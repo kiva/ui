@@ -47,7 +47,6 @@
 			<kv-loading-spinner v-if="isRegionsLoading" />
 			<ul>
 				<li v-for="region in regions" :key="region.name">
-					<!-- Attempted to add tracking information (line 54) in here doesn't work -->
 					<button
 						@click="openSection(region.name)"
 						:aria-pressed="isOpenSection(region.name) ? 'true' : 'false'"

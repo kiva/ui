@@ -31,13 +31,11 @@
 				<li v-if="isRegionsLoading">
 					<kv-loading-spinner />
 				</li>
-				<!-- Attempted to add tracking information (line 40 & 11) in here doesn't work -->
 				<expandable-list-item
 					v-for="region in regions"
 					:key="region.name"
 					:id="`lend-menu-${region.name}-panel` | changeCase('paramCase')"
 					ref="regionCountries"
-					v-kv-track-event="['TopNav','click-Lend-Region', region.name]"
 				>
 					<template slot="title">
 						<button v-kv-track-event="['TopNav','click-Lend-Region', region.name]">
