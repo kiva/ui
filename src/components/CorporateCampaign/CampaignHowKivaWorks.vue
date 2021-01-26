@@ -6,10 +6,7 @@
 					By lending as little as $25 on Kiva, you can support the causes you care
 					about and make a real personal impact.
 				</p>
-				<fifteen-years-how-kiva-works-carousel
-					class="carousel"
-					:slides="slides"
-				/>
+				<fifteen-years-how-kiva-works-carousel class="carousel" :slides="slides" />
 			</div>
 		</div>
 	</div>
@@ -62,32 +59,21 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
-@import 'components/15-years/15-years';
-
-/* stylelint-disable no-descending-specificity */
 
 .works {
-	// max-width: inherit;
 	padding: 4rem 0;
-	// background-color: rgba(0, 0, 0, 0.1);
-	background: #fff;
-	color: $twilight;
 
 	/* hides the horizontal scrollbar created by hacking the carousel below */
 	width: 100%;
 	overflow-x: hidden;
 
 	&__subhead {
-		@include h4();
+		@include large-text();
 
-		// max-width: rem-calc(913);
-		padding: 0 2rem;
 		margin: 0;
 	}
 
 	&__header {
-		--section-header-line-color: #{$twilight};
-
 		margin-bottom: 2rem;
 
 		@include breakpoint('xxlarge') {

@@ -11,6 +11,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
 
 .fifteen-year-styled {
+	--fifteen-year-font-family-monospace: 'Roboto Mono', monospace;
+
 	h2 {
 		@include h2();
 	}
