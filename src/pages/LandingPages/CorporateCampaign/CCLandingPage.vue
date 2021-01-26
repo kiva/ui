@@ -909,7 +909,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 .corporate-campaign-landing {
@@ -943,6 +943,10 @@ export default {
 
 .campaign-checkout {
 	margin-top: 1rem;
+
+	@include breakpoint(large) {
+		min-width: rem-calc(600);
+	}
 }
 
 .campaign-thanks {
