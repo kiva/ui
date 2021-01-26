@@ -49,7 +49,12 @@
 					<div class="kv-lightbox__body"
 						ref="kvLightboxBody"
 					>
-						<slot>Lightbox body</slot>
+						<!-- gives lightbox content foundation grids the correct margins -->
+						<div class="row small-collapse">
+							<div class="small-12 columns">
+								<slot>Lightbox body</slot>
+							</div>
+						</div>
 					</div>
 					<div class="kv-lightbox__controls" v-if="this.$slots.controls">
 						<slot name="controls"></slot>
