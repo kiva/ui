@@ -1,14 +1,36 @@
 <template>
-	<router-link to="/basket" v-if="count > 0" class="basket-bar hide-for-large">
-		Basket ({{ count }})
+	<router-link
+		v-if="count > 0"
+		:to="basketLink"
+		class="basket-bar hide-for-large"
+		:class="{'basket-bar--floating' : floating}"
+		v-kv-track-event="['BasketBar','click-Basket']"
+	>
+		<template v-if="floating">
+			<kv-icon
+				v-if="floating"
+				class="basket-bar__icon"
+				name="cart"
+				from-sprite="true"
+			/>
+			<span class="basket-bar__count">{{ count }}</span>
+			<span class="show-for-sr">items in your cart</span>
+		</template>
+
+		<template v-else>
+			Basket ({{ count }})
+		</template>
 	</router-link>
 </template>
 
 <script>
-import _get from 'lodash/get';
 import countQuery from '@/graphql/query/basketCount.graphql';
+import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	components: {
+		KvIcon
+	},
 	inject: ['apollo'],
 	data() {
 		return {
@@ -19,13 +41,35 @@ export default {
 		query: countQuery,
 		preFetch: true,
 		result({ data }) {
-			this.count = _get(data, 'shop.nonTrivialItemCount');
+			this.count = data?.shop?.nonTrivialItemCount || 0;
 		}
 	},
+	props: {
+		corporate: {
+			type: Boolean,
+			default: false
+		},
+		floating: {
+			type: Boolean,
+			default: false
+		},
+	},
+	computed: {
+		basketLink() {
+			return this.corporate ? this.addHashToRoute('show-basket') : '/basket';
+		}
+	},
+	methods: {
+		addHashToRoute(hash) {
+			const route = { ...this.$route };
+			route.hash = hash;
+			return route;
+		},
+	}
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 .basket-bar {
@@ -43,10 +87,32 @@ export default {
 	font-weight: normal;
 	z-index: 1000;
 
-	&:hover {
+	&:hover,
+	&:focus {
 		color: $white;
 		background-color: $kiva-accent-darkblue;
 		text-decoration: none;
 	}
+
+	&__icon {
+		flex-shrink: 0;
+		fill: $white;
+		width: rem-calc(20);
+		height: rem-calc(20);
+	}
 }
+
+.basket-bar--floating {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	bottom: 1rem;
+	right: 1rem;
+	width: auto;
+	min-width: rem-calc(60);
+	height: rem-calc(60);
+	padding: rem-calc(12);
+	border-radius: rem-calc(60);
+}
+
 </style>

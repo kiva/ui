@@ -989,7 +989,4 @@ export default {
 	}
 }
 
-.basket-bar {
-	display: none;
-}
 </style>
