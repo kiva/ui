@@ -1,98 +1,98 @@
 <template>
-	<div class="columns">
-		<div
-			class="kiva-card-entry-wrapper row"
-		>
-			<span class="small-3 large-2">
-				<button @click="toggleAccordion">
-					<kv-icon
-						:class="{ flipped: open }"
-						class="toggle-arrow"
-						name="medium-chevron"
-						:from-sprite="true"
-					/>
-				</button>
-			</span>
-			<button
-				class="featured-text accordion-title small-9 large-10"
-				@click="toggleAccordion"
-			>
-				Have a Kiva Card?
+	<div class="kiva-card-entry-wrapper row">
+		<div class="small-3 large-2 columns">
+			<button @click="toggleAccordion">
+				<kv-icon
+					:class="{ flipped: open }"
+					class="toggle-arrow"
+					name="medium-chevron"
+					:from-sprite="true"
+				/>
 			</button>
-			<kv-expandable easing="ease-in-out">
-				<div
-					v-show="open"
-					class="accordion-info row small-12"
-				>
-					<div class="small-3 large-2"></div>
-					<div class="small-9 large-10">
-						<div>
+		</div>
+		<button
+			class="featured-text accordion-title small-9 large-10 columns"
+			@click="toggleAccordion"
+		>
+			Have a Kiva Card?
+		</button>
+		<kv-expandable easing="ease-in-out">
+			<div
+				v-show="open"
+				class="accordion-info row small-12 columns"
+			>
+				<div class="small-9 small-offset-3 large-10 large-offset-2 columns">
+					<div class="row">
+						<div class="small-9 large-5 xlarge-4 columns">
 							<input
 								placeholder="ABCD-1234-EFGH-5678"
 								class="kiva-card-input"
 								v-model="kivaCardCode"
 								@keyup.enter.prevent="updateKivaCard('redemption_code')"
 							>
+						</div>
+						<div class="small-4 large-3 xlarge-2 columns">
 							<button class="button secondary"
 								@click.prevent="updateKivaCard('redemption_code')"
 							>
 								Apply
 							</button>
-
+						</div>
+						<div class="small-4 columns align-self-middle">
 							<!-- This lightbox will be replaced with a Popper tip message. -->
 							<button @click.prevent="triggerDefaultLightbox"
 								class="help-lightbox-trigger"
 							>
 								Need help?
 							</button>
-							<kv-lightbox
-								:visible="defaultLbVisible"
-								@lightbox-closed="lightboxClosed"
-								title="Where can I find my Kiva Card code?"
-							>
-								<p>
-									Kiva issues three types of Kiva Cards: print-it-yourself cards,
-									email delivery and postal delivery.
-								</p>
-								<p>Print-it-yourself:</p>
-								<img alt="print-kiva-card"
-									class="card-spacing"
-									height="116"
-									src="~@/assets/images/checkout/printcard_codelocation.jpg"
-									width="450"
-								>
-								<p>Email delivery:</p>
-								<img alt="email-kiva-card"
-									class="card-spacing"
-									height="199"
-									src="~@/assets/images/checkout/emailcard_codelocation.jpg"
-									width="450"
-								>
-								<p>Postal delivery:</p>
-								<img alt="postal-kiva-card"
-									class="postal-card"
-									height="158"
-									src="~@/assets/images/checkout/physicalcard_codelocation.jpg"
-									width="430"
-								>
-							</kv-lightbox>
-
-							<ul class="redemption-items">
-								<li v-for="(credit, index) in credits" :key="index">
-									<span class="heading">Kiva Card value: </span>
-									<span class="value">${{ credit.applied }}</span>
-									<button class="remove-wrapper"
-										@click.prevent.stop="removeCredit('redemption_code', credit.id)"
-									>
-										<kv-icon class="remove-x" name="small-x" :from-sprite="true" title="Remove" />
-									</button>
-								</li>
-							</ul>
 						</div>
+						<kv-lightbox
+							:visible="defaultLbVisible"
+							@lightbox-closed="lightboxClosed"
+							title="Where can I find my Kiva Card code?"
+						>
+							<p>
+								Kiva issues three types of Kiva Cards: print-it-yourself cards,
+								email delivery and postal delivery.
+							</p>
+							<p>Print-it-yourself:</p>
+							<img alt="print-kiva-card"
+								class="card-spacing"
+								height="116"
+								src="~@/assets/images/checkout/printcard_codelocation.jpg"
+								width="450"
+							>
+							<p>Email delivery:</p>
+							<img alt="email-kiva-card"
+								class="card-spacing"
+								height="199"
+								src="~@/assets/images/checkout/emailcard_codelocation.jpg"
+								width="450"
+							>
+							<p>Postal delivery:</p>
+							<img alt="postal-kiva-card"
+								class="postal-card"
+								height="158"
+								src="~@/assets/images/checkout/physicalcard_codelocation.jpg"
+								width="430"
+							>
+						</kv-lightbox>
+
+						<ul class="redemption-items">
+							<li v-for="(credit, index) in credits" :key="index">
+								<span class="heading">Kiva Card value: </span>
+								<span class="value">${{ credit.applied }}</span>
+								<button class="remove-wrapper"
+									@click.prevent.stop="removeCredit('redemption_code', credit.id)"
+								>
+									<kv-icon class="remove-x" name="small-x" :from-sprite="true" title="Remove" />
+								</button>
+							</li>
+						</ul>
 					</div>
 				</div>
-			</kv-expandable>
-		</div>
+			</div>
+		</kv-expandable>
 	</div>
 </template>
 
@@ -196,11 +196,6 @@ export default {
 <style lang="scss" scoped>
 @import "settings";
 
-div.columns .kiva-card-entry-wrapper {
-	max-width: rem-calc(800);
-	margin: 0 auto;
-}
-
 .toggle-arrow {
 	transition: transform 300ms ease;
 	display: block;
@@ -215,42 +210,31 @@ div.columns .kiva-card-entry-wrapper {
 
 .accordion-title {
 	font-weight: $global-weight-highlight;
-	padding-left: rem-calc(7);
 	text-align: left;
-
-	@include breakpoint(medium) {
-		padding-left: 0;
-	}
-
-	&:hover {
-		cursor: pointer;
-	}
 }
 
 .flipped {
 	transform: rotate(180deg);
 }
 
-.accordion-info button.secondary {
-	color: $kiva-accent-blue;
-	border: 1px solid $kiva-accent-blue;
-	box-shadow: 0 1px $kiva-accent-blue;
-	visibility: visible;
-	font-size: $medium-text-font-size;
-	margin: rem-calc(15) rem-calc(15) 0 rem-calc(20);
+.accordion-info {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
 
-	@include breakpoint(medium) {
-		padding: rem-calc(6) rem-calc(20);
-		margin-right: rem-calc(15);
-		margin-left: rem-calc(17);
-		width: inherit;
-		font-size: $normal-text-font-size;
-		height: rem-calc(36);
-	}
+	button.secondary {
+		color: $kiva-accent-blue;
+		border: 1px solid $kiva-accent-blue;
+		box-shadow: 0 1px $kiva-accent-blue;
+		visibility: visible;
+		font-size: $medium-text-font-size;
+		margin-bottom: 0;
+		width: 100%;
 
-	@include breakpoint(large) {
-		float: left;
-		margin: rem-calc(15) rem-calc(15) 0 0;
+		@include breakpoint(medium) {
+			padding: rem-calc(6) rem-calc(20);
+			font-size: $normal-text-font-size;
+			height: rem-calc(36);
+		}
 	}
 }
 
@@ -281,38 +265,21 @@ div.columns .kiva-card-entry-wrapper {
 }
 
 .kiva-card-input {
-	width: rem-calc(240);
+	width: 100%;
+	height: rem-calc(50);
 	border: 1px solid $charcoal;
 	color: $charcoal;
 	border-radius: $button-radius;
 	font-weight: 300;
 	text-align: center;
 	display: block;
-	height: rem-calc(50);
 	font-size: $medium-text-font-size;
-	margin-left: rem-calc(20);
-
-	@include breakpoint(medium) {
-		margin: rem-calc(15) rem-calc(15) rem-calc(15) rem-calc(17);
-	}
+	margin-bottom: 1rem;
 
 	@include breakpoint(large) {
-		width: rem-calc(200);
 		font-size: $normal-text-font-size;
-		float: left;
 		height: rem-calc(37);
-	}
-}
-
-.help-lightbox-trigger {
-	margin: 1.2rem 0;
-	position: relative;
-	top: rem-calc(9);
-
-	@include breakpoint(large) {
-		float: left;
-		top: unset;
-		position: unset;
+		margin-bottom: 0;
 	}
 }
 
@@ -320,7 +287,6 @@ div.columns .kiva-card-entry-wrapper {
 	fill: $subtle-gray;
 	width: 1.1rem;
 	height: 1.1rem;
-	cursor: pointer;
 	vertical-align: middle;
 	margin-top: -0.1rem;
 }

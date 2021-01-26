@@ -50,12 +50,9 @@ export default {
 .checkout-holiday-promo {
 	display: flex;
 	align-items: center;
-	padding-left: 1.25rem;
-	padding-right: 1.25rem;
 
 	@include breakpoint(medium) {
-		margin: $list-side-margin $list-side-margin 2rem;
-		padding-left: rem-calc(90);
+		margin-bottom: 2rem;
 	}
 
 	.holiday-present-icon {

@@ -1,33 +1,29 @@
 <template>
-	<div class="order-totals small-collapse row">
+	<div class="order-totals row">
 		<div v-if="showKivaCredit" class="kiva-credit columns small-12">
-			<div class="forced-width">
-				<span v-if="showRemoveKivaCredit">
-					Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
-				</span>
-				<span v-if="showApplyKivaCredit">
-					<del>Kiva credit:</del> <span class="total-value"><del>({{ kivaCredit }})</del></span>
-				</span>
-				<button
-					v-if="showRemoveKivaCredit"
-					class="remove-credit"
-					@click="removeCredit('kiva_credit')"
-				>
-					<kv-icon class="remove-credit-icon" name="small-x" :from-sprite="true" title="Remove Credit" />
-				</button>
-				<button
-					v-if="showApplyKivaCredit"
-					class="apply-credit small-text"
-					@click="addCredit('kiva_credit')"
-				>
-					Apply
-				</button>
-			</div>
+			<span v-if="showRemoveKivaCredit">
+				Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
+			</span>
+			<span v-if="showApplyKivaCredit">
+				<del>Kiva credit:</del> <span class="total-value"><del>({{ kivaCredit }})</del></span>
+			</span>
+			<button
+				v-if="showRemoveKivaCredit"
+				class="remove-credit"
+				@click="removeCredit('kiva_credit')"
+			>
+				<kv-icon class="remove-credit-icon" name="small-x" :from-sprite="true" title="Remove Credit" />
+			</button>
+			<button
+				v-if="showApplyKivaCredit"
+				class="apply-credit small-text"
+				@click="addCredit('kiva_credit')"
+			>
+				Apply
+			</button>
 		</div>
 		<div class="order-total columns small-12">
-			<div class="forced-width">
-				<strong>Total: <span class="total-value">{{ orderTotal }}</span></strong>
-			</div>
+			<strong>Total: <span class="total-value">{{ orderTotal }}</span></strong>
 		</div>
 	</div>
 </template>
@@ -119,35 +115,14 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 .order-totals {
 	text-align: left;
-	padding-right: 0.625rem;
-	padding-left: rem-calc(21);
 
 	@include breakpoint(medium) {
 		text-align: right;
-	}
-
-	.forced-width {
-		max-width: rem-calc(779);
-		margin: 0 auto;
-
-		@include breakpoint(medium) {
-			margin-right: rem-calc(10);
-		}
-
-		// Needed these custom break points were needed to get the correct spacing
-		// for the kiva credit & order total rows
-		@media screen and (min-width: 760px) and (max-width: 850px) {
-			margin-right: rem-calc(13);
-		}
-
-		@media screen and (min-width: 851px) {
-			margin: 0 auto;
-		}
 	}
 
 	.kiva-credit {

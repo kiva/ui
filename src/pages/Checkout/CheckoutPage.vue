@@ -23,73 +23,87 @@
 							</div>
 							<hr>
 						</div>
-						<basket-items-list
-							:loans="loans"
-							:donations="donations"
-							:kiva-cards="kivaCards"
-							:teams="teams"
-							:loan-reservation-total="parseInt(totals.loanReservationTotal)"
-							@validateprecheckout="validatePreCheckout"
-							@refreshtotals="refreshTotals($event)"
-							@updating-totals="setUpdatingTotals"
-						/>
-						<hr>
-
-						<kiva-card-redemption
-							:credits="redemption_credits"
-							:totals="totals"
-							@refreshtotals="refreshTotals"
-							@updating-totals="setUpdatingTotals"
-						/>
+						<div class="basket-container">
+							<basket-items-list
+								:loans="loans"
+								:donations="donations"
+								:kiva-cards="kivaCards"
+								:teams="teams"
+								:loan-reservation-total="parseInt(totals.loanReservationTotal)"
+								@validateprecheckout="validatePreCheckout"
+								@refreshtotals="refreshTotals($event)"
+								@updating-totals="setUpdatingTotals"
+							/>
+						</div>
 
 						<hr>
 
-						<checkout-holiday-promo
-							v-if="holidayModeEnabled"
-							@updating-totals="setUpdatingTotals"
-						/>
+						<div class="basket-container">
+							<kiva-card-redemption
+								:credits="redemption_credits"
+								:totals="totals"
+								@refreshtotals="refreshTotals"
+								@updating-totals="setUpdatingTotals"
+							/>
+						</div>
 
-						<order-totals
-							:totals="totals"
-							@refreshtotals="refreshTotals"
-							@updating-totals="setUpdatingTotals"
-						/>
+						<hr>
 
-						<basket-verification />
+						<div class="basket-container">
+							<div class="row">
+								<div class="small-9 small-offset-3 large-10 large-offset-2 columns">
+									<checkout-holiday-promo
+										v-if="holidayModeEnabled"
+										@updating-totals="setUpdatingTotals"
+									/>
+								</div>
+							</div>
 
-						<div class="checkout-actions row" :class="{'small-collapse' : showLoginContinueButton}">
-							<div v-if="isLoggedIn" class="small-12">
-								<form v-if="showKivaCreditButton" action="/checkout" method="GET">
-									<input type="hidden" name="js_loaded" value="false">
-									<kiva-credit-payment
+							<order-totals
+								:totals="totals"
+								@refreshtotals="refreshTotals"
+								@updating-totals="setUpdatingTotals"
+							/>
+
+							<basket-verification />
+
+							<div class="checkout-actions row">
+								<div v-if="isLoggedIn" class="small-12 columns">
+									<form v-if="showKivaCreditButton" action="/checkout" method="GET">
+										<input type="hidden" name="js_loaded" value="false">
+										<kiva-credit-payment
+											@refreshtotals="refreshTotals"
+											@updating-totals="setUpdatingTotals"
+											@complete-transaction="completeTransaction"
+											class=" checkout-button"
+											id="kiva-credit-payment-button"
+										/>
+									</form>
+
+									<checkout-drop-in-payment-wrapper
+										v-else
+										:amount="creditNeeded"
 										@refreshtotals="refreshTotals"
 										@updating-totals="setUpdatingTotals"
 										@complete-transaction="completeTransaction"
-										class=" checkout-button"
-										id="kiva-credit-payment-button"
 									/>
-								</form>
+								</div>
 
-								<checkout-drop-in-payment-wrapper
-									v-else
-									:amount="creditNeeded"
-									@refreshtotals="refreshTotals"
-									@updating-totals="setUpdatingTotals"
-									@complete-transaction="completeTransaction"
-								/>
-							</div>
-
-							<div v-else-if="!isActivelyLoggedIn && showLoginContinueButton" class="small-12">
-								<kv-button
-									class="checkout-button smallest"
-									id="login-to-continue-button"
-									v-kv-track-event="['basket', 'Login to Continue Button']"
-									title="Login to Continue Button"
-									@click.native="loginToContinue"
-									:href="'/ui-login?force=true&doneUrl=/checkout'"
+								<div
+									v-else-if="!isActivelyLoggedIn && showLoginContinueButton"
+									class="small-12 columns"
 								>
-									{{ loginContinueButtonText }}
-								</kv-button>
+									<kv-button
+										class="checkout-button smallest"
+										id="login-to-continue-button"
+										v-kv-track-event="['basket', 'Login to Continue Button']"
+										title="Login to Continue Button"
+										@click.native="loginToContinue"
+										:href="'/ui-login?force=true&doneUrl=/checkout'"
+									>
+										{{ loginContinueButtonText }}
+									</kv-button>
+								</div>
 							</div>
 						</div>
 
@@ -671,6 +685,11 @@ export default {
 	}
 }
 
+.basket-container {
+	max-width: rem-calc(800);
+	margin: 0 auto;
+}
+
 .page-content {
 	padding: 1.625rem 0;
 
@@ -688,9 +707,6 @@ export default {
 		}
 
 		.checkout-actions {
-			max-width: rem-calc(800);
-			margin: 0 auto;
-
 			.checkout-button {
 				width: 100%;
 			}
@@ -700,7 +716,6 @@ export default {
 
 				.checkout-button {
 					width: auto;
-					margin-right: rem-calc(10);
 				}
 			}
 		}

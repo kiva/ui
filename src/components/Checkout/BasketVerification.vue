@@ -1,13 +1,10 @@
 <template>
-	<!-- NB: Reusing .order-totals .forced-width styling. -->
-	<div class="basket-verification order-totals">
+	<div class="basket-verification">
 		<div
 			v-if="verificationState === 'verified'"
-			class="verification-verified forced-width"
+			class="verification-verified"
 		>
-			<div class="forced-width">
-				Basket Verified!
-			</div>
+			Basket Verified!
 		</div>
 
 		<kv-lightbox

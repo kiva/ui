@@ -127,6 +127,48 @@ export const WithControls = (args, { argTypes }) => ({
 	`,
 });
 
+export const WithFoundationGrid = (args, { argTypes }) => ({
+	components: { KvLightbox, KvButton },
+	props: Object.keys(argTypes),
+	template: `
+		<div>
+			<kv-lightbox
+				:visible="visible"
+				:inverted="inverted"
+				:prevent-close="preventClose"
+				:title="title"
+				:no-padding-top="noPaddingTop"
+				:no-padding-bottom="noPaddingBottom"
+				:no-padding-sides="noPaddingSides"
+			>
+				<p>Hi, I'm outside the grid</p>
+				<div class="row">
+					<div class="small-12 large-6 columns">
+						<b>Grid, Full mobile, half large</b>
+					</div>
+					<div class="small-12 large-6 columns">
+						<b>Grid, Full mobile, half large</b>
+
+						<div class="row">
+							<div class="small-12 large-6 columns">
+								<b>Nested Grid, Full mobile, half large</b>
+							</div>
+							<div class="small-12 large-6 columns">
+								<b>Nested Grid, Full mobile, half large</b>
+							</div>
+						</div>
+					</div>
+				</div>
+				${loremIpsum}
+				<template slot="controls">
+					<kv-button>Button 1</kv-button>
+					<kv-button>Button 2</kv-button>
+				</template>
+			</kv-lightbox>
+		</div>
+	`,
+});
+
 export const CustomTitleColor = (args, { argTypes }) => ({
 	components: { KvLightbox },
 	props: Object.keys(argTypes),
