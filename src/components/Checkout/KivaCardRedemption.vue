@@ -1,102 +1,98 @@
 <template>
-	<div>
-		<div
-			class="kiva-card-entry-wrapper row"
-		>
-			<div class="small-3 large-2 columns">
-				<button @click="toggleAccordion">
-					<kv-icon
-						:class="{ flipped: open }"
-						class="toggle-arrow"
-						name="medium-chevron"
-						:from-sprite="true"
-					/>
-				</button>
-			</div>
-			<button
-				class="featured-text accordion-title small-9 large-10 columns"
-				@click="toggleAccordion"
-			>
-				Have a Kiva Card?
+	<div class="kiva-card-entry-wrapper row">
+		<div class="small-3 large-2 columns">
+			<button @click="toggleAccordion">
+				<kv-icon
+					:class="{ flipped: open }"
+					class="toggle-arrow"
+					name="medium-chevron"
+					:from-sprite="true"
+				/>
 			</button>
-			<kv-expandable easing="ease-in-out">
-				<div
-					v-show="open"
-					class="accordion-info row small-12 columns"
-				>
-					<div class="small-9 small-offset-3 large-10 large-offset-2 columns">
-						<div class="row">
-							<div class="small-9 large-5 xlarge-4 columns">
-								<input
-									placeholder="ABCD-1234-EFGH-5678"
-									class="kiva-card-input"
-									v-model="kivaCardCode"
-									@keyup.enter.prevent="updateKivaCard('redemption_code')"
-								>
-							</div>
-							<div class="small-4 large-3 xlarge-2 columns">
-								<button class="button secondary"
-									@click.prevent="updateKivaCard('redemption_code')"
-								>
-									Apply
-								</button>
-							</div>
-							<div class="small-4 columns align-self-middle">
-								<!-- This lightbox will be replaced with a Popper tip message. -->
-								<button @click.prevent="triggerDefaultLightbox"
-									class="help-lightbox-trigger"
-								>
-									Need help?
-								</button>
-							</div>
-							<kv-lightbox
-								:visible="defaultLbVisible"
-								@lightbox-closed="lightboxClosed"
-								title="Where can I find my Kiva Card code?"
+		</div>
+		<button
+			class="featured-text accordion-title small-9 large-10 columns"
+			@click="toggleAccordion"
+		>
+			Have a Kiva Card?
+		</button>
+		<kv-expandable easing="ease-in-out">
+			<div
+				v-show="open"
+				class="accordion-info row small-12 columns"
+			>
+				<div class="small-9 small-offset-3 large-10 large-offset-2 columns">
+					<div class="row">
+						<div class="small-9 large-5 xlarge-4 columns">
+							<input
+								placeholder="ABCD-1234-EFGH-5678"
+								class="kiva-card-input"
+								v-model="kivaCardCode"
+								@keyup.enter.prevent="updateKivaCard('redemption_code')"
 							>
-								<p>
-									Kiva issues three types of Kiva Cards: print-it-yourself cards,
-									email delivery and postal delivery.
-								</p>
-								<p>Print-it-yourself:</p>
-								<img alt="print-kiva-card"
-									class="card-spacing"
-									height="116"
-									src="~@/assets/images/checkout/printcard_codelocation.jpg"
-									width="450"
-								>
-								<p>Email delivery:</p>
-								<img alt="email-kiva-card"
-									class="card-spacing"
-									height="199"
-									src="~@/assets/images/checkout/emailcard_codelocation.jpg"
-									width="450"
-								>
-								<p>Postal delivery:</p>
-								<img alt="postal-kiva-card"
-									class="postal-card"
-									height="158"
-									src="~@/assets/images/checkout/physicalcard_codelocation.jpg"
-									width="430"
-								>
-							</kv-lightbox>
-
-							<ul class="redemption-items">
-								<li v-for="(credit, index) in credits" :key="index">
-									<span class="heading">Kiva Card value: </span>
-									<span class="value">${{ credit.applied }}</span>
-									<button class="remove-wrapper"
-										@click.prevent.stop="removeCredit('redemption_code', credit.id)"
-									>
-										<kv-icon class="remove-x" name="small-x" :from-sprite="true" title="Remove" />
-									</button>
-								</li>
-							</ul>
 						</div>
+						<div class="small-4 large-3 xlarge-2 columns">
+							<button class="button secondary"
+								@click.prevent="updateKivaCard('redemption_code')"
+							>
+								Apply
+							</button>
+						</div>
+						<div class="small-4 columns align-self-middle">
+							<!-- This lightbox will be replaced with a Popper tip message. -->
+							<button @click.prevent="triggerDefaultLightbox"
+								class="help-lightbox-trigger"
+							>
+								Need help?
+							</button>
+						</div>
+						<kv-lightbox
+							:visible="defaultLbVisible"
+							@lightbox-closed="lightboxClosed"
+							title="Where can I find my Kiva Card code?"
+						>
+							<p>
+								Kiva issues three types of Kiva Cards: print-it-yourself cards,
+								email delivery and postal delivery.
+							</p>
+							<p>Print-it-yourself:</p>
+							<img alt="print-kiva-card"
+								class="card-spacing"
+								height="116"
+								src="~@/assets/images/checkout/printcard_codelocation.jpg"
+								width="450"
+							>
+							<p>Email delivery:</p>
+							<img alt="email-kiva-card"
+								class="card-spacing"
+								height="199"
+								src="~@/assets/images/checkout/emailcard_codelocation.jpg"
+								width="450"
+							>
+							<p>Postal delivery:</p>
+							<img alt="postal-kiva-card"
+								class="postal-card"
+								height="158"
+								src="~@/assets/images/checkout/physicalcard_codelocation.jpg"
+								width="430"
+							>
+						</kv-lightbox>
+
+						<ul class="redemption-items">
+							<li v-for="(credit, index) in credits" :key="index">
+								<span class="heading">Kiva Card value: </span>
+								<span class="value">${{ credit.applied }}</span>
+								<button class="remove-wrapper"
+									@click.prevent.stop="removeCredit('redemption_code', credit.id)"
+								>
+									<kv-icon class="remove-x" name="small-x" :from-sprite="true" title="Remove" />
+								</button>
+							</li>
+						</ul>
 					</div>
 				</div>
-			</kv-expandable>
-		</div>
+			</div>
+		</kv-expandable>
 	</div>
 </template>
 

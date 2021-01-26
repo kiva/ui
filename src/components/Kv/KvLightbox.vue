@@ -51,7 +51,7 @@
 					>
 						<!-- gives lightbox content foundation grids the correct margins -->
 						<div class="row small-collapse">
-							<div class="small-12 columns">
+							<div class="columns">
 								<slot>Lightbox body</slot>
 							</div>
 						</div>

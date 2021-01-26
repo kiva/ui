@@ -23,26 +23,29 @@
 							</div>
 							<hr>
 						</div>
-						<basket-items-list
-							class="basket-container"
-							:loans="loans"
-							:donations="donations"
-							:kiva-cards="kivaCards"
-							:teams="teams"
-							:loan-reservation-total="parseInt(totals.loanReservationTotal)"
-							@validateprecheckout="validatePreCheckout"
-							@refreshtotals="refreshTotals($event)"
-							@updating-totals="setUpdatingTotals"
-						/>
+						<div class="basket-container">
+							<basket-items-list
+								:loans="loans"
+								:donations="donations"
+								:kiva-cards="kivaCards"
+								:teams="teams"
+								:loan-reservation-total="parseInt(totals.loanReservationTotal)"
+								@validateprecheckout="validatePreCheckout"
+								@refreshtotals="refreshTotals($event)"
+								@updating-totals="setUpdatingTotals"
+							/>
+						</div>
+
 						<hr>
 
-						<kiva-card-redemption
-							class="basket-container"
-							:credits="redemption_credits"
-							:totals="totals"
-							@refreshtotals="refreshTotals"
-							@updating-totals="setUpdatingTotals"
-						/>
+						<div class="basket-container">
+							<kiva-card-redemption
+								:credits="redemption_credits"
+								:totals="totals"
+								@refreshtotals="refreshTotals"
+								@updating-totals="setUpdatingTotals"
+							/>
+						</div>
 
 						<hr>
 
