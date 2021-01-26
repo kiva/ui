@@ -1,13 +1,6 @@
 <template>
 	<div class="row">
 		<kv-settings-card class="column large-8" title="Who you’ll support" :disabled="!isEnabled">
-			<template v-slot:icon>
-				<kv-icon
-					class="icon"
-					title="Who you’ll support"
-					name="auto-icon-who"
-				/>
-			</template>
 			<template v-slot:content>
 				<who-youll-support-text @click="showLightbox = true" />
 				<inline-counter :strong="true" v-show="!kivaChooses" />

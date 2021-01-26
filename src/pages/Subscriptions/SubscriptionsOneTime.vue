@@ -1,13 +1,6 @@
 <template>
 	<div class="row">
 		<kv-settings-card class="column large-8" title="Global COVID-19 Response Lending">
-			<template v-slot:icon>
-				<kv-icon
-					class="icon"
-					title="Monthly Good"
-					name="auto-icon-when"
-				/>
-			</template>
 			<template v-slot:content>
 				<p>
 					Thank you for supporting those affected by COVID-19. Your deposit of <kv-button class="text-link"
@@ -151,7 +144,6 @@ import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
@@ -171,7 +163,6 @@ export default {
 	components: {
 		KvButton,
 		KvCurrencyInput,
-		KvIcon,
 		KvLightbox,
 		KvLoadingSpinner,
 		KvSettingsCard,
