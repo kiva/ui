@@ -3,15 +3,23 @@
 		v-if="count > 0"
 		:to="basketLink"
 		class="basket-bar hide-for-large"
+		:class="{'basket-bar--floating' : floating}"
 		v-kv-track-event="['BasketBar','click-Basket']"
 	>
-		<kv-icon
-			class="basket-bar__icon"
-			name="cart"
-			from-sprite="true"
-		/>
-		<span class="basket-bar__count">{{ count }}</span>
-		<span class="show-for-sr">items in your cart</span>
+		<template v-if="floating">
+			<kv-icon
+				v-if="floating"
+				class="basket-bar__icon"
+				name="cart"
+				from-sprite="true"
+			/>
+			<span class="basket-bar__count">{{ count }}</span>
+			<span class="show-for-sr">items in your cart</span>
+		</template>
+
+		<template v-else>
+			Basket ({{ count }})
+		</template>
 	</router-link>
 </template>
 
@@ -41,6 +49,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		floating: {
+			type: Boolean,
+			default: false
+		},
 	},
 	computed: {
 		basketLink() {
@@ -61,22 +73,19 @@ export default {
 @import 'settings';
 
 .basket-bar {
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	display: block;
 	position: fixed;
-	bottom: 1rem;
-	right: 1rem;
-	z-index: 1000;
-	min-width: rem-calc(60);
-	height: rem-calc(60);
-	padding: rem-calc(12);
-	border-radius: rem-calc(60);
+	bottom: 0;
+	width: 100%;
 	box-shadow: 0 -1px 3px 0 rgba(51, 51, 51, 0.3);
+	transition: bottom 500ms ease;
+	text-align: center;
+	padding: rem-calc(18) rem-calc(36);
 	color: $white;
 	background-color: $kiva-accent-blue;
 	font-size: rem-calc(20);
 	font-weight: normal;
+	z-index: 1000;
 
 	&:hover,
 	&:focus {
@@ -92,4 +101,18 @@ export default {
 		height: rem-calc(20);
 	}
 }
+
+.basket-bar--floating {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	bottom: 1rem;
+	right: 1rem;
+	width: auto;
+	min-width: rem-calc(60);
+	height: rem-calc(60);
+	padding: rem-calc(12);
+	border-radius: rem-calc(60);
+}
+
 </style>

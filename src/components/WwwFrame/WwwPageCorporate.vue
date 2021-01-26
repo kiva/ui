@@ -13,7 +13,10 @@
 			:theme="footerTheme"
 			:corporate-logo-url="corporateLogoUrl"
 		/>
-		<the-basket-bar :corporate="true" />
+		<the-basket-bar
+			:corporate="true"
+			:floating="true"
+		/>
 		<cookie-banner />
 	</div>
 </template>
