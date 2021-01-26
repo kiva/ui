@@ -1,33 +1,33 @@
 <template>
 	<div class="basket-item-wrapper row">
-		<span class="hide-for-small-only medium-3 large-2">
-			<span class="kiva-card-icon">
+		<div class="hide-for-small-only medium-3 large-2 columns">
+			<div class="kiva-card-icon">
 				<!-- Print Kiva Card -->
-				<span v-if="cardType == 'print'">
-					<img alt="print-kiva-card"
-						class="card-preview"
-						src="~@/assets/images/checkout/kiva_card_print_preview.jpg"
-					>
-				</span>
+				<img
+					v-if="cardType == 'print'"
+					alt="print-kiva-card"
+					class="card-preview"
+					src="~@/assets/images/checkout/kiva_card_print_preview.jpg"
+				>
 				<!-- Postal Kiva Card -->
-				<span v-if="cardType == 'postal'">
-					<img alt="postal-kiva-card"
-						class="card-preview"
-						src="~@/assets/images/checkout/kiva_card_postal_preview.jpg"
-					>
-				</span>
+				<img
+					v-if="cardType == 'postal'"
+					alt="postal-kiva-card"
+					class="card-preview"
+					src="~@/assets/images/checkout/kiva_card_postal_preview.jpg"
+				>
 				<!-- Email Kiva Card -->
-				<span v-if="cardType == 'email'">
-					<img alt="email-kiva-card"
-						class="card-preview"
-						src="~@/assets/images/checkout/kiva_card_email_preview.jpg"
-					>
-				</span>
-			</span>
-		</span>
-		<span class="small-12 medium-5 large-7 kiva-card-info-wrapper">
+				<img
+					v-if="cardType == 'email'"
+					alt="email-kiva-card"
+					class="card-preview"
+					src="~@/assets/images/checkout/kiva_card_email_preview.jpg"
+				>
+			</div>
+		</div>
+		<div class="small-12 medium-5 large-7 columns kiva-card-info-wrapper">
 			<!-- Main line text -->
-			<span class="kiva-card-info featured-text">
+			<div class="kiva-card-info featured-text">
 				<!-- Print Kiva Card -->
 				<span v-if="cardType == 'print'">Print-it-yourself Kiva Card
 					<span v-if="quantity > 1">({{ quantity }})</span>
@@ -71,9 +71,9 @@
 						<div class="small-text">For {{ recipientName }} {{ recipientEmail }}</div>
 					</span>
 				</div>
-			</span>
-		</span>
-		<span class="small-12 medium-4 large-3 price-wrapper medium-text-font-size">
+			</div>
+		</div>
+		<div class="small-12 medium-4 large-3 columns price-wrapper medium-text-font-size">
 			<!-- Kiva card amount dropdown section -->
 			<loan-price
 				:ids-in-group="kivaCard.idsInGroup"
@@ -82,7 +82,7 @@
 				@refreshtotals="onLoanUpdate($event)"
 				@updating-totals="$emit('updating-totals', $event)"
 			/>
-		</span>
+		</div>
 	</div>
 </template>
 
@@ -152,7 +152,7 @@ export default {
 }
 
 .kiva-card-info {
-	line-height: 0.8;
+	line-height: 1.25;
 	font-weight: $global-weight-highlight;
 }
 
