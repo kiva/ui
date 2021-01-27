@@ -48,7 +48,7 @@
 			</kv-accordion-item>
 
 			<kv-accordion-item
-				class="loan-filters__loan-filters__lightbox-accordian"
+				class="loan-filters__lightbox-accordian"
 				id="sectors-accordian"
 			>
 				<template v-slot:header>
