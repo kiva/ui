@@ -4,8 +4,6 @@ $sky: #B8CEF8;
 $twilight: #3E4653;
 $offwhite: #F8F8F8;
 
-$font-family-monospace: 'Roboto Mono', monospace;
-
 @mixin huge-headline() {
 	font-weight: bold;
 	font-size: rem-calc(96);
@@ -61,7 +59,8 @@ $font-family-monospace: 'Roboto Mono', monospace;
 
 @mixin h5() {
 	font-size: rem-calc(12);
-	font-family: $font-family-monospace;
+	font-family: inherit;
+	font-family: var(--fifteen-years-font-family-monospace, inherit);
 	line-height: 1.5;
 	text-transform: uppercase;
 
