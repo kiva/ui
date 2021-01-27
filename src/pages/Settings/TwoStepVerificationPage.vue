@@ -168,7 +168,10 @@ export default {
 			const mfaOffConfirm = window.confirm('Are you sure you want to turn off 2-step verification?'); // eslint-disable-line no-alert, max-len
 			if (mfaOffConfirm) {
 				// Upon confirm trigger mutation to turn off mfa
-				this.turnOffMfa();
+				this.turnOffMfa().then(() => {
+					// Upon completion return to the security settings page
+					this.$router.push('/settings/security');
+				});
 			} else {
 				// Upon cancel return to the base URL of current page
 				this.$router.push('/settings/security/mfa');
@@ -195,11 +198,12 @@ export default {
 			return this.mfaMethods.length > 0;
 		},
 	},
-	beforeRouteUpdate(to, from, next) {
-		if (to.path === '/settings/security/mfa') {
-			this.gatherMfaEnrollments();
+	watch: {
+		$route(to, from) {
+			if (to.fullPath !== from.fullPath && to.path === '/settings/security/mfa') {
+				this.gatherMfaEnrollments();
+			}
 		}
-		next();
 	},
 	methods: {
 		gatherMfaEnrollments() {
@@ -219,12 +223,20 @@ export default {
 					if (result.errors) {
 						throw result.errors;
 					}
-					this.isLoading = false;
 					this.pageError = '';
 					const authEnrollments = result.data.my.authenticatorEnrollments;
 					this.lastLoginTime = result.data.my.lastLoginTimestamp;
 
+					// If the user has a recovery code that is not active, then their initial MFA setup was interrupted.
+					// To fix that, we need to delete their recovery code, which can only be done by turning
+					// off (resetting) their MFA. Once that's complete, we need to gather their MFA enrollments again.
+					if (authEnrollments.some(e => !e.active && e.authenticator_type === 'recovery-code')) {
+						return this.turnOffMfa()
+							.then(() => this.gatherMfaEnrollments());
+					}
+
 					this.formatMfaMethods(authEnrollments);
+					this.isLoading = false;
 				})
 				.catch(err => {
 					this.isLoading = false;
@@ -253,14 +265,12 @@ export default {
 			}
 		},
 		turnOffMfa() {
-			this.apollo.mutate({
+			return this.apollo.mutate({
 				mutation: removeMfa,
 			}).then(result => {
 				if (result.errors) {
 					throw result.errors;
 				}
-				// Upon completion return to the base URL of current page
-				this.$router.push('/settings/security/mfa');
 			}).catch(err => {
 				this.isLoading = false;
 				console.error(err);

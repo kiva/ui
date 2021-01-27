@@ -156,6 +156,9 @@ export default {
 	mounted() {
 		this.startEnrollment();
 	},
+	beforeDestroy() {
+		this.lightboxVisible = false;
+	},
 	methods: {
 		afterScan() {
 			this.step = 1;
