@@ -210,6 +210,9 @@ export default {
 			return 'Phone number';
 		}
 	},
+	beforeDestroy() {
+		this.lightboxVisible = false;
+	},
 	methods: {
 		getMFAToken() {
 			return new Promise((resolve, reject) => {
