@@ -972,12 +972,14 @@ export default {
 		@include breakpoint(xlarge) {
 			width: 58.75rem;
 		}
-	}
 
-	.close-button-wrapper,
-	.full-details-link,
-	.borrower-info-body.loan-use a {
-		display: none;
+		::v-deep {
+			.full-details-link,
+			.close-button-wrapper,
+			.borrower-info-body.loan-use a {
+				display: none;
+			}
+		}
 	}
 
 	.overview-column {
