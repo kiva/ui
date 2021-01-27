@@ -1,14 +1,11 @@
 <template>
 	<div>
-		<h3 class="filter-title">
-			Tags
-		</h3>
 		<div class="row collapse">
 			<div class="small-12 columns">
 				<check-list
 					key="tags"
 					:items="tagsWithSelected"
-					:use-columns="true"
+					:use-columns="false"
 					@change="onChange"
 				/>
 			</div>

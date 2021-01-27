@@ -241,14 +241,19 @@ export default {
 						this.loadingLoans = true;
 					} else {
 						const newLoans = data.lend?.loans?.values ?? [];
+						// Handle appending new loans to carousel
 						const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
 						const existingLoanIds = this.loans.length ? this.loans.map(loan => loan.id) : [];
 						if (newLoanIds.toString() !== existingLoanIds.toString()) {
 							this.loans = this.loans.concat(newLoans);
 						}
+
 						this.totalCount = data.lend?.loans?.totalCount ?? 0;
 						this.$emit('update-total-count', this.totalCount);
-						this.scrollPos = 0;
+						// Reset carousel position after applying new loan filters
+						if (this.offset === 0) {
+							this.scrollPos = 0;
+						}
 						this.loadingLoans = false;
 					}
 				}

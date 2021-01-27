@@ -1,14 +1,11 @@
 <template>
 	<div>
-		<h3 class="filter-title">
-			Attributes
-		</h3>
 		<div class="row collapse">
 			<div class="small-12 columns">
 				<check-list
 					key="attributes"
 					:items="attributesWithSelected"
-					:use-columns="true"
+					:use-columns="false"
 					@change="onChange"
 				/>
 			</div>
