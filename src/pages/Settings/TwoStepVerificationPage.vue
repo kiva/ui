@@ -189,7 +189,7 @@ export default {
 			if (this.isMfaActive) {
 				return 'Set up additional backup steps so you can log in even if your other options aren\'t available';
 			}
-			return 'You\'ll be asked for a verification code when accessing you Kiva account.';
+			return 'You\'ll be asked for a verification code when accessing your Kiva account.';
 		},
 		isMfaActive() {
 			return this.mfaMethods.length > 0;
