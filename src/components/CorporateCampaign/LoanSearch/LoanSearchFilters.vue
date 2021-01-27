@@ -35,6 +35,14 @@
 				@updated-filters="handleUpdatedFilters"
 			/>
 
+			<location-filter
+				class="filter-type location-filter-container"
+				:all-countries="allCountries"
+				:initial-countries="initialCountries"
+				:selected-countries="selectedCountries"
+				@updated-filters="handleUpdatedFilters"
+			/>
+
 			<sector-filter
 				class="filter-type sector-filter"
 				:all-sectors="allSectors"
@@ -78,6 +86,7 @@ import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import AttributeFilter from '@/components/CorporateCampaign/LoanSearch/AttributeFilter';
 import GenderFilter from '@/components/CorporateCampaign/LoanSearch/GenderFilter';
+import LocationFilter from '@/components/CorporateCampaign/LoanSearch/LocationFilter';
 import SectorFilter from '@/components/CorporateCampaign/LoanSearch/SectorFilter';
 import TagFilter from '@/components/CorporateCampaign/LoanSearch/TagFilter';
 
@@ -115,6 +124,7 @@ export default {
 		KvLightbox,
 		AttributeFilter,
 		GenderFilter,
+		LocationFilter,
 		SectorFilter,
 		TagFilter
 	},
@@ -139,21 +149,16 @@ export default {
 			modifiedFilters: null,
 		};
 	},
-	// apollo: {
-	// 	query: filterOptionsQuery,
-	// 	preFetch: true,
-	// 	result({ data }) {
-	// 		this.allSectors = _sortBy(data.lend?.sector || [], 'name');
-	// 	},
-	// },
 	mounted() {
 		// fetch loan filter options
 		this.apollo.query({
 			query: filterOptionsQuery
 		}).then(({ data }) => {
-			this.allAttributes = _sortBy(data.lend?.loanThemeFilter || [], 'name');
-			this.allSectors = _sortBy(data.lend?.sector || [], 'name');
-			this.allTags = _sortBy(data.lend?.tag || [], 'name');
+			this.allAttributes = _sortBy(data.lend?.loanThemeFilter ?? [], 'country.name');
+			const countries = data.lend?.countryFacets ?? [];
+			this.allCountries = countries.map(entry => entry.country);
+			this.allSectors = _sortBy(data.lend?.sector ?? [], 'name');
+			this.allTags = _sortBy(data.lend?.tag ?? [], 'name');
 		});
 	},
 	computed: {
@@ -173,6 +178,15 @@ export default {
 			const incomingFilter = this.initialFiltersCopy.gender !== this.modifiedFilters.gender
 				? this.modifiedFilters.gender : this.initialFiltersCopy.gender;
 			return incomingFilter || 'both';
+		},
+		initialCountries() {
+			// list of 2 character country code
+			return this.initialFilters.country || [];
+		},
+		selectedCountries() {
+			const incomingFilter = this.initialFiltersCopy.country !== this.modifiedFilters.country
+				? this.modifiedFilters.country : this.initialFiltersCopy.country;
+			return incomingFilter || [];
 		},
 		initialSectors() {
 			return this.initialFilters.sector || [];

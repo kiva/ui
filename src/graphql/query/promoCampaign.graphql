@@ -44,6 +44,8 @@ query promoCampaign($basketId: String, $promoFundId: String) {
 				pageId
 				loanSearchCriteria {
 					filters {
+						cityState
+						country
 						currencyLossPossible
 						dafEligible
 						distributionModel

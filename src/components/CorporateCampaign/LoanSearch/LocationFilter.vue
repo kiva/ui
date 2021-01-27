@@ -1,0 +1,140 @@
+<template>
+	<div class="country-filters">
+		<kv-accordion-item
+			class="region-accordian"
+			id="country-accordian"
+		>
+			<template v-slot:header>
+				<h3>Countries</h3>
+			</template>
+			<div class="row collapse">
+				<div class="small-12 columns">
+					<kv-accordion-item
+						class="region-accordian"
+						v-for="(region, name, index) in regions"
+						:key="name"
+						:id="`${index}-region`"
+					>
+						<template v-slot:header>
+							<h4>{{ name }}</h4>
+						</template>
+						<check-list
+							key="`${name}-country-list`"
+							:items="region"
+							:use-columns="false"
+							@change="onChange"
+						/>
+					</kv-accordion-item>
+				</div>
+			</div>
+		</kv-accordion-item>
+	</div>
+</template>
+
+<script>
+import _groupBy from 'lodash/groupBy';
+import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolending-filter-mixin';
+import CheckList from '@/pages/Autolending/CheckList';
+import KvAccordionItem from '@/components/Kv/KvAccordionItem';
+
+export default {
+	components: {
+		CheckList,
+		KvAccordionItem,
+	},
+	mixins: [
+		anyOrSelectedAutolendingFilter
+	],
+	props: {
+		allCountries: {
+			type: Array,
+			default: () => []
+		},
+		initialCountries: {
+			type: Array,
+			default: () => []
+		},
+		selectedCountries: {
+			type: Array,
+			default: () => []
+		},
+	},
+	data() {
+		return {
+			currentIsoCodes: [],
+		};
+	},
+	created() {
+		this.setFilterState();
+	},
+	computed: {
+		countriesWithSelected() {
+			return this.eligibleCountries.map(({ isoCode, name, region }) => {
+				return {
+					id: isoCode,
+					name,
+					region,
+					selected: this.currentIsoCodes.indexOf(isoCode) > -1,
+				};
+			});
+		},
+		eligibleCountries() {
+			// filters all Countries against prescribed lsc theme
+			const eligibleCountries = this.allCountries.filter(country => {
+				// TODO: potentially exclude some countries simimlar to lend/filter
+				if (this.initialCountries.length) {
+					return this.initialCountries.includes(country.isoCode) || false;
+				}
+				return true;
+			});
+			return eligibleCountries || [];
+		},
+		regions() {
+			return _groupBy(this.countriesWithSelected, 'region');
+		},
+	},
+	watch: {
+		initialCountries(next, prev) {
+			if (!this.selectedCountries && next !== prev) {
+				this.setFilterState();
+			}
+		},
+		selectedCountries(next, prev) {
+			if (next !== prev) {
+				this.setFilterState();
+			}
+		}
+	},
+	methods: {
+		onChange(checked, values) {
+			// Filter mixin function that calls mutation function
+			this.changeCountries(this.getValues(checked, values, this.currentIsoCodes));
+		},
+		changeCountries(countries) {
+			this.currentIsoCodes = countries;
+			this.$emit('updated-filters', {
+				country: countries.length ? countries : null
+			});
+		},
+		setFilterState() {
+			// set currently selected if present
+			if (this.selectedCountries) {
+				this.currentIsoCodes = this.selectedCountries;
+				return true;
+			}
+			// fallback to initial settings if present
+			if (this.initialCountries) {
+				this.currentIsoCodes = this.initialCountries;
+				return true;
+			}
+		},
+	},
+};
+</script>
+
+<style lang="scss" scoped>
+// @import 'settings';
+.region-accordian {
+	width: 100%;
+}
+</style>
