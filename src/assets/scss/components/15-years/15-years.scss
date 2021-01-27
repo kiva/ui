@@ -60,7 +60,7 @@ $offwhite: #F8F8F8;
 @mixin h5() {
 	font-size: rem-calc(12);
 	font-family: inherit;
-	font-family: var(--fifteen-year-font-family-monospace, inherit);
+	font-family: var(--fifteen-years-font-family-monospace, inherit);
 	line-height: 1.5;
 	text-transform: uppercase;
 

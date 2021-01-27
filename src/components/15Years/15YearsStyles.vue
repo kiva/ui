@@ -11,7 +11,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
 
 .fifteen-year-styled {
-	--fifteen-year-font-family-monospace: 'Roboto Mono', monospace;
+	--fifteen-years-font-family-monospace: 'Roboto Mono', monospace;
+	--fifteen-years-color-carousel-arrow-fill: #{$twilight};
+	--fifteen-years-color-carousel-arrow-fill-hover: #{$mint};
+	--fifteen-years-color-carousel-btn-color: #{$twilight};
+	--fifteen-years-color-carousel-btn-background: #{$offwhite};
+	--fifteen-years-color-carousel-btn-background-hover: #{$white};
+	--fifteen-years-color-carousel-btn-border-hover: #{$white};
+	--fifteen-years-color-carousel-btn-border-focus: #{$mint};
 
 	h2 {
 		@include h2();

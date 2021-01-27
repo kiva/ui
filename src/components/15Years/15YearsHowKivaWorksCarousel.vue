@@ -143,12 +143,18 @@ export default {
 @import 'settings';
 @import 'components/15-years/15-years';
 
-@mixin timeline-link() {
-	@include link();
+/* themable properties
+--fifteen-years-font-family-monospace
+--fifteen-years-color-carousel-arrow-fill
+--fifteen-years-color-carousel-arrow-fill-hover
+--fifteen-years-color-carousel-btn-color
+--fifteen-years-color-carousel-btn-background
+--fifteen-years-color-carousel-btn-background-hover
+--fifteen-years-color-carousel-btn-border-hover
+--fifteen-years-color-carousel-btn-border-focus
+*/
 
-	color: $mint;
-}
-
+/* stylelint-disable no-descending-specificity */
 // Duplicate of 15yearstimeline.vue
 .carousel {
 	$prev-next-size: rem-calc(75);
@@ -173,8 +179,10 @@ export default {
 		border-radius: rem-calc(16);
 		padding: rem-calc(2) rem-calc(8);
 		border: rem-calc(2) solid transparent;
-		background: $offwhite;
-		color: $twilight;
+		background: $kiva-bg-lightgray;
+		background: var(--fifteen-years-color-carousel-btn-background, #{$kiva-bg-lightgray});
+		color: #{$body-font-color};
+		color: var(--fifteen-years-color-carousel-btn-color, #{$body-font-color});
 	}
 
 	&__prevnext-btn-icon {
@@ -192,19 +200,24 @@ export default {
 		width: $prev-next-size;
 		height: $prev-next-size;
 		border-radius: 50%;
-		fill: $twilight;
-		color: $offwhite;
+		fill: $body-font-color;
+		fill: var(--fifteen-years-color-carousel-arrow-fill, #{$body-font-color});
+		color: var(--fifteen-years-color-carousel-btn-background, #{$body-font-color});
+		color: $white;
+		color: var(--fifteen-years-color-carousel-btn-color, #{$white});
 		z-index: 3;
 
 		&:hover {
 			.carousel__prevnext-btn-year {
-				background: #fff;
-				color: $twilight;
-				border: rem-calc(2) solid #fff;
+				background: $white;
+				background: var(--fifteen-years-color-carousel-btn-background-hover, #{$white});
+				border-color: $white;
+				border-color: var(--fifteen-years-color-carousel-btn-border-hover, #{$white});
 			}
 
 			.carousel__prevnext-btn-icon {
-				fill: $mint;
+				fill: $button-background-hover;
+				fill: var(--fifteen-years-color-carousel-arrow-fill-hover, #{$button-background-hover});
 			}
 		}
 
@@ -212,7 +225,8 @@ export default {
 			outline: 0;
 
 			.carousel__prevnext-btn-year {
-				border: rem-calc(2) solid $mint;
+				border-color: $button-background-hover;
+				border-color: var(--fifteen-years-color-carousel-btn-border-focus, #{$button-background-hover});
 			}
 		}
 
