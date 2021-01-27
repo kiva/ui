@@ -1,12 +1,5 @@
 <template>
 	<div class="country-filters">
-		<!-- <kv-accordion-item
-			class="region-accordian"
-			id="country-accordian"
-		>
-			<template v-slot:header>
-				<h3>Countries</h3>
-			</template> -->
 		<div class="row collapse">
 			<div class="small-12 columns">
 				<div
@@ -23,25 +16,8 @@
 						@change="onChange"
 					/>
 				</div>
-				<!-- <kv-accordion-item
-					class="region-accordian"
-					v-for="(region, name, index) in regions"
-					:key="name"
-					:id="`${index}-region`"
-				>
-					<template v-slot:header>
-						<h4>{{ name }}</h4>
-					</template>
-					<check-list
-						key="`${name}-country-list`"
-						:items="region"
-						:use-columns="false"
-						@change="onChange"
-					/>
-				</kv-accordion-item> -->
 			</div>
 		</div>
-		<!-- </kv-accordion-item> -->
 	</div>
 </template>
 
@@ -49,12 +25,10 @@
 import _groupBy from 'lodash/groupBy';
 import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolending-filter-mixin';
 import CheckList from '@/pages/Autolending/CheckList';
-// import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 
 export default {
 	components: {
 		CheckList,
-		// KvAccordionItem,
 	},
 	mixins: [
 		anyOrSelectedAutolendingFilter
