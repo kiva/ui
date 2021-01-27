@@ -1,14 +1,14 @@
 <template>
 	<div>
-		<h3 class="filter-title">
+		<!-- <h3 class="filter-title">
 			Sectors
-		</h3>
+		</h3> -->
 		<div class="row collapse">
 			<div class="small-12 columns">
 				<check-list
 					key="sectors"
 					:items="sectorsWithSelected"
-					:use-columns="true"
+					:use-columns="false"
 					@change="onChange"
 				/>
 			</div>
