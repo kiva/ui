@@ -28,6 +28,7 @@ module.exports = {
 			apiKey: '82ec72aa3177a6f4fc47b7103e6db786',
 			defaultIndex: 'prod_fundraising_popularity',
 		},
+		btTokenKey: 'production_x6dwd3k4_f5swrg87wym8bx37',
 		auth0: {
 			loginRedirectUrls: {
 				X6gQsD1f3Y4dvCQK8LGxYPc84UZ9Svts: 'https://admin.kiva.org/admin/login?force=1',

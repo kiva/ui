@@ -10,13 +10,6 @@
 		</div>
 		<div class="row">
 			<kv-settings-card class="columns small-12 large-8" title="Credit Card Settings">
-				<template v-slot:icon>
-					<kv-icon
-						class="icon"
-						title="Payment"
-						name="unknown-card"
-					/>
-				</template>
 				<template v-slot:content>
 					<form class="payment-settings-default-form" @submit.prevent>
 						<fieldset>
@@ -49,18 +42,54 @@
 								</kv-button>
 							</div>
 						</fieldset>
-						<fieldset class="payment-settings-default-form__save-button-wrapper">
-							<kv-button
-								class="smaller"
-								v-if="!isProcessing"
-								@click.native="savePaymentSettings"
-								:disabled="!isChanged || $v.$invalid"
+						<fieldset>
+							<kv-button class="text-link payment-settings-default-form__expand-button"
+								@click.native.prevent="showAddACard = !showAddACard"
 							>
-								Save Settings
+								Add a new card <kv-icon class="arrow more-options-arrow"
+									:class="{'down': !showAddACard, 'up': showAddACard}"
+									name="small-chevron"
+									:from-sprite="true"
+								/>
 							</kv-button>
-							<kv-button class="smaller" v-else>
-								Saving <kv-loading-spinner />
-							</kv-button>
+							<transition name="kvfade">
+								<div v-show="showAddACard">
+									<braintree-drop-in-interface
+										ref="braintreeDropInInterface"
+										:payment-types="['card']"
+										auth="token-key"
+										:key="dropInComponentKey"
+										@transactions-enabled="enableAddCardButton = $event"
+									/>
+								</div>
+							</transition>
+						</fieldset>
+						<fieldset>
+							<div v-if="!showAddACard">
+								<kv-button
+									class="smaller payment-settings-default-form__save-button"
+									v-if="!isProcessing"
+									@click.native="savePaymentSettings"
+									:disabled="!isChanged || $v.$invalid"
+								>
+									Save Settings
+								</kv-button>
+								<kv-button class="smaller" v-else>
+									Saving <kv-loading-spinner />
+								</kv-button>
+							</div>
+							<div v-if="showAddACard">
+								<kv-button
+									value="submit"
+									id="dropin-submit"
+									class="smaller payment-settings-default-form__add-button"
+									:disabled="!enableAddCardButton || isProcessing"
+									@click.native="submitDropInAddACard"
+								>
+									<kv-icon name="lock" />
+									Add card <kv-loading-spinner v-if="isProcessing" />
+								</kv-button>
+							</div>
 						</fieldset>
 					</form>
 				</template>
@@ -124,6 +153,7 @@
 </template>
 
 <script>
+import * as Sentry from '@sentry/browser';
 import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
@@ -136,6 +166,7 @@ import KvRadio from '@/components/Kv/KvRadio';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterface';
 
 const pageQuery = gql`query paymentMethodVault {
   my {
@@ -156,6 +187,7 @@ const pageQuery = gql`query paymentMethodVault {
 export default {
 	inject: ['apollo'],
 	components: {
+		BraintreeDropInInterface,
 		KvButton,
 		KvIcon,
 		KvLightbox,
@@ -167,12 +199,15 @@ export default {
 	},
 	data() {
 		return {
-			selectedDefaultCardNonce: '',
-			savedPaymentMethods: [],
 			isProcessing: false,
-			showRemoveLightbox: false,
-			showActiveLightbox: false,
+			savedPaymentMethods: [],
+			selectedDefaultCardNonce: '',
 			selectedPaymentMethod: {},
+			showActiveLightbox: false,
+			showAddACard: false,
+			showRemoveLightbox: false,
+			enableAddCardButton: false,
+			dropInComponentKey: new Date().getTime()
 		};
 	},
 	mixins: [
@@ -213,7 +248,6 @@ export default {
 		lowerCaseDescription() {
 			return this.selectedPaymentMethod?.description?.toLowerCase?.();
 		}
-
 	},
 	methods: {
 		async savePaymentSettings() {
@@ -287,6 +321,84 @@ export default {
 				this.showRemoveLightbox = false;
 			}
 		},
+		resetAddACardForm() {
+			// Reset Add A New Card form
+			this.showAddACard = false;
+			// Change drop in UI key to destroy and reinitialize component
+			this.dropInComponentKey = new Date().getTime();
+		},
+		submitDropInAddACard() {
+			this.isProcessing = true;
+
+			// request payment method
+			this.$refs.braintreeDropInInterface.btDropinInstance.requestPaymentMethod()
+				.then(btSubmitResponse => {
+					const transactionNonce = btSubmitResponse?.nonce;
+					const deviceData = btSubmitResponse?.deviceData;
+					const paymentType = btSubmitResponse?.type;
+					if (transactionNonce) {
+						this.doBraintreeAddACard(transactionNonce, deviceData, paymentType);
+					}
+				}).catch(btSubmitError => {
+					console.error(btSubmitError);
+					// Fire specific exception to Sentry/Raven
+					Sentry.withScope(scope => {
+						scope.setTag('bt_stage_dropin', 'btRequestPaymentMethodCatch');
+						scope.setTag('bt_basket_validation_error', btSubmitError);
+						Sentry.captureException(btSubmitError);
+					});
+				});
+		},
+		async doBraintreeAddACard(nonce, deviceData, methodType) {
+			this.isProcessing = true;
+			const savePaymentMethod = this.apollo.mutate({
+				mutation: gql`mutation savePaymentMethod(
+					$methodType: PaymentMethodTypeEnum!,
+					$nonce: String!,
+					$deviceData: String,
+					$makeDefault: Boolean
+					) {
+					my {
+						paymentMethodVault {
+							savePaymentMethod(
+								nonce: $nonce,
+								deviceData: $deviceData,
+								methodType: $methodType,
+								makeDefault: $makeDefault
+								) {
+								nonce
+								description
+								methodType
+							}
+						}
+					}
+				}`,
+				variables: {
+					nonce,
+					methodType,
+					deviceData,
+					makeDefault: true,
+				},
+				awaitRefetchQueries: true,
+				refetchQueries: [
+					{ query: pageQuery }
+				]
+			});
+
+			try {
+				const saveResponse = await savePaymentMethod;
+				if (saveResponse.errors) {
+					throw new Error(saveResponse.errors[0].extensions.code || saveResponse.errors[0].message);
+				}
+				this.resetAddACardForm();
+				this.$showTipMsg('You have successfully added a payment method');
+			} catch (err) {
+				this.resetAddACardForm();
+				this.$showTipMsg('There was a problem adding payment method', 'error');
+			} finally {
+				this.isProcessing = false;
+			}
+		},
 	},
 };
 </script>
@@ -302,8 +414,12 @@ export default {
 	}
 
 	.payment-settings-default-form {
-		&__save-button-wrapper {
+		&__save-button {
 			margin-top: 1.75rem;
+		}
+
+		&__add-button {
+			margin-top: 0;
 		}
 
 		&__cc-wrapper {
@@ -323,6 +439,11 @@ export default {
 			height: 1.5rem;
 			margin: -0.33rem 0.5rem 0 1.5rem;
 		}
+
+		&__expand-button {
+			padding: 0.35rem 0.5rem;
+			margin-left: 2.65rem;
+		}
 	}
 
 	// style in button loading spinner
@@ -338,6 +459,40 @@ export default {
 
 	::v-deep .kv-lightbox__title {
 		max-width: rem-calc(495);
+	}
+
+	.arrow {
+		stroke: $blue;
+		width: rem-calc(13);
+		height: rem-calc(9);
+
+		&.more-options-arrow {
+			margin-left: 0.75rem;
+
+			&.up {
+				transform: rotate(180deg);
+			}
+		}
+	}
+
+	// specific styles to this braintree dropin UI
+	::v-deep .drop-in-wrapper {
+		max-width: rem-calc(375);
+		margin-top: 1rem;
+
+		.braintree-placeholder {
+			display: none;
+		}
+
+		// remove 'pay with card' header
+		.braintree-sheet__header {
+			display: none;
+		}
+
+		// remove payment toggle
+		[data-braintree-id="toggle"] {
+			display: none;
+		}
 	}
 }
 
