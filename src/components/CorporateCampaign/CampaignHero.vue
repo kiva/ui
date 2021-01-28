@@ -23,7 +23,12 @@
 						Make a loan, <br class="so mo"> change a life.
 					</template>
 				</h1>
-				<div v-if="bodyCopy" class="campaign-hero__body" v-html="bodyCopy"></div>
+				<div
+					v-if="bodyCopy"
+					class="campaign-hero__body"
+					v-html="bodyCopy"
+					ref="heroBodyCopy"
+				></div>
 				<p v-else class="campaign-hero__body">
 					With Kiva you can lend as little as $25 and make a big change in someone's life.
 				</p>
@@ -81,6 +86,12 @@ export default {
 		handleAddToBasket(payload) {
 			this.$emit('add-to-basket', payload);
 		},
+	},
+	async mounted() {
+		await this.$nextTick();
+		// make sure all partner content links open externally
+		const links = this.$refs.heroBodyCopy.querySelectorAll('a');
+		links.forEach(link => { link.target = '_blank'; }); // eslint-disable-line no-param-reassign
 	}
 };
 </script>
