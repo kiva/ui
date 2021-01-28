@@ -15,7 +15,6 @@ import SnowplowSessionLink from './SnowplowSessionLink';
 import initState from './localState';
 
 export default function createApolloClient({
-	csrfToken,
 	kvAuth0,
 	types = [],
 	uri,
@@ -55,7 +54,7 @@ export default function createApolloClient({
 			ExperimentIdLink(),
 			Auth0LinkCreator(kvAuth0),
 			BasketLinkCreator(),
-			HttpLinkCreator({ csrfToken, uri }),
+			HttpLinkCreator({ uri }),
 		]),
 		cache,
 		resolvers,

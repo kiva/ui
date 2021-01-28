@@ -41,7 +41,6 @@ export default function createApp({
 	const federationApolloURI = appConfig.federationService ? appConfig.federationService.uri : apollo.uri;
 
 	const apolloFederationClient = createApolloClient({
-		csrfToken: apollo.csrfToken,
 		types: apollo.types,
 		uri: federationApolloURI,
 		kvAuth0,

@@ -43,7 +43,6 @@ const {
 } = createApp({
 	appConfig: config,
 	apollo: {
-		csrfToken: cookieStore.has('kvis') && cookieStore.get('kvis').substr(6),
 		uri: config.graphqlUri,
 		types: config.graphqlFragmentTypes,
 	},
