@@ -3,20 +3,17 @@
 		<router-view />
 		<vue-progress-bar />
 		<the-tip-message />
-		<intercom-messenger />
 	</div>
 </template>
 
 <script>
 import TheTipMessage from '@/components/WwwFrame/TheTipMessage';
-import IntercomMessenger from '@/components/WwwFrame/IntercomMessenger';
 import webmanifest from '@/manifest.webmanifest';
 
 export default {
 	name: 'App',
 	components: {
 		TheTipMessage,
-		IntercomMessenger
 	},
 	metaInfo() {
 		return {
