@@ -55,9 +55,6 @@ module.exports = merge(base, {
 		federationService: {
 			uri: 'https://marketplace-api.dk1.kiva.org/graphql'
 		},
-		intercom: {
-			enable: false,
-		},
 		paypal : {
 			url: 'www.sandbox.paypal.com',
 			environment: 'sandbox'
