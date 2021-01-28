@@ -147,6 +147,7 @@
 					:totals="basketTotals"
 					:show-donation="false"
 					:auto-redirect-to-thanks="false"
+					:promo-fund="promoFund"
 					@transaction-complete="transactionComplete"
 					@refresh-totals="refreshTotals"
 				/>
@@ -571,6 +572,9 @@ export default {
 		},
 		externalFormId() {
 			return this.promoData?.managedAccount?.formId ?? null;
+		},
+		promoFund() {
+			return this.promoData?.promoFund ?? null;
 		},
 		promoFundId() {
 			return this.promoData?.promoFund?.id ?? null;

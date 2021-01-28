@@ -11,6 +11,13 @@
 			@refreshtotals="$emit('refresh-totals')"
 		/>
 
+		<order-totals
+			:totals="totals"
+			:promo-fund="promoFund"
+			@refreshtotals="refreshTotals"
+			@updating-totals="setUpdatingTotals"
+		/>
+
 		<div class="in-context-login" v-if="!isActivelyLoggedIn">
 			<kv-button
 				v-if="!isActivelyLoggedIn"
@@ -46,8 +53,9 @@ import numeral from 'numeral';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
-import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import KvButton from '@/components/Kv/KvButton';
+import BasketItemsList from '@/components/Checkout/BasketItemsList';
+import OrderTotals from '@/components/Checkout/OrderTotals';
 
 export default {
 	components: {
@@ -55,6 +63,7 @@ export default {
 		CheckoutDropInPaymentWrapper,
 		KvButton,
 		KivaCreditPayment,
+		OrderTotals
 	},
 	mixins: [
 		checkoutUtils
@@ -91,7 +100,11 @@ export default {
 		autoRedirectToThanks: {
 			type: Boolean,
 			default: true,
-		}
+		},
+		promoFund: {
+			type: Object,
+			default: () => {},
+		},
 	},
 	data() {
 		return {
