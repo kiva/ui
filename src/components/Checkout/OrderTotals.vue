@@ -351,6 +351,7 @@ export default {
 
 	.promo-opt-out-lightbox {
 		text-align: left;
+		max-width: 30rem;
 
 		.cancel-promo-opt-out-button {
 			margin-right: 1rem;

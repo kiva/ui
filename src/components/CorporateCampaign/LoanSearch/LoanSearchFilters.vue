@@ -317,6 +317,7 @@ export default {
 @import 'settings';
 
 .loan-filters {
+	padding: 0.8rem 0;
 	margin: 0 1rem;
 
 	@include breakpoint(medium) {
@@ -328,13 +329,18 @@ export default {
 		overflow: scroll;
 	}
 
+	// &__controls {
+	// 	margin: 0.8rem 0;
+	// }
+
 	&__toggle {
-		margin-right: 1rem;
+		margin: 0 1rem 0 0;
 	}
 
 	&__toggle-icon {
 		width: 1.2rem;
-		height: 1.2rem;
+		height: 0.75rem;
+		margin: 0 0 0 0.5rem;
 	}
 
 	&__total-count {
