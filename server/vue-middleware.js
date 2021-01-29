@@ -1,10 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const cookie = require('cookie');
 const { createBundleRenderer } = require('vue-server-renderer');
 const clearCachedVueModule = require('./util/clearCachedVueModule');
 const getGqlFragmentTypes = require('./util/getGqlFragmentTypes');
-const getSessionCookies = require('./util/getSessionCookies');
+const getCookies = require('./util/getCookies');
 const vueSsrCache = require('./util/vueSsrCache');
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -43,7 +42,7 @@ module.exports = function createMiddleware({
 	// eslint-disable-next-line no-param-reassign
 	clientManifest.publicPath = config.app.publicPath || '/';
 
-	// Create single renderer to be used be all requests
+	// Create single renderer to be used by all requests
 	const renderer = createBundleRenderer(serverBundle, {
 		cache: vueSsrCache(cache),
 		template,
@@ -57,25 +56,24 @@ module.exports = function createMiddleware({
 	return function middleware(req, res, next) {
 		const s = Date.now();
 
-		const cookies = cookie.parse(req.headers.cookie || '');
-
 		const context = {
 			url: req.url,
 			config: config.app,
-			cookies,
 			user: req.user || {},
 			locale: req.locale,
 		};
+
+		const { graphqlUri, sessionUri } = config.server;
 
 		// set html response headers
 		res.setHeader('Content-Type', 'text/html');
 		res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 
 		// get graphql api fragment types for the graphql client
-		const typesPromise = getGqlFragmentTypes(config.server.graphqlUri, cache);
+		const typesPromise = getGqlFragmentTypes(graphqlUri, cache);
 
-		// fetch initial session cookies in case starting session with this request
-		const cookiePromise = getSessionCookies(config.server.sessionUri, cookies);
+		// get cookies for this request including new session cookies
+		const cookiePromise = getCookies({ req, res, sessionUri });
 
 		if (!isProd) {
 			typesPromise.then(() => console.info(JSON.stringify({
@@ -91,20 +89,16 @@ module.exports = function createMiddleware({
 		}
 
 		Promise.all([typesPromise, cookiePromise])
-			.then(([types, cookieInfo]) => {
+			.then(([types, cookies]) => {
 				// add fetched types to rendering context
 				context.config.graphqlFragmentTypes = types;
-				// update cookies in the rendering context with any newly fetched session cookies
-				context.cookies = Object.assign(context.cookies, cookieInfo.cookies);
-				// forward any newly fetched 'Set-Cookie' headers
-				cookieInfo.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
+				// add Cookie instance to rendering context
+				context.cookies = cookies;
 				// Clear module cache of global Vue instance to ensure clean render
 				clearCachedVueModule();
 				// render the app
 				return renderer.renderToString(context);
 			}).then(html => {
-				// set any cookies created during the app render
-				context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
 				// send the final rendered html
 				res.send(html);
 				if (!isProd) {
@@ -115,12 +109,6 @@ module.exports = function createMiddleware({
 					}));
 				}
 			}).catch(err => {
-				if (err.url) {
-					// since this error is a redirect, set any cookies created during the app render
-					if (context && context.setCookies) {
-						context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
-					}
-				}
 				handleError(err, req, res, next);
 			});
 	};

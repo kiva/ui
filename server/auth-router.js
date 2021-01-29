@@ -1,4 +1,4 @@
-const cookie = require('cookie');
+const Cookie = require('cookie-universal');
 const express = require('express');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
@@ -67,7 +67,7 @@ module.exports = function authRouter(config = {}) {
 
 	// Handle login request
 	router.get('/ui-login', (req, res, next) => {
-		const cookies = cookie.parse(req.headers.cookie || '');
+		const cookies = Cookie(req, res, false);
 		const options = {
 			audience: config.auth0.apiAudience,
 			scope: config.auth0.scope,
@@ -76,7 +76,7 @@ module.exports = function authRouter(config = {}) {
 			options.prompt = 'login';
 		}
 		// Go to register instead of login if the user has not logged in before
-		if (!cookies.kvu) {
+		if (!cookies.get('kvu')) {
 			options.login_hint = 'signUp';
 		}
 		// Store url to redirect to after successful login
@@ -86,27 +86,30 @@ module.exports = function authRouter(config = {}) {
 		console.log(JSON.stringify({
 			meta: {},
 			level: 'log',
-			message: `LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}` // eslint-disable-line max-len
+			message: `LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(cookies)}, done url:${req.query.doneUrl}` // eslint-disable-line max-len
 		}));
 		passport.authenticate('auth0', options)(req, res, next);
 	});
 
 	// Handle logout request
 	router.get('/ui-logout', (req, res) => {
+		const cookies = Cookie(req, res, false);
 		console.log(JSON.stringify({
 			meta: {},
 			level: 'log',
-			message: `LoginUI: execute logout, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, user id:${req.user && req.user.id}` // eslint-disable-line max-len
+			message: `LoginUI: execute logout, session id:${req.sessionID}, cookie:${getSyncCookie(cookies)}, user id:${req.user && req.user.id}` // eslint-disable-line max-len
 		}));
 		const returnUrl = encodeURIComponent(`https://${config.host}`);
 		const logoutUrl = `https://${config.auth0.domain}/v2/logout?returnTo=${returnUrl}`;
 		req.logout(); // removes req.user
-		noteLoggedOut(res);
+		noteLoggedOut(cookies);
 		res.redirect(logoutUrl);
 	});
 
 	// Callback redirected to after Auth0 authentication
 	router.get('/process-ssr-auth', (req, res, next) => {
+		const cookies = Cookie(req, res, false);
+
 		passport.authenticate('auth0', (authErr, user, info) => {
 			if (authErr) {
 				console.log(JSON.stringify({
@@ -148,12 +151,12 @@ module.exports = function authRouter(config = {}) {
 					}));
 					doneUrl = req.session.lastUsedDoneUrl;
 				} else {
-					clearNotedLoginState(res);
+					clearNotedLoginState(cookies);
 				}
 				console.log(JSON.stringify({
 					meta: {},
 					level: 'log',
-					message: `LoginSyncUI: user failed to login, session id:${req.sessionID}, previous cookie:${getSyncCookie(req)}, info:${JSON.stringify(info)}` // eslint-disable-line max-len
+					message: `LoginSyncUI: user failed to login, session id:${req.sessionID}, previous cookie:${getSyncCookie(cookies)}, info:${JSON.stringify(info)}` // eslint-disable-line max-len
 				}));
 				return res.redirect(doneUrl || '/');
 			}
@@ -161,9 +164,9 @@ module.exports = function authRouter(config = {}) {
 			console.log(JSON.stringify({
 				meta: {},
 				level: 'log',
-				message: `LoginSyncUI: user logged in, session id:${req.sessionID}, previous cookie:${getSyncCookie(req)}, user id:${user.id}` // eslint-disable-line max-len
+				message: `LoginSyncUI: user logged in, session id:${req.sessionID}, previous cookie:${getSyncCookie(cookies)}, user id:${user.id}` // eslint-disable-line max-len
 			}));
-			noteLoggedIn(res, user);
+			noteLoggedIn(cookies, user);
 			req.session.lastUsedDoneUrl = doneUrl;
 			req.session.lastUsedState = req.query && req.query.state;
 
@@ -179,31 +182,32 @@ module.exports = function authRouter(config = {}) {
 
 	// For all other routes, check the login sync cookie to see if login or logout is needed
 	router.use((req, res, next) => {
+		const cookies = Cookie(req, res, false);
 		// don't try to perform login sync for the following paths
 		const bypassPaths = ['/error', '/process-browser-auth', '/register/social'];
 		if (bypassPaths.includes(req.path)) {
 			next();
-		} else if (isNotedLoggedIn(req) && !req.user) {
+		} else if (isNotedLoggedIn(cookies) && !req.user) {
 			console.log(JSON.stringify({
 				meta: {},
 				level: 'log',
-				message: `LoginSyncUI: attempt silent login, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user:${req.user}` // eslint-disable-line max-len
+				message: `LoginSyncUI: attempt silent login, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(cookies)}, user:${req.user}` // eslint-disable-line max-len
 			}));
 			attemptSilentAuth(req, res, next);
-		} else if (isNotedLoggedIn(req) && !isNotedUserRequestUser(req)) {
+		} else if (isNotedLoggedIn(cookies) && !isNotedUserRequestUser(cookies, req)) {
 			console.log(JSON.stringify({
 				meta: {},
 				level: 'log',
-				message: `LoginSyncUI: user id mismatch, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user:${req.user.id}` // eslint-disable-line max-len
+				message: `LoginSyncUI: user id mismatch, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(cookies)}, user:${req.user.id}` // eslint-disable-line max-len
 			}));
 			req.logout(); // removes req.user
 			attemptSilentAuth(req, res, next);
 		} else {
-			if (isNotedLoggedOut(req) && req.user) {
+			if (isNotedLoggedOut(cookies) && req.user) {
 				console.log(JSON.stringify({
 					meta: {},
 					level: 'log',
-					message: `LoginSyncUI: execute logout, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user id:${req.user.id}` // eslint-disable-line max-len
+					message: `LoginSyncUI: execute logout, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(cookies)}, user id:${req.user.id}` // eslint-disable-line max-len
 				}));
 				req.logout(); // removes req.user
 			}
