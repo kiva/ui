@@ -147,6 +147,7 @@
 					:totals="basketTotals"
 					:show-donation="false"
 					:auto-redirect-to-thanks="false"
+					:promo-fund="promoFund"
 					@transaction-complete="transactionComplete"
 					@refresh-totals="refreshTotals"
 				/>
@@ -350,12 +351,25 @@ const basketItemsQuery = gql`query basketItemsQuery(
 				}
 			}
 			totals {
+				bonusAppliedTotal
+				bonusAvailableTotal
 				creditAmountNeeded
-				creditAvailableTotal
 				creditAppliedTotal
+				creditAvailableTotal
 				donationTotal
 				itemTotal
+				freeTrialAppliedTotal
+				freeTrialAvailableTotal
+				kivaCardTotal
+				kivaCreditAvailableTotal
+				kivaCreditAppliedTotal
+				kivaCreditRemaining
+				kivaCreditToReapply
 				loanReservationTotal
+				redemptionCodeAppliedTotal
+				redemptionCodeAvailableTotal
+				universalCodeAppliedTotal
+				universalCodeAvailableTotal
 			}
 		}
 	}
@@ -571,6 +585,9 @@ export default {
 		},
 		externalFormId() {
 			return this.promoData?.managedAccount?.formId ?? null;
+		},
+		promoFund() {
+			return this.promoData?.promoFund ?? null;
 		},
 		promoFundId() {
 			return this.promoData?.promoFund?.id ?? null;
@@ -928,6 +945,8 @@ export default {
 }
 
 .loan-categories {
+	margin-top: 2rem;
+
 	& .row {
 		max-width: 69.15rem;
 	}
