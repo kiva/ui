@@ -33,19 +33,26 @@ Vue.use(VueProgressBar, {
 export default function createApp({
 	apollo = {},
 	appConfig = {},
+	cookies,
 	kvAuth0,
 	locale,
 } = {}) {
-	const apolloClient = createApolloClient({ ...apollo, kvAuth0, appConfig });
+	const apolloClient = createApolloClient({
+		...apollo,
+		appConfig,
+		cookies,
+		kvAuth0,
+	});
 
 	const federationApolloURI = appConfig.federationService ? appConfig.federationService.uri : apollo.uri;
 
 	const apolloFederationClient = createApolloClient({
+		appConfig,
+		cookies,
+		existingCache: apolloClient.cache,
+		kvAuth0,
 		types: apollo.types,
 		uri: federationApolloURI,
-		kvAuth0,
-		appConfig,
-		existingCache: apolloClient.cache
 	});
 
 	const router = createRouter();
@@ -60,6 +67,9 @@ export default function createApp({
 
 	// Provide application config to all components
 	Vue.prototype.$appConfig = appConfig;
+
+	// Provide cookies to all components
+	Vue.prototype.$cookies = cookies;
 
 	// Provide locale to all components
 	// TODO: use this to set locale in VueI18n

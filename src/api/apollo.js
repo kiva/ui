@@ -15,11 +15,12 @@ import SnowplowSessionLink from './SnowplowSessionLink';
 import initState from './localState';
 
 export default function createApolloClient({
+	appConfig,
+	cookies,
+	existingCache,
 	kvAuth0,
 	types = [],
 	uri,
-	appConfig,
-	existingCache
 }) {
 	let cache;
 	if (!existingCache) {
@@ -45,15 +46,15 @@ export default function createApolloClient({
 	}
 
 	// initialize local state resolvers
-	const { resolvers, defaults } = initState({ kvAuth0, appConfig });
+	const { resolvers, defaults } = initState({ appConfig, cookies, kvAuth0 });
 
 	const client = new ApolloClient({
 		link: ApolloLink.from([
 			NetworkErrorLink(),
-			SnowplowSessionLink(),
-			ExperimentIdLink(),
-			Auth0LinkCreator(kvAuth0),
-			BasketLinkCreator(),
+			SnowplowSessionLink({ cookies }),
+			ExperimentIdLink({ cookies }),
+			Auth0LinkCreator({ cookies, kvAuth0 }),
+			BasketLinkCreator({ cookies }),
 			HttpLinkCreator({ uri }),
 		]),
 		cache,

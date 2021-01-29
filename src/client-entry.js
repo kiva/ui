@@ -3,7 +3,7 @@ import '@babel/polyfill';
 import { getUserLocale } from 'get-user-locale';
 import _dropWhile from 'lodash/dropWhile';
 import _get from 'lodash/get';
-import cookieStore from '@/util/cookieStore';
+import Cookie from 'cookie-universal';
 import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import userIdQuery from '@/graphql/query/userId.graphql';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
@@ -20,14 +20,18 @@ const config = window.__KV_CONFIG__ || {};
 // Set webpack public asset path based on configuration
 __webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
 
+// create Cookie instance
+const cookies = Cookie(false, false, false);
+
 // Create auth instance
 let kvAuth0;
 if (config.auth0.enable) {
 	kvAuth0 = new KvAuth0({
 		audience: config.auth0.apiAudience,
-		mfaAudience: config.auth0.mfaAudience,
 		clientID: config.auth0.browserClientID,
+		cookies,
 		domain: config.auth0.domain,
+		mfaAudience: config.auth0.mfaAudience,
 		redirectUri: config.auth0.browserCallbackUri,
 		scope: config.auth0.scope,
 	});
@@ -46,6 +50,7 @@ const {
 		uri: config.graphqlUri,
 		types: config.graphqlFragmentTypes,
 	},
+	cookies,
 	kvAuth0,
 	locale: getUserLocale(),
 });
@@ -82,7 +87,7 @@ try {
 	const data = apolloClient.readQuery({
 		query: userIdQuery,
 		variables: {
-			basketId: cookieStore.get('kvbskt'),
+			basketId: cookies.get('kvbskt'),
 		},
 	});
 	userId = _get(data, 'my.userAccount.id');
@@ -121,8 +126,9 @@ router.onReady(() => {
 			.then(() => {
 			// Pre-fetch graphql queries from activated components
 				return preFetchAll(activated, apolloClient, {
-					route: to,
+					cookies,
 					kvAuth0,
+					route: to,
 				});
 			}).then(next).catch(next);
 	});

@@ -66,7 +66,6 @@
 <script>
 import _get from 'lodash/get';
 
-import cookieStore from '@/util/cookieStore';
 import { readJSONSetting } from '@/util/settingsUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import { isLoanFundraising } from '@/util/loanUtils';
@@ -217,7 +216,7 @@ export default {
 			this.apollo.watchQuery({
 				query: lendByCategoryHomepageCategories,
 				variables: {
-					basketId: cookieStore.get('kvbskt'),
+					basketId: this.$cookies.get('kvbskt'),
 				},
 			}).subscribe({
 				next: ({ data }) => {
@@ -265,7 +264,7 @@ export default {
 			pageData = this.apollo.readQuery({
 				query: lendByCategoryHomepageCategories,
 				variables: {
-					basketId: cookieStore.get('kvbskt'),
+					basketId: this.$cookies.get('kvbskt'),
 				},
 			});
 			this.processData(pageData);

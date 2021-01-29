@@ -96,7 +96,6 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvFlag from '@/components/Kv/KvFlag';
@@ -122,14 +121,14 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client, args) {
-			const fundedLoanId = numeral(_get(args, 'route.params.id')).value();
+		preFetch(config, client, { cookies, route }) {
+			const fundedLoanId = numeral(_get(route, 'params.id')).value();
 
 			return client.query({
 				query: fundedBorrowerProfile,
 				variables: {
 					id: fundedLoanId,
-					basketId: cookieStore.get('kvbskt'),
+					basketId: cookies.get('kvbskt'),
 				}
 			}).then(({ data }) => {
 				const loan = _get(data, 'lend.loan');
@@ -160,7 +159,7 @@ export default {
 				query: fundedBorrowerProfile,
 				variables: {
 					id: loanIdFromRoute,
-					basketId: cookieStore.get('kvbskt'),
+					basketId: this.$cookies.get('kvbskt'),
 				},
 			});
 

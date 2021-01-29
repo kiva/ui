@@ -1,7 +1,6 @@
 /* eslint-disable no-console, no-param-reassign */
 import serialize from 'serialize-javascript';
 import { v4 as uuidv4 } from 'uuid';
-import cookieStore from '@/util/cookieStore';
 import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import renderGlobals from '@/util/renderGlobals';
@@ -30,16 +29,13 @@ export default context => {
 		} = context;
 		const { accessToken, ...profile } = user;
 
-		// Reset cookie store with cookies passed from express middleware
-		cookieStore.reset(cookies);
-
 		// Create random visitor id if none is set
-		if (!cookieStore.get('uiv')) {
+		if (!cookies.get('uiv')) {
 			// Set visitor id cookie expiration for 2 years from now
 			const expires = new Date();
 			expires.setFullYear(expires.getFullYear() + 2);
 			// Store visitor id as 'uiv' cookie
-			cookieStore.set('uiv', uuidv4(), {
+			cookies.set('uiv', uuidv4(), {
 				expires,
 				sameSite: true,
 				secure: true,
@@ -52,6 +48,7 @@ export default context => {
 			kvAuth0 = new KvAuth0({
 				user: profile,
 				accessToken,
+				cookies,
 			});
 		} else {
 			kvAuth0 = MockKvAuth0;
@@ -69,6 +66,7 @@ export default context => {
 				uri: config.graphqlUri,
 				types: config.graphqlFragmentTypes
 			},
+			cookies,
 			kvAuth0,
 			locale,
 		});
@@ -106,8 +104,9 @@ export default context => {
 				// preFetchAll dispatches the queries with Apollo and returns a Promise,
 				// which is resolved when the action is complete and apollo cache has been updated.
 				return preFetchAll(matchedComponents, apolloClient, {
-					route: router.currentRoute,
+					cookies,
 					kvAuth0,
+					route: router.currentRoute,
 				});
 			}).then(() => {
 				let sp; // Vue serverPrefetch timing start
@@ -129,14 +128,12 @@ export default context => {
 					context.renderedState = renderGlobals({
 						__APOLLO_STATE__: apolloClient.cache.extract(),
 					});
-					context.setCookies = cookieStore.getSetCookies();
 				};
 				resolve(app);
 			}).catch(error => {
 				if (error instanceof Error) {
 					reject(error);
 				} else {
-					context.setCookies = cookieStore.getSetCookies();
 					reject({
 						url: router.resolve(error).href,
 					});

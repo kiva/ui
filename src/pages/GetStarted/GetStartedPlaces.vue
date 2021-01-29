@@ -159,7 +159,6 @@ import Fuse from 'fuse.js/dist/fuse.common';
 
 import countryListQuery from '@/graphql/query/countryList.graphql';
 
-import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 
 import KvButton from '@/components/Kv/KvButton';
@@ -202,10 +201,10 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client) {
+		preFetch(config, client, { cookies }) {
 			const lendingPrefs = client.query({
 				variables: {
-					visitorId: cookieStore.get('uiv') || null,
+					visitorId: cookies.get('uiv') || null,
 				},
 				query: lendingPreferencesPlaces,
 			});
@@ -291,7 +290,7 @@ export default {
 			}
 		},
 		async onSubmitForm() {
-			const uiv = cookieStore.get('uiv');
+			const uiv = this.$cookies.get('uiv');
 
 			const userCountryCodes = this.selectedCountries.map(country => country.code);
 
@@ -333,7 +332,7 @@ export default {
 		try {
 			lendingPrefs = this.apollo.readQuery({
 				variables: {
-					visitorId: cookieStore.get('uiv') || null,
+					visitorId: this.$cookies.get('uiv') || null,
 				},
 				query: lendingPreferencesPlaces,
 			});

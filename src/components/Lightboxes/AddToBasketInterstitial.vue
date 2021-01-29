@@ -96,7 +96,6 @@ import _filter from 'lodash/filter';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
 import store2 from 'store2';
-import cookieStore from '@/util/cookieStore';
 import basketAddInterstitial from '@/graphql/query/basketAddInterstitialClient.graphql';
 import basketAddInterstitialData from '@/graphql/query/basketAddInterstitialData.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
@@ -179,7 +178,7 @@ export default {
 				this.apollo.query({
 					query: basketAddInterstitialData,
 					variables: {
-						basketId: cookieStore.get('kvbskt'),
+						basketId: this.$cookies.get('kvbskt'),
 					},
 					fetchPolicy: 'network-only',
 				}).then(({ data }) => {

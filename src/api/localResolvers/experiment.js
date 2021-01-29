@@ -1,14 +1,13 @@
 import _get from 'lodash/get';
-import cookieStore from '@/util/cookieStore';
 import { parseExpCookie, serializeExpCookie, assignVersion } from '@/util/experimentUtils';
 import { readJSONSetting, hashCode } from '@/util/settingsUtils';
 
 /**
  * Experiment resolvers
  */
-export default () => {
+export default ({ cookies }) => {
 	// initialize the assignments from the experiment cookie
-	const assignments = parseExpCookie(cookieStore.get('uiab'));
+	const assignments = parseExpCookie(cookies.get('uiab'));
 
 	return {
 		resolvers: {
@@ -61,7 +60,7 @@ export default () => {
 						// assign the version using the experiment data (undefined if experiment disabled)
 						currentAssignment = {
 							id,
-							version: assignVersion(experiment),
+							version: assignVersion(experiment, cookies),
 							hash: settingHash,
 							population,
 						};
@@ -72,7 +71,7 @@ export default () => {
 							assignments[id] = currentAssignment;
 
 							// save the new assignments to the experiment cookie
-							cookieStore.set('uiab', serializeExpCookie(assignments), { path: '/' });
+							cookies.set('uiab', serializeExpCookie(assignments), { path: '/' });
 						} else {
 							// otherwise set the version to null
 							currentAssignment.version = null;
@@ -107,7 +106,7 @@ export default () => {
 						assignments[id] = updatedVersion;
 
 						// save the new assignments to the experiment cookie
-						cookieStore.set('uiab', serializeExpCookie(assignments), { path: '/' });
+						cookies.set('uiab', serializeExpCookie(assignments), { path: '/' });
 					}
 
 					return {
@@ -129,13 +128,13 @@ export default () => {
 					// console.log(activeExperiments);
 
 					// if (activeExperiments.length) {
-					// 	const currentAssignments = parseExpCookie(cookieStore.get('uiab'));
+					// 	const currentAssignments = parseExpCookie(cookies.get('uiab'));
 					// 	console.log('current cookie assignments: ', currentAssignments);
 					// 	const remainingAssignments = _filter(currentAssignments, (value, index) => {
 					// 		return activeExperiments.indexOf(index) !== -1;
 					// 	});
 					// 	console.log('new cookie assignments: ', remainingAssignments);
-					// 	// cookieStore.set('uiab', serializeExpCookie(remainingAssignments), { path: '/' });
+					// 	// cookies.set('uiab', serializeExpCookie(remainingAssignments), { path: '/' });
 					// }
 
 					return true;

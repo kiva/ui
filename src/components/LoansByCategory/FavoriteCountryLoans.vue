@@ -24,7 +24,6 @@ import _get from 'lodash/get';
 import favoriteCountryQuery from '@/graphql/query/lendByCategory/favoriteCountry.graphql';
 import basicLoanData from '@/graphql/query/basicLoanData.graphql';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
-import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 
 export default {
@@ -109,7 +108,7 @@ export default {
 		},
 	},
 	created() {
-		const basketId = cookieStore.get('kvbskt');
+		const basketId = this.$cookies.get('kvbskt');
 
 		let favoriteCountryData;
 

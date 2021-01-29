@@ -113,7 +113,6 @@ import SelectedRefinements from '@/pages/Lend/Filter/FilterComponents/SelectedRe
 import AlgoliaSearchBox from '@/pages/Lend/AlgoliaSearchBox';
 import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrackState';
 
-import cookieStore from '@/util/cookieStore';
 // TODO: Use this
 // import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -157,7 +156,7 @@ export default {
 		this.apollo.watchQuery({
 			query: lendFilterPageQuery,
 			variables: {
-				basketId: cookieStore.get('kvbskt'),
+				basketId: this.$cookies.get('kvbskt'),
 			},
 		}).subscribe({
 			next: ({ data }) => {
@@ -223,12 +222,12 @@ export default {
 		'apollo',
 	],
 	apollo: {
-		preFetch(config, client) {
+		preFetch(config, client, { cookies }) {
 			// prefetch page data + experiment settings
 			return client.query({
 				query: lendFilterPageQuery,
 				variables: {
-					basketId: cookieStore.get('kvbskt')
+					basketId: cookies.get('kvbskt')
 				},
 			});
 		}

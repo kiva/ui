@@ -113,7 +113,6 @@
 <script>
 import gql from 'graphql-tag';
 import * as Sentry from '@sentry/browser';
-import cookieStore from '@/util/cookieStore';
 import FrequentlyAskedQuestions from '@/components/GetStarted/FrequentlyAskedQuestions';
 import EditPreferences from '@/components/GetStarted/EditPreferences';
 import KvProgressBar from '@/components/Kv/KvProgressBar';
@@ -187,16 +186,16 @@ export default {
 	},
 	apollo: {
 		preFetch: true,
-		preFetchVariables() {
+		preFetchVariables({ cookies }) {
 			return {
 				limit: 3,
-				visitorId: cookieStore.get('uiv') || null
+				visitorId: cookies.get('uiv') || null
 			};
 		},
 		variables() {
 			return {
 				limit: 3,
-				visitorId: cookieStore.get('uiv') || null
+				visitorId: this.$cookies.get('uiv') || null
 			};
 		},
 		query: gql`query getStartedResults($limit: Int, $visitorId: String) {

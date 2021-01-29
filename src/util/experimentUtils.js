@@ -2,7 +2,6 @@ import _filter from 'lodash/filter';
 import _map from 'lodash/map';
 import _toPairs from 'lodash/toPairs';
 import { isWithinInterval } from 'date-fns';
-import cookieStore from '@/util/cookieStore';
 // import { readJSONSetting, hashCode } from '@/util/settingsUtils';
 
 /**
@@ -65,7 +64,7 @@ export function serializeExpCookie(assignments) {
  * @param {object} targets
  * @returns {boolean}
  */
-export function matchTargets(targets) {
+export function matchTargets(targets, cookies) {
 	// return true if no targets are set, aka everyone matches!!!
 	if (typeof targets === 'undefined') return true;
 
@@ -74,7 +73,7 @@ export function matchTargets(targets) {
 
 	// User Segment Targets
 	if (typeof targets.users !== 'undefined') {
-		const kvu = cookieStore.get('kvu');
+		const kvu = cookies.get('kvu');
 		// target cookied users only - kvu cookie is present
 		if (kvu && targets.users.indexOf('cookied') > -1) {
 			matched = true;
@@ -126,11 +125,11 @@ export function assignVersion({
 	distribution,
 	population,
 	targets
-}) {
+}, cookies) {
 	// only try to assign a version if the experiment is enabled
 	if (!enabled) return undefined;
 	// only try to assign a version if the experiment targets match
-	if (!matchTargets(targets)) return undefined;
+	if (!matchTargets(targets, cookies)) return undefined;
 	// only try to assign a version if the experiment is enabled, started, and not ended
 	if (isWithinInterval(new Date(), { start: new Date(startTime), end: new Date(endTime) })) {
 		// Based on Algo from Manager.php

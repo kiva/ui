@@ -49,7 +49,6 @@ import _invokeMap from 'lodash/invokeMap';
 import _mapValues from 'lodash/mapValues';
 import _merge from 'lodash/merge';
 import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
-import cookieStore from '@/util/cookieStore';
 // import KvButton from '@/components/Kv/KvButton';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import KvPagination from '@/components/Kv/KvPagination';
@@ -143,7 +142,7 @@ export default {
 				loans: () => [],
 				offset: this.offset,
 				filters: this.loanQueryFilters,
-				promoOnly: { basketId: cookieStore.get('kvbskt') }
+				promoOnly: { basketId: this.$cookies.get('kvbskt') }
 			};
 		},
 	},

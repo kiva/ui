@@ -167,7 +167,6 @@ import {
 	AisStateResults,
 	AisMenuSelect,
 } from 'vue-instantsearch';
-import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
@@ -221,7 +220,7 @@ export default {
 			basketData = this.apollo.readQuery({
 				query: itemsInBasketQuery,
 				variables: {
-					basketId: cookieStore.get('kvbskt'),
+					basketId: this.$cookies.get('kvbskt'),
 				},
 			});
 		} catch (e) {
@@ -232,7 +231,7 @@ export default {
 		this.apollo.watchQuery({
 			query: itemsInBasketQuery,
 			variables: {
-				basketId: cookieStore.get('kvbskt'),
+				basketId: this.$cookies.get('kvbskt'),
 			},
 		}).subscribe({
 			next: ({ data }) => {
@@ -245,7 +244,7 @@ export default {
 			userData = this.apollo.readQuery({
 				query: userStatus,
 				variables: {
-					basketId: cookieStore.get('kvbskt'),
+					basketId: this.$cookies.get('kvbskt'),
 				},
 			});
 		} catch (e) {

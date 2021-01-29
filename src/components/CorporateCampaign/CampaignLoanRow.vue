@@ -100,7 +100,6 @@
 <script>
 import _throttle from 'lodash/throttle';
 import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
-import cookieStore from '@/util/cookieStore';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
@@ -172,7 +171,7 @@ export default {
 				loans: () => [],
 				offset: this.offset,
 				filters: this.loanQueryFilters,
-				promoOnly: { basketId: cookieStore.get('kvbskt') }
+				promoOnly: { basketId: this.$cookies.get('kvbskt') }
 			};
 		},
 

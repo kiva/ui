@@ -1,10 +1,9 @@
 import { setContext } from 'apollo-link-context';
 import _set from 'lodash/set';
-import cookieStore from '@/util/cookieStore';
 
-function getSPCookieSession() {
+function getSPCookieSession(cookies) {
 	// kiva specific sp cookie
-	const sp = cookieStore.get('_sp_id.6d5c');
+	const sp = cookies.get('_sp_id.6d5c');
 	// handle missing cookie
 	if (typeof sp === 'undefined') {
 		return '';
@@ -15,10 +14,10 @@ function getSPCookieSession() {
 	return sessionId;
 }
 
-export default () => {
+export default ({ cookies }) => {
 	return setContext((operation, previousContext) => {
 		// fetch session id
-		const spSessionId = getSPCookieSession();
+		const spSessionId = getSPCookieSession(cookies);
 		// pass along existing context if no session id exists
 		if (spSessionId === '') {
 			return previousContext;

@@ -1,12 +1,8 @@
 import _filter from 'lodash/filter';
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
-import cookieStore from '@/util/cookieStore';
 import getDeepComponents from './getDeepComponents';
 import logFormatter from './logFormatter';
-
-// initial basketId from cookie
-let basketId = cookieStore.get('kvbskt');
 
 // harmless or known responses from our graphql api
 const wellKnownErrorCodes = [
@@ -64,7 +60,7 @@ export function preFetchApolloQuery(config, client, args) {
 		const prefetchVariables = config.preFetchVariables ? config.preFetchVariables(args) : {};
 		client.query({
 			query: config.query,
-			variables: { basketId, ...prefetchVariables },
+			variables: { basketId: args.cookies.get('kvbskt'), ...prefetchVariables },
 			fetchPolicy: 'network-only', // This is used to force re-fetch of queries after new auth
 		}).then(result => {
 			if (result.errors) {
@@ -78,8 +74,6 @@ export function preFetchApolloQuery(config, client, args) {
 }
 
 export function preFetchAll(components, apolloClient, { ...args }) {
-	// update basketId before preFetch cycle
-	basketId = cookieStore.get('kvbskt');
 	const allComponents = getDeepComponents(components);
 	const apolloComponents = _filter(allComponents, 'apollo.preFetch');
 	return Promise.all(_map(apolloComponents, c => preFetchApolloQuery(c.apollo, apolloClient, args)));

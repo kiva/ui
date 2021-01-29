@@ -52,7 +52,6 @@
 <script>
 import _get from 'lodash/get';
 
-import cookieStore from '@/util/cookieStore';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { isLoanFundraising } from '@/util/loanUtils';
 
@@ -147,7 +146,7 @@ export default {
 			pageData = this.apollo.readQuery({
 				query: lendByCategoryHomepageCategories,
 				variables: {
-					basketId: cookieStore.get('kvbskt'),
+					basketId: this.$cookies.get('kvbskt'),
 				},
 			});
 			this.processData(pageData);
@@ -181,7 +180,7 @@ export default {
 						numberOfLoans: 3,
 						imgDefaultSize: 'w480h300',
 						imgRetinaSize: 'w960h600',
-						basketId: cookieStore.get('kvbskt'),
+						basketId: this.$cookies.get('kvbskt'),
 					},
 				});
 				const channelLoans = _get(loanInfo, 'lend.loanChannelsById')[0];
@@ -305,7 +304,7 @@ export default {
 			this.apollo.watchQuery({
 				query: lendByCategoryHomepageCategories,
 				variables: {
-					basketId: cookieStore.get('kvbskt'),
+					basketId: this.$cookies.get('kvbskt'),
 				},
 			}).subscribe({
 				next: ({ data }) => {

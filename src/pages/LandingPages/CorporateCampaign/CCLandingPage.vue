@@ -179,7 +179,6 @@ import { processPageContentFlat } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
-import cookieStore from '@/util/cookieStore';
 import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
@@ -632,7 +631,7 @@ export default {
 			const basketItems = this.apollo.query({
 				query: basketItemsQuery,
 				variables: {
-					basketId: cookieStore.get('kvbskt')
+					basketId: this.$cookies.get('kvbskt')
 				}
 			});
 
@@ -692,7 +691,7 @@ export default {
 			const basketItems = this.apollo.query({
 				query: basketItemsQuery,
 				variables: {
-					basketId: cookieStore.get('kvbskt')
+					basketId: this.$cookies.get('kvbskt')
 				},
 				fetchPolicy: 'network-only',
 			});

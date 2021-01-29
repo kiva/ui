@@ -1,6 +1,5 @@
 import { setContext } from 'apollo-link-context';
 import _set from 'lodash/set';
-import cookieStore from '@/util/cookieStore';
 
 // Experiment Ids from setting that will be passed in the X-Experiment Header
 const targetIds = [
@@ -8,9 +7,9 @@ const targetIds = [
 	'ml_loan_to_loan',
 ];
 
-function buildExpHeaders() {
+function buildExpHeaders(cookies) {
 	// kiva specific experiment cookie
-	const exps = cookieStore.get('uiab');
+	const exps = cookies.get('uiab');
 	// handle missing cookie
 	if (typeof exps === 'undefined') {
 		return '';
@@ -42,10 +41,10 @@ function buildExpHeaders() {
 	return experimentHeader;
 }
 
-export default () => {
+export default ({ cookies }) => {
 	return setContext((operation, previousContext) => {
 		// fetch experiment header
-		const experimentHeader = buildExpHeaders();
+		const experimentHeader = buildExpHeaders(cookies);
 		// pass along existing context if no session id exists
 		if (experimentHeader === '') {
 			return previousContext;

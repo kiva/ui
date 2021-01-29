@@ -1,6 +1,5 @@
 import appInstallQuery from '@/graphql/query/appInstall.graphql';
 import _get from 'lodash/get';
-import cookieStore from '@/util/cookieStore';
 
 export default {
 	metaInfo() {
@@ -63,7 +62,7 @@ export default {
 			const data = this.apollo.readQuery({
 				query: appInstallQuery,
 				variables: {
-					basketId: cookieStore.get('kvbskt'),
+					basketId: this.$cookies.get('kvbskt'),
 				},
 			});
 			this.appInstallHasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');

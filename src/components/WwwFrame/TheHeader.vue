@@ -384,7 +384,6 @@ import experimentVersionFragment from '@/graphql/fragments/experimentVersion.gra
 import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
 import { preFetchAll } from '@/util/apolloPreFetch';
-import cookieStore from '@/util/cookieStore';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import SearchBar from './SearchBar';
@@ -505,8 +504,8 @@ export default {
 			this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
 		},
 		errorHandlers: {
-			'shop.invalidBasketId': ({ route }) => {
-				cookieStore.remove('kvbskt', { path: '/', secure: true });
+			'shop.invalidBasketId': ({ cookies, route }) => {
+				cookies.remove('kvbskt', { path: '/', secure: true });
 				// on server, reject with url to trigger redirect
 				if (typeof window === 'undefined') {
 					return Promise.reject(route);
@@ -527,8 +526,9 @@ export default {
 						// @todo maybe show a loding state until this completes?
 						const matched = this.$router.getMatchedComponents(this.$route);
 						return preFetchAll(matched, this.apollo, {
-							route: this.$route,
+							cookies: this.$cookies,
 							kvAuth0: this.kvAuth0,
+							route: this.$route,
 						}).catch(error => {
 							if (error.path) {
 								this.$router.push(error);

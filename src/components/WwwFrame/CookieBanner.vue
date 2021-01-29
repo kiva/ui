@@ -22,7 +22,6 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
-import cookieStore from '@/util/cookieStore';
 
 export default {
 	components: {
@@ -39,8 +38,8 @@ export default {
 			this.$kvTrackEvent('global', 'gdpr-notice', 'click-close');
 		},
 		migrateCookie() {
-			if (cookieStore.get('kvgdpr_closed') === 'true') {
-				cookieStore.remove('kvgdpr_closed');
+			if (this.$cookies.get('kvgdpr_closed') === 'true') {
+				this.$cookies.remove('kvgdpr_closed');
 				this.setGdprCookie();
 			}
 		},
@@ -50,14 +49,14 @@ export default {
 
 			try {
 				// eslint-disable-next-line max-len
-				cookieStore.set('kvgdpr', cookieValue, { expires: new Date(new Date().setFullYear(new Date().getFullYear() + 1)) });
+				this.$cookies.set('kvgdpr', cookieValue, { expires: new Date(new Date().setFullYear(new Date().getFullYear() + 1)) });
 			} catch (e) { /* intentionally empty */ }
 		}
 	},
 	mounted() {
 		this.migrateCookie();
 
-		if (cookieStore.get('kvgdpr') === undefined) {
+		if (this.$cookies.get('kvgdpr') === undefined) {
 			this.showBanner = true;
 			this.$kvTrackEvent('global', 'gdpr-notice', 'visible');
 			this.setGdprCookie();

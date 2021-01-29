@@ -169,7 +169,6 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
 import store2 from 'store2';
-import cookieStore from '@/util/cookieStore';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import logReadQueryError from '@/util/logReadQueryError';
 import syncDate from '@/util/syncDate';
@@ -329,7 +328,7 @@ export default {
 				this.apollo.readQuery({
 					query: promoQuery,
 					variables: {
-						basketId: cookieStore.get('kvbskt'),
+						basketId: this.$cookies.get('kvbskt'),
 					},
 				}),
 				'general.holiday_enabled.value',
@@ -492,7 +491,7 @@ export default {
 					// Pass custom JSON configuration to Auth0 login page
 					const kvConfig = JSON.stringify({ socialExp: true });
 					// Choose register as initial screen if no user has logged in on this browser before
-					if (!cookieStore.get('kvu')) {
+					if (!this.$cookies.get('kvu')) {
 						authorizeOptions.login_hint = `signUp|${kvConfig}`;
 					} else {
 						authorizeOptions.login_hint = `login|${kvConfig}`;
@@ -511,8 +510,9 @@ export default {
 						// When this is initially called the graphql doesn't have the auth token
 						// This has the unfortunate side affect of resetting the recently set userId from the login
 						return preFetchAll(matched, this.apollo, {
-							route: this.$route,
+							cookies: this.$cookies,
 							kvAuth0: this.kvAuth0,
+							route: this.$route,
 						}).catch(error => {
 							if (error.path) {
 								this.$router.push(error);
