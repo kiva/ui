@@ -61,7 +61,6 @@
 
 							<order-totals
 								:totals="totals"
-								:promo-fund="promoFund"
 								@refreshtotals="refreshTotals"
 								@updating-totals="setUpdatingTotals"
 							/>

@@ -351,12 +351,25 @@ const basketItemsQuery = gql`query basketItemsQuery(
 				}
 			}
 			totals {
+				bonusAppliedTotal
+				bonusAvailableTotal
 				creditAmountNeeded
-				creditAvailableTotal
 				creditAppliedTotal
+				creditAvailableTotal
 				donationTotal
 				itemTotal
+				freeTrialAppliedTotal
+				freeTrialAvailableTotal
+				kivaCardTotal
+				kivaCreditAvailableTotal
+				kivaCreditAppliedTotal
+				kivaCreditRemaining
+				kivaCreditToReapply
 				loanReservationTotal
+				redemptionCodeAppliedTotal
+				redemptionCodeAvailableTotal
+				universalCodeAppliedTotal
+				universalCodeAvailableTotal
 			}
 		}
 	}
@@ -932,6 +945,8 @@ export default {
 }
 
 .loan-categories {
+	margin-top: 2rem;
+
 	& .row {
 		max-width: 69.15rem;
 	}

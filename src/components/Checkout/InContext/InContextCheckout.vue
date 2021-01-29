@@ -9,12 +9,16 @@
 			:loan-reservation-total="parseInt(totals.loanReservationTotal)"
 			:teams="teams"
 			@refreshtotals="$emit('refresh-totals')"
+			@updating-totals="setUpdatingTotals"
 		/>
 
+		<hr>
+
 		<order-totals
+			class="in-context-checkout__order-totals"
 			:totals="totals"
 			:promo-fund="promoFund"
-			@refreshtotals="refreshTotals"
+			@refreshtotals="$emit('refresh-totals')"
 			@updating-totals="setUpdatingTotals"
 		/>
 
@@ -35,16 +39,24 @@
 				@complete-transaction="completeTransaction"
 				class="checkout-button"
 				id="kiva-credit-payment-button"
+				@refreshtotals="$emit('refresh-totals')"
+				@updating-totals="setUpdatingTotals"
 			/>
 
 			<checkout-drop-in-payment-wrapper
 				v-else
 				:amount="creditNeeded"
-				@refreshtotals="refreshTotals"
+				@refreshtotals="$emit('refresh-totals')"
 				@updating-totals="setUpdatingTotals"
 				@complete-transaction="completeTransaction"
 			/>
 		</div>
+
+		<kv-loading-overlay
+			v-if="updatingTotals"
+			id="updating-overlay"
+			class="updating-totals-overlay"
+		/>
 	</div>
 </template>
 
@@ -54,6 +66,7 @@ import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvButton from '@/components/Kv/KvButton';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 
@@ -63,6 +76,7 @@ export default {
 		CheckoutDropInPaymentWrapper,
 		KvButton,
 		KivaCreditPayment,
+		KvLoadingOverlay,
 		OrderTotals
 	},
 	mixins: [
@@ -108,7 +122,7 @@ export default {
 	},
 	data() {
 		return {
-
+			updatingTotals: false,
 		};
 	},
 	computed: {
@@ -151,11 +165,9 @@ export default {
 
 			this.$emit('transaction-complete', transactionData);
 		},
-		refreshTotals(payload) {
-			console.log(payload);
-		},
 		setUpdatingTotals(payload) {
 			console.log(payload);
+			this.updatingTotals = payload;
 		},
 	}
 };
@@ -165,11 +177,52 @@ export default {
 @import 'settings';
 
 .in-context-checkout {
+	position: relative;
+	min-height: 23rem;
+
+	#updating-overlay {
+		z-index: 1000;
+		width: auto;
+		height: auto;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		top: 0;
+		background-color: rgba($kiva-bg-lightgray, 0.7);
+
+		.spinner-wrapper {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+			height: 100%;
+			top: auto;
+			left: auto;
+			transform: none;
+		}
+	}
+
 	&__basket-items {
 		&--hide-donation {
 			::v-deep .basket-donation-item {
 				display: none;
 			}
+		}
+	}
+
+	&__order-totals {
+		margin-bottom: 1.5rem;
+
+		::v-deep .order-total,
+		::v-deep .kiva-credit {
+			font-size: 1.125rem;
+			margin-bottom: 0.25rem;
+		}
+
+		::v-deep .order-total strong,
+		::v-deep .kiva-credit strong {
+			// margin-right: 1.725rem;
+			margin-right: 2rem;
 		}
 	}
 }
