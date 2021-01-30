@@ -855,7 +855,7 @@ export default {
 			this.showThanks = true;
 			this.checkoutVisible = false;
 			this.updateBasketState();
-			trackTransactionEvent(payload.transactionId, this.apollo);
+			trackTransactionEvent(payload.transactionId, this.apollo, this.$cookies);
 		},
 
 		handleTeamJoinProcess(payload) {

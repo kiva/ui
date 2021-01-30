@@ -2,7 +2,7 @@ import trackTransactionMutation from '@/graphql/mutation/shop/trackTransaction.g
 import parseGACookie from '@/util/parseGACookie';
 import parseSPCookie from '@/util/parseSPCookie';
 
-export default function trackTransactionEvent(transactionId, apolloClient) {
+export default function trackTransactionEvent(transactionId, apolloClient, cookies) {
 	if (!transactionId) {
 		// exit if missing transaction id
 		return false;
@@ -15,10 +15,10 @@ export default function trackTransactionEvent(transactionId, apolloClient) {
 		gclid,
 		medium,
 		source,
-	} = parseGACookie();
+	} = parseGACookie(cookies);
 
 	// get tracking data from snowplow cookie
-	const { snowplowUserId, snowplowSessionId } = parseSPCookie();
+	const { snowplowUserId, snowplowSessionId } = parseSPCookie(cookies);
 
 	// track the transaction event
 	apolloClient.mutate({
