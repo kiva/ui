@@ -46,10 +46,6 @@ module.exports = {
 			domain: 'login.kiva.org',
 			scope: 'openid mfa',
 		},
-		intercom: {
-			enable: false,
-			appId: 't3epx9oz'
-		},
 		paypal : {
 			url: 'www.paypal.com',
 			environment: 'production'

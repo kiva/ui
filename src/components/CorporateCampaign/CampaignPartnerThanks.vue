@@ -64,6 +64,12 @@ export default {
 			return this.partnerContent?.contents?.[0]?.primaryCtaLink || '';
 		}
 	},
+	async mounted() {
+		await this.$nextTick();
+		// make sure all partner content links open externally
+		const links = this.$refs.partnerBodyCopy.querySelectorAll('a');
+		links.forEach(link => { link.target = '_blank'; }); // eslint-disable-line no-param-reassign
+	}
 };
 </script>
 

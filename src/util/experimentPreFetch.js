@@ -13,7 +13,6 @@ import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.
 let activeExperiments = [
 	'lend_filter_v2',
 	'expandable_loan_cards',
-	'intercom_messenger',
 	'add_to_basket_redirect',
 	'checkout_login_cta',
 	'homepage_force_dismiss_overlay',

@@ -10,6 +10,8 @@
 <script>
 import gql from 'graphql-tag';
 
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import { lightHeader } from '@/util/siteThemes';
 import { settingEnabled } from '@/util/settingsUtils';
 import { processPageContentFlat } from '@/util/contentfulUtils';
@@ -28,6 +30,12 @@ import TopMessageContentful from './TopMessageContentful';
 const activePageQuery = gql`query homepageFrame {
 	contentful {
 		entries(contentType: "page", contentKey: "home")
+	}
+	general {
+		legacyHomeExp: uiExperimentSetting(key: "home_legacy") {
+			key
+			value
+		}
 	}
 }`;
 
@@ -64,8 +72,8 @@ export default {
 	computed: {
 		activeHomepage() {
 			// if (this.is15YearsActive) return FifteenYearHomepage;
-			if (this.isLenderPreferencesActive) return LendByCategoryHomepage;
 			if (this.isContentfulHomepageActive) return MonthlyGoodHomepage;
+			if (this.isLenderPreferencesActive) return LendByCategoryHomepage;
 			// if (this.isMessageActive) return TopMessageContentful;
 			// if (this.isIwdActive) return IWDHomePage;
 			// if (this.isWrdActive) return WRDHomePage;
@@ -73,8 +81,8 @@ export default {
 		},
 		headerTheme() {
 			// if (this.is15YearsActive) return fifteenYearHeaderTheme;
-			if (this.isLenderPreferencesActive) return lightHeader;
 			if (this.isContentfulHomepageActive) return lightHeader;
+			if (this.isLenderPreferencesActive) return lightHeader;
 			// if (this.isMessageActive) return lightHeader;
 			// if (this.isIwdActive) return iwdHeaderTheme;
 			// if (this.isWrdActive) return wrdHeaderTheme;
@@ -90,7 +98,15 @@ export default {
 	},
 	apollo: {
 		query: activePageQuery,
-		preFetch: true,
+		preFetch(config, client) {
+			return client.query({
+				query: activePageQuery
+			}).then(() => {
+				return Promise.all([
+					client.query({ query: experimentQuery, variables: { id: 'home_legacy' } })
+				]);
+			});
+		},
 		result({ data }) {
 			// Check for contentful homepage content, else use non contentful homepage
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
@@ -107,8 +123,27 @@ export default {
 			);
 			if (this.pageData && isUiHomepageMonthlyGoodSettingEnabled) {
 				this.isContentfulHomepageActive = true;
+			}
+
+			// Fetch legacy homepage experiment data (GROW-442)
+			const legacyHomeExp = this.apollo.readFragment({
+				id: 'Experiment:home_legacy',
+				fragment: experimentVersionFragment,
+			}) || {};
+			// Fire Event for EXP-GROW-442
+			if (legacyHomeExp.version && legacyHomeExp.version !== 'unassigned') {
+				this.$kvTrackEvent(
+					'homepage',
+					'EXP-GROW-442',
+					legacyHomeExp.version,
+				);
+			}
+			if (legacyHomeExp.version === 'a') {
+				// Always show the legacy default homepage in this case
+				this.isContentfulHomepageActive = false;
+				this.isLenderPreferencesActive = false;
 			} else {
-				// Current 'default' homepage
+				// Otherwise show the new default homepage
 				this.isLenderPreferencesActive = true;
 			}
 		}

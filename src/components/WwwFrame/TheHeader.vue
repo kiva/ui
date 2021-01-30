@@ -50,7 +50,8 @@
 					<router-link
 						v-show="!isVisitor"
 						:id="myKivaMenuId"
-						:to="addHashToRoute('show-portfolio')"
+						to="/portfolio"
+						target="_blank"
 						class="header-button my-kiva"
 						v-kv-track-event="['TopNav','click-Portfolio']"
 					>

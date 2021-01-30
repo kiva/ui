@@ -9,12 +9,28 @@
 					Account
 				</router-link>
 			</li>
+			<li v-if="isMfaActive">
+				<router-link
+					to="/settings/security"
+					v-kv-track-event="['TertiaryNav','click-MyKiva-Settings-security']"
+				>
+					Security and login
+				</router-link>
+			</li>
 			<li>
 				<router-link
 					to="/settings/credit"
 					v-kv-track-event="['TertiaryNav','click-MyKiva-Settings-credit']"
 				>
 					Credit
+				</router-link>
+			</li>
+			<li>
+				<router-link
+					to="/settings/payments"
+					v-kv-track-event="['TertiaryNav','click-MyKiva-Settings-payments']"
+				>
+					Payments
 				</router-link>
 			</li>
 			<li>
@@ -31,14 +47,6 @@
 					v-kv-track-event="['TertiaryNav','click-Settings-data']"
 				>
 					Data
-				</router-link>
-			</li>
-			<li v-if="isMfaActive">
-				<router-link
-					to="/settings/security"
-					v-kv-track-event="['TertiaryNav','click-MyKiva-Settings-security']"
-				>
-					Security and login
 				</router-link>
 			</li>
 			<li>

@@ -11,7 +11,7 @@
 				v-if="floating"
 				class="basket-bar__icon"
 				name="cart"
-				from-sprite="true"
+				:from-sprite="true"
 			/>
 			<span class="basket-bar__count">{{ count }}</span>
 			<span class="show-for-sr">items in your cart</span>

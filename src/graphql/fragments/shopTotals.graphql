@@ -1,17 +1,21 @@
 fragment shopTotals on ShopTotals {
+	bonusAppliedTotal
+	bonusAvailableTotal
 	creditAmountNeeded
 	creditAppliedTotal
 	creditAvailableTotal
 	donationTotal
 	itemTotal
+	freeTrialAppliedTotal
+	freeTrialAvailableTotal
 	kivaCardTotal
 	kivaCreditAvailableTotal
 	kivaCreditAppliedTotal
 	kivaCreditRemaining
 	kivaCreditToReapply
 	loanReservationTotal
-	bonusAvailableTotal
-	bonusAppliedTotal
 	redemptionCodeAppliedTotal
 	redemptionCodeAvailableTotal
+	universalCodeAppliedTotal
+	universalCodeAvailableTotal
 }
