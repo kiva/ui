@@ -73,12 +73,11 @@
 
 		<!-- Warn about removing promo credit -->
 		<kv-lightbox
-			class="promo-opt-out-lightbox"
 			@lightbox-closed="promoOptOutLightboxClosed"
 			:visible="promoOptOutLightboxVisible"
 			title="You are leaving the promotion"
 		>
-			<p>
+			<p class="promo-opt-out-lightbox">
 				<strong>WARNING:</strong> If you proceed, your $50 credit from the Visa Foundation
 				promotion will be removed, and you will have to lend using your own money.
 				Click "Cancel" to use your free loan, or click "Remove Credit" to pay using your own money.
