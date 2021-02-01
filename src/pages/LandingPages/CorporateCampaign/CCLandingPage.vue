@@ -530,7 +530,11 @@ export default {
 		if (this.itemsInBasket.length) {
 			this.updateBasketState();
 		}
-		this.$router.push(this.adjustRouteHash(''));
+		// clean up show-basket process
+		// TODO: Revisit this control flow
+		if (this.$route.hash === '#show-basket') {
+			this.$router.push(this.adjustRouteHash(''));
+		}
 
 		// Ensure browser clock is correct before using current time
 		syncDate().then(() => {
