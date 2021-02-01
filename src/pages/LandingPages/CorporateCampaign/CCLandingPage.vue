@@ -178,6 +178,7 @@ import gql from 'graphql-tag';
 import numeral from 'numeral';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
+import syncDate from '@/util/syncDate';
 import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
@@ -529,7 +530,21 @@ export default {
 		if (this.itemsInBasket.length) {
 			this.updateBasketState();
 		}
-		this.$router.push(this.adjustRouteHash(''));
+		// clean up show-basket process
+		// TODO: Revisit this control flow
+		if (this.$route.hash === '#show-basket') {
+			this.$router.push(this.adjustRouteHash(''));
+		}
+
+		// Ensure browser clock is correct before using current time
+		syncDate().then(() => {
+			// update current time every second for reactivity
+			this.currentTimeInterval = setInterval(() => {
+				this.currentTime = Date.now();
+			}, 1000);
+		});
+
+		this.setAuthStatus(this.kvAuth0?.user ?? {});
 	},
 	watch: {
 		initialFilters(next) {
@@ -731,7 +746,7 @@ export default {
 				const basketItemValues = data.shop?.basket?.items?.values ?? [];
 				this.itemsInBasket = basketItemValues.length ? basketItemValues.map(item => item.id) : [];
 
-				const credits = data.shop?.basket?.credits?.values;
+				const credits = data.shop?.basket?.credits?.values ?? [];
 				// TODO: target this check on the promoFund.id or creditType when possible
 				const targetPromo = credits.filter(credit => {
 					return credit.promoFund ? Object.keys(credit.promoFund).length > 0 : false;
@@ -837,7 +852,8 @@ export default {
 			) {
 				this.showVerification = true;
 			} else if (
-				this.isActivelyLoggedIn
+				this.basketLoans.length
+				&& this.isActivelyLoggedIn
 				&& this.teamId
 				&& !this.teamJoinStatus
 			) {
@@ -953,6 +969,9 @@ export default {
 			this.checkoutVisible = true;
 		}
 		next();
+	},
+	destroyed() {
+		clearInterval(this.currentTimeInterval);
 	},
 };
 </script>
