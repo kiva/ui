@@ -9,7 +9,7 @@
 	>
 		<div class="small-12 large-8 columns">
 			<div class="campaign-status__message">
-				<kv-loading-spinner v-if="!loadingPromotion && !promoApplied && !promoErrorMessage" />
+				<kv-loading-spinner v-if="!loadingPromotion && promoApplied === null && !promoErrorMessage" />
 
 				<template v-if="loadingPromotion">
 					<kv-loading-spinner />
@@ -19,6 +19,9 @@
 				<template v-if="!promoApplied && promoErrorMessage">
 					<kv-icon class="campaign-status__icon" name="error" />
 					<span>{{ promoErrorMessage }}</span>
+				</template>
+				<template v-else-if="promoApplied === false">
+					<span>No promotion applied.</span>
 				</template>
 
 				<template v-if="promoApplied && !promoErrorMessage">
@@ -54,7 +57,7 @@ export default {
 		},
 		promoApplied: {
 			type: Boolean,
-			default: false
+			default: null
 		},
 		promoAmount: {
 			type: String,

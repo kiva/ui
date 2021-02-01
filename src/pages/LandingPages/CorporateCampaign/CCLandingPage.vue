@@ -157,7 +157,7 @@
 				class="campaign-thanks"
 				:prevent-close="preventLightboxClose"
 				:visible="showThanks"
-				@lightbox-closed="showThanks = false"
+				@lightbox-closed="thanksLightboxClosed"
 			>
 				<campaign-logo-group
 					class="campaign-thanks__logos"
@@ -244,6 +244,7 @@ const basketItemsQuery = gql`query basketItemsQuery(
 ) {
 	shop(basketId: $basketId) {
 		id
+		nonTrivialItemCount
 		basket {
 			id
 			hasFreeCredits
@@ -528,10 +529,18 @@ export default {
 		if (this.itemsInBasket.length) {
 			this.updateBasketState();
 		}
+		this.$router.push(this.adjustRouteHash(''));
 	},
 	watch: {
 		initialFilters(next) {
 			this.filters = next;
+		},
+		checkoutVisible(next) {
+			if (!next && this.$route.hash === '#show-basket') {
+				this.$nextTick(() => {
+					this.$router.push(this.adjustRouteHash(''));
+				});
+			}
 		}
 	},
 	computed: {
@@ -621,6 +630,9 @@ export default {
 			} else if (Object.keys(this.$route.query).length) {
 				// apply promo
 				this.applyPromotion();
+			} else {
+				this.promoApplied = false;
+				this.loadingPromotion = false;
 			}
 		},
 		applyPromotion() {
@@ -645,9 +657,8 @@ export default {
 			});
 		},
 		getPromoInformationFromBasket() {
-			console.log('getting promotion info from basket');
-
 			const basketItems = this.apollo.query({
+				fetchPolicy: 'network-only',
 				query: basketItemsQuery,
 				variables: {
 					basketId: cookieStore.get('kvbskt')
@@ -831,8 +842,8 @@ export default {
 				&& !this.teamJoinStatus
 			) {
 				// check for team join optionality
-				console.log(this.teamId);
 				this.showTeamForm = true;
+				this.checkoutVisible = false;
 			} else {
 				// signify checkout is ready
 				this.showCheckout();
@@ -848,15 +859,34 @@ export default {
 		checkoutLightboxClosed() {
 			this.checkoutVisible = false;
 			if (this.$route.hash === '#show-basket') {
-				this.$router.push(this.adjustRouteHash(''));
+				this.$nextTick(() => {
+					this.$router.push(this.adjustRouteHash(''));
+				});
 			}
 		},
 		transactionComplete(payload) {
 			this.transactionId = payload.transactionId;
 			this.showThanks = true;
 			this.checkoutVisible = false;
-			this.updateBasketState();
 			trackTransactionEvent(payload.transactionId, this.apollo);
+			// establish a new basket
+			this.apollo.mutate({
+				mutation: gql`mutation createNewBasketForUser { shop { id createBasket } }`,
+			}).then(({ data }) => {
+				// extract new basket id
+				const newBasketId = data.shop?.createBasket ?? null;
+				if (newBasketId) {
+					cookieStore.set('kvbskt', encodeURIComponent(newBasketId), { secure: true });
+					this.updateBasketState();
+				}
+			});
+		},
+		thanksLightboxClosed() {
+			// Consdier closing the lightbox
+			// this.showThanks = false;
+			// refresh the page
+			// TODO: Revisit approaches to reset basket cookie and refetch queries
+			window.location = window.location.origin + window.location.pathname;
 		},
 
 		handleTeamJoinProcess(payload) {
@@ -866,6 +896,7 @@ export default {
 		},
 		fetchMyTeams() {
 			this.apollo.query({
+				fetchPolicy: 'network-only',
 				query: myTeamsQuery
 			}).then(({ data }) => {
 				this.myTeams = data.my?.lender?.teams?.values ?? [];
@@ -897,7 +928,6 @@ export default {
 		adjustRouteHash(hash) {
 			const route = { ...this.$route };
 			route.hash = hash;
-			console.log(route);
 			return route;
 		},
 
@@ -908,7 +938,6 @@ export default {
 			this.totalCount = payload;
 		},
 		showLoanDetails(loan) {
-			console.log(loan);
 			this.detailedLoan = loan;
 			this.loanDetailsVisible = true;
 		}

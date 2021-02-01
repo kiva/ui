@@ -318,7 +318,7 @@ export default {
 
 .loan-filters {
 	padding: 0.8rem 0;
-	margin: 0 1rem;
+	margin: 0 1.75rem;
 
 	@include breakpoint(medium) {
 		margin: 0 3rem;

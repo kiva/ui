@@ -103,6 +103,11 @@ export function validateQueryParams(query, apollo) {
 	if (lendingReward) {
 		return applyLendingReward(lendingReward, apollo);
 	}
+	// return new Promise((resolve, reject) => {
+	// 	console.info('No promo code to validate');
+	// 	Promise.reject({ errors: [{ message: 'No promotion found.' }] });
+	// });
+	return Promise.reject('No promotion found.');
 }
 
 /**
