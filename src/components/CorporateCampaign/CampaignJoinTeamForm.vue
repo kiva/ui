@@ -7,12 +7,13 @@
 				:prevent-close="true"
 				:visible="showTeamLightbox"
 				@lightbox-closed="handleLightboxClosed"
+				:title="campaignTitleText"
 			>
 				<div v-if="showForm" class="text-center">
 					<p>
-						Join our community of 2M Kiva lenders who are doing good every day.
-						Lending Teams like {{ teamName }} and their members have helped over
-						3.8M borrowers build a better future for themselves and their families.
+						Lending Teams are self-organized groups on Kiva.org where you can
+						connect and rally around shared lending goals. By joining the
+						{{ teamName }}, you can easily see our collective impact across countries and sectors.
 					</p>
 					<p v-if="showError" class="error">
 						Oh no! Something went wrong! Please try to join this team later.
@@ -37,11 +38,11 @@
 					<div slot="controls" class="text-center">
 						<div v-if="showForm">
 							<kv-button class="smaller" @click.native.prevent="handleJoinTeam">
-								Continue
+								Join Now
 							</kv-button>
 							<br><br>
 							<kv-button class="text-link" @click.native.prevent="handleRejectTeam">
-								Opt-out of {{ campaignNameText }} lending team
+								Opt-out
 							</kv-button>
 						</div>
 						<div v-if="showSuccess || showError">
@@ -99,6 +100,9 @@ export default {
 		};
 	},
 	computed: {
+		campaignTitleText() {
+			return `Join ${this.campaignNameText} to do more good together`;
+		},
 		campaignNameText() {
 			return this.campaignName ? `the ${this.campaignName}` : 'this';
 		}

@@ -46,9 +46,6 @@ module.exports = merge(base, {
 			serverCallbackUri: 'https://www.audit.kiva.org/process-ssr-auth',
 			domain: 'login.audit.kiva.org',
 		},
-		intercom: {
-			enable: false,
-		},
 		paypal : {
 			url: 'www.sandbox.paypal.com',
 			environment: 'sandbox'

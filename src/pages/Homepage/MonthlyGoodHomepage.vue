@@ -28,7 +28,7 @@
 					<div class="featured-loans__body" v-html="heroBody">
 					</div>
 					<kv-button
-						class="show-for-large classic hollow"
+						class="show-for-large rounded"
 						:to="heroButton.link"
 						v-kv-track-event="[
 							'homepage',
@@ -44,7 +44,7 @@
 			<div class="row align-center hide-for-large">
 				<div class="small-10">
 					<kv-button
-						class="classic hollow expanded"
+						class="rounded expanded"
 						:to="heroButton.link"
 						v-kv-track-event="[
 							'homepage',
@@ -265,7 +265,7 @@
 						Make a loan today!
 					</p>
 					<kv-button
-						class="classic hollow"
+						class="rounded"
 						:to="heroButton.link"
 						v-kv-track-event="[
 							'homepage',

@@ -147,6 +147,7 @@
 					:totals="basketTotals"
 					:show-donation="false"
 					:auto-redirect-to-thanks="false"
+					:promo-fund="promoFund"
 					@transaction-complete="transactionComplete"
 					@refresh-totals="refreshTotals"
 				/>
@@ -156,7 +157,7 @@
 				class="campaign-thanks"
 				:prevent-close="preventLightboxClose"
 				:visible="showThanks"
-				@lightbox-closed="showThanks = false"
+				@lightbox-closed="thanksLightboxClosed"
 			>
 				<campaign-logo-group
 					class="campaign-thanks__logos"
@@ -177,6 +178,8 @@ import gql from 'graphql-tag';
 import numeral from 'numeral';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
+import syncDate from '@/util/syncDate';
+import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import cookieStore from '@/util/cookieStore';
@@ -243,6 +246,7 @@ const basketItemsQuery = gql`query basketItemsQuery(
 ) {
 	shop(basketId: $basketId) {
 		id
+		nonTrivialItemCount
 		basket {
 			id
 			hasFreeCredits
@@ -351,12 +355,25 @@ const basketItemsQuery = gql`query basketItemsQuery(
 				}
 			}
 			totals {
+				bonusAppliedTotal
+				bonusAvailableTotal
 				creditAmountNeeded
-				creditAvailableTotal
 				creditAppliedTotal
+				creditAvailableTotal
 				donationTotal
 				itemTotal
+				freeTrialAppliedTotal
+				freeTrialAvailableTotal
+				kivaCardTotal
+				kivaCreditAvailableTotal
+				kivaCreditAppliedTotal
+				kivaCreditRemaining
+				kivaCreditToReapply
 				loanReservationTotal
+				redemptionCodeAppliedTotal
+				redemptionCodeAvailableTotal
+				universalCodeAppliedTotal
+				universalCodeAvailableTotal
 			}
 		}
 	}
@@ -525,10 +542,32 @@ export default {
 				'warning'
 			);
 		}
+		// clean up show-basket process
+		// TODO: Revisit this control flow
+		if (this.$route.hash === '#show-basket') {
+			this.$router.push(this.adjustRouteHash(''));
+		}
+
+		// Ensure browser clock is correct before using current time
+		syncDate().then(() => {
+			// update current time every second for reactivity
+			this.currentTimeInterval = setInterval(() => {
+				this.currentTime = Date.now();
+			}, 1000);
+		});
+
+		this.setAuthStatus(this.kvAuth0?.user ?? {});
 	},
 	watch: {
 		initialFilters(next) {
 			this.filters = next;
+		},
+		checkoutVisible(next) {
+			if (!next && this.$route.hash === '#show-basket') {
+				this.$nextTick(() => {
+					this.$router.push(this.adjustRouteHash(''));
+				});
+			}
 		}
 	},
 	computed: {
@@ -584,6 +623,9 @@ export default {
 		externalFormId() {
 			return this.promoData?.managedAccount?.formId ?? null;
 		},
+		promoFund() {
+			return this.promoData?.promoFund ?? null;
+		},
 		promoFundId() {
 			return this.promoData?.promoFund?.id ?? null;
 		},
@@ -615,6 +657,9 @@ export default {
 			} else if (Object.keys(this.$route.query).length) {
 				// apply promo
 				this.applyPromotion();
+			} else {
+				this.promoApplied = false;
+				this.loadingPromotion = false;
 			}
 		},
 		applyPromotion() {
@@ -639,9 +684,8 @@ export default {
 			});
 		},
 		getPromoInformationFromBasket() {
-			console.log('getting promotion info from basket');
-
 			const basketItems = this.apollo.query({
+				fetchPolicy: 'network-only',
 				query: basketItemsQuery,
 				variables: {
 					basketId: cookieStore.get('kvbskt')
@@ -714,7 +758,7 @@ export default {
 				const basketItemValues = data.shop?.basket?.items?.values ?? [];
 				this.itemsInBasket = basketItemValues.length ? basketItemValues.map(item => item.id) : [];
 
-				const credits = data.shop?.basket?.credits?.values;
+				const credits = data.shop?.basket?.credits?.values ?? [];
 				// TODO: target this check on the promoFund.id or creditType when possible
 				const targetPromo = credits.filter(credit => {
 					return credit.promoFund ? Object.keys(credit.promoFund).length > 0 : false;
@@ -820,13 +864,14 @@ export default {
 			) {
 				this.showVerification = true;
 			} else if (
-				this.isActivelyLoggedIn
+				this.basketLoans.length
+				&& this.isActivelyLoggedIn
 				&& this.teamId
 				&& !this.teamJoinStatus
 			) {
 				// check for team join optionality
-				console.log(this.teamId);
 				this.showTeamForm = true;
+				this.checkoutVisible = false;
 			} else {
 				// signify checkout is ready
 				this.showCheckout();
@@ -842,14 +887,34 @@ export default {
 		checkoutLightboxClosed() {
 			this.checkoutVisible = false;
 			if (this.$route.hash === '#show-basket') {
-				this.$router.push(this.adjustRouteHash(''));
+				this.$nextTick(() => {
+					this.$router.push(this.adjustRouteHash(''));
+				});
 			}
 		},
 		transactionComplete(payload) {
 			this.transactionId = payload.transactionId;
 			this.showThanks = true;
 			this.checkoutVisible = false;
-			this.updateBasketState();
+			trackTransactionEvent(payload.transactionId, this.apollo);
+			// establish a new basket
+			this.apollo.mutate({
+				mutation: gql`mutation createNewBasketForUser { shop { id createBasket } }`,
+			}).then(({ data }) => {
+				// extract new basket id
+				const newBasketId = data.shop?.createBasket ?? null;
+				if (newBasketId) {
+					cookieStore.set('kvbskt', encodeURIComponent(newBasketId), { secure: true });
+					this.updateBasketState();
+				}
+			});
+		},
+		thanksLightboxClosed() {
+			// Consdier closing the lightbox
+			// this.showThanks = false;
+			// refresh the page
+			// TODO: Revisit approaches to reset basket cookie and refetch queries
+			window.location = window.location.origin + window.location.pathname;
 		},
 
 		handleTeamJoinProcess(payload) {
@@ -859,6 +924,7 @@ export default {
 		},
 		fetchMyTeams() {
 			this.apollo.query({
+				fetchPolicy: 'network-only',
 				query: myTeamsQuery
 			}).then(({ data }) => {
 				this.myTeams = data.my?.lender?.teams?.values ?? [];
@@ -890,7 +956,6 @@ export default {
 		adjustRouteHash(hash) {
 			const route = { ...this.$route };
 			route.hash = hash;
-			console.log(route);
 			return route;
 		},
 
@@ -901,7 +966,6 @@ export default {
 			this.totalCount = payload;
 		},
 		showLoanDetails(loan) {
-			console.log(loan);
 			this.detailedLoan = loan;
 			this.loanDetailsVisible = true;
 		}
@@ -917,6 +981,9 @@ export default {
 			this.checkoutVisible = true;
 		}
 		next();
+	},
+	destroyed() {
+		clearInterval(this.currentTimeInterval);
 	},
 };
 </script>
@@ -940,6 +1007,8 @@ export default {
 }
 
 .loan-categories {
+	margin-top: 2rem;
+
 	& .row {
 		max-width: 69.15rem;
 	}

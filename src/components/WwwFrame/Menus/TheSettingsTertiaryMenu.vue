@@ -27,6 +27,14 @@
 			</li>
 			<li>
 				<router-link
+					to="/settings/payments"
+					v-kv-track-event="['TertiaryNav','click-MyKiva-Settings-payments']"
+				>
+					Payments
+				</router-link>
+			</li>
+			<li>
+				<router-link
 					to="/settings/email"
 					v-kv-track-event="['TertiaryNav','click-MyKiva-Settings-email']"
 				>

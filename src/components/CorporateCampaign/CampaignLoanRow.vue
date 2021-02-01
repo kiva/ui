@@ -151,6 +151,7 @@ export default {
 			preventUpdatingDetailedCard: false,
 			limit: 15,
 			loadingLoans: true,
+			loanAdded: false,
 			loans: [],
 			loanQueryVarsStack: [this.filters],
 			loanQueryFilters: () => {},
@@ -200,7 +201,8 @@ export default {
 			this.offset = 0;
 			// reset loans
 			this.loans = [];
-
+			// reset loan added flag
+			this.loanAdded = false;
 			this.loanQueryFilters = next;
 			// }
 		}
@@ -219,6 +221,7 @@ export default {
 	},
 	methods: {
 		addToBasket(payload) {
+			this.loanAdded = true;
 			this.$emit('add-to-basket', payload);
 		},
 		showLoanDetails(payload) {
@@ -251,7 +254,7 @@ export default {
 						this.totalCount = data.lend?.loans?.totalCount ?? 0;
 						this.$emit('update-total-count', this.totalCount);
 						// Reset carousel position after applying new loan filters
-						if (this.offset === 0) {
+						if (this.offset === 0 && !this.loanAdded) {
 							this.scrollPos = 0;
 						}
 						this.loadingLoans = false;

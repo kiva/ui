@@ -156,6 +156,7 @@ export default {
 								numeral(updatedPrice).value()
 							);
 							this.$emit('refreshtotals', this.changeType === 'remove' ? 'removeLoan' : '');
+							this.$emit('updating-totals', false);
 							this.cachedSelection = this.selectedOption;
 						}
 					}).catch(error => {
@@ -196,6 +197,7 @@ export default {
 								numeral(updatedPrice).value()
 							);
 							this.$emit('refreshtotals', this.changeType === 'remove' ? 'removeLoan' : '');
+							this.$emit('updating-totals', false);
 							this.cachedSelection = this.selectedOption;
 						}
 					}).catch(error => {
