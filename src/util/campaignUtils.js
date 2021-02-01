@@ -103,6 +103,8 @@ export function validateQueryParams(query, apollo) {
 	if (lendingReward) {
 		return applyLendingReward(lendingReward, apollo);
 	}
+	// No code passed, Reject with status
+	return Promise.reject('No promotion found.');
 }
 
 /**

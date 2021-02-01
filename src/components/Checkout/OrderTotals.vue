@@ -234,7 +234,7 @@ export default {
 		showApplyActivePromoCredit() {
 			if (this.appliedPromoTotal && this.availablePromoTotal) {
 				return parseFloat(this.appliedPromoTotal.replace('$', '')) === 0
-				&& parseFloat(this.totals.availablePromoTotal.replace('$', '')) > 0;
+				&& parseFloat(this.availablePromoTotal.replace('$', '')) > 0;
 			}
 			return false;
 		}
