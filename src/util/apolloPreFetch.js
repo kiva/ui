@@ -41,7 +41,7 @@ export function handleApolloErrors(handlers = {}, errors, args) {
 		// Call the error handler with the errors and any additional args passed in from the top function
 		const handlerPromise = handler({ graphQLErrors, ...args });
 		// Throw error for malformed error handler functions
-		if (!(handlerPromise instanceof Promise)) {
+		if (typeof handlerPromise.then !== 'function') {
 			throw new TypeError('Error handler functions must return a Promise');
 		}
 		return handlerPromise;
@@ -53,7 +53,7 @@ export function preFetchApolloQuery(config, client, args) {
 	if (typeof config.preFetch === 'function') {
 		// Call the manual pre-fetch function
 		const preFetchPromise = config.preFetch(config, client, args);
-		if (!(preFetchPromise instanceof Promise)) {
+		if (typeof preFetchPromise.then !== 'function') {
 			throw new TypeError('Pre-fetch functions must return a Promise');
 		}
 		return preFetchPromise;
