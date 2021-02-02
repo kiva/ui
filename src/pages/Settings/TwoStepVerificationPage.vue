@@ -92,8 +92,22 @@
 						<div class="two-step-verification__sub-section">
 							<p>{{ cardSubhead }}</p>
 							<h3 class="strong">
+								Text message or phone call
+							</h3>
+							<p>
+								Receive a code via text message on your mobile device.
+							</p>
+							<kv-button class="smallest"
+								:to="`/settings/security/mfa/phone?first=${!isMfaActive}`"
+							>
+								Use text message or phone call
+							</kv-button>
+						</div>
+
+						<div class="two-step-verification__sub-section">
+							<h3 class="strong">
 								Authentication app
-								<span class="two-step-verification__sub-section--green">(Recommended)</span>
+								<span class="two-step-verification__sub-section--green">(Most secure)</span>
 							</h3>
 							<p>
 								Receive code from an authenticator app on your device,
@@ -104,20 +118,6 @@
 								:to="`/settings/security/mfa/app?first=${!isMfaActive}`"
 							>
 								Use authenticator app
-							</kv-button>
-						</div>
-
-						<div class="two-step-verification__sub-section">
-							<h3 class="strong">
-								Text message or phone call
-							</h3>
-							<p>
-								Receive a code via text message on your mobile device.
-							</p>
-							<kv-button class="smallest"
-								:to="`/settings/security/mfa/phone?first=${!isMfaActive}`"
-							>
-								Use text message or phone call
 							</kv-button>
 						</div>
 						<router-view />
