@@ -3,6 +3,7 @@ import '@babel/polyfill';
 import { getUserLocale } from 'get-user-locale';
 import _dropWhile from 'lodash/dropWhile';
 import _get from 'lodash/get';
+import Bowser from 'bowser';
 import cookieStore from '@/util/cookieStore';
 import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import userIdQuery from '@/graphql/query/userId.graphql';
@@ -49,6 +50,7 @@ const {
 	},
 	kvAuth0,
 	locale: getUserLocale(),
+	browser: Bowser.getParser(window.navigator.userAgent).parse().parsedResult
 });
 
 // Show a tip message when there is an unhandled auth0 error
