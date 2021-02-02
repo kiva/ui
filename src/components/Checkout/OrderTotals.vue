@@ -78,8 +78,9 @@
 			title="You are leaving the promotion"
 		>
 			<p class="promo-opt-out-lightbox">
-				<strong>WARNING:</strong> If you proceed, your $50 credit from the Visa Foundation
-				promotion will be removed, and you will have to lend using your own money.
+				<strong>WARNING:</strong> If you proceed, your {{ appliedPromoTotal }} credit from
+				the {{ promoFundDisplayName }} promotion will be removed, and you will have to lend
+				using your own money.
 				Click "Cancel" to use your free loan, or click "Remove Credit" to pay using your own money.
 			</p>
 
@@ -190,8 +191,17 @@ export default {
 		universalCodeAvailableTotal() {
 			return numeral(this.totals.universalCodeAvailableTotal).format('$0,0.00');
 		},
+		hasBonusCredit() {
+			return this.totals?.bonusAppliedTotal !== '0.00';
+		},
+		bonusAppliedTotal() {
+			return numeral(this.totals.bonusAppliedTotal).format('$0,0.00');
+		},
+		bonusAvailableTotal() {
+			return numeral(this.totals.bonusAvailableTotal).format('$0,0.00');
+		},
 		showPromoCreditTotal() {
-			if (this.hasRedemptionCode || this.hasUPCCode) {
+			if (this.hasRedemptionCode || this.hasUPCCode || this.hasBonusCredit) {
 				return true;
 			}
 			return false;
@@ -203,6 +213,9 @@ export default {
 			if (this.hasUPCCode) {
 				return this.universalCodeAppliedTotal;
 			}
+			if (this.hasBonusCredit) {
+				return this.bonusAppliedTotal;
+			}
 			return null;
 		},
 		availablePromoTotal() {
@@ -211,6 +224,9 @@ export default {
 			}
 			if (this.hasUPCCode) {
 				return this.universalCodeAvailableTotal;
+			}
+			if (this.hasBonusCredit) {
+				return this.bonusAvailableTotal;
 			}
 			return null;
 		},
@@ -221,6 +237,9 @@ export default {
 			}
 			if (this.hasUPCCode) {
 				return 'universal_code';
+			}
+			if (this.hasBonusCredit) {
+				return 'bonus_credit';
 			}
 			return null;
 		},

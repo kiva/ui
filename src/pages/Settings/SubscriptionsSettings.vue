@@ -6,18 +6,20 @@
 				<h1>Subscription settings</h1>
 			</div>
 		</div>
-		<router-view />
+		<subscriptions-settings-cards />
 	</www-page>
 </template>
 
 <script>
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import SubscriptionsSettingsCards from '@/components/Settings/SubscriptionsSettingsCards';
 
 export default {
 	components: {
-		WwwPage,
-		TheMyKivaSecondaryMenu
+		SubscriptionsSettingsCards,
+		TheMyKivaSecondaryMenu,
+		WwwPage
 	},
 	metaInfo: {
 		title: 'Subscription settings',
