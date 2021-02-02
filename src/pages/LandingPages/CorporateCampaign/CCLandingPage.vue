@@ -560,8 +560,9 @@ export default {
 	},
 	computed: {
 		pageTitle() {
-			// TODO: add field on Contentful Page for this
-			return this.pageData?.page?.pageLayout?.name;
+			const layoutTitle = this.pageData?.page?.pageLayout?.pageTitle;
+			const pageTitle = this.pageData?.page?.pageTitle ?? 'Loans that change lives';
+			return layoutTitle || pageTitle;
 		},
 		heroAreaContent() {
 			return this.pageData?.page?.contentGroups?.mlCampaignHero;
@@ -573,9 +574,6 @@ export default {
 			return this.pageData?.page?.contentGroups?.mlCampaignThanks;
 		},
 		promoAmount() {
-			// TODO: get promoAmount from basket credit instead
-			// - The promoPrice is currently hard-coded to 25
-			// return this.promoData?.promoFund?.promoPrice ?? null;
 			if (this.basketTargetPromoCredit.length) {
 				const promoAmount = this.basketTargetPromoCredit[0]?.available ?? '0';
 				return promoAmount;
