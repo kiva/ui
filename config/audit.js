@@ -29,6 +29,7 @@ module.exports = merge(base, {
 			apiKey: '28aaa1d56e6a1688f13f6b41da0f27a5',
 			defaultIndex: 'audit_fundraising_popularity',
 		},
+		btTokenKey: 'sandbox_q7kbtvzy_vynd473f79sfskz3',
 		auth0: {
 			loginRedirectUrls: {
 				cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5: 'https://admin.audit.kiva.org/admin/login?force=1',

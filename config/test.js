@@ -29,6 +29,7 @@ module.exports = merge(base, {
 			apiKey: '28aaa1d56e6a1688f13f6b41da0f27a5',
 			defaultIndex: 'test_fundraising_popularity',
 		},
+		btTokenKey: 'sandbox_q7kbtvzy_vynd473f79sfskz3',
 		auth0: {
 			loginRedirectUrls: {
 				PbZJxDWw2uO1j4K6lzC9Yjd5v6yGfLUE: 'https://admin.test.kiva.org/admin/login?force=1',
