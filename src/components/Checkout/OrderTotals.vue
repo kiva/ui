@@ -73,12 +73,11 @@
 
 		<!-- Warn about removing promo credit -->
 		<kv-lightbox
-			class="promo-opt-out-lightbox"
 			@lightbox-closed="promoOptOutLightboxClosed"
 			:visible="promoOptOutLightboxVisible"
 			title="You are leaving the promotion"
 		>
-			<p>
+			<p class="promo-opt-out-lightbox">
 				<strong>WARNING:</strong> If you proceed, your {{ appliedPromoTotal }} credit from
 				the {{ promoFundDisplayName }} promotion will be removed, and you will have to lend
 				using your own money.
@@ -322,13 +321,16 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.order-totals {
+.order-total,
+.kiva-credit {
 	text-align: left;
 
 	@include breakpoint(medium) {
 		text-align: right;
 	}
+}
 
+.order-totals {
 	.kiva-credit {
 		font-weight: $global-weight-highlight;
 		margin-bottom: 1rem;
@@ -369,7 +371,6 @@ export default {
 	}
 
 	.promo-opt-out-lightbox {
-		text-align: left;
 		max-width: 30rem;
 
 		.cancel-promo-opt-out-button {
@@ -380,6 +381,7 @@ export default {
 			text-align: right;
 		}
 
+		// TODO: figure this out.
 		::v-deep .kv-lightbox__body .row {
 			margin-right: auto !important;
 			margin-left: auto !important;

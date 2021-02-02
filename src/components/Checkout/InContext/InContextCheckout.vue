@@ -178,7 +178,6 @@ export default {
 
 .in-context-checkout {
 	position: relative;
-	min-height: 23rem;
 
 	#updating-overlay {
 		z-index: 1000;
