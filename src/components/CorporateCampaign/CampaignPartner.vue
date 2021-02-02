@@ -2,12 +2,24 @@
 	<section class="campaign-partner section">
 		<div class="row align-center">
 			<div class="small-12 medium-10 large-6 columns">
-				<img
+				<picture
 					v-if="partnerImage.url"
 					class="campaign-partner__img"
-					:src="partnerImage.url"
-					:alt="partnerImage.title"
 				>
+					<source
+						type="image/webp"
+						:srcset="`
+							${partnerImage.url}?w=1000&fm=webp 2x,
+							${partnerImage.url}?w=500&fm=webp 1x`"
+					>
+					<img
+						:srcset="`
+							${partnerImage.url}?w=1000&fm=jpg 2x,
+							${partnerImage.url}?w=500&fm=jpg 1x`"
+						:src="`${partnerImage.url}?w=500&fm=jpg`"
+						:alt="partnerImage.title"
+					>
+				</picture>
 			</div>
 			<div class="small-10 large-6 columns">
 				<h2
