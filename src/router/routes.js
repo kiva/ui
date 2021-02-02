@@ -224,16 +224,10 @@ export default [
 	},
 	{
 		path: '/settings/subscriptions',
-		component: () => import('@/pages/Subscriptions/SubscriptionsPage'),
-		children: [
-			{
-				path: '',
-				component: () => import('@/pages/Subscriptions/SubscriptionsSettingsPage'),
-				meta: {
-					activeLoginRequired: true,
-				}
-			},
-		],
+		component: () => import('@/pages/Settings/SubscriptionsSettings'),
+		meta: {
+			activeLoginRequired: true,
+		}
 	},
 	{ path: '/start', component: () => import('@/pages/Search/SentenceSearch') },
 	{

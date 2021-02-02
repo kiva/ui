@@ -89,10 +89,10 @@ import KvButton from '@/components/Kv/KvButton';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 
-import SubscriptionsMonthlyGood from './SubscriptionsMonthlyGood';
-import SubscriptionsOneTime from './SubscriptionsOneTime';
-import SubscriptionsAutoDeposit from './SubscriptionsAutoDeposit';
-import SubscriptionsLegacy from './SubscriptionsLegacy';
+import SubscriptionsMonthlyGood from '@/components/Subscriptions/SubscriptionsMonthlyGood';
+import SubscriptionsOneTime from '@/components/Subscriptions/SubscriptionsOneTime';
+import SubscriptionsAutoDeposit from '@/components/Subscriptions/SubscriptionsAutoDeposit';
+import SubscriptionsLegacy from '@/components/Subscriptions/SubscriptionsLegacy';
 
 const pageQuery = gql`query subscriptionSettingsPage {
 	my {
