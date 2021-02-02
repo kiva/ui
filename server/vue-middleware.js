@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const Bowser = require('bowser');
 const cookie = require('cookie');
 const { createBundleRenderer } = require('vue-server-renderer');
 const clearCachedVueModule = require('./util/clearCachedVueModule');
@@ -65,6 +66,7 @@ module.exports = function createMiddleware({
 			cookies,
 			user: req.user || {},
 			locale: req.locale,
+			device: Bowser.getParser(req.get('user-agent')).parse().parsedResult
 		};
 
 		// set html response headers

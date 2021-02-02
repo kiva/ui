@@ -530,6 +530,7 @@ export default {
 		if (this.itemsInBasket.length) {
 			this.updateBasketState();
 		}
+
 		// clean up show-basket process
 		// TODO: Revisit this control flow
 		if (this.$route.hash === '#show-basket') {
