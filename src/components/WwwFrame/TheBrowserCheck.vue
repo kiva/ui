@@ -25,10 +25,10 @@ export default {
 	},
 	computed: {
 		isUnsupportedBrowser() {
-			return this.$browser.browser.name === 'Internet Explorer';
+			return this.$device.browser.name === 'Internet Explorer';
 		},
 		isAppleDevice() {
-			return this.$browser.platform.vendor === 'Apple';
+			return this.$device.platform.vendor === 'Apple';
 		}
 	}
 };

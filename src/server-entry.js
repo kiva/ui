@@ -27,7 +27,7 @@ export default context => {
 			cookies,
 			user,
 			locale,
-			browser,
+			device,
 		} = context;
 		const { accessToken, ...profile } = user;
 
@@ -73,7 +73,7 @@ export default context => {
 			},
 			kvAuth0,
 			locale,
-			browser,
+			device,
 		});
 
 		// redirect to the resolved url if it does not match the requested url

@@ -50,7 +50,7 @@ const {
 	},
 	kvAuth0,
 	locale: getUserLocale(),
-	browser: Bowser.getParser(window.navigator.userAgent).parse().parsedResult
+	device: Bowser.getParser(window.navigator.userAgent).parse().parsedResult
 });
 
 // Show a tip message when there is an unhandled auth0 error

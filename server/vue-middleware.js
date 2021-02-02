@@ -66,7 +66,7 @@ module.exports = function createMiddleware({
 			cookies,
 			user: req.user || {},
 			locale: req.locale,
-			browser: Bowser.getParser(req.get('user-agent')).parse().parsedResult
+			device: Bowser.getParser(req.get('user-agent')).parse().parsedResult
 		};
 
 		// set html response headers
