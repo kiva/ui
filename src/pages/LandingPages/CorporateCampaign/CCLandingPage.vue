@@ -201,7 +201,6 @@ import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 // import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
-import { isUnsupportedBrowser } from '@/util/browserUtils';
 
 const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
 	contentful {
@@ -532,16 +531,6 @@ export default {
 			this.updateBasketState();
 		}
 
-		if (isUnsupportedBrowser()) {
-			this.$showTipMsg(
-				`Your browser is unsupported.
-				Please use
-				<a href="https://www.microsoft.com/en-us/edge" target="_blank">Microsoft Edge</a>,
-				<a href="https://www.mozilla.org/en-US/firefox/download/thanks/" target="_blank">Firefox</a>, or
-				<a href="https://www.google.com/chrome/" target="_blank">Chrome</a>.`,
-				'warning'
-			);
-		}
 		// clean up show-basket process
 		// TODO: Revisit this control flow
 		if (this.$route.hash === '#show-basket') {

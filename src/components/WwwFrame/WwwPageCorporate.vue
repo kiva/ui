@@ -1,5 +1,6 @@
 <template>
 	<div class="www-page-corporate">
+		<the-browser-check class="www-page-corporate__browser-check" ref="theBrowserCheck" />
 		<the-header
 			:theme="headerTheme"
 			:corporate="true"
@@ -26,6 +27,7 @@ import _get from 'lodash/get';
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
 import TheBasketBar from '@/components/WwwFrame/TheBasketBar';
+import TheBrowserCheck from '@/components/WwwFrame/TheBrowserCheck';
 import TheFooterCorporate from '@/components/WwwFrame/TheFooterCorporate';
 import TheHeader from '@/components/WwwFrame/TheHeader';
 
@@ -36,6 +38,7 @@ export default {
 	components: {
 		CookieBanner,
 		TheBasketBar,
+		TheBrowserCheck,
 		TheFooterCorporate,
 		TheHeader,
 	},
