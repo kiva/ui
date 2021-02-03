@@ -2,6 +2,7 @@
 	<div v-show="loanVisible" class="basket-item-wrapper row">
 		<div class="hide-for-small-only medium-3 large-2 columns">
 			<checkout-item-img
+				:disable-link="disableRedirects"
 				:loan-id="loan.id"
 				:name="loan.loan.name"
 				:image-url="loan.loan.image.url"
@@ -26,6 +27,9 @@
 					:loan-id="loan.id"
 					:team-id="loan.team ? loan.team.id : null"
 				/>
+				<loan-promo-credits
+					:applied-promo-credits="appliedPromoCredits"
+				/>
 			</div>
 		</div>
 		<div class="small-12 medium-4 large-3 columns loan-res-price-wrapper">
@@ -48,6 +52,7 @@
 <script>
 import CheckoutItemImg from '@/components/Checkout/CheckoutItemImg';
 import LoanMatcher from '@/components/Checkout/LoanMatcher';
+import LoanPromoCredits from '@/components/Checkout/LoanPromoCredits';
 import LoanReservation from '@/components/Checkout/LoanReservation';
 import LoanPrice from '@/components/Checkout/LoanPrice';
 import TeamAttribution from '@/components/Checkout/TeamAttribution';
@@ -56,12 +61,17 @@ export default {
 	components: {
 		CheckoutItemImg,
 		LoanMatcher,
+		LoanPromoCredits,
 		LoanReservation,
 		LoanPrice,
 		TeamAttribution
 	},
 	inject: ['apollo'],
 	props: {
+		disableRedirects: {
+			type: Boolean,
+			default: false
+		},
 		loan: {
 			type: Object,
 			default: () => {}
@@ -74,8 +84,22 @@ export default {
 	data() {
 		return {
 			activateTimer: true,
-			loanVisible: true
+			loanVisible: true,
 		};
+	},
+	computed: {
+		creditsUsed() {
+			return this.loan?.creditsUsed ?? [];
+		},
+		appliedPromoCredits() {
+			if (this.creditsUsed.length) {
+				const appliedCredits = this.creditsUsed.filter(credit => {
+					return credit.applied !== null && credit.creditType !== 'kiva_credit';
+				});
+				return appliedCredits.length ? appliedCredits : [];
+			}
+			return [];
+		}
 	},
 	methods: {
 		onLoanUpdate($event) {
@@ -83,14 +107,14 @@ export default {
 			if ($event === 'removeLoan') {
 				this.loanVisible = false;
 			}
-		}
+		},
 	},
 	updated() {
 		// check for zeroed out loan validate + refresh if present
 		if (typeof this.loan.price !== 'undefined' && this.loan.price === '0.00') {
 			this.$emit('validateprecheckout');
 		}
-	}
+	},
 };
 
 </script>

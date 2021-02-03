@@ -3,6 +3,7 @@
 		<basket-items-list
 			class="in-context-checkout__basket-items"
 			:class="{ 'in-context-checkout__basket-items--hide-donation' : !this.showDonation}"
+			:disable-redirects="disableRedirects"
 			:loans="loans"
 			:donations="donations"
 			:kiva-cards="kivaCards"
@@ -94,6 +95,10 @@ export default {
 		loans: {
 			type: Array,
 			default: () => [],
+		},
+		disableRedirects: {
+			type: Boolean,
+			default: false
 		},
 		donations: {
 			type: Array,
