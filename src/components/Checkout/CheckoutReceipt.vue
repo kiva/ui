@@ -407,6 +407,7 @@ export default {
 
 .total {
 	display: flex;
+	align-items: baseline;
 
 	&__header,
 	&__amount {
