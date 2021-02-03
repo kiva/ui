@@ -1044,6 +1044,7 @@ export default {
 		::v-deep {
 			.full-details-link,
 			.close-button-wrapper,
+			.info-panel a,
 			.borrower-info-body.loan-use a {
 				display: none;
 			}
