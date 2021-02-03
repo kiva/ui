@@ -38,7 +38,11 @@
 							class="loan"
 						>
 							<h3 class="loan__name">
+								<template v-if="disableRedirects">
+									{{ loan.loan.name }}
+								</template>
 								<router-link
+									v-else
 									:to="`/lend/${loan.id}`"
 								>
 									{{ loan.loan.name }}
@@ -289,6 +293,10 @@ export default {
 		receipt: {
 			type: Object,
 			required: true
+		},
+		disableRedirects: {
+			type: Boolean,
+			default: false
 		},
 	},
 	computed: {
