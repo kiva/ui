@@ -16,7 +16,7 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
-		nonTrendingRow: uiExperimentSetting(key: "EXP-ML-Service-Bandit") {
+		nonTrendingRow: uiExperimentSetting(key: "EXP-ML-Service-Bandit-LendByCategory") {
 			key
 			value
 		}

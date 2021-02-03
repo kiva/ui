@@ -21,6 +21,16 @@
 			/>
 		</div>
 
+		<div v-if="showNonTrendingLoansRow">
+			<non-trending-loans
+				ref="nonTrendingLoans"
+				:show-category-description="showCategoryDescription"
+				:is-logged-in="isLoggedIn"
+				:show-expandable-loan-cards="showExpandableLoanCards"
+				@scrolling-row="handleScrollingRow"
+			/>
+		</div>
+
 		<div>
 			<div
 				class="loan-category-row"
@@ -111,6 +121,7 @@ import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import ExpandableLoanCardExpanded from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardExpanded';
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
+import NonTrendingLoans from '@/components/LoansByCategory/NonTrendingLoans';
 
 // Row Limiter
 // > This controls how may rows are loaded on the server
@@ -127,6 +138,7 @@ export default {
 		AddToBasketInterstitial,
 		ExpandableLoanCardExpanded,
 		FavoriteCountryLoans,
+		NonTrendingLoans,
 	},
 	inject: ['apollo', 'kvAuth0'],
 	metaInfo: {
@@ -154,6 +166,7 @@ export default {
 			leftArrowPosition: undefined,
 			hasFavoriteCountry: false,
 			favoriteCountryExpVersion: 'control',
+			nonTrendingExpVersion: 'control',
 			showHoverLoanCards: false,
 			recommendedLoans: [],
 			categoryRowHillclimbExpVersion: null,
@@ -209,6 +222,12 @@ export default {
 				return true;
 			}
 			return false;
+		},
+		showNonTrendingLoansRow() {
+			if (this.nonTrendingExpVersion === 'shown') {
+				return true;
+			}
+			return true;
 		},
 		categoryRowType() {
 			return this.showHoverLoanCards ? CategoryRowHover : CategoryRow;
@@ -373,6 +392,27 @@ export default {
 				);
 			}
 		},
+		initializeNonTrendingLoansRowExp() {
+			// experiment: GROW-330 Machine Learning Non-Trending loans Country Row
+			// get assignment
+			const nonTrendingLoansRowEXP = this.apollo.readFragment({
+				id: 'Experiment:KivaLoves',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.nonTrendingLoansExpVersion = nonTrendingLoansRowEXP.version;
+
+			// Only track and activate if these conditions exist
+			if (this.nonTrendingLoansExpVersion
+				&& this.nonTrendingLoansExpVersion !== 'unassigned'
+			) {
+				// Fire Event for Exp GROW-330
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-ML-Service-Bandit-LendByCategory',
+					this.nonTrendingLoansExpVersion === 'shown' ? 'b' : 'a'
+				);
+			}
+		},
 		initializeHoverLoanCard() {
 			// CASH-521: Hover loan card experiment
 			const hoverLoanCardExperiment = this.apollo.readFragment({
@@ -505,6 +545,8 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'favorite_country' } }),
 					// experiment: CASH-521 Hover Loan Card Experiment
 					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
+					// experiment: GROW-330 Machine Learning Category row
+					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit' } }),
 				]);
 			}).then(expResults => {
 				// Set category ids and custom category ids based on whether the user is in the
@@ -604,6 +646,9 @@ export default {
 
 		// Initialize CASH-794 Favorite Country Row
 		this.initializeFavoriteCountryRowExp();
+
+		// Initialize GROW-330 Favorite Country Row
+		this.initializeNonTrendingLoansRowExp();
 
 		// get assignment for add to basket interstitial
 		const addToBasketPopupEXP = this.apollo.readFragment({
