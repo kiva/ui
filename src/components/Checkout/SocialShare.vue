@@ -649,5 +649,9 @@ $loan-triangle-size: rem-calc(12);
 	height: 1rem;
 	width: 1rem;
 	margin-right: 1rem;
+	color: $umbreon;
+	fill: $umbreon;
+	stroke: $umbreon;
+	stroke-width: 2px;
 }
 </style>

@@ -142,6 +142,30 @@ export default {
 	&.expanded {
 		width: 100%;
 	}
+
+	&.ghost {
+		border: rem-calc(1) solid $umbreon;
+		box-shadow: none;
+		border-radius: rem-calc(10);
+		color: $umbreon;
+		background-color: transparent;
+		padding: rem-calc(24);
+		font-weight: 600;
+		@include medium-text();
+
+		&:hover,
+		&:focus {
+			border-color: $blue;
+			background-color: $blue;
+			box-shadow: none;
+			color: $white;
+		}
+
+		&.active:not(:hover) {
+			background-color: $white;
+			border: rem-calc(1) solid $white;
+		}
+	}
 }
 
 .text-link {
