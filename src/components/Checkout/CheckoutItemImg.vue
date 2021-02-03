@@ -6,6 +6,7 @@
 		<img class="loan-img"
 			:src="imageUrl"
 			:alt="'photo of ' + name"
+			@click="handleImageClick"
 		>
 	</router-link>
 </template>
@@ -13,6 +14,10 @@
 <script>
 export default {
 	props: {
+		disableLink: {
+			type: Boolean,
+			default: false,
+		},
 		loanId: {
 			type: Number,
 			default: null
@@ -26,6 +31,13 @@ export default {
 			default: ''
 		}
 	},
+	methods: {
+		handleImageClick(event) {
+			if (this.disableLink) {
+				event.preventDefault();
+			}
+		},
+	}
 };
 </script>
 

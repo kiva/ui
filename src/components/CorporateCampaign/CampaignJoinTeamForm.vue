@@ -7,9 +7,9 @@
 				:prevent-close="true"
 				:visible="showTeamLightbox"
 				@lightbox-closed="handleLightboxClosed"
-				:title="campaignTitleText"
 			>
 				<div v-if="showForm" class="text-center">
+					<h2>{{ campaignTitleText }}</h2>
 					<p>
 						Lending Teams are self-organized groups on Kiva.org where you can
 						connect and rally around shared lending goals. By joining the
@@ -101,7 +101,7 @@ export default {
 	},
 	computed: {
 		campaignTitleText() {
-			return `Join ${this.campaignNameText} to do more good together`;
+			return `Join ${this.teamName} lending team to do more good together`;
 		},
 		campaignNameText() {
 			return this.campaignName ? `the ${this.campaignName}` : 'this';

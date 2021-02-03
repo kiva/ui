@@ -141,6 +141,7 @@
 					class="campaign-checkout"
 					:is-actively-logged-in="isActivelyLoggedIn"
 					:loans="basketLoans"
+					:disable-redirects="true"
 					:donations="donations"
 					:kiva-cards="kivaCards"
 					:teams="myTeams"
@@ -261,6 +262,7 @@ const basketItemsQuery = gql`query basketItemsQuery(
 						id
 						promoFund {
 							id
+							displayName
 						}
 					}
 					id
