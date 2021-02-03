@@ -165,6 +165,7 @@
 								Donation to Kiva
 							</h3>
 							<router-link
+								v-if="receipt.totals.donationTotal > 0"
 								class="smallest"
 								to="/portfolio/donations"
 							>
