@@ -1044,8 +1044,15 @@ export default {
 		::v-deep {
 			.full-details-link,
 			.close-button-wrapper,
+			.info-panel a,
 			.borrower-info-body.loan-use a {
 				display: none;
+			}
+
+			.name-location-sector .name {
+				text-decoration: none;
+				color: $body-font-color;
+				cursor: text;
 			}
 		}
 	}
