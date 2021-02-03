@@ -107,7 +107,6 @@
 						<div class="two-step-verification__sub-section">
 							<h3 class="strong">
 								Authentication app
-								<span class="two-step-verification__sub-section--green">(Most secure)</span>
 							</h3>
 							<p>
 								Receive code from an authenticator app on your device,
@@ -368,10 +367,6 @@ export default {
 
 	&__sub-section {
 		margin-top: 2rem;
-
-		&--green {
-			color: $kiva-green;
-		}
 	}
 
 	&--loading {
