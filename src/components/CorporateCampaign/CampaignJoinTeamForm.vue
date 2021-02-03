@@ -13,7 +13,8 @@
 					<p>
 						Lending Teams are self-organized groups on Kiva.org where you can
 						connect and rally around shared lending goals. By joining the
-						{{ teamName }}, you can easily see our collective impact across countries and sectors.
+						{{ teamName }} Lending Team, you can easily see our collective impact
+						across countries and sectors.
 					</p>
 					<p v-if="showError" class="error">
 						Oh no! Something went wrong! Please try to join this team later.
@@ -101,7 +102,7 @@ export default {
 	},
 	computed: {
 		campaignTitleText() {
-			return `Join ${this.teamName} lending team to do more good together`;
+			return `Join the ${this.teamName} Lending Team to do more good together`;
 		},
 		campaignNameText() {
 			return this.campaignName ? `the ${this.campaignName}` : 'this';
@@ -202,6 +203,12 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+
+.join-team-lightbox {
+	::v-deep .kv-lightbox__container {
+		max-width: 30rem;
+	}
+}
 
 #loading-overlay-teams {
 	background-color: rgba($white, 0.7);
