@@ -26,6 +26,7 @@
 					<checkout-receipt
 						v-if="showReceipt"
 						class="campaign-thanks__receipt"
+						:disable-redirects="true"
 						:lender="lender"
 						:receipt="receipt"
 					/>
