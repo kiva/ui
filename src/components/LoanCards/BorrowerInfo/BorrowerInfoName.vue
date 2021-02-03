@@ -51,5 +51,9 @@ export default {
 .borrower-info-name {
 	font-size: rem-calc(22);
 	font-weight: $global-weight-highlight;
+
+	> span {
+		display: block;
+	}
 }
 </style>
