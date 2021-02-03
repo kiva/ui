@@ -1048,6 +1048,12 @@ export default {
 			.borrower-info-body.loan-use a {
 				display: none;
 			}
+
+			.name-location-sector .name {
+				text-decoration: none;
+				color: $body-font-color;
+				cursor: text;
+			}
 		}
 	}
 
