@@ -59,7 +59,7 @@
 		</section>
 
 		<section
-			v-if="showMonthlyGoodSection"
+			v-if="showMonthlyGoodSelectorSection"
 			class="monthly-good-info section"
 		>
 			<div class="row align-center">
@@ -94,7 +94,7 @@
 
 		<!-- MG Selector Desktop -->
 		<section
-			v-if="showMonthlyGoodSection"
+			v-if="showMonthlyGoodSelectorSection"
 			class="monthly-good-selector show-for-medium"
 			:class="{ 'sticky': isSticky}"
 			:style="{bottom: mgStickBarOffset + 'px'}"
@@ -104,7 +104,7 @@
 
 		<!-- MG Selector Mobile -->
 		<section
-			v-if="showMonthlyGoodSection"
+			v-if="showMonthlyGoodSelectorSection"
 			class="monthly-good-selector section hide-for-large"
 		>
 			<div class="row align-center hide-for-large">
@@ -370,7 +370,7 @@ export default {
 			isSticky: false,
 			initialBottomPosition: 0,
 			mgStickBarOffset: 0,
-			showMonthlyGoodSection: false,
+			showMonthlyGoodSelectorSection: false,
 		};
 	},
 	computed: {
