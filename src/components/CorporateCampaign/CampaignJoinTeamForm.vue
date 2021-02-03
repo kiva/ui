@@ -101,7 +101,7 @@ export default {
 	},
 	computed: {
 		campaignTitleText() {
-			return `Join ${this.teamName} to do more good together`;
+			return `Join ${this.teamName} lending team to do more good together`;
 		},
 		campaignNameText() {
 			return this.campaignName ? `the ${this.campaignName}` : 'this';
