@@ -184,6 +184,7 @@ import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import cookieStore from '@/util/cookieStore';
+import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
@@ -713,6 +714,7 @@ export default {
 				// Initialize loan query + observer there are no loans in the basket
 				this.showLoans = true;
 				this.$refs.loandisplayref.activateLoanWatchQuery();
+				this.setAuthStatus(this.kvAuth0?.user);
 				this.updateBasketState();
 			});
 		},
@@ -728,12 +730,18 @@ export default {
 			this.initializeBasketRefresh();
 		},
 		initializeBasketRefresh() {
+			// TDOO: Consider extending loading state for basket updates
 			// Query to update basket state
 			this.updateBasketState();
 			// TEMPORARY: Obstruct ability to click the "Checkout" button on the loan card to prevent redirect
 			this.$refs.loandisplayref.loadingLoans = true;
 		},
 		updateBasketState() {
+			// Ensure basket state is loading
+			if (this.$refs.inContextCheckoutRef) {
+				this.$refs.inContextCheckoutRef.updatingTotals = true;
+			}
+			// update basket state
 			const basketItems = this.apollo.query({
 				query: basketItemsQuery,
 				variables: {
@@ -780,7 +788,7 @@ export default {
 			}
 
 			if (numeral(creditAmountNeeded).value() > 0) {
-				simpleCheckoutEligible = false;
+				// simpleCheckoutEligible = false;
 				simpleCheckoutRestrictedMessage = 'Additional credit or funds are needed to complete the transaction';
 			}
 
@@ -820,6 +828,9 @@ export default {
 				}
 				// turn off loading state
 				this.$refs.loandisplayref.loadingLoans = false;
+				if (this.$refs.inContextCheckoutRef) {
+					this.$refs.inContextCheckoutRef.updatingTotals = false;
+				}
 				// exit method
 				return false;
 			}
@@ -832,9 +843,15 @@ export default {
 						// this.showCheckoutError(validationStatus);
 					}
 
+					// Update user Auth state
+					this.setAuthStatus(this.kvAuth0?.user ?? {});
+
 					// TEMPORARY: turn off loading loans
 					this.$refs.loandisplayref.loadingLoans = false;
-					this.setAuthStatus(this.kvAuth0?.user ?? {});
+					if (this.$refs.inContextCheckoutRef) {
+						this.$refs.inContextCheckoutRef.updatingTotals = false;
+					}
+
 					// signify checkout is ready
 					this.handleBasketValidation();
 					return true;
@@ -909,7 +926,6 @@ export default {
 		handleTeamJoinProcess(payload) {
 			this.teamJoinStatus = payload.join;
 			this.fetchMyTeams();
-			this.handleBasketValidation();
 		},
 		fetchMyTeams() {
 			this.apollo.query({
@@ -917,7 +933,26 @@ export default {
 				query: myTeamsQuery
 			}).then(({ data }) => {
 				this.myTeams = data.my?.lender?.teams?.values ?? [];
+				this.addTeamToLoans();
 			});
+		},
+		addTeamToLoans() {
+			if (this.basketLoans.length && this.teamId) {
+				const loans = [];
+				// TODO Collect these promises and refresh basket once complete
+				this.basketLoans.forEach((loan, index) => {
+					loans[index] = this.apollo.mutate({
+						mutation: updateLoanReservationTeam,
+						variables: {
+							teamId: this.teamId,
+							loanid: loan.id
+						}
+					});
+				});
+				Promise.all(loans).then(() => {
+					this.updateBasketState();
+				});
+			}
 		},
 
 		verificationComplete() {

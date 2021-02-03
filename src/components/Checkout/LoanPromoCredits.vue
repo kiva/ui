@@ -5,7 +5,7 @@
 		>
 			<div class="promo-tags__item" :key="index">
 				<span class="promo-tags__item-credit">
-					<strong>{{ promoCredit.applied }} credit applied</strong>
+					<strong>{{ promoCredit.amount }} credit applied</strong>
 				</span>
 				<span class="promo-tags__item-sponsor">
 					Sponsored by:
@@ -37,6 +37,7 @@ export default {
 @import 'settings';
 
 .promo-tags {
+	clear: both;
 	margin: 0.375rem 0 0.5rem;
 
 	&__item {
@@ -46,7 +47,7 @@ export default {
 
 	&__item-credit {
 		color: $kiva-darkgreen;
-		display: block;
+		display: inline-block;
 		margin-bottom: 0.25rem;
 		background: $very-light-gray;
 		padding: 0.3rem 0.3rem 0.1rem;
@@ -56,7 +57,7 @@ export default {
 
 	&__item-sponsor {
 		display: block;
-		padding: 0.2rem;
+		padding: 0.2rem 0;
 	}
 }
 </style>
