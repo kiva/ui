@@ -3,7 +3,7 @@
 		<div class="row collapse">
 			<div class="small-12 columns">
 				<div
-					v-for="(region, name, index) in regions"
+					v-for="(name, index) in Object.keys(regions).sort()"
 					:key="name"
 					:id="`${index}-region`"
 					class="country-filters__region-section"
@@ -11,7 +11,7 @@
 					<h4>{{ name }}</h4>
 					<check-list
 						key="`${name}-country-list`"
-						:items="region"
+						:items="regions[name]"
 						:use-columns="false"
 						@change="onChange"
 					/>
@@ -78,7 +78,12 @@ export default {
 			return eligibleCountries || [];
 		},
 		regions() {
-			return _groupBy(this.countriesWithSelected, 'region');
+			const groupedRegions = _groupBy(this.countriesWithSelected, 'region');
+			// alphabetize countries within each region
+			Object.keys(groupedRegions).forEach(region => {
+				groupedRegions[region].sort((a, b) => { return (a.name > b.name) ? 1 : -1; });
+			});
+			return groupedRegions;
 		},
 	},
 	watch: {
