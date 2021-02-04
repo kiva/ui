@@ -1,5 +1,5 @@
 <template>
-	<www-page>
+	<system-page>
 		<div class="page-content">
 			<h1>Almost done...</h1>
 			<p>To complete your registration, please agree to the Terms of Use and Privacy Policy</p>
@@ -42,16 +42,16 @@
 				<a :href="`https://${$appConfig.auth0.domain}/v2/logout`">Cancel registration</a>
 			</div>
 		</div>
-	</www-page>
+	</system-page>
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
+import SystemPage from '@/components/SystemFrame/SystemPage';
 import KvButton from '@/components/Kv/KvButton';
 
 export default {
 	components: {
-		WwwPage,
+		SystemPage,
 		KvButton,
 	},
 	data() {
