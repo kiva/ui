@@ -20,7 +20,7 @@
 			<campaign-hero
 				:hero-area-content="heroAreaContent"
 				@add-to-basket="handleAddToBasket"
-				@jump-to-loans="scrollToSection('campaignLoanSection')"
+				@jump-to-loans="jumpToLoans"
 			/>
 
 			<hr>
@@ -967,15 +967,8 @@ export default {
 				this.myId = userState['https://www.kiva.org/kiva_id'] || null;
 			}
 		},
-
-		scrollToSection(section) {
-			this.$router.push({
-				query: {
-					...this.$route.query,
-					...this.urlParams
-				},
-				hash: section
-			});
+		jumpToLoans() {
+			this.$refs.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
 		},
 		adjustRouteHash(hash) {
 			const route = { ...this.$route };
