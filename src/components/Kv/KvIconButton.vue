@@ -3,13 +3,13 @@
 		@click.native.prevent="null"
 		:style="cssVars"
 	>
-		<div class="icon-background">
-			<div class="icon-wrapper icon icon--left">
+		<div class="icon-btn__icon-background">
+			<div class="icon-btn__icon-wrapper icon-btn__icon--left">
 				<slot name="icon-left"></slot>
 			</div>
 		</div>
 		<span><slot></slot></span>
-		<div class="icon-wrapper icon icon--right">
+		<div class="icon-btn__icon-wrapper icon-btn__icon--right">
 			<slot name="icon-right"></slot>
 		</div>
 	</kv-button>
@@ -60,7 +60,7 @@ export default {
 	justify-content: space-between;
 	flex-wrap: wrap;
 
-	.icon-background {
+	&__icon-background {
 		background-color: var(--kv-left-icon-background);
 		border-radius: 50%;
 		height: 2rem;
@@ -72,7 +72,7 @@ export default {
 		margin-right: 1rem;
 	}
 
-	.icon-wrapper ::v-deep div {
+	&__icon-wrapper ::v-deep div {
 		height: 1rem;
 		width: 1rem;
 		max-width: 1rem;
@@ -82,22 +82,22 @@ export default {
 		stroke-width: 2px;
 	}
 
-	.icon-wrapper.icon--right {
+	&__icon--right {
 		margin-right: 0.5rem;
 	}
 
 	&:hover {
-		.icon-wrapper.icon--right ::v-deep svg {
+		.icon-btn__icon--right ::v-deep svg {
 			color: var(--kv-color-hover);
 			fill: var(--kv-color-hover);
 			stroke: var(--kv-color-hover);
 		}
 
-		.icon-wrapper.icon--left ::v-deep svg {
+		.icon-btn__icon--left ::v-deep svg {
 			stroke: var(--kv-left-icon-hover);
 		}
 
-		.icon-background {
+		.icon-btn__icon-background {
 			background-color: var(--kv-color-hover);
 		}
 	}
@@ -109,11 +109,11 @@ export default {
 
 	// Active class
 	&.active:not(:hover) {
-		.icon-background {
+		.icon-btn__icon-background {
 			background-color: rgba(var(--kv-left-icon-color-active), 0.3);
 		}
 
-		.icon-wrapper.icon--left ::v-deep div {
+		.icon-btn__icon--left ::v-deep div {
 			color: rgba(var(--kv-left-icon-color-active), 1);
 			fill: rgba(var(--kv-left-icon-color-active), 1);
 			stroke: rgba(var(--kv-left-icon-color-active), 1);
