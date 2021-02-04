@@ -17,6 +17,11 @@
 <script>
 import KvButton from '@/components/Kv/KvButton';
 
+/**
+ * This component is a wrapper that creates a kv-button with icons on the left and/or right and a unique kvButton style.
+ * IT SHOULD ONLY BE USED ON THE THANKS PAGE V2 EXPERIMENT
+ * until site-wide button styling is finalized.
+ */
 export default {
 	components: {
 		KvButton,

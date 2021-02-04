@@ -1,6 +1,4 @@
 import KvButton from '@/components/Kv/KvButton';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvIconButton from '@/components/Kv/KvIconButton';
 
 export default {
 	title: 'KV/KvButton',
@@ -80,40 +78,4 @@ export const Expanded = () => ({
 export const AsALink = () => ({
 	components: { KvButton },
 	template: '<kv-button href="http://www.google.com">Button</kv-button>'
-});
-
-export const IconButton = () => ({
-	components: { KvIconButton, KvIcon },
-	template: `
-	<div>
-		<kv-icon-button class="expanded">
-			<template v-slot:icon-left>
-				<kv-icon
-					name="share"
-				/>
-			</template>
-			Button
-			<template v-slot:icon-right>
-				<kv-icon
-					name="fat-chevron"
-					:from-sprite="true"
-				/>
-			</template>
-		</kv-icon-button>
-		<kv-icon-button class="active expanded">
-			<template v-slot:icon-left>
-				<kv-icon
-					name="share"
-				/>
-			</template>
-			Button
-			<template v-slot:icon-right>
-				<kv-icon
-					name="fat-chevron"
-					:from-sprite="true"
-				/>
-			</template>
-		</kv-icon-button>
-	</div>
-	`
 });
