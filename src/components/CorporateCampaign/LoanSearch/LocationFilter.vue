@@ -57,14 +57,18 @@ export default {
 	},
 	computed: {
 		countriesWithSelected() {
-			return this.eligibleCountries.map(({ isoCode, name, region }) => {
-				return {
-					id: isoCode,
-					name,
-					region,
-					selected: this.currentIsoCodes.indexOf(isoCode) > -1,
-				};
-			});
+			return this.eligibleCountries
+				.filter(country => country.numLoansFundraising > 0)
+				.map(({
+					isoCode, name, region, numLoansFundraising
+				}) => {
+					return {
+						id: isoCode,
+						name: `${name} (${numLoansFundraising})`,
+						region,
+						selected: this.currentIsoCodes.indexOf(isoCode) > -1,
+					};
+				});
 		},
 		eligibleCountries() {
 			// filters all Countries against prescribed lsc theme
