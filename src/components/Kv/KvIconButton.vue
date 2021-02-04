@@ -1,6 +1,5 @@
 <template>
 	<kv-button class="icon-btn"
-		@click.native.prevent="null"
 		:style="cssVars"
 	>
 		<div class="icon-btn__icon-background">
