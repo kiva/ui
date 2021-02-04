@@ -82,21 +82,11 @@ export const AsALink = () => ({
 	template: '<kv-button href="http://www.google.com">Button</kv-button>'
 });
 
-export const Ghost = () => ({
-	components: { KvButton },
-	template: '<kv-button class="ghost">Button</kv-button>'
-});
-
-export const GhostActive = () => ({
-	components: { KvButton },
-	template: '<kv-button class="ghost active">Button</kv-button>'
-});
-
 export const IconButton = () => ({
 	components: { KvIconButton, KvIcon },
 	template: `
 	<div>
-		<kv-icon-button theme="ghost" class="ghost expanded">
+		<kv-icon-button class="expanded">
 			<template v-slot:icon-left>
 				<kv-icon
 					name="share"
@@ -110,7 +100,7 @@ export const IconButton = () => ({
 				/>
 			</template>
 		</kv-icon-button>
-		<kv-icon-button theme="ghost" class="ghost active expanded">
+		<kv-icon-button class="active expanded">
 			<template v-slot:icon-left>
 				<kv-icon
 					name="share"

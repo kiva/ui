@@ -25,13 +25,13 @@ export default {
 	props: {
 		theme: {
 			type: String,
-			default: 'ghost',
+			default: 'default',
 		},
 	},
 	computed: {
 		cssVars() {
-			// TODO add other button themes
-			if (this.theme === 'ghost') {
+			// TODO possibly add other themes
+			if (this.theme === 'default') {
 				// $platinum: #efefef;
 				// $umbreon: #212121;
 				// $white: #fff;
@@ -55,6 +55,17 @@ export default {
 @import 'settings';
 
 .icon-btn {
+	// Button styles
+	border: rem-calc(1) solid $umbreon;
+	box-shadow: none;
+	border-radius: rem-calc(10);
+	color: $umbreon;
+	background-color: transparent;
+	padding: rem-calc(24);
+	font-weight: 600;
+	@include medium-text();
+
+	// Positioning
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -86,7 +97,13 @@ export default {
 		margin-right: 0.5rem;
 	}
 
-	&:hover {
+	&:hover,
+	&:focus {
+		border-color: $blue;
+		background-color: $blue;
+		box-shadow: none;
+		color: $white;
+
 		.icon-btn__icon--right ::v-deep svg {
 			color: var(--kv-color-hover);
 			fill: var(--kv-color-hover);
@@ -109,6 +126,9 @@ export default {
 
 	// Active class
 	&.active:not(:hover) {
+		background-color: $white;
+		border: rem-calc(1) solid $white;
+
 		.icon-btn__icon-background {
 			background-color: rgba(var(--kv-left-icon-color-active), 0.3);
 		}
