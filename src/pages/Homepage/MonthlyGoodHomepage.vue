@@ -58,7 +58,10 @@
 			</div>
 		</section>
 
-		<section class="monthly-good-info section">
+		<section
+			v-if="showMonthlyGoodSelectorSection"
+			class="monthly-good-info section"
+		>
 			<div class="row align-center">
 				<div class="small-10 large-12 columns">
 					<h1 class="monthly-good-info__header" v-html="infoHeadline">
@@ -91,6 +94,7 @@
 
 		<!-- MG Selector Desktop -->
 		<section
+			v-if="showMonthlyGoodSelectorSection"
 			class="monthly-good-selector show-for-medium"
 			:class="{ 'sticky': isSticky}"
 			:style="{bottom: mgStickBarOffset + 'px'}"
@@ -99,7 +103,10 @@
 		</section>
 
 		<!-- MG Selector Mobile -->
-		<section class="monthly-good-selector section hide-for-large">
+		<section
+			v-if="showMonthlyGoodSelectorSection"
+			class="monthly-good-selector section hide-for-large"
+		>
 			<div class="row align-center hide-for-large">
 				<div class="small-10 columns">
 					<kv-button
@@ -363,6 +370,7 @@ export default {
 			isSticky: false,
 			initialBottomPosition: 0,
 			mgStickBarOffset: 0,
+			showMonthlyGoodSelectorSection: false,
 		};
 	},
 	computed: {
