@@ -1,10 +1,10 @@
 <template>
 	<div class="order-totals">
-		<div class="order-total" v-if="showPromoCreditTotal">
+		<div v-if="showPromoCreditTotal" class="order-total" data-test="order-total">
 			<strong>Order Total: <span class="total-value">{{ itemTotal }}</span></strong>
 		</div>
 
-		<div v-if="showKivaCredit" class="kiva-credit">
+		<div v-if="showKivaCredit" class="kiva-credit" data-test="kiva-credit">
 			<span v-if="showRemoveKivaCredit">
 				Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
 			</span>
@@ -28,7 +28,7 @@
 		</div>
 
 		<div v-if="showPromoCreditTotal">
-			<div class="order-total">
+			<div class="order-total" data-test="promo-total">
 				<template v-if="availablePromoTotal">
 					{{ availablePromoTotal }}
 				</template>
@@ -63,7 +63,7 @@
 			</kv-tooltip>
 		</div>
 
-		<div class="order-total">
+		<div class="order-total" data-test="total-due">
 			<strong>
 				<template v-if="!showPromoCreditTotal">Total: </template>
 				<template v-else>Total Due: </template>
