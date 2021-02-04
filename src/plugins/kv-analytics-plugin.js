@@ -71,7 +71,7 @@ export default Vue => {
 				window.fbq('track', 'PageView');
 			}
 		},
-		trackEvent: (category, action, label, property, value) => {
+		trackEvent: (category, action, label, property, value, callback = () => {}) => {
 			const eventLabel = (label !== undefined && label !== null) ? String(label) : undefined;
 			const eventValue = (value !== undefined && value !== null) ? parseInt(value, 10) : undefined;
 			const eventProperty = (property !== undefined && property !== null) ? String(property) : undefined;
@@ -91,11 +91,40 @@ export default Vue => {
 
 			// Attempt Snowplow event
 			if (snowplowLoaded) {
+				// In case there is a problem with the tracking event ensure that the callback gets called after 500ms
+				let callbackCalled = false;
+				const callbackTimeout = setTimeout(() => {
+					if (!callbackCalled) {
+						callbackCalled = true;
+						callback({ error: 'timeout' });
+					}
+				}, 500);
+
 				// Snowplow API
-				// eslint-disable-next-line max-len
-				// https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#trackStructEvent
-				// snowplow_name_here('trackStructEvent', 'category','action','label','property','value');
-				window.snowplow('trackStructEvent', category, action, eventLabel, eventProperty, eventValue);
+				/* eslint-disable max-len */
+				// https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-tracker/tracking-specific-events/#tracking-custom-structured-events
+				// https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-tracker/tracking-specific-events/#callback-after-track-2-15-0
+				/* eslint-eable max-len */
+				// snowplow('trackStructEvent', 'category', 'action', 'label', 'property', 'value', context, timestamp, afterTrack);
+				window.snowplow(
+					'trackStructEvent',
+					category,
+					action,
+					eventLabel,
+					eventProperty,
+					eventValue,
+					undefined,
+					undefined,
+					payload => {
+						if (!callbackCalled) {
+							callbackCalled = true;
+							clearTimeout(callbackTimeout);
+							callback({ payload });
+						}
+					}
+				);
+			} else {
+				callback({ error: 'not loaded' });
 			}
 
 			return true;
@@ -263,8 +292,8 @@ export default Vue => {
 	};
 
 	// eslint-disable-next-line no-param-reassign
-	Vue.prototype.$kvTrackEvent = (category, action, label, property, value) => {
-		kvActions.trackEvent(category, action, label, property, value);
+	Vue.prototype.$kvTrackEvent = (category, action, label, property, value, callback) => {
+		kvActions.trackEvent(category, action, label, property, value, callback);
 	};
 
 	// eslint-disable-next-line no-param-reassign
