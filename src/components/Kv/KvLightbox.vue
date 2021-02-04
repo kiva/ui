@@ -134,10 +134,12 @@ export default {
 				this.$nextTick(() => {
 					this.$refs.kvLightbox.focus();
 					this.lockScroll();
+					document.body.classList.add('lightbox-open'); // used as a styling hook when printing
 				});
 			} else {
 				document.removeEventListener('keyup', this.onKeyUp);
 				this.unlockScroll();
+				document.body.classList.remove('lightbox-open'); // used as a styling hook when printing
 			}
 		},
 		onKeyUp(e) {
@@ -333,6 +335,23 @@ export default {
 					fill: $kiva-accent-green;
 				}
 			}
+		}
+	}
+}
+</style>
+
+<style lang="scss">
+// only show the contents of the lighbox when printing
+body.lightbox-open {
+	@media print {
+		* {
+			visibility: hidden !important;
+			overflow: hidden !important;
+		}
+
+		.kv-lightbox * {
+			visibility: visible !important;
+			overflow: unset !important;
 		}
 	}
 }
