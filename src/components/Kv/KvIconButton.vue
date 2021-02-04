@@ -97,8 +97,7 @@ export default {
 		margin-right: 0.5rem;
 	}
 
-	&:hover,
-	&:focus {
+	&:hover {
 		border-color: $blue;
 		background-color: $blue;
 		box-shadow: none;
