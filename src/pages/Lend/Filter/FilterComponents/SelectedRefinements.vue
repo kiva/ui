@@ -6,7 +6,7 @@
 					<div class="small-12 large-10 columns">
 						<div :class="[{ collapsed: isCollapsed }, 'accordion-container']">
 							<div class="accordion-content" ref="accordionContent">
-								<filter-chip
+								<kv-chip
 									v-for="item in items"
 									:key="[
 										item.attribute,
@@ -55,14 +55,14 @@ import {
 	AisClearRefinements,
 } from 'vue-instantsearch';
 import algoliaCustomCategories from '@/plugins/algolia-custom-categories-mixin';
-import FilterChip from '@/pages/Lend/Filter/FilterComponents/FilterChip';
+import KvChip from '@/components/Kv/KvChip';
 import ClearAllRefinements from '@/pages/Lend/Filter/FilterComponents/ClearAllRefinements';
 
 export default {
 	components: {
 		AisCurrentRefinements,
 		AisClearRefinements,
-		FilterChip,
+		KvChip,
 		ClearAllRefinements,
 	},
 	props: {
