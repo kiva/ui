@@ -87,14 +87,17 @@ export default {
 		margin-right: 1rem;
 	}
 
+	&__icon-wrapper {
+		display: flex;
+	}
+
 	&__icon-wrapper ::v-deep div {
-		height: 1rem;
-		width: 1rem;
-		max-width: 1rem;
+		height: 1.5rem;
+		width: 1.5rem;
+		max-width: 1.5rem;
 		color: var(--kv-left-icon-color);
 		fill: var(--kv-left-icon-color);
 		stroke: var(--kv-left-icon-color);
-		stroke-width: 2px;
 	}
 
 	&__icon--right {
