@@ -36,6 +36,9 @@ if (config.auth0.enable) {
 	kvAuth0 = MockKvAuth0;
 }
 
+const { userAgent } = window.navigator;
+const device = userAgent ? Bowser.getParser(userAgent).parse().parsedResult : null;
+
 // Create the App instance
 const {
 	app,
@@ -50,7 +53,7 @@ const {
 	},
 	kvAuth0,
 	locale: getUserLocale(),
-	device: Bowser.getParser(window.navigator.userAgent).parse().parsedResult
+	device
 });
 
 // Show a tip message when there is an unhandled auth0 error
