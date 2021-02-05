@@ -1,8 +1,13 @@
 <template>
-	<div class="in-context-checkout">
+	<div
+		class="in-context-checkout"
+		id="inContextCheckout"
+		ref="inContextCheckoutRef"
+	>
 		<basket-items-list
 			class="in-context-checkout__basket-items"
 			:class="{ 'in-context-checkout__basket-items--hide-donation' : !this.showDonation}"
+			:disable-redirects="disableRedirects"
 			:loans="loans"
 			:donations="donations"
 			:kiva-cards="kivaCards"
@@ -95,6 +100,10 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		disableRedirects: {
+			type: Boolean,
+			default: false
+		},
 		donations: {
 			type: Array,
 			default: () => [],
@@ -178,7 +187,6 @@ export default {
 
 .in-context-checkout {
 	position: relative;
-	min-height: 23rem;
 
 	#updating-overlay {
 		z-index: 1000;

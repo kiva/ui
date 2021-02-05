@@ -7,33 +7,37 @@
 				:prevent-close="true"
 				:visible="showTeamLightbox"
 				@lightbox-closed="handleLightboxClosed"
-				:title="campaignTitleText"
 			>
-				<div v-if="showForm" class="text-center">
-					<p>
-						Lending Teams are self-organized groups on Kiva.org where you can
-						connect and rally around shared lending goals. By joining the
-						{{ teamName }}, you can easily see our collective impact across countries and sectors.
-					</p>
-					<p v-if="showError" class="error">
-						Oh no! Something went wrong! Please try to join this team later.
-					</p>
-					<kv-loading-overlay id="loading-overlay-teams" v-if="loading" />
-				</div>
-				<div v-if="showSuccess" class="text-center">
-					<div v-if="isMember">
-						<h2>Congratulations! You've joined the {{ teamName }} Lending Team.</h2>
+				<div class="join-team-lightbox__content">
+					<div v-if="showForm" class="text-center">
+						<h2>{{ campaignTitleText }}</h2>
 						<p>
-							When you make loans, you'll now have the option to count those loans towards this team.
+							Lending Teams are self-organized groups on Kiva.org where you can
+							connect and rally around shared lending goals. By joining the
+							{{ teamName }} Lending Team, you can easily see our collective impact
+							across countries and sectors.
 						</p>
+						<p v-if="showError" class="error">
+							Oh no! Something went wrong! Please try to join this team later.
+						</p>
+						<kv-loading-overlay id="loading-overlay-teams" v-if="loading" />
 					</div>
-					<div v-else>
-						<h2>You've requested to join the {{ teamName }} Lending Team.</h2>
-						<p>
-							Once your request is approved, you'll have the option to count loans towards this team.
-						</p>
+					<div v-if="showSuccess" class="text-center">
+						<div v-if="isMember">
+							<h2>Congratulations! You've joined the {{ teamName }} Lending Team.</h2>
+							<p>
+								When you make loans, you'll now have the option to count those loans towards this team.
+							</p>
+						</div>
+						<div v-else>
+							<h2>You've requested to join the {{ teamName }} Lending Team.</h2>
+							<p>
+								Once your request is approved, you'll have the option to count loans towards this team.
+							</p>
+						</div>
 					</div>
 				</div>
+
 				<template slot="controls">
 					<div slot="controls" class="text-center">
 						<div v-if="showForm">
@@ -101,7 +105,7 @@ export default {
 	},
 	computed: {
 		campaignTitleText() {
-			return `Join ${this.campaignNameText} to do more good together`;
+			return `Join the ${this.teamName} Lending Team to do more good together`;
 		},
 		campaignNameText() {
 			return this.campaignName ? `the ${this.campaignName}` : 'this';
@@ -191,7 +195,8 @@ export default {
 			// TODO: Close lightbox
 			this.showTeamLightbox = false;
 			this.$emit('team-process-complete', { join: 'declined', myTeams: this.myTeams });
-			// TODO: Determing if /declineInvitationToJoinTeam?team_id=${this.teamId} is necessary
+			// TODO: Determine if /declineInvitationToJoinTeam?team_id=${this.teamId} is necessary
+			// - It may be that we can use this to prevent spamming the person with repeated ligthboxes
 		},
 		handleLightboxClosed() {
 
@@ -202,6 +207,12 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+
+.join-team-lightbox {
+	&__content {
+		max-width: 27rem;
+	}
+}
 
 #loading-overlay-teams {
 	background-color: rgba($white, 0.7);

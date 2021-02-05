@@ -38,7 +38,11 @@
 							class="loan"
 						>
 							<h3 class="loan__name">
+								<template v-if="disableRedirects">
+									{{ loan.loan.name }}
+								</template>
 								<router-link
+									v-else
 									:to="`/lend/${loan.id}`"
 								>
 									{{ loan.loan.name }}
@@ -165,6 +169,7 @@
 								Donation to Kiva
 							</h3>
 							<router-link
+								v-if="receipt.totals.donationTotal > 0"
 								class="smallest"
 								to="/portfolio/donations"
 							>
@@ -289,6 +294,10 @@ export default {
 			type: Object,
 			required: true
 		},
+		disableRedirects: {
+			type: Boolean,
+			default: false
+		},
 	},
 	computed: {
 		formattedTransactionTime() {
@@ -398,6 +407,7 @@ export default {
 
 .total {
 	display: flex;
+	align-items: baseline;
 
 	&__header,
 	&__amount {

@@ -2,12 +2,24 @@
 	<div class="campaign-logo-group">
 		<kiva-logo class="campaign-logo-group__kiva" />
 		<span v-if="corporateLogoUrl" class="campaign-logo-group__separator" aria-hidden="true">+</span>
-		<img
-			v-if="corporateLogoUrl"
+		<picture
 			class="campaign-logo-group__corporate"
-			:src="corporateLogoUrl"
-			alt=""
+			v-if="corporateLogoUrl"
 		>
+			<source
+				type="image/webp"
+				:srcset="`
+					${corporateLogoUrl}?h=56&fm=webp 2x,
+					${corporateLogoUrl}?h=23&fm=webp 1x`"
+			>
+			<img
+				:srcset="`
+					${corporateLogoUrl}?h=56&fm=png 2x,
+					${corporateLogoUrl}?h=23&fm=png 1x`"
+				:src="`${corporateLogoUrl}?h=23&fm=png`"
+				alt=""
+			>
+		</picture>
 	</div>
 </template>
 

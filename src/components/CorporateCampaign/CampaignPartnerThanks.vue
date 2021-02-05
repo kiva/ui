@@ -1,11 +1,23 @@
 <template>
 	<div class="campaign-partner-thanks">
-		<img
+		<picture
 			v-if="partnerImage.url"
 			class="campaign-partner-thanks__img"
-			:src="partnerImage.url"
-			alt=""
 		>
+			<source
+				type="image/webp"
+				:srcset="`
+					${partnerImage.url}?w=1000&fm=webp 2x,
+					${partnerImage.url}?w=500&fm=webp 1x`"
+			>
+			<img
+				:srcset="`
+					${partnerImage.url}?w=1000&fm=jpg 2x,
+					${partnerImage.url}?w=500&fm=jpg 1x`"
+				:src="`${partnerImage.url}?w=500&fm=jpg`"
+				:alt="partnerImage.title"
+			>
+		</picture>
 		<h2
 			v-if="headline"
 			class="campaign-partner-thanks__header"

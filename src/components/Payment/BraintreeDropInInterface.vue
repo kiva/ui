@@ -34,7 +34,11 @@ export default {
 		* */
 		flow: {
 			type: String,
-			default: 'checkout'
+			default: 'checkout',
+			validator(value) {
+				// The value must match one of these strings
+				return ['checkout', 'vault'].indexOf(value) !== -1;
+			}
 		},
 		/**
 		 * Preselect Vaulted Payment Method
@@ -53,53 +57,75 @@ export default {
 		paymentTypes: {
 			type: Array,
 			default: () => ['paypal', 'card'],
+			validator(value) {
+				const possiblePaymentTypes = ['card', 'paypal', 'paypalCredit', 'venmo', 'applePay', 'googlePay'];
+				return value.every(elem => possiblePaymentTypes.includes(elem));
+			}
+		},
+		/**
+		 * Drop-In auth options
+		 * Must be 'token-key' or 'client-token'
+		* */
+		auth: {
+			type: String,
+			default: 'client-token',
+			validator(value) {
+				// The value must match one of these strings
+				return ['token-key', 'client-token'].indexOf(value) !== -1;
+			}
 		},
 	},
 	data() {
 		return {
 			btDropinInstance: () => {},
 			clientToken: null,
-			updatingPaymentWrapper: true,
+			updatingPaymentWrapper: false,
 		};
 	},
 	methods: {
 		setUpdatingPaymentWrapper(state) {
 			this.updatingPaymentWrapper = state;
 		},
-		initializePaymentOptions() {
-			this.setUpdatingPaymentWrapper(true);
-			this.apollo.query({
-				query: getClientToken,
-				variables: {
-					amount: numeral(this.amount).format('0.00'),
-					useCustomerId: true
-				}
-			}).then(response => {
-				if (response.errors) {
-					this.setUpdatingPaymentWrapper(false);
-					console.error(response.errors);
-					const errorCode = _get(response, 'errors[0].code');
-					const errorMessage = _get(response, 'errors[0].message');
+		getDropInAuthToken() {
+			if (this.auth === 'client-token') {
+				this.setUpdatingPaymentWrapper(true);
 
-					Sentry.withScope(scope => {
-						scope.setTag('bt_stage_dropin', 'btGetClientTokenError');
-						scope.setTag('bt_get_client_token_error', errorMessage);
-						Sentry.captureException(errorCode);
-					});
-				} else {
-					this.clientToken = _get(response, 'data.shop.getClientToken');
-					this.initializeDropIn();
-					// Replace our loader with the dropIn loader after a small delay
-					setTimeout(() => this.setUpdatingPaymentWrapper(false), 500);
-				}
-			}).catch(error => {
-				console.error(error);
-				this.$showTipMsg('An Error has occured. Please refresh the page and try again.', 'error');
-			});
+				this.apollo.query({
+					query: getClientToken,
+					variables: {
+						amount: numeral(this.amount).format('0.00'),
+						useCustomerId: true
+					}
+				}).then(response => {
+					if (response.errors) {
+						this.setUpdatingPaymentWrapper(false);
+						console.error(response.errors);
+						const errorCode = _get(response, 'errors[0].code');
+						const errorMessage = _get(response, 'errors[0].message');
+
+						Sentry.withScope(scope => {
+							scope.setTag('bt_stage_dropin', 'btGetClientTokenError');
+							scope.setTag('bt_get_client_token_error', errorMessage);
+							Sentry.captureException(errorCode);
+						});
+					} else {
+						this.clientToken = _get(response, 'data.shop.getClientToken');
+						this.initializeDropIn(this.clientToken);
+						// Replace our loader with the dropIn loader after a small delay
+						setTimeout(() => this.setUpdatingPaymentWrapper(false), 500);
+					}
+				}).catch(error => {
+					console.error(error);
+					this.$showTipMsg('An Error has occured. Please refresh the page and try again.', 'error');
+				});
+			}
+			if (this.auth === 'token-key') {
+				this.initializeDropIn(this.$appConfig.btTokenKey);
+			}
 		},
-		initializeDropIn() {
+		initializeDropIn(authToken) {
 			Dropin.create({
-				authorization: this.clientToken,
+				authorization: authToken,
 				container: '#dropin-container',
 				dataCollector: {
 					kount: true // Required if Kount fraud data collection is enabled
@@ -198,7 +224,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.initializePaymentOptions();
+		this.getDropInAuthToken();
 	}
 };
 </script>
@@ -429,6 +455,8 @@ $border-width: 1px;
 
 		// Credit Card icons in form header
 		[data-braintree-id="card-view-icons"] {
+			padding-bottom: 0;
+
 			& > div {
 				padding: 0;
 				border: $border-width solid #f3f3f3;

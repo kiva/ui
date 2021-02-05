@@ -20,23 +20,44 @@
 			<campaign-hero
 				:hero-area-content="heroAreaContent"
 				@add-to-basket="handleAddToBasket"
-				@jump-to-loans="scrollToSection('campaignLoanSection')"
+				@jump-to-loans="jumpToLoans"
 			/>
 
 			<hr>
 
-			<section class="loan-categories section" id="campaignLoanSection">
+			<section class="loan-categories section" id="campaignLoanSection" ref="campaignLoanSection">
 				<div class="row">
 					<div class="columns">
 						<h2 class="loan-categories__header text-center">
 							Support causes you care about.
 						</h2>
 
-						<campaign-loan-filters
-							:initial-filters="initialFilters"
-							:total-count="totalCount"
-							@updated-filters="handleUpdatedFilters"
-						/>
+						<div class="loan-view-controls">
+							<campaign-loan-filters
+								class="loan-view-controls__filters"
+								:initial-filters="initialFilters"
+								:total-count="totalCount"
+								@updated-filters="handleUpdatedFilters"
+								@set-loan-display="handleLoanDisplayType"
+							/>
+							<!-- <div class="loan-view-controls__display">
+								<kv-pill-toggle
+									id="pill"
+									:options="[
+										{
+											title: 'Rows',
+											key: 'rows',
+										},
+										{
+											title: 'Grid',
+											key: 'grid',
+										},
+									]"
+									selected="rows"
+									@pill-toggled="(val) => { showLoanRows = val === 'rows' }"
+								/>
+							</div> -->
+						</div>
 
 						<campaign-loan-row
 							v-show="showLoanRows"
@@ -45,7 +66,7 @@
 							:is-visitor="isVisitor"
 							:items-in-basket="itemsInBasket"
 							:is-logged-in="!isVisitor"
-							:is-visible="true"
+							:is-visible="showLoanRows"
 							:key="'one-category'"
 							:row-number="1"
 							@add-to-basket="handleAddToBasket"
@@ -60,6 +81,7 @@
 							:show-loans="showLoans"
 							:checkout-visible="checkoutVisible || showThanks"
 							:filters="filters"
+							:is-visible="!showLoanRows"
 							:is-visitor="isVisitor"
 							:items-in-basket="itemsInBasket"
 							@add-to-basket="handleAddToBasket"
@@ -70,24 +92,6 @@
 				</div>
 			</section>
 
-			<hr>
-			<section class="campaign-loan-view-selector section row align-center">
-				<div class="small-12 large-8 align-self-middle columns text-center">
-					<kv-button
-						class="text-link"
-						@click.native.prevent="showLoanRows = true"
-					>
-						Show loan rows
-					</kv-button>
-					&nbsp;&nbsp;|&nbsp;&nbsp;
-					<kv-button
-						class="text-link"
-						@click.native.prevent="showLoanRows = false"
-					>
-						Show loan grid
-					</kv-button>
-				</div>
-			</section>
 			<hr>
 
 			<campaign-partner :partner-area-content="partnerAreaContent" />
@@ -141,6 +145,7 @@
 					class="campaign-checkout"
 					:is-actively-logged-in="isActivelyLoggedIn"
 					:loans="basketLoans"
+					:disable-redirects="true"
 					:donations="donations"
 					:kiva-cards="kivaCards"
 					:teams="myTeams"
@@ -183,6 +188,7 @@ import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import cookieStore from '@/util/cookieStore';
+import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
@@ -195,8 +201,8 @@ import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
 import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
 import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
 import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
-import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
+// import KvPillToggle from '@/components/Kv/KvPillToggle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 // import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
@@ -261,6 +267,7 @@ const basketItemsQuery = gql`query basketItemsQuery(
 						id
 						promoFund {
 							id
+							displayName
 						}
 					}
 					id
@@ -408,8 +415,8 @@ export default {
 		CampaignThanks,
 		CampaignVerificationForm,
 		InContextCheckout,
-		KvButton,
 		KvLightbox,
+		// KvPillToggle,
 		LoanCardController,
 		WwwPageCorporate,
 	},
@@ -530,6 +537,7 @@ export default {
 		if (this.itemsInBasket.length) {
 			this.updateBasketState();
 		}
+
 		// clean up show-basket process
 		// TODO: Revisit this control flow
 		if (this.$route.hash === '#show-basket') {
@@ -560,8 +568,9 @@ export default {
 	},
 	computed: {
 		pageTitle() {
-			// TODO: add field on Contentful Page for this
-			return this.pageData?.page?.pageLayout?.name;
+			const layoutTitle = this.pageData?.page?.pageLayout?.pageTitle;
+			const pageTitle = this.pageData?.page?.pageTitle ?? 'Loans that change lives';
+			return layoutTitle || pageTitle;
 		},
 		heroAreaContent() {
 			return this.pageData?.page?.contentGroups?.mlCampaignHero;
@@ -573,9 +582,6 @@ export default {
 			return this.pageData?.page?.contentGroups?.mlCampaignThanks;
 		},
 		promoAmount() {
-			// TODO: get promoAmount from basket credit instead
-			// - The promoPrice is currently hard-coded to 25
-			// return this.promoData?.promoFund?.promoPrice ?? null;
 			if (this.basketTargetPromoCredit.length) {
 				const promoAmount = this.basketTargetPromoCredit[0]?.available ?? '0';
 				return promoAmount;
@@ -712,6 +718,7 @@ export default {
 				// Initialize loan query + observer there are no loans in the basket
 				this.showLoans = true;
 				this.$refs.loandisplayref.activateLoanWatchQuery();
+				this.setAuthStatus(this.kvAuth0?.user);
 				this.updateBasketState();
 			});
 		},
@@ -727,12 +734,18 @@ export default {
 			this.initializeBasketRefresh();
 		},
 		initializeBasketRefresh() {
+			// TDOO: Consider extending loading state for basket updates
 			// Query to update basket state
 			this.updateBasketState();
 			// TEMPORARY: Obstruct ability to click the "Checkout" button on the loan card to prevent redirect
 			this.$refs.loandisplayref.loadingLoans = true;
 		},
 		updateBasketState() {
+			// Ensure basket state is loading
+			if (this.$refs.inContextCheckoutRef) {
+				this.$refs.inContextCheckoutRef.updatingTotals = true;
+			}
+			// update basket state
 			const basketItems = this.apollo.query({
 				query: basketItemsQuery,
 				variables: {
@@ -779,7 +792,7 @@ export default {
 			}
 
 			if (numeral(creditAmountNeeded).value() > 0) {
-				simpleCheckoutEligible = false;
+				// simpleCheckoutEligible = false;
 				simpleCheckoutRestrictedMessage = 'Additional credit or funds are needed to complete the transaction';
 			}
 
@@ -819,6 +832,9 @@ export default {
 				}
 				// turn off loading state
 				this.$refs.loandisplayref.loadingLoans = false;
+				if (this.$refs.inContextCheckoutRef) {
+					this.$refs.inContextCheckoutRef.updatingTotals = false;
+				}
 				// exit method
 				return false;
 			}
@@ -831,9 +847,15 @@ export default {
 						// this.showCheckoutError(validationStatus);
 					}
 
+					// Update user Auth state
+					this.setAuthStatus(this.kvAuth0?.user ?? {});
+
 					// TEMPORARY: turn off loading loans
 					this.$refs.loandisplayref.loadingLoans = false;
-					this.setAuthStatus(this.kvAuth0?.user ?? {});
+					if (this.$refs.inContextCheckoutRef) {
+						this.$refs.inContextCheckoutRef.updatingTotals = false;
+					}
+
 					// signify checkout is ready
 					this.handleBasketValidation();
 					return true;
@@ -904,11 +926,14 @@ export default {
 			// TODO: Revisit approaches to reset basket cookie and refetch queries
 			window.location = window.location.origin + window.location.pathname;
 		},
+		// toggle visible loan types
+		handleLoanDisplayType(state) {
+			this.showLoanRows = state;
+		},
 
 		handleTeamJoinProcess(payload) {
 			this.teamJoinStatus = payload.join;
 			this.fetchMyTeams();
-			this.handleBasketValidation();
 		},
 		fetchMyTeams() {
 			this.apollo.query({
@@ -916,7 +941,26 @@ export default {
 				query: myTeamsQuery
 			}).then(({ data }) => {
 				this.myTeams = data.my?.lender?.teams?.values ?? [];
+				this.addTeamToLoans();
 			});
+		},
+		addTeamToLoans() {
+			if (this.basketLoans.length && this.teamId) {
+				const loans = [];
+				// TODO Collect these promises and refresh basket once complete
+				this.basketLoans.forEach((loan, index) => {
+					loans[index] = this.apollo.mutate({
+						mutation: updateLoanReservationTeam,
+						variables: {
+							teamId: this.teamId,
+							loanid: loan.id
+						}
+					});
+				});
+				Promise.all(loans).then(() => {
+					this.updateBasketState();
+				});
+			}
 		},
 
 		verificationComplete() {
@@ -931,15 +975,8 @@ export default {
 				this.myId = userState['https://www.kiva.org/kiva_id'] || null;
 			}
 		},
-
-		scrollToSection(section) {
-			this.$router.push({
-				query: {
-					...this.$route.query,
-					...this.urlParams
-				},
-				hash: section
-			});
+		jumpToLoans() {
+			this.$refs.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
 		},
 		adjustRouteHash(hash) {
 			const route = { ...this.$route };
@@ -1003,6 +1040,7 @@ export default {
 
 	&__header {
 		font-weight: bold;
+		margin-bottom: 2rem;
 
 		@include breakpoint(large) {
 			@include large-text();
@@ -1045,8 +1083,15 @@ export default {
 		::v-deep {
 			.full-details-link,
 			.close-button-wrapper,
+			.info-panel a,
 			.borrower-info-body.loan-use a {
 				display: none;
+			}
+
+			.name-location-sector .name {
+				text-decoration: none;
+				color: $body-font-color;
+				cursor: text;
 			}
 		}
 	}
@@ -1055,6 +1100,29 @@ export default {
 		margin-bottom: 1.5rem;
 	}
 }
+
+// .loan-view-controls {
+// 	display: flex;
+// 	justify-content: space-between;
+// 	align-items: baseline;
+// 	flex-direction: column;
+
+// 	@include breakpoint(medium) {
+// 		flex-direction: row;
+// 		margin: 0 1rem;
+// 	}
+// 	@include breakpoint(large) {
+// 		margin: 0 3rem;
+// 	}
+
+// 	&__filters {
+// 		margin-bottom: 1rem;
+
+// 		@include breakpoint(medium) {
+// 			margin-bottom: 0;
+// 		}
+// 	}
+// }
 
 #campaignLoanSection {
 	// ensure we scroll past the sticky header

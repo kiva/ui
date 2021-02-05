@@ -1,10 +1,10 @@
 <template>
 	<div class="order-totals">
-		<div class="order-total" v-if="showPromoCreditTotal">
+		<div v-if="showPromoCreditTotal" class="order-total" data-test="order-total">
 			<strong>Order Total: <span class="total-value">{{ itemTotal }}</span></strong>
 		</div>
 
-		<div v-if="showKivaCredit" class="kiva-credit">
+		<div v-if="showKivaCredit" class="kiva-credit" data-test="kiva-credit">
 			<span v-if="showRemoveKivaCredit">
 				Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
 			</span>
@@ -28,7 +28,7 @@
 		</div>
 
 		<div v-if="showPromoCreditTotal">
-			<div class="order-total">
+			<div class="order-total" data-test="promo-total">
 				<template v-if="availablePromoTotal">
 					{{ availablePromoTotal }}
 				</template>
@@ -63,7 +63,7 @@
 			</kv-tooltip>
 		</div>
 
-		<div class="order-total">
+		<div class="order-total" data-test="total-due">
 			<strong>
 				<template v-if="!showPromoCreditTotal">Total: </template>
 				<template v-else>Total Due: </template>
@@ -73,12 +73,11 @@
 
 		<!-- Warn about removing promo credit -->
 		<kv-lightbox
-			class="promo-opt-out-lightbox"
 			@lightbox-closed="promoOptOutLightboxClosed"
 			:visible="promoOptOutLightboxVisible"
 			title="You are leaving the promotion"
 		>
-			<p>
+			<p class="promo-opt-out-lightbox">
 				<strong>WARNING:</strong> If you proceed, your {{ appliedPromoTotal }} credit from
 				the {{ promoFundDisplayName }} promotion will be removed, and you will have to lend
 				using your own money.
@@ -322,13 +321,16 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.order-totals {
+.order-total,
+.kiva-credit {
 	text-align: left;
 
 	@include breakpoint(medium) {
 		text-align: right;
 	}
+}
 
+.order-totals {
 	.kiva-credit {
 		font-weight: $global-weight-highlight;
 		margin-bottom: 1rem;
@@ -369,7 +371,6 @@ export default {
 	}
 
 	.promo-opt-out-lightbox {
-		text-align: left;
 		max-width: 30rem;
 
 		.cancel-promo-opt-out-button {
@@ -380,6 +381,7 @@ export default {
 			text-align: right;
 		}
 
+		// TODO: figure this out.
 		::v-deep .kv-lightbox__body .row {
 			margin-right: auto !important;
 			margin-left: auto !important;

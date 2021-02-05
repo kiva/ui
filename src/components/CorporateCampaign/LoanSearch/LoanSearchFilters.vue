@@ -1,20 +1,49 @@
 <template>
 	<div class="loan-filters">
-		<div class="loan-filters__controls">
-			<kv-button
-				class="loan-filters__toggle rounded smallest secondary"
-				@click.native.prevent="showFilters()"
-			>
-				Filter loans
+		<div class="loan-filters__top-row">
+			<div class="loan-filters__controls">
+				<kv-button
+					class="loan-filters__toggle rounded smallest secondary"
+					@click.native.prevent="showFilters()"
+				>
+					Filter loans
 
-				<kv-icon
-					class="loan-filters__toggle-icon"
-					name="small-chevron"
-					:from-sprite="true"
-					aria-hidden="true"
+					<kv-icon
+						class="loan-filters__toggle-icon"
+						name="small-chevron"
+						:from-sprite="true"
+						aria-hidden="true"
+					/>
+				</kv-button>
+				<span class="loan-filters__total-count">{{ totalCount }} loans</span>
+			</div>
+
+			<div class="loan-filters__loan-display">
+				<kv-pill-toggle
+					id="pill"
+					:options="[
+						{
+							title: 'Rows',
+							key: 'rows',
+						},
+						{
+							title: 'Grid',
+							key: 'grid',
+						},
+					]"
+					selected="rows"
+					@pill-toggled="(val) => { $emit('set-loan-display', val === 'rows') }"
 				/>
-			</kv-button>
-			<span class="loan-filters__total-count">{{ totalCount }} loans</span>
+			</div>
+		</div>
+
+		<div v-if="filterChips.length" class="loan-filters__chips">
+			<kv-chip
+				v-for="(filter, index) in filterChips"
+				:key="index"
+				:title="cleanChipName(filter.name)"
+				@click-chip="handleRemoveFilter(filter)"
+			/>
 		</div>
 
 		<kv-lightbox
@@ -111,11 +140,13 @@
 import _sortBy from 'lodash/sortBy';
 import gql from 'graphql-tag';
 import KvButton from '@/components/Kv/KvButton';
+import KvChip from '@/components/Kv/KvChip';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import AttributeFilter from '@/components/CorporateCampaign/LoanSearch/AttributeFilter';
 import GenderFilter from '@/components/CorporateCampaign/LoanSearch/GenderFilter';
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import KvIcon from '@/components/Kv/KvIcon';
+import KvPillToggle from '@/components/Kv/KvPillToggle';
 import LocationFilter from '@/components/CorporateCampaign/LoanSearch/LocationFilter';
 import SectorFilter from '@/components/CorporateCampaign/LoanSearch/SectorFilter';
 import TagFilter from '@/components/CorporateCampaign/LoanSearch/TagFilter';
@@ -151,7 +182,9 @@ export default {
 	inject: ['apollo'],
 	components: {
 		KvButton,
+		KvChip,
 		KvLightbox,
+		KvPillToggle,
 		AttributeFilter,
 		GenderFilter,
 		KvAccordionItem,
@@ -235,7 +268,31 @@ export default {
 			const incomingFilter = this.initialFiltersCopy.loanTags !== this.modifiedFilters.loanTags
 				? this.modifiedFilters.loanTags : this.initialFiltersCopy.loanTags;
 			return incomingFilter || [];
-		}
+		},
+		filterChips() {
+			// gather selected Countries
+			const selectedCountriesRaw = this.allCountries.filter(country => {
+				return this.selectedCountries.includes(country.isoCode);
+			});
+
+			// gather selected Sectors
+			const selectedSectorsRaw = this.allSectors.filter(sector => {
+				return this.selectedSectors.includes(sector.id);
+			});
+
+			// gather selected Themes
+			const selectedAttributesRaw = this.allAttributes.filter(attribute => {
+				return this.selectedAttributes.includes(attribute.name);
+			});
+
+			// gather selected tags
+			const selectedTagsRaw = this.allTags.filter(tag => {
+				return this.selectedTags.includes(tag.id);
+			});
+
+			// const selectedTagsEnriched = selectedTagsRaw.map()
+			return [...selectedCountriesRaw, ...selectedSectorsRaw, ...selectedAttributesRaw, ...selectedTagsRaw];
+		},
 	},
 	watch: {
 		initialFilters: {
@@ -249,7 +306,6 @@ export default {
 			deep: true,
 		}
 	},
-
 	methods: {
 		showFilters() {
 			this.filtersVisible = true;
@@ -309,6 +365,27 @@ export default {
 
 			return filtersCopy;
 		},
+		cleanChipName(name) {
+			return name.replace(/#/g, '');
+		},
+		handleRemoveFilter(filter) {
+			console.log(filter);
+			this.showFilters();
+			// eslint-disable-next-line no-underscore-dangle
+			// const type = filter.__typename;
+			// switch (type) {
+			// 	case 'Country':
+			// 		break;
+			// 	case 'Sector':
+			// 		break;
+			// 	case 'LoanThemeFilter':
+			// 		break;
+			// 	case 'Tag':
+			// 		break;
+			// 	default:
+			// 		break;
+			// }
+		},
 	},
 };
 </script>
@@ -317,21 +394,26 @@ export default {
 @import 'settings';
 
 .loan-filters {
-	padding: 0.8rem 0;
-	margin: 0 1.75rem;
-
-	@include breakpoint(medium) {
-		margin: 0 3rem;
-	}
-
-	@include breakpoint(large) {
+	&__top-row {
 		display: flex;
-		overflow: scroll;
+		align-items: center;
+		justify-content: space-between;
+		flex-direction: column;
+		margin: 0 1rem 1rem;
+
+		@include breakpoint(medium) {
+			flex-direction: row;
+			margin: 0 3.5rem 1rem;
+		}
 	}
 
-	// &__controls {
-	// 	margin: 0.8rem 0;
-	// }
+	&__controls {
+		margin-bottom: 1rem;
+
+		@include breakpoint(medium) {
+			margin-bottom: 0;
+		}
+	}
 
 	&__toggle {
 		margin: 0 1rem 0 0;
@@ -347,10 +429,28 @@ export default {
 		font-weight: 700;
 	}
 
+	&__chips {
+		display: block;
+		margin: 1.5rem 1rem 0.5rem;
+
+		@include breakpoint(medium) {
+			margin: 1.5rem 3.5rem 0.5rem;
+		}
+
+		// Temporarily hide close 'X'
+		::v-deep .filter-close-button-container {
+			display: none;
+		}
+	}
+
 	h3 {
 		display: block;
 		padding: 0.5rem 0;
 	}
+
+	// &__loan-display {
+
+	// }
 
 	&__lightbox {
 		::v-deep .kv-lightbox__container {

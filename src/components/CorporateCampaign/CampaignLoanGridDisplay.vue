@@ -1,15 +1,9 @@
 <template>
-	<!-- v-if="!checkoutVisible"  -->
 	<section
 		id="campaign-loans"
 		class="campaign-loans row align-center"
 	>
-		<!-- <div class="columns small-12 large-8 align-self-middle" v-if="!showLoans">
-			<kv-button @click="activateLoanWatchQuery">
-				Find a loan
-			</kv-button>
-		</div> -->
-		<div class="columns small-12 large-8 align-self-middle" v-if="showLoans && loans.length > 0">
+		<div class="columns small-12 large-8 align-self-middle" v-if="isVisible && loans.length > 0">
 			<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
 				<!-- GridLoanCard or LendHomepageLoanCard -->
 				<loan-card-controller
@@ -32,6 +26,14 @@
 				{{ totalCount }} loans
 			</div>
 		</div>
+
+		<div v-if="zeroLoans" class="zero-loans-state">
+			<h3>All borrowers matching this search have been funded.</h3>
+			<p>
+				Please adjust your criteria or <span @click.prevent="resetSearchFilters">start a new search.</span>
+			</p>
+		</div>
+
 		<div v-if="loadingLoans" class="campaign-loans__loading-loans">
 			<kv-loading-overlay
 				id="loadingLoansOverlay"
@@ -106,6 +108,10 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		isVisible: {
+			type: Boolean,
+			default: false,
+		},
 		isVisitor: {
 			type: Boolean,
 			default: true,
@@ -126,6 +132,7 @@ export default {
 			totalCount: 0,
 			loanQueryVarsStack: [this.filters],
 			loanQueryFilters: () => {},
+			zeroLoans: false,
 		};
 	},
 	computed: {
@@ -155,6 +162,12 @@ export default {
 			if (next !== prev) {
 				this.loanQueryFilters = next;
 			}
+		},
+		isVisible(next) {
+			if (next) {
+				this.loadingLoans = false;
+				this.activateLoanWatchQuery();
+			}
 		}
 	},
 	created() {
@@ -178,18 +191,19 @@ export default {
 			});
 			this.$watch(() => this.loanQueryVars, vars => {
 				observer.setVariables(vars);
+				this.loadingLoans = true;
+				this.zeroLoans = false;
 			}, { deep: true });
 			// Subscribe to the observer to see each result
 			observer.subscribe({
-				next: ({ data, loading }) => {
-					if (loading) {
-						this.loadingLoans = true;
-					} else {
-						this.loans = data.lend?.loans?.values ?? [];
-						this.totalCount = data.lend?.loans?.totalCount ?? 0;
-						this.$emit('update-total-count', this.totalCount);
-						this.checkIfPageIsOutOfRange(this.loans.length, this.pageQuery.page);
-						this.loadingLoans = false;
+				next: ({ data }) => {
+					this.loans = data.lend?.loans?.values ?? [];
+					this.totalCount = data.lend?.loans?.totalCount ?? 0;
+					this.$emit('update-total-count', this.totalCount);
+					this.checkIfPageIsOutOfRange(this.loans.length, this.pageQuery.page);
+					this.loadingLoans = false;
+					if (!this.totalCount) {
+						this.zeroLoans = true;
 					}
 				}
 			});
@@ -232,6 +246,9 @@ export default {
 				});
 			}
 		},
+		resetSearchFilters() {
+			this.$emit('reset-loan-filters');
+		}
 	},
 };
 </script>

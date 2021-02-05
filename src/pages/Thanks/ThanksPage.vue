@@ -14,9 +14,9 @@
 						</h1>
 						<p class="thanks__header-subhead">
 							Thanks for supporting {{ borrowerSupport }}.<br>
-							<span class="hide-for-print">
-								We've emailed your order confirmation to {{ lender.email }}
-							</span>
+						</p>
+						<p class="hide-for-print">
+							We've emailed your order confirmation to <strong>{{ lender.email }}</strong>
 						</p>
 					</div>
 				</template>
@@ -271,8 +271,12 @@ export default {
 
 .thanks {
 	&__header {
-		text-align: center;
-		margin-bottom: 3rem;
+		text-align: left;
+		margin-bottom: 2.5rem;
+
+		@include breakpoint(medium) {
+			text-align: center;
+		}
 	}
 
 	&__header-h1 {
