@@ -21,16 +21,6 @@
 			/>
 		</div>
 
-		<div v-if="showNonTrendingLoansRow">
-			<non-trending-loans
-				ref="nonTrendingLoans"
-				:show-category-description="showCategoryDescription"
-				:is-logged-in="isLoggedIn"
-				:show-expandable-loan-cards="showExpandableLoanCards"
-				@scrolling-row="handleScrollingRow"
-			/>
-		</div>
-
 		<div>
 			<div
 				class="loan-category-row"
@@ -112,6 +102,7 @@ import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.g
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import recommendedLoansQuery from '@/graphql/query/lendByCategory/recommendedLoans.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
+import mlOrderedLoanChannels from '@/graphql/query/lendByCategory/mlOrderedLoanChannels.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import CategoryRowHover from '@/components/LoansByCategory/CategoryRowHover';
@@ -121,7 +112,6 @@ import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import ExpandableLoanCardExpanded from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardExpanded';
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
-import NonTrendingLoans from '@/components/LoansByCategory/NonTrendingLoans';
 
 // Row Limiter
 // > This controls how may rows are loaded on the server
@@ -138,7 +128,6 @@ export default {
 		AddToBasketInterstitial,
 		ExpandableLoanCardExpanded,
 		FavoriteCountryLoans,
-		NonTrendingLoans,
 	},
 	inject: ['apollo', 'kvAuth0'],
 	metaInfo: {
@@ -166,10 +155,9 @@ export default {
 			leftArrowPosition: undefined,
 			hasFavoriteCountry: false,
 			favoriteCountryExpVersion: 'control',
-			nonTrendingExpVersion: 'control',
 			showHoverLoanCards: false,
 			recommendedLoans: [],
-			categoryRowHillclimbExpVersion: null,
+			mlServiceBanditExpVersion: null,
 		};
 	},
 	computed: {
@@ -190,10 +178,10 @@ export default {
 		customCategories() {
 			const categories = [];
 			// Add recommended loans category row
-			const recLoanChannel = _find(this.categorySetting, { __typename: 'RecLoanChannel' });
-			if (recLoanChannel) {
+			const recLoanChannel95 = _find(this.categorySetting, { __typename: 'RecLoanChannel', id: 95 });
+			if (recLoanChannel95) {
 				const channel = {
-					id: recLoanChannel.id,
+					id: recLoanChannel95.id,
 					loans: this.recommendedLoans,
 					url: '',
 				};
@@ -206,6 +194,26 @@ export default {
 				}
 				categories.push(channel);
 			}
+
+			// Add recommended loans category row
+			const recLoanChannel103 = _find(this.categorySetting, { __typename: 'RecLoanChannel', id: 103 });
+			if (recLoanChannel103) {
+				const channel = {
+					id: recLoanChannel103.id,
+					loans: this.recommendedLoans,
+					url: '',
+				};
+				console.log('channel', channel);
+				console.log('recLoanChannel103', recLoanChannel103);
+
+				channel.name = 'Spotlighted by Kiva';
+				// eslint-disable-next-line max-len
+				channel.description = 'We’re spotlighting these loans because they haven’t gotten the attention they need — and we need your help to fund them.';
+				console.log('channel BEFORE', categories);
+				categories.push(channel);
+				console.log('channel AFTER', categories);
+			}
+
 			return categories;
 		},
 		customCategoryIds() {
@@ -222,12 +230,6 @@ export default {
 				return true;
 			}
 			return false;
-		},
-		showNonTrendingLoansRow() {
-			if (this.nonTrendingExpVersion === 'shown') {
-				return true;
-			}
-			return true;
 		},
 		categoryRowType() {
 			return this.showHoverLoanCards ? CategoryRowHover : CategoryRow;
@@ -270,7 +272,6 @@ export default {
 					});
 				}
 			}
-
 			_each(categories, (category, catIndex) => {
 				_each(category.loans.values, (loan, loanIndex) => {
 					loanIds.push({
@@ -285,14 +286,24 @@ export default {
 			return pageViewTrackData;
 		},
 		setRows(data) {
-			if (this.categoryRowHillclimbExpVersion === 'variant-a') {
+			if (this.mlServiceBanditExpVersion !== null) {
+				let baseData = {};
+				try {
+					baseData = this.apollo.readQuery({
+						query: mlOrderedLoanChannels,
+					});
+				} catch (e) {
+					logReadQueryError(e, 'LendByCategory mlOrderedLoanChannels');
+				}
+
+				console.log('setRows DATA', data);
 				// Get the array of channel objects from the ml multi-armed bandit
-				this.categorySetting = _get(data, 'ml.orderedLoanChannels') || [];
-				this.categorySetId = 'variant-a';
+				this.categorySetting = _get(baseData, 'ml.orderedLoanChannels') || [];
+				this.categorySetId = this.mlServiceBanditExpVersion;
 			} else {
 				// Get the array of channel objects from settings
 				this.categorySetting = readJSONSetting(data, 'general.rows.value') || [];
-				this.categorySetId = 'control';
+				this.categorySetId = 'default';
 			}
 		},
 		fetchRemainingLoanChannels() {
@@ -392,27 +403,6 @@ export default {
 				);
 			}
 		},
-		initializeNonTrendingLoansRowExp() {
-			// experiment: GROW-330 Machine Learning Non-Trending loans Country Row
-			// get assignment
-			const nonTrendingLoansRowEXP = this.apollo.readFragment({
-				id: 'Experiment:KivaLoves',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.nonTrendingLoansExpVersion = nonTrendingLoansRowEXP.version;
-
-			// Only track and activate if these conditions exist
-			if (this.nonTrendingLoansExpVersion
-				&& this.nonTrendingLoansExpVersion !== 'unassigned'
-			) {
-				// Fire Event for Exp GROW-330
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-ML-Service-Bandit-LendByCategory',
-					this.nonTrendingLoansExpVersion === 'shown' ? 'b' : 'a'
-				);
-			}
-		},
 		initializeHoverLoanCard() {
 			// CASH-521: Hover loan card experiment
 			const hoverLoanCardExperiment = this.apollo.readFragment({
@@ -438,7 +428,7 @@ export default {
 			}
 		},
 		initializeRecommendedLoansRow() {
-			const recLoanChannel = _find(this.categorySetting, { __typename: 'RecLoanChannel' });
+			const recLoanChannel = _find(this.categorySetting, { __typename: 'RecLoanChannel', id: 95 });
 			if (recLoanChannel) {
 				// Load recommended loan data
 				try {
@@ -498,25 +488,26 @@ export default {
 			}
 			return Promise.resolve();
 		},
-		initializeCategoryRowHillclimb() {
-			// experiment: CASH-970 Category Row Sort by MultiArmed Bandit algorithm experiment
+		initializeMLServiceBanditRowExp() {
+			console.log('initializeMLServiceBanditRowExp method TRIGGERED');
+			// experiment: GROW-330 by MultiArmed Bandit algorithm experiment
 			// get assignment
-			const categoryRowHillclimb = 0;
-			const categoryRowHillclimbEXP = this.apollo.readFragment({
-				id: 'Experiment:category_row_hillclimb',
+			const mlServiceBandit = 0;
+			const mlServiceBanditEXP = this.apollo.readFragment({
+				id: 'Experiment:EXP-ML-Service-Bandit-LendByCategory',
 				fragment: experimentVersionFragment,
 			}) || {};
-			this.categoryRowHillclimbExpVersion = categoryRowHillclimbEXP.version;
+			this.mlServiceBanditExpVersion = mlServiceBanditEXP.version;
 			// Logged in user and non-users are included in this experiment,
 			// logged-in users are automatically tracked with their id
 			// Fire Event for Exp CASH-970
-			if (this.categoryRowHillclimbExpVersion && this.categoryRowHillclimbExpVersion !== 'unassigned') {
+			if (this.mlServiceBanditExpVersion && this.mlServiceBanditExpVersion !== 'unassigned') {
 				this.$kvTrackEvent(
 					'Lending',
 					'EXP-CASH-970-Mar2020',
-					this.categoryRowHillclimbExpVersion === 'variant-a' ? 'b' : 'a',
-					this.categoryRowHillclimbExpVersion === 'variant-a' ? categoryRowHillclimb : null,
-					this.categoryRowHillclimbExpVersion === 'variant-a' ? categoryRowHillclimb : null
+					this.mlServiceBanditExpVersion === 'variant-a' ? 'b' : 'a',
+					this.mlServiceBanditExpVersion === 'variant-a' ? mlServiceBandit : null,
+					this.mlServiceBanditExpVersion === 'variant-a' ? mlServiceBandit : null
 				);
 			}
 		},
@@ -531,12 +522,9 @@ export default {
 			}).then(({ data }) => {
 				// Get the array of channel objects from settings
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
-				// Get the array of channel objects from the ml multi-armed bandit
-				expRowData = _get(data, 'ml.orderedLoanChannels') || [];
-
 				return Promise.all([
-					// experiment: CASH-970 Category Row Sort by MultiArmed Bandit algorithm experiment
-					client.query({ query: experimentQuery, variables: { id: 'category_row_hillclimb' } }),
+					// experiment: GROW-330 Machine Learning Category row
+					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
 					// experiment: category description
 					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
 					// experiment: add to basket interstitial
@@ -545,17 +533,21 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'favorite_country' } }),
 					// experiment: CASH-521 Hover Loan Card Experiment
 					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
-					// experiment: GROW-330 Machine Learning Category row
-					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit' } }),
 				]);
 			}).then(expResults => {
-				// Set category ids and custom category ids based on whether the user is in the
-				// control group or the variant group for CASH-970 Category row hill climb experiment
-				const hillClimbExpVersion = _get(expResults, '[0].data.experiment.version');
-				if (hillClimbExpVersion !== 'control' && hillClimbExpVersion !== null) {
-					rowData = expRowData;
-				}
+				console.log('expResults in preFetch', expResults);
+				return client.query({
+					query: mlOrderedLoanChannels
+				}).then(({ data }) => {
+				// Get the array of channel objects from the ml multi-armed bandit
+					expRowData = _get(data, 'ml.orderedLoanChannels') || [];
 
+					const mlServiceBanditExpVersion = _get(expResults, '[0].data.experiment.version');
+					if (mlServiceBanditExpVersion !== null) {
+						rowData = expRowData;
+					}
+				});
+			}).then(() => {
 				// Get all channel ids for the row data
 				const ids = _map(rowData, 'id');
 				// Filter other channel types as custom categories
@@ -613,8 +605,8 @@ export default {
 		// Initialize CASH-521: Hover loan card experiment
 		this.initializeHoverLoanCard();
 
-		// Initialize CASH-970: Category row hill climb experiment assignment and tracking
-		this.initializeCategoryRowHillclimb();
+		// Initialize GROW-330: Machine Learning served rows
+		this.initializeMLServiceBanditRowExp();
 
 		// Copy basic data from query into instance variables
 		this.setRows(baseData);
@@ -646,9 +638,6 @@ export default {
 
 		// Initialize CASH-794 Favorite Country Row
 		this.initializeFavoriteCountryRowExp();
-
-		// Initialize GROW-330 Favorite Country Row
-		this.initializeNonTrendingLoansRowExp();
 
 		// get assignment for add to basket interstitial
 		const addToBasketPopupEXP = this.apollo.readFragment({
