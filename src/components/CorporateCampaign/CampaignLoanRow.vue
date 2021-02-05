@@ -1,14 +1,12 @@
 <template>
 	<div class="component-wrapper" ref="componentWrapper">
-		<!-- <div class="loan-search-title">
-			View Loans that are "Trending Now"
-		</div> -->
-		<kv-loading-spinner v-if="isLoading" />
+		<kv-loading-spinner v-if="loadingLoans" />
 		<div
 			v-else
 			class="cards-and-arrows-wrapper"
 		>
 			<button
+				v-show="!zeroLoans"
 				class="arrow left-arrow"
 				:disabled="scrollPos === 0"
 				@click="scrollRowLeft"
@@ -26,7 +24,7 @@
 				/>
 			</button>
 
-			<div class="cards-display-window">
+			<div v-show="!zeroLoans" class="cards-display-window">
 				<div
 					class="cards-holder"
 					:style="{ marginLeft: scrollPos + 'px' }"
@@ -76,7 +74,9 @@
 					</div>
 				</div>
 			</div>
+
 			<button
+				v-show="!zeroLoans"
 				class="arrow right-arrow"
 				:disabled="scrollPos <= minLeftMargin"
 				@click="scrollRowRight"
@@ -93,6 +93,13 @@
 					title="Next Loans"
 				/>
 			</button>
+
+			<div v-if="zeroLoans" class="zero-loans-state">
+				<h3>All borrowers matching this search have been funded.</h3>
+				<p>
+					Please adjust your criteria or <span @click.prevent="resetSearchFilters">start a new search.</span>
+				</p>
+			</div>
 		</div>
 	</div>
 </template>
@@ -157,12 +164,10 @@ export default {
 			loanQueryFilters: () => {},
 			offset: 0,
 			totalCount: 0,
+			zeroLoans: false,
 		};
 	},
 	computed: {
-		isLoading() {
-			return this.loans.length === 0 && this.isVisible;
-		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
 		},
@@ -205,6 +210,11 @@ export default {
 			this.loanAdded = false;
 			this.loanQueryFilters = next;
 			// }
+		},
+		isVisible(next) {
+			if (next) {
+				this.loadingLoans = false;
+			}
 		}
 	},
 	mounted() {
@@ -236,28 +246,29 @@ export default {
 			});
 			this.$watch(() => this.loanQueryVars, vars => {
 				observer.setVariables(vars);
+				this.loadingLoans = true;
+				this.zeroLoans = false;
 			}, { deep: true });
 			// Subscribe to the observer to see each result
 			observer.subscribe({
-				next: ({ data, loading }) => {
-					if (loading) {
-						this.loadingLoans = true;
-					} else {
-						const newLoans = data.lend?.loans?.values ?? [];
-						// Handle appending new loans to carousel
-						const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
-						const existingLoanIds = this.loans.length ? this.loans.map(loan => loan.id) : [];
-						if (newLoanIds.toString() !== existingLoanIds.toString()) {
-							this.loans = this.loans.concat(newLoans);
-						}
+				next: ({ data }) => {
+					const newLoans = data.lend?.loans?.values ?? [];
+					// Handle appending new loans to carousel
+					const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
+					const existingLoanIds = this.loans.length ? this.loans.map(loan => loan.id) : [];
+					if (newLoanIds.toString() !== existingLoanIds.toString()) {
+						this.loans = this.loans.concat(newLoans);
+					}
 
-						this.totalCount = data.lend?.loans?.totalCount ?? 0;
-						this.$emit('update-total-count', this.totalCount);
-						// Reset carousel position after applying new loan filters
-						if (this.offset === 0 && !this.loanAdded) {
-							this.scrollPos = 0;
-						}
-						this.loadingLoans = false;
+					this.totalCount = data.lend?.loans?.totalCount ?? 0;
+					this.$emit('update-total-count', this.totalCount);
+					// Reset carousel position after applying new loan filters
+					if (this.offset === 0 && !this.loanAdded) {
+						this.scrollPos = 0;
+					}
+					this.loadingLoans = false;
+					if (this.totalCount === 0) {
+						this.zeroLoans = true;
 					}
 				}
 			});
@@ -286,6 +297,9 @@ export default {
 				this.scrollPos = newLeftMargin;
 			}
 		},
+		resetSearchFilters() {
+			this.$emit('reset-loan-filters');
+		}
 	},
 };
 </script>
@@ -428,5 +442,13 @@ $card-half-space: rem-calc(14/2);
 
 .loading-spinner {
 	margin: 9rem auto; // Top margin prevents content shifting when loading
+}
+
+.zero-loans-state {
+	padding: 3rem 1rem;
+
+	@include breakpoint(medium) {
+		padding: 3rem;
+	}
 }
 </style>
