@@ -18,6 +18,7 @@ export const Default = () => ({
 		<kv-icon-button class="expanded">
 			<template v-slot:icon-left>
 				<kv-icon
+					class="share-icon"
 					name="share"
 				/>
 			</template>
@@ -32,6 +33,7 @@ export const Default = () => ({
 		<kv-icon-button class="active expanded">
 			<template v-slot:icon-left>
 				<kv-icon
+					class="share-icon"
 					name="share"
 				/>
 			</template>
@@ -43,6 +45,69 @@ export const Default = () => ({
 				/>
 			</template>
 		</kv-icon-button>
+		<kv-icon-button class="expanded">
+			<template v-slot:icon-left>
+				<kv-icon
+					name="alert-circle"
+				/>
+			</template>
+			Button
+			<template v-slot:icon-right>
+				<kv-icon
+					name="fat-chevron"
+					:from-sprite="true"
+				/>
+			</template>
+		</kv-icon-button>
+		<kv-icon-button class="active expanded">
+			<template v-slot:icon-left>
+				<kv-icon
+					name="alert-circle"
+				/>
+			</template>
+			Button
+			<template v-slot:icon-right>
+				<kv-icon
+					name="fat-chevron"
+					:from-sprite="true"
+				/>
+			</template>
+		</kv-icon-button>
+		<kv-icon-button class="expanded">
+			<template v-slot:icon-left>
+				<kv-icon
+					name="receipt-outline"
+				/>
+			</template>
+			Button
+			<template v-slot:icon-right>
+				<kv-icon
+					name="fat-chevron"
+					:from-sprite="true"
+				/>
+			</template>
+		</kv-icon-button>
+		<kv-icon-button class="active expanded">
+			<template v-slot:icon-left>
+				<kv-icon
+					name="receipt-outline"
+				/>
+			</template>
+			Button
+			<template v-slot:icon-right>
+				<kv-icon
+					name="fat-chevron"
+					:from-sprite="true"
+				/>
+			</template>
+		</kv-icon-button>
+		<component is="style">
+		// Icon sizes can be overwritten
+		.share-icon {
+			height: 1.15rem;
+			width: 1.15rem;
+		}
+		</component>
 	</div>
 	`
 });

@@ -87,21 +87,28 @@ export default {
 		margin-right: 1rem;
 	}
 
-	&__icon-wrapper {
-		display: flex;
-	}
-
 	&__icon-wrapper ::v-deep div {
-		height: 1.5rem;
-		width: 1.5rem;
-		max-width: 1.5rem;
-		color: var(--kv-left-icon-color);
-		fill: var(--kv-left-icon-color);
-		stroke: var(--kv-left-icon-color);
+		display: flex;
+		align-items: center;
 	}
 
 	&__icon--right {
 		margin-right: 0.5rem;
+	}
+
+	&__icon--left ::v-deep svg [stroke] {
+		stroke: var(--kv-left-icon-color);
+	}
+
+	// Default icon size.
+	::v-deep .icon {
+		width: 1.25rem;
+		height: 1.25rem;
+	}
+
+	span {
+		text-align: left;
+		flex-grow: 2;
 	}
 
 	&:hover {
@@ -113,21 +120,19 @@ export default {
 		.icon-btn__icon--right ::v-deep svg {
 			color: var(--kv-color-hover);
 			fill: var(--kv-color-hover);
+		}
+
+		.icon-btn__icon--right ::v-deep svg [stroke] {
 			stroke: var(--kv-color-hover);
 		}
 
-		.icon-btn__icon--left ::v-deep svg {
+		.icon-btn__icon--left ::v-deep svg [stroke] {
 			stroke: var(--kv-left-icon-hover);
 		}
 
 		.icon-btn__icon-background {
 			background-color: var(--kv-color-hover);
 		}
-	}
-
-	span {
-		text-align: left;
-		flex-grow: 2;
 	}
 
 	// Active class
@@ -139,9 +144,11 @@ export default {
 			background-color: rgba(var(--kv-left-icon-color-active), 0.3);
 		}
 
-		.icon-btn__icon--left ::v-deep div {
+		.icon-btn__icon--left ::v-deep svg {
 			color: rgba(var(--kv-left-icon-color-active), 1);
-			fill: rgba(var(--kv-left-icon-color-active), 1);
+		}
+
+		.icon-btn__icon--left ::v-deep svg [stroke] {
 			stroke: rgba(var(--kv-left-icon-color-active), 1);
 		}
 	}

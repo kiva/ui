@@ -649,9 +649,5 @@ $loan-triangle-size: rem-calc(12);
 	height: 1rem;
 	width: 1rem;
 	margin-right: 1rem;
-	color: $kiva-text-dark;
-	fill: $kiva-text-dark;
-	stroke: $kiva-text-dark;
-	stroke-width: 2px;
 }
 </style>
