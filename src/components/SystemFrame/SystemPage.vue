@@ -68,8 +68,13 @@ export default {
 		background-color: $white;
 		border: 1px solid $kiva-stroke-gray;
 		border-radius: rem-calc(3);
-		padding: 1.5rem;
-		margin: 4.5rem 1.5rem 3rem 1.5rem;
+		padding: 1rem;
+		margin: 4rem 1rem 3rem;
+
+		@include breakpoint(medium) {
+			padding: 1.5rem;
+			margin: 4.5rem 1.5rem 3rem;
+		}
 
 		@include breakpoint(large) {
 			margin-top: 6.5rem;
