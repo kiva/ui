@@ -1,10 +1,8 @@
-// import StoryRouter from 'storybook-vue-router';
 import SystemPage from '@/components/SystemFrame/SystemPage';
 
 export default {
 	title: 'SystemFrame/SystemPage',
 	component: SystemPage,
-	// decorators: [StoryRouter()],
 };
 
 export const Default = () => ({
