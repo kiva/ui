@@ -473,17 +473,21 @@ export default {
 		}
 	},
 	beforeDestroy() {
-		window.removeEventListener('scroll', this.throttledScroll);
-		window.removeEventListener('resize', _throttle(() => {
-			this.initStickyBehavior();
-		}, 200));
+		if (this.showMonthlyGoodSelectorSection) {
+			window.removeEventListener('scroll', this.throttledScroll);
+			window.removeEventListener('resize', _throttle(() => {
+				this.initStickyBehavior();
+			}, 200));
+		}
 	},
 	mounted() {
-		window.addEventListener('scroll', this.throttledScroll);
-		window.addEventListener('resize', _throttle(() => {
+		if (this.showMonthlyGoodSelectorSection) {
+			window.addEventListener('scroll', this.throttledScroll);
+			window.addEventListener('resize', _throttle(() => {
+				this.initStickyBehavior();
+			}, 200));
 			this.initStickyBehavior();
-		}, 200));
-		this.initStickyBehavior();
+		}
 	},
 };
 </script>
