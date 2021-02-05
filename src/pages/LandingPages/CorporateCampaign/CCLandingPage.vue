@@ -38,9 +38,9 @@
 								:initial-filters="initialFilters"
 								:total-count="totalCount"
 								@updated-filters="handleUpdatedFilters"
+								@set-loan-display="handleLoanDisplayType"
 							/>
-
-							<div class="loan-view-controls__display">
+							<!-- <div class="loan-view-controls__display">
 								<kv-pill-toggle
 									id="pill"
 									:options="[
@@ -56,7 +56,7 @@
 									selected="rows"
 									@pill-toggled="(val) => { showLoanRows = val === 'rows' }"
 								/>
-							</div>
+							</div> -->
 						</div>
 
 						<campaign-loan-row
@@ -66,7 +66,7 @@
 							:is-visitor="isVisitor"
 							:items-in-basket="itemsInBasket"
 							:is-logged-in="!isVisitor"
-							:is-visible="true"
+							:is-visible="showLoanRows"
 							:key="'one-category'"
 							:row-number="1"
 							@add-to-basket="handleAddToBasket"
@@ -81,6 +81,7 @@
 							:show-loans="showLoans"
 							:checkout-visible="checkoutVisible || showThanks"
 							:filters="filters"
+							:is-visible="!showLoanRows"
 							:is-visitor="isVisitor"
 							:items-in-basket="itemsInBasket"
 							@add-to-basket="handleAddToBasket"
@@ -201,7 +202,7 @@ import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVer
 import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
 import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import KvPillToggle from '@/components/Kv/KvPillToggle';
+// import KvPillToggle from '@/components/Kv/KvPillToggle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 // import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
@@ -415,7 +416,7 @@ export default {
 		CampaignVerificationForm,
 		InContextCheckout,
 		KvLightbox,
-		KvPillToggle,
+		// KvPillToggle,
 		LoanCardController,
 		WwwPageCorporate,
 	},
@@ -925,6 +926,10 @@ export default {
 			// TODO: Revisit approaches to reset basket cookie and refetch queries
 			window.location = window.location.origin + window.location.pathname;
 		},
+		// toggle visible loan types
+		handleLoanDisplayType(state) {
+			this.showLoanRows = state;
+		},
 
 		handleTeamJoinProcess(payload) {
 			this.teamJoinStatus = payload.join;
@@ -1096,17 +1101,28 @@ export default {
 	}
 }
 
-.loan-view-controls {
-	@include breakpoint(large) {
-		align-items: baseline;
-		display: flex;
-		justify-content: space-between;
-		margin: 0 3rem;
-	}
+// .loan-view-controls {
+// 	display: flex;
+// 	justify-content: space-between;
+// 	align-items: baseline;
+// 	flex-direction: column;
 
-	// &__filters {
-	// }
-}
+// 	@include breakpoint(medium) {
+// 		flex-direction: row;
+// 		margin: 0 1rem;
+// 	}
+// 	@include breakpoint(large) {
+// 		margin: 0 3rem;
+// 	}
+
+// 	&__filters {
+// 		margin-bottom: 1rem;
+
+// 		@include breakpoint(medium) {
+// 			margin-bottom: 0;
+// 		}
+// 	}
+// }
 
 #campaignLoanSection {
 	// ensure we scroll past the sticky header
