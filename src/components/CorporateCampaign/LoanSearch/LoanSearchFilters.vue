@@ -17,6 +17,14 @@
 			<span class="loan-filters__total-count">{{ totalCount }} loans</span>
 		</div>
 
+		<div class="loan-filters__chips">
+			<kv-chip
+				v-for="(todo, index) in todos"
+				:key="index"
+				title="chip title"
+			/>
+		</div>
+
 		<kv-lightbox
 			class="loan-filters__lightbox"
 			id="filterControlsLightbox"
@@ -111,6 +119,7 @@
 import _sortBy from 'lodash/sortBy';
 import gql from 'graphql-tag';
 import KvButton from '@/components/Kv/KvButton';
+import KvChip from '@/components/Kv/KvChip';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import AttributeFilter from '@/components/CorporateCampaign/LoanSearch/AttributeFilter';
 import GenderFilter from '@/components/CorporateCampaign/LoanSearch/GenderFilter';
@@ -151,6 +160,7 @@ export default {
 	inject: ['apollo'],
 	components: {
 		KvButton,
+		KvChip,
 		KvLightbox,
 		AttributeFilter,
 		GenderFilter,
@@ -317,21 +327,10 @@ export default {
 @import 'settings';
 
 .loan-filters {
-	padding: 0.8rem 0;
-	margin: 0 1.75rem;
-
-	@include breakpoint(medium) {
-		margin: 0 3rem;
-	}
-
-	@include breakpoint(large) {
+	&__controls {
 		display: flex;
-		overflow: scroll;
+		align-items: baseline;
 	}
-
-	// &__controls {
-	// 	margin: 0.8rem 0;
-	// }
 
 	&__toggle {
 		margin: 0 1rem 0 0;
@@ -345,6 +344,10 @@ export default {
 
 	&__total-count {
 		font-weight: 700;
+	}
+
+	&__chips {
+		margin: 1rem 0;
 	}
 
 	h3 {

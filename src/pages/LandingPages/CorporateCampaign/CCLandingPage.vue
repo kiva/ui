@@ -25,18 +25,39 @@
 
 			<hr>
 
-			<section class="loan-categories section" id="campaignLoanSection">
+			<section class="loan-categories section" id="campaignLoanSection" ref="campaignLoanSection">
 				<div class="row">
 					<div class="columns">
 						<h2 class="loan-categories__header text-center">
 							Support causes you care about.
 						</h2>
 
-						<campaign-loan-filters
-							:initial-filters="initialFilters"
-							:total-count="totalCount"
-							@updated-filters="handleUpdatedFilters"
-						/>
+						<div class="loan-view-controls">
+							<campaign-loan-filters
+								class="loan-view-controls__filters"
+								:initial-filters="initialFilters"
+								:total-count="totalCount"
+								@updated-filters="handleUpdatedFilters"
+							/>
+
+							<div class="loan-view-controls__display">
+								<kv-pill-toggle
+									id="pill"
+									:options="[
+										{
+											title: 'Rows',
+											key: 'rows',
+										},
+										{
+											title: 'Grid',
+											key: 'grid',
+										},
+									]"
+									selected="rows"
+									@pill-toggled="(val) => { showLoanRows = val === 'rows' }"
+								/>
+							</div>
+						</div>
 
 						<campaign-loan-row
 							v-show="showLoanRows"
@@ -70,24 +91,6 @@
 				</div>
 			</section>
 
-			<hr>
-			<section class="campaign-loan-view-selector section row align-center">
-				<div class="small-12 large-8 align-self-middle columns text-center">
-					<kv-button
-						class="text-link"
-						@click.native.prevent="showLoanRows = true"
-					>
-						Show loan rows
-					</kv-button>
-					&nbsp;&nbsp;|&nbsp;&nbsp;
-					<kv-button
-						class="text-link"
-						@click.native.prevent="showLoanRows = false"
-					>
-						Show loan grid
-					</kv-button>
-				</div>
-			</section>
 			<hr>
 
 			<campaign-partner :partner-area-content="partnerAreaContent" />
@@ -197,8 +200,8 @@ import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
 import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
 import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
 import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
-import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import KvPillToggle from '@/components/Kv/KvPillToggle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 // import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
@@ -411,8 +414,8 @@ export default {
 		CampaignThanks,
 		CampaignVerificationForm,
 		InContextCheckout,
-		KvButton,
 		KvLightbox,
+		KvPillToggle,
 		LoanCardController,
 		WwwPageCorporate,
 	},
@@ -1032,6 +1035,7 @@ export default {
 
 	&__header {
 		font-weight: bold;
+		margin-bottom: 2rem;
 
 		@include breakpoint(large) {
 			@include large-text();
@@ -1090,6 +1094,18 @@ export default {
 	.overview-column {
 		margin-bottom: 1.5rem;
 	}
+}
+
+.loan-view-controls {
+	@include breakpoint(large) {
+		align-items: baseline;
+		display: flex;
+		justify-content: space-between;
+		margin: 0 3rem;
+	}
+
+	// &__filters {
+	// }
 }
 
 #campaignLoanSection {
