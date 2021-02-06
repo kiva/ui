@@ -450,7 +450,7 @@ export default {
 				return setting.__typename === 'RecLoanChannel';
 			});
 			console.log('category setting', this.categorySetting);
-			console.log('recLoanChannel', recLoanChannels);
+			console.log('recLoanChannels', recLoanChannels);
 
 			if (recLoanChannels.length) {
 				// Load recommended loan data
@@ -504,7 +504,7 @@ export default {
 
 			if (recChannels && _get(this, 'recommendedLoans.values.length') < 6) {
 				const variables = {
-					ids: [recLoanChannel.id, serviceBanditLoanChannel.id],
+					// ids: [recLoanChannel.id, serviceBanditLoanChannel.id],
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
 					offset: 20
