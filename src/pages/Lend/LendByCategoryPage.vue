@@ -167,7 +167,6 @@ export default {
 		categories() {
 			// merge realCategories & customCategories
 			const categories = _uniqBy(this.realCategories.concat(this.customCategories, this.clientCategories), 'id');
-
 			return categories
 				// fiter our any empty categories and categories with 0 loans
 				.filter(channel => _get(channel, 'loans.values.length') > 0)
@@ -177,42 +176,61 @@ export default {
 		// Define any categories that need extra handling
 		customCategories() {
 			const categories = [];
-			// Add recommended loans category row
-			const recLoanChannel95 = _find(this.categorySetting, { __typename: 'RecLoanChannel', id: 95 });
-			if (recLoanChannel95) {
-				const channel = {
-					id: recLoanChannel95.id,
-					loans: this.recommendedLoans,
-					url: '',
-				};
-				if (this.userId) {
-					channel.name = `Recommended for ${this.firstName}`;
-					channel.description = 'Loans we think you\'ll love based on your lending history.';
-				} else {
-					channel.name = 'Recommended by others';
-					channel.description = 'Log in for personalized recommendations.';
-				}
-				categories.push(channel);
+
+			if (this.recommendedLoans.length) {
+				this.recommendedLoans.forEach(channel => {
+					const originalChannel = this.categorySetting.filter(original => {
+						return original.id === channel.id;
+					});
+					console.log('OG Channel', originalChannel);
+					const recChannel = {
+						id: channel.id,
+						name: channel.name,
+						description: channel.description,
+						loans: {
+							__typename: 'LoanBasicCollection',
+							values: channel.values,
+						},
+						url: '',
+					};
+					//	TODO check channelID if it's 95 update orginal name and descripton with
+					if (recChannel.id === 95) {
+						if (this.userId) {
+							recChannel.name = `Recommended for ${this.firstName}`;
+							recChannel.description = 'Loans we think you\'ll love based on your lending history.';
+						} else {
+							recChannel.name = 'Recommended by others';
+							recChannel.description = 'Log in for personalized recommendations.';
+						}
+					}
+
+					// CURRENTLY
+					// the recChannel.id == 95 check is working
+					// recChannel.id === 103 name and description comes back undefined
+					// 103 renders on page, 95 isn't shown
+					categories.push(recChannel);
+				});
 			}
 
 			// Add recommended loans category row
-			const recLoanChannel103 = _find(this.categorySetting, { __typename: 'RecLoanChannel', id: 103 });
-			if (recLoanChannel103) {
-				const channel = {
-					id: recLoanChannel103.id,
-					loans: this.recommendedLoans,
-					url: '',
-				};
-				console.log('channel', channel);
-				console.log('recLoanChannel103', recLoanChannel103);
+			// const recLoanChannel95 = _find(this.categorySetting, { __typename: 'RecLoanChannel', id: 95 });
+			// if (recLoanChannel95) {
+			// 	const channel95 = {
+			// 		id: recLoanChannel95.id,
+			// 		loans: this.recommendedLoans,
+			// 		url: '',
+			// 	};
 
-				channel.name = 'Spotlighted by Kiva';
-				// eslint-disable-next-line max-len
-				channel.description = 'We’re spotlighting these loans because they haven’t gotten the attention they need — and we need your help to fund them.';
-				console.log('channel BEFORE', categories);
-				categories.push(channel);
-				console.log('channel AFTER', categories);
-			}
+			// 	if (this.userId) {
+			// 		channel95.name = `Recommended for ${this.firstName}`;
+			// 		channel95.description = 'Loans we think you\'ll love based on your lending history.';
+			// 	} else {
+			// 		channel95.name = 'Recommended by others';
+			// 		channel95.description = 'Log in for personalized recommendations.';
+			// 	}
+			// 	categories.push(channel95);
+			// }
+			console.log('categories', categories);
 
 			return categories;
 		},
@@ -296,7 +314,6 @@ export default {
 					logReadQueryError(e, 'LendByCategory mlOrderedLoanChannels');
 				}
 
-				console.log('setRows DATA', data);
 				// Get the array of channel objects from the ml multi-armed bandit
 				this.categorySetting = _get(baseData, 'ml.orderedLoanChannels') || [];
 				this.categorySetId = this.mlServiceBanditExpVersion;
@@ -428,13 +445,19 @@ export default {
 			}
 		},
 		initializeRecommendedLoansRow() {
-			const recLoanChannel = _find(this.categorySetting, { __typename: 'RecLoanChannel', id: 95 });
-			if (recLoanChannel) {
+			const recLoanChannels = this.categorySetting.filter(setting => {
+				// eslint-disable-next-line no-underscore-dangle
+				return setting.__typename === 'RecLoanChannel';
+			});
+			console.log('category setting', this.categorySetting);
+			console.log('recLoanChannel', recLoanChannels);
+
+			if (recLoanChannels.length) {
 				// Load recommended loan data
 				try {
 					const variables = {
 						basketId: cookieStore.get('kvbskt'),
-						ids: [recLoanChannel.id],
+						ids: recLoanChannels.map(channel => channel.id),
 						imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 						imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
 					};
@@ -442,16 +465,33 @@ export default {
 						query: recommendedLoansQuery,
 						variables,
 					});
+					console.log('data after read query', data);
+
+					const allRecLoanChannels = data.ml?.getOrderedChannelsByIds ?? [];
+
+					const allRecLoans = allRecLoanChannels.map(channel => {
+						const channelLoans = channel.loans?.values ?? [];
+						if (channelLoans.length) {
+							return {
+								values: this.filterFundedLoans(channelLoans),
+								id: channel.id,
+								name: channel.name,
+								description: channel.description,
+							};
+						}
+						return [];
+					});
+					this.recommendedLoans = allRecLoans;
 
 					// Filter out funded loans
-					const initialLoanSet = _get(data, 'ml.getOrderedChannelsByIds[0].loans.values');
-					const filteredLoanSet = this.filterFundedLoans(initialLoanSet);
+					// const initialLoanSet = _get(data, 'ml.getOrderedChannelsByIds[0].loans.values');
+					// const filteredLoanSet = this.filterFundedLoans(initialLoanSet);
 
-					// share out results of loan query for row analytics
-					this.recommendedLoans = {
-						values: filteredLoanSet,
-						__typename: 'LoanBasicCollection'
-					};
+					// // share out results of loan query for row analytics
+					// this.recommendedLoans = {
+					// 	values: filteredLoanSet,
+					// 	__typename: 'LoanBasicCollection'
+					// };
 				} catch (e) {
 					logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
 				}
@@ -460,10 +500,11 @@ export default {
 		fetchRecommendedLoans() {
 			// once the initial loan set is filtered and loaded, we query for more loans if there are too few
 			// if there are 6 or fewer recommended loans we'll fetch 20 more
-			const recLoanChannel = _find(this.categorySetting, { __typename: 'RecLoanChannel' });
-			if (recLoanChannel && _get(this, 'recommendedLoans.values.length') < 6) {
+			const recChannels = _find(this.categorySetting, { __typename: 'RecLoanChannel' });
+
+			if (recChannels && _get(this, 'recommendedLoans.values.length') < 6) {
 				const variables = {
-					ids: [recLoanChannel.id],
+					ids: [recLoanChannel.id, serviceBanditLoanChannel.id],
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
 					offset: 20
@@ -472,6 +513,7 @@ export default {
 					query: recommendedLoansQuery,
 					variables,
 				}).then(({ data }) => {
+					console.log('fetchRecommendedLoans data', data);
 					// filter and update recommended loans
 					const backfillLoanSet = _get(data, 'ml.getOrderedChannelsByIds[0].loans.values');
 					const filteredBackfillLoans = this.filterFundedLoans(backfillLoanSet);
@@ -535,7 +577,6 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
 				]);
 			}).then(expResults => {
-				console.log('expResults in preFetch', expResults);
 				return client.query({
 					query: mlOrderedLoanChannels
 				}).then(({ data }) => {
@@ -552,6 +593,7 @@ export default {
 				const ids = _map(rowData, 'id');
 				// Filter other channel types as custom categories
 				const recChannels = _filter(rowData, { __typename: 'RecLoanChannel' });
+				// console.log('recChannels', recChannels);
 				const recChannelIds = _map(recChannels, 'id');
 				const hasRecRow = recChannels.length > 0;
 
@@ -696,7 +738,7 @@ export default {
 	mounted() {
 		Promise.all([
 			this.fetchRemainingLoanChannels(),
-			this.fetchRecommendedLoans()
+			// this.fetchRecommendedLoans()
 		]).then(() => {
 			this.rowLazyLoadComplete = true;
 
