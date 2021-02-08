@@ -119,7 +119,6 @@ export default {
 
 		.icon-btn__icon--right ::v-deep svg {
 			color: var(--kv-color-hover);
-			fill: var(--kv-color-hover);
 		}
 
 		.icon-btn__icon--right ::v-deep svg [stroke] {
