@@ -1,12 +1,12 @@
 <template>
 	<router-link
+		:is="disableLink ? 'span' : 'router-link'"
 		:to="`/lend/${loanId}`"
 		v-kv-track-event="['basket', 'click-Read more', 'Photo', loanId, loanId]"
 	>
 		<img class="loan-img"
 			:src="imageUrl"
 			:alt="'photo of ' + name"
-			@click="handleImageClick"
 		>
 	</router-link>
 </template>
@@ -30,13 +30,6 @@ export default {
 			type: String,
 			default: ''
 		}
-	},
-	methods: {
-		handleImageClick(event) {
-			if (this.disableLink) {
-				event.preventDefault();
-			}
-		},
 	}
 };
 </script>
