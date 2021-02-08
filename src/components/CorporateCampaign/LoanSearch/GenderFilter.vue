@@ -1,39 +1,21 @@
 <template>
 	<div class="gender-radios">
-		<h3 class="filter-title">
-			Genders
-		</h3>
-		<kv-radio
-			id="gender-radio-both"
-			radio-value="both"
-			v-model="gender"
-		>
-			Everyone
-		</kv-radio>
-		<kv-radio
-			id="gender-radio-female"
-			radio-value="female"
-			v-model="gender"
-		>
-			Women only
-		</kv-radio>
-		<kv-radio
-			id="gender-radio-male"
-			radio-value="male"
-			v-model="gender"
-		>
-			Men only
-		</kv-radio>
+		<kv-pill-toggle
+			id="filter-gender"
+			:options="genderOptions"
+			:selected="gender"
+			@pill-toggled="(val) => gender = val"
+		/>
 	</div>
 </template>
 
 <script>
-import KvRadio from '@/components/Kv/KvRadio';
+import KvPillToggle from '@/components/Kv/KvPillToggle';
 
 export default {
 	inject: ['apollo'],
 	components: {
-		KvRadio,
+		KvPillToggle,
 	},
 	props: {
 		initialGender: {
@@ -48,6 +30,20 @@ export default {
 	data() {
 		return {
 			gender: null,
+			genderOptions: [
+				{
+					title: 'All genders',
+					key: 'both',
+				},
+				{
+					title: 'Women',
+					key: 'female',
+				},
+				{
+					title: 'Men',
+					key: 'male',
+				},
+			]
 		};
 	},
 	watch: {
