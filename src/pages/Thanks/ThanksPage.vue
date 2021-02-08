@@ -23,7 +23,18 @@
 			</div>
 		</div>
 
-		<monthly-good-c-t-a v-if="showMonthlyGoodCTA" :headline="ctaHeadline" />
+		<div class="mg_cta-row">
+			<div class="row align-center">
+				<div class="small-12 columns">
+					<monthly-good-c-t-a
+						v-if="showMonthlyGoodCTA"
+						:headline="ctaHeadline"
+						:body-copy="ctaBodyCopy"
+						:button-text="ctaButtonText"
+					/>
+				</div>
+			</div>
+		</div>
 
 		<div class="row page-content">
 			<template v-if="loans.length > 0">
@@ -191,11 +202,29 @@ export default {
 		contentfulHeadline() {
 			return this.ctaContentBlock?.headline;
 		},
+		contentfulSubHeadline() {
+			return this.ctaContentBlock?.subHeadline;
+		},
+		contentfulPrimaryCtaText() {
+			return this.ctaContentBlock?.primaryCtaText;
+		},
 		ctaHeadline() {
 			if (this.isContentfulActive) {
 				return this.contentfulHeadline;
 			}
-			return 'Grow your lending with Monthly Good!';
+			return null;
+		},
+		ctaBodyCopy() {
+			if (this.isContentfulActive) {
+				return this.contentfulSubHeadline;
+			}
+			return null;
+		},
+		ctaButtonText() {
+			if (this.isContentfulActive) {
+				return this.contentfulPrimaryCtaText;
+			}
+			return null;
 		}
 	},
 	mounted() {
@@ -256,6 +285,10 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+
+.mg_cta-row {
+	background: $white;
+}
 
 .page-content {
 	padding: 1.625rem 0 0 0;

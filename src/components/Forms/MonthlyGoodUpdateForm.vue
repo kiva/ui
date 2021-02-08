@@ -90,7 +90,7 @@
 						<label
 							class="show-for-sr"
 							:class="{ 'error': $v.form.donation.$invalid }"
-							for="amount"
+							for="donation"
 						>
 							Donation
 						</label>
