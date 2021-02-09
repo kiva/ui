@@ -85,7 +85,6 @@
 <script>
 import _each from 'lodash/each';
 import _filter from 'lodash/filter';
-import _find from 'lodash/find';
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _take from 'lodash/take';
