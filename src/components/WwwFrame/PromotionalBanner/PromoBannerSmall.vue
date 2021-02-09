@@ -1,6 +1,6 @@
 <template>
 	<div class="hide-for-xxlarge hide-for-print promo-banner-small">
-		<promotional-banner />
+		<promotional-banner :basket-state="basketState" />
 	</div>
 </template>
 <script>
@@ -9,7 +9,13 @@ import PromotionalBanner from './PromotionalBanner';
 export default {
 	components: {
 		PromotionalBanner,
-	}
+	},
+	props: {
+		basketState: {
+			type: Object,
+			default: () => {},
+		},
+	},
 };
 </script>
 
