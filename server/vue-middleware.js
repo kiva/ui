@@ -44,18 +44,18 @@ module.exports = function createMiddleware({
 	// eslint-disable-next-line no-param-reassign
 	clientManifest.publicPath = config.app.publicPath || '/';
 
-	// Create single renderer to be used be all requests
-	const renderer = createBundleRenderer(serverBundle, {
-		cache: vueSsrCache(cache),
-		template,
-		clientManifest,
-		runInNewContext: false,
-		inject: false,
-		// don't prefetch anything
-		shouldPrefetch: () => false,
-	});
-
 	return function middleware(req, res, next) {
+		// Create single renderer to be used be all requests
+		const renderer = createBundleRenderer(serverBundle, {
+			cache: vueSsrCache(cache),
+			template,
+			clientManifest,
+			runInNewContext: false,
+			inject: false,
+			// don't prefetch anything
+			shouldPrefetch: () => false,
+		});
+
 		const s = Date.now();
 
 		const cookies = cookie.parse(req.headers.cookie || '');
