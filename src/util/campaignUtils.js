@@ -120,6 +120,7 @@ export function getPromoFromBasket(promoFundId, apollo) {
 		query: promoCampaign,
 		variables: {
 			promoFundId: String(promoFundId)
-		}
+		},
+		fetchPolicy: 'network-only',
 	});
 }
