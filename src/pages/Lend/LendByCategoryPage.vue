@@ -179,10 +179,6 @@ export default {
 
 			if (this.recommendedLoans.length) {
 				this.recommendedLoans.forEach(channel => {
-					const originalChannel = this.categorySetting.filter(original => {
-						return original.id === channel.id;
-					});
-					console.log('OG Channel', originalChannel);
 					const recChannel = {
 						id: channel.id,
 						name: channel.name,
@@ -193,7 +189,7 @@ export default {
 						},
 						url: '',
 					};
-					//	TODO check channelID if it's 95 update orginal name and descripton with
+					//	check recChannel.id, if it's 95 update the name and descripton with
 					if (recChannel.id === 95) {
 						if (this.userId) {
 							recChannel.name = `Recommended for ${this.firstName}`;
@@ -204,33 +200,9 @@ export default {
 						}
 					}
 
-					// CURRENTLY
-					// the recChannel.id == 95 check is working
-					// recChannel.id === 103 name and description comes back undefined
-					// 103 renders on page, 95 isn't shown
 					categories.push(recChannel);
 				});
 			}
-
-			// Add recommended loans category row
-			// const recLoanChannel95 = _find(this.categorySetting, { __typename: 'RecLoanChannel', id: 95 });
-			// if (recLoanChannel95) {
-			// 	const channel95 = {
-			// 		id: recLoanChannel95.id,
-			// 		loans: this.recommendedLoans,
-			// 		url: '',
-			// 	};
-
-			// 	if (this.userId) {
-			// 		channel95.name = `Recommended for ${this.firstName}`;
-			// 		channel95.description = 'Loans we think you\'ll love based on your lending history.';
-			// 	} else {
-			// 		channel95.name = 'Recommended by others';
-			// 		channel95.description = 'Log in for personalized recommendations.';
-			// 	}
-			// 	categories.push(channel95);
-			// }
-			console.log('categories', categories);
 
 			return categories;
 		},
@@ -444,13 +416,11 @@ export default {
 				);
 			}
 		},
-		initializeRecommendedLoansRow() {
+		initializeRecommendedLoanRows() {
 			const recLoanChannels = this.categorySetting.filter(setting => {
 				// eslint-disable-next-line no-underscore-dangle
 				return setting.__typename === 'RecLoanChannel';
 			});
-			console.log('category setting', this.categorySetting);
-			console.log('recLoanChannels', recLoanChannels);
 
 			if (recLoanChannels.length) {
 				// Load recommended loan data
@@ -465,7 +435,6 @@ export default {
 						query: recommendedLoansQuery,
 						variables,
 					});
-					console.log('data after read query', data);
 
 					const allRecLoanChannels = data.ml?.getOrderedChannelsByIds ?? [];
 
@@ -482,56 +451,71 @@ export default {
 						return [];
 					});
 					this.recommendedLoans = allRecLoans;
-
-					// Filter out funded loans
-					// const initialLoanSet = _get(data, 'ml.getOrderedChannelsByIds[0].loans.values');
-					// const filteredLoanSet = this.filterFundedLoans(initialLoanSet);
-
-					// // share out results of loan query for row analytics
-					// this.recommendedLoans = {
-					// 	values: filteredLoanSet,
-					// 	__typename: 'LoanBasicCollection'
-					// };
 				} catch (e) {
 					logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
 				}
 			}
 		},
-		fetchRecommendedLoans() {
-			// once the initial loan set is filtered and loaded, we query for more loans if there are too few
-			// if there are 6 or fewer recommended loans we'll fetch 20 more
-			const recChannels = _find(this.categorySetting, { __typename: 'RecLoanChannel' });
+		fetchRecommendedLoans(offset = 0) {
+			const lengthCheck = this.recommendedLoans.map(channel => {
+				const loanCount = channel.values?.length ?? 0;
+				return loanCount > 25;
+			});
 
-			if (recChannels && _get(this, 'recommendedLoans.values.length') < 6) {
+			// If more than 6 loans are returned, do nothing
+			// Otherwise proceed loading more loans for that category
+			if (!lengthCheck.includes(false)) {
+				return false;
+			}
+
+			const recLoanChannels = this.categorySetting.filter(setting => {
+				// eslint-disable-next-line no-underscore-dangle
+				return setting.__typename === 'RecLoanChannel';
+			});
+
+			if (recLoanChannels.length) {
+				// Load recommended loan data
 				const variables = {
-					// ids: [recLoanChannel.id, serviceBanditLoanChannel.id],
+					offset,
+					basketId: cookieStore.get('kvbskt'),
+					ids: recLoanChannels.map(channel => channel.id),
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-					offset: 20
 				};
+
 				return this.apollo.query({
 					query: recommendedLoansQuery,
 					variables,
 				}).then(({ data }) => {
-					console.log('fetchRecommendedLoans data', data);
-					// filter and update recommended loans
-					const backfillLoanSet = _get(data, 'ml.getOrderedChannelsByIds[0].loans.values');
-					const filteredBackfillLoans = this.filterFundedLoans(backfillLoanSet);
+					const allRecLoanChannels = data.ml?.getOrderedChannelsByIds ?? [];
 
-					// add new loans to row
-					if (filteredBackfillLoans.length > 0) {
-						const values = _get(this, 'recommendedLoans.values') || [];
-						this.recommendedLoans = {
-							values: values.concat(filteredBackfillLoans),
-							__typename: 'LoanBasicCollection'
-						};
-					}
+					const allRecLoans = allRecLoanChannels.map(channel => {
+						// filter and update recommended loans
+						// const backfillLoanSet = _get(data, 'ml.getOrderedChannelsByIds[0].loans.values');
+
+						const channelLoans = channel.loans?.values ?? [];
+						const filteredBackfillLoans = this.filterFundedLoans(channelLoans);
+						const existingChannel = this.recommendedLoans.filter(existingChannelObject => {
+							return existingChannelObject.id === channel.id;
+						});
+
+						const existingLoanValues = existingChannel[0].values || [];
+						if (channelLoans.length) {
+							return {
+								values: existingLoanValues.concat(filteredBackfillLoans),
+								id: channel.id,
+								name: channel.name,
+								description: channel.description,
+							};
+						}
+						return [];
+					});
+					this.recommendedLoans = allRecLoans;
 				});
 			}
 			return Promise.resolve();
 		},
 		initializeMLServiceBanditRowExp() {
-			console.log('initializeMLServiceBanditRowExp method TRIGGERED');
 			// experiment: GROW-330 by MultiArmed Bandit algorithm experiment
 			// get assignment
 			const mlServiceBandit = 0;
@@ -593,7 +577,6 @@ export default {
 				const ids = _map(rowData, 'id');
 				// Filter other channel types as custom categories
 				const recChannels = _filter(rowData, { __typename: 'RecLoanChannel' });
-				// console.log('recChannels', recChannels);
 				const recChannelIds = _map(recChannels, 'id');
 				const hasRecRow = recChannels.length > 0;
 
@@ -667,7 +650,9 @@ export default {
 			const categoryData = this.apollo.readQuery({
 				query: loanChannelQuery,
 				variables: {
-					ids: _take(this.realCategoryIds, ssrRowLimiter),
+					// ids: _take(this.realCategoryIds, ssrRowLimiter),
+					// _without(ids, ...recChannelIds)
+					ids: _take(_without(this.realCategoryIds, this.customCategoryIds), ssrRowLimiter),
 					basketId: cookieStore.get('kvbskt'),
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
@@ -732,13 +717,13 @@ export default {
 			);
 		}
 
-		// Initialize Recommended Loans Row
-		this.initializeRecommendedLoansRow();
+		// Initialize Recommended Loan Rows
+		this.initializeRecommendedLoanRows();
 	},
 	mounted() {
 		Promise.all([
 			this.fetchRemainingLoanChannels(),
-			// this.fetchRecommendedLoans()
+			this.fetchRecommendedLoans(20)
 		]).then(() => {
 			this.rowLazyLoadComplete = true;
 
