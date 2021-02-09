@@ -55,6 +55,12 @@ export default {
 			return _orderBy(this.teams, 'name');
 		}
 	},
+	mounted() {
+		// update initial team id
+		this.$nextTick(() => {
+			this.selectedId = this.teamId || 0;
+		});
+	},
 	methods: {
 		updateLoanReservation() {
 			if (this.selectedId !== this.loanId) {
