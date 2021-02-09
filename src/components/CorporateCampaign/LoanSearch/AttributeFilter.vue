@@ -5,7 +5,7 @@
 				<check-list
 					key="attributes"
 					:items="attributesWithSelected"
-					:use-columns="false"
+					:use-columns="true"
 					@change="onChange"
 				/>
 			</div>

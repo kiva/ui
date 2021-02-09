@@ -5,7 +5,7 @@
 				<check-list
 					key="tags"
 					:items="tagsWithSelected"
-					:use-columns="false"
+					:use-columns="true"
 					@change="onChange"
 				/>
 			</div>
