@@ -90,8 +90,10 @@ export default {
 	async mounted() {
 		await this.$nextTick();
 		// make sure all partner content links open externally
-		const links = this.$refs.heroBodyCopy.querySelectorAll('a');
-		links.forEach(link => { link.target = '_blank'; }); // eslint-disable-line no-param-reassign
+		if (this.$refs.heroBodyCopy) {
+			const links = this.$refs.heroBodyCopy.querySelectorAll('a');
+			links.forEach(link => { link.target = '_blank'; }); // eslint-disable-line no-param-reassign
+		}
 	}
 };
 </script>
