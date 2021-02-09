@@ -50,8 +50,8 @@
 						ref="kvLightboxBody"
 					>
 						<!-- gives lightbox content foundation grids the correct margins -->
-						<div class="row small-collapse">
-							<div class="columns">
+						<div class="kv-lightbox__body-row row">
+							<div class="kv-lightbox__body-columns columns">
 								<slot>Lightbox body</slot>
 							</div>
 						</div>
@@ -242,6 +242,15 @@ export default {
 			margin: 0 -2.8125rem;
 			padding: 0 2.8125rem;
 		}
+	}
+
+	&__body-row,
+	&__body-columns {
+		// gives lightbox content foundation grids the correct margins
+		margin-left: 0;
+		margin-right: 0;
+		padding-left: 0;
+		padding-right: 0;
 	}
 
 	&__controls {
