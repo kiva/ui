@@ -1,16 +1,33 @@
 <template functional>
-	<router-link
-		to="/lend/freeCreditEligible"
-		class="bonus-banner"
-		v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
-	>
-		<div class="content">
-			<span class="leading-text">Select a borrower to</span> <br class="so xxlu">
-			<span class="call-to-action-text">
-				lend your {{ props.bonusBalance | numeral('$0.00') }} free credit
-			</span>
-		</div>
-	</router-link>
+	<div class="bonus-banner-holder">
+		<router-link
+			v-if="props.promoData && !props.promoData.pageId"
+			to="/lend/freeCreditEligible"
+			class="bonus-banner"
+			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
+		>
+			<div class="content">
+				<span class="leading-text">Select a borrower to</span> <br class="so xxlu">
+				<span class="call-to-action-text">
+					lend your {{ props.promoData.bonusBalance | numeral('$0.00') }} free credit
+				</span>
+			</div>
+		</router-link>
+		<router-link
+			v-if="props.promoData && props.promoData.pageId"
+			:to="`/cc/${props.promoData.pageId}`"
+			class="bonus-banner"
+			v-kv-track-event="['TopNav','click-Promo','MVP Bonus Banner']"
+		>
+			<div class="content">
+				<span class="call-to-action-text">You have {{ props.promoData.available | numeral('$0.00') }}</span>
+				<br class="so xxlu">
+				<span class="call-to-action-text">
+					from {{ props.promoData.displayName }} to lend!
+				</span>
+			</div>
+		</router-link>
+	</div>
 </template>
 
 <style lang="scss">

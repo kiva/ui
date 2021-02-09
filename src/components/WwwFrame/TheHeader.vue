@@ -125,7 +125,7 @@
 							</button>
 							<search-bar ref="search" v-if="searchOpen" :aria-hidden="searchOpen ? 'false' : 'true'" />
 						</div>
-						<promo-banner-large />
+						<promo-banner-large :basket-state="basketState" />
 					</div>
 					<router-link
 						v-show="isVisitor"
@@ -184,7 +184,7 @@
 						</span>
 					</router-link>
 				</div>
-				<promo-banner-small />
+				<promo-banner-small :basket-state="basketState" />
 				<kv-dropdown
 					:controller="lendMenuId"
 					@show.once="loadLendInfo"
@@ -419,6 +419,7 @@ export default {
 			myKivaMenuId: 'my-kiva-header-dropdown',
 			searchOpen: false,
 			redirectToLoginExperimentVersion: null,
+			basketState: () => {},
 		};
 	},
 	props: {
@@ -441,7 +442,7 @@ export default {
 		theme: {
 			type: Object,
 			default: () => {}
-		}
+		},
 	},
 	computed: {
 		isTrustee() {
@@ -497,6 +498,7 @@ export default {
 			this.basketCount = _get(data, 'shop.nonTrivialItemCount');
 			this.balance = Math.floor(_get(data, 'my.userAccount.balance'));
 			this.profilePic = _get(data, 'my.lender.image.url');
+			this.basketState = data || {};
 
 			// GROW-280 redirect to login instead of popup login experiment
 			const redirectToLoginExperiment = this.apollo.readFragment({
