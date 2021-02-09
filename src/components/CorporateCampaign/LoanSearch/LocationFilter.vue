@@ -12,7 +12,7 @@
 					<check-list
 						key="`${name}-country-list`"
 						:items="regions[name]"
-						:use-columns="false"
+						:use-columns="true"
 						@change="onChange"
 					/>
 				</div>

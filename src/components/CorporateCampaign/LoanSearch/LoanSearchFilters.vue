@@ -53,76 +53,77 @@
 			:visible="filtersVisible"
 			@lightbox-closed="filtersVisible = false"
 		>
-			<gender-filter
-				class="filter-type gender-filter"
-				:initial-gender="initialGender"
-				:selected-gender="selectedGender"
-				@updated-filters="handleUpdatedFilters"
-			/>
-
-			<kv-accordion-item
-				class="loan-filters__lightbox-accordian"
-				id="region-accordian"
-			>
-				<template v-slot:header>
-					<h3>Countries</h3>
-				</template>
-				<location-filter
-					class="loan-filters__filter-type location-filter-container"
-					:all-countries="allCountries"
-					:initial-countries="initialCountries"
-					:selected-countries="selectedCountries"
+			<div class="loan-filter-controls">
+				<gender-filter
+					:initial-gender="initialGender"
+					:selected-gender="selectedGender"
 					@updated-filters="handleUpdatedFilters"
 				/>
-			</kv-accordion-item>
 
-			<kv-accordion-item
-				class="loan-filters__lightbox-accordian"
-				id="sectors-accordian"
-			>
-				<template v-slot:header>
-					<h3>Sectors</h3>
-				</template>
-				<sector-filter
-					class="filter-type sector-filter"
-					:all-sectors="allSectors"
-					:initial-sectors="initialSectors"
-					:selected-sectors="selectedSectors"
-					@updated-filters="handleUpdatedFilters"
-				/>
-			</kv-accordion-item>
+				<kv-accordion-item
+					class="loan-filters__lightbox-accordian"
+					id="region-accordian"
+				>
+					<template v-slot:header>
+						<h3>Countries</h3>
+					</template>
+					<location-filter
+						class="loan-filter-controls__filter-type"
+						:all-countries="allCountries"
+						:initial-countries="initialCountries"
+						:selected-countries="selectedCountries"
+						@updated-filters="handleUpdatedFilters"
+					/>
+				</kv-accordion-item>
 
-			<kv-accordion-item
-				class="loan-filters__lightbox-accordian"
-				id="attributes-accordian"
-			>
-				<template v-slot:header>
-					<h3>Attributes</h3>
-				</template>
-				<attribute-filter
-					class="loan-filters__filter-type attribute-filter"
-					:all-attributes="allAttributes"
-					:initial-attributes="initialAttributes"
-					:selected-attributes="selectedAttributes"
-					@updated-filters="handleUpdatedFilters"
-				/>
-			</kv-accordion-item>
+				<kv-accordion-item
+					class="loan-filters__lightbox-accordian"
+					id="sectors-accordian"
+				>
+					<template v-slot:header>
+						<h3>Sectors</h3>
+					</template>
+					<sector-filter
+						class="loan-filter-controls__filter-type"
+						:all-sectors="allSectors"
+						:initial-sectors="initialSectors"
+						:selected-sectors="selectedSectors"
+						@updated-filters="handleUpdatedFilters"
+					/>
+				</kv-accordion-item>
 
-			<kv-accordion-item
-				class="loan-filters__lightbox-accordian"
-				id="tags-accordian"
-			>
-				<template v-slot:header>
-					<h3>Tags</h3>
-				</template>
-				<tag-filter
-					class="loan-filters__filter-type tag-filter"
-					:all-tags="allTags"
-					:initial-tags="initialTags"
-					:selected-tags="selectedTags"
-					@updated-filters="handleUpdatedFilters"
-				/>
-			</kv-accordion-item>
+				<kv-accordion-item
+					class="loan-filters__lightbox-accordian"
+					id="attributes-accordian"
+				>
+					<template v-slot:header>
+						<h3>Attributes</h3>
+					</template>
+					<attribute-filter
+						class="loan-filter-controls__filter-type"
+						:all-attributes="allAttributes"
+						:initial-attributes="initialAttributes"
+						:selected-attributes="selectedAttributes"
+						@updated-filters="handleUpdatedFilters"
+					/>
+				</kv-accordion-item>
+
+				<kv-accordion-item
+					class="loan-filters__lightbox-accordian"
+					id="tags-accordian"
+				>
+					<template v-slot:header>
+						<h3>Tags</h3>
+					</template>
+					<tag-filter
+						class="loan-filter-controls__filter-type"
+						:all-tags="allTags"
+						:initial-tags="initialTags"
+						:selected-tags="selectedTags"
+						@updated-filters="handleUpdatedFilters"
+					/>
+				</kv-accordion-item>
+			</div>
 
 			<template slot="controls">
 				<kv-button
@@ -456,6 +457,20 @@ export default {
 		::v-deep .kv-lightbox__container {
 			min-width: 20rem;
 		}
+	}
+}
+
+.loan-filter-controls {
+	@include breakpoint('medium') {
+		width: rem-calc(360);
+	}
+
+	@include breakpoint('large') {
+		width: rem-calc(550);
+	}
+
+	@include breakpoint('xlarge') {
+		width: rem-calc(625);
 	}
 
 	&__filter-type {
