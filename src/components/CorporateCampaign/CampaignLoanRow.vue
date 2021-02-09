@@ -56,6 +56,7 @@
 					</div>
 
 					<div
+						v-if="hasMoreLoansAvailable"
 						class="column cards-wrap"
 					>
 						<button
@@ -188,6 +189,9 @@ export default {
 		shiftIncrement() {
 			return this.cardsInWindow * this.cardWidth;
 		},
+		hasMoreLoansAvailable() {
+			return (this.totalCount - this.offset) > this.limit;
+		}
 	},
 	watch: {
 		loans() {
