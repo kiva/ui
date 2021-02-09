@@ -469,6 +469,7 @@ export default {
 			basketTotals: {},
 			basketTargetPromoCredit: () => [],
 			basketLoans: [],
+			initialBasketCredits: [],
 			donations: [],
 			kivaCards: [],
 			totalCount: 0,
@@ -517,12 +518,11 @@ export default {
 
 			this.lendingRewardOffered = data.shop?.lendingRewardOffered ?? false;
 			this.hasFreeCredits = data.shop?.basket?.hasFreeCredits ?? false;
+			this.initialBasketCredits = data.shop?.basket?.credits?.values ?? [];
+
 			const basketItems = data.shop?.basket?.items?.values ?? [];
 			this.itemsInBasket = basketItems.length ? basketItems.map(item => item.id) : [];
 			this.isVisitor = !data.my?.userAccount?.id ?? true;
-			// are there loans in the basket?
-			// eslint-disable-next-line no-underscore-dangle
-			// this.basketLoans = basketItems.filter(item => item.__typename === 'LoanReservation');
 		}
 	},
 	created() {
@@ -534,9 +534,9 @@ export default {
 		// check for applied promo
 		this.verifyOrApplyPromotion();
 		// update basket state if any loans are already in the basket
-		if (this.itemsInBasket.length) {
-			this.updateBasketState();
-		}
+		// if (this.itemsInBasket.length) {
+		// 	this.updateBasketState();
+		// }
 
 		// clean up show-basket process
 		// TODO: Revisit this control flow
@@ -635,25 +635,23 @@ export default {
 	},
 	methods: {
 		verifyOrApplyPromotion() {
-			// TODO: Establish control flow for applied promotional state
-			// 1. Does route have a promo code? (done)
-			// 2. check basket for loan items with ANY promotional credit applied
-			// 	- applied promo credits reveal promotional state
-			//		- check available + promoId to know if promo is applied to basket
-			//		- check applied + promoId to know if promo is applied to a loan(s)
-			//		- if this exists get detailed promo info
-			// 	- loans in basket with credits applied reveal basket state
-			//		- if this exist skip loading loans and show "Find more loans" link
-			//		- Load and show Checkout
-			// handle previously applied promo
-			if (this.hasFreeCredits || this.lendingRewardOffered) {
-				this.getPromoInformationFromBasket();
-			} else if (Object.keys(this.$route.query).length) {
+			// Always apply a promo if query params exist
+			if (Object.keys(this.$route.query).length) {
 				// apply promo
 				this.applyPromotion();
+
+			// handle previously applied promo
+			// There may be some additional processing we can do on initialBasketCredits
+			// to further optimize and skip the first step
+			} else if (this.hasFreeCredits || this.lendingRewardOffered) {
+				this.getPromoInformationFromBasket();
+
+			// handle no promo visit
 			} else {
 				this.promoApplied = false;
 				this.loadingPromotion = false;
+				// ensure updated basket state for promo-less visit
+				this.updateBasketState();
 			}
 		},
 		applyPromotion() {
@@ -663,14 +661,12 @@ export default {
 			applyPromo.then(result => {
 				// failed to apply promotion
 				if (result.errors) {
+					// This error might arise if the promo is already applied
+					// Store the error message here and handle visibility in getPromoInformationFromBasket
 					this.promoErrorMessage = result.errors[0].message;
-					this.promoApplied = false;
-					this.loadingPromotion = false;
-				} else {
-					this.promoApplied = true;
-					// gather promo info
-					this.getPromoInformationFromBasket();
 				}
+				// gather promo info
+				this.getPromoInformationFromBasket();
 			}).catch(error => {
 				console.error(error);
 				this.promoErrorMessage = error;
@@ -711,10 +707,19 @@ export default {
 				// Future usage will not require the promoFundId relying only on the basket id
 				return getPromoFromBasket(targetPromo[0].promoFund?.id, this.apollo);
 			}).then(response => {
-				// TODO Handle response and any potential errors
-				this.promoData = response.data?.shop?.promoCampaign;
-				this.promoApplied = true;
-				this.loadingPromotion = false;
+				// Verify that applied promotion is for current page
+				if (this.verifyPromoMatchesPageId(response.data?.shop?.promoCampaign?.managedAccount?.pageId)) {
+					this.promoData = response.data?.shop?.promoCampaign;
+					this.promoApplied = true;
+					this.loadingPromotion = false;
+					this.promoErrorMessage = null;
+				} else {
+					// Handle response and any potential errors
+					// > this reveals and prior error messages from the promo application
+					this.promoApplied = false;
+					this.loadingPromotion = false;
+				}
+
 				// Initialize loan query + observer there are no loans in the basket
 				this.showLoans = true;
 				this.$refs.loandisplayref.activateLoanWatchQuery();
@@ -967,6 +972,11 @@ export default {
 			// TODO: There is currently no way to know if someone has already submitted
 			// maybe use localstorage
 			this.showCheckout();
+		},
+		verifyPromoMatchesPageId(pageId) {
+			const promoPageId = pageId || this.promoData?.managedAccount?.pageId;
+			// Current page path is a co-branded space and should match applied promo page path
+			return this.$route?.params?.dynamicRoute === promoPageId;
 		},
 
 		setAuthStatus(userState) {

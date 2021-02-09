@@ -3,7 +3,7 @@
 		class="campaign-status section row align-center"
 		:class="{
 			'campaign-status--loading': loadingPromotion,
-			'campaign-status--error': !promoApplied && promoErrorMessage,
+			'campaign-status--error': !promoApplied && promoErrorMessage && !loadingPromotion,
 			'campaign-status--success': promoApplied && !promoErrorMessage,
 		}"
 	>
@@ -16,7 +16,7 @@
 					<span>Validating Promotion</span>
 				</template>
 
-				<template v-if="!promoApplied && promoErrorMessage">
+				<template v-if="!promoApplied && promoErrorMessage && !loadingPromotion">
 					<kv-icon class="campaign-status__icon" name="error" />
 					<span>{{ promoErrorMessage }}</span>
 				</template>
