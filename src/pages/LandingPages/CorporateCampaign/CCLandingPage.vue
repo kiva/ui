@@ -268,6 +268,7 @@ const basketItemsQuery = gql`query basketItemsQuery(
 						promoFund {
 							id
 							displayName
+							displayDescription
 						}
 					}
 					id
