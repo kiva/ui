@@ -22,7 +22,7 @@
 		<order-totals
 			class="in-context-checkout__order-totals"
 			:totals="totals"
-			:promo-fund="promoFund"
+			:promo-fund="derivedPromoFund"
 			@refreshtotals="$emit('refresh-totals')"
 			@updating-totals="setUpdatingTotals"
 		/>
@@ -137,6 +137,26 @@ export default {
 	computed: {
 		creditNeeded() {
 			return this.totals?.creditAmountNeeded ?? '0';
+		},
+		derivedPromoFund() {
+			// return prop passed promoFund if present
+			if (this.promoFund !== null && Object.keys(this.promoFund).length) {
+				return this.promoFund;
+			}
+			// Filter Loans with applied Credits with an associated Promo Fund
+			const appliedCreditsPromoFunds = this.loans?.filter(loan => {
+				const hasCredits = loan.creditsUsed.length > 0;
+				let hasPromoFund = false;
+				if (hasCredits) {
+					hasPromoFund = loan.creditsUsed.filter(credit => credit.promoFund !== null).length > 0;
+				}
+				return hasPromoFund;
+			}).map(loan => {
+				// return first credit's promoFund
+				return loan.creditsUsed[0]?.promoFund;
+			});
+			// Using the first promoFund available
+			return appliedCreditsPromoFunds[0] || null;
 		},
 		registerOrLoginHref() {
 			return `/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
