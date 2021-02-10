@@ -20,11 +20,11 @@ service:
 
 resources:
   requests:
-    cpu: 350m
-    memory: 500Mi
+    cpu: 500m
+    memory: 750Mi
   limits:
-    cpu: 350m
-    memory: 500Mi
+    cpu: 500m
+    memory: 750Mi
 
 replicaCount: 15
 minReplicas: 15
