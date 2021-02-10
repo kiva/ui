@@ -166,32 +166,15 @@ export default {
 		categories() {
 			// merge realCategories & customCategories
 			const categories = _uniqBy(this.realCategories.concat(this.customCategories, this.clientCategories), 'id');
-
-			// eslint-disable-next-line max-len
-			console.log('categories filter', categories.filter(channel => _get(channel, 'loans.values.length') > 0));
-			console.log('categories sort', categories.sort(indexIn(this.categoryIds, 'id')));
 			return categories
-
-			// DEBUGGING
-			// Logged out
-			// When we get to this point,
-			// categories array has 2 items:
-			// 103 (has description, id, loans (13), name & url)
-			// 95 (has description, id, loans(NO LOANS HERE), name, url)
-			// so when I hit this filter function, 95 is removed here.
-
 				// fiter our any empty categories and categories with 0 loans
 				.filter(channel => _get(channel, 'loans.values.length') > 0)
-
 				// and re-order to match the setting
 				.sort(indexIn(this.categoryIds, 'id'));
 		},
-		// Define any categories that need extra handling
 		customCategories() {
-			const categories = [];
-
 			if (this.recommendedLoans.length) {
-				this.recommendedLoans.forEach(channel => {
+				return this.recommendedLoans.map(channel => {
 					const recChannel = {
 						id: channel.id,
 						name: channel.name,
@@ -212,12 +195,15 @@ export default {
 							recChannel.description = 'Log in for personalized recommendations.';
 						}
 					}
-
-					categories.push(recChannel);
+					return recChannel;
 				});
 			}
-
-			return categories;
+			// If there are no recommended loan channels fetched yet, return the
+			// RecLoanChannel objects from the category setting instead
+			return this.categorySetting.filter(setting => {
+				// eslint-disable-next-line no-underscore-dangle
+				return setting.__typename === 'RecLoanChannel';
+			});
 		},
 		customCategoryIds() {
 			return _map(this.customCategories, 'id');
@@ -435,7 +421,6 @@ export default {
 				return setting.__typename === 'RecLoanChannel';
 			});
 
-			// ERROR BEING THROWN BEFORE GETTING TO THIS LINE.
 			if (recLoanChannels.length) {
 				// Load recommended loan data
 				try {
@@ -658,16 +643,12 @@ export default {
 
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 
-		console.log('without', _without(this.realCategoryIds, this.customCategoryIds));
-		// RETURNING: without [60, 103, 95, 56, 65, 52, 68, 70, 67, 98, 11, 76]
-		console.log('Take and without', _take(_without(this.realCategoryIds, this.customCategoryIds), ssrRowLimiter));
-		// RETURNING: Take and without [60, 103]
 		// Read the SSR ready loan channels from the cache
 		try {
 			const categoryData = this.apollo.readQuery({
 				query: loanChannelQuery,
 				variables: {
-					// ERROR IS BEING THROWN HERE or withing realCategoryIds or customCategoryIds
+					// I DON'T NEED THIS WITHOUT ANYMORE
 					ids: _take(_without(this.realCategoryIds, this.customCategoryIds), ssrRowLimiter),
 					basketId: cookieStore.get('kvbskt'),
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
@@ -678,8 +659,6 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'LendByCategory loanChannelQuery');
 		}
-
-		console.log('Logging Point! error thrown before here');
 
 		// Initialize CASH-794 Favorite Country Row
 		this.initializeFavoriteCountryRowExp();
