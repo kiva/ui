@@ -257,6 +257,7 @@ export default {
 			addToBasketRedirectExperimentShown: false,
 			loginButtonExperimentVersion: null,
 			redirectToLoginExperimentVersion: null,
+			guestCheckoutExperimentVersion: null,
 		};
 	},
 	apollo: {
@@ -373,6 +374,22 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
+
+		// GROW-458 Guest Checkout Experiment
+		const guestCheckoutExperiment = this.apollo.readFragment({
+			id: 'Experiment:guest_checkout',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.guestCheckoutExperimentVersion = guestCheckoutExperiment.version;
+
+		if (this.guestCheckoutExperimentVersion) {
+			console.log('tracking thrown');
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-GROW-458-Feb2020',
+				this.guestCheckoutExperimentVersion,
+			);
+		}
 	},
 	mounted() {
 		// Ensure browser clock is correct before using current time
