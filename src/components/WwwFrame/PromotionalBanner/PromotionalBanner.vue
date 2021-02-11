@@ -4,6 +4,7 @@
 
 <script>
 import gql from 'graphql-tag';
+import { indexIn } from '@/util/comparators';
 import numeral from 'numeral';
 import BonusBanner from './Banners/BonusBanner';
 import LendingRewardsBanner from './Banners/LendingRewardsBanner';
@@ -69,8 +70,16 @@ export default {
 			return this.basketState?.shop?.basket?.hasFreeCredits ?? false;
 		},
 		priorityBasketCredit() {
+			// get credits list
 			const basketCredits = this.basketState?.shop?.basket?.credits?.values ?? [];
-			return basketCredits.length ? basketCredits[0] : null;
+			if (!basketCredits.length) return false;
+			// establish precedence for credit types
+			const sortBy = ['universal_code', 'redemption_code', 'bonus_credit', 'kiva_credit'];
+			// copy and sort the credits
+			const creditsArrayCopy = basketCredits.map(credit => credit);
+			creditsArrayCopy.sort(indexIn(sortBy, 'creditType'));
+			// return the 1st credit for presentation
+			return creditsArrayCopy.length ? creditsArrayCopy[0] : null;
 		},
 		creditAvailable() {
 			return this.priorityBasketCredit?.available ?? null;
@@ -115,6 +124,7 @@ export default {
 	},
 	methods: {
 		fetchManagedAccountCampaign() {
+			// TODO: Create an array of queries if multiple credits have an associated promo fund
 			// extended promotion information from managed account
 			if (this.promoFundId && this.hasFreeCredits && this.creditAvailable) {
 				this.apollo.query({
