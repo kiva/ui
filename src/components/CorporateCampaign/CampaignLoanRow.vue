@@ -1,126 +1,92 @@
 <template>
-	<div class="component-wrapper" ref="componentWrapper">
-		<kv-loading-spinner v-if="loadingLoans" />
+	<div class="component-wrapper">
+		<transition name="kvfade">
+			<div
+				v-show="loadingLoans"
+				class="spinner"
+			>
+				<kv-loading-spinner />
+			</div>
+		</transition>
 		<div
-			v-else
-			class="cards-and-arrows-wrapper"
+			v-if="zeroLoans"
+			class="zero-loans-state"
 		>
-			<button
-				v-show="!zeroLoans"
-				class="arrow left-arrow"
-				:disabled="scrollPos === 0"
-				@click="scrollRowLeft"
-				v-kv-track-event="[
-					'campaign-landing',
-					'click-carousel-horizontal-scroll',
-					'left'
-				]"
-			>
-				<kv-icon
-					class="arrow-icon"
-					name="fat-chevron"
-					:from-sprite="true"
-					title="Previous Loans"
-				/>
-			</button>
-
-			<div v-show="!zeroLoans" class="cards-display-window">
-				<div
-					class="cards-holder"
-					:style="{ marginLeft: scrollPos + 'px' }"
-					v-touch:swipe.left="scrollRowRight"
-					v-touch:swipe.right="scrollRowLeft"
-				>
-					<div v-for="(loan, index) in loans"
-						:key="loan.id"
-						class="column cards-wrap"
-					>
-						<loan-card-controller
-							class="cards-loan-card"
-							loan-card-type="LendHomepageLoanCard"
-							:loan="loan"
-							:items-in-basket="itemsInBasket"
-							:category-id="index"
-							category-set-id="campaign-loan-row"
-							:row-number="rowNumber"
-							:card-number="index + 1"
-							:enable-tracking="true"
-							:is-visitor="!isLoggedIn"
-							:show-view-loan-cta="false"
-							:disable-redirects="true"
-							@add-to-basket="addToBasket"
-							@image-click="showLoanDetails"
-							@read-more-link="showLoanDetails"
-							@name-click="showLoanDetails"
-						/>
-					</div>
-
-					<div
-						v-if="hasMoreLoansAvailable"
-						class="column cards-wrap"
-					>
-						<button
-							class="view-all-loans-category see-all-card"
-							@click.prevent="loadMoreLoans"
-							title="Load more loans"
-							v-kv-track-event="[
-								'campaign-landing',
-								'click-carousel-load-more-loans',
-								'Load More loans']"
-						>
-							<div class="link">
-								<h3>Load More</h3>
-							</div>
-						</button>
-					</div>
-				</div>
-			</div>
-
-			<button
-				v-show="!zeroLoans"
-				class="arrow right-arrow"
-				:disabled="scrollPos <= minLeftMargin"
-				@click="scrollRowRight"
-				v-kv-track-event="[
-					'campaign-landing',
-					'click-carousel-horizontal-scroll',
-					'right'
-				]"
-			>
-				<kv-icon
-					class="arrow-icon"
-					name="fat-chevron"
-					:from-sprite="true"
-					title="Next Loans"
-				/>
-			</button>
-
-			<div v-if="zeroLoans" class="zero-loans-state">
-				<h3>All borrowers matching this search have been funded.</h3>
-				<p>
-					Please adjust your criteria or <a @click.prevent="resetSearchFilters">start a new search.</a>
-				</p>
-			</div>
+			<h3>All borrowers matching this search have been funded.</h3>
+			<p>
+				Please adjust your criteria or <a @click.prevent="resetSearchFilters">start a new search.</a>
+			</p>
 		</div>
+		<kv-carousel
+			v-if="!loadingLoans && !zeroLoans"
+			ref="campaignLoanCarousel"
+			slides-to-scroll="visible"
+			:autoplay="false"
+			indicator-style="none"
+			:embla-options="{
+				loop: false,
+				align: 'start'
+			}"
+		>
+			<kv-carousel-slide
+				v-for="(loan, index) in loans"
+				:key="`loan-${loan.id}`"
+				class="column cards-wrap"
+			>
+				<loan-card-controller
+					class="cards-loan-card"
+					loan-card-type="LendHomepageLoanCard"
+					:loan="loan"
+					:items-in-basket="itemsInBasket"
+					:category-id="index"
+					category-set-id="campaign-loan-row"
+					:row-number="rowNumber"
+					:card-number="index + 1"
+					:enable-tracking="true"
+					:is-visitor="!isLoggedIn"
+					:show-view-loan-cta="false"
+					:disable-redirects="true"
+					@add-to-basket="addToBasket"
+					@image-click="showLoanDetails"
+					@read-more-link="showLoanDetails"
+					@name-click="showLoanDetails"
+				/>
+			</kv-carousel-slide>
+
+			<kv-carousel-slide
+				v-if="hasMoreLoansAvailable"
+				class="column cards-wrap"
+			>
+				<button
+					class="see-all-card"
+					@click.prevent="loadMoreLoans"
+					v-kv-track-event="[
+						'campaign-landing',
+						'click-carousel-load-more-loans',
+						'Load More loans']"
+				>
+					<div class="see-all-card__link">
+						<h3>Load More</h3>
+					</div>
+				</button>
+			</kv-carousel-slide>
+		</kv-carousel>
 	</div>
 </template>
 
 <script>
-import _throttle from 'lodash/throttle';
 import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import cookieStore from '@/util/cookieStore';
-import KvIcon from '@/components/Kv/KvIcon';
+import KvCarousel from '@/components/Kv/KvCarousel';
+import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
-
-const cardWidth = 303;
-const cardRightMargin = 15;
-const cardWidthTotal = cardWidth + cardRightMargin * 2;
 
 export default {
 	inject: ['apollo'],
 	components: {
-		KvIcon,
+		KvCarousel,
+		KvCarouselSlide,
 		KvLoadingSpinner,
 		LoanCardController,
 	},
@@ -152,10 +118,6 @@ export default {
 	},
 	data() {
 		return {
-			scrollPos: 0,
-			windowWidth: 0,
-			wrapperWidth: 0,
-			cardWidth: cardWidthTotal,
 			preventUpdatingDetailedCard: false,
 			limit: 15,
 			loadingLoans: true,
@@ -169,10 +131,6 @@ export default {
 		};
 	},
 	computed: {
-		cardsInWindow() {
-			return Math.floor(this.wrapperWidth / this.cardWidth);
-		},
-
 		loanQueryVars() {
 			return {
 				limit: this.limit,
@@ -182,22 +140,11 @@ export default {
 				promoOnly: { basketId: cookieStore.get('kvbskt') }
 			};
 		},
-
-		minLeftMargin() {
-			return ((this.loans.length + 1) - this.cardsInWindow) * -this.cardWidth;
-		},
-		shiftIncrement() {
-			return this.cardsInWindow * this.cardWidth;
-		},
 		hasMoreLoansAvailable() {
 			return (this.totalCount - this.offset) > this.limit;
 		}
 	},
 	watch: {
-		loans() {
-			// When the amount of loans changes, save window width to calculate scrolling
-			this.saveWindowWidth();
-		},
 		loanQueryVars(next, prev) {
 			this.loanQueryVarsStack.push(prev);
 		},
@@ -215,7 +162,6 @@ export default {
 		isVisible(next) {
 			if (next) {
 				this.loadingLoans = false;
-				this.saveWindowWidth();
 			}
 		},
 		showLoans(next) {
@@ -223,16 +169,6 @@ export default {
 				this.activateLoanWatchQuery();
 			}
 		}
-	},
-	mounted() {
-		window.addEventListener('resize', _throttle(() => {
-			this.saveWindowWidth();
-		}, 200));
-	},
-	beforeDestroy() {
-		window.removeEventListener('resize', _throttle(() => {
-			this.saveWindowWidth();
-		}, 200));
 	},
 	methods: {
 		addToBasket(payload) {
@@ -268,13 +204,21 @@ export default {
 
 					this.totalCount = data.lend?.loans?.totalCount ?? 0;
 					this.$emit('update-total-count', this.totalCount);
-					// Reset carousel position after applying new loan filters
-					if (this.offset === 0 && !this.loanAdded) {
-						this.scrollPos = 0;
-					}
+
 					this.loadingLoans = false;
 					if (this.totalCount === 0) {
 						this.zeroLoans = true;
+					}
+
+					// Reset carousel position after applying loan filters or loading additional loans
+					if (!this.loanAdded && !this.zeroLoans) {
+						this.$nextTick(() => {
+							// Since we can show up to 3 cards at a time,
+							// we need to do math do determine how far to scroll the carousel
+							const slidesInView = this.$refs.campaignLoanCarousel.embla.slidesInView(true).length;
+							const scrollDistance = this.offset / slidesInView;
+							this.$refs.campaignLoanCarousel.goToSlide(parseInt(scrollDistance, 10));
+						});
 					}
 				}
 			});
@@ -286,22 +230,6 @@ export default {
 		},
 		loadMoreLoans() {
 			this.offset += this.limit;
-		},
-
-		saveWindowWidth() {
-			this.wrapperWidth = this.$refs.componentWrapper ? this.$refs.componentWrapper.clientWidth : 0;
-		},
-		scrollRowLeft() {
-			if (this.scrollPos < 0) {
-				const newLeftMargin = Math.min(0, this.scrollPos + this.shiftIncrement);
-				this.scrollPos = newLeftMargin;
-			}
-		},
-		scrollRowRight() {
-			if (this.scrollPos > this.minLeftMargin) {
-				const newLeftMargin = this.scrollPos - this.shiftIncrement;
-				this.scrollPos = newLeftMargin;
-			}
 		},
 		resetSearchFilters() {
 			this.$emit('reset-loan-filters');
@@ -316,117 +244,34 @@ export default {
 
 .component-wrapper {
 	text-align: center;
-}
-
-.loan-search-title {
-	color: $charcoal;
-	font-weight: $global-weight-normal;
-	font-size: $featured-text-font-size;
-	line-height: 1.5rem;
-	text-transform: capitalize;
-	text-align: left;
-	margin: 2rem 0 0 3.5rem;
-}
-
-.cards-and-arrows-wrapper {
+	min-height: rem-calc(500); // prevents layout shift as loans load in
+	display: flex;
 	align-items: center;
-	display: flex;
-	position: relative;
 	justify-content: center;
-	margin: 0 1rem; // fit as much of the card as possible in mobile
-
-	@include breakpoint(medium) {
-		margin: 0 2.5rem; // leave 2.5rem spacing for arrows
-	}
+	position: relative;
 }
 
-.arrow { // similar styles to KvCarousel
-	$arrow-width: rem-calc(41);
-
-	position: absolute;
-	background: $kiva-text-light;
-	border-radius: 50%;
-	width: $arrow-width;
-	height: $arrow-width;
-	padding: 0.6rem 0.6rem 0.5rem;
-	overflow: hidden; // prevents a weird chrome twitch on click
-	fill: #fff;
-
-	&:focus {
-		outline: 0;
-		background: #000;
-	}
-
-	&:hover {
-		background: $anchor-color-hover;
-	}
-
-	&.left-arrow {
-		left: -3.25rem;
-		transform: rotate(90deg);
-	}
-
-	&.right-arrow {
-		right: -3.25rem;
-		transform: rotate(270deg);
-	}
-
-	&[disabled] {
-		@include button-disabled();
-
-		background: $kiva-text-light;
-	}
-}
-
-.arrow-icon {
-	width: rem-calc(21);
-	height: rem-calc(23);
-}
-
-.cards-display-window {
-	overflow-x: hidden;
-	width: 100%;
-	text-align: center;
-}
-
-.cards-holder {
-	display: flex;
-	flex-wrap: nowrap;
-	transition: margin 0.5s;
-	overflow: hidden;
-	padding: 1rem 0 2rem;
-}
-
-$card-width: rem-calc(303);
+$card-width: rem-calc(297);
 $card-margin: rem-calc(14);
 $card-half-space: rem-calc(14/2);
 
 .cards-wrap {
-	flex-basis: auto;
-	flex-shrink: 0;
 	display: flex;
+	width: auto;
 }
 
 .cards-loan-card,
-.cards-mg-promo,
 .see-all-card {
 	border-radius: 0.65rem;
 	box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 	width: $card-width;
+	max-width: calc(100vw - 4rem); // ensure some extra card is shown on mobile
 	flex: 1 0 auto;
+	margin: 1rem 0 2rem 0;
 }
 
-.cards-mg-promo {
-	border: 0;
-}
-
-.column-block {
-	background: pink;
-}
-
-// Customize styles for touch screens ie. No Arrows
 @media (hover: none) {
-	.arrow {
+	::v-deep .kv-carousel__arrows-btn {
 		display: none;
 	}
 }
@@ -438,7 +283,7 @@ $card-half-space: rem-calc(14/2);
 		box-shadow: 0 0 $card-half-space rgba(0, 0, 0, 0.2);
 	}
 
-	.link {
+	&__link {
 		align-items: center;
 		display: flex;
 		height: 100%;
@@ -446,8 +291,15 @@ $card-half-space: rem-calc(14/2);
 	}
 }
 
-.loading-spinner {
-	margin: 9rem auto; // Top margin prevents content shifting when loading
+.spinner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	z-index: 1;
+	width: 100%;
+	height: 100%;
+	background: #fff;
 }
 
 .zero-loans-state {

@@ -1061,7 +1061,7 @@ export default {
 
 		position: sticky;
 		top: $header-height;
-		z-index: 1;
+		z-index: 2;
 
 		@include breakpoint(large) {
 			top: $header-height-large;
