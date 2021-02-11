@@ -85,7 +85,6 @@
 <script>
 import _each from 'lodash/each';
 import _filter from 'lodash/filter';
-import _find from 'lodash/find';
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _take from 'lodash/take';
@@ -102,6 +101,7 @@ import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.g
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import recommendedLoansQuery from '@/graphql/query/lendByCategory/recommendedLoans.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
+import mlOrderedLoanChannels from '@/graphql/query/lendByCategory/mlOrderedLoanChannels.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import CategoryRowHover from '@/components/LoansByCategory/CategoryRowHover';
@@ -156,7 +156,7 @@ export default {
 			favoriteCountryExpVersion: 'control',
 			showHoverLoanCards: false,
 			recommendedLoans: [],
-			categoryRowHillclimbExpVersion: null,
+			mlServiceBanditExpVersion: null,
 		};
 	},
 	computed: {
@@ -166,34 +166,44 @@ export default {
 		categories() {
 			// merge realCategories & customCategories
 			const categories = _uniqBy(this.realCategories.concat(this.customCategories, this.clientCategories), 'id');
-
 			return categories
 				// fiter our any empty categories and categories with 0 loans
 				.filter(channel => _get(channel, 'loans.values.length') > 0)
 				// and re-order to match the setting
 				.sort(indexIn(this.categoryIds, 'id'));
 		},
-		// Define any categories that need extra handling
 		customCategories() {
-			const categories = [];
-			// Add recommended loans category row
-			const recLoanChannel = _find(this.categorySetting, { __typename: 'RecLoanChannel' });
-			if (recLoanChannel) {
-				const channel = {
-					id: recLoanChannel.id,
-					loans: this.recommendedLoans,
-					url: '',
-				};
-				if (this.userId) {
-					channel.name = `Recommended for ${this.firstName}`;
-					channel.description = 'Loans we think you\'ll love based on your lending history.';
-				} else {
-					channel.name = 'Recommended by others';
-					channel.description = 'Log in for personalized recommendations.';
-				}
-				categories.push(channel);
+			if (this.recommendedLoans.length) {
+				return this.recommendedLoans.map(channel => {
+					const recChannel = {
+						id: channel.id,
+						name: channel.name,
+						description: channel.description,
+						loans: {
+							__typename: 'LoanBasicCollection',
+							values: channel.values,
+						},
+						url: '',
+					};
+					//	check recChannel.id, if it's 95 update the name and descripton with
+					if (recChannel.id === 95) {
+						if (this.userId) {
+							recChannel.name = `Recommended for ${this.firstName}`;
+							recChannel.description = 'Loans we think you\'ll love based on your lending history.';
+						} else {
+							recChannel.name = 'Recommended by others';
+							recChannel.description = 'Log in for personalized recommendations.';
+						}
+					}
+					return recChannel;
+				});
 			}
-			return categories;
+			// If there are no recommended loan channels fetched yet, return the
+			// RecLoanChannel objects from the category setting instead
+			return this.categorySetting.filter(setting => {
+				// eslint-disable-next-line no-underscore-dangle
+				return setting.__typename === 'RecLoanChannel';
+			});
 		},
 		customCategoryIds() {
 			return _map(this.customCategories, 'id');
@@ -251,7 +261,6 @@ export default {
 					});
 				}
 			}
-
 			_each(categories, (category, catIndex) => {
 				_each(category.loans.values, (loan, loanIndex) => {
 					loanIds.push({
@@ -266,14 +275,23 @@ export default {
 			return pageViewTrackData;
 		},
 		setRows(data) {
-			if (this.categoryRowHillclimbExpVersion === 'variant-a') {
+			if (this.mlServiceBanditExpVersion !== null) {
+				let baseData = {};
+				try {
+					baseData = this.apollo.readQuery({
+						query: mlOrderedLoanChannels,
+					});
+				} catch (e) {
+					logReadQueryError(e, 'LendByCategory mlOrderedLoanChannels');
+				}
+
 				// Get the array of channel objects from the ml multi-armed bandit
-				this.categorySetting = _get(data, 'ml.orderedLoanChannels') || [];
-				this.categorySetId = 'variant-a';
+				this.categorySetting = _get(baseData, 'ml.orderedLoanChannels') || [];
+				this.categorySetId = this.mlServiceBanditExpVersion;
 			} else {
 				// Get the array of channel objects from settings
 				this.categorySetting = readJSONSetting(data, 'general.rows.value') || [];
-				this.categorySetId = 'control';
+				this.categorySetId = 'default';
 			}
 		},
 		fetchRemainingLoanChannels() {
@@ -397,14 +415,18 @@ export default {
 				);
 			}
 		},
-		initializeRecommendedLoansRow() {
-			const recLoanChannel = _find(this.categorySetting, { __typename: 'RecLoanChannel' });
-			if (recLoanChannel) {
+		initializeRecommendedLoanRows() {
+			const recLoanChannels = this.categorySetting.filter(setting => {
+				// eslint-disable-next-line no-underscore-dangle
+				return setting.__typename === 'RecLoanChannel';
+			});
+
+			if (recLoanChannels.length) {
 				// Load recommended loan data
 				try {
 					const variables = {
 						basketId: cookieStore.get('kvbskt'),
-						ids: [recLoanChannel.id],
+						ids: recLoanChannels.map(channel => channel.id),
 						imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 						imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
 					};
@@ -413,70 +435,104 @@ export default {
 						variables,
 					});
 
-					// Filter out funded loans
-					const initialLoanSet = _get(data, 'ml.getOrderedChannelsByIds[0].loans.values');
-					const filteredLoanSet = this.filterFundedLoans(initialLoanSet);
+					const allRecLoanChannels = data.ml?.getOrderedChannelsByIds ?? [];
 
-					// share out results of loan query for row analytics
-					this.recommendedLoans = {
-						values: filteredLoanSet,
-						__typename: 'LoanBasicCollection'
-					};
+					const allRecLoans = allRecLoanChannels.map(channel => {
+						const channelLoans = channel.loans?.values ?? [];
+						if (channelLoans.length) {
+							return {
+								values: this.filterFundedLoans(channelLoans),
+								id: channel.id,
+								name: channel.name,
+								description: channel.description,
+							};
+						}
+						return [];
+					});
+					this.recommendedLoans = allRecLoans;
 				} catch (e) {
 					logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
 				}
 			}
 		},
-		fetchRecommendedLoans() {
-			// once the initial loan set is filtered and loaded, we query for more loans if there are too few
-			// if there are 6 or fewer recommended loans we'll fetch 20 more
-			const recLoanChannel = _find(this.categorySetting, { __typename: 'RecLoanChannel' });
-			if (recLoanChannel && _get(this, 'recommendedLoans.values.length') < 6) {
+		fetchRecommendedLoans(offset = 0) {
+			const lengthCheck = this.recommendedLoans.map(channel => {
+				const loanCount = channel.values?.length ?? 0;
+				return loanCount > 6;
+			});
+
+			// If more than 6 loans are returned, do nothing
+			// Otherwise proceed loading more loans for that category
+			if (!lengthCheck.includes(false)) {
+				return false;
+			}
+
+			const recLoanChannels = this.categorySetting.filter(setting => {
+				// eslint-disable-next-line no-underscore-dangle
+				return setting.__typename === 'RecLoanChannel';
+			});
+
+			if (recLoanChannels.length) {
+				// Load recommended loan data
 				const variables = {
-					ids: [recLoanChannel.id],
+					offset,
+					basketId: cookieStore.get('kvbskt'),
+					ids: recLoanChannels.map(channel => channel.id),
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-					offset: 20
 				};
+
 				return this.apollo.query({
 					query: recommendedLoansQuery,
 					variables,
 				}).then(({ data }) => {
-					// filter and update recommended loans
-					const backfillLoanSet = _get(data, 'ml.getOrderedChannelsByIds[0].loans.values');
-					const filteredBackfillLoans = this.filterFundedLoans(backfillLoanSet);
+					const allRecLoanChannels = data.ml?.getOrderedChannelsByIds ?? [];
 
-					// add new loans to row
-					if (filteredBackfillLoans.length > 0) {
-						const values = _get(this, 'recommendedLoans.values') || [];
-						this.recommendedLoans = {
-							values: values.concat(filteredBackfillLoans),
-							__typename: 'LoanBasicCollection'
-						};
-					}
+					const allRecLoans = allRecLoanChannels.map(channel => {
+						// filter and update recommended loans
+						// const backfillLoanSet = _get(data, 'ml.getOrderedChannelsByIds[0].loans.values');
+
+						const channelLoans = channel.loans?.values ?? [];
+						const filteredBackfillLoans = this.filterFundedLoans(channelLoans);
+						const existingChannel = this.recommendedLoans.filter(existingChannelObject => {
+							return existingChannelObject.id === channel.id;
+						});
+
+						const existingLoanValues = existingChannel[0].values || [];
+						if (channelLoans.length) {
+							return {
+								values: existingLoanValues.concat(filteredBackfillLoans),
+								id: channel.id,
+								name: channel.name,
+								description: channel.description,
+							};
+						}
+						return [];
+					});
+					this.recommendedLoans = allRecLoans;
 				});
 			}
 			return Promise.resolve();
 		},
-		initializeCategoryRowHillclimb() {
-			// experiment: CASH-970 Category Row Sort by MultiArmed Bandit algorithm experiment
+		initializeMLServiceBanditRowExp() {
+			// experiment: GROW-330 by MultiArmed Bandit algorithm experiment
 			// get assignment
-			const categoryRowHillclimb = 0;
-			const categoryRowHillclimbEXP = this.apollo.readFragment({
-				id: 'Experiment:category_row_hillclimb',
+			const mlServiceBandit = 0;
+			const mlServiceBanditEXP = this.apollo.readFragment({
+				id: 'Experiment:EXP-ML-Service-Bandit-LendByCategory',
 				fragment: experimentVersionFragment,
 			}) || {};
-			this.categoryRowHillclimbExpVersion = categoryRowHillclimbEXP.version;
+			this.mlServiceBanditExpVersion = mlServiceBanditEXP.version;
 			// Logged in user and non-users are included in this experiment,
 			// logged-in users are automatically tracked with their id
 			// Fire Event for Exp CASH-970
-			if (this.categoryRowHillclimbExpVersion && this.categoryRowHillclimbExpVersion !== 'unassigned') {
+			if (this.mlServiceBanditExpVersion && this.mlServiceBanditExpVersion !== 'unassigned') {
 				this.$kvTrackEvent(
 					'Lending',
 					'EXP-CASH-970-Mar2020',
-					this.categoryRowHillclimbExpVersion === 'variant-a' ? 'b' : 'a',
-					this.categoryRowHillclimbExpVersion === 'variant-a' ? categoryRowHillclimb : null,
-					this.categoryRowHillclimbExpVersion === 'variant-a' ? categoryRowHillclimb : null
+					this.mlServiceBanditExpVersion === 'variant-a' ? 'b' : 'a',
+					this.mlServiceBanditExpVersion === 'variant-a' ? mlServiceBandit : null,
+					this.mlServiceBanditExpVersion === 'variant-a' ? mlServiceBandit : null
 				);
 			}
 		},
@@ -491,12 +547,9 @@ export default {
 			}).then(({ data }) => {
 				// Get the array of channel objects from settings
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
-				// Get the array of channel objects from the ml multi-armed bandit
-				expRowData = _get(data, 'ml.orderedLoanChannels') || [];
-
 				return Promise.all([
-					// experiment: CASH-970 Category Row Sort by MultiArmed Bandit algorithm experiment
-					client.query({ query: experimentQuery, variables: { id: 'category_row_hillclimb' } }),
+					// experiment: GROW-330 Machine Learning Category row
+					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
 					// experiment: category description
 					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
 					// experiment: add to basket interstitial
@@ -507,13 +560,18 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
 				]);
 			}).then(expResults => {
-				// Set category ids and custom category ids based on whether the user is in the
-				// control group or the variant group for CASH-970 Category row hill climb experiment
-				const hillClimbExpVersion = _get(expResults, '[0].data.experiment.version');
-				if (hillClimbExpVersion !== 'control' && hillClimbExpVersion !== null) {
-					rowData = expRowData;
-				}
+				return client.query({
+					query: mlOrderedLoanChannels
+				}).then(({ data }) => {
+				// Get the array of channel objects from the ml multi-armed bandit
+					expRowData = _get(data, 'ml.orderedLoanChannels') || [];
 
+					const mlServiceBanditExpVersion = _get(expResults, '[0].data.experiment.version');
+					if (mlServiceBanditExpVersion !== null) {
+						rowData = expRowData;
+					}
+				});
+			}).then(() => {
 				// Get all channel ids for the row data
 				const ids = _map(rowData, 'id');
 				// Filter other channel types as custom categories
@@ -571,9 +629,8 @@ export default {
 		// Initialize CASH-521: Hover loan card experiment
 		this.initializeHoverLoanCard();
 
-		// Initialize CASH-970: Category row hill climb experiment assignment and tracking
-		this.initializeCategoryRowHillclimb();
-
+		// Initialize GROW-330: Machine Learning served rows
+		this.initializeMLServiceBanditRowExp();
 		// Copy basic data from query into instance variables
 		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
@@ -591,7 +648,7 @@ export default {
 			const categoryData = this.apollo.readQuery({
 				query: loanChannelQuery,
 				variables: {
-					ids: _take(this.realCategoryIds, ssrRowLimiter),
+					ids: _take(this.customCategoryIds, ssrRowLimiter),
 					basketId: cookieStore.get('kvbskt'),
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
@@ -656,13 +713,13 @@ export default {
 			);
 		}
 
-		// Initialize Recommended Loans Row
-		this.initializeRecommendedLoansRow();
+		// Initialize Recommended Loan Rows
+		this.initializeRecommendedLoanRows();
 	},
 	mounted() {
 		Promise.all([
 			this.fetchRemainingLoanChannels(),
-			this.fetchRecommendedLoans()
+			this.fetchRecommendedLoans(20)
 		]).then(() => {
 			this.rowLazyLoadComplete = true;
 

@@ -12,6 +12,8 @@ query recommendedLoans(
 			__typename
 			... on RecLoanChannel {
 				id
+				name
+				description
 				loans(limit: $numberOfLoans, offset: $offset) {
 					values {
 						id
