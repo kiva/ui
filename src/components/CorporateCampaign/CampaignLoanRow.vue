@@ -141,10 +141,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		// loans: {
-		// 	type: Array,
-		// 	default: () => [],
-		// },
 		rowNumber: {
 			type: Number,
 			default: null
@@ -206,9 +202,6 @@ export default {
 			this.loanQueryVarsStack.push(prev);
 		},
 		filters(next) {
-			// console.log('filters watch: ', next);
-			// if (next !== prev) {
-
 			// TODO: Review process for reseting loans after applying filters
 			// reset offset
 			this.offset = 0;
@@ -232,8 +225,6 @@ export default {
 		}
 	},
 	mounted() {
-		// this.activateLoanWatchQuery();
-
 		window.addEventListener('resize', _throttle(() => {
 			this.saveWindowWidth();
 		}, 200));
