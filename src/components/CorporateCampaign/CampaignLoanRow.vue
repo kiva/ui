@@ -14,7 +14,7 @@
 		>
 			<h3>All borrowers matching this search have been funded.</h3>
 			<p>
-				Please adjust your criteria or <span @click.prevent="resetSearchFilters">start a new search.</span>
+				Please adjust your criteria or <a @click.prevent="resetSearchFilters">start a new search.</a>
 			</p>
 		</div>
 		<kv-carousel
@@ -114,7 +114,11 @@ export default {
 		rowNumber: {
 			type: Number,
 			default: null
-		}
+		},
+		showLoans: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -166,10 +170,15 @@ export default {
 			if (next) {
 				this.loadingLoans = false;
 			}
+		},
+		showLoans(next) {
+			if (next) {
+				this.activateLoanWatchQuery();
+			}
 		}
 	},
 	mounted() {
-		this.activateLoanWatchQuery();
+		// this.activateLoanWatchQuery();
 	},
 	methods: {
 		addToBasket(payload) {
@@ -181,6 +190,7 @@ export default {
 			this.$emit('show-loan-details', selectedLoan);
 		},
 		activateLoanWatchQuery() {
+			this.loadingLoans = true;
 			const observer = this.apollo.watchQuery({
 				query: basicLoanQuery,
 				variables: this.loanQueryVars,
