@@ -648,8 +648,7 @@ export default {
 			const categoryData = this.apollo.readQuery({
 				query: loanChannelQuery,
 				variables: {
-					// I DON'T NEED THIS WITHOUT ANYMORE
-					ids: _take(_without(this.realCategoryIds, this.customCategoryIds), ssrRowLimiter),
+					ids: _take(this.customCategoryIds, ssrRowLimiter),
 					basketId: cookieStore.get('kvbskt'),
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
