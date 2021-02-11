@@ -115,7 +115,7 @@ export function validateQueryParams(query, apollo) {
  * @param {Object} apollo Apollo Client instance
  * @returns {Promise}
  */
-export function getPromoFromBasket(promoFundId, apollo) {
+export function getPromoFromBasket(promoFundId = null, apollo) {
 	return apollo.query({
 		query: promoCampaign,
 		variables: {
