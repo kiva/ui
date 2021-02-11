@@ -681,7 +681,7 @@ export default {
 				this.promoApplied = false;
 				this.loadingPromotion = false;
 				// ensure updated basket state for promo-less visit
-				this.updateBasketState();
+				this.getPromoInformationFromBasket();
 			}
 		},
 		applyPromotion() {
