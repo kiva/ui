@@ -16,24 +16,13 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
+		mlServiceBandit: uiExperimentSetting(key: "EXP-ML-Service-Bandit-LendByCategory") {
+			key
+			value
+		}
 		hoverLoanCards: uiExperimentSetting(key: "hover_loan_cards") {
 			key
 			value
-		}
-		categoryRowHillclimb: uiExperimentSetting(key: "category_row_hillclimb") {
-			key
-			value
-		}
-	}
-	ml {
-		orderedLoanChannels(platform:marketplace) {
-			__typename
-			... on LoanChannel {
-				id
-			}
-			... on RecLoanChannel {
-				id
-			}
 		}
 	}
 	my {
