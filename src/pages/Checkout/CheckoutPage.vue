@@ -382,10 +382,9 @@ export default {
 		}) || {};
 		this.guestCheckoutExperimentVersion = guestCheckoutExperiment.version;
 
-		if (this.guestCheckoutExperimentVersion) {
-			console.log('tracking thrown');
+		if (!cookieStore.get('kvu') && this.guestCheckoutExperimentVersion) {
 			this.$kvTrackEvent(
-				'Basket',
+				'Checkout',
 				'EXP-GROW-458-Feb2020',
 				this.guestCheckoutExperimentVersion,
 			);
