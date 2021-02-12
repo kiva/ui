@@ -543,7 +543,7 @@ export default {
 		this.setAuthStatus(this.kvAuth0?.user ?? {});
 	},
 	watch: {
-		initialFilters(next, prev) {
+		initialFilters(next) {
 			if (typeof next === 'object' && Object.keys(next).length > 0) {
 				this.filters = next;
 			}
