@@ -376,18 +376,22 @@ export default {
 		this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
 
 		// GROW-458 Guest Checkout Experiment
-		const guestCheckoutExperiment = this.apollo.readFragment({
-			id: 'Experiment:guest_checkout',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.guestCheckoutExperimentVersion = guestCheckoutExperiment.version;
+		// If the user doesn't have the kvu cookie (indicating they have never
+		// logged into Kiva on this device) trigger this experiment
+		if (!cookieStore.get('kvu')) {
+			const guestCheckoutExperiment = this.apollo.readFragment({
+				id: 'Experiment:guest_checkout',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.guestCheckoutExperimentVersion = guestCheckoutExperiment.version;
 
-		if (!cookieStore.get('kvu') && this.guestCheckoutExperimentVersion) {
-			this.$kvTrackEvent(
-				'Checkout',
-				'EXP-GROW-458-Feb2020',
-				this.guestCheckoutExperimentVersion,
-			);
+			if (this.guestCheckoutExperimentVersion) {
+				this.$kvTrackEvent(
+					'Checkout',
+					'EXP-GROW-458-Feb2020',
+					this.guestCheckoutExperimentVersion,
+				);
+			}
 		}
 	},
 	mounted() {
