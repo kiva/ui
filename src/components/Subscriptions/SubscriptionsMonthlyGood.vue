@@ -30,6 +30,11 @@
 					<p>
 						<kv-button class="text-link"
 							@click.native.prevent="showCancelLightbox = true"
+							v-kv-track-event="[
+								'monthlyGood',
+								'click-cancel-monthly-good',
+								'Cancel Monthly Good'
+							]"
 						>
 							Cancel Monthly Good
 						</kv-button>

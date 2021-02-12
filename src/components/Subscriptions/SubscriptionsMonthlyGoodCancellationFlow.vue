@@ -228,6 +228,8 @@ export default {
 			this.currentStep = step;
 		},
 		closeLightbox() {
+			// Track this event
+			this.$kvTrackEvent('monthlyGood', 'click-close-monthly-good', 'close cancel monthly good');
 			// Reset
 			this.resetCancellationFlow();
 			// Emit event
