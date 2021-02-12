@@ -18,6 +18,7 @@
 			</p>
 		</div>
 		<kv-carousel
+			v-show="!zeroLoans"
 			ref="campaignLoanCarousel"
 			slides-to-scroll="visible"
 			:autoplay="false"
