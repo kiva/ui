@@ -385,6 +385,7 @@ export default {
 			}) || {};
 			this.guestCheckoutExperimentVersion = guestCheckoutExperiment.version;
 
+			// If a guest checkout experiment version set, trigger tracking
 			if (this.guestCheckoutExperimentVersion) {
 				this.$kvTrackEvent(
 					'Checkout',
