@@ -598,7 +598,7 @@ export default {
 		prioritizedTargetCampaignCredit() {
 			if (this.pageSettingData?.promoFundId) {
 				const targetPromos = this.basketCredits.filter(credit => {
-					return credit.promoFund?.id === this.pageSettingData?.promoPageId;
+					return credit.promoFund?.id === this.pageSettingData?.promoFundId;
 				});
 				return targetPromos.length ? targetPromos[0] : null;
 			}
@@ -694,6 +694,11 @@ export default {
 					// This error might arise if the promo is already applied
 					// Store the error message here and handle visibility in getPromoInformationFromBasket
 					this.promoErrorMessage = result.errors[0].message;
+					this.promoApplied = false;
+					this.loadingPromotion = false;
+				} else {
+					this.promoApplied = true;
+					this.loadingPromotion = false;
 				}
 				// gather promo info
 				this.getPromoInformationFromBasket();
@@ -701,6 +706,7 @@ export default {
 				console.error(error);
 				this.promoErrorMessage = error;
 				this.loadingPromotion = false;
+				this.promoApplied = false;
 			});
 		},
 		getPromoInformationFromBasket() {
@@ -740,9 +746,14 @@ export default {
 				// Verify that applied promotion is for current page
 				if (this.verifyPromoMatchesPageId(response.data?.shop?.promoCampaign?.managedAccount?.pageId)) {
 					this.promoData = response.data?.shop?.promoCampaign;
-					this.promoApplied = true;
+					// this.promoApplied = true;
 					this.loadingPromotion = false;
-					this.promoErrorMessage = null;
+					// if this promo credit is already applied and matches we can clear the error
+					if (this.prioritizedTargetCampaignCredit?.promoFund?.id
+						=== response.data?.shop?.promoCampaign?.promoFund?.id) {
+						this.promoApplied = true;
+						this.promoErrorMessage = null;
+					}
 				} else {
 					// Handle response and any potential errors
 					// > this reveals and prior error messages from the promo application
