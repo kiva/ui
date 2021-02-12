@@ -18,7 +18,7 @@
 			</p>
 		</div>
 		<kv-carousel
-			v-if="!loadingLoans && !zeroLoans"
+			v-show="!zeroLoans"
 			ref="campaignLoanCarousel"
 			slides-to-scroll="visible"
 			:autoplay="false"
@@ -145,6 +145,13 @@ export default {
 		}
 	},
 	watch: {
+		loans() {
+			if (this.loans.length) {
+				this.$nextTick(() => {
+					this.$refs.campaignLoanCarousel.reInit();
+				});
+			}
+		},
 		loanQueryVars(next, prev) {
 			this.loanQueryVarsStack.push(prev);
 		},
@@ -157,7 +164,9 @@ export default {
 			// reset loan added flag
 			this.loanAdded = false;
 			this.loanQueryFilters = next;
-			// }
+
+			// Reset carousel position after applying loan filters
+			this.$refs.campaignLoanCarousel.goToSlide(0);
 		},
 		isVisible(next) {
 			if (next) {
@@ -208,17 +217,6 @@ export default {
 					this.loadingLoans = false;
 					if (this.totalCount === 0) {
 						this.zeroLoans = true;
-					}
-
-					// Reset carousel position after applying loan filters or loading additional loans
-					if (!this.loanAdded && !this.zeroLoans) {
-						this.$nextTick(() => {
-							// Since we can show up to 3 cards at a time,
-							// we need to do math do determine how far to scroll the carousel
-							const slidesInView = this.$refs.campaignLoanCarousel.embla.slidesInView(true).length;
-							const scrollDistance = this.offset / slidesInView;
-							this.$refs.campaignLoanCarousel.goToSlide(parseInt(scrollDistance, 10));
-						});
 					}
 				}
 			});
