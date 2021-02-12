@@ -63,7 +63,6 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -164,9 +163,9 @@ export default {
 	watch: {
 		loanChannel: {
 			handler(channel) {
-				this.name = _get(channel, 'name', '');
-				this.url = _get(channel, 'url', '');
-				this.id = _get(channel, 'id', '');
+				this.name = channel?.name || '';
+				this.url = channel?.url || '';
+				this.id = channel?.id || '';
 			},
 			immediate: true,
 		},
