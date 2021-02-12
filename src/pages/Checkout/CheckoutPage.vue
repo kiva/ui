@@ -254,6 +254,7 @@ export default {
 			addToBasketRedirectExperimentShown: false,
 			loginButtonExperimentVersion: null,
 			redirectToLoginExperimentVersion: null,
+			guestCheckoutExperimentVersion: null,
 		};
 	},
 	apollo: {
@@ -356,6 +357,26 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
+
+		// GROW-458 Guest Checkout Experiment
+		// If the user doesn't have the kvu cookie (indicating they have never
+		// logged into Kiva on this device) trigger this experiment
+		if (!cookieStore.get('kvu')) {
+			const guestCheckoutExperiment = this.apollo.readFragment({
+				id: 'Experiment:guest_checkout',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.guestCheckoutExperimentVersion = guestCheckoutExperiment.version;
+
+			// If a guest checkout experiment version set, trigger tracking
+			if (this.guestCheckoutExperimentVersion) {
+				this.$kvTrackEvent(
+					'Checkout',
+					'EXP-GROW-458-Feb2020',
+					this.guestCheckoutExperimentVersion,
+				);
+			}
+		}
 	},
 	mounted() {
 		// Ensure browser clock is correct before using current time
