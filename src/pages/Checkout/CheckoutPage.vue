@@ -103,7 +103,6 @@
 										title="Checkout as guest"
 										@click.native="guestCheckout"
 									>
-										<!-- :href="'/ui-login?force=true&doneUrl=/checkout'" -->
 										Checkout as guest
 									</kv-button>
 
