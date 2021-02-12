@@ -200,10 +200,7 @@ export default {
 		});
 
 		if (this.slidesToScroll === 'visible') {
-			this.embla.reInit({
-				slidesToScroll: this.embla.slidesInView(true).length,
-				inViewThreshold: 0.90,
-			});
+			this.reInitVisible();
 
 			this.embla.on('resize', _throttle(() => {
 				this.embla.reInit({
@@ -278,6 +275,28 @@ export default {
 		goToSlide(index) {
 			this.embla.scrollTo(index);
 			this.intervalTimerCurrentTime = 0;
+		},
+		/**
+		 * Reinitialize the carousel.
+		 * Used after adding slides dynamically.
+		 *
+		 * @public This is a public method
+		 */
+		reInit() {
+			this.embla.reInit();
+			if (this.slidesToScroll === 'visible') {
+				this.reInitVisible();
+			}
+			this.slides = this.embla.slideNodes();
+		},
+		reInitVisible() {
+			const slidesInView = this.embla.slidesInView(true).length;
+			if (slidesInView) {
+				this.embla.reInit({
+					slidesToScroll: slidesInView,
+					inViewThreshold: 0.90,
+				});
+			}
 		},
 		onCarouselContainerClick(e) {
 			// If we're dragging, block click handlers within slides
