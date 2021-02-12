@@ -10,7 +10,7 @@
 					srcset="@/assets/images/loan-card-stack_2x.jpg 2x"
 					alt=""
 					width="383"
-					height="429"
+					height="455"
 				>
 			</div>
 			<!-- eslint-disable-next-line max-len -->
@@ -131,10 +131,11 @@ export default {
 
 	&__header {
 		@include large-text();
-		// padding-top: 1rem;
 
 		@include breakpoint(xlarge) {
 			@include huge-headline();
+
+			font-weight: 500;
 		}
 	}
 
