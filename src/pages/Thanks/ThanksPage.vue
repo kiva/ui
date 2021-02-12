@@ -23,45 +23,76 @@
 			</div>
 		</div>
 
-		<div class="mg_cta-row">
-			<div class="row align-center">
-				<div class="small-12 columns">
-					<monthly-good-c-t-a
-						v-if="showMonthlyGoodCTA"
-						:headline="ctaHeadline"
-						:body-copy="ctaBodyCopy"
-						:button-text="ctaButtonText"
+		<!-- Thanks Page V1 -->
+		<div v-if="thanksPageVersion === 'a'">
+			<div class="mg_cta-row">
+				<div class="row align-center">
+					<div class="small-12 columns">
+						<monthly-good-c-t-a
+							v-if="!isMonthlyGoodSubscriber"
+							:headline="ctaHeadline"
+							:body-copy="ctaBodyCopy"
+							:button-text="ctaButtonText"
+						/>
+					</div>
+				</div>
+			</div>
+
+			<div class="row page-content">
+				<template v-if="loans.length > 0">
+					<social-share
+						class="thanks__social-share"
+						:lender="lender"
+						:loans="loans"
+					/>
+				</template>
+
+				<div class="small-12 columns thanks">
+					<hr v-if="loans.length > 0 || !isMonthlyGoodSubscriber">
+					<checkout-receipt
+						v-if="receipt"
+						class="thanks__receipt"
+						:lender="lender"
+						:receipt="receipt"
 					/>
 				</div>
+
+				<contentful-lightbox
+					v-if="promoEnabled"
+					:content-group="contentGroup"
+					:visible="displayLightbox"
+					@lightbox-closed="displayLightbox = false"
+				/>
 			</div>
 		</div>
 
-		<div class="row page-content">
-			<template v-if="loans.length > 0">
+		<thanks-layout-v2
+			v-if="thanksPageVersion === 'b'"
+			:show-mg-cta="!isMonthlyGoodSubscriber"
+			:show-share="loans.length > 0"
+		>
+			<template v-slot:receipt>
+				<checkout-receipt
+					v-if="receipt"
+					:lender="lender"
+					:receipt="receipt"
+				/>
+			</template>
+			<template v-slot:mg>
+				<monthly-good-c-t-a
+					:headline="ctaHeadline"
+					:body-copy="ctaBodyCopy"
+					:button-text="ctaButtonText"
+				/>
+			</template>
+			<template v-slot:share>
 				<social-share
 					class="thanks__social-share"
 					:lender="lender"
 					:loans="loans"
 				/>
 			</template>
-
-			<div class="small-12 columns thanks">
-				<hr v-if="loans.length > 0 || showMonthlyGoodCTA">
-				<checkout-receipt
-					v-if="receipt"
-					class="thanks__receipt"
-					:lender="lender"
-					:receipt="receipt"
-				/>
-			</div>
-
-			<contentful-lightbox
-				v-if="promoEnabled"
-				:content-group="contentGroup"
-				:visible="displayLightbox"
-				@lightbox-closed="displayLightbox = false"
-			/>
-		</div>
+		</thanks-layout-v2>
 	</www-page>
 </template>
 
@@ -75,6 +106,7 @@ import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import MonthlyGoodCTA from '@/components/Checkout/MonthlyGoodCTA';
 import SocialShare from '@/components/Checkout/SocialShare';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import ThanksLayoutV2 from '@/components/Thanks/ThanksLayoutV2';
 
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import contentful from '@/graphql/query/contentful.graphql';
@@ -92,6 +124,7 @@ export default {
 		KvCheckoutSteps,
 		MonthlyGoodCTA,
 		SocialShare,
+		ThanksLayoutV2,
 		WwwPage,
 	},
 	inject: ['apollo', 'federation'],
@@ -114,9 +147,8 @@ export default {
 				'Payment',
 				'Thank You!'
 			],
-			showMonthlyGoodCTA: false,
+			thanksPageVersion: 'a',
 			isMonthlyGoodSubscriber: false,
-			isContentfulActive: false,
 			pageData: {},
 		};
 	},
@@ -171,17 +203,7 @@ export default {
 			// Check for contentful content
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
-
-			// returns the contentful content of the uiSetting key ui-homepage-monthly-good
-			// which controls when the contentful page layout should be active
-			const uiMonthlyGoodLandingSetting = this.pageData?.page?.settings?.find(item => item.key === 'ui-homepage-monthly-good') ?? null; // eslint-disable-line max-len
-			this.isContentfulActive = settingEnabled(
-				uiMonthlyGoodLandingSetting,
-				'active',
-				'startDate',
-				'endDate'
-			);
-		}
+		},
 	},
 	computed: {
 		borrowerSupport() {
@@ -199,33 +221,15 @@ export default {
 			// eslint-disable-next-line max-len
 			return this.ctaContentGroup?.contents?.find(contentItem => contentItem.key === 'thanks-mg-cta');
 		},
-		contentfulHeadline() {
+		ctaHeadline() {
 			return this.ctaContentBlock?.headline;
 		},
-		contentfulSubHeadline() {
+		ctaBodyCopy() {
 			return this.ctaContentBlock?.subHeadline;
 		},
-		contentfulPrimaryCtaText() {
+		ctaButtonText() {
 			return this.ctaContentBlock?.primaryCtaText;
 		},
-		ctaHeadline() {
-			if (this.isContentfulActive) {
-				return this.contentfulHeadline;
-			}
-			return null;
-		},
-		ctaBodyCopy() {
-			if (this.isContentfulActive) {
-				return this.contentfulSubHeadline;
-			}
-			return null;
-		},
-		ctaButtonText() {
-			if (this.isContentfulActive) {
-				return this.contentfulPrimaryCtaText;
-			}
-			return null;
-		}
 	},
 	mounted() {
 		confetti({
@@ -239,19 +243,18 @@ export default {
 		});
 
 		// MG Upsell On Thanks Page - EXP-SUBS-526-Oct2020
+		// This experiment determines which Thanks Page layout will be shown.
 		const mgCTAExperiment = this.apollo.readFragment({
 			id: 'Experiment:mg_thanks_cta',
 			fragment: experimentVersionFragment,
 		}) || {};
 
-		if (mgCTAExperiment.version === 'shown' && !this.isMonthlyGoodSubscriber) {
-			this.showMonthlyGoodCTA = true;
-			this.$kvTrackEvent(
-				'Thanks',
-				'EXP-SUBS-526-Oct2020',
-				mgCTAExperiment.version === 'shown' ? 'a' : 'b'
-			);
-		}
+		this.thanksPageVersion = mgCTAExperiment.version === 'shown' ? 'b' : 'a';
+		this.$kvTrackEvent(
+			'Thanks',
+			'EXP-SUBS-526-Oct2020',
+			mgCTAExperiment.version === 'shown' ? 'b' : 'a'
+		);
 
 		// Contentful Lightbox
 		this.federation.query({

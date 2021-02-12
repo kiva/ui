@@ -12,10 +12,7 @@
 					<div class="overlay-column columns medium-12 large-8">
 						<p class="mg-headline" v-html="pageCopy.headline">
 						</p>
-						<p class="mg-subhead" v-if="!isContentfulActive">
-							{{ pageCopy.subhead }}
-						</p>
-						<div class="mg-subhead" v-if="isContentfulActive" v-html="heroBody">
+						<div class="mg-subhead" v-html="heroBody">
 						</div>
 						<landing-form
 							:amount.sync="monthlyGoodAmount"
@@ -77,7 +74,6 @@ import experimentVersionFragment from '@/graphql/fragments/experimentVersion.gra
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 import { processPageContentFlat } from '@/util/contentfulUtils';
-import { settingEnabled } from '@/util/settingsUtils';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvHero from '@/components/Kv/KvHero';
@@ -153,7 +149,6 @@ export default {
 				['wxga retina', heroImagesRequire('./monthlygood-banner-xxl-retina.jpg')],
 			],
 			pageData: {},
-			isContentfulActive: false
 		};
 	},
 	inject: ['apollo'],
@@ -188,16 +183,6 @@ export default {
 			// Check for contentful content
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
-
-			// returns the contentful content of the uiSetting key ui-homepage-monthly-good
-			// which controls when the contentful page layout should be active
-			const uiMonthlyGoodLandingSetting = this.pageData?.page?.settings?.find(item => item.key === 'ui-homepage-monthly-good') ?? null; // eslint-disable-line max-len
-			this.isContentfulActive = settingEnabled(
-				uiMonthlyGoodLandingSetting,
-				'active',
-				'startDate',
-				'endDate'
-			);
 		},
 	},
 	computed: {
@@ -215,7 +200,6 @@ export default {
 		pageCopy() {
 			return {
 				headline: 'It\'s easy to do good.',
-				subhead: 'Support borrowers worldwide with monthly contributions as little as $5.',
 				button: 'Start Monthly Good'
 			};
 		}

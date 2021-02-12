@@ -40,23 +40,6 @@
 								@updated-filters="handleUpdatedFilters"
 								@set-loan-display="handleLoanDisplayType"
 							/>
-							<!-- <div class="loan-view-controls__display">
-								<kv-pill-toggle
-									id="pill"
-									:options="[
-										{
-											title: 'Rows',
-											key: 'rows',
-										},
-										{
-											title: 'Grid',
-											key: 'grid',
-										},
-									]"
-									selected="rows"
-									@pill-toggled="(val) => { showLoanRows = val === 'rows' }"
-								/>
-							</div> -->
 						</div>
 
 						<campaign-loan-row
@@ -69,9 +52,11 @@
 							:is-visible="showLoanRows"
 							:key="'one-category'"
 							:row-number="1"
+							:show-loans="showLoans"
 							@add-to-basket="handleAddToBasket"
 							@update-total-count="setTotalCount"
 							@show-loan-details="showLoanDetails"
+							@reset-loan-filters="handleResetLoanFilters"
 						/>
 
 						<campaign-loan-grid-display
@@ -87,6 +72,7 @@
 							@add-to-basket="handleAddToBasket"
 							@update-total-count="setTotalCount"
 							@show-loan-details="showLoanDetails"
+							@reset-loan-filters="handleResetLoanFilters"
 						/>
 					</div>
 				</div>
@@ -181,8 +167,10 @@
 <script>
 import gql from 'graphql-tag';
 import numeral from 'numeral';
+import { indexIn } from '@/util/comparators';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
+import LoanSearchFilters, { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
 import syncDate from '@/util/syncDate';
 import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -202,11 +190,8 @@ import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVer
 import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
 import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
 import KvLightbox from '@/components/Kv/KvLightbox';
-// import KvPillToggle from '@/components/Kv/KvPillToggle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
-// import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
 
 const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
 	contentful {
@@ -358,6 +343,8 @@ const basketItemsQuery = gql`query basketItemsQuery(
 					creditType
 					promoFund {
 						id
+						displayName
+						displayDescription
 					}
 				}
 			}
@@ -417,7 +404,6 @@ export default {
 		CampaignVerificationForm,
 		InContextCheckout,
 		KvLightbox,
-		// KvPillToggle,
 		LoanCardController,
 		WwwPageCorporate,
 	},
@@ -468,9 +454,9 @@ export default {
 			loadingPromotion: false,
 			loans: [],
 			basketTotals: {},
-			basketTargetPromoCredit: () => [],
 			basketLoans: [],
 			initialBasketCredits: [],
+			basketCredits: [],
 			donations: [],
 			kivaCards: [],
 			totalCount: 0,
@@ -534,10 +520,6 @@ export default {
 		this.loadingPromotion = true;
 		// check for applied promo
 		this.verifyOrApplyPromotion();
-		// update basket state if any loans are already in the basket
-		// if (this.itemsInBasket.length) {
-		// 	this.updateBasketState();
-		// }
 
 		// clean up show-basket process
 		// TODO: Revisit this control flow
@@ -556,8 +538,12 @@ export default {
 		this.setAuthStatus(this.kvAuth0?.user ?? {});
 	},
 	watch: {
-		initialFilters(next) {
-			this.filters = next;
+		initialFilters(next, prev) {
+			console.log('initialFilters: ', next, prev);
+			if (typeof next === 'object' && Object.keys(next).length > 0) {
+				this.filters = next;
+			}
+			return false;
 		},
 		checkoutVisible(next) {
 			if (!next && this.$route.hash === '#show-basket') {
@@ -568,6 +554,15 @@ export default {
 		}
 	},
 	computed: {
+		pageSettingData() {
+			const settings = this.pageData?.page?.settings ?? [];
+			const jsonDataArray = settings.map(setting => setting.dataObject || {});
+			/* eslint-disable-next-line no-unused-vars, no-empty-pattern */
+			const allJsonData = jsonDataArray.reduce((accumulator, settingDataObject) => {
+				return { ...accumulator, ...settingDataObject };
+			}, {});
+			return allJsonData;
+		},
 		pageTitle() {
 			const layoutTitle = this.pageData?.page?.pageLayout?.pageTitle;
 			const pageTitle = this.pageData?.page?.pageTitle ?? 'Loans that change lives';
@@ -583,15 +578,49 @@ export default {
 			return this.pageData?.page?.contentGroups?.mlCampaignThanks;
 		},
 		promoAmount() {
-			if (this.basketTargetPromoCredit.length) {
-				const promoAmount = this.basketTargetPromoCredit[0]?.available ?? '0';
+			if (this.prioritizedTargetCampaignCredit) {
+				const promoAmount = this.prioritizedTargetCampaignCredit?.available ?? '0';
 				return promoAmount;
 			}
 			return '0';
 		},
+		prioritizedBasketCredits() {
+			const basketCredits = this.basketCredits.length ? this.basketCredits : this.initialBasketCredits;
+			if (!basketCredits.length) return basketCredits;
+			// establish precedence for credit types
+			const sortBy = ['universal_code', 'redemption_code', 'bonus_credit', 'kiva_credit'];
+			// copy and sort the credits
+			const creditsArrayCopy = basketCredits.map(credit => credit);
+			creditsArrayCopy.sort(indexIn(sortBy, 'creditType'));
+			// return the 1st credit for presentation
+			return creditsArrayCopy;
+		},
+		prioritizedTargetCampaignCredit() {
+			if (this.pageSettingData?.promoFundId) {
+				const targetPromos = this.basketCredits.filter(credit => {
+					return credit.promoFund?.id === this.pageSettingData?.promoFundId;
+				});
+				return targetPromos.length ? targetPromos[0] : null;
+			}
+			if (this.prioritizedBasketCredits.length) {
+				return this.prioritizedBasketCredits[0];
+			}
+			return null;
+		},
 		initialFilters() {
-			const filters = this.promoData?.managedAccount?.loanSearchCriteria?.filters ?? {};
-			return getSearchableFilters(filters);
+			// initialize filter object
+			let filters = LoanSearchFilters();
+			// fetch filters from promo if available
+			const promoFilters = this.promoData?.managedAccount?.loanSearchCriteria?.filters ?? null;
+			// update filters from promo if present and fetchting promo data is complete
+			if (!this.loadingPromotion && promoFilters) {
+				filters = promoFilters;
+			}
+			// const filters = promoFilters || LoanSearchFilters();
+			const baseFilters = getSearchableFilters(filters);
+			// set some always on filters
+			baseFilters.status = 'fundraising';
+			return baseFilters;
 		},
 		isActivelyLoggedIn() {
 			const lastLogin = (parseInt(this.lastActiveLogin, 10)) || 0;
@@ -652,7 +681,7 @@ export default {
 				this.promoApplied = false;
 				this.loadingPromotion = false;
 				// ensure updated basket state for promo-less visit
-				this.updateBasketState();
+				this.getPromoInformationFromBasket();
 			}
 		},
 		applyPromotion() {
@@ -665,6 +694,11 @@ export default {
 					// This error might arise if the promo is already applied
 					// Store the error message here and handle visibility in getPromoInformationFromBasket
 					this.promoErrorMessage = result.errors[0].message;
+					this.promoApplied = false;
+					this.loadingPromotion = false;
+				} else {
+					this.promoApplied = true;
+					this.loadingPromotion = false;
 				}
 				// gather promo info
 				this.getPromoInformationFromBasket();
@@ -672,6 +706,7 @@ export default {
 				console.error(error);
 				this.promoErrorMessage = error;
 				this.loadingPromotion = false;
+				this.promoApplied = false;
 			});
 		},
 		getPromoInformationFromBasket() {
@@ -683,7 +718,7 @@ export default {
 				}
 			});
 
-			// TEMPORARY Handling for patched in basket credits
+			// Handling for patched in basket credits
 			// TODO Extract as utility to get promo id from basket credits
 			basketItems.then(({ data }) => {
 				// console.log(data);
@@ -698,22 +733,27 @@ export default {
 				const basketItemValues = data.shop?.basket?.items?.values ?? [];
 				this.itemsInBasket = basketItemValues.length ? basketItemValues.map(item => item.id) : [];
 
-				const credits = data.shop?.basket?.credits?.values;
-				// TODO: target this check on the promoFund.id or creditType when possible
-				const targetPromo = credits.filter(credit => {
-					return credit.promoFund ? Object.keys(credit.promoFund).length > 0 : false;
-				});
-				this.basketTargetPromoCredit = targetPromo;
+				this.basketCredits = data.shop?.basket?.credits?.values || [];
+
 				// Primary PromoCampaign Query
-				// Future usage will not require the promoFundId relying only on the basket id
-				return getPromoFromBasket(targetPromo[0].promoFund?.id, this.apollo);
+				// > Previously > Future usage will not require the promoFundId relying only on the basket id
+				// > Currently > Providing the Promo Id can help differentiate between existing credits on the baskset
+				// Override promoFundId if provided in contentful setting
+				const targetPromoId = this.pageSettingData?.promoFundId
+					?? (this.prioritizedTargetCampaignCredit?.promoFund?.id ?? null);
+				return getPromoFromBasket(targetPromoId, this.apollo);
 			}).then(response => {
 				// Verify that applied promotion is for current page
 				if (this.verifyPromoMatchesPageId(response.data?.shop?.promoCampaign?.managedAccount?.pageId)) {
 					this.promoData = response.data?.shop?.promoCampaign;
-					this.promoApplied = true;
+					// this.promoApplied = true;
 					this.loadingPromotion = false;
-					this.promoErrorMessage = null;
+					// if this promo credit is already applied and matches we can clear the error
+					if (this.prioritizedTargetCampaignCredit?.promoFund?.id
+						=== response.data?.shop?.promoCampaign?.promoFund?.id) {
+						this.promoApplied = true;
+						this.promoErrorMessage = null;
+					}
 				} else {
 					// Handle response and any potential errors
 					// > this reveals and prior error messages from the promo application
@@ -723,7 +763,7 @@ export default {
 
 				// Initialize loan query + observer there are no loans in the basket
 				this.showLoans = true;
-				this.$refs.loandisplayref.activateLoanWatchQuery();
+
 				this.setAuthStatus(this.kvAuth0?.user);
 				this.updateBasketState();
 			});
@@ -765,12 +805,7 @@ export default {
 				const basketItemValues = data.shop?.basket?.items?.values ?? [];
 				this.itemsInBasket = basketItemValues.length ? basketItemValues.map(item => item.id) : [];
 
-				const credits = data.shop?.basket?.credits?.values ?? [];
-				// TODO: target this check on the promoFund.id or creditType when possible
-				const targetPromo = credits.filter(credit => {
-					return credit.promoFund ? Object.keys(credit.promoFund).length > 0 : false;
-				});
-				this.basketTargetPromoCredit = targetPromo;
+				this.basketCredits = data.shop?.basket?.credits?.values ?? [];
 			});
 		},
 		validatePromoBasketState(basketState) {
@@ -998,6 +1033,9 @@ export default {
 		handleUpdatedFilters(payload) {
 			this.filters = getSearchableFilters(payload);
 		},
+		handleResetLoanFilters() {
+			this.filters = this.initialFilters;
+		},
 		setTotalCount(payload) {
 			this.totalCount = payload;
 		},
@@ -1034,7 +1072,7 @@ export default {
 
 		position: sticky;
 		top: $header-height;
-		z-index: 1;
+		z-index: 2;
 
 		@include breakpoint(large) {
 			top: $header-height-large;

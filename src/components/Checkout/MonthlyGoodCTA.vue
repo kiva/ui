@@ -208,8 +208,7 @@ export default {
 @import 'settings';
 
 .monthly-good-cta {
-	padding: 1.75rem 1.5rem 1.5rem 1.5rem;
-	background: $white;
+	padding: 1.5rem;
 	text-align: left;
 
 	@include breakpoint(large) {

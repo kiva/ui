@@ -171,7 +171,6 @@ import numeral from 'numeral';
 import store2 from 'store2';
 import cookieStore from '@/util/cookieStore';
 import { preFetchAll } from '@/util/apolloPreFetch';
-import logReadQueryError from '@/util/logReadQueryError';
 import syncDate from '@/util/syncDate';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import checkoutSettings from '@/graphql/query/checkout/checkoutSettings.graphql';
@@ -191,8 +190,6 @@ import BasketVerification from '@/components/Checkout/BasketVerification';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import { settingEnabled } from '@/util/settingsUtils';
-import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
@@ -257,6 +254,7 @@ export default {
 			addToBasketRedirectExperimentShown: false,
 			loginButtonExperimentVersion: null,
 			redirectToLoginExperimentVersion: null,
+			guestCheckoutExperimentVersion: null,
 		};
 	},
 	apollo: {
@@ -323,22 +321,8 @@ export default {
 		const validationErrors = _get(shopMutationData, 'validatePreCheckout', []);
 		this.showCheckoutError(validationErrors, true);
 
-		// check if holiday mode is enabled
-		try {
-			this.holidayModeEnabled = settingEnabled(
-				this.apollo.readQuery({
-					query: promoQuery,
-					variables: {
-						basketId: cookieStore.get('kvbskt'),
-					},
-				}),
-				'general.holiday_enabled.value',
-				'general.holiday_start_time.value',
-				'general.holiday_end_time.value'
-			);
-		} catch (e) {
-			logReadQueryError(e, 'CheckoutPage promoQuery');
-		}
+		// TODO: Implement check against contentful setting
+		// to signify if holiday mode is enabled
 
 		// GROW-127 Add to basket redirect experiment
 		const addToBasketRedirectExperiment = this.apollo.readFragment({
@@ -373,6 +357,26 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
+
+		// GROW-458 Guest Checkout Experiment
+		// If the user doesn't have the kvu cookie (indicating they have never
+		// logged into Kiva on this device) trigger this experiment
+		if (!cookieStore.get('kvu')) {
+			const guestCheckoutExperiment = this.apollo.readFragment({
+				id: 'Experiment:guest_checkout',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.guestCheckoutExperimentVersion = guestCheckoutExperiment.version;
+
+			// If a guest checkout experiment version set, trigger tracking
+			if (this.guestCheckoutExperimentVersion) {
+				this.$kvTrackEvent(
+					'Checkout',
+					'EXP-GROW-458-Feb2020',
+					this.guestCheckoutExperimentVersion,
+				);
+			}
+		}
 	},
 	mounted() {
 		// Ensure browser clock is correct before using current time

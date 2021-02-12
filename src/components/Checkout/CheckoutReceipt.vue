@@ -1,10 +1,7 @@
 <template>
 	<div class="checkout-receipt">
 		<h2 class="checkout-receipt__headline">
-			<kv-icon
-				class="receipt-icon"
-				name="receipt"
-			/>Order Confirmation
+			Order Confirmation
 		</h2>
 		<div class="checkout-receipt__wrapper">
 			<section data-test="lender-info" class="section section--lender-info">
@@ -475,11 +472,5 @@ export default {
 			fill: $anchor-color-hover;
 		}
 	}
-}
-
-.receipt-icon {
-	height: 1rem;
-	width: 1rem;
-	margin-right: 1rem;
 }
 </style>

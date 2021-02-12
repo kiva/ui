@@ -30,7 +30,7 @@
 		<div v-if="zeroLoans" class="zero-loans-state">
 			<h3>All borrowers matching this search have been funded.</h3>
 			<p>
-				Please adjust your criteria or <span @click.prevent="resetSearchFilters">start a new search.</span>
+				Please adjust your criteria or <a @click.prevent="resetSearchFilters">start a new search.</a>
 			</p>
 		</div>
 
@@ -184,6 +184,7 @@ export default {
 			this.$emit('show-loan-details', selectedLoan);
 		},
 		activateLoanWatchQuery() {
+			this.loadingLoans = true;
 			const observer = this.apollo.watchQuery({
 				query: basicLoanQuery,
 				variables: this.loanQueryVars,

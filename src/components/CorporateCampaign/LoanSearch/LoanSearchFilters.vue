@@ -428,6 +428,7 @@ export default {
 
 	&__total-count {
 		font-weight: 700;
+		white-space: nowrap;
 	}
 
 	&__chips {

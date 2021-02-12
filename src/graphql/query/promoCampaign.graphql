@@ -17,6 +17,8 @@ query promoCampaign($basketId: String, $promoFundId: String) {
 					creditType
 					promoFund {
 						id
+						displayName
+						displayDescription
 					}
 				}
 			}

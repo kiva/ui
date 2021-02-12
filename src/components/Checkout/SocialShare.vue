@@ -1,10 +1,7 @@
 <template>
 	<section class="share hide-for-print">
 		<h2 class="share__headline">
-			<kv-icon
-				class="share-icon"
-				name="share"
-			/>Feeling good? Extend your impact
+			Feeling good? Extend your impact
 		</h2>
 
 		<div class="share__wrapper">
@@ -643,11 +640,5 @@ $loan-triangle-size: rem-calc(12);
 	&__select {
 		margin: 0;
 	}
-}
-
-.share-icon {
-	height: 1rem;
-	width: 1rem;
-	margin-right: 1rem;
 }
 </style>

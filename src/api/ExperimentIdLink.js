@@ -4,7 +4,7 @@ import cookieStore from '@/util/cookieStore';
 
 // Experiment Ids from setting that will be passed in the X-Experiment Header
 const targetIds = [
-	'category_row_hillclimb',
+	'EXP-ML-Service-Bandit-LendByCategory',
 	'ml_loan_to_loan',
 ];
 
