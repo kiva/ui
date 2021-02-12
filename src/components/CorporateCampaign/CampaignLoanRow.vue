@@ -115,6 +115,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		sortBy: {
+			type: String,
+			default: 'popularity'
+		}
 	},
 	data() {
 		return {
@@ -137,7 +141,8 @@ export default {
 				loans: () => [],
 				offset: this.offset,
 				filters: this.loanQueryFilters,
-				promoOnly: { basketId: cookieStore.get('kvbskt') }
+				promoOnly: { basketId: cookieStore.get('kvbskt') },
+				sortBy: this.sortBy,
 			};
 		},
 		hasMoreLoansAvailable() {
