@@ -544,7 +544,6 @@ export default {
 	},
 	watch: {
 		initialFilters(next, prev) {
-			console.log('initialFilters: ', next, prev);
 			if (typeof next === 'object' && Object.keys(next).length > 0) {
 				this.filters = next;
 			}
@@ -871,7 +870,6 @@ export default {
 
 			// Basket is not eligible for simple incontext checkout
 			if (!simpleCheckoutEligible) {
-				console.log('ineligible for incontext checkout');
 				// Temporary notice of failure condition that was hit
 				// TODO: Create lightbox or other notice with action options for resolution
 				if (simpleCheckoutRestrictedMessage && this.basketLoans.length) {

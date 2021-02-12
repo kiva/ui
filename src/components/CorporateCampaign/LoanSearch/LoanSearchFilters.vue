@@ -411,7 +411,6 @@ export default {
 			// }
 		},
 		handleSortByUpdated(sortBy) {
-			console.log(sortBy);
 			if (this.selectedSort !== sortBy) {
 				this.selectedSort = sortBy;
 			}

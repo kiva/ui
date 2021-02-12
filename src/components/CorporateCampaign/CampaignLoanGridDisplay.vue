@@ -174,11 +174,6 @@ export default {
 				this.activateLoanWatchQuery();
 			}
 		},
-		// sortBy(next, prev) {
-		// 	if (next !== prev) {
-		// 		this.
-		// 	}
-		// }
 	},
 	created() {
 		// extract query
