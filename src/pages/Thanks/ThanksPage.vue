@@ -149,7 +149,6 @@ export default {
 			],
 			thanksPageVersion: 'a',
 			isMonthlyGoodSubscriber: false,
-			isContentfulActive: false,
 			pageData: {},
 		};
 	},
@@ -204,17 +203,7 @@ export default {
 			// Check for contentful content
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
-
-			// returns the contentful content of the uiSetting key ui-homepage-monthly-good
-			// which controls when the contentful page layout should be active
-			const uiMonthlyGoodLandingSetting = this.pageData?.page?.settings?.find(item => item.key === 'ui-homepage-monthly-good') ?? null; // eslint-disable-line max-len
-			this.isContentfulActive = settingEnabled(
-				uiMonthlyGoodLandingSetting,
-				'active',
-				'startDate',
-				'endDate'
-			);
-		}
+		},
 	},
 	computed: {
 		borrowerSupport() {
@@ -232,33 +221,15 @@ export default {
 			// eslint-disable-next-line max-len
 			return this.ctaContentGroup?.contents?.find(contentItem => contentItem.key === 'thanks-mg-cta');
 		},
-		contentfulHeadline() {
+		ctaHeadline() {
 			return this.ctaContentBlock?.headline;
 		},
-		contentfulSubHeadline() {
+		ctaBodyCopy() {
 			return this.ctaContentBlock?.subHeadline;
 		},
-		contentfulPrimaryCtaText() {
+		ctaButtonText() {
 			return this.ctaContentBlock?.primaryCtaText;
 		},
-		ctaHeadline() {
-			if (this.isContentfulActive) {
-				return this.contentfulHeadline;
-			}
-			return null;
-		},
-		ctaBodyCopy() {
-			if (this.isContentfulActive) {
-				return this.contentfulSubHeadline;
-			}
-			return null;
-		},
-		ctaButtonText() {
-			if (this.isContentfulActive) {
-				return this.contentfulPrimaryCtaText;
-			}
-			return null;
-		}
 	},
 	mounted() {
 		confetti({
