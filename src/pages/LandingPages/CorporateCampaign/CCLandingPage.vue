@@ -109,6 +109,7 @@
 			/>
 
 			<kv-lightbox
+				class="loan-details-lightbox"
 				:visible="loanDetailsVisible"
 				:no-padding-top="true"
 				:no-padding-bottom="true"
@@ -1132,6 +1133,15 @@ export default {
 
 		@include breakpoint(large) {
 			height: rem-calc(28);
+		}
+	}
+}
+
+.loan-details-lightbox {
+	::v-deep .kv-lightbox__header {
+		button.kv-lightbox__close-btn {
+			background: $white;
+			border-radius: 1.25rem;
 		}
 	}
 }

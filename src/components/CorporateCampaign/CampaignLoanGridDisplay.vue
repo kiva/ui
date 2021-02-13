@@ -192,32 +192,6 @@ export default {
 			const selectedLoan = this.loans.find(loan => loan.id === payload.loanId);
 			this.$emit('show-loan-details', selectedLoan);
 		},
-		activateLoanWatchQuery() {
-			this.loadingLoans = true;
-			const observer = this.apollo.watchQuery({
-				query: basicLoanQuery,
-				variables: this.loanQueryVars,
-				fetchPolicy: 'network-only'
-			});
-			this.$watch(() => this.loanQueryVars, vars => {
-				observer.setVariables(vars);
-				this.loadingLoans = true;
-				this.zeroLoans = false;
-			}, { deep: true });
-			// Subscribe to the observer to see each result
-			observer.subscribe({
-				next: ({ data }) => {
-					this.loans = data.lend?.loans?.values ?? [];
-					this.totalCount = data.lend?.loans?.totalCount ?? 0;
-					this.$emit('update-total-count', this.totalCount);
-					this.checkIfPageIsOutOfRange(this.loans.length, this.pageQuery.page);
-					this.loadingLoans = false;
-					if (!this.totalCount) {
-						this.zeroLoans = true;
-					}
-				}
-			});
-		},
 		fetchLoans() {
 			this.loadingLoans = true;
 			this.zeroLoans = false;

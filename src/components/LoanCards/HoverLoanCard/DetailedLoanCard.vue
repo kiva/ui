@@ -534,6 +534,7 @@ $row-arrow-width: 2.5rem;
 		width: rem-calc(100);
 		height: rem-calc(100);
 		pointer-events: none;
+		z-index: 1;
 
 		.close-button {
 			border: none;
