@@ -85,8 +85,10 @@
 
 			<hr>
 
-			<campaign-partner :partner-area-content="partnerAreaContent" />
-			<hr>
+			<template v-if="partnerAreaContent">
+				<campaign-partner :partner-area-content="partnerAreaContent" />
+				<hr>
+			</template>
 
 			<campaign-how-kiva-works v-if="!showThanks" />
 
