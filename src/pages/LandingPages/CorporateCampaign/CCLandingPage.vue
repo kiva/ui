@@ -54,6 +54,7 @@
 							:is-logged-in="!isVisitor"
 							:is-visible="showLoanRows"
 							:key="'one-category'"
+							:promo-only="promoOnlyQuery"
 							:row-number="1"
 							:show-loans="showLoans"
 							:sort-by="sortBy"
@@ -662,6 +663,12 @@ export default {
 		},
 		promoFundId() {
 			return this.promoData?.promoFund?.id ?? null;
+		},
+		promoOnlyQuery() {
+			if (this.promoApplied) {
+				return { basketId: cookieStore.get('kvbskt') };
+			}
+			return null;
 		},
 		teamId() {
 			return this.promoData?.promoGroup?.teamId ?? null;

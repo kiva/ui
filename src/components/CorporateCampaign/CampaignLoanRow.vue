@@ -76,7 +76,6 @@
 
 <script>
 import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
-import cookieStore from '@/util/cookieStore';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -106,6 +105,10 @@ export default {
 		isVisible: {
 			type: Boolean,
 			default: false
+		},
+		promoOnly: {
+			type: Object,
+			default: null
 		},
 		rowNumber: {
 			type: Number,
@@ -141,7 +144,7 @@ export default {
 				loans: () => [],
 				offset: this.offset,
 				filters: this.loanQueryFilters,
-				promoOnly: { basketId: cookieStore.get('kvbskt') },
+				promoOnly: this.promoOnly,
 				sortBy: this.sortBy,
 			};
 		},
@@ -153,7 +156,17 @@ export default {
 		loans() {
 			if (this.loans.length) {
 				this.$nextTick(() => {
-					this.$refs.campaignLoanCarousel.reInit();
+					if (this.$refs.campaignLoanCarousel) {
+						// re-init carousel
+						this.$refs.campaignLoanCarousel.reInit();
+						// shake the carousel to re-init controls
+						this.$refs.campaignLoanCarousel.goToSlide(
+							(this.$refs.campaignLoanCarousel.currentIndex + 1) || 0
+						);
+						this.$refs.campaignLoanCarousel.goToSlide(
+							(this.$refs.campaignLoanCarousel.currentIndex - 1) || 0
+						);
+					}
 				});
 			}
 		},
@@ -180,7 +193,10 @@ export default {
 		},
 		showLoans(next) {
 			if (next) {
-				this.activateLoanWatchQuery();
+				this.fetchLoans();
+				this.$watch(() => this.loanQueryVars, () => {
+					this.fetchLoans();
+				}, { deep: true });
 			}
 		}
 	},
@@ -193,36 +209,29 @@ export default {
 			const selectedLoan = this.loans.find(loan => loan.id === payload.loanId);
 			this.$emit('show-loan-details', selectedLoan);
 		},
-		activateLoanWatchQuery() {
+		fetchLoans() {
 			this.loadingLoans = true;
-			const observer = this.apollo.watchQuery({
+			this.zeroLoans = false;
+
+			this.apollo.query({
 				query: basicLoanQuery,
 				variables: this.loanQueryVars,
-				fetchPolicy: 'network-only'
-			});
-			this.$watch(() => this.loanQueryVars, vars => {
-				observer.setVariables(vars);
-				this.loadingLoans = true;
-				this.zeroLoans = false;
-			}, { deep: true });
-			// Subscribe to the observer to see each result
-			observer.subscribe({
-				next: ({ data }) => {
-					const newLoans = data.lend?.loans?.values ?? [];
-					// Handle appending new loans to carousel
-					const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
-					const existingLoanIds = this.loans.length ? this.loans.map(loan => loan.id) : [];
-					if (newLoanIds.toString() !== existingLoanIds.toString()) {
-						this.loans = this.loans.concat(newLoans);
-					}
+				fetchPolicy: 'network-only',
+			}).then(({ data }) => {
+				const newLoans = data.lend?.loans?.values ?? [];
+				// Handle appending new loans to carousel
+				const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
+				const existingLoanIds = this.loans.length ? this.loans.map(loan => loan.id) : [];
+				if (newLoanIds.toString() !== existingLoanIds.toString()) {
+					this.loans = this.loans.concat(newLoans);
+				}
 
-					this.totalCount = data.lend?.loans?.totalCount ?? 0;
-					this.$emit('update-total-count', this.totalCount);
+				this.totalCount = data.lend?.loans?.totalCount ?? 0;
+				this.$emit('update-total-count', this.totalCount);
 
-					this.loadingLoans = false;
-					if (this.totalCount === 0) {
-						this.zeroLoans = true;
-					}
+				this.loadingLoans = false;
+				if (this.totalCount === 0) {
+					this.zeroLoans = true;
 				}
 			});
 		},
