@@ -299,8 +299,8 @@ export default {
 		filterChips() {
 			// gather gender setting
 			const genderOptions = [
-				{ name: 'Women', key: 'female' },
-				{ name: 'Men', key: 'male' },
+				{ name: 'Women', key: 'female', __typename: 'GenderEnum' },
+				{ name: 'Men', key: 'male', __typename: 'GenderEnum' },
 			];
 			const selectedGenderRaw = genderOptions.filter(gender => {
 				if (this.appliedFilters && this.appliedFilters.gender) {
@@ -371,15 +371,12 @@ export default {
 			this.filtersVisible = true;
 		},
 		handleUpdatedFilters(payload) {
-			// console.log('handleUpdatedFilters: ', payload);
 			const filterKeys = Object.keys(payload);
-			// console.log('filterKeys: ', filterKeys);
 			filterKeys.forEach(key => {
 				this.modifiedFilters[key] = payload[key];
 			});
 		},
 		applyFilters() {
-			// console.log(this.modifiedFilters);
 			this.$emit('updated-filters', this.modifiedFilters);
 			this.$emit('updated-sort-by', this.selectedSort);
 			this.filtersVisible = false;
@@ -430,22 +427,52 @@ export default {
 			return name.replace(/#/g, '');
 		},
 		handleRemoveFilter(filter) {
-			console.log(filter);
-			this.showFilters();
 			// eslint-disable-next-line no-underscore-dangle
-			// const type = filter.__typename;
-			// switch (type) {
-			// 	case 'Country':
-			// 		break;
-			// 	case 'Sector':
-			// 		break;
-			// 	case 'LoanThemeFilter':
-			// 		break;
-			// 	case 'Tag':
-			// 		break;
-			// 	default:
-			// 		break;
-			// }
+			const type = filter.__typename;
+			switch (type) {
+				case 'GenderEnum':
+					this.modifiedFilters.gender = null;
+					this.applyFilters();
+					break;
+				case 'Country':
+					if (this.modifiedFilters.country && this.modifiedFilters.country.length) {
+						const newCountries = this.modifiedFilters.country.filter(isoCode => {
+							return filter.isoCode !== isoCode;
+						});
+						this.modifiedFilters.country = newCountries;
+						this.applyFilters();
+					}
+					break;
+				case 'Sector':
+					if (this.modifiedFilters.sector && this.modifiedFilters.sector.length) {
+						const newSectors = this.modifiedFilters.sector.filter(sectorId => {
+							return filter.id !== sectorId;
+						});
+						this.modifiedFilters.sector = newSectors;
+						this.applyFilters();
+					}
+					break;
+				case 'LoanThemeFilter':
+					if (this.modifiedFilters.theme && this.modifiedFilters.theme.length) {
+						const newThemes = this.modifiedFilters.theme.filter(themeName => {
+							return filter.name !== themeName;
+						});
+						this.modifiedFilters.theme = newThemes;
+						this.applyFilters();
+					}
+					break;
+				case 'Tag':
+					if (this.modifiedFilters.loanTags && this.modifiedFilters.loanTags.length) {
+						const newTags = this.modifiedFilters.loanTags.filter(tagId => {
+							return filter.id !== tagId;
+						});
+						this.modifiedFilters.loanTags = newTags;
+						this.applyFilters();
+					}
+					break;
+				default:
+					break;
+			}
 		},
 		handleSortByUpdated(sortBy) {
 			if (this.selectedSort !== sortBy) {
@@ -503,21 +530,12 @@ export default {
 		@include breakpoint(medium) {
 			margin: 1.5rem 3.5rem 0.5rem;
 		}
-
-		// Temporarily hide close 'X'
-		::v-deep .filter-close-button-container {
-			display: none;
-		}
 	}
 
 	h3 {
 		display: block;
 		padding: 0.5rem 0;
 	}
-
-	// &__loan-display {
-
-	// }
 
 	&__lightbox {
 		::v-deep .kv-lightbox__container {
