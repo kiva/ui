@@ -119,6 +119,10 @@ export default {
 		itemsInBasket: {
 			type: Array,
 			default: () => [],
+		},
+		sortBy: {
+			type: String,
+			default: 'popularity'
 		}
 	},
 	data() {
@@ -150,7 +154,8 @@ export default {
 				loans: () => [],
 				offset: this.offset,
 				filters: this.loanQueryFilters,
-				promoOnly: { basketId: cookieStore.get('kvbskt') }
+				promoOnly: { basketId: cookieStore.get('kvbskt') },
+				sortBy: this.sortBy,
 			};
 		},
 	},
@@ -168,7 +173,7 @@ export default {
 				this.loadingLoans = false;
 				this.activateLoanWatchQuery();
 			}
-		}
+		},
 	},
 	created() {
 		// extract query

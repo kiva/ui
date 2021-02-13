@@ -63,6 +63,7 @@ query promoCampaign($basketId: String, $promoFundId: String) {
 						sector
 						loanTags
 					}
+					sortBy
 				}
 			}
 		}

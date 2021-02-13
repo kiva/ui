@@ -36,8 +36,10 @@
 							<campaign-loan-filters
 								class="loan-view-controls__filters"
 								:initial-filters="initialFilters"
+								:initial-sort-by="initialSortBy"
 								:total-count="totalCount"
 								@updated-filters="handleUpdatedFilters"
+								@updated-sort-by="handleUpdatedSortBy"
 								@set-loan-display="handleLoanDisplayType"
 							/>
 						</div>
@@ -53,6 +55,7 @@
 							:key="'one-category'"
 							:row-number="1"
 							:show-loans="showLoans"
+							:sort-by="sortBy"
 							@add-to-basket="handleAddToBasket"
 							@update-total-count="setTotalCount"
 							@show-loan-details="showLoanDetails"
@@ -63,12 +66,13 @@
 							v-show="!showLoanRows"
 							id="campaignLoanDisplay"
 							ref="loandisplayref"
-							:show-loans="showLoans"
 							:checkout-visible="checkoutVisible || showThanks"
 							:filters="filters"
 							:is-visible="!showLoanRows"
 							:is-visitor="isVisitor"
 							:items-in-basket="itemsInBasket"
+							:show-loans="showLoans"
+							:sort-by="sortBy"
 							@add-to-basket="handleAddToBasket"
 							@update-total-count="setTotalCount"
 							@show-loan-details="showLoanDetails"
@@ -469,6 +473,7 @@ export default {
 			showVerification: false,
 			showTeamForm: false,
 			showThanks: false,
+			sortBy: 'popularity',
 			teamJoinStatus: null,
 			transactionId: null,
 			showLoanRows: true,
@@ -538,8 +543,7 @@ export default {
 		this.setAuthStatus(this.kvAuth0?.user ?? {});
 	},
 	watch: {
-		initialFilters(next, prev) {
-			console.log('initialFilters: ', next, prev);
+		initialFilters(next) {
 			if (typeof next === 'object' && Object.keys(next).length > 0) {
 				this.filters = next;
 			}
@@ -621,6 +625,9 @@ export default {
 			// set some always on filters
 			baseFilters.status = 'fundraising';
 			return baseFilters;
+		},
+		initialSortBy() {
+			return this.promoData?.managedAccount?.loanSearchCriteria?.sortBy ?? 'popularity';
 		},
 		isActivelyLoggedIn() {
 			const lastLogin = (parseInt(this.lastActiveLogin, 10)) || 0;
@@ -746,7 +753,6 @@ export default {
 				// Verify that applied promotion is for current page
 				if (this.verifyPromoMatchesPageId(response.data?.shop?.promoCampaign?.managedAccount?.pageId)) {
 					this.promoData = response.data?.shop?.promoCampaign;
-					// this.promoApplied = true;
 					this.loadingPromotion = false;
 					// if this promo credit is already applied and matches we can clear the error
 					if (this.prioritizedTargetCampaignCredit?.promoFund?.id
@@ -864,7 +870,6 @@ export default {
 
 			// Basket is not eligible for simple incontext checkout
 			if (!simpleCheckoutEligible) {
-				console.log('ineligible for incontext checkout');
 				// Temporary notice of failure condition that was hit
 				// TODO: Create lightbox or other notice with action options for resolution
 				if (simpleCheckoutRestrictedMessage && this.basketLoans.length) {
@@ -1035,6 +1040,11 @@ export default {
 		},
 		handleResetLoanFilters() {
 			this.filters = this.initialFilters;
+		},
+		handleUpdatedSortBy(sortBy) {
+			if (sortBy && this.sortBy !== sortBy) {
+				this.sortBy = sortBy;
+			}
 		},
 		setTotalCount(payload) {
 			this.totalCount = payload;

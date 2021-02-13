@@ -62,6 +62,21 @@
 
 				<kv-accordion-item
 					class="loan-filters__lightbox-accordian"
+					id="sort-order-accordian"
+				>
+					<template v-slot:header>
+						<h3>Sort By</h3>
+					</template>
+					<sort-order
+						class="loan-filter-controls__filter-type"
+						:initial-sort="initialSortBy"
+						:selected-sort="selectedSort"
+						@sort-order-updated="handleSortByUpdated"
+					/>
+				</kv-accordion-item>
+
+				<kv-accordion-item
+					class="loan-filters__lightbox-accordian"
 					id="region-accordian"
 				>
 					<template v-slot:header>
@@ -150,6 +165,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 import LocationFilter from '@/components/CorporateCampaign/LoanSearch/LocationFilter';
 import SectorFilter from '@/components/CorporateCampaign/LoanSearch/SectorFilter';
+import SortOrder from '@/components/CorporateCampaign/LoanSearch/SortOrder';
 import TagFilter from '@/components/CorporateCampaign/LoanSearch/TagFilter';
 
 const filterOptionsQuery = gql`
@@ -192,12 +208,17 @@ export default {
 		KvIcon,
 		LocationFilter,
 		SectorFilter,
+		SortOrder,
 		TagFilter
 	},
 	props: {
 		initialFilters: {
 			type: Object,
 			default: () => {}
+		},
+		initialSortBy: {
+			type: String,
+			default: 'popularity',
 		},
 		totalCount: {
 			type: Number,
@@ -213,6 +234,7 @@ export default {
 			filtersVisible: false,
 			initialFiltersCopy: null,
 			modifiedFilters: null,
+			selectedSort: null,
 		};
 	},
 	mounted() {
@@ -322,6 +344,7 @@ export default {
 		applyFilters() {
 			// console.log(this.modifiedFilters);
 			this.$emit('updated-filters', this.modifiedFilters);
+			this.$emit('updated-sort-by', this.selectedSort);
 			this.filtersVisible = false;
 		},
 		// TODO: Move to Util file
@@ -387,6 +410,11 @@ export default {
 			// 		break;
 			// }
 		},
+		handleSortByUpdated(sortBy) {
+			if (this.selectedSort !== sortBy) {
+				this.selectedSort = sortBy;
+			}
+		}
 	},
 };
 </script>
