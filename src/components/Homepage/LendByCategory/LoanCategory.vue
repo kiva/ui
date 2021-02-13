@@ -17,6 +17,7 @@
 				loop: false,
 				align: 'start'
 			}"
+			@interact-carousel="onInteractCarousel"
 		>
 			<kv-carousel-slide
 				v-for="(loan, index) in loans"
@@ -196,6 +197,9 @@ export default {
 					return String(this.name).replace(/\s\[.*\]/g, '');
 			}
 		},
+		onInteractCarousel(interaction) {
+			this.$kvTrackEvent('homepage', 'click-carousel-horizontal-scroll', interaction);
+		}
 	},
 };
 </script>
