@@ -541,6 +541,7 @@ export default {
 		preFetch(config, client) {
 			let rowData;
 			let expRowData;
+			let expResults;
 
 			return client.query({
 				query: lendByCategoryQuery
@@ -559,57 +560,61 @@ export default {
 					// experiment: CASH-521 Hover Loan Card Experiment
 					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
 				]);
-			}).then(expResults => {
+			}).then(expAssignments => {
+				expResults = expAssignments;
 				return client.query({
 					query: mlOrderedLoanChannels
-				}).then(({ data }) => {
-				// Get the array of channel objects from the ml multi-armed bandit
-					expRowData = _get(data, 'ml.orderedLoanChannels') || [];
-
-					const mlServiceBanditExpVersion = _get(expResults, '[0].data.experiment.version');
-					if (mlServiceBanditExpVersion !== null) {
-						rowData = expRowData;
-					}
 				});
-			}).then(() => {
-				// Get all channel ids for the row data
-				const ids = _map(rowData, 'id');
-				// Filter other channel types as custom categories
-				const recChannels = _filter(rowData, { __typename: 'RecLoanChannel' });
-				const recChannelIds = _map(recChannels, 'id');
-				const hasRecRow = recChannels.length > 0;
+			}).then(({ data }) => {
+				// Get the array of channel objects from the ml multi-armed bandit
+				expRowData = _get(data, 'ml.orderedLoanChannels') || [];
 
-				// Read hover loan card experiment version assignment
-				const hoverLoanCardExperiment = client.readFragment({
-					id: 'Experiment:hover_loan_cards',
-					fragment: experimentVersionFragment,
-				}) || {};
-				const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
+				const mlServiceBanditExpVersion = _get(expResults, '[0].data.experiment.version');
+				if (mlServiceBanditExpVersion !== null) {
+					rowData = expRowData;
+				}
 
-				const imgDefaultSize = hoverCards ? 'w480h300' : 'w480h360';
-				const imgRetinaSize = hoverCards ? 'w960h600' : 'w960h720';
+				return rowData;
+			})
+				.then(() => {
+					// Get all channel ids for the row data
+					const ids = _map(rowData, 'id');
+					// Filter other channel types as custom categories
+					const recChannels = _filter(rowData, { __typename: 'RecLoanChannel' });
+					const recChannelIds = _map(recChannels, 'id');
+					const hasRecRow = recChannels.length > 0;
 
-				// Pre-fetch all the data for SSR targeted channels
-				return Promise.all([
-					client.query({
-						query: loanChannelQuery,
-						variables: {
-							// exclude custom rows + limit for ssr
-							ids: _take(_without(ids, ...recChannelIds), ssrRowLimiter),
-							imgDefaultSize,
-							imgRetinaSize,
-						},
-					}),
-					hasRecRow ? client.query({
-						query: recommendedLoansQuery,
-						variables: {
-							ids: recChannelIds,
-							imgDefaultSize,
-							imgRetinaSize,
-						}
-					}) : Promise.resolve(),
-				]);
-			});
+					// Read hover loan card experiment version assignment
+					const hoverLoanCardExperiment = client.readFragment({
+						id: 'Experiment:hover_loan_cards',
+						fragment: experimentVersionFragment,
+					}) || {};
+					const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
+
+					const imgDefaultSize = hoverCards ? 'w480h300' : 'w480h360';
+					const imgRetinaSize = hoverCards ? 'w960h600' : 'w960h720';
+
+					// Pre-fetch all the data for SSR targeted channels
+					return Promise.all([
+						client.query({
+							query: loanChannelQuery,
+							variables: {
+								// exclude custom rows + limit for ssr
+								ids: _take(_without(ids, ...recChannelIds), ssrRowLimiter),
+								imgDefaultSize,
+								imgRetinaSize,
+							},
+						}),
+						hasRecRow ? client.query({
+							query: recommendedLoansQuery,
+							variables: {
+								ids: recChannelIds,
+								imgDefaultSize,
+								imgRetinaSize,
+							}
+						}) : Promise.resolve(),
+					]);
+				});
 		},
 	},
 	created() {
@@ -631,6 +636,7 @@ export default {
 
 		// Initialize GROW-330: Machine Learning served rows
 		this.initializeMLServiceBanditRowExp();
+
 		// Copy basic data from query into instance variables
 		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
@@ -643,12 +649,15 @@ export default {
 
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 
+		// Initialize Recommended Loan Rows
+		this.initializeRecommendedLoanRows();
+
 		// Read the SSR ready loan channels from the cache
 		try {
 			const categoryData = this.apollo.readQuery({
 				query: loanChannelQuery,
 				variables: {
-					ids: _take(this.customCategoryIds, ssrRowLimiter),
+					ids: _take(_without(this.categoryIds, ...this.customCategoryIds), ssrRowLimiter),
 					basketId: cookieStore.get('kvbskt'),
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
@@ -712,9 +721,6 @@ export default {
 				'b',
 			);
 		}
-
-		// Initialize Recommended Loan Rows
-		this.initializeRecommendedLoanRows();
 	},
 	mounted() {
 		Promise.all([
