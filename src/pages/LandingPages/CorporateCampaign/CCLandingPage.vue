@@ -35,6 +35,7 @@
 						<div class="loan-view-controls">
 							<campaign-loan-filters
 								class="loan-view-controls__filters"
+								:applied-filters="filters"
 								:initial-filters="initialFilters"
 								:initial-sort-by="initialSortBy"
 								:total-count="totalCount"

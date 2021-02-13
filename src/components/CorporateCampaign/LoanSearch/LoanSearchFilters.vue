@@ -212,6 +212,10 @@ export default {
 		TagFilter
 	},
 	props: {
+		appliedFilters: {
+			type: Object,
+			default: () => {}
+		},
 		initialFilters: {
 			type: Object,
 			default: () => {}
@@ -293,28 +297,61 @@ export default {
 			return incomingFilter || [];
 		},
 		filterChips() {
+			// gather gender setting
+			const genderOptions = [
+				{ name: 'Women', key: 'female' },
+				{ name: 'Men', key: 'male' },
+			];
+			const selectedGenderRaw = genderOptions.filter(gender => {
+				if (this.appliedFilters && this.appliedFilters.gender) {
+					return this.appliedFilters.gender === gender.key;
+				}
+				return false;
+			});
+
 			// gather selected Countries
 			const selectedCountriesRaw = this.allCountries.filter(country => {
-				return this.selectedCountries.includes(country.isoCode);
+				const appliedCountries = this.appliedFilters?.country ?? [];
+				if (appliedCountries.length) {
+					return appliedCountries.includes(country.isoCode);
+				}
+				return false;
 			});
 
 			// gather selected Sectors
 			const selectedSectorsRaw = this.allSectors.filter(sector => {
-				return this.selectedSectors.includes(sector.id);
+				const appliedSectors = this.appliedFilters?.sector ?? [];
+				if (appliedSectors.length) {
+					return appliedSectors.includes(sector.id);
+				}
+				return false;
 			});
 
 			// gather selected Themes
 			const selectedAttributesRaw = this.allAttributes.filter(attribute => {
-				return this.selectedAttributes.includes(attribute.name);
+				const appliedAttributes = this.appliedFilters?.theme ?? [];
+				if (appliedAttributes.length) {
+					return appliedAttributes.includes(attribute.name);
+				}
+				return false;
 			});
 
 			// gather selected tags
 			const selectedTagsRaw = this.allTags.filter(tag => {
-				return this.selectedTags.includes(tag.id);
+				const appliedTags = this.appliedFilters?.loanTags ?? [];
+				if (appliedTags.length) {
+					return appliedTags.includes(tag.id);
+				}
+				return false;
 			});
 
-			// const selectedTagsEnriched = selectedTagsRaw.map()
-			return [...selectedCountriesRaw, ...selectedSectorsRaw, ...selectedAttributesRaw, ...selectedTagsRaw];
+			return [
+				...selectedGenderRaw,
+				...selectedCountriesRaw,
+				...selectedSectorsRaw,
+				...selectedAttributesRaw,
+				...selectedTagsRaw
+			];
 		},
 	},
 	watch: {
