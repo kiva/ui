@@ -51,8 +51,6 @@ import _invokeMap from 'lodash/invokeMap';
 import _mapValues from 'lodash/mapValues';
 import _merge from 'lodash/merge';
 import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
-import cookieStore from '@/util/cookieStore';
-// import KvButton from '@/components/Kv/KvButton';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import KvPagination from '@/components/Kv/KvPagination';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
@@ -120,6 +118,10 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		promoOnly: {
+			type: Object,
+			default: null
+		},
 		sortBy: {
 			type: String,
 			default: 'popularity'
@@ -154,7 +156,7 @@ export default {
 				loans: () => [],
 				offset: this.offset,
 				filters: this.loanQueryFilters,
-				promoOnly: { basketId: cookieStore.get('kvbskt') },
+				promoOnly: this.promoOnly,
 				sortBy: this.sortBy,
 			};
 		},
@@ -170,8 +172,10 @@ export default {
 		},
 		isVisible(next) {
 			if (next) {
-				this.loadingLoans = false;
-				this.activateLoanWatchQuery();
+				this.fetchLoans();
+				this.$watch(() => this.loanQueryVars, () => {
+					this.fetchLoans();
+				}, { deep: true });
 			}
 		},
 	},
@@ -188,29 +192,24 @@ export default {
 			const selectedLoan = this.loans.find(loan => loan.id === payload.loanId);
 			this.$emit('show-loan-details', selectedLoan);
 		},
-		activateLoanWatchQuery() {
+		fetchLoans() {
 			this.loadingLoans = true;
-			const observer = this.apollo.watchQuery({
+			this.zeroLoans = false;
+
+			this.apollo.query({
 				query: basicLoanQuery,
 				variables: this.loanQueryVars,
-				fetchPolicy: 'network-only'
-			});
-			this.$watch(() => this.loanQueryVars, vars => {
-				observer.setVariables(vars);
-				this.loadingLoans = true;
-				this.zeroLoans = false;
-			}, { deep: true });
-			// Subscribe to the observer to see each result
-			observer.subscribe({
-				next: ({ data }) => {
-					this.loans = data.lend?.loans?.values ?? [];
-					this.totalCount = data.lend?.loans?.totalCount ?? 0;
-					this.$emit('update-total-count', this.totalCount);
-					this.checkIfPageIsOutOfRange(this.loans.length, this.pageQuery.page);
-					this.loadingLoans = false;
-					if (!this.totalCount) {
-						this.zeroLoans = true;
-					}
+				// fetchPolicy: 'network-only'
+			}).then(({ data }) => {
+				this.loans = data.lend?.loans?.values ?? [];
+				this.totalCount = data.lend?.loans?.totalCount ?? 0;
+
+				this.$emit('update-total-count', this.totalCount);
+				this.checkIfPageIsOutOfRange(this.loans.length, this.pageQuery.page);
+
+				this.loadingLoans = false;
+				if (!this.totalCount) {
+					this.zeroLoans = true;
 				}
 			});
 		},

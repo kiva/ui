@@ -54,6 +54,7 @@
 							:is-logged-in="!isVisitor"
 							:is-visible="showLoanRows"
 							:key="'one-category'"
+							:promo-only="promoOnlyQuery"
 							:row-number="1"
 							:show-loans="showLoans"
 							:sort-by="sortBy"
@@ -108,6 +109,7 @@
 			/>
 
 			<kv-lightbox
+				class="loan-details-lightbox"
 				:visible="loanDetailsVisible"
 				:no-padding-top="true"
 				:no-padding-bottom="true"
@@ -663,6 +665,12 @@ export default {
 		promoFundId() {
 			return this.promoData?.promoFund?.id ?? null;
 		},
+		promoOnlyQuery() {
+			if (this.promoApplied) {
+				return { basketId: cookieStore.get('kvbskt') };
+			}
+			return null;
+		},
 		teamId() {
 			return this.promoData?.promoGroup?.teamId ?? null;
 		},
@@ -1125,6 +1133,15 @@ export default {
 
 		@include breakpoint(large) {
 			height: rem-calc(28);
+		}
+	}
+}
+
+.loan-details-lightbox {
+	::v-deep .kv-lightbox__header {
+		button.kv-lightbox__close-btn {
+			background: $white;
+			border-radius: 1.25rem;
 		}
 	}
 }
