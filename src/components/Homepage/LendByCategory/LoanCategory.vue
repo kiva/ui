@@ -228,7 +228,6 @@ $card-half-space: rem-calc(14/2);
 	box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 	width: $card-width;
 	max-width: calc(100vw - 4rem); // ensure some extra card is shown on mobile
-	flex: 1 0 auto;
 	margin: 1rem 0 2rem 0;
 }
 
@@ -256,6 +255,10 @@ $card-half-space: rem-calc(14/2);
 		height: 100%;
 		justify-content: center;
 	}
+}
+
+::v-deep .lend-homepage-loan-card__image-wrapper {
+	padding-bottom: 62.5%;
 }
 
 .spinner {
