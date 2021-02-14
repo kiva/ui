@@ -162,9 +162,6 @@ export default {
 		},
 	},
 	watch: {
-		loanQueryVars(next, prev) {
-			this.loanQueryVarsStack.push(prev);
-		},
 		filters(next, prev) {
 			if (next !== prev) {
 				this.loanQueryFilters = next;
@@ -173,11 +170,15 @@ export default {
 		isVisible(next) {
 			if (next) {
 				this.fetchLoans();
-				this.$watch(() => this.loanQueryVars, () => {
-					this.fetchLoans();
-				}, { deep: true });
 			}
 		},
+		loanQueryVars: {
+			handler(next, prev) {
+				this.loanQueryVarsStack.push(prev);
+				this.fetchLoans();
+			},
+			deep: true,
+		}
 	},
 	created() {
 		// extract query
@@ -193,7 +194,9 @@ export default {
 			this.$emit('show-loan-details', selectedLoan);
 		},
 		fetchLoans() {
-			this.loadingLoans = true;
+			if (this.isVisible) {
+				this.loadingLoans = true;
+			}
 			this.zeroLoans = false;
 
 			this.apollo.query({
@@ -204,10 +207,12 @@ export default {
 				this.loans = data.lend?.loans?.values ?? [];
 				this.totalCount = data.lend?.loans?.totalCount ?? 0;
 
-				this.$emit('update-total-count', this.totalCount);
-				this.checkIfPageIsOutOfRange(this.loans.length, this.pageQuery.page);
+				if (this.isVisible) {
+					this.$emit('update-total-count', this.totalCount);
+					this.checkIfPageIsOutOfRange(this.loans.length, this.pageQuery.page);
+					this.loadingLoans = false;
+				}
 
-				this.loadingLoans = false;
 				if (!this.totalCount) {
 					this.zeroLoans = true;
 				}

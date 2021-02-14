@@ -154,7 +154,7 @@ export default {
 	},
 	watch: {
 		loans() {
-			if (this.loans.length) {
+			if (this.loans.length && this.isVisible) {
 				this.$nextTick(() => {
 					if (this.$refs.campaignLoanCarousel) {
 						// re-init carousel
@@ -169,9 +169,6 @@ export default {
 					}
 				});
 			}
-		},
-		loanQueryVars(next, prev) {
-			this.loanQueryVarsStack.push(prev);
 		},
 		filters(next) {
 			// TODO: Review process for reseting loans after applying filters
@@ -194,10 +191,14 @@ export default {
 		showLoans(next) {
 			if (next) {
 				this.fetchLoans();
-				this.$watch(() => this.loanQueryVars, () => {
-					this.fetchLoans();
-				}, { deep: true });
 			}
+		},
+		loanQueryVars: {
+			handler(next, prev) {
+				this.loanQueryVarsStack.push(prev);
+				this.fetchLoans();
+			},
+			deep: true,
 		}
 	},
 	methods: {
@@ -210,7 +211,9 @@ export default {
 			this.$emit('show-loan-details', selectedLoan);
 		},
 		fetchLoans() {
-			this.loadingLoans = true;
+			if (this.isVisible) {
+				this.loadingLoans = true;
+			}
 			this.zeroLoans = false;
 
 			this.apollo.query({
@@ -226,10 +229,12 @@ export default {
 					this.loans = this.loans.concat(newLoans);
 				}
 
-				this.totalCount = data.lend?.loans?.totalCount ?? 0;
-				this.$emit('update-total-count', this.totalCount);
+				if (this.isVisible) {
+					this.totalCount = data.lend?.loans?.totalCount ?? 0;
+					this.$emit('update-total-count', this.totalCount);
+					this.loadingLoans = false;
+				}
 
-				this.loadingLoans = false;
 				if (this.totalCount === 0) {
 					this.zeroLoans = true;
 				}
