@@ -523,13 +523,11 @@ export default {
 				fragment: experimentVersionFragment,
 			}) || {};
 			this.mlServiceBanditExpVersion = mlServiceBanditEXP.version;
-			// Logged in user and non-users are included in this experiment,
-			// logged-in users are automatically tracked with their id
-			// Fire Event for Exp CASH-970
+
 			if (this.mlServiceBanditExpVersion && this.mlServiceBanditExpVersion !== 'unassigned') {
 				this.$kvTrackEvent(
 					'Lending',
-					'EXP-CASH-970-Mar2020',
+					'EXP-ML-Service-Bandit-LendByCategory',
 					this.mlServiceBanditExpVersion === 'variant-a' ? 'b' : 'a',
 					this.mlServiceBanditExpVersion === 'variant-a' ? mlServiceBandit : null,
 					this.mlServiceBanditExpVersion === 'variant-a' ? mlServiceBandit : null
@@ -549,8 +547,6 @@ export default {
 				// Get the array of channel objects from settings
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				return Promise.all([
-					// experiment: GROW-330 Machine Learning Category row
-					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
 					// experiment: category description
 					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
 					// experiment: add to basket interstitial
@@ -618,6 +614,9 @@ export default {
 		},
 	},
 	created() {
+		// Initialize GROW-330: Machine Learning served rows
+		this.initializeMLServiceBanditRowExp();
+
 		// Read the page data from the cache
 		let baseData = {};
 		try {
@@ -633,9 +632,6 @@ export default {
 
 		// Initialize CASH-521: Hover loan card experiment
 		this.initializeHoverLoanCard();
-
-		// Initialize GROW-330: Machine Learning served rows
-		this.initializeMLServiceBanditRowExp();
 
 		// Copy basic data from query into instance variables
 		this.setRows(baseData);
