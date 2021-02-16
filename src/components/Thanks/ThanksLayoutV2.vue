@@ -42,6 +42,7 @@
 				<kv-icon-button class="thanks-page__icon-button expanded"
 					:class="{ active: isShareSelected }"
 					@click.native="setVisibleSection('share')"
+					v-if="showShare"
 				>
 					<template v-slot:icon-left>
 						<kv-icon
@@ -166,6 +167,7 @@
 					:class="{
 						'kv-accordion--open' : isShareSelected,
 					}"
+					v-if="showShare"
 				>
 					<kv-icon-button class=" thanks-page__icon-button expanded"
 						:class="{ active: isShareSelected }"
