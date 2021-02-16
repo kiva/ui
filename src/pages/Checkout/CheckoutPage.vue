@@ -747,16 +747,6 @@ export default {
 			}
 
 			.guest-checkout-button {
-				color: $kiva-accent-blue;
-				border: 1px solid $kiva-accent-blue;
-				box-shadow: 0 2px $kiva-accent-blue;
-
-				&:hover {
-					color: $kiva-accent-darkblue;
-					border: 1px solid $kiva-accent-darkblue;
-					box-shadow: 0 2px $kiva-accent-darkblue;
-				}
-
 				@include breakpoint(medium) {
 					margin-right: 1rem;
 				}
