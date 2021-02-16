@@ -23,6 +23,7 @@ import LendByCategoryHomepage from '@/pages/Homepage/LendByCategoryHomepage';
 import MonthlyGoodHomepage from '@/pages/Homepage/MonthlyGoodHomepage';
 // import FifteenYearHomepage from '@/pages/Homepage/15YearHomepage';
 // import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
+import IWD2021HomePage from '@/pages/Homepage/iwd/IWD2021Homepage';
 // import WRDHomePage from '@/pages/Homepage/wrd/WRDHomepage';
 
 import TopMessageContentful from './TopMessageContentful';
@@ -47,6 +48,7 @@ export default {
 		LendByCategoryHomepage,
 		// FifteenYearHomepage,
 		// IWDHomePage,
+		IWD2021HomePage,
 		// WRDHomePage,
 		TopMessageContentful,
 	},
@@ -64,6 +66,7 @@ export default {
 			isLenderPreferencesActive: false,
 			isContentfulHomepageActive: false,
 			isIwdActive: false,
+			isIWD2021Active: false,
 			isWrdActive: false,
 			isMessageActive: false,
 			pageData: null,
@@ -72,6 +75,7 @@ export default {
 	computed: {
 		activeHomepage() {
 			// if (this.is15YearsActive) return FifteenYearHomepage;
+			if (this.isIWD2021Active) return IWD2021HomePage;
 			if (this.isContentfulHomepageActive) return MonthlyGoodHomepage;
 			if (this.isLenderPreferencesActive) return LendByCategoryHomepage;
 			// if (this.isMessageActive) return TopMessageContentful;
@@ -125,6 +129,19 @@ export default {
 				this.isContentfulHomepageActive = true;
 			}
 
+			// returns the contentful content of the uiSetting key ui-homepage-iwd-2021
+			// which controls when the contentful page layout should be active
+			const uiHomepageIWD2021Setting = this.pageData?.page?.settings?.find(item => item.key === 'ui-homepage-iwd-2021') ?? null; // eslint-disable-line max-len
+			const isUiHomepageIWD2021SettingEnabled = settingEnabled(
+				uiHomepageIWD2021Setting,
+				'active',
+				'startDate',
+				'endDate'
+			);
+			if (this.pageData && isUiHomepageIWD2021SettingEnabled) {
+				this.isIWD2021Active = true;
+			}
+
 			// Fetch legacy homepage experiment data (GROW-442)
 			const legacyHomeExp = this.apollo.readFragment({
 				id: 'Experiment:home_legacy',
@@ -142,6 +159,7 @@ export default {
 				// Always show the legacy default homepage in this case
 				this.isContentfulHomepageActive = false;
 				this.isLenderPreferencesActive = false;
+				this.isIWD2021Active = false;
 			} else {
 				// Otherwise show the new default homepage
 				this.isLenderPreferencesActive = true;
