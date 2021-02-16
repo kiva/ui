@@ -547,6 +547,8 @@ export default {
 				// Get the array of channel objects from settings
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				return Promise.all([
+					// experiment: GROW-330 Machine Learning Category row
+					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
 					// experiment: category description
 					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
 					// experiment: add to basket interstitial
@@ -566,6 +568,7 @@ export default {
 				expRowData = _get(data, 'ml.orderedLoanChannels') || [];
 
 				const mlServiceBanditExpVersion = _get(expResults, '[0].data.experiment.version');
+
 				if (mlServiceBanditExpVersion !== null) {
 					rowData = expRowData;
 				}

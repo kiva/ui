@@ -16,6 +16,10 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
+		mlServiceBandit: uiExperimentSetting(key: "EXP-ML-Service-Bandit-LendByCategory") {
+			key
+			value
+		}
 		hoverLoanCards: uiExperimentSetting(key: "hover_loan_cards") {
 			key
 			value
