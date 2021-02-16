@@ -288,6 +288,7 @@ export default {
 				this.reInitVisible();
 			}
 			this.slides = this.embla.slideNodes();
+			this.$forceUpdate(); // force a re-render so embla.canScrollNext() gets called in the template
 		},
 		reInitVisible() {
 			const slidesInView = this.embla.slidesInView(true).length;
