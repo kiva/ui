@@ -93,6 +93,19 @@
 									v-else-if="!isActivelyLoggedIn && showLoginContinueButton"
 									class="small-12 columns"
 								>
+									<!-- Guest checkout button shown to user's with a 'kvu' cookie
+										which indicates if a user has logged into Kiva on current browser -->
+									<kv-button
+										v-if="showGuestCheckoutButton"
+										class="guest-checkout-button checkout-button smallest secondary"
+										id="guest-checkout-button"
+										v-kv-track-event="['basket', 'Guest Checkout Button']"
+										title="Checkout as guest"
+										@click.native="guestCheckout"
+									>
+										Checkout as guest
+									</kv-button>
+
 									<kv-button
 										class="checkout-button smallest"
 										id="login-to-continue-button"
@@ -445,6 +458,13 @@ export default {
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;
 		},
+		showGuestCheckoutButton() {
+			// Checking if Kiva has been logged into on user's current browser
+			if (!cookieStore.get('kvu')) {
+				return true;
+			}
+			return false;
+		},
 		showLoginContinueButton() {
 			if (!this.myId || !this.isActivelyLoggedIn) {
 				return true;
@@ -482,6 +502,9 @@ export default {
 			}
 
 			// Doing nothing here allows the normal link handling to happen, which will send the user to /ui-login
+		},
+		guestCheckout() {
+			console.log('Guest checkout method triggered.');
 		},
 		doPopupLogin() {
 			if (this.kvAuth0.enabled) {
@@ -720,6 +743,12 @@ export default {
 
 				.checkout-button {
 					width: auto;
+				}
+			}
+
+			.guest-checkout-button {
+				@include breakpoint(medium) {
+					margin-right: 1rem;
 				}
 			}
 		}
