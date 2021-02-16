@@ -62,6 +62,21 @@
 
 				<kv-accordion-item
 					class="loan-filters__lightbox-accordian"
+					id="sort-order-accordian"
+				>
+					<template v-slot:header>
+						<h3>Sort By</h3>
+					</template>
+					<sort-order
+						class="loan-filter-controls__filter-type"
+						:initial-sort="initialSortBy"
+						:selected-sort="selectedSort"
+						@sort-order-updated="handleSortByUpdated"
+					/>
+				</kv-accordion-item>
+
+				<kv-accordion-item
+					class="loan-filters__lightbox-accordian"
 					id="region-accordian"
 				>
 					<template v-slot:header>
@@ -150,6 +165,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 import LocationFilter from '@/components/CorporateCampaign/LoanSearch/LocationFilter';
 import SectorFilter from '@/components/CorporateCampaign/LoanSearch/SectorFilter';
+import SortOrder from '@/components/CorporateCampaign/LoanSearch/SortOrder';
 import TagFilter from '@/components/CorporateCampaign/LoanSearch/TagFilter';
 
 const filterOptionsQuery = gql`
@@ -192,12 +208,21 @@ export default {
 		KvIcon,
 		LocationFilter,
 		SectorFilter,
+		SortOrder,
 		TagFilter
 	},
 	props: {
+		appliedFilters: {
+			type: Object,
+			default: () => {}
+		},
 		initialFilters: {
 			type: Object,
 			default: () => {}
+		},
+		initialSortBy: {
+			type: String,
+			default: 'popularity',
 		},
 		totalCount: {
 			type: Number,
@@ -213,6 +238,7 @@ export default {
 			filtersVisible: false,
 			initialFiltersCopy: null,
 			modifiedFilters: null,
+			selectedSort: null,
 		};
 	},
 	mounted() {
@@ -271,28 +297,61 @@ export default {
 			return incomingFilter || [];
 		},
 		filterChips() {
+			// gather gender setting
+			const genderOptions = [
+				{ name: 'Women', key: 'female', __typename: 'GenderEnum' },
+				{ name: 'Men', key: 'male', __typename: 'GenderEnum' },
+			];
+			const selectedGenderRaw = genderOptions.filter(gender => {
+				if (this.appliedFilters && this.appliedFilters.gender) {
+					return this.appliedFilters.gender === gender.key;
+				}
+				return false;
+			});
+
 			// gather selected Countries
 			const selectedCountriesRaw = this.allCountries.filter(country => {
-				return this.selectedCountries.includes(country.isoCode);
+				const appliedCountries = this.appliedFilters?.country ?? [];
+				if (appliedCountries.length) {
+					return appliedCountries.includes(country.isoCode);
+				}
+				return false;
 			});
 
 			// gather selected Sectors
 			const selectedSectorsRaw = this.allSectors.filter(sector => {
-				return this.selectedSectors.includes(sector.id);
+				const appliedSectors = this.appliedFilters?.sector ?? [];
+				if (appliedSectors.length) {
+					return appliedSectors.includes(sector.id);
+				}
+				return false;
 			});
 
 			// gather selected Themes
 			const selectedAttributesRaw = this.allAttributes.filter(attribute => {
-				return this.selectedAttributes.includes(attribute.name);
+				const appliedAttributes = this.appliedFilters?.theme ?? [];
+				if (appliedAttributes.length) {
+					return appliedAttributes.includes(attribute.name);
+				}
+				return false;
 			});
 
 			// gather selected tags
 			const selectedTagsRaw = this.allTags.filter(tag => {
-				return this.selectedTags.includes(tag.id);
+				const appliedTags = this.appliedFilters?.loanTags ?? [];
+				if (appliedTags.length) {
+					return appliedTags.includes(tag.id);
+				}
+				return false;
 			});
 
-			// const selectedTagsEnriched = selectedTagsRaw.map()
-			return [...selectedCountriesRaw, ...selectedSectorsRaw, ...selectedAttributesRaw, ...selectedTagsRaw];
+			return [
+				...selectedGenderRaw,
+				...selectedCountriesRaw,
+				...selectedSectorsRaw,
+				...selectedAttributesRaw,
+				...selectedTagsRaw
+			];
 		},
 	},
 	watch: {
@@ -312,16 +371,14 @@ export default {
 			this.filtersVisible = true;
 		},
 		handleUpdatedFilters(payload) {
-			// console.log('handleUpdatedFilters: ', payload);
 			const filterKeys = Object.keys(payload);
-			// console.log('filterKeys: ', filterKeys);
 			filterKeys.forEach(key => {
 				this.modifiedFilters[key] = payload[key];
 			});
 		},
 		applyFilters() {
-			// console.log(this.modifiedFilters);
 			this.$emit('updated-filters', this.modifiedFilters);
+			this.$emit('updated-sort-by', this.selectedSort);
 			this.filtersVisible = false;
 		},
 		// TODO: Move to Util file
@@ -370,23 +427,58 @@ export default {
 			return name.replace(/#/g, '');
 		},
 		handleRemoveFilter(filter) {
-			console.log(filter);
-			this.showFilters();
 			// eslint-disable-next-line no-underscore-dangle
-			// const type = filter.__typename;
-			// switch (type) {
-			// 	case 'Country':
-			// 		break;
-			// 	case 'Sector':
-			// 		break;
-			// 	case 'LoanThemeFilter':
-			// 		break;
-			// 	case 'Tag':
-			// 		break;
-			// 	default:
-			// 		break;
-			// }
+			const type = filter.__typename;
+			switch (type) {
+				case 'GenderEnum':
+					this.modifiedFilters.gender = null;
+					this.applyFilters();
+					break;
+				case 'Country':
+					if (this.modifiedFilters.country && this.modifiedFilters.country.length) {
+						const newCountries = this.modifiedFilters.country.filter(isoCode => {
+							return filter.isoCode !== isoCode;
+						});
+						this.modifiedFilters.country = newCountries;
+						this.applyFilters();
+					}
+					break;
+				case 'Sector':
+					if (this.modifiedFilters.sector && this.modifiedFilters.sector.length) {
+						const newSectors = this.modifiedFilters.sector.filter(sectorId => {
+							return filter.id !== sectorId;
+						});
+						this.modifiedFilters.sector = newSectors;
+						this.applyFilters();
+					}
+					break;
+				case 'LoanThemeFilter':
+					if (this.modifiedFilters.theme && this.modifiedFilters.theme.length) {
+						const newThemes = this.modifiedFilters.theme.filter(themeName => {
+							return filter.name !== themeName;
+						});
+						this.modifiedFilters.theme = newThemes;
+						this.applyFilters();
+					}
+					break;
+				case 'Tag':
+					if (this.modifiedFilters.loanTags && this.modifiedFilters.loanTags.length) {
+						const newTags = this.modifiedFilters.loanTags.filter(tagId => {
+							return filter.id !== tagId;
+						});
+						this.modifiedFilters.loanTags = newTags;
+						this.applyFilters();
+					}
+					break;
+				default:
+					break;
+			}
 		},
+		handleSortByUpdated(sortBy) {
+			if (this.selectedSort !== sortBy) {
+				this.selectedSort = sortBy;
+			}
+		}
 	},
 };
 </script>
@@ -438,21 +530,12 @@ export default {
 		@include breakpoint(medium) {
 			margin: 1.5rem 3.5rem 0.5rem;
 		}
-
-		// Temporarily hide close 'X'
-		::v-deep .filter-close-button-container {
-			display: none;
-		}
 	}
 
 	h3 {
 		display: block;
 		padding: 0.5rem 0;
 	}
-
-	// &__loan-display {
-
-	// }
 
 	&__lightbox {
 		::v-deep .kv-lightbox__container {

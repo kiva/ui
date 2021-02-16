@@ -18,7 +18,7 @@
 			</p>
 		</div>
 		<kv-carousel
-			v-if="!loadingLoans && !zeroLoans"
+			v-show="!zeroLoans"
 			ref="campaignLoanCarousel"
 			slides-to-scroll="visible"
 			:autoplay="false"
@@ -76,7 +76,6 @@
 
 <script>
 import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
-import cookieStore from '@/util/cookieStore';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -107,6 +106,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		promoOnly: {
+			type: Object,
+			default: null
+		},
 		rowNumber: {
 			type: Number,
 			default: null
@@ -115,6 +118,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		sortBy: {
+			type: String,
+			default: 'popularity'
+		}
 	},
 	data() {
 		return {
@@ -137,7 +144,8 @@ export default {
 				loans: () => [],
 				offset: this.offset,
 				filters: this.loanQueryFilters,
-				promoOnly: { basketId: cookieStore.get('kvbskt') }
+				promoOnly: this.promoOnly,
+				sortBy: this.sortBy,
 			};
 		},
 		hasMoreLoansAvailable() {
@@ -145,8 +153,22 @@ export default {
 		}
 	},
 	watch: {
-		loanQueryVars(next, prev) {
-			this.loanQueryVarsStack.push(prev);
+		loans() {
+			if (this.loans.length && this.isVisible) {
+				this.$nextTick(() => {
+					if (this.$refs.campaignLoanCarousel) {
+						// re-init carousel
+						this.$refs.campaignLoanCarousel.reInit();
+						// shake the carousel to re-init controls
+						this.$refs.campaignLoanCarousel.goToSlide(
+							(this.$refs.campaignLoanCarousel.currentIndex + 1) || 0
+						);
+						this.$refs.campaignLoanCarousel.goToSlide(
+							(this.$refs.campaignLoanCarousel.currentIndex - 1) || 0
+						);
+					}
+				});
+			}
 		},
 		filters(next) {
 			// TODO: Review process for reseting loans after applying filters
@@ -157,7 +179,9 @@ export default {
 			// reset loan added flag
 			this.loanAdded = false;
 			this.loanQueryFilters = next;
-			// }
+
+			// Reset carousel position after applying loan filters
+			this.$refs.campaignLoanCarousel.goToSlide(0);
 		},
 		isVisible(next) {
 			if (next) {
@@ -166,8 +190,15 @@ export default {
 		},
 		showLoans(next) {
 			if (next) {
-				this.activateLoanWatchQuery();
+				this.fetchLoans();
 			}
+		},
+		loanQueryVars: {
+			handler(next, prev) {
+				this.loanQueryVarsStack.push(prev);
+				this.fetchLoans();
+			},
+			deep: true,
 		}
 	},
 	methods: {
@@ -179,47 +210,33 @@ export default {
 			const selectedLoan = this.loans.find(loan => loan.id === payload.loanId);
 			this.$emit('show-loan-details', selectedLoan);
 		},
-		activateLoanWatchQuery() {
-			this.loadingLoans = true;
-			const observer = this.apollo.watchQuery({
+		fetchLoans() {
+			if (this.isVisible) {
+				this.loadingLoans = true;
+			}
+			this.zeroLoans = false;
+
+			this.apollo.query({
 				query: basicLoanQuery,
 				variables: this.loanQueryVars,
-				fetchPolicy: 'network-only'
-			});
-			this.$watch(() => this.loanQueryVars, vars => {
-				observer.setVariables(vars);
-				this.loadingLoans = true;
-				this.zeroLoans = false;
-			}, { deep: true });
-			// Subscribe to the observer to see each result
-			observer.subscribe({
-				next: ({ data }) => {
-					const newLoans = data.lend?.loans?.values ?? [];
-					// Handle appending new loans to carousel
-					const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
-					const existingLoanIds = this.loans.length ? this.loans.map(loan => loan.id) : [];
-					if (newLoanIds.toString() !== existingLoanIds.toString()) {
-						this.loans = this.loans.concat(newLoans);
-					}
+				fetchPolicy: 'network-only',
+			}).then(({ data }) => {
+				const newLoans = data.lend?.loans?.values ?? [];
+				// Handle appending new loans to carousel
+				const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
+				const existingLoanIds = this.loans.length ? this.loans.map(loan => loan.id) : [];
+				if (newLoanIds.toString() !== existingLoanIds.toString()) {
+					this.loans = this.loans.concat(newLoans);
+				}
 
+				if (this.isVisible) {
 					this.totalCount = data.lend?.loans?.totalCount ?? 0;
 					this.$emit('update-total-count', this.totalCount);
-
 					this.loadingLoans = false;
-					if (this.totalCount === 0) {
-						this.zeroLoans = true;
-					}
+				}
 
-					// Reset carousel position after applying loan filters or loading additional loans
-					if (!this.loanAdded && !this.zeroLoans) {
-						this.$nextTick(() => {
-							// Since we can show up to 3 cards at a time,
-							// we need to do math do determine how far to scroll the carousel
-							const slidesInView = this.$refs.campaignLoanCarousel.embla.slidesInView(true).length;
-							const scrollDistance = this.offset / slidesInView;
-							this.$refs.campaignLoanCarousel.goToSlide(parseInt(scrollDistance, 10));
-						});
-					}
+				if (this.totalCount === 0) {
+					this.zeroLoans = true;
 				}
 			});
 		},
@@ -266,7 +283,6 @@ $card-half-space: rem-calc(14/2);
 	box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 	width: $card-width;
 	max-width: calc(100vw - 4rem); // ensure some extra card is shown on mobile
-	flex: 1 0 auto;
 	margin: 1rem 0 2rem 0;
 }
 

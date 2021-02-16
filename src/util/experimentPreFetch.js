@@ -18,7 +18,8 @@ let activeExperiments = [
 	'homepage_force_dismiss_overlay',
 	'redirect_to_login',
 	'mg_login_after_setup',
-	'guest_checkout'
+	'guest_checkout',
+	'EXP-ML-Service-Bandit-LendByCategory',
 ];
 
 // TODO: Enhance Error handling

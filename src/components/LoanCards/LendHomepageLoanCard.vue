@@ -220,18 +220,20 @@ export default {
 	background: $white;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
-	flex: 1 0 auto;
+	justify-content: flex-start;
+	height: fit-content;
 	border-radius: 0.65rem;
 
 	&__image-wrapper {
 		border-radius: 0.65rem 0.65rem 0 0;
 		overflow: hidden;
 		flex-shrink: 0;
+		height: 0;
+		padding-bottom: 75%;
 
 		::v-deep a.borrower-image-link {
 			position: relative;
-			display: inline-block;
+			display: block;
 			height: 100%;
 
 			.borrower-image {
