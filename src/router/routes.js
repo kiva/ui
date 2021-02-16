@@ -159,6 +159,13 @@ export default [
 		}
 	},
 	{
+		path: '/register/guest',
+		component: () => import('@/pages/LoginAndRegister/GuestAccountClaim'),
+		meta: {
+			activeLoginRequired: true,
+		}
+	},
+	{
 		path: '/settings/autolending',
 		component: () => import('@/pages/Autolending/AutolendingPage'),
 		children: [
