@@ -1,9 +1,9 @@
-mutation {
-  my {
-    completeGuestAccountClaim ($firstName: String, $lastName: String) {
-        success
-        error
-        value
+mutation completeGuestAccountClaim($firstName: String, $lastName: String){
+    my {
+        completeGuestAccountClaim (firstName: $firstName, lastName: $lastName) {
+            success
+            error
+            value
+        }
     }
-  }
 }
