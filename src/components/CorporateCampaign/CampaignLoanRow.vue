@@ -30,7 +30,7 @@
 		>
 			<kv-carousel-slide
 				v-for="(loan, index) in loans"
-				:key="`loan-${loan.id}`"
+				:key="`loan-${loan.id}-${index}`"
 				class="column cards-wrap"
 			>
 				<loan-card-controller
@@ -157,15 +157,8 @@ export default {
 			if (this.loans.length && this.isVisible) {
 				this.$nextTick(() => {
 					if (this.$refs.campaignLoanCarousel) {
-						// re-init carousel
+						// re-init carousel since the slides changed
 						this.$refs.campaignLoanCarousel.reInit();
-						// shake the carousel to re-init controls
-						this.$refs.campaignLoanCarousel.goToSlide(
-							(this.$refs.campaignLoanCarousel.currentIndex + 1) || 0
-						);
-						this.$refs.campaignLoanCarousel.goToSlide(
-							(this.$refs.campaignLoanCarousel.currentIndex - 1) || 0
-						);
 					}
 				});
 			}
