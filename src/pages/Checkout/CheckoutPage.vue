@@ -93,10 +93,11 @@
 									v-else-if="!isActivelyLoggedIn && showLoginContinueButton"
 									class="small-12 columns"
 								>
-									<!-- Guest checkout button shown to user's with a 'kvu' cookie
+									<!-- Guest checkout button shown when the uiexp.guest_checkout is enabled
+										to users in the test group without a 'kvu' cookie
 										which indicates if a user has logged into Kiva on current browser -->
 									<kv-button
-										v-if="showGuestCheckoutButton"
+										v-if="showGuestCheckoutButton && guestCheckoutExperimentVersion === 'shown'"
 										class="guest-checkout-button checkout-button smallest secondary"
 										id="guest-checkout-button"
 										v-kv-track-event="['basket', 'Guest Checkout Button']"
