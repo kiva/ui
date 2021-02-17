@@ -7,15 +7,15 @@
 			<p>
 				To finish creating your account, please enter your first and last name below.
 			</p>
-			<form id="guestAccountClaimForm" action="." @submit.prevent.stop="postGuestAccountClaimForm">
+			<form id="guestAccountClaimForm" action="." @submit.prevent.stop="submitForm">
 				<label class="input-label" for="firstName">
 					First name
 				</label>
-				<input id="firstName" type="text" required @valid="firstName = $event">
+				<input id="firstName" v-model="firstName" type="text" required @valid="firstName = $event">
 				<label class="input-label" for="lastName">
 					Last name
 				</label>
-				<input id="lastName" type="text" required @valid="lastName = $event">
+				<input id="lastName" v-model="lastName" type="text" required @valid="lastName = $event">
 				<KvButton class="claim-button" type="submit">
 					Done
 				</KvButton>
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import SystemPage from '@/components/SystemFrame/SystemPage';
 import KvButton from '@/components/Kv/KvButton';
 import completeGuestAccountClaim from '@/graphql/mutation/completeGuestAccountClaim.graphql';
@@ -39,6 +40,7 @@ export default {
 		return {
 			firstName: '',
 			lastName: '',
+			error: ''
 		};
 	},
 	computed: {
@@ -60,16 +62,17 @@ export default {
 					firstName: this.firstName,
 					lastName: this.lastName,
 				},
-			}).then(({ response }) => {
-				if (response.error) {
-					this.$showTipMsg(response.error, 'error');
-				} else {
+			}).then(data => {
+				const response = _get(data, 'data.my.completeGuestAccountClaim');
+				if (response.success) {
 					window.location = `https://${this.$appConfig.auth0.domain}`
 							+ `/continue?${this.formData}&state=${this.$route.query.state}`;
+				} else {
+					this.$showTipMsg(response.error, 'error');
 				}
 			});
 		},
-		submit() {
+		submitForm() {
 			if (this.formValid) {
 				this.claimGuestAccount();
 			} else {

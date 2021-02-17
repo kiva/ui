@@ -1,4 +1,4 @@
-mutation completeGuestAccountClaim($firstName: String, $lastName: String){
+mutation completeGuestAccountClaim($firstName: String!, $lastName: String!){
     my {
         completeGuestAccountClaim (firstName: $firstName, lastName: $lastName) {
             success
