@@ -168,14 +168,21 @@ export default {
 			}
 		},
 		isVisible(next) {
-			if (next) {
+			if (next && this.showLoans) {
+				this.fetchLoans();
+			}
+		},
+		showLoans(next) {
+			if (next && this.isVisible) {
 				this.fetchLoans();
 			}
 		},
 		loanQueryVars: {
 			handler(next, prev) {
 				this.loanQueryVarsStack.push(prev);
-				this.fetchLoans();
+				if (this.showLoans && this.isVisible) {
+					this.fetchLoans();
+				}
 			},
 			deep: true,
 		}
@@ -230,14 +237,13 @@ export default {
 			// if it is, changes page to the last page and displays a tip message
 			const loansOutOfRange = loansArrayLength === 0 && pageQueryParam;
 			if (loansOutOfRange) {
-				// eslint-disable-next-line max-len
-				this.$showTipMsg(`There are currently ${this.lastLoanPage} pages of results. We’ve loaded the last page for you.`);
 				this.pageChange(this.lastLoanPage);
 			}
 		},
 		pageChange(number) {
 			const offset = loansPerPage * (number - 1);
 			this.offset = offset;
+			this.pageQuery = { page: number };
 			this.pushChangesToUrl();
 		},
 		updateFromParams(query) {
