@@ -7,7 +7,7 @@
 			<p>
 				To finish creating your account, please enter your first and last name below.
 			</p>
-			<form id="guestAccountClaimForm" action="." @submit.prevent.stop="submitForm">
+			<form id="guestAccountClaimForm" action="." @submit.prevent.stop="claimGuestAccount">
 				<label class="input-label" for="firstName">
 					First name
 				</label>
@@ -39,8 +39,7 @@ export default {
 	data() {
 		return {
 			firstName: '',
-			lastName: '',
-			error: ''
+			lastName: ''
 		};
 	},
 	computed: {
@@ -49,10 +48,7 @@ export default {
 				`firstName=${encodeURIComponent(this.firstName)}`,
 				`lastName=${encodeURIComponent(this.lastName)}`,
 			].join('&');
-		},
-		formValid() {
-			return this.firstName && this.lastName;
-		},
+		}
 	},
 	methods: {
 		claimGuestAccount() {
@@ -71,13 +67,6 @@ export default {
 					this.$showTipMsg(response.error, 'error');
 				}
 			});
-		},
-		submitForm() {
-			if (this.formValid) {
-				this.claimGuestAccount();
-			} else {
-				this.$showTipMsg('Please complete all the fields.', 'error');
-			}
 		}
 	},
 
@@ -89,10 +78,6 @@ export default {
 
 .page-content {
 	max-width: 20rem;
-
-	#submit-button {
-		width: 100%;
-	}
 
 	.input-label {
 		text-align: left;
