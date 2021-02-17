@@ -184,19 +184,22 @@ export default {
 			this.$refs.campaignLoanCarousel.goToSlide(0);
 		},
 		isVisible(next) {
-			if (next) {
+			if (next && this.showLoans) {
 				this.loadingLoans = false;
+				this.fetchLoans();
 			}
 		},
 		showLoans(next) {
-			if (next) {
+			if (next && this.isVisible) {
 				this.fetchLoans();
 			}
 		},
 		loanQueryVars: {
 			handler(next, prev) {
 				this.loanQueryVarsStack.push(prev);
-				this.fetchLoans();
+				if (this.showLoans && this.isVisible) {
+					this.fetchLoans();
+				}
 			},
 			deep: true,
 		}
@@ -225,8 +228,11 @@ export default {
 				// Handle appending new loans to carousel
 				const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
 				const existingLoanIds = this.loans.length ? this.loans.map(loan => loan.id) : [];
+
+				// Filter out any loans already in the stack
+				const newLoansFiltered = newLoans.filter(loan => !existingLoanIds.includes(loan.id));
 				if (newLoanIds.toString() !== existingLoanIds.toString()) {
-					this.loans = this.loans.concat(newLoans);
+					this.loans = [...this.loans, ...newLoansFiltered];
 				}
 
 				if (this.isVisible) {
