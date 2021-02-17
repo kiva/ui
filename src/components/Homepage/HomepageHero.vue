@@ -76,6 +76,7 @@ export default {
 		heroImage() {
 			const mediaObject = this.content?.media?.[0];
 			return {
+				description: mediaObject?.description ?? '',
 				title: mediaObject?.title ?? '',
 				url: mediaObject?.file?.url ?? ''
 			};
