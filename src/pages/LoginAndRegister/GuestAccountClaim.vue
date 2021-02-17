@@ -11,11 +11,16 @@
 				<label class="input-label" for="firstName">
 					First name
 				</label>
-				<input id="firstName" v-model="firstName" type="text" required @valid="firstName = $event">
+				<input id="firstName" v-model="firstName" type="text" required>
 				<label class="input-label" for="lastName">
 					Last name
 				</label>
-				<input id="lastName" v-model="lastName" type="text" required @valid="lastName = $event">
+				<input id="lastName" v-model="lastName" type="text" required>
+				<ul v-show="showValidationError" class="validation-errors">
+					<li>
+						You must provide your first and last name
+					</li>
+				</ul>
 				<KvButton class="claim-button" type="submit">
 					Done
 				</KvButton>
@@ -39,10 +44,14 @@ export default {
 	data() {
 		return {
 			firstName: '',
-			lastName: ''
+			lastName: '',
+			showValidationError: false
 		};
 	},
 	computed: {
+		isValid() {
+			return this.firstName.trim() && this.lastName.trim();
+		},
 		formData() {
 			return [
 				`firstName=${encodeURIComponent(this.firstName)}`,
@@ -52,21 +61,12 @@ export default {
 	},
 	methods: {
 		claimGuestAccount() {
-			this.apollo.mutate({
-				mutation: completeGuestAccountClaim,
-				variables: {
-					firstName: this.firstName,
-					lastName: this.lastName,
-				},
-			}).then(data => {
-				const response = _get(data, 'data.my.completeGuestAccountClaim');
-				if (response.success) {
-					window.location = `https://${this.$appConfig.auth0.domain}`
-							+ `/continue?${this.formData}&state=${this.$route.query.state}`;
-				} else {
-					this.$showTipMsg(response.error, 'error');
-				}
-			});
+			if (!this.isValid) {
+				this.showValidationError = true;
+			}else {
+				window.location = `https://${this.$appConfig.auth0.domain}`
+						+ `/continue?${this.formData}&state=${this.$route.query.state}`;
+			}
 		}
 	},
 
