@@ -30,10 +30,8 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import SystemPage from '@/components/SystemFrame/SystemPage';
 import KvButton from '@/components/Kv/KvButton';
-import completeGuestAccountClaim from '@/graphql/mutation/completeGuestAccountClaim.graphql';
 
 export default {
 	components: {
@@ -63,7 +61,7 @@ export default {
 		claimGuestAccount() {
 			if (!this.isValid) {
 				this.showValidationError = true;
-			}else {
+			} else {
 				window.location = `https://${this.$appConfig.auth0.domain}`
 						+ `/continue?${this.formData}&state=${this.$route.query.state}`;
 			}
