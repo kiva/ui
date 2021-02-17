@@ -1,7 +1,6 @@
 <template>
 	<div class="iwd-2021-homepage">
-		<!-- hero component. example: -->
-		<!-- <homepage-hero :content="heroContentGroup" /> -->
+		<homepage-hero class="section" :content="heroContentGroup" />
 		<!-- loan categories component -->
 		<!-- how it works component -->
 		<!-- mind the gap component -->
@@ -13,7 +12,12 @@
 </template>
 
 <script>
+import HomepageHero from '@/components/Homepage/HomepageHero';
+
 export default {
+	components: {
+		HomepageHero,
+	},
 	props: {
 		content: {
 			type: Object,
@@ -28,10 +32,35 @@ export default {
 		},
 	},
 	computed: {
-		// Example: get content group for a component from the page data
-		// heroContentGroup() {
-		// 	return this.content?.page?.contentGroups?.homepageHero ?? null;
-		// },
+		heroContentGroup() {
+			return this.content?.page?.contentGroups?.homepageHero ?? null;
+		},
 	},
 };
 </script>
+
+<style lang="scss">
+@import 'settings';
+
+.iwd-2021-homepage {
+	// Text fields from contentful can include an em tag or an i tag. Adding this class
+	// to the elements with contentful content will make the text in those tags green
+	.green-emphasis {
+		em,
+		i {
+			font-style: normal;
+			color: $kiva-green;
+		}
+	}
+
+	// Uniform spacing for page sections
+	.section {
+		position: relative;
+		padding: 2rem 0;
+
+		@include breakpoint(large) {
+			padding: 2rem 0;
+		}
+	}
+}
+</style>

@@ -291,7 +291,7 @@ export function processPageContent(entryItem) {
 	};
 
 	// extract content groups for parsing
-	const contentGroups = entryItem.fields?.pageLayout?.fields?.contentGroups;
+	const contentGroups = entryItem.fields?.pageLayout?.fields?.contentGroups ?? [];
 	const cleanedContentGroups = [];
 
 	if (contentGroups.length <= 0) {
@@ -343,7 +343,7 @@ export function processPageContentFlat(entryItem) {
 	};
 
 	// extract content groups for parsing
-	const contentGroups = entryItem.fields?.pageLayout?.fields?.contentGroups;
+	const contentGroups = entryItem.fields?.pageLayout?.fields?.contentGroups ?? [];
 
 	if (contentGroups.length <= 0) {
 		contentfulContentObject.page.pageLayout.contentGroups = {
