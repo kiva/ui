@@ -5,7 +5,7 @@
 		:footer-theme="footerTheme"
 	>
 		<donate-from-macro-hero
-			:data="donateFromMacroContent"
+			:data="heroContentGroup"
 		/>
 
 		<div class="FAQ-wrapper section">
@@ -35,17 +35,14 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DonateFromMacroHero from '@/pages/Donate/DonateFromMacroHero';
-import { processContent } from '@/util/contentfulUtils';
+import { processPageContent } from '@/util/contentfulUtils';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
-
-const billionImpactImagesRequire = require.context('@/assets/images/10-years-billion-impact', true);
 
 const pageQuery = gql`query donateContent {
 	contentful {
@@ -66,14 +63,7 @@ export default {
 		return {
 			headerTheme: lightHeader,
 			footerTheme: lightFooter,
-			donationFAQs: null,
-			impactHeadline: '',
-			impactBody: '',
-			donateFromMacroContent: () => {},
-			impactImageSet: [
-				['small', billionImpactImagesRequire('./10-years-billion-impact_ghost.jpg')],
-				['small retina', billionImpactImagesRequire('./10-years-billion-impact_2x_ghost.jpg')],
-			]
+			pageData: {},
 		};
 	},
 	inject: ['apollo'],
@@ -85,28 +75,52 @@ export default {
 			});
 		},
 		result({ data }) {
-			const contentfulPageData = _get(data, 'contentful.entries.items');
-			if (!contentfulPageData) {
-				return false;
-			}
-			// Processing data from contentful
-			// eslint-disable-next-line
-			this.donateFromMacroContent = processContent(contentfulPageData);
-			// pulling the FAQs off the data for use in faqCopy computed function
-			// eslint-disable-next-line
-			this.donationFAQs = _get(this.donateFromMacroContent, 'page.pageLayout.fields.contentGroups[1].fields.content.fields.bodyCopy');
-			// eslint-disable-next-line max-len
-			this.allDonationImpactText = _get(this.donateFromMacroContent, 'page.pageLayout.fields.contentGroups[2].fields.content.fields');
-			this.impactHeadline = _get(this.allDonationImpactText, 'headline');
-			this.impactBody = _get(this.allDonationImpactText, 'bodyCopy');
+			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
+			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
 		},
 	},
 	computed: {
+		impactImageSet() {
+			const smallImage = this.impactContentGroup?.media?.[0]?.file?.url ?? null;
+			const smallImageRetina = this.impactContentGroup?.media?.[1]?.file?.url ?? null;
+
+			return [
+				['small', smallImage],
+				['small retina', smallImageRetina],
+			];
+		},
+		pageLayout() {
+			return this.pageData?.page?.pageLayout;
+		},
+		heroContentGroup() {
+			// eslint-disable-next-line max-len
+			return this.pageLayout?.contentGroups?.find(contentGroup => contentGroup.key === 'donation-hero');
+		},
+		impactContentGroup() {
+			// eslint-disable-next-line max-len
+			return this.pageLayout?.contentGroups?.find(contentGroup => contentGroup.key === 'donation-impact');
+		},
+		faqContentGroup() {
+			// eslint-disable-next-line max-len
+			return this.pageLayout?.contentGroups?.find(contentGroup => contentGroup.key === 'donation-faqs');
+		},
+		donationFAQs() {
+			return this.faqContentGroup?.contents?.find(contentBlock => contentBlock.key === 'donate-page-faqs');
+		},
+		allDonationImpactText() {
+			// eslint-disable-next-line max-len
+			return this.impactContentGroup?.contents?.find(contentBlock => contentBlock.key === 'donation-impact-content');
+		},
 		faqCopy() {
-			return documentToHtmlString(this.donationFAQs);
+			const bodyCopy = this.donationFAQs?.bodyCopy;
+			return documentToHtmlString(bodyCopy);
+		},
+		impactHeadline() {
+			return this.allDonationImpactText?.headline;
 		},
 		impactBodyCopy() {
-			return documentToHtmlString(this.impactBody);
+			const bodyCopy = this.allDonationImpactText?.bodyCopy;
+			return documentToHtmlString(bodyCopy);
 		},
 	}
 };
