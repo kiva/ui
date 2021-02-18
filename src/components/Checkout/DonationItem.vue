@@ -402,7 +402,9 @@ export default {
 		openNudgeLightbox() {
 			this.$kvTrackEvent('basket', 'click-open nudge');
 			this.nudgeLightboxVisible = true;
-			this.$refs.nudgeLightbox.openNudgeLightbox();
+			this.$nextTick(() => {
+				this.$refs.nudgeLightbox.openNudgeLightbox();
+			});
 		},
 		donationNudgeDescription() {
 			/* eslint-disable max-len */
