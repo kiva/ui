@@ -689,7 +689,7 @@ export default {
 			return this.promoData?.promoFund?.id ?? null;
 		},
 		promoOnlyQuery() {
-			if (this.promoApplied) {
+			if (this.promoApplied && !this.isMatchingCampaign) {
 				return { basketId: cookieStore.get('kvbskt') };
 			}
 			return null;
