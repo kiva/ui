@@ -14,7 +14,7 @@
 				>
 			</div>
 			<!-- eslint-disable-next-line max-len -->
-			<div class="small-10 large-6 xlarge-7 align-self-middle columns featured-loans__cta_wrapper">
+			<div class="small-10 large-6 xlarge-7 align-self-middle columns">
 				<h1 class="campaign-hero__header">
 					<template v-if="headline">
 						{{ headline }}
@@ -32,17 +32,32 @@
 				<p v-else class="campaign-hero__body">
 					With Kiva you can lend as little as $25 and make a big change in someone's life.
 				</p>
-				<kv-button
-					class="button smallest"
-					@click.native.prevent="jumpToLoans"
-					v-kv-track-event="[
-						'Campaign',
-						'click-hero-cta',
-						'Find a borrower'
-					]"
-				>
-					Find a borrower
-				</kv-button>
+				<div class="campaign-hero__cta-wrapper">
+					<kv-button
+						class="button smallest"
+						@click.native.prevent="jumpToLoans"
+						v-kv-track-event="[
+							'Campaign',
+							'click-hero-cta',
+							'Find a borrower'
+						]"
+					>
+						Find a borrower
+					</kv-button>
+					<kv-button
+						v-if="secondaryCtaLink && secondaryCtaText"
+						class="button secondary smallest"
+						:href="secondaryCtaLink"
+						target="_blank"
+						v-kv-track-event="[
+							'Campaign',
+							'click-hero-secondary-cta',
+							secondaryCtaText
+						]"
+					>
+						{{ secondaryCtaText }}
+					</kv-button>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -78,6 +93,12 @@ export default {
 			}
 			return '';
 		},
+		secondaryCtaText() {
+			return this.heroAreaContent?.contents?.[0]?.primaryCtaText || '';
+		},
+		secondaryCtaLink() {
+			return this.heroAreaContent?.contents?.[0]?.primaryCtaLink || '';
+		}
 	},
 	methods: {
 		jumpToLoans() {
@@ -145,6 +166,15 @@ export default {
 
 		@include breakpoint(xlarge) {
 			@include featured-text();
+		}
+	}
+
+	&__cta-wrapper {
+		flex-direction: row;
+		flex-wrap: wrap;
+
+		.button {
+			margin: 0 1rem 1rem 0;
 		}
 	}
 }
