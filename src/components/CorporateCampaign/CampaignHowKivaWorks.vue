@@ -48,7 +48,7 @@ export default {
 				{
 					step: 'Step Three',
 					title: 'Borrower repays',
-					blurb: 'When the borrower repays, funds return back to the funders account.',
+					blurb: 'When the borrower repays, funds return back to the lenders account.',
 					video: step3Video,
 				}
 			];
