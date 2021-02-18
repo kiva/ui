@@ -1,7 +1,7 @@
 <template>
 	<div class="iwd-2021-homepage">
 		<homepage-hero class="section" :content="heroContentGroup" />
-		<!-- loan categories component -->
+		<homepage-loan-categories class="section" :content="loansContentGroup" />
 		<!-- how it works component -->
 		<!-- mind the gap component -->
 		<!-- iwd kiva stats component -->
@@ -13,10 +13,12 @@
 
 <script>
 import HomepageHero from '@/components/Homepage/HomepageHero';
+import HomepageLoanCategories from '@/components/Homepage/HomepageLoanCategories';
 
 export default {
 	components: {
 		HomepageHero,
+		HomepageLoanCategories,
 	},
 	props: {
 		content: {
@@ -34,6 +36,9 @@ export default {
 	computed: {
 		heroContentGroup() {
 			return this.content?.page?.contentGroups?.homepageHero ?? null;
+		},
+		loansContentGroup() {
+			return this.content?.page?.contentGroups?.homepageLoanCategories ?? null;
 		},
 	},
 };
@@ -59,7 +64,7 @@ export default {
 		padding: 2rem 0;
 
 		@include breakpoint(large) {
-			padding: 2rem 0;
+			padding: 4rem 0;
 		}
 	}
 }
