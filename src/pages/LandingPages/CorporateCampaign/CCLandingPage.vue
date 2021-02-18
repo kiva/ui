@@ -8,6 +8,7 @@
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
 			<campaign-status
 				class="corporate-campaign-landing__status"
+				:is-matching="isMatchingCampaign"
 				:loading-promotion="loadingPromotion"
 				:promo-error-message="promoErrorMessage"
 				:promo-applied="promoApplied"
@@ -619,16 +620,30 @@ export default {
 		initialFilters() {
 			// initialize filter object
 			let filters = LoanSearchFilters();
+
 			// fetch filters from promo if available
 			const promoFilters = this.promoData?.managedAccount?.loanSearchCriteria?.filters ?? null;
 			// update filters from promo if present and fetchting promo data is complete
 			if (!this.loadingPromotion && promoFilters) {
 				filters = promoFilters;
 			}
-			// const filters = promoFilters || LoanSearchFilters();
+
+			// initialize base filters with defaults
 			const baseFilters = getSearchableFilters(filters);
+
+			// check for matcherAccountId from Contentful
+			let matcherAccounts = this.pageSettingData?.matcherAccountId ?? null;
+			if (matcherAccounts && typeof matcherAccounts === 'number') {
+				matcherAccounts = [matcherAccounts];
+			}
+			// apply matcherAccounts array if present
+			if (matcherAccounts && matcherAccounts.length) {
+				baseFilters.matcherAccountId = matcherAccounts;
+			}
+
 			// set some always on filters
 			baseFilters.status = 'fundraising';
+
 			return baseFilters;
 		},
 		initialSortBy() {
@@ -641,10 +656,16 @@ export default {
 			}
 			return false;
 		},
+		isMatchingCampaign() {
+			return this.pageSettingData?.matcherAccountId !== undefined;
+		},
 		contentfulPageId() {
 			return this.promoData?.managedAccount?.pageid ?? null;
 		},
 		campaignPartnerName() {
+			if (this.isMatchingCampaign) {
+				return this.pageSettingData?.matchingAccountName ?? null;
+			}
 			return this.promoData?.promoFund?.displayName ?? null;
 		},
 		verificationRequired() {
@@ -691,7 +712,7 @@ export default {
 			// handle previously applied promo
 			// There may be some additional processing we can do on initialBasketCredits
 			// to further optimize and skip the first step
-			} else if (this.hasFreeCredits || this.lendingRewardOffered) {
+			} else if (this.hasFreeCredits || this.lendingRewardOffered || this.isMatchingCampaign) {
 				this.getPromoInformationFromBasket();
 
 			// handle no promo visit
@@ -764,13 +785,18 @@ export default {
 				// Verify that applied promotion is for current page
 				if (this.verifyPromoMatchesPageId(response.data?.shop?.promoCampaign?.managedAccount?.pageId)) {
 					this.promoData = response.data?.shop?.promoCampaign;
-					this.loadingPromotion = false;
 					// if this promo credit is already applied and matches we can clear the error
 					if (this.prioritizedTargetCampaignCredit?.promoFund?.id
 						=== response.data?.shop?.promoCampaign?.promoFund?.id) {
 						this.promoApplied = true;
 						this.promoErrorMessage = null;
 					}
+					this.$nextTick(() => {
+						this.loadingPromotion = false;
+					});
+				} else if (this.isMatchingCampaign) {
+					this.promoApplied = true;
+					this.loadingPromotion = false;
 				} else {
 					// Handle response and any potential errors
 					// > this reveals and prior error messages from the promo application
