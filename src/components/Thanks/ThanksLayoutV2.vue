@@ -3,7 +3,10 @@
 		<!-- Thanks Page V2 - Desktop -->
 		<div class="row show-for-large thanks-page--large-up">
 			<div class="small-6 columns hide-for-print">
-				<kv-icon-button class="thanks-page__icon-button expanded" v-if="showMgCta"
+				<kv-icon-button
+					data-test="thanks-page-button--mg"
+					class="thanks-page__icon-button expanded"
+					v-if="showMgCta"
 					:class="{ active: isMgSelected }"
 					@click.native="setVisibleSection('mg')"
 				>
@@ -21,7 +24,9 @@
 						/>
 					</template>
 				</kv-icon-button>
-				<kv-icon-button class="thanks-page__icon-button expanded"
+				<kv-icon-button
+					data-test="thanks-page-button--receipt"
+					class="thanks-page__icon-button expanded"
 					:class="{ active: isReceiptSelected }"
 					@click.native="setVisibleSection('receipt')"
 				>
@@ -39,7 +44,9 @@
 						/>
 					</template>
 				</kv-icon-button>
-				<kv-icon-button class="thanks-page__icon-button expanded"
+				<kv-icon-button
+					data-test="thanks-page-button--share"
+					class="thanks-page__icon-button expanded"
 					:class="{ active: isShareSelected }"
 					@click.native="setVisibleSection('share')"
 					v-if="showShare"
@@ -64,15 +71,24 @@
 					v-if="showMgCta"
 					v-show="isMgSelected"
 					class="thanks-page__content-area thanks-page__content-area--mg"
+					data-test="thanks-page-content--mg"
 				>
 					<slot name="mg">
 					</slot>
 				</div>
-				<div v-show="isReceiptSelected" class="thanks-page__content-area thanks-page__content-area--receipt">
+				<div
+					v-show="isReceiptSelected"
+					class="thanks-page__content-area thanks-page__content-area--receipt"
+					data-test="thanks-page-content--receipt"
+				>
 					<slot name="receipt">
 					</slot>
 				</div>
-				<div v-show="isShareSelected" class="thanks-page__content-area thanks-page__content-area--share">
+				<div
+					v-show="isShareSelected"
+					class="thanks-page__content-area thanks-page__content-area--share"
+					data-test="thanks-page-content--share"
+				>
 					<slot name="share">
 					</slot>
 				</div>
