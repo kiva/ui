@@ -18,15 +18,21 @@ import FifteenYearsHowKivaWorksCarousel from '@/components/15Years/15YearsHowKiv
 const step1Video = require('@/assets/media/15-years/step1.mp4');
 const step2Video = require('@/assets/media/15-years/step2.mp4');
 const step3Video = require('@/assets/media/15-years/step3.mp4');
-// const step4Video = require('@/assets/media/15-years/step4.mp4');
+const step4Video = require('@/assets/media/15-years/step4.mp4');
 
 export default {
 	components: {
 		FifteenYearsHowKivaWorksCarousel,
 	},
-	data() {
-		return {
-			slides: [
+	props: {
+		isMatchingCampaign: {
+			type: Boolean,
+			default: false
+		}
+	},
+	computed: {
+		slides() {
+			const steps = [
 				{
 					step: 'Step One',
 					title: 'Choose a borrower',
@@ -42,17 +48,22 @@ export default {
 				{
 					step: 'Step Three',
 					title: 'Borrower repays',
-					blurb: 'When the borrower repays, funds return back to the funders account.',
+					blurb: 'When the borrower repays, funds return back to the lenders account.',
 					video: step3Video,
-				},
-				// {
-				// 	step: 'Step Four',
-				// 	title: 'Repeat',
-				// 	blurb: 'Relend your money or withdraw your funds.',
-				// 	video: step4Video,
-				// },
-			],
-		};
+				}
+			];
+			if (this.isMatchingCampaign) {
+				steps.push(
+					{
+						step: 'Step Four',
+						title: 'Repeat',
+						blurb: 'Relend your money or withdraw your funds.',
+						video: step4Video,
+					},
+				);
+			}
+			return steps;
+		}
 	}
 };
 </script>

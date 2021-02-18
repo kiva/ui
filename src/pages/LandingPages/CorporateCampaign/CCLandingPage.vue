@@ -92,7 +92,9 @@
 				<hr>
 			</template>
 
-			<campaign-how-kiva-works v-if="!showThanks" />
+			<campaign-how-kiva-works
+				:is-matching-campaign="isMatchingCampaign"
+			/>
 
 			<campaign-join-team-form
 				v-if="this.showTeamForm"
