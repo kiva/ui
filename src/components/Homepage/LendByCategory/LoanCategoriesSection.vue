@@ -138,6 +138,7 @@ export default {
 				case 52:
 					return 'women';
 				case 96:
+				case 106:
 					return 'COVID-19';
 				case 93:
 					return 'shelter';
@@ -146,12 +147,16 @@ export default {
 				case 87:
 					return 'agriculture';
 				case 102:
+				case 104:
 					return 'technology';
 				case 4:
+				case 88:
 					return 'education';
 				case 25:
+				case 105:
 					return 'health';
 				case 32:
+				case 107:
 					return 'refugees';
 				default:
 					// remove any text contained within square brackets, including the brackets
