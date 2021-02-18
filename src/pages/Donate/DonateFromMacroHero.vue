@@ -3,7 +3,7 @@
 		<template v-slot:images>
 			<kv-responsive-image
 				class="donation-hero-picture show-for-large"
-				:images="heroImages"
+				:images="heroResponsiveImageSet"
 				alt=""
 			/>
 		</template>
@@ -27,13 +27,12 @@
 	</kv-hero>
 </template>
 <script>
-import _get from 'lodash/get';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import { createArrayOfResponsiveImageSet } from '@/util/contentfulUtils';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
-import DonateForm from './DonateForm';
 
-const heroImagesRequire = require.context('@/assets/images/donate-macro-hero', true);
+import DonateForm from './DonateForm';
 
 export default {
 	props: {
@@ -52,55 +51,35 @@ export default {
 	},
 	data() {
 		return {
-			// TODO: These need to be hooked up to the files in contentful still
-			// https://app.contentful.com/spaces/j0p9a6ql0rn7/environments/development/entries/6pXrrPQucbeNLqf47tW3wh
-			heroImages: [
-				['small', heroImagesRequire('./donate-1-sm-standard.jpg')],
-				['small retina', heroImagesRequire('./donate-1-sm-retina.jpg')],
-				['medium', heroImagesRequire('./donate-2-med-standard.jpg')],
-				['medium retina', heroImagesRequire('./donate-2-med-retina.jpg')],
-				['large', heroImagesRequire('./donate-3-lg-standard.jpg')],
-				['large retina', heroImagesRequire('./donate-3-lg-retina.jpg')],
-				['xxlarge', heroImagesRequire('./donate-4-xxl-standard.jpg')],
-				['xxlarge retina', heroImagesRequire('./donate-4-xxl-retina.jpg')],
-				['xga', heroImagesRequire('./donate-5-xga-standard.jpg')],
-				['xga retina', heroImagesRequire('./donate-5-xga-retina.jpg')],
-				['wxga', heroImagesRequire('./donate-6-wxga-standard.jpg')],
-				['wga retina', heroImagesRequire('./donate-6-wxga-retina.jpg')],
-			],
 		};
 	},
 	computed: {
+		heroResponsiveImageSet() {
+			const imageSet = this.data?.contents?.find(contentItem => contentItem.name === 'donation-page-images');
+			return createArrayOfResponsiveImageSet(imageSet);
+		},
 		donationHeroContent() {
-			return _get(this.data, 'page.pageLayout.fields.contentGroups[0].fields.contents[1].fields');
+			return this.data?.contents?.find(contentItem => contentItem.key === 'donation-form-copy');
 		},
 		headlineCopy() {
-			return _get(this.donationHeroContent, 'headline');
+			return this.donationHeroContent?.headline;
 		},
 		subheadCopy() {
-			return _get(this.donationHeroContent, 'subHeadline');
+			return this.donationHeroContent?.subHeadline;
 		},
 		buttonCopy() {
-			return _get(this.donationHeroContent, 'primaryCtaText');
-		},
-		// Will be used once images are coming through from contentful
-		zeroImages() {
-			// eslint-disable-next-line
-			const donationImages = _get(this.data, 'page.pageLayout.fields.contentGroups[0].fields.contents[0].fields.images');
-			return donationImages;
+			return this.donationHeroContent?.primaryCtaText;
 		},
 		donationValues() {
 			// defining the donation dollar amount to pass down for button values
-			// eslint-disable-next-line
-			const donationAmounts = _get(this.data, 'page.pageLayout.fields.contentGroups[0].fields.contents[2].fields.dataObject.amounts');
+			const donationSetting = this.data?.contents?.find(contentItem => contentItem.key === 'donationAmounts');
+			const donationAmounts = donationSetting?.dataObject?.amounts;
 			return donationAmounts;
 		},
 		formDisclaimer() {
 			// extracting form disclaimer from contentful to pass into form
-			const formDisclaimerContent = _get(
-				this.data,
-				'page.pageLayout.fields.contentGroups[0].fields.contents[3].fields.richText'
-			);
+			// eslint-disable-next-line max-len
+			const formDisclaimerContent = this.data?.contents?.find(contentItem => contentItem.key === 'macro-donate-button-disclaimer');
 			return documentToHtmlString(formDisclaimerContent);
 		},
 	}
