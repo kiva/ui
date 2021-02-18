@@ -165,7 +165,6 @@ export default {
 .how-it-works {
 	&__list {
 		list-style: none;
-
 	}
 
 	&__subtitle {
