@@ -60,11 +60,11 @@ export default {
 			return this.eligibleCountries
 				.filter(country => country.numLoansFundraising > 0)
 				.map(({
-					isoCode, name, region, numLoansFundraising
+					isoCode, name, region
 				}) => {
 					return {
 						id: isoCode,
-						name: `${name} (${numLoansFundraising})`,
+						name: `${name}`,
 						region,
 						selected: this.currentIsoCodes.indexOf(isoCode) > -1,
 					};
