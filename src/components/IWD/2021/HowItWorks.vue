@@ -36,7 +36,6 @@
 </template>
 
 <script>
-// import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
 	props: {
@@ -63,10 +62,6 @@ export default {
 				subHeadline: step.subHeadline ?? '',
 				image: this.stepImages[index],
 			}));
-			// Using documentToHtmlString in the two line above result
-			// in the healine and subheadline being over written
-			//   headline: documentToHtmlString(step.headline ?? ''),
-			// 	 subHeadline: documentToHtmlString(step.subHeadline ?? ''),
 		},
 		stepImages() {
 			const images = this.content?.media ?? [];
