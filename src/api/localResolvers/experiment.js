@@ -1,4 +1,3 @@
-import _get from 'lodash/get';
 import cookieStore from '@/util/cookieStore';
 import { parseExpCookie, serializeExpCookie, assignVersion } from '@/util/experimentUtils';
 import { readJSONSetting, hashCode } from '@/util/settingsUtils';
@@ -30,9 +29,9 @@ export default () => {
 
 					// get the hash for our current experiment setting
 					const settingHash = hashCode(JSON.stringify(experimentSubset));
-					const population = _get(experiment, 'population') || 1;
+					const population = experiment?.population ?? 1;
 
-					// Add hash to exisitng cookie exps if it's missing
+					// Add hash to existing cookie exps if it's missing
 					if (typeof currentAssignment.hash === 'undefined') {
 						currentAssignment.hash = settingHash;
 					}
