@@ -48,7 +48,8 @@ export default {
 				{
 					step: 'Step Three',
 					title: 'Borrower repays',
-					blurb: 'When the borrower repays, funds return back to the lenders account.',
+					blurb: `When the borrower repays, funds return back to the
+						${this.isMatchingCampaign ? 'lenders' : 'funders'} account.`,
 					video: step3Video,
 				}
 			];
