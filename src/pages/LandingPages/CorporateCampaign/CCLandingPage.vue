@@ -38,6 +38,7 @@
 								class="loan-view-controls__filters"
 								:applied-filters="filters"
 								:initial-filters="initialFilters"
+								:excluded-tags="excludedTags"
 								:initial-sort-by="initialSortBy"
 								:total-count="totalCount"
 								@updated-filters="handleUpdatedFilters"
@@ -650,6 +651,9 @@ export default {
 		},
 		initialSortBy() {
 			return this.promoData?.managedAccount?.loanSearchCriteria?.sortBy ?? 'popularity';
+		},
+		excludedTags() {
+			return this.pageSettingData?.excludedTags ?? []; // tags that we don't want to show in the filter lightbox
 		},
 		isActivelyLoggedIn() {
 			const lastLogin = (parseInt(this.lastActiveLogin, 10)) || 0;
