@@ -15,7 +15,7 @@
 <script>
 import HomepageHero from '@/components/Homepage/HomepageHero';
 import HomepageLoanCategories from '@/components/Homepage/HomepageLoanCategories';
-import HowItWorks from '@/components/IWD/2021/HowItWorks';
+import HowItWorks from '@/components/Homepage/HomepageHowItWorks';
 
 export default {
 	components: {

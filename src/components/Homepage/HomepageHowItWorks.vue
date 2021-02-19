@@ -45,14 +45,14 @@ export default {
 		},
 	},
 	computed: {
-		howItworksText() {
-			return this.content?.contents?.find(({ key }) => key.indexOf('iwd-2021-homepage-how-it-works-text') > -1);
+		howItWorksText() {
+			return this.content?.contents?.find(({ key }) => key.indexOf('homepage-how-it-works-text') > -1);
 		},
 		howItWorksHeadline() {
-			return this.howItworksText?.headline ?? '';
+			return this.howItWorksText?.headline ?? '';
 		},
 		howItWorksSubhead() {
-			return this.howItworksText?.subHeadline ?? '';
+			return this.howItWorksText?.subHeadline ?? '';
 		},
 		stepsText() {
 			const allStepsText = this.content?.contents?.filter(({ key }) => key.indexOf('step-text') > -1);
