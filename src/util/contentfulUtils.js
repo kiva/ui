@@ -22,10 +22,10 @@ function determineResponsiveSizeFromFileName(filename) {
 	if (filename.match(/lg/g)) {
 		size = 'large';
 	}
-	if (filename.match(/xl/g)) {
+	if (filename.match(/xl/g) || filename.match(/xga/g)) {
 		size = 'xga';
 	}
-	if (filename.match(/xxl/g)) {
+	if (filename.match(/xxl/g) || filename.match(/wxga/g)) {
 		size = 'wxga';
 	}
 
@@ -33,6 +33,32 @@ function determineResponsiveSizeFromFileName(filename) {
 }
 
 /**
+ * Takes raw contentful responsive image set object, and returns
+ * an array with image urls mapped to their respective sizes
+ *
+ * @param {object} contentful Responsive Image Set Object
+ * @returns {array}
+ */
+export function createArrayOfResponsiveImageSet(contentfulResponsiveImageSet) {
+	// param must be an object, which contains prop images
+	if (!contentfulResponsiveImageSet || !contentfulResponsiveImageSet.images) return [];
+
+	// copy responsive image set param
+	const contentfulResponsiveImageSetCopy = JSON.parse(JSON.stringify(contentfulResponsiveImageSet));
+	contentfulResponsiveImageSetCopy.images.forEach(imageObj => {
+		// eslint-disable-next-line no-param-reassign
+		imageObj.responsiveSize = determineResponsiveSizeFromFileName(imageObj.file.fileName);
+	});
+	// convert to array and reduce
+	const responsiveImageArray = contentfulResponsiveImageSetCopy.images.reduce((newArray, curVal) => {
+		newArray.push([curVal.responsiveSize, curVal.file.url]);
+		return newArray;
+	}, []);
+	return responsiveImageArray;
+}
+
+/**
+ * TODO remove this once content field is fully deprecated from contentful
  * Takes raw contentful content field, and returns an object with keys mapped to the content type.
  * For the special contentful content field responsiveImageSet returns an array of objects.
  *
@@ -145,7 +171,7 @@ export function formatGlobalPromoBanner(contentfulContent) {
  * @returns {object}
  */
 export function formatMediaAssetArray(mediaArray) {
-	if (!mediaArray.length) return [];
+	if (!mediaArray || !mediaArray.length) return [];
 
 	const mediaAssets = [];
 
@@ -300,12 +326,12 @@ export function processPageContent(entryItem) {
 		};
 	} else {
 		contentGroups.forEach(item => {
-			// console.log('content group item', item);
 			const contentGroupFields = {
 				key: item.fields?.key,
 				name: item.fields?.name,
 				type: item.fields?.type ?? null,
-				contents: formatContentTypes(item.fields?.contents)
+				contents: formatContentTypes(item.fields?.contents),
+				media: formatMediaAssetArray(item.fields?.media),
 			};
 			cleanedContentGroups.push(contentGroupFields);
 		});
