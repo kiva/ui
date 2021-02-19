@@ -2,9 +2,8 @@
 	<div class="iwd-2021-homepage">
 		<homepage-hero class="section" :content="heroContentGroup" />
 		<homepage-loan-categories class="section" :content="loansContentGroup" />
-		<!-- how it works component -->
 		<how-it-works class="section" :content="howItWorksContentGroup" />
-		<!-- mind the gap component -->
+		<homepage-midroll-c-t-a class="section" :content="midrollContentGroup" />
 		<!-- iwd kiva stats component -->
 		<!-- testimonials component -->
 		<!-- partners component -->
@@ -15,12 +14,14 @@
 <script>
 import HomepageHero from '@/components/Homepage/HomepageHero';
 import HomepageLoanCategories from '@/components/Homepage/HomepageLoanCategories';
+import HomepageMidrollCTA from '@/components/Homepage/HomepageMidrollCTA';
 import HowItWorks from '@/components/Homepage/HomepageHowItWorks';
 
 export default {
 	components: {
 		HomepageHero,
 		HomepageLoanCategories,
+		HomepageMidrollCTA,
 		HowItWorks,
 	},
 	props: {
@@ -45,7 +46,10 @@ export default {
 		},
 		howItWorksContentGroup() {
 			return this.content?.page?.contentGroups?.homepageHowItWorks ?? null;
-		}
+		},
+		midrollContentGroup() {
+			return this.content?.page?.contentGroups?.homepageMidrollCta ?? null;
+		},
 	},
 };
 </script>
