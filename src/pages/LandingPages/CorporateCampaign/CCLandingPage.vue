@@ -710,8 +710,12 @@ export default {
 	},
 	methods: {
 		verifyOrApplyPromotion() {
-			// Always apply a promo if query params exist
-			if (Object.keys(this.$route.query).length) {
+			// Always apply a promo if activating query params exist
+			const promoQueryKeys = ['upc', 'promoCode', 'lendingReward'];
+			const targetParams = Object.keys(this.$route.query).filter(targetKey => {
+				return promoQueryKeys.includes(targetKey);
+			});
+			if (targetParams.length) {
 				// apply promo
 				this.applyPromotion();
 
