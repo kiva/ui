@@ -3,6 +3,7 @@
 		<homepage-hero class="section" :content="heroContentGroup" />
 		<homepage-loan-categories class="section" :content="loansContentGroup" />
 		<!-- how it works component -->
+		<how-it-works class="section" :content="howItWorksContentGroup" />
 		<!-- mind the gap component -->
 		<!-- iwd kiva stats component -->
 		<!-- testimonials component -->
@@ -14,11 +15,13 @@
 <script>
 import HomepageHero from '@/components/Homepage/HomepageHero';
 import HomepageLoanCategories from '@/components/Homepage/HomepageLoanCategories';
+import HowItWorks from '@/components/Homepage/HomepageHowItWorks';
 
 export default {
 	components: {
 		HomepageHero,
 		HomepageLoanCategories,
+		HowItWorks,
 	},
 	props: {
 		content: {
@@ -40,6 +43,9 @@ export default {
 		loansContentGroup() {
 			return this.content?.page?.contentGroups?.homepageLoanCategories ?? null;
 		},
+		howItWorksContentGroup() {
+			return this.content?.page?.contentGroups?.homepageHowItWorks ?? null;
+		}
 	},
 };
 </script>
