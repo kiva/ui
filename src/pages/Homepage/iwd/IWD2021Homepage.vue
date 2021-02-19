@@ -44,7 +44,6 @@ export default {
 			return this.content?.page?.contentGroups?.homepageLoanCategories ?? null;
 		},
 		howItWorksContentGroup() {
-			console.log('content groups', this.content?.page?.contentGroups?.homepageHowItWorks);
 			return this.content?.page?.contentGroups?.homepageHowItWorks ?? null;
 		}
 	},
