@@ -24,13 +24,16 @@
 					<span>No promotion applied.</span>
 				</template>
 
-				<template v-if="promoApplied && !promoErrorMessage">
+				<template v-if="promoApplied && !promoErrorMessage && !isMatching">
 					<span v-if="promoAmount === '$0.00'">Calculating promotion...</span>
 					<span v-else>
 						You have ${{ promoAmount | numeral }}
 						<span v-if="promoName">from {{ promoName }}</span>
 						to lend!
 					</span>
+				</template>
+				<template v-else-if="promoApplied && !promoErrorMessage && isMatching">
+					<span>Make a matched loan while {{ promoName }}’s funds last</span>
 				</template>
 			</div>
 		</div>
@@ -47,6 +50,10 @@ export default {
 		KvLoadingSpinner,
 	},
 	props: {
+		isMatching: {
+			type: Boolean,
+			default: false
+		},
 		loadingPromotion: {
 			type: Boolean,
 			default: false

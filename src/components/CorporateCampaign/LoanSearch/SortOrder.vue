@@ -2,19 +2,25 @@
 	<div class="sort-by-controls">
 		<ul>
 			<li v-for="sortOption in sortOptions" :key="sortOption.value">
-				<a
-					:class="{ 'selected': activeSort === sortOption.value }"
-					@click.prevent="handleSortSelection(sortOption)"
+				<kv-radio
+					:id="`sort-by-${sortOption.value}`"
+					:radio-value="sortOption.value"
+					v-model="activeSort"
 				>
 					{{ sortOption.label }}
-				</a>
+				</kv-radio>
 			</li>
 		</ul>
 	</div>
 </template>
 
 <script>
+import KvRadio from '@/components/Kv/KvRadio';
+
 export default {
+	components: {
+		KvRadio
+	},
 	props: {
 		selectedSort: {
 			type: String,
@@ -52,13 +58,14 @@ export default {
 			if (next !== prev) {
 				this.setSortOrder();
 			}
+		},
+		activeSort(next, prev) {
+			if (next !== prev) {
+				this.$emit('sort-order-updated', next);
+			}
 		}
 	},
 	methods: {
-		handleSortSelection(sortOption) {
-			this.$emit('sort-order-updated', sortOption.value);
-			this.activeSort = sortOption;
-		},
 		setSortOrder() {
 			// set selected if present
 			if (this.selectedSort) {
@@ -71,11 +78,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-.sort-by-controls {
-	a.selected {
-		font-weight: 500;
-	}
-}
-</style>

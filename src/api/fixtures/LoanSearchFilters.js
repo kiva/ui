@@ -70,11 +70,11 @@ export function getInputFilters(filters) {
 export function getSearchableFilters(filters) {
 	const {
 		// eslint-disable-next-line max-len
-		theme, country, gender, isGroup, partner, sector, loanTags, distributionModel, dafEligible, status
+		theme, country, gender, isGroup, partner, sector, loanTags, distributionModel, dafEligible, status, matcherAccountId
 	} = filters;
 	const result = {
 		// eslint-disable-next-line max-len
-		theme, country, gender, isGroup, partner, sector, loanTags, distributionModel, dafEligible, status
+		theme, country, gender, isGroup, partner, sector, loanTags, distributionModel, dafEligible, status, matcherAccountId
 	};
 	if (filters) {
 		const arrearsRate = getSearchableRange(filters.arrearsRate);
