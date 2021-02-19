@@ -220,6 +220,14 @@ export default {
 			type: Object,
 			default: () => {}
 		},
+		/**
+		 * Tag names that we don't want to show in the filter lightbox
+		 * e.g., ['#Team Guys Holding Fish', '#Technology']
+		* */
+		excludedTags: {
+			type: Array,
+			default: () => []
+		},
 		initialSortBy: {
 			type: String,
 			default: 'popularity',
@@ -250,7 +258,9 @@ export default {
 			const countries = data.lend?.countryFacets ?? [];
 			this.allCountries = countries.map(entry => entry.country);
 			this.allSectors = _sortBy(data.lend?.sector ?? [], 'name');
-			this.allTags = _sortBy(data.lend?.tag ?? [], 'name');
+			this.allTags = _sortBy(data.lend?.tag ?? [], 'name').filter(tag => {
+				return !this.excludedTags.includes(tag.name);
+			});
 		});
 	},
 	computed: {
