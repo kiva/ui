@@ -3,7 +3,7 @@
 		<homepage-hero class="section" :content="heroContentGroup" />
 		<homepage-loan-categories class="section" :content="loansContentGroup" />
 		<!-- how it works component -->
-		<!-- mind the gap component -->
+		<homepage-midroll-c-t-a class="section" :content="midrollContentGroup" />
 		<!-- iwd kiva stats component -->
 		<!-- testimonials component -->
 		<!-- partners component -->
@@ -14,11 +14,13 @@
 <script>
 import HomepageHero from '@/components/Homepage/HomepageHero';
 import HomepageLoanCategories from '@/components/Homepage/HomepageLoanCategories';
+import HomepageMidrollCTA from '@/components/Homepage/HomepageMidrollCTA';
 
 export default {
 	components: {
 		HomepageHero,
 		HomepageLoanCategories,
+		HomepageMidrollCTA,
 	},
 	props: {
 		content: {
@@ -39,6 +41,9 @@ export default {
 		},
 		loansContentGroup() {
 			return this.content?.page?.contentGroups?.homepageLoanCategories ?? null;
+		},
+		midrollContentGroup() {
+			return this.content?.page?.contentGroups?.homepageMidrollCta ?? null;
 		},
 	},
 };
