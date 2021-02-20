@@ -1,6 +1,9 @@
 module.exports = {
 	ci: {
 		collect: {
+			settings: {
+				onlyCategories: ['accessibility', 'best-practices', 'performance', 'seo']
+			},
 			startServerCommand: 'npm start -- --config=local',
 			startServerReadyPattern: 'server started at',
 			url: [
