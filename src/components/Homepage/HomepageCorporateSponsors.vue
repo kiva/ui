@@ -1,12 +1,12 @@
 <template>
-	<section class="section sponsors bold text-center large-text">
+	<section class="section sponsors text-center">
 		<img
 			:src="sponsorsSectionImg.file.url"
 			class="sponsors__section-img"
 		>
 		<p
 			v-html="sponsorsHeadline"
-			class="sponsors__headline"
+			class=" large-text sponsors__headline"
 		>
 		</p>
 		<ul class="sponsors__list row">
