@@ -82,13 +82,6 @@ export default {
 		}
 	}
 
-	// Centering the last sponsor logo
-	&__li:last-child {
-		@include breakpoint(large) {
-			margin: 0 auto;
-		}
-	}
-
 	&__li {
 		// Applies to all sponsor logos
 		&--logo {
@@ -113,7 +106,7 @@ export default {
 		}
 
 		&--principal-foundation-logo {
-			width: rem-calc(278);;
+			width: rem-calc(278);
 		}
 
 		&--pepsi-foundation-logo {
@@ -134,6 +127,13 @@ export default {
 
 		&--xilinx-logo {
 			width: rem-calc(142);
+		}
+	}
+
+	// Centering the last sponsor logo
+	&__li:last-child {
+		@include breakpoint(large) {
+			margin: 0 auto;
 		}
 	}
 }
