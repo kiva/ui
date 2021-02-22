@@ -3,14 +3,11 @@ import fetch from 'isomorphic-fetch';
 // http is a nodejs dep only used during development mode (there is no http npm package as of July 2020)
 import { Agent as HttpAgent } from 'http'; // eslint-disable-line import/no-extraneous-dependencies
 import { Agent as SslAgent } from 'https';
-import cookieStore from '@/util/cookieStore';
 
-export default ({ csrfToken = '', uri = '' }) => {
-	const cookie = cookieStore.getCookieString();
+export default ({ uri = '' }) => {
 	const onVm = uri.indexOf('vm') > -1;
 	const usingLocal = uri.indexOf('localhost') > -1;
 	const secure = uri.indexOf('https') === 0;
-	const viaAjax = uri.indexOf('ajax') > -1;
 	let agent;
 
 	if (usingLocal && !secure) {
@@ -26,20 +23,9 @@ export default ({ csrfToken = '', uri = '' }) => {
 		uri,
 		fetch,
 		headers: {},
+		credentials: 'same-origin',
 		fetchOptions: { agent }
 	};
-
-	// only add the csrf token if we have one
-	if (csrfToken.length > 0 && viaAjax) {
-		options.headers['x-crumb'] = csrfToken;
-	}
-
-	// setup authorization
-	if (cookie && viaAjax) {
-		options.headers.cookie = cookie;
-	} else {
-		options.credentials = 'same-origin';
-	}
 
 	return new BatchHttpLink(options);
 };

@@ -1,6 +1,5 @@
 import { setContext } from 'apollo-link-context';
 import _set from 'lodash/set';
-import cookieStore from '@/util/cookieStore';
 
 // Add the user info to the context and add the access token to the authorization header
 function getAuthContext(context, user, token) {
@@ -11,7 +10,7 @@ function getAuthContext(context, user, token) {
 	return context;
 }
 
-export default kvAuth0 => {
+export default ({ cookieStore, kvAuth0 }) => {
 	return setContext((operation, previousContext) => {
 		// If auth0 is not enabled, don't add anything to the context
 		if (!kvAuth0.enabled) return getAuthContext(previousContext);
