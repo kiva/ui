@@ -4,6 +4,7 @@
 			<kv-lightbox
 				:visible="iFrameVisible"
 				class="employee-verification"
+				:prevent-close="true"
 				id="faFormLightbox"
 			>
 				<iframe
@@ -19,6 +20,9 @@
 </template>
 
 <script>
+import parseSPCookie from '@/util/parseSPCookie';
+import cookieStore from '@/util/cookieStore';
+import { addDays } from 'date-fns';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
@@ -35,9 +39,17 @@ export default {
 			type: String,
 			default: null
 		},
+		maId: {
+			type: String,
+			default: ''
+		},
+		pfId: {
+			type: String,
+			default: ''
+		},
 		userId: {
 			type: String,
-			default: null
+			default: ''
 		},
 	},
 	data() {
@@ -46,25 +58,33 @@ export default {
 			iFrameVisible: false,
 			iFrameWidth: 600,
 			iFrameHeight: 800,
+			spId: '',
+			spUserId: '',
 		};
 	},
 	mounted() {
-		this.setFrameSrc();
-		this.setIFrameDimensions();
-		if (this.formId) {
-			this.iFrameVisible = true;
+		// initiate form if it has not been recently submitted
+		if (!cookieStore.get('kvma-verified')) {
+			this.initVerificationForm();
 		}
-		window.addEventListener('message', message => {
-			this.handleIFrameMessage(message);
-		});
 	},
 	methods: {
+		initVerificationForm() {
+			this.getSnowplowSession().then(() => {
+				this.setFrameSrc();
+				this.setIFrameDimensions();
+				if (this.formId) {
+					this.iFrameVisible = true;
+				}
+				window.addEventListener('message', message => {
+					this.handleIFrameMessage(message);
+				});
+			});
+		},
 		setFrameSrc() {
 			if (!this.$isServer && window && window.location && this.formId) {
-				const doneUrl = encodeURIComponent(
-					`${window.location.origin}${this.$route.path}${window.location.search}&formComplete=true`
-				);
-				this.iFrameSrc = `https://kiva.tfaforms.net/${this.formId}?tfa_2=${this.userId}&tfa_3=${doneUrl}`;
+				// eslint-disable-next-line max-len
+				this.iFrameSrc = `https://kiva.tfaforms.net/${this.formId}?tfa_1=${this.userId}&tfa_2=${this.maId}&tfa_3=${this.pfId}&tfa_4=${this.spId}&tfa_5=${this.spUserId}`;
 			}
 		},
 		setIFrameDimensions() {
@@ -75,19 +95,43 @@ export default {
 		handleIFrameMessage(message) {
 			const messageDataType = message?.data?.type;
 			// Events emitted via 'postMessage'
-			// 'form_submitted' form submitted (may or may not be valid)
-			// 'frame_loaded' form window loaded (may or may not be on form or thanks view)
+
+			// 'fa_form_submitted' form submitted (may or may not be valid)
+			if (messageDataType && messageDataType === 'fa_form_submitted') {
+				// Update timestamp for submitted form
+				this.formSubmittedTimestamp = Date.now();
+			}
+
 			// 'fa_form_closed' form completed and transitioned to thanks view
 			if (messageDataType && messageDataType === 'fa_form_closed') {
-				window.setTimeout(
-					() => {
-						this.iFrameVisible = false;
-						this.$emit('verification-complete');
-					},
-					800
-				);
+				// compare the time closed with time submitted
+				this.$nextTick(() => {
+					const timeDifference = Date.now() - this.formSubmittedTimestamp;
+					// set cookie and close lightbox if within recent 1 second threshold
+					// > upon succesful submission the form is quickly unloaded
+					if (timeDifference <= 1000) {
+						// store cookie verification state for 24 hours
+						cookieStore.set('kvma-verified', true, {
+							expires: addDays(new Date(), 1)
+						});
+					}
+					// handle closing lightbox
+					window.setTimeout(
+						() => {
+							this.iFrameVisible = false;
+							this.$emit('verification-complete');
+						},
+						1000
+					);
+				});
 			}
 		},
+		async getSnowplowSession() {
+			// get tracking data from snowplow cookie
+			const { snowplowUserId, snowplowSessionId } = parseSPCookie();
+			this.spId = snowplowSessionId;
+			this.spUserId = snowplowUserId;
+		}
 	}
 };
 </script>

@@ -106,8 +106,10 @@
 			/>
 
 			<campaign-verification-form
-				v-if="this.showVerification"
-				:form-id="this.externalFormId"
+				v-if="showVerification"
+				:form-id="externalFormId"
+				:ma-id="String(managedAccountId)"
+				:pf-id="String(promoFundId)"
 				:user-id="this.myId"
 				@verification-complete="verificationComplete"
 			/>
@@ -685,6 +687,9 @@ export default {
 		},
 		externalFormId() {
 			return this.promoData?.managedAccount?.formId ?? null;
+		},
+		managedAccountId() {
+			return this.promoData?.managedAccount?.id ?? null;
 		},
 		promoFund() {
 			return this.promoData?.promoFund ?? null;
