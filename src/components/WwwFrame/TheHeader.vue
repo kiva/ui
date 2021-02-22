@@ -385,7 +385,6 @@ import experimentVersionFragment from '@/graphql/fragments/experimentVersion.gra
 import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
 import { preFetchAll } from '@/util/apolloPreFetch';
-import cookieStore from '@/util/cookieStore';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import SearchBar from './SearchBar';
@@ -419,7 +418,7 @@ export default {
 			myKivaMenuId: 'my-kiva-header-dropdown',
 			searchOpen: false,
 			redirectToLoginExperimentVersion: null,
-			basketState: () => {},
+			basketState: {},
 		};
 	},
 	props: {
@@ -508,7 +507,7 @@ export default {
 			this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
 		},
 		errorHandlers: {
-			'shop.invalidBasketId': ({ route }) => {
+			'shop.invalidBasketId': ({ cookieStore, route }) => {
 				cookieStore.remove('kvbskt', { path: '/', secure: true });
 				// on server, reject with url to trigger redirect
 				if (typeof window === 'undefined') {

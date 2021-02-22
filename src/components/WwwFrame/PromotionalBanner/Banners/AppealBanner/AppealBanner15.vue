@@ -62,7 +62,6 @@
 <script>
 // import gsap from 'gsap';
 // import gql from 'graphql-tag';
-import cookieStore from '@/util/cookieStore';
 import { expand, collapse } from '@/util/expander';
 
 import FifteenYearsButton from '@/components/15Years/15YearsButton';
@@ -85,7 +84,7 @@ export default {
 		// KvProgressCircle,
 		// SwashieFace
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		appealBannerContent: {
 			type: Object,
@@ -132,7 +131,7 @@ export default {
 		},
 	},
 	created() {
-		if (cookieStore.get('appeal_banner_15_shrunk')) {
+		if (this.cookieStore.get('appeal_banner_15_shrunk')) {
 			this.open = false;
 		} else {
 			// open banner
@@ -166,7 +165,7 @@ export default {
 	// },
 	methods: {
 		shrinkAppeal() {
-			cookieStore.set('appeal_banner_15_shrunk', true, { path: '/' });
+			this.cookieStore.set('appeal_banner_15_shrunk', true, { path: '/' });
 			this.open = false;
 		},
 		truncateStringToNumberOfWords(string, numberOfWords) {

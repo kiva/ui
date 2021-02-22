@@ -269,7 +269,6 @@ import { subDays } from 'date-fns';
 
 import logReadQueryError from '@/util/logReadQueryError';
 import { checkLastLoginTime } from '@/util/authenticationGuard';
-import cookieStore from '@/util/cookieStore';
 import { parseExpCookie } from '@/util/experimentUtils';
 
 import authenticationQuery from '@/graphql/query/authenticationQuery.graphql';
@@ -424,7 +423,7 @@ export default {
 	},
 	inject: ['apollo'],
 	apollo: {
-		preFetch(config, client, { route }) {
+		preFetch(config, client, { cookieStore, route }) {
 			// SUBS-609 Login After MG Setup Experiment
 			// When SUBS-609 login exp ends, this route can be set back to
 			// meta: {

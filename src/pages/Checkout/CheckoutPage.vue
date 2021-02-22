@@ -183,7 +183,6 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
 import store2 from 'store2';
-import cookieStore from '@/util/cookieStore';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import syncDate from '@/util/syncDate';
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -233,7 +232,7 @@ export default {
 		CheckoutDropInPaymentWrapper,
 		RandomLoanSelector,
 	},
-	inject: ['apollo', 'kvAuth0'],
+	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [
 		checkoutUtils
 	],
@@ -375,7 +374,7 @@ export default {
 		// GROW-458 Guest Checkout Experiment
 		// If the user doesn't have the kvu cookie (indicating they have never
 		// logged into Kiva on this device) trigger this experiment
-		if (!cookieStore.get('kvu')) {
+		if (!this.cookieStore.get('kvu')) {
 			const guestCheckoutExperiment = this.apollo.readFragment({
 				id: 'Experiment:guest_checkout',
 				fragment: experimentVersionFragment,
@@ -461,7 +460,7 @@ export default {
 		},
 		showGuestCheckoutButton() {
 			// Checking if Kiva has been logged into on user's current browser
-			if (!cookieStore.get('kvu')) {
+			if (!this.cookieStore.get('kvu')) {
 				return true;
 			}
 			return false;
@@ -520,7 +519,7 @@ export default {
 					// Pass custom JSON configuration to Auth0 login page
 					const kvConfig = JSON.stringify({ socialExp: true });
 					// Choose register as initial screen if no user has logged in on this browser before
-					if (!cookieStore.get('kvu')) {
+					if (!this.cookieStore.get('kvu')) {
 						authorizeOptions.login_hint = `signUp|${kvConfig}`;
 					} else {
 						authorizeOptions.login_hint = `login|${kvConfig}`;

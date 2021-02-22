@@ -10,7 +10,7 @@ export default {
 	},
 	inject: ['apollo'],
 	apollo: {
-		preFetch(config, client, { route }) {
+		preFetch(config, client, { cookieStore, route }) {
 			return new Promise((resolve, reject) => {
 				if (typeof window !== 'undefined') {
 					// force server load if currently on a browser client
@@ -29,10 +29,10 @@ export default {
 							gclid,
 							medium,
 							source,
-						} = parseGACookie();
+						} = parseGACookie(cookieStore);
 
 						// get tracking data from snowplow cookie
-						const { snowplowUserId, snowplowSessionId } = parseSPCookie();
+						const { snowplowUserId, snowplowSessionId } = parseSPCookie(cookieStore);
 
 						// build route for thanks page redirect
 						const successRoute = {

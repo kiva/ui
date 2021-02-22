@@ -90,7 +90,6 @@ import _map from 'lodash/map';
 import _take from 'lodash/take';
 import _uniqBy from 'lodash/uniqBy';
 import _without from 'lodash/without';
-import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
@@ -128,7 +127,7 @@ export default {
 		ExpandableLoanCardExpanded,
 		FavoriteCountryLoans,
 	},
-	inject: ['apollo', 'kvAuth0'],
+	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo: {
 		title: 'Loans by category'
 	},
@@ -425,7 +424,7 @@ export default {
 				// Load recommended loan data
 				try {
 					const variables = {
-						basketId: cookieStore.get('kvbskt'),
+						basketId: this.cookieStore.get('kvbskt'),
 						ids: recLoanChannels.map(channel => channel.id),
 						imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 						imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
@@ -476,7 +475,7 @@ export default {
 				// Load recommended loan data
 				const variables = {
 					offset,
-					basketId: cookieStore.get('kvbskt'),
+					basketId: this.cookieStore.get('kvbskt'),
 					ids: recLoanChannels.map(channel => channel.id),
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
@@ -626,7 +625,7 @@ export default {
 			baseData = this.apollo.readQuery({
 				query: lendByCategoryQuery,
 				variables: {
-					basketId: cookieStore.get('kvbskt'),
+					basketId: this.cookieStore.get('kvbskt'),
 				},
 			});
 		} catch (e) {
@@ -657,7 +656,7 @@ export default {
 				query: loanChannelQuery,
 				variables: {
 					ids: _take(_without(this.categoryIds, ...this.customCategoryIds), ssrRowLimiter),
-					basketId: cookieStore.get('kvbskt'),
+					basketId: this.cookieStore.get('kvbskt'),
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
 				},

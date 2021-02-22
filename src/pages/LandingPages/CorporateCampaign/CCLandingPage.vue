@@ -188,7 +188,6 @@ import syncDate from '@/util/syncDate';
 import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
-import cookieStore from '@/util/cookieStore';
 import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
@@ -402,7 +401,7 @@ const myTeamsQuery = gql`query myTeamsQuery {
 }`;
 
 export default {
-	inject: ['apollo', 'kvAuth0'],
+	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	components: {
 		CampaignHero,
 		CampaignHowKivaWorks,
@@ -694,7 +693,7 @@ export default {
 		},
 		promoOnlyQuery() {
 			if (this.promoApplied && !this.isMatchingCampaign) {
-				return { basketId: cookieStore.get('kvbskt') };
+				return { basketId: this.cookieStore.get('kvbskt') };
 			}
 			return null;
 		},
@@ -763,7 +762,7 @@ export default {
 				fetchPolicy: 'network-only',
 				query: basketItemsQuery,
 				variables: {
-					basketId: cookieStore.get('kvbskt')
+					basketId: this.cookieStore.get('kvbskt')
 				}
 			});
 
@@ -848,7 +847,7 @@ export default {
 			const basketItems = this.apollo.query({
 				query: basketItemsQuery,
 				variables: {
-					basketId: cookieStore.get('kvbskt')
+					basketId: this.cookieStore.get('kvbskt')
 				},
 				fetchPolicy: 'network-only',
 			});
@@ -999,7 +998,7 @@ export default {
 			this.transactionId = payload.transactionId;
 			this.showThanks = true;
 			this.checkoutVisible = false;
-			trackTransactionEvent(payload.transactionId, this.apollo);
+			trackTransactionEvent(payload.transactionId, this.apollo, this.cookieStore);
 			// establish a new basket
 			this.apollo.mutate({
 				mutation: gql`mutation createNewBasketForUser { shop { id createBasket } }`,
@@ -1007,7 +1006,7 @@ export default {
 				// extract new basket id
 				const newBasketId = data.shop?.createBasket ?? null;
 				if (newBasketId) {
-					cookieStore.set('kvbskt', encodeURIComponent(newBasketId), { secure: true });
+					this.cookieStore.set('kvbskt', encodeURIComponent(newBasketId), { secure: true });
 					this.updateBasketState();
 				}
 			});
