@@ -7,10 +7,12 @@
 */
 import closeTipMessage from '@/graphql/mutation/tipMessage/closeTipMessage.graphql';
 import showTipMessage from '@/graphql/mutation/tipMessage/showTipMessage.graphql';
+import checkInjections from '@/util/injectionCheck';
+
+const injections = ['apollo'];
 
 export default Vue => {
 	Vue.mixin({
-		inject: ['apollo'],
 		methods: {
 			/*
 				Show global tip message
@@ -19,6 +21,8 @@ export default Vue => {
 				@param Optional Boolean tipPersist
 			*/
 			$showTipMsg(tipMsg, tipMsgType = '', tipPersist = false) {
+				checkInjections(this, injections);
+
 				this.apollo.mutate({
 					mutation: showTipMessage,
 					variables: {
@@ -33,6 +37,8 @@ export default Vue => {
 				- Calling from component clears tip message contents and type, sets tipPersist to false
 			*/
 			$closeTipMsg() {
+				checkInjections(this, injections);
+
 				this.apollo.mutate({
 					mutation: closeTipMessage,
 				});

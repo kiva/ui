@@ -1,8 +1,10 @@
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.graphql';
+import checkInjections from '@/util/injectionCheck';
+
+const injections = ['apollo', 'cookieStore'];
 
 export default {
-	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			lendFilterExpActive: false,
@@ -12,6 +14,8 @@ export default {
 	},
 	methods: {
 		getLendFilterExpVersion() {
+			checkInjections(this, injections);
+
 			// Lend Filter Exp
 			// Read temp cookie (set before redirect from /lend) + Assignment (should only ever = 'b')
 			const lendListViewExpLegacy = this.cookieStore.get('kvlendfilter') || '';
@@ -33,6 +37,8 @@ export default {
 			this.lendFilterExpActive = this.lendFilterExpVersion === 'b';
 		},
 		updateLendFilterExp() {
+			checkInjections(this, injections);
+
 			if (this.lendFilterExpVersion && this.lendFilterExpVersion !== 'unassigned') {
 				this.$kvTrackEvent(
 					'Lending',

@@ -1,5 +1,8 @@
-import appInstallQuery from '@/graphql/query/appInstall.graphql';
 import _get from 'lodash/get';
+import appInstallQuery from '@/graphql/query/appInstall.graphql';
+import checkInjections from '@/util/injectionCheck';
+
+const injections = ['apollo', 'cookieStore'];
 
 export default {
 	metaInfo() {
@@ -15,7 +18,6 @@ export default {
 			] : []
 		};
 	},
-	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			appInstallHasFreeCredits: false,
@@ -58,6 +60,8 @@ export default {
 		}
 	},
 	created() {
+		checkInjections(this, injections);
+
 		try {
 			const data = this.apollo.readQuery({
 				query: appInstallQuery,

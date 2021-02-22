@@ -1,13 +1,17 @@
 import _get from 'lodash/get';
+import checkInjections from '@/util/injectionCheck';
 import logReadQueryError from '@/util/logReadQueryError';
+
+const injections = ['apollo', 'cookieStore'];
 
 // install method for plugin
 export default Vue => {
 // export default {
 	Vue.mixin({
-		inject: ['apollo', 'cookieStore'],
 		created() {
 			if (this.$options.apollo) {
+				checkInjections(this, injections);
+
 				const {
 					query,
 					preFetch,
