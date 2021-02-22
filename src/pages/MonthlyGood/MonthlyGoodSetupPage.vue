@@ -421,7 +421,7 @@ export default {
 		},
 
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, { cookieStore, route }) {
 			// SUBS-609 Login After MG Setup Experiment

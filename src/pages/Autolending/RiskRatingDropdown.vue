@@ -29,7 +29,7 @@ import gql from 'graphql-tag';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvDropdownRounded,
 	},

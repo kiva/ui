@@ -89,7 +89,7 @@ import KvRadio from '@/components/Kv/KvRadio';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvLightbox,
 		KvButton,

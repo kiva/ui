@@ -402,7 +402,7 @@ export default {
 		PromoBannerSmall,
 		TheLendMenu: () => import('./LendMenu/TheLendMenu'),
 	},
-	inject: ['apollo', 'kvAuth0'],
+	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	data() {
 		return {
 			isVisitor: true,

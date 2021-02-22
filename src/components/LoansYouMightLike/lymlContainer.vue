@@ -142,7 +142,7 @@ export default {
 			expMlLoanToLoanVersion: null,
 		};
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client) {
 			return new Promise((resolve, reject) => {

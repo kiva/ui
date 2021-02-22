@@ -55,7 +55,7 @@ export default {
 		KvCheckbox,
 		KvLoadingSpinner,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			experimentEnabled: false,

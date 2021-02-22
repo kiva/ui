@@ -95,7 +95,7 @@ export default {
 	components: {
 		LoanCardController,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		itemsInBasket: {
 			type: Array,

@@ -134,7 +134,7 @@ export default {
 		InfoPanel,
 		KvLoadingSpinner
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		expandable: {
 			type: Boolean,

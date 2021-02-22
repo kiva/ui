@@ -187,7 +187,7 @@ export default {
 	metaInfo: {
 		title: 'Settings',
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			isMfaActive: false,

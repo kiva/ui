@@ -11,7 +11,7 @@ export default {
 	components: {
 		KvTipMessage,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: tipMessageData,
 		preFetch: true,

@@ -57,7 +57,7 @@ export default {
 
 		};
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: homepageStatistics,
 		preFetch: true,

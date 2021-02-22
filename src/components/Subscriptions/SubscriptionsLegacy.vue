@@ -38,7 +38,7 @@ const pageQuery = gql`query legacySubscription {
 }`;
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvSettingsCard,
 	},

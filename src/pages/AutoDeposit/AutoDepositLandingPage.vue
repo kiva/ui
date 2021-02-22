@@ -129,7 +129,7 @@ export default {
 			pageData: null,
 		};
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: pageQuery,
 		preFetch: true,

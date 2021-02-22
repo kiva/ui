@@ -197,7 +197,7 @@ export default {
 			expRecurringOnly: null,
 		};
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: pageQuery,
 		preFetch(config, client) {

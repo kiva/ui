@@ -53,7 +53,7 @@ import gql from 'graphql-tag';
 import KvButton from '@/components/Kv/KvButton';
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvButton,
 	},

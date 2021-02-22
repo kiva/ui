@@ -8,7 +8,7 @@ export default {
 	render(h) {
 		return h('div');
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, { cookieStore, route }) {
 			return new Promise((resolve, reject) => {

@@ -268,7 +268,7 @@ export default {
 		LoanCategoriesSection,
 		NoClickLoanCard,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			howItWorksImgs: {
