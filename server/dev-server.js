@@ -5,6 +5,7 @@ require('../build/check-versions')();
 require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
 const chokidar = require('chokidar');
 const express = require('express');
+const compression = require('compression');
 const helmet = require('helmet');
 const locale = require('locale');
 const MFS = require('memory-fs');
@@ -35,6 +36,9 @@ const cache = initCache(config.server);
 // app init
 const port = argv.port || config.server.port;
 const app = express();
+
+// gzip. On prod this is handled by k8s
+app.use(compression());
 
 // Set sensible security headers for express
 app.use(helmet());
