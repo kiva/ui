@@ -6,14 +6,14 @@
 		>
 		<p
 			v-html="sponsorsHeadline"
-			class=" large-text sponsors__headline"
+			class="sponsors__headline"
 		>
 		</p>
 		<ul class="sponsors__list row">
 			<li
 				v-for="image in sponsorImages"
 				:key="image.title"
-				class="sponsors__li small-6 large-4 columns"
+				class="sponsors__li small-12 large-4 columns"
 			>
 				<img
 					:src="image.url"
@@ -66,18 +66,22 @@ export default {
 
 .sponsors {
 	&__section-img {
-		width: 20rem;
-		margin-bottom: 1.5rem;
+		width: rem-calc(220);
+		margin: 2.5rem;
 
 		@include breakpoint(large) {
-			width: 25rem;
+			width: rem-calc(320);
 		}
 	}
 
 	&__headline {
-		padding: rem-calc(10);
+		padding: 0 rem-calc(10);
+		margin-bottom: 0;
+		font-size: rem-calc(22);
+		font-weight: 600;
 
 		@include breakpoint(large) {
+			font-size: rem-calc(36);
 			margin-bottom: rem-calc(50);
 		}
 	}
@@ -85,12 +89,21 @@ export default {
 	&__li {
 		// Applies to all sponsor logos
 		&--logo {
-			margin: rem-calc(60) auto;
+			margin: rem-calc(32) 0;
+
+			@include breakpoint(large) {
+				margin: rem-calc(64) 0;
+			}
+
 		}
 
 		// styling individual sponsor logos
 		&--boa-logo {
-			width: rem-calc(306);
+			width: rem-calc(240);
+
+			@include breakpoint(large) {
+				width: rem-calc(306);
+			}
 		}
 
 		&--hitachi-logo {
@@ -98,7 +111,7 @@ export default {
 		}
 
 		&--visa-foundation-logo {
-			width: rem-calc(92);
+			width: rem-calc(95);
 		}
 
 		&--women-and-girls-empowerment-logo {
@@ -110,7 +123,11 @@ export default {
 		}
 
 		&--pepsi-foundation-logo {
-			width: rem-calc(182);
+			width: rem-calc(134);
+
+			@include breakpoint(large) {
+				width: rem-calc(182);
+			}
 		}
 
 		&--fossil-foundation-logo {
