@@ -94,7 +94,6 @@ export default {
 			@include breakpoint(large) {
 				margin: rem-calc(64) 0;
 			}
-
 		}
 
 		// styling individual sponsor logos
