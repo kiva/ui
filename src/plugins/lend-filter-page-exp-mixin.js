@@ -1,8 +1,8 @@
-import cookieStore from '@/util/cookieStore';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.graphql';
 
 export default {
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			lendFilterExpActive: false,
@@ -14,7 +14,7 @@ export default {
 		getLendFilterExpVersion() {
 			// Lend Filter Exp
 			// Read temp cookie (set before redirect from /lend) + Assignment (should only ever = 'b')
-			const lendListViewExpLegacy = cookieStore.get('kvlendfilter') || '';
+			const lendListViewExpLegacy = this.cookieStore.get('kvlendfilter') || '';
 			// We have a legacy experiment already set
 			if (lendListViewExpLegacy !== '') {
 				// use legacy version
@@ -51,7 +51,7 @@ export default {
 					}
 				}).then(() => {
 					// remove legacy cookie
-					cookieStore.remove('kvlendfilter');
+					this.cookieStore.remove('kvlendfilter');
 				});
 			}
 		},

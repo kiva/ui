@@ -3,10 +3,10 @@ import * as Sentry from '@sentry/browser';
 import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
 import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
-import cookieStore from '@/util/cookieStore';
 import logFormatter from '@/util/logFormatter';
 
 export default {
+	inject: ['apollo', 'cookieStore'],
 	methods: {
 		/**
 		 * Call the shop validateCheckout graphql query
@@ -119,7 +119,7 @@ export default {
 		 */
 		redirectToThanks(transactionId) {
 			if (transactionId) {
-				cookieStore.remove('kvbskt', { path: '/', secure: true });
+				this.cookieStore.remove('kvbskt', { path: '/', secure: true });
 				window.location = `/checkout/post-purchase?kiva_transaction_id=${transactionId}`;
 			}
 		}

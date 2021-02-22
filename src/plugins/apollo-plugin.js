@@ -1,16 +1,13 @@
 import _get from 'lodash/get';
-import checkApolloInject from '@/util/apolloInjectCheck';
-import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 
 // install method for plugin
 export default Vue => {
 // export default {
 	Vue.mixin({
+		inject: ['apollo', 'cookieStore'],
 		created() {
 			if (this.$options.apollo) {
-				checkApolloInject(this);
-
 				const {
 					query,
 					preFetch,
@@ -20,7 +17,7 @@ export default Vue => {
 				} = this.$options.apollo;
 
 				if (query) {
-					const basketId = cookieStore.get('kvbskt');
+					const basketId = this.cookieStore.get('kvbskt');
 					// if the query was prefetched, read the data from the cache
 					if (preFetch) {
 						try {
@@ -28,7 +25,10 @@ export default Vue => {
 								query,
 								variables: {
 									basketId,
-									...preFetchVariables({ route: this.$route }),
+									...preFetchVariables({
+										cookieStore: this.cookieStore,
+										route: this.$route,
+									}),
 								}
 							});
 							result.call(this, { data });

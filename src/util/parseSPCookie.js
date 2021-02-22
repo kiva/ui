@@ -1,7 +1,6 @@
 import _find from 'lodash/find';
-import cookieStore from './cookieStore';
 
-export default function parseSPCookie() {
+export default function parseSPCookie(cookieStore) {
 	// get the cookie that has a name that starts with '_sp_id'
 	const cookie = _find(cookieStore.getAll(), (val, key) => key.indexOf('_sp_id') === 0);
 	if (!cookie) {
