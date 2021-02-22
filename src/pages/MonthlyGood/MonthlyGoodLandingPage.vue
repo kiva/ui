@@ -180,6 +180,21 @@ export default {
 				);
 			}
 
+			// SUBS-609 Login After MG Setup Experiment
+			// Experiment is prefetched in experimentPreFetch
+			// This experiment is tracked here and on /setup
+			// since they are entry points into the MG Funnel
+			const mgLoginExperiment = this.apollo.readFragment({
+				id: 'Experiment:mg_login_after_setup',
+				fragment: experimentVersionFragment,
+			}) || {};
+			const loginAfterSetupExpVersion = mgLoginExperiment.version ?? {};
+			if (loginAfterSetupExpVersion === 'control') {
+				this.$kvTrackEvent('MonthlyGood', 'EXP-SUBS-609-Jan2021', 'a');
+			} else if (loginAfterSetupExpVersion === 'shown') {
+				this.$kvTrackEvent('MonthlyGood', 'EXP-SUBS-609-Jan2021', 'b');
+			}
+
 			// Check for contentful content
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;

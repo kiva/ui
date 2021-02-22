@@ -269,9 +269,11 @@ import { subDays } from 'date-fns';
 
 import logReadQueryError from '@/util/logReadQueryError';
 import { checkLastLoginTime } from '@/util/authenticationGuard';
+import cookieStore from '@/util/cookieStore';
+import { parseExpCookie } from '@/util/experimentUtils';
 
 import authenticationQuery from '@/graphql/query/authenticationQuery.graphql';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
@@ -286,15 +288,6 @@ import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 import AlreadySubscribedNotice from './AlreadySubscribedNotice';
 import LegacySubscriberNotice from './LegacySubscriberNotice';
-
-const expQuery = gql`query monthlyGoodSetupExpQuery {
-	general {
-		uiExperimentSetting(key: "mg_login_after_setup") {
-			key
-			value
-		}
-	}
-}`;
 
 const pageQuery = gql`query monthlyGoodSetupPageControl {
 	general {
@@ -432,63 +425,59 @@ export default {
 	inject: ['apollo'],
 	apollo: {
 		preFetch(config, client, { route }) {
+			// SUBS-609 Login After MG Setup Experiment
 			// When SUBS-609 login exp ends, this route can be set back to
 			// meta: {
 			// 	activeLoginRequired: true,
 			// }
 			// in routes.js
 
-			// Get exp value for SUBS-609
-			return client.query({
-				query: expQuery
-			})
-				.then(() => client.query({
-					query: experimentAssignmentQuery, variables: { id: 'mg_login_after_setup' }
-				}))
-				.then(({ data }) => {
-					const loginAfterSetupExpVersion = data?.experiment?.version ?? {};
-					// Control version
-					// Auth status should be checked.
-					if (loginAfterSetupExpVersion === 'control') {
-						return client.query({
-							query: authenticationQuery,
-							// eslint-disable-next-line no-shadow
-						}).then(({ data }) => {
-							if (!data.my) {
-								throw new Error('api.authenticationRequired');
-							}
-							// Route requires active login
-							if (!checkLastLoginTime(data, 'activeLoginDuration', 3600)) {
-								throw new Error('activeLoginRequired');
-							}
-						}).catch(() => {
-							// Auth error will be caught here, redirect to login.
-							return Promise.reject({
-								path: '/ui-login',
-								query: { doneUrl: route.fullPath }
-							});
-						});
+			// SUBS-609 Login After MG Setup Experiment
+			const experimentAssignments = parseExpCookie(cookieStore.get('uiab'));
+			const loginAfterSetupExpVersion = experimentAssignments?.mg_login_after_setup?.version ?? 'control';
+			// Control version
+			// Auth status should be checked.
+			if (loginAfterSetupExpVersion === 'control') {
+				return client.query({
+					query: authenticationQuery,
+				}).then(({ data }) => {
+					if (!data.my) {
+						throw new Error('api.authenticationRequired');
 					}
-					// Shown version
-					// Auth status should not be checked, continue with pageQuery
-				})
-				.then(() => client.query({ query: pageQuery }));
-		},
+					// Route requires active login
+					if (!checkLastLoginTime(data, 'activeLoginDuration', 3600)) {
+						throw new Error('activeLoginRequired');
+					}
+					return client.query({ query: pageQuery });
+				}).catch(() => {
+					// Auth error will be caught here, redirect to login.
+					return Promise.reject({
+						path: '/ui-login',
+						query: { doneUrl: route.fullPath }
+					});
+				});
+			}
+			// Shown version
+			// Auth status should not be checked, continue with pageQuery
+			if (loginAfterSetupExpVersion === 'shown') {
+				return client.query({ query: pageQuery });
+			}
+		}
 	},
 	created() {
-		// Track experiment
-		try {
-			const expQueryResult = this.apollo.readQuery({
-				query: experimentAssignmentQuery, variables: { id: 'mg_login_after_setup' }
-			});
-			const loginAfterSetupExpVersion = expQueryResult?.experiment?.version ?? {};
-			if (loginAfterSetupExpVersion === 'control') {
-				this.$kvTrackEvent('MonthlyGood', 'EXP-SUBS-609-Jan2021', 'a');
-			} else if (loginAfterSetupExpVersion === 'shown') {
-				this.$kvTrackEvent('MonthlyGood', 'EXP-SUBS-609-Jan2021', 'b');
-			}
-		} catch (e) {
-			logReadQueryError(e, 'MonthlyGoodSetupPage expQueryResult');
+		// SUBS-609 Login After MG Setup Experiment
+		// Experiment is prefetched in experimentPreFetch
+		// This experiment is tracked here and on /monthlygood
+		// since they are entry points into the MG Funnel
+		const mgLoginExperiment = this.apollo.readFragment({
+			id: 'Experiment:mg_login_after_setup',
+			fragment: experimentVersionFragment,
+		}) || {};
+		const loginAfterSetupExpVersion = mgLoginExperiment.version ?? {};
+		if (loginAfterSetupExpVersion === 'control') {
+			this.$kvTrackEvent('MonthlyGood', 'EXP-SUBS-609-Jan2021', 'a');
+		} else if (loginAfterSetupExpVersion === 'shown') {
+			this.$kvTrackEvent('MonthlyGood', 'EXP-SUBS-609-Jan2021', 'b');
 		}
 
 		try {
