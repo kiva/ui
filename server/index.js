@@ -34,8 +34,11 @@ const cache = initCache(config.server);
 const app = express();
 const port = argv.port || config.server.port;
 
-// gzip
-app.use(compression());
+// Use gzip on local server.
+// In higher environments it's handled elsewhere
+if (config.server.gzipEnabled) {
+	app.use(compression());
+}
 
 // Set sensible security headers for express
 app.use(helmet());

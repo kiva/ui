@@ -18,5 +18,6 @@ module.exports = merge(base, {
 		sessionUri: '',
 		memcachedEnabled: false,
 		memcachedServers: '',
+		gzipEnabled: true,
 	},
 })
