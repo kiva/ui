@@ -6,6 +6,7 @@
 		<homepage-midroll-c-t-a class="section" :content="midrollContentGroup" />
 		<!-- iwd kiva stats component -->
 		<!-- testimonials component -->
+		<testimonials class="section" :content="testimonialsContentGroup" />
 		<!-- partners component -->
 		<corporate-sponsors class="section" :content="corporateSponsorsContentGroup" />
 		<!-- bottom cta component -->
@@ -18,6 +19,7 @@ import HomepageLoanCategories from '@/components/Homepage/HomepageLoanCategories
 import HomepageMidrollCTA from '@/components/Homepage/HomepageMidrollCTA';
 import HowItWorks from '@/components/Homepage/HomepageHowItWorks';
 import CorporateSponsors from '@/components/Homepage/HomepageCorporateSponsors';
+import Testimonials from '@/components/Homepage/HomepageTestimonials';
 
 export default {
 	components: {
@@ -26,6 +28,7 @@ export default {
 		HomepageMidrollCTA,
 		HowItWorks,
 		CorporateSponsors,
+		Testimonials,
 	},
 	props: {
 		content: {
@@ -52,6 +55,10 @@ export default {
 		},
 		midrollContentGroup() {
 			return this.content?.page?.contentGroups?.homepageMidrollCta ?? null;
+		},
+		testimonialsContentGroup() {
+			console.log(this.content?.page?.contentGroups);
+			return this.content?.page?.contentGroups?.homepageTestimonials ?? null;
 		},
 		corporateSponsorsContentGroup() {
 			return this.content?.page?.contentGroups?.homepageStrategicPartners ?? null;
