@@ -116,7 +116,7 @@ export default {
 		ThanksLayoutV2,
 		WwwPage,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
 		return {
 			title: 'Thank you!'

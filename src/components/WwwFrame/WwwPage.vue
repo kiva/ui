@@ -30,7 +30,8 @@ import TheBannerArea from './TheBannerArea';
 
 export default {
 	inject: [
-		'apollo'
+		'apollo',
+		'cookieStore',
 	],
 	components: {
 		CookieBanner,

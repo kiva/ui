@@ -20,15 +20,16 @@
 import KvAlert from '@/components/Kv/KvAlert';
 
 export default {
+	inject: ['device'],
 	components: {
 		KvAlert,
 	},
 	computed: {
 		isUnsupportedBrowser() {
-			return this.$device?.browser?.name === 'Internet Explorer';
+			return this.device?.browser?.name === 'Internet Explorer';
 		},
 		isAppleDevice() {
-			return this.$device?.platform?.vendor === 'Apple';
+			return this.device?.platform?.vendor === 'Apple';
 		}
 	}
 };

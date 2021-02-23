@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import cookieStore from '@/util/cookieStore';
 import numeral from 'numeral';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
@@ -24,7 +23,7 @@ export default {
 	components: {
 		AppealBannerCircular
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: appealBannerQuery,
 		preFetch: true,
@@ -74,7 +73,7 @@ export default {
 		}
 	},
 	created() {
-		const bannerIsOpen = cookieStore.get('appeal_banner_is_open');
+		const bannerIsOpen = this.cookieStore.get('appeal_banner_is_open');
 		if (typeof bannerIsOpen === 'undefined') {
 			this.isOpen = true;
 		} else {
@@ -84,7 +83,7 @@ export default {
 	methods: {
 		onToggleBanner(isOpen) {
 			this.isOpen = isOpen;
-			cookieStore.set('appeal_banner_is_open', isOpen, { path: '/' });
+			this.cookieStore.set('appeal_banner_is_open', isOpen, { path: '/' });
 		},
 		onAmountSelected(amount) {
 			this.apollo.mutate({

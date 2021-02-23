@@ -86,7 +86,6 @@
 <script>
 import gql from 'graphql-tag';
 import * as Sentry from '@sentry/browser';
-import cookieStore from '@/util/cookieStore';
 import loanUseMixin from '@/plugins/loan/loan-use-mixin';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
@@ -161,7 +160,7 @@ export default {
 			required: true,
 		}
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	mixins: [loanUseMixin, percentRaisedMixin, timeLeftMixin],
 	components: {
 		FundraisingStatusMeter,
@@ -235,7 +234,7 @@ export default {
 				const data = this.apollo.readQuery({
 					query: loanQuery,
 					variables: {
-						basketId: cookieStore.get('kvbskt'),
+						basketId: this.cookieStore.get('kvbskt'),
 						loanId: this.loanId,
 					},
 				});
@@ -256,7 +255,7 @@ export default {
 			this.queryObserver = this.apollo.watchQuery({
 				query: loanQuery,
 				variables: {
-					basketId: cookieStore.get('kvbskt'),
+					basketId: this.cookieStore.get('kvbskt'),
 					loanId: this.loanId,
 				},
 			});
@@ -301,7 +300,7 @@ export default {
 		loanId(loanId) {
 			if (this.queryObserver) {
 				this.queryObserver.setVariables({
-					basketId: cookieStore.get('kvbskt'),
+					basketId: this.cookieStore.get('kvbskt'),
 					loanId,
 				});
 			}

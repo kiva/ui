@@ -26,7 +26,8 @@ import TheBasketBar from './TheBasketBar';
 
 export default {
 	inject: [
-		'apollo'
+		'apollo',
+		'cookieStore',
 	],
 	components: {
 		CookieBanner,

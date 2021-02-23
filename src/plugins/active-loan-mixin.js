@@ -1,4 +1,7 @@
 import updateActiveLoan from '@/graphql/mutation/updateActiveLoan.graphql';
+import checkInjections from '@/util/injectionCheck';
+
+const injections = ['apollo'];
 
 const emptyActiveLoan = {
 	xCoordinate: 0,
@@ -17,7 +20,6 @@ const emptyActiveLoan = {
 };
 
 export default {
-	inject: ['apollo'],
 	data() {
 		return {
 			activeLoan: emptyActiveLoan,
@@ -56,6 +58,8 @@ export default {
 			loan,
 			tracking,
 		}) {
+			checkInjections(this, injections);
+
 			this.apollo.mutate({
 				mutation: updateActiveLoan,
 				variables: {
@@ -69,6 +73,8 @@ export default {
 			});
 		},
 		clearHoverLoan() {
+			checkInjections(this, injections);
+
 			this.apollo.mutate({
 				mutation: updateActiveLoan,
 				variables: emptyActiveLoan,

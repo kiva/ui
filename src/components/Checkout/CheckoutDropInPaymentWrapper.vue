@@ -45,7 +45,7 @@ export default {
 		KvIcon,
 		BraintreeDropInInterface
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	mixins: [
 		checkoutUtils
 	],

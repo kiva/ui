@@ -31,7 +31,7 @@ export default {
 	components: {
 		KvIcon
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			count: 0

@@ -311,7 +311,7 @@ const pageQuery = gql`query autoDepositPage {
 }`;
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		AutoDepositDropInPaymentWrapper,
 		KvButton,

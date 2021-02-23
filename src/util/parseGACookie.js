@@ -1,5 +1,4 @@
 import _fromPairs from 'lodash/fromPairs';
-import cookieStore from './cookieStore';
 
 // regex to match numbers at the start of the ga cookie (e.g. 1231231.15135135135.1.1)
 const startingNumbersRegex = /^[\d.]+/;
@@ -8,7 +7,7 @@ const trimParensRegex = /^\(+|\)+$/g;
 // regex to match any comma, colon, or semicolon
 const punctuationRegex = /[,:;]/g;
 
-export default function parseGACookie() {
+export default function parseGACookie(cookieStore) {
 	const cookie = cookieStore.get('__utmz');
 	// return an empty object if the cookie isn't present
 	if (!cookie) {

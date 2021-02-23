@@ -88,7 +88,7 @@ export default {
 			category: null
 		};
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: pageQuery,
 		preFetch: true,

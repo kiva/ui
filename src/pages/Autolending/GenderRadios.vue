@@ -33,7 +33,7 @@ import gql from 'graphql-tag';
 import KvRadio from '@/components/Kv/KvRadio';
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvRadio,
 	},

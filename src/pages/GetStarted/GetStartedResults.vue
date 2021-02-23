@@ -113,7 +113,6 @@
 <script>
 import gql from 'graphql-tag';
 import * as Sentry from '@sentry/browser';
-import cookieStore from '@/util/cookieStore';
 import FrequentlyAskedQuestions from '@/components/GetStarted/FrequentlyAskedQuestions';
 import EditPreferences from '@/components/GetStarted/EditPreferences';
 import KvProgressBar from '@/components/Kv/KvProgressBar';
@@ -123,7 +122,7 @@ import RecommendedLoanCard from '@/components/LoanCards/RecommendedLoanCard';
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		FrequentlyAskedQuestions,
 		EditPreferences,
@@ -187,7 +186,7 @@ export default {
 	},
 	apollo: {
 		preFetch: true,
-		preFetchVariables() {
+		preFetchVariables({ cookieStore }) {
 			return {
 				limit: 3,
 				visitorId: cookieStore.get('uiv') || null
@@ -196,7 +195,7 @@ export default {
 		variables() {
 			return {
 				limit: 3,
-				visitorId: cookieStore.get('uiv') || null
+				visitorId: this.cookieStore.get('uiv') || null
 			};
 		},
 		query: gql`query getStartedResults($limit: Int, $visitorId: String) {

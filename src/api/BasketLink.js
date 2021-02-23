@@ -1,9 +1,8 @@
 import _get from 'lodash/get';
 import _set from 'lodash/set';
 import { ApolloLink } from 'apollo-link';
-import cookieStore from '@/util/cookieStore';
 
-export default () => {
+export default ({ cookieStore }) => {
 	return new ApolloLink((operation, forward) => {
 		// Fetch current basket id from cookie
 		const basketId = cookieStore.get('kvbskt');

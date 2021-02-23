@@ -19,7 +19,7 @@ import {
 } from '@/util/touchEvents';
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		controller: { type: String, required: true },
 		openDelay: { type: Number, default: 0 },

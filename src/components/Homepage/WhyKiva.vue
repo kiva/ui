@@ -80,7 +80,7 @@ export default {
 	components: {
 		// KvIcon
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			repaymentRate: '',

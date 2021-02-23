@@ -3,7 +3,6 @@ const path = require('path');
 const Bowser = require('bowser');
 const cookie = require('cookie');
 const { createBundleRenderer } = require('vue-server-renderer');
-const clearCachedVueModule = require('./util/clearCachedVueModule');
 const getGqlFragmentTypes = require('./util/getGqlFragmentTypes');
 const getSessionCookies = require('./util/getSessionCookies');
 const vueSsrCache = require('./util/vueSsrCache');
@@ -44,7 +43,7 @@ module.exports = function createMiddleware({
 	// eslint-disable-next-line no-param-reassign
 	clientManifest.publicPath = config.app.publicPath || '/';
 
-	// Create single renderer to be used be all requests
+	// Create single renderer to be used by all requests
 	const renderer = createBundleRenderer(serverBundle, {
 		cache: vueSsrCache(cache),
 		template,
@@ -102,8 +101,6 @@ module.exports = function createMiddleware({
 				context.cookies = Object.assign(context.cookies, cookieInfo.cookies);
 				// forward any newly fetched 'Set-Cookie' headers
 				cookieInfo.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
-				// Clear module cache of global Vue instance to ensure clean render
-				clearCachedVueModule();
 				// render the app
 				return renderer.renderToString(context);
 			}).then(html => {

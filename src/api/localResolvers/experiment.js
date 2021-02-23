@@ -1,11 +1,10 @@
-import cookieStore from '@/util/cookieStore';
 import { parseExpCookie, serializeExpCookie, assignVersion } from '@/util/experimentUtils';
 import { readJSONSetting, hashCode } from '@/util/settingsUtils';
 
 /**
  * Experiment resolvers
  */
-export default () => {
+export default ({ cookieStore }) => {
 	// initialize the assignments from the experiment cookie
 	const assignments = parseExpCookie(cookieStore.get('uiab'));
 
@@ -60,7 +59,7 @@ export default () => {
 						// assign the version using the experiment data (undefined if experiment disabled)
 						currentAssignment = {
 							id,
-							version: assignVersion(experiment),
+							version: assignVersion(experiment, cookieStore),
 							hash: settingHash,
 							population,
 						};

@@ -1,4 +1,4 @@
-import cookieStore from '@/util/cookieStore';
+import CookieStore from '@/util/cookieStore';
 import {
 	assignVersion,
 	matchTargets,
@@ -79,10 +79,6 @@ describe('experimentUtils.js', () => {
 	});
 
 	describe('matchTargets', () => {
-		afterEach(() => {
-			cookieStore.reset({});
-		});
-
 		it('Returns true when "targets" is undefined', () => {
 			expect(matchTargets()).toBe(true);
 		});
@@ -92,21 +88,21 @@ describe('experimentUtils.js', () => {
 		});
 
 		it('Returns true when cookied users are targeted and the kvu cookie exists', () => {
-			cookieStore.reset({ kvu: 'user id' });
-			expect(matchTargets({ users: ['cookied'] })).toBe(true);
+			const cookieStore = new CookieStore({ kvu: 'user id' });
+			expect(matchTargets({ users: ['cookied'] }, cookieStore)).toBe(true);
 		});
 
 		it('Returns false when cookied users are targeted and the kvu cookie does not exist', () => {
-			expect(matchTargets({ users: ['cookied'] })).toBe(false);
+			expect(matchTargets({ users: ['cookied'] }, new CookieStore())).toBe(false);
 		});
 
 		it('Returns false when uncookied users are targeted and the kvu cookie exists', () => {
-			cookieStore.reset({ kvu: 'user id' });
-			expect(matchTargets({ users: ['uncookied'] })).toBe(false);
+			const cookieStore = new CookieStore({ kvu: 'user id' });
+			expect(matchTargets({ users: ['uncookied'] }, cookieStore)).toBe(false);
 		});
 
 		it('Returns true when uncookied users are targeted and the kvu cookie does not exist', () => {
-			expect(matchTargets({ users: ['uncookied'] })).toBe(true);
+			expect(matchTargets({ users: ['uncookied'] }, new CookieStore())).toBe(true);
 		});
 	});
 

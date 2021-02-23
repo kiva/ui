@@ -133,7 +133,7 @@ export default {
 	mixins: [
 		lockScrollUtils,
 	],
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		appealMatchEnabled: {
 			type: Boolean,

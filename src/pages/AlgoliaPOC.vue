@@ -176,7 +176,6 @@ import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 // This mixin provides some algolia search instance initialization on mounted
 import algoliaInit from '@/plugins/algolia-init-mixin';
 
-import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
@@ -211,6 +210,7 @@ export default {
 	},
 	inject: [
 		'apollo',
+		'cookieStore',
 	],
 	mixins: [
 		algoliaInit
@@ -291,7 +291,7 @@ export default {
 		}
 	},
 	created() {
-		const basketId = cookieStore.get('kvbskt');
+		const basketId = this.cookieStore.get('kvbskt');
 
 		try {
 			const basketData = this.apollo.readQuery({

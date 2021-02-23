@@ -83,7 +83,7 @@ export default {
 	components: {
 		KvResponsiveImage,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			loanChannels: []

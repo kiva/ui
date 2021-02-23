@@ -54,7 +54,7 @@ export default {
 			]
 		};
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: bannerQuery,
 		preFetch: true,

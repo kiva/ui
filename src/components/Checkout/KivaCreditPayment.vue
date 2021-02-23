@@ -18,7 +18,7 @@ export default {
 	components: {
 		KvButton
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	mixins: [
 		checkoutUtils
 	],
