@@ -106,8 +106,10 @@
 			/>
 
 			<campaign-verification-form
-				v-if="this.showVerification"
-				:form-id="this.externalFormId"
+				v-if="showVerification"
+				:form-id="externalFormId"
+				:ma-id="String(managedAccountId)"
+				:pf-id="String(promoFundId)"
 				:user-id="this.myId"
 				@verification-complete="verificationComplete"
 			/>
@@ -528,9 +530,10 @@ export default {
 	created() {
 		// extract query
 		this.pageQuery = this.$route.query;
+		// startup campaign status loader
+		this.loadingPromotion = true;
 	},
 	mounted() {
-		this.loadingPromotion = true;
 		// check for applied promo
 		this.verifyOrApplyPromotion();
 
@@ -685,6 +688,9 @@ export default {
 		externalFormId() {
 			return this.promoData?.managedAccount?.formId ?? null;
 		},
+		managedAccountId() {
+			return this.promoData?.managedAccount?.id ?? null;
+		},
 		promoFund() {
 			return this.promoData?.promoFund ?? null;
 		},
@@ -743,11 +749,8 @@ export default {
 					// Store the error message here and handle visibility in getPromoInformationFromBasket
 					this.promoErrorMessage = result.errors[0].message;
 					this.promoApplied = false;
-					this.loadingPromotion = false;
-				} else {
-					this.promoApplied = true;
-					this.loadingPromotion = false;
 				}
+
 				// gather promo info
 				this.getPromoInformationFromBasket();
 			}).catch(error => {

@@ -7,6 +7,7 @@
 		<!-- iwd kiva stats component -->
 		<!-- testimonials component -->
 		<!-- partners component -->
+		<corporate-sponsors class="section" :content="corporateSponsorsContentGroup" />
 		<!-- bottom cta component -->
 	</div>
 </template>
@@ -16,6 +17,7 @@ import HomepageHero from '@/components/Homepage/HomepageHero';
 import HomepageLoanCategories from '@/components/Homepage/HomepageLoanCategories';
 import HomepageMidrollCTA from '@/components/Homepage/HomepageMidrollCTA';
 import HowItWorks from '@/components/Homepage/HomepageHowItWorks';
+import CorporateSponsors from '@/components/Homepage/HomepageCorporateSponsors';
 
 export default {
 	components: {
@@ -23,6 +25,7 @@ export default {
 		HomepageLoanCategories,
 		HomepageMidrollCTA,
 		HowItWorks,
+		CorporateSponsors,
 	},
 	props: {
 		content: {
@@ -50,6 +53,9 @@ export default {
 		midrollContentGroup() {
 			return this.content?.page?.contentGroups?.homepageMidrollCta ?? null;
 		},
+		corporateSponsorsContentGroup() {
+			return this.content?.page?.contentGroups?.homepageStrategicPartners ?? null;
+		}
 	},
 };
 </script>
