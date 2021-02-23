@@ -4,33 +4,38 @@
 		:class="{
 			'campaign-status--loading': loadingPromotion,
 			'campaign-status--error': !promoApplied && promoErrorMessage && !loadingPromotion,
-			'campaign-status--success': promoApplied && !promoErrorMessage,
+			'campaign-status--success': (promoApplied && !promoErrorMessage) || statusMessageOverride,
 		}"
 	>
 		<div class="small-12 large-8 columns">
 			<div class="campaign-status__message">
-				<template v-if="loadingPromotion && !promoApplied && !promoErrorMessage">
-					<kv-loading-spinner />
-					<span>Validating Promotion</span>
+				<template v-if="statusMessageOverride">
+					<span>{{ statusMessageOverride }}</span>
 				</template>
+				<template v-else>
+					<template v-if="loadingPromotion && !promoApplied && !promoErrorMessage">
+						<kv-loading-spinner />
+						<span>Validating Promotion</span>
+					</template>
 
-				<template v-if="!promoApplied && promoErrorMessage && !loadingPromotion">
-					<kv-icon class="campaign-status__icon" name="error" />
-					<span>{{ promoErrorMessage }}</span>
-				</template>
-				<template v-else-if="!loadingPromotion && promoApplied === false">
-					<span>No promotion applied.</span>
-				</template>
+					<template v-if="!promoApplied && promoErrorMessage && !loadingPromotion">
+						<kv-icon class="campaign-status__icon" name="error" />
+						<span>{{ promoErrorMessage }}</span>
+					</template>
+					<template v-else-if="!loadingPromotion && promoApplied === false">
+						<span>No promotion applied.</span>
+					</template>
 
-				<template v-if="!loadingPromotion && promoApplied && !promoErrorMessage && !isMatching">
-					<span v-if="promoName && (promoAmount !== '$0.00')">
-						You have ${{ promoAmount | numeral }}
-						<span v-if="promoName">from {{ promoName }}</span>
-						to lend!
-					</span>
-				</template>
-				<template v-else-if="promoApplied && !promoErrorMessage && isMatching">
-					<span>Make a matched loan while {{ promoName }}’s funds last</span>
+					<template v-if="!loadingPromotion && promoApplied && !promoErrorMessage && !isMatching">
+						<span v-if="promoName && (promoAmount !== '$0.00')">
+							You have ${{ promoAmount | numeral }}
+							<span v-if="promoName">from {{ promoName }}</span>
+							to lend!
+						</span>
+					</template>
+					<template v-else-if="promoApplied && !promoErrorMessage && isMatching">
+						<span>Make a matched loan while {{ promoName }}’s funds last</span>
+					</template>
 				</template>
 			</div>
 		</div>
@@ -68,6 +73,10 @@ export default {
 			default: '$0.00'
 		},
 		promoName: {
+			type: String,
+			default: null
+		},
+		statusMessageOverride: {
 			type: String,
 			default: null
 		}
