@@ -1,29 +1,31 @@
 <template>
 	<section class="section sponsors text-center">
-		<img
-			:src="sponsorsSectionImg.file.url"
-			class="sponsors__section-img"
-		>
-		<p
-			v-html="sponsorsHeadline"
-			class="sponsors__headline"
-		>
-		</p>
-		<ul class="sponsors__list row">
-			<li
-				v-for="image in sponsorImages"
-				:key="image.title"
-				class="sponsors__li small-12 large-4 columns"
+		<div class="row">
+			<img
+				:src="sponsorsSectionImg.file.url"
+				class="sponsors__section-img"
 			>
-				<img
-					:src="image.url"
-					:alt="image.description"
-					:class="'sponsors__li--' + image.description"
-					class="sponsors__li--logo"
-					loading="lazy"
+			<p
+				v-html="sponsorsHeadline"
+				class="sponsors__headline"
+			>
+			</p>
+			<ul class="sponsors__list">
+				<li
+					v-for="image in sponsorImages"
+					:key="image.title"
+					class="sponsors__li small-12 large-4 columns"
 				>
-			</li>
-		</ul>
+					<img
+						:src="image.url"
+						:alt="image.description"
+						:class="'sponsors__li--' + image.description"
+						class="sponsors__li--logo"
+						loading="lazy"
+					>
+				</li>
+			</ul>
+		</div>
 	</section>
 </template>
 

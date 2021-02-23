@@ -8,9 +8,9 @@
 			</p>
 			<div class="row">
 				<div
-					v-for="supporter in supportersText"
+					v-for="(supporter, index) in supportersText"
 					:key="supporter.key"
-					class="testimonials__supporter-card medium-text small-12 large-4"
+					class="testimonials__supporter-card medium-text small-12 large-4 columns"
 				>
 					<!-- Supporter image -->
 					<img
@@ -35,31 +35,17 @@
 						v-html="supporter.quote"
 					>
 					</p>
+
+					<!-- eslint-disable max-len -->
 					<!-- Supporter card flourish images -->
 					<img
-						v-if="flourishImgs.card1[0].cardNumber === supporter.key"
-						:class="'testimonials__supporter-card--' + flourishImgs.card1[0].class"
-						:src="flourishImgs.card1[0].url"
-						:alt="flourishImgs.card1[0].description"
+						v-for="flourishImg in flourishImgs[index]"
+						:key="flourishImg.class"
+						:class="'testimonials__supporter-card--page-flourish testimonials__supporter-card--' + flourishImg.class"
+						:src="flourishImg.url"
+						:alt="flourishImg.description"
 					>
-					<img
-						v-if="flourishImgs.card2[0].cardNumber === supporter.key"
-						:class="'testimonials__supporter-card--' + flourishImgs.card2[0].class"
-						:src="flourishImgs.card2[0].url"
-						:alt="flourishImgs.card2[0].description"
-					>
-					<img
-						v-if="flourishImgs.card2[1].cardNumber === supporter.key"
-						:class="'testimonials__supporter-card--' + flourishImgs.card2[1].class"
-						:src="flourishImgs.card2[1].url"
-						:alt="flourishImgs.card2[1].description"
-					>
-					<img
-						v-if="flourishImgs.card3[0].cardNumber === supporter.key"
-						:class="'testimonials__supporter-card--' + flourishImgs.card3[0].class"
-						:src="flourishImgs.card3[0].url"
-						:alt="flourishImgs.card3[0].description"
-					>
+					<!-- eslint-enable max-len -->
 				</div>
 			</div>
 		</div>
@@ -78,41 +64,33 @@ export default {
 	},
 	data() {
 		return {
-			flourishImgs: {
-				card1: [
+			flourishImgs: [
+				[
 					{
 						description: 'Support card flourish image',
-						title: 'Page flourish 1',
-						cardNumber: 0,
 						class: 'page-flourish-1',
 						url: imgRequire('./supporter_card_1_flourish.png'),
 					}],
-				card2: [
+				[
 					{
 						description: 'Support card flourish image',
-						title: 'Page flourish 2',
-						cardNumber: 1,
 						class: 'page-flourish-2',
 						url: imgRequire('./supporter_card_2_flourish_A.png'),
 					},
 					{
 						description: 'Support card flourish image',
-						title: 'Page flourish 3',
-						cardNumber: 1,
 						class: 'page-flourish-3',
 						url: imgRequire('./supporter_card_2_flourish_B.png'),
 					},
 				],
-				card3: [
+				[
 					{
 						description: 'Support card flourish image',
-						title: 'Page flourish 4',
-						cardNumber: 2,
 						class: 'page-flourish-4',
 						url: imgRequire('./supporter_card_3_flourish.png'),
 					}
 				],
-			},
+			],
 		};
 	},
 	computed: {
@@ -124,7 +102,6 @@ export default {
 		},
 		supportersText() {
 			const allSupportersText = this.content?.contents?.filter(({ key }) => key.indexOf('testimonial-text') > -1);
-			console.log('supporters text', allSupportersText);
 			return allSupportersText?.map((supporter, index) => ({
 				key: index,
 				headline: supporter.headline ?? '',
@@ -161,21 +138,61 @@ export default {
 			margin-bottom: 0;
 		}
 
-		// &--page-flourish-1 {
+		&--page-flourish {
+			position: relative;
+		}
 
-		// }
+		&--page-flourish-1 {
+			width: rem-calc(50);
+			bottom: 329px;
+			left: -77px;
 
-		// &--page-flourish-2 {
+			@include breakpoint(medium) {
+				bottom: 293px;
+			}
 
-		// }
+			@include breakpoint(large) {
+				width: rem-calc(50);
+				top: -329px;
+				left: -77px;
+			}
+		}
 
-		// &--page-flourish-3 {
+		&--page-flourish-2 {
+			width: rem-calc(45);
+			bottom: 329px;
+			left: -17px;
 
-		// }
+			@include breakpoint(large) {
+				width: rem-calc(45);
+				top: -478px;
+				left: -17px;
+			}
+		}
 
-		// &--page-flourish-4 {
+		&--page-flourish-3 {
+			width: rem-calc(60);
+			top: -356px;
+			left: 38px;
 
-		// }
+			@include breakpoint(large) {
+				width: rem-calc(60);
+				top: -356px;
+				left: 38px;
+			}
+		}
+
+		&--page-flourish-4 {
+			width: rem-calc(50);
+			top: -435px;
+			left: 76px;
+
+			@include breakpoint(large) {
+				width: rem-calc(50);
+				top: -435px;
+				left: 76px;
+			}
+		}
 	}
 }
 
