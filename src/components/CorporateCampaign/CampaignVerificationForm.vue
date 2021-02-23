@@ -21,11 +21,11 @@
 
 <script>
 import parseSPCookie from '@/util/parseSPCookie';
-import cookieStore from '@/util/cookieStore';
 import { addDays } from 'date-fns';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
+	inject: ['cookieStore'],
 	metaInfo: {
 		script: [
 			{ src: '//kiva.tfaforms.net/js/iframe_resize_helper.js', async: true }
@@ -64,7 +64,7 @@ export default {
 	},
 	mounted() {
 		// initiate form if it has not been recently submitted
-		if (!cookieStore.get('kvma-verified')) {
+		if (!this.cookieStore.get('kvma-verified')) {
 			this.initVerificationForm();
 		}
 	},
@@ -111,7 +111,7 @@ export default {
 					// > upon succesful submission the form is quickly unloaded
 					if (timeDifference <= 1000) {
 						// store cookie verification state for 24 hours
-						cookieStore.set('kvma-verified', true, {
+						this.cookieStore.set('kvma-verified', true, {
 							expires: addDays(new Date(), 1)
 						});
 					}
@@ -128,7 +128,7 @@ export default {
 		},
 		async getSnowplowSession() {
 			// get tracking data from snowplow cookie
-			const { snowplowUserId, snowplowSessionId } = parseSPCookie();
+			const { snowplowUserId, snowplowSessionId } = parseSPCookie(this.cookieStore);
 			this.spId = snowplowSessionId;
 			this.spUserId = snowplowUserId;
 		}
