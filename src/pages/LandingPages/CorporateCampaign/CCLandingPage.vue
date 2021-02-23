@@ -7,6 +7,7 @@
 		<div class="corporate-campaign-landing">
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
 			<campaign-status
+				v-if="!hideStatusBar"
 				class="corporate-campaign-landing__status"
 				:is-matching="isMatchingCampaign"
 				:loading-promotion="loadingPromotion"
@@ -14,6 +15,7 @@
 				:promo-applied="promoApplied"
 				:promo-amount="promoAmount"
 				:promo-name="campaignPartnerName"
+				:status-message-override="statusMessageOverride"
 				@show-checkout="showCheckout"
 			/>
 
@@ -711,7 +713,13 @@ export default {
 		},
 		corporateLogoUrl() {
 			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.media?.[0]?.file?.url;
-		}
+		},
+		hideStatusBar() {
+			return this.pageSettingData?.hideStatusBar ?? false;
+		},
+		statusMessageOverride() {
+			return this.pageSettingData?.statusMessageOverride ?? null;
+		},
 	},
 	methods: {
 		verifyOrApplyPromotion() {
