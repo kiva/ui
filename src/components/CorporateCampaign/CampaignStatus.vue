@@ -10,7 +10,7 @@
 		<div class="small-12 large-8 columns">
 			<div class="campaign-status__message">
 				<template v-if="statusMessageOverride">
-					<span v-html="statusMessageOverride"></span>
+					<span>{{ statusMessageOverride }}</span>
 				</template>
 				<template v-else>
 					<template v-if="loadingPromotion && !promoApplied && !promoErrorMessage">
