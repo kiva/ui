@@ -149,7 +149,6 @@ export default {
 @import 'settings';
 
 .testimonials {
-
 	&__supporter-card {
 		&--img {
 			border-radius: 50%;
@@ -161,8 +160,23 @@ export default {
 			color: $kiva-green;
 			margin-bottom: 0;
 		}
-	}
 
+		// &--page-flourish-1 {
+
+		// }
+
+		// &--page-flourish-2 {
+
+		// }
+
+		// &--page-flourish-3 {
+
+		// }
+
+		// &--page-flourish-4 {
+
+		// }
+	}
 }
 
 </style>
