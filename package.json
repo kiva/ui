@@ -79,7 +79,7 @@
 		"express": "^4.17.1",
 		"express-session": "^1.17.1",
 		"express-winston": "^4.0.3",
-		"flag-icon-css": "kiva/flag-icon-css.git#sprite",
+		"flag-icon-css": "git+ssh://git@github.com:kiva/flag-icon-css.git#sprite",
 		"foundation-sites": "6.6.3",
 		"fuse.js": "^5.2.3",
 		"get-user-locale": "^1.4.0",
@@ -208,7 +208,7 @@
 		"webpack-filter-warnings-plugin": "^1.2.1",
 		"webpack-hot-middleware": "^2.25.0",
 		"webpack-node-externals": "^2.5.2",
-		"webpack-svgstore-plugin": "kiva/webpack-svgstore-plugin#develop"
+		"webpack-svgstore-plugin": "git+ssh://git@github.com:kiva/webpack-svgstore-plugin#develop"
 	},
 	"engines": {
 		"node": ">= 10.0.0",
