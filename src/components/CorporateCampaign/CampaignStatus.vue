@@ -9,9 +9,7 @@
 	>
 		<div class="small-12 large-8 columns">
 			<div class="campaign-status__message">
-				<kv-loading-spinner v-if="!loadingPromotion && promoApplied === null && !promoErrorMessage" />
-
-				<template v-if="loadingPromotion">
+				<template v-if="loadingPromotion && !promoApplied && !promoErrorMessage">
 					<kv-loading-spinner />
 					<span>Validating Promotion</span>
 				</template>
@@ -20,13 +18,12 @@
 					<kv-icon class="campaign-status__icon" name="error" />
 					<span>{{ promoErrorMessage }}</span>
 				</template>
-				<template v-else-if="promoApplied === false">
+				<template v-else-if="!loadingPromotion && promoApplied === false">
 					<span>No promotion applied.</span>
 				</template>
 
-				<template v-if="promoApplied && !promoErrorMessage && !isMatching">
-					<span v-if="promoAmount === '$0.00'">Calculating promotion...</span>
-					<span v-else>
+				<template v-if="!loadingPromotion && promoApplied && !promoErrorMessage && !isMatching">
+					<span v-if="promoName && (promoAmount !== '$0.00')">
 						You have ${{ promoAmount | numeral }}
 						<span v-if="promoName">from {{ promoName }}</span>
 						to lend!

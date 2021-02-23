@@ -531,9 +531,10 @@ export default {
 	created() {
 		// extract query
 		this.pageQuery = this.$route.query;
+		// startup campaign status loader
+		this.loadingPromotion = true;
 	},
 	mounted() {
-		this.loadingPromotion = true;
 		// check for applied promo
 		this.verifyOrApplyPromotion();
 
@@ -749,11 +750,8 @@ export default {
 					// Store the error message here and handle visibility in getPromoInformationFromBasket
 					this.promoErrorMessage = result.errors[0].message;
 					this.promoApplied = false;
-					this.loadingPromotion = false;
-				} else {
-					this.promoApplied = true;
-					this.loadingPromotion = false;
 				}
+
 				// gather promo info
 				this.getPromoInformationFromBasket();
 			}).catch(error => {
