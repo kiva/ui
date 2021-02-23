@@ -3,6 +3,7 @@ const cluster = require('cluster');
 const http = require('http');
 const ddTrace = require('dd-trace');
 const express = require('express');
+const compression = require('compression');
 const helmet = require('helmet');
 const locale = require('locale');
 const serverRoutes = require('./available-routes-middleware');
@@ -32,6 +33,12 @@ const cache = initCache(config.server);
 
 const app = express();
 const port = argv.port || config.server.port;
+
+// Use gzip on local server.
+// In higher environments it's handled elsewhere
+if (config.server.gzipEnabled) {
+	app.use(compression());
+}
 
 // Set sensible security headers for express
 app.use(helmet());
