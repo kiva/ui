@@ -488,7 +488,8 @@ export default {
 			transactionId: null,
 			showLoanRows: true,
 			loanDetailsVisible: false,
-			detailedLoan: null
+			detailedLoan: null,
+			useMatcherAccountIds: true,
 		};
 	},
 	metaInfo() {
@@ -642,7 +643,7 @@ export default {
 				matcherAccounts = [matcherAccounts];
 			}
 			// apply matcherAccounts array if present
-			if (matcherAccounts && matcherAccounts.length) {
+			if (this.useMatcherAccountIds && matcherAccounts && matcherAccounts.length) {
 				baseFilters.matcherAccountId = matcherAccounts;
 			}
 
@@ -1068,6 +1069,13 @@ export default {
 			// Current page path is a co-branded space and should match applied promo page path
 			return this.$route?.params?.dynamicRoute === promoPageId;
 		},
+		checkInitialFiltersAgainstAppliedFilters() {
+			// check that initial filters match what is currently applied
+			if (JSON.stringify(this.initialFilters) === JSON.stringify(this.filters)) {
+				return true;
+			}
+			return false;
+		},
 
 		setAuthStatus(userState) {
 			if (typeof userState !== 'undefined' && userState !== null) {
@@ -1097,6 +1105,12 @@ export default {
 		},
 		setTotalCount(payload) {
 			this.totalCount = payload;
+
+			// if this is a matching account and the original filters were used
+			// we need to remove the matcherAccountId from the query to show loans
+			if (payload === 0 && this.isMatchingCampaign && this.checkInitialFiltersAgainstAppliedFilters()) {
+				this.useMatcherAccountIds = false;
+			}
 		},
 		showLoanDetails(loan) {
 			this.detailedLoan = loan;
