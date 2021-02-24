@@ -128,8 +128,8 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
-.testimonials {
 
+.testimonials {
 	&__header {
 		margin-bottom: rem-calc(70);
 	}
