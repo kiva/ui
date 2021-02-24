@@ -6,7 +6,7 @@
 				class="bottom-cta__headline"
 			></p>
 			<kv-button
-				class="rounded smallest impact-text bottom-cta__button"
+				class="rounded smaller impact-text bottom-cta__button"
 				:to="buttonLink"
 				v-kv-track-event="[
 					'homepage',
