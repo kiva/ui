@@ -5,6 +5,7 @@
 		<how-it-works class="section" :content="howItWorksContentGroup" />
 		<homepage-midroll-c-t-a class="section" :content="midrollContentGroup" />
 		<!-- iwd kiva stats component -->
+		<homepage-general-stats class="section" :content="statisticsContentGroup" />
 		<!-- testimonials component -->
 		<!-- partners component -->
 		<corporate-sponsors class="section" :content="corporateSponsorsContentGroup" />
@@ -15,6 +16,7 @@
 
 <script>
 import HomepageHero from '@/components/Homepage/HomepageHero';
+import HomepageGeneralStats from '@/components/Homepage/HomepageGeneralStats';
 import HomepageLoanCategories from '@/components/Homepage/HomepageLoanCategories';
 import HomepageMidrollCTA from '@/components/Homepage/HomepageMidrollCTA';
 import HowItWorks from '@/components/Homepage/HomepageHowItWorks';
@@ -24,6 +26,7 @@ import BottomCTA from '@/components/Homepage/HomepageBottomCTA';
 export default {
 	components: {
 		HomepageHero,
+		HomepageGeneralStats,
 		HomepageLoanCategories,
 		HomepageMidrollCTA,
 		HowItWorks,
@@ -55,6 +58,9 @@ export default {
 		},
 		midrollContentGroup() {
 			return this.content?.page?.contentGroups?.homepageMidrollCta ?? null;
+		},
+		statisticsContentGroup() {
+			return this.content?.page?.contentGroups?.homepageStatistics ?? null;
 		},
 		corporateSponsorsContentGroup() {
 			return this.content?.page?.contentGroups?.homepageStrategicPartners ?? null;
