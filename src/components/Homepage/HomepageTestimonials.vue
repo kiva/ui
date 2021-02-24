@@ -27,12 +27,14 @@
 					</p>
 					<!-- Supporter title -->
 					<p
+						class="testimonials__supporter-card--title"
 						v-html="supporter.subHeadline"
 					>
 					</p>
 					<!-- Supporter quote -->
 					<p
 						v-html="supporter.quote"
+						class="testimonials__supporter-card--quote"
 					>
 					</p>
 
@@ -134,12 +136,23 @@ export default {
 		&--img {
 			border-radius: 50%;
 			max-width: rem-calc(166);
+			margin-bottom: rem-calc(30);
+			line-height: 1;
 		}
 
 		&--name {
 			font-weight: 600;
 			color: $kiva-green;
 			margin-bottom: 0;
+			line-height: 1;
+		}
+
+		&--title {
+			line-height: 1.3;
+		}
+
+		&--quote {
+			line-height: 1.5;
 		}
 
 		&--page-flourish {
@@ -149,10 +162,10 @@ export default {
 		&--page-flourish-1 {
 			width: rem-calc(50);
 			left: rem-calc(-77);
-			top: rem-calc(-328);
+			top: rem-calc(-311);
 
-			@include breakpoint(medium) {
-				top: rem-calc(-292);
+			@include breakpoint(374) {
+				top: rem-calc(-280);
 			}
 
 			@include breakpoint(large) {
@@ -166,26 +179,26 @@ export default {
 			}
 
 			@include breakpoint(xlarge) {
-				top: rem-calc(-398);
+				top: rem-calc(-372);
 			}
 
 			// Halfway between xlg and xxlg breakpoints
 			@include breakpoint(875) {
-				top: rem-calc(-358);
+				top: rem-calc(-339);
 			}
 
 			@include breakpoint(xxlarge) {
-				top: rem-calc(-322);
+				top: rem-calc(-308);
 			}
 		}
 
 		&--page-flourish-2 {
 			width: rem-calc(45);
-			top: rem-calc(-435);
+			top: rem-calc(-418);
 			left: rem-calc(-49);
 
 			@include breakpoint(374) {
-				top: rem-calc(-396);
+				top: rem-calc(-383);
 			}
 
 			@include breakpoint(medium) {
@@ -203,22 +216,22 @@ export default {
 			}
 
 			@include breakpoint(xlarge) {
-				top: rem-calc(-508);
+				top: rem-calc(-479);
 			}
 
 			// Halfway between xlg and xxlg breakpoints
 			@include breakpoint(875) {
-				top: rem-calc(-472);
+				top: rem-calc(-449);
 			}
 		}
 
 		&--page-flourish-3 {
 			width: rem-calc(60);
-			top: rem-calc(-358);
+			top: rem-calc(-342);
 			left: rem-calc(42);
 
 			@include breakpoint(374) {
-				top: rem-calc(-325);
+				top: rem-calc(-308);
 			}
 
 			@include breakpoint(medium) {
@@ -237,22 +250,23 @@ export default {
 			}
 
 			@include breakpoint(xlarge) {
-				top: rem-calc(-430);
+				top: rem-calc(-402);
 			}
 
 			// Halfway between xlg and xxlg breakpoints
 			@include breakpoint(875) {
-				top: rem-calc(-395);
+				top: rem-calc(-374);
 			}
 		}
 
 		&--page-flourish-4 {
 			width: rem-calc(50);
-			top: rem-calc(-430);
+			top: rem-calc(-409);
 			left: rem-calc(76);
+			margin-bottom: rem-calc(-80);
 
 			@include breakpoint(374) {
-				top: rem-calc(-394);
+				top: rem-calc(-377);
 			}
 
 			@include breakpoint(medium) {
@@ -271,12 +285,12 @@ export default {
 			}
 
 			@include breakpoint(xlarge) {
-				top: rem-calc(-496);
+				top: rem-calc(-466);
 			}
 
 			// Breakpoint halfway between xlg and xxlg
 			@include breakpoint(875) {
-				top: rem-calc(-460);
+				top: rem-calc(-436);
 			}
 		}
 	}
