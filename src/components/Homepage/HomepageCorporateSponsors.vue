@@ -82,7 +82,7 @@ export default {
 
 		@include breakpoint(large) {
 			font-size: rem-calc(36);
-			margin-bottom: rem-calc(50);
+			margin-bottom: 1rem;
 		}
 	}
 

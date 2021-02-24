@@ -57,13 +57,13 @@ export default {
 .bottom-cta {
 	&__headline {
 		font-size: rem-calc(44);
-		font-weight: 600;
+		font-weight: 300;
 		margin-bottom: rem-calc(30);
 		line-height: 1.3;
 	}
 
 	&__button {
-		margin-bottom: rem-calc(30);
+		margin-bottom: 1rem;
 	}
 }
 
