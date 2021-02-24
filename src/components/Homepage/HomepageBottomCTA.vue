@@ -1,13 +1,16 @@
 <template>
-	<section class="how-it-works section text-center">
+	<section class="bottom-cta section text-center">
 		<div class="small-12">
-			<h1 v-html="bottomCTAHeadline"></h1>
+			<p
+				v-html="bottomCTAHeadline"
+				class="bottom-cta__headline"
+			></p>
 			<kv-button
-				class="rounded"
+				class="rounded smallest impact-text bottom-cta__button"
 				:to="buttonLink"
 				v-kv-track-event="[
 					'homepage',
-					'click-hero-cta',
+					'click-homepage-cta-bottom',
 					buttonText,
 				]"
 			>
@@ -35,7 +38,6 @@ export default {
 			return this.content?.contents?.find(({ key }) => key.indexOf('homepage-bottom-cta-section') > -1);
 		},
 		bottomCTAHeadline() {
-			console.log('bottomCTAContent', this.bottomCTAContent);
 			return this.bottomCTAContent?.headline ?? '';
 		},
 		buttonText() {
@@ -51,5 +53,18 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+
+.bottom-cta {
+	&__headline {
+		font-size: rem-calc(44);
+		font-weight: 600;
+		margin-bottom: rem-calc(30);
+		line-height: 1.3;
+	}
+
+	&__button {
+		margin-bottom: rem-calc(30);
+	}
+}
 
 </style>

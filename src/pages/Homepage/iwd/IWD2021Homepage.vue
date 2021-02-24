@@ -66,7 +66,7 @@ export default {
 			return this.content?.page?.contentGroups?.homepageStrategicPartners ?? null;
 		},
 		bottomCTAContentGroup() {
-			return this.content?.page?.contentGroups?.homepageBottomCTA ?? null;
+			return this.content?.page?.contentGroups?.homepageBottomCta ?? null;
 		}
 	},
 };
