@@ -131,10 +131,16 @@ export default {
 
 .testimonials {
 	&__header {
-		margin-bottom: rem-calc(70);
+		margin-bottom: rem-calc(64);
 	}
 
 	&__supporter-card {
+		margin-bottom: rem-calc(40);
+
+		@include breakpoint(large) {
+			margin-bottom: 0;
+		}
+
 		&--img-wrapper {
 			position: relative;
 		}
@@ -173,6 +179,7 @@ export default {
 
 		&--quote {
 			line-height: 1.5;
+			margin-bottom: 0;
 		}
 
 		&--page-flourish {

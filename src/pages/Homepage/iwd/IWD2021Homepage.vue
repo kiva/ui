@@ -96,10 +96,6 @@ export default {
 	.section {
 		position: relative;
 		padding: 2rem 0;
-
-		@include breakpoint(large) {
-			padding: 4rem 0;
-		}
 	}
 }
 </style>

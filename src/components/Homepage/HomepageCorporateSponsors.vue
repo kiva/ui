@@ -67,7 +67,7 @@ export default {
 .sponsors {
 	&__section-img {
 		width: rem-calc(220);
-		margin: 2.5rem;
+		margin: 0 2.5rem 2.5rem 2.5rem;
 
 		@include breakpoint(large) {
 			width: rem-calc(320);
@@ -82,7 +82,7 @@ export default {
 
 		@include breakpoint(large) {
 			font-size: rem-calc(36);
-			margin-bottom: rem-calc(50);
+			margin-bottom: 1rem;
 		}
 	}
 
