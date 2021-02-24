@@ -138,6 +138,10 @@ export default {
 			margin-bottom: 0;
 		}
 
+		&__header {
+			margin-bottom: rem-calc(70);
+		}
+
 		&--page-flourish {
 			position: relative;
 		}
