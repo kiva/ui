@@ -9,6 +9,7 @@
 		<!-- partners component -->
 		<corporate-sponsors class="section" :content="corporateSponsorsContentGroup" />
 		<!-- bottom cta component -->
+		<bottom-CTA class="section" :content="bottomCTAContentGroup" />
 	</div>
 </template>
 
@@ -18,6 +19,7 @@ import HomepageLoanCategories from '@/components/Homepage/HomepageLoanCategories
 import HomepageMidrollCTA from '@/components/Homepage/HomepageMidrollCTA';
 import HowItWorks from '@/components/Homepage/HomepageHowItWorks';
 import CorporateSponsors from '@/components/Homepage/HomepageCorporateSponsors';
+import BottomCTA from '@/components/Homepage/HomepageBottomCTA';
 
 export default {
 	components: {
@@ -26,6 +28,7 @@ export default {
 		HomepageMidrollCTA,
 		HowItWorks,
 		CorporateSponsors,
+		BottomCTA,
 	},
 	props: {
 		content: {
@@ -55,6 +58,9 @@ export default {
 		},
 		corporateSponsorsContentGroup() {
 			return this.content?.page?.contentGroups?.homepageStrategicPartners ?? null;
+		},
+		bottomCTAContentGroup() {
+			return this.content?.page?.contentGroups?.homepageBottomCTA ?? null;
 		}
 	},
 };
