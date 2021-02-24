@@ -1,7 +1,7 @@
 <template>
 	<section class="how-it-works section text-center">
 		<div class="small-12">
-			<p v-html="bottomCTAHeadline"></p>
+			<h1 v-html="bottomCTAHeadline"></h1>
 			<kv-button
 				class="rounded"
 				:to="buttonLink"
@@ -32,10 +32,10 @@ export default {
 	},
 	computed: {
 		bottomCTAContent() {
-			console.log(this.content?.contents?.find(({ key }) => key.indexOf('homepage-bottom-cta-section') > -1));
 			return this.content?.contents?.find(({ key }) => key.indexOf('homepage-bottom-cta-section') > -1);
 		},
 		bottomCTAHeadline() {
+			console.log('bottomCTAContent', this.bottomCTAContent);
 			return this.bottomCTAContent?.headline ?? '';
 		},
 		buttonText() {
