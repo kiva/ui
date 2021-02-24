@@ -37,13 +37,31 @@
 			</div>
 		</div>
 
-		<div v-if="filterChips.length" class="loan-filters__chips">
-			<kv-chip
-				v-for="(filter, index) in filterChips"
-				:key="index"
-				:title="cleanChipName(filter.name)"
-				@click-chip="handleRemoveFilter(filter)"
-			/>
+		<div
+			v-if="filterChips.length"
+			class="loan-filters__chips-wrapper"
+		>
+			<div class="row">
+				<div
+					class="loan-filters__chips small-12 large-9 xxlarge-10 columns"
+					:class="{'loan-filters__chips--collapsed' : chipsCollapsed}"
+				>
+					<kv-chip
+						v-for="(filter, index) in filterChips"
+						:key="`chip-${index}`"
+						:title="cleanChipName(filter.name)"
+						@click-chip="handleRemoveFilter(filter)"
+					/>
+				</div>
+				<div class="small-12 large-3 xxlarge-2 columns">
+					<kv-button
+						class="loan-filters__chips-toggle text-link"
+						@click.native="chipsCollapsed = !chipsCollapsed"
+					>
+						{{ chipsCollapsed ? `Show all ${filterChips.length} filters` : 'Hide filters' }}
+					</kv-button>
+				</div>
+			</div>
 		</div>
 
 		<kv-lightbox
@@ -247,6 +265,7 @@ export default {
 			initialFiltersCopy: null,
 			modifiedFilters: null,
 			selectedSort: null,
+			chipsCollapsed: true,
 		};
 	},
 	mounted() {
@@ -533,12 +552,34 @@ export default {
 		white-space: nowrap;
 	}
 
-	&__chips {
+	&__chips-wrapper {
 		display: block;
 		margin: 1.5rem 1rem 0.5rem;
 
 		@include breakpoint(medium) {
 			margin: 1.5rem 3.5rem 0.5rem;
+		}
+	}
+
+	&__chips-toggle {
+		display: block;
+		margin: 1rem auto 0 0;
+		font-size: $small-text-font-size;
+		white-space: nowrap;
+
+		@include breakpoint(large) {
+			margin: 0 0 0 auto;
+		}
+	}
+
+	&__chips {
+		&--collapsed {
+			overflow: hidden;
+			max-height: 7rem;
+
+			@include breakpoint(large) {
+				max-height: 2rem;
+			}
 		}
 	}
 
