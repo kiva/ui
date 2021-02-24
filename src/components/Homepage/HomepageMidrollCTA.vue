@@ -152,15 +152,15 @@ $second-break: xxlarge;
 
 	&__card {
 		text-align: center;
-		max-width: rem-calc(450);
+		max-width: rem-calc(400);
 		padding: 1rem;
 		margin: 0 auto 1rem;
 		border-radius: rem-calc(20);
 		box-shadow: 0 rem-calc(2) rem-calc(10) rgba(0, 0, 0, 0.25);
 
 		@include breakpoint($second-break) {
-			padding: rem-calc(25);
-			margin-bottom: rem-calc(60);
+			padding: rem-calc(22);
+			margin: 0 0 rem-calc(60);
 			box-shadow: 0 rem-calc(4) rem-calc(15) rgba(0, 0, 0, 0.25);
 		}
 
@@ -170,8 +170,8 @@ $second-break: xxlarge;
 			margin: 0 auto rem-calc(6);
 
 			@include breakpoint($second-break) {
-				height: rem-calc(100);
-				margin-bottom: rem-calc(22);
+				height: rem-calc(90);
+				margin-bottom: rem-calc(20);
 			}
 		}
 
@@ -179,16 +179,15 @@ $second-break: xxlarge;
 			max-width: 17rem;
 			margin: 0 auto;
 			letter-spacing: -0.02rem;
-			line-height: 1.5;
 
 			@include breakpoint($second-break) {
-				max-width: 25rem;
-
-				@include featured-text();
+				max-width: 21rem;
+				font-size: $medium-text-font-size;
 			}
 
 			p {
 				margin: 0;
+				line-height: 1.5;
 			}
 
 			i {
