@@ -1,10 +1,5 @@
 <template>
-	<www-page id="homepage"
-		:header-theme="headerTheme"
-		:footer-theme="footerTheme"
-	>
-		<component :is="activeHomepage" :content="pageData" />
-	</www-page>
+	<component :is="activeHomepage" :content="pageData" />
 </template>
 
 <script>
@@ -12,21 +7,20 @@ import gql from 'graphql-tag';
 
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
-import { lightHeader } from '@/util/siteThemes';
+import { preFetchAll } from '@/util/apolloPreFetch';
 import { settingEnabled } from '@/util/settingsUtils';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
-import DefaultHomePage from '@/pages/Homepage/DefaultHomepage';
-import LendByCategoryHomepage from '@/pages/Homepage/LendByCategoryHomepage';
-import MonthlyGoodHomepage from '@/pages/Homepage/MonthlyGoodHomepage';
-// import FifteenYearHomepage from '@/pages/Homepage/15YearHomepage';
-// import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
-import IWD2021HomePage from '@/pages/Homepage/iwd/IWD2021Homepage';
-// import WRDHomePage from '@/pages/Homepage/wrd/WRDHomepage';
-
-import TopMessageContentful from './TopMessageContentful';
+const DefaultHomePage = () => import('@/pages/Homepage/DefaultHomepage');
+const LendByCategoryHomepage = () => import('@/pages/Homepage/LendByCategoryHomepage');
+const MonthlyGoodHomepage = () => import('@/pages/Homepage/MonthlyGoodHomepage');
+// const FifteenYearHomepage = () => import('@/pages/Homepage/15YearHomepage');
+// const IWDHomePage = () => import('@/pages/Homepage/iwd/IWDHomepage');
+const IWD2021HomePage = () => import('@/pages/Homepage/iwd/IWD2021Homepage');
+// const WRDHomePage = () => import('@/pages/Homepage/wrd/WRDHomepage');
+const TopMessageContentful = () => import('./TopMessageContentful');
 
 const activePageQuery = gql`query homepageFrame {
 	contentful {
@@ -39,6 +33,47 @@ const activePageQuery = gql`query homepageFrame {
 		}
 	}
 }`;
+
+// Get the Contentful Page data from the data of an Apollo query result
+const getPageData = data => {
+	const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
+	return pageEntry ? processPageContentFlat(pageEntry) : null;
+};
+
+// Return an import function for the active homepage component
+const selectActiveHomepage = (pageData = {}, legacyHomeExp = {}) => {
+	// Being in the 'a' variant of the legacy home experiment forces using the legacy homepage
+	if (legacyHomeExp.version === 'a') {
+		return DefaultHomePage;
+	}
+
+	// If the IWD 2021 campaign is active, use that homepage
+	const uiHomepageIWD2021Setting = pageData?.page?.settings?.find(item => item.key === 'ui-homepage-iwd-2021') ?? null; // eslint-disable-line max-len
+	const isUiHomepageIWD2021SettingEnabled = settingEnabled(
+		uiHomepageIWD2021Setting,
+		'active',
+		'startDate',
+		'endDate'
+	);
+	if (pageData && isUiHomepageIWD2021SettingEnabled) {
+		return IWD2021HomePage;
+	}
+
+	// If the Monthly Good campaign is active, use that homepage
+	const uiHomepageMonthlyGoodSetting = this.pageData?.page?.settings?.find(item => item.key === 'ui-homepage-monthly-good') ?? null; // eslint-disable-line max-len
+	const isUiHomepageMonthlyGoodSettingEnabled = settingEnabled(
+		uiHomepageMonthlyGoodSetting,
+		'active',
+		'startDate',
+		'endDate'
+	);
+	if (pageData && isUiHomepageMonthlyGoodSettingEnabled) {
+		return MonthlyGoodHomepage;
+	}
+
+	// If nothing else is selected, default to the Lend-By-Category homepage
+	return LendByCategoryHomepage;
+};
 
 export default {
 	inject: ['apollo', 'cookieStore'],
@@ -62,85 +97,33 @@ export default {
 	},
 	data() {
 		return {
-			is15YearsActive: false,
-			isLenderPreferencesActive: false,
-			isContentfulHomepageActive: false,
-			isIwdActive: false,
-			isIWD2021Active: false,
-			isWrdActive: false,
-			isMessageActive: false,
+			activeHomepage: null,
 			pageData: null,
 		};
 	},
-	computed: {
-		activeHomepage() {
-			// if (this.is15YearsActive) return FifteenYearHomepage;
-			if (this.isIWD2021Active) return IWD2021HomePage;
-			if (this.isContentfulHomepageActive) return MonthlyGoodHomepage;
-			if (this.isLenderPreferencesActive) return LendByCategoryHomepage;
-			// if (this.isMessageActive) return TopMessageContentful;
-			// if (this.isIwdActive) return IWDHomePage;
-			// if (this.isWrdActive) return WRDHomePage;
-			return DefaultHomePage;
-		},
-		headerTheme() {
-			// if (this.is15YearsActive) return fifteenYearHeaderTheme;
-			if (this.isContentfulHomepageActive) return lightHeader;
-			if (this.isLenderPreferencesActive) return lightHeader;
-			// if (this.isMessageActive) return lightHeader;
-			// if (this.isIwdActive) return iwdHeaderTheme;
-			// if (this.isWrdActive) return wrdHeaderTheme;
-			return null;
-		},
-		footerTheme() {
-			// if (this.is15YearsActive) return fifteenYearFooterTheme;
-			// if (this.isMessageActive) return lightFooter;
-			// if (this.isIwdActive) return iwdFooterTheme;
-			// if (this.isWrdActive) return wrdFooterTheme;
-			return null;
-		}
-	},
 	apollo: {
 		query: activePageQuery,
-		preFetch(config, client) {
+		preFetch(config, client, args) {
 			return client.query({
 				query: activePageQuery
-			}).then(() => {
-				return Promise.all([
-					client.query({ query: experimentQuery, variables: { id: 'home_legacy' } })
-				]);
+			}).then(({ data }) => {
+				return client.query({
+					query: experimentQuery,
+					variables: { id: 'home_legacy' },
+				}).then(expResult => {
+					// Select which homepage to load
+					const componentImporter = selectActiveHomepage(getPageData(data), expResult?.data?.experiment);
+					return componentImporter();
+				}).then(resolvedImport => {
+					// Call preFetch for the active homepage
+					const component = resolvedImport.default;
+					return preFetchAll([component], client, args);
+				});
 			});
 		},
 		result({ data }) {
-			// Check for contentful homepage content, else use non contentful homepage
-			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
-			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
-
-			// returns the contentful content of the uiSetting key ui-homepage-monthly-good
-			// which controls when the contentful page layout should be active
-			const uiHomepageMonthlyGoodSetting = this.pageData?.page?.settings?.find(item => item.key === 'ui-homepage-monthly-good') ?? null; // eslint-disable-line max-len
-			const isUiHomepageMonthlyGoodSettingEnabled = settingEnabled(
-				uiHomepageMonthlyGoodSetting,
-				'active',
-				'startDate',
-				'endDate'
-			);
-			if (this.pageData && isUiHomepageMonthlyGoodSettingEnabled) {
-				this.isContentfulHomepageActive = true;
-			}
-
-			// returns the contentful content of the uiSetting key ui-homepage-iwd-2021
-			// which controls when the contentful page layout should be active
-			const uiHomepageIWD2021Setting = this.pageData?.page?.settings?.find(item => item.key === 'ui-homepage-iwd-2021') ?? null; // eslint-disable-line max-len
-			const isUiHomepageIWD2021SettingEnabled = settingEnabled(
-				uiHomepageIWD2021Setting,
-				'active',
-				'startDate',
-				'endDate'
-			);
-			if (this.pageData && isUiHomepageIWD2021SettingEnabled) {
-				this.isIWD2021Active = true;
-			}
+			// Get page data from Contentful
+			this.pageData = getPageData(data);
 
 			// Fetch legacy homepage experiment data (GROW-442)
 			const legacyHomeExp = this.apollo.readFragment({
@@ -155,15 +138,9 @@ export default {
 					legacyHomeExp.version,
 				);
 			}
-			if (legacyHomeExp.version === 'a') {
-				// Always show the legacy default homepage in this case
-				this.isContentfulHomepageActive = false;
-				this.isLenderPreferencesActive = false;
-				this.isIWD2021Active = false;
-			} else {
-				// Otherwise show the new default homepage
-				this.isLenderPreferencesActive = true;
-			}
+
+			// Set active homepage
+			this.activeHomepage = selectActiveHomepage(this.pageData, legacyHomeExp);
 		}
 	}
 };

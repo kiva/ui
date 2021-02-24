@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<www-page id="homepage">
 		<hero-slideshow
 			v-if="showSlideShow && !isExperimentActive"
 			:promo-enabled="promoEnabled"
@@ -20,7 +20,7 @@
 		</div>
 		<why-kiva />
 		<category-grid />
-	</div>
+	</www-page>
 </template>
 
 <script>
@@ -32,6 +32,7 @@ import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 import contentful from '@/graphql/query/contentful.graphql';
 import { settingEnabled } from '@/util/settingsUtils';
+import WwwPage from '@/components/WwwFrame/WwwPage';
 import WhyKiva from '@/components/Homepage/WhyKiva';
 import MonthlyGoodExplained from '@/components/Homepage/MonthlyGoodExplained';
 import MGCovidExplained from '@/pages/LandingPages/MGCovid19/MGCovidExplained';
@@ -51,6 +52,7 @@ const pageQuery = gql`query homepageMGHeroExperiment {
 
 export default {
 	components: {
+		WwwPage,
 		WhyKiva,
 		HeroSlideshow,
 		MonthlyGoodExplained,
