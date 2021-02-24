@@ -126,6 +126,10 @@ export default {
 @import 'settings';
 
 .testimonials {
+	&__header {
+		margin-bottom: rem-calc(70);
+	}
+
 	&__supporter-card {
 		&--img {
 			border-radius: 50%;
@@ -136,10 +140,6 @@ export default {
 			font-weight: 600;
 			color: $kiva-green;
 			margin-bottom: 0;
-		}
-
-		&__header {
-			margin-bottom: rem-calc(70);
 		}
 
 		&--page-flourish {
