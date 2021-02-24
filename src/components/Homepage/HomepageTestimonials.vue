@@ -12,13 +12,26 @@
 					:key="supporter.key"
 					class="testimonials__supporter-card medium-text small-12 large-4 columns"
 				>
-					<!-- Supporter image -->
-					<img
-						v-if="supporter.image.url"
-						class="testimonials__supporter-card--img"
-						:src="supporter.image.url"
-						:alt="supporter.image.description"
-					>
+					<div class="testimonials__supporter-card--img-wrapper">
+						<!-- Supporter image -->
+						<img
+							v-if="supporter.image.url"
+							:class="'testimonials__supporter-card--img testimonials__supporter-card--img-' + index"
+							:src="supporter.image.url"
+							:alt="supporter.image.description"
+						>
+
+						<!-- Supporter card flourish images -->
+						<!-- eslint-disable max-len -->
+						<img
+							v-for="flourishImg in flourishImgs[index]"
+							:key="flourishImg.class"
+							:class="'testimonials__supporter-card--page-flourish testimonials__supporter-card--' + flourishImg.class"
+							:src="flourishImg.url"
+							:alt="flourishImg.description"
+						>
+						<!-- eslint-enable max-len -->
+					</div>
 					<!-- Supporter name -->
 					<p
 						v-html="supporter.headline"
@@ -37,17 +50,6 @@
 						class="testimonials__supporter-card--quote"
 					>
 					</p>
-
-					<!-- Supporter card flourish images -->
-					<!-- eslint-disable max-len -->
-					<img
-						v-for="flourishImg in flourishImgs[index]"
-						:key="flourishImg.class"
-						:class="'testimonials__supporter-card--page-flourish testimonials__supporter-card--' + flourishImg.class"
-						:src="flourishImg.url"
-						:alt="flourishImg.description"
-					>
-					<!-- eslint-enable max-len -->
 				</div>
 			</div>
 		</div>
@@ -133,11 +135,29 @@ export default {
 	}
 
 	&__supporter-card {
+		&--img-wrapper {
+			position: relative;
+		}
+
 		&--img {
 			border-radius: 50%;
 			max-width: rem-calc(166);
 			margin-bottom: rem-calc(30);
 			line-height: 1;
+		}
+
+		// Setting margin offset to make up for the width
+		// of the flourish image that's positioned absolutely
+		&--img-0 {
+			margin-right: rem-calc(-50);
+		}
+
+		&--img-1 {
+			margin-right: rem-calc(-105);
+		}
+
+		&--img-2 {
+			margin-right: rem-calc(-50);
 		}
 
 		&--name {
@@ -161,137 +181,26 @@ export default {
 
 		&--page-flourish-1 {
 			width: rem-calc(50);
-			left: rem-calc(-77);
-			top: rem-calc(-311);
-
-			@include breakpoint(374) {
-				top: rem-calc(-280);
-			}
-
-			@include breakpoint(large) {
-				left: rem-calc(-76);
-				top: rem-calc(-433);
-			}
-
-			// Halfway between lg and xlg breakpoints
-			@include breakpoint(721) {
-				top: rem-calc(-396);
-			}
-
-			@include breakpoint(xlarge) {
-				top: rem-calc(-372);
-			}
-
-			// Halfway between xlg and xxlg breakpoints
-			@include breakpoint(875) {
-				top: rem-calc(-339);
-			}
-
-			@include breakpoint(xxlarge) {
-				top: rem-calc(-308);
-			}
+			left: rem-calc(-140);
+			top: rem-calc(22);
 		}
 
 		&--page-flourish-2 {
 			width: rem-calc(45);
-			top: rem-calc(-418);
-			left: rem-calc(-49);
-
-			@include breakpoint(374) {
-				top: rem-calc(-383);
-			}
-
-			@include breakpoint(medium) {
-				top: rem-calc(-400);
-			}
-
-			@include breakpoint(large) {
-				top: rem-calc(-578);
-				left: rem-calc(-47);
-			}
-
-			// Halfway between lg and xlg breakpoints
-			@include breakpoint(721) {
-				top: rem-calc(-546);
-			}
-
-			@include breakpoint(xlarge) {
-				top: rem-calc(-479);
-			}
-
-			// Halfway between xlg and xxlg breakpoints
-			@include breakpoint(875) {
-				top: rem-calc(-449);
-			}
+			top: rem-calc(-45);
+			left: rem-calc(-84);
 		}
 
 		&--page-flourish-3 {
 			width: rem-calc(60);
-			top: rem-calc(-342);
-			left: rem-calc(42);
-
-			@include breakpoint(374) {
-				top: rem-calc(-308);
-			}
-
-			@include breakpoint(medium) {
-				top: rem-calc(-287);
-			}
-
-			@include breakpoint(large) {
-				width: rem-calc(60);
-				top: rem-calc(-498);
-				left: rem-calc(43);
-			}
-
-			// Halfway between lg and xlg breakpoints
-			@include breakpoint(721) {
-				top: rem-calc(-468);
-			}
-
-			@include breakpoint(xlarge) {
-				top: rem-calc(-402);
-			}
-
-			// Halfway between xlg and xxlg breakpoints
-			@include breakpoint(875) {
-				top: rem-calc(-374);
-			}
+			top: rem-calc(27);
+			left: rem-calc(9);
 		}
 
 		&--page-flourish-4 {
 			width: rem-calc(50);
-			top: rem-calc(-409);
-			left: rem-calc(76);
-			margin-bottom: rem-calc(-80);
-
-			@include breakpoint(374) {
-				top: rem-calc(-377);
-			}
-
-			@include breakpoint(medium) {
-				top: rem-calc(-359);
-			}
-
-			@include breakpoint(large) {
-				width: rem-calc(50);
-				top: rem-calc(-602);
-				left: rem-calc(74);
-			}
-
-			// Halfway between lg and xlg breakpoints
-			@include breakpoint(721) {
-				top: rem-calc(-533);
-			}
-
-			@include breakpoint(xlarge) {
-				top: rem-calc(-466);
-			}
-
-			// Breakpoint halfway between xlg and xxlg
-			@include breakpoint(875) {
-				top: rem-calc(-436);
-			}
+			top: rem-calc(25);
+			left: rem-calc(14);
 		}
 	}
 }
