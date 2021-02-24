@@ -60,7 +60,7 @@ const selectActiveHomepage = (pageData = {}, legacyHomeExp = {}) => {
 	}
 
 	// If the Monthly Good campaign is active, use that homepage
-	const uiHomepageMonthlyGoodSetting = this.pageData?.page?.settings?.find(item => item.key === 'ui-homepage-monthly-good') ?? null; // eslint-disable-line max-len
+	const uiHomepageMonthlyGoodSetting = pageData?.page?.settings?.find(item => item.key === 'ui-homepage-monthly-good') ?? null; // eslint-disable-line max-len
 	const isUiHomepageMonthlyGoodSettingEnabled = settingEnabled(
 		uiHomepageMonthlyGoodSetting,
 		'active',
