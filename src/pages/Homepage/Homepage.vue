@@ -41,7 +41,7 @@ const activePageQuery = gql`query homepageFrame {
 }`;
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		WwwPage,
 		DefaultHomePage,

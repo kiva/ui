@@ -59,7 +59,7 @@ export default {
 		LoanCardController,
 		KvLoadingOverlay,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		isLoggedIn: {
 			type: Boolean,

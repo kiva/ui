@@ -109,7 +109,7 @@ const loanQuery = gql`query noClickLoanCard($channelId: Int!) {
 }`;
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	mixins: [
 		loanUseMixin,
 		percentRaisedMixin,

@@ -11,7 +11,7 @@ import RadialIcon from '@/components/15Years/RadialIcon';
 
 export default {
 	name: 'FifteenYearsGlobeCTA',
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		RadialIcon,
 	},

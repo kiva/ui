@@ -65,6 +65,7 @@ module.exports = {
 		sessionUri: 'https://www.kiva.org/start-ui-session',
 		memcachedEnabled: true,
 		memcachedServers: 'memcached-01:11211,memcached-02:11211',
+		gzipEnabled: false,
 	},
 	build: {
 		assetsRoot: path.resolve(__dirname, '../dist'),

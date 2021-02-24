@@ -1,7 +1,7 @@
 /* eslint-disable no-console, no-param-reassign */
 import serialize from 'serialize-javascript';
 import { v4 as uuidv4 } from 'uuid';
-import cookieStore from '@/util/cookieStore';
+import CookieStore from '@/util/cookieStore';
 import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import renderGlobals from '@/util/renderGlobals';
@@ -31,8 +31,8 @@ export default context => {
 		} = context;
 		const { accessToken, ...profile } = user;
 
-		// Reset cookie store with cookies passed from express middleware
-		cookieStore.reset(cookies);
+		// Create cookie store with cookies passed from express middleware
+		const cookieStore = new CookieStore(cookies);
 
 		// Create random visitor id if none is set
 		if (!cookieStore.get('uiv')) {
@@ -51,8 +51,9 @@ export default context => {
 		let kvAuth0;
 		if (config.auth0.enable) {
 			kvAuth0 = new KvAuth0({
-				user: profile,
 				accessToken,
+				cookieStore,
+				user: profile,
 			});
 		} else {
 			kvAuth0 = MockKvAuth0;
@@ -67,13 +68,13 @@ export default context => {
 		} = createApp({
 			appConfig: config,
 			apollo: {
-				csrfToken: cookieStore.has('kvis') && cookieStore.get('kvis').substr(6),
 				uri: config.graphqlUri,
 				types: config.graphqlFragmentTypes
 			},
+			cookieStore,
+			device,
 			kvAuth0,
 			locale,
-			device,
 		});
 
 		// redirect to the resolved url if it does not match the requested url
@@ -109,8 +110,9 @@ export default context => {
 				// preFetchAll dispatches the queries with Apollo and returns a Promise,
 				// which is resolved when the action is complete and apollo cache has been updated.
 				return preFetchAll(matchedComponents, apolloClient, {
-					route: router.currentRoute,
+					cookieStore,
 					kvAuth0,
+					route: router.currentRoute,
 				});
 			}).then(() => {
 				let sp; // Vue serverPrefetch timing start

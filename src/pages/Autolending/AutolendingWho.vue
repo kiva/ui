@@ -150,7 +150,7 @@ import SectorRadios from './SectorRadios';
 import WhoYoullSupportText from './WhoYoullSupportText';
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		AttributeFilter,
 		AttributeRadios,

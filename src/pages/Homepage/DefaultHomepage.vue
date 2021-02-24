@@ -67,7 +67,7 @@ export default {
 			promoContent: {}
 		};
 	},
-	inject: ['apollo', 'federation'],
+	inject: ['apollo', 'cookieStore', 'federation'],
 	apollo: {
 		query: pageQuery,
 		preFetch(config, client) {

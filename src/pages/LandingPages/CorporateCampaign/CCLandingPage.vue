@@ -7,6 +7,7 @@
 		<div class="corporate-campaign-landing">
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
 			<campaign-status
+				v-if="!hideStatusBar"
 				class="corporate-campaign-landing__status"
 				:is-matching="isMatchingCampaign"
 				:loading-promotion="loadingPromotion"
@@ -14,6 +15,7 @@
 				:promo-applied="promoApplied"
 				:promo-amount="promoAmount"
 				:promo-name="campaignPartnerName"
+				:status-message-override="statusMessageOverride"
 				@show-checkout="showCheckout"
 			/>
 
@@ -106,8 +108,10 @@
 			/>
 
 			<campaign-verification-form
-				v-if="this.showVerification"
-				:form-id="this.externalFormId"
+				v-if="showVerification"
+				:form-id="externalFormId"
+				:ma-id="String(managedAccountId)"
+				:pf-id="String(promoFundId)"
 				:user-id="this.myId"
 				@verification-complete="verificationComplete"
 			/>
@@ -188,7 +192,6 @@ import syncDate from '@/util/syncDate';
 import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
-import cookieStore from '@/util/cookieStore';
 import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
@@ -402,7 +405,7 @@ const myTeamsQuery = gql`query myTeamsQuery {
 }`;
 
 export default {
-	inject: ['apollo', 'kvAuth0'],
+	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	components: {
 		CampaignHero,
 		CampaignHowKivaWorks,
@@ -487,7 +490,8 @@ export default {
 			transactionId: null,
 			showLoanRows: true,
 			loanDetailsVisible: false,
-			detailedLoan: null
+			detailedLoan: null,
+			useMatcherAccountIds: true,
 		};
 	},
 	metaInfo() {
@@ -529,9 +533,10 @@ export default {
 	created() {
 		// extract query
 		this.pageQuery = this.$route.query;
+		// startup campaign status loader
+		this.loadingPromotion = true;
 	},
 	mounted() {
-		this.loadingPromotion = true;
 		// check for applied promo
 		this.verifyOrApplyPromotion();
 
@@ -640,7 +645,7 @@ export default {
 				matcherAccounts = [matcherAccounts];
 			}
 			// apply matcherAccounts array if present
-			if (matcherAccounts && matcherAccounts.length) {
+			if (this.useMatcherAccountIds && matcherAccounts && matcherAccounts.length) {
 				baseFilters.matcherAccountId = matcherAccounts;
 			}
 
@@ -686,6 +691,9 @@ export default {
 		externalFormId() {
 			return this.promoData?.managedAccount?.formId ?? null;
 		},
+		managedAccountId() {
+			return this.promoData?.managedAccount?.id ?? null;
+		},
 		promoFund() {
 			return this.promoData?.promoFund ?? null;
 		},
@@ -694,7 +702,7 @@ export default {
 		},
 		promoOnlyQuery() {
 			if (this.promoApplied && !this.isMatchingCampaign) {
-				return { basketId: cookieStore.get('kvbskt') };
+				return { basketId: this.cookieStore.get('kvbskt') };
 			}
 			return null;
 		},
@@ -706,7 +714,13 @@ export default {
 		},
 		corporateLogoUrl() {
 			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.media?.[0]?.file?.url;
-		}
+		},
+		hideStatusBar() {
+			return this.pageSettingData?.hideStatusBar ?? false;
+		},
+		statusMessageOverride() {
+			return this.pageSettingData?.statusMessageOverride ?? null;
+		},
 	},
 	methods: {
 		verifyOrApplyPromotion() {
@@ -744,11 +758,8 @@ export default {
 					// Store the error message here and handle visibility in getPromoInformationFromBasket
 					this.promoErrorMessage = result.errors[0].message;
 					this.promoApplied = false;
-					this.loadingPromotion = false;
-				} else {
-					this.promoApplied = true;
-					this.loadingPromotion = false;
 				}
+
 				// gather promo info
 				this.getPromoInformationFromBasket();
 			}).catch(error => {
@@ -763,7 +774,7 @@ export default {
 				fetchPolicy: 'network-only',
 				query: basketItemsQuery,
 				variables: {
-					basketId: cookieStore.get('kvbskt')
+					basketId: this.cookieStore.get('kvbskt')
 				}
 			});
 
@@ -848,7 +859,7 @@ export default {
 			const basketItems = this.apollo.query({
 				query: basketItemsQuery,
 				variables: {
-					basketId: cookieStore.get('kvbskt')
+					basketId: this.cookieStore.get('kvbskt')
 				},
 				fetchPolicy: 'network-only',
 			});
@@ -999,7 +1010,7 @@ export default {
 			this.transactionId = payload.transactionId;
 			this.showThanks = true;
 			this.checkoutVisible = false;
-			trackTransactionEvent(payload.transactionId, this.apollo);
+			trackTransactionEvent(payload.transactionId, this.apollo, this.cookieStore);
 			// establish a new basket
 			this.apollo.mutate({
 				mutation: gql`mutation createNewBasketForUser { shop { id createBasket } }`,
@@ -1007,7 +1018,7 @@ export default {
 				// extract new basket id
 				const newBasketId = data.shop?.createBasket ?? null;
 				if (newBasketId) {
-					cookieStore.set('kvbskt', encodeURIComponent(newBasketId), { secure: true });
+					this.cookieStore.set('kvbskt', encodeURIComponent(newBasketId), { secure: true });
 					this.updateBasketState();
 				}
 			});
@@ -1066,6 +1077,13 @@ export default {
 			// Current page path is a co-branded space and should match applied promo page path
 			return this.$route?.params?.dynamicRoute === promoPageId;
 		},
+		checkInitialFiltersAgainstAppliedFilters() {
+			// check that initial filters match what is currently applied
+			if (JSON.stringify(this.initialFilters) === JSON.stringify(this.filters)) {
+				return true;
+			}
+			return false;
+		},
 
 		setAuthStatus(userState) {
 			if (typeof userState !== 'undefined' && userState !== null) {
@@ -1095,6 +1113,12 @@ export default {
 		},
 		setTotalCount(payload) {
 			this.totalCount = payload;
+
+			// if this is a matching account and the original filters were used
+			// we need to remove the matcherAccountId from the query to show loans
+			if (payload === 0 && this.isMatchingCampaign && this.checkInitialFiltersAgainstAppliedFilters()) {
+				this.useMatcherAccountIds = false;
+			}
 		},
 		showLoanDetails(loan) {
 			this.detailedLoan = loan;

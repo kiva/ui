@@ -62,7 +62,7 @@ export default {
 			autoDepositAmount: 0,
 		};
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: pageQuery,
 		preFetch: true,

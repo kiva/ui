@@ -159,7 +159,7 @@ const pageQuery = gql`query oneTimeSubscription {
 }`;
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvButton,
 		KvCurrencyInput,

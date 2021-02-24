@@ -4,7 +4,7 @@ import { getUserLocale } from 'get-user-locale';
 import _dropWhile from 'lodash/dropWhile';
 import _get from 'lodash/get';
 import Bowser from 'bowser';
-import cookieStore from '@/util/cookieStore';
+import CookieStore from '@/util/cookieStore';
 import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import userIdQuery from '@/graphql/query/userId.graphql';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
@@ -21,14 +21,18 @@ const config = window.__KV_CONFIG__ || {};
 // Set webpack public asset path based on configuration
 __webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
 
+// Create cookie store instance
+const cookieStore = new CookieStore();
+
 // Create auth instance
 let kvAuth0;
 if (config.auth0.enable) {
 	kvAuth0 = new KvAuth0({
 		audience: config.auth0.apiAudience,
-		mfaAudience: config.auth0.mfaAudience,
 		clientID: config.auth0.browserClientID,
+		cookieStore,
 		domain: config.auth0.domain,
+		mfaAudience: config.auth0.mfaAudience,
 		redirectUri: config.auth0.browserCallbackUri,
 		scope: config.auth0.scope,
 	});
@@ -36,6 +40,7 @@ if (config.auth0.enable) {
 	kvAuth0 = MockKvAuth0;
 }
 
+// Get device information
 const { userAgent } = window.navigator;
 const device = userAgent ? Bowser.getParser(userAgent).parse().parsedResult : null;
 
@@ -47,13 +52,13 @@ const {
 } = createApp({
 	appConfig: config,
 	apollo: {
-		csrfToken: cookieStore.has('kvis') && cookieStore.get('kvis').substr(6),
 		uri: config.graphqlUri,
 		types: config.graphqlFragmentTypes,
 	},
+	cookieStore,
+	device,
 	kvAuth0,
 	locale: getUserLocale(),
-	device
 });
 
 // Show a tip message when there is an unhandled auth0 error
@@ -127,8 +132,9 @@ router.onReady(() => {
 			.then(() => {
 			// Pre-fetch graphql queries from activated components
 				return preFetchAll(activated, apolloClient, {
-					route: to,
+					cookieStore,
 					kvAuth0,
+					route: to,
 				});
 			}).then(next).catch(next);
 	});

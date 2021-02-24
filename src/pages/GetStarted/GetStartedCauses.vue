@@ -49,7 +49,6 @@
 </template>
 
 <script>
-import cookieStore from '@/util/cookieStore';
 import gql from 'graphql-tag';
 
 import KvButton from '@/components/Kv/KvButton';
@@ -78,18 +77,18 @@ export default {
 	metaInfo: {
 		title: 'Get Started'
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: lendingPreferencesCauses,
 		preFetch: true,
-		preFetchVariables() {
+		preFetchVariables({ cookieStore }) {
 			return {
 				visitorId: cookieStore.get('uiv') || null
 			};
 		},
 		variables() {
 			return {
-				visitorId: cookieStore.get('uiv') || null
+				visitorId: this.cookieStore.get('uiv') || null
 			};
 		},
 		result({ data }) {
@@ -198,7 +197,7 @@ export default {
 			}
 		},
 		async onSubmitForm() {
-			const uiv = cookieStore.get('uiv');
+			const uiv = this.cookieStore.get('uiv');
 
 			const userCauseIds = this.selectedCauses.map(cause => cause.id);
 

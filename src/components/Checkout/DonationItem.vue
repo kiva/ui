@@ -158,7 +158,7 @@ export default {
 		DonationNudgeLightbox,
 		DonationNudgeLightboxImage,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		donation: {
 			type: Object,

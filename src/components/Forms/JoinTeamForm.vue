@@ -57,7 +57,7 @@ export default {
 		KvButton,
 		KvLoadingOverlay,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, { route }) {
 			return client.query({

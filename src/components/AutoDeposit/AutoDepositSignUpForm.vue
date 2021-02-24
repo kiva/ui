@@ -229,7 +229,7 @@ export default {
 		},
 
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: userIdQuery,
 		preFetch: true,

@@ -71,7 +71,7 @@ export default {
 		KvLoadingSpinner,
 		WwwPage,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			doneUrl: '',

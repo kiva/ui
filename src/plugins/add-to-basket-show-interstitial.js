@@ -1,9 +1,11 @@
 import _get from 'lodash/get';
 import basketAddInterstitial from '@/graphql/query/basketAddInterstitialClient.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
+import checkInjections from '@/util/injectionCheck';
+
+const injections = ['apollo'];
 
 export default {
-	inject: ['apollo'],
 	data() {
 		return {
 			basketInterstitialState: {}
@@ -18,6 +20,8 @@ export default {
 		// update basket insterstitial state with visible + loanId properties
 		triggerAddToBasketInterstitial(loanId) {
 			if (this.basketInterstitialActive) {
+				checkInjections(this, injections);
+
 				this.apollo.mutate({
 					mutation: updateAddToBasketInterstitial,
 					variables: {
@@ -30,6 +34,8 @@ export default {
 		}
 	},
 	mounted() {
+		checkInjections(this, injections);
+
 		// determine if add to basket interstitial is active
 		this.apollo.watchQuery({ query: basketAddInterstitial }).subscribe({
 			next: ({ data }) => {

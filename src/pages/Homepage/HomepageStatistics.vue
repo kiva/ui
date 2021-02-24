@@ -66,7 +66,7 @@ export default {
 			numCountries: 77,
 		};
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: homepageStatistics,
 		preFetch: true,

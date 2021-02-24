@@ -79,7 +79,6 @@ import _filter from 'lodash/filter';
 import _mapValues from 'lodash/mapValues';
 import _merge from 'lodash/merge';
 import numeral from 'numeral';
-import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
@@ -147,7 +146,7 @@ export default {
 		AddToBasketInterstitial,
 		PromoGridLoanCard,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	mixins: [
 		lendFilterExpMixin,
 		loanChannelQueryMapMixin,
@@ -262,7 +261,7 @@ export default {
 			allChannelsData = this.apollo.readQuery({
 				query: loanChannelPageQuery,
 				variables: {
-					basketId: cookieStore.get('kvbskt'),
+					basketId: this.cookieStore.get('kvbskt'),
 				}
 			});
 		} catch (e) {
@@ -285,7 +284,7 @@ export default {
 				variables: _merge(
 					this.loanQueryVars,
 					fromUrlParams(this.pageQuery),
-					{ basketId: cookieStore.get('kvbskt') }
+					{ basketId: this.cookieStore.get('kvbskt') }
 				),
 			});
 		} catch (e) {
@@ -315,9 +314,9 @@ export default {
 
 		this.updateLendFilterExp();
 		// check for newly assigned bounceback
-		const redirectFromUiCookie = cookieStore.get('redirectFromUi') || '';
+		const redirectFromUiCookie = this.cookieStore.get('redirectFromUi') || '';
 		if (redirectFromUiCookie === 'true') {
-			cookieStore.remove('redirectFromUi');
+			this.cookieStore.remove('redirectFromUi');
 			this.$router.push(this.getAlgoliaFilterUrl());
 		}
 	},
@@ -479,7 +478,7 @@ export default {
 			&& to.path.indexOf('/lend/') !== -1
 			&& to.path.indexOf('/lend/filter') === -1) {
 			// set cookie to signify redirect
-			cookieStore.set('redirectFromUi', true);
+			this.cookieStore.set('redirectFromUi', true);
 		}
 		next();
 	}

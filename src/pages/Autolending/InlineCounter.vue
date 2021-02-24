@@ -13,7 +13,7 @@ import numeral from 'numeral';
 import LoanCountSpan from './LoanCountSpan';
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		strong: {
 			type: Boolean,

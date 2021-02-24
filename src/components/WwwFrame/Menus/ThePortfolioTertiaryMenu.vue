@@ -116,7 +116,7 @@ import TertiaryMenu from '@/components/WwwFrame/TertiaryMenu';
 
 export default {
 	components: { TertiaryMenu },
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			userBalance: 0,

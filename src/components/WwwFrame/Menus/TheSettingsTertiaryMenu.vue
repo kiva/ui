@@ -76,7 +76,7 @@ const pageQuery = gql`query mfaFeatureFlagQuery {
 
 export default {
 	components: { TertiaryMenu },
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			isMfaActive: false,

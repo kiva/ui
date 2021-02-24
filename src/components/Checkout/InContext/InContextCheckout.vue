@@ -76,6 +76,7 @@ import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 
 export default {
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		BasketItemsList,
 		CheckoutDropInPaymentWrapper,

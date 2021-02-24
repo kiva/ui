@@ -57,7 +57,7 @@ export default {
 		KvLightbox,
 		KvLoadingSpinner,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			email: '',

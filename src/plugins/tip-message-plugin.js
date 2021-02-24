@@ -1,13 +1,15 @@
 /*
 	Global Tip Message Mixin
-	- REQUIRES: inject: ['apollo'] to manage global tip message state
+	- REQUIRES: provide: { apollo } to manage global tip message state
 	- Exposes the following two methods for use on any component instance
 	- Call from component javascript using this.$showTipMsg or template using $showTipMsg
 	- See TheTipMessage.vue for internal implementation
 */
-import checkApolloInject from '@/util/apolloInjectCheck';
 import closeTipMessage from '@/graphql/mutation/tipMessage/closeTipMessage.graphql';
 import showTipMessage from '@/graphql/mutation/tipMessage/showTipMessage.graphql';
+import checkInjections from '@/util/injectionCheck';
+
+const injections = ['apollo'];
 
 export default Vue => {
 	Vue.mixin({
@@ -19,7 +21,7 @@ export default Vue => {
 				@param Optional Boolean tipPersist
 			*/
 			$showTipMsg(tipMsg, tipMsgType = '', tipPersist = false) {
-				checkApolloInject(this);
+				checkInjections(this, injections);
 
 				this.apollo.mutate({
 					mutation: showTipMessage,
@@ -35,7 +37,7 @@ export default Vue => {
 				- Calling from component clears tip message contents and type, sets tipPersist to false
 			*/
 			$closeTipMsg() {
-				checkApolloInject(this);
+				checkInjections(this, injections);
 
 				this.apollo.mutate({
 					mutation: closeTipMessage,

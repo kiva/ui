@@ -36,13 +36,12 @@ import gql from 'graphql-tag';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/browser';
 import basketItemsQuery from '@/graphql/query/basketItems.graphql';
-import cookieStore from '@/util/cookieStore';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		loanId: {
 			type: Number,
@@ -134,7 +133,7 @@ export default {
 					{
 						query: basketItemsQuery,
 						variables: {
-							basketId: cookieStore.get('kvbskt'),
+							basketId: this.cookieStore.get('kvbskt'),
 						}
 					},
 				]

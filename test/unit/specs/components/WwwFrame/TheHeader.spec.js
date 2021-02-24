@@ -2,6 +2,7 @@ import { shallowMount, createLocalVue, RouterLinkStub } from '@vue/test-utils';
 import VueRouter from 'vue-router';
 import TheHeader from '@/components/WwwFrame/TheHeader';
 import kvAnalytics from '@/plugins/kv-analytics-plugin';
+import CookieStore from '@/util/cookieStore';
 import { MockKvAuth0 } from '@/util/KvAuth0';
 import numeralFilter from '@/plugins/numeral-filter';
 
@@ -30,6 +31,7 @@ describe('TheHeader', () => {
 			},
 			provide: {
 				apollo: {},
+				cookieStore: new CookieStore(),
 				kvAuth0: MockKvAuth0,
 			},
 			router,

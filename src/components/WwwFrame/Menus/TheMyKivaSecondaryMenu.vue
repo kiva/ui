@@ -162,7 +162,7 @@ export default {
 		ThePortfolioTertiaryMenu,
 		TheSettingsTertiaryMenu
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			open: false,

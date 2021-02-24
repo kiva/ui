@@ -33,7 +33,8 @@ import TheHeader from '@/components/WwwFrame/TheHeader';
 
 export default {
 	inject: [
-		'apollo'
+		'apollo',
+		'cookieStore',
 	],
 	components: {
 		CookieBanner,

@@ -33,6 +33,7 @@
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
+	inject: ['locale'],
 	components: { WwwPage },
 	metaInfo: {
 		title: 'Error'
@@ -62,7 +63,7 @@ export default {
 			return this.$appConfig.auth0.loginRedirectUrls[this.clientId];
 		},
 		messages() {
-			const language = this.$locale.substring(0, 2).toLowerCase();
+			const language = this.locale.substring(0, 2).toLowerCase();
 			/* eslint-disable max-len */
 			switch (language) {
 				case 'es':

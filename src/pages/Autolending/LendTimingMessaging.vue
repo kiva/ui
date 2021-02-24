@@ -20,7 +20,7 @@ import { differenceInCalendarDays } from 'date-fns';
 import numeral from 'numeral';
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			changedTiming: false,

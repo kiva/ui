@@ -73,7 +73,7 @@ export default {
 		KvButton,
 		KvLoadingSpinner,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			setCategories: [],

@@ -74,7 +74,7 @@ export default {
 		ThePortfolioTertiaryMenu,
 		StatsSection
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	metaInfo: {
 		title: 'Lending Stats'
 	},
