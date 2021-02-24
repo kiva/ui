@@ -12,26 +12,28 @@
 			>
 			</p>
 		</div>
-		<ol class="how-it-works__list row">
-			<li
-				v-for="step in stepsText"
-				:key="step.key"
-				class="how-it-works__li small-12 xxlarge-3 columns"
-			>
-				<img
-					v-if="step.image.url"
-					class="how-it-works__img"
-					:src="step.image.url"
-					:alt="step.image.description"
+		<div class="row">
+			<ol class="how-it-works__list row">
+				<li
+					v-for="step in stepsText"
+					:key="step.key"
+					class="how-it-works__li small-12 xxlarge-3 columns"
 				>
-				<p
-					v-html="step.headline"
-					class="how-it-works__subtitle"
-				>
-				</p>
-				<p v-html="step.subHeadline"></p>
-			</li>
-		</ol>
+					<img
+						v-if="step.image.url"
+						class="how-it-works__img"
+						:src="step.image.url"
+						:alt="step.image.description"
+					>
+					<p
+						v-html="step.headline"
+						class="how-it-works__subtitle"
+					>
+					</p>
+					<p v-html="step.subHeadline"></p>
+				</li>
+			</ol>
+		</div>
 	</section>
 </template>
 
