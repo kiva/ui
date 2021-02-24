@@ -57,7 +57,6 @@ export default {
 			return this.content?.page?.contentGroups?.homepageMidrollCta ?? null;
 		},
 		testimonialsContentGroup() {
-			console.log(this.content?.page?.contentGroups);
 			return this.content?.page?.contentGroups?.homepageTestimonials ?? null;
 		},
 		corporateSponsorsContentGroup() {

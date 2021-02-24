@@ -36,8 +36,8 @@
 					>
 					</p>
 
-					<!-- eslint-disable max-len -->
 					<!-- Supporter card flourish images -->
+					<!-- eslint-disable max-len -->
 					<img
 						v-for="flourishImg in flourishImgs[index]"
 						:key="flourishImg.class"
@@ -144,53 +144,135 @@ export default {
 
 		&--page-flourish-1 {
 			width: rem-calc(50);
-			bottom: 329px;
-			left: -77px;
+			left: rem-calc(-77);
+			top: rem-calc(-328);
 
 			@include breakpoint(medium) {
-				bottom: 293px;
+				top: rem-calc(-292);
 			}
 
 			@include breakpoint(large) {
-				width: rem-calc(50);
-				top: -329px;
-				left: -77px;
+				left: rem-calc(-76);
+				top: rem-calc(-433);
+			}
+
+			// Halfway between lg and xlg breakpoints
+			@include breakpoint(721) {
+				top: rem-calc(-396);
+			}
+
+			@include breakpoint(xlarge) {
+				top: rem-calc(-398);
+			}
+
+			// Halfway between xlg and xxlg breakpoints
+			@include breakpoint(875) {
+				top: rem-calc(-358);
+			}
+
+			@include breakpoint(xxlarge) {
+				top: rem-calc(-322);
 			}
 		}
 
 		&--page-flourish-2 {
 			width: rem-calc(45);
-			bottom: 329px;
-			left: -17px;
+			top: rem-calc(-435);
+			left: rem-calc(-49);
+
+			@include breakpoint(374) {
+				top: rem-calc(-396);
+			}
+
+			@include breakpoint(medium) {
+				top: rem-calc(-400);
+			}
 
 			@include breakpoint(large) {
-				width: rem-calc(45);
-				top: -478px;
-				left: -17px;
+				top: rem-calc(-578);
+				left: rem-calc(-47);
+			}
+
+			// Halfway between lg and xlg breakpoints
+			@include breakpoint(721) {
+				top: rem-calc(-546);
+			}
+
+			@include breakpoint(xlarge) {
+				top: rem-calc(-508);
+			}
+
+			// Halfway between xlg and xxlg breakpoints
+			@include breakpoint(875) {
+				top: rem-calc(-472);
 			}
 		}
 
 		&--page-flourish-3 {
 			width: rem-calc(60);
-			top: -356px;
-			left: 38px;
+			top: rem-calc(-358);
+			left: rem-calc(42);
+
+			@include breakpoint(374) {
+				top: rem-calc(-325);
+			}
+
+			@include breakpoint(medium) {
+				top: rem-calc(-287);
+			}
 
 			@include breakpoint(large) {
 				width: rem-calc(60);
-				top: -356px;
-				left: 38px;
+				top: rem-calc(-498);
+				left: rem-calc(43);
+			}
+
+			// Halfway between lg and xlg breakpoints
+			@include breakpoint(721) {
+				top: rem-calc(-468);
+			}
+
+			@include breakpoint(xlarge) {
+				top: rem-calc(-430);
+			}
+
+			// Halfway between xlg and xxlg breakpoints
+			@include breakpoint(875) {
+				top: rem-calc(-395);
 			}
 		}
 
 		&--page-flourish-4 {
 			width: rem-calc(50);
-			top: -435px;
-			left: 76px;
+			top: rem-calc(-430);
+			left: rem-calc(76);
+
+			@include breakpoint(374) {
+				top: rem-calc(-394);
+			}
+
+			@include breakpoint(medium) {
+				top: rem-calc(-359);
+			}
 
 			@include breakpoint(large) {
 				width: rem-calc(50);
-				top: -435px;
-				left: 76px;
+				top: rem-calc(-602);
+				left: rem-calc(74);
+			}
+
+			// Halfway between lg and xlg breakpoints
+			@include breakpoint(721) {
+				top: rem-calc(-533);
+			}
+
+			@include breakpoint(xlarge) {
+				top: rem-calc(-496);
+			}
+
+			// Breakpoint halfway between xlg and xxlg
+			@include breakpoint(875) {
+				top: rem-calc(-460);
 			}
 		}
 	}
