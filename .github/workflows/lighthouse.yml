@@ -26,7 +26,7 @@ jobs:
         uses: treosh/lighthouse-ci-action@v7
         with:
           serverBaseUrl: https://lighthouse-ci-kiva-dev.herokuapp.com/
-          serverToken: ${{ secrets.LHCI_DEV_BUILD_TOKEN }}
+          serverToken: ${{ secrets.LHCI_TOKEN }}
           configPath: ./lighthouserc.js
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
