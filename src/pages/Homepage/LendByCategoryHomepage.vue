@@ -391,10 +391,6 @@ export default {
 	}
 }
 
-.lend-by-category-homepage {
-	overflow: hidden;
-}
-
 .featured-loans {
 	padding: 2rem 0;
 

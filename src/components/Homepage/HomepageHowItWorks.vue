@@ -13,7 +13,7 @@
 			</p>
 		</div>
 		<div class="row">
-			<ol class="how-it-works__list row">
+			<ol class="how-it-works__list row column">
 				<li
 					v-for="step in stepsText"
 					:key="step.key"

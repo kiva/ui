@@ -531,10 +531,6 @@ export default {
 	}
 }
 
-.monthly-good-homepage {
-	overflow: hidden;
-}
-
 .featured-loans,
 .monthly-good-info {
 	&__header {
