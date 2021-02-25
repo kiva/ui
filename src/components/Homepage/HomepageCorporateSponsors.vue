@@ -1,14 +1,18 @@
 <template>
 	<section class="section sponsors text-center">
-		<img
-			:src="sponsorsSectionImg.file.url"
-			class="sponsors__section-img"
-		>
-		<p
-			v-html="sponsorsHeadline"
-			class="sponsors__headline"
-		>
-		</p>
+		<div class="row">
+			<div class="small-12 columns">
+				<img
+					:src="sponsorsSectionImg.file.url"
+					class="sponsors__section-img"
+				>
+				<p
+					v-html="sponsorsHeadline"
+					class="sponsors__headline"
+				>
+				</p>
+			</div>
+		</div>
 		<ul class="sponsors__list row">
 			<li
 				v-for="image in sponsorImages"

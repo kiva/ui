@@ -1,5 +1,5 @@
 <template>
-	<section class="bottom-cta section text-center">
+	<section class="bottom-cta section text-center row">
 		<div class="small-12">
 			<p
 				v-html="bottomCTAHeadline"
