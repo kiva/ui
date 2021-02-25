@@ -803,7 +803,7 @@ export default {
 				this.updateBasketState();
 			});
 		},
-		async setInitialFilters() {
+		setInitialFilters() {
 			// initialize filter object
 			let filters = LoanSearchFilters();
 
