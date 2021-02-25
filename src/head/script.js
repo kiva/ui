@@ -92,4 +92,23 @@ export default config => {
 		}());
 		/* eslint-enable */
 	}
+
+	// One Trust snippet
+	if (config.oneTrust && config.oneTrust.enable) {
+		/* eslint-disable */
+		(function () {
+			const p = document.getElementsByTagName('script')[0];
+			const s = document.createElement('script');
+			s.setAttribute('type', 'text/javascript');
+			s.setAttribute('data-domain-script', `${config.oneTrust.key}${config.oneTrust.domainSuffix}`)
+			s.src = `https://cdn.cookielaw.org/consent/${config.oneTrust.key}${config.oneTrust.domainSuffix}/otSDKStub.js`;
+			p.parentNode.insertBefore(s, p);
+
+			const fs = document.createElement('script');
+			fs.setAttribute('type', 'text/javascript');
+			fs.innerHTML = 'function OptanonWrapper() { }';
+			p.parentNode.insertBefore(fs, p);
+		}());
+		/* eslint-enable */
+	}
 };
