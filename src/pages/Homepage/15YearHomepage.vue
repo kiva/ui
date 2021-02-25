@@ -1,5 +1,9 @@
 <template>
-	<div class="fifteen-year-homepage">
+	<www-page id="homepage"
+		class="fifteen-year-homepage"
+		:header-theme="headerTheme"
+		:footer-theme="footerTheme"
+	>
 		<fifteen-years-styles>
 			<section class="fifteen-year-section">
 				<fifteen-years-header />
@@ -241,10 +245,13 @@
 				</div>
 			</div>
 		</section>
-	</div>
+	</www-page>
 </template>
 
 <script>
+import { fifteenYearHeaderTheme, fifteenYearFooterTheme } from '@/util/siteThemes';
+
+import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
@@ -257,6 +264,7 @@ const imgRequire = require.context('@/assets/images/lend-by-category-homepage/',
 
 export default {
 	components: {
+		WwwPage,
 		FifteenYearsHeader,
 		FifteenYearsStyles,
 		FifteenYearsSupportingPartners,
@@ -267,6 +275,8 @@ export default {
 	},
 	data() {
 		return {
+			headerTheme: fifteenYearHeaderTheme,
+			footerTheme: fifteenYearFooterTheme,
 			loanNotDonationImgs: {
 				header: [
 					['small', imgRequire('./loan-not-donation.png')],

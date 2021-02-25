@@ -1,19 +1,35 @@
 <template>
-	<div v-if="content" class="homepage-top-message">
+	<www-page id="homepage"
+		class="homepage-top-message"
+		:header-theme="headerTheme"
+		:footer-theme="footerTheme"
+	>
 		<div class="row align-center">
 			<div class="columns small-12" v-html="content">
 			</div>
 		</div>
-	</div>
+	</www-page>
 </template>
 
 <script>
+import WwwPage from '@/components/WwwFrame/WwwPage';
+import { lightHeader, lightFooter } from '@/util/siteThemes';
+
 export default {
+	components: {
+		WwwPage,
+	},
 	props: {
 		content: {
 			type: String,
 			default: '',
 		},
+	},
+	data() {
+		return {
+			headerTheme: lightHeader,
+			footerTheme: lightFooter,
+		};
 	},
 };
 </script>

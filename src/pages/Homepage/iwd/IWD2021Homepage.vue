@@ -1,5 +1,8 @@
 <template>
-	<div class="iwd-2021-homepage">
+	<www-page id="homepage"
+		class="iwd-2021-homepage"
+		:header-theme="headerTheme"
+	>
 		<homepage-hero class="section" :content="heroContentGroup" />
 		<homepage-loan-categories class="section" :content="loansContentGroup" />
 		<how-it-works class="section" :content="howItWorksContentGroup" />
@@ -12,10 +15,11 @@
 		<corporate-sponsors class="section" :content="corporateSponsorsContentGroup" />
 		<!-- bottom cta component -->
 		<bottom-CTA class="section" :content="bottomCTAContentGroup" />
-	</div>
+	</www-page>
 </template>
 
 <script>
+import WwwPage from '@/components/WwwFrame/WwwPage';
 import HomepageHero from '@/components/Homepage/HomepageHero';
 import HomepageGeneralStats from '@/components/Homepage/HomepageGeneralStats';
 import HomepageLoanCategories from '@/components/Homepage/HomepageLoanCategories';
@@ -25,8 +29,11 @@ import CorporateSponsors from '@/components/Homepage/HomepageCorporateSponsors';
 import Testimonials from '@/components/Homepage/HomepageTestimonials';
 import BottomCTA from '@/components/Homepage/HomepageBottomCTA';
 
+import { lightHeader } from '@/util/siteThemes';
+
 export default {
 	components: {
+		WwwPage,
 		HomepageHero,
 		HomepageGeneralStats,
 		HomepageLoanCategories,
@@ -48,6 +55,11 @@ export default {
 				};
 			}
 		},
+	},
+	data() {
+		return {
+			headerTheme: lightHeader,
+		};
 	},
 	computed: {
 		heroContentGroup() {

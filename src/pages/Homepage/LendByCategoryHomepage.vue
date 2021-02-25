@@ -1,5 +1,8 @@
 <template>
-	<div class="lend-by-category-homepage">
+	<www-page id="homepage"
+		class="lend-by-category-homepage"
+		:header-theme="headerTheme"
+	>
 		<hero-slideshow
 			v-if="heroPromoEnabled && heroPromoContent"
 			:promo-enabled="heroPromoEnabled"
@@ -229,13 +232,15 @@
 				</div>
 			</div>
 		</section>
-	</div>
+	</www-page>
 </template>
 
 <script>
 import { settingEnabled } from '@/util/settingsUtils';
 import { processContent, formatGenericContentBlock } from '@/util/contentfulUtils';
+import { lightHeader } from '@/util/siteThemes';
 
+import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 // import FeaturedLoansCarousel from '@/components/Homepage/LendByCategory/FeaturedLoansCarousel';
@@ -259,6 +264,7 @@ const promosQuery = gql`
 
 export default {
 	components: {
+		WwwPage,
 		// FeaturedLoansCarousel,
 		HeroSlideshow,
 		HomepageStatistics,
@@ -271,6 +277,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
+			headerTheme: lightHeader,
 			howItWorksImgs: {
 				borrower: [
 					['small', imgRequire('./how-it-works-borrower.png')],

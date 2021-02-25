@@ -1,5 +1,9 @@
 <template>
-	<div class="page-content">
+	<www-page id="homepage"
+		class="page-content"
+		:header-theme="headerTheme"
+		:footer-theme="footerTheme"
+	>
 		<div class="hero">
 			<a
 				:href="primaryCtaUrl"
@@ -196,10 +200,13 @@
 			</kv-button>
 			<line-divider-5 class="divider divider--bottom divider--purple" />
 		</section>
-	</div>
+	</www-page>
 </template>
 
 <script>
+import { wrdHeaderTheme, wrdFooterTheme } from '@/util/siteThemes';
+
+import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
@@ -220,9 +227,12 @@ export default {
 		LineDivider3,
 		LineDivider4,
 		LineDivider5,
+		WwwPage,
 	},
 	data() {
 		return {
+			headerTheme: wrdHeaderTheme,
+			footerTheme: wrdFooterTheme,
 			heroImageSet: [
 				['small', wrdImagesRequire('./banner_sm.jpg')],
 				['small retina', wrdImagesRequire('./banner_sm_2x.jpg')],

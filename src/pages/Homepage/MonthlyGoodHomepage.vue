@@ -1,5 +1,8 @@
 <template>
-	<div class="monthly-good-homepage">
+	<www-page id="homepage"
+		class="monthly-good-homepage"
+		:header-theme="headerTheme"
+	>
 		<section class="featured-loans section">
 			<div class="row align-center">
 				<div
@@ -285,12 +288,15 @@
 				</div>
 			</div>
 		</section>
-	</div>
+	</www-page>
 </template>
 
 <script>
 import _throttle from 'lodash/throttle';
 
+import { lightHeader } from '@/util/siteThemes';
+
+import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
@@ -310,6 +316,7 @@ export default {
 		KvResponsiveImage,
 		LoanCategoriesSection,
 		MonthlyGoodSelector,
+		WwwPage,
 	},
 	props: {
 		content: {
@@ -326,6 +333,7 @@ export default {
 	},
 	data() {
 		return {
+			headerTheme: lightHeader,
 			howItWorksImgs: {
 				borrower: [
 					['small', imgRequire('./how-it-works-borrower.png')],

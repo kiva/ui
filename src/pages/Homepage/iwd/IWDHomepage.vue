@@ -1,5 +1,9 @@
 <template>
-	<div class="page-content">
+	<www-page id="homepage"
+		class="page-content"
+		:header-theme="headerTheme"
+		:footer-theme="footerTheme"
+	>
 		<a
 			class="hero"
 			:href="primaryCtaUrl"
@@ -282,10 +286,13 @@
 			alt=""
 			loading="lazy"
 		>
-	</div>
+	</www-page>
 </template>
 
 <script>
+import { iwdHeaderTheme, iwdFooterTheme } from '@/util/siteThemes';
+
+import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
@@ -321,6 +328,7 @@ const getPdtDate = () => {
 
 export default {
 	components: {
+		WwwPage,
 		KvButton,
 		KvResponsiveImage,
 		IwdFlag,
@@ -344,6 +352,8 @@ export default {
 	},
 	data() {
 		return {
+			headerTheme: iwdHeaderTheme,
+			footerTheme: iwdFooterTheme,
 			heroImageSet: [
 				['small', iwdImagesRequire('./banner_sm.png')],
 				['small retina', iwdImagesRequire('./banner_sm_2x.png')],
