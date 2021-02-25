@@ -6,7 +6,7 @@
 				class="testimonials__header large-text small-12 columns"
 			>
 			</p>
-			<div class="row">
+			<div class="row small-12 columns">
 				<div
 					v-for="(supporter, index) in supportersText"
 					:key="supporter.key"
