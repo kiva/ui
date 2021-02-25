@@ -39,27 +39,44 @@
 
 		<div
 			v-if="filterChips.length"
-			class="loan-filters__chips-wrapper"
+			class="loan-filters__chips chips"
 		>
 			<div class="row">
 				<div
-					class="loan-filters__chips small-12 large-9 xxlarge-10 columns"
-					:class="{'loan-filters__chips--collapsed' : chipsCollapsed}"
+					class="chips__container small-12 large-8 xxlarge-9 columns"
+					:class="{'chips--collapsed' : isChipsCollapsed}"
+					ref="chipsContainer"
 				>
-					<kv-chip
-						v-for="(filter, index) in filterChips"
-						:key="`chip-${index}`"
-						:title="cleanChipName(filter.name)"
-						@click-chip="handleRemoveFilter(filter)"
-					/>
-				</div>
-				<div class="small-12 large-3 xxlarge-2 columns">
-					<kv-button
-						class="loan-filters__chips-toggle text-link"
-						@click.native="chipsCollapsed = !chipsCollapsed"
+					<div
+						ref="chipsInnerContainer"
 					>
-						{{ chipsCollapsed ? `Show all ${filterChips.length} filters` : 'Hide filters' }}
-					</kv-button>
+						<kv-chip
+							v-for="(filter, index) in filterChips"
+							:key="`chip-${index}`"
+							:title="cleanChipName(filter.name)"
+							@click-chip="handleRemoveFilter(filter)"
+						/>
+					</div>
+				</div>
+				<div class="small-12 large-4 xxlarge-3 columns">
+					<div class="chips__toggle-container">
+						<kv-button
+							v-if="isChipsCollapsable"
+							class="chips__toggle text-link"
+							@click.native="isChipsCollapsed = !isChipsCollapsed"
+						>
+							{{ isChipsCollapsed ? `Show all ${filterChips.length} filters` : 'Hide filters' }}
+						</kv-button>
+
+						<template v-if="!isInitialFilters">
+							| <kv-button
+								class="chips__toggle text-link"
+								@click.native="handleResetFilters"
+							>
+								Reset all
+							</kv-button>
+						</template>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -171,6 +188,7 @@
 </template>
 
 <script>
+import _isEqual from 'lodash/isEqual';
 import _sortBy from 'lodash/sortBy';
 import gql from 'graphql-tag';
 import KvButton from '@/components/Kv/KvButton';
@@ -265,7 +283,8 @@ export default {
 			initialFiltersCopy: null,
 			modifiedFilters: null,
 			selectedSort: null,
-			chipsCollapsed: true,
+			isChipsCollapsable: true,
+			isChipsCollapsed: true,
 		};
 	},
 	mounted() {
@@ -382,6 +401,9 @@ export default {
 				...selectedTagsRaw
 			];
 		},
+		isInitialFilters() {
+			return _isEqual(this.modifiedFilters, this.initialFilters);
+		}
 	},
 	watch: {
 		initialFilters: {
@@ -393,7 +415,13 @@ export default {
 			},
 			immediate: true,
 			deep: true,
-		}
+		},
+		modifiedFilters: {
+			handler() {
+				this.determineIsChipsCollapsable();
+			},
+			deep: true,
+		},
 	},
 	methods: {
 		showFilters() {
@@ -507,6 +535,24 @@ export default {
 			if (this.selectedSort !== sortBy) {
 				this.selectedSort = sortBy;
 			}
+		},
+		handleResetFilters() {
+			this.modifiedFilters = this.copyFilters(this.initialFilters);
+			this.$emit('reset-loan-filters');
+		},
+		async determineIsChipsCollapsable() {
+			const { chipsContainer, chipsInnerContainer } = this.$refs;
+
+			if (chipsContainer && chipsInnerContainer) {
+				const isCollapsed = this.isChipsCollapsed.valueOf(); // get the initial collapsed state
+
+				this.isChipsCollapsed = true; // collapse the container.
+				await this.$nextTick(); // let that render
+
+				// is the inner container bigger than the outer?
+				this.isChipsCollapsable = chipsInnerContainer.clientHeight > chipsContainer.clientHeight;
+				this.isChipsCollapsed = isCollapsed; // go back to the initial state
+			}
 		}
 	},
 };
@@ -552,34 +598,12 @@ export default {
 		white-space: nowrap;
 	}
 
-	&__chips-wrapper {
+	&__chips {
 		display: block;
 		margin: 1.5rem 1rem 0.5rem;
 
 		@include breakpoint(medium) {
 			margin: 1.5rem 3.5rem 0.5rem;
-		}
-	}
-
-	&__chips-toggle {
-		display: block;
-		margin: 1rem auto 0 0;
-		font-size: $small-text-font-size;
-		white-space: nowrap;
-
-		@include breakpoint(large) {
-			margin: 0 0 0 auto;
-		}
-	}
-
-	&__chips {
-		&--collapsed {
-			overflow: hidden;
-			max-height: 7rem;
-
-			@include breakpoint(large) {
-				max-height: 2rem;
-			}
 		}
 	}
 
@@ -591,6 +615,32 @@ export default {
 	&__lightbox {
 		::v-deep .kv-lightbox__container {
 			min-width: 20rem;
+		}
+	}
+}
+
+.chips {
+	&__toggle-container {
+		display: block;
+		margin: 1rem auto 0 0;
+
+		@include breakpoint(large) {
+			margin: 0 0 0 auto;
+			text-align: right;
+		}
+	}
+
+	&__toggle {
+		font-size: $small-text-font-size;
+		white-space: nowrap;
+	}
+
+	&--collapsed {
+		overflow: hidden;
+		max-height: 7rem;
+
+		@include breakpoint(large) {
+			max-height: rem-calc(38);
 		}
 	}
 }
