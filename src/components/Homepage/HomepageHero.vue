@@ -141,6 +141,10 @@ export default {
 		line-height: rem-calc(54);
 		font-weight: 500;
 
+		a {
+			color: $kiva-green;
+		}
+
 		@include breakpoint(xlarge) {
 			@include huge-headline();
 		}
