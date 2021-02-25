@@ -3,18 +3,42 @@
 		class="iwd-2021-homepage"
 		:header-theme="headerTheme"
 	>
-		<homepage-hero class="section" :content="heroContentGroup" />
-		<homepage-loan-categories class="section" :content="loansContentGroup" />
-		<how-it-works class="section" :content="howItWorksContentGroup" />
-		<homepage-midroll-c-t-a class="section" :content="midrollContentGroup" />
+		<homepage-hero class="section"
+			v-if="heroContentGroup"
+			:content="heroContentGroup"
+		/>
+		<homepage-loan-categories class="section"
+			v-if="loansContentGroup"
+			:content="loansContentGroup"
+		/>
+		<how-it-works class="section"
+			v-if="howItWorksContentGroup"
+			:content="howItWorksContentGroup"
+		/>
+		<homepage-midroll-c-t-a class="section"
+			v-if="midrollContentGroup"
+			:content="midrollContentGroup"
+		/>
 		<!-- iwd kiva stats component -->
-		<homepage-general-stats class="section" :content="statisticsContentGroup" />
+		<homepage-general-stats class="section"
+			v-if="statisticsContentGroup"
+			:content="statisticsContentGroup"
+		/>
 		<!-- testimonials component -->
-		<testimonials class="section" :content="testimonialsContentGroup" />
+		<testimonials class="section"
+			v-if="testimonialsContentGroup"
+			:content="testimonialsContentGroup"
+		/>
 		<!-- partners component -->
-		<corporate-sponsors class="section" :content="corporateSponsorsContentGroup" />
+		<corporate-sponsors class="section"
+			v-if="corporateSponsorsContentGroup"
+			:content="corporateSponsorsContentGroup"
+		/>
 		<!-- bottom cta component -->
-		<bottom-CTA class="section" :content="bottomCTAContentGroup" />
+		<bottom-CTA class="section"
+			v-if="bottomCTAContentGroup"
+			:content="bottomCTAContentGroup"
+		/>
 	</www-page>
 </template>
 
