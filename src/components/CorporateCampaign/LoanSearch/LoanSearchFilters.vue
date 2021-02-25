@@ -67,15 +67,14 @@
 						>
 							{{ isChipsCollapsed ? `Show all ${filterChips.length} filters` : 'Hide filters' }}
 						</kv-button>
-
-						<template v-if="!isInitialFilters">
-							| <kv-button
-								class="chips__toggle text-link"
-								@click.native="handleResetFilters"
-							>
-								Reset all
-							</kv-button>
-						</template>
+						<span v-if="!isInitialFilters && isChipsCollapsable">|</span>
+						<kv-button
+							v-if="!isInitialFilters"
+							class="chips__toggle text-link"
+							@click.native="handleResetFilters"
+						>
+							Reset all
+						</kv-button>
 					</div>
 				</div>
 			</div>
