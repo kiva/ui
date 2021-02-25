@@ -46,6 +46,7 @@
 								@updated-filters="handleUpdatedFilters"
 								@updated-sort-by="handleUpdatedSortBy"
 								@set-loan-display="handleLoanDisplayType"
+								@reset-loan-filters="handleResetLoanFilters"
 							/>
 						</div>
 

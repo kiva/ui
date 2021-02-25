@@ -96,6 +96,7 @@ export default {
 
 	&__img {
 		display: block;
+		width: 100%;
 		margin: 0 auto 2rem;
 
 		@include breakpoint(large) {
