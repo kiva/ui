@@ -24,6 +24,12 @@ query initializeCheckout($basketId: String) {
 			value
 			key
 		}
+		guestCheckoutEnabled: featureSetting(key: "guest_checkout.enabled") {
+			key
+			value
+			description
+		}
+
 	}
 	shop (basketId: $basketId) {
 		id
