@@ -6,51 +6,51 @@
 				class="testimonials__header large-text small-12 columns"
 			>
 			</p>
-			<div class="row small-12 columns">
-				<div
-					v-for="(supporter, index) in supportersText"
-					:key="supporter.key"
-					class="testimonials__supporter-card medium-text small-12 large-4 columns"
-				>
-					<div class="testimonials__supporter-card--img-wrapper">
-						<!-- Supporter image -->
-						<img
-							v-if="supporter.image.url"
-							:class="'testimonials__supporter-card--img testimonials__supporter-card--img-' + index"
-							:src="supporter.image.url"
-							:alt="supporter.image.description"
-						>
+		</div>
+		<div class="row">
+			<div
+				v-for="(supporter, index) in supportersText"
+				:key="supporter.key"
+				class="testimonials__supporter-card medium-text small-12 large-4 columns"
+			>
+				<div class="testimonials__supporter-card--img-wrapper">
+					<!-- Supporter image -->
+					<img
+						v-if="supporter.image.url"
+						:class="'testimonials__supporter-card--img testimonials__supporter-card--img-' + index"
+						:src="supporter.image.url"
+						:alt="supporter.image.description"
+					>
 
-						<!-- Supporter card flourish images -->
-						<!-- eslint-disable max-len -->
-						<img
-							v-for="flourishImg in flourishImgs[index]"
-							:key="flourishImg.class"
-							:class="'testimonials__supporter-card--page-flourish testimonials__supporter-card--' + flourishImg.class"
-							:src="flourishImg.url"
-							:alt="flourishImg.description"
-						>
-						<!-- eslint-enable max-len -->
-					</div>
-					<!-- Supporter name -->
-					<p
-						v-html="supporter.headline"
-						class="testimonials__supporter-card--name"
+					<!-- Supporter card flourish images -->
+					<!-- eslint-disable max-len -->
+					<img
+						v-for="flourishImg in flourishImgs[index]"
+						:key="flourishImg.class"
+						:class="'testimonials__supporter-card--page-flourish testimonials__supporter-card--' + flourishImg.class"
+						:src="flourishImg.url"
+						:alt="flourishImg.description"
 					>
-					</p>
-					<!-- Supporter title -->
-					<p
-						class="testimonials__supporter-card--title"
-						v-html="supporter.subHeadline"
-					>
-					</p>
-					<!-- Supporter quote -->
-					<p
-						v-html="supporter.quote"
-						class="testimonials__supporter-card--quote"
-					>
-					</p>
+					<!-- eslint-enable max-len -->
 				</div>
+				<!-- Supporter name -->
+				<p
+					v-html="supporter.headline"
+					class="testimonials__supporter-card--name"
+				>
+				</p>
+				<!-- Supporter title -->
+				<p
+					class="testimonials__supporter-card--title"
+					v-html="supporter.subHeadline"
+				>
+				</p>
+				<!-- Supporter quote -->
+				<p
+					v-html="supporter.quote"
+					class="testimonials__supporter-card--quote"
+				>
+				</p>
 			</div>
 		</div>
 	</section>
