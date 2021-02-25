@@ -22,10 +22,11 @@ jobs:
         run: |
           npm install
           npm run build
-      - name: run Lighthouse CI
-        run: |
-          npm install -g @lhci/cli@0.7.x
-          lhci autorun
+      - name: Audit URLs using Lighthouse
+        uses: treosh/lighthouse-ci-action@v7
+        with:
+          serverBaseUrl: https://lighthouse-ci-kiva-dev.herokuapp.com/
+          serverToken: ${{ secrets.LHCI_DEV_BUILD_TOKEN }}
+          configPath: ./lighthouserc.js
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LHCI_DEV_BUILD_TOKEN: ${{ secrets.LHCI_DEV_BUILD_TOKEN }}
