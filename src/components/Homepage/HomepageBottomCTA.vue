@@ -1,6 +1,6 @@
 <template>
 	<section class="bottom-cta section text-center row">
-		<div class="small-12">
+		<div class="small-12 columns">
 			<p
 				v-html="bottomCTAHeadline"
 				class="bottom-cta__headline"
