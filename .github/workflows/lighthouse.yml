@@ -23,6 +23,8 @@ jobs:
           npm install
           npm run build
       - name: run Lighthouse CI
+        env:
+          LHCI_DEV_BUILD_TOKEN: ${{ secrets.LHCI_DEV_BUILD_TOKEN }}
         run: |
           npm install -g @lhci/cli@0.7.x
           lhci autorun

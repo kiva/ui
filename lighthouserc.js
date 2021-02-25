@@ -16,7 +16,7 @@ module.exports = {
 		upload: {
 			target: 'lhci',
 			serverBaseUrl: 'https://lighthouse-ci-kiva-dev.herokuapp.com/',
-			token: 'LHCI_DEV_BUILD_TOKEN goes here',
+			token: process.env.LHCI_DEV_BUILD_TOKEN,
 		},
 	},
 };
