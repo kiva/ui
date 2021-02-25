@@ -376,8 +376,9 @@ export default {
 		this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
 
 		// GROW-458 Guest Checkout Experiment
-		// If the user doesn't have the kvu cookie (indicating they have never
-		// logged into Kiva on this device) trigger this experiment
+		// Trigger guest checkout experiment if user doesn't have a
+		// kvu cookie (indicating they have never logged into Kiva on this device)
+		// and guest checkout experiment is active
 		if (!this.cookieStore.get('kvu') && this.isGuestCheckoutExperimentActive) {
 			const guestCheckoutExperiment = this.apollo.readFragment({
 				id: 'Experiment:guest_checkout',
