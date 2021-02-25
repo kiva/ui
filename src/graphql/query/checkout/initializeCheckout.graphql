@@ -29,7 +29,6 @@ query initializeCheckout($basketId: String) {
 			value
 			description
 		}
-
 	}
 	shop (basketId: $basketId) {
 		id

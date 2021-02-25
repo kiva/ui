@@ -267,7 +267,7 @@ export default {
 			addToBasketRedirectExperimentShown: false,
 			loginButtonExperimentVersion: null,
 			redirectToLoginExperimentVersion: null,
-			isGuestCheckoutActive: false,
+			isGuestCheckoutExperimentActive: false,
 			guestCheckoutExperimentVersion: null,
 		};
 	},
@@ -307,7 +307,7 @@ export default {
 		},
 		result({ data }) {
 			// Checking if guest checkout feature is enabled in Admin settingsManager
-			this.isGuestCheckoutActive = data?.general?.guestCheckoutEnabled?.value === 'true';
+			this.isGuestCheckoutExperimentActive = data?.general?.guestCheckoutEnabled?.value === 'true';
 			// user data
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
@@ -377,7 +377,7 @@ export default {
 		// GROW-458 Guest Checkout Experiment
 		// If the user doesn't have the kvu cookie (indicating they have never
 		// logged into Kiva on this device) trigger this experiment
-		if (!this.cookieStore.get('kvu') && this.isGuestCheckoutActive) {
+		if (!this.cookieStore.get('kvu') && this.isGuestCheckoutExperimentActive) {
 			const guestCheckoutExperiment = this.apollo.readFragment({
 				id: 'Experiment:guest_checkout',
 				fragment: experimentVersionFragment,
@@ -465,7 +465,7 @@ export default {
 		showGuestCheckoutButton() {
 			// Checking if guest checkout featuer flag is enabled
 			// and if Kiva has been logged into on user's current browser
-			if (this.isGuestCheckoutActive && !this.cookieStore.get('kvu')) {
+			if (this.isGuestCheckoutExperimentActive && !this.cookieStore.get('kvu')) {
 				return true;
 			}
 			return false;
