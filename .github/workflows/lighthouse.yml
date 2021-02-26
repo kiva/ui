@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      LHCI_DEV_BUILD_TOKEN: ${{ secrets.LHCI_DEV_BUILD_TOKEN }}
+      DEV_LHCI_BUILD_TOKEN: ${{ secrets.LHCI_DEV_BUILD_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
