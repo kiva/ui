@@ -56,11 +56,13 @@ export default {
 	},
 	mounted() {
 		this.migrateCookie();
-
-		if (this.cookieStore.get('kvgdpr') === undefined) {
-			this.showBanner = true;
-			this.$kvTrackEvent('global', 'gdpr-notice', 'visible');
-			this.setGdprCookie();
+		// If oneTrust is enabled - don't show banner
+		if (!this.$appConfig?.oneTrust?.enable) {
+			if (this.cookieStore.get('kvgdpr') === undefined) {
+				this.showBanner = true;
+				this.$kvTrackEvent('global', 'gdpr-notice', 'visible');
+				this.setGdprCookie();
+			}
 		}
 	},
 };
