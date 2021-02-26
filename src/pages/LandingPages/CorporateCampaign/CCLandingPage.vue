@@ -16,7 +16,6 @@
 				:promo-amount="promoAmount"
 				:promo-name="campaignPartnerName"
 				:status-message-override="statusMessageOverride"
-				@show-checkout="showCheckout"
 			/>
 
 			<!-- TODO: Alter CTA if Checkout is ready -->
@@ -494,6 +493,7 @@ export default {
 			detailedLoan: null,
 			useMatcherAccountIds: true,
 			initialFilters: {},
+			verificationSumbitted: false,
 		};
 	},
 	metaInfo() {
@@ -681,9 +681,6 @@ export default {
 		},
 		teamId() {
 			return this.promoData?.promoGroup?.teamId ?? null;
-		},
-		verificationSumbitted() {
-			return this.pageQuery?.formComplete === 'true' || false;
 		},
 		corporateLogoUrl() {
 			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.media?.[0]?.file?.url;
@@ -1069,9 +1066,8 @@ export default {
 		},
 
 		verificationComplete() {
-			// TODO: There is currently no way to know if someone has already submitted
-			// maybe use localstorage
-			this.showCheckout();
+			this.verificationSumbitted = true;
+			this.handleBasketValidation();
 		},
 		verifyPromoMatchesPageId(pageId) {
 			const promoPageId = pageId || this.promoData?.managedAccount?.pageId;
