@@ -25,7 +25,8 @@ jobs:
       - name: Audit URLs using Lighthouse
         uses: treosh/lighthouse-ci-action@v7
         with:
-          temporaryPublicStorage: true
           configPath: ./lighthouserc.js
+          serverBaseUrl: https://lighthouse-ci-kiva-dev.herokuapp.com/
+          serverToken: ${{ secrets.LHCI_DEV_BUILD_TOKEN }}
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
