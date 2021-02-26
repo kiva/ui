@@ -13,5 +13,10 @@ module.exports = {
 				'http://localhost:8888/lend-by-category/women'
 			]
 		},
+		upload: {
+			target: 'lhci',
+			serverBaseUrl: 'https://lighthouse-ci-kiva-dev.herokuapp.com/',
+			token: process.env.LHCI_DEV_BUILD_TOKEN,
+		},
 	},
 };
