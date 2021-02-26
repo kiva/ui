@@ -142,9 +142,6 @@ export default config => {
 				if (config.enableSnowplow) {
 					OneTrust.InsertHtml('', 'head', insertSnowplow, null, 'C0002');
 				}
-				if (config.enableGTM && !optout) {
-					OneTrust.InsertHtml('', 'head', insertGTM, null, 'C0002');
-				}
 				if (config.algoliaConfig.enableAA && !optout) {
 					OneTrust.InsertHtml('', 'head', insertAlgoliaAnalytics, null, 'C0002');
 				}
@@ -164,6 +161,12 @@ export default config => {
 			* They do not store directly personal information, but are based on uniquely identifying your browser
 			* and internet device. If you do not allow these cookies, you will experience less targeted advertising.
 			* */
+
+			if (config.enableAnalytics) {
+				if (config.enableGTM && !optout) {
+					OneTrust.InsertHtml('', 'head', insertGTM, null, 'C0004');
+				}
+			}
 
 			/** Category 'C0005'
 			* Social Media Cookies
