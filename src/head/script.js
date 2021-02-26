@@ -1,4 +1,13 @@
 export default config => {
+	// check for opt out of 3rd party scripts + cookies
+	const cookies = typeof document !== 'undefined' ? document.cookie.split(';') : [];
+	let optout = false;
+	for (let i = 0; i < cookies.length; i++) { // eslint-disable-line
+		if (cookies[i].indexOf('kvgdpr') !== -1 && cookies[i].indexOf('opted_out=true') !== -1) {
+			optout = true;
+		}
+	}
+
 	// Google Analytics snippet
 	const insertGoogleAnalytics = () => {
 		/* eslint-disable */
@@ -73,6 +82,21 @@ export default config => {
 		/* eslint-enable */
 	};
 
+	// Always load
+	// PerimeterX snippet
+	if (config.enablePerimeterx) {
+		/* eslint-disable */
+		(function(){
+			window._pxAppId = config.perimeterxAppId;
+			var p = document.getElementsByTagName('script')[0],
+				s = document.createElement('script');
+			s.async = 1;
+			s.src = `/${config.perimeterxAppId.substring(2)}/init.js`;
+			p.parentNode.insertBefore(s,p);
+		}());
+		/* eslint-enable */
+	}
+
 	// One Trust Cookie Management
 	if (config.oneTrust && config.oneTrust.enable) {
 		/* eslint-disable */
@@ -112,16 +136,16 @@ export default config => {
 			* monitor its performance.
 			* */
 			if (config.enableAnalytics) {
-				if (config.enableGA) {
+				if (config.enableGA && !optout) {
 					OneTrust.InsertHtml('', 'head', insertGoogleAnalytics, null, 'C0002');
 				}
 				if (config.enableSnowplow) {
 					OneTrust.InsertHtml('', 'head', insertSnowplow, null, 'C0002');
 				}
-				if (config.enableGTM ) {
+				if (config.enableGTM && !optout) {
 					OneTrust.InsertHtml('', 'head', insertGTM, null, 'C0002');
 				}
-				if (config.algoliaConfig.enableAA) {
+				if (config.algoliaConfig.enableAA && !optout) {
 					OneTrust.InsertHtml('', 'head', insertAlgoliaAnalytics, null, 'C0002');
 				}
 			}
@@ -149,7 +173,7 @@ export default config => {
 			* you see on other websites you visit. If you do not allow these cookies you may not be able to use or see
 			* these sharing tools.
 			* */
-			if (config.enableFB) {
+			if (config.enableFB && !optout) {
 				OneTrust.InsertHtml('', 'head', insertFB, null, 'C0005');
 			}
 		};
@@ -158,15 +182,6 @@ export default config => {
 
 	// Legacy behavior without oneTrust
 	if (!config.oneTrust || !config.oneTrust.enable) {
-		// check for opt out of 3rd party scripts + cookies
-		const cookies = typeof document !== 'undefined' ? document.cookie.split(';') : [];
-		let optout = false;
-		for (let i = 0; i < cookies.length; i++) { // eslint-disable-line
-			if (cookies[i].indexOf('kvgdpr') !== -1 && cookies[i].indexOf('opted_out=true') !== -1) {
-				optout = true;
-			}
-		}
-
 		if (config.enableAnalytics) {
 			if (config.enableGA && !optout) {
 				insertGoogleAnalytics();
@@ -184,21 +199,6 @@ export default config => {
 
 		if (config.enableFB && !optout) {
 			insertFB();
-		}
-
-		// TODO Does this need to go into OneTrust Initialization above?
-		// PerimeterX snippet
-		if (config.enablePerimeterx) {
-			/* eslint-disable */
-			(function(){
-				window._pxAppId = config.perimeterxAppId;
-				var p = document.getElementsByTagName('script')[0],
-					s = document.createElement('script');
-				s.async = 1;
-				s.src = `/${config.perimeterxAppId.substring(2)}/init.js`;
-				p.parentNode.insertBefore(s,p);
-			}());
-			/* eslint-enable */
 		}
 	}
 };
