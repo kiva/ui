@@ -113,7 +113,11 @@ export default {
 		// make sure all partner content links open externally
 		if (this.$refs.heroBodyCopy) {
 			const links = this.$refs.heroBodyCopy.querySelectorAll('a');
-			links.forEach(link => { link.target = '_blank'; }); // eslint-disable-line no-param-reassign
+			if (links.length > 0) {
+				Array.prototype.forEach.call(links, link => {
+					link.target = '_blank';// eslint-disable-line no-param-reassign
+				});
+			}
 		}
 	}
 };
