@@ -6,13 +6,13 @@
 		<source
 			type="image/webp"
 			:srcset="`
-					${buildUrl(width * 2, height * 2)}&fm=webp&q=70 2x,
+					${buildUrl(width * 2, height * 2)}&fm=webp&q=65 2x,
 					${buildUrl(width, height)}&fm=webp&q=80 1x`"
 		>
 		<img
 			class="kv-contentful-img__img"
 			:srcset="`
-					${buildUrl(width * 2, height * 2)}&fm=${fallbackFormat}&q=70 2x,
+					${buildUrl(width * 2, height * 2)}&fm=${fallbackFormat}&q=65 2x,
 					${buildUrl(width, height)}&fm=${fallbackFormat}&q=80 1x`"
 			:src="`${buildUrl(width, height)}&fm=${fallbackFormat}&q=80`"
 			:width="width ? width : null"
@@ -28,7 +28,9 @@
 // respectful of our users data plans, and not damage our SEO, we shouldn't send the source image directly to our users.
 
 // This component uses to contentful's image query params to:
-// Serve webp with a fallback for older browsers. Offer both 1x and 2x images. Properly size the images.
+// Serve webp with a fallback for older browsers.
+// Offer both 1x and 2x images.
+// Properly size the images and make sure they're compressed.
 // If we have both width and height we pass those attributes to the image to prevent jank.
 // Allow lazy loading via image attribute.
 
