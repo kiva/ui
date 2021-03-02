@@ -52,17 +52,6 @@ export default function createApp({
 		kvAuth0,
 	});
 
-	const federationApolloURI = appConfig.federationService ? appConfig.federationService.uri : apollo.uri;
-
-	const apolloFederationClient = createApolloClient({
-		appConfig,
-		cookieStore,
-		existingCache: apolloClient.cache,
-		kvAuth0,
-		types: apollo.types,
-		uri: federationApolloURI,
-	});
-
 	const router = createRouter();
 	// Checking that sentry is enabled & is not server side
 	if (appConfig.enableSentry && typeof window !== 'undefined') {
@@ -83,7 +72,6 @@ export default function createApp({
 			apollo: apolloClient,
 			cookieStore,
 			device,
-			federation: apolloFederationClient,
 			kvAuth0,
 			locale,
 		}
