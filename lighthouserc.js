@@ -1,3 +1,5 @@
+console.log(`fake secret: ${process.env.FAKE_SECRET}`);
+
 module.exports = {
 	ci: {
 		collect: {

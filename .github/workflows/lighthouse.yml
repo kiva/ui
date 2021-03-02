@@ -15,6 +15,7 @@ jobs:
     env:
       LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       DEV_LHCI_BUILD_TOKEN: ${{ secrets.LHCI_DEV_BUILD_TOKEN }}
+      FAKE_SECRET: ${{ secrets.FAKE_SECRET }}
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
