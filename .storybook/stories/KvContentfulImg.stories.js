@@ -4,12 +4,12 @@ export default {
 	title: 'Kv/KvContentfulImg',
 	component: KvContentfulImg,
 	args: {
-		contentfulSrc: 'https://images.ctfassets.net/j0p9a6ql0rn7/5fMPZOXnBVwvzwpXrVhZmD/ce1dd3e642c9d4707c2bb6c2a67f0e0d/IWD2021Step2.png',
+		contentfulSrc: 'https://images.ctfassets.net/j0p9a6ql0rn7/2TWV32iioxapwjn26ZpigZ/84ac39a1396d6be9eea472cf8791faa7/Cynthia.png',
 		fallbackFormat: 'jpg',
-		width: null,
+		width: 200,
 		height: null,
 		alt: null,
-		loading: null,
+		loading: 'lazy',
 	},
 };
 
