@@ -69,6 +69,7 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+
 .statistics {
 	&__header {
 		max-width: 95%;
@@ -78,7 +79,7 @@ export default {
 		margin-top: 40px;
 
 		&--icon {
-			margin-bottom:40px;
+			margin-bottom: 40px;
 		}
 
 		&--icon-0 {
@@ -86,7 +87,7 @@ export default {
 		}
 
 		&--icon-1 {
-			width: 48px
+			width: 48px;
 		}
 
 		&--icon-2 {
