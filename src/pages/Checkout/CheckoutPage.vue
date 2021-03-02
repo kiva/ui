@@ -93,9 +93,10 @@
 									v-else-if="!isActivelyLoggedIn && showLoginContinueButton"
 									class="small-12 columns"
 								>
-									<!-- Guest checkout button shown when the uiexp.guest_checkout is enabled
-										to users in the test group without a 'kvu' cookie
-										which indicates if a user has logged into Kiva on current browser -->
+									<!-- Guest checkout button shown when the uiexp.guest_checkout and
+										feature.guest_checkout are enabled to users in the test group
+										without a 'kvu' cookie which indicates if a user has logged
+										into Kiva on current browser -->
 									<kv-button
 										v-if="showGuestCheckoutButton && guestCheckoutExperimentVersion === 'shown'"
 										class="guest-checkout-button checkout-button smallest secondary"
@@ -267,6 +268,7 @@ export default {
 			addToBasketRedirectExperimentShown: false,
 			loginButtonExperimentVersion: null,
 			redirectToLoginExperimentVersion: null,
+			isGuestCheckoutExperimentActive: false,
 			guestCheckoutExperimentVersion: null,
 		};
 	},
@@ -305,6 +307,8 @@ export default {
 				});
 		},
 		result({ data }) {
+			// Checking if guest checkout feature is enabled in Admin settingsManager
+			this.isGuestCheckoutExperimentActive = data?.general?.guestCheckoutEnabled?.value === 'true';
 			// user data
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
@@ -372,9 +376,10 @@ export default {
 		this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
 
 		// GROW-458 Guest Checkout Experiment
-		// If the user doesn't have the kvu cookie (indicating they have never
-		// logged into Kiva on this device) trigger this experiment
-		if (!this.cookieStore.get('kvu')) {
+		// Trigger guest checkout experiment if user doesn't have a
+		// kvu cookie (indicating they have never logged into Kiva on this device)
+		// and guest checkout experiment is active
+		if (!this.cookieStore.get('kvu') && this.isGuestCheckoutExperimentActive) {
 			const guestCheckoutExperiment = this.apollo.readFragment({
 				id: 'Experiment:guest_checkout',
 				fragment: experimentVersionFragment,
@@ -459,8 +464,9 @@ export default {
 			return parseFloat(this.creditNeeded) === 0;
 		},
 		showGuestCheckoutButton() {
-			// Checking if Kiva has been logged into on user's current browser
-			if (!this.cookieStore.get('kvu')) {
+			// Checking if guest checkout experiment is active
+			// and if Kiva has been logged into on user's current browser
+			if (this.isGuestCheckoutExperimentActive && !this.cookieStore.get('kvu')) {
 				return true;
 			}
 			return false;

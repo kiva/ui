@@ -35,7 +35,7 @@ const pageQuery = gql`query autolendProfileEnabled {
 }`;
 
 export default {
-	inject: ['apollo', 'cookieStore', 'federation'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		AutolendingWho,
 		AutolendingStatus,

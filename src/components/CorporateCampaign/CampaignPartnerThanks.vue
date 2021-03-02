@@ -1,23 +1,13 @@
 <template>
 	<div class="campaign-partner-thanks">
-		<picture
+		<kv-contentful-img
 			v-if="partnerImage.url"
 			class="campaign-partner-thanks__img"
-		>
-			<source
-				type="image/webp"
-				:srcset="`
-					${partnerImage.url}?w=1000&fm=webp 2x,
-					${partnerImage.url}?w=500&fm=webp 1x`"
-			>
-			<img
-				:srcset="`
-					${partnerImage.url}?w=1000&fm=jpg 2x,
-					${partnerImage.url}?w=500&fm=jpg 1x`"
-				:src="`${partnerImage.url}?w=500&fm=jpg`"
-				:alt="partnerImage.title"
-			>
-		</picture>
+			:contentful-src="partnerImage.url"
+			:width="500"
+			:alt="partnerImage.title"
+			fallback-format="jpg"
+		/>
 		<h2
 			v-if="headline"
 			class="campaign-partner-thanks__header"
@@ -42,11 +32,13 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
+import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
 	components: {
-		KvButton
+		KvButton,
+		KvContentfulImg
 	},
 	props: {
 		partnerContent: {
@@ -81,7 +73,11 @@ export default {
 		// make sure all partner content links open externally
 		if (this.$refs.partnerBodyCopy) {
 			const links = this.$refs.partnerBodyCopy.querySelectorAll('a');
-			links.forEach(link => { link.target = '_blank'; }); // eslint-disable-line no-param-reassign
+			if (links.length > 0) {
+				Array.prototype.forEach.call(links, link => {
+					link.target = '_blank';// eslint-disable-line no-param-reassign
+				});
+			}
 		}
 	}
 };

@@ -10,7 +10,7 @@
 			<template v-slot:overlayContent>
 				<div class="row">
 					<div class="overlay-column columns medium-12 large-8">
-						<p class="mg-headline" v-html="pageCopy.headline">
+						<p class="mg-headline" v-html="heroHeadline">
 						</p>
 						<div class="mg-subhead" v-html="heroBody">
 						</div>
@@ -18,14 +18,14 @@
 							:amount.sync="monthlyGoodAmount"
 							:selected-group.sync="selectedGroup"
 							key="top"
-							:button-text="pageCopy.button"
+							:button-text="heroPrimaryCtaText"
 							v-if="!isMonthlyGoodSubscriber && !isExperimentActive"
 						/>
 						<landing-form-experiment
 							:amount.sync="monthlyGoodAmount"
 							:selected-group.sync="selectedGroup"
 							key="top"
-							:button-text="pageCopy.button"
+							:button-text="heroPrimaryCtaText"
 							v-if="!isMonthlyGoodSubscriber && isExperimentActive"
 						/>
 						<div class="already-subscribed-msg-wrapper" v-if="isMonthlyGoodSubscriber">
@@ -50,7 +50,7 @@
 					:selected-group.sync="selectedGroup"
 					key="bottom"
 					v-if="!isMonthlyGoodSubscriber"
-					:button-text="pageCopy.button"
+					:button-text="heroPrimaryCtaText"
 				/>
 				<div class="already-subscribed-msg-wrapper" v-if="isMonthlyGoodSubscriber">
 					<h4>
@@ -212,12 +212,12 @@ export default {
 			const text = this.heroText?.bodyCopy ?? '';
 			return documentToHtmlString(text).replace(/\n/g, '<br />');
 		},
-		pageCopy() {
-			return {
-				headline: 'It\'s easy to do good.',
-				button: 'Start Monthly Good'
-			};
-		}
+		heroHeadline() {
+			return this.heroText?.headline ?? 'It\'s easy to do good.';
+		},
+		heroPrimaryCtaText() {
+			return this.heroText?.primaryCtaText ?? 'Start Monthly Good';
+		},
 	},
 };
 

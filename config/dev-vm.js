@@ -53,12 +53,14 @@ module.exports = merge(base, {
 			serverCallbackUri: 'https://dev-vm-01.kiva.org/process-ssr-auth',
 			domain: 'login.dev.kiva.org',
 		},
-		federationService: {
-			uri: 'https://marketplace-api.dk1.kiva.org/graphql'
-		},
-		paypal : {
+		paypal: {
 			url: 'www.sandbox.paypal.com',
 			environment: 'sandbox'
+		},
+		oneTrust: {
+			enable: true,
+			key: 'db9dcf94-1c32-40fb-9a57-cefafea1088d',
+			domainSuffix: '-test',
 		},
 	},
 	server: {

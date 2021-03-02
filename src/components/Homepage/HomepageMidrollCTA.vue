@@ -8,13 +8,15 @@
 				:key="card.key"
 				class="homepage-midroll-cta__card"
 			>
-				<img
+				<kv-contentful-img
 					v-if="card.image"
 					class="homepage-midroll-cta__card-img"
-					:src="card.image.url"
+					:contentful-src="card.image.url"
+					fallback-format="png"
 					:alt="card.image.description"
+					:height="90"
 					loading="lazy"
-				>
+				/>
 				<div class="homepage-midroll-cta__card-body green-emphasis" v-html="card.body">
 				</div>
 			</div>
@@ -42,11 +44,13 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
+import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
 	components: {
 		KvButton,
+		KvContentfulImg,
 	},
 	props: {
 		content: {

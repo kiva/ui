@@ -16,7 +16,6 @@
 				:promo-amount="promoAmount"
 				:promo-name="campaignPartnerName"
 				:status-message-override="statusMessageOverride"
-				@show-checkout="showCheckout"
 			/>
 
 			<!-- TODO: Alter CTA if Checkout is ready -->
@@ -46,6 +45,7 @@
 								@updated-filters="handleUpdatedFilters"
 								@updated-sort-by="handleUpdatedSortBy"
 								@set-loan-display="handleLoanDisplayType"
+								@reset-loan-filters="handleResetLoanFilters"
 							/>
 						</div>
 
@@ -492,6 +492,8 @@ export default {
 			loanDetailsVisible: false,
 			detailedLoan: null,
 			useMatcherAccountIds: true,
+			initialFilters: {},
+			verificationSumbitted: false,
 		};
 	},
 	metaInfo() {
@@ -625,35 +627,6 @@ export default {
 			}
 			return null;
 		},
-		initialFilters() {
-			// initialize filter object
-			let filters = LoanSearchFilters();
-
-			// fetch filters from promo if available
-			const promoFilters = this.promoData?.managedAccount?.loanSearchCriteria?.filters ?? null;
-			// update filters from promo if present and fetchting promo data is complete
-			if (!this.loadingPromotion && promoFilters) {
-				filters = promoFilters;
-			}
-
-			// initialize base filters with defaults
-			const baseFilters = getSearchableFilters(filters);
-
-			// check for matcherAccountId from Contentful
-			let matcherAccounts = this.pageSettingData?.matcherAccountId ?? null;
-			if (matcherAccounts && typeof matcherAccounts === 'number') {
-				matcherAccounts = [matcherAccounts];
-			}
-			// apply matcherAccounts array if present
-			if (this.useMatcherAccountIds && matcherAccounts && matcherAccounts.length) {
-				baseFilters.matcherAccountId = matcherAccounts;
-			}
-
-			// set some always on filters
-			baseFilters.status = 'fundraising';
-
-			return baseFilters;
-		},
 		initialSortBy() {
 			return this.promoData?.managedAccount?.loanSearchCriteria?.sortBy ?? 'popularity';
 		},
@@ -708,9 +681,6 @@ export default {
 		},
 		teamId() {
 			return this.promoData?.promoGroup?.teamId ?? null;
-		},
-		verificationSumbitted() {
-			return this.pageQuery?.formComplete === 'true' || false;
 		},
 		corporateLogoUrl() {
 			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.media?.[0]?.file?.url;
@@ -812,25 +782,53 @@ export default {
 						this.promoApplied = true;
 						this.promoErrorMessage = null;
 					}
-					this.$nextTick(() => {
-						this.loadingPromotion = false;
-					});
 				} else if (this.isMatchingCampaign) {
 					this.promoApplied = true;
-					this.loadingPromotion = false;
 				} else {
 					// Handle response and any potential errors
 					// > this reveals and prior error messages from the promo application
 					this.promoApplied = false;
-					this.loadingPromotion = false;
 				}
 
-				// Initialize loan query + observer there are no loans in the basket
+				this.loadingPromotion = false;
+
+				this.setInitialFilters();
+
 				this.showLoans = true;
 
 				this.setAuthStatus(this.kvAuth0?.user);
+
 				this.updateBasketState();
 			});
+		},
+		setInitialFilters() {
+			// initialize filter object
+			let filters = LoanSearchFilters();
+
+			// fetch filters from promo if available
+			const promoFilters = this.promoData?.managedAccount?.loanSearchCriteria?.filters ?? null;
+			// update filters from promo if present and fetchting promo data is complete
+			if (!this.loadingPromotion && promoFilters) {
+				filters = promoFilters;
+			}
+
+			// initialize base filters with defaults
+			const baseFilters = getSearchableFilters(filters);
+
+			// check for matcherAccountId from Contentful
+			let matcherAccounts = this.pageSettingData?.matcherAccountId ?? null;
+			if (matcherAccounts && typeof matcherAccounts === 'number') {
+				matcherAccounts = [matcherAccounts];
+			}
+			// apply matcherAccounts array if present
+			if (this.useMatcherAccountIds && matcherAccounts && matcherAccounts.length) {
+				baseFilters.matcherAccountId = matcherAccounts;
+			}
+
+			// set some always on filters
+			baseFilters.status = 'fundraising';
+
+			this.initialFilters = baseFilters;
 		},
 		handleAddToBasket(payload) {
 			if (payload.eventSource === 'checkoutBtnClick') {
@@ -1068,9 +1066,8 @@ export default {
 		},
 
 		verificationComplete() {
-			// TODO: There is currently no way to know if someone has already submitted
-			// maybe use localstorage
-			this.showCheckout();
+			this.verificationSumbitted = true;
+			this.handleBasketValidation();
 		},
 		verifyPromoMatchesPageId(pageId) {
 			const promoPageId = pageId || this.promoData?.managedAccount?.pageId;
@@ -1118,6 +1115,7 @@ export default {
 			// we need to remove the matcherAccountId from the query to show loans
 			if (payload === 0 && this.isMatchingCampaign && this.checkInitialFiltersAgainstAppliedFilters()) {
 				this.useMatcherAccountIds = false;
+				this.setInitialFilters();
 			}
 		},
 		showLoanDetails(loan) {

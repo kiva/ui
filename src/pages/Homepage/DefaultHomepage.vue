@@ -69,7 +69,7 @@ export default {
 			promoContent: {}
 		};
 	},
-	inject: ['apollo', 'cookieStore', 'federation'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: pageQuery,
 		preFetch(config, client) {
@@ -92,7 +92,7 @@ export default {
 		},
 	},
 	created() {
-		this.federation.query({
+		this.apollo.query({
 			query: contentful,
 			variables: {
 				contentType: 'uiSetting',
