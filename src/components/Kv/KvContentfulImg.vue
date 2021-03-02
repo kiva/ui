@@ -101,5 +101,10 @@ export default {
 <style lang="scss" scoped>
 .kv-contentful-img {
 	display: inline-block;
+
+	&__img {
+		max-width: 100%;
+		max-height: 100%;
+	}
 }
 </style>
