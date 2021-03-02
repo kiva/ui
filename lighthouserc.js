@@ -1,5 +1,3 @@
-console.log(`fake secret: ${process.env.FAKE_SECRET}`);
-
 module.exports = {
 	ci: {
 		collect: {
@@ -18,7 +16,7 @@ module.exports = {
 		upload: {
 			target: 'lhci',
 			serverBaseUrl: 'https://lighthouse-ci-kiva-dev.herokuapp.com/',
-			token: process.env.DEV_LHCI_BUILD_TOKEN,
+			token: process.env.LHCI_DEV_BUILD_TOKEN,
 		},
 	},
 };
