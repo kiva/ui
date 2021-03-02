@@ -18,12 +18,15 @@
 				:key="step.key"
 				class="how-it-works__li small-12 xxlarge-3 columns"
 			>
-				<img
+				<kv-contentful-img
 					v-if="step.image.url"
 					class="how-it-works__img"
-					:src="step.image.url"
+					:contentful-src="step.image.url"
 					:alt="step.image.description"
-				>
+					:height="115"
+					loading="lazy"
+					fallback-format="png"
+				/>
 				<p
 					v-html="step.headline"
 					class="how-it-works__subtitle"
@@ -36,8 +39,12 @@
 </template>
 
 <script>
+import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 
 export default {
+	components: {
+		KvContentfulImg
+	},
 	props: {
 		content: {
 			type: Object,

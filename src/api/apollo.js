@@ -17,33 +17,27 @@ import initState from './localState';
 export default function createApolloClient({
 	appConfig,
 	cookieStore,
-	existingCache,
 	kvAuth0,
 	types = [],
 	uri,
 }) {
-	let cache;
-	if (!existingCache) {
-		cache = new InMemoryCache({
-			fragmentMatcher: new IntrospectionFragmentMatcher({
-				introspectionQueryResultData: {
-					__schema: { types }
-				}
-			}),
-			// Return a custom cache id for types that don't have an id field
-			dataIdFromObject: object => {
-				if (object.__typename === 'Setting' && object.key) return `Setting:${object.key}`;
-				return defaultDataIdFromObject(object);
-			},
-			// Use a simpler underlying cache for server renders
-			resultCaching: typeof window !== 'undefined',
-			// Block modifying cache results outside of normal operations
-			// see https://github.com/apollographql/apollo-client/pull/4543
-			freezeResults: true,
-		});
-	} else {
-		cache = existingCache;
-	}
+	const cache = new InMemoryCache({
+		fragmentMatcher: new IntrospectionFragmentMatcher({
+			introspectionQueryResultData: {
+				__schema: { types }
+			}
+		}),
+		// Return a custom cache id for types that don't have an id field
+		dataIdFromObject: object => {
+			if (object.__typename === 'Setting' && object.key) return `Setting:${object.key}`;
+			return defaultDataIdFromObject(object);
+		},
+		// Use a simpler underlying cache for server renders
+		resultCaching: typeof window !== 'undefined',
+		// Block modifying cache results outside of normal operations
+		// see https://github.com/apollographql/apollo-client/pull/4543
+		freezeResults: true,
+	});
 
 	// initialize local state resolvers
 	const { resolvers, defaults } = initState({ appConfig, cookieStore, kvAuth0 });
@@ -75,11 +69,9 @@ export default function createApolloClient({
 		assumeImmutableResults: true,
 	});
 
-	if (!existingCache) {
-		// set default local state
-		cache.writeData({ data: defaults });
-		client.onResetStore(() => cache.writeData({ data: defaults }));
-	}
+	// set default local state
+	cache.writeData({ data: defaults });
+	client.onResetStore(() => cache.writeData({ data: defaults }));
 
 	return client;
 }
