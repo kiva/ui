@@ -2,24 +2,15 @@
 	<section class="campaign-partner section">
 		<div class="row align-center">
 			<div class="small-12 medium-10 large-6 columns">
-				<picture
+				<kv-contentful-img
 					v-if="partnerImage.url"
 					class="campaign-partner__img"
-				>
-					<source
-						type="image/webp"
-						:srcset="`
-							${partnerImage.url}?w=1000&fm=webp 2x,
-							${partnerImage.url}?w=500&fm=webp 1x`"
-					>
-					<img
-						:srcset="`
-							${partnerImage.url}?w=1000&fm=jpg 2x,
-							${partnerImage.url}?w=500&fm=jpg 1x`"
-						:src="`${partnerImage.url}?w=500&fm=jpg`"
-						:alt="partnerImage.title"
-					>
-				</picture>
+					:contentful-src="partnerImage.url"
+					:width="500"
+					fallback-format="jpg"
+					loading="lazy"
+					:alt="partnerImage.title"
+				/>
 			</div>
 			<div class="small-10 large-6 columns">
 				<h2
@@ -40,9 +31,13 @@
 </template>
 
 <script>
+import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
+	components: {
+		KvContentfulImg
+	},
 	props: {
 		partnerAreaContent: {
 			type: Object,

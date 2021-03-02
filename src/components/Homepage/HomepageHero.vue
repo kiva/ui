@@ -12,12 +12,15 @@
 						heroImage.description,
 					]"
 				>
-					<img
+					<kv-contentful-img
 						v-if="heroImage.url"
 						class="homepage-hero__img"
-						:src="heroImage.url"
+						:contentful-src="heroImage.url"
+						:width="500"
+						:height="527"
+						fallback-format="jpg"
 						:alt="heroImage.description"
-					>
+					/>
 				</router-link>
 			</div>
 			<!-- eslint-disable-next-line max-len -->
@@ -60,11 +63,13 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
+import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
 	components: {
 		KvButton,
+		KvContentfulImg,
 	},
 	props: {
 		content: {
