@@ -15,12 +15,16 @@
 			>
 				<div class="testimonials__supporter-card--img-wrapper">
 					<!-- Supporter image -->
-					<img
+					<kv-contentful-img
 						v-if="supporter.image.url"
 						:class="'testimonials__supporter-card--img testimonials__supporter-card--img-' + index"
-						:src="supporter.image.url"
+						:contentful-src="supporter.image.url"
 						:alt="supporter.image.description"
-					>
+						:width="166"
+						:height="166"
+						loading="lazy"
+						fallback-format="jpg"
+					/>
 
 					<!-- Supporter card flourish images -->
 					<!-- eslint-disable max-len -->
@@ -57,9 +61,14 @@
 </template>
 
 <script>
+import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+
 const imgRequire = require.context('@/assets/images/iwd/iwd-2021-Homepage', true);
 
 export default {
+	components: {
+		KvContentfulImg,
+	},
 	props: {
 		content: {
 			type: Object,
@@ -143,27 +152,15 @@ export default {
 
 		&--img-wrapper {
 			position: relative;
+			width: rem-calc(166);
+			margin: 0 auto;
 		}
 
 		&--img {
 			border-radius: 50%;
-			max-width: rem-calc(166);
+			overflow: hidden;
 			margin-bottom: rem-calc(30);
 			line-height: 1;
-		}
-
-		// Setting margin offset to make up for the width
-		// of the flourish image that's positioned absolutely
-		&--img-0 {
-			margin-right: rem-calc(-50);
-		}
-
-		&--img-1 {
-			margin-right: rem-calc(-105);
-		}
-
-		&--img-2 {
-			margin-right: rem-calc(-50);
 		}
 
 		&--name {
@@ -183,31 +180,31 @@ export default {
 		}
 
 		&--page-flourish {
-			position: relative;
+			position: absolute;
 		}
 
 		&--page-flourish-1 {
 			width: rem-calc(50);
-			left: rem-calc(-140);
-			top: rem-calc(22);
+			left: rem-calc(-18);
+			top: rem-calc(85);
 		}
 
 		&--page-flourish-2 {
 			width: rem-calc(45);
-			top: rem-calc(-45);
-			left: rem-calc(-84);
+			top: rem-calc(10);
+			left: rem-calc(-20);
 		}
 
 		&--page-flourish-3 {
 			width: rem-calc(60);
-			top: rem-calc(27);
-			left: rem-calc(9);
+			top: rem-calc(82);
+			right: rem-calc(-13);
 		}
 
 		&--page-flourish-4 {
 			width: rem-calc(50);
-			top: rem-calc(25);
-			left: rem-calc(14);
+			top: rem-calc(81);
+			right: rem-calc(-20);
 		}
 	}
 }
