@@ -54,6 +54,11 @@ import SystemPage from '@/components/SystemFrame/SystemPage';
 import KvButton from '@/components/Kv/KvButton';
 
 export default {
+	metaInfo() {
+		return {
+			title: 'Accept terms'
+		};
+	},
 	components: {
 		SystemPage,
 		KvButton,
