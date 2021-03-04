@@ -100,39 +100,54 @@ export default {
 			return video;
 		},
 		totalLoansInDollarsFormatted() {
+			// Defining empty arrays to put the split contentful strings into
 			const part1 = [];
 			const part2 = [];
 			const contentfulTextString = this.statsBlockText[0].copy;
 			const loansInDollarsFormatted = numeral(this.totalLoansInDollars).format('$0.0a').slice(0, -1);
+			// Splitting the string from returned from contentful, where it finds '{value}'
 			const stringSplit = contentfulTextString.split('{value}');
+			// Pushing the two pieces of the split string the respected arrays
 			part1.push(stringSplit[0]);
 			part2.push(stringSplit[1]);
+			// Putting the pieces together, both pieces of the string
+			// with the data from graphql
 			const finalString = part1 + loansInDollarsFormatted + part2;
 
 			return finalString;
 		},
 		repaymentRateFormatted() {
+			// Defining empty arrays to put the split contentful strings into
 			const part1 = [];
 			const part2 = [];
 			const contentfulTextString = this.statsBlockText[1].copy;
 			const repaymentRateFormatted = `${numeral(this.repaymentRate).format('0')}%`;
+			// Splitting the string from returned from contentful, where it finds '{value}'
 			const stringSplit = contentfulTextString.split('{value}');
+			// Pushing the two pieces of the split string the respected arrays
 			part1.push(stringSplit[0]);
 			part2.push(stringSplit[1]);
+			// Putting the pieces together, both pieces of the string
+			// with the data from graphql
 			const finalString = part1 + repaymentRateFormatted + part2;
 
 			return finalString;
 		},
 		numCountriesAndLendersFormatted() {
+			// Defining empty arrays to put the split contentful strings into
 			const part1 = [];
 			const part2 = [];
 			const part3 = [];
 			const contentfulTextString = this.statsBlockText[2].copy;
 			const numberOfLendersFormatted = numeral(this.numLenders).format('0.0b').slice(0, -1);
+			// Splitting the string from returned from contentful, where it finds '{value}'
 			const stringSplit = contentfulTextString.split('{value}');
+			// Pushing the three pieces of the split string the respected arrays
 			part1.push(stringSplit[0]);
 			part2.push(stringSplit[1]);
 			part3.push(stringSplit[2]);
+			// Putting the pieces together, all pieces of the string
+			// with the data from graphql
 			const finalString = part1 + this.numCountries + part2 + numberOfLendersFormatted + part3;
 
 			return finalString;
