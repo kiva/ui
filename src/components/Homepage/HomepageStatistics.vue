@@ -6,23 +6,30 @@
 				class="small-12 large-6 columns statistics__header huge green-emphasis"
 			>
 			</h1>
-			<img class="statistics_video small-12 large-6 columns">
+			<video
+				:src="statsVideo.file.url"
+				class="statistics__video-wrapper--video small-12 large-6 columns"
+				autoplay
+				loop
+				muted
+				playsinline
+			></video>
 		</div>
-		<div class="row statistics__block">
+		<div class="row statistics__stat-block">
 			<div
 				v-for="(statBlock, index) in statsBlockText"
 				:key="statBlock.key"
-				class="small-4 columns"
+				class="small-12 medium-4 columns"
 			>
 				<img
 					v-if="statBlock.image.url"
-					:class="'statistics__block--icon statistics__block--icon-' + index"
+					:class="'statistics__stat-block--icon statistics__stat-block--icon-' + index"
 					:src="statBlock.image.url"
 					:alt="statBlock.image.description"
 				>
 				<p
-					class="statistics__block--stat green-emphasis"
-					v-html="statBlock.headline"
+					class="statistics__stat-block--stat green-emphasis"
+					v-html="statBlock.copy"
 				>
 				</p>
 			</div>
@@ -31,6 +38,8 @@
 </template>
 
 <script>
+import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+
 export default {
 	props: {
 		content: {
@@ -50,18 +59,24 @@ export default {
 			const allStatsText = this.content?.contents?.filter(({ key }) => key.indexOf('homepage-statistics-text') > -1);
 			return allStatsText?.map((block, index) => ({
 				key: block.key || index,
-				headline: block.headline ?? '',
+				copy: documentToHtmlString(block.bodyCopy ?? ''),
 				image: this.statsIcons[index],
 			}));
 		},
 		statsIcons() {
-			const icon = this.content?.media ?? [];
-			return icon.map(image => ({
+			const icons = this.content?.media ?? [];
+			return icons.map(image => ({
 				description: image?.description ?? '',
 				title: image?.title ?? '',
 				url: image?.file?.url ?? ''
 			}));
 		},
+		statsVideo() {
+			// Grabbing the 2x video from contentful.
+			// this.content?.media[3] is the 1x video
+			const video = this.content?.media[4] ?? [];
+			return video;
+		}
 
 	}
 };
@@ -71,31 +86,45 @@ export default {
 @import 'settings';
 
 .statistics {
-	&__header {
-		max-width: 95%;
+	&::v-deep em {
+		font-style: normal;
+		color: $kiva-green;
 	}
 
-	&__block {
-		margin-top: 40px;
+	&__header {
+
+	}
+
+	&--video {
+
+	}
+
+	&__stat-block {
+		margin-top: rem-calc(40);
 
 		&--icon {
-			margin-bottom: 40px;
+			margin-bottom: rem-calc(20);
 		}
 
 		&--icon-0 {
-			width: 44px;
+			width: rem-calc(44);
 		}
 
 		&--icon-1 {
-			width: 48px;
+			width: rem-calc(48);
 		}
 
 		&--icon-2 {
-			width: 42px;
+			width: rem-calc(42);
 		}
 
 		&--stat {
-			font-size: 21px;
+			font-size: rem-calc(21);
+
+			&::v-deep i {
+				color: $kiva-green;
+				font-weight: bold;
+			}
 		}
 	}
 }

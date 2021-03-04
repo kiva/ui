@@ -156,9 +156,8 @@
 			</ol>
 		</section>
 
-		<section class="statistics section text-center">
-			<div class="row">
-				<div class="small-12 columns">
+		<section class="statistics section">
+			<!-- <div class="small-12 columns">
 					<kv-responsive-image
 						class="statistics__img"
 						:images="statistics"
@@ -174,9 +173,16 @@
 					<p class="statistics__body">
 						We don't take a penny.
 					</p>
-				</div>
-				<homepage-statistics />
-			</div>
+				</div> -->
+
+			<!-- Old homepage stats component -->
+			<!-- <homepage-statistics /> -->
+
+			<!-- New stats cta component -->
+			<homepage-statistics class="section"
+				v-if="statisticsContentfulContentGroup"
+				:content="statisticsContentfulContentGroup"
+			/>
 		</section>
 
 		<section class="lender-quotes section">
@@ -248,7 +254,8 @@ import KivaCardPromo from '@/components/Homepage/LendByCategory/KivaCardPromo';
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
 import NoClickLoanCard from '@/components/Homepage/LendByCategory/NoClickLoanCard';
 import gql from 'graphql-tag';
-import HomepageStatistics from './HomepageStatistics';
+import HomepageStatistics from '@/components/Homepage/HomepageStatistics';
+// import HomepageStatistics from './HomepageStatistics';
 import HeroSlideshow from './HeroSlideshow';
 
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
@@ -267,14 +274,28 @@ export default {
 		WwwPage,
 		// FeaturedLoansCarousel,
 		HeroSlideshow,
-		HomepageStatistics,
+		// HomepageStatistics,
 		KivaCardPromo,
 		KvButton,
 		KvResponsiveImage,
 		LoanCategoriesSection,
 		NoClickLoanCard,
+		HomepageStatistics,
 	},
 	inject: ['apollo', 'cookieStore'],
+	props: {
+		content: {
+			type: Object,
+			default() {
+				return {
+					page: {
+						contentGroups: {},
+						pageLayout: {}
+					}
+				};
+			}
+		},
+	},
 	data() {
 		return {
 			headerTheme: lightHeader,
@@ -319,10 +340,10 @@ export default {
 			heroPromoEnabled: null,
 			kivaCardPromoEnabled: null,
 			kivaCardPromoContent: null,
-			statistics: [
-				['small', imgRequire('./stats.png')],
-				['small retina', imgRequire('./stats_2x.png')],
-			],
+			// statistics: [
+			// 	['small', imgRequire('./stats.png')],
+			// 	['small retina', imgRequire('./stats_2x.png')],
+			// ],
 			takeQuizImgs: {
 				header: [
 					['small', imgRequire('./potters.png')],
@@ -331,6 +352,11 @@ export default {
 			},
 
 		};
+	},
+	computed: {
+		statisticsContentfulContentGroup() {
+			return this.content?.page?.contentGroups?.homepageStatistics ?? null;
+		}
 	},
 	apollo: {
 		query: promosQuery,
@@ -552,32 +578,32 @@ export default {
 }
 
 .statistics {
-	&__img {
-		width: rem-calc(235);
-		margin: 0 auto 1rem;
-	}
+	// &__img {
+	// 	width: rem-calc(235);
+	// 	margin: 0 auto 1rem;
+	// }
 
-	&__header {
-		font-size: 6rem;
-		font-weight: bold;
-		margin-bottom: 0;
+	// &__header {
+	// 	font-size: 6rem;
+	// 	font-weight: bold;
+	// 	margin-bottom: 0;
 
-		span {
-			display: block;
-		}
-	}
+	// 	span {
+	// 		display: block;
+	// 	}
+	// }
 
-	&__header-small {
-		@include featured-text();
+	// &__header-small {
+	// 	@include featured-text();
 
-		font-weight: $global-weight-normal;
-	}
+	// 	font-weight: $global-weight-normal;
+	// }
 
-	&__body {
-		@include featured-text();
+	// &__body {
+	// 	@include featured-text();
 
-		margin-bottom: rem-calc(30);
-	}
+	// 	margin-bottom: rem-calc(30);
+	// }
 }
 
 .lender-quotes {

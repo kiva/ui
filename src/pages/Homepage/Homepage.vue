@@ -24,7 +24,7 @@ const TopMessageContentful = () => import('./TopMessageContentful');
 
 const activePageQuery = gql`query homepageFrame {
 	contentful {
-		entries(contentType: "page", contentKey: "home")
+		entries(contentType: "page", contentKey: "home-default")
 	}
 	general {
 		legacyHomeExp: uiExperimentSetting(key: "home_legacy") {
@@ -71,6 +71,7 @@ const selectActiveHomepage = (pageData = {}, legacyHomeExp = {}) => {
 		return MonthlyGoodHomepage;
 	}
 
+	// Might want to add a check for pageData here?
 	// If nothing else is selected, default to the Lend-By-Category homepage
 	return LendByCategoryHomepage;
 };
