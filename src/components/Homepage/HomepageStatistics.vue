@@ -23,12 +23,20 @@
 				:key="statBlock.key"
 				class="small-12 medium-4 columns"
 			>
-				<img
+				<kv-contentful-img
+					v-if="statBlock.image.url"
+					:class="'statistics__stat-block--icon statistics__stat-block--icon-' + index"
+					:contentful-src="statBlock.image.url"
+					:alt="statBlock.image.description"
+					fallback-format="png"
+				/>
+
+				<!-- <img
 					v-if="statBlock.image.url"
 					:class="'statistics__stat-block--icon statistics__stat-block--icon-' + index"
 					:src="statBlock.image.url"
 					:alt="statBlock.image.description"
-				>
+				> -->
 				<p
 					class="statistics__stat-block--stat green-emphasis"
 					v-html="formattedTextStrings[index]"
@@ -42,6 +50,7 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
+import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import whyKivaQuery from '@/graphql/query/whyKivaData.graphql';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
@@ -64,6 +73,9 @@ export default {
 			this.numCountries = _get(data, 'general.kivaStats.numCountries');
 			this.numLenders = _get(data, 'general.kivaStats.numLenders');
 		}
+	},
+	components: {
+		KvContentfulImg,
 	},
 	props: {
 		content: {
