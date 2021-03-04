@@ -29,7 +29,7 @@
 				>
 				<p
 					class="statistics__stat-block--stat green-emphasis"
-					v-html="statBlock.copy"
+					v-html="formattedTextStrings"
 				>
 				</p>
 			</div>
@@ -38,9 +38,39 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
+import numeral from 'numeral';
+import whyKivaQuery from '@/graphql/query/whyKivaData.graphql';
+// import getCacheKey from '@/util/getCacheKey';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
+	// name: 'HomepageStats',
+	// serverCacheKey: () => getCacheKey('WhyKiva'),
+	inject: ['apollo', 'cookieStore'],
+	data() {
+		return {
+			repaymentRate: '',
+			totalLoansInDollars: '',
+			numCountries: '',
+			numLenders: '',
+			formattedTextStrings: [
+				this.totalLoansInDollarsFormatted,
+				this.repaymentRateFormatted,
+				this.numCountriesAndLendersFormatted,
+			],
+		};
+	},
+	apollo: {
+		query: whyKivaQuery,
+		preFetch: false,
+		result({ data }) {
+			this.repaymentRate = _get(data, 'general.kivaStats.repaymentRate');
+			this.totalLoansInDollars = _get(data, 'general.kivaStats.amountFunded');
+			this.numCountries = _get(data, 'general.kivaStats.numCountries');
+			this.numLenders = _get(data, 'general.kivaStats.numLenders');
+		}
+	},
 	props: {
 		content: {
 			type: Object,
@@ -76,7 +106,46 @@ export default {
 			// this.content?.media[3] is the 1x video
 			const video = this.content?.media[4] ?? [];
 			return video;
-		}
+		},
+		totalLoansInDollarsFormatted() {
+			const part1 = [];
+			const part2 = [];
+			const contentfulTextString = this.statsBlockText[0].copy;
+			const loansInDollarsFormatted = numeral(this.totalLoansInDollars).format('$0.0a').slice(0, -1);
+			const stringSplit = contentfulTextString.split('{value}');
+			part1.push(stringSplit[0]);
+			part2.push(stringSplit[1]);
+
+			const finalString = part1 + loansInDollarsFormatted + part2;
+			return finalString;
+		},
+		repaymentRateFormatted() {
+			const part1 = [];
+			const part2 = [];
+			const contentfulTextString = this.statsBlockText[1].copy;
+			const repaymentRateFormatted = numeral(this.repaymentRate).format('0.0');
+			const stringSplit = contentfulTextString.split('{value}');
+			part1.push(stringSplit[0]);
+			part2.push(stringSplit[1]);
+			const finalString = part1 + repaymentRateFormatted + part2;
+
+			return finalString;
+		},
+		numCountriesAndLendersFormatted() {
+			const part1 = [];
+			const part2 = [];
+			const part3 = [];
+			const contentfulTextString = this.statsBlockText[2].copy;
+			const numberOfCountries = numeral(this.numCountries);
+			const numberOfLendersFormatted = numeral(this.numLenders).format('0.0a').slice(0, -1);
+			const stringSplit = contentfulTextString.split('{value}');
+			part1.push(stringSplit[0]);
+			part2.push(stringSplit[1]);
+			part3.push(stringSplit[2]);
+			const finalString = part1 + numberOfLendersFormatted + part2 + numberOfCountries + part3;
+
+			return finalString;
+		},
 
 	}
 };

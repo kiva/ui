@@ -157,28 +157,24 @@
 		</section>
 
 		<section class="statistics section">
-			<!-- <div class="small-12 columns">
-					<kv-responsive-image
-						class="statistics__img"
-						:images="statistics"
-						loading="lazy"
-						alt=""
-					/>
-				</div>
-				<div class="small-12 columns">
-					<h2 class="statistics__header">
-						<span>100%</span>
-						<span class="statistics__header-small">of your loan goes to the field.</span>
-					</h2>
-					<p class="statistics__body">
-						We don't take a penny.
-					</p>
-				</div> -->
+			<div class="small-12 columns">
+				<kv-responsive-image
+					class="statistics__img"
+					:images="statistics"
+					loading="lazy"
+					alt=""
+				/>
+			</div>
+			<div class="small-12 columns text-center">
+				<h2 class="statistics__header">
+					<span>100%</span>
+					<span class="statistics__header-small">of your loan goes to the field.</span>
+				</h2>
+				<p class="statistics__body">
+					We don't take a penny.
+				</p>
+			</div>
 
-			<!-- Old homepage stats component -->
-			<!-- <homepage-statistics /> -->
-
-			<!-- New stats cta component -->
 			<homepage-statistics class="section"
 				v-if="statisticsContentfulContentGroup"
 				:content="statisticsContentfulContentGroup"
@@ -255,7 +251,6 @@ import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCate
 import NoClickLoanCard from '@/components/Homepage/LendByCategory/NoClickLoanCard';
 import gql from 'graphql-tag';
 import HomepageStatistics from '@/components/Homepage/HomepageStatistics';
-// import HomepageStatistics from './HomepageStatistics';
 import HeroSlideshow from './HeroSlideshow';
 
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
@@ -274,7 +269,6 @@ export default {
 		WwwPage,
 		// FeaturedLoansCarousel,
 		HeroSlideshow,
-		// HomepageStatistics,
 		KivaCardPromo,
 		KvButton,
 		KvResponsiveImage,
@@ -340,10 +334,10 @@ export default {
 			heroPromoEnabled: null,
 			kivaCardPromoEnabled: null,
 			kivaCardPromoContent: null,
-			// statistics: [
-			// 	['small', imgRequire('./stats.png')],
-			// 	['small retina', imgRequire('./stats_2x.png')],
-			// ],
+			statistics: [
+				['small', imgRequire('./stats.png')],
+				['small retina', imgRequire('./stats_2x.png')],
+			],
 			takeQuizImgs: {
 				header: [
 					['small', imgRequire('./potters.png')],
@@ -578,32 +572,32 @@ export default {
 }
 
 .statistics {
-	// &__img {
-	// 	width: rem-calc(235);
-	// 	margin: 0 auto 1rem;
-	// }
+	&__img {
+		width: rem-calc(235);
+		margin: 0 auto 1rem;
+	}
 
-	// &__header {
-	// 	font-size: 6rem;
-	// 	font-weight: bold;
-	// 	margin-bottom: 0;
+	&__header {
+		font-size: 6rem;
+		font-weight: bold;
+		margin-bottom: 0;
 
-	// 	span {
-	// 		display: block;
-	// 	}
-	// }
+		span {
+			display: block;
+		}
+	}
 
-	// &__header-small {
-	// 	@include featured-text();
+	&__header-small {
+		@include featured-text();
 
-	// 	font-weight: $global-weight-normal;
-	// }
+		font-weight: $global-weight-normal;
+	}
 
-	// &__body {
-	// 	@include featured-text();
+	&__body {
+		@include featured-text();
 
-	// 	margin-bottom: rem-calc(30);
-	// }
+		margin-bottom: rem-calc(30);
+	}
 }
 
 .lender-quotes {

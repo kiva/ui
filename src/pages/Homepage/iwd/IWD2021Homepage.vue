@@ -39,12 +39,6 @@
 			v-if="bottomCTAContentGroup"
 			:content="bottomCTAContentGroup"
 		/>
-
-		<!-- New stats cta component -->
-		<homepage-statistics class="section"
-			v-if="newStatisticsContentGroup"
-			:content="newStatisticsContentGroup"
-		/>
 	</www-page>
 </template>
 
@@ -59,8 +53,6 @@ import HomepageCorporateSponsors from '@/components/Homepage/HomepageCorporateSp
 import HomepageTestimonials from '@/components/Homepage/HomepageTestimonials';
 import HomepageBottomCTA from '@/components/Homepage/HomepageBottomCTA';
 
-import HomepageStatistics from '@/components/Homepage/HomepageStatistics';
-
 import { lightHeader } from '@/util/siteThemes';
 
 export default {
@@ -74,7 +66,6 @@ export default {
 		HomepageCorporateSponsors,
 		HomepageTestimonials,
 		HomepageBottomCTA,
-		HomepageStatistics,
 	},
 	props: {
 		content: {
@@ -119,10 +110,6 @@ export default {
 		bottomCTAContentGroup() {
 			return this.content?.page?.contentGroups?.homepageBottomCta ?? null;
 		},
-		newStatisticsContentGroup() {
-			console.log(this.content?.page?.contentGroups);
-			return this.content?.page?.contentGroups?.homepageStatistics ?? null;
-		}
 	},
 };
 </script>
