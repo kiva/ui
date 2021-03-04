@@ -29,7 +29,7 @@
 				>
 				<p
 					class="statistics__stat-block--stat green-emphasis"
-					v-html="formattedTextStrings"
+					v-html="formattedTextStrings[index]"
 				>
 				</p>
 			</div>
@@ -41,12 +41,9 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import whyKivaQuery from '@/graphql/query/whyKivaData.graphql';
-// import getCacheKey from '@/util/getCacheKey';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
-	// name: 'HomepageStats',
-	// serverCacheKey: () => getCacheKey('WhyKiva'),
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
@@ -54,11 +51,6 @@ export default {
 			totalLoansInDollars: '',
 			numCountries: '',
 			numLenders: '',
-			formattedTextStrings: [
-				this.totalLoansInDollarsFormatted,
-				this.repaymentRateFormatted,
-				this.numCountriesAndLendersFormatted,
-			],
 		};
 	},
 	apollo: {
@@ -115,15 +107,15 @@ export default {
 			const stringSplit = contentfulTextString.split('{value}');
 			part1.push(stringSplit[0]);
 			part2.push(stringSplit[1]);
-
 			const finalString = part1 + loansInDollarsFormatted + part2;
+
 			return finalString;
 		},
 		repaymentRateFormatted() {
 			const part1 = [];
 			const part2 = [];
 			const contentfulTextString = this.statsBlockText[1].copy;
-			const repaymentRateFormatted = numeral(this.repaymentRate).format('0.0');
+			const repaymentRateFormatted = `${numeral(this.repaymentRate).format('0')}%`;
 			const stringSplit = contentfulTextString.split('{value}');
 			part1.push(stringSplit[0]);
 			part2.push(stringSplit[1]);
@@ -136,17 +128,22 @@ export default {
 			const part2 = [];
 			const part3 = [];
 			const contentfulTextString = this.statsBlockText[2].copy;
-			const numberOfCountries = numeral(this.numCountries);
-			const numberOfLendersFormatted = numeral(this.numLenders).format('0.0a').slice(0, -1);
+			const numberOfLendersFormatted = numeral(this.numLenders).format('0.0b').slice(0, -1);
 			const stringSplit = contentfulTextString.split('{value}');
 			part1.push(stringSplit[0]);
 			part2.push(stringSplit[1]);
 			part3.push(stringSplit[2]);
-			const finalString = part1 + numberOfLendersFormatted + part2 + numberOfCountries + part3;
+			const finalString = part1 + this.numCountries + part2 + numberOfLendersFormatted + part3;
 
 			return finalString;
 		},
-
+		formattedTextStrings() {
+			return [
+				this.totalLoansInDollarsFormatted,
+				this.repaymentRateFormatted,
+				this.numCountriesAndLendersFormatted
+			];
+		}
 	}
 };
 </script>
@@ -159,14 +156,6 @@ export default {
 		font-style: normal;
 		color: $kiva-green;
 	}
-
-	// &__header {
-
-	// }
-
-	// &--video {
-
-	// }
 
 	&__stat-block {
 		margin-top: rem-calc(40);
