@@ -71,7 +71,6 @@ const selectActiveHomepage = (pageData = {}, legacyHomeExp = {}) => {
 		return MonthlyGoodHomepage;
 	}
 
-	// Might want to add a check for pageData here?
 	// If nothing else is selected, default to the Lend-By-Category homepage
 	return LendByCategoryHomepage;
 };

@@ -6,14 +6,16 @@
 				class="small-12 large-6 columns statistics__header huge green-emphasis"
 			>
 			</h1>
-			<video
-				:src="statsVideo.file.url"
-				class="statistics__video-wrapper--video small-12 large-6 columns"
-				autoplay
-				loop
-				muted
-				playsinline
-			></video>
+			<span class="statistics__video-wrapper small-12 large-6 columns">
+				<video
+					:src="statsVideo.file.url"
+					class="statistics__video-wrapper--video"
+					autoplay
+					loop
+					muted
+					playsinline
+				></video>
+			</span>
 		</div>
 		<div class="row statistics__stat-block">
 			<div
@@ -110,8 +112,7 @@ export default {
 			// Pushing the two pieces of the split string the respected arrays
 			part1.push(stringSplit[0]);
 			part2.push(stringSplit[1]);
-			// Putting the pieces together, both pieces of the string
-			// with the data from graphql
+			// Joining both pieces of the string and the data from graphql
 			const finalString = part1 + loansInDollarsFormatted + part2;
 
 			return finalString;
@@ -127,8 +128,7 @@ export default {
 			// Pushing the two pieces of the split string the respected arrays
 			part1.push(stringSplit[0]);
 			part2.push(stringSplit[1]);
-			// Putting the pieces together, both pieces of the string
-			// with the data from graphql
+			// Joining both pieces of the string and the data from graphql
 			const finalString = part1 + repaymentRateFormatted + part2;
 
 			return finalString;
@@ -146,8 +146,7 @@ export default {
 			part1.push(stringSplit[0]);
 			part2.push(stringSplit[1]);
 			part3.push(stringSplit[2]);
-			// Putting the pieces together, all pieces of the string
-			// with the data from graphql
+			// Joining all the pieces of the string and the data from graphql
 			const finalString = part1 + this.numCountries + part2 + numberOfLendersFormatted + part3;
 
 			return finalString;
@@ -170,6 +169,13 @@ export default {
 	&::v-deep em {
 		font-style: normal;
 		color: $kiva-green;
+	}
+
+	&__video-wrapper {
+		&--video {
+			width: 100%;
+			border-radius: rem-calc(10);
+		}
 	}
 
 	&__stat-block {
