@@ -1,6 +1,9 @@
 name: Lighthouse CI PROD
 
-on: workflow_dispatch
+on:
+  schedule:
+    # run nightly at midnight
+    - cron:  '0 0 * * *'
 
 jobs:
   lhci:
