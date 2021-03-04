@@ -1,4 +1,4 @@
-name: Lighthouse CI
+name: Lighthouse CI DEV
 
 on:
   push:
@@ -12,6 +12,9 @@ jobs:
   lhci:
     name: Lighthouse
     runs-on: ubuntu-latest
+    env:
+      LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      LHCI_DEV_BUILD_TOKEN: ${{ secrets.LHCI_DEV_BUILD_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
@@ -25,6 +28,4 @@ jobs:
       - name: run Lighthouse CI
         run: |
           npm install -g @lhci/cli@0.7.x
-          lhci autorun
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          lhci autorun --config=./lighthouserc-dev.js
