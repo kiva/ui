@@ -1,0 +1,8 @@
+query ftdQuery {
+	my {
+		userAccount {
+			id
+			isFirstTimeDepositor
+		}
+	}
+}
