@@ -91,13 +91,13 @@ export default {
 		color: $kiva-green;
 	}
 
-	&__header {
+	// &__header {
 
-	}
+	// }
 
-	&--video {
+	// &--video {
 
-	}
+	// }
 
 	&__stat-block {
 		margin-top: rem-calc(40);
