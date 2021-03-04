@@ -1,0 +1,28 @@
+name: Lighthouse CI PROD
+
+on:
+  schedule:
+    # run nightly at midnight
+    - cron:  '0 0 * * *'
+
+jobs:
+  lhci:
+    name: Lighthouse
+    runs-on: ubuntu-latest
+    env:
+      LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      LHCI_PROD_BUILD_TOKEN: ${{ secrets.LHCI_PROD_BUILD_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: npm install, build
+        run: |
+          npm install
+          npm run build
+      - name: run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli@0.7.x
+          lhci autorun --config=./lighthouserc-prod.js
