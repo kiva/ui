@@ -29,14 +29,8 @@
 					:contentful-src="statBlock.image.url"
 					:alt="statBlock.image.description"
 					fallback-format="png"
+					:width="50"
 				/>
-
-				<!-- <img
-					v-if="statBlock.image.url"
-					:class="'statistics__stat-block--icon statistics__stat-block--icon-' + index"
-					:src="statBlock.image.url"
-					:alt="statBlock.image.description"
-				> -->
 				<p
 					class="statistics__stat-block--stat green-emphasis"
 					v-html="formattedTextStrings[index]"
