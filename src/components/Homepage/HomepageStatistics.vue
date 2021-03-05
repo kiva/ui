@@ -113,7 +113,7 @@ export default {
 			const part2 = [];
 			const contentfulTextString = this.statsBlockText[0].copy;
 			const loansInDollarsFormatted = numeral(this.totalLoansInDollars).format('$0.0a').slice(0, -1);
-			// Splitting the string from returned from contentful, where it finds '{value}'
+			// Splitting the string returned from contentful, where it finds '{value}'
 			const stringSplit = contentfulTextString.split('{value}');
 			// Pushing the two pieces of the split string the respected arrays
 			part1.push(stringSplit[0]);
@@ -129,7 +129,7 @@ export default {
 			const part2 = [];
 			const contentfulTextString = this.statsBlockText[1].copy;
 			const repaymentRateFormatted = `${numeral(this.repaymentRate).format('0')}%`;
-			// Splitting the string from returned from contentful, where it finds '{value}'
+			// Splitting the string returned from contentful, where it finds '{value}'
 			const stringSplit = contentfulTextString.split('{value}');
 			// Pushing the two pieces of the split string the respected arrays
 			part1.push(stringSplit[0]);
@@ -146,7 +146,7 @@ export default {
 			const part3 = [];
 			const contentfulTextString = this.statsBlockText[2].copy;
 			const numberOfLendersFormatted = numeral(this.numLenders).format('0.0b').slice(0, -1);
-			// Splitting the string from returned from contentful, where it finds '{value}'
+			// Splitting the string returned from contentful, where it finds '{value}'
 			const stringSplit = contentfulTextString.split('{value}');
 			// Pushing the three pieces of the split string the respected arrays
 			part1.push(stringSplit[0]);
