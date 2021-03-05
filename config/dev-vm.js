@@ -26,6 +26,7 @@ module.exports = merge(base, {
 		fbApplicationId: '263964058630',
 		fbPixelId: '108245819986414',
 		fbOgNameSpace: 'vm-kiva',
+		quantcastId: '',
 		enableSentry: false,
 		sentryURI: '',
 		algoliaConfig: {
