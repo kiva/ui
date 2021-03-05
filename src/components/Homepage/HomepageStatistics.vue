@@ -95,7 +95,7 @@ export default {
 			}));
 		},
 		statsIcons() {
-			const icons = this.content?.media ?? [];
+			const icons = this.content?.media?.filter(({ key }) => key.indexOf('homepage-stats-icon') > -1) ?? [];
 			return icons.map(image => ({
 				description: image?.description ?? '',
 				title: image?.title ?? '',
@@ -103,9 +103,9 @@ export default {
 			}));
 		},
 		statsVideo() {
-			// Grabbing the 2x video from contentful.
-			// this.content?.media[3] is the 1x video
-			const video = this.content?.media[4] ?? [];
+			// Grabbing the 1x video from contentful. 2x video = 'homepage-statistics-video-2x'
+			// eslint-disable-next-line max-len
+			const video = this.content?.media?.filter(({ key }) => key.indexOf('homepage-statistics-video-1x') > -1) ?? [];
 			return video;
 		},
 		totalLoansInDollarsFormatted() {
