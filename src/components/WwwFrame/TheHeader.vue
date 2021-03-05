@@ -542,6 +542,7 @@ export default {
 		},
 		onLendMenuShow() {
 			this.$refs.lendMenu.onOpen();
+			this.$kvTrackEvent('TopNav', 'hover-Lend-menu', 'Lend');
 		},
 		onLendMenuHide() {
 			this.$refs.lendMenu.onClose();
