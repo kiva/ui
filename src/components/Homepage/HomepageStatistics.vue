@@ -1,11 +1,11 @@
 <template>
 	<section class="statistics section">
 		<div class="row">
-			<h1
+			<h2
 				v-html="statsHeadline"
-				class="small-12 large-6 columns statistics__header huge green-emphasis"
+				class="small-12 large-6 columns statistics__header green-emphasis"
 			>
-			</h1>
+			</h2>
 			<span class="statistics__video-wrapper small-12 large-6 columns">
 				<video
 					:src="statsVideo.file.url"
@@ -17,7 +17,7 @@
 				></video>
 			</span>
 		</div>
-		<div class="row statistics__stat-block">
+		<div class="row stat-block">
 			<div
 				v-for="(statBlock, index) in statsBlockText"
 				:key="statBlock.key"
@@ -25,14 +25,15 @@
 			>
 				<kv-contentful-img
 					v-if="statBlock.image.url"
-					:class="'statistics__stat-block--icon statistics__stat-block--icon-' + index"
+					:class="'stat-block__icon stat-block__icon-' + index"
 					:contentful-src="statBlock.image.url"
 					:alt="statBlock.image.description"
 					fallback-format="png"
-					:width="50"
+					:width="48"
+					:height="48"
 				/>
 				<p
-					class="statistics__stat-block--stat green-emphasis"
+					class="stat-block__stat green-emphasis"
 					v-html="formattedTextStrings[index]"
 				>
 				</p>
@@ -177,6 +178,12 @@ export default {
 		color: $kiva-green;
 	}
 
+	&__header {
+		font-size: 4rem;
+		font-weight: 600;
+		line-height: rem-calc(73.6);
+	}
+
 	&__video-wrapper {
 		&--video {
 			width: 100%;
@@ -184,26 +191,14 @@ export default {
 		}
 	}
 
-	&__stat-block {
+	.stat-block {
 		margin-top: rem-calc(40);
 
-		&--icon {
+		&__icon {
 			margin-bottom: rem-calc(20);
 		}
 
-		&--icon-0 {
-			width: rem-calc(44);
-		}
-
-		&--icon-1 {
-			width: rem-calc(48);
-		}
-
-		&--icon-2 {
-			width: rem-calc(42);
-		}
-
-		&--stat {
+		&__stat {
 			font-size: rem-calc(21);
 
 			&::v-deep i {
