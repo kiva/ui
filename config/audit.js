@@ -5,7 +5,7 @@ module.exports = merge(base, {
 	app: {
 		host: 'www.audit.kiva.org',
 		publicPath: 'https://www-audit-kiva-org.freetls.fastly.net/ui/',
-		graphqlUri: 'https://marketplace-api.dk1.kiva.org/graphql',
+		graphqlUri: 'https://marketplace-api-audit.dk1.kiva.org/graphql',
 		enablePerimeterx: true,
 		perimeterxAppId: 'PX5u4Lz98O',
 		enableAnalytics: true,
@@ -29,19 +29,20 @@ module.exports = merge(base, {
 			apiKey: '28aaa1d56e6a1688f13f6b41da0f27a5',
 			defaultIndex: 'audit_fundraising_popularity',
 		},
+
 		auth0: {
-			loginRedirectUrls: {
-				cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5: 'https://admin.audit.kiva.org/admin/login?force=1',
-				e6wSaTBDpKRkV5SV5cWw6zD6eJjd2DEk: 'https://partners.audit.kiva.org/pa2/login/login?authLevel=recent',
-				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'https://www.audit.kiva.org/authenticate?authLevel=recent',
-				KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH: 'https://www.audit.kiva.org/ui-login?force=true',
-				ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF: 'https://www.audit.kiva.org/ui-login?force=true',
-			},
+                        loginRedirectUrls: {
+                                'A4914FJRPa71OPMzR0T106GPxVHH3q5c': 'https://admin.dev.kiva.org/admin/login?force=1',
+                                'aXEO12lKmGd1qSDMb0V6QYMbb40He8Wd': 'https://partners.dev.kiva.org/pa2/login/login?authLevel=recent',
+                                'lLGHlyn6iT1uzE0tbWQaoLcjdDe5u1Po': 'https://www.dev.kiva.org/authenticate?authLevel=recent',
+				'372Ui67a51VX4AcSq9FjUOuQD3dfKNUt': 'https://www.dev.kiva.org/ui-login?force=true',
+                                'Pc96rp0vzWOcAlWk5HJTozjTTP6qZyDP': 'https://www.dev.kiva.org/ui-login?force=true',
+                        },
 			enable: true,
 			apiAudience: 'https://api.audit.kivaws.org/graphql',
 			mfaAudience: 'https://kiva-audit.auth0.com/mfa/',
-			browserClientID: 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF',
-			serverClientID: 'KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH',
+			browserClientID: 'Pc96rp0vzWOcAlWk5HJTozjTTP6qZyDP',
+			serverClientID: '372Ui67a51VX4AcSq9FjUOuQD3dfKNUt',
 			browserCallbackUri: 'https://www.audit.kiva.org/process-browser-auth',
 			serverCallbackUri: 'https://www.audit.kiva.org/process-ssr-auth',
 			domain: 'login.audit.kiva.org',
@@ -55,7 +56,7 @@ module.exports = merge(base, {
 		},
 	},
 	server: {
-		graphqlUri: 'https://marketplace-api.dk1.kiva.org/graphql',
+		graphqlUri: 'https://marketplace-api-audit.dk1.kiva.org/graphql',
 		sessionUri: 'https://www.audit.kiva.org/start-ui-session',
 		memcachedEnabled: true,
 		memcachedServers: 'audit-memcached-01:11211',
