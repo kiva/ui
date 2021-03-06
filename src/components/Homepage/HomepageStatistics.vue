@@ -47,6 +47,7 @@ import _get from 'lodash/get';
 import numeral from 'numeral';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import whyKivaQuery from '@/graphql/query/whyKivaData.graphql';
+import { buildDynamicString } from '@/util/contentfulUtils';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
@@ -129,7 +130,7 @@ export default {
 				return '';
 			}
 
-			return this.buildDynamicString(startingString, '{value}', [loansInDollarsFormatted]);
+			return buildDynamicString(startingString, '{value}', [loansInDollarsFormatted]);
 		},
 		repaymentRateFormatted() {
 			const startingString = this.statsBlockText[1]?.copy || '';
@@ -139,7 +140,7 @@ export default {
 				return '';
 			}
 
-			return this.buildDynamicString(startingString, '{value}', [repaymentRateValueFormatted]);
+			return buildDynamicString(startingString, '{value}', [repaymentRateValueFormatted]);
 		},
 		numCountriesAndLendersFormatted() {
 			const startingString = this.statsBlockText[2]?.copy || '';
@@ -149,7 +150,7 @@ export default {
 				return '';
 			}
 
-			return this.buildDynamicString(startingString, '{value}', [this.numCountries, numberOfLendersFormatted]);
+			return buildDynamicString(startingString, '{value}', [this.numCountries, numberOfLendersFormatted]);
 		},
 		formattedTextStrings() {
 			return [
@@ -159,26 +160,6 @@ export default {
 			];
 		},
 	},
-	methods: {
-		buildDynamicString(sourceString = '', splitKey = '', dynamicValues = []) {
-			if (typeof sourceString !== 'string') {
-				return '';
-			}
-			let finalString = '';
-			// split the source string where it finds the splitKey
-			const stringSplit = sourceString.split(splitKey);
-			// forEach with index of the sourceString
-			stringSplit.forEach((item, index) => {
-				finalString = finalString.concat(item);
-				// if there's a dyanmic value at the current index, proceed adding it
-				// to the finalString
-				if (dynamicValues[index]) {
-					finalString = finalString.concat(dynamicValues[index]);
-				}
-			});
-			return finalString;
-		},
-	}
 };
 </script>
 
