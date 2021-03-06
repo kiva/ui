@@ -95,7 +95,11 @@ export default {
 			}));
 		},
 		statsIcons() {
-			const icons = this.content?.media?.filter(({ key }) => key.indexOf('homepage-stats-icon') > -1) ?? [];
+			// Attempted to be more specific by using the title to pull in the content,
+			// but wasn't able to get this working
+			// const icons = this.content?.media?.filter(({ key }) => key.indexOf('homepage-stats-icon') > -1);
+
+			const icons = this.content?.media ?? [];
 			return icons.map(image => ({
 				description: image?.description ?? '',
 				title: image?.title ?? '',
@@ -103,60 +107,49 @@ export default {
 			}));
 		},
 		statsVideo() {
-			// Grabbing the 1x video from contentful. 2x video = 'homepage-statistics-video-2x'
+			// Attempted to be more specific by using the title to pull in the content,
+			// but wasn't able to get this working
 			// eslint-disable-next-line max-len
-			const video = this.content?.media?.filter(({ key }) => key.indexOf('homepage-statistics-video-1x') > -1) ?? [];
+			// const video = this.content?.media?.find(({ key }) => key.indexOf('homepage-statistics-video-1x') > -1);
+
+			// eslint-disable-next-line max-len
+			// Grabbing the 1x video from contentful. 2x video = 'homepage-statistics-video-2x' || this.content?.media[3]
+			const video = this.content?.media[3] ?? [];
+			if (video === '') {
+				return '';
+			}
+
 			return video;
 		},
 		totalLoansInDollarsFormatted() {
-			// Defining empty arrays to put the split contentful strings into
-			const part1 = [];
-			const part2 = [];
-			const contentfulTextString = this.statsBlockText[0].copy;
+			const startingString = this.statsBlockText[0]?.copy || '';
 			const loansInDollarsFormatted = numeral(this.totalLoansInDollars).format('$0.0a').slice(0, -1);
-			// Splitting the string returned from contentful, where it finds '{value}'
-			const stringSplit = contentfulTextString.split('{value}');
-			// Pushing the two pieces of the split string the respected arrays
-			part1.push(stringSplit[0]);
-			part2.push(stringSplit[1]);
-			// Joining both pieces of the string and the data from graphql
-			const finalString = part1 + loansInDollarsFormatted + part2;
 
-			return finalString;
+			if (startingString === '' || loansInDollarsFormatted === '$0.') {
+				return '';
+			}
+
+			return this.buildDynamicString(startingString, '{value}', [loansInDollarsFormatted]);
 		},
 		repaymentRateFormatted() {
-			// Defining empty arrays to put the split contentful strings into
-			const part1 = [];
-			const part2 = [];
-			const contentfulTextString = this.statsBlockText[1].copy;
-			const repaymentRateFormatted = `${numeral(this.repaymentRate).format('0')}%`;
-			// Splitting the string returned from contentful, where it finds '{value}'
-			const stringSplit = contentfulTextString.split('{value}');
-			// Pushing the two pieces of the split string the respected arrays
-			part1.push(stringSplit[0]);
-			part2.push(stringSplit[1]);
-			// Joining both pieces of the string and the data from graphql
-			const finalString = part1 + repaymentRateFormatted + part2;
+			const startingString = this.statsBlockText[1]?.copy || '';
+			const repaymentRateValueFormatted = `${numeral(this.repaymentRate).format('0')}%`;
 
-			return finalString;
+			if (startingString === '' || repaymentRateValueFormatted === '0%') {
+				return '';
+			}
+
+			return this.buildDynamicString(startingString, '{value}', [repaymentRateValueFormatted]);
 		},
 		numCountriesAndLendersFormatted() {
-			// Defining empty arrays to put the split contentful strings into
-			const part1 = [];
-			const part2 = [];
-			const part3 = [];
-			const contentfulTextString = this.statsBlockText[2].copy;
+			const startingString = this.statsBlockText[2]?.copy || '';
 			const numberOfLendersFormatted = numeral(this.numLenders).format('0.0b').slice(0, -1);
-			// Splitting the string returned from contentful, where it finds '{value}'
-			const stringSplit = contentfulTextString.split('{value}');
-			// Pushing the three pieces of the split string the respected arrays
-			part1.push(stringSplit[0]);
-			part2.push(stringSplit[1]);
-			part3.push(stringSplit[2]);
-			// Joining all the pieces of the string and the data from graphql
-			const finalString = part1 + this.numCountries + part2 + numberOfLendersFormatted + part3;
 
-			return finalString;
+			if (startingString === '' || numberOfLendersFormatted === '0.0' || !this.numCountries) {
+				return '';
+			}
+
+			return this.buildDynamicString(startingString, '{value}', [this.numCountries, numberOfLendersFormatted]);
 		},
 		formattedTextStrings() {
 			return [
@@ -164,7 +157,27 @@ export default {
 				this.repaymentRateFormatted,
 				this.numCountriesAndLendersFormatted
 			];
-		}
+		},
+	},
+	methods: {
+		buildDynamicString(sourceString = '', splitKey = '', dynamicValues = []) {
+			if (typeof sourceString !== 'string') {
+				return '';
+			}
+			let finalString = '';
+			// split the source string where it finds the splitKey
+			const stringSplit = sourceString.split(splitKey);
+			// forEach with index of the sourceString
+			stringSplit.forEach((item, index) => {
+				finalString = finalString.concat(item);
+				// if there's a dyanmic value at the current index, proceed adding it
+				// to the finalString
+				if (dynamicValues[index]) {
+					finalString = finalString.concat(dynamicValues[index]);
+				}
+			});
+			return finalString;
+		},
 	}
 };
 </script>
