@@ -33,7 +33,7 @@ describe('SearchBar', () => {
 	});
 
 	it('should fetch suggestions when it gains focus', done => {
-		const input = wrapper.find({ ref: 'input' });
+		const input = wrapper.findComponent({ ref: 'input' });
 		input.trigger('focus');
 		input.trigger('blur');
 		input.trigger('focus');
@@ -44,7 +44,7 @@ describe('SearchBar', () => {
 	});
 
 	it('should show filtered results when a search term is entered', done => {
-		const input = wrapper.find({ ref: 'input' });
+		const input = wrapper.findComponent({ ref: 'input' });
 		input.trigger('focus');
 		input.element.value = 'ak';
 		input.trigger('input');
@@ -60,19 +60,19 @@ describe('SearchBar', () => {
 	});
 
 	it('should change the highlighted item when the up/down arrow keys are pressed', () => {
-		const input = wrapper.find({ ref: 'input' });
+		const input = wrapper.findComponent({ ref: 'input' });
 		wrapper.vm.rawResults = suggestions;
-		expect(wrapper.find('.highlighted').exists()).toBe(false);
+		expect(wrapper.findComponent('.highlighted').exists()).toBe(false);
 
 		input.trigger('keydown.down');
-		const first = wrapper.find('.highlighted').html();
+		const first = wrapper.findComponent('.highlighted').html();
 
 		input.trigger('keydown.down');
-		const second = wrapper.find('.highlighted').html();
+		const second = wrapper.findComponent('.highlighted').html();
 		expect(second).not.toBe(first);
 
 		input.trigger('keydown.up');
-		const third = wrapper.find('.highlighted').html();
+		const third = wrapper.findComponent('.highlighted').html();
 		expect(third).toBe(first);
 	});
 });
