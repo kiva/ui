@@ -62,17 +62,17 @@ describe('SearchBar', () => {
 	it('should change the highlighted item when the up/down arrow keys are pressed', () => {
 		const input = wrapper.findComponent({ ref: 'input' });
 		wrapper.vm.rawResults = suggestions;
-		expect(wrapper.findComponent('.highlighted').exists()).toBe(false);
+		expect(wrapper.find('.highlighted').exists()).toBe(false);
 
 		input.trigger('keydown.down');
-		const first = wrapper.findComponent('.highlighted').html();
+		const first = wrapper.find('.highlighted').html();
 
 		input.trigger('keydown.down');
-		const second = wrapper.findComponent('.highlighted').html();
+		const second = wrapper.find('.highlighted').html();
 		expect(second).not.toBe(first);
 
 		input.trigger('keydown.up');
-		const third = wrapper.findComponent('.highlighted').html();
+		const third = wrapper.find('.highlighted').html();
 		expect(third).toBe(first);
 	});
 });
