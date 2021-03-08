@@ -218,11 +218,11 @@ $card-half-space: rem-calc(14/2);
 	align-items: start;
 	justify-content: center;
 	position: relative;
-}
 
-.cards-wrap {
-	display: flex;
-	width: auto;
+	.cards-wrap {
+		display: flex;
+		width: auto;
+	}
 }
 
 .cards-loan-card,
