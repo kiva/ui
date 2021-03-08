@@ -9,7 +9,8 @@ module.exports = {
 				'https://www.kiva.org/lend/filter',
 				'https://www.kiva.org/lend-by-category',
 				'https://www.kiva.org/lend-by-category/women'
-			]
+			],
+			numberOfRuns: 5,
 		},
 		upload: {
 			target: 'lhci',
