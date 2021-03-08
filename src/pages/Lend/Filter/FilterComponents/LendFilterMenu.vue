@@ -14,7 +14,7 @@
 					<ais-clear-refinements class="clear-all-container">
 						<div
 							class="filter-mobile-reset-all-link"
-							slot-scope="{ canRefine, refine }"
+							slot-scope="{ refine }"
 							@click="clearAllRefinementsAndClose(refine)"
 						>
 							Reset all

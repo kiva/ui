@@ -120,7 +120,7 @@ export default {
 	watch: {
 		percentFull() {
 			if (this.percentFull > 100) {
-				this.percentFull = 100;
+				this.fillLevel = 100;
 			}
 
 			if (!this.timer) {
