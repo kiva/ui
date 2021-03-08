@@ -266,6 +266,7 @@ export default {
 	justify-content: center;
 	position: relative;
 
+	// extra specificity to ensure width: auto is respected when bundling css
 	.cards-wrap {
 		display: flex;
 		width: auto;
