@@ -218,11 +218,12 @@ $card-half-space: rem-calc(14/2);
 	align-items: start;
 	justify-content: center;
 	position: relative;
-}
 
-.cards-wrap {
-	display: flex;
-	width: auto;
+	// extra specificity to ensure width: auto is respected when bundling css
+	.cards-wrap {
+		display: flex;
+		width: auto;
+	}
 }
 
 .cards-loan-card,
