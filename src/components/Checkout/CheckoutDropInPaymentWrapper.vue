@@ -8,6 +8,44 @@
 				:payment-types="paymentTypes"
 				@transactions-enabled="enableCheckoutButton = $event"
 			/>
+			<div v-if="isGuestCheckout">
+				<label class="input-label" for="emailReceipt">
+					Where should we email your receipt?
+					<input
+						type="email"
+						name="emailReceipt"
+						v-model="email"
+						id="emailReceipt"
+					>
+					<p v-if="emailErrors && emailErrors.length" class="input-error">
+						Valid email required.
+					</p>
+				</label>
+				<kv-checkbox
+					id="termsAgreement"
+					class="checkbox"
+				>
+					I have read and agree to the
+					<a :href="`https://${this.$appConfig.host}/legal/terms`"
+					   target="_blank"
+					   title="Open Terms of Use in a new window">
+						Terms of Use
+					</a> and
+					<a :href="`https://${this.$appConfig.host}/legal/privacy`"
+					   target="_blank"
+					   title="Open Privacy Policy in a new window">
+						Privacy Policy
+					</a>.
+				</kv-checkbox>
+				<kv-checkbox
+					id="emailUpdates"
+					class="checkbox"
+					name="emailUpdates"
+					:checked="true"
+				>
+					Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.
+				</kv-checkbox>
+			</div>
 			<div id="dropin-button">
 				<kv-button
 					value="submit"
@@ -38,12 +76,15 @@ import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndC
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterface';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
+import { email, getFailures } from '@/util/validators';
 
 export default {
 	components: {
 		KvButton,
 		KvIcon,
-		BraintreeDropInInterface
+		BraintreeDropInInterface,
+		KvCheckbox
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
@@ -57,59 +98,69 @@ export default {
 	},
 	data() {
 		return {
+			email: null,
+			isGuestCheckout: false,
 			enableCheckoutButton: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 		};
+	},
+	computed: {
+		// A named slot will be created for each validator that fails, where the name of the slot will
+		// be the key of the validator that failed in the validators object
+		emailErrors() {
+			if(!this.email) return;
+			return getFailures({ email }, this.email);
+		}
 	},
 	methods: {
 		validateBasketAndCheckout() {
 			this.$emit('updating-totals', true);
 			// Validate Basket prior to starting
 			this.validateBasket()
-				.then(validationStatus => {
-					if (validationStatus === true) {
-						// request payment method
-						this.submitDropInPayment();
-					} else {
-						// validation failed
+					.then(validationStatus => {
+						if (validationStatus === true) {
+							// request payment method
+							this.submitDropInPayment();
+						} else {
+							// validation failed
+							this.$emit('updating-totals', false);
+							this.showCheckoutError(validationStatus);
+							this.$emit('refreshtotals');
+						}
+						return validationStatus;
+					})
+					.catch(error => {
 						this.$emit('updating-totals', false);
-						this.showCheckoutError(validationStatus);
-						this.$emit('refreshtotals');
-					}
-					return validationStatus;
-				})
-				.catch(error => {
-					this.$emit('updating-totals', false);
-					const errorCode = _get(error, 'errors[0].code');
-					const errorMessage = _get(error, 'errors[0].message');
+						const errorCode = _get(error, 'errors[0].code');
+						const errorMessage = _get(error, 'errors[0].message');
 
-					// Fire specific exception to Sentry/Raven
-					Sentry.withScope(scope => {
-						scope.setTag('bt_stage_dropin', 'btSubmitValidationCatch');
-						scope.setTag('bt_basket_validation_error', errorMessage);
-						Sentry.captureException(errorCode);
+						// Fire specific exception to Sentry/Raven
+						Sentry.withScope(scope => {
+							scope.setTag('bt_stage_dropin', 'btSubmitValidationCatch');
+							scope.setTag('bt_basket_validation_error', errorMessage);
+							Sentry.captureException(errorCode);
+						});
 					});
-				});
 		},
 		submitDropInPayment() {
 			// request payment method
 			this.$refs.braintreeDropInInterface.btDropinInstance.requestPaymentMethod()
-				.then(btSubmitResponse => {
-					const transactionNonce = btSubmitResponse?.nonce;
-					const deviceData = btSubmitResponse?.deviceData;
-					const paymentType = btSubmitResponse?.type;
-					if (transactionNonce) {
-						this.doBraintreeCheckout(transactionNonce, deviceData, paymentType);
-					}
-				}).catch(btSubmitError => {
-					console.error(btSubmitError);
-					// Fire specific exception to Sentry/Raven
-					Sentry.withScope(scope => {
-						scope.setTag('bt_stage_dropin', 'btRequestPaymentMethodCatch');
-						scope.setTag('bt_basket_validation_error', btSubmitError);
-						Sentry.captureException(btSubmitError);
-					});
+					.then(btSubmitResponse => {
+						const transactionNonce = btSubmitResponse?.nonce;
+						const deviceData = btSubmitResponse?.deviceData;
+						const paymentType = btSubmitResponse?.type;
+						if (transactionNonce) {
+							this.doBraintreeCheckout(transactionNonce, deviceData, paymentType);
+						}
+					}).catch(btSubmitError => {
+				console.error(btSubmitError);
+				// Fire specific exception to Sentry/Raven
+				Sentry.withScope(scope => {
+					scope.setTag('bt_stage_dropin', 'btRequestPaymentMethodCatch');
+					scope.setTag('bt_basket_validation_error', btSubmitError);
+					Sentry.captureException(btSubmitError);
 				});
+			});
 		},
 		doBraintreeCheckout(nonce, deviceData, paymentType) {
 			// Apollo call to the query mutation
@@ -129,7 +180,7 @@ export default {
 					const errorMessage = _get(kivaBraintreeResponse, 'errors[0].message');
 					const standardErrorCode = `(Braintree error: ${errorCode})`;
 					const standardError = `There was an error processing your payment.
-						Please try again. ${standardErrorCode}`;
+					Please try again. ${standardErrorCode}`;
 
 					// Payment method failed, unselect attempted payment method
 					this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
@@ -146,18 +197,18 @@ export default {
 
 				// Transaction is complete
 				const transactionId = _get(
-					kivaBraintreeResponse,
-					'data.shop.doNoncePaymentDepositAndCheckout'
+						kivaBraintreeResponse,
+						'data.shop.doNoncePaymentDepositAndCheckout'
 				);
 				// redirect to thanks with KIVA transaction id
 				if (transactionId) {
 					// fire BT Success event
 					this.$kvTrackEvent(
-						'basket',
-						`${paymentType} Braintree DropIn Payment`,
-						'Success',
-						transactionId,
-						transactionId
+							'basket',
+							`${paymentType} Braintree DropIn Payment`,
+							'Success',
+							transactionId,
+							transactionId
 					);
 					// Complete transaction handles additional analytics + redirect
 					this.$emit('complete-transaction', transactionId);
@@ -171,4 +222,26 @@ export default {
 
 <style lang="scss" scoped>
 @import "settings";
+.input-label {
+	margin: 1rem 0 1rem;
+	text-align: left;
+	font-weight: normal;
+	font-size: 1rem;
+	line-height: 1.4;
+	color: $charcoal;
+
+	input {
+		color: $charcoal;
+		margin: 0;
+	}
+}
+.checkbox {
+	@include small-text();
+	font-weight: $global-weight-normal;
+	margin: 0 0 1rem;
+}
+.input-error {
+	color: $kiva-accent-red;
+	font-weight: $global-weight-normal;
+}
 </style>
