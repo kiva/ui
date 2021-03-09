@@ -89,12 +89,15 @@ export default {
 		amount: {
 			type: String,
 			default: ''
+		},
+		isGuestCheckout: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
 		return {
 			email: null,
-			isGuestCheckout: false,
 			enableCheckoutButton: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 		};
