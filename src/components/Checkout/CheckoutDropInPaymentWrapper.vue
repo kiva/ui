@@ -94,7 +94,7 @@ export default {
 	data() {
 		return {
 			email: null,
-			isGuestCheckout: true,
+			isGuestCheckout: false,
 			enableCheckoutButton: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 		};
