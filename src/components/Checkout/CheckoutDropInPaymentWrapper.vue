@@ -8,7 +8,7 @@
 				:payment-types="paymentTypes"
 				@transactions-enabled="enableCheckoutButton = $event"
 			/>
-			<div v-if="isGuestCheckout">
+			<div v-if="isGuestCheckout" id="guest-checkout">
 				<label class="input-label" for="emailReceipt">
 					Where should we email your receipt?
 					<input
@@ -99,7 +99,7 @@ export default {
 	data() {
 		return {
 			email: null,
-			isGuestCheckout: false,
+			isGuestCheckout: true,
 			enableCheckoutButton: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 		};
@@ -222,26 +222,28 @@ export default {
 
 <style lang="scss" scoped>
 @import "settings";
-.input-label {
-	margin: 1rem 0 1rem;
-	text-align: left;
-	font-weight: normal;
-	font-size: 1rem;
-	line-height: 1.4;
-	color: $charcoal;
-
-	input {
+#guest-checkout {
+	.input-label {
+		margin: 1rem 0 1rem;
+		text-align: left;
+		font-weight: normal;
+		font-size: 1rem;
+		line-height: 1.4;
 		color: $charcoal;
-		margin: 0;
+
+		input {
+			color: $charcoal;
+			margin: 0;
+		}
 	}
-}
-.checkbox {
-	@include small-text();
-	font-weight: $global-weight-normal;
-	margin: 0 0 1rem;
-}
-.input-error {
-	color: $kiva-accent-red;
-	font-weight: $global-weight-normal;
+	.checkbox {
+		@include small-text();
+		font-weight: $global-weight-normal;
+		margin: 0 0 1rem;
+	}
+	.input-error {
+		color: $kiva-accent-red;
+		font-weight: $global-weight-normal;
+	}
 }
 </style>
