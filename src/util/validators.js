@@ -19,6 +19,6 @@ export function getFailures(validators, value, ...args) {
 	if (typeof validators !== 'object') return [];
 
 	return Object.entries(validators)
-		.filter((v) => !v[1](value, ...args))
-		.map((v) => v[0]);
+		.filter(v => !v[1](value, ...args))
+		.map(v => v[0]);
 }
