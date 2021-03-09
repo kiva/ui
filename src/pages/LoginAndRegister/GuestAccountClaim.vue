@@ -8,20 +8,27 @@
 				To finish creating your account, please enter your first and last name below.
 			</p>
 			<form id="guestAccountClaimForm" action="." @submit.prevent.stop="claimGuestAccount">
-				<label class="input-label" for="firstName">
+				<kv-base-input name="firstName"
+					type="text"
+					v-model.trim="firstName"
+					:validation="$v.firstName"
+				>
 					First name
-				</label>
-				<input id="firstName" v-model="firstName" type="text" required>
-				<label class="input-label" for="lastName">
+					<template #required>
+						Enter first name.
+					</template>
+				</kv-base-input>
+				<kv-base-input name="lastName"
+					type="text"
+					v-model.trim="lastName"
+					:validation="$v.lastName"
+				>
 					Last name
-				</label>
-				<input id="lastName" v-model="lastName" type="text" required>
-				<ul v-show="showValidationError" class="validation-errors">
-					<li>
-						You must provide your first and last name
-					</li>
-				</ul>
-				<KvButton class="claim-button" type="submit">
+					<template #required>
+						Enter last name.
+					</template>
+				</kv-base-input>
+				<KvButton class="claim-button smaller" type="submit">
 					Done
 				</KvButton>
 			</form>
@@ -30,40 +37,51 @@
 </template>
 
 <script>
+import { validationMixin } from 'vuelidate';
+import { required } from 'vuelidate/lib/validators';
 import SystemPage from '@/components/SystemFrame/SystemPage';
 import KvButton from '@/components/Kv/KvButton';
+import KvBaseInput from '@/components/Kv/KvBaseInput';
 
 export default {
+	metaInfo() {
+		return {
+			title: 'Claim account'
+		};
+	},
 	components: {
 		SystemPage,
 		KvButton,
+		KvBaseInput,
 	},
 	inject: ['apollo'],
+	mixins: [
+		validationMixin,
+	],
+	validations: {
+		firstName: {
+			required,
+		},
+		lastName: {
+			required,
+		},
+	},
 	data() {
 		return {
 			firstName: '',
 			lastName: '',
-			showValidationError: false
 		};
-	},
-	computed: {
-		isValid() {
-			return this.firstName.trim() && this.lastName.trim();
-		},
-		formData() {
-			return [
-				`firstName=${encodeURIComponent(this.firstName)}`,
-				`lastName=${encodeURIComponent(this.lastName)}`,
-			].join('&');
-		}
 	},
 	methods: {
 		claimGuestAccount() {
-			if (!this.isValid) {
-				this.showValidationError = true;
-			} else {
-				window.location = `https://${this.$appConfig.auth0.domain}`
-						+ `/continue?${this.formData}&state=${this.$route.query.state}`;
+			this.$v.$touch();
+			if (!this.$v.$invalid) {
+				const params = [
+					`firstName=${encodeURIComponent(this.firstName)}`,
+					`lastName=${encodeURIComponent(this.lastName)}`,
+					`state=${this.$route.query.state}`
+				].join('&');
+				window.location = `https://${this.$appConfig.auth0.domain}/continue?${params}`;
 			}
 		}
 	},
@@ -77,12 +95,9 @@ export default {
 .page-content {
 	max-width: 20rem;
 
-	.input-label {
-		text-align: left;
-	}
-
 	.claim-button {
 		width: 100%;
+		margin: rem-calc(8) 0 rem-calc(2);
 	}
 }
 </style>
