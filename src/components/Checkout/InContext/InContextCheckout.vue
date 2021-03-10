@@ -161,7 +161,14 @@ export default {
 			return appliedCreditsPromoFunds[0] || null;
 		},
 		registerOrLoginHref() {
-			return `/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
+			const urlParams = new URLSearchParams(window.location.search);
+			urlParams.set('fromLogin', 'true');
+			window.location.search = urlParams;
+			console.log(window.location);
+
+			const path = this.$route.fullPath;
+			console.log(path);
+			return `/ui-login?force=true&doneUrl=${encodeURIComponent(path)}`;
 		},
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;

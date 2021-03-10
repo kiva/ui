@@ -5,6 +5,12 @@
 		:corporate-logo-url="corporateLogoUrl"
 	>
 		<div class="corporate-campaign-landing">
+			<div
+				v-if="loadingPage"
+				class="corporate-campaign-landing__loading-page"
+			>
+				LOADING
+			</div>
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
 			<campaign-status
 				v-if="!hideStatusBar"
@@ -494,6 +500,7 @@ export default {
 			useMatcherAccountIds: true,
 			initialFilters: {},
 			verificationSumbitted: false,
+			loadingPage: false,
 		};
 	},
 	metaInfo() {
@@ -546,6 +553,11 @@ export default {
 		// TODO: Revisit this control flow
 		if (this.$route.hash === '#show-basket') {
 			this.$router.push(this.adjustRouteHash(''));
+		}
+
+		if (this.$route.query.fromLogin) {
+			this.loadingPage = true;
+			console.log('from login');
 		}
 
 		// Ensure browser clock is correct before using current time
@@ -980,6 +992,7 @@ export default {
 				&& this.isActivelyLoggedIn
 				&& this.teamId
 				&& !this.teamJoinStatus
+				// I think this is the general area to show the checkout after login for all users
 			) {
 				// check for team join optionality
 				this.showTeamForm = true;
@@ -988,6 +1001,7 @@ export default {
 				// signify checkout is ready
 				this.showCheckout();
 			}
+			this.loadingPage = false;
 		},
 		showCheckout() {
 			if (this.basketLoans.length) {
@@ -1133,6 +1147,12 @@ export default {
 		if (to.hash === '#show-basket') {
 			this.checkoutVisible = true;
 		}
+
+		if (this.$route.query.fromLogin) {
+			console.log('from login');
+			this.loadingPage = true;
+		}
+
 		next();
 	},
 	destroyed() {
@@ -1156,6 +1176,15 @@ export default {
 		@include breakpoint(large) {
 			top: $header-height-large;
 		}
+	}
+
+	&__loading-page {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: pink;
 	}
 }
 
