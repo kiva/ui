@@ -5,12 +5,9 @@
 		:corporate-logo-url="corporateLogoUrl"
 	>
 		<div class="corporate-campaign-landing">
-			<div
+			<kv-loading-overlay
 				v-if="loadingPage"
-				class="corporate-campaign-landing__loading-page"
-			>
-				LOADING
-			</div>
+			/>
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
 			<campaign-status
 				v-if="!hideStatusBar"
@@ -212,6 +209,7 @@ import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVer
 import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
 import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 
@@ -426,6 +424,7 @@ export default {
 		CampaignVerificationForm,
 		InContextCheckout,
 		KvLightbox,
+		KvLoadingOverlay,
 		LoanCardController,
 		WwwPageCorporate,
 	},
@@ -1150,6 +1149,7 @@ export default {
 	beforeRouteUpdate(to, from, next) {
 		this.$refs.loandisplayref.updateFromParams(to.query);
 		if (to.hash === '#show-basket') {
+			console.log('beforeRouteUpdate show basket');
 			this.checkoutVisible = true;
 		}
 
@@ -1181,15 +1181,6 @@ export default {
 		@include breakpoint(large) {
 			top: $header-height-large;
 		}
-	}
-
-	&__loading-page {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: pink;
 	}
 }
 
