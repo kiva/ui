@@ -9,16 +9,16 @@
 				@transactions-enabled="enableCheckoutButton = $event"
 			/>
 			<div v-if="isGuestCheckout" id="guest-checkout">
-				<label class="input-label" for="emailReceipt">
+				<label class="input-label" for="email">
 					Where should we email your receipt?
 					<input
 						type="email"
-						name="emailReceipt"
+						name="email"
 						v-model="email"
-						id="emailReceipt"
+						id="email"
 						class="fs-exclude"
 					>
-					<p v-if="emailErrors && emailErrors.length" class="input-error">
+					<p v-if="!$v.email.email" class="input-error">
 						Valid email required.
 					</p>
 				</label>
@@ -72,7 +72,8 @@ import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterface';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
-import { email, getFailures } from '@/util/validators';
+import { validationMixin } from 'vuelidate';
+import { email } from 'vuelidate/lib/validators';
 
 export default {
 	components: {
@@ -83,7 +84,8 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
-		checkoutUtils
+		checkoutUtils,
+		validationMixin
 	],
 	props: {
 		amount: {
@@ -92,7 +94,7 @@ export default {
 		},
 		isGuestCheckout: {
 			type: Boolean,
-			default: false
+			default: true
 		}
 	},
 	data() {
@@ -102,13 +104,8 @@ export default {
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 		};
 	},
-	computed: {
-		// A named slot will be created for each validator that fails, where the name of the slot will
-		// be the key of the validator that failed in the validators object
-		emailErrors() {
-			if (!this.email) return;
-			return getFailures({ email }, this.email);
-		}
+	validations: {
+		email: { email }
 	},
 	methods: {
 		validateBasketAndCheckout() {
