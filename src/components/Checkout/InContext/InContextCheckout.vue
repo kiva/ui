@@ -161,14 +161,12 @@ export default {
 			return appliedCreditsPromoFunds[0] || null;
 		},
 		registerOrLoginHref() {
-			const urlParams = new URLSearchParams(window.location.search);
-			urlParams.set('fromLogin', 'true');
-			window.location.search = urlParams;
-			console.log(window.location);
-
-			const path = this.$route.fullPath;
-			console.log(path);
-			return `/ui-login?force=true&doneUrl=${encodeURIComponent(path)}`;
+			let newurl;
+			const searchParams = new URLSearchParams(window.location.search);
+			searchParams.set('fromLogin', 'true');
+			newurl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?${searchParams.toString()}`; /* eslint-disable-line */
+			console.log(newurl);
+			return `/ui-login?force=true&doneUrl=${encodeURIComponent(newurl)}`;
 		},
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;
