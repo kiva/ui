@@ -949,6 +949,9 @@ export default {
 				if (this.$refs.inContextCheckoutRef) {
 					this.$refs.inContextCheckoutRef.updatingTotals = false;
 				}
+
+				this.loadingPage = false;
+				console.log('this.loadingPage', this.loadingPage);
 				// exit method
 				return false;
 			}
@@ -977,6 +980,9 @@ export default {
 					console.error(errorResponse);
 					return false;
 				});
+
+			this.loadingPage = false;
+			console.log('this.loadingPage', this.loadingPage);
 		},
 		handleBasketValidation() {
 			// check for verification form requirement
@@ -1001,7 +1007,6 @@ export default {
 				// signify checkout is ready
 				this.showCheckout();
 			}
-			this.loadingPage = false;
 		},
 		showCheckout() {
 			if (this.basketLoans.length) {
