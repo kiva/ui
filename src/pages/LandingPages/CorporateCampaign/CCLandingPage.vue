@@ -551,7 +551,7 @@ export default {
 		// clean up show-basket process
 		// TODO: Revisit this control flow
 		if (this.$route.hash === '#show-basket') {
-			this.$router.push(this.adjustRouteHash(''));
+			this.$router.push(this.adjustRouteHash('')).catch(() => {});
 		}
 
 		if (this.$route.query.fromLogin) {
@@ -579,7 +579,7 @@ export default {
 		checkoutVisible(next) {
 			if (!next && this.$route.hash === '#show-basket') {
 				this.$nextTick(() => {
-					this.$router.push(this.adjustRouteHash(''));
+					this.$router.push(this.adjustRouteHash('')).catch(() => {});
 				});
 			}
 		}
@@ -949,8 +949,7 @@ export default {
 					this.$refs.inContextCheckoutRef.updatingTotals = false;
 				}
 
-				this.loadingPage = false;
-				console.log('this.loadingPage', this.loadingPage);
+				this.setLoadingPageFalse();
 				// exit method
 				return false;
 			}
@@ -980,8 +979,7 @@ export default {
 					return false;
 				});
 
-			this.loadingPage = false;
-			console.log('this.loadingPage', this.loadingPage);
+			this.setLoadingPageFalse();
 		},
 		handleBasketValidation() {
 			// check for verification form requirement
@@ -1018,7 +1016,7 @@ export default {
 			this.checkoutVisible = false;
 			if (this.$route.hash === '#show-basket') {
 				this.$nextTick(() => {
-					this.$router.push(this.adjustRouteHash(''));
+					this.$router.push(this.adjustRouteHash('')).catch(() => {});
 				});
 			}
 		},
@@ -1114,7 +1112,15 @@ export default {
 			route.hash = hash;
 			return route;
 		},
+		setLoadingPageFalse() {
+			this.loadingPage = false;
+			console.log('this.loadingPage', this.loadingPage);
 
+			// cleanup hash
+			const query = { ...this.$route.query };
+			delete query.fromLogin;
+			this.$router.replace({ query }).catch(() => {});
+		},
 		handleUpdatedFilters(payload) {
 			this.filters = getSearchableFilters(payload);
 		},
