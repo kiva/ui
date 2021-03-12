@@ -17,14 +17,18 @@
 						v-model="email"
 						id="email"
 						class="fs-exclude"
+						@keyup="emailChange()"
 					>
-					<p v-if="!$v.email.email" class="input-error">
+					<p v-if="displayEmailErrors" class="input-error">
 						Valid email required.
 					</p>
 				</label>
 				<kv-checkbox
 					id="termsAgreement"
+					name="termsAgreement"
 					class="checkbox"
+					v-model="termsAgreement"
+					@change="termsAgreementCheckboxChange()"
 				>I have read and agree to the <a
 					:href="`https://${this.$appConfig.host}/legal/terms`"
 					target="_blank"
@@ -32,6 +36,9 @@
 						:href="`https://${this.$appConfig.host}/legal/privacy`"
 						target="_blank"
 						title="Open Privacy Policy in a new window">Privacy Policy</a>.
+					<p v-if="displayTermsAgreementErrors" class="input-error">
+						You must agree to the Kiva Terms of service & Privacy policy.
+					</p>
 				</kv-checkbox>
 				<kv-checkbox
 					id="emailUpdates"
@@ -47,7 +54,7 @@
 					id="dropin-submit"
 					class="button"
 					:disabled="!enableCheckoutButton"
-					@click.native="validateBasketAndCheckout"
+					@click.native="submit"
 				>
 					<kv-icon name="lock" />
 					Checkout
@@ -73,7 +80,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterface';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 import { validationMixin } from 'vuelidate';
-import { email } from 'vuelidate/lib/validators';
+import { required, email } from 'vuelidate/lib/validators';
 
 export default {
 	components: {
@@ -100,14 +107,39 @@ export default {
 	data() {
 		return {
 			email: null,
+			termsAgreement: false,
 			enableCheckoutButton: false,
+			displayEmailErrors: false,
+			displayTermsAgreementErrors: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 		};
 	},
 	validations: {
-		email: { email }
+		email: {
+			required,
+			email
+		},
+		termsAgreement: { required: value => value === true }
 	},
 	methods: {
+		submit() {
+			if (!this.$v.$invalid) {
+				this.validateBasketAndCheckout();
+			} else {
+				if(this.$v.termsAgreement.$invalid) {
+					this.displayTermsAgreementErrors = true;
+				}
+				if(this.$v.email.$invalid) {
+					this.displayEmailErrors = true;
+				}
+			}
+		},
+		termsAgreementCheckboxChange() {
+			this.displayTermsAgreementErrors = this.termsAgreement !== true;
+		},
+		emailChange() {
+			this.displayEmailErrors = this.$v.email.$invalid;
+		},
 		validateBasketAndCheckout() {
 			this.$emit('updating-totals', true);
 			// Validate Basket prior to starting
@@ -244,6 +276,7 @@ export default {
 	.input-error {
 		color: $kiva-accent-red;
 		font-weight: $global-weight-normal;
+		font-size: 1rem;
 	}
 }
 </style>
