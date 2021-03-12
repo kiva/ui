@@ -1,6 +1,7 @@
 import StoryRouter from 'storybook-vue-router';
 import RecommendedLoanCard from '@/components/LoanCards/RecommendedLoanCard';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
+import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 
 const queryResult = {
 	data: {
@@ -47,7 +48,7 @@ export default {
 };
 
 export const Default = () => ({
-	mixins: [apolloStoryMixin({ queryResult })],
+	mixins: [apolloStoryMixin({ queryResult }), cookieStoreStoryMixin()],
 	components: { RecommendedLoanCard },
 	template: `
 		<div class="row">
@@ -59,7 +60,7 @@ export const Default = () => ({
 });
 
 export const Loading = () => ({
-	mixins: [apolloStoryMixin({ loading: true })],
+	mixins: [apolloStoryMixin({ loading: true }), cookieStoreStoryMixin()],
 	components: { RecommendedLoanCard },
 	template: `
 		<div class="row">

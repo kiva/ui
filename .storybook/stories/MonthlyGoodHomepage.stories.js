@@ -8,6 +8,8 @@ Vue.use(Vue2TouchEvents);
 import StoryRouter from 'storybook-vue-router';
 import MonthlyGoodHomepage from '@/pages/Homepage/MonthlyGoodHomepage';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
+import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
+import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
 import { mockLoansArray } from '../utils';
 import mockedLoanChannelsData from '../mock-data/loan-channels-data-mock';
 
@@ -35,7 +37,7 @@ export const Default = () => ({
 	components: {
 		MonthlyGoodHomepage,
 	},
-	mixins: [apolloStoryMixin()],
+	mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin],
 	provide: {
 		apollo: {
 			readQuery() {
