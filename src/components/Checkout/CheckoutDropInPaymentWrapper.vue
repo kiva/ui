@@ -126,10 +126,10 @@ export default {
 			if (!this.$v.$invalid) {
 				this.validateBasketAndCheckout();
 			} else {
-				if(this.$v.termsAgreement.$invalid) {
+				if (this.$v.termsAgreement.$invalid) {
 					this.displayTermsAgreementErrors = true;
 				}
-				if(this.$v.email.$invalid) {
+				if (this.$v.email.$invalid) {
 					this.displayEmailErrors = true;
 				}
 			}
