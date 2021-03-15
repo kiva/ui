@@ -17,9 +17,8 @@
 						v-model="email"
 						id="email"
 						class="fs-exclude"
-						@keyup="emailChange()"
 					>
-					<p v-if="displayEmailErrors" class="input-error">
+					<p v-if="$v.email.$error" class="input-error">
 						Valid email required.
 					</p>
 				</label>
@@ -28,7 +27,6 @@
 					name="termsAgreement"
 					class="checkbox"
 					v-model="termsAgreement"
-					@change="termsAgreementCheckboxChange()"
 				>I have read and agree to the <a
 					:href="`https://${this.$appConfig.host}/legal/terms`"
 					target="_blank"
@@ -36,7 +34,7 @@
 						:href="`https://${this.$appConfig.host}/legal/privacy`"
 						target="_blank"
 						title="Open Privacy Policy in a new window">Privacy Policy</a>.
-					<p v-if="displayTermsAgreementErrors" class="input-error">
+					<p v-if="$v.termsAgreement.$error" class="input-error">
 						You must agree to the Kiva Terms of service & Privacy policy.
 					</p>
 				</kv-checkbox>
@@ -109,8 +107,6 @@ export default {
 			email: null,
 			termsAgreement: false,
 			enableCheckoutButton: false,
-			displayEmailErrors: false,
-			displayTermsAgreementErrors: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 		};
 	},
@@ -123,22 +119,10 @@ export default {
 	},
 	methods: {
 		submit() {
+			this.$v.$touch();
 			if (!this.$v.$invalid) {
 				this.validateBasketAndCheckout();
-			} else {
-				if (this.$v.termsAgreement.$invalid) {
-					this.displayTermsAgreementErrors = true;
-				}
-				if (this.$v.email.$invalid) {
-					this.displayEmailErrors = true;
-				}
 			}
-		},
-		termsAgreementCheckboxChange() {
-			this.displayTermsAgreementErrors = this.termsAgreement !== true;
-		},
-		emailChange() {
-			this.displayEmailErrors = this.$v.email.$invalid;
 		},
 		validateBasketAndCheckout() {
 			this.$emit('updating-totals', true);
