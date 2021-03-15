@@ -896,34 +896,28 @@ export default {
 				loanReservationTotal
 			} = this.basketTotals;
 
-			const simpleCheckoutEligible = true;
 			let simpleCheckoutRestrictedMessage = '';
 
 			// TODO: Log or notify for any of the following conditions
 			if (numeral(donationTotal).value() > 0) {
-				// simpleCheckoutEligible = false;
 				simpleCheckoutRestrictedMessage = 'There is a donation present on the basket.';
 			}
 
 			if (numeral(creditAmountNeeded).value() > 0) {
-				// simpleCheckoutEligible = false;
 				simpleCheckoutRestrictedMessage = 'Additional credit or funds are needed to complete the transaction';
 			}
 
 			// TODO: Refine and document narrow in-context checkout conditions
 			// TODO: Handle complex checkout scenarios
 			if (numeral(creditAppliedTotal).value() !== numeral(loanReservationTotal).value()) {
-				// simpleCheckoutEligible = false;
 				simpleCheckoutRestrictedMessage = 'Promo Credit applied does not match loan reservation total';
 			}
 
 			if (numeral(itemTotal).value() !== numeral(loanReservationTotal).value()) {
-				// simpleCheckoutEligible = false;
 				simpleCheckoutRestrictedMessage = 'Item total does not match loan reservation total';
 			}
 
 			if (numeral(creditAvailableTotal).value() !== numeral(loanReservationTotal).value()) {
-				// simpleCheckoutEligible = false;
 				simpleCheckoutRestrictedMessage = 'Credit available total does not match loan reservation total.';
 			}
 
@@ -935,23 +929,11 @@ export default {
 			// eslint-disable-next-line no-underscore-dangle
 			this.kivaCards = basketItems.filter(item => item.__typename === 'KivaCard');
 
-			// Basket is not eligible for simple incontext checkout
-			if (!simpleCheckoutEligible) {
-				// Temporary notice of failure condition that was hit
-				// TODO: Create lightbox or other notice with action options for resolution
-				if (simpleCheckoutRestrictedMessage && this.basketLoans.length) {
-					console.log(simpleCheckoutRestrictedMessage);
-					// this.$showTipMsg(simpleCheckoutRestrictedMessage, 'info');
-				}
-				// turn off loading state
-				this.$refs.loandisplayref.loadingLoans = false;
-				if (this.$refs.inContextCheckoutRef) {
-					this.$refs.inContextCheckoutRef.updatingTotals = false;
-				}
-
-				this.setLoadingPageFalse();
-				// exit method
-				return false;
+			// Temporary notice of failure condition that was hit
+			// TODO: Create lightbox or other notice with action options for resolution
+			if (simpleCheckoutRestrictedMessage && this.basketLoans.length) {
+				console.log(simpleCheckoutRestrictedMessage);
+				// this.$showTipMsg(simpleCheckoutRestrictedMessage, 'info');
 			}
 
 			this.validateBasket()
