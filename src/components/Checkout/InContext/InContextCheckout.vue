@@ -2,7 +2,6 @@
 	<div
 		class="in-context-checkout"
 		id="inContextCheckout"
-		ref="inContextCheckoutRef"
 	>
 		<basket-items-list
 			class="in-context-checkout__basket-items"
