@@ -545,9 +545,9 @@ export default {
 		// startup campaign status loader
 		this.loadingPromotion = true;
 
-		if (this.itemsInBasket.length) {
-			this.loadingPage = true;
-		}
+		// show a loading screen if the page loads with an loan in the basket.
+		const basketItems = this.rawPageData.shop?.basket?.items?.values ?? [];
+		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
 	},
 	mounted() {
 		// check for applied promo
