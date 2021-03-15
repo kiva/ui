@@ -975,7 +975,6 @@ export default {
 				&& this.isActivelyLoggedIn
 				&& this.teamId
 				&& !this.teamJoinStatus
-				// I think this is the general area to show the checkout after login for all users
 			) {
 				// check for team join optionality
 				this.showTeamForm = true;
@@ -1126,13 +1125,7 @@ export default {
 	beforeRouteUpdate(to, from, next) {
 		this.$refs.loandisplayref.updateFromParams(to.query);
 		if (to.hash === '#show-basket') {
-			console.log('beforeRouteUpdate show basket');
 			this.checkoutVisible = true;
-		}
-
-		if (this.$route.query.fromLogin) {
-			console.log('from login');
-			this.loadingPage = true;
 		}
 
 		next();
