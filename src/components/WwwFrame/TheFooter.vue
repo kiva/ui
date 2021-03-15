@@ -339,6 +339,14 @@
 						</li>
 						<li>
 							<router-link
+								:to="cookiesUrl"
+								v-kv-track-event="['Footer', 'click-Cookie policy']"
+							>
+								Cookie policy
+							</router-link>
+						</li>
+						<li>
+							<router-link
 								:to="termsUrl"
 								v-kv-track-event="['Footer', 'click-Terms of use']"
 							>
@@ -649,6 +657,14 @@
 					</li>
 					<li>
 						<router-link
+							:to="cookiesUrl"
+							v-kv-track-event="['Footer', 'click-Cookie policy']"
+						>
+							Cookie policy
+						</router-link>
+					</li>
+					<li>
+						<router-link
 							:to="termsUrl"
 							v-kv-track-event="['Footer', 'click-Terms of use']"
 						>
@@ -705,6 +721,7 @@ export default {
 			lendByCategoryUrl: '/lend-by-category',
 			helpUrl: '/help',
 			careersUrl: 'https://www.careers.kiva.org/',
+			cookiesUrl: '/legal/cookies',
 			sitemapUrl: '/sitemap',
 			privacyUrl: '/legal/privacy',
 			termsUrl: '/legal/terms',
