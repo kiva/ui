@@ -160,12 +160,7 @@ export default {
 			return appliedCreditsPromoFunds[0] || null;
 		},
 		registerOrLoginHref() {
-			// add fromLogin to the end of our url
-			const searchParams = new URLSearchParams(window.location.search);
-			searchParams.set('fromLogin', 'true');
-			const newurl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?${searchParams.toString()}`; /* eslint-disable-line */
-			console.log(newurl);
-			return `/ui-login?force=true&doneUrl=${encodeURIComponent(newurl)}`;
+			return `/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
 		},
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;

@@ -544,6 +544,10 @@ export default {
 		this.pageQuery = this.$route.query;
 		// startup campaign status loader
 		this.loadingPromotion = true;
+
+		if (this.itemsInBasket.length) {
+			this.loadingPage = true;
+		}
 	},
 	mounted() {
 		// check for applied promo
@@ -553,11 +557,6 @@ export default {
 		// TODO: Revisit this control flow
 		if (this.$route.hash === '#show-basket') {
 			this.$router.push(this.adjustRouteHash('')).catch(() => {});
-		}
-
-		if (this.$route.query.fromLogin) {
-			this.loadingPage = true;
-			console.log('from login');
 		}
 
 		// Ensure browser clock is correct before using current time
@@ -974,13 +973,11 @@ export default {
 
 					// signify checkout is ready
 					this.handleBasketValidation();
-					return true;
 				}).catch(errorResponse => {
 					console.error(errorResponse);
-					return false;
+				}).finally(() => {
+					this.loadingPage = false;
 				});
-
-			this.setLoadingPageFalse();
 		},
 		handleBasketValidation() {
 			// check for verification form requirement
@@ -1112,15 +1109,6 @@ export default {
 			const route = { ...this.$route };
 			route.hash = hash;
 			return route;
-		},
-		setLoadingPageFalse() {
-			this.loadingPage = false;
-			console.log('this.loadingPage', this.loadingPage);
-
-			// cleanup hash
-			const query = { ...this.$route.query };
-			delete query.fromLogin;
-			this.$router.replace({ query }).catch(() => {});
 		},
 		handleUpdatedFilters(payload) {
 			this.filters = getSearchableFilters(payload);
