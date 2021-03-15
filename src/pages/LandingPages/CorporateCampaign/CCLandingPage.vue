@@ -158,6 +158,7 @@
 					:promo-fund="promoFund"
 					@transaction-complete="transactionComplete"
 					@refresh-totals="refreshTotals"
+					ref="inContextCheckoutRef"
 				/>
 			</kv-lightbox>
 
