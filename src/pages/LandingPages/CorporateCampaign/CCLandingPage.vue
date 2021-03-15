@@ -153,11 +153,12 @@
 					:kiva-cards="kivaCards"
 					:teams="myTeams"
 					:totals="basketTotals"
-					:show-donation="false"
+					:show-donation="isMatchingCampaign"
 					:auto-redirect-to-thanks="false"
 					:promo-fund="promoFund"
 					@transaction-complete="transactionComplete"
 					@refresh-totals="refreshTotals"
+					ref="inContextCheckoutRef"
 				/>
 			</kv-lightbox>
 
@@ -885,12 +886,12 @@ export default {
 				loanReservationTotal
 			} = this.basketTotals;
 
-			let simpleCheckoutEligible = true;
+			const simpleCheckoutEligible = true;
 			let simpleCheckoutRestrictedMessage = '';
 
 			// TODO: Log or notify for any of the following conditions
 			if (numeral(donationTotal).value() > 0) {
-				simpleCheckoutEligible = false;
+				// simpleCheckoutEligible = false;
 				simpleCheckoutRestrictedMessage = 'There is a donation present on the basket.';
 			}
 
