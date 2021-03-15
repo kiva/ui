@@ -6,6 +6,7 @@ Vue.use(kivaPlugins)
 
 import StoryRouter from 'storybook-vue-router';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
+import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
 
 import SecuritySettingsPage from '@/pages/Settings/SecuritySettings';
@@ -18,7 +19,7 @@ export default {
 };
 
 export const SecurityAndLogin = () => ({
-	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin],
 	components: {
 		SecuritySettingsPage,
 	},
@@ -28,7 +29,7 @@ export const SecurityAndLogin = () => ({
 });
 
 export const TwoStepVerification = () => ({
-	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin],
 	components: {
 		TwoStepVerificationPage,
 	},
