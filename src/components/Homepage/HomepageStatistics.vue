@@ -81,7 +81,8 @@ export default {
 	},
 	computed: {
 		statsText() {
-			return this.content?.contents?.find(({ key }) => key.indexOf('homepage-statistics-headline-text') > -1);
+			// eslint-disable-next-line max-len
+			return this.content?.contents?.find(({ key }) => key.indexOf('homepage-statistics-headline-content') > -1);
 		},
 		statsHeadline() {
 			return this.statsText.headline ?? '';

@@ -24,7 +24,7 @@ const TopMessageContentful = () => import('./TopMessageContentful');
 
 const activePageQuery = gql`query homepageFrame {
 	contentful {
-		entries(contentType: "page", contentKey: "home-default")
+		entries(contentType: "page", contentKey: "home")
 	}
 	general {
 		legacyHomeExp: uiExperimentSetting(key: "home_legacy") {
