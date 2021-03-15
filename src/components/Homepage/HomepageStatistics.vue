@@ -62,7 +62,7 @@ export default {
 	},
 	apollo: {
 		query: whyKivaQuery,
-		preFetch: false,
+		preFetch: true,
 		result({ data }) {
 			this.repaymentRate = _get(data, 'general.kivaStats.repaymentRate');
 			this.totalLoansInDollars = _get(data, 'general.kivaStats.amountFunded');
@@ -84,7 +84,7 @@ export default {
 			return this.content?.contents?.find(({ key }) => key.indexOf('homepage-statistics-headline-text') > -1);
 		},
 		statsHeadline() {
-			return this.statsText.headline;
+			return this.statsText.headline ?? '';
 		},
 		statsBlockText() {
 			// eslint-disable-next-line max-len
@@ -96,11 +96,8 @@ export default {
 			}));
 		},
 		statsIcons() {
-			// Attempted to be more specific by using the title to pull in the content,
-			// but wasn't able to get this working
-			// const icons = this.content?.media?.filter(({ key }) => key.indexOf('homepage-stats-icon') > -1);
+			const icons = this.content?.media?.filter(({ title }) => title.indexOf('homepage-stats-icon') > -1);
 
-			const icons = this.content?.media ?? [];
 			return icons.map(image => ({
 				description: image?.description ?? '',
 				title: image?.title ?? '',
@@ -108,14 +105,9 @@ export default {
 			}));
 		},
 		statsVideo() {
-			// Attempted to be more specific by using the title to pull in the content,
-			// but wasn't able to get this working
+			// Grabbing the 1x video from contentful. 2x video = 'homepage-statistics-video-2x'
 			// eslint-disable-next-line max-len
-			// const video = this.content?.media?.find(({ key }) => key.indexOf('homepage-statistics-video-1x') > -1);
-
-			// eslint-disable-next-line max-len
-			// Grabbing the 1x video from contentful. 2x video = 'homepage-statistics-video-2x' || this.content?.media[3]
-			const video = this.content?.media[3] ?? [];
+			const video = this.content?.media?.find(({ title }) => title.indexOf('homepage-statistics-video-1x') > -1);
 			if (video === '') {
 				return '';
 			}
@@ -198,6 +190,7 @@ export default {
 			&::v-deep i {
 				color: $kiva-green;
 				font-weight: bold;
+				font-style: normal;
 			}
 		}
 	}
