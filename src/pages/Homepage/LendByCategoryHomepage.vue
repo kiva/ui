@@ -157,24 +157,6 @@
 		</section>
 
 		<section class="statistics section">
-			<div class="small-12 columns">
-				<kv-responsive-image
-					class="statistics__img"
-					:images="statistics"
-					loading="lazy"
-					alt=""
-				/>
-			</div>
-			<div class="small-12 columns text-center">
-				<h2 class="statistics__header">
-					<span>100%</span>
-					<span class="statistics__header-small">of your loan goes to the field.</span>
-				</h2>
-				<p class="statistics__body">
-					We don't take a penny.
-				</p>
-			</div>
-
 			<homepage-statistics class="section"
 				v-if="statisticsContentfulContentGroup"
 				:content="statisticsContentfulContentGroup"
@@ -334,10 +316,10 @@ export default {
 			heroPromoEnabled: null,
 			kivaCardPromoEnabled: null,
 			kivaCardPromoContent: null,
-			statistics: [
-				['small', imgRequire('./stats.png')],
-				['small retina', imgRequire('./stats_2x.png')],
-			],
+			// statistics: [
+			// 	['small', imgRequire('./stats.png')],
+			// 	['small retina', imgRequire('./stats_2x.png')],
+			// ],
 			takeQuizImgs: {
 				header: [
 					['small', imgRequire('./potters.png')],
