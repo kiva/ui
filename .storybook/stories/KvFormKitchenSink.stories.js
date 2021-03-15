@@ -1,3 +1,4 @@
+import KvBaseInput from '@/components/Kv/KvBaseInput';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
@@ -14,6 +15,7 @@ export default {
 
 export const KitchenSink = () => ({
 	components: {
+		KvBaseInput,
 		KvCheckbox,
 		KvCurrencyInput,
 		KvDropdownRounded,
@@ -26,6 +28,13 @@ export const KitchenSink = () => ({
 	},
 	data() {
 		return {
+			kvBaseInputError: {
+				validationName: false,
+				$error: true,
+				$params: {
+					validationName: {},
+				},
+			},
 			kvCheckboxModel1: true,
 			kvCheckboxModel2: false,
 			kvCheckboxModel3: false,
@@ -268,6 +277,28 @@ export const KitchenSink = () => ({
 							rows="4"
 						></textarea>
 					</label>
+				</fieldset>
+
+				<fieldset>
+					<legend>KvBaseInput</legend>
+					<kv-base-input
+						type="text"
+						name="baseInput"
+						:validation="{}"
+					>
+						Base input
+					</kv-base-input>
+					<kv-base-input
+						type="text"
+						name="baseInputError"
+						:validation="kvBaseInputError"
+					>
+						Base input with error
+
+						<template #validationName>
+							There is a problem
+						</template>
+					</kv-base-input>
 				</fieldset>
 			</form>
 		</section>

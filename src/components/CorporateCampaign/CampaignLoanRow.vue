@@ -265,16 +265,17 @@ export default {
 	align-items: center;
 	justify-content: center;
 	position: relative;
+
+	// extra specificity to ensure width: auto is respected when bundling css
+	.cards-wrap {
+		display: flex;
+		width: auto;
+	}
 }
 
 $card-width: rem-calc(297);
 $card-margin: rem-calc(14);
 $card-half-space: rem-calc(14/2);
-
-.cards-wrap {
-	display: flex;
-	width: auto;
-}
 
 .cards-loan-card,
 .see-all-card {

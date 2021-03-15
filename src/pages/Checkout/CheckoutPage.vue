@@ -179,13 +179,13 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
 import store2 from 'store2';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import syncDate from '@/util/syncDate';
+import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import checkoutSettings from '@/graphql/query/checkout/checkoutSettings.graphql';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
@@ -207,15 +207,6 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
-
-const ftdQuery = gql`query ftdQuery {
-	my {
-		userAccount {
-			id
-			isFirstTimeDepositor
-		}
-	}
-}`;
 
 export default {
 	components: {
@@ -613,32 +604,19 @@ export default {
 			});
 		},
 		completeTransaction(transactionId) {
-			// compile transaction information
-			const transactionData = {
-				transactionId: numeral(transactionId).value(),
-				itemTotal: this.totals.itemTotal,
-				loans: this.loans.map(loan => {
-					const { __typename, id, price } = loan;
-					return { __typename, id, price };
-				}),
-				donations: this.donations.map(donation => {
-					const { __typename, id, price } = donation;
-					return { __typename, id, price };
-				}),
-				kivaCardTotal: this.totals.kivaCardTotal,
-				kivaCards: this.kivaCards.map(kivaCard => {
-					const { __typename, id, price } = kivaCard;
-					return { __typename, id, price };
-				}),
-				isFTD: false,
-			};
+			// compile transaction data
+			const transactionData = formatTransactionData(
+				numeral(transactionId).value(),
+				this.loans,
+				this.kivaCards,
+				this.donations,
+				this.totals
+			);
 
 			// Fetch FTD Status
-			const myFTDQuery = this.apollo.query({
-				query: ftdQuery,
-			});
+			const myFTDQueryUtil = myFTDQuery(this.apollo);
 
-			myFTDQuery.then(({ data }) => {
+			myFTDQueryUtil.then(({ data }) => {
 				// determine ftd status
 				const isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
 				transactionData.isFTD = isFTD;

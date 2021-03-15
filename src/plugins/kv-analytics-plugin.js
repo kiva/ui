@@ -166,6 +166,7 @@ export default Vue => {
 			}
 		},
 		trackTransaction: transactionData => {
+			kvActions.checkLibs();
 			// Nothing to track
 			if (transactionData.transactionId === '') {
 				return false;
@@ -177,6 +178,7 @@ export default Vue => {
 			if (gaLoaded) {
 				kvActions.trackGATransaction(transactionData);
 			}
+			kvActions.trackQuantcast(transactionData);
 		},
 		trackFBTransaction: transactionData => {
 			const itemTotal = transactionData.itemTotal || '';
@@ -187,6 +189,26 @@ export default Vue => {
 					content_type: transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender'
 				});
 			}
+
+			// send transaction data
+			kvActions.trackFBCustomEvent(
+				'TransactionInfo',
+				{
+					depositTotal: transactionData.depositTotal,
+					donationTotal: transactionData.donationTotal,
+					isFtd: transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender',
+					isTip: transactionData.isTip,
+					isUserEdited: transactionData.isUserEdited,
+					itemTotal: transactionData.itemTotal,
+					loanCount: transactionData.loanCount,
+					loanTotal: transactionData.loanTotal,
+					kivaCardCount: transactionData.kivaCardCount,
+					kivaCardTotal: transactionData.kivaCardTotal,
+					kivaCreditUsed: transactionData.kivaCreditAppliedTotal,
+					paymentType: transactionData.paymentType,
+					transactionId: transactionData.transactionId,
+				}
+			);
 
 			// signify transaction has kiva cards
 			if (transactionData.kivaCards && transactionData.kivaCards.length) {
@@ -227,8 +249,32 @@ export default Vue => {
 
 			// Save transaction information to GA
 			window.ga('send', 'event', 'Ecommerce', 'Purchase', { nonInteraction: 1 });
-		}
+		},
+		trackQuantcast: transactionData => {
+			// exit if script is not loaded due to blocking or user choice
+			// eslint-disable-next-line no-underscore-dangle
+			if (typeof window._qevents === 'undefined') return false;
 
+			let qacct = null;
+			/* eslint-disable no-underscore-dangle */
+			if (window.__KV_CONFIG__ && window.__KV_CONFIG__.quantcastId) {
+				qacct = window.__KV_CONFIG__.quantcastId;
+			}
+
+			const customerType = transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender';
+			const donationAmountNormalized = transactionData.donationTotal ? transactionData.donationTotal.replace('.', '') : null;
+
+			// format data for quantcast event
+			// eslint-disable-next-line no-underscore-dangle
+			window._qevents.push({
+				qacct,
+				uid: 'null',
+				labels: `_fp.event.Checkout,_fp.customer.${customerType},_fp.donation.${donationAmountNormalized}`,
+				orderid: String(transactionData.transactionId),
+				revenue: String(transactionData.itemTotal),
+				event: 'refresh'
+			});
+		}
 	};
 
 	Vue.directive('kv-track-event', {

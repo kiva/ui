@@ -67,6 +67,7 @@
 
 <script>
 import numeral from 'numeral';
+import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
@@ -168,30 +169,33 @@ export default {
 	},
 	methods: {
 		completeTransaction(transactionId) {
-			// compile transaction information
-			const transactionData = {
-				transactionId: numeral(transactionId).value(),
-				itemTotal: this.totals.itemTotal,
-				loans: this.loans.map(loan => {
-					const { __typename, id, price } = loan;
-					return { __typename, id, price };
-				}),
-				donations: this.donations.map(donation => {
-					const { __typename, id, price } = donation;
-					return { __typename, id, price };
-				}),
-			};
-			// fire transaction events
-			this.$kvTrackTransaction(transactionData);
-			// redirect to thanks
-			if (this.autoRedirectToThanks) {
-				window.setTimeout(
-					() => {
-						this.redirectToThanks(transactionId);
-					},
-					800
-				);
-			}
+			// compile transaction data
+			const transactionData = formatTransactionData(
+				numeral(transactionId).value(),
+				this.loans,
+				this.kivaCards,
+				this.donations,
+				this.totals
+			);
+			// check ftd status
+			const myFtd = myFTDQuery(this.apollo);
+			myFtd.then(({ data }) => {
+				const isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
+				// update transaction data
+				transactionData.isFTD = isFTD;
+				// send analytics event
+				this.$kvTrackTransaction(transactionData);
+
+				// redirect to thanks
+				if (this.autoRedirectToThanks) {
+					window.setTimeout(
+						() => {
+							this.redirectToThanks(transactionId);
+						},
+						800
+					);
+				}
+			});
 
 			this.$emit('transaction-complete', transactionData);
 		},
