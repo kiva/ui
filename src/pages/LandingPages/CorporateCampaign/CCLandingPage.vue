@@ -5,6 +5,10 @@
 		:corporate-logo-url="corporateLogoUrl"
 	>
 		<div class="corporate-campaign-landing">
+			<kv-loading-overlay
+				v-if="loadingPage"
+				class="corporate-campaign-landing__loading-page"
+			/>
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
 			<campaign-status
 				v-if="!hideStatusBar"
@@ -207,6 +211,7 @@ import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVer
 import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
 import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 
@@ -421,6 +426,7 @@ export default {
 		CampaignVerificationForm,
 		InContextCheckout,
 		KvLightbox,
+		KvLoadingOverlay,
 		LoanCardController,
 		WwwPageCorporate,
 	},
@@ -495,6 +501,7 @@ export default {
 			useMatcherAccountIds: true,
 			initialFilters: {},
 			verificationSumbitted: false,
+			loadingPage: false,
 		};
 	},
 	metaInfo() {
@@ -538,6 +545,10 @@ export default {
 		this.pageQuery = this.$route.query;
 		// startup campaign status loader
 		this.loadingPromotion = true;
+
+		// show a loading screen if the page loads with an loan in the basket.
+		const basketItems = this.rawPageData.shop?.basket?.items?.values ?? [];
+		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
 	},
 	mounted() {
 		// check for applied promo
@@ -546,7 +557,7 @@ export default {
 		// clean up show-basket process
 		// TODO: Revisit this control flow
 		if (this.$route.hash === '#show-basket') {
-			this.$router.push(this.adjustRouteHash(''));
+			this.$router.push(this.adjustRouteHash('')).catch(() => {});
 		}
 
 		// Ensure browser clock is correct before using current time
@@ -569,7 +580,7 @@ export default {
 		checkoutVisible(next) {
 			if (!next && this.$route.hash === '#show-basket') {
 				this.$nextTick(() => {
-					this.$router.push(this.adjustRouteHash(''));
+					this.$router.push(this.adjustRouteHash('')).catch(() => {});
 				});
 			}
 		}
@@ -945,10 +956,10 @@ export default {
 
 					// signify checkout is ready
 					this.handleBasketValidation();
-					return true;
 				}).catch(errorResponse => {
 					console.error(errorResponse);
-					return false;
+				}).finally(() => {
+					this.loadingPage = false;
 				});
 		},
 		handleBasketValidation() {
@@ -985,7 +996,7 @@ export default {
 			this.checkoutVisible = false;
 			if (this.$route.hash === '#show-basket') {
 				this.$nextTick(() => {
-					this.$router.push(this.adjustRouteHash(''));
+					this.$router.push(this.adjustRouteHash('')).catch(() => {});
 				});
 			}
 		},
@@ -1081,7 +1092,6 @@ export default {
 			route.hash = hash;
 			return route;
 		},
-
 		handleUpdatedFilters(payload) {
 			this.filters = getSearchableFilters(payload);
 		},
@@ -1118,6 +1128,7 @@ export default {
 		if (to.hash === '#show-basket') {
 			this.checkoutVisible = true;
 		}
+
 		next();
 	},
 	destroyed() {
@@ -1141,6 +1152,10 @@ export default {
 		@include breakpoint(large) {
 			top: $header-height-large;
 		}
+	}
+
+	&__loading-page {
+		z-index: 1;
 	}
 }
 
