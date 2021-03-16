@@ -381,3 +381,30 @@ export function processPageContentFlat(entryItem) {
 
 	return contentfulContentObject;
 }
+
+/**
+ *  Takes the following (sourceString, splitKey, [dynamicValues])
+ *
+ * - sourceString = String of text to be .split at the location of the splitKey
+ * - splitKey = is the value to look for in the string to preform the .split
+ * - [dynamicValues] are the values you want to concat to the string at location of the splitKey
+ *
+ */
+export function buildDynamicString(sourceString = '', splitKey = '', dynamicValues = []) {
+	if (typeof sourceString !== 'string') {
+		return '';
+	}
+	let finalString = '';
+	// split the source string where it finds the splitKey
+	const stringSplit = sourceString.split(splitKey);
+	// forEach with index of the sourceString
+	stringSplit.forEach((item, index) => {
+		finalString = finalString.concat(item);
+		// if there's a dyanmic value at the current index, proceed adding it
+		// to the finalString
+		if (dynamicValues[index]) {
+			finalString = finalString.concat(dynamicValues[index]);
+		}
+	});
+	return finalString;
+}

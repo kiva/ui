@@ -11,7 +11,7 @@
 			v-if="loansContentGroup"
 			:content="loansContentGroup"
 		/>
-		<how-it-works class="section"
+		<homepage-how-it-works class="section"
 			v-if="howItWorksContentGroup"
 			:content="howItWorksContentGroup"
 		/>
@@ -25,17 +25,17 @@
 			:content="statisticsContentGroup"
 		/>
 		<!-- testimonials component -->
-		<testimonials class="section"
+		<homepage-testimonials class="section"
 			v-if="testimonialsContentGroup"
 			:content="testimonialsContentGroup"
 		/>
 		<!-- partners component -->
-		<corporate-sponsors class="section"
+		<homepage-corporate-sponsors class="section"
 			v-if="corporateSponsorsContentGroup"
 			:content="corporateSponsorsContentGroup"
 		/>
 		<!-- bottom cta component -->
-		<bottom-CTA class="section"
+		<homepage-bottom-CTA class="section"
 			v-if="bottomCTAContentGroup"
 			:content="bottomCTAContentGroup"
 		/>
@@ -48,10 +48,10 @@ import HomepageHero from '@/components/Homepage/HomepageHero';
 import HomepageGeneralStats from '@/components/Homepage/HomepageGeneralStats';
 import HomepageLoanCategories from '@/components/Homepage/HomepageLoanCategories';
 import HomepageMidrollCTA from '@/components/Homepage/HomepageMidrollCTA';
-import HowItWorks from '@/components/Homepage/HomepageHowItWorks';
-import CorporateSponsors from '@/components/Homepage/HomepageCorporateSponsors';
-import Testimonials from '@/components/Homepage/HomepageTestimonials';
-import BottomCTA from '@/components/Homepage/HomepageBottomCTA';
+import HomepageHowItWorks from '@/components/Homepage/HomepageHowItWorks';
+import HomepageCorporateSponsors from '@/components/Homepage/HomepageCorporateSponsors';
+import HomepageTestimonials from '@/components/Homepage/HomepageTestimonials';
+import HomepageBottomCTA from '@/components/Homepage/HomepageBottomCTA';
 
 import { lightHeader } from '@/util/siteThemes';
 
@@ -62,10 +62,10 @@ export default {
 		HomepageGeneralStats,
 		HomepageLoanCategories,
 		HomepageMidrollCTA,
-		HowItWorks,
-		CorporateSponsors,
-		Testimonials,
-		BottomCTA,
+		HomepageHowItWorks,
+		HomepageCorporateSponsors,
+		HomepageTestimonials,
+		HomepageBottomCTA,
 	},
 	props: {
 		content: {
@@ -109,7 +109,7 @@ export default {
 		},
 		bottomCTAContentGroup() {
 			return this.content?.page?.contentGroups?.homepageBottomCta ?? null;
-		}
+		},
 	},
 };
 </script>

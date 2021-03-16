@@ -156,27 +156,29 @@
 			</ol>
 		</section>
 
-		<section class="statistics section text-center">
-			<div class="row">
-				<div class="small-12 columns">
-					<kv-responsive-image
-						class="statistics__img"
-						:images="statistics"
-						loading="lazy"
-						alt=""
-					/>
-				</div>
-				<div class="small-12 columns">
-					<h2 class="statistics__header">
-						<span>100%</span>
-						<span class="statistics__header-small">of your loan goes to the field.</span>
-					</h2>
-					<p class="statistics__body">
-						We don't take a penny.
-					</p>
-				</div>
-				<homepage-statistics />
+		<section class="statistics section">
+			<div class="small-12 columns">
+				<kv-responsive-image
+					class="statistics__img"
+					:images="statistics"
+					loading="lazy"
+					alt=""
+				/>
 			</div>
+			<div class="small-12 columns">
+				<h2 class="statistics__header">
+					<span>100%</span>
+					<span class="statistics__header-small">of your loan goes to the field.</span>
+				</h2>
+				<p class="statistics__body">
+					We don't take a penny.
+				</p>
+			</div>
+
+			<homepage-statistics class="section"
+				v-if="statisticsContentfulContentGroup"
+				:content="statisticsContentfulContentGroup"
+			/>
 		</section>
 
 		<section class="lender-quotes section">
@@ -248,7 +250,7 @@ import KivaCardPromo from '@/components/Homepage/LendByCategory/KivaCardPromo';
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
 import NoClickLoanCard from '@/components/Homepage/LendByCategory/NoClickLoanCard';
 import gql from 'graphql-tag';
-import HomepageStatistics from './HomepageStatistics';
+import HomepageStatistics from '@/components/Homepage/HomepageStatistics';
 import HeroSlideshow from './HeroSlideshow';
 
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
@@ -267,14 +269,27 @@ export default {
 		WwwPage,
 		// FeaturedLoansCarousel,
 		HeroSlideshow,
-		HomepageStatistics,
 		KivaCardPromo,
 		KvButton,
 		KvResponsiveImage,
 		LoanCategoriesSection,
 		NoClickLoanCard,
+		HomepageStatistics,
 	},
 	inject: ['apollo', 'cookieStore'],
+	props: {
+		content: {
+			type: Object,
+			default() {
+				return {
+					page: {
+						contentGroups: {},
+						pageLayout: {}
+					}
+				};
+			}
+		},
+	},
 	data() {
 		return {
 			headerTheme: lightHeader,
@@ -331,6 +346,11 @@ export default {
 			},
 
 		};
+	},
+	computed: {
+		statisticsContentfulContentGroup() {
+			return this.content?.page?.contentGroups?.homepageStatistics ?? null;
+		}
 	},
 	apollo: {
 		query: promosQuery,
