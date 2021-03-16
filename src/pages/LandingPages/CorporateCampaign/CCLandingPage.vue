@@ -7,6 +7,7 @@
 		<div class="corporate-campaign-landing">
 			<kv-loading-overlay
 				v-if="loadingPage"
+				class="corporate-campaign-landing__loading-page"
 			/>
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
 			<campaign-status
@@ -1151,6 +1152,10 @@ export default {
 		@include breakpoint(large) {
 			top: $header-height-large;
 		}
+	}
+
+	&__loading-page {
+		z-index: 1;
 	}
 }
 
