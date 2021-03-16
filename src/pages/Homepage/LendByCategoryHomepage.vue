@@ -165,7 +165,7 @@
 					alt=""
 				/>
 			</div>
-			<div class="small-12 columns">
+			<div class="small-12 columns text-center">
 				<h2 class="statistics__header">
 					<span>100%</span>
 					<span class="statistics__header-small">of your loan goes to the field.</span>
