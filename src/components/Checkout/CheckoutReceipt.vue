@@ -6,8 +6,12 @@
 		<div class="checkout-receipt__wrapper">
 			<section data-test="lender-info" class="section section--lender-info">
 				<div>{{ formattedTransactionTime }}</div>
-				<div>{{ lender.firstName }} {{ lender.lastName }}</div>
-				<div>{{ lender.email }}</div>
+				<div class="fs-exclude">
+					{{ lender.firstName }} {{ lender.lastName }}
+				</div>
+				<div class="fs-exclude">
+					{{ lender.email }}
+				</div>
 			</section>
 			<section>
 				<div
@@ -34,7 +38,7 @@
 							data-test="loan"
 							class="loan"
 						>
-							<h3 class="loan__name">
+							<h3 class="loan__name fs-exclude">
 								<template v-if="disableRedirects">
 									{{ loan.loan.name }}
 								</template>
@@ -101,7 +105,7 @@
 								<h3 class="loan__name">
 									Postal delivery Kiva Card
 								</h3>
-								<div class="loan__details">
+								<div class="loan__details fs-exclude">
 									For: {{ card.kivaCardObject.mailingInfo.firstName }}
 									{{ card.kivaCardObject.mailingInfo.lastName }}<br>
 									{{ card.kivaCardObject.mailingInfo.address }}<br>
@@ -118,7 +122,7 @@
 									Kiva Card
 								</h3>
 								<div
-									class="loan__details"
+									class="loan__details fs-exclude"
 									v-if="card.kivaCardObject.recipient.name"
 								>
 									For: {{ card.kivaCardObject.recipient.name }}
@@ -128,7 +132,7 @@
 								<h3 class="loan__name">
 									Email delivery Kiva Card
 								</h3>
-								<div class="loan__details">
+								<div class="loan__details fs-exclude">
 									For:
 									<template v-if="card.kivaCardObject.recipient.name">
 										{{ card.kivaCardObject.recipient.name }} &ndash;

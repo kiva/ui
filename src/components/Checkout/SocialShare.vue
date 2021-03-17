@@ -34,7 +34,7 @@
 					Message
 				</label>
 				<textarea
-					class="message__textbox"
+					class="message__textbox fs-mask"
 					id="message-textbox"
 					:placeholder="placeholderMessage"
 					:maxlength="maxMessageLength"

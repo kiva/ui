@@ -13,10 +13,11 @@
 							Thank you!
 						</h1>
 						<p class="thanks__header-subhead">
-							Thanks for supporting {{ borrowerSupport }}.<br>
+							Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
 						</p>
 						<p class="hide-for-print">
-							We've emailed your order confirmation to <strong>{{ lender.email }}</strong>
+							We've emailed your order confirmation to
+							<strong class="fs-exclude">{{ lender.email }}</strong>
 						</p>
 					</div>
 				</template>
