@@ -9,6 +9,7 @@
 			</p>
 			<form id="guestAccountClaimForm" action="." @submit.prevent.stop="claimGuestAccount">
 				<kv-base-input name="firstName"
+					class="fs-exclude"
 					type="text"
 					v-model.trim="firstName"
 					:validation="$v.firstName"
@@ -19,6 +20,7 @@
 					</template>
 				</kv-base-input>
 				<kv-base-input name="lastName"
+					class="fs-exclude"
 					type="text"
 					v-model.trim="lastName"
 					:validation="$v.lastName"
@@ -28,9 +30,9 @@
 						Enter last name.
 					</template>
 				</kv-base-input>
-				<KvButton class="claim-button smaller" type="submit">
+				<kv-button class="claim-button smaller" type="submit">
 					Done
-				</KvButton>
+				</kv-button>
 			</form>
 		</div>
 	</system-page>

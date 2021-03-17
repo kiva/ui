@@ -3,7 +3,7 @@
 		<div class="team-select">
 			<select
 				v-model="selectedId"
-				class="team-select-dd small-text"
+				class="team-select-dd small-text fs-mask"
 				@change="updateLoanReservation()"
 			>
 				<option value="0">
