@@ -137,8 +137,10 @@ export default {
 					} else {
 						const errorMessage = _get(validationStatus, '[0].error');
 						if (errorMessage === 'api.authenticationRequired') {
-							window.location = '/ui-login?force=true&doneUrl=/checkout'
-									+ `&login_hint=login|${JSON.stringify({ msg: 're-auth-acc-exists' })}`;
+							const login_hint = encodeURIComponent(
+									`login|${JSON.stringify({ msg: 're-auth-acc-exists' })}`
+							);
+							window.location = `/ui-login?force=true&doneUrl=/checkout&login_hint=${login_hint}`;
 						} else {
 							this.$emit('updating-totals', false);
 							this.showCheckoutError(validationStatus);
