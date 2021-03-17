@@ -24,7 +24,7 @@
 								class="payment-settings-default-form__cc-wrapper"
 							>
 								<kv-radio
-									class="payment-settings-default-form__radio"
+									class="payment-settings-default-form__radio fs-exclude"
 									:id="`creditCard-${index}`"
 									:radio-value="paymentMethod.nonce"
 									v-model="selectedDefaultCardNonce"
