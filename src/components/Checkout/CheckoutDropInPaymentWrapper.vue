@@ -99,7 +99,7 @@ export default {
 		},
 		isGuestCheckout: {
 			type: Boolean,
-			default: false
+			default: true
 		}
 	},
 	data() {
@@ -119,10 +119,48 @@ export default {
 	},
 	methods: {
 		submit() {
-			this.$v.$touch();
-			if (!this.$v.$invalid) {
+			if(this.isGuestCheckout) {
+				this.$v.$touch();
+				if (!this.$v.$invalid) {
+					this.validateGuestBasketAndCheckout();
+				}
+			} else {
 				this.validateBasketAndCheckout();
 			}
+		},
+		validateGuestBasketAndCheckout() {
+			this.$emit('updating-totals', true);
+			this.validateGuestBasket(this.email)
+					.then(validationStatus => {
+						if (validationStatus === true) {
+							// request payment method
+							this.submitDropInPayment();
+						} else {
+							const errorMessage = _get(validationStatus, '[0].error');
+							if(errorMessage === 'api.authenticationRequired') {
+								window.location = `/ui-login?force=true&doneUrl=/checkout`
+										+`&login_hint=login|${JSON.stringify({ msg: 're-auth-acc-exists' })}`;
+								return;
+							} else {
+								this.$emit('updating-totals', false);
+								this.showCheckoutError(validationStatus);
+								this.$emit('refreshtotals');
+							}
+						}
+						return validationStatus;
+					})
+					.catch(error => {
+						this.$emit('updating-totals', false);
+						const errorCode = _get(error, 'errors[0].code');
+						const errorMessage = _get(error, 'errors[0].message');
+
+						// Fire specific exception to Sentry/Raven
+						Sentry.withScope(scope => {
+							scope.setTag('bt_stage_dropin', 'btSubmitValidationCatch');
+							scope.setTag('bt_basket_validation_error', errorMessage);
+							Sentry.captureException(errorCode);
+						});
+					});
 		},
 		validateBasketAndCheckout() {
 			this.$emit('updating-totals', true);
