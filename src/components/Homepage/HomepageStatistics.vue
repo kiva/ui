@@ -85,7 +85,7 @@ export default {
 			return this.content?.contents?.find(({ key }) => key.indexOf('homepage-statistics-headline-text') > -1);
 		},
 		statsHeadline() {
-			return this.statsText.headline ?? '';
+			return this.statsText?.headline ?? '';
 		},
 		statsBlockText() {
 			// eslint-disable-next-line max-len
