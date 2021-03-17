@@ -1,5 +1,5 @@
 <template>
-	<div class="drop-in-wrapper">
+	<div class="drop-in-wrapper fs-exclude">
 		<div id="dropin-container"></div>
 		<kv-loading-spinner v-if="updatingPaymentWrapper" />
 	</div>
