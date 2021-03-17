@@ -151,6 +151,14 @@ export default [
 	{ path: '/process-browser-auth', component: () => import('@/pages/ProcessBrowserAuth') },
 	{ path: '/protocol', component: () => import('@/pages/Protocol') },
 	{ path: '/register/social', component: () => import('@/pages/LoginAndRegister/RegisterSocial') },
+	{ path: '/register/guest', component: () => import('@/pages/LoginAndRegister/GuestAccountClaim') },
+	{
+		path: '/register/guest-redirect',
+		component: () => import('@/pages/LoginAndRegister/GuestAccountRedirect'),
+		meta: {
+			authenticationRequired: true,
+		},
+	},
 	{
 		path: '/settings',
 		component: () => import('@/pages/Settings/SettingsPage'),
@@ -158,7 +166,6 @@ export default [
 			authenticationRequired: true,
 		}
 	},
-	{ path: '/register/guest', component: () => import('@/pages/LoginAndRegister/GuestAccountClaim') },
 	{
 		path: '/settings/autolending',
 		component: () => import('@/pages/Autolending/AutolendingPage'),
