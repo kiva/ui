@@ -2,7 +2,7 @@
 	<div v-if="showCategory">
 		<div class="row title-row">
 			<div class="column small-12">
-				<h2 class="category-name">
+				<h2 class="category-name fs-mask">
 					<router-link
 						v-if="showViewAllLink"
 						class="view-all-link"
