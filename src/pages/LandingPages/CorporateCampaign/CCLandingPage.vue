@@ -5,6 +5,10 @@
 		:corporate-logo-url="corporateLogoUrl"
 	>
 		<div class="corporate-campaign-landing">
+			<kv-loading-overlay
+				v-if="loadingPage"
+				class="corporate-campaign-landing__loading-page"
+			/>
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
 			<campaign-status
 				v-if="!hideStatusBar"
@@ -153,11 +157,12 @@
 					:kiva-cards="kivaCards"
 					:teams="myTeams"
 					:totals="basketTotals"
-					:show-donation="false"
+					:show-donation="isMatchingCampaign"
 					:auto-redirect-to-thanks="false"
 					:promo-fund="promoFund"
 					@transaction-complete="transactionComplete"
 					@refresh-totals="refreshTotals"
+					ref="inContextCheckoutRef"
 				/>
 			</kv-lightbox>
 
@@ -206,6 +211,7 @@ import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVer
 import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
 import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 
@@ -420,6 +426,7 @@ export default {
 		CampaignVerificationForm,
 		InContextCheckout,
 		KvLightbox,
+		KvLoadingOverlay,
 		LoanCardController,
 		WwwPageCorporate,
 	},
@@ -494,6 +501,7 @@ export default {
 			useMatcherAccountIds: true,
 			initialFilters: {},
 			verificationSumbitted: false,
+			loadingPage: false,
 		};
 	},
 	metaInfo() {
@@ -537,6 +545,10 @@ export default {
 		this.pageQuery = this.$route.query;
 		// startup campaign status loader
 		this.loadingPromotion = true;
+
+		// show a loading screen if the page loads with an loan in the basket.
+		const basketItems = this.rawPageData.shop?.basket?.items?.values ?? [];
+		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
 	},
 	mounted() {
 		// check for applied promo
@@ -545,7 +557,7 @@ export default {
 		// clean up show-basket process
 		// TODO: Revisit this control flow
 		if (this.$route.hash === '#show-basket') {
-			this.$router.push(this.adjustRouteHash(''));
+			this.$router.push(this.adjustRouteHash('')).catch(() => {});
 		}
 
 		// Ensure browser clock is correct before using current time
@@ -568,7 +580,7 @@ export default {
 		checkoutVisible(next) {
 			if (!next && this.$route.hash === '#show-basket') {
 				this.$nextTick(() => {
-					this.$router.push(this.adjustRouteHash(''));
+					this.$router.push(this.adjustRouteHash('')).catch(() => {});
 				});
 			}
 		}
@@ -885,34 +897,28 @@ export default {
 				loanReservationTotal
 			} = this.basketTotals;
 
-			let simpleCheckoutEligible = true;
 			let simpleCheckoutRestrictedMessage = '';
 
 			// TODO: Log or notify for any of the following conditions
 			if (numeral(donationTotal).value() > 0) {
-				simpleCheckoutEligible = false;
 				simpleCheckoutRestrictedMessage = 'There is a donation present on the basket.';
 			}
 
 			if (numeral(creditAmountNeeded).value() > 0) {
-				// simpleCheckoutEligible = false;
 				simpleCheckoutRestrictedMessage = 'Additional credit or funds are needed to complete the transaction';
 			}
 
 			// TODO: Refine and document narrow in-context checkout conditions
 			// TODO: Handle complex checkout scenarios
 			if (numeral(creditAppliedTotal).value() !== numeral(loanReservationTotal).value()) {
-				// simpleCheckoutEligible = false;
 				simpleCheckoutRestrictedMessage = 'Promo Credit applied does not match loan reservation total';
 			}
 
 			if (numeral(itemTotal).value() !== numeral(loanReservationTotal).value()) {
-				// simpleCheckoutEligible = false;
 				simpleCheckoutRestrictedMessage = 'Item total does not match loan reservation total';
 			}
 
 			if (numeral(creditAvailableTotal).value() !== numeral(loanReservationTotal).value()) {
-				// simpleCheckoutEligible = false;
 				simpleCheckoutRestrictedMessage = 'Credit available total does not match loan reservation total.';
 			}
 
@@ -924,21 +930,11 @@ export default {
 			// eslint-disable-next-line no-underscore-dangle
 			this.kivaCards = basketItems.filter(item => item.__typename === 'KivaCard');
 
-			// Basket is not eligible for simple incontext checkout
-			if (!simpleCheckoutEligible) {
-				// Temporary notice of failure condition that was hit
-				// TODO: Create lightbox or other notice with action options for resolution
-				if (simpleCheckoutRestrictedMessage && this.basketLoans.length) {
-					console.log(simpleCheckoutRestrictedMessage);
-					// this.$showTipMsg(simpleCheckoutRestrictedMessage, 'info');
-				}
-				// turn off loading state
-				this.$refs.loandisplayref.loadingLoans = false;
-				if (this.$refs.inContextCheckoutRef) {
-					this.$refs.inContextCheckoutRef.updatingTotals = false;
-				}
-				// exit method
-				return false;
+			// Temporary notice of failure condition that was hit
+			// TODO: Create lightbox or other notice with action options for resolution
+			if (simpleCheckoutRestrictedMessage && this.basketLoans.length) {
+				console.log(simpleCheckoutRestrictedMessage);
+				// this.$showTipMsg(simpleCheckoutRestrictedMessage, 'info');
 			}
 
 			this.validateBasket()
@@ -960,10 +956,10 @@ export default {
 
 					// signify checkout is ready
 					this.handleBasketValidation();
-					return true;
 				}).catch(errorResponse => {
 					console.error(errorResponse);
-					return false;
+				}).finally(() => {
+					this.loadingPage = false;
 				});
 		},
 		handleBasketValidation() {
@@ -1000,7 +996,7 @@ export default {
 			this.checkoutVisible = false;
 			if (this.$route.hash === '#show-basket') {
 				this.$nextTick(() => {
-					this.$router.push(this.adjustRouteHash(''));
+					this.$router.push(this.adjustRouteHash('')).catch(() => {});
 				});
 			}
 		},
@@ -1096,7 +1092,6 @@ export default {
 			route.hash = hash;
 			return route;
 		},
-
 		handleUpdatedFilters(payload) {
 			this.filters = getSearchableFilters(payload);
 		},
@@ -1133,6 +1128,7 @@ export default {
 		if (to.hash === '#show-basket') {
 			this.checkoutVisible = true;
 		}
+
 		next();
 	},
 	destroyed() {
@@ -1156,6 +1152,10 @@ export default {
 		@include breakpoint(large) {
 			top: $header-height-large;
 		}
+	}
+
+	&__loading-page {
+		z-index: 1;
 	}
 }
 
