@@ -22,7 +22,7 @@
 							Enter your phone number here:
 						</label>
 						<kv-phone-input
-							class="phone-authentication__phone-input"
+							class="phone-authentication__phone-input fs-exclude"
 							:class="{ 'phone-authentication__phone-input--error' : $v.phoneNumber.$error}"
 							:disabled="enrollmentPending"
 							id="phone_input"
@@ -78,7 +78,7 @@
 				<form
 					@submit.prevent="submitVerification"
 				>
-					<p>Enter the code sent to {{ phoneNumber }}.</p>
+					<p>Enter the code sent to <span class="fs-exclude">{{ phoneNumber }}</span>.</p>
 					<label
 						for="verification_code"
 						class="phone-authentication__label"
@@ -86,7 +86,7 @@
 						Enter your 6-digit code here:
 					</label>
 					<kv-verification-code-input
-						class="verification-code__input"
+						class="verification-code__input fs-exclude"
 						id="verification_code"
 						ref="userVerificationCodeInput"
 						v-model="userVerificationCode"

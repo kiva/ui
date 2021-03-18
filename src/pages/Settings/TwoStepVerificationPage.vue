@@ -61,7 +61,7 @@
 								<h4>{{ readableAuthName(mfaMethod.authenticator_type) }}</h4>
 								<!-- Phone number related to authentication method -->
 								<p
-									class="two-step-verification__method--number"
+									class="two-step-verification__method--number fs-mask"
 								>
 									{{ mfaMethod.name }}
 								</p>

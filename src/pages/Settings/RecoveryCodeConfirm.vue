@@ -7,7 +7,7 @@
 			Copy this recovery code and keep it somewhere safe. You'll
 			need it if you want to log in without your device.
 		</p>
-		<div class="recovery-code">
+		<div class="recovery-code fs-exclude">
 			{{ mfaRecoveryCode }}
 		</div>
 		<div>
