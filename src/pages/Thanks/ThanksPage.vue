@@ -65,21 +65,21 @@
 			:show-mg-cta="!isMonthlyGoodSubscriber"
 			:show-share="loans.length > 0"
 		>
-			<template v-slot:receipt>
+			<template #receipt>
 				<checkout-receipt
 					v-if="receipt"
 					:lender="lender"
 					:receipt="receipt"
 				/>
 			</template>
-			<template v-slot:mg>
+			<template #mg>
 				<monthly-good-c-t-a
 					:headline="ctaHeadline"
 					:body-copy="ctaBodyCopy"
 					:button-text="ctaButtonText"
 				/>
 			</template>
-			<template v-slot:share>
+			<template #share>
 				<social-share
 					class="thanks__social-share"
 					:lender="lender"

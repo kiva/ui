@@ -1,7 +1,7 @@
 <template>
 	<div class="row">
 		<kv-settings-card class="column large-8" title="When your balance will be lent" :disabled="!isEnabled">
-			<template v-slot:content>
+			<template #content>
 				<span>
 					Your balance will be automatically lent
 					<span v-if="lendAfterDaysIdle === 0">

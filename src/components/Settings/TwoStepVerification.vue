@@ -4,7 +4,7 @@
 			title="2-Step verification"
 			class="two-step-card-wrapper__two-step-card"
 		>
-			<template v-slot:content>
+			<template #content>
 				<h3 class="strong">
 					Status:
 					<kv-loading-placeholder

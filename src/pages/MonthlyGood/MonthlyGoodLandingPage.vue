@@ -1,13 +1,13 @@
 <template>
 	<www-page>
 		<kv-hero class="mg-hero bg-overlay" :class="{'experiment':isExperimentActive}">
-			<template v-slot:images>
+			<template #images>
 				<kv-responsive-image
 					:images="heroImages"
 					alt="A woman in a yellow dress with a look of pride and satisfaction on her face "
 				/>
 			</template>
-			<template v-slot:overlayContent>
+			<template #overlayContent>
 				<div class="row">
 					<div class="overlay-column columns medium-12 large-8">
 						<p class="mg-headline" v-html="heroHeadline">
@@ -44,7 +44,7 @@
 		/>
 		<email-preview />
 		<kiva-as-expert>
-			<template v-slot:form>
+			<template #form>
 				<landing-form
 					:amount.sync="monthlyGoodAmount"
 					:selected-group.sync="selectedGroup"

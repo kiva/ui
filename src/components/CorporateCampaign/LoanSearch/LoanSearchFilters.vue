@@ -98,7 +98,7 @@
 					class="loan-filters__lightbox-accordian"
 					id="sort-order-accordian"
 				>
-					<template v-slot:header>
+					<template #header>
 						<h3>Sort By</h3>
 					</template>
 					<sort-order
@@ -113,7 +113,7 @@
 					class="loan-filters__lightbox-accordian"
 					id="region-accordian"
 				>
-					<template v-slot:header>
+					<template #header>
 						<h3>Countries</h3>
 					</template>
 					<location-filter
@@ -129,7 +129,7 @@
 					class="loan-filters__lightbox-accordian"
 					id="sectors-accordian"
 				>
-					<template v-slot:header>
+					<template #header>
 						<h3>Sectors</h3>
 					</template>
 					<sector-filter
@@ -145,7 +145,7 @@
 					class="loan-filters__lightbox-accordian"
 					id="attributes-accordian"
 				>
-					<template v-slot:header>
+					<template #header>
 						<h3>Attributes</h3>
 					</template>
 					<attribute-filter
@@ -161,7 +161,7 @@
 					class="loan-filters__lightbox-accordian"
 					id="tags-accordian"
 				>
-					<template v-slot:header>
+					<template #header>
 						<h3>Tags</h3>
 					</template>
 					<tag-filter

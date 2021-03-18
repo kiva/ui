@@ -3,10 +3,10 @@
 		<div class="row">
 			<div class="columns">
 				<fifteen-years-section-header>
-					<template v-slot:header>
+					<template #header>
 						15 years of impact
 					</template>
-					<template v-slot:subhead>
+					<template #subhead>
 						The history of Kiva,<br class="smo"><br class="xxlu"> year by year
 					</template>
 				</fifteen-years-section-header>

@@ -22,7 +22,7 @@ export const Default = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	template: `
 		<kv-settings-card class="column large-8" :title="title" :disabled="disabled">
-			<template v-slot:content>
+			<template #content>
 				<p>{{cardContent}}</p>
 			</template>
 		</kv-settings-card>

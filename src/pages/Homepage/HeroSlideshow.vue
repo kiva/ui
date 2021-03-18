@@ -2,7 +2,7 @@
 	<div>
 		<!-- Promo -->
 		<kv-hero v-if="promoEnabled">
-			<template v-slot:carousel>
+			<template #carousel>
 				<kv-carousel
 					@change="slideChange"
 					:hide-arrows="true"
@@ -37,19 +37,19 @@
 			</template>
 			<template
 				v-if="promoContent.genericContentBlock.headline"
-				v-slot:headlineTitle
+				#headlineTitle
 			>
 				{{ promoContent.genericContentBlock.headline }}
 			</template>
 			<template
 				v-if="promoContent.genericContentBlock.subHeadline"
-				v-slot:headlineBody
+				#headlineBody
 			>
 				{{ promoContent.genericContentBlock.subHeadline }}
 			</template>
 			<template
 				v-if="promoContent.genericContentBlock.primaryCtaText"
-				v-slot:action
+				#action
 			>
 				<kv-button
 					:to="promoContent.genericContentBlock.primaryCtaLink"
@@ -62,7 +62,7 @@
 
 		<!-- Default -->
 		<kv-hero v-else>
-			<template v-slot:carousel>
+			<template #carousel>
 				<kv-carousel
 					@change="slideChange"
 					:hide-arrows="true"
@@ -108,17 +108,17 @@
 					<!-- eslint-enable max-len -->
 				</kv-carousel>
 			</template>
-			<template v-slot:headlineTitle>
+			<template #headlineTitle>
 				Dreams are universal,<br class="smo"> opportunity is not.
 			</template>
-			<template v-slot:headlineBody>
+			<template #headlineBody>
 				Lend as little as $25<br class="so">
 				to create<br class="mo">
 				opportunity<br class="so"><br class="lu">
 				for people<br class="mo">
 				around the world.
 			</template>
-			<template v-slot:action>
+			<template #action>
 				<kv-button
 					to="/lend-by-category"
 					v-kv-track-event="['Home', 'EXP-HeroWhyKiva', 'click-Start-lending']"

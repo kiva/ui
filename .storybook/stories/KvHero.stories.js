@@ -34,17 +34,17 @@ export const headlineBodyAction = () => ({
 	},
 	template: `
 		<kv-hero headline-bg-color="#0b290c">
-			<template v-slot:images>
+			<template #images>
 				<kv-responsive-image :images="images" alt="A woman in a yellow dress with a look of pride and satisfaction on her face " />
 			</template>
-			<template v-slot:headlineTitle>
+			<template #headlineTitle>
 				Lorem Ipsum eiusmod est amet aliqua quis eu labore. Culpa cillum
 			</template>
-			<template v-slot:headlineBody>
+			<template #headlineBody>
 				Eiusmod est amet aliqua quis eu labore. Culpa cillum voluptate aliqua in. Cillum ad sunt excepteur
 				magna dolor est elit sunt voluptate in commodo.
 			</template>
-			<template v-slot:action>
+			<template #action>
 				<kv-button
 					href="/lend-by-category"
 				>
@@ -68,13 +68,13 @@ export const headlineAction = () => ({
 	},
 	template: `
 		<kv-hero>
-			<template v-slot:images>
+			<template #images>
 				<kv-responsive-image :images="images" alt="A woman in a yellow dress with a look of pride and satisfaction on her face " />
 			</template>
-			<template v-slot:headlineTitle>
+			<template #headlineTitle>
 				Making opportunity possible<br class="lu"> is a team effort
 			</template>
-			<template v-slot:action>
+			<template #action>
 				<kv-button
 					href="/lend-by-category"
 				>
@@ -97,10 +97,10 @@ export const headline = () => ({
 	},
 	template: `
 		<kv-hero>
-			<template v-slot:images>
+			<template #images>
 				<kv-responsive-image :images="images" alt="A woman in a yellow dress with a look of pride and satisfaction on her face " />
 			</template>
-			<template v-slot:headlineTitle>
+			<template #headlineTitle>
 				Making opportunity possible<br class="lu"> is a team effort
 			</template>
 		</kv-hero>
@@ -120,10 +120,10 @@ export const action = () => ({
 	},
 	template: `
 		<kv-hero>
-			<template v-slot:images>
+			<template #images>
 				<kv-responsive-image :images="images" alt="A woman in a yellow dress with a look of pride and satisfaction on her face " />
 			</template>
-			<template v-slot:action>
+			<template #action>
 				<kv-button
 					href="/lend-by-category"
 				>
@@ -146,7 +146,7 @@ export const imageOnly = () => ({
 	},
 	template: `
 		<kv-hero>
-			<template v-slot:images>
+			<template #images>
 				<kv-responsive-image :images="images" alt="A woman in a yellow dress with a look of pride and satisfaction on her face " />
 			</template>
 		</kv-hero>

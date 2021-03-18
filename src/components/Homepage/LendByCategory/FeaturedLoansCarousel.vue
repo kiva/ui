@@ -18,7 +18,7 @@
 			class="featured-loans-carousel"
 			@interact-carousel="onInteractCarousel"
 		>
-			<template v-slot:default>
+			<template #default>
 				<kv-carousel-slide
 					v-for="(category, index) in prefetchedCategoryInfo"
 					:key="category.id"

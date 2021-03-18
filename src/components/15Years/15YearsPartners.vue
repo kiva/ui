@@ -4,10 +4,10 @@
 			<div class="columns">
 				<section>
 					<fifteen-years-section-header class="partners__header">
-						<template v-slot:header>
+						<template #header>
 							Strategic Partners
 						</template>
-						<template v-slot:subhead>
+						<template #subhead>
 							Individuals and organizations <br class="smo"><br class="xxlu"> making a difference
 						</template>
 					</fifteen-years-section-header>

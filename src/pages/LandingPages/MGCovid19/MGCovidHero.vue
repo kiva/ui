@@ -1,6 +1,6 @@
 <template>
 	<kv-hero class="mg-hero">
-		<template v-slot:images>
+		<template #images>
 			<kv-responsive-image
 				class="mg-hero-picture"
 				:images="heroImages"
@@ -8,7 +8,7 @@
 				v-if="!expVideoActive"
 			/>
 		</template>
-		<template v-slot:overlayContent>
+		<template #overlayContent>
 			<div class="row">
 				<div class="
 						video-column

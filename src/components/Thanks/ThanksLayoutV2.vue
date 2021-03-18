@@ -10,13 +10,13 @@
 					:class="{ active: isMgSelected }"
 					@click.native="setVisibleSection('mg')"
 				>
-					<template v-slot:icon-left>
+					<template #icon-left>
 						<kv-icon
 							name="alert-circle"
 						/>
 					</template>
 					Monthly Good
-					<template v-slot:icon-right>
+					<template #icon-right>
 						<kv-icon
 							class="arrow-icon"
 							:class="{ obfuscate: !isMgSelected }"
@@ -30,13 +30,13 @@
 					:class="{ active: isReceiptSelected }"
 					@click.native="setVisibleSection('receipt')"
 				>
-					<template v-slot:icon-left>
+					<template #icon-left>
 						<kv-icon
 							name="receipt-outline"
 						/>
 					</template>
 					Order Confirmation
-					<template v-slot:icon-right>
+					<template #icon-right>
 						<kv-icon
 							class="arrow-icon"
 							:class="{ obfuscate: !isReceiptSelected }"
@@ -51,13 +51,13 @@
 					@click.native="setVisibleSection('share')"
 					v-if="showShare"
 				>
-					<template v-slot:icon-left>
+					<template #icon-left>
 						<kv-icon
 							name="share"
 						/>
 					</template>
 					Share
-					<template v-slot:icon-right>
+					<template #icon-right>
 						<kv-icon
 							class="arrow-icon"
 							:class="{ obfuscate: !isShareSelected }"
@@ -112,13 +112,13 @@
 						:aria-expanded="isMgSelected ? 'true' : 'false'"
 						@click.native="setVisibleSection('mg')"
 					>
-						<template v-slot:icon-left>
+						<template #icon-left>
 							<kv-icon
 								name="alert-circle"
 							/>
 						</template>
 						Monthly Good
-						<template v-slot:icon-right>
+						<template #icon-right>
 							<kv-icon
 								name="fat-chevron"
 								:from-sprite="true"
@@ -151,13 +151,13 @@
 						:aria-expanded="isReceiptSelected ? 'true' : 'false'"
 						@click.native="setVisibleSection('receipt')"
 					>
-						<template v-slot:icon-left>
+						<template #icon-left>
 							<kv-icon
 								name="receipt-outline"
 							/>
 						</template>
 						Order Confirmation
-						<template v-slot:icon-right>
+						<template #icon-right>
 							<kv-icon
 								name="fat-chevron"
 								:from-sprite="true"
@@ -191,13 +191,13 @@
 						:aria-expanded="isShareSelected ? 'true' : 'false'"
 						@click.native="setVisibleSection('share')"
 					>
-						<template v-slot:icon-left>
+						<template #icon-left>
 							<kv-icon
 								name="share"
 							/>
 						</template>
 						Share
-						<template v-slot:icon-right>
+						<template #icon-right>
 							<kv-icon
 								name="fat-chevron"
 								:from-sprite="true"
