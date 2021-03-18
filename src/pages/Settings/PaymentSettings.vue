@@ -24,7 +24,7 @@
 								class="payment-settings-default-form__cc-wrapper"
 							>
 								<kv-radio
-									class="payment-settings-default-form__radio fs-mask"
+									class="payment-settings-default-form__radio"
 									:id="`creditCard-${index}`"
 									:radio-value="paymentMethod.nonce"
 									v-model="selectedDefaultCardNonce"
@@ -32,7 +32,8 @@
 									<img class="payment-settings-default-form__cc-icon"
 										:src="paymentMethod.imageUrl"
 										alt="credit card"
-									> {{ paymentMethod.description }}
+									>
+									<span class="fs-mask">{{ paymentMethod.description }}</span>
 								</kv-radio>
 								<kv-button
 									@click.native.prevent="showLightbox(paymentMethod)"
