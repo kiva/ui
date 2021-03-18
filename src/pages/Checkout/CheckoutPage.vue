@@ -321,6 +321,11 @@ export default {
 		}
 	},
 	created() {
+		// show guest account claim confirmation message
+		if (this.myId && this.$route.query?.claimed === '1') {
+			this.$showTipMsg('Account created');
+		}
+
 		// show any validation errors that occured during preFetch
 		const shopMutationData = this.apollo.readFragment({
 			id: 'ShopMutation',
