@@ -8,13 +8,51 @@
 				:payment-types="paymentTypes"
 				@transactions-enabled="enableCheckoutButton = $event"
 			/>
+			<div v-if="isGuestCheckout" id="guest-checkout">
+				<label class="input-label" for="email">
+					Where should we email your receipt?
+					<input
+						type="email"
+						name="email"
+						v-model="email"
+						id="email"
+						class="fs-exclude"
+					>
+					<p v-if="$v.email.$error" class="input-error">
+						Valid email required.
+					</p>
+				</label>
+				<kv-checkbox
+					id="termsAgreement"
+					name="termsAgreement"
+					class="checkbox"
+					v-model="termsAgreement"
+				>I have read and agree to the <a
+					:href="`https://${this.$appConfig.host}/legal/terms`"
+					target="_blank"
+					title="Open Terms of Use in a new window">Terms of Use</a> and <a
+						:href="`https://${this.$appConfig.host}/legal/privacy`"
+						target="_blank"
+						title="Open Privacy Policy in a new window">Privacy Policy</a>.
+					<p v-if="$v.termsAgreement.$error" class="input-error">
+						You must agree to the Kiva Terms of service & Privacy policy.
+					</p>
+				</kv-checkbox>
+				<kv-checkbox
+					id="emailUpdates"
+					class="checkbox"
+					name="emailUpdates"
+					:checked="true"
+				>Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.
+				</kv-checkbox>
+			</div>
 			<div id="dropin-button">
 				<kv-button
 					value="submit"
 					id="dropin-submit"
 					class="button"
 					:disabled="!enableCheckoutButton"
-					@click.native="validateBasketAndCheckout"
+					@click.native="submit"
 				>
 					<kv-icon name="lock" />
 					Checkout
@@ -38,30 +76,91 @@ import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndC
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterface';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
+import { validationMixin } from 'vuelidate';
+import { required, email } from 'vuelidate/lib/validators';
 
 export default {
 	components: {
 		KvButton,
 		KvIcon,
-		BraintreeDropInInterface
+		BraintreeDropInInterface,
+		KvCheckbox
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
-		checkoutUtils
+		checkoutUtils,
+		validationMixin
 	],
 	props: {
 		amount: {
 			type: String,
 			default: ''
+		},
+		isGuestCheckout: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
 		return {
+			email: null,
+			termsAgreement: false,
 			enableCheckoutButton: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 		};
 	},
+	validations: {
+		email: {
+			required,
+			email
+		},
+		termsAgreement: { required: value => value === true }
+	},
 	methods: {
+		submit() {
+			if (this.isGuestCheckout) {
+				this.$v.$touch();
+				if (!this.$v.$invalid) {
+					this.validateGuestBasketAndCheckout();
+				}
+			} else {
+				this.validateBasketAndCheckout();
+			}
+		},
+		validateGuestBasketAndCheckout() {
+			this.$emit('updating-totals', true);
+			this.validateGuestBasket(this.email)
+				.then(validationStatus => {
+					if (validationStatus === true) {
+						this.submitDropInPayment();
+					} else {
+						const errorMessage = _get(validationStatus, '[0].error');
+						if (errorMessage === 'api.authenticationRequired') {
+							const loginHint = encodeURIComponent(
+								`login|${JSON.stringify({ msg: 're-auth-acc-exists' })}`
+							);
+							window.location = `/ui-login?force=true&doneUrl=/checkout&login_hint=${loginHint}`;
+						} else {
+							this.$emit('updating-totals', false);
+							this.showCheckoutError(validationStatus);
+							this.$emit('refreshtotals');
+						}
+					}
+					return validationStatus;
+				})
+				.catch(error => {
+					this.$emit('updating-totals', false);
+					const errorCode = _get(error, 'errors[0].code');
+					const errorMessage = _get(error, 'errors[0].message');
+
+					Sentry.withScope(scope => {
+						scope.setTag('bt_stage_dropin', 'btSubmitValidationCatch');
+						scope.setTag('bt_basket_validation_error', errorMessage);
+						Sentry.captureException(errorCode);
+					});
+				});
+		},
 		validateBasketAndCheckout() {
 			this.$emit('updating-totals', true);
 			// Validate Basket prior to starting
@@ -129,7 +228,7 @@ export default {
 					const errorMessage = _get(kivaBraintreeResponse, 'errors[0].message');
 					const standardErrorCode = `(Braintree error: ${errorCode})`;
 					const standardError = `There was an error processing your payment.
-						Please try again. ${standardErrorCode}`;
+					Please try again. ${standardErrorCode}`;
 
 					// Payment method failed, unselect attempted payment method
 					this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
@@ -171,4 +270,34 @@ export default {
 
 <style lang="scss" scoped>
 @import "settings";
+
+#guest-checkout {
+	.input-label {
+		margin: 1rem 0 1rem;
+		text-align: left;
+		font-weight: normal;
+		font-size: 1rem;
+		line-height: 1.4;
+		color: $charcoal;
+
+		input {
+			color: $charcoal;
+			margin: 0;
+		}
+	}
+
+	.checkbox {
+
+		@include small-text();
+
+		font-weight: $global-weight-normal;
+		margin: 0 0 1rem;
+	}
+
+	.input-error {
+		color: $kiva-accent-red;
+		font-weight: $global-weight-normal;
+		font-size: 1rem;
+	}
+}
 </style>
