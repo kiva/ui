@@ -22,6 +22,14 @@
 						</router-link>
 						<span> | </span>
 						<router-link
+							to="/legal/cookies"
+							v-kv-track-event="['Footer', 'click-Explore-Cookie policy']"
+							target="_blank"
+						>
+							Cookie policy
+						</router-link>
+						<span> | </span>
+						<router-link
 							to="/legal/terms"
 							v-kv-track-event="['Footer', 'click-Explore-Terms of use']"
 							target="_blank"
