@@ -32,7 +32,8 @@
 									<img class="payment-settings-default-form__cc-icon"
 										:src="paymentMethod.imageUrl"
 										alt="credit card"
-									> {{ paymentMethod.description }}
+									>
+									<span class="fs-mask">{{ paymentMethod.description }}</span>
 								</kv-radio>
 								<kv-button
 									@click.native.prevent="showLightbox(paymentMethod)"
