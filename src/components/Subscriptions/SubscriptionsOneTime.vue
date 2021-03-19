@@ -1,7 +1,7 @@
 <template>
 	<div class="row">
 		<kv-settings-card class="column large-8" title="Global COVID-19 Response Lending">
-			<template v-slot:content>
+			<template #content>
 				<p>
 					Thank you for supporting those affected by COVID-19. Your deposit of <kv-button class="text-link"
 						@click.native.prevent="showLightbox = true;"

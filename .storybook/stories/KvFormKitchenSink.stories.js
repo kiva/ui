@@ -172,7 +172,7 @@ export const KitchenSink = () => ({
 							v-model="kvRangeSlider"
 						>
 							Slider Label
-							<template v-slot:value>(value: {{kvRangeSlider}})</template>
+							<template #value>(value: {{kvRangeSlider}})</template>
 						</kv-range-slider>
 						<kv-range-slider
 							id="slider-2"
@@ -180,7 +180,7 @@ export const KitchenSink = () => ({
 							disabled
 						>
 							Slider Label Disabled
-							<template v-slot:value>(value: {{kvRangeSlider}})</template>
+							<template #value>(value: {{kvRangeSlider}})</template>
 						</kv-range-slider>
 					</fieldset>
 

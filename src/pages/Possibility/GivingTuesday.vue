@@ -1,13 +1,13 @@
 <template>
 	<div>
 		<kv-hero headline-bg-color="#0b290c">
-			<template v-slot:images>
+			<template #images>
 				<kv-responsive-image :images="givingTuesdayImages" alt="A woman smiling" />
 			</template>
-			<template v-slot:headlineTitle>
+			<template #headlineTitle>
 				Making opportunity possible<br class="lu"> is a team effort
 			</template>
-			<template v-slot:action>
+			<template #action>
 				<kv-button
 					class="cta-button"
 					to="/donate/supportus"

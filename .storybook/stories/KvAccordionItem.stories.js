@@ -19,7 +19,7 @@ export const Default = (args, { argTypes }) => ({
 				:disabled="disabled"
 				:open="open"
 			>
-				<template v-slot:header>
+				<template #header>
 					<h2>Title</h2>
 				</template>
 				<p>
@@ -34,7 +34,7 @@ export const Default = (args, { argTypes }) => ({
 				:disabled="disabled"
 				:open="open"
 			>
-				<template v-slot:header>
+				<template #header>
 					<h2>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</h2>
 				</template>
 				<p>
@@ -74,7 +74,7 @@ export const H3Header = (args, { argTypes }) => ({
 				:disabled="disabled"
 				:open="open"
 			>
-				<template v-slot:header>
+				<template #header>
 					<h3>Title</h3>
 				</template>
 				<p>
@@ -89,7 +89,7 @@ export const H3Header = (args, { argTypes }) => ({
 				:disabled="disabled"
 				:open="open"
 			>
-				<template v-slot:header>
+				<template #header>
 					<h3>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</h3>
 				</template>
 				<p>

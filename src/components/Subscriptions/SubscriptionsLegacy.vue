@@ -1,7 +1,7 @@
 <template>
 	<div class="row">
 		<kv-settings-card class="column large-8" title="Auto Deposits">
-			<template v-slot:content>
+			<template #content>
 				<div v-for="(sub, index) in legacySubscriptions" :key="index">
 					<p>
 						<!-- eslint-disable-next-line max-len -->

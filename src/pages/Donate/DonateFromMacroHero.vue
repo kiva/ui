@@ -1,13 +1,13 @@
 <template>
 	<kv-hero class="donation-hero">
-		<template v-slot:images>
+		<template #images>
 			<kv-responsive-image
 				class="donation-hero-picture show-for-large"
 				:images="heroResponsiveImageSet"
 				alt=""
 			/>
 		</template>
-		<template v-slot:overlayContent>
+		<template #overlayContent>
 			<div class="row">
 				<div class="
 						overlay-column columns

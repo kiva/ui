@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<kv-hero>
-			<template v-slot:images>
+			<template #images>
 				<kv-responsive-image :images="yearEndImages" alt="Be a part of Possibility" />
 			</template>
-			<template v-slot:action>
+			<template #action>
 				<kv-button
 					class="cta-button"
 					to="/donate/supportus"

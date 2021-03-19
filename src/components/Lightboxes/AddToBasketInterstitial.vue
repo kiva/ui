@@ -78,7 +78,7 @@
 				</div>
 			</div>
 
-			<template v-slot:controls>
+			<template #controls>
 				<kv-checkbox
 					id="user-pref-hide-interstitial"
 					:checked="userPrefHideInterstitial"

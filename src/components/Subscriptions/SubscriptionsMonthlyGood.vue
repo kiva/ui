@@ -1,7 +1,7 @@
 <template>
 	<div class="row">
 		<kv-settings-card class="column large-8" title="Monthly Good">
-			<template v-slot:content>
+			<template #content>
 				<router-link v-if="!isMonthlyGoodSubscriber"
 					to="/monthlygood"
 				>

@@ -16,14 +16,14 @@ export const Default = () => ({
 		 until site-wide button styling is finalized.
 		</p>
 		<kv-icon-button class="expanded">
-			<template v-slot:icon-left>
+			<template #icon-left>
 				<kv-icon
 					class="share-icon"
 					name="share"
 				/>
 			</template>
 			Button
-			<template v-slot:icon-right>
+			<template #icon-right>
 				<kv-icon
 					name="fat-chevron"
 					:from-sprite="true"
@@ -31,14 +31,14 @@ export const Default = () => ({
 			</template>
 		</kv-icon-button>
 		<kv-icon-button class="active expanded">
-			<template v-slot:icon-left>
+			<template #icon-left>
 				<kv-icon
 					class="share-icon"
 					name="share"
 				/>
 			</template>
 			Button
-			<template v-slot:icon-right>
+			<template #icon-right>
 				<kv-icon
 					name="fat-chevron"
 					:from-sprite="true"
@@ -46,13 +46,13 @@ export const Default = () => ({
 			</template>
 		</kv-icon-button>
 		<kv-icon-button class="expanded">
-			<template v-slot:icon-left>
+			<template #icon-left>
 				<kv-icon
 					name="alert-circle"
 				/>
 			</template>
 			Button
-			<template v-slot:icon-right>
+			<template #icon-right>
 				<kv-icon
 					name="fat-chevron"
 					:from-sprite="true"
@@ -60,13 +60,13 @@ export const Default = () => ({
 			</template>
 		</kv-icon-button>
 		<kv-icon-button class="active expanded">
-			<template v-slot:icon-left>
+			<template #icon-left>
 				<kv-icon
 					name="alert-circle"
 				/>
 			</template>
 			Button
-			<template v-slot:icon-right>
+			<template #icon-right>
 				<kv-icon
 					name="fat-chevron"
 					:from-sprite="true"
@@ -74,13 +74,13 @@ export const Default = () => ({
 			</template>
 		</kv-icon-button>
 		<kv-icon-button class="expanded">
-			<template v-slot:icon-left>
+			<template #icon-left>
 				<kv-icon
 					name="receipt-outline"
 				/>
 			</template>
 			Button
-			<template v-slot:icon-right>
+			<template #icon-right>
 				<kv-icon
 					name="fat-chevron"
 					:from-sprite="true"
@@ -88,13 +88,13 @@ export const Default = () => ({
 			</template>
 		</kv-icon-button>
 		<kv-icon-button class="active expanded">
-			<template v-slot:icon-left>
+			<template #icon-left>
 				<kv-icon
 					name="receipt-outline"
 				/>
 			</template>
 			Button
-			<template v-slot:icon-right>
+			<template #icon-right>
 				<kv-icon
 					name="fat-chevron"
 					:from-sprite="true"

@@ -51,7 +51,7 @@ export const Default = () => ({
 				v-model="sliderVal"
 			>
 				<strong>Strong Label 💪</strong>
-				<template v-slot:value>(value: {{sliderVal}})</template>
+				<template #value>(value: {{sliderVal}})</template>
 			</kv-range-slider>
 		</fieldset>
 	`,
@@ -85,7 +85,7 @@ export const WithStep = () => ({
 				v-model="sliderVal"
 			>
 				min: 0, max: 0.1, step: 0.001
-				<template v-slot:value>(Current Value: {{sliderVal}})</template>
+				<template #value>(Current Value: {{sliderVal}})</template>
 			</kv-range-slider>
 
 			<br>
@@ -98,7 +98,7 @@ export const WithStep = () => ({
 				v-model="sliderVal2"
 			>
 				min: -1000, max: 1000, step: 100
-				<template v-slot:value>(Current Value: {{sliderVal2}})</template>
+				<template #value>(Current Value: {{sliderVal2}})</template>
 			</kv-range-slider>
 		</fieldset>
 	`,
@@ -121,7 +121,7 @@ export const OneWayBinding = () => ({
 				@input="onInput"
 			>
 				:value instead of v-model
-				<template v-slot:value>(Current Value: {{sliderVal}})</template>
+				<template #value>(Current Value: {{sliderVal}})</template>
 			</kv-range-slider>
 		</fieldset>
 	`,
@@ -150,7 +150,7 @@ export const FontSized = () => ({
 				style="font-size: 2em"
 			>
 				font-size:
-				<template v-slot:value>2em</template>
+				<template #value>2em</template>
 			</kv-range-slider>
 			<kv-range-slider
 				id="slider-2"
@@ -158,7 +158,7 @@ export const FontSized = () => ({
 				style="font-size: 1em"
 			>
 				font-size:
-				<template v-slot:value>1em</template>
+				<template #value>1em</template>
 			</kv-range-slider>
 			<kv-range-slider
 				id="slider-3"
@@ -166,7 +166,7 @@ export const FontSized = () => ({
 				style="font-size: .75em"
 			>
 				font-size:
-				<template v-slot:value>.75em</template>
+				<template #value>.75em</template>
 			</kv-range-slider>
 		</fieldset>
 	`,

@@ -68,7 +68,7 @@
 						id="get-to-know-us_accordion"
 						:open="false"
 					>
-						<template v-slot:header>
+						<template #header>
 							<h2>Get to know us</h2>
 						</template>
 						<ul>
@@ -142,7 +142,7 @@
 						id="community_accordion"
 						:open="false"
 					>
-						<template v-slot:header>
+						<template #header>
 							<h2>Community</h2>
 						</template>
 						<ul>
@@ -168,7 +168,7 @@
 						id="explore_accordion"
 						:open="false"
 					>
-						<template v-slot:header>
+						<template #header>
 							<h2>Explore</h2>
 						</template>
 						<ul>
@@ -210,7 +210,7 @@
 						id="work-with-us_accordion"
 						:open="false"
 					>
-						<template v-slot:header>
+						<template #header>
 							<h2>Work with us</h2>
 						</template>
 						<ul>

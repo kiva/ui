@@ -25,7 +25,7 @@
 					title="2-step verification is turned on"
 					v-if="!isLoading && isMfaActive && !pageError"
 				>
-					<template v-slot:content>
+					<template #content>
 						<div>
 							<p>
 								We'll ask you for your password and verification code from your
@@ -52,7 +52,7 @@
 					v-if="!isLoading && isMfaActive && !pageError"
 					title="Your security method(s)"
 				>
-					<template v-slot:content>
+					<template #content>
 						<ul>
 							<li
 								class="two-step-verification__method"
@@ -88,7 +88,7 @@
 					v-if="!isLoading && !pageError"
 					:title="`${ cardTitle }`"
 				>
-					<template v-slot:content>
+					<template #content>
 						<div class="two-step-verification__sub-section">
 							<p>{{ cardSubhead }}</p>
 							<h3 class="strong">

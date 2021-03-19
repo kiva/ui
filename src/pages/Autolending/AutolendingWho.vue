@@ -1,7 +1,7 @@
 <template>
 	<div class="row">
 		<kv-settings-card class="column large-8" title="Who you’ll support" :disabled="!isEnabled">
-			<template v-slot:content>
+			<template #content>
 				<who-youll-support-text @click="showLightbox = true" />
 				<inline-counter :strong="true" v-show="!kivaChooses" />
 

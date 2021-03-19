@@ -4,10 +4,10 @@
 			<div class="columns individuals__wrapper">
 				<fifteen-years-popcorn class="individuals__popcorn" />
 				<fifteen-years-section-header class="individuals__header">
-					<template v-slot:header>
+					<template #header>
 						The World <br class="lo xlo"> of Kiva
 					</template>
-					<template v-slot:subhead>
+					<template #subhead>
 						The people who<br class="smo"><br class="xxlu"> make it happen
 					</template>
 				</fifteen-years-section-header>
@@ -106,7 +106,7 @@
 				:expanded="true"
 			/>
 
-			<template v-slot:controls>
+			<template #controls>
 				<div class="prevnext">
 					<button
 						class="prevnext__btn prevnext__btn--prev"

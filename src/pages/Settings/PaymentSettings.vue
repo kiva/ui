@@ -10,7 +10,7 @@
 		</div>
 		<div class="row">
 			<kv-settings-card class="columns small-12 large-8" title="Credit Card Settings">
-				<template v-slot:content>
+				<template #content>
 					<form class="payment-settings-default-form" @submit.prevent>
 						<fieldset>
 							<legend v-if="hasSavedPaymentMethods">

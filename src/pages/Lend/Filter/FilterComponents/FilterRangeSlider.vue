@@ -12,7 +12,7 @@
 			<span class="title">
 				{{ title }}
 			</span>
-			<template v-slot:value>
+			<template #value>
 				<span class="range-label">
 					({{ rangeLabel }})
 				</span>

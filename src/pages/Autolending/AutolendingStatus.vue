@@ -1,7 +1,7 @@
 <template>
 	<div class="row">
 		<kv-settings-card class="column large-8" title="Auto-lending status">
-			<template v-slot:content>
+			<template #content>
 				Your auto-lending setting is currently
 				<kv-button class="text-link"
 					@click.native.prevent="showLightbox = true; triggerWatcher()"

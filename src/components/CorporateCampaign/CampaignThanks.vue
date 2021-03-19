@@ -10,7 +10,7 @@
 					<campaign-partner-thanks :partner-content="partnerContent" />
 				</section>
 				<kv-accordion-item id="thanks-share">
-					<template v-slot:header>
+					<template #header>
 						<h2>Share the Good</h2>
 					</template>
 					<social-share
@@ -20,7 +20,7 @@
 					/>
 				</kv-accordion-item>
 				<kv-accordion-item id="thanks-receipt">
-					<template v-slot:header>
+					<template #header>
 						<h2>Receipt</h2>
 					</template>
 					<checkout-receipt

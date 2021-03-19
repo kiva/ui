@@ -1,6 +1,6 @@
 <template>
 	<kv-settings-card title="Password">
-		<template v-slot:content>
+		<template #content>
 			<p>
 				Clicking this button will send you a verification email.
 				As a final step in this process, you'll need to click the

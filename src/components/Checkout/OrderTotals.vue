@@ -84,7 +84,7 @@
 				Click "Cancel" to use your free loan, or click "Remove Credit" to pay using your own money.
 			</p>
 
-			<template v-slot:controls>
+			<template #controls>
 				<kv-button
 					class="smallest secondary cancel-promo-opt-out-button"
 					v-kv-track-event="['promoCampaign', 'Cancel Promo Opt-out Button']"

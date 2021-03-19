@@ -140,7 +140,7 @@
 						automatically redirected.
 					</p>
 					<p>Thank you for minding our dust.</p>
-					<template v-slot:controls>
+					<template #controls>
 						<kv-button
 							class="smaller checkout-button"
 							id="Continue-to-legacy-button"
