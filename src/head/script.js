@@ -166,6 +166,9 @@ export default config => {
 				if (config.enableGTM && !optout) {
 					OneTrust.InsertHtml('', 'head', insertGTM, null, 'C0004');
 				}
+				if (config.enableFB && !optout) {
+					OneTrust.InsertHtml('', 'head', insertFB, null, 'C0004');
+				}
 			}
 
 			/** Category 'C0005'
@@ -176,9 +179,7 @@ export default config => {
 			* you see on other websites you visit. If you do not allow these cookies you may not be able to use or see
 			* these sharing tools.
 			* */
-			if (config.enableFB && !optout) {
-				OneTrust.InsertHtml('', 'head', insertFB, null, 'C0005');
-			}
+			// Currently any social media scripts are loaded via GTM
 		};
 		/* eslint-enable */
 	}
