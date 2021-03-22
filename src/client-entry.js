@@ -101,11 +101,11 @@ try {
 	// do nothing (leave user id as null)
 }
 
-// setup global analytics data
-app.$setKvAnalyticsData(userId);
-
-// fire server rendered pageview
-app.$fireServerPageView();
+// setup global analytics configuratino + data
+app.$setKvAnalyticsData(userId).then(() => {
+	// fire server rendered pageview
+	app.$fireServerPageView();
+});
 
 // Setup adding touch info to the state
 window.addEventListener('touchstart', function onFirstTouch() {
