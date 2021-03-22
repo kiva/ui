@@ -2,9 +2,11 @@
 	<www-page>
 		<kv-hero class="mg-hero bg-overlay" :class="{'experiment':isExperimentActive}">
 			<template #images>
-				<kv-responsive-image
-					:images="heroImages"
-					alt="A woman in a yellow dress with a look of pride and satisfaction on her face "
+				<kv-contentful-img
+					:contentful-src="heroImage"
+					fallback-format="jpg"
+					:width="screenWidth"
+					:alt="heroImageAlt"
 				/>
 			</template>
 			<template #overlayContent>
@@ -69,6 +71,7 @@
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
+import _throttle from 'lodash/throttle';
 
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
@@ -77,7 +80,7 @@ import { processPageContentFlat } from '@/util/contentfulUtils';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvHero from '@/components/Kv/KvHero';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import FrequentlyAskedQuestions from '@/components/MonthlyGood/FrequentlyAskedQuestions';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
@@ -113,16 +116,16 @@ export default {
 		title: 'Start Monthly Good',
 	},
 	components: {
-		WwwPage,
-		LandingForm,
-		KvHero,
-		KvResponsiveImage,
-		HowItWorks,
 		EmailPreview,
-		MoreAboutKiva,
-		KivaAsExpert,
 		FrequentlyAskedQuestions,
-		LandingFormExperiment
+		HowItWorks,
+		KivaAsExpert,
+		KvContentfulImg,
+		KvHero,
+		LandingForm,
+		LandingFormExperiment,
+		MoreAboutKiva,
+		WwwPage,
 	},
 	props: {
 		category: {
@@ -149,6 +152,8 @@ export default {
 				['wxga retina', heroImagesRequire('./monthlygood-banner-xxl-retina.jpg')],
 			],
 			pageData: {},
+			screenWidth: 320,
+
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -204,6 +209,12 @@ export default {
 		heroContentGroup() {
 			return this.pageData?.page?.contentGroups?.homepageHero ?? null;
 		},
+		heroImage() {
+			return this.heroContentGroup?.media?.[0]?.file?.url ?? '';
+		},
+		heroImageAlt() {
+			return this.heroContentGroup?.media?.[0]?.file?.description ?? '';
+		},
 		heroText() {
 			// eslint-disable-next-line max-len
 			return this.heroContentGroup?.contents?.find(contentItem => contentItem.key === 'mg-landing-hero-text');
@@ -218,6 +229,15 @@ export default {
 		heroPrimaryCtaText() {
 			return this.heroText?.primaryCtaText ?? 'Start Monthly Good';
 		},
+	},
+	mounted() {
+		// Set initial screen size
+		this.screenWidth = window.innerWidth;
+
+		// Update the screen size at most every 200ms when the window is being resized
+		window.addEventListener('resize', _throttle(() => {
+			this.screenWidth = window.innerWidth;
+		}, 200));
 	},
 };
 
