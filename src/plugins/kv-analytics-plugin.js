@@ -15,6 +15,11 @@ export default Vue => {
 			gaAltLoaded = inBrowser && typeof window._gaq === 'object';
 			snowplowLoaded = inBrowser && typeof window.snowplow === 'function';
 			fbLoaded = inBrowser && typeof window.fbq === 'function';
+
+			if (typeof window.ga === 'function' && typeof window.snowplow === 'function') {
+				return true;
+			}
+			return false;
 		},
 		pageview: (to, from) => {
 			if (!inBrowser) return false;
@@ -294,20 +299,36 @@ export default Vue => {
 
 	// eslint-disable-next-line no-param-reassign
 	Vue.prototype.$setKvAnalyticsData = (userId = null) => {
-		// establish loaded libs
-		kvActions.checkLibs();
+		return new Promise(resolve => {
+			let readyStateTimeout;
+			const readyStateInterval = window.setInterval(() => {
+				if (kvActions.checkLibs()) {
+					clearInterval(readyStateInterval);
+					clearTimeout(readyStateTimeout);
+					// Setup Global Snowplow
+					if (snowplowLoaded) {
+						window.snowplow('setUserId', userId);
+					}
+					// Setup Global GA Data
+					if (gaLoaded) {
+						window.ga('set', { userId });
+						window.ga('set', 'useBeacon', true);
+						window.ga('require', 'ec');
+						window.ga('set', 'dimension1', userId);
+					}
+					// resovle for next steps
+					resolve();
+				}
+			}, 100);
 
-		// Setup Global Snowplow
-		if (snowplowLoaded) {
-			window.snowplow('setUserId', userId);
-		}
-		// Setup Global GA Data
-		if (gaLoaded) {
-			window.ga('set', { userId });
-			window.ga('set', 'useBeacon', true);
-			window.ga('require', 'ec');
-			window.ga('set', 'dimension1', userId);
-		}
+			readyStateTimeout = window.setTimeout(() => {
+				// clean up interval and timeout
+				clearInterval(readyStateInterval);
+				clearTimeout(readyStateTimeout);
+				// resolve the promise
+				resolve();
+			}, 3000);
+		});
 	};
 
 	// eslint-disable-next-line no-param-reassign
