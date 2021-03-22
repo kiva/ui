@@ -1,5 +1,4 @@
 import logFormatter from '@/util/logFormatter';
-import { promise } from 'hard-source-webpack-plugin-fixed-hashbug/lib/util/plugin-compat';
 
 // install method for plugin
 export default Vue => {
@@ -327,7 +326,7 @@ export default Vue => {
 				clearInterval(readyStateInterval);
 				clearTimeout(readyStateTimeout);
 				// resolve the promise
-				promise.resolve();
+				resolve();
 			}, 3000);
 		});
 	};
