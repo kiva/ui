@@ -106,7 +106,7 @@ export default {
 		},
 		isGuestCheckout: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 	},
 	data() {
