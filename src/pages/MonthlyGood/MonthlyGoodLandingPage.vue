@@ -1,19 +1,24 @@
 <template>
 	<www-page>
-		<kv-hero class="mg-hero bg-overlay" :class="{'experiment':isExperimentActive}">
+		<kv-hero
+			class="mg-hero bg-overlay"
+			:class="{ experiment: isExperimentActive }"
+		>
 			<template #images>
-				<kv-responsive-image
-					:images="heroImages"
-					alt="A woman in a yellow dress with a look of pride and satisfaction on her face "
+				<kv-contentful-img
+					:contentful-src="heroImage"
+					fallback-format="jpg"
+					:width="1440"
+					:alt="heroImageAlt"
+					:source-sizes="sourceSizes"
+					crop="&fit=fill&f=face"
 				/>
 			</template>
 			<template #overlayContent>
 				<div class="row">
 					<div class="overlay-column columns medium-12 large-8">
-						<p class="mg-headline" v-html="heroHeadline">
-						</p>
-						<div class="mg-subhead" v-html="heroBody">
-						</div>
+						<p class="mg-headline" v-html="heroHeadline"></p>
+						<div class="mg-subhead" v-html="heroBody"></div>
 						<landing-form
 							:amount.sync="monthlyGoodAmount"
 							:selected-group.sync="selectedGroup"
@@ -28,10 +33,13 @@
 							:button-text="heroPrimaryCtaText"
 							v-if="!isMonthlyGoodSubscriber && isExperimentActive"
 						/>
-						<div class="already-subscribed-msg-wrapper" v-if="isMonthlyGoodSubscriber">
+						<div
+							class="already-subscribed-msg-wrapper"
+							v-if="isMonthlyGoodSubscriber"
+						>
 							<h4>
-								You're already signed up for Monthly Good.
-								Changes to this contribution can be made in your
+								You're already signed up for Monthly Good. Changes to this
+								contribution can be made in your
 								<a href="/settings/subscriptions">subscription settings</a>.
 							</h4>
 						</div>
@@ -39,9 +47,7 @@
 				</div>
 			</template>
 		</kv-hero>
-		<how-it-works
-			:is-experiment-active="isExperimentActive"
-		/>
+		<how-it-works :is-experiment-active="isExperimentActive" />
 		<email-preview />
 		<kiva-as-expert>
 			<template #form>
@@ -52,10 +58,13 @@
 					v-if="!isMonthlyGoodSubscriber"
 					:button-text="heroPrimaryCtaText"
 				/>
-				<div class="already-subscribed-msg-wrapper" v-if="isMonthlyGoodSubscriber">
+				<div
+					class="already-subscribed-msg-wrapper"
+					v-if="isMonthlyGoodSubscriber"
+				>
 					<h4>
-						You're already signed up for Monthly Good.
-						Changes to this contribution can be made in your
+						You're already signed up for Monthly Good. Changes to this
+						contribution can be made in your
 						<a href="/settings/subscriptions">subscription settings</a>.
 					</h4>
 				</div>
@@ -77,8 +86,9 @@ import { processPageContentFlat } from '@/util/contentfulUtils';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvHero from '@/components/Kv/KvHero';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import FrequentlyAskedQuestions from '@/components/MonthlyGood/FrequentlyAskedQuestions';
+import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 import LandingForm from './LandingForm';
@@ -88,47 +98,47 @@ import EmailPreview from './EmailPreview';
 import MoreAboutKiva from './MoreAboutKiva';
 import KivaAsExpert from './KivaAsExpert';
 
-const pageQuery = gql`query monthlyGoodLandingPage {
-	my {
-		autoDeposit {
-			id
-			isSubscriber
+const pageQuery = gql`
+	query monthlyGoodLandingPage {
+		my {
+			autoDeposit {
+				id
+				isSubscriber
+			}
+		}
+		general {
+			uiExperimentSetting(key: "mg_amount_selector") {
+				key
+				value
+			}
+		}
+		contentful {
+			entries(contentType: "page", contentKey: "monthlygood")
 		}
 	}
-	general {
-		uiExperimentSetting(key: "mg_amount_selector") {
-			key
-			value
-		}
-	}
-	contentful {
-		entries(contentType: "page", contentKey: "monthlygood")
-	}
-}`;
-
-const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', true);
+`;
 
 export default {
 	metaInfo: {
 		title: 'Start Monthly Good',
 	},
 	components: {
-		WwwPage,
-		LandingForm,
-		KvHero,
-		KvResponsiveImage,
-		HowItWorks,
 		EmailPreview,
-		MoreAboutKiva,
-		KivaAsExpert,
 		FrequentlyAskedQuestions,
-		LandingFormExperiment
+		HowItWorks,
+		KivaAsExpert,
+		KvContentfulImg,
+		KvHero,
+		LandingForm,
+		LandingFormExperiment,
+		MoreAboutKiva,
+		WwwPage,
 	},
 	props: {
 		category: {
 			type: String,
-			default: 'default'
-		}
+			default: 'default',
+		},
 	},
 	data() {
 		return {
@@ -136,32 +146,50 @@ export default {
 			isMonthlyGoodSubscriber: false,
 			monthlyGoodAmount: 25,
 			selectedGroup: this.category || 'default',
-			heroImages: [
-				['small', heroImagesRequire('./monthlygood-banner-sm-std.jpg')],
-				['small retina', heroImagesRequire('./monthlygood-banner-sm-retina.jpg')],
-				['medium', heroImagesRequire('./monthlygood-banner-med-std_0.jpg')],
-				['medium retina', heroImagesRequire('./monthlygood-banner-med-retina_0.jpg')],
-				['large', heroImagesRequire('./monthlygood-banner-lg-std_0.jpg')],
-				['large retina', heroImagesRequire('./monthlygood-banner-lg-retina_0.jpg')],
-				['xga', heroImagesRequire('./monthlygood-banner-xl-std_0.jpg')],
-				['xga retina', heroImagesRequire('./monthlygood-banner-xl-retina_0.jpg')],
-				['wxga', heroImagesRequire('./monthlygood-banner-xxl-std.jpg')],
-				['wxga retina', heroImagesRequire('./monthlygood-banner-xxl-retina.jpg')],
-			],
 			pageData: {},
+			sourceSizes: [
+				{
+					width: 1920,
+					height: 650,
+					media: 'min-width: 1441px',
+				},
+				{
+					width: 1440,
+					height: 620,
+					media: 'min-width: 1025px',
+				},
+				{
+					width: 1024,
+					height: 441,
+					media: 'min-width: 681px',
+				},
+				{
+					width: 680,
+					height: 372,
+					media: 'min-width: 481px',
+				},
+				{
+					width: 480,
+					height: 540,
+					media: 'min-width: 0px',
+				},
+			],
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: pageQuery,
 		preFetch(config, client) {
-			return client.query({
-				query: pageQuery
-			}).then(() => {
-				return client.query({
-					query: experimentQuery, variables: { id: 'mg_amount_selector' }
+			return client
+				.query({
+					query: pageQuery,
+				})
+				.then(() => {
+					return client.query({
+						query: experimentQuery,
+						variables: { id: 'mg_amount_selector' },
+					});
 				});
-			});
 		},
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
@@ -201,6 +229,12 @@ export default {
 		},
 	},
 	computed: {
+		heroImage() {
+			return this.heroContentGroup?.media?.[0]?.file?.url ?? '';
+		},
+		heroImageAlt() {
+			return this.heroContentGroup?.media?.[0]?.description ?? '';
+		},
 		heroContentGroup() {
 			return this.pageData?.page?.contentGroups?.homepageHero ?? null;
 		},
@@ -213,18 +247,17 @@ export default {
 			return documentToHtmlString(text).replace(/\n/g, '<br />');
 		},
 		heroHeadline() {
-			return this.heroText?.headline ?? 'It\'s easy to do good.';
+			return this.heroText?.headline ?? "It's easy to do good.";
 		},
 		heroPrimaryCtaText() {
 			return this.heroText?.primaryCtaText ?? 'Start Monthly Good';
 		},
 	},
 };
-
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import "settings";
 
 .already-subscribed-msg-wrapper {
 	background-color: $vivid-yellow;
@@ -242,7 +275,12 @@ export default {
 		}
 	}
 
-	margin-bottom: 0;
+	::v-deep .kv-contentful-img,
+	::v-deep .kv-contentful-img__img {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
 
 	::v-deep form {
 		// overwrite styles for error display over hero image
@@ -252,6 +290,7 @@ export default {
 		}
 	}
 
+	margin-bottom: 0;
 	//set min height to improve sizing when image has not loaded yet
 	min-height: 6.25rem;
 	@include breakpoint(xlarge) {

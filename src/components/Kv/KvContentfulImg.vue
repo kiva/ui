@@ -3,23 +3,46 @@
 		class="kv-contentful-img"
 		v-if="(width || height) && contentfulSrc && fallbackFormat"
 	>
-		<source
-			type="image/webp"
-			:srcset="`
+		<!-- Set of image sources -->
+		<template v-if="sourceSizes.length > 0">
+			<template v-for="(image, index) in sourceSizes">
+				<source
+					:key="'image'+index"
+					:media="'('+image.media+')'"
+					type="image/webp"
+					:srcset="`
+					${buildUrl(image.width * 2, image.height * 2)}${crop}&fm=webp&q=65 2x,
+					${buildUrl(image.width, image.height)}${crop}&fm=webp&q=80 1x`"
+				>
+			</template>
+			<img
+				class="kv-contentful-img__img"
+				:src="`${buildUrl(width, height)}${crop}fm=${fallbackFormat}&q=80`"
+				:alt="alt"
+				:loading="loading"
+			>
+		</template>
+
+		<!-- Single image -->
+		<template v-if="sourceSizes.length === 0">
+			<source
+				type="image/webp"
+				:srcset="`
 					${buildUrl(width * 2, height * 2)}&fm=webp&q=65 2x,
 					${buildUrl(width, height)}&fm=webp&q=80 1x`"
-		>
-		<img
-			class="kv-contentful-img__img"
-			:srcset="`
+			>
+			<img
+				class="kv-contentful-img__img"
+				:srcset="`
 					${buildUrl(width * 2, height * 2)}&fm=${fallbackFormat}&q=65 2x,
 					${buildUrl(width, height)}&fm=${fallbackFormat}&q=80 1x`"
-			:src="`${buildUrl(width, height)}&fm=${fallbackFormat}&q=80`"
-			:width="width ? width : null"
-			:height="height ? height : null"
-			:alt="alt"
-			:loading="loading"
-		>
+				:src="`${buildUrl(width, height)}&fm=${fallbackFormat}&q=80`"
+				:width="width ? width : null"
+				:height="height ? height : null"
+				:alt="alt"
+				:loading="loading"
+			>
+		</template>
 	</picture>
 </template>
 
@@ -73,12 +96,38 @@ export default {
 			default: '',
 		},
 		/**
+		 * Additional contentful query param string for crop and fit
+		* */
+		crop: {
+			type: String,
+			default: '',
+		},
+		/**
 		 * Loading hint to the browser - https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-loading
 		 * `lazy, eager`
 		* */
 		loading: {
 			type: String,
-			default: null
+			default: null,
+			validator(value) {
+				// The value must match one of these strings
+				return ['lazy', 'eager'].indexOf(value) !== -1;
+			}
+		},
+		/**
+		 * Sources sizes.
+		 * Array of objects for different image sources.
+		 * Sample object:
+		 * 		{
+					width: 1440,
+					height: 620,
+					media: 'min-width: 1025px',
+				}
+		* */
+		sourceSizes: {
+			type: Array,
+			required: false,
+			default: () => []
 		}
 	},
 	methods: {
