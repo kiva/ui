@@ -101,7 +101,7 @@ export default config => {
 	if (config.oneTrust && config.oneTrust.enable) {
 		/* eslint-disable */
 		(function () {
-			let oneTrustUrl = `https://cdn.cookielaw.org/consent/scripttemplates/otSDKStub.js`;
+			let oneTrustUrl = 'https://cdn.cookielaw.org/scripttemplates/otSDKStub.js';
 			if (config.host && config.host !== 'www.kiva.org') {
 				oneTrustUrl = `https://cdn.cookielaw.org/consent/${config.oneTrust.key}${config.oneTrust.domainSuffix}/otSDKStub.js`;
 			}
