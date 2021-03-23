@@ -316,6 +316,25 @@ export default {
 };
 </script>
 
+<style lang="scss">
+@import "settings";
+
+#guest-checkout {
+	.kv-checkbox {
+		.input {
+			&:checked + .label,
+			&:active + .label {
+				.square {
+					background-color: $blue;
+					border-color: $blue;
+				}
+			}
+		}
+	}
+}
+
+</style>
+
 <style lang="scss" scoped>
 @import "settings";
 
