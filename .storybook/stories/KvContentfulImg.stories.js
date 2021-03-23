@@ -11,6 +11,7 @@ export default {
 		alt: null,
 		loading: 'lazy',
 		crop: null,
+		sourceSizes: null
 	},
 };
 
@@ -27,14 +28,14 @@ export const ImageSet = (args, { argTypes }) => ({
 			:height="height"
 			:alt="alt"
 			:loading="loading"
-			:source-sizes="sizes"
+			:source-sizes="sourceSizes"
 			:crop="crop"
 		/>
 	`,
 });
 ImageSet.args = {
 	crop: '&fit=fill&f=face',
-	sizes: [
+	sourceSizes: [
 		{
 			width: 1920,
 			height: 650,
