@@ -215,7 +215,7 @@ $card-half-space: rem-calc(14/2);
 .component-wrapper {
 	min-height: rem-calc(465); // prevents layout shift as loans load in
 	display: flex;
-	align-items: start;
+	align-items: flex-start;
 	justify-content: center;
 	position: relative;
 
