@@ -218,6 +218,7 @@
 								<a
 									:href="careersUrl"
 									target="_blank"
+									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-Careers']"
 								>
 									Careers
@@ -235,6 +236,7 @@
 								<a
 									href="https://www.careers.kiva.org/fellowships"
 									target="_blank"
+									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-Kiva fellows']"
 								>
 									Kiva fellows
@@ -252,6 +254,7 @@
 								<a
 									href="https://www.kivaushub.org/hubs"
 									target="_blank"
+									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-US Hubs']"
 								>
 									US Hubs
@@ -268,7 +271,8 @@
 						<li>
 							<a
 								:href="appStoreUrl"
-								target="_blank" rel="noopener"
+								target="_blank"
+								rel="noopener"
 								v-kv-track-event="['global', 'click-app-badge-footer', 'App Store']"
 							>
 								<img
@@ -567,7 +571,8 @@
 							<li>
 								<a
 									:href="appStoreUrl"
-									target="_blank" rel="noopener"
+									target="_blank"
+									rel="noopener"
 									v-kv-track-event="['global', 'click-app-badge-footer', 'App Store']"
 								>
 									<img
@@ -602,6 +607,7 @@
 								<a
 									:href="careersUrl"
 									target="_blank"
+									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-Careers']"
 								>
 									Careers
@@ -619,6 +625,7 @@
 								<a
 									href="https://www.careers.kiva.org/fellowships"
 									target="_blank"
+									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-Kiva fellows']"
 								>
 									Kiva fellows
@@ -636,6 +643,7 @@
 								<a
 									href="https://www.kivaushub.org/hubs"
 									target="_blank"
+									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-US Hubs']"
 								>
 									US Hubs
