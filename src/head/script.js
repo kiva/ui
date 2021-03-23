@@ -101,12 +101,16 @@ export default config => {
 	if (config.oneTrust && config.oneTrust.enable) {
 		/* eslint-disable */
 		(function () {
+			let oneTrustUrl = `https://cdn.cookielaw.org/consent/scripttemplates/otSDKStub.js`;
+			if (config.host && config.host !== 'www.kiva.org') {
+				oneTrustUrl = `https://cdn.cookielaw.org/consent/${config.oneTrust.key}${config.oneTrust.domainSuffix}/otSDKStub.js`;
+			}
 			// Main OneTrust script to display cookie notice and set user preferences
 			const p = document.getElementsByTagName('script')[0];
 			const s = document.createElement('script');
 			s.setAttribute('type', 'text/javascript');
 			s.setAttribute('data-domain-script', `${config.oneTrust.key}${config.oneTrust.domainSuffix}`)
-			s.src = `https://cdn.cookielaw.org/consent/${config.oneTrust.key}${config.oneTrust.domainSuffix}/otSDKStub.js`;
+			s.src = oneTrustUrl;
 			p.parentNode.insertBefore(s, p);
 		}());
 
