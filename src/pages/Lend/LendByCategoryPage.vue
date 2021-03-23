@@ -527,9 +527,9 @@ export default {
 				this.$kvTrackEvent(
 					'Lending',
 					'EXP-ML-Service-Bandit-LendByCategory',
-					this.mlServiceBanditExpVersion === 'variant-a' ? 'b' : 'a',
-					this.mlServiceBanditExpVersion === 'variant-a' ? mlServiceBandit : null,
-					this.mlServiceBanditExpVersion === 'variant-a' ? mlServiceBandit : null
+					this.mlServiceBanditExpVersion,
+					this.mlServiceBanditExpVersion === 'b' ? mlServiceBandit : null,
+					this.mlServiceBanditExpVersion === 'b' ? mlServiceBandit : null
 				);
 			}
 		},
