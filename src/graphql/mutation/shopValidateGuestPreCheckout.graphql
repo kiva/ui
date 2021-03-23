@@ -1,7 +1,7 @@
-mutation validateGuestPreCheckout($basketId: String, $email: String) {
+mutation validateGuestPreCheckout($basketId: String, $email: String, $visitorId: String) {
 	shop (basketId: $basketId) {
 		id
-		validatePreCheckout (email: $email) {
+		validatePreCheckout (email: $email, visitorId: $visitorId) {
 			error
 			success
 			value

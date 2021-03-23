@@ -5,7 +5,8 @@ mutation trackTransaction(
 	$snowplowUserId: String,
 	$snowplowSessionId: String,
 	$source: String,
-	$transactionId: Int!
+	$transactionId: Int!,
+	$visitorId: String
 ) {
 	shop {
 		id
@@ -17,6 +18,7 @@ mutation trackTransaction(
 			snowplowSessionId: $snowplowSessionId
 			source: $source
 			transactionId: $transactionId
+			visitorId: $visitorId
 		)
 	}
 }

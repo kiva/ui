@@ -51,6 +51,7 @@ export default {
 								snowplowUserId,
 								source: gclid || route.query.gclid ? 'google-cpc' : source,
 								transactionId,
+								visitorId: this.cookieStore.get('uiv') || null
 							},
 						})
 							// whether it succeeded or failed, redirect to the thanks page with the transaction id

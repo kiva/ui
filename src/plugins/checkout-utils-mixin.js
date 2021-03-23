@@ -57,7 +57,10 @@ export default {
 			return new Promise((resolve, reject) => {
 				this.apollo.mutate({
 					mutation: shopValidateGuestBasket,
-					variables: { email: guestEmail }
+					variables: {
+						email: guestEmail,
+						visitorId: this.cookieStore.get('uiv') || null
+					}
 				}).then(data => {
 					const validationResult = _get(data, 'data.shop.validatePreCheckout');
 					if (typeof validationResult !== 'undefined' && validationResult.length === 0) {
