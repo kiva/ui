@@ -256,6 +256,7 @@ export default {
 						nonce,
 						deviceData,
 						savePaymentMethod: false, // save payment methods handled by braintree drop in UI
+						visitorId: this.cookieStore.get('uiv') || null
 					},
 				})
 				.then(kivaBraintreeResponse => {
