@@ -48,6 +48,11 @@ module.exports = {
 			domain: 'login.kiva.org',
 			scope: 'openid mfa',
 		},
+		oneTrust: {
+			enable: true,
+			key: 'db9dcf94-1c32-40fb-9a57-cefafea1088d',
+			domainSuffix: '',
+		},
 		paypal : {
 			url: 'www.paypal.com',
 			environment: 'production'
