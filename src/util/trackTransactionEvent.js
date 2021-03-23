@@ -31,6 +31,7 @@ export default function trackTransactionEvent(transactionId, apolloClient, cooki
 			snowplowUserId,
 			source: gclid ? 'google-cpc' : source,
 			transactionId,
+			visitorId: cookieStore.get('uiv') || null
 		},
 	})
 		// return statuc
