@@ -37,9 +37,9 @@
 			<p v-if="serverError" class="guest-account-upsell__server-error">
 				There was a problem when trying to create your account, please try again later.
 			</p>
-			<KvButton class="guest-account-upsell__claim-button smaller expanded" type="submit">
+			<kv-button class="guest-account-upsell__claim-button smaller expanded" type="submit">
 				Create my account
-			</KvButton>
+			</kv-button>
 		</form>
 	</section>
 </template>
@@ -92,6 +92,8 @@ export default {
 			this.serverError = false;
 			this.$v.$touch();
 			if (!this.$v.$invalid) {
+				this.$kvTrackEvent('Thanks', 'click-register-upsell-name-cta', 'Create my account');
+
 				// will end up redirecting to password reset page.
 				this.apollo.mutate({
 					mutation: gql`mutation startGuestAccountClaim(
