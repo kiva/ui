@@ -81,7 +81,6 @@
 									</form>
 
 									<checkout-drop-in-payment-wrapper
-										:is-guest-checkout="true"
 										v-else
 										:amount="creditNeeded"
 										@refreshtotals="refreshTotals"
