@@ -433,10 +433,10 @@ export default {
 			return false;
 		},
 		checkoutSteps() {
-			return ['Basket', 'Account', 'Payment', 'Thank You!'];
+			return ['Basket', 'Payment', 'Thank You!'];
 		},
 		currentStep() {
-			return this.isLoggedIn ? 2 : 0;
+			return this.isLoggedIn ? 1 : 0;
 		},
 		creditNeeded() {
 			return this.totals.creditAmountNeeded || '0.00';
