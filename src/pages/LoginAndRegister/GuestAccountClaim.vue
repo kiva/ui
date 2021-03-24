@@ -30,7 +30,15 @@
 						Enter last name.
 					</template>
 				</kv-base-input>
-				<kv-button class="claim-button smaller" type="submit">
+				<kv-button
+					class="claim-button smaller"
+					type="submit"
+					v-kv-track-event="[
+						'Login',
+						'click-guest-enter-name-cta',
+						'Done'
+					]"
+				>
 					Done
 				</kv-button>
 			</form>
@@ -77,13 +85,17 @@ export default {
 	methods: {
 		claimGuestAccount() {
 			this.$v.$touch();
+
 			if (!this.$v.$invalid) {
 				const params = [
 					`firstName=${encodeURIComponent(this.firstName)}`,
 					`lastName=${encodeURIComponent(this.lastName)}`,
 					`state=${this.$route.query.state}`
 				].join('&');
+				this.$kvTrackEvent('Register', 'guest-account-registration-success');
 				window.location = `https://${this.$appConfig.auth0.domain}/continue?${params}`;
+			} else {
+				this.$kvTrackEvent('Login', 'error-guest-enter-name-cta', [this.$v.lastName, this.$v.firstName]);
 			}
 		}
 	},
