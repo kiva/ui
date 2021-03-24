@@ -192,7 +192,7 @@ export default {
 		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
-			if (this.selectedLoan.id) {
+			if (this.selectedLoan.id && this.lender.inviterName) {
 				if (this.isTeamInvitation) {
 					return `${base}/invitedto/${this.selectedLenderTeam}/by/${this.lender.inviterName}/for/${this.selectedLoan.id}`; // eslint-disable-line max-len
 				}

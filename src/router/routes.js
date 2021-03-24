@@ -49,9 +49,6 @@ export default [
 	{
 		path: '/checkout/thanks',
 		component: () => import('@/pages/Thanks/ThanksPage'),
-		meta: {
-			authenticationRequired: true,
-		}
 	},
 	{ path: '/covid19response', component: () => import('@/pages/LandingPages/MGCovid19/MGCovid19') },
 	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/DonateFromMacro') },
