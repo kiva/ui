@@ -4,12 +4,7 @@
 			Before you go!
 		</h2>
 		<p v-if="borrowerName" class="guest-account-upsell__subhead">
-			<template v-if="borrowerName">
-				Get updates from {{ borrowerName }} and choose how to re-lend your money when they pay you back.
-			</template>
-			<template v-else>
-				Get updates from the borrowers you support and choose how to re-lend your money when they pay you back.
-			</template>
+			{{ borrowerUpdateText }}
 		</p>
 		<form id="guestUpsellForm" action="." @submit.prevent.stop="submit">
 			<kv-base-input name="firstName"
@@ -86,6 +81,17 @@ export default {
 		borrowerName() {
 			return this.loans.length === 1 ? this.loans[0].name : '';
 		},
+		borrowerUpdateText() {
+			if (this.borrowerName) {
+				return `Get updates from ${this.borrowerName} and choose
+					how to re-lend your money when they pay you back.`;
+			}
+			return `Get updates from the borrowers you support and choose
+				how to re-lend your money when they pay you back.`;
+		}
+	},
+	mounted() {
+		this.$kvTrackEvent('Thanks', 'view-register-upsell', this.borrowerUpdateText);
 	},
 	methods: {
 		submit() {
