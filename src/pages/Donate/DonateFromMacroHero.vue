@@ -1,10 +1,13 @@
 <template>
 	<kv-hero class="donation-hero">
 		<template #images>
-			<kv-responsive-image
-				class="donation-hero-picture show-for-large"
-				:images="heroResponsiveImageSet"
-				alt=""
+			<kv-contentful-img
+				:contentful-src="heroImage"
+				fallback-format="jpg"
+				:width="1440"
+				:alt="heroImageAlt"
+				:source-sizes="sourceSizes"
+				crop="&fit=fill"
 			/>
 		</template>
 		<template #overlayContent>
@@ -28,8 +31,8 @@
 </template>
 <script>
 import KvHero from '@/components/Kv/KvHero';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import { createArrayOfResponsiveImageSet } from '@/util/contentfulUtils';
+import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 import DonateForm from './DonateForm';
@@ -45,18 +48,47 @@ export default {
 		title: 'Donate to Kiva today!'
 	},
 	components: {
-		KvHero,
 		DonateForm,
-		KvResponsiveImage,
+		KvContentfulImg,
+		KvHero,
 	},
 	data() {
 		return {
+			sourceSizes: [
+				{
+					width: 1920,
+					height: 575,
+					media: 'min-width: 1441px',
+				},
+				{
+					width: 1440,
+					height: 575,
+					media: 'min-width: 1025px',
+				},
+				{
+					width: 1024,
+					height: 620,
+					media: 'min-width: 681px',
+				},
+				{
+					width: 680,
+					height: 372,
+					media: 'min-width: 481px',
+				},
+				{
+					width: 480,
+					height: 540,
+					media: 'min-width: 0px',
+				},
+			],
 		};
 	},
 	computed: {
-		heroResponsiveImageSet() {
-			const imageSet = this.data?.contents?.find(contentItem => contentItem.name === 'donation-page-images');
-			return createArrayOfResponsiveImageSet(imageSet);
+		heroImage() {
+			return this.data?.media?.[0]?.file?.url ?? '';
+		},
+		heroImageAlt() {
+			return this.data?.media?.[0]?.description ?? '';
 		},
 		donationHeroContent() {
 			return this.data?.contents?.find(contentItem => contentItem.key === 'donation-form-copy');
@@ -90,7 +122,6 @@ export default {
 @import 'settings';
 
 .donation-hero {
-	// background-color: #fdf7eb;
 	background-color: #EEEFE9;
 	margin-bottom: 0;
 	padding-bottom: 1rem;
@@ -100,24 +131,6 @@ export default {
 	::v-deep .overlay-holder {
 		display: flex;
 		flex-direction: column-reverse;
-
-		.donation-hero-picture {
-			@include breakpoint(large) {
-				position: absolute;
-				top: 0;
-				bottom: 0;
-			}
-
-			// Prevent whitespace below the image in browsers that understand object-fit. (IE11 will see some whitepace)
-			@supports (object-fit: cover) {
-				img {
-					object-fit: cover;
-					object-position: 50% 25%; // keep the illustrations heads visible
-					height: 100%;
-					width: 100%;
-				}
-			}
-		}
 
 		.overlay-content {
 			margin-top: 1rem;
@@ -146,6 +159,22 @@ export default {
 					max-width: 31.25rem;
 					padding: 2.5rem 2.5rem 2.25rem;
 				}
+			}
+		}
+	}
+
+	::v-deep .kv-contentful-img {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+
+		// Prevent whitespace below the image in browsers that understand object-fit. (IE11 will see some whitepace)
+		@supports (object-fit: cover) {
+			img {
+				object-fit: cover;
+				object-position: 50% 25%; // keep the illustrations heads visible
+				height: 100%;
+				width: 100%;
 			}
 		}
 	}
