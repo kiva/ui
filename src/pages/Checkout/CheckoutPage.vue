@@ -83,6 +83,7 @@
 									<checkout-drop-in-payment-wrapper
 										v-else
 										:amount="creditNeeded"
+										:is-guest-checkout="checkingOutAsGuest"
 										@refreshtotals="refreshTotals"
 										@updating-totals="setUpdatingTotals"
 										@complete-transaction="completeTransaction"
@@ -261,6 +262,7 @@ export default {
 			redirectToLoginExperimentVersion: null,
 			isGuestCheckoutExperimentActive: false,
 			guestCheckoutExperimentVersion: null,
+			checkingOutAsGuest: false,
 		};
 	},
 	apollo: {
@@ -420,6 +422,9 @@ export default {
 	},
 	computed: {
 		isLoggedIn() {
+			if (this.checkingOutAsGuest) {
+				return true;
+			}
 			if (this.myId !== null && this.myId !== undefined && this.isActivelyLoggedIn) {
 				return true;
 			}
@@ -457,6 +462,9 @@ export default {
 			return this.totals.creditAmountNeeded || '0.00';
 		},
 		showKivaCreditButton() {
+			if (this.checkingOutAsGuest) {
+				return false;
+			}
 			return parseFloat(this.creditNeeded) === 0;
 		},
 		showGuestCheckoutButton() {
@@ -506,7 +514,7 @@ export default {
 			// Doing nothing here allows the normal link handling to happen, which will send the user to /ui-login
 		},
 		guestCheckout() {
-			console.log('Guest checkout method triggered.');
+			this.checkingOutAsGuest = true;
 		},
 		doPopupLogin() {
 			if (this.kvAuth0.enabled) {

@@ -6,6 +6,8 @@
 				:amount="amount"
 				flow="checkout"
 				:payment-types="paymentTypes"
+				:preselect-vaulted-payment-method="!isGuestCheckout"
+				:auth="isGuestCheckout ? 'token-key' : 'client-token'"
 				@transactions-enabled="enableCheckoutButton = $event"
 			/>
 			<div v-if="isGuestCheckout" id="guest-checkout">
