@@ -49,6 +49,7 @@
 					id="emailUpdates"
 					class="checkbox"
 					name="emailUpdates"
+					v-model="emailUpdates"
 					:checked="true"
 				>
 					Receive email updates from Kiva (including borrower updates
@@ -113,6 +114,7 @@ export default {
 		return {
 			email: null,
 			termsAgreement: false,
+			emailUpdates: true,
 			enableCheckoutButton: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 		};
@@ -137,7 +139,7 @@ export default {
 		},
 		validateGuestBasketAndCheckout() {
 			this.$emit('updating-totals', true);
-			this.validateGuestBasket(this.email)
+			this.validateGuestBasket(this.email, this.emailUpdates)
 				.then(validationStatus => {
 					if (validationStatus === true) {
 						this.submitDropInPayment();

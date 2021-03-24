@@ -51,7 +51,7 @@ export default {
 		 *
 		 * @returns {Promise}
 		 */
-		validateGuestBasket(guestEmail) {
+		validateGuestBasket(guestEmail, emailUpdates) {
 			checkInjections(this, injections);
 
 			return new Promise((resolve, reject) => {
@@ -59,6 +59,7 @@ export default {
 					mutation: shopValidateGuestBasket,
 					variables: {
 						email: guestEmail,
+						emailOptIn: emailUpdates,
 						visitorId: this.cookieStore.get('uiv') || null
 					}
 				}).then(data => {
