@@ -17,6 +17,11 @@
 						v-model="email"
 						id="email"
 						class="fs-exclude"
+						@focus="$kvTrackEvent(
+							'basket',
+							'click-email-receipt-field',
+							'Where should we email your receipt?'
+						)"
 					>
 					<p v-if="$v.email.$error" class="input-error">
 						Valid email required.
@@ -27,6 +32,12 @@
 					name="termsAgreement"
 					class="checkbox"
 					v-model="termsAgreement"
+					@change="$kvTrackEvent(
+						'basket',
+						'click-terms-of-use',
+						'I have read and agree to the Terms of Use and Privacy Policy.',
+						termsAgreement ? 1 : 0
+					)"
 				>
 					I have read and agree to the
 					<a
@@ -50,6 +61,12 @@
 					class="checkbox"
 					name="emailUpdates"
 					v-model="emailUpdates"
+					@change="$kvTrackEvent(
+						'basket',
+						'click-marketing-updates',
+						'Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.', // eslint-disable-line
+						emailUpdates ? 1 : 0
+					)"
 					:checked="true"
 				>
 					Receive email updates from Kiva (including borrower updates
