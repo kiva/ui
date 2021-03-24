@@ -95,7 +95,7 @@ export default {
 				this.$kvTrackEvent('Register', 'guest-account-registration-success');
 				window.location = `https://${this.$appConfig.auth0.domain}/continue?${params}`;
 			} else {
-				this.$kvTrackEvent('Login', 'error-guest-enter-name-cta', [this.$v.lastName, this.$v.firstName]);
+				this.$kvTrackEvent('Login', 'error-guest-enter-name-cta', [this.$v.firstName, this.$v.lastName]);
 			}
 		}
 	},
