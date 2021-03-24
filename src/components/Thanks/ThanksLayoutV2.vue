@@ -4,6 +4,27 @@
 		<div class="row show-for-large thanks-page--large-up">
 			<div class="small-6 columns hide-for-print">
 				<kv-icon-button
+					data-test="thanks-page-button--guest"
+					class="thanks-page__icon-button expanded"
+					v-if="showGuestUpsell"
+					:class="{ active: isGuestSelected }"
+					@click.native="setVisibleSection('guest')"
+				>
+					<template #icon-left>
+						<kv-icon
+							name="alert-circle"
+						/>
+					</template>
+					Before you go!
+					<template #icon-right>
+						<kv-icon
+							class="arrow-icon"
+							:class="{ obfuscate: !isGuestSelected }"
+							name="arrow"
+						/>
+					</template>
+				</kv-icon-button>
+				<kv-icon-button
 					data-test="thanks-page-button--mg"
 					class="thanks-page__icon-button expanded"
 					v-if="showMgCta"
@@ -68,6 +89,15 @@
 			</div>
 			<div class="small-6 columns expand-for-print">
 				<div
+					v-if="showGuestUpsell"
+					v-show="isGuestSelected"
+					class="thanks-page__content-area thanks-page__content-area--guest"
+					data-test="thanks-page-content--guest"
+				>
+					<slot name="guest">
+					</slot>
+				</div>
+				<div
 					v-if="showMgCta"
 					v-show="isMgSelected"
 					class="thanks-page__content-area thanks-page__content-area--mg"
@@ -98,6 +128,46 @@
 		<!-- Thanks Page V2 - Mobile -->
 		<div class="row hide-for-large thanks-page--medium-down">
 			<div class="small-12 columns">
+				<!-- guest -->
+				<div
+					class="kv-accordion thanks-page__content-area thanks-page__content-area--guest"
+					:class="{
+						'kv-accordion--open' : isGuestSelected,
+					}"
+					v-if="showGuestUpsell"
+				>
+					<kv-icon-button class="thanks-page__icon-button expanded"
+						:class="{ active: isGuestSelected }"
+						aria-controls="`kv-accordion-mg-accordion`"
+						:aria-expanded="isGuestSelected ? 'true' : 'false'"
+						@click.native="setVisibleSection('guest')"
+					>
+						<template #icon-left>
+							<kv-icon
+								name="alert-circle"
+							/>
+						</template>
+						Before you go!
+						<template #icon-right>
+							<kv-icon
+								name="fat-chevron"
+								:from-sprite="true"
+							/>
+						</template>
+					</kv-icon-button>
+					<kv-expandable>
+						<div
+							class="kv-accordion__pane"
+							id="kv-accordion-guest-accordion"
+							v-show="isGuestSelected"
+							:aria-hidden="isGuestSelected ? 'false' : 'true'"
+						>
+							<hr>
+							<slot name="guest">
+							</slot>
+						</div>
+					</kv-expandable>
+				</div>
 				<!-- mg -->
 				<div
 					class="kv-accordion thanks-page__content-area thanks-page__content-area--mg"
@@ -234,6 +304,10 @@ export default {
 		KvIconButton,
 	},
 	props: {
+		showGuestUpsell: {
+			type: Boolean,
+			default: false
+		},
 		showMgCta: {
 			type: Boolean,
 			default: false
@@ -244,8 +318,14 @@ export default {
 		},
 	},
 	data() {
+		let visibleSection = 'receipt';
+		if (this.showGuestUpsell) {
+			visibleSection = 'guest';
+		} else if (this.showMgCta) {
+			visibleSection = 'mg';
+		}
 		return {
-			visibleSection: this.showMgCta ? 'mg' : 'receipt',
+			visibleSection,
 		};
 	},
 	methods: {
@@ -254,6 +334,9 @@ export default {
 		}
 	},
 	computed: {
+		isGuestSelected() {
+			return this.visibleSection === 'guest';
+		},
 		isMgSelected() {
 			return this.visibleSection === 'mg';
 		},

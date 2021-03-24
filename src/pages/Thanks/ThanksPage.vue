@@ -15,7 +15,7 @@
 						<p class="thanks__header-subhead">
 							Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
 						</p>
-						<p class="hide-for-print">
+						<p v-if="lender.email" class="hide-for-print">
 							We've emailed your order confirmation to
 							<strong class="fs-exclude">{{ lender.email }}</strong>
 						</p>
@@ -62,7 +62,8 @@
 
 		<thanks-layout-v2
 			v-if="thanksPageVersion === 'b'"
-			:show-mg-cta="!isMonthlyGoodSubscriber"
+			:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest"
+			:show-guest-upsell="isGuest"
 			:show-share="loans.length > 0"
 		>
 			<template #receipt>
@@ -86,6 +87,11 @@
 					:loans="loans"
 				/>
 			</template>
+			<template #guest>
+				<guest-upsell
+					:loans="loans"
+				/>
+			</template>
 		</thanks-layout-v2>
 	</www-page>
 </template>
@@ -95,6 +101,7 @@ import confetti from 'canvas-confetti';
 import numeral from 'numeral';
 
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
+import GuestUpsell from '@/components/Checkout/GuestUpsell';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import MonthlyGoodCTA from '@/components/Checkout/MonthlyGoodCTA';
 import SocialShare from '@/components/Checkout/SocialShare';
@@ -111,6 +118,7 @@ import { joinArray } from '@/util/joinArray';
 export default {
 	components: {
 		CheckoutReceipt,
+		GuestUpsell,
 		KvCheckoutSteps,
 		MonthlyGoodCTA,
 		SocialShare,
@@ -136,16 +144,18 @@ export default {
 			],
 			thanksPageVersion: 'a',
 			isMonthlyGoodSubscriber: false,
+			isGuest: false,
 			pageData: {},
 		};
 	},
 	apollo: {
 		query: thanksPageQuery,
-		preFetch(config, client, { route }) {
+		preFetch(config, client, { cookieStore, route }) {
 			return client.query({
 				query: thanksPageQuery,
 				variables: {
-					checkoutId: numeral(route.query.kiva_transaction_id).value()
+					checkoutId: numeral(route.query.kiva_transaction_id).value(),
+					visitorId: cookieStore.get('uiv') || null,
 				}
 			}).then(() => {
 				return client.query({
@@ -153,20 +163,22 @@ export default {
 				});
 			});
 		},
-		preFetchVariables({ route }) {
+		preFetchVariables({ cookieStore, route }) {
 			return {
-				checkoutId: numeral(route.query.kiva_transaction_id).value()
+				checkoutId: numeral(route.query.kiva_transaction_id).value(),
+				visitorId: cookieStore.get('uiv') || null,
 			};
 		},
 		variables() {
 			return {
-				checkoutId: numeral(this.$route.query.kiva_transaction_id).value()
+				checkoutId: numeral(this.$route.query.kiva_transaction_id).value(),
+				visitorId: this.cookieStore.get('uiv') || null,
 			};
 		},
 		result({ data }) {
 			this.lender = {
-				...data.my.userAccount,
-				teams: data.my.teams.values.map(value => value.team)
+				...(data?.my?.userAccount ?? {}),
+				teams: data?.my?.teams?.values?.map(value => value.team) ?? [],
 			};
 
 			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
@@ -175,12 +187,14 @@ export default {
 			// receipt from rendering in the rare cases this query fails.
 			// But it will not throw a server error.
 			this.receipt = data?.shop?.receipt;
+			this.isGuest = this.receipt && !data?.my?.userAccount;
+			this.thanksPageVersion = this.isGuest ? 'b' : 'a';
 			const loansResponse = this.receipt?.items?.values ?? [];
 			this.loans = loansResponse
 				.filter(item => item.basketItemType === 'loan_reservation')
 				.map(item => item.loan);
 
-			if (!data?.my?.userAccount) {
+			if (!this.isGuest && !data?.my?.userAccount) {
 				console.error(`Failed to get lender for transaction id: ${this.$route.query.kiva_transaction_id}`);
 			}
 			if (!this.receipt) {
@@ -236,7 +250,7 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 
-		this.thanksPageVersion = mgCTAExperiment.version === 'shown' ? 'b' : 'a';
+		this.thanksPageVersion = mgCTAExperiment.version === 'shown' || this.isGuest ? 'b' : 'a';
 		this.$kvTrackEvent(
 			'Thanks',
 			'EXP-SUBS-526-Oct2020',
