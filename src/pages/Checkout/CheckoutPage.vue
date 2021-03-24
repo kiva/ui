@@ -116,7 +116,7 @@
 										@click.native="loginToContinue"
 										:href="'/ui-login?force=true&doneUrl=/checkout'"
 									>
-										{{ loginContinueButtonText }}
+										Continue
 									</kv-button>
 								</div>
 							</div>
@@ -433,24 +433,9 @@ export default {
 			return false;
 		},
 		checkoutSteps() {
-			if (this.loginButtonExperimentShown) {
-				return [
-					'Basket',
-					'Payment',
-					'Thank You!'
-				];
-			}
-			return [
-				'Basket',
-				'Account',
-				'Payment',
-				'Thank You!'
-			];
+			return ['Basket', 'Account', 'Payment', 'Thank You!'];
 		},
 		currentStep() {
-			if (this.loginButtonExperimentShown) {
-				return this.isLoggedIn ? 1 : 0;
-			}
 			return this.isLoggedIn ? 2 : 0;
 		},
 		creditNeeded() {
@@ -473,9 +458,6 @@ export default {
 			}
 			return false;
 		},
-		loginContinueButtonText() {
-			return this.loginButtonExperimentShown ? 'Continue' : 'Login to Continue';
-		},
 		emptyBasket() {
 			if (this.loans.length === 0 && this.kivaCards.length === 0
 				&& (!this.donations.length
@@ -484,9 +466,6 @@ export default {
 			}
 			return false;
 		},
-		loginButtonExperimentShown() {
-			return this.loginButtonExperimentVersion === 'b';
-		}
 	},
 	methods: {
 		loginToContinue(event) {
@@ -515,17 +494,6 @@ export default {
 				const authorizeOptions = {};
 				if (!this.isActivelyLoggedIn) {
 					authorizeOptions.prompt = 'login';
-				}
-
-				if (this.loginButtonExperimentShown) {
-					// Pass custom JSON configuration to Auth0 login page
-					const kvConfig = JSON.stringify({ socialExp: true });
-					// Choose register as initial screen if no user has logged in on this browser before
-					if (!this.cookieStore.get('kvu')) {
-						authorizeOptions.login_hint = `signUp|${kvConfig}`;
-					} else {
-						authorizeOptions.login_hint = `login|${kvConfig}`;
-					}
 				}
 
 				this.kvAuth0.popupLogin(authorizeOptions).then(result => {
