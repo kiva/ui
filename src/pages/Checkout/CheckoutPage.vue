@@ -81,6 +81,7 @@
 									</form>
 
 									<checkout-drop-in-payment-wrapper
+										:is-guest-checkout="true"
 										v-else
 										:amount="creditNeeded"
 										@refreshtotals="refreshTotals"
@@ -101,7 +102,7 @@
 										v-if="showGuestCheckoutButton && guestCheckoutExperimentVersion === 'shown'"
 										class="guest-checkout-button checkout-button smallest secondary"
 										id="guest-checkout-button"
-										v-kv-track-event="['basket', 'Guest Checkout Button']"
+										v-kv-track-event="['basket', 'click-guest-checkout-cta', 'Checkout as guest']"
 										title="Checkout as guest"
 										@click.native="guestCheckout"
 									>
@@ -111,7 +112,7 @@
 									<kv-button
 										class="checkout-button smallest"
 										id="login-to-continue-button"
-										v-kv-track-event="['basket', 'Login to Continue Button']"
+										v-kv-track-event="['basket', 'click-sign-in-cta', loginContinueButtonText]"
 										title="Login to Continue Button"
 										@click.native="loginToContinue"
 										:href="'/ui-login?force=true&doneUrl=/checkout'"

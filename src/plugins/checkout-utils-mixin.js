@@ -158,6 +158,7 @@ export default {
 
 			if (errorMessages) {
 				this.$showTipMsg(errorMessages, 'error');
+				this.$kvTrackEvent('basket', 'error-checkout-cta', errorMessages);
 			}
 		},
 
