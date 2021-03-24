@@ -33,14 +33,14 @@
 						</li>
 					</ul>
 				</p>
-				<KvButton
+				<kv-button
 					class="register-button smaller"
 					type="submit"
 					name="regForm_submit"
 					id="regForm_submit"
 				>
 					Complete registration
-				</KvButton>
+				</kv-button>
 			</form>
 			<div class="small-12">
 				<a :href="`https://${$appConfig.auth0.domain}/v2/logout`">Cancel registration</a>
