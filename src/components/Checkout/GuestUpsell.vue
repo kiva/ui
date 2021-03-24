@@ -122,6 +122,7 @@ export default {
 				}).catch(err => {
 					this.serverError = true;
 					const errors = Array.isArray(err) ? err : [err];
+					this.$kvTrackEvent('Thanks', 'error-register-upsell-name-cta', errors.toString());
 					errors.forEach(error => {
 						console.error(error);
 						try {
