@@ -33,11 +33,6 @@
 				<kv-button
 					class="claim-button smaller"
 					type="submit"
-					v-kv-track-event="[
-						'Login',
-						'click-guest-enter-name-cta',
-						'Done'
-					]"
 				>
 					Done
 				</kv-button>
@@ -84,6 +79,7 @@ export default {
 	},
 	methods: {
 		claimGuestAccount() {
+			this.$kvTrackEvent('Login', 'click-guest-enter-name-cta', 'Done');
 			this.$v.$touch();
 
 			if (!this.$v.$invalid) {
@@ -92,8 +88,10 @@ export default {
 					`lastName=${encodeURIComponent(this.lastName)}`,
 					`state=${this.$route.query.state}`
 				].join('&');
-				this.$kvTrackEvent('Register', 'guest-account-registration-success');
-				window.location = `https://${this.$appConfig.auth0.domain}/continue?${params}`;
+				// eslint-disable-next-line max-len
+				this.$kvTrackEvent('Register', 'guest-account-registration-success', undefined, undefined, undefined, () => {
+					window.location = `https://${this.$appConfig.auth0.domain}/continue?${params}`;
+				});
 			} else {
 				this.$kvTrackEvent('Login', 'error-guest-enter-name-cta', [this.$v.firstName, this.$v.lastName]);
 			}
