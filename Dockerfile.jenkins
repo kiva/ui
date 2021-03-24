@@ -35,7 +35,7 @@ COPY --from=build-stage /ui/package.json .
 COPY --from=build-stage /ui/package-lock.json .
 
 # Install PROD dependencies only
-RUN npm install --production
+RUN npm install --production --ignore-scripts
 
 # Expose API port to the outside
 EXPOSE 8888
