@@ -4,12 +4,7 @@
 			Before you go!
 		</h2>
 		<p v-if="borrowerName" class="guest-account-upsell__subhead">
-			<template v-if="borrowerName">
-				Get updates from {{ borrowerName }} and choose how to re-lend your money when they pay you back.
-			</template>
-			<template v-else>
-				Get updates from the borrowers you support and choose how to re-lend your money when they pay you back.
-			</template>
+			{{ borrowerUpdateText }}
 		</p>
 		<form id="guestUpsellForm" action="." @submit.prevent.stop="submit">
 			<kv-base-input name="firstName"
@@ -37,9 +32,9 @@
 			<p v-if="serverError" class="guest-account-upsell__server-error">
 				There was a problem when trying to create your account, please try again later.
 			</p>
-			<KvButton class="guest-account-upsell__claim-button smaller expanded" type="submit">
+			<kv-button class="guest-account-upsell__claim-button smaller expanded" type="submit">
 				Create my account
-			</KvButton>
+			</kv-button>
 		</form>
 	</section>
 </template>
@@ -86,12 +81,25 @@ export default {
 		borrowerName() {
 			return this.loans.length === 1 ? this.loans[0].name : '';
 		},
+		borrowerUpdateText() {
+			if (this.borrowerName) {
+				return `Get updates from ${this.borrowerName} and choose
+					how to re-lend your money when they pay you back.`;
+			}
+			return `Get updates from the borrowers you support and choose
+				how to re-lend your money when they pay you back.`;
+		}
+	},
+	mounted() {
+		this.$kvTrackEvent('Thanks', 'view-register-upsell', this.borrowerUpdateText);
 	},
 	methods: {
 		submit() {
 			this.serverError = false;
 			this.$v.$touch();
 			if (!this.$v.$invalid) {
+				this.$kvTrackEvent('Thanks', 'click-register-upsell-name-cta', 'Create my account');
+
 				// will end up redirecting to password reset page.
 				this.apollo.mutate({
 					mutation: gql`mutation startGuestAccountClaim(
@@ -120,6 +128,7 @@ export default {
 				}).catch(err => {
 					this.serverError = true;
 					const errors = Array.isArray(err) ? err : [err];
+					this.$kvTrackEvent('Thanks', 'error-register-upsell-name-cta', errors.toString());
 					errors.forEach(error => {
 						console.error(error);
 						try {
