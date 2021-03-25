@@ -20,6 +20,9 @@ Kiva welcomes outside contributions to our UI repository. If you have any ideas 
 # install dependencies
 $ npm install
 
+# optionally install husky git hooks
+$ npx husky install
+
 # serve with hot reload at localhost:8888
 $ npm run dev -- --config=local
 # visit localhost:8888 for the home page
@@ -58,6 +61,9 @@ $ ./ui-server.sh {status|log|restart|local|start_local}
 
 # install dependencies
 $ npm install
+
+# optionally install husky git hooks
+$ npx husky install
 
 # serve with hot reload at localhost:8888
 $ npm run dev

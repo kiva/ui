@@ -33,8 +33,7 @@
 		"lint:graphql": "eslint --ext .graphql src/graphql",
 		"storybook": "start-storybook -p 6006",
 		"build-storybook": "build-storybook",
-		"deploy-storybook": "storybook-to-ghpages",
-		"prepare": "[ $HUSKY -eq 0 ] || husky install"
+		"deploy-storybook": "storybook-to-ghpages"
 	},
 	"dependencies": {
 		"@babel/eslint-parser": "^7.12.1",
@@ -168,7 +167,6 @@
 		"html-minifier": "^4.0.0",
 		"husky": "^5.2.0",
 		"inject-loader": "^4.0.1",
-		"is-ci": "^2.0.0",
 		"istanbul-lib-coverage": "^3.0.0",
 		"istanbul-lib-report": "^3.0.0",
 		"istanbul-reports": "^3.0.2",
