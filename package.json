@@ -34,7 +34,7 @@
 		"storybook": "start-storybook -p 6006",
 		"build-storybook": "build-storybook",
 		"deploy-storybook": "storybook-to-ghpages",
-		"prepare": "is-ci || husky install"
+		"prepare": "[ $HUSKY -eq 0 ] || husky install"
 	},
 	"dependencies": {
 		"@babel/eslint-parser": "^7.12.1",
