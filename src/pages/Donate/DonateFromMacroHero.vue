@@ -167,6 +167,7 @@ export default {
 		position: absolute;
 		top: 0;
 		bottom: 0;
+		align-self: center;
 
 		// Prevent whitespace below the image in browsers that understand object-fit. (IE11 will see some whitepace)
 		@supports (object-fit: cover) {
