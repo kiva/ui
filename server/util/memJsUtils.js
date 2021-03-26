@@ -9,6 +9,11 @@ module.exports = {
 						message: `MemJS Error Getting ${key}, Error: ${error}`
 					}));
 				}
+				console.info(JSON.stringify({
+					meta: {},
+					level: 'info',
+					message: `MemJS Success Getting ${key}`
+				}));
 				resolve(data);
 			});
 		});
