@@ -33,4 +33,29 @@ describe('SimpleQueue', () => {
 	it('returns an array with 1 object value from the queue', () => {
 		expect(queue.items).toEqual([testObjEntry]);
 	});
+
+	it('returns 0 length after restting the queue', () => {
+		queue.add(testObjEntry);
+		queue.add(testObjEntry);
+		queue.add(testObjEntry);
+		expect(queue.length).toBeGreaterThan(0);
+		queue.reset();
+		expect(queue.length).toEqual(0);
+	});
+
+	it('limits the number entries in the queue to the itemLimit value', () => {
+		queue.reset();
+		const totalItems = 210; // default limit is 200
+		// eslint-disable-next-line no-plusplus
+		for (let i = 0; i < totalItems; i++) {
+			queue.add(i);
+		}
+		expect(queue.length).toEqual(queue.itemLimit);
+	});
+
+	it('configures itemLimit passed via options object', () => {
+		const itemLimit = 30;
+		const limitQueue = new SimpleQueue({ itemLimit });
+		expect(limitQueue.itemLimit).toEqual(itemLimit);
+	});
 });
