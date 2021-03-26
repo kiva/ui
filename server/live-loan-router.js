@@ -76,12 +76,15 @@ function fetchRecommendedLoans(type, id, cache) {
 	let query;
 	let queryResultPath;
 	if (type === 'user') {
-		query = recommendationsByLoginIdQuery;
+		query = recommendationsByLoginIdQuery(id);
 		queryResultPath = 'data.ml.recommendationsByLoginId.values';
 	} else if (type === 'loan') {
-		query = recommendationsByLoanIdQuery;
+		query = recommendationsByLoanIdQuery(id);
 		queryResultPath = 'data.ml.relatedLoansByTopics[0].values';
+	} else {
+		throw new Error('type must be user or loan');
 	}
+
 	return new Promise((resolve, reject) => {
 		memJsUtils.getFromCache(`recommendations-by-${type}-id-${id}`, cache).then(data => {
 			if (data) {
@@ -93,7 +96,7 @@ function fetchRecommendedLoans(type, id, cache) {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
-						query: query(id)
+						query
 					}),
 				})
 					.then(result => result.json())
