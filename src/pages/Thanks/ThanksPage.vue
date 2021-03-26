@@ -112,7 +112,7 @@ import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
-import { processPageContent } from '@/util/contentfulUtils';
+import { processPageContentFlat } from '@/util/contentfulUtils';
 import { joinArray } from '@/util/joinArray';
 
 export default {
@@ -203,7 +203,7 @@ export default {
 
 			// Check for contentful content
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
-			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
+			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
 		},
 	},
 	computed: {
@@ -215,8 +215,7 @@ export default {
 			return joinArray(loanNames, 'and');
 		},
 		ctaContentGroup() {
-			// eslint-disable-next-line max-len
-			return this.pageData?.page?.pageLayout?.contentGroups?.find(contentGroup => contentGroup.key === 'thanks-mg-cta-jan-2021');
+			return this.pageData?.page?.contentGroups?.thanksMgCtaJan_2021;
 		},
 		ctaContentBlock() {
 			// eslint-disable-next-line max-len
