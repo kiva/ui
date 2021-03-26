@@ -72,7 +72,16 @@ const recommendationsByLoanIdQuery = id => `{
 	}
 }`;
 
-function fetchRecommendations(query, id, type, cache) {
+function fetchRecommendedLoans(type, id, cache) {
+	let query;
+	let resultPath;
+	if (type === 'user') {
+		query = recommendationsByLoginIdQuery;
+		resultPath = 'data.ml.recommendationsByLoginId.values';
+	} else if (type === 'loan') {
+		query = recommendationsByLoanIdQuery;
+		resultPath = 'data.ml.relatedLoansByTopics[0].values';
+	}
 	return new Promise((resolve, reject) => {
 		memJsUtils.getFromCache(`recommendations-by-${type}-id-${id}`, cache).then(data => {
 			if (data) {
@@ -89,12 +98,7 @@ function fetchRecommendations(query, id, type, cache) {
 				})
 					.then(result => result.json())
 					.then(result => {
-						let loanData;
-						if (type === 'user') {
-							loanData = get(result, 'data.ml.recommendationsByLoginId.values');
-						} else if (type === 'loan') {
-							loanData = get(result, 'data.ml.relatedLoansByTopics[0].values');
-						}
+						const loanData = get(result, resultPath);
 						if (loanData) {
 							const expires = 10 * 60; // 10 minutes
 							memJsUtils.setToCache(
@@ -133,83 +137,61 @@ async function getLoanImg(loan, cache) {
 	return loanImg;
 }
 
+async function redirectToUrl(type, cache, req, res) {
+	const { id, offset } = req.params;
+	if (isNumeric(id) && isNumeric(offset)) {
+		try {
+			const loanData = await fetchRecommendedLoans(type, id, cache);
+			const offsetLoanId = loanData[offset - 1].id;
+			res.redirect(302, `/lend/${offsetLoanId}`);
+		} catch (err) {
+			console.error(err);
+			res.redirect(302, '/lend-by-category/');
+		}
+	} else {
+		res.status(400).send('Invalid Parameters');
+	}
+}
+
+async function serveImg(type, cache, req, res) {
+	const { id, offset } = req.params;
+	if (isNumeric(id) && isNumeric(offset)) {
+		try {
+			const loanData = await fetchRecommendedLoans(type, id, cache);
+			const loan = loanData[offset - 1];
+			const loanImg = await getLoanImg(loan, cache);
+			res.contentType('image/jpeg');
+			res.send(loanImg);
+		} catch (err) {
+			console.error(err);
+			res.sendStatus(500);
+		}
+	} else {
+		res.status(400).send('Invalid Parameters');
+	}
+}
+
 module.exports = function liveLoanRouter(cache) {
 	const router = express.Router();
 
 	// User URL Router
-	router.use('/u/:userId/url/:offset', async (req, res) => {
-		const { userId, offset } = req.params;
-		if (isNumeric(userId) && isNumeric(offset)) {
-			try {
-				const loanData = await fetchRecommendations(recommendationsByLoginIdQuery, userId, 'user', cache);
-				const offsetLoanId = loanData[offset - 1].id;
-				res.redirect(302, `/lend/${offsetLoanId}`);
-			} catch (err) {
-				console.error(err);
-				res.redirect(302, '/lend-by-category/');
-			}
-		} else {
-			res.status(400).send('Invalid Parameters');
-		}
+	router.use('/u/:id/url/:offset', async (req, res) => {
+		await redirectToUrl('user', cache, req, res);
 	});
 
 	// User IMG Router
-	router.use('/u/:userId/img/:offset', async (req, res) => {
-		const { userId, offset } = req.params;
-		if (isNumeric(userId) && isNumeric(offset)) {
-			try {
-				const loanData = await fetchRecommendations(recommendationsByLoginIdQuery, userId, 'user', cache);
-				const loan = loanData[offset - 1];
-				console.log('888');
-				console.log(loan);
-				const loanImg = await getLoanImg(loan, cache);
-				res.contentType('image/jpeg');
-				res.send(loanImg);
-			} catch (err) {
-				console.error(err);
-				res.sendStatus(500);
-			}
-		} else {
-			res.status(400).send('Invalid Parameters');
-		}
+	router.use('/u/:id/img/:offset', async (req, res) => {
+		await serveImg('user', cache, req, res);
 	});
 
 	// Loan-to-loan URL Router
-	router.use('/l/:loanId/url/:offset', async (req, res) => {
-		const { loanId, offset } = req.params;
-		if (isNumeric(loanId) && isNumeric(offset)) {
-			try {
-				const loanData = await fetchRecommendations(recommendationsByLoanIdQuery, loanId, 'loan', cache);
-				const offsetLoanId = loanData[offset - 1].id;
-				res.redirect(302, `/lend/${offsetLoanId}`);
-			} catch (err) {
-				console.error(err);
-				res.redirect(302, '/lend-by-category/');
-			}
-		} else {
-			res.status(400).send('Invalid Parameters');
-		}
+	router.use('/l/:id/url/:offset', async (req, res) => {
+		await redirectToUrl('loan', cache, req, res);
 	});
 
 	// Loan-to-loan IMG Router
-	router.use('/l/:loanId/img/:offset', async (req, res) => {
-		const { loanId, offset } = req.params;
-		if (isNumeric(loanId) && isNumeric(offset)) {
-			try {
-				const loanData = await fetchRecommendations(recommendationsByLoanIdQuery, loanId, 'loan', cache);
-				const loan = loanData[offset - 1];
-				console.log('999');
-				console.log(loan);
-				const loanImg = await getLoanImg(loan, cache);
-				res.contentType('image/jpeg');
-				res.send(loanImg);
-			} catch (err) {
-				console.error(err);
-				res.sendStatus(500);
-			}
-		} else {
-			res.status(400).send('Invalid Parameters');
-		}
+	router.use('/l/:id/img/:offset', async (req, res) => {
+		await serveImg('loan', cache, req, res);
 	});
 
 	// 404 any /live-loan/* routes that don't match above
