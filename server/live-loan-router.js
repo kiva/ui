@@ -3,6 +3,7 @@ const express = require('express');
 const argv = require('./util/argv');
 const config = require('../config/selectConfig')(argv.config);
 const fetch = require('./util/fetch');
+const log = require('./util/log');
 const memJsUtils = require('./util/memJsUtils');
 const drawLoanCard = require('./util/live-loan/live-loan-draw');
 
@@ -72,7 +73,19 @@ const recommendationsByLoanIdQuery = id => `{
 	}
 }`;
 
-function fetchRecommendedLoans(type, id, cache) {
+async function fetchRecommendedLoans(type, id, cache) {
+	// If we have loan data in memjscache return that quickly
+	try {
+		const cachedLoanData = await memJsUtils.getFromCache(`recommendations-by-${type}-id-${id}`, cache);
+		if (cachedLoanData) {
+			return JSON.parse(cachedLoanData);
+		}
+	} catch (err) {
+		log(err, `Error reading from memjs: ${err}`);
+	}
+
+	// Otherwise we need to hit the graphql endpoint.
+	// prep the query
 	let query;
 	let queryResultPath;
 	if (type === 'user') {
@@ -82,49 +95,42 @@ function fetchRecommendedLoans(type, id, cache) {
 		query = recommendationsByLoanIdQuery(id);
 		queryResultPath = 'data.ml.relatedLoansByTopics[0].values';
 	} else {
-		throw new Error('type must be user or loan');
+		throw new Error('Type must be user or loan');
 	}
 
-	return new Promise((resolve, reject) => {
-		memJsUtils.getFromCache(`recommendations-by-${type}-id-${id}`, cache).then(data => {
-			if (data) {
-				const jsonData = JSON.parse(data);
-				resolve(jsonData);
-			} else {
-				const endpoint = config.app.graphqlUri;
-				fetch(endpoint, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						query
-					}),
-				})
-					.then(result => result.json())
-					.then(result => {
-						const loanData = get(result, queryResultPath);
-						if (loanData) {
-							const expires = 10 * 60; // 10 minutes
-							memJsUtils.setToCache(
-								`recommendations-by-${type}-id-${id}`,
-								JSON.stringify(loanData),
-								expires,
-								cache
-							)
-								.then(() => {
-									resolve(loanData);
-								});
-						} else {
-							throw new Error('No loans returned');
-						}
-					}).catch(err => {
-						console.error(err);
-						reject(err);
-					});
-			}
-		}).catch(err => {
-			console.error(err);
+	// hit the endpoint and parse the response
+	let loanData;
+	try {
+		const endpoint = config.app.graphqlUri;
+		const response = await fetch(endpoint, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				query
+			}),
 		});
-	});
+		const result = await response.json();
+		loanData = get(result, queryResultPath);
+	} catch (err) {
+		throw new Error(`Error fetching loans: ${err}`);
+	}
+
+	// Set the loan data in memcache, then return the loan data
+	if (loanData) {
+		try {
+			const expires = 10 * 60; // 10 minutes
+			await memJsUtils.setToCache(
+				`recommendations-by-${type}-id-${id}`,
+				JSON.stringify(loanData),
+				expires,
+				cache
+			);
+		} catch (err) {
+			throw new Error(`Error setting loan data to cache: ${err}`);
+		}
+		// if setting the cache fails, return the data anyway
+		return loanData;
+	}
 }
 
 async function redirectToUrl(type, cache, req, res) {
@@ -135,7 +141,7 @@ async function redirectToUrl(type, cache, req, res) {
 			const offsetLoanId = loanData[offset - 1].id;
 			res.redirect(302, `/lend/${offsetLoanId}`);
 		} catch (err) {
-			console.error(err);
+			log(err, 'error');
 			res.redirect(302, '/lend-by-category/');
 		}
 	} else {
@@ -163,7 +169,7 @@ async function serveImg(type, cache, req, res) {
 			res.contentType('image/jpeg');
 			res.send(loanImg);
 		} catch (err) {
-			console.error(err);
+			log(err, 'error');
 			res.sendStatus(500);
 		}
 	} else {
