@@ -124,19 +124,6 @@ function fetchRecommendedLoans(type, id, cache) {
 	});
 }
 
-async function getLoanImg(loan, cache) {
-	let loanImg;
-	const cachedLoanImg = await memJsUtils.getFromCache(`loan-card-img-${loan.id}`, cache);
-	if (cachedLoanImg) {
-		loanImg = cachedLoanImg;
-	} else {
-		loanImg = await drawLoanCard(loan);
-		const expires = 10 * 60; // 10 minutes
-		await memJsUtils.setToCache(`loan-card-img-${loan.id}`, loanImg, expires, cache);
-	}
-	return loanImg;
-}
-
 async function redirectToUrl(type, cache, req, res) {
 	const { id, offset } = req.params;
 	if (isNumeric(id) && isNumeric(offset)) {
@@ -159,7 +146,17 @@ async function serveImg(type, cache, req, res) {
 		try {
 			const loanData = await fetchRecommendedLoans(type, id, cache);
 			const loan = loanData[offset - 1];
-			const loanImg = await getLoanImg(loan, cache);
+
+			let loanImg;
+			const cachedLoanImg = await memJsUtils.getFromCache(`loan-card-img-${loan.id}`, cache);
+			if (cachedLoanImg) {
+				loanImg = cachedLoanImg;
+			} else {
+				loanImg = await drawLoanCard(loan);
+				const expires = 10 * 60; // 10 minutes
+				await memJsUtils.setToCache(`loan-card-img-${loan.id}`, loanImg, expires, cache);
+			}
+
 			res.contentType('image/jpeg');
 			res.send(loanImg);
 		} catch (err) {
