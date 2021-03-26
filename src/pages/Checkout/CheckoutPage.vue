@@ -112,7 +112,7 @@
 									<kv-button
 										class="checkout-button smallest"
 										id="login-to-continue-button"
-										v-kv-track-event="['basket', 'click-sign-in-cta', loginContinueButtonText]"
+										v-kv-track-event="['basket', 'click-sign-in-cta', 'Continue']"
 										title="Login to Continue Button"
 										@click.native="loginToContinue"
 										:href="'/ui-login?force=true&doneUrl=/checkout'"
