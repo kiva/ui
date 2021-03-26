@@ -189,9 +189,8 @@ export default Vue => {
 			kvActions.checkLibs();
 
 			if (!queue.isEmpty()) {
-				const queueItems = queue.items.length ? queue.items : [];
 				// eslint-disable-next-line no-plusplus
-				for (let i = 0; i < queueItems.length; i++) {
+				for (let i = 0; i < queue.items.length; i++) {
 					const item = queue.remove();
 					const method = item.eventType;
 					const { eventData } = item;
