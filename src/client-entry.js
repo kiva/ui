@@ -105,6 +105,7 @@ try {
 app.$setKvAnalyticsData(userId).then(() => {
 	// fire server rendered pageview
 	app.$fireServerPageView();
+	app.$fireQueuedEvents();
 });
 
 // Setup adding touch info to the state
@@ -156,6 +157,7 @@ router.onReady(() => {
 		app.$Progress.finish();
 		// fire pageview
 		app.$fireAsyncPageView(to, from);
+		app.$kvFireQueuedEvents();
 	});
 
 	router.onError(() => app.$Progress.fail());
