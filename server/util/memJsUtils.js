@@ -5,11 +5,7 @@ module.exports = {
 		return new Promise(resolve => {
 			cache.get(key, (error, data) => {
 				if (error) {
-					console.error(JSON.stringify({
-						meta: {},
-						level: 'error',
-						message: `MemJS Error Getting ${key}, Error: ${error}`
-					}));
+					log(`MemJS Error Getting ${key}, Error: ${error}`, 'error');
 				}
 				log(`MemJS Success Getting ${key}`);
 				resolve(data);
