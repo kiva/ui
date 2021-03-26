@@ -10,6 +10,116 @@ function isNumeric(value) {
 	return /^\d+$/.test(value);
 }
 
+const recommendationsByLoginIdQuery = id => `{
+	ml {
+		recommendationsByLoginId(
+			segment: all
+				loginId: ${id}
+				offset: 0
+				limit: 4
+		) {
+			values {
+				name
+				id
+				borrowerCount
+				geocode {
+					country {
+						name
+					}
+				}
+				use
+				loanAmount
+				status
+				loanFundraisingInfo {
+					fundedAmount
+				}
+				image {
+					retina: url(customSize: "w960h720")
+				}
+			}
+		}
+	}
+}`;
+
+const recommendationsByLoanIdQuery = id => `{
+	ml {
+		relatedLoansByTopics(
+			loanId: ${id},
+			offset: 0,
+			topics: [story]
+			limit: 4,
+		) {
+			values {
+				name
+				id
+				borrowerCount
+				geocode {
+					country {
+						name
+					}
+				}
+				use
+				loanAmount
+				status
+				loanFundraisingInfo {
+					fundedAmount
+				}
+				image {
+					retina: url(customSize: "w960h720")
+				}
+			}
+		}
+	}
+}`;
+
+function fetchRecommendations(query, id, type, cache) {
+	return new Promise((resolve, reject) => {
+		memJsUtils.getFromCache(`recommendations-by-${type}-id-${id}`, cache).then(data => {
+			if (data) {
+				const jsonData = JSON.parse(data);
+				resolve(jsonData);
+			} else {
+				const endpoint = config.app.graphqlUri;
+				fetch(endpoint, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						query: query(id)
+					}),
+				})
+					.then(result => result.json())
+					.then(result => {
+						let loanData;
+						if (type === 'user') {
+							loanData = get(result, 'data.ml.recommendationsByLoginId.values');
+						} else if (type === 'loan') {
+							loanData = get(result, 'data.ml.relatedLoansByTopics[0].values');
+						}
+						if (loanData) {
+							const expires = 10 * 60; // 10 minutes
+							memJsUtils.setToCache(
+								`recommendations-by-${type}-id-${id}`,
+								JSON.stringify(loanData),
+								expires,
+								cache
+							)
+								.then(() => {
+									resolve(loanData);
+								});
+						} else {
+							throw new Error('No loans returned');
+						}
+					}).catch(err => {
+						console.error(err);
+						reject(err);
+					});
+			}
+		}).catch(err => {
+			console.error(err);
+		});
+	});
+}
+
 async function getLoanImg(loan, cache) {
 	let loanImg;
 	const cachedLoanImg = await memJsUtils.getFromCache(`loan-card-img-${loan.id}`, cache);
@@ -23,156 +133,6 @@ async function getLoanImg(loan, cache) {
 	return loanImg;
 }
 
-function fetchRecommendationsByLoginId(loginId, cache) {
-	return new Promise((resolve, reject) => {
-		memJsUtils.getFromCache(`recommendations-by-login-id-${loginId}`, cache).then(data => {
-			if (data) {
-				const jsonData = JSON.parse(data);
-				resolve(jsonData);
-			} else {
-				const endpoint = config.app.graphqlUri;
-				const query = `{
-					ml {
-						recommendationsByLoginId(
-							segment: all
-								loginId: ${loginId}
-								offset: 0
-								limit: 4
-						) {
-							values {
-								name
-								id
-								borrowerCount
-								geocode {
-									country {
-										name
-									}
-								}
-								use
-								loanAmount
-								status
-								loanFundraisingInfo {
-									fundedAmount
-								}
-								image {
-									retina: url(customSize: "w960h720")
-								}
-							}
-						}
-					}
-				}`;
-
-				fetch(endpoint, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						query
-					}),
-				})
-					.then(result => result.json())
-					.then(result => {
-						const loanData = get(result, 'data.ml.recommendationsByLoginId.values');
-						if (loanData) {
-							const expires = 10 * 60; // 10 minutes
-							memJsUtils.setToCache(
-								`recommendations-by-login-id-${loginId}`,
-								JSON.stringify(loanData),
-								expires,
-								cache
-							)
-								.then(() => {
-									resolve(loanData);
-								});
-						} else {
-							throw new Error('No loans returned');
-						}
-					}).catch(err => {
-						console.error(err);
-						reject(err);
-					});
-			}
-		}).catch(err => {
-			console.error(err);
-		});
-	});
-}
-
-function fetchRecommendationsByLoanId(loanId, cache) {
-	return new Promise((resolve, reject) => {
-		memJsUtils.getFromCache(`recommendations-by-loan-id-${loanId}`, cache).then(data => {
-			if (data) {
-				const jsonData = JSON.parse(data);
-				resolve(jsonData);
-			} else {
-				const endpoint = config.app.graphqlUri;
-				const query = `{
-					ml {
-						relatedLoansByTopics(
-							loanId: ${loanId},
-							offset: 0,
-							topics: [story]
-							limit: 4,
-						) {
-							values {
-								name
-								id
-								borrowerCount
-								geocode {
-									country {
-										name
-									}
-								}
-								use
-								loanAmount
-								status
-								loanFundraisingInfo {
-									fundedAmount
-								}
-								image {
-									retina: url(customSize: "w960h720")
-								}
-							}
-						}
-					}
-				}`;
-
-				fetch(endpoint, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						query
-					}),
-				})
-					.then(result => result.json())
-					.then(result => {
-						const loanData = get(result, 'data.ml.relatedLoansByTopics[0].values');
-						console.log('hiii');
-						console.log(get(result, 'data.ml.relatedLoansByTopics[0].values'));
-						if (loanData) {
-							const expires = 10 * 60; // 10 minutes
-							memJsUtils.setToCache(
-								`recommendations-by-loan-id-${loanId}`,
-								JSON.stringify(loanData),
-								expires,
-								cache
-							)
-								.then(() => {
-									resolve(loanData);
-								});
-						} else {
-							throw new Error('No loans returned');
-						}
-					}).catch(err => {
-						console.error(err);
-						reject(err);
-					});
-			}
-		}).catch(err => {
-			console.error(err);
-		});
-	});
-}
-
 module.exports = function liveLoanRouter(cache) {
 	const router = express.Router();
 
@@ -181,7 +141,7 @@ module.exports = function liveLoanRouter(cache) {
 		const { userId, offset } = req.params;
 		if (isNumeric(userId) && isNumeric(offset)) {
 			try {
-				const loanData = await fetchRecommendationsByLoginId(userId, cache);
+				const loanData = await fetchRecommendations(recommendationsByLoginIdQuery, userId, 'user', cache);
 				const offsetLoanId = loanData[offset - 1].id;
 				res.redirect(302, `/lend/${offsetLoanId}`);
 			} catch (err) {
@@ -198,8 +158,10 @@ module.exports = function liveLoanRouter(cache) {
 		const { userId, offset } = req.params;
 		if (isNumeric(userId) && isNumeric(offset)) {
 			try {
-				const loanData = await fetchRecommendationsByLoginId(userId, cache);
+				const loanData = await fetchRecommendations(recommendationsByLoginIdQuery, userId, 'user', cache);
 				const loan = loanData[offset - 1];
+				console.log('888');
+				console.log(loan);
 				const loanImg = await getLoanImg(loan, cache);
 				res.contentType('image/jpeg');
 				res.send(loanImg);
@@ -217,7 +179,7 @@ module.exports = function liveLoanRouter(cache) {
 		const { loanId, offset } = req.params;
 		if (isNumeric(loanId) && isNumeric(offset)) {
 			try {
-				const loanData = await fetchRecommendationsByLoanId(loanId, cache);
+				const loanData = await fetchRecommendations(recommendationsByLoanIdQuery, loanId, 'loan', cache);
 				const offsetLoanId = loanData[offset - 1].id;
 				res.redirect(302, `/lend/${offsetLoanId}`);
 			} catch (err) {
@@ -234,8 +196,10 @@ module.exports = function liveLoanRouter(cache) {
 		const { loanId, offset } = req.params;
 		if (isNumeric(loanId) && isNumeric(offset)) {
 			try {
-				const loanData = await fetchRecommendationsByLoanId(loanId, cache);
+				const loanData = await fetchRecommendations(recommendationsByLoanIdQuery, loanId, 'loan', cache);
 				const loan = loanData[offset - 1];
+				console.log('999');
+				console.log(loan);
 				const loanImg = await getLoanImg(loan, cache);
 				res.contentType('image/jpeg');
 				res.send(loanImg);
