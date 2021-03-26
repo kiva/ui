@@ -133,7 +133,7 @@ export default {
 		return {
 			email: null,
 			termsAgreement: false,
-			emailUpdates: true,
+			emailUpdates: false,
 			enableCheckoutButton: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 		};
