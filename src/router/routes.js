@@ -187,6 +187,13 @@ export default [
 
 	},
 	{
+		path: '/settings/email-ui', // Temporary route - change to /email when migration is complete
+		component: () => import('@/pages/Settings/EmailSettings'),
+		meta: {
+			authenticationRequired: true,
+		},
+	},
+	{
 		path: '/settings/payments',
 		component: () => import('@/pages/Settings/PaymentSettings'),
 		meta: {

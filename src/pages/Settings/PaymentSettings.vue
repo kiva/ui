@@ -196,6 +196,9 @@ export default {
 		TheMyKivaSecondaryMenu,
 		WwwPage,
 	},
+	metaInfo: {
+		title: 'Payment settings',
+	},
 	data() {
 		return {
 			isProcessing: false,
