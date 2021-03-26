@@ -1,4 +1,5 @@
 import logFormatter from '@/util/logFormatter';
+import SimpleQueue from '@/util/simpleQueue';
 
 // install method for plugin
 export default Vue => {
@@ -7,6 +8,7 @@ export default Vue => {
 	let gaLoaded;
 	let gaAltLoaded;
 	let fbLoaded;
+	const queue = new SimpleQueue();
 
 	const kvActions = {
 		checkLibs: () => {
@@ -96,43 +98,68 @@ export default Vue => {
 
 			// Attempt Snowplow event
 			if (snowplowLoaded) {
-				// In case there is a problem with the tracking event ensure that the callback gets called after 500ms
-				let callbackCalled = false;
-				const callbackTimeout = setTimeout(() => {
-					if (!callbackCalled) {
-						callbackCalled = true;
-						callback({ error: 'timeout' });
-					}
-				}, 500);
-
-				// Snowplow API
-				/* eslint-disable max-len */
-				// https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-tracker/tracking-specific-events/#tracking-custom-structured-events
-				// https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-tracker/tracking-specific-events/#callback-after-track-2-15-0
-				/* eslint-eable max-len */
-				// snowplow('trackStructEvent', 'category', 'action', 'label', 'property', 'value', context, timestamp, afterTrack);
-				window.snowplow(
-					'trackStructEvent',
+				kvActions.trackSnowplowEvent({
 					category,
 					action,
 					eventLabel,
 					eventProperty,
 					eventValue,
-					undefined,
-					undefined,
-					payload => {
-						if (!callbackCalled) {
-							callbackCalled = true;
-							clearTimeout(callbackTimeout);
-							callback({ payload });
-						}
-					}
-				);
+					callback
+				});
 			} else {
 				callback({ error: 'not loaded' });
+				// add missed snowplow event to queue
+				queue.add({
+					eventType: 'trackSnowplowEvent',
+					eventLib: 'snowplow',
+					eventData: {
+						category,
+						action,
+						eventLabel,
+						eventProperty,
+						eventValue,
+						callback
+					}
+				});
 			}
 
 			return true;
+		},
+		trackSnowplowEvent: eventData => {
+			if (!snowplowLoaded) return false;
+
+			// In case there is a problem with the tracking event ensure that the callback gets called after 500ms
+			let callbackCalled = false;
+			const callbackTimeout = setTimeout(() => {
+				if (!callbackCalled) {
+					callbackCalled = true;
+					eventData.callback({ error: 'timeout' });
+				}
+			}, 500);
+
+			// Snowplow API
+			/* eslint-disable max-len */
+			// https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-tracker/tracking-specific-events/#tracking-custom-structured-events
+			// https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-tracker/tracking-specific-events/#callback-after-track-2-15-0
+			/* eslint-eable max-len */
+			// snowplow('trackStructEvent', 'category', 'action', 'label', 'property', 'value', context, timestamp, afterTrack);
+			window.snowplow(
+				'trackStructEvent',
+				eventData.category,
+				eventData.action,
+				eventData.eventLabel,
+				eventData.eventProperty,
+				eventData.eventValue,
+				undefined,
+				undefined,
+				payload => {
+					if (!callbackCalled) {
+						callbackCalled = true;
+						clearTimeout(callbackTimeout);
+						eventData.callback({ payload });
+					}
+				}
+			);
 		},
 		trackSelfDescribingEvent: eventData => {
 			// the data passed into this should be a JSON object similar to the following
@@ -147,9 +174,32 @@ export default Vue => {
 			// });
 			if (snowplowLoaded) {
 				window.snowplow('trackSelfDescribingEvent', eventData);
+			} else {
+				// add missed snowplow event to queue
+				queue.add({
+					eventType: 'trackSelfDescribingEvent',
+					eventLib: 'snowplow',
+					eventData,
+				});
 			}
 
 			return true;
+		},
+		fireQueuedEvents() {
+			kvActions.checkLibs();
+
+			if (!queue.isEmpty()) {
+				const queueItems = queue.items.length ? queue.items : [];
+				// eslint-disable-next-line no-plusplus
+				for (let i = 0; i < queueItems.length; i++) {
+					const item = queue.remove();
+					const method = item.eventType;
+					const { eventData } = item;
+					if (typeof kvActions[method] === 'function') {
+						kvActions[method](eventData, true);
+					}
+				}
+			}
 		},
 		// https://developers.facebook.com/docs/facebook-pixel/implementation/conversion-tracking#tracking-custom-events
 		trackFBCustomEvent: (eventName, eventData = null) => {
@@ -279,7 +329,7 @@ export default Vue => {
 				revenue: String(transactionData.itemTotal),
 				event: 'refresh'
 			});
-		}
+		},
 	};
 
 	Vue.directive('kv-track-event', {
@@ -356,6 +406,11 @@ export default Vue => {
 				}
 			}
 		};
+	};
+
+	// eslint-disable-next-line no-param-reassign
+	Vue.prototype.$fireQueuedEvents = () => {
+		kvActions.fireQueuedEvents();
 	};
 
 	// eslint-disable-next-line no-param-reassign
