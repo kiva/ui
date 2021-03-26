@@ -74,13 +74,13 @@ const recommendationsByLoanIdQuery = id => `{
 
 function fetchRecommendedLoans(type, id, cache) {
 	let query;
-	let resultPath;
+	let queryResultPath;
 	if (type === 'user') {
 		query = recommendationsByLoginIdQuery;
-		resultPath = 'data.ml.recommendationsByLoginId.values';
+		queryResultPath = 'data.ml.recommendationsByLoginId.values';
 	} else if (type === 'loan') {
 		query = recommendationsByLoanIdQuery;
-		resultPath = 'data.ml.relatedLoansByTopics[0].values';
+		queryResultPath = 'data.ml.relatedLoansByTopics[0].values';
 	}
 	return new Promise((resolve, reject) => {
 		memJsUtils.getFromCache(`recommendations-by-${type}-id-${id}`, cache).then(data => {
@@ -98,7 +98,7 @@ function fetchRecommendedLoans(type, id, cache) {
 				})
 					.then(result => result.json())
 					.then(result => {
-						const loanData = get(result, resultPath);
+						const loanData = get(result, queryResultPath);
 						if (loanData) {
 							const expires = 10 * 60; // 10 minutes
 							memJsUtils.setToCache(
