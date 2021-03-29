@@ -79,6 +79,9 @@ module.exports = function authRouter(config = {}) {
 		if (!cookies.kvu) {
 			options.login_hint = 'signUp';
 		}
+		if (req.query.login_hint) {
+			options.login_hint = req.query.login_hint;
+		}
 		// Store url to redirect to after successful login
 		if (req.query.doneUrl) {
 			req.session.doneUrl = req.query.doneUrl;

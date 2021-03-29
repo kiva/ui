@@ -120,7 +120,7 @@ export default {
 					if (result?.errors?.length > 0) {
 						throw result.errors;
 					}
-					const resetUrl = result?.data?.my?.startGuestAccountClaim;
+					const resetUrl = result?.data?.general?.startGuestAccountClaim;
 					if (!resetUrl) {
 						throw new Error('Missing reset url');
 					}

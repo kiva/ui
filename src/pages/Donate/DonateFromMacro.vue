@@ -40,7 +40,7 @@ import gql from 'graphql-tag';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DonateFromMacroHero from '@/pages/Donate/DonateFromMacroHero';
-import { processPageContent } from '@/util/contentfulUtils';
+import { processPageContentFlat } from '@/util/contentfulUtils';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
@@ -76,7 +76,7 @@ export default {
 		},
 		result({ data }) {
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
-			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
+			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
 		},
 	},
 	computed: {
@@ -90,19 +90,19 @@ export default {
 			];
 		},
 		pageLayout() {
-			return this.pageData?.page?.pageLayout;
+			return this.pageData?.page;
 		},
 		heroContentGroup() {
 			// eslint-disable-next-line max-len
-			return this.pageLayout?.contentGroups?.find(contentGroup => contentGroup.key === 'donation-hero');
+			return this.pageLayout?.contentGroups?.donationHero;
 		},
 		impactContentGroup() {
 			// eslint-disable-next-line max-len
-			return this.pageLayout?.contentGroups?.find(contentGroup => contentGroup.key === 'donation-impact');
+			return this.pageLayout?.contentGroups?.donationImpact;
 		},
 		faqContentGroup() {
 			// eslint-disable-next-line max-len
-			return this.pageLayout?.contentGroups?.find(contentGroup => contentGroup.key === 'donation-faqs');
+			return this.pageLayout?.contentGroups?.donationFaqs;
 		},
 		donationFAQs() {
 			return this.faqContentGroup?.contents?.find(contentBlock => contentBlock.key === 'donate-page-faqs');

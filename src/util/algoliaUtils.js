@@ -1,6 +1,9 @@
 import _filter from 'lodash/filter';
 import _find from 'lodash/find';
 
+// temporary store for utm query params
+let utmParams = [];
+
 // dev_fundraising_loans is the base index, all others are replicas
 // INFO: This list powers the sort order component
 export const fundraisingIndices = [
@@ -76,9 +79,25 @@ export function rebuildSortByIndexFromRoute(routeStateSortBy) {
 	return setSortByEnv(selectedRouteSort);
 }
 
+// Build object of external query params. ie utm params
+export function extractExternalParams(search) {
+	const searchParams = search.replace('?', '').split('&');
+	// extract utms
+	const utmParamsFromSearch = searchParams.filter(param => param.indexOf('utm_') !== -1);
+	const utmArray = utmParamsFromSearch.map(utmString => {
+		const utm = utmString.split('=');
+		return utm;
+	});
+	return Object.fromEntries(utmArray);
+}
+
 // Build Algolia specific map of current search state to url query parameters
 export function stateToRoute(uiState) {
-	// console.log(`uiState: ${JSON.stringify(uiState)}`);
+	// extract and assign utm params if present
+	if (window.location.search.indexOf('utm') !== -1 && !utmParams.length) {
+		utmParams = extractExternalParams(window.location.search);
+	}
+
 	return {
 		query: uiState.query,
 		gender:
@@ -121,13 +140,19 @@ export function stateToRoute(uiState) {
 			uiState.range
 			&& uiState.range['partner.riskRating'],
 		sortBy: createSimpleSortByFromState(uiState.sortBy),
-		page: uiState.page
+		page: uiState.page,
+		// patch in utmParams if present
+		...utmParams
 	};
 }
 
 // Build Algolia specific map from url query parameters into a search object
 export function routeToState(routeState) {
-	// console.log(`routeState: ${JSON.stringify(routeState)}`);
+	// extract and assign utm params if present
+	if (window.location.search.indexOf('utm') !== -1 && !utmParams.length) {
+		utmParams = extractExternalParams(window.location.search);
+	}
+
 	return {
 		query: routeState.query,
 		menu: {
@@ -165,7 +190,9 @@ export function routeToState(routeState) {
 				routeState.risk,
 		},
 		sortBy: rebuildSortByIndexFromRoute(routeState.sortBy),
-		page: routeState.page
+		page: routeState.page,
+		// patch in utmParams if present
+		...utmParams
 	};
 }
 
