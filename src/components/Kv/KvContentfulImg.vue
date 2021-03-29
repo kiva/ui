@@ -17,7 +17,7 @@
 			</template>
 			<img
 				class="kv-contentful-img__img"
-				:src="`${buildUrl(width, height)}${crop}fm=${fallbackFormat}&q=80`"
+				:src="`${buildUrl(width, height)}${crop}&fm=${fallbackFormat}&q=80`"
 				:alt="alt"
 				:loading="loading"
 			>
