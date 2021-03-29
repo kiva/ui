@@ -6,15 +6,25 @@
 		<!-- Set of image sources -->
 		<template v-if="sourceSizes.length > 0">
 			<template v-for="(image, index) in sourceSizes">
+				<!-- browser supports webp -->
 				<source
-					:key="'image'+index"
+					:key="'webp-image'+index"
 					:media="'('+image.media+')'"
 					type="image/webp"
 					:srcset="`
 					${buildUrl(image.width * 2, image.height * 2)}${crop}&fm=webp&q=65 2x,
 					${buildUrl(image.width, image.height)}${crop}&fm=webp&q=80 1x`"
 				>
+				<!-- browser doesn't support webp -->
+				<source
+					:key="'fallback-image'+index"
+					:media="'('+image.media+')'"
+					:srcset="`
+					${buildUrl(image.width * 2, image.height * 2)}${crop}&fm=${fallbackFormat}&q=65 2x,
+					${buildUrl(image.width, image.height)}${crop}&fm=${fallbackFormat}&q=80 1x`"
+				>
 			</template>
+			<!-- browser doesn't support picture element -->
 			<img
 				class="kv-contentful-img__img"
 				:src="`${buildUrl(width, height)}${crop}&fm=${fallbackFormat}&q=80`"
@@ -25,12 +35,14 @@
 
 		<!-- Single image -->
 		<template v-if="sourceSizes.length === 0">
+			<!-- browser supports webp -->
 			<source
 				type="image/webp"
 				:srcset="`
 					${buildUrl(width * 2, height * 2)}&fm=webp&q=65 2x,
 					${buildUrl(width, height)}&fm=webp&q=80 1x`"
 			>
+			<!-- browser doesn't support webp or browser doesn't support picture element -->
 			<img
 				class="kv-contentful-img__img"
 				:srcset="`
