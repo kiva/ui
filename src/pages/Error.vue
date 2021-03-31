@@ -22,7 +22,7 @@
 				</template>
 				<p>
 					{{ messages.contact }}
-					<a :href="`mailto:${contactEmail}`">{{ contactEmail }}</a>
+					<a class="fs-exclude" :href="`mailto:${contactEmail}`">{{ contactEmail }}</a>
 				</p>
 			</div>
 		</div>

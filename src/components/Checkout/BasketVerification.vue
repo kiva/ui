@@ -27,7 +27,7 @@
 			title="Verification link sent"
 			@lightbox-closed="close"
 		>
-			<p>We sent a validation link <span v-if="email" class="email">to {{ email }}</span>.</p>
+			<p>We sent a validation link <span v-if="email" class="email fs-exclude">to {{ email }}</span>.</p>
 			<p>After receiving the email, follow the link provided to continue checking out with your Kiva Credit.</p>
 			<kv-button v-if="!sending" @click.native="send">
 				Resend email
