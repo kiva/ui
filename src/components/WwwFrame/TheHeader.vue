@@ -60,6 +60,7 @@
 							<img
 								:src="profilePic"
 								alt="My portfolio"
+								class="fs-mask"
 							>
 						</span>
 					</router-link>
@@ -180,6 +181,7 @@
 							<img
 								:src="profilePic"
 								alt="My portfolio"
+								class="fs-mask"
 							>
 						</span>
 					</router-link>
