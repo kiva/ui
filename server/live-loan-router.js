@@ -81,7 +81,7 @@ async function fetchRecommendedLoans(type, id, cache) {
 			return JSON.parse(cachedLoanData);
 		}
 	} catch (err) {
-		log(err, `Error reading from memjs: ${err}`);
+		log(`Error reading from memjs: ${err}`, 'error');
 	}
 
 	// Otherwise we need to hit the graphql endpoint.
@@ -115,7 +115,7 @@ async function fetchRecommendedLoans(type, id, cache) {
 		throw new Error(`Error fetching loans: ${err}`);
 	}
 
-	// Set the loan data in memcache, then return the loan data
+	// Set the loan data in memcache, return the loan data
 	if (loanData) {
 		try {
 			const expires = 10 * 60; // 10 minutes
@@ -125,11 +125,11 @@ async function fetchRecommendedLoans(type, id, cache) {
 				expires,
 				cache
 			);
+			return loanData;
 		} catch (err) {
+			// throw if we can't save to memcache since not using caching would be problematic during an email campaign
 			throw new Error(`Error setting loan data to cache: ${err}`);
 		}
-		// if setting the cache fails, return the data anyway
-		return loanData;
 	}
 }
 
