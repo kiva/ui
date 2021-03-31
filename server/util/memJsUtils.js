@@ -7,8 +7,10 @@ module.exports = {
 				if (error) {
 					log(`MemJS Error Getting ${key}, Error: ${error}`, 'error');
 				}
-				log(`MemJS Success Getting ${key}`);
-				resolve(data);
+				if (data) {
+					log(`MemJS Success Getting ${key}`);
+				}
+				resolve(data || null);
 			});
 		});
 	},
