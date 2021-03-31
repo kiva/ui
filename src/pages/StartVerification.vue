@@ -13,7 +13,7 @@
 				</template>
 				<template v-else>
 					<h1>Email verification pending</h1>
-					<p>We sent a validation link <span v-if="email" class="email">to {{ email }}</span>.</p>
+					<p>We sent a validation link <span v-if="email" class="email fs-exclude">to {{ email }}</span>.</p>
 					<p>After receiving the email, follow the link provided to continue {{ process }}.</p>
 					<kv-button v-if="!sending" @click.native="send">
 						Resend email

@@ -13,7 +13,10 @@
 				variant="success"
 				:can-close="true"
 			>
-				<b>{{ successMsg }}</b>
+				<b>
+					Email has been sent to
+					<span class="fs-exclude">{{ userEmail ? userEmail : 'the address on file' }}</span>
+				</b>
 			</kv-alert>
 			<kv-alert
 				v-if="isPasswordRequestFailure"
@@ -74,13 +77,6 @@ export default {
 	},
 	mounted() {
 		this.loadUserEmail(); // load user email async since it's not crucial
-	},
-	computed: {
-		successMsg() { // TODO: What's the text here?
-			return this.userEmail
-				? `Email has been sent to ${this.userEmail}`
-				: 'Email has been sent to the address on file';
-		}
 	},
 	methods: {
 		loadUserEmail() {
