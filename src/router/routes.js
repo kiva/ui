@@ -152,9 +152,6 @@ export default [
 	{
 		path: '/register/guest-redirect',
 		component: () => import('@/pages/LoginAndRegister/GuestAccountRedirect'),
-		meta: {
-			authenticationRequired: true,
-		},
 	},
 	{
 		path: '/settings',
