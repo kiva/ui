@@ -81,7 +81,7 @@ async function fetchRecommendedLoans(type, id, cache) {
 			return JSON.parse(cachedLoanData);
 		}
 	} catch (err) {
-		log(`Error reading from memjs: ${err}`, 'error');
+		log(`Error reading from memjs, ${err}`, 'error');
 	}
 
 	// Otherwise we need to hit the graphql endpoint.
@@ -99,7 +99,7 @@ async function fetchRecommendedLoans(type, id, cache) {
 	}
 
 	// hit the endpoint and parse the response
-	let loanData;
+	let loanData = [];
 	try {
 		const endpoint = config.app.graphqlUri;
 		const response = await fetch(endpoint, {
@@ -112,11 +112,11 @@ async function fetchRecommendedLoans(type, id, cache) {
 		const result = await response.json();
 		loanData = get(result, queryResultPath);
 	} catch (err) {
-		throw new Error(`Error fetching loans: ${err}`);
+		log(`Error fetching loans: ${err}`, 'error');
 	}
 
 	// Set the loan data in memcache, return the loan data
-	if (loanData) {
+	if (loanData.length) {
 		try {
 			const expires = 10 * 60; // 10 minutes
 			await memJsUtils.setToCache(
@@ -127,9 +127,11 @@ async function fetchRecommendedLoans(type, id, cache) {
 			);
 			return loanData;
 		} catch (err) {
-			// throw if we can't save to memcache since not using caching would be problematic during an email campaign
-			throw new Error(`Error setting loan data to cache: ${err}`);
+			log(`Error setting loan data to cache, ${err}`, 'error');
 		}
+	} else {
+		// future improvement, return a default set of 4 loans here
+		throw new Error('No loans returned');
 	}
 }
 
@@ -141,7 +143,7 @@ async function redirectToUrl(type, cache, req, res) {
 			const offsetLoanId = loanData[offset - 1].id;
 			res.redirect(302, `/lend/${offsetLoanId}`);
 		} catch (err) {
-			log(err, 'error');
+			log(`Error redirecting to url, ${err}`, 'error');
 			res.redirect(302, '/lend-by-category/');
 		}
 	} else {
@@ -169,7 +171,7 @@ async function serveImg(type, cache, req, res) {
 			res.contentType('image/jpeg');
 			res.send(loanImg);
 		} catch (err) {
-			log(err, 'error');
+			log(`Error serving image, ${err}`, 'error');
 			res.sendStatus(500);
 		}
 	} else {
