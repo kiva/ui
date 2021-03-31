@@ -31,6 +31,7 @@ export default {
 				// Check to see if user is authenticated
 				if (!data?.my?.userAccount?.id) {
 					redirectPath = '/ui-login';
+					query.login_hint = 'login';
 					query.doneUrl = finalUrl;
 				}
 				return Promise.reject({
