@@ -157,8 +157,88 @@
 				</kv-settings-card>
 			</div>
 
-			<!-- !TODO Add Trustee email settings section  -->
-			<!-- !TODO Add Borrower email settings section  -->
+			<div class="row" v-if="isBorrower">
+				<!-- Borrower Settings -->
+				<kv-settings-card
+					class="columns small-12 large-8"
+					title="Entrepreneur tips"
+					:disabled="form.globalUnsubscribed"
+				>
+					<template #content>
+						<fieldset>
+							<kv-button class="text-link" @click.native="borrowerToggleAll()">
+								{{ borrowerAllSelected ? "Deselect" : "Select" }} All
+							</kv-button>
+							<kv-checkbox
+								id="leadNurturing"
+								name="leadNurturing"
+								v-model="form.leadNurturing"
+								class="email-settings__checkbox"
+							>
+								Getting started with Kiva
+							</kv-checkbox>
+							<kv-checkbox
+								id="onboardingSupport"
+								name="onboardingSupport"
+								v-model="form.onboardingSupport"
+								class="email-settings__checkbox"
+							>
+								Loan success guide
+							</kv-checkbox>
+							<kv-checkbox
+								id="borrowerNews"
+								name="borrowerNews"
+								v-model="form.borrowerNews"
+								class="email-settings__checkbox"
+							>
+								Entrepreneur community updates
+							</kv-checkbox>
+						</fieldset>
+					</template>
+				</kv-settings-card>
+			</div>
+
+			<div class="row" v-if="isTrustee">
+				<!-- Trustee Settings -->
+				<kv-settings-card
+					class="columns small-12 large-8"
+					title="Trustee updates"
+					:disabled="form.globalUnsubscribed"
+				>
+					<template #content>
+						<fieldset>
+							<kv-button class="text-link" @click.native="trusteeToggleAll()">
+								{{ trusteeAllSelected ? "Deselect" : "Select" }} All
+							</kv-button>
+							<kv-checkbox
+								id="networkTransactions"
+								name="networkTransactions"
+								v-model="form.networkTransactions"
+								class="email-settings__checkbox"
+							>
+								Borrower network transactions
+							</kv-checkbox>
+							<kv-checkbox
+								id="networkDigest"
+								name="networkDigest"
+								v-model="form.networkDigest"
+								class="email-settings__checkbox"
+							>
+								Borrower network digest
+							</kv-checkbox>
+							<kv-checkbox
+								id="trusteeNews"
+								name="trusteeNews"
+								v-model="form.trusteeNews"
+								class="email-settings__checkbox"
+							>
+								Trustee news and tips
+							</kv-checkbox>
+						</fieldset>
+					</template>
+				</kv-settings-card>
+			</div>
+
 			<div class="row">
 				<div class="columns small-12 large-8">
 					<kv-button
@@ -196,6 +276,10 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 const pageQuery = gql`
 	query communicationPreferences {
 		my {
+			trustee {
+				id
+			}
+			isBorrower
 			communicationSettings {
 				globalUnsubscribed
 				accountUpdates
@@ -205,6 +289,12 @@ const pageQuery = gql`
 				loanUpdates
 				commentsMessages
 				teamDigests
+				leadNurturing
+				onboardingSupport
+				borrowerNews
+				networkTransactions
+				networkDigest
+				trusteeNews
 			}
 		}
 	}
@@ -279,22 +369,36 @@ export default {
 				autolendUpdates: 'monthly',
 				loanUpdates: false,
 				commentsMessages: false,
-				teamDigests: 'weekly'
+				teamDigests: 'weekly',
+				leadNurturing: false,
+				onboardingSupport: false,
+				borrowerNews: false,
+				networkTransactions: false,
+				networkDigest: false,
+				trusteeNews: false,
 			},
 			// Component Data
 			initialValues: {},
 			generalAllSelected: false,
 			lendingAllSelected: false,
+			borrowerAllSelected: false,
+			trusteeAllSelected: false,
 			isProcessing: false,
+			isBorrower: false,
+			isTrustee: false
 		};
 	},
 	apollo: {
 		query: pageQuery,
 		preFetch: true,
 		result({ data }) {
+			this.isBorrower = data?.my?.isBorrower ?? false;
+			this.isTrustee = !!data?.my?.trustee?.id;
+
 			// Get user email settings or set to default
 			// Global setting
 			this.form.globalUnsubscribed = data?.my?.communicationSettings?.globalUnsubscribed ?? false;
+
 			// General settings
 			this.form.accountUpdates = data?.my?.communicationSettings?.accountUpdates ?? false;
 			this.form.lenderNews = data?.my?.communicationSettings?.lenderNews ?? false;
@@ -307,6 +411,7 @@ export default {
 			&& this.form.autolendUpdates === 'monthly') {
 				this.generalAllSelected = true;
 			}
+
 			// Lending settings
 			this.form.loanUpdates =	data?.my?.communicationSettings?.loanUpdates ?? false;
 			this.form.commentsMessages = data?.my?.communicationSettings?.commentsMessages ?? false;
@@ -315,6 +420,25 @@ export default {
 			if (this.form.loanUpdates && this.form.commentsMessages && this.form.teamDigests === 'weekly') {
 				this.lendingAllSelected = true;
 			}
+
+			// Borrower settings
+			this.form.leadNurturing = data?.my?.communicationSettings?.leadNurturing ?? false;
+			this.form.onboardingSupport = data?.my?.communicationSettings?.onboardingSupport ?? false;
+			this.form.borrowerNews = data?.my?.communicationSettings?.borrowerNews ?? false;
+			// Borrower select toggle
+			if (this.form.leadNurturing && this.form.onboardingSupport && this.form.borrowerNews) {
+				this.borrowerAllSelected = true;
+			}
+
+			// Trustee settings
+			this.form.networkTransactions = data?.my?.communicationSettings?.networkTransactions ?? false;
+			this.form.networkDigest = data?.my?.communicationSettings?.networkDigest ?? false;
+			this.form.trusteeNews = data?.my?.communicationSettings?.trusteeNews ?? false;
+			// Trustee select toggle
+			if (this.form.networkTransactions && this.form.networkDigest && this.form.trusteeNews) {
+				this.trusteeAllSelected = true;
+			}
+
 			// Make a copy of initial values for reset functionality
 			this.initialValues = { ...this.form };
 		},
@@ -359,10 +483,38 @@ export default {
 				this.form.teamDigests = 'no';
 			}
 		},
+		borrowerToggleAll() {
+			// Toggle select flag
+			this.borrowerAllSelected = !this.borrowerAllSelected;
+			// Set borrower values to their default values
+			if (this.borrowerAllSelected) {
+				this.form.leadNurturing = true;
+				this.form.onboardingSupport = true;
+				this.form.borrowerNews = true;
+			} else {
+				this.form.leadNurturing = false;
+				this.form.onboardingSupport = false;
+				this.form.borrowerNews = false;
+			}
+		},
+		trusteeToggleAll() {
+			// Toggle select flag
+			this.trusteeAllSelected = !this.trusteeAllSelected;
+			// Set trustee values to their default values
+			if (this.trusteeAllSelected) {
+				this.form.networkTransactions = true;
+				this.form.networkDigest = true;
+				this.form.trusteeNews = true;
+			} else {
+				this.form.networkTransactions = false;
+				this.form.networkDigest = false;
+				this.form.trusteeNews = false;
+			}
+		},
 		async saveSettings() {
 			this.isProcessing = true;
 			try {
-				// If globalUnsubscribed is true, fire unsubscribe all mutation
+				// globalUnsubscribed is true, fire unsubscribe all mutation
 				if (this.form.globalUnsubscribed) {
 					const unsubscribeFromAllCommunications = this.apollo.mutate({
 						mutation: gql`
@@ -384,7 +536,7 @@ export default {
 					}
 				}
 
-				// If globalUnsubscribed is false, fire mutation with itemized subscribe settings
+				// globalUnsubscribed is false, fire mutation with itemized subscribe settings
 				if (!this.form.globalUnsubscribed) {
 					const updateCommunicationSettings = this.apollo.mutate({
 						mutation: gql`
@@ -397,6 +549,12 @@ export default {
 								$loanUpdates: Boolean
 								$commentsMessages: Boolean
 								$teamDigests: TeamMessageFrequencyEnum,
+								$leadNurturing: Boolean,
+								$onboardingSupport: Boolean,
+								$borrowerNews: Boolean,
+								$networkTransactions: Boolean,
+								$networkDigest: Boolean,
+								$trusteeNews: Boolean
 							) {
 								my {
 									updateCommunicationSettings(
@@ -408,7 +566,13 @@ export default {
 											autolendUpdates: $autolendUpdates
 											loanUpdates: $loanUpdates
 											commentsMessages: $commentsMessages
-											teamDigests: $teamDigests
+											teamDigests: $teamDigests,
+											leadNurturing: $leadNurturing,
+											onboardingSupport: $onboardingSupport,
+											borrowerNews: $borrowerNews,
+											networkTransactions: $networkTransactions,
+											networkDigest: $networkDigest,
+											trusteeNews: $trusteeNews
 										}
 									)
 								}
@@ -422,7 +586,13 @@ export default {
 							autolendUpdates: this.form.autolendUpdates,
 							loanUpdates: this.form.loanUpdates,
 							commentsMessages: this.form.commentsMessages,
-							teamDigests: this.form.teamDigests
+							teamDigests: this.form.teamDigests,
+							leadNurturing: this.form.leadNurturing,
+							onboardingSupport: this.form.onboardingSupport,
+							borrowerNews: this.form.borrowerNews,
+							networkTransactions: this.form.networkTransactions,
+							networkDigest: this.form.networkDigest,
+							trusteeNews: this.form.trusteeNews
 						},
 						awaitRefetchQueries: true,
 						refetchQueries: [{ query: pageQuery }],
