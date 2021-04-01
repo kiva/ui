@@ -183,7 +183,13 @@ module.exports = function authRouter(config = {}) {
 	// For all other routes, check the login sync cookie to see if login or logout is needed
 	router.use((req, res, next) => {
 		// don't try to perform login sync for the following paths
-		const bypassPaths = ['/error', '/process-browser-auth', '/register/social'];
+		const bypassPaths = [
+			'/error',
+			'/process-browser-auth',
+			'/register/social',
+			'/register/guest',
+			'/register/guest-redirect',
+		];
 		if (bypassPaths.includes(req.path)) {
 			next();
 		} else if (isNotedLoggedIn(req) && !req.user) {
