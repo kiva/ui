@@ -10,7 +10,7 @@
 				<template v-if="loans.length > 0">
 					<div class="thanks__header hide-for-print">
 						<h1 class="thanks__header-h1">
-							Thank you!
+							Thank you! Test! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Qui cumque vitae autem minus earum quisquam provident, magni dolore harum reprehenderit consequatur esse nisi totam expedita consequuntur eius consectetur, quo voluptatum!
 						</h1>
 						<p class="thanks__header-subhead">
 							Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
