@@ -153,6 +153,44 @@
 								</option>
 							</kv-dropdown-rounded>
 						</fieldset>
+
+						<!-- User per team preferences -->
+						<fieldset class="email-settings__per-team-prefs" v-if="hasTeams && form.teamDigests !== 'no'">
+							<kv-button
+								class="text-link"
+								@click.native="teamsShown = !teamsShown"
+							>
+								{{ teamsShown ? "Hide" : "Show" }} per-team preferences
+							</kv-button>
+							<div v-if="teamsShown">
+								<template v-for="(team, index) in form.teamMessageFrequencies">
+									<label
+										for="single-team-digest-input"
+										:key="`team${index}-label`"
+									>{{ team.name }}</label>
+									<kv-dropdown-rounded :key="`team${index}-select`"
+										id="single-team-digest-input"
+										v-model="team.frequency"
+									>
+										<option value="no">
+											Do not send
+										</option>
+										<option value="yes">
+											Send as they arrive
+										</option>
+										<option value="nightly">
+											Send a nightly digest
+										</option>
+										<option value="weekly">
+											Send a weekly digest
+										</option>
+										<option value="default">
+											Use my default for teams
+										</option>
+									</kv-dropdown-rounded>
+								</template>
+							</div>
+						</fieldset>
 					</template>
 				</kv-settings-card>
 			</div>
@@ -279,6 +317,17 @@ const pageQuery = gql`
 			trustee {
 				id
 			}
+			teams {
+				totalCount
+				values {
+					id
+					team {
+						id
+						name
+					}
+					sendTeamMessages
+				}
+			}
 			isBorrower
 			communicationSettings {
 				globalUnsubscribed
@@ -300,49 +349,27 @@ const pageQuery = gql`
 	}
 `;
 
-/** Legacy Mutation - For reference
-gqlMyUpdateCommunicationSettings: gql`
-	mutation ($globalUnsubscribed: Boolean,
-				$lenderNews: Boolean,
-				$accountUpdates: Boolean,
-				$monthlyGood: Boolean,
-				$repaymentUpdates: MessageFrequencyEnum,
-				$autolendUpdates: MessageFrequencyEnum,
-				$loanUpdates: Boolean,
-				$commentsMessages: Boolean,
-				$teamDigests: TeamMessageFrequencyEnum,
-				$leadNurturing: Boolean,
-				$onboardingSupport: Boolean,
-				$borrowerNews: Boolean,
-				$networkTransactions: Boolean,
-				$networkDigest: Boolean,
-				$trusteeNews: Boolean,
-				$loansToSubscribe: [Int],
-				$loansToUnsubscribe: [Int],
-				$teamMessageFrequencies: [TeamMessageFrequencyInput]
-	) {
-	my {
-		updateCommunicationSettings (communicationSettings: {
-			globalUnsubscribed: $globalUnsubscribed
-			lenderNews: $lenderNews
-			accountUpdates: $accountUpdates
-			monthlyGood: $monthlyGood
-			repaymentUpdates: $repaymentUpdates
-			autolendUpdates: $autolendUpdates
-			loanUpdates: $loanUpdates
-			commentsMessages: $commentsMessages
-			teamDigests: $teamDigests
-			leadNurturing: $leadNurturing
-			onboardingSupport: $onboardingSupport
-			borrowerNews: $borrowerNews
-			networkTransactions: $networkTransactions
-			networkDigest: $networkDigest
-			trusteeNews: $trusteeNews
-		})
-		updateTeamMessageFrequencies (frequencies: $teamMessageFrequencies)
+/**
+ * Takes raw data.teams.values array and returns array of objects
+ * in the format expected for teamMessageFrequencies
+ * Sample:
+ * [{teamId: 18077, frequency: "yes"}]
+ * @param {Array}
+ * @returns {Array}
+ */
+const generateTeamMessageFrequencies = teamValues => {
+	try {
+		return teamValues.map(teamValue => {
+			return {
+				teamId: teamValue.team.id,
+				frequency: teamValue.sendTeamMessages,
+				name: teamValue.team.name
+			};
+		});
+	} catch {
+		return [];
 	}
-}`
-* */
+};
 
 export default {
 	components: {
@@ -376,6 +403,7 @@ export default {
 				networkTransactions: false,
 				networkDigest: false,
 				trusteeNews: false,
+				teamMessageFrequencies: []
 			},
 			// Component Data
 			initialValues: {},
@@ -385,7 +413,9 @@ export default {
 			trusteeAllSelected: false,
 			isProcessing: false,
 			isBorrower: false,
-			isTrustee: false
+			isTrustee: false,
+			hasTeams: false,
+			teamsShown: false,
 		};
 	},
 	apollo: {
@@ -394,6 +424,7 @@ export default {
 		result({ data }) {
 			this.isBorrower = data?.my?.isBorrower ?? false;
 			this.isTrustee = !!data?.my?.trustee?.id;
+			this.hasTeams = data?.my?.teams?.totalCount && data?.my?.teams?.totalCount > 0;
 
 			// Get user email settings or set to default
 			// Global setting
@@ -420,6 +451,10 @@ export default {
 			if (this.form.loanUpdates && this.form.commentsMessages && this.form.teamDigests === 'weekly') {
 				this.lendingAllSelected = true;
 			}
+			// Lending team settings
+			if (this.hasTeams) {
+				this.form.teamMessageFrequencies = generateTeamMessageFrequencies(data?.my?.teams?.values);
+			}
 
 			// Borrower settings
 			this.form.leadNurturing = data?.my?.communicationSettings?.leadNurturing ?? false;
@@ -439,14 +474,14 @@ export default {
 				this.trusteeAllSelected = true;
 			}
 
-			// Make a copy of initial values for reset functionality
-			this.initialValues = { ...this.form };
+			// Make a deep copy of initial values for reset functionality
+			this.initialValues = JSON.parse(JSON.stringify(this.form));
 		},
 	},
 	computed: {
 		isChanged() {
-			// Shallow compare 2 objects
-			return Object.entries(this.initialValues).toString() !== Object.entries(this.form).toString();
+			// Quickly deep compare 2 objects
+			return JSON.stringify(this.initialValues) !== JSON.stringify(this.form);
 		},
 	},
 	methods: {
@@ -554,7 +589,8 @@ export default {
 								$borrowerNews: Boolean,
 								$networkTransactions: Boolean,
 								$networkDigest: Boolean,
-								$trusteeNews: Boolean
+								$trusteeNews: Boolean,
+								$teamMessageFrequencies: [TeamMessageFrequencyInput]
 							) {
 								my {
 									updateCommunicationSettings(
@@ -575,6 +611,7 @@ export default {
 											trusteeNews: $trusteeNews
 										}
 									)
+									updateTeamMessageFrequencies (frequencies: $teamMessageFrequencies)
 								}
 							}
 						`,
@@ -592,7 +629,8 @@ export default {
 							borrowerNews: this.form.borrowerNews,
 							networkTransactions: this.form.networkTransactions,
 							networkDigest: this.form.networkDigest,
-							trusteeNews: this.form.trusteeNews
+							trusteeNews: this.form.trusteeNews,
+							teamMessageFrequencies: this.form.teamMessageFrequencies
 						},
 						awaitRefetchQueries: true,
 						refetchQueries: [{ query: pageQuery }],
@@ -622,6 +660,10 @@ export default {
 .email-settings {
 	.row:last-child {
 		margin-bottom: 3rem;
+	}
+
+	&__per-team-prefs {
+		margin-left: 1rem;
 	}
 
 	&__reset-button {
