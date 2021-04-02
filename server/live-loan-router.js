@@ -3,170 +3,203 @@ const express = require('express');
 const argv = require('./util/argv');
 const config = require('../config/selectConfig')(argv.config);
 const fetch = require('./util/fetch');
-
+const log = require('./util/log');
+const memJsUtils = require('./util/memJsUtils');
 const drawLoanCard = require('./util/live-loan/live-loan-draw');
 
 function isNumeric(value) {
 	return /^\d+$/.test(value);
 }
 
-function getFromCache(key, cache) {
-	return new Promise(resolve => {
-		cache.get(key, (error, data) => {
-			if (error) {
-				console.error(JSON.stringify({
-					meta: {},
-					level: 'error',
-					message: `MemJS Error Getting ${key}, Error: ${error}`
-				}));
-			}
-			resolve(data);
-		});
-	});
-}
-
-function setToCache(key, value, expires, cache) {
-	return new Promise((resolve, reject) => {
-		cache.set(key, value, { expires }, (error, success) => {
-			if (error) {
-				console.error(JSON.stringify({
-					meta: {},
-					level: 'error',
-					message: `MemJS Error Setting Cache for ${key}, Error: ${error}`
-				}));
-				reject();
-			}
-			if (success) {
-				console.info(JSON.stringify({
-					meta: {},
-					level: 'info',
-					message: `MemJS Success Setting Cache for ${key}, Success: ${success}`
-				}));
-				resolve();
-			}
-		});
-	});
-}
-
-function fetchRecommendedLoans(loginId, cache) {
-	return new Promise((resolve, reject) => {
-		getFromCache(`recommendations-by-login-id-${loginId}`, cache).then(data => {
-			if (data) {
-				const jsonData = JSON.parse(data);
-				resolve(jsonData);
-			} else {
-				const endpoint = config.app.graphqlUri;
-				const query = `{
-					ml {
-						recommendationsByLoginId(
-							segment: all
-								loginId: ${loginId}
-								offset: 0
-								limit: 4
-						) {
-							values {
-								name
-								id
-								borrowerCount
-								geocode {
-									country {
-										name
-									}
-								}
-								use
-								loanAmount
-								status
-								loanFundraisingInfo {
-									fundedAmount
-								}
-								image {
-									retina: url(customSize: "w960h720")
-								}
-							}
-						}
+const recommendationsByLoginIdQuery = id => `{
+	ml {
+		recommendationsByLoginId(
+			segment: all
+				loginId: ${id}
+				offset: 0
+				limit: 4
+		) {
+			values {
+				name
+				id
+				borrowerCount
+				geocode {
+					country {
+						name
 					}
-				}`;
-
-				fetch(endpoint, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						query
-					}),
-				})
-					.then(result => result.json())
-					.then(result => {
-						const loanData = get(result, 'data.ml.recommendationsByLoginId.values');
-						if (loanData) {
-							const expires = 10 * 60; // 10 minutes
-							setToCache(
-								`recommendations-by-login-id-${loginId}`,
-								JSON.stringify(loanData),
-								expires,
-								cache
-							)
-								.then(() => {
-									resolve(loanData);
-								});
-						} else {
-							throw new Error('No loans returned');
-						}
-					}).catch(err => {
-						console.error(err);
-						reject(err);
-					});
+				}
+				use
+				loanAmount
+				status
+				loanFundraisingInfo {
+					fundedAmount
+				}
+				image {
+					retina: url(customSize: "w960h720")
+				}
 			}
-		}).catch(err => {
-			console.error(err);
+		}
+	}
+}`;
+
+const recommendationsByLoanIdQuery = id => `{
+	ml {
+		relatedLoansByTopics(
+			loanId: ${id},
+			offset: 0,
+			topics: [story]
+			limit: 4,
+		) {
+			values {
+				name
+				id
+				borrowerCount
+				geocode {
+					country {
+						name
+					}
+				}
+				use
+				loanAmount
+				status
+				loanFundraisingInfo {
+					fundedAmount
+				}
+				image {
+					retina: url(customSize: "w960h720")
+				}
+			}
+		}
+	}
+}`;
+
+async function fetchRecommendedLoans(type, id, cache) {
+	// If we have loan data in memjscache return that quickly
+	try {
+		const cachedLoanData = await memJsUtils.getFromCache(`recommendations-by-${type}-id-${id}`, cache);
+		if (cachedLoanData) {
+			return JSON.parse(cachedLoanData);
+		}
+	} catch (err) {
+		log(`Error reading from memjs, ${err}`, 'error');
+	}
+
+	// Otherwise we need to hit the graphql endpoint.
+	// prep the query
+	let query;
+	let queryResultPath;
+	if (type === 'user') {
+		query = recommendationsByLoginIdQuery(id);
+		queryResultPath = 'data.ml.recommendationsByLoginId.values';
+	} else if (type === 'loan') {
+		query = recommendationsByLoanIdQuery(id);
+		queryResultPath = 'data.ml.relatedLoansByTopics[0].values';
+	} else {
+		throw new Error('Type must be user or loan');
+	}
+
+	// hit the endpoint and parse the response
+	let loanData = [];
+	try {
+		const endpoint = config.app.graphqlUri;
+		const response = await fetch(endpoint, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				query
+			}),
 		});
-	});
+		const result = await response.json();
+		loanData = get(result, queryResultPath);
+	} catch (err) {
+		log(`Error fetching loans: ${err}`, 'error');
+	}
+
+	// Set the loan data in memcache, return the loan data
+	if (loanData.length) {
+		try {
+			const expires = 10 * 60; // 10 minutes
+			await memJsUtils.setToCache(
+				`recommendations-by-${type}-id-${id}`,
+				JSON.stringify(loanData),
+				expires,
+				cache
+			);
+			return loanData;
+		} catch (err) {
+			log(`Error setting loan data to cache, ${err}`, 'error');
+		}
+	} else {
+		// future improvement, return a default set of 4 loans here
+		throw new Error('No loans returned');
+	}
+}
+
+async function redirectToUrl(type, cache, req, res) {
+	const { id, offset } = req.params;
+	if (isNumeric(id) && isNumeric(offset)) {
+		try {
+			const loanData = await fetchRecommendedLoans(type, id, cache);
+			const offsetLoanId = loanData[offset - 1].id;
+			res.redirect(302, `/lend/${offsetLoanId}`);
+		} catch (err) {
+			log(`Error redirecting to url, ${err}`, 'error');
+			res.redirect(302, '/lend-by-category/');
+		}
+	} else {
+		res.status(400).send('Invalid Parameters');
+	}
+}
+
+async function serveImg(type, cache, req, res) {
+	const { id, offset } = req.params;
+	if (isNumeric(id) && isNumeric(offset)) {
+		try {
+			const loanData = await fetchRecommendedLoans(type, id, cache);
+			const loan = loanData[offset - 1];
+
+			let loanImg;
+			const cachedLoanImg = await memJsUtils.getFromCache(`loan-card-img-${loan.id}`, cache);
+			if (cachedLoanImg) {
+				loanImg = cachedLoanImg;
+			} else {
+				loanImg = await drawLoanCard(loan);
+				const expires = 10 * 60; // 10 minutes
+				await memJsUtils.setToCache(`loan-card-img-${loan.id}`, loanImg, expires, cache);
+			}
+
+			res.contentType('image/jpeg');
+			res.send(loanImg);
+		} catch (err) {
+			log(`Error serving image, ${err}`, 'error');
+			res.sendStatus(500);
+		}
+	} else {
+		res.status(400).send('Invalid Parameters');
+	}
 }
 
 module.exports = function liveLoanRouter(cache) {
 	const router = express.Router();
 
-	// URL Router
-	router.use('/u/:userId/url/:offset', async (req, res) => {
-		const { userId, offset } = req.params;
-		if (isNumeric(userId) && isNumeric(offset)) {
-			try {
-				const loanData = await fetchRecommendedLoans(userId, cache);
-				const offsetLoanId = loanData[offset - 1].id;
-				res.redirect(302, `/lend/${offsetLoanId}`);
-			} catch (err) {
-				console.error(err);
-				res.redirect(302, '/lend-by-category/');
-			}
-		} else {
-			res.status(400).send('Invalid Parameters');
-		}
+	// User URL Router
+	router.use('/u/:id/url/:offset', async (req, res) => {
+		await redirectToUrl('user', cache, req, res);
 	});
 
-	// IMG Router
-	router.use('/u/:userId/img/:offset', async (req, res) => {
-		const { userId, offset } = req.params;
-		if (isNumeric(userId) && isNumeric(offset)) {
-			try {
-				const loanData = await fetchRecommendedLoans(userId, cache);
-				const loan = loanData[offset - 1];
-				let loanImg;
-				const cachedLoanImg = await getFromCache(`loan-card-img-${loan.id}`, cache);
-				if (cachedLoanImg) {
-					loanImg = cachedLoanImg;
-				} else {
-					loanImg = await drawLoanCard(loan);
-					const expires = 10 * 60; // 10 minutes
-					await setToCache(`loan-card-img-${loan.id}`, loanImg, expires, cache);
-				}
-				res.contentType('image/jpeg');
-				res.send(loanImg);
-			} catch (err) {
-				console.error(err);
-				res.sendStatus(500);
-			}
-		} else {
-			res.status(400).send('Invalid Parameters');
-		}
+	// User IMG Router
+	router.use('/u/:id/img/:offset', async (req, res) => {
+		await serveImg('user', cache, req, res);
+	});
+
+	// Loan-to-loan URL Router
+	router.use('/l/:id/url/:offset', async (req, res) => {
+		await redirectToUrl('loan', cache, req, res);
+	});
+
+	// Loan-to-loan IMG Router
+	router.use('/l/:id/img/:offset', async (req, res) => {
+		await serveImg('loan', cache, req, res);
 	});
 
 	// 404 any /live-loan/* routes that don't match above
