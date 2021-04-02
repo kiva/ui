@@ -439,6 +439,7 @@ export default {
 			if (loginAfterSetupExpVersion === 'control') {
 				return client.query({
 					query: authenticationQuery,
+					fetchPolicy: 'network-only',
 				}).then(({ data }) => {
 					if (!data.my) {
 						throw new Error('api.authenticationRequired');
@@ -452,7 +453,7 @@ export default {
 					// Auth error will be caught here, redirect to login.
 					return Promise.reject({
 						path: '/ui-login',
-						query: { doneUrl: route.fullPath }
+						query: { force: true, doneUrl: route.fullPath }
 					});
 				});
 			}
