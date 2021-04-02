@@ -115,7 +115,8 @@ module.exports = function authRouter(config = {}) {
 				console.log(JSON.stringify({
 					meta: {},
 					level: 'log',
-					message: `LoginUI: auth error, session id:${req.sessionID}, error:${authErr}`
+					// eslint-disable-next-line max-len
+					message: `LoginUI: auth error, session id:${req.sessionID}, error: ${authErr}, user: ${JSON.stringify(user)}, info: ${JSON.stringify(info)}`,
 				}));
 				return next(authErr);
 			}
