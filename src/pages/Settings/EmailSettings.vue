@@ -34,6 +34,7 @@
 					</template>
 				</kv-settings-card>
 			</div>
+
 			<div class="row">
 				<!-- General Settings -->
 				<kv-settings-card
@@ -77,14 +78,7 @@
 									Send a monthly digest
 								</option>
 							</kv-dropdown-rounded>
-							<!-- TODO Implement Service Worker for push notifications -->
-							<!-- When repaymentUpdates == 'none' this should be hidden -->
-							<!-- <div class="input-wrapper nested">
-								<input id="push-repayment-updates-input" type="checkbox">
-								<label for="push-repayment-updates-input">
-									Receive notifications on this device
-								</label>
-							</div> -->
+
 							<label for="autolend-updates-input">Autolending notifications</label>
 							<kv-dropdown-rounded
 								id="autolend-updates-input"
@@ -308,6 +302,7 @@ import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
@@ -573,6 +568,14 @@ export default {
 
 				// globalUnsubscribed is false, fire mutation with itemized subscribe settings
 				if (!this.form.globalUnsubscribed) {
+					// remove name property from team frequencies
+					const cleanedTeamFrequencies = this.form.teamMessageFrequencies.map(teamValue => {
+						return {
+							teamId: teamValue.teamId,
+							frequency: teamValue.frequency
+						};
+					});
+
 					const updateCommunicationSettings = this.apollo.mutate({
 						mutation: gql`
 							mutation updateCommunicationSettings(
@@ -630,7 +633,7 @@ export default {
 							networkTransactions: this.form.networkTransactions,
 							networkDigest: this.form.networkDigest,
 							trusteeNews: this.form.trusteeNews,
-							teamMessageFrequencies: this.form.teamMessageFrequencies
+							teamMessageFrequencies: cleanedTeamFrequencies
 						},
 						awaitRefetchQueries: true,
 						refetchQueries: [{ query: pageQuery }],
@@ -645,6 +648,7 @@ export default {
 				}
 				this.$showTipMsg('Your email settings have been saved');
 			} catch (err) {
+				console.log(err);
 				this.$showTipMsg('There was a problem saving your settings', 'error');
 			} finally {
 				this.isProcessing = false;
@@ -658,12 +662,17 @@ export default {
 @import "settings";
 
 .email-settings {
-	.row:last-child {
+	form .row:last-child {
 		margin-bottom: 3rem;
 	}
 
-	&__per-team-prefs {
+	&__per-team-prefs,
+	&__notifications {
 		margin-left: 1rem;
+	}
+
+	&__notifications {
+		margin-bottom: 0.75rem;
 	}
 
 	&__reset-button {
