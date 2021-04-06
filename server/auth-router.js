@@ -115,9 +115,20 @@ module.exports = function authRouter(config = {}) {
 				console.log(JSON.stringify({
 					meta: {},
 					level: 'log',
-					// eslint-disable-next-line max-len
-					message: `LoginUI: auth error, session id:${req.sessionID}, error: ${authErr}, user: ${JSON.stringify(user)}, info: ${JSON.stringify(info)}`,
+					message: `LoginUI: auth error, session id:${req.sessionID}, error: ${authErr}`,
 				}));
+
+				const { profileRetried } = req.session;
+				delete req.session.profileRetried;
+				if (!profileRetried && authErr.message === 'failed to fetch user profile') {
+					// This may be a guest user who just gave us their name. For some reason, that
+					// always results in the profile failing to be fetched on the first redirect
+					// back to the ui-server after the guest logged in (see GROW-556). The issue seems to
+					// resolve itself once a new authorization request is made, so that's what we'll do for now.
+					req.session.profileRetried = true;
+					return res.redirect('/ui-login');
+				}
+
 				return next(authErr);
 			}
 
