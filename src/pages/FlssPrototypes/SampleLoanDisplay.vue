@@ -19,7 +19,11 @@
 
 			<hr>
 
-			<section class="loan-categories section" id="flssLoanSection" ref="flssLoanSection">
+			<section
+				class="loan-categories section"
+				id="flssLoanSection"
+				ref="flssLoanSection"
+			>
 				<div class="row">
 					<div class="columns">
 						<h2 class="loan-categories__header text-center">
@@ -36,9 +40,7 @@
 						</h2>
 
 						<div class="loan-view-controls">
-							<flss-loan-filters
-								class="loan-view-controls__filters"
-							/>
+							<flss-loan-filters class="loan-view-controls__filters" />
 						</div>
 
 						<flss-loan-row
@@ -74,7 +76,6 @@
 							@add-to-basket="handleAddToBasket"
 							@update-total-count="setTotalCount"
 							@show-loan-details="showLoanDetails"
-
 							@reset-loan-filters="handleResetLoanFilters"
 						/>
 					</div>
@@ -93,7 +94,9 @@ import numeral from 'numeral';
 import { indexIn } from '@/util/comparators';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
-import LoanSearchFilters, { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
+import LoanSearchFilters, {
+	getSearchableFilters,
+} from '@/api/fixtures/LoanSearchFilters';
 import syncDate from '@/util/syncDate';
 import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -102,200 +105,204 @@ import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationT
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 // import LoanCardController from '@/components/LoanCards/LoanCardController';
 
-const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
+const pageQuery = gql`
+  query pageContent($basketId: String!, $contentKey: String) {
     contentful {
-        entries(contentType: "page", contentKey: $contentKey)
+      entries(contentType: "page", contentKey: $contentKey)
     }
     shop(basketId: $basketId) {
+      id
+      basket {
         id
-        basket {
+        hasFreeCredits
+        items {
+          totalCount
+          values {
             id
-            hasFreeCredits
-            items {
-                totalCount
-                values {
-                    id
-                    basketItemType
-                }
-            }
-            credits {
-                values {
-                    id
-                    applied
-                    available
-                    creditType
-                    promoFund {
-                        id
-                    }
-                }
-            }
+            basketItemType
+          }
         }
-        lendingRewardOffered
+        credits {
+          values {
+            id
+            applied
+            available
+            creditType
+            promoFund {
+              id
+            }
+          }
+        }
+      }
+      lendingRewardOffered
     }
     my {
-        userAccount {
-            id
-        }
+      userAccount {
+        id
+      }
     }
-}`;
+  }
+`;
 
 // Query to gather credits and promo id from latest basket state
-const basketItemsQuery = gql`query basketItemsQuery(
-    $basketId: String!,
-) {
+const basketItemsQuery = gql`
+  query basketItemsQuery($basketId: String!) {
     shop(basketId: $basketId) {
+      id
+      nonTrivialItemCount
+      basket {
         id
-        nonTrivialItemCount
-        basket {
+        hasFreeCredits
+        items {
+          totalCount
+          values {
+            basketItemType
+            creditsUsed {
+              amount
+              applied
+              available
+              creditType
+              id
+              promoFund {
+                id
+                displayName
+                displayDescription
+              }
+            }
             id
-            hasFreeCredits
-            items {
-                totalCount
-                values {
-                    basketItemType
-                    creditsUsed {
-                        amount
-                        applied
-                        available
-                        creditType
-                        id
-                        promoFund {
-                            id
-                            displayName
-                            displayDescription
-                        }
-                    }
-                    id
-                    price
-                    ... on LoanReservation {
-                        expiryTime
-                        isEndingSoon
-                        donateRepayments
-                        loan {
-                            id
-                            name
-                            use
-                            status
-                            matchingText
-                            loanAmount
-                            plannedExpirationDate
-                            sector {
-                                id
-                                name
-                            }
-                            activity {
-                                id
-                                name
-                            }
-                            geocode {
-                                country {
-                                    name
-                                    isoCode
-                                }
-                            }
-                            loanFundraisingInfo {
-                                isExpiringSoon
-                                fundedAmount
-                                reservedAmount
-                            }
-                            image {
-                                id
-                                url: url (presetSize: loan_thumbnail)
-                                url_2x: url (presetSize: loan_thumbnail_retina)
-                            }
-                            ... on LoanDirect {
-                                sponsor_name: trusteeName
-                            }
-                            ... on LoanPartner {
-                                sponsor_name: partnerName
-                            }
-                        }
-                        team {
-                            id
-                            name
-                        }
-                    }
-                    ... on Donation {
-                        isTip
-                        isUserEdited
-                    }
-                    ... on KivaCard {
-                        id
-                        price
-                        idsInGroup
-                        quantity
-                        individualPrice
-                        kivaCardObject {
-                            deliveryType
-                            recipient {
-                                name
-                                email
-                                scheduledDeliveryDate
-                            }
-                            mailingInfo {
-                                firstName
-                                lastName
-                                address
-                                city
-                                state
-                                zip
-                            }
-                        }
-                    }
+            price
+            ... on LoanReservation {
+              expiryTime
+              isEndingSoon
+              donateRepayments
+              loan {
+                id
+                name
+                use
+                status
+                matchingText
+                loanAmount
+                plannedExpirationDate
+                sector {
+                  id
+                  name
                 }
-            }
-            credits {
-                values {
-                    id
-                    applied
-                    available
-                    creditType
-                    promoFund {
-                        id
-                        displayName
-                        displayDescription
-                    }
+                activity {
+                  id
+                  name
                 }
+                geocode {
+                  country {
+                    name
+                    isoCode
+                  }
+                }
+                loanFundraisingInfo {
+                  isExpiringSoon
+                  fundedAmount
+                  reservedAmount
+                }
+                image {
+                  id
+                  url: url(presetSize: loan_thumbnail)
+                  url_2x: url(presetSize: loan_thumbnail_retina)
+                }
+                ... on LoanDirect {
+                  sponsor_name: trusteeName
+                }
+                ... on LoanPartner {
+                  sponsor_name: partnerName
+                }
+              }
+              team {
+                id
+                name
+              }
             }
-            totals {
-                bonusAppliedTotal
-                bonusAvailableTotal
-                creditAmountNeeded
-                creditAppliedTotal
-                creditAvailableTotal
-                donationTotal
-                itemTotal
-                freeTrialAppliedTotal
-                freeTrialAvailableTotal
-                kivaCardTotal
-                kivaCreditAvailableTotal
-                kivaCreditAppliedTotal
-                kivaCreditRemaining
-                kivaCreditToReapply
-                loanReservationTotal
-                redemptionCodeAppliedTotal
-                redemptionCodeAvailableTotal
-                universalCodeAppliedTotal
-                universalCodeAvailableTotal
+            ... on Donation {
+              isTip
+              isUserEdited
             }
+            ... on KivaCard {
+              id
+              price
+              idsInGroup
+              quantity
+              individualPrice
+              kivaCardObject {
+                deliveryType
+                recipient {
+                  name
+                  email
+                  scheduledDeliveryDate
+                }
+                mailingInfo {
+                  firstName
+                  lastName
+                  address
+                  city
+                  state
+                  zip
+                }
+              }
+            }
+          }
         }
+        credits {
+          values {
+            id
+            applied
+            available
+            creditType
+            promoFund {
+              id
+              displayName
+              displayDescription
+            }
+          }
+        }
+        totals {
+          bonusAppliedTotal
+          bonusAvailableTotal
+          creditAmountNeeded
+          creditAppliedTotal
+          creditAvailableTotal
+          donationTotal
+          itemTotal
+          freeTrialAppliedTotal
+          freeTrialAvailableTotal
+          kivaCardTotal
+          kivaCreditAvailableTotal
+          kivaCreditAppliedTotal
+          kivaCreditRemaining
+          kivaCreditToReapply
+          loanReservationTotal
+          redemptionCodeAppliedTotal
+          redemptionCodeAvailableTotal
+          universalCodeAppliedTotal
+          universalCodeAvailableTotal
+        }
+      }
     }
-}`;
+  }
+`;
 
 // Query to gather user Teams
-const myTeamsQuery = gql`query myTeamsQuery {
+const myTeamsQuery = gql`
+  query myTeamsQuery {
     my {
-        lender {
+      lender {
+        id
+        teams(limit: 100) {
+          values {
             id
-            teams(limit: 100) {
-                values {
-                    id
-                    name
-                }
-            }
+            name
+          }
         }
+      }
     }
-}`;
+  }
+`;
 
 export default {
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
@@ -317,29 +324,27 @@ export default {
 		// LoanCardController,
 		// WwwPageCorporate,
 	},
-	mixins: [
-		checkoutUtils
-	],
+	mixins: [checkoutUtils],
 	props: {
 		dynamicRoute: {
 			type: String,
-			default: ''
+			default: '',
 		},
 		formComplete: {
 			type: String,
-			default: ''
+			default: '',
 		},
 		lendingReward: {
 			type: String,
-			default: ''
+			default: '',
 		},
 		promoCode: {
 			type: String,
-			default: ''
+			default: '',
 		},
 		upc: {
 			type: String,
-			default: ''
+			default: '',
 		},
 	},
 	data() {
@@ -423,9 +428,11 @@ export default {
 			this.initialBasketCredits = data.shop?.basket?.credits?.values ?? [];
 
 			const basketItems = data.shop?.basket?.items?.values ?? [];
-			this.itemsInBasket = basketItems.length ? basketItems.map(item => item.id) : [];
+			this.itemsInBasket = basketItems.length
+				? basketItems.map(item => item.id)
+				: [];
 			this.isVisitor = !data.my?.userAccount?.id ?? true;
-		}
+		},
 	},
 	created() {
 		// extract query
@@ -435,7 +442,8 @@ export default {
 
 		// show a loading screen if the page loads with an loan in the basket.
 		const basketItems = this.rawPageData.shop?.basket?.items?.values ?? [];
-		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
+		// eslint-disable-next-line no-underscore-dangle
+		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation');
 	},
 	mounted() {
 		// check for applied promo
@@ -470,16 +478,19 @@ export default {
 					this.$router.push(this.adjustRouteHash('')).catch(() => {});
 				});
 			}
-		}
+		},
 	},
 	computed: {
 		pageSettingData() {
 			const settings = this.pageData?.page?.settings ?? [];
 			const jsonDataArray = settings.map(setting => setting.dataObject || {});
 			/* eslint-disable-next-line no-unused-vars, no-empty-pattern */
-			const allJsonData = jsonDataArray.reduce((accumulator, settingDataObject) => {
-				return { ...accumulator, ...settingDataObject };
-			}, {});
+			const allJsonData = jsonDataArray.reduce(
+				(accumulator, settingDataObject) => {
+					return { ...accumulator, ...settingDataObject };
+				},
+				{}
+			);
 			return allJsonData;
 		},
 		pageTitle() {
@@ -504,10 +515,17 @@ export default {
 			return '0';
 		},
 		prioritizedBasketCredits() {
-			const basketCredits = this.basketCredits.length ? this.basketCredits : this.initialBasketCredits;
+			const basketCredits = this.basketCredits.length
+				? this.basketCredits
+				: this.initialBasketCredits;
 			if (!basketCredits.length) return basketCredits;
 			// establish precedence for credit types
-			const sortBy = ['universal_code', 'redemption_code', 'bonus_credit', 'kiva_credit'];
+			const sortBy = [
+				'universal_code',
+				'redemption_code',
+				'bonus_credit',
+				'kiva_credit',
+			];
 			// copy and sort the credits
 			const creditsArrayCopy = basketCredits.map(credit => credit);
 			creditsArrayCopy.sort(indexIn(sortBy, 'creditType'));
@@ -527,14 +545,17 @@ export default {
 			return null;
 		},
 		initialSortBy() {
-			return this.promoData?.managedAccount?.loanSearchCriteria?.sortBy ?? 'popularity';
+			return (
+				this.promoData?.managedAccount?.loanSearchCriteria?.sortBy
+        ?? 'popularity'
+			);
 		},
 		excludedTags() {
 			return this.pageSettingData?.excludedTags ?? []; // tags that we don't want to show in the filter lightbox
 		},
 		isActivelyLoggedIn() {
-			const lastLogin = (parseInt(this.lastActiveLogin, 10)) || 0;
-			if (lastLogin + (this.activeLoginDuration * 1000) > this.currentTime) {
+			const lastLogin = parseInt(this.lastActiveLogin, 10) || 0;
+			if (lastLogin + this.activeLoginDuration * 1000 > this.currentTime) {
 				return true;
 			}
 			return false;
@@ -552,7 +573,10 @@ export default {
 			return this.promoData?.promoFund?.displayName ?? null;
 		},
 		verificationRequired() {
-			if (this.promoData?.managedAccount?.isEmployee && this.promoData?.managedAccount?.formId) {
+			if (
+				this.promoData?.managedAccount?.isEmployee
+        && this.promoData?.managedAccount?.formId
+			) {
 				return true;
 			}
 			return false;
@@ -582,7 +606,8 @@ export default {
 			return this.promoData?.promoGroup?.teamId ?? null;
 		},
 		flssLogoUrl() {
-			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.media?.[0]?.file?.url;
+			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.media?.[0]
+				?.file?.url;
 		},
 		hideStatusBar() {
 			return this.pageSettingData?.hideStatusBar ?? false;
@@ -595,9 +620,11 @@ export default {
 		verifyOrApplyPromotion() {
 			// Always apply a promo if activating query params exist
 			const promoQueryKeys = ['upc', 'promoCode', 'lendingReward'];
-			const targetParams = Object.keys(this.$route.query).filter(targetKey => {
-				return promoQueryKeys.includes(targetKey);
-			});
+			const targetParams = Object.keys(this.$route.query).filter(
+				targetKey => {
+					return promoQueryKeys.includes(targetKey);
+				}
+			);
 			if (targetParams.length) {
 				// apply promo
 				this.applyPromotion();
@@ -605,7 +632,11 @@ export default {
 				// handle previously applied promo
 				// There may be some additional processing we can do on initialBasketCredits
 				// to further optimize and skip the first step
-			} else if (this.hasFreeCredits || this.lendingRewardOffered || this.isMatchingCampaign) {
+			} else if (
+				this.hasFreeCredits
+        || this.lendingRewardOffered
+        || this.isMatchingCampaign
+			) {
 				this.getPromoInformationFromBasket();
 
 				// handle no promo visit
@@ -620,85 +651,98 @@ export default {
 			// establish promotion state
 			const applyPromo = validateQueryParams(this.$route.query, this.apollo);
 			// handle applied promo state
-			applyPromo.then(result => {
-				// failed to apply promotion
-				if (result.errors) {
-					// This error might arise if the promo is already applied
-					// Store the error message here and handle visibility in getPromoInformationFromBasket
-					this.promoErrorMessage = result.errors[0].message;
-					this.promoApplied = false;
-				}
+			applyPromo
+				.then(result => {
+					// failed to apply promotion
+					if (result.errors) {
+						// This error might arise if the promo is already applied
+						// Store the error message here and handle visibility in getPromoInformationFromBasket
+						this.promoErrorMessage = result.errors[0].message;
+						this.promoApplied = false;
+					}
 
-				// gather promo info
-				this.getPromoInformationFromBasket();
-			}).catch(error => {
-				console.error(error);
-				this.promoErrorMessage = error;
-				this.loadingPromotion = false;
-				this.promoApplied = false;
-			});
+					// gather promo info
+					this.getPromoInformationFromBasket();
+				})
+				.catch(error => {
+					console.error(error);
+					this.promoErrorMessage = error;
+					this.loadingPromotion = false;
+					this.promoApplied = false;
+				});
 		},
 		getPromoInformationFromBasket() {
 			const basketItems = this.apollo.query({
 				fetchPolicy: 'network-only',
 				query: basketItemsQuery,
 				variables: {
-					basketId: this.cookieStore.get('kvbskt')
-				}
+					basketId: this.cookieStore.get('kvbskt'),
+				},
 			});
 
 			// Handling for patched in basket credits
 			// TODO Extract as utility to get promo id from basket credits
-			basketItems.then(({ data }) => {
-				// console.log(data);
-				// TODO: Handle success state (transition to checkout view, fallback to tipmsg)
-				if (typeof data.shop === 'undefined') {
-					console.error('missing shop basket');
-					return false;
-				}
-
-				// Validate baseline promo + basket state (1 loan, 1 credit, 0 donation)
-				this.validatePromoBasketState(data);
-				const basketItemValues = data.shop?.basket?.items?.values ?? [];
-				this.itemsInBasket = basketItemValues.length ? basketItemValues.map(item => item.id) : [];
-
-				this.basketCredits = data.shop?.basket?.credits?.values || [];
-
-				// Primary PromoCampaign Query
-				// > Previously > Future usage will not require the promoFundId relying only on the basket id
-				// > Currently > Providing the Promo Id can help differentiate between existing credits on the baskset
-				// Override promoFundId if provided in contentful setting
-				const targetPromoId = this.pageSettingData?.promoFundId
-                    ?? (this.prioritizedTargetCampaignCredit?.promoFund?.id ?? null);
-				return getPromoFromBasket(targetPromoId, this.apollo);
-			}).then(response => {
-				// Verify that applied promotion is for current page
-				if (this.verifyPromoMatchesPageId(response.data?.shop?.promoCampaign?.managedAccount?.pageId)) {
-					this.promoData = response.data?.shop?.promoCampaign;
-					// if this promo credit is already applied and matches we can clear the error
-					if (this.prioritizedTargetCampaignCredit?.promoFund?.id
-                        === response.data?.shop?.promoCampaign?.promoFund?.id) {
-						this.promoApplied = true;
-						this.promoErrorMessage = null;
+			basketItems
+				.then(({ data }) => {
+					// console.log(data);
+					// TODO: Handle success state (transition to checkout view, fallback to tipmsg)
+					if (typeof data.shop === 'undefined') {
+						console.error('missing shop basket');
+						return false;
 					}
-				} else if (this.isMatchingCampaign) {
-					this.promoApplied = true;
-				} else {
-					// Handle response and any potential errors
-					// > this reveals and prior error messages from the promo application
-					this.promoApplied = false;
-				}
 
-				this.loadingPromotion = false;
+					// Validate baseline promo + basket state (1 loan, 1 credit, 0 donation)
+					this.validatePromoBasketState(data);
+					const basketItemValues = data.shop?.basket?.items?.values ?? [];
+					this.itemsInBasket = basketItemValues.length
+						? basketItemValues.map(item => item.id)
+						: [];
 
-				this.setInitialFilters();
+					this.basketCredits = data.shop?.basket?.credits?.values || [];
 
-				this.showLoans = true;
+					// Primary PromoCampaign Query
+					// > Previously > Future usage will not require the promoFundId relying only on the basket id
+					// > Currently > Providing the Promo Id helps differentiate between existing credits in the basket
+					// Override promoFundId if provided in contentful setting
+					const targetPromoId = this.pageSettingData?.promoFundId
+            ?? this.prioritizedTargetCampaignCredit?.promoFund?.id
+            ?? null;
+					return getPromoFromBasket(targetPromoId, this.apollo);
+				})
+				.then(response => {
+					// Verify that applied promotion is for current page
+					if (
+						this.verifyPromoMatchesPageId(
+							response.data?.shop?.promoCampaign?.managedAccount?.pageId
+						)
+					) {
+						this.promoData = response.data?.shop?.promoCampaign;
+						// if this promo credit is already applied and matches we can clear the error
+						if (
+							this.prioritizedTargetCampaignCredit?.promoFund?.id
+              === response.data?.shop?.promoCampaign?.promoFund?.id
+						) {
+							this.promoApplied = true;
+							this.promoErrorMessage = null;
+						}
+					} else if (this.isMatchingCampaign) {
+						this.promoApplied = true;
+					} else {
+						// Handle response and any potential errors
+						// > this reveals and prior error messages from the promo application
+						this.promoApplied = false;
+					}
 
-				this.setAuthStatus(this.kvAuth0?.user);
+					this.loadingPromotion = false;
 
-				this.updateBasketState();
-			});
+					this.setInitialFilters();
+
+					this.showLoans = true;
+
+					this.setAuthStatus(this.kvAuth0?.user);
+
+					this.updateBasketState();
+				});
 		},
 		setInitialFilters() {
 			// initialize filter object
@@ -720,7 +764,11 @@ export default {
 				matcherAccounts = [matcherAccounts];
 			}
 			// apply matcherAccounts array if present
-			if (this.useMatcherAccountIds && matcherAccounts && matcherAccounts.length) {
+			if (
+				this.useMatcherAccountIds
+        && matcherAccounts
+        && matcherAccounts.length
+			) {
 				baseFilters.matcherAccountId = matcherAccounts;
 			}
 
@@ -756,7 +804,7 @@ export default {
 			const basketItems = this.apollo.query({
 				query: basketItemsQuery,
 				variables: {
-					basketId: this.cookieStore.get('kvbskt')
+					basketId: this.cookieStore.get('kvbskt'),
 				},
 				fetchPolicy: 'network-only',
 			});
@@ -764,7 +812,9 @@ export default {
 				// Validate baseline promo + basket state (1 loan, 1 credit, 0 donation)
 				this.validatePromoBasketState(data);
 				const basketItemValues = data.shop?.basket?.items?.values ?? [];
-				this.itemsInBasket = basketItemValues.length ? basketItemValues.map(item => item.id) : [];
+				this.itemsInBasket = basketItemValues.length
+					? basketItemValues.map(item => item.id)
+					: [];
 
 				this.basketCredits = data.shop?.basket?.credits?.values ?? [];
 			});
@@ -781,7 +831,7 @@ export default {
 				creditAppliedTotal,
 				donationTotal,
 				itemTotal,
-				loanReservationTotal
+				loanReservationTotal,
 			} = this.basketTotals;
 
 			let simpleCheckoutRestrictedMessage = '';
@@ -797,15 +847,23 @@ export default {
 
 			// TODO: Refine and document narrow in-context checkout conditions
 			// TODO: Handle complex checkout scenarios
-			if (numeral(creditAppliedTotal).value() !== numeral(loanReservationTotal).value()) {
+			if (
+				numeral(creditAppliedTotal).value()
+        !== numeral(loanReservationTotal).value()
+			) {
 				simpleCheckoutRestrictedMessage = 'Promo Credit applied does not match loan reservation total';
 			}
 
-			if (numeral(itemTotal).value() !== numeral(loanReservationTotal).value()) {
+			if (
+				numeral(itemTotal).value() !== numeral(loanReservationTotal).value()
+			) {
 				simpleCheckoutRestrictedMessage = 'Item total does not match loan reservation total';
 			}
 
-			if (numeral(creditAvailableTotal).value() !== numeral(loanReservationTotal).value()) {
+			if (
+				numeral(creditAvailableTotal).value()
+        !== numeral(loanReservationTotal).value()
+			) {
 				simpleCheckoutRestrictedMessage = 'Credit available total does not match loan reservation total.';
 			}
 
@@ -843,9 +901,11 @@ export default {
 
 					// signify checkout is ready
 					this.handleBasketValidation();
-				}).catch(errorResponse => {
+				})
+				.catch(errorResponse => {
 					console.error(errorResponse);
-				}).finally(() => {
+				})
+				.finally(() => {
 					this.loadingPage = false;
 				});
 		},
@@ -853,16 +913,16 @@ export default {
 			// check for verification form requirement
 			if (
 				this.isActivelyLoggedIn
-                && this.verificationRequired
-                && this.externalFormId
-                && !this.verificationSumbitted
+        && this.verificationRequired
+        && this.externalFormId
+        && !this.verificationSumbitted
 			) {
 				this.showVerification = true;
 			} else if (
 				this.basketLoans.length
-                && this.isActivelyLoggedIn
-                && this.teamId
-                && !this.teamJoinStatus
+        && this.isActivelyLoggedIn
+        && this.teamId
+        && !this.teamJoinStatus
 			) {
 				// check for team join optionality
 				this.showTeamForm = true;
@@ -891,18 +951,33 @@ export default {
 			this.transactionId = payload.transactionId;
 			this.showThanks = true;
 			this.checkoutVisible = false;
-			trackTransactionEvent(payload.transactionId, this.apollo, this.cookieStore);
+			trackTransactionEvent(
+				payload.transactionId,
+				this.apollo,
+				this.cookieStore
+			);
 			// establish a new basket
-			this.apollo.mutate({
-				mutation: gql`mutation createNewBasketForUser { shop { id createBasket } }`,
-			}).then(({ data }) => {
-				// extract new basket id
-				const newBasketId = data.shop?.createBasket ?? null;
-				if (newBasketId) {
-					this.cookieStore.set('kvbskt', encodeURIComponent(newBasketId), { secure: true });
-					this.updateBasketState();
-				}
-			});
+			this.apollo
+				.mutate({
+					mutation: gql`
+            mutation createNewBasketForUser {
+              shop {
+                id
+                createBasket
+              }
+            }
+          `,
+				})
+				.then(({ data }) => {
+					// extract new basket id
+					const newBasketId = data.shop?.createBasket ?? null;
+					if (newBasketId) {
+						this.cookieStore.set('kvbskt', encodeURIComponent(newBasketId), {
+							secure: true,
+						});
+						this.updateBasketState();
+					}
+				});
 		},
 		thanksLightboxClosed() {
 			// Consdier closing the lightbox
@@ -921,13 +996,15 @@ export default {
 			this.fetchMyTeams();
 		},
 		fetchMyTeams() {
-			this.apollo.query({
-				fetchPolicy: 'network-only',
-				query: myTeamsQuery
-			}).then(({ data }) => {
-				this.myTeams = data.my?.lender?.teams?.values ?? [];
-				this.addTeamToLoans();
-			});
+			this.apollo
+				.query({
+					fetchPolicy: 'network-only',
+					query: myTeamsQuery,
+				})
+				.then(({ data }) => {
+					this.myTeams = data.my?.lender?.teams?.values ?? [];
+					this.addTeamToLoans();
+				});
 		},
 		addTeamToLoans() {
 			if (this.basketLoans.length && this.teamId) {
@@ -938,8 +1015,8 @@ export default {
 						mutation: updateLoanReservationTeam,
 						variables: {
 							teamId: this.teamId,
-							loanid: loan.id
-						}
+							loanid: loan.id,
+						},
 					});
 				});
 				Promise.all(loans).then(() => {
@@ -959,7 +1036,9 @@ export default {
 		},
 		checkInitialFiltersAgainstAppliedFilters() {
 			// check that initial filters match what is currently applied
-			if (JSON.stringify(this.initialFilters) === JSON.stringify(this.filters)) {
+			if (
+				JSON.stringify(this.initialFilters) === JSON.stringify(this.filters)
+			) {
 				return true;
 			}
 			return false;
@@ -995,7 +1074,11 @@ export default {
 
 			// if this is a matching account and the original filters were used
 			// we need to remove the matcherAccountId from the query to show loans
-			if (payload === 0 && this.isMatchingCampaign && this.checkInitialFiltersAgainstAppliedFilters()) {
+			if (
+				payload === 0
+        && this.isMatchingCampaign
+        && this.checkInitialFiltersAgainstAppliedFilters()
+			) {
 				this.useMatcherAccountIds = false;
 				this.setInitialFilters();
 			}
@@ -1003,7 +1086,7 @@ export default {
 		showLoanDetails(loan) {
 			this.detailedLoan = loan;
 			this.loanDetailsVisible = true;
-		}
+		},
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
@@ -1025,7 +1108,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import "settings";
 
 .flss-landing {
 	&__status {
@@ -1126,26 +1209,26 @@ export default {
 }
 
 .loan-view-controls {
- display: flex;
- justify-content: space-between;
- align-items: baseline;
- flex-direction: column;
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	flex-direction: column;
 
- @include breakpoint(medium) {
-     flex-direction: row;
-     margin: 0 1rem;
- }
- @include breakpoint(large) {
-     margin: 0 3rem;
- }
+	@include breakpoint(medium) {
+		flex-direction: row;
+		margin: 0 1rem;
+	}
+	@include breakpoint(large) {
+		margin: 0 3rem;
+	}
 
- &__filters {
-     margin-bottom: 1rem;
+	&__filters {
+		margin-bottom: 1rem;
 
-     @include breakpoint(medium) {
-         margin-bottom: 0;
-     }
- }
+		@include breakpoint(medium) {
+			margin-bottom: 0;
+		}
+	}
 }
 
 #campaignLoanSection {
@@ -1155,5 +1238,4 @@ export default {
 		scroll-margin-top: rem-calc(116);
 	}
 }
-
 </style>
