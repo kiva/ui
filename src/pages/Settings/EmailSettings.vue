@@ -296,13 +296,13 @@
 <script>
 // import * as Sentry from "@sentry/browser";
 import gql from 'graphql-tag';
+import logFormatter from '@/util/logFormatter';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
@@ -647,8 +647,8 @@ export default {
 					}
 				}
 				this.$showTipMsg('Your email settings have been saved');
-			} catch (err) {
-				console.log(err);
+			} catch (error) {
+				logFormatter(error, 'error');
 				this.$showTipMsg('There was a problem saving your settings', 'error');
 			} finally {
 				this.isProcessing = false;
