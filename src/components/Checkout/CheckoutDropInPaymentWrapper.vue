@@ -171,6 +171,7 @@ export default {
 							const loginHint = encodeURIComponent(
 								`login|${JSON.stringify({
 									msg: 're-auth-acc-exists',
+									guest: true,
 								})}`
 							);
 							window.location = `/ui-login?force=true&doneUrl=/checkout&login_hint=${loginHint}`;
