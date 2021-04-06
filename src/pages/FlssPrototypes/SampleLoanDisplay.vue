@@ -102,7 +102,6 @@ import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationT
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 // import LoanCardController from '@/components/LoanCards/LoanCardController';
 
-
 const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
     contentful {
         entries(contentType: "page", contentKey: $contentKey)
