@@ -79,6 +79,11 @@
 								</option>
 							</kv-dropdown-rounded>
 
+							<push-repayment-updates
+								class="email-settings__notifications"
+								v-show="form.repaymentUpdates !== 'none'"
+							/>
+
 							<label for="autolend-updates-input">Autolending notifications</label>
 							<kv-dropdown-rounded
 								id="autolend-updates-input"
@@ -303,6 +308,7 @@ import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import PushRepaymentUpdates from '@/components/Settings/PushRepaymentUpdates';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
@@ -373,6 +379,7 @@ export default {
 		KvDropdownRounded,
 		KvLoadingSpinner,
 		KvSettingsCard,
+		PushRepaymentUpdates,
 		TheMyKivaSecondaryMenu,
 		WwwPage,
 	},
