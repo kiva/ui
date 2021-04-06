@@ -79,6 +79,10 @@ module.exports = function authRouter(config = {}) {
 		if (!cookies.kvu) {
 			options.login_hint = 'signUp';
 		}
+		if (req.query.forgot === 'true') {
+			options.prompt = 'login';
+			options.login_hint = 'forgotPassword';
+		}
 		if (req.query.login_hint) {
 			options.login_hint = req.query.login_hint;
 		}
