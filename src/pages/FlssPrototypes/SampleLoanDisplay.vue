@@ -1,29 +1,17 @@
 <template>
-	<www-page-corporate
+	<www-page-minimal
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
-		:corporate-logo-url="corporateLogoUrl"
+		:flss-logo-url="flssLogoUrl"
 	>
-		<div class="corporate-campaign-landing">
+		<div class="flss-landing">
 			<kv-loading-overlay
 				v-if="loadingPage"
-				class="corporate-campaign-landing__loading-page"
-			/>
-			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
-			<campaign-status
-				v-if="!hideStatusBar"
-				class="corporate-campaign-landing__status"
-				:is-matching="isMatchingCampaign"
-				:loading-promotion="loadingPromotion"
-				:promo-error-message="promoErrorMessage"
-				:promo-applied="promoApplied"
-				:promo-amount="promoAmount"
-				:promo-name="campaignPartnerName"
-				:status-message-override="statusMessageOverride"
+				class="flss-landing__loading-page"
 			/>
 
 			<!-- TODO: Alter CTA if Checkout is ready -->
-			<campaign-hero
+			<flss-hero
 				:hero-area-content="heroAreaContent"
 				@add-to-basket="handleAddToBasket"
 				@jump-to-loans="jumpToLoans"
@@ -31,40 +19,31 @@
 
 			<hr>
 
-			<section class="loan-categories section" id="campaignLoanSection" ref="campaignLoanSection">
+			<section class="loan-categories section" id="flssLoanSection" ref="flssLoanSection">
 				<div class="row">
 					<div class="columns">
 						<h2 class="loan-categories__header text-center">
 							Support causes you care about.
 
-							<!--PSD TODO switch to simple dropdown tailored queries -->
+							<!--PSD TODO switch to simple dropdown tailored queries-->
 
-							<!--PSD HOWTO pass queries to dev graphql endpoint -->
-							<!-- write a query via appollo here in the page? -->
+							<!--PSD HOWTO pass queries to dev graphql endpoint-->
+							<!-- write a query via appollo here in the page?-->
 
-							<!--PSD HOWTO pass loan ids from query to federation  -->
+							<!--PSD HOWTO pass loan ids from query to federation-->
 
-							<!--PSD placeholder page is /pages/FlssPrototypes -->
+							<!--PSD placeholder page is /pages/FlssPrototypes-->
 						</h2>
 
 						<div class="loan-view-controls">
-							<campaign-loan-filters
+							<flss-loan-filters
 								class="loan-view-controls__filters"
-								:applied-filters="filters"
-								:initial-filters="initialFilters"
-								:excluded-tags="excludedTags"
-								:initial-sort-by="initialSortBy"
-								:total-count="totalCount"
-								@updated-filters="handleUpdatedFilters"
-								@updated-sort-by="handleUpdatedSortBy"
-								@set-loan-display="handleLoanDisplayType"
-								@reset-loan-filters="handleResetLoanFilters"
 							/>
 						</div>
 
-						<campaign-loan-row
+						<flss-loan-row
 							v-show="showLoanRows"
-							id="campaignLoanRowDisplay"
+							id="flssLoanRowDisplay"
 							:filters="filters"
 							:is-visitor="isVisitor"
 							:items-in-basket="itemsInBasket"
@@ -81,9 +60,9 @@
 							@reset-loan-filters="handleResetLoanFilters"
 						/>
 
-						<campaign-loan-grid-display
+						<flss-loan-grid-display
 							v-show="!showLoanRows"
-							id="campaignLoanDisplay"
+							id="flssLoanDisplay"
 							ref="loandisplayref"
 							:checkout-visible="checkoutVisible || showThanks"
 							:filters="filters"
@@ -104,98 +83,10 @@
 
 			<hr>
 
-			<template v-if="partnerAreaContent">
-				<campaign-partner :partner-area-content="partnerAreaContent" />
-				<hr>
-			</template>
-
-			<campaign-how-kiva-works
-				:is-matching-campaign="isMatchingCampaign"
-			/>
-
-			<campaign-join-team-form
-				v-if="this.showTeamForm"
-				:campaign-name="campaignPartnerName"
-				:team-id="this.teamId"
-				:promo-id="this.promoFundId"
-				@team-process-complete="handleTeamJoinProcess"
-			/>
-
-			<campaign-verification-form
-				v-if="showVerification"
-				:form-id="externalFormId"
-				:ma-id="String(managedAccountId)"
-				:pf-id="String(promoFundId)"
-				:user-id="this.myId"
-				@verification-complete="verificationComplete"
-			/>
-
-			<kv-lightbox
-				class="loan-details-lightbox"
-				:visible="loanDetailsVisible"
-				:no-padding-top="true"
-				:no-padding-bottom="true"
-				:no-padding-sides="true"
-				@lightbox-closed="loanDetailsVisible = false"
-			>
-				<!-- taken from CategoryRowHOver -->
-				<loan-card-controller
-					v-if="detailedLoan"
-					class="campaign-loan-details"
-					loan-card-type="DetailedLoanCard"
-					:loan="detailedLoan"
-					:items-in-basket="itemsInBasket"
-					:enable-tracking="true"
-					:disable-redirects="true"
-					:is-visitor="isVisitor"
-					@add-to-basket="handleAddToBasket"
-				/>
-			</kv-lightbox>
-
-			<kv-lightbox
-				:prevent-close="preventLightboxClose"
-				:visible="checkoutVisible"
-				@lightbox-closed="checkoutLightboxClosed"
-				title="Checkout"
-			>
-				<in-context-checkout
-					class="campaign-checkout"
-					:is-actively-logged-in="isActivelyLoggedIn"
-					:loans="basketLoans"
-					:disable-redirects="true"
-					:donations="donations"
-					:kiva-cards="kivaCards"
-					:teams="myTeams"
-					:totals="basketTotals"
-					:show-donation="isMatchingCampaign"
-					:auto-redirect-to-thanks="false"
-					:promo-fund="promoFund"
-					@transaction-complete="transactionComplete"
-					@refresh-totals="refreshTotals"
-					ref="inContextCheckoutRef"
-				/>
-			</kv-lightbox>
-
-			<kv-lightbox
-				class="campaign-thanks"
-				:prevent-close="preventLightboxClose"
-				:visible="showThanks"
-				@lightbox-closed="thanksLightboxClosed"
-			>
-				<campaign-logo-group
-					class="campaign-thanks__logos"
-					:corporate-logo-url="corporateLogoUrl"
-					:style="`--logo-color: ${headerTheme.logoColor}`"
-				/>
-				<campaign-thanks
-					:transaction-id="transactionId"
-					:partner-content="partnerThanksContent"
-				/>
-			</kv-lightbox>
+			<hr>
 		</div>
-	</www-page-corporate>
+	</www-page-minimal>
 </template>
-
 <script>
 import gql from 'graphql-tag';
 import numeral from 'numeral';
@@ -208,22 +99,9 @@ import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
-import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
-import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
-import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
-import CampaignLoanGridDisplay from '@/components/CorporateCampaign/CampaignLoanGridDisplay';
-import CampaignLoanRow from '@/components/CorporateCampaign/CampaignLoanRow';
-import CampaignLoanFilters from '@/components/CorporateCampaign/LoanSearch/LoanSearchFilters';
-import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
-import CampaignPartner from '@/components/CorporateCampaign/CampaignPartner';
-import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
-import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
-import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
-import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
-import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
+// import LoanCardController from '@/components/LoanCards/LoanCardController';
+
 
 const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
     contentful {
@@ -423,22 +301,22 @@ const myTeamsQuery = gql`query myTeamsQuery {
 export default {
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	components: {
-		CampaignHero,
-		CampaignHowKivaWorks,
-		CampaignJoinTeamForm,
-		CampaignLoanGridDisplay,
-		CampaignLoanFilters,
-		CampaignLoanRow,
-		CampaignLogoGroup,
-		CampaignPartner,
-		CampaignStatus,
-		CampaignThanks,
-		CampaignVerificationForm,
-		InContextCheckout,
-		KvLightbox,
+		// CampaignHero,
+		// CampaignHowKivaWorks,
+		// CampaignJoinTeamForm,
+		// CampaignLoanGridDisplay,
+		// CampaignLoanFilters,
+		// CampaignLoanRow,
+		// CampaignLogoGroup,
+		// CampaignPartner,
+		// CampaignStatus,
+		// CampaignThanks,
+		// CampaignVerificationForm,
+		// InContextCheckout,
+		// KvLightbox,
 		KvLoadingOverlay,
-		LoanCardController,
-		WwwPageCorporate,
+		// LoanCardController,
+		// WwwPageCorporate,
 	},
 	mixins: [
 		checkoutUtils
@@ -704,7 +582,7 @@ export default {
 		teamId() {
 			return this.promoData?.promoGroup?.teamId ?? null;
 		},
-		corporateLogoUrl() {
+		flssLogoUrl() {
 			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.media?.[0]?.file?.url;
 		},
 		hideStatusBar() {
@@ -1150,133 +1028,133 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.corporate-campaign-landing {
-    &__status {
-        $header-height: rem-calc(45); // same as TheHeader.vue
-        $header-height-large: rem-calc(64); // same as TheHeader.vue
+.flss-landing {
+	&__status {
+		$header-height: rem-calc(45); // same as TheHeader.vue
+		$header-height-large: rem-calc(64); // same as TheHeader.vue
 
-        position: sticky;
-        top: $header-height;
-        z-index: 2;
+		position: sticky;
+		top: $header-height;
+		z-index: 2;
 
-        @include breakpoint(large) {
-            top: $header-height-large;
-        }
-    }
+		@include breakpoint(large) {
+			top: $header-height-large;
+		}
+	}
 
-    &__loading-page {
-        z-index: 1;
-    }
+	&__loading-page {
+		z-index: 1;
+	}
 }
 
 .loan-categories {
-    margin-top: 2rem;
+	margin-top: 2rem;
 
-    & .row {
-        max-width: 69.15rem;
-    }
+	& .row {
+		max-width: 69.15rem;
+	}
 
-    &__header {
-        font-weight: bold;
-        margin-bottom: 2rem;
+	&__header {
+		font-weight: bold;
+		margin-bottom: 2rem;
 
-        @include breakpoint(large) {
-            @include large-text();
-        }
-    }
+		@include breakpoint(large) {
+			@include large-text();
+		}
+	}
 }
 
-.campaign-checkout {
-    margin-top: 1rem;
+.flss-checkout {
+	margin-top: 1rem;
 
-    @include breakpoint(large) {
-        min-width: rem-calc(600);
-    }
+	@include breakpoint(large) {
+		min-width: rem-calc(600);
+	}
 }
 
-.campaign-thanks {
-    &__logos {
-        height: rem-calc(20);
-        margin-bottom: 2rem;
+.flss-thanks {
+	&__logos {
+		height: rem-calc(20);
+		margin-bottom: 2rem;
 
-        @include breakpoint(large) {
-            height: rem-calc(28);
-        }
-    }
+		@include breakpoint(large) {
+			height: rem-calc(28);
+		}
+	}
 }
 
 .loan-details-lightbox {
-    ::v-deep .kv-lightbox__header {
-        button.kv-lightbox__close-btn {
-            background: $white;
-            border-radius: 1.25rem;
-        }
-    }
+	::v-deep .kv-lightbox__header {
+		button.kv-lightbox__close-btn {
+			background: $white;
+			border-radius: 1.25rem;
+		}
+	}
 }
 
-.campaign-loan-details {
-    // Style overrides for the loan details lightbox content
-    // Note, styles inside DetailedLoanCard.vue are not scoped
-    border: 0;
+.flss-loan-details {
+	// Style overrides for the loan details lightbox content
+	// Note, styles inside DetailedLoanCard.vue are not scoped
+	border: 0;
 
-    &.detailed-loan-card.row {
-        max-width: 100%;
-        border: 0;
+	&.detailed-loan-card.row {
+		max-width: 100%;
+		border: 0;
 
-        @include breakpoint(xlarge) {
-            width: 58.75rem;
-        }
+		@include breakpoint(xlarge) {
+			width: 58.75rem;
+		}
 
-        ::v-deep {
-            .full-details-link,
-            .close-button-wrapper,
-            .info-panel a,
-            .borrower-info-body.loan-use a {
-                display: none;
-            }
+		::v-deep {
+			.full-details-link,
+			.close-button-wrapper,
+			.info-panel a,
+			.borrower-info-body.loan-use a {
+				display: none;
+			}
 
-            .name-location-sector .name {
-                text-decoration: none;
-                color: $body-font-color;
-                cursor: text;
-            }
-        }
-    }
+			.name-location-sector .name {
+				text-decoration: none;
+				color: $body-font-color;
+				cursor: text;
+			}
+		}
+	}
 
-    .overview-column {
-        margin-bottom: 1.5rem;
-    }
+	.overview-column {
+		margin-bottom: 1.5rem;
+	}
 }
 
-// .loan-view-controls {
-//  display: flex;
-//  justify-content: space-between;
-//  align-items: baseline;
-//  flex-direction: column;
+.loan-view-controls {
+ display: flex;
+ justify-content: space-between;
+ align-items: baseline;
+ flex-direction: column;
 
-//  @include breakpoint(medium) {
-//      flex-direction: row;
-//      margin: 0 1rem;
-//  }
-//  @include breakpoint(large) {
-//      margin: 0 3rem;
-//  }
+ @include breakpoint(medium) {
+     flex-direction: row;
+     margin: 0 1rem;
+ }
+ @include breakpoint(large) {
+     margin: 0 3rem;
+ }
 
-//  &__filters {
-//      margin-bottom: 1rem;
+ &__filters {
+     margin-bottom: 1rem;
 
-//      @include breakpoint(medium) {
-//          margin-bottom: 0;
-//      }
-//  }
-// }
+     @include breakpoint(medium) {
+         margin-bottom: 0;
+     }
+ }
+}
 
 #campaignLoanSection {
-    // ensure we scroll past the sticky header
-    scroll-margin-top: rem-calc(85);
-    @include breakpoint(large) {
-        scroll-margin-top: rem-calc(116);
-    }
+	// ensure we scroll past the sticky header
+	scroll-margin-top: rem-calc(85);
+	@include breakpoint(large) {
+		scroll-margin-top: rem-calc(116);
+	}
 }
 
 </style>
