@@ -2,7 +2,6 @@
 	<www-page-minimal
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
-		:flss-logo-url="flssLogoUrl"
 	>
 		<div class="flss-landing">
 			<kv-loading-overlay
@@ -11,11 +10,11 @@
 			/>
 
 			<!-- TODO: Alter CTA if Checkout is ready -->
-			<flss-hero
+			<!-- <flss-hero
 				:hero-area-content="heroAreaContent"
 				@add-to-basket="handleAddToBasket"
 				@jump-to-loans="jumpToLoans"
-			/>
+			/> -->
 
 			<hr>
 
@@ -54,23 +53,6 @@
 							:key="'one-category'"
 							:promo-only="promoOnlyQuery"
 							:row-number="1"
-							:show-loans="showLoans"
-							:sort-by="sortBy"
-							@add-to-basket="handleAddToBasket"
-							@update-total-count="setTotalCount"
-							@show-loan-details="showLoanDetails"
-							@reset-loan-filters="handleResetLoanFilters"
-						/>
-
-						<flss-loan-grid-display
-							v-show="!showLoanRows"
-							id="flssLoanDisplay"
-							ref="loandisplayref"
-							:checkout-visible="checkoutVisible || showThanks"
-							:filters="filters"
-							:is-visible="!showLoanRows"
-							:is-visitor="isVisitor"
-							:items-in-basket="itemsInBasket"
 							:show-loans="showLoans"
 							:sort-by="sortBy"
 							@add-to-basket="handleAddToBasket"
@@ -604,10 +586,6 @@ export default {
 		},
 		teamId() {
 			return this.promoData?.promoGroup?.teamId ?? null;
-		},
-		flssLogoUrl() {
-			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.media?.[0]
-				?.file?.url;
 		},
 		hideStatusBar() {
 			return this.pageSettingData?.hideStatusBar ?? false;
