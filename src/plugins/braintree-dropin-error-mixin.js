@@ -7,8 +7,6 @@ export default {
 			// eslint-disable-next-line max-len
 			const standardError = `There was an error processing your payment. Please try again. ${standardErrorCode}`;
 
-			// Payment method failed, unselect attempted payment method
-			this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
 			// Potential error message: 'Transaction failed. Please select a different payment method.';
 			this.$showTipMsg(standardError, 'error');
 

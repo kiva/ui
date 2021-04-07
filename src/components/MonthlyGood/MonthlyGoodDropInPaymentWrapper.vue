@@ -136,7 +136,8 @@ export default {
 						// Check for errors in transaction
 						if (kivaBraintreeResponse.errors) {
 							this.processBraintreeDropInError(this.action, kivaBraintreeResponse);
-
+							// Payment method failed, unselect attempted payment method
+							this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
 							// exit
 							return kivaBraintreeResponse;
 						}
@@ -177,7 +178,8 @@ export default {
 					// Check for errors in transaction
 					if (kivaBraintreeResponse.errors) {
 						this.processBraintreeDropInError(this.action, kivaBraintreeResponse);
-
+						// Payment method failed, unselect attempted payment method
+						this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
 						// exit
 						return kivaBraintreeResponse;
 					}
