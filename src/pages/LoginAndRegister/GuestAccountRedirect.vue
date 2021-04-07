@@ -34,8 +34,10 @@ export default {
 					return Promise.reject({
 						path: '/ui-login',
 						query: {
-							login_hint: 'login',
-							doneUrl: `${path}?${queryString}`,
+							loginHint: `login|${JSON.stringify({
+								guest: true,
+							})}`,
+							doneUrl: `${path}?${queryString}&login_hint=${query.loginHint}`,
 						},
 					});
 				}
