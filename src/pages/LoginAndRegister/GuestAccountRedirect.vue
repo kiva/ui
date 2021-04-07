@@ -37,7 +37,7 @@ export default {
 							loginHint: `login|${JSON.stringify({
 								guest: true,
 							})}`,
-							doneUrl: `${path}?${queryString}&login_hint=${query.loginHint}`,
+							doneUrl: `${path}?${queryString}`,
 						},
 					});
 				}
