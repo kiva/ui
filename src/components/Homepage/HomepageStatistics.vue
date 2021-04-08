@@ -21,7 +21,7 @@
 			<div
 				v-for="(statBlock, index) in statsBlockText"
 				:key="statBlock.key"
-				class="small-12 medium-4 columns"
+				class="small-12 medium-4 columns stat-block__block"
 			>
 				<kv-contentful-img
 					v-if="statBlock.image.url"
@@ -169,9 +169,16 @@ export default {
 		font-size: 4rem;
 		font-weight: 600;
 		line-height: rem-calc(73.6);
+		text-align: center;
+
+		@include breakpoint(large) {
+			text-align: left;
+		}
 	}
 
 	&__video-wrapper {
+		margin-top: 2.5rem;
+
 		&--video {
 			width: 100%;
 			border-radius: rem-calc(10);
@@ -181,6 +188,10 @@ export default {
 	.stat-block {
 		margin-top: rem-calc(40);
 
+		&__block {
+			margin-bottom: 1rem;
+		}
+
 		&__icon {
 			margin-bottom: rem-calc(20);
 		}
@@ -189,7 +200,6 @@ export default {
 			font-size: rem-calc(21);
 
 			&::v-deep i {
-				color: $kiva-green;
 				font-weight: bold;
 				font-style: normal;
 			}
