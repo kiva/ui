@@ -175,7 +175,7 @@
 				</p>
 			</div>
 
-			<homepage-statistics class="section"
+			<homepage-statistics
 				v-if="statisticsContentfulContentGroup"
 				:content="statisticsContentfulContentGroup"
 			/>
