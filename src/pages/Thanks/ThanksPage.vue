@@ -3,24 +3,25 @@
 		<div class="row page-content">
 			<div class="small-12 columns thanks">
 				<div class="thanks__checkout-steps-wrapper hide-for-print">
-					<kv-checkout-steps :steps="checkoutSteps" :current-step-index="3" />
+					<kv-checkout-steps :steps="checkoutSteps" :current-step-index="2" />
 					<hr>
 				</div>
 
-				<template v-if="loans.length > 0">
-					<div class="thanks__header hide-for-print">
-						<h1 class="thanks__header-h1">
-							Thank you!
-						</h1>
-						<p class="thanks__header-subhead">
-							Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
-						</p>
-						<p v-if="lender.email" class="hide-for-print">
-							We've emailed your order confirmation to
-							<strong class="fs-exclude">{{ lender.email }}</strong>
-						</p>
-					</div>
-				</template>
+				<div class="thanks__header hide-for-print">
+					<h1 class="thanks__header-h1">
+						Thank you!
+					</h1>
+					<p v-if="loans.length > 0" class="thanks__header-subhead">
+						Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
+					</p>
+					<p v-if="lender.email" class="hide-for-print">
+						We've emailed your order confirmation to
+						<strong class="fs-exclude">{{ lender.email }}</strong>
+					</p>
+					<p v-else class="hide-for-print">
+						We've emailed your order confirmation to you.
+					</p>
+				</div>
 			</div>
 		</div>
 
@@ -138,7 +139,6 @@ export default {
 			receipt: {},
 			checkoutSteps: [
 				'Basket',
-				'Account',
 				'Payment',
 				'Thank You!'
 			],
