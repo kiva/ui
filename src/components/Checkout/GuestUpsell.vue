@@ -79,15 +79,11 @@ export default {
 	},
 	computed: {
 		borrowerName() {
-			return this.loans.length === 1 ? this.loans[0].name : '';
+			return this.loans.length === 1 ? this.loans[0].name : 'the borrowers you support';
 		},
 		borrowerUpdateText() {
-			if (this.borrowerName) {
-				return `Get updates from ${this.borrowerName} and choose
-					how to re-lend your money when they pay you back.`;
-			}
-			return `Get updates from the borrowers you support and choose
-				how to re-lend your money when they pay you back.`;
+			return `Finish setting up your account to get updates from ${this.borrowerName}
+				and choose how to re-lend your money when they pay you back.`;
 		}
 	},
 	mounted() {
