@@ -33,7 +33,7 @@
 										:src="paymentMethod.imageUrl"
 										alt="credit card"
 									>
-									<span class="fs-mask">{{ paymentMethod.description }}</span>
+									<span class="fs-exclude">{{ paymentMethod.description }}</span>
 								</kv-radio>
 								<kv-button
 									@click.native.prevent="showLightbox(paymentMethod)"
@@ -101,9 +101,11 @@
 		<kv-lightbox
 			class="remove-card-lightbox"
 			:visible="showRemoveLightbox"
-			:title="`Are you sure you want to remove the card ${lowerCaseDescription}?`"
 			@lightbox-closed="showRemoveLightbox = false"
 		>
+			<h2 class="fs-exclude">
+				Are you sure you want to remove the card {{ lowerCaseDescription }}?
+			</h2>
 			<p>
 				This will remove this card from your payment settings forever.
 			</p>
@@ -131,9 +133,11 @@
 		<kv-lightbox
 			class="active-card-lightbox"
 			:visible="showActiveLightbox"
-			:title="`Unable to remove card ${lowerCaseDescription}`"
 			@lightbox-closed="showActiveLightbox = false"
 		>
+			<h2 class="fs-exclude">
+				Unable to remove card {{ lowerCaseDescription }}
+			</h2>
 			<p>
 				This card is used in your Monthly Good or Auto Deposit, and can be edited
 				<router-link to="/settings/subscriptions">
