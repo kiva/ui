@@ -3,7 +3,7 @@
 		<h2 class="guest-account-upsell__headline">
 			Before you go!
 		</h2>
-		<p v-if="borrowerName" class="guest-account-upsell__subhead">
+		<p class="guest-account-upsell__subhead">
 			{{ borrowerUpdateText }}
 		</p>
 		<form id="guestUpsellForm" action="." @submit.prevent.stop="submit">

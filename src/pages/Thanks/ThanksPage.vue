@@ -7,20 +7,21 @@
 					<hr>
 				</div>
 
-				<template v-if="loans.length > 0">
-					<div class="thanks__header hide-for-print">
-						<h1 class="thanks__header-h1">
-							Thank you!
-						</h1>
-						<p class="thanks__header-subhead">
-							Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
-						</p>
-						<p v-if="lender.email" class="hide-for-print">
-							We've emailed your order confirmation to
-							<strong class="fs-exclude">{{ lender.email }}</strong>
-						</p>
-					</div>
-				</template>
+				<div class="thanks__header hide-for-print">
+					<h1 class="thanks__header-h1">
+						Thank you!
+					</h1>
+					<p v-if="loans.length > 0" class="thanks__header-subhead">
+						Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
+					</p>
+					<p v-if="lender.email" class="hide-for-print">
+						We've emailed your order confirmation to
+						<strong class="fs-exclude">{{ lender.email }}</strong>
+					</p>
+					<p v-else class="hide-for-print">
+						We've emailed your order confirmation to you.
+					</p>
+				</div>
 			</div>
 		</div>
 
