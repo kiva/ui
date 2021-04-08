@@ -1,5 +1,5 @@
 <template>
-	<section class="statistics section">
+	<section class="statistics">
 		<div class="row">
 			<h2
 				v-html="statsHeadline"
@@ -29,8 +29,8 @@
 					:contentful-src="statBlock.image.url"
 					:alt="statBlock.image.description"
 					fallback-format="png"
-					:width="48"
-					:height="48"
+					:width="65"
+					:height="64"
 				/>
 				<p
 					class="stat-block__stat green-emphasis"
@@ -179,6 +179,10 @@ export default {
 	&__video-wrapper {
 		margin-top: 2.5rem;
 
+		@include breakpoint(large) {
+			margin-top: 0;
+		}
+
 		&--video {
 			width: 100%;
 			border-radius: rem-calc(10);
@@ -190,6 +194,7 @@ export default {
 
 		&__block {
 			margin-bottom: 1rem;
+			text-align: center;
 		}
 
 		&__icon {
