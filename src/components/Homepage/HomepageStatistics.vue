@@ -17,15 +17,15 @@
 				></video>
 			</span>
 		</div>
-		<div class="row stat-block">
+		<div class="row stats-wrap">
 			<div
 				v-for="(statBlock, index) in statsBlockText"
 				:key="statBlock.key"
-				class="small-12 medium-4 columns stat-block__block"
+				class="small-12 medium-4 columns stats-wrap__block"
 			>
 				<kv-contentful-img
 					v-if="statBlock.image.url"
-					:class="'stat-block__icon stat-block__icon-' + index"
+					:class="'stats-wrap__block--icon stats-wrap__block--icon-' + index"
 					:contentful-src="statBlock.image.url"
 					:alt="statBlock.image.description"
 					fallback-format="png"
@@ -33,7 +33,7 @@
 					:height="64"
 				/>
 				<p
-					class="stat-block__stat green-emphasis"
+					class="stats-wrap__block--stat green-emphasis"
 					v-html="formattedTextStrings[index]"
 				>
 				</p>
@@ -189,24 +189,24 @@ export default {
 		}
 	}
 
-	.stat-block {
+	.stats-wrap {
 		margin-top: rem-calc(40);
 
 		&__block {
 			margin-bottom: 1rem;
 			text-align: center;
-		}
 
-		&__icon {
-			margin-bottom: rem-calc(20);
-		}
+			&--icon {
+				margin-bottom: rem-calc(20);
+			}
 
-		&__stat {
-			font-size: rem-calc(21);
+			&--stat {
+				font-size: rem-calc(21);
 
-			&::v-deep i {
-				font-weight: bold;
-				font-style: normal;
+				&::v-deep i {
+					font-weight: bold;
+					font-style: normal;
+				}
 			}
 		}
 	}
