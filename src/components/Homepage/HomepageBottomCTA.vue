@@ -55,6 +55,8 @@ export default {
 @import 'settings';
 
 .bottom-cta {
+	padding: 2rem 0;
+
 	&__headline {
 		font-size: rem-calc(44);
 		font-weight: 300;

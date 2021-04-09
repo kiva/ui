@@ -25,7 +25,7 @@
 			</div>
 			<!-- eslint-disable-next-line max-len -->
 			<div class="small-10 large-6 xlarge-7 small-order-1 large-order-2 align-self-middle columns homepage-hero__cta_wrapper">
-				<h1 class="homepage-hero__header green-emphasis" v-html="heroHeadline">
+				<h1 class="homepage-hero__header" v-html="heroHeadline">
 				</h1>
 				<div class="homepage-hero__body" v-html="heroBody">
 				</div>
@@ -146,7 +146,10 @@ export default {
 		line-height: rem-calc(54);
 		font-weight: 500;
 
-		a {
+		a,
+		em,
+		i {
+			font-style: normal;
 			color: $kiva-green;
 		}
 

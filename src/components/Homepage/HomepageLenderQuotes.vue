@@ -83,6 +83,8 @@ export default {
 @import 'settings';
 
 .lender-quotes {
+	padding: 2rem 0;
+
 	&__header {
 		margin-bottom: 2rem;
 		font-weight: bold;
