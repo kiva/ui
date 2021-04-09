@@ -4,7 +4,7 @@ export default [
 		name: 'homepage',
 		component: () => import('@/pages/Homepage/Homepage'),
 		meta: {
-			contentfulPage: 'home-default',
+			contentfulPage: 'home',
 		},
 	},
 	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
