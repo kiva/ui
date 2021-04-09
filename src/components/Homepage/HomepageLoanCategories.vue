@@ -36,6 +36,8 @@ export default {
 @import 'settings';
 
 .homepage-loan-categories {
+	padding: 2rem 0;
+
 	.row {
 		max-width: 69.15rem;
 	}

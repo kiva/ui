@@ -139,6 +139,8 @@ export default {
 @import 'settings';
 
 .testimonials {
+	padding: 2rem 0;
+
 	&__header {
 		margin-bottom: rem-calc(64);
 	}

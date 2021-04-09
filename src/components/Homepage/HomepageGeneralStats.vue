@@ -77,6 +77,8 @@ export default {
 @import 'settings';
 
 .homepage-general-stats {
+	padding: 2rem 0;
+
 	&__img {
 		width: rem-calc(220);
 		margin: 0 auto;

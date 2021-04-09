@@ -64,10 +64,12 @@ const HomepageCorporateSponsors = () => import('@/components/Homepage/HomepageCo
 // const HomepageGeneralStats = () => import('@/components/Homepage/HomepageGeneralStats');
 const HomepageHero = () => import('@/components/Homepage/HomepageHero');
 const HomepageHowItWorks = () => import('@/components/Homepage/HomepageHowItWorks');
+const HomepageLenderQuotes = () => import('@/components/Homepage/HomepageLenderQuotes');
 const HomepageLoanCategories = () => import('@/components/Homepage/HomepageLoanCategories');
 const HomepageMidrollCTA = () => import('@/components/Homepage/HomepageMidrollCTA');
 const HomepageStatistics = () => import('@/components/Homepage/HomepageStatistics');
 const HomepageTestimonials = () => import('@/components/Homepage/HomepageTestimonials');
+const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
 
 // Query for getting contentful page data
 const pageQuery = gql`query contentfulPage($key: String) {
@@ -106,6 +108,8 @@ const getComponentFromType = type => {
 			return HomepageHero;
 		case 'homepageHowItWorks':
 			return HomepageHowItWorks;
+		case 'homepageLenderQuotes':
+			return HomepageLenderQuotes;
 		case 'homepageLoanCategories':
 			return HomepageLoanCategories;
 		case 'homepageMidrollCta':
@@ -117,6 +121,8 @@ const getComponentFromType = type => {
 			return HomepageCorporateSponsors;
 		case 'homepageTestimonials':
 			return HomepageTestimonials;
+		case 'homepageVerticalCTA':
+			return HomepageVerticalCTA;
 		case 'mlCampaignHero':
 			return CampaignHero;
 		case 'mlCampaignLogo':

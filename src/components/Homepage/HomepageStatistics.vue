@@ -32,11 +32,11 @@
 					:width="65"
 					:height="64"
 				/>
-				<p
+				<div
 					class="stats-wrap__block--stat green-emphasis"
 					v-html="formattedTextStrings[index]"
 				>
-				</p>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -160,18 +160,21 @@ export default {
 @import 'settings';
 
 .statistics {
+	padding: 2rem 0;
+
 	&::v-deep em {
 		font-style: normal;
 		color: $kiva-green;
 	}
 
 	&__header {
-		font-size: 4rem;
-		font-weight: 600;
+		font-size: 3rem;
+		font-weight: 500;
 		line-height: rem-calc(73.6);
 		text-align: center;
 
 		@include breakpoint(large) {
+			font-size: 4rem;
 			text-align: left;
 		}
 	}

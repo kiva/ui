@@ -101,6 +101,7 @@ $first-break: xlarge;
 $second-break: xxlarge;
 
 .homepage-midroll-cta {
+	padding: 2rem 0;
 	max-width: 66rem;
 
 	.row &__card-wrapper.columns {

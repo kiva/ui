@@ -86,6 +86,8 @@ export default {
 @import 'settings';
 
 .how-it-works {
+	padding: 2rem 0;
+
 	&__list {
 		list-style: none;
 
