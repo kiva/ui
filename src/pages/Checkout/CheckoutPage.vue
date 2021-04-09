@@ -316,7 +316,7 @@ export default {
 				{ __typename: 'Credit', creditType: 'redemption_code' }
 			);
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
-			if (this.kivaCards || this.redemption_credits || this.hasFreeCredits) {
+			if (this.redemption_credits || this.hasFreeCredits) {
 				this.disableGuestCheckout();
 			}
 
@@ -581,9 +581,7 @@ export default {
 				if (hasFreeCredits) {
 					if (refreshEvent === 'kiva-card-applied') {
 						this.$kvTrackEvent('basket', 'free credits applied', 'exit to legacy');
-						if (this.checkingOutAsGuest) {
-							this.disableGuestCheckout();
-						}
+						this.disableGuestCheckout();
 					}
 					this.redirectLightboxVisible = true;
 					// automatically redirect to legacy after 7 seconds
