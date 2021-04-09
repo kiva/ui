@@ -24,6 +24,26 @@
 </template>
 
 <script>
+/*
+This is a page component that dynamically pre-fetches and displays a page based on a Contentful Page Layout, using
+the contentGroup types to decide which components to display.
+
+This handles the page title, the page frame, and has some default content in case there is an error when getting
+the Page Layout from Contentful.
+
+The possible components are pre-determined, but in the future it could setup to use any component in a given directory.
+
+To use, simply create a route that defines contentfulPage in the meta data, e.g.:
+{
+	path: '/',
+	name: 'homepage',
+	component: () => import('@/pages/ContentfulPage'),
+	meta: {
+		contentfulPage: 'home',
+	},
+},
+*/
+
 import gql from 'graphql-tag';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import { processPageContent } from '@/util/contentfulUtils';
