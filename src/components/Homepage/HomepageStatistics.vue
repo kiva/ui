@@ -32,11 +32,11 @@
 					:width="65"
 					:height="64"
 				/>
-				<p
+				<div
 					class="stats-wrap__block--stat green-emphasis"
 					v-html="formattedTextStrings[index]"
 				>
-				</p>
+				</div>
 			</div>
 		</div>
 	</section>
