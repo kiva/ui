@@ -83,8 +83,8 @@ module.exports = function authRouter(config = {}) {
 			options.prompt = 'login';
 			options.login_hint = 'forgotPassword';
 		}
-		if (req.query.login_hint) {
-			options.login_hint = req.query.login_hint;
+		if (req.query.loginHint) {
+			options.login_hint = req.query.loginHint;
 		}
 		// Store url to redirect to after successful login
 		if (req.query.doneUrl) {

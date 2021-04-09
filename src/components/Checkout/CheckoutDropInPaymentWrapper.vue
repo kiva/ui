@@ -175,7 +175,7 @@ export default {
 									msg: 're-auth-acc-exists',
 								})}`
 							);
-							window.location = `/ui-login?force=true&doneUrl=/checkout&login_hint=${loginHint}`;
+							window.location = `/ui-login?force=true&doneUrl=/checkout&loginHint=${loginHint}`;
 						} else {
 							this.$emit('updating-totals', false);
 							this.showCheckoutError(validationStatus);
