@@ -188,7 +188,16 @@ export default {
 			// But it will not throw a server error.
 			this.receipt = data?.shop?.receipt;
 			this.isGuest = this.receipt && !data?.my?.userAccount;
-			this.thanksPageVersion = this.isGuest ? 'b' : 'a';
+
+			// MG Upsell On Thanks Page - EXP-SUBS-526-Oct2020
+			// This experiment determines which Thanks Page layout will be shown.
+			const mgCTAExperiment = this.apollo.readFragment({
+				id: 'Experiment:mg_thanks_cta',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.thanksPageVersion = mgCTAExperiment.version === 'shown' || this.isGuest ? 'b' : 'a';
+
 			const loansResponse = this.receipt?.items?.values ?? [];
 			this.loans = loansResponse
 				.filter(item => item.basketItemType === 'loan_reservation')
