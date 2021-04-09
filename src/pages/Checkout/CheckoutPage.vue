@@ -316,7 +316,7 @@ export default {
 				{ __typename: 'Credit', creditType: 'redemption_code' }
 			);
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
-			if (this.redemption_credits || this.hasFreeCredits) {
+			if (this.redemption_credits.length || this.hasFreeCredits !== false) {
 				this.disableGuestCheckout();
 			}
 
