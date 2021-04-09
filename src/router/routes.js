@@ -1,5 +1,12 @@
 export default [
-	{ path: '/', name: 'homepage', component: () => import('@/pages/Homepage/Homepage') },
+	{
+		path: '/',
+		name: 'homepage',
+		component: () => import('@/pages/Homepage/Homepage'),
+		meta: {
+			contentfulPage: 'home-default',
+		},
+	},
 	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
 	{
 		path: '/auto-deposit',
