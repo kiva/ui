@@ -35,18 +35,17 @@
 								@updating-totals="setUpdatingTotals"
 							/>
 						</div>
-
-						<hr>
-
-						<div class="basket-container">
-							<kiva-card-redemption
-								:credits="redemption_credits"
-								:totals="totals"
-								@refreshtotals="refreshTotals"
-								@updating-totals="setUpdatingTotals"
-							/>
+						<div v-if="showKivaCardForm">
+							<hr>
+							<div class="basket-container">
+								<kiva-card-redemption
+									:credits="redemption_credits"
+									:totals="totals"
+									@refreshtotals="refreshTotals"
+									@updating-totals="setUpdatingTotals"
+								/>
+							</div>
 						</div>
-
 						<hr>
 
 						<div class="basket-container">
@@ -317,6 +316,13 @@ export default {
 				{ __typename: 'Credit', creditType: 'redemption_code' }
 			);
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+			if (this.kivaCards || this.redemption_credits || this.hasFreeCredits) {
+				// If the user has a Kiva Card applied, don't show the guest checkout button
+				this.checkingOutAsGuest = false;
+
+				// do not fire the guest checkout experiment event either
+				this.isGuestCheckoutExperimentActive = false;
+			}
 
 			// general data
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
@@ -452,6 +458,10 @@ export default {
 			}
 			return parseFloat(this.creditNeeded) === 0;
 		},
+		showKivaCardForm() {
+			// If the user clicks the guest checkout button, hide the "Have a Kiva Card?" form
+			return !this.checkingOutAsGuest;
+		},
 		showGuestCheckoutButton() {
 			// Checking if guest checkout experiment is active
 			// and if Kiva has been logged into on user's current browser
@@ -572,6 +582,10 @@ export default {
 				if (hasFreeCredits) {
 					if (refreshEvent === 'kiva-card-applied') {
 						this.$kvTrackEvent('basket', 'free credits applied', 'exit to legacy');
+						if (this.checkingOutAsGuest) {
+							// If the user enters a Kiva Card, don’t show the guest checkout button
+							this.checkingOutAsGuest = false;
+						}
 					}
 					this.redirectLightboxVisible = true;
 					// automatically redirect to legacy after 7 seconds
