@@ -317,11 +317,7 @@ export default {
 			);
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 			if (this.kivaCards || this.redemption_credits || this.hasFreeCredits) {
-				// If the user has a Kiva Card applied, don't show the guest checkout button
-				this.checkingOutAsGuest = false;
-
-				// do not fire the guest checkout experiment event either
-				this.isGuestCheckoutExperimentActive = false;
+				this.disableGuestCheckout();
 			}
 
 			// general data
@@ -459,8 +455,7 @@ export default {
 			return parseFloat(this.creditNeeded) === 0;
 		},
 		showKivaCardForm() {
-			// If the user clicks the guest checkout button, hide the "Have a Kiva Card?" form
-			return !this.checkingOutAsGuest;
+			return this.checkingOutAsGuest === false;
 		},
 		showGuestCheckoutButton() {
 			// Checking if guest checkout experiment is active
@@ -504,6 +499,10 @@ export default {
 		},
 		guestCheckout() {
 			this.checkingOutAsGuest = true;
+		},
+		disableGuestCheckout() {
+			this.checkingOutAsGuest = false;
+			this.isGuestCheckoutExperimentActive = false;
 		},
 		doPopupLogin() {
 			if (this.kvAuth0.enabled) {
@@ -583,8 +582,7 @@ export default {
 					if (refreshEvent === 'kiva-card-applied') {
 						this.$kvTrackEvent('basket', 'free credits applied', 'exit to legacy');
 						if (this.checkingOutAsGuest) {
-							// If the user enters a Kiva Card, don’t show the guest checkout button
-							this.checkingOutAsGuest = false;
+							this.disableGuestCheckout();
 						}
 					}
 					this.redirectLightboxVisible = true;
