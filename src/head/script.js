@@ -48,7 +48,7 @@ export default config => {
 	// FullStory snippet
 	const insertFullStory = () => {
 		/* eslint-disable */
-        window['_fs_debug'] = true;
+        window['_fs_debug'] = false;
         window['_fs_host'] = 'fullstory.com';
         window['_fs_script'] = 'edge.fullstory.com/s/fs.js';
         window['_fs_org'] = '10F8DP';
