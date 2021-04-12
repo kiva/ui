@@ -81,7 +81,9 @@ module.exports = function authRouter(config = {}) {
 		}
 		if (req.query.forgot === 'true') {
 			options.prompt = 'login';
-			options.login_hint = 'forgotPassword';
+			options.login_hint = `forgotPassword|${JSON.stringify({
+				guest: true,
+			})}`;
 		}
 		if (req.query.loginHint) {
 			options.login_hint = req.query.loginHint;
