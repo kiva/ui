@@ -27,9 +27,9 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 export default {
 	inject: ['cookieStore'],
 	metaInfo: {
-		script: [
-			{ src: '//kiva.tfaforms.net/js/iframe_resize_helper.js', async: true }
-		],
+		// script: [
+		// 	{ src: '//kiva.tfaforms.net/js/iframe_resize_helper.js', async: true }
+		// ],
 	},
 	components: {
 		KvLightbox,

@@ -771,7 +771,7 @@ export default {
 				}
 
 				// Validate baseline promo + basket state (1 loan, 1 credit, 0 donation)
-				this.validatePromoBasketState(data);
+				// this.validatePromoBasketState(data);
 				const basketItemValues = data.shop?.basket?.items?.values ?? [];
 				this.itemsInBasket = basketItemValues.length ? basketItemValues.map(item => item.id) : [];
 
