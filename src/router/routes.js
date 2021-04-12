@@ -98,6 +98,13 @@ export default [
 	{ path: '/lend-by-category/:category', component: () => import('@/pages/Lend/LoanChannelCategoryPage') },
 	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
 	{
+		path: '/lp/:dynamicRoute',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: route => ({
+			contentfulPage: `lp/${route.params.dynamicRoute}`,
+		}),
+	},
+	{
 		path: '/monthlygood',
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage'),
 		props: route => ({ category: route.query.category })
