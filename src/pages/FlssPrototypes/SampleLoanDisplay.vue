@@ -55,7 +55,7 @@ import gql from 'graphql-tag';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 
-const pageQuery = gql`query pageQuery {
+const pageQuery = gql`query loanQuery {
 lend {
     loans (filters: {gender: female, country: ["KE"]}, limit: 5) {
     totalCount
