@@ -3,17 +3,17 @@
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
 	>
-		<div class="flss-landing">
+		<div class="simple-landing">
 			<kv-loading-overlay
 				v-if="loadingPage"
-				class="flss-landing__loading-page"
+				class="simple-landing__loading-page"
 			/>
 			<hr>
 
 			<section
 				class="loan-categories section"
-				id="flssLoanSection"
-				ref="flssLoanSection"
+				id="simpleLoanSection"
+				ref="simpleLoanSection"
 			>
 				<div class="row">
 					<div class="columns">
@@ -56,26 +56,42 @@
 	</www-page-minimal>
 </template>
 <script>
+
+
+
 import gql from 'graphql-tag';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 
-const query = gql`
+const pageQuery = gql`
 {
-    fundraisingLoans {
-        values {
-            loan {
-                id
-            }
+  lend {
+    loans (filters: {gender: female, country: ["KE"]}, limit: 5) {
+      totalCount
+      values {
+        name
+        loanAmount
+        image {
+          url(presetSize: small)
         }
+        activity {
+          name
+        }
+        geocode {
+          country {
+            isoCode
+            name
+          }
+        }
+      }
     }
-
+  }
 }
 `
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 
 		KvLoadingOverlay,
@@ -94,22 +110,7 @@ export default {
 		},
 	},
 	data() {
-		return {
-			headerTheme: lightHeader,
-			footerTheme: lightFooter,
-			rawPageData: null,
-			pageData: null,
-			filters: null,
-			offset: 0,
-			pageQuery: { page: '1' },
-			showLoans: false,
-			sortBy: 'popularity',
-			showLoanRows: true,
-			loanDetailsVisible: talse,
-			detailedLoan: null,
-			initialFilters: {},
-			loadingPage: false,
-		};
+		return {};
 	},
 	metaInfo() {
 		return {
@@ -118,7 +119,8 @@ export default {
 	},
 	apollo: {
 		preFetch: true,
-		query: pageQuery,
+		query:
+         pageQuery,
 		// TODO: Convert to prefetch function and check for page path before fetching all content
 		// - Requires extended contentful graphql query options for include depth and query by addtional fields
 		preFetchVariables({ route }) {
@@ -141,7 +143,7 @@ export default {
 	},
 	created() {
 		// extract query
-		this.pageQuery = this.$route.query;
+		// this.pageQuery = this.$route.query;
 	},
 	mounted() {
 	},
@@ -189,7 +191,7 @@ export default {
 <style lang="scss" scoped>
 @import "settings";
 
-.flss-landing {
+.simple-landing {
 	&__status {
 		$header-height: rem-calc(45); // same as TheHeader.vue
 		$header-height-large: rem-calc(64); // same as TheHeader.vue
@@ -225,24 +227,7 @@ export default {
 	}
 }
 
-.flss-checkout {
-	margin-top: 1rem;
 
-	@include breakpoint(large) {
-		min-width: rem-calc(600);
-	}
-}
-
-.flss-thanks {
-	&__logos {
-		height: rem-calc(20);
-		margin-bottom: 2rem;
-
-		@include breakpoint(large) {
-			height: rem-calc(28);
-		}
-	}
-}
 
 .loan-details-lightbox {
 	::v-deep .kv-lightbox__header {
@@ -253,7 +238,7 @@ export default {
 	}
 }
 
-.flss-loan-details {
+.loan-details {
 	// Style overrides for the loan details lightbox content
 	// Note, styles inside DetailedLoanCard.vue are not scoped
 	border: 0;
