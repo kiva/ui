@@ -1,5 +1,8 @@
 <template>
-	<component :is="pageFrame">
+	<component :is="pageFrame"
+		:header-theme="headerTheme"
+		:footer-theme="footerTheme"
+	>
 		<template v-if="!pageError">
 			<component
 				v-for="({ component, content }) in contentGroups"
@@ -48,6 +51,7 @@ To use, simply create a route that defines contentfulPage in the meta data, e.g.
 import gql from 'graphql-tag';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import { processPageContent } from '@/util/contentfulUtils';
+import * as siteThemes from '@/util/siteThemes';
 
 // Page frames
 const WwwPage = () => import('@/components/WwwFrame/WwwPage');
@@ -157,6 +161,8 @@ export default {
 	data() {
 		return {
 			contentGroups: [],
+			footerTheme: {},
+			headerTheme: {},
 			pageError: false,
 			pageFrame: WwwPage,
 			title: undefined,
@@ -213,6 +219,8 @@ export default {
 				this.pageError = true;
 			} else {
 				this.title = (pageData?.page?.pageLayout?.pageTitle || pageData?.page?.pageTitle) ?? undefined;
+				this.headerTheme = siteThemes[pageData?.page?.pageLayout?.headerTheme] || {};
+				this.footerTheme = siteThemes[pageData?.page?.pageLayout?.footerTheme] || {};
 				this.pageFrame = getPageFrameFromType(pageData?.page?.pageType);
 				this.contentGroups = getContentGroups(pageData);
 			}
