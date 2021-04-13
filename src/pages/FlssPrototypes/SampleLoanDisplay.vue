@@ -1,5 +1,5 @@
 <template>
-	<www-page-minimal
+	<www-page
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
 	>
@@ -26,65 +26,74 @@
 							<!--PSD placeholder page is /pages/FlssPrototypes-->
 						</h2>
 
-						<div class="loan-view-controls">
-							<flss-loan-filters class="loan-view-controls__filters" />
-						</div>
+						<div class="loan-container">
 
-						<flss-loan-row
-							v-show="showLoanRows"
-							id="simpleLoanRowDisplay"
-							:is-visible="showLoanRows"
-							:key="'one-category'"
-							:row-number="1"
-							:show-loans="showLoans"
-							@show-loan-details="showLoanDetails"
-						/>
+                            <flss-loans
+                                id="flssLoanRowDisplay"
+                                :filters="filters"
+                                :is-visitor="true"
+                                :items-in-basket="null"
+                                :is-logged-in="null"
+                                :is-visible="showLoanRows"
+                                :key="'one-category'"
+                                :row-number="1"
+                                :show-loans="true"
+                                sort-by="popularity"
+						    />
+						</div>
 					</div>
 				</div>
 			</section>
-
-			<hr>
-
-			<hr>
 		</div>
-	</www-page-minimal>
+	</www-page>
 </template>
 <script>
 
 import gql from 'graphql-tag';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
+import WwwPage from '@/components/WwwFrame/WwwPage';
+import FlssLoans from '@/pages/FlssPrototypes/FlssLoanRow'
 
-const pageQuery = gql`query loanQuery {
-lend {
-    loans (filters: {gender: female, country: ["KE"]}, limit: 5) {
-    totalCount
-    values {
-        id
-        name
-        loanAmount
-        image {
-            id
-            url(presetSize: small)
-        }
-        activity {
-            id
-            name
-        }
-        geocode {
-            country {
-            isoCode
-            name
-            }
-        }
-    }
-}
-}
+const pageQuery = gql`query pageContent($basketId: String!) {
+	shop(basketId: $basketId) {
+		id
+		basket {
+			id
+			// hasFreeCredits
+			items {
+				totalCount
+				values {
+					id
+					basketItemType
+				}
+			}
+			// credits {
+			// 	values {
+			// 		id
+			// 		applied
+			// 		available
+			// 		creditType
+			// 		promoFund {
+			// 			id
+			// 		}
+			// 	}
+			// }
+		}
+		// lendingRewardOffered
+	}
+	my {
+		userAccount {
+			id
+		}
+	}
+}`;
 
-`;
 export default {
-	inject: ['apollo', 'cookieStore'],
+	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	components: {
+        WwwPage,
+        FlssLoans
 	},
 	mixins: [],
 	props: {
@@ -105,7 +114,7 @@ export default {
 			pageData: null,
 			showLoans: false,
 			showLoanRows: true,
-
+            filters: {}
 		};
 	},
 	metaInfo() {
@@ -119,27 +128,27 @@ export default {
          pageQuery,
 		// TODO: Convert to prefetch function and check for page path before fetching all content
 		// - Requires extended contentful graphql query options for include depth and query by addtional fields
-		preFetchVariables({ route }) {
-			return { contentKey: route.params.dynamicRoute };
-		},
-		variables() {
-			return { contentKey: this.$route.params.dynamicRoute };
-		},
-		result({ data }) {
-			// extract dynamicRoute param for contentful query
-			const { dynamicRoute } = this.$route.params;
-			// redirect if missing page data and/or route
-			if (typeof dynamicRoute === 'undefined') {
-				this.$router.push('/');
-			}
-			this.rawPageData = data;
-			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
-			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
-		},
+		// preFetchVariables({ route }) {
+		// 	return { contentKey: route.params.dynamicRoute };
+		// },
+		// variables() {
+		// 	return { contentKey: this.$route.params.dynamicRoute };
+		// },
+		// result({ data }) {
+		// 	// extract dynamicRoute param for contentful query
+		// 	const { dynamicRoute } = this.$route.params;
+		// 	// redirect if missing page data and/or route
+		// 	// if (typeof dynamicRoute === 'undefined') {
+		// 	// 	this.$router.push('/');
+		// 	// }
+		// 	this.rawPageData = data;
+		// 	const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
+		// 	this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
+		// },
 	},
 	created() {
 		// extract query
-		this.pageQuery = this.$route.query;
+		// this.pageQuery = this.$route.query;
 	},
 	mounted() {
 	},
