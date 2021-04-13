@@ -73,11 +73,9 @@ const query = gql`
     }
 
 }
-
 `
-
 export default {
-	inject: ['apollo', 'cookieStore', 'kvAuth0'],
+	inject: ['apollo'],
 	components: {
 
 		KvLoadingOverlay,
@@ -144,23 +142,10 @@ export default {
 	created() {
 		// extract query
 		this.pageQuery = this.$route.query;
-		// startup campaign status loader
-		this.loadingPromotion = true;
-
-		// show a loading screen if the page loads with an loan in the basket.
-		const basketItems = this.rawPageData.shop?.basket?.items?.values ?? [];
-		// eslint-disable-next-line no-underscore-dangle
-		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation');
 	},
 	mounted() {
 	},
 	watch: {
-		initialFilters(next) {
-			if (typeof next === 'object' && Object.keys(next).length > 0) {
-				this.filters = next;
-			}
-			return false;
-		},
 	},
 	computed: {
 		pageSettingData() {
