@@ -94,7 +94,9 @@ describe('contentfulUtils.js', () => {
 				pageType: 'corporate-campaign',
 				pageLayout: {
 					name: 'Promo Campaign Test',
+					headerTheme: 'lightHeader',
 					contentGroups: [{}],
+					footerTheme: undefined,
 					pageTitle: 'Test Page Layout Title',
 				},
 				settings: [{}]
@@ -112,6 +114,7 @@ describe('contentfulUtils.js', () => {
 				pageType: 'corporate-campaign',
 				pageLayout: {
 					name: 'Promo Campaign Test',
+					headerTheme: 'lightHeader',
 					contentGroups: [{
 						key: 'promo-campaign-test-cg',
 						name: 'Promo Campaign Test Content Groups',
@@ -134,6 +137,7 @@ describe('contentfulUtils.js', () => {
 							images: expect.any(Array)
 						}]
 					}],
+					footerTheme: undefined,
 					pageTitle: 'Test Page Layout Title',
 				},
 				pageTitle: 'Test Page Title',
@@ -170,6 +174,7 @@ describe('contentfulUtils.js', () => {
 				pageType: 'corporate-campaign',
 				pageLayout: {
 					name: 'Promo Campaign Test',
+					headerTheme: 'lightHeader',
 					pageTitle: 'Test Page Layout Title',
 				},
 				settings: expect.any(Array),
@@ -189,6 +194,7 @@ describe('contentfulUtils.js', () => {
 				pageType: 'corporate-campaign',
 				pageLayout: {
 					name: 'Promo Campaign Test',
+					headerTheme: 'lightHeader',
 					pageTitle: 'Test Page Layout Title',
 				},
 				settings: expect.any(Array),
@@ -243,6 +249,7 @@ describe('contentfulUtils.js', () => {
 				pageType: expect.any(String),
 				pageLayout: expect.objectContaining({
 					name: expect.any(String),
+					headerTheme: expect.any(String),
 					pageTitle: expect.any(String)
 				}),
 				settings: expect.any(Array),
@@ -262,6 +269,7 @@ describe('contentfulUtils.js', () => {
 				pageType: expect.any(String),
 				pageLayout: expect.objectContaining({
 					name: expect.any(String),
+					headerTheme: expect.any(String),
 					pageTitle: expect.any(String)
 				}),
 				settings: expect.any(Array),
@@ -323,6 +331,8 @@ describe('contentfulUtils.js', () => {
 				pageType: undefined,
 				pageLayout: expect.objectContaining({
 					name: expect.any(String),
+					headerTheme: undefined,
+					footerTheme: undefined,
 					pageTitle: undefined
 				}),
 				settings: [],
@@ -342,6 +352,8 @@ describe('contentfulUtils.js', () => {
 				pageType: undefined,
 				pageLayout: expect.objectContaining({
 					name: expect.any(String),
+					headerTheme: undefined,
+					footerTheme: undefined,
 					pageTitle: undefined
 				}),
 				settings: [],
