@@ -77,6 +77,8 @@ const HomepageTestimonials = () => import('@/components/Homepage/HomepageTestimo
 const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
 const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
 
+const MonthlyGoodFrequentlyAskedQuestions = () => import('@/components/MonthlyGood/FrequentlyAskedQuestions');
+
 // Query for getting contentful page data
 const pageQuery = gql`query contentfulPage($key: String) {
 	contentful {
@@ -137,8 +139,14 @@ const getComponentFromType = type => {
 			return CampaignPartner;
 		case 'mlCampaignThanks':
 			return CampaignThanks;
+<<<<<<< HEAD
 		case 'monthlyGoodSelector':
 			return MonthlyGoodSelectorWrapper;
+=======
+		case 'frequentlyAskedQuestions':
+			// TODO change this to generic FAQ Component
+			return MonthlyGoodFrequentlyAskedQuestions;
+>>>>>>> SUBS-676 Adds MG FAQ Component to Contentful Page
 		default:
 			console.error(`Unknown content group type "${type}"`);
 			return null;
