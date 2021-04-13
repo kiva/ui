@@ -99,7 +99,7 @@ export default [
 	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
 	{
 		path: '/lp/:dynamicRoute',
-		component: () => import('@/pages/ContentfulPage'),
+		component: () => import('@/pages/LandingPages/MonthlyGood'),
 		meta: route => ({
 			contentfulPage: `lp/${route.params.dynamicRoute}`,
 		}),

@@ -6,6 +6,7 @@
 				:key="content.key"
 				:is="component"
 				:content="content"
+				v-bind="$attrs"
 			/>
 		</template>
 		<template v-else>
@@ -70,6 +71,7 @@ const HomepageMidrollCTA = () => import('@/components/Homepage/HomepageMidrollCT
 const HomepageStatistics = () => import('@/components/Homepage/HomepageStatistics');
 const HomepageTestimonials = () => import('@/components/Homepage/HomepageTestimonials');
 const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
+const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
 
 // Query for getting contentful page data
 const pageQuery = gql`query contentfulPage($key: String) {
@@ -131,6 +133,8 @@ const getComponentFromType = type => {
 			return CampaignPartner;
 		case 'mlCampaignThanks':
 			return CampaignThanks;
+		case 'monthlyGoodSelector':
+			return MonthlyGoodSelectorWrapper;
 		default:
 			console.error(`Unknown content group type "${type}"`);
 			return null;
