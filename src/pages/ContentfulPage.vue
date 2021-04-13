@@ -75,6 +75,8 @@ const HomepageStatistics = () => import('@/components/Homepage/HomepageStatistic
 const HomepageTestimonials = () => import('@/components/Homepage/HomepageTestimonials');
 const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
 
+const MonthlyGoodFrequentlyAskedQuestions = () => import('@/components/MonthlyGood/FrequentlyAskedQuestions');
+
 // Query for getting contentful page data
 const pageQuery = gql`query contentfulPage($key: String) {
 	contentful {
@@ -135,6 +137,9 @@ const getComponentFromType = type => {
 			return CampaignPartner;
 		case 'mlCampaignThanks':
 			return CampaignThanks;
+		case 'frequentlyAskedQuestions':
+			// TODO change this to generic FAQ Component
+			return MonthlyGoodFrequentlyAskedQuestions;
 		default:
 			console.error(`Unknown content group type "${type}"`);
 			return null;
