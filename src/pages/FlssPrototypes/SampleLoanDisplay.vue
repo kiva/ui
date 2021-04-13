@@ -3,11 +3,7 @@
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
 	>
-		<div class="simple-landing">
-			<kv-loading-overlay
-				v-if="loadingPage"
-				class="simple-landing__loading-page"
-			/>
+		<div class="simple-campaign-landing">
 			<hr>
 
 			<section
@@ -36,14 +32,12 @@
 
 						<flss-loan-row
 							v-show="showLoanRows"
-							id="flssLoanRowDisplay"
+							id="simpleLoanRowDisplay"
 							:is-visible="showLoanRows"
 							:key="'one-category'"
 							:row-number="1"
 							:show-loans="showLoans"
-							:sort-by="sortBy"
 							@show-loan-details="showLoanDetails"
-
 						/>
 					</div>
 				</div>
@@ -57,46 +51,40 @@
 </template>
 <script>
 
-
-
 import gql from 'graphql-tag';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
-import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
 
-const pageQuery = gql`
-{
-  lend {
+const pageQuery = gql`query pageQuery {
+lend {
     loans (filters: {gender: female, country: ["KE"]}, limit: 5) {
-      totalCount
-      values {
+    totalCount
+    values {
+        id
         name
         loanAmount
         image {
-          url(presetSize: small)
+            id
+            url(presetSize: small)
         }
         activity {
-          name
+            id
+            name
         }
         geocode {
-          country {
+            country {
             isoCode
             name
-          }
+            }
         }
-      }
     }
-  }
 }
-`
+}
+
+`;
 export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
-
-		KvLoadingOverlay,
-		LoanCardController,
-
 	},
 	mixins: [],
 	props: {
@@ -110,7 +98,15 @@ export default {
 		},
 	},
 	data() {
-		return {};
+		return {
+			headerTheme: lightHeader,
+			footerTheme: lightFooter,
+			rawPageData: null,
+			pageData: null,
+			showLoans: false,
+			showLoanRows: true,
+
+		};
 	},
 	metaInfo() {
 		return {
@@ -143,7 +139,7 @@ export default {
 	},
 	created() {
 		// extract query
-		// this.pageQuery = this.$route.query;
+		this.pageQuery = this.$route.query;
 	},
 	mounted() {
 	},
@@ -176,7 +172,7 @@ export default {
 
 	},
 	methods: {
-		
+
 		showLoanDetails(loan) {
 			this.detailedLoan = loan;
 			this.loanDetailsVisible = true;
@@ -191,7 +187,7 @@ export default {
 <style lang="scss" scoped>
 @import "settings";
 
-.simple-landing {
+.simple-campaign-landing {
 	&__status {
 		$header-height: rem-calc(45); // same as TheHeader.vue
 		$header-height-large: rem-calc(64); // same as TheHeader.vue
@@ -226,8 +222,6 @@ export default {
 		}
 	}
 }
-
-
 
 .loan-details-lightbox {
 	::v-deep .kv-lightbox__header {
