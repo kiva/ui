@@ -300,7 +300,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
-import MonthlyGoodSelector from '@/components/Homepage/MonthlyGoodSelector';
+import MonthlyGoodSelector from '@/components/MonthlyGood/MonthlyGoodSelector';
 import KvIcon from '@/components/Kv/KvIcon';
 
 import HomepageStatistics from './HomepageStatistics';
