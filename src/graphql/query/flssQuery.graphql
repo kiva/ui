@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #import '../fragments/loanCardFields.graphql'
 
 query basicLoanData(
@@ -32,3 +33,39 @@ query basicLoanData(
 	}
 }
 
+||||||| parent of 084d1253... set up sample page with independent graphql queries
+=======
+#import '../fragments/loanCardFields.graphql'
+
+query basicLoanData(
+	$offset: Int,
+	$limit: Int,
+	$filters: LoanSearchFiltersInput,
+	$imgDefaultSize: String = "w480h360",
+	$imgRetinaSize: String = "w960h720",
+	$sortBy: LoanSearchSortByEnum,
+	$promoOnly: BasketInput,
+) {
+	lend {
+		loans(
+			offset: $offset,
+			limit: $limit,
+			filters: $filters,
+			sortBy: $sortBy,
+			promoOnly: $promoOnly
+			) {
+			totalCount
+			values {
+				id
+				...loanCardFields
+				image {
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+					hash
+				}
+			}
+		}
+	}
+}
+>>>>>>> 084d1253... set up sample page with independent graphql queries
