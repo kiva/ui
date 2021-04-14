@@ -75,11 +75,14 @@
 </template>
 
 <script>
-import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
+// import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
+// import basicLoanQuery from '@/graphql/query/recommendedLoans.graphql';
+// import loanChannel from '@/graphl/query/loanChannelData.graphql'
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
+import basicLoanQuery from '@/graphql/query/flssQuery.graphql';
 
 export default {
 	inject: ['apollo'],
