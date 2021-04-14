@@ -30,8 +30,9 @@
 				<div class="homepage-hero__body" v-html="heroBody">
 				</div>
 				<kv-button
-					class="show-for-large rounded"
-					:to="heroButton.link"
+					:class="`${buttonClass} show-for-large rounded`"
+					:to="buttonTo"
+					@click.native="buttonClick"
 					v-kv-track-event="[
 						'homepage',
 						'click-hero-cta',
@@ -46,8 +47,9 @@
 		<div class="row align-center hide-for-large">
 			<div class="small-10">
 				<kv-button
-					class="rounded expanded"
-					:to="heroButton.link"
+					:class="`${buttonClass} rounded expanded`"
+					:to="buttonTo"
+					@click.native="buttonClick"
 					v-kv-track-event="[
 						'homepage',
 						'click-hero-cta',
@@ -78,6 +80,18 @@ export default {
 		},
 	},
 	computed: {
+		buttonClass() {
+			return this.$attrs?.customCtaButtonClass ?? '';
+		},
+		buttonTo() {
+			if (this.$attrs?.customCtaFunction) {
+				return null;
+			}
+			return this.heroButton.link;
+		},
+		buttonClick() {
+			return this.$attrs?.customCtaFunction ?? null;
+		},
 		heroImage() {
 			const mediaObject = this.content?.media?.[0];
 			return {

@@ -9,6 +9,7 @@
 				:key="content.key"
 				:is="component"
 				:content="content"
+				v-bind="getComponentOptions(content.key)"
 			/>
 		</template>
 		<template v-else>
@@ -160,6 +161,21 @@ const getContentGroups = pageData => {
 	})).filter(group => typeof group.component === 'function');
 };
 
+const componentOptions = {
+	'homepage-hero-monthly-good': {
+		/**
+		 * Open monthly good interactive selector
+		 * in MonthlyGoodSelector.vue
+		 */
+		customCtaFunction(event) {
+			// prevents event from bubbling up to v-click-outside listener in MonthlyGoodSelector
+			event.stopPropagation();
+			this.$root.$emit('openMonthlyGoodSelector');
+		},
+		customCtaButtonClass: 'classic hollow'
+	},
+};
+
 export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
@@ -229,6 +245,11 @@ export default {
 				this.contentGroups = getContentGroups(pageData);
 			}
 		}
-	}
+	},
+	methods: {
+		getComponentOptions(key) {
+			return componentOptions[key] || {};
+		}
+	},
 };
 </script>
