@@ -10,7 +10,7 @@
 						'click-mgpromo-cause-cta',
 						'Choose a cause'
 					]"
-					@click="openCauses"
+					@click="toggleCauses"
 				>
 					<template v-if="!selectedGroup">
 						<strong>Choose a cause</strong><br>
@@ -49,7 +49,7 @@
 						'click-mgpromo-amount-cta',
 						'Choose an amount'
 					]"
-					@click="openAmounts"
+					@click="toggleAmounts"
 				>
 					<template v-if="!mgAmount">
 						<strong>Choose an amount</strong><br>
@@ -159,6 +159,15 @@ export default {
 	},
 	mounted() {
 		document.addEventListener('keyup', this.onKeyUp);
+		this.$root.$on('openMonthlyGoodSelector', () => {
+			/**
+			 * Move focus to button from whatever triggered this event
+			 * And open causes.
+			 */
+			document.getElementsByClassName('monthly-selector__button')[0].focus();
+			this.isCauseOpen = true;
+			this.isAmountOpen = false;
+		});
 	},
 	beforeDestroy() {
 		document.removeEventListener('keyup', this.onKeyUp);
@@ -182,11 +191,11 @@ export default {
 				}
 			});
 		},
-		openCauses() {
+		toggleCauses() {
 			this.isCauseOpen = !this.isCauseOpen;
 			this.isAmountOpen = false;
 		},
-		openAmounts() {
+		toggleAmounts() {
 			// only open if group selected
 			if (this.selectedGroup) {
 				this.isAmountOpen = !this.isAmountOpen;
