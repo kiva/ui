@@ -77,7 +77,7 @@
 			:applied-promo-total="appliedPromoTotal"
 			:promo-fund-display-name="promoFundDisplayName"
 			:active-credit-type="activeCreditType"
-			@credit-removed="$emit('refreshtotals')"
+			@credit-removed="handleCreditRemoved"
 			@updating-totals="setUpdating($event)"
 			@lightbox-closed="promoOptOutLightboxVisible = false"
 		/>
@@ -262,6 +262,10 @@ export default {
 		setUpdating(state) {
 			this.$emit('updating-totals', state);
 		},
+		handleCreditRemoved() {
+			this.$emit('refreshtotals');
+			this.$router.push(this.$route.path); // remove promo query param from url
+		}
 	}
 };
 </script>
