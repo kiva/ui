@@ -14,14 +14,10 @@
 				<div class="row">
 					<div class="columns">
 						<h2 class="loan-categories__header text-center">
-							Support causes you care about.
+							Fundraising Loan Search Service Loans
 
 							<!--PSD TODO switch to simple dropdown tailored queries-->
-
-							<!--PSD HOWTO pass queries to dev graphql endpoint-->
-							<!-- write a query via appollo here in the page?-->
-							<!-- duplicate basicLoanData and use custom queries instead to flss -->
-							<!-- and then import the new flss component -->
+							
 						</h2>
 						<div class="loan-container">
 							<flss-loans
@@ -90,6 +86,7 @@ export default {
 	},
 	data() {
 		return {
+			active: false,
 			headerTheme: lightHeader,
 			footerTheme: lightFooter,
 			rawPageData: null,
@@ -106,8 +103,7 @@ export default {
 	},
 	apollo: {
 		preFetch: true,
-		query:
-         pageQuery,
+		query: pageQuery,
 	},
 	created() {
 	},
@@ -147,10 +143,14 @@ export default {
 			this.detailedLoan = loan;
 			this.loanDetailsVisible = true;
 		},
+		toggle() {
+			this.active = !this.active;
+		}
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
 	},
+
 };
 </script>
 

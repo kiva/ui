@@ -75,19 +75,22 @@
 </template>
 
 <script>
-// import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
-// import basicLoanQuery from '@/graphql/query/recommendedLoans.graphql';
+
 // import loanChannel from '@/graphl/query/loanChannelData.graphql'
+// import KvDropdown from '@/components/Kv/KvDropdown';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
-import basicLoanQuery from '@/graphql/query/flssQuery.graphql';
+import flssLoanQuery from '@/graphql/query/flssQuery.graphql';
+// import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
+
 
 export default {
 	inject: ['apollo'],
 	components: {
 		KvCarousel,
+		// KvDropdown,
 		KvCarouselSlide,
 		KvLoadingSpinner,
 		LoanCardController,
@@ -219,23 +222,26 @@ export default {
 			this.zeroLoans = false;
 
 			this.apollo.query({
-				query: basicLoanQuery,
+				query: flssLoanQuery,
 				variables: this.loanQueryVars,
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
-				const newLoans = data.lend?.loans?.values ?? [];
+				const newLoans = data.fundraisingLoans?.values ?? [];
+
 				// Handle appending new loans to carousel
 				const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
+
 				const existingLoanIds = this.loans.length ? this.loans.map(loan => loan.id) : [];
 
 				// Filter out any loans already in the stack
 				const newLoansFiltered = newLoans.filter(loan => !existingLoanIds.includes(loan.id));
 				if (newLoanIds.toString() !== existingLoanIds.toString()) {
 					this.loans = [...this.loans, ...newLoansFiltered];
+				// this runs
 				}
 
 				if (this.isVisible) {
-					this.totalCount = data.lend?.loans?.totalCount ?? 0;
+					this.totalCount = data.fundraisingLoans.totalCount ?? 0;
 					this.$emit('update-total-count', this.totalCount);
 					this.loadingLoans = false;
 				}
@@ -255,8 +261,8 @@ export default {
 		},
 		resetSearchFilters() {
 			this.$emit('reset-loan-filters');
-		}
-	},
+		},
+	}
 };
 </script>
 
