@@ -74,6 +74,7 @@ const HomepageMidrollCTA = () => import('@/components/Homepage/HomepageMidrollCT
 const HomepageStatistics = () => import('@/components/Homepage/HomepageStatistics');
 const HomepageTestimonials = () => import('@/components/Homepage/HomepageTestimonials');
 const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
+const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
 
 const MonthlyGoodFrequentlyAskedQuestions = () => import('@/components/MonthlyGood/FrequentlyAskedQuestions');
 
@@ -140,6 +141,8 @@ const getComponentFromType = type => {
 		case 'frequentlyAskedQuestions':
 			// TODO change this to generic FAQ Component
 			return MonthlyGoodFrequentlyAskedQuestions;
+		case 'monthlyGoodSelector':
+			return MonthlyGoodSelectorWrapper;
 		default:
 			console.error(`Unknown content group type "${type}"`);
 			return null;
