@@ -886,9 +886,9 @@ export default {
 			}
 		},
 		handleCreditRemoved() {
-			console.log('credit removed');
 			this.showVerification = false;
 			this.$router.push(this.$route.path); // remove promo query param from url
+			this.promoApplied = false;
 			this.refreshTotals();
 			this.verificationComplete();
 		},
