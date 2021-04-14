@@ -20,10 +20,8 @@
 
 							<!--PSD HOWTO pass queries to dev graphql endpoint-->
 							<!-- write a query via appollo here in the page?-->
-
-							<!--PSD HOWTO pass loan ids from query to federation-->
-
-							<!--PSD placeholder page is /pages/FlssPrototypes-->
+							<!-- duplicate basicLoanData and use custom queries instead to flss -->
+							<!-- and then import the new flss component -->
 						</h2>
 						<div class="loan-container">
 							<flss-loans
