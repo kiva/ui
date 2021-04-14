@@ -22,6 +22,7 @@
 							<!-- write a query via appollo here in the page?-->
 							<!-- duplicate basicLoanData and use custom queries instead to flss -->
 							<!-- and then import the new flss component -->
+
 						</h2>
 						<div class="loan-container">
 							<flss-loans
