@@ -70,7 +70,6 @@ export default {
 			this.closeLightbox();
 		},
 		removeCredit(type) {
-			// TODO: Setup removing "promo_credit" type
 			this.setUpdating(true);
 			this.apollo.mutate({
 				mutation: removeCreditByType,
