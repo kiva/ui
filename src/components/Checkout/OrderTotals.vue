@@ -86,7 +86,9 @@
 
 <script>
 import numeral from 'numeral';
+import logFormatter from '@/util/logFormatter';
 import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
+import { removeCredit } from '@/util/checkoutUtils';
 import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -258,6 +260,18 @@ export default {
 			if (this.activeCreditType) {
 				this.addCredit(this.activeCreditType);
 			}
+		},
+		removeCredit(type) {
+			this.setUpdating(true);
+			removeCredit(this.apollo, type)
+				.then(() => {
+					this.$kvTrackEvent('basket', 'Kiva Credit', 'Remove Credit Success');
+					this.$emit('refreshtotals');
+				}).catch(error => {
+					logFormatter(error, 'error');
+				}).finally(() => {
+					this.setUpdating(false);
+				});
 		},
 		setUpdating(state) {
 			this.$emit('updating-totals', state);

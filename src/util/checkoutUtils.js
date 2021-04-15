@@ -1,5 +1,6 @@
 import numeral from 'numeral';
 import myFTD from '@/graphql/query/myFTD.graphql';
+import removeCreditByTypeMutation from '@/graphql/mutation/shopRemoveCreditByType.graphql';
 
 /** Format Transaction Data for Analtyics events
 * @param {Number} transactionId
@@ -100,5 +101,22 @@ export function myFTDQuery(apollo) {
 	// Fetch FTD Status
 	return apollo.query({
 		query: myFTD,
+	});
+}
+
+/**
+ * removeCredit mutation
+ * removes a credit applied to the user
+ *
+ * @param {Object} apollo Apollo Client instance
+ * @param {('bonus_credit'|'free_trial'|'kiva_credit'|'redemption_code'|'universal_code')} creditType
+ * @returns {Promise}
+ */
+export function removeCredit(apollo, creditType) {
+	return apollo.mutate({
+		mutation: removeCreditByTypeMutation,
+		variables: {
+			creditType
+		}
 	});
 }
