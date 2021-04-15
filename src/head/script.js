@@ -123,7 +123,7 @@ export default config => {
 			var p = document.getElementsByTagName('script')[0],
 				s = document.createElement('script');
 			s.async = 1;
-			s.src = `/${config.perimeterxAppId.substring(2)}/init.js`;
+			s.src = `${window.location.origin}/${config.perimeterxAppId.substring(2)}/init.js`;
 			p.parentNode.insertBefore(s,p);
 		}());
 		/* eslint-enable */
