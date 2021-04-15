@@ -75,8 +75,9 @@ const HomepageMidrollCTA = () => import('@/components/Homepage/HomepageMidrollCT
 const HomepageStatistics = () => import('@/components/Homepage/HomepageStatistics');
 const HomepageTestimonials = () => import('@/components/Homepage/HomepageTestimonials');
 const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
-const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
+const HomepageMonthlyGoodInfo = () => import('@/components/Homepage/HomepageMonthlyGoodInfo');
 
+const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
 const MonthlyGoodFrequentlyAskedQuestions = () => import('@/components/MonthlyGood/FrequentlyAskedQuestions');
 
 // Query for getting contentful page data
@@ -131,6 +132,8 @@ const getComponentFromType = type => {
 			return HomepageTestimonials;
 		case 'homepageVerticalCTA':
 			return HomepageVerticalCTA;
+		case 'homepageMonthlyGoodInfo':
+			return HomepageMonthlyGoodInfo;
 		case 'mlCampaignHero':
 			return CampaignHero;
 		case 'mlCampaignLogo':
@@ -144,6 +147,7 @@ const getComponentFromType = type => {
 			return MonthlyGoodFrequentlyAskedQuestions;
 		case 'monthlyGoodSelector':
 			return MonthlyGoodSelectorWrapper;
+
 		default:
 			console.error(`Unknown content group type "${type}"`);
 			return null;

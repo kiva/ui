@@ -74,12 +74,16 @@ export default {
 			}
 		},
 		initStickyBehavior() {
-			// Initial position down the page of element before mg selector element
-			// const { bottom } = this.$el.getElementsByClassName('monthly-good-info')[0].getBoundingClientRect();
+			// temporary set to not sticky to calculate these values based on original element position on page
+			this.isSticky = false;
+			this.mgStickBarOffset = 0;
+
+			// Initial position down the page of selector
+			const { top } = this.$el.getElementsByClassName('monthly-good-selector')[0].getBoundingClientRect();
 			const heightOfMgSelector = this.$el.getElementsByClassName('monthly-good-selector')[0].offsetHeight;
 			const scrollPositionOfPage = window.scrollY;
 
-			this.initialBottomPosition = scrollPositionOfPage + heightOfMgSelector;
+			this.initialBottomPosition = top + scrollPositionOfPage + heightOfMgSelector;
 			this.onScroll();
 		},
 		setMgStickyBarOffset() {
@@ -96,7 +100,7 @@ export default {
 			}
 			// set offset
 			this.mgStickBarOffset = offsetHeight;
-		}
+		},
 	},
 	beforeDestroy() {
 		window.removeEventListener('scroll', this.throttledScroll);
@@ -116,8 +120,8 @@ export default {
 <style lang="scss">
 @import 'settings';
 // Hack to allow the entire footer to still be visible when the MG sticky is active
-.www-footer {
-	padding-bottom: 20rem;
+footer.www-footer {
+	padding-bottom: 17rem;
 	@include breakpoint(large) {
 		padding-bottom: 15rem;
 	}
@@ -127,7 +131,7 @@ export default {
 	}
 
 	@include breakpoint(xxlarge) {
-		padding-bottom: 7rem;
+		padding-bottom: 8rem;
 	}
 }
 </style>
@@ -142,275 +146,6 @@ export default {
 
 	@include breakpoint(large) {
 		padding: 2rem 0;
-	}
-}
-
-.featured-loans,
-.monthly-good-info {
-	&__header {
-		font-size: rem-calc(48);
-		line-height: rem-calc(54);
-		font-weight: 500;
-
-		@include breakpoint(xlarge) {
-			@include huge-headline();
-		}
-
-		// This text field from contentful can include an em tag or an i tag
-		::v-deep em,
-		::v-deep i {
-			font-style: normal;
-			color: $kiva-green;
-		}
-	}
-
-	&__body {
-		::v-deep p {
-			@include medium-text();
-
-			@include breakpoint(xlarge) {
-				@include featured-text();
-
-				line-height: rem-calc(36);
-			}
-		}
-	}
-}
-
-.monthly-good-info {
-	&__block {
-		display: flex;
-		margin-top: 1.75rem;
-	}
-
-	&__icon-report,
-	&__icon-choose {
-		margin-top: 0.65rem;
-		flex-shrink: 0;
-	}
-
-	&__icon-choose {
-		height: rem-calc(56);
-		width: rem-calc(56);
-	}
-
-	&__icon-report {
-		height: rem-calc(56);
-		width: rem-calc(56);
-	}
-
-	&__body {
-		padding: 0 0.75rem 1rem 1.5rem;
-		flex-grow: 1;
-	}
-}
-
-.featured-loans {
-	padding: 2rem 0;
-
-	@include breakpoint(large) {
-		padding: 4rem 0 2rem;
-	}
-
-	&__cta_wrapper {
-		padding: 0;
-
-		@include breakpoint(medium) {
-			padding: 0 2rem;
-		}
-	}
-
-	&__img {
-		display: block;
-		margin: 0 auto 2rem;
-
-		@include breakpoint(large) {
-			margin: 0 auto;
-		}
-	}
-
-	&__body {
-		margin: 2.25rem auto 0;
-
-		@include breakpoint(medium) {
-			margin: 2.25rem auto 2.25rem;
-		}
-	}
-}
-
-.loan-categories {
-	& .row {
-		max-width: 69.15rem;
-	}
-
-	&__header {
-		font-weight: bold;
-
-		@include breakpoint(large) {
-			@include large-text();
-		}
-	}
-}
-
-.how-it-works {
-	&__header {
-		font-weight: bold;
-
-		@include breakpoint(large) {
-			@include large-text();
-		}
-	}
-
-	&__list {
-		list-style: none;
-		margin-top: 1rem;
-		margin-bottom: 0;
-		padding: 0;
-	}
-
-	&__li {
-		margin-bottom: 1rem;
-	}
-
-	&__img {
-		width: rem-calc(81);
-		height: rem-calc(100);
-		margin: 0 auto 1rem;
-
-		&--borrower {
-			width: rem-calc(81);
-		}
-
-		&--loan {
-			width: rem-calc(124);
-		}
-
-		&--repaid {
-			width: rem-calc(87);
-		}
-
-		&--repeat {
-			width: rem-calc(94);
-		}
-	}
-
-	&__subtitle {
-		font-weight: bold;
-
-		@include breakpoint(large) {
-			@include featured-text();
-		}
-	}
-}
-
-.statistics {
-	&__img {
-		width: rem-calc(235);
-		margin: 0 auto 1rem;
-	}
-
-	&__header {
-		font-size: 6rem;
-		font-weight: bold;
-		margin-bottom: 0;
-
-		span {
-			display: block;
-		}
-	}
-
-	&__header-small {
-		@include featured-text();
-
-		font-weight: $global-weight-normal;
-	}
-
-	&__body {
-		@include featured-text();
-
-		margin-bottom: rem-calc(30);
-	}
-}
-
-.lender-quotes {
-	&__header {
-		margin-bottom: 2rem;
-		font-weight: bold;
-
-		@include breakpoint(large) {
-			@include large-text();
-		}
-	}
-
-	.quote-card {
-		@include featured-text();
-
-		margin: 0 auto rem-calc(25) auto;
-		text-align: center;
-		border-radius: 1rem;
-		background: $white;
-		box-shadow: 0 0 1.2rem 1rem rgb(153, 153, 153, 0.1);
-		position: relative;
-		overflow: hidden;
-		z-index: 1;
-
-		@include breakpoint(large) {
-			@include medium-text();
-		}
-
-		&__lender-img {
-			margin: rem-calc(30) auto rem-calc(30) auto;
-			width: 5.5rem;
-			border-radius: 50%;
-
-			@include breakpoint(large) {
-				width: 4rem;
-			}
-		}
-
-		&__quote {
-			line-height: 1.3;
-			margin-bottom: rem-calc(30);
-		}
-
-		&__attribution {
-			line-height: 1.3;
-			font-weight: bold;
-			margin-bottom: 0;
-			position: relative;
-		}
-
-		&__title {
-			position: relative;
-			margin-bottom: rem-calc(30);
-		}
-	}
-
-	.quote-card:nth-child(even) {
-		@include breakpoint(large) {
-			margin-right: 0.9rem;
-		}
-	}
-
-	.quote-card:nth-child(odd) {
-		@include breakpoint(large) {
-			margin-left: 0.9rem;
-		}
-	}
-}
-
-.final-cta {
-	&__body {
-		@include featured-text();
-
-		margin-bottom: 1rem;
-
-		@include breakpoint(large) {
-			@include impact-text();
-
-			font-weight: 300;
-			margin-bottom: 2rem;
-		}
 	}
 }
 
