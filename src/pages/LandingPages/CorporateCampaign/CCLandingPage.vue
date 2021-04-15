@@ -593,6 +593,14 @@ export default {
 			return false;
 		},
 		checkoutVisible(next) {
+			if (next) {
+				this.$kvTrackEvent(
+					'ManagedLendingCampaign',
+					'modal-show-in-context-checkout',
+					this.isActivelyLoggedIn ? 'checkout-ready' : 'checkout-requires-login'
+				);
+			}
+
 			if (!next && this.$route.hash === '#show-basket') {
 				this.$nextTick(() => {
 					this.$router.push(this.adjustRouteHash('')).catch(() => {});
