@@ -1011,6 +1011,7 @@ export default {
 				&& this.verificationRequired
 				&& this.externalFormId
 				&& !this.verificationSumbitted
+				&& this.basketLoans.length
 			) {
 				this.showVerification = true;
 			} else if (
