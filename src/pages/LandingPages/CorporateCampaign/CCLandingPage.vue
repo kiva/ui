@@ -118,6 +118,17 @@
 				:pf-id="String(promoFundId)"
 				:user-id="this.myId"
 				@verification-complete="verificationComplete"
+				@opt-out="showVerifyRemovePromoCredit = true"
+			/>
+
+			<!-- Warn about removing promo credit -->
+			<verify-remove-promo-credit
+				:visible="showVerifyRemovePromoCredit"
+				:applied-promo-total="promoAmount"
+				:promo-fund-display-name="campaignPartnerName"
+				:active-credit-type="activeCreditType"
+				@credit-removed="handleCreditRemoved"
+				@lightbox-closed="showVerifyRemovePromoCredit = false"
 			/>
 
 			<kv-lightbox
@@ -214,6 +225,7 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
+import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 
 const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
 	contentful {
@@ -429,6 +441,7 @@ export default {
 		KvLoadingOverlay,
 		LoanCardController,
 		WwwPageCorporate,
+		VerifyRemovePromoCredit
 	},
 	mixins: [
 		checkoutUtils
@@ -502,6 +515,7 @@ export default {
 			initialFilters: {},
 			verificationSumbitted: false,
 			loadingPage: false,
+			showVerifyRemovePromoCredit: false
 		};
 	},
 	metaInfo() {
@@ -547,7 +561,7 @@ export default {
 		this.loadingPromotion = true;
 
 		// show a loading screen if the page loads with an loan in the basket.
-		const basketItems = this.rawPageData.shop?.basket?.items?.values ?? [];
+		const basketItems = this.rawPageData?.shop?.basket?.items?.values ?? [];
 		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
 	},
 	mounted() {
@@ -703,6 +717,27 @@ export default {
 		statusMessageOverride() {
 			return this.pageSettingData?.statusMessageOverride ?? null;
 		},
+		hasRedemptionCode() {
+			return this.basketTotals?.redemptionCodeAppliedTotal !== '0.00';
+		},
+		hasUPCCode() {
+			return this.basketTotals?.universalCodeAppliedTotal !== '0.00';
+		},
+		hasBonusCredit() {
+			return this.basketTotals?.bonusAppliedTotal !== '0.00';
+		},
+		activeCreditType() {
+			if (this.hasRedemptionCode) {
+				return 'redemption_code';
+			}
+			if (this.hasUPCCode) {
+				return 'universal_code';
+			}
+			if (this.hasBonusCredit) {
+				return 'bonus_credit';
+			}
+			return null;
+		},
 	},
 	methods: {
 		verifyOrApplyPromotion() {
@@ -849,6 +884,13 @@ export default {
 			} else {
 				this.initializeBasketRefresh();
 			}
+		},
+		handleCreditRemoved() {
+			this.showVerification = false;
+			this.$router.push(this.$route.path); // remove promo query param from url
+			this.promoApplied = false;
+			this.refreshTotals();
+			this.verificationComplete();
 		},
 		refreshTotals() {
 			this.initializeBasketRefresh();
