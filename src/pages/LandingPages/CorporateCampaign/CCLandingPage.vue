@@ -201,6 +201,7 @@
 import gql from 'graphql-tag';
 import numeral from 'numeral';
 import { indexIn } from '@/util/comparators';
+import logFormatter from '@/util/logFormatter';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
 import LoanSearchFilters, { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
@@ -780,7 +781,7 @@ export default {
 				// gather promo info
 				this.getPromoInformationFromBasket();
 			}).catch(error => {
-				console.error(error);
+				logFormatter(error, 'error');
 				this.promoErrorMessage = error;
 				this.loadingPromotion = false;
 				this.promoApplied = false;
@@ -1011,6 +1012,7 @@ export default {
 				&& this.verificationRequired
 				&& this.externalFormId
 				&& !this.verificationSumbitted
+				&& this.basketLoans.length
 			) {
 				this.showVerification = true;
 			} else if (

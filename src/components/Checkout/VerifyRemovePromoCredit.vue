@@ -34,7 +34,8 @@
 </template>
 
 <script>
-import removeCreditByType from '@/graphql/mutation/shopRemoveCreditByType.graphql';
+import { removeCredit } from '@/util/checkoutUtils';
+import logFormatter from '@/util/logFormatter';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
@@ -71,19 +72,15 @@ export default {
 		},
 		removeCredit(type) {
 			this.setUpdating(true);
-			this.apollo.mutate({
-				mutation: removeCreditByType,
-				variables: {
-					creditType: type
-				}
-			}).then(() => {
-				this.setUpdating(false);
-				this.$kvTrackEvent('basket', 'Kiva Credit', 'Remove Credit Success');
-				this.$emit('credit-removed');
-			}).catch(error => {
-				console.error(error);
-				this.setUpdating(false);
-			});
+			removeCredit(this.apollo, type)
+				.then(() => {
+					this.$kvTrackEvent('basket', 'Kiva Credit', 'Remove Credit Success');
+					this.$emit('credit-removed');
+				}).catch(error => {
+					logFormatter(error, 'error');
+				}).finally(() => {
+					this.setUpdating(false);
+				});
 		},
 		setUpdating(state) {
 			this.$emit('updating-totals', state);
