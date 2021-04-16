@@ -90,6 +90,7 @@
 </template>
 
 <script>
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import CountryList from './CountryList';
@@ -97,6 +98,7 @@ import ExpandableListItem from './ExpandableListItem';
 import SearchList from './SearchList';
 
 export default {
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		CountryList,
 		ExpandableListItem,
@@ -134,6 +136,11 @@ export default {
 			default: true,
 		},
 	},
+	data() {
+		return {
+			mgHighlightInNavVersion: null,
+		};
+	},
 	computed: {
 		hasSearches() {
 			return this.searches.length > 0;
@@ -155,6 +162,14 @@ export default {
 				this.$refs.searches.collapse();
 			}
 		}
+	},
+	created() {
+		// EXP SUBS-679 present main nav options for subscription or individual lending
+		const mgHighlightInNav = this.apollo.readFragment({
+			id: 'Experiment:mg_highlight_in_nav',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.mgHighlightInNavVersion = mgHighlightInNav.version;
 	},
 };
 </script>
