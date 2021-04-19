@@ -1,20 +1,26 @@
 #import '../fragments/loanCardFields.graphql'
 
-query fundraisingLoansData {
-  fundraisingLoans(
-    filters: {sector {eq: "education"}}
-  ) {
+query basicLoanData(
+	$offset: Int,
+	$limit: Int,
+	$filters: LoanSearchFiltersInput,
+	$imgDefaultSize: String = "w480h360",
+	$imgRetinaSize: String = "w960h720",
+	$sortBy: LoanSearchSortByEnum,
+	$promoOnly: BasketInput,
+) {
+  fundraisingLoans(filters: { sector: { eq: "education" } }) {
     values {
       loan {
         id
-        ...loanCardFields
+		...loanCardFields
+				image {
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+					hash
+				}
       }
-      image {
-            id
-            default: url(customSize: $imgDefaultSize)
-            retina: url(customSize: $imgRetinaSize)
-            hash
-		}
     }
   }
 }
