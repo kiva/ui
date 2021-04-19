@@ -162,6 +162,11 @@ export default {
 	&.message-text-error {
 		background-color: $kiva-accent-red;
 
+		a {
+			color: #fff;
+			text-decoration: underline;
+		}
+
 		.icon.icon-error {
 			fill: $white;
 		}
