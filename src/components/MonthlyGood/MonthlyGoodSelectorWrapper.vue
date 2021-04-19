@@ -12,6 +12,7 @@
 		<!-- MG Selector Mobile -->
 		<section
 			class="monthly-good-selector section show-for-small-only"
+			v-if="isMobile"
 		>
 			<monthly-good-selector-mobile />
 		</section>
@@ -34,6 +35,7 @@ export default {
 			isSticky: false,
 			initialBottomPosition: 0,
 			mgStickBarOffset: 0,
+			isMobile: false
 		};
 	},
 	computed: {
@@ -80,19 +82,26 @@ export default {
 			// set offset
 			this.mgStickBarOffset = offsetHeight;
 		},
+		determineIfMobile() {
+			this.isMobile = document.documentElement.clientWidth < 480;
+		}
 	},
 	beforeDestroy() {
 		window.removeEventListener('scroll', this.throttledScroll);
 		window.removeEventListener('resize', _throttle(() => {
 			this.initStickyBehavior();
+			this.determineIfMobile();
 		}, 200));
 	},
 	mounted() {
 		window.addEventListener('scroll', this.throttledScroll);
 		window.addEventListener('resize', _throttle(() => {
 			this.initStickyBehavior();
+			this.determineIfMobile();
 		}, 200));
+
 		this.initStickyBehavior();
+		this.determineIfMobile();
 	},
 };
 </script>
