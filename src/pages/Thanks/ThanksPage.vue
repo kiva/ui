@@ -25,44 +25,7 @@
 			</div>
 		</div>
 
-		<!-- Thanks Page V1 -->
-		<div v-if="thanksPageVersion === 'a'">
-			<div class="mg_cta-row">
-				<div class="row align-center">
-					<div class="small-12 columns">
-						<monthly-good-c-t-a
-							v-if="!isMonthlyGoodSubscriber"
-							:headline="ctaHeadline"
-							:body-copy="ctaBodyCopy"
-							:button-text="ctaButtonText"
-						/>
-					</div>
-				</div>
-			</div>
-
-			<div class="row page-content">
-				<template v-if="loans.length > 0">
-					<social-share
-						class="thanks__social-share"
-						:lender="lender"
-						:loans="loans"
-					/>
-				</template>
-
-				<div class="small-12 columns thanks">
-					<hr v-if="loans.length > 0 || !isMonthlyGoodSubscriber">
-					<checkout-receipt
-						v-if="receipt"
-						class="thanks__receipt"
-						:lender="lender"
-						:receipt="receipt"
-					/>
-				</div>
-			</div>
-		</div>
-
 		<thanks-layout-v2
-			v-if="thanksPageVersion === 'b'"
 			:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest"
 			:show-guest-upsell="isGuest"
 			:show-share="loans.length > 0"
@@ -110,8 +73,6 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import ThanksLayoutV2 from '@/components/Thanks/ThanksLayoutV2';
 
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { joinArray } from '@/util/joinArray';
@@ -142,7 +103,6 @@ export default {
 				'Payment',
 				'Thank You!'
 			],
-			thanksPageVersion: 'a',
 			isMonthlyGoodSubscriber: false,
 			isGuest: false,
 			pageData: {},
@@ -150,19 +110,7 @@ export default {
 	},
 	apollo: {
 		query: thanksPageQuery,
-		preFetch(config, client, { cookieStore, route }) {
-			return client.query({
-				query: thanksPageQuery,
-				variables: {
-					checkoutId: numeral(route.query.kiva_transaction_id).value(),
-					visitorId: cookieStore.get('uiv') || null,
-				}
-			}).then(() => {
-				return client.query({
-					query: experimentAssignmentQuery, variables: { id: 'mg_thanks_cta' }
-				});
-			});
-		},
+		preFetch: true,
 		preFetchVariables({ cookieStore, route }) {
 			return {
 				checkoutId: numeral(route.query.kiva_transaction_id).value(),
@@ -188,15 +136,6 @@ export default {
 			// But it will not throw a server error.
 			this.receipt = data?.shop?.receipt;
 			this.isGuest = this.receipt && !data?.my?.userAccount;
-
-			// MG Upsell On Thanks Page - EXP-SUBS-526-Oct2020
-			// This experiment determines which Thanks Page layout will be shown.
-			const mgCTAExperiment = this.apollo.readFragment({
-				id: 'Experiment:mg_thanks_cta',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			this.thanksPageVersion = mgCTAExperiment.version === 'shown' || this.isGuest ? 'b' : 'a';
 
 			const loansResponse = this.receipt?.items?.values ?? [];
 			this.loans = loansResponse
@@ -250,20 +189,6 @@ export default {
 			colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c'], // misc. kiva colors
 			disableForReducedMotion: true,
 		});
-
-		// MG Upsell On Thanks Page - EXP-SUBS-526-Oct2020
-		// This experiment determines which Thanks Page layout will be shown.
-		const mgCTAExperiment = this.apollo.readFragment({
-			id: 'Experiment:mg_thanks_cta',
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		this.thanksPageVersion = mgCTAExperiment.version === 'shown' || this.isGuest ? 'b' : 'a';
-		this.$kvTrackEvent(
-			'Thanks',
-			'EXP-SUBS-526-Oct2020',
-			mgCTAExperiment.version === 'shown' ? 'b' : 'a'
-		);
 	},
 };
 
@@ -271,10 +196,6 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
-
-.mg_cta-row {
-	background: $white;
-}
 
 .page-content {
 	padding: 1.625rem 0 0 0;
@@ -314,15 +235,6 @@ export default {
 
 	&__social-share {
 		margin-bottom: 0.5rem;
-	}
-
-	&__receipt {
-		max-width: rem-calc(485);
-		margin: 1.75rem auto 2rem;
-
-		@media print {
-			max-width: none;
-		}
 	}
 }
 </style>
