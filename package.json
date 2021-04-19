@@ -142,7 +142,7 @@
 		"app-manifest-loader": "^2.4.1",
 		"autoprefixer": "^9.8.6",
 		"babel-core": "^7.0.0-bridge.0",
-		"babel-jest": "^23.4.2",
+		"babel-jest": "^26.6.3",
 		"babel-loader": "^8.1.0",
 		"babel-plugin-istanbul": "^6.0.0",
 		"babel-preset-vue": "^2.0.2",
