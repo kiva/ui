@@ -11,28 +11,9 @@
 
 		<!-- MG Selector Mobile -->
 		<section
-			class="monthly-good-selector section hide-for-large"
+			class="monthly-good-selector section show-for-small-only"
 		>
-			<div class="row align-center hide-for-large">
-				<div class="small-10 columns">
-					<kv-button
-						class="classic hollow expanded"
-						to="/monthlygood"
-						v-kv-track-event="[
-							'homepage',
-							'click-mgpromo-cta',
-							'Join today'
-						]"
-					>
-						Join today <kv-icon
-							class="right-arrow-icon"
-							name="fat-chevron"
-							:from-sprite="true"
-							title="Next Loans"
-						/>
-					</kv-button>
-				</div>
-			</div>
+			<monthly-good-selector-mobile />
 		</section>
 	</div>
 </template>
@@ -40,15 +21,13 @@
 <script>
 import _throttle from 'lodash/throttle';
 
-import KvButton from '@/components/Kv/KvButton';
 import MonthlyGoodSelector from '@/components/MonthlyGood/MonthlyGoodSelector';
-import KvIcon from '@/components/Kv/KvIcon';
+import MonthlyGoodSelectorMobile from '@/components/MonthlyGood/MonthlyGoodSelectorMobile';
 
 export default {
 	components: {
-		KvButton,
-		KvIcon,
 		MonthlyGoodSelector,
+		MonthlyGoodSelectorMobile,
 	},
 	data() {
 		return {
@@ -160,15 +139,6 @@ footer.www-footer {
 		z-index: 1000;
 		width: 100%;
 		box-shadow: 0 -5px 80px rgba(0, 0, 0, 0.1);
-	}
-
-	.right-arrow-icon {
-		width: rem-calc(21);
-		height: rem-calc(23);
-		transform: rotate(270deg);
-		fill: $kiva-green;
-		margin: 0 20px;
-		position: absolute;
 	}
 }
 </style>

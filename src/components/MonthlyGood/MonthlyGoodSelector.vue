@@ -30,7 +30,7 @@
 							'click-mgpromo-cause',
 							option.marketingName
 						]"
-						@click="selectCause(option)"
+						@click.stop="selectCause(option)"
 					>
 						<img
 							class="monthly-selector__causes-icon"
@@ -69,7 +69,7 @@
 							'click-mgpromo-amount',
 							option.value
 						]"
-						@click="selectAmount(option.value)"
+						@click.stop="selectAmount(option.value)"
 					>
 						{{ option.label }}
 					</button>
