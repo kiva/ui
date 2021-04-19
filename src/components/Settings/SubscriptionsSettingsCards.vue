@@ -39,7 +39,7 @@
 			<template>
 				&nbsp;
 			</template>
-			<template slot="controls">
+			<template #controls>
 				<kv-button
 					value="Yes"
 					id="cancel-subscription-yes"

@@ -14,7 +14,7 @@ export const Default = () => ({
 		<div>
 			<button id="my-cool-btn">Hover of Focus Me!</button>
 			<kv-tooltip controller="my-cool-btn">
-				<template slot="title">
+				<template #title>
 					What is an Experimental Field Partner?
 				</template>
 				If a Field Partner is labeled as Experimental, this means that Kiva has

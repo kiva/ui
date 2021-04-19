@@ -116,7 +116,7 @@
 							</div>
 						</div>
 					</form>
-					<template slot="controls">
+					<template #controls>
 						<kv-button
 							data-test="one-time-save-button"
 							class="smaller button"

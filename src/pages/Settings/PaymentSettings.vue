@@ -1,6 +1,8 @@
 <template>
 	<www-page class="payments" :gray-background="true">
-		<the-my-kiva-secondary-menu slot="secondary" />
+		<template #secondary>
+			<the-my-kiva-secondary-menu />
+		</template>
 		<div class="title-area">
 			<div class="row column">
 				<h1>
@@ -109,7 +111,7 @@
 			<p>
 				This will remove this card from your payment settings forever.
 			</p>
-			<template slot="controls">
+			<template #controls>
 				<kv-button
 					class="smallest secondary"
 					@click.prevent.native="showRemoveLightbox = false"
@@ -144,7 +146,7 @@
 					here
 				</router-link>
 			</p>
-			<template slot="controls">
+			<template #controls>
 				<kv-button
 					id="active-card-no"
 					class="smallest secondary"

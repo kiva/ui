@@ -1,6 +1,9 @@
 <template>
 	<www-page class="email-settings" :gray-background="true">
-		<the-my-kiva-secondary-menu slot="secondary" />
+		<template #secondary>
+			<the-my-kiva-secondary-menu />
+		</template>
+
 		<div class="email-settings__title-area">
 			<div class="row column">
 				<h1>Email Settings</h1>

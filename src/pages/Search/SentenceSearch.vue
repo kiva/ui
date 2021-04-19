@@ -36,14 +36,13 @@
 									aria-expanded="false"
 								>
 									<template
-										slot="defaultOption"
+										#defaultOption
 										class="featured-text"
 									>
 										women and men
 									</template>
 									<template
-										slot="item"
-										slot-scope="{ item }"
+										#item="{ item }"
 										class="featured-text"
 									>
 										{{ item.label }}
@@ -61,14 +60,13 @@
 										aria-expanded="false"
 									>
 										<template
-											slot="defaultOption"
+											#defaultOption
 											class="featured-text"
 										>
 											any region
 										</template>
 										<template
-											slot="item"
-											slot-scope="{ item }"
+											#item="{ item }"
 											class="featured-text"
 										>
 											{{ item.label }}
@@ -114,7 +112,7 @@
 									class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
 									:results-per-page="15"
 								>
-									<template slot="default" slot-scope="{ items }">
+									<template #default="{ items }">
 										<algolia-adapter
 											v-for="(item, itemIndex) in items" :key="item.id"
 											:loan="item"
