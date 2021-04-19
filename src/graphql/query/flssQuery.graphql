@@ -1,6 +1,7 @@
 #import '../fragments/loanCardFields.graphql'
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 query flssLoanData(
   $filterObject: [FundraisingLoanSearchFilterInput!] = {countryIsoCode: {
           any: [
@@ -12,11 +13,29 @@ query flssLoanData(
 ) {
   fundraisingLoans(filters: $filterObject) {
     totalCount
+||||||| parent of ae38cec1... create valid test query
+query fundraisingLoansData {
+  fundraisingLoans(
+    filters: {sector {eq: "education"}}
+  ) {
+=======
+query basicLoanData(
+	$offset: Int,
+	$limit: Int,
+	$filters: LoanSearchFiltersInput,
+	$imgDefaultSize: String = "w480h360",
+	$imgRetinaSize: String = "w960h720",
+	$sortBy: LoanSearchSortByEnum,
+	$promoOnly: BasketInput,
+) {
+  fundraisingLoans(filters: { sector: { eq: "education" } }) {
+>>>>>>> ae38cec1... create valid test query
     values {
       id
       ...loanCardFields
       image {
         id
+<<<<<<< HEAD
         default: url(customSize: $imgDefaultSize)
         retina: url(customSize: $imgRetinaSize)
         hash
@@ -30,6 +49,17 @@ query basicLoanData ($sector: String = "retail") {
     values {
       loan {
         ...loanCardFields
+||||||| parent of ae38cec1... create valid test query
+        ...loanCardFields
+=======
+		...loanCardFields
+				image {
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+					hash
+				}
+>>>>>>> ae38cec1... create valid test query
       }
     }
   }
