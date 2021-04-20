@@ -11,7 +11,7 @@
 						'Lets get started'
 					]"
 				>
-					Lets get started <kv-icon
+					Let's get started <kv-icon
 						class="right-arrow-icon"
 						name="fat-chevron"
 						:from-sprite="true"
@@ -60,7 +60,10 @@
 			<div class="monthly-selector-mobile__your-cause" v-if="selectedGroup">
 				<strong>Your cause</strong>
 				<div class="monthly-selector-mobile__causes monthly-selector-mobile__causes--selected">
-					<button class="selected">
+					<button
+						class="selected"
+						@click="goBackToCauses"
+					>
 						<img
 							class="monthly-selector-mobile__causes-icon"
 							:src="getImage(`./mg-${selectedGroup.value}.svg`)"
@@ -157,7 +160,10 @@ export default {
 		getImage(image) {
 			return mgSelectorImgRequire(image);
 		},
-
+		goBackToCauses() {
+			this.lightboxStep = 'cause';
+			this.selectedGroup = null;
+		},
 		navigateToMG() {
 			// If mgAmount is other, just default to 25 value
 			this.$router.push({
@@ -270,7 +276,6 @@ $offwhite: #F8F8F8;
 
 	&__causes--selected {
 		padding-left: 0;
-		cursor: pointer;
 	}
 
 	&__causes-icon {
