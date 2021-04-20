@@ -4,7 +4,7 @@ export default [
 		name: 'homepage',
 		component: () => import('@/pages/Homepage/Homepage'),
 		meta: {
-			contentfulPage: 'home',
+			contentfulPage: () => 'home',
 		},
 	},
 	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
@@ -101,9 +101,9 @@ export default [
 	{
 		path: '/lp/:dynamicRoute',
 		component: () => import('@/pages/ContentfulPage'),
-		meta: route => ({
-			contentfulPage: `lp/${route.params.dynamicRoute}`,
-		}),
+		meta: {
+			contentfulPage: route => `lp/${route.params.dynamicRoute}`,
+		},
 	},
 	{
 		path: '/monthlygood',

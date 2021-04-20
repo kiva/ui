@@ -43,7 +43,7 @@ To use, simply create a route that defines contentfulPage in the meta data, e.g.
 	name: 'homepage',
 	component: () => import('@/pages/ContentfulPage'),
 	meta: {
-		contentfulPage: 'home',
+		contentfulPage: () => 'home',
 	},
 },
 */
@@ -201,19 +201,19 @@ export default {
 		query: pageQuery,
 		preFetchVariables({ route }) {
 			return {
-				key: route?.meta?.contentfulPage,
+				key: route?.meta?.contentfulPage(route),
 			};
 		},
 		variables() {
 			return {
-				key: this.$route?.meta?.contentfulPage,
+				key: this.$route?.meta?.contentfulPage(this.$route),
 			};
 		},
 		preFetch(config, client, args) {
 			return client.query({
 				query: pageQuery,
 				variables: {
-					key: args?.route?.meta?.contentfulPage,
+					key: args?.route?.meta?.contentfulPage(args?.route),
 				},
 			}).then(({ data }) => {
 				// Get Contentful page data
