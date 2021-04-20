@@ -2,7 +2,7 @@
 	<section class="homepage-hero">
 		<div class="row align-center">
 			<div
-				class="small-12 medium-10 large-6 xlarge-5 small-order-2 large-order-1 columns"
+				class="small-12 medium-10 large-6 xlarge-5 columns"
 			>
 				<router-link
 					:to="heroButton.link"
@@ -24,7 +24,7 @@
 				</router-link>
 			</div>
 			<!-- eslint-disable-next-line max-len -->
-			<div class="small-10 large-6 xlarge-7 small-order-1 large-order-2 align-self-middle columns homepage-hero__cta_wrapper">
+			<div class="small-10 large-6 xlarge-7 align-self-middle columns homepage-hero__cta_wrapper">
 				<h1 class="homepage-hero__header" v-html="heroHeadline">
 				</h1>
 				<div class="homepage-hero__body" v-html="heroBody">
