@@ -1,12 +1,34 @@
 #import '../fragments/loanCardFields.graphql'
 
-query basicLoanData ($sector: String = "retail") {
-  fundraisingLoans(filters: { sector: { eq: $sector } }) {
-    totalCount
-    values {
-      loan {
-        ...loanCardFields
-      }
-    }
-  }
+query basicLoanData(
+	$offset: Int,
+	$limit: Int,
+	$filters: LoanSearchFiltersInput,
+	$imgDefaultSize: String = "w480h360",
+	$imgRetinaSize: String = "w960h720",
+	$sortBy: LoanSearchSortByEnum,
+	$promoOnly: BasketInput,
+) {
+	lend {
+		loans(
+			offset: $offset,
+			limit: $limit,
+			filters: $filters,
+			sortBy: $sortBy,
+			promoOnly: $promoOnly
+			) {
+			totalCount
+			values {
+				id
+				...loanCardFields
+				image {
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+					hash
+				}
+			}
+		}
+	}
 }
+
