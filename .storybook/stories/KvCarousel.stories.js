@@ -7,7 +7,7 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import causeList from '../mock-data/cause-selector-data-mock';
 
 const defaultCarouselSlides = `
-	<template slot="default">
+	<template #default>
 		<kv-carousel-slide style="background-color: green;">
 			<img src="https://via.placeholder.com/300x220/e8f0f6/000000" style="width: 100%;">
 		</kv-carousel-slide>

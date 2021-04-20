@@ -1,10 +1,12 @@
 <template>
 	<www-page>
-		<custom-secondary-menu
-			slot="secondary"
-			class="hide-for-large"
-			:menu-items="menuItems"
-		/>
+		<template #secondary>
+			<custom-secondary-menu
+
+				class="hide-for-large"
+				:menu-items="menuItems"
+			/>
+		</template>
 		<div class="row page-content">
 			<tertiary-menu class="show-for-large large-2 tertiary-menu-terms">
 				<ul>

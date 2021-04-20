@@ -108,7 +108,7 @@
 											class="loan-card-group"
 											:results-per-page="15"
 										>
-											<template slot="default" slot-scope="{ items }">
+											<template #default="{ items }">
 												<algolia-adapter
 													v-for="(item, itemIndex) in items" :key="item.id"
 													:loan="item"

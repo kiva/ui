@@ -11,7 +11,7 @@
 			<span id="donate-repayments-tooltip">Donate loan repayments instead?</span>
 		</kv-checkbox>
 		<kv-tooltip controller="donate-repayments-tooltip">
-			<template slot="title">
+			<template #title>
 				Thanks for your support!
 			</template>
 			When you check this box, repayments go back to Kiva in the form of donations,

@@ -4,7 +4,7 @@
 			Explore Categories
 		</router-link>
 		<expandable-list-item id="lend-menu-category-panel" ref="categories">
-			<template slot="title">
+			<template #title>
 				<span>Categories</span>
 				<kv-icon class="chevron-icon" name="small-chevron-mobile" :from-sprite="true" />
 			</template>
@@ -23,7 +23,7 @@
 			</ul>
 		</expandable-list-item>
 		<expandable-list-item id="lend-menu-region-panel" ref="regions">
-			<template slot="title">
+			<template #title>
 				<span>Regions</span>
 				<kv-icon class="chevron-icon" name="small-chevron-mobile" :from-sprite="true" />
 			</template>
@@ -37,7 +37,7 @@
 					:id="`lend-menu-${region.name}-panel` | changeCase('paramCase')"
 					ref="regionCountries"
 				>
-					<template slot="title">
+					<template #title>
 						<span v-kv-track-event="['TopNav','click-Lend-Region', region.name]">
 							{{ region.name }}
 						</span>
@@ -51,7 +51,7 @@
 			All loans
 		</router-link>
 		<expandable-list-item id="lend-menu-my-kiva-panel" ref="myKiva" v-if="userId">
-			<template slot="title">
+			<template #title>
 				<span>My Kiva</span>
 				<kv-icon class="chevron-icon" name="small-chevron-mobile" :from-sprite="true" />
 			</template>
@@ -67,7 +67,7 @@
 					<span v-else>Starred loans</span>
 				</li>
 				<expandable-list-item id="lend-menu-saved-searches-panel" ref="searches" v-if="hasSearches">
-					<template slot="title">
+					<template #title>
 						<span>Saved searches</span>
 						<kv-icon class="chevron-icon" name="small-chevron-mobile" :from-sprite="true" />
 					</template>

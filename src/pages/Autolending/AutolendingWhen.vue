@@ -68,7 +68,7 @@
 							</kv-radio>
 						</div>
 					</div>
-					<template slot="controls">
+					<template #controls>
 						<kv-button
 							data-test="when-save-button"
 							class="smaller button"

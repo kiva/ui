@@ -174,7 +174,7 @@
 				</kv-accordion-item>
 			</div>
 
-			<template slot="controls">
+			<template #controls>
 				<kv-button
 					class="button smallest"
 					@click.native.prevent="applyFilters"
