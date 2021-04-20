@@ -1,6 +1,5 @@
 #import '../fragments/loanCardFields.graphql'
 
-
 query flssLoanData(
   $filterObject: [FundraisingLoanSearchFilterInput!] 
   $imgDefaultSize: String = "w480h360"
@@ -19,5 +18,3 @@ query flssLoanData(
       }
     }
   }
-}
-
