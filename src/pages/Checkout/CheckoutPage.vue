@@ -105,7 +105,7 @@
 										title="Checkout as guest"
 										@click.native="guestCheckout"
 									>
-										Checkout as guest
+										Continue as guest
 									</kv-button>
 
 									<kv-button
