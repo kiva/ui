@@ -262,7 +262,7 @@ export default {
 			isGuestCheckoutExperimentActive: false,
 			guestCheckoutExperimentVersion: null,
 			checkingOutAsGuest: false,
-			hasEverLoggedIn: 'no',
+			hasEverLoggedIn: false,
 		};
 	},
 	apollo: {
@@ -307,7 +307,7 @@ export default {
 			this.myId = _get(data, 'my.userAccount.id');
 			this.teams = _get(data, 'my.lender.teams.values');
 			this.lastActiveLogin = _get(data, 'my.lastLoginTimestamp', 0);
-			this.hasEverLoggedIn = _get(data, 'hasEverLoggedIn');
+			this.hasEverLoggedIn = _get(data, 'hasEverLoggedIn', false);
 			// basket data
 			this.totals = _get(data, 'shop.basket.totals') || {};
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
