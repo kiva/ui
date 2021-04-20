@@ -44,6 +44,7 @@ extend type Query {
 	activeLoan: ActiveLoan
 	autolending: Autolending
 	verificationLightbox: VerificationLightbox
+	hasEverLoggedIn: Boolean
 }
 
 extend type My {
