@@ -5,13 +5,13 @@ module.exports = merge(base, {
 	app: {
 		host: 'localhost',
 		publicPath: '/',
-		graphqlUri: 'https://marketplace-api.dk1.kiva.org/graphql',
+		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
 		auth0: {
 			enable: false,
 		},
 	},
 	server: {
-		graphqlUri: 'https://marketplace-api.dk1.kiva.org/graphql',
+		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
 		sessionUri: '',
 		memcachedEnabled: false,
 		memcachedServers: '',
