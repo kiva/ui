@@ -69,6 +69,8 @@ export default {
 		copyToClipboard(string) {
 			try {
 				navigator.clipboard.writeText(string);
+				// Tip message triggered letting user know code successfully copied to clipboard
+				this.$showTipMsg('Code copied.', 'confirm');
 			} catch (err) {
 				console.error(err);
 			}
