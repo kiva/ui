@@ -17,26 +17,14 @@
 							Fundraising Loan Search Service Loans
 
 							<!--PSD TODO switch to simple dropdown tailored queries-->
-<<<<<<< HEAD
 							
-||||||| parent of 02683827... run linting
-
-							<!--PSD HOWTO pass queries to dev graphql endpoint-->
-							<!-- write a query via appollo here in the page?-->
-							<!-- duplicate basicLoanData and use custom queries instead to flss -->
-							<!-- and then import the new flss component -->
-
-=======
-
-							<!--PSD HOWTO pass queries to dev graphql endpoint-->
-							<!-- write a query via appollo here in the page?-->
-                            
-							<!-- duplicate basicLoanData and use custom queries instead to flss -->
-							<!-- and then import the new flss component -->
->>>>>>> 02683827... run linting
 						</h2>
 						<div class="loan-container">
-							<flss-loans
+                        <button @click="toggle">Toggle</button>
+                        <div v-if="active">
+                            Menu
+                        </div>
+                            <flss-loans
 								id="flssLoanRowDisplay"
 								:filters="filters"
 								:is-visitor="true"
@@ -87,7 +75,7 @@ export default {
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	components: {
 		WwwPage,
-		FlssLoans
+		FlssLoans,
 	},
 	mixins: [],
 	props: {
@@ -166,7 +154,6 @@ export default {
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
 	},
-
 };
 </script>
 
