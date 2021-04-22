@@ -25,7 +25,11 @@
 							<!-- and then import the new flss component -->
 						</h2>
 						<div class="loan-container">
-							<flss-loans
+                        <button @click="toggle">Toggle</button>
+                        <div v-if="active">
+                            Menu
+                        </div>
+                            <flss-loans
 								id="flssLoanRowDisplay"
 								:filters="filters"
 								:is-visitor="true"
@@ -76,7 +80,7 @@ export default {
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	components: {
 		WwwPage,
-		FlssLoans
+		FlssLoans,
 	},
 	mixins: [],
 	props: {
@@ -91,6 +95,7 @@ export default {
 	},
 	data() {
 		return {
+            active: false,
 			headerTheme: lightHeader,
 			footerTheme: lightFooter,
 			rawPageData: null,
@@ -107,8 +112,7 @@ export default {
 	},
 	apollo: {
 		preFetch: true,
-		query:
-         pageQuery,
+		query: pageQuery,
 	},
 	created() {
 	},
@@ -148,10 +152,14 @@ export default {
 			this.detailedLoan = loan;
 			this.loanDetailsVisible = true;
 		},
+        toggle () {
+		this.active = !this.active
+	    }
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
 	},
+    
 };
 </script>
 
