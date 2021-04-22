@@ -16,7 +16,7 @@
 			<p>
 				Please adjust your criteria or <a @click.prevent="resetSearchFilters">start a new search.</a>
 			</p>
-		</div>
+		</div>		
 		<kv-carousel
 			v-show="!zeroLoans"
 			ref="campaignLoanCarousel"
@@ -93,7 +93,7 @@ export default {
 		// KvDropdown,
 		KvCarouselSlide,
 		KvLoadingSpinner,
-		LoanCardController,
+		// LoanCardController,
 	},
 	props: {
 		filters: {
@@ -230,7 +230,6 @@ export default {
 
 				// Handle appending new loans to carousel
 				const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
-
 				const existingLoanIds = this.loans.length ? this.loans.map(loan => loan.id) : [];
 
 				// Filter out any loans already in the stack
@@ -249,7 +248,9 @@ export default {
 				if (this.totalCount === 0) {
 					this.zeroLoans = true;
 				}
-			});
+			console.log(newLoans)
+			}
+			);
 		},
 		setLoanQueryFilters(userSelection) {
 			if (!userSelection) {
