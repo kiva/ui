@@ -9,7 +9,7 @@ query basicLoanData(
 	$sortBy: LoanSearchSortByEnum,
 	$promoOnly: BasketInput,
 ) {
-  fundraisingLoans(filters: { sector: { eq: "education" } }) {
+  fundraisingLoans {
     values {
       loan {
         id
