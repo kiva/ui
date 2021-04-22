@@ -178,6 +178,18 @@ const componentOptions = {
 		},
 		customCtaButtonClass: 'classic hollow'
 	},
+	'homepage-bottom-cta-monthly-good': {
+		/**
+		 * Open monthly good interactive selector
+		 * in MonthlyGoodSelector.vue
+		 */
+		customCtaFunction(event) {
+			// prevents event from bubbling up to v-click-outside listener in MonthlyGoodSelector
+			event.stopPropagation();
+			this.$root.$emit('openMonthlyGoodSelector');
+		},
+		customCtaButtonClass: 'classic hollow'
+	},
 };
 
 export default {

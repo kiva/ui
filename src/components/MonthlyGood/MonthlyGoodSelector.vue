@@ -21,24 +21,26 @@
 						Your cause
 					</template>
 				</button>
-				<div class="monthly-selector__causes" v-if="isCauseOpen">
-					<button
-						v-for="(option, index) in sortedLendingCategories"
-						:key="index"
-						v-kv-track-event="[
-							'homepage',
-							'click-mgpromo-cause',
-							option.marketingName
-						]"
-						@click.stop="selectCause(option)"
-					>
-						<img
-							class="monthly-selector__causes-icon"
-							:src="getImage(`./mg-${option.value}.svg`)"
+				<transition name="kvfade">
+					<div class="monthly-selector__causes" v-if="isCauseOpen">
+						<button
+							v-for="(option, index) in sortedLendingCategories"
+							:key="index"
+							v-kv-track-event="[
+								'homepage',
+								'click-mgpromo-cause',
+								option.marketingName
+							]"
+							@click.stop="selectCause(option)"
 						>
-						{{ option.marketingName }}
-					</button>
-				</div>
+							<img
+								class="monthly-selector__causes-icon"
+								:src="getImage(`./mg-${option.value}.svg`)"
+							>
+							{{ option.marketingName }}
+						</button>
+					</div>
+				</transition>
 			</div>
 			<div class="column">
 				<button
@@ -60,20 +62,22 @@
 						Your amount
 					</template>
 				</button>
-				<div class="monthly-selector__amounts" v-if="isAmountOpen">
-					<button
-						v-for="(option, index) in mgAmountOptions"
-						:key="index"
-						v-kv-track-event="[
-							'homepage',
-							'click-mgpromo-amount',
-							option.value
-						]"
-						@click.stop="selectAmount(option.value)"
-					>
-						{{ option.label }}
-					</button>
-				</div>
+				<transition name="kvfade">
+					<div class="monthly-selector__amounts" v-if="isAmountOpen">
+						<button
+							v-for="(option, index) in mgAmountOptions"
+							:key="index"
+							v-kv-track-event="[
+								'homepage',
+								'click-mgpromo-amount',
+								option.value
+							]"
+							@click.stop="selectAmount(option.value)"
+						>
+							{{ option.label }}
+						</button>
+					</div>
+				</transition>
 			</div>
 			<div class="shrink column monthly-selector__take-action-wrapper">
 				<kv-button @click.native="navigateToMG"
