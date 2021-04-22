@@ -4,17 +4,17 @@
 			<router-link
 				to="/monthlygood"
 				class="header-button"
-				v-kv-track-event="['TopNav','click-mg-exp-cause', 'Find a Cause']"
+				v-kv-track-event="['TopNav','click-mg-exp-cause', 'Find a cause']"
 			>
-				<span>Find a Cause</span>
+				<span>Find a cause</span>
 			</router-link>
 			<router-link
 				:id="borrowerMenuId"
 				to="/lend-by-category"
 				class="header-button"
-				v-kv-track-event="['TopNav','click-mg-exp-borrower', 'Find a Borrower']"
+				v-kv-track-event="['TopNav','click-mg-exp-borrower', 'Find a borrower']"
 			>
-				<span>Find a Borrower <kv-icon class="triangle-icon" name="triangle" :from-sprite="true" /></span>
+				<span>Find a borrower <kv-icon class="triangle-icon" name="triangle" :from-sprite="true" /></span>
 			</router-link>
 			<kv-dropdown
 				:controller="borrowerMenuId"
@@ -50,7 +50,7 @@ export default {
 		onBorrowerMenuShow() {
 			// get the ref from parent component filling in slot
 			this.$scopedSlots?.lendmenu()[0]?.context?.$refs?.lendMenu.onOpen();
-			this.$kvTrackEvent('TopNav', 'hover-Borrower-menu', 'Find a Borrower');
+			this.$kvTrackEvent('TopNav', 'hover-Borrower-menu', 'Find a borrower');
 		},
 	},
 };
