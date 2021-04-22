@@ -30,7 +30,9 @@ describe('TheHeader', () => {
 				},
 			},
 			provide: {
-				apollo: {},
+				apollo: {
+					readFragment: () => {}
+				},
 				cookieStore: new CookieStore(),
 				kvAuth0: MockKvAuth0,
 			},
