@@ -1,7 +1,6 @@
 #import '../fragments/loanCardFields.graphql'
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 query flssLoanData(
   $filterObject: [FundraisingLoanSearchFilterInput!] = {countryIsoCode: {
           any: [
@@ -13,88 +12,18 @@ query flssLoanData(
 ) {
   fundraisingLoans(filters: $filterObject) {
     totalCount
-||||||| parent of ae38cec1... create valid test query
-query fundraisingLoansData {
-  fundraisingLoans(
-    filters: {sector {eq: "education"}}
-  ) {
-=======
-query basicLoanData(
-	$offset: Int,
-	$limit: Int,
-	$filters: LoanSearchFiltersInput,
-	$imgDefaultSize: String = "w480h360",
-	$imgRetinaSize: String = "w960h720",
-	$sortBy: LoanSearchSortByEnum,
-	$promoOnly: BasketInput,
-) {
-  fundraisingLoans(filters: { sector: { eq: "education" } }) {
->>>>>>> ae38cec1... create valid test query
     values {
       id
       ...loanCardFields
       image {
         id
-<<<<<<< HEAD
         default: url(customSize: $imgDefaultSize)
         retina: url(customSize: $imgRetinaSize)
         hash
       }
     }
   }
-||||||| parent of ebe459df... use basic loan data for query until fundraising service is stable
-query basicLoanData ($sector: String = "retail") {
-  fundraisingLoans(filters: { sector: { eq: $sector } }) {
-    totalCount
-    values {
-      loan {
-        ...loanCardFields
-||||||| parent of ae38cec1... create valid test query
-        ...loanCardFields
-=======
-		...loanCardFields
-				image {
-					id
-					default: url(customSize: $imgDefaultSize)
-					retina: url(customSize: $imgRetinaSize)
-					hash
-				}
->>>>>>> ae38cec1... create valid test query
       }
     }
   }
 }
-=======
-query basicLoanData(
-	$offset: Int,
-	$limit: Int,
-	$filters: LoanSearchFiltersInput,
-	$imgDefaultSize: String = "w480h360",
-	$imgRetinaSize: String = "w960h720",
-	$sortBy: LoanSearchSortByEnum,
-	$promoOnly: BasketInput,
-) {
-	lend {
-		loans(
-			offset: $offset,
-			limit: $limit,
-			filters: $filters,
-			sortBy: $sortBy,
-			promoOnly: $promoOnly
-			) {
-			totalCount
-			values {
-				id
-				...loanCardFields
-				image {
-					id
-					default: url(customSize: $imgDefaultSize)
-					retina: url(customSize: $imgRetinaSize)
-					hash
-				}
-			}
-		}
-	}
-}
-
->>>>>>> ebe459df... use basic loan data for query until fundraising service is stable
