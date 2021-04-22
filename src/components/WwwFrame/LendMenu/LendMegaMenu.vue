@@ -110,7 +110,6 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -161,7 +160,6 @@ export default {
 			categoriesWidth: null,
 			openedSection: '',
 			savedSearchesTitle: 'Saved searches',
-			mgHighlightInNavVersion: null,
 		};
 	},
 	computed: {
@@ -234,14 +232,6 @@ export default {
 		closeSection() {
 			this.openedSection = '';
 		},
-	},
-	created() {
-		// EXP SUBS-679 present main nav options for subscription or individual lending
-		const mgHighlightInNav = this.apollo.readFragment({
-			id: 'Experiment:mg_highlight_in_nav',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.mgHighlightInNavVersion = mgHighlightInNav.version;
 	},
 	mounted() {
 		this.checkCategoryWidth();
