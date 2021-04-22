@@ -193,7 +193,12 @@
 					@show="onLendMenuShow"
 					@hide="onLendMenuHide"
 				>
-					<the-lend-menu ref="lendMenu" />
+					<monthly-good-exp-menu-wrapper v-if="mgHighlightInNavVersion === 'shown'">
+						<template #lendmenu>
+							<the-lend-menu ref="lendMenu" />
+						</template>
+					</monthly-good-exp-menu-wrapper>
+					<the-lend-menu ref="lendMenu" v-else />
 				</kv-dropdown>
 				<kv-dropdown
 					:controller="aboutMenuId"
@@ -389,6 +394,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
+import MonthlyGoodExpMenuWrapper from '@/components/WwwFrame/LendMenu/MonthlyGoodExpMenuWrapper';
 import SearchBar from './SearchBar';
 import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
 import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
@@ -396,13 +402,14 @@ import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
 export default {
 	components: {
 		CampaignLogoGroup,
+		KivaLogo,
 		KvDropdown,
 		KvIcon,
-		KivaLogo,
-		SearchBar,
+		MonthlyGoodExpMenuWrapper,
 		PromoBannerLarge,
 		PromoBannerSmall,
-		TheLendMenu: () => import('./LendMenu/TheLendMenu'),
+		SearchBar,
+		TheLendMenu: () => import('@/components/WwwFrame/LendMenu/TheLendMenu'),
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	data() {
@@ -421,6 +428,7 @@ export default {
 			searchOpen: false,
 			redirectToLoginExperimentVersion: null,
 			basketState: {},
+			mgHighlightInNavVersion: null,
 		};
 	},
 	props: {
@@ -444,6 +452,14 @@ export default {
 			type: Object,
 			default: () => {}
 		},
+	},
+	created() {
+		// EXP SUBS-679 present main nav options for subscription or individual lending
+		const mgHighlightInNav = this.apollo.readFragment({
+			id: 'Experiment:mg_highlight_in_nav',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.mgHighlightInNavVersion = mgHighlightInNav.version;
 	},
 	computed: {
 		isTrustee() {
@@ -543,7 +559,10 @@ export default {
 			}
 		},
 		onLendMenuShow() {
-			this.$refs.lendMenu.onOpen();
+			if (this.mgHighlightInNavVersion !== 'shown') {
+				this.$refs.lendMenu.onOpen();
+			}
+
 			this.$kvTrackEvent('TopNav', 'hover-Lend-menu', 'Lend');
 		},
 		onLendMenuHide() {
@@ -930,4 +949,5 @@ $close-search-button-size: 2.5rem;
 		height: rem-calc(28);
 	}
 }
+
 </style>
