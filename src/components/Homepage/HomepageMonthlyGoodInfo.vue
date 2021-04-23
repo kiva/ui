@@ -1,6 +1,6 @@
 <template>
 	<section
-		class="monthly-good-info section"
+		class="monthly-good-info section show-for-small-only"
 	>
 		<div class="row align-center">
 			<div class="small-10 large-12 columns">
