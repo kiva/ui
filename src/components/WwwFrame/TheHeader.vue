@@ -188,17 +188,20 @@
 				</div>
 				<promo-banner-small :basket-state="basketState" />
 				<kv-dropdown
+					v-if="mgHighlightInNavVersion === 'shown'"
+					:controller="lendMenuId"
+					@show.once="loadLendInfo"
+				>
+					<monthly-good-exp-menu-wrapper ref="mgExpWrapper" />
+				</kv-dropdown>
+				<kv-dropdown
+					v-if="mgHighlightInNavVersion !== 'shown'"
 					:controller="lendMenuId"
 					@show.once="loadLendInfo"
 					@show="onLendMenuShow"
 					@hide="onLendMenuHide"
 				>
-					<monthly-good-exp-menu-wrapper v-if="mgHighlightInNavVersion === 'shown'">
-						<template #lendmenu>
-							<the-lend-menu ref="lendMenu" />
-						</template>
-					</monthly-good-exp-menu-wrapper>
-					<the-lend-menu ref="lendMenu" v-else />
+					<the-lend-menu ref="lendMenu" />
 				</kv-dropdown>
 				<kv-dropdown
 					:controller="aboutMenuId"
@@ -395,7 +398,6 @@ import { preFetchAll } from '@/util/apolloPreFetch';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import MonthlyGoodExpMenuWrapper from '@/components/WwwFrame/LendMenu/MonthlyGoodExpMenuWrapper';
-import TheLendMenu from '@/components/WwwFrame/LendMenu/TheLendMenu';
 
 import SearchBar from './SearchBar';
 import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
@@ -411,7 +413,7 @@ export default {
 		PromoBannerLarge,
 		PromoBannerSmall,
 		SearchBar,
-		TheLendMenu,
+		TheLendMenu: () => import('@/components/WwwFrame/LendMenu/TheLendMenu'),
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	data() {
@@ -561,10 +563,7 @@ export default {
 			}
 		},
 		onLendMenuShow() {
-			if (this.mgHighlightInNavVersion !== 'shown') {
-				this.$refs.lendMenu.onOpen();
-			}
-
+			this.$refs.lendMenu.onOpen();
 			this.$kvTrackEvent('TopNav', 'hover-Lend-menu', 'Lend');
 		},
 		onLendMenuHide() {
@@ -576,7 +575,11 @@ export default {
 			return route;
 		},
 		loadLendInfo() {
-			this.$refs.lendMenu.onLoad();
+			if (this.mgHighlightInNavVersion === 'shown') {
+				this.$refs.mgExpWrapper.onLoad();
+			} else {
+				this.$refs.lendMenu.onLoad();
+			}
 		},
 		toggleSearch() {
 			this.searchOpen = !this.searchOpen;

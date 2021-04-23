@@ -19,14 +19,14 @@
 			<kv-dropdown
 				:controller="borrowerMenuId"
 				@show="onBorrowerMenuShow"
+				@hide="onBorrowerMenuHide"
+				@show.once="onLoad"
 			>
-				<slot name="lendmenu">
-				</slot>
+				<the-lend-menu ref="lendMenuDesktop" />
 			</kv-dropdown>
 		</div>
 		<div class="the-mg-exp-menu__mobile hide-for-large">
-			<slot name="lendmenu">
-			</slot>
+			<the-lend-menu ref="lendMenuMobile" />
 		</div>
 	</div>
 </template>
@@ -34,11 +34,13 @@
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
 import KvDropdown from '@/components/Kv/KvDropdown';
+import TheLendMenu from '@/components/WwwFrame/LendMenu/TheLendMenu';
 
 export default {
 	components: {
 		KvDropdown,
 		KvIcon,
+		TheLendMenu,
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
@@ -48,10 +50,16 @@ export default {
 	},
 	methods: {
 		onBorrowerMenuShow() {
-			// get the ref from parent component filling in slot
-			this.$scopedSlots?.lendmenu()[0]?.context?.$refs?.lendMenu.onOpen();
+			this.$refs.lendMenuDesktop.onOpen();
 			this.$kvTrackEvent('TopNav', 'hover-Borrower-menu', 'Find a borrower');
 		},
+		onBorrowerMenuHide() {
+			this.$refs.lendMenuDesktop.onClose();
+		},
+		onLoad() {
+			this.$refs.lendMenuDesktop.onLoad();
+			this.$refs.lendMenuMobile.onLoad();
+		}
 	},
 };
 </script>
