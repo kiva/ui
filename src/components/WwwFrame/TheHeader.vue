@@ -395,6 +395,8 @@ import { preFetchAll } from '@/util/apolloPreFetch';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import MonthlyGoodExpMenuWrapper from '@/components/WwwFrame/LendMenu/MonthlyGoodExpMenuWrapper';
+import TheLendMenu from '@/components/WwwFrame/LendMenu/TheLendMenu';
+
 import SearchBar from './SearchBar';
 import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
 import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
@@ -409,7 +411,7 @@ export default {
 		PromoBannerLarge,
 		PromoBannerSmall,
 		SearchBar,
-		TheLendMenu: () => import('@/components/WwwFrame/LendMenu/TheLendMenu'),
+		TheLendMenu,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	data() {
