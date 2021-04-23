@@ -70,7 +70,7 @@ export default {
 			try {
 				navigator.clipboard.writeText(string);
 				// Tip message letting user know code successfully copied to clipboard
-				this.$showTipMsg('Code copied.', 'confirm');
+				this.$showTipMsg('Recovery code copied.', 'confirm');
 			} catch (err) {
 				console.error(err);
 			}
