@@ -2,7 +2,7 @@
 	<div class="the-mg-exp-menu">
 		<div class="the-mg-exp-menu__desktop show-for-large">
 			<router-link
-				to="/monthlygood"
+				to="/lp/support-causes-monthly"
 				class="header-button"
 				v-kv-track-event="['TopNav','click-mg-exp-cause', 'Find a cause']"
 			>
