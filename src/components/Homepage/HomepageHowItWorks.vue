@@ -97,7 +97,6 @@ export default {
 	}
 
 	&__img {
-		height: rem-calc(115);
 		margin-bottom: rem-calc(10);
 	}
 
