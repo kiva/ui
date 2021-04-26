@@ -1,25 +1,71 @@
-#import '../fragments/loanCardFields.graphql'
+fragment loanCardFields on LoanBasic {
+	id
+	status
+	name
+	borrowerCount
+	geocode {
+		# city added for DetailedLoanCard Query Cache
+		city
+		# state is used for US loans on LoanChannelCategoryPage
+		state
+		country {
+			isoCode
+			name
+			region
+		}
+	}
+	use
+	activity {
+		id
+		name
+	}
+	sector {
+		id
+		name
+	}
+	whySpecial
+	lenderRepaymentTerm
+	loanAmount
+	minNoteSize
+	loanFundraisingInfo {
+		fundedAmount
+		reservedAmount
+		isExpiringSoon
+	}
+	plannedExpirationDate
+	matchingText
+	userProperties {
+		favorited
+		lentTo
+	}
+	# lenders added for DetailedLoanCard Query Cache
+	lenders(limit: 0) {
+		totalCount
+	}
+	... on LoanPartner {
+		partnerName
+	}
+	...on LoanDirect {
+		trusteeName
+	}
+}
 
 query basicLoanData(
-	$offset: Int,
-	$limit: Int,
-	$filters: LoanSearchFiltersInput,
 	$imgDefaultSize: String = "w480h360",
 	$imgRetinaSize: String = "w960h720",
-	$sortBy: LoanSearchSortByEnum,
-	$promoOnly: BasketInput,
 ) {
   fundraisingLoans {
+    totalCount
     values {
       loan {
         id
 		...loanCardFields
-				image {
-					id
-					default: url(customSize: $imgDefaultSize)
-					retina: url(customSize: $imgRetinaSize)
-					hash
-				}
+		image {
+			id
+			default: url(customSize: $imgDefaultSize)
+			retina: url(customSize: $imgRetinaSize)
+			hash
+		}
       }
     }
   }

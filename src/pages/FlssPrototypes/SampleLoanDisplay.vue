@@ -20,16 +20,18 @@
 
 							<!--PSD HOWTO pass queries to dev graphql endpoint-->
 							<!-- write a query via appollo here in the page?-->
-                            
+
 							<!-- duplicate basicLoanData and use custom queries instead to flss -->
 							<!-- and then import the new flss component -->
 						</h2>
 						<div class="loan-container">
-                        <button @click="toggle">Toggle</button>
-                        <div v-if="active">
-                            Menu
-                        </div>
-                            <flss-loans
+							<button @click="toggle">
+								Toggle
+							</button>
+							<div v-if="active">
+								Menu
+							</div>
+							<flss-loans
 								id="flssLoanRowDisplay"
 								:filters="filters"
 								:is-visitor="true"
@@ -54,6 +56,7 @@ import gql from 'graphql-tag';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import FlssLoans from '@/pages/FlssPrototypes/FlssLoanRow';
+// import LoanCardController from '@/components/LoanCards/FlssLoanCardController';
 
 const pageQuery = gql`query pageContent($basketId: String!) {
 	shop(basketId: $basketId) {
@@ -80,7 +83,8 @@ export default {
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	components: {
 		WwwPage,
-		FlssLoans,
+		FlssLoans
+		// LoanCardController
 	},
 	mixins: [],
 	props: {
@@ -95,7 +99,7 @@ export default {
 	},
 	data() {
 		return {
-            active: false,
+			active: false,
 			headerTheme: lightHeader,
 			footerTheme: lightFooter,
 			rawPageData: null,
@@ -152,14 +156,14 @@ export default {
 			this.detailedLoan = loan;
 			this.loanDetailsVisible = true;
 		},
-        toggle () {
-		this.active = !this.active
-	    }
+		toggle() {
+			this.active = !this.active;
+		}
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
 	},
-    
+
 };
 </script>
 

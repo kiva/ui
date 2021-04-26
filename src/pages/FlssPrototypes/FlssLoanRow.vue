@@ -16,7 +16,7 @@
 			<p>
 				Please adjust your criteria or <a @click.prevent="resetSearchFilters">start a new search.</a>
 			</p>
-		</div>		
+		</div>
 		<kv-carousel
 			v-show="!zeroLoans"
 			ref="campaignLoanCarousel"
@@ -81,8 +81,8 @@
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
-import flssLoanQuery from '@/graphql/query/flssQuery.graphql';
+import LoanCardController from '@/components/LoanCards/FlssLoanCardController';
+// import flssLoanQuery from '@/graphql/query/flssQuery.graphql';
 import basicLoanQuery from '@/graphql/query/flssQuery.graphql';
 // import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 
@@ -93,7 +93,7 @@ export default {
 		// KvDropdown,
 		KvCarouselSlide,
 		KvLoadingSpinner,
-		// LoanCardController,
+		LoanCardController,
 	},
 	props: {
 		filters: {
@@ -226,15 +226,19 @@ export default {
 				variables: this.loanQueryVars,
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
-				const newLoans = data.fundraisingLoans.values;
+				// const newLoans = data.lend?.loans?.values ?? [];
+				const newLoans = data.fundraisingLoans.values ?? [];
+				
 				// Handle appending new loans to carousel
 				const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
+				
 				const existingLoanIds = this.loans.length ? this.values.map(loan => loan.id) : [];
 
 				// Filter out any loans already in the stack
 				const newLoansFiltered = newLoans.filter(loan => !existingLoanIds.includes(loan.id));
 				if (newLoanIds.toString() !== existingLoanIds.toString()) {
 					this.loans = [...this.loans, ...newLoansFiltered];
+				// this runs
 				}
 
 				if (this.isVisible) {
@@ -246,9 +250,7 @@ export default {
 				if (this.totalCount === 0) {
 					this.zeroLoans = true;
 				}
-			console.log(newLoans)
-			}
-			);
+			});
 		},
 		setLoanQueryFilters(userSelection) {
 			if (!userSelection) {
