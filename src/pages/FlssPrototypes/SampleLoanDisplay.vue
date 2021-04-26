@@ -17,14 +17,32 @@
 							Fundraising Loan Search Service Loans
 
 							<!--PSD TODO switch to simple dropdown tailored queries-->
+<<<<<<< HEAD
 							
+||||||| parent of 1f06500e... debug data flowing to loan controller
+
+							<!--PSD HOWTO pass queries to dev graphql endpoint-->
+							<!-- write a query via appollo here in the page?-->
+                            
+							<!-- duplicate basicLoanData and use custom queries instead to flss -->
+							<!-- and then import the new flss component -->
+=======
+
+							<!--PSD HOWTO pass queries to dev graphql endpoint-->
+							<!-- write a query via appollo here in the page?-->
+
+							<!-- duplicate basicLoanData and use custom queries instead to flss -->
+							<!-- and then import the new flss component -->
+>>>>>>> 1f06500e... debug data flowing to loan controller
 						</h2>
 						<div class="loan-container">
-                        <button @click="toggle">Toggle</button>
-                        <div v-if="active">
-                            Menu
-                        </div>
-                            <flss-loans
+							<button @click="toggle">
+								Toggle
+							</button>
+							<div v-if="active">
+								Menu
+							</div>
+							<flss-loans
 								id="flssLoanRowDisplay"
 								:filters="filters"
 								:is-visitor="true"
@@ -49,6 +67,7 @@ import gql from 'graphql-tag';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import FlssLoans from '@/pages/FlssPrototypes/FlssLoanRow';
+// import LoanCardController from '@/components/LoanCards/FlssLoanCardController';
 
 const pageQuery = gql`query pageContent($basketId: String!) {
 	shop(basketId: $basketId) {
@@ -75,7 +94,8 @@ export default {
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	components: {
 		WwwPage,
-		FlssLoans,
+		FlssLoans
+		// LoanCardController
 	},
 	mixins: [],
 	props: {
@@ -154,6 +174,12 @@ export default {
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
 	},
+<<<<<<< HEAD
+||||||| parent of 1f06500e... debug data flowing to loan controller
+    
+=======
+
+>>>>>>> 1f06500e... debug data flowing to loan controller
 };
 </script>
 
