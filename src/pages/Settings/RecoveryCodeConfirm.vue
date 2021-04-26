@@ -45,6 +45,7 @@ import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 
 export default {
+	inject: ['apollo'],
 	data() {
 		return {
 			verified: false,
