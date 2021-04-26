@@ -1,4 +1,54 @@
-#import '../fragments/loanCardFields.graphql'
+fragment loanCardFields on LoanBasic {
+	id
+	status
+	name
+	borrowerCount
+	geocode {
+		# city added for DetailedLoanCard Query Cache
+		city
+		# state is used for US loans on LoanChannelCategoryPage
+		state
+		country {
+			isoCode
+			name
+			region
+		}
+	}
+	use
+	activity {
+		id
+		name
+	}
+	sector {
+		id
+		name
+	}
+	whySpecial
+	lenderRepaymentTerm
+	loanAmount
+	minNoteSize
+	loanFundraisingInfo {
+		fundedAmount
+		reservedAmount
+		isExpiringSoon
+	}
+	plannedExpirationDate
+	matchingText
+	userProperties {
+		favorited
+		lentTo
+	}
+	# lenders added for DetailedLoanCard Query Cache
+	lenders(limit: 0) {
+		totalCount
+	}
+	... on LoanPartner {
+		partnerName
+	}
+	...on LoanDirect {
+		trusteeName
+	}
+}
 
 
 query flssLoanData(
