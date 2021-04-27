@@ -19,10 +19,6 @@
 							<!--PSD TODO switch to simple dropdown tailored queries-->
 
 							<!--PSD HOWTO pass queries to dev graphql endpoint-->
-							<!-- write a query via appollo here in the page?-->
-
-							<!-- duplicate basicLoanData and use custom queries instead to flss -->
-							<!-- and then import the new flss component -->
 						</h2>
 						<div class="loan-container">
 							<button @click="toggle">
@@ -56,7 +52,7 @@ import gql from 'graphql-tag';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import FlssLoans from '@/pages/FlssPrototypes/FlssLoanRow';
-// import LoanCardController from '@/components/LoanCards/FlssLoanCardController';
+import LoanCardController from '@/components/LoanCards/FlssLoanCardController';
 
 const pageQuery = gql`query pageContent($basketId: String!) {
 	shop(basketId: $basketId) {
@@ -83,8 +79,8 @@ export default {
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	components: {
 		WwwPage,
-		FlssLoans
-		// LoanCardController
+		FlssLoans,
+		LoanCardController
 	},
 	mixins: [],
 	props: {
