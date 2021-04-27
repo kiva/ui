@@ -81,7 +81,7 @@
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import LoanCardController from '@/components/LoanCards/FlssLoanCardController';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 // import flssLoanQuery from '@/graphql/query/flssQuery.graphql';
 import basicLoanQuery from '@/graphql/query/flssQuery.graphql';
 // import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
@@ -227,7 +227,10 @@ export default {
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
 				// const newLoans = data.lend?.loans?.values ?? [];
-				const newLoans = data.fundraisingLoans.values ?? [];
+				const incomingLoans = data.fundraisingLoans?.values ?? [];
+				const newLoans = incomingLoans.map(loan => {
+					return loan.loan;
+				});
 				
 				// Handle appending new loans to carousel
 				const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
