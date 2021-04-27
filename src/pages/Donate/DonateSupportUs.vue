@@ -61,7 +61,6 @@ export default {
 			formSubmitAnalytics: {
 				category: '/donate/supportus',
 				action: 'click-donate-support-us-form',
-				label: 'Donate',
 			},
 		};
 	},

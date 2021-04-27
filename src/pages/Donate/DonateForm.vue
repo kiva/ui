@@ -78,7 +78,6 @@ export default {
 				return {
 					category: 'Donate Form',
 					action: 'click-donate-support-us-form',
-					label: 'Donate',
 				};
 			},
 		},

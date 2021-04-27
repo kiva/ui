@@ -58,7 +58,6 @@ export default {
 			formSubmitAnalytics: {
 				category: '/support-kiva',
 				action: 'Donate from Macro',
-				label: 'Donation from Macro',
 			},
 			sourceSizes: [
 				{
