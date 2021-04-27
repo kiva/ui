@@ -19,7 +19,12 @@
 				<kv-button class="smaller submit-btn" type="submit" :disabled="$v.$invalid">
 					{{ buttonText }}
 				</kv-button>
-				<div class="attribution-text text-center" v-html="formDisclaimer"></div>
+				<!-- Donation Disclaimer should always be present if we have a payment option active -->
+				<div
+					class="attribution-text text-center"
+					v-if="showDisclaimer || activateMonthlyOption"
+					v-html="formDisclaimerCopy"
+				></div>
 			</div>
 		</div>
 	</form>
@@ -51,13 +56,13 @@ export default {
 		};
 	},
 	props: {
+		activateMonthlyOption: {
+			type: Boolean,
+			default: false
+		},
 		buttonText: {
 			type: String,
-			default: 'Contribute monthly'
-		},
-		id: { // used when you have multiple instances of this form on one page.
-			type: String,
-			default: 'instance1',
+			default: 'Donate'
 		},
 		data: {
 			type: Array,
@@ -66,11 +71,30 @@ export default {
 		formDisclaimer: {
 			type: String,
 			default: '',
-		}
+		},
+		formSubmitAnalytics: {
+			type: Object,
+			default: () => {
+				return {
+					category: 'Donate Form',
+					action: 'click-donate-support-us-form',
+					label: 'Donate',
+				};
+			},
+		},
+		id: { // used when you have multiple instances of this form on one page.
+			type: String,
+			default: 'instance1',
+		},
+		showDisclaimer: {
+			type: Boolean,
+			default: false
+		},
 	},
 	inject: ['apollo'],
 	data() {
 		return {
+			defaultDisclaimer: '<p>Thanks to PayPal, Kiva receives free payment processing.</p>',
 			donationAmountSelection: '500',
 			donationCustomAmount: 500,
 			donationAmount: 500,
@@ -92,6 +116,9 @@ export default {
 			values.push({ title: 'Other', key: 'custom' });
 			return values;
 		},
+		formDisclaimerCopy() {
+			return this.formDisclaimer || this.defaultDisclaimer;
+		}
 	},
 	methods: {
 		donationAmountSelected(value) {
@@ -100,7 +127,7 @@ export default {
 				this.donationAmountSelection = 'custom';
 			} else {
 				this.updateAmount(numeral(value).value(), 'donation');
-				this.donationAmountSelection = value;
+				this.donationAmountSelection = String(value);
 			}
 		},
 		donationCustomAmountUpdated(value) {
@@ -117,7 +144,7 @@ export default {
 				this.donationAmountSelection = 'custom';
 			} else {
 				this.updateAmount(numeral(value).value());
-				this.donationAmountSelection = value;
+				this.donationAmountSelection = String(value);
 			}
 		},
 		submit() {
@@ -134,9 +161,9 @@ export default {
 					});
 				} else {
 					this.$kvTrackEvent(
-						'/support-kiva',
-						'Donate from Macro',
-						'Donation from Macro',
+						this.formSubmitAnalytics.category,
+						this.formSubmitAnalytics.action,
+						this.buttonText,
 						// pass donation amount as whole number
 						numeral(this.selectedAmount).value() * 100,
 						numeral(this.selectedAmount).value() * 100
