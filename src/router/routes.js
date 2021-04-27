@@ -59,6 +59,7 @@ export default [
 	},
 	{ path: '/covid19response', component: () => import('@/pages/LandingPages/MGCovid19/MGCovid19') },
 	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/DonateFromMacro') },
+	{ path: '/donate/supportus-ui', component: () => import('@/pages/Donate/DonateSupportUs') },
 	{ path: '/error', component: () => import('@/pages/Error') },
 	{ path: '/flss', component: () => import('@/pages/FlssPrototypes/SampleLoanDisplay') },
 	{ path: '/funded/:id', component: () => import('@/pages/BorrowerProfile/fundedBorrowerProfile') },
