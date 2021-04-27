@@ -70,13 +70,20 @@ export default {
 .the-mg-exp-menu {
 	&__desktop {
 		// width of the-lend-menu
-		width: rem-calc(443);
+		width: rem-calc(507);
 		display: flex;
 		height: rem-calc(51);
 
 		.header-button {
 			flex: 1;
 			color: $kiva-accent-blue;
+			border-right: 0;
+
+			&:hover {
+				background-color: $kiva-bg-darkgray;
+				text-decoration: none;
+				color: $kiva-accent-blue;
+			}
 		}
 
 		.header-button:first-child {
@@ -90,8 +97,8 @@ export default {
 		::v-deep {
 			div.dropdown-pane.is-open {
 				// hack to move the secondary dropdown left
-				left: -223px !important;
-				width: rem-calc(445);
+				left: -255px !important;
+				width: rem-calc(509);
 			}
 		}
 	}
