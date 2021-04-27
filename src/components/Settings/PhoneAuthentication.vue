@@ -5,6 +5,7 @@
 			:visible="lightboxVisible"
 			@lightbox-closed="completeSetup"
 			:title="lightboxTitle"
+			:prevent-close="step === 3"
 		>
 			<section
 				v-if="step === 0"
@@ -211,7 +212,7 @@ export default {
 				return 'Complete setup';
 			}
 			return 'Phone number';
-		}
+		},
 	},
 	beforeDestroy() {
 		this.lightboxVisible = false;
