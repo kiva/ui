@@ -180,27 +180,25 @@ export default {
 	inject: ['apollo'],
 	computed: {
 		amountLeft() {
-			return 0
-			// const {
-			// 	fundedAmount,
-			// 	reservedAmount
-			// } = this.loan.loanFundraisingInfo;
+			const {
+				fundedAmount,
+				reservedAmount
+			} = this.loan.loanFundraisingInfo;
 			
-			// return this.loan.loanAmount - fundedAmount - reservedAmount;
+			return this.loan.loanAmount - fundedAmount - reservedAmount;
 		},
 		isFunded() {
 			return this.loan.status === 'funded';
 		},
 		isSelectedByAnother() {
-			return 0
+			return false
 			// return this.amountLeft <= 0 && !this.isFunded;
 		},
 		isExpired() {
 			return this.loan.status === 'expired';
 		},
 		percentRaised() {
-			return 0
-			// return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
+			return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
 		},
 		timeLeftMessage() {
 			const days = differenceInDays(parseISO(this.loan.plannedExpirationDate), Date.now());
@@ -230,14 +228,10 @@ export default {
 			return this.timeLeftMessage;
 		},
 	},
-	created() {
-		console.log("yo", this.loan);
-		return this.loan
-		},
 	data() {
-		console.log("yo, yo", this.loan);
+
 		return {
-			isFavorite: this.loan.userProperties.favorited,
+			isFavorite: this.loan.userProperties.favorited
 		};
 	},
 	watch: {
