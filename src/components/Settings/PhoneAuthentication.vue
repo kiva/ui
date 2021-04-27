@@ -5,7 +5,7 @@
 			:visible="lightboxVisible"
 			@lightbox-closed="completeSetup"
 			:title="lightboxTitle"
-			:prevent-close="step === 3 ? 'true' : 'false'"
+			:prevent-close="step === 3"
 		>
 			<section
 				v-if="step === 0"
