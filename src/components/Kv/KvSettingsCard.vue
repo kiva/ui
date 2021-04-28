@@ -47,9 +47,5 @@ export default {
 	background: $white;
 	padding: 1.95rem;
 	margin-bottom: 1.5rem;
-
-	&__content-wrapper {
-		padding: 0 0 0 1rem;
-	}
 }
 </style>
