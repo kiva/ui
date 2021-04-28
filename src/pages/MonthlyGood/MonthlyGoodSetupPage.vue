@@ -269,10 +269,9 @@ import { subDays } from 'date-fns';
 
 import logReadQueryError from '@/util/logReadQueryError';
 import { checkLastLoginTime } from '@/util/authenticationGuard';
-import { parseExpCookie } from '@/util/experimentUtils';
 
 import authenticationQuery from '@/graphql/query/authenticationQuery.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
@@ -423,63 +422,54 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
-		preFetch(config, client, { cookieStore, route }) {
-			// SUBS-609 Login After MG Setup Experiment
-			// When SUBS-609 login exp ends, this route can be set back to
-			// meta: {
-			// 	activeLoginRequired: true,
-			// }
-			// in routes.js
-
-			// SUBS-609 Login After MG Setup Experiment
-			const experimentAssignments = parseExpCookie(cookieStore.get('uiab'));
-			const loginAfterSetupExpVersion = experimentAssignments?.mg_login_after_setup?.version ?? 'control';
-			// Control version
-			// Auth status should be checked.
-			if (loginAfterSetupExpVersion === 'control') {
-				return client.query({
-					query: authenticationQuery,
-					fetchPolicy: 'network-only',
-				}).then(({ data }) => {
-					if (!data.my) {
-						throw new Error('api.authenticationRequired');
+		preFetch(config, client, { route }) {
+			/**
+			 * Implementation of SUBS-609 Experiment Results
+			 * For users without a currently active login.
+			 *
+			 * If user has logged in before:
+			 * Setup page should load, showing continue button.
+			 * Login after setup form
+			 *
+			 * If user has not logged in before:
+			 * Setup page should not load, redirect to login, then show setup page.
+			 * Login before setup form.
+			 */
+			return client.query({ query: hasEverLoggedInQuery })
+				.then(response => {
+					const loginAfterSetup = response.data?.hasEverLoggedIn ? 'shown' : 'control';
+					// Control version
+					// Auth status should be checked and redirect to login.
+					if (loginAfterSetup === 'control') {
+						return client.query({
+							query: authenticationQuery,
+							fetchPolicy: 'network-only',
+						}).then(({ data }) => {
+							if (!data.my) {
+								throw new Error('api.authenticationRequired');
+							}
+							// Route requires active login
+							if (!checkLastLoginTime(data, 'activeLoginDuration', 3600)) {
+								throw new Error('activeLoginRequired');
+							}
+							return client.query({ query: pageQuery });
+						}).catch(() => {
+							// Auth error will be caught here, redirect to login.
+							return Promise.reject({
+								path: '/ui-login',
+								query: { force: true, doneUrl: route.fullPath }
+							});
+						});
 					}
-					// Route requires active login
-					if (!checkLastLoginTime(data, 'activeLoginDuration', 3600)) {
-						throw new Error('activeLoginRequired');
+					// Shown version
+					// Auth status should not be checked, continue with pageQuery
+					if (loginAfterSetup === 'shown') {
+						return client.query({ query: pageQuery });
 					}
-					return client.query({ query: pageQuery });
-				}).catch(() => {
-					// Auth error will be caught here, redirect to login.
-					return Promise.reject({
-						path: '/ui-login',
-						query: { force: true, doneUrl: route.fullPath }
-					});
 				});
-			}
-			// Shown version
-			// Auth status should not be checked, continue with pageQuery
-			if (loginAfterSetupExpVersion === 'shown') {
-				return client.query({ query: pageQuery });
-			}
 		}
 	},
 	created() {
-		// SUBS-609 Login After MG Setup Experiment
-		// Experiment is prefetched in experimentPreFetch
-		// This experiment is tracked here and on /monthlygood
-		// since they are entry points into the MG Funnel
-		const mgLoginExperiment = this.apollo.readFragment({
-			id: 'Experiment:mg_login_after_setup',
-			fragment: experimentVersionFragment,
-		}) || {};
-		const loginAfterSetupExpVersion = mgLoginExperiment.version ?? {};
-		if (loginAfterSetupExpVersion === 'control') {
-			this.$kvTrackEvent('MonthlyGood', 'EXP-SUBS-609-Jan2021', 'a');
-		} else if (loginAfterSetupExpVersion === 'shown') {
-			this.$kvTrackEvent('MonthlyGood', 'EXP-SUBS-609-Jan2021', 'b');
-		}
-
 		try {
 			const pageQueryResult = this.apollo.readQuery({
 				query: pageQuery,
