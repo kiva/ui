@@ -166,6 +166,7 @@ import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
 
 import KvButton from '@/components/Kv/KvButton';
+import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvRadio from '@/components/Kv/KvRadio';
@@ -195,6 +196,7 @@ export default {
 	components: {
 		BraintreeDropInInterface,
 		KvButton,
+		KvIcon,
 		KvLightbox,
 		KvLoadingSpinner,
 		KvRadio,
