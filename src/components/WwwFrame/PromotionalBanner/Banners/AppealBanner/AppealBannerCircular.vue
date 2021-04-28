@@ -36,6 +36,7 @@
 				<div class="appeal-banner__content small-12 columns">
 					<h3 class="appeal-banner__title strong" v-html="headline"></h3>
 					<div class="appeal-banner__body" v-html="body"></div>
+					<div class="appeal-banner__link" v-html="link"></div>
 					<ul class="appeal-banner__amount-list">
 						<li v-for="(buttonAmount, index) in buttonAmounts"
 							:key="`amount-${index}`"
@@ -144,6 +145,10 @@ export default {
 			type: String,
 			default: '',
 		},
+		link: {
+			type: String,
+			default: '',
+		},
 		body: {
 			type: String,
 			default: '',
@@ -243,26 +248,25 @@ export default {
 	&__btn {
 		font-size: rem-calc(14);
 		border-radius: rem-calc(8);
-		background: #fff;
+		background: $white;
 		color: $kiva-icon-green;
-		border-color: $kiva-icon-green;
 		box-shadow: none;
 		width: 100%;
 		margin-bottom: 0;
+		border: 1px solid $kiva-green;
 
 		&:hover,
 		&:focus {
-			color: #fff;
-			background: $kiva-green;
+			background: $kiva-bg-darkgray;
 		}
 
 		&--toggle-open {
-			color: #fff;
-			background: $kiva-icon-green;
+			color: $kiva-green;
+			background: $white;
 
 			&:hover,
 			&:focus {
-				background: #fff;
+				background: $kiva-bg-darkgray;
 				color: $kiva-icon-green;
 			}
 		}
@@ -297,9 +301,26 @@ export default {
 		white-space: pre-wrap;
 	}
 
+	&__link {
+		&::v-deep {
+			a {
+				text-align: center;
+				color: $kiva-text-dark;
+				margin-bottom: 1rem;
+				top: -16px;
+				position: relative;
+
+				@include breakpoint(large) {
+					text-align: left;
+				}
+			}
+		}
+	}
+
 	&--open {
 		padding-top: rem-calc(16);
 		padding-bottom: rem-calc(16);
+		background-color: #EAF6F0;
 
 		@include breakpoint(large) {
 			padding-top: rem-calc(24);
@@ -308,6 +329,9 @@ export default {
 	}
 
 	&--closed {
+		background-color: $kiva-green;
+		border-bottom: 1px solid $kiva-icon-green;
+
 		.appeal-banner__content {
 			padding-top: rem-calc(8);
 			padding-bottom: rem-calc(8);
@@ -321,6 +345,7 @@ export default {
 
 		.appeal-banner__title {
 			margin: 0;
+			color: $white;
 		}
 	}
 }

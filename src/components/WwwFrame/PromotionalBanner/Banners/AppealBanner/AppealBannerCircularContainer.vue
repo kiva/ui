@@ -5,6 +5,7 @@
 		:button-amounts="buttonAmounts"
 		:headline="headline"
 		:body="body"
+		:link="link"
 		:image-url="imageUrl"
 		:is-open="isOpen"
 		@toggle-banner="onToggleBanner"
@@ -61,6 +62,20 @@ export default {
 		body() {
 			const appealBody = this.appealBannerContent?.additionalContent?.[0]?.fields?.richText || '';
 			return documentToHtmlString(appealBody);
+		},
+		link() {
+			const appealLink = this.appealBannerContent?.additionalContent?.[1]?.fields?.richText || '';
+
+			// contentful wraps all richText fields with a <p> tag,
+			// which makes them difficult to style as headers,
+			// this removes that wrapping tag
+			const options = {
+				renderNode: {
+					paragraph: (node, next) => `${next(node.content)}`
+				}
+			};
+
+			return documentToHtmlString(appealLink, options);
 		},
 		buttonAmounts() {
 			const amountsArr = this.appealBannerContent?.dataObject?.donationAmounts || '';
