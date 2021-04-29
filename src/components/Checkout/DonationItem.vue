@@ -106,20 +106,29 @@
 			title="How does Kiva use donations?"
 		>
 			<p>
-				100% of every dollar you lend on Kiva goes directly to funding loans.
-				We rely on small optional donations from you and others to keep Kiva running.
-				Every $1 donated to Kiva makes $8 in loans possible around the world.
-				Your donation will enable us to:
+				100% of money lent on Kiva goes to funding loans,
+				so we rely on donations to continue this important work.
+				Each dollar helps us invest in systemic change and spread financial inclusion around the world.
+			</p>
+			<p>
+				We’re investing in lasting solutions for a more inclusive world through your donations.
+				Projects like...
 			</p>
 			<ul style="margin-bottom: 1rem;">
-				<li>Send expert staff to over 60 countries to vet and monitor loans and partners.</li>
-				<li>Build and maintain a website that facilitates over $1 million in loans each week.</li>
-				<li>Provide comprehensive customer support to thousands of lenders worldwide.</li>
-				<li>Train and support hundreds of volunteers -- 4 for every 1 staff member at Kiva.</li>
+				<li>
+					Kiva Protocol, giving unbanked people a digital identity and secure control over their
+					own credit information in places like Sierra Leone.
+				</li>
+				<li>
+					Kiva Capital, scaling our model for institutional investors.
+				</li>
+				<li>
+					Kiva Labs, supporting small and growing social enterprises around the world.
+				</li>
 			</ul>
 			<p>
-				If you live in the United States, your donation is tax-deductible.
-				Thank you for considering a donation to Kiva.
+				Your donations also help over 100 Kiva employees and more than 400 volunteers
+				make your loans happen!
 			</p>
 		</kv-lightbox>
 	</div>
