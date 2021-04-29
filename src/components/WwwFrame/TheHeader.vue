@@ -459,17 +459,17 @@ export default {
 		},
 	},
 	created() {
-		// EXP SUBS-679 present main nav options for subscription or individual lending
+		// EXP SUBS-680 present main nav options for subscription or individual lending
 		const mgHighlightInNav = this.apollo.readFragment({
 			id: 'Experiment:mg_highlight_in_nav',
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.mgHighlightInNavVersion = mgHighlightInNav.version;
 
-		// Fire Event for EXP SUBS-679
+		// Fire Event for EXP SUBS-680
 		this.$kvTrackEvent(
 			'TopNav',
-			'EXP-SUBS-679-Apr2021',
+			'EXP-SUBS-680-Apr2021',
 			this.mgHighlightInNavVersion === 'shown' ? 'b' : 'a'
 		);
 	},
