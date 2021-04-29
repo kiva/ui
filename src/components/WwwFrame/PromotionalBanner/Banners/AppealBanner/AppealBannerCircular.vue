@@ -261,13 +261,12 @@ export default {
 		}
 
 		&--toggle-open {
-			color: $kiva-green;
-			background: $white;
+			color: $white;
+			background: $kiva-green;
 
 			&:hover,
 			&:focus {
-				background: $kiva-bg-darkgray;
-				color: $kiva-icon-green;
+				background: darken($kiva-green, 10%);
 			}
 		}
 	}
@@ -329,8 +328,7 @@ export default {
 	}
 
 	&--closed {
-		background-color: $kiva-green;
-		border-bottom: 1px solid $kiva-icon-green;
+		background-color: #EAF6F0;
 
 		.appeal-banner__content {
 			padding-top: rem-calc(8);
@@ -345,7 +343,7 @@ export default {
 
 		.appeal-banner__title {
 			margin: 0;
-			color: $white;
+			color: $kiva-text-dark;
 		}
 	}
 }
