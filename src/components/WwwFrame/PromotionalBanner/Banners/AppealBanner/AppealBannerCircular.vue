@@ -244,7 +244,7 @@ export default {
 		font-size: rem-calc(14);
 		border-radius: rem-calc(8);
 		background: $white;
-		color: $kiva-icon-green;
+		color: $kiva-green;
 		box-shadow: none;
 		width: 100%;
 		margin-bottom: 0;
