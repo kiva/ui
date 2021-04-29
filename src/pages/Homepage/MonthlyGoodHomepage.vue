@@ -229,7 +229,7 @@
 						We don't take a penny.
 					</p>
 				</div>
-				<homepage-statistics />
+				<homepage-statistics-legacy />
 			</div>
 		</section>
 
@@ -302,15 +302,14 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
 import MonthlyGoodSelector from '@/components/MonthlyGood/MonthlyGoodSelector';
 import KvIcon from '@/components/Kv/KvIcon';
-
-import HomepageStatistics from './HomepageStatistics';
+import HomepageStatisticsLegacy from '@/components/Homepage/HomepageStatisticsLegacy';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
 
 export default {
 	components: {
-		HomepageStatistics,
+		HomepageStatisticsLegacy,
 		KvButton,
 		KvIcon,
 		KvResponsiveImage,

@@ -24,7 +24,7 @@ export default ({ cookieStore, kvAuth0 }) => {
 						const cacheData = cache.readQuery({ query: hasEverLoggedInQuery });
 						return !!cacheData?.hasEverLoggedIn;
 					} catch (e) {
-						// Reutrn false if there wasn't a previously cached value
+						// Return false if there wasn't a previously cached value
 						return false;
 					}
 				},
