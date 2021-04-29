@@ -173,7 +173,7 @@
 						We don't take a penny.
 					</p>
 				</div>
-				<homepage-statistics />
+				<homepage-statistics-legacy />
 				<kv-responsive-image
 					class="statistics__flourish"
 					:images="flourishImgs.pinkRight"
@@ -258,7 +258,7 @@ import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCate
 import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
 import FifteenYearsStyles from '@/components/15Years/15YearsStyles';
 import FifteenYearsSupportingPartners from '@/components/15Years/15YearsSupportingPartners';
-import HomepageStatistics from './HomepageStatistics';
+import HomepageStatisticsLegacy from '@/components/Homepage/HomepageStatisticsLegacy';
 
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
 
@@ -268,7 +268,7 @@ export default {
 		FifteenYearsHeader,
 		FifteenYearsStyles,
 		FifteenYearsSupportingPartners,
-		HomepageStatistics,
+		HomepageStatisticsLegacy,
 		KvButton,
 		KvResponsiveImage,
 		LoanCategoriesSection,
