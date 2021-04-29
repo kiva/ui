@@ -465,6 +465,13 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.mgHighlightInNavVersion = mgHighlightInNav.version;
+
+		// Fire Event for EXP SUBS-679
+		this.$kvTrackEvent(
+			'TopNav',
+			'EXP-SUBS-679-Apr2021',
+			this.mgHighlightInNavVersion === 'shown' ? 'b' : 'a'
+		);
 	},
 	computed: {
 		isTrustee() {
