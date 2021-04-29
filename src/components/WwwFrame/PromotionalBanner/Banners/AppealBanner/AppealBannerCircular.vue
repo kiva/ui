@@ -36,7 +36,6 @@
 				<div class="appeal-banner__content small-12 columns">
 					<h3 class="appeal-banner__title strong" v-html="headline"></h3>
 					<div class="appeal-banner__body" v-html="body"></div>
-					<div class="appeal-banner__link" v-html="link"></div>
 					<ul class="appeal-banner__amount-list">
 						<li v-for="(buttonAmount, index) in buttonAmounts"
 							:key="`amount-${index}`"
@@ -142,10 +141,6 @@ export default {
 			default() { return [20, 35, 50]; },
 		},
 		headline: {
-			type: String,
-			default: '',
-		},
-		link: {
 			type: String,
 			default: '',
 		},
@@ -298,20 +293,10 @@ export default {
 	&__body {
 		margin-bottom: 1rem;
 		white-space: pre-wrap;
-	}
 
-	&__link {
 		&::v-deep {
 			a {
-				text-align: center;
 				color: $kiva-text-dark;
-				margin-bottom: 1rem;
-				top: -16px;
-				position: relative;
-
-				@include breakpoint(large) {
-					text-align: left;
-				}
 			}
 		}
 	}
