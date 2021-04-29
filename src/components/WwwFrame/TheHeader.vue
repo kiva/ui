@@ -191,6 +191,7 @@
 					v-if="mgHighlightInNavVersion === 'shown'"
 					:controller="lendMenuId"
 					@show.once="loadLendInfo"
+					@show="onLendMenuShow"
 				>
 					<monthly-good-exp-menu-wrapper ref="mgExpWrapper" />
 				</kv-dropdown>
@@ -563,7 +564,9 @@ export default {
 			}
 		},
 		onLendMenuShow() {
-			this.$refs.lendMenu.onOpen();
+			if (this.mgHighlightInNavVersion !== 'shown') {
+				this.$refs.lendMenu.onOpen();
+			}
 			this.$kvTrackEvent('TopNav', 'hover-Lend-menu', 'Lend');
 		},
 		onLendMenuHide() {
