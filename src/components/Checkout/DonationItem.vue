@@ -105,19 +105,31 @@
 			@lightbox-closed="lightboxClosed"
 			title="How does Kiva use donations?"
 		>
-			<p>100% of money lent on Kiva goes to funding loans,
+			<p>
+				100% of money lent on Kiva goes to funding loans,
 				so we rely on donations to continue this important work.
-				Each dollar helps us invest in systemic change and spread financial inclusion around the world.</p>
-			<p>We’re investing in lasting solutions for a more inclusive world through your donations.
-				Projects like...</p>
+				Each dollar helps us invest in systemic change and spread financial inclusion around the world.
+			</p>
+			<p>
+				We’re investing in lasting solutions for a more inclusive world through your donations.
+				Projects like...
+			</p>
 			<ul style="margin-bottom: 1rem;">
-				<li>Kiva Protocol, giving unbanked people a digital identity and secure control over their
-					own credit information in places like Sierra Leone.</li>
-				<li>Kiva Capital, scaling our model for institutional investors.</li>
-				<li>Kiva Labs, supporting small and growing social enterprises around the world.</li>
+				<li>
+					Kiva Protocol, giving unbanked people a digital identity and secure control over their
+					own credit information in places like Sierra Leone.
+				</li>
+				<li>
+					Kiva Capital, scaling our model for institutional investors.
+				</li>
+				<li>
+					Kiva Labs, supporting small and growing social enterprises around the world.
+				</li>
 			</ul>
-			<p>Your donations also help over 100 Kiva employees and more than 400 volunteers
-				make your loans happen!</p>
+			<p>
+				Your donations also help over 100 Kiva employees and more than 400 volunteers
+				make your loans happen!
+			</p>
 		</kv-lightbox>
 	</div>
 </template>
