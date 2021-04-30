@@ -182,7 +182,7 @@ export default {
 		}
 	},
 	created() {
-		// EXP SUBS-679 present main nav options for subscription or individual lending
+		// EXP SUBS-680 present main nav options for subscription or individual lending
 		const mgHighlightInNav = this.apollo.readFragment({
 			id: 'Experiment:mg_highlight_in_nav',
 			fragment: experimentVersionFragment,
