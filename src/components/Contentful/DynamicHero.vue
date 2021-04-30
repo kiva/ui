@@ -1,33 +1,46 @@
 <template>
-	<section class="homepage-hero">
+	<section class="contentful-hero">
 		<div class="row align-center">
+			<!-- hero media -->
 			<div
 				class="small-12 medium-10 large-6 xlarge-5 columns"
 			>
-				<router-link
-					:to="heroButton.link"
-					v-kv-track-event="[
-						'homepage',
-						'click-hero-loancards',
-						heroImage.description,
-					]"
-				>
-					<kv-contentful-img
-						v-if="heroImage.url"
-						class="homepage-hero__img"
-						:contentful-src="heroImage.url"
-						:width="500"
-						:height="527"
-						fallback-format="jpg"
-						:alt="heroImage.description"
-					/>
-				</router-link>
+				<template v-if="isHeroImage">
+					<router-link
+						:to="heroButton.link"
+						v-kv-track-event="[
+							'homepage',
+							'click-hero-loancards',
+							heroMedia.description,
+						]"
+					>
+						<kv-contentful-img
+							v-if="heroMedia.url"
+							class="contentful-hero__img"
+							:contentful-src="heroMedia.url"
+							:width="500"
+							:height="527"
+							fallback-format="jpg"
+							:alt="heroMedia.description"
+						/>
+					</router-link>
+				</template>
+				<template v-if="isHeroVideo">
+					<video
+						:src="heroMedia.url"
+						class="contentful-hero__video-wrapper--video"
+						autoplay
+						loop
+						muted
+						playsinline
+					></video>
+				</template>
 			</div>
 			<!-- eslint-disable-next-line max-len -->
-			<div class="small-10 large-6 xlarge-7 align-self-middle columns homepage-hero__cta_wrapper">
-				<h1 class="homepage-hero__header" v-html="heroHeadline">
+			<div class="small-10 large-6 xlarge-7 align-self-middle columns contentful-hero__cta_wrapper">
+				<h1 class="contentful-hero__header" v-html="heroHeadline">
 				</h1>
-				<div class="homepage-hero__body" v-html="heroBody">
+				<div class="contentful-hero__body" v-html="heroBody">
 				</div>
 				<kv-button
 					:class="`${buttonClass} show-for-large rounded`"
@@ -80,6 +93,15 @@ export default {
 		},
 	},
 	computed: {
+		mediaObject() {
+			return this.content?.media?.[0];
+		},
+		isHeroVideo() {
+			return this.mediaObject?.file?.contentType.includes('video');
+		},
+		isHeroImage() {
+			return this.mediaObject?.file?.contentType.includes('image');
+		},
 		buttonClass() {
 			return this.$attrs?.customCtaButtonClass ?? '';
 		},
@@ -92,16 +114,15 @@ export default {
 		buttonClick() {
 			return this.$attrs?.customCtaFunction ?? null;
 		},
-		heroImage() {
-			const mediaObject = this.content?.media?.[0];
+		heroMedia() {
 			return {
-				description: mediaObject?.description ?? '',
-				title: mediaObject?.title ?? '',
-				url: mediaObject?.file?.url ?? ''
+				description: this.mediaObject?.description ?? '',
+				title: this.mediaObject?.title ?? '',
+				url: this.mediaObject?.file?.url ?? ''
 			};
 		},
 		heroText() {
-			return this.content?.contents?.find(({ key }) => key.indexOf('homepage-hero-text') > -1);
+			return this.content?.contents?.find(({ key }) => key.indexOf('hero-text') > -1);
 		},
 		heroHeadline() {
 			return this.heroText?.headline ?? '';
@@ -123,7 +144,7 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-.homepage-hero {
+.contentful-hero {
 	padding: 2rem 0;
 
 	@include breakpoint(large) {
@@ -188,6 +209,19 @@ export default {
 
 				line-height: rem-calc(36);
 			}
+		}
+	}
+
+	&__video-wrapper {
+		margin-top: 2.5rem;
+
+		@include breakpoint(large) {
+			margin-top: 0;
+		}
+
+		&--video {
+			width: 100%;
+			border-radius: rem-calc(10);
 		}
 	}
 }

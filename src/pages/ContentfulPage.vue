@@ -67,8 +67,7 @@ const CampaignThanks = () => import('@/components/CorporateCampaign/CampaignThan
 const HomepageBottomCTA = () => import('@/components/Homepage/HomepageBottomCTA');
 const HomepageCorporateSponsors = () => import('@/components/Homepage/HomepageCorporateSponsors');
 // const HomepageGeneralStats = () => import('@/components/Homepage/HomepageGeneralStats');
-// const HomepageHero = () => import('@/components/Homepage/HomepageHero');
-const ContentfulDynamicHero = () => import('@/components/Contentful/ContentfulDynamicHero');
+const DynamicHero = () => import('@/components/Contentful/DynamicHero');
 
 const HomepageHowItWorks = () => import('@/components/Homepage/HomepageHowItWorks');
 const HomepageLenderQuotes = () => import('@/components/Homepage/HomepageLenderQuotes');
@@ -116,8 +115,10 @@ const getComponentFromType = type => {
 		case 'homepageBottomCTA':
 			return HomepageBottomCTA;
 		case 'homepageHero':
-			// return HomepageHero;
-			return ContentfulDynamicHero;
+			// TODO - deprecate homepageHero type on contentful then remove this
+			return DynamicHero;
+		case 'dynamicHero':
+			return DynamicHero;
 		case 'homepageHowItWorks':
 			return HomepageHowItWorks;
 		case 'homepageLenderQuotes':
