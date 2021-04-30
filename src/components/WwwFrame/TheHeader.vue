@@ -191,6 +191,7 @@
 					v-if="mgHighlightInNavVersion === 'shown'"
 					:controller="lendMenuId"
 					@show.once="loadLendInfo"
+					@show="onLendMenuShow"
 				>
 					<monthly-good-exp-menu-wrapper ref="mgExpWrapper" />
 				</kv-dropdown>
@@ -458,12 +459,19 @@ export default {
 		},
 	},
 	created() {
-		// EXP SUBS-679 present main nav options for subscription or individual lending
+		// EXP SUBS-680 present main nav options for subscription or individual lending
 		const mgHighlightInNav = this.apollo.readFragment({
 			id: 'Experiment:mg_highlight_in_nav',
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.mgHighlightInNavVersion = mgHighlightInNav.version;
+
+		// Fire Event for EXP SUBS-680
+		this.$kvTrackEvent(
+			'TopNav',
+			'EXP-SUBS-680-Apr2021',
+			this.mgHighlightInNavVersion === 'shown' ? 'b' : 'a'
+		);
 	},
 	computed: {
 		isTrustee() {
@@ -563,7 +571,9 @@ export default {
 			}
 		},
 		onLendMenuShow() {
-			this.$refs.lendMenu.onOpen();
+			if (this.mgHighlightInNavVersion !== 'shown') {
+				this.$refs.lendMenu.onOpen();
+			}
 			this.$kvTrackEvent('TopNav', 'hover-Lend-menu', 'Lend');
 		},
 		onLendMenuHide() {
