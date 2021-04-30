@@ -243,27 +243,25 @@ export default {
 	&__btn {
 		font-size: rem-calc(14);
 		border-radius: rem-calc(8);
-		background: #fff;
-		color: $kiva-icon-green;
-		border-color: $kiva-icon-green;
+		background: $white;
+		color: $kiva-green;
 		box-shadow: none;
 		width: 100%;
 		margin-bottom: 0;
+		border: 1px solid $kiva-green;
 
 		&:hover,
 		&:focus {
-			color: #fff;
-			background: $kiva-green;
+			background: $kiva-bg-darkgray;
 		}
 
 		&--toggle-open {
-			color: #fff;
-			background: $kiva-icon-green;
+			color: $white;
+			background: $kiva-green;
 
 			&:hover,
 			&:focus {
-				background: #fff;
-				color: $kiva-icon-green;
+				background: darken($kiva-green, 10%);
 			}
 		}
 	}
@@ -295,11 +293,18 @@ export default {
 	&__body {
 		margin-bottom: 1rem;
 		white-space: pre-wrap;
+
+		&::v-deep {
+			a {
+				color: $kiva-text-dark;
+			}
+		}
 	}
 
 	&--open {
 		padding-top: rem-calc(16);
 		padding-bottom: rem-calc(16);
+		background-color: #EAF6F0;
 
 		@include breakpoint(large) {
 			padding-top: rem-calc(24);
@@ -308,6 +313,8 @@ export default {
 	}
 
 	&--closed {
+		background-color: #EAF6F0;
+
 		.appeal-banner__content {
 			padding-top: rem-calc(8);
 			padding-bottom: rem-calc(8);
@@ -321,6 +328,7 @@ export default {
 
 		.appeal-banner__title {
 			margin: 0;
+			color: $kiva-text-dark;
 		}
 	}
 }
