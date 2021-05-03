@@ -14,9 +14,10 @@ module.exports = {
 			]
 		},
 		upload: {
-			target: 'lhci',
-			serverBaseUrl: 'https://lighthouse-ci-kiva-dev.herokuapp.com/',
-			token: process.env.LHCI_DEV_BUILD_TOKEN,
+			target: 'temporary-public-storage',
+			// target: 'lhci',
+			// serverBaseUrl: 'https://lighthouse-ci-kiva-dev.herokuapp.com/',
+			// token: process.env.LHCI_DEV_BUILD_TOKEN,
 		},
 	},
 };
