@@ -9,7 +9,7 @@
 					<router-link
 						:to="heroButton.link"
 						v-kv-track-event="[
-							'homepage',
+							'Hero',
 							'click-hero-loancards',
 							heroMedia.description,
 						]"
@@ -47,7 +47,7 @@
 					:to="buttonTo"
 					@click.native="buttonClick"
 					v-kv-track-event="[
-						'homepage',
+						'Hero',
 						'click-hero-cta',
 						heroButton.text,
 					]"
@@ -64,7 +64,7 @@
 					:to="buttonTo"
 					@click.native="buttonClick"
 					v-kv-track-event="[
-						'homepage',
+						'Hero',
 						'click-hero-cta',
 						heroButton.text,
 					]"
