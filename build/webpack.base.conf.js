@@ -73,7 +73,8 @@ module.exports = {
 			},
 			{
 				// Inject styles from the /pages/ directory as <style> tags
-				test: /\/pages\/.+\.scss$/,
+				// Also injects TheHeader styles to each page css file
+				test: /(\/pages\/.+\.scss|\/TheHeader\.scss)/,
 				use: [
 					{ loader: 'thread-loader' },
 					{ loader: 'vue-style-loader' },
