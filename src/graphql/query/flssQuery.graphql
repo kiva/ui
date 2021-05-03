@@ -10,7 +10,7 @@ query flssLoanData(
   $imgDefaultSize: String = "w480h360"
   $imgRetinaSize: String = "w960h720"
 ) {
-  fundraisingLoans(filters: $filterObject) {
+  fundraisingLoans(filters: $filters) {
     totalCount
     values {
       id
