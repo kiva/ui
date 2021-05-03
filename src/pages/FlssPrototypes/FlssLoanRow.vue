@@ -227,10 +227,10 @@ export default {
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
 				const newLoans = data.fundraisingLoans?.values ?? [];
-				
+
 				// Handle appending new loans to carousel
 				const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
-				
+
 				const existingLoanIds = this.loans.length ? this.values.map(loan => loan.id) : [];
 
 				// Filter out any loans already in the stack

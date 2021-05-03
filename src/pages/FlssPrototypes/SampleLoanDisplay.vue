@@ -44,7 +44,6 @@ import gql from 'graphql-tag';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import FlssLoans from '@/pages/FlssPrototypes/FlssLoanRow';
-import LoanCardController from '@/components/LoanCards/FlssLoanCardController';
 
 const pageQuery = gql`query pageContent($basketId: String!) {
 	shop(basketId: $basketId) {
@@ -71,8 +70,7 @@ export default {
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	components: {
 		WwwPage,
-		FlssLoans,
-		LoanCardController
+		FlssLoans
 	},
 	mixins: [],
 	props: {
