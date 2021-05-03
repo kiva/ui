@@ -20,12 +20,6 @@
 							
 						</h2>
 						<div class="loan-container">
-							<button @click="toggle">
-								Toggle
-							</button>
-							<div v-if="active">
-								Menu
-							</div>
 							<flss-loans
 								id="flssLoanRowDisplay"
 								:filters="filters"
