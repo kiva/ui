@@ -2,7 +2,6 @@ const { merge } = require('webpack-merge');
 var assetsPath = require('./assets-path');
 var baseWebpackConfig = require('./webpack.base.conf');
 var styleLoaders = require('./style-loaders');
-var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var SvgStorePlugin = require('webpack-svgstore-plugin');
 var VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 
@@ -14,23 +13,6 @@ module.exports = merge(baseWebpackConfig, {
 		app: './src/client-entry.js'
 	},
 	devtool: isProd ? 'source-map' : false,
-	module: {
-		rules: [
-			{
-				// Extract styles, excluding the /pages/ directory as those are injected
-				test: /\.scss$/,
-				exclude: /\pages\//,
-				use: [
-					{
-						loader: MiniCssExtractPlugin.loader,
-						options: {
-							esModule: true,
-						}
-					}
-				].concat(styleLoaders),
-			},
-		]
-	},
 	optimization: {
 		splitChunks: {
 			chunks: 'all',
@@ -38,10 +20,6 @@ module.exports = merge(baseWebpackConfig, {
 		}
 	},
 	plugins: [
-		new MiniCssExtractPlugin({
-			filename: assetsPath('css/[name].[contenthash].css'),
-			chunkFilename: assetsPath('css/[name].[contenthash].css'),
-		}),
 		// minify and combine svg icons
 		new SvgStorePlugin({
 			svg: {
