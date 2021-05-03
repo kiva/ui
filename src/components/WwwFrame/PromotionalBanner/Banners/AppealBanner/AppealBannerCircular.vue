@@ -24,7 +24,7 @@
 							v-if="imageUrl"
 							class="indicator__image"
 							:contentful-src="imageUrl"
-							alt="Promotional banner indicator image"
+							alt=""
 							fallback-format="gif"
 							:height="94"
 						/>
