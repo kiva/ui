@@ -11,7 +11,8 @@ module.exports = {
 				'http://localhost:8888/lend/filter',
 				'http://localhost:8888/lend-by-category',
 				'http://localhost:8888/lend-by-category/women'
-			]
+			],
+			numberOfRuns: 5,
 		},
 		upload: {
 			target: 'temporary-public-storage',
