@@ -184,14 +184,14 @@ export default {
 				fundedAmount,
 				reservedAmount
 			} = this.loan.loanFundraisingInfo;
-			
+
 			return this.loan.loanAmount - fundedAmount - reservedAmount;
 		},
 		isFunded() {
 			return this.loan.status === 'funded';
 		},
 		isSelectedByAnother() {
-			return false
+			return false;
 			// return this.amountLeft <= 0 && !this.isFunded;
 		},
 		isExpired() {
@@ -229,7 +229,6 @@ export default {
 		},
 	},
 	data() {
-
 		return {
 			isFavorite: this.loan.userProperties.favorited
 		};
