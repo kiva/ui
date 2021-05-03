@@ -1,10 +1,11 @@
 #import '../fragments/loanCardFields.graphql'
 
 query flssLoanData(
+  $filters: [FundraisingLoanSearchFilterInput!] = {sector: {ne: "agriculture"}} 
   $imgDefaultSize: String = "w480h360"
   $imgRetinaSize: String = "w960h720"
 ) {
-  fundraisingLoans(filters: { sector: { eq: "retail" } }) {
+  fundraisingLoans(filters: $filters) {
     totalCount
     values {
       id
