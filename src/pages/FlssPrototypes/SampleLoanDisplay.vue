@@ -14,19 +14,11 @@
 				<div class="row">
 					<div class="columns">
 						<h2 class="loan-categories__header text-center">
-							Support causes you care about.
+							Fundraising Loan Search Service Loans
 
 							<!--PSD TODO switch to simple dropdown tailored queries-->
-
-							<!--PSD HOWTO pass queries to dev graphql endpoint-->
 						</h2>
 						<div class="loan-container">
-							<button @click="toggle">
-								Toggle
-							</button>
-							<div v-if="active">
-								Menu
-							</div>
 							<flss-loans
 								id="flssLoanRowDisplay"
 								:filters="filters"

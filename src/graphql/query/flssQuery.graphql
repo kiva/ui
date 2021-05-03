@@ -1,22 +1,21 @@
 #import '../fragments/loanCardFields.graphql'
 
-query basicLoanData(
+query flssLoanData(
 	$imgDefaultSize: String = "w480h360",
 	$imgRetinaSize: String = "w960h720",
 ) {
-  fundraisingLoans (filters: {sector: {eq: "retail"}}) {
+  fundraisingLoans (filters: {sector: {eq: "retail"}} ) {
     totalCount
     values {
-      loan {
         id
 		...loanCardFields
-		image {
-			id
-			default: url(customSize: $imgDefaultSize)
-			retina: url(customSize: $imgRetinaSize)
-			hash
-		}
+				image {
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+					hash
+				}
       }
+
     }
-  }
 }

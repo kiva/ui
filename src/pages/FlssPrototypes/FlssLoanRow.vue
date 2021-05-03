@@ -226,11 +226,7 @@ export default {
 				variables: this.loanQueryVars,
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
-				// const newLoans = data.lend?.loans?.values ?? [];
-				const incomingLoans = data.fundraisingLoans?.values ?? [];
-				const newLoans = incomingLoans.map(loan => {
-					return loan.loan;
-				});
+				const newLoans = data.fundraisingLoans?.values ?? [];
 				
 				// Handle appending new loans to carousel
 				const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
