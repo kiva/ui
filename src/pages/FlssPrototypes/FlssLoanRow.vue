@@ -231,7 +231,7 @@ export default {
 				// Handle appending new loans to carousel
 				const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
 
-				const existingLoanIds = this.loans.length ? this.values.map(loan => loan.id) : [];
+				const existingLoanIds = this.loans.length ? this.loans.map(loan => loan.id) : [];
 
 				// Filter out any loans already in the stack
 				const newLoansFiltered = newLoans.filter(loan => !existingLoanIds.includes(loan.id));
