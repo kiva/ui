@@ -80,7 +80,7 @@
 		"graphql": "^14.7.0",
 		"graphql-tag": "^2.11.0",
 		"gsap": "^3.5.1",
-		"helmet": "^3.21.0",
+		"helmet": "^4.6.0",
 		"https": "^1.0.0",
 		"instantsearch.js": "^3.6.0",
 		"isomorphic-fetch": "^3.0.0",
