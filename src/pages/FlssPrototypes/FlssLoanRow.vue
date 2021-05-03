@@ -252,7 +252,8 @@ export default {
 		},
 		setLoanQueryFilters(userSelection) {
 			if (!userSelection) {
-				this.loanQueryFilters = this.filters;
+				// this.loanQueryFilters = this.filters;
+				this.loanQueryFilters = { sector: { eq: 'agriculture' } };
 			}
 		},
 		loadMoreLoans() {
