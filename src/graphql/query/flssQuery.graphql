@@ -24,6 +24,6 @@ query flssLoanData(
     }
   }
       }
+
     }
-  }
 }
