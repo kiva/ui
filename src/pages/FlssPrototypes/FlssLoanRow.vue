@@ -82,8 +82,7 @@ import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
-// import flssLoanQuery from '@/graphql/query/flssQuery.graphql';
-import basicLoanQuery from '@/graphql/query/flssQuery.graphql';
+import flssLoanQuery from '@/graphql/query/flssQuery.graphql';
 // import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 
 export default {
@@ -222,7 +221,7 @@ export default {
 			this.zeroLoans = false;
 
 			this.apollo.query({
-				query: basicLoanQuery,
+				query: flssLoanQuery,
 				variables: this.loanQueryVars,
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
@@ -253,7 +252,8 @@ export default {
 		},
 		setLoanQueryFilters(userSelection) {
 			if (!userSelection) {
-				this.loanQueryFilters = this.filters;
+				// this.loanQueryFilters = this.filters;
+				this.loanQueryFilters = { sector: { eq: 'agriculture' } };
 			}
 		},
 		loadMoreLoans() {
