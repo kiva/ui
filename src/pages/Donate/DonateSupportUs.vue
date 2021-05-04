@@ -21,8 +21,8 @@
 			</div>
 			<div class="small-12 columns">
 				<kv-frequently-asked-questions
-						:faqs-contentful="frequentlyAskedQuestions"
-						:headline="frequentlyAskedQuestionsHeadline"
+					:faqs-contentful="frequentlyAskedQuestions"
+					:headline="frequentlyAskedQuestionsHeadline"
 				/>
 			</div>
 		</div>
