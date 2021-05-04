@@ -66,6 +66,15 @@
 							>
 								Portfolio and balance updates
 							</kv-checkbox>
+							<kv-checkbox
+								v-if="isMonthlyGoodSubscriber"
+								id="monthlyGood"
+								name="monthlyGood"
+								v-model="form.monthlyGood"
+								class="email-settings__checkbox"
+							>
+								Monthly Good updates
+							</kv-checkbox>
 							<label for="repayment-updates-input">Repayment notifications</label>
 							<kv-dropdown-rounded
 								id="repayment-updates-input"
@@ -318,6 +327,10 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 const pageQuery = gql`
 	query communicationPreferences {
 		my {
+			autoDeposit {
+				id
+				isSubscriber
+			}
 			trustee {
 				id
 			}
@@ -334,19 +347,20 @@ const pageQuery = gql`
 			}
 			isBorrower
 			communicationSettings {
-				globalUnsubscribed
 				accountUpdates
-				lenderNews
-				repaymentUpdates
 				autolendUpdates
-				loanUpdates
-				commentsMessages
-				teamDigests
-				leadNurturing
-				onboardingSupport
 				borrowerNews
-				networkTransactions
+				commentsMessages
+				globalUnsubscribed
+				leadNurturing
+				lenderNews
+				loanUpdates
+				monthlyGood
 				networkDigest
+				networkTransactions
+				onboardingSupport
+				repaymentUpdates
+				teamDigests
 				trusteeNews
 			}
 		}
@@ -396,6 +410,7 @@ export default {
 			form: {
 				globalUnsubscribed: false,
 				accountUpdates: false,
+				monthlyGood: false,
 				lenderNews: false,
 				repaymentUpdates: 'monthly',
 				autolendUpdates: 'monthly',
@@ -421,6 +436,7 @@ export default {
 			isTrustee: false,
 			hasTeams: false,
 			teamsShown: false,
+			isMonthlyGoodSubscriber: false,
 		};
 	},
 	apollo: {
@@ -430,6 +446,7 @@ export default {
 			this.isBorrower = data?.my?.isBorrower ?? false;
 			this.isTrustee = !!data?.my?.trustee?.id;
 			this.hasTeams = data?.my?.teams?.totalCount && data?.my?.teams?.totalCount > 0;
+			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
 
 			// Get user email settings or set to default
 			// Global setting
@@ -440,6 +457,7 @@ export default {
 			this.form.lenderNews = data?.my?.communicationSettings?.lenderNews ?? false;
 			this.form.repaymentUpdates = data?.my?.communicationSettings?.repaymentUpdates ?? 'monthly';
 			this.form.autolendUpdates =	data?.my?.communicationSettings?.autolendUpdates ?? 'monthly';
+			this.form.monthlyGood = data?.my?.communicationSettings?.monthlyGood ?? false;
 			// General select toggle
 			if (this.form.accountUpdates
 			&& this.form.lenderNews
@@ -499,11 +517,13 @@ export default {
 			// Set general values to their default values
 			if (this.generalAllSelected) {
 				this.form.accountUpdates = true;
+				this.form.monthlyGood = true;
 				this.form.lenderNews = true;
 				this.form.repaymentUpdates = 'monthly';
 				this.form.autolendUpdates = 'monthly';
 			} else {
 				this.form.accountUpdates = false;
+				this.form.monthlyGood = false;
 				this.form.lenderNews = false;
 				this.form.repaymentUpdates = 'none';
 				this.form.autolendUpdates = 'none';
@@ -592,6 +612,7 @@ export default {
 								$globalUnsubscribed: Boolean
 								$lenderNews: Boolean
 								$accountUpdates: Boolean
+								$monthlyGood: Boolean
 								$repaymentUpdates: MessageFrequencyEnum
 								$autolendUpdates: MessageFrequencyEnum
 								$loanUpdates: Boolean
@@ -611,6 +632,7 @@ export default {
 											globalUnsubscribed: $globalUnsubscribed
 											lenderNews: $lenderNews
 											accountUpdates: $accountUpdates
+											monthlyGood: $monthlyGood
 											repaymentUpdates: $repaymentUpdates
 											autolendUpdates: $autolendUpdates
 											loanUpdates: $loanUpdates
@@ -632,6 +654,7 @@ export default {
 							globalUnsubscribed: this.form.globalUnsubscribed,
 							lenderNews: this.form.lenderNews,
 							accountUpdates: this.form.accountUpdates,
+							monthlyGood: this.form.monthlyGood,
 							repaymentUpdates: this.form.repaymentUpdates,
 							autolendUpdates: this.form.autolendUpdates,
 							loanUpdates: this.form.loanUpdates,

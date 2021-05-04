@@ -45,6 +45,7 @@ import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 
 export default {
+	inject: ['apollo'],
 	data() {
 		return {
 			verified: false,
@@ -69,6 +70,8 @@ export default {
 		copyToClipboard(string) {
 			try {
 				navigator.clipboard.writeText(string);
+				// Tip message letting user know code successfully copied to clipboard
+				this.$showTipMsg('Recovery code copied.');
 			} catch (err) {
 				console.error(err);
 			}

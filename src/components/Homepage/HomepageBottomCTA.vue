@@ -6,8 +6,9 @@
 				class="bottom-cta__headline"
 			></p>
 			<kv-button
-				class="rounded smaller impact-text bottom-cta__button"
-				:to="buttonLink"
+				:class="`${buttonClass} rounded smaller bottom-cta__button`"
+				:to="buttonTo"
+				@click.native="buttonClick"
 				v-kv-track-event="[
 					'homepage',
 					'click-homepage-cta-bottom',
@@ -45,7 +46,19 @@ export default {
 		},
 		buttonLink() {
 			return this.bottomCTAContent?.primaryCtaLink ?? '';
-		}
+		},
+		buttonClass() {
+			return this.$attrs?.customCtaButtonClass ?? '';
+		},
+		buttonTo() {
+			if (this.$attrs?.customCtaFunction) {
+				return null;
+			}
+			return this.buttonLink;
+		},
+		buttonClick() {
+			return this.$attrs?.customCtaFunction ?? null;
+		},
 	}
 };
 

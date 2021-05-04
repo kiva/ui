@@ -23,6 +23,7 @@
 						:button-text="buttonCopy"
 						:data="donationValues"
 						:form-disclaimer="formDisclaimer"
+						:form-submit-analytics="formSubmitAnalytics"
 					/>
 				</div>
 			</div>
@@ -54,6 +55,10 @@ export default {
 	},
 	data() {
 		return {
+			formSubmitAnalytics: {
+				category: '/support-kiva',
+				action: 'Donate from Macro',
+			},
 			sourceSizes: [
 				{
 					width: 1920,

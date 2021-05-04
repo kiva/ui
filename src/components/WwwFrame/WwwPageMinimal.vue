@@ -17,6 +17,7 @@
 
 <script>
 import _get from 'lodash/get';
+import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
@@ -50,10 +51,13 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, args) {
-			return fetchAllExpSettings(config, client, {
-				query: _get(args, 'route.query'),
-				path: _get(args, 'route.path')
-			});
+			return Promise.all([
+				client.query({ query: hasEverLoggedInQuery }),
+				fetchAllExpSettings(config, client, {
+					query: _get(args, 'route.query'),
+					path: _get(args, 'route.path')
+				}),
+			]);
 		}
 	}
 };
