@@ -11,9 +11,8 @@ query flssLoanData(
 ||||||| parent of 8f9426b7... update flss query to use countryISO
 =======
   $filterObject: [FundraisingLoanSearchFilterInput!] = {countryIsoCode: {
-          none: [
+          any: [
             "KE",
-            "PH",
 			"PY"
           ]}} 
 >>>>>>> 8f9426b7... update flss query to use countryISO
