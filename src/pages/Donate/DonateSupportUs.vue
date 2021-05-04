@@ -19,7 +19,7 @@
 				<h4>Loans vs. Donations</h4>
 				<p>Kiva does not take a cut of loans, optional donations fund our operations.</p>
 			</div>
-			<div class="small-12 columns">
+			<div class="small-12 columns donation-faq">
 				<kv-frequently-asked-questions
 					:faqs-contentful="frequentlyAskedQuestions"
 					:headline="frequentlyAskedQuestionsHeadline"
@@ -145,5 +145,9 @@ export default {
 
 .page-content {
 	padding: 2rem 0;
+}
+.donation-faq {
+	padding-top: 1.25rem;
+	padding-bottom: 1.25rem;
 }
 </style>
