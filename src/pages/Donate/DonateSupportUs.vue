@@ -20,7 +20,10 @@
 				<p>Kiva does not take a cut of loans, optional donations fund our operations.</p>
 			</div>
 			<div class="small-12 columns">
-				<h4>Frequently asked questions</h4>
+				<kv-frequently-asked-questions
+						:faqs-contentful="frequentlyAskedQuestions"
+						:headline="frequentlyAskedQuestionsHeadline"
+				/>
 			</div>
 		</div>
 	</www-page>
@@ -30,6 +33,7 @@
 import gql from 'graphql-tag';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import DonateForm from './DonateForm';
@@ -49,6 +53,7 @@ export default {
 	components: {
 		WwwPage,
 		DonateForm,
+		KvFrequentlyAskedQuestions,
 	},
 	data() {
 		return {
@@ -121,7 +126,16 @@ export default {
 				return documentToHtmlString(disclaimerRichText);
 			}
 			return '';
-		}
+		},
+		faqContentGroup() {
+			return this.page?.contentGroups?.webDonateSupportUsFaqs || {};
+		},
+		frequentlyAskedQuestionsHeadline() {
+			return this.faqContentGroup?.name;
+		},
+		frequentlyAskedQuestions() {
+			return this.faqContentGroup?.contents;
+		},
 	}
 };
 </script>
