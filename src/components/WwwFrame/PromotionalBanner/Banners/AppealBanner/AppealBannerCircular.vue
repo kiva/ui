@@ -20,12 +20,14 @@
 							:rotate="36"
 							:show-number="false"
 						/>
-						<img
+						<kv-contentful-img
 							v-if="imageUrl"
 							class="indicator__image"
-							:src="imageUrl"
+							:contentful-src="imageUrl"
 							alt=""
-						>
+							fallback-format="gif"
+							:height="94"
+						/>
 						<div
 							class="indicator__goal-status"
 							v-html="goalStatus"
@@ -119,12 +121,14 @@ import smoothReflow from 'vue-smooth-reflow';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvProgressCircle from '@/components/Kv/KvProgressCircle';
+import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 
 export default {
 	components: {
 		KvButton,
 		KvIcon,
 		KvProgressCircle,
+		KvContentfulImg
 	},
 	mixins: [smoothReflow],
 	props: {
