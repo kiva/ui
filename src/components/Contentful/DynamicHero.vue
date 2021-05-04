@@ -102,6 +102,13 @@ import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
+/**
+* Dynamic Hero Component
+* This component will display a Hero driven by a Contentful Content Group
+* Depending on the number and type of media attached to the content group
+* on contentful, the left side will either be an image, a video or a carousel.
+* */
+
 export default {
 	components: {
 		KvButton,
@@ -110,6 +117,9 @@ export default {
 		KvContentfulImg,
 	},
 	props: {
+		/**
+		 * Content group content from Contentful
+		* */
 		content: {
 			type: Object,
 			default: () => {},
