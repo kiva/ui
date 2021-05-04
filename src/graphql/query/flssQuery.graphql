@@ -2,15 +2,31 @@
 
 
 query flssLoanData(
+<<<<<<< HEAD
   $filterObject: [FundraisingLoanSearchFilterInput!] = {countryIsoCode: {
           any: [
             "KE",
 			"PY"
           ]}} 
+||||||| parent of 8f9426b7... update flss query to use countryISO
+=======
+  $filterObject: [FundraisingLoanSearchFilterInput!] = {countryIsoCode: {
+          none: [
+            "KE",
+            "PH",
+			"PY"
+          ]}} 
+>>>>>>> 8f9426b7... update flss query to use countryISO
   $imgDefaultSize: String = "w480h360"
   $imgRetinaSize: String = "w960h720"
 ) {
+<<<<<<< HEAD
   fundraisingLoans(filters: $filters) {
+||||||| parent of 8f9426b7... update flss query to use countryISO
+  fundraisingLoans(filters: { sector: { eq: "retail" } }) {
+=======
+  fundraisingLoans(filters: $filterObject) {
+>>>>>>> 8f9426b7... update flss query to use countryISO
     totalCount
     values {
       id
@@ -24,3 +40,4 @@ query flssLoanData(
     }
   }
 }
+
