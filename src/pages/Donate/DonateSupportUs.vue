@@ -146,8 +146,9 @@ export default {
 .page-content {
 	padding: 2rem 0;
 }
+
 .donation-faq {
-	padding-top: 1.25rem;
+	padding-top: 3.25rem;
 	padding-bottom: 1.25rem;
 }
 </style>
