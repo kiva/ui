@@ -2,9 +2,8 @@
 
 query flssLoanData(
   $filterObject: [FundraisingLoanSearchFilterInput!] = {countryIsoCode: {
-          none: [
+          any: [
             "KE",
-            "PH",
 			"PY"
           ]}} 
   $imgDefaultSize: String = "w480h360"
