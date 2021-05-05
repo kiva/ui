@@ -17,8 +17,8 @@ module.exports = merge(baseWebpackConfig, {
 	// https://webpack.js.org/configuration/externals/#externals
 	// https://github.com/liady/webpack-node-externals
 	externals: nodeExternals({
-		// do not externalize style files in case we need to import it from a dep
 		allowlist: [
+			// do not externalize style files in case we need to import it from a dep
 			/\.css$/,
 			/\.scss$/,
 			/\.vue$/,
@@ -30,6 +30,8 @@ module.exports = merge(baseWebpackConfig, {
 			// allow timesync & promise to handle timesync calling require('promise')
 			/timesync/,
 			/promise/,
+			// allow flag icon sprites
+			/flag-icon-css/,
 		]
 	}),
 	plugins: [
