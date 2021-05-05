@@ -85,7 +85,6 @@ import LoanCardController from '@/components/LoanCards/LoanCardController';
 import flssLoanQuery from '@/graphql/query/flssQuery.graphql';
 // import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 
-
 export default {
 	inject: ['apollo'],
 	components: {
