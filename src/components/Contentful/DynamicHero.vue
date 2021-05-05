@@ -9,18 +9,16 @@
 					<kv-carousel
 						indicator-style="bar"
 					>
-						<template #default>
-							<kv-carousel-slide v-for="(image, index) in heroMedia" :key="index">
-								<kv-contentful-img
-									v-if="image.url"
-									:height="527"
-									class="contentful-hero__img"
-									:contentful-src="image.url"
-									fallback-format="jpg"
-									:alt="image.description"
-								/>
-							</kv-carousel-slide>
-						</template>
+						<kv-carousel-slide v-for="(image, index) in heroMedia" :key="index">
+							<kv-contentful-img
+								v-if="image.url"
+								:height="527"
+								class="contentful-hero__img"
+								:contentful-src="image.url"
+								fallback-format="jpg"
+								:alt="image.description"
+							/>
+						</kv-carousel-slide>
 					</kv-carousel>
 				</template>
 				<template v-if="isHeroImage">
@@ -97,9 +95,6 @@
 <script>
 import KvButton from '@/components/Kv/KvButton';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
-import KvCarousel from '@/components/Kv/KvCarousel';
-import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
-
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 /**
@@ -112,8 +107,8 @@ import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 export default {
 	components: {
 		KvButton,
-		KvCarousel,
-		KvCarouselSlide,
+		KvCarousel: () => import('@/components/Kv/KvCarousel'),
+		KvCarouselSlide: () => import('@/components/Kv/KvCarouselSlide'),
 		KvContentfulImg,
 	},
 	props: {
