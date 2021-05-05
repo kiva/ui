@@ -221,7 +221,7 @@ export default {
 			return this.heroContentGroup?.media?.[0]?.description ?? '';
 		},
 		heroContentGroup() {
-			return this.pageData?.page?.contentGroups?.homepageHero ?? null;
+			return this.pageData?.page?.contentGroups?.monthlygoodLandingHero ?? null;
 		},
 		heroText() {
 			// eslint-disable-next-line max-len
