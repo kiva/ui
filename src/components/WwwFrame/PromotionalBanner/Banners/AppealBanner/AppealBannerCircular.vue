@@ -26,7 +26,8 @@
 							:contentful-src="imageUrl"
 							alt=""
 							fallback-format="gif"
-							:height="94"
+							:height="164"
+							:width="164"
 						/>
 						<div
 							class="indicator__goal-status"
@@ -59,7 +60,7 @@
 						</li>
 						<li class="appeal-banner__amount-item--other">
 							<kv-button
-								class="appeal-banner__btn smallest rounded"
+								class="appeal-banner__btn rounded"
 								to="/donate/supportus"
 								v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0, 0]"
 							>
@@ -246,7 +247,7 @@ export default {
 
 	&__btn {
 		font-size: rem-calc(14);
-		padding: 0.75rem 1.5rem;
+		padding: 0.5rem 1rem;
 		border-radius: rem-calc(8);
 		background: $white;
 		color: $kiva-green;
@@ -254,6 +255,10 @@ export default {
 		width: 100%;
 		margin-bottom: 0;
 		border: 1px solid $kiva-green;
+
+		@include breakpoint(large) {
+			padding: 0.75rem 1.5rem;
+		}
 
 		&:hover,
 		&:focus {
@@ -345,7 +350,6 @@ export default {
 
 	&__progress-circle,
 	&__image {
-		display: flex;
 		position: absolute;
 		z-index: 1;
 		width: 100%;
