@@ -70,7 +70,7 @@
 		</div>
 
 		<!-- Auto Deposit Frequently Asked Questions -->
-		<frequently-asked-questions
+		<kv-frequently-asked-questions
 			:faqs-contentful="frequentlyAskedQuestions"
 			:headline="frequentlyAskedQuestionsHeadline"
 		/>
@@ -83,7 +83,7 @@ import gql from 'graphql-tag';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import FrequentlyAskedQuestions from '@/components/AutoDeposit/FrequentlyAskedQuestions';
+import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
 import AutoDepositSignUpForm from '@/components/AutoDeposit/AutoDepositSignUpForm';
 
 import IconAutoDepositAlternate from '@/assets/icons/inline/auto-deposit-alternate.svg';
@@ -115,7 +115,7 @@ export default {
 	},
 	components: {
 		AutoDepositSignUpForm,
-		FrequentlyAskedQuestions,
+		KvFrequentlyAskedQuestions,
 		IconAutoDepositAlternate,
 		IconLend,
 		IconUpdatesAlternate,
