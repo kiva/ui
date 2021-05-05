@@ -15,9 +15,7 @@
 					<div class="columns">
 						<h2 class="loan-categories__header text-center">
 							Fundraising Loan Search Service Loans
-
 							<!--PSD TODO switch to simple dropdown tailored queries-->
-							
 						</h2>
 						<div class="loan-container">
 							<flss-loans
