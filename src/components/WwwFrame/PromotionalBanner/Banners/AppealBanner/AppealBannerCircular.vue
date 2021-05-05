@@ -246,7 +246,7 @@ export default {
 
 	&__btn {
 		font-size: rem-calc(14);
-		padding: .75rem 1.5rem;
+		padding: 0.75rem 1.5rem;
 		border-radius: rem-calc(8);
 		background: $white;
 		color: $kiva-green;
