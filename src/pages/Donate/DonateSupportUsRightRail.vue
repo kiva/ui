@@ -53,7 +53,7 @@ export default {
 			const callouts = [];
 
 			const makeLoansHappenCopy = this.content?.contents?.find(
-				item => item.key === 'web-donate-support-us-make-loans-happen'
+				item => item.key === 'web-donate-support-us-callout-1'
 			) || {};
 			const makeLoansHappenImage = this.content?.media?.find(
 				image => image.title === 'homepage-stats-icon-1'
@@ -66,7 +66,7 @@ export default {
 			});
 
 			const fundInnovationCopy = this.content?.contents?.find(
-				item => item.key === 'web-donate-support-us-fund-innovation'
+				item => item.key === 'web-donate-support-us-callout-2'
 			) || {};
 			const fundInnovationImage = this.content?.media?.find(
 				image => image.title === 'Globe Grid Illustration'

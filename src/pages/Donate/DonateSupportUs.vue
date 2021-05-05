@@ -18,7 +18,7 @@
 			<div class="small-12 large-5 columns donation-meter-holder">
 				<donate-support-us-right-rail :content="donationCalloutsCG" />
 			</div>
-			<div class="small-12 columns donation-faq donation-faq-holder">
+			<div class="small-12 columns donation-faq-holder">
 				<kv-frequently-asked-questions
 					:faqs-contentful="frequentlyAskedQuestions"
 					:headline="frequentlyAskedQuestionsHeadline"
