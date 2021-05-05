@@ -87,7 +87,7 @@ export default {
 	},
 	computed: {
 		heroContentGroup() {
-			return this.content?.page?.contentGroups?.homepageHero ?? null;
+			return this.content?.page?.contentGroups?.dynamicHero ?? null;
 		},
 		loansContentGroup() {
 			return this.content?.page?.contentGroups?.homepageLoanCategories ?? null;
