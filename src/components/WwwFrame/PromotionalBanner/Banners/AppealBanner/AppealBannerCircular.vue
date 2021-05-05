@@ -44,7 +44,7 @@
 							class="appeal-banner__amount-item"
 						>
 							<kv-button
-								class="appeal-banner__btn smallest rounded"
+								class="appeal-banner__btn rounded"
 								@click.native="onClickAmountBtn(buttonAmount)"
 								v-kv-track-event="[
 									'promo',
@@ -246,6 +246,7 @@ export default {
 
 	&__btn {
 		font-size: rem-calc(14);
+		padding: .75rem 1.5rem;
 		border-radius: rem-calc(8);
 		background: $white;
 		color: $kiva-green;
@@ -344,6 +345,7 @@ export default {
 
 	&__progress-circle,
 	&__image {
+		display: flex;
 		position: absolute;
 		z-index: 1;
 		width: 100%;
