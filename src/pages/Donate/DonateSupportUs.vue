@@ -3,7 +3,7 @@
 		id="support-us-landing"
 	>
 		<div class="row page-content">
-			<div class="small-12 large-7 columns">
+			<div class="small-12 large-7 columns donation-form-holder">
 				<h1 class="donate-headline" v-html="headlineCopy"></h1>
 				<div class="donate-subhead" v-html="subHeadCopy"></div>
 				<donate-form
@@ -15,11 +15,10 @@
 					:show-disclaimer="false"
 				/>
 			</div>
-			<div class="small-12 large-5 columns">
-				<h4>Loans vs. Donations</h4>
-				<p>Kiva does not take a cut of loans, optional donations fund our operations.</p>
+			<div class="small-12 large-5 columns donation-meter-holder">
+				<donate-support-us-right-rail :content="donationCalloutsCG" />
 			</div>
-			<div class="small-12 columns donation-faq">
+			<div class="small-12 columns donation-faq donation-faq-holder">
 				<kv-frequently-asked-questions
 					:faqs-contentful="frequentlyAskedQuestions"
 					:headline="frequentlyAskedQuestionsHeadline"
@@ -35,8 +34,9 @@ import gql from 'graphql-tag';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
 import { processPageContentFlat } from '@/util/contentfulUtils';
+import DonateForm from '@/pages/Donate/DonateForm';
+import DonateSupportUsRightRail from '@/pages/Donate/DonateSupportUsRightRail';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
-import DonateForm from './DonateForm';
 
 const pageQuery = gql`query donateContent {
 	contentful {
@@ -54,6 +54,7 @@ export default {
 		WwwPage,
 		DonateForm,
 		KvFrequentlyAskedQuestions,
+		DonateSupportUsRightRail,
 	},
 	data() {
 		return {
@@ -136,6 +137,9 @@ export default {
 		frequentlyAskedQuestions() {
 			return this.faqContentGroup?.contents;
 		},
+		donationCalloutsCG() {
+			return this.page?.contentGroups?.webDonateSupportUsDonationCallouts || {};
+		}
 	}
 };
 </script>
@@ -147,8 +151,27 @@ export default {
 	padding: 2rem 0;
 }
 
-.donation-faq {
-	padding-top: 3.25rem;
-	padding-bottom: 1.25rem;
+.donation-form-holder,
+.donation-meter-holder,
+.donation-faq-holder {
+	margin-bottom: rem-calc(40);
+
+	@include breakpoint(medium) {
+		margin-bottom: rem-calc(64);
+	}
+
+	@include breakpoint(large) {
+		margin-bottom: rem-calc(128);
+	}
+}
+
+.donation-form-holder {
+	.donate-headline {
+		margin-bottom: rem-calc(16);
+	}
+
+	.donate-subhead {
+		margin-bottom: rem-calc(24);
+	}
 }
 </style>
