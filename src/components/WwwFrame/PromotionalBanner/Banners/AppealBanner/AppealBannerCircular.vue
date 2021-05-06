@@ -99,7 +99,7 @@
 				</div>
 				<div class="shrink columns">
 					<kv-button
-						class="appeal-banner__btn appeal-banner__btn--toggle-open smallest rounded"
+						class="appeal-banner__btn appeal-banner__btn--toggle-open rounded"
 						@click.native="onClickToggleBanner"
 						v-kv-track-event="[
 							'promo',
@@ -262,6 +262,7 @@ export default {
 
 		&:hover,
 		&:focus {
+			color: $kiva-green;
 			background: $kiva-bg-darkgray;
 		}
 
