@@ -145,6 +145,22 @@ export function formatUiSetting(contentfulContent) {
 }
 
 /**
+ * Format Background (contentful type id: background)
+ * Takes raw contentful content object and returns an object with targeted keys/values
+ *
+ * @param {array} contentfulContent data
+ * @returns {object}
+ */
+export function formatBackground(contentfulContent) {
+	return {
+		key: contentfulContent.fields?.key,
+		name: contentfulContent.fields?.name,
+		backgroundColor: contentfulContent.fields?.backgroundColor,
+		backgroundMedia: contentfulContent.fields?.backgroundMedia?.fields,
+	};
+}
+
+/**
  * Format Ui Setting (contentful type id: globalPromoBanner)
  * Takes raw contentful content object and returns an object with targeted keys/values
  *
@@ -267,6 +283,8 @@ export function formatContentType(contentfulContent, contentType) {
 			return formatResponsiveImageSet(contentfulContent);
 		case 'richTextContent':
 			return formatRichTextContent(contentfulContent);
+		case 'background':
+			return formatBackground(contentfulContent);
 		default:
 			return { error: 'Unrecognized Content Type' };
 	}
