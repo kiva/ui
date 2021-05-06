@@ -1,5 +1,5 @@
 <template>
-	<section class="contentful-hero">
+	<section class="contentful-hero" :style="heroBackgroundStyle">
 		<div class="row align-center">
 			<!-- hero media -->
 			<div
@@ -173,6 +173,24 @@ export default {
 				link: this.heroText?.primaryCtaLink ?? '',
 			};
 		},
+		heroBackground() {
+			return this.content?.contents?.find(({ key }) => key.indexOf('background') > -1);
+		},
+		heroBackgroundStyle() {
+			// Creates an object with conditional keys if heroBackground contains those elements
+			const styleObject = {
+				...(this.heroBackground?.backgroundColor && {
+					'background-color': this.heroBackground?.backgroundColor
+				}),
+				...(this.heroBackground?.backgroundImage?.file?.url && {
+					'background-image': `url("${this.heroBackground?.backgroundImage?.file?.url}")`
+				}),
+				...(this.heroBackground?.backgroundImage?.file?.url && {
+					'background-size': 'cover'
+				})
+			};
+			return styleObject;
+		}
 	},
 };
 </script>
