@@ -103,7 +103,7 @@ export default {
 	padding: rem-calc(40) 1rem 1rem;
 	margin: 0;
 	border-radius: 1rem;
-	border: 1px solid $kiva-green;
+	border: 1px solid #C4C4C4;
 
 	&__meter {
 		margin-bottom: rem-calc(40);

@@ -2,7 +2,7 @@
 	<form @submit.prevent.stop="submit" novalidate>
 		<div class="row">
 			<div class="small-12 columns input-wrapper recurring-amounts">
-				<fieldset>
+				<fieldset v-if="!subscriptionApplied">
 					<multi-amount-selector
 						:id="`${id}-donation-amount-selector`"
 						class="donation-amount-selector"
@@ -16,13 +16,32 @@
 						@pill-toggled="pillToggled"
 					/>
 				</fieldset>
-				<kv-button class="smaller submit-btn" type="submit" :disabled="$v.$invalid">
+				<!-- Monthly donation option -->
+				<kv-base-input
+					:name="`${id}-donate-monthly-toggle`"
+					type="checkbox"
+					v-if="activateMonthlyOption && !subscriptionApplied"
+					v-model="isMonthly"
+					v-kv-track-event="['Donate form', 'toggle-monthly-donation', 'Make a monthly donation.']"
+				>
+					<template #after>
+						Make a monthly donation.
+					</template>
+				</kv-base-input>
+				<donate-form-drop-in-payment-wrapper
+					v-if="isMonthly"
+					:disclaimer="formDisclaimerCopy"
+					:donate-amount="selectedAmount"
+					:id="id"
+					@completed="subscriptionApplied = true"
+				/>
+				<kv-button v-if="!isMonthly" class="smaller submit-btn" type="submit" :disabled="$v.$invalid">
 					{{ buttonText }}
 				</kv-button>
 				<!-- Donation Disclaimer should always be present if we have a payment option active -->
 				<div
 					class="attribution-text text-center"
-					v-if="showDisclaimer || activateMonthlyOption"
+					v-if="showDisclaimer && !isMonthly && !subscriptionApplied"
 					v-html="formDisclaimerCopy"
 				></div>
 			</div>
@@ -35,12 +54,16 @@ import numeral from 'numeral';
 import _forEach from 'lodash/forEach';
 import { validationMixin } from 'vuelidate';
 import { minValue, maxValue } from 'vuelidate/lib/validators';
+import DonateFormDropInPaymentWrapper from '@/pages/Donate/DonateFormDropInPaymentWrapper';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
+import KvBaseInput from '@/components/Kv/KvBaseInput';
 import KvButton from '@/components/Kv/KvButton';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 
 export default {
 	components: {
+		DonateFormDropInPaymentWrapper,
+		KvBaseInput,
 		KvButton,
 		MultiAmountSelector,
 	},
@@ -97,8 +120,10 @@ export default {
 			donationAmountSelection: '500',
 			donationCustomAmount: 500,
 			donationAmount: 500,
-			minDonationAmount: 25,
-			maxDonationAmount: 10000
+			minDonationAmount: 1,
+			maxDonationAmount: 10000,
+			isMonthly: false,
+			subscriptionApplied: false,
 		};
 	},
 	computed: {
@@ -147,6 +172,11 @@ export default {
 			}
 		},
 		submit() {
+			// exit form submit if a monthly donation was processed
+			if (this.isMonthly) {
+				return false;
+			}
+
 			this.apollo.mutate({
 				mutation: updateDonation,
 				variables: {
@@ -176,6 +206,20 @@ export default {
 			});
 		}
 	},
+	mounted() {
+		this.$nextTick(() => {
+			// set a default selection
+			const initialSelection = this.donationAmountOptions[1]?.key;
+			this.donationAmountSelected(initialSelection);
+			this.updateAmount(initialSelection);
+			this.donationCustomAmount = numeral(initialSelection).value();
+
+			// check route for setMonthly initializer
+			if (this.$route?.query?.setMonthly === 'true' && this.activateMonthlyOption) {
+				this.isMonthly = true;
+			}
+		});
+	}
 };
 
 </script>

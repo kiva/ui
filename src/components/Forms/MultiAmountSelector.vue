@@ -115,12 +115,17 @@ export default {
 		};
 	},
 	watch: {
+		customAmount(newVal, prevVal) {
+			if (newVal !== prevVal) {
+				this.customAmountModel = newVal;
+			}
+		},
 		customAmountModel(newVal) {
 			// Implementation Required in Parent Component
 			// Enables tracking of custom option/key associated value
 			this.$emit('custom-amount-updated', newVal);
 		},
-		selected(newVal) {
+		selected(newVal, prevVal) {
 			// to focus custom amount input element
 			if (newVal === 'custom') {
 				this.$nextTick(() => {
@@ -135,6 +140,12 @@ export default {
 			if (newVal !== 'custom' && this.$v.$invalid) {
 				// reset to valid default value
 				this.customAmountModel = this.minCustomAmount;
+			}
+
+			// to update checked if selected state comes through a prop
+			if (newVal !== 'custom' && newVal !== prevVal) {
+				// reset to valid default value
+				this.checked = newVal;
 			}
 		},
 	},
