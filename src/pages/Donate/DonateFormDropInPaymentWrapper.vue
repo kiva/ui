@@ -144,7 +144,8 @@ export default {
 			return 'You already have an existing auto deposit. Changes can be made in your ';
 		},
 		loginHref() {
-			return `/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
+			const doneUrl = `${this.$route.fullPath}?setMonthly=true`;
+			return `/ui-login?force=true&doneUrl=${encodeURIComponent(doneUrl)}`;
 		},
 	},
 	methods: {
@@ -209,7 +210,7 @@ export default {
 				this.submitting = false;
 			});
 		},
-	},
+	}
 };
 </script>
 

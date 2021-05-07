@@ -199,6 +199,13 @@ export default {
 			});
 		}
 	},
+	mounted() {
+		this.$nextTick(() => {
+			if (this.$route?.query?.setMonthly === 'true' && this.activateMonthlyOption) {
+				this.isMonthly = true;
+			}
+		});
+	}
 };
 
 </script>
