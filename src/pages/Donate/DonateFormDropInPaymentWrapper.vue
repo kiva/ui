@@ -46,9 +46,11 @@
 			></div>
 		</div>
 		<div v-else class="dropin-payment-thanks small-12 columns">
-			<p>
-				Thanks! Every month you'll get an email confirming your ${{ donationAmountAsString }} donation!
-			</p>
+			<hr>
+			<br>
+			<h3>
+				Thanks! Every month you'll get an email confirming your ${{ donateAmountAsString }} donation!
+			</h3>
 			<p>
 				Visit your
 				<router-link to="/settings/subscriptions">
@@ -101,6 +103,7 @@ export default {
 	},
 	data() {
 		return {
+			dayOfMonth: new Date().getDate(),
 			enableConfirmButton: false,
 			submitting: false,
 			isLoggedIn: false,
@@ -204,6 +207,7 @@ export default {
 						'Save Monthly Donation'
 					);
 					this.completed = true;
+					this.$emit('completed');
 				}
 				return kivaBraintreeResponse;
 			}).finally(() => {
@@ -240,6 +244,12 @@ export default {
 
 		.loading-spinner .line {
 			background-color: $white;
+		}
+	}
+
+	.dropin-payment-thanks {
+		h3 {
+			font-weight: 500;
 		}
 	}
 }
