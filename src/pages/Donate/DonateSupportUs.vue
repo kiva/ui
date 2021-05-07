@@ -13,6 +13,7 @@
 					:form-disclaimer="formDisclaimer"
 					:form-submit-analytics="formSubmitAnalytics"
 					:show-disclaimer="false"
+					:activate-monthly-option="true"
 				/>
 			</div>
 			<div class="small-12 large-5 columns donation-meter-holder">
