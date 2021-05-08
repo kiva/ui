@@ -272,6 +272,7 @@ export default {
 
 			&:hover,
 			&:focus {
+				color: $white;
 				background: darken($kiva-green, 10%);
 			}
 		}
@@ -292,7 +293,6 @@ export default {
 		&:hover,
 		&:focus {
 			background-color: $kiva-bg-darkgray;
-			color: $white;
 			fill: $dark-charcoal;
 		}
 	}
