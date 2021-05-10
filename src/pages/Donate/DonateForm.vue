@@ -18,6 +18,7 @@
 				</fieldset>
 				<!-- Monthly donation option -->
 				<kv-base-input
+					class="recurring-amounts__monthly-toggle"
 					:name="`${id}-donate-monthly-toggle`"
 					type="checkbox"
 					v-if="activateMonthlyOption && !subscriptionApplied"
@@ -226,8 +227,17 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+.recurring-amounts {
+	fieldset {
+		margin-bottom: 1.25rem;
+	}
+
+	&__monthly-toggle {
+		margin-bottom: 1rem;
+	}
+}
+
 .donation-amount-selector {
-	margin-bottom: 1rem;
 	position: relative;
 }
 

@@ -181,7 +181,7 @@ export default {
 				mutation: braintreeCreateAutoDepositSubscription,
 				variables: {
 					paymentMethodNonce: nonce,
-					amount: '0.00',
+					amount: this.donateAmountAsString,
 					donateAmount: this.donateAmountAsString,
 					dayOfMonth: numeral(this.dayOfMonth).value(),
 					deviceData,
