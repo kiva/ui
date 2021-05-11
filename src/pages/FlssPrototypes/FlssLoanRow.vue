@@ -68,30 +68,29 @@
 </template>
 
 <script>
-import gql from "graphql-tag";
 // import loanChannel from '@/graphl/query/loanChannelData.graphql'
 // import KvDropdown from '@/components/Kv/KvDropdown';
-import KvCarousel from "@/components/Kv/KvCarousel";
-import KvCarouselSlide from "@/components/Kv/KvCarouselSlide";
-import KvLoadingSpinner from "@/components/Kv/KvLoadingSpinner";
-import LoanCardController from "@/components/LoanCards/LoanCardController";
-import flssLoanQuery from "@/graphql/query/flssQuery.graphql";
+import KvCarousel from '@/components/Kv/KvCarousel';
+import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
+import flssLoanQuery from '@/graphql/query/flssQuery.graphql';
 // import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 
 export const favoriteCountries = `
 {
-    countryIsoCode: { any: ["KE", "PH", "PY","MG"], none: ["US"] }
+    countryIsoCode: { any: ['KE', 'PH', 'PY','MG'], none: ["US"] }
   }
 `;
 
 export const favoriteSectors = `
 {
-    sector: { any: ["agriculture", "retail] }
+    sector: { any: ['agriculture', 'retail'] }
   }
 `;
 
 export default {
-	inject: ["apollo"],
+	inject: ['apollo'],
 	components: {
 		KvCarousel,
 		// KvDropdown,
@@ -130,7 +129,7 @@ export default {
 		},
 		sortBy: {
 			type: String,
-			default: "popularity",
+			default: 'popularity',
 		},
 	},
 	data() {
@@ -213,13 +212,13 @@ export default {
 	methods: {
 		addToBasket(payload) {
 			this.loanAdded = true;
-			this.$emit("add-to-basket", payload);
+			this.$emit('add-to-basket', payload);
 		},
 		showLoanDetails(payload) {
 			const selectedLoan = this.loans.find(
-				(loan) => loan.id === payload.loanId
+				loan => loan.id === payload.loanId
 			);
-			this.$emit("show-loan-details", selectedLoan);
+			this.$emit('show-loan-details', selectedLoan);
 		},
 		fetchLoans() {
 			if (this.isVisible) {
@@ -232,22 +231,22 @@ export default {
 					query: flssLoanQuery,
 					// variables: this.loanQueryVars,
 					variables: favoriteSectors,
-					fetchPolicy: "network-only",
+					fetchPolicy: 'network-only',
 				})
 				.then(({ data }) => {
 					const newLoans = data.fundraisingLoans?.values ?? [];
 
 					// Handle appending new loans to carousel
 					const newLoanIds = newLoans.length
-						? newLoans.map((loan) => loan.id)
+						? newLoans.map(loan => loan.id)
 						: [];
 					const existingLoanIds = this.loans.length
-						? this.loans.map((loan) => loan.id)
+						? this.loans.map(loan => loan.id)
 						: [];
 
 					// Filter out any loans already in the stack
 					const newLoansFiltered = newLoans.filter(
-						(loan) => !existingLoanIds.includes(loan.id)
+						loan => !existingLoanIds.includes(loan.id)
 					);
 					if (newLoanIds.toString() !== existingLoanIds.toString()) {
 						this.loans = [...this.loans, ...newLoansFiltered];
@@ -256,7 +255,7 @@ export default {
 
 					if (this.isVisible) {
 						this.totalCount = data.fundraisingLoans.totalCount ?? 0;
-						this.$emit("update-total-count", this.totalCount);
+						this.$emit('update-total-count', this.totalCount);
 						this.loadingLoans = false;
 					}
 
@@ -274,7 +273,7 @@ export default {
 			this.offset += this.limit;
 		},
 		resetSearchFilters() {
-			this.$emit("reset-loan-filters");
+			this.$emit('reset-loan-filters');
 		},
 	},
 };
