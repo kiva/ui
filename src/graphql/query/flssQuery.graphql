@@ -2,12 +2,7 @@
 
 
 query flssLoanData(
-  $filterObject: [FundraisingLoanSearchFilterInput!] = {countryIsoCode: {
-          any: [
-            "KE",
-            "PH",
-			"PY"
-          ]}} 
+  $filterObject: [FundraisingLoanSearchFilterInput!] 
   $imgDefaultSize: String = "w480h360"
   $imgRetinaSize: String = "w960h720"
 ) {
