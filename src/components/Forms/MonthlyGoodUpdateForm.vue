@@ -135,7 +135,7 @@
 					<strong>Your contribution will:</strong>
 				</div>
 				<div class="column">
-					<kv-dropdown-rounded
+					<kv-select
 						v-model="form.category"
 						class="group-dropdown"
 					>
@@ -146,7 +146,7 @@
 						>
 							{{ option.label }}
 						</option>
-					</kv-dropdown-rounded>
+					</kv-select>
 				</div>
 			</div>
 		</fieldset>
@@ -160,7 +160,7 @@ import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 import KvIcon from '@/components/Kv/KvIcon';
 
 /**
@@ -173,7 +173,7 @@ export default {
 	components: {
 		KvIcon,
 		KvCurrencyInput,
-		KvDropdownRounded,
+		KvSelect,
 	},
 	data() {
 		return {
@@ -303,7 +303,7 @@ form {
 		margin-bottom: 0.25em;
 	}
 
-	// styles to match KvDropDownRounded
+	// styles to match KvSelect
 	input.text-input {
 		border: 1px solid $charcoal;
 		border-radius: $button-radius;

@@ -1,7 +1,7 @@
 import KvBaseInput from '@/components/Kv/KvBaseInput';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 import KvPhoneInput from '@/components/Kv/KvPhoneInput';
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 import KvRadio from '@/components/Kv/KvRadio';
@@ -18,7 +18,7 @@ export const KitchenSink = () => ({
 		KvBaseInput,
 		KvCheckbox,
 		KvCurrencyInput,
-		KvDropdownRounded,
+		KvSelect,
 		KvPhoneInput,
 		KvPillToggle,
 		KvRadio,
@@ -39,7 +39,7 @@ export const KitchenSink = () => ({
 			kvCheckboxModel2: false,
 			kvCheckboxModel3: false,
 			kvCurrencyAmount: 25,
-			kvDropdownRoundedModel: 'test2',
+			KvSelectModel: 'test2',
 			KvPhoneInput: '',
 			kvPillOptions: [
 				{
@@ -231,11 +231,11 @@ export const KitchenSink = () => ({
 					</fieldset>
 
 					<fieldset style="margin-bottom: 2rem;">
-						<kv-dropdown-rounded v-model="kvDropdownRoundedModel">
+						<kv-select v-model="KvSelectModel">
 							<option value="test">Test</option>
 							<option value="test2">Test2</option>
 							<option value="test3">Test3</option>
-						</kv-dropdown-rounded>
+						</kv-select>
 					</fieldset>
 
 				</fieldset>

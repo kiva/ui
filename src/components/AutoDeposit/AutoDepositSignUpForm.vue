@@ -85,7 +85,7 @@
 				>
 					Donation
 				</label>
-				<kv-dropdown-rounded
+				<kv-select
 					class="donation-dropdown"
 					v-model="donationOptionSelected"
 					v-if="donationOptionSelected !== 'other'"
@@ -97,7 +97,7 @@
 					>
 						{{ option.label }}
 					</option>
-				</kv-dropdown-rounded>
+				</kv-select>
 				<kv-currency-input
 					class="text-input"
 					id="donation"
@@ -172,7 +172,7 @@ import AutoDepositDropInPaymentWrapper from '@/components/AutoDeposit/AutoDeposi
 import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 
@@ -186,7 +186,7 @@ export default {
 		KvButton,
 		KvCheckbox,
 		KvCurrencyInput,
-		KvDropdownRounded,
+		KvSelect,
 		KvIcon,
 		KvLoadingOverlay,
 	},
@@ -416,7 +416,7 @@ export default {
 	}
 }
 
-// styles to match KvDropDownRounded
+// styles to match KvSelect
 .text-input {
 	border-radius: $button-radius;
 	color: $charcoal;

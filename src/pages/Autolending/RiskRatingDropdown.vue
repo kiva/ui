@@ -3,7 +3,7 @@
 		<h3 class="filter-title">
 			Field Partner risk ratings
 		</h3>
-		<kv-dropdown-rounded v-model="riskRating">
+		<kv-select v-model="riskRating">
 			<option value="0">
 				All loans
 			</option>
@@ -19,19 +19,19 @@
 			<option value="4">
 				&#9733; &#9733; &#9733; &#9733; and up
 			</option>
-		</kv-dropdown-rounded>
+		</kv-select>
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		KvDropdownRounded,
+		KvSelect,
 	},
 	data() {
 		return {

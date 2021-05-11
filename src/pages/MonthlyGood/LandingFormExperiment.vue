@@ -17,7 +17,7 @@
 			>
 				Loan monthly to
 			</label>
-			<kv-dropdown-rounded
+			<kv-select
 				class="select-category"
 				id="select-category"
 				:value="selectedGroup"
@@ -30,7 +30,7 @@
 				>
 					{{ option.label }}
 				</option>
-			</kv-dropdown-rounded>
+			</kv-select>
 		</div>
 
 		<kv-button class="smaller" type="submit" :disabled="$v.$invalid" v-kv-track-event="[
@@ -48,7 +48,7 @@
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 import KvButton from '@/components/Kv/KvButton';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
 
@@ -59,7 +59,7 @@ export default {
 	],
 	components: {
 		KvButton,
-		KvDropdownRounded,
+		KvSelect,
 		MultiAmountSelector
 	},
 	validations: {
