@@ -114,9 +114,6 @@ const getComponentFromType = type => {
 	switch (type) {
 		case 'homepageBottomCTA':
 			return HomepageBottomCTA;
-		case 'homepageHero':
-			// TODO - deprecate homepageHero type on contentful then remove this
-			return DynamicHero;
 		case 'dynamicHero':
 			return DynamicHero;
 		case 'homepageHowItWorks':
