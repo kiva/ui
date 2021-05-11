@@ -1,5 +1,5 @@
 <template>
-	<section-with-background class="contentful-hero">
+	<section-with-background class="contentful-hero" :background-content="heroBackground">
 		<template #content>
 			<div class="row align-center">
 				<!-- hero media -->
@@ -92,16 +92,12 @@
 				</div>
 			</div>
 		</template>
-		<template #background>
-			<background :background-content="heroBackground" />
-		</template>
 	</section-with-background>
 </template>
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
-import Background from '@/components/Contentful/Background';
 import SectionWithBackground from '@/components/Contentful/SectionWithBackground';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
@@ -119,7 +115,6 @@ export default {
 		KvCarousel: () => import('@/components/Kv/KvCarousel'),
 		KvCarouselSlide: () => import('@/components/Kv/KvCarouselSlide'),
 		KvContentfulImg,
-		Background,
 		SectionWithBackground,
 	},
 	props: {
