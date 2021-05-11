@@ -1,100 +1,105 @@
 <template>
-	<section class="contentful-hero">
-		<div class="row align-center">
-			<!-- hero media -->
-			<div
-				class="small-12 medium-10 large-6 xlarge-5 columns"
-			>
-				<template v-if="isHeroCarousel">
-					<kv-carousel
-						indicator-style="bar"
-					>
-						<kv-carousel-slide v-for="(image, index) in heroMedia" :key="index">
+	<section-with-background class="contentful-hero" :background-content="heroBackground">
+		<template #content>
+			<div class="row align-center">
+				<!-- hero media -->
+				<div
+					class="small-12 medium-10 large-6 xlarge-5 columns"
+				>
+					<template v-if="isHeroCarousel">
+						<kv-carousel
+							indicator-style="bar"
+						>
+							<kv-carousel-slide v-for="(image, index) in heroMedia" :key="index">
+								<kv-contentful-img
+									v-if="image.url"
+									:height="557"
+									:width="500"
+									class="contentful-hero__img"
+									:contentful-src="image.url"
+									fallback-format="jpg"
+									:alt="image.description"
+								/>
+							</kv-carousel-slide>
+						</kv-carousel>
+					</template>
+					<template v-if="isHeroImage">
+						<router-link
+							:to="heroButton.link"
+							v-kv-track-event="[
+								'Hero',
+								'click-hero-loancards',
+								heroMedia[0].description,
+							]"
+						>
 							<kv-contentful-img
-								v-if="image.url"
-								:height="527"
+								v-if="heroMedia[0].url"
 								class="contentful-hero__img"
-								:contentful-src="image.url"
+								:contentful-src="heroMedia[0].url"
+								:width="500"
+								:height="527"
 								fallback-format="jpg"
-								:alt="image.description"
+								:alt="heroMedia[0].description"
 							/>
-						</kv-carousel-slide>
-					</kv-carousel>
-				</template>
-				<template v-if="isHeroImage">
-					<router-link
-						:to="heroButton.link"
+						</router-link>
+					</template>
+					<template v-if="isHeroVideo">
+						<video
+							:src="heroMedia[0].url"
+							class="contentful-hero__video-wrapper--video"
+							autoplay
+							loop
+							muted
+							playsinline
+						></video>
+					</template>
+				</div>
+				<!-- eslint-disable-next-line max-len -->
+				<div class="small-10 large-6 xlarge-7 align-self-middle columns contentful-hero__cta_wrapper">
+					<h1 class="contentful-hero__header" v-html="heroHeadline">
+					</h1>
+					<div class="contentful-hero__body" v-html="heroBody">
+					</div>
+					<kv-button
+						:class="`${buttonClass} show-for-large rounded`"
+						:to="buttonTo"
+						@click.native="buttonClick"
 						v-kv-track-event="[
 							'Hero',
-							'click-hero-loancards',
-							heroMedia[0].description,
+							'click-hero-cta',
+							heroButton.text,
 						]"
 					>
-						<kv-contentful-img
-							v-if="heroMedia[0].url"
-							class="contentful-hero__img"
-							:contentful-src="heroMedia[0].url"
-							:width="500"
-							:height="527"
-							fallback-format="jpg"
-							:alt="heroMedia[0].description"
-						/>
-					</router-link>
-				</template>
-				<template v-if="isHeroVideo">
-					<video
-						:src="heroMedia[0].url"
-						class="contentful-hero__video-wrapper--video"
-						autoplay
-						loop
-						muted
-						playsinline
-					></video>
-				</template>
-			</div>
-			<!-- eslint-disable-next-line max-len -->
-			<div class="small-10 large-6 xlarge-7 align-self-middle columns contentful-hero__cta_wrapper">
-				<h1 class="contentful-hero__header" v-html="heroHeadline">
-				</h1>
-				<div class="contentful-hero__body" v-html="heroBody">
+						{{ heroButton.text }}
+					</kv-button>
 				</div>
-				<kv-button
-					:class="`${buttonClass} show-for-large rounded`"
-					:to="buttonTo"
-					@click.native="buttonClick"
-					v-kv-track-event="[
-						'Hero',
-						'click-hero-cta',
-						heroButton.text,
-					]"
-				>
-					{{ heroButton.text }}
-				</kv-button>
 			</div>
-		</div>
-		<!-- Button in different element order for mobile only -->
-		<div class="row align-center hide-for-large">
-			<div class="small-10">
-				<kv-button
-					:class="`${buttonClass} rounded expanded`"
-					:to="buttonTo"
-					@click.native="buttonClick"
-					v-kv-track-event="[
-						'Hero',
-						'click-hero-cta',
-						heroButton.text,
-					]"
-				>
-					{{ heroButton.text }}
-				</kv-button>
+			<!-- Button in different element order for mobile only -->
+			<div class="row align-center hide-for-large">
+				<div class="small-10">
+					<kv-button
+						:class="`${buttonClass} rounded expanded`"
+						:to="buttonTo"
+						@click.native="buttonClick"
+						v-kv-track-event="[
+							'Hero',
+							'click-hero-cta',
+							heroButton.text,
+						]"
+					>
+						{{ heroButton.text }}
+					</kv-button>
+				</div>
 			</div>
-		</div>
-	</section>
+		</template>
+	</section-with-background>
 </template>
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+import SectionWithBackground from '@/components/Contentful/SectionWithBackground';
+
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 /**
@@ -110,6 +115,7 @@ export default {
 		KvCarousel: () => import('@/components/Kv/KvCarousel'),
 		KvCarouselSlide: () => import('@/components/Kv/KvCarouselSlide'),
 		KvContentfulImg,
+		SectionWithBackground,
 	},
 	props: {
 		/**
@@ -173,18 +179,22 @@ export default {
 				link: this.heroText?.primaryCtaLink ?? '',
 			};
 		},
+		heroBackground() {
+			return this.content?.contents?.find(({ key }) => key.indexOf('background') > -1);
+		},
+
 	},
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 .contentful-hero {
-	padding: 2rem 0;
+	height: rem-calc(925);
 
 	@include breakpoint(large) {
-		padding: 4rem 0 2rem;
+		height: rem-calc(530);
 	}
 
 	.row {
@@ -217,9 +227,9 @@ export default {
 		line-height: rem-calc(54);
 		font-weight: 500;
 
-		a,
-		em,
-		i {
+		::v-deep a,
+		::v-deep em,
+		::v-deep i {
 			font-style: normal;
 			color: $kiva-green;
 		}
@@ -237,7 +247,7 @@ export default {
 			margin: 2.25rem auto 2.25rem;
 		}
 
-		p {
+		::v-deep p {
 			@include medium-text();
 
 			@include breakpoint(xlarge) {
