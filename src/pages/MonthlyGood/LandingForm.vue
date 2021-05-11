@@ -16,11 +16,11 @@
 				</ul>
 			</fieldset>
 			<fieldset class="large-8 medium-7 small-12 columns">
-				<kv-dropdown-rounded :value="selectedGroup" @input="updateSelected">
+				<kv-select :value="selectedGroup" @input="updateSelected">
 					<option v-for="(option, index) in lendingCategories" :value="option.value" :key="index">
 						{{ option.label }}
 					</option>
-				</kv-dropdown-rounded>
+				</kv-select>
 			</fieldset>
 		</div>
 
@@ -39,7 +39,7 @@
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvButton from '@/components/Kv/KvButton';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
@@ -52,7 +52,7 @@ export default {
 	components: {
 		KvButton,
 		KvCurrencyInput,
-		KvDropdownRounded,
+		KvSelect,
 	},
 	validations: {
 		amount: {
@@ -110,7 +110,7 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-// styles to match KvDropDownRounded
+// styles to match KvSelect
 input[type="text"] {
 	border-radius: $button-radius;
 	color: $charcoal;

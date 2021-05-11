@@ -273,7 +273,7 @@ form {
 		margin-bottom: 0.25em;
 	}
 
-	// styles to match KvDropDownRounded
+	// styles to match KvSelect
 	input.text-input {
 		border: 1px solid $charcoal;
 		border-radius: $button-radius;

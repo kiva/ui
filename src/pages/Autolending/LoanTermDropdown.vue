@@ -3,7 +3,7 @@
 		<h3 class="filter-title">
 			Loan terms
 		</h3>
-		<kv-dropdown-rounded v-model="loanTerm">
+		<kv-select v-model="loanTerm">
 			<option value="0">
 				All loan terms
 			</option>
@@ -19,19 +19,19 @@
 			<option value="24">
 				24 months or less
 			</option>
-		</kv-dropdown-rounded>
+		</kv-select>
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		KvDropdownRounded,
+		KvSelect,
 	},
 	data() {
 		return {

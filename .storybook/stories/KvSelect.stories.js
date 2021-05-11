@@ -1,35 +1,35 @@
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 
 export default {
-	title: 'Kv/Form Elements/KvDropdownRounded',
-	component: KvDropdownRounded,
+	title: 'Kv/Form Elements/KvSelect',
+	component: KvSelect,
 };
 
 export const Default = () => ({
-	components: { KvDropdownRounded },
+	components: { KvSelect },
 	data: () => ({
 		myCoolModel: 'test3',
 	}),
 	template: `
-		<kv-dropdown-rounded v-model="myCoolModel">
+		<kv-select v-model="myCoolModel">
 			<option value="test">Test</option>
 			<option value="test2">Test2</option>
 			<option value="test3">Test3</option>
-		</kv-dropdown-rounded>
+		</kv-select>
 	`,
 });
 
 export const Disabled = () => ({
-	components: { KvDropdownRounded },
+	components: { KvSelect },
 	data: () => ({
 		myCoolModel: 'test3',
 	}),
 	template: `
-		<kv-dropdown-rounded disabled v-model="myCoolModel">
+		<kv-select disabled v-model="myCoolModel">
 			<option value="test">Test</option>
 			<option value="test2">Test2</option>
 			<option value="test3">Test3</option>
-		</kv-dropdown-rounded>
+		</kv-select>
 	`,
 });
 

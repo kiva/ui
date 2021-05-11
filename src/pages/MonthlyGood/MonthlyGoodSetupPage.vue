@@ -117,7 +117,7 @@
 											>
 												Donation
 											</label>
-											<kv-dropdown-rounded
+											<kv-select
 												class="donation-dropdown"
 												v-model="donationOptionSelected"
 												v-if="donationOptionSelected !== 'other'"
@@ -129,7 +129,7 @@
 												>
 													{{ option.label }}
 												</option>
-											</kv-dropdown-rounded>
+											</kv-select>
 											<kv-currency-input
 												class="text-input"
 												id="donation"
@@ -177,7 +177,7 @@
 										<div class="small-12 columns">
 											<div class="additional-left-pad-spans">
 												Select a category to focus your lending
-												<kv-dropdown-rounded v-model="selectedGroup" class="group-dropdown">
+												<kv-select v-model="selectedGroup" class="group-dropdown">
 													<option
 														v-for="(option, index) in lendingCategories"
 														:value="option.value"
@@ -185,7 +185,7 @@
 													>
 														{{ option.label }}
 													</option>
-												</kv-dropdown-rounded>
+												</kv-select>
 											</div>
 										</div>
 									</div>
@@ -276,7 +276,7 @@ import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql
 import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
@@ -364,7 +364,7 @@ export default {
 		KvButton,
 		KvCheckbox,
 		KvCurrencyInput,
-		KvDropdownRounded,
+		KvSelect,
 		KvIcon,
 		KvLoadingOverlay,
 		LegacySubscriberNotice,
@@ -746,7 +746,7 @@ export default {
 			display: inline-block;
 		}
 
-		// styles to match KvDropDownRounded
+		// styles to match KvSelect
 		input.text-input {
 			border: 1px solid $charcoal;
 			border-radius: $button-radius;

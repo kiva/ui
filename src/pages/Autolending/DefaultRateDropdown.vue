@@ -3,7 +3,7 @@
 		<h3 class="filter-title">
 			Field Partner default rates
 		</h3>
-		<kv-dropdown-rounded v-model="defaultRate">
+		<kv-select v-model="defaultRate">
 			<option value="0">
 				All
 			</option>
@@ -31,19 +31,19 @@
 			<option value="0.08">
 				8% or less
 			</option>
-		</kv-dropdown-rounded>
+		</kv-select>
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		KvDropdownRounded,
+		KvSelect,
 	},
 	data() {
 		return {

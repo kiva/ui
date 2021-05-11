@@ -1,7 +1,7 @@
 <template>
 	<div class="lend-timing-dropdown">
 		<span>Lend my balance for me</span>
-		<kv-dropdown-rounded :value="lendAfterDaysIdle" @input="updateLendAfterDaysIdle">
+		<kv-select :value="lendAfterDaysIdle" @input="updateLendAfterDaysIdle">
 			<option value="0">
 				As soon as possible
 			</option>
@@ -20,19 +20,19 @@
 			<option value="120">
 				If I haven’t made a loan after 120 days
 			</option>
-		</kv-dropdown-rounded>
+		</kv-select>
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		KvDropdownRounded,
+		KvSelect,
 	},
 	data() {
 		return {

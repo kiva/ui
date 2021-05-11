@@ -33,7 +33,7 @@
 							v-model="autolendingStatus"
 						>
 							PAUSED for
-							<kv-dropdown-rounded v-model="daysToPause" @change="triggerWatcher">
+							<kv-select v-model="daysToPause" @change="triggerWatcher">
 								<option value="30">
 									1 Month
 								</option>
@@ -43,7 +43,7 @@
 								<option value="180">
 									6 Months
 								</option>
-							</kv-dropdown-rounded>
+							</kv-select>
 						</kv-radio>
 						<kv-radio
 							data-test="is-autolending-off"
@@ -82,7 +82,7 @@ import {
 } from 'date-fns';
 
 import KvButton from '@/components/Kv/KvButton';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvRadio from '@/components/Kv/KvRadio';
@@ -95,7 +95,7 @@ export default {
 		KvButton,
 		KvRadio,
 		KvLoadingSpinner,
-		KvDropdownRounded,
+		KvSelect,
 		KvSettingsCard
 	},
 	data() {

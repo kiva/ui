@@ -23,7 +23,7 @@
 						<label for="global-unsubscribed-input">
 							<strong>Do you want to receive emails from Kiva?</strong>
 						</label>
-						<kv-dropdown-rounded
+						<kv-select
 							id="global-unsubscribed-input"
 							v-model="form.globalUnsubscribed"
 						>
@@ -33,7 +33,7 @@
 							<option :value="true">
 								Send only legally required emails
 							</option>
-						</kv-dropdown-rounded>
+						</kv-select>
 					</template>
 				</kv-settings-card>
 			</div>
@@ -76,7 +76,7 @@
 								Monthly Good updates
 							</kv-checkbox>
 							<label for="repayment-updates-input">Repayment notifications</label>
-							<kv-dropdown-rounded
+							<kv-select
 								id="repayment-updates-input"
 								v-model="form.repaymentUpdates"
 							>
@@ -89,7 +89,7 @@
 								<option value="monthly">
 									Send a monthly digest
 								</option>
-							</kv-dropdown-rounded>
+							</kv-select>
 
 							<push-repayment-updates
 								class="email-settings__notifications"
@@ -97,7 +97,7 @@
 							/>
 
 							<label for="autolend-updates-input">Autolending notifications</label>
-							<kv-dropdown-rounded
+							<kv-select
 								id="autolend-updates-input"
 								v-model="form.autolendUpdates"
 							>
@@ -110,7 +110,7 @@
 								<option value="monthly">
 									Send a monthly digest
 								</option>
-							</kv-dropdown-rounded>
+							</kv-select>
 							<a href="/lend/saved-search">Saved searches notifications</a>
 						</fieldset>
 					</template>
@@ -146,7 +146,7 @@
 								Loan comments, lender to lender messages
 							</kv-checkbox>
 							<label for="team-digests-input">Team digests</label>
-							<kv-dropdown-rounded
+							<kv-select
 								id="team-digests-input"
 								v-model="form.teamDigests"
 							>
@@ -162,7 +162,7 @@
 								<option value="weekly">
 									Send a weekly digest
 								</option>
-							</kv-dropdown-rounded>
+							</kv-select>
 						</fieldset>
 
 						<!-- User per team preferences -->
@@ -179,7 +179,7 @@
 										for="single-team-digest-input"
 										:key="`team${index}-label`"
 									>{{ team.name }}</label>
-									<kv-dropdown-rounded :key="`team${index}-select`"
+									<kv-select :key="`team${index}-select`"
 										id="single-team-digest-input"
 										v-model="team.frequency"
 									>
@@ -198,7 +198,7 @@
 										<option value="default">
 											Use my default for teams
 										</option>
-									</kv-dropdown-rounded>
+									</kv-select>
 								</template>
 							</div>
 						</fieldset>
@@ -317,7 +317,7 @@ import logFormatter from '@/util/logFormatter';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import PushRepaymentUpdates from '@/components/Settings/PushRepaymentUpdates';
@@ -393,7 +393,7 @@ export default {
 	components: {
 		KvButton,
 		KvCheckbox,
-		KvDropdownRounded,
+		KvSelect,
 		KvLoadingSpinner,
 		KvSettingsCard,
 		PushRepaymentUpdates,
