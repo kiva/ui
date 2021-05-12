@@ -99,9 +99,9 @@ export default {
 		headlineCopy() {
 			const contentfulHeadlineCopy = this.heroGenericContentBlock?.headline;
 			if (contentfulHeadlineCopy) {
-				return documentToHtmlString(contentfulHeadlineCopy);
+				return contentfulHeadlineCopy;
 			}
-			return documentToHtmlString(this.defaultHeadlineCopy);
+			return this.defaultHeadlineCopy;
 		},
 		subHeadCopy() {
 			const contentfulSubHeadCopy = this.heroGenericContentBlock?.bodyCopy;
