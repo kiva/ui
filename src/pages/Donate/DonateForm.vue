@@ -36,7 +36,13 @@
 					:id="id"
 					@completed="subscriptionApplied = true"
 				/>
-				<kv-button v-if="!isMonthly" class="smaller submit-btn" type="submit" :disabled="$v.$invalid">
+				<kv-button
+					v-if="!isMonthly"
+					class="smaller submit-btn"
+					:class="{'disabled': formSubmitted}"
+					type="submit"
+					:disabled="$v.$invalid"
+				>
 					{{ buttonText }}
 				</kv-button>
 				<!-- Donation Disclaimer should always be present if we have a payment option active -->
@@ -121,6 +127,7 @@ export default {
 			donationAmountSelection: '500',
 			donationCustomAmount: 500,
 			donationAmount: 500,
+			formSubmitted: false,
 			minDonationAmount: 1,
 			maxDonationAmount: 10000,
 			isMonthly: false,
@@ -174,9 +181,11 @@ export default {
 		},
 		submit() {
 			// exit form submit if a monthly donation was processed
-			if (this.isMonthly) {
+			if (this.isMonthly || this.formSubmitted) {
 				return false;
 			}
+			// allow form submission only once
+			this.formSubmitted = true;
 
 			this.apollo.mutate({
 				mutation: updateDonation,
