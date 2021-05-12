@@ -97,7 +97,11 @@ export default {
 			return this.heroContentGroup?.contents?.find(contentBlock => contentBlock.key === 'web-lender-donation-form-copy');
 		},
 		headlineCopy() {
-			return this.heroGenericContentBlock?.headline;
+			const contentfulHeadlineCopy = this.heroGenericContentBlock?.headline;
+			if (contentfulHeadlineCopy) {
+				return documentToHtmlString(contentfulHeadlineCopy);
+			}
+			return documentToHtmlString(this.defaultHeadlineCopy);
 		},
 		subHeadCopy() {
 			const contentfulSubHeadCopy = this.heroGenericContentBlock?.bodyCopy;
@@ -114,8 +118,8 @@ export default {
 			return this.heroContentGroup?.contents?.find(contentBlock => contentBlock.key === 'webLenderDonationAmounts');
 		},
 		donationValues() {
-			return this.heroSettings?.dataObject?.amounts.length
-				? this.heroSettings?.dataObject?.amounts
+			return this.heroSettingsContent?.dataObject?.amounts.length
+				? this.heroSettingsContent?.dataObject?.amounts
 				: this.defaultDonationValues;
 		},
 		heroDisclaimerContent() {
