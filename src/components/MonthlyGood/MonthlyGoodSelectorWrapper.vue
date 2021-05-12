@@ -70,7 +70,7 @@ export default {
 		setMgStickyBarOffset() {
 			let offsetHeight = 0;
 			const basketBar = document.getElementsByClassName('basket-bar')[0];
-			const cookieBanner = document.getElementsByClassName('cookie-banner-container')[0];
+			const cookieBanner = document.getElementById('onetrust-banner-sdk');
 			// Height of basket bar if present
 			if (typeof basketBar !== 'undefined' && basketBar.clientHeight > 0) {
 				offsetHeight = basketBar.clientHeight;
