@@ -1745,3 +1745,72 @@ export const homepagePromos = {
 		}
 	}
 }
+
+export const contentfulGenericContentBlock = (key) => {
+	return {
+		"key": key,
+		"name": `Test GenericContentBlock ${key}`,
+		"bodyCopy": { "data": {}, "content": [{ "data": {}, "content": [{ "data": {}, "marks": [], "value": "Kiva makes it simple to support causes you care about - every month, automatically.", "nodeType": "text" }], "nodeType": "paragraph" }], "nodeType": "document" },
+		"headline": "Choose a cause, <br/><em>change a life</em>",
+		"subHeadline": undefined,
+		"primaryCtaLink": undefined,
+		"primaryCtaKvTrackEvent": undefined,
+		"primaryCtaText": "Select your cause",
+	}
+
+}
+
+export const contentfulBackground = (type) => {
+	let backgroundVideo = {
+		"title": "Test Video 2",
+		"file": {
+			"url": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/28831/Typer.mp4",
+			"details": { "size": 1175461 },
+			"fileName": "Typer.mp4",
+			"contentType": "video/mp4"
+		}
+	}
+	let backgroundImage = {
+		"title": "Test Image",
+		"file": {
+			"url": "https://images.ctfassets.net/j0p9a6ql0rn7/7mY5ZujL9UfbluRkVkHgkX/b30c629747deda979a57b9ae027469f3/mg-hppromo-1-wxga-retina.jpg",
+			"details": { "size": 1175461 },
+			"fileName": "mg-hppromo-1-wxga-retina.jpg",
+			"contentType": "image/jpg"
+		}
+	}
+	return {
+		"key": "test-background",
+		"name": "Test Background",
+		"backgroundColor": "#518230",
+		"backgroundMedia": {
+			...(type==='image' && backgroundImage),
+			...(type==='video' && backgroundVideo),
+			...(type==='color' && undefined)
+		}
+	}
+
+}
+
+export const contentfulMediaImg = () => {
+	let randomColor = Math.floor(Math.random()*16777215).toString(16);
+	return {
+		"title": "Test Image",
+		"description": "Image Description",
+		"file": {
+			"url": `https://via.placeholder.com/401x457/${randomColor}/000000`,
+			"details": { "size": 232910, "image": { "width": 401, "height": 457 } },
+			"fileName": "placeholder.png", "contentType": "image/png"
+		}
+	}
+}
+
+export const contentfulMediaVideo = {
+	"title": "Test Video",
+	"description": "Video Description",
+	"file": {
+		"url": "https://temp.media/video/?height=600&width=337&length=10",
+		"details": { "size": 232910, "image": { "width": 337, "height": 600 } },
+		"fileName": "placeholder.png", "contentType": "video/mp4"
+	}
+}
