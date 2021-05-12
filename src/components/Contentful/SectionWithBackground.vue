@@ -30,16 +30,6 @@ import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 /**
 * Section Background
 * Creates a full width section with a full bleed background.
-
-* When using this component you must specify a height in CSS
-* in the parent, for example:
-*
-* 	height: rem-calc(920);
-*
-* 	@include breakpoint(large) {
-* 		height: rem-calc(550);
-*	}
-
 * */
 
 export default {
@@ -130,14 +120,15 @@ export default {
 		overflow: hidden;
 		z-index: 2;
 		margin: 0;
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
+		top: 0;
 	}
 
 	&__background-wrapper {
 		width: 100%;
 		height: 100%;
+		z-index: -1;
+		top: 0;
+		position: absolute;
 	}
 
 	&__media {
@@ -145,7 +136,7 @@ export default {
 		width: 100%;
 		height: 100%;
 
-		// over ride kvContentfulImg nexted img styling
+		// over ride kvContentfulImg nested img styling
 		::v-deep img {
 			object-fit: cover;
 			width: 100%;

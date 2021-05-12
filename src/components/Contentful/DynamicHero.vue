@@ -191,12 +191,6 @@ export default {
 @import 'settings';
 
 .contentful-hero {
-	height: rem-calc(925);
-
-	@include breakpoint(large) {
-		height: rem-calc(530);
-	}
-
 	.row {
 		max-width: 70rem;
 	}
