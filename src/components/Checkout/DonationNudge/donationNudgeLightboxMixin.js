@@ -49,7 +49,6 @@ export default {
 			this.closeNudgeLightbox();
 		},
 		expandNudgeLightbox() {
-			console.log('expandNudgeLightbox triggered');
 			this.$refs.nudgeBoxes.openNudgeLightbox();
 		},
 	},
