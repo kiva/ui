@@ -48,7 +48,7 @@ export default {
 			this.$kvTrackEvent('basket', 'Update Nudge Donation', `Update Success${clickSource}`, amount * 100);
 			this.closeNudgeLightbox();
 		},
-		openNudgeLightbox() {
+		expandNudgeLightbox() {
 			this.$refs.nudgeBoxes.openNudgeLightbox();
 		},
 	},
