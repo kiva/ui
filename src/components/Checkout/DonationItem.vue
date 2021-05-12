@@ -412,7 +412,7 @@ export default {
 			this.$kvTrackEvent('basket', 'click-open nudge');
 			this.nudgeLightboxVisible = true;
 			this.$nextTick(() => {
-				this.$refs.nudgeLightbox.openNudgeLightbox();
+				this.$refs.nudgeLightbox.expandNudgeLightbox();
 			});
 		},
 		donationNudgeDescription() {
