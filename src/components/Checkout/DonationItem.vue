@@ -72,7 +72,6 @@
 			/>
 		</div>
 		<donation-nudge-lightbox
-			v-if="!donationNudgeFellows"
 			ref="nudgeLightbox"
 			:loan-count="loanCount"
 			:loan-reservation-total="loanReservationTotal"
@@ -80,21 +79,6 @@
 			:close-nudge-lightbox="closeNudgeLightbox"
 			:update-donation-to="updateDonationTo"
 			:has-custom-donation="hasCustomDonation"
-			:experimental-footer="showCharityOverheadFooter"
-			:description="donationNudgeDescription()"
-			:percentage-rows="donationNudgePercentageRows"
-			:current-donation-amount="amount"
-		/>
-		<donation-nudge-lightbox-image
-			v-else
-			ref="nudgeLightbox"
-			:loan-count="loanCount"
-			:loan-reservation-total="loanReservationTotal"
-			:nudge-lightbox-visible="nudgeLightboxVisible"
-			:close-nudge-lightbox="closeNudgeLightbox"
-			:update-donation-to="updateDonationTo"
-			:has-custom-donation="hasCustomDonation"
-			:header="donationNudgeFellowsHeader"
 			:experimental-footer="showCharityOverheadFooter"
 			:description="donationNudgeDescription()"
 			:percentage-rows="donationNudgePercentageRows"
@@ -149,7 +133,6 @@ import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
-import DonationNudgeLightboxImage from '@/components/Checkout/DonationNudge/DonationNudgeLightboxImage';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 const donationItemQuery = gql`query donationItemQuery {
@@ -165,7 +148,6 @@ export default {
 		KvLightbox,
 		DonateRepayments,
 		DonationNudgeLightbox,
-		DonationNudgeLightboxImage,
 	},
 	inject: ['apollo', 'cookieStore'],
 	props: {
@@ -197,8 +179,6 @@ export default {
 			donationNudgeBorrowerImageExperiment: false,
 			donationDetailsLink: 'How Kiva uses donations',
 			showCharityOverheadFooter: false,
-			donationNudgeFellows: false,
-			donationNudgeFellowsHeader: 'Donations enable Kiva Fellows to reach the people who need it most',
 			dynamicDonationItem: ''
 		};
 	},
@@ -212,8 +192,6 @@ export default {
 					Promise.all([
 						// Get the assigned experiment version for Donation Nudge Borrower Image Experiment
 						client.query({ query: experimentAssignmentQuery, variables: { id: 'charity_overhead' } }),
-						// Get the assigned experiment version for Donation nudge fellows experiment
-						client.query({ query: experimentAssignmentQuery, variables: { id: 'donation_nudge_fellows' } }),
 						// Get the assigned experiment version for GROW-74
 						client.query({ query: experimentAssignmentQuery, variables: { id: 'checkout_donation_tag_line' } }), // eslint-disable-line max-len
 						// Get contentful dynamic content
@@ -332,19 +310,7 @@ export default {
 					this.showCharityOverheadFooter = true;
 				}
 			}
-			// CASH-1111: Donation Nudge Fellows
-			if (this.hasLoans) {
-				const donationNudgeFellowsExp = this.apollo.readFragment({
-					id: 'Experiment:donation_nudge_fellows',
-					fragment: experimentVersionFragment,
-				}) || {};
-				if (donationNudgeFellowsExp.version === 'control') {
-					this.$kvTrackEvent('basket', 'EXP-CASH-1111-Aug2019', 'a');
-				} else if (donationNudgeFellowsExp.version === 'shown') {
-					this.$kvTrackEvent('basket', 'EXP-CASH-1111-Aug2019', 'b');
-					this.donationNudgeFellows = true;
-				}
-			}
+
 			// GROW-74: Donation tag line
 			if (this.hasLoans) {
 				const donationTagLineExperiment = this.apollo.readFragment({
