@@ -112,15 +112,17 @@ export default {
 			});
 		},
 		afterLightboxOpens() {
-			try {
-				if (this.currentDonationAmount && this.customDonationSelected) {
-					this.setInputs(this.currentDonationAmount);
-				}
-
-				setTimeout(() => { document.getElementById('button-number-0').focus(); }, 500);
-			} catch (e) {
-				// no-op
+			if (this.currentDonationAmount && this.customDonationSelected) {
+				this.setInputs(this.currentDonationAmount);
 			}
+
+			setTimeout(() => {
+				try {
+					document.getElementById('button-number-0').focus();
+				} catch (error) {
+					// no-op
+				}
+			}, 500);
 		},
 		getDonationByPercent(percent) {
 			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');

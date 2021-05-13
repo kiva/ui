@@ -295,15 +295,17 @@ export default {
 			});
 		},
 		afterLightboxOpens() {
-			try {
-				if (this.currentDonationAmount && this.customDonationSelected) {
-					this.setInputs(this.currentDonationAmount);
-				}
-
-				setTimeout(() => { document.getElementById('first-button').focus(); }, 500);
-			} catch (e) {
-				// no-op
+			if (this.currentDonationAmount && this.customDonationSelected) {
+				this.setInputs(this.currentDonationAmount);
 			}
+
+			setTimeout(() => {
+				try {
+					document.getElementById('first-button').focus();
+				} catch (error) {
+					// no-op
+				}
+			}, 500);
 		},
 		getDonationByPercent(percent) {
 			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');
