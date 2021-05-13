@@ -49,7 +49,7 @@ export default {
 			this.closeNudgeLightbox();
 		},
 		expandNudgeLightbox() {
-			this.$refs.nudgeBoxes.openNudgeLightbox();
+			this.$refs.nudgeBoxes.afterLightboxOpens();
 		},
 	},
 };
