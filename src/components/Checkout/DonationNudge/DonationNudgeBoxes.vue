@@ -299,13 +299,13 @@ export default {
 				this.setInputs(this.currentDonationAmount);
 			}
 
-			setTimeout(() => {
+			this.$nextTick(() => {
 				try {
 					document.getElementById('first-button').focus();
 				} catch (error) {
 					// no-op
 				}
-			}, 500);
+			});
 		},
 		getDonationByPercent(percent) {
 			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');
