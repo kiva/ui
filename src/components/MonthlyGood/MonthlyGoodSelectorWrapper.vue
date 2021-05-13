@@ -76,7 +76,7 @@ export default {
 				offsetHeight = basketBar.clientHeight;
 			}
 			// Height of Cookie banner if present (overrides basket bar if present)
-			if (typeof cookieBanner !== 'undefined' && cookieBanner.clientHeight > 0) {
+			if (cookieBanner && cookieBanner.clientHeight > 0) {
 				offsetHeight = cookieBanner.clientHeight;
 			}
 			// set offset
