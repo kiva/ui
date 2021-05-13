@@ -4,10 +4,6 @@ query donationData {
 			key
 			value
 		}
-		donationNudgeFellows: uiExperimentSetting(key: "donation_nudge_fellows") {
-			key
-			value
-		}
 		specificDonationUseTextExperiment: uiExperimentSetting(key: "checkout_donation_tag_line") {
 			key
 			value
