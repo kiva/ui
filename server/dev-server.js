@@ -37,7 +37,9 @@ const port = argv.port || config.server.port;
 const app = express();
 
 // Set sensible security headers for express
-app.use(helmet());
+app.use(helmet({
+	contentSecurityPolicy: false,
+}));
 
 // Setup Request Logger
 app.use(logger.requestLogger);

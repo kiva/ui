@@ -41,7 +41,9 @@ if (config.server.gzipEnabled) {
 }
 
 // Set sensible security headers for express
-app.use(helmet());
+app.use(helmet({
+	contentSecurityPolicy: false,
+}));
 
 // Set headers for static files
 function setHeaders(res, path) {
