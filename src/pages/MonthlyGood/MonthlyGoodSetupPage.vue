@@ -1,7 +1,26 @@
 <template>
 	<www-page>
 		<div class="monthly-good-setup-page">
-			<div class="row align-center ">
+			<div class="row align-center text-center auto-lending-notice" v-if="balance > 100">
+				<div class="small-12 medium-11 large-10 column">
+					<h2>Heads up! You have {{ balance | numeral('$0') }} available to lend.</h2>
+					<!-- eslint-disable-next-line max-len -->
+					<p>If you sign up for Monthly Good, this balance and all future repayments will be automatically lent. If you prefer to keep choosing your own loans, switch to auto-deposit.</p>
+					<kv-button
+						class="smaller secondary"
+						to="/auto-deposit"
+						v-kv-track-event="[
+							'MonthlyGood',
+							'click-large-balance-auto-deposit-warning',
+							'Switch to auto-deposit'
+						]"
+					>
+						Switch to auto-deposit
+					</kv-button>
+					<hr>
+				</div>
+			</div>
+			<div class="row align-center">
 				<div class="small-12 medium-11 large-10 column"
 					v-if="!isMonthlyGoodSubscriber && !hasLegacySubscription"
 				>
@@ -202,15 +221,13 @@
 							<div class="large-9 medium-10 small-12 columns">
 								<p>
 									<!-- eslint-disable-next-line max-len -->
-									<strong><em>We'll charge your account{{ isOnetime ? '' : ' each month' }}, and any credit in your Kiva account will be automatically re-lent for you.</em></strong>
+									We’ll charge your payment method{{ isOnetime ? '' : ' each month' }}. All credit in your Kiva account, including repayments, will be automatically lent whenever it exceeds $25.
 								</p>
-								<p v-if="hasAutoDeposits">
+								<p class="conditional-messaging">
 									<!-- eslint-disable-next-line max-len -->
-									<em>* Your {{ isOnetime ? '' : 'new Monthly Good ' }}contribution will replace your existing auto deposit.</em>
-								</p>
-								<p v-if="hasAutoLending">
+									<em v-if="hasAutoDeposits">* Your {{ isOnetime ? '' : 'new Monthly Good ' }}contribution will replace your existing auto deposit.</em>
 									<!-- eslint-disable-next-line max-len -->
-									<em>* {{ isOnetime ? 'This contribution' : 'Enrolling in Monthly Good' }} will also disable your current auto lending settings.</em>
+									<em v-if="hasAutoLending">* {{ isOnetime ? 'This contribution' : 'Enrolling in Monthly Good' }} will also disable your current auto lending settings.</em>
 								</p>
 
 								<div class="payment-dropin-wrapper" v-if="hasActiveLogin">
@@ -273,19 +290,18 @@ import { checkLastLoginTime } from '@/util/authenticationGuard';
 import authenticationQuery from '@/graphql/query/authenticationQuery.graphql';
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
 
+import AlreadySubscribedNotice from '@/components/MonthlyGood/AlreadySubscribedNotice';
 import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import KvSelect from '@/components/Kv/KvSelect';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
+import KvSelect from '@/components/Kv/KvSelect';
+import LegacySubscriberNotice from '@/components/MonthlyGood/LegacySubscriberNotice';
 import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
-
-import AlreadySubscribedNotice from './AlreadySubscribedNotice';
-import LegacySubscriberNotice from './LegacySubscriberNotice';
 
 const pageQuery = gql`query monthlyGoodSetupPageControl {
 	general {
@@ -312,6 +328,10 @@ const pageQuery = gql`query monthlyGoodSetupPageControl {
 		autolendProfile {
 			id
 			isEnabled
+		}
+		userAccount {
+			id
+			balance
 		}
 	}
 }`;
@@ -391,6 +411,7 @@ export default {
 			hasLegacySubscription: false,
 			isMGTaglineActive: false,
 			hasActiveLogin: false,
+			balance: 0,
 		};
 	},
 	mixins: [
@@ -481,6 +502,7 @@ export default {
 			this.legacySubs = pageQueryResult?.my?.subscriptions?.values ?? [];
 			this.hasLegacySubscription = this.legacySubs.length > 0;
 			this.hasActiveLogin = !!pageQueryResult?.my;
+			this.balance = Math.floor(pageQueryResult?.my?.userAccount?.balance ?? 0);
 		} catch (e) {
 			logReadQueryError(e, 'MonthlyGoodSetupPage pageQuery');
 		}
@@ -516,6 +538,13 @@ export default {
 		}
 		if (this.hasLegacySubscription) {
 			this.$kvTrackEvent('Registration', 'unsuccessful-monthly-good-reg', 'has-legacy-subscription');
+		}
+
+		// Fire event if user sees auto-deposit warning
+		if (this.balance > 100) {
+			this.$kvTrackEvent('MonthlyGood', 'large-balance-auto-deposit-warning', 'shown');
+		} else {
+			this.$kvTrackEvent('MonthlyGood', 'large-balance-auto-deposit-warning', 'hidden');
 		}
 	},
 	watch: {
@@ -808,8 +837,22 @@ export default {
 		}
 	}
 
+	.auto-lending-notice {
+		h2 {
+			margin-bottom: 1.5rem;
+		}
+
+		.button {
+			margin-top: 1rem;
+		}
+
+		margin-bottom: 2.5rem;
+	}
+
 	// cover and disallow clicking if form is invalid
-	.payment-dropin-wrapper { position: relative; }
+	.payment-dropin-wrapper {
+		position: relative;
+	}
 
 	.payment-dropin-invalid-cover {
 		position: absolute;
@@ -819,6 +862,11 @@ export default {
 		left: 0;
 		background: rgba(255, 255, 255, 0.8);
 		z-index: 10000;
+	}
+
+	.conditional-messaging {
+		margin: 1.5rem 0 2rem;
+		em { display: block; }
 	}
 }
 
