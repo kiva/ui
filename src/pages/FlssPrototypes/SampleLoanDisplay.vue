@@ -1,10 +1,7 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-		:footer-theme="footerTheme"
-	>
+	<www-page :header-theme="headerTheme" :footer-theme="footerTheme">
 		<div class="simple-campaign-landing">
-			<hr>
+			<hr />
 
 			<section
 				class="loan-categories section"
@@ -16,8 +13,10 @@
 						<h2 class="loan-categories__header text-center">
 							Fundraising Loan Search Service Loans
 							<!--PSD TODO switch to simple dropdown tailored queries-->
+							<!-- -->
 						</h2>
 						<div class="loan-container">
+							<kv-dropdown />
 							<flss-loans
 								id="flssLoanRowDisplay"
 								:filters="filters"
@@ -38,50 +37,53 @@
 	</www-page>
 </template>
 <script>
+import gql from "graphql-tag";
+import { lightHeader, lightFooter } from "@/util/siteThemes";
+import WwwPage from "@/components/WwwFrame/WwwPage";
+import FlssLoans from "@/pages/FlssPrototypes/FlssLoanRow";
+// import KvDropdown from "@/components/Kv/KvDropdown";
+// import LoanCardController from "@/components/LoanCards/LoanCardController";
 
-import gql from 'graphql-tag';
-import { lightHeader, lightFooter } from '@/util/siteThemes';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import FlssLoans from '@/pages/FlssPrototypes/FlssLoanRow';
-// import LoanCardController from '@/components/LoanCards/FlssLoanCardController';
-
-const pageQuery = gql`query pageContent($basketId: String!) {
-	shop(basketId: $basketId) {
-		id
-		basket {
+const pageQuery = gql`
+	query pageContent($basketId: String!) {
+		shop(basketId: $basketId) {
 			id
-			items {
-				totalCount
-				values {
-					id
-					basketItemType
+			basket {
+				id
+				items {
+					totalCount
+					values {
+						id
+						basketItemType
+					}
 				}
 			}
 		}
-	}
-	my {
-		userAccount {
-			id
+		my {
+			userAccount {
+				id
+			}
 		}
 	}
-}`;
+`;
 
 export default {
-	inject: ['apollo', 'cookieStore', 'kvAuth0'],
+	inject: ["apollo", "cookieStore", "kvAuth0"],
 	components: {
 		WwwPage,
-		FlssLoans
-		// LoanCardController
+		FlssLoans,
+		KvDropdown,
+		LoanCardController,
 	},
 	mixins: [],
 	props: {
 		dynamicRoute: {
 			type: String,
-			default: '',
+			default: "",
 		},
 		formComplete: {
 			type: String,
-			default: '',
+			default: "",
 		},
 	},
 	data() {
@@ -93,7 +95,7 @@ export default {
 			pageData: null,
 			showLoans: false,
 			showLoanRows: true,
-			filters: {}
+			filters: {},
 		};
 	},
 	metaInfo() {
@@ -105,16 +107,13 @@ export default {
 		preFetch: true,
 		query: pageQuery,
 	},
-	created() {
-	},
-	mounted() {
-	},
-	watch: {
-	},
+	created() {},
+	mounted() {},
+	watch: {},
 	computed: {
 		pageSettingData() {
 			const settings = this.pageData?.page?.settings ?? [];
-			const jsonDataArray = settings.map(setting => setting.dataObject || {});
+			const jsonDataArray = settings.map((setting) => setting.dataObject || {});
 			/* eslint-disable-next-line no-unused-vars, no-empty-pattern */
 			const allJsonData = jsonDataArray.reduce(
 				(accumulator, settingDataObject) => {
@@ -126,26 +125,25 @@ export default {
 		},
 		pageTitle() {
 			const layoutTitle = this.pageData?.page?.pageLayout?.pageTitle;
-			const pageTitle = this.pageData?.page?.pageTitle ?? 'Loans that change lives';
+			const pageTitle =
+				this.pageData?.page?.pageTitle ?? "Loans that change lives";
 			return layoutTitle || pageTitle;
 		},
 		initialSortBy() {
 			return (
-				this.promoData?.managedAccount?.loanSearchCriteria?.sortBy
-        ?? 'popularity'
+				this.promoData?.managedAccount?.loanSearchCriteria?.sortBy ??
+				"popularity"
 			);
 		},
-
 	},
 	methods: {
-
 		showLoanDetails(loan) {
 			this.detailedLoan = loan;
 			this.loanDetailsVisible = true;
 		},
 		toggle() {
 			this.active = !this.active;
-		}
+		},
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
