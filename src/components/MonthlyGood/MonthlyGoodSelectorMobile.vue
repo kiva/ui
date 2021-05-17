@@ -155,6 +155,7 @@ export default {
 			this.lightboxVisible = true;
 		},
 		hideLightbox() {
+			this.$kvTrackEvent('MonthlyGood', 'click-close-monthly-good-selector-mobile', this.lightboxStep);
 			this.lightboxVisible = false;
 		},
 		getImage(image) {
