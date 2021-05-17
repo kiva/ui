@@ -68,8 +68,6 @@
 </template>
 
 <script>
-// import loanChannel from '@/graphl/query/loanChannelData.graphql'
-// import KvDropdown from '@/components/Kv/KvDropdown';
 import KvCarousel from "@/components/Kv/KvCarousel";
 import KvCarouselSlide from "@/components/Kv/KvCarouselSlide";
 import KvLoadingSpinner from "@/components/Kv/KvLoadingSpinner";
@@ -85,7 +83,6 @@ export default {
 	inject: ["apollo"],
 	components: {
 		KvCarousel,
-		// KvDropdown,
 		KvCarouselSlide,
 		KvLoadingSpinner,
 		LoanCardController,
@@ -221,8 +218,6 @@ export default {
 			this.apollo
 				.query({
 					query: flssLoanQuery,
-					// variables: this.loanQueryVars,
-					// variables:
 					variables: {
 						filterObject: favoriteCountries,
 					},
