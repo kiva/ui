@@ -1,8 +1,7 @@
 <template>
 	<www-page :header-theme="headerTheme" :footer-theme="footerTheme">
 		<div class="simple-campaign-landing">
-			<hr />
-
+			{{ pageTitle }}
 			<section
 				class="loan-categories section"
 				id="simpleLoanSection"
@@ -14,9 +13,47 @@
 							Fundraising Loan Search Service Loans
 							<!--PSD TODO switch to simple dropdown tailored queries-->
 							<!-- -->
+							<hr />
 						</h2>
+						<section
+							class="dropDownMenuWrapper"
+							:class="{
+								'dropDownMenuWrapper--noTitle': !menuTitle,
+							}"
+						>
+							<button class="dropDownMenuButton" ref="menu" @click="openClose">
+								{{ menuTitle }}
+							</button>
+
+							<div
+								class="iconWrapper"
+								:class="{ 'iconWrapper--noTitle': !menuTitle }"
+							>
+								<FilterIcon />
+							</div>
+							<section class="dropdownMenu" v-if="isOpen">
+								<div class="menuArrow"></div>
+								<slot></slot>
+
+								<section class="option">
+									<button @click="chooseFavCountry">Favorite Countries</button>
+									<span class="desc">Western Samoa, US and not Kenya</span>
+								</section>
+
+								<section class="option">
+									<button @click="chooseFavSector">Favorite Sectors</button>
+									<span class="desc">Education and Arts</span>
+								</section>
+
+								<section class="option">
+									<button @click="chooseAll">All Fundraising</button>
+									<span class="desc">All loans currently fundraising</span>
+								</section>
+							</section>
+						</section>
+
 						<div class="loan-container">
-							<kv-dropdown />
+							<!-- <kv-dropdown /> -->
 							<flss-loans
 								id="flssLoanRowDisplay"
 								:filters="filters"
@@ -40,9 +77,12 @@
 import gql from "graphql-tag";
 import { lightHeader, lightFooter } from "@/util/siteThemes";
 import WwwPage from "@/components/WwwFrame/WwwPage";
-import FlssLoans from "@/pages/FlssPrototypes/FlssLoanRow";
-// import KvDropdown from "@/components/Kv/KvDropdown";
-// import LoanCardController from "@/components/LoanCards/LoanCardController";
+import {
+	FlssLoans,
+	favoriteCountries,
+	favoriteSectors,
+} from "@/pages/FlssPrototypes/FlssLoanRow";
+import FilterIcon from "@/assets/icons/inline/filters.svg";
 
 const pageQuery = gql`
 	query pageContent($basketId: String!) {
@@ -72,8 +112,7 @@ export default {
 	components: {
 		WwwPage,
 		FlssLoans,
-		KvDropdown,
-		LoanCardController,
+		FilterIcon,
 	},
 	mixins: [],
 	props: {
@@ -84,6 +123,10 @@ export default {
 		formComplete: {
 			type: String,
 			default: "",
+		},
+		menuTitle: {
+			type: String,
+			default: "FLSS Filters",
 		},
 	},
 	data() {
@@ -96,6 +139,7 @@ export default {
 			showLoans: false,
 			showLoanRows: true,
 			filters: {},
+			isOpen: false,
 		};
 	},
 	metaInfo() {
@@ -141,8 +185,37 @@ export default {
 			this.detailedLoan = loan;
 			this.loanDetailsVisible = true;
 		},
-		toggle() {
-			this.active = !this.active;
+		openClose() {
+			const menuButton = this;
+			const closeListerner = (e) => {
+				if (menuButton.catchOutsideClick(e, menuButton.$refs.menu)) {
+					window.removeEventListener(
+						"click",
+						closeListerner
+					)((menuButton.isOpen = false));
+				}
+			};
+			window.addEventListener("click", closeListerner);
+			this.isOpen = !this.isOpen;
+		},
+		chooseFavCountry() {
+			this.filter = favoriteCountries;
+			console.log(this.filter);
+		},
+		chooseFavSector() {
+			this.filter = favoriteSectors;
+			console.log(this.filter);
+		},
+		chooseAll() {
+			this.filter = { countryIsoCode: { none: [] } };
+			console.log(this.filter);
+		},
+		catchOutsideClick(event, dropdown) {
+			// When user clicks menu — do nothing
+			if (dropdown === event.target) return false;
+
+			// When user clicks outside of the menu — close the menu
+			if (this.isOpen && dropdown !== event.target) return true;
 		},
 	},
 	destroyed() {
@@ -254,5 +327,136 @@ export default {
 			margin-bottom: 0;
 		}
 	}
+}
+
+.dropDownMenuWrapper {
+	position: relative;
+	width: 500px;
+	height: 80px;
+	border-radius: 8px;
+	background: white;
+	border: 1px solid #eee;
+	box-shadow: 10px 10px 0 0 rgba(black, 0.03);
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+	* {
+		box-sizing: border-box;
+		text-align: left;
+	}
+
+	.dropDownMenuButton {
+		border: none;
+		font-size: inherit;
+		background: none;
+		outline: none;
+		border-radius: 4px;
+		position: absolute;
+		top: 0;
+		left: 0;
+		display: flex;
+		align-items: center;
+		padding: 0 70px 0 20px;
+		margin: 0;
+		line-height: 1;
+		width: 100%;
+		height: 100%;
+		z-index: 4;
+		cursor: pointer;
+	}
+
+	.iconWrapper {
+		width: 25px;
+		height: 25px;
+		position: absolute;
+		right: 30px;
+		top: 50%;
+		transform: translate(0, -50%);
+		z-index: 1;
+	}
+
+	.iconWrapper--noTitle {
+		left: 0;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		width: auto;
+		height: auto;
+		transform: none;
+	}
+
+	.dropdownMenu {
+		position: absolute;
+		top: 100%;
+		width: 100%;
+		min-width: 300px;
+		min-height: 10px;
+		border-radius: 8px;
+		border: 1px solid #eee;
+		box-shadow: 10px 10px 0 0 rgba(black, 0.03);
+		background: white;
+		padding: 10px 30px;
+		animation: menu 0.3s ease forwards;
+		z-index: 4;
+
+		.menuArrow {
+			width: 20px;
+			height: 20px;
+			position: absolute;
+			top: -10px;
+			left: 20px;
+			border-left: 1px solid #eee;
+			border-top: 1px solid #eee;
+			background: white;
+			transform: rotate(45deg);
+			border-radius: 4px 0 0 0;
+		}
+
+		.option {
+			width: 100%;
+			border-bottom: 1px solid #eee;
+			padding: 20px 0;
+			cursor: pointer;
+			position: relative;
+			z-index: 2;
+
+			&:last-child {
+				border-bottom: 0;
+			}
+
+			* {
+				color: inherit;
+				text-decoration: none;
+				background: none;
+				border: 0;
+				padding: 0;
+				outline: none;
+				cursor: pointer;
+			}
+		}
+
+		.desc {
+			opacity: 0.5;
+			display: block;
+			width: 100%;
+			font-size: 14px;
+			margin: 3px 0 0 0;
+			cursor: default;
+		}
+	}
+
+	@keyframes menu {
+		from {
+			transform: translate3d(0, 30px, 0);
+		}
+		to {
+			transform: translate3d(0, 20px, 0);
+		}
+	}
+}
+
+.dropDownMenuWrapper--noTitle {
+	padding: 0;
+	width: 60px;
+	height: 60px;
 }
 </style>
