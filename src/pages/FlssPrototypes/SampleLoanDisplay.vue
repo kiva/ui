@@ -87,9 +87,8 @@ import FilterIcon from '@/assets/icons/inline/filters.svg';
 
 export const favoriteCountries = {
 	countryIsoCode: { any: ['WS', 'US'] },
-};
-
-export const favoriteSectors = { sector: { any: ['education', 'arts'] } };
+}
+export const favoriteSectors = { sector: { any: ['education', 'arts'] } }
 
 const pageQuery = gql`
 	query pageContent($basketId: String!) {
@@ -146,6 +145,7 @@ export default {
 			showLoans: false,
 			showLoanRows: true,
 			filters: {},
+			// filters: favoriteCountries,
 			isOpen: false,
 		};
 	},
@@ -201,23 +201,20 @@ export default {
 					)((menuButton.isOpen = false));
 				}
 			};
-			window.addEventListener('click', closeListerner);
+			window.addEventListener('click', closeListerner)
 			this.isOpen = !this.isOpen;
 		},
 		chooseFavCountry() {
-			this.filter = favoriteCountries;
-			// this.$emit('loanQueryFilters', this.filter);
-			console.log(this.filter);
+			this.filters = favoriteCountries;
+			console.log(this.filters);
 		},
 		chooseFavSector() {
-			this.filter = favoriteSectors;
-			// this.$emit('loanQueryFilters', this.filter);
-			console.log(this.filter);
+			this.filters = favoriteSectors;
+			console.log(filters);
 		},
 		chooseAll() {
-			this.filter = {};
-			// this.$emit('loanQueryFilters', this.filter);
-			console.log(this.filter);
+			this.filters = {};
+			console.log("this is an empty obj", filters);
 		},
 		catchOutsideClick(event, dropdown) {
 			// When user clicks menu — do nothing

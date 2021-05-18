@@ -1,6 +1,5 @@
 <template>
 	<div class="component-wrapper">
-		<h3>Number of loans: {{ totalCount }}</h3>
 		<transition name="kvfade">
 			<div v-show="loadingLoans" class="spinner">
 				<kv-loading-spinner />
@@ -65,6 +64,8 @@
 				</button>
 			</kv-carousel-slide>
 		</kv-carousel>
+
+		<h3>Number of loans: {{ totalCount }}</h3>
 	</div>
 </template>
 
@@ -75,12 +76,6 @@ import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import flssLoanQuery from '@/graphql/query/flssQuery.graphql';
 // import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
-
-export const favoriteCountries = {
-	countryIsoCode: { any: ['WS', 'US'] },
-};
-
-export const favoriteSectors = { sector: { any: ['education', 'arts'] } };
 
 export default {
 	inject: ['apollo'],
@@ -222,8 +217,8 @@ export default {
 				.query({
 					query: flssLoanQuery,
 					variables: {
-						filterObject: favoriteCountries,
-						// filterObject: this.loanQueryFilters,
+						// filterObject: favoriteCountries,
+						filterObject: this.loanQueryFilters,
 					},
 					fetchPolicy: 'network-only',
 				})
