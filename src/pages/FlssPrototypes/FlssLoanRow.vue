@@ -223,6 +223,7 @@ export default {
 					query: flssLoanQuery,
 					variables: {
 						filterObject: favoriteCountries,
+						// filterObject: this.loanQueryFilters,
 					},
 					fetchPolicy: 'network-only',
 				})
@@ -259,7 +260,8 @@ export default {
 		},
 		setLoanQueryFilters(userSelection) {
 			if (!userSelection) {
-				this.loanQueryFilters = this.filters;
+				// this.loanQueryFilters = this.filters;
+				console.log('from sample loan page:', this.loanQueryFilters);
 			}
 		},
 		loadMoreLoans() {
