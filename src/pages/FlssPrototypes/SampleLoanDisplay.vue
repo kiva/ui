@@ -9,11 +9,12 @@
 				<div class="row">
 					<div class="columns">
 						<h2 class="loan-categories__header text-center">
-							Fundraising Loan Search Service Loans
-							<!--PSD TODO switch to simple dropdown tailored queries-->
-							<!-- -->
-							<hr>
+							{{ pageTitle }}
 						</h2>
+						<h2 class="loan-categories__header text-center">
+							Fundraising Loan Search Service Loans
+						</h2>
+						<hr>
 						<section
 							class="dropDownMenuWrapper"
 							:class="{
@@ -38,7 +39,7 @@
 									<button @click="chooseFavCountry">
 										Favorite Countries
 									</button>
-									<span class="desc">Western Samoa, US and not Kenya</span>
+									<span class="desc">Western Samoa and US</span>
 								</section>
 
 								<section class="option">
@@ -87,8 +88,8 @@ import FilterIcon from '@/assets/icons/inline/filters.svg';
 
 export const favoriteCountries = {
 	countryIsoCode: { any: ['WS', 'US'] },
-}
-export const favoriteSectors = { sector: { any: ['education', 'arts'] } }
+};
+export const favoriteSectors = { sector: { any: ['education', 'arts'] } };
 
 const pageQuery = gql`
 	query pageContent($basketId: String!) {
@@ -145,7 +146,6 @@ export default {
 			showLoans: false,
 			showLoanRows: true,
 			filters: {},
-			// filters: favoriteCountries,
 			isOpen: false,
 		};
 	},
@@ -201,7 +201,7 @@ export default {
 					)((menuButton.isOpen = false));
 				}
 			};
-			window.addEventListener('click', closeListerner)
+			window.addEventListener('click', closeListerner);
 			this.isOpen = !this.isOpen;
 		},
 		chooseFavCountry() {
@@ -210,11 +210,10 @@ export default {
 		},
 		chooseFavSector() {
 			this.filters = favoriteSectors;
-			console.log(filters);
+			console.log(this.filters);
 		},
 		chooseAll() {
 			this.filters = {};
-			console.log("this is an empty obj", filters);
 		},
 		catchOutsideClick(event, dropdown) {
 			// When user clicks menu — do nothing
