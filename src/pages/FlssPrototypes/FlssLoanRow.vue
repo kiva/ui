@@ -1,5 +1,6 @@
 <template>
 	<div class="component-wrapper">
+		<h3>Number of loans: {{ totalCount }}</h3>
 		<transition name="kvfade">
 			<div v-show="loadingLoans" class="spinner">
 				<kv-loading-spinner />
@@ -75,7 +76,9 @@ import LoanCardController from "@/components/LoanCards/LoanCardController";
 import flssLoanQuery from "@/graphql/query/flssQuery.graphql";
 // import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 
-export const favoriteCountries = { countryIsoCode: { any: ["WS", "US"] } };
+export const favoriteCountries = {
+	countryIsoCode: { any: ["WS", "US"] },
+};
 
 export const favoriteSectors = { sector: { any: ["education", "arts"] } };
 
