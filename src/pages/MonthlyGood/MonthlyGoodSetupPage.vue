@@ -542,9 +542,7 @@ export default {
 
 		// Fire event if user sees auto-deposit warning
 		if (this.balance > 100) {
-			this.$kvTrackEvent('MonthlyGood', 'large-balance-auto-deposit-warning', 'shown');
-		} else {
-			this.$kvTrackEvent('MonthlyGood', 'large-balance-auto-deposit-warning', 'hidden');
+			this.$kvTrackEvent('MonthlyGood', 'shown-large-balance-auto-deposit-warning');
 		}
 	},
 	watch: {
