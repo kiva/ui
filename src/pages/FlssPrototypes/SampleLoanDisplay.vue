@@ -1,7 +1,6 @@
 <template>
 	<www-page :header-theme="headerTheme" :footer-theme="footerTheme">
 		<div class="simple-campaign-landing">
-			{{ pageTitle }}
 			<section
 				class="loan-categories section"
 				id="simpleLoanSection"
@@ -13,7 +12,7 @@
 							Fundraising Loan Search Service Loans
 							<!--PSD TODO switch to simple dropdown tailored queries-->
 							<!-- -->
-							<hr />
+							<hr>
 						</h2>
 						<section
 							class="dropDownMenuWrapper"
@@ -36,17 +35,23 @@
 								<slot></slot>
 
 								<section class="option">
-									<button @click="chooseFavCountry">Favorite Countries</button>
+									<button @click="chooseFavCountry">
+										Favorite Countries
+									</button>
 									<span class="desc">Western Samoa, US and not Kenya</span>
 								</section>
 
 								<section class="option">
-									<button @click="chooseFavSector">Favorite Sectors</button>
+									<button @click="chooseFavSector">
+										Favorite Sectors
+									</button>
 									<span class="desc">Education and Arts</span>
 								</section>
 
 								<section class="option">
-									<button @click="chooseAll">All Fundraising</button>
+									<button @click="chooseAll">
+										All Fundraising
+									</button>
 									<span class="desc">All loans currently fundraising</span>
 								</section>
 							</section>
@@ -74,15 +79,17 @@
 	</www-page>
 </template>
 <script>
-import gql from "graphql-tag";
-import { lightHeader, lightFooter } from "@/util/siteThemes";
-import WwwPage from "@/components/WwwFrame/WwwPage";
-import {
-	FlssLoans,
-	favoriteCountries,
-	favoriteSectors,
-} from "@/pages/FlssPrototypes/FlssLoanRow";
-import FilterIcon from "@/assets/icons/inline/filters.svg";
+import gql from 'graphql-tag';
+import { lightHeader, lightFooter } from '@/util/siteThemes';
+import WwwPage from '@/components/WwwFrame/WwwPage';
+import FlssLoans from '@/pages/FlssPrototypes/FlssLoanRow';
+import FilterIcon from '@/assets/icons/inline/filters.svg';
+
+export const favoriteCountries = {
+	countryIsoCode: { any: ['WS', 'US'] },
+};
+
+export const favoriteSectors = { sector: { any: ['education', 'arts'] } };
 
 const pageQuery = gql`
 	query pageContent($basketId: String!) {
@@ -108,7 +115,7 @@ const pageQuery = gql`
 `;
 
 export default {
-	inject: ["apollo", "cookieStore", "kvAuth0"],
+	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	components: {
 		WwwPage,
 		FlssLoans,
@@ -118,15 +125,15 @@ export default {
 	props: {
 		dynamicRoute: {
 			type: String,
-			default: "",
+			default: '',
 		},
 		formComplete: {
 			type: String,
-			default: "",
+			default: '',
 		},
 		menuTitle: {
 			type: String,
-			default: "FLSS Filters",
+			default: 'FLSS Filters',
 		},
 	},
 	data() {
@@ -157,7 +164,7 @@ export default {
 	computed: {
 		pageSettingData() {
 			const settings = this.pageData?.page?.settings ?? [];
-			const jsonDataArray = settings.map((setting) => setting.dataObject || {});
+			const jsonDataArray = settings.map(setting => setting.dataObject || {});
 			/* eslint-disable-next-line no-unused-vars, no-empty-pattern */
 			const allJsonData = jsonDataArray.reduce(
 				(accumulator, settingDataObject) => {
@@ -169,14 +176,13 @@ export default {
 		},
 		pageTitle() {
 			const layoutTitle = this.pageData?.page?.pageLayout?.pageTitle;
-			const pageTitle =
-				this.pageData?.page?.pageTitle ?? "Loans that change lives";
+			const pageTitle = this.pageData?.page?.pageTitle ?? 'Loans that change lives';
 			return layoutTitle || pageTitle;
 		},
 		initialSortBy() {
 			return (
-				this.promoData?.managedAccount?.loanSearchCriteria?.sortBy ??
-				"popularity"
+				this.promoData?.managedAccount?.loanSearchCriteria?.sortBy
+				?? 'popularity'
 			);
 		},
 	},
@@ -187,27 +193,30 @@ export default {
 		},
 		openClose() {
 			const menuButton = this;
-			const closeListerner = (e) => {
+			const closeListerner = e => {
 				if (menuButton.catchOutsideClick(e, menuButton.$refs.menu)) {
 					window.removeEventListener(
-						"click",
+						'click',
 						closeListerner
 					)((menuButton.isOpen = false));
 				}
 			};
-			window.addEventListener("click", closeListerner);
+			window.addEventListener('click', closeListerner);
 			this.isOpen = !this.isOpen;
 		},
 		chooseFavCountry() {
 			this.filter = favoriteCountries;
+			// this.$emit('loanQueryFilters', this.filter);
 			console.log(this.filter);
 		},
 		chooseFavSector() {
 			this.filter = favoriteSectors;
+			// this.$emit('loanQueryFilters', this.filter);
 			console.log(this.filter);
 		},
 		chooseAll() {
-			this.filter = { countryIsoCode: { none: [] } };
+			this.filter = {};
+			// this.$emit('loanQueryFilters', this.filter);
 			console.log(this.filter);
 		},
 		catchOutsideClick(event, dropdown) {
@@ -448,6 +457,7 @@ export default {
 		from {
 			transform: translate3d(0, 30px, 0);
 		}
+
 		to {
 			transform: translate3d(0, 20px, 0);
 		}
