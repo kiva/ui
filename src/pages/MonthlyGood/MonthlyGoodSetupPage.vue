@@ -1,7 +1,9 @@
 <template>
 	<www-page>
 		<div class="monthly-good-setup-page">
-			<div class="row align-center text-center auto-lending-notice" v-if="balance > 100">
+			<div class="row align-center text-center auto-lending-notice"
+				v-if="balance > autoDepositNoticeThreshold"
+			>
 				<div class="small-12 medium-11 large-10 column">
 					<h2>Heads up! You have {{ balance | numeral('$0') }} available to lend.</h2>
 					<!-- eslint-disable-next-line max-len -->
@@ -412,6 +414,7 @@ export default {
 			isMGTaglineActive: false,
 			hasActiveLogin: false,
 			balance: 0,
+			autoDepositNoticeThreshold: 150
 		};
 	},
 	mixins: [
@@ -541,7 +544,7 @@ export default {
 		}
 
 		// Fire event if user sees auto-deposit warning
-		if (this.balance > 100) {
+		if (this.balance > this.autoDepositNoticeThreshold) {
 			this.$kvTrackEvent('MonthlyGood', 'shown-large-balance-auto-deposit-warning');
 		}
 	},
