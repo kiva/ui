@@ -141,7 +141,15 @@ async function redirectToUrl(type, cache, req, res) {
 		try {
 			const loanData = await fetchRecommendedLoans(type, id, cache);
 			const offsetLoanId = loanData[offset - 1].id;
-			res.redirect(302, `/lend/${offsetLoanId}`);
+
+			let redirect = `/lend/${offsetLoanId}`;
+			// If the original request had query params on it, forward those along
+			const requestUrl = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+			const queryParams = new URLSearchParams(requestUrl.search);
+			if (queryParams) {
+				redirect += `?${queryParams}`;
+			}
+			res.redirect(302, redirect);
 		} catch (err) {
 			log(`Error redirecting to url, ${err}`, 'error');
 			res.redirect(302, '/lend-by-category/');
