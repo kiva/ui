@@ -10,12 +10,11 @@ module.exports = [
 	{
 		loader: 'postcss-loader',
 		options: {
-			postcssOptions: {
-				plugins: [
-					require('autoprefixer')(),
-					require('cssnano')()
-				]
-			}
+			ident: 'postcss',
+			plugins: (loader) => [
+				require('autoprefixer')(),
+				require('cssnano')()
+			]
 		}
 	},
 	{
