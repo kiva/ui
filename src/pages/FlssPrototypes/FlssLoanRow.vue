@@ -71,7 +71,6 @@
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import flssLoanQuery from '@/graphql/query/flssQuery.graphql';
 
@@ -82,7 +81,6 @@ export default {
 		KvCarouselSlide,
 		KvLoadingSpinner,
 		LoanCardController,
-		KvLoadingParagraph,
 	},
 	props: {
 		filters: {

@@ -62,8 +62,6 @@
 									</button>
 									<span class="desc">All loans currently fundraising</span>
 								</section>
-
-
 							</section>
 						</section>
 
@@ -79,19 +77,21 @@
 								:row-number="1"
 								:show-loans="true"
 								sort-by="popularity"
-								v-on:sending-count="receiveCount"
+								@sending-count="receiveCount"
 							/>
 						</div>
 					</div>
 				</div>
-			<div class="row">
-					<h2>Number of available loans:
+				<div class="row">
+					<h2>
+						Number of available loans:
 						{{ numLoans }}
 					</h2>
 				</div>
 				<div class="row">
-					<h2>The filters being passed through to graphql:<br>
-					{{ filterReveal }}
+					<h2>
+						The filters being passed through to graphql:<br>
+						{{ filterReveal }}
 					</h2>
 				</div>
 			</section>
@@ -111,8 +111,8 @@ export const favoriteCountries = {
 export const favoriteSectors = { sector: { any: ['education', 'arts'] } };
 
 export const favoriteKenya = {
-    countryIsoCode: { eq: "KE"}, sector: {none: ["agriculture", "retail"]}
-  };
+	countryIsoCode: { eq: 'KE' }, sector: { none: ['agriculture', 'retail'] }
+};
 
 const pageQuery = gql`
 	query pageContent($basketId: String!) {
@@ -158,10 +158,6 @@ export default {
 			type: String,
 			default: 'FLSS Filters',
 		},
-		// numLoans: {
-		// 	type: Number,
-		// 	default: 0
-		// }
 	},
 	data() {
 		return {
@@ -192,7 +188,7 @@ export default {
 	computed: {
 		filterReveal() {
 			const filterReveal = JSON.stringify(this.filters, null, '   ');
-			return filterReveal
+			return filterReveal;
 		},
 		pageSettingData() {
 			const settings = this.pageData?.page?.settings ?? [];
@@ -238,11 +234,9 @@ export default {
 		},
 		chooseFavCountry() {
 			this.filters = favoriteCountries;
-			console.log(this.filters);
 		},
 		chooseFavSector() {
 			this.filters = favoriteSectors;
-			console.log(this.filters);
 		},
 		chooseKenya() {
 			this.filters = favoriteKenya;
@@ -258,7 +252,7 @@ export default {
 			if (this.isOpen && dropdown !== event.target) return true;
 		},
 		receiveCount(totalCount) {
-			this.numLoans = totalCount
+			this.numLoans = totalCount;
 		},
 	},
 	destroyed() {
