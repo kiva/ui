@@ -64,8 +64,6 @@
 				</button>
 			</kv-carousel-slide>
 		</kv-carousel>
-
-		<h3>Number of loans: {{ totalCount }}</h3>
 	</div>
 </template>
 
@@ -73,9 +71,9 @@
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import flssLoanQuery from '@/graphql/query/flssQuery.graphql';
-// import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 
 export default {
 	inject: ['apollo'],
@@ -84,6 +82,7 @@ export default {
 		KvCarouselSlide,
 		KvLoadingSpinner,
 		LoanCardController,
+		KvLoadingParagraph,
 	},
 	props: {
 		filters: {
@@ -129,7 +128,7 @@ export default {
 			loanQueryVarsStack: [this.filters],
 			loanQueryFilters: () => {},
 			offset: 0,
-			totalCount: 0,
+			totalCount: this.totalCount,
 			zeroLoans: false,
 		};
 	},
@@ -196,6 +195,9 @@ export default {
 	created() {
 		this.fetchLoans();
 	},
+	beforeUpdate() {
+		this.sendCount();
+	},
 	methods: {
 		addToBasket(payload) {
 			this.loanAdded = true;
@@ -217,7 +219,6 @@ export default {
 				.query({
 					query: flssLoanQuery,
 					variables: {
-						// filterObject: favoriteCountries,
 						filterObject: this.loanQueryFilters,
 					},
 					fetchPolicy: 'network-only',
@@ -255,8 +256,7 @@ export default {
 		},
 		setLoanQueryFilters(userSelection) {
 			if (!userSelection) {
-				// this.loanQueryFilters = this.filters;
-				console.log('from sample loan page:', this.loanQueryFilters);
+				this.loanQueryFilters = this.filters;
 			}
 		},
 		loadMoreLoans() {
@@ -265,6 +265,9 @@ export default {
 		resetSearchFilters() {
 			this.$emit('reset-loan-filters');
 		},
+		sendCount() {
+			this.$emit('sending-count', this.totalCount);
+		}
 	},
 };
 </script>
@@ -339,5 +342,15 @@ $card-half-space: rem-calc(14/2);
 	@include breakpoint(medium) {
 		padding: 3rem;
 	}
+}
+
+.iconWrapper--noTitle {
+	left: 0;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	width: auto;
+	height: auto;
+	transform: none;
 }
 </style>
