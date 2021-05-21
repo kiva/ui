@@ -50,16 +50,24 @@
 								</section>
 
 								<section class="option">
+									<button @click="chooseKenya">
+										Kenya exclude agriculture and retail
+									</button>
+									<span class="desc">All loans in Kenya with exclusions</span>
+								</section>
+
+								<section class="option">
 									<button @click="chooseAll">
 										All Fundraising
 									</button>
 									<span class="desc">All loans currently fundraising</span>
 								</section>
+
+
 							</section>
 						</section>
 
 						<div class="loan-container">
-							<!-- <kv-dropdown /> -->
 							<flss-loans
 								id="flssLoanRowDisplay"
 								:filters="filters"
@@ -71,9 +79,20 @@
 								:row-number="1"
 								:show-loans="true"
 								sort-by="popularity"
+								v-on:sending-count="receiveCount"
 							/>
 						</div>
 					</div>
+				</div>
+			<div class="row">
+					<h2>Number of available loans:
+						{{ numLoans }}
+					</h2>
+				</div>
+				<div class="row">
+					<h2>The filters being passed through to graphql:<br>
+					{{ filterReveal }}
+					</h2>
 				</div>
 			</section>
 		</div>
@@ -90,6 +109,10 @@ export const favoriteCountries = {
 	countryIsoCode: { any: ['WS', 'US'] },
 };
 export const favoriteSectors = { sector: { any: ['education', 'arts'] } };
+
+export const favoriteKenya = {
+    countryIsoCode: { eq: "KE"}, sector: {none: ["agriculture", "retail"]}
+  };
 
 const pageQuery = gql`
 	query pageContent($basketId: String!) {
@@ -119,7 +142,7 @@ export default {
 	components: {
 		WwwPage,
 		FlssLoans,
-		FilterIcon,
+		FilterIcon
 	},
 	mixins: [],
 	props: {
@@ -135,6 +158,10 @@ export default {
 			type: String,
 			default: 'FLSS Filters',
 		},
+		// numLoans: {
+		// 	type: Number,
+		// 	default: 0
+		// }
 	},
 	data() {
 		return {
@@ -147,6 +174,7 @@ export default {
 			showLoanRows: true,
 			filters: {},
 			isOpen: false,
+			numLoans: 0
 		};
 	},
 	metaInfo() {
@@ -162,6 +190,10 @@ export default {
 	mounted() {},
 	watch: {},
 	computed: {
+		filterReveal() {
+			const filterReveal = JSON.stringify(this.filters, null, '   ');
+			return filterReveal
+		},
 		pageSettingData() {
 			const settings = this.pageData?.page?.settings ?? [];
 			const jsonDataArray = settings.map(setting => setting.dataObject || {});
@@ -212,6 +244,9 @@ export default {
 			this.filters = favoriteSectors;
 			console.log(this.filters);
 		},
+		chooseKenya() {
+			this.filters = favoriteKenya;
+		},
 		chooseAll() {
 			this.filters = {};
 		},
@@ -221,6 +256,9 @@ export default {
 
 			// When user clicks outside of the menu — close the menu
 			if (this.isOpen && dropdown !== event.target) return true;
+		},
+		receiveCount(totalCount) {
+			this.numLoans = totalCount
 		},
 	},
 	destroyed() {
