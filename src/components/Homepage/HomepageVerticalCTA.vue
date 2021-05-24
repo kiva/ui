@@ -54,7 +54,7 @@ export default {
 			default: () => {},
 		},
 	},
-	inject: ['apollo','cookieStore'],
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: pageQuery,
 		preFetch(config, client) {
