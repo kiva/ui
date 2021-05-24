@@ -1,5 +1,8 @@
 <template>
-	<section class="vertical-cta row">
+	<section
+		class="vertical-cta row"
+		v-if="showVerticalCTA"
+	>
 		<kv-contentful-img
 			v-if="image.url"
 			class="small-12 columns vertical-cta__image"
@@ -18,8 +21,28 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
+import gql from 'graphql-tag';
+
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+
+const pageQuery = gql`
+  query homepageVerticalCTA {
+    general {
+      homepage_verticalcta_active: uiConfigSetting(key: "homepage_verticalcta_active") {
+        key
+        value
+      }
+      homepage_verticalcta_exp: uiExperimentSetting(key: "homepage_verticalcta") {
+        key
+        value
+      }
+    }
+  }
+`;
 
 export default {
 	components: {
@@ -30,6 +53,34 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+	},
+	inject: ['apollo', 'cookieStore'],
+	apollo: {
+		query: pageQuery,
+		preFetch(config, client) {
+			return client.query({
+				query: pageQuery
+			}).then(() => {
+				return client.query({ query: experimentAssignmentQuery, variables: { id: 'homepage_verticalcta' } });
+			});
+		},
+		result({ data }) {
+			const verticalCTAExpActive = _get(data, 'general.homepage_verticalcta_active.value') === 'true' || false;
+			if (verticalCTAExpActive) {
+				const verticalCTAExp = this.apollo.readFragment({
+					id: 'Experiment:homepage_verticalcta',
+					fragment: experimentVersionFragment,
+				}) || {};
+				const { version } = verticalCTAExp;
+				this.showVerticalCTA = version === 'shown';
+				this.$kvTrackEvent('Home', 'EXP-GROW-612-May2021', this.showVerticalCTA ? 'b' : 'a');
+			}
+		}
+	},
+	data() {
+		return {
+			showVerticalCTA: false
+		};
 	},
 	computed: {
 		sectionText() {
