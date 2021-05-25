@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import 'tailwindcss/tailwind.css';
 import TheTipMessage from '@/components/WwwFrame/TheTipMessage';
 import webmanifest from '@/manifest.webmanifest';
 
