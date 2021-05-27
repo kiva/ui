@@ -98,7 +98,7 @@
 										without a 'kvu' cookie which indicates if a user has logged
 										into Kiva on current browser -->
 									<kv-button
-										v-if="eligibleForGuestCheckout && guestCheckoutExperimentVersion === 'shown'"
+										v-if="eligibleForGuestCheckout && !guestCheckoutCTAExpActive"
 										class="guest-checkout-button checkout-button smallest secondary"
 										id="guest-checkout-button"
 										v-kv-track-event="['basket', 'click-guest-checkout-cta', 'Checkout as guest']"
@@ -109,15 +109,53 @@
 									</kv-button>
 
 									<kv-button
+										v-if="!guestCheckoutCTAExpActive"
 										class="checkout-button smallest"
 										id="login-to-continue-button"
-										v-kv-track-event="['basket', 'click-sign-in-cta', 'Continue']"
+										v-kv-track-event="['basket', 'click-register-cta', 'Continue']"
 										title="Login to Continue Button"
 										@click.native="loginToContinue"
 										:href="'/ui-login?force=true&doneUrl=/checkout'"
 									>
 										Continue
 									</kv-button>
+
+									<kv-button
+										v-if="eligibleForGuestCheckout && guestCheckoutCTAExpActive"
+										class="checkout-button smallest secondary"
+										id="create-account-continue-button"
+										v-kv-track-event="['basket', 'click-register-cta', 'Create an account']"
+										title="Create an account"
+										@click.native="loginToContinue"
+										:href="'/ui-login?force=true&doneUrl=/checkout'"
+									>
+										Create an account
+									</kv-button>
+
+									<kv-button
+										v-if="eligibleForGuestCheckout && guestCheckoutCTAExpActive"
+										class="guest-checkout-button checkout-button smallest"
+										id="guest-checkout-exp-button"
+										v-kv-track-event="['basket', 'click-guest-checkout-cta', 'Continue as guest']"
+										title="Checkout as guest"
+										@click.native="guestCheckout"
+									>
+										Continue as guest
+									</kv-button>
+								</div>
+								<div
+									v-if="!isActivelyLoggedIn
+										&& showLoginContinueButton
+										&& eligibleForGuestCheckout
+										&& guestCheckoutCTAExpActive"
+									class="small-12 text-right"
+								>
+									<span>Already have an account?</span>
+									<a
+										href="/ui-login?force=true&amp;doneUrl=/checkout"
+										v-kv-track-event="['basket', 'click-sign—in-cta', 'Sign in here']"
+										title="Sign in here"
+									>Sign in here</a>
 								</div>
 							</div>
 						</div>
@@ -259,8 +297,8 @@ export default {
 			addToBasketRedirectExperimentShown: false,
 			loginButtonExperimentVersion: null,
 			redirectToLoginExperimentVersion: null,
-			isGuestCheckoutExperimentActive: false,
-			guestCheckoutExperimentVersion: null,
+			isGuestCheckoutEnabled: false,
+			guestCheckoutCTAExpActive: false,
 			checkingOutAsGuest: false,
 			hasEverLoggedIn: false,
 		};
@@ -301,7 +339,7 @@ export default {
 		},
 		result({ data }) {
 			// Checking if guest checkout feature is enabled in Admin settingsManager
-			this.isGuestCheckoutExperimentActive = data?.general?.guestCheckoutEnabled?.value === 'true';
+			this.isGuestCheckoutEnabled = data?.general?.guestCheckoutEnabled?.value === 'true';
 			// user data
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
@@ -377,22 +415,18 @@ export default {
 		}) || {};
 		this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
 
-		// GROW-458 Guest Checkout Experiment
-		// Trigger guest checkout experiment if user has not logged in before
-		// and guest checkout experiment is active
 		if (this.eligibleForGuestCheckout) {
-			const guestCheckoutExperiment = this.apollo.readFragment({
-				id: 'Experiment:guest_checkout',
+			const guestCheckoutCTAExperiment = this.apollo.readFragment({
+				id: 'Experiment:guest_checkout_cta',
 				fragment: experimentVersionFragment,
 			}) || {};
-			this.guestCheckoutExperimentVersion = guestCheckoutExperiment.version;
 
-			// If a guest checkout experiment version set, trigger tracking
-			if (this.guestCheckoutExperimentVersion && this.guestCheckoutExperimentVersion !== 'unassigned') {
+			if (guestCheckoutCTAExperiment.version && guestCheckoutCTAExperiment.version !== 'unassigned') {
+				this.guestCheckoutCTAExpActive = guestCheckoutCTAExperiment.version === 'shown';
 				this.$kvTrackEvent(
 					'Checkout',
-					'EXP-GROW-458-Feb2020',
-					this.guestCheckoutExperimentVersion,
+					'EXP-GROW-614-May2021',
+					guestCheckoutCTAExperiment.version === 'shown' ? 'b' : 'a'
 				);
 			}
 		}
@@ -459,9 +493,9 @@ export default {
 			return this.checkingOutAsGuest === false;
 		},
 		eligibleForGuestCheckout() {
-			// Checking if guest checkout experiment is active
+			// Checking if guest checkout is enabled
 			// and if Kiva has been logged into on user's current browser
-			if (this.isGuestCheckoutExperimentActive
+			if (this.isGuestCheckoutEnabled
 				&& !this.isActivelyLoggedIn
 				&& !this.hasEverLoggedIn
 			) {
@@ -506,7 +540,7 @@ export default {
 		},
 		disableGuestCheckout() {
 			this.checkingOutAsGuest = false;
-			this.isGuestCheckoutExperimentActive = false;
+			this.isGuestCheckoutEnabled = false;
 		},
 		doPopupLogin() {
 			if (this.kvAuth0.enabled) {
