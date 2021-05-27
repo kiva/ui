@@ -109,6 +109,15 @@ import clickOutside from '@/plugins/click-outside';
 const mgSelectorImgRequire = require.context('@/assets/images/mg-selector-icons/', true);
 
 export default {
+	props: {
+		/**
+		 * The category value to preSelect. Or null for no selection
+		* */
+		preSelectedCategory: {
+			type: Object,
+			default: null,
+		},
+	},
 	components: {
 		KvButton,
 	},
@@ -129,7 +138,7 @@ export default {
 	},
 	data() {
 		return {
-			selectedGroup: null,
+			selectedGroup: this.preSelectedCategory,
 			mgAmount: null,
 			isCauseOpen: false,
 			isAmountOpen: false,
@@ -163,11 +172,11 @@ export default {
 	},
 	mounted() {
 		document.addEventListener('keyup', this.onKeyUp);
-		this.$root.$on('openMonthlyGoodSelector', this.showCausesRootEvent);
+		this.$root.$on('openMonthlyGoodSelector', this.onCtaClick);
 	},
 	beforeDestroy() {
 		document.removeEventListener('keyup', this.onKeyUp);
-		this.$root.$off('openMonthlyGoodSelector', this.showCausesRootEvent);
+		this.$root.$off('openMonthlyGoodSelector', this.onCtaClick);
 	},
 	methods: {
 		onKeyUp(e) {
@@ -188,14 +197,22 @@ export default {
 				}
 			});
 		},
-		showCausesRootEvent() {
+		onCtaClick() {
 			/**
 			 * Move focus to button from whatever triggered this event
 			 * And open causes.
 			 */
 			document.getElementsByClassName('monthly-selector__button')[0].focus();
-			this.isCauseOpen = true;
-			this.isAmountOpen = false;
+
+			// if preSelectedCategory is present, open amounts.
+			if (this.preSelectedCategory) {
+				this.isCauseOpen = false;
+				this.isAmountOpen = true;
+			} else {
+				// if no preSelectedCategory is present, open causes.
+				this.isCauseOpen = true;
+				this.isAmountOpen = false;
+			}
 		},
 		toggleCauses() {
 			this.isCauseOpen = !this.isCauseOpen;
@@ -252,7 +269,8 @@ export default {
 			}
 			return numeral(this.mgAmount).format('$0,0.00');
 		},
-	}
+	},
+
 };
 
 </script>

@@ -6,7 +6,7 @@
 			:class="{ 'sticky': isSticky}"
 			:style="{bottom: mgStickBarOffset + 'px'}"
 		>
-			<monthly-good-selector />
+			<monthly-good-selector-desktop :pre-selected-category="preSelectedCategory" />
 		</section>
 
 		<!-- MG Selector Mobile -->
@@ -14,7 +14,7 @@
 			class="monthly-good-selector section show-for-small-only"
 			v-if="isMobile"
 		>
-			<monthly-good-selector-mobile />
+			<monthly-good-selector-mobile :pre-selected-category="preSelectedCategory" />
 		</section>
 	</div>
 </template>
@@ -22,12 +22,22 @@
 <script>
 import _throttle from 'lodash/throttle';
 
-import MonthlyGoodSelector from '@/components/MonthlyGood/MonthlyGoodSelector';
+import MonthlyGoodSelectorDesktop from '@/components/MonthlyGood/MonthlyGoodSelectorDesktop';
 import MonthlyGoodSelectorMobile from '@/components/MonthlyGood/MonthlyGoodSelectorMobile';
+import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 export default {
+	props: {
+		/**
+		 * Content group content from Contentful
+		* */
+		content: {
+			type: Object,
+			default: () => {},
+		},
+	},
 	components: {
-		MonthlyGoodSelector,
+		MonthlyGoodSelectorDesktop,
 		MonthlyGoodSelectorMobile,
 	},
 	data() {
@@ -38,10 +48,25 @@ export default {
 			isMobile: false
 		};
 	},
+	mixins: [
+		loanGroupCategoriesMixin,
+	],
 	computed: {
 		throttledScroll() {
 			// prevent onScroll from being called more than once every 100ms
 			return _throttle(this.onScroll, 100);
+		},
+		mgSelectorSetting() {
+			return this.content?.contents?.find(({ key }) => key.indexOf('monthly-good-selector-setting') > -1);
+		},
+		preSelectedCategorySetting() {
+			return this.mgSelectorSetting?.dataObject?.preSelectedCategory ?? null;
+		},
+		preSelectedCategory() {
+			// Validated Category Setting
+			// Check setting to make sure it is an actual category or return null
+			// Must return null (no preselected category) or a valid category object
+			return this.lendingCategories.find(({ value }) => value === this.preSelectedCategorySetting) ?? null;
 		}
 	},
 	methods: {

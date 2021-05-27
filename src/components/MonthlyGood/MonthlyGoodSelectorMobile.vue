@@ -90,6 +90,15 @@ import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 const mgSelectorImgRequire = require.context('@/assets/images/mg-selector-icons/', true);
 
 export default {
+	props: {
+		/**
+		 * The category value to preSelect. Or null for no selection
+		* */
+		preSelectedCategory: {
+			type: Object,
+			default: null,
+		},
+	},
 	components: {
 		KvButton,
 		KvIcon,
@@ -111,7 +120,7 @@ export default {
 	},
 	data() {
 		return {
-			selectedGroup: null,
+			selectedGroup: this.preSelectedCategory,
 			mgAmount: null,
 			mgAmountOptions: [
 				{
@@ -145,13 +154,20 @@ export default {
 		};
 	},
 	mounted() {
-		this.$root.$on('openMonthlyGoodSelector', this.showCausesRootEvent);
+		this.$root.$on('openMonthlyGoodSelector', this.onCtaClick);
 	},
 	beforeDestroy() {
-		this.$root.$off('openMonthlyGoodSelector', this.showCausesRootEvent);
+		this.$root.$off('openMonthlyGoodSelector', this.onCtaClick);
 	},
 	methods: {
 		showLightbox() {
+			// if preSelectedCategory is present, open amounts.
+			if (this.preSelectedCategory) {
+				this.lightboxStep = 'amount';
+			} else {
+				// if no preSelectedCategory is present, open causes.
+				this.lightboxStep = 'cause';
+			}
 			this.lightboxVisible = true;
 		},
 		hideLightbox() {
@@ -175,13 +191,12 @@ export default {
 				}
 			});
 		},
-		showCausesRootEvent() {
+		onCtaClick() {
 			/**
 			 * Move focus to button from whatever triggered this event
 			 * And open causes.
 			 */
 			document.getElementsByClassName('monthly-selector-mobile__button')[0].focus();
-			this.lightboxStep = 'cause';
 			this.showLightbox();
 		},
 		selectCause(option) {
