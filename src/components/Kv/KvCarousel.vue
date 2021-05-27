@@ -434,7 +434,7 @@ $bar-indicator-margin: rem-calc(4);
 			&::after {
 				display: block;
 				content: '';
-				background: hsla(0, 0, 100, 0.5);
+				background: hsla(0, 0%, 100%, 0.5);
 				width: 100%;
 				height: 100%;
 				transform-origin: left;
@@ -509,7 +509,7 @@ $bar-indicator-margin: rem-calc(4);
 				&::after {
 					display: block;
 					content: '';
-					background: hsla(0, 0, 100, 0.5);
+					background: hsla(0, 0%, 100%, 0.5);
 					width: 100%;
 					height: 100%;
 				}

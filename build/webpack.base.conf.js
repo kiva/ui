@@ -1,16 +1,16 @@
-var path = require('path');
-var assetsPath = require('./assets-path');
-var styleLoaders = require('./style-loaders');
-var config = require('../config');
-var VueLoaderPlugin = require('vue-loader').VueLoaderPlugin;
-var FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
-var webpack = require('webpack');
-var GitRevisionPlugin = require('git-revision-webpack-plugin');
-var gitRevisionPlugin = new GitRevisionPlugin({
+const path = require('path');
+const assetsPath = require('./assets-path');
+const config = require('../config');
+const VueLoaderPlugin = require('vue-loader').VueLoaderPlugin;
+const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
+const webpack = require('webpack');
+const GitRevisionPlugin = require('git-revision-webpack-plugin');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin-fixed-hashbug');
+const gitRevisionPlugin = new GitRevisionPlugin({
 	branch: true
 });
 const isProd = process.env.NODE_ENV === 'production';
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin-fixed-hashbug')
+const isNode = typeof document === 'undefined';
 
 function resolve (dir) {
 	return path.join(__dirname, '..', dir);
@@ -72,12 +72,61 @@ module.exports = {
 				],
 			},
 			{
-				// Inject styles as <style> tags
+				test: /\.css$/,
+				use: [
+					{ loader: 'thread-loader' },
+					{ loader: 'vue-style-loader' }, // Inject styles as <style> tags
+					{ loader: 'css-loader' },
+					{
+						loader: 'postcss-loader',
+						options: {
+							postcssOptions: {
+								plugins: [
+									require('autoprefixer'),
+									require('cssnano'),
+									require('tailwindcss'),
+								]
+							}
+						}
+					},
+				]
+			},
+			{
 				test: /\.scss$/,
 				use: [
 					{ loader: 'thread-loader' },
-					{ loader: 'vue-style-loader' },
-				].concat(styleLoaders)
+					{ loader: 'vue-style-loader' }, // Inject styles as <style> tags
+					{ loader: 'css-loader' },
+					{
+						loader: 'postcss-loader',
+						options: {
+							postcssOptions: {
+								plugins: [
+									require('autoprefixer'),
+									require('cssnano'),
+								]
+							}
+						}
+					},
+					{
+						loader: 'sass-loader',
+						options: {
+							// If document is defined, sass will attempt to run as if it were in the browser. However, some
+							// code editors expose document, so sass will sometimes throw errors when this config is loaded
+							// by editor plugins. We won't use webpack in a browser, so to resolve the issue we can just check
+							// for document before attempting to load sass.
+							implementation: isNode ? require('sass') : function() {},
+							sassOptions: {
+								fiber: false, // to disable automatic use of fibers package
+								includePaths: [
+									'src/assets/fonts',
+									'src/assets/scss',
+									'node_modules/foundation-sites/scss'
+								]
+							}
+						}
+					}
+				]
 			},
 			{
 				test: /\.html$/,
