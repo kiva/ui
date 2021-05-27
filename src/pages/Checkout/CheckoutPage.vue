@@ -145,15 +145,17 @@
 								</div>
 								<div
 									v-if="!isActivelyLoggedIn
-									&& showLoginContinueButton
-									&& eligibleForGuestCheckout
-									&& guestCheckoutCTAExpActive"
-									class="small-12 text-right">
+										&& showLoginContinueButton
+										&& eligibleForGuestCheckout
+										&& guestCheckoutCTAExpActive"
+									class="small-12 text-right"
+								>
 									<span>Already have an account?</span>
 									<a
 										href="/ui-login?force=true&amp;doneUrl=/checkout"
 										v-kv-track-event="['basket', 'click-sign—in-cta', 'Sign in here']"
-										title="Sign in here">Sign in here</a>
+										title="Sign in here"
+									>Sign in here</a>
 								</div>
 							</div>
 						</div>
