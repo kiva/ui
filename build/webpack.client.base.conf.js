@@ -1,7 +1,6 @@
 const { merge } = require('webpack-merge');
 var assetsPath = require('./assets-path');
 var baseWebpackConfig = require('./webpack.base.conf');
-var styleLoaders = require('./style-loaders');
 var SvgStorePlugin = require('webpack-svgstore-plugin');
 var VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 
