@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'production'
+
 const { mergeWithRules } = require('webpack-merge');
 const baseWebpackConfig = require('./webpack.client.prod.conf');
 
@@ -12,6 +14,7 @@ module.exports = mergeWithRules({
 		},
 	},
 })(baseWebpackConfig, {
+	mode: 'production',
 	module: {
 		rules: [
 			{
