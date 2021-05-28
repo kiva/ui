@@ -152,7 +152,7 @@
 								>
 									<span>Already have an account?</span>
 									<a
-										href="/ui-login?force=true&amp;doneUrl=/checkout"
+										href="/login?force=true&amp;loginHint=login&amp;doneUrl=checkout"
 										v-kv-track-event="['basket', 'click-sign—in-cta', 'Sign in here']"
 										title="Sign in here"
 									>Sign in here</a>
