@@ -1,6 +1,4 @@
 <template>
-	<!-- Header goes here -->
-
 	<!--There was a slight difference between the max-width defintions in the figma file
 	and what we have available from tailwinds.
 
@@ -24,7 +22,6 @@
 	<div class="grid-cols-12 mx-5 md:mx-8 lg:mx-16 md:max-w-4xl lg:max-w-6xl flex-auto">
 		Borrower Profile frame
 	</div>
-	<!-- Footer  goes here -->
 </template>
 
 <script>
