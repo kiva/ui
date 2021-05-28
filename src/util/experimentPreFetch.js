@@ -17,7 +17,7 @@ let activeExperiments = [
 	'checkout_login_cta',
 	'homepage_force_dismiss_overlay',
 	'redirect_to_login',
-	'guest_checkout',
+	'guest_checkout_cta',
 	'mg_highlight_in_nav'
 ];
 
