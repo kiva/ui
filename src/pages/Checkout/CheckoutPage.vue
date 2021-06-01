@@ -134,7 +134,7 @@
 
 									<kv-button
 										v-if="eligibleForGuestCheckout && guestCheckoutCTAExpActive"
-										class="guest-checkout-button checkout-button smallest"
+										class="checkout-button smallest"
 										id="guest-checkout-exp-button"
 										v-kv-track-event="['basket', 'click-guest-checkout-cta', 'Continue as guest']"
 										title="Checkout as guest"
@@ -148,11 +148,11 @@
 										&& showLoginContinueButton
 										&& eligibleForGuestCheckout
 										&& guestCheckoutCTAExpActive"
-									class="small-12 text-right"
+									class="small-12 columns text-right"
 								>
 									<span>Already have an account?</span>
 									<a
-										href="/ui-login?force=true&amp;doneUrl=/checkout"
+										href="/login?force=true&amp;loginHint=login&amp;doneUrl=checkout"
 										v-kv-track-event="['basket', 'click-sign—in-cta', 'Sign in here']"
 										title="Sign in here"
 									>Sign in here</a>
