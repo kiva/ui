@@ -1,9 +1,5 @@
 <template>
-	<www-page
-		id="borrower-profile"
-		:header-theme="headerTheme"
-		:footer-theme="footerTheme"
-	>
+	<www-page id="borrower-profile">
 		<!--There was a slight difference between the max-width defintions in the figma file
 		and what we have available from tailwinds.
 
@@ -39,8 +35,7 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: '',
-			footerTheme: '',
+
 		};
 	}
 };
