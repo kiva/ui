@@ -94,7 +94,12 @@ module.exports = {
 			{
 				test: /\.scss$/,
 				use: [
-					{ loader: 'thread-loader' },
+					{
+						loader: 'thread-loader',
+						options: {
+							workerParallelJobs: 2
+						}
+					},
 					{ loader: 'vue-style-loader' }, // Inject styles as <style> tags
 					{ loader: 'css-loader' },
 					{
