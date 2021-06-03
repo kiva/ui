@@ -1,37 +1,42 @@
 <template>
-	<div class="borrower-name-wrapper text-gray-800">
-		<h2>{{ name }}</h2>
-	</div>
+	<h1 class="text-h2">{{ name }}</h1>
 </template>
 
 <script>
+import gql from 'graphql-tag';
+
 export default {
-	props: {
-		name: {
-			type: String,
-			default: ''
-		}
-	}
+	inject: ['apollo', 'cookieStore'],
+	data() {
+		return {
+			name: '',
+		};
+	},
+	apollo: {
+		query: gql`
+			query borrowerName($loanId: Int!) {
+				lend {
+					loan(id: $loanId) {
+						id
+						name
+					}
+				}
+			}
+		`,
+		preFetch: true,
+		preFetchVariables({ route }) {
+			return {
+				loanId: route?.params?.id ?? 0,
+			};
+		},
+		variables() {
+			return {
+				loanId: this.$route?.params?.id ?? 0,
+			};
+		},
+		result({ data }) {
+			this.name = data?.lend?.loan?.name ?? '';
+		},
+	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.borrower-name-wrapper {
-	position: absolute;
-	width: 160px;
-	height: 48px;
-	left: 336px;
-	top: 188px;
-
-	@include breakpoint(large) {
-		h2 {
-			font-family: 'Kiva Post Grot';
-			font-size: 32px;
-			line-height: 150%;
-			letter-spacing: -1px;
-		}
-	}
-}
-</style>
