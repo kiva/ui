@@ -25,6 +25,10 @@
 			}
 		]
 	],
+	"overrides": [{
+		"test": "./src/lib/globekit/globekit.esm.js",
+		"compact": true
+	}],
 	"env": {
 		"test": {
 			"presets": [
