@@ -1,5 +1,5 @@
 <template>
-	<div class="borrower-name-wrapper">
+	<div class="borrower-name-wrapper text-gray-800">
 		<h2>{{ name }}</h2>
 	</div>
 </template>
@@ -24,11 +24,10 @@ export default {
 	height: 48px;
 	left: 336px;
 	top: 188px;
-	color: $umbreon;
 
 	@include breakpoint(large) {
 		h2 {
-			font-family: $body-font-family;
+			font-family: 'Kiva Post Grot';
 			font-size: 32px;
 			line-height: 150%;
 			letter-spacing: -1px;
