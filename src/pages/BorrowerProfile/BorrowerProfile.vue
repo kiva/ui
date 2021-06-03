@@ -15,6 +15,7 @@
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
 
 export default {
 	components: {
