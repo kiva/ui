@@ -13,6 +13,8 @@
 		"inspect": "cross-env NODE_ENV=production node --inspect --max-old-space-size=4096 server/index.js",
 		"build": "rimraf dist && node --max-old-space-size=4096 build/build.js",
 		"build:cypress": "rimraf dist && node --max-old-space-size=4096 build/build.cypress.js",
+		"build:report": "rimraf dist/client-bundle-stats.json && rimraf dist/static && node --max-old-space-size=4096 build/build.report.js",
+		"build:report-webpack": "webpack --config build/webpack.client.report.conf.js --progress --profile",
 		"build:trace": "rimraf dist && node --trace-deprecation build/build.js",
 		"build:all": "rimraf dist && npm run build:client && npm run build:server",
 		"build:client": "rimraf dist/static && webpack --config build/webpack.client.prod.conf.js --progress --hide-modules",
