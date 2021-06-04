@@ -280,12 +280,14 @@ describe('contentfulUtils.js', () => {
 						contents: [{
 							key: expect.any(String),
 							name: expect.any(String),
-							bodyCopy: expect.any(Object)
+							bodyCopy: expect.any(Object),
+							contentType: expect.any(String)
 						},
 						{
 							name: expect.any(String),
 							description: expect.any(String),
-							images: expect.any(Array)
+							images: expect.any(Array),
+							contentType: expect.any(String)
 						}],
 						type: expect.any(String)
 					})
@@ -367,6 +369,7 @@ describe('contentfulUtils.js', () => {
 								name: expect.any(String),
 								bodyCopy: expect.any(Object),
 								headline: 'Set up an Auto Deposit',
+								contentType: expect.any(String)
 							}
 						],
 					}),
@@ -376,19 +379,23 @@ describe('contentfulUtils.js', () => {
 						contents: [{
 							key: expect.any(String),
 							name: expect.any(String),
-							richText: expect.any(Object)
+							richText: expect.any(Object),
+							contentType: expect.any(String)
 						}, {
 							key: expect.any(String),
 							name: expect.any(String),
-							richText: expect.any(Object)
+							richText: expect.any(Object),
+							contentType: expect.any(String)
 						}, {
 							key: expect.any(String),
 							name: expect.any(String),
-							richText: expect.any(Object)
+							richText: expect.any(Object),
+							contentType: expect.any(String)
 						}, {
 							key: expect.any(String),
 							name: expect.any(String),
-							richText: expect.any(Object)
+							richText: expect.any(Object),
+							contentType: expect.any(String)
 						}],
 					}),
 					autoDepositWhatToExpect: expect.objectContaining({
@@ -397,15 +404,18 @@ describe('contentfulUtils.js', () => {
 						contents: [{
 							key: expect.any(String),
 							name: expect.any(String),
-							richText: expect.any(Object)
+							richText: expect.any(Object),
+							contentType: expect.any(String)
 						}, {
 							key: expect.any(String),
 							name: expect.any(String),
-							richText: expect.any(Object)
+							richText: expect.any(Object),
+							contentType: expect.any(String)
 						}, {
 							key: expect.any(String),
 							name: expect.any(String),
-							richText: expect.any(Object)
+							richText: expect.any(Object),
+							contentType: expect.any(String)
 						}],
 					})
 				}),
