@@ -33,7 +33,7 @@ export default {
 	computed: {
 		loanUseFiltered() {
 			// eslint-disable-next-line max-len
-			return loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount, 100);
+			return loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount);
 		},
 	}
 };

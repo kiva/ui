@@ -37,9 +37,11 @@ const borrowerCountLanguage = borrowerCount => {
 const shortenedLoanUse = (loanUse, loanName, loanUseMaxLength) => {
 	const lowerCaseUse = loanUse.toString().charAt(0).toLowerCase() + loanUse.toString().slice(1);
 	const convertedUse = (loanUse.substring(0, loanName.length) === loanName) ? loanUse : lowerCaseUse;
-
 	if (loanUse.length === 0) {
 		return 'For the borrower\'s privacy, this loan has been made anonymous.';
+	}
+	if (loanUseMaxLength === 0) {
+		return convertedUse;
 	}
 	if (loanUse.length > loanUseMaxLength) {
 		return `${convertedUse.substring(0, loanUseMaxLength)}...`;
