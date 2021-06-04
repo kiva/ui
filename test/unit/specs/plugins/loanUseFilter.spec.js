@@ -27,6 +27,9 @@ describe('loanUseFilter', () => {
 			expect(shortenedLoanUse('Loan Title', 'Loan Title', 100)).toBe('Loan Title');
 			expect(shortenedLoanUse('this is a very very long loan use',
 				'the loan name is also very long', 5)).toBe('this ...');
+			expect(shortenedLoanUse('this is a very very long loan use',
+				'the loan name is also very long', 0))
+				.toBe('this is a very very long loan use');
 		});
 	});
 	describe('loanUseFilter', () => {
@@ -44,7 +47,7 @@ describe('loanUseFilter', () => {
 			expect(loanUseFilter('loan use', 'loan name', 'fundraising', 500.50, undefined, 10))
 				.toBe('A loan of $501 helps loan use');
 			expect(loanUseFilter('loan use', 'loan name', 'fundraising', 500.50, 35, undefined))
-				.toBe('A loan of $501 helps a member ...');
+				.toBe('A loan of $501 helps a member loan use');
 		});
 	});
 });
