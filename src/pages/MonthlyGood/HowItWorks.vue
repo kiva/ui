@@ -82,6 +82,7 @@ export default {
 
 	h4 {
 		margin-bottom: 1rem;
+		text-transform: inherit;
 	}
 
 	.step-wrapper {

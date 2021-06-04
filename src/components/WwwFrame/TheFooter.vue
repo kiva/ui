@@ -811,6 +811,7 @@ $footer-separator-color: $magnemite;
 	h2 {
 		font-size: 0.875rem;
 		font-weight: $global-weight-bold;
+		letter-spacing: initial;
 		margin: 0;
 		line-height: 1.6;
 	}
