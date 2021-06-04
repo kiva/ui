@@ -138,6 +138,10 @@ export default {
 		}
 	}
 
+	&__callouts--header {
+		text-transform: inherit;
+	}
+
 	&__callouts--icon {
 		display: block;
 		margin-bottom: 0.75rem;

@@ -124,6 +124,7 @@ export default {
 		h4 {
 			padding-right: 2.65rem;
 			line-height: 1.35rem;
+			text-transform: inherit;
 		}
 	}
 
