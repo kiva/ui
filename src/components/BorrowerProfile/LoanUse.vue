@@ -1,9 +1,7 @@
 <template>
-	<div>
-		<span class="text-h2 text-gray-800">
-			{{ filteredLoanUse }}
-		</span>
-	</div>
+	<span class="text-h2 text-gray-800">
+		{{ loanUseFiltered }}
+	</span>
 </template>
 
 <script>
@@ -33,7 +31,7 @@ export default {
 		}
 	},
 	computed: {
-		filteredLoanUse() {
+		loanUseFiltered() {
 			// eslint-disable-next-line max-len
 			return loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount, 100);
 		},
