@@ -1,7 +1,7 @@
 <template>
-	<span class="text-h2 text-gray-800">
+	<p class="text-h2">
 		{{ loanUseFiltered }}
-	</span>
+	</p>
 </template>
 
 <script>
