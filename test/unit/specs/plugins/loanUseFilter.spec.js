@@ -29,7 +29,7 @@ describe('loanUseFilter', () => {
 				'the loan name is also very long', 5)).toBe('this ...');
 			expect(shortenedLoanUse('this is a very very long loan use',
 				'the loan name is also very long', 0))
-				.toBe('this is a very very long loan use the loan name is also very long');
+				.toBe('this is a very very long loan use');
 		});
 	});
 	describe('loanUseFilter', () => {
