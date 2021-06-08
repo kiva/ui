@@ -274,17 +274,35 @@ export function formatContentType(contentfulContent, contentType) {
 	// console.log(JSON.stringify(contentfulContent), contentType);
 	switch (contentType) {
 		case 'genericContentBlock':
-			return formatGenericContentBlock(contentfulContent);
+			return {
+				...formatGenericContentBlock(contentfulContent),
+				contentType
+			};
 		case 'uiSetting':
-			return formatUiSetting(contentfulContent);
+			return {
+				...formatUiSetting(contentfulContent),
+				contentType
+			};
 		case 'globalPromoBanner':
-			return formatGlobalPromoBanner(contentfulContent);
+			return {
+				...formatGlobalPromoBanner(contentfulContent),
+				contentType
+			};
 		case 'responsiveImageSet':
-			return formatResponsiveImageSet(contentfulContent);
+			return {
+				...formatResponsiveImageSet(contentfulContent),
+				contentType
+			};
 		case 'richTextContent':
-			return formatRichTextContent(contentfulContent);
+			return {
+				...formatRichTextContent(contentfulContent),
+				contentType
+			};
 		case 'background':
-			return formatBackground(contentfulContent);
+			return {
+				...formatBackground(contentfulContent),
+				contentType
+			};
 		default:
 			return { error: 'Unrecognized Content Type' };
 	}
