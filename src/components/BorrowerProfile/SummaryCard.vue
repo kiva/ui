@@ -1,17 +1,21 @@
 <template>
-	<section class="flex flex-wrap bg-gray-100 p-2.5 md:bg-white md:p-3 md:rounded lg:p-4">
+	<section class="tw-flex tw-flex-wrap tw-bg-gray-100 tw-p-2.5 md:tw-bg-white md:tw-p-3 md:tw-rounded lg:tw-p-4">
 		<borrower-avatar
-			class="flex-none w-8 h-8 mr-1.5 mb-1.5 md:w-9 md:h-9 md:mr-3 md:mb-3 lg:w-10 lg:h-10 lg:mr-4 lg:mb-4"
+			class="
+				tw-flex-none tw-w-8 tw-h-8 tw-mr-1.5 tw-mb-1.5
+				md:tw-w-9 md:tw-h-9 md:tw-mr-3 md:tw-mb-3
+				lg:tw-w-10 lg:tw-h-10 lg:tw-mr-4 lg:tw-mb-4
+			"
 			:alt="`Small, circular photograph of ${name}`"
 			:fallback="fallbackImage"
 			:sources="images"
 		/>
-		<div class="flex-auto">
+		<div class="tw-flex-auto">
 			<borrower-name :name="name" />
 			<!-- fundraising progress placeholder  -->
 		</div>
 		<loan-use
-			class="flex-none w-full"
+			class="tw-flex-none tw-w-full"
 			:borrower-count="borrowerCount"
 			:loan-amount="loanAmount"
 			:name="name"
