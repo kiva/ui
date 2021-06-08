@@ -32,7 +32,7 @@
 								heroMedia[0].description,
 							]"
 						>
-							<kv-contentful-img-new
+							<kv-contentful-img
 								v-if="heroMedia[0].url"
 								class="contentful-hero__img"
 								:contentful-src="heroMedia[0].url"
@@ -52,7 +52,7 @@
 								responsiveHeroDescription,
 							]"
 						>
-							<kv-contentful-img-new
+							<kv-contentful-img
 								class="contentful-hero__img"
 								:contentful-src="responsiveHeroImages[0].url"
 								:width="responsiveHeroImages[0].width"
@@ -81,6 +81,7 @@
 					<div class="contentful-hero__body" v-html="heroBody">
 					</div>
 					<kv-button
+						v-if="heroButton.text"
 						:class="`${buttonClass} show-for-large rounded`"
 						:to="buttonTo"
 						@click.native="buttonClick"
@@ -95,7 +96,7 @@
 				</div>
 			</div>
 			<!-- Button in different element order for mobile only -->
-			<div class="row align-center hide-for-large">
+			<div v-if="heroButton.text" class="row align-center hide-for-large">
 				<div class="small-10">
 					<kv-button
 						:class="`${buttonClass} rounded expanded`"
@@ -117,12 +118,8 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
-import KvContentfulImg from '@/components/Kv/KvContentfulImg';
-
 import SectionWithBackground from '@/components/Contentful/SectionWithBackground';
-
-import KvContentfulImgNew from '~/@kiva/kv-components/vue/KvContentfulImg';
-
+import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 /**
@@ -139,7 +136,6 @@ export default {
 		KvCarouselSlide: () => import('@/components/Kv/KvCarouselSlide'),
 		KvContentfulImg,
 		SectionWithBackground,
-		KvContentfulImgNew,
 	},
 	props: {
 		/**
@@ -160,7 +156,8 @@ export default {
 		isHeroImage() {
 			return this.mediaArray.length === 1
 				&& this.mediaArray?.[0]?.file?.contentType.includes('image')
-				&& (!this.isHeroCarousel || !this.isResponsiveHeroImage);
+				&& !this.isHeroCarousel
+				&& !this.isResponsiveHeroImage;
 		},
 		isResponsiveHeroImage() {
 			return this.content?.contents?.find(
