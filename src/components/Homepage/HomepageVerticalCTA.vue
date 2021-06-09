@@ -1,23 +1,30 @@
 <template>
-	<section
-		class="vertical-cta row"
+	<section-with-background
 		v-if="showVerticalCTA"
+		class="vertical-cta"
+		:background-content="sectionBackground"
 	>
-		<kv-contentful-img
-			v-if="image.url"
-			class="small-12 columns vertical-cta__image"
-			:contentful-src="image.url"
-			:alt="image.description"
-			:width="250"
-			:height="150"
-			loading="lazy"
-			fallback-format="png"
-		/>
-		<h2 v-html="headline" class="small-12 columns vertical-cta__header">
-		</h2>
-		<div v-html="body" class="small-12 columns vertical-cta__body">
-		</div>
-	</section>
+		<template #content>
+			<section
+				class="row"
+			>
+				<kv-contentful-img
+					v-if="image.url"
+					class="small-12 columns vertical-cta__image"
+					:contentful-src="image.url"
+					:alt="image.description"
+					:width="250"
+					:height="150"
+					loading="lazy"
+					fallback-format="png"
+				/>
+				<h2 v-html="headline" class="small-12 columns vertical-cta__header">
+				</h2>
+				<div v-html="body" class="small-12 columns vertical-cta__body">
+				</div>
+			</section>
+		</template>
+	</section-with-background>
 </template>
 
 <script>
@@ -27,6 +34,7 @@ import gql from 'graphql-tag';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+import SectionWithBackground from '@/components/Contentful/SectionWithBackground';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 const pageQuery = gql`
@@ -47,6 +55,7 @@ const pageQuery = gql`
 export default {
 	components: {
 		KvContentfulImg,
+		SectionWithBackground,
 	},
 	props: {
 		content: {
@@ -65,15 +74,23 @@ export default {
 			});
 		},
 		result({ data }) {
-			const verticalCTAExpActive = _get(data, 'general.homepage_verticalcta_active.value') === 'true' || false;
-			if (verticalCTAExpActive) {
-				const verticalCTAExp = this.apollo.readFragment({
-					id: 'Experiment:homepage_verticalcta',
-					fragment: experimentVersionFragment,
-				}) || {};
-				const { version } = verticalCTAExp;
-				this.showVerticalCTA = version === 'shown';
-				this.$kvTrackEvent('Home', 'EXP-GROW-612-May2021', this.showVerticalCTA ? 'b' : 'a');
+			console.log(this.$route.path);
+			// EXP-GROW-612 is only targed for homepage
+			// Always show the comopnent unless we're on the homepage
+			if (this.$route.path !== '/') {
+				this.showVerticalCTA = true;
+			} else {
+				// eslint-disable-next-line max-len
+				const verticalCTAExpActive = _get(data, 'general.homepage_verticalcta_active.value') === 'true' || false;
+				if (verticalCTAExpActive) {
+					const verticalCTAExp = this.apollo.readFragment({
+						id: 'Experiment:homepage_verticalcta',
+						fragment: experimentVersionFragment,
+					}) || {};
+					const { version } = verticalCTAExp;
+					this.showVerticalCTA = version === 'shown';
+					this.$kvTrackEvent('Home', 'EXP-GROW-612-May2021', this.showVerticalCTA ? 'b' : 'a');
+				}
 			}
 		}
 	},
@@ -100,6 +117,11 @@ export default {
 		body() {
 			const text = this.sectionText?.bodyCopy ?? '';
 			return text ? documentToHtmlString(text) : '';
+		},
+		sectionBackground() {
+			return this.content?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'background' : false;
+			});
 		},
 	},
 };
