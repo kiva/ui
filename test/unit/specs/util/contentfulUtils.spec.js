@@ -1,4 +1,5 @@
 import {
+	buildDynamicString,
 	formatGenericContentBlock,
 	formatResponsiveImageSet,
 	formatMediaAssetArray,
@@ -17,6 +18,29 @@ import responsiveImageSetRaw from '../../fixtures/ResponsiveImageSetRaw.json';
 import responsiveImageSetResult from '../../fixtures/ResponsiveImageSetResult.json';
 
 describe('contentfulUtils.js', () => {
+	describe('buildDynamicString', () => {
+		it('returns the source string with instances of split key replaced with the given values', () => {
+			expect(buildDynamicString(
+				'There are {value} things',
+				'{value}',
+				[5]
+			)).toBe('There are 5 things');
+			expect(buildDynamicString(
+				'There are {value} things. A whole {value}!',
+				'{value}',
+				[5, '89%']
+			)).toBe('There are 5 things. A whole 89%!');
+		});
+
+		it('returns the source string if no split key is present', () => {
+			expect(buildDynamicString(
+				'There is no split key',
+				'{value}',
+				[5]
+			)).toBe('There is no split key');
+		});
+	});
+
 	describe('formatUiSetting', () => {
 		test('should return a Ui Setting specific object', () => {
 			const expectedObject = {
