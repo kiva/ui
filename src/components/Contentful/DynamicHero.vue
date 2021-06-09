@@ -13,7 +13,6 @@
 							<kv-carousel-slide v-for="(image, index) in heroMedia" :key="index">
 								<kv-contentful-img
 									v-if="image.url"
-									:height="557"
 									:width="500"
 									class="contentful-hero__img"
 									:contentful-src="image.url"
@@ -37,7 +36,6 @@
 								class="contentful-hero__img"
 								:contentful-src="heroMedia[0].url"
 								:width="500"
-								:height="527"
 								fallback-format="jpg"
 								:alt="heroMedia[0].description"
 							/>
