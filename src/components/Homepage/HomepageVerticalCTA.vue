@@ -74,7 +74,6 @@ export default {
 			});
 		},
 		result({ data }) {
-			console.log(this.$route.path);
 			// EXP-GROW-612 is only targed for homepage
 			// Always show the comopnent unless we're on the homepage
 			if (this.$route.path !== '/') {
