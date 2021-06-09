@@ -1,6 +1,12 @@
 
 import StoryRouter from 'storybook-vue-router';
-import { contentfulMediaImg, contentfulGenericContentBlock, contentfulBackground, contentfulMediaVideo } from '../mock-data/contentful-data-mock';
+import {
+	contentfulMediaImg,
+	contentfulGenericContentBlock,
+	contentfulBackground,
+	contentfulMediaVideo,
+	contentfulResponsiveImageSet
+} from '../mock-data/contentful-data-mock';
 import DynamicHero from '@/components/Contentful/DynamicHero.vue';
 
 const heroContentGroup = {
@@ -37,6 +43,38 @@ Default.args = {
 		...heroContentGroup,
 		"media": [
 			{...contentfulMediaImg()}		]
+	}
+};
+
+export const ResponsiveImage = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		DynamicHero,
+	},
+	provide: {
+		apollo: {
+			readQuery() {
+				return {}
+			},
+			query(params) {
+				return Promise.resolve({});
+			},
+		},
+	},
+	template: `
+		<dynamic-hero :content="content"/>
+	`,
+});
+
+ResponsiveImage.args = {
+	content: {
+		...heroContentGroup,
+		contents: [
+			{...contentfulGenericContentBlock('hero-text')},
+			{...contentfulBackground('color')},
+			{...contentfulResponsiveImageSet}
+		],
+		media: null
 	}
 };
 

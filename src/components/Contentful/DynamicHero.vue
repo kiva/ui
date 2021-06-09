@@ -43,6 +43,26 @@
 							/>
 						</router-link>
 					</template>
+					<template v-if="isResponsiveHeroImage && responsiveHeroImages.length">
+						<router-link
+							:to="heroButton.link"
+							v-kv-track-event="[
+								'Hero',
+								'click-hero-loancards',
+								responsiveHeroDescription,
+							]"
+						>
+							<kv-contentful-img
+								class="contentful-hero__img"
+								:contentful-src="responsiveHeroImages[0].url"
+								:width="responsiveHeroImages[0].width"
+								:height="responsiveHeroImages[0].height"
+								fallback-format="jpg"
+								:alt="responsiveHeroDescription"
+								:source-sizes="responsiveHeroImages"
+							/>
+						</router-link>
+					</template>
 					<template v-if="isHeroVideo">
 						<video
 							:src="heroMedia[0].url"
@@ -61,6 +81,7 @@
 					<div class="contentful-hero__body" v-html="heroBody">
 					</div>
 					<kv-button
+						v-if="heroButton.text"
 						:class="`${buttonClass} show-for-large rounded`"
 						:to="buttonTo"
 						@click.native="buttonClick"
@@ -75,7 +96,7 @@
 				</div>
 			</div>
 			<!-- Button in different element order for mobile only -->
-			<div class="row align-center hide-for-large">
+			<div v-if="heroButton.text" class="row align-center hide-for-large">
 				<div class="small-10">
 					<kv-button
 						:class="`${buttonClass} rounded expanded`"
@@ -97,9 +118,8 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
-import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import SectionWithBackground from '@/components/Contentful/SectionWithBackground';
-
+import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 /**
@@ -136,11 +156,18 @@ export default {
 		isHeroImage() {
 			return this.mediaArray.length === 1
 				&& this.mediaArray?.[0]?.file?.contentType.includes('image')
-				&& !this.isHeroCarousel;
+				&& !this.isHeroCarousel
+				&& !this.isResponsiveHeroImage;
+		},
+		isResponsiveHeroImage() {
+			return this.content?.contents?.find(
+				({ contentType }) => contentType === 'responsiveImageSet'
+			) !== undefined;
 		},
 		isHeroCarousel() {
-			return this.mediaArray.length !== 1
-			&& this.mediaArray.every(media => media?.file?.contentType.includes('image'));
+			return this.mediaArray.length > 1
+			&& this.mediaArray.every(media => media?.file?.contentType.includes('image')
+			&& !this.isResponsiveHeroImage);
 		},
 		buttonClass() {
 			return this.$attrs?.customCtaButtonClass ?? '';
@@ -163,7 +190,35 @@ export default {
 				};
 			});
 		},
+		responsiveHeroImages() {
+			const imageSet = this.content?.contents?.find(({ contentType }) => contentType === 'responsiveImageSet');
+			if (!this.isResponsiveHeroImage || (imageSet.images && !imageSet.images.length)) return [];
+
+			return imageSet.images.map(entry => {
+				// TODO: Make this a util
+				let mediaSize = 'min-width: 0';
+				if (entry.title.indexOf('med') !== -1) {
+					mediaSize = 'min-width: 735px';
+				} else if (entry.title.indexOf('lg') !== -1) {
+					mediaSize = 'min-width: 1025px';
+				} else if (entry.title.indexOf('xl') !== -1) {
+					mediaSize = 'min-width: 1441px';
+				}
+
+				return {
+					width: entry.file?.details?.image?.width ?? '',
+					height: entry.file?.details?.image?.height ?? '',
+					media: mediaSize,
+					url: entry.file?.url ?? ''
+				};
+			});
+		},
+		responsiveHeroDescription() {
+			const imageSet = this.content?.contents?.find(({ contentType }) => contentType === 'responsiveImageSet');
+			return imageSet?.description ?? '';
+		},
 		heroText() {
+			// TODO: use the contentType param to target this content instead of a string fragment in the key
 			return this.content?.contents?.find(({ key }) => key.indexOf('hero-text') > -1);
 		},
 		heroHeadline() {
@@ -180,6 +235,7 @@ export default {
 			};
 		},
 		heroBackground() {
+			// TODO: use the contentType param to target this content instead of a string fragment in the key
 			return this.content?.contents?.find(({ key }) => key.indexOf('background') > -1);
 		},
 

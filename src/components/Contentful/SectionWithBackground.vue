@@ -113,7 +113,7 @@ export default {
 		padding: 2rem 0;
 
 		@include breakpoint(large) {
-			padding: 4rem 0 2rem;
+			padding: 4rem 0 4rem;
 		}
 
 		width: 100%;
