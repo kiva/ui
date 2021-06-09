@@ -434,6 +434,11 @@ export function buildDynamicString(sourceString = '', splitKey = '', dynamicValu
 	if (typeof sourceString !== 'string') {
 		return '';
 	}
+	// if the split key is not found in the source string, return the source string
+	if (sourceString.indexOf(splitKey) === -1) {
+		return sourceString;
+	}
+
 	let finalString = '';
 	// split the source string where it finds the splitKey
 	const stringSplit = sourceString.split(splitKey);
