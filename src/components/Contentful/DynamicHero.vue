@@ -171,13 +171,10 @@ export default {
 			return this.$attrs?.customCtaButtonClass ?? '';
 		},
 		buttonTo() {
-			if (this.$attrs?.customCtaFunction) {
+			if (this.$attrs?.customEventName) {
 				return null;
 			}
 			return this.heroButton.link;
-		},
-		buttonClick() {
-			return this.$attrs?.customCtaFunction ?? null;
 		},
 		heroMedia() {
 			return this.mediaArray.map(media => {
@@ -239,6 +236,17 @@ export default {
 		},
 
 	},
+	methods: {
+		buttonClick(event) {
+			const customEventName = this.$attrs?.customEventName ?? null;
+			if (customEventName) {
+				// Current behavior is to replace a button navigation if a custom event name is passed
+				event.stopPropagation();
+				// Emit root level event that any component can listen for
+				this.$root.$emit(customEventName);
+			}
+		},
+	}
 };
 </script>
 
