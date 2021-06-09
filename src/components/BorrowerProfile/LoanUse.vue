@@ -1,5 +1,5 @@
 <template>
-	<p class="text-h2">
+	<p class="tw-text-h2">
 		{{ loanUseFiltered }}
 	</p>
 </template>

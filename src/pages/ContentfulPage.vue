@@ -166,31 +166,20 @@ const getContentGroups = pageData => {
 	})).filter(group => typeof group.component === 'function');
 };
 
+// Modifications for Monthly Good Landing pages
+const customMGEventsAndConfig = {
+	// Custom attribute for MG page landing specific button class
+	customCtaButtonClass: 'classic hollow',
+	// Custom attribute for event name emitted with MG landing page button clicks
+	customEventName: 'openMonthlyGoodSelector'
+};
+
 const componentOptions = {
-	'homepage-hero-monthly-good': {
-		/**
-		 * Open monthly good interactive selector
-		 * in MonthlyGoodSelector.vue
-		 */
-		customCtaFunction(event) {
-			// prevents event from bubbling up to v-click-outside listener in MonthlyGoodSelector
-			event.stopPropagation();
-			this.$root.$emit('openMonthlyGoodSelector');
-		},
-		customCtaButtonClass: 'classic hollow'
-	},
-	'homepage-bottom-cta-monthly-good': {
-		/**
-		 * Open monthly good interactive selector
-		 * in MonthlyGoodSelector.vue
-		 */
-		customCtaFunction(event) {
-			// prevents event from bubbling up to v-click-outside listener in MonthlyGoodSelector
-			event.stopPropagation();
-			this.$root.$emit('openMonthlyGoodSelector');
-		},
-		customCtaButtonClass: 'classic hollow'
-	},
+	// Selected MG Landing page component keys to recieve custom attrubutes
+	'homepage-hero-monthly-good': customMGEventsAndConfig,
+	'homepage-bottom-cta-monthly-good': customMGEventsAndConfig,
+	'landing-mg-wrd-hero': customMGEventsAndConfig,
+	'homepage-bottom-cta-mg-refugees': customMGEventsAndConfig,
 };
 
 export default {

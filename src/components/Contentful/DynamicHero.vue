@@ -13,7 +13,6 @@
 							<kv-carousel-slide v-for="(image, index) in heroMedia" :key="index">
 								<kv-contentful-img
 									v-if="image.url"
-									:height="557"
 									:width="500"
 									class="contentful-hero__img"
 									:contentful-src="image.url"
@@ -37,7 +36,6 @@
 								class="contentful-hero__img"
 								:contentful-src="heroMedia[0].url"
 								:width="500"
-								:height="527"
 								fallback-format="jpg"
 								:alt="heroMedia[0].description"
 							/>
@@ -173,13 +171,10 @@ export default {
 			return this.$attrs?.customCtaButtonClass ?? '';
 		},
 		buttonTo() {
-			if (this.$attrs?.customCtaFunction) {
+			if (this.$attrs?.customEventName) {
 				return null;
 			}
 			return this.heroButton.link;
-		},
-		buttonClick() {
-			return this.$attrs?.customCtaFunction ?? null;
 		},
 		heroMedia() {
 			return this.mediaArray.map(media => {
@@ -235,11 +230,23 @@ export default {
 			};
 		},
 		heroBackground() {
-			// TODO: use the contentType param to target this content instead of a string fragment in the key
-			return this.content?.contents?.find(({ key }) => key.indexOf('background') > -1);
+			return this.content?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'background' : false;
+			});
 		},
 
 	},
+	methods: {
+		buttonClick(event) {
+			const customEventName = this.$attrs?.customEventName ?? null;
+			if (customEventName) {
+				// Current behavior is to replace a button navigation if a custom event name is passed
+				event.stopPropagation();
+				// Emit root level event that any component can listen for
+				this.$root.$emit(customEventName);
+			}
+		},
+	}
 };
 </script>
 
