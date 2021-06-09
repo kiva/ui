@@ -235,8 +235,9 @@ export default {
 			};
 		},
 		heroBackground() {
-			// TODO: use the contentType param to target this content instead of a string fragment in the key
-			return this.content?.contents?.find(({ key }) => key.indexOf('background') > -1);
+			return this.content?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'background' : false;
+			});
 		},
 
 	},
