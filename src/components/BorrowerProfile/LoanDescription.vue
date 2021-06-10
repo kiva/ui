@@ -1,20 +1,20 @@
 <template>
 	<section>
-		<p 
+		<p
 			class="tw-text-h2"
 		>
 			More about this loan
 		</p>
-		<div 
+		<div
 			v-if="partnerName"
 		>
 			<div>
 				{{ moreInfoAboutLoan }}
 			</div>
-			<div 
+			<div
 				v-if="loanAlertText"
 			>
-				<p  
+				<p
 					class="tw-text-h3"
 				>
 					About {{ partnerName }}:
@@ -27,10 +27,10 @@
 					{{ paragraph }}
 				</p>
 			</div>
-			<div 
+			<div
 				v-if="dualStatementNote"
 			>
-				<p 
+				<p
 					class="tw-text-h3"
 				>
 					Important Note About This Loan
@@ -40,10 +40,10 @@
 				</p>
 			</div>
 		</div>
-		<div 
+		<div
 			v-if="!partnerName"
 		>
-			<p 
+			<p
 				class="tw-text-h3"
 			>
 				Business Description
@@ -55,7 +55,7 @@
 			>
 				{{ paragraph }}
 			</p>
-			<p 
+			<p
 				class="tw-text-h3"
 			>
 				What is the purpose of this loan?
@@ -74,27 +74,27 @@
 <script>
 export default {
 	props: {
-		partnerName: {
+		partnerName: { // LoanPartner.partnerName
 			type: String,
 			default: '',
 		},
-		moreInfoAboutLoan: {
+		moreInfoAboutLoan: { // LoanPartner.moreInfoAboutLoan
 			type: String,
 			default: '',
 		},
-		dualStatementNote: {
+		dualStatementNote: { // LoanPartner.LoanPartner
 			type: String,
 			default: '',
 		},
-		businessDescription: {
+		businessDescription: { // LoanDirect.purpose
 			type: String,
 			default: '',
 		},
-		purpose: {
+		purpose: { // LoanDirect.purpose
 			type: String,
 			default: '',
 		},
-		loanAlertText: {
+		loanAlertText: { // Partner.loanAlertText
 			type: String,
 			default: '',
 		},
