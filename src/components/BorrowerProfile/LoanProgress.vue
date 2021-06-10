@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
+import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
 export default {
 	components: {
