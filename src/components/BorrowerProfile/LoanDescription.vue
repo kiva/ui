@@ -3,7 +3,7 @@
 		<p
 			class="tw-text-h2"
 		>
-			More about this loan
+			{{ firstName }}'s story
 		</p>
 		<div
 			v-if="partnerName"
@@ -82,11 +82,11 @@ export default {
 			type: String,
 			default: '',
 		},
-		dualStatementNote: { // LoanPartner.LoanPartner
+		dualStatementNote: { // LoanPartner.dualStatementNote
 			type: String,
 			default: '',
 		},
-		businessDescription: { // LoanDirect.purpose
+		businessDescription: { // LoanDirect.businessDescription
 			type: String,
 			default: '',
 		},
@@ -95,6 +95,10 @@ export default {
 			default: '',
 		},
 		loanAlertText: { // Partner.loanAlertText
+			type: String,
+			default: '',
+		},
+		firstName: { // Borrower.firstName
 			type: String,
 			default: '',
 		},
