@@ -25,17 +25,6 @@
 						loading="lazy"
 						fallback-format="jpg"
 					/>
-
-					<!-- Supporter card flourish images -->
-					<!-- eslint-disable max-len -->
-					<img
-						v-for="flourishImg in flourishImgs[index]"
-						:key="flourishImg.class"
-						:class="'testimonials__supporter-card--page-flourish testimonials__supporter-card--' + flourishImg.class"
-						:src="flourishImg.url"
-						:alt="flourishImg.description"
-					>
-					<!-- eslint-enable max-len -->
 				</div>
 				<!-- Supporter name -->
 				<p
@@ -63,8 +52,6 @@
 <script>
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 
-const imgRequire = require.context('@/assets/images/iwd/iwd-2021-Homepage', true);
-
 export default {
 	components: {
 		KvContentfulImg,
@@ -74,37 +61,6 @@ export default {
 			type: Object,
 			default: () => {},
 		},
-	},
-	data() {
-		return {
-			flourishImgs: [
-				[
-					{
-						description: 'Support card flourish image',
-						class: 'page-flourish-1',
-						url: imgRequire('./supporter_card_1_flourish.png'),
-					}],
-				[
-					{
-						description: 'Support card flourish image',
-						class: 'page-flourish-2',
-						url: imgRequire('./supporter_card_2_flourish_A.png'),
-					},
-					{
-						description: 'Support card flourish image',
-						class: 'page-flourish-3',
-						url: imgRequire('./supporter_card_2_flourish_B.png'),
-					},
-				],
-				[
-					{
-						description: 'Support card flourish image',
-						class: 'page-flourish-4',
-						url: imgRequire('./supporter_card_3_flourish.png'),
-					}
-				],
-			],
-		};
 	},
 	computed: {
 		testimonialSectionText() {
@@ -179,34 +135,6 @@ export default {
 		&--quote {
 			line-height: 1.5;
 			margin-bottom: 0;
-		}
-
-		&--page-flourish {
-			position: absolute;
-		}
-
-		&--page-flourish-1 {
-			width: rem-calc(50);
-			left: rem-calc(-18);
-			top: rem-calc(85);
-		}
-
-		&--page-flourish-2 {
-			width: rem-calc(45);
-			top: rem-calc(10);
-			left: rem-calc(-20);
-		}
-
-		&--page-flourish-3 {
-			width: rem-calc(60);
-			top: rem-calc(82);
-			right: rem-calc(-13);
-		}
-
-		&--page-flourish-4 {
-			width: rem-calc(50);
-			top: rem-calc(81);
-			right: rem-calc(-20);
 		}
 	}
 }
