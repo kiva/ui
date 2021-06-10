@@ -112,7 +112,9 @@ export default {
 		},
 		purposeParagraphs() {
 			return this.toParagraphs(this.purpose);
-		},
+		}
+	},
+	methods: {
 		toParagraphs(text) {
 			return String(text).split(/(\r\n\r\n|\n\n|\n \n|<br>)/);
 		}
