@@ -22,7 +22,7 @@
 				<p
 					v-for="(paragraph, index) in loanAlertTextParagraphs"
 					:key="index"
-					class="tw-text"
+					class="tw-text-base"
 				>
 					{{ paragraph }}
 				</p>
@@ -51,7 +51,7 @@
 			<p
 				v-for="(paragraph, index) in businessDescriptionParagraphs"
 				:key="index"
-				class="tw-text"
+				class="tw-text-base"
 			>
 				{{ paragraph }}
 			</p>
@@ -63,7 +63,7 @@
 			<p
 				v-for="(paragraph, index) in purposeParagraphs"
 				:key="index"
-				class="tw-text"
+				class="tw-text-base"
 			>
 				{{ paragraph }}
 			</p>
@@ -86,15 +86,15 @@ export default {
 			type: String,
 			default: '',
 		},
-		businessDescription: {//directBusinessDescription
+		businessDescription: {
 			type: String,
 			default: '',
 		},
-		purpose: {//directLoanPurpose
+		purpose: {
 			type: String,
 			default: '',
 		},
-		loanAlertText: {//moreAboutFieldPartner
+		loanAlertText: {
 			type: String,
 			default: '',
 		},
