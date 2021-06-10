@@ -11,8 +11,15 @@
 			:sources="images"
 		/>
 		<div class="tw-flex-auto">
-			<borrower-name :name="name" />
-			<!-- fundraising progress placeholder  -->
+			<borrower-name
+				class="md:tw-mb-1.5 lg:tw-mb-2"
+				:name="name"
+			/>
+			<loan-progress
+				:money-left="unreservedAmount"
+				:progress-percent="fundraisingPercent"
+				:time-left="timeLeft"
+			/>
 		</div>
 		<loan-use
 			class="tw-flex-none tw-w-full"
@@ -30,6 +37,7 @@
 import gql from 'graphql-tag';
 import BorrowerAvatar from './BorrowerAvatar';
 import BorrowerName from './BorrowerName';
+import LoanProgress from './LoanProgress';
 import LoanUse from './LoanUse';
 
 export default {
@@ -37,26 +45,32 @@ export default {
 	components: {
 		BorrowerAvatar,
 		BorrowerName,
+		LoanProgress,
 		LoanUse,
 	},
 	data() {
 		return {
 			borrowerCount: 0,
 			fallbackImage: '',
+			fundraisingPercent: 0,
 			images: [],
 			loanAmount: '0',
 			name: '',
 			status: '',
+			timeLeft: '',
+			unreservedAmount: '0',
 			use: '',
 		};
 	},
 	apollo: {
 		query: gql`
-			query borrowerAvatar($loanId: Int!) {
+			query summaryCard($loanId: Int!) {
 				lend {
 					loan(id: $loanId) {
 						id
 						borrowerCount
+						fundraisingPercent @client
+						fundraisingTimeLeft @client
 						image {
 							id
 							urlSm1x: url(customSize: "s64fz50")
@@ -67,8 +81,14 @@ export default {
 							urlLg2x: url(customSize: "s160fz50")
 						}
 						loanAmount
+						loanFundraisingInfo {
+							fundedAmount
+							reservedAmount
+						}
 						name
+						plannedExpirationDate
 						status
+						unreservedAmount @client
 						use
 					}
 				}
@@ -85,35 +105,39 @@ export default {
 				loanId: Number(this.$route?.params?.id ?? 0),
 			};
 		},
-		result({ data }) {
-			this.borrowerCount = data?.lend?.loan?.borrowerCount ?? 0;
-			this.fallbackImage = data?.lend?.loan?.image?.urlSm1x ?? '';
-			this.loanAmount = data?.lend?.loan?.loanAmount ?? '0';
-			this.name = data?.lend?.loan?.name ?? '';
-			this.status = data?.lend?.loan?.status ?? '';
-			this.use = data?.lend?.loan?.use ?? '';
+		result(result) {
+			const loan = result?.data?.lend?.loan;
+			this.borrowerCount = loan?.borrowerCount ?? 0;
+			this.fallbackImage = loan?.image?.urlSm1x ?? '';
+			this.fundraisingPercent = loan?.fundraisingPercent ?? 0;
+			this.loanAmount = loan?.loanAmount ?? '0';
+			this.name = loan?.name ?? '';
+			this.status = loan?.status ?? '';
+			this.timeLeft = loan?.fundraisingTimeLeft ?? '';
+			this.unreservedAmount = loan?.unreservedAmount ?? '0';
+			this.use = loan?.use ?? '';
 
 			// Build images array
 			this.images = [
 				{
 					media: 'min-width: 1024px', // large
 					urls: {
-						'2x': data?.lend?.loan?.image?.urlLg2x ?? '',
-						'1x': data?.lend?.loan?.image?.urlLg1x ?? '',
+						'2x': loan?.image?.urlLg2x ?? '',
+						'1x': loan?.image?.urlLg1x ?? '',
 					},
 				},
 				{
 					media: 'min-width: 734px', // medium
 					urls: {
-						'2x': data?.lend?.loan?.image?.urlMd2x ?? '',
-						'1x': data?.lend?.loan?.image?.urlMd1x ?? '',
+						'2x': loan?.image?.urlMd2x ?? '',
+						'1x': loan?.image?.urlMd1x ?? '',
 					},
 				},
 				{
 					media: 'min-width: 0',
 					urls: {
-						'2x': data?.lend?.loan?.image?.urlSm2x ?? '',
-						'1x': data?.lend?.loan?.image?.urlSm1x ?? '',
+						'2x': loan?.image?.urlSm2x ?? '',
+						'1x': loan?.image?.urlSm1x ?? '',
 					},
 				},
 			];
