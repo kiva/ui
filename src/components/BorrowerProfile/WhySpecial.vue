@@ -1,7 +1,7 @@
 <template>
-	<h1 class="tw-text-h2">
+	<h2 class="tw-text-h2">
 		{{ whySpecial }}
-	</h1>
+	</h2>
 </template>
 
 <script>
