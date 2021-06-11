@@ -1,9 +1,6 @@
 <template>
 	<span class="tw-z-1">
-		<!-- eslint-disable-next-line max-len -->
-		<div class="
-					tw-bg-brand
-					tw-fixed
+		<div class="tw-fixed
 					tw-left-0
 					md:tw-relative
 					md:tw-left-unset
@@ -69,8 +66,8 @@
 			</span>
 			<!-- Do I need another check here,
 				right now just checking if user has free credit.
-				additional/different check on loan for free
-				credit eligibilty? -->
+				Is there an additional/different check on loan for free
+				credit eligibilty of loan? -->
 			<p
 				v-if="freeCreditWarning && !allSharesReserved"
 				class="tw-text-h4 tw-text-gray-500 tw-inline-block tw-text-center tw-w-full"
@@ -84,10 +81,9 @@
 				All shares reserved
 			</p>
 		</div>
-		<!-- eslint-disable-next-line max-len -->
 		<div v-if="lenderCountVisibilty"
-			class="tw-bg-brand-300
-					tw-fixed md:tw-static
+			class="tw-fixed
+					md:tw-static
 					tw-left-3
 					tw-right-3
 					tw-bottom-8
