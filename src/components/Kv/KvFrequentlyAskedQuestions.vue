@@ -11,7 +11,7 @@
 						{{ frequentlyAskedQuestionsHeadline }}
 					</h2>
 				</div>
-				<div v-if="frequentlyAskedQuestions" class="small-12 columns">
+				<div v-if="frequentlyAskedQuestions" class="small-12 columns tw-py-2">
 					<div class="row collapse">
 						<kv-expandable-question
 							v-for="(question, index) in frequentlyAskedQuestions"
@@ -81,5 +81,4 @@ export default {
 		});
 	}
 };
-
 </script>
