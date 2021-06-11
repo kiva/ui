@@ -1,9 +1,9 @@
 <template>
 	<div class="monthly-selector-mobile">
 		<div class="row align-center">
-			<div class="small-10 columns">
+			<div class="small-12 columns">
 				<kv-button
-					class="classic expanded monthly-selector-mobile__button"
+					class="monthly-selector-mobile__button tw-mx-auto tw-w-full"
 					@click.native="showLightbox"
 					v-kv-track-event="[
 						'homepage',
@@ -11,12 +11,7 @@
 						'Lets get started'
 					]"
 				>
-					Let's get started <kv-icon
-						class="right-arrow-icon"
-						name="fat-chevron"
-						:from-sprite="true"
-						title="Let's get started"
-					/>
+					Get started
 				</kv-button>
 			</div>
 		</div>
@@ -81,11 +76,11 @@ import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import KvButton from '@/components/Kv/KvButton';
-import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const mgSelectorImgRequire = require.context('@/assets/images/mg-selector-icons/', true);
 
@@ -101,7 +96,6 @@ export default {
 	},
 	components: {
 		KvButton,
-		KvIcon,
 		KvLightbox,
 	},
 	mixins: [
