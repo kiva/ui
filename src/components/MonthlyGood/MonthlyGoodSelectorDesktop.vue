@@ -306,7 +306,6 @@ $kivaaction: #2B7C5F;
 		}
 
 		&.highlight {
-			// border: 2px solid $kivaaction;
 			background-color: $white;
 		}
 
@@ -315,7 +314,6 @@ $kivaaction: #2B7C5F;
 		}
 
 		&.active {
-			// box-shadow: 0 -5px 80px rgba(0, 0, 0, 0.1);
 			border: 2px solid $kivaaction;
 			background-color: $white;
 		}

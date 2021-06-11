@@ -165,26 +165,11 @@ footer.www-footer {
 <style lang="scss" scoped>
 @import "settings";
 
-// utils
-// .section {
-// 	position: relative;
-// 	padding: 2rem 0;
-
-// 	@include breakpoint(large) {
-// 		padding: 2rem 0;
-// 	}
-// }
-
 .monthly-good-selector {
-	// border-radius: rem-calc(20) rem-calc(20) 0 0;
-	// background-color: $white;
-
 	&.sticky {
-		// position: fixed;
-		// bottom: 0;
+		// non-standard "bottom" property requires additional tailwinds config to support
 		transition: bottom 0.4s;
-		// z-index: 1000;
-		// width: 100%;
+		// probably doable with tw, will revisit later
 		box-shadow: 0 -5px 80px rgba(0, 0, 0, 0.1);
 	}
 }
