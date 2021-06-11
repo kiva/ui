@@ -103,11 +103,10 @@ import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-// import KvButton from '@/components/Kv/KvButton';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 import clickOutside from '@/plugins/click-outside';
+
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const mgSelectorImgRequire = require.context('@/assets/images/mg-selector-icons/', true);
 

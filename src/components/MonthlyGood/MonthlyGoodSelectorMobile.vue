@@ -76,7 +76,6 @@ import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
@@ -97,7 +96,6 @@ export default {
 	},
 	components: {
 		KvButton,
-		KvIcon,
 		KvLightbox,
 	},
 	mixins: [

@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<!-- MG Selector Desktop -->
+		<!-- eslint-disable max-len -->
 		<section
 			class="monthly-good-selector md:tw-visible tw-invisible tw-bg-brand-50 tw-px-3 tw-py-0 tw-rounded-t"
 			:class="{ 'sticky': isSticky, 'tw-fixed tw-bottom-0 tw-w-full tw-z-50': isSticky, 'tw-relative': !isSticky }"
@@ -18,6 +19,7 @@
 		>
 			<monthly-good-selector-mobile :pre-selected-category="preSelectedCategory" />
 		</section>
+		<!-- eslint-enable max-len -->
 	</div>
 </template>
 
