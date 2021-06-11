@@ -13,7 +13,9 @@
 		<the-footer
 			:theme="footerTheme"
 		/>
-		<the-basket-bar />
+		<the-basket-bar
+			v-if="activeOnPage"
+		/>
 		<cookie-banner />
 	</div>
 </template>
@@ -71,6 +73,15 @@ export default {
 					path: _get(args, 'route.path')
 				}),
 			]);
+		}
+	},
+	computed: {
+		// Hiding basket footer on /lend-beta page
+		activeOnPage() {
+			if (this.$route.path.includes('lend-beta')) {
+				return false;
+			}
+			return true;
 		}
 	}
 };
