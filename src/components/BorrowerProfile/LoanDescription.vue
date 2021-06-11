@@ -1,10 +1,10 @@
 <template>
 	<section>
-		<p
+		<h2
 			class="tw-text-h2"
 		>
 			{{ firstName }}'s story
-		</p>
+		</h2>
 		<div
 			v-if="partnerName"
 		>
@@ -14,11 +14,11 @@
 			<div
 				v-if="loanAlertText"
 			>
-				<p
+				<h3
 					class="tw-text-h3"
 				>
 					About {{ partnerName }}:
-				</p>
+				</h3>
 				<p
 					v-for="(paragraph, index) in loanAlertTextParagraphs"
 					:key="index"
@@ -30,11 +30,11 @@
 			<div
 				v-if="dualStatementNote"
 			>
-				<p
+				<h3
 					class="tw-text-h3"
 				>
 					Important Note About This Loan
-				</p>
+				</h3>
 				<p>
 					{{ dualStatementNote }}
 				</p>
@@ -43,11 +43,11 @@
 		<div
 			v-if="!partnerName"
 		>
-			<p
+			<h3
 				class="tw-text-h3"
 			>
 				Business Description
-			</p>
+			</h3>
 			<p
 				v-for="(paragraph, index) in businessDescriptionParagraphs"
 				:key="index"
@@ -55,11 +55,11 @@
 			>
 				{{ paragraph }}
 			</p>
-			<p
+			<h3
 				class="tw-text-h3"
 			>
 				What is the purpose of this loan?
-			</p>
+			</h3>
 			<p
 				v-for="(paragraph, index) in purposeParagraphs"
 				:key="index"
