@@ -1,14 +1,14 @@
 <template>
 	<div class="frequently-asked-questions-section-wrapper row" id="frequently-asked-questions">
-		<div class="small-12 columns">
+		<div v-if="frequentlyAskedQuestionsHeadline" class="small-12 columns">
 			<h2>
-				{{ headline }}
+				{{ frequentlyAskedQuestionsHeadline }}
 			</h2>
 		</div>
-		<div class="small-12 columns">
+		<div v-if="frequentlyAskedQuestions" class="small-12 columns">
 			<div class="row collapse">
 				<kv-expandable-question
-					v-for="(question, index) in faqsContentful"
+					v-for="(question, index) in frequentlyAskedQuestions"
 					:key="index"
 					:title="question.name"
 					:content="convertFromRichTextToHtml(question.richText)"
@@ -29,20 +29,25 @@ export default {
 		KvExpandableQuestion
 	},
 	props: {
-		faqsContentful: {
-			type: Array,
-			default() {
-				return [];
-			}
-		},
-		headline: {
-			type: String,
-			default: ''
+		/**
+		 * Content group content from Contentful
+		* */
+		content: {
+			type: Object,
+			default: () => {},
 		},
 	},
 	data() {
 		return {
 		};
+	},
+	computed: {
+		frequentlyAskedQuestionsHeadline() {
+			return this.content?.name ?? null;
+		},
+		frequentlyAskedQuestions() {
+			return this.content?.contents ?? null;
+		},
 	},
 	methods: {
 		convertFromRichTextToHtml(rawRichText) {
