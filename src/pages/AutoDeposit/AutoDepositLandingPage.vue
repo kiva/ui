@@ -71,8 +71,7 @@
 
 		<!-- Auto Deposit Frequently Asked Questions -->
 		<kv-frequently-asked-questions
-			:faqs-contentful="frequentlyAskedQuestions"
-			:headline="frequentlyAskedQuestionsHeadline"
+			:content="faqContentGroup"
 		/>
 	</www-page>
 </template>
@@ -155,11 +154,8 @@ export default {
 			const rawRichText = this.pageData?.page?.contentGroups?.autoDepositCta?.contents?.[0]?.bodyCopy;
 			return documentToHtmlString(rawRichText);
 		},
-		frequentlyAskedQuestionsHeadline() {
-			return this.pageData?.page?.contentGroups?.autoDepositFaqs?.name;
-		},
-		frequentlyAskedQuestions() {
-			return this.pageData?.page?.contentGroups?.autoDepositFaqs?.contents;
+		faqContentGroup() {
+			return this.pageData?.page?.contentGroups?.autoDepositFaqs ?? {};
 		},
 		whatToExpectHeadline() {
 			return this.pageData?.page?.contentGroups?.autoDepositWhatToExpect?.name;
