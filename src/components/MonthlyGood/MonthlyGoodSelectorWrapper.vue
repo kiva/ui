@@ -2,16 +2,18 @@
 	<div>
 		<!-- MG Selector Desktop -->
 		<section
-			class="monthly-good-selector show-for-medium"
-			:class="{ 'sticky': isSticky}"
+			class="monthly-good-selector md:tw-visible tw-invisible tw-bg-brand-50 tw-px-3 tw-py-0 tw-rounded-t"
+			:class="{ 'sticky': isSticky, 'tw-fixed tw-bottom-0 tw-w-full tw-z-50': isSticky, 'tw-relative': !isSticky }"
 			:style="{bottom: mgStickBarOffset + 'px'}"
 		>
 			<monthly-good-selector-desktop :pre-selected-category="preSelectedCategory" />
 		</section>
 
-		<!-- MG Selector Mobile -->
+		<!-- MG Selector Mobile show-for-small-only  -->
 		<section
-			class="monthly-good-selector section show-for-small-only"
+			class="monthly-good-selector tw-visible md:tw-invisible tw-bg-brand-50 tw-px-3 tw-py-2"
+			:class="{ 'sticky': isSticky, 'tw-fixed tw-bottom-0 tw-w-full tw-z-50': isSticky, 'tw-relative': !isSticky }"
+			:style="{bottom: mgStickBarOffset + 'px'}"
 			v-if="isMobile"
 		>
 			<monthly-good-selector-mobile :pre-selected-category="preSelectedCategory" />
@@ -59,6 +61,9 @@ export default {
 		mgSelectorSetting() {
 			return this.content?.contents?.find(({ key }) => key.indexOf('monthly-good-selector-setting') > -1);
 		},
+		alwaysSticky() {
+			return this.mgSelectorSetting?.dataObject?.alwaysSticky ?? false;
+		},
 		preSelectedCategorySetting() {
 			return this.mgSelectorSetting?.dataObject?.preSelectedCategory ?? null;
 		},
@@ -89,7 +94,13 @@ export default {
 			const heightOfMgSelector = this.$el.getElementsByClassName('monthly-good-selector')[0].offsetHeight;
 			const scrollPositionOfPage = window.scrollY;
 
-			this.initialBottomPosition = top + scrollPositionOfPage + heightOfMgSelector;
+			// override for always stickey behavior
+			if (this.alwaysSticky) {
+				this.initialBottomPosition = 0;
+			} else {
+				this.initialBottomPosition = top + scrollPositionOfPage + heightOfMgSelector;
+			}
+
 			this.onScroll();
 		},
 		setMgStickyBarOffset() {
@@ -108,7 +119,7 @@ export default {
 			this.mgStickBarOffset = offsetHeight;
 		},
 		determineIfMobile() {
-			this.isMobile = document.documentElement.clientWidth < 480;
+			this.isMobile = document.documentElement.clientWidth < 735;
 		}
 	},
 	beforeDestroy() {
@@ -153,25 +164,25 @@ footer.www-footer {
 @import "settings";
 
 // utils
-.section {
-	position: relative;
-	padding: 2rem 0;
+// .section {
+// 	position: relative;
+// 	padding: 2rem 0;
 
-	@include breakpoint(large) {
-		padding: 2rem 0;
-	}
-}
+// 	@include breakpoint(large) {
+// 		padding: 2rem 0;
+// 	}
+// }
 
 .monthly-good-selector {
-	border-radius: rem-calc(20) rem-calc(20) 0 0;
-	background-color: $white;
+	// border-radius: rem-calc(20) rem-calc(20) 0 0;
+	// background-color: $white;
 
 	&.sticky {
-		position: fixed;
-		bottom: 0;
+		// position: fixed;
+		// bottom: 0;
 		transition: bottom 0.4s;
-		z-index: 1000;
-		width: 100%;
+		// z-index: 1000;
+		// width: 100%;
 		box-shadow: 0 -5px 80px rgba(0, 0, 0, 0.1);
 	}
 }

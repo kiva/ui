@@ -13,11 +13,11 @@
 					@click="toggleCauses"
 				>
 					<template v-if="!selectedGroup">
-						<strong>Choose a cause</strong><br>
+						<strong class="tw-action">Choose a cause</strong><br>
 						What matters to you?
 					</template>
 					<template v-if="selectedGroup">
-						<strong>{{ selectedGroup.marketingName }}</strong><br>
+						<strong class="tw-action">{{ selectedGroup.marketingName }}</strong><br>
 						Your cause
 					</template>
 				</button>
@@ -80,16 +80,18 @@
 				</transition>
 			</div>
 			<div class="shrink column monthly-selector__take-action-wrapper">
+				<!--  classic hollow -->
 				<kv-button @click.native="navigateToMG"
-					class="monthly-selector__take-action classic hollow"
+					class="monthly-selector__take-action"
 					v-kv-track-event="[
 						'homepage',
 						'click-mgpromo-cta',
 						'Take action'
 					]"
+					:state="($v.mgAmount.$invalid || $v.groupValue.$invalid) ? 'disabled' : ''"
 					:disabled="$v.mgAmount.$invalid || $v.groupValue.$invalid"
 				>
-					Take action
+					Subscribe
 				</kv-button>
 			</div>
 		</div>
@@ -101,7 +103,8 @@ import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import KvButton from '@/components/Kv/KvButton';
+// import KvButton from '@/components/Kv/KvButton';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 import clickOutside from '@/plugins/click-outside';
@@ -250,14 +253,14 @@ export default {
 		},
 		causeClass() {
 			return {
-				highlight: !this.isCauseOpen && !this.selectedGroup,
+				highlight: !this.isCauseOpen && !this.selectedGroup && !this.isAmountOpen,
 				active: this.isCauseOpen,
 				completed: !this.isCauseOpen && this.selectedGroup
 			};
 		},
 		amountClass() {
 			return {
-				highlight: this.selectedGroup && !this.isAmountOpen && !this.mgAmount,
+				highlight: this.selectedGroup && !this.isAmountOpen && !this.mgAmount && !this.isCauseOpen,
 				inactive: !this.selectedGroup && !this.isAmountOpen,
 				active: this.isAmountOpen,
 				completed: this.mgAmount
@@ -279,6 +282,7 @@ export default {
 @import 'settings';
 
 $offwhite: #F8F8F8;
+$kivaaction: #2B7C5F;
 
 .monthly-selector {
 	position: relative;
@@ -286,7 +290,7 @@ $offwhite: #F8F8F8;
 	&__button {
 		padding: 0.75rem 1.25rem;
 		border-radius: rem-calc(20px);
-		border: 3px solid transparent;
+		border: 2px solid transparent;
 		text-align: left;
 		width: 100%;
 		color: $magnemite;
@@ -303,16 +307,23 @@ $offwhite: #F8F8F8;
 		}
 
 		&.highlight {
-			border: 3px solid $kiva-green;
+			// border: 2px solid $kivaaction;
+			background-color: $white;
+		}
+
+		&:hover {
+			background-color: $white;
 		}
 
 		&.active {
-			box-shadow: 0 -5px 80px rgba(0, 0, 0, 0.1);
+			// box-shadow: 0 -5px 80px rgba(0, 0, 0, 0.1);
+			border: 2px solid $kivaaction;
+			background-color: $white;
 		}
 
 		&.completed {
 			strong {
-				color: $kiva-green;
+				color: $kivaaction;
 			}
 		}
 
