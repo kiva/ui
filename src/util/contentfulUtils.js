@@ -243,6 +243,7 @@ export function formatContentGroupsFlat(contentfulContent) {
 				key: entry.fields?.key,
 				name: entry.fields?.name,
 				type: entry.fields?.type ?? null,
+				title: entry.fields?.title ?? null,
 				// eslint-disable-next-line no-use-before-define
 				contents: formatContentTypes(entry.fields?.contents)
 			};
@@ -368,6 +369,7 @@ export function processPageContent(entryItem) {
 				key: item.fields?.key,
 				name: item.fields?.name,
 				type: item.fields?.type ?? null,
+				title: item.fields?.title ?? null,
 				contents: formatContentTypes(item.fields?.contents),
 				media: formatMediaAssetArray(item.fields?.media),
 			};

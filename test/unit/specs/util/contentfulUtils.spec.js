@@ -142,6 +142,7 @@ describe('contentfulUtils.js', () => {
 					contentGroups: [{
 						key: 'promo-campaign-test-cg',
 						name: 'Promo Campaign Test Content Groups',
+						title: 'Promo Campaign Test Content Groups',
 						contents: [{
 							key: 'header-area',
 							name: 'Test Campaign Title',
@@ -226,6 +227,7 @@ describe('contentfulUtils.js', () => {
 					mlCampaignHero: {
 						key: 'promo-campaign-test-cg',
 						name: 'Promo Campaign Test Content Groups',
+						title: 'Promo Campaign Test Content Groups',
 						contents: [{
 							key: 'header-area',
 							name: 'Test Campaign Title',

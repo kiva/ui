@@ -1,32 +1,42 @@
 <template>
-	<div class="frequently-asked-questions-section-wrapper row" id="frequently-asked-questions">
-		<div v-if="frequentlyAskedQuestionsHeadline" class="small-12 columns">
-			<h2>
-				{{ frequentlyAskedQuestionsHeadline }}
-			</h2>
-		</div>
-		<div v-if="frequentlyAskedQuestions" class="small-12 columns">
-			<div class="row collapse">
-				<kv-expandable-question
-					v-for="(question, index) in frequentlyAskedQuestions"
-					:key="index"
-					:title="question.name"
-					:content="convertFromRichTextToHtml(question.richText)"
-					class="small-12 columns"
-					:id="question.name | changeCase('paramCase')"
-				/>
+	<section-with-background
+		v-if="frequentlyAskedQuestionsHeadline || frequentlyAskedQuestions"
+		class="frequently-asked-questions-section-wrapper tw-mb-4"
+		:background-content="sectionBackground"
+	>
+		<template #content>
+			<div class="row" id="frequently-asked-questions">
+				<div v-if="frequentlyAskedQuestionsHeadline" class="small-12 columns">
+					<h2 class="tw-text-h2">
+						{{ frequentlyAskedQuestionsHeadline }}
+					</h2>
+				</div>
+				<div v-if="frequentlyAskedQuestions" class="small-12 columns">
+					<div class="row collapse">
+						<kv-expandable-question
+							v-for="(question, index) in frequentlyAskedQuestions"
+							:key="index"
+							:title="question.name"
+							:content="convertFromRichTextToHtml(question.richText)"
+							class="small-12 columns"
+							:id="question.name | changeCase('paramCase')"
+						/>
+					</div>
+				</div>
 			</div>
-		</div>
-	</div>
+		</template>
+	</section-with-background>
 </template>
 
 <script>
 import KvExpandableQuestion from '@/components/Kv/KvExpandableQuestion';
+import SectionWithBackground from '@/components/Contentful/SectionWithBackground';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
 	components: {
-		KvExpandableQuestion
+		KvExpandableQuestion,
+		SectionWithBackground,
 	},
 	props: {
 		/**
@@ -43,10 +53,15 @@ export default {
 	},
 	computed: {
 		frequentlyAskedQuestionsHeadline() {
-			return this.content?.name ?? null;
+			return this.content?.title ?? null;
 		},
 		frequentlyAskedQuestions() {
 			return this.content?.contents ?? null;
+		},
+		sectionBackground() {
+			return this.content?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'background' : false;
+			});
 		},
 	},
 	methods: {
@@ -68,20 +83,3 @@ export default {
 };
 
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.frequently-asked-questions-section-wrapper {
-	margin-bottom: 4rem;
-
-	h2 {
-		margin-bottom: 1.85rem;
-		font-weight: bold;
-
-		@include breakpoint(large) {
-			@include large-text();
-		}
-	}
-}
-</style>
