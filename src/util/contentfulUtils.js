@@ -243,6 +243,7 @@ export function formatContentGroupsFlat(contentfulContent) {
 				key: entry.fields?.key,
 				name: entry.fields?.name,
 				type: entry.fields?.type ?? null,
+				title: entry.fields?.title ?? null,
 				// eslint-disable-next-line no-use-before-define
 				contents: formatContentTypes(entry.fields?.contents)
 			};
@@ -274,17 +275,35 @@ export function formatContentType(contentfulContent, contentType) {
 	// console.log(JSON.stringify(contentfulContent), contentType);
 	switch (contentType) {
 		case 'genericContentBlock':
-			return formatGenericContentBlock(contentfulContent);
+			return {
+				...formatGenericContentBlock(contentfulContent),
+				contentType
+			};
 		case 'uiSetting':
-			return formatUiSetting(contentfulContent);
+			return {
+				...formatUiSetting(contentfulContent),
+				contentType
+			};
 		case 'globalPromoBanner':
-			return formatGlobalPromoBanner(contentfulContent);
+			return {
+				...formatGlobalPromoBanner(contentfulContent),
+				contentType
+			};
 		case 'responsiveImageSet':
-			return formatResponsiveImageSet(contentfulContent);
+			return {
+				...formatResponsiveImageSet(contentfulContent),
+				contentType
+			};
 		case 'richTextContent':
-			return formatRichTextContent(contentfulContent);
+			return {
+				...formatRichTextContent(contentfulContent),
+				contentType
+			};
 		case 'background':
-			return formatBackground(contentfulContent);
+			return {
+				...formatBackground(contentfulContent),
+				contentType
+			};
 		default:
 			return { error: 'Unrecognized Content Type' };
 	}
@@ -350,6 +369,7 @@ export function processPageContent(entryItem) {
 				key: item.fields?.key,
 				name: item.fields?.name,
 				type: item.fields?.type ?? null,
+				title: item.fields?.title ?? null,
 				contents: formatContentTypes(item.fields?.contents),
 				media: formatMediaAssetArray(item.fields?.media),
 			};
@@ -416,6 +436,11 @@ export function buildDynamicString(sourceString = '', splitKey = '', dynamicValu
 	if (typeof sourceString !== 'string') {
 		return '';
 	}
+	// if the split key is not found in the source string, return the source string
+	if (sourceString.indexOf(splitKey) === -1) {
+		return sourceString;
+	}
+
 	let finalString = '';
 	// split the source string where it finds the splitKey
 	const stringSplit = sourceString.split(splitKey);

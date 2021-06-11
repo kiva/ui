@@ -1,12 +1,13 @@
 <template>
 	<www-page id="borrower-profile">
-		<div class="container">
-			<div class="grid grid-cols-12 gap-x-2">
-				<div class="col-span-12 md:col-start-2 md:col-span-10 lg:col-span-7">
-					Borrower details
+		<div class="tw-container">
+			<div class="tw-grid tw-grid-cols-12 tw-gap-x-2">
+				<div class="tw-col-span-12 md:tw-col-start-2 md:tw-col-span-10 lg:tw-col-span-7">
+					<summary-card />
+					<!-- Borrower details -->
 				</div>
-				<div class="col-span-12 md:col-start-6 md:col-span-6 lg:col-span-5">
-					Powered by lenders info
+				<div class="tw-col-span-12 md:tw-col-start-6 md:tw-col-span-6 lg:tw-col-span-5">
+					<!-- Powered by lenders info -->
 				</div>
 			</div>
 		</div>
@@ -15,9 +16,11 @@
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import SummaryCard from '@/components/BorrowerProfile/SummaryCard';
 
 export default {
 	components: {
+		SummaryCard,
 		WwwPage,
 	},
 	data() {

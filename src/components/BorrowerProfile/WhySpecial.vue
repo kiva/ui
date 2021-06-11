@@ -1,14 +1,14 @@
 <template>
-	<h1 class="tw-text-h2">
-		{{ name }}
-	</h1>
+	<p class="tw-text-h2">
+		{{ whySpecial }}
+	</p>
 </template>
 
 <script>
 
 export default {
 	props: {
-		name: {
+		whySpecial: {
 			type: String,
 			default: ''
 		}

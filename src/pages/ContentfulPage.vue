@@ -81,6 +81,8 @@ const HomepageMonthlyGoodInfo = () => import('@/components/Homepage/HomepageMont
 const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
 const MonthlyGoodFrequentlyAskedQuestions = () => import('@/components/MonthlyGood/FrequentlyAskedQuestions');
 
+const KvFrequentlyAskedQuestions = () => import('@/components/Kv/KvFrequentlyAskedQuestions');
+
 // Query for getting contentful page data
 const pageQuery = gql`query contentfulPage($key: String) {
 	contentful {
@@ -143,11 +145,13 @@ const getComponentFromType = type => {
 			return CampaignPartner;
 		case 'mlCampaignThanks':
 			return CampaignThanks;
-		case 'frequentlyAskedQuestions':
+		case 'mgFrequentlyAskedQuestions':
 			// TODO change this to generic FAQ Component
 			return MonthlyGoodFrequentlyAskedQuestions;
 		case 'monthlyGoodSelector':
 			return MonthlyGoodSelectorWrapper;
+		case 'frequentlyAskedQuestions':
+			return KvFrequentlyAskedQuestions;
 
 		default:
 			console.error(`Unknown content group type "${type}"`);
@@ -166,31 +170,20 @@ const getContentGroups = pageData => {
 	})).filter(group => typeof group.component === 'function');
 };
 
+// Modifications for Monthly Good Landing pages
+const customMGEventsAndConfig = {
+	// Custom attribute for MG page landing specific button class
+	customCtaButtonClass: 'classic hollow',
+	// Custom attribute for event name emitted with MG landing page button clicks
+	customEventName: 'openMonthlyGoodSelector'
+};
+
 const componentOptions = {
-	'homepage-hero-monthly-good': {
-		/**
-		 * Open monthly good interactive selector
-		 * in MonthlyGoodSelector.vue
-		 */
-		customCtaFunction(event) {
-			// prevents event from bubbling up to v-click-outside listener in MonthlyGoodSelector
-			event.stopPropagation();
-			this.$root.$emit('openMonthlyGoodSelector');
-		},
-		customCtaButtonClass: 'classic hollow'
-	},
-	'homepage-bottom-cta-monthly-good': {
-		/**
-		 * Open monthly good interactive selector
-		 * in MonthlyGoodSelector.vue
-		 */
-		customCtaFunction(event) {
-			// prevents event from bubbling up to v-click-outside listener in MonthlyGoodSelector
-			event.stopPropagation();
-			this.$root.$emit('openMonthlyGoodSelector');
-		},
-		customCtaButtonClass: 'classic hollow'
-	},
+	// Selected MG Landing page component keys to recieve custom attrubutes
+	'homepage-hero-monthly-good': customMGEventsAndConfig,
+	'homepage-bottom-cta-monthly-good': customMGEventsAndConfig,
+	'landing-mg-wrd-hero': customMGEventsAndConfig,
+	'homepage-bottom-cta-mg-refugees': customMGEventsAndConfig,
 };
 
 export default {

@@ -51,6 +51,18 @@ extend type My {
 	lastLoginTimestamp: Int
 }
 
+extend type LoanPartner {
+	fundraisingPercent: Float!
+	fundraisingTimeLeft: String!
+	unreservedAmount: Money!
+}
+
+extend type LoanDirect {
+	fundraisingPercent: Float!
+	fundraisingTimeLeft: String!
+	unreservedAmount: Money!
+}
+
 type TipMessage {
 	message: String
 	persist: Boolean

@@ -1,49 +1,55 @@
 <template>
-	<section class="how-it-works section text-center">
-		<div class="row">
-			<p
-				v-html="howItWorksHeadline"
-				class="how-it-works__header large-text small-12 columns"
-			>
-			</p>
-			<p
-				v-html="howItWorksSubhead"
-				class="large-6 large-offset-3 columns"
-			>
-			</p>
-		</div>
-		<ol class="row how-it-works__list">
-			<li
-				v-for="step in stepsText"
-				:key="step.key"
-				class="how-it-works__li small-12 xxlarge-3 columns"
-			>
-				<kv-contentful-img
-					v-if="step.image.url"
-					class="how-it-works__img"
-					:contentful-src="step.image.url"
-					:alt="step.image.description"
-					:height="115"
-					loading="lazy"
-					fallback-format="png"
-				/>
-				<p
-					v-html="step.headline"
-					class="how-it-works__subtitle"
-				>
-				</p>
-				<p v-html="step.subHeadline"></p>
-			</li>
-		</ol>
-	</section>
+	<section-with-background class="how-it-works" :background-content="sectionBackground">
+		<template #content>
+			<section class="section text-center">
+				<div class="row">
+					<p
+						v-html="howItWorksHeadline"
+						class="how-it-works__header large-text small-12 columns"
+					>
+					</p>
+					<p
+						v-html="howItWorksSubhead"
+						class="large-6 large-offset-3 columns"
+					>
+					</p>
+				</div>
+				<ol class="row how-it-works__list">
+					<li
+						v-for="step in stepsText"
+						:key="step.key"
+						class="how-it-works__li small-12 xxlarge-3 columns"
+					>
+						<kv-contentful-img
+							v-if="step.image.url"
+							class="how-it-works__img"
+							:contentful-src="step.image.url"
+							:alt="step.image.description"
+							:height="115"
+							loading="lazy"
+							fallback-format="png"
+						/>
+						<p
+							v-html="step.headline"
+							class="how-it-works__subtitle"
+						>
+						</p>
+						<p v-html="step.subHeadline"></p>
+					</li>
+				</ol>
+			</section>
+		</template>
+	</section-with-background>
 </template>
 
 <script>
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+import SectionWithBackground from '@/components/Contentful/SectionWithBackground';
 
 export default {
 	components: {
-		KvContentfulImg
+		KvContentfulImg,
+		SectionWithBackground,
 	},
 	props: {
 		content: {
@@ -78,6 +84,11 @@ export default {
 				url: image?.file?.url ?? ''
 			}));
 		},
+		sectionBackground() {
+			return this.content?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'background' : false;
+			});
+		},
 	}
 };
 
@@ -86,10 +97,9 @@ export default {
 @import 'settings';
 
 .how-it-works {
-	padding: 2rem 0;
-
 	&__list {
 		list-style: none;
+		justify-content: space-around;
 
 		@include breakpoint(large) {
 			margin-top: rem-calc(30);
