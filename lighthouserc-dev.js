@@ -3,8 +3,6 @@ module.exports = {
 		collect: {
 			settings: {
 				onlyCategories: ['accessibility', 'best-practices', 'performance', 'seo'],
-				maxWaitForFcp: 10000,
-				maxWaitForLoad: 10000,
 			},
 			startServerCommand: 'npm start -- --config=local',
 			startServerReadyPattern: 'server started at',
@@ -15,8 +13,7 @@ module.exports = {
 				'http://localhost:8888/lend-by-category/arts',
 				'http://localhost:8888/ui-site-map',
 				'http://localhost:8888/cc/kiva-universal',
-				'http://localhost:8888/lp/support-refugees',
-				'http://localhost:8888/lend-by-category'
+				'http://localhost:8888/lp/support-refugees'
 			],
 			numberOfRuns: 5,
 		},
