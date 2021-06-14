@@ -171,6 +171,8 @@ footer.www-footer {
 		transition: bottom 0.4s;
 		// probably doable with tw, will revisit later
 		box-shadow: 0 -5px 80px rgba(0, 0, 0, 0.1);
+		// Temporary scss override to ensure layering over header in mobile
+		z-index: 1000;
 	}
 }
 </style>
