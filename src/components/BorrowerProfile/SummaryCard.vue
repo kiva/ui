@@ -1,6 +1,11 @@
 <template>
 	<!-- eslint-disable-next-line max-len -->
-	<section class="tw-flex tw-flex-wrap tw-bg-gray-100 tw-p-2.5 md:tw-bg-white md:tw-p-3 md:tw-rounded-t lg:tw-rounded lg:tw-p-4">
+	<section class="
+		tw-flex tw-flex-wrap
+		tw-bg-gray-50 md:tw-bg-white
+		tw-p-2.5 md:tw-p-3 lg:tw-p-4
+		md:tw-rounded-t lg:tw-rounded"
+	>
 		<borrower-avatar
 			class="
 				tw-flex-none tw-w-8 tw-h-8 tw-mr-1.5 tw-mb-1.5
