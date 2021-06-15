@@ -51,6 +51,12 @@ extend type My {
 	lastLoginTimestamp: Int
 }
 
+extend interface LoanBasic {
+	fundraisingPercent: Float!
+	fundraisingTimeLeft: String!
+	unreservedAmount: Money!
+}
+
 extend type LoanPartner {
 	fundraisingPercent: Float!
 	fundraisingTimeLeft: String!
