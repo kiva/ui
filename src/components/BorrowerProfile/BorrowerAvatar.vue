@@ -1,5 +1,5 @@
 <template>
-	<picture class="tw-rounded-full tw-overflow-hidden tw-bg-black">
+	<picture class="tw-rounded-full tw-overflow-hidden tw-bg-brand">
 		<source
 			v-for="({ media, urls }, index) in sources"
 			:key="index"
