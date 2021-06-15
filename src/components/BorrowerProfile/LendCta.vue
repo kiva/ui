@@ -15,10 +15,8 @@
 					tw-border-gray-300
 					md:tw-border-none
 					tw-pt-1
-					tw-pl-2.5
-					tw-pr-2.5
-					lg:tw-pl-4
-					lg:tw-pr-4"
+					tw-px-2.5
+					lg:tw-px-4"
 		>
 			<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
 				{{ lgScreenheadline }}
@@ -31,19 +29,18 @@
 					v-model="selectedOption"
 				>
 					<option
-						v-for="price in prices"
-						:key="price"
-						:value="price"
+						v-for="priceOption in prices"
+						:key="priceOption"
+						:value="priceOption"
 					>
-						${{ price }}
+						${{ priceOption }}
 					</option>
 				</kv-ui-select>
 				<!-- Lend button -->
 				<kv-ui-button
 					v-if="!showAdding && !inBasket"
 					class="tw-inline-flex tw-flex-1"
-					@click.native="addToBasket"
-					kv-track=""
+					@click="addToBasket"
 				>
 					{{ ctaButtonText }}
 				</kv-ui-button>
@@ -51,10 +48,9 @@
 				<kv-ui-button
 					v-if="inBasket"
 					class="tw-inline-flex tw-flex-1"
-					@click.native="addToBasket"
-					kv-track=""
+					:to="'/basket'"
 				>
-					{{ ctaButtonText }}
+					Continue to checkout
 				</kv-ui-button>
 				<!-- Adding to basket button -->
 				<kv-ui-button
@@ -304,9 +300,6 @@ export default {
 			return 'Loading...';
 		},
 		ctaButtonText() {
-			if (this.status === 'fundraising' && this.amountInBasket !== '') {
-				return 'Continue to checkout';
-			}
 			if (this.status === 'fundraising') {
 				return 'Lend now';
 			}
