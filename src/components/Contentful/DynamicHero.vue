@@ -191,18 +191,34 @@ export default {
 
 			return imageSet.images.map(entry => {
 				// TODO: Make this a util
+
+				// All screen breakpoints:
+				// small: 0,
+				// medium: 481px,
+				// large: 681px,
+				// xlarge: 761px,
+				// xxlarge: 989px,
+				// xga: 1025px,
+				// wxga: 1441px,
+
+				// small size
 				let mediaSize = 'min-width: 0';
+				let width = 537;
+
 				if (entry.title.indexOf('med') !== -1) {
-					mediaSize = 'min-width: 735px';
+					mediaSize = 'min-width: 681px';
+					width = 397;
 				} else if (entry.title.indexOf('lg') !== -1) {
 					mediaSize = 'min-width: 1025px';
-				} else if (entry.title.indexOf('xl') !== -1) {
-					mediaSize = 'min-width: 1441px';
+					width = 394;
 				}
 
+				const aspectRatio = (entry.file?.details?.image?.height ?? 0) / (entry.file?.details?.image?.width ?? 1); // eslint-disable-line max-len
+				const height = aspectRatio ? Math.round(width * aspectRatio) : null;
+
 				return {
-					width: entry.file?.details?.image?.width ?? '',
-					height: entry.file?.details?.image?.height ?? '',
+					width,
+					height,
 					media: mediaSize,
 					url: entry.file?.url ?? ''
 				};
