@@ -8,6 +8,11 @@ export default config => {
 		}
 	}
 
+	// scaffold global dataLayer
+	// - ensures data can be pushed hereafter
+	// - if active, gtm is primary consumer
+	window.dataLayer = window.dataLayer || [];
+
 	// Google Analytics snippet
 	const insertGoogleAnalytics = () => {
 		/* eslint-disable */

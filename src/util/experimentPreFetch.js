@@ -18,7 +18,8 @@ let activeExperiments = [
 	'homepage_force_dismiss_overlay',
 	'redirect_to_login',
 	'guest_checkout_cta',
-	'mg_highlight_in_nav'
+	'mg_highlight_in_nav',
+	'unbounce_trigger'
 ];
 
 // TODO: Enhance Error handling
