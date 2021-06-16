@@ -73,7 +73,7 @@ export default {
 			// Check for hasEverLoggedIn + associated exp
 			if (!hasEverLoggedIn && unbounceTriggerExp.version && unbounceTriggerExp.version !== 'unassigned') {
 				// push data object if eligible + assigned
-				if (unbounceTriggerExp.version === 'shown' && typeof window !== 'undefined') {
+				if (unbounceTriggerExp.version === 'b' && typeof window !== 'undefined') {
 					window.dataLayer.push({ event: 'activateUnbounceEvent' });
 				}
 				// fire exp analtyics if eligible
