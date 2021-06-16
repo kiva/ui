@@ -8,6 +8,11 @@ export default config => {
 		}
 	}
 
+	// scaffold global dataLayer
+	// - ensures data can be pushed hereafter
+	// - if active, gtm is primary consumer
+	window.dataLayer = window.dataLayer || [];
+
 	// Google Analytics snippet
 	const insertGoogleAnalytics = () => {
 		/* eslint-disable */
@@ -79,8 +84,6 @@ export default config => {
 
 	// Google Tag Manager snippet
 	const insertGTM = () => {
-		// ensure dataLayer exists prior to loading gtm
-		window.dataLayer = window.dataLayer || [];
 		/* eslint-disable */
 		(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
