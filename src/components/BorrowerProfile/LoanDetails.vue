@@ -1,19 +1,35 @@
 <template>
 	<dl>
-		<dt>Loan length</dt>
-		<dd>{{ loanLength }}</dd>
-
-		<dt>Repayment schedule</dt>
-		<dd>{{ repaymentSchedule }}</dd>
-
-		<dt>Funding model</dt>
-		<dd>{{ fundingModel }}</dd>
-
-		<dt>Partner covers currency loss?</dt>
-		<dd>{{ hasCurrencyLossScenario }}</dd>
-
-		<dt>Is borrower paying interest?</dt>
-		<dd>{{ borrowerPayingInterest }}</dd>
+		<div class="tw-flex tw-mb-2">
+			<dt class="tw-flex-1">
+				<button class="tw-underline">Loan length</button>
+			</dt>
+			<dd>{{ loanLength }}</dd>
+		</div>
+		<div class="tw-flex tw-mb-2">
+			<dt class="tw-flex-1">
+				<button class="tw-underline">Repayment schedule</button>
+			</dt>
+			<dd>{{ repaymentSchedule }}</dd>
+		</div>
+		<div class="tw-flex tw-mb-2">
+			<dt class="tw-flex-1">
+				<button class="tw-underline">Funding model</button>
+			</dt>
+			<dd>{{ fundingModel }}</dd>
+		</div>
+		<div class="tw-flex tw-mb-2">
+			<dt class="tw-flex-1">
+				<button class="tw-underline">Partner covers currency loss?</button>
+			</dt>
+			<dd>{{ hasCurrencyLossScenario }}</dd>
+		</div>
+		<div class="tw-flex tw-mb-2">
+			<dt class="tw-flex-1">
+				<button class="tw-underline">Is borrower paying interest?</button>
+			</dt>
+			<dd>{{ borrowerPayingInterest }}</dd>
+		</div>
 	</dl>
 </template>
 
