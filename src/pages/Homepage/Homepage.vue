@@ -13,6 +13,7 @@ const DefaultHomePage = () => import('@/pages/Homepage/DefaultHomepage');
 const ContentfulPage = () => import('@/pages/ContentfulPage');
 
 const activePageQuery = gql`query homepageFrame {
+	hasEverLoggedIn @client
 	general {
 		legacyHomeExp: uiExperimentSetting(key: "home_legacy") {
 			key
@@ -63,7 +64,26 @@ export default {
 				return preFetchAll([component], client, args);
 			});
 		},
-		result() {
+		result({ data }) {
+			const hasEverLoggedIn = data?.hasEverLoggedIn ?? true;
+			const unbounceTriggerExp = this.apollo.readFragment({
+				id: 'Experiment:unbounce_trigger',
+				fragment: experimentVersionFragment,
+			}) || {};
+			// Check for hasEverLoggedIn + associated exp
+			if (!hasEverLoggedIn && unbounceTriggerExp.version && unbounceTriggerExp.version !== 'unassigned') {
+				// push data object if eligible + assigned
+				if (unbounceTriggerExp.version === 'shown' && typeof window !== 'undefined') {
+					window.dataLayer.push({ event: 'activateUnbounceEvent' });
+				}
+				// fire exp analtyics if eligible
+				this.$kvTrackEvent(
+					'homepage',
+					'EXP-GROW-678-Jun2021',
+					unbounceTriggerExp.version,
+				);
+			}
+
 			// Fetch legacy homepage experiment data (GROW-442)
 			const legacyHomeExp = this.apollo.readFragment({
 				id: 'Experiment:home_legacy',
