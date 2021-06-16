@@ -3,6 +3,7 @@ require('../build/check-versions')();
 
 // dependencies
 require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
+require('dotenv').config({ path: './config.env' });
 const chokidar = require('chokidar');
 const express = require('express');
 const helmet = require('helmet');
