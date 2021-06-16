@@ -304,6 +304,9 @@ export default {
 			return 'Loading...';
 		},
 		ctaButtonText() {
+			if (this.status === 'fundraising' && this.lentPreviously) {
+				return 'Lend again';
+			}
 			if (this.status === 'fundraising') {
 				return 'Lend now';
 			}
