@@ -17,3 +17,4 @@ build/schema.graphql
 .vscode
 .env
 .config.env
+config.env
