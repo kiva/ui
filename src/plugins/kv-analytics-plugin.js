@@ -348,11 +348,6 @@ export default Vue => {
 
 	// eslint-disable-next-line no-param-reassign
 	Vue.prototype.$setKvAnalyticsData = (userId = null) => {
-		// initalize data layer
-		if (typeof window !== 'undefined') {
-			window.dataLayer = window.dataLayer || [];
-		}
-
 		return new Promise(resolve => {
 			let readyStateTimeout;
 			const readyStateInterval = window.setInterval(() => {
