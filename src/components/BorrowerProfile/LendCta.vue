@@ -16,7 +16,10 @@
 					md:tw-border-none
 					tw-pt-1
 					tw-px-2.5
-					lg:tw-px-4"
+					md:tw-pt-0
+					md:tw-pb-2
+					lg:tw-px-4
+					lg:tw-py-1"
 		>
 			<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
 				{{ lgScreenheadline }}
