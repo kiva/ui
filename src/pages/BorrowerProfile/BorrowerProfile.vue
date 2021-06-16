@@ -8,7 +8,7 @@
 						<summary-card />
 					</div>
 					<div class="tw-col-span-12 md:tw-col-start-2 md:tw-col-span-10 lg:tw-col-span-5">
-						<lend-cta />
+						<lend-cta :loan-id="Number($route.params.id || 0)" />
 					</div>
 				</div>
 			</div>

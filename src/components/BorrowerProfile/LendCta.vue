@@ -1,5 +1,5 @@
 <template>
-	<span class="tw-z-1">
+	<div>
 		<div class="tw-fixed
 					tw-left-0
 					md:tw-relative
@@ -104,7 +104,7 @@
 			/>
 			powered by {{ numLenders }} lenders
 		</div>
-	</span>
+	</div>
 </template>
 
 <script>
@@ -121,6 +121,10 @@ import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 export default {
 	inject: ['apollo', 'cookieStore'],
 	props: {
+		loanId: {
+			type: Number,
+			default: 0,
+		},
 		price: {
 			type: [Number, String],
 			default: 25,
@@ -193,7 +197,7 @@ export default {
 		preFetch: false,
 		variables() {
 			return {
-				loanId: Number(this.$route?.params?.id ?? 0),
+				loanId: this.loanId,
 			};
 		},
 		result(result) {
@@ -204,7 +208,7 @@ export default {
 			this.minNoteSize = loan?.minNoteSize ?? '';
 			this.fundedAmount = loan?.loanFundraisingInfo?.fundedAmount ?? '';
 			this.reservedAmount = loan?.loanFundraisingInfo?.reservedAmount ?? '';
-			this.unreservedAmount = loan?.unreservedAmount ?? '0';
+			this.unreservedAmount = loan?.unreservedAmount ?? '';
 			this.isExpiringSoon = loan?.loanFundraisingInfo?.isExpiringSoon ?? false;
 			this.lentPreviously = loan?.userProperties?.lentTo ?? false;
 			this.amountInBasket = loan?.userProperties?.amountInBasket ?? '';
@@ -340,7 +344,7 @@ export default {
 			return false;
 		},
 		allSharesReserved() {
-			if (this.unreservedAmount === '' || parseFloat(this.unreservedAmount) === 0) {
+			if (parseFloat(this.unreservedAmount) === 0) {
 				return true;
 			}
 			return false;
