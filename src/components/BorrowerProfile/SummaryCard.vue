@@ -35,32 +35,51 @@
 			:status="status"
 			:use="use"
 		/>
-		<!-- location/sector placeholder class="flex-auto" -->
+		<div class="tw-flex-auto tw-inline-flex">
+			<summary-tag v-if="countryName">
+				<kv-material-icon
+					class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
+					:icon="mdiMapMarker"
+				/>
+				{{ countryName }}
+			</summary-tag>
+			<summary-tag v-if="activityName">
+				{{ activityName }}
+			</summary-tag>
+		</div>
 	</section>
 </template>
 
 <script>
 import gql from 'graphql-tag';
+import { mdiMapMarker } from '@mdi/js';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerAvatar from './BorrowerAvatar';
 import BorrowerName from './BorrowerName';
 import LoanProgress from './LoanProgress';
 import LoanUse from './LoanUse';
+import SummaryTag from './SummaryTag';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BorrowerAvatar,
 		BorrowerName,
+		KvMaterialIcon,
 		LoanProgress,
 		LoanUse,
+		SummaryTag,
 	},
 	data() {
 		return {
+			activityName: '',
 			borrowerCount: 0,
+			countryName: '',
 			fallbackImage: '',
 			fundraisingPercent: 0,
 			images: [],
 			loanAmount: '0',
+			mdiMapMarker,
 			name: '',
 			status: '',
 			timeLeft: '',
@@ -74,9 +93,18 @@ export default {
 				lend {
 					loan(id: $loanId) {
 						id
+						activity {
+							id
+							name
+						}
 						borrowerCount
 						fundraisingPercent @client
 						fundraisingTimeLeft @client
+						geocode {
+							country {
+								name
+							}
+						}
 						image {
 							id
 							urlSm1x: url(customSize: "s64fz50")
@@ -113,7 +141,9 @@ export default {
 		},
 		result(result) {
 			const loan = result?.data?.lend?.loan;
+			this.activityName = loan?.activity?.name ?? '';
 			this.borrowerCount = loan?.borrowerCount ?? 0;
+			this.countryName = loan?.geocode?.country?.name ?? '';
 			this.fallbackImage = loan?.image?.urlSm1x ?? '';
 			this.fundraisingPercent = loan?.fundraisingPercent ?? 0;
 			this.loanAmount = loan?.loanAmount ?? '0';
