@@ -22,6 +22,12 @@ export default {
 			titleTemplate: '%s | Kiva',
 			/* eslint-disable global-require */
 			meta: [
+				// Referrer policy
+				{
+					vmid: 'referrer',
+					name: 'referrer',
+					content: 'strict-origin-when-cross-origin'
+				},
 				// General Meta Tags
 				{
 					vmid: 'description',
