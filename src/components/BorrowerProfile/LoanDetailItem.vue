@@ -1,7 +1,9 @@
 <template>
 	<div class="tw-flex tw-mb-2">
 		<dt class="tw-flex-1">
-			<button class="tw-underline">{{ term }}</button>
+			<button class="tw-underline">
+				{{ term }}
+			</button>
 		</dt>
 		<dd>{{ details }}</dd>
 	</div>

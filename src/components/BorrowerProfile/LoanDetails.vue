@@ -25,6 +25,7 @@
 
 <script>
 import LoanDetailItem from '@/components/BorrowerProfile/LoanDetailItem';
+
 export default {
 	components: {
 		LoanDetailItem,
