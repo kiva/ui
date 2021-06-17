@@ -38,7 +38,12 @@
 			</section>
 
 			<section v-if="storyTranslation">
-				<img v-if="reviewerImageLink" src="{{ reviewerImageLink }}" alt="Translator profile picture">
+				<img
+					loading="lazy"
+					v-if="reviewerImageLink"
+					:src="reviewerImageLink"
+					alt="Translator profile picture"
+				>
 				<p class="tw-text-base">
 					Translated from {{ language }}
 					<span v-if="reviewerName">
