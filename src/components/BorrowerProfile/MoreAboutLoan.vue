@@ -1,8 +1,6 @@
 <template>
 	<section>
-		<h2
-			class="tw-text-h2"
-		>
+		<h2>
 			More about this loan
 		</h2>
 		<div
@@ -14,15 +12,12 @@
 			<div
 				v-if="loanAlertText"
 			>
-				<h3
-					class="tw-text-h3"
-				>
+				<h3>
 					About {{ partnerName }}:
 				</h3>
 				<p
 					v-for="(paragraph, index) in loanAlertTextParagraphs"
-					:key="index"
-					class="tw-text-base"
+					:key="`storyDescription-${index}`"
 				>
 					{{ paragraph }}
 				</p>
@@ -30,9 +25,7 @@
 			<div
 				v-if="dualStatementNote"
 			>
-				<h3
-					class="tw-text-h3"
-				>
+				<h3>
 					Important Note About This Loan
 				</h3>
 				<p>
@@ -43,27 +36,21 @@
 		<div
 			v-if="!partnerName"
 		>
-			<h3
-				class="tw-text-h3"
-			>
+			<h3>
 				Business Description
 			</h3>
 			<p
 				v-for="(paragraph, index) in businessDescriptionParagraphs"
-				:key="index"
-				class="tw-text-base"
+				:key="`businessDescription-${index}`"
 			>
 				{{ paragraph }}
 			</p>
-			<h3
-				class="tw-text-h3"
-			>
+			<h3>
 				What is the purpose of this loan?
 			</h3>
 			<p
 				v-for="(paragraph, index) in purposeParagraphs"
-				:key="index"
-				class="tw-text-base"
+				:key="`purpose-${index}`"
 			>
 				{{ paragraph }}
 			</p>
@@ -112,7 +99,7 @@ export default {
 	},
 	methods: {
 		toParagraphs(text) {
-			return String(text).split(/(\r\n\r\n|\n\n|\n \n|<br>)/);
+			return String(text).split(/(\r|\n|<br\s*\/?>)+/);
 		}
 	}
 };

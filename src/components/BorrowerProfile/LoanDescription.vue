@@ -18,7 +18,7 @@
 			<section v-if="storyDescription">
 				<p
 					v-for="(paragraph, index) in storyDescriptionParagraphs"
-					:key="index"
+					:key="`storyDescription-${index}`"
 					class="tw-text-base"
 				>
 					{{ paragraph }}
@@ -57,7 +57,7 @@
 				<div>
 					<p
 						v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
-						:key="index"
+						:key="`originalLanguageParagraph-${index}`"
 						class="tw-text-base"
 					>
 						{{ paragraph }}
