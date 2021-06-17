@@ -1,40 +1,34 @@
 <template>
 	<dl>
-		<div class="tw-flex tw-mb-2">
-			<dt class="tw-flex-1">
-				<button class="tw-underline">Loan length</button>
-			</dt>
-			<dd>{{ loanLength }}</dd>
-		</div>
-		<div class="tw-flex tw-mb-2">
-			<dt class="tw-flex-1">
-				<button class="tw-underline">Repayment schedule</button>
-			</dt>
-			<dd>{{ repaymentSchedule }}</dd>
-		</div>
-		<div class="tw-flex tw-mb-2">
-			<dt class="tw-flex-1">
-				<button class="tw-underline">Funding model</button>
-			</dt>
-			<dd>{{ fundingModel }}</dd>
-		</div>
-		<div class="tw-flex tw-mb-2">
-			<dt class="tw-flex-1">
-				<button class="tw-underline">Partner covers currency loss?</button>
-			</dt>
-			<dd>{{ hasCurrencyLossScenario }}</dd>
-		</div>
-		<div class="tw-flex tw-mb-2">
-			<dt class="tw-flex-1">
-				<button class="tw-underline">Is borrower paying interest?</button>
-			</dt>
-			<dd>{{ borrowerPayingInterest }}</dd>
-		</div>
+		<loan-detail-item
+			:term="'Loan length'"
+			:details="loanLength"
+		/>
+		<loan-detail-item
+			:term="'Repayment schedule'"
+			:details="repaymentSchedule"
+		/>
+		<loan-detail-item
+			:term="'Funding model'"
+			:details="fundingModel"
+		/>
+		<loan-detail-item
+			:term="'Partner covers currency loss?'"
+			:details="hasCurrencyLossScenario"
+		/>
+		<loan-detail-item
+			:term="'Is borrower paying interest?'"
+			:details="borrowerPayingInterest"
+		/>
 	</dl>
 </template>
 
 <script>
+import LoanDetailItem from '@/components/BorrowerProfile/LoanDetailItem';
 export default {
+	components: {
+		LoanDetailItem,
+	},
 	props: {
 		partnerName: { // LoanPartner.partnerName
 			type: String,
