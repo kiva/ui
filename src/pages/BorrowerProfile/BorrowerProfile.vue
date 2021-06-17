@@ -1,9 +1,12 @@
 <template>
-	<www-page id="borrower-profile">
+	<www-page
+		id="borrower-profile"
+		:header-theme="headerTheme"
+	>
 		<div class="tw-relative tw-overflow-hidden md:tw-py-6 lg:tw-py-8 tw-bg-gray-50">
 			<hero-background class="tw-absolute tw-top-0" />
-			<kv-page-container>
-				<kv-grid class="tw-grid-cols-12 tw-gap-x-2 tw-relative">
+			<kv-page-container class="tw-relative">
+				<kv-grid class="tw-grid-cols-12 tw-gap-x-2">
 					<div class="tw-col-span-12 md:tw-col-start-2 md:tw-col-span-10 lg:tw-col-span-7">
 						<summary-card />
 					</div>
@@ -17,6 +20,8 @@
 </template>
 
 <script>
+import { lightHeader } from '@/util/siteThemes';
+
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import HeroBackground from '@/components/BorrowerProfile/HeroBackground';
 import SummaryCard from '@/components/BorrowerProfile/SummaryCard';
@@ -33,6 +38,11 @@ export default {
 		LendCta,
 		SummaryCard,
 		WwwPage,
+	},
+	data() {
+		return {
+			headerTheme: lightHeader
+		};
 	},
 };
 </script>
