@@ -3,19 +3,13 @@
 		<div>
 			<h2
 				class="tw-text-h2"
-				v-if="previousLoanDetails"
-			>
-				Update on {{ borrowerOrGroupName }}
-			</h2>
-			<h2
-				class="tw-text-h2"
-				v-if="!previousLoanDetails && isAnonymizationLevelFull"
+				v-if="isAnonymizationLevelFull"
 			>
 				Story
 			</h2>
 			<h2
 				class="tw-text-h2"
-				v-if="!previousLoanDetails && !isAnonymizationLevelFull"
+				v-if="!isAnonymizationLevelFull"
 			>
 				{{ borrowerOrGroupName }}'s story
 			</h2>
@@ -33,60 +27,14 @@
 
 			<section v-if="borrowersList">
 				<p class="tw-text-base">
-					{{ borrowersList }} <span v-if="showNotPicturedMessage">*not pictured</span>
+					{{ borrowersList }}
 				</p>
 			</section>
 
 			<section>
-				<h2 class="tw-text-h2">Previous loan details</h2>
-				<p class="tw-text-base">{{ previousLoanDescription }}</p>
-
-				<a
-					v-if="showPreviousLoanLink"
-					href="{{ previousLoanUrl }}"
-				>
-					More from {{ borrowerOrGroupName }}'s previous loan »
-				</a>
-				<br>
-				<a
-					v-if="showPreviousLoanLink"
-					href="#"
-				>
-					Learn more about successive and concurrent loans
-				</a>
-				<section>
-					<p
-						v-for="(paragraph, index) in allPreviousLoanDescriptionsParagraphs"
-						:key="index"
-						class="tw-text-base"
-					>
-						{{ paragraph }}
-					</p>
-				</section>
-				<p v-if="showAllPreviousLoanDetails">
-					Show all previous loans
-				</p>
-			</section>
-
-			<section v-if="showPreviousLoanDetails">
-				<p
-					class="tw-text-base"
-					v-if="previousLoanTitlePayingback"
-				>
-					Show currently repaying previous loan details
-				</p>
-				<p
-					class="tw-text-base"
-					v-if="previousLoanTitleRepaid"
-				>
-					Show repaid previous loan details
-				</p>
-				<p
-					class="tw-text-base"
-					v-if="previousLoanTitle"
-				>
-					Show previous loan details
-				</p>
+				<!--
+				Previous Loan sections omitted. Needs separate ticket
+				-->
 			</section>
 
 			<section v-if="storyTranslation">
@@ -99,7 +47,7 @@
 				</p>
 				<div>
 					<p
-						v-for="(paragraph, index) in storyDescriptionParagraphs"
+						v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
 						:key="index"
 						class="tw-text-base"
 					>
@@ -112,95 +60,84 @@
 </template>
 
 <script>
+import _forEach from 'lodash/forEach';
+
 export default {
 		props: {
-			previousLoanDetails: {
-				type: Boolean,
-				default: false,
-			},
-			borrowerOrGroupName: {
+			partnerName: { // LoanPartner.partnerName
 				type: String,
 				default: '',
 			},
-			isAnonymizationLevelFull: {
-				type: Boolean,
-				default: false,
-			},
-			storyDescription: {
+			borrowerOrGroupName: { // LoanBasic.name
 				type: String,
 				default: '',
 			},
-			borrowersList: {
+			anonymizationLevel: { // LoanBasic.anonymizationLevel
 				type: String,
 				default: '',
 			},
-			showNotPicturedMessage: {
-				type: Boolean,
-				default: false,
-			},
-			previousLoanDescription: {
+			storyDescription: { // LoanBasic.description
 				type: String,
 				default: '',
 			},
-			showPreviousLoanLink: {
-				type: Boolean,
-				default: false,
-			},
-			previousLoanUrl: {
+			descriptionInOriginalLanguage: { // LoanBasic.descriptionInOriginalLanguage
 				type: String,
 				default: '',
 			},
-			allPreviousLoanDescriptions: {
+			originalLanguage: { //LoanBasic.originalLanguage
+				type: Object,
+				default: () => {},
+			},
+			borrowerCount: { // LoanBasic.borrowerCount
 				type: String,
 				default: '',
 			},
-			showAllPreviousLoanDetails: {
-				type: Boolean,
-				default: false,
-			},
-			showPreviousLoanDetails: {
-				type: Boolean,
-				default: false,
-			},
-			previousLoanTitlePayingback: {
-				type: Boolean,
-				default: false,
-			},
-			previousLoanTitleRepaid: {
-				type: Boolean,
-				default: false,
-			},
-			previousLoanTitle: {
-				type: Boolean,
-				default: false,
-			},
-			storyTranslation: {
-				type: Boolean,
-				default: false,
-			},
-			reviewerImageLink: {
+			borrowers: { // LoanBasic.borrowers
 				type: String,
 				default: '',
 			},
-			language: {
-				type: String,
-				default: '',
-			},
-			reviewerName: {
-				type: String,
-				default: '',
-			},
-			reviewerLink: {
-				type: String,
-				default: '',
+			reviewer: { // LoanPartner.reviewer
+				type: Object,
+				default: () => {},
 			},
 		},
 		computed: {
+			borrowersList() {
+				if(this.borrowerCount <= 1) {
+					return '';
+				}
+				let borrowersInThisGroup = "In this group: ";
+				_forEach(this.borrowers, borrower => {
+					borrowers_list += borrower.firstName;
+				});
+				return borrowersInThisGroup;
+			},
 			storyDescriptionParagraphs() {
 				return this.toParagraphs(this.storyDescription);
 			},
-			allPreviousLoanDescriptionsParagraphs() {
-				return this.toParagraphs(this.allPreviousLoanDescriptions);
+			descriptionInOriginalLanguageParagraphs() {
+				return this.toParagraphs(this.descriptionInOriginalLanguage);
+			},
+			isAnonymizationLevelFull() {
+				return this.anonymizationLevel === 'full';
+			},
+			storyTranslation() {
+				return this.isPartnerLoan() && parseInt(this.originalLanguage?.id ?? 0, 10) !== 1;
+			},
+			language() {
+				return this.originalLanguage?.name ?? '';
+			},
+			isPartnerLoan() {
+				return this.partnerName !== '';
+			},
+			reviewerName() {
+				return this.reviewer?.bylineName ?? '';
+			},
+			reviewerLink() {
+				return '';
+			},
+			reviewerImageLink() {
+				return '';
 			},
 		},
 		methods: {
