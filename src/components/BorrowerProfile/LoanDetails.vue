@@ -84,27 +84,27 @@ export default {
 			return this.isPartnerLoan ? 'Partner covers currency loss?' : 'Currency exchange loss:';
 		},
 		currencyLossScenarioDetails() {
-			if( !this.isPartnerLoan ) {
+			if (!this.isPartnerLoan) {
 				return 'N/A';
 			}
 
-			if ( this.currency === 'USD' ) {
+			if (this.currency === 'USD') {
 				return 'N/A';
 			}
 
-			if ( this.lossLiabilityCurrencyExchange === 'none' ) {
+			if (this.lossLiabilityCurrencyExchange === 'none') {
 				return this.currency === 'USD' ? 'N/A' : 'Yes';
 			}
 
-			if ( this.lossLiabilityCurrencyExchange === 'shared' ) {
+			if (this.lossLiabilityCurrencyExchange === 'shared') {
 				return 'Partially';
 			}
 
-			if ( this.lossLiabilityCurrencyExchange === 'partner' ) {
+			if (this.lossLiabilityCurrencyExchange === 'partner') {
 				return 'Yes';
 			}
 
-			if ( this.lossLiabilityCurrencyExchange === 'lender' ) {
+			if (this.lossLiabilityCurrencyExchange === 'lender') {
 				return 'No';
 			}
 
