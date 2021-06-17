@@ -13,8 +13,8 @@
 			:details="fundingModel"
 		/>
 		<loan-detail-item
-			:term="'Partner covers currency loss?'"
-			:details="hasCurrencyLossScenario"
+			:term="currencyLossScenarioTerm"
+			:details="currencyLossScenarioDetails"
 		/>
 		<loan-detail-item
 			:term="'Is borrower paying interest?'"
@@ -55,6 +55,14 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		currency: { // LoanTerm.currency
+			type: String,
+			default: '',
+		},
+		lossLiabilityCurrencyExchange: { // LoanTerm.lossLiabilityCurrencyExchange
+			type: String,
+			default: '',
+		},
 	},
 	computed: {
 		isPartnerLoan() {
@@ -72,8 +80,35 @@ export default {
 		borrowerPayingInterest() {
 			return this.isPartnerLoan && this.chargesFeesInterest ? 'Yes' : 'No';
 		},
-		hasCurrencyLossScenario() {
-			return this.isPartnerLoan ? 'Yes' : 'No';
+		currencyLossScenarioTerm() {
+			return this.isPartnerLoan ? 'Partner covers currency loss?' : 'Currency exchange loss:';
+		},
+		currencyLossScenarioDetails() {
+			if (!this.isPartnerLoan) {
+				return 'N/A';
+			}
+
+			if (this.currency === 'USD') {
+				return 'N/A';
+			}
+
+			if (this.lossLiabilityCurrencyExchange === 'none') {
+				return this.currency === 'USD' ? 'N/A' : 'Yes';
+			}
+
+			if (this.lossLiabilityCurrencyExchange === 'shared') {
+				return 'Partially';
+			}
+
+			if (this.lossLiabilityCurrencyExchange === 'partner') {
+				return 'Yes';
+			}
+
+			if (this.lossLiabilityCurrencyExchange === 'lender') {
+				return 'No';
+			}
+
+			return '';
 		},
 	}
 };
