@@ -5,6 +5,7 @@ module.exports = merge(base, {
 	app: {
 		host: 'www.qa.kiva.org',
 		publicPath: 'https://www-qa-kiva-org.freetls.fastly.net/ui/',
+		photoPath: 'https://www-qa-kiva-org.freetls.fastly.net/img/',
 		graphqlUri: 'https://marketplace-api-qa.dk1.kiva.org/graphql',
 		enablePerimeterx: false,
 		perimeterxAppId: '####',
