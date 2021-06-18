@@ -18,6 +18,7 @@
 			"
 			:src="defaultUrl"
 			:alt="alt"
+			loading="lazy"
 		>
 	</picture>
 </template>
