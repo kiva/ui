@@ -99,7 +99,7 @@ export default {
 	},
 	methods: {
 		toParagraphs(text) {
-			return String(text).split(/(\r|\n|<br\s*\/?>)+/);
+			return String(text).replace(/\r|\n|<br\s*\/?>/g, '\n').split(/\n+/);
 		}
 	}
 };
