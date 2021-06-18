@@ -23,6 +23,7 @@ module.exports = {
 			target: 'lhci',
 			serverBaseUrl: 'https://lighthouse-ci-kiva-dev.herokuapp.com/',
 			token: process.env.LHCI_DEV_BUILD_TOKEN,
+			ignoreDuplicateBuildFailure: true
 		},
 	},
 };
