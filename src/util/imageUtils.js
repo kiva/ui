@@ -45,3 +45,30 @@ export function preloadImage(src) {
 	const img = new Image();
 	img.src = src;
 }
+
+/**
+ * Get the url for a Kiva image hash
+ * @returns {string} full url for the image
+ */
+export function getKivaImageUrl({
+	base = '/',
+	width,
+	height,
+	square,
+	faceZoom,
+	hash,
+	format = 'jpg',
+} = {}) {
+	if (!hash) {
+		return '';
+	}
+	if (!width && !height && !square && !faceZoom) {
+		return '';
+	}
+	const w = width ? `w${Math.ceil(width)}` : '';
+	const h = height ? `h${Math.ceil(height)}` : '';
+	const s = square ? `s${Math.ceil(square)}` : '';
+	const fz = faceZoom ? `fz${Math.ceil(faceZoom)}` : '';
+
+	return `${base}${w}${h}${s}${fz}/${hash}.${format}`;
+}

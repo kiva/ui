@@ -4,6 +4,7 @@ module.exports = {
 	app: {
 		host: 'www.kiva.org',
 		publicPath: 'https://www-kiva-org.freetls.fastly.net/ui/',
+		photoPath: 'https://www-kiva-org.freetls.fastly.net/img/',
 		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
 		enablePerimeterx: true,
 		perimeterxAppId: 'PXr3pNVz1F',
