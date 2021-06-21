@@ -42,7 +42,7 @@
 					loading="lazy"
 					v-if="reviewerImageLink"
 					:src="reviewerImageLink"
-					alt="Translator profile picture"
+					:alt="reviewerName"
 				>
 				<p class="tw-text-base">
 					Translated from {{ language }}
@@ -97,19 +97,19 @@ export default {
 			type: String,
 			default: '',
 		},
-		originalLanguage: { // LoanBasic.originalLanguage
+		originalLanguage: { // LoanBasic.originalLanguage with { id, name }
 			type: Object,
 			default: () => {},
 		},
 		borrowerCount: { // LoanBasic.borrowerCount
-			type: String,
-			default: '',
+			type: Number,
+			default: 0,
 		},
-		borrowers: { // LoanBasic.borrowers
-			type: String,
-			default: '',
+		borrowers: { // LoanBasic.borrowers with { firstName }
+			type: Array,
+			default: () => [],
 		},
-		reviewer: { // LoanPartner.reviewer
+		reviewer: { // LoanPartner.reviewer with { bylineName, image: { url } }
 			type: Object,
 			default: () => {},
 		},
@@ -119,11 +119,8 @@ export default {
 			if (this.borrowerCount <= 1) {
 				return '';
 			}
-			let borrowersInThisGroup = 'In this group: ';
-			this.borrowers.forEach(borrower => {
-				borrowersInThisGroup += borrower.firstName;
-			});
-			return borrowersInThisGroup;
+			const names = this.borrowers.map(({ firstName }) => firstName);
+			return `In this group: ${names.join(', ')}`;
 		},
 		storyDescriptionParagraphs() {
 			return this.toParagraphs(this.storyDescription);
@@ -135,7 +132,7 @@ export default {
 			return this.anonymizationLevel === 'full';
 		},
 		storyTranslation() {
-			return this.isPartnerLoan() && parseInt(this.originalLanguage?.id ?? 0, 10) !== 1;
+			return this.isPartnerLoan && parseInt(this.originalLanguage?.id ?? 0, 10) !== 1;
 		},
 		language() {
 			return this.originalLanguage?.name ?? '';
@@ -152,7 +149,7 @@ export default {
 	},
 	methods: {
 		toParagraphs(text) {
-			return String(text).split(/(\r\n\r\n|\n\n|\n \n|<br>)/);
+			return String(text).replace(/\r|\n|<br\s*\/?>/g, '\n').split(/\n+/);
 		}
 	}
 };

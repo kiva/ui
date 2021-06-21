@@ -21,19 +21,30 @@
 				{ width: 280 },
 			]"
 		/>
-		<!-- {{ name }}'s story' -->
-		<!-- loan description -->
+		<loan-description
+			:anonymization-level="anonymizationLevel"
+			:borrower-count="borrowerCount"
+			:borrower-or-group-name="name"
+			:borrowers="borrowers"
+			:description-in-original-language="descriptionInOriginalLanguage"
+			:original-language="originalLanguage"
+			:partner-name="partnerName"
+			:reviewer="reviewer"
+			:story-description="description"
+		/>
 	</article>
 </template>
 
 <script>
 import gql from 'graphql-tag';
 import BorrowerImage from './BorrowerImage';
+import LoanDescription from './LoanDescription';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BorrowerImage,
+		LoanDescription,
 	},
 	props: {
 		loanId: {
@@ -43,9 +54,16 @@ export default {
 	},
 	data() {
 		return {
+			anonymizationLevel: '',
+			borrowerCount: 0,
+			borrowers: [],
 			name: '',
 			hash: '',
 			description: '',
+			descriptionInOriginalLanguage: '',
+			originalLanguage: {},
+			partnerName: '',
+			reviewer: {},
 		};
 	},
 	apollo: {
@@ -53,11 +71,33 @@ export default {
 			lend {
 				loan(id: $loanId) {
 					id
-					name
+					anonymizationLevel
+					borrowerCount
+					borrowers {
+						id
+						firstName
+					}
 					description
+					descriptionInOriginalLanguage
 					image {
 						id
 						hash
+					}
+					name
+					originalLanguage {
+						id
+						name
+					}
+					... on LoanPartner {
+						partnerName
+						reviewer {
+							id
+							bylineName
+							image {
+								id
+								url
+							}
+						}
 					}
 				}
 			}
@@ -69,9 +109,16 @@ export default {
 		},
 		result(result) {
 			const loan = result?.data?.lend?.loan;
+			this.anonymizationLevel = loan?.anonymizationLevel ?? '';
+			this.borrowerCount = loan?.borrowerCount ?? 0;
+			this.borrowers = loan?.borrowers ?? [];
 			this.description = loan?.description ?? '';
+			this.descriptionInOriginalLanguage = loan?.descriptionInOriginalLanguage ?? '';
 			this.hash = loan?.image?.hash ?? '';
 			this.name = loan?.name ?? '';
+			this.originalLanguage = loan?.originalLanguage ?? {};
+			this.partnerName = loan?.partnerName ?? '';
+			this.reviewer = loan?.reviewer ?? {};
 		},
 	},
 };
