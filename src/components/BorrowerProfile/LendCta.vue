@@ -44,6 +44,11 @@
 					v-if="!showAdding && !inBasket"
 					class="tw-inline-flex tw-flex-1"
 					@click="addToBasket"
+					v-kv-track-event="[
+						'Borrower profile',
+						'click-lend-CTA',
+						ctaButtonText
+					]"
 				>
 					{{ ctaButtonText }}
 				</kv-ui-button>
@@ -52,6 +57,11 @@
 					v-if="inBasket"
 					class="tw-inline-flex tw-flex-1"
 					:to="'/basket'"
+					v-kv-track-event="[
+						'Borrower profile',
+						'click-contiue-to-checkout-CTA',
+						'Continue to checkout'
+					]"
 				>
 					Continue to checkout
 				</kv-ui-button>
@@ -59,6 +69,11 @@
 				<kv-ui-button
 					v-if="showAdding"
 					class="tw-inline-flex tw-flex-1"
+					v-kv-track-event="[
+						'Borrower profile',
+						'click-adding-to-basket-CTA',
+						'Adding to basket'
+					]"
 				>
 					Adding to basket...
 				</kv-ui-button>
