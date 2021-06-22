@@ -64,7 +64,7 @@
 				</kv-ui-button>
 			</span>
 			<p
-				v-if="hasFreeCredit && !promoEligible"
+				v-if="freeCreditWarning"
 				class="tw-text-h4 tw-text-gray-500 tw-inline-block tw-text-center tw-w-full"
 			>
 				Not eligilble for lending credit
@@ -343,10 +343,7 @@ export default {
 			return true;
 		},
 		freeCreditWarning() {
-			if (this.hasFreeCredit === true) {
-				return true;
-			}
-			return false;
+			return this.hasFreeCredit === true && this.promoEligible === false;
 		},
 		allSharesReserved() {
 			if (parseFloat(this.unreservedAmount) === 0) {
