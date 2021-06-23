@@ -63,12 +63,8 @@
 					Adding to basket...
 				</kv-ui-button>
 			</span>
-			<!-- Do I need another check here,
-				right now just checking if user has free credit.
-				Is there an additional/different check on loan for free
-				credit eligibilty of loan? -->
 			<p
-				v-if="freeCreditWarning && !allSharesReserved"
+				v-if="freeCreditWarning"
 				class="tw-text-h4 tw-text-gray-500 tw-inline-block tw-text-center tw-w-full"
 			>
 				Not eligilble for lending credit
@@ -150,6 +146,7 @@ export default {
 			unreservedAmount: '',
 			lentPreviously: false,
 			amountInBasket: '',
+			promoEligible: false,
 			minNoteSize: '',
 			status: '',
 			numLenders: 0,
@@ -177,6 +174,7 @@ export default {
 						userProperties {
 							lentTo
 							amountInBasket
+							promoEligible(basketId: $basketId)
 						}
 						lenders{
 							totalCount
@@ -215,6 +213,7 @@ export default {
 			this.isExpiringSoon = loan?.loanFundraisingInfo?.isExpiringSoon ?? false;
 			this.lentPreviously = loan?.userProperties?.lentTo ?? false;
 			this.amountInBasket = loan?.userProperties?.amountInBasket ?? '';
+			this.promoEligible = loan?.userProperties?.promoEligible ?? false;
 			this.numLenders = loan?.lenders?.totalCount ?? 0;
 			this.hasFreeCredit = result?.data?.basket?.hasFreeCredits ?? false;
 
@@ -344,10 +343,7 @@ export default {
 			return true;
 		},
 		freeCreditWarning() {
-			if (this.hasFreeCredit === true) {
-				return true;
-			}
-			return false;
+			return this.hasFreeCredit === true && this.promoEligible === false;
 		},
 		allSharesReserved() {
 			if (parseFloat(this.unreservedAmount) === 0) {
