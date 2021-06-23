@@ -174,7 +174,7 @@ export default {
 						userProperties {
 							lentTo
 							amountInBasket
-							promoEligible
+							promoEligible(basketId: $basketId)
 						}
 						lenders{
 							totalCount
