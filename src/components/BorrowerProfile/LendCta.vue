@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="lg:tw-mb-1.5">
 		<div class="tw-fixed
 					tw-left-0
 					md:tw-relative
@@ -93,7 +93,7 @@
 					tw-mt-1
 					tw-mb-1
 					md:tw-mr-3
-					lg:mb-3
+					lg:tw-mb-0
 					tw-flex
 					md:tw-w-3/5
 					lg:tw-w-full
