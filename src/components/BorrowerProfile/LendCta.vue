@@ -16,7 +16,7 @@
 		>
 			<kv-grid
 				:class="[
-					'tw-grid-cols-12 tw-gap-x-2',
+					'tw-grid-cols-12',
 					'tw-px-2.5',
 					'tw-bg-white',
 					'tw-border-t tw-border-gray-300',
@@ -99,7 +99,7 @@
 			</kv-grid>
 			<kv-grid
 				:class="[
-					'tw-grid-cols-12 tw-gap-x-2',
+					'tw-grid-cols-12',
 					'tw-order-first',
 					'tw-px-2.5',
 					{

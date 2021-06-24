@@ -1,6 +1,6 @@
 <template>
 	<kv-page-container>
-		<kv-grid class="tw-grid-cols-12 tw-gap-x-2">
+		<kv-grid class="tw-grid-cols-12">
 			<div class="tw-col-span-12 md:tw-col-start-2 md:tw-col-span-10 lg:tw-col-span-7">
 				<slot></slot>
 			</div>
