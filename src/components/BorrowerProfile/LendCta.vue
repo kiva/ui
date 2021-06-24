@@ -30,11 +30,21 @@
 					id="LoanAmountDropdown"
 					class="tw-pr-2.5 tw--mb-2"
 					v-model="selectedOption"
+					v-kv-track-event="[
+						'Lending',
+						'click-Modify loan amount',
+						'open dialog'
+					]"
 				>
 					<option
 						v-for="priceOption in prices"
 						:key="priceOption"
 						:value="priceOption"
+						v-kv-track-event="[
+							'Lending',
+							'Modify loan amount',
+							priceOption
+						]"
 					>
 						${{ priceOption }}
 					</option>
@@ -44,9 +54,10 @@
 					v-if="!showAdding && !inBasket"
 					class="tw-inline-flex tw-flex-1"
 					@click="addToBasket"
+					:to="ctaHref"
 					v-kv-track-event="[
-						'Borrower profile',
-						'click-lend-CTA',
+						'Lending',
+						'Add to basket',
 						ctaButtonText
 					]"
 				>
@@ -56,10 +67,10 @@
 				<kv-ui-button
 					v-if="inBasket"
 					class="tw-inline-flex tw-flex-1"
-					:to="'/basket'"
+					:to="ctaHref"
 					v-kv-track-event="[
-						'Borrower profile',
-						'click-contiue-to-checkout-CTA',
+						'Lending',
+						'click-Continue-to-checkout',
 						'Continue to checkout'
 					]"
 				>
@@ -70,8 +81,8 @@
 					v-if="showAdding"
 					class="tw-inline-flex tw-flex-1"
 					v-kv-track-event="[
-						'Borrower profile',
-						'click-adding-to-basket-CTA',
+						'Lending',
+						'click-Adding-to-basket-CTA',
 						'Adding to basket'
 					]"
 				>
@@ -335,6 +346,12 @@ export default {
 				return 'Find another loan';
 			}
 			return 'Loading...';
+		},
+		ctaHref() {
+			if (this.status === 'refuned' || this.status === 'expired' || this.allSharesReserved === true || this.status === 'funded') {
+				return '/lend-by-category';
+			}
+			return '/bakset';
 		},
 		state() {
 			if (this.isAdding) {
