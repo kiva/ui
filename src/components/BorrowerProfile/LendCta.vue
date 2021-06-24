@@ -327,7 +327,6 @@ export default {
 		createWrapperObserver() {
 			// Watch for the wrapper element moving in and out of the viewport
 			this.wrapperObserver = createIntersectionObserver({
-				// options: { rootMargin: '-128px 0px 0px 0px' },
 				targets: [this.$refs?.wrapper],
 				callback: entries => {
 					entries.forEach(entry => {
