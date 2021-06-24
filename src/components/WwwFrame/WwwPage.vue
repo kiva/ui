@@ -6,7 +6,7 @@
 			:theme="headerTheme"
 		/>
 		<slot name="secondary"></slot>
-		<main :class="{'gray-background': grayBackground}">
+		<main :class="mainClasses">
 			<slot name="tertiary"></slot>
 			<slot></slot>
 		</main>
@@ -63,6 +63,10 @@ export default {
 			type: Object,
 			default: null,
 		},
+		mainClass: {
+			type: [Object, String],
+			default: '',
+		},
 	},
 	apollo: {
 		preFetch(config, client, args) {
@@ -82,7 +86,13 @@ export default {
 				return false;
 			}
 			return true;
-		}
+		},
+		mainClasses() {
+			return [
+				this.mainClass,
+				{ 'gray-background': this.grayBackground },
+			];
+		},
 	}
 };
 </script>

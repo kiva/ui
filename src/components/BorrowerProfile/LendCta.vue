@@ -1,26 +1,20 @@
 <template>
-	<div>
-		<div class="tw-fixed
-					tw-left-0
-					md:tw-relative
-					md:tw-left-unset
-					tw-bottom-0
-					tw-right-0
-					md:tw-rounded-b
-					md:tw-rounded-t-none
-					lg:tw-rounded-t
-					tw-bg-white
-					tw-border
-					tw-bt-1
-					tw-border-gray-300
-					md:tw-border-none
-					tw-pt-1
-					tw-px-2.5
-					md:tw-pt-0
-					md:tw-pb-2
-					lg:tw-px-4
-					lg:tw-py-1"
+	<div ref="wrapper"
+		:class="['lg:tw-mb-1.5', { 'md:tw-px-4': isSticky }]"
+		:style="wrapperStyle"
+	>
+		<div
+			:class="[
+				'tw-w-full tw-z-10',
+				'tw-flex tw-flex-col',
+				'tw-fixed tw-left-0 tw-bottom-0',
+				{
+					'md:tw-static': !isSticky,
+				},
+				'lg:tw-static',
+			]"
 		>
+<<<<<<< HEAD
 			<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
 				{{ lgScreenheadline }}
 			</p>
@@ -98,36 +92,130 @@
 			<p
 				v-if="allSharesReserved"
 				class="tw-text-h4 tw-text-gray-500 tw-inline-block tw-text-center tw-w-full"
+=======
+			<kv-grid
+				:class="[
+					'tw-grid-cols-12',
+					'tw-px-2.5',
+					'tw-bg-white',
+					'tw-border-t tw-border-gray-300',
+					{
+						'md:tw-rounded-b md:tw-border-none': !isSticky,
+						'md:tw-px-3': !isSticky,
+						'md:tw-px-4': isSticky,
+					},
+					'lg:tw-rounded-t',
+					'lg:tw-px-4',
+				]"
 			>
-				All shares reserved
-			</p>
-		</div>
-		<div v-if="lenderCountVisibilty"
-			class="tw-fixed
-					md:tw-static
-					tw-left-3
-					tw-right-3
-					tw-bottom-8
-					tw-rounded
-					tw-bg-white
-					tw-text-h4
-					tw-justify-center
-					tw-mt-1
-					tw-mb-1
-					md:tw-mr-3
-					lg:mb-3
-					tw-flex
-					md:tw-w-3/5
-					lg:tw-w-full
-					md:tw-float-right
-					lg:tw-float-none
-					tw-p-1"
-		>
-			<kv-material-icon
-				class="tw-h-2.5 tw-pointer-events-none"
-				:icon="mdiLightningBolt"
-			/>
-			powered by {{ numLenders }} lenders
+				<div
+					:class="[
+						'tw-pt-1',
+						'tw-col-span-12',
+						{
+							'md:tw-pt-0 md:tw-pb-2': !isSticky,
+							'md:tw-col-start-2 md:tw-col-span-10': isSticky,
+						},
+						'lg:tw-col-span-12',
+						'lg:tw-py-1',
+					]"
+				>
+					<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
+						{{ lgScreenheadline }}
+					</p>
+					<span class="tw-flex tw-pb-1 lg:tw-pb-3">
+						<label for="LoanAmountDropdown" class="tw-sr-only">Lend amount</label>
+						<kv-ui-select
+							v-if="hideShowLendDropdown"
+							id="LoanAmountDropdown"
+							class="tw-pr-2.5 tw--mb-2"
+							v-model="selectedOption"
+						>
+							<option
+								v-for="priceOption in prices"
+								:key="priceOption"
+								:value="priceOption"
+							>
+								${{ priceOption }}
+							</option>
+						</kv-ui-select>
+						<!-- Lend button -->
+						<kv-ui-button
+							v-if="!showAdding && !inBasket"
+							class="tw-inline-flex tw-flex-1"
+							@click="addToBasket"
+						>
+							{{ ctaButtonText }}
+						</kv-ui-button>
+						<!-- Continue to checkout button -->
+						<kv-ui-button
+							v-if="inBasket"
+							class="tw-inline-flex tw-flex-1"
+							:to="'/basket'"
+						>
+							Continue to checkout
+						</kv-ui-button>
+						<!-- Adding to basket button -->
+						<kv-ui-button
+							v-if="showAdding"
+							class="tw-inline-flex tw-flex-1"
+						>
+							Adding to basket...
+						</kv-ui-button>
+					</span>
+					<p
+						v-if="freeCreditWarning"
+						class="tw-text-h4 tw-text-gray-500 tw-inline-block tw-text-center tw-w-full"
+					>
+						Not eligilble for lending credit
+					</p>
+					<p
+						v-if="allSharesReserved"
+						class="tw-text-h4 tw-text-gray-500 tw-inline-block tw-text-center tw-w-full"
+					>
+						All shares reserved
+					</p>
+				</div>
+			</kv-grid>
+			<kv-grid
+				:class="[
+					'tw-grid-cols-12',
+					'tw-order-first',
+					'tw-px-2.5',
+					{
+						'md:tw-order-none': !isSticky,
+						'md:tw-px-3': !isSticky,
+						'md:tw-px-4': isSticky,
+					},
+					'lg:tw-px-0',
+				]"
+>>>>>>> master
+			>
+				<div v-if="lenderCountVisibilty"
+					:class="[
+						'tw-col-span-12',
+						'tw-mb-1 tw-p-1',
+						'tw-rounded',
+						'tw-bg-white',
+						'tw-text-h4',
+						'tw-flex tw-justify-center',
+						'md:tw-mt-1',
+						{
+							'md:tw-mb-0': !isSticky,
+							'md:tw-col-start-6 md:tw-col-span-7': !isSticky,
+							'md:tw-col-start-5 md:tw-col-span-6': isSticky,
+						},
+						'lg:tw-mb-0',
+						'lg:tw-col-span-12'
+					]"
+				>
+					<kv-material-icon
+						class="tw-h-2.5 tw-pointer-events-none"
+						:icon="mdiLightningBolt"
+					/>
+					powered by {{ numLenders }} lenders
+				</div>
+			</kv-grid>
 		</div>
 	</div>
 </template>
@@ -137,11 +225,13 @@ import { mdiLightningBolt } from '@mdi/js';
 import * as Sentry from '@sentry/browser';
 import gql from 'graphql-tag';
 import { buildPriceArray } from '@/util/loanUtils';
+import { createIntersectionObserver } from '@/util/observerUtils';
 import numeral from 'numeral';
 import basketItemsQuery from '@/graphql/query/basketItems.graphql';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
@@ -156,9 +246,10 @@ export default {
 		},
 	},
 	components: {
-		KvUiSelect,
-		KvUiButton,
+		KvGrid,
 		KvMaterialIcon,
+		KvUiButton,
+		KvUiSelect,
 	},
 	data() {
 		return {
@@ -180,6 +271,9 @@ export default {
 			isAdding: false,
 			inBasket: false,
 			hasFreeCredit: false,
+			isSticky: false,
+			wrapperHeight: 0,
+			wrapperObserver: null,
 		};
 	},
 	apollo: {
@@ -310,7 +404,32 @@ export default {
 			} catch (e) {
 				// no-op
 			}
-		}
+		},
+		createWrapperObserver() {
+			// Watch for the wrapper element moving in and out of the viewport
+			this.wrapperObserver = createIntersectionObserver({
+				targets: [this.$refs?.wrapper],
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.target === this.$refs?.wrapper) {
+							if (entry.intersectionRatio > 0) {
+								// Wrapper is in the viewport, so lend cta should NOT be stuck to the bottom
+								this.isSticky = false;
+							} else {
+								// Wrapper is NOT the viewport, so lend cta should be stuck to the bottom
+								this.wrapperHeight = entry.boundingClientRect.height;
+								this.isSticky = true;
+							}
+						}
+					});
+				},
+			});
+		},
+		destroyWrapperObserver() {
+			if (this.wrapperObserver) {
+				this.wrapperObserver.disconnect();
+			}
+		},
 	},
 	computed: {
 		prices() {
@@ -382,7 +501,18 @@ export default {
 				return true;
 			}
 			return false;
-		}
+		},
+		wrapperStyle() {
+			return {
+				paddingBottom: this.isSticky ? `${this.wrapperHeight}px` : '0',
+			};
+		},
+	},
+	mounted() {
+		this.createWrapperObserver();
+	},
+	beforeDestroy() {
+		this.destroyWrapperObserver();
 	},
 };
 
