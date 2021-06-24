@@ -5,7 +5,7 @@
 		:main-class="'tw-bg-gray-50'"
 	>
 		<article class="tw-relative">
-			<div class="tw-relative" style="max-height: 460px">
+			<div class="tw-relative" style="max-height: 460px;">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 					<hero-background />
 				</div>
