@@ -45,6 +45,7 @@
 						{{ lgScreenheadline }}
 					</p>
 					<span class="tw-flex tw-pb-1 lg:tw-pb-3">
+						<label for="LoanAmountDropdown" class="tw-sr-only">Lend amount</label>
 						<kv-ui-select
 							v-if="hideShowLendDropdown"
 							id="LoanAmountDropdown"
