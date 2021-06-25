@@ -13,6 +13,7 @@
 			<campaign-status
 				v-if="!hideStatusBar"
 				class="corporate-campaign-landing__status"
+				:active-credit-type="activeCreditType"
 				:is-matching="isMatchingCampaign"
 				:loading-promotion="loadingPromotion"
 				:promo-error-message="promoErrorMessage"
@@ -271,6 +272,7 @@ const basketItemsQuery = gql`query basketItemsQuery(
 ) {
 	shop(basketId: $basketId) {
 		id
+		lendingRewardOffered
 		nonTrivialItemCount
 		basket {
 			id
@@ -709,7 +711,7 @@ export default {
 			return this.promoData?.promoFund?.id ?? null;
 		},
 		promoOnlyQuery() {
-			if (this.promoApplied && !this.isMatchingCampaign) {
+			if (this.promoApplied && !this.isMatchingCampaign && !this.lendingRewardOffered) {
 				return { basketId: this.cookieStore.get('kvbskt') };
 			}
 			return null;
@@ -744,6 +746,9 @@ export default {
 			}
 			if (this.hasBonusCredit) {
 				return 'bonus_credit';
+			}
+			if (this.lendingRewardOffered) {
+				return 'lending_reward';
 			}
 			return null;
 		},
@@ -815,10 +820,9 @@ export default {
 				}
 
 				// Validate baseline promo + basket state (1 loan, 1 credit, 0 donation)
-				// this.validatePromoBasketState(data);
 				const basketItemValues = data.shop?.basket?.items?.values ?? [];
 				this.itemsInBasket = basketItemValues.length ? basketItemValues.map(item => item.id) : [];
-
+				this.lendingRewardOffered = data.shop?.lendingRewardOffered ?? false;
 				this.basketCredits = data.shop?.basket?.credits?.values || [];
 
 				// Primary PromoCampaign Query
@@ -835,6 +839,12 @@ export default {
 					// if this promo credit is already applied and matches we can clear the error
 					if (this.prioritizedTargetCampaignCredit?.promoFund?.id
 						=== response.data?.shop?.promoCampaign?.promoFund?.id) {
+						this.promoApplied = true;
+						this.promoErrorMessage = null;
+					}
+					// handle lending reward presence
+					if (response.data?.shop?.promoCampaign?.managedAccount?.managementType === 'lending_reward'
+						&& response.data?.shop?.promoCampaign?.promoFund?.id) {
 						this.promoApplied = true;
 						this.promoErrorMessage = null;
 					}

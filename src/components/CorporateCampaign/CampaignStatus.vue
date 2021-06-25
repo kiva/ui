@@ -27,10 +27,14 @@
 					</template>
 
 					<template v-if="!loadingPromotion && promoApplied && !promoErrorMessage && !isMatching">
-						<span v-if="promoName && (promoAmount !== '$0.00')">
+						<span v-if="promoName && (promoAmount !== '$0.00') && activeCreditType !== 'lending_reward'">
 							You have ${{ promoAmount | numeral }}
 							<span v-if="promoName">from {{ promoName }}</span>
 							to lend!
+						</span>
+						<span v-if="activeCreditType === 'lending_reward'">
+							Complete a loan to recieve your lending reward
+							<span v-if="promoName"> from {{ promoName }}</span>!
 						</span>
 					</template>
 					<template v-else-if="promoApplied && !promoErrorMessage && isMatching">
@@ -52,6 +56,10 @@ export default {
 		KvLoadingSpinner,
 	},
 	props: {
+		activeCreditType: {
+			type: String,
+			default: null
+		},
 		isMatching: {
 			type: Boolean,
 			default: false
