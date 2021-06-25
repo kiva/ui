@@ -71,7 +71,6 @@
 						<kv-ui-button
 							v-if="lendButtonVisibility"
 							class="tw-inline-flex tw-flex-1"
-							ref="lendButton"
 							@click="addToBasket"
 							v-kv-track-event="[
 								'Lending',
@@ -114,7 +113,7 @@
 						<kv-ui-button
 							v-if="!lendButtonVisibility"
 							class="tw-inline-flex tw-flex-1"
-							:to="ctaHref"
+							to="/lend-by-category"
 							v-kv-track-event="[
 								'Lending',
 								'Non actionable loan',
@@ -437,13 +436,6 @@ export default {
 				return 'Find another loan';
 			}
 			return 'Loading...';
-		},
-		ctaHref() {
-			// eslint-disable-next-line max-len
-			if (this.status === 'refunded' || this.status === 'expired' || this.allSharesReserved || this.status === 'funded') {
-				return '/lend-by-category';
-			}
-			return '';
 		},
 		state() {
 			if (this.isAdding) {
