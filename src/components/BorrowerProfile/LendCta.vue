@@ -75,7 +75,7 @@
 							v-kv-track-event="[
 								'Lending',
 								'Add to basket',
-								'Lend now'
+								ctaButtonText
 							]"
 						>
 							{{ ctaButtonText }}
