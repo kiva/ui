@@ -14,85 +14,6 @@
 				'lg:tw-static',
 			]"
 		>
-<<<<<<< HEAD
-			<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
-				{{ lgScreenheadline }}
-			</p>
-			<span class="tw-flex tw-pb-1 lg:tw-pb-3">
-				<kv-ui-select
-					v-if="hideShowLendDropdown"
-					id="LoanAmountDropdown"
-					class="tw-pr-2.5 tw--mb-2"
-					v-model="selectedOption"
-					v-kv-track-event="[
-						'Lending',
-						'click-Modify loan amount',
-						'open dialog'
-					]"
-				>
-					<option
-						v-for="priceOption in prices"
-						:key="priceOption"
-						:value="priceOption"
-						v-kv-track-event="[
-							'Lending',
-							'Modify loan amount',
-							priceOption
-						]"
-					>
-						${{ priceOption }}
-					</option>
-				</kv-ui-select>
-				<!-- Lend button -->
-				<kv-ui-button
-					v-if="!showAdding && !inBasket"
-					class="tw-inline-flex tw-flex-1"
-					@click="addToBasket"
-					:to="ctaHref"
-					v-kv-track-event="[
-						'Lending',
-						'Add to basket',
-						ctaButtonText
-					]"
-				>
-					{{ ctaButtonText }}
-				</kv-ui-button>
-				<!-- Continue to checkout button -->
-				<kv-ui-button
-					v-if="inBasket"
-					class="tw-inline-flex tw-flex-1"
-					:to="ctaHref"
-					v-kv-track-event="[
-						'Lending',
-						'click-Continue-to-checkout',
-						'Continue to checkout'
-					]"
-				>
-					Continue to checkout
-				</kv-ui-button>
-				<!-- Adding to basket button -->
-				<kv-ui-button
-					v-if="showAdding"
-					class="tw-inline-flex tw-flex-1"
-					v-kv-track-event="[
-						'Lending',
-						'click-Adding-to-basket-CTA',
-						'Adding to basket'
-					]"
-				>
-					Adding to basket...
-				</kv-ui-button>
-			</span>
-			<p
-				v-if="freeCreditWarning"
-				class="tw-text-h4 tw-text-gray-500 tw-inline-block tw-text-center tw-w-full"
-			>
-				Not eligilble for lending credit
-			</p>
-			<p
-				v-if="allSharesReserved"
-				class="tw-text-h4 tw-text-gray-500 tw-inline-block tw-text-center tw-w-full"
-=======
 			<kv-grid
 				:class="[
 					'tw-grid-cols-12',
@@ -130,6 +51,15 @@
 							id="LoanAmountDropdown"
 							class="tw-pr-2.5 tw--mb-2"
 							v-model="selectedOption"
+							v-kv-track-event="[
+								'Lending',
+								'click-Modify loan amount',
+								'open dialog'
+							]"
+							@change="$kvTrackEvent(
+								'Lending',
+								'Modify loan amount',
+							)"
 						>
 							<option
 								v-for="priceOption in prices"
@@ -141,23 +71,46 @@
 						</kv-ui-select>
 						<!-- Lend button -->
 						<kv-ui-button
-							v-if="!showAdding && !inBasket"
+							v-if="!isAdding && this.amountInBasket === '' && !this.lentPreviously"
 							class="tw-inline-flex tw-flex-1"
-							@click="addToBasket"
+							@click.native="addToBasket"
+							v-kv-track-event="[
+								'Lending',
+								'Add to basket',
+								'Lend now'
+							]"
 						>
 							{{ ctaButtonText }}
 						</kv-ui-button>
 						<!-- Continue to checkout button -->
 						<kv-ui-button
-							v-if="inBasket"
+							v-if="this.state === 'basketed'"
 							class="tw-inline-flex tw-flex-1"
-							:to="'/basket'"
+							to="/basket"
+							v-kv-track-event="[
+								'Lending',
+								'click-Continue-to-checkout',
+								'Continue to checkout'
+							]"
 						>
 							Continue to checkout
 						</kv-ui-button>
+						<!-- Lend again/lent previously button -->
+						<kv-ui-button
+							v-if="this.lentPreviously"
+							class="tw-inline-flex tw-flex-1"
+							@click.native="addToBasket"
+							v-kv-track-event="[
+								'Lending',
+								'Add to basket',
+								'Lend again'
+							]"
+						>
+							Lend again
+						</kv-ui-button>
 						<!-- Adding to basket button -->
 						<kv-ui-button
-							v-if="showAdding"
+							v-if="isAdding"
 							class="tw-inline-flex tw-flex-1"
 						>
 							Adding to basket...
@@ -189,7 +142,6 @@
 					},
 					'lg:tw-px-0',
 				]"
->>>>>>> master
 			>
 				<div v-if="lenderCountVisibilty"
 					:class="[
@@ -269,7 +221,6 @@ export default {
 			numLenders: 0,
 			lenderCountVisibilty: false,
 			isAdding: false,
-			inBasket: false,
 			hasFreeCredit: false,
 			isSticky: false,
 			wrapperHeight: 0,
@@ -451,9 +402,6 @@ export default {
 			return 'Loading...';
 		},
 		ctaButtonText() {
-			if (this.status === 'fundraising' && this.lentPreviously) {
-				return 'Lend again';
-			}
 			if (this.status === 'fundraising') {
 				return 'Lend now';
 			}
@@ -467,10 +415,11 @@ export default {
 			return 'Loading...';
 		},
 		ctaHref() {
+			// eslint-disable-next-line max-len
 			if (this.status === 'refuned' || this.status === 'expired' || this.allSharesReserved === true || this.status === 'funded') {
 				return '/lend-by-category';
 			}
-			return '/bakset';
+			return '/basket';
 		},
 		state() {
 			if (this.isAdding) {
@@ -488,7 +437,8 @@ export default {
 			return this.state === 'adding';
 		},
 		hideShowLendDropdown() {
-			if (this.status !== 'fundraising' || this.amountInBasket !== '' || this.allSharesReserved) {
+			// eslint-disable-next-line max-len
+			if (this.status !== 'fundraising' || this.state === 'basketed' || this.state === 'adding' || this.allSharesReserved) {
 				return false;
 			}
 			return true;
