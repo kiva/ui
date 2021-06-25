@@ -72,9 +72,8 @@
 						</kv-ui-select>
 
 						<!-- Lend button -->
-						<!-- eslint-disable max-len -->
 						<kv-ui-button
-							v-if="!isAdding && this.amountInBasket === '' && !this.lentPreviously && this.status !== 'funded' && this.status !== 'refunded' && this.status !== 'expired' && !this.allSharesReserved"
+							v-if="lendButtonVisibility"
 							class="tw-inline-flex tw-flex-1"
 							ref="lendButton"
 							@click="addToBasket"
@@ -84,7 +83,6 @@
 								'Lend now'
 							]"
 						>
-							<!-- eslint-enable max-len -->
 							{{ ctaButtonText }}
 						</kv-ui-button>
 
@@ -106,7 +104,7 @@
 						<kv-ui-button
 							v-if="this.lentPreviously"
 							class="tw-inline-flex tw-flex-1"
-							@click.native="addToBasket"
+							@click="addToBasket"
 							v-kv-track-event="[
 								'Lending',
 								'Add to basket',
@@ -117,9 +115,8 @@
 						</kv-ui-button>
 
 						<!-- Funded, refunded, expired/ allSharesReserved button -->
-						<!-- eslint-disable max-len -->
 						<kv-ui-button
-							v-if="this.status === 'funded' || this.status === 'refunded' || this.status === 'expired' || this.allSharesReserved"
+							v-if="!lendButtonVisibility"
 							class="tw-inline-flex tw-flex-1"
 							:to="ctaHref"
 							v-kv-track-event="[
@@ -129,7 +126,6 @@
 								this.status
 							]"
 						>
-							<!-- eslint-enable max-len -->
 							{{ ctaButtonText }}
 						</kv-ui-button>
 
@@ -460,6 +456,13 @@ export default {
 		},
 		showAdding() {
 			return this.state === 'adding';
+		},
+		lendButtonVisibility() {
+			// eslint-disable-next-line max-len
+			if (!this.isAdding && this.amountInBasket === '' && !this.lentPreviously && this.status !== 'funded' && this.status !== 'refunded' && this.status !== 'expired' && !this.allSharesReserved) {
+				return true;
+			}
+			return false;
 		},
 		hideShowLendDropdown() {
 			// eslint-disable-next-line max-len
