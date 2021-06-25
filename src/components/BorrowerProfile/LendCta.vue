@@ -462,7 +462,7 @@ export default {
 		},
 		lendButtonVisibility() {
 			// eslint-disable-next-line max-len
-			if (!this.isAdding && this.amountInBasket === '' && !this.lentPreviously && this.status !== 'funded' && this.status !== 'refunded' && this.status !== 'expired' && !this.allSharesReserved) {
+			if (this.state !== 'adding' && this.state === 'basketed' && this.state !== 'lent-to' && this.status !== 'funded' && this.status !== 'refunded' && this.status !== 'expired' && !this.allSharesReserved) {
 				return true;
 			}
 			return false;
