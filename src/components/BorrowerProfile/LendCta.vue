@@ -56,11 +56,7 @@
 								'click-Modify loan amount',
 								'open dialog'
 							]"
-							@change="$kvTrackEvent(
-								'Lending',
-								'Modify loan amount',
-								'priceOption from below?'
-							)"
+							@change="trackLendAmountSelection"
 						>
 							<option
 								v-for="priceOption in prices"
@@ -402,6 +398,13 @@ export default {
 				this.wrapperObserver.disconnect();
 			}
 		},
+		trackLendAmountSelection(selectedDollarAmount) {
+			this.$kvTrackEvent(
+				'Lending',
+				'Modify lend amount',
+				selectedDollarAmount
+			);
+		}
 	},
 	computed: {
 		prices() {
