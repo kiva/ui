@@ -1,22 +1,22 @@
 <template>
 	<dl>
-		<loan-detail-item
+		<description-list-item
 			:term="'Loan length'"
 			:details="loanLength"
 		/>
-		<loan-detail-item
+		<description-list-item
 			:term="'Repayment schedule'"
 			:details="repaymentSchedule"
 		/>
-		<loan-detail-item
+		<description-list-item
 			:term="'Funding model'"
 			:details="fundingModel"
 		/>
-		<loan-detail-item
+		<description-list-item
 			:term="currencyLossScenarioTerm"
 			:details="currencyLossScenarioDetails"
 		/>
-		<loan-detail-item
+		<description-list-item
 			:term="'Is borrower paying interest?'"
 			:details="borrowerPayingInterest"
 		/>
@@ -24,11 +24,11 @@
 </template>
 
 <script>
-import LoanDetailItem from '@/components/BorrowerProfile/LoanDetailItem';
+import DescriptionListItem from '@/components/BorrowerProfile/DescriptionListItem';
 
 export default {
 	components: {
-		LoanDetailItem,
+		DescriptionListItem,
 	},
 	props: {
 		partnerName: { // LoanPartner.partnerName
