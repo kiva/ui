@@ -9,7 +9,7 @@
 		<dl>
 			<description-list-item
 				:term="'Kiva borrowers'"
-				:details="numLoansEndorsedTotal"
+				:details="numLoansEndorsedPublic"
 			/>
 			<description-list-item
 				:term="'Total loans'"
