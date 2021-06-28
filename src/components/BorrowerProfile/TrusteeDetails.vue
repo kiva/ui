@@ -46,7 +46,7 @@ export default {
 			type: String,
 			default: '',
 		},
-		numLoansEndorsedTotal: { // TrusteeStats.numLoansEndorsedTotal
+		numLoansEndorsedPublic: { // TrusteeStats.numLoansEndorsedPublic
 			type: Number,
 			default: 0,
 		},
