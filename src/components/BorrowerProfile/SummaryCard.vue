@@ -156,6 +156,11 @@ export default {
 			this.timeLeft = loan?.fundraisingTimeLeft ?? '';
 			this.unreservedAmount = loan?.unreservedAmount ?? '0';
 			this.use = loan?.use ?? '';
+
+			// If all shares are reserved in baskets, set the fundraising meter to 100%
+			if (this.unreservedAmount === '0') {
+				this.fundraisingPercent = 1;
+			}
 		},
 	},
 };
