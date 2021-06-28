@@ -51,6 +51,12 @@
 							id="LoanAmountDropdown"
 							class="tw-pr-2.5 tw--mb-2"
 							v-model="selectedOption"
+							v-kv-track-event="[
+								'Lending',
+								'click-Modify loan amount',
+								'open dialog'
+							]"
+							@change="trackLendAmountSelection"
 						>
 							<option
 								v-for="priceOption in prices"
@@ -60,25 +66,67 @@
 								${{ priceOption }}
 							</option>
 						</kv-ui-select>
+
 						<!-- Lend button -->
 						<kv-ui-button
-							v-if="!showAdding && !inBasket"
+							v-if="lendButtonVisibility"
 							class="tw-inline-flex tw-flex-1"
 							@click="addToBasket"
+							v-kv-track-event="[
+								'Lending',
+								'Add to basket',
+								ctaButtonText
+							]"
 						>
 							{{ ctaButtonText }}
 						</kv-ui-button>
+
 						<!-- Continue to checkout button -->
 						<kv-ui-button
-							v-if="inBasket"
+							v-if="this.state === 'basketed'"
 							class="tw-inline-flex tw-flex-1"
-							:to="'/basket'"
+							to="/basket"
+							v-kv-track-event="[
+								'Lending',
+								'click-Continue-to-checkout',
+								'Continue to checkout'
+							]"
 						>
 							Continue to checkout
 						</kv-ui-button>
+
+						<!-- Lend again/lent previously button -->
+						<kv-ui-button
+							v-if="this.lentPreviously"
+							class="tw-inline-flex tw-flex-1"
+							@click="addToBasket"
+							v-kv-track-event="[
+								'Lending',
+								'Add to basket',
+								'Lend again'
+							]"
+						>
+							Lend again
+						</kv-ui-button>
+
+						<!-- Funded, refunded, expired/ allSharesReserved button -->
+						<kv-ui-button
+							v-if="!lendButtonVisibility"
+							class="tw-inline-flex tw-flex-1"
+							to="/lend-by-category"
+							v-kv-track-event="[
+								'Lending',
+								'Non actionable loan',
+								ctaButtonText,
+								this.status
+							]"
+						>
+							{{ ctaButtonText }}
+						</kv-ui-button>
+
 						<!-- Adding to basket button -->
 						<kv-ui-button
-							v-if="showAdding"
+							v-if="isAdding"
 							class="tw-inline-flex tw-flex-1"
 						>
 							Adding to basket...
@@ -189,7 +237,6 @@ export default {
 			numLenders: 0,
 			lenderCountVisibilty: false,
 			isAdding: false,
-			inBasket: false,
 			hasFreeCredit: false,
 			isSticky: false,
 			wrapperHeight: 0,
@@ -350,6 +397,13 @@ export default {
 				this.wrapperObserver.disconnect();
 			}
 		},
+		trackLendAmountSelection(selectedDollarAmount) {
+			this.$kvTrackEvent(
+				'Lending',
+				'Modify lend amount',
+				selectedDollarAmount
+			);
+		}
 	},
 	computed: {
 		prices() {
@@ -364,24 +418,21 @@ export default {
 			if (this.status === 'funded') {
 				return 'Help more borrowers like this';
 			}
-			// refuned, expired or all shares reserved
-			if (this.status === 'refuned' || this.status === 'expired' || this.allSharesReserved === true) {
+			// refunded, expired or all shares reserved
+			if (this.status === 'refunded' || this.status === 'expired' || this.allSharesReserved) {
 				return 'Help fund other borrowers';
 			}
 			return 'Loading...';
 		},
 		ctaButtonText() {
-			if (this.status === 'fundraising' && this.lentPreviously) {
-				return 'Lend again';
-			}
-			if (this.status === 'fundraising') {
+			if (this.status === 'fundraising' && !this.allSharesReserved) {
 				return 'Lend now';
 			}
 			if (this.status === 'funded') {
 				return 'Find another loan like this';
 			}
-			// refuned, expired or all shares reserved
-			if (this.status === 'refuned' || this.status === 'expired' || this.allSharesReserved === true) {
+			// refunded, expired or all shares reserved
+			if (this.status === 'refunded' || this.status === 'expired' || this.allSharesReserved) {
 				return 'Find another loan';
 			}
 			return 'Loading...';
@@ -401,8 +452,16 @@ export default {
 		showAdding() {
 			return this.state === 'adding';
 		},
+		lendButtonVisibility() {
+			// eslint-disable-next-line max-len
+			if (this.state !== 'adding' && this.state === 'basketed' && this.state !== 'lent-to' && this.status !== 'funded' && this.status !== 'refunded' && this.status !== 'expired' && !this.allSharesReserved) {
+				return true;
+			}
+			return false;
+		},
 		hideShowLendDropdown() {
-			if (this.status !== 'fundraising' || this.amountInBasket !== '' || this.allSharesReserved) {
+			// eslint-disable-next-line max-len
+			if (this.status !== 'fundraising' || this.state === 'basketed' || this.state === 'adding' || this.allSharesReserved) {
 				return false;
 			}
 			return true;
