@@ -157,5 +157,13 @@ export default {
 			this.use = loan?.use ?? '';
 		},
 	},
+	mounted: {
+		// If all shares are reserved in baskets, set the fundraising meter to 100%
+		checkAllSharesReserved() {
+			if (this.unreservedAmount === '0') {
+				this.fundraisingPercent = 1;
+			}
+		}
+	}
 };
 </script>
