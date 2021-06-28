@@ -1,38 +1,39 @@
 <template>
 	<section class="
-		tw-flex tw-flex-wrap
-		tw-bg-gray-50 md:tw-bg-white
+		md:tw-bg-white
 		tw-py-2.5 md:tw-p-3 lg:tw-p-4
 		md:tw-rounded-t lg:tw-rounded"
 	>
-		<div class="
-			tw-flex-none tw-w-8 tw-h-8 tw-mr-1.5 tw-mb-1.5
-			md:tw-w-9 md:tw-h-9 md:tw-mr-3 md:tw-mb-3
-			lg:tw-w-10 lg:tw-h-10 lg:tw-mr-4 lg:tw-mb-4"
-		>
-			<borrower-image
-				class="tw-w-full tw-rounded-full tw-bg-brand"
-				:alt="name"
-				:aspect-ratio="1"
-				:default-image="{ width: 80, faceZoom: 50 }"
-				:hash="hash"
-				:images="[
-					{ width: 80, faceZoom: 50, viewSize: 1024 },
-					{ width: 72, faceZoom: 50, viewSize: 734 },
-					{ width: 64, faceZoom: 50 },
-				]"
-			/>
-		</div>
-		<div class="tw-flex-auto">
-			<borrower-name
-				class="md:tw-mb-1.5 lg:tw-mb-2"
-				:name="name"
-			/>
-			<loan-progress
-				:money-left="unreservedAmount"
-				:progress-percent="fundraisingPercent"
-				:time-left="timeLeft"
-			/>
+		<div class="tw-flex">
+			<div class="
+				tw-flex-none tw-w-8 tw-h-8 tw-mr-1.5 tw-mb-1.5
+				md:tw-w-9 md:tw-h-9 md:tw-mr-3 md:tw-mb-3
+				lg:tw-w-10 lg:tw-h-10 lg:tw-mr-4 lg:tw-mb-4"
+			>
+				<borrower-image
+					class="tw-w-full tw-rounded-full tw-bg-brand"
+					:alt="name"
+					:aspect-ratio="1"
+					:default-image="{ width: 80, faceZoom: 50 }"
+					:hash="hash"
+					:images="[
+						{ width: 80, faceZoom: 50, viewSize: 1024 },
+						{ width: 72, faceZoom: 50, viewSize: 734 },
+						{ width: 64, faceZoom: 50 },
+					]"
+				/>
+			</div>
+			<div class="tw-flex-auto">
+				<borrower-name
+					class="md:tw-mb-1.5 lg:tw-mb-2"
+					:name="name"
+				/>
+				<loan-progress
+					:money-left="unreservedAmount"
+					:progress-percent="fundraisingPercent"
+					:time-left="timeLeft"
+				/>
+			</div>
 		</div>
 		<loan-use
 			class="tw-flex-none tw-w-full"
