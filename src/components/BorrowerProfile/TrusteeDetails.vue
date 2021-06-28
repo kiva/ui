@@ -24,12 +24,12 @@
 				:details="repaymentRateFormatted"
 			/>
 		</dl>
-		<a
-			:href="`/partners/${trusteeId}`"
+		<router-link
+			:to="`/trustees/${trusteeId}`"
 			class="tw-uppercase"
 		>
 			More about this trustee
-		</a>
+		</router-link>
 	</section>
 </template>
 
