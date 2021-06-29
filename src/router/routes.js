@@ -99,6 +99,7 @@ export default [
 	{ path: '/lend-by-category', component: () => import('@/pages/Lend/LendByCategoryPage') },
 	{ path: '/lend-by-category/:category', component: () => import('@/pages/Lend/LoanChannelCategoryPage') },
 	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
+	{ path: '/lend/filter-alpha', component: () => import('@/pages/Lend/FilterAlpha/LendFilterAlpha') },
 
 	{ path: '/lend-beta/:id', component: () => import('@/pages/BorrowerProfile/BorrowerProfile') },
 
