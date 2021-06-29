@@ -102,7 +102,6 @@ export default {
 			return this.showFindMoreLoansInCountryButton();
 		},
 		result(result) {
-			console.log(result);
 			const countries = [];
 			const countryFacets = result?.data?.lend?.countryFacets ?? [];
 			if (countryFacets.length) {
