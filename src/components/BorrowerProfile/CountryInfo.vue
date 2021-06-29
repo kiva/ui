@@ -99,7 +99,7 @@ export default {
 			}
 		`,
 		skip() {
-			return this.numLoansFundraising >= 1;
+			return this.showFindMoreLoansInCountryButton();
 		},
 		result(result) {
 			console.log(result);
