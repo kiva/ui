@@ -87,8 +87,7 @@ export default {
 		},
 	},
 	apollo: {
-		query: gql`
-			query getCountryFacets {
+		query: gql`query getCountryFacets {
 			  lend {
 				countryFacets {
 				  country {
@@ -99,7 +98,6 @@ export default {
 			  }
 			}
 		`,
-		preFetch: true,
 		result(result) {
 			const countries = [];
 			const countryFacets = result?.data?.lend?.countryFacets ?? [];
