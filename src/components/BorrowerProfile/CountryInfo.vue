@@ -98,7 +98,11 @@ export default {
 			  }
 			}
 		`,
+		skip() {
+			return this.numLoansFundraising >= 1;
+		},
 		result(result) {
+			console.log(result);
 			const countries = [];
 			const countryFacets = result?.data?.lend?.countryFacets ?? [];
 			if (countryFacets.length) {
