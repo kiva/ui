@@ -43,7 +43,7 @@
                         <kv-material-icon
                             v-for="i in 5"
                             :key="i"
-                            class="tw-text-black hover:tw-text-action-700"
+                            class="tw-text-black"
                             :icon="getStarIcon(i)"
                         />
                     </div>
