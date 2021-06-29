@@ -99,7 +99,7 @@ export default {
 			}
 		`,
 		skip() {
-			return this.showFindMoreLoansInCountryButton();
+			return this.numLoansFundraising !== 0;
 		},
 		result(result) {
 			const countries = [];
