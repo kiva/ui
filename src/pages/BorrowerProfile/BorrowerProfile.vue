@@ -21,6 +21,11 @@
 			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-12">
 				<loan-story :loan-id="loanId" />
 			</content-container>
+			<div class="tw-bg-brand-50">
+				<content-container>
+					<details-tabs :loan-id="loanId" name="bp-details" />
+				</content-container>
+			</div>
 		</article>
 		<!-- <aside>Similar loans</aside> -->
 	</www-page>
@@ -36,10 +41,12 @@ import HeroBackground from '@/components/BorrowerProfile/HeroBackground';
 import SummaryCard from '@/components/BorrowerProfile/SummaryCard';
 import LendCta from '@/components/BorrowerProfile/LendCta';
 import LoanStory from '@/components/BorrowerProfile/LoanStory';
+import DetailsTabs from '@/components/BorrowerProfile/DetailsTabs';
 
 export default {
 	components: {
 		ContentContainer,
+		DetailsTabs,
 		HeroBackground,
 		LendCta,
 		LoanStory,
