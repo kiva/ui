@@ -1,5 +1,4 @@
 <template>
-	<!-- <div class="tw-relative" :style="{height: `${getComputedHeight()}px`, width: `${getComputedWidth()}px`}"> -->
 	<div class="tw-relative tw-block tw-w-full" :style="mapDimensions">
 		<div
 			:id="`kv-map-holder-${this.mapId}`"
