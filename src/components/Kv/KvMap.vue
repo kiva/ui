@@ -4,6 +4,7 @@
 			:id="`kv-map-holder-${this.mapId}`"
 			:ref="refString"
 			class="tw-w-full tw-h-full tw-bg-black"
+			:style="{ position: 'absolute' }"
 		></div>
 	</div>
 </template>
@@ -57,7 +58,7 @@ export default {
 		 */
 		aspectRatio: {
 			type: Number,
-			default: 1.3
+			default: 1
 		},
 		/**
 		 * Control how quickly the autoZoom occurs
@@ -67,11 +68,11 @@ export default {
 			default: 1500
 		},
 		/**
-		 * These maps require a height to be set in order to render
+		 * Set the height to override aspect ratio driven and/or default dimensions
 		 */
 		height: {
 			type: Number,
-			default: 300,
+			default: null,
 		},
 		/**
 		 * Setting this initialZoom will zoom the map from initialZoom to zoom when the map enters the viewport
@@ -109,6 +110,13 @@ export default {
 			default: false
 		},
 		/**
+		 * Set the width to override aspect ratio driven and/or default dimensions
+		 */
+		width: {
+			type: Number,
+			default: null,
+		},
+		/**
 		 * Default zoom level
 		 */
 		zoomLevel: {
@@ -128,12 +136,15 @@ export default {
 	},
 	computed: {
 		mapDimensions() {
+			// Use container to derive height based on aspect ration + width
 			const container = this.$el?.getBoundingClientRect();
 			const height = container ? `${container.width / this.aspectRatio}px` : '300px';
 			const width = container ? `${container.width}px` : '100%';
+			// Override values if deliberate height or width are provided
 			return {
-				height,
-				width,
+				height: this.height ? `${this.height}px` : height,
+				width: this.width ? `${this.width}px` : width,
+				paddingBottom: this.height ? `${this.height}px` : `${100 / this.aspectRatio}%`,
 			};
 		},
 		refString() {
@@ -141,6 +152,10 @@ export default {
 		},
 	},
 	mounted() {
+		/**
+		 * This initial checkWebGL() call kicks off the vue-meta asset inclusion
+		 * We then start polling for the readiness of our selected map library and initialize it once ready
+		 */
 		if (this.checkWebGL()) {
 			testDelayedGlobalLibrary('maplibregl').then(response => {
 				if (response.loaded && !this.mapLoaded && !this.useLeaflet) {
@@ -270,8 +285,6 @@ export default {
 				doubleClickZoom: false,
 				dragRotate: false,
 			});
-			// this.mapInstance.scrollZoom.disable();
-			// this.mapInstance.doubleClickZoom.disable();
 
 			// signify map has loaded
 			this.mapLoaded = true;

@@ -36,12 +36,21 @@ AutoZoom.args = {
 	zoomLevel: 4,
 }
 
+export const FixedDimensions = Template.bind({});
+FixedDimensions.args = {
+	initialZoom: null,
+	height: 250,
+	mapId: 3,
+	width: 250,
+	zoomLevel: 14,
+};
+
 export const Leaflet = Template.bind({});
 Leaflet.args = {
 	initialZoom: null,
 	lat: -0.023559,
 	long: 37.906193,
-	mapId: 3,
+	mapId: 4,
 	useLeaflet: true,
 	zoomLevel: 6,
 };
