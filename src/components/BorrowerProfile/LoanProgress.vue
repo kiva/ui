@@ -2,6 +2,7 @@
 	<figure>
 		<kv-progress-bar
 			class="tw-mb-1.5 lg:tw-mb-1"
+			aria-label="Percent the loan has funded"
 			:value="progressPercent * 100"
 		/>
 		<figcaption class="tw-flex">

@@ -385,9 +385,11 @@ export default {
 
 			// gather selected tags
 			const selectedTagsRaw = this.allTags.filter(tag => {
-				const appliedTags = this.appliedFilters?.loanTags ?? [];
-				if (appliedTags.length) {
-					return appliedTags.includes(tag.id);
+				if (tag.name?.charAt(0) === '#') { // kludge to only include public tags
+					const appliedTags = this.appliedFilters?.loanTags ?? [];
+					if (appliedTags.length) {
+						return appliedTags.includes(tag.id);
+					}
 				}
 				return false;
 			});
