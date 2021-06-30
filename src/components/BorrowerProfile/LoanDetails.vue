@@ -2,7 +2,7 @@
 	<dl>
 		<description-list-item
 			:term="'Loan length'"
-			:details="loanLength"
+			:details="`${loanLength} months`"
 		/>
 		<description-list-item
 			:term="'Repayment schedule'"
@@ -36,12 +36,12 @@ export default {
 			default: '',
 		},
 		loanLenderRepaymentTerm: { // LoanBasic.lenderRepaymentTerm
-			type: String,
-			default: '',
+			type: Number,
+			default: 0,
 		},
 		loanTermLenderRepaymentTerm: { // LoanTerm.lenderRepaymentTerm
-			type: String,
-			default: '',
+			type: Number,
+			default: 0,
 		},
 		repaymentInterval: { // LoanBasic.repaymentInterval
 			type: String,
@@ -72,7 +72,9 @@ export default {
 			return this.isPartnerLoan ? this.loanLenderRepaymentTerm : this.loanTermLenderRepaymentTerm;
 		},
 		repaymentSchedule() {
-			return this.isPartnerLoan ? this.repaymentInterval : 'Monthly';
+			const schedule = this.isPartnerLoan ? this.repaymentInterval : 'Monthly';
+			const scheduleUpperCase = schedule.toString().charAt(0).toUpperCase() + schedule.toString().slice(1);
+			return scheduleUpperCase;
 		},
 		fundingModel() {
 			return this.isPartnerLoan && this.flexibleFundraisingEnabled ? 'Flexible' : 'Fixed';
