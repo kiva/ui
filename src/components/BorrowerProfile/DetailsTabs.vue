@@ -3,8 +3,8 @@
 		<div v-if="loading">
 			<!-- Loading placeholder for kv-tab elements -->
 			<div class="tw-flex tw-mb-4.5 md:tw-mb-5 tw-h-2.5 md:tw-h-3 lg:tw-h-4">
-				<kv-loading-placeholder class="tw-mr-2.5 md:tw-mr-5 lg:tw-mr-6" style="width: 22%" />
-				<kv-loading-placeholder style="width: 22%" />
+				<kv-loading-placeholder class="tw-mr-2.5 md:tw-mr-5 lg:tw-mr-6" style="width: 22%;" />
+				<kv-loading-placeholder style="width: 22%;" />
 			</div>
 			<!-- Loading placeholder for description-list-item elements -->
 			<div v-for="i in 5" :key="i" class="tw-flex tw-justify-between tw-h-2 tw-mb-4">
