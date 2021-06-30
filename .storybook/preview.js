@@ -1,6 +1,7 @@
 import { addParameters } from '@storybook/vue';
 import { MINIMAL_VIEWPORTS} from '@storybook/addon-viewport';
 import Vue from 'vue';
+import Meta from 'vue-meta';
 
 //load all the svg icon sprites
 import '@/assets/iconLoader';
@@ -16,6 +17,9 @@ import './storybookStyles.scss';
 
 // import config file for storybook environment
 import config from '../config/local';
+
+// initialize vue-meta
+Vue.use(Meta);
 
 // provide global application config
 Vue.prototype.$appConfig = config.app;
