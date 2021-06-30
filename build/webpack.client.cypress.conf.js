@@ -9,7 +9,7 @@ module.exports = mergeWithRules({
 			test: 'match',
 			use: {
 				loader: 'match',
-				options: 'replace',
+				options: 'merge',
 			},
 		},
 	},
