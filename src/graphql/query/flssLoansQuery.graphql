@@ -1,0 +1,21 @@
+#import '../fragments/loanCardFields.graphql'
+
+query flssLoanData(
+  $filterObject: [FundraisingLoanSearchFilterInput!]
+  $imgDefaultSize: String = "w480h360"
+  $imgRetinaSize: String = "w960h720"
+) {
+  fundraisingLoans(filters: $filterObject) {
+    totalCount
+    values {
+      id
+      ...loanCardFields
+      image {
+        id
+        default: url(customSize: $imgDefaultSize)
+        retina: url(customSize: $imgRetinaSize)
+        hash
+      }
+    }
+  }
+}
