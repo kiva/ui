@@ -4,7 +4,7 @@
 		<!-- eslint-disable max-len -->
 		<section
 			class="monthly-good-selector md:tw-visible tw-invisible tw-bg-brand-50 tw-px-3 tw-py-0 tw-rounded-t"
-			:class="{ 'sticky': isSticky, 'tw-fixed tw-bottom-0 tw-w-full tw-z-50': isSticky, 'tw-relative': !isSticky }"
+			:class="{ 'sticky': isSticky, 'tw-fixed tw-bottom-0 tw-w-full tw-z-sticky': isSticky, 'tw-relative': !isSticky }"
 			:style="{bottom: mgStickBarOffset + 'px'}"
 		>
 			<monthly-good-selector-desktop :pre-selected-category="preSelectedCategory" />
@@ -13,7 +13,7 @@
 		<!-- MG Selector Mobile show-for-small-only  -->
 		<section
 			class="monthly-good-selector tw-visible md:tw-invisible tw-bg-brand-50 tw-px-3 tw-py-2"
-			:class="{ 'sticky': isSticky, 'tw-fixed tw-bottom-0 tw-w-full tw-z-50': isSticky, 'tw-relative': !isSticky }"
+			:class="{ 'sticky': isSticky, 'tw-fixed tw-bottom-0 tw-w-full tw-z-sticky': isSticky, 'tw-relative': !isSticky }"
 			:style="{bottom: mgStickBarOffset + 'px'}"
 			v-if="isMobile"
 		>

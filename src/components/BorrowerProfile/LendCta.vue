@@ -5,7 +5,7 @@
 	>
 		<div
 			:class="[
-				'tw-w-full tw-z-10',
+				'tw-w-full tw-z-sticky',
 				'tw-flex tw-flex-col',
 				'tw-fixed tw-left-0 tw-bottom-0',
 				{
