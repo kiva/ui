@@ -128,6 +128,12 @@ export default {
 		padding: 0.875rem;
 	}
 
+	&__message {
+		margin-bottom: 0;
+		line-height: $small-text-line-height;
+		font-weight: bold;
+	}
+
 	&--loading {
 		background-color: $kiva-bg-darkgray;
 	}
@@ -146,12 +152,6 @@ export default {
 	&--success {
 		background-color: $kiva-green;
 		color: $white;
-	}
-
-	&__message {
-		margin-bottom: 0;
-		line-height: $small-text-line-height;
-		font-weight: bold;
 	}
 
 	&__icon {
