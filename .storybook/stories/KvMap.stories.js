@@ -5,11 +5,13 @@ export default {
 	component: KvMap,
 	args: {
 		autoZoomDelay: 1000,
+		height: null,
 		initialZoom: null,
 		lat: 37.700091,
 		long: -123.013243,
 		mapId: 0,
 		useLeaflet: false,
+		width: null,
 		zoomLevel: 4,
 	},
 };
@@ -17,7 +19,18 @@ export default {
 const Template = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { KvMap },
-	template: '<kv-map class="tw-rounded tw-overflow-hidden tw-m-4" :auto-zoom-delay="autoZoomDelay" :lat="lat" :long="long" :initial-zoom="initialZoom" :map-id="mapId" :use-leaflet="useLeaflet" :zoom-level="zoomLevel"  />',
+	template: `<kv-map
+		class="tw-rounded tw-overflow-hidden"
+		:auto-zoom-delay="autoZoomDelay"
+		:height="height"
+		:lat="lat"
+		:long="long"
+		:initial-zoom="initialZoom"
+		:map-id="mapId"
+		:use-leaflet="useLeaflet"
+		:width="width"
+		:zoom-level="zoomLevel"
+	/>`,
 });
 
 export const Default = Template.bind({});

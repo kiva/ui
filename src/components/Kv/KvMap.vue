@@ -86,14 +86,14 @@ export default {
 		 */
 		lat: {
 			type: Number,
-			default: 37.700091
+			default: null
 		},
 		/**
 		 * Set the center point longitude
 		 */
 		long: {
 			type: Number,
-			default: -123.013243
+			default: null
 		},
 		/**
 		 * Set this if there are more than one map on the page
@@ -151,29 +151,21 @@ export default {
 			return `mapholder${this.mapId}`;
 		},
 	},
+	watch: {
+		lat(next, prev) {
+			if (prev === null && this.long && !this.mapLibreReady && !this.leafletReady) {
+				this.initializeMap();
+			}
+		},
+		long(next, prev) {
+			if (prev === null && this.lat && !this.mapLibreReady && !this.leafletReady) {
+				this.initializeMap();
+			}
+		}
+	},
 	mounted() {
-		/**
-		 * This initial checkWebGL() call kicks off the vue-meta asset inclusion
-		 * We then start polling for the readiness of our selected map library and initialize it once ready
-		 */
-		if (this.checkWebGL()) {
-			testDelayedGlobalLibrary('maplibregl').then(response => {
-				if (response.loaded && !this.mapLoaded && !this.useLeaflet) {
-					this.initializeMapLibre();
-					this.mapLibreReady = true;
-				} else {
-					console.error('MapLibreGL failed to load');
-				}
-			});
-		} else {
-			testDelayedGlobalLibrary('L').then(leafletTest => {
-				if (leafletTest.loaded && !this.mapLoaded) {
-					this.initializeLeaflet();
-					this.leafletReady = true;
-				} else {
-					console.error('Leaflet failed to load');
-				}
-			});
+		if (!this.mapLibreReady && !this.leafletReady) {
+			this.initializeMap();
 		}
 	},
 	methods: {
@@ -238,6 +230,31 @@ export default {
 				return true;
 			}
 			return false;
+		},
+		initializeMap() {
+			/**
+			 * This initial checkWebGL() call kicks off the vue-meta asset inclusion
+			 * We then start polling for the readiness of our selected map library and initialize it once ready
+			 */
+			if (this.checkWebGL()) {
+				testDelayedGlobalLibrary('maplibregl').then(response => {
+					if (response.loaded && !this.mapLoaded && !this.useLeaflet && this.lat && this.long) {
+						this.initializeMapLibre();
+						this.mapLibreReady = true;
+					} else {
+						console.error('MapLibreGL failed to load');
+					}
+				});
+			} else {
+				testDelayedGlobalLibrary('L').then(leafletTest => {
+					if (leafletTest.loaded && !this.mapLoaded && this.lat && this.long) {
+						this.initializeLeaflet();
+						this.leafletReady = true;
+					} else {
+						console.error('Leaflet failed to load');
+					}
+				});
+			}
 		},
 		initializeLeaflet() {
 			/* eslint-disable no-undef, max-len */

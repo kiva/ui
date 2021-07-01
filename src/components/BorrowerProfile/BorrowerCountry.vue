@@ -4,7 +4,7 @@
 			class="
 				tw-rounded
 				tw-overflow-hidden
-				tw-m-4
+				tw-my-5
 			"
 			:auto-zoom-delay="mapAutoZoomDelay"
 			:aspect-ratio="mapAspectRatio"
@@ -42,7 +42,7 @@ export default {
 	},
 	data() {
 		return {
-			mapZoomLevel: 6,
+			mapZoomLevel: 5,
 			mapInitialZoom: 2,
 			mapAutoZoomDelay: 500,
 			mapAspectRatio: 1.3,
