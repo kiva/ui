@@ -58,7 +58,23 @@ export default function createApp({
 		Sentry.init({
 			dsn: appConfig.sentryURI,
 			integrations: [new Integrations.Vue({ Vue, attachProps: true })],
-			release: UI_COMMIT
+			release: UI_COMMIT,
+			beforeSend(event) {
+				// make sentry colleted event easy to compare to
+				const eventAsString = JSON.stringify(event);
+				// match specific 3rd party events for exclusion
+				// Skip sending failed loads of pX
+				// eslint-disable-next-line quotes
+				if (eventAsString.indexOf("Cannot set property 'PX1065' of undefined") !== -1) {
+					return false;
+				}
+				// Skip sending failed Algolia analtyics related errors
+				if (eventAsString.indexOf('Before calling any methods on the analytics') !== -1) {
+					return false;
+				}
+				// return event otherwise
+				return event;
+			},
 		});
 	}
 
