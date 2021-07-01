@@ -1,5 +1,5 @@
 <template>
-	<section v-if="displayTrusteeSection">
+	<section>
 		<p>
 			Trustees are U.S.-based individuals or organizations that refer potential borrowers to Kiva.
 		</p>
@@ -28,7 +28,7 @@
 			:to="`/trustees/${trusteeId}`"
 			class="tw-uppercase"
 		>
-			More about this trustee
+			More about this trustee &rarr;
 		</router-link>
 	</section>
 </template>
@@ -68,9 +68,6 @@ export default {
 		},
 	},
 	computed: {
-		displayTrusteeSection() {
-			return this.trusteeName !== '' && this.trusteeName !== 'No Trustee Endorsement';
-		},
 		totalLoansValueFormatted() {
 			return numeral(this.totalLoansValue).format('$0,0[.]00');
 		},

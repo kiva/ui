@@ -1,5 +1,5 @@
 <template>
-	<section v-if="isPartnerLoan">
+	<section>
 		<p>
 			<!-- eslint-disable-next-line max-len -->
 			Field partners are local organizations working in communities to vet borrowers, provide services, and administer loans on the ground.
@@ -90,6 +90,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		avgBorrowerCostType: { // Partner.avgBorrowerCostType
+			type: String,
+			default: '',
+		},
 		avgProfitability: { // Partner.avgProfitability
 			type: Number,
 			default: 0,
@@ -110,37 +114,27 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		distributionModel: { // LoanBasic.distributionModel
-			type: String,
-			default: '',
-		},
 	},
 	computed: {
-		isPartnerLoan() {
-			return this.distributionModel === 'field_partner';
-		},
 		avgBorrowerCostFormatted() {
 			return this.avgBorrowerCost !== 0
-				? `${numeral(this.avgBorrowerCost).format('0%')} PY`
+				? `${numeral(this.avgBorrowerCost / 100).format('0%')} ${this.avgBorrowerCostType}`
 				: 'N/A';
 		},
 		avgProfitabilityFormatted() {
-			return numeral(this.avgProfitability).format('0%');
+			return numeral(this.avgProfitability / 100).format('0[.]0%');
 		},
 		delinquencyRateFormatted() {
-			return numeral(this.arrearsRate).format('0%');
+			return numeral(this.arrearsRate / 100).format('0[.]00%');
 		},
 		loansAtRiskRateFormatted() {
-			return numeral(this.loansAtRiskRate).format('0%');
+			return numeral(this.loansAtRiskRate / 100).format('0[.]00%');
 		},
 		defaultRateFormatted() {
-			return numeral(this.defaultRate).format('0%');
+			return numeral(this.defaultRate / 100).format('0[.]00%');
 		},
 		currencyExchangeLossRateFormatted() {
-			return numeral(this.currencyExchangeLossRate).format('0%');
-		},
-		riskRatingFormatted() {
-			return numeral(this.riskRating).format('0%');
+			return numeral(this.currencyExchangeLossRate / 100).format('0[.]00%');
 		},
 	},
 	methods: {
