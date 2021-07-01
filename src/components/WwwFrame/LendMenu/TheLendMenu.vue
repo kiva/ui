@@ -149,23 +149,25 @@ export default {
 		},
 	},
 	mounted() {
-		this.apollo.query({
-			query: privateLendMenuQuery,
-			variables: {
-				userId: this.userId,
-			}
-		}).then(({ data, errors }) => {
-			if (!errors) {
-				this.favoritesCount = _get(data, 'lend.loans.totalCount');
-				this.savedSearches = _get(data, 'my.savedSearches.values');
-			} else {
-				this.favoritesCount = 0;
-				this.savedSearches = [];
-			}
-		}).finally(() => {
-			// data might have changed since the initial render, so trigger any needed updates
-			this.onOpen();
-		});
+		if (this.hasUserId) {
+			this.apollo.query({
+				query: privateLendMenuQuery,
+				variables: {
+					userId: this.userId,
+				}
+			}).then(({ data, errors }) => {
+				if (!errors) {
+					this.favoritesCount = _get(data, 'lend.loans.totalCount');
+					this.savedSearches = _get(data, 'my.savedSearches.values');
+				} else {
+					this.favoritesCount = 0;
+					this.savedSearches = [];
+				}
+			}).finally(() => {
+				// data might have changed since the initial render, so trigger any needed updates
+				this.onOpen();
+			});
+		}
 	}
 };
 </script>
