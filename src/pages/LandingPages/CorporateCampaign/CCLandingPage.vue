@@ -160,6 +160,19 @@
 				@lightbox-closed="checkoutLightboxClosed"
 				title="Checkout"
 			>
+				<campaign-status
+					v-if="!hideStatusBar && activeCreditType === 'lending_reward'"
+					class="corporate-campaign-landing__status--incontext collapse"
+					:active-credit-type="activeCreditType"
+					:in-context="true"
+					:is-matching="isMatchingCampaign"
+					:loading-promotion="loadingPromotion"
+					:promo-error-message="promoErrorMessage"
+					:promo-applied="promoApplied"
+					:promo-amount="promoAmount"
+					:promo-name="campaignPartnerName"
+					:status-message-override="statusMessageOverride"
+				/>
 				<in-context-checkout
 					class="campaign-checkout"
 					:is-actively-logged-in="isActivelyLoggedIn"
@@ -188,6 +201,19 @@
 					class="campaign-thanks__logos"
 					:corporate-logo-url="corporateLogoUrl"
 					:style="`--logo-color: ${headerTheme.logoColor}`"
+				/>
+				<campaign-status
+					v-if="!hideStatusBar && hasFreeCredits && campaignPartnerName"
+					class="corporate-campaign-landing__status--incontext collapse"
+					:active-credit-type="activeCreditType"
+					:in-context="true"
+					:is-matching="isMatchingCampaign"
+					:loading-promotion="loadingPromotion"
+					:promo-error-message="promoErrorMessage"
+					:promo-applied="promoApplied"
+					:promo-amount="promoAmount"
+					:promo-name="campaignPartnerName"
+					:status-message-override="statusMessageOverride"
 				/>
 				<campaign-thanks
 					:transaction-id="transactionId"
@@ -824,6 +850,7 @@ export default {
 				this.itemsInBasket = basketItemValues.length ? basketItemValues.map(item => item.id) : [];
 				this.lendingRewardOffered = data.shop?.lendingRewardOffered ?? false;
 				this.basketCredits = data.shop?.basket?.credits?.values || [];
+				this.hasFreeCredits = data.shop?.basket?.hasFreeCredits ?? false;
 
 				// Primary PromoCampaign Query
 				// > Previously > Future usage will not require the promoFundId relying only on the basket id
@@ -833,6 +860,8 @@ export default {
 					?? (this.prioritizedTargetCampaignCredit?.promoFund?.id ?? null);
 				return getPromoFromBasket(targetPromoId, this.apollo);
 			}).then(response => {
+				// eslint-disable-next-line max-len
+				const isLendingReward = response.data?.shop?.promoCampaign?.managedAccount?.managementType === 'lending_reward';
 				// Verify that applied promotion is for current page
 				if (this.verifyPromoMatchesPageId(response.data?.shop?.promoCampaign?.managedAccount?.pageId)) {
 					this.promoData = response.data?.shop?.promoCampaign;
@@ -843,8 +872,7 @@ export default {
 						this.promoErrorMessage = null;
 					}
 					// handle lending reward presence
-					if (response.data?.shop?.promoCampaign?.managedAccount?.managementType === 'lending_reward'
-						&& response.data?.shop?.promoCampaign?.promoFund?.id) {
+					if (isLendingReward && response.data?.shop?.promoCampaign?.promoFund?.id) {
 						this.promoApplied = true;
 						this.promoErrorMessage = null;
 					}
@@ -926,11 +954,15 @@ export default {
 			if (this.$refs.inContextCheckoutRef) {
 				this.$refs.inContextCheckoutRef.updatingTotals = true;
 			}
+
+			// get our basket id
+			const basketId = decodeURIComponent(this.cookieStore.get('kvbskt'));
+
 			// update basket state
 			const basketItems = this.apollo.query({
 				query: basketItemsQuery,
 				variables: {
-					basketId: this.cookieStore.get('kvbskt')
+					basketId
 				},
 				fetchPolicy: 'network-only',
 			});
@@ -941,6 +973,7 @@ export default {
 				this.itemsInBasket = basketItemValues.length ? basketItemValues.map(item => item.id) : [];
 
 				this.basketCredits = data.shop?.basket?.credits?.values ?? [];
+				this.hasFreeCredits = data.shop?.basket?.hasFreeCredits ?? false;
 			});
 		},
 		validatePromoBasketState(basketState) {
@@ -1074,8 +1107,8 @@ export default {
 				// extract new basket id
 				const newBasketId = data.shop?.createBasket ?? null;
 				if (newBasketId) {
-					this.cookieStore.set('kvbskt', encodeURIComponent(newBasketId), { secure: true });
-					this.updateBasketState();
+					this.cookieStore.set('kvbskt', newBasketId, { secure: true });
+					this.getPromoInformationFromBasket();
 				}
 			});
 		},
@@ -1216,6 +1249,14 @@ export default {
 		}
 	}
 
+	&__status--incontext {
+		position: relative;
+		top: auto;
+		z-index: 2;
+		height: auto;
+		margin-bottom: 2rem;
+	}
+
 	&__loading-page {
 		z-index: 1;
 	}
@@ -1299,29 +1340,6 @@ export default {
 		margin-bottom: 1.5rem;
 	}
 }
-
-// .loan-view-controls {
-// 	display: flex;
-// 	justify-content: space-between;
-// 	align-items: baseline;
-// 	flex-direction: column;
-
-// 	@include breakpoint(medium) {
-// 		flex-direction: row;
-// 		margin: 0 1rem;
-// 	}
-// 	@include breakpoint(large) {
-// 		margin: 0 3rem;
-// 	}
-
-// 	&__filters {
-// 		margin-bottom: 1rem;
-
-// 		@include breakpoint(medium) {
-// 			margin-bottom: 0;
-// 		}
-// 	}
-// }
 
 #campaignLoanSection {
 	// ensure we scroll past the sticky header
