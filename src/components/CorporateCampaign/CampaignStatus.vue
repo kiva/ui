@@ -1,13 +1,14 @@
 <template>
 	<section
 		class="campaign-status section row align-center"
-		:class="{
+		:class="[{
 			'campaign-status--loading': loadingPromotion,
-			'campaign-status--error': !promoApplied && promoErrorMessage && !loadingPromotion,
-			'campaign-status--success': (promoApplied && !promoErrorMessage) || statusMessageOverride,
-		}"
+			'campaign-status--error': !promoApplied && promoErrorMessage && !loadingPromotion && !inContext,
+			'campaign-status--success': (promoApplied && !promoErrorMessage && !inContext) || statusMessageOverride,
+			'campaign-status--incontext': inContext,
+		}, inContextClasses]"
 	>
-		<div class="small-12 large-8 columns">
+		<div class="small-12 columns" :class="{ 'large-8': !inContext }">
 			<div class="campaign-status__message">
 				<template v-if="statusMessageOverride">
 					<span>{{ statusMessageOverride }}</span>
@@ -27,7 +28,11 @@
 					</template>
 
 					<template v-if="!loadingPromotion && promoApplied && !promoErrorMessage && !isMatching">
-						<span v-if="promoName && (promoAmount !== '$0.00') && activeCreditType !== 'lending_reward'">
+						<span
+							v-if="promoName && (promoAmount !== '$0.00') && activeCreditType !== 'lending_reward'"
+							@click="handlePromoLinkClick"
+							:class="{ 'tw-underline': inContext, 'tw-cursor-pointer': inContext }"
+						>
 							You have ${{ promoAmount | numeral }}
 							<span v-if="promoName">from {{ promoName }}</span>
 							to lend!
@@ -60,6 +65,10 @@ export default {
 			type: String,
 			default: null
 		},
+		inContext: {
+			type: Boolean,
+			default: false
+		},
 		isMatching: {
 			type: Boolean,
 			default: false
@@ -89,6 +98,19 @@ export default {
 			default: null
 		}
 	},
+	computed: {
+		inContextClasses() {
+			return this.inContext ? 'tw-relative tw-bg-gray-50 tw-rounded' : '';
+		}
+	},
+	methods: {
+		handlePromoLinkClick() {
+			// Do nothing if not within the In-Context scenario
+			if (!this.inContext) return false;
+			// Refresh the page we are in context
+			window.location = window.location.origin + window.location.pathname;
+		}
+	}
 };
 </script>
 
@@ -106,6 +128,12 @@ export default {
 		padding: 0.875rem;
 	}
 
+	&__message {
+		margin-bottom: 0;
+		line-height: $small-text-line-height;
+		font-weight: bold;
+	}
+
 	&--loading {
 		background-color: $kiva-bg-darkgray;
 	}
@@ -115,15 +143,15 @@ export default {
 		color: $white;
 	}
 
+	&--incontext {
+		.campaign-status__message {
+			font-weight: normal;
+		}
+	}
+
 	&--success {
 		background-color: $kiva-green;
 		color: $white;
-	}
-
-	&__message {
-		margin-bottom: 0;
-		line-height: $small-text-line-height;
-		font-weight: bold;
 	}
 
 	&__icon {
