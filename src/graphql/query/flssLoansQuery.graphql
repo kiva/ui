@@ -4,12 +4,12 @@ query flssLoanData(
   $filterObject: [FundraisingLoanSearchFilterInput!] = { countryIsoCode: {any: ["US"]}}
   $imgDefaultSize: String = "w480h360"
   $imgRetinaSize: String = "w960h720"
-  $limit: Int = 50
-  $pageNumber: Int
+  $limit: Int
+  $offest: Int
 ) {
   fundraisingLoans(filters: $filterObject,
   							limit:  $limit,
-  							pageNumber: $pageNumber) {
+  							pageNumber: $offset) {
     totalCount
     values {
       id
