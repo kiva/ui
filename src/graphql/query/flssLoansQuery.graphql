@@ -1,11 +1,15 @@
 #import '../fragments/loanCardFields.graphql'
 
 query flssLoanData(
-  $filterObject: [FundraisingLoanSearchFilterInput!]
+  $filterObject: [FundraisingLoanSearchFilterInput!] = { countryIsoCode: {any: ["US"]}}
   $imgDefaultSize: String = "w480h360"
   $imgRetinaSize: String = "w960h720"
+  $limit: Int = 50
+  $pageNumber: Int
 ) {
-  fundraisingLoans(filters: $filterObject) {
+  fundraisingLoans(filters: $filterObject,
+  							limit:  $limit,
+  							pageNumber: $pageNumber) {
     totalCount
     values {
       id
