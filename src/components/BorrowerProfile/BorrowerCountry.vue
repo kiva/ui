@@ -4,7 +4,7 @@
 			class="
 				tw-rounded
 				tw-overflow-hidden
-				tw-my-5
+				tw-mb-6
 			"
 			:auto-zoom-delay="mapAutoZoomDelay"
 			:aspect-ratio="mapAspectRatio"

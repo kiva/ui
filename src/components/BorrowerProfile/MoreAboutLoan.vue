@@ -59,32 +59,25 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
+
 export default {
+	inject: ['apollo', 'cookieStore'],
 	props: {
-		partnerName: { // LoanPartner.partnerName
-			type: String,
-			default: '',
+		loanId: {
+			type: Number,
+			default: 0,
 		},
-		moreInfoAboutLoan: { // LoanPartner.moreInfoAboutLoan
-			type: String,
-			default: '',
-		},
-		dualStatementNote: { // LoanPartner.dualStatementNote
-			type: String,
-			default: '',
-		},
-		businessDescription: { // LoanDirect.businessDescription
-			type: String,
-			default: '',
-		},
-		purpose: { // LoanDirect.purpose
-			type: String,
-			default: '',
-		},
-		loanAlertText: { // Partner.loanAlertText
-			type: String,
-			default: '',
-		},
+	},
+	data() {
+		return {
+			businessDescription: '',
+			dualStatementNote: '',
+			loanAlertText: '',
+			moreInfoAboutLoan: '',
+			partnerName: '',
+			purpose: '',
+		};
 	},
 	computed: {
 		loanAlertTextParagraphs() {
@@ -96,6 +89,42 @@ export default {
 		purposeParagraphs() {
 			return this.toParagraphs(this.purpose);
 		}
+	},
+	apollo: {
+		query: gql`query moreAboutLoan($loanId: Int!) {
+			lend {
+				loan(id: $loanId) {
+					id
+					... on LoanDirect {
+						businessDescription
+						purpose
+					}
+					... on LoanPartner {
+						dualStatementNote
+						moreInfoAboutLoan
+						partnerName
+						partner {
+							id
+							loanAlertText
+						}
+					}
+				}
+			}
+		}`,
+		variables() {
+			return {
+				loanId: this.loanId,
+			};
+		},
+		result(result) {
+			const loan = result?.data?.lend?.loan;
+			this.businessDescription = loan?.businessDescription ?? '';
+			this.dualStatementNote = loan?.dualStatementNote ?? '';
+			this.loanAlertText = loan?.partner?.loanAlertText ?? '';
+			this.moreInfoAboutLoan = loan?.moreInfoAboutLoan ?? '';
+			this.partnerName = loan?.partnerName ?? '';
+			this.purpose = loan?.purpose ?? '';
+		},
 	},
 	methods: {
 		toParagraphs(text) {

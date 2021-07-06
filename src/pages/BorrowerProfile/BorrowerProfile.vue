@@ -19,10 +19,18 @@
 				</sidebar-container>
 			</div>
 			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-8">
-				<loan-story :loan-id="loanId" />
-				<borrower-country :loan-id="loanId" />
+				<loan-story class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 			</content-container>
-			<div class="tw-bg-brand-50">
+			<div class="tw-bg-brand-50 tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
+				<content-container>
+					<why-special :loan-id="loanId" />
+				</content-container>
+			</div>
+			<content-container>
+				<more-about-loan class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
+				<borrower-country class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
+			</content-container>
+			<div class="tw-bg-brand-50 tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
 				<content-container>
 					<details-tabs :loan-id="loanId" name="bp-details" />
 				</content-container>
@@ -44,6 +52,8 @@ import LendCta from '@/components/BorrowerProfile/LendCta';
 import LoanStory from '@/components/BorrowerProfile/LoanStory';
 import DetailsTabs from '@/components/BorrowerProfile/DetailsTabs';
 import BorrowerCountry from '@/components/BorrowerProfile/BorrowerCountry';
+import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
+import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 
 export default {
 	components: {
@@ -53,8 +63,10 @@ export default {
 		HeroBackground,
 		LendCta,
 		LoanStory,
+		MoreAboutLoan,
 		SidebarContainer,
 		SummaryCard,
+		WhySpecial,
 		WwwPage,
 	},
 	data() {
