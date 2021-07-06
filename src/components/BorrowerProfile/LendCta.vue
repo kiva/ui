@@ -146,44 +146,81 @@
 					</p>
 				</div>
 			</kv-grid>
-			<kv-grid
-				:class="[
-					'tw-grid-cols-12',
-					'tw-order-first',
-					'tw-px-2.5',
-					{
-						'md:tw-order-none': !isSticky,
-						'md:tw-px-3': !isSticky,
-						'md:tw-px-4': isSticky,
-					},
-					'lg:tw-px-0',
-				]"
+
+			<transition-group
+				enter-active-class="tw-transition-opacity tw-duration-500 tw-delay-300"
+				enter-class="tw-opacity-0"
+				enter-to-class="tw-opacity-full"
 			>
-				<div v-if="lenderCountVisibilty"
+				<!-- leave-active-class="tw-transition-opacity tw-duration-300 tw-delay-300"
+				leave-class="tw-opacity-full"
+				leave-to-class="tw-opacity-0" -->
+				<kv-grid
+					v-show="lenderCountVisibilty || matchingTextVisibilty"
+					key="grid"
 					:class="[
-						'tw-col-span-12',
-						'tw-mb-1 tw-p-1',
-						'tw-rounded',
-						'tw-bg-white',
-						'tw-text-h4',
-						'tw-flex tw-justify-center',
-						'md:tw-mt-1',
+						'tw-grid-cols-12',
+						'tw-order-first',
+						'tw-px-2.5',
 						{
-							'md:tw-mb-0': !isSticky,
-							'md:tw-col-start-6 md:tw-col-span-7': !isSticky,
-							'md:tw-col-start-5 md:tw-col-span-6': isSticky,
+							'md:tw-order-none': !isSticky,
+							'md:tw-px-3': !isSticky,
+							'md:tw-px-4': isSticky,
 						},
-						'lg:tw-mb-0',
-						'lg:tw-col-span-12'
+						'lg:tw-px-0',
 					]"
 				>
-					<kv-material-icon
-						class="tw-h-2.5 tw-pointer-events-none"
-						:icon="mdiLightningBolt"
-					/>
-					powered by {{ numLenders }} lenders
-				</div>
-			</kv-grid>
+					<div
+						key="wrapper"
+						:class="[
+							'tw-col-span-12',
+							'tw-mb-1 tw-p-1',
+							'tw-rounded',
+							'tw-bg-white',
+							'tw-text-h4',
+							'tw-flex tw-justify-center',
+							'tw-mt-1',
+							{
+								'md:tw-mb-0': !isSticky,
+								'md:tw-col-start-6 md:tw-col-span-7': !isSticky,
+								'md:tw-col-start-5 md:tw-col-span-6': isSticky,
+							},
+							'lg:tw-mb-0',
+							'lg:tw-col-span-12'
+						]"
+					>
+						<!-- 'tw-col-span-12', -->
+						<!-- <transition-group
+							v-show="lenderCountVisibilty || matchingTextVisibilty"
+							enter-active-class="tw-transition-opacity tw-duration-300 tw-delay-300"
+							leave-active-class="tw-transition-opacity tw-duration-300"
+							enter-class="tw-opacity-0 tw-absolute tw-top-0"
+							enter-to-class="tw-opacity-full"
+							leave-class="tw-opacity-full"
+							leave-to-class="tw-opacity-0 tw-absolute tw-top-0"
+						> -->
+						<span
+							key="numLendersStat"
+							v-show="lenderCountVisibilty"
+						>
+							<kv-material-icon
+								class="tw-h-2.5 tw-pointer-events-none"
+								:icon="mdiLightningBolt"
+							/>
+							powered by {{ numLenders }} lenders
+						</span>
+
+						<span
+							key="loanMatchingText"
+							v-show="matchingTextVisibilty"
+							class=""
+						>
+							{{ matchingText }}
+						</span>
+						<!-- </transition-group> -->
+					</div>
+				</kv-grid>
+			</transition-group>
 		</div>
 	</div>
 </template>
@@ -236,6 +273,8 @@ export default {
 			status: '',
 			numLenders: 0,
 			lenderCountVisibilty: false,
+			matchingTextVisibilty: false,
+			matchingText: '',
 			isAdding: false,
 			hasFreeCredit: false,
 			isSticky: false,
@@ -252,6 +291,7 @@ export default {
 						status
 						minNoteSize
 						loanAmount
+						matcherName
 						unreservedAmount @client
 						loanFundraisingInfo {
 							fundedAmount
@@ -303,9 +343,14 @@ export default {
 			this.promoEligible = loan?.userProperties?.promoEligible ?? false;
 			this.numLenders = loan?.lenders?.totalCount ?? 0;
 			this.hasFreeCredit = result?.data?.basket?.hasFreeCredits ?? false;
+			this.matchingText = loan?.matchingText ?? '🤝 2X MATCHED LOAN';
 
-			if (this.status === 'fundraising') {
+			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibilty = true;
+			}
+
+			if (this.matchingText !== '') {
+				// this.matchingTextVisibilty = true;
 			}
 		},
 	},
@@ -403,6 +448,25 @@ export default {
 				'Modify lend amount',
 				selectedDollarAmount
 			);
+		},
+		// animateSlotStatsContainerEnter() {
+		// 	const slideInContainer = () => {
+
+		// 	};
+		// },
+		animateSlotMachineStats() {
+			const cycleSlotMachine = () => {
+				if (this.lenderCountVisibilty) {
+					console.log('inside animateSlotMachineStats if block');
+					this.lenderCountVisibilty = false;
+					this.matchingTextVisibilty = true;
+				} else {
+					console.log('inside animateSlotMachineStats OUTSIDE if block');
+					this.matchingTextVisibilty = false;
+					this.lenderCountVisibilty = true;
+				}
+			};
+			setInterval(cycleSlotMachine, 5000);
 		}
 	},
 	computed: {
@@ -483,6 +547,8 @@ export default {
 	},
 	mounted() {
 		this.createWrapperObserver();
+		// this.animateSlotStatsContainerEnter();
+		// this.animateSlotMachineStats();
 	},
 	beforeDestroy() {
 		this.destroyWrapperObserver();
@@ -490,3 +556,17 @@ export default {
 };
 
 </script>
+
+<style lang="scss">
+@import 'settings';
+
+@keyframes slideInStatsContainer {
+	from {
+		top: -100%;
+	}
+
+	to {
+		top: 100%;
+	}
+}
+</style>
