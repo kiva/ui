@@ -1,5 +1,5 @@
 <template>
-	<section>
+	<section class="tw-prose">
 		<h2>
 			More about this loan
 		</h2>

@@ -1,16 +1,10 @@
 <template>
-	<section>
+	<section class="tw-prose">
 		<div>
-			<h2
-				class="tw-text-h2"
-				v-if="isAnonymizationLevelFull"
-			>
+			<h2 v-if="isAnonymizationLevelFull">
 				Story
 			</h2>
-			<h2
-				class="tw-text-h2"
-				v-if="!isAnonymizationLevelFull"
-			>
+			<h2 v-if="!isAnonymizationLevelFull">
 				{{ borrowerOrGroupName }}'s story
 			</h2>
 		</div>
@@ -19,14 +13,13 @@
 				<p
 					v-for="(paragraph, index) in storyDescriptionParagraphs"
 					:key="`storyDescription-${index}`"
-					class="tw-text-base"
 				>
 					{{ paragraph }}
 				</p>
 			</section>
 
 			<section v-if="borrowersList">
-				<p class="tw-text-base">
+				<p>
 					{{ borrowersList }}
 				</p>
 			</section>
@@ -44,7 +37,7 @@
 					:src="reviewerImageLink"
 					:alt="reviewerName"
 				>
-				<p class="tw-text-base">
+				<p>
 					Translated from {{ language }}
 					<span v-if="reviewerName">
 						by
@@ -63,7 +56,6 @@
 					<p
 						v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
 						:key="`originalLanguageParagraph-${index}`"
-						class="tw-text-base"
 					>
 						{{ paragraph }}
 					</p>
