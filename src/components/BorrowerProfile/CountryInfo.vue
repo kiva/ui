@@ -24,7 +24,7 @@
 		<kv-ui-button
 			v-if="showFindMoreLoansInCountryButton"
 			class="tw-inline-flex tw-flex-1 tw-pb-1 lg:tw-pb-3"
-			to="`/lend?country=${countryIsoCode}`"
+			:to="`/lend?country=${countryIsoCode}`"
 		>
 			Find more borrowers in {{ countryName }}
 		</kv-ui-button>

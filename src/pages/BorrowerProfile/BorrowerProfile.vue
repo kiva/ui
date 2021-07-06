@@ -18,7 +18,7 @@
 					<lend-cta :loan-id="loanId" />
 				</sidebar-container>
 			</div>
-			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-12">
+			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-8">
 				<loan-story :loan-id="loanId" />
 				<borrower-country :loan-id="loanId" />
 			</content-container>
