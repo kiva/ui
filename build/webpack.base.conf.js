@@ -140,16 +140,27 @@ module.exports = {
 			},
 			{
 				test: /\.js$/,
+				include: [
+					resolve('src'),
+					resolve('test'),
+					resolve('node_modules/@kiva'),
+				],
 				use: [
 					{ loader: 'thread-loader' },
 					{
 						loader: 'babel-loader',
 						options: {
 							cacheDirectory: true,
+							// These babelrc and configFile settings ensure that all files processed by this loader get
+							// transformed using this project's babel config. Without this, babel will search for the
+							// config in the package directory of the file being processed, which means that files from
+							// node_modules will not use this project's babel config; they will use their own babel
+							// config file, or no config at all if they do not have one.
+							babelrc: false,
+							configFile: resolve('.babelrc'),
 						},
 					},
 				],
-				include: [resolve('src'), resolve('test')]
 			},
 			{
 				test: /\.(graphql|gql)$/,

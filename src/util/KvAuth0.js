@@ -9,6 +9,10 @@ const isServer = typeof window === 'undefined';
 // only require auth0-js if we are not in a server environment
 const auth0js = !isServer ? require('auth0-js') : null;
 
+const SYNC_NAME = 'kvls';
+const LOGOUT_VALUE = 'o';
+const COOKIE_OPTIONS = { path: '/', secure: true };
+
 // These symbols are unique, and therefore are private to this scope.
 // For more details, see https://medium.com/@davidrhyswhite/private-members-in-es6-db1ccd6128a5
 const errorCallbacks = Symbol('errorCallbacks');
@@ -19,6 +23,9 @@ const popupAuthorize = Symbol('authorize');
 const popupWindow = Symbol('popupWindow');
 const sessionPromise = Symbol('sessionPromise');
 const setAuthData = Symbol('setAuthData');
+const noteLoggedIn = Symbol('noteLoggedIn');
+const noteLoggedOut = Symbol('noteLoggedOut');
+const clearNotedLoginState = Symbol('clearNotedLoginState');
 
 function getErrorString(err) {
 	return `${err.error || err.code || err.name}: ${err.error_description || err.description}`;
@@ -139,6 +146,35 @@ export default class KvAuth0 {
 			|| false;
 	}
 
+	getSyncCookieValue() {
+		return this.cookieStore.get(SYNC_NAME);
+	}
+
+	isNotedLoggedIn() {
+		const syncValue = this.getSyncCookieValue();
+		return syncValue && syncValue !== LOGOUT_VALUE;
+	}
+
+	isNotedLoggedOut() {
+		return this.getSyncCookieValue() === LOGOUT_VALUE;
+	}
+
+	isNotedUserSessionUser() {
+		return String(this.getKivaId()) === String(this.getSyncCookieValue());
+	}
+
+	[noteLoggedIn]() {
+		this.cookieStore.set(SYNC_NAME, this.getKivaId(), COOKIE_OPTIONS);
+	}
+
+	[noteLoggedOut]() {
+		this.cookieStore.set(SYNC_NAME, LOGOUT_VALUE, COOKIE_OPTIONS);
+	}
+
+	[clearNotedLoginState]() {
+		this.cookieStore.remove(SYNC_NAME, COOKIE_OPTIONS);
+	}
+
 	// Silently fetch an access token for the MFA api to manage MFA factors
 	getMfaManagementToken() {
 		// only try this if in the browser
@@ -213,6 +249,7 @@ export default class KvAuth0 {
 						this[setAuthData]();
 						if (err.error === 'login_required' || err.error === 'unauthorized') {
 							// User is not logged in, so continue without authentication
+							this[noteLoggedOut]();
 							resolve();
 						} else if (err.error === 'consent_required' || err.error === 'interaction_required') {
 							// These errors require interaction beyond what can be provided by webauth,
@@ -229,12 +266,14 @@ export default class KvAuth0 {
 								scope.setTag('auth_method', 'check session');
 								Sentry.captureMessage(getErrorString(err));
 							});
+							this[clearNotedLoginState]();
 							this[handleUnknownError](err);
 							resolve();
 						}
 					} else {
 						// Successful authentication
 						this[setAuthData](result);
+						this[noteLoggedIn]();
 						resolve();
 					}
 				});
@@ -313,6 +352,10 @@ export const MockKvAuth0 = {
 	getKivaId: () => undefined,
 	getLastLogin: () => 0,
 	getMfaEnrollToken: () => Promise.resolve({}),
+	getSyncCookieValue: () => null,
+	isNotedLoggedIn: () => false,
+	isNotedLoggedOut: () => false,
+	isNotedUserSessionUser: () => true,
 	checkSession: () => Promise.resolve({}),
 	popupLogin: () => Promise.resolve({}),
 	popupCallback: () => Promise.resolve({}),

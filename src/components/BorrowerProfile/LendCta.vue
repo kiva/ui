@@ -5,7 +5,7 @@
 	>
 		<div
 			:class="[
-				'tw-w-full tw-z-10',
+				'tw-w-full tw-z-sticky',
 				'tw-flex tw-flex-col',
 				'tw-fixed tw-left-0 tw-bottom-0',
 				{
@@ -111,7 +111,7 @@
 
 						<!-- Funded, refunded, expired/ allSharesReserved button -->
 						<kv-ui-button
-							v-if="!lendButtonVisibility"
+							v-if="showNonActionableLoanButton"
 							class="tw-inline-flex tw-flex-1"
 							to="/lend-by-category"
 							v-kv-track-event="[
@@ -227,12 +227,10 @@
 
 <script>
 import { mdiLightningBolt } from '@mdi/js';
-import * as Sentry from '@sentry/browser';
 import gql from 'graphql-tag';
+import { setLendAmount } from '@/util/basketUtils';
 import { buildPriceArray } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
-import numeral from 'numeral';
-import basketItemsQuery from '@/graphql/query/basketItems.graphql';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -244,10 +242,6 @@ export default {
 		loanId: {
 			type: Number,
 			default: 0,
-		},
-		price: {
-			type: [Number, String],
-			default: 25,
 		},
 	},
 	components: {
@@ -267,15 +261,19 @@ export default {
 			reservedAmount: '',
 			unreservedAmount: '',
 			lentPreviously: false,
-			amountInBasket: '',
 			promoEligible: false,
 			minNoteSize: '',
 			status: '',
 			numLenders: 0,
 			lenderCountVisibilty: false,
+<<<<<<< HEAD
 			matchingTextVisibilty: false,
 			matchingText: '',
+=======
+			basketItems: [],
+>>>>>>> master
 			isAdding: false,
+			isLoading: true,
 			hasFreeCredit: false,
 			isSticky: false,
 			wrapperHeight: 0,
@@ -284,7 +282,7 @@ export default {
 	},
 	apollo: {
 		query: gql`
-			query lendCta($loanId: Int!, $basketId: String,) {
+			query lendCta($loanId: Int!, $basketId: String) {
 				lend {
 					loan(id: $loanId) {
 						id
@@ -300,7 +298,6 @@ export default {
 						}
 						userProperties {
 							lentTo
-							amountInBasket
 							promoEligible(basketId: $basketId)
 						}
 						lenders{
@@ -329,7 +326,9 @@ export default {
 			};
 		},
 		result(result) {
+			this.isLoading = false;
 			const loan = result?.data?.lend?.loan;
+			const basket = result?.data?.shop?.basket;
 
 			this.loanAmount = loan?.loanAmount ?? '0';
 			this.status = loan?.status ?? '';
@@ -339,11 +338,15 @@ export default {
 			this.unreservedAmount = loan?.unreservedAmount ?? '';
 			this.isExpiringSoon = loan?.loanFundraisingInfo?.isExpiringSoon ?? false;
 			this.lentPreviously = loan?.userProperties?.lentTo ?? false;
-			this.amountInBasket = loan?.userProperties?.amountInBasket ?? '';
 			this.promoEligible = loan?.userProperties?.promoEligible ?? false;
 			this.numLenders = loan?.lenders?.totalCount ?? 0;
+<<<<<<< HEAD
 			this.hasFreeCredit = result?.data?.basket?.hasFreeCredits ?? false;
 			this.matchingText = loan?.matchingText ?? '🤝 2X MATCHED LOAN';
+=======
+			this.hasFreeCredit = basket?.hasFreeCredits ?? false;
+			this.basketItems = basket?.items?.values ?? [];
+>>>>>>> master
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibilty = true;
@@ -356,66 +359,17 @@ export default {
 	},
 	methods: {
 		addToBasket() {
-			const price = numeral(this.price).format('0.00');
 			this.isAdding = true;
-			this.apollo.mutate({
-				mutation: gql`mutation addToBasket($loanId: Int!, $price: Money!, $basketId: String) {
-					shop (basketId: $basketId) {
-						id
-						updateLoanReservation (loanReservation: {
-							id: $loanId
-							price: $price
-						}) {
-							id
-							price
-						}
-					}
-				}`,
-				variables: {
-					loanId: this.loanId,
-					price,
-				},
-				optimisticResponse: {
-					__typename: 'Mutation',
-					shop: {
-						__typename: 'ShopMutation',
-						updateLoanReservation: {
-							__typename: 'LoanReservation',
-							id: this.loanId,
-							price,
-						},
-					},
-				},
-				awaitRefetchQueries: true,
-				refetchQueries: [
-					{
-						query: basketItemsQuery,
-						variables: {
-							basketId: this.cookieStore.get('kvbskt'),
-						}
-					},
-				]
-			}).then(result => {
+			setLendAmount({
+				amount: this.selectedOption,
+				apollo: this.apollo,
+				loanId: this.loanId,
+			}).then(() => {
 				this.isAdding = false;
-				if (result.error) {
-					this.handleError(result.error);
-				}
-			}).catch(error => {
+			}).catch(() => {
 				this.isAdding = false;
-				this.handleError(error);
+				this.$showTipMsg('There was a problem adding the loan to your basket', 'error');
 			});
-		},
-		handleError(err) {
-			console.error(err);
-			this.$showTipMsg('There was a problem adding the loan to your basket', 'error');
-			try {
-				Sentry.withScope(scope => {
-					scope.setTag('loan_id', this.loanId);
-					Sentry.captureException(err);
-				});
-			} catch (e) {
-				// no-op
-			}
 		},
 		createWrapperObserver() {
 			// Watch for the wrapper element moving in and out of the viewport
@@ -470,43 +424,58 @@ export default {
 		}
 	},
 	computed: {
+		isInBasket() {
+			// eslint-disable-next-line no-underscore-dangle
+			return this.basketItems.some(item => item.__typename === 'LoanReservation' && item.id === this.loanId);
+		},
 		prices() {
 			const minAmount = parseFloat(this.minNoteSize);
 			// limit at 20 price options
 			return buildPriceArray(parseFloat(this.unreservedAmount), minAmount).slice(0, 20);
 		},
 		lgScreenheadline() {
-			if (this.status === 'fundraising') {
-				return 'Help fund this loan';
+			switch (this.state) {
+				case 'loading':
+					return 'Loading...';
+				case 'funded':
+					return 'Help more borrowers like this';
+				case 'refunded':
+				case 'expired':
+				case 'fully-reserved':
+					return 'Help fund other borrowers';
+				default:
+					return 'Help fund this loan';
 			}
-			if (this.status === 'funded') {
-				return 'Help more borrowers like this';
-			}
-			// refunded, expired or all shares reserved
-			if (this.status === 'refunded' || this.status === 'expired' || this.allSharesReserved) {
-				return 'Help fund other borrowers';
-			}
-			return 'Loading...';
 		},
 		ctaButtonText() {
-			if (this.status === 'fundraising' && !this.allSharesReserved) {
-				return 'Lend now';
+			switch (this.state) {
+				case 'loading':
+					return 'Loading...';
+				case 'funded':
+					return 'Find another loan like this';
+				case 'refunded':
+				case 'expired':
+				case 'fully-reserved':
+					return 'Find another loan';
+				default:
+					return 'Lend now';
 			}
-			if (this.status === 'funded') {
-				return 'Find another loan like this';
-			}
-			// refunded, expired or all shares reserved
-			if (this.status === 'refunded' || this.status === 'expired' || this.allSharesReserved) {
-				return 'Find another loan';
-			}
-			return 'Loading...';
 		},
 		state() {
+			if (this.isLoading) {
+				return 'loading';
+			}
 			if (this.isAdding) {
 				return 'adding';
 			}
-			if (this.amountInBasket !== '') {
+			if (this.isInBasket) {
 				return 'basketed';
+			}
+			if (this.status === 'funded' || this.status === 'refunded' || this.status === 'expired') {
+				return this.status;
+			}
+			if (this.allSharesReserved) {
+				return 'fully-reserved';
 			}
 			if (this.lentPreviously) {
 				return 'lent-to';
@@ -517,18 +486,16 @@ export default {
 			return this.state === 'adding';
 		},
 		lendButtonVisibility() {
-			// eslint-disable-next-line max-len
-			if (this.state !== 'adding' && this.state === 'basketed' && this.state !== 'lent-to' && this.status !== 'funded' && this.status !== 'refunded' && this.status !== 'expired' && !this.allSharesReserved) {
-				return true;
-			}
-			return false;
+			return this.state === 'lend' || this.state === 'loading';
+		},
+		showNonActionableLoanButton() {
+			return this.state === 'funded'
+				|| this.state === 'refunded'
+				|| this.state === 'expired'
+				|| this.state === 'fully-reserved';
 		},
 		hideShowLendDropdown() {
-			// eslint-disable-next-line max-len
-			if (this.status !== 'fundraising' || this.state === 'basketed' || this.state === 'adding' || this.allSharesReserved) {
-				return false;
-			}
-			return true;
+			return this.state === 'lend' || this.state === 'lent-to';
 		},
 		freeCreditWarning() {
 			return this.hasFreeCredit === true && this.promoEligible === false;
