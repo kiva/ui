@@ -169,10 +169,12 @@ export default {
 		}
 	},
 	methods: {
-		activateZoom(zoomOut) {
+		activateZoom(zoomOut = false) {
 			const { mapInstance, hasWebGL, mapLibreReady } = this;
-			// exit if already zoomed out (getZoom() works for both leaflet + maplibregl)
-			if (zoomOut && mapInstance.getZoom() === this.initialZoom) return false;
+			const currentZoomLevel = mapInstance.getZoom();
+			// exit if already zoomed in (getZoom() works for both leaflet + maplibregl)
+			if ((!zoomOut && currentZoomLevel === this.zoomLevel)
+				|| (zoomOut && currentZoomLevel === this.initialZoom)) return false;
 
 			this.zoomActive = true;
 			// establish delayed zoom duration
@@ -201,8 +203,6 @@ export default {
 						if (entry.target === this.$refs?.[this.refString] && !this.zoomActive) {
 							if (entry.intersectionRatio > 0) {
 								this.activateZoom();
-							} else {
-								this.activateZoom(true);
 							}
 						}
 					});
