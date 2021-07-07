@@ -40,7 +40,8 @@ module.exports = {
 			'@': resolve('src'),
 			'foundation': 'foundation-sites/js',
 			// alias promise module to handle timesync calling require('promise')
-			'promise': resolve('build/promise.js')
+			'promise': resolve('build/promise.js'),
+			'tailwindcss': 'tailwindcss/tailwind.css',
 		}
 	},
 	module: {
@@ -109,6 +110,7 @@ module.exports = {
 								plugins: [
 									require('autoprefixer'),
 									require('cssnano'),
+									require('tailwindcss'),
 								]
 							}
 						}
@@ -126,7 +128,8 @@ module.exports = {
 								includePaths: [
 									'src/assets/fonts',
 									'src/assets/scss',
-									'node_modules/foundation-sites/scss'
+									'node_modules/foundation-sites/scss',
+									'node_modules/tailwindcss'
 								]
 							}
 						}
