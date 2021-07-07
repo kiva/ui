@@ -382,8 +382,6 @@ export default {
 			switch (this.state) {
 				case 'loading':
 					return 'Loading...';
-				case 'lent-to':
-					return 'Lend again';
 				case 'funded':
 					return 'Find another loan like this';
 				case 'refunded':
