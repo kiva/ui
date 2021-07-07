@@ -83,7 +83,7 @@
 
 						<!-- Continue to checkout button -->
 						<kv-ui-button
-							v-if="this.state === 'basketed'"
+							v-if="this.state === 'basketed' && this.state !== 'adding'"
 							class="tw-inline-flex tw-flex-1"
 							to="/basket"
 							v-kv-track-event="[
@@ -97,7 +97,7 @@
 
 						<!-- Lend again/lent previously button -->
 						<kv-ui-button
-							v-if="this.lentPreviously"
+							v-if="this.lentPreviously && this.state !== 'basketed' && this.state !== 'adding'"
 							class="tw-inline-flex tw-flex-1"
 							@click="addToBasket"
 							v-kv-track-event="[
@@ -380,6 +380,8 @@ export default {
 			switch (this.state) {
 				case 'loading':
 					return 'Loading...';
+				case 'lent-to':
+					return 'Lend again';
 				case 'funded':
 					return 'Find another loan like this';
 				case 'refunded':
