@@ -4,6 +4,7 @@ module.exports = {
 	presets: [kvConfig],
 	purge: [
 		'./node_modules/@kiva/kv-components/**/*.vue',
+		'./node_modules/@kiva/kv-components/utils/**/*.js',
 		'./server/**/*.html',
 		'./src/**/*.vue',
 	],
