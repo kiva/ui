@@ -69,6 +69,7 @@
 
 						<!-- Lend button -->
 						<kv-ui-button
+							key="lendButton"
 							v-if="lendButtonVisibility"
 							class="tw-inline-flex tw-flex-1"
 							@click="addToBasket"
@@ -97,7 +98,8 @@
 
 						<!-- Lend again/lent previously button -->
 						<kv-ui-button
-							v-if="this.lentPreviously"
+							key="lendAgainButton"
+							v-if="this.state === 'lent-to'"
 							class="tw-inline-flex tw-flex-1"
 							@click="addToBasket"
 							v-kv-track-event="[

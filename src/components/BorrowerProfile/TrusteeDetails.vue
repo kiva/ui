@@ -6,7 +6,7 @@
 		<h2>
 			{{ trusteeName }}
 		</h2>
-		<dl>
+		<dl class="tw-mb-4">
 			<description-list-item
 				:term="'Kiva borrowers'"
 				:details="numLoansEndorsedPublic"
@@ -26,7 +26,7 @@
 		</dl>
 		<router-link
 			:to="`/trustees/${trusteeId}`"
-			class="tw-uppercase"
+			class="tw-text-h4"
 		>
 			More about this trustee &rarr;
 		</router-link>

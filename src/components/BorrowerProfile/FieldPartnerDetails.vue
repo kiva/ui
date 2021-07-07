@@ -7,7 +7,7 @@
 		<h2>
 			{{ partnerName }}
 		</h2>
-		<dl>
+		<dl class="tw-mb-4">
 			<description-list-item
 				:term="'Average cost to borrower'"
 				:details="avgBorrowerCostFormatted"
@@ -32,9 +32,9 @@
 				:term="'Currency exchange loss rate'"
 				:details="currencyExchangeLossRateFormatted"
 			/>
-			<div class="tw-flex tw-mb-2">
-				<dt class="tw-flex-1">
-					<button class="tw-underline">
+			<div class="tw-flex tw-mb-1.5">
+				<dt class="tw-flex-1 tw-mb-0">
+					<button class="tw-underline tw-font-book">
 						Field Partner risk rating
 					</button>
 				</dt>
@@ -52,7 +52,7 @@
 		</dl>
 		<router-link
 			:to="`/partners/${partnerId}`"
-			class="tw-uppercase"
+			class="tw-text-h4"
 		>
 			More about {{ partnerName }} &rarr;
 		</router-link>

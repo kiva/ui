@@ -5,8 +5,8 @@
 				tw-w-full
 				tw-bg-black
 				tw-rounded
-				tw-mb-3.5
-				md:tw-mb-4
+				tw--mb-1.5
+				md:tw--mb-1
 			"
 			:alt="name"
 			:aspect-ratio="16 / 25"

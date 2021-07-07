@@ -1,5 +1,5 @@
 <template>
-	<section class="tw-py-4 md:tw-py-6 lg:tw-py-8">
+	<section class="tw-prose tw-py-4 md:tw-py-6 lg:tw-py-8">
 		<div v-if="loading">
 			<!-- Loading placeholder for kv-tab elements -->
 			<div class="tw-flex tw-mb-4.5 md:tw-mb-5 tw-h-2.5 md:tw-h-3 lg:tw-h-4">
@@ -14,17 +14,29 @@
 		</div>
 		<kv-tabs v-else>
 			<template #tabNav>
+				<kv-tab :for="loanTabId">
+					Loan details
+				</kv-tab>
 				<kv-tab :for="partnerTabId" v-if="isPartnerLoan">
 					Field Partner
 				</kv-tab>
 				<kv-tab :for="trusteeTabId" v-if="hasTrustee">
 					Trustee
 				</kv-tab>
-				<kv-tab :for="loanTabId">
-					Loan details
-				</kv-tab>
 			</template>
 			<template #tabPanels>
+				<kv-tab-panel :id="loanTabId">
+					<loan-details
+						:charges-fees-interest="partner.chargesFeesInterest"
+						:currency="loan.currency"
+						:flexible-fundraising-enabled="loan.flexibleFundraisingEnabled"
+						:loan-lender-repayment-term="loan.loanLenderRepaymentTerm"
+						:loan-term-lender-repayment-term="loan.loanTermLenderRepaymentTerm"
+						:loss-liability-currency-exchange="loan.lossLiabilityCurrencyExchange"
+						:partner-name="partner.name"
+						:repayment-interval="loan.repaymentInterval"
+					/>
+				</kv-tab-panel>
 				<kv-tab-panel :id="partnerTabId" v-if="isPartnerLoan">
 					<field-partner-details
 						:arrears-rate="partner.arrearsRate"
@@ -46,18 +58,6 @@
 						:trustee-id="trustee.id"
 						:trustee-name="trustee.name"
 						:total-loans-value="trustee.totalLoansValue"
-					/>
-				</kv-tab-panel>
-				<kv-tab-panel :id="loanTabId">
-					<loan-details
-						:charges-fees-interest="partner.chargesFeesInterest"
-						:currency="loan.currency"
-						:flexible-fundraising-enabled="loan.flexibleFundraisingEnabled"
-						:loan-lender-repayment-term="loan.loanLenderRepaymentTerm"
-						:loan-term-lender-repayment-term="loan.loanTermLenderRepaymentTerm"
-						:loss-liability-currency-exchange="loan.lossLiabilityCurrencyExchange"
-						:partner-name="partner.name"
-						:repayment-interval="loan.repaymentInterval"
 					/>
 				</kv-tab-panel>
 			</template>
