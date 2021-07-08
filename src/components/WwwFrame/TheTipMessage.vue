@@ -4,6 +4,7 @@
 
 <script>
 import _get from 'lodash/get';
+import DOMPurify from 'dompurify';
 import tipMessageData from '@/graphql/query/tipMessage/tipMessageData.graphql';
 import KvTipMessage from '@/components/Kv/KvTipMessage';
 
@@ -21,10 +22,11 @@ export default {
 
 				if (showing) {
 					const message = _get(data, 'tip.message');
+					const safeMessage = DOMPurify.sanitize(message, { ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a'] });
 					const messageType = _get(data, 'tip.type');
 					const persist = _get(data, 'tip.persist');
 
-					this.$refs.tip.show(message, messageType, persist);
+					this.$refs.tip.show(safeMessage, messageType, persist);
 				} else {
 					this.$refs.tip.close();
 				}
