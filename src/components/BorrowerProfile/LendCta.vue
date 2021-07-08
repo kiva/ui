@@ -150,13 +150,10 @@
 			</kv-grid>
 
 			<transition-group
-				enter-active-class="tw-transition-opacity tw-duration-500 tw-delay-300"
-				enter-class="tw-opacity-0"
-				enter-to-class="tw-opacity-full"
+				enter-active-class="tw-transition-transform tw-duration-700 tw-delay-300"
+				enter-class="tw-transform tw-absolute tw-translate-y-0 md:tw--translate-y-7 lg:tw--translate-y-7"
+				enter-to-class="tw-transform tw--translate-y-15 md:tw-translate-y-0 lg:tw-translate-y-0"
 			>
-				<!-- leave-active-class="tw-transition-opacity tw-duration-300 tw-delay-300"
-				leave-class="tw-opacity-full"
-				leave-to-class="tw-opacity-0" -->
 				<kv-grid
 					v-show="lenderCountVisibilty || matchingTextVisibilty"
 					key="grid"
@@ -191,35 +188,35 @@
 							'lg:tw-col-span-12'
 						]"
 					>
-						<!-- 'tw-col-span-12', -->
-						<!-- <transition-group
-							v-show="lenderCountVisibilty || matchingTextVisibilty"
-							enter-active-class="tw-transition-opacity tw-duration-300 tw-delay-300"
-							leave-active-class="tw-transition-opacity tw-duration-300"
-							enter-class="tw-opacity-0 tw-absolute tw-top-0"
-							enter-to-class="tw-opacity-full"
-							leave-class="tw-opacity-full"
-							leave-to-class="tw-opacity-0 tw-absolute tw-top-0"
-						> -->
-						<span
-							key="numLendersStat"
-							v-show="lenderCountVisibilty"
+						<transition-group
+							key="transformTransition"
+							enter-active-class="tw-transition-all tw-duration-1000"
+							enter-class="tw-transform tw-absolute tw--translate-y-4 tw-opacity-0"
+							enter-to-class="tw-transform tw-absolute tw-translate-y-0 tw-opacity-full"
+							leave-active-class="tw-transition-all tw-duration-1000"
+							leave-class="tw-transform tw-absolute tw-translate-y-0 tw-opacity-full"
+							leave-to-class="tw-transform tw-absolute tw-translate-y-4 tw-opacity-0"
 						>
-							<kv-material-icon
-								class="tw-h-2.5 tw-pointer-events-none"
-								:icon="mdiLightningBolt"
-							/>
-							powered by {{ numLenders }} lenders
-						</span>
+							<span
+								key="numLendersStat"
+								v-show="lenderCountVisibilty"
+								class=""
+							>
+								<kv-material-icon
+									class="tw-h-2.5 tw-pointer-events-none"
+									:icon="mdiLightningBolt"
+								/>
+								powered by {{ numLenders }} lenders
+							</span>
 
-						<span
-							key="loanMatchingText"
-							v-show="matchingTextVisibilty"
-							class=""
-						>
-							{{ matchingText }}
-						</span>
-						<!-- </transition-group> -->
+							<span
+								key="loanMatchingText"
+								v-show="matchingTextVisibilty"
+								class=""
+							>
+								{{ matchingText }}
+							</span>
+						</transition-group>
 					</div>
 				</kv-grid>
 			</transition-group>
@@ -268,18 +265,16 @@ export default {
 			status: '',
 			numLenders: 0,
 			lenderCountVisibilty: false,
-<<<<<<< HEAD
 			matchingTextVisibilty: false,
 			matchingText: '',
-=======
 			basketItems: [],
->>>>>>> master
 			isAdding: false,
 			isLoading: true,
 			hasFreeCredit: false,
 			isSticky: false,
 			wrapperHeight: 0,
 			wrapperObserver: null,
+			triggerStatCycle: false,
 		};
 	},
 	apollo: {
@@ -342,13 +337,9 @@ export default {
 			this.lentPreviously = loan?.userProperties?.lentTo ?? false;
 			this.promoEligible = loan?.userProperties?.promoEligible ?? false;
 			this.numLenders = loan?.lenders?.totalCount ?? 0;
-<<<<<<< HEAD
-			this.hasFreeCredit = result?.data?.basket?.hasFreeCredits ?? false;
-			this.matchingText = loan?.matchingText ?? '🤝 2X MATCHED LOAN';
-=======
 			this.hasFreeCredit = basket?.hasFreeCredits ?? false;
 			this.basketItems = basket?.items?.values ?? [];
->>>>>>> master
+			this.matchingText = loan?.matchingText ?? '🤝 2X MATCHED LOAN';
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibilty = true;
@@ -405,15 +396,12 @@ export default {
 				selectedDollarAmount
 			);
 		},
-		// animateSlotStatsContainerEnter() {
-		// 	const slideInContainer = () => {
-
-		// 	};
-		// },
-		animateSlotMachineStats() {
+		cycleStatsSlot() {
 			const cycleSlotMachine = () => {
+				console.log('cycleStatsSlot triggered');
 				if (this.lenderCountVisibilty) {
 					console.log('inside animateSlotMachineStats if block');
+					// show/hide not working with transition correctly
 					this.lenderCountVisibilty = false;
 					this.matchingTextVisibilty = true;
 				} else {
@@ -516,8 +504,7 @@ export default {
 	},
 	mounted() {
 		this.createWrapperObserver();
-		// this.animateSlotStatsContainerEnter();
-		// this.animateSlotMachineStats();
+		this.cycleStatsSlot();
 	},
 	beforeDestroy() {
 		this.destroyWrapperObserver();
