@@ -77,19 +77,6 @@
 
 								<!-- Lend button -->
 								<kv-ui-button
-									v-if="lendButtonVisibility"
-									class="tw-inline-flex tw-flex-1"
-									type="submit"
-									v-kv-track-event="[
-										'Lending',
-										'Add to basket',
-										ctaButtonText
-									]"
-								>
-									{{ ctaButtonText }}
-								</kv-ui-button>
-								<!-- Lend button -->
-								<kv-ui-button
 									key="lendButton"
 									v-if="lendButtonVisibility"
 									class="tw-inline-flex tw-flex-1"
