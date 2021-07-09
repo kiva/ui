@@ -45,42 +45,75 @@
 						{{ lgScreenheadline }}
 					</p>
 					<span class="tw-flex tw-pb-1 lg:tw-pb-3">
-						<label for="LoanAmountDropdown" class="tw-sr-only">Lend amount</label>
-						<kv-ui-select
-							v-if="hideShowLendDropdown"
-							id="LoanAmountDropdown"
-							class="tw-pr-2.5 tw--mb-2"
-							v-model="selectedOption"
-							v-kv-track-event="[
-								'Lending',
-								'click-Modify loan amount',
-								'open dialog'
-							]"
-							@change="trackLendAmountSelection"
-						>
-							<option
-								v-for="priceOption in prices"
-								:key="priceOption"
-								:value="priceOption"
-							>
-								${{ priceOption }}
-							</option>
-						</kv-ui-select>
+						<form @submit.prevent="addToBasket" class="tw-w-full tw-flex">
+							<fieldset class="tw-w-full tw-flex" :disabled="isAdding">
+								<label
+									v-if="hideShowLendDropdown"
+									for="LoanAmountDropdown"
+									class="tw-sr-only"
+								>
+									Lend amount
+								</label>
+								<kv-ui-select
+									v-if="hideShowLendDropdown"
+									id="LoanAmountDropdown"
+									class="tw-pr-2.5 tw--mb-2"
+									v-model="selectedOption"
+									v-kv-track-event="[
+										'Lending',
+										'click-Modify loan amount',
+										'open dialog'
+									]"
+									@change="trackLendAmountSelection"
+								>
+									<option
+										v-for="priceOption in prices"
+										:key="priceOption"
+										:value="priceOption"
+									>
+										${{ priceOption }}
+									</option>
+								</kv-ui-select>
 
-						<!-- Lend button -->
-						<kv-ui-button
-							key="lendButton"
-							v-if="lendButtonVisibility"
-							class="tw-inline-flex tw-flex-1"
-							@click="addToBasket"
-							v-kv-track-event="[
-								'Lending',
-								'Add to basket',
-								ctaButtonText
-							]"
-						>
-							{{ ctaButtonText }}
-						</kv-ui-button>
+								<!-- Lend button -->
+								<kv-ui-button
+									key="lendButton"
+									v-if="lendButtonVisibility"
+									class="tw-inline-flex tw-flex-1"
+									type="submit"
+									v-kv-track-event="[
+										'Lending',
+										'Add to basket',
+										ctaButtonText
+									]"
+								>
+									{{ ctaButtonText }}
+								</kv-ui-button>
+
+								<!-- Lend again/lent previously button -->
+								<kv-ui-button
+									key="lendAgainButton"
+									v-if="this.state === 'lent-to'"
+									class="tw-inline-flex tw-flex-1"
+									type="submit"
+									v-kv-track-event="[
+										'Lending',
+										'Add to basket',
+										'Lend again'
+									]"
+								>
+									Lend again
+								</kv-ui-button>
+
+								<!-- Adding to basket button -->
+								<kv-ui-button
+									v-if="isAdding"
+									class="tw-inline-flex tw-flex-1"
+								>
+									Adding to basket...
+								</kv-ui-button>
+							</fieldset>
+						</form>
 
 						<!-- Continue to checkout button -->
 						<kv-ui-button
@@ -96,21 +129,6 @@
 							Continue to checkout
 						</kv-ui-button>
 
-						<!-- Lend again/lent previously button -->
-						<kv-ui-button
-							key="lendAgainButton"
-							v-if="this.state === 'lent-to'"
-							class="tw-inline-flex tw-flex-1"
-							@click="addToBasket"
-							v-kv-track-event="[
-								'Lending',
-								'Add to basket',
-								'Lend again'
-							]"
-						>
-							Lend again
-						</kv-ui-button>
-
 						<!-- Funded, refunded, expired/ allSharesReserved button -->
 						<kv-ui-button
 							v-if="showNonActionableLoanButton"
@@ -124,14 +142,6 @@
 							]"
 						>
 							{{ ctaButtonText }}
-						</kv-ui-button>
-
-						<!-- Adding to basket button -->
-						<kv-ui-button
-							v-if="isAdding"
-							class="tw-inline-flex tw-flex-1"
-						>
-							Adding to basket...
 						</kv-ui-button>
 					</span>
 					<p
