@@ -80,7 +80,7 @@
 									</form>
 
 									<checkout-drop-in-payment-wrapper
-										v-else
+										v-if="isClientReady && !showKivaCreditButton"
 										:amount="creditNeeded"
 										:is-guest-checkout="checkingOutAsGuest"
 										@refreshtotals="refreshTotals"
@@ -301,6 +301,7 @@ export default {
 			guestCheckoutCTAExpActive: false,
 			checkingOutAsGuest: false,
 			hasEverLoggedIn: false,
+			isClientReady: false,
 		};
 	},
 	apollo: {
@@ -432,6 +433,7 @@ export default {
 		}
 	},
 	mounted() {
+		this.isClientReady = !this.$isServer;
 		// Ensure browser clock is correct before using current time
 		syncDate().then(() => {
 			// update current time every second for reactivity

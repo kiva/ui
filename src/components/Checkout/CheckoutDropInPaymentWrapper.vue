@@ -109,14 +109,13 @@ import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndC
 
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
-import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterface';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 
 export default {
 	components: {
 		KvButton,
 		KvIcon,
-		BraintreeDropInInterface,
+		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvCheckbox,
 	},
 	inject: ['apollo', 'cookieStore'],
