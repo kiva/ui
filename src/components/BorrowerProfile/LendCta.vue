@@ -46,7 +46,7 @@
 					</p>
 					<span class="tw-flex tw-pb-1 lg:tw-pb-3">
 						<form @submit.prevent="addToBasket" class="tw-w-full tw-flex">
-							<fieldset class="tw-w-full tw-flex">
+							<fieldset class="tw-w-full tw-flex" :disabled="isAdding">
 								<label
 									v-if="hideShowLendDropdown"
 									for="LoanAmountDropdown"
