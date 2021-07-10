@@ -2,6 +2,7 @@
 	<div class="row align-right">
 		<div class="dropin-payment-holder small-12 columns">
 			<braintree-drop-in-interface
+				v-if="isClientReady"
 				ref="braintreeDropInInterface"
 				:amount="amount"
 				flow="checkout"
@@ -136,6 +137,7 @@ export default {
 			termsAgreement: false,
 			emailUpdates: false,
 			enableCheckoutButton: false,
+			isClientReady: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 		};
 	},
@@ -145,6 +147,9 @@ export default {
 			email,
 		},
 		termsAgreement: { required: value => value === true },
+	},
+	mounted() {
+		this.isClientReady = !this.$isServer;
 	},
 	methods: {
 		submit() {
