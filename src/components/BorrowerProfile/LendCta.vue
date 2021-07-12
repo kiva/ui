@@ -16,6 +16,7 @@
 		>
 			<kv-grid
 				:class="[
+					'tw-z-2',
 					'tw-grid-cols-12',
 					'tw-px-2.5',
 					'tw-bg-white',
@@ -151,17 +152,23 @@
 
 			<transition-group
 				enter-active-class="tw-transition-transform tw-duration-700 tw-delay-300"
-				enter-class="tw-transform tw-absolute tw-translate-y-0 md:tw--translate-y-7 lg:tw--translate-y-7"
-				enter-to-class="tw-transform tw--translate-y-15 md:tw-translate-y-0 lg:tw-translate-y-0"
+				enter-class="tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7"
+				enter-to-class="tw-transform tw-translate-y-0 md:tw-translate-y-0 lg:tw-translate-y-0"
 			>
 				<kv-grid
-					v-show="lenderCountVisibilty || matchingTextVisibilty"
+					v-show="lenderCountVisibility || matchingTextVisibility"
 					key="grid"
+					id="grid"
 					:class="[
 						'tw-grid-cols-12',
 						'tw-order-first',
 						'tw-px-2.5',
+						'tw-absolute',
+						'tw-bottom-8',
+						'tw-w-full',
 						{
+							'md:tw-relative': !isSticky,
+							'md:tw-bottom-0': !isSticky,
 							'md:tw-order-none': !isSticky,
 							'md:tw-px-3': !isSticky,
 							'md:tw-px-4': isSticky,
@@ -170,8 +177,12 @@
 					]"
 				>
 					<div
+						id="wrapper"
 						key="wrapper"
 						:class="[
+							'tw-z-1',
+							'tw-h-5',
+							'tw-overflow-hidden',
 							'tw-col-span-12',
 							'tw-mb-1 tw-p-1',
 							'tw-rounded',
@@ -180,6 +191,7 @@
 							'tw-flex tw-justify-center',
 							'tw-mt-1',
 							{
+								'tw-relative': !isSticky,
 								'md:tw-mb-0': !isSticky,
 								'md:tw-col-start-6 md:tw-col-span-7': !isSticky,
 								'md:tw-col-start-5 md:tw-col-span-6': isSticky,
@@ -190,17 +202,17 @@
 					>
 						<transition-group
 							key="transformTransition"
-							enter-active-class="tw-transition-all tw-duration-1000"
-							enter-class="tw-transform tw-absolute tw--translate-y-4 tw-opacity-0"
-							enter-to-class="tw-transform tw-absolute tw-translate-y-0 tw-opacity-full"
+							class="tw-flex tw-flex-col"
+							enter-active-class="tw-transition-all tw-duration-1000 tw-delay-1000"
+							enter-class="tw-transform tw--translate-y-2 tw-opacity-0"
+							enter-to-class="tw-transform tw-translate-y-0 tw-opacity-full"
 							leave-active-class="tw-transition-all tw-duration-1000"
-							leave-class="tw-transform tw-absolute tw-translate-y-0 tw-opacity-full"
-							leave-to-class="tw-transform tw-absolute tw-translate-y-4 tw-opacity-0"
+							leave-class="tw-transform tw-translate-y-0 tw-opacity-full"
+							leave-to-class="tw-transform tw-translate-y-2 tw-opacity-0"
 						>
 							<span
 								key="numLendersStat"
-								v-show="lenderCountVisibilty"
-								class=""
+								v-show="statSlotAnimation"
 							>
 								<kv-material-icon
 									class="tw-h-2.5 tw-pointer-events-none"
@@ -211,8 +223,7 @@
 
 							<span
 								key="loanMatchingText"
-								v-show="matchingTextVisibilty"
-								class=""
+								v-show="!statSlotAnimation"
 							>
 								{{ matchingText }}
 							</span>
@@ -264,8 +275,9 @@ export default {
 			minNoteSize: '',
 			status: '',
 			numLenders: 0,
-			lenderCountVisibilty: false,
-			matchingTextVisibilty: false,
+			lenderCountVisibility: false,
+			matchingTextVisibility: false,
+			statSlotAnimation: false,
 			matchingText: '',
 			basketItems: [],
 			isAdding: false,
@@ -339,14 +351,15 @@ export default {
 			this.numLenders = loan?.lenders?.totalCount ?? 0;
 			this.hasFreeCredit = basket?.hasFreeCredits ?? false;
 			this.basketItems = basket?.items?.values ?? [];
-			this.matchingText = loan?.matchingText ?? '🤝 2X MATCHED LOAN';
+			this.matchingText = loan?.matchingText ?? '';
+			// '🤝 2X MATCHED LOAN'
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
-				this.lenderCountVisibilty = true;
+				this.lenderCountVisibility = true;
 			}
 
-			if (this.matchingText !== '') {
-				// this.matchingTextVisibilty = true;
+			if (this.lenderCountVisibility && this.matching!== '') {
+				this.statSlotAnimation = true;
 			}
 		},
 	},
@@ -397,21 +410,47 @@ export default {
 			);
 		},
 		cycleStatsSlot() {
-			const cycleSlotMachine = () => {
-				console.log('cycleStatsSlot triggered');
-				if (this.lenderCountVisibilty) {
-					console.log('inside animateSlotMachineStats if block');
-					// show/hide not working with transition correctly
-					this.lenderCountVisibilty = false;
-					this.matchingTextVisibilty = true;
-				} else {
-					console.log('inside animateSlotMachineStats OUTSIDE if block');
-					this.matchingTextVisibilty = false;
-					this.lenderCountVisibilty = true;
-				}
-			};
-			setInterval(cycleSlotMachine, 5000);
+			// trigger slot machine animation only if there is matching text
+			// aka another item to scroll into view
+
+			// TODO:: I only want this to cycle if there this.matchingText is not an empty string
+			// whenever I add this condition check in, it no longer cycles correctly, which doesn't
+			// entirely make sense because this.matchingText stays the same
+
+			// if (this.matchingText.length) {
+			// 	const cycleSlotMachine = () => {
+			// 		console.log('cycleStatsSlot triggered');
+			// 		if (this.lenderCountVisibility) {
+			// 			console.log('inside animateSlotMachineStats if block');
+			// 			this.lenderCountVisibility = false;
+			// 			this.matchingTextVisibility = true;
+			// 		} else {
+			// 			console.log('inside animateSlotMachineStats OUTSIDE if block');
+			// 			this.matchingTextVisibility = false;
+			// 			this.lenderCountVisibility = true;
+			// 		}
+			// 	};
+			// 	setInterval(cycleSlotMachine, 5000);
+			// }
+
+			if (this.matchingText.length) {
+				const cycleSlotMachine = () => {
+					if (this.statSlotAnimation) {
+						this.statSlotAnimation = false;
+					} else {
+						this.statSlotAnimation = true;
+					}
+				};
+				setInterval(cycleSlotMachine, 5000);
+			}
 		}
+	},
+	watch: {
+		matchingText(newValue, previousValue) {
+			if (newValue !== previousValue && newValue !== '') {
+				this.cycleStatsSlot();
+			}
+		},
 	},
 	computed: {
 		isInBasket() {
