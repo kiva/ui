@@ -237,7 +237,7 @@
 							>
 								<!-- This emoji is used in the mock, and material design's
 								handshake emoji is not great -->
-								
+
 								<!-- <span
 									class="tw-text-h3 tw-inline-block tw-align-middle tw-px-1"
 								>
@@ -380,7 +380,7 @@ export default {
 				this.lenderCountVisibility = true;
 			}
 
-			if (this.lenderCountVisibility && this.matching!== '') {
+			if (this.lenderCountVisibility && this.matching !== '') {
 				this.statScrollAnimation = true;
 			}
 		},
