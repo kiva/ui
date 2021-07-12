@@ -2,6 +2,7 @@
 	<div class="row">
 		<div class="dropin-payment-holder small-12 columns">
 			<braintree-drop-in-interface
+				v-if="isClientReady"
 				ref="braintreeDropInInterface"
 				:amount="amount | numeral('0.00')"
 				flow="vault"
@@ -42,11 +43,10 @@ import braintreeUpdateSubscriptionPaymentMethod from
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterface';
 
 export default {
 	components: {
-		BraintreeDropInInterface,
+		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvButton,
 		KvIcon,
 		KvLoadingSpinner
@@ -82,8 +82,12 @@ export default {
 	data() {
 		return {
 			enableConfirmButton: false,
+			isClientReady: false,
 			submitting: false,
 		};
+	},
+	mounted() {
+		this.isClientReady = !this.$isServer;
 	},
 	methods: {
 		submitDropInAutoDeposit() {
