@@ -80,7 +80,7 @@
 									</form>
 
 									<checkout-drop-in-payment-wrapper
-										v-else
+										v-if="!showKivaCreditButton"
 										:amount="creditNeeded"
 										:is-guest-checkout="checkingOutAsGuest"
 										@refreshtotals="refreshTotals"

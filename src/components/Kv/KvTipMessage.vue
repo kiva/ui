@@ -5,7 +5,7 @@
 				<div class="icon-wrapper">
 					<kv-icon :name="iconName" />
 				</div>
-				<p data-test="tip-message" class="message" v-html="safeMessage">
+				<p data-test="tip-message" class="message" v-html="message">
 				</p>
 			</span>
 			<button @click="close" class="close-tip-message" aria-label="Close">
@@ -17,7 +17,6 @@
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
-import DOMPurify from 'dompurify';
 
 export default {
 	components: {
@@ -33,9 +32,6 @@ export default {
 		};
 	},
 	computed: {
-		safeMessage() {
-			return DOMPurify.sanitize(this.message, { ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a'] });
-		},
 		typeClass() {
 			// Valid options are 'warning' + 'error' otherwise use confirmation as default
 			if (this.messageType === 'warning' || this.messageType === 'error') {
