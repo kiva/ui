@@ -258,8 +258,7 @@
 </template>
 
 <script>
-import { mdiLightningBolt } from '@mdi/js';
-import { mdiHandshakeOutline } from '@mdi/js';
+import { mdiLightningBolt, mdiHandshakeOutline } from '@mdi/js';
 import gql from 'graphql-tag';
 import { setLendAmount } from '@/util/basketUtils';
 import { buildPriceArray } from '@/util/loanUtils';
