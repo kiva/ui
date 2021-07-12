@@ -209,7 +209,7 @@
 						]"
 					>
 						<transition-group
-							key="transformTransition"
+							key="transition"
 							class="tw-flex tw-flex-col"
 							enter-active-class="tw-transition-all tw-duration-1000 tw-delay-1000"
 							enter-class="tw-transform tw--translate-y-2 tw-opacity-0"
@@ -219,21 +219,35 @@
 							leave-to-class="tw-transform tw-translate-y-2 tw-opacity-0"
 						>
 							<span
+								class="tw-inline-block tw-align-middle"
 								key="numLendersStat"
-								v-show="statSlotAnimation"
+								v-show="statScrollAnimation"
 							>
 								<kv-material-icon
-									class="tw-h-2.5 tw-pointer-events-none"
+									class="tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
 									:icon="mdiLightningBolt"
 								/>
 								powered by {{ numLenders }} lenders
 							</span>
 
 							<span
+								class="tw-inline-block tw-align-middle"
 								key="loanMatchingText"
-								v-show="!statSlotAnimation"
+								v-show="!statScrollAnimation"
 							>
-								{{ matchingText }}
+								<!-- This emoji is used in the mock, and material design's
+								handshake emoji is not great -->
+								
+								<!-- <span
+									class="tw-text-h3 tw-inline-block tw-align-middle tw-px-1"
+								>
+									🤝
+								</span> -->
+								<kv-material-icon
+									class="tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
+									:icon="mdiHandshakeOutline"
+								/>
+								2X MATCHED LOAN
 							</span>
 						</transition-group>
 					</div>
@@ -245,6 +259,7 @@
 
 <script>
 import { mdiLightningBolt } from '@mdi/js';
+import { mdiHandshakeOutline } from '@mdi/js';
 import gql from 'graphql-tag';
 import { setLendAmount } from '@/util/basketUtils';
 import { buildPriceArray } from '@/util/loanUtils';
@@ -271,6 +286,7 @@ export default {
 	data() {
 		return {
 			mdiLightningBolt,
+			mdiHandshakeOutline,
 			defaultSelectorAmount: 25,
 			selectedOption: '25',
 			loanAmount: '',
@@ -285,7 +301,7 @@ export default {
 			numLenders: 0,
 			lenderCountVisibility: false,
 			matchingTextVisibility: false,
-			statSlotAnimation: false,
+			statScrollAnimation: false,
 			matchingText: '',
 			basketItems: [],
 			isAdding: false,
@@ -305,7 +321,7 @@ export default {
 						status
 						minNoteSize
 						loanAmount
-						matcherName
+						matchingText
 						unreservedAmount @client
 						loanFundraisingInfo {
 							fundedAmount
@@ -366,7 +382,7 @@ export default {
 			}
 
 			if (this.lenderCountVisibility && this.matching!== '') {
-				this.statSlotAnimation = true;
+				this.statScrollAnimation = true;
 			}
 		},
 	},
@@ -419,10 +435,10 @@ export default {
 		cycleStatsSlot() {
 			if (this.matchingText.length) {
 				const cycleSlotMachine = () => {
-					if (this.statSlotAnimation) {
-						this.statSlotAnimation = false;
+					if (this.statScrollAnimation) {
+						this.statScrollAnimation = false;
 					} else {
-						this.statSlotAnimation = true;
+						this.statScrollAnimation = true;
 					}
 				};
 				setInterval(cycleSlotMachine, 5000);
