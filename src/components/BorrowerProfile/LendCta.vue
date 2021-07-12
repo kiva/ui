@@ -158,7 +158,6 @@
 				<kv-grid
 					v-show="lenderCountVisibility || matchingTextVisibility"
 					key="grid"
-					id="grid"
 					:class="[
 						'tw-grid-cols-12',
 						'tw-order-first',
@@ -177,7 +176,6 @@
 					]"
 				>
 					<div
-						id="wrapper"
 						key="wrapper"
 						:class="[
 							'tw-z-1',
@@ -286,7 +284,6 @@ export default {
 			isSticky: false,
 			wrapperHeight: 0,
 			wrapperObserver: null,
-			triggerStatCycle: false,
 		};
 	},
 	apollo: {
@@ -410,29 +407,6 @@ export default {
 			);
 		},
 		cycleStatsSlot() {
-			// trigger slot machine animation only if there is matching text
-			// aka another item to scroll into view
-
-			// TODO:: I only want this to cycle if there this.matchingText is not an empty string
-			// whenever I add this condition check in, it no longer cycles correctly, which doesn't
-			// entirely make sense because this.matchingText stays the same
-
-			// if (this.matchingText.length) {
-			// 	const cycleSlotMachine = () => {
-			// 		console.log('cycleStatsSlot triggered');
-			// 		if (this.lenderCountVisibility) {
-			// 			console.log('inside animateSlotMachineStats if block');
-			// 			this.lenderCountVisibility = false;
-			// 			this.matchingTextVisibility = true;
-			// 		} else {
-			// 			console.log('inside animateSlotMachineStats OUTSIDE if block');
-			// 			this.matchingTextVisibility = false;
-			// 			this.lenderCountVisibility = true;
-			// 		}
-			// 	};
-			// 	setInterval(cycleSlotMachine, 5000);
-			// }
-
 			if (this.matchingText.length) {
 				const cycleSlotMachine = () => {
 					if (this.statSlotAnimation) {
@@ -551,17 +525,3 @@ export default {
 };
 
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-@keyframes slideInStatsContainer {
-	from {
-		top: -100%;
-	}
-
-	to {
-		top: 100%;
-	}
-}
-</style>
