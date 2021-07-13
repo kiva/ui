@@ -279,7 +279,6 @@ export default {
 	data() {
 		return {
 			mdiLightningBolt,
-			mdiPartyPopper,
 			defaultSelectorAmount: 25,
 			selectedOption: '25',
 			loanAmount: '',
@@ -534,12 +533,14 @@ export default {
 		},
 		transitionEnterClasses() {
 			if (this.isSticky) {
-				return "tw-transform tw-translate-y-7 md:tw-translate-y-7 lg:tw--translate-y-7"
+				return 'tw-transform tw-translate-y-7 md:tw-translate-y-7 lg:tw--translate-y-7';
 			}
-			return "tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7";
+			return 'tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7';
 		},
 		transitionEnterToClasses() {
+			// eslint-disable-next-line max-len
 			return "[ 'tw-transform','tw-translate-y-0', { 'md:tw-translate-y-0': !isSticky } 'md:tw-translate-y-0','lg:tw-translate-y-0' ]";
+			// eslint-enable-next-line max-len
 		},
 	},
 	mounted() {
