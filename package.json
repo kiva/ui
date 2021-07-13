@@ -82,7 +82,7 @@
 		"fuse.js": "^5.2.3",
 		"get-user-locale": "^1.4.0",
 		"graphql": "^14.7.0",
-		"graphql-tag": "^2.11.0",
+		"graphql-tag": "^2.12.5",
 		"gsap": "^3.5.1",
 		"helmet": "^4.6.0",
 		"https": "^1.0.0",
