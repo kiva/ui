@@ -252,7 +252,7 @@
 </template>
 
 <script>
-import { mdiLightningBolt, mdiPartyPopper } from '@mdi/js';
+import { mdiLightningBolt } from '@mdi/js';
 import gql from 'graphql-tag';
 import { setLendAmount } from '@/util/basketUtils';
 import { buildPriceArray } from '@/util/loanUtils';
@@ -445,15 +445,6 @@ export default {
 		},
 	},
 	computed: {
-		transitionEnterClasses() {
-			if (this.isSticky) {
-				return "tw-transform tw-translate-y-7 md:tw-translate-y-7 lg:tw--translate-y-7"
-			}
-			return "tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7";
-		},
-		transitionEnterToClasses() {
-			return "[ 'tw-transform','tw-translate-y-0', { 'md:tw-translate-y-0': !isSticky } 'md:tw-translate-y-0','lg:tw-translate-y-0' ]";
-		},
 		isInBasket() {
 			// eslint-disable-next-line no-underscore-dangle
 			return this.basketItems.some(item => item.__typename === 'LoanReservation' && item.id === this.loanId);
@@ -540,6 +531,15 @@ export default {
 			return {
 				paddingBottom: this.isSticky ? `${this.wrapperHeight}px` : '0',
 			};
+		},
+		transitionEnterClasses() {
+			if (this.isSticky) {
+				return "tw-transform tw-translate-y-7 md:tw-translate-y-7 lg:tw--translate-y-7"
+			}
+			return "tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7";
+		},
+		transitionEnterToClasses() {
+			return "[ 'tw-transform','tw-translate-y-0', { 'md:tw-translate-y-0': !isSticky } 'md:tw-translate-y-0','lg:tw-translate-y-0' ]";
 		},
 	},
 	mounted() {
