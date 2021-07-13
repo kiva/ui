@@ -242,11 +242,11 @@
 								<!-- <span
 									class="tw-text-h3 tw-inline-block tw-align-middle tw-px-1"
 								>
-									🤝
+									🎉
 								</span> -->
 								<kv-material-icon
 									class="tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
-									:icon="mdiHandshakeOutline"
+									:icon="mdiPartyPopper"
 								/>
 								2X MATCHED LOAN
 							</span>
@@ -259,7 +259,7 @@
 </template>
 
 <script>
-import { mdiLightningBolt, mdiHandshakeOutline } from '@mdi/js';
+import { mdiLightningBolt, mdiPartyPopper } from '@mdi/js';
 import gql from 'graphql-tag';
 import { setLendAmount } from '@/util/basketUtils';
 import { buildPriceArray } from '@/util/loanUtils';
@@ -286,7 +286,7 @@ export default {
 	data() {
 		return {
 			mdiLightningBolt,
-			mdiHandshakeOutline,
+			mdiPartyPopper,
 			defaultSelectorAmount: 25,
 			selectedOption: '25',
 			loanAmount: '',
