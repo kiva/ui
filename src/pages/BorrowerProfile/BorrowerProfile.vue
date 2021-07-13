@@ -29,6 +29,18 @@
 			<content-container>
 				<more-about-loan class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<borrower-country class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
+				<lenders-and-teams
+					key="lenders"
+					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+					:loan-id="loanId"
+					display-type="lenders"
+				/>
+				<lenders-and-teams
+					key="teams"
+					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+					:loan-id="loanId"
+					display-type="teams"
+				/>
 			</content-container>
 			<div class="tw-bg-brand-50 tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
 				<content-container>
@@ -52,6 +64,7 @@ import LendCta from '@/components/BorrowerProfile/LendCta';
 import LoanStory from '@/components/BorrowerProfile/LoanStory';
 import DetailsTabs from '@/components/BorrowerProfile/DetailsTabs';
 import BorrowerCountry from '@/components/BorrowerProfile/BorrowerCountry';
+import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 
@@ -62,6 +75,7 @@ export default {
 		DetailsTabs,
 		HeroBackground,
 		LendCta,
+		LendersAndTeams,
 		LoanStory,
 		MoreAboutLoan,
 		SidebarContainer,
