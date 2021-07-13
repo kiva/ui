@@ -163,7 +163,7 @@
 			<transition
 				enter-active-class="tw-transition-transform tw-duration-700 tw-delay-300"
 				:enter-class="transitionEnterClasses"
-				:enter-to-class="transitionEnterToClasses"
+				enter-to-class="tw-transform tw-translate-y-0 md:tw-translate-y-0 lg:tw-translate-y-0"
 			>
 				<kv-grid
 					v-show="lenderCountVisibility || matchingTextVisibility"
@@ -536,11 +536,6 @@ export default {
 				return 'tw-transform tw-translate-y-7 md:tw-translate-y-7 lg:tw--translate-y-7';
 			}
 			return 'tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7';
-		},
-		transitionEnterToClasses() {
-			// eslint-disable-next-line max-len
-			return "[ 'tw-transform','tw-translate-y-0', { 'md:tw-translate-y-0': !isSticky } 'md:tw-translate-y-0','lg:tw-translate-y-0' ]";
-			// eslint-enable-next-line max-len
 		},
 	},
 	mounted() {
