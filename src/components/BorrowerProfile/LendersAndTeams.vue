@@ -47,8 +47,10 @@
 						class="tw-rounded md:tw-block tw-hidden tw-mr-2" :style="{width: '88px', height: '88px'}"
 					/>
 					<div>
-						{{ item.name }}<br>
-						{{ item.lenderPage.whereabouts }}
+						<span v-if="item.name">{{ item.name }}</span><br>
+						<span v-if="item.lenderPage && item.lenderPage.whereabouts">
+							{{ item.lenderPage.whereabouts }}
+						</span>
 					</div>
 				</div>
 			</div>
