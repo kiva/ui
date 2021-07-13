@@ -208,10 +208,11 @@
 							'lg:tw-col-span-12'
 						]"
 					>
-						<transition-group
+						<transition
+							mode="out-in"
 							key="transition"
 							class="tw-flex tw-flex-col"
-							enter-active-class="tw-transition-all tw-duration-1000 tw-delay-1000"
+							enter-active-class="tw-transition-all tw-duration-1000"
 							enter-class="tw-transform tw--translate-y-2 tw-opacity-0"
 							enter-to-class="tw-transform tw-translate-y-0 tw-opacity-full"
 							leave-active-class="tw-transition-all tw-duration-1000"
@@ -221,7 +222,7 @@
 							<span
 								class="tw-inline-block tw-align-middle"
 								key="numLendersStat"
-								v-show="statScrollAnimation"
+								v-if="statScrollAnimation"
 							>
 								<kv-material-icon
 									class="tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
@@ -233,7 +234,7 @@
 							<span
 								class="tw-inline-block tw-align-middle"
 								key="loanMatchingText"
-								v-show="!statScrollAnimation"
+								v-if="!statScrollAnimation"
 							>
 								<!-- This emoji is used in the mock, and material design's
 								handshake emoji is not great -->
@@ -249,7 +250,7 @@
 								/>
 								2X MATCHED LOAN
 							</span>
-						</transition-group>
+						</transition>
 					</div>
 				</kv-grid>
 			</transition-group>
