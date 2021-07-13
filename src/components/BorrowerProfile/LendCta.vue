@@ -160,10 +160,10 @@
 				</div>
 			</kv-grid>
 
-			<transition-group
+			<transition
 				enter-active-class="tw-transition-transform tw-duration-700 tw-delay-300"
-				enter-class="tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7"
-				enter-to-class="tw-transform tw-translate-y-0 md:tw-translate-y-0 lg:tw-translate-y-0"
+				:enter-class="transitionEnterClasses"
+				:enter-to-class="transitionEnterToClasses"
 			>
 				<kv-grid
 					v-show="lenderCountVisibility || matchingTextVisibility"
@@ -236,24 +236,17 @@
 								key="loanMatchingText"
 								v-if="!statScrollAnimation"
 							>
-								<!-- This emoji is used in the mock, and material design's
-								handshake emoji is not great -->
-
-								<!-- <span
+								<span
 									class="tw-text-h3 tw-inline-block tw-align-middle tw-px-1"
 								>
 									🎉
-								</span> -->
-								<kv-material-icon
-									class="tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
-									:icon="mdiPartyPopper"
-								/>
+								</span>
 								2X MATCHED LOAN
 							</span>
 						</transition>
 					</div>
 				</kv-grid>
-			</transition-group>
+			</transition>
 		</div>
 	</div>
 </template>
@@ -375,7 +368,6 @@ export default {
 			this.hasFreeCredit = basket?.hasFreeCredits ?? false;
 			this.basketItems = basket?.items?.values ?? [];
 			this.matchingText = loan?.matchingText ?? '';
-			// '🤝 2X MATCHED LOAN'
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;
@@ -453,6 +445,15 @@ export default {
 		},
 	},
 	computed: {
+		transitionEnterClasses() {
+			if (this.isSticky) {
+				return "tw-transform tw-translate-y-7 md:tw-translate-y-7 lg:tw--translate-y-7"
+			}
+			return "tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7";
+		},
+		transitionEnterToClasses() {
+			return "[ 'tw-transform','tw-translate-y-0', { 'md:tw-translate-y-0': !isSticky } 'md:tw-translate-y-0','lg:tw-translate-y-0' ]";
+		},
 		isInBasket() {
 			// eslint-disable-next-line no-underscore-dangle
 			return this.basketItems.some(item => item.__typename === 'LoanReservation' && item.id === this.loanId);
