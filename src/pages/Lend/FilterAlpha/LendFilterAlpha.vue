@@ -33,7 +33,7 @@ export default {
 		return {
 			headerTheme: lightHeader,
 			loanId: Number(this.$route.params.id || 0),
-			loanQueryFilters: () => {},
+			loanQueryFilters: { countryIsoCode: { any: ['US'] } },
 			totalCount: 0,
 			loans: [],
 			zeroLoans: false,
