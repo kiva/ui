@@ -33,6 +33,8 @@ export default {
 		return {
 			headerTheme: lightHeader,
 			loanId: Number(this.$route.params.id || 0),
+			// flss query is defaulted to US loans currently to keep loans count
+			// manageable for now
 			loanQueryFilters: { countryIsoCode: { any: ['US'] } },
 			totalCount: 0,
 			loans: [],
@@ -53,8 +55,6 @@ export default {
 					const newLoans = data.fundraisingLoans?.values ?? [];
 					this.loans = newLoans;
 					// leaving console.log for sanity check
-					// flss query is defaulted to US loans currently to keep loans count
-					// manageable
 					console.log(newLoans);
 
 					const totalCount = data.fundraisingLoans.totalCount ?? 0;
