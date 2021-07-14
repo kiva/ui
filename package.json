@@ -181,6 +181,7 @@
 		"ora": "^4.0.2",
 		"postcss": "^8.3.0",
 		"postcss-loader": "^4.3.0",
+		"postcss-nested": "^5.0.5",
 		"rimraf": "^3.0.2",
 		"sass": "^1.32.13",
 		"sass-loader": "^10.2.0",
