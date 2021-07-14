@@ -1,7 +1,7 @@
 #import '../fragments/loanCardFields.graphql'
 
 query flssLoanData(
-  $filterObject: [FundraisingLoanSearchFilterInput!] = { countryIsoCode: {any: ["US"]}}
+  $filterObject: [FundraisingLoanSearchFilterInput!]
   $imgDefaultSize: String = "w480h360"
   $imgRetinaSize: String = "w960h720"
   $limit: Int = 20

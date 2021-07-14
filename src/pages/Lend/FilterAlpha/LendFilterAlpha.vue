@@ -18,18 +18,56 @@
 
 <script>
 import { lightHeader } from '@/util/siteThemes';
-
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 
 export default {
+	inject: ['apollo'],
 	components: {
 		WwwPage,
+	},
+	mounted() {
+		this.fetchLoans();
 	},
 	data() {
 		return {
 			headerTheme: lightHeader,
 			loanId: Number(this.$route.params.id || 0),
+			// flss query is defaulted to US loans currently to keep loans count
+			// manageable for now
+			loanQueryFilters: { countryIsoCode: { any: ['US'] } },
+			totalCount: 0,
+			loans: [],
+			zeroLoans: false,
 		};
+	},
+	methods: {
+		fetchLoans() {
+			this.apollo
+				.query({
+					query: flssLoanQuery,
+					variables: {
+						filterObject: this.loanQueryFilters,
+						limit: 20
+					},
+					fetchPolicy: 'network-only',
+				})
+				.then(({ data }) => {
+					const newLoans = data.fundraisingLoans?.values ?? [];
+					this.loans = newLoans;
+					// leaving console.log for sanity check
+					console.log(newLoans);
+
+					const totalCount = data.fundraisingLoans.totalCount ?? 0;
+					this.totalCount = totalCount;
+					// leaving console.log for sanity check
+					console.log(totalCount);
+
+					if (this.totalCount === 0) {
+						this.zeroLoans = true;
+					}
+				});
+		},
 	},
 };
 </script>
