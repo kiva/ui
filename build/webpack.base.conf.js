@@ -2,6 +2,7 @@ const path = require('path');
 const assetsPath = require('./assets-path');
 const config = require('../config');
 const VueLoaderPlugin = require('vue-loader').VueLoaderPlugin;
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 const webpack = require('webpack');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
@@ -73,6 +74,7 @@ module.exports = {
 			},
 			{
 				test: /\.css$/,
+				exclude: [resolve('src/assets/scss/tailwind')],
 				use: [
 					{ loader: 'thread-loader' },
 					{ loader: 'vue-style-loader' }, // Inject styles as <style> tags
@@ -84,12 +86,37 @@ module.exports = {
 								plugins: [
 									require('autoprefixer'),
 									require('cssnano'),
-									require('tailwindcss'),
 								]
 							}
 						}
 					},
 				]
+			},
+			{
+				// Extract tailwind styles since they are global
+				test: /\.css$/,
+				include: [resolve('src/assets/scss/tailwind')],
+				use: [
+					{
+						loader: MiniCssExtractPlugin.loader,
+						options: {
+							esModule: true,
+						}
+					},
+					{ loader: 'css-loader' },
+					{
+						loader: 'postcss-loader',
+						options: {
+							postcssOptions: {
+								plugins: [
+									require('cssnano'),
+									require('tailwindcss'),
+									require('autoprefixer'),
+								]
+							}
+						}
+					},
+				],
 			},
 			{
 				test: /\.scss$/,
@@ -247,6 +274,10 @@ module.exports = {
 	plugins: [
 		new FilterWarningsPlugin({
 			exclude: /vue-loader.*type=style/
+		}),
+		new MiniCssExtractPlugin({
+			filename: assetsPath('css/[name].[contenthash].css'),
+			chunkFilename: assetsPath('css/[name].[contenthash].css'),
 		}),
 		new VueLoaderPlugin(),
 		new webpack.DefinePlugin({
