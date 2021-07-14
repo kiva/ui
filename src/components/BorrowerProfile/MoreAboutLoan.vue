@@ -6,8 +6,7 @@
 		<div
 			v-if="partnerName"
 		>
-			<div>
-				{{ moreInfoAboutLoan }}
+			<div v-html="moreInfoAboutLoan">
 			</div>
 			<div
 				v-if="loanAlertText"
@@ -18,8 +17,8 @@
 				<p
 					v-for="(paragraph, index) in loanAlertTextParagraphs"
 					:key="`storyDescription-${index}`"
+					v-html="paragraph"
 				>
-					{{ paragraph }}
 				</p>
 			</div>
 			<div
