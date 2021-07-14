@@ -43,7 +43,7 @@ export default {
 	data() {
 		return {
 			mapZoomLevel: 5,
-			mapInitialZoom: 2,
+			mapInitialZoom: 4,
 			mapAutoZoomDelay: 500,
 			mapAspectRatio: 1.3,
 			mapLat: null,

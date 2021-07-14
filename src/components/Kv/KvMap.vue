@@ -241,8 +241,6 @@ export default {
 					if (response.loaded && !this.mapLoaded && !this.useLeaflet && this.lat && this.long) {
 						this.initializeMapLibre();
 						this.mapLibreReady = true;
-					} else {
-						console.error('MapLibreGL failed to load');
 					}
 				});
 			} else {
@@ -250,8 +248,6 @@ export default {
 					if (leafletTest.loaded && !this.mapLoaded && this.lat && this.long) {
 						this.initializeLeaflet();
 						this.leafletReady = true;
-					} else {
-						console.error('Leaflet failed to load');
 					}
 				});
 			}
