@@ -4,7 +4,7 @@ query flssLoanData(
   $filterObject: [FundraisingLoanSearchFilterInput!]
   $imgDefaultSize: String = "w480h360"
   $imgRetinaSize: String = "w960h720"
-  $limit: Int = 50
+  $limit: Int = 0
   $offset: Int = 0
 ) {
   fundraisingLoans(filters: $filterObject,

@@ -48,6 +48,7 @@ export default {
 					query: flssLoanQuery,
 					variables: {
 						filterObject: this.loanQueryFilters,
+						limit: 20
 					},
 					fetchPolicy: 'network-only',
 				})
