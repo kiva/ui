@@ -27,9 +27,8 @@
 				<h3>
 					Important Note About This Loan
 				</h3>
-				<p>
-					{{ dualStatementNote }}
-				</p>
+				<div v-html="dualStatementNote">
+				</div>
 			</div>
 		</div>
 		<div
@@ -38,21 +37,21 @@
 			<h3>
 				Business Description
 			</h3>
-			<p
+			<div
 				v-for="(paragraph, index) in businessDescriptionParagraphs"
 				:key="`businessDescription-${index}`"
+				v-html="paragraph"
 			>
-				{{ paragraph }}
-			</p>
+			</div>
 			<h3>
 				What is the purpose of this loan?
 			</h3>
-			<p
+			<div
 				v-for="(paragraph, index) in purposeParagraphs"
 				:key="`purpose-${index}`"
+				v-html="paragraph"
 			>
-				{{ paragraph }}
-			</p>
+			</div>
 		</div>
 	</section>
 </template>
