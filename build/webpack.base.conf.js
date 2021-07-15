@@ -109,9 +109,9 @@ module.exports = {
 						options: {
 							postcssOptions: {
 								plugins: [
-									require('postcss-nested'),
 									require('cssnano'),
 									require('tailwindcss'),
+									require('postcss-prepend-selector')( { selector: '.kv-tailwind ' } ),
 									require('autoprefixer'),
 								]
 							}
