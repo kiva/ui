@@ -1,8 +1,10 @@
 <template>
 	<article>
 		<div v-if="loading" class="tw-w-full tw-my-5 md:tw-my-6 lg:tw-my-8">
-			<kv-loading-placeholder class="tw-w-full tw-mb-2 lg:tw-mb-3" :style="{height: '28px'}" />
-			<kv-loading-placeholder class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '28px'}" />
+			<kv-loading-placeholder class="tw-w-full tw-mb-2 lg:tw-mb-3" :style="{height: '1.6rem'}" />
+			<kv-loading-placeholder
+				class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
+			/>
 		</div>
 
 		<h2 class="tw-sr-only">
