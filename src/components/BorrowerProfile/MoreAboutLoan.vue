@@ -14,12 +14,12 @@
 				<h3>
 					About {{ partnerName }}:
 				</h3>
-				<p
+				<div
 					v-for="(paragraph, index) in loanAlertTextParagraphs"
 					:key="`storyDescription-${index}`"
 					v-html="paragraph"
 				>
-				</p>
+				</div>
 			</div>
 			<div
 				v-if="dualStatementNote"
