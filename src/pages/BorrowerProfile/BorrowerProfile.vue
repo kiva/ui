@@ -2,7 +2,7 @@
 	<www-page
 		id="borrower-profile"
 		:header-theme="headerTheme"
-		:main-class="'tw-bg-gray-50'"
+		:main-class="'kv-tailwind tw-bg-gray-50'"
 	>
 		<article class="tw-relative">
 			<div class="tw-relative">
