@@ -46,7 +46,7 @@
 						{{ lgScreenheadline }}
 					</p>
 					<span class="tw-flex tw-pb-1 lg:tw-pb-3">
-						<form @submit.prevent="addToBasket" class="tw-w-full tw-flex">
+						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
 							<fieldset class="tw-w-full tw-flex" :disabled="isAdding">
 								<label
 									v-if="hideShowLendDropdown"
@@ -480,6 +480,16 @@ export default {
 				default:
 					return 'Lend now';
 			}
+		},
+		useFormSubmit() {
+			if (this.hideShowLendDropdown
+				|| this.lendButtonVisibility
+				|| this.lendAgainButton
+				|| this.state === 'lent-to'
+				|| this.isAdding) {
+				return true;
+			}
+			return false;
 		},
 		state() {
 			if (this.isLoading) {
