@@ -10,12 +10,12 @@
 					<hero-background />
 				</div>
 				<content-container class="md:tw-pt-6 lg:tw-pt-8">
-					<summary-card class="tw-relative lg:tw--mb-1.5" />
+					<summary-card class="tw-relative lg:tw--mb-1.5 tw-z-1" />
 				</content-container>
 			</div>
-			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8">
+			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8 tw-pointer-events-none">
 				<sidebar-container class="lg:tw-sticky lg:tw-top-12 lg:tw-mt-10 lg:tw-pb-8">
-					<lend-cta :loan-id="loanId" />
+					<lend-cta class="tw-pointer-events-auto" :loan-id="loanId" />
 				</sidebar-container>
 			</div>
 			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-8">
