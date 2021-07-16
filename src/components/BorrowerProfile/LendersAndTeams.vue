@@ -71,7 +71,9 @@
 			@lightbox-closed="isLightboxVisible = false"
 		>
 			<template #header>
-				<h2 class="tw-text-h2">{{ sectionTitle }}</h2>
+				<h2 class="tw-text-h2">
+					{{ sectionTitle }}
+				</h2>
 				<div class="tw-mb-3">
 					<kv-material-icon
 						class="tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
@@ -106,10 +108,14 @@
 				@click.prevent="loadMore"
 				:state="fetchingLightboxItems ? 'loading' : ''"
 				variant="ghost"
-			>Load more</kv-button>
+			>
+				Load more
+			</kv-button>
 
 			<template #controls>
-				<kv-button @click="isLightboxVisible = false">Close</kv-button>
+				<kv-button @click="isLightboxVisible = false">
+					Close
+				</kv-button>
 			</template>
 		</kv-lightbox>
 	</section>
@@ -119,10 +125,10 @@
 import { mdiLightningBolt } from '@mdi/js';
 import gql from 'graphql-tag';
 import { createIntersectionObserver } from '@/util/observerUtils';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 // TODO: replace the loading placeholder with component from kv-components when available.
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int) {
