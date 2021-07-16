@@ -67,7 +67,7 @@ export default {
 		};
 	},
 	apollo: {
-		prefetch: true,
+		preFetch: true,
 		query: gql`query loanStory($loanId: Int!) {
 			lend {
 				loan(id: $loanId) {
@@ -106,6 +106,11 @@ export default {
 				}
 			}
 		}`,
+		preFetchVariables({ route }) {
+			return {
+				loanId: Number(route?.params?.id ?? 0),
+			};
+		},
 		variables() {
 			return {
 				loanId: this.loanId,
