@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<!-- Display Content  v-if="!loading && this.totalItemCount" -->
+		<!-- Display Content -->
 		<div>
 			<h2 class="tw-text-h2">
 				{{ sectionTitle }}
@@ -55,16 +55,69 @@
 				</div>
 			</div>
 
-			<div
+			<!-- TODO: Use incoming TextLink component -->
+			<button
 				v-if="totalItemCount > initialItemLimit"
 				class="tw-text-h4"
 				@click="openLightbox"
 			>
 				{{ seeAllLinkText }}
-			</div>
+			</button>
 		</div>
 
-		<!-- TODO: Build out Lightbox Content -->
+		<kv-lightbox
+			:visible="isLightboxVisible"
+			:title="sectionTitle"
+			@lightbox-closed="isLightboxVisible = false"
+		>
+			<template #header>
+				<h2 class="tw-text-h2">
+					{{ sectionTitle }}
+				</h2>
+				<div class="tw-mb-3">
+					<kv-material-icon
+						class="tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
+						:icon="mdiLightningBolt"
+					/>
+					<span>{{ poweredByText }}</span>
+				</div>
+			</template>
+
+			<div class="tw-mb-3 tw-grid tw-grid-cols-2 md:tw-grid-cols-3 tw-gap-2">
+				<!-- TODO: Replace with Generic component for showing Either Team or Lender image and information -->
+				<div
+					v-for="(item, index) in items" :key="index"
+					class="tw-flex tw-flex-col md:tw-flex-row md:tw-items-center tw-mb-3"
+				>
+					<kv-loading-placeholder class="tw-rounded md:tw-hidden tw-mb-1.5" :style="{height: '128px'}" />
+					<kv-loading-placeholder
+						class="tw-rounded md:tw-block tw-hidden tw-mr-2" :style="{width: '88px', height: '88px'}"
+					/>
+					<div>
+						<span v-if="item.name">{{ item.name }}</span><br>
+						<span v-if="item.lenderPage && item.lenderPage.whereabouts">
+							{{ item.lenderPage.whereabouts }}
+						</span>
+					</div>
+				</div>
+			</div>
+
+			<kv-button
+				v-if="items.length < totalItemCount"
+				class="tw-w-full"
+				@click.prevent="loadMore"
+				:state="fetchingLightboxItems ? 'loading' : ''"
+				variant="ghost"
+			>
+				Load more
+			</kv-button>
+
+			<template #controls>
+				<kv-button @click="isLightboxVisible = false">
+					Close
+				</kv-button>
+			</template>
+		</kv-lightbox>
 	</section>
 </template>
 
@@ -74,6 +127,8 @@ import gql from 'graphql-tag';
 import { createIntersectionObserver } from '@/util/observerUtils';
 // TODO: replace the loading placeholder with component from kv-components when available.
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int) {
@@ -119,6 +174,8 @@ const lendersQuery = gql`query lendersQuery($loanId: Int!, $limit: Int, $offset:
 
 export default {
 	components: {
+		KvButton,
+		KvLightbox,
 		KvLoadingPlaceholder,
 		KvMaterialIcon,
 	},
@@ -138,11 +195,15 @@ export default {
 	},
 	data() {
 		return {
+			fetchingLightboxItems: false,
 			initialItemLimit: 6,
+			isLightboxVisible: false,
 			items: [],
 			loading: true,
 			mdiLightningBolt,
 			observer: null,
+			itemQueryLimit: 20,
+			itemQueryOffset: 0,
 			totalItemCount: 0,
 		};
 	},
@@ -195,32 +256,44 @@ export default {
 				this.observer.disconnect();
 			}
 		},
-		fetchItems() {
+		fetchItems(fromLightbox = false) {
 			if (this.loanId === 0) return false;
+
+			const queryLimit = fromLightbox ? this.itemQueryLimit : this.initialItemLimit;
+			const queryOffset = this.items.length + this.itemQueryOffset;
 
 			// run apollo query
 			this.apollo.query({
 				query: this.displayType === 'teams' ? teamsQuery : lendersQuery,
 				variables: {
 					loanId: this.loanId,
-					// TODO: add option for load more limit (20)
-					limit: this.initialItemLimit,
-					// TODO: add option offset during load more action
-					offset: 0
+					limit: queryLimit,
+					offset: queryOffset
 				}
 			}).then(({ data }) => {
 				this.totalItemCount = data?.lend?.loan?.[this.displayType]?.totalCount ?? 0;
 				const items = data?.lend?.loan?.[this.displayType]?.values ?? 0;
 				// patch in list items
-				// TODO: ensure proper handling once we add load more functionality
 				this.items = [...this.items, ...items];
 
 				this.loading = false;
+				if (fromLightbox) {
+					this.fetchingLightboxItems = false;
+				}
 			});
 		},
+		loadMore() {
+			this.fetchingLightboxItems = true;
+			// calculate proper offset after initial item limit
+			const newOffset = this.items.length === this.initialItemLimit ? 6 : this.offset + 20;
+			this.offset = newOffset;
+			this.fetchItems(true);
+		},
 		openLightbox() {
-			// Todo: implement lightbox and content
-			return false;
+			this.isLightboxVisible = true;
+			if (this.items.length <= this.initialItemLimit) {
+				this.loadMore();
+			}
 		}
 	},
 	mounted() {
