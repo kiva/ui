@@ -1,78 +1,90 @@
 <template>
 	<section>
-		<h2 class="tw-text-h2">
-			{{ countryName }} at a glance
-		</h2>
-		<div class="tw-flex lg:tw-mb-3">
-			<p class="tw-flex-auto">
-				<span class="tw-block tw-text-h2">
-					{{ avgAnnualIncomeFormatted }}
-				</span>
-				<span class="tw-block tw-text-h4 tw-text-gray-500">
-					Average annual income (USD)
-				</span>
-			</p>
-			<p class="tw-flex-auto">
-				<span class="tw-block tw-text-h2">
-					{{ numLoansFundraising }}
-				</span>
-				<span class="tw-block tw-text-h4 tw-text-gray-500">
-					Loans currently fundraising
-				</span>
-			</p>
+		<div v-if="loading" class="">
+			<kv-loading-placeholder
+				class="tw-mb-2" :style="{width: 30 + (Math.random() * 15) + '%', height: '1.6rem'}"
+			/>
+			<div class="tw-flex lg:tw-mb-3">
+				<div v-for="i in 2" :key="i" class="tw-flex-auto">
+					<kv-loading-placeholder
+						class="tw-block tw-mb-2" :style="{width: 10 + (Math.random() * 15) + '%', height: '1.6rem'}"
+					/>
+					<kv-loading-placeholder
+						class="tw-block tw-mb-2" :style="{width: 40 + (Math.random() * 15) + '%', height: '1.0rem'}"
+					/>
+				</div>
+			</div>
 		</div>
-		<kv-ui-button
-			v-if="showFindMoreLoansInCountryButton"
-			class="tw-inline-flex tw-flex-1"
-			:to="`/lend?country=${countryIsoCode}`"
-		>
-			Find more borrowers in {{ countryName }}
-		</kv-ui-button>
-		<kv-ui-button
-			v-if="showFindMoreLoansInRegionButton"
-			class="tw-inline-flex tw-flex-1"
-			:to="loansInRegionLink"
-		>
-			Find more borrowers in {{ regionName }}
-		</kv-ui-button>
+
+		<div v-else>
+			<h2 class="tw-text-h2">
+				{{ countryName }} at a glance
+			</h2>
+			<div class="tw-flex lg:tw-mb-3">
+				<p class="tw-flex-auto">
+					<span class="tw-block tw-text-h2">
+						{{ avgAnnualIncomeFormatted }}
+					</span>
+					<span class="tw-block tw-text-h4 tw-text-gray-500">
+						Average annual income (USD)
+					</span>
+				</p>
+				<p class="tw-flex-auto">
+					<span class="tw-block tw-text-h2">
+						{{ numLoansFundraising }}
+					</span>
+					<span class="tw-block tw-text-h4 tw-text-gray-500">
+						Loans currently fundraising
+					</span>
+				</p>
+			</div>
+			<kv-ui-button
+				v-if="showFindMoreLoansInCountryButton"
+				class="tw-inline-flex tw-flex-1"
+				:to="`/lend?country=${countryIsoCode}`"
+			>
+				Find more borrowers in {{ countryName }}
+			</kv-ui-button>
+			<kv-ui-button
+				v-if="showFindMoreLoansInRegionButton"
+				class="tw-inline-flex tw-flex-1"
+				:to="loansInRegionLink"
+			>
+				Find more borrowers in {{ regionName }}
+			</kv-ui-button>
+		</div>
 	</section>
 </template>
 
 <script>
 import gql from 'graphql-tag';
 import numeral from 'numeral';
+import { createIntersectionObserver } from '@/util/observerUtils';
+// TODO: replace the loading placeholder with component from kv-components when available.
+import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
+		KvLoadingPlaceholder,
 		KvUiButton,
 	},
 	props: {
-		numLoansFundraising: { // Country.numLoansFundraising
+		loanId: {
 			type: Number,
 			default: 0,
-		},
-		avgAnnualIncome: { // Country.ppp
-			type: String,
-			default: '',
-		},
-		countryIsoCode: { // Country.isoCode
-			type: String,
-			default: '',
-		},
-		countryName: { // Country.name
-			type: String,
-			default: '',
-		},
-		regionName: { // Country.region
-			type: String,
-			default: '',
 		},
 	},
 	data() {
 		return {
+			avgAnnualIncome: '',
+			countryIsoCode: '',
+			countryName: '',
+			loading: true,
 			loansInRegionLink: '',
+			numLoansFundraising: 0,
+			regionName: '',
 		};
 	},
 	computed: {
@@ -86,30 +98,89 @@ export default {
 			return numeral(this.avgAnnualIncome).format('$0,0[.]00');
 		},
 	},
-	apollo: {
-		query: gql`query getCountryFacets {
-			  lend {
-				countryFacets {
-				  country {
-					isoCode
-					region
-				  }
+	methods: {
+		createObserver() {
+			// Watch for this element being close to entering the viewport
+			this.observer = createIntersectionObserver({
+				targets: [this.$el],
+				rootMargin: '500px',
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.target === this.$el && entry.intersectionRatio > 0) {
+							// This element is close to being in the viewport, so load the data.
+							// Because of the apollo cache it's safe to call this repeatedly.
+							this.loadData();
+						}
+					});
 				}
-			  }
-			}
-		`,
-		result(result) {
-			const countries = [];
-			const countryFacets = result?.data?.lend?.countryFacets ?? [];
-			if (countryFacets.length) {
-				for (let i = 0; i < countryFacets.length; i += 1) {
-					if (countryFacets[i].country.region === this.regionName) {
-						countries.push(countryFacets[i].country.isoCode);
-					}
-				}
-				this.loansInRegionLink = `/lend?country=${countries.join(',').toLowerCase()}&sortBy=newest`;
+			});
+			if (!this.observer) {
+				// Observer was not created, so call loadData right away as a fallback.
+				this.loadData();
 			}
 		},
+		destroyObserver() {
+			if (this.observer) {
+				this.observer.disconnect();
+			}
+		},
+		loadData() {
+			this.apollo.query({
+				query: gql`query borrowerCountryInfo($loanId: Int!) {
+					lend {
+						loan(id: $loanId) {
+							id
+							geocode {
+								latitude
+								longitude
+								country {
+									numLoansFundraising
+									ppp
+									isoCode
+									name
+									region
+								}
+							}
+						}
+						countryFacets {
+							country {
+								isoCode
+								region
+							}
+						}
+					}
+				}`,
+				variables: {
+					loanId: this.loanId
+				},
+			}).then(result => {
+				const geocode = result?.data?.lend?.loan?.geocode;
+				this.numLoansFundraising = geocode?.country?.numLoansFundraising ?? 0;
+				this.avgAnnualIncome = geocode?.country?.ppp ?? '';
+				this.countryIsoCode = geocode?.country?.isoCode ?? '';
+				this.countryName = geocode?.country?.name ?? '';
+				this.regionName = geocode?.country?.region ?? '';
+
+				const countries = [];
+				const countryFacets = result?.data?.lend?.countryFacets ?? [];
+				if (countryFacets.length) {
+					for (let i = 0; i < countryFacets.length; i += 1) {
+						if (countryFacets[i].country.region === this.regionName) {
+							countries.push(countryFacets[i].country.isoCode);
+						}
+					}
+					this.loansInRegionLink = `/lend?country=${countries.join(',').toLowerCase()}&sortBy=newest`;
+				}
+
+				this.loading = false;
+			});
+		},
+	},
+	mounted() {
+		this.createObserver();
+	},
+	beforeDestroy() {
+		this.destroyObserver();
 	},
 };
 
