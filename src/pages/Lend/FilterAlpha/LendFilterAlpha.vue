@@ -11,6 +11,41 @@
 			</div>
 			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8">
 			</div>
+			<kv-page-container>
+				<h2 class="tw-mb-2">
+					Make a loan, change a life
+				</h2>
+				<h3 class="tw-mb-3">
+					Each Kiva loan helps people build a better future for themselves and their families.
+				</h3>
+				<kv-grid class="tw-grid-cols-2 md:tw-grid-cols-3">
+					<div class="tw-bg-gray-300 text-center sm:text-left"><p>Filters</p>
+					</div>
+
+					<div class="tw-col-span-2 tw-bg-white-300">
+						<div class="tw-bg-gray-300 tw-h-30">Search Loans</div>
+						<p>Loan Count</p>
+                        <kv-grid class="tw-grid-rows-4">
+							<div class="tw-bg-gray-300 tw-h-30">Loan Card 1</div>
+							<div class="tw-bg-gray-300 tw-h-96">Loan Card 2</div>
+							<div class="tw-bg-gray-300 tw-h-30">Loan Card 3</div>
+							<div class="tw-bg-gray-300 tw-h-30">Loan Card 4</div>
+							<div class="tw-bg-gray-300 tw-h-30">Loan Card 5</div>
+							<div class="tw-bg-gray-300 tw-h-30">Loan Card 6</div>
+							<div class="tw-bg-gray-300 tw-h-30">Loan Card 7</div>
+							<div class="tw-bg-gray-300 tw-h-30">Loan Card 8</div>
+							<div class="tw-bg-gray-300 tw-h-30">Loan Card 9</div>
+							<div class="tw-bg-gray-300 tw-h-30">Loan Card 10</div>
+							<div class="tw-bg-gray-300 tw-h-30">Loan Card 11</div>
+							<div class="tw-bg-gray-300 tw-h-30">Loan Card 12</div>
+							<div class="tw-bg-gray-300 tw-h-30">Loan Card 13</div>
+							<div class="tw-bg-gray-300 tw-h-30">Loan Card 14</div>
+							<div class="tw-bg-gray-300 tw-h-30">Loan Card 15</div>
+						</kv-grid>
+					</div>
+				</kv-grid>
+			</kv-page-container>
+			</div>
 		</article>
 		<!-- <aside>Similar loans</aside> -->
 	</www-page>
@@ -20,10 +55,14 @@
 import { lightHeader } from '@/util/siteThemes';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	components: {
 		WwwPage,
+		KvGrid,
+		KvPageContainer,
 	},
 	data() {
 		return {
