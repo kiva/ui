@@ -1,6 +1,7 @@
 import _get from 'lodash/get';
 import appInstallQuery from '@/graphql/query/appInstall.graphql';
 import checkInjections from '@/util/injectionCheck';
+import logReadQueryError from '@/util/logReadQueryError';
 
 const injections = ['apollo', 'cookieStore'];
 
@@ -72,7 +73,7 @@ export default {
 			this.appInstallHasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 			this.appInstallLendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
 		} catch (err) {
-			console.error(err);
+			logReadQueryError(err, 'app-install-mixin');
 		}
 	},
 	mounted() {
