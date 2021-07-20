@@ -92,7 +92,6 @@ import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
-
 export default {
 	inject: ['apollo'],
 	components: {
