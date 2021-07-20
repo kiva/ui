@@ -89,12 +89,5 @@ export default {
 			loanId: Number(this.$route.params.id || 0),
 		};
 	},
-	created() {
-		this.$kvTrackEvent(
-			'Borrower profile',
-			'borrower profile status',
-			this.status
-		);
-	},
 };
 </script>

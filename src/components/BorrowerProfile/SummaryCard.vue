@@ -162,6 +162,13 @@ export default {
 				this.fundraisingPercent = 1;
 			}
 		},
+		mounted() {
+			this.$kvTrackEvent(
+				'Borrower profile',
+				'borrower profile status',
+				this.status
+			);
+		},
 	},
 };
 </script>
