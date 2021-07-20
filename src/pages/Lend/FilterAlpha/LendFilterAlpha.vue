@@ -88,9 +88,10 @@
 <script>
 import { lightHeader } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
+
 
 export default {
 	inject: ['apollo'],
