@@ -14,7 +14,7 @@
 
 			<div v-html="moreInfoAboutLoan">
 			</div>
-			
+
 			<div
 				v-if="loanAlertText"
 			>
