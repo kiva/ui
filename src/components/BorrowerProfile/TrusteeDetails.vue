@@ -1,12 +1,13 @@
 <template>
 	<section>
 		<p>
-			Trustees are U.S.-based individuals or organizations that refer potential borrowers to Kiva.
+			Trustees are organizations that refer potential U.S.-based
+			borrowers to Kiva and publicly vouch for them on Kiva.org.
 		</p>
 		<h2>
 			{{ trusteeName }}
 		</h2>
-		<dl>
+		<dl class="tw-mb-4">
 			<description-list-item
 				:term="'Kiva borrowers'"
 				:details="numLoansEndorsedPublic"
@@ -26,7 +27,7 @@
 		</dl>
 		<router-link
 			:to="`/trustees/${trusteeId}`"
-			class="tw-uppercase"
+			class="tw-text-h4"
 		>
 			More about this trustee &rarr;
 		</router-link>

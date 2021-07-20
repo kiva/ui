@@ -19,7 +19,7 @@
 				</router-link>.
 			</kv-alert>
 			<braintree-drop-in-interface
-				v-if="isLoggedIn && !hasExistingAutoDeposit"
+				v-if="isClientReady && isLoggedIn && !hasExistingAutoDeposit"
 				ref="braintreeDropInInterface"
 				:amount="donateAmountAsString"
 				flow="vault"
@@ -75,11 +75,10 @@ import KvAlert from '@/components/Kv/KvAlert';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterface';
 
 export default {
 	components: {
-		BraintreeDropInInterface,
+		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvAlert,
 		KvButton,
 		KvIcon,
@@ -110,6 +109,7 @@ export default {
 			isInMonthlyGood: false,
 			hasExistingAutoDeposit: false,
 			completed: false,
+			isClientReady: false,
 		};
 	},
 	apollo: {
@@ -150,6 +150,9 @@ export default {
 			const doneUrl = `${this.$route.fullPath}?setMonthly=true`;
 			return `/ui-login?force=true&doneUrl=${encodeURIComponent(doneUrl)}`;
 		},
+	},
+	mounted() {
+		this.isClientReady = !this.$isServer;
 	},
 	methods: {
 		submitDropInAutoDeposit() {

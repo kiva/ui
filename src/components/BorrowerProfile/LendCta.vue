@@ -16,6 +16,7 @@
 		>
 			<kv-grid
 				:class="[
+					'tw-z-2',
 					'tw-grid-cols-12',
 					'tw-px-2.5',
 					'tw-bg-white',
@@ -45,41 +46,75 @@
 						{{ lgScreenheadline }}
 					</p>
 					<span class="tw-flex tw-pb-1 lg:tw-pb-3">
-						<label for="LoanAmountDropdown" class="tw-sr-only">Lend amount</label>
-						<kv-ui-select
-							v-if="hideShowLendDropdown"
-							id="LoanAmountDropdown"
-							class="tw-pr-2.5 tw--mb-2"
-							v-model="selectedOption"
-							v-kv-track-event="[
-								'Lending',
-								'click-Modify loan amount',
-								'open dialog'
-							]"
-							@change="trackLendAmountSelection"
-						>
-							<option
-								v-for="priceOption in prices"
-								:key="priceOption"
-								:value="priceOption"
-							>
-								${{ priceOption }}
-							</option>
-						</kv-ui-select>
+						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
+							<fieldset class="tw-w-full tw-flex" :disabled="isAdding">
+								<label
+									v-if="hideShowLendDropdown"
+									for="LoanAmountDropdown"
+									class="tw-sr-only"
+								>
+									Lend amount
+								</label>
+								<kv-ui-select
+									v-if="hideShowLendDropdown"
+									id="LoanAmountDropdown"
+									class="tw-pr-2.5 tw--mb-2"
+									v-model="selectedOption"
+									v-kv-track-event="[
+										'Lending',
+										'click-Modify loan amount',
+										'open dialog'
+									]"
+									@change="trackLendAmountSelection"
+								>
+									<option
+										v-for="priceOption in prices"
+										:key="priceOption"
+										:value="priceOption"
+									>
+										${{ priceOption }}
+									</option>
+								</kv-ui-select>
 
-						<!-- Lend button -->
-						<kv-ui-button
-							v-if="lendButtonVisibility"
-							class="tw-inline-flex tw-flex-1"
-							@click="addToBasket"
-							v-kv-track-event="[
-								'Lending',
-								'Add to basket',
-								ctaButtonText
-							]"
-						>
-							{{ ctaButtonText }}
-						</kv-ui-button>
+								<!-- Lend button -->
+								<kv-ui-button
+									key="lendButton"
+									v-if="lendButtonVisibility"
+									class="tw-inline-flex tw-flex-1"
+									type="submit"
+									v-kv-track-event="[
+										'Lending',
+										'Add to basket',
+										ctaButtonText
+									]"
+								>
+									{{ ctaButtonText }}
+								</kv-ui-button>
+
+								<!-- Lend again/lent previously button -->
+								<kv-ui-button
+									key="lendAgainButton"
+									v-if="this.state === 'lent-to'"
+									class="tw-inline-flex tw-flex-1"
+									type="submit"
+									v-kv-track-event="[
+										'Lending',
+										'Add to basket',
+										'Lend again'
+									]"
+								>
+									Lend again
+								</kv-ui-button>
+
+								<!-- Adding to basket button -->
+								<kv-ui-button
+									v-if="isAdding"
+									class="tw-inline-flex tw-flex-1"
+								>
+									Adding to basket...
+								</kv-ui-button>
+							</fieldset>
+						</form>
 
 						<!-- Continue to checkout button -->
 						<kv-ui-button
@@ -93,20 +128,6 @@
 							]"
 						>
 							Continue to checkout
-						</kv-ui-button>
-
-						<!-- Lend again/lent previously button -->
-						<kv-ui-button
-							v-if="this.lentPreviously"
-							class="tw-inline-flex tw-flex-1"
-							@click="addToBasket"
-							v-kv-track-event="[
-								'Lending',
-								'Add to basket',
-								'Lend again'
-							]"
-						>
-							Lend again
 						</kv-ui-button>
 
 						<!-- Funded, refunded, expired/ allSharesReserved button -->
@@ -123,14 +144,6 @@
 						>
 							{{ ctaButtonText }}
 						</kv-ui-button>
-
-						<!-- Adding to basket button -->
-						<kv-ui-button
-							v-if="isAdding"
-							class="tw-inline-flex tw-flex-1"
-						>
-							Adding to basket...
-						</kv-ui-button>
 					</span>
 					<p
 						v-if="freeCreditWarning"
@@ -146,44 +159,94 @@
 					</p>
 				</div>
 			</kv-grid>
-			<kv-grid
-				:class="[
-					'tw-grid-cols-12',
-					'tw-order-first',
-					'tw-px-2.5',
-					{
-						'md:tw-order-none': !isSticky,
-						'md:tw-px-3': !isSticky,
-						'md:tw-px-4': isSticky,
-					},
-					'lg:tw-px-0',
-				]"
+
+			<transition
+				enter-active-class="tw-transition-transform tw-duration-700 tw-delay-300"
+				:enter-class="transitionEnterClasses"
+				enter-to-class="tw-transform tw-translate-y-0 md:tw-translate-y-0 lg:tw-translate-y-0"
 			>
-				<div v-if="lenderCountVisibilty"
+				<kv-grid
+					v-show="lenderCountVisibility || matchingTextVisibility"
+					key="grid"
 					:class="[
-						'tw-col-span-12',
-						'tw-mb-1 tw-p-1',
-						'tw-rounded',
-						'tw-bg-white',
-						'tw-text-h4',
-						'tw-flex tw-justify-center',
-						'md:tw-mt-1',
+						'tw-grid-cols-12',
+						'tw-order-first',
+						'tw-px-2.5',
+						'tw-absolute',
+						'tw-bottom-8',
+						'tw-w-full',
 						{
-							'md:tw-mb-0': !isSticky,
-							'md:tw-col-start-6 md:tw-col-span-7': !isSticky,
-							'md:tw-col-start-5 md:tw-col-span-6': isSticky,
+							'md:tw-relative': !isSticky,
+							'md:tw-bottom-0': !isSticky,
+							'md:tw-order-none': !isSticky,
+							'md:tw-px-3': !isSticky,
+							'md:tw-px-4': isSticky,
 						},
-						'lg:tw-mb-0',
-						'lg:tw-col-span-12'
+						'lg:tw-px-0',
 					]"
 				>
-					<kv-material-icon
-						class="tw-h-2.5 tw-pointer-events-none"
-						:icon="mdiLightningBolt"
-					/>
-					powered by {{ numLenders }} lenders
-				</div>
-			</kv-grid>
+					<div
+						key="wrapper"
+						:class="[
+							'tw-z-1',
+							'tw-h-5',
+							'tw-overflow-hidden',
+							'tw-col-span-12',
+							'tw-mb-1 tw-p-1',
+							'tw-rounded',
+							'tw-bg-white',
+							'tw-text-h4',
+							'tw-flex tw-justify-center',
+							'tw-mt-1',
+							{
+								'tw-relative': !isSticky,
+								'md:tw-mb-0': !isSticky,
+								'md:tw-col-start-6 md:tw-col-span-7': !isSticky,
+								'md:tw-col-start-5 md:tw-col-span-6': isSticky,
+							},
+							'lg:tw-mb-0',
+							'lg:tw-col-span-12'
+						]"
+					>
+						<transition
+							mode="out-in"
+							key="transition"
+							class="tw-flex tw-flex-col"
+							enter-active-class="tw-transition-all tw-duration-1000"
+							enter-class="tw-transform tw--translate-y-2 tw-opacity-0"
+							enter-to-class="tw-transform tw-translate-y-0 tw-opacity-full"
+							leave-active-class="tw-transition-all tw-duration-1000"
+							leave-class="tw-transform tw-translate-y-0 tw-opacity-full"
+							leave-to-class="tw-transform tw-translate-y-2 tw-opacity-0"
+						>
+							<span
+								class="tw-inline-block tw-align-middle"
+								key="numLendersStat"
+								v-if="statScrollAnimation"
+							>
+								<kv-material-icon
+									class="tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
+									:icon="mdiLightningBolt"
+								/>
+								powered by {{ numLenders }} lenders
+							</span>
+
+							<span
+								class="tw-inline-block tw-align-middle"
+								key="loanMatchingText"
+								v-if="!statScrollAnimation"
+							>
+								<span
+									class="tw-text-h3 tw-inline-block tw-align-middle tw-px-1"
+								>
+									🎉
+								</span>
+								2X MATCHED LOAN
+							</span>
+						</transition>
+					</div>
+				</kv-grid>
+			</transition>
 		</div>
 	</div>
 </template>
@@ -228,7 +291,10 @@ export default {
 			minNoteSize: '',
 			status: '',
 			numLenders: 0,
-			lenderCountVisibilty: false,
+			lenderCountVisibility: false,
+			matchingTextVisibility: false,
+			statScrollAnimation: false,
+			matchingText: '',
 			basketItems: [],
 			isAdding: false,
 			isLoading: true,
@@ -247,6 +313,7 @@ export default {
 						status
 						minNoteSize
 						loanAmount
+						matchingText
 						unreservedAmount @client
 						loanFundraisingInfo {
 							fundedAmount
@@ -299,9 +366,14 @@ export default {
 			this.numLenders = loan?.lenders?.totalCount ?? 0;
 			this.hasFreeCredit = basket?.hasFreeCredits ?? false;
 			this.basketItems = basket?.items?.values ?? [];
+			this.matchingText = loan?.matchingText ?? '';
 
-			if (this.status === 'fundraising') {
-				this.lenderCountVisibilty = true;
+			if (this.status === 'fundraising' && this.numLenders > 0) {
+				this.lenderCountVisibility = true;
+			}
+
+			if (this.lenderCountVisibility && this.matching !== '') {
+				this.statScrollAnimation = true;
 			}
 		},
 	},
@@ -350,7 +422,26 @@ export default {
 				'Modify lend amount',
 				selectedDollarAmount
 			);
+		},
+		cycleStatsSlot() {
+			if (this.matchingText.length) {
+				const cycleSlotMachine = () => {
+					if (this.statScrollAnimation) {
+						this.statScrollAnimation = false;
+					} else {
+						this.statScrollAnimation = true;
+					}
+				};
+				setInterval(cycleSlotMachine, 5000);
+			}
 		}
+	},
+	watch: {
+		matchingText(newValue, previousValue) {
+			if (newValue !== previousValue && newValue !== '') {
+				this.cycleStatsSlot();
+			}
+		},
 	},
 	computed: {
 		isInBasket() {
@@ -389,6 +480,16 @@ export default {
 				default:
 					return 'Lend now';
 			}
+		},
+		useFormSubmit() {
+			if (this.hideShowLendDropdown
+				|| this.lendButtonVisibility
+				|| this.lendAgainButton
+				|| this.state === 'lent-to'
+				|| this.isAdding) {
+				return true;
+			}
+			return false;
 		},
 		state() {
 			if (this.isLoading) {
@@ -440,9 +541,16 @@ export default {
 				paddingBottom: this.isSticky ? `${this.wrapperHeight}px` : '0',
 			};
 		},
+		transitionEnterClasses() {
+			if (this.isSticky) {
+				return 'tw-transform tw-translate-y-7 md:tw-translate-y-7 lg:tw--translate-y-7';
+			}
+			return 'tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7';
+		},
 	},
 	mounted() {
 		this.createWrapperObserver();
+		this.cycleStatsSlot();
 	},
 	beforeDestroy() {
 		this.destroyWrapperObserver();

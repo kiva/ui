@@ -58,6 +58,7 @@
 							<transition name="kvfade">
 								<div v-show="showAddACard">
 									<braintree-drop-in-interface
+										v-if="isClientReady"
 										ref="braintreeDropInInterface"
 										:payment-types="['card']"
 										auth="token-key"
@@ -173,7 +174,6 @@ import KvRadio from '@/components/Kv/KvRadio';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterface';
 
 const pageQuery = gql`query paymentMethodVault {
   my {
@@ -194,7 +194,7 @@ const pageQuery = gql`query paymentMethodVault {
 export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		BraintreeDropInInterface,
+		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvButton,
 		KvIcon,
 		KvLightbox,
@@ -209,6 +209,7 @@ export default {
 	},
 	data() {
 		return {
+			isClientReady: false,
 			isProcessing: false,
 			savedPaymentMethods: [],
 			selectedDefaultCardNonce: '',
@@ -238,6 +239,7 @@ export default {
 		},
 	},
 	mounted() {
+		this.isClientReady = !this.$isServer;
 		// After initial value is loaded, setup watch to make form dirty on value changes
 		this.$watch('selectedDefaultCardNonce', () => {
 			this.$v.$touch();
@@ -430,6 +432,15 @@ export default {
 
 		&__add-button {
 			margin-top: 0;
+
+			.wrapper {
+				width: 1rem;
+				height: 1rem;
+
+				::v-deep .icon {
+					fill: white;
+				}
+			}
 		}
 
 		&__cc-wrapper {

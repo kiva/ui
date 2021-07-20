@@ -2,6 +2,7 @@
 	<div class="row align-right">
 		<div class="dropin-payment-holder small-12 columns">
 			<braintree-drop-in-interface
+				v-if="isClientReady"
 				ref="braintreeDropInInterface"
 				:amount="amount"
 				flow="checkout"
@@ -109,14 +110,13 @@ import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndC
 
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
-import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterface';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 
 export default {
 	components: {
 		KvButton,
 		KvIcon,
-		BraintreeDropInInterface,
+		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvCheckbox,
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -137,6 +137,7 @@ export default {
 			termsAgreement: false,
 			emailUpdates: false,
 			enableCheckoutButton: false,
+			isClientReady: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 		};
 	},
@@ -146,6 +147,9 @@ export default {
 			email,
 		},
 		termsAgreement: { required: value => value === true },
+	},
+	mounted() {
+		this.isClientReady = !this.$isServer;
 	},
 	methods: {
 		submit() {

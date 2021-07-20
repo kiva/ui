@@ -4,7 +4,7 @@
 			class="
 				tw-rounded
 				tw-overflow-hidden
-				tw-my-5
+				tw-mb-6
 			"
 			:auto-zoom-delay="mapAutoZoomDelay"
 			:aspect-ratio="mapAspectRatio"
@@ -13,13 +13,7 @@
 			:zoom-level="mapZoomLevel"
 			:initial-zoom="mapInitialZoom"
 		/>
-		<country-info
-			:num-loans-fundraising="countryNumLoansFundraising"
-			:avg-annual-income="countryAvgAnnualIncome"
-			:country-iso-code="countryIsoCode"
-			:country-name="countryName"
-			:region-name="countryRegionName"
-		/>
+		<country-info :loan-id="loanId" />
 	</article>
 </template>
 
@@ -43,33 +37,21 @@ export default {
 	data() {
 		return {
 			mapZoomLevel: 5,
-			mapInitialZoom: 2,
+			mapInitialZoom: 4,
 			mapAutoZoomDelay: 500,
 			mapAspectRatio: 1.3,
 			mapLat: null,
 			mapLong: null,
-			countryNumLoansFundraising: 0,
-			countryAvgAnnualIncome: '',
-			countryIsoCode: '',
-			countryName: '',
-			countryRegionName: '',
 		};
 	},
 	apollo: {
-		query: gql`query borrowerCountry($loanId: Int!) {
+		query: gql`query borrowerCountryCoords($loanId: Int!) {
 			lend {
 				loan(id: $loanId) {
 					id
 					geocode {
 						latitude
 						longitude
-						country {
-							numLoansFundraising
-							ppp
-							isoCode
-							name
-							region
-						}
 					}
 				}
 			}
@@ -83,11 +65,6 @@ export default {
 			const geocode = result?.data?.lend?.loan?.geocode;
 			this.mapLat = geocode?.latitude ?? null;
 			this.mapLong = geocode?.longitude ?? null;
-			this.countryNumLoansFundraising = geocode?.country?.numLoansFundraising ?? 0;
-			this.countryAvgAnnualIncome = geocode?.country?.ppp ?? '';
-			this.countryIsoCode = geocode?.country?.isoCode ?? '';
-			this.countryName = geocode?.country?.name ?? '';
-			this.countryRegionName = geocode?.country?.region ?? '';
 		},
 	},
 };
