@@ -284,6 +284,14 @@ export default Vue => {
 			}
 		},
 		trackGATransaction: transactionData => {
+			// push to dataLayer
+			if (typeof window.dataLayer === 'object') {
+				window.dataLayer.push({
+					event: 'setTransactionData',
+					...transactionData
+				});
+			}
+
 			// Add each purchased item to the tracker
 			const allItems = transactionData.loans.concat(transactionData.donations);
 			allItems.forEach(item => {
@@ -364,6 +372,12 @@ export default Vue => {
 						window.ga('set', 'useBeacon', true);
 						window.ga('require', 'ec');
 						window.ga('set', 'dimension1', userId);
+					}
+					// set id on dataLayer
+					if (typeof window.dataLayer === 'object') {
+						window.dataLayer.push({
+							kvuid: userId
+						});
 					}
 					// resovle for next steps
 					resolve();
