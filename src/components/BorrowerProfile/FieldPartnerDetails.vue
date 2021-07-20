@@ -1,9 +1,5 @@
 <template>
 	<section>
-		<p>
-			<!-- eslint-disable-next-line max-len -->
-			Field partners are local organizations working in communities to vet borrowers, provide services, and administer loans on the ground.
-		</p>
 		<h2>
 			{{ partnerName }}
 		</h2>
