@@ -6,8 +6,15 @@
 		<div
 			v-if="partnerName && !loading"
 		>
+			<p>
+				This loan is facilitated by our Field Partner, {{ partnerName }}.
+				Field Partners are local organizations working in communities to vet
+				borrowers, provide services, and administer loans on the ground.
+			</p>
+
 			<div v-html="moreInfoAboutLoan">
 			</div>
+
 			<div
 				v-if="loanAlertText"
 			>
