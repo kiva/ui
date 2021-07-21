@@ -95,6 +95,13 @@ export default {
 			use: '',
 		};
 	},
+	mounted() {
+		this.$kvTrackEvent(
+			'Borrower profile',
+			'borrower profile status',
+			this.status
+		);
+	},
 	apollo: {
 		query: gql`
 			query summaryCard($loanId: Int!) {
