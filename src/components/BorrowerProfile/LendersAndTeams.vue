@@ -17,7 +17,10 @@
 					:style="{width: 20 + (Math.random() * 15) + '%', height: '14px'}"
 					class="tw-ml-1 tw-inline-block tw-align-middle"
 				/>
-				<span v-else>
+				<span
+					v-else
+					class="tw-text-h4"
+				>
 					{{ poweredByText }}
 				</span>
 			</div>
@@ -30,29 +33,22 @@
 						class="tw-rounded md:tw-block tw-hidden tw-mr-2" :style="{width: '88px', height: '88px'}"
 					/>
 					<div :style="{display: 'block', height: 'auto', width: '50%'}">
-						<kv-loading-placeholder class="tw-mb-1 tw-w-full" :style="{height: '14px'}" />
+						<kv-loading-placeholder class="tw-mb-1 tw-flex-shrink-0 tw-w-full" :style="{height: '14px'}" />
 						<kv-loading-placeholder :style="{width: 40 + (Math.random() * 15) + '%', height: '14px'}" />
 					</div>
 				</div>
 			</div>
 
-			<div v-if="!loading" class="section-items tw-mb-3 tw-grid tw-grid-cols-2 tw-gap-2">
-				<!-- Replace with Generic component for showing Either Team or Lender image and information -->
-				<div
+			<div v-if="!loading" class="section-items tw-grid tw-grid-cols-2 tw-gap-2 tw-mb-3">
+				<supporter-details
 					v-for="(item, index) in truncatedItemList" :key="index"
-					class="tw-flex tw-flex-col md:tw-flex-row md:tw-items-center tw-mb-3"
-				>
-					<kv-loading-placeholder class="tw-rounded md:tw-hidden tw-mb-1.5" :style="{height: '128px'}" />
-					<kv-loading-placeholder
-						class="tw-rounded md:tw-block tw-hidden tw-mr-2" :style="{width: '88px', height: '88px'}"
-					/>
-					<div>
-						<span v-if="item.name">{{ item.name }}</span><br>
-						<span v-if="item.lenderPage && item.lenderPage.whereabouts">
-							{{ item.lenderPage.whereabouts }}
-						</span>
-					</div>
-				</div>
+					class="tw-flex tw-flex-col md:tw-flex-row md:tw-items-center"
+					:name="item.name"
+					:hash="item.image.hash"
+					:display-type="displayType"
+					:lender-page="`${ displayType === 'lenders' ? item.lenderPage : null}`"
+					:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
+				/>
 			</div>
 
 			<!-- TODO: Use incoming TextLink component -->
@@ -130,6 +126,7 @@ import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import SupporterDetails from './SupporterDetails';
 
 const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int) {
 	lend {
@@ -140,10 +137,10 @@ const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int
 				values {
 					id
 					name
-					# image {
-					# 	id
-					# 	hash
-					# }
+					image {
+						id
+						hash
+					}
 				}
 			}
 		}
@@ -162,10 +159,10 @@ const lendersQuery = gql`query lendersQuery($loanId: Int!, $limit: Int, $offset:
 					lenderPage {
 						whereabouts
 					}
-					# image {
-					# 	id
-					# 	hash
-					# }
+					image {
+						id
+						hash
+					}
 				}
 			}
 		}
@@ -178,6 +175,7 @@ export default {
 		KvLightbox,
 		KvLoadingPlaceholder,
 		KvMaterialIcon,
+		SupporterDetails,
 	},
 	inject: ['apollo', 'cookieStore'],
 	props: {
