@@ -13,7 +13,7 @@
 				:default-image="{ width: isMobile ? 160 : 96 }"
 				:hash="hash"
 				:images="[
-					// small
+					// small & medium
 					{ width: 180, viewSize: 414 },
 					// large
 					{ width: 84, viewSize: 734 },
