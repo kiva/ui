@@ -69,6 +69,7 @@ import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 
 export default {
+	inject: ['cookieStore'],
 	components: {
 		BorrowerCountry,
 		ContentContainer,
@@ -89,5 +90,13 @@ export default {
 			loanId: Number(this.$route.params.id || 0),
 		};
 	},
+	mounted() {
+		// EXP-GROW-655-Aug2021
+		// This is cookie is set during the redirect and signifies the exp is active when landing on this page
+		const expCookieSignifier = this.cookieStore.get('kvlendborrowerbeta');
+		if (expCookieSignifier === 'b') {
+			this.$kvTrackEvent('Borrower Profile', 'EXP-GROW-655-Aug2021', expCookieSignifier);
+		}
+	}
 };
 </script>
