@@ -42,7 +42,6 @@
 			<div v-if="!loading" class="section-items tw-grid tw-grid-cols-2 tw-gap-2 tw-mb-3">
 				<supporter-details
 					v-for="(item, index) in truncatedItemList" :key="index"
-					class="tw-flex tw-flex-col md:tw-flex-row md:tw-items-center"
 					:name="item.name"
 					:hash="item.image.hash"
 					:display-type="displayType"

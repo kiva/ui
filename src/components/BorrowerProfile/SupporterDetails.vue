@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="tw-flex tw-flex-col md:tw-flex-row md:tw-items-center">
 		<!-- eslint-disable-next-line max-len -->
 		<div class="tw-block md:tw-inline-block md:tw-flex-none md:tw-mr-2 tw-w-[135px] md:tw-w-[150px] lg:tw-w-[84px] xl:tw-w-[96px]">
 			<borrower-image
