@@ -8,6 +8,7 @@
 	"scripts": {
 		"dev": "cross-env NODE_ENV=development node server/dev-server.js",
 		"start": "cross-env NODE_ENV=production node --max-old-space-size=2048 server/index.js",
+		"start-k8s": "cross-env NODE_ENV=production node --max-old-space-size=1024 server/index.js",
 		"docker-dev-vm": "rimraf node_modules/.cache/hard-source && cross-env NODE_ENV=development node server/dev-server.js",
 		"inspect-dev": "cross-env NODE_ENV=development node --inspect --max-old-space-size=4096 server/dev-server.js",
 		"inspect": "cross-env NODE_ENV=production node --inspect --max-old-space-size=4096 server/index.js",
