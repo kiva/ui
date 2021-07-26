@@ -67,6 +67,7 @@ export default {
 		};
 	},
 	apollo: {
+		preFetch: true,
 		query: gql`query loanStory($loanId: Int!) {
 			lend {
 				loan(id: $loanId) {
@@ -78,30 +79,38 @@ export default {
 						firstName
 					}
 					description
-					descriptionInOriginalLanguage
+					# TEMPORARILY Disabled for MVP
+					# descriptionInOriginalLanguage
 					image {
 						id
 						hash
 					}
 					name
-					originalLanguage {
-						id
-						name
-					}
+					# TEMPORARILY Disabled for MVP
+					# originalLanguage {
+					# 	id
+					# 	name
+					# }
 					... on LoanPartner {
 						partnerName
-						reviewer {
-							id
-							bylineName
-							image {
-								id
-								url
-							}
-						}
+						# TEMPORARILY Disabled for MVP
+						# reviewer {
+						# 	id
+						# 	bylineName
+						# 	image {
+						# 		id
+						# 		url
+						# 	}
+						# }
 					}
 				}
 			}
 		}`,
+		preFetchVariables({ route }) {
+			return {
+				loanId: Number(route?.params?.id ?? 0),
+			};
+		},
 		variables() {
 			return {
 				loanId: this.loanId,

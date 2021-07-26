@@ -124,7 +124,9 @@ export default {
 			return this.anonymizationLevel === 'full';
 		},
 		storyTranslation() {
-			return this.isPartnerLoan && parseInt(this.originalLanguage?.id ?? 0, 10) !== 1;
+			// TODO: Temporarily removing for MVP
+			return false;
+			// return this.isPartnerLoan && parseInt(this.originalLanguage?.id ?? 0, 10) !== 1;
 		},
 		language() {
 			return this.originalLanguage?.name ?? '';

@@ -21,8 +21,21 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '15.x'
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-dependencies
+        with:
+          path: |
+            ~/.cache
+            ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - run: npm install -g npm@latest
-      - run: npm install
+      - run: npm ci --prefer-offline
       - run: npm run deploy-storybook -- --ci --script=build-storybook
         env:
           GH_TOKEN: Kiva:${{ secrets.GITHUB_TOKEN }}

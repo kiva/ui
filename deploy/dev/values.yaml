@@ -41,10 +41,13 @@ ingress:
       - host: "ui-dev.dk1.kiva.org"
         http:
           paths:
-          - backend:
-              serviceName: "kiva-ui"
-              servicePort: *servicePortName
-            path: /
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: "kiva-ui"
+                port:
+                  name: *servicePortName
   tls:
     - hosts:
       - ui-dev.dk1.kiva.org
