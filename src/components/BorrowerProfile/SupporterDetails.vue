@@ -3,11 +3,9 @@
 		<!-- eslint-disable-next-line max-len -->
 		<div class="tw-block md:tw-inline-block md:tw-flex-none md:tw-mr-2 tw-w-[135px] md:tw-w-[150px] lg:tw-w-[84px] xl:tw-w-[96px]">
 			<borrower-image
-				class="
-					tw-w-full
-					tw-bg-black
-					tw-rounded
-				"
+				v-if="!this.isAnon"
+				class="tw-w-full tw-rounded"
+				:class="`${this.isAnon ? 'tw-bg-brand' : 'tw-bg-black' }`"
 				:alt="name"
 				:aspect-ratio="borrowerImageAspect"
 				:default-image="{ width: isMobile ? 160 : 96 }"
@@ -21,6 +19,27 @@
 					{ width: 96, viewSize: 1024 }
 				]"
 			/>
+			<div
+				v-else
+				class="
+					tw-w-full
+					tw-rounded
+					tw-bg-brand
+					tw-flex
+					tw-items-center
+					tw-justify-center
+					tw-mb-1
+					tw-h-[101px] md:tw-h-[150px] lg:tw-h-[84px] xl:tw-h-[96px]"
+			>
+				<!-- Kiva K logo -->
+				<!-- eslint-disable max-len -->
+				<svg class="" width="25" height="37" viewBox="0 0 25 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M8.22861 0.875H0.857178V36.3125H8.22861V0.875Z" fill="white" />
+					<path d="M10.1143 23.2751C21.9428 23.2751 24.6857 13.2126 24.6857 11.4626H23.6571C11.8286 11.4626 9.08569 21.5251 9.08569 23.2751H10.1143Z" fill="white" />
+					<path d="M9.08569 24.2376C9.08569 26.0751 11.1428 36.3126 23.8285 36.3126H24.8571C24.8571 34.4751 22.8 24.2376 10.1143 24.2376H9.08569Z" fill="white" />
+				</svg>
+				<!-- eslint-enable max-len -->
+			</div>
 		</div>
 		<div class="tw-inline-block">
 			<span
@@ -41,11 +60,13 @@
 
 <script>
 import _throttle from 'lodash/throttle';
+import KvIcon from '@/components/Kv/KvIcon';
 import BorrowerImage from './BorrowerImage';
 
 export default {
 	components: {
 		BorrowerImage,
+		KvIcon,
 	},
 	props: {
 		name: {
@@ -72,6 +93,7 @@ export default {
 	data() {
 		return {
 			isMobile: false,
+			isAnon: false,
 		};
 	},
 	computed: {
@@ -85,6 +107,15 @@ export default {
 	methods: {
 		determineIfMobile() {
 			this.isMobile = document.documentElement.clientWidth < 735;
+		},
+		anonymousSupporter() {
+			if (this.hash === null && this.name === 'Anonymous') {
+				this.isAnon = true;
+				// pass through the anonymous image
+			}
+		},
+		countAnonymousSupporters() {
+
 		}
 	},
 	beforeDestroy() {
@@ -97,6 +128,7 @@ export default {
 			this.determineIfMobile();
 		}, 200));
 
+		this.anonymousSupporter();
 		this.determineIfMobile();
 	},
 };
