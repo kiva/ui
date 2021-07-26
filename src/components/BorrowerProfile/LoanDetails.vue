@@ -96,7 +96,7 @@ export default {
 			if (this.disbursalDate.length) {
 				const formattedDisbursedDate = format(parseISO(this.disbursalDate), 'MMMM dd, yyyy');
 				return formattedDisbursedDate;
-			} if (this.disbursalDate === '' && this.status === 'expired') {
+			} if (!this.disbursalDate.length && this.status === 'expired') {
 				return 'N/A, expired before fully funding';
 			}
 			return 'After fully funded on Kiva';
