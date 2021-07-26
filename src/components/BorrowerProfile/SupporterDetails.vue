@@ -112,17 +112,16 @@ export default {
 			}
 		},
 		countAnonymousSupporters() {
-			// How can I count the number of anonomous lenders,
+			// How can I count the number of anonymous lenders,
 			// if we're lazy loading them in?
-			// I'll have to either strip or skip the anonmous
+			// I'll have to either strip or skip the anonymous
 			// items after counting them all for display.
 
-			// Do I show the anonomous lender card only if there are less
-			// than 5 or less non-anonomous lenders?
+			// Do I show the anonymous lender card only if there are less
+			// than 5 or less non-anonymous lenders? ie. Do non-anonymous users
+			// get preference over the anonymous group card?
 
-			// Are there anonomous teams?
-
-			//
+			// Are there anonymous teams?
 		}
 	},
 	beforeDestroy() {
