@@ -60,13 +60,11 @@
 
 <script>
 import _throttle from 'lodash/throttle';
-import KvIcon from '@/components/Kv/KvIcon';
 import BorrowerImage from './BorrowerImage';
 
 export default {
 	components: {
 		BorrowerImage,
-		KvIcon,
 	},
 	props: {
 		name: {
@@ -111,11 +109,20 @@ export default {
 		anonymousSupporter() {
 			if (this.hash === null && this.name === 'Anonymous') {
 				this.isAnon = true;
-				// pass through the anonymous image
 			}
 		},
 		countAnonymousSupporters() {
+			// How can I count the number of anonomous lenders,
+			// if we're lazy loading them in?
+			// I'll have to either strip or skip the anonmous
+			// items after counting them all for display.
 
+			// Do I show the anonomous lender card only if there are less
+			// than 5 or less non-anonomous lenders?
+
+			// Are there anonomous teams?
+
+			//
 		}
 	},
 	beforeDestroy() {
