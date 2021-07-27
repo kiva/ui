@@ -29,6 +29,7 @@
 					:name="name"
 				/>
 				<loan-progress
+					class="tw-mb-2"
 					:money-left="unreservedAmount"
 					:progress-percent="fundraisingPercent"
 					:time-left="timeLeft"
@@ -36,7 +37,7 @@
 			</div>
 		</div>
 		<loan-use
-			class="tw-flex-none tw-w-full"
+			class="tw-flex-none tw-w-full tw-mb-2"
 			:borrower-count="borrowerCount"
 			:loan-amount="loanAmount"
 			:name="name"
