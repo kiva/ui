@@ -42,4 +42,4 @@ EXPOSE 8888
 
 # Launch application
 # NOTE: Uses default Production config and is overridden when starting K8s pods
-CMD [ "npm", "start" ]
+CMD [ "npm", "start-k8s" ]
