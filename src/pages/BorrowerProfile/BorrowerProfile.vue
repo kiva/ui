@@ -2,9 +2,9 @@
 	<www-page
 		id="borrower-profile"
 		:header-theme="headerTheme"
-		:main-class="'kv-tailwind tw-bg-gray-50'"
+		main-class="kv-tailwind"
 	>
-		<article class="tw-relative">
+		<article class="tw-relative tw-bg-gray-50">
 			<div class="tw-relative">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 					<hero-background />
