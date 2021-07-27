@@ -9,6 +9,10 @@
 			:details="repaymentSchedule"
 		/>
 		<description-list-item
+			:term="'Disbursed date'"
+			:details="disbursedDate"
+		/>
+		<description-list-item
 			:term="'Funding model'"
 			:details="fundingModel"
 		/>
@@ -25,6 +29,7 @@
 
 <script>
 import DescriptionListItem from '@/components/BorrowerProfile/DescriptionListItem';
+import { format, parseISO } from 'date-fns';
 
 export default {
 	components: {
@@ -63,6 +68,14 @@ export default {
 			type: String,
 			default: '',
 		},
+		disbursalDate: { // LoanBasic.disbursalDate
+			type: String,
+			default: '',
+		},
+		status: {
+			type: String,
+			default: '',
+		},
 	},
 	computed: {
 		isPartnerLoan() {
@@ -78,6 +91,15 @@ export default {
 		},
 		fundingModel() {
 			return this.isPartnerLoan && this.flexibleFundraisingEnabled ? 'Flexible' : 'Fixed';
+		},
+		disbursedDate() {
+			if (this.disbursalDate.length) {
+				const formattedDisbursedDate = format(parseISO(this.disbursalDate), 'MMMM dd, yyyy');
+				return formattedDisbursedDate;
+			} if (!this.disbursalDate.length && this.status === 'expired') {
+				return 'N/A, expired before fully funding';
+			}
+			return 'After fully funded on Kiva';
 		},
 		borrowerPayingInterest() {
 			return this.isPartnerLoan && this.chargesFeesInterest ? 'Yes' : 'No';

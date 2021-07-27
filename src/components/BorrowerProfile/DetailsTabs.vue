@@ -27,6 +27,7 @@
 			<template #tabPanels>
 				<kv-tab-panel :id="loanTabId">
 					<loan-details
+						:status="loan.status"
 						:charges-fees-interest="partner.chargesFeesInterest"
 						:currency="loan.currency"
 						:flexible-fundraising-enabled="loan.flexibleFundraisingEnabled"
@@ -35,6 +36,7 @@
 						:loss-liability-currency-exchange="loan.lossLiabilityCurrencyExchange"
 						:partner-name="partner.name"
 						:repayment-interval="loan.repaymentInterval"
+						:disbursal-date="loan.disbursalDate"
 					/>
 				</kv-tab-panel>
 				<kv-tab-panel :id="partnerTabId" v-if="isPartnerLoan">
@@ -181,8 +183,10 @@ export default {
 					lend {
 						loan(id: $loanId) {
 							id
+							status
 							lenderRepaymentTerm
 							repaymentInterval
+							disbursalDate
 							terms {
 								currency
 								flexibleFundraisingEnabled
@@ -232,6 +236,8 @@ export default {
 				this.loan.loanTermLenderRepaymentTerm = loan?.terms?.lenderRepaymentTerm ?? 0;
 				this.loan.lossLiabilityCurrencyExchange = loan?.terms?.lossLiabilityCurrencyExchange ?? '';
 				this.loan.repaymentInterval = loan?.repaymentInterval ?? '';
+				this.loan.disbursalDate = loan.disbursalDate ?? '';
+				this.loan.status = loan.status ?? '';
 
 				this.partner.arrearsRate = partner?.arrearsRate ?? 0;
 				this.partner.avgBorrowerCost = partner?.avgBorrowerCost ?? 0;
