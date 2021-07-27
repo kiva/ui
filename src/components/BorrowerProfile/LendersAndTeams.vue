@@ -48,6 +48,12 @@
 					:lender-page="`${ displayType === 'lenders' ? item.lenderPage : null}`"
 					:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
 				/>
+				<supporter-details
+					v-if="this.hasAnonymousSupporters && this.displayType === 'lenders'"
+					name="+ Anonymous lenders"
+					display-type="lenders"
+					:has-anonymous-supporters="this.hasAnonymousSupporters"
+				/>
 			</div>
 
 			<!-- TODO: Use incoming TextLink component -->
@@ -202,6 +208,7 @@ export default {
 			itemQueryLimit: 20,
 			itemQueryOffset: 0,
 			totalItemCount: 0,
+			hasAnonymousSupporters: false,
 		};
 	},
 	computed: {
@@ -222,8 +229,14 @@ export default {
 			return `See all ${this.totalItemCount} ${this.displayType === 'teams' ? 'lending ' : ''}${this.countAwareName}`;
 		},
 		truncatedItemList() {
-			return this.items.slice(0, this.initialItemLimit);
-		}
+			let modifier = 0;
+			if (this.hasAnonymousSupporters) {
+				modifier = 1;
+			}
+
+			const filterItemsList = this.items.filter(item => item.name !== 'Anonymous');
+			return filterItemsList.slice(0, this.initialItemLimit - modifier);
+		},
 	},
 	methods: {
 		createObserver() {
@@ -253,19 +266,24 @@ export default {
 				this.observer.disconnect();
 			}
 		},
+		filterAnonymousSuporters() {
+			const filterItemsList = this.truncatedItemList.filter(item => item.name === 'Anonymous');
+			if (filterItemsList) {
+				this.hasAnonymousSupporters = true;
+				return true;
+			}
+			return false;
+		},
 		fetchItems(fromLightbox = false) {
 			if (this.loanId === 0) return false;
-
-			const queryLimit = fromLightbox ? this.itemQueryLimit : this.initialItemLimit;
-			const queryOffset = this.items.length + this.itemQueryOffset;
 
 			// run apollo query
 			this.apollo.query({
 				query: this.displayType === 'teams' ? teamsQuery : lendersQuery,
 				variables: {
 					loanId: this.loanId,
-					limit: queryLimit,
-					offset: queryOffset
+					limit: this.itemQueryLimit,
+					offset: this.itemQueryOffset
 				}
 			}).then(({ data }) => {
 				this.totalItemCount = data?.lend?.loan?.[this.displayType]?.totalCount ?? 0;
@@ -282,8 +300,7 @@ export default {
 		loadMore() {
 			this.fetchingLightboxItems = true;
 			// calculate proper offset after initial item limit
-			const newOffset = this.items.length === this.initialItemLimit ? 6 : this.offset + 20;
-			this.offset = newOffset;
+			this.itemQueryOffset += this.itemQueryLimit;
 			this.fetchItems(true);
 		},
 		openLightbox() {
@@ -295,6 +312,7 @@ export default {
 	},
 	mounted() {
 		this.createObserver();
+		this.filterAnonymousSuporters();
 	},
 	beforeDestroy() {
 		this.destroyObserver();

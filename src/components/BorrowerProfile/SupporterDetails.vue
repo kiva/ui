@@ -3,9 +3,9 @@
 		<!-- eslint-disable-next-line max-len -->
 		<div class="tw-block md:tw-inline-block md:tw-flex-none md:tw-mr-2 tw-w-[135px] md:tw-w-[150px] lg:tw-w-[84px] xl:tw-w-[96px]">
 			<borrower-image
-				v-if="!this.isAnon"
+				v-if="!this.anonymousSupporterCard"
 				class="tw-w-full tw-rounded"
-				:class="`${this.isAnon ? 'tw-bg-brand' : 'tw-bg-black' }`"
+				:class="`${this.anonymousSupporterCard ? 'tw-bg-brand' : 'tw-bg-black' }`"
 				:alt="name"
 				:aspect-ratio="borrowerImageAspect"
 				:default-image="{ width: isMobile ? 160 : 96 }"
@@ -86,12 +86,16 @@ export default {
 		displayType: {
 			type: String,
 			default: ''
+		},
+		hasAnonymousSupporters: {
+			type: Boolean,
+			default: false,
 		}
 	},
 	data() {
 		return {
 			isMobile: false,
-			isAnon: false,
+			anonymousSupporterCard: false,
 		};
 	},
 	computed: {
@@ -106,23 +110,6 @@ export default {
 		determineIfMobile() {
 			this.isMobile = document.documentElement.clientWidth < 735;
 		},
-		anonymousSupporter() {
-			if (this.hash === null && this.name === 'Anonymous') {
-				this.isAnon = true;
-			}
-		},
-		countAnonymousSupporters() {
-			// How can I count the number of anonymous lenders,
-			// if we're lazy loading them in?
-			// I'll have to either strip or skip the anonymous
-			// items after counting them all for display.
-
-			// Do I show the anonymous lender card only if there are less
-			// than 5 or less non-anonymous lenders? ie. Do non-anonymous users
-			// get preference over the anonymous group card?
-
-			// Are there anonymous teams?
-		}
 	},
 	beforeDestroy() {
 		window.removeEventListener('resize', _throttle(() => {
@@ -134,7 +121,9 @@ export default {
 			this.determineIfMobile();
 		}, 200));
 
-		this.anonymousSupporter();
+		if (this.hasAnonymousSupporters) {
+			this.anonymousSupporterCard = true;
+		}
 		this.determineIfMobile();
 	},
 };
