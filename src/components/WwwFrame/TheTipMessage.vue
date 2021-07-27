@@ -1,9 +1,11 @@
 <template>
-	<kv-toast
-		ref="tip"
-		@close="$closeTipMsg"
-		class="tw-fixed tw-top-9 md:tw-top-11 tw-left-0 tw-right-0 tw-z-banner"
-	/>
+	<div class="kv-tailwind">
+		<kv-toast
+			ref="tip"
+			@close="$closeTipMsg"
+			class="tw-fixed tw-top-9 md:tw-top-11 tw-left-0 tw-right-0 tw-z-banner"
+		/>
+	</div>
 </template>
 
 <script>
