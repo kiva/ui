@@ -285,6 +285,16 @@ module.exports = {
 			UI_COMMIT: JSON.stringify(gitRevisionPlugin.commithash()),
 			UI_BRANCH: JSON.stringify(gitRevisionPlugin.branch())
 		}),
+		...(isProd ? [] : [new HardSourceWebpackPlugin.ExcludeModulePlugin([
+			{
+				// HardSource works with mini-css-extract-plugin but due to how
+				// mini-css emits assets, assets are not emitted on repeated builds with
+				// mini-css and hard-source together. Ignoring the mini-css loader
+				// modules, but not the other css loader modules, excludes the modules
+				// that mini-css needs rebuilt to output assets every time.
+				test: /mini-css-extract-plugin[\\/]dist[\\/]loader/,
+			},
+		])]),
 		...(isProd ? [] : [new HardSourceWebpackPlugin({
 			configHash(webpackConfig) {
 				return `${process.env.NODE_ENV.substring(0,3)}_${require('node-object-hash')({sort: false}).hash(webpackConfig)}`
@@ -296,6 +306,6 @@ module.exports = {
 				// Prune once cache reaches 500MB
 				sizeThreshold: 500 * 1024 * 1024
 			}
-		})])
+		})]),
 	]
 };
