@@ -41,11 +41,23 @@
 
 			<div v-if="!loading" class="section-items tw-grid tw-grid-cols-2 tw-gap-2 tw-mb-3">
 				<supporter-details
+					v-if="this.supporterOfLoan"
+					display-type="lenders"
+					:hash="this.userImageHash"
+					:name="this.userName"
+					:whereabouts="this.userWhereabouts"
+					:supporter-page-url="this.lenderPageUrl"
+				/>
+				<!-- Supporter page url, not quite working yet,
+				having a hard time finding the right field
+				in the db to populate the url correctly. -->
+				<supporter-details
 					v-for="(item, index) in truncatedItemList" :key="index"
 					:name="item.name"
 					:hash="item.image.hash"
 					:display-type="displayType"
-					:lender-page="`${ displayType === 'lenders' ? item.lenderPage : null}`"
+					:public-team-id="publicTeamId"
+					:supporter-page-url="`${ displayType === 'lenders' ? item.lenderPage.url : item.url}`"
 					:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
 				/>
 				<supporter-details
@@ -142,6 +154,8 @@ const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int
 				values {
 					id
 					name
+					url
+					teamPublicId
 					image {
 						id
 						hash
@@ -156,6 +170,9 @@ const lendersQuery = gql`query lendersQuery($loanId: Int!, $limit: Int, $offset:
 	lend {
 		loan(id: $loanId) {
 			id
+			userProperties {
+				lentTo
+			}
 			lenders(limit: $limit, offset: $offset) {
 				totalCount
 				values {
@@ -163,12 +180,32 @@ const lendersQuery = gql`query lendersQuery($loanId: Int!, $limit: Int, $offset:
 					name
 					lenderPage {
 						whereabouts
+						# not the field we want
+						url
 					}
 					image {
 						id
 						hash
 					}
 				}
+			}
+		}
+	}
+}`;
+
+const userQuery = gql`query userQuery {
+	my {
+		lender {
+			id
+			image {
+				id
+				hash
+			}
+			name
+			lenderPage {
+				# not the field we want
+				url
+				whereabouts
 			}
 		}
 	}
@@ -209,6 +246,11 @@ export default {
 			itemQueryOffset: 0,
 			totalItemCount: 0,
 			hasAnonymousSupporters: false,
+			supporterOfLoan: false,
+			userImageHash: '',
+			userName: '',
+			userWhereabouts: '',
+			lenderPageUrl: '',
 		};
 	},
 	computed: {
@@ -230,7 +272,11 @@ export default {
 		},
 		truncatedItemList() {
 			let modifier = 0;
-			if (this.hasAnonymousSupporters) {
+			if (this.hasAnonymousSupporters && this.supporterOfLoan) {
+				modifier = 2;
+			} else if (this.supporterOfLoan) {
+				modifier = 1;
+			} else if (this.hasAnonymousSupporters) {
 				modifier = 1;
 			}
 
@@ -288,6 +334,13 @@ export default {
 			}).then(({ data }) => {
 				this.totalItemCount = data?.lend?.loan?.[this.displayType]?.totalCount ?? 0;
 				const items = data?.lend?.loan?.[this.displayType]?.values ?? 0;
+				this.lentTo = data?.lend?.loan?.userProperties?.lentTo ?? false;
+
+				// Check if current user has lent to loan
+				if (this.lentTo) {
+					this.supporterOfLoan = true;
+				}
+
 				// patch in list items
 				this.items = [...this.items, ...items];
 
@@ -308,10 +361,23 @@ export default {
 			if (this.items.length <= this.initialItemLimit) {
 				this.loadMore();
 			}
+		},
+		loadUserData() {
+			this.apollo.query({
+				query: userQuery,
+			}).then(({ data }) => {
+				// Gather user data if they are logged in
+				const my = data?.my;
+				this.userImageHash = my?.lender.image.hash ?? '';
+				this.userName = my?.lender?.name ?? '';
+				this.userWhereabouts = my?.lender?.lenderPage?.whereabouts ?? '';
+				this.lenderPageUrl = my?.lender?.lenderPage?.url ?? '';
+			});
 		}
 	},
 	mounted() {
 		this.createObserver();
+		this.loadUserData();
 		this.filterAnonymousSuporters();
 	},
 	beforeDestroy() {
