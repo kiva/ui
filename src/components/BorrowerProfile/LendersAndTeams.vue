@@ -56,8 +56,7 @@
 					:name="item.name"
 					:hash="item.image.hash"
 					:display-type="displayType"
-					:public-team-id="publicTeamId"
-					:supporter-page-url="`${ displayType === 'lenders' ? item.lenderPage.url : item.url}`"
+					:public-id="`${ displayType === 'lenders' ? item.publicId : item.teamPublicId}`"
 					:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
 				/>
 				<supporter-details
@@ -154,7 +153,6 @@ const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int
 				values {
 					id
 					name
-					url
 					teamPublicId
 					image {
 						id
@@ -178,10 +176,9 @@ const lendersQuery = gql`query lendersQuery($loanId: Int!, $limit: Int, $offset:
 				values {
 					id
 					name
+					publicId
 					lenderPage {
 						whereabouts
-						# not the field we want
-						url
 					}
 					image {
 						id
@@ -203,8 +200,6 @@ const userQuery = gql`query userQuery {
 			}
 			name
 			lenderPage {
-				# not the field we want
-				url
 				whereabouts
 			}
 		}
@@ -250,6 +245,8 @@ export default {
 			userImageHash: '',
 			userName: '',
 			userWhereabouts: '',
+			publicId: '',
+			teamPublicId: '',
 			lenderPageUrl: '',
 		};
 	},
@@ -366,7 +363,7 @@ export default {
 			this.apollo.query({
 				query: userQuery,
 			}).then(({ data }) => {
-				// Gather user data if they are logged in
+				// Gather user data if available
 				const my = data?.my;
 				this.userImageHash = my?.lender.image.hash ?? '';
 				this.userName = my?.lender?.name ?? '';

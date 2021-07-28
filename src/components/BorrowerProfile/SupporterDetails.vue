@@ -2,8 +2,8 @@
 	<div class="tw-flex tw-flex-col md:tw-flex-row md:tw-items-center">
 		<router-link
 			class="tw-contents tw-no-underline"
-			:to="`${displayType === 'lenders' ? '/lender/' + this.name : '/team/' + this.name}`"
-			v-kv-track-event="['Kiva15', 'click-hero-secondary-CTA', title]"
+			:to="`${displayType === 'lenders' ? '/lender/' + this.publicId : '/team/' + this.publicId}`"
+			:v-kv-track-event="configureTracking"
 		>
 			<!-- eslint-disable-next-line max-len -->
 			<div class="tw-block md:tw-inline-block md:tw-flex-none md:tw-mr-2 tw-w-[135px] md:tw-w-[150px] lg:tw-w-[84px] xl:tw-w-[96px]">
@@ -82,7 +82,7 @@ export default {
 			type: String,
 			default: ''
 		},
-		lenderPageUrl: {
+		publicId: {
 			type: String,
 			default: '',
 		},
@@ -112,6 +112,13 @@ export default {
 			}
 			return 3 / 4;
 		},
+		configureTracking() {
+			if (this.displayType === 'lenders') {
+				return  [ 'Borrower profile', 'click-lender-image', this.name ];
+			} else {
+				return [ 'Borrower profile', 'click-team-image', this.name ];
+			}
+		}
 	},
 	methods: {
 		determineIfMobile() {
