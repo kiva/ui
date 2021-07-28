@@ -117,7 +117,7 @@
 		"vue-meta": "^2.4.0",
 		"vue-observe-visibility": "^0.4.6",
 		"vue-progressbar": "^0.7.3",
-		"vue-qrcode": "^0.3.5",
+		"vue-qrcode": "^0.4.0",
 		"vue-router": "^3.4.9",
 		"vue-server-renderer": "^2.6.12",
 		"vue-smooth-reflow": "^0.1.12",
