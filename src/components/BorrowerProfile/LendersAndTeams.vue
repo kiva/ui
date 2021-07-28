@@ -48,9 +48,6 @@
 					:whereabouts="this.userWhereabouts"
 					:supporter-page-url="this.lenderPageUrl"
 				/>
-				<!-- Supporter page url, not quite working yet,
-				having a hard time finding the right field
-				in the db to populate the url correctly. -->
 				<supporter-details
 					v-for="(item, index) in truncatedItemList" :key="index"
 					:name="item.name"
@@ -359,22 +356,22 @@ export default {
 				this.loadMore();
 			}
 		},
-		loadUserData() {
+		gatherCurrentUserData() {
 			this.apollo.query({
 				query: userQuery,
 			}).then(({ data }) => {
 				// Gather user data if available
-				const my = data?.my;
-				this.userImageHash = my?.lender.image.hash ?? '';
-				this.userName = my?.lender?.name ?? '';
-				this.userWhereabouts = my?.lender?.lenderPage?.whereabouts ?? '';
-				this.lenderPageUrl = my?.lender?.lenderPage?.url ?? '';
+				const lender = data?.my?.lender;
+				this.userImageHash = lender?.image.hash ?? '';
+				this.userName = lender?.name ?? '';
+				this.userWhereabouts = lender?.lenderPage?.whereabouts ?? '';
+				this.lenderPageUrl = lender?.lenderPage?.url ?? '';
 			});
 		}
 	},
 	mounted() {
 		this.createObserver();
-		this.loadUserData();
+		this.gatherCurrentUserData();
 		this.filterAnonymousSuporters();
 	},
 	beforeDestroy() {
