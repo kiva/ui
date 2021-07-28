@@ -1,5 +1,5 @@
 <template>
-	<section class="tw-prose tw-py-4 md:tw-py-6 lg:tw-py-8">
+	<section class="tw-py-4 md:tw-py-6 lg:tw-py-8">
 		<div v-if="loading">
 			<!-- Loading placeholder for kv-tab elements -->
 			<div class="tw-flex tw-mb-4.5 md:tw-mb-5 tw-h-2.5 md:tw-h-3 lg:tw-h-4">
@@ -12,7 +12,7 @@
 				<kv-loading-placeholder :style="{width: 5 + (Math.random() * 5) + '%'}" />
 			</div>
 		</div>
-		<kv-tabs v-else>
+		<kv-tabs v-else class="tw-prose">
 			<template #tabNav>
 				<kv-tab :for="loanTabId">
 					Loan details
@@ -37,6 +37,7 @@
 						:partner-name="partner.name"
 						:repayment-interval="loan.repaymentInterval"
 						:disbursal-date="loan.disbursalDate"
+						@show-definition="showDefinition"
 					/>
 				</kv-tab-panel>
 				<kv-tab-panel :id="partnerTabId" v-if="isPartnerLoan">
@@ -50,6 +51,7 @@
 						:partner-id="partner.id"
 						:partner-name="partner.name"
 						:risk-rating="partner.riskRating"
+						@show-definition="showDefinition"
 					/>
 				</kv-tab-panel>
 				<kv-tab-panel :id="trusteeTabId" v-if="hasTrustee">
@@ -60,18 +62,30 @@
 						:trustee-id="trustee.id"
 						:trustee-name="trustee.name"
 						:total-loans-value="trustee.totalLoansValue"
+						@show-definition="showDefinition"
 					/>
 				</kv-tab-panel>
 			</template>
 		</kv-tabs>
+
+		<kv-lightbox
+			:visible="isLightboxVisible"
+			:title="lightboxTitle"
+			@lightbox-closed="closeLightbox"
+		>
+			<div v-html="lightboxContent" class="tw-prose"></div>
+		</kv-lightbox>
 	</section>
 </template>
 
 <script>
 import gql from 'graphql-tag';
+import { formatContentGroupsFlat } from '@/util/contentfulUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 // TODO: replace the loading placeholder with component from kv-components when available.
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvTab from '~/@kiva/kv-components/vue/KvTab';
 import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
 import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
@@ -83,6 +97,7 @@ export default {
 	inject: ['apollo'],
 	components: {
 		FieldPartnerDetails,
+		KvLightbox,
 		KvLoadingPlaceholder,
 		KvTab,
 		KvTabPanel,
@@ -99,9 +114,17 @@ export default {
 			type: String,
 			required: true,
 		},
+		useSalesForce: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	data() {
 		return {
+			contentfulDefinitions: null,
+			isLightboxVisible: false,
+			lightboxContent: null,
+			lightboxTitle: '',
 			loan: {
 				currency: '',
 				flexibleFundraisingEnabled: false,
@@ -152,6 +175,13 @@ export default {
 		},
 	},
 	methods: {
+		closeLightbox() {
+			// close lightbox
+			this.isLightboxVisible = false;
+			// clear content
+			this.lightboxTitle = '';
+			this.lightboxContent = null;
+		},
 		createObserver() {
 			// Watch for this element being close to entering the viewport
 			this.observer = createIntersectionObserver({
@@ -176,6 +206,24 @@ export default {
 			if (this.observer) {
 				this.observer.disconnect();
 			}
+		},
+		loadContentfulDefintions(contentEntryKey) {
+			this.apollo.query({
+				query: gql`query contentfulDefinitions {
+					contentful {
+						entries(contentKey: "borrower-profile-definitions", contentType: "contentGroup")
+					}
+				}`,
+			}).then(result => {
+				// assign and show lightbox content
+				const contentfulData = result.data?.contentful?.entries?.items ?? null;
+				if (contentfulData) {
+					const contentfulDataFormatted = formatContentGroupsFlat(contentfulData);
+					this.contentfulDefinitions = contentfulDataFormatted.borrowerProfileDefinitions?.contents ?? null;
+					// show originally requested entry
+					this.showContentfulEntry(contentEntryKey);
+				}
+			});
 		},
 		loadData() {
 			this.apollo.query({
@@ -258,6 +306,54 @@ export default {
 				this.trustee.totalLoansValue = trustee?.stats?.totalLoansValue ?? '0';
 
 				this.loading = false;
+			});
+		},
+		showContentfulEntry(contentKey) {
+			// check for loaded data
+			if (!this.contentfulDefinitions) {
+				this.loadContentfulDefintions(contentKey);
+				return false;
+			}
+			// extract target entry
+			const contentfulEntry = this.contentfulDefinitions.find(entry => entry.key === contentKey);
+			// setup and show lightbox content
+			if (contentfulEntry) {
+				this.lightboxTitle = contentfulEntry.name;
+				this.lightboxContent = documentToHtmlString(contentfulEntry.richText);
+				this.isLightboxVisible = true;
+			}
+		},
+		showDefinition(payload) {
+			if (this.useSalesForce) {
+				this.showSalesforceSolution(payload.sfid);
+			} else {
+				this.showContentfulEntry(payload.cid);
+			}
+		},
+		showSalesforceSolution(solutionId) {
+			// fetch data
+			this.apollo.query({
+				query: gql`query salesforceSolution($id: String!) {
+					general {
+						salesforceSolution(id: $id) {
+							name
+							note
+						}
+					}
+				}`,
+				variables: {
+					id: solutionId
+				}
+			}).then(result => {
+				// assign and show lightbox content
+				const solutionData = result?.data?.general?.salesforceSolution ?? null;
+				const solutionTitle = solutionData?.name ?? '';
+				const solutionContent = solutionData?.note ?? null;
+				if (solutionData) {
+					this.lightboxTitle = solutionTitle;
+					this.lightboxContent = solutionContent;
+					this.isLightboxVisible = true;
+				}
 			});
 		},
 	},

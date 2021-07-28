@@ -3,26 +3,38 @@
 		<description-list-item
 			:term="'Loan length'"
 			:details="`${loanLength} months`"
+			@show-definition="$emit('show-definition',
+				{cid: 'bp-def-loan-length', sfid: '50150000000Ry3z'})"
 		/>
 		<description-list-item
 			:term="'Repayment schedule'"
 			:details="repaymentSchedule"
+			@show-definition="$emit('show-definition',
+				{cid: 'bp-def-repayment-schedule', sfid: '50150000000Ry44'})"
 		/>
 		<description-list-item
 			:term="'Disbursed date'"
 			:details="disbursedDate"
+			@show-definition="$emit('show-definition',
+				{cid: 'bp-def-disbursed-date', sfid: '50150000000RyAs'})"
 		/>
 		<description-list-item
 			:term="'Funding model'"
 			:details="fundingModel"
+			@show-definition="$emit('show-definition',
+				{cid: 'bp-def-funding-model', sfid: '5011T000001GNKy'})"
 		/>
 		<description-list-item
 			:term="currencyLossScenarioTerm"
 			:details="currencyLossScenarioDetails"
+			@show-definition="$emit('show-definition',
+				{cid: 'bp-def-partner-covers-currency-loss', sfid: '50150000000J5kV'})"
 		/>
 		<description-list-item
 			:term="'Is borrower paying interest?'"
 			:details="borrowerPayingInterest"
+			@show-definition="$emit('show-definition',
+				{cid: 'bp-def-do-borrowers-pay-interest', sfid: '50150000000IIav'})"
 		/>
 	</dl>
 </template>
