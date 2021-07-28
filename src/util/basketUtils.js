@@ -1,11 +1,12 @@
 import * as Sentry from '@sentry/browser';
 import gql from 'graphql-tag';
 import numeral from 'numeral';
+import logFormatter from '@/util/logFormatter';
 import basketCountQuery from '@/graphql/query/basketCount.graphql';
 import basketItemsQuery from '@/graphql/query/basketItems.graphql';
 
 function logSetLendAmountError(loanId, err) {
-	console.error(err);
+	logFormatter(err, 'error');
 	try {
 		Sentry.withScope(scope => {
 			scope.setTag('loan_id', this.loanId);
@@ -54,15 +55,19 @@ export function setLendAmount({ amount, apollo, loanId }) {
 				{ query: basketItemsQuery },
 			]
 		}).then(result => {
-			if (result.error) {
-				logSetLendAmountError(loanId, result.error);
-				reject(result.error);
+			if (result.errors) {
+				result.errors.forEach(error => {
+					logSetLendAmountError(loanId, error);
+				});
+				reject(result.errors);
 			} else {
 				resolve();
 			}
-		}).catch(error => {
-			logSetLendAmountError(loanId, error);
-			reject(error);
+		}).catch(errors => {
+			errors.forEach(error => {
+				logSetLendAmountError(loanId, error);
+			});
+			reject(errors);
 		});
 	});
 }
