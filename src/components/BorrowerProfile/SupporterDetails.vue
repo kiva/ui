@@ -114,7 +114,7 @@ export default {
 		},
 		configureTracking() {
 			if (this.displayType === 'lenders') {
-				return  ['Borrower profile', 'click-lender-image', this.name];
+				return ['Borrower profile', 'click-lender-image', this.name];
 			}
 			return ['Borrower profile', 'click-team-image', this.name];
 		}
