@@ -8,6 +8,13 @@
 const loanUseFilter = require('../../plugins/loan-use-filter');
 
 export default {
+	metaInfo() {
+		return {
+			meta: [
+				{ property: 'og:description', vmid: 'og:description', content: this.loanUseFiltered },
+			]
+		};
+	},
 	props: {
 		loanAmount: {
 			type: String,
