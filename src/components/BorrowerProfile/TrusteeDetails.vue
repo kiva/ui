@@ -11,18 +11,26 @@
 			<description-list-item
 				:term="'Kiva borrowers'"
 				:details="numLoansEndorsedPublic"
+				@show-definition="$emit('show-definition',
+					{cid: 'bp-def-trustee-kiva-borrowers', sfid: '50150000000s2cE'})"
 			/>
 			<description-list-item
 				:term="'Total loans'"
 				:details="totalLoansValueFormatted"
+				@show-definition="$emit('show-definition',
+					{cid: 'bp-def-trustee-total-loans', sfid: '50150000000s2cO'})"
 			/>
 			<description-list-item
 				:term="'Loans defaulted'"
 				:details="numDefaultedLoans"
+				@show-definition="$emit('show-definition',
+					{cid: 'bp-def-trustee-loans-defaulted', sfid: '50150000000s2cn'})"
 			/>
 			<description-list-item
 				:term="'Repayment rate'"
 				:details="repaymentRateFormatted"
+				@show-definition="$emit('show-definition',
+					{cid: 'bp-def-trustee-repayment-rate', sfid: '50150000000s2cx'})"
 			/>
 		</dl>
 		<router-link

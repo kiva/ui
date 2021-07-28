@@ -2,6 +2,7 @@ const path = require('path');
 const assetsPath = require('./assets-path');
 const config = require('../config');
 const VueLoaderPlugin = require('vue-loader').VueLoaderPlugin;
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 const webpack = require('webpack');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
@@ -73,6 +74,7 @@ module.exports = {
 			},
 			{
 				test: /\.css$/,
+				exclude: [resolve('src/assets/scss/tailwind')],
 				use: [
 					{ loader: 'thread-loader' },
 					{ loader: 'vue-style-loader' }, // Inject styles as <style> tags
@@ -84,12 +86,38 @@ module.exports = {
 								plugins: [
 									require('autoprefixer'),
 									require('cssnano'),
-									require('tailwindcss'),
 								]
 							}
 						}
 					},
 				]
+			},
+			{
+				// Extract tailwind styles since they are global
+				test: /\.css$/,
+				include: [resolve('src/assets/scss/tailwind')],
+				use: [
+					{
+						loader: MiniCssExtractPlugin.loader,
+						options: {
+							esModule: true,
+						}
+					},
+					{ loader: 'css-loader' },
+					{
+						loader: 'postcss-loader',
+						options: {
+							postcssOptions: {
+								plugins: [
+									require('cssnano'),
+									require('tailwindcss'),
+									require('postcss-prepend-selector')( { selector: '.kv-tailwind ' } ),
+									require('autoprefixer'),
+								]
+							}
+						}
+					},
+				],
 			},
 			{
 				test: /\.scss$/,
@@ -248,11 +276,25 @@ module.exports = {
 		new FilterWarningsPlugin({
 			exclude: /vue-loader.*type=style/
 		}),
+		new MiniCssExtractPlugin({
+			filename: assetsPath('css/[name].[contenthash].css'),
+			chunkFilename: assetsPath('css/[name].[contenthash].css'),
+		}),
 		new VueLoaderPlugin(),
 		new webpack.DefinePlugin({
 			UI_COMMIT: JSON.stringify(gitRevisionPlugin.commithash()),
 			UI_BRANCH: JSON.stringify(gitRevisionPlugin.branch())
 		}),
+		...(isProd ? [] : [new HardSourceWebpackPlugin.ExcludeModulePlugin([
+			{
+				// HardSource works with mini-css-extract-plugin but due to how
+				// mini-css emits assets, assets are not emitted on repeated builds with
+				// mini-css and hard-source together. Ignoring the mini-css loader
+				// modules, but not the other css loader modules, excludes the modules
+				// that mini-css needs rebuilt to output assets every time.
+				test: /mini-css-extract-plugin[\\/]dist[\\/]loader/,
+			},
+		])]),
 		...(isProd ? [] : [new HardSourceWebpackPlugin({
 			configHash(webpackConfig) {
 				return `${process.env.NODE_ENV.substring(0,3)}_${require('node-object-hash')({sort: false}).hash(webpackConfig)}`
@@ -264,6 +306,6 @@ module.exports = {
 				// Prune once cache reaches 500MB
 				sizeThreshold: 500 * 1024 * 1024
 			}
-		})])
+		})]),
 	]
 };

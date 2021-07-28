@@ -21,12 +21,12 @@
 				<h3>
 					About {{ partnerName }}:
 				</h3>
-				<div
+				<p
 					v-for="(paragraph, index) in loanAlertTextParagraphs"
 					:key="`storyDescription-${index}`"
 					v-html="paragraph"
 				>
-				</div>
+				</p>
 			</div>
 			<div
 				v-if="dualStatementNote"
@@ -44,21 +44,21 @@
 			<h3>
 				Business Description
 			</h3>
-			<div
+			<p
 				v-for="(paragraph, index) in businessDescriptionParagraphs"
 				:key="`businessDescription-${index}`"
 				v-html="paragraph"
 			>
-			</div>
+			</p>
 			<h3>
 				What is the purpose of this loan?
 			</h3>
-			<div
+			<p
 				v-for="(paragraph, index) in purposeParagraphs"
 				:key="`purpose-${index}`"
 				v-html="paragraph"
 			>
-			</div>
+			</p>
 		</div>
 
 		<div

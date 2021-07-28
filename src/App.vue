@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import 'tailwindcss/tailwind.css';
+import '@/assets/scss/tailwind/tailwind.css';
 import TheTipMessage from '@/components/WwwFrame/TheTipMessage';
 import webmanifest from '@/manifest.webmanifest';
 
@@ -159,5 +159,27 @@ export default {
 
 #app {
 	height: 100%;
+}
+
+// Kludges to ensure Kiva Classic styles are correct when using the .kv-tailwind class
+// Remove once Kiva Classic is the default
+.kv-tailwind {
+	p,
+	dl,
+	ol,
+	ul { line-height: 1.5; }
+}
+
+body .kv-tailwind {
+	font-weight: 300;
+	font-size: 1rem;
+	line-height: 1.5;
+	color: #212121;
+}
+
+@media (min-width: 1024px) {
+	body .kv-tailwind {
+		font-size: rem-calc(17);
+	}
 }
 </style>
