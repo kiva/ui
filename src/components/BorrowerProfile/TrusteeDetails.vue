@@ -41,8 +41,8 @@
 		</kv-text-link>
 		<div v-if="endorsement" class="tw-prose tw-my-3">
 			<h3>{{ endorsementTitle }}</h3>
-			<blockquote class="tw-p-0">
-				<p class="tw-text-gray-800">
+			<blockquote>
+				<p>
 					{{ endorsement }}
 				</p>
 			</blockquote>
