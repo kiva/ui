@@ -41,12 +41,26 @@
 
 			<div v-if="!loading" class="section-items tw-grid tw-grid-cols-2 tw-gap-2 tw-mb-3">
 				<supporter-details
+					v-if="this.supporterOfLoan"
+					display-type="lenders"
+					:hash="this.userImageHash"
+					:name="this.userName"
+					:whereabouts="this.userWhereabouts"
+					:supporter-page-url="this.lenderPageUrl"
+				/>
+				<supporter-details
 					v-for="(item, index) in truncatedItemList" :key="index"
 					:name="item.name"
 					:hash="item.image.hash"
 					:display-type="displayType"
-					:lender-page="`${ displayType === 'lenders' ? item.lenderPage : null}`"
+					:public-id="`${ displayType === 'lenders' ? item.publicId : item.teamPublicId}`"
 					:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
+				/>
+				<supporter-details
+					v-if="this.hasAnonymousSupporters && this.displayType === 'lenders'"
+					name="+ Anonymous lenders"
+					display-type="lenders"
+					:has-anonymous-supporters="this.hasAnonymousSupporters"
 				/>
 			</div>
 
@@ -136,6 +150,7 @@ const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int
 				values {
 					id
 					name
+					teamPublicId
 					image {
 						id
 						hash
@@ -150,11 +165,15 @@ const lendersQuery = gql`query lendersQuery($loanId: Int!, $limit: Int, $offset:
 	lend {
 		loan(id: $loanId) {
 			id
+			userProperties {
+				lentTo
+			}
 			lenders(limit: $limit, offset: $offset) {
 				totalCount
 				values {
 					id
 					name
+					publicId
 					lenderPage {
 						whereabouts
 					}
@@ -163,6 +182,22 @@ const lendersQuery = gql`query lendersQuery($loanId: Int!, $limit: Int, $offset:
 						hash
 					}
 				}
+			}
+		}
+	}
+}`;
+
+const userQuery = gql`query userQuery {
+	my {
+		lender {
+			id
+			image {
+				id
+				hash
+			}
+			name
+			lenderPage {
+				whereabouts
 			}
 		}
 	}
@@ -202,6 +237,14 @@ export default {
 			itemQueryLimit: 20,
 			itemQueryOffset: 0,
 			totalItemCount: 0,
+			hasAnonymousSupporters: false,
+			supporterOfLoan: false,
+			userImageHash: '',
+			userName: '',
+			userWhereabouts: '',
+			publicId: '',
+			teamPublicId: '',
+			lenderPageUrl: '',
 		};
 	},
 	computed: {
@@ -222,8 +265,18 @@ export default {
 			return `See all ${this.totalItemCount} ${this.displayType === 'teams' ? 'lending ' : ''}${this.countAwareName}`;
 		},
 		truncatedItemList() {
-			return this.items.slice(0, this.initialItemLimit);
-		}
+			let modifier = 0;
+			if (this.hasAnonymousSupporters && this.supporterOfLoan) {
+				modifier = 2;
+			} else if (this.supporterOfLoan) {
+				modifier = 1;
+			} else if (this.hasAnonymousSupporters) {
+				modifier = 1;
+			}
+
+			const filterItemsList = this.items.filter(item => item.name !== 'Anonymous');
+			return filterItemsList.slice(0, this.initialItemLimit - modifier);
+		},
 	},
 	methods: {
 		createObserver() {
@@ -253,23 +306,35 @@ export default {
 				this.observer.disconnect();
 			}
 		},
+		filterAnonymousSuporters() {
+			const filterItemsList = this.truncatedItemList.filter(item => item.name === 'Anonymous');
+			if (filterItemsList) {
+				this.hasAnonymousSupporters = true;
+				return true;
+			}
+			return false;
+		},
 		fetchItems(fromLightbox = false) {
 			if (this.loanId === 0) return false;
-
-			const queryLimit = fromLightbox ? this.itemQueryLimit : this.initialItemLimit;
-			const queryOffset = this.items.length + this.itemQueryOffset;
 
 			// run apollo query
 			this.apollo.query({
 				query: this.displayType === 'teams' ? teamsQuery : lendersQuery,
 				variables: {
 					loanId: this.loanId,
-					limit: queryLimit,
-					offset: queryOffset
+					limit: this.itemQueryLimit,
+					offset: this.itemQueryOffset
 				}
 			}).then(({ data }) => {
 				this.totalItemCount = data?.lend?.loan?.[this.displayType]?.totalCount ?? 0;
 				const items = data?.lend?.loan?.[this.displayType]?.values ?? 0;
+				this.lentTo = data?.lend?.loan?.userProperties?.lentTo ?? false;
+
+				// Check if current user has lent to loan
+				if (this.lentTo) {
+					this.supporterOfLoan = true;
+				}
+
 				// patch in list items
 				this.items = [...this.items, ...items];
 
@@ -282,8 +347,7 @@ export default {
 		loadMore() {
 			this.fetchingLightboxItems = true;
 			// calculate proper offset after initial item limit
-			const newOffset = this.items.length === this.initialItemLimit ? 6 : this.offset + 20;
-			this.offset = newOffset;
+			this.itemQueryOffset += this.itemQueryLimit;
 			this.fetchItems(true);
 		},
 		openLightbox() {
@@ -291,10 +355,24 @@ export default {
 			if (this.items.length <= this.initialItemLimit) {
 				this.loadMore();
 			}
+		},
+		gatherCurrentUserData() {
+			this.apollo.query({
+				query: userQuery,
+			}).then(({ data }) => {
+				// Gather user data if available
+				const lender = data?.my?.lender;
+				this.userImageHash = lender?.image.hash ?? '';
+				this.userName = lender?.name ?? '';
+				this.userWhereabouts = lender?.lenderPage?.whereabouts ?? '';
+				this.lenderPageUrl = lender?.lenderPage?.url ?? '';
+			});
 		}
 	},
 	mounted() {
 		this.createObserver();
+		this.gatherCurrentUserData();
+		this.filterAnonymousSuporters();
 	},
 	beforeDestroy() {
 		this.destroyObserver();
