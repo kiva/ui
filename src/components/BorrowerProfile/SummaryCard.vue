@@ -79,6 +79,20 @@ export default {
 		LoanUse,
 		SummaryTag,
 	},
+	metaInfo() {
+		return {
+			title: this.pageTitle,
+			meta: [
+				{ property: 'og:title', vmid: 'og:title', content: `A loan to ${this.name}` },
+			].concat(this.$appConfig.enableFB ? [
+				{
+					vmid: 'facebook_label',
+					name: 'facebook_label',
+					content: this.pageLabel
+				},
+			] : [])
+		};
+	},
 	data() {
 		return {
 			activityName: '',
@@ -95,6 +109,19 @@ export default {
 			unreservedAmount: '0',
 			use: '',
 		};
+	},
+	computed: {
+		pageLabel() {
+			return `Kiva - ${this.pageTitle}`;
+		},
+		pageTitle() {
+			// eslint-disable-next-line prefer-destructuring
+			let name = this.name;
+			if (this.businessName) {
+				name = `${name}, ${this.businessName}`;
+			}
+			return `${name} - ${this.countryName}`;
+		}
 	},
 	mounted() {
 		this.$kvTrackEvent(
@@ -135,6 +162,9 @@ export default {
 						status
 						unreservedAmount @client
 						use
+						... on LoanDirect {
+							businessName
+						}
 					}
 				}
 			}
@@ -154,6 +184,7 @@ export default {
 			const loan = result?.data?.lend?.loan;
 			this.activityName = loan?.activity?.name ?? '';
 			this.borrowerCount = loan?.borrowerCount ?? 0;
+			this.businessName = loan?.businessName ?? '';
 			this.countryName = loan?.geocode?.country?.name ?? '';
 			this.fallbackImage = loan?.image?.urlSm1x ?? '';
 			this.fundraisingPercent = loan?.fundraisingPercent ?? 0;
