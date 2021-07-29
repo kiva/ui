@@ -162,12 +162,18 @@ export default {
 }
 
 // Kludges to ensure Kiva Classic styles are correct when using the .kv-tailwind class
-// Remove once Kiva Classic is the default
+// Remove once Kiva Classic is the default and foundation base styles are removed
+
+// Misc selectors that Foundation base styling has definitions for, but Tailwind does not
 .kv-tailwind {
 	p,
 	dl,
 	ol,
 	ul { line-height: 1.5; }
+
+	blockquote p {
+		color: #212121;
+	}
 }
 
 body .kv-tailwind {
