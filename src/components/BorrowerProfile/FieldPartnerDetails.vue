@@ -64,7 +64,7 @@
 		</dl>
 
 		<kv-text-link
-			icon="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"
+			:icon="mdiArrowRight"
 			:to="`/partners/${partnerId}`"
 		>
 			More about {{ partnerName }}
@@ -75,7 +75,12 @@
 <script>
 import numeral from 'numeral';
 import DescriptionListItem from '@/components/BorrowerProfile/DescriptionListItem';
-import { mdiStar, mdiStarOutline, mdiStarHalfFull } from '@mdi/js';
+import {
+	mdiArrowRight,
+	mdiStar,
+	mdiStarOutline,
+	mdiStarHalfFull
+} from '@mdi/js';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
@@ -87,6 +92,7 @@ export default {
 	},
 	data() {
 		return {
+			mdiArrowRight,
 			mdiStar,
 			mdiStarOutline,
 			mdiStarHalfFull,
