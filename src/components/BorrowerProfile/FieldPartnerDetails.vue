@@ -62,12 +62,13 @@
 				</dd>
 			</div>
 		</dl>
-		<router-link
+
+		<kv-text-link
+			icon="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"
 			:to="`/partners/${partnerId}`"
-			class="tw-text-h4"
 		>
-			More about {{ partnerName }} &rarr;
-		</router-link>
+			More about {{ partnerName }}
+		</kv-text-link>
 	</section>
 </template>
 
@@ -76,11 +77,13 @@ import numeral from 'numeral';
 import DescriptionListItem from '@/components/BorrowerProfile/DescriptionListItem';
 import { mdiStar, mdiStarOutline, mdiStarHalfFull } from '@mdi/js';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 export default {
 	components: {
 		DescriptionListItem,
 		KvMaterialIcon,
+		KvTextLink,
 	},
 	data() {
 		return {

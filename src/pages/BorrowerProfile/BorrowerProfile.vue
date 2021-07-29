@@ -42,7 +42,7 @@
 					display-type="teams"
 				/>
 			</content-container>
-			<div class="tw-bg-brand-50 tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
+			<div class="tw-bg-brand-50">
 				<content-container>
 					<details-tabs :loan-id="loanId" name="bp-details" />
 				</content-container>
