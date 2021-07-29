@@ -56,6 +56,7 @@
 				</kv-tab-panel>
 				<kv-tab-panel :id="trusteeTabId" v-if="hasTrustee">
 					<trustee-details
+						:endorsement="trustee.endorsement"
 						:num-defaulted-loans="trustee.numDefaultedLoans"
 						:num-loans-endorsed-public="trustee.numLoansEndorsedPublic"
 						:repayment-rate="trustee.repaymentRate"
@@ -154,6 +155,7 @@ export default {
 				numLoansEndorsedPublic: 0,
 				repaymentRate: 0,
 				totalLoansValue: '0',
+				endorsement: '',
 			},
 		};
 	},
@@ -253,6 +255,7 @@ export default {
 										totalLoansValue
 									}
 								}
+								endorsement
 							}
 							... on LoanPartner {
 								partner {
@@ -298,6 +301,7 @@ export default {
 				this.partner.name = partner?.name ?? '';
 				this.partner.riskRating = partner?.riskRating ?? 0;
 
+				this.trustee.endorsement = loan?.endorsement ?? '';
 				this.trustee.id = trustee?.id ?? 0;
 				this.trustee.name = trustee?.organizationName ?? '';
 				this.trustee.numDefaultedLoans = trustee?.stats?.numDefaultedLoans ?? 0;

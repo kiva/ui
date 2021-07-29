@@ -33,24 +33,39 @@
 					{cid: 'bp-def-trustee-repayment-rate', sfid: '50150000000s2cx'})"
 			/>
 		</dl>
-		<router-link
+		<kv-text-link
+			:icon="mdiArrowRight"
 			:to="`/trustees/${trusteeId}`"
-			class="tw-text-h4"
 		>
-			More about this trustee &rarr;
-		</router-link>
+			More about this trustee
+		</kv-text-link>
+		<div v-if="endorsement" class="tw-prose tw-my-3">
+			<h3>{{ endorsementTitle }}</h3>
+			<blockquote class="tw-p-0">
+				<p class="tw-text-gray-800">
+					{{ endorsement }}
+				</p>
+			</blockquote>
+		</div>
 	</section>
 </template>
 
 <script>
 import numeral from 'numeral';
 import DescriptionListItem from '@/components/BorrowerProfile/DescriptionListItem';
+import { mdiArrowRight } from '@mdi/js';
+import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 export default {
 	components: {
 		DescriptionListItem,
+		KvTextLink,
 	},
 	props: {
+		endorsement: { // endorsement
+			type: String,
+			default: '',
+		},
 		trusteeName: { // LoanDirect.trusteeName
 			type: String,
 			default: '',
@@ -76,7 +91,15 @@ export default {
 			default: 0,
 		},
 	},
+	data() {
+		return {
+			mdiArrowRight,
+		};
+	},
 	computed: {
+		endorsementTitle() {
+			return `Why are you endorsing ${this.trusteeName}?`;
+		},
 		totalLoansValueFormatted() {
 			return numeral(this.totalLoansValue).format('$0,0[.]00');
 		},
