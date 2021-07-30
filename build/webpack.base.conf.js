@@ -41,7 +41,9 @@ module.exports = {
 			'@': resolve('src'),
 			'foundation': 'foundation-sites/js',
 			// alias promise module to handle timesync calling require('promise')
-			'promise': resolve('build/promise.js')
+			'promise': resolve('build/promise.js'),
+			// required for src/components/Contentful/DynamicRichText.vue
+			'vue$': 'vue/dist/vue.esm.js'
 		}
 	},
 	module: {
