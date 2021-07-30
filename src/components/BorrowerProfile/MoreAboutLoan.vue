@@ -21,7 +21,6 @@
 				<h3>
 					About {{ partnerName }}:
 				</h3>
-				<!-- v-for="(paragraph, index) in loanAlertTextParagraphs" -->
 				<p
 					:key="`storyDescription-${index}`"
 					v-html="this.loanAlertText"
@@ -44,7 +43,6 @@
 			<h3>
 				Business Description
 			</h3>
-			<!-- v-for="(paragraph, index) in businessDescriptionParagraphs" -->
 			<p
 				:key="`businessDescription-${index}`"
 				v-html="this.businessDescription"
@@ -53,7 +51,6 @@
 			<h3>
 				What is the purpose of this loan?
 			</h3>
-			<!-- v-for="(paragraph, index) in purposeParagraphs" -->
 			<p
 				:key="`purpose-${index}`"
 				v-html="this.purpose"
@@ -114,21 +111,7 @@ export default {
 			purpose: '',
 		};
 	},
-	computed: {
-		// loanAlertTextParagraphs() {
-		// 	return this.toParagraphs(this.loanAlertText);
-		// },
-		// businessDescriptionParagraphs() {
-		// 	return this.toParagraphs(this.businessDescription);
-		// },
-		// purposeParagraphs() {
-		// 	return this.toParagraphs(this.purpose);
-		// }
-	},
 	methods: {
-		// toParagraphs(text) {
-		// 	return String(text).replace(/\r|\n|<br\s*\/?>/g, '\n').split(/\n+/);
-		// },
 		createObserver() {
 			// Watch for this element being close to entering the viewport
 			this.observer = createIntersectionObserver({
