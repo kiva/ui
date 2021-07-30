@@ -8,6 +8,9 @@ metadata:
     helm.sh/chart: {{ include "ui-helm.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -17,4 +20,3 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "ui-helm.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-
