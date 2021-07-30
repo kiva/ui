@@ -52,6 +52,12 @@ export default {
 					geocode {
 						latitude
 						longitude
+						country {
+							geocode {
+								latitude
+								longitude
+							}
+						}
 					}
 				}
 			}
@@ -65,6 +71,11 @@ export default {
 			const geocode = result?.data?.lend?.loan?.geocode;
 			this.mapLat = geocode?.latitude ?? null;
 			this.mapLong = geocode?.longitude ?? null;
+			// fallback to country level lat/long if loan level is missing
+			if (!this.mapLat || !this.mapLong) {
+				this.mapLat = geocode?.country?.geocode?.latitude ?? null;
+				this.mapLong = geocode?.country?.geocode?.longitude ?? null;
+			}
 		},
 	},
 };
