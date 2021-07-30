@@ -1,21 +1,24 @@
 <template>
-	<div class="tw-flex tw-flex-col md:tw-flex-row md:tw-items-center">
-		<router-link class="
-			tw-rounded tw-overflow-hidden
+	<router-link
+		class="
+			tw-flex tw-flex-col
+			md:tw-flex-row md:tw-items-center
+			tw-no-underline hover:tw-no-underline
+			tw-mb-1"
+		:to="linkPath"
+		v-kv-track-event="configureTracking"
+	>
+		<div class="
 			tw-block md:tw-inline-block
 			md:tw-flex-none
 			md:tw-mr-2
 			tw-max-w-[160px] md:tw-w-[84px] lg:tw-w-[84px] xl:tw-w-[96px]
-			tw-no-underline hover:tw-no-underline
 			tw-mb-1 md:tw-mb-0"
-			:class="randomizedUserClass"
 			style="line-height: 0; /* global property affects images within anchors - override required */"
-			:to="linkPath"
-			v-kv-track-event="configureTracking"
 		>
 			<borrower-image
 				v-if="!this.anonymousSupporterCard && this.hash"
-				class="tw-w-full"
+				class="tw-w-full tw-rounded tw-bg-black"
 				:alt="name"
 				:aspect-ratio="borrowerImageAspect"
 				:default-image="{ width: isMobile ? 160 : 96 }"
@@ -38,13 +41,11 @@
 					tw-items-center
 					tw-justify-center
 					tw-h-[120px] md:tw-h-[84px] lg:tw-h-[84px] xl:tw-h-[96px]
-					tw-text-h1
-					tw-no-underline"
+					tw-text-h1"
 				:class="randomizedUserClass"
 			>
-				<!-- hover:tw-no-underline  -->
 				<!-- First Letter of lender name -->
-				<span class="tw-pt-1 tw-no-underline">
+				<span class="tw-pt-1">
 					{{ lenderNameFirstLetter }}
 				</span>
 			</div>
@@ -68,28 +69,23 @@
 				</svg>
 				<!-- eslint-enable max-len -->
 			</div>
-		</router-link>
-		<router-link
-			class="tw-text-black tw-inline-block"
-			:to="linkPath"
-			v-kv-track-event="configureTracking"
-		>
-			<div>
-				<span
-					v-if="name"
-					:class="`${ displayType === 'teams' ? 'tw-text-h4' : ''}`"
-				>
-					{{ name }}
-				</span><br>
-				<span
-					v-if="whereabouts"
-					class="tw-text-h4"
-				>
-					{{ whereabouts }}
-				</span>
-			</div>
-		</router-link>
-	</div>
+		</div>
+
+		<div class="tw-text-gray-800 hover:tw-underline hover:tw-text-action">
+			<span
+				v-if="name"
+				:class="`${ displayType === 'teams' ? 'tw-text-h4' : ''}`"
+			>
+				{{ name }}
+			</span><br>
+			<span
+				v-if="whereabouts"
+				class="tw-text-h4"
+			>
+				{{ whereabouts }}
+			</span>
+		</div>
+	</router-link>
 </template>
 
 <script>
@@ -135,11 +131,11 @@ export default {
 				{ color: 'tw-text-800', bg: 'tw-bg-brand-100' },
 				{ color: 'tw-text-action', bg: 'tw-bg-gray-100' },
 				{ color: 'tw-text-white', bg: 'tw-bg-action' },
-				{ color: 'tw-text-800', bg: 'tw-bg-gray-50' },
+				// { color: 'tw-text-800', bg: 'tw-bg-gray-50' },
 				{ color: 'tw-text-brand-50', bg: 'tw-bg-action' },
 				{ color: 'tw-text-brand-50', bg: 'tw-bg-gray-800' },
 				{ color: 'tw-text-gray-100', bg: 'tw-bg-action' },
-				{ color: 'tw-text-action', bg: 'tw-bg-gray-50' },
+				// { color: 'tw-text-action', bg: 'tw-bg-gray-50' },
 				{ color: 'tw-text-white', bg: 'tw-bg-gray-800' },
 			]
 		};
@@ -169,7 +165,7 @@ export default {
 			if (this.hash) return 'tw-bg-black';
 			const randomStyle = this.userCardStyleOptions[Math.floor(Math.random() * this.userCardStyleOptions.length)];
 			return `${randomStyle.color} ${randomStyle.bg} hover:${randomStyle.color}`;
-		}
+		},
 	},
 	methods: {
 		determineIfMobile() {
