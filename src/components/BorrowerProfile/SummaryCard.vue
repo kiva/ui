@@ -45,7 +45,7 @@
 			:use="use"
 		/>
 		<div class="tw-flex-auto tw-inline-flex">
-			<summary-tag>
+			<summary-tag v-if="countryName">
 				<kv-material-icon
 					class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
 					:icon="mdiMapMarker"
@@ -131,14 +131,11 @@ export default {
 				const formattedString = `${this.city}, ${this.state}, ${this.country}`;
 				return formattedString;
 			}
-			if (this.countryName) {
-				if (this.countryName === 'Puerto Rico') {
-					const formattedString = `${this.city}, PR`;
-					return formattedString;
-				}
-				return this.countryName;
+			if (this.countryName === 'Puerto Rico') {
+				const formattedString = `${this.city}, PR`;
+				return formattedString;
 			}
-			return '';
+			return this.countryName;
 		}
 	},
 	mounted() {
