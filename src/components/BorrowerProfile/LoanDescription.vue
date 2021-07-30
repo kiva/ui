@@ -13,8 +13,8 @@
 				<p
 					v-for="(paragraph, index) in storyDescriptionParagraphs"
 					:key="`storyDescription-${index}`"
+					v-html="paragraph"
 				>
-					{{ paragraph }}
 				</p>
 			</section>
 
@@ -56,8 +56,8 @@
 					<p
 						v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
 						:key="`originalLanguageParagraph-${index}`"
+						v-html="paragraph"
 					>
-						{{ paragraph }}
 					</p>
 				</div>
 			</section>
