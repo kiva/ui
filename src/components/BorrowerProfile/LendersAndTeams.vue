@@ -53,7 +53,7 @@
 				<supporter-details
 					v-for="(item, index) in truncatedItemList" :key="index"
 					:name="item.name"
-					:hash="item.image.hash"
+					:hash="item.image && item.image.hash ? item.image.hash : ''"
 					:display-type="displayType"
 					:public-id="`${ displayType === 'lenders' ? item.publicId : item.teamPublicId}`"
 					:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
@@ -104,7 +104,7 @@
 				<supporter-details
 					v-for="(item, index) in filteredItemList" :key="index"
 					:name="item.name"
-					:hash="item.image.hash"
+					:hash="item.image && item.image.hash ? item.image.hash : ''"
 					:display-type="displayType"
 					:public-id="`${ displayType === 'lenders' ? item.publicId : item.teamPublicId}`"
 					:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
