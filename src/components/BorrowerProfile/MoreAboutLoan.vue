@@ -42,7 +42,7 @@
 			v-if="!partnerName && !loading"
 		>
 			<h3>
-				Business Description
+				Business description
 			</h3>
 			<p
 				v-for="(paragraph, index) in businessDescriptionParagraphs"
