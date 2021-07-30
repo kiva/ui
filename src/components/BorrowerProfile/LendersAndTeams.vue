@@ -28,9 +28,11 @@
 			<div v-if="loading" class="tw-grid tw-grid-cols-2 tw-gap-2">
 				<!-- Loading placeholder for team or lender item elements -->
 				<div v-for="i in 5" :key="i" class="tw-flex tw-flex-col md:tw-flex-row md:tw-items-center tw-mb-3">
-					<kv-loading-placeholder class="tw-rounded md:tw-hidden tw-mb-1.5" :style="{height: '128px'}" />
 					<kv-loading-placeholder
-						class="tw-rounded md:tw-block tw-hidden tw-mr-2" :style="{width: '88px', height: '88px'}"
+						class="tw-rounded md:tw-hidden tw-mb-1.5" :style="{width: '135px', height: '101px'}"
+					/>
+					<kv-loading-placeholder
+						class="tw-rounded md:tw-block tw-hidden tw-mr-2" :style="{width: '96px', height: '96px'}"
 					/>
 					<div :style="{display: 'block', height: 'auto', width: '50%'}">
 						<kv-loading-placeholder class="tw-mb-1 tw-flex-shrink-0 tw-w-full" :style="{height: '14px'}" />
@@ -64,14 +66,12 @@
 				/>
 			</div>
 
-			<!-- TODO: Use incoming TextLink component -->
-			<button
+			<kv-text-link
 				v-if="totalItemCount > initialItemLimit"
-				class="tw-text-h4"
 				@click="openLightbox"
 			>
 				{{ seeAllLinkText }}
-			</button>
+			</kv-text-link>
 		</div>
 
 		<kv-lightbox
@@ -93,22 +93,28 @@
 			</template>
 
 			<div class="tw-mb-3 tw-grid tw-grid-cols-2 md:tw-grid-cols-3 tw-gap-2">
-				<!-- TODO: Replace with Generic component for showing Either Team or Lender image and information -->
-				<div
-					v-for="(item, index) in items" :key="index"
-					class="tw-flex tw-flex-col md:tw-flex-row md:tw-items-center tw-mb-3"
-				>
-					<kv-loading-placeholder class="tw-rounded md:tw-hidden tw-mb-1.5" :style="{height: '128px'}" />
-					<kv-loading-placeholder
-						class="tw-rounded md:tw-block tw-hidden tw-mr-2" :style="{width: '88px', height: '88px'}"
-					/>
-					<div>
-						<span v-if="item.name">{{ item.name }}</span><br>
-						<span v-if="item.lenderPage && item.lenderPage.whereabouts">
-							{{ item.lenderPage.whereabouts }}
-						</span>
-					</div>
-				</div>
+				<supporter-details
+					v-if="this.supporterOfLoan"
+					display-type="lenders"
+					:hash="this.userImageHash"
+					:name="this.userName"
+					:whereabouts="this.userWhereabouts"
+					:supporter-page-url="this.lenderPageUrl"
+				/>
+				<supporter-details
+					v-for="(item, index) in filteredItemList" :key="index"
+					:name="item.name"
+					:hash="item.image.hash"
+					:display-type="displayType"
+					:public-id="`${ displayType === 'lenders' ? item.publicId : item.teamPublicId}`"
+					:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
+				/>
+				<supporter-details
+					v-if="this.hasAnonymousSupporters && this.displayType === 'lenders'"
+					name="+ Anonymous lenders"
+					display-type="lenders"
+					:has-anonymous-supporters="this.hasAnonymousSupporters"
+				/>
 			</div>
 
 			<kv-button
@@ -120,12 +126,6 @@
 			>
 				Load more
 			</kv-button>
-
-			<template #controls>
-				<kv-button @click="isLightboxVisible = false">
-					Close
-				</kv-button>
-			</template>
 		</kv-lightbox>
 	</section>
 </template>
@@ -139,6 +139,7 @@ import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 import SupporterDetails from './SupporterDetails';
 
 const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int) {
@@ -209,6 +210,7 @@ export default {
 		KvLightbox,
 		KvLoadingPlaceholder,
 		KvMaterialIcon,
+		KvTextLink,
 		SupporterDetails,
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -237,7 +239,6 @@ export default {
 			itemQueryLimit: 20,
 			itemQueryOffset: 0,
 			totalItemCount: 0,
-			hasAnonymousSupporters: false,
 			supporterOfLoan: false,
 			userImageHash: '',
 			userName: '',
@@ -253,6 +254,17 @@ export default {
 			const singularName = pluralName.slice(0, -1);
 			return this.totalItemCount > 1 || this.totalItemCount === 0 ? pluralName
 				: singularName;
+		},
+		filteredItemList() {
+			// extract anon lenders
+			return this.items.filter(item => item.name !== 'Anonymous');
+		},
+		hasAnonymousSupporters() {
+			const filterItemsList = this.items.filter(item => item.name === 'Anonymous');
+			if (filterItemsList.length) {
+				return true;
+			}
+			return false;
 		},
 		poweredByText() {
 			return `powered by ${this.totalItemCount} ${this.countAwareName}`;
@@ -274,8 +286,7 @@ export default {
 				modifier = 1;
 			}
 
-			const filterItemsList = this.items.filter(item => item.name !== 'Anonymous');
-			return filterItemsList.slice(0, this.initialItemLimit - modifier);
+			return this.filteredItemList.slice(0, this.initialItemLimit - modifier);
 		},
 	},
 	methods: {
@@ -306,14 +317,6 @@ export default {
 				this.observer.disconnect();
 			}
 		},
-		filterAnonymousSuporters() {
-			const filterItemsList = this.truncatedItemList.filter(item => item.name === 'Anonymous');
-			if (filterItemsList) {
-				this.hasAnonymousSupporters = true;
-				return true;
-			}
-			return false;
-		},
 		fetchItems(fromLightbox = false) {
 			if (this.loanId === 0) return false;
 
@@ -327,6 +330,9 @@ export default {
 				}
 			}).then(({ data }) => {
 				this.totalItemCount = data?.lend?.loan?.[this.displayType]?.totalCount ?? 0;
+				if (!this.totalItemCount) {
+					this.$emit('hide-section');
+				}
 				const items = data?.lend?.loan?.[this.displayType]?.values ?? 0;
 				this.lentTo = data?.lend?.loan?.userProperties?.lentTo ?? false;
 
@@ -372,7 +378,6 @@ export default {
 	mounted() {
 		this.createObserver();
 		this.gatherCurrentUserData();
-		this.filterAnonymousSuporters();
 	},
 	beforeDestroy() {
 		this.destroyObserver();
