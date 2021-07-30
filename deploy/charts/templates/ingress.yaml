@@ -4,10 +4,17 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
-  {{- with .Values.ingress.annotations }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+    helm.sh/chart: {{ include "ui-helm.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- end }}
     {{- if .Values.ingress.whitelist.enabled }}
     {{- if .Values.allowed_ips }}
     nginx.ingress.kubernetes.io/whitelist-source-range: "{{ .Values.allowed_ips }}"
@@ -32,4 +39,3 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
-
