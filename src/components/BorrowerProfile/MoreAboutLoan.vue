@@ -21,10 +21,10 @@
 				<h3>
 					About {{ partnerName }}:
 				</h3>
+				<!-- v-for="(paragraph, index) in loanAlertTextParagraphs" -->
 				<p
-					v-for="(paragraph, index) in loanAlertTextParagraphs"
 					:key="`storyDescription-${index}`"
-					v-html="paragraph"
+					v-html="this.loanAlertText"
 				>
 				</p>
 			</div>
@@ -44,19 +44,19 @@
 			<h3>
 				Business Description
 			</h3>
+			<!-- v-for="(paragraph, index) in businessDescriptionParagraphs" -->
 			<p
-				v-for="(paragraph, index) in businessDescriptionParagraphs"
 				:key="`businessDescription-${index}`"
-				v-html="paragraph"
+				v-html="this.businessDescription"
 			>
 			</p>
 			<h3>
 				What is the purpose of this loan?
 			</h3>
+			<!-- v-for="(paragraph, index) in purposeParagraphs" -->
 			<p
-				v-for="(paragraph, index) in purposeParagraphs"
 				:key="`purpose-${index}`"
-				v-html="paragraph"
+				v-html="this.purpose"
 			>
 			</p>
 		</div>
@@ -115,20 +115,20 @@ export default {
 		};
 	},
 	computed: {
-		loanAlertTextParagraphs() {
-			return this.toParagraphs(this.loanAlertText);
-		},
-		businessDescriptionParagraphs() {
-			return this.toParagraphs(this.businessDescription);
-		},
-		purposeParagraphs() {
-			return this.toParagraphs(this.purpose);
-		}
+		// loanAlertTextParagraphs() {
+		// 	return this.toParagraphs(this.loanAlertText);
+		// },
+		// businessDescriptionParagraphs() {
+		// 	return this.toParagraphs(this.businessDescription);
+		// },
+		// purposeParagraphs() {
+		// 	return this.toParagraphs(this.purpose);
+		// }
 	},
 	methods: {
-		toParagraphs(text) {
-			return String(text).replace(/\r|\n|<br\s*\/?>/g, '\n').split(/\n+/);
-		},
+		// toParagraphs(text) {
+		// 	return String(text).replace(/\r|\n|<br\s*\/?>/g, '\n').split(/\n+/);
+		// },
 		createObserver() {
 			// Watch for this element being close to entering the viewport
 			this.observer = createIntersectionObserver({
