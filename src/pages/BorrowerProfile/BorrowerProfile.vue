@@ -30,16 +30,20 @@
 				<more-about-loan class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<borrower-country class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<lenders-and-teams
+					v-if="showLenders"
 					key="lenders"
 					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
 					:loan-id="loanId"
 					display-type="lenders"
+					@hide-section="showLenders = false"
 				/>
 				<lenders-and-teams
+					v-if="showTeams"
 					key="teams"
 					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
 					:loan-id="loanId"
 					display-type="teams"
+					@hide-section="showTeams = false"
 				/>
 			</content-container>
 			<div class="tw-bg-brand-50 tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
@@ -88,6 +92,8 @@ export default {
 		return {
 			headerTheme: lightHeader,
 			loanId: Number(this.$route.params.id || 0),
+			showLenders: true,
+			showTeams: true,
 		};
 	},
 	mounted() {

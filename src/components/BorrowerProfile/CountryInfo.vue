@@ -20,7 +20,7 @@
 			<h2 class="tw-text-h2">
 				{{ countryName }} at a glance
 			</h2>
-			<div class="tw-flex lg:tw-mb-3">
+			<div class="tw-flex tw-mb-2 lg:tw-mb-3">
 				<p class="tw-flex-auto">
 					<span class="tw-block tw-text-h2">
 						{{ avgAnnualIncomeFormatted }}

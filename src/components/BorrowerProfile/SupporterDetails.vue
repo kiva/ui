@@ -1,28 +1,53 @@
 <template>
-	<router-link
-		class="tw-flex tw-flex-col md:tw-flex-row md:tw-items-center tw-text-black"
-		:to="`${displayType === 'lenders' ? '/lender/' + this.publicId : '/team/' + this.publicId}`"
-		:v-kv-track-event="configureTracking"
-	>
-		<!-- eslint-disable-next-line max-len -->
-		<div class="tw-block md:tw-inline-block md:tw-flex-none md:tw-mr-2 tw-w-[135px] md:tw-w-[150px] lg:tw-w-[84px] xl:tw-w-[96px]">
+	<div class="tw-flex tw-flex-col md:tw-flex-row md:tw-items-center">
+		<router-link class="
+			tw-rounded tw-overflow-hidden
+			tw-block md:tw-inline-block
+			md:tw-flex-none
+			md:tw-mr-2
+			tw-max-w-[160px] md:tw-w-[84px] lg:tw-w-[84px] xl:tw-w-[96px]
+			tw-no-underline hover:tw-no-underline
+			tw-mb-1 md:tw-mb-0"
+			:class="randomizedUserClass"
+			style="line-height: 0; /* global property affects images within anchors - override required */"
+			:to="linkPath"
+			v-kv-track-event="configureTracking"
+		>
 			<borrower-image
-				v-if="!this.anonymousSupporterCard"
-				class="tw-w-full tw-rounded"
-				:class="`${this.anonymousSupporterCard ? 'tw-bg-brand' : 'tw-bg-black' }`"
+				v-if="!this.anonymousSupporterCard && this.hash"
+				class="tw-w-full"
 				:alt="name"
 				:aspect-ratio="borrowerImageAspect"
 				:default-image="{ width: isMobile ? 160 : 96 }"
 				:hash="hash"
 				:images="[
 					// small & medium
-					{ width: 180, viewSize: 414 },
+					{ width: 160, viewSize: 320 },
 					// large
 					{ width: 84, viewSize: 734 },
 					// xlarge
 					{ width: 96, viewSize: 1024 }
 				]"
 			/>
+			<div
+				v-else-if="!this.anonymousSupporterCard && !this.hash"
+				class="
+					tw-w-full
+					tw-rounded
+					tw-flex
+					tw-items-center
+					tw-justify-center
+					tw-h-[120px] md:tw-h-[84px] lg:tw-h-[84px] xl:tw-h-[96px]
+					tw-text-h1
+					tw-no-underline"
+				:class="randomizedUserClass"
+			>
+				<!-- hover:tw-no-underline  -->
+				<!-- First Letter of lender name -->
+				<span class="tw-pt-1 tw-no-underline">
+					{{ lenderNameFirstLetter }}
+				</span>
+			</div>
 			<div
 				v-else
 				class="
@@ -32,8 +57,7 @@
 					tw-flex
 					tw-items-center
 					tw-justify-center
-					tw-mb-1
-					tw-h-[101px] md:tw-h-[150px] lg:tw-h-[84px] xl:tw-h-[96px]"
+					tw-h-[120px] md:tw-h-[84px] lg:tw-h-[84px] xl:tw-h-[96px]"
 			>
 				<!-- Kiva K logo -->
 				<!-- eslint-disable max-len -->
@@ -44,22 +68,28 @@
 				</svg>
 				<!-- eslint-enable max-len -->
 			</div>
-		</div>
-		<div class="tw-inline-block">
-			<span
-				v-if="name"
-				:class="`${ displayType === 'teams' ? 'tw-text-h4' : ''}`"
-			>
-				{{ name }}
-			</span><br>
-			<span
-				v-if="whereabouts"
-				class="tw-text-h4"
-			>
-				{{ whereabouts }}
-			</span>
-		</div>
-	</router-link>
+		</router-link>
+		<router-link
+			class="tw-text-black tw-inline-block"
+			:to="linkPath"
+			v-kv-track-event="configureTracking"
+		>
+			<div>
+				<span
+					v-if="name"
+					:class="`${ displayType === 'teams' ? 'tw-text-h4' : ''}`"
+				>
+					{{ name }}
+				</span><br>
+				<span
+					v-if="whereabouts"
+					class="tw-text-h4"
+				>
+					{{ whereabouts }}
+				</span>
+			</div>
+		</router-link>
+	</div>
 </template>
 
 <script>
@@ -98,8 +128,20 @@ export default {
 	},
 	data() {
 		return {
-			isMobile: false,
 			anonymousSupporterCard: false,
+			isMobile: false,
+			userCardStyleOptions: [
+				{ color: 'tw-text-action', bg: 'tw-bg-brand-50' },
+				{ color: 'tw-text-800', bg: 'tw-bg-brand-100' },
+				{ color: 'tw-text-action', bg: 'tw-bg-gray-100' },
+				{ color: 'tw-text-white', bg: 'tw-bg-action' },
+				{ color: 'tw-text-800', bg: 'tw-bg-gray-50' },
+				{ color: 'tw-text-brand-50', bg: 'tw-bg-action' },
+				{ color: 'tw-text-brand-50', bg: 'tw-bg-gray-800' },
+				{ color: 'tw-text-gray-100', bg: 'tw-bg-action' },
+				{ color: 'tw-text-action', bg: 'tw-bg-gray-50' },
+				{ color: 'tw-text-white', bg: 'tw-bg-gray-800' },
+			]
 		};
 	},
 	computed: {
@@ -114,6 +156,19 @@ export default {
 				return ['Borrower profile', 'click-lender-image', this.name];
 			}
 			return ['Borrower profile', 'click-team-image', this.name];
+		},
+		lenderNameFirstLetter() {
+			return this.name.substring(0, 1).toUpperCase();
+		},
+		linkPath() {
+			// clear out link if none provided
+			if (!this.publicId) return '';
+			return this.displayType === 'lenders' ? `/lender/${this.publicId}` : `/team/${this.publicId}`;
+		},
+		randomizedUserClass() {
+			if (this.hash) return 'tw-bg-black';
+			const randomStyle = this.userCardStyleOptions[Math.floor(Math.random() * this.userCardStyleOptions.length)];
+			return `${randomStyle.color} ${randomStyle.bg} hover:${randomStyle.color}`;
 		}
 	},
 	methods: {
