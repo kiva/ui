@@ -50,8 +50,9 @@
 					class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
 					:icon="mdiMapMarker"
 				/>
-				{{ countryName }}
+				{{ formattedLocation }}
 			</summary-tag>
+
 			<summary-tag v-if="activityName">
 				{{ activityName }}
 			</summary-tag>
@@ -108,6 +109,9 @@ export default {
 			timeLeft: '',
 			unreservedAmount: '0',
 			use: '',
+			distributionModel: '',
+			city: '',
+			state: '',
 		};
 	},
 	computed: {
@@ -121,6 +125,17 @@ export default {
 				name = `${name}, ${this.businessName}`;
 			}
 			return `${name} - ${this.countryName}`;
+		},
+		formattedLocation() {
+			if (this.distributionModel === 'direct') {
+				const formattedString = `${this.city}, ${this.state}, ${this.country}`;
+				return formattedString;
+			}
+			if (this.countryName === 'Puerto Rico') {
+				const formattedString = `${this.city}, PR`;
+				return formattedString;
+			}
+			return this.countryName;
 		}
 	},
 	mounted() {
@@ -141,9 +156,12 @@ export default {
 							name
 						}
 						borrowerCount
+						distributionModel
 						fundraisingPercent @client
 						fundraisingTimeLeft @client
 						geocode {
+							city
+							state
 							country {
 								name
 							}
@@ -195,6 +213,9 @@ export default {
 			this.timeLeft = loan?.fundraisingTimeLeft ?? '';
 			this.unreservedAmount = loan?.unreservedAmount ?? '0';
 			this.use = loan?.use ?? '';
+			this.distributionModel = loan?.distributionModel ?? '';
+			this.city = loan?.geocode?.city ?? '';
+			this.state = loan?.geocode?.state ?? '';
 
 			// If all shares are reserved in baskets, set the fundraising meter to 100%
 			if (this.unreservedAmount === '0') {
