@@ -126,6 +126,7 @@ export default Vue => {
 			return true;
 		},
 		trackSnowplowEvent: eventData => {
+			kvActions.checkLibs();
 			if (!snowplowLoaded) return false;
 
 			// In case there is a problem with the tracking event ensure that the callback gets called after 500ms
@@ -190,7 +191,8 @@ export default Vue => {
 
 			if (!queue.isEmpty()) {
 				// eslint-disable-next-line no-plusplus
-				for (let i = 0; i < queue.items.length; i++) {
+				for (let i = 0; i <= queue.items.length; i++) {
+					if (queue.isEmpty()) return false;
 					const item = queue.remove();
 					const method = item.eventType;
 					const { eventData } = item;
