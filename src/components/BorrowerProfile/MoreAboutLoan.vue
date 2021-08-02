@@ -1,9 +1,10 @@
 <template>
-	<section class="tw-prose">
+	<section>
 		<h2>
 			More about this loan
 		</h2>
 		<div
+			class="tw-prose"
 			v-if="partnerName && !loading"
 		>
 			<p>
@@ -22,7 +23,7 @@
 					About {{ partnerName }}:
 				</h3>
 				<p
-					:key="`storyDescription-${index}`"
+					key="storyDescription"
 					v-html="this.loanAlertText"
 				>
 				</p>
@@ -40,22 +41,35 @@
 		<div
 			v-if="!partnerName && !loading"
 		>
-			<h3>
-				Business description
-			</h3>
-			<p
-				:key="`businessDescription-${index}`"
-				v-html="this.businessDescription"
-			>
-			</p>
-			<h3>
-				What is the purpose of this loan?
-			</h3>
-			<p
-				:key="`purpose-${index}`"
-				v-html="this.purpose"
-			>
-			</p>
+			<div class="tw-prose tw-mb-2">
+				<h3>
+					Business Description
+				</h3>
+				<div
+					key="businessDescription"
+					v-html="this.businessDescription"
+				>
+				</div>
+			</div>
+
+			<borrower-business-details
+				class="tw-mb-2"
+				:borrower-business-name="borrowerBusinessName"
+				:sector="sector"
+				:social-links="socialLinks"
+				:years-in-business="yearsInBusiness"
+			/>
+
+			<div class="tw-prose">
+				<h3>
+					What is the purpose of this loan?
+				</h3>
+				<div
+					key="purpose"
+					v-html="this.purpose"
+				>
+				</div>
+			</div>
 		</div>
 
 		<div
@@ -86,12 +100,14 @@
 <script>
 import gql from 'graphql-tag';
 import { createIntersectionObserver } from '@/util/observerUtils';
+import BorrowerBusinessDetails from '@/components/BorrowerProfile/BorrowerBusinessDetails';
 // TODO: replace the loading placeholder with component from kv-components when available.
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
+		BorrowerBusinessDetails,
 		KvLoadingPlaceholder,
 	},
 	props: {
@@ -102,14 +118,35 @@ export default {
 	},
 	data() {
 		return {
+			businessName: '',
 			businessDescription: '',
 			dualStatementNote: '',
 			loading: true,
 			loanAlertText: '',
 			moreInfoAboutLoan: '',
+			name: '',
 			partnerName: '',
 			purpose: '',
+			sector: '',
+			socialLinks: {
+				etsy: '',
+				facebook: '',
+				instagram: '',
+				linkedin: '',
+				twitter: '',
+				website: '',
+				yelp: '',
+			},
+			yearsInBusiness: '',
 		};
+	},
+	computed: {
+		borrowerBusinessName() {
+			if (this.businessName) {
+				return this.businessName;
+			}
+			return this.name;
+		},
 	},
 	methods: {
 		createObserver() {
@@ -143,9 +180,25 @@ export default {
 					lend {
 						loan(id: $loanId) {
 							id
+							name
+							sector {
+								id
+								name
+							}
 							... on LoanDirect {
+								businessName
 								businessDescription
 								purpose
+								yearsInBusiness
+								socialLinks {
+									etsy
+									facebook
+									instagram
+									linkedin
+									twitter
+									website
+									yelp
+								}
 							}
 							... on LoanPartner {
 								dualStatementNote
@@ -164,12 +217,17 @@ export default {
 				},
 			}).then(result => {
 				const loan = result?.data?.lend?.loan;
+				this.businessName = loan?.businessName ?? '';
 				this.businessDescription = loan?.businessDescription ?? '';
 				this.dualStatementNote = loan?.dualStatementNote ?? '';
+				this.name = loan?.name ?? '';
 				this.loanAlertText = loan?.partner?.loanAlertText ?? '';
 				this.moreInfoAboutLoan = loan?.moreInfoAboutLoan ?? '';
 				this.partnerName = loan?.partnerName ?? '';
 				this.purpose = loan?.purpose ?? '';
+				this.sector = loan?.sector?.name ?? '';
+				this.socialLinks = loan?.socialLinks ?? {};
+				this.yearsInBusiness = loan?.yearsInBusiness ?? '';
 
 				this.loading = false;
 			});
