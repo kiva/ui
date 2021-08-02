@@ -8,8 +8,9 @@ module.exports = merge(base, devVm, {
 	},
 	server: {
 		graphqlUri: 'https://api-vm.kiva.org/fed/graphql',
+		// memcachedEnabled: false,
 		memcachedEnabled: true,
-		memcachedServers: 'localhost:11211',
+		memcachedServers: 'memcached:11211',
 		disableCluster: true,
 	}
 })
