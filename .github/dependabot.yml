@@ -10,3 +10,6 @@ updates:
   - dependency-name: vue-instantsearch
     versions:
     - ">= 2.7.a"
+  - dependency-name: vue-svg-loader
+    versions:
+    - ">= 0.15.0"    
