@@ -128,7 +128,7 @@ export default {
 		},
 		formattedLocation() {
 			if (this.distributionModel === 'direct') {
-				const formattedString = `${this.city}, ${this.state}, ${this.country}`;
+				const formattedString = `${this.city}, ${this.state}, ${this.countryName}`;
 				return formattedString;
 			}
 			if (this.countryName === 'Puerto Rico') {

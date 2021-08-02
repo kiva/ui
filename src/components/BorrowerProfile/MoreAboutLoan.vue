@@ -43,7 +43,7 @@
 		>
 			<div class="tw-prose tw-mb-2">
 				<h3>
-					Business Description
+					Business description
 				</h3>
 				<div
 					key="businessDescription"
