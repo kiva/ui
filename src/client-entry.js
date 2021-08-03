@@ -157,7 +157,6 @@ router.onReady(() => {
 		app.$Progress.finish();
 		// fire pageview
 		app.$fireAsyncPageView(to, from);
-		app.$kvFireQueuedEvents();
 	});
 
 	router.onError(() => app.$Progress.fail());
