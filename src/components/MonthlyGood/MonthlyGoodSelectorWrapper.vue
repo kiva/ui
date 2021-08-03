@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="kv-tailwind">
 		<!-- MG Selector Desktop -->
 		<!-- eslint-disable max-len -->
 		<section
