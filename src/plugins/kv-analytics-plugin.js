@@ -189,16 +189,12 @@ export default Vue => {
 		fireQueuedEvents() {
 			kvActions.checkLibs();
 
-			if (!queue.isEmpty()) {
-				// eslint-disable-next-line no-plusplus
-				for (let i = 0; i <= queue.items.length; i++) {
-					if (queue.isEmpty()) return false;
-					const item = queue.remove();
-					const method = item.eventType;
-					const { eventData } = item;
-					if (typeof kvActions[method] === 'function') {
-						kvActions[method](eventData, true);
-					}
+			while (!queue.isEmpty()) {
+				const item = queue.remove();
+				const method = item.eventType;
+				const { eventData } = item;
+				if (typeof kvActions[method] === 'function') {
+					kvActions[method](eventData, true);
 				}
 			}
 		},
