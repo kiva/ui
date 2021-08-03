@@ -2,9 +2,9 @@
 	<www-page
 		id="lend-filter-alpha"
 		:header-theme="headerTheme"
-		:main-class="'tw-bg-gray-50'"
+		:main-class="'kv-tailwind'"
 	>
-		<article class="tw-relative">
+		<article class="tw-bg-gray-50 tw-relative">
 			<div class="tw-relative" style="max-height: 460px;">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 				</div>
