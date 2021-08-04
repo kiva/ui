@@ -58,6 +58,7 @@
 				:sector="sector"
 				:social-links="socialLinks"
 				:years-in-business="yearsInBusiness"
+				:loan-id="loanId"
 			/>
 
 			<div class="tw-prose">

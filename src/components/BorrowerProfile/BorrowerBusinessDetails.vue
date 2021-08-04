@@ -28,29 +28,54 @@
 			Years in operation
 		</p>
 
-		<!-- TEMPORARY Text link until we add icon display -->
-		<kv-text-link
+		<a
 			v-for="(link, index) in filteredSocialLinks"
 			:key="index"
-			:icon="mdiArrowTopRight"
-			class="tw-mt-2 tw-mr-2"
 			target="_blank"
-			:href="link.url"
+			class="tw-rounded tw-bg-gray-50
+					tw-inline-flex tw-items-center tw-justify-center
+					tw-mt-2 tw-mr-2
+					tw-h-6 tw-w-6"
+			:href="verifyUrl(link.url)"
+			v-kv-track-event="['Borrower Profile', 'EXP-GROW-655-Aug2021', 'click-social-', link.type]"
 		>
-			{{ link.type }}
-		</kv-text-link>
+			<component
+				:is="getLogo(link.type)"
+				:alt="`${link.type}-logo`"
+				:width="getLogoWidth(link.type)"
+				:height="getLogoHeight(link.type)"
+			/>
+		</a>
 	</section>
 </template>
 
 <script>
 import { mdiArrowTopRight } from '@mdi/js';
+import * as Sentry from '@sentry/browser';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
+
+const TwitterLogo = () => import('@/assets/inline-svgs/logos/twitter-logo.svg');
+const YelpLogo = () => import('@/assets/inline-svgs/logos/yelp-logo.svg');
+const EtsyLogo = () => import('@/assets/inline-svgs/logos/etsy-logo.svg');
+const FacebookLogo = () => import('@/assets/inline-svgs/logos/facebook-logo.svg');
+const InstagramLogo = () => import('@/assets/inline-svgs/logos/instagram-logo.svg');
+const LinkedinLogo = () => import('@/assets/inline-svgs/logos/linkedin-logo.svg');
 
 export default {
 	components: {
 		KvTextLink,
+		TwitterLogo,
+		YelpLogo,
+		EtsyLogo,
+		FacebookLogo,
+		InstagramLogo,
+		LinkedinLogo,
 	},
 	props: {
+		loanId: {
+			type: Number,
+			default: 0
+		},
 		borrowerBusinessName: {
 			type: String,
 			default: ''
@@ -73,13 +98,87 @@ export default {
 			mdiArrowTopRight,
 		};
 	},
+	methods: {
+		getLogo(value) {
+			switch (value) {
+				case 'twitter':
+					return TwitterLogo;
+				case 'etsy':
+					return EtsyLogo;
+				case 'facebook':
+					return FacebookLogo;
+				case 'instagram':
+					return InstagramLogo;
+				case 'linkedin':
+					return LinkedinLogo;
+				case 'yelp':
+					return YelpLogo;
+				default:
+					return null;
+			}
+		},
+		getLogoWidth(value) {
+			switch (value) {
+				case 'twitter':
+					return 28;
+				case 'etsy':
+					return 32;
+				case 'facebook':
+					return 28;
+				case 'instagram':
+					return 28;
+				case 'linkedin':
+					return 30;
+				case 'yelp':
+					return 30;
+				default:
+					return 0;
+			}
+		},
+		getLogoHeight(value) {
+			switch (value) {
+				case 'twitter':
+					return 23;
+				case 'etsy':
+					return 15;
+				case 'facebook':
+					return 28;
+				case 'instagram':
+					return 28;
+				case 'linkedin':
+					return 28;
+				case 'yelp':
+					return 22;
+				default:
+					return 0;
+			}
+		},
+		verifyUrl(value) {
+			if (this.filteredSocialLinks.length) {
+				try {
+					let validatedUrl = value;
+					if (!value.startsWith('http')) {
+						validatedUrl = `https://${value}`;
+					}
+					validatedUrl = new URL(validatedUrl);
+					return validatedUrl.href;
+				} catch (err) {
+					Sentry.withScope(scope => {
+						scope.setTag('borrower_profile', 'social_link');
+						Sentry.captureMessage(`Invalid url ${value} for ${this.loanId}`);
+					});
+					return '';
+				}
+			}
+		}
+	},
 	computed: {
 		processedWebsite() {
 			const website = this.socialLinks?.website ?? '';
 			// verify we have a website url
 			if (!website) return '';
-			// TODO: Create util to validate + format website urls (ensure they use https and have a valid structure)
-			return website;
+
+			return this.verifyUrl(website);
 		},
 		filteredSocialLinks() {
 			const linkKeys = Object.keys(this.socialLinks);
@@ -95,7 +194,7 @@ export default {
 			const socialLinks = filteredKeys.map(key => {
 				return { type: key, url: this.socialLinks[key] };
 			});
-			return socialLinks;
+			return socialLinks ?? [];
 		},
 		yearsInBusinessFormatted() {
 			const formatedInBusinessOptions = {
@@ -108,7 +207,7 @@ export default {
 			};
 
 			return formatedInBusinessOptions[this.yearsInBusiness];
-		}
+		},
 	}
 };
 </script>
