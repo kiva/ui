@@ -113,22 +113,19 @@ export default {
 	},
 	methods: {
 		runQuery() {
-			// why isn't the data making it to flssData variable?
-			// fetchData() is definitely being called b/c the console.log statements in
-			// the function are being run. A
-			const flssData = fetchData(this.loanQueryFilters, this.apollo);
-			console.log('this is flss', flssData);
-			this.loans = flssData.newLoans;
-			console.log('this is loans', this.loans);
-			this.totalCount = flssData.totalCount;
-			console.log('this is count', this.totalCount);
-			this.zeroLoans = flssData.zeroLoans;
+			fetchData(this.loanQueryFilters, this.apollo).then(flssData => {
+				this.loans = flssData.values ?? [];
+				this.totalCount = flssData.totalCount;
+
+				if (this.totalCount === 0) {
+					this.zeroLoans = true;
+				}
+			});
 		},
 
 	},
 	mounted() {
-		const data = this.runQuery();
-		console.log('this is data',data)
+		this.runQuery();
 	}
 };
 </script>
