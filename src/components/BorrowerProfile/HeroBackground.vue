@@ -11,6 +11,7 @@
 			:contentful-src="contentfulSrc"
 			fallback-format="jpg"
 			fit="fill"
+			loading="lazy"
 			:alt="contentfulAlt"
 			:width="1024"
 			:height="320"

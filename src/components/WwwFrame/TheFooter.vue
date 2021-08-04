@@ -279,6 +279,8 @@
 									class="download-app-ios"
 									src="@/assets/icons/app-store.svg"
 									loading="lazy"
+									width="120"
+									height="40"
 									alt="Check out our new app on the App Store"
 								>
 							</a>
@@ -294,6 +296,8 @@
 									class="download-app-android"
 									src="@/assets/icons/play-store.svg"
 									loading="lazy"
+									width="135"
+									height="40"
 									alt="Check out our new app on the Play Store"
 								>
 							</a>

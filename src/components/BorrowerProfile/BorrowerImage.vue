@@ -18,6 +18,8 @@
 			"
 			:src="defaultUrl"
 			:alt="alt"
+			width="80"
+			height="80"
 			loading="lazy"
 		>
 	</picture>
