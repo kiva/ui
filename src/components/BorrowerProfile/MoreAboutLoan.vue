@@ -1,10 +1,9 @@
 <template>
-	<section>
+	<section class="tw-prose">
 		<h2>
 			More about this loan
 		</h2>
 		<div
-			class="tw-prose"
 			v-if="partnerName && !loading"
 		>
 			<p>
@@ -41,7 +40,7 @@
 		<div
 			v-if="!partnerName && !loading"
 		>
-			<div class="tw-prose tw-mb-2">
+			<div class="tw-mb-2">
 				<h3>
 					Business description
 				</h3>

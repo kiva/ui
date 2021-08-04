@@ -2,7 +2,7 @@
 	<section>
 		<div v-if="loading" class="">
 			<kv-loading-placeholder
-				class="tw-mb-2" :style="{width: 30 + (Math.random() * 15) + '%', height: '1.6rem'}"
+				class="tw-mb-4" :style="{width: 30 + (Math.random() * 15) + '%', height: '1.6rem'}"
 			/>
 			<div class="tw-flex lg:tw-mb-3">
 				<div v-for="i in 2" :key="i" class="tw-flex-auto">
@@ -17,7 +17,7 @@
 		</div>
 
 		<div v-else>
-			<h2 class="tw-text-h2">
+			<h2 class="tw-mb-4">
 				{{ countryName }} at a glance
 			</h2>
 			<div class="tw-flex tw-mb-2 lg:tw-mb-3">
