@@ -5,11 +5,12 @@
 	>
 		<template v-if="!pageError">
 			<component
-				v-for="({ component, content }) in contentGroups"
+				v-for="({ component, content, wrapperClass }) in contentGroups"
 				:key="content.key"
 				:is="component"
 				:content="content"
 				v-bind="getComponentOptions(content.key)"
+				:class="wrapperClass"
 			/>
 		</template>
 		<template v-else>
@@ -57,7 +58,7 @@ import * as siteThemes from '@/util/siteThemes';
 const WwwPage = () => import('@/components/WwwFrame/WwwPage');
 const WwwPageCorporate = () => import('@/components/WwwFrame/WwwPageCorporate');
 
-// Content Group components
+// Content Group Types
 // TODO: update the campaign components to accept "content" prop
 const CampaignHero = () => import('@/components/CorporateCampaign/CampaignHero');
 const CampaignLogoGroup = () => import('@/components/CorporateCampaign/CampaignLogoGroup');
@@ -67,8 +68,6 @@ const CampaignThanks = () => import('@/components/CorporateCampaign/CampaignThan
 const HomepageBottomCTA = () => import('@/components/Homepage/HomepageBottomCTA');
 const HomepageCorporateSponsors = () => import('@/components/Homepage/HomepageCorporateSponsors');
 // const HomepageGeneralStats = () => import('@/components/Homepage/HomepageGeneralStats');
-const DynamicHero = () => import('@/components/Contentful/DynamicHero');
-
 const HomepageHowItWorks = () => import('@/components/Homepage/HomepageHowItWorks');
 const HomepageLenderQuotes = () => import('@/components/Homepage/HomepageLenderQuotes');
 const HomepageLoanCategories = () => import('@/components/Homepage/HomepageLoanCategories');
@@ -77,6 +76,9 @@ const HomepageStatistics = () => import('@/components/Homepage/HomepageStatistic
 const HomepageTestimonials = () => import('@/components/Homepage/HomepageTestimonials');
 const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
 const HomepageMonthlyGoodInfo = () => import('@/components/Homepage/HomepageMonthlyGoodInfo');
+
+const DynamicHero = () => import('@/components/Contentful/DynamicHero');
+const HeroWithCarousel = () => import('@/components/Contentful/HeroWithCarousel');
 
 const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
 const MonthlyGoodFrequentlyAskedQuestions = () => import('@/components/MonthlyGood/FrequentlyAskedQuestions');
@@ -111,13 +113,26 @@ const getPageFrameFromType = type => {
 	}
 };
 
+// The components that return kv-tailwind will get wrapped in that class,
+// they have already been migrated to use tailwind CSS. Legacy components
+// should return empty string so they are not wrapped in the kv-tailwind class
+// once all components use tailwind, we can add the 'kv-tailwind' to the
+// :is="pageFrame" component on this page
+const getWrapperClassFromType = type => {
+	switch (type) {
+		case 'heroWithCarousel':
+		case 'monthlyGoodSelector':
+			return 'kv-tailwind';
+		default:
+			return '';
+	}
+};
+
 // Return a component importer function based on content group type from Contentful
 const getComponentFromType = type => {
 	switch (type) {
 		case 'homepageBottomCTA':
 			return HomepageBottomCTA;
-		case 'dynamicHero':
-			return DynamicHero;
 		case 'homepageHowItWorks':
 			return HomepageHowItWorks;
 		case 'homepageLenderQuotes':
@@ -152,6 +167,10 @@ const getComponentFromType = type => {
 			return MonthlyGoodSelectorWrapper;
 		case 'frequentlyAskedQuestions':
 			return KvFrequentlyAskedQuestions;
+		case 'dynamicHero':
+			return DynamicHero;
+		case 'heroWithCarousel':
+			return HeroWithCarousel;
 
 		default:
 			console.error(`Unknown content group type "${type}"`);
@@ -167,6 +186,7 @@ const getContentGroups = pageData => {
 	return groups.map(group => ({
 		component: getComponentFromType(group.type),
 		content: group,
+		wrapperClass: getWrapperClassFromType(group.type),
 	})).filter(group => typeof group.component === 'function');
 };
 
