@@ -87,7 +87,7 @@
 
 <script>
 import { lightHeader } from '@/util/siteThemes';
-import { fetchData } from '@/util/flssUtils';
+import fetchData from '@/util/flssUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -111,24 +111,24 @@ export default {
 			zeroLoans: false,
 		};
 	},
-	mounted() {
-		const flssData = this.queryFlss();
-		console.log(flssData);
-	},
 	methods: {
-		queryFlss() {
-			const data = fetchData(this.loanQueryFilters);
-			return data;
+		runQuery() {
+			// why isn't the data making it to flssData variable?
+			// fetchData() is definitely being called b/c the console.log statements in
+			// the function are being run. A
+			const flssData = fetchData(this.loanQueryFilters, this.apollo);
+			console.log('this is flss', flssData);
+			this.loans = flssData.newLoans;
+			console.log('this is loans', this.loans);
+			this.totalCount = flssData.totalCount;
+			console.log('this is count', this.totalCount);
+			this.zeroLoans = flssData.zeroLoans;
 		},
-		getLoans() {
-			this.loans = this.flssData.newLoans;
-		},
-		getTotalCount() {
-			this.totalCount = this.flssData.totalCount;
-		},
-		isZeroLoans() {
-			this.zeroLoans = this.flssData.zeroLoans;
-		}
+
+	},
+	mounted() {
+		const data = this.runQuery();
+		console.log('this is data',data)
 	}
 };
 </script>
