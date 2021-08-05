@@ -1,6 +1,7 @@
+/* eslint-disable import/prefer-default-export */
 import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 
-export default function fetchData(loanQueryFilters, apollo) {
+export function fetchData(loanQueryFilters, apollo) {
 	return apollo.query({
 		query: flssLoanQuery,
 		variables: {

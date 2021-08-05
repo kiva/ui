@@ -87,7 +87,7 @@
 
 <script>
 import { lightHeader } from '@/util/siteThemes';
-import fetchData from '@/util/flssUtils';
+import { fetchData } from '@/util/flssUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
