@@ -104,7 +104,7 @@ export default {
 			return numeral(this.totalLoansValue).format('$0,0[.]00');
 		},
 		repaymentRateFormatted() {
-			return numeral(this.repaymentRate).format('0%');
+			return numeral(this.repaymentRate/100).format('0%');
 		},
 	},
 };
