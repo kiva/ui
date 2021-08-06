@@ -91,8 +91,8 @@
 
 <script>
 import { lightHeader } from '@/util/siteThemes';
+import { fetchData } from '@/util/flssUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
@@ -101,10 +101,7 @@ export default {
 	components: {
 		WwwPage,
 		KvGrid,
-		KvPageContainer,
-	},
-	mounted() {
-		this.fetchLoans();
+		KvPageContainer
 	},
 	data() {
 		return {
@@ -119,32 +116,20 @@ export default {
 		};
 	},
 	methods: {
-		fetchLoans() {
-			this.apollo
-				.query({
-					query: flssLoanQuery,
-					variables: {
-						filterObject: this.loanQueryFilters,
-						limit: 20
-					},
-					fetchPolicy: 'network-only',
-				})
-				.then(({ data }) => {
-					const newLoans = data.fundraisingLoans?.values ?? [];
-					this.loans = newLoans;
-					// leaving console.log for sanity check
-					console.log(newLoans);
+		runQuery() {
+			fetchData(this.loanQueryFilters, this.apollo).then(flssData => {
+				this.loans = flssData.values ?? [];
+				this.totalCount = flssData.totalCount;
 
-					const totalCount = data.fundraisingLoans.totalCount ?? 0;
-					this.totalCount = totalCount;
-					// leaving console.log for sanity check
-					console.log(totalCount);
-
-					if (this.totalCount === 0) {
-						this.zeroLoans = true;
-					}
-				});
+				if (this.totalCount === 0) {
+					this.zeroLoans = true;
+				}
+			});
 		},
+
 	},
+	mounted() {
+		this.runQuery();
+	}
 };
 </script>
