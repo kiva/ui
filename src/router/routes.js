@@ -7,6 +7,14 @@ export default [
 			contentfulPage: () => 'home',
 		},
 	},
+	{
+		path: '/homepage-classic',
+		name: 'homepage',
+		component: () => import('@/pages/Homepage/HomepageClassic'),
+		meta: {
+			contentfulPage: () => 'homepage',
+		},
+	},
 	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
 	{
 		path: '/auto-deposit',
