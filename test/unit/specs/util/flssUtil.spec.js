@@ -23,12 +23,12 @@ describe('flssUtils.js', () => {
 			fetchPolicy: 'network-only',
 		};
 
-		it('Queries for currently fundraising loans', () => {
+		it('Checks if the query filters are run through apollo', () => {
 			fetchData(loanQueryFilters, apollo);
 			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
 		});
 
-		it('Returns the currently fundraising loans', done => {
+		it('Returns the currently fundraising loans data', done => {
 			fetchData(loanQueryFilters, apollo).then(data => {
 				expect(data).toBe(result);
 				done();
