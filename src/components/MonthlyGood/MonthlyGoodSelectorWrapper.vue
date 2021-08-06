@@ -17,7 +17,7 @@
 			:style="{bottom: mgStickBarOffset + 'px'}"
 			v-if="isMobile"
 		>
-			<monthly-good-selector-mobile :pre-selected-category="preSelectedCategory" />
+			<monthly-good-selector-mobile :pre-selected-category="preSelectedCategory" :rich-text-content="mgMobileRichText" />
 		</section>
 		<!-- eslint-enable max-len -->
 	</div>
@@ -61,7 +61,14 @@ export default {
 			return _throttle(this.onScroll, 100);
 		},
 		mgSelectorSetting() {
-			return this.content?.contents?.find(({ key }) => key.indexOf('monthly-good-selector-setting') > -1);
+			return this.content?.contents?.find(
+				({ contentType }) => contentType === 'uiSetting'
+			) ?? {};
+		},
+		mgMobileRichText() {
+			return this.content?.contents?.find(
+				({ contentType }) => contentType === 'richTextContent'
+			) ?? {};
 		},
 		alwaysSticky() {
 			return this.mgSelectorSetting?.dataObject?.alwaysSticky ?? false;

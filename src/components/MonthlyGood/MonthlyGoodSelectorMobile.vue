@@ -17,10 +17,7 @@
 			title="Monthly Subscription"
 			@lightbox-closed="hideLightbox"
 		>
-			<!-- eslint-disable-next-line max-len -->
-			<p class="tw-pb-3">
-				100% of your loan goes to borrowers. We’ll send you incredible stories about the people you supported.
-			</p>
+			<div class="tw-pb-3" v-html="monthlySubscriptionCopy"></div>
 			<div v-if="selectedGroup">
 				<h4 class="tw-py-1">
 					Your cause
@@ -92,8 +89,8 @@
 import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
-
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -109,6 +106,13 @@ export default {
 		preSelectedCategory: {
 			type: Object,
 			default: null,
+		},
+		/**
+		 * Rich text object for copy for lightbox
+		* */
+		richTextContent: {
+			type: Object,
+			default: () => {},
 		},
 	},
 	components: {
@@ -225,6 +229,10 @@ export default {
 		},
 	},
 	computed: {
+		monthlySubscriptionCopy() {
+			const text = this.richTextContent?.richText;
+			return documentToHtmlString(text);
+		},
 		sortedLendingCategories() {
 			// return this.lendingCategories sorted by marketingOrder property
 			return [...this.lendingCategories].sort((a, b) => a.marketingOrder - b.marketingOrder);
