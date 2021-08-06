@@ -24,14 +24,14 @@
 							<p>Filters</p>
 						</div>
 						<div class="md:tw-hidden">
-							<p> {{totalCount}} Loans </p>
+							<p> {{ totalCount }} Loans </p>
 						</div>
 						<div class="tw-col-span-2">
 							<div class="tw-bg-gray-300 tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
 								Search Loans
 							</div>
 							<div class="tw-hidden md:tw-block tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
-								<p> {{totalCount}} Loans </p>
+								<p> {{ totalCount }} Loans </p>
 							</div>
 							<kv-grid class="tw-grid-rows-4">
 								<div class="tw-bg-gray-300 tw-h-4">
