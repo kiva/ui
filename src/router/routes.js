@@ -12,7 +12,7 @@ export default [
 		name: 'homepage',
 		component: () => import('@/pages/Homepage/HomepageClassic'),
 		meta: {
-			contentfulPage: () => 'homepage',
+			contentfulPage: () => 'home-classic',
 		},
 	},
 	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
