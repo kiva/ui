@@ -1,26 +1,43 @@
 <template>
-	<div class="monthly-selector-mobile">
-		<div class="row align-center">
-			<div class="small-12 columns">
-				<kv-button
-					class="monthly-selector-mobile__button tw-mx-auto tw-w-full"
-					@click.native="showLightbox"
-					v-kv-track-event="[
-						'homepage',
-						'click-mgpromo-cta',
-						'Lets get started'
-					]"
-				>
-					Get started
-				</kv-button>
-			</div>
-		</div>
+	<div>
+		<kv-button
+			class="tw-mx-auto tw-w-full"
+			@click="showLightbox"
+			v-kv-track-event="[
+				'homepage',
+				'click-mgpromo-cta',
+				'Lets get started'
+			]"
+			id="mobileMonthlyGoodSelectorButton"
+		>
+			Get started
+		</kv-button>
 		<kv-lightbox
 			:visible="lightboxVisible"
-			:title="lightboxTitle"
+			title="Monthly Subscription"
 			@lightbox-closed="hideLightbox"
 		>
-			<div class="monthly-selector-mobile__causes" v-if="lightboxStep == 'cause'">
+			<div class="tw-pb-3" v-html="monthlySubscriptionCopy"></div>
+			<div v-if="selectedGroup">
+				<h4 class="tw-py-1">
+					Your cause
+				</h4>
+				<button
+					@click="goBackToCauses"
+					class="tw-w-full tw-flex tw-items-center tw-mb-1.5"
+				>
+					<img
+						class="tw-h-5 tw-w-5 tw-rounded-sm tw-overflow-hidden tw-mr-1"
+						:src="getImage(`./mg-${selectedGroup.value}.svg`)"
+					>
+					{{ selectedGroup.marketingName }}
+				</button>
+			</div>
+			<div v-if="lightboxStep == 'cause'" class="tw-mb-4">
+				<p class="tw-mb-2">
+					What cause would you like to support?
+				</p>
+
 				<button
 					v-for="(option, index) in sortedLendingCategories"
 					:key="index"
@@ -29,44 +46,41 @@
 						'click-mgpromo-cause',
 						option.marketingName
 					]"
+					class="tw-w-full tw-flex tw-items-center tw-mb-1.5"
 					@click="selectCause(option)"
 				>
 					<img
-						class="monthly-selector-mobile__causes-icon"
+						class="tw-h-5 tw-w-5 tw-rounded-sm tw-overflow-hidden tw-mr-1"
 						:src="getImage(`./mg-${option.value}.svg`)"
 					>
 					{{ option.marketingName }}
 				</button>
 			</div>
-			<div class="monthly-selector-mobile__amounts" v-if="lightboxStep == 'amount'">
-				<button
-					v-for="(option, index) in mgAmountOptions"
-					:key="index"
-					v-kv-track-event="[
-						'homepage',
-						'click-mgpromo-amount',
-						option.value
-					]"
-					@click="selectAmount(option.value)"
+			<div class="tw-mt-2" v-if="lightboxStep === 'amount'">
+				<label class="tw-text-h4 tw-py-1" for="mgAmountDropdown">
+					Choose your amount
+				</label>
+				<kv-ui-select
+					id="mgAmountDropdown"
+					class="tw-w-full"
+					v-model.number="mgAmount"
+					@change="trackMgAmountSelection"
 				>
-					{{ option.label }}
-				</button>
-			</div>
-			<div class="monthly-selector-mobile__your-cause" v-if="selectedGroup">
-				<strong>Your cause</strong>
-				<div class="monthly-selector-mobile__causes monthly-selector-mobile__causes--selected">
-					<button
-						class="selected"
-						@click="goBackToCauses"
+					<option
+						v-for="(option, index) in mgAmountOptions"
+						:key="index"
+						:value="option.value"
 					>
-						<img
-							class="monthly-selector-mobile__causes-icon"
-							:src="getImage(`./mg-${selectedGroup.value}.svg`)"
-						>
-						{{ selectedGroup.marketingName }}
-					</button>
-				</div>
+						{{ option.label }}
+					</option>
+				</kv-ui-select>
 			</div>
+
+			<template #controls v-if="selectedGroup">
+				<kv-button @click="navigateToMG" class="tw-mt-12">
+					Next
+				</kv-button>
+			</template>
 		</kv-lightbox>
 	</div>
 </template>
@@ -74,13 +88,13 @@
 <script>
 import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
-import { required, minValue, maxValue } from 'vuelidate/lib/validators';
-
-import KvLightbox from '@/components/Kv/KvLightbox';
-
+import { required } from 'vuelidate/lib/validators';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 const mgSelectorImgRequire = require.context('@/assets/images/mg-selector-icons/', true);
 
@@ -93,10 +107,18 @@ export default {
 			type: Object,
 			default: null,
 		},
+		/**
+		 * Rich text object for copy for lightbox
+		* */
+		richTextContent: {
+			type: Object,
+			default: () => {},
+		},
 	},
 	components: {
 		KvButton,
 		KvLightbox,
+		KvUiSelect,
 	},
 	mixins: [
 		loanGroupCategoriesMixin,
@@ -105,8 +127,10 @@ export default {
 	validations: {
 		mgAmount: {
 			required,
-			minValue: minValue(5),
-			maxValue: maxValue(100),
+			valid(value) {
+				const possibleValues = this.mgAmountOptions.map(option => option.value);
+				return possibleValues.includes(value);
+			}
 		},
 		groupValue: {
 			required
@@ -115,36 +139,35 @@ export default {
 	data() {
 		return {
 			selectedGroup: this.preSelectedCategory,
-			mgAmount: null,
+			mgAmount: 25,
 			mgAmountOptions: [
 				{
 					value: 5,
-					label: `${numeral(5).format('$0,0')} /mo`,
+					label: `${numeral(5).format('$0,0')}`,
 				},
 				{
 					value: 25,
-					label: `${numeral(25).format('$0,0')} /mo`,
+					label: `${numeral(25).format('$0,0')}`,
 				},
 				{
 					value: 50,
-					label: `${numeral(50).format('$0,0')} /mo`,
+					label: `${numeral(50).format('$0,0')}`,
 				},
 				{
 					value: 75,
-					label: `${numeral(75).format('$0,0')} /mo`,
+					label: `${numeral(75).format('$0,0')}`,
 				},
 				{
 					value: 100,
-					label: `${numeral(100).format('$0,0')} /mo`,
+					label: `${numeral(100).format('$0,0')}`,
 				},
 				{
 					value: 'other',
 					label: 'Other',
 				},
 			],
-
 			lightboxVisible: false,
-			lightboxStep: 'cause',
+			lightboxStep: 'amount',
 		};
 	},
 	mounted() {
@@ -190,19 +213,26 @@ export default {
 			 * Move focus to button from whatever triggered this event
 			 * And open causes.
 			 */
-			document.getElementsByClassName('monthly-selector-mobile__button')[0].focus();
+			document.getElementById('mobileMonthlyGoodSelectorButton').focus();
 			this.showLightbox();
 		},
 		selectCause(option) {
 			this.lightboxStep = 'amount';
 			this.selectedGroup = option;
 		},
-		selectAmount(amount) {
-			this.mgAmount = amount;
-			this.navigateToMG();
+		trackMgAmountSelection(selectedDollarAmount) {
+			this.$kvTrackEvent(
+				'homepage',
+				'click-mgpromo-amount',
+				selectedDollarAmount
+			);
 		},
 	},
 	computed: {
+		monthlySubscriptionCopy() {
+			const text = this.richTextContent?.richText;
+			return documentToHtmlString(text);
+		},
 		sortedLendingCategories() {
 			// return this.lendingCategories sorted by marketingOrder property
 			return [...this.lendingCategories].sort((a, b) => a.marketingOrder - b.marketingOrder);
@@ -216,84 +246,10 @@ export default {
 			}
 			return numeral(this.mgAmount).format('$0,0.00');
 		},
-		lightboxTitle() {
-			return this.lightboxStep === 'cause'
-				? 'What cause would you like to support?' : 'How much would you like to lend?';
-		}
 	}
 };
 
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-
-$offwhite: #F8F8F8;
-
-.monthly-selector-mobile {
-	position: relative;
-
-	.right-arrow-icon {
-		width: rem-calc(21);
-		height: rem-calc(23);
-		transform: rotate(270deg);
-		fill: $white;
-		margin: 0 20px;
-		position: absolute;
-	}
-
-	&__your-cause {
-		margin-top: 1rem;
-	}
-
-	&__amounts {
-		flex-flow: column;
-		align-items: center;
-
-		button {
-			width: auto;
-			margin-bottom: 1rem;
-		}
-	}
-
-	&__causes {
-		flex-flow: wrap;
-
-		button {
-			width: 100%;
-		}
-	}
-
-	&__causes,
-	&__amounts {
-		display: flex;
-		padding: 0.75rem 1.5rem;
-
-		button {
-			text-align: left;
-			font-size: 1.5rem;
-			display: flex;
-			align-items: center;
-			padding: 0.5rem;
-			border-radius: rem-calc(8);
-
-			&:hover,
-			&.selected {
-				background-color: $offwhite;
-			}
-		}
-	}
-
-	&__causes--selected {
-		padding-left: 0;
-	}
-
-	&__causes-icon {
-		height: rem-calc(48);
-		width: rem-calc(48);
-		border-radius: rem-calc(8);
-		overflow: hidden;
-		margin-right: 1rem;
-	}
-}
 </style>

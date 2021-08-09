@@ -76,7 +76,8 @@
 				<div class="small-10 large-6 xlarge-7 align-self-middle columns contentful-hero__cta_wrapper">
 					<h1 class="contentful-hero__header" v-html="heroHeadline">
 					</h1>
-					<div class="contentful-hero__body" v-html="heroBody">
+					<div class="contentful-hero__body">
+						<dynamic-rich-text :html="heroBody" />
 					</div>
 					<kv-button
 						v-if="heroButton.text"
@@ -117,8 +118,9 @@
 <script>
 import KvButton from '@/components/Kv/KvButton';
 import SectionWithBackground from '@/components/Contentful/SectionWithBackground';
+import { richTextRenderer } from '@/util/contentful/richTextRenderer';
+import DynamicRichText from '@/components/Contentful/DynamicRichText';
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 /**
 * Dynamic Hero Component
@@ -132,6 +134,7 @@ export default {
 		KvButton,
 		KvCarousel: () => import('@/components/Kv/KvCarousel'),
 		KvCarouselSlide: () => import('@/components/Kv/KvCarouselSlide'),
+		DynamicRichText,
 		KvContentfulImg,
 		SectionWithBackground,
 	},
@@ -237,7 +240,7 @@ export default {
 		},
 		heroBody() {
 			const text = this.heroText?.bodyCopy ?? '';
-			return text ? documentToHtmlString(text) : '';
+			return text ? richTextRenderer(text) : '';
 		},
 		heroButton() {
 			return {

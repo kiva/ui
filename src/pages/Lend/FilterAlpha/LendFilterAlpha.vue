@@ -23,12 +23,16 @@
 						<div class="tw-bg-gray-300 tw-text-left md:tw-text-center">
 							<p>Filters</p>
 						</div>
-
+						<div class="md:tw-hidden">
+							<p> {{ totalCount }} Loans </p>
+						</div>
 						<div class="tw-col-span-2">
-							<div class="tw-bg-gray-300 tw-h-4">
+							<div class="tw-bg-gray-300 tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
 								Search Loans
 							</div>
-							<p>Loan Count</p>
+							<div class="tw-hidden md:tw-block tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
+								<p> {{ totalCount }} Loans </p>
+							</div>
 							<kv-grid class="tw-grid-rows-4">
 								<div class="tw-bg-gray-300 tw-h-4">
 									Loan Card 1
@@ -87,8 +91,8 @@
 
 <script>
 import { lightHeader } from '@/util/siteThemes';
+import { fetchData } from '@/util/flssUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
@@ -97,10 +101,7 @@ export default {
 	components: {
 		WwwPage,
 		KvGrid,
-		KvPageContainer,
-	},
-	mounted() {
-		this.fetchLoans();
+		KvPageContainer
 	},
 	data() {
 		return {
@@ -115,32 +116,20 @@ export default {
 		};
 	},
 	methods: {
-		fetchLoans() {
-			this.apollo
-				.query({
-					query: flssLoanQuery,
-					variables: {
-						filterObject: this.loanQueryFilters,
-						limit: 20
-					},
-					fetchPolicy: 'network-only',
-				})
-				.then(({ data }) => {
-					const newLoans = data.fundraisingLoans?.values ?? [];
-					this.loans = newLoans;
-					// leaving console.log for sanity check
-					console.log(newLoans);
+		runQuery() {
+			fetchData(this.loanQueryFilters, this.apollo).then(flssData => {
+				this.loans = flssData.values ?? [];
+				this.totalCount = flssData.totalCount;
 
-					const totalCount = data.fundraisingLoans.totalCount ?? 0;
-					this.totalCount = totalCount;
-					// leaving console.log for sanity check
-					console.log(totalCount);
-
-					if (this.totalCount === 0) {
-						this.zeroLoans = true;
-					}
-				});
+				if (this.totalCount === 0) {
+					this.zeroLoans = true;
+				}
+			});
 		},
+
 	},
+	mounted() {
+		this.runQuery();
+	}
 };
 </script>
