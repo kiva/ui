@@ -288,6 +288,7 @@ import { subDays } from 'date-fns';
 
 import logReadQueryError from '@/util/logReadQueryError';
 import { checkLastLoginTime } from '@/util/authenticationGuard';
+import { myFTDQuery } from '@/util/checkoutUtils';
 
 import authenticationQuery from '@/graphql/query/authenticationQuery.graphql';
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
@@ -624,31 +625,52 @@ export default {
 			this.showLoadingOverlay = true;
 			this.$kvTrackEvent('Registration', 'successful-monthly-good-reg', 'register-monthly-good');
 
-			try {
-				// Track Facebook Event For MG
-				if (typeof window !== 'undefined' && typeof fbq === 'function') {
-					window.fbq('trackCustom', 'MonthlyGoodSignUp', {
-						amount: this.totalCombinedDeposit,
-						donateAmount: this.donation,
-						dayOfMonth: this.dayOfMonth,
-						category: this.selectedGroup,
-						isOneTime: this.isOnetime
+			const mgSignupData = {
+				amount: this.totalCombinedDeposit,
+				mgAmount: this.mgAmount,
+				donateAmount: this.donation,
+				dayOfMonth: this.dayOfMonth,
+				category: this.selectedGroup,
+				isFtd: false,
+				isOneTime: this.isOnetime,
+			};
+
+			// check ftd status
+			const myFtd = myFTDQuery(this.apollo);
+			myFtd.then(({ data }) => {
+				const isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
+				// update transaction data
+				mgSignupData.isFTD = isFTD;
+
+				// push to dataLayer
+				if (typeof window.dataLayer === 'object') {
+					window.dataLayer.push({
+						event: 'monthlyGoodSignUp',
+						...mgSignupData
 					});
 				}
-			} catch (e) {
-				console.error(e);
-			}
 
-			// Send to thanks page
-			this.$router.push({
-				path: '/monthlygood/thanks',
-				query: {
-					onetime: this.isOnetime,
-					source: this.source,
-					paymentType: paymentType || 'UnknownBraintree',
+				// TODO: Migrate completely to GTM
+				try {
+					// Track Facebook Event For MG
+					if (typeof window !== 'undefined' && typeof fbq === 'function') {
+						window.fbq('trackCustom', 'MonthlyGoodSignUp', mgSignupData);
+					}
+				} catch (e) {
+					console.error(e);
 				}
-			}).finally(() => {
-				this.showLoadingOverlay = false;
+
+				// Send to thanks page
+				this.$router.push({
+					path: '/monthlygood/thanks',
+					query: {
+						onetime: this.isOnetime,
+						source: this.source,
+						paymentType: paymentType || 'UnknownBraintree',
+					}
+				}).finally(() => {
+					this.showLoadingOverlay = false;
+				});
 			});
 		},
 	},
