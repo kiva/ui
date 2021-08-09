@@ -10,7 +10,7 @@ export default [
 	{
 		path: '/homepage-classic',
 		name: 'homepage',
-		component: () => import('@/pages/Homepage/HomepageClassic'),
+		component: () => import('@/pages/Homepage/Homepage'),
 		meta: {
 			contentfulPage: () => 'home-classic',
 		},
