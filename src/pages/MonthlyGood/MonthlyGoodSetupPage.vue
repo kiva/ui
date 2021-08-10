@@ -631,7 +631,7 @@ export default {
 				donateAmount: this.donation,
 				dayOfMonth: this.dayOfMonth,
 				category: this.selectedGroup,
-				isFtd: false,
+				isFTD: false,
 				isOneTime: this.isOnetime,
 			};
 
