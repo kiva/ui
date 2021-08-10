@@ -627,6 +627,7 @@ export default {
 
 			const mgSignupData = {
 				mgTotalAmount: this.totalCombinedDeposit,
+				mgLendingAmount: this.mgAmount,
 				mgDonationAmount: this.donation,
 				mgDayOfMonth: this.dayOfMonth,
 				mgCategory: this.selectedGroup,
