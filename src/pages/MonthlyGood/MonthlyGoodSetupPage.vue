@@ -626,13 +626,13 @@ export default {
 			this.$kvTrackEvent('Registration', 'successful-monthly-good-reg', 'register-monthly-good');
 
 			const mgSignupData = {
-				amount: this.totalCombinedDeposit,
-				mgAmount: this.mgAmount,
-				donateAmount: this.donation,
-				dayOfMonth: this.dayOfMonth,
-				category: this.selectedGroup,
+				mgTotalAmount: this.totalCombinedDeposit,
+				mgLendingAmount: this.mgAmount,
+				mgDonationAmount: this.donation,
+				mgDayOfMonth: this.dayOfMonth,
+				mgCategory: this.selectedGroup,
 				isFTD: false,
-				isOneTime: this.isOnetime,
+				mgIsOneTime: this.isOnetime,
 			};
 
 			// check ftd status
@@ -648,16 +648,6 @@ export default {
 						event: 'monthlyGoodSignUp',
 						...mgSignupData
 					});
-				}
-
-				// TODO: Migrate completely to GTM
-				try {
-					// Track Facebook Event For MG
-					if (typeof window !== 'undefined' && typeof fbq === 'function') {
-						window.fbq('trackCustom', 'MonthlyGoodSignUp', mgSignupData);
-					}
-				} catch (e) {
-					console.error(e);
 				}
 
 				// Send to thanks page
