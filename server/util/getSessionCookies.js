@@ -3,7 +3,7 @@ const fetch = require('./fetch');
 
 const getCookieString = cookies => {
 	return Object.keys(cookies)
-		.map(key => `${key}=${cookies[key]}`)
+		.map(key => `${encodeURIComponent(key)}=${encodeURIComponent(cookies[key])}`)
 		.join(';');
 };
 
