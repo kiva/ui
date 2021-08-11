@@ -103,7 +103,7 @@ export default {
 	},
 	created() {
 		logFormatter(
-			`Auth0 authentication error: ${this.error}: ${this.errorDescription}`,
+			`Auth0 authentication error: ${this.errorCode}: ${this.errorDescription}`,
 			'warn',
 			{ ...this.$route.query }
 		);
