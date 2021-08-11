@@ -31,6 +31,7 @@
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import logFormatter from '@/util/logFormatter';
 
 export default {
 	inject: ['locale'],
@@ -101,8 +102,11 @@ export default {
 		}
 	},
 	created() {
-		// eslint-disable-next-line no-console
-		console.warn('Auth0 error:', JSON.stringify(this.$route.query));
+		logFormatter(
+			`Auth0 authentication error: ${this.error}: ${this.errorDescription}`,
+			'warn',
+			{ ...this.$route.query }
+		);
 	},
 };
 </script>
