@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue, RouterLinkStub } from '@vue/test-utils';
+import { render } from '@testing-library/vue';
+import userEvent from '@testing-library/user-event';
 import VueRouter from 'vue-router';
 import TheHeader from '@/components/WwwFrame/TheHeader';
 import kvAnalytics from '@/plugins/kv-analytics-plugin';
@@ -6,50 +7,55 @@ import CookieStore from '@/util/cookieStore';
 import { MockKvAuth0 } from '@/util/KvAuth0';
 import numeralFilter from '@/plugins/numeral-filter';
 
-const localVue = createLocalVue();
-localVue.use(kvAnalytics);
-localVue.use(VueRouter);
-localVue.filter('numeral', numeralFilter);
-const router = new VueRouter();
+const emptyComponent = {
+	template: '<div></div>',
+};
 
 describe('TheHeader', () => {
 	it('should hide/show the search area when the search toggle button is clicked', async () => {
-		const focusMethod = jest.fn();
-		const wrapper = shallowMount(TheHeader, {
-			localVue,
-			stubs: {
-				RouterLink: RouterLinkStub,
-				SearchBar: {
-					template: '<div></div>',
-					methods: {
-						focus: focusMethod
-					}
+		const { getByText, findByPlaceholderText, queryByPlaceholderText } = render(
+			TheHeader,
+			{
+				provide: {
+					apollo: {
+						readFragment: () => {},
+						query: () => Promise.resolve({}),
+					},
+					cookieStore: new CookieStore(),
+					kvAuth0: MockKvAuth0,
 				},
-				TheLendMenu: {
-					template: '<div></div>'
+				routes: new VueRouter(),
+				// Stubbing out child components not used in this test
+				stubs: {
+					MonthlyGoodExpMenuWrapper: { ...emptyComponent },
+					PromoBannerLarge: { ...emptyComponent },
+					PromoBannerSmall: { ...emptyComponent },
+					TheLendMenu: { ...emptyComponent },
 				},
 			},
-			provide: {
-				apollo: {
-					readFragment: () => {}
-				},
-				cookieStore: new CookieStore(),
-				kvAuth0: MockKvAuth0,
+			vue => {
+				vue.use(kvAnalytics);
+				vue.filter('numeral', numeralFilter);
 			},
-			router,
-		});
-		const toggle = wrapper.find('.search-toggler');
-		const area = wrapper.find('#top-nav-search-area');
+		);
 
-		expect(area.attributes()['aria-hidden']).toBe('true');
+		// Expect the search bar to not exist
+		let searchBar = queryByPlaceholderText('Search all loans');
+		expect(searchBar).toBeNull();
 
-		toggle.trigger('click');
-		await localVue.nextTick();
-		expect(focusMethod).toHaveBeenCalled();
-		expect(area.attributes()['aria-hidden']).toBe('false');
+		// Click the search toggle button to open the search
+		const searchToggle = getByText('Open Search');
+		await userEvent.click(searchToggle);
 
-		toggle.trigger('click');
-		await localVue.nextTick();
-		expect(area.attributes()['aria-hidden']).toBe('true');
+		// Expect the search bar to exist and be focused
+		searchBar = await findByPlaceholderText('Search all loans');
+		expect(searchBar).toBe(document.activeElement);
+
+		// Click the search toggle button again to close the search
+		await userEvent.click(searchToggle);
+
+		// Expect the search bar not to exist anymore
+		searchBar = queryByPlaceholderText('Search all loans');
+		expect(searchBar).toBeNull();
 	});
 });
