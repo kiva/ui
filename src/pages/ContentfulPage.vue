@@ -5,11 +5,12 @@
 	>
 		<template v-if="!pageError">
 			<component
-				v-for="({ component, content }) in contentGroups"
+				v-for="({ component, content, wrapperClass }) in contentGroups"
 				:key="content.key"
 				:is="component"
 				:content="content"
 				v-bind="getComponentOptions(content.key)"
+				:class="wrapperClass"
 			/>
 		</template>
 		<template v-else>
@@ -162,6 +163,16 @@ const getComponentFromType = type => {
 	}
 };
 
+const getWrapperClassFromType = type => {
+	switch (type) {
+		case 'landingPageHero':
+		case 'monthlyGoodSelector':
+		case 'testimonialCards':
+			return 'kv-tailwind';
+		default:
+			return '';
+	}
+};
 // Return array of Content Group objects with component importer functions and content
 const getContentGroups = pageData => {
 	// Using contentGroups from page.pageLayout
@@ -170,6 +181,7 @@ const getContentGroups = pageData => {
 	return groups.map(group => ({
 		component: getComponentFromType(group.type),
 		content: group,
+		wrapperClass: getWrapperClassFromType(group.type),
 	})).filter(group => typeof group.component === 'function');
 };
 
