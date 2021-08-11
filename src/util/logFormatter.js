@@ -1,11 +1,11 @@
 // generate various console types using a stringified message
 // and a format that matcher our server request logs
 
-export default (message, type) => {
+export default (message, type, meta = {}) => {
 	if (!message || message === '') return false;
 
 	const stringifiedMessage = JSON.stringify({
-		meta: {},
+		meta,
 		level: type || 'log',
 		message,
 	});
