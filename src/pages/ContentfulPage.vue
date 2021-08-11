@@ -83,6 +83,8 @@ const MonthlyGoodFrequentlyAskedQuestions = () => import('@/components/MonthlyGo
 
 const KvFrequentlyAskedQuestions = () => import('@/components/Kv/KvFrequentlyAskedQuestions');
 
+const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
+
 // Query for getting contentful page data
 const pageQuery = gql`query contentfulPage($key: String) {
 	contentful {
@@ -152,7 +154,8 @@ const getComponentFromType = type => {
 			return MonthlyGoodSelectorWrapper;
 		case 'frequentlyAskedQuestions':
 			return KvFrequentlyAskedQuestions;
-
+		case 'testimonialCards':
+			return TestimonialCards;
 		default:
 			console.error(`Unknown content group type "${type}"`);
 			return null;
