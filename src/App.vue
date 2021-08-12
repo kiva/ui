@@ -55,9 +55,13 @@ export default {
 				// eslint-disable-next-line max-len
 				{ property: 'og:description', vmid: 'og:description', content: 'Support women, entrepreneurs, students and refugees around the world with as little as $25 on Kiva. 100% of your loans go to support borrowers.' },
 				{ property: 'theme-color', content: '#4faf4e' },
-				{ property: 'og:image', content: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg' },
-				{ property: 'og:image:width', content: '1200' },
-				{ property: 'og:image:height', content: '630' },
+				{
+					property: 'og:image',
+					vmid: 'og:image',
+					content: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg'
+				},
+				{ property: 'og:image:width', vmid: 'og:image:width', content: '1200' },
+				{ property: 'og:image:height', vmid: 'og:image:height', content: '630' },
 			]).concat([
 				// Microsoft Tile Tags
 				{
