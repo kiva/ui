@@ -13,9 +13,10 @@ export default {
 	computed: {
 		dynamicComponent() {
 			return {
-				template: `<div>${this.html}</div>`,
+				template: `<div class="kv-tailwind">${this.html}</div>`,
 				components: {
-					KvContentfulImg: () => import('~/@kiva/kv-components/vue/KvContentfulImg')
+					KvContentfulImg: () => import('~/@kiva/kv-components/vue/KvContentfulImg'),
+					KvButton: () => import('~/@kiva/kv-components/vue/KvButton')
 				},
 				props: [
 					/* define props as needed */
