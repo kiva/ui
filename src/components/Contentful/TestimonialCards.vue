@@ -3,21 +3,20 @@
 		<template #content>
 			<kv-page-container class="tw-bg-gray-50">
 				<kv-grid class="tw-grid-cols-12 tw-text-center">
-					<!-- <div class="tw-col-span-12 tw-text-center"> -->
 					<h2
 						v-html="testimonialHeadline"
-						class="tw-py-4"
+						class="tw-py-4 tw-col-span-12"
 					>
 					</h2>
 
 					<div
 						v-for="(singleCard, index) in cardData"
 						:key="index"
-						class="
-								tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-6
-								tw-bg-white tw-rounded"
+						class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-6
+							tw-mb-2
+							tw-bg-white tw-rounded"
 					>
-						<div class="tw-py-3">
+						<div class="tw-pt-4 tw-pb-3">
 							<kv-contentful-img
 								v-if="singleCard.imageUrl"
 								class="tw-rounded-full tw-overflow-hidden"
@@ -33,19 +32,19 @@
 
 						<p
 							v-html="singleCard.quote"
-							class="tw-text-subhead tw-pb-3"
+							class="tw-text-subhead tw-pb-4 tw-px-2"
 						>
 						</p>
 
 						<h3
-							v-html="singleCard.name"
-							class="tw-pb-3"
+							v-html="singleCard.name + ','"
+							class="tw-pb-2"
 						>
 						</h3>
 
 						<h4
 							v-html="singleCard.title"
-							class="tw-text-gray-500 tw-pb-3"
+							class="tw-text-gray-500 tw-pb-4"
 						>
 						</h4>
 					</div>
@@ -60,14 +59,12 @@
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import SectionWithBackground from '@/components/Contentful/SectionWithBackground';
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
-// import DynamicRichText from '@/components/Contentful/DynamicRichText';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 export default {
 	components: {
 		KvContentfulImg,
-		// DynamicRichText,
 		KvGrid,
 		KvPageContainer,
 		SectionWithBackground,
@@ -95,7 +92,8 @@ export default {
 
 				console.log('arrayItem', arrayItem.bodyCopy);
 				if (bodyCopy) {
-					// type check here
+					// Gathering and formatting all the contentful data
+					// to construct the testimonial/supporter card for display
 					const nameNode = arrayItem.bodyCopy.content.find(({ nodeType }) => {
 						return nodeType === 'heading-3';
 					});
