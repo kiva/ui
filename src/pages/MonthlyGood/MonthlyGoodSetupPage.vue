@@ -639,8 +639,9 @@ export default {
 			const myFtd = myFTDQuery(this.apollo);
 			myFtd.then(({ data }) => {
 				const isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
+				const hasDeposits = data?.my?.userAccount?.hasDeposits;
 				// update transaction data
-				mgSignupData.isFTD = isFTD;
+				mgSignupData.isFTD = isFTD || !hasDeposits;
 
 				// push to dataLayer
 				if (typeof window.dataLayer === 'object') {
