@@ -25,6 +25,7 @@
 						:key="suggestion.label"
 						@mousedown.prevent
 						@click="runSearch(suggestion)"
+						data-testid="search-bar-result"
 						class="result"
 						:class="{highlighted: suggestion.label === highlighted.label}"
 					>

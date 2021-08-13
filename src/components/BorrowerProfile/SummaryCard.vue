@@ -63,6 +63,7 @@
 <script>
 import gql from 'graphql-tag';
 import { mdiMapMarker } from '@mdi/js';
+import { getKivaImageUrl } from '@/util/imageUtils';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
@@ -85,6 +86,12 @@ export default {
 			title: this.pageTitle,
 			meta: [
 				{ property: 'og:title', vmid: 'og:title', content: `A loan to ${this.name}` },
+				{ property: 'og:type', vmid: 'og:type', content: 'kivadotorg:loan' },
+				{
+					property: 'og:image',
+					vmid: 'og:image',
+					content: this.imageShareUrl
+				},
 			].concat(this.$appConfig.enableFB ? [
 				{
 					vmid: 'facebook_label',
@@ -115,6 +122,15 @@ export default {
 		};
 	},
 	computed: {
+		imageShareUrl() {
+			if (!this.hash) return '';
+			return getKivaImageUrl({
+				height: 630,
+				width: 1200,
+				base: this.$appConfig.photoPath,
+				hash: this.hash,
+			});
+		},
 		pageLabel() {
 			return `Kiva - ${this.pageTitle}`;
 		},

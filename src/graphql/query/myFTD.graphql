@@ -3,6 +3,7 @@ query ftdQuery {
 		userAccount {
 			id
 			isFirstTimeDepositor
+			hasDeposits
 		}
 	}
 }

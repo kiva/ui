@@ -1,6 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
+import { render } from '@testing-library/vue';
+import userEvent from '@testing-library/user-event';
 import SearchBar from '@/components/WwwFrame/SearchBar';
 import suggestionsQuery from '@/graphql/query/loanSearchSuggestions.graphql';
+import byTextContent from '../../../helpers/byTextContent';
 
 const suggestions = [
 	{ group: 'U.S. cities', label: 'Akron, OH', query: 'cityState=Akron,OH' },
@@ -13,66 +15,100 @@ const suggestions = [
 	{ group: 'Partners', label: 'iSchool Zambia', query: 'partner=356' },
 ];
 
-describe('SearchBar', () => {
-	let wrapper;
-	let apollo = {};
-
-	beforeEach(() => {
-		const query = jest.fn();
-		query.mockReturnValue(Promise.resolve({
-			data: {
-				lend: {
-					loanSearchSuggestions: suggestions
-				}
+// Return a mock ApolloClient instance
+function getMockApollo() {
+	const query = jest.fn();
+	query.mockReturnValue(Promise.resolve({
+		data: {
+			lend: {
+				loanSearchSuggestions: suggestions
 			}
-		}));
-		apollo = { query };
-		wrapper = shallowMount(SearchBar, {
-			provide: { apollo }
-		});
-	});
+		}
+	}));
+	return { query };
+}
 
-	it('should fetch suggestions when it gains focus', done => {
-		const input = wrapper.findComponent({ ref: 'input' });
-		input.trigger('focus');
-		input.trigger('blur');
-		input.trigger('focus');
+// Render the search bar, optionally taking an ApolloClient instance to provide to the component
+function renderSearchBar(apollo = getMockApollo()) {
+	return render(SearchBar, {
+		provide: { apollo }
+	});
+}
+
+describe('SearchBar', () => {
+	it('should fetch suggestions when it gains focus', async () => {
+		const apollo = getMockApollo();
+		const { getByPlaceholderText } = renderSearchBar(apollo);
+
+		const input = getByPlaceholderText('Search all loans');
+		await userEvent.click(input); // click into the search bar
+		await userEvent.tab(); // tab away from the search bar
+		await userEvent.click(input); // click into the search bar again
+
+		// Expect apollo.query to have been called twice with the suggestions query
 		expect(apollo.query.mock.calls.length).toBe(2);
 		expect(apollo.query.mock.calls[0][0]).toEqual({ query: suggestionsQuery });
 		expect(apollo.query.mock.calls[1][0]).toEqual({ query: suggestionsQuery });
-		done();
 	});
 
-	it('should show filtered results when a search term is entered', done => {
-		const input = wrapper.findComponent({ ref: 'input' });
-		input.trigger('focus');
-		input.element.value = 'ak';
-		input.trigger('input');
+	it('should show filtered results when a search term is entered', async () => {
+		const { getByPlaceholderText, findAllByTestId, findByText } = renderSearchBar();
 
-		// $nextTick, setImmediate, and timeouts <2ms all execute too early to test these assertions
-		setTimeout(() => {
-			expect(wrapper.vm.term).toBe('ak');
-			expect(wrapper.vm.showResults).toBe(true);
-			expect(wrapper.vm.rawResults.length).toBe(3);
-			expect(wrapper.vm.sections.length).toBe(2);
-			done();
-		}, 2);
+		// Type 'ak' in the search bar
+		const input = getByPlaceholderText('Search all loans');
+		userEvent.type(input, 'ak');
+
+		// Expect only 3 results to be displayed
+		const results = await findAllByTestId('search-bar-result');
+		expect(results.length).toBe(3);
+
+		// Expect that these groups are displayed
+		await findByText('U.S. cities');
+		await findByText('United States');
+
+		// Expect that these results are displayed
+		await findByText(byTextContent('Akron, OH'));
+		await findByText(byTextContent('Anchorage, AK'));
+		await findByText(byTextContent('Alaska (AK)'));
 	});
 
 	it('should change the highlighted item when the up/down arrow keys are pressed', async () => {
-		const input = wrapper.findComponent({ ref: 'input' });
-		wrapper.vm.rawResults = suggestions;
-		expect(wrapper.find('.highlighted').exists()).toBe(false);
+		const { getByPlaceholderText, findAllByTestId } = renderSearchBar();
+		const isHighlighted = node => node.classList.contains('highlighted');
+		const searchTerm = 'a';
 
-		await input.trigger('keydown.down');
-		const first = wrapper.find('.highlighted').html();
+		// Type searchTerm in the search bar
+		const input = getByPlaceholderText('Search all loans');
+		userEvent.type(input, searchTerm);
 
-		await input.trigger('keydown.down');
-		const second = wrapper.find('.highlighted').html();
-		expect(second).not.toBe(first);
+		// Wait for results to be displayed
+		const [first, second] = await findAllByTestId('search-bar-result');
 
-		await input.trigger('keydown.up');
-		const third = wrapper.find('.highlighted').html();
-		expect(third).toBe(first);
+		// Confirm first element is not already highlighted
+		expect(isHighlighted(first)).toBe(false);
+
+		// Arrowing down should highlight the first result and fill the search input with the first result
+		await userEvent.type(input, '{arrowdown}');
+		expect(isHighlighted(first)).toBe(true);
+		expect(input.value).toBe(first.textContent);
+
+		// Arrowing down again should highlight the second result, unhighlight the first result,
+		// and fill the search input with the second result
+		await userEvent.type(input, '{arrowdown}');
+		expect(isHighlighted(second)).toBe(true);
+		expect(isHighlighted(first)).toBe(false);
+		expect(input.value).toBe(second.textContent);
+
+		// Arrowing up should highlight the first result again, unhighlight the second result,
+		// and fill the search input with the first result again
+		await userEvent.type(input, '{arrowup}');
+		expect(isHighlighted(first)).toBe(true);
+		expect(isHighlighted(second)).toBe(false);
+		expect(input.value).toBe(first.textContent);
+
+		// Arrowing up again should unhighlight the first result and fill the search input with the original search term
+		await userEvent.type(input, '{arrowup}');
+		expect(isHighlighted(first)).toBe(false);
+		expect(input.value).toBe(searchTerm);
 	});
 });

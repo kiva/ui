@@ -4,7 +4,7 @@
 		:header-theme="headerTheme"
 		:main-class="'kv-tailwind'"
 	>
-		<article class="tw-bg-gray-50 tw-relative">
+		<article class="tw-bg-gray-50 tw-relative tw-pt-6">
 			<div class="tw-relative" style="max-height: 460px;">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 				</div>
@@ -13,12 +13,28 @@
 			</div>
 			<div>
 				<kv-page-container>
-					<h2 class="tw-mb-2">
-						Make a loan, change a life
-					</h2>
-					<h3 class="tw-mb-3">
-						Each Kiva loan helps people build a better future for themselves and their families.
-					</h3>
+					<div class="tw-flex tw-items-start">
+						<div class="tw-flex-1">
+							<h2 class="tw-mb-2">
+								Make a loan, change a life
+							</h2>
+							<p class="tw-mb-3p tw-hidden md:tw-block">
+								Each Kiva loan helps people build a better future for themselves and their families.
+							</p>
+						</div>
+						<button class="tw-mb-2 tw-border-r tw-border-gray-300 tw-px-2">
+							<kv-material-icon :icon="mdiCompassRose" class="tw-text-gray-500 tw-w-5 tw-h-5" />
+							<p class="tw-hidden md:tw-block">
+								Explore
+							</p>
+						</button>
+						<button class="tw-mb-2 tw-px-2">
+							<kv-material-icon :icon="mdiFilterVariant" class="tw-text-brand tw-w-5 tw-h-5" />
+							<p class="tw-hidden md:tw-block">
+								Filter
+							</p>
+						</button>
+					</div>
 					<kv-grid class="tw-grid-cols-2 md:tw-grid-cols-3">
 						<div class="tw-bg-gray-300 tw-text-left md:tw-text-center">
 							<p>Filters</p>
@@ -92,16 +108,20 @@
 <script>
 import { lightHeader } from '@/util/siteThemes';
 import { fetchData } from '@/util/flssUtils';
+import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
+
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	inject: ['apollo'],
 	components: {
 		WwwPage,
 		KvGrid,
-		KvPageContainer
+		KvPageContainer,
+		KvMaterialIcon,
 	},
 	data() {
 		return {
@@ -113,6 +133,8 @@ export default {
 			totalCount: 0,
 			loans: [],
 			zeroLoans: false,
+			mdiFilterVariant,
+			mdiCompassRose,
 		};
 	},
 	methods: {
