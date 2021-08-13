@@ -1,58 +1,59 @@
 <template>
-	<section-with-background :background-content="background">
-		<template #content>
-			<kv-page-container class="tw-bg-gray-50">
-				<kv-grid class="tw-grid-cols-12 tw-text-center">
-					<h2
-						v-html="testimonialHeadline"
-						class="tw-py-4 tw-col-span-12"
-					>
-					</h2>
+	<div>
+		<section-with-background :background-content="background" class="tw-bg-gray-50">
+			<template #content>
+				<kv-page-container>
+					<kv-grid class="tw-grid-cols-12 tw-text-center">
+						<h2
+							v-html="testimonialHeadline"
+							class="tw-py-4 tw-col-span-12"
+						>
+						</h2>
 
-					<div
-						v-for="(singleCard, index) in cardData"
-						:key="index"
-						class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-6
+						<div
+							v-for="(singleCard, index) in cardData"
+							:key="index"
+							class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-6
 							tw-mb-2
 							tw-bg-white tw-rounded"
-					>
-						<div class="tw-pt-4 tw-pb-3">
-							<kv-contentful-img
-								v-if="singleCard.imageUrl"
-								class="tw-rounded-full tw-overflow-hidden"
-								:class="'testimonial-card-' + index"
-								:contentful-src="singleCard.imageUrl"
-								:alt="singleCard.parsedName"
-								:width="64"
-								:height="64"
-								loading="lazy"
-								fallback-format="jpg"
-							/>
+						>
+							<div class="tw-pt-4 tw-pb-3">
+								<kv-contentful-img
+									v-if="singleCard.imageUrl"
+									class="tw-rounded-full tw-overflow-hidden"
+									:class="'testimonial-card-' + index"
+									:contentful-src="singleCard.imageUrl"
+									:alt="singleCard.parsedName"
+									:width="64"
+									:height="64"
+									loading="lazy"
+									fallback-format="jpg"
+								/>
+							</div>
+
+							<p
+								v-html="singleCard.quote"
+								class="tw-text-subhead tw-pb-4 tw-px-2"
+							>
+							</p>
+
+							<h3
+								v-html="singleCard.name + ','"
+								class="tw-pb-2"
+							>
+							</h3>
+
+							<h4
+								v-html="singleCard.title"
+								class="tw-text-gray-500 tw-pb-4"
+							>
+							</h4>
 						</div>
-
-						<p
-							v-html="singleCard.quote"
-							class="tw-text-subhead tw-pb-4 tw-px-2"
-						>
-						</p>
-
-						<h3
-							v-html="singleCard.name + ','"
-							class="tw-pb-2"
-						>
-						</h3>
-
-						<h4
-							v-html="singleCard.title"
-							class="tw-text-gray-500 tw-pb-4"
-						>
-						</h4>
-					</div>
-					<!-- </div> -->
-				</kv-grid>
-			</kv-page-container>
-		</template>
-	</section-with-background>
+					</kv-grid>
+				</kv-page-container>
+			</template>
+		</section-with-background>
+	</div>
 </template>
 
 <script>
