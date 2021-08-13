@@ -1,65 +1,76 @@
 <template>
-	<kv-page-container>
-		<kv-grid class="tw-grid-cols-12">
-			<div class="tw-col-span-12 tw-text-center justify-items-center tw-bg-gray-50">
-				<p
-					v-html="testimonialHeadline"
-					class="tw-text-h2"
-				>
-				</p>
+	<section-with-background :background-content="background">
+		<template #content>
+			<kv-page-container class="tw-bg-gray-50">
+				<kv-grid class="tw-grid-cols-12 tw-text-center">
+					<!-- <div class="tw-col-span-12 tw-text-center"> -->
+					<h2
+						v-html="testimonialHeadline"
+						class="tw-py-4"
+					>
+					</h2>
 
-				<div
-					v-for="(singleCard, index) in cardData"
-					:key="index"
-					class="small-12 large-4 columns tw-bg-white tw-rounded"
-				>
-					<div class="tw-rounded-full">
-						<!-- Supporter image -->
-						<kv-contentful-img
-							v-if="singleCard.imageUrl"
-							:class="'testimonial-card-' + index"
-							:contentful-src="singleCard.imageUrl"
-							:alt="singleCard.name"
-							:width="64"
-							:height="64"
-							loading="lazy"
-							fallback-format="jpg"
-						/>
+					<div
+						v-for="(singleCard, index) in cardData"
+						:key="index"
+						class="
+								tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-6
+								tw-bg-white tw-rounded"
+					>
+						<div class="tw-py-3">
+							<kv-contentful-img
+								v-if="singleCard.imageUrl"
+								class="tw-rounded-full tw-overflow-hidden"
+								:class="'testimonial-card-' + index"
+								:contentful-src="singleCard.imageUrl"
+								:alt="singleCard.parsedName"
+								:width="64"
+								:height="64"
+								loading="lazy"
+								fallback-format="jpg"
+							/>
+						</div>
+
+						<p
+							v-html="singleCard.quote"
+							class="tw-text-subhead tw-pb-3"
+						>
+						</p>
+
+						<h3
+							v-html="singleCard.name"
+							class="tw-pb-3"
+						>
+						</h3>
+
+						<h4
+							v-html="singleCard.title"
+							class="tw-text-gray-500 tw-pb-3"
+						>
+						</h4>
 					</div>
-					<!-- Supporter quote -->
-					<p
-						v-html="singleCard.quote"
-						class="tw-text-subhead"
-					>
-					</p>
-					<!-- Supporter name -->
-					<p
-						v-html="singleCard.name"
-						class="tw-text-h3"
-					>
-					</p>
-					<!-- Supporter title -->
-					<p
-						class="tw-text-h4 tw-text-gray-500"
-						v-html="singleCard.title"
-					>
-					</p>
-				</div>
-			</div>
-		</kv-grid>
-	</kv-page-container>
+					<!-- </div> -->
+				</kv-grid>
+			</kv-page-container>
+		</template>
+	</section-with-background>
 </template>
 
 <script>
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+import SectionWithBackground from '@/components/Contentful/SectionWithBackground';
+import { richTextRenderer } from '@/util/contentful/richTextRenderer';
+// import DynamicRichText from '@/components/Contentful/DynamicRichText';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 export default {
 	components: {
 		KvContentfulImg,
+		// DynamicRichText,
 		KvGrid,
 		KvPageContainer,
+		SectionWithBackground,
 	},
 	props: {
 		content: {
@@ -69,11 +80,8 @@ export default {
 	},
 	computed: {
 		contentfulComponentData() {
-			const contentfulData = [];
-			const rawContentfulData = this.content?.contents;
-
-			rawContentfulData.forEach(arrayItem => {
-				contentfulData.push(arrayItem);
+			const contentfulData = this.content.contents.filter(({ contentType }) => {
+				return contentType === 'genericContentBlock';
 			});
 			return contentfulData;
 		},
@@ -83,11 +91,43 @@ export default {
 		cardData() {
 			const allCardData = [];
 			this.contentfulComponentData.forEach(arrayItem => {
-				if (arrayItem.bodyCopy) {
-					const name = arrayItem.headline;
-					const title = arrayItem.subHeadline;
-					const imageUrl = arrayItem.bodyCopy.content[0].data.target.fields.file.url;
-					const quote = arrayItem.bodyCopy.content[2].content[0].value;
+				const bodyCopy = richTextRenderer(arrayItem.bodyCopy);
+
+				console.log('arrayItem', arrayItem.bodyCopy);
+				if (bodyCopy) {
+					// type check here
+					const nameNode = arrayItem.bodyCopy.content.find(({ nodeType }) => {
+						return nodeType === 'heading-3';
+					});
+
+					const nameObject = nameNode.content.find(({ nodeType }) => {
+						return nodeType === 'text';
+					});
+
+					const titleNode = arrayItem.bodyCopy.content.find(({ nodeType }) => {
+						return nodeType === 'heading-4';
+					});
+
+					const titleObject = titleNode.content.find(({ nodeType }) => {
+						return nodeType === 'text';
+					});
+
+					const quoteNode = arrayItem.bodyCopy.content.find(({ nodeType }) => {
+						return nodeType === 'paragraph';
+					});
+
+					const quoteObject = quoteNode.content.find(({ nodeType }) => {
+						return nodeType === 'text';
+					});
+
+					const imageNode = arrayItem.bodyCopy.content.find(({ nodeType }) => {
+						return nodeType === 'embedded-asset-block';
+					});
+
+					const name = nameObject.value;
+					const title = titleObject.value;
+					const imageUrl = imageNode.data.target.fields.file.url;
+					const quote = quoteObject.value;
 
 					const cardData = {
 						name, title, imageUrl, quote
@@ -97,6 +137,11 @@ export default {
 			});
 
 			return allCardData;
+		},
+		background() {
+			return this.content?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'background' : false;
+			});
 		},
 	}
 };
