@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<section-with-background :background-content="background" class="tw-bg-gray-50">
+		<section-with-background :background-content="background">
 			<template #content>
 				<kv-page-container>
 					<kv-grid class="tw-grid-cols-12 tw-text-center">
@@ -21,7 +21,6 @@
 								<kv-contentful-img
 									v-if="singleCard.imageUrl"
 									class="tw-rounded-full tw-overflow-hidden"
-									:class="'testimonial-card-' + index"
 									:contentful-src="singleCard.imageUrl"
 									:alt="singleCard.parsedName"
 									:width="64"
@@ -78,48 +77,49 @@ export default {
 	},
 	computed: {
 		contentfulComponentData() {
-			const contentfulData = this.content.contents.filter(({ contentType }) => {
+			const contentfulData = this.content?.contents?.filter(({ contentType }) => {
 				return contentType === 'genericContentBlock';
 			});
 			return contentfulData;
 		},
 		testimonialHeadline() {
-			return this.contentfulComponentData[0].headline;
+			const contentfulHeadline = this.content?.contents?.find(({ contentType }) => {
+				return contentType === 'richTextContent';
+			});
+			const richText = richTextRenderer(contentfulHeadline.richText);
+
+			return richText;
 		},
 		cardData() {
-			const allCardData = [];
-			this.contentfulComponentData.forEach(arrayItem => {
-				const bodyCopy = richTextRenderer(arrayItem.bodyCopy);
-
-				console.log('arrayItem', arrayItem.bodyCopy);
-				if (bodyCopy) {
+			return this.contentfulComponentData.map(arrayItem => {
+				if (arrayItem.bodyCopy) {
 					// Gathering and formatting all the contentful data
 					// to construct the testimonial/supporter card for display
-					const nameNode = arrayItem.bodyCopy.content.find(({ nodeType }) => {
+					const nameNode = arrayItem?.bodyCopy?.content?.find(({ nodeType }) => {
 						return nodeType === 'heading-3';
 					});
 
-					const nameObject = nameNode.content.find(({ nodeType }) => {
+					const nameObject = nameNode?.content?.find(({ nodeType }) => {
 						return nodeType === 'text';
 					});
 
-					const titleNode = arrayItem.bodyCopy.content.find(({ nodeType }) => {
+					const titleNode = arrayItem?.bodyCopy?.content?.find(({ nodeType }) => {
 						return nodeType === 'heading-4';
 					});
 
-					const titleObject = titleNode.content.find(({ nodeType }) => {
+					const titleObject = titleNode?.content?.find(({ nodeType }) => {
 						return nodeType === 'text';
 					});
 
-					const quoteNode = arrayItem.bodyCopy.content.find(({ nodeType }) => {
+					const quoteNode = arrayItem?.bodyCopy?.content?.find(({ nodeType }) => {
 						return nodeType === 'paragraph';
 					});
 
-					const quoteObject = quoteNode.content.find(({ nodeType }) => {
+					const quoteObject = quoteNode?.content?.find(({ nodeType }) => {
 						return nodeType === 'text';
 					});
 
-					const imageNode = arrayItem.bodyCopy.content.find(({ nodeType }) => {
+					const imageNode = arrayItem?.bodyCopy?.content?.find(({ nodeType }) => {
 						return nodeType === 'embedded-asset-block';
 					});
 
@@ -131,11 +131,10 @@ export default {
 					const cardData = {
 						name, title, imageUrl, quote
 					};
-					allCardData.push(cardData);
+					return cardData;
 				}
+				return false;
 			});
-
-			return allCardData;
 		},
 		background() {
 			return this.content?.contents?.find(({ contentType }) => {
