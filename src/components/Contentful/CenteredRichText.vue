@@ -6,7 +6,6 @@
 		<template #content>
 			<kv-page-container>
 				<kv-grid class="tw-grid-cols-12 tw-text-center">
-					<!-- md:tw-col-start-2 md:tw-col-span-10 lg:tw-col-span-6 -->
 					<div class="tw-prose tw-col-span-12">
 						<dynamic-rich-text :html="richContent" />
 					</div>
