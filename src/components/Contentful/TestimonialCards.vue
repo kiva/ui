@@ -10,7 +10,7 @@
 						>
 						</h2>
 
-						<div
+						<figure
 							v-for="(singleCard, index) in cardData"
 							:key="index"
 							class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-6
@@ -30,24 +30,28 @@
 								/>
 							</div>
 
-							<p
-								v-html="singleCard.quote"
-								class="tw-text-subhead tw-pb-4 tw-px-2"
-							>
-							</p>
+							<blockquote>
+								<p
+									v-html="singleCard.quote"
+									class="tw-text-subhead tw-pb-4 tw-px-2"
+								>
+								</p>
+							</blockquote>
 
-							<h3
-								v-html="singleCard.name + ','"
-								class="tw-pb-2"
-							>
-							</h3>
+							<figcaption>
+								<h3
+									v-html="singleCard.name + ','"
+									class="tw-pb-2"
+								>
+								</h3>
 
-							<h4
-								v-html="singleCard.title"
-								class="tw-text-gray-500 tw-pb-4"
-							>
-							</h4>
-						</div>
+								<h4
+									v-html="singleCard.title"
+									class="tw-text-gray-500 tw-pb-4"
+								>
+								</h4>
+							</figcaption>
+						</figure>
 					</kv-grid>
 				</kv-page-container>
 			</template>
