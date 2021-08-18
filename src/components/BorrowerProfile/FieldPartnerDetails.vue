@@ -65,7 +65,8 @@
 
 		<kv-text-link
 			:icon="mdiArrowRight"
-			:to="`/partners/${partnerId}`"
+			:href="`/partners/${partnerId}`"
+			target="_blank"
 		>
 			More about {{ partnerName }}
 		</kv-text-link>
