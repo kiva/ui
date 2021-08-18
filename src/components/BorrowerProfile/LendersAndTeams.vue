@@ -192,6 +192,7 @@ const userQuery = gql`query userQuery {
 	my {
 		lender {
 			id
+			publicId
 			image {
 				id
 				hash
@@ -240,6 +241,7 @@ export default {
 			itemQueryOffset: 0,
 			totalItemCount: 0,
 			supporterOfLoan: false,
+			userId: '',
 			userImageHash: '',
 			userName: '',
 			userWhereabouts: '',
@@ -257,7 +259,7 @@ export default {
 		},
 		filteredItemList() {
 			// extract anon lenders
-			return this.items.filter(item => item.name !== 'Anonymous');
+			return this.items.filter(item => item.name !== 'Anonymous' && item.id !== this.userId);
 		},
 		hasAnonymousSupporters() {
 			const filterItemsList = this.items.filter(item => item.name === 'Anonymous');
@@ -368,6 +370,7 @@ export default {
 			}).then(({ data }) => {
 				// Gather user data if available
 				const lender = data?.my?.lender;
+				this.userId = lender?.id ?? '';
 				this.userImageHash = lender?.image.hash ?? '';
 				this.userName = lender?.name ?? '';
 				this.userWhereabouts = lender?.lenderPage?.whereabouts ?? '';
