@@ -17,10 +17,10 @@
 		</div>
 
 		<div v-else>
-			<h2 class="tw-text-h2">
+			<h2 class="tw-text-h2 tw-mb-4">
 				{{ countryName }} at a glance
 			</h2>
-			<div class="tw-flex tw-mb-2 lg:tw-mb-3">
+			<div class="tw-flex tw-mb-4">
 				<p class="tw-flex-auto">
 					<span class="tw-block tw-text-h2">
 						{{ avgAnnualIncomeFormatted }}
@@ -41,14 +41,16 @@
 			<kv-ui-button
 				v-if="showFindMoreLoansInCountryButton"
 				class="tw-inline-flex tw-flex-1"
-				:to="`/lend?country=${countryIsoCode}`"
+				:href="`/lend?country=${countryIsoCode}`"
+				target="_blank"
 			>
 				Find more borrowers in {{ countryName }}
 			</kv-ui-button>
 			<kv-ui-button
 				v-if="showFindMoreLoansInRegionButton"
 				class="tw-inline-flex tw-flex-1"
-				:to="loansInRegionLink"
+				:href="loansInRegionLink"
+				target="_blank"
 			>
 				Find more borrowers in {{ regionName }}
 			</kv-ui-button>

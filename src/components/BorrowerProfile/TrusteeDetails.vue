@@ -35,7 +35,8 @@
 		</dl>
 		<kv-text-link
 			:icon="mdiArrowRight"
-			:to="`/trustees/${trusteeId}`"
+			:href="`/trustees/${trusteeId}`"
+			target="_blank"
 		>
 			More about this trustee
 		</kv-text-link>
