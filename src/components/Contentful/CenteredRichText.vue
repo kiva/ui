@@ -48,7 +48,7 @@ export default {
 			const richContent = this.content?.contents?.find(({ contentType }) => {
 				return contentType ? contentType === 'richTextContent' : false;
 			});
-			const richText = richContent.richText ?? '';
+			const richText = richContent?.richText ?? '';
 			return richText ? richTextRenderer(richText) : '';
 		},
 		verticalPadding() {

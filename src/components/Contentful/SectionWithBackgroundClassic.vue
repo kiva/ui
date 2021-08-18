@@ -19,7 +19,7 @@
 					muted
 					playsinline
 				></video>
-				<kv-contentful-img class="tw-w-full tw-h-full tw-object-cover section-with-background__media"
+				<kv-contentful-img class="tw-w-full tw-h-full tw-object-cover"
 					v-if="isBackgroundImage"
 					:width="1440"
 					:contentful-src="backgroundMedia.url"
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 
 /**
 * Section Background
@@ -118,30 +118,42 @@ export default {
 
 			// apply small or default classes
 			if (this.verticalPadding && this.verticalPadding.sm) {
-				// eslint-disable-next-line max-len
-				classes = `${classes} tw-pt-${this.verticalPadding.sm.top} tw-pb-${this.verticalPadding.sm.bottom}`;
+				classes = `
+					${classes}
+					tw-pt-${this.verticalPadding.sm.top}
+					tw-pb-${this.verticalPadding.sm.bottom}
+				`;
 			} else {
 				classes = `${defaultSmClasses}`;
 			}
 
 			// apply medium classes
 			if (this.verticalPadding && this.verticalPadding.md) {
-				// eslint-disable-next-line max-len
-				classes = `${classes} md:tw-pt-${this.verticalPadding.md.top} md:tw-pb-${this.verticalPadding.md.bottom}`;
+				classes = `
+					${classes}
+					md:tw-pt-${this.verticalPadding.md.top}
+					md:tw-pb-${this.verticalPadding.md.bottom}
+				`;
 			}
 
 			// apply large classes or default classes
 			if (this.verticalPadding && this.verticalPadding.lg) {
-				// eslint-disable-next-line max-len
-				classes = `${classes} lg:tw-pt-${this.verticalPadding.lg.top} lg:tw-pb-${this.verticalPadding.lg.bottom}`;
+				classes = `
+					${classes}
+					lg:tw-pt-${this.verticalPadding.lg.top}
+					lg:tw-pb-${this.verticalPadding.lg.bottom}
+					`;
 			} else {
 				classes = `${classes} ${defaultLgClasses}`;
 			}
 
 			// apply xl classes
 			if (this.verticalPadding && this.verticalPadding.xl) {
-				// eslint-disable-next-line max-len
-				classes = `${classes} xl:tw-pt-${this.verticalPadding.xl.top} xl:tw-pb-${this.verticalPadding.xl.bottom}`;
+				classes = `
+					${classes}
+					xl:tw-pt-${this.verticalPadding.xl.top}
+					xl:tw-pb-${this.verticalPadding.xl.bottom}
+				`;
 			}
 
 			// return final class declarations
@@ -150,18 +162,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.section-with-background {
-	&__media {
-		// over ride kvContentfulImg nested img styling
-		::v-deep img {
-			object-fit: cover;
-			width: 100%;
-			height: 100%;
-		}
-	}
-}
-</style>
