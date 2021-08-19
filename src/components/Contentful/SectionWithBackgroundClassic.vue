@@ -52,6 +52,23 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		/**
+		 * Padding Object for Contentful driven vertical padding classes
+		 *
+		 * Important requirements:
+		 * - Receives an object with nested size objects matching our breakpoint prefixes ('md', 'xl', etc)
+		 * - Styles will only be applied for safelisted classes in tailwind.purge.safelist.txt
+		 * {
+		 * 	"sm": {
+		 * 		"top": 2,
+		 * 		"bottom": 4
+		 * 	},
+		 * 	"md": {
+		 * 		"top": 4,
+		 * 		"bottom": 6
+		 * 	}
+		 * }
+		* */
 		verticalPadding: {
 			type: Object,
 			default: () => {},
@@ -110,6 +127,9 @@ export default {
 				url: this.backgroundContent?.backgroundMedia?.file?.url ?? ''
 			};
 		},
+		/**
+		 * Processing for Contentful driven verticalPadding object
+		* */
 		verticalPaddingClasses() {
 			let classes = '';
 			let hasSmSizes = false;
