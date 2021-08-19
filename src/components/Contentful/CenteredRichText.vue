@@ -5,10 +5,8 @@
 	>
 		<template #content>
 			<kv-page-container>
-				<kv-grid class="tw-grid-cols-12 tw-text-center">
-					<div class="tw-prose tw-col-span-12">
-						<dynamic-rich-text :html="richContent" />
-					</div>
+				<kv-grid>
+					<dynamic-rich-text class="tw-prose tw-text-center" :html="richContent" />
 				</kv-grid>
 			</kv-page-container>
 		</template>

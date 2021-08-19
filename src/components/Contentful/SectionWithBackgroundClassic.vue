@@ -1,8 +1,8 @@
 <template>
-	<section class="">
-		<div class="tw-relative tw-p-0">
+	<section>
+		<div class="tw-relative">
 			<div
-				class="tw-relative tw-w-full tw-overflow-hidden tw-z-1 tw-m-0 tw-top-0"
+				class="tw-relative tw-w-full tw-overflow-hidden tw-z-1 tw-top-0"
 				:class="verticalPaddingClasses"
 			>
 				<slot name="content">
