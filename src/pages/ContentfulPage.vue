@@ -77,6 +77,7 @@ const HomepageTestimonials = () => import('@/components/Homepage/HomepageTestimo
 const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
 const HomepageMonthlyGoodInfo = () => import('@/components/Homepage/HomepageMonthlyGoodInfo');
 
+const CenteredRichText = () => import('@/components/Contentful/CenteredRichText');
 const DynamicHero = () => import('@/components/Contentful/DynamicHero');
 const HeroWithCarousel = () => import('@/components/Contentful/HeroWithCarousel');
 
@@ -122,6 +123,7 @@ const getPageFrameFromType = type => {
 // :is="pageFrame" component on this page
 const getWrapperClassFromType = type => {
 	switch (type) {
+		case 'centeredRichText':
 		case 'heroWithCarousel':
 		case 'monthlyGoodSelector':
 		case 'testimonialCards':
@@ -172,6 +174,8 @@ const getComponentFromType = type => {
 			return KvFrequentlyAskedQuestions;
 		case 'testimonialCards':
 			return TestimonialCards;
+		case 'centeredRichText':
+			return CenteredRichText;
 		case 'dynamicHero':
 			return DynamicHero;
 		case 'heroWithCarousel':
