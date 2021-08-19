@@ -111,50 +111,41 @@ export default {
 			};
 		},
 		verticalPaddingClasses() {
-			// Defaults
+			let classes = '';
+			let hasSmSizes = false;
+			let hasLgSizes = false;
+			// Defaults currently applied around sections with backgrounds
 			const defaultSmClasses = 'tw-pt-2 tw-pb-2';
 			const defaultLgClasses = 'lg:tw-pt-4 lg:tw-pb-4';
-			let classes = '';
+			// establish padding object
+			const vp = this.verticalPadding || {};
 
-			// apply small or default classes
-			if (this.verticalPadding && this.verticalPadding.sm) {
-				classes = `
-					${classes}
-					tw-pt-${this.verticalPadding.sm.top}
-					tw-pb-${this.verticalPadding.sm.bottom}
-				`;
-			} else {
+			// map size definitions to class strings
+			const sizeClassStrings = Object.keys(vp).map(key => {
+				// establish breakpoint size prefix
+				const sizePrefix = key !== 'sm' ? `${key}:` : '';
+				// extract size object
+				const sizeObj = typeof vp[key] === 'object' ? vp[key] : {};
+				// signify default overrides if present
+				if (key === 'sm') hasSmSizes = true;
+				if (key === 'lg') hasLgSizes = true;
+				// process sizes
+				const top = sizeObj.top.toString() ? `${sizePrefix}tw-pt-${sizeObj.top}` : '';
+				const bottom = sizeObj.bottom.toString() ? `${sizePrefix}tw-pb-${sizeObj.bottom}` : '';
+				// return our size based class set
+				return `${top} ${bottom}`;
+			});
+
+			// Apply small defaults
+			if (!hasSmSizes) {
 				classes = `${defaultSmClasses}`;
 			}
-
-			// apply medium classes
-			if (this.verticalPadding && this.verticalPadding.md) {
-				classes = `
-					${classes}
-					md:tw-pt-${this.verticalPadding.md.top}
-					md:tw-pb-${this.verticalPadding.md.bottom}
-				`;
+			// Apply large defualts if none are specified
+			if (!hasLgSizes) {
+				classes = `${defaultLgClasses}`;
 			}
 
-			// apply large classes or default classes
-			if (this.verticalPadding && this.verticalPadding.lg) {
-				classes = `
-					${classes}
-					lg:tw-pt-${this.verticalPadding.lg.top}
-					lg:tw-pb-${this.verticalPadding.lg.bottom}
-					`;
-			} else {
-				classes = `${classes} ${defaultLgClasses}`;
-			}
-
-			// apply xl classes
-			if (this.verticalPadding && this.verticalPadding.xl) {
-				classes = `
-					${classes}
-					xl:tw-pt-${this.verticalPadding.xl.top}
-					xl:tw-pb-${this.verticalPadding.xl.bottom}
-				`;
-			}
+			classes = `${classes} ${sizeClassStrings.join(' ')}`;
 
 			// return final class declarations
 			return `${classes}`;
