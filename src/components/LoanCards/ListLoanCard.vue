@@ -85,6 +85,7 @@
 					<div v-if="loan.matchingText && !isFunded" class="list-loan-card-matching-text">
 						<matching-text
 							:matching-text="loan.matchingText"
+							:match-ratio="loan.matchRatio"
 							:is-funded="isFunded"
 							:is-selected-by-another="isSelectedByAnother"
 							:is-expired="isExpired"
@@ -138,6 +139,7 @@
 						<div v-if="loan.matchingText && !isFunded" class="list-loan-card-matching-text">
 							<matching-text
 								:matching-text="loan.matchingText"
+								:match-ratio="loan.matchRatio"
 								:is-funded="isFunded"
 								:is-selected-by-another="isSelectedByAnother"
 								:is-expired="isExpired"
