@@ -91,6 +91,26 @@ export function processContent(contentfulContent) {
 }
 
 /**
+ * Format Button (contentful type id: button)
+ * Takes raw contentful content object and returns an object with targeted keys/values
+ *
+ * @param {array} contentfulContent data
+ * @returns {object}
+ */
+export function formatButton(contentfulContent) {
+	return {
+		description: contentfulContent.fields?.description,
+		label: contentfulContent.fields?.label,
+		style: contentfulContent.fields?.style,
+		subHeadline: contentfulContent.fields?.subHeadline,
+		webLink: contentfulContent.fields?.webLink,
+		deepLink: contentfulContent.fields?.deepLink,
+		analyticsClickEvent: contentfulContent.fields?.analyticsClickEvent,
+		filter: contentfulContent.fields?.filter,
+	};
+}
+
+/**
  * Format Generic Content Block (contentful type id: genericContentBlock)
  * Takes raw contentful content object and returns an object with targeted keys/values
  *
@@ -302,6 +322,11 @@ export function formatContentType(contentfulContent, contentType) {
 		case 'background':
 			return {
 				...formatBackground(contentfulContent),
+				contentType
+			};
+		case 'button':
+			return {
+				...formatButton(contentfulContent),
 				contentType
 			};
 		default:
