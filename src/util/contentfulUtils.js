@@ -181,6 +181,24 @@ export function formatBackground(contentfulContent) {
 }
 
 /**
+ * Format StoryCard (contentful type id: storyCard)
+ * Takes raw contentful content object and returns an object with targeted keys/values
+ *
+ * @param {array} contentfulContent data
+ * @returns {object}
+ */
+export function formatStoryCard(contentfulContent) {
+	return {
+		backgroundMedia: contentfulContent.fields?.backgroundMedia?.fields,
+		cardContent: contentfulContent.fields?.cardContent,
+		footer: contentfulContent.fields?.footer,
+		key: contentfulContent.fields?.key,
+		kickerHeadline: contentfulContent.fields?.kickerHeadline,
+		theme: contentfulContent.fields?.theme,
+	};
+}
+
+/**
  * Format Ui Setting (contentful type id: globalPromoBanner)
  * Takes raw contentful content object and returns an object with targeted keys/values
  *
@@ -327,6 +345,11 @@ export function formatContentType(contentfulContent, contentType) {
 		case 'button':
 			return {
 				...formatButton(contentfulContent),
+				contentType
+			};
+		case 'storyCard':
+			return {
+				...formatStoryCard(contentfulContent),
 				contentType
 			};
 		default:

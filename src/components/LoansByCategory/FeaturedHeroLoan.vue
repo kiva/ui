@@ -71,6 +71,7 @@
 
 								<matching-text
 									:matching-text="loan.matchingText"
+									:match-ratio="loan.matchRatio"
 									:is-funded="isFunded"
 									:is-selected-by-another="isSelectedByAnother"
 								/>
