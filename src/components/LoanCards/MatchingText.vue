@@ -7,7 +7,7 @@
 			'wrap': props.wrap,
 		}"
 	>
-		2x matching by {{ props.matchingText }}
+		{{ props.matchRatio + 1 }}x matching by {{ props.matchingText }}
 	</span>
 </template>
 

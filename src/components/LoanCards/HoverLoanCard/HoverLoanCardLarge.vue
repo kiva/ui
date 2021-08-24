@@ -77,6 +77,7 @@
 				<div class="matching-text-container" :class="{hide: isFunded || isExpired}">
 					<matching-text
 						:matching-text="loan.matchingText"
+						:match-ratio="loan.matchRatio"
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
 						:wrap="true"
