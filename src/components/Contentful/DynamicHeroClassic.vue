@@ -141,7 +141,6 @@ export default {
 		KvContentfulImg,
 		KvGrid,
 		KvPageContainer,
-		// SectionWithBackground,
 		SectionWithBackgroundClassic,
 	},
 	props: {
@@ -164,6 +163,7 @@ export default {
 			const contentfulAnaltyicsEvent = this.buttonContent?.analyticsClickEvent ?? null;
 			return contentfulAnaltyicsEvent || defaults;
 		},
+		// TODO: Consider Deprecating
 		buttonClass() {
 			return this.$attrs?.customCtaButtonClass ?? '';
 		},
@@ -184,9 +184,13 @@ export default {
 			}
 			return this.buttonContent?.webLink ?? '';
 		},
+		/**
+		 * Depends on various custom properties on Contentful dataObject
+		 */
 		customGridStyles() {
 			let customStyles = '';
 			// Check for custom width
+			// TODO: Extend for viewports
 			const maxWidthValue = this.uiSetting?.dataObject?.maxWidthValue ?? null;
 			const maxWidthUnit = this.uiSetting?.dataObject?.maxWidthUnit ?? 'rem';
 			if (maxWidthValue) {
@@ -208,12 +212,6 @@ export default {
 		heroBody() {
 			const text = this.genericContentBlock?.bodyCopy ?? '';
 			return text ? richTextRenderer(text) : '';
-		},
-		heroButton() {
-			return {
-				text: this.genericContentBlock?.primaryCtaText ?? '',
-				link: this.genericContentBlock?.primaryCtaLink ?? '',
-			};
 		},
 		heroHeadline() {
 			return this.genericContentBlock?.headline ?? '';
@@ -296,9 +294,15 @@ export default {
 			const imageSet = this.content?.contents?.find(({ contentType }) => contentType === 'responsiveImageSet');
 			return imageSet?.description ?? '';
 		},
+		/**
+		 * Depends on singleColumn property on Contentful dataObject
+		 */
 		singleColumn() {
 			return this.uiSetting?.dataObject?.singleColumn ?? false;
 		},
+		/**
+		 * Depends on swapOrder property on Contentful dataObject
+		 */
 		swapOrder() {
 			return this.uiSetting?.dataObject?.swapOrder ?? false;
 		},
@@ -308,6 +312,9 @@ export default {
 			});
 			return uiSetting ?? {};
 		},
+		/**
+		 * Depends on verticalPadding property on Contentful dataObject
+		 */
 		verticalPadding() {
 			return this.uiSetting?.dataObject?.verticalPadding ?? {};
 		},
@@ -326,83 +333,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-// @import 'settings';
-
-// .contentful-hero {
-// 	.row {
-// 		max-width: 70rem;
-// 	}
-
-// 	&__cta_wrapper {
-// 		padding: 0;
-
-// 		@include breakpoint(medium) {
-// 			padding: 0 2rem;
-// 		}
-
-// 		@include breakpoint(xxlarge) {
-// 			padding: 0 2rem 0 4rem;
-// 		}
-// 	}
-
-// 	&__img {
-// 		display: block;
-// 		margin: 0 auto 2rem;
-
-// 		@include breakpoint(large) {
-// 			margin: 0 auto;
-// 		}
-// 	}
-
-// 	&__header {
-// 		font-size: rem-calc(48);
-// 		line-height: rem-calc(54);
-// 		font-weight: 500;
-
-// 		::v-deep a,
-// 		::v-deep em,
-// 		::v-deep i {
-// 			font-style: normal;
-// 			color: $kiva-green;
-// 		}
-
-// 		@include breakpoint(xlarge) {
-// 			@include huge-headline();
-// 		}
-// 	}
-
-// 	&__body {
-// 		margin: 2.25rem auto 0;
-// 		white-space: pre-wrap;
-
-// 		@include breakpoint(medium) {
-// 			margin: 2.25rem auto 2.25rem;
-// 		}
-
-// 		::v-deep p {
-// 			@include medium-text();
-
-// 			@include breakpoint(xlarge) {
-// 				@include featured-text();
-
-// 				line-height: rem-calc(36);
-// 			}
-// 		}
-// 	}
-
-// 	&__video-wrapper {
-// 		margin-top: 2.5rem;
-
-// 		@include breakpoint(large) {
-// 			margin-top: 0;
-// 		}
-
-// 		&--video {
-// 			width: 100%;
-// 			border-radius: rem-calc(10);
-// 		}
-// 	}
-// }
-</style>
