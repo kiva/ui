@@ -7,7 +7,7 @@
 			class="tw-prose"
 			v-if="partnerName && !loading"
 		>
-			<p>
+			<p v-if="!partnerNameNA">
 				This loan is facilitated by our Field Partner, {{ partnerName }}.
 				Field Partners are local organizations working in communities to vet
 				borrowers, provide services, and administer loans on the ground.
@@ -148,6 +148,11 @@ export default {
 			}
 			return this.name;
 		},
+		partnerNameNA() {
+			return this.partnerName.indexOf('N/A') > -1
+				|| this.partnerName.indexOf('N/a') > -1
+				|| this.partnerName.indexOf('n/a') > -1;
+		}
 	},
 	methods: {
 		createObserver() {
