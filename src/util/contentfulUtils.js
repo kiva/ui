@@ -181,6 +181,21 @@ export function formatBackground(contentfulContent) {
 }
 
 /**
+ * Format Carousel (contentful type id: webCarousel)
+ * Takes raw contentful content object and returns an object with targeted keys/values
+ *
+ * @param {array} contentfulContent data
+ * @returns {object}
+ */
+export function formatCarousel(contentfulContent) {
+	return {
+		key: contentfulContent.fields?.key,
+		// eslint-disable-next-line no-use-before-define
+		slides: formatContentTypes(contentfulContent.fields?.slides),
+	};
+}
+
+/**
  * Format StoryCard (contentful type id: storyCard)
  * Takes raw contentful content object and returns an object with targeted keys/values
  *
@@ -350,6 +365,11 @@ export function formatContentType(contentfulContent, contentType) {
 		case 'storyCard':
 			return {
 				...formatStoryCard(contentfulContent),
+				contentType
+			};
+		case 'webCarousel':
+			return {
+				...formatCarousel(contentfulContent),
 				contentType
 			};
 		default:

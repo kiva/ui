@@ -88,6 +88,7 @@ const MonthlyGoodFrequentlyAskedQuestions = () => import('@/components/MonthlyGo
 const KvFrequentlyAskedQuestions = () => import('@/components/Kv/KvFrequentlyAskedQuestions');
 
 const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
+const CarouselWithHeader = () => import('@/components/Contentful/CarouselWithHeader');
 
 // Query for getting contentful page data
 const pageQuery = gql`query contentfulPage($key: String) {
@@ -129,6 +130,7 @@ const getWrapperClassFromType = type => {
 		case 'heroWithCarousel':
 		case 'monthlyGoodSelector':
 		case 'testimonialCards':
+		case 'carouselWithHeader':
 			return 'kv-tailwind';
 		default:
 			return '';
@@ -184,7 +186,8 @@ const getComponentFromType = type => {
 			return DynamicHeroClassic;
 		case 'heroWithCarousel':
 			return HeroWithCarousel;
-
+		case 'carouselWithHeader':
+			return CarouselWithHeader;
 		default:
 			console.error(`Unknown content group type "${type}"`);
 			return null;
