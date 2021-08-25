@@ -79,6 +79,7 @@ const HomepageMonthlyGoodInfo = () => import('@/components/Homepage/HomepageMont
 
 const CenteredRichText = () => import('@/components/Contentful/CenteredRichText');
 const DynamicHero = () => import('@/components/Contentful/DynamicHero');
+const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
 const HeroWithCarousel = () => import('@/components/Contentful/HeroWithCarousel');
 
 const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
@@ -124,6 +125,7 @@ const getPageFrameFromType = type => {
 const getWrapperClassFromType = type => {
 	switch (type) {
 		case 'centeredRichText':
+		case 'dynamicHeroClassic':
 		case 'heroWithCarousel':
 		case 'monthlyGoodSelector':
 		case 'testimonialCards':
@@ -178,6 +180,8 @@ const getComponentFromType = type => {
 			return CenteredRichText;
 		case 'dynamicHero':
 			return DynamicHero;
+		case 'dynamicHeroClassic':
+			return DynamicHeroClassic;
 		case 'heroWithCarousel':
 			return HeroWithCarousel;
 
