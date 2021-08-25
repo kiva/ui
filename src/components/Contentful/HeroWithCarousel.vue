@@ -1,13 +1,13 @@
 <template>
-	<section-with-background :background-content="heroBackground">
+	<section-with-background-classic
+		:background-content="background"
+		:vertical-padding="verticalPadding"
+	>
 		<template #content>
 			<kv-page-container>
 				<kv-grid class="tw-grid-cols-12">
-					<div class="tw-col-span-12 md:tw-col-start-2 md:tw-col-span-10 lg:tw-col-span-6">
-						<h1 v-html="heroHeadline">
-						</h1>
-						<h3 v-html="heroSubHeadline" class="tw-pt-2.5 lg:tw-pt-2">
-						</h3>
+					<div class="tw-col-span-12" :class="customTextAlignment">
+						<dynamic-rich-text :html="heroRichText" />
 					</div>
 					<div class="tw-col-span-12">
 						<kv-carousel
@@ -15,21 +15,33 @@
 							:multiple-slides-visible="true"
 							slides-to-scroll="visible"
 							class="tw-w-full"
-							slide-max-width="32.5rem"
+							:slide-max-width="singleSlideWidth"
 						>
-							<template v-for="(storyCard, index) in storyCards" #[`storyCard${index}`]>
-								<story-card :content="storyCard" :key="index" />
+							<template v-for="(slide, index) in carouselSlides" #[`slide${index}`]>
+								<story-card
+									:content="slide"
+									:key="index"
+									v-if="slide.contentType === 'storyCard'"
+								/>
+								<dynamic-rich-text
+									:html="getRichText(slide.richText)"
+									:key="index"
+									v-if="slide.contentType === 'richTextContent'"
+								/>
 							</template>
 						</kv-carousel>
 					</div>
 				</kv-grid>
 			</kv-page-container>
 		</template>
-	</section-with-background>
+	</section-with-background-classic>
 </template>
 
 <script>
-import SectionWithBackground from '@/components/Contentful/SectionWithBackground';
+import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
+import { richTextRenderer } from '@/util/contentful/richTextRenderer';
+import DynamicRichText from '@/components/Contentful/DynamicRichText';
+
 import StoryCard from '@/components/Contentful/StoryCard';
 
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
@@ -40,16 +52,17 @@ import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 * Hero With Carousel Component
 * This component will display a Hero driven by a Contentful Content
 * Group of type heroWithCarousel. Content will be displayed above a
-* full width carousel. Hero should have cards as Content Items
+* full width carousel.
 * */
 
 export default {
 	components: {
+		DynamicRichText,
 		KvCarousel,
 		KvGrid,
 		KvPageContainer,
-		SectionWithBackground,
-		StoryCard
+		SectionWithBackgroundClassic,
+		StoryCard,
 	},
 	props: {
 		/**
@@ -60,27 +73,64 @@ export default {
 			default: () => {},
 		},
 	},
+	methods: {
+		getRichText(richText) {
+			return richText ? richTextRenderer(richText) : '';
+		}
+	},
 	computed: {
 		heroText() {
 			return this.content?.contents?.find(({ contentType }) => {
-				return contentType ? contentType === 'genericContentBlock' : false;
+				return contentType ? contentType === 'richTextContent' : false;
 			});
 		},
-		heroHeadline() {
-			return this.heroText?.headline ?? '';
+		heroRichText() {
+			return this.heroText ? richTextRenderer(this.heroText.richText) : '';
 		},
-		heroSubHeadline() {
-			return this.heroText?.subHeadline ?? '';
-		},
-		heroBackground() {
+		background() {
 			return this.content?.contents?.find(({ contentType }) => {
 				return contentType ? contentType === 'background' : false;
 			});
 		},
-		storyCards() {
-			return this.content?.contents?.filter(({ contentType }) => {
-				return contentType ? contentType === 'storyCard' : false;
+		carousel() {
+			return this.content?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'webCarousel' : false;
 			});
+		},
+		carouselSlides() {
+			return this.carousel?.slides ?? [];
+		},
+		uiSetting() {
+			const uiSetting = this.content?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'uiSetting' : false;
+			});
+			return uiSetting ?? {};
+		},
+		/**
+		 * Depends on various custom properties on Contentful dataObject
+		 */
+		customTextAlignment() {
+			// Check for custom text alignment
+			const textAlign = this.uiSetting?.dataObject?.textAlign ?? null;
+			if (textAlign === 'center') {
+				return 'tw-text-center';
+			}
+			// default class string for left aligned text
+			return 'md:tw-col-start-2 md:tw-col-span-10 lg:tw-col-span-6';
+		},
+		singleSlideWidth() {
+			// tw-grid width is 1072px == 67 rem
+			const twGridRemWidth = 67;
+			const slidesToShow = this.carousel?.slidesToShow ?? 1;
+			const columnGaps = (this.carousel?.slidesToShow - 1) * 2;
+			const availableSpaceForSlides = twGridRemWidth - columnGaps;
+			return `${Math.floor(availableSpaceForSlides / slidesToShow)}rem`;
+		},
+		verticalPadding() {
+			const uiSetting = this.content?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'uiSetting' : false;
+			});
+			return uiSetting?.dataObject?.verticalPadding ?? {};
 		},
 	}
 };

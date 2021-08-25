@@ -192,6 +192,8 @@ export function formatCarousel(contentfulContent) {
 		key: contentfulContent.fields?.key,
 		// eslint-disable-next-line no-use-before-define
 		slides: formatContentTypes(contentfulContent.fields?.slides),
+		slidesToShow: contentfulContent.fields?.slidesToShow,
+
 	};
 }
 
