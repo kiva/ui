@@ -135,8 +135,8 @@ export default {
 			let hasSmSizes = false;
 			let hasLgSizes = false;
 			// Defaults currently applied around sections with backgrounds
-			const defaultSmClasses = 'tw-pt-2 tw-pb-2';
-			const defaultLgClasses = 'lg:tw-pt-4 lg:tw-pb-4';
+			const defaultSmClasses = 'tw-pt-4 tw-pb-4';
+			const defaultLgClasses = 'lg:tw-pt-8 lg:tw-pb-8';
 			// establish padding object
 			const vp = this.verticalPadding || {};
 
@@ -162,7 +162,7 @@ export default {
 			}
 			// Apply large defualts if none are specified
 			if (!hasLgSizes) {
-				classes = `${defaultLgClasses}`;
+				classes = `${classes} ${defaultLgClasses}`;
 			}
 
 			classes = `${classes} ${sizeClassStrings.join(' ')}`;
