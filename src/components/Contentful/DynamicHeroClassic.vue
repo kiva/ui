@@ -226,8 +226,7 @@ export default {
 			});
 		},
 		heroSubHeadline() {
-			const text = this.genericContentBlock?.subHeadline ?? '';
-			return text ? richTextRenderer(text) : '';
+			return this.genericContentBlock?.subHeadline ?? '';
 		},
 		isHeroCarousel() {
 			return this.mediaArray.length > 1
