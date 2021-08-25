@@ -5,6 +5,7 @@
 			md:tw-flex-row md:tw-items-center
 			tw-no-underline hover:tw-no-underline
 			tw-mb-1"
+		:class="{ 'hover:tw-cursor-default': anonymousSupporterCard }"
 		:to="linkPath"
 		v-kv-track-event="configureTracking"
 	>
@@ -71,7 +72,10 @@
 			</div>
 		</div>
 
-		<div class="tw-text-gray-800 hover:tw-underline hover:tw-text-action">
+		<div
+			class="tw-text-gray-800"
+			:class="{ 'hover:tw-underline hover:tw-text-action': !anonymousSupporterCard }"
+		>
 			<span
 				v-if="name"
 				:class="`${ displayType === 'teams' ? 'tw-text-h4' : ''}`"
