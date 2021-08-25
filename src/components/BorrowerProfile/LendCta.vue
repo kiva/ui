@@ -241,7 +241,7 @@
 								>
 									🎉
 								</span>
-								2X MATCHED LOAN
+								{{ matchRatio + 1 }}X MATCHED LOAN
 							</span>
 						</transition>
 					</div>
@@ -295,6 +295,7 @@ export default {
 			matchingTextVisibility: false,
 			statScrollAnimation: false,
 			matchingText: '',
+			matchRatio: 0,
 			basketItems: [],
 			isAdding: false,
 			isLoading: true,
@@ -314,6 +315,7 @@ export default {
 						minNoteSize
 						loanAmount
 						matchingText
+						matchRatio
 						unreservedAmount @client
 						loanFundraisingInfo {
 							fundedAmount
@@ -367,6 +369,7 @@ export default {
 			this.hasFreeCredit = basket?.hasFreeCredits ?? false;
 			this.basketItems = basket?.items?.values ?? [];
 			this.matchingText = loan?.matchingText ?? '';
+			this.matchRatio = loan?.matchRatio ?? 0;
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;
