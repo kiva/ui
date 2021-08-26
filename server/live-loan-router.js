@@ -7,10 +7,6 @@ const log = require('./util/log');
 const memJsUtils = require('./util/memJsUtils');
 const drawLoanCard = require('./util/live-loan/live-loan-draw');
 
-function isNumeric(value) {
-	return /^\d+$/.test(value);
-}
-
 const recommendationsByLoginIdQuery = id => `{
 	ml {
 		recommendationsByLoginId(
@@ -136,54 +132,50 @@ async function fetchRecommendedLoans(type, id, cache) {
 }
 
 async function redirectToUrl(type, cache, req, res) {
-	const { id, offset } = req.params;
-	if (isNumeric(id) && isNumeric(offset)) {
-		try {
-			const loanData = await fetchRecommendedLoans(type, id, cache);
-			const offsetLoanId = loanData[offset - 1].id;
+	// Use default values for id and offset if they are not numeric
+	const id = req.params?.id || 0;
+	const offset = req.params?.offset || 1;
+	try {
+		const loanData = await fetchRecommendedLoans(type, id, cache);
+		const offsetLoanId = loanData[offset - 1].id;
 
-			let redirect = `/lend/${offsetLoanId}`;
-			// If the original request had query params on it, forward those along
-			const requestUrl = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
-			const queryParams = new URLSearchParams(requestUrl.search);
-			if (queryParams) {
-				redirect += `?${queryParams}`;
-			}
-			res.redirect(302, redirect);
-		} catch (err) {
-			log(`Error redirecting to url, ${err}`, 'error');
-			res.redirect(302, '/lend-by-category/');
+		let redirect = `/lend/${offsetLoanId}`;
+		// If the original request had query params on it, forward those along
+		const requestUrl = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+		const queryParams = new URLSearchParams(requestUrl.search);
+		if (queryParams) {
+			redirect += `?${queryParams}`;
 		}
-	} else {
-		res.status(400).send('Invalid Parameters');
+		res.redirect(302, redirect);
+	} catch (err) {
+		log(`Error redirecting to url, ${err}`, 'error');
+		res.redirect(302, '/lend-by-category/');
 	}
 }
 
 async function serveImg(type, cache, req, res) {
-	const { id, offset } = req.params;
-	if (isNumeric(id) && isNumeric(offset)) {
-		try {
-			const loanData = await fetchRecommendedLoans(type, id, cache);
-			const loan = loanData[offset - 1];
+	// Use default values for id and offset if they are not numeric
+	const id = req.params?.id || 0;
+	const offset = req.params?.offset || 1;
+	try {
+		const loanData = await fetchRecommendedLoans(type, id, cache);
+		const loan = loanData[offset - 1];
 
-			let loanImg;
-			const cachedLoanImg = await memJsUtils.getFromCache(`loan-card-img-${loan.id}`, cache);
-			if (cachedLoanImg) {
-				loanImg = cachedLoanImg;
-			} else {
-				loanImg = await drawLoanCard(loan);
-				const expires = 10 * 60; // 10 minutes
-				await memJsUtils.setToCache(`loan-card-img-${loan.id}`, loanImg, expires, cache);
-			}
-
-			res.contentType('image/jpeg');
-			res.send(loanImg);
-		} catch (err) {
-			log(`Error serving image, ${err}`, 'error');
-			res.sendStatus(500);
+		let loanImg;
+		const cachedLoanImg = await memJsUtils.getFromCache(`loan-card-img-${loan.id}`, cache);
+		if (cachedLoanImg) {
+			loanImg = cachedLoanImg;
+		} else {
+			loanImg = await drawLoanCard(loan);
+			const expires = 10 * 60; // 10 minutes
+			await memJsUtils.setToCache(`loan-card-img-${loan.id}`, loanImg, expires, cache);
 		}
-	} else {
-		res.status(400).send('Invalid Parameters');
+
+		res.contentType('image/jpeg');
+		res.send(loanImg);
+	} catch (err) {
+		log(`Error serving image, ${err}`, 'error');
+		res.sendStatus(500);
 	}
 }
 
@@ -191,22 +183,22 @@ module.exports = function liveLoanRouter(cache) {
 	const router = express.Router();
 
 	// User URL Router
-	router.use('/u/:id/url/:offset', async (req, res) => {
+	router.use('/u/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
 		await redirectToUrl('user', cache, req, res);
 	});
 
 	// User IMG Router
-	router.use('/u/:id/img/:offset', async (req, res) => {
+	router.use('/u/:id(\\d{0,})/img/:offset(\\d{0,})', async (req, res) => {
 		await serveImg('user', cache, req, res);
 	});
 
 	// Loan-to-loan URL Router
-	router.use('/l/:id/url/:offset', async (req, res) => {
+	router.use('/l/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
 		await redirectToUrl('loan', cache, req, res);
 	});
 
 	// Loan-to-loan IMG Router
-	router.use('/l/:id/img/:offset', async (req, res) => {
+	router.use('/l/:id(\\d{0,})/img/:offset(\\d{0,})', async (req, res) => {
 		await serveImg('loan', cache, req, res);
 	});
 
