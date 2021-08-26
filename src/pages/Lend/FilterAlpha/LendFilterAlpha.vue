@@ -69,14 +69,6 @@
 				</kv-page-container>
 			</div>
 		</article>
-	</www-page>
-</template>
-							</kv-grid>
-						</div>
-					</kv-grid>
-				</kv-page-container>
-			</div>
-		</article>
 		<!-- <aside>Similar loans</aside> -->
 	</www-page>
 </template>
