@@ -79,7 +79,6 @@ import { fetchData } from '@/util/flssUtils';
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
-// import ListLoanCard from '@/components/LoanCards/ListLoanCard';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -92,7 +91,6 @@ export default {
 		KvGrid,
 		KvPageContainer,
 		KvMaterialIcon,
-		// ListLoanCard,
 		LoanCardController
 
 	},
