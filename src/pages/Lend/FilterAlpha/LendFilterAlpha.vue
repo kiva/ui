@@ -31,13 +31,18 @@
 						<button class="tw-mb-2 tw-px-2">
 							<kv-material-icon :icon="mdiFilterVariant" class="tw-text-brand tw-w-5 tw-h-5" />
 							<p class="tw-hidden md:tw-block">
-								Filter
+								Filters
 							</p>
 						</button>
 					</div>
 					<kv-grid class="tw-grid-cols-2 md:tw-grid-cols-3">
 						<div class="tw-bg-gray-300 tw-text-left md:tw-text-center">
 							<p>Filters</p>
+							<hr>
+							<br> Gender
+							<br> Loan Term
+							<br> Country
+							<br> Sector
 						</div>
 						<div class="md:tw-hidden">
 							<p> {{ totalCount }} Loans </p>
@@ -50,51 +55,14 @@
 								<p> {{ totalCount }} Loans </p>
 							</div>
 							<kv-grid class="tw-grid-rows-4">
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 1
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 2
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 3
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 4
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 5
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 6
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 7
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 8
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 9
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 10
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 11
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 12
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 13
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 14
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 15
-								</div>
+								<loan-card-controller
+									v-for="loan in loans"
+									:items-in-basket="null"
+									:is-visitor="true"
+									:key="loan.id"
+									:loan="loan"
+									loan-card-type="ListLoanCard"
+								/>
 							</kv-grid>
 						</div>
 					</kv-grid>
@@ -111,6 +79,7 @@ import { fetchData } from '@/util/flssUtils';
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -122,6 +91,8 @@ export default {
 		KvGrid,
 		KvPageContainer,
 		KvMaterialIcon,
+		LoanCardController
+
 	},
 	data() {
 		return {
