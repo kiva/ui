@@ -50,51 +50,20 @@
 								<p> {{ totalCount }} Loans </p>
 							</div>
 							<kv-grid class="tw-grid-rows-4">
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 1
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 2
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 3
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 4
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 5
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 6
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 7
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 8
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 9
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 10
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 11
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 12
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 13
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 14
-								</div>
-								<div class="tw-bg-gray-300 tw-h-4">
-									Loan Card 15
-								</div>
+								<template v-for="(loan, index) in this.loans">
+									<div class="tw-bg-gray-300 tw-h-4"
+										v-bind:key="loan.id"
+									>
+										Loan Card: {{ index }}
+										{{ loan.id }}
+										{{ loan.name }}
+										{{ loan.loanAmount }}
+										{{ loan.fundraisingDate }}
+										{{ loan.image.id }}
+										{{ loan.status }}
+										raised: {{ loan.loanFundraisingInfo.fundedAmount }}
+									</div>
+								</template>
 							</kv-grid>
 						</div>
 					</kv-grid>
@@ -111,6 +80,7 @@ import { fetchData } from '@/util/flssUtils';
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
+// import ListLoanCard from '@/components/LoanCards/ListLoanCard';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
