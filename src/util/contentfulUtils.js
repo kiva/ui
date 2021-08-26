@@ -181,7 +181,7 @@ export function formatBackground(contentfulContent) {
 }
 
 /**
- * Format Carousel (contentful type id: webCarousel)
+ * Format Carousel (contentful type id: carousel)
  * Takes raw contentful content object and returns an object with targeted keys/values
  *
  * @param {array} contentfulContent data
@@ -369,7 +369,7 @@ export function formatContentType(contentfulContent, contentType) {
 				...formatStoryCard(contentfulContent),
 				contentType
 			};
-		case 'webCarousel':
+		case 'carousel':
 			return {
 				...formatCarousel(contentfulContent),
 				contentType

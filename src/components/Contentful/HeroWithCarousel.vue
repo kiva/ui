@@ -94,7 +94,7 @@ export default {
 		},
 		carousel() {
 			return this.content?.contents?.find(({ contentType }) => {
-				return contentType ? contentType === 'webCarousel' : false;
+				return contentType ? contentType === 'carousel' : false;
 			});
 		},
 		carouselSlides() {
