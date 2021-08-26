@@ -31,13 +31,18 @@
 						<button class="tw-mb-2 tw-px-2">
 							<kv-material-icon :icon="mdiFilterVariant" class="tw-text-brand tw-w-5 tw-h-5" />
 							<p class="tw-hidden md:tw-block">
-								Filter
+								Filters
 							</p>
 						</button>
 					</div>
 					<kv-grid class="tw-grid-cols-2 md:tw-grid-cols-3">
 						<div class="tw-bg-gray-300 tw-text-left md:tw-text-center">
 							<p>Filters</p>
+							<hr>
+							<br> Gender
+							<br> Loan Term
+							<br> Country
+							<br> Sector
 						</div>
 						<div class="md:tw-hidden">
 							<p> {{ totalCount }} Loans </p>
@@ -50,20 +55,22 @@
 								<p> {{ totalCount }} Loans </p>
 							</div>
 							<kv-grid class="tw-grid-rows-4">
-								<template v-for="(loan, index) in this.loans">
-									<div class="tw-bg-gray-300 tw-h-4"
-										v-bind:key="loan.id"
-									>
-										Loan Card: {{ index }}
-										{{ loan.id }}
-										{{ loan.name }}
-										{{ loan.loanAmount }}
-										{{ loan.fundraisingDate }}
-										{{ loan.image.id }}
-										{{ loan.status }}
-										raised: {{ loan.loanFundraisingInfo.fundedAmount }}
-									</div>
-								</template>
+								<loan-card-controller
+									v-for="loan in loans"
+									:items-in-basket="null"
+									:is-visitor="true"
+									:key="loan.id"
+									:loan="loan"
+									loan-card-type="ListLoanCard"
+								/>
+							</kv-grid>
+						</div>
+					</kv-grid>
+				</kv-page-container>
+			</div>
+		</article>
+	</www-page>
+</template>
 							</kv-grid>
 						</div>
 					</kv-grid>
@@ -80,7 +87,8 @@ import { fetchData } from '@/util/flssUtils';
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
-// import ListLoanCard from '@/components/LoanCards/ListLoanCard';
+import ListLoanCard from '@/components/LoanCards/ListLoanCard';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -92,6 +100,9 @@ export default {
 		KvGrid,
 		KvPageContainer,
 		KvMaterialIcon,
+		ListLoanCard,
+		LoanCardController
+
 	},
 	data() {
 		return {
