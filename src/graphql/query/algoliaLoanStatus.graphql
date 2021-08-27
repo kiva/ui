@@ -9,6 +9,7 @@ query algoliaLoanStatus(
 				id
 				status
 				matchingText
+				matchRatio
 				minNoteSize
 				loanFundraisingInfo {
 					fundedAmount
