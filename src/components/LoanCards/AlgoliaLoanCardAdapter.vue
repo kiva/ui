@@ -61,6 +61,7 @@ export default {
 			latestUserProperties: null,
 			latestStatus: null,
 			latestMatchingText: null,
+			matchRatio: 1,
 		};
 	},
 	computed: {
@@ -88,6 +89,7 @@ export default {
 				},
 				use: _get(this.loan, 'use'),
 				matchingText: this.latestMatchingText || _get(this.loan, 'matchingText'),
+				matchRatio: this.matchRatio || _get(this.loan, 'matchRatio'),
 				name: _get(this.loan, 'name'),
 				partnerName: _get(this.loan, 'partner.name'),
 				plannedExpirationDate: exprirationDate.toISOString(),
@@ -128,8 +130,9 @@ export default {
 						favorited: _get(data, 'lend.loans.values[0].userProperties.favorited'),
 						lentTo: _get(data, 'lend.loans.values[0].userProperties.lentTo'),
 					};
-					// patch in latest matchingText
+					// patch in latest matchingText & matchRatio
 					this.latestMatchingText = _get(data, 'lend.loans.values[0].matchingText');
+					this.matchRatio = _get(data, 'lend.loans.values[0].matchRatio');
 					// patch in latest status
 					this.latestStatus = _get(data, 'lend.loans.values[0].status');
 				}
