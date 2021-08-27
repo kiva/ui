@@ -5,7 +5,7 @@
 	>
 		<template #content>
 			<kv-page-container>
-				<kv-grid>
+				<kv-grid :style="customGridStyles" class="tw-mx-auto">
 					<dynamic-rich-text class="tw-prose tw-text-center" :html="richContent" />
 				</kv-grid>
 			</kv-page-container>
@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import DynamicRichText from '@/components/Contentful/DynamicRichText';
@@ -27,6 +28,7 @@ export default {
 		KvPageContainer,
 		SectionWithBackgroundClassic,
 	},
+	mixins: [contentfulStylesMixin],
 	props: {
 		/**
 		 * Content group content from Contentful
@@ -48,12 +50,6 @@ export default {
 			});
 			const richText = richContent?.richText ?? '';
 			return richText ? richTextRenderer(richText) : '';
-		},
-		verticalPadding() {
-			const uiSetting = this.content?.contents?.find(({ contentType }) => {
-				return contentType ? contentType === 'uiSetting' : false;
-			});
-			return uiSetting?.dataObject?.verticalPadding ?? {};
 		},
 	}
 };
