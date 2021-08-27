@@ -8,8 +8,7 @@ export default () => {
 		forward
 	}) => {
 		if (networkError) {
-			logFormatter(operation, 'error');
-			logFormatter(networkError, 'error');
+			logFormatter(`Apollo network error: ${networkError}`, 'error', { operation, networkError });
 		}
 		forward();
 	});

@@ -118,6 +118,7 @@ import EditPreferences from '@/components/GetStarted/EditPreferences';
 import KvProgressBar from '@/components/Kv/KvProgressBar';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import RecommendedLoanCard from '@/components/LoanCards/RecommendedLoanCard';
+import logFormatter from '@/util/logFormatter';
 
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
 
@@ -232,7 +233,7 @@ export default {
 		}`,
 		result(result) {
 			if (result.error) {
-				console.error(result.error);
+				logFormatter('GetStartedResults: Error finding loan recommendations', 'error', { result });
 				this.$showTipMsg('There was a problem finding your loan recommendations', 'error');
 				try {
 					Sentry.withScope(scope => {

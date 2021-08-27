@@ -52,6 +52,7 @@ To use, simply create a route that defines contentfulPage in the meta data, e.g.
 import gql from 'graphql-tag';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import { processPageContent } from '@/util/contentfulUtils';
+import logFormatter from '@/util/logFormatter';
 import * as siteThemes from '@/util/siteThemes';
 
 // Page frames
@@ -112,7 +113,7 @@ const getPageFrameFromType = type => {
 		case 'lender-campaign':
 			return WwwPage;
 		default:
-			console.error(`Unknown page type "${type}"`);
+			logFormatter(`ContentfulPage: Unknown page type "${type}"`, 'error');
 			return WwwPage;
 	}
 };
@@ -185,7 +186,7 @@ const getComponentFromType = type => {
 		case 'heroWithCarousel':
 			return HeroWithCarousel;
 		default:
-			console.error(`Unknown content group type "${type}"`);
+			logFormatter(`ContenfulPage: Unknown content group type "${type}"`, 'error');
 			return null;
 	}
 };

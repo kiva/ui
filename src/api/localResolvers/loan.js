@@ -4,6 +4,7 @@ import {
 	parseISO,
 } from 'date-fns';
 import numeral from 'numeral';
+import logFormatter from '@/util/logFormatter';
 
 // Return true if the given loan object is missing the given field.
 // Logs an error to the console if the field is missing.
@@ -17,7 +18,7 @@ function missingLoanField({
 	// Use optional chaining to see if nested loan properties exist
 	const value = propChain.reduce((val, chainLink) => val?.[chainLink] ?? null, loan);
 	if (value === null) {
-		console.error(`Missing required field '${field}' for ${type}.${resolver}`);
+		logFormatter(`Loan resolver: Missing required field '${field}' for ${type}.${resolver}`, 'error', { loan });
 		return true;
 	}
 }

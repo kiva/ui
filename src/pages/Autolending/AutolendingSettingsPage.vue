@@ -18,6 +18,7 @@
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
+import logFormatter from '@/util/logFormatter';
 import SaveButton from './SaveButton';
 import AutolendingStatus from './AutolendingStatus';
 import AutolendingWhen from './AutolendingWhen';
@@ -81,7 +82,7 @@ export default {
 							});
 						} else {
 						// Log other errors
-							console.error(e);
+							logFormatter('AutoendingSettingsPage: Error during pre-fetch', 'error', { error: e });
 							resolve();
 						}
 					});
