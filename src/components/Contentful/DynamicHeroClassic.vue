@@ -101,7 +101,6 @@
 						<kv-button
 							v-if="buttonText"
 							class="tw-w-full md:tw-w-auto"
-							:class="`${buttonClass}`"
 							:to="buttonTo"
 							:variant="buttonStyle"
 							@click.native="buttonClick"
@@ -117,6 +116,7 @@
 </template>
 
 <script>
+import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import DynamicRichText from '@/components/Contentful/DynamicRichText';
@@ -143,6 +143,7 @@ export default {
 		KvPageContainer,
 		SectionWithBackgroundClassic,
 	},
+	mixins: [contentfulStylesMixin],
 	props: {
 		/**
 		 * Content group content from Contentful
@@ -163,10 +164,6 @@ export default {
 			const contentfulAnaltyicsEvent = this.buttonContent?.analyticsClickEvent ?? null;
 			return contentfulAnaltyicsEvent || defaults;
 		},
-		// TODO: Consider Deprecating
-		buttonClass() {
-			return this.$attrs?.customCtaButtonClass ?? '';
-		},
 		buttonContent() {
 			return this.content?.contents?.find(({ contentType }) => {
 				return contentType ? contentType === 'button' : false;
@@ -183,25 +180,6 @@ export default {
 				return '';
 			}
 			return this.buttonContent?.webLink ?? '';
-		},
-		/**
-		 * Depends on various custom properties on Contentful dataObject
-		 */
-		customGridStyles() {
-			let customStyles = '';
-			// Check for custom width
-			// TODO: Extend for viewports
-			const maxWidthValue = this.uiSetting?.dataObject?.maxWidthValue ?? null;
-			const maxWidthUnit = this.uiSetting?.dataObject?.maxWidthUnit ?? 'rem';
-			if (maxWidthValue) {
-				customStyles = `maxWidth: ${maxWidthValue}${maxWidthUnit};`;
-			}
-			// Check for custom text alignment
-			const textAlign = this.uiSetting?.dataObject?.textAlign ?? null;
-			if (textAlign) {
-				customStyles = `${customStyles} textAlign: ${textAlign};`;
-			}
-			return customStyles;
 		},
 		genericContentBlock() {
 			const gcb = this.content?.contents?.find(({ contentType }) => {
@@ -293,31 +271,6 @@ export default {
 			const imageSet = this.content?.contents?.find(({ contentType }) => contentType === 'responsiveImageSet');
 			return imageSet?.description ?? '';
 		},
-		/**
-		 * Depends on singleColumn property on Contentful dataObject
-		 */
-		singleColumn() {
-			return this.uiSetting?.dataObject?.singleColumn ?? false;
-		},
-		/**
-		 * Depends on swapOrder property on Contentful dataObject
-		 */
-		swapOrder() {
-			return this.uiSetting?.dataObject?.swapOrder ?? false;
-		},
-		uiSetting() {
-			const uiSetting = this.content?.contents?.find(({ contentType }) => {
-				return contentType ? contentType === 'uiSetting' : false;
-			});
-			return uiSetting ?? {};
-		},
-		/**
-		 * Depends on verticalPadding property on Contentful dataObject
-		 */
-		verticalPadding() {
-			return this.uiSetting?.dataObject?.verticalPadding ?? {};
-		},
-
 	},
 	methods: {
 		buttonClick(event) {
