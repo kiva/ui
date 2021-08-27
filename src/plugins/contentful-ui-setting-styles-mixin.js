@@ -9,12 +9,12 @@ export default {
 			const maxWidthValue = this.uiSetting?.dataObject?.maxWidthValue ?? null;
 			const maxWidthUnit = this.uiSetting?.dataObject?.maxWidthUnit ?? 'rem';
 			if (maxWidthValue) {
-				customStyles = `maxWidth: ${maxWidthValue}${maxWidthUnit};`;
+				customStyles = `max-width: ${maxWidthValue}${maxWidthUnit};`;
 			}
 			// Check for custom text alignment
 			const textAlign = this.uiSetting?.dataObject?.textAlign ?? null;
 			if (textAlign) {
-				customStyles = `${customStyles} textAlign: ${textAlign};`;
+				customStyles = `${customStyles} text-align: ${textAlign};`;
 			}
 			return customStyles;
 		},

@@ -5,10 +5,8 @@
 	>
 		<template #content>
 			<kv-page-container>
-				<kv-grid :style="customGridStyles" class="tw-mx-auto">
+				<kv-grid class="tw-mx-auto tw-text-center" :style="customGridStyles">
 					<dynamic-rich-text
-						class="tw-prose tw-text-center"
-						:style="customGridStyles"
 						:html="richContent"
 					/>
 				</kv-grid>
