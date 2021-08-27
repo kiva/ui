@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import DynamicRichText from '@/components/Contentful/DynamicRichText';
@@ -78,6 +79,7 @@ export default {
 			return richText ? richTextRenderer(richText) : '';
 		}
 	},
+	mixins: [contentfulStylesMixin],
 	computed: {
 		heroText() {
 			return this.content?.contents?.find(({ contentType }) => {
@@ -100,12 +102,6 @@ export default {
 		carouselSlides() {
 			return this.carousel?.slides ?? [];
 		},
-		uiSetting() {
-			const uiSetting = this.content?.contents?.find(({ contentType }) => {
-				return contentType ? contentType === 'uiSetting' : false;
-			});
-			return uiSetting ?? {};
-		},
 		/**
 		 * Depends on various custom properties on Contentful dataObject
 		 */
@@ -125,12 +121,6 @@ export default {
 			const columnGaps = (this.carousel?.slidesToShow - 1) * 2;
 			const availableSpaceForSlides = twGridRemWidth - columnGaps;
 			return `${Math.floor(availableSpaceForSlides / slidesToShow)}rem`;
-		},
-		verticalPadding() {
-			const uiSetting = this.content?.contents?.find(({ contentType }) => {
-				return contentType ? contentType === 'uiSetting' : false;
-			});
-			return uiSetting?.dataObject?.verticalPadding ?? {};
 		},
 	}
 };

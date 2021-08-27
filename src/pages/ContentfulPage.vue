@@ -206,6 +206,8 @@ const getContentGroups = pageData => {
 // Modifications for Monthly Good Landing pages
 const customMGEventsAndConfig = {
 	// Custom attribute for MG page landing specific button class
+	// TODO deprecate this when DynamicHero.vue and HomepageBottomCTA.vue
+	// are no longer in use
 	customCtaButtonClass: 'classic hollow',
 	// Custom attribute for event name emitted with MG landing page button clicks
 	customEventName: 'openMonthlyGoodSelector'
