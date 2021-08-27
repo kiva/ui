@@ -6,7 +6,11 @@
 		<template #content>
 			<kv-page-container>
 				<kv-grid :style="customGridStyles" class="tw-mx-auto">
-					<dynamic-rich-text class="tw-prose tw-text-center" :html="richContent" />
+					<dynamic-rich-text
+						class="tw-prose tw-text-center"
+						:style="customGridStyles"
+						:html="richContent"
+					/>
 				</kv-grid>
 			</kv-page-container>
 		</template>
