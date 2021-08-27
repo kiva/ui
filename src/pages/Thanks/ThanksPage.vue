@@ -75,6 +75,7 @@ import ThanksLayoutV2 from '@/components/Thanks/ThanksLayoutV2';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 
 import { processPageContentFlat } from '@/util/contentfulUtils';
+import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 
 export default {
@@ -123,7 +124,9 @@ export default {
 				visitorId: this.cookieStore.get('uiv') || null,
 			};
 		},
-		result({ data }) {
+		result(result) {
+			const { data } = result;
+
 			this.lender = {
 				...(data?.my?.userAccount ?? {}),
 				teams: data?.my?.teams?.values?.map(value => value.team) ?? [],
@@ -143,10 +146,18 @@ export default {
 				.map(item => item.loan);
 
 			if (!this.isGuest && !data?.my?.userAccount) {
-				console.error(`Failed to get lender for transaction id: ${this.$route.query.kiva_transaction_id}`);
+				logFormatter(
+					`Failed to get lender for transaction id: ${this.$route.query.kiva_transaction_id}`,
+					'error',
+					{ result }
+				);
 			}
 			if (!this.receipt) {
-				console.error(`Failed to get receipt for transaction id: ${this.$route.query.kiva_transaction_id}`);
+				logFormatter(
+					`Failed to get receipt for transaction id: ${this.$route.query.kiva_transaction_id}`,
+					'error',
+					{ result }
+				);
 			}
 
 			// Check for contentful content
