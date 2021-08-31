@@ -15,7 +15,7 @@
 							:key="index"
 							class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-6
 							tw-mb-2
-							tw-bg-white tw-rounded"
+							tw-bg-primary tw-rounded"
 						>
 							<div class="tw-pt-4 tw-pb-3">
 								<kv-contentful-img
@@ -47,7 +47,7 @@
 
 								<h4
 									v-html="singleCard.title"
-									class="tw-text-gray-500 tw-pb-4"
+									class="tw-text-secondary tw-pb-4"
 								>
 								</h4>
 							</figcaption>
