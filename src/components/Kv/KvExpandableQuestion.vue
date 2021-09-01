@@ -3,7 +3,7 @@
 		<button class="tw-w-full tw-py-2 tw-flex tw-justify-between"
 			@click="toggleFaq"
 		>
-			<h3 class="tw-text-subhead">
+			<h3 class="tw-text-subhead tw-text-left">
 				{{ title }}
 			</h3>
 			<kv-material-icon
