@@ -224,7 +224,6 @@ export default {
 		},
 		faqContentGroup() {
 			return this.contentGroups?.find(({ type }) => {
-				console.log(type);
 				return type ? type === 'frequentlyAskedQuestions' : false;
 			});
 		},

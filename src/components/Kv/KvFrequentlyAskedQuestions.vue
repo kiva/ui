@@ -30,10 +30,9 @@
 import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
 import KvExpandableQuestion from '@/components/Kv/KvExpandableQuestion';
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
+import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
 	components: {
@@ -71,7 +70,7 @@ export default {
 	},
 	methods: {
 		convertFromRichTextToHtml(rawRichText) {
-			return documentToHtmlString(rawRichText);
+			return rawRichText ? richTextRenderer(rawRichText) : '';
 		}
 	},
 	mounted() {
