@@ -84,7 +84,6 @@ const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClas
 const HeroWithCarousel = () => import('@/components/Contentful/HeroWithCarousel');
 
 const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
-const MonthlyGoodFrequentlyAskedQuestions = () => import('@/components/MonthlyGood/FrequentlyAskedQuestions');
 
 const KvFrequentlyAskedQuestions = () => import('@/components/Kv/KvFrequentlyAskedQuestions');
 
@@ -168,9 +167,6 @@ const getComponentFromType = type => {
 			return CampaignPartner;
 		case 'mlCampaignThanks':
 			return CampaignThanks;
-		case 'mgFrequentlyAskedQuestions':
-			// TODO change this to generic FAQ Component
-			return MonthlyGoodFrequentlyAskedQuestions;
 		case 'monthlyGoodSelector':
 			return MonthlyGoodSelectorWrapper;
 		case 'frequentlyAskedQuestions':
