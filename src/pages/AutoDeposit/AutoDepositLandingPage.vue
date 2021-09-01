@@ -70,9 +70,11 @@
 		</div>
 
 		<!-- Auto Deposit Frequently Asked Questions -->
-		<kv-frequently-asked-questions
-			:content="faqContentGroup"
-		/>
+		<div class="kv-tailwind">
+			<kv-frequently-asked-questions
+				:content="faqContentGroup"
+			/>
+		</div>
 	</www-page>
 </template>
 

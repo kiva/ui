@@ -71,8 +71,8 @@
 			</template>
 		</kiva-as-expert>
 		<more-about-kiva />
-		<div class="kv-tailwinds">
-			<!-- Monthly Good Frequently Asked Questions -->
+		<!-- Monthly Good Frequently Asked Questions -->
+		<div class="kv-tailwind">
 			<kv-frequently-asked-questions
 				:content="faqContentGroup"
 			/>
@@ -255,7 +255,6 @@ export default {
 		heroPrimaryCtaText() {
 			return this.heroText?.primaryCtaText ?? 'Start Monthly Good';
 		},
-
 	},
 };
 </script>
