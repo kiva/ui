@@ -1,2 +1,2 @@
-@Library('github.com/kiva/marketplace-web-ui-ci@main') _
+@Library('web-ui-ci') _
 kivaUIServerPipeline()
