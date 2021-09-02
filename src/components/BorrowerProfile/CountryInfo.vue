@@ -25,7 +25,7 @@
 					<span class="tw-block tw-text-h2">
 						{{ avgAnnualIncomeFormatted }}
 					</span>
-					<span class="tw-block tw-text-h4 tw-text-gray-500">
+					<span class="tw-block tw-text-h4 tw-text-secondary">
 						Average annual income (USD)
 					</span>
 				</p>
@@ -33,7 +33,7 @@
 					<span class="tw-block tw-text-h2">
 						{{ numLoansFundraising }}
 					</span>
-					<span class="tw-block tw-text-h4 tw-text-gray-500">
+					<span class="tw-block tw-text-h4 tw-text-secondary">
 						Loans currently fundraising
 					</span>
 				</p>
