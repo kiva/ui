@@ -1,43 +1,47 @@
 <template>
-	<section-with-background
-		v-if="frequentlyAskedQuestionsHeadline || frequentlyAskedQuestions"
-		class="frequently-asked-questions-section-wrapper tw-mb-4"
-		:background-content="sectionBackground"
+	<section-with-background-classic
+		:background-content="background"
+		:vertical-padding="verticalPadding"
 	>
 		<template #content>
-			<div class="row" id="frequently-asked-questions">
-				<div v-if="frequentlyAskedQuestionsHeadline" class="small-12 columns">
-					<h2 class="tw-text-h2">
-						{{ frequentlyAskedQuestionsHeadline }}
-					</h2>
-				</div>
-				<div v-if="frequentlyAskedQuestions" class="small-12 columns tw-py-2">
-					<div class="row collapse">
+			<kv-page-container>
+				<kv-grid>
+					<div v-if="frequentlyAskedQuestionsHeadline">
+						<h2 class="tw-text-h2">
+							{{ frequentlyAskedQuestionsHeadline }}
+						</h2>
+					</div>
+					<div v-if="frequentlyAskedQuestions" class="tw-divide-y">
 						<kv-expandable-question
 							v-for="(question, index) in frequentlyAskedQuestions"
 							:key="index"
 							:title="question.name"
 							:content="convertFromRichTextToHtml(question.richText)"
-							class="small-12 columns"
 							:id="question.name | changeCase('paramCase')"
 						/>
 					</div>
-				</div>
-			</div>
+				</kv-grid>
+			</kv-page-container>
 		</template>
-	</section-with-background>
+	</section-with-background-classic>
 </template>
 
 <script>
+import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
 import KvExpandableQuestion from '@/components/Kv/KvExpandableQuestion';
-import SectionWithBackground from '@/components/Contentful/SectionWithBackground';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
+import { richTextRenderer } from '@/util/contentful/richTextRenderer';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	components: {
 		KvExpandableQuestion,
-		SectionWithBackground,
+		KvGrid,
+		KvPageContainer,
+		SectionWithBackgroundClassic,
 	},
+	mixins: [contentfulStylesMixin],
 	props: {
 		/**
 		 * Content group content from Contentful
@@ -58,7 +62,7 @@ export default {
 		frequentlyAskedQuestions() {
 			return this.content?.contents ?? null;
 		},
-		sectionBackground() {
+		background() {
 			return this.content?.contents?.find(({ contentType }) => {
 				return contentType ? contentType === 'background' : false;
 			});
@@ -66,7 +70,7 @@ export default {
 	},
 	methods: {
 		convertFromRichTextToHtml(rawRichText) {
-			return documentToHtmlString(rawRichText);
+			return rawRichText ? richTextRenderer(rawRichText) : '';
 		}
 	},
 	mounted() {
