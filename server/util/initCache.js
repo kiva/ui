@@ -14,13 +14,16 @@ function FakeMemcached(options) {
 
 	// Replace 'set' with a memcached-compatible wrapper
 	const oldSet = lru.set;
-	lru.set = (key, value, age, callback) => {
+	lru.set = (key, value, { expires }, callback) => {
 		try {
-			oldSet.call(lru, key, value, age * 1000);
+			oldSet.call(lru, key, value, (expires ?? 0) * 1000);
 		} catch (error) {
 			if (callback) {
 				callback(error);
 			}
+		}
+		if (callback) {
+			callback(null, true);
 		}
 	};
 
