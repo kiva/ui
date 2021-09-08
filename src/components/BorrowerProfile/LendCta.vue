@@ -19,8 +19,8 @@
 					'tw-z-2',
 					'tw-grid-cols-12',
 					'tw-px-2.5',
-					'tw-bg-white',
-					'tw-border-t tw-border-gray-300',
+					'tw-bg-primary',
+					'tw-border-t tw-border-tertiary',
 					{
 						'md:tw-rounded-b md:tw-border-none': !isSticky,
 						'md:tw-px-3': !isSticky,
@@ -147,13 +147,13 @@
 					</span>
 					<p
 						v-if="freeCreditWarning"
-						class="tw-text-h4 tw-text-gray-500 tw-inline-block tw-text-center tw-w-full"
+						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full"
 					>
 						Not eligilble for lending credit
 					</p>
 					<p
 						v-if="allSharesReserved"
-						class="tw-text-h4 tw-text-gray-500 tw-inline-block tw-text-center tw-w-full"
+						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full"
 					>
 						All shares reserved
 					</p>
@@ -194,7 +194,7 @@
 							'tw-col-span-12',
 							'tw-mb-1 tw-p-1',
 							'tw-rounded',
-							'tw-bg-white',
+							'tw-bg-primary',
 							'tw-text-h4',
 							'tw-flex tw-justify-center',
 							'tw-mt-1',

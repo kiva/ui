@@ -20,8 +20,7 @@ module.exports = {
 				if (error) {
 					log(`MemJS Error Setting Cache for ${key}, Error: ${error}`, 'error');
 					reject();
-				}
-				if (success) {
+				} else {
 					log(`MemJS Success Setting Cache for ${key}, Success: ${success}`);
 					resolve();
 				}

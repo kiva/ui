@@ -73,7 +73,7 @@
 		</div>
 
 		<div
-			class="tw-text-gray-800"
+			class="tw-text-primary"
 			:class="{ 'hover:tw-underline hover:tw-text-action': !anonymousSupporterCard }"
 		>
 			<span
@@ -132,15 +132,15 @@ export default {
 			isMobile: false,
 			userCardStyleOptions: [
 				{ color: 'tw-text-action', bg: 'tw-bg-brand-50' },
-				{ color: 'tw-text-800', bg: 'tw-bg-brand-100' },
-				{ color: 'tw-text-action', bg: 'tw-bg-gray-100' },
+				{ color: 'tw-text-black', bg: 'tw-bg-brand-100' },
+				{ color: 'tw-text-action', bg: 'tw-bg-secondary' },
 				{ color: 'tw-text-white', bg: 'tw-bg-action' },
 				// { color: 'tw-text-800', bg: 'tw-bg-gray-50' },
 				{ color: 'tw-text-brand-50', bg: 'tw-bg-action' },
-				{ color: 'tw-text-brand-50', bg: 'tw-bg-gray-800' },
-				{ color: 'tw-text-gray-100', bg: 'tw-bg-action' },
+				{ color: 'tw-text-brand-50', bg: 'tw-bg-black' },
+				{ color: 'tw-text-primary-inverse', bg: 'tw-bg-action' },
 				// { color: 'tw-text-action', bg: 'tw-bg-gray-50' },
-				{ color: 'tw-text-white', bg: 'tw-bg-gray-800' },
+				{ color: 'tw-text-white', bg: 'tw-bg-black' },
 			]
 		};
 	},

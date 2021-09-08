@@ -4,7 +4,7 @@
 		:header-theme="headerTheme"
 		:main-class="'kv-tailwind'"
 	>
-		<article class="tw-bg-gray-50 tw-relative tw-pt-6">
+		<article class="tw-bg-secondary tw-relative tw-pt-6">
 			<div class="tw-relative" style="max-height: 460px;">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 				</div>
@@ -22,8 +22,8 @@
 								Each Kiva loan helps people build a better future for themselves and their families.
 							</p>
 						</div>
-						<button class="tw-mb-2 tw-border-r tw-border-gray-300 tw-px-2">
-							<kv-material-icon :icon="mdiCompassRose" class="tw-text-gray-500 tw-w-5 tw-h-5" />
+						<button class="tw-mb-2 tw-border-r tw-border-tertiary tw-px-2">
+							<kv-material-icon :icon="mdiCompassRose" class="tw-text-secondary tw-w-5 tw-h-5" />
 							<p class="tw-hidden md:tw-block">
 								Explore
 							</p>
@@ -36,7 +36,7 @@
 						</button>
 					</div>
 					<kv-grid class="tw-grid-cols-2 md:tw-grid-cols-3">
-						<div class="tw-bg-gray-300 tw-text-left md:tw-text-center">
+						<div class="tw-bg-tertiary tw-text-left md:tw-text-center">
 							<p>Filters</p>
 							<hr>
 							<br> Gender
@@ -48,7 +48,7 @@
 							<p> {{ totalCount }} Loans </p>
 						</div>
 						<div class="tw-col-span-2">
-							<div class="tw-bg-gray-300 tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
+							<div class="tw-bg-tertiary tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
 								Search Loans
 							</div>
 							<div class="tw-hidden md:tw-block tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">

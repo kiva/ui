@@ -1,6 +1,6 @@
 <template>
 	<section class="
-		md:tw-bg-white
+		md:tw-bg-primary
 		tw-py-2.5 md:tw-p-3 lg:tw-p-4
 		md:tw-rounded-t lg:tw-rounded"
 	>

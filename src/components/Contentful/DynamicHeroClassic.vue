@@ -72,7 +72,7 @@
 						<template v-if="isHeroVideo">
 							<video
 								:src="heroMedia[0].url"
-								class="contentful-hero__video-wrapper--video"
+								class="tw-rounded tw-overflow-hidden"
 								autoplay
 								loop
 								muted

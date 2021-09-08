@@ -4,7 +4,7 @@
 		:header-theme="headerTheme"
 		main-class="kv-tailwind"
 	>
-		<article class="tw-relative tw-bg-gray-50">
+		<article class="tw-relative tw-bg-secondary">
 			<div class="tw-relative">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 					<hero-background />
@@ -21,7 +21,7 @@
 			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-8">
 				<loan-story class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 			</content-container>
-			<div class="tw-bg-brand-50 tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
+			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
 				<content-container>
 					<why-special :loan-id="loanId" />
 				</content-container>
@@ -46,7 +46,7 @@
 					@hide-section="showTeams = false"
 				/>
 			</content-container>
-			<div class="tw-bg-brand-50">
+			<div class="tw-bg-primary">
 				<content-container>
 					<details-tabs :loan-id="loanId" name="bp-details" />
 				</content-container>

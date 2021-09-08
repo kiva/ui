@@ -1,4 +1,5 @@
 const fetch = require('./fetch');
+const log = require('./log');
 
 function fetchGqlFragments(url, cache) {
 	return fetch(url, {
@@ -13,22 +14,19 @@ function fetchGqlFragments(url, cache) {
 			// eslint-disable-next-line no-underscore-dangle
 			const fragmentTypes = result.data.__schema.types.filter(t => t.possibleTypes !== null);
 
-			cache.set('ui-gql-fragment-types', JSON.stringify(fragmentTypes), 24 * 60 * 60, (error, success) => {
-				if (error) {
-					console.error(JSON.stringify({
-						meta: {},
-						level: 'error',
-						message: `MemJS Error Setting Cache for ui-gql-fragment-types, Error: ${error}`
-					}));
+			cache.set(
+				'ui-gql-fragment-types',
+				JSON.stringify(fragmentTypes),
+				{ expires: 24 * 60 * 60 },
+				(error, success) => {
+					if (error) {
+						log(`MemJS Error Setting Cache for ui-gql-fragment-types, Error: ${error}`, 'error');
+					}
+					if (success) {
+						log(`MemJS Success Setting Cache for ui-gql-fragment-types, Success: ${success}`);
+					}
 				}
-				if (success) {
-					console.info(JSON.stringify({
-						meta: {},
-						level: 'info',
-						message: `MemJS Success Setting Cache for ui-gql-fragment-types, Success: ${success}`
-					}));
-				}
-			});
+			);
 
 			return fragmentTypes;
 		});
@@ -39,11 +37,7 @@ function getGqlFragmentsFromCache(cache) {
 		cache.get('ui-gql-fragment-types', (error, data) => {
 			let parsedData = [];
 			if (error) {
-				console.error(JSON.stringify({
-					meta: {},
-					level: 'error',
-					message: `MemJS Error Getting ui-gql-fragment-types, Error: ${error}`
-				}));
+				log(`MemJS Error Getting ui-gql-fragment-types, Error: ${error}`, 'error');
 			}
 			if (data) parsedData = JSON.parse(data);
 			resolve(parsedData);
