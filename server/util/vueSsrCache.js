@@ -1,3 +1,5 @@
+const log = require('./log');
+
 // The Vue ServerSideRenderer requires a cache instance that implements this interface:
 // type RenderCache = {
 //     get: (key: string, cb?: Function) => string | void;
@@ -11,11 +13,7 @@ module.exports = function wrapper(cache) {
 		get(key, cb) {
 			cache.get(key, (error, data) => {
 				if (error) {
-					console.error(JSON.stringify({
-						meta: {},
-						level: 'error',
-						message: `MemJS Error Getting Cache for ${key}, Error: ${error}`
-					}));
+					log(`MemJS Error Getting Cache for ${key}, Error: ${error}`, 'error');
 				}
 				if (!error && data) {
 					const bufferToString = data.toString('utf8');
@@ -28,20 +26,12 @@ module.exports = function wrapper(cache) {
 			});
 		},
 		set(key, value) {
-			cache.set(key, value.html, 1 * 60 * 60, (error, success) => {
+			cache.set(key, value.html, { expires: 0 }, (error, success) => {
 				if (error) {
-					console.error(JSON.stringify({
-						meta: {},
-						level: 'error',
-						message: `MemJS Error Setting Cache for: ${key}, Error: ${error}`
-					}));
+					log(`MemJS Error Setting Cache for: ${key}, Error: ${error}`, 'error');
 				}
 				if (success) {
-					console.info(JSON.stringify({
-						meta: {},
-						level: 'info',
-						message: `MemJS Success Setting Cache for: ${key}, Success: ${success}`
-					}));
+					log(`MemJS Success Setting Cache for: ${key}, Success: ${success}`);
 				}
 			});
 		},
