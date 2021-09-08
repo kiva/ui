@@ -1,8 +1,9 @@
 import _filter from 'lodash/filter';
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
-import getDeepComponents from './getDeepComponents';
+import { isContentfulQuery } from '@/util/contentful/isContentfulQuery';
 import logFormatter from './logFormatter';
+import getDeepComponents from './getDeepComponents';
 
 // harmless or known responses from our graphql api
 const wellKnownErrorCodes = [
@@ -57,13 +58,16 @@ export function preFetchApolloQuery(config, client, args) {
 
 	// Fetch the query from the component's apollo options
 	return new Promise((resolve, reject) => {
-		const { cookieStore } = args;
+		const { cookieStore, route } = args;
+
+		const hasPreviewQueryParam = route.query?.preview === 'true';
 		const prefetchVariables = config.preFetchVariables ? config.preFetchVariables(args) : {};
 		client.query({
 			query: config.query,
 			variables: {
 				basketId: cookieStore.get('kvbskt'),
 				...prefetchVariables,
+				...(isContentfulQuery(config.query) && hasPreviewQueryParam && { preview: true }),
 			},
 			fetchPolicy: 'network-only', // This is used to force re-fetch of queries after new auth
 		}).then(result => {

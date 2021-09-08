@@ -1,0 +1,8 @@
+# The preview parameter should come from a route query param and
+# should not be passed in manually. It is handled by: src/util/apolloPreFetch.js on the server side and
+# src/plugins/apollo-plugin.js on the client
+query contentfulEntries($contentType: String!, $contentKey: String, $preview: Boolean) {
+	contentful {
+		entries(contentType: $contentType, contentKey: $contentKey, preview: $preview)
+	}
+}

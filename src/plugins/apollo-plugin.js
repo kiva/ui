@@ -1,6 +1,6 @@
-import _get from 'lodash/get';
 import checkInjections from '@/util/injectionCheck';
 import logReadQueryError from '@/util/logReadQueryError';
+import { isContentfulQuery } from '@/util/contentful/isContentfulQuery';
 
 const injections = ['apollo', 'cookieStore'];
 
@@ -21,6 +21,8 @@ export default Vue => {
 				} = this.$options.apollo;
 
 				if (query) {
+					const hasPreviewQueryParam = this.$route?.query?.preview;
+
 					const basketId = this.cookieStore.get('kvbskt');
 					// if the query was prefetched, read the data from the cache
 					if (preFetch) {
@@ -33,12 +35,15 @@ export default Vue => {
 										cookieStore: this.cookieStore,
 										route: this.$route,
 									}),
+									/* Adds `preview: true` variable if the query is a contentful query
+									and the preview query param exists on the route */
+									...(isContentfulQuery(query) && hasPreviewQueryParam && { preview: true })
 								}
 							});
 							result.call(this, { data });
 						} catch (e) {
 							// if there's an error, skip reading from the cache and just wait for the watch query
-							logReadQueryError(e, `ApolloMixin ${_get(query, 'definitions[0].name.value')}`);
+							logReadQueryError(e, `ApolloMixin ${query?.definitions?.[0]?.name?.value}`);
 						}
 					}
 
@@ -48,7 +53,8 @@ export default Vue => {
 							query,
 							variables: {
 								basketId,
-								...variables.call(this)
+								...variables.call(this),
+								...(isContentfulQuery(query) && hasPreviewQueryParam && { preview: true })
 							}
 						});
 
@@ -57,6 +63,7 @@ export default Vue => {
 						this.$watch(variables, vars => observer.setVariables({
 							basketId,
 							...vars,
+							...(isContentfulQuery(query) && hasPreviewQueryParam && { preview: true })
 						}), { deep: true });
 
 						// Subscribe to the observer to see each result
