@@ -10,7 +10,7 @@ module.exports = function log(message, level = 'info') {
 		message
 	});
 	if (level === 'warning') {
-		console.warning(payload);
+		console.warn(payload);
 	} else if (level === 'error') {
 		console.error(payload);
 	} else {
