@@ -11,7 +11,7 @@
 					:style="customGridStyles"
 				>
 					<div
-						class="tw-mx-auto tw-col-span-12 md:tw-col-span-6 xl:tw-col-span-5"
+						class="tw-mx-auto tw-col-span-12 md:tw-col-span-6"
 					>
 						<!-- eslint-enable max-len -->
 						<template v-if="isHeroCarousel">
@@ -82,7 +82,7 @@
 					</div>
 
 					<div
-						class="tw-col-span-12 md:tw-col-span-6 xl:tw-col-span-7"
+						class="tw-col-span-12 md:tw-col-span-6"
 						:class="{ 'tw-order-first': swapOrder }"
 					>
 						<h1

@@ -57,8 +57,9 @@ export function richTextRenderer(content) {
 		const isRichTextContent = contentfulEntryNode?.data?.target?.sys?.contentType?.sys?.id === 'richTextContent';
 		const isButton = contentfulEntryNode?.data?.target?.sys?.contentType?.sys?.id === 'button';
 		if (isRichTextContent) {
+			const richTextHTML = richTextRenderer(contentfulEntryNode?.data?.target?.fields?.richText);
 			return `
-				<div class="tw-prose">${richTextRenderer(contentfulEntryNode?.data?.target?.fields?.richText)}</div>
+				<div class="tw-prose tw-whitespace-pre-wrap">${richTextHTML}</div>
 			`;
 		}
 		if (isButton) {
