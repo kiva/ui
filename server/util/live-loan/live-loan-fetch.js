@@ -86,6 +86,19 @@ async function fetchRecommendationsByLoanId(id) {
 	);
 }
 
+// Parse the filter string and return an array of filter arrays, e.g. [['sector', 'arts'], ['country', 'ke']]
+// Returns an empty array if the filter string does not contain any valid matches.
+const getFilterArrays = filterString => {
+	// This regex matches strings like 'sector_arts,country_ke' and captures each
+	// param name and value (for example 'sector', 'arts', 'country', 'ke' would be captured).
+	// See tests, examples, and a more detailed explanation at regexr.com/659in
+	const searchParamRegex = /(?:([a-z]+)_([a-z0-9 ]+),?)+?/g;
+	// Match the regex against the filter string, returning an iterator of all the matches and captured groups
+	const matches = filterString.toLowerCase().matchAll(searchParamRegex);
+	// Return an array of the matches as filter names and values, like [['sector', 'arts'], ['country', 'ke']]
+	return [...matches].map(match => [match[1], match[2]]);
+};
+
 // Only returns true for supported loan search filters
 const supportedFilter = name => {
 	switch (name) {
@@ -106,9 +119,7 @@ const parseFilterStringFLSS = filterString => {
 	if (!filterString || typeof filterString !== 'string') {
 		return [];
 	}
-	return filterString.toLowerCase()
-		.split(',')
-		.map(filter => filter.split('_'))
+	return getFilterArrays(filterString)
 		.filter(([name]) => supportedFilter(name))
 		.map(([name, value]) => {
 			// FLSS uses 'countryIsoCode' for the country filter
@@ -143,9 +154,7 @@ const parseFilterStringLegacy = (filterString, sectors) => {
 	const filters = {};
 	// only try parsing if the input is valid
 	if (filterString && typeof filterString === 'string') {
-		filterString.toLowerCase()
-			.split(',')
-			.map(filter => filter.split('_'))
+		getFilterArrays(filterString)
 			.filter(([name]) => supportedFilter(name))
 			.forEach(([name, value]) => {
 				if (name === 'gender') {
