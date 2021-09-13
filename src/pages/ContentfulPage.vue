@@ -69,7 +69,7 @@ const CampaignThanks = () => import('@/components/CorporateCampaign/CampaignThan
 const HomepageBottomCTA = () => import('@/components/Homepage/HomepageBottomCTA');
 const HomepageCorporateSponsors = () => import('@/components/Homepage/HomepageCorporateSponsors');
 // const HomepageGeneralStats = () => import('@/components/Homepage/HomepageGeneralStats');
-const HomepageHowItWorks = () => import('@/components/Homepage/HomepageHowItWorks');
+// const HomepageHowItWorks = () => import('@/components/Homepage/HomepageHowItWorks');
 const HomepageLenderQuotes = () => import('@/components/Homepage/HomepageLenderQuotes');
 const HomepageLoanCategories = () => import('@/components/Homepage/HomepageLoanCategories');
 const HomepageMidrollCTA = () => import('@/components/Homepage/HomepageMidrollCTA');
@@ -88,6 +88,10 @@ const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/Monthl
 const KvFrequentlyAskedQuestions = () => import('@/components/Kv/KvFrequentlyAskedQuestions');
 
 const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
+
+const MultiStepCentered = () => import('@/components/Contentful/MultiStepCentered');
+
+const Heading = () => import('@/components/Contentful/Heading');
 
 // Query for getting contentful page data
 const pageQuery = gql`query contentfulPage($key: String) {
@@ -129,6 +133,8 @@ const getWrapperClassFromType = type => {
 		case 'heroWithCarousel':
 		case 'monthlyGoodSelector':
 		case 'testimonialCards':
+		case 'heading':
+		case 'homepageHowItWorks':
 		case 'frequentlyAskedQuestions':
 			return 'kv-tailwind';
 		default:
@@ -142,7 +148,9 @@ const getComponentFromType = type => {
 		case 'homepageBottomCTA':
 			return HomepageBottomCTA;
 		case 'homepageHowItWorks':
-			return HomepageHowItWorks;
+			return MultiStepCentered;
+		case 'heading':
+			return Heading;
 		case 'homepageLenderQuotes':
 			return HomepageLenderQuotes;
 		case 'homepageLoanCategories':
