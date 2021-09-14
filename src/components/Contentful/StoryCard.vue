@@ -101,11 +101,11 @@ export default {
 	.story-card__imageCard {
 		aspect-ratio: 4 / 5;
 		border-radius: 2.5rem;
-		min-height: 550px;
 		overflow: hidden;
 		padding: 2.5rem 1.25rem;
 		@include breakpoint(medium) {
 			padding: 2.5rem;
+			min-height: 550px;
 		}
 		@include breakpoint(large) {
 			padding: 3rem;
