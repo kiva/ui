@@ -1,5 +1,5 @@
 <template>
-	<section class="tw-rounded tw-border-tertiary tw-bg-primary tw-p-[20px] md:tw-p-[28px] md:tw-p-[32px]">
+	<section class="tw-rounded tw-border-tertiary tw-bg-primary tw-p-2.5 md:tw-p-3.5 lg:tw-p-4">
 		<h2 class="tw-mt-0 tw-mb-1">
 			About {{ borrowerBusinessName }}
 		</h2>

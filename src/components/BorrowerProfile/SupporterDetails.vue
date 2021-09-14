@@ -13,7 +13,7 @@
 			tw-block md:tw-inline-block
 			md:tw-flex-none
 			md:tw-mr-2
-			tw-max-w-[160px] md:tw-w-[84px] lg:tw-w-[84px] xl:tw-w-[96px]
+			tw-max-w-[160px] md:tw-w-[84px] xl:tw-w-12
 			tw-mb-1 md:tw-mb-0"
 			style="line-height: 0; /* global property affects images within anchors - override required */"
 		>
@@ -41,7 +41,7 @@
 					tw-flex
 					tw-items-center
 					tw-justify-center
-					tw-h-[120px] md:tw-h-[84px] lg:tw-h-[84px] xl:tw-h-[96px]
+					tw-h-[120px] md:tw-h-[84px] xl:tw-h-12
 					tw-text-h1"
 				:class="randomizedUserClass"
 			>
@@ -59,7 +59,7 @@
 					tw-flex
 					tw-items-center
 					tw-justify-center
-					tw-h-[120px] md:tw-h-[84px] lg:tw-h-[84px] xl:tw-h-[96px]"
+					tw-h-[120px] md:tw-h-[84px] xl:tw-h-12"
 			>
 				<!-- Kiva K logo -->
 				<!-- eslint-disable max-len -->
