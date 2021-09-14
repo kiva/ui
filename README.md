@@ -89,5 +89,6 @@ $ npm run unit
 $ npm test
 ```
 
-For some more details, checkout the [template this is based on](http://vuejs-templates.github.io/webpack/) and the [docs for vue-loader](http://vuejs.github.io/vue-loader).
+For some more details, checkout the [template this is based on](http://vuejs-templates.github.io/webpack/) 
+and the [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
