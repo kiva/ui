@@ -66,6 +66,7 @@ export default [
 		component: () => import('@/pages/Thanks/ThanksPage'),
 	},
 	{ path: '/covid19response', component: () => import('@/pages/LandingPages/MGCovid19/MGCovid19') },
+	{ path: '/design', component: () => import('@/pages/Design/DesignPage') },
 	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/DonateFromMacro') },
 	{ path: '/donate/supportus', component: () => import('@/pages/Donate/DonateSupportUs') },
 	{ path: '/error', component: () => import('@/pages/Error') },
