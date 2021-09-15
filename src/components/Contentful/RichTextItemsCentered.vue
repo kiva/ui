@@ -1,14 +1,12 @@
 <template>
-	<section-with-background-classic class="how-it-works" :background-content="sectionBackground">
+	<section-with-background-classic
+		class="how-it-works"
+		:background-content="sectionBackground"
+		:vertical-padding="verticalPadding"
+	>
 		<template #content>
 			<kv-page-container>
 				<kv-grid class="tw-grid-cols-12 tw-text-center">
-					<!-- <div
-						class="tw-py-4 tw-col-span-12"
-					>
-						<dynamic-rich-text :html="sectionHeadings" />
-					</div> -->
-
 					<figure
 						v-for="(item, index) in richContentfulContent"
 						:key="index"
@@ -17,7 +15,7 @@
 							tw-bg-primary tw-rounded"
 					>
 						<div class="tw-pt-4 tw-pb-3">
-							<dynamic-rich-text :html="parseRichContent(item)" />
+							<dynamic-rich-text :html="parsedRichContent(item)" />
 						</div>
 					</figure>
 				</kv-grid>
@@ -30,6 +28,7 @@
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import DynamicRichText from '@/components/Contentful/DynamicRichText';
+import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
@@ -40,6 +39,7 @@ export default {
 		SectionWithBackgroundClassic,
 		DynamicRichText,
 	},
+	mixins: [contentfulStylesMixin],
 	props: {
 		content: {
 			type: Object,
@@ -47,7 +47,7 @@ export default {
 		},
 	},
 	methods: {
-		parseRichContent(item) {
+		parsedRichContent(item) {
 			const richText = item?.richText ?? '';
 			return richText ? richTextRenderer(richText) : '';
 		}

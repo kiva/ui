@@ -54,6 +54,7 @@ import { preFetchAll } from '@/util/apolloPreFetch';
 import { processPageContent } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
 import * as siteThemes from '@/util/siteThemes';
+import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
 
 // Page frames
 const WwwPage = () => import('@/components/WwwFrame/WwwPage');
@@ -89,9 +90,7 @@ const KvFrequentlyAskedQuestions = () => import('@/components/Kv/KvFrequentlyAsk
 
 const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
 
-const MultiStepCentered = () => import('@/components/Contentful/MultiStepCentered');
-
-const Heading = () => import('@/components/Contentful/Heading');
+const MultiStepCentered = () => import('@/components/Contentful/RichTextItemsCentered');
 
 // Query for getting contentful page data
 const pageQuery = gql`query contentfulPage($key: String) {
@@ -133,7 +132,6 @@ const getWrapperClassFromType = type => {
 		case 'heroWithCarousel':
 		case 'monthlyGoodSelector':
 		case 'testimonialCards':
-		case 'heading':
 		case 'homepageHowItWorks':
 		case 'frequentlyAskedQuestions':
 			return 'kv-tailwind';
@@ -149,8 +147,6 @@ const getComponentFromType = type => {
 			return HomepageBottomCTA;
 		case 'homepageHowItWorks':
 			return MultiStepCentered;
-		case 'heading':
-			return Heading;
 		case 'homepageLenderQuotes':
 			return HomepageLenderQuotes;
 		case 'homepageLoanCategories':
@@ -243,6 +239,7 @@ export default {
 			title: this.title,
 		};
 	},
+	mixins: [contentfulStylesMixin],
 	apollo: {
 		query: pageQuery,
 		preFetchVariables({ route }) {
