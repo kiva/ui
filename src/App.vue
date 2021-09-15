@@ -13,7 +13,7 @@
 import '@/assets/scss/tailwind/tailwind.css';
 import TheTipMessage from '@/components/WwwFrame/TheTipMessage';
 import webmanifest from '@/manifest.webmanifest';
-import { kivaThemes } from '~/@kiva/kv-tokens/configs/kivaColors';
+import { defaultTheme } from '~/@kiva/kv-tokens/configs/kivaColors';
 
 export default {
 	name: 'App',
@@ -165,7 +165,7 @@ export default {
 			// The kv-tokens tailwind config applies a set of CSS custom properties to the ":root".
 			// However, in UI a PostCSS plugin prepends all tailwind stuff with .kv-tailwind
 			// And there is no .kv-tailwind :root. So we are inlining them on the div#app in the interim.
-			defaultKivaClassicTheme: kivaThemes.default
+			defaultKivaClassicTheme: defaultTheme
 		};
 	}
 };
