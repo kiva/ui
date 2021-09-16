@@ -10,11 +10,9 @@
 					<figure
 						v-for="(item, index) in richContentfulContent"
 						:key="index"
-						class="tw-col-span-12 lg:tw-col-span-3
-							tw-mb-2
-							tw-bg-primary tw-rounded"
+						class="tw-col-span-12 lg:tw-col-span-3"
 					>
-						<div class="tw-pt-4 tw-pb-3">
+						<div class="tw-pt-2">
 							<dynamic-rich-text :html="parsedRichContent(item)" />
 						</div>
 					</figure>
@@ -64,13 +62,6 @@ export default {
 			});
 			return richContentfulData;
 		},
-		// sectionHeadings() {
-		// 	const richText = this.content?.contents?.filter(({ contentType }) => {
-		// 		return contentType === 'genericContentBlock';
-		// 	});
-		// 	const headings = richText;
-		// 	return headings;
-		// },
 	}
 };
 </script>

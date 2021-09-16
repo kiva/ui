@@ -54,7 +54,6 @@ import { preFetchAll } from '@/util/apolloPreFetch';
 import { processPageContent } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
 import * as siteThemes from '@/util/siteThemes';
-import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
 
 // Page frames
 const WwwPage = () => import('@/components/WwwFrame/WwwPage');
@@ -70,7 +69,7 @@ const CampaignThanks = () => import('@/components/CorporateCampaign/CampaignThan
 const HomepageBottomCTA = () => import('@/components/Homepage/HomepageBottomCTA');
 const HomepageCorporateSponsors = () => import('@/components/Homepage/HomepageCorporateSponsors');
 // const HomepageGeneralStats = () => import('@/components/Homepage/HomepageGeneralStats');
-// const HomepageHowItWorks = () => import('@/components/Homepage/HomepageHowItWorks');
+const HomepageHowItWorks = () => import('@/components/Homepage/HomepageHowItWorks');
 const HomepageLenderQuotes = () => import('@/components/Homepage/HomepageLenderQuotes');
 const HomepageLoanCategories = () => import('@/components/Homepage/HomepageLoanCategories');
 const HomepageMidrollCTA = () => import('@/components/Homepage/HomepageMidrollCTA');
@@ -90,7 +89,7 @@ const KvFrequentlyAskedQuestions = () => import('@/components/Kv/KvFrequentlyAsk
 
 const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
 
-const MultiStepCentered = () => import('@/components/Contentful/RichTextItemsCentered');
+const RichTextItemsCentered = () => import('@/components/Contentful/RichTextItemsCentered');
 
 // Query for getting contentful page data
 const pageQuery = gql`query contentfulPage($key: String) {
@@ -133,6 +132,7 @@ const getWrapperClassFromType = type => {
 		case 'monthlyGoodSelector':
 		case 'testimonialCards':
 		case 'homepageHowItWorks':
+		case 'richTextItemsCentered':
 		case 'frequentlyAskedQuestions':
 			return 'kv-tailwind';
 		default:
@@ -146,7 +146,7 @@ const getComponentFromType = type => {
 		case 'homepageBottomCTA':
 			return HomepageBottomCTA;
 		case 'homepageHowItWorks':
-			return MultiStepCentered;
+			return HomepageHowItWorks;
 		case 'homepageLenderQuotes':
 			return HomepageLenderQuotes;
 		case 'homepageLoanCategories':
@@ -186,6 +186,8 @@ const getComponentFromType = type => {
 			return DynamicHeroClassic;
 		case 'heroWithCarousel':
 			return HeroWithCarousel;
+		case 'richTextItemsCentered':
+			return RichTextItemsCentered;
 		default:
 			logFormatter(`ContenfulPage: Unknown content group type "${type}"`, 'error');
 			return null;
@@ -239,7 +241,6 @@ export default {
 			title: this.title,
 		};
 	},
-	mixins: [contentfulStylesMixin],
 	apollo: {
 		query: pageQuery,
 		preFetchVariables({ route }) {
