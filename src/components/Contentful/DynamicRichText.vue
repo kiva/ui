@@ -20,9 +20,17 @@ export default {
 				},
 				props: [
 					/* define props as needed */
-				]
+				],
+				methods: {
+					buttonClick(customEventName, event) {
+						// Current behavior is to replace a button navigation if a custom event name is passed
+						event.stopPropagation();
+						// Emit root level event that any component can listen for
+						this.$root.$emit(customEventName);
+					},
+				}
 			};
-		}
+		},
 	},
 	render(createElement) {
 		return createElement(
