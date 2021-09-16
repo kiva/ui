@@ -1,31 +1,42 @@
 <template>
 	<div>
 		<div
-			class="kv-tailwind"
+			class="kv-tailwind tw-w-[336px]"
 			v-if="isLoading"
 		>
+			<!-- Image -->
 			<kv-loading-placeholder
-				class="tw-mb-2 tw-rounded" :style="{width: 30 + (Math.random() * 15) + '%', height: '15.75rem'}"
+				class="tw-mb-2 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
 			/>
 
+			<!-- name -->
 			<kv-loading-placeholder
-				class="tw-mb-2" :style="{width: 30 + (Math.random() * 15) + '%', height: '1.875rem'}"
+				class="tw-mb-2 tw-rounded" :style="{width: 75 + (Math.random() * 15) + '%', height: '1.875rem'}"
 			/>
 
+			<!-- Amount to go -->
 			<kv-loading-placeholder
-				class="tw-mb-2" :style="{width: 10 + (Math.random() * 15) + '%', height: '1.3rem'}"
+				class="tw-mb-2 tw-rounded" :style="{width: 40 + (Math.random() * 15) + '%', height: '1.3rem'}"
 			/>
 
+			<!-- Fundraising bar -->
 			<kv-loading-placeholder
-				class="tw-mb-2" :style="{width: 30 + (Math.random() * 15) + '%', height: '0.5rem'}"
+				class="tw-mb-2 tw-rounded" :style="{width: '100%', height: '0.5rem'}"
 			/>
 
+			<!-- LoanUse  -->
 			<kv-loading-placeholder
-				class="tw-mb-2" :style="{width: 30 + (Math.random() * 15) + '%', height: '3.25rem'}"
+				class="tw-mb-2 tw-rounded" :style="{width: '100%', height: '3.25rem'}"
 			/>
 
+			<!-- Matching text  -->
 			<kv-loading-placeholder
-				class="tw-mb-2 tw-rounded" :style="{width: 10 + (Math.random() * 15) + '%', height: '3rem'}"
+				class="tw-mb-2 tw-rounded" :style="{width: 75 + (Math.random() * 15) + '%', height: '1.3rem'}"
+			/>
+
+			<!-- Button -->
+			<kv-loading-placeholder
+				class="tw-mb-2 tw-rounded" :style="{width: '9rem', height: '3rem'}"
 			/>
 		</div>
 		<div
