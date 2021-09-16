@@ -89,6 +89,8 @@ const KvFrequentlyAskedQuestions = () => import('@/components/Kv/KvFrequentlyAsk
 
 const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
 
+const RichTextItemsCentered = () => import('@/components/Contentful/RichTextItemsCentered');
+
 // Query for getting contentful page data
 const pageQuery = gql`query contentfulPage($key: String) {
 	contentful {
@@ -129,6 +131,8 @@ const getWrapperClassFromType = type => {
 		case 'heroWithCarousel':
 		case 'monthlyGoodSelector':
 		case 'testimonialCards':
+		case 'homepageHowItWorks':
+		case 'richTextItemsCentered':
 		case 'frequentlyAskedQuestions':
 			return 'kv-tailwind';
 		default:
@@ -182,6 +186,8 @@ const getComponentFromType = type => {
 			return DynamicHeroClassic;
 		case 'heroWithCarousel':
 			return HeroWithCarousel;
+		case 'richTextItemsCentered':
+			return RichTextItemsCentered;
 		default:
 			logFormatter(`ContenfulPage: Unknown content group type "${type}"`, 'error');
 			return null;
