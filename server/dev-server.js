@@ -126,7 +126,7 @@ chokidar.watch(path.resolve(__dirname, 'index.template.html')).on('change', () =
 });
 
 // update when the client manifest changes
-clientCompiler.plugin('done', rawStats => {
+clientCompiler.hooks.done.tap('done', rawStats => {
 	// abort if there were errors
 	const stats = rawStats.toJson();
 	if (stats.errors.length) return;

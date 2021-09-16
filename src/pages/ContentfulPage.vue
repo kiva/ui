@@ -89,6 +89,8 @@ const KvFrequentlyAskedQuestions = () => import('@/components/Kv/KvFrequentlyAsk
 
 const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
 
+const RichTextItemsCentered = () => import('@/components/Contentful/RichTextItemsCentered');
+
 // Get the Contentful Page data from the data of an Apollo query result
 const getPageData = data => {
 	const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
@@ -122,6 +124,8 @@ const getWrapperClassFromType = type => {
 		case 'heroWithCarousel':
 		case 'monthlyGoodSelector':
 		case 'testimonialCards':
+		case 'homepageHowItWorks':
+		case 'richTextItemsCentered':
 		case 'frequentlyAskedQuestions':
 			return 'kv-tailwind';
 		default:
@@ -175,6 +179,8 @@ const getComponentFromType = type => {
 			return DynamicHeroClassic;
 		case 'heroWithCarousel':
 			return HeroWithCarousel;
+		case 'richTextItemsCentered':
+			return RichTextItemsCentered;
 		default:
 			logFormatter(`ContenfulPage: Unknown content group type "${type}"`, 'error');
 			return null;
