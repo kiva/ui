@@ -12,6 +12,7 @@ import showTipMessage from '@/graphql/mutation/tipMessage/showTipMessage.graphql
 
 import { preFetchAll } from '@/util/apolloPreFetch';
 import { authenticationGuard } from '@/util/authenticationGuard';
+import { contentfulPreviewCookie } from '@/util/contentfulPreviewCookie';
 
 import createApp from '@/main';
 import '@/assets/iconLoader';
@@ -129,6 +130,7 @@ router.onReady(() => {
 		const prevMatched = router.getMatchedComponents(from);
 		const activated = _dropWhile(matched, (c, i) => prevMatched[i] === c);
 
+		contentfulPreviewCookie({ route: to, cookieStore });
 		authenticationGuard({ route: to, apolloClient, kvAuth0 })
 			.then(() => {
 			// Pre-fetch graphql queries from activated components

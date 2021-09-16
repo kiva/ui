@@ -1,0 +1,39 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* Kludges to ensure Kiva Classic styles are correct when using the .kv-tailwind class */
+
+/* Remove once Kiva Classic is the default and foundation base styles are removed */
+
+/* Misc selectors that Foundation base styling has definitions for, but Tailwind does not */
+
+.kv-tailwind p,
+.kv-tailwind dl,
+.kv-tailwind ol,
+.kv-tailwind ul {
+	line-height: 1.5;
+}
+
+.kv-tailwind blockquote p {
+	color: #212121;
+	color: rgb(var(--tw-text-primary));
+}
+
+.kv-tailwind select {
+	background-image: none;
+}
+
+body .kv-tailwind {
+	font-weight: 300;
+	font-size: 1rem;
+	line-height: 1.5;
+	color: #212121;
+	color: rgb(var(--tw-text-primary));
+}
+
+@media (min-width: 1024px) {
+	body .kv-tailwind {
+		font-size: rem-calc(17);
+	}
+}
