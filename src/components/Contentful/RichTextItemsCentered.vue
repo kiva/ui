@@ -5,11 +5,13 @@
 	>
 		<template #content>
 			<kv-page-container>
-				<kv-grid class="tw-grid-cols-12 tw-text-center">
+				<kv-grid
+					:style="customGridStyles"
+					class="tw-grid-cols-12 tw-text-center">
 					<div
 						v-for="(item, index) in richContentfulContent"
 						:key="index"
-						class="tw-col-span-12 lg:tw-col-span-3"
+						:class="`tw-col-span-12 lg:tw-col-span-${12/richContentfulContent.length}`"
 					>
 						<div class="tw-pt-2">
 							<dynamic-rich-text :html="parsedRichContent(item)" />
