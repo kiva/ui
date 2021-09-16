@@ -5,7 +5,6 @@
 				tw-w-full
 				tw-bg-black
 				tw-rounded
-				tw-hidden
 			"
 			:alt="'photo of ' + borrowerName"
 			:aspect-ratio="3 / 4"
