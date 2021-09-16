@@ -279,8 +279,8 @@ module.exports = {
 			exclude: /vue-loader.*type=style/
 		}),
 		new MiniCssExtractPlugin({
-			filename: assetsPath('css/[name].[contenthash].css'),
-			chunkFilename: assetsPath('css/[name].[contenthash].css'),
+			filename: isProd ? assetsPath('css/[name].[contenthash].css') : assetsPath('css/[name].css'),
+			chunkFilename: isProd ? assetsPath('css/[name].[contenthash].css') : assetsPath('css/[name].css'),
 		}),
 		new VueLoaderPlugin(),
 		new webpack.DefinePlugin({
