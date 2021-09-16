@@ -6,7 +6,7 @@
 		<template #content>
 			<kv-page-container>
 				<kv-grid class="tw-grid-cols-12 tw-text-center">
-					<figure
+					<div
 						v-for="(item, index) in richContentfulContent"
 						:key="index"
 						class="tw-col-span-12 lg:tw-col-span-3"
@@ -14,7 +14,7 @@
 						<div class="tw-pt-2">
 							<dynamic-rich-text :html="parsedRichContent(item)" />
 						</div>
-					</figure>
+					</div>
 				</kv-grid>
 			</kv-page-container>
 		</template>
