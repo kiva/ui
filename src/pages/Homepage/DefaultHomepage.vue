@@ -30,7 +30,7 @@ import gql from 'graphql-tag';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
-import contentful from '@/graphql/query/contentful.graphql';
+import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
 import { settingEnabled } from '@/util/settingsUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import WhyKiva from '@/components/Homepage/WhyKiva';
@@ -93,7 +93,7 @@ export default {
 	},
 	created() {
 		this.apollo.query({
-			query: contentful,
+			query: contentfulEntries,
 			variables: {
 				contentType: 'uiSetting',
 				contentKey: 'ui-homepage-promo',
