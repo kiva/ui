@@ -1,30 +1,64 @@
 <template>
-	<div class="kv-tailwind tw-w-[336px]" :id="`${loanId}-loan-card`">
-		<borrower-image
-			class="
+	<div>
+		<div
+			class="kv-tailwind"
+			v-if="isLoading"
+		>
+			<kv-loading-placeholder
+				class="tw-mb-2 tw-rounded" :style="{width: 30 + (Math.random() * 15) + '%', height: '15.75rem'}"
+			/>
+
+			<kv-loading-placeholder
+				class="tw-mb-2" :style="{width: 30 + (Math.random() * 15) + '%', height: '1.875rem'}"
+			/>
+
+			<kv-loading-placeholder
+				class="tw-mb-2" :style="{width: 10 + (Math.random() * 15) + '%', height: '1.3rem'}"
+			/>
+
+			<kv-loading-placeholder
+				class="tw-mb-2" :style="{width: 30 + (Math.random() * 15) + '%', height: '0.5rem'}"
+			/>
+
+			<kv-loading-placeholder
+				class="tw-mb-2" :style="{width: 30 + (Math.random() * 15) + '%', height: '3.25rem'}"
+			/>
+
+			<kv-loading-placeholder
+				class="tw-mb-2 tw-rounded" :style="{width: 10 + (Math.random() * 15) + '%', height: '3rem'}"
+			/>
+		</div>
+		<div
+			v-else
+			class="kv-tailwind tw-w-[336px]"
+			:id="`${loanId}-loan-card`"
+		>
+			<borrower-image
+				class="
 				tw-w-full
 				tw-bg-black
 				tw-rounded
 				tw-hidden
 			"
-			:alt="'photo of ' + borrowerName"
-			:aspect-ratio="3 / 4"
-			:default-image="{ width: 336 }"
-			:hash="imageHash"
-			:images="[
-				{ width: 336, viewSize: 1024 },
-				{ width: 336, viewSize: 768 },
-				{ width: 416, viewSize: 480 },
-				{ width: 374, viewSize: 414 },
-				{ width: 335, viewSize: 375 },
-				{ width: 280 },
-			]"
-		/>
+				:alt="'photo of ' + borrowerName"
+				:aspect-ratio="3 / 4"
+				:default-image="{ width: 336 }"
+				:hash="imageHash"
+				:images="[
+					{ width: 336, viewSize: 1024 },
+					{ width: 336, viewSize: 768 },
+					{ width: 416, viewSize: 480 },
+					{ width: 374, viewSize: 414 },
+					{ width: 335, viewSize: 375 },
+					{ width: 280 },
+				]"
+			/>
 
-		<borrower-name
-			class="md:tw-mb-1.5 lg:tw-mb-2 tw-text-h3"
-			:name="borrowerName"
-		/>
+			<borrower-name
+				class="md:tw-mb-1.5 lg:tw-mb-2 tw-text-h3"
+				:name="borrowerName"
+			/>
+		</div>
 	</div>
 </template>
 
@@ -36,6 +70,7 @@ import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
+import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 
 const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
@@ -105,6 +140,7 @@ export default {
 	components: {
 		BorrowerImage,
 		BorrowerName,
+		KvLoadingPlaceholder,
 	},
 	data() {
 		return {
