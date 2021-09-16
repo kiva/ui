@@ -124,7 +124,6 @@ const getWrapperClassFromType = type => {
 		case 'heroWithCarousel':
 		case 'monthlyGoodSelector':
 		case 'testimonialCards':
-		case 'homepageHowItWorks':
 		case 'richTextItemsCentered':
 		case 'frequentlyAskedQuestions':
 			return 'kv-tailwind';

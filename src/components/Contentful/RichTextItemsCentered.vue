@@ -7,7 +7,8 @@
 			<kv-page-container>
 				<kv-grid
 					:style="customGridStyles"
-					class="tw-grid-cols-12 tw-text-center">
+					class="tw-grid-cols-12 tw-text-center"
+				>
 					<div
 						v-for="(item, index) in richContentfulContent"
 						:key="index"
