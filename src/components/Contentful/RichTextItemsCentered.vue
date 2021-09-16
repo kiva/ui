@@ -1,6 +1,5 @@
 <template>
 	<section-with-background-classic
-		class="how-it-works"
 		:background-content="sectionBackground"
 		:vertical-padding="verticalPadding"
 	>
