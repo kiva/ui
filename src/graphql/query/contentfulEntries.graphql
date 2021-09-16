@@ -1,0 +1,7 @@
+# The preview parameter should come from a route query param and
+# should not be passed in manually. It is handled by src/api/ContentfulPreviewLink.js
+query contentfulEntries($contentType: String!, $contentKey: String, $preview: Boolean) {
+	contentful {
+		entries(contentType: $contentType, contentKey: $contentKey, preview: $preview)
+	}
+}

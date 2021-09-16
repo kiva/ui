@@ -49,11 +49,11 @@ To use, simply create a route that defines contentfulPage in the meta data, e.g.
 },
 */
 
-import gql from 'graphql-tag';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import { processPageContent } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
 import * as siteThemes from '@/util/siteThemes';
+import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
 
 // Page frames
 const WwwPage = () => import('@/components/WwwFrame/WwwPage');
@@ -89,12 +89,7 @@ const KvFrequentlyAskedQuestions = () => import('@/components/Kv/KvFrequentlyAsk
 
 const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
 
-// Query for getting contentful page data
-const pageQuery = gql`query contentfulPage($key: String) {
-	contentful {
-		entries(contentType: "page", contentKey: $key)
-	}
-}`;
+const RichTextItemsCentered = () => import('@/components/Contentful/RichTextItemsCentered');
 
 // Get the Contentful Page data from the data of an Apollo query result
 const getPageData = data => {
@@ -129,6 +124,8 @@ const getWrapperClassFromType = type => {
 		case 'heroWithCarousel':
 		case 'monthlyGoodSelector':
 		case 'testimonialCards':
+		case 'homepageHowItWorks':
+		case 'richTextItemsCentered':
 		case 'frequentlyAskedQuestions':
 			return 'kv-tailwind';
 		default:
@@ -182,6 +179,8 @@ const getComponentFromType = type => {
 			return DynamicHeroClassic;
 		case 'heroWithCarousel':
 			return HeroWithCarousel;
+		case 'richTextItemsCentered':
+			return RichTextItemsCentered;
 		default:
 			logFormatter(`ContenfulPage: Unknown content group type "${type}"`, 'error');
 			return null;
@@ -236,23 +235,26 @@ export default {
 		};
 	},
 	apollo: {
-		query: pageQuery,
+		query: contentfulEntries,
 		preFetchVariables({ route }) {
 			return {
-				key: route?.meta?.contentfulPage(route),
+				contentType: 'page',
+				contentKey: route?.meta?.contentfulPage(route),
 			};
 		},
 		variables() {
 			return {
-				key: this.$route?.meta?.contentfulPage(this.$route),
+				contentType: 'page',
+				contentKey: this.$route?.meta?.contentfulPage(this.$route),
 			};
 		},
 		preFetch(config, client, args) {
 			return client.query({
-				query: pageQuery,
+				query: contentfulEntries,
 				variables: {
-					key: args?.route?.meta?.contentfulPage(args?.route),
-				},
+					contentType: 'page',
+					contentKey: args?.route?.meta?.contentfulPage(args?.route),
+				}
 			}).then(({ data }) => {
 				// Get Contentful page data
 				const pageData = getPageData(data);
