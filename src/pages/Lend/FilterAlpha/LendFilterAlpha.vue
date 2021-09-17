@@ -9,8 +9,8 @@
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 				</div>
 			</div>
-			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8">
-			</div>
+			<!-- <div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8">
+			</div> -->
 			<div>
 				<kv-page-container>
 					<div class="tw-flex tw-items-start">
@@ -39,10 +39,46 @@
 						<div class="tw-bg-tertiary tw-text-left md:tw-text-center">
 							<p>Filters</p>
 							<hr>
-							<br> Gender
+							<fieldset>
+								<legend>Gender Filter</legend>
+								<kv-radio
+									value="women"
+									v-model="gender"
+								>
+									Women
+								</kv-radio>
+								<kv-radio
+									value="men"
+									v-model="gender"
+								>
+									Men
+								</kv-radio>
+								<kv-radio
+									value="both"
+									v-model="gender"
+								>
+									All
+								</kv-radio>
+
+								<span>gender: {{ gender }}</span>
+							</fieldset>
+							<hr>
 							<br> Loan Term
 							<br> Country
 							<br> Sector
+							<br>
+							<kv-button
+								v-model="loanQueryFilters"
+								@click="searchQuery"
+							>
+								Search
+							</kv-button>
+							<kv-button
+								v-model="loanQueryFilters"
+								@click="resetFilter"
+							>
+								Reset Filters
+							</kv-button>
 						</div>
 						<div class="md:tw-hidden">
 							<p> {{ totalCount }} Loans </p>
@@ -74,15 +110,16 @@
 </template>
 
 <script>
+import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
 import { lightHeader } from '@/util/siteThemes';
 import { fetchData } from '@/util/flssUtils';
-import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
-
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	inject: ['apollo'],
@@ -91,38 +128,101 @@ export default {
 		KvGrid,
 		KvPageContainer,
 		KvMaterialIcon,
-		LoanCardController
-
+		LoanCardController,
+		KvRadio,
+		KvButton,
 	},
 	data() {
 		return {
 			headerTheme: lightHeader,
 			loanId: Number(this.$route.params.id || 0),
-			// flss query is defaulted to US loans currently to keep loans count
-			// manageable for now
-			loanQueryFilters: { countryIsoCode: { any: ['US'] } },
+			loanQueryFilters: {},
 			totalCount: 0,
 			loans: [],
 			zeroLoans: false,
 			mdiFilterVariant,
 			mdiCompassRose,
+			gender: 'both',
+			sector: ['education', 'agriculture'],
+			country: ['TZ', 'KE'],
 		};
 	},
 	methods: {
+		filterGender() {
+			let genderFilter = {};
+			if (this.gender === 'both') {
+				genderFilter = { eq: {} };
+			} else {
+				genderFilter = { eq: this.gender };
+			}
+			console.log('from genderFilter func:', genderFilter);
+			return genderFilter;
+		},
+		filterSector() {
+			// # TODO: collect sector from checkbox inputs
+			// let sectorFilter = [];
+			// this.sector = ['education', 'agriculture'];
+			const sectorFilter = { any: this.sector };
+			console.log('from filterSector', sectorFilter);
+			return sectorFilter;
+		},
+		filterCountry() {
+			// # TODO: collect country from checkbox inputs
+			// let countryFilter = ['TZ', 'KE'];
+			const countryFilter = { any: this.country };
+			console.log('from filterCountrey', countryFilter);
+			return countryFilter;
+		},
+		resetFilter() {
+			this.loanQueryFilters = {};
+			this.runQuery(this.loanQueryFilters);
+		},
 		runQuery() {
+			console.log('filters into runQuery:', this.loanQueryFilters);
 			fetchData(this.loanQueryFilters, this.apollo).then(flssData => {
 				this.loans = flssData.values ?? [];
 				this.totalCount = flssData.totalCount;
+				console.log('num loans:', this.totalCount);
 
 				if (this.totalCount === 0) {
 					this.zeroLoans = true;
 				}
 			});
 		},
-
+		searchQuery() {
+			this.loanQueryFilters = this.queryFilters
+			console.log('from searchQuery', this.loanQueryFilters);
+			console.log('new query ran, yes!')
+			this.runQuery()
+		},
 	},
 	mounted() {
-		this.runQuery();
-	}
+		this.loanQueryFilters = { countryIsoCode: { any: ['US'] } };
+		this.runQuery(this.loanQueryFilters);
+	},
+	created() {
+		this.loanQueryFilters = this.queryFilters
+	},
+	computed: {
+		queryFilters() {
+			const genderFilter = this.filterGender(() => {});
+			console.log('this is filtergender', genderFilter);
+
+			const loanQueryFilters = {
+				countryIsoCode: this.country,
+				gender: genderFilter,
+				sector: this.sector,
+			};
+			console.log('yo! from queryFilters', loanQueryFilters);
+			loanQueryFilters;
+			return loanQueryFilters;
+		},
+	},
+	watch: {
+		gender: { handler: 'filterGender' },
+		sector: { handler: 'filterSector' },
+		country: { handler: 'filterCountry' },
+		loanQueryFilters: { handler: 'searchQuery' },
+	},
 };
 </script>
