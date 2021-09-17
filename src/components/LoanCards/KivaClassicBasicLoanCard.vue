@@ -1,74 +1,75 @@
 <template>
-	<div>
-		<div
-			class="kv-tailwind tw-w-[336px]"
+	<div
+		class="kv-tailwind tw-w-[336px]"
+		:id="`${loanId}-loan-card`"
+	>
+		<!-- Borrower image -->
+		<kv-loading-placeholder
 			v-if="isLoading"
-		>
-			<!-- Image -->
-			<kv-loading-placeholder
-				class="tw-mb-2 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
-			/>
-
-			<!-- name -->
-			<kv-loading-placeholder
-				class="tw-mb-2 tw-rounded" :style="{width: 75 + (Math.random() * 15) + '%', height: '1.875rem'}"
-			/>
-
-			<!-- Amount to go -->
-			<kv-loading-placeholder
-				class="tw-mb-2 tw-rounded" :style="{width: 40 + (Math.random() * 15) + '%', height: '1.3rem'}"
-			/>
-
-			<!-- Fundraising bar -->
-			<kv-loading-placeholder
-				class="tw-mb-2 tw-rounded" :style="{width: '100%', height: '0.5rem'}"
-			/>
-
-			<!-- LoanUse  -->
-			<kv-loading-placeholder
-				class="tw-mb-2 tw-rounded" :style="{width: '100%', height: '3.25rem'}"
-			/>
-
-			<!-- Matching text  -->
-			<kv-loading-placeholder
-				class="tw-mb-2 tw-rounded" :style="{width: 75 + (Math.random() * 15) + '%', height: '1.3rem'}"
-			/>
-
-			<!-- Button -->
-			<kv-loading-placeholder
-				class="tw-mb-2 tw-rounded" :style="{width: '9rem', height: '3rem'}"
-			/>
-		</div>
-		<div
-			v-else
-			class="kv-tailwind tw-w-[336px]"
-			:id="`${loanId}-loan-card`"
-		>
-			<borrower-image
-				class="
+			class="tw-mb-2 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
+		/>
+		<borrower-image
+			v-if="!isLoading"
+			class="
 				tw-w-full
 				tw-bg-black
 				tw-rounded
 			"
-				:alt="'photo of ' + borrowerName"
-				:aspect-ratio="3 / 4"
-				:default-image="{ width: 336 }"
-				:hash="imageHash"
-				:images="[
-					{ width: 336, viewSize: 1024 },
-					{ width: 336, viewSize: 768 },
-					{ width: 416, viewSize: 480 },
-					{ width: 374, viewSize: 414 },
-					{ width: 335, viewSize: 375 },
-					{ width: 280 },
-				]"
-			/>
+			:alt="'photo of ' + borrowerName"
+			:aspect-ratio="3 / 4"
+			:default-image="{ width: 336 }"
+			:hash="imageHash"
+			:images="[
+				{ width: 336, viewSize: 1024 },
+				{ width: 336, viewSize: 768 },
+				{ width: 416, viewSize: 480 },
+				{ width: 374, viewSize: 414 },
+				{ width: 335, viewSize: 375 },
+				{ width: 280 },
+			]"
+		/>
 
-			<borrower-name
-				class="md:tw-mb-1.5 lg:tw-mb-2 tw-text-h3"
-				:name="borrowerName"
-			/>
-		</div>
+		<!-- Borrower name-->
+		<kv-loading-placeholder
+			v-if="isLoading"
+			class="tw-mb-2" :style="{width: 75 + (Math.random() * 15) + '%', height: '2rem'}"
+		/>
+
+		<borrower-name
+			v-if="!isLoading"
+			class="md:tw-mb-1.5 lg:tw-mb-2 tw-text-h3"
+			:name="borrowerName"
+		/>
+
+		<!-- Amount to go line-->
+		<kv-loading-placeholder
+			v-if="isLoading"
+			class="tw-mb-1" :style="{width: 40 + (Math.random() * 15) + '%', height: '1.5rem'}"
+		/>
+
+		<!-- Fundraising bar -->
+		<kv-loading-placeholder
+			v-if="isLoading"
+			class="tw-mb-4 tw-rounded" :style="{width: '100%', height: '0.5rem'}"
+		/>
+
+		<!-- LoanUse  -->
+		<kv-loading-paragraph
+			v-if="isLoading"
+			class="tw-mb-3" :style="{width: '100%', height: '6.25rem'}"
+		/>
+
+		<!-- Matching text  -->
+		<kv-loading-placeholder
+			v-if="isLoading"
+			class="tw-mb-2" :style="{width: 75 + (Math.random() * 15) + '%', height: '1.5rem'}"
+		/>
+
+		<!-- Button -->
+		<kv-loading-placeholder
+			v-if="isLoading"
+			class="tw-mb-2 tw-rounded" :style="{width: '9rem', height: '3rem'}"
+		/>
 	</div>
 </template>
 
@@ -81,6 +82,7 @@ import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 
 const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
@@ -151,6 +153,7 @@ export default {
 		BorrowerImage,
 		BorrowerName,
 		KvLoadingPlaceholder,
+		KvLoadingParagraph,
 	},
 	data() {
 		return {
