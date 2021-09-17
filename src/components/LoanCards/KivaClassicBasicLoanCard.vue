@@ -68,7 +68,7 @@
 		<!-- Button -->
 		<kv-loading-placeholder
 			v-if="isLoading"
-			class="tw-mb-2 tw-rounded" :style="{width: '9rem', height: '3rem'}"
+			class="tw-rounded" :style="{width: '9rem', height: '3rem'}"
 		/>
 	</div>
 </template>
