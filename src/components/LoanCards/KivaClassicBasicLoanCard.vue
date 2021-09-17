@@ -1,6 +1,15 @@
 <template>
-	<div class="kv-tailwind tw-w-[336px]" :id="`${loanId}-loan-card`">
+	<div
+		class="kv-tailwind tw-w-[336px]"
+		:id="`${loanId}-loan-card`"
+	>
+		<!-- Borrower image -->
+		<kv-loading-placeholder
+			v-if="isLoading"
+			class="tw-mb-1 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
+		/>
 		<borrower-image
+			v-if="!isLoading"
 			class="
 				tw-w-full
 				tw-bg-black
@@ -20,9 +29,46 @@
 			]"
 		/>
 
+		<!-- Borrower name-->
+		<kv-loading-placeholder
+			v-if="isLoading"
+			class="tw-mb-0.5" :style="{width: 75 + (Math.random() * 15) + '%', height: '1.875rem'}"
+		/>
+
 		<borrower-name
+			v-if="!isLoading"
 			class="md:tw-mb-1.5 lg:tw-mb-2 tw-text-h3"
 			:name="borrowerName"
+		/>
+
+		<!-- Amount to go line-->
+		<kv-loading-placeholder
+			v-if="isLoading"
+			class="tw-mb-0.5" :style="{width: 40 + (Math.random() * 15) + '%', height: '1.3rem'}"
+		/>
+
+		<!-- Fundraising bar -->
+		<kv-loading-placeholder
+			v-if="isLoading"
+			class="tw-mb-1.5 tw-rounded" :style="{width: '100%', height: '0.5rem'}"
+		/>
+
+		<!-- LoanUse  -->
+		<kv-loading-paragraph
+			v-if="isLoading"
+			class="tw-mb-1.5" :style="{width: '100%', height: '5.5rem'}"
+		/>
+
+		<!-- Matching text  -->
+		<kv-loading-placeholder
+			v-if="isLoading"
+			class="tw-mb-1" :style="{width: 75 + (Math.random() * 15) + '%', height: '1.3rem'}"
+		/>
+
+		<!-- Button -->
+		<kv-loading-placeholder
+			v-if="isLoading"
+			class="tw-rounded" :style="{width: '9rem', height: '3rem'}"
 		/>
 	</div>
 </template>
@@ -35,6 +81,8 @@ import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
+import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 
 const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
@@ -104,6 +152,8 @@ export default {
 	components: {
 		BorrowerImage,
 		BorrowerName,
+		KvLoadingPlaceholder,
+		KvLoadingParagraph,
 	},
 	data() {
 		return {
