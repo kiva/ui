@@ -6,7 +6,7 @@
 		<!-- Borrower image -->
 		<kv-loading-placeholder
 			v-if="isLoading"
-			class="tw-mb-2 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
+			class="tw-mb-1 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
 		/>
 		<borrower-image
 			v-if="!isLoading"
@@ -32,7 +32,7 @@
 		<!-- Borrower name-->
 		<kv-loading-placeholder
 			v-if="isLoading"
-			class="tw-mb-2" :style="{width: 75 + (Math.random() * 15) + '%', height: '2rem'}"
+			class="tw-mb-0.5" :style="{width: 75 + (Math.random() * 15) + '%', height: '1.875rem'}"
 		/>
 
 		<borrower-name
@@ -44,25 +44,25 @@
 		<!-- Amount to go line-->
 		<kv-loading-placeholder
 			v-if="isLoading"
-			class="tw-mb-1" :style="{width: 40 + (Math.random() * 15) + '%', height: '1.5rem'}"
+			class="tw-mb-0.5" :style="{width: 40 + (Math.random() * 15) + '%', height: '1.3rem'}"
 		/>
 
 		<!-- Fundraising bar -->
 		<kv-loading-placeholder
 			v-if="isLoading"
-			class="tw-mb-4 tw-rounded" :style="{width: '100%', height: '0.5rem'}"
+			class="tw-mb-1.5 tw-rounded" :style="{width: '100%', height: '0.5rem'}"
 		/>
 
 		<!-- LoanUse  -->
 		<kv-loading-paragraph
 			v-if="isLoading"
-			class="tw-mb-3" :style="{width: '100%', height: '6.25rem'}"
+			class="tw-mb-1.5" :style="{width: '100%', height: '5.5rem'}"
 		/>
 
 		<!-- Matching text  -->
 		<kv-loading-placeholder
 			v-if="isLoading"
-			class="tw-mb-2" :style="{width: 75 + (Math.random() * 15) + '%', height: '1.5rem'}"
+			class="tw-mb-1" :style="{width: 75 + (Math.random() * 15) + '%', height: '1.3rem'}"
 		/>
 
 		<!-- Button -->
