@@ -208,6 +208,8 @@ const customMGEventsAndConfig = {
 	customEventName: 'openMonthlyGoodSelector'
 };
 
+// TODO deprecate this when DynamicHero.vue and HomepageBottomCTA.vue
+// are no longer in use
 const componentOptions = {
 	// Selected MG Landing page component keys to recieve custom attrubutes
 	'homepage-hero-monthly-good': customMGEventsAndConfig,
