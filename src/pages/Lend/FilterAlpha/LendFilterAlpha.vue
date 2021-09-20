@@ -42,15 +42,27 @@
 							<fieldset>
 								<legend>Gender Filter</legend>
 								<kv-radio
+<<<<<<< HEAD
 									class="tw-text-left"
 									value="female"
+||||||| parent of 7d122b43 (comment out created to restore genderFilter functionality)
+									value="women"
+=======
+									value="female"
+>>>>>>> 7d122b43 (comment out created to restore genderFilter functionality)
 									v-model="gender"
 								>
 									Women
 								</kv-radio>
 								<kv-radio
+<<<<<<< HEAD
 									class="tw-text-left"
 									value="male"
+||||||| parent of 7d122b43 (comment out created to restore genderFilter functionality)
+									value="men"
+=======
+									value="male"
+>>>>>>> 7d122b43 (comment out created to restore genderFilter functionality)
 									v-model="gender"
 								>
 									Men
@@ -147,8 +159,16 @@ export default {
 			zeroLoans: false,
 			mdiFilterVariant,
 			mdiCompassRose,
+<<<<<<< HEAD
 			gender: 'both',
 			sector: ['Food', 'Education'],
+||||||| parent of 7d122b43 (comment out created to restore genderFilter functionality)
+			gender: 'both',
+			sector: ['education', 'agriculture'],
+=======
+			gender: 'men',
+			sector: ['education', 'agriculture'],
+>>>>>>> 7d122b43 (comment out created to restore genderFilter functionality)
 			country: ['TZ', 'KE'],
 		};
 	},
@@ -156,9 +176,9 @@ export default {
 		filterGender() {
 			let genderFilter = {};
 			if (this.gender === 'both') {
-				genderFilter = { eq: {} };
+				genderFilter = { any: [' female', 'male'] };
 			} else {
-				genderFilter = { eq: this.gender };
+				genderFilter = { any: [this.gender] };
 			}
 			console.log('from genderFilter func:', genderFilter);
 			return genderFilter;
@@ -205,18 +225,18 @@ export default {
 		this.loanQueryFilters = { countryIsoCode: { any: ['US'] } };
 		this.runQuery(this.loanQueryFilters);
 	},
-	created() {
-		this.loanQueryFilters = this.queryFilters;
-	},
+	// created() {
+	// 	this.loanQueryFilters = this.queryFilters;
+	// },
 	computed: {
 		queryFilters() {
 			const genderFilter = this.filterGender(() => {});
 			console.log('this is filtergender', genderFilter);
 
 			const loanQueryFilters = {
-				countryIsoCode: this.country,
+				countryIsoCode: { any: this.country },
 				gender: genderFilter,
-				sector: this.sector,
+				sector: { any: this.sector },
 			};
 			console.log('yo! from queryFilters', loanQueryFilters);
 			return loanQueryFilters;
