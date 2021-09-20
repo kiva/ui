@@ -59,6 +59,13 @@
 			class="tw-mb-1.5" :style="{width: '100%', height: '5.5rem'}"
 		/>
 
+		<div
+			v-if="!isLoading"
+			class="tw-mb-1.5 lg:tw-mb-1"
+		>
+			{{ loanUse }}
+		</div>
+
 		<!-- Matching text  -->
 		<kv-loading-placeholder
 			v-if="isLoading"
