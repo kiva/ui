@@ -7,6 +7,7 @@
 			<component
 				v-for="({ component, content, wrapperClass }) in contentGroups"
 				:key="content.key"
+				:id="content.key"
 				:is="component"
 				:content="content"
 				v-bind="getComponentOptions(content.key)"
