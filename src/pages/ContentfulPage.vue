@@ -58,6 +58,7 @@ import * as siteThemes from '@/util/siteThemes';
 // Page frames
 const WwwPage = () => import('@/components/WwwFrame/WwwPage');
 const WwwPageCorporate = () => import('@/components/WwwFrame/WwwPageCorporate');
+const WwwPageDesign = () => import('@/components/WwwFrame/WwwPageDesign');
 
 // Content Group Types
 // TODO: update the campaign components to accept "content" prop
@@ -111,6 +112,8 @@ const getPageFrameFromType = type => {
 			return WwwPage;
 		case 'lender-campaign':
 			return WwwPage;
+		case 'design':
+			return WwwPageDesign;
 		default:
 			logFormatter(`ContentfulPage: Unknown page type "${type}"`, 'error');
 			return WwwPage;
