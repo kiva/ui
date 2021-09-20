@@ -53,6 +53,14 @@
 			class="tw-mb-1.5 tw-rounded" :style="{width: '100%', height: '0.5rem'}"
 		/>
 
+		<!-- Contains amount to go and fundraising bar -->
+		<loan-progress-group
+			v-if="!ifLoading"
+			:money-left="unreservedAmount"
+			:progress-percent="fundraisingPercent"
+			:time-left="timeLeftMessage"
+		/>
+
 		<!-- LoanUse  -->
 		<kv-loading-paragraph
 			v-if="isLoading"
@@ -83,6 +91,7 @@ import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
+import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 
 const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
@@ -136,6 +145,11 @@ const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 
 			# for time-left-mixin
 			plannedExpirationDate
+
+			# for loan-progress component
+			unreservedAmount @client
+			fundraisingPercent @client
+			fundraisingTimeLeft @client
 		}
 	}
 }`;
@@ -154,6 +168,7 @@ export default {
 		BorrowerName,
 		KvLoadingPlaceholder,
 		KvLoadingParagraph,
+		LoanProgressGroup,
 	},
 	data() {
 		return {
@@ -195,6 +210,15 @@ export default {
 			const text = this.loan?.whySpecial || '';
 			return text.toString().charAt(0).toLowerCase() + text.toString().slice(1);
 		},
+		fundraisingPercent() {
+			return this.loan?.fundraisingPercent ?? 0;
+		},
+		unreservedAmount() {
+			return this.loan?.unreservedAmount ?? '0';
+		},
+		timeLeft() {
+			return this.loan?.fundraisingTimeLeft ?? '';
+		}
 	},
 	methods: {
 		prefetchLoanData() {
