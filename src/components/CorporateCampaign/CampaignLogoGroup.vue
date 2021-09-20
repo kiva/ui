@@ -42,8 +42,8 @@ $logo-color: $white;
 	align-items: center;
 
 	&__kiva {
-		fill: $logo-color; // IE11 fallback
-		fill: var(--logo-color, $logo-color);
+		color: $logo-color; // IE11 fallback
+		color: var(--logo-color, $logo-color);
 	}
 
 	&__kiva,
