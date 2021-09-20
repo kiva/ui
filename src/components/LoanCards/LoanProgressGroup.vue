@@ -1,7 +1,7 @@
 <template>
 	<figure>
 		<h4 class="tw-mb-0.5">
-			{{ moneyLeft | numeral('$0,0[.]00') }} to go{{ timeLeft !== '' ? '. ' + timeLeft : '' }}
+			{{ moneyLeft | numeral('$0,0[.]00') }} to go{{ timeLeft !== '' ? `. ${timeLeft}` : '' }}
 		</h4>
 		<kv-progress-bar
 			class="tw-mb-1.5 lg:tw-mb-1"
