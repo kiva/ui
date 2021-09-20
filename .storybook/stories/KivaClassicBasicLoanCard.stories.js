@@ -29,6 +29,11 @@ const queryResult = {
 				status: "fundraising",
 				loanAmount: "250000.00",
 				borrowerCount: 1,
+				fundraisingPercent: 0.75,
+				unreservedAmount: '600',
+				// This doesn't seem to be doing anything, are we able to use the
+				// timeLeftMixin within storybook?
+				timeLeft: '10000',
 				loanFundraisingInfo: {
 					fundedAmount: "218950.00",
 					reservedAmount: "0.00",
