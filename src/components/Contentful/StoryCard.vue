@@ -1,26 +1,26 @@
 <template>
-	<section
-		class="tw-h-full"
-		:class="themeClass"
-		v-if="hasBackgroundImage"
-	>
-		<kv-contentful-img
-			class="tw-h-full tw-object-cover"
-			:width="520"
-			fallback-format="jpg"
-			:contentful-src="backgroundImage.url"
-			:alt="backgroundImage.description"
-		/>
-		<p class="story-card__imageCard-title tw-text-h4">
-			{{ backgroundImage.title }}
-		</p>
-	</section>
+	<kv-theme-provider :theme="darkGreenTheme">
+		<section
+			class="tw-h-full"
+			v-if="hasBackgroundImage"
+		>
+			<kv-contentful-img
+				class="tw-h-full tw-object-cover"
+				:width="520"
+				fallback-format="jpg"
+				:contentful-src="backgroundImage.url"
+				:alt="backgroundImage.description"
+			/>
+			<p class="story-card__imageCard-title tw-text-h4">
+				{{ backgroundImage.title }}
+			</p>
+		</section>
 
-	<section
-		class="
+		<section
+			class="
 			story-card
 			tw-h-full
-			tw-bg-brand-200
+			tw-bg-primary
 			tw-text-primary
 			tw-flex
 			tw-flex-col
@@ -28,31 +28,39 @@
 			tw-items-center
 			tw-p-6
 		"
-		:class="themeClass"
-		v-else
-	>
-		<p class="tw-text-center tw-text-h4">
-			{{ kickerHeadline }}
-		</p>
-		<dynamic-rich-text
-			class="story-card__content tw-text-center tw-h-full"
-			:html="cardContent"
-		/>
-		<dynamic-rich-text class="tw-text-center" :html="footer" />
-	</section>
+			v-else
+		>
+			<p class="tw-text-center tw-text-h4">
+				{{ kickerHeadline }}
+			</p>
+			<dynamic-rich-text
+				class="story-card__content tw-text-center tw-h-full"
+				:html="cardContent"
+			/>
+			<dynamic-rich-text class="tw-text-center" :html="footer" />
+		</section>
+	</kv-theme-provider>
 </template>
 
 <script>
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import DynamicRichText from '@/components/Contentful/DynamicRichText';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+import {
+	darkTheme,
+	darkGreenTheme,
+	mintTheme,
+	defaultTheme
+} from '@kiva/kv-tokens/configs/kivaColors';
+import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
 /**
 * Story Card Component
 * */
 export default {
 	components: {
 		DynamicRichText,
-		KvContentfulImg
+		KvContentfulImg,
+		KvThemeProvider
 	},
 	props: {
 		/**
@@ -62,6 +70,14 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+	},
+	data() {
+		return {
+			darkTheme,
+			darkGreenTheme,
+			mintTheme,
+			defaultTheme
+		};
 	},
 	computed: {
 		theme() {
