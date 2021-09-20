@@ -22,6 +22,10 @@ module.exports = merge(baseWebpackConfig, {
 		hotUpdateChunkFilename: assetsPath('[id].hot-update.js'),
 		hotUpdateMainFilename: assetsPath('hot-update.json')
 	},
+	watchOptions: {
+		poll: 1000
+	},
+	stats: false,
 	optimization: {
 		runtimeChunk: true,
 	},
