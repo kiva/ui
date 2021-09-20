@@ -190,10 +190,10 @@ export default {
 			});
 		},
 		searchQuery() {
-			this.loanQueryFilters = this.queryFilters
+			this.loanQueryFilters = this.queryFilters;
 			console.log('from searchQuery', this.loanQueryFilters);
-			console.log('new query ran, yes!')
-			this.runQuery()
+			console.log('new query ran, yes!');
+			this.runQuery();
 		},
 	},
 	mounted() {
@@ -201,7 +201,7 @@ export default {
 		this.runQuery(this.loanQueryFilters);
 	},
 	created() {
-		this.loanQueryFilters = this.queryFilters
+		this.loanQueryFilters = this.queryFilters;
 	},
 	computed: {
 		queryFilters() {
@@ -214,7 +214,6 @@ export default {
 				sector: this.sector,
 			};
 			console.log('yo! from queryFilters', loanQueryFilters);
-			loanQueryFilters;
 			return loanQueryFilters;
 		},
 	},
