@@ -72,6 +72,11 @@ export default function createApp({
 				if (eventAsString.indexOf('Before calling any methods on the analytics') !== -1) {
 					return false;
 				}
+				// Skip sending errors from CefSharp
+				// https://forum.sentry.io/t/unhandledrejection-non-error-promise-rejection-captured-with-value/14062/20
+				if (eventAsString.indexOf('Object Not Found Matching Id') !== -1) {
+					return false;
+				}
 				// return event otherwise
 				return event;
 			},

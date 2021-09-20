@@ -1,6 +1,0 @@
-query contentful($contentType: String!, $contentKey: String) {
-	contentful {
-		entries(contentType: $contentType, contentKey: $contentKey)
-	}
-}
-
