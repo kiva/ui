@@ -16,6 +16,10 @@ export default {
 			if (textAlign) {
 				customStyles = `${customStyles} text-align: ${textAlign};`;
 			}
+			// Vertical alignment of grid items
+			const verticalAlign = this.uiSetting?.dataObject?.verticalAlign ?? null;
+			customStyles = `${customStyles} align-items: ${verticalAlign};`;
+
 			return customStyles;
 		},
 		/**
