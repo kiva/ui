@@ -78,6 +78,10 @@ async function serveImg(type, cache, req, res) {
 		}
 
 		res.contentType('image/jpeg');
+		res.set('Cache-Control', [
+			'no-store, no-cache, must-revalidate, max-age=0',
+			'post-check=0, pre-check=0'
+		]);
 		res.send(loanImg);
 	} catch (err) {
 		log(`Error serving image, ${err}`, 'error');

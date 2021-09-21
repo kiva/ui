@@ -69,15 +69,7 @@ threadLoader.warmup({
 // webpack setup
 const clientCompiler = webpack(clientConfig);
 const serverCompiler = webpack(serverConfig);
-const devMiddleware = webpackDevMiddleware(clientCompiler, {
-	logLevel: 'silent',
-	stats: false,
-	publicPath: clientConfig.output.publicPath,
-	watchOptions: {
-		poll: 1000
-	}
-	// serverSideRender: true,
-});
+const devMiddleware = webpackDevMiddleware(clientCompiler, {});
 const hotMiddleware = webpackHotMiddleware(clientCompiler, {
 	path: '/__ui_hmr',
 	log: () => {}

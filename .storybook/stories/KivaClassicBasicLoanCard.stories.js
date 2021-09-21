@@ -29,6 +29,8 @@ const queryResult = {
 				status: "fundraising",
 				loanAmount: "250000.00",
 				borrowerCount: 1,
+				fundraisingPercent: 0.75,
+				unreservedAmount: '600',
 				loanFundraisingInfo: {
 					fundedAmount: "218950.00",
 					reservedAmount: "0.00",
