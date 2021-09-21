@@ -59,12 +59,15 @@
 			class="tw-mb-1.5" :style="{width: '100%', height: '5.5rem'}"
 		/>
 
-		<div
+		<loan-use
 			v-if="!isLoading"
-			class="tw-mb-1.5 lg:tw-mb-1"
-		>
-			{{ loanUse }}
-		</div>
+			loan-use-max-length="52"
+			:use="loan.use"
+			:name="borrowerName"
+			:status="loan.status"
+			:loan-amount="loan.loanAmount"
+			:borrower-count="loan.borrowerCount"
+		/>
 
 		<!-- Matching text  -->
 		<kv-loading-placeholder
@@ -83,7 +86,7 @@
 <script>
 import gql from 'graphql-tag';
 import * as Sentry from '@sentry/browser';
-import loanUseMixin from '@/plugins/loan/loan-use-mixin';
+import LoanUse from '@/components/BorrowerProfile/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
@@ -155,12 +158,13 @@ export default {
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [loanUseMixin, percentRaisedMixin, timeLeftMixin],
+	mixins: [percentRaisedMixin, timeLeftMixin],
 	components: {
 		BorrowerImage,
 		BorrowerName,
 		KvLoadingPlaceholder,
 		KvLoadingParagraph,
+		LoanUse,
 	},
 	data() {
 		return {

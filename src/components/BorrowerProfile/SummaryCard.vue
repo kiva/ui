@@ -37,7 +37,7 @@
 			</div>
 		</div>
 		<loan-use
-			class="tw-flex-none tw-w-full tw-mb-2"
+			class="tw-flex-none tw-w-full tw-mb-2 tw-text-h2"
 			:borrower-count="borrowerCount"
 			:loan-amount="loanAmount"
 			:name="name"
