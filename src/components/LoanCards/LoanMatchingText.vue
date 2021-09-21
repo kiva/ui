@@ -1,19 +1,21 @@
 <template>
 	<span class="tw-flex tw-items-center">
-		<h4 class="tw-inline-block ">
-			<span
-				class="
+		<span
+			class="
+				tw-text-h4
 				tw-mr-1
-				tw-p-1
+				tw-pl-0.5
 				tw-h-3
+				tw-w-3
 				tw-rounded-full
 				tw-bg-brand-100
 				tw-border-2
 				tw-border-brand
 			"
-			>
-				🎉
-			</span>
+		>
+			🎉
+		</span>
+		<h4 class="tw-inline-block ">
 			{{ constructedMatchingText }}
 		</h4>
 	</span>
