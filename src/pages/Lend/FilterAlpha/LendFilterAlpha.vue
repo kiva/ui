@@ -42,18 +42,21 @@
 							<fieldset>
 								<legend>Gender Filter</legend>
 								<kv-radio
+									class="tw-text-left"
 									value="female"
 									v-model="gender"
 								>
 									Women
 								</kv-radio>
 								<kv-radio
+									class="tw-text-left"
 									value="male"
 									v-model="gender"
 								>
 									Men
 								</kv-radio>
 								<kv-radio
+									class="tw-text-left"
 									value="both"
 									v-model="gender"
 								>
