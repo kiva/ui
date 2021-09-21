@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import SearchEngine from '@/util/searchEngine';
 
 describe('SearchEngine', () => {
