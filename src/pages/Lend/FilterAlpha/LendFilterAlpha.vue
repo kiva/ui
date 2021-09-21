@@ -151,23 +151,23 @@ export default {
 		filterGender() {
 			let genderFilter = {};
 			if (this.gender === 'both') {
-				genderFilter = { any: [ 'female', 'male'] };
+				genderFilter = { any: ['female', 'male'] };
 			} else {
-				genderFilter = { any: [ this.gender ] };
+				genderFilter = { any: [this.gender] };
 			}
 			console.log('from genderFilter func:', genderFilter);
 			return genderFilter;
 		},
 		filterSector() {
 			// # TODO: collect sector from checkbox inputs
-			// let sectorFilter = [];
+			let sectorFilter = {};
 			// this.sector = ['education', 'agriculture'];
-			const sectors_selected = this.sector
+			const sectorsSelected = this.sector;
 
-			if (sectors_selected.length < 1) {
+			if (sectorsSelected.length < 1) {
 				sectorFilter = { none: [] };
 			} else {
-				sectorFilter = { any: sectors_selected};
+				sectorFilter = sectorsSelected;
 			}
 			console.log('from filterSector', sectorFilter);
 			return sectorFilter;
@@ -221,8 +221,8 @@ export default {
 	},
 	watch: {
 		gender: { handler: 'updateQuery' },
-		// sector: { handler: 'filterSector' },
-		// country: { handler: 'filterCountry' },
+		// sector: { handler: 'updateQuery' },
+		// country: { handler: 'updateQuery' },
 		loanQueryFilters: { handler: 'updateQuery' },
 	},
 };
