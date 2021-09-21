@@ -35,6 +35,9 @@ export function fetchData(loanQueryFilters, apollo) {
 
 export function filterGender(gender) {
 	let genderFilter = {};
+	if (!['both', 'male', 'female'].includes(gender)) {
+		return genderFilter;
+	}
 	if (gender === 'both') {
 		genderFilter = { any: ['female', 'male'] };
 	} else {

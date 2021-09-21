@@ -49,5 +49,9 @@ describe('flssUtils.js', () => {
 			const output = filterGender('female');
 			expect(output).toEqual(singleGender);
 		});
+
+		it('Check invalid input and return empty filter', () => {
+			expect(filterGender('nope')).toEqual({});
+		});
 	});
 });
