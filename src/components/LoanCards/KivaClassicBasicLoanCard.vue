@@ -73,6 +73,24 @@
 			class="tw-mb-1" :style="{width: 75 + (Math.random() * 15) + '%', height: '1.3rem'}"
 		/>
 
+		<loan-matching-text
+			v-if="!isLoading"
+			:matcher-name="loan.matchingText"
+			:match-ratio="loan.matchRatio"
+			:status="loan.status"
+			:funded-amount="loan.loanFundraisingInfo.fundedAmount"
+			:reserved-amount="loan.loanFundraisingInfo.reservedAmount"
+			:loan-amount="loan.loanAmount"
+		/>
+
+		<!-- <matching-text
+			v-if="!isLoading"
+			class=""
+			:matching-text="loan.matchingText"
+			:match-ratio="loan.matchRatio"
+			:is-funded="isFunded"
+			:is-selected-by-another="isSelectedByAnother"
+		/> -->
 		<!-- Button -->
 		<kv-loading-placeholder
 			v-if="isLoading"
@@ -92,6 +110,9 @@ import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
+// import MatchingText from '@/components/LoanCards/MatchingText';
+import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
+// import numeral from 'numeral';
 
 const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
@@ -150,6 +171,10 @@ const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 			unreservedAmount @client
 			fundraisingPercent @client
 			fundraisingTimeLeft @client
+
+			# for matching-text component
+			matchingText
+			matchRatio
 		}
 	}
 }`;
@@ -169,6 +194,8 @@ export default {
 		KvLoadingPlaceholder,
 		KvLoadingParagraph,
 		LoanProgressGroup,
+		// MatchingText,
+		LoanMatchingText,
 	},
 	data() {
 		return {
@@ -218,7 +245,17 @@ export default {
 		},
 		timeLeft() {
 			return this.loan?.fundraisingTimeLeft ?? '';
-		}
+		},
+		// isFunded() {
+		// 	return this.loan?.status === 'funded';
+		// },
+		// amountLeft() {
+		// 	const { fundedAmount, reservedAmount } = this.loan.loanFundraisingInfo;
+		// 	return numeral(this.loan.loanAmount).subtract(fundedAmount).subtract(reservedAmount).value();
+		// },
+		// isSelectedByAnother() {
+		// 	return this.amountLeft <= 0 && !this.isFunded;
+		// },
 	},
 	methods: {
 		prefetchLoanData() {
