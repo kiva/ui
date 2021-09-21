@@ -112,7 +112,7 @@
 <script>
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
 import { lightHeader } from '@/util/siteThemes';
-import { fetchData } from '@/util/flssUtils';
+import { fetchData, filterGender, allSectors } from '@/util/flssUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
@@ -148,15 +148,8 @@ export default {
 		};
 	},
 	methods: {
-		filterGender() {
-			let genderFilter = {};
-			if (this.gender === 'both') {
-				genderFilter = { any: ['female', 'male'] };
-			} else {
-				genderFilter = { any: [this.gender] };
-			}
-			console.log('from genderFilter func:', genderFilter);
-			return genderFilter;
+		populateSector() {
+			console.log(allSectors);
 		},
 		filterSector() {
 			// # TODO: collect sector from checkbox inputs
@@ -207,7 +200,7 @@ export default {
 	},
 	computed: {
 		queryFilters() {
-			const genderFilter = this.filterGender(() => {});
+			const genderFilter = filterGender(this.gender);
 			console.log('this is filtergender', genderFilter);
 
 			const loanQueryFilters = {
