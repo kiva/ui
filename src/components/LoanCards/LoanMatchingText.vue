@@ -4,7 +4,7 @@
 			class="
 				tw-text-h4
 				tw-mr-1
-				tw-pl-0.5
+				tw-text-center
 				tw-h-3
 				tw-w-3
 				tw-rounded-full
