@@ -42,27 +42,15 @@
 							<fieldset>
 								<legend>Gender Filter</legend>
 								<kv-radio
-<<<<<<< HEAD
 									class="tw-text-left"
 									value="female"
-||||||| parent of 7d122b43 (comment out created to restore genderFilter functionality)
-									value="women"
-=======
-									value="female"
->>>>>>> 7d122b43 (comment out created to restore genderFilter functionality)
 									v-model="gender"
 								>
 									Women
 								</kv-radio>
 								<kv-radio
-<<<<<<< HEAD
 									class="tw-text-left"
 									value="male"
-||||||| parent of 7d122b43 (comment out created to restore genderFilter functionality)
-									value="men"
-=======
-									value="male"
->>>>>>> 7d122b43 (comment out created to restore genderFilter functionality)
 									v-model="gender"
 								>
 									Men
@@ -159,16 +147,8 @@ export default {
 			zeroLoans: false,
 			mdiFilterVariant,
 			mdiCompassRose,
-<<<<<<< HEAD
 			gender: 'both',
 			sector: ['Food', 'Education'],
-||||||| parent of 7d122b43 (comment out created to restore genderFilter functionality)
-			gender: 'both',
-			sector: ['education', 'agriculture'],
-=======
-			gender: 'men',
-			sector: ['education', 'agriculture'],
->>>>>>> 7d122b43 (comment out created to restore genderFilter functionality)
 			country: ['TZ', 'KE'],
 		};
 	},
@@ -185,9 +165,9 @@ export default {
 		},
 		filterSector() {
 			// # TODO: collect sector from checkbox inputs
-			// let sectorFilter = [];
+			let sectorFilter = {};
 			// this.sector = ['education', 'agriculture'];
-			const sectorFilter = { any: this.sector };
+			sectorFilter = { any: this.sector };
 			console.log('from filterSector', sectorFilter);
 			return sectorFilter;
 		},
@@ -243,10 +223,10 @@ export default {
 		},
 	},
 	watch: {
-		gender: { handler: 'filterGender' },
-		sector: { handler: 'filterSector' },
-		country: { handler: 'filterCountry' },
-		loanQueryFilters: { handler: 'searchQuery' },
+		gender: { handler: 'updateQuery' },
+		// sector: { handler: 'updateQuery' },
+		// country: { handler: 'updateQuery' },
+		loanQueryFilters: { handler: 'updateQuery' },
 	},
 };
 </script>
