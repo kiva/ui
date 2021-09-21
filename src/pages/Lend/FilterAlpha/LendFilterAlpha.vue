@@ -66,8 +66,7 @@
 								<span>gender: {{ gender }}</span>
 							</fieldset>
 							<hr>
-							<br> Loan Term
-							<br> Country
+							<hr>
 							<br> Sector
 							<br>
 							<kv-button
@@ -82,6 +81,9 @@
 							>
 								Reset Filters
 							</kv-button>
+							<hr>
+							<br> Loan Term
+							<br> Country
 						</div>
 						<div class="md:tw-hidden">
 							<p> {{ totalCount }} Loans </p>
