@@ -9,8 +9,8 @@
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 				</div>
 			</div>
-			<!-- <div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8">
-			</div> -->
+			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8">
+			</div>
 			<div>
 				<kv-page-container>
 					<div class="tw-flex tw-items-start">
