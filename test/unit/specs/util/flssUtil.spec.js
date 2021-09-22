@@ -1,4 +1,4 @@
-import { fetchData } from '@/util/flssUtils';
+import { fetchData, filterGender } from '@/util/flssUtils';
 import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 
 describe('flssUtils.js', () => {
@@ -33,6 +33,25 @@ describe('flssUtils.js', () => {
 				expect(data).toBe(result);
 				done();
 			});
+		});
+	});
+
+	describe('filterGender', () => {
+		const bothGenders = { any: ['female', 'male'] };
+		const singleGender = { any: ['female'] };
+
+		it('Checks if the query filters for male and female are created', () => {
+			const output = filterGender('both');
+			expect(output).toEqual(bothGenders);
+		});
+
+		it('Checks if the query filters for a single gender are created', () => {
+			const output = filterGender('female');
+			expect(output).toEqual(singleGender);
+		});
+
+		it('Check invalid input and return empty filter', () => {
+			expect(filterGender('nope')).toEqual({});
 		});
 	});
 });

@@ -39,10 +39,51 @@
 						<div class="tw-bg-tertiary tw-text-left md:tw-text-center">
 							<p>Filters</p>
 							<hr>
-							<br> Gender
+							<fieldset>
+								<legend>Gender Filter</legend>
+								<kv-radio
+									class="tw-text-left"
+									value="female"
+									v-model="gender"
+								>
+									Women
+								</kv-radio>
+								<kv-radio
+									class="tw-text-left"
+									value="male"
+									v-model="gender"
+								>
+									Men
+								</kv-radio>
+								<kv-radio
+									class="tw-text-left"
+									value="both"
+									v-model="gender"
+								>
+									All
+								</kv-radio>
+
+								<span>gender: {{ gender }}</span>
+							</fieldset>
+							<hr>
+							<hr>
+							<br> Sector
+							<br>
+							<kv-button
+								v-model="loanQueryFilters"
+								@click="updateQuery"
+							>
+								Search
+							</kv-button>
+							<kv-button
+								v-model="loanQueryFilters"
+								@click="resetFilter"
+							>
+								Reset Filters
+							</kv-button>
+							<hr>
 							<br> Loan Term
 							<br> Country
-							<br> Sector
 						</div>
 						<div class="md:tw-hidden">
 							<p> {{ totalCount }} Loans </p>
@@ -74,15 +115,16 @@
 </template>
 
 <script>
-import { lightHeader } from '@/util/siteThemes';
-import { fetchData } from '@/util/flssUtils';
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
-
+import { lightHeader } from '@/util/siteThemes';
+import { fetchData, filterGender, allSectors } from '@/util/flssUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	inject: ['apollo'],
@@ -91,38 +133,95 @@ export default {
 		KvGrid,
 		KvPageContainer,
 		KvMaterialIcon,
-		LoanCardController
-
+		LoanCardController,
+		KvRadio,
+		KvButton,
 	},
 	data() {
 		return {
 			headerTheme: lightHeader,
 			loanId: Number(this.$route.params.id || 0),
-			// flss query is defaulted to US loans currently to keep loans count
-			// manageable for now
-			loanQueryFilters: { countryIsoCode: { any: ['US'] } },
+			loanQueryFilters: {},
 			totalCount: 0,
 			loans: [],
 			zeroLoans: false,
 			mdiFilterVariant,
 			mdiCompassRose,
+			gender: 'both',
+			sector: ['food', 'education'],
+			country: ['TZ', 'KE'],
 		};
 	},
 	methods: {
+		populateSector() {
+			console.log(allSectors);
+		},
+		filterSector() {
+			// # TODO: collect sector from checkbox inputs
+			let sectorFilter = {};
+			// this.sector = ['education', 'agriculture'];
+			const sectorsSelected = this.sector;
+
+			if (sectorsSelected.length < 1) {
+				sectorFilter = { none: [] };
+			} else {
+				sectorFilter = sectorsSelected;
+			}
+			console.log('from filterSector', sectorFilter);
+			return sectorFilter;
+		},
+		filterCountry() {
+			// # TODO: collect country from checkbox inputs
+			// let countryFilter = ['TZ', 'KE'];
+			const countryFilter = { any: this.country };
+			console.log('from filterCountrey', countryFilter);
+			return countryFilter;
+		},
+		resetFilter() {
+			this.loanQueryFilters = {};
+			this.runQuery();
+		},
 		runQuery() {
+			console.log('filters into fetchData:', this.loanQueryFilters);
 			fetchData(this.loanQueryFilters, this.apollo).then(flssData => {
 				this.loans = flssData.values ?? [];
 				this.totalCount = flssData.totalCount;
+				console.log('num loans:', this.totalCount);
 
 				if (this.totalCount === 0) {
 					this.zeroLoans = true;
 				}
 			});
 		},
-
+		updateQuery() {
+			this.loanQueryFilters = this.queryFilters;
+			console.log('from updateQuery', this.loanQueryFilters);
+			console.log('new query ran, yes!');
+		},
 	},
 	mounted() {
+		this.loanQueryFilters = { countryIsoCode: { any: ['US'] } };
 		this.runQuery();
-	}
+	},
+	computed: {
+		queryFilters() {
+			const genderFilter = filterGender(this.gender);
+			console.log('this is filtergender', genderFilter);
+
+			const loanQueryFilters = {
+				countryIsoCode: { any: this.country },
+				gender: genderFilter,
+				sector: { any: this.sector },
+			};
+			console.log('yo! from queryFilters', loanQueryFilters);
+			return loanQueryFilters;
+		},
+	},
+	watch: {
+		gender: { handler: 'updateQuery' },
+		// sector: { handler: 'updateQuery' },
+		// country: { handler: 'updateQuery' },
+		loanQueryFilters: { handler: 'updateQuery' },
+	},
 };
 </script>
