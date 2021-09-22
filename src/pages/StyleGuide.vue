@@ -115,7 +115,7 @@ $header-height-large: rem-calc(64);
 			width: rem-calc(57);
 			height: 100%;
 			margin: rem-calc(-3) auto 0;
-			fill: $text-color;
+			color: $text-color;
 			max-height: $header-height;
 
 			@include breakpoint(large) {

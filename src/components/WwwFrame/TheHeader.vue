@@ -726,8 +726,8 @@ $close-search-button-size: 2.5rem;
 		width: rem-calc(71);
 		height: 100%;
 		margin: rem-calc(-3) auto 0;
-		fill: $header-logo-color; // IE11 fallback
-		fill: var(--kv-header-logo-color, $header-logo-color);
+		color: $header-logo-color; // IE11 fallback
+		color: var(--kv-header-logo-color, $header-logo-color);
 		max-height: $header-height;
 
 		@include breakpoint(large) {

@@ -46,7 +46,7 @@ export default {
 		width: rem-calc(57);
 		height: rem-calc(45);
 		margin: 0 auto;
-		fill: $white;
+		color: $white;
 
 		@include breakpoint(large) {
 			width: rem-calc(72);

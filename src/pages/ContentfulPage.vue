@@ -7,6 +7,7 @@
 			<component
 				v-for="({ component, content, wrapperClass }) in contentGroups"
 				:key="content.key"
+				:id="content.key"
 				:is="component"
 				:content="content"
 				v-bind="getComponentOptions(content.key)"
@@ -58,6 +59,7 @@ import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
 // Page frames
 const WwwPage = () => import('@/components/WwwFrame/WwwPage');
 const WwwPageCorporate = () => import('@/components/WwwFrame/WwwPageCorporate');
+const WwwPageDesign = () => import('@/components/WwwFrame/WwwPageDesign');
 
 // Content Group Types
 // TODO: update the campaign components to accept "content" prop
@@ -106,6 +108,8 @@ const getPageFrameFromType = type => {
 			return WwwPage;
 		case 'lender-campaign':
 			return WwwPage;
+		case 'design':
+			return WwwPageDesign;
 		default:
 			logFormatter(`ContentfulPage: Unknown page type "${type}"`, 'error');
 			return WwwPage;
