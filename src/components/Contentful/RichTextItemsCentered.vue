@@ -7,7 +7,7 @@
 			<kv-page-container>
 				<kv-grid
 					:style="customGridStyles"
-					class="tw-grid-cols-12 tw-text-center"
+					class="tw-grid-cols-12 tw-justify-items-center tw-text-center"
 				>
 					<div
 						v-for="(item, index) in richContentfulContent"
@@ -19,6 +19,7 @@
 							'lg:tw-col-span-4': richContentfulContent.length === 3,
 							'lg:tw-col-span-3': richContentfulContent.length === 4,
 						}"
+						:style="maxWidthStyles"
 					>
 						<div class="tw-pt-2">
 							<dynamic-rich-text :html="parsedRichContent(item)" />
