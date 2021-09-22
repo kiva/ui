@@ -55,6 +55,7 @@ export function validateSectorInput(sectorList) {
 		return isValid;
 	}
 	console.log('Check if the sector list is valid:', sectorList);
+	return false;
 }
 
 export function filterSector(sectorList) {
