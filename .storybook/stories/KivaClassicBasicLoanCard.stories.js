@@ -36,7 +36,9 @@ const queryResult = {
 					reservedAmount: "0.00",
 					isExpiringSoon: false
 				},
-				plannedExpirationDate: "2020-09-10T19:30:13Z"
+				plannedExpirationDate: "2020-09-10T19:30:13Z",
+				matchingText: "LISC",
+				matchRatio: 2,
 			}
 		}
 	}
