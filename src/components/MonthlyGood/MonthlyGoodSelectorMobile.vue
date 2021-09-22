@@ -77,7 +77,7 @@
 			</div>
 
 			<template #controls v-if="selectedGroup">
-				<kv-button @click="navigateToMG" class="tw-mt-12">
+				<kv-button @click="navigateToMG">
 					Next
 				</kv-button>
 			</template>
