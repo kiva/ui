@@ -12,7 +12,13 @@
 					<div
 						v-for="(item, index) in richContentfulContent"
 						:key="index"
-						:class="`tw-col-span-12 lg:tw-col-span-${12/richContentfulContent.length}`"
+						:class="{
+							'tw-col-span-12': true,
+							'md:tw-col-span-6': richContentfulContent.length >= 2,
+							'lg:tw-col-span-6': richContentfulContent.length === 2,
+							'lg:tw-col-span-4': richContentfulContent.length === 3,
+							'lg:tw-col-span-3': richContentfulContent.length === 4,
+						}"
 					>
 						<div class="tw-pt-2">
 							<dynamic-rich-text :html="parsedRichContent(item)" />
