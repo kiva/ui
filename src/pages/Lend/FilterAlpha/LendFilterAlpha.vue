@@ -206,6 +206,7 @@ export default {
 	},
 	mounted() {
 		this.loanQueryFilters = { countryIsoCode: { any: ['US'] } };
+		console.log('mounted query ran:', this.loanQueryFilters);
 		this.runQuery(this.loanQueryFilters);
 	},
 	computed: {
