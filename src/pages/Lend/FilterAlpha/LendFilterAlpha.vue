@@ -66,8 +66,19 @@
 								<span>gender: {{ gender }}</span>
 							</fieldset>
 							<hr>
-							<hr>
-							<br> Sector
+							<fieldset>
+								<legend>Sector</legend>
+								<kv-checkbox
+									class="tw-text-left"
+									v-for=" sectorBox in allSectors"
+									name="sectorBox.name"
+									v-model="sector"
+									:key="sectorBox.id"
+									:checked="false"
+								>
+									{{ sectorBox.name }}
+								</kv-checkbox>
+							</fieldset>
 							<br>
 							<kv-button
 								v-model="loanQueryFilters"
@@ -117,17 +128,9 @@
 <script>
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
 import { lightHeader } from '@/util/siteThemes';
-<<<<<<< HEAD
-import { fetchData, filterGender, allSectors } from '@/util/flssUtils';
-||||||| parent of f9125a4f (update run query to take a query as parameter)
 import {
 	fetchData, filterGender, allSectors, filterSector
 } from '@/util/flssUtils';
-=======
-import {
-	fetchData, filterGender, filterSector
-} from '@/util/flssUtils';
->>>>>>> f9125a4f (update run query to take a query as parameter)
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
@@ -135,6 +138,7 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 
 export default {
 	inject: ['apollo'],
@@ -146,6 +150,7 @@ export default {
 		LoanCardController,
 		KvRadio,
 		KvButton,
+		KvCheckbox,
 	},
 	data() {
 		return {
@@ -192,9 +197,9 @@ export default {
 			this.loanQueryFilters = {};
 			this.runQuery(this.loanQueryFilters);
 		},
-		runQuery(loanQueryFilters) {
-			console.log('filters into runQuery:', loanQueryFilters);
-			fetchData(loanQueryFilters, this.apollo).then(flssData => {
+		runQuery() {
+			console.log('filters into runQuery:', this.loanQueryFilters);
+			fetchData(this.loanQueryFilters, this.apollo).then(flssData => {
 				this.loans = flssData.values ?? [];
 				this.totalCount = flssData.totalCount;
 				console.log('num loans:', this.totalCount);
@@ -205,34 +210,31 @@ export default {
 			});
 		},
 		updateQuery() {
-			this.loanQueryFilters = this.queryFilters
-			console.log('from searchQuery', this.loanQueryFilters);
+			// this.country = ['TZ', 'KE'];
+
+			const loanQueryFilters = this.queryFilters;
+			console.log('from updateQuery', loanQueryFilters);
 			console.log('new query ran, yes!');
-			this.runQuery(loanQueryFilters);
+			this.runQuery();
 		},
 	},
 	mounted() {
 		this.loanQueryFilters = { countryIsoCode: { any: ['US'] } };
 		this.runQuery(this.loanQueryFilters);
 	},
-	// created() {
-	// 	this.loanQueryFilters = this.queryFilters;
-	// },
 	computed: {
 		queryFilters() {
-<<<<<<< HEAD
-			const genderFilter = this.filterGender(() => {});
-||||||| parent of f9125a4f (update run query to take a query as parameter)
 			// // TODO: enable genderFilter when its working
 			const genderFilter = filterGender(this.gender);
-=======
-			const genderFilter = filterGender(this.gender);
->>>>>>> f9125a4f (update run query to take a query as parameter)
 			console.log('this is filtergender', genderFilter);
 
+			const sectorFilter = filterSector(this.sector);
+			console.log('this is filterSector', sectorFilter);
+
 			const loanQueryFilters = {
-				countryIsoCode: { any: this.country },
-				gender: genderFilter,
+				countryIsoCode: { none: [] },
+				// TODO: enable genderFilter when its working
+				// gender: genderFilter,
 				sector: { any: this.sector },
 			};
 			console.log('yo! from queryFilters', loanQueryFilters);
@@ -241,9 +243,8 @@ export default {
 	},
 	watch: {
 		gender: { handler: 'updateQuery' },
-		// sector: { handler: 'updateQuery' },
-		// country: { handler: 'updateQuery' },
-		loanQueryFilters: { handler: 'updateQuery' },
+		sector: { handler: 'updateQuery' },
+		// // country: { handler: 'updateQuery' },
 	},
 };
 </script>
