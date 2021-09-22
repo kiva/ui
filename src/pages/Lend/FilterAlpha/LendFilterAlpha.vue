@@ -165,6 +165,7 @@ export default {
 			gender: 'both',
 			sector: ['Food', 'Education'],
 			country: ['TZ', 'KE'],
+			allSectors,
 		};
 	},
 	methods: {
