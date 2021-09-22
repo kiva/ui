@@ -55,7 +55,7 @@ export function validateSectorInput(sectorList) {
 		const isValid = sectorList.every(sector => sectorNames.includes(sector));
 		return isValid;
 	}
-	console.log('Check if the sector list is valid:', sectorList);
+	console.log('No sector filters were passed to the query.  /nPlease check the sector input:', sectorList);
 	return false;
 }
 
