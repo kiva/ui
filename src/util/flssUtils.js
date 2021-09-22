@@ -46,6 +46,7 @@ export function filterGender(gender) {
 		genderFilter = { any: [gender] };
 	}
 
+	console.log('from filterGender:', genderFilter);
 	return genderFilter;
 }
 
@@ -65,6 +66,6 @@ export function filterSector(sectorList) {
 	if (validateSectorInput(sectorList)) {
 		sectorFilter = { any: sectorList };
 	}
-	console.log('from filterSector', sectorFilter);
+	console.log('from filterSector:', sectorFilter);
 	return sectorFilter;
 }
