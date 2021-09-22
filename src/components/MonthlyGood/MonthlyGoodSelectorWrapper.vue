@@ -1,25 +1,53 @@
 <template>
 	<div>
 		<!-- MG Selector Desktop -->
-		<!-- eslint-disable max-len -->
 		<section
-			class="monthly-good-selector md:tw-visible tw-invisible tw-bg-brand-50 tw-px-3 tw-py-0 tw-rounded-t"
-			:class="{ 'sticky': isSticky, 'tw-fixed tw-bottom-0 tw-w-full tw-z-sticky': isSticky, 'tw-relative': !isSticky }"
-			:style="{bottom: mgStickBarOffset + 'px'}"
+			:class="[
+				'monthly-good-selector',
+				'tw-invisible md:tw-visible',
+				'tw-bg-brand-50',
+				'tw-px-3 tw-py-0',
+				'tw-rounded-t',
+				{
+					'sticky': isSticky,
+					'tw-fixed tw-bottom-0 tw-w-full tw-z-sticky': isSticky,
+					'tw-relative': !isSticky
+				}
+			]"
+			:style="{ bottom: mgStickBarOffset + 'px' }"
 		>
 			<monthly-good-selector-desktop :pre-selected-category="preSelectedCategory" />
 		</section>
 
-		<!-- MG Selector Mobile show-for-small-only  -->
-		<section
-			class="monthly-good-selector tw-visible md:tw-invisible tw-bg-brand-50 tw-px-3 tw-py-2"
-			:class="{ 'sticky': isSticky, 'tw-fixed tw-bottom-0 tw-w-full tw-z-sticky': isSticky, 'tw-relative': !isSticky }"
-			:style="{bottom: mgStickBarOffset + 'px'}"
-			v-if="isMobile"
+		<!-- MG Selector Mobile show-for-small-only, show only after scrolling initially  -->
+		<transition
+			enter-active-class="tw-transition-all tw-duration-1000 tw-delay-300 tw-ease-in-out"
+			enter-class="tw-translate-y-full tw-opacity-0"
+			enter-to-class="tw-translate-y-0 tw-opacity-100"
 		>
-			<monthly-good-selector-mobile :pre-selected-category="preSelectedCategory" :rich-text-content="mgMobileRichText" />
-		</section>
-		<!-- eslint-enable max-len -->
+			<section
+				:class="[
+					'monthly-good-selector',
+					'tw-visible md:tw-invisible',
+					'tw-bg-primary',
+					'tw-border-t tw-border-b tw-border-tertiary',
+					'tw-px-3 tw-pt-2.5 tw-pb-3',
+					'tw-text-center',
+					{
+						'sticky': isSticky,
+						'tw-fixed tw-bottom-0 tw-w-full tw-z-sticky': isSticky,
+						'tw-relative': !isSticky
+					}
+				]"
+				:style="{ bottom: mgStickBarOffset + 'px' }"
+				v-show="hasScrolled"
+			>
+				<monthly-good-selector-mobile
+					:pre-selected-category="preSelectedCategory"
+					:rich-text-content="mgMobileRichText"
+				/>
+			</section>
+		</transition>
 	</div>
 </template>
 
@@ -49,7 +77,7 @@ export default {
 			isSticky: false,
 			initialBottomPosition: 0,
 			mgStickBarOffset: 0,
-			isMobile: false
+			hasScrolled: false
 		};
 	},
 	mixins: [
@@ -103,7 +131,7 @@ export default {
 			const heightOfMgSelector = this.$el.getElementsByClassName('monthly-good-selector')[0].offsetHeight;
 			const scrollPositionOfPage = window.scrollY;
 
-			// override for always stickey behavior
+			// override for always sticky behavior
 			if (this.alwaysSticky) {
 				this.initialBottomPosition = 0;
 			} else {
@@ -126,27 +154,27 @@ export default {
 			}
 			// set offset
 			this.mgStickBarOffset = offsetHeight;
-		},
-		determineIfMobile() {
-			this.isMobile = document.documentElement.clientWidth < 735;
 		}
 	},
 	beforeDestroy() {
 		window.removeEventListener('scroll', this.throttledScroll);
+		window.removeEventListener('scroll', () => {
+			this.hasScrolled = true;
+		});
 		window.removeEventListener('resize', _throttle(() => {
 			this.initStickyBehavior();
-			this.determineIfMobile();
 		}, 200));
 	},
 	mounted() {
 		window.addEventListener('scroll', this.throttledScroll);
+		window.addEventListener('scroll', () => {
+			this.hasScrolled = true;
+		});
 		window.addEventListener('resize', _throttle(() => {
 			this.initStickyBehavior();
-			this.determineIfMobile();
 		}, 200));
 
 		this.initStickyBehavior();
-		this.determineIfMobile();
 	},
 };
 </script>
@@ -174,8 +202,6 @@ footer.www-footer {
 
 .monthly-good-selector {
 	&.sticky {
-		// non-standard "bottom" property requires additional tailwinds config to support
-		transition: bottom 0.4s;
 		// probably doable with tw, will revisit later
 		box-shadow: 0 -5px 80px rgba(0, 0, 0, 0.1);
 		// Temporary scss override to ensure layering over header in mobile
