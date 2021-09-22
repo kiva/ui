@@ -1,3 +1,4 @@
+tw-text-jumbo
 tw-pt-0
 md:tw-pt-0
 lg:tw-pt-0
