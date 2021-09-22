@@ -169,24 +169,6 @@ export default {
 		};
 	},
 	methods: {
-		filterGender() {
-			let genderFilter = {};
-			if (this.gender === 'both') {
-				genderFilter = { any: [' female', 'male'] };
-			} else {
-				genderFilter = { any: [this.gender] };
-			}
-			console.log('from genderFilter func:', genderFilter);
-			return genderFilter;
-		},
-		filterSector() {
-			// # TODO: collect sector from checkbox inputs
-			let sectorFilter = {};
-			// this.sector = ['education', 'agriculture'];
-			sectorFilter = { any: this.sector };
-			console.log('from filterSector', sectorFilter);
-			return sectorFilter;
-		},
 		filterCountry() {
 			// # TODO: collect country from checkbox inputs
 			// let countryFilter = ['TZ', 'KE'];
@@ -195,12 +177,15 @@ export default {
 			return countryFilter;
 		},
 		resetFilter() {
+			this.gender = 'both';
+			this.sector = [];
+			this.country = [];
 			this.loanQueryFilters = {};
 			this.runQuery(this.loanQueryFilters);
 		},
-		runQuery() {
-			console.log('filters into runQuery:', this.loanQueryFilters);
-			fetchData(this.loanQueryFilters, this.apollo).then(flssData => {
+		runQuery(loanQueryFilters) {
+			console.log('filters into runQuery:', loanQueryFilters);
+			fetchData(loanQueryFilters, this.apollo).then(flssData => {
 				this.loans = flssData.values ?? [];
 				this.totalCount = flssData.totalCount;
 				console.log('num loans:', this.totalCount);
@@ -213,10 +198,10 @@ export default {
 		updateQuery() {
 			// this.country = ['TZ', 'KE'];
 
-			const loanQueryFilters = this.queryFilters;
-			console.log('from updateQuery', loanQueryFilters);
+			const updatedQueryFilters = this.queryFilters;
+			console.log('from updateQuery', updatedQueryFilters);
 			console.log('new query ran, yes!');
-			this.runQuery();
+			this.runQuery(updatedQueryFilters);
 		},
 	},
 	mounted() {
@@ -236,7 +221,7 @@ export default {
 				countryIsoCode: { none: [] },
 				// TODO: enable genderFilter when its working
 				// gender: genderFilter,
-				sector: { any: this.sector },
+				sector: sectorFilter,
 			};
 			console.log('yo! from queryFilters', loanQueryFilters);
 			return loanQueryFilters;
