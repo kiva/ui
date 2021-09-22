@@ -15,7 +15,7 @@ export const allSectors = [
 	{ id: 13, name: 'Wholesale' },
 	{ id: 14, name: 'Construction' },
 	{ id: 15, name: 'Education' },
-	{ id: 16, name: 'Personal' },
+	{ id: 16, name: 'Personal Use' },
 	{ id: 17, name: 'Entertainment' }
 ];
 
