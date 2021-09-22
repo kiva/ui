@@ -117,7 +117,17 @@
 <script>
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
 import { lightHeader } from '@/util/siteThemes';
+<<<<<<< HEAD
 import { fetchData, filterGender, allSectors } from '@/util/flssUtils';
+||||||| parent of f9125a4f (update run query to take a query as parameter)
+import {
+	fetchData, filterGender, allSectors, filterSector
+} from '@/util/flssUtils';
+=======
+import {
+	fetchData, filterGender, filterSector
+} from '@/util/flssUtils';
+>>>>>>> f9125a4f (update run query to take a query as parameter)
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
@@ -182,9 +192,9 @@ export default {
 			this.loanQueryFilters = {};
 			this.runQuery(this.loanQueryFilters);
 		},
-		runQuery() {
-			console.log('filters into runQuery:', this.loanQueryFilters);
-			fetchData(this.loanQueryFilters, this.apollo).then(flssData => {
+		runQuery(loanQueryFilters) {
+			console.log('filters into runQuery:', loanQueryFilters);
+			fetchData(loanQueryFilters, this.apollo).then(flssData => {
 				this.loans = flssData.values ?? [];
 				this.totalCount = flssData.totalCount;
 				console.log('num loans:', this.totalCount);
@@ -198,7 +208,7 @@ export default {
 			this.loanQueryFilters = this.queryFilters
 			console.log('from searchQuery', this.loanQueryFilters);
 			console.log('new query ran, yes!');
-			this.runQuery();
+			this.runQuery(loanQueryFilters);
 		},
 	},
 	mounted() {
@@ -210,7 +220,14 @@ export default {
 	// },
 	computed: {
 		queryFilters() {
+<<<<<<< HEAD
 			const genderFilter = this.filterGender(() => {});
+||||||| parent of f9125a4f (update run query to take a query as parameter)
+			// // TODO: enable genderFilter when its working
+			const genderFilter = filterGender(this.gender);
+=======
+			const genderFilter = filterGender(this.gender);
+>>>>>>> f9125a4f (update run query to take a query as parameter)
 			console.log('this is filtergender', genderFilter);
 
 			const loanQueryFilters = {
