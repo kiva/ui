@@ -65,6 +65,7 @@ export function filterSector(sectorList) {
 	let sectorFilter = { none: [] };
 	if (validateSectorInput(sectorList)) {
 		sectorFilter = { any: sectorList };
+		return sectorFilter;
 	}
 	console.log('from filterSector:', sectorFilter);
 	return sectorFilter;
