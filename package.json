@@ -211,7 +211,7 @@
 		"webpack-dev-middleware": "^3.7.1",
 		"webpack-filter-warnings-plugin": "^1.2.1",
 		"webpack-hot-middleware": "^2.25.0",
-		"webpack-node-externals": "^2.5.2",
+		"webpack-node-externals": "^3.0.0",
 		"webpack-svgstore-plugin": "kiva/webpack-svgstore-plugin#develop"
 	},
 	"engines": {
