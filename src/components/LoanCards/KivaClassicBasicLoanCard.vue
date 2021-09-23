@@ -8,30 +8,48 @@
 			v-if="isLoading"
 			class="tw-mb-1 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
 		/>
-		<borrower-image
+
+		<span
 			v-if="!isLoading"
-			class="
+			class="tw-relative"
+		>
+			<borrower-image
+				class="
 				tw-w-full
 				tw-bg-black
 				tw-rounded
 			"
-			:alt="'photo of ' + borrowerName"
-			:aspect-ratio="3 / 4"
-			:default-image="{ width: 336 }"
-			:hash="imageHash"
-			:images="[
-				{ width: 336, viewSize: 1024 },
-				{ width: 336, viewSize: 768 },
-				{ width: 416, viewSize: 480 },
-				{ width: 374, viewSize: 414 },
-				{ width: 335, viewSize: 375 },
-				{ width: 280 },
-			]"
-			:city="city"
-			:state="state"
-			:country-name="countryName"
-			:distribution-model="distributionModel"
-		/>
+				:alt="'photo of ' + borrowerName"
+				:aspect-ratio="3 / 4"
+				:default-image="{ width: 336 }"
+				:hash="imageHash"
+				:images="[
+					{ width: 336, viewSize: 1024 },
+					{ width: 336, viewSize: 768 },
+					{ width: 416, viewSize: 480 },
+					{ width: 374, viewSize: 414 },
+					{ width: 335, viewSize: 375 },
+					{ width: 280 },
+				]"
+				:city="city"
+				:state="state"
+				:country-name="countryName"
+				:distribution-model="distributionModel"
+			/>
+			<summary-tag
+				v-if="countryName"
+				class="tw-absolute tw-bottom-1.5 tw-left-1"
+				:city="city"
+				:state="state"
+				:country-name="countryName"
+			>
+				<kv-material-icon
+					class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
+					:icon="mdiMapMarker"
+				/>
+				{{ formattedLocation }}
+			</summary-tag>
+		</span>
 
 		<!-- Borrower name-->
 		<kv-loading-placeholder
@@ -133,6 +151,7 @@ import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
 import { mdiChevronRight, mdiMapMarker } from '@mdi/js';
+import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -223,6 +242,7 @@ export default {
 		LoanMatchingText,
 		KvButton,
 		KvMaterialIcon,
+		SummaryTag,
 	},
 	data() {
 		return {
@@ -284,6 +304,17 @@ export default {
 		timeLeft() {
 			return this.loan?.fundraisingTimeLeft ?? '';
 		},
+		formattedLocation() {
+			if (this.distributionModel === 'direct') {
+				const formattedString = `${this.city}, ${this.state}, ${this.countryName}`;
+				return formattedString;
+			}
+			if (this.countryName === 'Puerto Rico') {
+				const formattedString = `${this.city}, PR`;
+				return formattedString;
+			}
+			return this.countryName;
+		}
 	},
 	methods: {
 		prefetchLoanData() {
