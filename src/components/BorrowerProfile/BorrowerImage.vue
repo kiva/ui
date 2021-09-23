@@ -92,8 +92,8 @@ export default {
 			default: () => [],
 		},
 		/**
-		 * City, State and Country are all location data for the loan.
-		 * IF countryName is not included the location <summary-tag> is hidden.
+		 * City, State and Country are all location data for the loan
+		 * If countryName is not included the location <summary-tag> is hidden.
 		 */
 		city: {
 			type: String,
@@ -109,7 +109,8 @@ export default {
 		},
 		/**
 		 * String of the distributionModel for the loan.
-		 * Used to help determine how to display the location of the loan.
+		 * Used to determine how to format the location of the loan
+		 * for display to the user
 		 */
 		distributionModel: {
 			type: String,
