@@ -19,6 +19,8 @@ export const allSectors = [
 	{ id: 17, name: 'Entertainment' }
 ];
 
+export const sectorNames = allSectors.map(a => a.name);
+
 export function fetchData(loanQueryFilters, apollo) {
 	return apollo.query({
 		query: flssLoanQuery,
@@ -44,5 +46,27 @@ export function filterGender(gender) {
 		genderFilter = { any: [gender] };
 	}
 
+	console.log('from filterGender:', genderFilter);
 	return genderFilter;
+}
+
+export function validateSectorInput(sectorList) {
+	if (sectorList.length > 0) {
+		const isValid = sectorList.every(sector => sectorNames.includes(sector));
+		return isValid;
+	}
+	console.log('No sector filters were passed to the query.  \nPlease check the sector input:', sectorList);
+	return false;
+}
+
+export function filterSector(sectorList) {
+	// # TODO: collect sector from checkbox inputs
+	// once they're fixed
+	let sectorFilter = { none: [] };
+	if (validateSectorInput(sectorList)) {
+		sectorFilter = { any: sectorList };
+		return sectorFilter;
+	}
+	console.log('from filterSector:', sectorFilter);
+	return sectorFilter;
 }

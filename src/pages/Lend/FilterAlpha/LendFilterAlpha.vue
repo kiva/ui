@@ -9,8 +9,8 @@
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 				</div>
 			</div>
-			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8">
-			</div>
+			<!-- <div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8">
+			</div> -->
 			<div>
 				<kv-page-container>
 					<div class="tw-flex tw-items-start">
@@ -66,8 +66,19 @@
 								<span>gender: {{ gender }}</span>
 							</fieldset>
 							<hr>
-							<hr>
-							<br> Sector
+							<fieldset>
+								<legend>Sector</legend>
+								<kv-checkbox
+									class="tw-text-left"
+									v-for=" sectorBox in allSectors"
+									name="sectorBox.name"
+									v-model="sector"
+									:key="sectorBox.id"
+									:checked="false"
+								>
+									{{ sectorBox.name }}
+								</kv-checkbox>
+							</fieldset>
 							<br>
 							<kv-button
 								v-model="loanQueryFilters"
@@ -117,7 +128,9 @@
 <script>
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
 import { lightHeader } from '@/util/siteThemes';
-import { fetchData, filterGender, allSectors } from '@/util/flssUtils';
+import {
+	fetchData, filterGender, allSectors, filterSector
+} from '@/util/flssUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
@@ -125,6 +138,7 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 
 export default {
 	inject: ['apollo'],
@@ -136,6 +150,7 @@ export default {
 		LoanCardController,
 		KvRadio,
 		KvButton,
+		KvCheckbox,
 	},
 	data() {
 		return {
@@ -148,28 +163,12 @@ export default {
 			mdiFilterVariant,
 			mdiCompassRose,
 			gender: 'both',
-			sector: ['food', 'education'],
+			sector: ['Food', 'Education'],
 			country: ['TZ', 'KE'],
+			allSectors,
 		};
 	},
 	methods: {
-		populateSector() {
-			console.log(allSectors);
-		},
-		filterSector() {
-			// # TODO: collect sector from checkbox inputs
-			let sectorFilter = {};
-			// this.sector = ['education', 'agriculture'];
-			const sectorsSelected = this.sector;
-
-			if (sectorsSelected.length < 1) {
-				sectorFilter = { none: [] };
-			} else {
-				sectorFilter = sectorsSelected;
-			}
-			console.log('from filterSector', sectorFilter);
-			return sectorFilter;
-		},
 		filterCountry() {
 			// # TODO: collect country from checkbox inputs
 			// let countryFilter = ['TZ', 'KE'];
@@ -178,12 +177,15 @@ export default {
 			return countryFilter;
 		},
 		resetFilter() {
+			this.gender = 'both';
+			this.sector = [];
+			this.country = [];
 			this.loanQueryFilters = {};
-			this.runQuery();
+			this.runQuery(this.loanQueryFilters);
 		},
-		runQuery() {
-			console.log('filters into fetchData:', this.loanQueryFilters);
-			fetchData(this.loanQueryFilters, this.apollo).then(flssData => {
+		runQuery(loanQueryFilters) {
+			console.log('filters into runQuery:', loanQueryFilters);
+			fetchData(loanQueryFilters, this.apollo).then(flssData => {
 				this.loans = flssData.values ?? [];
 				this.totalCount = flssData.totalCount;
 				console.log('num loans:', this.totalCount);
@@ -194,24 +196,33 @@ export default {
 			});
 		},
 		updateQuery() {
-			this.loanQueryFilters = this.queryFilters;
-			console.log('from updateQuery', this.loanQueryFilters);
+			// this.country = ['TZ', 'KE'];
+
+			const updatedQueryFilters = this.queryFilters;
+			console.log('from updateQuery', updatedQueryFilters);
 			console.log('new query ran, yes!');
+			this.runQuery(updatedQueryFilters);
 		},
 	},
 	mounted() {
 		this.loanQueryFilters = { countryIsoCode: { any: ['US'] } };
-		this.runQuery();
+		console.log('mounted query ran:', this.loanQueryFilters);
+		this.runQuery(this.loanQueryFilters);
 	},
 	computed: {
 		queryFilters() {
+			// // TODO: enable genderFilter when its working
 			const genderFilter = filterGender(this.gender);
 			console.log('this is filtergender', genderFilter);
 
+			const sectorFilter = filterSector(this.sector);
+			console.log('this is filterSector', sectorFilter);
+
 			const loanQueryFilters = {
-				countryIsoCode: { any: this.country },
-				gender: genderFilter,
-				sector: { any: this.sector },
+				countryIsoCode: { none: [] },
+				// TODO: enable genderFilter when its working
+				// gender: genderFilter,
+				sector: sectorFilter,
 			};
 			console.log('yo! from queryFilters', loanQueryFilters);
 			return loanQueryFilters;
@@ -219,9 +230,8 @@ export default {
 	},
 	watch: {
 		gender: { handler: 'updateQuery' },
-		// sector: { handler: 'updateQuery' },
-		// country: { handler: 'updateQuery' },
-		loanQueryFilters: { handler: 'updateQuery' },
+		sector: { handler: 'updateQuery' },
+		// // country: { handler: 'updateQuery' },
 	},
 };
 </script>
