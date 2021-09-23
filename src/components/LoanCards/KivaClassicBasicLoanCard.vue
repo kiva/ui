@@ -9,18 +9,19 @@
 			class="tw-mb-1 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
 		/>
 
-		<!-- Is there a way to display the click completely if allSharesAreReserved? -->
+		<!-- If allSharesReserved, disable link by make it a span -->
 		<router-link
-			:to="`${!allSharesReserved ? `/lend/${loanId}` : ''}`"
+			:is="allSharesReserved ? 'span' : 'router-link'"
+			:to="`${!allSharesReserved ? `/lend/${loanId}` : diable}`"
 			v-kv-track-event="['KivaClassicBasicLoanCard', 'click-borrower-image', loanId]"
 		>
 			<borrower-image
 				v-if="!isLoading"
 				class="
-				tw-w-full
-				tw-bg-black
-				tw-rounded
-			"
+					tw-w-full
+					tw-bg-black
+					tw-rounded
+				"
 				:alt="'photo of ' + borrowerName"
 				:aspect-ratio="3 / 4"
 				:default-image="{ width: 336 }"
@@ -115,7 +116,7 @@
 			class="tw-mb-2"
 			:state="`${allSharesReserved ? 'disabled' : ''}`"
 			:to="`/lend/${loanId}`"
-			v-kv-track-event="['KivaClassicBasicLoanCard', 'click-Read-more-CTA', loanId]"
+			v-kv-track-event="['KivaClassicBasicLoanCard', 'click-Read-more-CTA-button', loanId]"
 		>
 			Read more
 			<kv-material-icon
