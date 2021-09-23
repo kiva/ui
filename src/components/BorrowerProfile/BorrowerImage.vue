@@ -20,7 +20,7 @@
 			:alt="alt"
 			loading="lazy"
 		>
-		<!-- Hidden if countyName prop is not passed into component -->
+		<!-- Hidden if countryName prop is not passed into component -->
 		<summary-tag
 			v-if="countryName"
 			class="tw-absolute tw-bottom-1 tw-left-1"
