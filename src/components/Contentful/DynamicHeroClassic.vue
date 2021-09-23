@@ -34,14 +34,26 @@
 							</kv-carousel>
 						</template>
 						<template v-if="isHeroImage">
-							<router-link
-								:to="buttonTo"
-								v-kv-track-event="[
-									'Hero',
-									'click-hero-loancards',
-									heroMedia[0].description,
-								]"
-							>
+							<template v-if="buttonTo">
+								<router-link
+									:to="buttonTo"
+									v-kv-track-event="[
+										'Hero',
+										'click-hero-loancards',
+										heroMedia[0].description,
+									]"
+								>
+									<kv-contentful-img
+										v-if="heroMedia[0].url"
+										class="tw-block tw-mx-auto tw-mt-0 tw-mb-4 md:tw-mb-0"
+										:contentful-src="heroMedia[0].url"
+										:width="500"
+										fallback-format="jpg"
+										:alt="heroMedia[0].description"
+									/>
+								</router-link>
+							</template>
+							<template v-else>
 								<kv-contentful-img
 									v-if="heroMedia[0].url"
 									class="tw-block tw-mx-auto tw-mt-0 tw-mb-4 md:tw-mb-0"
@@ -50,17 +62,30 @@
 									fallback-format="jpg"
 									:alt="heroMedia[0].description"
 								/>
-							</router-link>
+							</template>
 						</template>
 						<template v-if="isResponsiveHeroImage && responsiveHeroImages.length">
-							<router-link
-								:to="buttonTo"
-								v-kv-track-event="[
-									'Hero',
-									'click-hero-loancards',
-									responsiveHeroDescription,
-								]"
-							>
+							<template v-if="buttonTo">
+								<router-link
+									:to="buttonTo"
+									v-kv-track-event="[
+										'Hero',
+										'click-hero-loancards',
+										responsiveHeroDescription,
+									]"
+								>
+									<kv-contentful-img
+										class="tw-block tw-mx-auto tw-mt-0 tw-mb-4 md:tw-mb-0"
+										:contentful-src="responsiveHeroImages[0].url"
+										:width="responsiveHeroImages[0].width"
+										:height="responsiveHeroImages[0].height"
+										fallback-format="jpg"
+										:alt="responsiveHeroDescription"
+										:source-sizes="responsiveHeroImages"
+									/>
+								</router-link>
+							</template>
+							<template v-else>
 								<kv-contentful-img
 									class="tw-block tw-mx-auto tw-mt-0 tw-mb-4 md:tw-mb-0"
 									:contentful-src="responsiveHeroImages[0].url"
@@ -70,7 +95,7 @@
 									:alt="responsiveHeroDescription"
 									:source-sizes="responsiveHeroImages"
 								/>
-							</router-link>
+							</template>
 						</template>
 						<template v-if="isHeroVideo">
 							<video
