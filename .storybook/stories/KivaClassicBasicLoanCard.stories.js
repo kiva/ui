@@ -8,7 +8,10 @@ const queryResult = {
 		lend: {
 			loan: {
 				id: 1998250,
+				distributionModel: 'partner', // direct, partner, both
 				geocode: {
+					city: "Cranston",
+					state: "Rhode Island",
 					country: {
 						name: "Malawi",
 						isoCode: "MW"

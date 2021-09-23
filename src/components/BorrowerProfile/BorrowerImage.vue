@@ -20,11 +20,25 @@
 			:alt="alt"
 			loading="lazy"
 		>
+		<summary-tag
+			v-if="countryName"
+			class="tw-absolute tw-bottom-2 tw-left-1"
+			:city="city"
+			:state="state"
+			:country-name="countryName"
+		>
+			<kv-material-icon
+				class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
+				:icon="mdiMapMarker"
+			/>
+			{{ formattedLocation }}
+		</summary-tag>
 	</picture>
 </template>
 
 <script>
 import { getKivaImageUrl } from '@/util/imageUtils';
+import { mdiMapMarker } from '@mdi/js';
 
 export default {
 	props: {
@@ -74,6 +88,27 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		city: {
+			type: String,
+			default: '',
+		},
+		state: {
+			type: String,
+			default: '',
+		},
+		countryName: {
+			type: String,
+			default: '',
+		},
+		distributionModel: {
+			type: String,
+			default: '',
+		}
+	},
+	data() {
+		return {
+			mdiMapMarker,
+		};
 	},
 	computed: {
 		// Get the full url for the fallback image
@@ -118,6 +153,17 @@ export default {
 				return `${this.getSrcsetDef(size)}, ${this.getSrcsetDef(retinaSize)}`;
 			}).join(', ');
 		},
+		formattedLocation() {
+			if (this.distributionModel === 'direct') {
+				const formattedString = `${this.city}, ${this.state}, ${this.countryName}`;
+				return formattedString;
+			}
+			if (this.countryName === 'Puerto Rico') {
+				const formattedString = `${this.city}, PR`;
+				return formattedString;
+			}
+			return this.countryName;
+		}
 	},
 	methods: {
 		// Get the url for the loan image sized width by height

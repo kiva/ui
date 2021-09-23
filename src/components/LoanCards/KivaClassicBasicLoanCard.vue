@@ -3,7 +3,7 @@
 		class="kv-tailwind tw-w-[336px]"
 		:id="`${loanId}-loan-card`"
 	>
-		<!-- Borrower image -->
+		<!-- Borrower image w/location <summary-tag> -->
 		<kv-loading-placeholder
 			v-if="isLoading"
 			class="tw-mb-1 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
@@ -27,6 +27,10 @@
 				{ width: 335, viewSize: 375 },
 				{ width: 280 },
 			]"
+			:city="city"
+			:state="state"
+			:country-name="countryName"
+			:distribution-model="distributionModel"
 		/>
 
 		<!-- Borrower name-->
@@ -128,7 +132,7 @@ import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
-import { mdiChevronRight } from '@mdi/js';
+import { mdiChevronRight, mdiMapMarker } from '@mdi/js';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -148,7 +152,10 @@ const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	lend {
 		loan(id: $loanId) {
 			id
+			distributionModel
 			geocode {
+				city
+				state
 				country {
 					name
 					isoCode
@@ -224,6 +231,7 @@ export default {
 			isLoading: false,
 			queryObserver: null,
 			mdiChevronRight,
+			mdiMapMarker,
 		};
 	},
 	computed: {
@@ -235,6 +243,15 @@ export default {
 		},
 		countryName() {
 			return this.loan?.geocode?.country?.name || '';
+		},
+		city() {
+			return this.loan?.geocode?.city || '';
+		},
+		state() {
+			return this.loan?.geocode?.state || '';
+		},
+		distributionModel() {
+			return this.loan?.distributionModel || '';
 		},
 		imageHash() {
 			return this.loan?.image?.hash ?? '';
