@@ -9,15 +9,7 @@
 			class="tw-mb-1 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
 		/>
 
-<<<<<<< HEAD
-		<span
-=======
-		<!-- TODO: Once click interaction for this is in place, we need to disable the click
-		if allSharesReserved is true
-		ie.
-		:click="`${allSharesReserved ? 'correct redirect' : ''}`" -->
-		<borrower-image
->>>>>>> master
+		<div
 			v-if="!isLoading"
 			class="tw-relative"
 		>
@@ -46,7 +38,7 @@
 			/>
 			<summary-tag
 				v-if="countryName"
-				class="tw-absolute tw-bottom-1.5 tw-left-1"
+				class="tw-absolute tw-bottom-2 tw-left-1"
 				:city="city"
 				:state="state"
 				:country-name="countryName"
@@ -57,7 +49,7 @@
 				/>
 				{{ formattedLocation }}
 			</summary-tag>
-		</span>
+		</div>
 
 		<!-- Borrower name-->
 		<kv-loading-placeholder
