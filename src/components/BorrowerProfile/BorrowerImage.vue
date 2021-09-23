@@ -22,7 +22,7 @@
 		>
 		<summary-tag
 			v-if="countryName"
-			class="tw-absolute tw-bottom-2 tw-left-1"
+			class="tw-absolute tw-bottom-1 tw-left-1"
 			:city="city"
 			:state="state"
 			:country-name="countryName"
@@ -39,6 +39,8 @@
 <script>
 import { getKivaImageUrl } from '@/util/imageUtils';
 import { mdiMapMarker } from '@mdi/js';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import SummaryTag from './SummaryTag';
 
 export default {
 	props: {
@@ -104,6 +106,10 @@ export default {
 			type: String,
 			default: '',
 		}
+	},
+	components: {
+		KvMaterialIcon,
+		SummaryTag,
 	},
 	data() {
 		return {
