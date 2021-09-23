@@ -6,12 +6,15 @@
 		<template #content>
 			<kv-page-container>
 				<kv-grid
-					class="tw-grid-cols-12 tw-gap-2 tw-items-center"
-					:class="{ 'tw-grid-cols-1 tw-mx-auto': singleColumn }"
+					class="tw-grid-cols-12 tw-gap-2 tw-items-center tw-justify-items-center"
 					:style="customGridStyles"
 				>
 					<div
-						class="tw-mx-auto tw-col-span-12 md:tw-col-span-6"
+						class="tw-mx-auto tw-col-span-12"
+						:class="{
+							'md:tw-col-span-6': !singleColumn
+						}"
+						:style="maxWidthStyles"
 					>
 						<!-- eslint-enable max-len -->
 						<template v-if="isHeroCarousel">
@@ -82,8 +85,12 @@
 					</div>
 
 					<div
-						class="tw-col-span-12 md:tw-col-span-6"
-						:class="{ 'tw-order-first': swapOrder }"
+						class="tw-col-span-12"
+						:class="{
+							'tw-order-first': swapOrder,
+							'md:tw-col-span-6': !singleColumn
+						}"
+						:style="maxWidthStyles"
 					>
 						<h1
 							v-if="heroHeadline"
