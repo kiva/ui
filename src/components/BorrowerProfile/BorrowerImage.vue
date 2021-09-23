@@ -20,6 +20,7 @@
 			:alt="alt"
 			loading="lazy"
 		>
+		<!-- Hidden if countyName prop is not passed into component -->
 		<summary-tag
 			v-if="countryName"
 			class="tw-absolute tw-bottom-1 tw-left-1"
@@ -90,6 +91,10 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		/**
+		 * City, State and Country are all location data for the loan.
+		 * IF countryName is not included the location <summary-tag> is hidden.
+		 */
 		city: {
 			type: String,
 			default: '',
@@ -102,6 +107,10 @@ export default {
 			type: String,
 			default: '',
 		},
+		/**
+		 * String of the distributionModel for the loan.
+		 * Used to help determine how to display the location of the loan.
+		 */
 		distributionModel: {
 			type: String,
 			default: '',
