@@ -9,30 +9,32 @@
 			class="tw-mb-1 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
 		/>
 
-		<!-- TODO: Once click interaction for this is in place, we need to disable the click
-		if allSharesReserved is true
-		ie.
-		:click="`${allSharesReserved ? 'correct redirect' : ''}`" -->
-		<borrower-image
-			v-if="!isLoading"
-			class="
+		<!-- Is there a way to display the click completely if allSharesAreReserved? -->
+		<router-link
+			:to="`${!allSharesReserved ? `/lend/${loanId}` : ''}`"
+			v-kv-track-event="['KivaClassicBasicLoanCard', 'click-borrower-image', loanId]"
+		>
+			<borrower-image
+				v-if="!isLoading"
+				class="
 				tw-w-full
 				tw-bg-black
 				tw-rounded
 			"
-			:alt="'photo of ' + borrowerName"
-			:aspect-ratio="3 / 4"
-			:default-image="{ width: 336 }"
-			:hash="imageHash"
-			:images="[
-				{ width: 336, viewSize: 1024 },
-				{ width: 336, viewSize: 768 },
-				{ width: 416, viewSize: 480 },
-				{ width: 374, viewSize: 414 },
-				{ width: 335, viewSize: 375 },
-				{ width: 280 },
-			]"
-		/>
+				:alt="'photo of ' + borrowerName"
+				:aspect-ratio="3 / 4"
+				:default-image="{ width: 336 }"
+				:hash="imageHash"
+				:images="[
+					{ width: 336, viewSize: 1024 },
+					{ width: 336, viewSize: 768 },
+					{ width: 416, viewSize: 480 },
+					{ width: 374, viewSize: 414 },
+					{ width: 335, viewSize: 375 },
+					{ width: 280 },
+				]"
+			/>
+		</router-link>
 
 		<!-- Borrower name-->
 		<kv-loading-placeholder
@@ -112,7 +114,8 @@
 			v-if="!isLoading"
 			class="tw-mb-2"
 			:state="`${allSharesReserved ? 'disabled' : ''}`"
-			:to="`/lend/${loan.loanId}`"
+			:to="`/lend/${loanId}`"
+			v-kv-track-event="['KivaClassicBasicLoanCard', 'click-Read-more-CTA', loanId]"
 		>
 			Read more
 			<kv-material-icon
