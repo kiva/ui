@@ -37,7 +37,7 @@
 
 		<borrower-name
 			v-if="!isLoading"
-			class="md:tw-mb-1.5 lg:tw-mb-2 tw-text-h3"
+			class="tw-mb-1 tw-text-h3"
 			:name="borrowerName"
 		/>
 
@@ -56,6 +56,7 @@
 		<!-- Contains amount to go and fundraising bar -->
 		<loan-progress-group
 			v-if="!ifLoading"
+			class="tw-mb-2.5"
 			:money-left="unreservedAmount"
 			:progress-percent="fundraisingPercent"
 			:time-left="timeLeftMessage"
@@ -69,6 +70,7 @@
 
 		<loan-use
 			v-if="!isLoading"
+			class="tw-mb-2.5"
 			loan-use-max-length="52"
 			:use="loan.use"
 			:name="borrowerName"
@@ -85,7 +87,7 @@
 
 		<loan-matching-text
 			v-if="!isLoading"
-			class="tw-mb-1"
+			class="tw-mb-1.5"
 			:matcher-name="loan.matchingText"
 			:match-ratio="loan.matchRatio"
 			:status="loan.status"
@@ -94,11 +96,23 @@
 			:loan-amount="loan.loanAmount"
 		/>
 
-		<!-- Button -->
+		<!-- CTA Button -->
 		<kv-loading-placeholder
 			v-if="isLoading"
 			class="tw-rounded" :style="{width: '9rem', height: '3rem'}"
 		/>
+
+		<kv-button
+			v-if="!isLoading"
+			class="tw-mb-2"
+			:to="`/lend/${loan.loanId}`"
+		>
+			Read more
+			<kv-material-icon
+				class="tw-align-middle"
+				:icon="mdiChevronRight"
+			/>
+		</kv-button>
 	</div>
 </template>
 
@@ -114,6 +128,9 @@ import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
+import { mdiChevronRight } from '@mdi/js';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
@@ -197,6 +214,8 @@ export default {
 		LoanUse,
 		LoanProgressGroup,
 		LoanMatchingText,
+		KvButton,
+		KvMaterialIcon,
 	},
 	data() {
 		return {
@@ -204,6 +223,7 @@ export default {
 			basketItems: null,
 			isLoading: false,
 			queryObserver: null,
+			mdiChevronRight,
 		};
 	},
 	computed: {

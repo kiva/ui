@@ -15,7 +15,7 @@
 		>
 			🎉
 		</span>
-		<h4 class="tw-inline-block ">
+		<h4 class="tw-inline-block">
 			{{ constructedMatchingText }}
 		</h4>
 	</span>
