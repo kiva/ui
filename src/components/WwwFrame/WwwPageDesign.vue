@@ -26,26 +26,40 @@
 						</div>
 
 						<!-- nav for mobile and desktop -->
-						<ul class="
+						<nav id="top-nav">
+							<ul class="
 								tw-flex tw-gap-2 tw-items-center md:tw-justify-end tw-py-2.5
 								tw-bg-secondary md:tw-bg-primary"
-						>
-							<li>
-								<kv-button variant="ghost" to="#creative-studio-logo-intro">
-									Logos
-								</kv-button>
-							</li>
-							<li>
-								<kv-button variant="ghost" to="#creative-studio-colors-intro">
-									Colors
-								</kv-button>
-							</li>
-							<li>
-								<kv-button variant="ghost" to="#creative-studio-typography-intro">
-									Type
-								</kv-button>
-							</li>
-						</ul>
+							>
+								<li>
+									<kv-button
+										variant="ghost"
+										href="#creative-studio-logo-intro"
+										@click.native.prevent="scrollPastNav('#creative-studio-logo-intro')"
+									>
+										Logos
+									</kv-button>
+								</li>
+								<li>
+									<kv-button
+										variant="ghost"
+										href="#creative-studio-colors-intro"
+										@click.native.prevent="scrollPastNav('#creative-studio-colors-intro')"
+									>
+										Colors
+									</kv-button>
+								</li>
+								<li>
+									<kv-button
+										variant="ghost"
+										href="#creative-studio-typography-intro"
+										@click.native.prevent="scrollPastNav('#creative-studio-typography-intro')"
+									>
+										Type
+									</kv-button>
+								</li>
+							</ul>
+						</nav>
 					</div>
 				</kv-page-container>
 			</div>
@@ -192,6 +206,27 @@ export default {
 			darkTheme,
 			year: new Date().getFullYear(),
 		};
+	},
+	methods: {
+		scrollPastNav(id) {
+			// Scrolls the page so the target isn't covered by the top nav
+			const navEl = document.querySelector('#top-nav');
+			const navHeight = navEl?.clientHeight ?? 0;
+			const targetEl = document.querySelector(id);
+			const targetOffset = targetEl?.offsetTop ?? 0;
+
+			if (navHeight && targetOffset) {
+				window.scrollTo({
+					top: targetOffset - navHeight,
+					behavior: 'smooth'
+				});
+			}
+
+			// update the url without triggering a new scroll
+			const url = new URL(window.location);
+			url.hash = id;
+			window.history.replaceState({}, '', url);
+		}
 	}
 };
 </script>
