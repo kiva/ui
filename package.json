@@ -21,6 +21,7 @@
 		"build:client": "rimraf dist/static && webpack --config build/webpack.client.prod.conf.js --progress --stats=minimal",
 		"build:server": "webpack --node-env=production --config build/webpack.server.conf.js --progress --stats=detailed",
 		"destroyBuildCache": "rimraf node_modules/.cache/hard-source",
+		"e2e:ci": "cypress run",
 		"e2e:dev": "cypress open --config baseUrl=http://localhost:8888",
 		"e2e:headless": "cypress run --config baseUrl=http://localhost:8888",
 		"fetchSchema": "node build/fetch-schema.js && wait-on build/schema.graphql",
