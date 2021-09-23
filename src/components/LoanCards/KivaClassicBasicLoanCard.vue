@@ -8,6 +8,11 @@
 			v-if="isLoading"
 			class="tw-mb-1 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
 		/>
+
+		<!-- TODO: Once click interaction for this is in place, we need to disable the click
+		if allSharesReserved is true
+		ie.
+		:click="`${allSharesReserved ? 'correct redirect' : ''}`" -->
 		<borrower-image
 			v-if="!isLoading"
 			class="
@@ -60,6 +65,7 @@
 			:money-left="unreservedAmount"
 			:progress-percent="fundraisingPercent"
 			:time-left="timeLeftMessage"
+			:all-shares-reserved="allSharesReserved"
 		/>
 
 		<!-- LoanUse  -->
@@ -105,6 +111,7 @@
 		<kv-button
 			v-if="!isLoading"
 			class="tw-mb-2"
+			:state="`${allSharesReserved ? 'disabled' : ''}`"
 			:to="`/lend/${loan.loanId}`"
 		>
 			Read more
@@ -266,6 +273,12 @@ export default {
 		},
 		timeLeft() {
 			return this.loan?.fundraisingTimeLeft ?? '';
+		},
+		allSharesReserved() {
+			if (parseFloat(this.loan?.unreservedAmount) === 0) {
+				return true;
+			}
+			return false;
 		},
 	},
 	methods: {
