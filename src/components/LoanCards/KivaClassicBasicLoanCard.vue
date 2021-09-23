@@ -10,9 +10,9 @@
 		/>
 
 		<!-- TODO: Once click interaction for this is in place, we need to disable the click
-		if allSharesReserved is true 
-		
-		click="`${allSharesReserved ? 'correct redirect' : ''}`" -->
+		if allSharesReserved is true
+		ie.
+		:click="`${allSharesReserved ? 'correct redirect' : ''}`" -->
 		<borrower-image
 			v-if="!isLoading"
 			class="
