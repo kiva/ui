@@ -10,7 +10,8 @@ import '@/assets/iconLoader';
 import '../src/assets/scss/app.scss';
 
 // Load Tailwinds css
-import 'tailwindcss/tailwind.css';
+// import 'tailwindcss/tailwind.css';
+import './tailwind.css';
 
 // css for storybook overrides like background color
 import './storybookStyles.scss';

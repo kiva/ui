@@ -100,7 +100,7 @@ export default {
 	},
 	computed: {
 		inContextClasses() {
-			return this.inContext ? 'tw-relative tw-bg-gray-50 tw-rounded' : '';
+			return this.inContext ? 'tw-relative tw-bg-secondary tw-rounded' : '';
 		}
 	},
 	methods: {

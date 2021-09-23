@@ -1,5 +1,8 @@
 <template>
-	<div id="app">
+	<div
+		id="app"
+		:style="defaultKivaClassicTheme"
+	>
 		<router-view />
 		<vue-progress-bar />
 		<the-tip-message />
@@ -10,6 +13,7 @@
 import '@/assets/scss/tailwind/tailwind.css';
 import TheTipMessage from '@/components/WwwFrame/TheTipMessage';
 import webmanifest from '@/manifest.webmanifest';
+import { defaultTheme } from '~/@kiva/kv-tokens/configs/kivaColors';
 
 export default {
 	name: 'App',
@@ -154,6 +158,15 @@ export default {
 				}
 			]))
 		};
+	},
+	data() {
+		return {
+			// Kludge to ensure Kiva Classic styles work while we use the .kv-tailwind class.
+			// The kv-tokens tailwind config applies a set of CSS custom properties to the ":root".
+			// However, in UI a PostCSS plugin prepends all tailwind stuff with .kv-tailwind
+			// And there is no .kv-tailwind :root. So we are inlining them on the div#app in the interim.
+			defaultKivaClassicTheme: defaultTheme
+		};
 	}
 };
 </script>
@@ -177,6 +190,11 @@ export default {
 
 	blockquote p {
 		color: #212121;
+		color: rgb(var(--tw-text-primary));
+	}
+
+	select {
+		background-image: none;
 	}
 }
 
@@ -185,6 +203,7 @@ body .kv-tailwind {
 	font-size: 1rem;
 	line-height: 1.5;
 	color: #212121;
+	color: rgb(var(--tw-text-primary));
 }
 
 @media (min-width: 1024px) {

@@ -14,7 +14,7 @@
 							:embla-options="{ loop: false }"
 							:multiple-slides-visible="true"
 							slides-to-scroll="visible"
-							class="tw-w-full"
+							class="tw-w-full tw-overflow-visible md:tw-overflow-hidden"
 							:slide-max-width="singleSlideWidth"
 						>
 							<template v-for="(slide, index) in carouselSlides" #[`slide${index}`]>
@@ -112,7 +112,7 @@ export default {
 				return 'tw-text-center';
 			}
 			// default class string for left aligned text
-			return 'md:tw-col-start-2 md:tw-col-span-10 lg:tw-col-span-6';
+			return '';
 		},
 		singleSlideWidth() {
 			// tw-grid width is 1072px == 67 rem

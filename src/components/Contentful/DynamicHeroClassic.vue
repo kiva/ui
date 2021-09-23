@@ -11,7 +11,7 @@
 					:style="customGridStyles"
 				>
 					<div
-						class="tw-mx-auto tw-col-span-12 md:tw-col-span-6 xl:tw-col-span-5"
+						class="tw-mx-auto tw-col-span-12 md:tw-col-span-6"
 					>
 						<!-- eslint-enable max-len -->
 						<template v-if="isHeroCarousel">
@@ -72,7 +72,7 @@
 						<template v-if="isHeroVideo">
 							<video
 								:src="heroMedia[0].url"
-								class="contentful-hero__video-wrapper--video"
+								class="tw-rounded tw-overflow-hidden"
 								autoplay
 								loop
 								muted
@@ -82,7 +82,7 @@
 					</div>
 
 					<div
-						class="tw-col-span-12 md:tw-col-span-6 xl:tw-col-span-7"
+						class="tw-col-span-12 md:tw-col-span-6"
 						:class="{ 'tw-order-first': swapOrder }"
 					>
 						<h1

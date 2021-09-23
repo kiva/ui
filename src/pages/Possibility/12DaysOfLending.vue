@@ -37,7 +37,7 @@
 
 <script>
 import _get from 'lodash/get';
-import contentful from '@/graphql/query/contentful.graphql';
+import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KivaContentBlock from '@/pages/Possibility/KivaContentBlock';
@@ -75,7 +75,7 @@ export default {
 	inject: ['apollo'],
 	created() {
 		this.apollo.query({
-			query: contentful,
+			query: contentfulEntries,
 			variables: {
 				contentType: 'uiSetting',
 				contentKey: 'ui-global-promo',

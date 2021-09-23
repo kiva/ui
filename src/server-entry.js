@@ -9,6 +9,8 @@ import createApp from '@/main';
 import headScript from '@/head/script';
 import noscriptTemplate from '@/head/noscript.html';
 import { authenticationGuard } from '@/util/authenticationGuard';
+import { contentfulPreviewCookie } from '@/util/contentfulPreviewCookie';
+
 import logFormatter from '@/util/logFormatter';
 
 const isDev = process.env.NODE_ENV !== 'production';
@@ -101,6 +103,7 @@ export default context => {
 				// TODO: Check for + redirect to kiva php app external route
 				return reject({ code: 404 });
 			}
+			contentfulPreviewCookie({ route: router.currentRoute, cookieStore });
 			// Use route meta property to determine if route needs authentication
 			// authenticationGuard will reject promise with a redirect to login if
 			// required authentication query fails

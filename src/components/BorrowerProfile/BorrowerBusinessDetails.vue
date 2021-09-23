@@ -1,5 +1,5 @@
 <template>
-	<section class="tw-rounded tw-border-gray-300 tw-bg-white tw-p-[20px] md:tw-p-[28px] md:tw-p-[32px]">
+	<section class="tw-rounded tw-border-tertiary tw-bg-primary tw-p-2.5 md:tw-p-3.5 lg:tw-p-4">
 		<h2 class="tw-mt-0 tw-mb-1">
 			About {{ borrowerBusinessName }}
 		</h2>
@@ -17,14 +17,14 @@
 		<h3 v-if="sector" class="tw-mb-0">
 			{{ sector }}
 		</h3>
-		<p class="tw-text-h4 tw-text-gray-500 tw-mb-2">
+		<p class="tw-text-h4 tw-text-secondary tw-mb-2">
 			Industry
 		</p>
 
 		<h3 class="tw-mb-0">
 			{{ yearsInBusinessFormatted }}
 		</h3>
-		<p class="tw-text-h4 tw-text-gray-500">
+		<p class="tw-text-h4 tw-text-secondary">
 			Years in operation
 		</p>
 
@@ -32,7 +32,7 @@
 			v-for="(link, index) in filteredSocialLinks"
 			:key="index"
 			target="_blank"
-			class="tw-rounded tw-bg-gray-50
+			class="tw-rounded tw-bg-secondary
 					tw-inline-flex tw-items-center tw-justify-center
 					tw-mt-2 tw-mr-2
 					tw-h-6 tw-w-6"

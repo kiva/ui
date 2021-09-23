@@ -8,6 +8,7 @@ import {
 } from 'apollo-cache-inmemory';
 import Auth0LinkCreator from './Auth0Link';
 import BasketLinkCreator from './BasketLink';
+import ContentfulPreviewLink from './ContentfulPreviewLink';
 import ExperimentIdLink from './ExperimentIdLink';
 import HttpLinkCreator from './HttpLink';
 import NetworkErrorLink from './NetworkErrorLink';
@@ -49,6 +50,7 @@ export default function createApolloClient({
 			ExperimentIdLink({ cookieStore }),
 			Auth0LinkCreator({ cookieStore, kvAuth0 }),
 			BasketLinkCreator({ cookieStore }),
+			ContentfulPreviewLink({ cookieStore }),
 			HttpLinkCreator({ uri }),
 		]),
 		cache,

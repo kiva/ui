@@ -1,5 +1,5 @@
 <template>
-	<p class="tw-text-h2">
+	<p>
 		{{ loanUseFiltered }}
 	</p>
 </template>
@@ -35,12 +35,16 @@ export default {
 		borrowerCount: {
 			type: Number,
 			default: 1,
+		},
+		loanUseMaxLength: {
+			type: Number,
+			default: 0,
 		}
 	},
 	computed: {
 		loanUseFiltered() {
 			// eslint-disable-next-line max-len
-			return loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount);
+			return loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount, this.loanUseMaxLength);
 		},
 	}
 };

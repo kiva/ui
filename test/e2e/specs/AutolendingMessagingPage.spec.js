@@ -1,12 +1,4 @@
-import wwwPageMock from '../fixtures/wwwPageMock';
-
 describe('Autolending Messaging Spec', () => {
-	beforeEach(() => {
-		cy.mock(wwwPageMock());
-		// Hide tracking cookie notice banner
-		cy.setCookie('kvgdpr', 'true');
-	});
-
 	describe('Visits autolending opt-out page', () => {
 		it('Opt-out page should display failure message with missing success param', () => {
 			// Visit autolending settings

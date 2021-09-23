@@ -10,7 +10,7 @@
 				<span class="tw-text-h3 tw-block tw-m-0">
 					{{ timeLeft }}
 				</span>
-				<span class="tw-text-h4 tw-text-gray-500 tw-block">
+				<span class="tw-text-h4 tw-text-secondary tw-block">
 					remaining
 				</span>
 			</p>
@@ -18,7 +18,7 @@
 				<p class="tw-text-h3 tw-m-0">
 					{{ moneyLeft | numeral('$0,0[.]00') }} to go
 				</p>
-				<p class="tw-text-h4 tw-text-gray-500">
+				<p class="tw-text-h4 tw-text-secondary">
 					{{ progressPercent | numeral('0%') }} funded
 				</p>
 			</div>

@@ -42,15 +42,6 @@ jobs:
       run: npm run lint
     - name: Run Unit Tests
       run: npm run unit
-    - name: Run e2e Tests
-      uses: cypress-io/github-action@v2
-      with:
-        browser: chrome
-        headless: true
-        build: npm run build:cypress
-        start: npm start -- --mock --config=local
-        wait-on: 'http://localhost:8888/ui-site-map'
-        command: npm run e2e:headless
     - name: Merge test coverage reports
       run: npm run coverage:merge
     - name: Coveralls

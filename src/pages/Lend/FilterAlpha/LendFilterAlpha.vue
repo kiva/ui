@@ -4,13 +4,13 @@
 		:header-theme="headerTheme"
 		:main-class="'kv-tailwind'"
 	>
-		<article class="tw-bg-gray-50 tw-relative tw-pt-6">
+		<article class="tw-bg-secondary tw-relative tw-pt-6">
 			<div class="tw-relative" style="max-height: 460px;">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 				</div>
 			</div>
-			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8">
-			</div>
+			<!-- <div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8">
+			</div> -->
 			<div>
 				<kv-page-container>
 					<div class="tw-flex tw-items-start">
@@ -22,8 +22,8 @@
 								Each Kiva loan helps people build a better future for themselves and their families.
 							</p>
 						</div>
-						<button class="tw-mb-2 tw-border-r tw-border-gray-300 tw-px-2">
-							<kv-material-icon :icon="mdiCompassRose" class="tw-text-gray-500 tw-w-5 tw-h-5" />
+						<button class="tw-mb-2 tw-border-r tw-border-tertiary tw-px-2">
+							<kv-material-icon :icon="mdiCompassRose" class="tw-text-secondary tw-w-5 tw-h-5" />
 							<p class="tw-hidden md:tw-block">
 								Explore
 							</p>
@@ -36,19 +36,71 @@
 						</button>
 					</div>
 					<kv-grid class="tw-grid-cols-2 md:tw-grid-cols-3">
-						<div class="tw-bg-gray-300 tw-text-left md:tw-text-center">
+						<div class="tw-bg-tertiary tw-text-left md:tw-text-center">
 							<p>Filters</p>
 							<hr>
-							<br> Gender
+							<fieldset>
+								<legend>Gender Filter</legend>
+								<kv-radio
+									class="tw-text-left"
+									value="female"
+									v-model="gender"
+								>
+									Women
+								</kv-radio>
+								<kv-radio
+									class="tw-text-left"
+									value="male"
+									v-model="gender"
+								>
+									Men
+								</kv-radio>
+								<kv-radio
+									class="tw-text-left"
+									value="both"
+									v-model="gender"
+								>
+									All
+								</kv-radio>
+
+								<span>gender: {{ gender }}</span>
+							</fieldset>
+							<hr>
+							<fieldset>
+								<legend>Sector</legend>
+								<kv-checkbox
+									class="tw-text-left"
+									v-for=" sectorBox in allSectors"
+									name="sectorBox.name"
+									v-model="sector"
+									:key="sectorBox.id"
+									:checked="false"
+								>
+									{{ sectorBox.name }}
+								</kv-checkbox>
+							</fieldset>
+							<br>
+							<kv-button
+								v-model="loanQueryFilters"
+								@click="updateQuery"
+							>
+								Search
+							</kv-button>
+							<kv-button
+								v-model="loanQueryFilters"
+								@click="resetFilter"
+							>
+								Reset Filters
+							</kv-button>
+							<hr>
 							<br> Loan Term
 							<br> Country
-							<br> Sector
 						</div>
 						<div class="md:tw-hidden">
 							<p> {{ totalCount }} Loans </p>
 						</div>
 						<div class="tw-col-span-2">
-							<div class="tw-bg-gray-300 tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
+							<div class="tw-bg-tertiary tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
 								Search Loans
 							</div>
 							<div class="tw-hidden md:tw-block tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
@@ -74,15 +126,19 @@
 </template>
 
 <script>
-import { lightHeader } from '@/util/siteThemes';
-import { fetchData } from '@/util/flssUtils';
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
-
+import { lightHeader } from '@/util/siteThemes';
+import {
+	fetchData, filterGender, allSectors, filterSector
+} from '@/util/flssUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 
 export default {
 	inject: ['apollo'],
@@ -91,38 +147,91 @@ export default {
 		KvGrid,
 		KvPageContainer,
 		KvMaterialIcon,
-		LoanCardController
-
+		LoanCardController,
+		KvRadio,
+		KvButton,
+		KvCheckbox,
 	},
 	data() {
 		return {
 			headerTheme: lightHeader,
 			loanId: Number(this.$route.params.id || 0),
-			// flss query is defaulted to US loans currently to keep loans count
-			// manageable for now
-			loanQueryFilters: { countryIsoCode: { any: ['US'] } },
+			loanQueryFilters: {},
 			totalCount: 0,
 			loans: [],
 			zeroLoans: false,
 			mdiFilterVariant,
 			mdiCompassRose,
+			gender: 'both',
+			sector: ['Food', 'Education'],
+			country: ['TZ', 'KE'],
+			allSectors,
 		};
 	},
 	methods: {
-		runQuery() {
-			fetchData(this.loanQueryFilters, this.apollo).then(flssData => {
+		filterCountry() {
+			// # TODO: collect country from checkbox inputs
+			// let countryFilter = ['TZ', 'KE'];
+			const countryFilter = { any: this.country };
+			console.log('from filterCountrey', countryFilter);
+			return countryFilter;
+		},
+		resetFilter() {
+			this.gender = 'both';
+			this.sector = [];
+			this.country = [];
+			this.loanQueryFilters = {};
+			this.runQuery(this.loanQueryFilters);
+		},
+		runQuery(loanQueryFilters) {
+			console.log('filters into runQuery:', loanQueryFilters);
+			fetchData(loanQueryFilters, this.apollo).then(flssData => {
 				this.loans = flssData.values ?? [];
 				this.totalCount = flssData.totalCount;
+				console.log('num loans:', this.totalCount);
 
 				if (this.totalCount === 0) {
 					this.zeroLoans = true;
 				}
 			});
 		},
+		updateQuery() {
+			// this.country = ['TZ', 'KE'];
 
+			const updatedQueryFilters = this.queryFilters;
+			console.log('from updateQuery', updatedQueryFilters);
+			console.log('new query ran, yes!');
+			this.runQuery(updatedQueryFilters);
+		},
 	},
 	mounted() {
-		this.runQuery();
-	}
+		this.loanQueryFilters = { countryIsoCode: { any: ['US'] } };
+		console.log('mounted query ran:', this.loanQueryFilters);
+		this.runQuery(this.loanQueryFilters);
+	},
+	computed: {
+		queryFilters() {
+			// // TODO: enable genderFilter when its working
+			const genderFilter = filterGender(this.gender);
+			console.log('this is filtergender', genderFilter);
+
+			const sectorFilter = filterSector(this.sector);
+			console.log('this is filterSector', sectorFilter);
+
+			const loanQueryFilters = {
+				countryIsoCode: { none: [] },
+				// TODO: enable genderFilter when its working
+				// gender: genderFilter,
+				sector: sectorFilter,
+			};
+			console.log('yo! from queryFilters', loanQueryFilters);
+			return loanQueryFilters;
+		},
+	},
+	watch: {
+		gender: { handler: 'updateQuery' },
+		sector: { handler: 'updateQuery' },
+		// // country: { handler: 'updateQuery' },
+	},
 };
 </script>

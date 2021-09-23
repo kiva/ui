@@ -13,7 +13,7 @@
 			tw-block md:tw-inline-block
 			md:tw-flex-none
 			md:tw-mr-2
-			tw-max-w-[160px] md:tw-w-[84px] lg:tw-w-[84px] xl:tw-w-[96px]
+			tw-max-w-[160px] md:tw-w-[84px] xl:tw-w-12
 			tw-mb-1 md:tw-mb-0"
 			style="line-height: 0; /* global property affects images within anchors - override required */"
 		>
@@ -41,7 +41,7 @@
 					tw-flex
 					tw-items-center
 					tw-justify-center
-					tw-h-[120px] md:tw-h-[84px] lg:tw-h-[84px] xl:tw-h-[96px]
+					tw-h-[120px] md:tw-h-[84px] xl:tw-h-12
 					tw-text-h1"
 				:class="randomizedUserClass"
 			>
@@ -59,7 +59,7 @@
 					tw-flex
 					tw-items-center
 					tw-justify-center
-					tw-h-[120px] md:tw-h-[84px] lg:tw-h-[84px] xl:tw-h-[96px]"
+					tw-h-[120px] md:tw-h-[84px] xl:tw-h-12"
 			>
 				<!-- Kiva K logo -->
 				<!-- eslint-disable max-len -->
@@ -73,7 +73,7 @@
 		</div>
 
 		<div
-			class="tw-text-gray-800"
+			class="tw-text-primary"
 			:class="{ 'hover:tw-underline hover:tw-text-action': !anonymousSupporterCard }"
 		>
 			<span
@@ -132,15 +132,15 @@ export default {
 			isMobile: false,
 			userCardStyleOptions: [
 				{ color: 'tw-text-action', bg: 'tw-bg-brand-50' },
-				{ color: 'tw-text-800', bg: 'tw-bg-brand-100' },
-				{ color: 'tw-text-action', bg: 'tw-bg-gray-100' },
+				{ color: 'tw-text-black', bg: 'tw-bg-brand-100' },
+				{ color: 'tw-text-action', bg: 'tw-bg-secondary' },
 				{ color: 'tw-text-white', bg: 'tw-bg-action' },
 				// { color: 'tw-text-800', bg: 'tw-bg-gray-50' },
 				{ color: 'tw-text-brand-50', bg: 'tw-bg-action' },
-				{ color: 'tw-text-brand-50', bg: 'tw-bg-gray-800' },
-				{ color: 'tw-text-gray-100', bg: 'tw-bg-action' },
+				{ color: 'tw-text-brand-50', bg: 'tw-bg-black' },
+				{ color: 'tw-text-primary-inverse', bg: 'tw-bg-action' },
 				// { color: 'tw-text-action', bg: 'tw-bg-gray-50' },
-				{ color: 'tw-text-white', bg: 'tw-bg-gray-800' },
+				{ color: 'tw-text-white', bg: 'tw-bg-black' },
 			]
 		};
 	},

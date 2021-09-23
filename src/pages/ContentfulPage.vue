@@ -7,6 +7,7 @@
 			<component
 				v-for="({ component, content, wrapperClass }) in contentGroups"
 				:key="content.key"
+				:id="content.key"
 				:is="component"
 				:content="content"
 				v-bind="getComponentOptions(content.key)"
@@ -49,15 +50,16 @@ To use, simply create a route that defines contentfulPage in the meta data, e.g.
 },
 */
 
-import gql from 'graphql-tag';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import { processPageContent } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
 import * as siteThemes from '@/util/siteThemes';
+import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
 
 // Page frames
 const WwwPage = () => import('@/components/WwwFrame/WwwPage');
 const WwwPageCorporate = () => import('@/components/WwwFrame/WwwPageCorporate');
+const WwwPageDesign = () => import('@/components/WwwFrame/WwwPageDesign');
 
 // Content Group Types
 // TODO: update the campaign components to accept "content" prop
@@ -84,18 +86,12 @@ const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClas
 const HeroWithCarousel = () => import('@/components/Contentful/HeroWithCarousel');
 
 const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
-const MonthlyGoodFrequentlyAskedQuestions = () => import('@/components/MonthlyGood/FrequentlyAskedQuestions');
 
 const KvFrequentlyAskedQuestions = () => import('@/components/Kv/KvFrequentlyAskedQuestions');
 
 const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
 
-// Query for getting contentful page data
-const pageQuery = gql`query contentfulPage($key: String) {
-	contentful {
-		entries(contentType: "page", contentKey: $key)
-	}
-}`;
+const RichTextItemsCentered = () => import('@/components/Contentful/RichTextItemsCentered');
 
 // Get the Contentful Page data from the data of an Apollo query result
 const getPageData = data => {
@@ -112,6 +108,8 @@ const getPageFrameFromType = type => {
 			return WwwPage;
 		case 'lender-campaign':
 			return WwwPage;
+		case 'design':
+			return WwwPageDesign;
 		default:
 			logFormatter(`ContentfulPage: Unknown page type "${type}"`, 'error');
 			return WwwPage;
@@ -130,6 +128,8 @@ const getWrapperClassFromType = type => {
 		case 'heroWithCarousel':
 		case 'monthlyGoodSelector':
 		case 'testimonialCards':
+		case 'richTextItemsCentered':
+		case 'frequentlyAskedQuestions':
 			return 'kv-tailwind';
 		default:
 			return '';
@@ -168,9 +168,6 @@ const getComponentFromType = type => {
 			return CampaignPartner;
 		case 'mlCampaignThanks':
 			return CampaignThanks;
-		case 'mgFrequentlyAskedQuestions':
-			// TODO change this to generic FAQ Component
-			return MonthlyGoodFrequentlyAskedQuestions;
 		case 'monthlyGoodSelector':
 			return MonthlyGoodSelectorWrapper;
 		case 'frequentlyAskedQuestions':
@@ -185,6 +182,8 @@ const getComponentFromType = type => {
 			return DynamicHeroClassic;
 		case 'heroWithCarousel':
 			return HeroWithCarousel;
+		case 'richTextItemsCentered':
+			return RichTextItemsCentered;
 		default:
 			logFormatter(`ContenfulPage: Unknown content group type "${type}"`, 'error');
 			return null;
@@ -213,6 +212,8 @@ const customMGEventsAndConfig = {
 	customEventName: 'openMonthlyGoodSelector'
 };
 
+// TODO deprecate this when DynamicHero.vue and HomepageBottomCTA.vue
+// are no longer in use
 const componentOptions = {
 	// Selected MG Landing page component keys to recieve custom attrubutes
 	'homepage-hero-monthly-good': customMGEventsAndConfig,
@@ -239,23 +240,26 @@ export default {
 		};
 	},
 	apollo: {
-		query: pageQuery,
+		query: contentfulEntries,
 		preFetchVariables({ route }) {
 			return {
-				key: route?.meta?.contentfulPage(route),
+				contentType: 'page',
+				contentKey: route?.meta?.contentfulPage(route),
 			};
 		},
 		variables() {
 			return {
-				key: this.$route?.meta?.contentfulPage(this.$route),
+				contentType: 'page',
+				contentKey: this.$route?.meta?.contentfulPage(this.$route),
 			};
 		},
 		preFetch(config, client, args) {
 			return client.query({
-				query: pageQuery,
+				query: contentfulEntries,
 				variables: {
-					key: args?.route?.meta?.contentfulPage(args?.route),
-				},
+					contentType: 'page',
+					contentKey: args?.route?.meta?.contentfulPage(args?.route),
+				}
 			}).then(({ data }) => {
 				// Get Contentful page data
 				const pageData = getPageData(data);

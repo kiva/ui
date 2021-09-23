@@ -40,8 +40,8 @@ export default {
 				},
 				{
 					value: 'eco_friendly',
-					label: 'Support eco-friendly loans',
-					shortName: 'eco-friendly loans',
+					label: 'Support climate change loans',
+					shortName: 'climate change loans',
 					marketingName: 'Climate',
 					marketingOrder: 6
 				},
