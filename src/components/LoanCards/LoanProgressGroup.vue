@@ -1,12 +1,15 @@
 <template>
 	<figure>
-		<h4 class="tw-mb-0.5">
+		<h4 v-if="allSharesReserved">
+			Funding complete
+		</h4>
+		<h4 v-if="!allSharesReserved" class="tw-mb-0.5">
 			{{ moneyLeft | numeral('$0,0[.]00') }} to go{{ timeLeft !== '' ? `. ${timeLeft}` : '' }}
 		</h4>
 		<kv-progress-bar
 			class="tw-mb-1.5 lg:tw-mb-1"
 			aria-label="Percent the loan has funded"
-			:value="progressPercent * 100"
+			:value="`${ allSharesReserved ? 100 : (progressPercent * 100)}`"
 		/>
 	</figure>
 </template>
@@ -31,6 +34,10 @@ export default {
 			type: String,
 			default: '',
 		},
+		allSharesReserved: {
+			type: Boolean,
+			default: false,
+		}
 	},
 };
 </script>
