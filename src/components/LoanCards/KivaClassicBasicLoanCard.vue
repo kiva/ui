@@ -9,7 +9,7 @@
 			class="tw-mb-1 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
 		/>
 
-		<!-- If allSharesReserved, disable link by make it a span -->
+		<!-- If allSharesReserved, disable link by making it a span -->
 		<router-link
 			:is="allSharesReserved ? 'span' : 'router-link'"
 			:to="`${!allSharesReserved ? `/lend/${loanId}` : diable}`"
