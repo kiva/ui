@@ -150,10 +150,8 @@ export default {
 				if (key === 'sm') hasSmSizes = true;
 				if (key === 'lg') hasLgSizes = true;
 				// process sizes
-				const top = typeof sizeObj.top !== 'undefined' && sizeObj.top.toString()
-					? `${sizePrefix}tw-pt-${sizeObj.top}` : '';
-				const bottom = typeof sizeObj.bottom !== 'undefined' && sizeObj.bottom.toString()
-					? `${sizePrefix}tw-pb-${sizeObj.bottom}` : '';
+				const top = sizeObj.top?.toString() ? `${sizePrefix}tw-pt-${sizeObj.top}` : '';
+				const bottom = sizeObj.bottom?.toString() ? `${sizePrefix}tw-pb-${sizeObj.bottom}` : '';
 				// return our size based class set
 				return `${top} ${bottom}`;
 			});
