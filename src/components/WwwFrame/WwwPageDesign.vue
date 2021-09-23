@@ -36,6 +36,7 @@
 										variant="ghost"
 										href="#creative-studio-logo-intro"
 										@click.native.prevent="scrollPastNav('#creative-studio-logo-intro')"
+										:state="activeSection === 'creative-studio-logo-intro' ? 'active' : ''"
 									>
 										Logos
 									</kv-button>
@@ -45,6 +46,7 @@
 										variant="ghost"
 										href="#creative-studio-colors-intro"
 										@click.native.prevent="scrollPastNav('#creative-studio-colors-intro')"
+										:state="activeSection === 'creative-studio-colors-intro' ? 'active' : ''"
 									>
 										Colors
 									</kv-button>
@@ -54,6 +56,7 @@
 										variant="ghost"
 										href="#creative-studio-typography-intro"
 										@click.native.prevent="scrollPastNav('#creative-studio-typography-intro')"
+										:state="activeSection === 'creative-studio-typography-intro' ? 'active' : ''"
 									>
 										Type
 									</kv-button>
@@ -186,6 +189,7 @@ import FacebookLogo from '@/assets/inline-svgs/logos/facebook-logo.svg';
 import TwitterLogo from '@/assets/inline-svgs/logos/twitter-logo.svg';
 
 import { darkTheme } from '@kiva/kv-tokens/configs/kivaColors';
+import { createIntersectionObserver } from '@/util/observerUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -205,6 +209,7 @@ export default {
 		return {
 			darkTheme,
 			year: new Date().getFullYear(),
+			activeSection: '',
 		};
 	},
 	methods: {
@@ -226,7 +231,38 @@ export default {
 			const url = new URL(window.location);
 			url.hash = id;
 			window.history.replaceState({}, '', url);
-		}
-	}
+		},
+		createObserver() {
+			// scrollspy to highlight which section is currently in the viewport
+			this.observer = createIntersectionObserver({
+				targets: document.querySelectorAll(`
+					#creative-studio-logo-intro,
+					#creative-studio-colors-intro,
+					#creative-studio-typography-intro
+				`),
+				options: {
+					rootMargin: '-50% 0px', // when the section crosses the halfway mark of the screen
+				},
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.isIntersecting) {
+							this.activeSection = entry.target.id;
+						}
+					});
+				}
+			});
+		},
+		destroyObserver() {
+			if (this.observer) {
+				this.observer.disconnect();
+			}
+		},
+	},
+	mounted() {
+		this.createObserver();
+	},
+	beforeDestroy() {
+		this.destroyObserver();
+	},
 };
 </script>
