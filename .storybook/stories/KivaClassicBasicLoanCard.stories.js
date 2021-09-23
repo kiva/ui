@@ -11,7 +11,7 @@ const queryResult = {
 				distributionModel: 'partner', // direct, partner, both
 				geocode: {
 					city: "Cranston",
-					state: "Rhode Island",
+					state: "RI",
 					country: {
 						name: "Malawi",
 						isoCode: "MW"
