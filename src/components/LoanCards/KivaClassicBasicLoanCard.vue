@@ -136,7 +136,7 @@
 			:to="`/lend/${loanId}`"
 			v-kv-track-event="['Lending', 'click-Read-more', 'Read more', loanId]"
 		>
-			Learn more
+			View loan
 			<kv-material-icon
 				class="tw-align-middle"
 				:icon="mdiChevronRight"
