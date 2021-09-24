@@ -11,10 +11,6 @@ WORKDIR /ui
 RUN HUSKY=0 npm ci
 RUN npm run build
 
-# acceptance test stage
-FROM build-stage as acceptance-test
-RUN npm run e2e:ci -- --config baseUrl=https://www.stage.kiva.org
-
 # run stage
 FROM node:16-alpine as run-stage
 RUN apk add --no-cache git
