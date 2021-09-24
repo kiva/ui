@@ -3,52 +3,56 @@
 		class="kv-tailwind tw-w-[336px]"
 		:id="`${loanId}-loan-card`"
 	>
-		<!-- Borrower image w/location <summary-tag> -->
+		<!-- Borrower image w/ location <summary-tag> -->
 		<kv-loading-placeholder
 			v-if="isLoading"
 			class="tw-mb-1 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
 		/>
-
 		<div
 			v-if="!isLoading"
 			class="tw-relative"
 		>
-			<borrower-image
-				class="
-				tw-w-full
-				tw-bg-black
-				tw-rounded
-			"
-				:alt="'photo of ' + borrowerName"
-				:aspect-ratio="3 / 4"
-				:default-image="{ width: 336 }"
-				:hash="imageHash"
-				:images="[
-					{ width: 336, viewSize: 1024 },
-					{ width: 336, viewSize: 768 },
-					{ width: 416, viewSize: 480 },
-					{ width: 374, viewSize: 414 },
-					{ width: 335, viewSize: 375 },
-					{ width: 280 },
-				]"
-				:city="city"
-				:state="state"
-				:country-name="countryName"
-				:distribution-model="distributionModel"
-			/>
-			<summary-tag
-				v-if="countryName"
-				class="tw-absolute tw-bottom-2 tw-left-1"
-				:city="city"
-				:state="state"
-				:country-name="countryName"
+			<!-- If allSharesReserved, disable link by making it a span -->
+			<router-link
+				:is="allSharesReserved ? 'span' : 'router-link'"
+				:to="`/lend/${loanId}`"
+				v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
 			>
-				<kv-material-icon
-					class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
-					:icon="mdiMapMarker"
+				<borrower-image
+					class="
+					tw-relative
+					tw-w-full
+					tw-bg-black
+					tw-rounded
+				"
+					:alt="'photo of ' + borrowerName"
+					:aspect-ratio="3 / 4"
+					:default-image="{ width: 336 }"
+					:hash="imageHash"
+					:images="[
+						{ width: 336, viewSize: 1024 },
+						{ width: 336, viewSize: 768 },
+						{ width: 416, viewSize: 480 },
+						{ width: 374, viewSize: 414 },
+						{ width: 335, viewSize: 375 },
+						{ width: 280 },
+					]"
 				/>
-				{{ formattedLocation }}
-			</summary-tag>
+				<div v-if="countryName">
+					<summary-tag
+						class="tw-absolute tw-bottom-2 tw-left-1 tw-text-primary"
+						:city="city"
+						:state="state"
+						:country-name="countryName"
+					>
+						<kv-material-icon
+							class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
+							:icon="mdiMapMarker"
+						/>
+						{{ formattedLocation }}
+					</summary-tag>
+				</div>
+			</router-link>
 		</div>
 
 		<!-- Borrower name-->
@@ -129,9 +133,10 @@
 			v-if="!isLoading"
 			class="tw-mb-2"
 			:state="`${allSharesReserved ? 'disabled' : ''}`"
-			:to="`/lend/${loan.loanId}`"
+			:to="`/lend/${loanId}`"
+			v-kv-track-event="['Lending', 'click-Read-more', 'Read more', loanId]"
 		>
-			Read more
+			View loan
 			<kv-material-icon
 				class="tw-align-middle"
 				:icon="mdiChevronRight"
