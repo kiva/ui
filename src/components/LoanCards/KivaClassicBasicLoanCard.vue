@@ -15,11 +15,10 @@
 			<!-- If allSharesReserved, disable link by making it a span -->
 			<router-link
 				:is="allSharesReserved ? 'span' : 'router-link'"
-				:to="`${!allSharesReserved ? `/lend/${loanId}` : diable}`"
-				v-kv-track-event="['KivaClassicBasicLoanCard', 'click-borrower-image', loanId]"
+				:to="`/lend/${loanId}`"
+				v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
 			>
 				<borrower-image
-					v-if="!isLoading"
 					class="
 					tw-relative
 					tw-w-full
@@ -41,7 +40,7 @@
 				/>
 				<div v-if="countryName">
 					<summary-tag
-						class="tw-absolute tw-bottom-2 tw-left-1"
+						class="tw-absolute tw-bottom-2 tw-left-1 tw-text-primary"
 						:city="city"
 						:state="state"
 						:country-name="countryName"
@@ -135,7 +134,7 @@
 			class="tw-mb-2"
 			:state="`${allSharesReserved ? 'disabled' : ''}`"
 			:to="`/lend/${loanId}`"
-			v-kv-track-event="['KivaClassicBasicLoanCard', 'click-Read-more-CTA-button', loanId]"
+			v-kv-track-event="['Lending', 'click-Read-more', 'Read more', loanId]"
 		>
 			Read more
 			<kv-material-icon
