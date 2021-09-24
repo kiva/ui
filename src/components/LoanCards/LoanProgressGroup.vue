@@ -6,7 +6,7 @@
 		<kv-progress-bar
 			class="tw-mb-1.5 lg:tw-mb-1"
 			aria-label="Percent the loan has funded"
-			:value="`${ allSharesReserved ? 100 : (progressPercent * 100)}`"
+			:value="allSharesReserved ? 100 : (progressPercent * 100)"
 		/>
 	</figure>
 </template>

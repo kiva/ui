@@ -84,6 +84,7 @@ const CenteredRichText = () => import('@/components/Contentful/CenteredRichText'
 const DynamicHero = () => import('@/components/Contentful/DynamicHero');
 const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
 const HeroWithCarousel = () => import('@/components/Contentful/HeroWithCarousel');
+const LoansByCategoryCarousel = () => import('@/components/Contentful/LoansByCategoryCarousel');
 
 const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
 
@@ -126,6 +127,7 @@ const getWrapperClassFromType = type => {
 		case 'centeredRichText':
 		case 'dynamicHeroClassic':
 		case 'heroWithCarousel':
+		case 'loansByCategoryCarousel':
 		case 'monthlyGoodSelector':
 		case 'testimonialCards':
 		case 'richTextItemsCentered':
@@ -182,6 +184,8 @@ const getComponentFromType = type => {
 			return DynamicHeroClassic;
 		case 'heroWithCarousel':
 			return HeroWithCarousel;
+		case 'loansByCategoryCarousel':
+			return LoansByCategoryCarousel;
 		case 'richTextItemsCentered':
 			return RichTextItemsCentered;
 		default:
