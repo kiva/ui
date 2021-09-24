@@ -3,7 +3,6 @@
 		{{ loanUseFiltered }}
 		<kv-text-link
 			v-if="loanId"
-			class="tw-inline"
 			:to="`/lend/${loanId}`"
 			v-kv-track-event="['Lending', 'click-Read more', 'Learn more', loanId]"
 		>
@@ -63,7 +62,6 @@ export default {
 			// eslint-disable-next-line max-len
 			return loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount, this.loanUseMaxLength);
 		},
-
 	}
 };
 
