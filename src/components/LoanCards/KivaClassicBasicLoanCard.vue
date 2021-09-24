@@ -3,39 +3,58 @@
 		class="kv-tailwind tw-w-[336px]"
 		:id="`${loanId}-loan-card`"
 	>
-		<!-- Borrower image -->
+		<!-- Borrower image w/ location <summary-tag> -->
 		<kv-loading-placeholder
 			v-if="isLoading"
 			class="tw-mb-1 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
 		/>
-
-		<!-- If allSharesReserved, disable link by making it a span -->
-		<router-link
-			:is="allSharesReserved ? 'span' : 'router-link'"
-			:to="`${!allSharesReserved ? `/lend/${loanId}` : diable}`"
-			v-kv-track-event="['KivaClassicBasicLoanCard', 'click-borrower-image', loanId]"
+		<div
+			v-if="!isLoading"
+			class="tw-relative"
 		>
-			<borrower-image
-				v-if="!isLoading"
-				class="
+			<!-- If allSharesReserved, disable link by making it a span -->
+			<router-link
+				:is="allSharesReserved ? 'span' : 'router-link'"
+				:to="`${!allSharesReserved ? `/lend/${loanId}` : diable}`"
+				v-kv-track-event="['KivaClassicBasicLoanCard', 'click-borrower-image', loanId]"
+			>
+				<borrower-image
+					v-if="!isLoading"
+					class="
+					tw-relative
 					tw-w-full
 					tw-bg-black
 					tw-rounded
 				"
-				:alt="'photo of ' + borrowerName"
-				:aspect-ratio="3 / 4"
-				:default-image="{ width: 336 }"
-				:hash="imageHash"
-				:images="[
-					{ width: 336, viewSize: 1024 },
-					{ width: 336, viewSize: 768 },
-					{ width: 416, viewSize: 480 },
-					{ width: 374, viewSize: 414 },
-					{ width: 335, viewSize: 375 },
-					{ width: 280 },
-				]"
-			/>
-		</router-link>
+					:alt="'photo of ' + borrowerName"
+					:aspect-ratio="3 / 4"
+					:default-image="{ width: 336 }"
+					:hash="imageHash"
+					:images="[
+						{ width: 336, viewSize: 1024 },
+						{ width: 336, viewSize: 768 },
+						{ width: 416, viewSize: 480 },
+						{ width: 374, viewSize: 414 },
+						{ width: 335, viewSize: 375 },
+						{ width: 280 },
+					]"
+				/>
+				<div v-if="countryName">
+					<summary-tag
+						class="tw-absolute tw-bottom-2 tw-left-1"
+						:city="city"
+						:state="state"
+						:country-name="countryName"
+					>
+						<kv-material-icon
+							class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
+							:icon="mdiMapMarker"
+						/>
+						{{ formattedLocation }}
+					</summary-tag>
+				</div>
+			</router-link>
+		</div>
 
 		<!-- Borrower name-->
 		<kv-loading-placeholder
@@ -139,7 +158,8 @@ import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
-import { mdiChevronRight } from '@mdi/js';
+import { mdiChevronRight, mdiMapMarker } from '@mdi/js';
+import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -159,7 +179,10 @@ const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	lend {
 		loan(id: $loanId) {
 			id
+			distributionModel
 			geocode {
+				city
+				state
 				country {
 					name
 					isoCode
@@ -227,6 +250,7 @@ export default {
 		LoanMatchingText,
 		KvButton,
 		KvMaterialIcon,
+		SummaryTag,
 	},
 	data() {
 		return {
@@ -235,6 +259,7 @@ export default {
 			isLoading: false,
 			queryObserver: null,
 			mdiChevronRight,
+			mdiMapMarker,
 		};
 	},
 	computed: {
@@ -246,6 +271,15 @@ export default {
 		},
 		countryName() {
 			return this.loan?.geocode?.country?.name || '';
+		},
+		city() {
+			return this.loan?.geocode?.city || '';
+		},
+		state() {
+			return this.loan?.geocode?.state || '';
+		},
+		distributionModel() {
+			return this.loan?.distributionModel || '';
 		},
 		imageHash() {
 			return this.loan?.image?.hash ?? '';
@@ -277,6 +311,17 @@ export default {
 		},
 		timeLeft() {
 			return this.loan?.fundraisingTimeLeft ?? '';
+		},
+		formattedLocation() {
+			if (this.distributionModel === 'direct') {
+				const formattedString = `${this.city}, ${this.state}, ${this.countryName}`;
+				return formattedString;
+			}
+			if (this.countryName === 'Puerto Rico') {
+				const formattedString = `${this.city}, PR`;
+				return formattedString;
+			}
+			return this.countryName;
 		},
 		allSharesReserved() {
 			if (parseFloat(this.loan?.unreservedAmount) === 0) {
