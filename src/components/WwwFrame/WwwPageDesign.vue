@@ -95,7 +95,13 @@
 											</router-link>
 										</li>
 										<li>
-											<a href="mailto:design@kiva.org">Type</a>
+											<a
+												:href="`mailto:design@kiva.org?${typeRequestEmail}`"
+												class="tw-inline-flex tw-gap-1"
+											>
+												<span>Type</span>
+												<kv-material-icon class="tw-w-2" :icon="mdiEmailOutline" />
+											</a>
 										</li>
 									</ul>
 								</div>
@@ -187,12 +193,13 @@ import KivaCreativeStudioLogo from '@/assets/inline-svgs/logos/kiva-creative-stu
 import InstagramLogo from '@/assets/inline-svgs/logos/instagram-logo.svg';
 import FacebookLogo from '@/assets/inline-svgs/logos/facebook-logo.svg';
 import TwitterLogo from '@/assets/inline-svgs/logos/twitter-logo.svg';
+import { mdiEmailOutline } from '@mdi/js';
 
-import { darkTheme } from '@kiva/kv-tokens/configs/kivaColors';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	components: {
@@ -200,6 +207,7 @@ export default {
 		KivaCreativeStudioLogo,
 		KvButton,
 		KvGrid,
+		KvMaterialIcon,
 		KvPageContainer,
 		InstagramLogo,
 		FacebookLogo,
@@ -207,9 +215,18 @@ export default {
 	},
 	data() {
 		return {
-			darkTheme,
 			year: new Date().getFullYear(),
 			activeSection: '',
+			mdiEmailOutline,
+			typeRequestEmail: `
+				subject=${encodeURI('📥 Typekit request')}
+				&body=${encodeURI(`Name:
+Organization:
+
+Hey, Design 👋
+This is a message requesting the Kiva Post Grot typekit for the purpose(s) of
+				`)}
+			`
 		};
 	},
 	methods: {
