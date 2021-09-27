@@ -1,6 +1,7 @@
 <template>
 	<div
-		class="kv-tailwind tw-min-w-[230px] tw-max-w-[374px]"
+		class="kv-tailwind"
+		style="min-width: 230px; max-width: 374px;"
 		:id="`${loanId}-loan-card`"
 	>
 		<!-- Borrower image w/ location <summary-tag> -->
@@ -99,6 +100,7 @@
 			v-if="!isLoading"
 			class="tw-mb-2.5"
 			:loan-use-max-length="52"
+			:loan-id="`${allSharesReserved ? '' : loanId}`"
 			:use="loan.use"
 			:name="borrowerName"
 			:status="loan.status"
@@ -130,7 +132,7 @@
 		/>
 
 		<kv-button
-			v-if="!isLoading"
+			v-if="!isLoading && !allSharesReserved"
 			class="tw-mb-2"
 			:state="`${allSharesReserved ? 'disabled' : ''}`"
 			:to="`/lend/${loanId}`"
@@ -142,6 +144,21 @@
 				:icon="mdiChevronRight"
 			/>
 		</kv-button>
+
+		<!-- If allSharesReserved show message and hide cta button -->
+		<div
+			v-if="allSharesReserved"
+			class="
+				tw-rounded
+				tw-bg-brand-100
+				tw-text-center
+				tw-w-full
+				tw-py-1 tw-px-1.5
+				tw-mb-2 tw-mt-2
+			"
+		>
+			Another lender has selected this loan. Please choose a different borrower to support.
+		</div>
 	</div>
 </template>
 

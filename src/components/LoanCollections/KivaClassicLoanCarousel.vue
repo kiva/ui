@@ -12,12 +12,9 @@
 		<kv-carousel
 			v-if="augmentedLoanIds.length > 0 && isVisible"
 			class="tw-w-full tw-overflow-visible md:tw-overflow-hidden"
-			:autoplay="false"
 			:embla-options="{
 				loop: false,
-				align: 'start'
 			}"
-			indicator-style="none"
 			:multiple-slides-visible="true"
 			slides-to-scroll="visible"
 			:slide-max-width="singleSlideWidth"
@@ -28,7 +25,8 @@
 				<router-link
 					v-if="loanId === 3"
 					:key="`view-more-card-${loanId}`"
-					class="tw-flex tw-items-center tw-h-full tw-w-full hover:tw-bg-brand-50 tw-rounded"
+					class="tw-flex tw-items-center tw-h-full tw-w-full
+						hover:tw-bg-action-highlight hover:tw-text-primary-inverse tw-rounded"
 					:to="cleanUrl"
 					v-kv-track-event="[
 						'Homepage',
