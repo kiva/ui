@@ -67,7 +67,7 @@
 			class="tw-mb-1 tw-text-h3"
 			:max-length="50"
 			:name="borrowerName"
-			style="min-height: 60px;"
+			style="min-height: 3.75rem;"
 		/>
 
 		<!-- Amount to go line-->
