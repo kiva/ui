@@ -150,7 +150,7 @@
 			v-if="allSharesReserved"
 			class="
 				tw-rounded
-				tw-bg-brand-100
+				tw-bg-primary-inverse
 				tw-text-center
 				tw-w-full
 				tw-py-1 tw-px-1.5
