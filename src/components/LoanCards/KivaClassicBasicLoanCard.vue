@@ -115,7 +115,7 @@
 		/>
 
 		<loan-matching-text
-			v-if="!isLoading"
+			v-if="!isLoading && loan.matchingText !== ''"
 			class="tw-mb-1.5"
 			:matcher-name="loan.matchingText"
 			:match-ratio="loan.matchRatio"
@@ -241,6 +241,7 @@ const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 			fundraisingTimeLeft @client
 
 			# for matching-text component
+			isMatchable
 			matchingText
 			matchRatio
 		}
