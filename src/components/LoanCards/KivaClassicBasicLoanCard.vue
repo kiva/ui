@@ -1,6 +1,7 @@
 <template>
 	<div
-		class="kv-tailwind tw-w-[336px]"
+		class="kv-tailwind"
+		style="min-width: 230px; max-width: 374px;"
 		:id="`${loanId}-loan-card`"
 	>
 		<!-- Borrower image w/ location <summary-tag> -->
@@ -81,7 +82,7 @@
 
 		<!-- Contains amount to go and fundraising bar -->
 		<loan-progress-group
-			v-if="!ifLoading"
+			v-if="!isLoading"
 			class="tw-mb-2.5"
 			:money-left="unreservedAmount"
 			:progress-percent="fundraisingPercent"
@@ -98,7 +99,7 @@
 		<loan-use
 			v-if="!isLoading"
 			class="tw-mb-2.5"
-			loan-use-max-length="52"
+			:loan-use-max-length="52"
 			:loan-id="`${allSharesReserved ? '' : loanId}`"
 			:use="loan.use"
 			:name="borrowerName"
