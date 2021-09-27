@@ -1,7 +1,7 @@
 <template>
 	<div
-		class="kv-tailwind"
-		style="min-width: 230px; max-width: 374px;"
+		class="kv-tailwind tw-flex tw-flex-col"
+		style="min-width: 230px; max-width: 374px; height: 100%;"
 		:id="`${loanId}-loan-card`"
 	>
 		<!-- Borrower image w/ location <summary-tag> -->
@@ -65,7 +65,9 @@
 		<borrower-name
 			v-if="!isLoading"
 			class="tw-mb-1 tw-text-h3"
+			:max-length="50"
 			:name="borrowerName"
+			style="min-height: 60px;"
 		/>
 
 		<!-- Amount to go line-->
@@ -93,12 +95,12 @@
 		<!-- LoanUse  -->
 		<kv-loading-paragraph
 			v-if="isLoading"
-			class="tw-mb-1.5" :style="{width: '100%', height: '5.5rem'}"
+			class="tw-mb-1.5 tw-flex-grow" :style="{width: '100%', height: '5.5rem'}"
 		/>
 
 		<loan-use
 			v-if="!isLoading"
-			class="tw-mb-2.5"
+			class="tw-mb-2.5 tw-flex-grow"
 			:loan-use-max-length="52"
 			:loan-id="`${allSharesReserved ? '' : loanId}`"
 			:use="loan.use"
@@ -128,12 +130,12 @@
 		<!-- CTA Button -->
 		<kv-loading-placeholder
 			v-if="isLoading"
-			class="tw-rounded" :style="{width: '9rem', height: '3rem'}"
+			class="tw-rounded tw-self-start" :style="{width: '9rem', height: '3rem'}"
 		/>
 
 		<kv-button
 			v-if="!isLoading && !allSharesReserved"
-			class="tw-mb-2"
+			class="tw-mb-2 tw-self-start"
 			:state="`${allSharesReserved ? 'disabled' : ''}`"
 			:to="`/lend/${loanId}`"
 			v-kv-track-event="['Lending', 'click-Read-more', 'Read more', loanId]"
