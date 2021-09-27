@@ -34,26 +34,15 @@
 							</kv-carousel>
 						</template>
 						<template v-if="isHeroImage">
-							<template v-if="buttonTo">
-								<router-link
-									:to="buttonTo"
-									v-kv-track-event="[
-										'Hero',
-										'click-hero-loancards',
-										heroMedia[0].description,
-									]"
-								>
-									<kv-contentful-img
-										v-if="heroMedia[0].url"
-										class="tw-block tw-mx-auto tw-mt-0 tw-mb-4 md:tw-mb-0"
-										:contentful-src="heroMedia[0].url"
-										:width="500"
-										fallback-format="jpg"
-										:alt="heroMedia[0].description"
-									/>
-								</router-link>
-							</template>
-							<template v-else>
+							<component
+								:is="buttonTo ? 'router-link' : 'span'"
+								:to="buttonTo"
+								v-kv-track-event="[
+									'Hero',
+									'click-hero-loancards',
+									heroMedia[0].description,
+								]"
+							>
 								<kv-contentful-img
 									v-if="heroMedia[0].url"
 									class="tw-block tw-mx-auto tw-mt-0 tw-mb-4 md:tw-mb-0"
@@ -62,30 +51,18 @@
 									fallback-format="jpg"
 									:alt="heroMedia[0].description"
 								/>
-							</template>
+							</component>
 						</template>
 						<template v-if="isResponsiveHeroImage && responsiveHeroImages.length">
-							<template v-if="buttonTo">
-								<router-link
-									:to="buttonTo"
-									v-kv-track-event="[
-										'Hero',
-										'click-hero-loancards',
-										responsiveHeroDescription,
-									]"
-								>
-									<kv-contentful-img
-										class="tw-block tw-mx-auto tw-mt-0 tw-mb-4 md:tw-mb-0"
-										:contentful-src="responsiveHeroImages[0].url"
-										:width="responsiveHeroImages[0].width"
-										:height="responsiveHeroImages[0].height"
-										fallback-format="jpg"
-										:alt="responsiveHeroDescription"
-										:source-sizes="responsiveHeroImages"
-									/>
-								</router-link>
-							</template>
-							<template v-else>
+							<component
+								:is="buttonTo ? 'router-link' : 'span'"
+								:to="buttonTo"
+								v-kv-track-event="[
+									'Hero',
+									'click-hero-loancards',
+									responsiveHeroDescription,
+								]"
+							>
 								<kv-contentful-img
 									class="tw-block tw-mx-auto tw-mt-0 tw-mb-4 md:tw-mb-0"
 									:contentful-src="responsiveHeroImages[0].url"
@@ -95,7 +72,7 @@
 									:alt="responsiveHeroDescription"
 									:source-sizes="responsiveHeroImages"
 								/>
-							</template>
+							</component>
 						</template>
 						<template v-if="isHeroVideo">
 							<video
@@ -130,16 +107,9 @@
 						<div v-if="heroBody" class="tw-prose tw-mb-2 md:tw-mb-3">
 							<dynamic-rich-text :html="heroBody" />
 						</div>
-						<kv-button
-							v-if="buttonText"
-							class="tw-w-full md:tw-w-auto"
-							:to="buttonTo"
-							:variant="buttonStyle"
-							@click.native="buttonClick"
-							v-kv-track-event="buttonAnalytics"
-						>
-							{{ buttonText }}
-						</kv-button>
+						<button-wrapper
+							:content="buttonContent"
+						/>
 					</div>
 				</kv-grid>
 			</kv-page-container>
@@ -152,7 +122,7 @@ import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin'
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import DynamicRichText from '@/components/Contentful/DynamicRichText';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import ButtonWrapper from '@/components/Contentful/ButtonWrapper';
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -166,7 +136,7 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	components: {
-		KvButton,
+		ButtonWrapper,
 		KvCarousel: () => import('@/components/Kv/KvCarousel'),
 		KvCarouselSlide: () => import('@/components/Kv/KvCarouselSlide'),
 		DynamicRichText,
@@ -191,26 +161,12 @@ export default {
 				return contentType ? contentType === 'background' : false;
 			});
 		},
-		buttonAnalytics() {
-			const defaults = ['Hero', 'click-hero-cta', this.buttonText];
-			const contentfulAnaltyicsEvent = this.buttonContent?.analyticsClickEvent ?? null;
-			return contentfulAnaltyicsEvent || defaults;
-		},
 		buttonContent() {
 			return this.content?.contents?.find(({ contentType }) => {
 				return contentType ? contentType === 'button' : false;
 			});
 		},
-		buttonStyle() {
-			return this.buttonContent?.style ?? 'primary';
-		},
-		buttonText() {
-			return this.buttonContent?.label ?? null;
-		},
 		buttonTo() {
-			if (this.$attrs?.customEventName) {
-				return '';
-			}
 			return this.buttonContent?.webLink ?? '';
 		},
 		genericContentBlock() {
@@ -304,16 +260,5 @@ export default {
 			return imageSet?.description ?? '';
 		},
 	},
-	methods: {
-		buttonClick(event) {
-			const customEventName = this.$attrs?.customEventName ?? null;
-			if (customEventName) {
-				// Current behavior is to replace a button navigation if a custom event name is passed
-				event.stopPropagation();
-				// Emit root level event that any component can listen for
-				this.$root.$emit(customEventName);
-			}
-		},
-	}
 };
 </script>

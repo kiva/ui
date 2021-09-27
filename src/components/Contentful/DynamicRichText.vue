@@ -16,19 +16,10 @@ export default {
 				template: `<div class="tw-prose tw-whitespace-pre-wrap">${this.html}</div>`,
 				components: {
 					KvContentfulImg: () => import('~/@kiva/kv-components/vue/KvContentfulImg'),
-					KvButton: () => import('~/@kiva/kv-components/vue/KvButton')
+					ButtonWrapper: () => import('@/components/Contentful/ButtonWrapper')
 				},
-				props: [
-					/* define props as needed */
-				],
-				methods: {
-					buttonClick(customEventName, event) {
-						// Current behavior is to replace a button navigation if a custom event name is passed
-						event.stopPropagation();
-						// Emit root level event that any component can listen for
-						this.$root.$emit(customEventName);
-					},
-				}
+				props: {
+				},
 			};
 		},
 	},
@@ -38,8 +29,7 @@ export default {
 			[
 				createElement(this.dynamicComponent, {
 					props: {
-						/* pass prop values as needed */
-					}
+					},
 				})
 			]
 		);
