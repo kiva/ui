@@ -131,7 +131,7 @@
 		/>
 
 		<kv-button
-			v-if="!isLoading"
+			v-if="!isLoading && !allSharesReserved"
 			class="tw-mb-2"
 			:state="`${allSharesReserved ? 'disabled' : ''}`"
 			:to="`/lend/${loanId}`"
@@ -143,6 +143,21 @@
 				:icon="mdiChevronRight"
 			/>
 		</kv-button>
+
+		<!-- If allSharesReserved show message and hide cta button -->
+		<div
+			v-if="allSharesReserved"
+			class="
+				tw-rounded
+				tw-bg-brand-100
+				tw-text-center
+				tw-w-full
+				tw-py-1 tw-px-1.5
+				tw-mb-2 tw-mt-2
+			"
+		>
+			Another lender has selected this loan. Please choose a different borrower to support.
+		</div>
 	</div>
 </template>
 

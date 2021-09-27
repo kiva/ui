@@ -6,7 +6,7 @@
 		<kv-progress-bar
 			class="tw-mb-1.5 lg:tw-mb-1"
 			aria-label="Percent the loan has funded"
-			:value="`${ allSharesReserved ? 100 : (progressPercent * 100)}`"
+			:value="progressPercent * 100"
 		/>
 	</figure>
 </template>
@@ -39,9 +39,6 @@ export default {
 	},
 	computed: {
 		fundingText() {
-			if (this.allSharesReserved) {
-				return 'Funding complete';
-			}
 			const formattedMoneyLeft = numeral(this.moneyLeft).format('$0,0[.]00');
 			const formattedTimeLeft = `${this.timeLeft !== '' ? `. ${this.timeLeft}` : ''}`;
 
