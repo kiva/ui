@@ -193,8 +193,14 @@ export default Vue => {
 				const item = queue.remove();
 				const method = item.eventType;
 				const { eventData } = item;
-				if (typeof kvActions[method] === 'function') {
-					kvActions[method](eventData, true);
+				if (inBrowser && typeof kvActions[method] === 'function') {
+					// Wrapping the event call in a setTimeout ensures that this while loop
+					// completes before the event functions are called. This is needed because
+					// the event functions can add more events to this queue, and we only want
+					// to process this queue once.
+					window.setTimeout(() => {
+						kvActions[method](eventData, true);
+					});
 				}
 			}
 		},
