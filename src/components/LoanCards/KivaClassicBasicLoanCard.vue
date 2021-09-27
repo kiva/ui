@@ -99,6 +99,7 @@
 			v-if="!isLoading"
 			class="tw-mb-2.5"
 			loan-use-max-length="52"
+			:loan-id="`${allSharesReserved ? '' : loanId}`"
 			:use="loan.use"
 			:name="borrowerName"
 			:status="loan.status"

@@ -1,10 +1,19 @@
 <template>
 	<p>
 		{{ loanUseFiltered }}
+		<kv-text-link
+			v-if="loanId"
+			:to="`/lend/${loanId}`"
+			v-kv-track-event="['Lending', 'click-Read more', 'Learn more', loanId]"
+		>
+			Learn more
+		</kv-text-link>
 	</p>
 </template>
 
 <script>
+import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
+
 const loanUseFilter = require('../../plugins/loan-use-filter');
 
 export default {
@@ -14,6 +23,9 @@ export default {
 				{ property: 'og:description', vmid: 'og:description', content: this.loanUseFiltered },
 			]
 		};
+	},
+	components: {
+		KvTextLink,
 	},
 	props: {
 		loanAmount: {
@@ -39,6 +51,10 @@ export default {
 		loanUseMaxLength: {
 			type: Number,
 			default: 0,
+		},
+		loanId: {
+			type: String,
+			default: '',
 		}
 	},
 	computed: {
