@@ -175,6 +175,8 @@ export default {
 		}, 200));
 	},
 	mounted() {
+		this.determineIfMobile();
+
 		window.addEventListener('scroll', this.throttledScroll);
 		window.addEventListener('scroll', () => {
 			this.hasScrolled = true;
