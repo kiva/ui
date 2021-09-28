@@ -25,17 +25,18 @@
 					tw-w-full
 					tw-bg-black
 					tw-rounded
+					tw-object-contain
 				"
 					:alt="'photo of ' + borrowerName"
 					:aspect-ratio="3 / 4"
 					:default-image="{ width: 336 }"
 					:hash="imageHash"
 					:images="[
-						{ width: 336, viewSize: 1024 },
-						{ width: 336, viewSize: 768 },
-						{ width: 416, viewSize: 480 },
-						{ width: 374, viewSize: 414 },
-						{ width: 335, viewSize: 375 },
+						{ width: 336, faceZoom: 0.7, viewSize: 1024 },
+						{ width: 336, faceZoom: 0.7, viewSize: 768 },
+						{ width: 416, faceZoom: 0.7, viewSize: 480 },
+						{ width: 374, faceZoom: 0.7, viewSize: 414 },
+						{ width: 335, faceZoom: 0.7, viewSize: 375 },
 						{ width: 280 },
 					]"
 				/>
