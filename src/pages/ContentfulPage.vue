@@ -12,6 +12,7 @@
 				:content="content"
 				v-bind="getComponentOptions(content.key)"
 				:class="wrapperClass"
+				data-section-type="contentful-section"
 			/>
 		</template>
 		<template v-else>
