@@ -1,9 +1,10 @@
 <template>
 	<div
-		class="tw-flex tw-justify-center tw-max-w-[700px] tw-flex-wrap tw-mx-auto"
+		class="tw-flex tw-justify-start md:tw-justify-center
+			md:tw-flex-wrap tw-mx-auto tw-overflow-x-auto md:tw-overflow-x-none"
 	>
 		<kv-button
-			class="tw-mx-1 tw-mb-3"
+			class="tw-mx-1 md:tw-mb-3"
 			v-for="category in loanChannels" :key="category.id"
 			:variant="selectedChannel === category.id ? 'link' : 'ghost'"
 			@click="handleCategoryClick(category.id)"
