@@ -37,7 +37,7 @@
 										class="tw-w-full md:tw-w-auto"
 										href="#creative-studio-logo-intro"
 										@click.native.prevent="scrollPastNav('#creative-studio-logo-intro')"
-										:state="activeSection === 'creative-studio-logo-intro' ? 'active' : ''"
+										:state="activeSection.includes('creative-studio-logo') ? 'active' : ''"
 									>
 										Logos
 									</kv-button>
@@ -48,7 +48,7 @@
 										class="tw-w-full md:tw-w-auto"
 										href="#creative-studio-colors-intro"
 										@click.native.prevent="scrollPastNav('#creative-studio-colors-intro')"
-										:state="activeSection === 'creative-studio-colors-intro' ? 'active' : ''"
+										:state="activeSection.includes('creative-studio-colors') ? 'active' : ''"
 									>
 										Colors
 									</kv-button>
@@ -59,7 +59,7 @@
 										class="tw-w-full md:tw-w-auto"
 										href="#creative-studio-typography-intro"
 										@click.native.prevent="scrollPastNav('#creative-studio-typography-intro')"
-										:state="activeSection === 'creative-studio-typography-intro' ? 'active' : ''"
+										:state="activeSection.includes('creative-studio-typography') ? 'active' : ''"
 									>
 										Type
 									</kv-button>
@@ -254,23 +254,25 @@ This is a message requesting the Kiva Post Grot typekit for the purpose(s) of
 		},
 		createObserver() {
 			// scrollspy to highlight which section is currently in the viewport
-			this.observer = createIntersectionObserver({
-				targets: document.querySelectorAll(`
-					#creative-studio-logo-intro,
-					#creative-studio-colors-intro,
-					#creative-studio-typography-intro
-				`),
-				options: {
-					rootMargin: '-50% 0px', // when the section crosses the halfway mark of the screen
-				},
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.isIntersecting) {
-							this.activeSection = entry.target.id;
-						}
-					});
-				}
-			});
+			setTimeout(() => {
+				// Kludge. Not sure why setTimeout is needed, but the observer doesn't seem to work without it.
+				// Possibly because I'm not using $refs.
+				// Tried await this.$nextTick(), but doesn't work.
+				this.observer = createIntersectionObserver({
+					targets: document.querySelectorAll('[data-section-type="contentful-section"]'),
+					options: {
+						rootMargin: '-50% 0px', // when the section crosses the halfway mark of the screen
+						root: null, // use the window as the root
+					},
+					callback: entries => {
+						entries.forEach(entry => {
+							if (entry.isIntersecting) {
+								this.activeSection = entry.target.id;
+							}
+						});
+					}
+				});
+			}, 500);
 		},
 		destroyObserver() {
 			if (this.observer) {
