@@ -32,11 +32,11 @@
 					:default-image="{ width: 336 }"
 					:hash="imageHash"
 					:images="[
-						{ width: 336, faceZoom: 0.7, viewSize: 1024 },
-						{ width: 336, faceZoom: 0.7, viewSize: 768 },
-						{ width: 416, faceZoom: 0.7, viewSize: 480 },
-						{ width: 374, faceZoom: 0.7, viewSize: 414 },
-						{ width: 335, faceZoom: 0.7, viewSize: 375 },
+						{ width: 336, faceZoom: 1, viewSize: 1024 },
+						{ width: 336, faceZoom: 1, viewSize: 768 },
+						{ width: 416, faceZoom: 1, viewSize: 480 },
+						{ width: 374, faceZoom: 1, viewSize: 414 },
+						{ width: 335, faceZoom: 1, viewSize: 375 },
 						{ width: 280 },
 					]"
 				/>
