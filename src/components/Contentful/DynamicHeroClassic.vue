@@ -37,11 +37,11 @@
 							<component
 								:is="buttonTo ? 'router-link' : 'span'"
 								:to="buttonTo"
-								v-kv-track-event="[
+								v-kv-track-event="buttonTo ? [
 									'Hero',
 									'click-hero-loancards',
 									heroMedia[0].description,
-								]"
+								] : null"
 							>
 								<kv-contentful-img
 									v-if="heroMedia[0].url"
@@ -57,11 +57,11 @@
 							<component
 								:is="buttonTo ? 'router-link' : 'span'"
 								:to="buttonTo"
-								v-kv-track-event="[
+								v-kv-track-event="buttonTo ? [
 									'Hero',
 									'click-hero-loancards',
 									responsiveHeroDescription,
-								]"
+								] : null"
 							>
 								<kv-contentful-img
 									class="tw-block tw-mx-auto tw-mt-0 tw-mb-4 md:tw-mb-0"
@@ -108,6 +108,7 @@
 							<dynamic-rich-text :html="heroBody" />
 						</div>
 						<button-wrapper
+							class="tw-w-full md:tw-w-auto"
 							:content="buttonContent"
 						/>
 					</div>
