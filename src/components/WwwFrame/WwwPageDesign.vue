@@ -26,14 +26,15 @@
 						</div>
 
 						<!-- nav for mobile and desktop -->
-						<nav id="top-nav">
+						<nav id="top-nav" class="tw-flex-1">
 							<ul class="
 								tw-flex tw-gap-2 tw-items-center md:tw-justify-end tw-py-2.5
 								tw-bg-secondary md:tw-bg-primary"
 							>
-								<li>
+								<li class="tw-flex-1 md:tw-flex-initial">
 									<kv-button
 										variant="ghost"
+										class="tw-w-full md:tw-w-auto"
 										href="#creative-studio-logo-intro"
 										@click.native.prevent="scrollPastNav('#creative-studio-logo-intro')"
 										:state="activeSection.includes('creative-studio-logo') ? 'active' : ''"
@@ -41,9 +42,10 @@
 										Logos
 									</kv-button>
 								</li>
-								<li>
+								<li class="tw-flex-1 md:tw-flex-initial">
 									<kv-button
 										variant="ghost"
+										class="tw-w-full md:tw-w-auto"
 										href="#creative-studio-colors-intro"
 										@click.native.prevent="scrollPastNav('#creative-studio-colors-intro')"
 										:state="activeSection.includes('creative-studio-colors') ? 'active' : ''"
@@ -51,9 +53,10 @@
 										Colors
 									</kv-button>
 								</li>
-								<li>
+								<li class="tw-flex-1 md:tw-flex-initial">
 									<kv-button
 										variant="ghost"
+										class="tw-w-full md:tw-w-auto"
 										href="#creative-studio-typography-intro"
 										@click.native.prevent="scrollPastNav('#creative-studio-typography-intro')"
 										:state="activeSection.includes('creative-studio-typography') ? 'active' : ''"
