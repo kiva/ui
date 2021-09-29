@@ -125,6 +125,7 @@ const getPageFrameFromType = type => {
 // :is="pageFrame" component on this page
 const getWrapperClassFromType = type => {
 	switch (type) {
+		case 'cardRow':
 		case 'centeredRichText':
 		case 'dynamicHeroClassic':
 		case 'heroWithCarousel':
