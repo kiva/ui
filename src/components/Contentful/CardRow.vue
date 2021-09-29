@@ -4,7 +4,8 @@
 		:vertical-padding="verticalPadding"
 	>
 		<template
-			#content :class="tw-bg-primary">
+			#content class="tw-bg-primary"
+		>
 			<kv-page-container>
 				<kv-grid
 					class="tw-mx-auto tw-grid-cols-12"
