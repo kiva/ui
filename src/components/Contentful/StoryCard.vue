@@ -84,12 +84,7 @@ export default {
 		},
 	},
 	data() {
-		return {
-			darkTheme,
-			darkGreenTheme,
-			mintTheme,
-			defaultTheme
-		};
+		return {};
 	},
 	computed: {
 		theme() {
