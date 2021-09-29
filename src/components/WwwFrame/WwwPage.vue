@@ -6,10 +6,7 @@
 			:theme="headerTheme"
 		/>
 		<slot name="secondary"></slot>
-		<main
-			:class="mainClasses"
-			:style="backgroundColor ? `background-color: ${backgroundColor};` : ''"
-		>
+		<main :class="mainClasses">
 			<slot name="tertiary"></slot>
 			<slot></slot>
 		</main>
@@ -50,10 +47,6 @@ export default {
 		appInstallMixin
 	],
 	props: {
-		backgroundColor: {
-			type: String,
-			default: null
-		},
 		grayBackground: {
 			type: Boolean,
 			default: false,
@@ -127,5 +120,19 @@ export default {
 			background: $kiva-bg-lightgray;
 		}
 	}
+}
+</style>
+
+<style lang="scss" scoped>
+.tw-bg-primary {
+	background-color: rgb(var(--bg-primary));
+}
+
+.tw-bg-secondary {
+	background-color: rgb(var(--bg-secondary));
+}
+
+.tw-bg-tertiary {
+	background-color: rgb(var(--bg-tertiary));
 }
 </style>
