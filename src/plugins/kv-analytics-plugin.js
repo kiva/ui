@@ -346,7 +346,7 @@ export default Vue => {
 	Vue.directive('kv-track-event', {
 		bind: (el, binding) => {
 			// TODO: add arg for once, submit + change events
-			if (typeof el === 'object') {
+			if (typeof el === 'object' && binding.value) {
 				el.addEventListener('click', () => {
 					try {
 						kvActions.parseEventProperties(binding.value);

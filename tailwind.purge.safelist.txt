@@ -60,3 +60,7 @@ tw-text-subhead
 tw-text-base
 tw-text-small
 tw-text-link
+
+# Whitespace Classes
+tw-whitespace-normal
+tw-whitespace-pre-wrap

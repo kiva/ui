@@ -58,31 +58,11 @@ export function richTextRenderer(content) {
 		const isButton = contentfulEntryNode?.data?.target?.sys?.contentType?.sys?.id === 'button';
 		if (isRichTextContent) {
 			const richTextHTML = richTextRenderer(contentfulEntryNode?.data?.target?.fields?.richText);
-			return `
-				<div class="tw-prose tw-whitespace-pre-wrap">${richTextHTML}</div>
-			`;
+			return `<div>${richTextHTML}</div>`;
 		}
 		if (isButton) {
-			const analyticsClickEvent = contentfulEntryNode?.data?.target?.fields?.analyticsClickEvent;
-			const webClickEventName = contentfulEntryNode?.data?.target?.fields?.webClickEventName;
-
-			const analyticsDirective = () => {
-				return analyticsClickEvent ? `v-kv-track-event="['${analyticsClickEvent.join("','")}']"` : '';
-			};
-
-			const clickFunctionality = () => {
-				if (webClickEventName) {
-					return `@click="buttonClick('${webClickEventName}', $event)"`;
-				}
-				return `href="${contentfulEntryNode?.data?.target?.fields?.webLink ?? '#'}"`;
-			};
-			return `
-				<kv-button
-					variant="${contentfulEntryNode?.data?.target?.fields?.style ?? 'primary'}"
-					${analyticsDirective()}
-					${clickFunctionality()}
-				>${contentfulEntryNode?.data?.target?.fields?.label ?? ''}</kv-button>
-			`;
+			const buttonObject = JSON.stringify(contentfulEntryNode?.data?.target?.fields).replace(/"/g, '\'');
+			return `<button-wrapper class="tw-whitespace-normal" :content="${buttonObject}"/>`;
 		}
 		return '';
 	};
@@ -97,7 +77,10 @@ export function richTextRenderer(content) {
 			},
 			[BLOCKS.EMBEDDED_ASSET]: node => {
 				return assetRenderer(node?.data?.target?.fields);
-			}
+			},
+			[BLOCKS.DOCUMENT]: (node, next) => {
+				return `<div class="tw-prose tw-whitespace-pre-wrap">${next(node.content)}</div>`;
+			},
 		}
 	};
 	return documentToHtmlString(content, options);
