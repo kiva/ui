@@ -10,10 +10,19 @@
 				<kv-grid
 					class="tw-mx-auto tw-grid-cols-12"
 				>
+					<!-- :class="`tw-col-span-12 md:tw-col-span-${12/storyCards.length}`" -->
 					<div
 						v-for="(storyCard, index) in storyCards"
 						:key="index"
-						:class="`tw-col-span-12 md:tw-col-span-${12/storyCards.length}`"
+						:class="[
+							'tw-col-span-12',
+							{
+								'md:tw-col-span-6': storyCards.length >= 2,
+								'lg:tw-col-span-6': storyCards.length === 2,
+								'lg:tw-col-span-4': storyCards.length === 3,
+								'lg:tw-col-span-3': storyCards.length === 4
+							}
+						]"
 					>
 						<story-card
 							:content="storyCard"

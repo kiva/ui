@@ -57,13 +57,13 @@
 <script>
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import DynamicRichText from '@/components/Contentful/DynamicRichText';
-import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import {
 	darkTheme,
 	darkGreenTheme,
 	mintTheme,
 	defaultTheme
-} from '@kiva/kv-tokens/configs/kivaColors';
+} from '~/@kiva/kv-tokens/configs/kivaColors';
+import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
 /**
 * Story Card Component
