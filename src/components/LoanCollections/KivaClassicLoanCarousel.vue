@@ -206,7 +206,7 @@ export default {
 		},
 		// TODO: Review all tracking cateogries
 		onInteractCarousel(interaction) {
-			this.$kvTrackEvent('homepage', 'click-carousel-horizontal-scroll', interaction);
+			this.$kvTrackEvent('carousel', 'click-carousel-horizontal-scroll', interaction);
 		},
 	},
 };
