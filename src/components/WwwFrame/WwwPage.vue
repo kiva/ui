@@ -6,7 +6,10 @@
 			:theme="headerTheme"
 		/>
 		<slot name="secondary"></slot>
-		<main :class="mainClasses">
+		<main
+			:class="mainClasses"
+			:style="backgroundColor ? `background-color: ${backgroundColor};` : ''"
+		>
 			<slot name="tertiary"></slot>
 			<slot></slot>
 		</main>
@@ -47,6 +50,10 @@ export default {
 		appInstallMixin
 	],
 	props: {
+		backgroundColor: {
+			type: String,
+			default: null
+		},
 		grayBackground: {
 			type: Boolean,
 			default: false,

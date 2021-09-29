@@ -62,6 +62,7 @@
 			},
 			"fields": {
 				"name": "Promo Campaign Test",
+				"pageBackgroundColor": "",
 				"headerTheme": "lightHeader",
 				"contentGroups": [{
 					"sys": {
