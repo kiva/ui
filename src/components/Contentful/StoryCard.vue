@@ -99,7 +99,7 @@ export default {
 				kivaClassicGreen: darkGreenTheme,
 				kivaClassicDark: darkTheme,
 				imageCard: darkTheme
-			}
+			};
 			return themeMapper[this.content?.theme] ?? defaultTheme;
 		},
 		themeClass() {
