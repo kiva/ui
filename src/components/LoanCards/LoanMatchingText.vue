@@ -13,7 +13,12 @@
 				tw-border-brand
 			"
 		>
-			🎉
+			<img
+				:src="partyEmoji"
+				alt="matching icon"
+				class="tw-m-auto"
+				:style="{ padding: '2px 0 2px 0', height: '1.2rem' }"
+			>
 		</span>
 		<h4 class="tw-inline-block">
 			{{ constructedMatchingText }}
@@ -22,6 +27,7 @@
 </template>
 
 <script>
+const imgRequire = require.context('@/assets/images/', true);
 
 export default {
 	props: {
@@ -69,6 +75,9 @@ export default {
 			}
 			return `${this.matchRatio + 1}x matching by ${this.matcherName}`;
 		},
+		partyEmoji() {
+			return imgRequire('./party-emoji.png');
+		}
 	}
 };
 </script>
