@@ -419,6 +419,7 @@ export function processPageContent(entryItem) {
 		pageLayout: {
 			name: entryItem.fields?.pageLayout?.fields?.name,
 			pageTitle: entryItem.fields?.pageLayout?.fields?.pageTitle,
+			pageBackgroundColor: entryItem.fields?.pageLayout?.fields?.pageBackgroundColor,
 			headerTheme: entryItem.fields?.pageLayout?.fields?.headerTheme,
 			footerTheme: entryItem.fields?.pageLayout?.fields?.footerTheme,
 		},

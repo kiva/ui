@@ -5,7 +5,6 @@ __mocks__
 .editorconfig
 .test
 .stylelint
-cypress.json
 ui-server.sh
 Dockerfile*
 Jenkinsfile
