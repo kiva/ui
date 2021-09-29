@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
 	<kv-theme-provider :theme="theme">
 		<div
 			class="
