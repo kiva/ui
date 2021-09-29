@@ -9,15 +9,14 @@
 				tw-w-3
 				tw-rounded-full
 				tw-bg-brand-100
-				tw-border-2
-				tw-border-brand
 			"
+			:style="{border: '1px solid #2AA967'}"
 		>
 			<img
 				:src="partyEmoji"
 				alt="matching icon"
 				class="tw-m-auto"
-				:style="{ padding: '2px 0 2px 0', height: '1.2rem' }"
+				:style="{ padding: '4px 0 2px 0', height: '1.2rem'}"
 			>
 		</span>
 		<h4 class="tw-inline-block">
