@@ -208,8 +208,9 @@ export default {
 	.story-card >>> .tw-prose h1 u:after,
 	.story-card >>> .tw-prose h2 u:after,
 	.story-card >>> .tw-prose h3 u:after {
-		// eslint-disable-next-line max-len
+		/* eslint-disable max-len */
 		background-image: url("data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiB2aWV3Qm94PSIwIDAgMTU4IDgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0ibTE1NC43NSA2Yy0zLjY2OS0uNDk5NDYtMTE0LjI2MjEtNi40OTI5NzktMTUyIDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzJhYTk2NyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS13aWR0aD0iNCIvPjwvc3ZnPg==");
+		/* eslint-enable max-len */
 		content: "";
 		display: block;
 		position: absolute;
@@ -223,8 +224,9 @@ export default {
 	.story-card >>> .tw-prose h1 i::after,
 	.story-card >>> .tw-prose h2 i::after,
 	.story-card >>> .tw-prose h3 i::after {
-		// eslint-disable-next-line max-len
+		/* eslint-disable max-len */
 		background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiIHZpZXdCb3g9IjAgMCAzNzcgOTkiPgoJPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCQkuc3ZnX2xpbmV7ZmlsbDpub25lO3N0cm9rZTojMmFhOTY3O3N0cm9rZS13aWR0aDo0O3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjEwO3ZlY3Rvci1lZmZlY3Q6IG5vbi1zY2FsaW5nLXN0cm9rZTt9Cgk8L3N0eWxlPgoJPHBhdGggY2xhc3M9InN2Z19saW5lIiBkPSJNMzA4Ljg5NyAyNy43MTNDMzU2LjYwMSAzMy4zODA5IDQyMy4zODYgNTEuMjA4MyAzMDguODkzIDc3LjE3NUMxNjUuNzc2IDEwOS42MzMgLTMyLjI1OTYgOTYuNTc0IDkuODI2MzMgMzkuODExOEM0My40OTUxIC01LjU5Nzk3IDI1Ny4yNTEgMi40OTkyNiAzNTkuOTIgMTIuMjI0MSIvPgo8L3N2Zz4=");
+		/* eslint-enable max-len */
 		content: "";
 		display: block;
 		position: absolute;
