@@ -2,6 +2,7 @@
 	<component :is="pageFrame"
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
+		:main-class="pageBackgroundColor"
 	>
 		<template v-if="!pageError">
 			<component
@@ -230,6 +231,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
+			pageBackgroundColor: '',
 			contentGroups: [],
 			footerTheme: {},
 			headerTheme: {},
@@ -292,6 +294,7 @@ export default {
 				this.pageError = true;
 			} else {
 				this.title = (pageData?.page?.pageLayout?.pageTitle || pageData?.page?.pageTitle) ?? undefined;
+				this.pageBackgroundColor = pageData?.page?.pageLayout?.pageBackgroundColor ?? '';
 				this.headerTheme = siteThemes[pageData?.page?.pageLayout?.headerTheme] || {};
 				this.footerTheme = siteThemes[pageData?.page?.pageLayout?.footerTheme] || {};
 				this.pageFrame = getPageFrameFromType(pageData?.page?.pageType);
