@@ -197,16 +197,26 @@
 										</fieldset>
 									</form>
 									<div class="ad-update-lightbox__payment-method">
-										<div class="row align-middle">
-											<div class="column medium-12 large-6" v-if="paymentMethod">
-												<strong>Current payment method:</strong><br>
-												<img class="ad-update-lightbox__cc-icon"
-													:src="paymentMethod.imageUrl"
-													alt="credit card"
-												>
-												{{ paymentMethod.description }}
+										<div class="row column">
+											<strong>Current payment method:</strong>
+										</div>
+										<div class="row">
+											<div class="column">
+												<template v-if="paymentMethod">
+													<img class="ad-update-lightbox__cc-icon"
+														:src="paymentMethod.imageUrl"
+														alt="credit card"
+													>
+													{{ paymentMethod.description }}
+												</template>
+												<template v-else>
+													<p>
+														<!-- eslint-disable-next-line max-len  -->
+														You are currently using a legacy payment method and will need to cancel the current auto deposit or subscription, followed by creating a new auto deposit or subscription in order to change or manage the payment method.
+													</p>
+												</template>
 											</div>
-											<div class="column medium-12 large-6 text-right">
+											<div class="column text-right" v-if="paymentMethod">
 												<button
 													class="button--link"
 													@click="toggleSections"
@@ -278,7 +288,6 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
@@ -362,19 +371,19 @@ export default {
 	},
 	apollo: {
 		query: pageQuery,
-		preFetch(config, client) {
-			return client.query({
-				query: pageQuery
-			});
-		},
+		preFetch: true,
 		result({ data }) {
-			const autoDepositAmount = parseFloat(_get(data, 'my.autoDeposit.amount', 0));
-			// eslint-disable-next-line max-len
-			this.isAutoDepositSubscriber = !_get(data, 'my.autoDeposit.isSubscriber', false) && _get(data, 'my.autoDeposit.status', false);
-			this.donation = parseFloat(_get(data, 'my.autoDeposit.donateAmount', 0));
-			this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
-			this.mgAmount = autoDepositAmount - this.donation;
-			this.paymentMethod = _get(data, 'my.autoDeposit.paymentMethod', {});
+			const isSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
+			const autoDepositStatus = data?.my?.autoDeposit?.status ?? false;
+
+			this.isAutoDepositSubscriber = !isSubscriber && autoDepositStatus;
+			if (this.isAutoDepositSubscriber) {
+				const autoDepositAmount = parseFloat(data?.my?.autoDeposit?.amount ?? 0);
+				this.donation = parseFloat(data?.my?.autoDeposit?.donateAmount ?? 0);
+				this.dayOfMonth = data?.my?.autoDeposit?.dayOfMonth;
+				this.mgAmount = autoDepositAmount - this.donation;
+				this.paymentMethod = data?.my?.autoDeposit?.paymentMethod ?? {};
+			}
 		},
 	},
 	mounted() {
@@ -469,7 +478,7 @@ form {
 		margin-bottom: 0.25em;
 	}
 
-	// styles to match KvDropDownRounded
+	// styles to match KvSelect
 	input.text-input {
 		border: 1px solid $charcoal;
 		border-radius: $button-radius;

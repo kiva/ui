@@ -1,6 +1,9 @@
 import { addParameters } from '@storybook/vue';
 import { MINIMAL_VIEWPORTS} from '@storybook/addon-viewport';
 import Vue from 'vue';
+import Meta from 'vue-meta';
+import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
+import { defaultTheme } from '@kiva/kv-tokens/configs/kivaColors';
 
 //load all the svg icon sprites
 import '@/assets/iconLoader';
@@ -8,11 +11,18 @@ import '@/assets/iconLoader';
 // same styles that are in App.vue
 import '../src/assets/scss/app.scss';
 
+// Load Tailwinds css
+// import 'tailwindcss/tailwind.css';
+import './tailwind.css';
+
 // css for storybook overrides like background color
 import './storybookStyles.scss';
 
 // import config file for storybook environment
 import config from '../config/local';
+
+// initialize vue-meta
+Vue.use(Meta);
 
 // provide global application config
 Vue.prototype.$appConfig = config.app;
@@ -78,4 +88,11 @@ addParameters({
     },
   },
 });
+
+// Wrap all stories with the kv-theme-provider component
+export const decorators = [(story) => ({
+	components: { story, KvThemeProvider },
+	template: '<kv-theme-provider :theme="theme"><story /></kv-theme-provider>',
+	data() { return { theme: defaultTheme } }
+})];
 

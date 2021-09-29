@@ -1,4 +1,5 @@
 import {
+	buildDynamicString,
 	formatGenericContentBlock,
 	formatResponsiveImageSet,
 	formatMediaAssetArray,
@@ -17,6 +18,29 @@ import responsiveImageSetRaw from '../../fixtures/ResponsiveImageSetRaw.json';
 import responsiveImageSetResult from '../../fixtures/ResponsiveImageSetResult.json';
 
 describe('contentfulUtils.js', () => {
+	describe('buildDynamicString', () => {
+		it('returns the source string with instances of split key replaced with the given values', () => {
+			expect(buildDynamicString(
+				'There are {value} things',
+				'{value}',
+				[5]
+			)).toBe('There are 5 things');
+			expect(buildDynamicString(
+				'There are {value} things. A whole {value}!',
+				'{value}',
+				[5, '89%']
+			)).toBe('There are 5 things. A whole 89%!');
+		});
+
+		it('returns the source string if no split key is present', () => {
+			expect(buildDynamicString(
+				'There is no split key',
+				'{value}',
+				[5]
+			)).toBe('There is no split key');
+		});
+	});
+
 	describe('formatUiSetting', () => {
 		test('should return a Ui Setting specific object', () => {
 			const expectedObject = {
@@ -94,7 +118,9 @@ describe('contentfulUtils.js', () => {
 				pageType: 'corporate-campaign',
 				pageLayout: {
 					name: 'Promo Campaign Test',
+					headerTheme: 'lightHeader',
 					contentGroups: [{}],
+					footerTheme: undefined,
 					pageTitle: 'Test Page Layout Title',
 				},
 				settings: [{}]
@@ -112,9 +138,11 @@ describe('contentfulUtils.js', () => {
 				pageType: 'corporate-campaign',
 				pageLayout: {
 					name: 'Promo Campaign Test',
+					headerTheme: 'lightHeader',
 					contentGroups: [{
 						key: 'promo-campaign-test-cg',
 						name: 'Promo Campaign Test Content Groups',
+						title: 'Promo Campaign Test Content Groups',
 						contents: [{
 							key: 'header-area',
 							name: 'Test Campaign Title',
@@ -134,6 +162,7 @@ describe('contentfulUtils.js', () => {
 							images: expect.any(Array)
 						}]
 					}],
+					footerTheme: undefined,
 					pageTitle: 'Test Page Layout Title',
 				},
 				pageTitle: 'Test Page Title',
@@ -170,6 +199,7 @@ describe('contentfulUtils.js', () => {
 				pageType: 'corporate-campaign',
 				pageLayout: {
 					name: 'Promo Campaign Test',
+					headerTheme: 'lightHeader',
 					pageTitle: 'Test Page Layout Title',
 				},
 				settings: expect.any(Array),
@@ -189,6 +219,7 @@ describe('contentfulUtils.js', () => {
 				pageType: 'corporate-campaign',
 				pageLayout: {
 					name: 'Promo Campaign Test',
+					headerTheme: 'lightHeader',
 					pageTitle: 'Test Page Layout Title',
 				},
 				settings: expect.any(Array),
@@ -196,6 +227,7 @@ describe('contentfulUtils.js', () => {
 					mlCampaignHero: {
 						key: 'promo-campaign-test-cg',
 						name: 'Promo Campaign Test Content Groups',
+						title: 'Promo Campaign Test Content Groups',
 						contents: [{
 							key: 'header-area',
 							name: 'Test Campaign Title',
@@ -243,6 +275,7 @@ describe('contentfulUtils.js', () => {
 				pageType: expect.any(String),
 				pageLayout: expect.objectContaining({
 					name: expect.any(String),
+					headerTheme: expect.any(String),
 					pageTitle: expect.any(String)
 				}),
 				settings: expect.any(Array),
@@ -262,6 +295,7 @@ describe('contentfulUtils.js', () => {
 				pageType: expect.any(String),
 				pageLayout: expect.objectContaining({
 					name: expect.any(String),
+					headerTheme: expect.any(String),
 					pageTitle: expect.any(String)
 				}),
 				settings: expect.any(Array),
@@ -272,12 +306,14 @@ describe('contentfulUtils.js', () => {
 						contents: [{
 							key: expect.any(String),
 							name: expect.any(String),
-							bodyCopy: expect.any(Object)
+							bodyCopy: expect.any(Object),
+							contentType: expect.any(String)
 						},
 						{
 							name: expect.any(String),
 							description: expect.any(String),
-							images: expect.any(Array)
+							images: expect.any(Array),
+							contentType: expect.any(String)
 						}],
 						type: expect.any(String)
 					})
@@ -323,6 +359,8 @@ describe('contentfulUtils.js', () => {
 				pageType: undefined,
 				pageLayout: expect.objectContaining({
 					name: expect.any(String),
+					headerTheme: undefined,
+					footerTheme: undefined,
 					pageTitle: undefined
 				}),
 				settings: [],
@@ -342,6 +380,8 @@ describe('contentfulUtils.js', () => {
 				pageType: undefined,
 				pageLayout: expect.objectContaining({
 					name: expect.any(String),
+					headerTheme: undefined,
+					footerTheme: undefined,
 					pageTitle: undefined
 				}),
 				settings: [],
@@ -355,6 +395,7 @@ describe('contentfulUtils.js', () => {
 								name: expect.any(String),
 								bodyCopy: expect.any(Object),
 								headline: 'Set up an Auto Deposit',
+								contentType: expect.any(String)
 							}
 						],
 					}),
@@ -364,19 +405,23 @@ describe('contentfulUtils.js', () => {
 						contents: [{
 							key: expect.any(String),
 							name: expect.any(String),
-							richText: expect.any(Object)
+							richText: expect.any(Object),
+							contentType: expect.any(String)
 						}, {
 							key: expect.any(String),
 							name: expect.any(String),
-							richText: expect.any(Object)
+							richText: expect.any(Object),
+							contentType: expect.any(String)
 						}, {
 							key: expect.any(String),
 							name: expect.any(String),
-							richText: expect.any(Object)
+							richText: expect.any(Object),
+							contentType: expect.any(String)
 						}, {
 							key: expect.any(String),
 							name: expect.any(String),
-							richText: expect.any(Object)
+							richText: expect.any(Object),
+							contentType: expect.any(String)
 						}],
 					}),
 					autoDepositWhatToExpect: expect.objectContaining({
@@ -385,15 +430,18 @@ describe('contentfulUtils.js', () => {
 						contents: [{
 							key: expect.any(String),
 							name: expect.any(String),
-							richText: expect.any(Object)
+							richText: expect.any(Object),
+							contentType: expect.any(String)
 						}, {
 							key: expect.any(String),
 							name: expect.any(String),
-							richText: expect.any(Object)
+							richText: expect.any(Object),
+							contentType: expect.any(String)
 						}, {
 							key: expect.any(String),
 							name: expect.any(String),
-							richText: expect.any(Object)
+							richText: expect.any(Object),
+							contentType: expect.any(String)
 						}],
 					})
 				}),

@@ -5,6 +5,7 @@ module.exports = merge(base, {
 	app: {
 		host: 'dev-vm-01.kiva.org',
 		publicPath: 'https://dev-vm-01.kiva.org/ui/',
+		photoPath: 'https://dev-vm-01.kiva.org/img/',
 		graphqlUri: 'https://api-vm.kiva.org/graphql',
 		// Run federation
 		// graphqlUri: 'https://api-vm.kiva.org/fed/graphql',
@@ -26,6 +27,7 @@ module.exports = merge(base, {
 		fbApplicationId: '263964058630',
 		fbPixelId: '108245819986414',
 		fbOgNameSpace: 'vm-kiva',
+		enableFullStory: false,
 		quantcastId: '',
 		enableSentry: false,
 		sentryURI: '',

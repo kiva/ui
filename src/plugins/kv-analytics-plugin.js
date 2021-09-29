@@ -126,6 +126,7 @@ export default Vue => {
 			return true;
 		},
 		trackSnowplowEvent: eventData => {
+			kvActions.checkLibs();
 			if (!snowplowLoaded) return false;
 
 			// In case there is a problem with the tracking event ensure that the callback gets called after 500ms
@@ -188,15 +189,18 @@ export default Vue => {
 		fireQueuedEvents() {
 			kvActions.checkLibs();
 
-			if (!queue.isEmpty()) {
-				// eslint-disable-next-line no-plusplus
-				for (let i = 0; i < queue.items.length; i++) {
-					const item = queue.remove();
-					const method = item.eventType;
-					const { eventData } = item;
-					if (typeof kvActions[method] === 'function') {
+			while (!queue.isEmpty()) {
+				const item = queue.remove();
+				const method = item.eventType;
+				const { eventData } = item;
+				if (inBrowser && typeof kvActions[method] === 'function') {
+					// Wrapping the event call in a setTimeout ensures that this while loop
+					// completes before the event functions are called. This is needed because
+					// the event functions can add more events to this queue, and we only want
+					// to process this queue once.
+					window.setTimeout(() => {
 						kvActions[method](eventData, true);
-					}
+					});
 				}
 			}
 		},
@@ -284,6 +288,14 @@ export default Vue => {
 			}
 		},
 		trackGATransaction: transactionData => {
+			// push to dataLayer
+			if (typeof window.dataLayer === 'object') {
+				window.dataLayer.push({
+					event: 'setTransactionData',
+					...transactionData
+				});
+			}
+
 			// Add each purchased item to the tracker
 			const allItems = transactionData.loans.concat(transactionData.donations);
 			allItems.forEach(item => {
@@ -334,7 +346,7 @@ export default Vue => {
 	Vue.directive('kv-track-event', {
 		bind: (el, binding) => {
 			// TODO: add arg for once, submit + change events
-			if (typeof el === 'object') {
+			if (typeof el === 'object' && binding.value) {
 				el.addEventListener('click', () => {
 					try {
 						kvActions.parseEventProperties(binding.value);
@@ -364,6 +376,12 @@ export default Vue => {
 						window.ga('set', 'useBeacon', true);
 						window.ga('require', 'ec');
 						window.ga('set', 'dimension1', userId);
+					}
+					// set id on dataLayer
+					if (typeof window.dataLayer === 'object') {
+						window.dataLayer.push({
+							kvuid: userId
+						});
 					}
 					// resovle for next steps
 					resolve();

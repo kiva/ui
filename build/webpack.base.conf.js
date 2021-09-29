@@ -1,16 +1,17 @@
-var path = require('path');
-var assetsPath = require('./assets-path');
-var styleLoaders = require('./style-loaders');
-var config = require('../config');
-var VueLoaderPlugin = require('vue-loader').VueLoaderPlugin;
-var FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
-var webpack = require('webpack');
-var GitRevisionPlugin = require('git-revision-webpack-plugin');
-var gitRevisionPlugin = new GitRevisionPlugin({
+const path = require('path');
+const assetsPath = require('./assets-path');
+const config = require('../config');
+const VueLoaderPlugin = require('vue-loader').VueLoaderPlugin;
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
+const webpack = require('webpack');
+const GitRevisionPlugin = require('git-revision-webpack-plugin');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin-fixed-hashbug');
+const gitRevisionPlugin = new GitRevisionPlugin({
 	branch: true
 });
 const isProd = process.env.NODE_ENV === 'production';
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin-fixed-hashbug')
+const isNode = typeof document === 'undefined';
 
 function resolve (dir) {
 	return path.join(__dirname, '..', dir);
@@ -40,7 +41,9 @@ module.exports = {
 			'@': resolve('src'),
 			'foundation': 'foundation-sites/js',
 			// alias promise module to handle timesync calling require('promise')
-			'promise': resolve('build/promise.js')
+			'promise': resolve('build/promise.js'),
+			// required for src/components/Contentful/DynamicRichText.vue
+			'vue$': 'vue/dist/vue.esm.js'
 		}
 	},
 	module: {
@@ -72,12 +75,93 @@ module.exports = {
 				],
 			},
 			{
-				// Inject styles from the /pages/ directory as <style> tags
-				test: /\/pages\/.+\.scss$/,
+				test: /\.css$/,
+				exclude: [resolve('src/assets/scss/tailwind')],
 				use: [
 					{ loader: 'thread-loader' },
-					{ loader: 'vue-style-loader' },
-				].concat(styleLoaders)
+					{ loader: 'vue-style-loader' }, // Inject styles as <style> tags
+					{ loader: 'css-loader' },
+					{
+						loader: 'postcss-loader',
+						options: {
+							postcssOptions: {
+								plugins: [
+									require('autoprefixer'),
+									require('cssnano'),
+								]
+							}
+						}
+					},
+				]
+			},
+			{
+				// Extract tailwind styles since they are global
+				test: /\.css$/,
+				include: [resolve('src/assets/scss/tailwind')],
+				use: [
+					{
+						loader: MiniCssExtractPlugin.loader,
+						options: {
+							esModule: true,
+						}
+					},
+					{ loader: 'css-loader' },
+					{
+						loader: 'postcss-loader',
+						options: {
+							postcssOptions: {
+								plugins: [
+									require('cssnano'),
+									require('tailwindcss'),
+									require('postcss-prepend-selector')( { selector: '.kv-tailwind ' } ),
+									require('autoprefixer'),
+								]
+							}
+						}
+					},
+				],
+			},
+			{
+				test: /\.scss$/,
+				use: [
+					{
+						loader: 'thread-loader',
+						options: {
+							workerParallelJobs: 2
+						}
+					},
+					{ loader: 'vue-style-loader' }, // Inject styles as <style> tags
+					{ loader: 'css-loader' },
+					{
+						loader: 'postcss-loader',
+						options: {
+							postcssOptions: {
+								plugins: [
+									require('autoprefixer'),
+									require('cssnano'),
+								]
+							}
+						}
+					},
+					{
+						loader: 'sass-loader',
+						options: {
+							// If document is defined, sass will attempt to run as if it were in the browser. However, some
+							// code editors expose document, so sass will sometimes throw errors when this config is loaded
+							// by editor plugins. We won't use webpack in a browser, so to resolve the issue we can just check
+							// for document before attempting to load sass.
+							implementation: isNode ? require('sass') : function() {},
+							sassOptions: {
+								fiber: false, // to disable automatic use of fibers package
+								includePaths: [
+									'src/assets/fonts',
+									'src/assets/scss',
+									'node_modules/foundation-sites/scss'
+								]
+							}
+						}
+					}
+				]
 			},
 			{
 				test: /\.html$/,
@@ -86,16 +170,27 @@ module.exports = {
 			},
 			{
 				test: /\.js$/,
+				include: [
+					resolve('src'),
+					resolve('test'),
+					resolve('node_modules/@kiva'),
+				],
 				use: [
 					{ loader: 'thread-loader' },
 					{
 						loader: 'babel-loader',
 						options: {
 							cacheDirectory: true,
+							// These babelrc and configFile settings ensure that all files processed by this loader get
+							// transformed using this project's babel config. Without this, babel will search for the
+							// config in the package directory of the file being processed, which means that files from
+							// node_modules will not use this project's babel config; they will use their own babel
+							// config file, or no config at all if they do not have one.
+							babelrc: false,
+							configFile: resolve('.babelrc'),
 						},
 					},
 				],
-				include: [resolve('src'), resolve('test')]
 			},
 			{
 				test: /\.(graphql|gql)$/,
@@ -183,11 +278,25 @@ module.exports = {
 		new FilterWarningsPlugin({
 			exclude: /vue-loader.*type=style/
 		}),
+		new MiniCssExtractPlugin({
+			filename: isProd ? assetsPath('css/[name].[contenthash].css') : assetsPath('css/[name].css'),
+			chunkFilename: isProd ? assetsPath('css/[name].[contenthash].css') : assetsPath('css/[name].css'),
+		}),
 		new VueLoaderPlugin(),
 		new webpack.DefinePlugin({
 			UI_COMMIT: JSON.stringify(gitRevisionPlugin.commithash()),
 			UI_BRANCH: JSON.stringify(gitRevisionPlugin.branch())
 		}),
+		...(isProd ? [] : [new HardSourceWebpackPlugin.ExcludeModulePlugin([
+			{
+				// HardSource works with mini-css-extract-plugin but due to how
+				// mini-css emits assets, assets are not emitted on repeated builds with
+				// mini-css and hard-source together. Ignoring the mini-css loader
+				// modules, but not the other css loader modules, excludes the modules
+				// that mini-css needs rebuilt to output assets every time.
+				test: /mini-css-extract-plugin[\\/]dist[\\/]loader/,
+			},
+		])]),
 		...(isProd ? [] : [new HardSourceWebpackPlugin({
 			configHash(webpackConfig) {
 				return `${process.env.NODE_ENV.substring(0,3)}_${require('node-object-hash')({sort: false}).hash(webpackConfig)}`
@@ -199,6 +308,6 @@ module.exports = {
 				// Prune once cache reaches 500MB
 				sizeThreshold: 500 * 1024 * 1024
 			}
-		})])
+		})]),
 	]
 };

@@ -1,8 +1,6 @@
 const { merge } = require('webpack-merge');
 var assetsPath = require('./assets-path');
 var baseWebpackConfig = require('./webpack.base.conf');
-var styleLoaders = require('./style-loaders');
-var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var SvgStorePlugin = require('webpack-svgstore-plugin');
 var VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 
@@ -14,23 +12,6 @@ module.exports = merge(baseWebpackConfig, {
 		app: './src/client-entry.js'
 	},
 	devtool: isProd ? 'source-map' : false,
-	module: {
-		rules: [
-			{
-				// Extract styles, excluding the /pages/ directory as those are injected
-				test: /\.scss$/,
-				exclude: /\pages\//,
-				use: [
-					{
-						loader: MiniCssExtractPlugin.loader,
-						options: {
-							esModule: true,
-						}
-					}
-				].concat(styleLoaders),
-			},
-		]
-	},
 	optimization: {
 		splitChunks: {
 			chunks: 'all',
@@ -38,10 +19,6 @@ module.exports = merge(baseWebpackConfig, {
 		}
 	},
 	plugins: [
-		new MiniCssExtractPlugin({
-			filename: assetsPath('css/[name].[contenthash].css'),
-			chunkFilename: assetsPath('css/[name].[contenthash].css'),
-		}),
 		// minify and combine svg icons
 		new SvgStorePlugin({
 			svg: {
@@ -55,16 +32,10 @@ module.exports = merge(baseWebpackConfig, {
 			prefix: 'icon-',
 		}),
 		...(isProd ? [] : [new HardSourceWebpackPlugin.ExcludeModulePlugin([
-			{
-				// HardSource works with mini-css-extract-plugin but due to how
-				// mini-css emits assets, assets are not emitted on repeated builds with
-				// mini-css and hard-source together. Ignoring the mini-css loader
-				// modules, but not the other css loader modules, excludes the modules
-				// that mini-css needs rebuilt to output assets every time.
-				// The above is also true for .woff font files, jpgs/pngs referenced in
-				// css, and the SVG sprite created by svgXhr
-				test: /mini-css-extract-plugin[\\/]dist[\\/]loader/,
-			},
+			// Due to how some loaders emit assets, certain assets are not emitted
+			// on repeated builds with those loaders and hard-source together.
+			// This is true for .woff font files, jpgs/pngs referenced in
+			// css, and the SVG sprite created by svgXhr
 			{
 				test: /url-loader.*woff|url-loader.*png|url-loader.*jpg/,
 			},

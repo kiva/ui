@@ -5,6 +5,7 @@ module.exports = merge(base, {
 	app: {
 		host: 'www.stage.kiva.org',
 		publicPath: 'https://www-stage-kiva-org.freetls.fastly.net/ui/',
+		photoPath: 'https://www-stage-kiva-org.freetls.fastly.net/img/',
 		graphqlUri: 'https://marketplace-api-stage.dk1.kiva.org/graphql',
 		enablePerimeterx: false,
 		perimeterxAppId: '####',
@@ -19,6 +20,7 @@ module.exports = merge(base, {
 		fbApplicationId: '2260431077572912',
 		fbPixelId: '',
 		fbOgNameSpace: 'stage-kiva',
+		enableFullStory: false,
 		quantcastId: '',
 		enableSentry: true,
 		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@sentry.io/1201287',

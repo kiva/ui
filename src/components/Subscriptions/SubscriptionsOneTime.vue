@@ -116,7 +116,7 @@
 							</div>
 						</div>
 					</form>
-					<template slot="controls">
+					<template #controls>
 						<kv-button
 							data-test="one-time-save-button"
 							class="smaller button"
@@ -273,7 +273,7 @@ form {
 		margin-bottom: 0.25em;
 	}
 
-	// styles to match KvDropDownRounded
+	// styles to match KvSelect
 	input.text-input {
 		border: 1px solid $charcoal;
 		border-radius: $button-radius;

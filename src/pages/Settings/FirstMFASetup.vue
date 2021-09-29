@@ -1,8 +1,5 @@
 <template>
 	<div class="first-mfa-setup">
-		<h2 class="first-mfa-setup__heading">
-			Complete setup
-		</h2>
 		<p class="first-mfa-setup__description">
 			To complete your setup, you will need to enter a 2-step verification code on the login page.
 		</p>

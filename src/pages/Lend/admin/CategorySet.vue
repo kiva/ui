@@ -20,9 +20,11 @@
 			</select>
 			<kv-icon class="icon icon-x" name="x" @click.native="removeCategory(category)" :from-sprite="true" />
 		</li>
-		<kv-button slot="footer" class="add-button setting" @click.native="addCategory">
-			+ Add category
-		</kv-button>
+		<template #footer>
+			<kv-button class="add-button setting" @click.native="addCategory">
+				+ Add category
+			</kv-button>
+		</template>
 	</draggable>
 </template>
 

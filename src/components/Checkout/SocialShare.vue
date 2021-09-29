@@ -113,7 +113,7 @@
 					>
 						Team
 					</label>
-					<kv-dropdown-rounded
+					<kv-select
 						class="teams__select"
 						id="team_select"
 						v-model="selectedLenderTeam"
@@ -125,7 +125,7 @@
 						>
 							{{ team.name }}
 						</option>
-					</kv-dropdown-rounded>
+					</kv-select>
 				</div>
 			</div>
 		</div>
@@ -136,14 +136,14 @@
 import _map from 'lodash/map';
 import clipboardCopy from 'clipboard-copy';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	inject: ['apollo'],
 	components: {
 		KvCheckbox,
-		KvDropdownRounded,
+		KvSelect,
 		KvIcon
 	},
 	props: {

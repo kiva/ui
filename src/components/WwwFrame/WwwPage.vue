@@ -6,20 +6,23 @@
 			:theme="headerTheme"
 		/>
 		<slot name="secondary"></slot>
-		<main :class="{'gray-background': grayBackground}">
+		<main :class="mainClasses">
 			<slot name="tertiary"></slot>
 			<slot></slot>
 		</main>
 		<the-footer
 			:theme="footerTheme"
 		/>
-		<the-basket-bar />
+		<the-basket-bar
+			v-if="activeOnPage"
+		/>
 		<cookie-banner />
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
+import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
@@ -60,14 +63,36 @@ export default {
 			type: Object,
 			default: null,
 		},
+		mainClass: {
+			type: [Object, String],
+			default: '',
+		},
 	},
 	apollo: {
 		preFetch(config, client, args) {
-			return fetchAllExpSettings(config, client, {
-				query: _get(args, 'route.query'),
-				path: _get(args, 'route.path')
-			});
+			return Promise.all([
+				client.query({ query: hasEverLoggedInQuery }),
+				fetchAllExpSettings(config, client, {
+					query: _get(args, 'route.query'),
+					path: _get(args, 'route.path')
+				}),
+			]);
 		}
+	},
+	computed: {
+		// Hiding basket footer on /lend-beta page
+		activeOnPage() {
+			if (this.$route.path.includes('lend-beta')) {
+				return false;
+			}
+			return true;
+		},
+		mainClasses() {
+			return [
+				this.mainClass,
+				{ 'gray-background': this.grayBackground },
+			];
+		},
 	}
 };
 </script>

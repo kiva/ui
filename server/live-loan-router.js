@@ -1,172 +1,125 @@
-const get = require('lodash/get');
 const express = require('express');
-const argv = require('./util/argv');
-const config = require('../config/selectConfig')(argv.config);
-const fetch = require('./util/fetch');
-
+const log = require('./util/log');
+const memJsUtils = require('./util/memJsUtils');
 const drawLoanCard = require('./util/live-loan/live-loan-draw');
+const fetchLoansByType = require('./util/live-loan/live-loan-fetch');
 
-function isNumeric(value) {
-	return /^\d+$/.test(value);
+async function fetchRecommendedLoans(type, id, cache) {
+	// If we have loan data in memjscache return that quickly
+	try {
+		const cachedLoanData = await memJsUtils.getFromCache(`recommendations-by-${type}-id-${id}`, cache);
+		if (cachedLoanData) {
+			return JSON.parse(cachedLoanData);
+		}
+	} catch (err) {
+		log(`Error reading from memjs, ${err}`, 'error');
+	}
+
+	// Otherwise we need to hit the graphql endpoint.
+	const loanData = await fetchLoansByType(type, id);
+
+	// Set the loan data in memcache, return the loan data
+	if (loanData.length) {
+		const expires = 10 * 60; // 10 minutes
+		memJsUtils.setToCache(`recommendations-by-${type}-id-${id}`, JSON.stringify(loanData), expires, cache)
+			.catch(err => {
+				log(`Error setting loan data to cache, ${err}`, 'error');
+			});
+		// Return before setting to the cache completes to speed up response times
+		return loanData;
+	}
+
+	// future improvement, return a default set of 4 loans here
+	throw new Error('No loans returned');
 }
 
-function getFromCache(key, cache) {
-	return new Promise(resolve => {
-		cache.get(key, (error, data) => {
-			if (error) {
-				console.error(JSON.stringify({
-					meta: {},
-					level: 'error',
-					message: `MemJS Error Getting ${key}, Error: ${error}`
-				}));
-			}
-			resolve(data);
-		});
-	});
+async function getLoanForRequest(type, cache, req) {
+	// Use default values for id and offset if they are not numeric
+	const id = req.params?.id || 0;
+	const offset = req.params?.offset || 1;
+
+	const loanData = await fetchRecommendedLoans(type, id, cache);
+	return loanData[offset - 1];
 }
 
-function setToCache(key, value, expires, cache) {
-	return new Promise((resolve, reject) => {
-		cache.set(key, value, { expires }, (error, success) => {
-			if (error) {
-				console.error(JSON.stringify({
-					meta: {},
-					level: 'error',
-					message: `MemJS Error Setting Cache for ${key}, Error: ${error}`
-				}));
-				reject();
-			}
-			if (success) {
-				console.info(JSON.stringify({
-					meta: {},
-					level: 'info',
-					message: `MemJS Success Setting Cache for ${key}, Success: ${success}`
-				}));
-				resolve();
-			}
-		});
-	});
+async function redirectToUrl(type, cache, req, res) {
+	try {
+		const loan = await getLoanForRequest(type, cache, req);
+
+		let redirect = `/lend/${loan.id}`;
+		// If the original request had query params on it, forward those along
+		const requestUrl = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+		const queryParams = new URLSearchParams(requestUrl.search);
+		if (queryParams) {
+			redirect += `?${queryParams}`;
+		}
+		res.redirect(302, redirect);
+	} catch (err) {
+		log(`Error redirecting to url, ${err}`, 'error');
+		res.redirect(302, '/lend-by-category/');
+	}
 }
 
-function fetchRecommendedLoans(loginId, cache) {
-	return new Promise((resolve, reject) => {
-		getFromCache(`recommendations-by-login-id-${loginId}`, cache).then(data => {
-			if (data) {
-				const jsonData = JSON.parse(data);
-				resolve(jsonData);
-			} else {
-				const endpoint = config.app.graphqlUri;
-				const query = `{
-					ml {
-						recommendationsByLoginId(
-							segment: all
-								loginId: ${loginId}
-								offset: 0
-								limit: 4
-						) {
-							values {
-								name
-								id
-								borrowerCount
-								geocode {
-									country {
-										name
-									}
-								}
-								use
-								loanAmount
-								status
-								loanFundraisingInfo {
-									fundedAmount
-								}
-								image {
-									retina: url(customSize: "w960h720")
-								}
-							}
-						}
-					}
-				}`;
+async function serveImg(type, cache, req, res) {
+	try {
+		const loan = await getLoanForRequest(type, cache, req);
 
-				fetch(endpoint, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						query
-					}),
-				})
-					.then(result => result.json())
-					.then(result => {
-						const loanData = get(result, 'data.ml.recommendationsByLoginId.values');
-						if (loanData) {
-							const expires = 10 * 60; // 10 minutes
-							setToCache(
-								`recommendations-by-login-id-${loginId}`,
-								JSON.stringify(loanData),
-								expires,
-								cache
-							)
-								.then(() => {
-									resolve(loanData);
-								});
-						} else {
-							throw new Error('No loans returned');
-						}
-					}).catch(err => {
-						console.error(err);
-						reject(err);
-					});
-			}
-		}).catch(err => {
-			console.error(err);
-		});
-	});
+		let loanImg;
+		const cachedLoanImg = await memJsUtils.getFromCache(`loan-card-img-${loan.id}`, cache);
+		if (cachedLoanImg) {
+			loanImg = cachedLoanImg;
+		} else {
+			loanImg = await drawLoanCard(loan);
+			const expires = 10 * 60; // 10 minutes
+			memJsUtils.setToCache(`loan-card-img-${loan.id}`, loanImg, expires, cache).catch(err => {
+				log(`Error setting loan data to cache, ${err}`, 'error');
+			});
+			// Continue before setting to the cache completes to speed up response times
+		}
+
+		res.contentType('image/jpeg');
+		res.set('Cache-Control', [
+			'no-store, no-cache, must-revalidate, max-age=0',
+			'post-check=0, pre-check=0'
+		]);
+		res.send(loanImg);
+	} catch (err) {
+		log(`Error serving image, ${err}`, 'error');
+		res.sendStatus(500);
+	}
 }
 
 module.exports = function liveLoanRouter(cache) {
 	const router = express.Router();
 
-	// URL Router
-	router.use('/u/:userId/url/:offset', async (req, res) => {
-		const { userId, offset } = req.params;
-		if (isNumeric(userId) && isNumeric(offset)) {
-			try {
-				const loanData = await fetchRecommendedLoans(userId, cache);
-				const offsetLoanId = loanData[offset - 1].id;
-				res.redirect(302, `/lend/${offsetLoanId}`);
-			} catch (err) {
-				console.error(err);
-				res.redirect(302, '/lend-by-category/');
-			}
-		} else {
-			res.status(400).send('Invalid Parameters');
-		}
+	// User URL Router
+	router.use('/u/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
+		await redirectToUrl('user', cache, req, res);
 	});
 
-	// IMG Router
-	router.use('/u/:userId/img/:offset', async (req, res) => {
-		const { userId, offset } = req.params;
-		if (isNumeric(userId) && isNumeric(offset)) {
-			try {
-				const loanData = await fetchRecommendedLoans(userId, cache);
-				const loan = loanData[offset - 1];
-				let loanImg;
-				const cachedLoanImg = await getFromCache(`loan-card-img-${loan.id}`, cache);
-				if (cachedLoanImg) {
-					loanImg = cachedLoanImg;
-				} else {
-					loanImg = await drawLoanCard(loan);
-					const expires = 10 * 60; // 10 minutes
-					await setToCache(`loan-card-img-${loan.id}`, loanImg, expires, cache);
-				}
-				res.contentType('image/jpeg');
-				res.send(loanImg);
-			} catch (err) {
-				console.error(err);
-				res.sendStatus(500);
-			}
-		} else {
-			res.status(400).send('Invalid Parameters');
-		}
+	// User IMG Router
+	router.use('/u/:id(\\d{0,})/img/:offset(\\d{0,})', async (req, res) => {
+		await serveImg('user', cache, req, res);
+	});
+
+	// Loan-to-loan URL Router
+	router.use('/l/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
+		await redirectToUrl('loan', cache, req, res);
+	});
+
+	// Loan-to-loan IMG Router
+	router.use('/l/:id(\\d{0,})/img/:offset(\\d{0,})', async (req, res) => {
+		await serveImg('loan', cache, req, res);
+	});
+
+	// Filter URL Router
+	router.use('/f/:id([a-zA-Z0-9%,_]{0,})/url/:offset(\\d{0,})', async (req, res) => {
+		await redirectToUrl('filter', cache, req, res);
+	});
+
+	// Filter IMG Router
+	router.use('/f/:id([a-zA-Z0-9%,_]{0,})/img/:offset(\\d{0,})', async (req, res) => {
+		await serveImg('filter', cache, req, res);
 	});
 
 	// 404 any /live-loan/* routes that don't match above

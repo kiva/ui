@@ -1,41 +1,42 @@
 <template>
-	<div class="expandable-faq">
-		<button class="expandable-faq__header"
+	<div>
+		<button class="tw-w-full tw-py-2 tw-flex tw-justify-between"
 			@click="toggleFaq"
 		>
-			<h4>{{ title }}</h4>
-			<kv-icon
+			<h3 class="tw-text-subhead tw-text-left">
+				{{ title }}
+			</h3>
+			<kv-material-icon
+				class="tw-h-4"
 				@click="open = !open"
-				:class="{ flipped: open }"
-				class="toggle-arrow"
-				name="small-chevron"
-				:from-sprite="true"
+				:icon="open ? mdiChevronUp : mdiChevronDown"
 			/>
 		</button>
 		<kv-expandable easing="ease-in-out">
 			<div
 				v-show="open"
-				class="row expandable-faq__content"
+				class="tw-prose tw-pb-4 tw-pt-2"
+				v-html="content"
 			>
-				<div class="small-12 columns">
-					<div v-html="content">
-					</div>
-				</div>
 			</div>
 		</kv-expandable>
 	</div>
 </template>
 
 <script>
+import {
+	mdiChevronDown,
+	mdiChevronUp
+} from '@mdi/js';
 import { paramCase } from 'change-case';
 
 import KvExpandable from '@/components/Kv/KvExpandable';
-import KvIcon from '@/components/Kv/KvIcon';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	components: {
 		KvExpandable,
-		KvIcon
+		KvMaterialIcon,
 	},
 	props: {
 		/**
@@ -63,6 +64,8 @@ export default {
 	data() {
 		return {
 			open: false,
+			mdiChevronDown,
+			mdiChevronUp
 		};
 	},
 	computed: {
@@ -79,6 +82,7 @@ export default {
 	},
 	methods: {
 		toggleFaq() {
+			console.log('toggle');
 			if (!this.open) {
 				this.$kvTrackEvent(this.analyticsCategory, 'click-faq-expand', this.title);
 			}
@@ -90,45 +94,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-
-.expandable-faq {
-	border-top: 1px solid $charcoal;
-
-	&:first-child {
-		border-top: 0;
-	}
-
-	.toggle-arrow {
-		height: 1rem;
-		width: 1.563rem;
-		position: absolute;
-		right: 0.9375rem;
-		top: 0.75rem;
-	}
-
-	.flipped {
-		transform: rotate(180deg);
-	}
-
-	&:last-child {
-		border-bottom: 1px solid $charcoal;
-	}
-
-	.expandable-faq__header {
-		padding: 0.55rem 0.9375rem;
-		width: 100%;
-		text-align: left;
-		position: relative;
-
-		h4 {
-			padding-right: 2.65rem;
-			line-height: 1.35rem;
-		}
-	}
-
-	.expandable-faq__content {
-		padding-top: 0.55rem;
-	}
-}
 </style>

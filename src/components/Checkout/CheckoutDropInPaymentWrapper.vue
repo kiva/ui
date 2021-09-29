@@ -2,6 +2,7 @@
 	<div class="row align-right">
 		<div class="dropin-payment-holder small-12 columns">
 			<braintree-drop-in-interface
+				v-if="isClientReady"
 				ref="braintreeDropInInterface"
 				:amount="amount"
 				flow="checkout"
@@ -98,27 +99,28 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
-
+import { validationMixin } from 'vuelidate';
+import { required, email } from 'vuelidate/lib/validators';
 import * as Sentry from '@sentry/browser';
+
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
+import braintreeDropInError from '@/plugins/braintree-dropin-error-mixin';
+
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
-import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterface';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
-import { validationMixin } from 'vuelidate';
-import { required, email } from 'vuelidate/lib/validators';
 
 export default {
 	components: {
 		KvButton,
 		KvIcon,
-		BraintreeDropInInterface,
+		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvCheckbox,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [checkoutUtils, validationMixin],
+	mixins: [checkoutUtils, validationMixin, braintreeDropInError],
 	props: {
 		amount: {
 			type: String,
@@ -135,6 +137,7 @@ export default {
 			termsAgreement: false,
 			emailUpdates: false,
 			enableCheckoutButton: false,
+			isClientReady: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 		};
 	},
@@ -144,6 +147,9 @@ export default {
 			email,
 		},
 		termsAgreement: { required: value => value === true },
+	},
+	mounted() {
+		this.isClientReady = !this.$isServer;
 	},
 	methods: {
 		submit() {
@@ -173,7 +179,7 @@ export default {
 									msg: 're-auth-acc-exists',
 								})}`
 							);
-							window.location = `/ui-login?force=true&doneUrl=/checkout&login_hint=${loginHint}`;
+							window.location = `/ui-login?force=true&doneUrl=/checkout&loginHint=${loginHint}`;
 						} else {
 							this.$emit('updating-totals', false);
 							this.showCheckoutError(validationStatus);
@@ -284,31 +290,9 @@ export default {
 					// Check for errors in transaction
 					if (kivaBraintreeResponse.errors) {
 						this.$emit('updating-totals', false);
-						const errorCode = _get(
-							kivaBraintreeResponse,
-							'errors[0].code'
-						);
-						const errorMessage = _get(
-							kivaBraintreeResponse,
-							'errors[0].message'
-						);
-						const standardErrorCode = `(Braintree error: ${errorCode})`;
-						const standardError = `There was an error processing your payment.
-					Please try again. ${standardErrorCode}`;
-
+						this.processBraintreeDropInError('basket', kivaBraintreeResponse);
 						// Payment method failed, unselect attempted payment method
 						this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
-						// Potential error message: 'Transaction failed. Please select a different payment method.';
-
-						this.$showTipMsg(standardError, 'error');
-
-						// Fire specific exception to Snowplow
-						this.$kvTrackEvent(
-							'basket',
-							'DropIn Payment Error',
-							`${errorCode}: ${errorMessage}`
-						);
-
 						// exit
 						return kivaBraintreeResponse;
 					}

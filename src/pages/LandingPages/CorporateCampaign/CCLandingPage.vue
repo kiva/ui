@@ -13,6 +13,7 @@
 			<campaign-status
 				v-if="!hideStatusBar"
 				class="corporate-campaign-landing__status"
+				:active-credit-type="activeCreditType"
 				:is-matching="isMatchingCampaign"
 				:loading-promotion="loadingPromotion"
 				:promo-error-message="promoErrorMessage"
@@ -118,6 +119,17 @@
 				:pf-id="String(promoFundId)"
 				:user-id="this.myId"
 				@verification-complete="verificationComplete"
+				@opt-out="showVerifyRemovePromoCredit = true"
+			/>
+
+			<!-- Warn about removing promo credit -->
+			<verify-remove-promo-credit
+				:visible="showVerifyRemovePromoCredit"
+				:applied-promo-total="promoAmount"
+				:promo-fund-display-name="campaignPartnerName"
+				:active-credit-type="activeCreditType"
+				@credit-removed="handleCreditRemoved"
+				@lightbox-closed="showVerifyRemovePromoCredit = false"
 			/>
 
 			<kv-lightbox
@@ -148,6 +160,19 @@
 				@lightbox-closed="checkoutLightboxClosed"
 				title="Checkout"
 			>
+				<campaign-status
+					v-if="!hideStatusBar && activeCreditType === 'lending_reward'"
+					class="corporate-campaign-landing__status--incontext collapse"
+					:active-credit-type="activeCreditType"
+					:in-context="true"
+					:is-matching="isMatchingCampaign"
+					:loading-promotion="loadingPromotion"
+					:promo-error-message="promoErrorMessage"
+					:promo-applied="promoApplied"
+					:promo-amount="promoAmount"
+					:promo-name="campaignPartnerName"
+					:status-message-override="statusMessageOverride"
+				/>
 				<in-context-checkout
 					class="campaign-checkout"
 					:is-actively-logged-in="isActivelyLoggedIn"
@@ -177,6 +202,19 @@
 					:corporate-logo-url="corporateLogoUrl"
 					:style="`--logo-color: ${headerTheme.logoColor}`"
 				/>
+				<campaign-status
+					v-if="!hideStatusBar && hasFreeCredits && campaignPartnerName"
+					class="corporate-campaign-landing__status--incontext collapse"
+					:active-credit-type="activeCreditType"
+					:in-context="true"
+					:is-matching="isMatchingCampaign"
+					:loading-promotion="loadingPromotion"
+					:promo-error-message="promoErrorMessage"
+					:promo-applied="promoApplied"
+					:promo-amount="promoAmount"
+					:promo-name="campaignPartnerName"
+					:status-message-override="statusMessageOverride"
+				/>
 				<campaign-thanks
 					:transaction-id="transactionId"
 					:partner-content="partnerThanksContent"
@@ -190,6 +228,7 @@
 import gql from 'graphql-tag';
 import numeral from 'numeral';
 import { indexIn } from '@/util/comparators';
+import logFormatter from '@/util/logFormatter';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
 import LoanSearchFilters, { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
@@ -214,6 +253,7 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
+import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 
 const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
 	contentful {
@@ -258,6 +298,7 @@ const basketItemsQuery = gql`query basketItemsQuery(
 ) {
 	shop(basketId: $basketId) {
 		id
+		lendingRewardOffered
 		nonTrivialItemCount
 		basket {
 			id
@@ -429,6 +470,7 @@ export default {
 		KvLoadingOverlay,
 		LoanCardController,
 		WwwPageCorporate,
+		VerifyRemovePromoCredit
 	},
 	mixins: [
 		checkoutUtils
@@ -502,6 +544,7 @@ export default {
 			initialFilters: {},
 			verificationSumbitted: false,
 			loadingPage: false,
+			showVerifyRemovePromoCredit: false
 		};
 	},
 	metaInfo() {
@@ -547,7 +590,7 @@ export default {
 		this.loadingPromotion = true;
 
 		// show a loading screen if the page loads with an loan in the basket.
-		const basketItems = this.rawPageData.shop?.basket?.items?.values ?? [];
+		const basketItems = this.rawPageData?.shop?.basket?.items?.values ?? [];
 		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
 	},
 	mounted() {
@@ -578,6 +621,14 @@ export default {
 			return false;
 		},
 		checkoutVisible(next) {
+			if (next) {
+				this.$kvTrackEvent(
+					'ManagedLendingCampaign',
+					'modal-show-in-context-checkout',
+					this.isActivelyLoggedIn ? 'checkout-ready' : 'checkout-requires-login'
+				);
+			}
+
 			if (!next && this.$route.hash === '#show-basket') {
 				this.$nextTick(() => {
 					this.$router.push(this.adjustRouteHash('')).catch(() => {});
@@ -686,7 +737,7 @@ export default {
 			return this.promoData?.promoFund?.id ?? null;
 		},
 		promoOnlyQuery() {
-			if (this.promoApplied && !this.isMatchingCampaign) {
+			if (this.promoApplied && !this.isMatchingCampaign && !this.lendingRewardOffered) {
 				return { basketId: this.cookieStore.get('kvbskt') };
 			}
 			return null;
@@ -702,6 +753,30 @@ export default {
 		},
 		statusMessageOverride() {
 			return this.pageSettingData?.statusMessageOverride ?? null;
+		},
+		hasRedemptionCode() {
+			return this.basketTotals?.redemptionCodeAppliedTotal !== '0.00';
+		},
+		hasUPCCode() {
+			return this.basketTotals?.universalCodeAppliedTotal !== '0.00';
+		},
+		hasBonusCredit() {
+			return this.basketTotals?.bonusAppliedTotal !== '0.00';
+		},
+		activeCreditType() {
+			if (this.hasRedemptionCode) {
+				return 'redemption_code';
+			}
+			if (this.hasUPCCode) {
+				return 'universal_code';
+			}
+			if (this.hasBonusCredit) {
+				return 'bonus_credit';
+			}
+			if (this.lendingRewardOffered) {
+				return 'lending_reward';
+			}
+			return null;
 		},
 	},
 	methods: {
@@ -745,7 +820,7 @@ export default {
 				// gather promo info
 				this.getPromoInformationFromBasket();
 			}).catch(error => {
-				console.error(error);
+				logFormatter(error, 'error');
 				this.promoErrorMessage = error;
 				this.loadingPromotion = false;
 				this.promoApplied = false;
@@ -771,11 +846,11 @@ export default {
 				}
 
 				// Validate baseline promo + basket state (1 loan, 1 credit, 0 donation)
-				this.validatePromoBasketState(data);
 				const basketItemValues = data.shop?.basket?.items?.values ?? [];
 				this.itemsInBasket = basketItemValues.length ? basketItemValues.map(item => item.id) : [];
-
+				this.lendingRewardOffered = data.shop?.lendingRewardOffered ?? false;
 				this.basketCredits = data.shop?.basket?.credits?.values || [];
+				this.hasFreeCredits = data.shop?.basket?.hasFreeCredits ?? false;
 
 				// Primary PromoCampaign Query
 				// > Previously > Future usage will not require the promoFundId relying only on the basket id
@@ -785,12 +860,19 @@ export default {
 					?? (this.prioritizedTargetCampaignCredit?.promoFund?.id ?? null);
 				return getPromoFromBasket(targetPromoId, this.apollo);
 			}).then(response => {
+				// eslint-disable-next-line max-len
+				const isLendingReward = response.data?.shop?.promoCampaign?.managedAccount?.managementType === 'lending_reward';
 				// Verify that applied promotion is for current page
 				if (this.verifyPromoMatchesPageId(response.data?.shop?.promoCampaign?.managedAccount?.pageId)) {
 					this.promoData = response.data?.shop?.promoCampaign;
 					// if this promo credit is already applied and matches we can clear the error
 					if (this.prioritizedTargetCampaignCredit?.promoFund?.id
 						=== response.data?.shop?.promoCampaign?.promoFund?.id) {
+						this.promoApplied = true;
+						this.promoErrorMessage = null;
+					}
+					// handle lending reward presence
+					if (isLendingReward && response.data?.shop?.promoCampaign?.promoFund?.id) {
 						this.promoApplied = true;
 						this.promoErrorMessage = null;
 					}
@@ -850,6 +932,13 @@ export default {
 				this.initializeBasketRefresh();
 			}
 		},
+		handleCreditRemoved() {
+			this.showVerification = false;
+			this.$router.push(this.$route.path); // remove promo query param from url
+			this.promoApplied = false;
+			this.refreshTotals();
+			this.verificationComplete();
+		},
 		refreshTotals() {
 			this.initializeBasketRefresh();
 		},
@@ -865,11 +954,15 @@ export default {
 			if (this.$refs.inContextCheckoutRef) {
 				this.$refs.inContextCheckoutRef.updatingTotals = true;
 			}
+
+			// get our basket id
+			const basketId = decodeURIComponent(this.cookieStore.get('kvbskt'));
+
 			// update basket state
 			const basketItems = this.apollo.query({
 				query: basketItemsQuery,
 				variables: {
-					basketId: this.cookieStore.get('kvbskt')
+					basketId
 				},
 				fetchPolicy: 'network-only',
 			});
@@ -880,6 +973,7 @@ export default {
 				this.itemsInBasket = basketItemValues.length ? basketItemValues.map(item => item.id) : [];
 
 				this.basketCredits = data.shop?.basket?.credits?.values ?? [];
+				this.hasFreeCredits = data.shop?.basket?.hasFreeCredits ?? false;
 			});
 		},
 		validatePromoBasketState(basketState) {
@@ -969,6 +1063,7 @@ export default {
 				&& this.verificationRequired
 				&& this.externalFormId
 				&& !this.verificationSumbitted
+				&& this.basketLoans.length
 			) {
 				this.showVerification = true;
 			} else if (
@@ -1012,8 +1107,8 @@ export default {
 				// extract new basket id
 				const newBasketId = data.shop?.createBasket ?? null;
 				if (newBasketId) {
-					this.cookieStore.set('kvbskt', encodeURIComponent(newBasketId), { secure: true });
-					this.updateBasketState();
+					this.cookieStore.set('kvbskt', newBasketId, { secure: true });
+					this.getPromoInformationFromBasket();
 				}
 			});
 		},
@@ -1154,6 +1249,14 @@ export default {
 		}
 	}
 
+	&__status--incontext {
+		position: relative;
+		top: auto;
+		z-index: 2;
+		height: auto;
+		margin-bottom: 2rem;
+	}
+
 	&__loading-page {
 		z-index: 1;
 	}
@@ -1237,29 +1340,6 @@ export default {
 		margin-bottom: 1.5rem;
 	}
 }
-
-// .loan-view-controls {
-// 	display: flex;
-// 	justify-content: space-between;
-// 	align-items: baseline;
-// 	flex-direction: column;
-
-// 	@include breakpoint(medium) {
-// 		flex-direction: row;
-// 		margin: 0 1rem;
-// 	}
-// 	@include breakpoint(large) {
-// 		margin: 0 3rem;
-// 	}
-
-// 	&__filters {
-// 		margin-bottom: 1rem;
-
-// 		@include breakpoint(medium) {
-// 			margin-bottom: 0;
-// 		}
-// 	}
-// }
 
 #campaignLoanSection {
 	// ensure we scroll past the sticky header

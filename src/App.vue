@@ -1,5 +1,8 @@
 <template>
-	<div id="app">
+	<div
+		id="app"
+		:style="defaultKivaClassicTheme"
+	>
 		<router-view />
 		<vue-progress-bar />
 		<the-tip-message />
@@ -7,8 +10,10 @@
 </template>
 
 <script>
+import '@/assets/scss/tailwind/tailwind.css';
 import TheTipMessage from '@/components/WwwFrame/TheTipMessage';
 import webmanifest from '@/manifest.webmanifest';
+import { defaultTheme } from '~/@kiva/kv-tokens/configs/kivaColors';
 
 export default {
 	name: 'App',
@@ -21,6 +26,12 @@ export default {
 			titleTemplate: '%s | Kiva',
 			/* eslint-disable global-require */
 			meta: [
+				// Referrer policy
+				{
+					vmid: 'referrer',
+					name: 'referrer',
+					content: 'strict-origin-when-cross-origin'
+				},
 				// General Meta Tags
 				{
 					vmid: 'description',
@@ -48,9 +59,13 @@ export default {
 				// eslint-disable-next-line max-len
 				{ property: 'og:description', vmid: 'og:description', content: 'Support women, entrepreneurs, students and refugees around the world with as little as $25 on Kiva. 100% of your loans go to support borrowers.' },
 				{ property: 'theme-color', content: '#4faf4e' },
-				{ property: 'og:image', content: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg' },
-				{ property: 'og:image:width', content: '1200' },
-				{ property: 'og:image:height', content: '630' },
+				{
+					property: 'og:image',
+					vmid: 'og:image',
+					content: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg'
+				},
+				{ property: 'og:image:width', vmid: 'og:image:width', content: '1200' },
+				{ property: 'og:image:height', vmid: 'og:image:height', content: '630' },
 			]).concat([
 				// Microsoft Tile Tags
 				{
@@ -143,6 +158,15 @@ export default {
 				}
 			]))
 		};
+	},
+	data() {
+		return {
+			// Kludge to ensure Kiva Classic styles work while we use the .kv-tailwind class.
+			// The kv-tokens tailwind config applies a set of CSS custom properties to the ":root".
+			// However, in UI a PostCSS plugin prepends all tailwind stuff with .kv-tailwind
+			// And there is no .kv-tailwind :root. So we are inlining them on the div#app in the interim.
+			defaultKivaClassicTheme: defaultTheme
+		};
 	}
 };
 </script>
@@ -152,5 +176,39 @@ export default {
 
 #app {
 	height: 100%;
+}
+
+// Kludges to ensure Kiva Classic styles are correct when using the .kv-tailwind class
+// Remove once Kiva Classic is the default and foundation base styles are removed
+
+// Misc selectors that Foundation base styling has definitions for, but Tailwind does not
+.kv-tailwind {
+	p,
+	dl,
+	ol,
+	ul { line-height: 1.5; }
+
+	blockquote p {
+		color: #212121;
+		color: rgb(var(--tw-text-primary));
+	}
+
+	select {
+		background-image: none;
+	}
+}
+
+body .kv-tailwind {
+	font-weight: 300;
+	font-size: 1rem;
+	line-height: 1.5;
+	color: #212121;
+	color: rgb(var(--tw-text-primary));
+}
+
+@media (min-width: 1024px) {
+	body .kv-tailwind {
+		font-size: rem-calc(17);
+	}
 }
 </style>

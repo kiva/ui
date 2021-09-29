@@ -1,6 +1,9 @@
 <template>
 	<www-page class="autolending" :gray-background="true">
-		<the-my-kiva-secondary-menu slot="secondary" />
+		<template #secondary>
+			<the-my-kiva-secondary-menu />
+		</template>
+
 		<div class="title-area">
 			<div class="row column">
 				<h1>Auto-lending settings</h1>

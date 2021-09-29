@@ -1,6 +1,8 @@
 <template>
 	<www-page class="payments" :gray-background="true">
-		<the-my-kiva-secondary-menu slot="secondary" />
+		<template #secondary>
+			<the-my-kiva-secondary-menu />
+		</template>
 		<div class="title-area">
 			<div class="row column">
 				<h1>
@@ -33,7 +35,7 @@
 										:src="paymentMethod.imageUrl"
 										alt="credit card"
 									>
-									<span class="fs-mask">{{ paymentMethod.description }}</span>
+									<span class="fs-exclude">{{ paymentMethod.description }}</span>
 								</kv-radio>
 								<kv-button
 									@click.native.prevent="showLightbox(paymentMethod)"
@@ -56,6 +58,7 @@
 							<transition name="kvfade">
 								<div v-show="showAddACard">
 									<braintree-drop-in-interface
+										v-if="isClientReady"
 										ref="braintreeDropInInterface"
 										:payment-types="['card']"
 										auth="token-key"
@@ -101,13 +104,15 @@
 		<kv-lightbox
 			class="remove-card-lightbox"
 			:visible="showRemoveLightbox"
-			:title="`Are you sure you want to remove the card ${lowerCaseDescription}?`"
 			@lightbox-closed="showRemoveLightbox = false"
 		>
+			<h2 class="fs-exclude">
+				Are you sure you want to remove the card {{ lowerCaseDescription }}?
+			</h2>
 			<p>
 				This will remove this card from your payment settings forever.
 			</p>
-			<template slot="controls">
+			<template #controls>
 				<kv-button
 					class="smallest secondary"
 					@click.prevent.native="showRemoveLightbox = false"
@@ -131,16 +136,18 @@
 		<kv-lightbox
 			class="active-card-lightbox"
 			:visible="showActiveLightbox"
-			:title="`Unable to remove card ${lowerCaseDescription}`"
 			@lightbox-closed="showActiveLightbox = false"
 		>
+			<h2 class="fs-exclude">
+				Unable to remove card {{ lowerCaseDescription }}
+			</h2>
 			<p>
 				This card is used in your Monthly Good or Auto Deposit, and can be edited
 				<router-link to="/settings/subscriptions">
 					here
 				</router-link>
 			</p>
-			<template slot="controls">
+			<template #controls>
 				<kv-button
 					id="active-card-no"
 					class="smallest secondary"
@@ -160,13 +167,13 @@ import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
 
 import KvButton from '@/components/Kv/KvButton';
+import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvRadio from '@/components/Kv/KvRadio';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterface';
 
 const pageQuery = gql`query paymentMethodVault {
   my {
@@ -187,8 +194,9 @@ const pageQuery = gql`query paymentMethodVault {
 export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		BraintreeDropInInterface,
+		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvButton,
+		KvIcon,
 		KvLightbox,
 		KvLoadingSpinner,
 		KvRadio,
@@ -196,8 +204,12 @@ export default {
 		TheMyKivaSecondaryMenu,
 		WwwPage,
 	},
+	metaInfo: {
+		title: 'Payment settings',
+	},
 	data() {
 		return {
+			isClientReady: false,
 			isProcessing: false,
 			savedPaymentMethods: [],
 			selectedDefaultCardNonce: '',
@@ -227,6 +239,7 @@ export default {
 		},
 	},
 	mounted() {
+		this.isClientReady = !this.$isServer;
 		// After initial value is loaded, setup watch to make form dirty on value changes
 		this.$watch('selectedDefaultCardNonce', () => {
 			this.$v.$touch();
@@ -419,6 +432,15 @@ export default {
 
 		&__add-button {
 			margin-top: 0;
+
+			.wrapper {
+				width: 1rem;
+				height: 1rem;
+
+				::v-deep .icon {
+					fill: white;
+				}
+			}
 		}
 
 		&__cc-wrapper {

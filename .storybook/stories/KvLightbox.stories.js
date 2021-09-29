@@ -94,7 +94,7 @@ export const SmallContent = (args, { argTypes }) => ({
 				:no-padding-sides="noPaddingSides"
 			>
 				<p>Small amount of content</p>
-				<template slot="controls">
+				<template #controls>
 					<kv-button>Button 1</kv-button>
 					<kv-button>Button 2</kv-button>
 				</template>
@@ -118,7 +118,7 @@ export const WithControls = (args, { argTypes }) => ({
 				:no-padding-sides="noPaddingSides"
 			>
 				${loremIpsum}
-				<template slot="controls">
+				<template #controls>
 					<kv-button>Button 1</kv-button>
 					<kv-button>Button 2</kv-button>
 				</template>
@@ -160,7 +160,7 @@ export const WithFoundationGrid = (args, { argTypes }) => ({
 					</div>
 				</div>
 				${loremIpsum}
-				<template slot="controls">
+				<template #controls>
 					<kv-button>Button 1</kv-button>
 					<kv-button>Button 2</kv-button>
 				</template>

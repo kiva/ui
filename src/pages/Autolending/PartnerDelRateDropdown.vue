@@ -3,7 +3,7 @@
 		<h3 class="filter-title">
 			Field Partner delinquency rates
 		</h3>
-		<kv-dropdown-rounded v-model="delinquencyRate">
+		<kv-select v-model="delinquencyRate">
 			<option value="0">
 				All delinquency rates
 			</option>
@@ -22,19 +22,19 @@
 			<option value="0.25">
 				25% or less
 			</option>
-		</kv-dropdown-rounded>
+		</kv-select>
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		KvDropdownRounded,
+		KvSelect,
 	},
 	data() {
 		return {

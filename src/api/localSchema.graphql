@@ -44,10 +44,29 @@ extend type Query {
 	activeLoan: ActiveLoan
 	autolending: Autolending
 	verificationLightbox: VerificationLightbox
+	hasEverLoggedIn: Boolean
 }
 
 extend type My {
 	lastLoginTimestamp: Int
+}
+
+extend interface LoanBasic {
+	fundraisingPercent: Float!
+	fundraisingTimeLeft: String!
+	unreservedAmount: Money!
+}
+
+extend type LoanPartner {
+	fundraisingPercent: Float!
+	fundraisingTimeLeft: String!
+	unreservedAmount: Money!
+}
+
+extend type LoanDirect {
+	fundraisingPercent: Float!
+	fundraisingTimeLeft: String!
+	unreservedAmount: Money!
 }
 
 type TipMessage {

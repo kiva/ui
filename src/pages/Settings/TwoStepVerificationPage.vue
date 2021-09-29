@@ -1,6 +1,8 @@
 <template>
 	<www-page class="two-step-verification" :gray-background="true">
-		<the-my-kiva-secondary-menu slot="secondary" />
+		<template #secondary>
+			<the-my-kiva-secondary-menu />
+		</template>
 		<div class="two-step-verification__title-area">
 			<div class="row column">
 				<h1>

@@ -66,9 +66,12 @@ ESLint auto fix
 {
     /* Other workspace settings...  */
     "editor.formatOnSave": false,
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
-    }
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true,
+		"source.fixAll.eslint": true,
+		"source.fixAll.tslint": true,
+		"source.fixAll.stylelint": true,
+	},
 }
 ```
 

@@ -13,9 +13,8 @@ module.exports = loanData => {
 			const bodyWidth = cardWidth * 0.85;
 			const borrowerImgAspectRatio = 0.75;
 			const kivaColors = {
-				blue: '#118aec',
-				darkBlue: '#006ed3',
-				green: '#4faf4e',
+				action: '#2B7C5F',
+				brand: '#2AA967',
 				textLight: '#999999',
 				strokeGrey: '#d8d8d8',
 				textDark: '#484848',
@@ -46,7 +45,7 @@ module.exports = loanData => {
 				// Borrower name
 				const nameXPos = cardWidth / 2;
 				const nameYPos = 242 * resizeFactor;
-				ctx.fillStyle = kivaColors.blue;
+				ctx.fillStyle = kivaColors.action;
 				ctx.font = `500 ${24 * resizeFactor}px "Kiva Post Grot"`;
 				ctx.fillText(ellipsisLine(ctx, loanData.name, bodyWidth), nameXPos, nameYPos);
 
@@ -80,7 +79,7 @@ module.exports = loanData => {
 				ctx.fillStyle = kivaColors.strokeGrey;
 				ctx.fill();
 				roundRect(ctx, fundingXPos, fundingYPos, bodyWidth * fundraisingPercent, fundingHeight, fundingBorderRadius);
-				ctx.fillStyle = kivaColors.green;
+				ctx.fillStyle = kivaColors.brand;
 				ctx.fill();
 				// Fundraising info - text
 				ctx.font = `italic 500 ${14 * resizeFactor}px "Kiva Post Grot"`;
@@ -90,19 +89,22 @@ module.exports = loanData => {
 				const btnXPos = (cardWidth - bodyWidth) / 2;
 				const btnYPos = 450 * resizeFactor;
 				const btnHeight = 50 * resizeFactor;
-				const btnBorderRadius = 4 * resizeFactor;
+				const btnBorderRadius = 14 * resizeFactor;
 				const btnFontSize = 19;
-				ctx.shadowBlur = 0;
-				ctx.shadowOffsetX = 0;
-				ctx.shadowOffsetY = 2 * resizeFactor;
-				ctx.shadowColor = kivaColors.darkBlue;
+				const btnFontRenderSize = btnFontSize * resizeFactor;
+				const btnTxtXPos = cardWidth / 2;
+				const btnTxtYPos = btnYPos + (btnHeight / 2) - (btnFontRenderSize / 2);
+				// ctx.shadowBlur = 0;
+				// ctx.shadowOffsetX = 0;
+				// ctx.shadowOffsetY = 2 * resizeFactor;
+				// ctx.shadowColor = kivaColors.darkBlue;
 				roundRect(ctx, btnXPos, btnYPos, bodyWidth, btnHeight, btnBorderRadius);
-				ctx.fillStyle = kivaColors.blue;
+				ctx.fillStyle = kivaColors.action;
 				ctx.fill();
 				ctx.shadowColor = 'transparent';
 				ctx.fillStyle = kivaColors.white;
 				ctx.font = `500 ${btnFontSize * resizeFactor}px "Kiva Post Grot"`;
-				ctx.fillText('Lend now', cardWidth / 2, btnYPos + btnHeight / 2 - btnFontSize);
+				ctx.fillText('Lend now', btnTxtXPos, btnTxtYPos);
 
 				// Borrower Image
 				const borrowerImg = await loadImage(loanData.image.retina);

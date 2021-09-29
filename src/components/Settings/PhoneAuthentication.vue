@@ -5,6 +5,7 @@
 			:visible="lightboxVisible"
 			@lightbox-closed="completeSetup"
 			:title="lightboxTitle"
+			:prevent-close="step === 3"
 		>
 			<section
 				v-if="step === 0"
@@ -201,14 +202,17 @@ export default {
 		lightboxTitle() {
 			if (this.step === 1) {
 				if (this.enrollmentType === 'SMS') {
-					return 'We just sent you a text message';
+					return 'We sent you a text message';
 				}
 				if (this.enrollmentType === 'voice') {
 					return 'You’ll receive a call shortly';
 				}
 			}
+			if (this.step === 4) {
+				return 'Complete setup';
+			}
 			return 'Phone number';
-		}
+		},
 	},
 	beforeDestroy() {
 		this.lightboxVisible = false;

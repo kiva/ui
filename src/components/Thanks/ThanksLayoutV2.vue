@@ -15,7 +15,7 @@
 							name="alert-circle"
 						/>
 					</template>
-					Before you go!
+					Create your account
 					<template #icon-right>
 						<kv-icon
 							class="arrow-icon"
@@ -147,7 +147,7 @@
 								name="alert-circle"
 							/>
 						</template>
-						Before you go!
+						Create your account
 						<template #icon-right>
 							<kv-icon
 								name="fat-chevron"

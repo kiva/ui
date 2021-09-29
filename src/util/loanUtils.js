@@ -31,6 +31,20 @@ export function isLoanFundraising(loan) {
 	return true;
 }
 
+/**
+ * Returns the why special string for the loan if it is defined
+ *
+ * @param {string} whySpecial from LoanBasic.whySpecial
+ * @returns {string}
+ */
+export function formatWhySpecial(whySpecial = '') {
+	if (whySpecial) {
+		const lowerCaseWhySpecial = whySpecial.toString().charAt(0).toLowerCase() + whySpecial.toString().slice(1);
+		return `This loan is special because ${lowerCaseWhySpecial.trim()}`;
+	}
+	return '';
+}
+
 export function buildPriceArray(amountLeft, minAmount) {
 	// get count of shares based on available remaining amount.
 	const N = amountLeft / minAmount;

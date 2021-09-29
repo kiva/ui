@@ -35,5 +35,6 @@ module.exports = {
 		'<rootDir>/src/util/animation',
 		'<rootDir>/node_modules/'
 	],
-	testURL: 'http://localhost'
+	testURL: 'http://localhost',
+	testEnvironment: 'jsdom'
 };

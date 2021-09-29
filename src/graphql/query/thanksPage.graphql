@@ -98,12 +98,6 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			inviterName
 		}
 	}
-	general {
-		uiExperimentSetting(key: "mg_thanks_cta") {
-			key
-			value
-		}
-	}
 	contentful {
 		entries(contentType: "page", contentKey: "thanks")
 	}

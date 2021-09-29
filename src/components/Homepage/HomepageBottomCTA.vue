@@ -6,8 +6,9 @@
 				class="bottom-cta__headline"
 			></p>
 			<kv-button
-				class="rounded smaller impact-text bottom-cta__button"
-				:to="buttonLink"
+				:class="`${buttonClass} rounded smaller bottom-cta__button`"
+				:to="buttonTo"
+				@click.native="buttonClick"
 				v-kv-track-event="[
 					'homepage',
 					'click-homepage-cta-bottom',
@@ -45,7 +46,27 @@ export default {
 		},
 		buttonLink() {
 			return this.bottomCTAContent?.primaryCtaLink ?? '';
-		}
+		},
+		buttonClass() {
+			return this.$attrs?.customCtaButtonClass ?? '';
+		},
+		buttonTo() {
+			if (this.$attrs?.customEventName) {
+				return null;
+			}
+			return this.buttonLink;
+		},
+	},
+	methods: {
+		buttonClick(event) {
+			const customEventName = this.$attrs?.customEventName ?? null;
+			if (customEventName) {
+				// Current behavior is to replace a button navigation if a custom event name is passed
+				event.stopPropagation();
+				// Emit root level event that any component can listen for
+				this.$root.$emit(customEventName);
+			}
+		},
 	}
 };
 
@@ -55,6 +76,8 @@ export default {
 @import 'settings';
 
 .bottom-cta {
+	padding: 2rem 0;
+
 	&__headline {
 		font-size: rem-calc(44);
 		font-weight: 300;

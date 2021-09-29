@@ -71,23 +71,27 @@
 			</template>
 		</kiva-as-expert>
 		<more-about-kiva />
-		<frequently-asked-questions />
+		<!-- Monthly Good Frequently Asked Questions -->
+		<div class="kv-tailwind">
+			<kv-frequently-asked-questions
+				:content="faqContentGroup"
+			/>
+		</div>
 	</www-page>
 </template>
 
 <script>
-import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
-import { processPageContentFlat } from '@/util/contentfulUtils';
+import { processPageContent } from '@/util/contentfulUtils';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvHero from '@/components/Kv/KvHero';
-import FrequentlyAskedQuestions from '@/components/MonthlyGood/FrequentlyAskedQuestions';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
@@ -124,10 +128,10 @@ export default {
 	},
 	components: {
 		EmailPreview,
-		FrequentlyAskedQuestions,
 		HowItWorks,
 		KivaAsExpert,
 		KvContentfulImg,
+		KvFrequentlyAskedQuestions,
 		KvHero,
 		LandingForm,
 		LandingFormExperiment,
@@ -192,7 +196,8 @@ export default {
 				});
 		},
 		result({ data }) {
-			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
+			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
+
 			// Monthly Good Amount Selector Experiment - EXP-GROW-11-Apr2020
 			const mgAmountSelectorExperiment = this.apollo.readFragment({
 				id: 'Experiment:mg_amount_selector',
@@ -208,39 +213,36 @@ export default {
 				);
 			}
 
-			// SUBS-609 Login After MG Setup Experiment
-			// Experiment is prefetched in experimentPreFetch
-			// This experiment is tracked here and on /setup
-			// since they are entry points into the MG Funnel
-			const mgLoginExperiment = this.apollo.readFragment({
-				id: 'Experiment:mg_login_after_setup',
-				fragment: experimentVersionFragment,
-			}) || {};
-			const loginAfterSetupExpVersion = mgLoginExperiment.version ?? {};
-			if (loginAfterSetupExpVersion === 'control') {
-				this.$kvTrackEvent('MonthlyGood', 'EXP-SUBS-609-Jan2021', 'a');
-			} else if (loginAfterSetupExpVersion === 'shown') {
-				this.$kvTrackEvent('MonthlyGood', 'EXP-SUBS-609-Jan2021', 'b');
-			}
-
 			// Check for contentful content
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
-			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
+			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
 		},
 	},
 	computed: {
+		contentGroups() {
+			return this.pageData?.page?.pageLayout?.contentGroups ?? [];
+		},
+		faqContentGroup() {
+			return this.contentGroups?.find(({ type }) => {
+				return type ? type === 'frequentlyAskedQuestions' : false;
+			});
+		},
+		heroContentGroup() {
+			return this.contentGroups?.find(({ key }) => {
+				return key ? key === 'monthlygood-landing-hero' : false;
+			});
+		},
 		heroImage() {
 			return this.heroContentGroup?.media?.[0]?.file?.url ?? '';
 		},
 		heroImageAlt() {
 			return this.heroContentGroup?.media?.[0]?.description ?? '';
 		},
-		heroContentGroup() {
-			return this.pageData?.page?.contentGroups?.homepageHero ?? null;
-		},
 		heroText() {
-			// eslint-disable-next-line max-len
-			return this.heroContentGroup?.contents?.find(contentItem => contentItem.key === 'mg-landing-hero-text');
+			// This contentGroup doesnt have a type, so find by key
+			return this.heroContentGroup?.contents?.find(contentItem => {
+				return contentItem.key === 'mg-landing-hero-text';
+			});
 		},
 		heroBody() {
 			const text = this.heroText?.bodyCopy ?? '';

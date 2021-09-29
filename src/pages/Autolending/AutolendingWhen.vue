@@ -40,7 +40,7 @@
 								v-model="donationToggle"
 							>
 								Include a donation to Kiva of
-								<kv-dropdown-rounded v-model="donation">
+								<kv-select v-model="donation">
 									<option :value="0">
 										0%
 									</option>
@@ -56,7 +56,7 @@
 									<option :value="20">
 										20%
 									</option>
-								</kv-dropdown-rounded>
+								</kv-select>
 							</kv-radio>
 							<kv-radio
 								data-test="is-autolending-donation-off"
@@ -68,7 +68,7 @@
 							</kv-radio>
 						</div>
 					</div>
-					<template slot="controls">
+					<template #controls>
 						<kv-button
 							data-test="when-save-button"
 							class="smaller button"
@@ -96,7 +96,7 @@ import gql from 'graphql-tag';
 import _isFinite from 'lodash/isFinite';
 
 import KvButton from '@/components/Kv/KvButton';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvSelect from '@/components/Kv/KvSelect';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvRadio from '@/components/Kv/KvRadio';
@@ -109,7 +109,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvButton,
-		KvDropdownRounded,
+		KvSelect,
 		KvLightbox,
 		KvLoadingSpinner,
 		KvRadio,

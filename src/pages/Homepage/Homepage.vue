@@ -1,5 +1,5 @@
 <template>
-	<component :is="activeHomepage" :content="pageData" />
+	<component :is="activeHomepage" />
 </template>
 
 <script>
@@ -8,24 +8,12 @@ import gql from 'graphql-tag';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
-import { settingEnabled } from '@/util/settingsUtils';
-import { processPageContentFlat } from '@/util/contentfulUtils';
-
-import WwwPage from '@/components/WwwFrame/WwwPage';
 
 const DefaultHomePage = () => import('@/pages/Homepage/DefaultHomepage');
-const LendByCategoryHomepage = () => import('@/pages/Homepage/LendByCategoryHomepage');
-const MonthlyGoodHomepage = () => import('@/pages/Homepage/MonthlyGoodHomepage');
-// const FifteenYearHomepage = () => import('@/pages/Homepage/15YearHomepage');
-// const IWDHomePage = () => import('@/pages/Homepage/iwd/IWDHomepage');
-const IWD2021HomePage = () => import('@/pages/Homepage/iwd/IWD2021Homepage');
-// const WRDHomePage = () => import('@/pages/Homepage/wrd/WRDHomepage');
-const TopMessageContentful = () => import('./TopMessageContentful');
+const ContentfulPage = () => import('@/pages/ContentfulPage');
 
 const activePageQuery = gql`query homepageFrame {
-	contentful {
-		entries(contentType: "page", contentKey: "home")
-	}
+	hasEverLoggedIn @client
 	general {
 		legacyHomeExp: uiExperimentSetting(key: "home_legacy") {
 			key
@@ -34,59 +22,17 @@ const activePageQuery = gql`query homepageFrame {
 	}
 }`;
 
-// Get the Contentful Page data from the data of an Apollo query result
-const getPageData = data => {
-	const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
-	return pageEntry ? processPageContentFlat(pageEntry) : null;
-};
-
 // Return an import function for the active homepage component
-const selectActiveHomepage = (pageData = {}, legacyHomeExp = {}) => {
+const selectActiveHomepage = (legacyHomeExp = {}) => {
 	// Being in the 'a' variant of the legacy home experiment forces using the legacy homepage
 	if (legacyHomeExp.version === 'a') {
 		return DefaultHomePage;
 	}
-
-	// If the IWD 2021 campaign is active, use that homepage
-	const uiHomepageIWD2021Setting = pageData?.page?.settings?.find(item => item.key === 'ui-homepage-iwd-2021') ?? null; // eslint-disable-line max-len
-	const isUiHomepageIWD2021SettingEnabled = settingEnabled(
-		uiHomepageIWD2021Setting,
-		'active',
-		'startDate',
-		'endDate'
-	);
-	if (pageData && isUiHomepageIWD2021SettingEnabled) {
-		return IWD2021HomePage;
-	}
-
-	// If the Monthly Good campaign is active, use that homepage
-	const uiHomepageMonthlyGoodSetting = pageData?.page?.settings?.find(item => item.key === 'ui-homepage-monthly-good') ?? null; // eslint-disable-line max-len
-	const isUiHomepageMonthlyGoodSettingEnabled = settingEnabled(
-		uiHomepageMonthlyGoodSetting,
-		'active',
-		'startDate',
-		'endDate'
-	);
-	if (pageData && isUiHomepageMonthlyGoodSettingEnabled) {
-		return MonthlyGoodHomepage;
-	}
-
-	// If nothing else is selected, default to the Lend-By-Category homepage
-	return LendByCategoryHomepage;
+	return ContentfulPage;
 };
 
 export default {
 	inject: ['apollo', 'cookieStore'],
-	components: {
-		WwwPage,
-		DefaultHomePage,
-		LendByCategoryHomepage,
-		// FifteenYearHomepage,
-		// IWDHomePage,
-		IWD2021HomePage,
-		// WRDHomePage,
-		TopMessageContentful,
-	},
 	metaInfo: {
 		meta: [
 			{
@@ -98,7 +44,6 @@ export default {
 	data() {
 		return {
 			activeHomepage: null,
-			pageData: null,
 		};
 	},
 	apollo: {
@@ -106,24 +51,38 @@ export default {
 		preFetch(config, client, args) {
 			return client.query({
 				query: activePageQuery
-			}).then(({ data }) => {
-				return client.query({
-					query: experimentQuery,
-					variables: { id: 'home_legacy' },
-				}).then(expResult => {
-					// Select which homepage to load
-					const componentImporter = selectActiveHomepage(getPageData(data), expResult?.data?.experiment);
-					return componentImporter();
-				}).then(resolvedImport => {
-					// Call preFetch for the active homepage
-					const component = resolvedImport.default;
-					return preFetchAll([component], client, args);
-				});
+			}).then(() => client.query({
+				query: experimentQuery,
+				variables: { id: 'home_legacy' },
+			})).then(expResult => {
+				// Select which homepage to load
+				const componentImporter = selectActiveHomepage(expResult?.data?.experiment);
+				return componentImporter();
+			}).then(resolvedImport => {
+				// Call preFetch for the active homepage
+				const component = resolvedImport.default;
+				return preFetchAll([component], client, args);
 			});
 		},
 		result({ data }) {
-			// Get page data from Contentful
-			this.pageData = getPageData(data);
+			const hasEverLoggedIn = data?.hasEverLoggedIn ?? true;
+			const unbounceTriggerExp = this.apollo.readFragment({
+				id: 'Experiment:unbounce_trigger',
+				fragment: experimentVersionFragment,
+			}) || {};
+			// Check for hasEverLoggedIn + associated exp
+			if (!hasEverLoggedIn && unbounceTriggerExp.version && unbounceTriggerExp.version !== 'unassigned') {
+				// push data object if eligible + assigned
+				if (unbounceTriggerExp.version === 'b' && typeof window !== 'undefined') {
+					window.dataLayer.push({ event: 'activateUnbounceEvent' });
+				}
+				// fire exp analtyics if eligible
+				this.$kvTrackEvent(
+					'homepage',
+					'EXP-GROW-678-Jun2021',
+					unbounceTriggerExp.version,
+				);
+			}
 
 			// Fetch legacy homepage experiment data (GROW-442)
 			const legacyHomeExp = this.apollo.readFragment({
@@ -140,7 +99,7 @@ export default {
 			}
 
 			// Set active homepage
-			this.activeHomepage = selectActiveHomepage(this.pageData, legacyHomeExp);
+			this.activeHomepage = selectActiveHomepage(legacyHomeExp);
 		}
 	}
 };

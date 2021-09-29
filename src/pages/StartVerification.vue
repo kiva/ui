@@ -1,12 +1,12 @@
 <template>
 	<www-page class="start-verification-page">
 		<div class="page-content row align-center">
-			<div class="columns shrink">
+			<div class="columns shrink" data-test="withdraw-verification-text">
 				<template v-if="!sent">
 					<h1>Email verification required</h1>
 					<p>To ensure your safety, we added an extra layer of security.</p>
 					<p>Once we verify your account, you can continue {{ process }}!</p>
-					<kv-button v-if="!sending" @click.native="send">
+					<kv-button data-test="withdraw-send-verification" v-if="!sending" @click.native="send">
 						Send verification link
 					</kv-button>
 					<kv-loading-spinner class="sending-spinner" v-else />
@@ -15,7 +15,7 @@
 					<h1>Email verification pending</h1>
 					<p>We sent a validation link <span v-if="email" class="email fs-exclude">to {{ email }}</span>.</p>
 					<p>After receiving the email, follow the link provided to continue {{ process }}.</p>
-					<kv-button v-if="!sending" @click.native="send">
+					<kv-button data-test="withdraw-resend-verification" v-if="!sending" @click.native="send">
 						Resend email
 					</kv-button>
 					<kv-loading-spinner class="sending-spinner" v-else />

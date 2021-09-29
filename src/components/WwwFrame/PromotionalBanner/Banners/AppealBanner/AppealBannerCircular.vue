@@ -20,12 +20,15 @@
 							:rotate="36"
 							:show-number="false"
 						/>
-						<img
+						<kv-contentful-img
 							v-if="imageUrl"
 							class="indicator__image"
-							:src="imageUrl"
+							:contentful-src="imageUrl"
 							alt=""
-						>
+							fallback-format="gif"
+							:height="164"
+							:width="164"
+						/>
 						<div
 							class="indicator__goal-status"
 							v-html="goalStatus"
@@ -42,7 +45,7 @@
 							class="appeal-banner__amount-item"
 						>
 							<kv-button
-								class="appeal-banner__btn smallest rounded"
+								class="appeal-banner__btn rounded"
 								@click.native="onClickAmountBtn(buttonAmount)"
 								v-kv-track-event="[
 									'promo',
@@ -57,7 +60,7 @@
 						</li>
 						<li class="appeal-banner__amount-item--other">
 							<kv-button
-								class="appeal-banner__btn smallest rounded"
+								class="appeal-banner__btn rounded"
 								to="/donate/supportus"
 								v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0, 0]"
 							>
@@ -96,7 +99,7 @@
 				</div>
 				<div class="shrink columns">
 					<kv-button
-						class="appeal-banner__btn appeal-banner__btn--toggle-open smallest rounded"
+						class="appeal-banner__btn appeal-banner__btn--toggle-open rounded"
 						@click.native="onClickToggleBanner"
 						v-kv-track-event="[
 							'promo',
@@ -119,12 +122,14 @@ import smoothReflow from 'vue-smooth-reflow';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvProgressCircle from '@/components/Kv/KvProgressCircle';
+import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 
 export default {
 	components: {
 		KvButton,
 		KvIcon,
 		KvProgressCircle,
+		KvContentfulImg
 	},
 	mixins: [smoothReflow],
 	props: {
@@ -242,28 +247,33 @@ export default {
 
 	&__btn {
 		font-size: rem-calc(14);
+		padding: 0.5rem 1rem;
 		border-radius: rem-calc(8);
-		background: #fff;
-		color: $kiva-icon-green;
-		border-color: $kiva-icon-green;
+		background: $white;
+		color: $kiva-green;
 		box-shadow: none;
 		width: 100%;
 		margin-bottom: 0;
+		border: 1px solid $kiva-green;
+
+		@include breakpoint(large) {
+			padding: 0.75rem 1.5rem;
+		}
 
 		&:hover,
 		&:focus {
-			color: #fff;
-			background: $kiva-green;
+			color: $kiva-green;
+			background: $kiva-bg-darkgray;
 		}
 
 		&--toggle-open {
-			color: #fff;
-			background: $kiva-icon-green;
+			color: $white;
+			background: $kiva-green;
 
 			&:hover,
 			&:focus {
-				background: #fff;
-				color: $kiva-icon-green;
+				color: $white;
+				background: darken($kiva-green, 10%);
 			}
 		}
 	}
@@ -295,11 +305,18 @@ export default {
 	&__body {
 		margin-bottom: 1rem;
 		white-space: pre-wrap;
+
+		&::v-deep {
+			a {
+				color: $kiva-text-dark;
+			}
+		}
 	}
 
 	&--open {
 		padding-top: rem-calc(16);
 		padding-bottom: rem-calc(16);
+		background-color: #EAF6F0;
 
 		@include breakpoint(large) {
 			padding-top: rem-calc(24);
@@ -308,6 +325,8 @@ export default {
 	}
 
 	&--closed {
+		background-color: #EAF6F0;
+
 		.appeal-banner__content {
 			padding-top: rem-calc(8);
 			padding-bottom: rem-calc(8);
@@ -321,6 +340,7 @@ export default {
 
 		.appeal-banner__title {
 			margin: 0;
+			color: $kiva-text-dark;
 		}
 	}
 }

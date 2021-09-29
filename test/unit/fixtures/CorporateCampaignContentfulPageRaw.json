@@ -62,6 +62,7 @@
 			},
 			"fields": {
 				"name": "Promo Campaign Test",
+				"headerTheme": "lightHeader",
 				"contentGroups": [{
 					"sys": {
 						"space": {
@@ -95,6 +96,7 @@
 					"fields": {
 						"key": "promo-campaign-test-cg",
 						"name": "Promo Campaign Test Content Groups",
+						"title": "Promo Campaign Test Content Groups",
 						"contents": [{
 								"sys": {
 									"space": {

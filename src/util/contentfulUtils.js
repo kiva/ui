@@ -91,6 +91,26 @@ export function processContent(contentfulContent) {
 }
 
 /**
+ * Format Button (contentful type id: button)
+ * Takes raw contentful content object and returns an object with targeted keys/values
+ *
+ * @param {array} contentfulContent data
+ * @returns {object}
+ */
+export function formatButton(contentfulContent) {
+	return {
+		description: contentfulContent.fields?.description,
+		label: contentfulContent.fields?.label,
+		style: contentfulContent.fields?.style,
+		subHeadline: contentfulContent.fields?.subHeadline,
+		webLink: contentfulContent.fields?.webLink,
+		deepLink: contentfulContent.fields?.deepLink,
+		analyticsClickEvent: contentfulContent.fields?.analyticsClickEvent,
+		filter: contentfulContent.fields?.filter,
+	};
+}
+
+/**
  * Format Generic Content Block (contentful type id: genericContentBlock)
  * Takes raw contentful content object and returns an object with targeted keys/values
  *
@@ -141,6 +161,57 @@ export function formatUiSetting(contentfulContent) {
 		// eslint-disable-next-line no-use-before-define
 		contents: formatContentTypes(contentfulContent.fields?.content),
 		dataObject: contentfulContent.fields?.dataObject,
+	};
+}
+
+/**
+ * Format Background (contentful type id: background)
+ * Takes raw contentful content object and returns an object with targeted keys/values
+ *
+ * @param {array} contentfulContent data
+ * @returns {object}
+ */
+export function formatBackground(contentfulContent) {
+	return {
+		key: contentfulContent.fields?.key,
+		name: contentfulContent.fields?.name,
+		backgroundColor: contentfulContent.fields?.backgroundColor,
+		backgroundMedia: contentfulContent.fields?.backgroundMedia?.fields,
+	};
+}
+
+/**
+ * Format Carousel (contentful type id: carousel)
+ * Takes raw contentful content object and returns an object with targeted keys/values
+ *
+ * @param {array} contentfulContent data
+ * @returns {object}
+ */
+export function formatCarousel(contentfulContent) {
+	return {
+		key: contentfulContent.fields?.key,
+		// eslint-disable-next-line no-use-before-define
+		slides: formatContentTypes(contentfulContent.fields?.slides),
+		slidesToShow: contentfulContent.fields?.slidesToShow,
+
+	};
+}
+
+/**
+ * Format StoryCard (contentful type id: storyCard)
+ * Takes raw contentful content object and returns an object with targeted keys/values
+ *
+ * @param {array} contentfulContent data
+ * @returns {object}
+ */
+export function formatStoryCard(contentfulContent) {
+	return {
+		backgroundMedia: contentfulContent.fields?.backgroundMedia?.fields,
+		cardContent: contentfulContent.fields?.cardContent,
+		footer: contentfulContent.fields?.footer,
+		key: contentfulContent.fields?.key,
+		kickerHeadline: contentfulContent.fields?.kickerHeadline,
+		theme: contentfulContent.fields?.theme,
 	};
 }
 
@@ -227,6 +298,7 @@ export function formatContentGroupsFlat(contentfulContent) {
 				key: entry.fields?.key,
 				name: entry.fields?.name,
 				type: entry.fields?.type ?? null,
+				title: entry.fields?.title ?? null,
 				// eslint-disable-next-line no-use-before-define
 				contents: formatContentTypes(entry.fields?.contents)
 			};
@@ -258,15 +330,50 @@ export function formatContentType(contentfulContent, contentType) {
 	// console.log(JSON.stringify(contentfulContent), contentType);
 	switch (contentType) {
 		case 'genericContentBlock':
-			return formatGenericContentBlock(contentfulContent);
+			return {
+				...formatGenericContentBlock(contentfulContent),
+				contentType
+			};
 		case 'uiSetting':
-			return formatUiSetting(contentfulContent);
+			return {
+				...formatUiSetting(contentfulContent),
+				contentType
+			};
 		case 'globalPromoBanner':
-			return formatGlobalPromoBanner(contentfulContent);
+			return {
+				...formatGlobalPromoBanner(contentfulContent),
+				contentType
+			};
 		case 'responsiveImageSet':
-			return formatResponsiveImageSet(contentfulContent);
+			return {
+				...formatResponsiveImageSet(contentfulContent),
+				contentType
+			};
 		case 'richTextContent':
-			return formatRichTextContent(contentfulContent);
+			return {
+				...formatRichTextContent(contentfulContent),
+				contentType
+			};
+		case 'background':
+			return {
+				...formatBackground(contentfulContent),
+				contentType
+			};
+		case 'button':
+			return {
+				...formatButton(contentfulContent),
+				contentType
+			};
+		case 'storyCard':
+			return {
+				...formatStoryCard(contentfulContent),
+				contentType
+			};
+		case 'carousel':
+			return {
+				...formatCarousel(contentfulContent),
+				contentType
+			};
 		default:
 			return { error: 'Unrecognized Content Type' };
 	}
@@ -311,6 +418,8 @@ export function processPageContent(entryItem) {
 		pageLayout: {
 			name: entryItem.fields?.pageLayout?.fields?.name,
 			pageTitle: entryItem.fields?.pageLayout?.fields?.pageTitle,
+			headerTheme: entryItem.fields?.pageLayout?.fields?.headerTheme,
+			footerTheme: entryItem.fields?.pageLayout?.fields?.footerTheme,
 		},
 		settings: entryItem.fields?.settings
 			? formatContentTypes(entryItem.fields?.settings) : []
@@ -330,6 +439,7 @@ export function processPageContent(entryItem) {
 				key: item.fields?.key,
 				name: item.fields?.name,
 				type: item.fields?.type ?? null,
+				title: item.fields?.title ?? null,
 				contents: formatContentTypes(item.fields?.contents),
 				media: formatMediaAssetArray(item.fields?.media),
 			};
@@ -363,6 +473,8 @@ export function processPageContentFlat(entryItem) {
 		pageLayout: {
 			name: entryItem.fields?.pageLayout?.fields?.name,
 			pageTitle: entryItem.fields?.pageLayout?.fields?.pageTitle,
+			headerTheme: entryItem.fields?.pageLayout?.fields?.headerTheme,
+			footerTheme: entryItem.fields?.pageLayout?.fields?.footerTheme,
 		},
 		settings: entryItem.fields?.settings
 			? formatContentTypes(entryItem.fields?.settings) : []
@@ -394,6 +506,11 @@ export function buildDynamicString(sourceString = '', splitKey = '', dynamicValu
 	if (typeof sourceString !== 'string') {
 		return '';
 	}
+	// if the split key is not found in the source string, return the source string
+	if (sourceString.indexOf(splitKey) === -1) {
+		return sourceString;
+	}
+
 	let finalString = '';
 	// split the source string where it finds the splitKey
 	const stringSplit = sourceString.split(splitKey);

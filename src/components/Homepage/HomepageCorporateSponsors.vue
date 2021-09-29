@@ -69,6 +69,8 @@ export default {
 @import 'settings';
 
 .sponsors {
+	padding: 2rem 0;
+
 	&__section-img {
 		width: rem-calc(220);
 		margin: 0 2.5rem 2.5rem 2.5rem;

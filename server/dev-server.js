@@ -3,6 +3,7 @@ require('../build/check-versions')();
 
 // dependencies
 require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
+require('dotenv').config({ path: './.config.env' });
 const chokidar = require('chokidar');
 const express = require('express');
 const helmet = require('helmet');
@@ -37,7 +38,9 @@ const port = argv.port || config.server.port;
 const app = express();
 
 // Set sensible security headers for express
-app.use(helmet());
+app.use(helmet({
+	contentSecurityPolicy: false,
+}));
 
 // Setup Request Logger
 app.use(logger.requestLogger);
@@ -123,7 +126,7 @@ chokidar.watch(path.resolve(__dirname, 'index.template.html')).on('change', () =
 });
 
 // update when the client manifest changes
-clientCompiler.plugin('done', rawStats => {
+clientCompiler.hooks.done.tap('done', rawStats => {
 	// abort if there were errors
 	const stats = rawStats.toJson();
 	if (stats.errors.length) return;

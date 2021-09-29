@@ -2,7 +2,7 @@
 	<form @submit.prevent.stop="submit" novalidate>
 		<div class="row">
 			<div class="small-12 columns input-wrapper recurring-amounts">
-				<fieldset>
+				<fieldset v-if="!subscriptionApplied">
 					<multi-amount-selector
 						:id="`${id}-donation-amount-selector`"
 						class="donation-amount-selector"
@@ -16,10 +16,41 @@
 						@pill-toggled="pillToggled"
 					/>
 				</fieldset>
-				<kv-button class="smaller submit-btn" type="submit" :disabled="$v.$invalid">
+				<!-- Monthly donation option -->
+				<kv-base-input
+					class="recurring-amounts__monthly-toggle"
+					:name="`${id}-donate-monthly-toggle`"
+					type="checkbox"
+					v-if="activateMonthlyOption && !subscriptionApplied"
+					v-model="isMonthly"
+					v-kv-track-event="['Donate form', 'toggle-monthly-donation', 'Make a monthly donation.']"
+				>
+					<template #after>
+						Make a monthly donation.
+					</template>
+				</kv-base-input>
+				<donate-form-drop-in-payment-wrapper
+					v-if="isMonthly"
+					:disclaimer="formDisclaimerCopy"
+					:donate-amount="selectedAmount"
+					:id="id"
+					@completed="subscriptionApplied = true"
+				/>
+				<kv-button
+					v-if="!isMonthly"
+					class="smaller submit-btn"
+					:class="{'disabled': formSubmitted}"
+					type="submit"
+					:disabled="$v.$invalid"
+				>
 					{{ buttonText }}
 				</kv-button>
-				<div class="attribution-text text-center" v-html="formDisclaimer"></div>
+				<!-- Donation Disclaimer should always be present if we have a payment option active -->
+				<div
+					class="attribution-text text-center"
+					v-if="showDisclaimer && !isMonthly && !subscriptionApplied"
+					v-html="formDisclaimerCopy"
+				></div>
 			</div>
 		</div>
 	</form>
@@ -30,12 +61,16 @@ import numeral from 'numeral';
 import _forEach from 'lodash/forEach';
 import { validationMixin } from 'vuelidate';
 import { minValue, maxValue } from 'vuelidate/lib/validators';
+import DonateFormDropInPaymentWrapper from '@/pages/Donate/DonateFormDropInPaymentWrapper';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
+import KvBaseInput from '@/components/Kv/KvBaseInput';
 import KvButton from '@/components/Kv/KvButton';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 
 export default {
 	components: {
+		DonateFormDropInPaymentWrapper,
+		KvBaseInput,
 		KvButton,
 		MultiAmountSelector,
 	},
@@ -51,13 +86,13 @@ export default {
 		};
 	},
 	props: {
+		activateMonthlyOption: {
+			type: Boolean,
+			default: false
+		},
 		buttonText: {
 			type: String,
-			default: 'Contribute monthly'
-		},
-		id: { // used when you have multiple instances of this form on one page.
-			type: String,
-			default: 'instance1',
+			default: 'Donate'
 		},
 		data: {
 			type: Array,
@@ -66,16 +101,37 @@ export default {
 		formDisclaimer: {
 			type: String,
 			default: '',
-		}
+		},
+		formSubmitAnalytics: {
+			type: Object,
+			default: () => {
+				return {
+					category: 'Donate Form',
+					action: 'click-donate-support-us-form',
+				};
+			},
+		},
+		id: { // used when you have multiple instances of this form on one page.
+			type: String,
+			default: 'instance1',
+		},
+		showDisclaimer: {
+			type: Boolean,
+			default: false
+		},
 	},
 	inject: ['apollo'],
 	data() {
 		return {
+			defaultDisclaimer: '<p>Thanks to PayPal, Kiva receives free payment processing.</p>',
 			donationAmountSelection: '500',
 			donationCustomAmount: 500,
 			donationAmount: 500,
-			minDonationAmount: 25,
-			maxDonationAmount: 10000
+			formSubmitted: false,
+			minDonationAmount: 1,
+			maxDonationAmount: 10000,
+			isMonthly: false,
+			subscriptionApplied: false,
 		};
 	},
 	computed: {
@@ -92,6 +148,9 @@ export default {
 			values.push({ title: 'Other', key: 'custom' });
 			return values;
 		},
+		formDisclaimerCopy() {
+			return this.formDisclaimer || this.defaultDisclaimer;
+		}
 	},
 	methods: {
 		donationAmountSelected(value) {
@@ -100,7 +159,7 @@ export default {
 				this.donationAmountSelection = 'custom';
 			} else {
 				this.updateAmount(numeral(value).value(), 'donation');
-				this.donationAmountSelection = value;
+				this.donationAmountSelection = String(value);
 			}
 		},
 		donationCustomAmountUpdated(value) {
@@ -117,10 +176,17 @@ export default {
 				this.donationAmountSelection = 'custom';
 			} else {
 				this.updateAmount(numeral(value).value());
-				this.donationAmountSelection = value;
+				this.donationAmountSelection = String(value);
 			}
 		},
 		submit() {
+			// exit form submit if a monthly donation was processed
+			if (this.isMonthly || this.formSubmitted) {
+				return false;
+			}
+			// allow form submission only once
+			this.formSubmitted = true;
+
 			this.apollo.mutate({
 				mutation: updateDonation,
 				variables: {
@@ -134,9 +200,9 @@ export default {
 					});
 				} else {
 					this.$kvTrackEvent(
-						'/support-kiva',
-						'Donate from Macro',
-						'Donation from Macro',
+						this.formSubmitAnalytics.category,
+						this.formSubmitAnalytics.action,
+						this.buttonText,
 						// pass donation amount as whole number
 						numeral(this.selectedAmount).value() * 100,
 						numeral(this.selectedAmount).value() * 100
@@ -150,14 +216,37 @@ export default {
 			});
 		}
 	},
+	mounted() {
+		this.$nextTick(() => {
+			// set a default selection
+			const initialSelection = this.donationAmountOptions[1]?.key;
+			this.donationAmountSelected(initialSelection);
+			this.updateAmount(initialSelection);
+			this.donationCustomAmount = numeral(initialSelection).value();
+
+			// check route for setMonthly initializer
+			if (this.$route?.query?.setMonthly === 'true' && this.activateMonthlyOption) {
+				this.isMonthly = true;
+			}
+		});
+	}
 };
 
 </script>
 <style lang="scss" scoped>
 @import 'settings';
 
+.recurring-amounts {
+	fieldset {
+		margin-bottom: 1.25rem;
+	}
+
+	&__monthly-toggle {
+		margin-bottom: 1rem;
+	}
+}
+
 .donation-amount-selector {
-	margin-bottom: 1rem;
 	position: relative;
 }
 

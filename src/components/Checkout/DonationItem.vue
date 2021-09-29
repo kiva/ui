@@ -72,7 +72,6 @@
 			/>
 		</div>
 		<donation-nudge-lightbox
-			v-if="!donationNudgeFellows"
 			ref="nudgeLightbox"
 			:loan-count="loanCount"
 			:loan-reservation-total="loanReservationTotal"
@@ -80,21 +79,6 @@
 			:close-nudge-lightbox="closeNudgeLightbox"
 			:update-donation-to="updateDonationTo"
 			:has-custom-donation="hasCustomDonation"
-			:experimental-footer="showCharityOverheadFooter"
-			:description="donationNudgeDescription()"
-			:percentage-rows="donationNudgePercentageRows"
-			:current-donation-amount="amount"
-		/>
-		<donation-nudge-lightbox-image
-			v-else
-			ref="nudgeLightbox"
-			:loan-count="loanCount"
-			:loan-reservation-total="loanReservationTotal"
-			:nudge-lightbox-visible="nudgeLightboxVisible"
-			:close-nudge-lightbox="closeNudgeLightbox"
-			:update-donation-to="updateDonationTo"
-			:has-custom-donation="hasCustomDonation"
-			:header="donationNudgeFellowsHeader"
 			:experimental-footer="showCharityOverheadFooter"
 			:description="donationNudgeDescription()"
 			:percentage-rows="donationNudgePercentageRows"
@@ -106,20 +90,29 @@
 			title="How does Kiva use donations?"
 		>
 			<p>
-				100% of every dollar you lend on Kiva goes directly to funding loans.
-				We rely on small optional donations from you and others to keep Kiva running.
-				Every $1 donated to Kiva makes $8 in loans possible around the world.
-				Your donation will enable us to:
+				100% of money lent on Kiva goes to funding loans,
+				so we rely on donations to continue this important work.
+				Each dollar helps us invest in systemic change and spread financial inclusion around the world.
+			</p>
+			<p>
+				We’re investing in lasting solutions for a more inclusive world through your donations.
+				Projects like...
 			</p>
 			<ul style="margin-bottom: 1rem;">
-				<li>Send expert staff to over 60 countries to vet and monitor loans and partners.</li>
-				<li>Build and maintain a website that facilitates over $1 million in loans each week.</li>
-				<li>Provide comprehensive customer support to thousands of lenders worldwide.</li>
-				<li>Train and support hundreds of volunteers -- 4 for every 1 staff member at Kiva.</li>
+				<li>
+					Kiva Protocol, giving unbanked people a digital identity and secure control over their
+					own credit information in places like Sierra Leone.
+				</li>
+				<li>
+					Kiva Capital, scaling our model for institutional investors.
+				</li>
+				<li>
+					Kiva Labs, supporting small and growing social enterprises around the world.
+				</li>
 			</ul>
 			<p>
-				If you live in the United States, your donation is tax-deductible.
-				Thank you for considering a donation to Kiva.
+				Your donations also help over 100 Kiva employees and more than 400 volunteers
+				make your loans happen!
 			</p>
 		</kv-lightbox>
 	</div>
@@ -140,7 +133,6 @@ import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
-import DonationNudgeLightboxImage from '@/components/Checkout/DonationNudge/DonationNudgeLightboxImage';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 const donationItemQuery = gql`query donationItemQuery {
@@ -156,7 +148,6 @@ export default {
 		KvLightbox,
 		DonateRepayments,
 		DonationNudgeLightbox,
-		DonationNudgeLightboxImage,
 	},
 	inject: ['apollo', 'cookieStore'],
 	props: {
@@ -188,8 +179,6 @@ export default {
 			donationNudgeBorrowerImageExperiment: false,
 			donationDetailsLink: 'How Kiva uses donations',
 			showCharityOverheadFooter: false,
-			donationNudgeFellows: false,
-			donationNudgeFellowsHeader: 'Donations enable Kiva Fellows to reach the people who need it most',
 			dynamicDonationItem: ''
 		};
 	},
@@ -203,8 +192,6 @@ export default {
 					Promise.all([
 						// Get the assigned experiment version for Donation Nudge Borrower Image Experiment
 						client.query({ query: experimentAssignmentQuery, variables: { id: 'charity_overhead' } }),
-						// Get the assigned experiment version for Donation nudge fellows experiment
-						client.query({ query: experimentAssignmentQuery, variables: { id: 'donation_nudge_fellows' } }),
 						// Get the assigned experiment version for GROW-74
 						client.query({ query: experimentAssignmentQuery, variables: { id: 'checkout_donation_tag_line' } }), // eslint-disable-line max-len
 						// Get contentful dynamic content
@@ -323,19 +310,7 @@ export default {
 					this.showCharityOverheadFooter = true;
 				}
 			}
-			// CASH-1111: Donation Nudge Fellows
-			if (this.hasLoans) {
-				const donationNudgeFellowsExp = this.apollo.readFragment({
-					id: 'Experiment:donation_nudge_fellows',
-					fragment: experimentVersionFragment,
-				}) || {};
-				if (donationNudgeFellowsExp.version === 'control') {
-					this.$kvTrackEvent('basket', 'EXP-CASH-1111-Aug2019', 'a');
-				} else if (donationNudgeFellowsExp.version === 'shown') {
-					this.$kvTrackEvent('basket', 'EXP-CASH-1111-Aug2019', 'b');
-					this.donationNudgeFellows = true;
-				}
-			}
+
 			// GROW-74: Donation tag line
 			if (this.hasLoans) {
 				const donationTagLineExperiment = this.apollo.readFragment({
@@ -403,7 +378,7 @@ export default {
 			this.$kvTrackEvent('basket', 'click-open nudge');
 			this.nudgeLightboxVisible = true;
 			this.$nextTick(() => {
-				this.$refs.nudgeLightbox.openNudgeLightbox();
+				this.$refs.nudgeLightbox.expandNudgeLightbox();
 			});
 		},
 		donationNudgeDescription() {

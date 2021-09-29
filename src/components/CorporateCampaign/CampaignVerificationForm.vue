@@ -1,38 +1,46 @@
 <template>
-	<section class="campaign-verification section row align-center">
-		<div class="small-12 large-8 align-self-middle columns">
-			<kv-lightbox
-				:visible="iFrameVisible"
-				class="employee-verification"
-				:prevent-close="true"
-				id="faFormLightbox"
-			>
-				<iframe
-					id="faForm"
-					:src="iFrameSrc"
-					:height="iFrameHeight"
-					:width="iFrameWidth"
-					frameborder="0"
-				></iframe>
-			</kv-lightbox>
+	<kv-lightbox
+		:visible="iFrameVisible"
+		:prevent-close="true"
+		id="faFormLightbox"
+	>
+		<div class="content" ref="formContainerRef">
+			<iframe
+				id="faForm"
+				:src="iFrameSrc"
+				:height="iFrameHeight"
+				:width="iFrameWidth"
+				frameborder="0"
+			></iframe>
+
+			<div class="text-center">
+				<kv-button
+					class="text-link"
+					@click.native="optOut"
+				>
+					No thanks, I'll opt out
+				</kv-button>
+			</div>
 		</div>
-	</section>
+	</kv-lightbox>
 </template>
 
 <script>
 import parseSPCookie from '@/util/parseSPCookie';
 import { addDays } from 'date-fns';
+import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
 	inject: ['cookieStore'],
 	metaInfo: {
-		script: [
-			{ src: '//kiva.tfaforms.net/js/iframe_resize_helper.js', async: true }
-		],
+		// script: [
+		// 	{ src: '//kiva.tfaforms.net/js/iframe_resize_helper.js', async: true }
+		// ],
 	},
 	components: {
 		KvLightbox,
+		KvButton,
 	},
 	props: {
 		formId: {
@@ -131,15 +139,14 @@ export default {
 			const { snowplowUserId, snowplowSessionId } = parseSPCookie(this.cookieStore);
 			this.spId = snowplowSessionId;
 			this.spUserId = snowplowUserId;
+		},
+		optOut() {
+			this.$emit('opt-out');
 		}
 	}
 };
 </script>
-
 <style lang="scss" scoped>
-::v-deep .kv-lightbox {
-	.close-lightbox {
-		display: none;
-	}
-}
+@import 'settings';
+
 </style>

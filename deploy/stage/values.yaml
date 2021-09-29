@@ -18,11 +18,11 @@ service:
 
 resources:
   requests:
-    cpu: 250m
-    memory: 300Mi
+    cpu: 500m
+    memory: 2000Mi
   limits:
-    cpu: 250m
-    memory: 300Mi
+    cpu: 500m
+    memory: 2000Mi
 
 replicaCount: 2
 minReplicas: 2
@@ -32,7 +32,7 @@ metrics:
   name: cpu
   target:
     type: Utilization
-    averageUtilization: 60
+    averageUtilization: 25
 
 ingress:
   host: "ui-stage.dk1.kiva.org"
@@ -41,10 +41,13 @@ ingress:
       - host: "ui-stage.dk1.kiva.org"
         http:
           paths:
-          - backend:
-              serviceName: "kiva-ui"
-              servicePort: *servicePortName
-            path: /
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: "kiva-ui"
+                port:
+                  name: *servicePortName
   tls:
     - hosts:
       - ui-stage.dk1.kiva.org

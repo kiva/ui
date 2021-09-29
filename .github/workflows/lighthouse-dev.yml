@@ -17,13 +17,26 @@ jobs:
       LHCI_DEV_BUILD_TOKEN: ${{ secrets.LHCI_DEV_BUILD_TOKEN }}
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 12.x
+      - name: Use Node.js 15.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 15.x
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-dependencies
+        with:
+          path: |
+            ~/.cache
+            ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: npm install, build
         run: |
-          npm install
+          npm ci --prefer-offline
           npm run build
       - name: run Lighthouse CI
         run: |

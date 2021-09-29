@@ -38,8 +38,8 @@
 					</div>
 				</div>
 
-				<template slot="controls">
-					<div slot="controls" class="text-center">
+				<template #controls>
+					<div class="text-center">
 						<div v-if="showForm">
 							<kv-button class="smaller" @click.native.prevent="handleJoinTeam">
 								Join Now

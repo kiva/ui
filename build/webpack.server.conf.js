@@ -14,21 +14,11 @@ module.exports = merge(baseWebpackConfig, {
 		libraryTarget: 'commonjs2'
 		, filename: 'server-bundle.js'
 	},
-	module: {
-		rules: [
-			{
-				// Ignore styles not from the /pages/ directory, since it's extracted in the client
-				test: /\.scss$/,
-				exclude: /\pages\//,
-				loader: 'null-loader'
-			},
-		]
-	},
 	// https://webpack.js.org/configuration/externals/#externals
 	// https://github.com/liady/webpack-node-externals
 	externals: nodeExternals({
-		// do not externalize style files in case we need to import it from a dep
 		allowlist: [
+			// do not externalize style files in case we need to import it from a dep
 			/\.css$/,
 			/\.scss$/,
 			/\.vue$/,
@@ -40,6 +30,8 @@ module.exports = merge(baseWebpackConfig, {
 			// allow timesync & promise to handle timesync calling require('promise')
 			/timesync/,
 			/promise/,
+			// allow flag icon sprites
+			/flag-icon-css/,
 		]
 	}),
 	plugins: [

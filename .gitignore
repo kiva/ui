@@ -15,3 +15,7 @@ build/schema.graphql
 *.njsproj
 *.sln
 .vscode
+.env
+.config.env
+config.env
+jsconfig.json

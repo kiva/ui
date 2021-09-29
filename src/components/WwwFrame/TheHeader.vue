@@ -188,6 +188,15 @@
 				</div>
 				<promo-banner-small :basket-state="basketState" />
 				<kv-dropdown
+					v-if="mgHighlightInNavVersion === 'shown'"
+					:controller="lendMenuId"
+					@show.once="loadLendInfo"
+					@show="onLendMenuShow"
+				>
+					<monthly-good-exp-menu-wrapper ref="mgExpWrapper" />
+				</kv-dropdown>
+				<kv-dropdown
+					v-if="mgHighlightInNavVersion !== 'shown'"
 					:controller="lendMenuId"
 					@show.once="loadLendInfo"
 					@show="onLendMenuShow"
@@ -389,6 +398,8 @@ import KvIcon from '@/components/Kv/KvIcon';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
+import MonthlyGoodExpMenuWrapper from '@/components/WwwFrame/LendMenu/MonthlyGoodExpMenuWrapper';
+
 import SearchBar from './SearchBar';
 import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
 import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
@@ -396,13 +407,14 @@ import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
 export default {
 	components: {
 		CampaignLogoGroup,
+		KivaLogo,
 		KvDropdown,
 		KvIcon,
-		KivaLogo,
-		SearchBar,
+		MonthlyGoodExpMenuWrapper,
 		PromoBannerLarge,
 		PromoBannerSmall,
-		TheLendMenu: () => import('./LendMenu/TheLendMenu'),
+		SearchBar,
+		TheLendMenu: () => import('@/components/WwwFrame/LendMenu/TheLendMenu'),
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	data() {
@@ -421,6 +433,7 @@ export default {
 			searchOpen: false,
 			redirectToLoginExperimentVersion: null,
 			basketState: {},
+			mgHighlightInNavVersion: null,
 		};
 	},
 	props: {
@@ -444,6 +457,21 @@ export default {
 			type: Object,
 			default: () => {}
 		},
+	},
+	created() {
+		// EXP SUBS-680 present main nav options for subscription or individual lending
+		const mgHighlightInNav = this.apollo.readFragment({
+			id: 'Experiment:mg_highlight_in_nav',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.mgHighlightInNavVersion = mgHighlightInNav.version;
+
+		// Fire Event for EXP SUBS-680
+		this.$kvTrackEvent(
+			'TopNav',
+			'EXP-SUBS-680-Apr2021',
+			this.mgHighlightInNavVersion === 'shown' ? 'b' : 'a'
+		);
 	},
 	computed: {
 		isTrustee() {
@@ -543,7 +571,9 @@ export default {
 			}
 		},
 		onLendMenuShow() {
-			this.$refs.lendMenu.onOpen();
+			if (this.mgHighlightInNavVersion !== 'shown') {
+				this.$refs.lendMenu.onOpen();
+			}
 			this.$kvTrackEvent('TopNav', 'hover-Lend-menu', 'Lend');
 		},
 		onLendMenuHide() {
@@ -555,7 +585,11 @@ export default {
 			return route;
 		},
 		loadLendInfo() {
-			this.$refs.lendMenu.onLoad();
+			if (this.mgHighlightInNavVersion === 'shown') {
+				this.$refs.mgExpWrapper.onLoad();
+			} else {
+				this.$refs.lendMenu.onLoad();
+			}
 		},
 		toggleSearch() {
 			this.searchOpen = !this.searchOpen;
@@ -692,8 +726,8 @@ $close-search-button-size: 2.5rem;
 		width: rem-calc(71);
 		height: 100%;
 		margin: rem-calc(-3) auto 0;
-		fill: $header-logo-color; // IE11 fallback
-		fill: var(--kv-header-logo-color, $header-logo-color);
+		color: $header-logo-color; // IE11 fallback
+		color: var(--kv-header-logo-color, $header-logo-color);
 		max-height: $header-height;
 
 		@include breakpoint(large) {
@@ -930,4 +964,5 @@ $close-search-button-size: 2.5rem;
 		height: rem-calc(28);
 	}
 }
+
 </style>

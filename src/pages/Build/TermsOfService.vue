@@ -1,6 +1,8 @@
 <template>
 	<www-page>
-		<developer-secondary-menu slot="secondary" />
+		<template #secondary>
+			<developer-secondary-menu />
+		</template>
 		<div class="row page-content">
 			<div class="small-12 columns">
 				<h1>Terms Of Service</h1>

@@ -2,6 +2,7 @@
 	<div class="row">
 		<div class="dropin-payment-holder small-12 columns">
 			<braintree-drop-in-interface
+				v-if="isClientReady"
 				ref="braintreeDropInInterface"
 				:amount="amount | numeral('0.00')"
 				flow="vault"
@@ -32,22 +33,26 @@
 <script>
 import numeral from 'numeral';
 import * as Sentry from '@sentry/browser';
+
+import braintreeDropInError from '@/plugins/braintree-dropin-error-mixin';
+
 import braintreeCreateAutoDepositSubscription from '@/graphql/mutation/braintreeCreateAutoDepositSubscription.graphql';
 import braintreeUpdateSubscriptionPaymentMethod from
 	'@/graphql/mutation/braintreeUpdateSubscriptionPaymentMethod.graphql';
+
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterface';
 
 export default {
 	components: {
-		BraintreeDropInInterface,
+		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvButton,
 		KvIcon,
 		KvLoadingSpinner
 	},
 	inject: ['apollo'],
+	mixins: [braintreeDropInError],
 	props: {
 		amount: {
 			type: Number,
@@ -77,8 +82,12 @@ export default {
 	data() {
 		return {
 			enableConfirmButton: false,
+			isClientReady: false,
 			submitting: false,
 		};
+	},
+	mounted() {
+		this.isClientReady = !this.$isServer;
 	},
 	methods: {
 		submitDropInAutoDeposit() {
@@ -120,21 +129,9 @@ export default {
 					}).then(kivaBraintreeResponse => {
 					// Check for errors in transaction
 						if (kivaBraintreeResponse.errors) {
-							const errorCode = kivaBraintreeResponse.errors?.[0]?.code;
-							const errorMessage = kivaBraintreeResponse.errors?.[0]?.message;
-							const standardErrorCode = `(Braintree error: ${errorCode})`;
-							// eslint-disable-next-line max-len
-							const standardError = `There was an error processing your payment. Please try again. ${standardErrorCode}`;
-
+							this.processBraintreeDropInError(this.action, kivaBraintreeResponse);
 							// Payment method failed, unselect attempted payment method
 							this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
-							// Potential error message: 'Transaction failed. Please select a different payment method.';
-
-							this.$showTipMsg(standardError, 'error');
-
-							// Fire specific exception to Snowplow
-							this.$kvTrackEvent(this.action, 'DropIn Payment Error', `${errorCode}: ${errorMessage}`);
-
 							// exit
 							return kivaBraintreeResponse;
 						}
@@ -172,21 +169,9 @@ export default {
 				}).then(kivaBraintreeResponse => {
 					// Check for errors in transaction
 					if (kivaBraintreeResponse.errors) {
-						const errorCode = kivaBraintreeResponse.errors?.[0]?.code;
-						const errorMessage = kivaBraintreeResponse.errors?.[0]?.message;
-						const standardErrorCode = `(Braintree error: ${errorCode})`;
-						const standardError = `There was an error processing your payment.
-						Please try again. ${standardErrorCode}`;
-
+						this.processBraintreeDropInError(this.action, kivaBraintreeResponse);
 						// Payment method failed, unselect attempted payment method
 						this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
-						// Potential error message: 'Transaction failed. Please select a different payment method.';
-
-						this.$showTipMsg(standardError, 'error');
-
-						// Fire specific exception to Snowplow
-						this.$kvTrackEvent(this.action, 'DropIn Payment Error', `${errorCode}: ${errorMessage}`);
-
 						// exit
 						return kivaBraintreeResponse;
 					}

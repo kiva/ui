@@ -103,6 +103,7 @@
 					<div class="columns medium-12 large-4 matching-text-wrap">
 						<matching-text
 							:matching-text="loan.matchingText"
+							:match-ratio="loan.matchRatio"
 							:is-funded="isFunded"
 							:is-selected-by-another="isSelectedByAnother"
 							:wrap="true"

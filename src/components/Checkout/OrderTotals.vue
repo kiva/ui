@@ -42,7 +42,7 @@
 				<button
 					v-if="showRemoveActivePromoCredit"
 					class="remove-credit"
-					@click="verifyRemovePromoCredit"
+					@click="promoOptOutLightboxVisible = true"
 				>
 					<kv-icon class="remove-credit-icon" name="small-x" :from-sprite="true" title="Remove Credit" />
 				</button>
@@ -72,54 +72,35 @@
 		</div>
 
 		<!-- Warn about removing promo credit -->
-		<kv-lightbox
-			@lightbox-closed="promoOptOutLightboxClosed"
+		<verify-remove-promo-credit
 			:visible="promoOptOutLightboxVisible"
-			title="You are leaving the promotion"
-		>
-			<p class="promo-opt-out-lightbox">
-				<strong>WARNING:</strong> If you proceed, your {{ appliedPromoTotal }} credit from
-				the {{ promoFundDisplayName }} promotion will be removed, and you will have to lend
-				using your own money.
-				Click "Cancel" to use your free loan, or click "Remove Credit" to pay using your own money.
-			</p>
-
-			<template #controls>
-				<kv-button
-					class="smallest secondary cancel-promo-opt-out-button"
-					v-kv-track-event="['promoCampaign', 'Cancel Promo Opt-out Button']"
-					@click.prevent.native="promoOptOutLightboxClosed"
-				>
-					Cancel
-				</kv-button>
-				<kv-button
-					class="smallest promo-opt-out-button"
-					v-kv-track-event="['promoCampaign', 'Promo Opt-out Button']"
-					@click.prevent.native="removePromoCredit"
-				>
-					Remove Credit
-				</kv-button>
-			</template>
-		</kv-lightbox>
+			:applied-promo-total="appliedPromoTotal"
+			:promo-fund-display-name="promoFundDisplayName"
+			:active-credit-type="activeCreditType"
+			@credit-removed="handleCreditRemoved"
+			@updating-totals="setUpdating($event)"
+			@lightbox-closed="promoOptOutLightboxVisible = false"
+		/>
 	</div>
 </template>
 
 <script>
 import numeral from 'numeral';
+import logFormatter from '@/util/logFormatter';
 import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
-import removeCreditByType from '@/graphql/mutation/shopRemoveCreditByType.graphql';
+import { removeCredit } from '@/util/checkoutUtils';
 import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
 import KvButton from '@/components/Kv/KvButton';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvTooltip from '@/components/Kv/KvTooltip';
+import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 
 export default {
 	components: {
 		KvButton,
 		KvIcon,
-		KvLightbox,
-		KvTooltip
+		KvTooltip,
+		VerifyRemovePromoCredit
 	},
 	inject: ['apollo'],
 	props: {
@@ -134,7 +115,6 @@ export default {
 	},
 	data() {
 		return {
-			loading: false,
 			promoOptOutLightboxVisible: false,
 		};
 	},
@@ -276,44 +256,30 @@ export default {
 				this.setUpdating(false);
 			});
 		},
-		removeCredit(type) {
-			// TODO: Setup removing "promo_credit" type
-			this.setUpdating(true);
-			this.apollo.mutate({
-				mutation: removeCreditByType,
-				variables: {
-					creditType: type
-				}
-			}).then(() => {
-				this.setUpdating(false);
-				this.$kvTrackEvent('basket', 'Kiva Credit', 'Remove Credit Success');
-				this.$emit('refreshtotals');
-			}).catch(error => {
-				console.error(error);
-				this.setUpdating(false);
-			});
-		},
-		verifyRemovePromoCredit() {
-			this.promoOptOutLightboxVisible = true;
-		},
-		removePromoCredit() {
-			if (this.activeCreditType) {
-				this.removeCredit(this.activeCreditType);
-			}
-			this.promoOptOutLightboxClosed();
-		},
 		applyPromoCredit() {
 			if (this.activeCreditType) {
 				this.addCredit(this.activeCreditType);
 			}
 		},
-		promoOptOutLightboxClosed() {
-			this.promoOptOutLightboxVisible = false;
+		removeCredit(type) {
+			this.setUpdating(true);
+			removeCredit(this.apollo, type)
+				.then(() => {
+					this.$kvTrackEvent('basket', 'Kiva Credit', 'Remove Credit Success');
+					this.$emit('refreshtotals');
+				}).catch(error => {
+					logFormatter(error, 'error');
+				}).finally(() => {
+					this.setUpdating(false);
+				});
 		},
 		setUpdating(state) {
-			this.loading = state;
 			this.$emit('updating-totals', state);
 		},
+		handleCreditRemoved() {
+			this.$emit('refreshtotals');
+			this.$router.push(this.$route.path); // remove promo query param from url
+		}
 	}
 };
 </script>
@@ -368,24 +334,6 @@ export default {
 
 	.tooltip {
 		text-align: left;
-	}
-
-	.promo-opt-out-lightbox {
-		max-width: 30rem;
-
-		.cancel-promo-opt-out-button {
-			margin-right: 1rem;
-		}
-
-		::v-deep .kv-lightbox__controls {
-			text-align: right;
-		}
-
-		// TODO: figure this out.
-		::v-deep .kv-lightbox__body .row {
-			margin-right: auto !important;
-			margin-left: auto !important;
-		}
 	}
 }
 </style>

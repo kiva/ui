@@ -1,6 +1,8 @@
 <template>
 	<www-page :gray-background="true">
-		<the-my-kiva-secondary-menu slot="secondary" />
+		<template #secondary>
+			<the-my-kiva-secondary-menu />
+		</template>
 		<div class="title-area">
 			<div class="row column">
 				<h1>Settings</h1>
@@ -92,7 +94,7 @@
 					class="section__link"
 					href="/settings/payments"
 				>
-					<h2 class="section__title">Payment Settings</h2>
+					<h2 class="section__title">Payment settings</h2>
 					<ul class="section__list">
 						<li>
 							<h3>Payment methods</h3>

@@ -40,7 +40,9 @@ export default {
 		// Validation object from Vuelidate for this input
 		validation: {
 			type: Object,
-			default: () => {},
+			default() {
+				return {};
+			},
 		},
 	},
 	mixins: [inputWrapperMixin],
@@ -87,7 +89,8 @@ export default {
 
 		&[type="checkbox"] {
 			float: left;
-			margin: 0.4rem 0.4rem 1rem 0;
+			margin: 0.25rem 0.4rem 1rem 0;
+			height: auto;
 		}
 
 		&--error,

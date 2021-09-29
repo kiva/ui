@@ -103,7 +103,7 @@
 							</div>
 						</transition>
 					</div>
-					<template slot="controls">
+					<template #controls>
 						<div class="row">
 							<div class="columns shrink">
 								<save-button @autolendingSaved="settingsSaved" />

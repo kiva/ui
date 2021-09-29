@@ -1,5 +1,20 @@
 export default [
-	{ path: '/', name: 'homepage', component: () => import('@/pages/Homepage/Homepage') },
+	{
+		path: '/',
+		name: 'homepage',
+		component: () => import('@/pages/Homepage/Homepage'),
+		meta: {
+			contentfulPage: () => 'home',
+		},
+	},
+	{
+		path: '/homepage-classic',
+		name: 'homepage-classic',
+		component: () => import('@/pages/Homepage/Homepage'),
+		meta: {
+			contentfulPage: () => 'home-classic',
+		},
+	},
 	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
 	{
 		path: '/auto-deposit',
@@ -51,8 +66,17 @@ export default [
 		component: () => import('@/pages/Thanks/ThanksPage'),
 	},
 	{ path: '/covid19response', component: () => import('@/pages/LandingPages/MGCovid19/MGCovid19') },
+	{
+		path: '/design',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: {
+			contentfulPage: () => 'design',
+		},
+	},
 	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/DonateFromMacro') },
+	{ path: '/donate/supportus', component: () => import('@/pages/Donate/DonateSupportUs') },
 	{ path: '/error', component: () => import('@/pages/Error') },
+	{ path: '/flss', component: () => import('@/pages/FlssPrototypes/SampleLoanDisplay') },
 	{ path: '/funded/:id', component: () => import('@/pages/BorrowerProfile/fundedBorrowerProfile') },
 	{
 		path: '/get-started',
@@ -90,6 +114,17 @@ export default [
 	{ path: '/lend-by-category', component: () => import('@/pages/Lend/LendByCategoryPage') },
 	{ path: '/lend-by-category/:category', component: () => import('@/pages/Lend/LoanChannelCategoryPage') },
 	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
+	{ path: '/lend/filter-alpha', component: () => import('@/pages/Lend/FilterAlpha/LendFilterAlpha') },
+
+	{ path: '/lend-beta/:id', component: () => import('@/pages/BorrowerProfile/BorrowerProfile') },
+
+	{
+		path: '/lp/:dynamicRoute',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: {
+			contentfulPage: route => `lp/${route.params.dynamicRoute}`,
+		},
+	},
 	{
 		path: '/monthlygood',
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage'),
@@ -152,9 +187,6 @@ export default [
 	{
 		path: '/register/guest-redirect',
 		component: () => import('@/pages/LoginAndRegister/GuestAccountRedirect'),
-		meta: {
-			authenticationRequired: true,
-		},
 	},
 	{
 		path: '/settings',
@@ -185,6 +217,13 @@ export default [
 			},
 		],
 
+	},
+	{
+		path: '/settings/email',
+		component: () => import('@/pages/Settings/EmailSettings'),
+		meta: {
+			authenticationRequired: true,
+		},
 	},
 	{
 		path: '/settings/payments',

@@ -70,20 +70,20 @@
 		</div>
 
 		<!-- Auto Deposit Frequently Asked Questions -->
-		<frequently-asked-questions
-			:faqs-contentful="frequentlyAskedQuestions"
-			:headline="frequentlyAskedQuestionsHeadline"
-		/>
+		<div class="kv-tailwind">
+			<kv-frequently-asked-questions
+				:content="faqContentGroup"
+			/>
+		</div>
 	</www-page>
 </template>
 
 <script>
-import _get from 'lodash/get';
 import gql from 'graphql-tag';
-import { processPageContentFlat } from '@/util/contentfulUtils';
+import { processPageContent } from '@/util/contentfulUtils';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import FrequentlyAskedQuestions from '@/components/AutoDeposit/FrequentlyAskedQuestions';
+import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
 import AutoDepositSignUpForm from '@/components/AutoDeposit/AutoDepositSignUpForm';
 
 import IconAutoDepositAlternate from '@/assets/icons/inline/auto-deposit-alternate.svg';
@@ -115,7 +115,7 @@ export default {
 	},
 	components: {
 		AutoDepositSignUpForm,
-		FrequentlyAskedQuestions,
+		KvFrequentlyAskedQuestions,
 		IconAutoDepositAlternate,
 		IconLend,
 		IconUpdatesAlternate,
@@ -136,36 +136,49 @@ export default {
 		result({ data }) {
 			// Extract page content from contentful
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
-			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
+			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
 
-			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
-			this.hasAutoDeposits = !!_get(data, 'my.autoDeposit') && !this.isMonthlyGoodSubscriber;
-			const legacySubs = _get(data, 'my.subscriptions.values', []);
+			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
+			this.hasAutoDeposits = data?.my?.autoDeposit ?? false;
+
+			const legacySubs = data?.my?.subscriptions?.values ?? [];
 			this.hasLegacySubscription = legacySubs.length > 0;
 		},
 	},
 	computed: {
+		contentGroups() {
+			return this.pageData?.page?.pageLayout?.contentGroups ?? [];
+		},
 		canDisplayForm() {
 			return !this.isMonthlyGoodSubscriber && !this.hasAutoDeposits && !this.hasLegacySubscription;
 		},
+		faqContentGroup() {
+			return this.contentGroups?.find(({ type }) => {
+				return type ? type === 'frequentlyAskedQuestions' : false;
+			});
+		},
+		ctaContentGroup() {
+			return this.contentGroups?.find(({ key }) => {
+				return key ? key === 'auto-deposit-cta' : false;
+			});
+		},
 		headerAreaHeadline() {
-			return this.pageData?.page?.contentGroups?.autoDepositCta?.contents?.[0]?.headline;
+			return this.ctaContentGroup?.contents?.[0]?.headline;
 		},
 		headerAreaBodyCopy() {
-			const rawRichText = this.pageData?.page?.contentGroups?.autoDepositCta?.contents?.[0]?.bodyCopy;
+			const rawRichText = this.ctaContentGroup?.contents?.[0]?.bodyCopy;
 			return documentToHtmlString(rawRichText);
 		},
-		frequentlyAskedQuestionsHeadline() {
-			return this.pageData?.page?.contentGroups?.autoDepositFaqs?.name;
-		},
-		frequentlyAskedQuestions() {
-			return this.pageData?.page?.contentGroups?.autoDepositFaqs?.contents;
+		whatToExpectContentGroup() {
+			return this.contentGroups?.find(({ key }) => {
+				return key ? key === 'auto-deposit-what-to-expect' : false;
+			});
 		},
 		whatToExpectHeadline() {
-			return this.pageData?.page?.contentGroups?.autoDepositWhatToExpect?.name;
+			return this.whatToExpectContentGroup?.title;
 		},
 		whatToExpect() {
-			return this.pageData?.page?.contentGroups?.autoDepositWhatToExpect?.contents;
+			return this.whatToExpectContentGroup?.contents;
 		}
 	},
 	methods: {

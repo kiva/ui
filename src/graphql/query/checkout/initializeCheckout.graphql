@@ -1,6 +1,7 @@
 #import '../../fragments/shopTotals.graphql'
 
 query initializeCheckout($basketId: String) {
+	hasEverLoggedIn @client
 	my {
 		lastLoginTimestamp @client
 		userAccount {

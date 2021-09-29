@@ -3,7 +3,7 @@
 		class="iwd-2021-homepage"
 		:header-theme="headerTheme"
 	>
-		<homepage-hero class="section"
+		<dynamic-hero class="section"
 			v-if="heroContentGroup"
 			:content="heroContentGroup"
 		/>
@@ -44,7 +44,7 @@
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import HomepageHero from '@/components/Homepage/HomepageHero';
+import DynamicHero from '@/components/Contentful/DynamicHero';
 import HomepageGeneralStats from '@/components/Homepage/HomepageGeneralStats';
 import HomepageLoanCategories from '@/components/Homepage/HomepageLoanCategories';
 import HomepageMidrollCTA from '@/components/Homepage/HomepageMidrollCTA';
@@ -58,7 +58,7 @@ import { lightHeader } from '@/util/siteThemes';
 export default {
 	components: {
 		WwwPage,
-		HomepageHero,
+		DynamicHero,
 		HomepageGeneralStats,
 		HomepageLoanCategories,
 		HomepageMidrollCTA,
@@ -87,7 +87,7 @@ export default {
 	},
 	computed: {
 		heroContentGroup() {
-			return this.content?.page?.contentGroups?.homepageHero ?? null;
+			return this.content?.page?.contentGroups?.dynamicHero ?? null;
 		},
 		loansContentGroup() {
 			return this.content?.page?.contentGroups?.homepageLoanCategories ?? null;

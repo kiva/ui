@@ -205,7 +205,8 @@ export default {
 
 	#lend-filter-wrapper {
 		position: relative;
-		height: 2rem;
+		height: auto;
+		min-height: 2rem;
 
 		#algolia-pagination-stats {
 			display: block;
