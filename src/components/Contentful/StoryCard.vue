@@ -26,14 +26,14 @@
 			tw-flex-col
 			tw-justify-between
 			tw-items-center
-			tw-p-6
 		"
 		:class="themeClass"
 		v-else
 	>
-		<p class="tw-text-center tw-text-h4">
-			{{ kickerHeadline }}
-		</p>
+		<dynamic-rich-text
+			class="tw-text-center tw-text-h4 tw-text-action"
+			:html="cardTitle"
+		/>
 		<dynamic-rich-text
 			class="story-card__content tw-text-center tw-h-full"
 			:html="cardContent"
@@ -70,16 +70,17 @@ export default {
 		themeClass() {
 			return `story-card__${this.content?.theme}`;
 		},
-		footer() {
-			const text = this.content?.footer ?? '';
+		cardTitle() {
+			const text = this.content?.cardTitle ?? '';
 			return text ? richTextRenderer(text) : '';
 		},
 		cardContent() {
 			const text = this.content?.cardContent ?? '';
 			return text ? richTextRenderer(text) : '';
 		},
-		kickerHeadline() {
-			return this.content?.kickerHeadline ?? '';
+		footer() {
+			const text = this.content?.footer ?? '';
+			return text ? richTextRenderer(text) : '';
 		},
 		backgroundImage() {
 			return {
