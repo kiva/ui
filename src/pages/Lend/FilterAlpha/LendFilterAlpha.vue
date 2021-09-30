@@ -74,7 +74,7 @@
 									name="sectorBox.name"
 									v-model="sector"
 									:key="sectorBox.id"
-									:checked="false"
+									:value="sectorBox.name"
 								>
 									{{ sectorBox.name }}
 								</kv-checkbox>
