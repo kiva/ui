@@ -126,6 +126,7 @@ export default {
 };
 </script>
 
+<!-- eslint-disable max-len -->
 <style lang="scss" scoped>
 	@import 'settings';
 
@@ -219,6 +220,7 @@ export default {
 	.story-card >>> .tw-prose h1 i::after,
 	.story-card >>> .tw-prose h2 i::after,
 	.story-card >>> .tw-prose h3 i::after {
+		background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiIHZpZXdCb3g9IjAgMCAzNzcgOTkiPgoJPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCQkuc3ZnX2xpbmV7ZmlsbDpub25lO3N0cm9rZTojMmFhOTY3O3N0cm9rZS13aWR0aDo0O3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjEwO3ZlY3Rvci1lZmZlY3Q6IG5vbi1zY2FsaW5nLXN0cm9rZTt9Cgk8L3N0eWxlPgoJPHBhdGggY2xhc3M9InN2Z19saW5lIiBkPSJNMzA4Ljg5NyAyNy43MTNDMzU2LjYwMSAzMy4zODA5IDQyMy4zODYgNTEuMjA4MyAzMDguODkzIDc3LjE3NUMxNjUuNzc2IDEwOS42MzMgLTMyLjI1OTYgOTYuNTc0IDkuODI2MzMgMzkuODExOEM0My40OTUxIC01LjU5Nzk3IDI1Ny4yNTEgMi40OTkyNiAzNTkuOTIgMTIuMjI0MSIvPgo8L3N2Zz4=");
 		content: "";
 		display: block;
 		position: absolute;
