@@ -207,6 +207,7 @@ export default {
 	.story-card >>> .tw-prose h1 u::after,
 	.story-card >>> .tw-prose h2 u::after,
 	.story-card >>> .tw-prose h3 u::after {
+		background-image: url("data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiB2aWV3Qm94PSIwIDAgMTU4IDgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0ibTE1NC43NSA2Yy0zLjY2OS0uNDk5NDYtMTE0LjI2MjEtNi40OTI5NzktMTUyIDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzJhYTk2NyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS13aWR0aD0iNCIvPjwvc3ZnPg==");
 		content: "";
 		display: block;
 		position: absolute;
