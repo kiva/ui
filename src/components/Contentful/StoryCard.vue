@@ -1,58 +1,78 @@
 <template>
-	<section
-		class="tw-h-full"
-		:class="themeClass"
-		v-if="hasBackgroundImage"
-	>
-		<kv-contentful-img
-			class="tw-h-full tw-object-cover"
-			:width="520"
-			fallback-format="jpg"
-			:contentful-src="backgroundImage.url"
-			:alt="backgroundImage.description"
-		/>
-		<p class="story-card__imageCard-title tw-text-h4">
-			{{ backgroundImage.title }}
-		</p>
-	</section>
+	<kv-theme-provider :theme="theme">
+		<div
+			class="
+				overflow-hidden
+				tw-h-full
+			"
+			:class="themeClass"
+			v-if="hasBackgroundImage"
+		>
+			<kv-contentful-img
+				class="tw-h-full tw-object-cover"
+				:width="520"
+				fallback-format="jpg"
+				:contentful-src="backgroundImage.url"
+				:alt="backgroundImage.description"
+			/>
+			<p class="story-card__imageCard-title tw-text-h4">
+				{{ backgroundImage.title }}
+			</p>
+		</div>
 
-	<section
-		class="
-			story-card
-			tw-h-full
-			tw-bg-brand-200
-			tw-text-primary
-			tw-flex
-			tw-flex-col
-			tw-justify-between
-			tw-items-center
-			tw-p-6
-		"
-		:class="themeClass"
-		v-else
-	>
-		<p class="tw-text-center tw-text-h4">
-			{{ kickerHeadline }}
-		</p>
-		<dynamic-rich-text
-			class="story-card__content tw-text-center tw-h-full"
-			:html="cardContent"
-		/>
-		<dynamic-rich-text class="tw-text-center" :html="footer" />
-	</section>
+		<div
+			class="
+				story-card
+				tw-bg-primary
+				tw-flex
+				tw-flex-col
+				tw-h-full
+				tw-justify-between
+				tw-items-center
+				overflow-hidden
+				tw-text-primary
+				tw-px-4
+				tw-py-4
+				md:tw-py-8
+				md:tw-px-5
+				sm:tw-px-2
+				sm:tw-py-2
+			"
+			:class="themeClass"
+			v-else
+		>
+			<dynamic-rich-text
+				class="tw-text-center tw-text-h4 tw-text-action"
+				:html="cardTitle"
+			/>
+			<dynamic-rich-text
+				class="story-card__content tw-text-center tw-h-full"
+				:html="cardContent"
+			/>
+			<dynamic-rich-text class="tw-text-center" :html="footer" />
+		</div>
+	</kv-theme-provider>
 </template>
 
 <script>
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import DynamicRichText from '@/components/Contentful/DynamicRichText';
-import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+import {
+	darkTheme,
+	darkGreenTheme,
+	mintTheme,
+	defaultTheme
+} from '~/@kiva/kv-tokens/configs/kivaColors';
+import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
+import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
 /**
 * Story Card Component
 * */
 export default {
 	components: {
 		DynamicRichText,
-		KvContentfulImg
+		KvContentfulImg,
+		KvThemeProvider
 	},
 	props: {
 		/**
@@ -63,23 +83,34 @@ export default {
 			default: () => {},
 		},
 	},
+	data() {
+		return {};
+	},
 	computed: {
 		theme() {
-			return this.content?.theme ?? '';
+			const themeMapper = {
+				kivaCLassicLight: defaultTheme,
+				kivaClassicMint: mintTheme,
+				kivaClassicGreen: darkGreenTheme,
+				kivaClassicDark: darkTheme,
+				imageCard: darkTheme
+			};
+			return themeMapper[this.content?.theme] ?? defaultTheme;
 		},
 		themeClass() {
 			return `story-card__${this.content?.theme}`;
 		},
-		footer() {
-			const text = this.content?.footer ?? '';
+		cardTitle() {
+			const text = this.content?.cardTitle ?? '';
 			return text ? richTextRenderer(text) : '';
 		},
 		cardContent() {
 			const text = this.content?.cardContent ?? '';
 			return text ? richTextRenderer(text) : '';
 		},
-		kickerHeadline() {
-			return this.content?.kickerHeadline ?? '';
+		footer() {
+			const text = this.content?.footer ?? '';
+			return text ? richTextRenderer(text) : '';
 		},
 		backgroundImage() {
 			return {
@@ -94,21 +125,19 @@ export default {
 	}
 };
 </script>
+
 <style lang="scss" scoped>
 	@import 'settings';
 
 	.story-card,
 	.story-card__imageCard {
-		aspect-ratio: 4 / 5;
 		border-radius: 2.5rem;
-		overflow: hidden;
-		padding: 2.5rem 1.25rem;
+		min-height: 550px;
 		@include breakpoint(medium) {
-			padding: 2.5rem;
-			min-height: 550px;
+			min-height: 600px;
 		}
 		@include breakpoint(large) {
-			padding: 3rem;
+			min-height: 720px;
 		}
 	}
 
@@ -121,7 +150,6 @@ export default {
 	.story-card__imageCard >>> .kv-contentful-img::after,
 	.story-card__imageCard-title {
 		bottom: 0.5rem;
-		color: #fff;
 		content: "";
 		position: absolute;
 		right: 1rem;
@@ -153,34 +181,50 @@ export default {
 		justify-content: center;
 	}
 
-	// Theme overrides. TODO(dew): coord with Ryan to use kivaThemes
-	.story-card__kivaClassicLight {
-		background: #fff;
+	.story-card >>> .tw-prose u {
+		text-decoration: none;
 	}
 
-	.story-card__kivaClassicMint {
-		background: #95D4B3;
+	.story-card >>> .tw-prose h1 i,
+	.story-card >>> .tw-prose h1 u,
+	.story-card >>> .tw-prose h2 i,
+	.story-card >>> .tw-prose h2 u,
+	.story-card >>> .tw-prose h3 i,
+	.story-card >>> .tw-prose h3 u {
+		position: relative;
+		display: inline-block;
+		font-style: normal;
 	}
 
-	.story-card__kivaClassicLight >>> .tw-prose h2,
-	.story-card__kivaClassicLight >>> .tw-prose h3,
-	.story-card__kivaClassicDark >>> .tw-prose h2,
-	.story-card__kivaClassicDark >>> .tw-prose h3 {
-		color: #212121;
+	// Text formatting for headlines.
+	.story-card >>> .tw-prose h1 b,
+	.story-card >>> .tw-prose h2 b,
+	.story-card >>> .tw-prose h3 b {
+		color: rgba(var(--text-action));
 	}
 
-	.story-card__kivaClassicGreen {
-		background: #2aa967;
+	.story-card >>> .tw-prose h1 u::after,
+	.story-card >>> .tw-prose h2 u::after,
+	.story-card >>> .tw-prose h3 u::after {
+		content: "";
+		display: block;
+		position: absolute;
+		bottom: -6px;
+		left: -4px;
+		width: calc(100% + 8px);
+		text-decoration: none;
+		height: 8px;
 	}
 
-	.story-card__kivaClassicDark {
-		background: #212121;
-	}
-
-	.story-card__kivaClassicGreen >>> .tw-prose h2,
-	.story-card__kivaClassicGreen >>> .tw-prose h3,
-	.story-card__kivaClassicDark >>> .tw-prose h2,
-	.story-card__kivaClassicDark >>> .tw-prose h3 {
-		color: #fff;
+	.story-card >>> .tw-prose h1 i::after,
+	.story-card >>> .tw-prose h2 i::after,
+	.story-card >>> .tw-prose h3 i::after {
+		content: "";
+		display: block;
+		position: absolute;
+		top: -10px;
+		left: -6px;
+		width: calc(100% + 24px);
+		height: calc(100% + 16px);
 	}
 </style>

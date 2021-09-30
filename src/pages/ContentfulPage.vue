@@ -81,6 +81,7 @@ const HomepageTestimonials = () => import('@/components/Homepage/HomepageTestimo
 const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
 const HomepageMonthlyGoodInfo = () => import('@/components/Homepage/HomepageMonthlyGoodInfo');
 
+const CardRow = () => import('@/components/Contentful/CardRow');
 const CenteredRichText = () => import('@/components/Contentful/CenteredRichText');
 const DynamicHero = () => import('@/components/Contentful/DynamicHero');
 const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
@@ -125,6 +126,7 @@ const getPageFrameFromType = type => {
 // :is="pageFrame" component on this page
 const getWrapperClassFromType = type => {
 	switch (type) {
+		case 'cardRow':
 		case 'centeredRichText':
 		case 'dynamicHeroClassic':
 		case 'heroWithCarousel':
@@ -177,6 +179,8 @@ const getComponentFromType = type => {
 			return KvFrequentlyAskedQuestions;
 		case 'testimonialCards':
 			return TestimonialCards;
+		case 'cardRow':
+			return CardRow;
 		case 'centeredRichText':
 			return CenteredRichText;
 		case 'dynamicHero':
