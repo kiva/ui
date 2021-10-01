@@ -118,6 +118,7 @@ describe('contentfulUtils.js', () => {
 				pageType: 'corporate-campaign',
 				pageLayout: {
 					name: 'Promo Campaign Test',
+					pageBackgroundColor: undefined,
 					headerTheme: 'lightHeader',
 					contentGroups: [{}],
 					footerTheme: undefined,
@@ -138,6 +139,7 @@ describe('contentfulUtils.js', () => {
 				pageType: 'corporate-campaign',
 				pageLayout: {
 					name: 'Promo Campaign Test',
+					pageBackgroundColor: undefined,
 					headerTheme: 'lightHeader',
 					contentGroups: [{
 						key: 'promo-campaign-test-cg',

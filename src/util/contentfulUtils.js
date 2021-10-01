@@ -200,18 +200,19 @@ export function formatCarousel(contentfulContent) {
 /**
  * Format StoryCard (contentful type id: storyCard)
  * Takes raw contentful content object and returns an object with targeted keys/values
- *
+ * TODO remove kickerHeadline once content field is fully deprecated from contentful
  * @param {array} contentfulContent data
  * @returns {object}
  */
 export function formatStoryCard(contentfulContent) {
 	return {
 		backgroundMedia: contentfulContent.fields?.backgroundMedia?.fields,
+		cardTitle: contentfulContent.fields?.cardTitle,
 		cardContent: contentfulContent.fields?.cardContent,
 		footer: contentfulContent.fields?.footer,
 		key: contentfulContent.fields?.key,
-		kickerHeadline: contentfulContent.fields?.kickerHeadline,
 		theme: contentfulContent.fields?.theme,
+		kickerHeadline: contentfulContent.fields?.kickerHeadline,
 	};
 }
 
@@ -418,6 +419,7 @@ export function processPageContent(entryItem) {
 		pageLayout: {
 			name: entryItem.fields?.pageLayout?.fields?.name,
 			pageTitle: entryItem.fields?.pageLayout?.fields?.pageTitle,
+			pageBackgroundColor: entryItem.fields?.pageLayout?.fields?.pageBackgroundColor,
 			headerTheme: entryItem.fields?.pageLayout?.fields?.headerTheme,
 			footerTheme: entryItem.fields?.pageLayout?.fields?.footerTheme,
 		},

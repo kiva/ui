@@ -67,7 +67,7 @@
 			class="tw-mb-1 tw-text-h3"
 			:max-length="50"
 			:name="borrowerName"
-			style="min-height: 3.75rem;"
+			style="min-height: 3rem;"
 		/>
 
 		<!-- Amount to go line-->
@@ -138,7 +138,7 @@
 			class="tw-mb-2 tw-self-start"
 			:state="`${allSharesReserved ? 'disabled' : ''}`"
 			:to="`/lend/${loanId}`"
-			v-kv-track-event="['Lending', 'click-Read-more', 'Read more', loanId]"
+			v-kv-track-event="['Lending', 'click-Read-more', 'View loan', loanId]"
 		>
 			View loan
 			<kv-material-icon

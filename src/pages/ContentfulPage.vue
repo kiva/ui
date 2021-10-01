@@ -2,6 +2,7 @@
 	<component :is="pageFrame"
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
+		:main-class="pageBackgroundColor"
 	>
 		<template v-if="!pageError">
 			<component
@@ -12,6 +13,7 @@
 				:content="content"
 				v-bind="getComponentOptions(content.key)"
 				:class="wrapperClass"
+				data-section-type="contentful-section"
 			/>
 		</template>
 		<template v-else>
@@ -80,6 +82,7 @@ const HomepageTestimonials = () => import('@/components/Homepage/HomepageTestimo
 const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
 const HomepageMonthlyGoodInfo = () => import('@/components/Homepage/HomepageMonthlyGoodInfo');
 
+const CardRow = () => import('@/components/Contentful/CardRow');
 const CenteredRichText = () => import('@/components/Contentful/CenteredRichText');
 const DynamicHero = () => import('@/components/Contentful/DynamicHero');
 const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
@@ -93,6 +96,8 @@ const KvFrequentlyAskedQuestions = () => import('@/components/Kv/KvFrequentlyAsk
 const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
 
 const RichTextItemsCentered = () => import('@/components/Contentful/RichTextItemsCentered');
+
+const MediaItemsCentered = () => import('@/components/Contentful/MediaItemsCentered');
 
 // Get the Contentful Page data from the data of an Apollo query result
 const getPageData = data => {
@@ -124,6 +129,7 @@ const getPageFrameFromType = type => {
 // :is="pageFrame" component on this page
 const getWrapperClassFromType = type => {
 	switch (type) {
+		case 'cardRow':
 		case 'centeredRichText':
 		case 'dynamicHeroClassic':
 		case 'heroWithCarousel':
@@ -131,6 +137,7 @@ const getWrapperClassFromType = type => {
 		case 'monthlyGoodSelector':
 		case 'testimonialCards':
 		case 'richTextItemsCentered':
+		case 'mediaItemsCentered':
 		case 'frequentlyAskedQuestions':
 			return 'kv-tailwind';
 		default:
@@ -176,6 +183,8 @@ const getComponentFromType = type => {
 			return KvFrequentlyAskedQuestions;
 		case 'testimonialCards':
 			return TestimonialCards;
+		case 'cardRow':
+			return CardRow;
 		case 'centeredRichText':
 			return CenteredRichText;
 		case 'dynamicHero':
@@ -188,6 +197,8 @@ const getComponentFromType = type => {
 			return LoansByCategoryCarousel;
 		case 'richTextItemsCentered':
 			return RichTextItemsCentered;
+		case 'mediaItemsCentered':
+			return MediaItemsCentered;
 		default:
 			logFormatter(`ContenfulPage: Unknown content group type "${type}"`, 'error');
 			return null;
@@ -230,6 +241,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
+			pageBackgroundColor: '',
 			contentGroups: [],
 			footerTheme: {},
 			headerTheme: {},
@@ -292,6 +304,7 @@ export default {
 				this.pageError = true;
 			} else {
 				this.title = (pageData?.page?.pageLayout?.pageTitle || pageData?.page?.pageTitle) ?? undefined;
+				this.pageBackgroundColor = pageData?.page?.pageLayout?.pageBackgroundColor ?? '';
 				this.headerTheme = siteThemes[pageData?.page?.pageLayout?.headerTheme] || {};
 				this.footerTheme = siteThemes[pageData?.page?.pageLayout?.footerTheme] || {};
 				this.pageFrame = getPageFrameFromType(pageData?.page?.pageType);
