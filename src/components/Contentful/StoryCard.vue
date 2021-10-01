@@ -1,5 +1,5 @@
 <template>
-	<kv-theme-provider :theme="theme">
+	<kv-theme-provider :theme="theme" class="tw-h-full">
 		<div
 			class="
 				overflow-hidden
@@ -133,13 +133,6 @@ export default {
 	.story-card,
 	.story-card__imageCard {
 		border-radius: 2.5rem;
-		min-height: 550px;
-		@include breakpoint(medium) {
-			min-height: 600px;
-		}
-		@include breakpoint(large) {
-			min-height: 720px;
-		}
 	}
 
 	.story-card__imageCard {
