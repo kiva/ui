@@ -1,12 +1,4 @@
-@import 'settings';
-
-h1 {
-	font-weight: 500;
-}
-
-h4 {
-	font-weight: 400;
-}
+@import "settings";
 
 h1.huge {
 	@include huge-headline();
