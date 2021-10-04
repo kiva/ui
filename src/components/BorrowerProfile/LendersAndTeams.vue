@@ -142,11 +142,11 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 import SupporterDetails from './SupporterDetails';
 
-const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int) {
+const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int, $sortBy: String) {
 	lend {
 		loan(id: $loanId) {
 			id
-			teams(limit: $limit, offset: $offset) {
+			teams(limit: $limit, offset: $offset, sortBy: $sortBy ) {
 				totalCount
 				values {
 					id
@@ -239,6 +239,7 @@ export default {
 			observer: null,
 			itemQueryLimit: 20,
 			itemQueryOffset: 0,
+			sortBy: 'overallLoanedAmount',
 			totalItemCount: 0,
 			supporterOfLoan: false,
 			userId: '',
@@ -328,7 +329,8 @@ export default {
 				variables: {
 					loanId: this.loanId,
 					limit: this.itemQueryLimit,
-					offset: this.itemQueryOffset
+					offset: this.itemQueryOffset,
+					sortBy: this.sortBy,
 				}
 			}).then(({ data }) => {
 				this.totalItemCount = data?.lend?.loan?.[this.displayType]?.totalCount ?? 0;
