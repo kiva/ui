@@ -142,7 +142,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 import SupporterDetails from './SupporterDetails';
 
-const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int, $sortBy: String) {
+const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int, $sortBy: TeamSearchSortByEnum) {
 	lend {
 		loan(id: $loanId) {
 			id
@@ -239,7 +239,7 @@ export default {
 			observer: null,
 			itemQueryLimit: 20,
 			itemQueryOffset: 0,
-			sortBy: 'overallLoanedAmount',
+			sortBy: 'memberCount',
 			totalItemCount: 0,
 			supporterOfLoan: false,
 			userId: '',
@@ -327,12 +327,12 @@ export default {
 				loanId: this.loanId,
 				limit: this.itemQueryLimit,
 				offset: this.itemQueryOffset,
-				sortBy: this.sortBy,
+				sortBy: this.sortBy
 			};
 			const lenderVars = {
 				loanId: this.loanId,
 				limit: this.itemQueryLimit,
-				offset: this.itemQueryOffset,
+				offset: this.itemQueryOffset
 			};
 
 			// run apollo query
