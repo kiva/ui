@@ -323,15 +323,22 @@ export default {
 		fetchItems(fromLightbox = false) {
 			if (this.loanId === 0) return false;
 
+			const teamVars = {
+				loanId: this.loanId,
+				limit: this.itemQueryLimit,
+				offset: this.itemQueryOffset,
+				sortBy: this.sortBy,
+			};
+			const lenderVars = {
+				loanId: this.loanId,
+				limit: this.itemQueryLimit,
+				offset: this.itemQueryOffset,
+			};
+
 			// run apollo query
 			this.apollo.query({
 				query: this.displayType === 'teams' ? teamsQuery : lendersQuery,
-				variables: {
-					loanId: this.loanId,
-					limit: this.itemQueryLimit,
-					offset: this.itemQueryOffset,
-					sortBy: this.sortBy,
-				}
+				variables: this.displayType === 'teams' ? teamVars : lenderVars,
 			}).then(({ data }) => {
 				this.totalItemCount = data?.lend?.loan?.[this.displayType]?.totalCount ?? 0;
 				if (!this.totalItemCount) {
