@@ -15,6 +15,7 @@
 			:embla-options="{
 				loop: false,
 			}"
+			ref="categoryCarousel"
 			:multiple-slides-visible="true"
 			slides-to-scroll="visible"
 			:slide-max-width="singleSlideWidth"
@@ -173,6 +174,13 @@ export default {
 				this.name = channel?.name || '';
 				this.url = channel?.url || '';
 				this.id = channel?.id || '';
+				if (this.$refs && this.$refs.categoryCarousel) {
+					// Scroll the first slide when swtiching categories
+					this.$refs.categoryCarousel.goToSlide(0);
+					// Reinitailize the category, to ensure proper number of indexes
+					// are displayed on the frontend
+					this.$refs.categoryCarousel.reInit();
+				}
 			},
 			immediate: true,
 		},

@@ -1,7 +1,7 @@
 import { subDays } from 'date-fns';
 import wwwPageMock from '../fixtures/wwwPageMock';
 
-describe('Autolending Page Spec', () => {
+describe.skip('Autolending Page Spec', () => {
 	beforeEach(() => {
 		cy.mock(wwwPageMock({
 			UserAccount: {

@@ -190,7 +190,7 @@ export default {
 
 	blockquote p {
 		color: #212121;
-		color: rgb(var(--tw-text-primary));
+		color: rgb(var(--text-primary));
 	}
 
 	select {
@@ -203,7 +203,7 @@ body .kv-tailwind {
 	font-size: 1rem;
 	line-height: 1.5;
 	color: #212121;
-	color: rgb(var(--tw-text-primary));
+	color: rgb(var(--text-primary));
 }
 
 @media (min-width: 1024px) {

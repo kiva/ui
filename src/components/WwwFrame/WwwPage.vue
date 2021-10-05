@@ -122,3 +122,17 @@ export default {
 	}
 }
 </style>
+
+<style lang="scss" scoped>
+.tw-bg-primary {
+	background-color: rgb(var(--bg-primary));
+}
+
+.tw-bg-secondary {
+	background-color: rgb(var(--bg-secondary));
+}
+
+.tw-bg-tertiary {
+	background-color: rgb(var(--bg-tertiary));
+}
+</style>

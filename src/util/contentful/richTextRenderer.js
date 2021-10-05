@@ -61,8 +61,12 @@ export function richTextRenderer(content) {
 			return `<div>${richTextHTML}</div>`;
 		}
 		if (isButton) {
-			const buttonObject = JSON.stringify(contentfulEntryNode?.data?.target?.fields).replace(/"/g, '\'');
-			return `<button-wrapper class="tw-whitespace-normal" :content="${buttonObject}"/>`;
+			// The content prop expects an object, but in this context
+			// only passing in a string representation of an object will work
+			// We must stringify the object, then replace the quotes
+			// eslint-disable-next-line max-len
+			const buttonObject = JSON.stringify(contentfulEntryNode?.data?.target?.fields).replace(/'/g, '\\\'').replace(/"/g, '\'');
+			return `<button-wrapper class="tw-whitespace-normal" :content="${buttonObject}" />`;
 		}
 		return '';
 	};
