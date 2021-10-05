@@ -28,7 +28,6 @@ module.exports = {
 						ident: 'postcss',
 						plugins: [
 						require('tailwindcss'),
-						require('postcss-prepend-selector')( { selector: '.kv-tailwind ' } ),
 						require('autoprefixer')
 						]
 					}
