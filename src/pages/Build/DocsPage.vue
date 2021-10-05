@@ -3,7 +3,7 @@
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
-		<div class="row page-content">
+		<div class="row tw-prose tw-py-4 md:tw-py-8">
 			<div class="small-12 columns">
 				<h1>Developer Docs</h1>
 				<p>
@@ -32,7 +32,7 @@
 					<kv-multi-code-block nowrap :code="code" />
 				</p>
 				<p>
-					<strong class="show-for-medium-up">NOTE: </strong>
+					<strong class="tw-hidden md:tw-inline">NOTE: </strong>
 					QraphQL's limit for a GET request query is 2500 characters.
 					A POST request is recommended for longer queries
 				</p>
@@ -135,11 +135,3 @@ r.json()`,
 	}
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-.page-content {
-	padding: 1.625rem 0;
-}
-</style>
