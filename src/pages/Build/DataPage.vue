@@ -3,11 +3,11 @@
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
-		<div class="row page-content">
+		<div class="row tw-prose tw-py-4 md:tw-py-8">
 			<div class="small-12 columns">
 				<h1>Data Snapshots</h1>
-				<div class="callout secondary">
-					<strong class="show-for-medium-up">Important Note:</strong>
+				<div class="tw-bg-caution tw-p-3 tw-my-1">
+					<strong class="tw-hidden md:tw-inline">Important Note:</strong>
 					<!-- eslint-disable-next-line max-len -->
 					For now, snapshots are generated intermittently. We'll update this message when the snapshots are back on a regular schedule.
 				</div>
@@ -25,12 +25,12 @@
 					The latest data snapshots are available in the format of your choice at the following URLs:
 				</p>
 				<p>
-					<strong class="show-for-medium-up">JSON:</strong>
+					<strong class="tw-hidden md:tw-inline">JSON:</strong>
 					<a href="http://s3.kiva.org/snapshots/kiva_ds_json.zip">
 						http://s3.kiva.org/snapshots/kiva_ds_json.zip
 					</a>
 					<br>
-					<strong class="show-for-medium-up">CSV:</strong>
+					<strong class="tw-hidden md:tw-inline">CSV:</strong>
 					<a href="http://s3.kiva.org/snapshots/kiva_ds_csv.zip">
 						http://s3.kiva.org/snapshots/kiva_ds_csv.zip
 					</a>
@@ -105,17 +105,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-.page-content {
-	padding: 1.625rem 0;
-}
-
-.callout {
-	background-color: $kiva-alert-yellow;
-	padding: 1.625rem;
-	margin: 0.5rem 0;
-}
-</style>

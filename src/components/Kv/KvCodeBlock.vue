@@ -1,5 +1,5 @@
 <template>
-	<code class="code" :class="{nowrap}">
+	<code>
 		<pre v-if="code">{{ code }}</pre>
 		<slot v-else></slot>
 	</code>
@@ -12,20 +12,6 @@ export default {
 			type: String,
 			default: '',
 		},
-		nowrap: {
-			type: Boolean,
-			default: false,
-		},
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.code {
-	&.nowrap {
-		white-space: nowrap;
-	}
-}
-</style>

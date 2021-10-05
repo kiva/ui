@@ -4,7 +4,7 @@
 			<developer-secondary-menu />
 		</template>
 
-		<div class="row page-content">
+		<div class="row tw-prose tw-py-4 md:tw-py-8">
 			<div class="small-12 columns">
 				<h1>Developer Home</h1>
 
@@ -52,11 +52,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-.page-content {
-	padding: 1.625rem 0;
-}
-</style>
