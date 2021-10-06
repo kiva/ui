@@ -1,22 +1,33 @@
 <template>
-	<div
-		id="app"
-		class="tw-bg-primary tw-h-full"
+	<kv-theme-provider
+		:theme="theme"
 	>
-		<router-view />
-		<vue-progress-bar />
-		<the-tip-message />
-	</div>
+		<div id="app" class="tw-bg-primary tw-h-full">
+			<router-view />
+			<vue-progress-bar />
+			<the-tip-message />
+			<button
+				class="tw-fixed tw-z-stratosphere tw-right-3 tw-top-3"
+				@click="isDark = !isDark"
+			>
+				<span v-if="isDark">🌙</span>
+				<span v-else>🌞</span>
+			</button>
+		</div>
+	</kv-theme-provider>
 </template>
 
 <script>
 import '@/assets/scss/tailwind/tailwind.css';
 import TheTipMessage from '@/components/WwwFrame/TheTipMessage';
 import webmanifest from '@/manifest.webmanifest';
+import { darkTheme } from '~/@kiva/kv-tokens/configs/kivaColors';
+import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
 
 export default {
 	name: 'App',
 	components: {
+		KvThemeProvider,
 		TheTipMessage,
 	},
 	metaInfo() {
@@ -157,6 +168,14 @@ export default {
 				}
 			]))
 		};
+	},
+	data() {
+		return { isDark: false };
+	},
+	computed: {
+		theme() {
+			return this.isDark ? darkTheme : {};
+		}
 	},
 };
 </script>
