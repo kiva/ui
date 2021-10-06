@@ -72,7 +72,7 @@
 		</kiva-as-expert>
 		<more-about-kiva />
 		<!-- Monthly Good Frequently Asked Questions -->
-		<div class="kv-tailwind">
+		<div>
 			<kv-frequently-asked-questions
 				:content="faqContentGroup"
 			/>
