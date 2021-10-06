@@ -2,7 +2,6 @@
 	<www-page
 		id="borrower-profile"
 		:header-theme="headerTheme"
-		main-class="kv-tailwind"
 	>
 		<article class="tw-relative tw-bg-secondary">
 			<div class="tw-relative">
