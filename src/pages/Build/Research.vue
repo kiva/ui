@@ -3,54 +3,52 @@
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
-		<div class="row tw-prose tw-py-4 md:tw-py-8">
-			<div class="small-12 columns">
-				<div>
-					<h1>Research</h1>
-					<p>
-						Kiva is proud to have worked with the academic and research community for over 10 years.
-						Some of Kiva's research and education partners include: Stanford University,
-						University of Michigan, UC Berkeley, University of Washington, University of San Francisco.
-					</p>
-					<p>
-						If your group is interested in a research collaboration with Kiva, Kiva's current
-						research interests include:
-					</p>
-					<div v-for="topic in topics" :key="topic">
-						<ul>
-							<li>{{ topic }}</li>
-						</ul>
-					</div>
-					<p>
-						Please find below selected publications featuring Kiva data that are available on
-						the open web.
-					</p>
-				</div>
-				<div v-for="year in years" :key="year">
-					<h2>{{ year }}</h2>
-					<!-- eslint-disable vue/no-use-v-if-with-v-for -->
-					<div v-if="paper.year === year" v-for="(paper, index) in papers" :key="index">
-						<p>
-							<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
-								<i>{{ paper.publication }}</i>
-							</a>
-						</p>
-					</div>
-					<!-- eslint-enable -->
-				</div>
+		<kv-page-wrapper class="tw-prose">
+			<h1>Research</h1>
+			<p>
+				Kiva is proud to have worked with the academic and research community for over 10 years.
+				Some of Kiva's research and education partners include: Stanford University,
+				University of Michigan, UC Berkeley, University of Washington, University of San Francisco.
+			</p>
+			<p>
+				If your group is interested in a research collaboration with Kiva, Kiva's current
+				research interests include:
+			</p>
+			<div v-for="topic in topics" :key="topic">
+				<ul>
+					<li>{{ topic }}</li>
+				</ul>
 			</div>
-		</div>
+			<p>
+				Please find below selected publications featuring Kiva data that are available on
+				the open web.
+			</p>
+			<div v-for="year in years" :key="year">
+				<h2>{{ year }}</h2>
+				<!-- eslint-disable vue/no-use-v-if-with-v-for -->
+				<div v-if="paper.year === year" v-for="(paper, index) in papers" :key="index">
+					<p>
+						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
+							<i>{{ paper.publication }}</i>
+						</a>
+					</p>
+				</div>
+				<!-- eslint-enable -->
+			</div>
+		</kv-page-wrapper>
 	</www-page>
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
+import KvPageWrapper from '@/components/Kv/KvPageWrapper';
+import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
 	components: {
-		WwwPage,
 		DeveloperSecondaryMenu,
+		KvPageWrapper,
+		WwwPage,
 	},
 	metaInfo: {
 		title: 'Research'
