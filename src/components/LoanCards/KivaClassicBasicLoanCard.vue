@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="kv-tailwind tw-flex tw-flex-col"
+		class="tw-flex tw-flex-col"
 		style="min-width: 230px; max-width: 374px; height: 100%;"
 		:id="`${loanId}-loan-card`"
 	>

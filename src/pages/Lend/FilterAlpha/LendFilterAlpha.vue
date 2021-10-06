@@ -2,7 +2,6 @@
 	<www-page
 		id="lend-filter-alpha"
 		:header-theme="headerTheme"
-		:main-class="'kv-tailwind'"
 	>
 		<article class="tw-bg-secondary tw-relative tw-pt-6">
 			<div class="tw-relative" style="max-height: 460px;">
