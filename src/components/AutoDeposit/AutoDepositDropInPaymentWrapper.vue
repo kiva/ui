@@ -32,7 +32,7 @@
 
 <script>
 import numeral from 'numeral';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 
 import braintreeDropInError from '@/plugins/braintree-dropin-error-mixin';
 

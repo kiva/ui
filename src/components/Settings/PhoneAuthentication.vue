@@ -132,7 +132,7 @@
 </template>
 
 <script>
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';

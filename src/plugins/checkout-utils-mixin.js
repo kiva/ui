@@ -1,5 +1,5 @@
 import _get from 'lodash/get';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import shopValidateGuestBasket from '@/graphql/mutation/shopValidateGuestPreCheckout.graphql';
 import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
