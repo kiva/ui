@@ -239,7 +239,7 @@ export default {
 			observer: null,
 			itemQueryLimit: 20,
 			itemQueryOffset: 0,
-			sortBy: 'newest',
+			sortBy: 'memberCount',
 			totalItemCount: 0,
 			supporterOfLoan: false,
 			userId: '',
