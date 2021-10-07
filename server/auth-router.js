@@ -193,7 +193,11 @@ module.exports = function authRouter(config = {}) {
 			req.login(user, serializeError => {
 				if (serializeError) return next(serializeError);
 				// Redirect for post-authenticate actions
-				res.redirect(`/authenticate/ui?doneUrl=${doneUrl ? encodeURIComponent(doneUrl) : '/portfolio'}`);
+				if (doneUrl) {
+					res.redirect(`/authenticate/ui?doneUrl=${encodeURIComponent(doneUrl)}`);
+				} else {
+					res.redirect('/authenticate/ui');
+				}
 			});
 		})(req, res, next);
 	});

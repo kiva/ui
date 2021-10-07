@@ -1,23 +1,33 @@
 <template>
-	<div
-		id="app"
-		:style="defaultKivaClassicTheme"
+	<kv-theme-provider
+		:theme="theme"
 	>
-		<router-view />
-		<vue-progress-bar />
-		<the-tip-message />
-	</div>
+		<div id="app" class="tw-bg-primary tw-h-full">
+			<router-view />
+			<vue-progress-bar />
+			<the-tip-message />
+			<button
+				class="tw-fixed tw-z-stratosphere tw-right-3 tw-top-3"
+				@click="isDark = !isDark"
+			>
+				<span v-if="isDark">🌙</span>
+				<span v-else>🌞</span>
+			</button>
+		</div>
+	</kv-theme-provider>
 </template>
 
 <script>
 import '@/assets/scss/tailwind/tailwind.css';
 import TheTipMessage from '@/components/WwwFrame/TheTipMessage';
 import webmanifest from '@/manifest.webmanifest';
-import { defaultTheme } from '~/@kiva/kv-tokens/configs/kivaColors';
+import { darkTheme } from '~/@kiva/kv-tokens/configs/kivaColors';
+import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
 
 export default {
 	name: 'App',
 	components: {
+		KvThemeProvider,
 		TheTipMessage,
 	},
 	metaInfo() {
@@ -160,55 +170,16 @@ export default {
 		};
 	},
 	data() {
-		return {
-			// Kludge to ensure Kiva Classic styles work while we use the .kv-tailwind class.
-			// The kv-tokens tailwind config applies a set of CSS custom properties to the ":root".
-			// However, in UI a PostCSS plugin prepends all tailwind stuff with .kv-tailwind
-			// And there is no .kv-tailwind :root. So we are inlining them on the div#app in the interim.
-			defaultKivaClassicTheme: defaultTheme
-		};
-	}
+		return { isDark: false };
+	},
+	computed: {
+		theme() {
+			return this.isDark ? darkTheme : {};
+		}
+	},
 };
 </script>
 
 <style lang="scss">
 @import 'app.scss';
-
-#app {
-	height: 100%;
-}
-
-// Kludges to ensure Kiva Classic styles are correct when using the .kv-tailwind class
-// Remove once Kiva Classic is the default and foundation base styles are removed
-
-// Misc selectors that Foundation base styling has definitions for, but Tailwind does not
-.kv-tailwind {
-	p,
-	dl,
-	ol,
-	ul { line-height: 1.5; }
-
-	blockquote p {
-		color: #212121;
-		color: rgb(var(--text-primary));
-	}
-
-	select {
-		background-image: none;
-	}
-}
-
-body .kv-tailwind {
-	font-weight: 300;
-	font-size: 1rem;
-	line-height: 1.5;
-	color: #212121;
-	color: rgb(var(--text-primary));
-}
-
-@media (min-width: 1024px) {
-	body .kv-tailwind {
-		font-size: rem-calc(17);
-	}
-}
 </style>
