@@ -1,5 +1,4 @@
 node_modules
-__mocks__
 .storybook
 .vscode
 .editorconfig
