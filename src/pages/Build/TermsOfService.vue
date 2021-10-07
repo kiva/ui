@@ -3,7 +3,7 @@
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
-		<kv-page-wrapper class="tw-prose">
+		<build-page-wrapper class="tw-prose">
 			<h1 class="tw-text-center">
 				KIVA DEVELOPER TERMS OF SERVICE
 			</h1>
@@ -163,19 +163,19 @@
 				<!-- eslint-disable-next-line max-len -->
 				This Agreement constitutes the complete and entire agreement between Licensee and Kiva pertaining to the subject matter hereof, and supersedes any and all prior or contemporaneous written or oral agreements or understandings with respect to such subject matter. This Agreement may be amended or modified only by a writing executed by Kiva. If for any reason a court of competent jurisdiction finds any provision of this Agreement invalid or unenforceable for any reason, that provision of the Agreement will be reformed to the extent necessary to make it enforceable or will be enforced to the maximum extent permissible, and the other provisions of this Agreement will remain in full force and effect. The failure of Kiva to act with respect to a breach of this Agreement by Licensee or others does not constitute a waiver and shall not limit Kiva’s rights with respect to such breach or any subsequent breaches. Any waiver of any provision of this Agreement by Kiva will be effective only if in writing and signed by Kiva. This Agreement is personal to Licensee and may not be assigned or transferred for any reason whatsoever (including without limitation, by operation of law, merger, reorganization, or as a result of an acquisition or change of control involving Licensee) without Kiva’s prior written consent and any action or conduct in violation of the foregoing shall be null and void and without effect. Kiva expressly reserves the right to assign this Agreement and to delegate any of its obligations hereunder.
 			</p>
-		</kv-page-wrapper>
+		</build-page-wrapper>
 	</www-page>
 </template>
 
 <script>
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
-import KvPageWrapper from '@/components/Kv/KvPageWrapper';
+import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
 	components: {
 		DeveloperSecondaryMenu,
-		KvPageWrapper,
+		BuildPageWrapper,
 		WwwPage,
 	},
 	metaInfo: {

@@ -3,7 +3,7 @@
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
-		<kv-page-wrapper class="tw-prose">
+		<build-page-wrapper class="tw-prose">
 			<h1>Research</h1>
 			<p>
 				Kiva is proud to have worked with the academic and research community for over 10 years.
@@ -35,19 +35,19 @@
 				</div>
 				<!-- eslint-enable -->
 			</div>
-		</kv-page-wrapper>
+		</build-page-wrapper>
 	</www-page>
 </template>
 
 <script>
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
-import KvPageWrapper from '@/components/Kv/KvPageWrapper';
+import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
 	components: {
 		DeveloperSecondaryMenu,
-		KvPageWrapper,
+		BuildPageWrapper,
 		WwwPage,
 	},
 	metaInfo: {

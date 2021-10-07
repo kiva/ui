@@ -3,7 +3,7 @@
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
-		<kv-page-wrapper class="tw-prose">
+		<build-page-wrapper class="tw-prose">
 			<h1>Getting Started</h1>
 			<p>Here are some tips to help you get started.</p>
 
@@ -52,19 +52,19 @@
 				simple as a widget for a blog that shows off loans you've recently
 				made on Kiva.
 			</p>
-		</kv-page-wrapper>
+		</build-page-wrapper>
 	</www-page>
 </template>
 
 <script>
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvPageWrapper from '@/components/Kv/KvPageWrapper';
+import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
 
 export default {
 	components: {
 		DeveloperSecondaryMenu,
-		KvPageWrapper,
+		BuildPageWrapper,
 		WwwPage,
 	},
 	metaInfo: {

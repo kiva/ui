@@ -4,7 +4,7 @@
 			<developer-secondary-menu />
 		</template>
 
-		<kv-page-wrapper class="tw-prose">
+		<build-page-wrapper class="tw-prose">
 			<h1>Developer Home</h1>
 
 			<h2>Hello! We're Open!</h2>
@@ -35,19 +35,19 @@
 				Join our <a href="http://groups.google.com/group/build-kiva">Google Group</a>
 				and take part in the discussion.
 			</p>
-		</kv-page-wrapper>
+		</build-page-wrapper>
 	</www-page>
 </template>
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
-import KvPageWrapper from '@/components/Kv/KvPageWrapper';
+import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
 
 export default {
 	components: {
 		DeveloperSecondaryMenu,
-		KvPageWrapper,
+		BuildPageWrapper,
 		WwwPage,
 	},
 	metaInfo: {
