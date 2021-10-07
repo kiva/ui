@@ -12,10 +12,8 @@
 			</p>
 			<h2>1. Abide by the developer Terms of Service</h2>
 			<p>
-				<!-- eslint-disable-next-line max-len -->
 				Before you develop an application on the Kiva API we must insist you
 				read the
-				<!-- eslint-disable-next-line max-len -->
 				<router-link to="/build/terms-of-service">
 					Terms of Service
 				</router-link>. Our staff and some pretty smart lawyers
@@ -49,8 +47,11 @@
 			</p>
 			<h2>4. Do not use the API for commercial use</h2>
 			<p>
-				<!-- eslint-disable-next-line max-len -->
-				Kiva is a 501(c)(3) non-profit and, by law, we cannot allow our resources to be used for commercial purposes. Commercial entities can use the API to charitable ends in line with Kiva's mission, but if you have any doubts that what you are doing is within our <router-link to="/build/terms-of-service">
+				Kiva is a 501(c)(3) non-profit and, by law, we cannot allow our
+				resources to be used for commercial purposes. Commercial entities
+				can use the API to charitable ends in line with Kiva's mission, but
+				if you have any doubts that what you are doing is within our
+				<router-link to="/build/terms-of-service">
 					Terms of Service
 				</router-link>, please contact us.
 			</p>
