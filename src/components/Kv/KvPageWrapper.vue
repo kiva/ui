@@ -13,7 +13,6 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 export default {
-	name: 'App',
 	components: {
 		KvPageContainer,
 		KvGrid,
