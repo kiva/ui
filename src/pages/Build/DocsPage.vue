@@ -3,7 +3,7 @@
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
-		<kv-page-wrapper class="tw-prose">
+		<build-page-wrapper class="tw-prose">
 			<h1>Developer Docs</h1>
 			<p>
 				We created the Kiva API so that anyone with a good idea and some
@@ -44,7 +44,7 @@
 				For more information on GraphQL itself, and how to write queries,
 				please check out these <a href="http://graphql.org/learn/">docs</a>
 			</p>
-		</kv-page-wrapper>
+		</build-page-wrapper>
 	</www-page>
 </template>
 
@@ -52,7 +52,7 @@
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
 import KvCodeBlock from '@/components/Kv/KvCodeBlock';
 import KvMultiCodeBlock from '@/components/Kv/KvMultiCodeBlock';
-import KvPageWrapper from '@/components/Kv/KvPageWrapper';
+import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
@@ -60,7 +60,7 @@ export default {
 		DeveloperSecondaryMenu,
 		KvCodeBlock,
 		KvMultiCodeBlock,
-		KvPageWrapper,
+		BuildPageWrapper,
 		WwwPage,
 	},
 	metaInfo: {

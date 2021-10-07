@@ -3,7 +3,7 @@
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
-		<kv-page-wrapper class="tw-prose">
+		<build-page-wrapper class="tw-prose">
 			<h1>Code Of Conduct</h1>
 			<p>
 				We really want you to be creative and have a fun time using the Kiva API,
@@ -115,19 +115,19 @@
 				keep local copies of Kiva's data in-sync with the current data available
 				through the API.
 			</p>
-		</kv-page-wrapper>
+		</build-page-wrapper>
 	</www-page>
 </template>
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
-import KvPageWrapper from '@/components/Kv/KvPageWrapper';
+import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
 
 export default {
 	components: {
 		DeveloperSecondaryMenu,
-		KvPageWrapper,
+		BuildPageWrapper,
 		WwwPage,
 	},
 	metaInfo: {

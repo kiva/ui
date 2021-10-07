@@ -4,7 +4,7 @@
 			<developer-secondary-menu />
 		</template>
 
-		<kv-page-wrapper class="tw-prose">
+		<build-page-wrapper class="tw-prose">
 			<h1>Developer Home</h1>
 
 			<h2>Hello! We're Open!</h2>
@@ -15,8 +15,11 @@
 			</p>
 			<h2>Ready to Explore?</h2>
 			<p>
-				<!-- eslint-disable-next-line max-len -->
-				The documentation section of the site is a manual of sorts for working with the API. We talk about conventions and best practices, and introduce you to some of the various data objects and how to work with them. We recommend that you read through most of the sections before embarking on your first application.
+				The documentation section of the site is a manual of sorts for
+				working with the API. We talk about conventions and best practices,
+				and introduce you to some of the various data objects and how to work
+				with them. We recommend that you read through most of the sections
+				before embarking on your first application.
 			</p>
 			<p>
 				Check out our <a href="https://api.kivaws.org/graphql"> GraphQL API methods</a>.
@@ -32,19 +35,19 @@
 				Join our <a href="http://groups.google.com/group/build-kiva">Google Group</a>
 				and take part in the discussion.
 			</p>
-		</kv-page-wrapper>
+		</build-page-wrapper>
 	</www-page>
 </template>
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
-import KvPageWrapper from '@/components/Kv/KvPageWrapper';
+import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
 
 export default {
 	components: {
 		DeveloperSecondaryMenu,
-		KvPageWrapper,
+		BuildPageWrapper,
 		WwwPage,
 	},
 	metaInfo: {

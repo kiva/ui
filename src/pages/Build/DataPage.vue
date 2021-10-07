@@ -3,7 +3,7 @@
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
-		<kv-page-wrapper class="tw-prose">
+		<build-page-wrapper class="tw-prose">
 			<h1>Data Snapshots</h1>
 			<div class="tw-bg-caution tw-text-black tw-p-3 tw-my-1">
 				<strong class="tw-hidden md:tw-inline">Important Note:</strong>
@@ -62,21 +62,21 @@
 				In the loans.csv snapshot, this would be split into three separate fields, each having its data separated by a comma and a space:
 				<kv-code-block :code="csvSchema" />
 			</p>
-		</kv-page-wrapper>
+		</build-page-wrapper>
 	</www-page>
 </template>
 
 <script>
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
 import KvCodeBlock from '@/components/Kv/KvCodeBlock';
-import KvPageWrapper from '@/components/Kv/KvPageWrapper';
+import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
 	components: {
 		DeveloperSecondaryMenu,
 		KvCodeBlock,
-		KvPageWrapper,
+		BuildPageWrapper,
 		WwwPage,
 	},
 	metaInfo: {
