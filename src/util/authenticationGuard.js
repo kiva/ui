@@ -1,5 +1,5 @@
 import _get from 'lodash/get';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import authenticationQuery from '@/graphql/query/authenticationQuery.graphql';
 
 const isServer = typeof window === 'undefined';

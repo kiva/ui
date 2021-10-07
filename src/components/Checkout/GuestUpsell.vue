@@ -41,7 +41,7 @@
 
 <script>
 import gql from 'graphql-tag';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
 import KvButton from '@/components/Kv/KvButton';

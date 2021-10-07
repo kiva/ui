@@ -1,7 +1,7 @@
 import { differenceInMilliseconds } from 'date-fns';
 import _get from 'lodash/get';
 import _over from 'lodash/over';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import syncDate from './syncDate';
 import logFormatter from './logFormatter';
 

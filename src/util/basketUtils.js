@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import gql from 'graphql-tag';
 import numeral from 'numeral';
 import logFormatter from '@/util/logFormatter';
