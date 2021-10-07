@@ -142,11 +142,11 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 import SupporterDetails from './SupporterDetails';
 
-const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int) {
+const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int, $sortBy: TeamSearchSortByEnum) {
 	lend {
 		loan(id: $loanId) {
 			id
-			teams(limit: $limit, offset: $offset) {
+			teams(limit: $limit, offset: $offset, sortBy: $sortBy ) {
 				totalCount
 				values {
 					id
@@ -239,6 +239,7 @@ export default {
 			observer: null,
 			itemQueryLimit: 20,
 			itemQueryOffset: 0,
+			sortBy: 'memberCount',
 			totalItemCount: 0,
 			supporterOfLoan: false,
 			userId: '',
@@ -322,14 +323,22 @@ export default {
 		fetchItems(fromLightbox = false) {
 			if (this.loanId === 0) return false;
 
+			const teamVars = {
+				loanId: this.loanId,
+				limit: this.itemQueryLimit,
+				offset: this.itemQueryOffset,
+				sortBy: this.sortBy
+			};
+			const lenderVars = {
+				loanId: this.loanId,
+				limit: this.itemQueryLimit,
+				offset: this.itemQueryOffset
+			};
+
 			// run apollo query
 			this.apollo.query({
 				query: this.displayType === 'teams' ? teamsQuery : lendersQuery,
-				variables: {
-					loanId: this.loanId,
-					limit: this.itemQueryLimit,
-					offset: this.itemQueryOffset
-				}
+				variables: this.displayType === 'teams' ? teamVars : lenderVars,
 			}).then(({ data }) => {
 				this.totalItemCount = data?.lend?.loan?.[this.displayType]?.totalCount ?? 0;
 				if (!this.totalItemCount) {
