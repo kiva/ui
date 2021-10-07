@@ -62,7 +62,6 @@ export default {
 		},
 		contentfulMediaItems() {
 			const mediaItemsContentfulData = this.content?.media ?? [];
-			console.log('length', mediaItemsContentfulData.length);
 			return mediaItemsContentfulData;
 		},
 		itemClasses() {
