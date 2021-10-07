@@ -3,53 +3,52 @@
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
-		<div class="row page-content">
-			<div class="small-12 columns">
-				<div>
-					<p>
-						Kiva is proud to have worked with the academic and research community for over 10 years.
-						Some of Kiva's research and education partners include: Stanford University,
-						University of Michigan, UC Berkeley, University of Washington, University of San Francisco.
-					</p>
-					<p>
-						If your group is interested in a research collaboration with Kiva, Kiva's current
-						research interests include:
-					</p>
-					<div v-for="topic in topics" :key="topic">
-						<ul>
-							<li>{{ topic }}</li>
-						</ul>
-					</div>
-					<p>
-						Please find below selected publications featuring Kiva data that are available on
-						the open web.
-					</p>
-				</div>
-				<div v-for="year in years" :key="year">
-					<h3>{{ year }}</h3>
-					<!-- eslint-disable vue/no-use-v-if-with-v-for -->
-					<div v-if="paper.year === year" v-for="(paper, index) in papers" :key="index">
-						<p>
-							<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
-								<i>{{ paper.publication }}</i>
-							</a>
-						</p>
-					</div>
-					<!-- eslint-enable -->
-				</div>
+		<build-page-wrapper class="tw-prose">
+			<h1>Research</h1>
+			<p>
+				Kiva is proud to have worked with the academic and research community for over 10 years.
+				Some of Kiva's research and education partners include: Stanford University,
+				University of Michigan, UC Berkeley, University of Washington, University of San Francisco.
+			</p>
+			<p>
+				If your group is interested in a research collaboration with Kiva, Kiva's current
+				research interests include:
+			</p>
+			<div v-for="topic in topics" :key="topic">
+				<ul>
+					<li>{{ topic }}</li>
+				</ul>
 			</div>
-		</div>
+			<p>
+				Please find below selected publications featuring Kiva data that are available on
+				the open web.
+			</p>
+			<div v-for="year in years" :key="year">
+				<h2>{{ year }}</h2>
+				<!-- eslint-disable vue/no-use-v-if-with-v-for -->
+				<div v-if="paper.year === year" v-for="(paper, index) in papers" :key="index">
+					<p>
+						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
+							<i>{{ paper.publication }}</i>
+						</a>
+					</p>
+				</div>
+				<!-- eslint-enable -->
+			</div>
+		</build-page-wrapper>
 	</www-page>
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
+import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
+import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
 	components: {
-		WwwPage,
 		DeveloperSecondaryMenu,
+		BuildPageWrapper,
+		WwwPage,
 	},
 	metaInfo: {
 		title: 'Research'
@@ -59,22 +58,21 @@ export default {
 			topics: ['Creation of Synthetic Datasets', 'Recommendation systems', 'Social Good ML Applications',
 				'Pro-Social Behaviorial Psychology', 'Fairness Research', 'Social Impact Assessments'],
 			years: [2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],
+			/* eslint-disable max-len */
 			papers: [
 				{
 					year: 2020,
 					author: 'Burke, Robin, Voida, Amy, et al.',
 					title: 'Algorithmic Fairness, Institutional Logics, and Social Choice',
-					/* eslint-disable max-len */
 					publication: 'Harvard Center for Research on Computation and Society: AI for Social Good workshop.',
-					/* eslint-enable max-len */
+
 					url: 'https://crcs.seas.harvard.edu/files/crcs/files/ai4sg_2020_paper_29.pdf'
 				},
 				{
 					year: 2020,
 					author: 'Burke, Robin, Sonboli, Nasim, et al.',
-					/* eslint-disable max-len */
 					title: '“And the Winner Is...”: Dynamic Lotteries for Multi-group Fairness-Aware Recommendation',
-					/* eslint-enable max-len */
+
 					publication: '14th ACM Conference on Recommender Systems, 2020',
 					url: 'https://arxiv.org/pdf/2009.02590.pdf'
 				},
@@ -82,26 +80,23 @@ export default {
 					year: 2020,
 					author: 'Sonboli, Nasim, Burke, Robin,  et al.',
 					title: '“Opportunistic Multi-aspect Fairness through Personalized Re-ranking',
-					/* eslint-disable max-len */
 					publication: 'Proceedings of the 28th ACM Conference on User Modeling, Adaptation and Personalization',
-					/* eslint-enable max-len */
+
 					url: 'https://arxiv.org/pdf/2005.12974.pdf'
 				},
 				{
 					year: 2019,
 					author: 'Wang, Bin et al',
-					/* eslint-disable max-len */
 					title: 'Social Networks in Online Peer-to-Peer Lending: The Case of Event-Type Ties as Pipes and Prisms',
-					/* eslint-enable max-len */
+
 					publication: 'Proceedings of the 52nd Hawaii International Conference on System Sciences',
 					url: 'https://scholarspace.manoa.hawaii.edu/bitstream/10125/60099/0659.pdf'
 				},
 				{
 					year: 2019,
 					author: 'O’Luing, Mervyn, et al',
-					/* eslint-disable max-len */
 					title: 'A Grouping Genetic Algorithm for Joint Stratification and Sample Allocation Designs',
-					/* eslint-enable max-len */
+
 					publication: 'Survey Methodology',
 					url: 'https://www150.statcan.gc.ca/n1/pub/12-001-x/2019003/article/00007-eng.pdf'
 				},
@@ -110,16 +105,14 @@ export default {
 					author: 'Tsai, Jeanne et al',
 					title: 'Culturally Valued Facial Expressions Enhance Loan Request Success',
 					publication: 'Emotion',
-					/* eslint-disable max-len */
 					url: 'https://culture-emotion-lab.sites.stanford.edu/sites/g/files/sbiybj9351/f/culturallyvaluedfacialloansuccess.pdf',
-					/* eslint-enable max-len */
+
 				},
 				{
 					year: 2019,
 					author: 'Zhao, Hongke et al',
-					/* eslint-disable max-len */
 					title: 'Voice of Charity: Prospecting the Donation Recurrence & Donor Retention in Crowdfunding',
-					/* eslint-enable max-len */
+
 					publication: 'IEEE Transactions on Knowledge and Data Engineering',
 					url: 'http://staff.ustc.edu.cn/~cheneh/paper_pdf/2019/Hongke-Zhao-TKDE.pdf',
 				},
@@ -127,35 +120,31 @@ export default {
 					year: 2018,
 					author: 'Jain, Lalit and Jamieson, Kevin',
 					title: 'Firing Bandits: Optimizing Crowdfunding',
-					/* eslint-disable max-len */
 					publication: 'Proceedings of the 35th International Conference on Machine Learning, Stockholm, Sweden, PMLR 80.',
-					/* eslint-enable max-len */
+
 					url: 'http://proceedings.mlr.press/v80/jain18a/jain18a.pdf'
 				},
 				{
 					year: 2018,
 					author: 'Sun, Lu, Kraut, Robert, and Yang, Diyi',
-					/* eslint-disable max-len */
 					title: 'Multi-level Modeling of Social Roles in Online Micro-lending Platforms',
-					/* eslint-enable max-len */
+
 					publication: 'Journal of Association for Computing Machinery',
 					url: 'https://www.cc.gatech.edu/~dyang888/docs/cscw19_sun.pdf'
 				},
 				{
 					year: 2018,
 					author: 'Rietveld, Joost et al',
-					/* eslint-disable max-len */
 					title: 'Market Orchestrators: The Effect of Platform Certification on Complementor Performance and Behavior in the Context of Kiva (2010-2013)',
-					/* eslint-enable max-len */
+
 					publication: 'Social Science Research Network',
 					url: 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3131553'
 				},
 				{
 					year: 2018,
 					author: 'Moss, Todd, et al',
-					/* eslint-disable max-len */
 					title: 'Funding the Story of hybrid Ventures: Crowdfunder Lending Preferences and Linguistic Hybridity',
-					/* eslint-enable max-len */
+
 					publication: 'Journal of Business Venturing',
 					url: 'https://whitman.syr.edu/pdfa/fundingthestoryofhybridventures.pdf'
 				},
@@ -169,24 +158,18 @@ export default {
 				{
 					year: 2017,
 					author: 'Thai T. Pham and Yuanyuan Shen',
-					/* eslint-disable max-len */
 					title: 'A Deep Causal Inference Approach to Measuring the Effects of Forming Group Loans in Online Non-profit Microfinance Platform',
-					/* eslint-enable max-len */
+
 					publication: 'Dissertation Graduate School of Business, Stanford University',
 					url: 'https://arxiv.org/pdf/1706.02795.pdf'
 				},
 				{
 					year: 2017,
 					author: 'Yang, Diyi and Kraut Robert',
-					/* eslint-disable max-len */
 					title: 'Persuading Teammates to Give: Systematic versus Heuristic Cues for Soliciting Loans',
-					/* eslint-enable max-len */
-					/* eslint-disable max-len */
 					publication: 'Proceedings of the ACM on Human-Computer Interaction Proceedings of the ACM on Human-Computer Interaction. DOI: 0.1145/3134749',
-					/* eslint-enable max-len */
-					/* eslint-disable max-len */
 					url: 'https://kraut.hciresearch.info/wp-content/uploads/Yang17-PersuadingTeammatesToGive.pdf'
-					/* eslint-enable max-len */
+
 				},
 				{
 					year: 2016,
@@ -198,9 +181,7 @@ export default {
 				{
 					year: 2015,
 					author: 'Paruthi, Gaurav et al',
-					/* eslint-disable max-len */
 					title: 'The Role of Rating and Loan Characteristics in Online Microfunding Behaviors',
-					/* eslint-enable max-len */
 					publication: 'Data For Good Exchange',
 					url: 'https://arxiv.org/pdf/1609.09571.pdf'
 				},
@@ -214,9 +195,7 @@ export default {
 				{
 					year: 2014,
 					author: 'Choo, Jaegul et al',
-					/* eslint-disable max-len */
 					title: 'To Gather Together for a Better World: Understanding and Leveraging Communities in Micro-lending Recommendation',
-					/* eslint-enable max-len */
 					publication: '23rd International World Wide Web Conference',
 					url: 'https://smartech.gatech.edu/bitstream/handle/1853/49249/GT-CSE-2013-05.pdf'
 				},
@@ -230,18 +209,14 @@ export default {
 				{
 					year: 2013,
 					author: 'Cryder, Cynthia et al',
-					/* eslint-disable max-len */
 					title: 'Goal gradient in helping behavior',
-					/* eslint-enable max-len */
 					publication: 'Journal of Experimental Social Psychology',
 					url: 'https://www.cmu.edu/dietrich/sds/docs/loewenstein/GoalGradBeh.pdf'
 				},
 				{
 					year: 2013,
 					author: 'Meer, Jonathan, and Oren Rigbi',
-					/* eslint-disable max-len */
 					title: 'The Effects of Transactions Costs and Social Distance: Evidence from a Field Experiment.',
-					/* eslint-enable max-len */
 					publication: 'The BE Journal of Economic Analysis & Policy',
 					url: 'http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.706.1636&rep=rep1&type=pdf'
 				},
@@ -256,9 +231,7 @@ export default {
 					year: 2012,
 					author: 'Liu, Yang, et al',
 					title: 'I loan because...: understanding motivations for pro-social lending',
-					/* eslint-disable max-len */
 					publication: 'Proceedings of the fifth ACM international conference on Web search and data mining. ACM, 2012.',
-					/* eslint-enable max-len */
 					url: 'http://www-personal.umich.edu/~qmei/pub/wsdm2012-liu.pdf'
 				},
 				{
@@ -266,9 +239,8 @@ export default {
 					author: 'Chen, Roy W',
 					title: 'Social Identity and Cooperation',
 					publication: 'Doctoral Dissertation. The University of Michigan, 2012',
-					/* eslint-disable max-len */
 					url: 'https://deepblue.lib.umich.edu/bitstream/handle/2027.42/93941/roywchen_1.pdf?sequence=1'
-					/* eslint-enable max-len */
+
 				},
 				{
 					year: 2011,
@@ -284,17 +256,9 @@ export default {
 					publication: 'Havard University Working Paper',
 					url: 'http://dash.harvard.edu/bitstream/handle/1/3757699/Hartley_Kiva_DASH.pdf'
 				}
+				/* eslint-enable max-len */
 			],
 		};
 	}
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-.page-content {
-	padding: 1.625rem 0;
-}
-
-</style>

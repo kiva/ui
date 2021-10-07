@@ -3,65 +3,65 @@
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
-		<div class="row page-content">
-			<div class="small-12 columns">
-				<h1>Developer Docs</h1>
-				<p>
-					We created the Kiva API so that anyone with a good idea and some
-					software savvy can help us expand the reach of Kiva, taking it into
-					new environments and to new audiences, and creating new features for
-					the Kiva community to experience our content in new ways.
-					True to the name of our developer destination, we want you to help us
-					build Kiva.org.
-				</p>
-				<h2>API Spotlight</h2>
-				<p>
-					In order to make the API as fast, usable, and mobile-friendly as
-					possible we decided to use GraphQL. One of the great things about
-					GraphQL is it's self documenting so you can easily explore all the
-					functionality by going to the
-					<a href="https://api.kivaws.org/graphql">GraphiQL Explorer</a>.
-					Click on the "Docs" link in the top right corner to open the Documentation
-					Explorer. Click the "play" button to run the query you build.
+		<build-page-wrapper class="tw-prose">
+			<h1>Developer Docs</h1>
+			<p>
+				We created the Kiva API so that anyone with a good idea and some
+				software savvy can help us expand the reach of Kiva, taking it into
+				new environments and to new audiences, and creating new features for
+				the Kiva community to experience our content in new ways.
+				True to the name of our developer destination, we want you to help us
+				build Kiva.org.
+			</p>
+			<h2>API Spotlight</h2>
+			<p>
+				In order to make the API as fast, usable, and mobile-friendly as
+				possible we decided to use GraphQL. One of the great things about
+				GraphQL is it's self documenting so you can easily explore all the
+				functionality by going to the
+				<a href="https://api.kivaws.org/graphql">GraphiQL Explorer</a>.
+				Click on the "Docs" link in the top right corner to open the Documentation
+				Explorer. Click the "play" button to run the query you build.
 
-					The GraphiQL Explorer allows you to practice writing queries
-					and viewing the returned results. Try it out!
-				</p>
-				<h3>GraphQL Samples</h3>
-				<p>
-					<kv-multi-code-block nowrap :code="code" />
-				</p>
-				<p>
-					<strong class="show-for-medium-up">NOTE: </strong>
-					QraphQL's limit for a GET request query is 2500 characters.
-					A POST request is recommended for longer queries
-				</p>
-				<!-- eslint-disable-next-line max-len -->
-				<p>
-					With all the methods above, the successfully returned JSON data should look something like:<br>
-					<kv-code-block :code="sampleJson" />
-				</p>
-				<p>
-					For more information on GraphQL itself, and how to write queries,
-					please check out these <a href="http://graphql.org/learn/">docs</a>
-				</p>
-			</div>
-		</div>
+				The GraphiQL Explorer allows you to practice writing queries
+				and viewing the returned results. Try it out!
+			</p>
+			<h3>GraphQL Samples</h3>
+			<p>
+				<kv-multi-code-block nowrap :code="code" />
+			</p>
+			<p>
+				<strong class="tw-hidden md:tw-inline">NOTE: </strong>
+				QraphQL's limit for a GET request query is 2500 characters.
+				A POST request is recommended for longer queries
+			</p>
+			<!-- eslint-disable-next-line max-len -->
+			<p>
+				With all the methods above, the successfully returned JSON data should look something like:<br>
+				<kv-code-block :code="sampleJson" />
+			</p>
+			<p>
+				For more information on GraphQL itself, and how to write queries,
+				please check out these <a href="http://graphql.org/learn/">docs</a>
+			</p>
+		</build-page-wrapper>
 	</www-page>
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
-import KvMultiCodeBlock from '@/components/Kv/KvMultiCodeBlock';
 import KvCodeBlock from '@/components/Kv/KvCodeBlock';
+import KvMultiCodeBlock from '@/components/Kv/KvMultiCodeBlock';
+import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
+import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
 	components: {
-		WwwPage,
 		DeveloperSecondaryMenu,
 		KvCodeBlock,
 		KvMultiCodeBlock,
+		BuildPageWrapper,
+		WwwPage,
 	},
 	metaInfo: {
 		title: 'Developer Docs'
@@ -135,11 +135,3 @@ r.json()`,
 	}
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-.page-content {
-	padding: 1.625rem 0;
-}
-</style>
