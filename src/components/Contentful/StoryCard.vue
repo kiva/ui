@@ -9,7 +9,7 @@
 			v-if="hasBackgroundImage"
 		>
 			<kv-contentful-img
-				class="tw-h-full tw-object-cover"
+				class="tw-h-full tw-w-full tw-object-cover"
 				:width="520"
 				fallback-format="jpg"
 				:contentful-src="backgroundImage.url"
