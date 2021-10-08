@@ -130,7 +130,7 @@ describe('flssUtils.js', () => {
 			fetchPolicy: 'network-only',
 		};
 
-		it('Checks if fetchSector calls the query to apollo', () => {
+		it('Checks if fetchSector calls the correct query variables to apollo', () => {
 			flssUtils.fetchSector(apollo);
 			expect(apollo.query).toHaveBeenCalledWith(apolloVars);
 		});
