@@ -226,7 +226,6 @@ export default {
 	watch: {
 		gender: { handler: 'updateQuery' },
 		sector: { handler: 'updateQuery' },
-		region: { handler: 'updateQuery' },
 	},
 };
 </script>
