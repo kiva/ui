@@ -163,7 +163,6 @@ export default {
 			gender: 'both',
 			sector: ['Food', 'Education'],
 			country: ['TZ', 'KE'],
-			loanTermMax: 36,
 			allSectors: [],
 		};
 	},
