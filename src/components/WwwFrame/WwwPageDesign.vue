@@ -191,13 +191,12 @@
 </template>
 
 <script>
+import { mdiEmailOutline } from '@mdi/js';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KivaCreativeStudioLogo from '@/assets/inline-svgs/logos/kiva-creative-studio-logo.svg';
 import InstagramLogo from '@/assets/inline-svgs/logos/instagram-logo.svg';
 import FacebookLogo from '@/assets/inline-svgs/logos/facebook-logo.svg';
 import TwitterLogo from '@/assets/inline-svgs/logos/twitter-logo.svg';
-import { mdiEmailOutline } from '@mdi/js';
-
 import { createIntersectionObserver } from '@/util/observerUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';

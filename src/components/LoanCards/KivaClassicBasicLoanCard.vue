@@ -165,6 +165,7 @@
 </template>
 
 <script>
+import { mdiChevronRight, mdiMapMarker } from '@mdi/js';
 import gql from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
 import LoanUse from '@/components/BorrowerProfile/LoanUse';
@@ -176,7 +177,6 @@ import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
-import { mdiChevronRight, mdiMapMarker } from '@mdi/js';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';

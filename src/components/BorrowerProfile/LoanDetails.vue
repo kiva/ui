@@ -40,8 +40,8 @@
 </template>
 
 <script>
-import DescriptionListItem from '@/components/BorrowerProfile/DescriptionListItem';
 import { format, parseISO } from 'date-fns';
+import DescriptionListItem from '@/components/BorrowerProfile/DescriptionListItem';
 
 export default {
 	components: {
