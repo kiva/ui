@@ -4,7 +4,7 @@
 			md:tw-flex-wrap tw-mx-auto tw-overflow-x-auto md:tw-overflow-x-none"
 	>
 		<kv-button
-			class="tw-mx-1 md:tw-mb-3"
+			class="tw-mx-1 md:tw-mb-3 tw-whitespace-nowrap"
 			v-for="category in loanChannels" :key="category.id"
 			:variant="selectedChannel === category.id ? 'link' : 'ghost'"
 			@click="handleCategoryClick(category.id)"
