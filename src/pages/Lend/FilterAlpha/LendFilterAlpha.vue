@@ -93,8 +93,6 @@
 								Reset Filters
 							</kv-button>
 							<hr>
-							<br> Loan Term
-							<br> Country
 						</div>
 						<div class="md:tw-hidden">
 							<p> {{ totalCount }} Loans </p>
@@ -129,7 +127,7 @@
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
 import { lightHeader } from '@/util/siteThemes';
 import {
-	fetchData, filterGender, allSectors, filterSector
+	fetchData, filterGender, filterSector, fetchSectors
 } from '@/util/flssUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
@@ -165,16 +163,15 @@ export default {
 			gender: 'both',
 			sector: ['Food', 'Education'],
 			country: ['TZ', 'KE'],
-			allSectors,
+			loanTermMax: 36,
+			allSectors: [],
 		};
 	},
 	methods: {
-		filterCountry() {
-			// # TODO: collect country from checkbox inputs
-			// let countryFilter = ['TZ', 'KE'];
-			const countryFilter = { any: this.country };
-			console.log('from filterCountrey', countryFilter);
-			return countryFilter;
+		async getSectors() {
+			const sectorInfo = await fetchSectors(this.apollo);
+			this.allSectors = sectorInfo;
+			console.log('current sectors', this.allSectors);
 		},
 		resetFilter() {
 			this.gender = 'both';
@@ -196,8 +193,6 @@ export default {
 			});
 		},
 		updateQuery() {
-			// this.country = ['TZ', 'KE'];
-
 			const updatedQueryFilters = this.queryFilters;
 			console.log('from updateQuery', updatedQueryFilters);
 			console.log('new query ran, yes!');
@@ -205,6 +200,7 @@ export default {
 		},
 	},
 	mounted() {
+		this.getSectors();
 		this.loanQueryFilters = { countryIsoCode: { any: ['US'] } };
 		console.log('mounted query ran:', this.loanQueryFilters);
 		this.runQuery(this.loanQueryFilters);
@@ -231,7 +227,7 @@ export default {
 	watch: {
 		gender: { handler: 'updateQuery' },
 		sector: { handler: 'updateQuery' },
-		// // country: { handler: 'updateQuery' },
+		region: { handler: 'updateQuery' },
 	},
 };
 </script>
