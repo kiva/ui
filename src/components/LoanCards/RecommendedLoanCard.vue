@@ -85,7 +85,7 @@
 
 <script>
 import gql from 'graphql-tag';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import loanUseMixin from '@/plugins/loan/loan-use-mixin';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';

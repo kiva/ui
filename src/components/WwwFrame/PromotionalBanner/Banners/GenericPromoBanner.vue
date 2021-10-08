@@ -2,10 +2,10 @@
 	<div class="row align-center generic-banner">
 		<component
 			:is="currentWrapperComponent"
-			:to="promoBannerContent.link"
-			:href="promoBannerContent.link"
+			:to="trimmedLink"
+			:href="trimmedLink"
 			:target="isExternalLink ? '_blank' : '_self'"
-			:class="{ 'banner-link' : promoBannerContent.link, 'banner-wrapper' : !promoBannerContent.link}"
+			:class="{ 'banner-link' : trimmedLink, 'banner-wrapper' : !trimmedLink}"
 			v-kv-track-event="handleTracking"
 		>
 			<kv-icon :name="iconKey" :class="`${iconKey}-icon icon`" />
@@ -64,6 +64,9 @@ export default {
 				return ['promo', 'click-Contentful-banner', this.promoBannerContent.richText];
 			}
 			return this.promoBannerContent.kvTrackEvent;
+		},
+		trimmedLink() {
+			return this.promoBannerContent?.link?.trim() ?? '';
 		}
 	},
 };

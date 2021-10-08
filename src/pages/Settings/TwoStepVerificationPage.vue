@@ -130,7 +130,7 @@
 </template>
 
 <script>
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import KvButton from '@/components/Kv/KvButton';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';

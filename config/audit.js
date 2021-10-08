@@ -23,8 +23,8 @@ module.exports = merge(base, {
 		fbOgNameSpace: 'audit-kiva',
 		enableFullStory: false,
 		quantcastId: '',
-		enableSentry: true,
-		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@sentry.io/1201287',
+		enableSentry: false,
+		sentryURI: '',
 		algoliaConfig: {
 			enableAA: true,
 			group: 'audit',

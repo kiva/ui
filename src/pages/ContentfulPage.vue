@@ -260,13 +260,13 @@ export default {
 		preFetchVariables({ route }) {
 			return {
 				contentType: 'page',
-				contentKey: route?.meta?.contentfulPage(route),
+				contentKey: route?.meta?.contentfulPage(route)?.trim(),
 			};
 		},
 		variables() {
 			return {
 				contentType: 'page',
-				contentKey: this.$route?.meta?.contentfulPage(this.$route),
+				contentKey: this.$route?.meta?.contentfulPage(this.$route)?.trim(),
 			};
 		},
 		preFetch(config, client, args) {
@@ -274,7 +274,7 @@ export default {
 				query: contentfulEntries,
 				variables: {
 					contentType: 'page',
-					contentKey: args?.route?.meta?.contentfulPage(args?.route),
+					contentKey: args?.route?.meta?.contentfulPage(args?.route)?.trim(),
 				}
 			}).then(({ data }) => {
 				// Get Contentful page data
