@@ -1,4 +1,5 @@
 /* eslint-disable import/prefer-default-export */
+import gql from 'graphql-tag';
 import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 
 export function fetchSectors(apollo) {
@@ -16,6 +17,9 @@ export function fetchSectors(apollo) {
 					id: sectorInfo.id
 				};
 			});
+		})
+		.catch(e => {
+			console.log('Sector Data failed to fetch: ', e.message);
 		});
 }
 
@@ -30,6 +34,9 @@ export function fetchData(loanQueryFilters, apollo) {
 	})
 		.then(({ data }) => {
 			return data.fundraisingLoans;
+		})
+		.catch(e => {
+			console.log('FundraisingLoans Data failed to fetch: ', e.message);
 		});
 }
 
@@ -48,20 +55,20 @@ export function filterGender(gender) {
 	return genderFilter;
 }
 
-export function validateSectorInput(sectorList) {
-	if (sectorList.length > 0) {
-		const isValid = sectorList.every(sector => sectorNames.includes(sector));
+export function validateSectorInput(sectorListInput, sectorNames) {
+	if (sectorListInput.length > 0) {
+		const isValid = sectorListInput.every(sector => sectorNames.includes(sector));
 		return isValid;
 	}
-	console.log('No sector filters were passed to the query.  \nPlease check the sector input:', sectorList);
+	console.log('No sector filters were passed to the query.  \nPlease check the sector input:', sectorListInput);
 	return false;
 }
 
-export function filterSector(sectorList) {
+export function filterSector(sectorList, sectorNames) {
 	// # TODO: collect sector from checkbox inputs
 	// once they're fixed
 	let sectorFilter = { none: [] };
-	if (validateSectorInput(sectorList)) {
+	if (validateSectorInput(sectorList, sectorNames)) {
 		sectorFilter = { any: sectorList };
 		return sectorFilter;
 	}
