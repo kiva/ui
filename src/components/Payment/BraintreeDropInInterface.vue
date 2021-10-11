@@ -8,7 +8,7 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import Dropin from 'braintree-web-drop-in';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';

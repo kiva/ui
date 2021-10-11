@@ -311,7 +311,7 @@
 </template>
 
 <script>
-// import * as Sentry from "@sentry/browser";
+// import * as Sentry from "@sentry/vue";
 import gql from 'graphql-tag';
 import logFormatter from '@/util/logFormatter';
 
