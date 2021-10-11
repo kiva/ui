@@ -39,11 +39,10 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
 import KvAlert from '@/components/Kv/KvAlert';
 import KvButton from '@/components/Kv/KvButton';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-
-import gql from 'graphql-tag';
 
 const userQuery = gql`query getUserEmail {
 	my {

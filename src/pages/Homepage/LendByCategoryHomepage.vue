@@ -238,10 +238,10 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
 import { settingEnabled } from '@/util/settingsUtils';
 import { processContent, formatGenericContentBlock } from '@/util/contentfulUtils';
 import { lightHeader } from '@/util/siteThemes';
-
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
@@ -249,7 +249,6 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KivaCardPromo from '@/components/Homepage/LendByCategory/KivaCardPromo';
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
 import NoClickLoanCard from '@/components/Homepage/LendByCategory/NoClickLoanCard';
-import gql from 'graphql-tag';
 import HomepageStatistics from '@/components/Homepage/HomepageStatistics';
 import HeroSlideshow from './HeroSlideshow';
 

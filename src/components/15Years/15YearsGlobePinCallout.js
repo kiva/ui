@@ -1,5 +1,5 @@
-import { Callout } from '@/lib/globekit/globekit.esm';
 import { getCodes } from 'flag-icon-css';
+import { Callout } from '@/lib/globekit/globekit.esm';
 
 // Copied from KvFlag
 const COUNTRY_LIST = getCodes();
