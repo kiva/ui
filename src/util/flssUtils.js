@@ -7,8 +7,6 @@ export function fetchSectors(apollo) {
 
 	return apollo.query({
 		query: sectorQuery,
-		loadingKey: 'loading',
-		fetchPolicy: 'network-only',
 	})
 		.then(dataSector => {
 			return dataSector.data.lend.sector.map(sectorInfo => {
