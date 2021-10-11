@@ -152,8 +152,6 @@ describe('flssUtils.js', () => {
 
 		const apolloVars = {
 			query: sectorQuery,
-			loadingKey: 'loading',
-			fetchPolicy: 'network-only',
 		};
 
 		it('Checks if fetchSector calls the correct query variables to apollo', () => {
