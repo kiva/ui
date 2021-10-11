@@ -12,10 +12,10 @@ import { preFetchAll } from '@/util/apolloPreFetch';
 const DefaultHomePage = () => import('@/pages/Homepage/DefaultHomepage');
 const ContentfulPage = () => import('@/pages/ContentfulPage');
 
-const activePageQuery = gql`query homepageFrame {
+const homePageExperimentQuery = gql`query homepageFrame {
 	hasEverLoggedIn @client
 	general {
-		legacyHomeExp: uiExperimentSetting(key: "home_legacy") {
+		classicHomeExp: uiExperimentSetting(key: "home_classic") {
 			key
 			value
 		}
@@ -24,8 +24,8 @@ const activePageQuery = gql`query homepageFrame {
 
 // Return an import function for the active homepage component
 const selectActiveHomepage = (legacyHomeExp = {}) => {
-	// Being in the 'a' variant of the legacy home experiment forces using the legacy homepage
-	if (legacyHomeExp.version === 'a') {
+	// Being in the 'x' variant of the classic home experiment forces using the legacy homepage
+	if (legacyHomeExp.version === 'x') {
 		return DefaultHomePage;
 	}
 	return ContentfulPage;
@@ -47,14 +47,21 @@ export default {
 		};
 	},
 	apollo: {
-		query: activePageQuery,
+		query: homePageExperimentQuery,
 		preFetch(config, client, args) {
 			return client.query({
-				query: activePageQuery
+				query: homePageExperimentQuery
 			}).then(() => client.query({
 				query: experimentQuery,
-				variables: { id: 'home_legacy' },
+				variables: { id: 'home_classic' },
 			})).then(expResult => {
+				// Redirect to /homepage-classic if experiment is active or route matches
+				if (expResult?.data?.experiment?.version === 'b' && args?.route?.path !== '/homepage-classic') {
+					// cancel the promise, returning a route for redirect
+					return Promise.reject({
+						path: '/homepage-classic'
+					});
+				}
 				// Select which homepage to load
 				const componentImporter = selectActiveHomepage(expResult?.data?.experiment);
 				return componentImporter();
@@ -65,41 +72,32 @@ export default {
 			});
 		},
 		result({ data }) {
+			// Setup unbounce event trigger which is restricted to non-logged-in and unknown users
 			const hasEverLoggedIn = data?.hasEverLoggedIn ?? true;
-			const unbounceTriggerExp = this.apollo.readFragment({
-				id: 'Experiment:unbounce_trigger',
-				fragment: experimentVersionFragment,
-			}) || {};
-			// Check for hasEverLoggedIn + associated exp
-			if (!hasEverLoggedIn && unbounceTriggerExp.version && unbounceTriggerExp.version !== 'unassigned') {
+			// Check for hasEverLoggedIn
+			if (!hasEverLoggedIn) {
 				// push data object if eligible + assigned
-				if (unbounceTriggerExp.version === 'b' && typeof window !== 'undefined') {
+				if (typeof window !== 'undefined') {
 					window.dataLayer.push({ event: 'activateUnbounceEvent' });
 				}
-				// fire exp analtyics if eligible
-				this.$kvTrackEvent(
-					'homepage',
-					'EXP-GROW-678-Jun2021',
-					unbounceTriggerExp.version,
-				);
 			}
 
 			// Fetch legacy homepage experiment data (GROW-442)
-			const legacyHomeExp = this.apollo.readFragment({
-				id: 'Experiment:home_legacy',
+			const classicHomeExp = this.apollo.readFragment({
+				id: 'Experiment:home_classic',
 				fragment: experimentVersionFragment,
 			}) || {};
 			// Fire Event for EXP-GROW-442
-			if (legacyHomeExp.version && legacyHomeExp.version !== 'unassigned') {
+			if (classicHomeExp.version && classicHomeExp.version !== 'unassigned') {
 				this.$kvTrackEvent(
 					'homepage',
-					'EXP-GROW-442',
-					legacyHomeExp.version,
+					'EXP-CORE-76',
+					classicHomeExp.version,
 				);
 			}
 
 			// Set active homepage
-			this.activeHomepage = selectActiveHomepage(legacyHomeExp);
+			this.activeHomepage = selectActiveHomepage(classicHomeExp);
 		}
 	}
 };
