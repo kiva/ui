@@ -161,7 +161,7 @@
 </template>
 
 <script>
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';

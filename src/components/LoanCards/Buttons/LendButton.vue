@@ -19,7 +19,7 @@
 <script>
 import _forEach from 'lodash/forEach';
 import numeral from 'numeral';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
 import KvButton from '@/components/Kv/KvButton';

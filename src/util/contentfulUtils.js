@@ -33,28 +33,45 @@ function determineResponsiveSizeFromFileName(filename) {
 }
 
 /**
- * Takes raw contentful responsive image set object, and returns
- * an array with image urls mapped to their respective sizes
+ * Takes formatted responsiveImageSet and returns an array of image objects which
+ * can be inserted into KvContentfulImg component as source sets
  *
- * @param {object} contentful Responsive Image Set Object
+ * @param {object} ResponsiveImage contentful object - output of: formatResponsiveImageSet
  * @returns {array}
  */
-export function createArrayOfResponsiveImageSet(contentfulResponsiveImageSet) {
-	// param must be an object, which contains prop images
-	if (!contentfulResponsiveImageSet || !contentfulResponsiveImageSet.images) return [];
+export function responsiveImageSetSourceSets(contentfulResponsiveImageObject) {
+	return contentfulResponsiveImageObject.images.map(entry => {
+		// All screen breakpoints:
+		// small: 0,
+		// medium: 481px,
+		// large: 681px,
+		// xlarge: 761px,
+		// xxlarge: 989px,
+		// xga: 1025px,
+		// wxga: 1441px,
 
-	// copy responsive image set param
-	const contentfulResponsiveImageSetCopy = JSON.parse(JSON.stringify(contentfulResponsiveImageSet));
-	contentfulResponsiveImageSetCopy.images.forEach(imageObj => {
-		// eslint-disable-next-line no-param-reassign
-		imageObj.responsiveSize = determineResponsiveSizeFromFileName(imageObj.file.fileName);
+		// small size
+		let mediaSize = 'min-width: 0';
+		let width = 537;
+
+		if (entry.title.indexOf('med') !== -1) {
+			mediaSize = 'min-width: 681px';
+			width = 397;
+		} else if (entry.title.indexOf('lg') !== -1) {
+			mediaSize = 'min-width: 1025px';
+			width = 394;
+		}
+
+		const aspectRatio = (entry.file?.details?.image?.height ?? 0) / (entry.file?.details?.image?.width ?? 1); // eslint-disable-line max-len
+		const height = aspectRatio ? Math.round(width * aspectRatio) : null;
+
+		return {
+			width,
+			height,
+			media: mediaSize,
+			url: entry.file?.url ?? ''
+		};
 	});
-	// convert to array and reduce
-	const responsiveImageArray = contentfulResponsiveImageSetCopy.images.reduce((newArray, curVal) => {
-		newArray.push([curVal.responsiveSize, curVal.file.url]);
-		return newArray;
-	}, []);
-	return responsiveImageArray;
 }
 
 /**
