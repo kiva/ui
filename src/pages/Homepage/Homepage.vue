@@ -55,7 +55,7 @@ export default {
 				query: experimentQuery,
 				variables: { id: 'home_classic' },
 			})).then(expResult => {
-				// Redirect to /homepage-classic if experiment is active or route matches
+				// Redirect to /homepage-classic if experiment is active and route is not already matched
 				if (expResult?.data?.experiment?.version === 'b' && args?.route?.path !== '/homepage-classic') {
 					// cancel the promise, returning a route for redirect
 					return Promise.reject({
@@ -82,12 +82,12 @@ export default {
 				}
 			}
 
-			// Fetch legacy homepage experiment data (GROW-442)
+			// Fetch classic homepage experiment data (CORE-76)
 			const classicHomeExp = this.apollo.readFragment({
 				id: 'Experiment:home_classic',
 				fragment: experimentVersionFragment,
 			}) || {};
-			// Fire Event for EXP-GROW-442
+			// Fire Event for EXP-CORE-76
 			if (classicHomeExp.version && classicHomeExp.version !== 'unassigned') {
 				this.$kvTrackEvent(
 					'homepage',
