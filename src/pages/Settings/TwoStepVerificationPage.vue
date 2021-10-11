@@ -130,6 +130,7 @@
 </template>
 
 <script>
+import _uniqBy from 'lodash/uniqBy';
 import * as Sentry from '@sentry/vue';
 import KvButton from '@/components/Kv/KvButton';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
@@ -139,7 +140,6 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import mfaQuery from '@/graphql/query/mfa/mfaQuery.graphql';
 import removeMfa from '@/graphql/mutation/mfa/removeMfa.graphql';
 import removeOneMfaMethod from '@/graphql/mutation/mfa/removeOneMfaMethod.graphql';
-import _uniqBy from 'lodash/uniqBy';
 
 export default {
 	data() {

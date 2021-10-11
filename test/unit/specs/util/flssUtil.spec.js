@@ -1,4 +1,5 @@
 // import { it } from 'date-fns/locale';
+import gql from 'graphql-tag';
 import * as flssUtils from '@/util/flssUtils';
 import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 
@@ -59,19 +60,37 @@ describe('flssUtils.js', () => {
 	describe('validateSectorInput', () => {
 		const notValid = false;
 		const isValid = true;
+		const allSectors = [
+			{ id: 1, name: 'Agriculture' },
+			{ id: 3, name: 'Transportation' },
+			{ id: 4, name: 'Services' },
+			{ id: 5, name: 'Clothing' },
+			{ id: 6, name: 'Health' },
+			{ id: 7, name: 'Retail' },
+			{ id: 8, name: 'Manufacturing' },
+			{ id: 9, name: 'Arts' },
+			{ id: 10, name: 'Housing' },
+			{ id: 12, name: 'Food' },
+			{ id: 13, name: 'Wholesale' },
+			{ id: 14, name: 'Construction' },
+			{ id: 15, name: 'Education' },
+			{ id: 16, name: 'Personal Use' },
+			{ id: 17, name: 'Entertainment' }
+		];
+		const sectorNames = allSectors.map(a => a.name);
 
 		it('Checks if sectorList is empty', () => {
-			const output = flssUtils.validateSectorInput([]);
+			const output = flssUtils.validateSectorInput([], sectorNames);
 			expect(output).toEqual(notValid);
 		});
 
 		it('Checks if sectorList element is not valid', () => {
-			const output = flssUtils.validateSectorInput(['Food', 'dairy']);
+			const output = flssUtils.validateSectorInput(['Food', 'dairy'], sectorNames);
 			expect(output).toEqual(notValid);
 		});
 
 		it('Checks if sectorList elements are all valid', () => {
-			const output = flssUtils.validateSectorInput(['Food', 'Education']);
+			const output = flssUtils.validateSectorInput(['Food', 'Education'], sectorNames);
 			expect(output).toEqual(isValid);
 		});
 	});
@@ -79,20 +98,65 @@ describe('flssUtils.js', () => {
 	describe('filterSector', () => {
 		const isValid = { any: ['Food', 'Education'] };
 		const notValid = { none: [] };
+		const allSectors = [
+			{ id: 1, name: 'Agriculture' },
+			{ id: 3, name: 'Transportation' },
+			{ id: 4, name: 'Services' },
+			{ id: 5, name: 'Clothing' },
+			{ id: 6, name: 'Health' },
+			{ id: 7, name: 'Retail' },
+			{ id: 8, name: 'Manufacturing' },
+			{ id: 9, name: 'Arts' },
+			{ id: 10, name: 'Housing' },
+			{ id: 12, name: 'Food' },
+			{ id: 13, name: 'Wholesale' },
+			{ id: 14, name: 'Construction' },
+			{ id: 15, name: 'Education' },
+			{ id: 16, name: 'Personal Use' },
+			{ id: 17, name: 'Entertainment' }
+		];
+		const sectorNames = allSectors.map(a => a.name);
 
 		it('Checks if filterSector is constructed as no filter with empty sector list', () => {
-			const output = flssUtils.filterSector(['Food', 'education']);
+			const input = [];
+			const output = flssUtils.filterSector(input, sectorNames);
 			expect(output).toEqual(notValid);
 		});
 
 		it('Checks if filterSector is constructed as no filter with invalid sector', () => {
-			const output = flssUtils.filterSector(['Food', 'education']);
+			const input = ['Food', 'education'];
+			const output = flssUtils.filterSector(input, sectorNames);
 			expect(output).toEqual(notValid);
 		});
 
 		it('Checks if filterSector is constructed correctly with valid input', () => {
-			const output = flssUtils.filterSector(['Food', 'Education']);
+			const input = ['Food', 'Education'];
+			const output = flssUtils.filterSector(input, sectorNames);
 			expect(output).toEqual(isValid);
+		});
+	});
+
+	describe('fetchSectors', () => {
+		const dataObj = [
+			{ id: 1, name: 'Agriculture' },
+			{ id: 3, name: 'Transportation' },
+			{ id: 4, name: 'Services' },
+			{ id: 5, name: 'Clothing' }
+		];
+
+		const sectorQuery = gql`query sectors {lend { sector { id name } } }`;
+
+		const apollo = {
+			query: jest.fn(() => Promise.resolve(dataObj)),
+		};
+
+		const apolloVars = {
+			query: sectorQuery,
+		};
+
+		it('Checks if fetchSector calls the correct query variables to apollo', () => {
+			flssUtils.fetchSectors(apollo);
+			expect(apollo.query).toHaveBeenCalledWith(apolloVars);
 		});
 	});
 });
