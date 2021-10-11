@@ -1,11 +1,12 @@
 import {
 	buildDynamicString,
 	formatGenericContentBlock,
-	formatResponsiveImageSet,
 	formatMediaAssetArray,
+	formatResponsiveImageSet,
 	formatUiSetting,
 	processPageContent,
-	processPageContentFlat
+	processPageContentFlat,
+	responsiveImageSetSourceSets
 } from '@/util/contentfulUtils';
 
 import inactiveUiSetting from '../../fixtures/UiSettingTypeInactiveRaw.json';
@@ -16,6 +17,7 @@ import uiSettingRaw from '../../fixtures/UiSettingRaw.json';
 import genericContentBlockRaw from '../../fixtures/GenericContentBlockRaw.json';
 import responsiveImageSetRaw from '../../fixtures/ResponsiveImageSetRaw.json';
 import responsiveImageSetResult from '../../fixtures/ResponsiveImageSetResult.json';
+import ResponsiveImageSetSourceSetsResult from '../../fixtures/ResponsiveImageSetSourceSetsResult.json';
 
 describe('contentfulUtils.js', () => {
 	describe('buildDynamicString', () => {
@@ -74,6 +76,13 @@ describe('contentfulUtils.js', () => {
 
 		test('should contain properly formatted Responsive Image Set entries', () => {
 			expect(formatResponsiveImageSet(responsiveImageSetRaw)).toMatchObject(responsiveImageSetResult);
+		});
+	});
+
+	describe('responsiveImageSetSourceSets', () => {
+		test('should return a properly formatted array of responsive image source sets', () => {
+			const sourceSets = responsiveImageSetSourceSets(responsiveImageSetResult);
+			expect(sourceSets).toEqual(ResponsiveImageSetSourceSetsResult.formattedResponsiveImageSet);
 		});
 	});
 

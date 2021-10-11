@@ -6,8 +6,24 @@
  * Docs: https://github.com/contentful/rich-text/tree/master/packages/rich-text-html-renderer#usage
  */
 
+import {
+	formatResponsiveImageSet, responsiveImageSetSourceSets
+} from '@/util/contentfulUtils';
 import { BLOCKS, INLINES } from '~/@contentful/rich-text-types';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+
+/**
+ * Returns a string representation of a value
+ * which can be inserted in an html attribute in quotes.
+ * Call stringify, then replaces single quotes with escaped
+ * then replaces double quotes with single quotes
+ *
+ * @param {string|object|array} value any value to convert to string
+ * @returns {string} string representation
+ */
+function htmlSafeStringify(value) {
+	return JSON.stringify(value).replace(/'/g, '\\\'').replace(/"/g, '\'');
+}
 
 /**
  * Returns html string from rich text nodes
@@ -54,10 +70,15 @@ export function richTextRenderer(content) {
 	 * @returns {string} String of html to render
 	 */
 	const entryRenderer = contentfulEntryNode => {
-		const isRichTextContent = contentfulEntryNode?.data?.target?.sys?.contentType?.sys?.id === 'richTextContent';
-		const isButton = contentfulEntryNode?.data?.target?.sys?.contentType?.sys?.id === 'button';
+		const entryContentTypeId = contentfulEntryNode?.data?.target?.sys?.contentType?.sys?.id;
+		const entryContent = contentfulEntryNode?.data?.target;
+
+		const isRichTextContent = entryContentTypeId === 'richTextContent';
+		const isButton = entryContentTypeId === 'button';
+		const isResponsiveImageSet = entryContentTypeId === 'responsiveImageSet';
+
 		if (isRichTextContent) {
-			const richTextHTML = richTextRenderer(contentfulEntryNode?.data?.target?.fields?.richText);
+			const richTextHTML = richTextRenderer(entryContent?.fields?.richText);
 			return `<div>${richTextHTML}</div>`;
 		}
 		if (isButton) {
@@ -65,8 +86,20 @@ export function richTextRenderer(content) {
 			// only passing in a string representation of an object will work
 			// We must stringify the object, then replace the quotes
 			// eslint-disable-next-line max-len
-			const buttonObject = JSON.stringify(contentfulEntryNode?.data?.target?.fields).replace(/'/g, '\\\'').replace(/"/g, '\'');
-			return `<button-wrapper class="tw-whitespace-normal" :content="${buttonObject}" />`;
+			const buttonObjectAsString = htmlSafeStringify(entryContent?.fields);
+			return `<button-wrapper class="tw-whitespace-normal" :content="${buttonObjectAsString}" />`;
+		}
+		if (isResponsiveImageSet) {
+			const formattedResponsiveImageSet = formatResponsiveImageSet(entryContent);
+			const sourceSets = responsiveImageSetSourceSets(formattedResponsiveImageSet);
+			const sourceSetArrayAsString = htmlSafeStringify(sourceSets);
+			return `<kv-contentful-img
+						contentful-src="${encodeURI(sourceSets[0].url)}"
+						width="${sourceSets[0].width}"
+						height="${sourceSets[0].height}"
+						fallback-format="jpg"
+						alt="${formattedResponsiveImageSet?.description}"
+						:source-sizes="${sourceSetArrayAsString}" />`;
 		}
 		return '';
 	};
