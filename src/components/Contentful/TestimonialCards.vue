@@ -5,6 +5,7 @@
 				<kv-page-container>
 					<kv-grid class="tw-grid-cols-12 tw-text-center">
 						<h2
+							v-if="testimonialHeadline"
 							v-html="testimonialHeadline"
 							class="tw-py-4 tw-col-span-12"
 						>
@@ -90,7 +91,7 @@ export default {
 			const contentfulHeadline = this.content?.contents?.find(({ contentType }) => {
 				return contentType === 'richTextContent';
 			});
-			const richText = richTextRenderer(contentfulHeadline.richText);
+			const richText = contentfulHeadline ? richTextRenderer(contentfulHeadline.richText) : '';
 
 			return richText;
 		},
