@@ -12,7 +12,9 @@
 			v-if="zeroLoans"
 			class="zero-loans-state"
 		>
-			<h3>All borrowers matching this search have been funded.</h3>
+			<h3 class="tw-mb-2">
+				All borrowers matching this search have been funded.
+			</h3>
 			<p>
 				Please adjust your criteria or <a @click.prevent="resetSearchFilters">start a new search.</a>
 			</p>
