@@ -32,7 +32,8 @@
 				</p>
 				<div class="tw-flex tw-flex-wrap tw-gap-2">
 					<kv-button
-						@click="jumpToLoans"
+						class="button smallest"
+						@click.native.prevent="jumpToLoans"
 						v-kv-track-event="[
 							'Campaign',
 							'click-hero-cta',
@@ -43,7 +44,7 @@
 					</kv-button>
 					<kv-button
 						v-if="secondaryCtaLink && secondaryCtaText"
-						variant="secondary"
+						class="button secondary smallest"
 						:href="secondaryCtaLink"
 						target="_blank"
 						v-kv-track-event="[
@@ -61,7 +62,7 @@
 </template>
 
 <script>
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvButton from '@/components/Kv/KvButton';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
