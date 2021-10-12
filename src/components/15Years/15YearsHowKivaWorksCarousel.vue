@@ -27,18 +27,16 @@
 						</video>
 					</div>
 					<div class="carousel__body-header">
-						<h3 class="carousel__body-subtitle">
+						<p class="tw-text-h4">
 							{{ slide.step }}
-						</h3>
-						<h4 class="carousel__body-title">
+						</p>
+						<h3 class="tw-text-h2 tw-mb-2">
 							{{ slide.title }}
-						</h4>
+						</h3>
 					</div>
 
 					<div class="carousel__body-content-wrap">
-						<p class="carousel__body-content">
-							{{ slide.blurb }}
-						</p>
+						<p>{{ slide.blurb }}</p>
 					</div>
 				</div>
 			</kv-carousel-slide>
@@ -295,19 +293,6 @@ export default {
 		}
 	}
 
-	&__body-subtitle {
-		@include h5();
-
-		margin-bottom: 0.5rem;
-	}
-
-	&__body-title {
-		@include h3();
-
-		line-height: 1;
-		margin-bottom: 0.5rem;
-	}
-
 	&__slide {
 		opacity: 0.1;
 		padding: 1rem;
@@ -391,10 +376,6 @@ export default {
 			float: left;
 			width: calc(100% - 20.5rem);
 		}
-	}
-
-	&__body-content {
-		margin-bottom: 0;
 	}
 }
 </style>
