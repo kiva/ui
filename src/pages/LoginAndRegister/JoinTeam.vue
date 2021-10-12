@@ -1,32 +1,24 @@
 <template>
 	<www-page>
-		<div class="row page-content">
+		<kv-page-container class="tw-py-4 md:tw-py-6 lg:tw-py-8">
 			<join-team-form />
-		</div>
+		</kv-page-container>
 	</www-page>
 </template>
 
 <script>
 import JoinTeamForm from '@/components/Forms/JoinTeamForm';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	components: {
+		KvPageContainer,
 		WwwPage,
 		JoinTeamForm
 	},
+	metaInfo: {
+		title: 'Join Team',
+	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.page-content {
-	padding: 1.625rem rem-calc(10);
-	max-width: rem-calc(340);
-
-	@include breakpoint(medium) {
-		padding: 1.625rem 0;
-	}
-}
-</style>
