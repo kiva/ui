@@ -1,18 +1,12 @@
 <template>
 	<section
-		class="
-			tw-bg-secondary
-			tw-py-1 tw-px-2 md:tw-p-1.5
-			tw-h-5 md:tw-h-6
-			tw-text-center
-			tw-transition-colors
-		"
+		class="campaign-status section row align-center"
 		:class="[{
-			'tw-bg-secondary': loadingPromotion,
-			'tw-bg-danger tw-text-white': !promoApplied && promoErrorMessage && !loadingPromotion && !inContext,
-			'tw-bg-brand tw-text-white': (promoApplied && !promoErrorMessage && !inContext) || statusMessageOverride,
-			'tw-relative tw-bg-secondary tw-rounded campaign-status--incontext': inContext,
-		}]"
+			'campaign-status--loading': loadingPromotion,
+			'campaign-status--error': !promoApplied && promoErrorMessage && !loadingPromotion && !inContext,
+			'campaign-status--success': (promoApplied && !promoErrorMessage && !inContext) || statusMessageOverride,
+			'campaign-status--incontext': inContext,
+		}, inContextClasses]"
 	>
 		<div class="small-12 columns" :class="{ 'large-8': !inContext }">
 			<div :class="[{
@@ -106,6 +100,11 @@ export default {
 		statusMessageOverride: {
 			type: String,
 			default: null
+		}
+	},
+	computed: {
+		inContextClasses() {
+			return this.inContext ? 'tw-relative tw-bg-secondary tw-rounded' : '';
 		}
 	},
 	methods: {
