@@ -83,16 +83,11 @@ export default {
 /* stylelint-disable no-descending-specificity */
 
 .works {
-	background: #fff;
-	color: $twilight;
-
 	/* hides the horizontal scrollbar created by hacking the carousel below */
 	width: 100%;
 	overflow-x: hidden;
 
 	&__subhead {
-		@include h4();
-
 		max-width: rem-calc(913);
 	}
 
