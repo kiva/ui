@@ -1,9 +1,9 @@
 <template>
 	<div class="loan-filters">
 		<div class="loan-filters__top-row">
-			<div class="loan-filters__controls">
+			<div class="tw-mb-2 md:tw-mb-0">
 				<kv-button
-					class="loan-filters__toggle rounded smallest secondary"
+					class="loan-filters__toggle rounded smallest secondary tw-mr-2"
 					@click.native.prevent="showFilters()"
 				>
 					Filter loans
@@ -15,7 +15,7 @@
 						aria-hidden="true"
 					/>
 				</kv-button>
-				<span class="loan-filters__total-count">{{ totalCount }} loans</span>
+				<span class="tw-font-medium tw-whitespace-nowrap">{{ totalCount }} loans</span>
 			</div>
 
 			<div class="loan-filters__loan-display">
@@ -39,7 +39,7 @@
 
 		<div
 			v-if="filterChips.length"
-			class="loan-filters__chips chips"
+			class="tw-mt-3 tw-mx-2 tw-mb-1 md:tw-mx-7"
 		>
 			<div class="row">
 				<div
@@ -99,7 +99,9 @@
 					id="sort-order-accordian"
 				>
 					<template #header>
-						<h3>Sort By</h3>
+						<h3 class="tw-py-1">
+							Sort By
+						</h3>
 					</template>
 					<sort-order
 						class="loan-filter-controls__filter-type"
@@ -114,7 +116,9 @@
 					id="region-accordian"
 				>
 					<template #header>
-						<h3>Countries</h3>
+						<h3 class="tw-py-1">
+							Countries
+						</h3>
 					</template>
 					<location-filter
 						class="loan-filter-controls__filter-type"
@@ -130,7 +134,9 @@
 					id="sectors-accordian"
 				>
 					<template #header>
-						<h3>Sectors</h3>
+						<h3 class="tw-py-1">
+							Sectors
+						</h3>
 					</template>
 					<sector-filter
 						class="loan-filter-controls__filter-type"
@@ -146,7 +152,9 @@
 					id="attributes-accordian"
 				>
 					<template #header>
-						<h3>Attributes</h3>
+						<h3 class="tw-py-1">
+							Attributes
+						</h3>
 					</template>
 					<attribute-filter
 						class="loan-filter-controls__filter-type"
@@ -162,7 +170,9 @@
 					id="tags-accordian"
 				>
 					<template #header>
-						<h3>Tags</h3>
+						<h3 class="tw-py-1">
+							Tags
+						</h3>
 					</template>
 					<tag-filter
 						class="loan-filter-controls__filter-type"
@@ -594,25 +604,6 @@ export default {
 		margin: 0 0 0 0.5rem;
 	}
 
-	&__total-count {
-		font-weight: 700;
-		white-space: nowrap;
-	}
-
-	&__chips {
-		display: block;
-		margin: 1.5rem 1rem 0.5rem;
-
-		@include breakpoint(medium) {
-			margin: 1.5rem 3.5rem 0.5rem;
-		}
-	}
-
-	h3 {
-		display: block;
-		padding: 0.5rem 0;
-	}
-
 	&__lightbox {
 		::v-deep .kv-lightbox__container {
 			min-width: 20rem;
@@ -629,11 +620,6 @@ export default {
 			margin: 0 0 0 auto;
 			text-align: right;
 		}
-	}
-
-	&__toggle {
-		font-size: $small-text-font-size;
-		white-space: nowrap;
 	}
 
 	&--collapsed {

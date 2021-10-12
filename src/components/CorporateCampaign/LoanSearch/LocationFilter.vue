@@ -8,7 +8,9 @@
 					:id="`${index}-region`"
 					class="country-filters__region-section"
 				>
-					<h4>{{ name }}</h4>
+					<h4 class="tw-mb-1">
+						{{ name }}
+					</h4>
 					<check-list
 						key="`${name}-country-list`"
 						:items="regions[name]"
