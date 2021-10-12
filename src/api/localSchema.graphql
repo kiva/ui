@@ -45,6 +45,7 @@ extend type Query {
 	autolending: Autolending
 	verificationLightbox: VerificationLightbox
 	hasEverLoggedIn: Boolean
+	isKivaAppReferral(kivaAppReferralQueryParam: String): Boolean
 }
 
 extend type My {

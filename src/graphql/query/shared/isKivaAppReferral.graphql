@@ -1,0 +1,3 @@
+query isKivaAppReferral($kivaAppReferralQueryParam: String) {
+	isKivaAppReferral(kivaAppReferralQueryParam: $kivaAppReferralQueryParam) @client
+}

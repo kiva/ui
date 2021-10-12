@@ -1,11 +1,13 @@
 <template>
 	<div class="www-page">
-		<the-banner-area />
-		<the-header
-			:hide-search-in-header="hideSearchInHeader"
-			:theme="headerTheme"
-		/>
-		<slot name="secondary"></slot>
+		<template v-if="!isKivaAppReferral">
+			<the-banner-area />
+			<the-header
+				:hide-search-in-header="hideSearchInHeader"
+				:theme="headerTheme"
+			/>
+			<slot name="secondary"></slot>
+		</template>
 		<main :class="mainClasses">
 			<slot name="tertiary"></slot>
 			<slot></slot>
@@ -21,8 +23,10 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
+import isKivaAppReferralQuery from '@/graphql/query/shared/isKivaAppReferral.graphql';
+import logReadQueryError from '@/util/logReadQueryError';
+
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
@@ -68,15 +72,40 @@ export default {
 			default: '',
 		},
 	},
+	data() {
+		return {
+			isKivaAppReferral: false
+		};
+	},
 	apollo: {
-		preFetch(config, client, args) {
+		preFetch(config, client, { route }) {
 			return Promise.all([
 				client.query({ query: hasEverLoggedInQuery }),
 				fetchAllExpSettings(config, client, {
-					query: _get(args, 'route.query'),
-					path: _get(args, 'route.path')
+					query: route?.query,
+					path: route?.path
 				}),
+				client.query({
+					query: isKivaAppReferralQuery,
+					variables: {
+						kivaAppReferralQueryParam: route?.query?.kivaAppReferral,
+					},
+				})
 			]);
+		},
+	},
+	created() {
+		let referralData = {};
+		try {
+			referralData = this.apollo.readQuery({
+				query: isKivaAppReferralQuery,
+				variables: {
+					kivaAppReferralQueryParam: this.$route?.query?.kivaAppReferral,
+				},
+			});
+			this.isKivaAppReferral = referralData?.isKivaAppReferral || false;
+		} catch (e) {
+			logReadQueryError(e, 'WwwPage isKivaAppReferralQuery');
 		}
 	},
 	computed: {
