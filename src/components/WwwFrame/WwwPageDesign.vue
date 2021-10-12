@@ -7,7 +7,7 @@
 			<kv-page-container class="md:tw-hidden">
 				<div class="tw-flex tw-flex-col md:tw-flex-row tw-items-baseline">
 					<div class="tw-flex-1 tw-my-2.5">
-						<KivaCreativeStudioLogo class="tw-h-8 tw-text-primary" />
+						<KivaCreativeStudioLogo class="tw-h-4 tw-text-primary" />
 						<span class="tw-sr-only">Kiva Creative Studio</span>
 					</div>
 				</div>
@@ -18,10 +18,10 @@
 					tw-sticky tw-z-sticky tw-top-0"
 			>
 				<kv-page-container>
-					<div class="tw-flex">
+					<div class="tw-flex tw-items-center">
 						<!-- Desktop only logo -->
 						<div class="tw-hidden md:tw-block tw-flex-1 tw-my-2.5">
-							<KivaCreativeStudioLogo class="tw-h-8" />
+							<KivaCreativeStudioLogo class="tw-h-4" />
 							<span class="tw-sr-only">Kiva Creative Studio</span>
 						</div>
 
