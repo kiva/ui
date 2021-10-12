@@ -1,7 +1,7 @@
 <template>
 	<div class="sort-by-controls">
 		<ul>
-			<li v-for="sortOption in sortOptions" :key="sortOption.value">
+			<li v-for="sortOption in sortOptions" :key="sortOption.value" class="tw-mb-1">
 				<kv-radio
 					:id="`sort-by-${sortOption.value}`"
 					:radio-value="sortOption.value"
