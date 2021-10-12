@@ -14,50 +14,48 @@
 			'tw-relative tw-bg-secondary tw-rounded campaign-status--incontext': inContext,
 		}]"
 	>
-		<div class="section row align-center">
-			<div class="small-12 columns" :class="{ 'large-8': !inContext }">
-				<div class="campaign-status__message"
-					:class="[{
-						'tw-font-book': inContext,
-						'tw-font-medium': !inContext }]"
-				>
-					<template v-if="statusMessageOverride">
-						<span>{{ statusMessageOverride }}</span>
+		<div class="small-12 columns" :class="{ 'large-8': !inContext }">
+			<div :class="[{
+				'tw-font-medium': inContext,
+				'tw-font-book': !inContext,
+			}]"
+			>
+				<template v-if="statusMessageOverride">
+					<span>{{ statusMessageOverride }}</span>
+				</template>
+				<template v-else>
+					<template v-if="loadingPromotion && !promoApplied && !promoErrorMessage">
+						<kv-loading-spinner />
+						<span>Validating Promotion</span>
 					</template>
-					<template v-else>
-						<template v-if="loadingPromotion && !promoApplied && !promoErrorMessage">
-							<kv-loading-spinner />
-							<span>Validating Promotion</span>
-						</template>
 
-						<template v-if="!promoApplied && promoErrorMessage && !loadingPromotion">
-							<kv-icon class="campaign-status__icon" name="error" />
-							<span>{{ promoErrorMessage }}</span>
-						</template>
-						<template v-else-if="!loadingPromotion && promoApplied === false">
-							<span>No promotion applied.</span>
-						</template>
-
-						<template v-if="!loadingPromotion && promoApplied && !promoErrorMessage && !isMatching">
-							<span
-								v-if="promoName && (promoAmount !== '$0.00') && activeCreditType !== 'lending_reward'"
-								@click="handlePromoLinkClick"
-								:class="{ 'tw-underline': inContext, 'tw-cursor-pointer': inContext }"
-							>
-								You have ${{ promoAmount | numeral }}
-								<span v-if="promoName">from {{ promoName }}</span>
-								to lend!
-							</span>
-							<span v-if="activeCreditType === 'lending_reward'">
-								Complete a loan to recieve your lending reward
-								<span v-if="promoName"> from {{ promoName }}</span>!
-							</span>
-						</template>
-						<template v-else-if="promoApplied && !promoErrorMessage && isMatching">
-							<span>Make a matched loan while {{ promoName }}’s funds last</span>
-						</template>
+					<template v-if="!promoApplied && promoErrorMessage && !loadingPromotion">
+						<kv-icon class="campaign-status__icon" name="error" />
+						<span>{{ promoErrorMessage }}</span>
 					</template>
-				</div>
+					<template v-else-if="!loadingPromotion && promoApplied === false">
+						<span>No promotion applied.</span>
+					</template>
+
+					<template v-if="!loadingPromotion && promoApplied && !promoErrorMessage && !isMatching">
+						<span
+							v-if="promoName && (promoAmount !== '$0.00') && activeCreditType !== 'lending_reward'"
+							@click="handlePromoLinkClick"
+							:class="{ 'tw-underline': inContext, 'tw-cursor-pointer': inContext }"
+						>
+							You have ${{ promoAmount | numeral }}
+							<span v-if="promoName">from {{ promoName }}</span>
+							to lend!
+						</span>
+						<span v-if="activeCreditType === 'lending_reward'">
+							Complete a loan to recieve your lending reward
+							<span v-if="promoName"> from {{ promoName }}</span>!
+						</span>
+					</template>
+					<template v-else-if="promoApplied && !promoErrorMessage && isMatching">
+						<span>Make a matched loan while {{ promoName }}’s funds last</span>
+					</template>
+				</template>
 			</div>
 		</div>
 	</section>
