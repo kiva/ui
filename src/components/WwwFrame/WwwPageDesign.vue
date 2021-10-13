@@ -99,7 +99,7 @@
 										</li>
 										<li>
 											<a
-												:href="`mailto:design@kiva.org?${typeRequestEmail}`"
+												:href="`mailto:designops@kiva.org?${typeRequestEmail}`"
 												class="tw-inline-flex tw-gap-1"
 											>
 												<span>Type</span>
@@ -131,7 +131,7 @@
 									</h2>
 									<ul class="tw-flex tw-flex-col tw-gap-0.5">
 										<li>
-											<a href="mailto:design@kiva.org">design@kiva.org</a>
+											<a href="mailto:designops@kiva.org">designops@kiva.org</a>
 										</li>
 									</ul>
 								</div>
