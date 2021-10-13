@@ -1,13 +1,12 @@
 <template>
 	<div class="www-page">
-		<template v-if="!isKivaAppReferral">
-			<the-banner-area />
-			<the-header
-				:hide-search-in-header="hideSearchInHeader"
-				:theme="headerTheme"
-			/>
-			<slot name="secondary"></slot>
-		</template>
+		<the-banner-area v-show="!isKivaAppReferral" />
+		<the-header v-show="!isKivaAppReferral"
+			:hide-search-in-header="hideSearchInHeader"
+			:theme="headerTheme"
+		/>
+		<slot name="secondary" v-if="!isKivaAppReferral"></slot>
+
 		<main :class="mainClasses">
 			<slot name="tertiary"></slot>
 			<slot></slot>
@@ -24,8 +23,6 @@
 
 <script>
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
-import isKivaAppReferralQuery from '@/graphql/query/shared/isKivaAppReferral.graphql';
-import logReadQueryError from '@/util/logReadQueryError';
 
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import appInstallMixin from '@/plugins/app-install-mixin';
@@ -84,29 +81,12 @@ export default {
 				fetchAllExpSettings(config, client, {
 					query: route?.query,
 					path: route?.path
-				}),
-				client.query({
-					query: isKivaAppReferralQuery,
-					variables: {
-						kivaAppReferralQueryParam: route?.query?.kivaAppReferral,
-					},
 				})
 			]);
 		},
 	},
 	created() {
-		let referralData = {};
-		try {
-			referralData = this.apollo.readQuery({
-				query: isKivaAppReferralQuery,
-				variables: {
-					kivaAppReferralQueryParam: this.$route?.query?.kivaAppReferral,
-				},
-			});
-			this.isKivaAppReferral = referralData?.isKivaAppReferral || false;
-		} catch (e) {
-			logReadQueryError(e, 'WwwPage isKivaAppReferralQuery');
-		}
+		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
 	},
 	computed: {
 		// Hiding basket footer on /lend-beta page
