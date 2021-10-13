@@ -572,7 +572,7 @@ export default {
 		},
 		onLendMenuShow() {
 			if (this.mgHighlightInNavVersion !== 'shown') {
-				this.$refs.lendMenu.onOpen();
+				this.$refs?.lendMenu?.onOpen?.();
 			}
 			this.$kvTrackEvent('TopNav', 'hover-Lend-menu', 'Lend');
 		},

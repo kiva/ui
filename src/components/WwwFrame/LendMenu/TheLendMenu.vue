@@ -113,7 +113,7 @@ export default {
 	},
 	methods: {
 		onOpen() {
-			this.$refs.mega.onOpen();
+			this.$refs?.mega?.onOpen?.();
 		},
 		onClose() {
 			this.$refs.list.onClose();
