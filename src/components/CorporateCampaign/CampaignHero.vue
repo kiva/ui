@@ -18,7 +18,7 @@
 						{{ headline }}
 					</template>
 					<template v-else>
-						Make a loan, <br class="so mo"> change a life.
+						Make a loan, <br> change a life.
 					</template>
 				</h1>
 				<div
