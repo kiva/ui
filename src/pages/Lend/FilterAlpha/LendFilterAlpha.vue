@@ -125,9 +125,10 @@
 
 <script>
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
+// import { getCountries } from 'libphonenumber-js';
 import { lightHeader } from '@/util/siteThemes';
 import {
-	fetchData, filterGender, filterSector, fetchSectors
+	fetchData, filterGender, filterSector, fetchSectors, fetchCountryFacets
 } from '@/util/flssUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
@@ -164,13 +165,19 @@ export default {
 			sector: ['Food', 'Education'],
 			country: ['TZ', 'KE'],
 			allSectors: [],
+			allCountries: []
 		};
 	},
 	methods: {
 		async getSectors() {
 			const sectorInfo = await fetchSectors(this.apollo);
 			this.allSectors = sectorInfo;
-			console.log('current sectors', this.allSectors);
+			console.log('current sectors:', this.allSectors);
+		},
+		async getAllCountries() {
+			const countryFacets = await fetchCountryFacets(this.apollo);
+			this.allCountries = countryFacets.map(cf => cf.country.name);
+			console.log('all countries:', this.allCountries);
 		},
 		resetFilter() {
 			this.gender = 'both';
@@ -200,6 +207,8 @@ export default {
 	},
 	mounted() {
 		this.getSectors();
+		this.getAllCountries();
+
 		this.loanQueryFilters = { countryIsoCode: { any: ['US'] } };
 		console.log('mounted query ran:', this.loanQueryFilters);
 		this.runQuery(this.loanQueryFilters);
@@ -210,7 +219,7 @@ export default {
 			const genderFilter = filterGender(this.gender);
 			console.log('this is filtergender', genderFilter);
 
-			const sectorFilter = filterSector(this.sector);
+			const sectorFilter = filterSector(this.sector, this.allSectors);
 			console.log('this is filterSector', sectorFilter);
 
 			const loanQueryFilters = {

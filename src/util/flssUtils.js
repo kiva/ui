@@ -21,6 +21,34 @@ export function fetchSectors(apollo) {
 		});
 }
 
+export function fetchCountryFacets(apollo) {
+	const countryQuery = gql`
+query countryFacets {
+	lend {
+		countryFacets {
+			country {
+				name
+				isoCode
+				geocode {latitude longitude}
+				fundsLentInCountry
+				numLoansFundraising
+				region }
+				count }
+			}
+	}`;
+
+	return apollo.query({
+		query: countryQuery,
+	})
+		.then(({ data }) => {
+			console.log('from fetchCountry:', data.lend.countryFacets);
+			return data.lend.countryFacets;
+		})
+		.catch(e => {
+			console.log('CountryFacet Data failed to fetch: ', e.message);
+		});
+}
+
 export function fetchData(loanQueryFilters, apollo) {
 	return apollo.query({
 		query: flssLoanQuery,
