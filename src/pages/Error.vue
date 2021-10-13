@@ -1,6 +1,6 @@
 <template>
 	<www-page class="ui-error-page">
-		<kv-page-container class="tw-py-4 md:tw-py-6 lg:tw-py-8 tw-text-center tw-prose">
+		<kv-default-wrapper class="tw-text-center tw-prose">
 			<template v-if="errorDescription === 'force_password_reset'">
 				<h1>{{ messages.headline }}</h1>
 				<p>{{ messages.reason }}</p>
@@ -23,20 +23,20 @@
 				{{ messages.contact }}
 				<a class="fs-exclude" :href="`mailto:${contactEmail}`">{{ contactEmail }}</a>
 			</p>
-		</kv-page-container>
+		</kv-default-wrapper>
 	</www-page>
 </template>
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import logFormatter from '@/util/logFormatter';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 
 export default {
 	inject: ['locale'],
 	components: {
 		WwwPage,
-		KvPageContainer,
+		KvDefaultWrapper,
 	},
 	metaInfo: {
 		title: 'Error'
