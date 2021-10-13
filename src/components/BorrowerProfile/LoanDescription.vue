@@ -24,11 +24,11 @@
 				</p>
 			</section>
 
-			<section>
-				<!--
-				"Previous Loan sections" omitted. Needs separate ticket
-				-->
-			</section>
+			<previous-loan-description
+				v-if="previousLoanId"
+				:loan-id="loanId"
+				:previous-loan-id="previousLoanId"
+			/>
 
 			<section v-if="storyTranslation">
 				<img
@@ -66,8 +66,12 @@
 </template>
 
 <script>
+import previousLoanDescription from '@/components/BorrowerProfile/PreviousLoanDescription';
 
 export default {
+	components: {
+		previousLoanDescription,
+	},
 	props: {
 		partnerName: { // LoanPartner.partnerName
 			type: String,
@@ -105,6 +109,14 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		previousLoanId: { // LoanBasic.previousLoanId
+			type: Number,
+			default: 0,
+		},
+		loanId: {
+			type: Number,
+			default: 0,
+		}
 	},
 	computed: {
 		borrowersList() {

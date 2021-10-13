@@ -149,7 +149,7 @@
 						v-if="freeCreditWarning"
 						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full"
 					>
-						Not eligilble for lending credit
+						Not eligible for lending credit
 					</p>
 					<p
 						v-if="allSharesReserved"
