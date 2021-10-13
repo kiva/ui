@@ -4,24 +4,22 @@
 		:vertical-padding="verticalPadding"
 	>
 		<template #content>
-			<kv-page-container>
-				<kv-grid>
-					<div v-if="frequentlyAskedQuestionsHeadline">
-						<h2 class="tw-text-h2">
-							{{ frequentlyAskedQuestionsHeadline }}
-						</h2>
-					</div>
-					<div v-if="frequentlyAskedQuestions" class="tw-divide-y">
-						<kv-expandable-question
-							v-for="(question, index) in frequentlyAskedQuestions"
-							:key="index"
-							:title="question.name"
-							:content="convertFromRichTextToHtml(question.richText)"
-							:id="question.name | changeCase('paramCase')"
-						/>
-					</div>
-				</kv-grid>
-			</kv-page-container>
+			<kv-grid>
+				<div v-if="frequentlyAskedQuestionsHeadline">
+					<h2 class="tw-text-h2">
+						{{ frequentlyAskedQuestionsHeadline }}
+					</h2>
+				</div>
+				<div v-if="frequentlyAskedQuestions" class="tw-divide-y">
+					<kv-expandable-question
+						v-for="(question, index) in frequentlyAskedQuestions"
+						:key="index"
+						:title="question.name"
+						:content="convertFromRichTextToHtml(question.richText)"
+						:id="question.name | changeCase('paramCase')"
+					/>
+				</div>
+			</kv-grid>
 		</template>
 	</section-with-background-classic>
 </template>
@@ -32,13 +30,11 @@ import KvExpandableQuestion from '@/components/Kv/KvExpandableQuestion';
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	components: {
 		KvExpandableQuestion,
 		KvGrid,
-		KvPageContainer,
 		SectionWithBackgroundClassic,
 	},
 	mixins: [contentfulStylesMixin],
