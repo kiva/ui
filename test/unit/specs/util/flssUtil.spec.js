@@ -154,8 +154,55 @@ describe('flssUtils.js', () => {
 			query: sectorQuery,
 		};
 
-		it('Checks if fetchSector calls the correct query variables to apollo', () => {
+		it('Checks if fetchCountryFacets calls the correct query variables to apollo', () => {
 			flssUtils.fetchSectors(apollo);
+			expect(apollo.query).toHaveBeenCalledWith(apolloVars);
+		});
+	});
+
+	describe('fetchCountryFacets', () => {
+		const dataObj = [
+			{
+				country: {
+					name: 'Cambodia',
+					isoCode: 'KH',
+					geocode: {
+						latitude: 13,
+						longitude: 105
+					},
+					fundsLentInCountry: 67608825,
+					numLoansFundraising: 18,
+					region: 'Asia'
+				},
+				count: 18
+			},
+		];
+
+		const countryQuery = gql`
+query countryFacets {
+	lend {
+		countryFacets {
+			country {
+				name
+				isoCode
+				geocode {latitude longitude}
+				fundsLentInCountry
+				numLoansFundraising
+				region }
+				count }
+			}
+	}`;
+
+		const apollo = {
+			query: jest.fn(() => Promise.resolve(dataObj)),
+		};
+
+		const apolloVars = {
+			query: countryQuery,
+		};
+
+		it('Checks if fetchCountryFacets calls the correct query variables to apollo', () => {
+			flssUtils.fetchCountryFacets(apollo);
 			expect(apollo.query).toHaveBeenCalledWith(apolloVars);
 		});
 	});

@@ -41,7 +41,6 @@ query countryFacets {
 		query: countryQuery,
 	})
 		.then(({ data }) => {
-			console.log('from fetchCountry:', data.lend.countryFacets);
 			return data.lend.countryFacets;
 		})
 		.catch(e => {

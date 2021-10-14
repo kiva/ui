@@ -172,9 +172,10 @@ export default {
 		async getSectors() {
 			const sectorInfo = await fetchSectors(this.apollo);
 			this.allSectors = sectorInfo;
-			console.log('current sectors:', this.allSectors);
 		},
 		async getAllCountries() {
+			// data pull only, not implmented with a component until design path
+			// with product is completed.
 			const countryFacets = await fetchCountryFacets(this.apollo);
 			this.allCountries = countryFacets.map(cf => cf.country.name);
 			console.log('all countries:', this.allCountries);
