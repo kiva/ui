@@ -4,18 +4,14 @@
 		<kv-text-link
 			v-if="previousLoanId"
 			v-kv-track-event="['Borrower profile', 'click-Loan details', 'Show previous loan details', this.loanId]"
-			@click.prevent="togglePreviousLoanDetails"
+			@click.prevent="performClick"
 		>
 			<!-- eslint-enable max-len -->
 			Show previous loan details
 			<kv-material-icon
-				:icon="mdiChevronUp"
-				class="tw-transition tw-duraation-500 tw-rotate-180"
-			/>
-			<!-- <kv-material-icon
-				v-if="!previousLoanDetailsOpen"
 				:icon="mdiChevronDown"
-			/> -->
+				class="tw-align-middle tw-transition tw-duration-500 tw-rotate-180"
+			/>
 		</kv-text-link>
 
 		<div v-if="previousLoanDetailsOpen">
@@ -32,7 +28,7 @@
 </template>
 
 <script>
-import { mdiChevronUp } from '@mdi/js';
+import { mdiChevronDown } from '@mdi/js';
 import gql from 'graphql-tag';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -53,9 +49,8 @@ export default {
 	},
 	data() {
 		return {
-			// mdiChevronDown,
-			mdiChevronUp,
-			previousLoanDetailsOpen: true,
+			mdiChevronDown,
+			previousLoanDetailsOpen: false,
 			previousLoanDescription: '',
 		};
 	},
@@ -65,7 +60,7 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		previousLoanId: { // LoanBasic.previousLoanId
+		previousLoanId: {
 			type: Number,
 			default: 0,
 		}
@@ -74,9 +69,6 @@ export default {
 		formatedPreviousLoanDescription() {
 			return this.toParagraphs(this.previousLoanDescription);
 		}
-	},
-	mounted() {
-		this.fetchPreviousLoanDescription();
 	},
 	methods: {
 		toParagraphs(text) {
@@ -90,16 +82,17 @@ export default {
 					// this.previousLoanId
 				}
 			}).then(({ data }) => {
-				console.log('data', data);
 				this.previousLoanDescription = data.lend?.loan?.description;
 			});
 		},
 		togglePreviousLoanDetails() {
-			console.log('previousLoanDetailsOpen', this.previousLoanDetailsOpen);
 			this.previousLoanDetailsOpen = !this.previousLoanDetailsOpen;
-			// if (this.previousLoanDetailsOpen) {
-			// 	this.previousLoanDetailsOpen = false;
-			// } this.previousLoanDetailsOpen = true;
+		},
+		performClick() {
+			this.togglePreviousLoanDetails();
+			if (this.previousLoanDescription === '') {
+				this.fetchPreviousLoanDescription();
+			}
 		}
 	}
 };
