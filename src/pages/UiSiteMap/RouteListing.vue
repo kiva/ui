@@ -1,28 +1,28 @@
 <template>
 	<div>
 		<div v-if="prodRoutes.length">
-			<h3>Prod Routes</h3>
-			<ul>
+			<h2 class="tw-mb-4">
+				Prod Routes
+			</h2>
+			<ul class="tw-list-disc tw-list-inside">
 				<li v-for="route in prodRoutes" :key="route.path">
-					<p>
-						<router-link :to="route.path">
-							<!-- eslint-disable-next-line -->
-							{{ route.path.replace('/','') }} <span v-if="route.name !== 'no-name'">({{ route.name }})</span>
-						</router-link>
-					</p>
+					<router-link :to="route.path">
+						<!-- eslint-disable-next-line -->
+						{{ route.path.replace('/','') }} <span v-if="route.name !== 'no-name'">({{ route.name }})</span>
+					</router-link>
 				</li>
 			</ul>
 		</div>
 		<div v-if="devRoutes.length">
-			<h3>Dev Routes</h3>
-			<ul>
+			<h2 class="tw-mb-4">
+				Dev Routes
+			</h2>
+			<ul class="tw-list-disc tw-list-inside">
 				<li v-for="route in devRoutes" :key="route.path">
-					<p>
-						<router-link :to="route.path">
-							<!-- eslint-disable-next-line -->
-							{{ route.path.replace('/','') }} <small v-if="route.name !== 'no-name'">({{ route.name }})</small>
-						</router-link>
-					</p>
+					<router-link :to="route.path">
+						<!-- eslint-disable-next-line -->
+						{{ route.path.replace('/','') }} <small v-if="route.name !== 'no-name'">({{ route.name }})</small>
+					</router-link>
 				</li>
 			</ul>
 		</div>
