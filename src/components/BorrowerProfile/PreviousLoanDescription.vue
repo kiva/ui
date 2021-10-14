@@ -83,8 +83,7 @@ export default {
 			this.apollo.query({
 				query: previousLoanQuery,
 				variables: {
-					id: 2255060
-					// this.previousLoanId
+					id: this.previousLoanId
 				}
 			}).then(({ data }) => {
 				this.previousLoanDescription = data.lend?.loan?.description;
