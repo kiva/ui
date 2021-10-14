@@ -1,5 +1,5 @@
 <template>
-	<section class="section sponsors text-center">
+	<section class="section sponsors tw-text-center">
 		<div class="row">
 			<div class="small-12 columns">
 				<img

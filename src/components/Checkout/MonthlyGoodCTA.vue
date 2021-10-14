@@ -60,7 +60,7 @@
 				</div>
 			</div>
 			<!-- Errors and Messaging -->
-			<div class="row column text-center">
+			<div class="row column tw-text-center">
 				<ul class="validation-errors" v-if="$v.mgAmount.$invalid">
 					<li v-if="!$v.mgAmount.required">
 						Amount field is required

@@ -1,7 +1,7 @@
 <template>
 	<section class="homepage-loan-categories">
 		<div class="row column">
-			<h2 class="homepage-loan-categories__header text-center" v-html="sectionHeadline">
+			<h2 class="homepage-loan-categories__header tw-text-center" v-html="sectionHeadline">
 			</h2>
 			<loan-categories-section />
 		</div>

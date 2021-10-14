@@ -133,7 +133,7 @@
 
 				<div class="row search-pagination-stats align-center">
 					<ais-pagination :padding="2" class="columns small-12" />
-					<ais-stats class="columns small-12 text-center" />
+					<ais-stats class="columns small-12 tw-text-center" />
 					<ais-hits-per-page class="columns small-12" :items="[
 						{ label: '15', value: 15, default: true },
 						{ label: '25', value: 25 },

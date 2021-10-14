@@ -35,7 +35,7 @@
 			<section class="loan-categories section" id="campaignLoanSection" ref="campaignLoanSection">
 				<div class="row">
 					<div class="columns">
-						<h2 class="loan-categories__header text-center">
+						<h2 class="loan-categories__header tw-text-center">
 							Support causes you care about.
 						</h2>
 

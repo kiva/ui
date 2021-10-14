@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<div class="mg-explained row">
-			<h2 class="mg-explained__title text-center small-12 columns">
+			<h2 class="mg-explained__title tw-text-center small-12 columns">
 				Three Steps to Impact
 			</h2>
-			<p class="mg-explained__body small-12 columns text-center">
+			<p class="mg-explained__body small-12 columns tw-text-center">
 				Set your commitment once, Kiva will make sure every dollar
 				is lent to COVID-19 impacted individuals and businesses.
 			</p>

@@ -13,7 +13,7 @@
 		<section class="loan-categories section">
 			<div class="row">
 				<div class="columns">
-					<h2 class="loan-categories__header text-center">
+					<h2 class="loan-categories__header tw-text-center">
 						Support causes you care about.
 					</h2>
 					<loan-categories-section />
@@ -66,7 +66,7 @@
 			/>
 		</section>
 
-		<section class="loan-not-donation section text-center">
+		<section class="loan-not-donation section tw-text-center">
 			<div class="row">
 				<kv-responsive-image
 					class="loan-not-donation__img"
@@ -90,7 +90,7 @@
 			/>
 		</section>
 
-		<section class="how-it-works section text-center">
+		<section class="how-it-works section tw-text-center">
 			<div class="row">
 				<h2 class="how-it-works__header small-12 columns">
 					How it works
@@ -154,7 +154,7 @@
 			</ol>
 		</section>
 
-		<section class="statistics section text-center">
+		<section class="statistics section tw-text-center">
 			<div class="row">
 				<div class="small-12 columns">
 					<kv-responsive-image
@@ -185,7 +185,7 @@
 
 		<section class="lender-quotes section">
 			<div class="row">
-				<h2 class="lender-quotes__header text-center small-12 columns">
+				<h2 class="lender-quotes__header tw-text-center small-12 columns">
 					What our lending <br class="so mo"> community thinks
 				</h2>
 				<div
@@ -226,7 +226,7 @@
 			/>
 		</section>
 
-		<section class="final-cta section text-center">
+		<section class="final-cta section tw-text-center">
 			<div class="row">
 				<div class="columns">
 					<p class="final-cta__body">

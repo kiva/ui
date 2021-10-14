@@ -1,5 +1,5 @@
 <template functional>
-	<div class="kv-message message-text text-center message-text-confirmation">
+	<div class="kv-message message-text tw-text-center message-text-confirmation">
 		<div class="kv-message-row">
 			<img class="kv-message-image" src="~@/assets/images/beta-icon.svg">
 			<div class="kv-message-message">
