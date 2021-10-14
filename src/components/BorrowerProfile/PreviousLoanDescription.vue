@@ -1,35 +1,39 @@
 <template>
 	<section>
-		<!-- eslint-disable max-len -->
 		<kv-text-link
 			v-if="previousLoanId"
 			v-kv-track-event="['Borrower profile', 'click-Loan details', 'Show previous loan details', this.loanId]"
 			@click.prevent="performClick"
 		>
-			<!-- eslint-enable max-len -->
 			Show previous loan details
 			<kv-material-icon
 				:icon="mdiChevronDown"
-				class="tw-align-middle tw-transition tw-duration-500 tw-rotate-180"
+				class="tw-align-middle tw-mb-0.5 tw-transition-transform tw-ease-in-out tw-duration-500"
+				:class="{'tw-rotate-180' : previousLoanDetailsOpen}"
 			/>
 		</kv-text-link>
+		<kv-expandable
+			v-show="previousLoanDetailsOpen"
+			easing="ease-in-out"
+		>
+			<div>
+				<h2>Previous loan details</h2>
 
-		<div v-if="previousLoanDetailsOpen">
-			<h2>Previous loan details</h2>
-
-			<p
-				v-for="(paragraph, index) in formatedPreviousLoanDescription"
-				:key="index"
-				v-html="paragraph"
-			>
-			</p>
-		</div>
+				<p
+					v-for="(paragraph, index) in formatedPreviousLoanDescription"
+					:key="index"
+					v-html="paragraph"
+				>
+				</p>
+			</div>
+		</kv-expandable>
 	</section>
 </template>
 
 <script>
 import { mdiChevronDown } from '@mdi/js';
 import gql from 'graphql-tag';
+import KvExpandable from '@/components/Kv/KvExpandable';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -46,6 +50,7 @@ export default {
 	components: {
 		KvTextLink,
 		KvMaterialIcon,
+		KvExpandable,
 	},
 	data() {
 		return {
@@ -68,7 +73,7 @@ export default {
 	computed: {
 		formatedPreviousLoanDescription() {
 			return this.toParagraphs(this.previousLoanDescription);
-		}
+		},
 	},
 	methods: {
 		toParagraphs(text) {
@@ -93,7 +98,7 @@ export default {
 			if (this.previousLoanDescription === '') {
 				this.fetchPreviousLoanDescription();
 			}
-		}
+		},
 	}
 };
 
