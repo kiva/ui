@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import { toParagraphs } from '@/util/loanUtils';
 import previousLoanDescription from '@/components/BorrowerProfile/PreviousLoanDescription';
 
 export default {
@@ -127,10 +128,10 @@ export default {
 			return `In this group: ${names.join(', ')}`;
 		},
 		storyDescriptionParagraphs() {
-			return this.toParagraphs(this.storyDescription);
+			return toParagraphs(this.storyDescription);
 		},
 		descriptionInOriginalLanguageParagraphs() {
-			return this.toParagraphs(this.descriptionInOriginalLanguage);
+			return toParagraphs(this.descriptionInOriginalLanguage);
 		},
 		isAnonymizationLevelFull() {
 			return this.anonymizationLevel === 'full';
@@ -153,11 +154,6 @@ export default {
 			return this.reviewer?.image?.url ?? '';
 		},
 	},
-	methods: {
-		toParagraphs(text) {
-			return String(text).replace(/\r|\n|<br\s*\/?>/g, '\n').split(/\n+/);
-		}
-	}
 };
 
 </script>

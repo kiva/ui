@@ -32,6 +32,7 @@
 
 <script>
 import { mdiChevronDown } from '@mdi/js';
+import { toParagraphs } from '@/util/loanUtils';
 import gql from 'graphql-tag';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
@@ -72,13 +73,10 @@ export default {
 	},
 	computed: {
 		formatedPreviousLoanDescription() {
-			return this.toParagraphs(this.previousLoanDescription);
+			return toParagraphs(this.previousLoanDescription);
 		},
 	},
 	methods: {
-		toParagraphs(text) {
-			return String(text).replace(/\r|\n|<br\s*\/?>/g, '\n').split(/\n+/);
-		},
 		fetchPreviousLoanDescription() {
 			this.apollo.query({
 				query: previousLoanQuery,
