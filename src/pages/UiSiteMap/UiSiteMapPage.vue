@@ -1,22 +1,22 @@
 <template>
 	<www-page>
-		<kv-page-container class="tw-py-8">
+		<kv-default-wrapper>
 			<h1 class="tw-mb-4">
 				Available Routes
 			</h1>
 			<route-listing />
-		</kv-page-container>
+		</kv-default-wrapper>
 	</www-page>
 </template>
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 import RouteListing from './RouteListing';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	components: {
-		KvPageContainer,
+		KvDefaultWrapper,
 		RouteListing,
 		WwwPage,
 	},

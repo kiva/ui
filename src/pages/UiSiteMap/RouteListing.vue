@@ -14,7 +14,9 @@
 			</ul>
 		</div>
 		<div v-if="devRoutes.length">
-			<h2>Dev Routes</h2>
+			<h2 class="tw-mb-4">
+				Dev Routes
+			</h2>
 			<ul class="tw-list-disc tw-list-inside">
 				<li v-for="route in devRoutes" :key="route.path">
 					<router-link :to="route.path">
