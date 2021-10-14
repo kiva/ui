@@ -1,19 +1,19 @@
 <template>
 	<www-page>
-		<kv-page-container class="tw-py-4 md:tw-py-6 lg:tw-py-8">
+		<kv-default-wrapper>
 			<join-team-form />
-		</kv-page-container>
+		</kv-default-wrapper>
 	</www-page>
 </template>
 
 <script>
 import JoinTeamForm from '@/components/Forms/JoinTeamForm';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 
 export default {
 	components: {
-		KvPageContainer,
+		KvDefaultWrapper,
 		WwwPage,
 		JoinTeamForm
 	},
