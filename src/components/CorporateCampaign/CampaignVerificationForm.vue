@@ -13,7 +13,7 @@
 				frameborder="0"
 			></iframe>
 
-			<div class="text-center">
+			<div class="tw-text-center">
 				<kv-button
 					class="text-link"
 					@click.native="optOut"

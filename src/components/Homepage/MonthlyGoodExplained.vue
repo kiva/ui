@@ -1,7 +1,7 @@
 <template>
 	<div class="monthly-good-explained">
 		<div class="row">
-			<h1 class="column small-12 text-center">
+			<h1 class="column small-12 tw-text-center">
 				How does Monthly Good work?
 			</h1>
 			<div class="column small-12 medium-6 large-3 step-wrapper">
@@ -52,7 +52,7 @@
 					your impact as Kiva continues to re-lend your repayments
 				</div>
 			</div>
-			<div class="column large-12 text-center learn-more-wrapper">
+			<div class="column large-12 tw-text-center learn-more-wrapper">
 				<router-link
 					:to="`/monthlygood`"
 					class="learn-more-text"

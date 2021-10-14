@@ -1,5 +1,5 @@
 <template>
-	<section class="testimonials section text-center">
+	<section class="testimonials section tw-text-center">
 		<div class="row">
 			<p
 				v-html="testimonialsHeadline"

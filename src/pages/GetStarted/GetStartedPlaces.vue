@@ -17,7 +17,7 @@
 							You can lend to people in 6 continents and 77 countries thanks to our Field Partners — local banks, NGOs, and social enterprises in each region. 100% of your loan goes into the field, where our global community of borrowers lives and works.
 						</p>
 					</div>
-					<div class="text-center small-12 xlarge-6 columns" v-if="countryList.length === 0">
+					<div class="tw-text-center small-12 xlarge-6 columns" v-if="countryList.length === 0">
 						<kv-loading-spinner />
 					</div>
 					<div v-else class="small-12 xlarge-6 columns">
@@ -117,13 +117,13 @@
 							<span>{{ selectAll ? 'deselect all' : 'select all' }}</span>
 						</button>
 						<p
-							class="get-started__summary text-center"
+							class="get-started__summary tw-text-center"
 							v-if="selectedCountries.length === 0"
 						>
 							<strong>Pick as many places as you'd like.</strong>
 						</p>
 						<p
-							class="get-started__summary text-center"
+							class="get-started__summary tw-text-center"
 							v-if="selectedCountries.length !== 0"
 						>
 							We'll show you loans in

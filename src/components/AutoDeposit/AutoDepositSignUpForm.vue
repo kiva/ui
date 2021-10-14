@@ -45,7 +45,7 @@
 		</div>
 
 		<!-- Errors and Messaging -->
-		<div class="row column text-center">
+		<div class="row column tw-text-center">
 			<ul class="validation-errors" v-if="$v.dayOfMonth.$invalid">
 				<li v-if="!$v.dayOfMonth.required">
 					Day field is required
@@ -114,7 +114,7 @@
 		</div>
 
 		<!-- Donation Errors -->
-		<div class="row column text-center">
+		<div class="row column tw-text-center">
 			<ul class="validation-errors" v-if="$v.donation.$invalid">
 				<li v-if="!$v.donation.minValue || !$v.donation.maxValue">
 					Enter a donation amount of $0-$10,000
@@ -123,7 +123,7 @@
 		</div>
 
 		<!-- General Errors & Messaging-->
-		<div class="row column text-center">
+		<div class="row column tw-text-center">
 			<ul class="validation-errors"
 				v-if="!$v.adAmount.combinedTotal || !$v.donation.combinedTotal"
 			>
@@ -146,7 +146,7 @@
 					@complete-transaction="completeADBraintree"
 				/>
 			</div>
-			<div class="text-center" v-else>
+			<div class="tw-text-center" v-else>
 				<kv-button
 					class="sign-in-button"
 					title="Sign in to set up"

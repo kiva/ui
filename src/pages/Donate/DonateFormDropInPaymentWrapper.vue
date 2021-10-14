@@ -40,7 +40,7 @@
 				<kv-loading-spinner v-if="submitting" />
 			</kv-button>
 			<div
-				class="attribution-text text-center"
+				class="attribution-text tw-text-center"
 				v-if="isLoggedIn && !hasExistingAutoDeposit"
 				v-html="disclaimer"
 			></div>

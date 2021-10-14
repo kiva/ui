@@ -1,10 +1,10 @@
 <template>
 	<div class="row row-container">
-		<h1 class="text-center kiva-green large-12 column why-kiva-text">
+		<h1 class="tw-text-center kiva-green large-12 column why-kiva-text">
 			Why Kiva?
 		</h1>
 		<img class="map-background" src="@/assets/images/world-map-simple.svg">
-		<div class="small-12 large-6 column text-center info-block">
+		<div class="small-12 large-6 column tw-text-center info-block">
 			<h2 class="kiva-green">
 				<span class="large-number">{{ repaymentRateFormatted }}% </span>
 				repayment rate
@@ -15,7 +15,7 @@
 				can use the money again.
 			</p>
 		</div>
-		<div class="small-12 large-6 column text-center info-block">
+		<div class="small-12 large-6 column tw-text-center info-block">
 			<h2 class="kiva-green">
 				<span class="large-number">100%</span>
 				goes to the field
@@ -26,7 +26,7 @@
 				make this possible.
 			</p>
 		</div>
-		<div class="small-12 column text-center info-block">
+		<div class="small-12 column tw-text-center info-block">
 			<!-- <span>
 				<kv-icon name="star" class="kiva-green star" />
 				<kv-icon name="star" class="kiva-green star" />
@@ -42,20 +42,20 @@
 				million lenders
 			</h2>
 		</div>
-		<div class="small-12 large-6 column text-center stats-block">
+		<div class="small-12 large-6 column tw-text-center stats-block">
 			<h2 class="kiva-green">
 				<span class="large-number">{{ totalLoansInDollarsFormatted }}</span>
 				billion in loans
 			</h2>
 		</div>
-		<div class="small-12 large-6 column text-center stats-block">
+		<div class="small-12 large-6 column tw-text-center stats-block">
 			<h2 class="kiva-green">
 				<span class="hide-for-large">in</span>
 				<span class="large-number">{{ numCountries }}</span>
 				countries
 			</h2>
 		</div>
-		<p class="column large-12 text-center">
+		<p class="column large-12 tw-text-center">
 			<router-link
 				:to="`/about`"
 				class="kiva-text-grey"

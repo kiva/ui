@@ -51,11 +51,14 @@
 		<!-- Auto Deposit What To Expect -->
 		<div class="auto-deposit-what-to-expect">
 			<div class="row">
-				<h2 class="column small-12 text-center">
+				<h2 class="column small-12 tw-text-center">
 					{{ whatToExpectHeadline }}
 				</h2>
 
-				<div class="small-12 large-4 column text-center" v-for="(item, index) in whatToExpect" :key="item.key">
+				<div
+					class="small-12 large-4 column tw-text-center"
+					v-for="(item, index) in whatToExpect" :key="item.key"
+				>
 					<icon-auto-deposit-alternate v-if="index == 0" class="auto-deposit-what-to-expect__icon" />
 					<icon-lend v-if="index == 1" class="auto-deposit-what-to-expect__icon" />
 					<icon-updates-alternate v-if="index == 2" class="auto-deposit-what-to-expect__icon" />

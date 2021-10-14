@@ -36,7 +36,7 @@
 		</div>
 
 		<div class="row column edit-preferences-row">
-			<section class="edit-preferences section text-center">
+			<section class="edit-preferences section tw-text-center">
 				<edit-preferences
 					:causes="causeValues"
 					:countries="countriesValues"
@@ -46,7 +46,7 @@
 		</div>
 
 		<div class="row column">
-			<section class="how-it-works section text-center">
+			<section class="how-it-works section tw-text-center">
 				<h2 class="how-it-works__header">
 					Here's how it works
 				</h2>
