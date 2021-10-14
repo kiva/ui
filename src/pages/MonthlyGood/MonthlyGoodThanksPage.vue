@@ -2,27 +2,27 @@
 	<www-page>
 		<div class="row align-center monthly-good-thanks-page">
 			<div class="small-12 medium-11 large-8 column">
-				<h1 class="text-center impact-text">
+				<h1 class="tw-text-center impact-text">
 					<kv-icon name="confirmation" class="icon-confirmation" /> {{ headline }}
 				</h1>
 
-				<p class="text-center">
+				<p class="tw-text-center">
 					Your contribution: ${{ mgAmount }}<span v-if="!isOnetime">/month</span>
 					<span v-if="donation > 0">(including your ${{ donation }} donation)</span>
 				</p>
 
 				<div class="panel" v-if="!fromCovidLanding">
-					<p class="text-center">
+					<p class="tw-text-center">
 						<strong>
 							Based on your contribution, you'll support your first borrower {{ monthWording }}.
 						</strong>
 					</p>
-					<p class="text-center">
+					<p class="tw-text-center">
 						<strong><em>This is our best guess but loan lengths and repayment rates vary.</em></strong>
 					</p>
 				</div>
 				<div class="panel" v-else>
-					<p class="text-center">
+					<p class="tw-text-center">
 						<strong>
 							Thank you for choosing to support someone who has been impacted by COVID‑19 coronavirus.
 						</strong>

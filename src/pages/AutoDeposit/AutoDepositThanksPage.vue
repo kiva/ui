@@ -1,9 +1,9 @@
 <template>
 	<www-page>
 		<!-- Auto Deposit Thanks Page -->
-		<div class="row align-center auto-deposit-thanks-page text-center">
+		<div class="row align-center auto-deposit-thanks-page tw-text-center">
 			<div class="small-12 medium-11 large-8 column">
-				<h1 class="text-center impact-text">
+				<h1 class="tw-text-center impact-text">
 					<kv-icon name="confirmation" class="icon-confirmation" /> Thanks!
 				</h1>
 

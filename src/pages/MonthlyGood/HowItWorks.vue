@@ -1,18 +1,18 @@
 <template>
 	<div class="how-works-section-wrapper" :class="{'experiment':isExperimentActive}" id="how-it-works">
 		<div class="row">
-			<h1 class="column small-12 text-center impact-text">
+			<h1 class="column small-12 tw-text-center impact-text">
 				How it works
 			</h1>
 
-			<div class="small-12 large-4 column step-wrapper text-center">
+			<div class="small-12 large-4 column step-wrapper tw-text-center">
 				<icon-auto-deposit-alternate class="mg-image" />
 				<h4>Contribute automatically</h4>
 				<div class="description-text">
 					<p>Sign up once by choosing a monthly amount that works for you. Cancel anytime.</p>
 				</div>
 			</div>
-			<div class="small-12 large-4 column step-wrapper text-center">
+			<div class="small-12 large-4 column step-wrapper tw-text-center">
 				<icon-lend class="mg-image" />
 				<h4>Help entrepreneurs in need</h4>
 				<div class="description-text">
@@ -20,14 +20,14 @@
 					<p>Kiva will automatically lend 100% of your funds to borrowers who need help reaching their goals. This could be anyone on Kiva, from farmers to students, artisans to shopkeepers.</p>
 				</div>
 			</div>
-			<div class="small-12 large-4 column step-wrapper text-center">
+			<div class="small-12 large-4 column step-wrapper tw-text-center">
 				<icon-updates-alternate class="mg-image" />
 				<h4>Receive inspiring stories</h4>
 				<div class="description-text">
 					<p>We’ll send you an update once a month, including who you supported and why it mattered.</p>
 				</div>
 			</div>
-			<div class="small-12 column text-center learn-more-wrapper">
+			<div class="small-12 column tw-text-center learn-more-wrapper">
 				<p class="learn-more-text">
 					<!-- eslint-disable-next-line max-len -->
 					As you’re repaid, your funds will be automatically relent to borrowers in need, multiplying your impact

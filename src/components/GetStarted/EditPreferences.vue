@@ -19,7 +19,7 @@
 						</span>
 					</div>
 					<div class="edit-preferences__content-wrapper">
-						<div class="row collapse text-left align-middle">
+						<div class="row collapse tw-text-left align-middle">
 							<div class="small-6 large-7 xlarge-6 columns">
 								<h2 class="edit-preferences__card-header">
 									Your {{ causes.length }} causes
@@ -59,7 +59,7 @@
 						</span>
 					</div>
 					<div class="edit-preferences__content-wrapper">
-						<div class="row collapse text-left align-middle column">
+						<div class="row collapse tw-text-left align-middle column">
 							<h2 class="edit-preferences__card-header">
 								All Causes
 							</h2>
@@ -86,7 +86,7 @@
 						</span>
 					</div>
 					<div class="edit-preferences__content-wrapper">
-						<div class="row collapse text-left align-middle">
+						<div class="row collapse tw-text-left align-middle">
 							<div class="small-6 large-7 xlarge-6 columns">
 								<h2 class="edit-preferences__card-header">
 									Your {{ countries.length }} places
@@ -128,7 +128,7 @@
 						</span>
 					</div>
 					<div class="edit-preferences__content-wrapper">
-						<div class="row collapse text-left align-middle column">
+						<div class="row collapse tw-text-left align-middle column">
 							<h2 class="edit-preferences__card-header">
 								Everywhere
 							</h2>

@@ -57,7 +57,7 @@
 			<div class="row lyml-wrapper">
 				<div class="small-12 columns">
 					<hr>
-					<h3 class="lyml-text text-center" v-html="lymlHeading"></h3>
+					<h3 class="lyml-text tw-text-center" v-html="lymlHeading"></h3>
 					<l-y-m-l
 						:basketed-loans="itemsInBasket"
 						:target-loan="loan"
@@ -67,7 +67,7 @@
 			</div>
 			<hr>
 			<div class="row">
-				<div class="small-12 columns text-center">
+				<div class="small-12 columns tw-text-center">
 					<!-- Loan use -->
 					<h2 class="loan-use-text">
 						A loan helped {{ loan.use }}

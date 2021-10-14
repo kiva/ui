@@ -1,7 +1,7 @@
 <template>
 	<www-page>
 		<div class="monthly-good-setup-page">
-			<div class="row align-center text-center auto-lending-notice"
+			<div class="row align-center tw-text-center auto-lending-notice"
 				v-if="balance > autoDepositNoticeThreshold"
 			>
 				<div class="small-12 medium-11 large-10 column">
@@ -26,10 +26,10 @@
 				<div class="small-12 medium-11 large-10 column"
 					v-if="!isMonthlyGoodSubscriber && !hasLegacySubscription"
 				>
-					<h1 class="text-center impact-text">
+					<h1 class="tw-text-center impact-text">
 						Confirm your Good
 					</h1>
-					<h3 class="text-center featured-text" v-if="!isOnetime">
+					<h3 class="tw-text-center featured-text" v-if="!isOnetime">
 						Review and set up your monthly contribution
 					</h3>
 					<form
@@ -38,7 +38,7 @@
 						novalidate
 					>
 						<div class="panel zigzag-bottom">
-							<div class="row align-center text-center">
+							<div class="row align-center tw-text-center">
 								<div class="medium-10 small-12 columns">
 									<div class="row column" v-if="!fromCovidLanding">
 										<strong>Each month on the</strong>
@@ -82,7 +82,7 @@
 										</div>
 									</div>
 
-									<div class="row text-left align-middle">
+									<div class="row tw-text-left align-middle">
 										<div class="columns">
 											<span class="additional-left-pad-spans strong">
 												Deposit for lending
@@ -101,7 +101,7 @@
 										</div>
 
 										<div class="small-12 columns">
-											<ul class="text-right validation-errors" v-if="$v.mgAmount.$invalid">
+											<ul class="tw-text-right validation-errors" v-if="$v.mgAmount.$invalid">
 												<li v-if="!$v.mgAmount.required">
 													Field is required
 												</li>
@@ -112,7 +112,7 @@
 										</div>
 									</div>
 
-									<div class="row text-left align-middle">
+									<div class="row tw-text-left align-middle">
 										<div class="columns">
 											<kv-checkbox
 												id="donation-checkbox"
@@ -160,7 +160,7 @@
 										</div>
 
 										<div class="small-12 columns">
-											<ul class="text-right validation-errors" v-if="$v.donation.$invalid">
+											<ul class="tw-text-right validation-errors" v-if="$v.donation.$invalid">
 												<li v-if="!$v.donation.minValue || !$v.donation.maxValue">
 													Enter an amount of $0-$10,000
 												</li>
@@ -168,7 +168,7 @@
 										</div>
 									</div>
 
-									<div class="row text-left">
+									<div class="row tw-text-left">
 										<div class="columns">
 											<strong v-if="!onetime"
 												class="additional-left-pad-spans"
@@ -183,7 +183,7 @@
 										</div>
 
 										<div class="small-12 columns">
-											<ul class="text-center validation-errors"
+											<ul class="tw-text-center validation-errors"
 												v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
 											>
 												<li>
@@ -194,7 +194,7 @@
 										</div>
 									</div>
 
-									<div class="row text-left" v-if="!fromCovidLanding">
+									<div class="row tw-text-left" v-if="!fromCovidLanding">
 										<div class="small-12 columns">
 											<div class="additional-left-pad-spans">
 												Select a category to focus your lending
@@ -213,13 +213,13 @@
 
 									<div class="row small-collapse" v-if="!isOnetime">
 										<div class="small-12 columns">
-											<em class="text-center">Rest easy, you can cancel anytime.</em>
+											<em class="tw-text-center">Rest easy, you can cancel anytime.</em>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="row align-center text-center">
+						<div class="row align-center tw-text-center">
 							<div class="large-9 medium-10 small-12 columns">
 								<p>
 									<!-- eslint-disable-next-line max-len -->

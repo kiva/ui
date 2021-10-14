@@ -380,7 +380,7 @@
 			</div>
 		</nav>
 		<nav class="large-footer show-for-large" aria-label="Footer navigation">
-			<div class="row collapse text-left">
+			<div class="row collapse tw-text-left">
 				<div class="column narrow hide-for-print">
 					<div class="large-footer__block">
 						<h2>Borrow</h2>
@@ -653,7 +653,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row column collapse text-left">
+			<div class="row column collapse tw-text-left">
 				<ul class="large-footer__single-line-links">
 					<li>
 						<router-link
@@ -689,7 +689,7 @@
 					</li>
 				</ul>
 			</div>
-			<div class="row column collapse text-left">
+			<div class="row column collapse tw-text-left">
 				<p class="large-footer__disclaimer">
 					Lending through Kiva involves risk of principal loss.
 					Kiva does not guarantee repayment or offer a financial return on your loan.

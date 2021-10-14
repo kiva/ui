@@ -1,5 +1,5 @@
 <template>
-	<section class="supporting-partners text-center">
+	<section class="supporting-partners tw-text-center">
 		<div class="supporting-partners__selected">
 			<h4>
 				Strategic partners supporting this celebration

@@ -83,7 +83,7 @@
 													</p>
 												</template>
 											</div>
-											<div class="column text-right" v-if="paymentMethod">
+											<div class="column tw-text-right" v-if="paymentMethod">
 												<button
 													class="button--link"
 													@click="toggleSections"
@@ -129,7 +129,7 @@
 											{{ paymentMethod.description }}
 										</div>
 										<p v-if="updateToCurrentPaymentMethod"
-											class="validation-error text-center"
+											class="validation-error tw-text-center"
 										>
 											<!-- eslint-disable-next-line max-len -->
 											This is your current payment method.<br> Please select or enter a new payment method to update your deposit.

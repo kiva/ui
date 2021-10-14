@@ -9,7 +9,7 @@
 				@lightbox-closed="handleLightboxClosed"
 			>
 				<div class="join-team-lightbox__content">
-					<div v-if="showForm" class="text-center">
+					<div v-if="showForm" class="tw-text-center">
 						<h2>{{ campaignTitleText }}</h2>
 						<p>
 							Lending Teams are self-organized groups on Kiva.org where you can
@@ -22,7 +22,7 @@
 						</p>
 						<kv-loading-overlay id="loading-overlay-teams" v-if="loading" />
 					</div>
-					<div v-if="showSuccess" class="text-center">
+					<div v-if="showSuccess" class="tw-text-center">
 						<div v-if="isMember">
 							<h2>Congratulations! You've joined the {{ teamName }} Lending Team.</h2>
 							<p>
@@ -39,7 +39,7 @@
 				</div>
 
 				<template #controls>
-					<div class="text-center">
+					<div class="tw-text-center">
 						<div v-if="showForm">
 							<kv-button class="smaller" @click.native.prevent="handleJoinTeam">
 								Join Now

@@ -16,7 +16,7 @@
 			<section>
 				<div
 					data-test="print-kcard-msg"
-					class="section text-center hide-for-print"
+					class="section tw-text-center hide-for-print"
 					v-if="printableKivaCards.length > 0"
 				>
 					<h2>Print your Kiva {{ printableKivaCards.length > 1 ? 'Cards' : 'Card' }}</h2>
@@ -147,7 +147,7 @@
 					</li>
 					<li
 						data-test="kcard-portfolio"
-						class="section text-center"
+						class="section tw-text-center"
 						v-if="kivaCards.length > 0"
 					>
 						For more details about all your Kiva Card purchases, please visit your
