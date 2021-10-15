@@ -7,7 +7,7 @@
 		<div class="corporate-campaign-landing">
 			<kv-loading-overlay
 				v-if="loadingPage"
-				class="corporate-campaign-landing__loading-page"
+				class="tw-z-1"
 			/>
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
 			<campaign-status
@@ -35,24 +35,21 @@
 			<section class="loan-categories section" id="campaignLoanSection" ref="campaignLoanSection">
 				<div class="row">
 					<div class="columns">
-						<h2 class="loan-categories__header tw-text-center">
+						<h2 class="tw-mb-4 tw-text-center">
 							Support causes you care about.
 						</h2>
 
-						<div class="loan-view-controls">
-							<campaign-loan-filters
-								class="loan-view-controls__filters"
-								:applied-filters="filters"
-								:initial-filters="initialFilters"
-								:excluded-tags="excludedTags"
-								:initial-sort-by="initialSortBy"
-								:total-count="totalCount"
-								@updated-filters="handleUpdatedFilters"
-								@updated-sort-by="handleUpdatedSortBy"
-								@set-loan-display="handleLoanDisplayType"
-								@reset-loan-filters="handleResetLoanFilters"
-							/>
-						</div>
+						<campaign-loan-filters
+							:applied-filters="filters"
+							:initial-filters="initialFilters"
+							:excluded-tags="excludedTags"
+							:initial-sort-by="initialSortBy"
+							:total-count="totalCount"
+							@updated-filters="handleUpdatedFilters"
+							@updated-sort-by="handleUpdatedSortBy"
+							@set-loan-display="handleLoanDisplayType"
+							@reset-loan-filters="handleResetLoanFilters"
+						/>
 
 						<campaign-loan-row
 							v-show="showLoanRows"
@@ -1256,10 +1253,6 @@ export default {
 		height: auto;
 		margin-bottom: 2rem;
 	}
-
-	&__loading-page {
-		z-index: 1;
-	}
 }
 
 .loan-categories {
@@ -1267,15 +1260,6 @@ export default {
 
 	& .row {
 		max-width: 69.15rem;
-	}
-
-	&__header {
-		font-weight: bold;
-		margin-bottom: 2rem;
-
-		@include breakpoint(large) {
-			@include large-text();
-		}
 	}
 }
 

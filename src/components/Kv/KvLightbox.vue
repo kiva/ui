@@ -28,7 +28,7 @@
 				>
 					<div class="kv-lightbox__header">
 						<h2 v-if="title"
-							class="kv-lightbox__title"
+							class="kv-lightbox__title tw-mb-1"
 							id="lightbox-title"
 						>
 							{{ title }}

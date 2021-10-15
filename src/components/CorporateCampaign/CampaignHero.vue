@@ -1,11 +1,9 @@
 <template>
-	<section
-		class="campaign-hero section"
-	>
+	<section class="tw-py-4 md:tw-py-8">
 		<div class="row align-center">
 			<div class="small-12 medium-10 large-6 xlarge-5 columns">
 				<img
-					class="campaign-hero__hero-img"
+					class="tw-block tw-mx-auto tw-mb-4 md:tw-mt-0"
 					src="@/assets/images/loan-card-stack.jpg"
 					srcset="@/assets/images/loan-card-stack_2x.jpg 2x"
 					alt=""
@@ -15,24 +13,24 @@
 			</div>
 			<!-- eslint-disable-next-line max-len -->
 			<div class="small-10 large-6 xlarge-7 align-self-middle columns">
-				<h1 class="campaign-hero__header">
+				<h1 class="tw-mb-4">
 					<template v-if="headline">
 						{{ headline }}
 					</template>
 					<template v-else>
-						Make a loan, <br class="so mo"> change a life.
+						Make a loan, <br> change a life.
 					</template>
 				</h1>
 				<div
 					v-if="bodyCopy"
-					class="campaign-hero__body"
+					class="tw-prose tw-text-subhead tw-mb-4"
 					v-html="bodyCopy"
 					ref="heroBodyCopy"
 				></div>
-				<p v-else class="campaign-hero__body">
+				<p v-else class="tw-text-subhead tw-mb-4">
 					With Kiva you can lend as little as $25 and make a big change in someone's life.
 				</p>
-				<div class="campaign-hero__cta-wrapper">
+				<div class="tw-flex tw-flex-wrap tw-gap-2">
 					<kv-button
 						class="button smallest"
 						@click.native.prevent="jumpToLoans"
@@ -122,64 +120,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.campaign-hero {
-	padding: 2rem 0 2rem;
-
-	@include breakpoint(large) {
-		padding: 4rem 0;
-	}
-
-	&__cta_wrapper {
-		padding: 0 0 2rem;
-
-		@include breakpoint(medium) {
-			padding: 0 2rem 2rem;
-		}
-
-		@include breakpoint(large) {
-			padding: 0 2rem;
-		}
-	}
-
-	&__hero-img {
-		display: block;
-		margin: 0 auto 2rem;
-
-		@include breakpoint(large) {
-			margin: 0 auto;
-		}
-	}
-
-	&__header {
-		@include large-text();
-
-		@include breakpoint(xlarge) {
-			@include huge-headline();
-
-			font-weight: 500;
-		}
-	}
-
-	&__body,
-	&__cta {
-		@include medium-text();
-
-		@include breakpoint(xlarge) {
-			@include featured-text();
-		}
-	}
-
-	&__cta-wrapper {
-		flex-direction: row;
-		flex-wrap: wrap;
-
-		.button {
-			margin: 0 1rem 1rem 0;
-		}
-	}
-}
-</style>
