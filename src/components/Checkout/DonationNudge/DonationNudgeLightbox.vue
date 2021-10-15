@@ -38,7 +38,7 @@
 							:wide-icon="true"
 							subtitle="Your donation is eligible for a tax deduction if you live in the U.S."
 						/>
-						<div v-else class="charity-overhead text-center">
+						<div v-else class="charity-overhead tw-text-center">
 							<h3><kv-icon name="info" class="info-icon" /> <span>Did you know?</span></h3>
 							<p>
 								Kiva donations are more efficient than the average charity,

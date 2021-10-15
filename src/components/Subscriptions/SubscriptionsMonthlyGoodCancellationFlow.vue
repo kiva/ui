@@ -13,7 +13,7 @@
 						We’d love to know why you are canceling Monthly Good by answering a few questions.
 					</p>
 					<kv-button
-						class="expanded secondary rounded text-left"
+						class="expanded secondary rounded tw-text-left"
 						@click.native.prevent="trackEvent({
 								label: `monthly good cancel ; It's too expensive`,
 								property: 'cancel reason ; start_amount'});
@@ -27,7 +27,7 @@
 						/>
 					</kv-button>
 					<kv-button
-						class="expanded secondary rounded text-left"
+						class="expanded secondary rounded tw-text-left"
 						@click.native.prevent="trackEvent({
 							label: `monthly good cancel ; I want to choose each loan`,
 							property: 'cancel reason ; start_category'}); goToStep('2-choose')"
@@ -40,7 +40,7 @@
 						/>
 					</kv-button>
 					<kv-button
-						class="expanded secondary rounded text-left"
+						class="expanded secondary rounded tw-text-left"
 						@click.native.prevent="trackEvent({
 							label: `monthly good cancel ; There's another reason`,
 							property: 'cancel reason ; start_other'}); goToStep('3-reason')"
@@ -66,7 +66,7 @@
 						You can change your monthly contribution to as little as $5 a month at any time.
 					</p>
 					<kv-button
-						class="expanded smaller rounded text-left" @click.native.prevent="trackEvent({
+						class="expanded smaller rounded tw-text-left" @click.native.prevent="trackEvent({
 							label: `monthly good cancel ; Change contribution`,
 							property: 'cancel reason ; amount_change'}); changeContribution()"
 					>
@@ -78,7 +78,7 @@
 						/>
 					</kv-button>
 					<kv-button
-						class="expanded secondary rounded text-left" @click.native.prevent="trackEvent({
+						class="expanded secondary rounded tw-text-left" @click.native.prevent="trackEvent({
 							label: `monthly good cancel ; Continue cancellation`,
 							property: 'cancel reason ; amount_other'}); goToStep('3-expensive')"
 					>
@@ -95,7 +95,7 @@
 						You can change lending categories at any time to better fit the causes you support.
 					</p>
 					<kv-button
-						class="expanded smaller rounded text-left" @click.native.prevent="trackEvent({
+						class="expanded smaller rounded tw-text-left" @click.native.prevent="trackEvent({
 							label: `monthly good cancel ; Edit my category`,
 							property: 'cancel reason ; category_change'}); changeContribution()"
 					>
@@ -107,7 +107,7 @@
 						/>
 					</kv-button>
 					<kv-button
-						class="expanded secondary rounded text-left" @click.native.prevent="trackEvent({
+						class="expanded secondary rounded tw-text-left" @click.native.prevent="trackEvent({
 							label: `monthly good cancel ; These aren't causes I want to support`,
 							property: 'cancel reason ; category_alignment'}); goToStep('3-choose-a')"
 					>
@@ -119,7 +119,7 @@
 						/>
 					</kv-button>
 					<kv-button
-						class="expanded secondary rounded text-left" @click.native.prevent="trackEvent({
+						class="expanded secondary rounded tw-text-left" @click.native.prevent="trackEvent({
 							label: `monthly good cancel ; Continue cancellation`,
 							property: 'cancel reason ; category_other'}); goToStep('3-choose-b')"
 					>
@@ -144,7 +144,7 @@
 						></textarea>
 					</label>
 					<kv-button
-						class="expanded smaller rounded text-left" @click.native.prevent="trackEvent({
+						class="expanded smaller rounded tw-text-left" @click.native.prevent="trackEvent({
 							label: `monthly good cancel ; Complete cancellation`,
 							property: `cancel submit ; ${cancelReason}`}); completeCancellation()"
 					>
@@ -264,7 +264,7 @@ export default {
 @import 'settings';
 
 .mg-cancel-lightbox {
-	.button.text-left {
+	.button.tw-text-left {
 		text-align: left;
 	}
 

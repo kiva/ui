@@ -10,7 +10,7 @@
 								:steps="checkoutSteps"
 								:current-step-index="currentStep"
 							/>
-							<div class="text-center continue-browsing"
+							<div class="tw-text-center continue-browsing"
 								v-if="addToBasketRedirectExperimentShown && !userPrefContinueBrowsing"
 							>
 								<span>Want to add more loans? </span>
@@ -148,7 +148,7 @@
 										&& showLoginContinueButton
 										&& eligibleForGuestCheckout
 										&& guestCheckoutCTAExpActive"
-									class="small-12 columns text-right"
+									class="small-12 columns tw-text-right"
 								>
 									<span>Already have an account?</span>
 									<a
@@ -192,7 +192,7 @@
 			</div>
 		</div>
 		<div v-if="emptyBasket" class="empty-basket">
-			<div class="row display-align text-center">
+			<div class="row display-align tw-text-center">
 				<div class="columns small-12">
 					<h2 class="empty-basket-heading">
 						Your basket is empty!

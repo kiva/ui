@@ -70,7 +70,7 @@
 					</div>
 				</div>
 				<div class="row columns align-middle">
-					<ul class="text-right validation-errors" v-if="$v.form.mgAmount.$invalid">
+					<ul class="tw-text-right validation-errors" v-if="$v.form.mgAmount.$invalid">
 						<li v-if="!$v.form.mgAmount.required">
 							Field is required
 						</li>
@@ -102,7 +102,7 @@
 					</div>
 				</div>
 				<div class="row column align-middle">
-					<ul class="text-right validation-errors" v-if="$v.form.donation.$invalid">
+					<ul class="tw-text-right validation-errors" v-if="$v.form.donation.$invalid">
 						<li v-if="!$v.form.donation.minValue || !$v.form.donation.maxValue">
 							Enter an amount of $0-$10,000
 						</li>
@@ -120,7 +120,7 @@
 					</div>
 				</div>
 				<div class="row column">
-					<ul class="text-center validation-errors"
+					<ul class="tw-text-center validation-errors"
 						v-if="!$v.form.mgAmount.maxTotal || !$v.form.donation.maxTotal"
 					>
 						<li>

@@ -29,7 +29,7 @@ export default {
 					this.messageType = data?.tip?.type ?? '';
 					this.persist = data?.tip?.persist ?? false;
 
-					this.$refs.tip.show(this.safeMessage, this.messageType, this.persist);
+					this.$refs.tip.show(this.safeMessage, this.messageType, this.preventAutoDismiss);
 					this.initialPath = this.$route.path;
 				} else {
 					this.$refs.tip.close();
@@ -45,6 +45,11 @@ export default {
 			initialPath: null
 		};
 	},
+	computed: {
+		preventAutoDismiss() {
+			return this.persist || this.messageType === 'error' || this.messageType === 'warning';
+		}
+	},
 	watch: {
 		/*
 			Observe $route.path for changes
@@ -57,7 +62,7 @@ export default {
 			if (to !== this.initialPath && this.persist !== true) {
 				this.$refs.tip.close();
 			} else if (to === this.initialPath) {
-				this.$refs.tip.show(this.safeMessage, this.messageType, this.persist);
+				this.$refs.tip.show(this.safeMessage, this.messageType, this.preventAutoDismiss);
 			}
 		},
 	}

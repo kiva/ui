@@ -15,6 +15,7 @@ module.exports = {
 		'^.+\\.js$': 'babel-jest',
 		'^.+\\.svg$': '<rootDir>/test/unit/transforms/svgTransform.js',
 	},
+	transformIgnorePatterns: ['/node_modules/(?!@kiva/)'],
 	snapshotSerializers: ['jest-serializer-vue'],
 	coverageDirectory: '<rootDir>/test/unit/coverage',
 	coverageReporters: ['json', 'html'],

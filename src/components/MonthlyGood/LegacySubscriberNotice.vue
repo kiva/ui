@@ -1,14 +1,14 @@
 <template>
 	<div>
-		<h1 class="text-center impact-text">
+		<h1 class="tw-text-center impact-text">
 			Please cancel your existing auto deposit first:
 		</h1>
 
-		<p class="text-center">
+		<p class="tw-text-center">
 			Thanks for your interest in Monthly Good. Because you have an existing Kiva subscription,
 			you’ll need to cancel this via PayPal before signing up for Monthly Good.
 		</p>
-		<div class="text-center" v-for="(sub, index) in legacySubscriptions" :key="index">
+		<div class="tw-text-center" v-for="(sub, index) in legacySubscriptions" :key="index">
 			<a :href="subscriptionCancelLink(sub)">Manage my auto deposit</a><br>
 		</div>
 	</div>

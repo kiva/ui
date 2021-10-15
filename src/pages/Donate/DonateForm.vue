@@ -47,7 +47,7 @@
 				</kv-button>
 				<!-- Donation Disclaimer should always be present if we have a payment option active -->
 				<div
-					class="attribution-text text-center"
+					class="attribution-text tw-text-center"
 					v-if="showDisclaimer && !isMonthly && !subscriptionApplied"
 					v-html="formDisclaimerCopy"
 				></div>

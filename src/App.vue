@@ -1,6 +1,7 @@
 <template>
 	<kv-theme-provider
 		:theme="theme"
+		class="tw-h-full"
 	>
 		<div id="app" class="tw-bg-primary tw-h-full">
 			<router-view />

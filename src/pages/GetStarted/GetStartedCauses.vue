@@ -30,7 +30,7 @@
 							</li>
 						</ul>
 						<p
-							class="get-started__summary text-center"
+							class="get-started__summary tw-text-center"
 							v-html="summaryText"
 						></p>
 					</div>

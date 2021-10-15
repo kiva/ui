@@ -15,7 +15,7 @@
 			</template>
 		</kv-hero>
 		<div class="row intro">
-			<div class="text-center featured-text columns large-10 large-offset-1">
+			<div class="tw-text-center featured-text columns large-10 large-offset-1">
 				<p>
 					Help us turn possibility into reality for borrowers around the world.
 				</p>
@@ -30,7 +30,7 @@
 		</div>
 		-->
 		<div class="row dual-cta">
-			<div class="small-12 large-6 text-center dual-cta-block">
+			<div class="small-12 large-6 tw-text-center dual-cta-block">
 				<router-link class="dual-cta-link" to="/blog/what-your-donations-really-do">
 					<h2 class="dual-cta-header">
 						Already donated?
@@ -41,7 +41,7 @@
 					<sketchy-arrow class="sketchy-arrow" />
 				</router-link>
 			</div>
-			<div class="small-12 large-6 text-center dual-cta-block">
+			<div class="small-12 large-6 tw-text-center dual-cta-block">
 				<router-link class="dual-cta-link" to="/donate/supportus">
 					<h2 class="dual-cta-header">
 						Haven't donated yet?

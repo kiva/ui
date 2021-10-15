@@ -72,8 +72,9 @@
 		</kiva-as-expert>
 		<more-about-kiva />
 		<!-- Monthly Good Frequently Asked Questions -->
-		<div>
+		<div class="row">
 			<kv-frequently-asked-questions
+				class="span-12 column"
 				:content="faqContentGroup"
 			/>
 		</div>
