@@ -108,6 +108,7 @@ export default {
 							scope.setTag('bt_get_client_token_error', errorMessage);
 							Sentry.captureException(errorCode);
 						});
+						this.$showTipMsg('An Error has occured. Please refresh the page and try again.', 'error');
 					} else {
 						this.clientToken = _get(response, 'data.shop.getClientToken');
 						this.initializeDropIn(this.clientToken);
