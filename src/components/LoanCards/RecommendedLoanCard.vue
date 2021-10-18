@@ -5,11 +5,12 @@
 			v-if="isLoading"
 		/>
 		<div class="rec-loan-card__sector" v-show="!isLoading">
-			A loan for <strong>{{ sectorName }}</strong> in <strong>{{ countryName }}</strong>
+			A loan for <strong class="tw-text-brand tw-font-book">{{ sectorName }}</strong>
+			in <strong class="tw-text-brand tw-font-book">{{ countryName }}</strong>
 		</div>
 		<div class="rec-loan-card__card">
 			<kv-loading-placeholder
-				class="rec-loan-card__image-wrapper rec-loan-card__image-wrapper--loading"
+				class="rec-loan-card__image-wrapper tw-bg-tertiary rec-loan-card__image-wrapper--loading"
 				v-if="isLoading"
 			/>
 			<div class="rec-loan-card__image-wrapper" v-show="!isLoading">
@@ -41,17 +42,17 @@
 			/>
 			<div class="rec-loan-card__summary">
 				<kv-loading-placeholder
-					class="rec-loan-card__name rec-loan-card__name--loading"
+					class="rec-loan-card__name tw-text-h3 rec-loan-card__name--loading"
 					v-if="isLoading"
 				/>
-				<h2 class="rec-loan-card__name" v-show="!isLoading">
+				<h2 class="rec-loan-card__name tw-text-h3 tw-mb-1" v-show="!isLoading">
 					{{ borrowerName }}
 				</h2>
 				<kv-loading-paragraph
 					class="rec-loan-card__loan-use rec-loan-card__loan-use--loading"
 					v-if="isLoading"
 				/>
-				<p class="rec-loan-card__loan-use" v-show="!isLoading">
+				<p class="rec-loan-card__loan-use tw-mb-1.5" v-show="!isLoading">
 					{{ loanUse }}
 					<router-link class="rec-loan-card__learn-more"
 						:to="`/lend/${loanId}`"
@@ -324,23 +325,9 @@ export default {
 	flex-shrink: 0;
 	min-width: rem-calc(246);
 	width: 100%;
-	font-size: rem-calc(12);
-
-	@include breakpoint(medium up) {
-		font-size: rem-calc(14);
-	}
-
-	@include breakpoint(large up) {
-		font-size: 1rem;
-	}
 
 	&__sector {
 		margin-left: 1rem;
-
-		strong {
-			color: $kiva-green;
-			font-weight: $global-weight-normal;
-		}
 
 		&--loading {
 			width: 60%;
@@ -359,7 +346,6 @@ export default {
 
 	&__image-wrapper {
 		position: relative;
-		background-color: $kiva-bg-darkgray;
 		width: 100%;
 		padding-bottom: 200/320 * 100%;
 
@@ -468,29 +454,10 @@ export default {
 	}
 
 	&__name {
-		font-size: rem-calc(16);
-		font-weight: $global-weight-bold;
-
 		&--loading {
-			height: rem-calc(16);
+			height: 1em;
 			width: 60%;
 			margin-bottom: 1rem;
-		}
-
-		@include breakpoint(medium up) {
-			font-size: rem-calc(20);
-
-			&--loading {
-				height: rem-calc(20);
-			}
-		}
-
-		@include breakpoint(large up) {
-			font-size: rem-calc(22);
-
-			&--loading {
-				height: rem-calc(22);
-			}
 		}
 	}
 
@@ -520,11 +487,9 @@ export default {
 	}
 
 	&__button {
-		$font-size: 1.25rem;
 		$padding: 1.25rem;
 
 		&.button {
-			font-size: $font-size;
 			padding: $padding;
 			margin: 0;
 			width: 100%;
@@ -533,7 +498,7 @@ export default {
 		&--loading {
 			border-radius: rem-calc(10);
 			overflow: hidden;
-			height: $font-size + 2 * $padding;
+			height: 1 + 2 * $padding;
 			padding: 0;
 		}
 	}
