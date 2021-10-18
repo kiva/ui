@@ -31,35 +31,49 @@
 			/>
 
 			<section v-if="storyTranslation">
-				<img
-					loading="lazy"
-					v-if="reviewerImageLink"
-					:src="reviewerImageLink"
-					:alt="reviewerName"
-				>
-				<p>
-					Translated from {{ language }}
-					<span v-if="reviewerName">
-						by
+				<i>
+					<p>
+						Translated from {{ language }}
+						<span v-if="reviewerName">
+							by
+							<span v-if="!showReviewersName">a</span>
+							<!-- eslint-disable max-len -->
+							<a
+								href="/work-with-us/internvolunteers"
+								title="Learn more about volunteering at Kiva"
+								v-kv-track-event="['Borrower profile', 'click-Kiva review volunteer', 'Kiva volunteer', this.loanId]"
+							>
+								Kiva volunteer
+							</a>
+							<span v-if="showReviewersName">
+								{{ reviewerName }}
+							</span>
+						</span>.
+
 						<a
-							href="/work-with-us/internvolunteers"
-							title="Learn more about volunteering at Kiva"
+							@click="openLightbox"
+							v-kv-track-event="['Borrower profile', 'click-Original language lightbox', 'View original language description', this.loanId]"
 						>
-							Kiva volunteer
-						</a> {{ reviewerName }}
-					</span>.
-					<a>
-						View original language description.
-					</a>
-				</p>
-				<div>
-					<p
-						v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
-						:key="`originalLanguageParagraph-${index}`"
-						v-html="paragraph"
-					>
+							<!-- eslint-enable max-len -->
+							View original language description.
+						</a>
+
+						<kv-lightbox
+							:visible="isLightboxVisible"
+							:title="lightboxTitle"
+							@lightbox-closed="closeLightbox"
+						>
+							<div>
+								<p
+									v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
+									:key="`originalLanguageParagraph-${index}`"
+									v-html="paragraph"
+								>
+								</p>
+							</div>
+						</kv-lightbox>
 					</p>
-				</div>
+				</i>
 			</section>
 		</div>
 	</section>
@@ -68,9 +82,11 @@
 <script>
 import { toParagraphs } from '@/util/loanUtils';
 import previousLoanDescription from '@/components/BorrowerProfile/PreviousLoanDescription';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	components: {
+		KvLightbox,
 		previousLoanDescription,
 	},
 	props: {
@@ -106,18 +122,23 @@ export default {
 			type: Array,
 			default: () => [],
 		},
-		reviewer: { // LoanPartner.reviewer with { bylineName, image: { url } }
+		reviewer: { // LoanPartner.reviewer with { bylineName, showName }
 			type: Object,
 			default: () => {},
 		},
 		previousLoanId: { // LoanBasic.previousLoanId
-			type: Number,
-			default: 0,
+			type: String,
+			default: '',
 		},
 		loanId: {
 			type: Number,
 			default: 0,
 		}
+	},
+	data() {
+		return {
+			isLightboxVisible: false,
+		};
 	},
 	computed: {
 		borrowersList() {
@@ -137,12 +158,11 @@ export default {
 			return this.anonymizationLevel === 'full';
 		},
 		storyTranslation() {
-			// TODO: Temporarily removing for MVP
-			return false;
-			// return this.isPartnerLoan && parseInt(this.originalLanguage?.id ?? 0, 10) !== 1;
+			// return false;
+			return this.isPartnerLoan && parseInt(this.originalLanguage?.id ?? 0, 10) !== 1;
 		},
 		language() {
-			return this.originalLanguage?.name ?? '';
+			return this.originalLanguage?.name ?? 'Spanish';
 		},
 		isPartnerLoan() {
 			return this.partnerName !== '';
@@ -150,10 +170,18 @@ export default {
 		reviewerName() {
 			return this.reviewer?.bylineName ?? '';
 		},
-		reviewerImageLink() {
-			return this.reviewer?.image?.url ?? '';
+		lightboxTitle() {
+			return this.isAnonymizationLevelFull ? 'Story' : `${this.borrowerOrGroupName}'s story`;
 		},
+		showReviewersName() {
+			return this.reviewer?.showName ?? '';
+		}
 	},
+	methods: {
+		openLightbox() {
+			this.isLightboxVisible = true;
+		},
+	}
 };
 
 </script>

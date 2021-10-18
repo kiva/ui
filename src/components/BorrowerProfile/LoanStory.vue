@@ -96,15 +96,11 @@ export default {
 					# }
 					... on LoanPartner {
 						partnerName
-						# TEMPORARILY Disabled for MVP
-						# reviewer {
-						# 	id
-						# 	bylineName
-						# 	image {
-						# 		id
-						# 		url
-						# 	}
-						# }
+						reviewer {
+							id
+							bylineName
+							showName
+						}
 					}
 				}
 			}
