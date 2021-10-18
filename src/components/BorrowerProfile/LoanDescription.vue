@@ -47,8 +47,8 @@
 							</a>
 							<span v-if="showReviewersName">
 								{{ reviewerName }}
-							</span>
-						</span>.
+							</span>.
+						</span>
 
 						<a
 							@click="openLightbox"
