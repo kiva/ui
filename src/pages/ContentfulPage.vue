@@ -269,7 +269,7 @@ export default {
 				// Get Contentful page data
 				const pageData = getPageData(data);
 				if (pageData.error) {
-					// Only import the default page frame if there is a contentful error
+					// Only import the error page if there is a contentful error
 					return Promise.all([ErrorPage()]);
 				}
 				// Get page frame component
