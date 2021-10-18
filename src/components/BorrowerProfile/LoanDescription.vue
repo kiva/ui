@@ -31,8 +31,8 @@
 			/>
 
 			<section v-if="storyTranslation">
-				<i>
-					<p>
+				<p>
+					<em>
 						Translated from {{ language }}
 						<span v-if="reviewerName">
 							by
@@ -58,23 +58,22 @@
 							<!-- eslint-enable max-len -->
 							View original language description.
 						</a>
-
-						<kv-lightbox
-							:visible="isLightboxVisible"
-							:title="lightboxTitle"
-							@lightbox-closed="closeLightbox"
+					</em>
+				</p>
+				<kv-lightbox
+					:visible="isLightboxVisible"
+					:title="lightboxTitle"
+					@lightbox-closed="closeLightbox"
+				>
+					<div>
+						<p
+							v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
+							:key="`originalLanguageParagraph-${index}`"
+							v-html="paragraph"
 						>
-							<div>
-								<p
-									v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
-									:key="`originalLanguageParagraph-${index}`"
-									v-html="paragraph"
-								>
-								</p>
-							</div>
-						</kv-lightbox>
-					</p>
-				</i>
+						</p>
+					</div>
+				</kv-lightbox>
 			</section>
 		</div>
 	</section>
@@ -128,8 +127,8 @@ export default {
 			default: () => {},
 		},
 		previousLoanId: { // LoanBasic.previousLoanId
-			type: String,
-			default: '',
+			type: Number,
+			default: 0,
 		},
 		loanId: {
 			type: Number,
