@@ -270,7 +270,7 @@ export default {
 				const pageData = getPageData(data);
 				if (pageData.error) {
 					// Only import the default page frame if there is a contentful error
-					return Promise.all([WwwPage()]);
+					return Promise.all([ErrorPage()]);
 				}
 				// Get page frame component
 				const pageFrame = getPageFrameFromType(pageData?.page?.pageType);
