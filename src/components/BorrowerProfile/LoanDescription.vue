@@ -52,6 +52,7 @@
 
 						<a
 							@click="openLightbox"
+							v-if="descriptionInOriginalLanguage !== '' "
 							v-kv-track-event="['Borrower profile', 'click-Original language lightbox', 'View original language description', this.loanId]"
 						>
 							<!-- eslint-enable max-len -->
@@ -158,11 +159,10 @@ export default {
 			return this.anonymizationLevel === 'full';
 		},
 		storyTranslation() {
-			// return false;
 			return this.isPartnerLoan && parseInt(this.originalLanguage?.id ?? 0, 10) !== 1;
 		},
 		language() {
-			return this.originalLanguage?.name ?? 'Spanish';
+			return this.originalLanguage?.name ?? '';
 		},
 		isPartnerLoan() {
 			return this.partnerName !== '';
@@ -174,12 +174,15 @@ export default {
 			return this.isAnonymizationLevelFull ? 'Story' : `${this.borrowerOrGroupName}'s story`;
 		},
 		showReviewersName() {
-			return this.reviewer?.showName ?? '';
+			return this.reviewer?.showName;
 		}
 	},
 	methods: {
 		openLightbox() {
 			this.isLightboxVisible = true;
+		},
+		closeLightbox() {
+			this.isLightboxVisible = false;
 		},
 	}
 };
