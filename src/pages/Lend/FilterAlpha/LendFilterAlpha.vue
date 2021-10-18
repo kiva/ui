@@ -165,7 +165,7 @@ export default {
 			sector: ['Food', 'Education'],
 			country: ['TZ', 'KE'],
 			allSectors: [],
-			allCountries: []
+			allCountries: [],
 		};
 	},
 	methods: {
@@ -176,7 +176,8 @@ export default {
 		async getAllCountries() {
 			// data pull only, not implmented with a component until design path
 			// with product is completed.
-			const countryFacets = await fetchCountryFacets(this.apollo);
+			console.log('from getAllCountries() start');
+			const countryFacets = await fetchCountryFacets(this.apollo);g
 			this.allCountries = countryFacets.map(cf => cf.country.name);
 			console.log('all countries:', this.allCountries);
 		},

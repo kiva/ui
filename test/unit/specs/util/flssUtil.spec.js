@@ -154,7 +154,7 @@ describe('flssUtils.js', () => {
 			query: sectorQuery,
 		};
 
-		it('Checks if fetchCountryFacets calls the correct query variables to apollo', () => {
+		it('Checks if fetchSectors calls the correct query variables to apollo', () => {
 			flssUtils.fetchSectors(apollo);
 			expect(apollo.query).toHaveBeenCalledWith(apolloVars);
 		});
