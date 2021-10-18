@@ -131,6 +131,11 @@ export default {
 
 			this.$v.$touch();
 			if (!this.$v.$invalid) {
+				// Track facebook event
+				if (typeof window !== 'undefined' && typeof fbq === 'function') {
+					window.fbq('track', 'Contact');
+				}
+
 				// eslint-disable-next-line max-len
 				const response = await fetch(`//links.iterable.com/lists/publicAddSubscriberForm?publicIdString=${iterableListIdString}`, {
 					method: 'POST',
