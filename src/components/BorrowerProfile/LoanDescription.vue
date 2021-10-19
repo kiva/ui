@@ -1,14 +1,16 @@
 <template>
 	<section>
-		<div>
-			<h2 v-if="isAnonymizationLevelFull">
+		<div class="tw-prose">
+			<h2
+				v-if="isAnonymizationLevelFull"
+			>
 				Story
 			</h2>
 			<h2 v-if="!isAnonymizationLevelFull">
 				{{ borrowerOrGroupName }}'s story
 			</h2>
 		</div>
-		<div>
+		<div class="tw-prose">
 			<section v-if="storyDescription">
 				<p
 					v-for="(paragraph, index) in storyDescriptionParagraphs"
@@ -60,20 +62,21 @@
 						</a>
 					</em>
 				</p>
-				<kv-lightbox
-					:visible="isLightboxVisible"
-					:title="lightboxTitle"
-					@lightbox-closed="closeLightbox"
-				>
-					<p
-						v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
-						:key="`originalLanguageParagraph-${index}`"
-						v-html="paragraph"
-					>
-					</p>
-				</kv-lightbox>
 			</section>
 		</div>
+		<kv-lightbox
+			:visible="isLightboxVisible"
+			:title="lightboxTitle"
+			@lightbox-closed="closeLightbox"
+		>
+			<p
+				v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
+				:key="`originalLanguageParagraph-${index}`"
+				v-html="paragraph"
+				class="tw-prose"
+			>
+			</p>
+		</kv-lightbox>
 	</section>
 </template>
 
