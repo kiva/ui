@@ -100,3 +100,13 @@ export function filterSector(sectorList, sectorNames) {
 	console.log('from filterSector:', sectorFilter);
 	return sectorFilter;
 }
+
+export function filterCountry(countryList, allCountries) {
+	let countryFilter = { none: [] };
+	if (countryList.length > 1 && countryList.every(country => allCountries.includes(country))) {
+		countryFilter = { any: countryList };
+		return countryFilter;
+	}
+	console.log('from filterCountry:', filterCountry);
+	return countryFilter;
+}
