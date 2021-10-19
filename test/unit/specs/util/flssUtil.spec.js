@@ -170,7 +170,6 @@ describe('flssUtils.js', () => {
 						latitude: 13,
 						longitude: 105
 					},
-					fundsLentInCountry: 67608825,
 					numLoansFundraising: 18,
 					region: 'Asia'
 				},
@@ -186,7 +185,6 @@ query countryFacets {
 				name
 				isoCode
 				geocode {latitude longitude}
-				fundsLentInCountry
 				numLoansFundraising
 				region }
 				count }

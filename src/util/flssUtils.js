@@ -30,7 +30,6 @@ query countryFacets {
 				name
 				isoCode
 				geocode {latitude longitude}
-				fundsLentInCountry
 				numLoansFundraising
 				region }
 				count }
