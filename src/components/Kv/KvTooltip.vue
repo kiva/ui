@@ -24,9 +24,7 @@
 import KvPopper from '@/components/Kv/KvPopper';
 import {
 	darkTheme,
-	darkGreenTheme,
-	mintTheme,
-	defaultTheme
+	mintTheme
 } from '~/@kiva/kv-tokens/configs/kivaColors';
 import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
 
@@ -43,15 +41,13 @@ export default {
 			default: 'default',
 			validator(value) {
 				// The value must match one of these strings
-				return ['default', 'mint', 'green', 'dark'].indexOf(value) !== -1;
+				return ['mint', 'dark'].indexOf(value) !== -1;
 			}
 		},
 	},
 	data() {
 		return {
-			darkGreenTheme,
 			darkTheme,
-			defaultTheme,
 			mintTheme,
 			popperModifiers: {
 				preventOverflow: {
@@ -63,9 +59,7 @@ export default {
 	computed: {
 		themeStyle() {
 			const themeMapper = {
-				default: defaultTheme,
 				mint: mintTheme,
-				green: darkGreenTheme,
 				dark: darkTheme
 			};
 			return themeMapper[this.theme];
