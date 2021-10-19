@@ -40,7 +40,7 @@
 		<div
 			v-if="!partnerName && !loading"
 		>
-			<div class="tw-mb-2 tw-prose">
+			<div class="tw-prose tw-mb-2">
 				<h3>
 					Business description
 				</h3>
