@@ -81,10 +81,6 @@ export default {
 
 	main {
 		flex-grow: 1;
-
-		&.gray-background {
-			background: $kiva-bg-lightgray;
-		}
 	}
 }
 </style>

@@ -1,18 +1,25 @@
 <template>
-	<div class="why-special-loan-card">
-		<kv-icon
-			class="why-special-loan-card__icon"
-			name="star"
-			:from-sprite="true"
-		/>
-		<p class="why-special-loan-card__text">
+	<div class="
+		tw-flex tw-items-stretch tw-flex-nowrap
+		tw-overflow-hidden
+		tw-border tw-border-tertiary
+		tw-rounded tw-w-full tw-mb-2"
+	>
+		<div class="tw-bg-tertiary tw-p-1 tw-flex-shrink-0 tw-flex tw-items-center">
+			<kv-material-icon
+				:icon="mdiStar"
+				class="tw-fill-current tw-text-primary-inverse"
+			/>
+		</div>
+		<p class="tw-bg-primary tw-p-2 tw-flex-1">
 			<strong>This loan is special because</strong> {{ text }}
 		</p>
 	</div>
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
+import { mdiStar } from '@mdi/js';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	props: {
@@ -22,54 +29,8 @@ export default {
 		}
 	},
 	components: {
-		KvIcon,
+		KvMaterialIcon,
 	},
+	data() { return { mdiStar }; }
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-$color: #e1e1e1;
-$bg-color: #fff;
-
-.why-special-loan-card {
-	border: 1px solid $color;
-	border-radius: rem-calc(10);
-	width: 100%;
-	margin-bottom: rem-calc(16);
-	overflow: hidden;
-	display: flex;
-	flex: row nowrap;
-	align-items: stretch;
-
-	&__icon {
-		background-color: $color;
-		color: $bg-color;
-		fill: $color;
-		padding: rem-calc(7);
-		flex-shrink: 0;
-		align-items: center;
-
-		.icon {
-			width: rem-calc(13);
-			height: rem-calc(13);
-		}
-
-		@include breakpoint(large up) {
-			padding: rem-calc(12);
-
-			.icon {
-				width: rem-calc(23);
-				height: rem-calc(23);
-			}
-		}
-	}
-
-	&__text {
-		line-height: (22 / 16);
-		margin: rem-calc(14) rem-calc(10);
-		flex-grow: 1;
-	}
-}
-</style>
