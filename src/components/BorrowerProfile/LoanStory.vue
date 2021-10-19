@@ -82,29 +82,23 @@ export default {
 					}
 					description
 					previousLoanId
-					# TEMPORARILY Disabled for MVP
-					# descriptionInOriginalLanguage
+					descriptionInOriginalLanguage
 					image {
 						id
 						hash
 					}
 					name
-					# TEMPORARILY Disabled for MVP
-					# originalLanguage {
-					# 	id
-					# 	name
-					# }
+					originalLanguage {
+						id
+						name
+					}
 					... on LoanPartner {
 						partnerName
-						# TEMPORARILY Disabled for MVP
-						# reviewer {
-						# 	id
-						# 	bylineName
-						# 	image {
-						# 		id
-						# 		url
-						# 	}
-						# }
+						reviewer {
+							id
+							bylineName
+							showName
+						}
 					}
 				}
 			}

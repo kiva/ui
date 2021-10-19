@@ -4,29 +4,16 @@
 		:footer-theme="footerTheme"
 		:main-class="pageBackgroundColor"
 	>
-		<template v-if="!pageError">
-			<component
-				v-for="({ component, content }) in contentGroups"
-				:key="content.key"
-				:id="content.key"
-				:is="component"
-				:content="content"
-				v-bind="getComponentOptions(content.key)"
-				data-section-type="contentful-section"
-			/>
-		</template>
-		<template v-else>
-			<div class="row">
-				<div class="small-12 columns">
-					<h1>
-						We're sorry, something went wrong
-					</h1>
-					<p>
-						There was an unknown problem with trying to load the content for this page.
-					</p>
-				</div>
-			</div>
-		</template>
+		<component
+			v-for="({ component, content, wrapperClass }) in contentGroups"
+			:key="content.key"
+			:id="content.key"
+			:is="component"
+			:content="content"
+			v-bind="getComponentOptions(content.key)"
+			:class="wrapperClass"
+			data-section-type="contentful-section"
+		/>
 	</component>
 </template>
 
@@ -61,6 +48,9 @@ import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
 const WwwPage = () => import('@/components/WwwFrame/WwwPage');
 const WwwPageCorporate = () => import('@/components/WwwFrame/WwwPageCorporate');
 const WwwPageDesign = () => import('@/components/WwwFrame/WwwPageDesign');
+
+// Error page
+const ErrorPage = () => import('@/pages/Error');
 
 // Content Group Types
 // TODO: update the campaign components to accept "content" prop
@@ -255,8 +245,8 @@ export default {
 				// Get Contentful page data
 				const pageData = getPageData(data);
 				if (pageData.error) {
-					// Only import the default page frame if there is a contentful error
-					return Promise.all([WwwPage()]);
+					// Only import the error page if there is a contentful error
+					return Promise.all([ErrorPage()]);
 				}
 				// Get page frame component
 				const pageFrame = getPageFrameFromType(pageData?.page?.pageType);
@@ -277,6 +267,7 @@ export default {
 			const pageData = getPageData(data);
 			if (pageData.error) {
 				this.pageError = true;
+				this.pageFrame = ErrorPage;
 			} else {
 				this.title = (pageData?.page?.pageLayout?.pageTitle || pageData?.page?.pageTitle) ?? undefined;
 				this.pageBackgroundColor = pageData?.page?.pageLayout?.pageBackgroundColor ?? '';

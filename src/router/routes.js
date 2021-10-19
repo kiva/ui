@@ -49,6 +49,16 @@ export default [
 	{ path: '/build/research', component: () => import('@/pages/Build/Research') },
 	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
 	{
+		path: '/causes',
+		component: () => import('@/pages/Causes/Causes'),
+		children: [
+			{
+				path: 'signup',
+				component: () => import('@/pages/Causes/Signup')
+			}
+		]
+	},
+	{
 		path: '/cc/:dynamicRoute',
 		component: () => import('@/pages/LandingPages/CorporateCampaign/CCLandingPage'),
 		props: route => ({
