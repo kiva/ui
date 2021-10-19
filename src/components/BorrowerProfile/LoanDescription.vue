@@ -1,14 +1,16 @@
 <template>
-	<section class="tw-prose">
-		<div>
-			<h2 v-if="isAnonymizationLevelFull">
+	<section>
+		<div class="tw-prose">
+			<h2
+				v-if="isAnonymizationLevelFull"
+			>
 				Story
 			</h2>
 			<h2 v-if="!isAnonymizationLevelFull">
 				{{ borrowerOrGroupName }}'s story
 			</h2>
 		</div>
-		<div>
+		<div class="tw-prose">
 			<section v-if="storyDescription">
 				<p
 					v-for="(paragraph, index) in storyDescriptionParagraphs"
@@ -31,46 +33,61 @@
 			/>
 
 			<section v-if="storyTranslation">
-				<img
-					loading="lazy"
-					v-if="reviewerImageLink"
-					:src="reviewerImageLink"
-					:alt="reviewerName"
-				>
 				<p>
-					Translated from {{ language }}
-					<span v-if="reviewerName">
-						by
+					<em>
+						Translated from {{ language }}
+						<span v-if="reviewerName">
+							by
+							<span v-if="!showReviewersName">a</span>
+							<!-- eslint-disable max-len -->
+							<a
+								href="/work-with-us/internvolunteers"
+								title="Learn more about volunteering at Kiva"
+								v-kv-track-event="['Borrower profile', 'click-Kiva review volunteer', 'Kiva volunteer', this.loanId]"
+							>
+								Kiva volunteer
+							</a>
+							<span v-if="showReviewersName">
+								{{ reviewerName }}
+							</span>.
+						</span>
+
 						<a
-							href="/work-with-us/internvolunteers"
-							title="Learn more about volunteering at Kiva"
+							@click="openLightbox"
+							v-if="descriptionInOriginalLanguage !== '' "
+							v-kv-track-event="['Borrower profile', 'click-Original language lightbox', 'View original language description', this.loanId]"
 						>
-							Kiva volunteer
-						</a> {{ reviewerName }}
-					</span>.
-					<a>
-						View original language description.
-					</a>
+							<!-- eslint-enable max-len -->
+							View original language description.
+						</a>
+					</em>
 				</p>
-				<div>
-					<p
-						v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
-						:key="`originalLanguageParagraph-${index}`"
-						v-html="paragraph"
-					>
-					</p>
-				</div>
 			</section>
 		</div>
+		<kv-lightbox
+			:visible="isLightboxVisible"
+			:title="lightboxTitle"
+			@lightbox-closed="closeLightbox"
+		>
+			<p
+				v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
+				:key="`originalLanguageParagraph-${index}`"
+				v-html="paragraph"
+				class="tw-prose"
+			>
+			</p>
+		</kv-lightbox>
 	</section>
 </template>
 
 <script>
 import { toParagraphs } from '@/util/loanUtils';
 import previousLoanDescription from '@/components/BorrowerProfile/PreviousLoanDescription';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	components: {
+		KvLightbox,
 		previousLoanDescription,
 	},
 	props: {
@@ -106,7 +123,7 @@ export default {
 			type: Array,
 			default: () => [],
 		},
-		reviewer: { // LoanPartner.reviewer with { bylineName, image: { url } }
+		reviewer: { // LoanPartner.reviewer with { bylineName, showName }
 			type: Object,
 			default: () => {},
 		},
@@ -118,6 +135,11 @@ export default {
 			type: Number,
 			default: 0,
 		}
+	},
+	data() {
+		return {
+			isLightboxVisible: false,
+		};
 	},
 	computed: {
 		borrowersList() {
@@ -137,9 +159,7 @@ export default {
 			return this.anonymizationLevel === 'full';
 		},
 		storyTranslation() {
-			// TODO: Temporarily removing for MVP
-			return false;
-			// return this.isPartnerLoan && parseInt(this.originalLanguage?.id ?? 0, 10) !== 1;
+			return this.isPartnerLoan && parseInt(this.originalLanguage?.id ?? 0, 10) !== 1;
 		},
 		language() {
 			return this.originalLanguage?.name ?? '';
@@ -150,10 +170,21 @@ export default {
 		reviewerName() {
 			return this.reviewer?.bylineName ?? '';
 		},
-		reviewerImageLink() {
-			return this.reviewer?.image?.url ?? '';
+		lightboxTitle() {
+			return this.isAnonymizationLevelFull ? 'Story' : `${this.borrowerOrGroupName}'s story`;
 		},
+		showReviewersName() {
+			return this.reviewer?.showName;
+		}
 	},
+	methods: {
+		openLightbox() {
+			this.isLightboxVisible = true;
+		},
+		closeLightbox() {
+			this.isLightboxVisible = false;
+		},
+	}
 };
 
 </script>

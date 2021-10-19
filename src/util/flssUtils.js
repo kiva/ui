@@ -21,6 +21,32 @@ export function fetchSectors(apollo) {
 		});
 }
 
+export function fetchCountryFacets(apollo) {
+	const countryQuery = gql`
+query countryFacets {
+	lend {
+		countryFacets {
+			country {
+				name
+				isoCode
+				geocode {latitude longitude}
+				numLoansFundraising
+				region }
+				}
+			}
+	}`;
+
+	return apollo.query({
+		query: countryQuery,
+	})
+		.then(({ data }) => {
+			return data.lend.countryFacets;
+		})
+		.catch(e => {
+			console.log('CountryFacet Data failed to fetch: ', e.message);
+		});
+}
+
 export function fetchData(loanQueryFilters, apollo) {
 	return apollo.query({
 		query: flssLoanQuery,
@@ -72,4 +98,14 @@ export function filterSector(sectorList, sectorNames) {
 	}
 	console.log('from filterSector:', sectorFilter);
 	return sectorFilter;
+}
+
+export function filterCountry(countryList, allCountries) {
+	let countryFilter = { none: [] };
+	if (countryList.length > 1 && countryList.every(country => allCountries.includes(country))) {
+		countryFilter = { any: countryList };
+		return countryFilter;
+	}
+	console.log('from filterCountry:', filterCountry);
+	return countryFilter;
 }
