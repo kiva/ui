@@ -1,5 +1,5 @@
 <template>
-	<section class="tw-prose">
+	<section>
 		<div>
 			<h2 v-if="isAnonymizationLevelFull">
 				Story
