@@ -21,9 +21,9 @@
 						<h1 class="tw-text-center">
 							Get on the list!
 						</h1>
-						<h3 class="tw-text-secondary tw-mt-3 tw-text-center tw-px-2.5">
+						<p class="tw-text-h3 tw-text-secondary tw-mt-3 tw-text-center tw-px-2.5">
 							We’re still building the app. If it looks exciting, join our waiting list.
-						</h3>
+						</p>
 						<!-- Iterable Form Code -->
 						<form
 							name="iterable_optin"
@@ -31,7 +31,7 @@
 							@submit.prevent="submitForm"
 							novalidate
 						>
-							<label class="tw-sr-only" for="email">Street Address</label>
+							<label class="tw-sr-only" for="email">Email</label>
 							<kv-text-input
 								id="email"
 								placeholder="Enter your email"
@@ -45,7 +45,7 @@
 								</template>
 							</kv-text-input>
 
-							<p class="tw-mt-2 tw-text-small">
+							<p class="tw-mt-2 tw-text-base">
 								Please send me an email me when the app is available.
 							</p>
 
@@ -75,9 +75,9 @@
 						<h1 class="tw-text-center">
 							We got it!
 						</h1>
-						<h3 class="tw-text-secondary tw-mt-3 tw-text-center tw-px-2.5">
+						<p class="tw-text-h3 tw-text-secondary tw-mt-3 tw-text-center tw-px-2.5">
 							You’ll hear from us when the app is ready to use.
-						</h3>
+						</p>
 					</div>
 				</div>
 			</kv-grid>
