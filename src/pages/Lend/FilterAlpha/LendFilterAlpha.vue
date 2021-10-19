@@ -125,7 +125,6 @@
 
 <script>
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
-// import { getCountries } from 'libphonenumber-js';
 import { lightHeader } from '@/util/siteThemes';
 import {
 	fetchData, filterGender, filterSector, fetchSectors, fetchCountryFacets
@@ -163,9 +162,10 @@ export default {
 			mdiCompassRose,
 			gender: 'both',
 			sector: ['Food', 'Education'],
-			country: ['TZ', 'KE'],
+			country: [],
 			allSectors: [],
 			allCountries: [],
+			allIsoCodes: [],
 		};
 	},
 	methods: {
@@ -174,12 +174,16 @@ export default {
 			this.allSectors = sectorInfo;
 		},
 		async getAllCountries() {
-			// data pull only, not implmented with a component until design path
+			// data pull only from production endpoint,
+			// not implmented with a component until design path
 			// with product is completed.
 			console.log('from getAllCountries() start');
-			const countryFacets = await fetchCountryFacets(this.apollo);g
+			const countryFacets = await fetchCountryFacets(this.apollo);
 			this.allCountries = countryFacets.map(cf => cf.country.name);
+			this.allIsoCodes = countryFacets.map(cf => cf.country.isoCode);
+			console.log('facets', countryFacets);
 			console.log('all countries:', this.allCountries);
+			console.log('all isocodes', this.allIsoCodes);
 		},
 		resetFilter() {
 			this.gender = 'both';
@@ -194,6 +198,7 @@ export default {
 				this.loans = flssData.values ?? [];
 				this.totalCount = flssData.totalCount;
 				console.log('num loans:', this.totalCount);
+				console.log('loans from runQuery()', this.loans);
 
 				if (this.totalCount === 0) {
 					this.zeroLoans = true;
@@ -210,10 +215,10 @@ export default {
 	mounted() {
 		this.getSectors();
 		this.getAllCountries();
-
-		this.loanQueryFilters = { countryIsoCode: { any: ['US'] } };
+		this.loanQueryFilters = { countryIsoCode: { none: [] } };
 		console.log('mounted query ran:', this.loanQueryFilters);
 		this.runQuery(this.loanQueryFilters);
+		console.log('loans from mounted:', this.loans);
 	},
 	computed: {
 		queryFilters() {
@@ -225,7 +230,7 @@ export default {
 			console.log('this is filterSector', sectorFilter);
 
 			const loanQueryFilters = {
-				countryIsoCode: { none: [] },
+				countryIsoCode: { any: [] },
 				// TODO: enable genderFilter when its working
 				// gender: genderFilter,
 				sector: sectorFilter,
@@ -237,6 +242,7 @@ export default {
 	watch: {
 		gender: { handler: 'updateQuery' },
 		sector: { handler: 'updateQuery' },
+		country: { handler: 'updateQuery' },
 	},
 };
 </script>
