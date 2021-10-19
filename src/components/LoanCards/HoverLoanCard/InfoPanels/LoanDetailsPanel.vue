@@ -17,103 +17,107 @@
 			v-else
 			class="loan-details-container"
 		>
-			<ul>
-				<li v-if="this.loanLength">
-					<label>Loan length:</label>
-					<span class="data">
+			<dl>
+				<div v-if="this.loanLength">
+					<dt>Loan length:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ loanLength }} months
-					</span>
-				</li>
-				<li v-if="this.repaymentSchedule">
-					<label>Repayment schedule:</label>
-					<span class="data repayment-schedule-text">
+					</dd>
+				</div>
+				<div v-if="this.repaymentSchedule">
+					<dt>Repayment schedule:</dt>
+					<dd class="tw-text-brand tw-my-0.5 tw-capitalize">
 						{{ repaymentSchedule }}
-					</span>
-				</li>
-				<li v-if="this.disbursalDate">
-					<label>Disbursal date:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.disbursalDate">
+					<dt>Disbursal date:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ disbursalDateFormatted }}
-					</p>
-				</li>
-				<li v-if="this.fundingModel !== ''">
-					<label>Funding model:</label>
-					<p class="data funding-model-text">
+					</dd>
+				</div>
+				<div v-if="this.fundingModel !== ''">
+					<dt>Funding model:</dt>
+					<dd class="tw-text-brand tw-my-0.5 tw-capitalize">
 						{{ fundingModelFormatted }}
-					</p>
-				</li>
-				<li>
-					<label v-if="this.currencyLossLiability">
+					</dd>
+				</div>
+				<div>
+					<dt v-if="this.currencyLossLiability">
 						Partner covers currency loss:
-					</label>
-					<label v-else>Currency exchange loss:</label>
-					<p class="data">
+					</dt>
+					<dt v-else>
+						Currency exchange loss:
+					</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ currencyLossLiabilityFormatted }}
-					</p>
-				</li>
-				<li v-if="this.facilitatedByFieldPartner">
-					<label>Facilitated by Field Partner/trustee:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.facilitatedByFieldPartner">
+					<dt>Facilitated by Field Partner/trustee:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ facilitatedByFieldPartnerFormatted }}
-					</p>
-				</li>
-				<li v-if="this.borrowerPayingInterest">
-					<label>Is borrower paying interest?</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.borrowerPayingInterest">
+					<dt>Is borrower paying interest?</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ borrowerPayingInterestFormatted }}
-					</p>
-				</li>
-				<li v-if="this.riskRating">
-					<label>Field Partner risk rating:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.riskRating">
+					<dt>Field Partner risk rating:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ riskRating }} stars
-					</p>
-				</li>
-			</ul>
-			<ul
+					</dd>
+				</div>
+			</dl>
+			<template
 				v-if="this.fundsLentInCountry
 					|| this.partnerLoansCurrentlyFundraising
 					|| this.directLoansCurrentlyFundraising"
 			>
-				<h3 class="country-heading">
+				<h3 class="tw-mb-1 tw-mt-4">
 					{{ country }} country facts
 				</h3>
-				<!-- <li v-if="this.avgAnnualIncome">
-					<label>Average annual income (USD):</label>
-					<p class="data">
+				<dl>
+					<!-- <div v-if="this.avgAnnualIncome">
+					<dt>Average annual income (USD):</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ avgAnnualIncome }}
 					</p>
-				</li> -->
-				<li v-if="this.fundsLentInCountry">
-					<label>Funds lent in {{ country }}:</label>
-					<p class="data">
-						{{ fundsLentInCountryFormatted }}
-					</p>
-				</li>
-				<li v-if="this.partnerLoansCurrentlyFundraising">
-					<label>Loans currently fundraising:</label>
-					<p class="data">
-						{{ partnerLoansCurrentlyFundraising }}
-					</p>
-				</li>
-				<li v-if="this.directLoansCurrentlyFundraising">
-					<label>Loans currently fundraising:</label>
-					<p class="data">
-						{{ directLoansCurrentlyFundraising }}
-					</p>
-				</li>
-				<!-- <li v-if="this.loansTransactedIn">
-					<label>Loans transacted in:</label>
-					<p class="data">
+				</div> -->
+					<div v-if="this.fundsLentInCountry">
+						<dt>Funds lent in {{ country }}:</dt>
+						<dd class="tw-text-brand tw-my-0.5">
+							{{ fundsLentInCountryFormatted }}
+						</dd>
+					</div>
+					<div v-if="this.partnerLoansCurrentlyFundraising">
+						<dt>Loans currently fundraising:</dt>
+						<dd class="tw-text-brand tw-my-0.5">
+							{{ partnerLoansCurrentlyFundraising }}
+						</dd>
+					</div>
+					<div v-if="this.directLoansCurrentlyFundraising">
+						<dt>Loans currently fundraising:</dt>
+						<dd class="tw-text-brand tw-my-0.5">
+							{{ directLoansCurrentlyFundraising }}
+						</dd>
+					</div>
+				<!-- <div v-if="this.loansTransactedIn">
+					<dt>Loans transacted in:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ loansTransactedIn }}
-					</p>
-				</li> -->
-			</ul>
+					</dd>
+				</div> -->
+				</dl>
+			</template>
 			<div v-if="this.whySpecial">
-				<h3 class="why-special">
+				<h3 class="tw-mb-1 tw-mt-4">
 					This loan is special because
 				</h3>
-				<p class="data">
+				<p class="tw-text-brand">
 					{{ whySpecial }}
 				</p>
 			</div>
@@ -261,23 +265,8 @@ export default {
 	margin-bottom: rem-calc(10);
 }
 
-ul {
-	list-style: none;
-	margin-left: 0;
-}
-
-.data {
-	color: $kiva-icon-green;
-	margin-bottom: 0;
-}
-
 .repayment-schedule-text,
 .funding-model-text {
 	text-transform: capitalize;
-}
-
-.country-heading,
-.why-special {
-	color: $black;
 }
 </style>

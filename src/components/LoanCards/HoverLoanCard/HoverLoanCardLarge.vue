@@ -1,5 +1,5 @@
 <template>
-	<div class="hover-loan-card-large" :class="{collapsed: !expanded}">
+	<div class="hover-loan-card-large tw-bg-primary" :class="{collapsed: !expanded}">
 		<loan-card-image
 			class="hover-loan-card-image"
 			:loan-id="loan.id"
@@ -24,7 +24,7 @@
 					<borrower-info-name
 						:name="loan.name"
 						:loan-id="loan.id"
-						class="name"
+						class="name tw-text-h3"
 						@track-loan-card-interaction="trackInteractionBorrowerInfoName"
 					/>
 				</div>
@@ -38,7 +38,7 @@
 				/>
 			</div>
 			<borrower-info-body
-				class="hover-borrower-info-body"
+				class="hover-borrower-info-body tw-text-small tw-font-book"
 				:amount="loan.loanAmount"
 				:borrower-count="loan.borrowerCount"
 				:name="loan.name"
@@ -195,11 +195,9 @@ export default {
 			align-items: center;
 
 			.name {
-				font-size: rem-calc(20);
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
-				font-weight: 500;
 
 				/* Next line prevents a weird visual bug on chrome */
 				margin-top: rem-calc(1);
@@ -209,11 +207,6 @@ export default {
 		.flag {
 			width: rem-calc(20);
 			margin-right: 0.25rem;
-		}
-
-		.hover-borrower-info-body {
-			font-size: rem-calc(14);
-			line-height: rem-calc(18);
 		}
 
 		.action-row {
@@ -227,11 +220,6 @@ export default {
 					margin: 0;
 					font-size: rem-calc(18);
 					padding: 0.5rem 1.5rem;
-
-					&.loan-funded-text,
-					&.loan-expired-text {
-						font-size: 0.875rem;
-					}
 				}
 
 				&.full-width {

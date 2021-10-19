@@ -1,7 +1,7 @@
 <template>
 	<div class="featured-row-wrapper">
 		<div class="featured-cards-display-window">
-			<div class="grid-loan-card">
+			<div class="grid-loan-card tw-bg-primary tw-border tw-border-tertiary">
 				<div class="row featured-hero-loan">
 					<div class="column small-12 large-6">
 						<loan-card-image
@@ -17,9 +17,8 @@
 					</div>
 					<div class="column small-12 large-6">
 						<div class="borrower-info-wrapper">
-							<borrower-info-name :name="loan.name" :loan-id="loan.id" class="name" />
-
-							<div class="country">
+							<borrower-info-name :name="loan.name" :loan-id="loan.id" class="name tw-text-h3" />
+							<div class="country tw-text-secondary tw-font-medium">
 								<!-- eslint-disable-next-line max-len -->
 								{{ loan.geocode.country.name }} <span v-if="loan.activity.name">/ {{ loan.activity.name }}</span>
 							</div>
@@ -200,9 +199,6 @@ $row-max-width: 58.75rem;
 		z-index: 10;
 
 		.grid-loan-card {
-			background-color: $white;
-			border: 1px solid $kiva-stroke-gray;
-
 			.featured-hero-loan {
 				height: 100%;
 				margin: rem-calc(20);
@@ -218,7 +214,6 @@ $row-max-width: 58.75rem;
 
 				.borrower-info-wrapper {
 					flex-grow: 1;
-					line-height: rem-calc(22);
 					padding: 0 rem-calc(20);
 					text-align: left;
 					margin-top: 0;
@@ -232,10 +227,6 @@ $row-max-width: 58.75rem;
 					}
 
 					.name {
-						font-size: rem-calc(22);
-						font-weight: $global-weight-highlight;
-						line-height: rem-calc(27);
-
 						@include breakpoint(medium down) {
 							margin-top: rem-calc(10);
 							text-align: center;
@@ -243,9 +234,6 @@ $row-max-width: 58.75rem;
 					}
 
 					.country {
-						color: $kiva-text-light;
-						font-weight: $global-weight-highlight;
-
 						@include breakpoint(medium down) {
 							text-align: center;
 						}
@@ -259,10 +247,6 @@ $row-max-width: 58.75rem;
 						.fundraising-thermometer {
 							text-align: center;
 						}
-					}
-
-					.fundraising-thermometer-wrapper .bold {
-						font-weight: $global-weight-bold;
 					}
 
 					.action {

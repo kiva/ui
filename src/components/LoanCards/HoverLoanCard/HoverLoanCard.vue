@@ -218,7 +218,7 @@ export default {
 
 		.more-details-wrapper {
 			position: absolute;
-			bottom: rem-calc(-118);
+			bottom: rem-calc(-116);
 			left: 50%;
 			cursor: pointer;
 			opacity: 0;

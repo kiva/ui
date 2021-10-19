@@ -371,7 +371,6 @@ $row-max-width: 63.75rem;
 a.view-all-link {
 	display: inline;
 	position: relative;
-	color: $kiva-text-dark;
 
 	.view-all-arrow {
 		position: absolute;
@@ -386,12 +385,6 @@ a.view-all-link {
 			bottom: -0.75rem;
 			right: -1.6rem;
 		}
-	}
-
-	&:hover {
-		text-decoration: none;
-		color: $kiva-text-dark;
-		cursor: pointer;
 	}
 }
 

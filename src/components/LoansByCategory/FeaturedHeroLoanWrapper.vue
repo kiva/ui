@@ -1,11 +1,11 @@
 <template>
-	<div class="featured-section-wrapper">
+	<div class="featured-section-wrapper tw-bg-secondary">
 		<div class="row">
 			<div class="column small-12">
-				<h2 class="section-name">
+				<h2 class="section-name tw-mb-1">
 					Featured: {{ loanChannel.name }}
 				</h2>
-				<p v-if="showCategoryDescription" class="section-description show-for-large">
+				<p v-if="showCategoryDescription" class="show-for-large tw-mb-4">
 					{{ loanChannel.description }}
 				</p>
 			</div>
@@ -224,7 +224,6 @@ $row-max-width: 58.75rem;
 
 .featured-section-wrapper {
 	position: relative;
-	background-color: $kiva-bg-darkgray;
 	margin: 0 auto 2rem;
 	padding: 2rem 0;
 
@@ -241,15 +240,7 @@ $row-max-width: 58.75rem;
 		}
 	}
 
-	.section-name {
-		font-weight: $global-weight-highlight;
-		margin-bottom: rem-calc(8);
-	}
-
 	.section-description {
-		@extend .section-name;
-
-		font-weight: $global-weight-normal;
 		margin-top: rem-calc(12);
 		margin-bottom: rem-calc(20);
 	}

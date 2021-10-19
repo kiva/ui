@@ -21,7 +21,7 @@
 			/>
 		</div>
 
-		<div>
+		<div class="tw-bg-primary">
 			<div
 				class="loan-category-row"
 				:class="{'hover-row': showHoverLoanCards}"
@@ -849,11 +849,6 @@ export default {
 					font-size: 3rem;
 					right: -1.6rem;
 				}
-			}
-
-			&:hover {
-				text-decoration: none;
-				cursor: pointer;
 			}
 		}
 	}

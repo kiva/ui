@@ -9,9 +9,10 @@
 	>
 		<div class="heading-region column small-12">
 			<view-toggle :browse-url="browseUrl" :filter-url="filterUrl" />
-
-			<h1>Make a loan, <br class="hide-for-medium">change a life</h1>
-			<p class="page-subhead show-for-large">
+			<h1 class="tw-mb-2">
+				Make a loan, <br class="hide-for-medium">change a life
+			</h1>
+			<p class="page-subhead show-for-large tw-mb-4">
 				Each Kiva loan helps people build a better future for themselves and their families.
 			</p>
 		</div>
@@ -66,14 +67,6 @@ export default {
 			@include breakpoint(large) {
 				margin: 0.375rem 0 0.375rem 0.375rem;
 			}
-		}
-
-		h1 {
-			margin: 0;
-		}
-
-		p {
-			margin-top: 0.75rem;
 		}
 
 		@media (hover: none) {
