@@ -57,6 +57,7 @@
 			<kv-tooltip
 				class="tooltip"
 				controller="promo_name"
+				theme="mint"
 				v-if="promoFundDisplayDescription"
 			>
 				{{ promoFundDisplayDescription }}
