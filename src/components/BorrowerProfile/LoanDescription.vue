@@ -65,14 +65,12 @@
 					:title="lightboxTitle"
 					@lightbox-closed="closeLightbox"
 				>
-					<div>
-						<p
-							v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
-							:key="`originalLanguageParagraph-${index}`"
-							v-html="paragraph"
-						>
-						</p>
-					</div>
+					<p
+						v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
+						:key="`originalLanguageParagraph-${index}`"
+						v-html="paragraph"
+					>
+					</p>
 				</kv-lightbox>
 			</section>
 		</div>
