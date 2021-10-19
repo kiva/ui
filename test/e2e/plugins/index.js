@@ -7,13 +7,15 @@
 // You can read more here:
 // https://on.cypress.io/plugins-guide
 // ***********************************************************
+const mergeReports = require('./merge-reports');
 
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
-
 module.exports = (on, config) => {
 	// eslint-disable-next-line global-require
 	// require('@cypress/code-coverage/task')(on, config);
+
+	mergeReports(on, config);
 
 	return config;
 };
