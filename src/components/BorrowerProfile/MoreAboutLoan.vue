@@ -14,9 +14,7 @@
 				<div v-html="moreInfoAboutLoan">
 				</div>
 
-				<div
-					v-if="loanAlertText"
-				>
+				<div v-if="loanAlertText">
 					<h3>
 						About {{ partnerName }}:
 					</h3>
@@ -26,9 +24,7 @@
 					>
 					</p>
 				</div>
-				<div
-					v-if="dualStatementNote"
-				>
+				<div v-if="dualStatementNote">
 					<h3>
 						Important Note About This Loan
 					</h3>
@@ -37,9 +33,7 @@
 				</div>
 			</div>
 		</div>
-		<div
-			v-if="!partnerName && !loading"
-		>
+		<div v-if="!partnerName && !loading">
 			<div class="tw-prose tw-mb-2">
 				<h3>
 					Business description
