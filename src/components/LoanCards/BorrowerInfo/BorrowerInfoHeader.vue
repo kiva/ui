@@ -4,6 +4,7 @@
 			v-if="name"
 			:name="name"
 			:loan-id="loanId"
+			class="tw-text-h3"
 			@track-loan-card-interaction="trackInteraction"
 		/>
 		<div class="country" v-if="country">

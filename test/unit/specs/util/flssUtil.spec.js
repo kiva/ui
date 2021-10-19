@@ -159,4 +159,71 @@ describe('flssUtils.js', () => {
 			expect(apollo.query).toHaveBeenCalledWith(apolloVars);
 		});
 	});
+
+	describe('fetchCountryFacets', () => {
+		const dataObj = [
+			{
+				country: {
+					name: 'Cambodia',
+					isoCode: 'KH',
+					geocode: {
+						latitude: 13,
+						longitude: 105
+					},
+					numLoansFundraising: 18,
+					region: 'Asia'
+				},
+			},
+		];
+
+		const countryQuery = gql`
+query countryFacets {
+	lend {
+		countryFacets {
+			country {
+				name
+				isoCode
+				geocode {latitude longitude}
+				numLoansFundraising
+				region }
+			}
+		}
+	}`;
+
+		const apollo = {
+			query: jest.fn(() => Promise.resolve(dataObj)),
+		};
+
+		const apolloVars = {
+			query: countryQuery,
+		};
+
+		it('Checks if fetchCountryFacets calls the correct query variables to apollo', () => {
+			flssUtils.fetchCountryFacets(apollo);
+			expect(apollo.query).toHaveBeenCalledWith(apolloVars);
+		});
+	});
+
+	describe('filterCountry', () => {
+		const isValid = { any: ['TZ', 'KE'] };
+		const notValid = { none: [] };
+
+		const country = ['TZ', 'KE'];
+		const allCountries = ['TZ', 'KE', 'US'];
+
+		it('Checks if filterCountry forms the correct loan filter query format ', () => {
+			const output = flssUtils.filterCountry(country, allCountries);
+			expect(output).toEqual(isValid);
+		});
+
+		it('Checks if filterCountry forms any empty loan filter query format with empty array', () => {
+			const output = flssUtils.filterCountry([], allCountries);
+			expect(output).toEqual(notValid);
+		});
+
+		it('Checks if filterCountry forms any empty loan filter query format with invalid country input', () => {
+			const output = flssUtils.filterCountry(['Constantinople'], allCountries);
+			expect(output).toEqual(notValid);
+		});
+	});
 });

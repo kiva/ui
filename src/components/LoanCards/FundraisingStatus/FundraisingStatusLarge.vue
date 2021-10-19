@@ -2,7 +2,7 @@
 	<div
 		class="fundraising-status"
 	>
-		<div class="funded-status-line">
+		<div class="funded-status-line tw-text-brand tw-text-small">
 			{{ percentRaised | numeral('0%') }} funded{{ lenderCount ? ` by ${lenderCount} lenders` : '' }}
 		</div>
 		<div
@@ -14,17 +14,14 @@
 				:short-meter="true"
 			/>
 		</div>
-		<div class="left-and-to-go-line">
+		<div class="left-and-to-go-line tw-text-small tw-text-secondary">
 			<span
 				v-if="isFunded"
-				class="funded"
+				class="tw-text-primary"
 			>
 				Funded
 			</span>
-			<span
-				:class="{'expiring-soon': expiringSoonMessage}"
-				v-else
-			>
+			<span v-else>
 				{{ timeLeftMessage }} / ${{ amountLeft | numeral('0,0') }} to go
 			</span>
 		</div>
@@ -80,21 +77,10 @@ export default {
 
 	.funded-status-line {
 		height: $small-text-font-size;
-		font-size: $small-text-font-size;
-		line-height: $small-text-font-size;
-		color: $kiva-green;
 	}
 
 	.left-and-to-go-line {
 		height: $small-text-font-size;
-		font-size: $small-text-font-size;
-		line-height: $small-text-font-size;
-		color: $gray;
-
-		.funded,
-		.expiring-soon {
-			color: $kiva-text-dark;
-		}
 	}
 }
 </style>

@@ -87,7 +87,7 @@
 										:id="`print-card-${card.id}`"
 										class="loan__question-icon"
 									/>
-									<kv-tooltip :controller="`print-card-${card.id}`">
+									<kv-tooltip :controller="`print-card-${card.id}`" theme="mint">
 										You can print this card now. We'll also send it to
 										you in an email so you can print it later.
 									</kv-tooltip>

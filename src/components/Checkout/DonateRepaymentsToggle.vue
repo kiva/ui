@@ -10,7 +10,7 @@
 		>
 			<span id="donate-repayments-tooltip">Donate loan repayments instead?</span>
 		</kv-checkbox>
-		<kv-tooltip controller="donate-repayments-tooltip">
+		<kv-tooltip controller="donate-repayments-tooltip" theme="mint">
 			<template #title>
 				Thanks for your support!
 			</template>

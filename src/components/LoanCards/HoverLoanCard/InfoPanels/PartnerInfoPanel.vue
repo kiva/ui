@@ -17,73 +17,73 @@
 			</div>
 		</div>
 		<div v-else>
-			<ul>
-				<li v-if="this.timeOnKiva">
-					<label>Time on Kiva:</label>
-					<span class="data">
+			<dl>
+				<div v-if="this.timeOnKiva">
+					<dt>Time on Kiva:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ timeOnKivaFormatted }} months
-					</span>
-				</li>
-				<li v-if="this.numOfBorrowers">
-					<label>Kiva borrowers:</label>
-					<span class="data">
+					</dd>
+				</div>
+				<div v-if="this.numOfBorrowers">
+					<dt>Kiva borrowers:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ numOfBorrowersFormatted }}
-					</span>
-				</li>
-				<li v-if="this.totalAmountRaised">
-					<label>Total loans:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.totalAmountRaised">
+					<dt>Total loans:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ totalAmountRaisedFormatted }}
-					</p>
-				</li>
-				<li v-if="this.avgCostToBorrower">
-					<label>Average cost to borrower:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.avgCostToBorrower">
+					<dt>Average cost to borrower:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ avgCostToBorrower }}% {{ avgCostToBorrowerType }}
-					</p>
-				</li>
-				<!-- <li>
-					<label>Profitabilty (return on assets):</label>
-					<p class="data">
+					</dd>
+				</div>
+				<!-- <div>
+					<dt>Profitabilty (return on assets):</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{}}
-					</p>
-				</li> -->
-				<li v-if="this.avgLoanSize">
-					<label>Average loan size (% per capita income):</label>
-					<p class="data">
+					</dd>
+				</div> -->
+				<div v-if="this.avgLoanSize">
+					<dt>Average loan size (% per capita income):</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ avgLoanSize }}%
-					</p>
-				</li>
-				<li v-if="this.deliquencyRate">
-					<label>Deliquency rate:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.deliquencyRate">
+					<dt>Deliquency rate:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ deliquencyRate }}%
-					</p>
-				</li>
-				<li v-if="this.riskRate">
-					<label>Loans at risk rate:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.riskRate">
+					<dt>Loans at risk rate:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ riskRateFormatted }}%
-					</p>
-				</li>
-				<li v-if="this.defaultRate">
-					<label>Default rate:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.defaultRate">
+					<dt>Default rate:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ defaultRateFormatted }}%
-					</p>
-				</li>
-				<li v-if="this.currencyExchangeLossRate">
-					<label>Currency exchange loss rate:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.currencyExchangeLossRate">
+					<dt>Currency exchange loss rate:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ currencyExchangeLossRateFormatted }}%
-					</p>
-				</li>
-			</ul>
+					</dd>
+				</div>
+			</dl>
 			<div v-if="this.loanAlertText && this.loanAlertText != ''">
-				<h3 class="loan-alert-text">
+				<h3 class="tw-mb-1 tw-mt-4">
 					Why Kiva works with this partner:
 				</h3>
-				<p class="data" v-html="loanAlertText"></p>
+				<p class="tw-prose" v-html="loanAlertText"></p>
 			</div>
 		</div>
 	</info-panel>
@@ -179,19 +179,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-ul {
-	list-style: none;
-}
-
-.data {
-	color: $kiva-icon-green;
-}
-
-.loan-alert-text {
-	color: $black;
-}
-</style>
