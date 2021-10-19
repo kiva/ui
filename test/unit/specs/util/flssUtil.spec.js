@@ -154,7 +154,7 @@ describe('flssUtils.js', () => {
 			query: sectorQuery,
 		};
 
-		it('Checks if fetchSectors calls the correct query variables to apollo', () => {
+		it('Checks if fetchSector calls the correct query variables to apollo', () => {
 			flssUtils.fetchSectors(apollo);
 			expect(apollo.query).toHaveBeenCalledWith(apolloVars);
 		});
@@ -204,6 +204,29 @@ query countryFacets {
 		it('Checks if fetchCountryFacets calls the correct query variables to apollo', () => {
 			flssUtils.fetchCountryFacets(apollo);
 			expect(apollo.query).toHaveBeenCalledWith(apolloVars);
+		});
+	});
+
+	describe('filterCountry', () => {
+		const isValid = { any: ['TZ', 'KE'] };
+		const notValid = { none: [] };
+
+		const country = ['TZ', 'KE'];
+		const allCountries = ['TZ', 'KE', 'US'];
+
+		it('Checks if filterCountry forms the correct loan filter query format ', () => {
+			const output = flssUtils.filterCountry(country, allCountries);
+			expect(output).toEqual(isValid);
+		});
+
+		it('Checks if filterCountry forms any empty loan filter query format with empty array', () => {
+			const output = flssUtils.filterCountry([], allCountries);
+			expect(output).toEqual(notValid);
+		});
+
+		it('Checks if filterCountry forms any empty loan filter query format with invalid country input', () => {
+			const output = flssUtils.filterCountry(['Constantinople'], allCountries);
+			expect(output).toEqual(notValid);
 		});
 	});
 });
