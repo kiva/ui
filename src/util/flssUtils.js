@@ -32,7 +32,7 @@ query countryFacets {
 				geocode {latitude longitude}
 				numLoansFundraising
 				region }
-				count }
+				}
 			}
 	}`;
 

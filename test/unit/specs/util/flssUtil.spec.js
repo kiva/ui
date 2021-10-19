@@ -173,7 +173,6 @@ describe('flssUtils.js', () => {
 					numLoansFundraising: 18,
 					region: 'Asia'
 				},
-				count: 18
 			},
 		];
 
@@ -187,8 +186,8 @@ query countryFacets {
 				geocode {latitude longitude}
 				numLoansFundraising
 				region }
-				count }
 			}
+		}
 	}`;
 
 		const apollo = {
