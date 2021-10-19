@@ -127,7 +127,7 @@
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
 import { lightHeader } from '@/util/siteThemes';
 import {
-	fetchData, filterGender, filterSector, fetchSectors, fetchCountryFacets
+	fetchData, filterGender, filterSector, fetchSectors, fetchCountryFacets, filterCountry
 } from '@/util/flssUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
@@ -230,8 +230,11 @@ export default {
 			const sectorFilter = filterSector(this.sector, this.allSectors);
 			console.log('this is filterSector', sectorFilter);
 
+			const countryFilter = filterCountry(this.country, this.allIsoCodes);
+			console.log('this is countryFilter', countryFilter);
+
 			const loanQueryFilters = {
-				countryIsoCode: { any: this.country },
+				countryIsoCode: countryFilter,
 				// TODO: enable genderFilter when its working
 				// gender: genderFilter,
 				sector: sectorFilter,
