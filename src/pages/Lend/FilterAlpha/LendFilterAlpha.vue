@@ -162,7 +162,7 @@ export default {
 			mdiCompassRose,
 			gender: 'both',
 			sector: ['Food', 'Education'],
-			country: [],
+			country: ['TZ', 'KE'],
 			allSectors: [],
 			allCountries: [],
 			allIsoCodes: [],
@@ -180,8 +180,9 @@ export default {
 			console.log('from getAllCountries() start');
 			const countryFacets = await fetchCountryFacets(this.apollo);
 			this.allCountries = countryFacets.map(cf => cf.country.name);
+			// pulled in IsoCodes b/c the loan query filters are currently coded
+			// to use ISO Codes instead of country names in queryFilters() right now
 			this.allIsoCodes = countryFacets.map(cf => cf.country.isoCode);
-			console.log('facets', countryFacets);
 			console.log('all countries:', this.allCountries);
 			console.log('all isocodes', this.allIsoCodes);
 		},
@@ -215,7 +216,7 @@ export default {
 	mounted() {
 		this.getSectors();
 		this.getAllCountries();
-		this.loanQueryFilters = { countryIsoCode: { none: [] } };
+		this.loanQueryFilters = { countryIsoCode: { any: ['US'] } };
 		console.log('mounted query ran:', this.loanQueryFilters);
 		this.runQuery(this.loanQueryFilters);
 		console.log('loans from mounted:', this.loans);
@@ -230,7 +231,7 @@ export default {
 			console.log('this is filterSector', sectorFilter);
 
 			const loanQueryFilters = {
-				countryIsoCode: { any: [] },
+				countryIsoCode: { any: this.country },
 				// TODO: enable genderFilter when its working
 				// gender: genderFilter,
 				sector: sectorFilter,
