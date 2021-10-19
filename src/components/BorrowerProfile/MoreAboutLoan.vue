@@ -1,47 +1,46 @@
 <template>
 	<section>
-		<h2>
-			More about this loan
-		</h2>
-		<div
-			class="tw-prose"
-			v-if="partnerName && !loading"
-		>
-			<p v-if="!partnerNameNA">
-				This loan is facilitated by our Field Partner, {{ partnerName }}.
-				Field Partners are local organizations working in communities to vet
-				borrowers, provide services, and administer loans on the ground.
-			</p>
-
-			<div v-html="moreInfoAboutLoan">
-			</div>
-
-			<div
-				v-if="loanAlertText"
-			>
-				<h3>
-					About {{ partnerName }}:
-				</h3>
-				<p
-					key="storyDescription"
-					v-html="this.loanAlertText"
-				>
+		<div class="tw-prose">
+			<h2>
+				More about this loan
+			</h2>
+			<div v-if="partnerName && !loading">
+				<p v-if="!partnerNameNA">
+					This loan is facilitated by our Field Partner, {{ partnerName }}.
+					Field Partners are local organizations working in communities to vet
+					borrowers, provide services, and administer loans on the ground.
 				</p>
-			</div>
-			<div
-				v-if="dualStatementNote"
-			>
-				<h3>
-					Important Note About This Loan
-				</h3>
-				<div v-html="dualStatementNote">
+
+				<div v-html="moreInfoAboutLoan">
+				</div>
+
+				<div
+					v-if="loanAlertText"
+				>
+					<h3>
+						About {{ partnerName }}:
+					</h3>
+					<p
+						key="storyDescription"
+						v-html="this.loanAlertText"
+					>
+					</p>
+				</div>
+				<div
+					v-if="dualStatementNote"
+				>
+					<h3>
+						Important Note About This Loan
+					</h3>
+					<div v-html="dualStatementNote">
+					</div>
 				</div>
 			</div>
 		</div>
 		<div
 			v-if="!partnerName && !loading"
 		>
-			<div class="tw-prose tw-mb-2">
+			<div class="tw-mb-2 tw-prose">
 				<h3>
 					Business description
 				</h3>
