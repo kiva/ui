@@ -1,5 +1,5 @@
 <template>
-	<div class="wrapper">
+	<span class="wrapper">
 		<template v-if="fromSprite">
 			<svg :class="`icon icon-${name}`">
 				<title v-if="title">{{ title }}</title>
@@ -13,7 +13,7 @@
 			/>
 			<span v-if="title" class="visually-hidden">{{ title }}</span>
 		</template>
-	</div>
+	</span>
 </template>
 <script>
 /* eslint-disable max-len */
