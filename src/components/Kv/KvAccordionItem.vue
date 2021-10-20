@@ -12,9 +12,9 @@
 			:aria-controls="`kv-accordion-${id}`"
 			:aria-expanded="isOpen ? 'true' : 'false'"
 		>
-			<div class="kv-accordion__header-text">
+			<span class="kv-accordion__header-text">
 				<slot name="header"></slot>
-			</div>
+			</span>
 			<kv-icon
 				class="kv-accordion__header-icon"
 				name="small-chevron"
