@@ -7,7 +7,7 @@
 			class="tw-text-h3"
 			@track-loan-card-interaction="trackInteraction"
 		/>
-		<div class="country" v-if="country">
+		<div class="tw-text-tertiary tw-font-medium tw-mb-1" v-if="country">
 			{{ locationString }}
 		</div>
 	</div>
@@ -67,17 +67,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.borrower-info-header {
-	line-height: rem-calc(22);
-
-	.country {
-		color: $kiva-text-light;
-		font-weight: $global-weight-highlight;
-		margin-bottom: rem-calc(10);
-	}
-}
-</style>
