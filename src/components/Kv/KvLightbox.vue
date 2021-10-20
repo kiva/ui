@@ -12,7 +12,7 @@
 			v-show="isShown"
 		>
 			<focus-lock
-				v-if="isShown"
+				:disabled="!isShown"
 				class="kv-lightbox__focus-lock"
 				:return-focus="true"
 			>

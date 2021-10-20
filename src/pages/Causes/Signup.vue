@@ -4,7 +4,7 @@
 			<kv-grid class="tw-grid-cols-12">
 				<div :class="[
 					'tw-px-1',
-					'tw-mb-6',
+					'tw-mb-14',
 					'tw-col-span-12',
 					'md:tw-col-span-8',
 					'md:tw-col-start-3',

@@ -54,6 +54,7 @@
 					v-for="(item, index) in truncatedItemList" :key="index"
 					:name="item.name"
 					:hash="item.image && item.image.hash ? item.image.hash : ''"
+					:item-data="item"
 					:display-type="displayType"
 					:public-id="`${ displayType === 'lenders' ? item.publicId : item.teamPublicId}`"
 					:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
@@ -102,9 +103,10 @@
 					:supporter-page-url="this.lenderPageUrl"
 				/>
 				<supporter-details
-					v-for="(item, index) in filteredItemList" :key="index"
+					v-for="(item, index) in filteredItemList" :key="`lb_item_${index}`"
 					:name="item.name"
 					:hash="item.image && item.image.hash ? item.image.hash : ''"
+					:item-data="item"
 					:display-type="displayType"
 					:public-id="`${ displayType === 'lenders' ? item.publicId : item.teamPublicId}`"
 					:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
@@ -149,13 +151,16 @@ const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int
 			teams(limit: $limit, offset: $offset, sortBy: $sortBy ) {
 				totalCount
 				values {
+					category
 					id
-					name
-					teamPublicId
 					image {
 						id
 						hash
 					}
+					lenderCount
+					lenderCountForLoan(id: $loanId)
+					name
+					teamPublicId
 				}
 			}
 		}
