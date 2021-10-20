@@ -1,15 +1,7 @@
 <template>
-	<div class="loan-expired-text small-text">
+	<p class="loan-expired-text
+		tw-bg-brand-200 tw-text-black tw-text-small tw-text-center tw-p-2"
+	>
 		The fundraising period for this loan has expired. Please choose a different borrower to support.
-	</div>
+	</p>
 </template>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.loan-expired-text {
-	background-color: $very-light-green;
-	padding: 1rem;
-	text-align: center;
-}
-</style>
