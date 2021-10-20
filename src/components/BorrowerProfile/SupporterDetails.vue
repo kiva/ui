@@ -8,6 +8,7 @@
 		:class="{ 'hover:tw-cursor-default': anonymousSupporterCard }"
 		:to="linkPath"
 		v-kv-track-event="configureTracking"
+		:id="toolTipId"
 	>
 		<div class="
 			tw-block md:tw-inline-block
@@ -89,16 +90,28 @@
 				{{ whereabouts }}
 			</span>
 		</div>
+
+		<kv-tooltip
+			class="tooltip"
+			:controller="toolTipId"
+			theme="dark"
+			v-if="teamTooltipData"
+		>
+			{{ teamTooltipData.category }}<br>
+			{{ teamTooltipData.lendersForTeamMessage }}
+		</kv-tooltip>
 	</router-link>
 </template>
 
 <script>
 import _throttle from 'lodash/throttle';
+import KvTooltip from '@/components/Kv/KvTooltip';
 import BorrowerImage from './BorrowerImage';
 
 export default {
 	components: {
 		BorrowerImage,
+		KvTooltip
 	},
 	props: {
 		name: {
@@ -108,6 +121,10 @@ export default {
 		hash: {
 			type: String,
 			default: ''
+		},
+		itemData: {
+			type: Object,
+			default: () => {}
 		},
 		publicId: {
 			type: String,
@@ -170,6 +187,26 @@ export default {
 			const randomStyle = this.userCardStyleOptions[Math.floor(Math.random() * this.userCardStyleOptions.length)];
 			return `${randomStyle.color} ${randomStyle.bg} hover:${randomStyle.color}`;
 		},
+		teamId() {
+			return this.itemData?.id ?? null;
+		},
+		teamTooltipData() {
+			const category = this.itemData?.category ?? '';
+			const lenderCount = this.itemData?.lenderCount ?? 0;
+			const lenderCountForLoan = this.itemData?.lenderCountForLoan ?? 0;
+			if (category && lenderCount && lenderCountForLoan) {
+				return {
+					category,
+					lendersForTeamMessage: `${lenderCountForLoan} of ${lenderCount} members`
+				};
+			}
+			return null;
+		},
+		toolTipId() {
+			const lenderElementId = this.publicId || '';
+			const teamElementId = `team_${this.teamId}_${this.$vnode.key}`;
+			return this.displayType === 'teams' ? teamElementId : lenderElementId;
+		}
 	},
 	methods: {
 		determineIfMobile() {
