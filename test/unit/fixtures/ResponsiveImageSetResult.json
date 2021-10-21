@@ -1,155 +1,141 @@
 {
-	"description": "Lend a hand from afar and join the global COVID-19 response. Take action",
-	"images": [{
-		"description": "Lend a hand from afar and join the global COVID-19 response. Take action",
-		"file": {
-			"contentType": "image/jpeg",
-			"details": {
-				"image": {
-					"height": 545,
-					"width": 1025
+	"description": "This is the description of the responsive image set",
+	"images": [
+		{
+			"description": "Description for Homepage Image sm",
+			"file": {
+				"contentType": "image/jpeg",
+				"details": {
+					"image": {
+						"height": 500,
+						"width": 1362
+					},
+					"size": 87066
 				},
-				"size": 87066
+				"fileName": "homepage_image_sm.jpg",
+				"url": "//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_sm.jpg"
 			},
-			"fileName": "Final_Homepage_lg_std.jpg",
-			"url": "//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/Final_Homepage_lg_std.jpg"
+			"title": "homepage image sm"
 		},
-		"title": "hp-mg lg std"
-	}, {
-		"description": "Lend a hand from afar and join the global COVID-19 response. Take action",
-		"file": {
-			"contentType": "image/jpeg",
-			"details": {
-				"image": {
-					"height": 675,
-					"width": 680
+		{
+			"description": "Description for Homepage Image med",
+			"file": {
+				"contentType": "image/jpeg",
+				"details": {
+					"image": {
+						"height": 500,
+						"width": 1362
+					},
+					"size": 87066
 				},
-				"size": 73397
+				"fileName": "homepage_image_med.jpg",
+				"url": "//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_med.jpg"
 			},
-			"fileName": "hp-mg_med_std.jpg",
-			"url": "//images.ctfassets.net/j0p9a6ql0rn7/4CZue28n9f0crCW7KdtmC3/62e687fdb3089ae04710b88db25b6da9/hp-mg_med_std.jpg"
+			"title": "homepage image med"
 		},
-		"title": "hp-mg med std"
-	}, {
-		"description": "Lend a hand from afar and join the global COVID-19 response. Take action",
-		"file": {
-			"contentType": "image/jpeg",
-			"details": {
-				"image": {
-					"height": 1350,
-					"width": 1360
+		{
+			"description": "Description for Homepage Image lg",
+			"file": {
+				"contentType": "image/jpeg",
+				"details": {
+					"image": {
+						"height": 500,
+						"width": 1362
+					},
+					"size": 87066
 				},
-				"size": 122452
+				"fileName": "homepage_image_lg.jpg",
+				"url": "//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_lg.jpg"
 			},
-			"fileName": "hp-mg_med_retina.jpg",
-			"url": "//images.ctfassets.net/j0p9a6ql0rn7/7xdmdw4GgKlUDRUSmvO5Iu/4ed7de5a67d27e2fbddb7f778dcb1317/hp-mg_med_retina.jpg"
+			"title": "homepage image lg"
 		},
-		"title": "hp-mg med retina"
-	}, {
-		"description": "Lend a hand from afar and join the global COVID-19 response. Take action",
-		"file": {
-			"contentType": "image/jpeg",
-			"details": {
-				"image": {
-					"height": 1090,
-					"width": 2048
+		{
+			"description": "Description for Homepage Image xl",
+			"file": {
+				"contentType": "image/jpeg",
+				"details": {
+					"image": {
+						"height": 500,
+						"width": 1362
+					},
+					"size": 87066
 				},
-				"size": 167314
+				"fileName": "homepage_image_xl.jpg",
+				"url": "//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_xl.jpg"
 			},
-			"fileName": "Final_Homepage_lg_retina.jpg",
-			"url": "//images.ctfassets.net/j0p9a6ql0rn7/5H7wikO7DzKOEqnBBqric1/5ae2476c691165a4c400780b0857cb48/Final_Homepage_lg_retina.jpg"
+			"title": "homepage image xl"
 		},
-		"title": "hp-mg lg retina"
-	}, {
-		"description": "Lend a hand from afar and join the global COVID-19 response. Take action",
-		"file": {
-			"contentType": "image/jpeg",
-			"details": {
-				"image": {
-					"height": 1535,
-					"width": 2880
+		{
+			"description": "Description for Homepage Image xxl",
+			"file": {
+				"contentType": "image/jpeg",
+				"details": {
+					"image": {
+						"height": 500,
+						"width": 1362
+					},
+					"size": 87066
 				},
-				"size": 270653
+				"fileName": "homepage_image_xxl.jpg",
+				"url": "//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_xxl.jpg"
 			},
-			"fileName": "hp-mg_xl_retina.jpg",
-			"url": "//images.ctfassets.net/j0p9a6ql0rn7/5YzqkUttXksSAgaHuw9Cuv/23b7a0460c3616bf4f9e349631a5ab0a/hp-mg_xl_retina.jpg"
+			"title": "homepage image xxl"
 		},
-		"title": "hp-mg xl retina"
-	}, {
-		"description": "Lend a hand from afar and join the global COVID-19 response. Take action",
-		"file": {
-			"contentType": "image/jpeg",
-			"details": {
-				"image": {
-					"height": 821,
-					"width": 1921
+		{
+			"description": "Description for Homepage Image xga",
+			"file": {
+				"contentType": "image/jpeg",
+				"details": {
+					"image": {
+						"height": 500,
+						"width": 1362
+					},
+					"size": 87066
 				},
-				"size": 148815
+				"fileName": "homepage_image_xga.jpg",
+				"url": "//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_xga.jpg"
 			},
-			"fileName": "hp-mg_xxl_std.jpg",
-			"url": "//images.ctfassets.net/j0p9a6ql0rn7/6zlivQBwWaw0XtJeYn8diS/c880e3eb4d5884ddc587742e6c010827/hp-mg_xxl_std.jpg"
+			"title": "homepage image xga"
 		},
-		"title": "hp-mg xxl std"
-	}, {
-		"description": "Lend a hand from afar and join the global COVID-19 response. Take action",
-		"file": {
-			"contentType": "image/jpeg",
-			"details": {
-				"image": {
-					"height": 1640,
-					"width": 3840
+		{
+			"description": "Description for Homepage Image wxga",
+			"file": {
+				"contentType": "image/jpeg",
+				"details": {
+					"image": {
+						"height": 500,
+						"width": 1362
+					},
+					"size": 87066
 				},
-				"size": 271004
+				"fileName": "homepage_image_wxga.jpg",
+				"url": "//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_wxga.jpg"
 			},
-			"fileName": "hp-mg_xxl_retina.jpg",
-			"url": "//images.ctfassets.net/j0p9a6ql0rn7/1afYQ0d3JJDNbpet9oIr6J/2c21bba64857e54a1a936aa3d4783cbf/hp-mg_xxl_retina.jpg"
+			"title": "homepage image wxga"
+		}
+	],
+	"name": "Sample Responsive Image Set",
+	"responsiveSizing": {
+		"sm": {
+			"width": 550
 		},
-		"title": "hp-mg xxl retina"
-	}, {
-		"description": "Lend a hand from afar and join the global COVID-19 response. Take action",
-		"file": {
-			"contentType": "image/jpeg",
-			"details": {
-				"image": {
-					"height": 768,
-					"width": 1441
-				},
-				"size": 137038
-			},
-			"fileName": "hp-mp_xl_std.jpg",
-			"url": "//images.ctfassets.net/j0p9a6ql0rn7/5tuiyeQcopJaHcUy3rDaTN/450b1136acedd6f218a2424ec4cfc5f9/hp-mp_xl_std.jpg"
+		"med": {
+			"width": 450
 		},
-		"title": "hp-mg xl std"
-	}, {
-		"description": "Lend a hand from afar and join the global COVID-19 response. Take action",
-		"file": {
-			"contentType": "image/jpeg",
-			"details": {
-				"image": {
-					"height": 600,
-					"width": 480
-				},
-				"size": 50791
-			},
-			"fileName": "hp-mg_sm_std.jpg",
-			"url": "//images.ctfassets.net/j0p9a6ql0rn7/7alHPYp7xv7BUT5WLEieTz/e905db49ecfaa6ea102fe94f33c2555c/hp-mg_sm_std.jpg"
+		"lg": {
+			"width": 350
 		},
-		"title": "hp-mg sm std"
-	}, {
-		"description": "Lend a hand from afar and join the global COVID-19 response. Take action",
-		"file": {
-			"contentType": "image/jpeg",
-			"details": {
-				"image": {
-					"height": 1200,
-					"width": 960
-				},
-				"size": 96212
-			},
-			"fileName": "hp-mg_sm_retina.jpg",
-			"url": "//images.ctfassets.net/j0p9a6ql0rn7/1ykOTxkXIdoDTe8gZ6lRZ2/78faa1f3944065eb6780d20c32235c79/hp-mg_sm_retina.jpg"
+		"xl": {
+			"width": 550
 		},
-		"title": "hp-mg sm retina"
-	}],
-	"name": "COVID fund Homepage Promo Images"
+		"xxl": {
+			"width": 450
+		},
+		"xga": {
+			"width": 350
+		},
+		"wxga": {
+			"width": 350
+		}
+	}
 }

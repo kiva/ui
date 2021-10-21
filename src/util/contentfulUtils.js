@@ -40,7 +40,18 @@ function determineResponsiveSizeFromFileName(filename) {
  * @returns {array}
  */
 export function responsiveImageSetSourceSets(contentfulResponsiveImageObject) {
-	return contentfulResponsiveImageObject.images.map(entry => {
+	const responsiveSizing = contentfulResponsiveImageObject.responsiveSizing || {};
+	let formattedArray = contentfulResponsiveImageObject.images.flatMap(entry => {
+		/**
+         * This filters out images that have 'std' for support of legacy ResponsiveImageSets
+         * that had both std and retina images. When all ResponsiveImageSets only have the
+         * retina version of images on contentful, this if can be removed
+         */
+
+		if (entry.title.indexOf('std') !== -1) {
+			return [];
+		}
+
 		// All screen breakpoints:
 		// small: 0,
 		// medium: 481px,
@@ -50,28 +61,99 @@ export function responsiveImageSetSourceSets(contentfulResponsiveImageObject) {
 		// xga: 1025px,
 		// wxga: 1441px,
 
-		// small size
-		let mediaSize = 'min-width: 0';
-		let width = 537;
+		let mediaSize;
+		let width;
+		let sortOrder;
 
-		if (entry.title.indexOf('med') !== -1) {
-			mediaSize = 'min-width: 681px';
-			width = 397;
-		} else if (entry.title.indexOf('lg') !== -1) {
-			mediaSize = 'min-width: 1025px';
-			width = 394;
+		const returnWidth = size => {
+			let maxWidthAtBreakpoint;
+			switch (size) {
+				case ('med'):
+					maxWidthAtBreakpoint = 681;
+					break;
+				case ('lg'):
+					maxWidthAtBreakpoint = 761;
+					break;
+				case ('xl'):
+					maxWidthAtBreakpoint = 989;
+					break;
+				case ('xxl'):
+					maxWidthAtBreakpoint = 1025;
+					break;
+				case ('xga'):
+					maxWidthAtBreakpoint = 1441;
+					break;
+				default:
+					// small  or default
+					maxWidthAtBreakpoint = 481;
+					break;
+			}
+			// return size or default
+			return responsiveSizing?.[size]?.width || maxWidthAtBreakpoint;
+		};
+
+		switch (true) {
+			case (entry.title.indexOf('med') !== -1):
+				mediaSize = 'min-width: 481px';
+				width = returnWidth('med');
+				sortOrder = 6;
+				break;
+			case (entry.title.indexOf('lg') !== -1):
+				mediaSize = 'min-width: 681px';
+				width = returnWidth('lg');
+				sortOrder = 5;
+				break;
+			case (entry.title.indexOf('xl') !== -1 && entry.title.indexOf('xxl') === -1):
+				mediaSize = 'min-width: 761px';
+				width = returnWidth('xl');
+				sortOrder = 4;
+				break;
+			case (entry.title.indexOf('xxl') !== -1):
+				mediaSize = 'min-width: 989px';
+				width = returnWidth('xxl');
+				sortOrder = 3;
+				break;
+			case (entry.title.indexOf('xga') !== -1 && entry.title.indexOf('wxga') === -1):
+				mediaSize = 'min-width: 1025px';
+				width = returnWidth('xga');
+				sortOrder = 2;
+				break;
+			case (entry.title.indexOf('wxga') !== -1):
+				mediaSize = 'min-width: 1441px';
+				width = returnWidth('wxga');
+				sortOrder = 1;
+				break;
+			default:
+				// small (entry.title.indexOf('sm') !== -1 ) or default
+				mediaSize = 'min-width: 0';
+				width = returnWidth('sm');
+				sortOrder = 7;
+				break;
 		}
-
-		const aspectRatio = (entry.file?.details?.image?.height ?? 0) / (entry.file?.details?.image?.width ?? 1); // eslint-disable-line max-len
+		const aspectRatio = (entry.file?.details?.image?.height ?? 0) / (entry.file?.details?.image?.width ?? 1);// eslint-disable-line max-len
 		const height = aspectRatio ? Math.round(width * aspectRatio) : null;
 
-		return {
+		return [{
 			width,
 			height,
 			media: mediaSize,
-			url: entry.file?.url ?? ''
-		};
+			url: entry.file?.url ?? '',
+			sortOrder,
+		}];
 	});
+	// Remove duplicate by sortOrder property
+	formattedArray = formattedArray.reduce((unique, o) => {
+		if (!unique.some(obj => obj.sortOrder === o.sortOrder)) {
+			unique.push(o);
+		}
+		return unique;
+	}, []);
+
+	// Sort by sortOrder property
+	formattedArray.sort((a, b) => {
+		return (a.sortOrder > b.sortOrder) ? 1 : -1;
+	});
+	return formattedArray;
 }
 
 /**
@@ -286,7 +368,8 @@ export function formatResponsiveImageSet(contentfulContent) {
 	const imageSet = {
 		name: contentfulContent.fields?.name,
 		description: contentfulContent.fields?.description,
-		images: []
+		images: [],
+		responsiveSizing: contentfulContent.fields?.responsiveSizing
 	};
 	const rawImages = contentfulContent.fields?.images;
 	imageSet.images = formatMediaAssetArray(rawImages);
@@ -328,8 +411,8 @@ export function formatContentGroupsFlat(contentfulContent) {
 			const cgType = entry.fields?.type ? camelCase(entry.fields?.type) : null;
 			contentGroupsFlat[
 				cgType
-				|| camelCase(entry.fields?.key)
-				|| `cg${index}`
+                || camelCase(entry.fields?.key)
+                || `cg${index}`
 			] = contentGroupFields;
 		}
 	});
