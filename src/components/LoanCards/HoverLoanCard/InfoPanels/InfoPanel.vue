@@ -1,5 +1,5 @@
 <template>
-	<div class="info-panel tw-bg-primary">
+	<div class="info-panel tw-bg-primary" style="--tw-bg-opacity: 0.95;">
 		<button
 			@click.prevent="toggle"
 			:aria-controls="id"
