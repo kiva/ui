@@ -86,102 +86,6 @@ async function fetchRecommendationsByLoanId(id) {
 	);
 }
 
-// Parse the filter string and return an array of filter arrays, e.g. [['sector', 'arts'], ['country', 'ke']]
-// Returns an empty array if the filter string does not contain any valid matches.
-const getFilterArrays = filterString => {
-	// This regex matches strings like 'sector_arts,country_ke' and captures each
-	// param name and value (for example 'sector', 'arts', 'country', 'ke' would be captured).
-	// See tests, examples, and a more detailed explanation at regexr.com/659in
-	const searchParamRegex = /(?:([a-z]+)_([a-z0-9 ]+),?)+?/g;
-	// Match the regex against the filter string, returning an iterator of all the matches and captured groups
-	const matches = filterString.toLowerCase().matchAll(searchParamRegex);
-	// Return an array of the matches as filter names and values, like [['sector', 'arts'], ['country', 'ke']]
-	return [...matches].map(match => [match[1], match[2]]);
-};
-
-// Only returns true for supported loan search filters
-const supportedFilter = name => {
-	switch (name) {
-		case 'country':
-		case 'gender':
-		case 'sector':
-			return true;
-		default:
-			log(`Unsupported filter "${name}"`, 'warning');
-			return false;
-	}
-};
-
-// Takes a string like: "gender_female,sector_education"
-// and returns an array of objects like: [ { gender: { eq: 'female' } }, { sector: { eq: 'education' } } ]
-const parseFilterStringFLSS = filterString => {
-	// If the filter string is not valid, return an empty array
-	if (!filterString || typeof filterString !== 'string') {
-		return [];
-	}
-	return getFilterArrays(filterString)
-		.filter(([name]) => supportedFilter(name))
-		.map(([name, value]) => {
-			// FLSS uses 'countryIsoCode' for the country filter
-			if (name === 'country') {
-				return { countryIsoCode: { eq: value } };
-			}
-			// Other filters can be passed through directly
-			return { [name]: { eq: value } };
-		});
-};
-
-// Get loans from the Fundraising Loan Search Service matching a set of filters
-async function fetchRecommendationsByFilter(filterString) {
-	return fetchGraphQL(
-		{
-			query: `query($filters: [FundraisingLoanSearchFilterInput!]) {
-				fundraisingLoans(pageNumber:0, limit: ${loanCount}, filters: $filters) {
-					${loanValues}
-				}
-			}`,
-			variables: {
-				filters: parseFilterStringFLSS(filterString),
-			}
-		},
-		'data.fundraisingLoans.values'
-	);
-}
-
-// Takes a string like: "gender_female,sector_education"
-// and converts it to a legacy filter object
-const parseFilterStringLegacy = (filterString, sectors) => {
-	const filters = {};
-	// only try parsing if the input is valid
-	if (filterString && typeof filterString === 'string') {
-		getFilterArrays(filterString)
-			.filter(([name]) => supportedFilter(name))
-			.forEach(([name, value]) => {
-				if (name === 'gender') {
-					// Set the value directly
-					filters[name] = value;
-				} else if (name === 'sector') {
-					// Find the sector id by sector name from filter value
-					const sector = sectors.find(s => s.name.toLowerCase() === value);
-					if (!sector) {
-						log(`Unknown sector "${value}"`, 'warning');
-						return;
-					}
-					// Make sure existing value is an array if it isn't already
-					filters[name] = filters[name] || [];
-					// Add the new sector id to the existing array
-					filters[name].push(sector.id);
-				} else if (name === 'country') {
-					// Make sure existing value is an array if it isn't already
-					filters[name] = filters[name] || [];
-					// Add the new value to the existing array
-					filters[name].push(value);
-				}
-			});
-	}
-	return filters;
-};
-
 // Get mapping of sector name to id
 async function fetchSectors() {
 	// If needed, these could be fetched async from legacy api, though be sure to cache results!
@@ -209,21 +113,234 @@ async function fetchSectors() {
 	]);
 }
 
-// Get loans from legacy lend search matching a set of filters
-async function fetchRecommendationsByLegacyFilter(filterString) {
-	const sectors = await fetchSectors();
+// Get possible sorting options
+async function fetchSorts() {
+	return Promise.resolve([
+		'amountLeft',
+		'expiringSoon',
+		'loanAmount',
+		'loanAmountDesc',
+		'newest',
+		'popularity',
+		'random',
+		'repaymentTerm'
+	]);
+}
+
+// Get possible themes
+async function fetchThemes() {
+	// If needed, these could be fetched async from legacy api, though be sure to cache results!
+	// return fetchGraphQL(
+	// 	{ query: '{ lend { loanThemeFilter { id name } } }' },
+	// 	'data.lend.loanThemeFilter'
+	// );
+	// Return constant result for now.
+	return Promise.resolve([
+		{ id: 1, name: 'Green' },
+		{ id: 2, name: 'Higher Education' },
+		{ id: 5, name: 'Islamic Finance' },
+		{ id: 6, name: 'Youth' },
+		{ id: 7, name: 'Start-Up' },
+		{ id: 8, name: 'Water and Sanitation' },
+		{ id: 9, name: 'Vulnerable Groups' },
+		{ id: 10, name: 'Fair Trade' },
+		{ id: 11, name: 'Rural Exclusion' },
+		{ id: 12, name: 'Mobile Technology' },
+		{ id: 13, name: 'Underfunded Areas' },
+		{ id: 14, name: 'Conflict Zones' },
+		{ id: 15, name: 'Job Creation' },
+		{ id: 17, name: 'Growing Businesses' },
+		{ id: 20, name: 'Disaster recovery' },
+		{ id: 24, name: 'Innovative Loans' },
+		{ id: 28, name: 'Refugees/Displaced' },
+		{ id: 29, name: 'Social Enterprise' },
+		{ id: 30, name: 'Earth Day Campaign' },
+		{ id: 32, name: 'Clean Energy' },
+		{ id: 36, name: 'Crisis Support Loans' }
+	]);
+}
+
+// Parse the filter string and return an array of filter arrays, e.g. [['sector', 'arts'], ['country', 'ke']]
+// Returns an empty array if the filter string does not contain any valid matches.
+const getFilterArrays = filterString => {
+	// This regex matches strings like 'sector_arts,country_ke' and captures each
+	// param name and value (for example 'sector', 'arts', 'country', 'ke' would be captured).
+	// See tests, examples, and a more detailed explanation at regexr.com/659in
+	const searchParamRegex = /(?:([a-z]+)_([a-z0-9 \\/-]+),?)+?/g;
+	// Match the regex against the filter string, returning an iterator of all the matches and captured groups
+	const matches = filterString.toLowerCase().matchAll(searchParamRegex);
+	// Return an array of the matches as filter names and values, like [['sector', 'arts'], ['country', 'ke']]
+	return [...matches].map(match => [match[1], match[2]]);
+};
+
+// Only returns true for supported FLSS loan search filters
+const supportedFilterFLSS = name => {
+	switch (name) {
+		case 'country':
+		case 'gender':
+		case 'sector':
+			return true;
+		default:
+			log(`Unsupported FLSS filter "${name}"`, 'warning');
+			return false;
+	}
+};
+
+// Takes a string like: "gender_female,sector_education"
+// and returns an array of objects like: [ { gender: { eq: 'female' } }, { sector: { eq: 'education' } } ]
+const parseFilterStringFLSS = filterString => {
+	// If the filter string is not valid, return an empty array
+	if (!filterString || typeof filterString !== 'string') {
+		return [];
+	}
+	return getFilterArrays(filterString)
+		.filter(([name]) => supportedFilterFLSS(name))
+		.map(([name, value]) => {
+			// FLSS uses 'countryIsoCode' for the country filter
+			if (name === 'country') {
+				return { countryIsoCode: { eq: value } };
+			}
+			// Other filters can be passed through directly
+			return { [name]: { eq: value } };
+		});
+};
+
+// Get loans from the Fundraising Loan Search Service matching a set of filters
+async function fetchRecommendationsByFilter(filterString) {
 	return fetchGraphQL(
 		{
-			query: `query($filters: LoanSearchFiltersInput) {
+			query: `query($filters: [FundraisingLoanSearchFilterInput!]) {
+				fundraisingLoans(pageNumber:0, limit: ${loanCount}, filters: $filters) {
+					${loanValues}
+				}
+			}`,
+			variables: {
+				filters: parseFilterStringFLSS(filterString),
+			}
+		},
+		'data.fundraisingLoans.values'
+	);
+}
+
+// Only returns true for supported legacy loan search filters
+const supportedFilterLegacy = name => {
+	switch (name) {
+		case 'country':
+		case 'gender':
+		case 'sector':
+		case 'sort':
+		case 'theme':
+			return true;
+		default:
+			log(`Unsupported legacy filter "${name}"`, 'warning');
+			return false;
+	}
+};
+
+// Takes a string like: "gender_female,sector_education"
+// and converts it to a legacy filter object
+async function parseFilterStringLegacy(filterString) {
+	const filters = {};
+
+	// Helper function to seet a single filter value
+	const setFilterValue = (name, value) => {
+		// Set the value directly
+		filters[name] = value;
+	};
+	// Helper function to add to a value to an array filter
+	const addArrayFilterValue = (name, value) => {
+		// Make sure existing value is an array if it isn't already
+		filters[name] = filters[name] || [];
+		// Add the new value to the existing array
+		filters[name].push(value);
+	};
+	// Helper function to find possible filter options from a given list
+	const findFilterOption = (options, name, value) => {
+		const option = options.find(o => o?.name?.toLowerCase() === value);
+		if (!option) {
+			log(`Unknown ${name} "${value}"`, 'warning');
+		}
+		return option;
+	};
+
+	// only try parsing if the input is valid
+	if (filterString && typeof filterString === 'string') {
+		// Fetch possible filter options
+		const [sectors, themes] = await Promise.all([fetchSectors(), fetchThemes()]);
+		// Start parsing the filter string
+		getFilterArrays(filterString)
+			// Remove any unsupported filters
+			.filter(([name]) => supportedFilterLegacy(name))
+			// Add each filter to the filter object
+			.forEach(([name, value]) => {
+				if (name === 'country') {
+					addArrayFilterValue(name, value);
+				} else if (name === 'gender') {
+					setFilterValue(name, value);
+				} else if (name === 'sector') {
+					// Find the sector from the list of possible sectors
+					const sector = findFilterOption(sectors, name, value);
+					if (sector) {
+						addArrayFilterValue(name, sector.id);
+					}
+				} else if (name === 'theme') {
+					// Find the theme from the list of possible themes
+					const theme = findFilterOption(themes, name, value);
+					if (theme) {
+						addArrayFilterValue(name, theme.name);
+					}
+				}
+			});
+	}
+	return filters;
+}
+
+// Takes a string like: "sort_expiringSoon,gender_female"
+// and extracts the sort option, e.g. "expiringSoon"
+async function parseSortStringLegacy(sortString) {
+	let sort = null;
+
+	// only try parsing if th einput is valid
+	if (sortString && typeof sortString === 'string') {
+		// get possible sorts
+		const sortOptions = await fetchSorts();
+
+		// start pasring the string
+		getFilterArrays(sortString)
+			// remove any filter that isn't "sort"
+			.filter(([name]) => name === 'sort')
+			// return just the value of the sort option
+			.map(array => array?.[1])
+			// if the sort option value is valid, set it as the sort to be returned
+			.forEach(value => {
+				const sortOption = sortOptions.find(o => o?.toLowerCase() === value);
+				if (sortOption) {
+					sort = sortOption;
+				}
+			});
+	}
+	return sort;
+}
+
+// Get loans from legacy lend search matching a set of filters
+async function fetchRecommendationsByLegacyFilter(filterString) {
+	const [filters, sort] = await Promise.all([
+		parseFilterStringLegacy(filterString),
+		parseSortStringLegacy(filterString)
+	]);
+	return fetchGraphQL(
+		{
+			query: `query($filters: LoanSearchFiltersInput, $sort: LoanSearchSortByEnum) {
 				lend {
-					loans(limit: ${loanCount}, offset: 0, filters: $filters) {
+					loans(limit: ${loanCount}, offset: 0, filters: $filters, sortBy: $sort) {
 						${loanValues}
 					}
 				}
 			}`,
 			variables: {
-				filters: parseFilterStringLegacy(filterString, sectors),
-			}
+				filters,
+				sort,
+			},
 		},
 		'data.lend.loans.values'
 	);
