@@ -11,21 +11,33 @@ jest.mock('../../../../server/util/argv', () => {
 
 describe('live-loan-fetch', () => {
 	describe('fetchRecommendationsByLegacyFilter', () => {
-		// Test that the given filterString results in the expectedFilters being used for the loan search query
-		async function testFilterParsing(filterString, expectedFilters) {
+		// Extract the variables used in the graphql query performed by fetchLoansByType when given inputString
+		async function readParsedVariable(inputString) {
 			// Reset fetch mock and make it return a resolved promise when called
 			fetch.mockClear();
 			fetch.mockResolvedValue({ json: () => {} });
 
 			// Run the filter parsing
-			await fetchLoansByType('filter', filterString);
+			await fetchLoansByType('filter', inputString);
 
-			// Check that the grahpql query variables match what is expected
+			// Extract the grahpql query variables
 			const { variables } = JSON.parse(fetch.mock.calls[0][1].body);
-			expect(variables.filters).toEqual(expectedFilters);
+			return variables;
 		}
 
-		it('converts filter strings to valid LoanSearchFiltersInput objects', async () => {
+		// Test that expectedFilters are used for the graphql query that's based on the inputString
+		async function testFilterParsing(inputString, expectedFilters) {
+			const { filters } = await readParsedVariable(inputString);
+			expect(filters).toEqual(expectedFilters);
+		}
+
+		// Test that expectedSort is used for the graphql query that's based on the inputString
+		async function testSortParsing(inputString, expectedSort) {
+			const { sort } = await readParsedVariable(inputString);
+			expect(sort).toEqual(expectedSort);
+		}
+
+		it('converts input strings to valid LoanSearchFiltersInput objects', async () => {
 			await testFilterParsing('gender_male,sector_education', { gender: 'male', sector: [15] });
 			await testFilterParsing('sector_retail', { sector: [7] });
 			await testFilterParsing('gender_female', { gender: 'female' });
@@ -34,6 +46,7 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('gender_female,country_us', { gender: 'female', country: ['us'] });
 			await testFilterParsing('gender_male,sector_arts,sector_agriculture', { gender: 'male', sector: [9, 1] });
 			await testFilterParsing('sector_personal use', { sector: [16] });
+			await testFilterParsing('sort_expiringSoon,gender_female', { gender: 'female' });
 			await testFilterParsing('theme_green', { theme: ['Green'] });
 			await testFilterParsing('theme_disaster recovery', { theme: ['Disaster recovery'] });
 			await testFilterParsing('theme_refugees/displaced', { theme: ['Refugees/Displaced'] });
@@ -47,8 +60,18 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('1234', {});
 		});
 
+		it('converts input strings to valid LoanSearchSortByEnum values', async () => {
+			await testSortParsing('sort_newest', 'newest');
+			await testSortParsing('sort_expiringSoon,gender_female', 'expiringSoon');
+
+			await testSortParsing('sort_notasort', null);
+			await testSortParsing('gender_female', null);
+			await testSortParsing('', null);
+			await testSortParsing('1234', null);
+		});
+
 		// TODO: activate this test (by removing .skip) once FLSS is used for live loan searching
-		it.skip('converts filter strings to valid [FundraisingLoanSearchFilterInput!] arrays', async () => {
+		it.skip('converts input strings to valid [FundraisingLoanSearchFilterInput!] arrays', async () => {
 			await testFilterParsing('gender_male,sector_education', [
 				{ gender: { eq: 'male' } },
 				{ sector: { eq: 'education' } }

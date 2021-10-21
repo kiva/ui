@@ -113,6 +113,20 @@ async function fetchSectors() {
 	]);
 }
 
+// Get possible sorting options
+async function fetchSorts() {
+	return Promise.resolve([
+		'amountLeft',
+		'expiringSoon',
+		'loanAmount',
+		'loanAmountDesc',
+		'newest',
+		'popularity',
+		'random',
+		'repaymentTerm'
+	]);
+}
+
 // Get possible themes
 async function fetchThemes() {
 	// If needed, these could be fetched async from legacy api, though be sure to cache results!
@@ -214,6 +228,7 @@ const supportedFilterLegacy = name => {
 		case 'country':
 		case 'gender':
 		case 'sector':
+		case 'sort':
 		case 'theme':
 			return true;
 		default:
@@ -280,20 +295,51 @@ async function parseFilterStringLegacy(filterString) {
 	return filters;
 }
 
+// Takes a string like: "sort_expiringSoon,gender_female"
+// and extracts the sort option, e.g. "expiringSoon"
+async function parseSortStringLegacy(sortString) {
+	let sort = null;
+
+	// only try parsing if th einput is valid
+	if (sortString && typeof sortString === 'string') {
+		// get possible sorts
+		const sortOptions = await fetchSorts();
+
+		// start pasring the string
+		getFilterArrays(sortString)
+			// remove any filter that isn't "sort"
+			.filter(([name]) => name === 'sort')
+			// return just the value of the sort option
+			.map(array => array?.[1])
+			// if the sort option value is valid, set it as the sort to be returned
+			.forEach(value => {
+				const sortOption = sortOptions.find(o => o?.toLowerCase() === value);
+				if (sortOption) {
+					sort = sortOption;
+				}
+			});
+	}
+	return sort;
+}
+
 // Get loans from legacy lend search matching a set of filters
 async function fetchRecommendationsByLegacyFilter(filterString) {
-	const filters = await parseFilterStringLegacy(filterString);
+	const [filters, sort] = await Promise.all([
+		parseFilterStringLegacy(filterString),
+		parseSortStringLegacy(filterString)
+	]);
 	return fetchGraphQL(
 		{
-			query: `query($filters: LoanSearchFiltersInput) {
+			query: `query($filters: LoanSearchFiltersInput, $sort: LoanSearchSortByEnum) {
 				lend {
-					loans(limit: ${loanCount}, offset: 0, filters: $filters) {
+					loans(limit: ${loanCount}, offset: 0, filters: $filters, sortBy: $sort) {
 						${loanValues}
 					}
 				}
 			}`,
 			variables: {
 				filters,
+				sort,
 			},
 		},
 		'data.lend.loans.values'
