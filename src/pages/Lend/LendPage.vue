@@ -1,16 +1,18 @@
 <template>
 	<www-page class="lend-page" :gray-background="true">
 		<div class="row">
-			<div class="small-12 columns heading-region">
-				<h1>Make a loan, change a life</h1>
-				<p>
+			<div class="small-12 columns tw-mt-3 tw-p-2">
+				<h1 class="tw-mb-2">
+					Make a loan, change a life
+				</h1>
+				<p class="tw-mb-4 tw-max-w-screen-lg">
 					Each Kiva loan helps people build a better
 					future for themselves and their families.
 				</p>
 			</div>
 
 			<div class="columns small-12">
-				<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
+				<div class="tw-relative row small-up-1 large-up-2 xxlarge-up-3">
 					<loan-card-controller
 						v-for="loan in loans"
 						:is-visitor="isVisitor"
@@ -22,7 +24,7 @@
 					<kv-loading-overlay v-if="loading" />
 				</div>
 				<kv-pagination :total="totalCount" :limit="limit" @page-change="pageChange" />
-				<div v-if="totalCount > 0" class="loan-count">
+				<div v-if="totalCount > 0" class="tw-text-center tw-mb-4 tw-text-tertiary">
 					{{ totalCount }} loans
 				</div>
 			</div>
@@ -154,30 +156,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.lend-page {
-	.loan-card-group {
-		position: relative;
-	}
-
-	.loan-count {
-		text-align: center;
-		margin: 0 0 2rem;
-		color: $kiva-text-light;
-	}
-}
-
-.heading-region {
-	margin-top: rem-calc(20);
-	padding: rem-calc(10);
-
-	@include breakpoint(large) {
-		p {
-			max-width: 75%;
-		}
-	}
-}
-</style>
