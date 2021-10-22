@@ -4,6 +4,7 @@ dist/
 npm-debug.log*
 coverage/
 test/e2e/screenshots
+test/e2e/results
 server/available-routes.json
 build/schema.graphql
 .nyc_output/
