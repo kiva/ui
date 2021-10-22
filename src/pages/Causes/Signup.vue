@@ -35,7 +35,7 @@
 							<kv-text-input
 								id="email"
 								placeholder="Enter your email"
-								class="tw-w-full"
+								class="fs-exclude tw-w-full"
 								v-model="email"
 								:valid="!$v.email.$error"
 							>
