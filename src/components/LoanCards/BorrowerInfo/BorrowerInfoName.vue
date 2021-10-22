@@ -1,10 +1,10 @@
 <template>
 	<router-link
 		:to="`/lend/${loanId}`"
-		class="borrower-info-name"
 		v-kv-track-event="['Lending', 'click-Read more', 'Name', loanId, loanId]"
 	>
 		<span
+			class="tw-block"
 			@click="handleNameClick"
 		>
 			{{ name }}
@@ -44,16 +44,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-.borrower-info-name {
-	font-size: rem-calc(22);
-	font-weight: $global-weight-highlight;
-
-	> span {
-		display: block;
-	}
-}
-</style>

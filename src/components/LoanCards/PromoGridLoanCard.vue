@@ -1,14 +1,17 @@
 <template>
 	<div
-		class="promo-grid-card"
+		class="promo-grid-card tw-bg-primary tw-border tw-border-tertiary"
 		:class="compact ? 'compact': ''"
 	>
-		<kv-responsive-image class="promo-background-image" :images="backgroundImage" loading="lazy" alt="" />
-		<div class="promo-content-wrapper">
+		<kv-responsive-image
+			class="promo-background-image"
+			:images="backgroundImage" loading="lazy" alt=""
+		/>
+		<div class="promo-content-wrapper tw-text-white">
 			<div class="promo-content">
 				<h3
-					class="promo-content-title"
-					:class="compact ? 'h2' : 'h1'"
+					class="promo-content-title tw-mb-1"
+					:class="compact ? 'tw-text-h3' : 'tw-text-h2'"
 				>
 					Make a<br class="su">monthly impact
 				</h3>
@@ -78,8 +81,6 @@ export default {
 @import 'settings';
 
 .promo-grid-card {
-	background-color: $white;
-	border: 1px solid $kiva-stroke-gray;
 	height: 100%;
 	width: 100%;
 	overflow: hidden;
@@ -123,7 +124,6 @@ export default {
 	padding: 1rem;
 	position: absolute;
 	bottom: 2rem;
-	color: white;
 
 	p {
 		font-size: 1.25rem;

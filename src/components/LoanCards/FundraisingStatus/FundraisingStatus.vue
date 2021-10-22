@@ -16,14 +16,20 @@
 				:short-meter="shortMeter"
 			/>
 		</div>
-		<div class="left-and-to-go-line">
+		<div
+			class="left-and-to-go-line tw-text-small"
+			:class="{
+				'tw-font-medium tw-italic tw-text-brand' : !leftAndToGoOnTop,
+				'tw-font-book tw-text-secondary' : leftAndToGoOnTop
+			}"
+		>
 			<span
 				v-if="expiringSoonMessage !== ''"
-				class="loan-message"
+				class="tw-text-primary"
 			>
 				{{ expiringSoonMessage }}
 			</span>
-			<span v-if="isFunded" class="funded">Funded</span>
+			<span v-if="isFunded" class="tw-font-book">Funded</span>
 			<span v-else>${{ amountLeft | numeral('0,0') }} to go</span>
 		</div>
 	</div>
@@ -85,23 +91,6 @@ export default {
 		margin-bottom: rem-calc(8);
 	}
 
-	.left-and-to-go-line {
-		height: $small-text-font-size;
-		font-size: $small-text-font-size;
-		line-height: $small-text-font-size;
-		font-style: italic;
-		font-weight: $button-font-weight;
-		color: $kiva-green;
-
-		.loan-message {
-			color: $kiva-text-dark;
-		}
-
-		.funded {
-			font-style: normal;
-		}
-	}
-
 	&.left-and-to-go-on-top {
 		flex-direction: column-reverse;
 
@@ -111,9 +100,6 @@ export default {
 
 		.left-and-to-go-line {
 			margin-bottom: 0.25rem;
-			font-weight: $global-weight-normal;
-			font-style: normal;
-			color: $gray;
 		}
 	}
 

@@ -1,5 +1,5 @@
 <template>
-	<div class="detailed-loan-card row collapse">
+	<div class="detailed-loan-card row collapse tw-bg-primary tw-border tw-border-secondary">
 		<div class="multi-pane columns small-12 xlarge-6 xxlarge-7 small-order-1 xlarge-order-2">
 			<loan-card-image
 				:loan-id="loan.id"
@@ -31,7 +31,13 @@
 					:class="{ active: isTabComponentActive(id) }"
 					@click="setTabComponent(id)"
 				>
-					<span>{{ title }}</span>
+					<span
+						:class="{
+							'tw-text-primary': isTabComponentActive(id),
+							'tw-text-tertiary': !isTabComponentActive(id),
+						}"
+						class="tw-uppercase tw-font-book"
+					>{{ title }}</span>
 				</button>
 			</div>
 			<div class="basic-info-flex-column">
@@ -40,7 +46,7 @@
 						:name="loan.name"
 						:loan-id="loan.id"
 						:disable-link="disableRedirects"
-						class="name"
+						class="tw-text-h2 tw-whitespace-nowrap"
 						@track-loan-card-interaction="trackInteractionBorrowerInfoName"
 					/>
 					<div class="location-sector-row">
@@ -147,7 +153,7 @@
 			<div>
 				<router-link
 					:to="`/lend/${loan.id}`"
-					class="full-details-link"
+					class="tw-text-h3"
 					v-kv-track-event="[
 						'Lending',
 						'click-Read full borrower details',
@@ -362,8 +368,6 @@ $row-arrow-width: 2.5rem;
 
 .detailed-loan-card.row {
 	position: relative;
-	background-color: $white;
-	border: 1px solid $kiva-stroke-gray;
 	max-width: rem-calc(414);
 	border-radius: rem-calc(3);
 	overflow: hidden;
@@ -412,14 +416,10 @@ $row-arrow-width: 2.5rem;
 				text-transform: uppercase;
 				transition: border-color $speed-curve, color $speed-curve, text-shadow $speed-curve;
 				border-color: rgba($white, 0);
-				color: $kiva-text-light;
-				font-weight: $global-weight-normal;
 			}
 
 			&.active span {
 				border-bottom: rem-calc(1) solid rgba($kiva-textlink, 1);
-				color: $kiva-text-dark;
-				text-shadow: rem-calc(0.5) 0 $kiva-text-dark;
 			}
 		}
 	}
@@ -441,12 +441,8 @@ $row-arrow-width: 2.5rem;
 
 			.name {
 				display: block;
-				font-size: rem-calc(28);
-				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
-				font-weight: 500;
-				line-height: rem-calc(51);
 			}
 
 			.location-sector-row {
@@ -523,8 +519,6 @@ $row-arrow-width: 2.5rem;
 	.full-details-link {
 		margin-bottom: 1.25rem;
 		display: inline-block;
-		font-size: rem-calc(20);
-		line-height: 2rem;
 	}
 
 	.close-button-wrapper {
