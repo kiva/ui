@@ -21,7 +21,10 @@
 				/>
 				<div class="search-filter-and-results">
 					<div class="small-12">
-						<div class="search-statement-wrapper">
+						<div class="
+							tw-bg-primary tw-border-t tw-border-b tw-border-tertiary
+							tw-px-2 tw-py-5	tw-mb-6"
+						>
 							<h2>
 								I want to support
 								<!-- documentation for reference: -->
@@ -50,7 +53,7 @@
 								</ais-menu-select>
 								<br class="show-for-small-only">
 								<span class="show-for-small-only">located</span>
-								<span class="no-break"> in
+								<span class="tw-whitespace-nowrap"> in
 									<br class="show-for-small-only">
 									<ais-menu-select
 										:attribute="'locationFacets.lvl0'"
@@ -109,7 +112,7 @@
 						<ais-state-results>
 							<template slot-scope="{ page, hitsPerPage, queryID, index }">
 								<ais-hits
-									class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
+									class="tw-relative row small-up-1 large-up-2 xxlarge-up-3"
 									:results-per-page="15"
 								>
 									<template #default="{ items }">
@@ -303,38 +306,12 @@ export default {
 	}
 }
 
-.loan-card-group {
-	position: relative;
-}
-
 .algolia-loan-card-adapter {
 	padding-left: 0;
 	padding-right: 0;
 }
 
-.search-statement-wrapper {
-	background-color: $white;
-	margin-bottom: rem-calc(44);
-	padding: 1.8125rem 2.5rem 0.8rem 2.5rem;
-	border-top: 1px solid $kiva-bg-darkgray;
-	border-bottom: 1px solid $kiva-bg-darkgray;
-
-	@include breakpoint(medium) {
-		padding-bottom: 1rem;
-	}
-}
-
-.search-statement-wrapper h2 {
-	@include breakpoint(medium) {
-		line-height: 1.7;
-	}
-}
-
 .sentence-search-dropdown {
-	background-image: url('~@/assets/images/medium-chevron2x.png');
-	background-repeat: no-repeat;
-	background-position: right rem-calc(20);
-	background-size: rem-calc(12);
 	margin-right: rem-calc(8);
 	margin-bottom: rem-calc(10);
 	height: rem-calc(36);
@@ -346,13 +323,9 @@ export default {
 	}
 }
 
-.no-break {
-	white-space: nowrap;
-}
-
 .ais-MenuSelect {
 	display: inline-block;
-	border-bottom: 1px dashed #118aec;
+	border-bottom: 1px dashed rgb(var(--text-action));
 	margin-bottom: rem-calc(24);
 
 	@include breakpoint(large) {
@@ -363,9 +336,7 @@ export default {
 .ais-MenuSelect select {
 	border: none;
 	background-color: transparent;
-	color: $kiva-accent-blue;
-	font-size: 1.375rem;
-	line-height: 2.25rem;
+	color: rgb(var(--text-action));
 	height: rem-calc(43);
 	margin-bottom: 0;
 	background-image: none;
@@ -379,9 +350,8 @@ export default {
 
 	@include breakpoint(medium) {
 		text-align-last: center;
-		font-size: 1.75rem;
-		padding-left: unset;
 		height: rem-calc(47);
+		padding-left: unset;
 		padding-top: unset;
 	}
 }
@@ -401,13 +371,13 @@ export default {
 	max-width: 25rem;
 
 	.ais-Pagination-item {
-		color: $kiva-text-light;
+		color: rgb(var(--text-tertiary));
 	}
 
 	.ais-Pagination-item--active,
 	.ais-Pagination-item--disabled {
 		a {
-			color: $kiva-text-light;
+			color: rgb(var(--text-tertiary));
 		}
 	}
 
@@ -418,7 +388,7 @@ export default {
 		margin: 0 0.2rem;
 
 		&:hover {
-			background-color: rgba(110, 176, 252, 0.05);
+			background-color: rgba(var(--text-action), 0.05);
 		}
 	}
 
@@ -437,6 +407,15 @@ export default {
 
 .ais-HitsPerPage {
 	max-width: 13rem;
+}
+
+.ais-HitsPerPage-select {
+	width: 100%;
+	height: rem-calc(48);
+	padding: 0 rem-calc(8);
+	border: 1px solid rgb(var(--border-tertiary));
+	border-radius: rem-calc(4);
+	margin: 1rem 0;
 }
 
 </style>
