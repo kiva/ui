@@ -1,13 +1,13 @@
 <template>
 	<!-- eslint-disable max-len -->
-	<div class="small-12 large-10 columns">
-		<h1 class="twoLineHeader">
+	<div class="small-12 large-10 columns tw-prose">
+		<h1>
 			Kiva Terms of Use Agreement
 		</h1>
 
-		<h3 class="twoLineHeader">
+		<p class="tw-text-h3">
 			(Last updated August 30th, 2021)*
-		</h3>
+		</p>
 
 		<p class="light">
 			<em>*Substantive changes from the prior version will generally be highlighted below for at least one month.</em>
@@ -836,7 +836,7 @@
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
 					<p>
-						This Agreement will remain in full force and effect while you access or use the Website or participate in the Program as a User and, notwithstanding anything herein to the contrary, this Agreement will remain in effect after your participation in the Program and registered account is terminated. From time to time, Kiva may make features available to Users as part of the Program. Kiva reserves the right, in its sole discretion, to include or cease providing these features at any time. Whether or not you are and remain eligible to participate in the Program, use the Website, or take advantage of any Kiva services, may be determined by Kiva in its sole and absolute discretion. <span class="highlight">You may terminate your participation in the Program and registered account at any time and for any reason through your Account Settings.  Any funds remaining in your account at the time of deletion, as well as any funds later repaid to the account, will be automatically donated to Kiva.</span>
+						This Agreement will remain in full force and effect while you access or use the Website or participate in the Program as a User and, notwithstanding anything herein to the contrary, this Agreement will remain in effect after your participation in the Program and registered account is terminated. From time to time, Kiva may make features available to Users as part of the Program. Kiva reserves the right, in its sole discretion, to include or cease providing these features at any time. Whether or not you are and remain eligible to participate in the Program, use the Website, or take advantage of any Kiva services, may be determined by Kiva in its sole and absolute discretion. <span class="tw-bg-caution tw-text-black">You may terminate your participation in the Program and registered account at any time and for any reason through your Account Settings.  Any funds remaining in your account at the time of deletion, as well as any funds later repaid to the account, will be automatically donated to Kiva.</span>
 					</p>
 				</div>
 
@@ -898,11 +898,6 @@ export default {
 @import 'settings';
 
 // This CSS came from original terms page.
-.highlight {
-	background-color: #ff0;
-	width: fit-content;
-}
-
 ul.light li {
 	font-weight: 300;
 }
@@ -956,8 +951,13 @@ div.summary-row > :first-child {
 		display: none;
 	}
 
+	div.summary-row > :first-child p {
+		margin-top: 0;
+	}
+
 	div.summary-row > :last-child p {
 		margin-left: 0;
+		margin-top: 0;
 		padding-left: 0;
 		border-left: 0;
 		margin-bottom: 1.1111111111rem;
