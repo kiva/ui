@@ -1,5 +1,5 @@
 <template>
-	<div name="tertiary" class="tertiary-nav columns">
+	<div name="tertiary" class="tertiary-nav columns tw-pt-2">
 		<slot></slot>
 	</div>
 </template>
@@ -8,34 +8,16 @@
 @import 'settings';
 
 .tertiary-nav {
-	padding-top: 0.875rem;
+	li {
+		margin-bottom: 1rem;
+	}
 
-	ul {
-		list-style-type: none;
-		margin: 0;
+	a {
+		font-weight: 400;
+	}
 
-		li {
-			margin-bottom: 0.875rem;
-			line-height: $small-text-line-height;
-
-			a {
-				font-weight: normal;
-				color: $kiva-accent-blue;
-				text-decoration: none;
-
-				&:hover {
-					text-decoration: underline;
-				}
-
-				&:visited {
-					color: $kiva-accent-blue;
-				}
-
-				&.router-link-exact-active {
-					color: $kiva-stroke-gray;
-				}
-			}
-		}
+	.router-link-exact-active {
+		color: rgb(var(--text-tertiary));
 	}
 }
 </style>
