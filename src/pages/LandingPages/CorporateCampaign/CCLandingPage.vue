@@ -213,6 +213,7 @@
 					:status-message-override="statusMessageOverride"
 				/>
 				<campaign-thanks
+					v-if="transactionId"
 					:transaction-id="transactionId"
 					:partner-content="partnerThanksContent"
 				/>
