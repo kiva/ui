@@ -265,7 +265,6 @@ export default {
 			console.log('this is countryFilter', countryFilter);
 
 			const loanTermFilter = filterLoanTerm(this.lenderTermLimit);
-			console.log(this.lenderTermLimit);
 			console.log('this is filterLoanTerm', loanTermFilter);
 
 			const loanQueryFilters = {
