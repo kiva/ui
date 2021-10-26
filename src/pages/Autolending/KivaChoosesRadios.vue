@@ -68,11 +68,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.kiva-chooses-radios {
-	margin-bottom: 0.5rem;
-}
-</style>

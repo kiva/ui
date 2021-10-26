@@ -1,77 +1,82 @@
 <template>
-	<div class="row">
-		<kv-settings-card class="column large-8" title="Auto-lending status">
-			<template #content>
+	<kv-settings-card title="Auto-lending status">
+		<template #content>
+			<p>
 				Your auto-lending setting is currently
-				<kv-button class="text-link"
-					@click.native.prevent="showLightbox = true; triggerWatcher()"
+				<button class="tw-text-link tw-font-medium"
+					@click="showLightbox = true; triggerWatcher()"
 					data-test="autolending-status"
 				>
-					<span class="uppercase">{{ autolendingStatus }}</span>
+					<span class="tw-uppercase">{{ autolendingStatus }}</span>
 					<span v-if="autolendingStatus == 'paused'">until {{ pauseUntilDateFormatted }}</span>
-				</kv-button>.
+				</button>.
+			</p>
 
-				<kv-lightbox
-					class="autolending-status-lightbox"
-					:visible="showLightbox"
-					title="Change your auto-lending status"
-					@lightbox-closed="showLightbox = false"
-				>
-					<div class="status-radio-wrapper">
-						<kv-radio
-							data-test="is-autolending-on"
-							id="is-autolending-on"
-							radio-value="on"
-							v-model="autolendingStatus"
+			<kv-lightbox
+				class="autolending-status-lightbox"
+				:visible="showLightbox"
+				title="Change your auto-lending status"
+				@lightbox-closed="showLightbox = false"
+			>
+				<div class="status-radio-wrapper">
+					<kv-radio
+						data-test="is-autolending-on"
+						id="is-autolending-on"
+						radio-value="on"
+						v-model="autolendingStatus"
+					>
+						ON
+					</kv-radio>
+					<kv-radio
+						data-test="is-autolending-paused"
+						id="is-autolending-paused"
+						radio-value="paused"
+						v-model="autolendingStatus"
+					>
+						PAUSED for
+						<kv-select
+							v-model="daysToPause"
+							@change="triggerWatcher"
+							id="days-to-pause-select"
+							class="tw-mb-0"
 						>
-							ON
-						</kv-radio>
-						<kv-radio
-							data-test="is-autolending-paused"
-							id="is-autolending-paused"
-							radio-value="paused"
-							v-model="autolendingStatus"
-						>
-							PAUSED for
-							<kv-select v-model="daysToPause" @change="triggerWatcher">
-								<option value="30">
-									1 Month
-								</option>
-								<option value="90">
-									3 Months
-								</option>
-								<option value="180">
-									6 Months
-								</option>
-							</kv-select>
-						</kv-radio>
-						<kv-radio
-							data-test="is-autolending-off"
-							id="is-autolending-off"
-							radio-value="off"
-							v-model="autolendingStatus"
-						>
-							OFF
-						</kv-radio>
-					</div>
-					<template #controls>
-						<kv-button
-							data-test="status-save-button"
-							class="smaller button"
-							v-if="!isSaving"
-							@click.native="save"
-							:disabled="!isChanged"
-						>
-							Save
-						</kv-button>
-						<kv-button data-test="status-save-button" class="smaller button" v-else>
-							Saving <kv-loading-spinner />
-						</kv-button>
-					</template>
-				</kv-lightbox>
-			</template>
-		</kv-settings-card>
-	</div>
+							<option value="30">
+								1 Month
+							</option>
+							<option value="90">
+								3 Months
+							</option>
+							<option value="180">
+								6 Months
+							</option>
+						</kv-select>
+					</kv-radio>
+					<kv-radio
+						data-test="is-autolending-off"
+						id="is-autolending-off"
+						radio-value="off"
+						v-model="autolendingStatus"
+					>
+						OFF
+					</kv-radio>
+				</div>
+				<template #controls>
+					<kv-button
+						data-test="status-save-button"
+						class="smaller button"
+						v-if="!isSaving"
+						@click.native="save"
+						:disabled="!isChanged"
+					>
+						Save
+					</kv-button>
+					<kv-button data-test="status-save-button" class="smaller button" v-else>
+						Saving <kv-loading-spinner />
+					</kv-button>
+				</template>
+			</kv-lightbox>
+		</template>
+	</kv-settings-card>
 </template>
 
 <script>
@@ -243,18 +248,5 @@ export default {
 	.dropdown-wrapper {
 		display: inline;
 	}
-}
-
-.uppercase {
-	text-transform: uppercase;
-}
-
-.kv-radio {
-	min-height: 2.7rem;
-	line-height: 2.7rem;
-}
-
-::v-deep .dropdown {
-	margin-bottom: 0;
 }
 </style>

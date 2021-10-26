@@ -1,6 +1,6 @@
 <template>
 	<div class="loan-increment-dropdown">
-		<h3 class="filter-title">
+		<h3 class="tw-mb-2">
 			Loan sizes
 		</h3>
 		<kv-select v-model="loanIncrement">
@@ -89,6 +89,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
