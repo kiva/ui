@@ -88,10 +88,11 @@
 								</label>
 								<kv-select class="tw-mt-2"
 									id="loanTerm"
-									value="All Loans"
 									v-model="lenderTermLimit"
+									value="0"
+									:disabled="false"
 								>
-									<option value="All Loans">
+									<option value="0">
 										All Loans
 									</option>
 									<option value="24">
@@ -241,18 +242,12 @@ export default {
 	mounted() {
 		this.getSectors();
 		this.getAllCountries();
-		// console.log('mounted lenderTermLimit', this.lenderTermLimit);
-		// // filterLoanTerm(this.lenderTermLimit);
 		this.loanQueryFilters = { countryIsoCode: { any: ['US'] } };
 		console.log('mounted query ran:', this.loanQueryFilters);
 		this.runQuery(this.loanQueryFilters);
 		console.log('loans from mounted:', this.loans);
 	},
 	computed: {
-		watchLoanTerm() {
-			console.log('lenderTerm', this.lenderTermLimit);
-			return this.lenderTermLimit;
-		},
 		queryFilters() {
 			// // TODO: enable genderFilter when its working
 			const genderFilter = filterGender(this.gender);
