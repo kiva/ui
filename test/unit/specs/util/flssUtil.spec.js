@@ -226,4 +226,31 @@ query countryFacets {
 			expect(output).toEqual(notValid);
 		});
 	});
+
+	describe('filterLoanTerm', () => {
+		const maxTerm = 60;
+		const validLoanTermFilter = { range: { lte: maxTerm } };
+
+		it('Checks if filterLoanTerm forms max loan filter query format with 0 as input', () => {
+			const output = flssUtils.filterLoanTerm('0');
+			expect(output).toEqual(validLoanTermFilter);
+		});
+
+		it('Checks if filterLoanTerm forms max loan filter query format with excess the maxTerm as input', () => {
+			const output = flssUtils.filterLoanTerm('61');
+			expect(output).toEqual(validLoanTermFilter);
+		});
+
+		it('Checks if filterLoanTerm forms max loan filter query format with non-numeric text as input', () => {
+			const output = flssUtils.filterLoanTerm('All Loans');
+			expect(output).toEqual(validLoanTermFilter);
+		});
+
+		it('Checks if filterLoanTerm forms correct format with valid input', () => {
+			const validFilter = { range: { lte: 12 } };
+			const input = '12';
+			const output = flssUtils.filterLoanTerm(input);
+			expect(output).toEqual(validFilter);
+		});
+	});
 });

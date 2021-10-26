@@ -111,11 +111,11 @@ export function filterCountry(countryList, allCountries) {
 }
 
 export function filterLoanTerm(loanTermLimit) {
-	const maxTerm = 60;
 	const value = parseInt(loanTermLimit, 10);
+	const maxTerm = 60;
 	let loanTermFilter = { range: { lte: maxTerm } };
 
-	if (value > 0) {
+	if (value > 0 && value <= maxTerm) {
 		loanTermFilter = { range: { lte: value } };
 		return loanTermFilter;
 	}
