@@ -76,7 +76,8 @@
 		<div class="kv-tailwind row">
 			<kv-frequently-asked-questions
 				class="span-12 column"
-				:content="faqContentGroup"
+				:headline="frequentlyAskedQuestionsHeadline"
+				:questions="frequentlyAskedQuestions"
 			/>
 		</div>
 	</www-page>
@@ -160,6 +161,12 @@ export default {
 			return this.contentGroups?.find(({ type }) => {
 				return type ? type === 'frequentlyAskedQuestions' : false;
 			});
+		},
+		frequentlyAskedQuestionsHeadline() {
+			return this.faqContentGroup?.title ?? null;
+		},
+		frequentlyAskedQuestions() {
+			return this.faqContentGroup?.contents ?? null;
 		},
 		ctaContentGroup() {
 			return this.contentGroups?.find(({ key }) => {

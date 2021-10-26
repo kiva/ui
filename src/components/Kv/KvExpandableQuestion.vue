@@ -82,7 +82,6 @@ export default {
 	},
 	methods: {
 		toggleFaq() {
-			console.log('toggle');
 			if (!this.open) {
 				this.$kvTrackEvent(this.analyticsCategory, 'click-faq-expand', this.title);
 			}
