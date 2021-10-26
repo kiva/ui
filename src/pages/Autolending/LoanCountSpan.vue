@@ -1,6 +1,6 @@
 <template>
 	<span v-if="counting">
-		<kv-loading-spinner />
+		<kv-loading-spinner size="small" class="tw-inline-block" />
 	</span>
 	<span v-else>
 		{{ count | numeral('0,0') }}
@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvLoadingSpinner from '~/@kiva/kv-components/vue/KvLoadingSpinner';
 
 export default {
 	props: {

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h3 class="filter-title">
+		<h3 class="tw-mb-2">
 			Loan terms
 		</h3>
 		<kv-select v-model="loanTerm">
@@ -85,6 +85,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss">
-</style>

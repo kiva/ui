@@ -1,13 +1,16 @@
 <template>
 	<div class="autolending-settings-page">
-		<autolending-status />
+		<div class="row">
+			<div class="column large-8">
+				<autolending-status />
 
-		<!-- When your balance will be lent -->
-		<autolending-when />
+				<!-- When your balance will be lent -->
+				<autolending-when />
 
-		<!-- Who you'll support-->
-		<autolending-who />
-
+				<!-- Who you'll support-->
+				<autolending-who />
+			</div>
+		</div>
 		<div class="row column">
 			<save-button v-if="isChanged" />
 		</div>
@@ -126,15 +129,6 @@ export default {
 			}
 		}
 	}
-}
-
-</style>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.autolending-settings-page {
-	padding-bottom: 5rem;
 }
 
 </style>

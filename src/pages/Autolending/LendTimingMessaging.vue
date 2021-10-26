@@ -1,11 +1,11 @@
 <template>
 	<div class="lend-timing-messaging">
 		<div v-if="legacyAutoLender">
-			<span class="text-notice">{{ autoLendNotice }}</span>
+			<span class="tw-text-tertiary tw-italic">{{ autoLendNotice }}</span>
 		</div>
 		<div
 			data-test="timing-explanation"
-			class="autolend-explanation-text"
+			class="autolend-explanation-text tw-text-brand"
 			v-if="isEnabled && this.cIdleStartTime !== null"
 		>
 			{{ autolendExplanationText }}
@@ -168,13 +168,7 @@ export default {
 	margin-top: 1.5rem;
 }
 
-.text-notice {
-	color: $kiva-text-light;
-	font-style: italic;
-}
-
 .autolend-explanation-text {
-	color: $kiva-green;
 	max-width: 30rem;
 }
 </style>

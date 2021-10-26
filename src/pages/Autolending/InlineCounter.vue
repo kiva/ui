@@ -1,8 +1,11 @@
 <template>
-	<h4 :class="{'bold' : strong, 'normal': !strong }">
+	<p
+		class="tw-mt-2 tw-text-base"
+		:class="{'tw-font-medium' : strong, 'tw-font-book': !strong }"
+	>
 		<!-- eslint-disable-next-line max-len  -->
 		Currently, <loan-count-span class="count-value" :count="count" :counting="counting" /> loans match your criteria.
-	</h4>
+	</p>
 </template>
 
 <script>
@@ -110,24 +113,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-h4 {
-	margin-top: 1rem;
-
-	&.normal {
-		font-weight: $global-weight-normal;
-	}
-
-	&.bold {
-		font-weight: $global-weight-bold;
-	}
-}
-
-::v-deep .loading-spinner {
-	height: 1rem;
-	width: 1rem;
-}
-</style>

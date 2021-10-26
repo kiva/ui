@@ -43,7 +43,7 @@ export default {
 		font-size: $medium-text-font-size;
 		font-weight: $global-weight-highlight;
 		cursor: pointer;
-		margin: 0 0 1rem;
+		margin: 0;
 		padding: 0.5rem 2.5rem 0.5rem 0.5rem;
 	}
 
