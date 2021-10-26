@@ -9,7 +9,6 @@ const map = istanbulCoverage.createCoverageMap();
 
 console.log('Loading coverage reports...');
 const coverageReports = [
-	// require('./e2e/coverage/coverage-final.json'),
 	require('./unit/coverage/coverage-final.json'),
 ];
 
