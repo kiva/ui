@@ -95,6 +95,26 @@ module.exports = {
 				]
 			},
 			{
+				// Allow Tailwind @apply in Vue using <style type="postcss">
+				test: /\.(postcss)$/,
+				use: [
+					'vue-style-loader',
+					{ loader: 'css-loader' },
+					{
+						loader: 'postcss-loader',
+						options: {
+							postcssOptions: {
+								plugins: [
+									require('cssnano'),
+									require('tailwindcss'),
+									require('autoprefixer'),
+								]
+							}
+						}
+					},
+				]
+			},
+			{
 				// Extract tailwind styles since they are global
 				test: /\.css$/,
 				include: [resolve('src/assets/scss/tailwind')],

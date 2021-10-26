@@ -21,7 +21,8 @@
 			</div>
 			<div class="small-12 columns donation-faq-holder">
 				<kv-frequently-asked-questions
-					:content="faqContentGroup"
+					:headline="frequentlyAskedQuestionsHeadline"
+					:questions="frequentlyAskedQuestions"
 				/>
 			</div>
 		</div>
@@ -134,6 +135,12 @@ export default {
 		},
 		faqContentGroup() {
 			return this.page?.contentGroups?.frequentlyAskedQuestions || {};
+		},
+		frequentlyAskedQuestionsHeadline() {
+			return this.faqContentGroup?.title ?? null;
+		},
+		frequentlyAskedQuestions() {
+			return this.faqContentGroup?.contents ?? null;
 		},
 		donationCalloutsCG() {
 			return this.page?.contentGroups?.webDonateSupportUsDonationCallouts || {};

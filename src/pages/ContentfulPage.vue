@@ -80,7 +80,7 @@ const LoansByCategoryCarousel = () => import('@/components/Contentful/LoansByCat
 
 const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
 
-const KvFrequentlyAskedQuestions = () => import('@/components/Kv/KvFrequentlyAskedQuestions');
+const FrequentlyAskedQuestions = () => import('@/components/Contentful/FrequentlyAskedQuestions');
 
 const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
 
@@ -146,7 +146,7 @@ const getComponentFromType = type => {
 		case 'monthlyGoodSelector':
 			return MonthlyGoodSelectorWrapper;
 		case 'frequentlyAskedQuestions':
-			return KvFrequentlyAskedQuestions;
+			return FrequentlyAskedQuestions;
 		case 'testimonialCards':
 			return TestimonialCards;
 		case 'cardRow':
