@@ -41,15 +41,15 @@
 							<span v-if="!showReviewersName">a</span>
 							<!-- eslint-disable max-len -->
 							<a
-								href="/work-with-us/internvolunteers"
+								href="/work-with-us/reviewers"
 								title="Learn more about volunteering at Kiva"
 								v-kv-track-event="['Borrower profile', 'click-Kiva review volunteer', 'Kiva volunteer', this.loanId]"
 							>
-								Kiva volunteer
+								Kiva volunteer<span v-if="!showReviewersName">.</span>
 							</a>
 							<span v-if="showReviewersName">
-								{{ reviewerName }}
-							</span>.
+								{{ reviewerName }}.
+							</span>
 						</span>
 
 						<a
