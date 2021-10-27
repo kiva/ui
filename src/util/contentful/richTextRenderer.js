@@ -26,6 +26,30 @@ function htmlSafeStringify(value) {
 }
 
 /**
+ * Contentful rich text fields add a trailing empty <p> tag, these should be removed
+ *
+ * @param {object} contentful RTF object containing RTF nodes
+ * @returns {object} RTF object containing RTF nodes without trailing empty <p> tag
+ */
+export function removeTrailingParagraphTag(content) {
+	// Remove empty <p> inserted by contentful
+	const innerContent = content.content;
+	const lastRTFElement = innerContent[innerContent.length - 1];
+
+	const contentWithoutTrailingEmptyParagraph = { ...content };
+
+	// If last item is an empty paragraph, which contains an empty text node, remove it
+	if (lastRTFElement.nodeType === 'paragraph'
+		&& Object.keys(lastRTFElement.data).length === 0
+		&& lastRTFElement.content.length === 1
+		&& lastRTFElement.content?.[0]?.value === ''
+		&& lastRTFElement.content?.[0]?.nodeType === 'text') {
+		contentWithoutTrailingEmptyParagraph.content = contentWithoutTrailingEmptyParagraph.content.slice(0, -1);
+	}
+	return contentWithoutTrailingEmptyParagraph;
+}
+
+/**
  * Returns html string from rich text nodes
  *
  * @param {object} content Content of a contentful rich text field
@@ -120,5 +144,8 @@ export function richTextRenderer(content) {
 			},
 		}
 	};
-	return documentToHtmlString(content, options);
+
+	const contentWithoutTrailingEmptyParagraph = removeTrailingParagraphTag(content);
+
+	return documentToHtmlString(contentWithoutTrailingEmptyParagraph, options);
 }
