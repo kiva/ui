@@ -61,12 +61,12 @@ export default {
 				{
 					width: 1024,
 					height: 441,
-					media: 'min-width: 681px',
+					media: 'min-width: 1024px',
 				},
 				{
 					width: 680,
 					height: 372,
-					media: 'min-width: 481px',
+					media: 'min-width: 734px',
 				},
 				{
 					width: 480,
