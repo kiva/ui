@@ -1,8 +1,0 @@
-{
-	"all": true,
-	"include": ["src/**"],
-	"exclude": ["src/assets/**"],
-	"extension": [".js", ".vue"],
-	"reporter": ["html", "json"],
-	"report-dir": "test/e2e/coverage"
-}
