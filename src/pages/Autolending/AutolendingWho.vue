@@ -67,7 +67,7 @@
 										</button>
 									</div>
 									<kv-expandable>
-										<div class="row" v-show="showAdvanced">
+										<div class="row tw-mt-2" v-show="showAdvanced">
 											<div class="small-12 large-6 columns">
 												<loan-increment-dropdown class="tw-mb-4" />
 											</div>
@@ -238,9 +238,9 @@ export default {
 		padding: 1.5rem 0 1.5rem 0.15rem;
 		overflow: hidden;
 
-		span, // placeholder span and a set to same width so animation is smoother
-		a {
+		> button { // set to full width so animation is smoother
 			width: 100%;
+			text-align: left;
 		}
 	}
 
