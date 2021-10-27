@@ -89,8 +89,6 @@
 								<kv-select class="tw-mt-2"
 									id="loanTerm"
 									v-model="lenderTermLimit"
-									value="0"
-									:disabled="false"
 								>
 									<option value="0">
 										All Loans
