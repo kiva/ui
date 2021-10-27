@@ -5,7 +5,7 @@
 			class="two-step-card-wrapper__two-step-card"
 		>
 			<template #content>
-				<h3 class="strong">
+				<h3 class="strong tw-mb-2">
 					Status:
 					<kv-loading-placeholder
 						class="two-step-card-wrapper__two-step-card--loading"
@@ -18,7 +18,7 @@
 						{{ MFAStatus }}
 					</span>
 				</h3>
-				<p>
+				<p class="tw-mb-4">
 					Protect your Kiva account with an extra layer of security by requiring access
 					to your phone. Once configured, you'll be required to enter
 					<span class="strong">both your password and an authenication code from your mobile phone</span>
