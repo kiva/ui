@@ -3,102 +3,104 @@
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
-		<div class="title-area">
+		<kv-default-wrapper>
 			<div class="row column">
-				<h1>
+				<h1 class="tw-mb-4">
 					Payment Methods
 				</h1>
 			</div>
-		</div>
-		<div class="row">
-			<kv-settings-card class="columns small-12 large-8" title="Credit Card Settings">
-				<template #content>
-					<form class="payment-settings-default-form" @submit.prevent>
-						<fieldset>
-							<legend v-if="hasSavedPaymentMethods">
-								Select your default card
-							</legend>
-							<legend v-else>
-								There are no cards saved to this account
-							</legend>
-							<div v-for="(paymentMethod, index) in savedPaymentMethods"
-								:key="index"
-								class="payment-settings-default-form__cc-wrapper"
-							>
-								<kv-radio
-									class="payment-settings-default-form__radio"
-									:id="`creditCard-${index}`"
-									:radio-value="paymentMethod.nonce"
-									v-model="selectedDefaultCardNonce"
+			<div class="row">
+				<kv-settings-card class="columns small-12 large-8" title="Credit Card Settings">
+					<template #content>
+						<form class="payment-settings-default-form" @submit.prevent>
+							<fieldset>
+								<legend v-if="hasSavedPaymentMethods" class="tw-block tw-mb-2">
+									Select your default card
+								</legend>
+								<legend v-else class="tw-block tw-mb-2">
+									There are no cards saved to this account
+								</legend>
+								<div v-for="(paymentMethod, index) in savedPaymentMethods"
+									:key="index"
+									class="payment-settings-default-form__cc-wrapper"
 								>
-									<img class="payment-settings-default-form__cc-icon"
-										:src="paymentMethod.imageUrl"
-										alt="credit card"
+									<kv-radio
+										class="payment-settings-default-form__radio"
+										:id="`creditCard-${index}`"
+										:radio-value="paymentMethod.nonce"
+										v-model="selectedDefaultCardNonce"
 									>
-									<span class="fs-exclude">{{ paymentMethod.description }}</span>
-								</kv-radio>
-								<kv-button
-									@click.native.prevent="showLightbox(paymentMethod)"
-									class="payment-settings-default-form__remove-btn text-link text-link--alert"
-								>
-									Remove
-								</kv-button>
-							</div>
-						</fieldset>
-						<fieldset>
-							<kv-button class="text-link payment-settings-default-form__expand-button"
-								@click.native.prevent="showAddACard = !showAddACard"
-							>
-								Add a new card <kv-icon class="arrow more-options-arrow"
-									:class="{'down': !showAddACard, 'up': showAddACard}"
-									name="small-chevron"
-									:from-sprite="true"
-								/>
-							</kv-button>
-							<transition name="kvfade">
-								<div v-show="showAddACard">
-									<braintree-drop-in-interface
-										v-if="isClientReady"
-										ref="braintreeDropInInterface"
-										:payment-types="['card']"
-										auth="token-key"
-										:key="dropInComponentKey"
-										@transactions-enabled="enableAddCardButton = $event"
-									/>
+										<img class="payment-settings-default-form__cc-icon tw-inline-block"
+											:src="paymentMethod.imageUrl"
+											alt="credit card"
+										>
+										<span class="fs-exclude">{{ paymentMethod.description }}</span>
+									</kv-radio>
+									<button
+										@click="showLightbox(paymentMethod)"
+										class="payment-settings-default-form__remove-btn
+									tw-font-medium tw-text-danger hover:tw-text-danger-highlight hover:tw-underline"
+									>
+										Remove
+									</button>
 								</div>
-							</transition>
-						</fieldset>
-						<fieldset>
-							<div v-if="!showAddACard">
-								<kv-button
-									class="smaller payment-settings-default-form__save-button"
-									v-if="!isProcessing"
-									@click.native="savePaymentSettings"
-									:disabled="!isChanged || $v.$invalid"
+							</fieldset>
+							<fieldset>
+								<button class="tw-text-link tw-font-medium payment-settings-default-form__expand-button"
+									@click="showAddACard = !showAddACard"
 								>
-									Save Settings
-								</kv-button>
-								<kv-button class="smaller" v-else>
-									Saving <kv-loading-spinner />
-								</kv-button>
-							</div>
-							<div v-if="showAddACard">
-								<kv-button
-									value="submit"
-									id="dropin-submit"
-									class="smaller payment-settings-default-form__add-button"
-									:disabled="!enableAddCardButton || isProcessing"
-									@click.native="submitDropInAddACard"
-								>
-									<kv-icon name="lock" />
-									Add card <kv-loading-spinner v-if="isProcessing" />
-								</kv-button>
-							</div>
-						</fieldset>
-					</form>
-				</template>
-			</kv-settings-card>
-		</div>
+									Add a new card
+									<kv-icon class="arrow more-options-arrow tw-stroke-current tw-text-action"
+										:class="{'down': !showAddACard, 'up': showAddACard}"
+										name="small-chevron"
+										:from-sprite="true"
+									/>
+								</button>
+								<transition name="kvfade">
+									<div v-show="showAddACard">
+										<braintree-drop-in-interface
+											v-if="isClientReady"
+											ref="braintreeDropInInterface"
+											:payment-types="['card']"
+											auth="token-key"
+											:key="dropInComponentKey"
+											@transactions-enabled="enableAddCardButton = $event"
+										/>
+									</div>
+								</transition>
+							</fieldset>
+							<fieldset>
+								<div v-if="!showAddACard">
+									<kv-button
+										class="smaller payment-settings-default-form__save-button"
+										v-if="!isProcessing"
+										@click.native="savePaymentSettings"
+										:disabled="!isChanged || $v.$invalid"
+									>
+										Save Settings
+									</kv-button>
+									<kv-button class="smaller" v-else>
+										Saving <kv-loading-spinner />
+									</kv-button>
+								</div>
+								<div v-if="showAddACard">
+									<kv-button
+										value="submit"
+										id="dropin-submit"
+										class="smaller payment-settings-default-form__add-button"
+										:disabled="!enableAddCardButton || isProcessing"
+										@click.native="submitDropInAddACard"
+									>
+										<kv-icon name="lock" />
+										Add card <kv-loading-spinner v-if="isProcessing" />
+									</kv-button>
+								</div>
+							</fieldset>
+						</form>
+					</template>
+				</kv-settings-card>
+			</div>
+		</kv-default-wrapper>
 
 		<!-- Are you sure? -->
 		<kv-lightbox
@@ -106,10 +108,10 @@
 			:visible="showRemoveLightbox"
 			@lightbox-closed="showRemoveLightbox = false"
 		>
-			<h2 class="fs-exclude">
+			<h2 class="fs-exclude tw-mb-4">
 				Are you sure you want to remove the card {{ lowerCaseDescription }}?
 			</h2>
-			<p>
+			<p class="tw-mb-4">
 				This will remove this card from your payment settings forever.
 			</p>
 			<template #controls>
@@ -138,10 +140,10 @@
 			:visible="showActiveLightbox"
 			@lightbox-closed="showActiveLightbox = false"
 		>
-			<h2 class="fs-exclude">
+			<h2 class="fs-exclude tw-mb-4">
 				Unable to remove card {{ lowerCaseDescription }}
 			</h2>
-			<p>
+			<p class="tw-mb-4">
 				This card is used in your Monthly Good or Auto Deposit, and can be edited
 				<router-link to="/settings/subscriptions">
 					here
@@ -167,6 +169,7 @@ import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
 
 import KvButton from '@/components/Kv/KvButton';
+import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -196,6 +199,7 @@ export default {
 	components: {
 		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvButton,
+		KvDefaultWrapper,
 		KvIcon,
 		KvLightbox,
 		KvLoadingSpinner,
@@ -419,12 +423,6 @@ export default {
 @import 'settings';
 
 .payments {
-	.title-area {
-		padding: 1.625rem 0;
-		margin-bottom: 2rem;
-		background-color: $white;
-	}
-
 	.payment-settings-default-form {
 		&__save-button {
 			margin-top: 1.75rem;
@@ -483,7 +481,6 @@ export default {
 	}
 
 	.arrow {
-		stroke: $blue;
 		width: rem-calc(13);
 		height: rem-calc(9);
 
