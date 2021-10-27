@@ -18,7 +18,7 @@
 			title="Criteria too narrow"
 			class="lightbox"
 		>
-			<p class="warning-text">
+			<p class="tw-mb-4 tw-text-subhead">
 				There {{ beVerb }} {{ loansLeft }} that {{ matchVerb }} your criteria -
 				we may not be able to lend your funds.
 			</p>
@@ -149,11 +149,6 @@ export default {
 		& >>> .line {
 			background-color: $white;
 		}
-	}
-
-	.warning-text {
-		font-size: rem-calc(18);
-		margin-bottom: 1.5rem;
 	}
 
 	.warning-buttons {

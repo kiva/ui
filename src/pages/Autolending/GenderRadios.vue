@@ -1,6 +1,6 @@
 <template>
-	<div class="gender-radios">
-		<h3 class="filter-title">
+	<div>
+		<h3 class="tw-mb-2">
 			Genders
 		</h3>
 		<kv-radio
@@ -84,6 +84,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

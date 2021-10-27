@@ -1,12 +1,13 @@
 <template>
-	<div class="settings-card" :class="{ obscure: disabled }">
-		<div class="settings-card__content-wrapper">
-			<h2>{{ title }}</h2>
-			<div class="settings-card__content">
-				<!-- @slot Content of the settings card. Should not be empty. -->
-				<slot name="content"></slot>
-			</div>
-		</div>
+	<div
+		class="tw-bg-primary tw-p-4 tw-mb-4 tw-w-full"
+		:class="{ 'tw-opacity-low tw-pointer-events-none': disabled }"
+	>
+		<h2 class="tw-mb-2">
+			{{ title }}
+		</h2>
+		<!-- @slot Content of the settings card. Should not be empty. -->
+		<slot name="content"></slot>
 	</div>
 </template>
 
@@ -34,18 +35,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.obscure {
-	opacity: 0.4;
-	pointer-events: none;
-}
-
-.settings-card {
-	background: $white;
-	padding: 1.95rem;
-	margin-bottom: 1.5rem;
-}
-</style>

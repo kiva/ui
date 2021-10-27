@@ -1,93 +1,91 @@
 <template>
-	<div class="row">
-		<kv-settings-card class="column large-8" title="When your balance will be lent" :disabled="!isEnabled">
-			<template #content>
-				<span>
-					Your balance will be automatically lent
-					<span v-if="lendAfterDaysIdle === 0">
-						<kv-button class="text-link"
-							@click.native.prevent="showLightbox = true;"
-						>as soon as possible</kv-button>
-					</span><span v-if="lendAfterDaysIdle !== 0">
-						if you haven’t made a loan <kv-button class="text-link"
-							@click.native.prevent="showLightbox = true;"
-						>after {{ lendAfterDaysIdle }} days</kv-button>
-					</span><span>, and will include a <kv-button class="text-link"
-						@click.native.prevent="showLightbox = true;"
-					>{{ donation }}% donation</kv-button> to Kiva.</span>
-				</span>
-				<kv-lightbox
-					class="autolending-when-lightbox"
-					:visible="showLightbox"
-					title="Choose when your balance will be auto-lent"
-					@lightbox-closed="showLightbox = false"
-				>
-					<div class="when-inputs-wrapper">
-						<lend-timing-dropdown />
-						<!--
+	<kv-settings-card title="When your balance will be lent" :disabled="!isEnabled">
+		<template #content>
+			<p>
+				Your balance will be automatically lent
+				<span v-if="lendAfterDaysIdle === 0">
+					<button class="tw-text-link tw-font-medium"
+						@click="showLightbox = true;"
+					>as soon as possible</button>
+				</span><span v-if="lendAfterDaysIdle !== 0">
+					if you haven’t made a loan <button class="tw-text-link tw-font-medium"
+						@click="showLightbox = true;"
+					>after {{ lendAfterDaysIdle }} days</button>
+				</span><span>, and will include a <button class="tw-text-link tw-font-medium"
+					@click="showLightbox = true;"
+				>{{ donation }}% donation</button> to Kiva.</span>
+			</p>
+			<kv-lightbox
+				class="autolending-when-lightbox"
+				:visible="showLightbox"
+				title="Choose when your balance will be auto-lent"
+				@lightbox-closed="showLightbox = false"
+			>
+				<div class="when-inputs-wrapper">
+					<lend-timing-dropdown />
+					<!--
 							While lenders with an auto-deposit donation should not have an auto-lending donation after
 							the fixes for AUTO-44 and AUTO-206, the check below includes donation===0
 							for graceful degradation, so that users with both donations still see the actual value.
 						-->
-						<p v-if="hasAutoDepositDonation && donation === 0">
-							Your auto-deposit includes a donation, so auto-lending donations are disabled.
-						</p>
-						<div v-else>
-							<kv-radio
-								data-test="is-autolending-donation-on"
-								id="is-autolending-donation-on"
-								radio-value="on"
-								v-model="donationToggle"
-							>
-								Include a donation to Kiva of
-								<kv-select v-model="donation">
-									<option :value="0">
-										0%
-									</option>
-									<option :value="5">
-										5%
-									</option>
-									<option :value="10">
-										10%
-									</option>
-									<option :value="15">
-										15%
-									</option>
-									<option :value="20">
-										20%
-									</option>
-								</kv-select>
-							</kv-radio>
-							<kv-radio
-								data-test="is-autolending-donation-off"
-								id="is-autolending-donation-off"
-								radio-value="off"
-								v-model="donationToggle"
-							>
-								No donation to Kiva.
-							</kv-radio>
-						</div>
-					</div>
-					<template #controls>
-						<kv-button
-							data-test="when-save-button"
-							class="smaller button"
-							v-if="!isSaving"
-							@click.native="save"
-							:disabled="!isChanged"
+					<p v-if="hasAutoDepositDonation && donation === 0">
+						Your auto-deposit includes a donation, so auto-lending donations are disabled.
+					</p>
+					<div v-else>
+						<kv-radio
+							data-test="is-autolending-donation-on"
+							id="is-autolending-donation-on"
+							radio-value="on"
+							v-model="donationToggle"
 						>
-							Save
-						</kv-button>
-						<kv-button data-test="when-save-button" class="smaller button" v-else>
-							Saving <kv-loading-spinner />
-						</kv-button>
-					</template>
-				</kv-lightbox>
+							Include a donation to Kiva of
+							<kv-select v-model="donation">
+								<option :value="0">
+									0%
+								</option>
+								<option :value="5">
+									5%
+								</option>
+								<option :value="10">
+									10%
+								</option>
+								<option :value="15">
+									15%
+								</option>
+								<option :value="20">
+									20%
+								</option>
+							</kv-select>
+						</kv-radio>
+						<kv-radio
+							data-test="is-autolending-donation-off"
+							id="is-autolending-donation-off"
+							radio-value="off"
+							v-model="donationToggle"
+						>
+							No donation to Kiva.
+						</kv-radio>
+					</div>
+				</div>
+				<template #controls>
+					<kv-button
+						data-test="when-save-button"
+						class="smaller button"
+						v-if="!isSaving"
+						@click.native="save"
+						:disabled="!isChanged"
+					>
+						Save
+					</kv-button>
+					<kv-button data-test="when-save-button" class="smaller button" v-else>
+						Saving <kv-loading-spinner />
+					</kv-button>
+				</template>
+			</kv-lightbox>
 
-				<lend-timing-messaging />
-			</template>
-		</kv-settings-card>
-	</div>
+			<lend-timing-messaging />
+		</template>
+	</kv-settings-card>
 </template>
 
 <script>

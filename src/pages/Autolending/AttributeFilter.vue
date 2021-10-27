@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<h3 class="specific-filter-title">
+		<h4 class="tw-mb-2">
 			Attributes
-		</h3>
+		</h4>
 		<div class="row collapse">
 			<div class="small-12 columns">
 				<check-list
@@ -84,13 +84,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.specific-filter-title {
-	font-size: 1rem;
-	margin: 0 auto 0.5rem;
-	font-weight: $global-weight-highlight;
-}
-</style>

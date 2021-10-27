@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h3 class="filter-title">
+		<h3 class="tw-mb-2">
 			Individuals or groups
 		</h3>
 		<kv-radio
@@ -97,6 +97,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
