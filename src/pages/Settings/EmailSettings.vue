@@ -4,309 +4,322 @@
 			<the-my-kiva-secondary-menu />
 		</template>
 
-		<div class="email-settings__title-area">
+		<kv-default-wrapper>
 			<div class="row column">
-				<h1>Email Settings</h1>
+				<h1 class="tw-mb-4">
+					Email Settings
+				</h1>
 			</div>
-		</div>
-		<form @submit.prevent>
-			<div class="row">
-				<kv-settings-card class="columns small-12 large-8" title="">
-					<template #content>
-						<p>
-							To customize the communications you receive select specific emails
-							from the list below. You can also disable most email communication
-							but
-							<strong>Kiva is still legally required to send a few emails</strong>
-							about your account status and activity.
-						</p>
-						<label for="global-unsubscribed-input">
-							<strong>Do you want to receive emails from Kiva?</strong>
-						</label>
-						<kv-select
-							id="global-unsubscribed-input"
-							v-model="form.globalUnsubscribed"
-						>
-							<option :value="false">
-								Yes, send me emails
-							</option>
-							<option :value="true">
-								Send only legally required emails
-							</option>
-						</kv-select>
-					</template>
-				</kv-settings-card>
-			</div>
-
-			<div class="row">
-				<!-- General Settings -->
-				<kv-settings-card
-					class="columns small-12 large-8"
-					title="General Kiva / account updates"
-					:disabled="form.globalUnsubscribed"
-				>
-					<template #content>
-						<fieldset>
-							<kv-button class="text-link" @click.native="generalToggleAll()">
-								{{ generalAllSelected ? "Deselect" : "Select" }} All
-							</kv-button>
-							<kv-checkbox
-								id="lenderNews"
-								name="lenderNews"
-								v-model="form.lenderNews"
-								class="email-settings__checkbox"
-							>
-								News, inspiration and promotions
-							</kv-checkbox>
-							<kv-checkbox
-								id="accountUpdates"
-								name="accountUpdates"
-								v-model="form.accountUpdates"
-								class="email-settings__checkbox"
-							>
-								Portfolio and balance updates
-							</kv-checkbox>
-							<kv-checkbox
-								v-if="isMonthlyGoodSubscriber"
-								id="monthlyGood"
-								name="monthlyGood"
-								v-model="form.monthlyGood"
-								class="email-settings__checkbox"
-							>
-								Monthly Good updates
-							</kv-checkbox>
-							<label for="repayment-updates-input">Repayment notifications</label>
+			<form @submit.prevent>
+				<div class="row">
+					<kv-settings-card class="columns small-12 large-8">
+						<template #content>
+							<p class="tw-mb-4">
+								To customize the communications you receive select specific emails
+								from the list below. You can also disable most email communication
+								but
+								<strong>Kiva is still legally required to send a few emails</strong>
+								about your account status and activity.
+							</p>
+							<label for="global-unsubscribed-input" class="tw-block tw-mb-1">
+								Do you want to receive emails from Kiva?
+							</label>
 							<kv-select
-								id="repayment-updates-input"
-								v-model="form.repaymentUpdates"
+								id="global-unsubscribed-input"
+								v-model="form.globalUnsubscribed"
 							>
-								<option value="none">
-									Do not send
+								<option :value="false">
+									Yes, send me emails
 								</option>
-								<option value="nightly">
-									Send a nightly digest
-								</option>
-								<option value="monthly">
-									Send a monthly digest
+								<option :value="true">
+									Send only legally required emails
 								</option>
 							</kv-select>
-
-							<push-repayment-updates
-								class="email-settings__notifications"
-								v-show="form.repaymentUpdates !== 'none'"
-							/>
-
-							<label for="autolend-updates-input">Autolending notifications</label>
-							<kv-select
-								id="autolend-updates-input"
-								v-model="form.autolendUpdates"
-							>
-								<option value="none">
-									Do not send
-								</option>
-								<option value="nightly">
-									Send a nightly digest
-								</option>
-								<option value="monthly">
-									Send a monthly digest
-								</option>
-							</kv-select>
-							<a href="/lend/saved-search">Saved searches notifications</a>
-						</fieldset>
-					</template>
-				</kv-settings-card>
-			</div>
-
-			<div class="row">
-				<!-- Loan Settings -->
-				<kv-settings-card
-					class="columns small-12 large-8"
-					title="Lending activity updates"
-					:disabled="form.globalUnsubscribed"
-				>
-					<template #content>
-						<fieldset>
-							<kv-button class="text-link" @click.native="lendingToggleAll()">
-								{{ lendingAllSelected ? "Deselect" : "Select" }} All
-							</kv-button>
-							<kv-checkbox
-								id="loanUpdates"
-								name="loanUpdates"
-								v-model="form.loanUpdates"
-								class="email-settings__checkbox"
-							>
-								Loan and borrower updates
-							</kv-checkbox>
-							<kv-checkbox
-								id="commentsMessages"
-								name="commentsMessages"
-								v-model="form.commentsMessages"
-								class="email-settings__checkbox"
-							>
-								Loan comments, lender to lender messages
-							</kv-checkbox>
-							<label for="team-digests-input">Team digests</label>
-							<kv-select
-								id="team-digests-input"
-								v-model="form.teamDigests"
-							>
-								<option value="no">
-									Do not send
-								</option>
-								<option value="yes">
-									Send as they arrive
-								</option>
-								<option value="nightly">
-									Send a nightly digest
-								</option>
-								<option value="weekly">
-									Send a weekly digest
-								</option>
-							</kv-select>
-						</fieldset>
-
-						<!-- User per team preferences -->
-						<fieldset class="email-settings__per-team-prefs" v-if="hasTeams && form.teamDigests !== 'no'">
-							<kv-button
-								class="text-link"
-								@click.native="teamsShown = !teamsShown"
-							>
-								{{ teamsShown ? "Hide" : "Show" }} per-team preferences
-							</kv-button>
-							<div v-if="teamsShown">
-								<template v-for="(team, index) in form.teamMessageFrequencies">
-									<label
-										for="single-team-digest-input"
-										:key="`team${index}-label`"
-									>{{ team.name }}</label>
-									<kv-select :key="`team${index}-select`"
-										id="single-team-digest-input"
-										v-model="team.frequency"
-									>
-										<option value="no">
-											Do not send
-										</option>
-										<option value="yes">
-											Send as they arrive
-										</option>
-										<option value="nightly">
-											Send a nightly digest
-										</option>
-										<option value="weekly">
-											Send a weekly digest
-										</option>
-										<option value="default">
-											Use my default for teams
-										</option>
-									</kv-select>
-								</template>
-							</div>
-						</fieldset>
-					</template>
-				</kv-settings-card>
-			</div>
-
-			<div class="row" v-if="isBorrower">
-				<!-- Borrower Settings -->
-				<kv-settings-card
-					class="columns small-12 large-8"
-					title="Entrepreneur tips"
-					:disabled="form.globalUnsubscribed"
-				>
-					<template #content>
-						<fieldset>
-							<kv-button class="text-link" @click.native="borrowerToggleAll()">
-								{{ borrowerAllSelected ? "Deselect" : "Select" }} All
-							</kv-button>
-							<kv-checkbox
-								id="leadNurturing"
-								name="leadNurturing"
-								v-model="form.leadNurturing"
-								class="email-settings__checkbox"
-							>
-								Getting started with Kiva
-							</kv-checkbox>
-							<kv-checkbox
-								id="onboardingSupport"
-								name="onboardingSupport"
-								v-model="form.onboardingSupport"
-								class="email-settings__checkbox"
-							>
-								Loan success guide
-							</kv-checkbox>
-							<kv-checkbox
-								id="borrowerNews"
-								name="borrowerNews"
-								v-model="form.borrowerNews"
-								class="email-settings__checkbox"
-							>
-								Entrepreneur community updates
-							</kv-checkbox>
-						</fieldset>
-					</template>
-				</kv-settings-card>
-			</div>
-
-			<div class="row" v-if="isTrustee">
-				<!-- Trustee Settings -->
-				<kv-settings-card
-					class="columns small-12 large-8"
-					title="Trustee updates"
-					:disabled="form.globalUnsubscribed"
-				>
-					<template #content>
-						<fieldset>
-							<kv-button class="text-link" @click.native="trusteeToggleAll()">
-								{{ trusteeAllSelected ? "Deselect" : "Select" }} All
-							</kv-button>
-							<kv-checkbox
-								id="networkTransactions"
-								name="networkTransactions"
-								v-model="form.networkTransactions"
-								class="email-settings__checkbox"
-							>
-								Borrower network transactions
-							</kv-checkbox>
-							<kv-checkbox
-								id="networkDigest"
-								name="networkDigest"
-								v-model="form.networkDigest"
-								class="email-settings__checkbox"
-							>
-								Borrower network digest
-							</kv-checkbox>
-							<kv-checkbox
-								id="trusteeNews"
-								name="trusteeNews"
-								v-model="form.trusteeNews"
-								class="email-settings__checkbox"
-							>
-								Trustee news and tips
-							</kv-checkbox>
-						</fieldset>
-					</template>
-				</kv-settings-card>
-			</div>
-
-			<div class="row">
-				<div class="columns small-12 large-8">
-					<kv-button
-						class="smallest"
-						@click.native="saveSettings"
-						:disabled="!isChanged || isProcessing"
-					>
-						Save email settings <kv-loading-spinner v-if="isProcessing" />
-					</kv-button>
-					<kv-button
-						v-if="isChanged"
-						class="text-link email-settings__reset-button"
-						@click.native="resetForm"
-					>
-						Reset
-					</kv-button>
+						</template>
+					</kv-settings-card>
 				</div>
-			</div>
-		</form>
+
+				<div class="row">
+					<!-- General Settings -->
+					<kv-settings-card
+						class="columns small-12 large-8"
+						title="General Kiva / account updates"
+						:disabled="form.globalUnsubscribed"
+					>
+						<template #content>
+							<fieldset>
+								<button class="tw-text-link tw-font-medium tw-mb-2" @click="generalToggleAll()">
+									{{ generalAllSelected ? "Deselect" : "Select" }} All
+								</button>
+								<kv-checkbox
+									id="lenderNews"
+									name="lenderNews"
+									v-model="form.lenderNews"
+									class="email-settings__checkbox"
+								>
+									News, inspiration and promotions
+								</kv-checkbox>
+								<kv-checkbox
+									id="accountUpdates"
+									name="accountUpdates"
+									v-model="form.accountUpdates"
+									class="email-settings__checkbox"
+								>
+									Portfolio and balance updates
+								</kv-checkbox>
+								<kv-checkbox
+									v-if="isMonthlyGoodSubscriber"
+									id="monthlyGood"
+									name="monthlyGood"
+									v-model="form.monthlyGood"
+									class="email-settings__checkbox"
+								>
+									Monthly Good updates
+								</kv-checkbox>
+
+								<label
+									class="tw-block tw-mt-4 tw-mb-1"
+									for="repayment-updates-input"
+								>Repayment notifications</label>
+								<kv-select
+									id="repayment-updates-input"
+									v-model="form.repaymentUpdates"
+								>
+									<option value="none">
+										Do not send
+									</option>
+									<option value="nightly">
+										Send a nightly digest
+									</option>
+									<option value="monthly">
+										Send a monthly digest
+									</option>
+								</kv-select>
+
+								<push-repayment-updates
+									class="email-settings__notifications tw-mt-2"
+									v-show="form.repaymentUpdates !== 'none'"
+								/>
+
+								<label
+									for="autolend-updates-input"
+									class=" tw-block tw-mt-4 tw-mb-1"
+								>Autolending notifications</label>
+								<kv-select
+									id="autolend-updates-input"
+									v-model="form.autolendUpdates"
+									class="tw-mb-4"
+								>
+									<option value="none">
+										Do not send
+									</option>
+									<option value="nightly">
+										Send a nightly digest
+									</option>
+									<option value="monthly">
+										Send a monthly digest
+									</option>
+								</kv-select>
+								<a href="/lend/saved-search" class="tw-font-medium">Saved searches notifications</a>
+							</fieldset>
+						</template>
+					</kv-settings-card>
+				</div>
+
+				<div class="row">
+					<!-- Loan Settings -->
+					<kv-settings-card
+						class="columns small-12 large-8"
+						title="Lending activity updates"
+						:disabled="form.globalUnsubscribed"
+					>
+						<template #content>
+							<fieldset>
+								<button class="tw-text-link tw-font-medium tw-mb-2" @click="lendingToggleAll()">
+									{{ lendingAllSelected ? "Deselect" : "Select" }} All
+								</button>
+								<kv-checkbox
+									id="loanUpdates"
+									name="loanUpdates"
+									v-model="form.loanUpdates"
+									class="email-settings__checkbox"
+								>
+									Loan and borrower updates
+								</kv-checkbox>
+								<kv-checkbox
+									id="commentsMessages"
+									name="commentsMessages"
+									v-model="form.commentsMessages"
+									class="email-settings__checkbox"
+								>
+									Loan comments, lender to lender messages
+								</kv-checkbox>
+								<label for="team-digests-input" class="tw-block tw-mb-1 tw-mt-4">Team digests</label>
+								<kv-select
+									id="team-digests-input"
+									v-model="form.teamDigests"
+								>
+									<option value="no">
+										Do not send
+									</option>
+									<option value="yes">
+										Send as they arrive
+									</option>
+									<option value="nightly">
+										Send a nightly digest
+									</option>
+									<option value="weekly">
+										Send a weekly digest
+									</option>
+								</kv-select>
+							</fieldset>
+
+							<!-- User per team preferences -->
+							<fieldset class="email-settings__per-team-prefs tw-mt-4"
+								v-if="hasTeams && form.teamDigests !== 'no'"
+							>
+								<button
+									class="tw-text-link tw-font-medium tw-mb-2"
+									@click="teamsShown = !teamsShown"
+								>
+									{{ teamsShown ? "Hide" : "Show" }} per-team preferences
+								</button>
+								<div v-if="teamsShown">
+									<template v-for="(team, index) in form.teamMessageFrequencies">
+										<label
+											for="single-team-digest-input"
+											:key="`team${index}-label`"
+											class="tw-block tw-mb-1"
+										>{{ team.name }}</label>
+										<kv-select :key="`team${index}-select`"
+											id="single-team-digest-input"
+											v-model="team.frequency"
+										>
+											<option value="no">
+												Do not send
+											</option>
+											<option value="yes">
+												Send as they arrive
+											</option>
+											<option value="nightly">
+												Send a nightly digest
+											</option>
+											<option value="weekly">
+												Send a weekly digest
+											</option>
+											<option value="default">
+												Use my default for teams
+											</option>
+										</kv-select>
+									</template>
+								</div>
+							</fieldset>
+						</template>
+					</kv-settings-card>
+				</div>
+
+				<div class="row" v-if="isBorrower">
+					<!-- Borrower Settings -->
+					<kv-settings-card
+						class="columns small-12 large-8"
+						title="Entrepreneur tips"
+						:disabled="form.globalUnsubscribed"
+					>
+						<template #content>
+							<fieldset>
+								<button class="tw-text-link tw-font-medium" @clic="borrowerToggleAll()">
+									{{ borrowerAllSelected ? "Deselect" : "Select" }} All
+								</button>
+								<kv-checkbox
+									id="leadNurturing"
+									name="leadNurturing"
+									v-model="form.leadNurturing"
+									class="email-settings__checkbox"
+								>
+									Getting started with Kiva
+								</kv-checkbox>
+								<kv-checkbox
+									id="onboardingSupport"
+									name="onboardingSupport"
+									v-model="form.onboardingSupport"
+									class="email-settings__checkbox"
+								>
+									Loan success guide
+								</kv-checkbox>
+								<kv-checkbox
+									id="borrowerNews"
+									name="borrowerNews"
+									v-model="form.borrowerNews"
+									class="email-settings__checkbox"
+								>
+									Entrepreneur community updates
+								</kv-checkbox>
+							</fieldset>
+						</template>
+					</kv-settings-card>
+				</div>
+
+				<div class="row" v-if="isTrustee">
+					<!-- Trustee Settings -->
+					<kv-settings-card
+						class="columns small-12 large-8"
+						title="Trustee updates"
+						:disabled="form.globalUnsubscribed"
+					>
+						<template #content>
+							<fieldset>
+								<button class="tw-text-link tw-font-medium" @click="trusteeToggleAll()">
+									{{ trusteeAllSelected ? "Deselect" : "Select" }} All
+								</button>
+								<kv-checkbox
+									id="networkTransactions"
+									name="networkTransactions"
+									v-model="form.networkTransactions"
+									class="email-settings__checkbox"
+								>
+									Borrower network transactions
+								</kv-checkbox>
+								<kv-checkbox
+									id="networkDigest"
+									name="networkDigest"
+									v-model="form.networkDigest"
+									class="email-settings__checkbox"
+								>
+									Borrower network digest
+								</kv-checkbox>
+								<kv-checkbox
+									id="trusteeNews"
+									name="trusteeNews"
+									v-model="form.trusteeNews"
+									class="email-settings__checkbox"
+								>
+									Trustee news and tips
+								</kv-checkbox>
+							</fieldset>
+						</template>
+					</kv-settings-card>
+				</div>
+
+				<div class="row">
+					<div class="columns small-12 large-8">
+						<kv-button
+							class="smallest"
+							@click.native="saveSettings"
+							:disabled="!isChanged || isProcessing"
+						>
+							Save email settings <kv-loading-spinner v-if="isProcessing" />
+						</kv-button>
+						<button
+							v-if="isChanged"
+							class="tw-text-link tw-font-medium email-settings__reset-button"
+							@click="resetForm"
+						>
+							Reset
+						</button>
+					</div>
+				</div>
+			</form>
+		</kv-default-wrapper>
 	</www-page>
 </template>
 
@@ -323,6 +336,7 @@ import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import PushRepaymentUpdates from '@/components/Settings/PushRepaymentUpdates';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 
 const pageQuery = gql`
 	query communicationPreferences {
@@ -393,6 +407,7 @@ export default {
 	components: {
 		KvButton,
 		KvCheckbox,
+		KvDefaultWrapper,
 		KvSelect,
 		KvLoadingSpinner,
 		KvSettingsCard,
@@ -714,22 +729,12 @@ export default {
 		margin-left: 2rem;
 	}
 
-	&__title-area {
-		padding: 1.625rem 0;
-		margin-bottom: 2rem;
-		background-color: $white;
-	}
-
 	::v-deep .text-link.button {
 		margin-bottom: 0.5rem;
 	}
 
 	&__checkbox {
 		margin-bottom: 0.25rem;
-	}
-
-	label {
-		font-size: 1rem;
 	}
 
 	#accountUpdates {
