@@ -18,7 +18,7 @@
 			"title": "homepage image sm"
 		},
 		{
-			"description": "Description for Homepage Image med",
+			"description": "Description for Homepage Image md",
 			"file": {
 				"contentType": "image/jpeg",
 				"details": {
@@ -28,10 +28,10 @@
 					},
 					"size": 87066
 				},
-				"fileName": "homepage_image_med.jpg",
-				"url": "//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_med.jpg"
+				"fileName": "homepage_image_md.jpg",
+				"url": "//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_md.jpg"
 			},
-			"title": "homepage image med"
+			"title": "homepage Image md"
 		},
 		{
 			"description": "Description for Homepage Image lg",
@@ -64,54 +64,6 @@
 				"url": "//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_xl.jpg"
 			},
 			"title": "homepage image xl"
-		},
-		{
-			"description": "Description for Homepage Image xxl",
-			"file": {
-				"contentType": "image/jpeg",
-				"details": {
-					"image": {
-						"height": 500,
-						"width": 1362
-					},
-					"size": 87066
-				},
-				"fileName": "homepage_image_xxl.jpg",
-				"url": "//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_xxl.jpg"
-			},
-			"title": "homepage image xxl"
-		},
-		{
-			"description": "Description for Homepage Image xga",
-			"file": {
-				"contentType": "image/jpeg",
-				"details": {
-					"image": {
-						"height": 500,
-						"width": 1362
-					},
-					"size": 87066
-				},
-				"fileName": "homepage_image_xga.jpg",
-				"url": "//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_xga.jpg"
-			},
-			"title": "homepage image xga"
-		},
-		{
-			"description": "Description for Homepage Image wxga",
-			"file": {
-				"contentType": "image/jpeg",
-				"details": {
-					"image": {
-						"height": 500,
-						"width": 1362
-					},
-					"size": 87066
-				},
-				"fileName": "homepage_image_wxga.jpg",
-				"url": "//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_wxga.jpg"
-			},
-			"title": "homepage image wxga"
 		}
 	],
 	"name": "Sample Responsive Image Set",
@@ -119,7 +71,7 @@
 		"sm": {
 			"width": 550
 		},
-		"med": {
+		"md": {
 			"width": 450
 		},
 		"lg": {
@@ -127,15 +79,6 @@
 		},
 		"xl": {
 			"width": 550
-		},
-		"xxl": {
-			"width": 450
-		},
-		"xga": {
-			"width": 350
-		},
-		"wxga": {
-			"width": 350
 		}
 	}
 }

@@ -74,27 +74,18 @@
 		}
 	  ],
 	  "responsiveSizing": {
-		"sm": {
-			"width": 550
-		},
-		"med": {
-			"width": 450
-		},
-		"lg": {
-			"width": 350
-		},
-		"xl": {
-			"width": 550
-		},
-		"xxl": {
-			"width": 450
-		},
-		"xga": {
-			"width": 350
-		},
-		"wxga": {
-			"width": 350
+			"sm": {
+				"width": 550
+			},
+			"md": {
+				"width": 450
+			},
+			"lg": {
+				"width": 350
+			},
+			"xl": {
+				"width": 550
+			}
 		}
-	}
 	}
 }

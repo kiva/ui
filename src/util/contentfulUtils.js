@@ -1,5 +1,6 @@
 import _get from 'lodash/get';
 import { camelCase } from 'change-case';
+import kvTokensPrimitives from '@kiva/kv-tokens/primitives.json';
 
 function determineResponsiveSizeFromFileName(filename) {
 	// retina
@@ -52,14 +53,12 @@ export function responsiveImageSetSourceSets(contentfulResponsiveImageObject) {
 			return [];
 		}
 
-		// All screen breakpoints:
-		// small: 0,
-		// medium: 481px,
-		// large: 681px,
-		// xlarge: 761px,
-		// xxlarge: 989px,
-		// xga: 1025px,
-		// wxga: 1441px,
+		// kvTokensPrimitives.breakpoints:
+		// "breakpoints": {
+		// 	"md": 734,
+		// 	"lg": 1024,
+		// 	"xl": 1440
+		// },
 
 		let mediaSize;
 		let width;
@@ -68,24 +67,20 @@ export function responsiveImageSetSourceSets(contentfulResponsiveImageObject) {
 		const returnWidth = size => {
 			let maxWidthAtBreakpoint;
 			switch (size) {
-				case ('med'):
-					maxWidthAtBreakpoint = 681;
+				case ('md'):
+					maxWidthAtBreakpoint = kvTokensPrimitives?.breakpoints?.lg || 1024;
 					break;
 				case ('lg'):
-					maxWidthAtBreakpoint = 761;
+					maxWidthAtBreakpoint = kvTokensPrimitives?.breakpoints?.xl || 1440;
 					break;
 				case ('xl'):
-					maxWidthAtBreakpoint = 989;
-					break;
-				case ('xxl'):
-					maxWidthAtBreakpoint = 1025;
-					break;
-				case ('xga'):
-					maxWidthAtBreakpoint = 1441;
+					// max width at this breakpoint is as large as possible
+					// lets return image width
+					maxWidthAtBreakpoint = entry.file?.details?.image?.width;
 					break;
 				default:
 					// small  or default
-					maxWidthAtBreakpoint = 481;
+					maxWidthAtBreakpoint = kvTokensPrimitives?.breakpoints?.md || 734;
 					break;
 			}
 			// return size or default
@@ -93,41 +88,26 @@ export function responsiveImageSetSourceSets(contentfulResponsiveImageObject) {
 		};
 
 		switch (true) {
-			case (entry.title.indexOf('med') !== -1):
-				mediaSize = 'min-width: 481px';
-				width = returnWidth('med');
-				sortOrder = 6;
-				break;
-			case (entry.title.indexOf('lg') !== -1):
-				mediaSize = 'min-width: 681px';
-				width = returnWidth('lg');
-				sortOrder = 5;
-				break;
-			case (entry.title.indexOf('xl') !== -1 && entry.title.indexOf('xxl') === -1):
-				mediaSize = 'min-width: 761px';
-				width = returnWidth('xl');
-				sortOrder = 4;
-				break;
-			case (entry.title.indexOf('xxl') !== -1):
-				mediaSize = 'min-width: 989px';
-				width = returnWidth('xxl');
+			case (entry.title.indexOf('md') !== -1):
+				mediaSize = 'min-width: 734px';
+				width = returnWidth('md');
 				sortOrder = 3;
 				break;
-			case (entry.title.indexOf('xga') !== -1 && entry.title.indexOf('wxga') === -1):
-				mediaSize = 'min-width: 1025px';
-				width = returnWidth('xga');
+			case (entry.title.indexOf('lg') !== -1):
+				mediaSize = 'min-width: 1024px';
+				width = returnWidth('lg');
 				sortOrder = 2;
 				break;
-			case (entry.title.indexOf('wxga') !== -1):
-				mediaSize = 'min-width: 1441px';
-				width = returnWidth('wxga');
+			case (entry.title.indexOf('xl') !== -1):
+				mediaSize = 'min-width: 1440px';
+				width = returnWidth('xl');
 				sortOrder = 1;
 				break;
 			default:
 				// small (entry.title.indexOf('sm') !== -1 ) or default
 				mediaSize = 'min-width: 0';
 				width = returnWidth('sm');
-				sortOrder = 7;
+				sortOrder = 4;
 				break;
 		}
 		const aspectRatio = (entry.file?.details?.image?.height ?? 0) / (entry.file?.details?.image?.width ?? 1);// eslint-disable-line max-len

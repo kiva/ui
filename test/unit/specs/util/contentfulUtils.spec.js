@@ -104,7 +104,7 @@ describe('contentfulUtils.js', () => {
 					sm: {
 						width: 550
 					},
-					med: {
+					md: {
 						width: 450
 					},
 					lg: {
@@ -113,15 +113,6 @@ describe('contentfulUtils.js', () => {
 					xl: {
 						width: 550
 					},
-					xxl: {
-						width: 450
-					},
-					xga: {
-						width: 350
-					},
-					wxga: {
-						width: 350
-					}
 				}
 			});
 		});
@@ -215,15 +206,15 @@ describe('contentfulUtils.js', () => {
 			const setResult = [
 				{
 					height: 128,
-					media: 'min-width: 681px',
-					sortOrder: 5,
+					media: 'min-width: 1024px',
+					sortOrder: 2,
 					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_lg.jpg',
 					width: 350,
 				},
 				{
 					height: 202,
 					media: 'min-width: 0',
-					sortOrder: 7,
+					sortOrder: 4,
 					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_sm.jpg',
 					width: 550,
 				},
@@ -290,11 +281,11 @@ describe('contentfulUtils.js', () => {
 			const sourceSets = responsiveImageSetSourceSets(setWithMultipleSize);
 			const setResult = [
 				{
-					height: 279,
-					media: 'min-width: 681px',
-					sortOrder: 5,
+					height: 529,
+					media: 'min-width: 1024px',
+					sortOrder: 2,
 					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_lg1.jpg',
-					width: 761,
+					width: 1440,
 				},
 			];
 			expect(sourceSets).toEqual(setResult);
@@ -330,7 +321,7 @@ describe('contentfulUtils.js', () => {
 						title: 'homepage image'
 					},
 					{
-						description: 'Description for Homepage Image med',
+						description: 'Description for Homepage Image md',
 						file: {
 							contentType: 'image/jpeg',
 							details: {
@@ -340,10 +331,10 @@ describe('contentfulUtils.js', () => {
 								},
 								size: 87066
 							},
-							fileName: 'homepage_image_med.jpg',
-							url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_med.jpg'
+							fileName: 'homepage_image_md.jpg',
+							url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_md.jpg'
 						},
-						title: 'homepage image med'
+						title: 'homepage Image md'
 					},
 					{
 						description: 'Description for Homepage Image lg',
@@ -367,22 +358,22 @@ describe('contentfulUtils.js', () => {
 			const setResult = [
 				{
 					height: 128,
-					media: 'min-width: 681px',
-					sortOrder: 5,
+					media: 'min-width: 1024px',
+					sortOrder: 2,
 					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_lg.jpg',
 					width: 350,
 				},
 				{
-					height: 250,
-					media: 'min-width: 481px',
-					sortOrder: 6,
-					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_med.jpg',
-					width: 681,
+					height: 376,
+					media: 'min-width: 734px',
+					sortOrder: 3,
+					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_md.jpg',
+					width: 1024,
 				},
 				{
 					height: 202,
 					media: 'min-width: 0',
-					sortOrder: 7,
+					sortOrder: 4,
 					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_sm.jpg',
 					width: 550,
 				},
@@ -413,7 +404,7 @@ describe('contentfulUtils.js', () => {
 						title: 'homepage image'
 					},
 					{
-						description: 'Description for Homepage Image med',
+						description: 'Description for Homepage Image md',
 						file: {
 							contentType: 'image/jpeg',
 							details: {
@@ -423,10 +414,10 @@ describe('contentfulUtils.js', () => {
 								},
 								size: 87066
 							},
-							fileName: 'homepage_image_med.jpg',
-							url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_med.jpg'
+							fileName: 'homepage_image_md.jpg',
+							url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_md.jpg'
 						},
-						title: 'homepage image med'
+						title: 'homepage Image md'
 					}
 				]
 			};
@@ -434,15 +425,15 @@ describe('contentfulUtils.js', () => {
 			const setResult = [
 				{
 					height: 165,
-					media: 'min-width: 481px',
-					sortOrder: 6,
-					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_med.jpg',
+					media: 'min-width: 734px',
+					sortOrder: 3,
+					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_md.jpg',
 					width: 450,
 				},
 				{
 					height: 202,
 					media: 'min-width: 0',
-					sortOrder: 7,
+					sortOrder: 4,
 					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image.jpg',
 					width: 550,
 				},
