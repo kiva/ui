@@ -80,6 +80,29 @@
 								</kv-checkbox>
 							</fieldset>
 							<br>
+							<fieldset>
+								<label class="tw-text-h4 tw-block"
+									for="loanTerm"
+								>
+									Loan Term Filter
+								</label>
+								<kv-select class="tw-mt-2"
+									id="loanTerm"
+									v-model="lenderTermLimit"
+								>
+									<option value="0">
+										All Loans
+									</option>
+									<option value="24">
+										Up to 24 months
+									</option>
+									<option value="12">
+										Up to 12 months
+									</option>
+								</kv-select>
+							</fieldset>
+							<br>
+							<hr>
 							<kv-button
 								v-model="loanQueryFilters"
 								@click="updateQuery"
@@ -127,7 +150,7 @@
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
 import { lightHeader } from '@/util/siteThemes';
 import {
-	fetchData, filterGender, filterSector, fetchSectors, fetchCountryFacets, filterCountry
+	fetchData, filterGender, filterSector, fetchSectors, fetchCountryFacets, filterCountry, filterLoanTerm,
 } from '@/util/flssUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
@@ -137,6 +160,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
 	inject: ['apollo'],
@@ -149,6 +173,7 @@ export default {
 		KvRadio,
 		KvButton,
 		KvCheckbox,
+		KvSelect
 	},
 	data() {
 		return {
@@ -163,6 +188,7 @@ export default {
 			gender: 'both',
 			sector: ['Food', 'Education'],
 			country: ['TZ', 'KE'],
+			lenderTermLimit: 0,
 			allSectors: [],
 			allCountries: [],
 			allIsoCodes: [],
@@ -177,19 +203,17 @@ export default {
 			// data pull only from production endpoint,
 			// not implmented with a component until design path
 			// with product is completed.
-			console.log('from getAllCountries() start');
 			const countryFacets = await fetchCountryFacets(this.apollo);
 			this.allCountries = countryFacets.map(cf => cf.country.name);
 			// pulled in IsoCodes b/c the loan query filters are currently coded
 			// to use ISO Codes instead of country names in queryFilters() right now
 			this.allIsoCodes = countryFacets.map(cf => cf.country.isoCode);
-			console.log('all countries:', this.allCountries);
-			console.log('all isocodes', this.allIsoCodes);
 		},
 		resetFilter() {
 			this.gender = 'both';
 			this.sector = [];
 			this.country = [];
+			this.lenderTermLimit = 0;
 			this.loanQueryFilters = {};
 			this.runQuery(this.loanQueryFilters);
 		},
@@ -233,8 +257,12 @@ export default {
 			const countryFilter = filterCountry(this.country, this.allIsoCodes);
 			console.log('this is countryFilter', countryFilter);
 
+			const loanTermFilter = filterLoanTerm(this.lenderTermLimit);
+			console.log('this is filterLoanTerm', loanTermFilter);
+
 			const loanQueryFilters = {
 				countryIsoCode: countryFilter,
+				lenderRepaymentTerm: loanTermFilter,
 				// TODO: enable genderFilter when its working
 				// gender: genderFilter,
 				sector: sectorFilter,
@@ -247,6 +275,7 @@ export default {
 		gender: { handler: 'updateQuery' },
 		sector: { handler: 'updateQuery' },
 		country: { handler: 'updateQuery' },
+		loanTermLimit: { handler: 'updateQuery' },
 	},
 };
 </script>

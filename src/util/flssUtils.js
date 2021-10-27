@@ -109,3 +109,16 @@ export function filterCountry(countryList, allCountries) {
 	console.log('from filterCountry:', filterCountry);
 	return countryFilter;
 }
+
+export function filterLoanTerm(loanTermLimit) {
+	const value = parseInt(loanTermLimit, 10);
+	const maxTerm = 60;
+	let loanTermFilter = { range: { lte: maxTerm } };
+
+	if (value > 0 && value <= maxTerm) {
+		loanTermFilter = { range: { lte: value } };
+		return loanTermFilter;
+	}
+	console.log('from filterLoanTerm:', loanTermFilter);
+	return loanTermFilter;
+}
