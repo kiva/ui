@@ -1,6 +1,6 @@
 <template>
 	<p
-		class="tw-mt-2 tw-text-base"
+		class="tw-mt-2"
 		:class="{'tw-font-medium' : strong, 'tw-font-book': !strong }"
 	>
 		<!-- eslint-disable-next-line max-len  -->
