@@ -1,13 +1,15 @@
 <template>
-	<div
-		class="tw-bg-primary tw-p-4 tw-mb-4 tw-w-full"
-		:class="{ 'tw-opacity-low tw-pointer-events-none': disabled }"
-	>
-		<h2 class="tw-mb-2">
-			{{ title }}
-		</h2>
-		<!-- @slot Content of the settings card. Should not be empty. -->
-		<slot name="content"></slot>
+	<div>
+		<div
+			class="tw-bg-primary tw-p-4 tw-mb-4 tw-w-full"
+			:class="{ 'tw-opacity-low tw-pointer-events-none': disabled }"
+		>
+			<h2 class="tw-mb-2" v-if="title">
+				{{ title }}
+			</h2>
+			<!-- @slot Content of the settings card. Should not be empty. -->
+			<slot name="content"></slot>
+		</div>
 	</div>
 </template>
 
