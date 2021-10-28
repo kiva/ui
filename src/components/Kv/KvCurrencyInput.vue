@@ -1,23 +1,32 @@
 <template>
-	<input
+	<kv-text-input
 		type="text"
 		ref="kvCurrencyInputRef"
 		v-model="displayValue"
 		@blur="isInputActive = false"
 		@focus="isInputActive = true"
 		placeholder="$"
-	>
+		:id="id"
+	/>
 </template>
 
 <script>
 import numeral from 'numeral';
+import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 export default {
+	components: {
+		KvTextInput
+	},
 	props: {
 		value: {
 			type: Number,
 			default: 0,
-		}
+		},
+		id: {
+			type: String,
+			default: '',
+		},
 	},
 	data() {
 		return {
