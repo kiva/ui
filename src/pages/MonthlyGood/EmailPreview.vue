@@ -1,15 +1,16 @@
 <template>
 	<div class="email-preview-section-wrapper row" id="email-preview">
-		<div class="small-12 large-6 columns">
+		<div class="small-12 large-6 columns tw-relative">
 			<kv-responsive-image
-				class="img"
+				class="tw-mx-auto lg:tw-absolute lg:tw-bottom-0 lg:tw-left-1/2 lg:tw--translate-x-1/2"
+				style="max-width: 21.88rem;"
 				:images="images"
 				alt="A Monthly Good email in your inbox"
 			/>
 		</div>
 		<div class="small-12 large-6 columns">
-			<div class="email-preview-text">
-				<h2 class="impact-text">
+			<div class="tw-py-4 md:tw-py-6 lg:tw-py-8">
+				<h2 class="tw-text-h1 tw-mb-4">
 					Monthly Good, delivered to your inbox
 				</h2>
 				<p>
@@ -43,22 +44,3 @@ export default {
 
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-h2 {
-	color: $kiva-green;
-	margin-bottom: 1.85rem;
-}
-
-.email-preview-text {
-	padding: 4rem 1rem;
-}
-
-.img {
-	max-width: 21.88rem;
-	margin: 0 auto;
-	display: block;
-}
-</style>
