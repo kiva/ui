@@ -1,39 +1,39 @@
 <template>
-	<div class="faq">
-		<h2 class="h3 strong">
+	<div class="tw-bg-primary tw-p-4">
+		<h2 class="tw-text-h3 tw-mb-2">
 			Level up your security with 2-step verfication
 		</h2>
-		<p>
+		<p class="tw-mb-4">
 			2-step verification protects your Kiva account by requiring an
 			additional code when you log in on a device we don't recognize.
 		</p>
-		<h3 class="strong">
+		<h3 class="tw-mb-2">
 			FAQ
 		</h3>
-		<ul class="faq__list">
+		<ul>
 			<li>
-				<kv-button
-					class="text-link"
-					@click.native.prevent="triggerWhatIsLightbox"
+				<button
+					class="tw-text-link tw-font-medium"
+					@click="triggerWhatIsLightbox"
 				>
 					What is 2-step Verification?
-				</kv-button>
+				</button>
 			</li>
 			<li>
-				<kv-button
-					class="text-link"
-					@click.native.prevent="triggerHowItWorksLightbox"
+				<button
+					class="tw-text-link tw-font-medium"
+					@click="triggerHowItWorksLightbox"
 				>
 					How does it work?
-				</kv-button>
+				</button>
 			</li>
 			<li>
-				<kv-button
-					class="text-link"
-					@click.native.prevent="triggerHowItProtectsLightbox"
+				<button
+					class="tw-text-link tw-font-medium"
+					@click="triggerHowItProtectsLightbox"
 				>
 					How does it protect you?
-				</kv-button>
+				</button>
 			</li>
 		</ul>
 		<kv-lightbox
@@ -75,12 +75,10 @@
 
 <script>
 import KvLightbox from '@/components/Kv/KvLightbox';
-import KvButton from '@/components/Kv/KvButton';
 
 export default {
 	components: {
 		KvLightbox,
-		KvButton,
 	},
 	data() {
 		return {
@@ -107,17 +105,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.faq {
-	background: $white;
-	padding: 1.95rem; // same as KvSettingsCard
-
-	&__list {
-		list-style-type: none;
-		margin: 0;
-	}
-}
-</style>

@@ -1,7 +1,7 @@
 <template>
 	<kv-settings-card title="Password">
 		<template #content>
-			<p>
+			<p class="tw-mb-4">
 				Clicking this button will send you a verification email.
 				As a final step in this process, you'll need to click the
 				link in that email to successfully update your account password.
