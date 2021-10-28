@@ -227,7 +227,7 @@
 					>
 						<template #content>
 							<fieldset>
-								<button class="tw-text-link tw-font-medium" @clic="borrowerToggleAll()">
+								<button class="tw-text-link tw-font-medium" @click="borrowerToggleAll()">
 									{{ borrowerAllSelected ? "Deselect" : "Select" }} All
 								</button>
 								<kv-checkbox
