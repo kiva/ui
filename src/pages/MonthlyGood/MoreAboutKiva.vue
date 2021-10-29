@@ -1,11 +1,14 @@
 <template>
-	<div class="more-about-kiva-section-wrapper row" id="more-about-kiva">
+	<div class="more-about-kiva-section-wrapper row
+			tw-py-4 md:tw-py-6 lg:tw-py-8"
+		id="more-about-kiva"
+	>
 		<div class="small-12 columns">
-			<h2 class="impact-text">
+			<h2 class="tw-mb-4">
 				More about Kiva
 			</h2>
 		</div>
-		<p class="small-12 large-7 columns">
+		<p class="small-12 large-7 columns tw-mb-4">
 			<!-- eslint-disable-next-line max-len -->
 			Kiva is an international nonprofit, founded in 2005 and based in San Francisco, with a mission of expanding financial access to help underserved communities thrive. We celebrate and support people looking to create a better future for themselves, their families and their communities.
 		</p>
@@ -39,18 +42,8 @@ export default {
 
 .icon-kiva-promise {
 	fill: transparent;
-	color: $charcoal;
 	display: block;
 	margin: 0 auto 2rem;
 	max-height: 8.125rem;
-}
-
-.more-about-kiva-section-wrapper {
-	padding: 2rem 0 2.5rem;
-
-	h2 {
-		color: $kiva-green;
-		margin-bottom: 1.85rem;
-	}
 }
 </style>

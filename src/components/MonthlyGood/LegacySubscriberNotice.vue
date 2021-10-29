@@ -1,10 +1,9 @@
 <template>
 	<div>
-		<h1 class="tw-text-center impact-text">
+		<h2 class="tw-text-center tw-text-h1 tw-mb-2">
 			Please cancel your existing auto deposit first:
-		</h1>
-
-		<p class="tw-text-center">
+		</h2>
+		<p class="tw-text-center tw-mb-2">
 			Thanks for your interest in Monthly Good. Because you have an existing Kiva subscription,
 			you’ll need to cancel this via PayPal before signing up for Monthly Good.
 		</p>
