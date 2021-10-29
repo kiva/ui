@@ -107,14 +107,11 @@ function fundraisingTimeLeft(loan) {
 	}
 
 	const now = parseISO(new Date().toISOString());
-
 	const diffInDays = differenceInDays(plannedExpirationDate, now);
-	console.log('plannedEXP', plannedExpirationDate);
-	console.log('NOW', parseISO(new Date().toISOString()));
-	console.log('diffInDays', diffInDays);
 
-	// use differenceInDays to see if the plannedExpirationDate is greater than 28 day from now
-	if (diffInDays > -28) {
+	// If the fundraising time left is greater than 28 days,
+	// we set the display units to days
+	if (diffInDays > 28) {
 		return formatDistanceToNowStrict(plannedExpirationDate, { unit: 'day' });
 	}
 	return formatDistanceToNowStrict(plannedExpirationDate);
