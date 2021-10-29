@@ -2,6 +2,7 @@ import {
 	isValid as isValidDate,
 	formatDistanceToNowStrict,
 	parseISO,
+	differenceInDays,
 } from 'date-fns';
 import numeral from 'numeral';
 import logFormatter from '@/util/logFormatter';
@@ -105,7 +106,17 @@ function fundraisingTimeLeft(loan) {
 		return '';
 	}
 
-	// Return the distance between the expiration time and now in words.
+	const now = parseISO(new Date().toISOString());
+
+	const diffInDays = differenceInDays(plannedExpirationDate, now);
+	console.log('plannedEXP', plannedExpirationDate);
+	console.log('NOW', parseISO(new Date().toISOString()));
+	console.log('diffInDays', diffInDays);
+
+	// use differenceInDays to see if the plannedExpirationDate is greater than 28 day from now
+	if (diffInDays > -28) {
+		return formatDistanceToNowStrict(plannedExpirationDate, { unit: 'day' });
+	}
 	return formatDistanceToNowStrict(plannedExpirationDate);
 }
 
