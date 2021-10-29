@@ -168,6 +168,7 @@ describe('loan.js', () => {
 			const tenMinutes = add(now, { minutes: 10 });
 			const twoHours = add(now, { hours: 2 });
 			const fiveDays = add(now, { days: 5 });
+			const fourtyDays = add(now, { days: 40 });
 
 			testFundraisingTimeLeft({
 				loan: { plannedExpirationDate: formatISO(tenMinutes) },
@@ -180,6 +181,12 @@ describe('loan.js', () => {
 			testFundraisingTimeLeft({
 				loan: { plannedExpirationDate: formatISO(fiveDays) },
 				expected: '5 days',
+			});
+			testFundraisingTimeLeft({
+				loan: {
+					plannedExpirationDate: formatISO(fourtyDays)
+				},
+				expected: '40 days',
 			});
 		});
 
