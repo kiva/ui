@@ -106,8 +106,7 @@ function fundraisingTimeLeft(loan) {
 		return '';
 	}
 
-	const now = parseISO(new Date().toISOString());
-	const diffInDays = differenceInDays(plannedExpirationDate, now);
+	const diffInDays = differenceInDays(plannedExpirationDate, new Date());
 
 	// Return the distance between the expiration time and now in words.
 	// If the time left is greater than 28 days,
