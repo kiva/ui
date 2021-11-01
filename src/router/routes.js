@@ -49,6 +49,16 @@ export default [
 	{ path: '/build/research', component: () => import('@/pages/Build/Research') },
 	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
 	{
+		path: '/causes',
+		component: () => import('@/pages/Causes/Causes'),
+		children: [
+			{
+				path: 'signup',
+				component: () => import('@/pages/Causes/Signup')
+			}
+		]
+	},
+	{
 		path: '/cc/:dynamicRoute',
 		component: () => import('@/pages/LandingPages/CorporateCampaign/CCLandingPage'),
 		props: route => ({
@@ -181,6 +191,20 @@ export default [
 		]
 	},
 	{ path: '/process-browser-auth', component: () => import('@/pages/ProcessBrowserAuth') },
+	{
+		path: '/process-instant-lending/:token/:loanId/:lendAmount',
+		component: () => import('@/pages/InstantActions/ProcessInstantLending'),
+		props: route => ({
+			token: route.params.token,
+			loanId: Number(route.params.loanId),
+			lendAmount: Number(route.params.lendAmount)
+		}),
+	},
+	{
+		path: '/process-instant-lending-error/:errorType',
+		component: () => import('@/pages/InstantActions/ProcessInstantLending'),
+		props: route => ({ errorType: route.params.errorType })
+	},
 	{ path: '/protocol', component: () => import('@/pages/Protocol') },
 	{ path: '/register/social', component: () => import('@/pages/LoginAndRegister/RegisterSocial') },
 	{ path: '/register/guest', component: () => import('@/pages/LoginAndRegister/GuestAccountClaim') },

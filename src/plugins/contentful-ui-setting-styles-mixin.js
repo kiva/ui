@@ -5,22 +5,32 @@ export default {
 		 */
 		customGridStyles() {
 			let customStyles = '';
-			// Check for custom width
-			const maxWidthValue = this.uiSetting?.dataObject?.maxWidthValue ?? null;
-			const maxWidthUnit = this.uiSetting?.dataObject?.maxWidthUnit ?? 'rem';
-			if (maxWidthValue) {
-				customStyles = `max-width: ${maxWidthValue}${maxWidthUnit};`;
-			}
-			// Check for custom text alignment
+			// Custom text alignment
 			const textAlign = this.uiSetting?.dataObject?.textAlign ?? null;
 			if (textAlign) {
 				customStyles = `${customStyles} text-align: ${textAlign};`;
 			}
 			// Vertical alignment of grid items
 			const verticalAlign = this.uiSetting?.dataObject?.verticalAlign ?? null;
-			customStyles = `${customStyles} align-items: ${verticalAlign};`;
+			if (verticalAlign) {
+				customStyles = `${customStyles} align-items: ${verticalAlign};`;
+			}
+
+			// Horizontal alignment of grid items
+			const horizontalAlign = this.uiSetting?.dataObject?.horizontalAlign ?? null;
+			if (horizontalAlign) {
+				customStyles = `${customStyles} justify-items: ${horizontalAlign};`;
+			}
 
 			return customStyles;
+		},
+		maxWidthStyles() {
+			// Custom max-width
+			const maxWidthValue = this.uiSetting?.dataObject?.maxWidthValue ?? null;
+			const maxWidthUnit = this.uiSetting?.dataObject?.maxWidthUnit ?? 'rem';
+			if (maxWidthValue) {
+				return `max-width: ${maxWidthValue}${maxWidthUnit};`;
+			}
 		},
 		/**
 		 * Depends on singleColumn property on Contentful dataObject

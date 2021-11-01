@@ -7,7 +7,7 @@
 			<kv-page-container class="md:tw-hidden">
 				<div class="tw-flex tw-flex-col md:tw-flex-row tw-items-baseline">
 					<div class="tw-flex-1 tw-my-2.5">
-						<KivaCreativeStudioLogo class="tw-h-8 tw-text-primary" />
+						<KivaCreativeStudioLogo class="tw-h-4 tw-text-primary" />
 						<span class="tw-sr-only">Kiva Creative Studio</span>
 					</div>
 				</div>
@@ -18,34 +18,54 @@
 					tw-sticky tw-z-sticky tw-top-0"
 			>
 				<kv-page-container>
-					<div class="tw-flex">
+					<div class="tw-flex tw-items-center">
 						<!-- Desktop only logo -->
 						<div class="tw-hidden md:tw-block tw-flex-1 tw-my-2.5">
-							<KivaCreativeStudioLogo class="tw-h-8" />
+							<KivaCreativeStudioLogo class="tw-h-4" />
 							<span class="tw-sr-only">Kiva Creative Studio</span>
 						</div>
 
 						<!-- nav for mobile and desktop -->
-						<ul class="
+						<nav id="top-nav" class="tw-flex-1">
+							<ul class="
 								tw-flex tw-gap-2 tw-items-center md:tw-justify-end tw-py-2.5
 								tw-bg-secondary md:tw-bg-primary"
-						>
-							<li>
-								<kv-button variant="ghost" to="#creative-studio-logo-intro">
-									Logos
-								</kv-button>
-							</li>
-							<li>
-								<kv-button variant="ghost" to="#creative-studio-colors-intro">
-									Colors
-								</kv-button>
-							</li>
-							<li>
-								<kv-button variant="ghost" to="#creative-studio-typography-intro">
-									Type
-								</kv-button>
-							</li>
-						</ul>
+							>
+								<li class="tw-flex-1 md:tw-flex-initial">
+									<kv-button
+										variant="ghost"
+										class="tw-w-full md:tw-w-auto"
+										href="#creative-studio-logo-intro"
+										@click.native.prevent="scrollPastNav('#creative-studio-logo-intro')"
+										:state="activeSection.includes('creative-studio-logo') ? 'active' : ''"
+									>
+										Logos
+									</kv-button>
+								</li>
+								<li class="tw-flex-1 md:tw-flex-initial">
+									<kv-button
+										variant="ghost"
+										class="tw-w-full md:tw-w-auto"
+										href="#creative-studio-colors-intro"
+										@click.native.prevent="scrollPastNav('#creative-studio-colors-intro')"
+										:state="activeSection.includes('creative-studio-colors') ? 'active' : ''"
+									>
+										Colors
+									</kv-button>
+								</li>
+								<li class="tw-flex-1 md:tw-flex-initial">
+									<kv-button
+										variant="ghost"
+										class="tw-w-full md:tw-w-auto"
+										href="#creative-studio-typography-intro"
+										@click.native.prevent="scrollPastNav('#creative-studio-typography-intro')"
+										:state="activeSection.includes('creative-studio-typography') ? 'active' : ''"
+									>
+										Type
+									</kv-button>
+								</li>
+							</ul>
+						</nav>
 					</div>
 				</kv-page-container>
 			</div>
@@ -78,7 +98,13 @@
 											</router-link>
 										</li>
 										<li>
-											<a href="mailto:design@kiva.org">Type</a>
+											<a
+												:href="`mailto:designops@kiva.org?${typeRequestEmail}`"
+												class="tw-inline-flex tw-gap-1"
+											>
+												<span>Type</span>
+												<kv-material-icon class="tw-w-2" :icon="mdiEmailOutline" />
+											</a>
 										</li>
 									</ul>
 								</div>
@@ -105,7 +131,7 @@
 									</h2>
 									<ul class="tw-flex tw-flex-col tw-gap-0.5">
 										<li>
-											<a href="mailto:design@kiva.org">design@kiva.org</a>
+											<a href="mailto:designops@kiva.org">designops@kiva.org</a>
 										</li>
 									</ul>
 								</div>
@@ -165,16 +191,17 @@
 </template>
 
 <script>
+import { mdiEmailOutline } from '@mdi/js';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KivaCreativeStudioLogo from '@/assets/inline-svgs/logos/kiva-creative-studio-logo.svg';
 import InstagramLogo from '@/assets/inline-svgs/logos/instagram-logo.svg';
 import FacebookLogo from '@/assets/inline-svgs/logos/facebook-logo.svg';
 import TwitterLogo from '@/assets/inline-svgs/logos/twitter-logo.svg';
-
-import { darkTheme } from '@kiva/kv-tokens/configs/kivaColors';
+import { createIntersectionObserver } from '@/util/observerUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	components: {
@@ -182,6 +209,7 @@ export default {
 		KivaCreativeStudioLogo,
 		KvButton,
 		KvGrid,
+		KvMaterialIcon,
 		KvPageContainer,
 		InstagramLogo,
 		FacebookLogo,
@@ -189,9 +217,73 @@ export default {
 	},
 	data() {
 		return {
-			darkTheme,
 			year: new Date().getFullYear(),
+			activeSection: '',
+			mdiEmailOutline,
+			typeRequestEmail: `
+				subject=${encodeURI('📥 Typekit request')}
+				&body=${encodeURI(`Name:
+Organization:
+
+Hey, Design 👋
+This is a message requesting the Kiva Post Grot typekit for the purpose(s) of
+				`)}
+			`
 		};
-	}
+	},
+	methods: {
+		scrollPastNav(id) {
+			// Scrolls the page so the target isn't covered by the top nav
+			const navEl = document.querySelector('#top-nav');
+			const navHeight = navEl?.clientHeight ?? 0;
+			const targetEl = document.querySelector(id);
+			const targetOffset = targetEl?.offsetTop ?? 0;
+
+			if (navHeight && targetOffset) {
+				window.scrollTo({
+					top: targetOffset - navHeight,
+					behavior: 'smooth'
+				});
+			}
+
+			// update the url without triggering a new scroll
+			const url = new URL(window.location);
+			url.hash = id;
+			window.history.replaceState({}, '', url);
+		},
+		createObserver() {
+			// scrollspy to highlight which section is currently in the viewport
+			setTimeout(() => {
+				// Kludge. Not sure why setTimeout is needed, but the observer doesn't seem to work without it.
+				// Possibly because I'm not using $refs.
+				// Tried await this.$nextTick(), but doesn't work.
+				this.observer = createIntersectionObserver({
+					targets: document.querySelectorAll('[data-section-type="contentful-section"]'),
+					options: {
+						rootMargin: '-50% 0px', // when the section crosses the halfway mark of the screen
+						root: null, // use the window as the root
+					},
+					callback: entries => {
+						entries.forEach(entry => {
+							if (entry.isIntersecting) {
+								this.activeSection = entry.target.id;
+							}
+						});
+					}
+				});
+			}, 500);
+		},
+		destroyObserver() {
+			if (this.observer) {
+				this.observer.disconnect();
+			}
+		},
+	},
+	mounted() {
+		this.createObserver();
+	},
+	beforeDestroy() {
+		this.destroyObserver();
+	},
 };
 </script>

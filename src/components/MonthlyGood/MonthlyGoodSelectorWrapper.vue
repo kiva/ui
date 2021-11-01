@@ -41,6 +41,7 @@
 				]"
 				:style="{ bottom: mgStickBarOffset + 'px' }"
 				v-show="hasScrolled"
+				v-if="isMobile"
 			>
 				<monthly-good-selector-mobile
 					:pre-selected-category="preSelectedCategory"
@@ -77,7 +78,8 @@ export default {
 			isSticky: false,
 			initialBottomPosition: 0,
 			mgStickBarOffset: 0,
-			hasScrolled: false
+			hasScrolled: false,
+			isMobile: false
 		};
 	},
 	mixins: [
@@ -109,9 +111,15 @@ export default {
 			// Check setting to make sure it is an actual category or return null
 			// Must return null (no preselected category) or a valid category object
 			return this.lendingCategories.find(({ value }) => value === this.preSelectedCategorySetting) ?? null;
-		}
+		},
 	},
 	methods: {
+		// this is required to prevent global events which may trigger
+		// opening the invisible lightbox in the mobile MG selector.
+		// which may have unwanted consequences with the page scroll
+		determineIfMobile() {
+			this.isMobile = document.documentElement.clientWidth < 735;
+		},
 		// Determine if MG desktop selector should be sticky or not
 		onScroll() {
 			if ((document.documentElement.scrollTop + window.innerHeight) <= this.initialBottomPosition) {
@@ -163,15 +171,19 @@ export default {
 		});
 		window.removeEventListener('resize', _throttle(() => {
 			this.initStickyBehavior();
+			this.determineIfMobile();
 		}, 200));
 	},
 	mounted() {
+		this.determineIfMobile();
+
 		window.addEventListener('scroll', this.throttledScroll);
 		window.addEventListener('scroll', () => {
 			this.hasScrolled = true;
 		});
 		window.addEventListener('resize', _throttle(() => {
 			this.initStickyBehavior();
+			this.determineIfMobile();
 		}, 200));
 
 		this.initStickyBehavior();

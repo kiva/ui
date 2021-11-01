@@ -1,11 +1,12 @@
 <template>
 	<div class="www-page">
-		<the-banner-area />
-		<the-header
+		<the-banner-area v-show="!isKivaAppReferral" />
+		<the-header v-show="!isKivaAppReferral"
 			:hide-search-in-header="hideSearchInHeader"
 			:theme="headerTheme"
 		/>
-		<slot name="secondary"></slot>
+		<slot name="secondary" v-if="!isKivaAppReferral"></slot>
+
 		<main :class="mainClasses">
 			<slot name="tertiary"></slot>
 			<slot></slot>
@@ -21,8 +22,8 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
+
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
@@ -68,16 +69,24 @@ export default {
 			default: '',
 		},
 	},
+	data() {
+		return {
+			isKivaAppReferral: false
+		};
+	},
 	apollo: {
-		preFetch(config, client, args) {
+		preFetch(config, client, { route }) {
 			return Promise.all([
 				client.query({ query: hasEverLoggedInQuery }),
 				fetchAllExpSettings(config, client, {
-					query: _get(args, 'route.query'),
-					path: _get(args, 'route.path')
-				}),
+					query: route?.query,
+					path: route?.path
+				})
 			]);
-		}
+		},
+	},
+	created() {
+		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
 	},
 	computed: {
 		// Hiding basket footer on /lend-beta page
@@ -120,5 +129,19 @@ export default {
 			background: $kiva-bg-lightgray;
 		}
 	}
+}
+</style>
+
+<style lang="scss" scoped>
+.tw-bg-primary {
+	background-color: rgb(var(--bg-primary));
+}
+
+.tw-bg-secondary {
+	background-color: rgb(var(--bg-secondary));
+}
+
+.tw-bg-tertiary {
+	background-color: rgb(var(--bg-tertiary));
 }
 </style>

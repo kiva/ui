@@ -101,7 +101,7 @@ import _get from 'lodash/get';
 import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
 import { required, email } from 'vuelidate/lib/validators';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import braintreeDropInError from '@/plugins/braintree-dropin-error-mixin';

@@ -8,7 +8,7 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import Dropin from 'braintree-web-drop-in';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -108,6 +108,7 @@ export default {
 							scope.setTag('bt_get_client_token_error', errorMessage);
 							Sentry.captureException(errorCode);
 						});
+						this.$showTipMsg('An Error has occured. Please refresh the page and try again.', 'error');
 					} else {
 						this.clientToken = _get(response, 'data.shop.getClientToken');
 						this.initializeDropIn(this.clientToken);

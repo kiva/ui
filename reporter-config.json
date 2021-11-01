@@ -1,0 +1,9 @@
+{
+	"reporterEnabled": "spec, mocha-junit-reporter",
+	"mochaJunitReporterReporterOptions": {
+		"mochaFile": "test/e2e/results/result-[hash].xml",
+		"rootSuiteTitle": "UI specs",
+		"testsuitesTitle": "Cypress tests",
+		"jenkinsMode": true
+	}
+}

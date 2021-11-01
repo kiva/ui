@@ -22,6 +22,7 @@
 			]"
 		/>
 		<loan-description
+			:loan-id="loanId"
 			:anonymization-level="anonymizationLevel"
 			:borrower-count="borrowerCount"
 			:borrower-or-group-name="name"
@@ -31,6 +32,7 @@
 			:partner-name="partnerName"
 			:reviewer="reviewer"
 			:story-description="description"
+			:previous-loan-id="previousLoanId"
 		/>
 	</article>
 </template>
@@ -79,29 +81,24 @@ export default {
 						firstName
 					}
 					description
-					# TEMPORARILY Disabled for MVP
-					# descriptionInOriginalLanguage
+					previousLoanId
+					descriptionInOriginalLanguage
 					image {
 						id
 						hash
 					}
 					name
-					# TEMPORARILY Disabled for MVP
-					# originalLanguage {
-					# 	id
-					# 	name
-					# }
+					originalLanguage {
+						id
+						name
+					}
 					... on LoanPartner {
 						partnerName
-						# TEMPORARILY Disabled for MVP
-						# reviewer {
-						# 	id
-						# 	bylineName
-						# 	image {
-						# 		id
-						# 		url
-						# 	}
-						# }
+						reviewer {
+							id
+							bylineName
+							showName
+						}
 					}
 				}
 			}
@@ -128,6 +125,7 @@ export default {
 			this.originalLanguage = loan?.originalLanguage ?? {};
 			this.partnerName = loan?.partnerName ?? '';
 			this.reviewer = loan?.reviewer ?? {};
+			this.previousLoanId = loan?.previousLoanId ?? '';
 		},
 	},
 };

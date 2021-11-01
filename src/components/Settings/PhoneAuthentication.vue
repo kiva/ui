@@ -132,7 +132,11 @@
 </template>
 
 <script>
-import * as Sentry from '@sentry/browser';
+import { validationMixin } from 'vuelidate';
+import {
+	required, minLength, maxLength, numeric
+} from 'vuelidate/lib/validators';
+import * as Sentry from '@sentry/vue';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -146,11 +150,6 @@ import enrollVoiceAuthenticatorMutation from '@/graphql/mutation/mfa/enrollVoice
 import confirmSMSAuthenticatorEnrollmentMutation from '@/graphql/mutation/mfa/confirmSMSAuthenticatorEnroll.graphql';
 import confirmVoiceAuthenticatorEnrollmentMutation from
 	'@/graphql/mutation/mfa/confirmVoiceAuthenticatorEnroll.graphql';
-
-import { validationMixin } from 'vuelidate';
-import {
-	required, minLength, maxLength, numeric
-} from 'vuelidate/lib/validators';
 
 export default {
 	components: {

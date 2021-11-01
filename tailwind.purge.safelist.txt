@@ -1,3 +1,4 @@
+# Padding classes
 tw-pt-0
 md:tw-pt-0
 lg:tw-pt-0
@@ -38,3 +39,28 @@ tw-pb-8
 md:tw-pb-8
 lg:tw-pb-8
 xl:tw-pb-8
+
+# Themable text color classes
+tw-text-primary
+tw-text-primary-inverse
+tw-text-secondary
+tw-text-tertiary
+tw-text-action
+tw-text-action-highlight
+tw-text-danger
+tw-text-danger-highlight
+
+# Typography classes
+tw-text-jumbo
+tw-text-h1
+tw-text-h2
+tw-text-h3
+tw-text-h4
+tw-text-subhead
+tw-text-base
+tw-text-small
+tw-text-link
+
+# Whitespace Classes
+tw-whitespace-normal
+tw-whitespace-pre-wrap

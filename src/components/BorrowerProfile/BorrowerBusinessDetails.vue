@@ -51,7 +51,7 @@
 
 <script>
 import { mdiArrowTopRight } from '@mdi/js';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 const TwitterLogo = () => import('@/assets/inline-svgs/logos/twitter-logo.svg');

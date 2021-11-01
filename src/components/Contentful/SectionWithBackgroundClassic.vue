@@ -90,12 +90,12 @@ export default {
 				{
 					width: 1024,
 					height: 441,
-					media: 'min-width: 681px',
+					media: 'min-width: 1024px',
 				},
 				{
 					width: 680,
 					height: 372,
-					media: 'min-width: 481px',
+					media: 'min-width: 734px',
 				},
 				{
 					width: 480,
@@ -150,8 +150,8 @@ export default {
 				if (key === 'sm') hasSmSizes = true;
 				if (key === 'lg') hasLgSizes = true;
 				// process sizes
-				const top = sizeObj.top.toString() ? `${sizePrefix}tw-pt-${sizeObj.top}` : '';
-				const bottom = sizeObj.bottom.toString() ? `${sizePrefix}tw-pb-${sizeObj.bottom}` : '';
+				const top = sizeObj.top?.toString() ? `${sizePrefix}tw-pt-${sizeObj.top}` : '';
+				const bottom = sizeObj.bottom?.toString() ? `${sizePrefix}tw-pb-${sizeObj.bottom}` : '';
 				// return our size based class set
 				return `${top} ${bottom}`;
 			});

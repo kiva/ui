@@ -32,7 +32,7 @@
 
 <script>
 import gql from 'graphql-tag';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import KvButton from '@/components/Kv/KvButton';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import WwwPage from '@/components/WwwFrame/WwwPage';

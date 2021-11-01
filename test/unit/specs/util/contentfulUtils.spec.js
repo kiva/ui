@@ -1,11 +1,13 @@
+/* eslint-disable max-len */
 import {
 	buildDynamicString,
 	formatGenericContentBlock,
-	formatResponsiveImageSet,
 	formatMediaAssetArray,
+	formatResponsiveImageSet,
 	formatUiSetting,
 	processPageContent,
-	processPageContentFlat
+	processPageContentFlat,
+	responsiveImageSetSourceSets
 } from '@/util/contentfulUtils';
 
 import inactiveUiSetting from '../../fixtures/UiSettingTypeInactiveRaw.json';
@@ -16,6 +18,8 @@ import uiSettingRaw from '../../fixtures/UiSettingRaw.json';
 import genericContentBlockRaw from '../../fixtures/GenericContentBlockRaw.json';
 import responsiveImageSetRaw from '../../fixtures/ResponsiveImageSetRaw.json';
 import responsiveImageSetResult from '../../fixtures/ResponsiveImageSetResult.json';
+import imageSourceSetResult from '../../fixtures/ImageSourceSetResult';
+import imageSourceSetResultStandardSizing from '../../fixtures/ImageSourceSetResultStandardSizing';
 
 describe('contentfulUtils.js', () => {
 	describe('buildDynamicString', () => {
@@ -62,18 +66,379 @@ describe('contentfulUtils.js', () => {
 	});
 
 	describe('formatResponsiveImageSet', () => {
+		const formattedResponsiveImageSet = formatResponsiveImageSet(responsiveImageSetRaw);
 		test('should return a Responsive Image Set specific object', () => {
 			const expectedObject = {
-				name: 'COVID fund Homepage Promo Images',
-				description: 'Lend a hand from afar and join the global COVID-19 response. Take action',
-				images: expect.any(Array)
+				name: 'Sample Responsive Image Set',
+				description: 'This is the description of the responsive image set',
+				images: expect.any(Array),
+				responsiveSizing: expect.any(Object)
 			};
 
-			expect(formatResponsiveImageSet(responsiveImageSetRaw)).toMatchObject(expectedObject);
+			expect(formattedResponsiveImageSet).toMatchObject(expectedObject);
 		});
 
 		test('should contain properly formatted Responsive Image Set entries', () => {
-			expect(formatResponsiveImageSet(responsiveImageSetRaw)).toMatchObject(responsiveImageSetResult);
+			expect(formattedResponsiveImageSet).toMatchObject({
+				description: 'This is the description of the responsive image set',
+				images: [
+					{
+						description: 'Description for Homepage Image lg',
+						file: {
+							contentType: 'image/jpeg',
+							details: {
+								image: {
+									height: 500,
+									width: 1362
+								},
+								size: 87066
+							},
+							fileName: 'homepage_image_lg.jpg',
+							url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_lg.jpg'
+						},
+						title: 'homepage image lg'
+					},
+				],
+				name: 'Sample Responsive Image Set',
+				responsiveSizing: {
+					sm: {
+						width: 550
+					},
+					md: {
+						width: 450
+					},
+					lg: {
+						width: 350
+					},
+					xl: {
+						width: 550
+					},
+				}
+			});
+		});
+	});
+
+	describe('responsiveImageSetSourceSets', () => {
+		test('should return a properly formatted array of responsive images to be used as a source set', () => {
+			const basicImageSetResult = responsiveImageSetResult;
+			const sourceSets = responsiveImageSetSourceSets(basicImageSetResult);
+			expect(sourceSets).toEqual(imageSourceSetResult);
+		});
+
+		test('should filter out `std` images', () => {
+			const setWithStdImages = {
+				description: responsiveImageSetResult.description,
+				responsiveSizing: responsiveImageSetResult.responsiveSizing,
+				name: responsiveImageSetResult.name,
+				images: [...responsiveImageSetResult.images, {
+					description: 'Description for Homepage Image lg std',
+					file: {
+						contentType: 'image/jpeg',
+						details: {
+							image: {
+								height: 500,
+								width: 1362
+							},
+							size: 87066
+						},
+						fileName: 'homepage_image_lg_std.jpg',
+						url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_lg_std.jpg'
+					},
+					title: 'homepage image lg std'
+				}]
+			};
+			const sourceSets = responsiveImageSetSourceSets(setWithStdImages);
+			expect(sourceSets).toEqual(imageSourceSetResult);
+		});
+
+		test('should not require responsive sizing and should use default sizing when missing', () => {
+			const setWithStdImages = {
+				description: responsiveImageSetResult.description,
+				responsiveSizing: {},
+				name: responsiveImageSetResult.name,
+				images: responsiveImageSetResult.images
+			};
+			const sourceSets = responsiveImageSetSourceSets(setWithStdImages);
+			expect(sourceSets).toEqual(imageSourceSetResultStandardSizing);
+		});
+
+		test('should handle missing image sizes', () => {
+			const setWithOnlySmallAndLarge = {
+				description: responsiveImageSetResult.description,
+				responsiveSizing: responsiveImageSetResult.responsiveSizing,
+				name: responsiveImageSetResult.name,
+				images: [
+					{
+						description: 'Description for Homepage Image sm',
+						file: {
+							contentType: 'image/jpeg',
+							details: {
+								image: {
+									height: 500,
+									width: 1362
+								},
+								size: 87066
+							},
+							fileName: 'homepage_image_sm.jpg',
+							url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_sm.jpg'
+						},
+						title: 'homepage image'
+					},
+					{
+						description: 'Description for Homepage Image lg',
+						file: {
+							contentType: 'image/jpeg',
+							details: {
+								image: {
+									height: 500,
+									width: 1362
+								},
+								size: 87066
+							},
+							fileName: 'homepage_image_lg.jpg',
+							url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_lg.jpg'
+						},
+						title: 'homepage image lg'
+					}
+				]
+			};
+			const sourceSets = responsiveImageSetSourceSets(setWithOnlySmallAndLarge);
+			const setResult = [
+				{
+					height: 128,
+					media: 'min-width: 1024px',
+					sortOrder: 2,
+					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_lg.jpg',
+					width: 350,
+				},
+				{
+					height: 202,
+					media: 'min-width: 0',
+					sortOrder: 4,
+					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_sm.jpg',
+					width: 550,
+				},
+			];
+			expect(sourceSets).toEqual(setResult);
+		});
+
+		test('should only return 1 item if size is declared multiple times', () => {
+			const setWithMultipleSize = {
+				description: responsiveImageSetResult.description,
+				responsiveSizing: {},
+				name: responsiveImageSetResult.name,
+				images: [
+					{
+						description: 'Description for Homepage Image lg1',
+						file: {
+							contentType: 'image/jpeg',
+							details: {
+								image: {
+									height: 500,
+									width: 1362
+								},
+								size: 87066
+							},
+							fileName: 'homepage_image_sm.jpg',
+							url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_lg1.jpg'
+						},
+						title: 'homepage image lg'
+					},
+					{
+						description: 'Description for Homepage Image lg2',
+						file: {
+							contentType: 'image/jpeg',
+							details: {
+								image: {
+									height: 500,
+									width: 1362
+								},
+								size: 87066
+							},
+							fileName: 'homepage_image_sm.jpg',
+							url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_lg2.jpg'
+						},
+						title: 'homepage image lg'
+					},
+					{
+						description: 'Description for Homepage Image lg3',
+						file: {
+							contentType: 'image/jpeg',
+							details: {
+								image: {
+									height: 500,
+									width: 1362
+								},
+								size: 87066
+							},
+							fileName: 'homepage_image_lg3.jpg',
+							url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_lg3.jpg'
+						},
+						title: 'homepage image lg'
+					},
+				]
+			};
+			const sourceSets = responsiveImageSetSourceSets(setWithMultipleSize);
+			const setResult = [
+				{
+					height: 529,
+					media: 'min-width: 1024px',
+					sortOrder: 2,
+					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_lg1.jpg',
+					width: 1440,
+				},
+			];
+			expect(sourceSets).toEqual(setResult);
+		});
+
+		test('should handle missing some responsive sizes', () => {
+			const setWithSomeMissingResponsiveSizes = {
+				description: responsiveImageSetResult.description,
+				responsiveSizing: {
+					sm: {
+						width: 550
+					},
+					lg: {
+						width: 350
+					},
+				},
+				name: responsiveImageSetResult.name,
+				images: [
+					{
+						description: 'Description for Homepage Image sm',
+						file: {
+							contentType: 'image/jpeg',
+							details: {
+								image: {
+									height: 500,
+									width: 1362
+								},
+								size: 87066
+							},
+							fileName: 'homepage_image_sm.jpg',
+							url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_sm.jpg'
+						},
+						title: 'homepage image'
+					},
+					{
+						description: 'Description for Homepage Image md',
+						file: {
+							contentType: 'image/jpeg',
+							details: {
+								image: {
+									height: 500,
+									width: 1362
+								},
+								size: 87066
+							},
+							fileName: 'homepage_image_md.jpg',
+							url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_md.jpg'
+						},
+						title: 'homepage Image md'
+					},
+					{
+						description: 'Description for Homepage Image lg',
+						file: {
+							contentType: 'image/jpeg',
+							details: {
+								image: {
+									height: 500,
+									width: 1362
+								},
+								size: 87066
+							},
+							fileName: 'homepage_image_lg.jpg',
+							url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_lg.jpg'
+						},
+						title: 'homepage image lg'
+					}
+				]
+			};
+			const sourceSets = responsiveImageSetSourceSets(setWithSomeMissingResponsiveSizes);
+			const setResult = [
+				{
+					height: 128,
+					media: 'min-width: 1024px',
+					sortOrder: 2,
+					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_lg.jpg',
+					width: 350,
+				},
+				{
+					height: 376,
+					media: 'min-width: 734px',
+					sortOrder: 3,
+					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_md.jpg',
+					width: 1024,
+				},
+				{
+					height: 202,
+					media: 'min-width: 0',
+					sortOrder: 4,
+					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_sm.jpg',
+					width: 550,
+				},
+			];
+			expect(sourceSets).toEqual(setResult);
+		});
+
+		test('should default an image missing size signifier in title as small', () => {
+			const setWithMissingSmall = {
+				description: responsiveImageSetResult.description,
+				responsiveSizing: responsiveImageSetResult.responsiveSizing,
+				name: responsiveImageSetResult.name,
+				images: [
+					{
+						description: 'Description for Homepage Image',
+						file: {
+							contentType: 'image/jpeg',
+							details: {
+								image: {
+									height: 500,
+									width: 1362
+								},
+								size: 87066
+							},
+							fileName: 'homepage_image.jpg',
+							url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image.jpg'
+						},
+						title: 'homepage image'
+					},
+					{
+						description: 'Description for Homepage Image md',
+						file: {
+							contentType: 'image/jpeg',
+							details: {
+								image: {
+									height: 500,
+									width: 1362
+								},
+								size: 87066
+							},
+							fileName: 'homepage_image_md.jpg',
+							url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_md.jpg'
+						},
+						title: 'homepage Image md'
+					}
+				]
+			};
+			const sourceSets = responsiveImageSetSourceSets(setWithMissingSmall);
+			const setResult = [
+				{
+					height: 165,
+					media: 'min-width: 734px',
+					sortOrder: 3,
+					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image_md.jpg',
+					width: 450,
+				},
+				{
+					height: 202,
+					media: 'min-width: 0',
+					sortOrder: 4,
+					url: '//images.ctfassets.net/j0p9a6ql0rn7/2F0fMUNds6qhAj6CyQ0kn4/360430aae71f90f2164625fbe5ce9d1e/homepage_image.jpg',
+					width: 550,
+				},
+			];
+			expect(sourceSets).toEqual(setResult);
 		});
 	});
 
@@ -118,6 +483,7 @@ describe('contentfulUtils.js', () => {
 				pageType: 'corporate-campaign',
 				pageLayout: {
 					name: 'Promo Campaign Test',
+					pageBackgroundColor: undefined,
 					headerTheme: 'lightHeader',
 					contentGroups: [{}],
 					footerTheme: undefined,
@@ -138,6 +504,7 @@ describe('contentfulUtils.js', () => {
 				pageType: 'corporate-campaign',
 				pageLayout: {
 					name: 'Promo Campaign Test',
+					pageBackgroundColor: undefined,
 					headerTheme: 'lightHeader',
 					contentGroups: [{
 						key: 'promo-campaign-test-cg',

@@ -3,9 +3,9 @@
 </template>
 
 <script>
+import numeral from 'numeral';
 import gql from 'graphql-tag';
 import { indexIn } from '@/util/comparators';
-import numeral from 'numeral';
 import BonusBanner from './Banners/BonusBanner';
 import LendingRewardsBanner from './Banners/LendingRewardsBanner';
 

@@ -34,7 +34,7 @@
 <script>
 import gql from 'graphql-tag';
 import numeral from 'numeral';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import basketItemsQuery from '@/graphql/query/basketItems.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';

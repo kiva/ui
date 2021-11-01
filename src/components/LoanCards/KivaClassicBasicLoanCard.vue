@@ -1,33 +1,60 @@
 <template>
 	<div
-		class="kv-tailwind tw-w-[336px]"
+		class="kv-tailwind tw-flex tw-flex-col"
+		style="min-width: 230px; max-width: 374px; height: 100%;"
 		:id="`${loanId}-loan-card`"
 	>
-		<!-- Borrower image -->
+		<!-- Borrower image w/ location <summary-tag> -->
 		<kv-loading-placeholder
 			v-if="isLoading"
 			class="tw-mb-1 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
 		/>
-		<borrower-image
+		<div
 			v-if="!isLoading"
-			class="
-				tw-w-full
-				tw-bg-black
-				tw-rounded
-			"
-			:alt="'photo of ' + borrowerName"
-			:aspect-ratio="3 / 4"
-			:default-image="{ width: 336 }"
-			:hash="imageHash"
-			:images="[
-				{ width: 336, viewSize: 1024 },
-				{ width: 336, viewSize: 768 },
-				{ width: 416, viewSize: 480 },
-				{ width: 374, viewSize: 414 },
-				{ width: 335, viewSize: 375 },
-				{ width: 280 },
-			]"
-		/>
+			class="tw-relative"
+		>
+			<!-- If allSharesReserved, disable link by making it a span -->
+			<router-link
+				:is="allSharesReserved ? 'span' : 'router-link'"
+				:to="`/lend/${loanId}`"
+				v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
+			>
+				<borrower-image
+					class="
+					tw-relative
+					tw-w-full
+					tw-bg-black
+					tw-rounded
+				"
+					:alt="'photo of ' + borrowerName"
+					:aspect-ratio="3 / 4"
+					:default-image="{ width: 336 }"
+					:hash="imageHash"
+					:images="[
+						{ width: 336, viewSize: 1024 },
+						{ width: 336, viewSize: 768 },
+						{ width: 416, viewSize: 480 },
+						{ width: 374, viewSize: 414 },
+						{ width: 335, viewSize: 375 },
+						{ width: 280 },
+					]"
+				/>
+				<div v-if="countryName">
+					<summary-tag
+						class="tw-absolute tw-bottom-2 tw-left-1 tw-text-primary"
+						:city="city"
+						:state="state"
+						:country-name="countryName"
+					>
+						<kv-material-icon
+							class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
+							:icon="mdiMapMarker"
+						/>
+						{{ formattedLocation }}
+					</summary-tag>
+				</div>
+			</router-link>
+		</div>
 
 		<!-- Borrower name-->
 		<kv-loading-placeholder
@@ -37,8 +64,10 @@
 
 		<borrower-name
 			v-if="!isLoading"
-			class="md:tw-mb-1.5 lg:tw-mb-2 tw-text-h3"
+			class="tw-mb-1 tw-text-h3"
+			:max-length="50"
 			:name="borrowerName"
+			style="min-height: 3rem;"
 		/>
 
 		<!-- Amount to go line-->
@@ -55,21 +84,25 @@
 
 		<!-- Contains amount to go and fundraising bar -->
 		<loan-progress-group
-			v-if="!ifLoading"
+			v-if="!isLoading"
+			class="tw-mb-2.5"
 			:money-left="unreservedAmount"
 			:progress-percent="fundraisingPercent"
 			:time-left="timeLeftMessage"
+			:all-shares-reserved="allSharesReserved"
 		/>
 
 		<!-- LoanUse  -->
 		<kv-loading-paragraph
 			v-if="isLoading"
-			class="tw-mb-1.5" :style="{width: '100%', height: '5.5rem'}"
+			class="tw-mb-1.5 tw-flex-grow" :style="{width: '100%', height: '5.5rem'}"
 		/>
 
 		<loan-use
 			v-if="!isLoading"
-			loan-use-max-length="52"
+			class="tw-mb-2.5 tw-flex-grow"
+			:loan-use-max-length="52"
+			:loan-id="`${allSharesReserved ? '' : loanId}`"
 			:use="loan.use"
 			:name="borrowerName"
 			:status="loan.status"
@@ -84,8 +117,8 @@
 		/>
 
 		<loan-matching-text
-			v-if="!isLoading"
-			class="tw-mb-1"
+			v-if="!isLoading && loan.matchingText !== ''"
+			class="tw-mb-1.5"
 			:matcher-name="loan.matchingText"
 			:match-ratio="loan.matchRatio"
 			:status="loan.status"
@@ -94,17 +127,47 @@
 			:loan-amount="loan.loanAmount"
 		/>
 
-		<!-- Button -->
+		<!-- CTA Button -->
 		<kv-loading-placeholder
 			v-if="isLoading"
-			class="tw-rounded" :style="{width: '9rem', height: '3rem'}"
+			class="tw-rounded tw-self-start" :style="{width: '9rem', height: '3rem'}"
 		/>
+
+		<kv-button
+			v-if="!isLoading && !allSharesReserved"
+			class="tw-mb-2 tw-self-start"
+			:state="`${allSharesReserved ? 'disabled' : ''}`"
+			:to="`/lend/${loanId}`"
+			v-kv-track-event="['Lending', 'click-Read-more', 'View loan', loanId]"
+		>
+			View loan
+			<kv-material-icon
+				class="tw-align-middle"
+				:icon="mdiChevronRight"
+			/>
+		</kv-button>
+
+		<!-- If allSharesReserved show message and hide cta button -->
+		<div
+			v-if="allSharesReserved"
+			class="
+				tw-rounded
+				tw-bg-secondary
+				tw-text-center
+				tw-w-full
+				tw-py-1 tw-px-1.5
+				tw-mb-2 tw-mt-2
+			"
+		>
+			Another lender has selected this loan. Please choose a different borrower to support.
+		</div>
 	</div>
 </template>
 
 <script>
+import { mdiChevronRight, mdiMapMarker } from '@mdi/js';
 import gql from 'graphql-tag';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import LoanUse from '@/components/BorrowerProfile/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
@@ -114,6 +177,9 @@ import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
+import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
@@ -131,7 +197,10 @@ const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	lend {
 		loan(id: $loanId) {
 			id
+			distributionModel
 			geocode {
+				city
+				state
 				country {
 					name
 					isoCode
@@ -174,6 +243,7 @@ const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 			fundraisingTimeLeft @client
 
 			# for matching-text component
+			isMatchable
 			matchingText
 			matchRatio
 		}
@@ -197,6 +267,9 @@ export default {
 		LoanUse,
 		LoanProgressGroup,
 		LoanMatchingText,
+		KvButton,
+		KvMaterialIcon,
+		SummaryTag,
 	},
 	data() {
 		return {
@@ -204,6 +277,8 @@ export default {
 			basketItems: null,
 			isLoading: false,
 			queryObserver: null,
+			mdiChevronRight,
+			mdiMapMarker,
 		};
 	},
 	computed: {
@@ -215,6 +290,15 @@ export default {
 		},
 		countryName() {
 			return this.loan?.geocode?.country?.name || '';
+		},
+		city() {
+			return this.loan?.geocode?.city || '';
+		},
+		state() {
+			return this.loan?.geocode?.state || '';
+		},
+		distributionModel() {
+			return this.loan?.distributionModel || '';
 		},
 		imageHash() {
 			return this.loan?.image?.hash ?? '';
@@ -246,6 +330,23 @@ export default {
 		},
 		timeLeft() {
 			return this.loan?.fundraisingTimeLeft ?? '';
+		},
+		formattedLocation() {
+			if (this.distributionModel === 'direct') {
+				const formattedString = `${this.city}, ${this.state}, ${this.countryName}`;
+				return formattedString;
+			}
+			if (this.countryName === 'Puerto Rico') {
+				const formattedString = `${this.city}, PR`;
+				return formattedString;
+			}
+			return this.countryName;
+		},
+		allSharesReserved() {
+			if (parseFloat(this.loan?.unreservedAmount) === 0) {
+				return true;
+			}
+			return false;
 		},
 	},
 	methods: {

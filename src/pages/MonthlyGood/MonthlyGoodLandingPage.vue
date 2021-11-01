@@ -72,9 +72,11 @@
 		</kiva-as-expert>
 		<more-about-kiva />
 		<!-- Monthly Good Frequently Asked Questions -->
-		<div class="kv-tailwind">
+		<div class="kv-tailwind row">
 			<kv-frequently-asked-questions
-				:content="faqContentGroup"
+				class="span-12 column"
+				:headline="frequentlyAskedQuestionsHeadline"
+				:questions="frequentlyAskedQuestions"
 			/>
 		</div>
 	</www-page>
@@ -226,6 +228,12 @@ export default {
 			return this.contentGroups?.find(({ type }) => {
 				return type ? type === 'frequentlyAskedQuestions' : false;
 			});
+		},
+		frequentlyAskedQuestionsHeadline() {
+			return this.faqContentGroup?.title ?? null;
+		},
+		frequentlyAskedQuestions() {
+			return this.faqContentGroup?.contents ?? null;
 		},
 		heroContentGroup() {
 			return this.contentGroups?.find(({ key }) => {

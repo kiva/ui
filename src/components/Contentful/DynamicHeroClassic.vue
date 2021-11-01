@@ -6,12 +6,15 @@
 		<template #content>
 			<kv-page-container>
 				<kv-grid
-					class="tw-grid-cols-12 tw-gap-2 tw-items-center"
-					:class="{ 'tw-grid-cols-1 tw-mx-auto': singleColumn }"
+					class="tw-grid-cols-12 tw-gap-2 tw-items-center tw-justify-items-center"
 					:style="customGridStyles"
 				>
 					<div
-						class="tw-mx-auto tw-col-span-12 md:tw-col-span-6"
+						class="tw-mx-auto tw-col-span-12"
+						:class="{
+							'md:tw-col-span-6': !singleColumn
+						}"
+						:style="maxWidthStyles"
 					>
 						<!-- eslint-enable max-len -->
 						<template v-if="isHeroCarousel">
@@ -31,13 +34,14 @@
 							</kv-carousel>
 						</template>
 						<template v-if="isHeroImage">
-							<router-link
+							<component
+								:is="buttonTo ? 'router-link' : 'span'"
 								:to="buttonTo"
-								v-kv-track-event="[
+								v-kv-track-event="buttonTo ? [
 									'Hero',
 									'click-hero-loancards',
 									heroMedia[0].description,
-								]"
+								] : null"
 							>
 								<kv-contentful-img
 									v-if="heroMedia[0].url"
@@ -47,16 +51,17 @@
 									fallback-format="jpg"
 									:alt="heroMedia[0].description"
 								/>
-							</router-link>
+							</component>
 						</template>
 						<template v-if="isResponsiveHeroImage && responsiveHeroImages.length">
-							<router-link
+							<component
+								:is="buttonTo ? 'router-link' : 'span'"
 								:to="buttonTo"
-								v-kv-track-event="[
+								v-kv-track-event="buttonTo ? [
 									'Hero',
 									'click-hero-loancards',
 									responsiveHeroDescription,
-								]"
+								] : null"
 							>
 								<kv-contentful-img
 									class="tw-block tw-mx-auto tw-mt-0 tw-mb-4 md:tw-mb-0"
@@ -67,7 +72,7 @@
 									:alt="responsiveHeroDescription"
 									:source-sizes="responsiveHeroImages"
 								/>
-							</router-link>
+							</component>
 						</template>
 						<template v-if="isHeroVideo">
 							<video
@@ -82,8 +87,12 @@
 					</div>
 
 					<div
-						class="tw-col-span-12 md:tw-col-span-6"
-						:class="{ 'tw-order-first': swapOrder }"
+						class="tw-col-span-12"
+						:class="{
+							'tw-order-first': swapOrder,
+							'md:tw-col-span-6': !singleColumn
+						}"
+						:style="maxWidthStyles"
 					>
 						<h1
 							v-if="heroHeadline"
@@ -98,16 +107,10 @@
 						<div v-if="heroBody" class="tw-prose tw-mb-2 md:tw-mb-3">
 							<dynamic-rich-text :html="heroBody" />
 						</div>
-						<kv-button
-							v-if="buttonText"
+						<button-wrapper
 							class="tw-w-full md:tw-w-auto"
-							:to="buttonTo"
-							:variant="buttonStyle"
-							@click.native="buttonClick"
-							v-kv-track-event="buttonAnalytics"
-						>
-							{{ buttonText }}
-						</kv-button>
+							:content="buttonContent"
+						/>
 					</div>
 				</kv-grid>
 			</kv-page-container>
@@ -120,11 +123,11 @@ import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin'
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import DynamicRichText from '@/components/Contentful/DynamicRichText';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import ButtonWrapper from '@/components/Contentful/ButtonWrapper';
+import { responsiveImageSetSourceSets } from '@/util/contentfulUtils';
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-
 /**
 * Dynamic Hero Component
 * This component will display a Hero driven by a Contentful Content Group
@@ -134,7 +137,7 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	components: {
-		KvButton,
+		ButtonWrapper,
 		KvCarousel: () => import('@/components/Kv/KvCarousel'),
 		KvCarouselSlide: () => import('@/components/Kv/KvCarouselSlide'),
 		DynamicRichText,
@@ -159,26 +162,12 @@ export default {
 				return contentType ? contentType === 'background' : false;
 			});
 		},
-		buttonAnalytics() {
-			const defaults = ['Hero', 'click-hero-cta', this.buttonText];
-			const contentfulAnaltyicsEvent = this.buttonContent?.analyticsClickEvent ?? null;
-			return contentfulAnaltyicsEvent || defaults;
-		},
 		buttonContent() {
 			return this.content?.contents?.find(({ contentType }) => {
 				return contentType ? contentType === 'button' : false;
 			});
 		},
-		buttonStyle() {
-			return this.buttonContent?.style ?? 'primary';
-		},
-		buttonText() {
-			return this.buttonContent?.label ?? null;
-		},
 		buttonTo() {
-			if (this.$attrs?.customEventName) {
-				return '';
-			}
 			return this.buttonContent?.webLink ?? '';
 		},
 		genericContentBlock() {
@@ -232,56 +221,12 @@ export default {
 			const imageSet = this.content?.contents?.find(({ contentType }) => contentType === 'responsiveImageSet');
 			if (!this.isResponsiveHeroImage || (imageSet.images && !imageSet.images.length)) return [];
 
-			return imageSet.images.map(entry => {
-				// TODO: Make this a util
-
-				// All screen breakpoints:
-				// small: 0,
-				// medium: 481px,
-				// large: 681px,
-				// xlarge: 761px,
-				// xxlarge: 989px,
-				// xga: 1025px,
-				// wxga: 1441px,
-
-				// small size
-				let mediaSize = 'min-width: 0';
-				let width = 537;
-
-				if (entry.title.indexOf('med') !== -1) {
-					mediaSize = 'min-width: 681px';
-					width = 397;
-				} else if (entry.title.indexOf('lg') !== -1) {
-					mediaSize = 'min-width: 1025px';
-					width = 394;
-				}
-
-				const aspectRatio = (entry.file?.details?.image?.height ?? 0) / (entry.file?.details?.image?.width ?? 1); // eslint-disable-line max-len
-				const height = aspectRatio ? Math.round(width * aspectRatio) : null;
-
-				return {
-					width,
-					height,
-					media: mediaSize,
-					url: entry.file?.url ?? ''
-				};
-			});
+			return responsiveImageSetSourceSets(imageSet);
 		},
 		responsiveHeroDescription() {
 			const imageSet = this.content?.contents?.find(({ contentType }) => contentType === 'responsiveImageSet');
 			return imageSet?.description ?? '';
 		},
 	},
-	methods: {
-		buttonClick(event) {
-			const customEventName = this.$attrs?.customEventName ?? null;
-			if (customEventName) {
-				// Current behavior is to replace a button navigation if a custom event name is passed
-				event.stopPropagation();
-				// Emit root level event that any component can listen for
-				this.$root.$emit(customEventName);
-			}
-		},
-	}
 };
 </script>

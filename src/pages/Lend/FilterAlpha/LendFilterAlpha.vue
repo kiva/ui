@@ -74,12 +74,35 @@
 									name="sectorBox.name"
 									v-model="sector"
 									:key="sectorBox.id"
-									:checked="false"
+									:value="sectorBox.name"
 								>
 									{{ sectorBox.name }}
 								</kv-checkbox>
 							</fieldset>
 							<br>
+							<fieldset>
+								<label class="tw-text-h4 tw-block"
+									for="loanTerm"
+								>
+									Loan Term Filter
+								</label>
+								<kv-select class="tw-mt-2"
+									id="loanTerm"
+									v-model="lenderTermLimit"
+								>
+									<option value="0">
+										All Loans
+									</option>
+									<option value="24">
+										Up to 24 months
+									</option>
+									<option value="12">
+										Up to 12 months
+									</option>
+								</kv-select>
+							</fieldset>
+							<br>
+							<hr>
 							<kv-button
 								v-model="loanQueryFilters"
 								@click="updateQuery"
@@ -93,8 +116,6 @@
 								Reset Filters
 							</kv-button>
 							<hr>
-							<br> Loan Term
-							<br> Country
 						</div>
 						<div class="md:tw-hidden">
 							<p> {{ totalCount }} Loans </p>
@@ -129,7 +150,7 @@
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
 import { lightHeader } from '@/util/siteThemes';
 import {
-	fetchData, filterGender, allSectors, filterSector
+	fetchData, filterGender, filterSector, fetchSectors, fetchCountryFacets, filterCountry, filterLoanTerm,
 } from '@/util/flssUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
@@ -139,6 +160,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
 	inject: ['apollo'],
@@ -151,6 +173,7 @@ export default {
 		KvRadio,
 		KvButton,
 		KvCheckbox,
+		KvSelect
 	},
 	data() {
 		return {
@@ -165,21 +188,32 @@ export default {
 			gender: 'both',
 			sector: ['Food', 'Education'],
 			country: ['TZ', 'KE'],
-			allSectors,
+			lenderTermLimit: 0,
+			allSectors: [],
+			allCountries: [],
+			allIsoCodes: [],
 		};
 	},
 	methods: {
-		filterCountry() {
-			// # TODO: collect country from checkbox inputs
-			// let countryFilter = ['TZ', 'KE'];
-			const countryFilter = { any: this.country };
-			console.log('from filterCountrey', countryFilter);
-			return countryFilter;
+		async getSectors() {
+			const sectorInfo = await fetchSectors(this.apollo);
+			this.allSectors = sectorInfo;
+		},
+		async getAllCountries() {
+			// data pull only from production endpoint,
+			// not implmented with a component until design path
+			// with product is completed.
+			const countryFacets = await fetchCountryFacets(this.apollo);
+			this.allCountries = countryFacets.map(cf => cf.country.name);
+			// pulled in IsoCodes b/c the loan query filters are currently coded
+			// to use ISO Codes instead of country names in queryFilters() right now
+			this.allIsoCodes = countryFacets.map(cf => cf.country.isoCode);
 		},
 		resetFilter() {
 			this.gender = 'both';
 			this.sector = [];
 			this.country = [];
+			this.lenderTermLimit = 0;
 			this.loanQueryFilters = {};
 			this.runQuery(this.loanQueryFilters);
 		},
@@ -189,6 +223,7 @@ export default {
 				this.loans = flssData.values ?? [];
 				this.totalCount = flssData.totalCount;
 				console.log('num loans:', this.totalCount);
+				console.log('loans from runQuery()', this.loans);
 
 				if (this.totalCount === 0) {
 					this.zeroLoans = true;
@@ -196,8 +231,6 @@ export default {
 			});
 		},
 		updateQuery() {
-			// this.country = ['TZ', 'KE'];
-
 			const updatedQueryFilters = this.queryFilters;
 			console.log('from updateQuery', updatedQueryFilters);
 			console.log('new query ran, yes!');
@@ -205,9 +238,12 @@ export default {
 		},
 	},
 	mounted() {
+		this.getSectors();
+		this.getAllCountries();
 		this.loanQueryFilters = { countryIsoCode: { any: ['US'] } };
 		console.log('mounted query ran:', this.loanQueryFilters);
 		this.runQuery(this.loanQueryFilters);
+		console.log('loans from mounted:', this.loans);
 	},
 	computed: {
 		queryFilters() {
@@ -215,11 +251,18 @@ export default {
 			const genderFilter = filterGender(this.gender);
 			console.log('this is filtergender', genderFilter);
 
-			const sectorFilter = filterSector(this.sector);
+			const sectorFilter = filterSector(this.sector, this.allSectors);
 			console.log('this is filterSector', sectorFilter);
 
+			const countryFilter = filterCountry(this.country, this.allIsoCodes);
+			console.log('this is countryFilter', countryFilter);
+
+			const loanTermFilter = filterLoanTerm(this.lenderTermLimit);
+			console.log('this is filterLoanTerm', loanTermFilter);
+
 			const loanQueryFilters = {
-				countryIsoCode: { none: [] },
+				countryIsoCode: countryFilter,
+				lenderRepaymentTerm: loanTermFilter,
 				// TODO: enable genderFilter when its working
 				// gender: genderFilter,
 				sector: sectorFilter,
@@ -231,7 +274,8 @@ export default {
 	watch: {
 		gender: { handler: 'updateQuery' },
 		sector: { handler: 'updateQuery' },
-		// // country: { handler: 'updateQuery' },
+		country: { handler: 'updateQuery' },
+		loanTermLimit: { handler: 'updateQuery' },
 	},
 };
 </script>

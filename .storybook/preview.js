@@ -2,6 +2,8 @@ import { addParameters } from '@storybook/vue';
 import { MINIMAL_VIEWPORTS} from '@storybook/addon-viewport';
 import Vue from 'vue';
 import Meta from 'vue-meta';
+import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
+import { defaultTheme } from '@kiva/kv-tokens/configs/kivaColors';
 
 //load all the svg icon sprites
 import '@/assets/iconLoader';
@@ -86,4 +88,11 @@ addParameters({
     },
   },
 });
+
+// Wrap all stories with the kv-theme-provider component
+export const decorators = [(story) => ({
+	components: { story, KvThemeProvider },
+	template: '<kv-theme-provider :theme="theme"><story /></kv-theme-provider>',
+	data() { return { theme: defaultTheme } }
+})];
 

@@ -2,30 +2,18 @@
 	<component :is="pageFrame"
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
+		:main-class="pageBackgroundColor"
 	>
-		<template v-if="!pageError">
-			<component
-				v-for="({ component, content, wrapperClass }) in contentGroups"
-				:key="content.key"
-				:id="content.key"
-				:is="component"
-				:content="content"
-				v-bind="getComponentOptions(content.key)"
-				:class="wrapperClass"
-			/>
-		</template>
-		<template v-else>
-			<div class="row">
-				<div class="small-12 columns">
-					<h1>
-						We're sorry, something went wrong
-					</h1>
-					<p>
-						There was an unknown problem with trying to load the content for this page.
-					</p>
-				</div>
-			</div>
-		</template>
+		<component
+			v-for="({ component, content, wrapperClass }) in contentGroups"
+			:key="content.key"
+			:id="content.key"
+			:is="component"
+			:content="content"
+			v-bind="getComponentOptions(content.key)"
+			:class="wrapperClass"
+			data-section-type="contentful-section"
+		/>
 	</component>
 </template>
 
@@ -61,6 +49,9 @@ const WwwPage = () => import('@/components/WwwFrame/WwwPage');
 const WwwPageCorporate = () => import('@/components/WwwFrame/WwwPageCorporate');
 const WwwPageDesign = () => import('@/components/WwwFrame/WwwPageDesign');
 
+// Error page
+const ErrorPage = () => import('@/pages/Error');
+
 // Content Group Types
 // TODO: update the campaign components to accept "content" prop
 const CampaignHero = () => import('@/components/CorporateCampaign/CampaignHero');
@@ -80,18 +71,22 @@ const HomepageTestimonials = () => import('@/components/Homepage/HomepageTestimo
 const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
 const HomepageMonthlyGoodInfo = () => import('@/components/Homepage/HomepageMonthlyGoodInfo');
 
+const CardRow = () => import('@/components/Contentful/CardRow');
 const CenteredRichText = () => import('@/components/Contentful/CenteredRichText');
 const DynamicHero = () => import('@/components/Contentful/DynamicHero');
 const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
 const HeroWithCarousel = () => import('@/components/Contentful/HeroWithCarousel');
+const LoansByCategoryCarousel = () => import('@/components/Contentful/LoansByCategoryCarousel');
 
 const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
 
-const KvFrequentlyAskedQuestions = () => import('@/components/Kv/KvFrequentlyAskedQuestions');
+const FrequentlyAskedQuestions = () => import('@/components/Contentful/FrequentlyAskedQuestions');
 
 const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
 
 const RichTextItemsCentered = () => import('@/components/Contentful/RichTextItemsCentered');
+
+const MediaItemsCentered = () => import('@/components/Contentful/MediaItemsCentered');
 
 // Get the Contentful Page data from the data of an Apollo query result
 const getPageData = data => {
@@ -123,12 +118,15 @@ const getPageFrameFromType = type => {
 // :is="pageFrame" component on this page
 const getWrapperClassFromType = type => {
 	switch (type) {
+		case 'cardRow':
 		case 'centeredRichText':
 		case 'dynamicHeroClassic':
 		case 'heroWithCarousel':
+		case 'loansByCategoryCarousel':
 		case 'monthlyGoodSelector':
 		case 'testimonialCards':
 		case 'richTextItemsCentered':
+		case 'mediaItemsCentered':
 		case 'frequentlyAskedQuestions':
 			return 'kv-tailwind';
 		default:
@@ -171,9 +169,11 @@ const getComponentFromType = type => {
 		case 'monthlyGoodSelector':
 			return MonthlyGoodSelectorWrapper;
 		case 'frequentlyAskedQuestions':
-			return KvFrequentlyAskedQuestions;
+			return FrequentlyAskedQuestions;
 		case 'testimonialCards':
 			return TestimonialCards;
+		case 'cardRow':
+			return CardRow;
 		case 'centeredRichText':
 			return CenteredRichText;
 		case 'dynamicHero':
@@ -182,8 +182,12 @@ const getComponentFromType = type => {
 			return DynamicHeroClassic;
 		case 'heroWithCarousel':
 			return HeroWithCarousel;
+		case 'loansByCategoryCarousel':
+			return LoansByCategoryCarousel;
 		case 'richTextItemsCentered':
 			return RichTextItemsCentered;
+		case 'mediaItemsCentered':
+			return MediaItemsCentered;
 		default:
 			logFormatter(`ContenfulPage: Unknown content group type "${type}"`, 'error');
 			return null;
@@ -226,6 +230,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
+			pageBackgroundColor: '',
 			contentGroups: [],
 			footerTheme: {},
 			headerTheme: {},
@@ -244,13 +249,13 @@ export default {
 		preFetchVariables({ route }) {
 			return {
 				contentType: 'page',
-				contentKey: route?.meta?.contentfulPage(route),
+				contentKey: route?.meta?.contentfulPage(route)?.trim(),
 			};
 		},
 		variables() {
 			return {
 				contentType: 'page',
-				contentKey: this.$route?.meta?.contentfulPage(this.$route),
+				contentKey: this.$route?.meta?.contentfulPage(this.$route)?.trim(),
 			};
 		},
 		preFetch(config, client, args) {
@@ -258,14 +263,14 @@ export default {
 				query: contentfulEntries,
 				variables: {
 					contentType: 'page',
-					contentKey: args?.route?.meta?.contentfulPage(args?.route),
+					contentKey: args?.route?.meta?.contentfulPage(args?.route)?.trim(),
 				}
 			}).then(({ data }) => {
 				// Get Contentful page data
 				const pageData = getPageData(data);
 				if (pageData.error) {
-					// Only import the default page frame if there is a contentful error
-					return Promise.all([WwwPage()]);
+					// Only import the error page if there is a contentful error
+					return Promise.all([ErrorPage()]);
 				}
 				// Get page frame component
 				const pageFrame = getPageFrameFromType(pageData?.page?.pageType);
@@ -286,8 +291,10 @@ export default {
 			const pageData = getPageData(data);
 			if (pageData.error) {
 				this.pageError = true;
+				this.pageFrame = ErrorPage;
 			} else {
 				this.title = (pageData?.page?.pageLayout?.pageTitle || pageData?.page?.pageTitle) ?? undefined;
+				this.pageBackgroundColor = pageData?.page?.pageLayout?.pageBackgroundColor ?? '';
 				this.headerTheme = siteThemes[pageData?.page?.pageLayout?.headerTheme] || {};
 				this.footerTheme = siteThemes[pageData?.page?.pageLayout?.footerTheme] || {};
 				this.pageFrame = getPageFrameFromType(pageData?.page?.pageType);

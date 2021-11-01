@@ -31,9 +31,9 @@
 </template>
 
 <script>
+import { differenceInYears } from 'date-fns';
 import numeral from 'numeral';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import { differenceInYears } from 'date-fns';
 import homepageStatistics from '@/graphql/query/whyKivaData.graphql';
 
 const billionImpactImagesRequire = require.context('@/assets/images/10-years-billion-impact', true);

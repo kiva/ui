@@ -1,7 +1,7 @@
 <template>
 	<figure>
 		<h4 class="tw-mb-0.5">
-			{{ moneyLeft | numeral('$0,0[.]00') }} to go{{ timeLeft !== '' ? `. ${timeLeft}` : '' }}
+			{{ fundingText }}
 		</h4>
 		<kv-progress-bar
 			class="tw-mb-1.5 lg:tw-mb-1"
@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import numeral from 'numeral';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
 export default {
@@ -31,6 +32,19 @@ export default {
 			type: String,
 			default: '',
 		},
+		allSharesReserved: {
+			type: Boolean,
+			default: false,
+		}
 	},
+	computed: {
+		fundingText() {
+			const formattedMoneyLeft = numeral(this.moneyLeft).format('$0,0[.]00');
+			const formattedTimeLeft = `${this.timeLeft !== '' ? `. ${this.timeLeft}` : ''}`;
+
+			const formatttedFundingText = `${formattedMoneyLeft} to go${formattedTimeLeft}`;
+			return 	formatttedFundingText;
+		}
+	}
 };
 </script>

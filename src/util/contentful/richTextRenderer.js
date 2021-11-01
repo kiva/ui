@@ -6,8 +6,48 @@
  * Docs: https://github.com/contentful/rich-text/tree/master/packages/rich-text-html-renderer#usage
  */
 
+import {
+	formatResponsiveImageSet, responsiveImageSetSourceSets
+} from '@/util/contentfulUtils';
 import { BLOCKS, INLINES } from '~/@contentful/rich-text-types';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+
+/**
+ * Returns a string representation of a value
+ * which can be inserted in an html attribute in quotes.
+ * Call stringify, then replaces single quotes with escaped
+ * then replaces double quotes with single quotes
+ *
+ * @param {string|object|array} value any value to convert to string
+ * @returns {string} string representation
+ */
+function htmlSafeStringify(value) {
+	return JSON.stringify(value).replace(/'/g, '\\\'').replace(/"/g, '\'');
+}
+
+/**
+ * Contentful rich text fields add a trailing empty <p> tag, these should be removed
+ *
+ * @param {object} contentful RTF object containing RTF nodes
+ * @returns {object} RTF object containing RTF nodes without trailing empty <p> tag
+ */
+export function removeTrailingParagraphTag(content) {
+	// Remove empty <p> inserted by contentful
+	const innerContent = content.content;
+	const lastRTFElement = innerContent[innerContent.length - 1];
+
+	const contentWithoutTrailingEmptyParagraph = { ...content };
+
+	// If last item is an empty paragraph, which contains an empty text node, remove it
+	if (lastRTFElement.nodeType === 'paragraph'
+		&& Object.keys(lastRTFElement.data).length === 0
+		&& lastRTFElement.content.length === 1
+		&& lastRTFElement.content?.[0]?.value === ''
+		&& lastRTFElement.content?.[0]?.nodeType === 'text') {
+		contentWithoutTrailingEmptyParagraph.content = contentWithoutTrailingEmptyParagraph.content.slice(0, -1);
+	}
+	return contentWithoutTrailingEmptyParagraph;
+}
 
 /**
  * Returns html string from rich text nodes
@@ -54,35 +94,36 @@ export function richTextRenderer(content) {
 	 * @returns {string} String of html to render
 	 */
 	const entryRenderer = contentfulEntryNode => {
-		const isRichTextContent = contentfulEntryNode?.data?.target?.sys?.contentType?.sys?.id === 'richTextContent';
-		const isButton = contentfulEntryNode?.data?.target?.sys?.contentType?.sys?.id === 'button';
+		const entryContentTypeId = contentfulEntryNode?.data?.target?.sys?.contentType?.sys?.id;
+		const entryContent = contentfulEntryNode?.data?.target;
+
+		const isRichTextContent = entryContentTypeId === 'richTextContent';
+		const isButton = entryContentTypeId === 'button';
+		const isResponsiveImageSet = entryContentTypeId === 'responsiveImageSet';
+
 		if (isRichTextContent) {
-			const richTextHTML = richTextRenderer(contentfulEntryNode?.data?.target?.fields?.richText);
-			return `
-				<div class="tw-prose tw-whitespace-pre-wrap">${richTextHTML}</div>
-			`;
+			const richTextHTML = richTextRenderer(entryContent?.fields?.richText);
+			return `<div>${richTextHTML}</div>`;
 		}
 		if (isButton) {
-			const analyticsClickEvent = contentfulEntryNode?.data?.target?.fields?.analyticsClickEvent;
-			const webClickEventName = contentfulEntryNode?.data?.target?.fields?.webClickEventName;
-
-			const analyticsDirective = () => {
-				return analyticsClickEvent ? `v-kv-track-event="['${analyticsClickEvent.join("','")}']"` : '';
-			};
-
-			const clickFunctionality = () => {
-				if (webClickEventName) {
-					return `@click="buttonClick('${webClickEventName}', $event)"`;
-				}
-				return `href="${contentfulEntryNode?.data?.target?.fields?.webLink ?? '#'}"`;
-			};
-			return `
-				<kv-button
-					variant="${contentfulEntryNode?.data?.target?.fields?.style ?? 'primary'}"
-					${analyticsDirective()}
-					${clickFunctionality()}
-				>${contentfulEntryNode?.data?.target?.fields?.label ?? ''}</kv-button>
-			`;
+			// The content prop expects an object, but in this context
+			// only passing in a string representation of an object will work
+			// We must stringify the object, then replace the quotes
+			// eslint-disable-next-line max-len
+			const buttonObjectAsString = htmlSafeStringify(entryContent?.fields);
+			return `<button-wrapper class="tw-whitespace-normal" :content="${buttonObjectAsString}" />`;
+		}
+		if (isResponsiveImageSet) {
+			const formattedResponsiveImageSet = formatResponsiveImageSet(entryContent);
+			const sourceSets = responsiveImageSetSourceSets(formattedResponsiveImageSet);
+			const sourceSetArrayAsString = htmlSafeStringify(sourceSets);
+			return `<kv-contentful-img
+						contentful-src="${encodeURI(sourceSets[0].url)}"
+						width="${sourceSets[0].width}"
+						height="${sourceSets[0].height}"
+						fallback-format="jpg"
+						alt="${formattedResponsiveImageSet?.description}"
+						:source-sizes="${sourceSetArrayAsString}" />`;
 		}
 		return '';
 	};
@@ -97,8 +138,14 @@ export function richTextRenderer(content) {
 			},
 			[BLOCKS.EMBEDDED_ASSET]: node => {
 				return assetRenderer(node?.data?.target?.fields);
-			}
+			},
+			[BLOCKS.DOCUMENT]: (node, next) => {
+				return `<div class="tw-prose tw-whitespace-pre-wrap">${next(node.content)}</div>`;
+			},
 		}
 	};
-	return documentToHtmlString(content, options);
+
+	const contentWithoutTrailingEmptyParagraph = removeTrailingParagraphTag(content);
+
+	return documentToHtmlString(contentWithoutTrailingEmptyParagraph, options);
 }

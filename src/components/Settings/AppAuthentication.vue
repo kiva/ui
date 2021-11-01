@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import { validationMixin } from 'vuelidate';
 import {
 	required, minLength, maxLength, numeric

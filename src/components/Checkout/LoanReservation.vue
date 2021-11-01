@@ -66,10 +66,6 @@ export default {
 		};
 	},
 	props: {
-		activateTimer: {
-			type: Boolean,
-			default: true
-		},
 		expiryTime: {
 			type: String,
 			default: ''
@@ -91,21 +87,13 @@ export default {
 		lightboxClosed() {
 			this.defaultLbVisible = false;
 		},
-		setDifferenceInWords(value) {
-			this.differenceInWords = value;
-		},
 		reservationMessage() {
 			if (this.expiryTime !== null) {
 				const mins = differenceInMinutes(this.reservedDate.getTime(), Date.now());
 				const seconds = differenceInSeconds(this.reservedDate.getTime(), Date.now()) % 60;
 
-				let warningMessageUpperBoundMinutes = 5;
-				let differenceInWords = `Reserved for ${mins} more minutes`;
-
-				if (this.activateTimer === true) {
-					warningMessageUpperBoundMinutes = 9;
-					differenceInWords = `Reservation expires in ${mins}m ${seconds}s`;
-				}
+				const warningMessageUpperBoundMinutes = 9;
+				const differenceInWords = `Reservation expires in ${mins}m ${seconds}s`;
 
 				if ((this.reservedDate.getTime() - Date.now()) <= 0 || this.isExpiringSoon) {
 					clearInterval(this.reservationMessageId);
@@ -114,19 +102,15 @@ export default {
 					this.loanReservationMsg3 = false;
 					this.loanReservationMsg4 = false;
 				} else if (mins > warningMessageUpperBoundMinutes) {
-					this.setDifferenceInWords(differenceInWords);
+					this.differenceInWords = differenceInWords;
 					this.loanReservationMsg1 = false;
 					this.loanReservationMsg2 = true;
 				} else if (mins > 1 && mins <= warningMessageUpperBoundMinutes) {
-					this.setDifferenceInWords(differenceInWords);
+					this.differenceInWords = differenceInWords;
 					this.loanReservationMsg2 = false;
 					this.loanReservationMsg3 = true;
 				} else if (mins <= 1) {
-					differenceInWords = this.activateTimer === true
-						? `Reservation expires in ${seconds}s`
-						: 'Reserved for 1 more minute';
-
-					this.setDifferenceInWords(differenceInWords);
+					this.differenceInWords = `Reservation expires in ${seconds}s`;
 					this.loanReservationMsg3 = false;
 					this.loanReservationMsg4 = true;
 				}
@@ -142,29 +126,17 @@ export default {
 			}, 1000);
 		}
 	},
-	mounted() {
-		if (this.activateTimer === true) {
-			this.activateReservationTimer();
-		}
+	created() {
+		this.reservationMessage();
 	},
-	destroyed() {
-		if (this.activateTimer === true) {
+	mounted() {
+		this.activateReservationTimer();
+	},
+	beforeDestroy() {
+		if (this.reservationMessageId) {
 			clearInterval(this.reservationMessageId);
 		}
 	},
-	watch: {
-		// This watch is only necessary due to a potentially changing experiment value
-		// TODO: remove this watch + similify setTimeout activation once experiment is removed
-		activateTimer(newValue) {
-			this.$nextTick(() => {
-				if (newValue) {
-					this.activateReservationTimer();
-				} else {
-					clearInterval(this.reservationMessageId);
-				}
-			});
-		}
-	}
 };
 
 </script>

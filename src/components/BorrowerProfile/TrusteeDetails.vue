@@ -52,9 +52,9 @@
 </template>
 
 <script>
+import { mdiArrowRight } from '@mdi/js';
 import numeral from 'numeral';
 import DescriptionListItem from '@/components/BorrowerProfile/DescriptionListItem';
-import { mdiArrowRight } from '@mdi/js';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 export default {

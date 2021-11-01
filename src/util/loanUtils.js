@@ -55,3 +55,7 @@ export function buildPriceArray(amountLeft, minAmount) {
 	}
 	return priceArray;
 }
+
+export function toParagraphs(text) {
+	return String(text).replace(/\r|\n|<br\s*\/?>/g, '\n').split(/\n+/);
+}

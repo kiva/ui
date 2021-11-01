@@ -1,5 +1,6 @@
 import _get from 'lodash/get';
 import { camelCase } from 'change-case';
+import kvTokensPrimitives from '@kiva/kv-tokens/primitives.json';
 
 function determineResponsiveSizeFromFileName(filename) {
 	// retina
@@ -33,28 +34,106 @@ function determineResponsiveSizeFromFileName(filename) {
 }
 
 /**
- * Takes raw contentful responsive image set object, and returns
- * an array with image urls mapped to their respective sizes
+ * Takes formatted responsiveImageSet and returns an array of image objects which
+ * can be inserted into KvContentfulImg component as source sets
  *
- * @param {object} contentful Responsive Image Set Object
+ * @param {object} ResponsiveImage contentful object - output of: formatResponsiveImageSet
  * @returns {array}
  */
-export function createArrayOfResponsiveImageSet(contentfulResponsiveImageSet) {
-	// param must be an object, which contains prop images
-	if (!contentfulResponsiveImageSet || !contentfulResponsiveImageSet.images) return [];
+export function responsiveImageSetSourceSets(contentfulResponsiveImageObject) {
+	const responsiveSizing = contentfulResponsiveImageObject.responsiveSizing || {};
+	let formattedArray = contentfulResponsiveImageObject.images.flatMap(entry => {
+		/**
+         * This filters out images that have 'std' for support of legacy ResponsiveImageSets
+         * that had both std and retina images. When all ResponsiveImageSets only have the
+         * retina version of images on contentful, this if can be removed
+         */
 
-	// copy responsive image set param
-	const contentfulResponsiveImageSetCopy = JSON.parse(JSON.stringify(contentfulResponsiveImageSet));
-	contentfulResponsiveImageSetCopy.images.forEach(imageObj => {
-		// eslint-disable-next-line no-param-reassign
-		imageObj.responsiveSize = determineResponsiveSizeFromFileName(imageObj.file.fileName);
+		if (entry.title.indexOf('std') !== -1) {
+			return [];
+		}
+
+		// kvTokensPrimitives.breakpoints:
+		// "breakpoints": {
+		// 	"md": 734,
+		// 	"lg": 1024,
+		// 	"xl": 1440
+		// },
+
+		let mediaSize;
+		let width;
+		let sortOrder;
+
+		const returnWidth = size => {
+			let maxWidthAtBreakpoint;
+			switch (size) {
+				case ('md'):
+					maxWidthAtBreakpoint = kvTokensPrimitives?.breakpoints?.lg || 1024;
+					break;
+				case ('lg'):
+					maxWidthAtBreakpoint = kvTokensPrimitives?.breakpoints?.xl || 1440;
+					break;
+				case ('xl'):
+					// max width at this breakpoint is as large as possible
+					// lets return image width
+					maxWidthAtBreakpoint = entry.file?.details?.image?.width;
+					break;
+				default:
+					// small  or default
+					maxWidthAtBreakpoint = kvTokensPrimitives?.breakpoints?.md || 734;
+					break;
+			}
+			// return size or default
+			return responsiveSizing?.[size]?.width || maxWidthAtBreakpoint;
+		};
+
+		switch (true) {
+			case (entry.title.indexOf('md') !== -1):
+				mediaSize = 'min-width: 734px';
+				width = returnWidth('md');
+				sortOrder = 3;
+				break;
+			case (entry.title.indexOf('lg') !== -1):
+				mediaSize = 'min-width: 1024px';
+				width = returnWidth('lg');
+				sortOrder = 2;
+				break;
+			case (entry.title.indexOf('xl') !== -1):
+				mediaSize = 'min-width: 1440px';
+				width = returnWidth('xl');
+				sortOrder = 1;
+				break;
+			default:
+				// small (entry.title.indexOf('sm') !== -1 ) or default
+				mediaSize = 'min-width: 0';
+				width = returnWidth('sm');
+				sortOrder = 4;
+				break;
+		}
+		const aspectRatio = (entry.file?.details?.image?.height ?? 0) / (entry.file?.details?.image?.width ?? 1);// eslint-disable-line max-len
+		const height = aspectRatio ? Math.round(width * aspectRatio) : null;
+
+		return [{
+			width,
+			height,
+			media: mediaSize,
+			url: entry.file?.url ?? '',
+			sortOrder,
+		}];
 	});
-	// convert to array and reduce
-	const responsiveImageArray = contentfulResponsiveImageSetCopy.images.reduce((newArray, curVal) => {
-		newArray.push([curVal.responsiveSize, curVal.file.url]);
-		return newArray;
+	// Remove duplicate by sortOrder property
+	formattedArray = formattedArray.reduce((unique, o) => {
+		if (!unique.some(obj => obj.sortOrder === o.sortOrder)) {
+			unique.push(o);
+		}
+		return unique;
 	}, []);
-	return responsiveImageArray;
+
+	// Sort by sortOrder property
+	formattedArray.sort((a, b) => {
+		return (a.sortOrder > b.sortOrder) ? 1 : -1;
+	});
+	return formattedArray;
 }
 
 /**
@@ -200,18 +279,19 @@ export function formatCarousel(contentfulContent) {
 /**
  * Format StoryCard (contentful type id: storyCard)
  * Takes raw contentful content object and returns an object with targeted keys/values
- *
+ * TODO remove kickerHeadline once content field is fully deprecated from contentful
  * @param {array} contentfulContent data
  * @returns {object}
  */
 export function formatStoryCard(contentfulContent) {
 	return {
 		backgroundMedia: contentfulContent.fields?.backgroundMedia?.fields,
+		cardTitle: contentfulContent.fields?.cardTitle,
 		cardContent: contentfulContent.fields?.cardContent,
 		footer: contentfulContent.fields?.footer,
 		key: contentfulContent.fields?.key,
-		kickerHeadline: contentfulContent.fields?.kickerHeadline,
 		theme: contentfulContent.fields?.theme,
+		kickerHeadline: contentfulContent.fields?.kickerHeadline,
 	};
 }
 
@@ -268,7 +348,8 @@ export function formatResponsiveImageSet(contentfulContent) {
 	const imageSet = {
 		name: contentfulContent.fields?.name,
 		description: contentfulContent.fields?.description,
-		images: []
+		images: [],
+		responsiveSizing: contentfulContent.fields?.responsiveSizing
 	};
 	const rawImages = contentfulContent.fields?.images;
 	imageSet.images = formatMediaAssetArray(rawImages);
@@ -310,8 +391,8 @@ export function formatContentGroupsFlat(contentfulContent) {
 			const cgType = entry.fields?.type ? camelCase(entry.fields?.type) : null;
 			contentGroupsFlat[
 				cgType
-				|| camelCase(entry.fields?.key)
-				|| `cg${index}`
+                || camelCase(entry.fields?.key)
+                || `cg${index}`
 			] = contentGroupFields;
 		}
 	});
@@ -418,6 +499,7 @@ export function processPageContent(entryItem) {
 		pageLayout: {
 			name: entryItem.fields?.pageLayout?.fields?.name,
 			pageTitle: entryItem.fields?.pageLayout?.fields?.pageTitle,
+			pageBackgroundColor: entryItem.fields?.pageLayout?.fields?.pageBackgroundColor,
 			headerTheme: entryItem.fields?.pageLayout?.fields?.headerTheme,
 			footerTheme: entryItem.fields?.pageLayout?.fields?.footerTheme,
 		},

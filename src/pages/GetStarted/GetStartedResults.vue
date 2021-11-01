@@ -112,7 +112,7 @@
 
 <script>
 import gql from 'graphql-tag';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/vue';
 import FrequentlyAskedQuestions from '@/components/GetStarted/FrequentlyAskedQuestions';
 import EditPreferences from '@/components/GetStarted/EditPreferences';
 import KvProgressBar from '@/components/Kv/KvProgressBar';
