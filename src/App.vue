@@ -1,9 +1,9 @@
 <template>
 	<kv-theme-provider
 		:theme="theme"
-		class="tw-h-full"
+		class="tw-flex tw-flex-col tw-h-full tw-w-full"
 	>
-		<div id="app" class="tw-bg-primary tw-h-full">
+		<div id="app" class="tw-bg-primary tw-flex-grow">
 			<router-view />
 			<vue-progress-bar />
 			<the-tip-message />
