@@ -1,24 +1,26 @@
 <template>
-	<div class="kiva-as-expert-section-wrapper" id="kiva-as-expert">
+	<div class="kiva-as-expert-section-wrapper tw-bg-secondary
+			tw-py-4 md:tw-py-6 lg:tw-py-8"
+		id="kiva-as-expert"
+	>
 		<div class="row">
 			<div class="small-12 columns">
-				<h2 class="impact-text">
+				<h2 class="tw-text-h1 tw-mb-4">
 					{{ yearsSinceStartCalc }} years, ${{ amountFunded }} billion in impact
 				</h2>
 			</div>
 			<div class="small-12 large-7 columns">
-				<p>
+				<p class="tw-mb-4">
 					<!-- eslint-disable-next-line max-len -->
 					With nearly ${{ amountFunded }} billion in loans funded, Kiva is a leading global nonprofit creating opportunity for communities in need around the world. Your support will help us continue to push boundaries. Join the movement of <strong>{{ numLenders }} million lenders</strong> who’ve supported <strong>{{ numBorrowers }} million borrowers</strong>.
 				</p>
 				<kv-responsive-image
 					:images="billionImpactImages"
-					class="hide-for-large community-image"
+					class="hide-for-large community-image tw-mb-4"
 					:alt="`${yearsSinceStartCalc} years, ${amountFunded} billion in impact`"
 				/>
 				<slot name="form"></slot>
 			</div>
-
 			<div class="large-5 columns">
 				<kv-responsive-image
 					:images="billionImpactImages"
@@ -93,14 +95,6 @@ export default {
 @import 'settings';
 
 .kiva-as-expert-section-wrapper {
-	padding: 2rem 0 3rem;
-	background-color: $ghost;
-
-	h2 {
-		color: $kiva-green;
-		margin-bottom: 1.85rem;
-	}
-
 	.community-image {
 		padding: 1.25rem;
 		width: 100%;
@@ -110,10 +104,6 @@ export default {
 		max-width: 25rem;
 		display: block;
 		margin: 0 auto;
-	}
-
-	::v-deep form {
-		margin-top: 2.5rem;
 	}
 }
 </style>

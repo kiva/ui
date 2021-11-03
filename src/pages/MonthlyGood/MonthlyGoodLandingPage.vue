@@ -16,9 +16,9 @@
 			</template>
 			<template #overlayContent>
 				<div class="row">
-					<div class="overlay-column columns medium-12 large-8">
-						<p class="mg-headline" v-html="heroHeadline"></p>
-						<div class="mg-subhead" v-html="heroBody"></div>
+					<div class="overlay-column columns tw-bg-primary-inverse tw-bg-opacity-low medium-12 large-8">
+						<h1 class="mg-headline tw-text-primary-inverse" v-html="heroHeadline"></h1>
+						<p class="mg-subhead tw-text-subhead tw-text-primary-inverse" v-html="heroBody"></p>
 						<landing-form
 							:amount.sync="monthlyGoodAmount"
 							:selected-group.sync="selectedGroup"
@@ -34,14 +34,14 @@
 							v-if="!isMonthlyGoodSubscriber && isExperimentActive"
 						/>
 						<div
-							class="already-subscribed-msg-wrapper"
+							class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
 							v-if="isMonthlyGoodSubscriber"
 						>
-							<h4>
+							<p class="tw-font-medium tw-mb-2">
 								You're already signed up for Monthly Good. Changes to this
 								contribution can be made in your
 								<a href="/settings/subscriptions">subscription settings</a>.
-							</h4>
+							</p>
 						</div>
 					</div>
 				</div>
@@ -59,14 +59,14 @@
 					:button-text="heroPrimaryCtaText"
 				/>
 				<div
-					class="already-subscribed-msg-wrapper"
+					class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
 					v-if="isMonthlyGoodSubscriber"
 				>
-					<h4>
+					<p class="tw-font-medium">
 						You're already signed up for Monthly Good. Changes to this
 						contribution can be made in your
 						<a href="/settings/subscriptions">subscription settings</a>.
-					</h4>
+					</p>
 				</div>
 			</template>
 		</kiva-as-expert>
@@ -74,7 +74,8 @@
 		<!-- Monthly Good Frequently Asked Questions -->
 		<div class="row">
 			<kv-frequently-asked-questions
-				class="span-12 column"
+				class="span-12 column
+					tw-py-4 md:tw-py-6 lg:tw-py-8"
 				:headline="frequentlyAskedQuestionsHeadline"
 				:questions="frequentlyAskedQuestions"
 			/>
@@ -269,18 +270,12 @@ export default {
 <style lang="scss" scoped>
 @import "settings";
 
-.already-subscribed-msg-wrapper {
-	background-color: $vivid-yellow;
-	padding: 0.625rem;
-	margin-top: 1.25rem;
-}
-
 .hero.mg-hero {
 	::v-deep .overlay-content {
 		.overlay-column {
 			max-width: none;
 			@include breakpoint(medium) {
-				max-width: 31.25rem;
+				max-width: 32.25rem;
 			}
 		}
 	}
@@ -320,32 +315,15 @@ export default {
 
 .mg-headline,
 .mg-subhead {
-	color: white;
 	text-shadow: 1px 1px 3px #333;
-	margin: 0;
-}
-
-.mg-headline {
-	font-weight: bold;
-	font-size: 2rem;
-	line-height: 2rem;
-
-	@include breakpoint(xlarge) {
-		font-size: 2.375rem;
-		line-height: 2.375rem;
-	}
 }
 
 .mg-subhead {
 	padding: 0;
-	font-size: 1.2rem;
-	line-height: 1.35rem;
 	margin-bottom: 0.65rem;
 
 	@include breakpoint(xlarge) {
 		padding-top: 0.875rem;
-		font-size: 1.5rem;
-		line-height: 1.75rem;
 		margin-bottom: 1rem;
 	}
 }
@@ -365,9 +343,8 @@ export default {
 		.overlay-column {
 			max-width: none;
 			padding: 1.5rem 1rem 0.5rem;
-			background-color: rgba(0, 0, 0, 0.35);
 			@include breakpoint(large) {
-				max-width: 31.25rem;
+				max-width: 32.25rem;
 				padding: 1.5rem 2rem 1.25rem 2rem;
 			}
 		}
@@ -375,7 +352,8 @@ export default {
 
 	::v-deep .images > div,
 	::v-deep .images img {
-		min-height: 18.75rem;
+		min-height: 22.75rem;
+		object-fit: cover;
 	}
 
 	.mg-headline,
@@ -394,12 +372,6 @@ export default {
 	.mg-subhead {
 		max-width: 28.125rem;
 		margin: 1rem 0 1.35rem 0;
-		font-size: 1.15rem;
-		line-height: 1.25rem;
-		@include breakpoint(xlarge) {
-			font-size: 1.25rem;
-			line-height: 1.5rem;
-		}
 	}
 }
 
