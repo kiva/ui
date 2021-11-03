@@ -10,7 +10,7 @@
 					<hero-background />
 				</div>
 				<content-container class="md:tw-pt-6 lg:tw-pt-8">
-					<summary-card class="tw-relative lg:tw--mb-1.5 tw-z-1" />
+					<summary-card class="tw-relative lg:tw--mb-1.5 tw-z-1" :loan-id="loanId" />
 				</content-container>
 			</div>
 			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8 tw-pointer-events-none">

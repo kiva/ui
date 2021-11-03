@@ -44,29 +44,47 @@
 			:status="status"
 			:use="use"
 		/>
-		<div class="tw-flex-auto tw-inline-flex">
-			<summary-tag v-if="countryName">
-				<kv-material-icon
-					class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
-					:icon="mdiMapMarker"
-				/>
-				{{ formattedLocation }}
-			</summary-tag>
+		<div class="tw-flex tw-justify-between">
+			<div class="tw-flex-auto tw-inline-flex">
+				<summary-tag v-if="countryName">
+					<kv-material-icon
+						class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
+						:icon="mdiMapMarker"
+					/>
+					{{ formattedLocation }}
+				</summary-tag>
 
-			<summary-tag v-if="activityName">
-				{{ activityName }}
-			</summary-tag>
+				<summary-tag v-if="activityName">
+					{{ activityName }}
+				</summary-tag>
+			</div>
+			<kv-text-link
+				@click="isShareLightboxVisible = true"
+				:icon="mdiXml"
+			>
+				Embed
+			</kv-text-link>
 		</div>
+		<kv-lightbox
+			title="Embed this loan"
+			:visible="isShareLightboxVisible"
+			@lightbox-closed="isShareLightboxVisible = false"
+		>
+			<embed-profile :loan-id="loanId" />
+		</kv-lightbox>
 	</section>
 </template>
 
 <script>
 import gql from 'graphql-tag';
-import { mdiMapMarker } from '@mdi/js';
+import { mdiXml, mdiMapMarker } from '@mdi/js';
 import { getKivaImageUrl } from '@/util/imageUtils';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
+import EmbedProfile from './EmbedProfile';
 import LoanProgress from './LoanProgress';
 import LoanUse from './LoanUse';
 import SummaryTag from './SummaryTag';
@@ -76,7 +94,10 @@ export default {
 	components: {
 		BorrowerImage,
 		BorrowerName,
+		EmbedProfile,
+		KvLightbox,
 		KvMaterialIcon,
+		KvTextLink,
 		LoanProgress,
 		LoanUse,
 		SummaryTag,
@@ -101,6 +122,12 @@ export default {
 			] : [])
 		};
 	},
+	props: {
+		loanId: {
+			type: Number,
+			default: 0
+		}
+	},
 	data() {
 		return {
 			activityName: '',
@@ -119,6 +146,8 @@ export default {
 			distributionModel: '',
 			city: '',
 			state: '',
+			isShareLightboxVisible: false,
+			mdiXml,
 		};
 	},
 	computed: {
