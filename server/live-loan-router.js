@@ -122,6 +122,11 @@ module.exports = function liveLoanRouter(cache) {
 		await serveImg('filter', cache, req, res);
 	});
 
+	// Loan Profile IMG Router
+	router.use('/p/:id([a-zA-Z0-9%,_-]{0,})/img/:offset(\\d{0,})', async (req, res) => {
+		await serveImg('profile', cache, req, res);
+	});
+
 	// 404 any /live-loan/* routes that don't match above
 	router.use((req, res) => {
 		res.sendStatus(404);

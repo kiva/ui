@@ -8,7 +8,7 @@ const log = require('../log');
 const loanCount = 4;
 
 // Which loan properties to fetch
-const loanValues = `values {
+const loanValues = `
 	name
 	id
 	borrowerCount
@@ -25,8 +25,7 @@ const loanValues = `values {
 	}
 	image {
 		retina: url(customSize: "w960h720")
-	}
-}`;
+	}`;
 
 // Make a graphql query <request> and return the results found at <resultPath>
 async function fetchGraphQL(request, resultPath) {
@@ -56,7 +55,7 @@ async function fetchRecommendationsByLoginId(id) {
 							offset: 0
 							limit: ${loanCount}
 					) {
-						${loanValues}
+						values {${loanValues}}
 					}
 				}
 			}`,
@@ -77,13 +76,30 @@ async function fetchRecommendationsByLoanId(id) {
 						topics: [story]
 						limit: ${loanCount},
 					) {
-						${loanValues}
+						values {${loanValues}}
 					}
 				}
 			}`,
 		},
 		'data.ml.relatedLoansByTopics[0].values'
 	);
+}
+
+// Get a single loan
+async function fetchLoanById(id) {
+	const loan = await fetchGraphQL(
+		{
+			query: `{
+				lend {
+					loan(id: ${id}) {
+						${loanValues}
+					}
+				}
+			}`,
+		},
+		'data.lend.loan'
+	);
+	return [loan];
 }
 
 // Get mapping of sector name to id
@@ -356,6 +372,8 @@ module.exports = async function fetchLoansByType(type, id) {
 		// Swap which line below is commented out to switch between FLSS and legacy (monolith) lend search
 		// return fetchRecommendationsByFilter(id);
 		return fetchRecommendationsByLegacyFilter(id);
+	} if (type === 'profile') {
+		return fetchLoanById(id);
 	}
 	throw new Error('Type must be user, loan, or filter');
 };
