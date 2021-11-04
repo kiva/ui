@@ -61,7 +61,11 @@
 				</kv-button>
 			</form>
 			<div class="small-12">
-				<a :href="`https://${$appConfig.auth0.domain}/v2/logout`">Cancel registration</a>
+				<a :href="`https://${$appConfig.auth0.domain}/v2/logout`"
+					v-kv-track-event="['Register', 'click-register-social-cancel-cta', 'Cancel registration']"
+				>
+					Cancel registration
+				</a>
 			</div>
 		</div>
 	</system-page>
@@ -140,19 +144,21 @@ export default {
 			this.needsNames = true;
 		}
 	},
-	mounted() {
-		// TODO: tracking events
-	},
 	methods: {
 		postRegisterSocialForm() {
+			this.$kvTrackEvent('Register', 'click-register-social-cta', 'Complete registration');
 			this.$v.$touch();
 
 			if (!this.$v.$invalid) {
-				window.location = `https://${this.$appConfig.auth0.domain}/continue`
-				+ '?agree=yes'
-				+ `&firstName=${this.firstName}`
-				+ `&lastName=${this.lastName}`
-				+ `&state=${this.$route.query.state}`;
+				this.$kvTrackEvent('Register', 'register-social-success', undefined, undefined, undefined, () => {
+					window.location = `https://${this.$appConfig.auth0.domain}/continue`
+					+ '?agree=yes'
+					+ `&firstName=${this.firstName}`
+					+ `&lastName=${this.lastName}`
+					+ `&state=${this.$route.query.state}`;
+				});
+			} else {
+				this.$kvTrackEvent('Register', 'error-register-social-form-invalid-input');
 			}
 		},
 	}
