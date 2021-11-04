@@ -15,12 +15,11 @@
 		>
 			<img id="nudge-donation-borrower-image-mobile" :src="props.mobileImageUrl">
 		</div>
-		<div
+		<h2
 			id="nudge-donation-top-header"
-			class="impact-text"
 		>
 			{{ props.header }}
-		</div>
+		</h2>
 		<div
 			class="row"
 			id="nudge-donation-top-content-row"
@@ -78,15 +77,6 @@ export default {
 	#nudge-donation-top-header {
 		@extend .nudge-lightbox-row-padding;
 
-		font-size: rem-calc(20);
-		font-weight: 500;
-		color: #64B365;
-		line-height: 1.9rem;
-
-		@include breakpoint(medium) {
-			font-size: 1.6rem;
-		}
-
 		@include breakpoint(large) {
 			&.hide-header-on-mobile {
 				display: block;
@@ -107,17 +97,10 @@ export default {
 
 		margin: 0.5rem auto 0 auto;
 		max-width: 48rem;
-		font-size: rem-calc(14);
-		line-height: rem-calc(24);
 
 		.nudge-donation-top-content {
 			width: 100%;
 		}
-
-		@include breakpoint(medium) {
-			font-size: 1rem;
-		}
-
 		@include breakpoint(large) {
 			margin: 1rem auto 0 auto;
 		}

@@ -5,6 +5,9 @@
 		v-kv-track-event="['basket', 'click-Read more', 'Photo', loanId, loanId]"
 	>
 		<img class="loan-img"
+			width="80"
+			height="80"
+			style="width: 5rem; height: 5rem;"
 			:src="imageUrl"
 			:alt="'photo of ' + name"
 		>
@@ -33,13 +36,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.loan-img {
-	height: rem-calc(80);
-	width: rem-calc(80);
-}
-
-</style>

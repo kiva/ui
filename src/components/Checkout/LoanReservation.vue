@@ -1,56 +1,54 @@
 <template>
-	<div class="reservation-info">
+	<div class="reservation-info tw-w-full">
 		<div
-			class="small-text"
+			class="tw-text-small tw-text-secondary"
 			v-if="expiryTime"
 		>
 			<!-- The loan-message class is on all possible loan-message return types for use in automated tests
 			that QA/David configured -->
 
 			<!-- Loading state -->
-			<div class="loan-message" v-if="calculatingMessage">
+			<p class="loan-message tw-my-1" v-if="calculatingMessage">
 				<em>Calculating loan reservation...</em>
-			</div>
+			</p>
 			<!-- Not Reserved -->
-			<div class="loan-message" v-if="loanReservationMsg1">
-				Loan not reserved. <kv-button class="text-link" @click.native="triggerDefaultLightbox">
+			<p class="loan-message tw-my-1" v-if="loanReservationMsg1">
+				Loan not reserved. <button class="tw-text-link tw-font-medium" @click="triggerDefaultLightbox">
 					Why?
-				</kv-button>
-			</div>
+				</button>
+			</p>
 			<!-- Time Based Messages -->
-			<div
+			<p
 				v-if="loanReservationMsg2 || loanReservationMsg3 || loanReservationMsg4"
-				class="loan-message"
-				:class="{red: loanReservationMsg3 || loanReservationMsg4}"
+				class="loan-message tw-my-1"
+				:class="{'tw-font-medium tw-text-danger': loanReservationMsg3 || loanReservationMsg4}"
 			>
 				{{ differenceInWords }}
-			</div>
-			<!-- TODO: Replace this lightbox with a Popper tip message. -->
-			<kv-lightbox
-				class="loanNotReservedLightbox"
-				:visible="defaultLbVisible"
-				@lightbox-closed="lightboxClosed"
-				title="What does it mean that my loan is not reserved?"
-			>
-				<p>
-					Loans will not be reserved if they've been in your basket for more than 45
-					minutes or have less than 6 hours left to fundraise. This means there's a chance this loan may be
-					funded by other lenders even though it's in your basket. To make this loan, please proceed through
-					the checkout process.
-				</p>
-			</kv-lightbox>
+			</p>
 		</div>
+		<!-- TODO: Replace this lightbox with a Popper tip message. -->
+		<kv-lightbox
+			class="loanNotReservedLightbox"
+			:visible="defaultLbVisible"
+			@lightbox-closed="lightboxClosed"
+			title="What does it mean that my loan is not reserved?"
+		>
+			<p>
+				Loans will not be reserved if they've been in your basket for more than 45
+				minutes or have less than 6 hours left to fundraise. This means there's a chance this loan may be
+				funded by other lenders even though it's in your basket. To make this loan, please proceed through
+				the checkout process.
+			</p>
+		</kv-lightbox>
 	</div>
 </template>
 
 <script>
 import { differenceInMinutes, differenceInSeconds } from 'date-fns';
-import KvButton from '@/components/Kv/KvButton';
-import KvLightbox from '@/components/Kv/KvLightbox';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	components: {
-		KvButton,
 		KvLightbox
 	},
 	data() {
@@ -138,29 +136,4 @@ export default {
 		}
 	},
 };
-
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.reservation-info {
-	color: $kiva-text-light;
-	width: 100%;
-	text-align: left;
-
-	.loanNotReservedLightbox {
-		color: $charcoal;
-	}
-
-	.loan-message {
-		margin-bottom: rem-calc(5);
-		font-weight: $global-weight-normal;
-	}
-
-	.loan-message.red {
-		color: $kiva-accent-red;
-		font-weight: $global-weight-highlight;
-	}
-}
-</style>

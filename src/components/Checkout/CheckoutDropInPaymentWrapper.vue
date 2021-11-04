@@ -12,28 +12,28 @@
 				@transactions-enabled="enableCheckoutButton = $event"
 			/>
 			<div v-if="isGuestCheckout" id="guest-checkout">
-				<label class="input-label" for="email">
+				<label class="input-label tw-font-medium tw-block tw-my-2" for="email">
 					Where should we email your receipt?
-					<input
-						type="email"
-						name="email"
-						v-model="email"
-						id="email"
-						class="fs-exclude"
-						@focus="$kvTrackEvent(
-							'basket',
-							'click-email-receipt-field',
-							'Where should we email your receipt?'
-						)"
-					>
-					<p v-if="$v.email.$error" class="input-error">
-						Valid email required.
-					</p>
 				</label>
+				<kv-text-input
+					type="email"
+					name="email"
+					v-model="email"
+					id="email"
+					class="fs-exclude tw-mb-2 tw-w-full"
+					@focus="$kvTrackEvent(
+						'basket',
+						'click-email-receipt-field',
+						'Where should we email your receipt?'
+					)"
+				/>
+				<p v-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
+					Valid email required.
+				</p>
 				<kv-checkbox
 					id="termsAgreement"
 					name="termsAgreement"
-					class="checkbox"
+					class="checkbox tw-text-small tw-mb-2"
 					v-model="termsAgreement"
 					@change="$kvTrackEvent(
 						'basket',
@@ -54,14 +54,14 @@
 						target="_blank"
 						title="Open Privacy Policy in a new window"
 					>Privacy Policy</a>.
-					<p v-if="$v.termsAgreement.$error" class="input-error">
+					<p v-if="$v.termsAgreement.$error" class="input-error tw-text-danger tw-text-base">
 						You must agree to the Kiva Terms of service & Privacy
 						policy.
 					</p>
 				</kv-checkbox>
 				<kv-checkbox
 					id="emailUpdates"
-					class="checkbox"
+					class="checkbox tw-text-small tw-mb-2"
 					name="emailUpdates"
 					v-model="emailUpdates"
 					@change="$kvTrackEvent(
@@ -80,9 +80,9 @@
 				<kv-button
 					value="submit"
 					id="dropin-submit"
-					class="button"
-					:disabled="!enableCheckoutButton"
-					@click.native="submit"
+					class="tw-mb-2"
+					:state="`${!enableCheckoutButton ? 'disabled' : ''}`"
+					@click="submit"
 				>
 					<kv-icon name="lock" />
 					Checkout
@@ -108,9 +108,10 @@ import braintreeDropInError from '@/plugins/braintree-dropin-error-mixin';
 
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 
-import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
-import KvCheckbox from '@/components/Kv/KvCheckbox';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 export default {
 	components: {
@@ -118,6 +119,7 @@ export default {
 		KvIcon,
 		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvCheckbox,
+		KvTextInput,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [checkoutUtils, validationMixin, braintreeDropInError],
@@ -321,55 +323,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss">
-@import "settings";
-
-#guest-checkout {
-	.kv-checkbox {
-		.input {
-			&:checked + .label,
-			&:active + .label {
-				.square {
-					background-color: $blue;
-					border-color: $blue;
-				}
-			}
-		}
-	}
-}
-
-</style>
-
-<style lang="scss" scoped>
-@import "settings";
-
-#guest-checkout {
-	.input-label {
-		margin: 1rem 0 1rem;
-		text-align: left;
-		font-weight: normal;
-		font-size: 1rem;
-		line-height: 1.4;
-		color: $charcoal;
-
-		input {
-			color: $charcoal;
-			margin: 0;
-		}
-	}
-
-	.checkbox {
-		@include small-text();
-
-		font-weight: $global-weight-normal;
-		margin: 0 0 1rem;
-	}
-
-	.input-error {
-		color: $kiva-accent-red;
-		font-weight: $global-weight-normal;
-		font-size: 1rem;
-	}
-}
-</style>
