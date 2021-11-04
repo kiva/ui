@@ -3,12 +3,11 @@
 		<kv-icon name="present" class="holiday-present-icon" />
 		<div>
 			Give hope this holiday season.
-			<a
-				href="#"
-				@click.prevent.stop="addOnePrintKivaCard"
+			<button class="tw-text-link"
+				@click="addOnePrintKivaCard"
 			>
 				Add a $25 Kiva Card to your cart.
-			</a>
+			</button>
 		</div>
 	</div>
 </template>

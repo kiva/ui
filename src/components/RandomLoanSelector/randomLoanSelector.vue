@@ -1,7 +1,7 @@
 <template>
 	<transition name="kvfade">
 		<div
-			class="section-wrapper random-loan-cards"
+			class="section-wrapper random-loan-cards tw-bg-secondary tw-relative"
 		>
 			<div v-if="randomLoans.length" class="section-container">
 				<div id="row-cards" class="row">
@@ -140,7 +140,6 @@ export default {
 @import 'settings';
 
 .section-wrapper {
-	background-color: $kiva-bg-lightgray;
 	padding: 2rem 0;
 }
 

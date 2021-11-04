@@ -27,19 +27,23 @@
 		</div>
 		<div class="small-12 medium-5 large-7 columns kiva-card-info-wrapper">
 			<!-- Main line text -->
-			<div class="kiva-card-info featured-text">
+			<div class="kiva-card-info">
 				<!-- Print Kiva Card -->
-				<span v-if="cardType == 'print'">Print-it-yourself Kiva Card
+				<h2 class="tw-text-h3 tw-inline-block" v-if="cardType == 'print'">
+					Print-it-yourself Kiva Card
 					<span v-if="quantity > 1">({{ quantity }})</span>
-				</span>
+				</h2>
 				<!-- Postal Kiva Card -->
-				<span v-if="cardType == 'postal'">Postal delivery Kiva Card
+				<h2 class="tw-text-h3 tw-inline-block" v-if="cardType == 'postal'">
+					Postal delivery Kiva Card
 					<span v-if="quantity > 1">({{ quantity }})</span>
-				</span>
+				</h2>
 				<!-- Email Kiva Card -->
-				<span v-if="cardType == 'email'">Email delivery Kiva Card</span>
+				<h2 class="tw-text-h3 tw-inline-block" v-if="cardType == 'email'">
+					Email delivery Kiva Card
+				</h2>
 
-				<a :href="formedEditUrl"
+				<a class="tw-inline-block" :href="formedEditUrl"
 					v-kv-track-event="['basket', 'Edit Kiva Card', cardType]"
 				>
 					<kv-icon
@@ -47,29 +51,36 @@
 						name="pencil"
 					/>
 				</a>
-
-				<div class="sub-text-container">
+				<div class="sub-text-container tw-text-secondary">
 					<!-- Print Kiva Card -->
-					<span v-if="cardType == 'print'">
-						<div class="small-text">Available after checkout</div>
-						<div class="small-text" v-if="recipientName">For {{ recipientName }}</div>
-					</span>
+					<div v-if="cardType == 'print'">
+						<p class="tw-text-small">
+							Available after checkout
+						</p>
+						<p class="tw-text-small" v-if="recipientName">
+							For {{ recipientName }}
+						</p>
+					</div>
 					<!-- Postal Kiva Card -->
-					<span v-if="cardType == 'postal'">
-						<div class="small-text">
+					<div v-if="cardType == 'postal'">
+						<p class="tw-text-small">
 							{{ mailingFirstName }}
 							{{ mailingLastName }}
 							{{ mailingStreet }}
 							{{ mailingCity }},
 							{{ mailingState }}
 							{{ mailingZip }}
-						</div>
-					</span>
+						</p>
+					</div>
 					<!-- Email Kiva Card -->
-					<span v-if="cardType == 'email'">
-						<div class="small-text">Scheduled to be sent  {{ deliveryDate }}</div>
-						<div class="small-text">For {{ recipientName }} {{ recipientEmail }}</div>
-					</span>
+					<div v-if="cardType == 'email'">
+						<p class="tw-text-small">
+							Scheduled to be sent  {{ deliveryDate }}
+						</p>
+						<p class="tw-text-small">
+							For {{ recipientName }} {{ recipientEmail }}
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -151,17 +162,7 @@ export default {
 	margin-bottom: rem-calc(30);
 }
 
-.kiva-card-info {
-	line-height: 1.25;
-	font-weight: $global-weight-highlight;
-}
-
-.sub-text-container {
-	color: $gray;
-	font-weight: $global-weight-normal;
-}
-
-.sub-text-container div.small-text {
+.sub-text-container div.tw-text-small {
 	margin-bottom: rem-calc(5);
 }
 

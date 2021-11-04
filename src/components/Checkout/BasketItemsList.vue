@@ -78,12 +78,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.basket-items-list ul {
-	margin: 0;
-	list-style-type: none;
-}
-</style>

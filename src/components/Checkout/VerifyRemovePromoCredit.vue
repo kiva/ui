@@ -4,8 +4,8 @@
 		:visible="visible"
 		title="You are leaving the promotion"
 	>
-		<div class="content">
-			<p>
+		<div class="content" style="max-width: 30rem;">
+			<p class="tw-mb-4">
 				<strong>WARNING:</strong> If you proceed, your {{ appliedPromoTotal }} credit from
 				the {{ promoFundDisplayName }} promotion will be removed, and you will have to lend
 				using your own money.
@@ -13,22 +13,19 @@
 			<p>Click "Cancel" to use your free loan, or click "Remove Credit" to pay using your own money.</p>
 		</div>
 		<template #controls>
-			<div class="controls">
-				<kv-button
-					class="smallest secondary controls__cancel-btn"
-					v-kv-track-event="['promoCampaign', 'Cancel Promo Opt-out Button']"
-					@click.native="closeLightbox"
-				>
-					Cancel
-				</kv-button>
-				<kv-button
-					class="smallest"
-					v-kv-track-event="['promoCampaign', 'Promo Opt-out Button']"
-					@click.native="removePromoCredit"
-				>
-					Remove Credit
-				</kv-button>
-			</div>
+			<kv-button
+				variant="secondary"
+				v-kv-track-event="['promoCampaign', 'Cancel Promo Opt-out Button']"
+				@click="closeLightbox"
+			>
+				Cancel
+			</kv-button>
+			<kv-button
+				v-kv-track-event="['promoCampaign', 'Promo Opt-out Button']"
+				@click="removePromoCredit"
+			>
+				Remove Credit
+			</kv-button>
 		</template>
 	</kv-lightbox>
 </template>
@@ -36,8 +33,8 @@
 <script>
 import { removeCredit } from '@/util/checkoutUtils';
 import logFormatter from '@/util/logFormatter';
-import KvButton from '@/components/Kv/KvButton';
-import KvLightbox from '@/components/Kv/KvLightbox';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	inject: ['apollo'],
@@ -91,18 +88,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-	.content {
-		max-width: 30rem;
-	}
-
-	.controls {
-		display: flex;
-		justify-content: flex-end;
-	}
-
-	.controls__cancel-btn {
-		margin-right: 0.5rem;
-	}
-</style>
