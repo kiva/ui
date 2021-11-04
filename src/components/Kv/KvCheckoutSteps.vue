@@ -1,32 +1,53 @@
 <template>
 	<div class="kv-checkout-steps">
-		<ul class="checkout-step-list">
+		<ol class="checkout-step-list">
 			<li
 				v-for="(step, index) in steps"
 				:key="`step-${index}`"
 				:id="`${step}-step` | changeCase('paramCase')"
-				class="step"
-				:class="isActive(index)"
+				class="step	tw-font-medium tw-text-tertiary"
 			>
-				<p class="step-name">
+				<p
+					class="step-name tw-text-small tw-font-medium"
+					:class="{'tw-text-brand': isActive(index)}"
+				>
 					{{ step }}
 				</p>
 				<span
-					class="step-icon number-icon"
 					v-if="index + 1 !== steps.length"
+					class="step-icon number-icon tw-w-3 tw-h-3 tw-rounded-full"
+					:class="[
+						{'tw-fill-current tw-bg-brand tw-text-white tw-border-brand tw-border': isActive(index)},
+						{'tw-bg-secondary tw-text-tertiary tw-border tw-border-tertiary': !isActive(index)},
+					]"
 				>
 					{{ index + 1 }}
 				</span>
-				<span v-else class="step-icon checkmark">
-					<kv-icon class="checkmark-icon" name="confirmation" />
+				<span
+					v-else
+					class="step-icon tw-w-3 tw-h-3 tw-rounded-full tw-border"
+					:class="[
+						{'tw-bg-brand tw-border-brand': isActive(index)},
+						{'tw-bg-secondary tw-border-tertiary': !isActive(index)}
+					]"
+				>
+					<kv-material-icon
+						class="tw-w-2 tw-h-2 tw-fill-current"
+						:class="[
+							{'tw-text-white': isActive(index)},
+							{'tw-text-tertiary': !isActive(index)},
+						]"
+						:icon="mdiCheckBold"
+					/>
 				</span>
 			</li>
-		</ul>
+		</ol>
 	</div>
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
+import { mdiCheckBold } from '@mdi/js';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	props: {
@@ -43,11 +64,12 @@ export default {
 		}
 	},
 	components: {
-		KvIcon
+		KvMaterialIcon,
 	},
+	data() { return { mdiCheckBold }; },
 	methods: {
 		isActive(stepIndex) {
-			return stepIndex === this.currentStepIndex ? 'active' : '';
+			return stepIndex === this.currentStepIndex;
 		}
 	},
 };
@@ -60,7 +82,6 @@ export default {
 	width: 100%;
 
 	.checkout-step-list {
-		list-style: none;
 		display: flex;
 		align-items: center;
 		margin: 0 auto;
@@ -70,14 +91,12 @@ export default {
 		text-align: center;
 		flex: 1;
 		z-index: 10;
-		font-weight: $global-weight-bold;
-		color: $kiva-stroke-gray;
 		position: relative;
 
 		&::before {
 			content: '';
 			position: absolute;
-			border-top: 1px dashed $kiva-stroke-gray;
+			border-top: 1px dashed rgb(var(--text-tertiary));
 			bottom: 0.7rem;
 			left: 50%;
 			right: -50%;
@@ -92,62 +111,16 @@ export default {
 
 		.step-name {
 			margin-bottom: 0.3rem;
-			font-size: 0.875rem;
-			font-weight: 400;
 		}
 
 		.step-icon {
-			display: block;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 			margin: 0 auto;
-			width: 1.5rem;
-			height: 1.5rem;
-			border-radius: 50%;
 
 			&.number-icon {
-				background: $kiva-bg-lightgray;
-				color: $kiva-stroke-gray;
-				border: 1px solid $kiva-stroke-gray;
-				font-size: 1rem;
-				text-align: center;
-				line-height: 1.325rem;
 				font-weight: 700;
-			}
-
-			&.checkmark {
-				width: 1.5rem;
-				height: 1.5rem;
-				background: #fff;
-				border: 1px solid $kiva-stroke-gray;
-				overflow: hidden;
-			}
-
-			.checkmark-icon {
-				background: $kiva-stroke-gray;
-				fill: $kiva-bg-lightgray;
-				width: 100%;
-			}
-		}
-
-		&.active {
-			color: $kiva-green;
-
-			.step-icon {
-				fill: $kiva-green;
-
-				&.number-icon {
-					background: $kiva-green;
-					color: $white;
-					border: 1px solid $kiva-green;
-				}
-
-				&.checkmark {
-					border: 0;
-				}
-
-				.checkmark-icon {
-					background: #fff;
-					fill: $kiva-green;
-				}
 			}
 		}
 	}

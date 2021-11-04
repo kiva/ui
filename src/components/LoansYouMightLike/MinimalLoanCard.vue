@@ -1,5 +1,5 @@
 <template>
-	<div class="minimal-loan-card">
+	<div class="minimal-loan-card tw-bg-primary tw-border-tertiary tw-border">
 		<!-- Image -->
 		<!-- is-visitor set to false is hiding the loan favorite star on borrower images -->
 		<div>
@@ -31,7 +31,7 @@
 				/>
 				<!-- Country -->
 				<p
-					class="small-text loan-data"
+					class="small-text loan-data tw-text-secondary"
 					:country="loan.geocode.country.name"
 					:sector="loan.activity.name"
 				>
@@ -41,11 +41,11 @@
 		</div>
 		<!-- Add to basket text -->
 		<div class="minimal-loan-card-action-wrap">
-			<a
+			<button
 				:loan-id="loan.id"
 				v-if="!itemInBasket"
-				@click.prevent="addToBasket()"
-				class="card-action"
+				@click="addToBasket()"
+				class="card-action tw-text-link tw-font-medium"
 				v-kv-track-event="[
 					'basket',
 					'basket-loan-upsell',
@@ -53,8 +53,9 @@
 					parseInt(cardNumber),
 					parseInt(cardNumber)
 				]"
-			>Add to basket
-			</a>
+			>
+				Add to basket
+			</button>
 			<p
 				class="card-action"
 				v-else
@@ -174,12 +175,10 @@ export default {
 
 .minimal-loan-card {
 	width: rem-calc(180);
-	border: 1px solid $kiva-stroke-gray;
 	margin: rem-calc(10);
 	display: inline-flex;
 	flex-direction: column;
 	justify-content: space-between;
-	background: white;
 
 	&:first-child,
 	&:last-child {
@@ -205,7 +204,6 @@ export default {
 
 .name {
 	font-weight: 400;
-	color: $kiva-text-dark;
 	margin-bottom: 0;
 	padding-bottom: rem-calc(6);
 	white-space: nowrap;
@@ -214,7 +212,6 @@ export default {
 }
 
 .loan-data {
-	color: $kiva-text-light;
 	margin-top: rem-calc(12);
 	margin-bottom: rem-calc(9);
 	line-height: 1.3;

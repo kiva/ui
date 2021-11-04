@@ -13,8 +13,12 @@
 			title="Verify your email"
 			@lightbox-closed="close"
 		>
-			<p>To ensure your safety, we added an extra layer of security.</p>
-			<p>Once we verify your account, you can continue checking out!</p>
+			<p class="tw-mb-4">
+				To ensure your safety, we added an extra layer of security.
+			</p>
+			<p class="tw-mb-4">
+				Once we verify your account, you can continue checking out!
+			</p>
 			<kv-button v-if="!sending" @click.native="send">
 				Send verification link
 			</kv-button>
@@ -27,8 +31,12 @@
 			title="Verification link sent"
 			@lightbox-closed="close"
 		>
-			<p>We sent a validation link <span v-if="email" class="email fs-exclude">to {{ email }}</span>.</p>
-			<p>After receiving the email, follow the link provided to continue checking out with your Kiva Credit.</p>
+			<p class="tw-mb-4">
+				We sent a validation link <span v-if="email" class="email fs-exclude">to {{ email }}</span>.
+			</p>
+			<p class="tw-mb-4">
+				After receiving the email, follow the link provided to continue checking out with your Kiva Credit.
+			</p>
 			<kv-button v-if="!sending" @click.native="send">
 				Resend email
 			</kv-button>

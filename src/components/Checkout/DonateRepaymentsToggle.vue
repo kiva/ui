@@ -8,7 +8,12 @@
 			v-model="donateRepayments"
 			@change="toggleDonateRepayments"
 		>
-			<span id="donate-repayments-tooltip">Donate loan repayments instead?</span>
+			<span
+				id="donate-repayments-tooltip"
+				class="tw-text-small tw-text-link tw-font-medium"
+			>
+				Donate loan repayments instead?
+			</span>
 		</kv-checkbox>
 		<kv-tooltip controller="donate-repayments-tooltip" theme="mint">
 			<template #title>
@@ -144,19 +149,12 @@ export default {
 		position: relative;
 		padding: 0.5rem 0 0 0.55rem;
 		line-height: 1;
-		font-size: $small-text-font-size;
 		cursor: pointer;
 
 		@include breakpoint(medium) {
 			text-align: right;
 			padding: 0.05rem 0 0 0.5rem;
 		}
-	}
-
-	.donate-repayments-checkbox {
-		position: relative;
-		left: -1000rem;
-		margin: 0;
 	}
 
 	.donate-repayments-icon {
@@ -170,16 +168,6 @@ export default {
 		svg {
 			height: 1.2rem;
 			width: 1.2rem;
-		}
-	}
-
-	#donate-repayments-tooltip {
-		font-weight: $global-weight-normal;
-		color: $kiva-accent-blue;
-		line-height: $small-text-line-height;
-
-		@include breakpoint(medium) {
-			text-align: right;
 		}
 	}
 }
