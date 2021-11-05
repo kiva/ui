@@ -1,12 +1,5 @@
 <template>
 	<www-page id="homepage">
-		<hero-slideshow
-			v-if="showSlideShow && !isExperimentActive"
-			:promo-enabled="promoEnabled"
-			:promo-content="promoContent"
-		/>
-		<monthly-good-explained v-if="isMonthlyGoodPromoActive && !isExperimentActive" />
-
 		<m-g-covid-hero
 			v-if="isExperimentActive"
 		/>
@@ -24,22 +17,16 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
-import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
-import { settingEnabled } from '@/util/settingsUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import WhyKiva from '@/components/Homepage/WhyKiva';
-import MonthlyGoodExplained from '@/components/Homepage/MonthlyGoodExplained';
 import MGCovidExplained from '@/pages/LandingPages/MGCovid19/MGCovidExplained';
 import MGCovidHero from '@/pages/LandingPages/MGCovid19/MGCovidHero';
 import CategoryGrid from '@/components/Homepage/CategoryGrid';
-import { processContent } from '@/util/contentfulUtils';
-import HeroSlideshow from './HeroSlideshow';
 
 const pageQuery = gql`query homepageMGHeroExperiment {
 	general {
@@ -54,8 +41,6 @@ export default {
 	components: {
 		WwwPage,
 		WhyKiva,
-		HeroSlideshow,
-		MonthlyGoodExplained,
 		CategoryGrid,
 		MGCovidExplained,
 		MGCovidHero,
@@ -66,7 +51,6 @@ export default {
 			experimentVersion: null,
 			promoEnabled: false,
 			showSlideShow: null,
-			promoContent: {}
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -91,32 +75,6 @@ export default {
 			this.isExperimentActive = homepageMGHero.version === 'shown';
 		},
 	},
-	created() {
-		this.apollo.query({
-			query: contentfulEntries,
-			variables: {
-				contentType: 'uiSetting',
-				contentKey: 'ui-homepage-promo',
-			}
-		}).then(({ data }) => {
-			// returns the contentful content of the uiSetting key ui-homepage-promo or empty object
-			// it should always be the first and only item in the array, since we pass the variable to the query above
-			const uiPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-homepage-promo'); // eslint-disable-line max-len
-			// exit if missing setting or fields
-			if (!uiPromoSetting || !uiPromoSetting.fields) {
-				return false;
-			}
-			this.promoEnabled = settingEnabled(
-				uiPromoSetting.fields,
-				'active',
-				'startDate',
-				'endDate'
-			);
-			this.promoContent = processContent(uiPromoSetting.fields.content);
-		}).finally(() => {
-			this.showSlideShow = true;
-		});
-	},
 	mounted() {
 		// Fire Event for GROW-79
 		if (this.experimentVersion && this.experimentVersion !== 'unassigned') {
@@ -127,15 +85,6 @@ export default {
 			);
 		}
 	},
-	computed: {
-		isMonthlyGoodPromoActive() {
-			try {
-				return this.promoEnabled && this.promoContent.genericContentBlock.key === 'monthlyGoodPromoHomepage';
-			} catch {
-				return false;
-			}
-		}
-	}
 };
 </script>
 
