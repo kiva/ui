@@ -705,7 +705,10 @@ export default {
 				const instantDonationFailed = `Heads up! You don't have enough Kiva credit in your account.
 					Hit "Continue" to login to check your Kiva credit balance and adjust your donation
 					amount accordingly.`;
-				this.$showTipMsg(instantDonationFailed, 'warning', true);
+				const toastTimeout = setTimeout(() => {
+					this.$showTipMsg(instantDonationFailed, 'warning', true);
+					clearTimeout(toastTimeout);
+				}, 1000);
 			}
 		}
 	},
