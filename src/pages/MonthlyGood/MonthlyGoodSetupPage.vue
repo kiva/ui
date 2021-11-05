@@ -102,7 +102,11 @@
 											>
 												Amount
 											</label>
-											<kv-currency-input class="text-input" id="amount" v-model="mgAmount" />
+											<kv-currency-input
+												class="text-input tw-w-full"
+												id="amount"
+												v-model="mgAmount"
+											/>
 										</div>
 
 										<div class="small-12 columns">
@@ -206,7 +210,7 @@
 									<div class="row tw-text-left" v-if="!fromCovidLanding">
 										<div class="small-12 columns">
 											<div class="tw-ml-3">
-												<label for="lending-category" class="tw-inline-block tw-mb-2">
+												<label for="lending-category" class="tw-block tw-mb-2">
 													Select a category to focus your lending
 												</label>
 												<kv-select
