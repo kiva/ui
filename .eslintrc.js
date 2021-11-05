@@ -1,6 +1,7 @@
 // http://eslint.org/docs/user-guide/configuring
 const path = require('path');
 const fs = require('fs');
+
 const isProd = process.env.NODE_ENV === 'production';
 
 let schema;
@@ -21,7 +22,7 @@ const graphqlOptions = {
 module.exports = {
 	root: true,
 	parserOptions: {
-		parser: "@babel/eslint-parser",
+		parser: '@babel/eslint-parser',
 		sourceType: 'module'
 	},
 	env: {
@@ -37,18 +38,18 @@ module.exports = {
 	// check if imports actually resolve
 	settings: {
 		'import/resolver': {
-			'webpack': {
-				'config': './build/webpack.base.conf.js'
+			webpack: {
+				config: './build/webpack.base.conf.js'
 			},
-			'node': {
-				'extensions': ['.js', '.mjs']
+			node: {
+				extensions: ['.js', '.mjs']
 			}
 		}
 	},
 	// add your custom rules here
 	rules: {
 		// tabs not spaces
-		'indent': ['error', 'tab', { SwitchCase: 1 }],
+		indent: ['error', 'tab', { SwitchCase: 1 }],
 		'no-tabs': 'off',
 		'vue/html-indent': ['error', 'tab'],
 		// max line length 120
@@ -70,7 +71,7 @@ module.exports = {
 		// allow curly brackets around arrow function bodies
 		'arrow-body-style': 'off',
 		// allow no parens for single-argument arrow functions
-		'arrow-parens': ['error','as-needed'],
+		'arrow-parens': ['error', 'as-needed'],
 		// allow no return statement
 		'consistent-return': 'off',
 		// allow (but do not require) dangling commas
@@ -91,4 +92,4 @@ module.exports = {
 		'graphql/named-operations': ['error', graphqlOptions],
 		'graphql/required-fields': ['error', { ...graphqlOptions, requiredFields: ['id', 'key'] }],
 	}
-}
+};
