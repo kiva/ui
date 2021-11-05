@@ -38,7 +38,7 @@ module.exports = {
 	settings: {
 		'import/resolver': {
 			'webpack': {
-				'config': 'build/webpack.base.conf.js'
+				'config': './build/webpack.base.conf.js'
 			},
 			'node': {
 				'extensions': ['.js', '.mjs']
