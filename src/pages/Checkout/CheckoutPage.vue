@@ -457,6 +457,9 @@ export default {
 		}
 
 		this.userPrefContinueBrowsing = store2('userPrefContinueBrowsing') === true; // read from localstorage
+
+		// show toast for specified scenario
+		this.handleToast();
 	},
 	computed: {
 		isLoggedIn() {
@@ -696,6 +699,16 @@ export default {
 				creditNeededInt * 100
 			);
 		},
+		handleToast() {
+			// Handle incoming Instant Donation status
+			const instantDonationStatus = this.$route?.query?.instantDonation ?? null;
+			if (instantDonationStatus === 'insufficient-funds' || instantDonationStatus === 'donation-failed') {
+				const instantDonationFailed = `Heads up! You don't have enough Kiva credit in your account.
+					Hit "Continue" to login to check your Kiva credit balance and adjust your donation
+					amount accordingly.`;
+				this.$showTipMsg(instantDonationFailed, 'warning', true);
+			}
+		}
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
