@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<signup-waitlist v-if="!isEligibleForCausesSignup" />
-		<signup-form v-if="isEligibleForCausesSignup" />
+		<signup-waitlist v-if="!isEligibleForCausesSignup || !isBeta" />
+		<signup-form v-if="isEligibleForCausesSignup && isBeta" :cause="cause" />
 	</div>
 </template>
 
@@ -61,6 +61,10 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, { route }) {
+			// TODO temporary beta query param
+			if (route.query.beta !== 'true') {
+				return Promise.resolve({});
+			}
 			return client.query({
 				query: authenticationQuery,
 				fetchPolicy: 'network-only',
@@ -93,7 +97,12 @@ export default {
 		}
 	},
 	computed: {
+		// Temporary query param feature flag
+		isBeta() {
+			return this.$route.query.beta === 'true';
+		},
 		isEligibleForCausesSignup() {
+			// TODO Update this, see GD-161
 			/** A user is eligible if:
 			* no existing MG subscription
 			* no legacy subscription
