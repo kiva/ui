@@ -4,7 +4,7 @@
 			<strong>Order Total: <span class="total-value">{{ itemTotal }}</span></strong>
 		</div>
 
-		<div v-if="showKivaCredit || true" class="kiva-credit tw-font-medium tw-mb-2" data-test="kiva-credit">
+		<div v-if="showKivaCredit" class="kiva-credit tw-font-medium tw-mb-2" data-test="kiva-credit">
 			<span v-if="showRemoveKivaCredit">
 				Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
 			</span>

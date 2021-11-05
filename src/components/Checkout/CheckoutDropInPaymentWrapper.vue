@@ -81,7 +81,7 @@
 					value="submit"
 					id="dropin-submit"
 					class="tw-mb-2"
-					:disabled="!enableCheckoutButton"
+					:state="`${!enableCheckoutButton ? 'disabled' : ''}`"
 					@click="submit"
 				>
 					<kv-icon name="lock" />
