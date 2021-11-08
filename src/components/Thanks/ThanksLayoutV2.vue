@@ -379,16 +379,12 @@ export default {
 			text-align: left;
 
 			&__headline {
-				@include medium-text();
-
 				text-align: left;
 				margin-top: 0;
 				margin-bottom: 1.5rem;
 			}
 
 			&__subhead {
-				@include medium-text();
-
 				margin-bottom: 1rem;
 			}
 		}
@@ -533,7 +529,7 @@ export default {
 // Mobile/Medium Styles
 .thanks-page--medium-down {
 	.thanks-page__content-area.kv-accordion--open {
-		background-color: $white;
+		background-color: rgb(var(--bg-primary));
 	}
 
 	.kv-accordion {
@@ -557,7 +553,7 @@ export default {
 // Desktop/Large Styles
 .thanks-page--large-up {
 	.thanks-page__content-area {
-		background-color: $white;
+		background-color: rgb(var(--bg-primary));
 	}
 
 	.thanks-page__icon-button {

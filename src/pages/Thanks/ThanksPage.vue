@@ -3,15 +3,20 @@
 		<div class="row page-content">
 			<div class="small-12 columns thanks">
 				<div class="thanks__checkout-steps-wrapper hide-for-print">
-					<kv-checkout-steps :steps="checkoutSteps" :current-step-index="2" />
-					<hr>
+					<kv-checkout-steps
+						:steps="checkoutSteps"
+						:current-step-index="2"
+						style="max-width: 40rem;"
+						class="tw-mx-auto"
+					/>
+					<hr class="tw-border-tertiary tw-my-3">
 				</div>
 
 				<div class="thanks__header hide-for-print">
-					<h1 class="thanks__header-h1">
+					<h1 class="thanks__header-h1 tw-mb-4">
 						Thank you!
 					</h1>
-					<p v-if="loans.length > 0" class="thanks__header-subhead">
+					<p v-if="loans.length > 0" class="thanks__header-subhead tw-text-subhead tw-mb-2">
 						Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
 					</p>
 					<p v-if="lender.email" class="hide-for-print">
@@ -228,16 +233,6 @@ export default {
 		@include breakpoint(medium) {
 			text-align: center;
 		}
-	}
-
-	&__header-h1 {
-		@include large-text();
-
-		margin-bottom: 1.5rem;
-	}
-
-	&__header-subhead {
-		@include featured-text();
 	}
 
 	&__checkout-steps-wrapper {

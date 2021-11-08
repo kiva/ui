@@ -34,7 +34,7 @@
 					Message
 				</label>
 				<textarea
-					class="message__textbox fs-mask"
+					class="message__textbox tw-w-full tw-bg-primary tw-border tw-border-tertiary fs-mask"
 					id="message-textbox"
 					:placeholder="placeholderMessage"
 					:maxlength="maxMessageLength"
@@ -42,14 +42,14 @@
 				></textarea>
 				<transition name="kvfastfade">
 					<button
-						class="message__suggested-btn"
+						class="message__suggested-btn tw-text-tertiary"
 						v-if="!isSuggestedMessage"
 						@click="useSuggestedMessage"
 					>
 						Suggested message
 					</button>
 				</transition>
-				<div class="message__charcount">
+				<div class="message__charcount tw-text-tertiary">
 					{{ message.length }}/{{ maxMessageLength }}
 				</div>
 			</div>
@@ -86,7 +86,7 @@
 					<span>Share</span>
 				</a>
 				<button
-					class="social__btn social__btn--link"
+					class="social__btn social__btn--link tw-text-link tw-border-tertiary tw-border"
 					:class="copyStatus.class"
 					:disabled="copyStatus.disabled"
 					v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Copy-link-share']"
@@ -135,9 +135,9 @@
 <script>
 import _map from 'lodash/map';
 import clipboardCopy from 'clipboard-copy';
-import KvCheckbox from '@/components/Kv/KvCheckbox';
-import KvSelect from '@/components/Kv/KvSelect';
 import KvIcon from '@/components/Kv/KvIcon';
+import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
 	inject: ['apollo'],
@@ -345,9 +345,7 @@ $loan-triangle-size: rem-calc(12);
 
 	&__teams {
 		flex-basis: 100%;
-		@include breakpoint(large) {
-			margin-left: calc(#{rem-calc(70) + 1rem});
-		}
+		justify-content: center;
 	}
 
 	&__headline {
@@ -413,15 +411,12 @@ $loan-triangle-size: rem-calc(12);
 		font-style: italic;
 		margin: 0;
 		padding: 1rem 1rem 3rem 1rem;
-		border-color: $subtle-gray;
 	}
 
 	&__charcount,
 	&__suggested-btn {
 		position: absolute;
 		bottom: 1rem;
-		line-height: 1;
-		color: $subtle-gray;
 	}
 
 	&__charcount {
@@ -459,7 +454,7 @@ $loan-triangle-size: rem-calc(12);
 			top: $loan-triangle-size * -2 + rem-calc(1);
 			left: $loan-triangle-size;
 			border-width: $loan-triangle-size;
-			border-color: transparent transparent #fff transparent;
+			border-color: transparent transparent rgb(var(--bg-primary)) transparent;
 		}
 
 		// triangle border
@@ -475,14 +470,14 @@ $loan-triangle-size: rem-calc(12);
 			&::after {
 				top: $loan-triangle-size;
 				left: unset;
-				border-color: transparent #fff transparent transparent;
+				border-color: transparent rgb(var(--bg-primary)) transparent transparent;
 			}
 
 			// triangle border
 			&::before {
 				top: $loan-triangle-size - rem-calc(1);
 				left: unset;
-				border-color: transparent $subtle-gray transparent transparent;
+				border-color: transparent rgb(var(--border-tertiary)) transparent transparent;
 			}
 		}
 
@@ -574,18 +569,10 @@ $loan-triangle-size: rem-calc(12);
 		}
 
 		&--link {
-			color: $kiva-textlink;
-			border: rem-calc(1) solid $subtle-gray;
 			transition:
 				background-color 0.25s ease-in,
 				border-color 0.25s ease-in,
 				color 0.25s ease-in;
-
-			&:hover,
-			&:focus {
-				text-decoration: $anchor-text-decoration-hover;
-				color: $anchor-color-hover;
-			}
 
 			.social__icon {
 				fill: $medium-gray;
@@ -594,13 +581,13 @@ $loan-triangle-size: rem-calc(12);
 		}
 
 		&--success {
-			background-color: $kiva-green;
-			border-color: $kiva-green;
+			background-color: rgb(var(--bg-brand));
+			border-color: rgb(var(--bg-brand));
 		}
 
 		&--error {
-			background-color: $kiva-accent-red;
-			border-color: $kiva-accent-red;
+			background-color: rgb(var(--bg-danger));
+			border-color: rgb(var(--bg-danger));
 		}
 
 		&--success,
@@ -635,10 +622,6 @@ $loan-triangle-size: rem-calc(12);
 
 	&__select-label {
 		@include visually-hidden();
-	}
-
-	&__select {
-		margin: 0;
 	}
 }
 </style>

@@ -3,7 +3,7 @@
 		<h2 class="checkout-receipt__headline">
 			Order Confirmation
 		</h2>
-		<div class="checkout-receipt__wrapper">
+		<div class="checkout-receipt__wrapper tw-bg-primary tw-p-4 tw-rounded-sm tw-border tw-border-tertiary">
 			<section data-test="lender-info" class="section section--lender-info">
 				<div>{{ formattedTransactionTime }}</div>
 				<div class="fs-exclude">
@@ -49,8 +49,8 @@
 									{{ loan.loan.name }}
 								</router-link>
 							</h3>
-							<div class="loan__meta">
-								<p class="loan__meta-city">
+							<div class="tw-text-small">
+								<p class="tw-text-secondary">
 									<template v-if="loan.loan.geocode && loan.loan.geocode.city">
 										{{ loan.loan.geocode.city }},
 									</template>
@@ -58,11 +58,11 @@
 										{{ loan.loan.geocode.country.name }}
 									</template>
 								</p>
-								<p v-if="loan.loan.use" class="loan__meta-use">
+								<p v-if="loan.loan.use">
 									A loan helps {{ loan.loan.use }}
 								</p>
 							</div>
-							<div class="loan__amount">
+							<div class="loan__amount tw-text-h3">
 								${{ loan.price }}
 							</div>
 						</div>
@@ -85,7 +85,7 @@
 									<kv-icon
 										name="question"
 										:id="`print-card-${card.id}`"
-										class="loan__question-icon"
+										class="loan__question-icon tw-fill-current tw-text-tertiary"
 									/>
 									<kv-tooltip :controller="`print-card-${card.id}`" theme="mint">
 										You can print this card now. We'll also send it to
@@ -94,7 +94,7 @@
 								</div>
 
 								<kv-button
-									class="smallest"
+									class="tw-mb-2"
 									target="_blank"
 									:href="`/gifts/kiva-cards/print?giftCode=${card.kivaCardObject.redemptionCode}`"
 								>
@@ -140,7 +140,7 @@
 									{{ card.kivaCardObject.recipient.email }}
 								</div>
 							</template>
-							<div class="loan__amount">
+							<div class="loan__amount tw-text-h3">
 								${{ card.price }}
 							</div>
 						</div>
@@ -176,7 +176,7 @@
 							>
 								Print Donation Information
 							</router-link>
-							<div class="loan__amount">
+							<div class="loan__amount tw-text-h3">
 								${{ receipt.totals.donationTotal }}
 							</div>
 						</div>
@@ -185,15 +185,15 @@
 						data-test="receipt-total"
 						class="section total"
 					>
-						<h3 class="total__header">
+						<h3 class="total__header tw-text-h3">
 							Total:
 						</h3>
-						<span class="total__amount">${{ receipt.totals.itemTotal }}</span>
+						<span class="total__amount tw-text-h3">${{ receipt.totals.itemTotal }}</span>
 					</li>
 				</ul>
 			</section>
 			<section class="section payments">
-				<h3 class="payments__header">
+				<h3 class="tw-text-secondary">
 					Payments
 				</h3>
 				<ul class="payments__list">
@@ -202,56 +202,62 @@
 						class="total"
 						v-if="receipt.totals.redemptionCodeAppliedTotal > 0"
 					>
-						<span class="total__header">Kiva Card:</span>
-						<span class="total__amount">${{ receipt.totals.redemptionCodeAppliedTotal }}</span>
+						<span class="total__header tw-text-h3">Kiva Card:</span>
+						<span class="total__amount tw-text-h3">
+							${{ receipt.totals.redemptionCodeAppliedTotal }}
+						</span>
 					</li>
 					<li
 						data-test="free-trial"
 						class="total"
 						v-if="receipt.totals.freeTrialAppliedTotal > 0"
 					>
-						<span class="total__header">Free Trial:</span>
-						<span class="total__amount">Free!</span>
+						<span class="total__header tw-text-h3">Free Trial:</span>
+						<span class="total__amount tw-text-h3">Free!</span>
 					</li>
 					<li
 						data-test="free-credit"
 						class="total"
 						v-if="receipt.totals.bonusAppliedTotal > 0"
 					>
-						<span class="total__header">Free credit:</span>
-						<span class="total__amount">{{ receipt.totals.bonusAppliedTotal }}</span>
+						<span class="total__header tw-text-h3">Free credit:</span>
+						<span class="total__amount tw-text-h3">{{ receipt.totals.bonusAppliedTotal }}</span>
 					</li>
 					<li
 						data-test="kiva-credit-added"
 						class="total"
 						v-if="receipt.totals.depositTotals.kivaCreditAdded > 0"
 					>
-						<span class="total__header">Kiva credit added:</span>
-						<span class="total__amount">${{ receipt.totals.depositTotals.kivaCreditAdded }}</span>
+						<span class="total__header tw-text-h3">Kiva credit added:</span>
+						<span class="total__amount tw-text-h3">
+							${{ receipt.totals.depositTotals.kivaCreditAdded }}
+						</span>
 					</li>
 					<li
 						data-test="kiva-credit-used"
 						class="total"
 						v-if="receipt.totals.depositTotals.kivaCreditUsed > 0"
 					>
-						<span class="total__header">Kiva credit:</span>
-						<span class="total__amount">${{ receipt.totals.depositTotals.kivaCreditUsed }}</span>
+						<span class="total__header tw-text-h3">Kiva credit:</span>
+						<span class="total__amount tw-text-h3">
+							${{ receipt.totals.depositTotals.kivaCreditUsed }}
+						</span>
 					</li>
 					<li
 						data-test="amount-charged"
 						class="total"
 						v-if="parseFloat(receipt.totals.depositTotals.depositTotal) > 0"
 					>
-						<span class="total__header">Amount charged:</span>
-						<span class="total__amount">
+						<span class="total__header tw-text-h3">Amount charged:</span>
+						<span class="total__amount tw-text-h3">
 							${{ receipt.totals.depositTotals.depositTotal }}
 						</span>
 					</li>
 				</ul>
 			</section>
 			<section class="section section--print hide-for-print">
-				<button class="print" @click="printReceipt">
-					<kv-icon name="print" class="print__icon" />
+				<button class="print tw-text-link tw-flex tw-items-center tw-gap-1" @click="printReceipt">
+					<kv-icon name="print" class="print__icon tw-fill-current" />
 					<span>Print this receipt</span>
 				</button>
 			</section>
@@ -261,9 +267,9 @@
 
 <script>
 import { format } from 'date-fns';
-import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvTooltip from '@/components/Kv/KvTooltip';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 // Ensures the date renders the same on client or SSR in any timezone.
 // Taken from https://github.com/date-fns/date-fns/issues/376#issuecomment-353871093
@@ -331,7 +337,7 @@ export default {
 @import 'settings';
 
 .section {
-	border-bottom: solid rem-calc(1) $light-gray;
+	border-bottom: solid rem-calc(1) rgb(var(--border-tertiary));
 	padding: $global-margin 0;
 	display: block;
 	overflow: hidden;
@@ -350,16 +356,7 @@ export default {
 }
 
 .checkout-receipt {
-	&__wrapper {
-		background: #fff;
-		padding: 2rem 2rem 1rem 2rem;
-		border: 1px solid $kiva-stroke-gray;
-		border-radius: rem-calc(2);
-	}
-
 	&__headline {
-		@include big-text();
-
 		text-align: center;
 		margin-bottom: 1.5rem;
 	}
@@ -373,8 +370,7 @@ export default {
 
 .loan {
 	&__name {
-		font-size: $medium-text-font-size;
-		font-weight: $global-weight-bold;
+		margin-bottom: 0.5rem;
 	}
 
 	&__name--inline {
@@ -383,25 +379,9 @@ export default {
 
 	&__question-icon {
 		width: 1rem;
-		fill: $light-gray;
-	}
-
-	&__meta {
-		@include small-text();
-	}
-
-	&__meta-city {
-		color: $kiva-text-light;
-		margin: 0;
-	}
-
-	&__meta-use {
-		margin: 0;
 	}
 
 	&__amount {
-		font-size: $medium-text-font-size;
-		font-weight: $global-weight-highlight;
 		text-align: right;
 	}
 }
@@ -412,8 +392,6 @@ export default {
 
 	&__header,
 	&__amount {
-		font-size: $medium-text-font-size;
-		font-weight: $global-weight-highlight;
 		text-align: right;
 		flex: 1;
 	}
@@ -423,25 +401,8 @@ export default {
 	}
 }
 
-.section.total {
-	.total__header,
-	.total__amount {
-		font-weight: $global-weight-bold;
-	}
-}
-
 .payments {
 	border-bottom: none;
-
-	&__header {
-		color: $kiva-text-light;
-	}
-
-	&__list {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
 
 	&__type {
 		display: flex;
@@ -455,26 +416,11 @@ export default {
 }
 
 .print {
-	display: flex;
 	margin: 0 auto;
-	color: $anchor-color;
-	text-decoration: $anchor-text-decoration;
 
 	&__icon {
 		height: rem-calc(16);
 		width: rem-calc(16);
-		margin-right: 0.5rem;
-		fill: $anchor-color;
-	}
-
-	&:hover,
-	&:focus {
-		text-decoration: $anchor-text-decoration-hover;
-		color: $anchor-color-hover;
-
-		.print__icon {
-			fill: $anchor-color-hover;
-		}
 	}
 }
 </style>
