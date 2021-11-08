@@ -1,9 +1,9 @@
 <template>
-	<section class="guest-account-upsell hide-for-print">
+	<section class="guest-account-upsell hide-for-print tw-p-3">
 		<h2 class="guest-account-upsell__headline">
 			Before you go!
 		</h2>
-		<p class="guest-account-upsell__subhead">
+		<p class="guest-account-upsell__subhead tw-mb-4">
 			{{ borrowerUpdateText }}
 		</p>
 		<form id="guestUpsellForm" action="." @submit.prevent.stop="submit">
@@ -29,10 +29,13 @@
 					Enter last name.
 				</template>
 			</kv-base-input>
-			<p v-if="serverError" class="guest-account-upsell__server-error">
+			<p
+				v-if="serverError"
+				class="guest-account-upsell__server-error tw-text-danger tw-text-small tw-font-medium tw-mb-2"
+			>
 				There was a problem when trying to create your account, please try again later.
 			</p>
-			<kv-button class="guest-account-upsell__claim-button smaller expanded" type="submit">
+			<kv-button class="guest-account-upsell__claim-button tw-w-full" type="submit">
 				Create my account
 			</kv-button>
 		</form>
@@ -44,8 +47,8 @@ import gql from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
-import KvButton from '@/components/Kv/KvButton';
 import KvBaseInput from '@/components/Kv/KvBaseInput';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	components: {
@@ -143,26 +146,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.guest-account-upsell {
-	padding: rem-calc(24);
-
-	&__headline {
-		font-weight: 600;
-		@include medium-text();
-	}
-
-	&__claim-button {
-		margin: 0;
-	}
-
-	&__server-error {
-		color: $kiva-accent-red;
-		font-weight: $global-weight-highlight;
-		font-size: $small-text-font-size;
-	}
-}
-</style>
