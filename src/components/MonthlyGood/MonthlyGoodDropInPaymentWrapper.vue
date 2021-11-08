@@ -14,16 +14,16 @@
 				<kv-button
 					value="submit"
 					id="dropin-submit"
-					class="button"
-					:disabled="!enableConfirmButton || submitting"
-					@click.native="submitDropInMonthlyGood"
+					class="tw-mb-2"
+					:state="!enableConfirmButton || submitting ? 'disabled' : ''"
+					@click="submitDropInMonthlyGood"
 				>
 					<kv-icon name="lock" />
 					Confirm <kv-loading-spinner v-if="submitting" />
 				</kv-button>
 			</div>
 
-			<p class="dropin-wrapper-attribution-text">
+			<p class="tw-text-small tw-text-secondary tw-text-center">
 				Thanks to PayPal, Kiva receives free payment processing for all loans.
 			</p>
 		</div>
@@ -40,9 +40,9 @@ import braintreeCreateMonthlyGoodSubscription from '@/graphql/mutation/braintree
 import braintreeUpdateSubscriptionPaymentMethod from
 	'@/graphql/mutation/braintreeUpdateSubscriptionPaymentMethod.graphql';
 
-import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	components: {
@@ -212,7 +212,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import "settings";
-</style>
