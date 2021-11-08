@@ -32,8 +32,17 @@
 						v-html="headline"
 					></h1>
 					<h3 v-if="subHeadline" class="tw-pb-2 tw-text-center" v-html="subHeadline"></h3>
-					<div v-if="userConfirmation" class="tw-pb-2 tw-prose" v-html="userConfirmation"></div>
-					<div v-if="bodyCopy" class="tw-pb-2 tw-prose" v-html="bodyCopy"></div>
+					<div v-if="userConfirmation" class="fs-exclude tw-pb-2 tw-prose" v-html="userConfirmation"></div>
+					<div v-if="bodyCopy" class="tw-pb-8 tw-prose" v-html="bodyCopy"></div>
+					<div v-if="contentfulCta && contentfulCta.linkText" class="tw-text-right">
+						<kv-button
+							:href="contentfulCta.href"
+							v-kv-track-event="contentfulCta.analytics"
+							class="tw-mb-2"
+						>
+							{{ contentfulCta.linkText }}
+						</kv-button>
+					</div>
 				</div>
 			</kv-grid>
 		</kv-page-container>
@@ -46,11 +55,12 @@ import { formatContentGroupsFlat } from '@/util/contentfulUtils';
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import { lightHeader } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
-const contentfulContentQuery = gql`query confirmDonationContent {
+const contentfulContentQuery = gql`query instantDonationThanksContent {
 	contentful {
 		entries(contentKey:"instant-donation-thanks-cg", contentType: "contentGroup")
 	}
@@ -64,6 +74,7 @@ export default {
 		};
 	},
 	components: {
+		KvButton,
 		KvContentfulImg,
 		KvGrid,
 		KvPageContainer,
@@ -94,10 +105,16 @@ export default {
 			const resultDecoded = this.result ? atob(this.result) : '';
 			const resultArray = resultDecoded.split('|');
 			return {
-				result: resultDecoded,
 				amount: resultArray?.[0],
 				user: resultArray?.[1],
 				transactionId: resultArray?.[2],
+			};
+		},
+		contentfulCta() {
+			return {
+				analtyics: this.genericContentBlock.primaryCtaKvTrackEvent ?? [],
+				href: this.genericContentBlock.primaryCtaLink ?? '#',
+				linkText: this.genericContentBlock.primaryCtaText ?? null,
 			};
 		},
 		genericContentBlock() {

@@ -240,7 +240,7 @@
 <script>
 import gql from 'graphql-tag';
 import { settingEnabled } from '@/util/settingsUtils';
-import { processContent, formatGenericContentBlock } from '@/util/contentfulUtils';
+import { formatGenericContentBlock } from '@/util/contentfulUtils';
 import { lightHeader } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
@@ -257,7 +257,6 @@ const imgRequire = require.context('@/assets/images/lend-by-category-homepage/',
 const promosQuery = gql`
 	query promos {
 		contentful {
-			heroPromo: entries(contentType: "uiSetting", contentKey: "ui-homepage-promo")
 			kivaCardPromo: entries(contentType: "uiSetting", contentKey: "ui-homepage-kiva-card-promo")
 		}
 	}
@@ -330,7 +329,7 @@ export default {
 				},
 			],
 			heroPromoContent: null,
-			heroPromoEnabled: null,
+			heroPromoEnabled: false,
 			kivaCardPromoEnabled: null,
 			kivaCardPromoContent: null,
 			statistics: [
@@ -357,20 +356,6 @@ export default {
 			return client.query({ query: promosQuery });
 		},
 		result({ data }) {
-			// Hero section promo
-			const heroPromoData = data?.contentful?.heroPromo?.items[0];
-			if (heroPromoData?.fields) {
-				this.heroPromoEnabled = settingEnabled(
-					heroPromoData.fields,
-					'active',
-					'startDate',
-					'endDate'
-				);
-				if (this.heroPromoEnabled) {
-					this.heroPromoContent = processContent(heroPromoData.fields.content);
-				}
-			}
-
 			// Kiva Card section promo
 			const kivaCardPromoData = data?.contentful?.kivaCardPromo?.items[0];
 			if (kivaCardPromoData?.fields) {
