@@ -536,7 +536,6 @@ $loan-triangle-size: rem-calc(12);
 	&__btn {
 		display: flex;
 		align-items: center;
-		color: #fff;
 		width: calc(50% - 0.5rem);
 		margin: 0 1rem 1rem 0;
 		padding: 1rem rem-calc(9) 1rem 1rem;
