@@ -15,7 +15,7 @@
 					value="submit"
 					id="dropin-submit"
 					class="tw-mb-2"
-					:state="`${!enableConfirmButton || submitting ? 'disabled' : ''}`"
+					:state="!enableConfirmButton || submitting ? 'disabled' : ''"
 					@click="submitDropInMonthlyGood"
 				>
 					<kv-icon name="lock" />
