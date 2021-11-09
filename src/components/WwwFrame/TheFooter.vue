@@ -1,5 +1,6 @@
 <template>
 	<footer class="www-footer" :style="cssVars">
+		<disclaimers />
 		<nav class="small-footer hide-for-large" aria-label="Footer navigation">
 			<div class="row collapse">
 				<div class="column">
@@ -706,12 +707,14 @@ import { getYear } from 'date-fns';
 import getCacheKey from '@/util/getCacheKey';
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import KvIcon from '@/components/Kv/KvIcon';
+import Disclaimers from '@/components/WwwFrame/DisclaimersContentful';
 
 export default {
 	name: 'TheFooter',
 	components: {
 		KvAccordionItem,
-		KvIcon
+		KvIcon,
+		Disclaimers,
 	},
 	serverCacheKey: props => getCacheKey(props.theme ? `footerThemed${props.theme.themeKey}` : 'footer'),
 	props: {

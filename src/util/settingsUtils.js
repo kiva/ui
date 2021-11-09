@@ -66,6 +66,23 @@ export function settingEnabled(data, enabledKey, startTimeKey, endTimeKey) {
 }
 
 /**
+ * Determine if a feature or setting is currently active (ie. within date range)
+ *
+ * @param {object} data
+ * @param {string} startTimeKey
+ * @param {string} endTimeKey
+ * @returns {object}
+ */
+export function settingWithinDateRange(data, startTimeKey, endTimeKey) {
+	const startTime = readDateSetting(data, startTimeKey);
+	const endTime = readDateSetting(data, endTimeKey);
+	return isWithinInterval(new Date(), {
+		start: startTime,
+		end: endTime
+	});
+}
+
+/**
  * Convert a string to a 32 bit integer
  * Inspiration: https://stackoverflow.com/a/8831937
  *

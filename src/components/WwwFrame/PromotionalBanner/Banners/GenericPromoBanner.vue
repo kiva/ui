@@ -12,6 +12,14 @@
 			<div class="content" v-html="promoBannerContent.richText">
 			</div>
 		</component>
+		<a
+			v-if="hasDisclaimer"
+			href="#disclaimers"
+			class="disclaimer-indicator"
+			v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
+		>
+			1
+		</a>
 	</div>
 </template>
 
@@ -34,6 +42,7 @@ export default {
 					kvTrackEvent: [],
 					link: '',
 					richText: '',
+					disclaimer: '',
 				};
 			}
 		},
@@ -67,6 +76,9 @@ export default {
 		},
 		trimmedLink() {
 			return this.promoBannerContent?.link?.trim() ?? '';
+		},
+		hasDisclaimer() {
+			return this.promoBannerContent.disclaimer !== '';
 		}
 	},
 };
@@ -111,6 +123,16 @@ export default {
 	.icon-corporate,
 	.icon-iwd {
 		fill: inherit;
+	}
+
+	.disclaimer-indicator {
+		color: $kiva-icon-green;
+		font-size: 0.875rem;
+
+		&:hover,
+		&:active {
+			color: $kiva-darkgreen;
+		}
 	}
 
 	.banner-link,
