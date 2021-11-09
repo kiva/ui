@@ -157,6 +157,9 @@
 					>
 						All shares reserved
 					</p>
+
+					<!-- Adding anchor icons and links here -->
+					<anchor-links />
 				</div>
 			</kv-grid>
 
@@ -257,6 +260,7 @@ import gql from 'graphql-tag';
 import { setLendAmount } from '@/util/basketUtils';
 import { buildPriceArray } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
+import AnchorLinks from '@/components/BorrowerProfile/AnchorLinks';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -275,6 +279,7 @@ export default {
 		KvMaterialIcon,
 		KvUiButton,
 		KvUiSelect,
+		AnchorLinks,
 	},
 	data() {
 		return {
