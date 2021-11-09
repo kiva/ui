@@ -1,34 +1,41 @@
 <template>
 	<www-page>
-		<!-- Auto Deposit Thanks Page -->
-		<div class="row align-center auto-deposit-thanks-page tw-text-center">
-			<div class="small-12 medium-11 large-8 column">
-				<h1 class="tw-text-center impact-text">
-					<kv-icon name="confirmation" class="icon-confirmation" /> Thanks!
-				</h1>
-
-				<p>
-					Every month your balance will grow by ${{ autoDepositAmount }}!<br>
-					<span v-if="donationAmount > 0">
-						<em>You’re also making a ${{ donationAmount }} donation to Kiva each month – thank you!</em>
-					</span>
-				</p>
-
-				<p class="auto-deposit-thanks-page__email-message">
-					<kv-icon class="icon-email" name="email" />
-					You’ll get an email after each deposit so you can make more loans.
-				</p>
-
-				<div class="panel">
-					<p>
-						<strong>Auto lending is the fastest way to lend your balance</strong><br>
+		<kv-default-wrapper>
+			<!-- Auto Deposit Thanks Page -->
+			<div class="row align-center auto-deposit-thanks-page tw-text-center">
+				<div class="small-12 medium-11 large-8 column">
+					<h1 class="tw-mb-4 tw-flex tw-gap-1 tw-items-center tw-justify-center">
+						<kv-material-icon
+							:icon="mdiCheckboxMarkedCircle"
+							class="tw-h-6 tw-w-6 tw-text-brand tw-fill-current"
+						/>
+						<span>Thanks!</span>
+					</h1>
+					<p class="tw-mb-4">
+						Every month your balance will grow by ${{ autoDepositAmount }}!
+						<template v-if="donationAmount > 0">
+							<br>
+							<em>You’re also making a ${{ donationAmount }} donation to Kiva each month – thank you!</em>
+						</template>
+					</p>
+					<kv-material-icon
+						:icon="mdiEmailOutline"
+						class="tw-h-6 tw-w-6 tw-mb-1 tw-text-brand tw-fill-current"
+					/>
+					<p class="tw-mb-4">
+						You’ll get an email after each deposit so you can make more loans.
+					</p>
+					<div class="tw-border tw-border-tertiary tw-bg-secondary tw-p-2">
+						<p class="tw-font-medium">
+							Auto lending is the fastest way to lend your balance
+						</p>
 						<router-link to="/settings/autolending">
 							Define your criteria
 						</router-link>
-					</p>
+					</div>
 				</div>
 			</div>
-		</div>
+		</kv-default-wrapper>
 	</www-page>
 </template>
 
@@ -37,7 +44,9 @@ import gql from 'graphql-tag';
 import numeral from 'numeral';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvIcon from '@/components/Kv/KvIcon';
+import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
+import { mdiCheckboxMarkedCircle, mdiEmailOutline } from '@mdi/js';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 const pageQuery = gql`query autoDepositThanksPage {
 	my {
@@ -52,7 +61,8 @@ const pageQuery = gql`query autoDepositThanksPage {
 export default {
 	components: {
 		WwwPage,
-		KvIcon,
+		KvDefaultWrapper,
+		KvMaterialIcon,
 	},
 	props: { },
 	data() {
@@ -60,6 +70,8 @@ export default {
 			totalAmount: 0,
 			donationAmount: 0,
 			autoDepositAmount: 0,
+			mdiCheckboxMarkedCircle,
+			mdiEmailOutline,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -82,39 +94,3 @@ export default {
 };
 
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.auto-deposit-thanks-page {
-	padding-top: 4rem;
-
-	h1 { margin-bottom: 1rem; }
-
-	.icon-confirmation,
-	.icon-email {
-		height: 3rem;
-		width: 3rem;
-		color: $kiva-green;
-		fill: $kiva-green;
-		vertical-align: middle;
-		margin-top: -0.65rem;
-	}
-
-	.icon-email {
-		display: block;
-		margin: 0 auto;
-	}
-
-	.panel {
-		border: 1px solid $light-gray;
-		padding: 1rem 1rem 0;
-		background-color: $platinum;
-		margin: 2rem auto;
-	}
-
-	&__email-message {
-		margin-top: 2.5rem;
-	}
-}
-</style>
