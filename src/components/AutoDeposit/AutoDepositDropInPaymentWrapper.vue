@@ -12,11 +12,11 @@
 			/>
 			<div id="dropin-button">
 				<kv-button
+					class="tw-mb-4"
 					value="submit"
 					id="dropin-submit"
-					class="button"
-					:disabled="!enableConfirmButton || submitting"
-					@click.native="submitDropInAutoDeposit"
+					:state="!enableConfirmButton || submitting ? 'disabled' : ''"
+					@click="submitDropInAutoDeposit"
 				>
 					<kv-icon name="lock" />
 					Confirm <kv-loading-spinner v-if="submitting" />
@@ -40,9 +40,9 @@ import braintreeCreateAutoDepositSubscription from '@/graphql/mutation/braintree
 import braintreeUpdateSubscriptionPaymentMethod from
 	'@/graphql/mutation/braintreeUpdateSubscriptionPaymentMethod.graphql';
 
-import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	components: {
@@ -199,7 +199,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import "settings";
-</style>
