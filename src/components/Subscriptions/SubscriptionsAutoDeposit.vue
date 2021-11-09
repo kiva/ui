@@ -9,23 +9,23 @@
 				</router-link>
 				<div v-if="isAutoDepositSubscriber">
 					<p>
-						On the <kv-button class="text-link"
-							@click.native.prevent="showEditLightbox = true;"
+						On the <button class="tw-text-link tw-font-medium"
+							@click="showEditLightbox = true;"
 						>
 							{{ dayOfMonth | numeral('Oo') }}
-						</kv-button> of each month <kv-button class="text-link"
-							@click.native.prevent="showEditLightbox = true;"
+						</button> of each month <button class="tw-text-link tw-font-medium"
+							@click="showEditLightbox = true;"
 						>
 							{{ totalCombinedDeposit | numeral('$0,0.00') }}
-						</kv-button> will be
+						</button> will be
 						transferred.
 					</p>
 					<p>
-						<kv-button class="text-link"
-							@click.native.prevent="$emit('cancel-subscription')"
+						<button class="tw-text-link tw-font-medium"
+							@click="$emit('cancel-subscription')"
 						>
 							Cancel Auto Deposit
-						</kv-button>
+						</button>
 					</p>
 
 					<!-- Edit AD Lightbox -->
@@ -55,11 +55,11 @@
 														<strong>Each month on the</strong>
 														<label class="show-for-sr"
 															:class="{ 'error': $v.dayOfMonth.$invalid }"
-															:for="dayOfMonth"
+															for="dayOfMonth"
 														>
 															Day of the Month
 														</label>
-														<input v-if="isDayInputShown"
+														<kv-text-input v-if="isDayInputShown"
 															@blur="hideDayInput()"
 															class="text-input__day"
 															id="dayOfMonth"
@@ -69,9 +69,9 @@
 															min="1"
 															max="31"
 															v-model.number="dayOfMonth"
-														>
+														/>
 														<button
-															class="button--ordinal-day"
+															class="tw-text-link tw-font-medium"
 															@click="isDayInputShown = true"
 															v-if="!isDayInputShown"
 														>
@@ -112,7 +112,6 @@
 																	Amount
 																</label>
 																<kv-currency-input
-																	class="text-input"
 																	id="amount"
 																	v-model="mgAmount"
 																/>
@@ -150,7 +149,6 @@
 																	Donation
 																</label>
 																<kv-currency-input
-																	class="text-input"
 																	id="donation"
 																	v-model="donation"
 																/>
@@ -197,13 +195,13 @@
 										</fieldset>
 									</form>
 									<div class="ad-update-lightbox__payment-method">
-										<div class="row column">
+										<p class="tw-mb-1">
 											<strong>Current payment method:</strong>
-										</div>
+										</p>
 										<div class="row">
 											<div class="column">
 												<template v-if="paymentMethod">
-													<img class="ad-update-lightbox__cc-icon"
+													<img class="ad-update-lightbox__cc-icon tw-inline-block"
 														:src="paymentMethod.imageUrl"
 														alt="credit card"
 													>
@@ -218,7 +216,7 @@
 											</div>
 											<div class="column tw-text-right" v-if="paymentMethod">
 												<button
-													class="button--link"
+													class="tw-text-link tw-font-medium"
 													@click="toggleSections"
 												>
 													<strong>Update Payment Method</strong>
@@ -227,38 +225,30 @@
 											</div>
 										</div>
 									</div>
-									<kv-button
-										data-test="auto-deposit-save-button"
-										class="smaller button"
-										v-if="!isSaving"
-										@click.native="saveAutoDeposit"
-										:disabled="!isChanged || $v.$invalid"
-									>
-										Save
-									</kv-button>
-									<kv-button data-test="auto-deposit-save-button" class="smaller button" v-else>
-										Saving <kv-loading-spinner />
-									</kv-button>
 								</div>
 								<!-- Payment Methods -->
 								<div
 									v-if="!settingsOpen"
 									class="row column" key="paymentSettings"
 								>
-									<kv-button class="text-link"
-										@click.native.prevent="toggleSections"
+									<button class="tw-text-link tw-font-medium"
+										@click="toggleSections"
 									>
 										<kv-icon
-											class="arrow back-arrow"
+											class="arrow back-arrow tw-stroke-current"
 											name="small-chevron"
 											:from-sprite="true"
 										/>
 										Back to deposit settings
-									</kv-button>
+									</button>
 									<div class="ad-update-lightbox__dropin-payment-wrapper">
 										<div class="row column ad-update-lightbox__current-payment-method">
-											<strong>Current payment method:</strong><br>
-											<img class="ad-update-lightbox__cc-icon" :src="paymentMethod.imageUrl">
+											<strong class="tw-mb-1">Current payment method:</strong><br>
+											<img
+												class="ad-update-lightbox__cc-icon tw-inline-block"
+												:src="paymentMethod.imageUrl"
+												alt="credit card"
+											>
 											{{ paymentMethod.description }}
 										</div>
 										<p v-if="updateToCurrentPaymentMethod"
@@ -280,6 +270,16 @@
 								</div>
 							</transition>
 						</div>
+						<template #controls>
+							<kv-button
+								v-if="settingsOpen"
+								data-test="auto-deposit-save-button"
+								@click="saveAutoDeposit"
+								:state="saveButtonState"
+							>
+								Save
+							</kv-button>
+						</template>
 					</kv-lightbox>
 				</div>
 			</template>
@@ -293,12 +293,12 @@ import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
 import AutoDepositDropInPaymentWrapper from '@/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
-import KvButton from '@/components/Kv/KvButton';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvIcon from '@/components/Kv/KvIcon';
-import KvLightbox from '@/components/Kv/KvLightbox';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 const pageQuery = gql`query autoDepositPage {
 	my {
@@ -327,8 +327,8 @@ export default {
 		KvCurrencyInput,
 		KvIcon,
 		KvLightbox,
-		KvLoadingSpinner,
 		KvSettingsCard,
+		KvTextInput,
 	},
 	data() {
 		return {
@@ -408,6 +408,15 @@ export default {
 		slideTransition() {
 			return this.settingsOpen ? 'kv-slide-right' : 'kv-slide-left';
 		},
+		saveButtonState() {
+			if (!this.isChanged || this.$v.$invalid) {
+				return 'disabled';
+			}
+			if (this.isSaving) {
+				return 'loading';
+			}
+			return '';
+		}
 	},
 	methods: {
 		toggleSections() {
@@ -478,24 +487,8 @@ form {
 		margin-bottom: 0.25em;
 	}
 
-	// styles to match KvSelect
-	input.text-input {
-		border: 1px solid $charcoal;
-		border-radius: $button-radius;
-		color: $charcoal;
-		font-size: $medium-text-font-size;
-		font-weight: $global-weight-highlight;
-		margin: 0;
-	}
-
 	.additional-left-pad-currency {
 		padding-left: 0.65rem;
-	}
-
-	.button--ordinal-day {
-		color: $kiva-accent-blue;
-		fill: $kiva-accent-blue;
-		cursor: pointer;
 	}
 
 	.icon-pencil {
@@ -504,11 +497,7 @@ form {
 	}
 
 	.text-input__day {
-		display: inline-block;
-		width: 3.5rem;
-		padding: 0.25rem 0.5rem;
 		margin: 0 0 0 0.25rem;
-		height: 2rem;
 	}
 
 	.text-input,
@@ -525,16 +514,6 @@ form {
 		}
 	}
 
-	::v-deep .loading-spinner {
-		vertical-align: middle;
-		width: 1rem;
-		height: 1rem;
-	}
-
-	::v-deep .loading-spinner .line {
-		background-color: $white;
-	}
-
 	.middle-wrapper {
 		padding-left: 2rem;
 		padding-right: 2rem;
@@ -546,7 +525,6 @@ form {
 	&__content {
 		overflow: hidden;
 		max-width: 100%;
-		margin: 1.5rem 0 0;
 
 		@include breakpoint('large') {
 			width: rem-calc(530);
@@ -564,7 +542,6 @@ form {
 
 	&__payment-method {
 		padding-right: 2rem;
-		margin-bottom: 2rem;
 	}
 
 	&__dropin-payment-wrapper {
@@ -582,7 +559,6 @@ form {
 	}
 
 	.arrow {
-		stroke: $blue;
 		width: rem-calc(13);
 		height: rem-calc(9);
 
@@ -592,9 +568,6 @@ form {
 	}
 
 	.button--link {
-		color: $kiva-accent-blue;
-		fill: $kiva-accent-blue;
-		cursor: pointer;
 		padding: 0.5rem;
 	}
 
