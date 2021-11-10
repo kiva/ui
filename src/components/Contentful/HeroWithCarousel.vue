@@ -31,6 +31,12 @@
 							</template>
 						</kv-carousel>
 					</div>
+					<div class="tw-col-span-12 tw-text-center">
+						<button-wrapper
+							class="tw-w-full md:tw-w-auto tw-mt-2"
+							:content="buttonContent"
+						/>
+					</div>
 				</kv-grid>
 			</kv-page-container>
 		</template>
@@ -42,6 +48,7 @@ import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin'
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import DynamicRichText from '@/components/Contentful/DynamicRichText';
+import ButtonWrapper from '@/components/Contentful/ButtonWrapper';
 
 import StoryCard from '@/components/Contentful/StoryCard';
 
@@ -58,6 +65,7 @@ import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
 	components: {
+		ButtonWrapper,
 		DynamicRichText,
 		KvCarousel,
 		KvGrid,
@@ -81,6 +89,11 @@ export default {
 	},
 	mixins: [contentfulStylesMixin],
 	computed: {
+		buttonContent() {
+			return this.content?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'button' : false;
+			});
+		},
 		heroText() {
 			return this.content?.contents?.find(({ contentType }) => {
 				return contentType ? contentType === 'richTextContent' : false;
