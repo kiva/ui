@@ -45,9 +45,6 @@ export default {
 			}
 			// uiGlobalPromoSetting can contain an array of different banners with
 			// different start/end dates first determine if setting is enabled.
-
-			// DO I NEED THIS CHECK, SINCE IF THERE'S INACTIVE BANNERS WITHIN DATE RANGE
-			// WE STILL WANT TO DISPLAY THE DISCLAIMERS... RIGHT?
 			const isGlobalSettingEnabled = settingEnabled(
 				uiGlobalPromoSetting.fields,
 				'active',
@@ -69,7 +66,7 @@ export default {
 				// gather all inactive promo banners by their start and end dates
 				const inactivePromoBanners = uiGlobalPromoSetting.fields.content.filter(promoContent => {
 					const hiddenUrls = promoContent?.fields?.hiddenUrls ?? [];
-					// Check hiddenUrl for display of disclaimers
+					// check hiddenUrl for display of disclaimers
 					if (hiddenUrls.includes(this.$route.path)) {
 						return false;
 					}
@@ -120,7 +117,7 @@ export default {
 		}
 	},
 	computed: {
-		// Constructing the final form of the disclaimer text for display
+		// constructing the final form of the disclaimer text for display
 		fullyBuiltDisclaimerText() {
 			const builtDisclaimertext = [];
 			this.disclaimerContent.forEach(disclaimer => {
