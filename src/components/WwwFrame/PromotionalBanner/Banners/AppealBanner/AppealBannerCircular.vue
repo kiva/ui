@@ -248,7 +248,6 @@ export default {
 	}
 
 	&__title {
-		margin-bottom: rem-calc(4);
 		display: inline;
 	}
 
@@ -332,6 +331,7 @@ export default {
 	}
 
 	&__body {
+		margin-top: rem-calc(4);
 		margin-bottom: 1rem;
 		white-space: pre-wrap;
 
