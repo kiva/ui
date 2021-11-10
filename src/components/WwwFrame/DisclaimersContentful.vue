@@ -1,4 +1,4 @@
-<template>
+s<template>
 	<div class="row">
 		<ol id="disclaimers" class="text-left">
 			<li
@@ -13,13 +13,31 @@
 
 <script>
 import _get from 'lodash/get';
+import numeral from 'numeral';
 import gql from 'graphql-tag';
 import { settingEnabled, settingWithinDateRange } from '@/util/settingsUtils';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
-const bannerQuery = gql`query bannerQuery {
+const disclaimerQuery = gql`query disclaimerQuery($basketId: String) {
 	contentful {
 		entries(contentType: "uiSetting", contentKey: "ui-global-promo")
+	}
+	my {
+		userAccount {
+			id
+			promoBalance
+		}
+	}
+	shop (basketId: $basketId) {
+		id
+		basket {
+			id
+			hasFreeCredits
+			totals {
+				redemptionCodeAvailableTotal
+			}
+		}
+		lendingRewardOffered
 	}
 }`;
 
@@ -27,11 +45,14 @@ export default {
 	data() {
 		return {
 			disclaimerContent: [],
+			lendingRewardOffered: false,
+			bonusBalance: 0,
+			hasFreeCredits: false,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
-		query: bannerQuery,
+		query: disclaimerQuery,
 		preFetch: true,
 		result({ data }) {
 			this.disclaimerContent = [];
@@ -113,6 +134,13 @@ export default {
 						}
 					});
 				}
+
+				// data for the hasPromoCredit function
+				const promoBalance = numeral(data.my.userAccount.promoBalance);
+				const basketPromoBalance = numeral(data.shop.totals.redemptionCodeAvailableTotal);
+				this.bonusBalance = promoBalance + basketPromoBalance;
+				this.lendingRewardOffered = data.shop.lendingRewardOffered;
+				this.hasFreeCredits = data.shop.basket.hasFreeCredits;
 			}
 		}
 	},
@@ -125,6 +153,16 @@ export default {
 				builtDisclaimertext.push(prependDisclaimer);
 			});
 			return builtDisclaimertext;
+		},
+		hasPromoSession() {
+			// check if the user has Promo Credit
+			// (lending reward credit, bonus credit, or free credit)
+			// if they have any of the above, the banners are hidden
+			// so we also hide the disclaimer section
+			if (this.lendingRewardOffered || this.bonusBalance > 0 || this.hasFreeCredits) {
+				return true;
+			}
+			return false;
 		}
 	}
 };
