@@ -9,36 +9,35 @@
 				</router-link>
 
 				<div v-if="isMonthlyGoodSubscriber">
-					<p>
-						On the <kv-button class="text-link"
-							@click.native.prevent="showEditLightbox = true;"
+					<p class="tw-mb-2">
+						On the <button class="tw-text-link tw-font-medium"
+							@click="showEditLightbox = true;"
 						>
 							{{ dayOfMonth | numeral('Oo') }}
-						</kv-button> of each month <kv-button class="text-link"
-							@click.native.prevent="showEditLightbox = true;"
+						</button> of each month <button class="tw-text-link tw-font-medium"
+							@click="showEditLightbox = true;"
 						>
 							{{ totalCombinedDeposit | numeral('$0,0.00') }}
-						</kv-button> will be
-						transferred <kv-button class="text-link"
-							@click.native.prevent="showEditLightbox = true;"
+						</button> will be
+						transferred <button class="tw-text-link tw-font-medium"
+							@click="showEditLightbox = true;"
 							v-if="selectedGroupDescriptor"
 						>
 							to support
 							{{ selectedGroupDescriptor }}.
-						</kv-button>
+						</button>
 					</p>
-					<p>
-						<kv-button class="text-link"
-							@click.native.prevent="showCancelLightbox = true"
-							v-kv-track-event="[
-								'monthlyGood',
-								'click-cancel-monthly-good',
-								'Cancel Monthly Good'
-							]"
-						>
-							Cancel Monthly Good
-						</kv-button>
-					</p>
+
+					<button class="tw-text-link tw-font-medium"
+						@click="showCancelLightbox = true"
+						v-kv-track-event="[
+							'monthlyGood',
+							'click-cancel-monthly-good',
+							'Cancel Monthly Good'
+						]"
+					>
+						Cancel Monthly Good
+					</button>
 
 					<!-- Edit MG Lightbox -->
 					<kv-lightbox
@@ -64,13 +63,13 @@
 										class="mg-update-lightbox__form"
 									/>
 									<div class="mg-update-lightbox__payment-method">
-										<div class="row column">
+										<p class="tw-mb-1">
 											<strong>Current payment method:</strong>
-										</div>
+										</p>
 										<div class="row">
 											<div class="column">
 												<template v-if="paymentMethod">
-													<img class="mg-update-lightbox__cc-icon"
+													<img class="mg-update-lightbox__cc-icon tw-inline-block"
 														:src="paymentMethod.imageUrl"
 														alt="credit card"
 													>
@@ -85,47 +84,41 @@
 											</div>
 											<div class="column tw-text-right" v-if="paymentMethod">
 												<button
-													class="button--link"
+													class="tw-text-link tw-font-medium"
 													@click="toggleSections"
 												>
-													<strong>Update Payment Method</strong>
+													Update Payment Method
 													<kv-icon class="icon-pencil" name="pencil" title="Edit" />
 												</button>
 											</div>
 										</div>
 									</div>
-									<kv-button
-										data-test="monthly-good-save-button"
-										class="smaller button"
-										v-if="!isSaving"
-										@click.native="saveMonthlyGood"
-										:disabled="!isChanged || !isFormValid"
-									>
-										Save Settings
-									</kv-button>
-									<kv-button data-test="monthly-good-save-button" class="smaller button" v-else>
-										Saving <kv-loading-spinner />
-									</kv-button>
 								</div>
 								<!-- Payment Methods -->
 								<div
 									v-if="!settingsOpen"
 									class="row column" key="paymentSettings"
 								>
-									<kv-button class="text-link"
-										@click.native.prevent="toggleSections"
+									<button class="tw-text-link tw-font-medium"
+										@click="toggleSections"
 									>
 										<kv-icon
-											class="arrow back-arrow"
+											class="arrow back-arrow tw-stroke-current"
 											name="small-chevron"
 											:from-sprite="true"
 										/>
 										Back to deposit settings
-									</kv-button>
+									</button>
 									<div class="mg-update-lightbox__dropin-payment-wrapper">
 										<div class="row column mg-update-lightbox__current-payment-method">
-											<strong>Current payment method:</strong><br>
-											<img class="mg-update-lightbox__cc-icon" :src="paymentMethod.imageUrl">
+											<p class="tw-mb-1">
+												<strong>Current payment method:</strong>
+											</p>
+											<img
+												class="mg-update-lightbox__cc-icon tw-inline-block"
+												:src="paymentMethod.imageUrl"
+												alt="credit card"
+											>
 											{{ paymentMethod.description }}
 										</div>
 										<p v-if="updateToCurrentPaymentMethod"
@@ -148,6 +141,15 @@
 								</div>
 							</transition>
 						</div>
+						<template #controls>
+							<kv-button
+								data-test="monthly-good-save-button"
+								@click="saveMonthlyGood"
+								:state="saveButtonState"
+							>
+								Save Settings
+							</kv-button>
+						</template>
 					</kv-lightbox>
 
 					<!-- Monthly Good Cancellation Flow -->
@@ -169,15 +171,14 @@ import gql from 'graphql-tag';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
-import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
-import KvLightbox from '@/components/Kv/KvLightbox';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import MonthlyGoodUpdateForm from '@/components/Forms/MonthlyGoodUpdateForm';
 import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
 import SubscriptionsMonthlyGoodCancellationFlow from
 	'@/components/Subscriptions/SubscriptionsMonthlyGoodCancellationFlow';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const pageQuery = gql`query monthlyGoodSubscription {
 	my {
@@ -204,7 +205,6 @@ export default {
 		KvButton,
 		KvIcon,
 		KvLightbox,
-		KvLoadingSpinner,
 		KvSettingsCard,
 		MonthlyGoodDropInPaymentWrapper,
 		MonthlyGoodUpdateForm,
@@ -260,6 +260,15 @@ export default {
 		slideTransition() {
 			return this.settingsOpen ? 'kv-slide-right' : 'kv-slide-left';
 		},
+		saveButtonState() {
+			if (!this.isChanged || !this.isFormValid) {
+				return 'disabled';
+			}
+			if (this.isSaving) {
+				return 'loading';
+			}
+			return '';
+		}
 	},
 	methods: {
 		/** This method is triggered when the form is updated.
@@ -361,7 +370,6 @@ export default {
 	&__content {
 		overflow: hidden;
 		max-width: 100%;
-		margin: 1.5rem 0 0;
 
 		@include breakpoint('large') {
 			width: rem-calc(530);
@@ -379,7 +387,6 @@ export default {
 
 	&__payment-method {
 		padding-right: 2rem;
-		margin-bottom: 2rem;
 	}
 
 	&__dropin-payment-wrapper {
@@ -397,20 +404,12 @@ export default {
 	}
 
 	.arrow {
-		stroke: $blue;
 		width: rem-calc(13);
 		height: rem-calc(9);
 
 		&.back-arrow {
 			transform: rotate(90deg);
 		}
-	}
-
-	.button--link {
-		color: $kiva-accent-blue;
-		fill: $kiva-accent-blue;
-		cursor: pointer;
-		padding: 0.5rem;
 	}
 
 	.icon-pencil {
