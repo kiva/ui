@@ -3,8 +3,12 @@
 		<div class="campaign-thanks__container">
 			<template v-if="loans.length > 0">
 				<header class="campaign-thanks__header hide-for-print">
-					<h2>Thanks for supporting {{ borrowerSupport }}!</h2>
-					<p>We've emailed your order confirmation to <span class="fs-exclude">{{ lender.email }}</span></p>
+					<h2 class="tw-mb-4">
+						Thanks for supporting {{ borrowerSupport }}!
+					</h2>
+					<p class="tw-text-subhead">
+						We've emailed your order confirmation to <span class="fs-exclude">{{ lender.email }}</span>
+					</p>
 				</header>
 				<section class="campaign-thanks__partner-block">
 					<campaign-partner-thanks :partner-content="partnerContent" />

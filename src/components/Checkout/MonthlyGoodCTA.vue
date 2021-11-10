@@ -1,5 +1,5 @@
 <template>
-	<div class="monthly-good-cta hide-for-print">
+	<div class="monthly-good-cta tw-text-left md:tw-text-center hide-for-print">
 		<h2 class="monthly-good-cta__headline">
 			{{ headline }}
 		</h2>
@@ -10,14 +10,15 @@
 			<div class="row">
 				<div class="small-12 large-4 column">
 					<label
+						class="tw-font-medium"
 						:class="{ 'error': $v.mgAmount.$invalid }"
 						for="amount"
 					>
 						Amount
 					</label>
-					<select
+					<kv-select
 						v-model="mgOptionSelected"
-						class="monthly-good-cta__dropdown"
+						class="monthly-good-cta__dropdown tw-mb-2"
 						v-if="mgOptionSelected !== 'other'"
 						id="amount"
 					>
@@ -28,7 +29,7 @@
 						>
 							{{ option.label }}
 						</option>
-					</select>
+					</kv-select>
 					<kv-currency-input
 						class="text-input"
 						:class="{ 'error': $v.mgAmount.$invalid }"
@@ -40,14 +41,15 @@
 				</div>
 				<div class="column">
 					<label
+						class="tw-font-medium"
 						for="cause"
 					>
 						Cause to support
 					</label>
-					<select
+					<kv-select
 						v-model="selectedGroup"
 						id="cause"
-						class="monthly-good-cta__dropdown"
+						class="monthly-good-cta__dropdown tw-mb-2"
 					>
 						<option
 							v-for="(option, index) in lendingCategories"
@@ -56,12 +58,12 @@
 						>
 							{{ option.label }}
 						</option>
-					</select>
+					</kv-select>
 				</div>
 			</div>
 			<!-- Errors and Messaging -->
 			<div class="row column tw-text-center">
-				<ul class="validation-errors" v-if="$v.mgAmount.$invalid">
+				<ul class="validation-errors tw-text-danger" v-if="$v.mgAmount.$invalid">
 					<li v-if="!$v.mgAmount.required">
 						Amount field is required
 					</li>
@@ -81,8 +83,8 @@
 							}
 						}"
 						v-kv-track-event="['Thanks', 'EXP-SUBS-526-Oct2020', 'click-monthly-good-signup']"
-						class="monthly-good-cta__button smaller"
-						:disabled="$v.mgAmount.$invalid"
+						class="monthly-good-cta__button"
+						:state="$v.mgAmount.$invalid ? 'disabled' : ''"
 					>
 						{{ buttonText }}
 					</kv-button>
@@ -97,10 +99,11 @@ import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import KvButton from '@/components/Kv/KvButton';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 /**
  * This CTA goes to the MG setup form
@@ -113,6 +116,7 @@ export default {
 	components: {
 		KvButton,
 		KvCurrencyInput,
+		KvSelect,
 	},
 	props: {
 		headline: {
@@ -209,47 +213,27 @@ export default {
 
 .monthly-good-cta {
 	padding: 1.5rem;
-	text-align: left;
-
-	@include breakpoint(large) {
-		text-align: center;
-	}
 
 	&__dropdown {
 		width: 100%;
 	}
 
 	&__headline {
-		@include big-text();
-
 		margin-bottom: 1.5rem;
 	}
 
 	&__subhead {
-		@include featured-text();
-
 		margin-bottom: 2rem;
 	}
 
 	&__form {
 		max-width: rem-calc(509);
 		margin: 0 auto;
-		text-align: center;
-
-		label {
-			font-weight: bold;
-			text-align: left;
-			font-size: 1rem;
-		}
 	}
 
 	&__button {
 		width: 100%;
 		margin-top: 1rem;
 	}
-}
-
-.text-input:not(.error) {
-	border: 1px solid $charcoal;
 }
 </style>
