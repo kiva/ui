@@ -255,6 +255,7 @@ export default {
 		font-size: $section-header-font-size;
 		font-weight: normal;
 		color: $kiva-text-dark;
+		margin-bottom: 0.5rem;
 	}
 
 	li {
@@ -315,14 +316,14 @@ export default {
 
 	.middle-section {
 		button {
-			color: $kiva-textlink;
+			color: rgb(var(--text-action));
 			padding: 0 $section-padding;
 			width: 100%;
 			line-height: inherit;
 			text-align: left;
 
 			&:hover {
-				color: $kiva-textlink-hover;
+				color: rgb(var(--text-action-highlight));
 				text-decoration: underline;
 			}
 
