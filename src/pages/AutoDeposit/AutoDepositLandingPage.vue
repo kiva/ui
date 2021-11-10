@@ -1,85 +1,93 @@
 <template>
 	<www-page>
-		<!-- Auto Deposit Text -->
-		<div class="auto-deposit-setup">
+		<section class="tw-py-4 md:tw-py-6 lg:tw-py-8">
+			<!-- Auto Deposit Text -->
 			<div class="row">
 				<div class="small-12 columns">
-					<h2 class="impact-text">
+					<h1 class="tw-mb-4">
 						{{ headerAreaHeadline }}
-					</h2>
+					</h1>
 				</div>
-				<div class="small-12 large-8 columns">
-					<div class="auto-deposit-setup__subhead" v-html="headerAreaBodyCopy">
+				<div class="small-12 large-10 columns">
+					<div class="tw-prose tw-mb-4 tw-text-subhead" v-html="headerAreaBodyCopy"></div>
+				</div>
+			</div>
+
+			<!-- Auto Deposit Form -->
+			<div class="auto-deposit-form" v-if="canDisplayForm">
+				<div class="row column">
+					<auto-deposit-sign-up-form />
+				</div>
+			</div>
+
+			<!-- Already Subscribed Notice -->
+			<div class="row" v-if="hasAutoDeposits || hasLegacySubscription">
+				<div class="small-12 columns">
+					<div class="tw-p-2 tw-mb-4 tw-bg-caution tw-text-black">
+						<p class="tw-text-h3">
+							You already have an existing auto deposit.
+							Changes can be made in your
+							<a href="/settings/subscriptions">subscription settings</a>.
+						</p>
 					</div>
 				</div>
 			</div>
-		</div>
 
-		<!-- Auto Deposit Form -->
-		<div class="auto-deposit-form" v-if="canDisplayForm">
-			<div class="row column">
-				<auto-deposit-sign-up-form />
-			</div>
-		</div>
-
-		<!-- Already Subscribed Notice -->
-		<div class="row" v-if="hasAutoDeposits || hasLegacySubscription">
-			<div class="small-12 large-6 columns">
-				<div class="already-subscribed-msg-wrapper">
-					<h3>
-						You already have an existing auto deposit.
-						Changes can be made in your
-						<a href="/settings/subscriptions">subscription settings</a>.
-					</h3>
+			<!-- Monthly Good Notice -->
+			<div class="row" v-if="isMonthlyGoodSubscriber">
+				<div class="small-12 columns">
+					<div class="tw-p-2 tw-mb-4 tw-bg-caution tw-text-black">
+						<p class="tw-text-h3">
+							Auto Deposit is not available to Monthly Good subscribers.
+							Changes can be made in your
+							<a href="/settings/subscriptions">subscription settings</a>.
+						</p>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<!-- Monthly Good Notice -->
-		<div class="row" v-if="isMonthlyGoodSubscriber">
-			<div class="small-12 large-6 columns">
-				<div class="already-subscribed-msg-wrapper">
-					<h3>
-						Auto Deposit is not available to Monthly Good subscribers.
-						Changes can be made in your
-						<a href="/settings/subscriptions">subscription settings</a>.
-					</h3>
-				</div>
-			</div>
-		</div>
-
-		<!-- Auto Deposit What To Expect -->
-		<div class="auto-deposit-what-to-expect">
+			<!-- Auto Deposit What To Expect -->
+		</section>
+		<section class="tw-py-4 md:tw-py-6 lg:tw-py-8 tw-text-center tw-bg-secondary">
 			<div class="row">
-				<h2 class="column small-12 tw-text-center">
+				<h2 class="small-12 column tw-mb-4">
 					{{ whatToExpectHeadline }}
 				</h2>
+				<div class="small-12 large-4 column" v-for="(item, index) in whatToExpect" :key="item.key">
+					<icon-auto-deposit-alternate
+						v-if="index == 0"
+						class="tw-w-9 tw-h-9 tw-mb-2 tw-block tw-mx-auto tw-text-brand"
+						style="fill: #fff;"
+					/>
+					<icon-lend v-if="index == 1"
+						class="tw-w-9 tw-h-9 tw-mb-2 tw-block tw-mx-auto tw-text-brand"
+						style="fill: #fff;"
+					/>
+					<icon-updates-alternate
+						v-if="index == 2"
+						class="tw-w-9 tw-h-9 tw-mb-2 tw-block tw-mx-auto tw-text-brand"
+						style="fill: #fff;"
+					/>
 
-				<div
-					class="small-12 large-4 column tw-text-center"
-					v-for="(item, index) in whatToExpect" :key="item.key"
-				>
-					<icon-auto-deposit-alternate v-if="index == 0" class="auto-deposit-what-to-expect__icon" />
-					<icon-lend v-if="index == 1" class="auto-deposit-what-to-expect__icon" />
-					<icon-updates-alternate v-if="index == 2" class="auto-deposit-what-to-expect__icon" />
-
-					<h3>
+					<h3 class="tw-text-brand tw-mb-2">
 						{{ item.name }}
 					</h3>
-					<div class="auto-deposit-what-to-expect__text" v-html="convertFromRichTextToHtml(item.richText)">
+					<div class="tw-prose" v-html="convertFromRichTextToHtml(item.richText)">
 					</div>
 				</div>
 			</div>
-		</div>
+		</section>
 
 		<!-- Auto Deposit Frequently Asked Questions -->
-		<div class="kv-tailwind row">
-			<kv-frequently-asked-questions
-				class="span-12 column"
-				:headline="frequentlyAskedQuestionsHeadline"
-				:questions="frequentlyAskedQuestions"
-			/>
-		</div>
+		<section class="tw-py-4 md:tw-py-6 lg:tw-py-8">
+			<div class="row">
+				<kv-frequently-asked-questions
+					class="span-12 column"
+					:headline="frequentlyAskedQuestionsHeadline"
+					:questions="frequentlyAskedQuestions"
+				/>
+			</div>
+		</section>
 	</www-page>
 </template>
 
@@ -199,73 +207,4 @@ export default {
 	},
 
 };
-
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.auto-deposit-setup {
-	padding: 4rem 0 0;
-
-	h2 {
-		margin-bottom: 3rem;
-	}
-
-	&__subhead {
-		::v-deep p {
-			@include medium-text();
-
-			@include breakpoint(xlarge) {
-				@include featured-text();
-			}
-		}
-	}
-}
-
-.auto-deposit-what-to-expect {
-	background-color: $ghost;
-	margin: 2rem 0 3rem;
-	padding: 1rem 0 3.5rem;
-
-	h2 {
-		color: $kiva-green;
-		padding: 2rem 0;
-		font-weight: bold;
-
-		@include breakpoint(large) {
-			@include large-text();
-		}
-	}
-
-	h3 {
-		color: $kiva-green;
-		margin-bottom: 1rem;
-		font-weight: bold;
-
-		@include breakpoint(large) {
-			@include featured-text();
-		}
-	}
-
-	&__text {
-		margin: 0 auto;
-		line-height: 1.4;
-		::v-deep p { margin: 1em 0; }
-	}
-
-	&__icon {
-		fill: $white;
-		width: 4.5rem;
-		display: block;
-		margin: 0 auto 1rem auto;
-		color: $kiva-green;
-	}
-}
-
-.already-subscribed-msg-wrapper {
-	background-color: $vivid-yellow;
-	padding: 1rem;
-	margin-top: 1.25rem;
-}
-</style>
