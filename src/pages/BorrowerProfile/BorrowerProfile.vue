@@ -19,7 +19,7 @@
 				</sidebar-container>
 			</div>
 			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-8">
-				<loan-story class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
+				<loan-story id="loanStory" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 			</content-container>
 			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
 				<content-container>
@@ -48,7 +48,7 @@
 			</content-container>
 			<div class="tw-bg-primary">
 				<content-container>
-					<details-tabs :loan-id="loanId" name="bp-details" />
+					<details-tabs id="loanDetails" :loan-id="loanId" name="bp-details" />
 				</content-container>
 			</div>
 		</article>
