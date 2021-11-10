@@ -71,7 +71,7 @@ export function settingEnabled(data, enabledKey, startTimeKey, endTimeKey) {
  * @param {object} data
  * @param {string} startTimeKey
  * @param {string} endTimeKey
- * @returns {object}
+ * @returns {boolean}
  */
 export function settingWithinDateRange(data, startTimeKey, endTimeKey) {
 	const startTime = readDateSetting(data, startTimeKey);

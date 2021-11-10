@@ -18,7 +18,9 @@
 			class="disclaimer-indicator"
 			v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
 		>
-			1
+			<sup>
+				1
+			</sup>
 		</a>
 	</div>
 </template>
@@ -127,7 +129,6 @@ export default {
 
 	.disclaimer-indicator {
 		color: $kiva-icon-green;
-		font-size: 0.875rem;
 
 		&:hover,
 		&:active {

@@ -38,6 +38,16 @@
 				</div>
 				<div class="appeal-banner__content small-12 columns">
 					<h3 class="appeal-banner__title strong" v-html="headline"></h3>
+					<a
+						v-if="disclaimer"
+						href="#disclaimers"
+						class="appeal-banner__disclaimer-indicator"
+						v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
+					>
+						<sup>
+							1
+						</sup>
+					</a>
 					<div class="appeal-banner__body" v-html="body"></div>
 					<ul class="appeal-banner__amount-list">
 						<li v-for="(buttonAmount, index) in buttonAmounts"
@@ -96,6 +106,16 @@
 			<div class="appeal-banner__content row align-middle">
 				<div class="columns">
 					<h4 class="appeal-banner__title" v-html="headline"></h4>
+					<a
+						v-if="disclaimer"
+						href="#disclaimers"
+						class="appeal-banner__disclaimer-indicator"
+						v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
+					>
+						<sup>
+							1
+						</sup>
+					</a>
 				</div>
 				<div class="shrink columns">
 					<kv-button
@@ -161,6 +181,10 @@ export default {
 			type: Boolean,
 			default: true
 		},
+		disclaimer: {
+			type: Boolean,
+			default: false
+		}
 	},
 	computed: {
 		isLoading() {
@@ -225,6 +249,11 @@ export default {
 
 	&__title {
 		margin-bottom: rem-calc(4);
+		display: inline;
+	}
+
+	&__disclaimer-indicator {
+		color: $kiva-text-dark;
 	}
 
 	&__amount-list {
