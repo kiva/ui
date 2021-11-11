@@ -19,5 +19,5 @@ jobs:
           node-version: '16.x'
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PUBLISH_PAT }}
         run: npx --yes -p conventional-changelog-conventionalcommits@4 -p @semantic-release/changelog@6 -p @semantic-release/git@10 -p semantic-release@18 semantic-release
