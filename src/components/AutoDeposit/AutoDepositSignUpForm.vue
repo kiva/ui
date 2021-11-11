@@ -5,25 +5,25 @@
 		novalidate
 	>
 		<!-- Amount and Day Input -->
-		<div class="row column align-middle">
-			<span class="ad-sign-up-form__deposit-text">
+		<div class="row column align-middle tw-text-h3">
+			<span>
 				Deposit
 			</span>
 			<label
-				class="show-for-sr"
+				class="tw-sr-only"
 				:class="{ 'error': $v.adAmount.$invalid }"
 				for="amount"
 			>
 				Amount
 			</label>
-			<kv-currency-input class="text-input" id="amount" v-model="adAmount" />
-			<span class="ad-sign-up-form__deposit-text">
+			<kv-currency-input class="tw-w-16" id="amount" v-model="adAmount" />
+			<span>
 				each month on the
 			</span>
-			<label class="show-for-sr" :class="{ 'error': $v.dayOfMonth.$invalid }" :for="dayOfMonth">
+			<label class="tw-sr-only" :class="{ 'error': $v.dayOfMonth.$invalid }" :for="dayOfMonth">
 				Day of the Month
 			</label>
-			<input v-if="isDayInputShown"
+			<kv-text-input v-if="isDayInputShown"
 				@blur="hideDayInput()"
 				class="text-input"
 				id="dayOfMonth"
@@ -33,14 +33,17 @@
 				min="1"
 				max="31"
 				v-model.number="dayOfMonth"
-			>
+			/>
 			<button
-				class="ad-sign-up-form__button--ordinal-day"
+				class="tw-text-action hover:tw-text-action-highlight"
 				@click="isDayInputShown = true"
 				v-if="!isDayInputShown"
 			>
 				<strong>{{ dayOfMonth | numeral('Oo') }}</strong>
-				<kv-icon class="icon-pencil" name="pencil" title="Edit" />
+				<kv-material-icon
+					class="tw-w-2.5 tw-h-2.5"
+					:icon="mdiPencil"
+				/>
 			</button>
 		</div>
 
@@ -66,64 +69,60 @@
 
 		<!-- Donation -->
 		<div class="row collapse align-middle">
-			<div class="columns shrink">
+			<div class="columns shrink tw-text-h3">
 				<kv-checkbox
 					id="donation-checkbox"
+					class="tw--mt-1"
 					v-model="donationCheckbox"
 					@change="donationCheckboxChange()"
-				/>
-				<span class="ad-sign-up-form__donation-text">
-					Add an optional
-				</span>
-			</div>
+				>
+					<span>
+						Add an optional
+					</span>
 
-			<div class="columns shrink">
-				<label
-					class="show-for-sr"
-					:class="{ 'error': $v.donation.$invalid }"
-					for="donation"
-				>
-					Donation
-				</label>
-				<kv-select
-					class="donation-dropdown"
-					v-model="donationOptionSelected"
-					v-if="donationOptionSelected !== 'other'"
-				>
-					<option
-						v-for="(option, index) in dropdownOptions"
-						:value="option.value"
-						:key="index"
+					<label
+						class="tw-sr-only"
+						:class="{ 'error': $v.donation.$invalid }"
+						for="donation"
 					>
-						{{ option.label }}
-					</option>
-				</kv-select>
-				<kv-currency-input
-					class="text-input"
-					id="donation"
-					v-model="donation"
-					v-if="donationOptionSelected === 'other'"
-				/>
-			</div>
-
-			<div class="columns shrink">
-				<span class="ad-sign-up-form__donation-text">
-					donation to support Kiva’s costs
-				</span>
+						Donation
+					</label>
+					<kv-select
+						id="donation"
+						class="donation-dropdown"
+						v-model="donationOptionSelected"
+						v-if="donationOptionSelected !== 'other'"
+					>
+						<option
+							v-for="(option, index) in dropdownOptions"
+							:value="option.value"
+							:key="index"
+						>
+							{{ option.label }}
+						</option>
+					</kv-select>
+					<kv-currency-input
+						class="tw-w-16"
+						id="donation"
+						v-model="donation"
+						v-if="donationOptionSelected === 'other'"
+					/>
+					<span>
+						donation to support Kiva’s costs
+					</span>
+				</kv-checkbox>
 			</div>
 		</div>
 
-		<!-- Donation Errors -->
 		<div class="row column tw-text-center">
+			<!-- Donation Errors -->
 			<ul class="validation-errors" v-if="$v.donation.$invalid">
 				<li v-if="!$v.donation.minValue || !$v.donation.maxValue">
 					Enter a donation amount of $0-$10,000
 				</li>
 			</ul>
-		</div>
 
-		<!-- General Errors & Messaging-->
-		<div class="row column tw-text-center">
+			<!-- General Errors & Messaging-->
 			<ul class="validation-errors"
 				v-if="!$v.adAmount.combinedTotal || !$v.donation.combinedTotal"
 			>
@@ -137,7 +136,7 @@
 
 		<!-- Payment Wrapper-->
 		<div class="row column">
-			<div class="payment-dropin-wrapper" v-if="isLoggedIn">
+			<div class="tw-text-center tw-relative" v-if="isLoggedIn">
 				<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
 				<auto-deposit-drop-in-payment-wrapper
 					:amount="totalCombinedDeposit"
@@ -146,15 +145,13 @@
 					@complete-transaction="completeADBraintree"
 				/>
 			</div>
-			<div class="tw-text-center" v-else>
-				<kv-button
-					class="sign-in-button"
-					title="Sign in to set up"
-					:href="`/ui-login?force=true&doneUrl=${$route.path}`"
-				>
-					Sign in to set up
-				</kv-button>
-			</div>
+			<kv-button
+				v-else
+				class="tw-mt-4"
+				:href="`/ui-login?force=true&doneUrl=${$route.path}`"
+			>
+				Sign in to set up
+			</kv-button>
 		</div>
 		<kv-loading-overlay
 			v-if="showLoadingOverlay"
@@ -169,14 +166,16 @@ import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
 import AutoDepositDropInPaymentWrapper from '@/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
-import KvButton from '@/components/Kv/KvButton';
-import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import KvSelect from '@/components/Kv/KvSelect';
-import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 
 import userIdQuery from '@/graphql/query/userId.graphql';
+import { mdiPencil } from '@mdi/js';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 let frozenDropdownOptions;
 
@@ -187,7 +186,8 @@ export default {
 		KvCheckbox,
 		KvCurrencyInput,
 		KvSelect,
-		KvIcon,
+		KvTextInput,
+		KvMaterialIcon,
 		KvLoadingOverlay,
 	},
 	data() {
@@ -200,6 +200,7 @@ export default {
 			donationOptionSelected: '15',
 			isDonationOptionsDirty: false,
 			isLoggedIn: false,
+			mdiPencil,
 			showLoadingOverlay: false,
 		};
 	},
@@ -376,7 +377,6 @@ export default {
 
 .ad-sign-up-form {
 	margin-top: 1rem;
-	max-width: rem-calc(665);
 
 	.row {
 		margin-bottom: 1rem;
@@ -386,67 +386,10 @@ export default {
 		margin-bottom: 0;
 	}
 
-	&__deposit-text {
-		font-size: $featured-text-font-size;
-		font-weight: $global-weight-bold;
-	}
-
-	&__donation-text {
-		font-size: $medium-text-font-size;
-		font-weight: $global-weight-bold;
-		padding: 0 0.65rem;
-	}
-
-	&__button--ordinal-day {
-		color: $kiva-accent-blue;
-		fill: $kiva-accent-blue;
-		cursor: pointer;
-		font-size: $featured-text-font-size;
-		padding: 0.25rem;
-	}
-
 	::v-deep .dropdown-wrapper.donation-dropdown .dropdown {
 		width: rem-calc(130);
 		margin-bottom: 0;
 	}
-
-	::v-deep .kv-checkbox {
-		display: inline-block;
-		width: rem-calc(17);
-	}
-}
-
-// styles to match KvSelect
-.text-input {
-	border-radius: $button-radius;
-	color: $charcoal;
-	font-size: $medium-text-font-size;
-	font-weight: $global-weight-highlight;
-	margin: 0;
-	display: inline-block;
-	// amount input
-	&#amount {
-		width: rem-calc(130);
-		display: inline-block;
-		margin: 0 0.35rem 0 0.55rem;
-	}
-	// day input
-	&#dayOfMonth {
-		width: rem-calc(62);
-		margin-left: 0.5rem;
-	}
-	// donation other input
-	&#donation {
-		width: rem-calc(130);
-	}
-}
-
-label:not(.error) + .text-input {
-	border: 1px solid $charcoal;
-}
-
-.sign-in-button {
-	margin-top: 3rem;
 }
 
 .payment-dropin-wrapper {
@@ -463,11 +406,6 @@ label:not(.error) + .text-input {
 	left: 0;
 	background: rgba(255, 255, 255, 0.8);
 	z-index: 10000;
-}
-
-.icon-pencil {
-	height: 1.25rem;
-	width: 1.25rem;
 }
 
 // Set z-index for loading overlay so that it is over drop in UI

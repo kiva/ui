@@ -95,7 +95,7 @@ module.exports = {
 				]
 			},
 			{
-				// Allow Tailwind @apply in Vue using <style type="postcss">
+				// Allow Tailwind @apply in Vue using <style lang="postcss">
 				test: /\.(postcss)$/,
 				use: [
 					'vue-style-loader',

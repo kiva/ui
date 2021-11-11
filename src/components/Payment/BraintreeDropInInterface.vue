@@ -253,15 +253,6 @@ $border-width: 1px;
 			background-color: $white;
 		}
 
-		// Initial Payment Selection labels
-		[data-braintree-id="choose-a-way-to-pay"],
-		[data-braintree-id="methods-label"],
-		[data-braintree-id="other-ways-to-pay"] {
-			color: $kiva-text-light;
-			width: 100%;
-			text-align: center;
-		}
-
 		// Various text styles
 		.braintree-method__label,
 		.braintree-option__label,
@@ -272,36 +263,9 @@ $border-width: 1px;
 			text-align: left;
 		}
 
-		// Payment Option buttons on initial UI
-		[data-braintree-id="payment-options-container"] {
-			.braintree-option {
-				padding: 12px 16px;
-
-				&:first-child {
-					border-radius: $form-border-radius $form-border-radius 0 0;
-				}
-
-				&:last-child {
-					border-radius: 0 0 $form-border-radius $form-border-radius;
-				}
-			}
-		}
-
 		// Saved payment methods container
 		// List of vaulted cards
 		[data-braintree-id="methods-container"] {
-			.braintree-method {
-				width: 100%;
-
-				&:first-child {
-					border-radius: $form-border-radius $form-border-radius 0 0;
-				}
-
-				&:last-child {
-					border-radius: 0 0 $form-border-radius $form-border-radius;
-				}
-			}
-
 			.braintree-method--active {
 				border-color: $active-border-color;
 				border-width: $border-width;
@@ -317,38 +281,6 @@ $border-width: 1px;
 			}
 		}
 
-		// 'Choose another way to pay' text
-		[data-braintree-id="toggle"] {
-			font-weight: $global-weight-highlight;
-			color: $kiva-accent-blue;
-			background: none;
-			font-size: 1rem;
-			padding: 0 rem-calc(18) rem-calc(2) rem-calc(18);
-
-			&:hover {
-				background: none;
-				font-weight: $global-weight-highlight;
-			}
-
-			& span {
-				border: none;
-
-				&:focus,
-				&:hover {
-					text-decoration: underline;
-					color: $highlight-blue;
-				}
-			}
-		}
-
-		// Braintree section headings
-		// 'Choose a way to pay'
-		// 'Paying with Card'
-		// 'Other ways to pay'
-		.braintree-heading {
-			font-size: $small-text-font-size;
-		}
-
 		// Payment method form headers
 		[data-braintree-id="paypal-sheet-header"],
 		[data-braintree-id="apple-pay-sheet-header"],
@@ -362,15 +294,6 @@ $border-width: 1px;
 			.braintree-sheet__logo--header {
 				display: none;
 				visibility: hidden;
-			}
-
-			// Form header text
-			.braintree-sheet__text,
-			.braintree-sheet__label {
-				margin-left: 0;
-				font-weight: $global-weight-highlight;
-				color: $kiva-glyph-primary-black;
-				font-size: $medium-text-font-size;
 			}
 
 			// Moves credit card icons to new line.
@@ -429,13 +352,6 @@ $border-width: 1px;
 							}
 						}
 					}
-				}
-
-				// Form field labels
-				.braintree-form__label {
-					color: $kiva-glyph-primary-black;
-					font-weight: $global-weight-highlight;
-					font-size: $normal-text-font-size;
 				}
 
 				// Help text next to form label.
@@ -497,4 +413,80 @@ $border-width: 1px;
 .drop-in-wrapper {
 	text-align: center;
 }
+</style>
+<style lang="postcss">
+	/* New Tailwind Styles */
+
+	/* Braintree section headings
+	'Choose a way to pay'
+	'Paying with Card'
+	'Other ways to pay' */
+	#dropin-container [data-braintree-id="choose-a-way-to-pay"],
+	#dropin-container [data-braintree-id="methods-label"],
+	#dropin-container [data-braintree-id="other-ways-to-pay"] {
+		@apply tw-text-h4 tw-text-primary tw-text-left;
+	}
+
+	/* Payment method form headers text
+	'Pay with card'
+	'Paypal'
+	'GooglePay'
+	'ApplePay' */
+	#dropin-container [data-braintree-id="paypal-sheet-header"] .braintree-sheet__text,
+	#dropin-container [data-braintree-id="apple-pay-sheet-header"] .braintree-sheet__text,
+	#dropin-container [data-braintree-id="google-pay-sheet-header"] .braintree-sheet__text,
+	#dropin-container [data-braintree-id="card-sheet-header"] .braintree-sheet__text,
+	#dropin-container [data-braintree-id="paypal-sheet-header"] .braintree-sheet__label,
+	#dropin-container [data-braintree-id="apple-pay-sheet-header"] .braintree-sheet__label,
+	#dropin-container [data-braintree-id="google-pay-sheet-header"] .braintree-sheet__label,
+	#dropin-container [data-braintree-id="card-sheet-header"] .braintree-sheet__label {
+		@apply tw-ml-0 tw-text-h4 tw-text-primary tw-text-left;
+	}
+
+	/* Saved payment methods container
+	List of vaulted cards */
+	#dropin-container [data-braintree-id="methods-container"] .braintree-method {
+		@apply tw-border-solid tw-border-tertiary tw-w-full tw-border;
+	}
+
+	#dropin-container [data-braintree-id="methods-container"] .braintree-method:first-child {
+		@apply tw-rounded-tr-sm tw-rounded-tl-sm tw-rounded-bl-none tw-rounded-br-none;
+	}
+
+	#dropin-container [data-braintree-id="methods-container"] .braintree-method:last-child {
+		@apply tw-rounded-br-sm tw-rounded-bl-sm;
+	}
+
+	/* Payment Option buttons on initial UI */
+	#dropin-container [data-braintree-id="payment-options-container"] .braintree-option {
+		@apply tw-border-solid tw-border-tertiary tw-w-full tw-border tw-border-b-0;
+	}
+
+	#dropin-container [data-braintree-id="payment-options-container"] .braintree-option:first-child {
+		@apply tw-rounded-tr-sm tw-rounded-tl-sm tw-rounded-bl-none tw-rounded-br-none;
+	}
+
+	#dropin-container [data-braintree-id="payment-options-container"] .braintree-option:last-child {
+		@apply tw-rounded-br-sm tw-rounded-bl-sm tw-border-b;
+	}
+
+	/* 'Choose another way to pay' text */
+	#dropin-container [data-braintree-id="toggle"],
+	#dropin-container [data-braintree-id="toggle"]:hover {
+		@apply tw-bg-transparent;
+	}
+
+	#dropin-container [data-braintree-id="toggle"] span,
+	#dropin-container [data-braintree-id="toggle"] span:focus,
+	#dropin-container [data-braintree-id="toggle"] span:hover {
+		@apply tw-text-base tw-no-underline tw-border-0;
+		@apply tw-font-medium;
+	}
+
+	/* Credit Card Payment Content
+	Form field labels */
+	#dropin-container [data-braintree-id="card"] .braintree-sheet__content .braintree-form__label {
+		@apply tw-text-base;
+		@apply tw-font-medium;
+	}
 </style>
