@@ -177,13 +177,13 @@ export default {
 	margin: 0;
 
 	.custom-input-element {
-		height: 2.125rem;
 		border-radius: $input-border-radius;
 		margin: 0;
 		font-size: 1em;
 		text-align: center;
 		cursor: default;
 		border-color: $kiva-green;
+		width: 100%;
 	}
 
 	.error {
@@ -196,7 +196,7 @@ export default {
 
 	.label {
 		flex: 1;
-		padding: rem-calc(6) rem-calc(13);
+		padding: rem-calc(12) rem-calc(13);
 		border: rem-calc(1) solid $input-border-color;
 		display: flex;
 		justify-content: center;

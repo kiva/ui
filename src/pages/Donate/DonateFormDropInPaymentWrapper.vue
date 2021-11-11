@@ -3,7 +3,6 @@
 		<div v-if="!completed" class="small-12 columns">
 			<kv-button
 				v-if="!isLoggedIn"
-				class="smaller submit-btn"
 				:href="loginHref"
 				v-kv-track-event="['Donate form', 'click-login', 'Sign in to set up']"
 			>
@@ -31,13 +30,12 @@
 				v-if="isLoggedIn && !hasExistingAutoDeposit"
 				class="dropin-submit"
 				:id="`${id}-dropin-submit`"
-				:disabled="!enableConfirmButton || submitting"
-				@click.native="submitDropInAutoDeposit"
+				:state="submitButtonState"
+				@click="submitDropInAutoDeposit"
 				v-kv-track-event="['Donate form', 'click-save-monthly-donation', 'Save Monthly Donation']"
 			>
 				<kv-icon name="lock" />
 				Save Monthly Donation
-				<kv-loading-spinner v-if="submitting" />
 			</kv-button>
 			<div
 				class="attribution-text tw-text-center"
@@ -72,9 +70,8 @@ import braintreeDropInError from '@/plugins/braintree-dropin-error-mixin';
 import braintreeCreateAutoDepositSubscription from '@/graphql/mutation/braintreeCreateAutoDepositSubscription.graphql';
 
 import KvAlert from '@/components/Kv/KvAlert';
-import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	components: {
@@ -82,7 +79,6 @@ export default {
 		KvAlert,
 		KvButton,
 		KvIcon,
-		KvLoadingSpinner
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [braintreeDropInError],
@@ -150,6 +146,15 @@ export default {
 			const doneUrl = `${this.$route.fullPath}?setMonthly=true`;
 			return `/ui-login?force=true&doneUrl=${encodeURIComponent(doneUrl)}`;
 		},
+		submitButtonState() {
+			if (!this.enableConfirmButton) {
+				return 'disabled';
+			}
+			if (this.submitting) {
+				return 'loading';
+			}
+			return '';
+		}
 	},
 	mounted() {
 		this.isClientReady = !this.$isServer;
@@ -227,7 +232,6 @@ export default {
 .donate-form-dropin-payment-wrapper {
 	.dropin-submit {
 		width: 100%;
-		font-size: 1.25rem;
 		margin-top: 1rem;
 
 		.icon-lock {
@@ -247,12 +251,6 @@ export default {
 
 		.loading-spinner .line {
 			background-color: $white;
-		}
-	}
-
-	.dropin-payment-thanks {
-		h3 {
-			font-weight: 500;
 		}
 	}
 }
