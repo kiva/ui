@@ -9,126 +9,98 @@
 			<transition name="kv-slide-left" mode="out-in">
 				<!-- Step 1 -->
 				<div v-if="currentStep === '1'" key="1">
-					<p class="mg-cancel-lightbox__text">
+					<p class="mg-cancel-lightbox__text tw-mb-4">
 						We’d love to know why you are canceling Monthly Good by answering a few questions.
 					</p>
 					<kv-button
-						class="expanded secondary rounded tw-text-left"
-						@click.native.prevent="trackEvent({
+						class="tw-w-full tw-mb-2"
+						variant="secondary"
+						@click="trackEvent({
 								label: `monthly good cancel ; It's too expensive`,
 								property: 'cancel reason ; start_amount'});
 							goToStep('2-expensive')"
 					>
 						It's too expensive
-						<kv-icon
-							class="mg-cancel-lightbox__chevron"
-							name="fat-chevron"
-							:from-sprite="true"
-						/>
 					</kv-button>
 					<kv-button
-						class="expanded secondary rounded tw-text-left"
-						@click.native.prevent="trackEvent({
+						class="tw-w-full tw-mb-2"
+						variant="secondary"
+						@click="trackEvent({
 							label: `monthly good cancel ; I want to choose each loan`,
 							property: 'cancel reason ; start_category'}); goToStep('2-choose')"
 					>
 						I want to choose each loan
-						<kv-icon
-							class="mg-cancel-lightbox__chevron"
-							name="fat-chevron"
-							:from-sprite="true"
-						/>
 					</kv-button>
 					<kv-button
-						class="expanded secondary rounded tw-text-left"
-						@click.native.prevent="trackEvent({
+						class="tw-w-full tw-mb-2"
+						variant="secondary"
+						@click="trackEvent({
 							label: `monthly good cancel ; There's another reason`,
 							property: 'cancel reason ; start_other'}); goToStep('3-reason')"
 					>
 						There's another reason
-						<kv-icon
-							class="mg-cancel-lightbox__chevron"
-							name="fat-chevron"
-							:from-sprite="true"
-						/>
 					</kv-button>
-					<kv-button class="mg-cancel-lightbox__abort text-link"
-						@click.native="trackEvent({
+					<button
+						class="mg-cancel-lightbox__abort tw-text-link tw-font-medium"
+						@click="trackEvent({
 							label: `monthly good cancel ; Wait! I don't want to cancel`,
 							property: 'exit'}); closeLightbox()"
 					>
 						Wait! I don't want to cancel
-					</kv-button>
+					</button>
 				</div>
 				<!-- Step 2 -->
 				<div v-if="currentStep === '2-expensive'" key="2-expensive">
-					<p class="mg-cancel-lightbox__text">
+					<p class="mg-cancel-lightbox__text tw-mb-4">
 						You can change your monthly contribution to as little as $5 a month at any time.
 					</p>
 					<kv-button
-						class="expanded smaller rounded tw-text-left" @click.native.prevent="trackEvent({
+						class="tw-w-full tw-mb-2"
+						@click="trackEvent({
 							label: `monthly good cancel ; Change contribution`,
 							property: 'cancel reason ; amount_change'}); changeContribution()"
 					>
 						Change contribution
-						<kv-icon
-							class="mg-cancel-lightbox__chevron mg-cancel-lightbox__chevron--white"
-							name="fat-chevron"
-							:from-sprite="true"
-						/>
 					</kv-button>
 					<kv-button
-						class="expanded secondary rounded tw-text-left" @click.native.prevent="trackEvent({
+						class="tw-w-full"
+						variant="secondary"
+						@click.native.prevent="trackEvent({
 							label: `monthly good cancel ; Continue cancellation`,
 							property: 'cancel reason ; amount_other'}); goToStep('3-expensive')"
 					>
 						Continue cancellation
-						<kv-icon
-							class="mg-cancel-lightbox__chevron"
-							name="fat-chevron"
-							:from-sprite="true"
-						/>
 					</kv-button>
 				</div>
 				<div v-if="currentStep === '2-choose'" key="2-choose">
-					<p class="mg-cancel-lightbox__text">
+					<p class="mg-cancel-lightbox__text tw-mb-4">
 						You can change lending categories at any time to better fit the causes you support.
 					</p>
 					<kv-button
-						class="expanded smaller rounded tw-text-left" @click.native.prevent="trackEvent({
+						class="tw-w-full tw-mb-2"
+						@click="trackEvent({
 							label: `monthly good cancel ; Edit my category`,
 							property: 'cancel reason ; category_change'}); changeContribution()"
 					>
 						Edit my category
-						<kv-icon
-							class="mg-cancel-lightbox__chevron mg-cancel-lightbox__chevron--white"
-							name="fat-chevron"
-							:from-sprite="true"
-						/>
 					</kv-button>
 					<kv-button
-						class="expanded secondary rounded tw-text-left" @click.native.prevent="trackEvent({
+						class="tw-w-full tw-mb-2"
+						variant="secondary"
+						@click="trackEvent({
 							label: `monthly good cancel ; These aren't causes I want to support`,
 							property: 'cancel reason ; category_alignment'}); goToStep('3-choose-a')"
 					>
 						These aren't causes I want to support
-						<kv-icon
-							class="mg-cancel-lightbox__chevron"
-							name="fat-chevron"
-							:from-sprite="true"
-						/>
 					</kv-button>
 					<kv-button
-						class="expanded secondary rounded tw-text-left" @click.native.prevent="trackEvent({
+						class="tw-w-full tw-mb-2"
+						variant="secondary"
+						@click="trackEvent({
 							label: `monthly good cancel ; Continue cancellation`,
 							property: 'cancel reason ; category_other'}); goToStep('3-choose-b')"
 					>
 						Continue cancellation
-						<kv-icon
-							class="mg-cancel-lightbox__chevron"
-							name="fat-chevron"
-							:from-sprite="true"
-						/>
 					</kv-button>
 				</div>
 				<!-- Step 3 -->
@@ -136,6 +108,18 @@
 				<div v-if="currentStep === '3-reason' || currentStep === '3-expensive' || currentStep === '3-choose-a' || currentStep === '3-choose-b'" key="3">
 					<label>
 						<textarea
+							class="
+								tw-w-full
+								tw-p-2
+								tw-mb-4
+								tw-border tw-border-tertiary
+								tw-rounded-sm
+								tw-appearance-none
+								tw-text-base
+								tw-bg-primary
+								tw-ring-inset
+								focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-action focus:tw-border-transparent
+							"
 							name="reasonTextArea"
 							rows="8"
 							:placeholder="textAreaPlaceholder"
@@ -144,16 +128,12 @@
 						></textarea>
 					</label>
 					<kv-button
-						class="expanded smaller rounded tw-text-left" @click.native.prevent="trackEvent({
+						class="tw-w-full"
+						@click="trackEvent({
 							label: `monthly good cancel ; Complete cancellation`,
 							property: `cancel submit ; ${cancelReason}`}); completeCancellation()"
 					>
 						Complete cancellation
-						<kv-icon
-							class="mg-cancel-lightbox__chevron mg-cancel-lightbox__chevron--white"
-							name="fat-chevron"
-							:from-sprite="true"
-						/>
 					</kv-button>
 				</div>
 			</transition>
@@ -162,15 +142,13 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvLightbox from '@/components/Kv/KvLightbox';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	inject: ['apollo'],
 	components: {
 		KvButton,
-		KvIcon,
 		KvLightbox,
 	},
 	props: {
@@ -271,7 +249,6 @@ export default {
 	&__content {
 		overflow: hidden;
 		max-width: 100%;
-		margin: 1.5rem 0 0;
 
 		@include breakpoint('large') {
 			width: rem-calc(530);

@@ -12,7 +12,7 @@
 			/>
 			<div id="dropin-button">
 				<kv-button
-					class="tw-mb-4"
+					class="tw-mb-2"
 					value="submit"
 					id="dropin-submit"
 					:state="!enableConfirmButton || submitting ? 'disabled' : ''"

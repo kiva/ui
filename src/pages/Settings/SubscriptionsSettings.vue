@@ -3,12 +3,14 @@
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
-		<div class="title-area">
+		<kv-default-wrapper>
 			<div class="row column">
-				<h1>Subscription settings</h1>
+				<h1 class="tw-mb-4">
+					Subscription settings
+				</h1>
 			</div>
-		</div>
-		<subscriptions-settings-cards />
+			<subscriptions-settings-cards />
+		</kv-default-wrapper>
 	</www-page>
 </template>
 
@@ -16,9 +18,11 @@
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import SubscriptionsSettingsCards from '@/components/Settings/SubscriptionsSettingsCards';
+import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 
 export default {
 	components: {
+		KvDefaultWrapper,
 		SubscriptionsSettingsCards,
 		TheMyKivaSecondaryMenu,
 		WwwPage
@@ -28,15 +32,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-.subscriptions {
-	.title-area {
-		padding: 1.625rem 0;
-		margin-bottom: 2rem;
-		background-color: $white;
-	}
-}
-</style>

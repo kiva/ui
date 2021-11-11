@@ -34,27 +34,24 @@
 			class="cancel-confirmation-lightbox"
 			:visible="showLightbox"
 			title="Are you sure?"
+			variant="alert"
 			@lightbox-closed="showLightbox = false"
 		>
-			<template>
-				&nbsp;
-			</template>
 			<template #controls>
-				<kv-button
-					value="Yes"
-					id="cancel-subscription-yes"
-					class="button smallest"
-					@click.prevent.native="cancelSubscription"
-				>
-					Yes, cancel my {{ confirmationText }}
-				</kv-button>
 				<kv-button
 					value="No"
 					id="cancel-subscription-no"
-					class="button smallest secondary"
-					@click.prevent.native="showLightbox = false"
+					variant="secondary"
+					@click="showLightbox = false"
 				>
 					No, keep it
+				</kv-button>
+				<kv-button
+					value="Yes"
+					id="cancel-subscription-yes"
+					@click="cancelSubscription"
+				>
+					Yes, cancel my {{ confirmationText }}
 				</kv-button>
 			</template>
 		</kv-lightbox>
@@ -63,14 +60,10 @@
 		<div class="row column" v-if="isChanged">
 			<kv-button
 				data-test="subscriptions-save-button"
-				class="smaller"
-				v-if="!isSaving"
-				@click.native="saveSubscription"
+				:state="isSaving ? 'loading' : ''"
+				@click="saveSubscription"
 			>
 				Save
-			</kv-button>
-			<kv-button data-test="subscriptions-save-button" class="smaller" v-else>
-				Saving <kv-loading-spinner />
 			</kv-button>
 		</div>
 
@@ -84,15 +77,14 @@
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
-import KvLightbox from '@/components/Kv/KvLightbox';
-import KvButton from '@/components/Kv/KvButton';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 
 import SubscriptionsMonthlyGood from '@/components/Subscriptions/SubscriptionsMonthlyGood';
 import SubscriptionsOneTime from '@/components/Subscriptions/SubscriptionsOneTime';
 import SubscriptionsAutoDeposit from '@/components/Subscriptions/SubscriptionsAutoDeposit';
 import SubscriptionsLegacy from '@/components/Subscriptions/SubscriptionsLegacy';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const pageQuery = gql`query subscriptionSettingsPage {
 	my {
@@ -113,7 +105,6 @@ export default {
 	components: {
 		KvButton,
 		KvLightbox,
-		KvLoadingSpinner,
 		KvLoadingOverlay,
 		SubscriptionsAutoDeposit,
 		SubscriptionsLegacy,
@@ -204,34 +195,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-.subscriptions {
-	.button {
-		.loading-spinner {
-			vertical-align: middle;
-			width: 1rem;
-			height: 1rem;
-
-			& >>> .line {
-				background-color: $white;
-			}
-		}
-	}
-}
-</style>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-#cancel-subscription-yes {
-	margin-right: 2rem;
-}
-
-.subscriptions-settings-page {
-	position: relative;
-	padding-bottom: 5rem;
-}
-</style>
