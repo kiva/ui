@@ -53,6 +53,12 @@
 				>
 					Apply
 				</button>
+				<div v-if="hasUPCCode" class="upc-disclaimer">
+					<p class="small-text">
+						Remember to use all your {{ promoFundDisplayName }} credits in one transaction.
+						You cannot use the remaining credits later.
+					</p>
+				</div>
 			</div>
 			<kv-tooltip
 				class="tooltip"
@@ -335,6 +341,28 @@ export default {
 
 	.tooltip {
 		text-align: left;
+	}
+
+	.upc-disclaimer {
+		display: flex;
+		justify-content: right;
+
+		@include breakpoint(medium) {
+			margin-right: 2.25rem;
+		}
+
+		p {
+			display: block;
+			color: $kiva-accent-red;
+			line-height: 1.25;
+			background: $very-light-gray;
+			padding: 0.3rem 0.3rem 0.1rem;
+			border-radius: 0.25rem;
+
+			@include breakpoint(medium) {
+				max-width: 22rem;
+			}
+		}
 	}
 }
 </style>
