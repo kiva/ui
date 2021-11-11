@@ -76,13 +76,13 @@ export default {
 
 		.header-button {
 			flex: 1;
-			color: $kiva-accent-blue;
+			color: rgb(var(--text-action));
 			border-right: 0;
 
 			&:hover {
 				background-color: $kiva-bg-darkgray;
 				text-decoration: none;
-				color: $kiva-accent-blue;
+				color: rgb(var(--text-action-highlight));
 			}
 		}
 
@@ -91,7 +91,7 @@ export default {
 		}
 
 		.triangle-icon {
-			fill: $kiva-accent-blue;
+			fill: rgb(var(--text-action));
 		}
 
 		::v-deep {
