@@ -15,10 +15,10 @@
 					/>
 				</fieldset>
 				<fieldset>
-					<legend v-if="oneTimeOnly" class="recurring-only-legend">
+					<legend v-if="oneTimeOnly">
 						Choose a one-time amount to contribute
 					</legend>
-					<legend v-else-if="expRecurringOnly === 'shown'" class="recurring-only-legend">
+					<legend v-else-if="expRecurringOnly === 'shown'">
 						Contribute monthly:
 					</legend>
 					<legend v-else class="visually-hidden">
@@ -51,7 +51,7 @@
 						:split-pills="true"
 					/>
 				</fieldset>
-				<kv-button class="smaller submit-btn" type="submit" :disabled="$v.$invalid">
+				<kv-button class="tw-w-full" type="submit" :state="$v.$invalid ? 'disabled' : ''">
 					{{ buttonText }}
 				</kv-button>
 			</div>
@@ -70,7 +70,7 @@ import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
-import KvButton from '@/components/Kv/KvButton';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const pageQuery = gql`query covidLandingPage {
 	general {
@@ -351,11 +351,6 @@ export default {
 	position: relative;
 }
 
-.recurring-only-legend {
-	font-size: 1rem;
-	font-weight: 700;
-}
-
 .submit-btn {
 	width: 100%;
 	margin: 0.5rem 0;
@@ -368,11 +363,6 @@ export default {
 	.pill {
 		flex-grow: 1;
 	}
-}
-
-::v-deep label,
-::v-deep input {
-	font-weight: 700;
 }
 
 ::v-deep .validation-errors {
