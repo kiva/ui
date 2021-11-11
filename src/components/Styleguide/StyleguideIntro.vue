@@ -14,7 +14,7 @@
 			<a href="https://foundation.zurb.com/sites/docs/sass.html#the-settings-file" target="_blank">
 				_settings.scss</a>
 			file. The nice thing about the settings file is that you can override it with your own
-			<a href="https://github.com/kiva/ui/blob/master/src/assets/scss/_settings.scss" target="_blank">
+			<a href="https://github.com/kiva/ui/blob/main/src/assets/scss/_settings.scss" target="_blank">
 				_settings.scss</a>
 			file.
 		</p>

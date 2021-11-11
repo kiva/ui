@@ -2,8 +2,8 @@
 
 > a.k.a. Uue Lewis and the Views
 
-[![Build Status](https://github.com/kiva/ui/workflows/Ui%20Tests/badge.svg?branch=master)](https://github.com/kiva/ui/actions)
-[![Coverage Status](https://coveralls.io/repos/github/kiva/ui/badge.svg?branch=master)](https://coveralls.io/github/kiva/ui?branch=master)
+[![Build Status](https://github.com/kiva/ui/workflows/Ui%20Tests/badge.svg?branch=main)](https://github.com/kiva/ui/actions)
+[![Coverage Status](https://coveralls.io/repos/github/kiva/ui/badge.svg?branch=main)](https://coveralls.io/github/kiva/ui?branch=main)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=kiva/ui)](https://dependabot.com)
 [![Known Vulnerabilities](https://snyk.io/test/github/kiva/ui/badge.svg)](https://snyk.io/test/github/kiva/ui)
 
@@ -90,4 +90,3 @@ $ npm test
 ```
 
 For some more details, checkout the [template this is based on](http://vuejs-templates.github.io/webpack/) and the [docs for vue-loader](http://vuejs.github.io/vue-loader).
-
