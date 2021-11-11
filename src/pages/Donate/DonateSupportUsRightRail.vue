@@ -1,5 +1,5 @@
 <template>
-	<div class="donate-right-col row">
+	<div class="donate-right-col tw-border tw-border-tertiary tw-rounded row">
 		<div class="donate-right-col__meter small-12 medium-5 large-12 columns" v-if="showMeter">
 			<donation-meter :content="progressMeterEntry" />
 		</div>
@@ -9,16 +9,17 @@
 					<kv-contentful-img
 						v-if="callout.imageUrl"
 						class="donate-right-col__callouts--icon"
+						style="width: 10rem;"
 						:contentful-src="callout.imageUrl"
 						:alt="callout.imageTitle"
 						fallback-format="png"
-						:width="49"
-						:height="48"
+						:width="65"
+						:height="65"
 					/>
 					<div class="donate-right-col__callouts--copy">
-						<h4 class="donate-right-col__callouts--header">
+						<h3 class="donate-right-col__callouts--header tw-mb-1">
 							{{ callout.title }}
-						</h4>
+						</h3>
 						<div class="donate-right-col__callouts--subhead" v-html="callout.subHead"></div>
 					</div>
 				</li>
@@ -69,7 +70,7 @@ export default {
 				item => item.key === 'web-donate-support-us-callout-2'
 			) || {};
 			const fundInnovationImage = this.content?.media?.find(
-				image => image.title === 'Globe Grid Illustration'
+				image => image.title === 'homepage-stats-icon-3'
 			);
 			callouts.push({
 				title: fundInnovationCopy.name || '',
@@ -102,8 +103,6 @@ export default {
 .donate-right-col {
 	padding: rem-calc(40) 1rem 1rem;
 	margin: 0;
-	border-radius: 1rem;
-	border: 1px solid #C4C4C4;
 
 	&__meter {
 		margin-bottom: rem-calc(40);
@@ -126,13 +125,11 @@ export default {
 			li {
 				display: block;
 				margin: 0 auto rem-calc(32);
-				max-width: rem-calc(225);
 				text-align: center;
 
 				@include breakpoint('medium') {
 					display: flex;
 					text-align: left;
-					max-width: rem-calc(275);
 				}
 			}
 		}
@@ -147,7 +144,6 @@ export default {
 		margin-bottom: 0.75rem;
 
 		@include breakpoint('medium') {
-			min-width: rem-calc(48);
 			margin-right: 1rem;
 		}
 	}
