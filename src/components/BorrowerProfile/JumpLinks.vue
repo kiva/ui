@@ -4,7 +4,7 @@
 		<a
 			class="tw-text-primary tw-mr-2.5"
 			v-kv-track-event="['Borrower profile', 'click-jump-link', 'Borrower story']"
-			href="#loanStory"
+			@click="scrollToSection('#loanStory')"
 		>
 			<kv-material-icon
 				class="tw-my-3 tw-align-middle"
@@ -15,7 +15,7 @@
 		<a
 			class="tw-text-primary tw-mr-2.5"
 			v-kv-track-event="['Borrower profile', 'click-jump-link', 'Loan details']"
-			href="#loanDetails"
+			@click="scrollToSection('#loanDetails')"
 		>
 			<kv-material-icon
 				class="tw-my-3 tw-align-middle"
@@ -40,5 +40,17 @@ export default {
 			mdiFormatListBulleted,
 		};
 	},
+	methods: {
+		scrollToSection(sectionId) {
+			const elementToScrollTo = document.querySelector(sectionId);
+			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop ?? 0;
+			window.scrollTo({
+				// 50 (to compensate for the height of the top nav) + top of the section to be scrolled to
+				// leaves the user on the correct section of the page when a jump link is clicked
+				top: 50 + topOfSectionToScrollTo,
+				behavior: 'smooth'
+			});
+		}
+	}
 };
 </script>
