@@ -14,7 +14,7 @@
 		</component>
 		<a
 			v-if="hasDisclaimer"
-			href="#disclaimers"
+			@click="scrollToSection('#disclaimers')"
 			class="disclaimer-indicator"
 			v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
 		>
@@ -27,11 +27,13 @@
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 
 export default {
 	components: {
 		KvIcon
 	},
+	mixins: [smoothScrollMixin],
 	props: {
 		iconKey: {
 			type: String,
@@ -48,6 +50,13 @@ export default {
 				};
 			}
 		},
+	},
+	methods: {
+		scrollToSection(sectionId) {
+			const elementToScrollTo = document.querySelector(sectionId);
+			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop ?? 0;
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+		}
 	},
 	computed: {
 		// if the promoBannerContent includes a link, render a router-link element, else render a plain div

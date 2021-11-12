@@ -1,4 +1,4 @@
-s<template>
+<template>
 	<div class="row">
 		<ol id="disclaimers" class="text-left">
 			<li

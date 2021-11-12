@@ -40,7 +40,7 @@
 					<h3 class="appeal-banner__title strong" v-html="headline"></h3>
 					<a
 						v-if="disclaimer"
-						href="#disclaimers"
+						@click="scrollToSection('#disclaimers')"
 						class="appeal-banner__disclaimer-indicator"
 						v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
 					>
@@ -138,6 +138,7 @@
 <script>
 // import numeral from 'numeral';
 import smoothReflow from 'vue-smooth-reflow';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -151,7 +152,7 @@ export default {
 		KvProgressCircle,
 		KvContentfulImg
 	},
-	mixins: [smoothReflow],
+	mixins: [smoothReflow, smoothScrollMixin],
 	props: {
 		targetAmount: {
 			type: Number,
@@ -217,6 +218,11 @@ export default {
 		onClickToggleBanner() {
 			this.$emit('toggle-banner', !this.isOpen);
 		},
+		scrollToSection(sectionId) {
+			const elementToScrollTo = document.querySelector(sectionId);
+			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop ?? 0;
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+		}
 	},
 	mounted() {
 		this.$smoothReflow();
