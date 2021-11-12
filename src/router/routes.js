@@ -75,6 +75,14 @@ export default [
 		path: '/checkout/thanks',
 		component: () => import('@/pages/Thanks/ThanksPage'),
 	},
+	{
+		path: '/confirm-instant-donation/:token/:amount',
+		component: () => import('@/pages/InstantActions/ConfirmInstantDonation'),
+		props: route => ({
+			token: route.params.token,
+			amount: route.params.amount
+		})
+	},
 	{ path: '/covid19response', component: () => import('@/pages/LandingPages/MGCovid19/MGCovid19') },
 	{
 		path: '/design',
@@ -105,6 +113,14 @@ export default [
 				component: () => import('@/pages/GetStarted/GetStartedResults')
 			},
 		]
+	},
+	{
+
+		path: '/instant-donation-thanks/:result',
+		component: () => import('@/pages/InstantActions/InstantDonationThanks'),
+		props: route => ({
+			result: route.params.result,
+		})
 	},
 	{ path: '/join-team', component: () => import('@/pages/LoginAndRegister/JoinTeam') },
 	{

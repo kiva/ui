@@ -147,6 +147,18 @@ export default {
 		donationCalloutsCG() {
 			return this.page?.contentGroups?.webDonateSupportUsDonationCallouts || {};
 		}
+	},
+	mounted() {
+		// Handle incoming Instant Donation status
+		const instantDonationStatus = this.$route?.query?.instantDonation ?? null;
+		if (instantDonationStatus === 'instant-donation-failed' || instantDonationStatus === 'validation-failed') {
+			const instantDonationFailed = `Oops, we’ve encountered an error. Don’t worry,
+				you can choose a donation amount below to continue.`;
+			const toastTimeout = setTimeout(() => {
+				this.$showTipMsg(instantDonationFailed, 'warning', true);
+				clearTimeout(toastTimeout);
+			}, 1000);
+		}
 	}
 };
 </script>

@@ -7,9 +7,16 @@ module.exports = merge(base, {
 		publicPath: '/',
 		photoPath: 'https://www-kiva-org.freetls.fastly.net/img/',
 		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
+		enablePerimeterx: false,
+		enableAnalytics: false,
+		enableFullStory: false,
+		enableSentry: false,
 		auth0: {
 			enable: false,
 		},
+		oneTrust: {
+			enable: false
+		}
 	},
 	server: {
 		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',

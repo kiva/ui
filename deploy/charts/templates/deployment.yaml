@@ -31,7 +31,7 @@ spec:
       restartPolicy: Always
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}" # In Jenkins, need to call helm with --set image.tag=master-XY
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}" # In Jenkins, need to call helm with --set image.tag=vX.Y.Z
         command: ["tini"]
         args: ["--", "node", "server/index.js", "--port={{ .Values.service.port }}", "--config={{ .Values.deployenv.environment }}"]
         imagePullPolicy: {{ .Values.image.pullPolicy }}

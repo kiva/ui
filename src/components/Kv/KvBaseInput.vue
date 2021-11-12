@@ -113,7 +113,6 @@ export default {
 
 	&__error-list {
 		margin: 0;
-		float: left;
 	}
 
 	&__error-item {

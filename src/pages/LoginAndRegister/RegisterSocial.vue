@@ -2,10 +2,10 @@
 	<system-page>
 		<div class="page-content">
 			<h1 class="featured-text">
-				Almost done...
+				One last thing!
 			</h1>
 			<p>
-				To complete your registration, please agree to the Terms of Use and Privacy Policy
+				{{ registrationMessage }}
 			</p>
 			<form
 				id="registerSocialTermsForm"
@@ -13,92 +13,155 @@
 				action="."
 				@submit.prevent.stop="postRegisterSocialForm"
 			>
-				<p class="terms">
-					<label>
-						<input
-							type="checkbox"
-							id="terms_agreement_popup"
-							name="terms_agreement_popup"
-							v-model="newAcctTerms"
-							@click="showNewAcctTermsError = validateTerms()"
-						>
+				<kv-base-input name="firstName"
+					class="fs-exclude"
+					type="text"
+					v-show="needsNames"
+					v-model.trim="firstName"
+					:validation="$v.firstName"
+				>
+					First name
+					<template #required>
+						Enter first name.
+					</template>
+				</kv-base-input>
+				<kv-base-input name="lastName"
+					class="fs-exclude"
+					type="text"
+					v-show="needsNames"
+					v-model.trim="lastName"
+					:validation="$v.lastName"
+				>
+					Last name
+					<template #required>
+						Enter last name.
+					</template>
+				</kv-base-input>
+				<kv-base-input name="newAcctTerms"
+					type="checkbox"
+					v-show="needsTerms"
+					v-model="newAcctTerms"
+					:validation="$v.newAcctTerms"
+				>
+					<template #after>
 						I have read and agree to the Kiva
 						<a href="/legal/terms" target="_blank">Terms of Use</a>
 						and
 						<a href="/legal/privacy" target="_blank">Privacy Policy</a>
-					</label>
-					<ul v-show="showNewAcctTermsError" class="validation-errors">
-						<li>
-							You must agree to the Kiva Terms of Use and Privacy Policy
-						</li>
-					</ul>
-				</p>
+					</template>
+					<template #checked>
+						You must agree to the Kiva Terms of Use and Privacy Policy.
+					</template>
+				</kv-base-input>
 				<kv-button
 					class="register-button smaller"
 					type="submit"
-					name="regForm_submit"
-					id="regForm_submit"
 				>
 					Complete registration
 				</kv-button>
 			</form>
 			<div class="small-12">
-				<a :href="`https://${$appConfig.auth0.domain}/v2/logout`">Cancel registration</a>
+				<a :href="`https://${$appConfig.auth0.domain}/v2/logout`"
+					v-kv-track-event="['Register', 'click-register-social-cancel-cta', 'Cancel registration']"
+				>
+					Cancel registration
+				</a>
 			</div>
 		</div>
 	</system-page>
 </template>
 
 <script>
-import SystemPage from '@/components/SystemFrame/SystemPage';
+import { validationMixin } from 'vuelidate';
+import { required } from 'vuelidate/lib/validators';
+import KvBaseInput from '@/components/Kv/KvBaseInput';
 import KvButton from '@/components/Kv/KvButton';
+import SystemPage from '@/components/SystemFrame/SystemPage';
 
 export default {
 	metaInfo() {
 		return {
-			title: 'Accept terms'
+			title: 'Complete registration'
 		};
 	},
 	components: {
-		SystemPage,
+		KvBaseInput,
 		KvButton,
+		SystemPage,
 	},
+	mixins: [
+		validationMixin,
+	],
 	data() {
 		return {
+			firstName: '',
+			lastName: '',
+			needsTerms: false,
+			needsNames: false,
 			newAcctTerms: false,
 			showNewAcctTermsError: false,
 		};
 	},
-	mounted() {
-		if (!this.$route.query.state) {
-			this.$router.push('/error');
+	computed: {
+		registrationMessage() {
+			const parts = [];
+			if (this.needsNames) {
+				parts.push('enter your first and last name below');
+			}
+			if (this.needsTerms) {
+				parts.push('agree to the Terms of Use and Privacy Policy');
+			}
+			return `To finish creating your account, please ${parts.join(' and ')}.`;
+		},
+	},
+	validations() {
+		const validations = {};
+		if (this.needsNames) {
+			validations.firstName = { required };
+			validations.lastName = { required };
+		}
+		if (this.needsTerms) {
+			validations.newAcctTerms = {
+				checked: val => val,
+			};
+		}
+		return validations;
+	},
+	beforeRouteEnter(to, from, next) {
+		// Redirect to error page if query parameters are missing
+		const { state, terms, names } = to.query ?? {};
+		if (!state || !(terms || names)) {
+			next('/error');
+		} else {
+			next();
+		}
+	},
+	created() {
+		if (this.$route.query.terms) {
+			this.needsTerms = true;
+		}
+		if (this.$route.query.names) {
+			this.needsNames = true;
 		}
 	},
 	methods: {
-		validateTerms() {
-			return this.newAcctTerms;
-		},
-
 		postRegisterSocialForm() {
-			// Validate the termsAgreementPopup is checked
-			if (!this.validateTerms()) {
-				// show error here
-				this.showNewAcctTermsError = true;
+			this.$kvTrackEvent('Register', 'click-register-social-cta', 'Complete registration');
+			this.$v.$touch();
+
+			if (!this.$v.$invalid) {
+				this.$kvTrackEvent('Register', 'register-social-success', undefined, undefined, undefined, () => {
+					window.location = `https://${this.$appConfig.auth0.domain}/continue`
+					+ '?agree=yes'
+					+ `&firstName=${this.firstName}`
+					+ `&lastName=${this.lastName}`
+					+ `&state=${this.$route.query.state}`;
+				});
 			} else {
-				window.location = `https://${this.$appConfig.auth0.domain}`
-				+ `/continue?agree=yes&state=${this.$route.query.state}`;
+				this.$kvTrackEvent('Register', 'error-register-social-form-invalid-input');
 			}
 		},
 	}
 
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.terms #terms_agreement_popup {
-	margin: 0 0.5rem 0 0;
-}
-
-</style>
