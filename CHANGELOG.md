@@ -1,3 +1,16 @@
+## [2.8.0](https://github.com/kiva/ui/compare/v2.7.0...v2.8.0) (2021-11-12)
+
+
+### Features
+
+* core-236 adding data needed to calculate hasPromoSession within disclaimerContentful ([ecbbf0a](https://github.com/kiva/ui/commit/ecbbf0a90424bf485e0f61601f517a07d34c0a32))
+* core-236 adding margin spacing to body after removing from headline ([41390cd](https://github.com/kiva/ui/commit/41390cd5885235025342cf179abe32139a384f98))
+* core-236 adding smoothScroll to disclaimers anchor click ([1e5fcfa](https://github.com/kiva/ui/commit/1e5fcfafbca99b5af61b04ff6003c98382325aa4))
+* core-236 adding superscript to appeal banner open & closed versions ([12413d9](https://github.com/kiva/ui/commit/12413d94acd149805dca1e1e1bfe40f9350491e0))
+* core-236 cleanup ([d3272fb](https://github.com/kiva/ui/commit/d3272fb43ae310bffa447435b9be0dafbbf02823))
+* Core-236 disclaimer text parsed and rendered from contentful within the footer ([26c0193](https://github.com/kiva/ui/commit/26c01933e22238a86e11a21a442f5760e6fb4c82))
+* refactoring a little, cleaning up console error ([7309044](https://github.com/kiva/ui/commit/7309044ec5d09a183bd054b527cc8e893d81078e))
+
 ## [2.7.0](https://github.com/kiva/ui/compare/v2.6.1...v2.7.0) (2021-11-12)
 
 
