@@ -75,7 +75,7 @@ export default {
 
 			// if setting is enabled determine which banner to display
 			if (isGlobalSettingEnabled) {
-				const activePromoBanner = uiGlobalPromoSetting.fields.content.find(promoContent => {
+				const activePromoBanner = uiGlobalPromoSetting?.fields?.content?.find(promoContent => {
 					return settingEnabled(
 						promoContent.fields,
 						'active',
@@ -85,7 +85,7 @@ export default {
 				});
 
 				// gather all inactive promo banners by their start and end dates
-				const inactivePromoBanners = uiGlobalPromoSetting.fields.content.filter(promoContent => {
+				const inactivePromoBanners = uiGlobalPromoSetting?.fields?.content?.filter(promoContent => {
 					const hiddenUrls = promoContent?.fields?.hiddenUrls ?? [];
 					// check hiddenUrl for display of disclaimers
 					if (hiddenUrls.includes(this.$route.path)) {
@@ -136,8 +136,8 @@ export default {
 				}
 
 				// data for the hasPromoCredit function
-				const promoBalance = numeral(data.my.userAccount.promoBalance);
-				const basketPromoBalance = numeral(data.shop.totals.redemptionCodeAvailableTotal);
+				const promoBalance = numeral(data?.my?.userAccount?.promoBalance ?? 0);
+				const basketPromoBalance = numeral(data?.shop?.totals?.redemptionCodeAvailableTotal ?? 0);
 				this.bonusBalance = promoBalance + basketPromoBalance;
 				this.lendingRewardOffered = data.shop.lendingRewardOffered;
 				this.hasFreeCredits = data.shop.basket.hasFreeCredits;

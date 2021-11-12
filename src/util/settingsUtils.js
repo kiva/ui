@@ -50,22 +50,6 @@ export function readJSONSetting(data, key) {
 }
 
 /**
- * Determine if a feature or setting is enabled and currently active.
- *
- * @param {object} data
- * @param {string} enabledKey
- * @param {string} startTimeKey
- * @param {string} endTimeKey
- * @returns {boolean}
- */
-export function settingEnabled(data, enabledKey, startTimeKey, endTimeKey) {
-	const enabled = readBoolSetting(data, enabledKey);
-	const startTime = readDateSetting(data, startTimeKey);
-	const endTime = readDateSetting(data, endTimeKey);
-	return enabled && isWithinInterval(new Date(), { start: startTime, end: endTime });
-}
-
-/**
  * Determine if a feature or setting is currently active (ie. within date range)
  *
  * @param {object} data
@@ -80,6 +64,20 @@ export function settingWithinDateRange(data, startTimeKey, endTimeKey) {
 		start: startTime,
 		end: endTime
 	});
+}
+
+/**
+ * Determine if a feature or setting is enabled and currently active.
+ *
+ * @param {object} data
+ * @param {string} enabledKey
+ * @param {string} startTimeKey
+ * @param {string} endTimeKey
+ * @returns {boolean}
+ */
+export function settingEnabled(data, enabledKey, startTimeKey, endTimeKey) {
+	const enabled = readBoolSetting(data, enabledKey);
+	return enabled && settingWithinDateRange(data, startTimeKey, endTimeKey);
 }
 
 /**
