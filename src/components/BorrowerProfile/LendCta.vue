@@ -157,6 +157,7 @@
 					>
 						All shares reserved
 					</p>
+					<jump-links class="tw-hidden lg:tw-block" />
 				</div>
 			</kv-grid>
 
@@ -257,6 +258,7 @@ import gql from 'graphql-tag';
 import { setLendAmount } from '@/util/basketUtils';
 import { buildPriceArray } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
+import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -275,6 +277,7 @@ export default {
 		KvMaterialIcon,
 		KvUiButton,
 		KvUiSelect,
+		JumpLinks,
 	},
 	data() {
 		return {
