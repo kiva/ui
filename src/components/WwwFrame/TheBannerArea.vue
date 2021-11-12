@@ -40,7 +40,7 @@ export default {
 		hasPromoSession() {
 			// Check if the user has Promo Credit
 			// (lending reward credit, bonus credit, or free credit)
-			// If the have any of the above, we hide the banner area
+			// If they have any of the above, we hide the banner area
 			if (this.lendingRewardOffered || this.bonusBalance > 0 || this.hasFreeCredits) {
 				return true;
 			}

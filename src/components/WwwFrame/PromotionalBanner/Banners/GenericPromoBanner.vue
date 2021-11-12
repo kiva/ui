@@ -12,16 +12,28 @@
 			<div class="content" v-html="promoBannerContent.richText">
 			</div>
 		</component>
+		<a
+			v-if="hasDisclaimer"
+			@click="scrollToSection('#disclaimers')"
+			class="disclaimer-indicator"
+			v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
+		>
+			<sup>
+				1
+			</sup>
+		</a>
 	</div>
 </template>
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 
 export default {
 	components: {
 		KvIcon
 	},
+	mixins: [smoothScrollMixin],
 	props: {
 		iconKey: {
 			type: String,
@@ -34,9 +46,17 @@ export default {
 					kvTrackEvent: [],
 					link: '',
 					richText: '',
+					disclaimer: '',
 				};
 			}
 		},
+	},
+	methods: {
+		scrollToSection(sectionId) {
+			const elementToScrollTo = document.querySelector(sectionId);
+			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop ?? 0;
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+		}
 	},
 	computed: {
 		// if the promoBannerContent includes a link, render a router-link element, else render a plain div
@@ -67,6 +87,9 @@ export default {
 		},
 		trimmedLink() {
 			return this.promoBannerContent?.link?.trim() ?? '';
+		},
+		hasDisclaimer() {
+			return this.promoBannerContent.disclaimer !== '';
 		}
 	},
 };
@@ -111,6 +134,15 @@ export default {
 	.icon-corporate,
 	.icon-iwd {
 		fill: inherit;
+	}
+
+	.disclaimer-indicator {
+		color: $kiva-icon-green;
+
+		&:hover,
+		&:active {
+			color: $kiva-darkgreen;
+		}
 	}
 
 	.banner-link,
