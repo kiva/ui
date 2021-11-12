@@ -28,12 +28,14 @@
 
 <script>
 import { mdiAccount, mdiFormatListBulleted } from '@mdi/js';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	components: {
 		KvMaterialIcon,
 	},
+	mixins: [smoothScrollMixin],
 	data() {
 		return {
 			mdiAccount,
@@ -44,12 +46,7 @@ export default {
 		scrollToSection(sectionId) {
 			const elementToScrollTo = document.querySelector(sectionId);
 			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop ?? 0;
-			window.scrollTo({
-				// 50 (to compensate for the height of the top nav) + top of the section to be scrolled to
-				// leaves the user on the correct section of the page when a jump link is clicked
-				top: 50 + topOfSectionToScrollTo,
-				behavior: 'smooth'
-			});
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
 		}
 	}
 };
