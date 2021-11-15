@@ -3,136 +3,138 @@
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
-		<div class="two-step-verification__title-area">
+		<kv-default-wrapper>
 			<div class="row column">
-				<h1>
+				<h1 class="tw-mb-4">
 					2-step verification
 				</h1>
 			</div>
-		</div>
-		<div class="row">
-			<div class="column small-12 large-8 two-step-verification__settings-card-area">
-				<p v-if="pageError" class="two-step-verification__error">
-					{{ pageError }}
-				</p>
+			<div class="row">
+				<div class="column small-12 large-8 two-step-verification__settings-card-area">
+					<p v-if="pageError" class="two-step-verification__error tw-text-danger">
+						{{ pageError }}
+					</p>
 
-				<!--
+					<!--
 					Toggle MFA off settings card
 				-->
-				<kv-loading-placeholder
-					class="two-step-verification--loading"
-					v-if="isLoading"
-				/>
-				<kv-settings-card
-					title="2-step verification is turned on"
-					v-if="!isLoading && isMfaActive && !pageError"
-				>
-					<template #content>
-						<div>
-							<p>
-								We'll ask you for your password and verification code from your
-								mobile phone in order to log into your Kiva account.
-							</p>
-							<kv-button
-								class="text-link"
-								@click.native.prevent="checkLastLoginTime"
-							>
-								Turn off 2-step verification
-							</kv-button>
-						</div>
-					</template>
-				</kv-settings-card>
+					<kv-loading-placeholder
+						class="two-step-verification--loading"
+						v-if="isLoading"
+					/>
+					<kv-settings-card
+						title="2-step verification is turned on"
+						v-if="!isLoading && isMfaActive && !pageError"
+					>
+						<template #content>
+							<div>
+								<p class="tw-mb-2">
+									We'll ask you for your password and verification code from your
+									mobile phone in order to log into your Kiva account.
+								</p>
+								<button
+									class="tw-text-link tw-font-medium"
+									@click="checkLastLoginTime"
+								>
+									Turn off 2-step verification
+								</button>
+							</div>
+						</template>
+					</kv-settings-card>
 
-				<!--
+					<!--
 					Security methods settings card
 				-->
-				<kv-loading-placeholder
-					class="two-step-verification--loading"
-					v-if="isLoading"
-				/>
-				<kv-settings-card
-					v-if="!isLoading && isMfaActive && !pageError"
-					title="Your security method(s)"
-				>
-					<template #content>
-						<ul>
-							<li
-								class="two-step-verification__method"
-								v-for="(mfaMethod, index) in mfaMethods" :key="index"
-							>
-								<h4>{{ readableAuthName(mfaMethod.authenticator_type) }}</h4>
-								<!-- Phone number related to authentication method -->
-								<p
-									class="two-step-verification__method--number fs-mask"
+					<kv-loading-placeholder
+						class="two-step-verification--loading"
+						v-if="isLoading"
+					/>
+					<kv-settings-card
+						v-if="!isLoading && isMfaActive && !pageError"
+						title="Your security method(s)"
+					>
+						<template #content>
+							<ul>
+								<li
+									class="two-step-verification__method"
+									v-for="(mfaMethod, index) in mfaMethods" :key="index"
 								>
-									{{ mfaMethod.name }}
-								</p>
-								<kv-button
-									class="text-link"
-									@click.native.prevent="removeMfaMethod(mfaMethod)"
-									v-if="mfaMethod.authenticator_type !== 'recovery-code'"
-								>
-									Remove
-								</kv-button>
-							</li>
-						</ul>
-					</template>
-				</kv-settings-card>
+									<h3 class="tw-mb-1">
+										{{ readableAuthName(mfaMethod.authenticator_type) }}
+									</h3>
+									<!-- Phone number related to authentication method -->
+									<p
+										class="two-step-verification__method--number fs-mask"
+									>
+										{{ mfaMethod.name }}
+									</p>
+									<button
+										class="tw-text-link tw-font-medium"
+										@click="removeMfaMethod(mfaMethod)"
+										v-if="mfaMethod.authenticator_type !== 'recovery-code'"
+									>
+										Remove
+									</button>
+								</li>
+							</ul>
+						</template>
+					</kv-settings-card>
 
-				<!--
+					<!--
 					Backup methods settings card
 				-->
-				<kv-loading-placeholder
-					class="two-step-verification--loading"
-					v-if="isLoading"
-				/>
-				<kv-settings-card
-					v-if="!isLoading && !pageError"
-					:title="`${ cardTitle }`"
-				>
-					<template #content>
-						<div class="two-step-verification__sub-section">
-							<p>{{ cardSubhead }}</p>
-							<h3 class="strong">
-								Text message or phone call
-							</h3>
-							<p>
-								Receive a code via text message on your mobile device.
-							</p>
-							<kv-button class="smallest"
-								:to="`/settings/security/mfa/phone?first=${!isMfaActive}`"
-							>
-								Use text message or phone call
-							</kv-button>
-						</div>
+					<kv-loading-placeholder
+						class="two-step-verification--loading"
+						v-if="isLoading"
+					/>
+					<kv-settings-card
+						v-if="!isLoading && !pageError"
+						:title="`${ cardTitle }`"
+					>
+						<template #content>
+							<div class="two-step-verification__sub-section tw-mb-4">
+								<p class="tw-mb-2">
+									{{ cardSubhead }}
+								</p>
+								<h3 class="tw-mb-2">
+									Text message or phone call
+								</h3>
+								<p class="tw-mb-2">
+									Receive a code via text message on your mobile device.
+								</p>
+								<kv-button
+									:to="`/settings/security/mfa/phone?first=${!isMfaActive}`"
+								>
+									Use text message or phone call
+								</kv-button>
+							</div>
 
-						<div class="two-step-verification__sub-section">
-							<h3 class="strong">
-								Authentication app
-							</h3>
-							<p>
-								Receive code from an authenticator app on your device,
-								like Google Authenticator, Duo, or Authy.
-							</p>
-							<kv-button
-								class="smallest"
-								:to="`/settings/security/mfa/app?first=${!isMfaActive}`"
-							>
-								Use authenticator app
-							</kv-button>
-						</div>
-						<router-view />
-					</template>
-				</kv-settings-card>
+							<div class="two-step-verification__sub-section">
+								<h3 class="tw-mb-2">
+									Authentication app
+								</h3>
+								<p class="tw-mb-2">
+									Receive code from an authenticator app on your device,
+									like Google Authenticator, Duo, or Authy.
+								</p>
+								<kv-button
+									:to="`/settings/security/mfa/app?first=${!isMfaActive}`"
+								>
+									Use authenticator app
+								</kv-button>
+							</div>
+							<router-view />
+						</template>
+					</kv-settings-card>
+				</div>
 			</div>
-		</div>
+		</kv-default-wrapper>
 	</www-page>
 </template>
 
 <script>
 import _uniqBy from 'lodash/uniqBy';
 import * as Sentry from '@sentry/vue';
-import KvButton from '@/components/Kv/KvButton';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
@@ -140,6 +142,8 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import mfaQuery from '@/graphql/query/mfa/mfaQuery.graphql';
 import removeMfa from '@/graphql/mutation/mfa/removeMfa.graphql';
 import removeOneMfaMethod from '@/graphql/mutation/mfa/removeOneMfaMethod.graphql';
+import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	data() {
@@ -154,6 +158,7 @@ export default {
 	},
 	components: {
 		KvButton,
+		KvDefaultWrapper,
 		KvSettingsCard,
 		TheMyKivaSecondaryMenu,
 		WwwPage,
@@ -339,12 +344,6 @@ export default {
 @import 'settings';
 
 .two-step-verification {
-	&__title-area {
-		padding: 1.625rem 0;
-		margin-bottom: 2rem;
-		background-color: $white;
-	}
-
 	&__settings-card-area {
 		padding: 0;
 
@@ -354,21 +353,12 @@ export default {
 		}
 	}
 
-	&__error {
-		color: $kiva-accent-red;
-	}
-
 	&__method {
 		margin-top: 2.3rem;
-		list-style: none;
 
 		&--number {
 			margin-bottom: rem-calc(4);
 		}
-	}
-
-	&__sub-section {
-		margin-top: 2rem;
 	}
 
 	&--loading {

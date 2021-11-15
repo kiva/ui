@@ -28,9 +28,8 @@
 				There was a problem sending the password reset email
 			</kv-alert>
 			<kv-button
-				class="smallest"
-				@click.native="onClickRequestPassword"
-				:disabled="isPasswordRequestPending"
+				@click="onClickRequestPassword"
+				:state="isPasswordRequestPending ? 'disabled' : ''"
 			>
 				Send change password email
 			</kv-button>
@@ -41,8 +40,8 @@
 <script>
 import gql from 'graphql-tag';
 import KvAlert from '@/components/Kv/KvAlert';
-import KvButton from '@/components/Kv/KvButton';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const userQuery = gql`query getUserEmail {
 	my {

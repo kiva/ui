@@ -1,7 +1,6 @@
 <template>
 	<div class="phone-authentication">
 		<kv-lightbox
-			class="phone-authentication__lightbox"
 			:visible="lightboxVisible"
 			@lightbox-closed="completeSetup"
 			:title="lightboxTitle"
@@ -12,20 +11,20 @@
 				class="phone-authentication__body"
 			>
 				<form>
-					<legend class="phone-authentication__legend">
+					<legend class="tw-block tw-mb-4">
 						Enter a phone number that can be used to verify your identity with a text message or phone call.
 					</legend>
-					<div class="phone-authentication__phone">
+					<div class="tw-mb-4">
 						<label
-							class="phone-authentication__label"
+							class="tw-text-h4 tw-mb-1 tw-block"
 							for="phone_input"
 						>
 							Enter your phone number here:
 						</label>
 						<kv-phone-input
-							class="phone-authentication__phone-input fs-exclude"
-							:class="{ 'phone-authentication__phone-input--error' : $v.phoneNumber.$error}"
+							class="phone-authentication__phone-input tw-mb-1 fs-exclude"
 							:disabled="enrollmentPending"
+							:valid="!$v.phoneNumber.$error"
 							id="phone_input"
 							ref="phoneInput"
 							v-model="phoneNumber"
@@ -42,7 +41,7 @@
 						</ul>
 					</div>
 
-					<h3 class="phone-authentication__label">
+					<h3 class="tw-text-h4 tw-mb-1 tw-block">
 						How do you want to get codes?
 					</h3>
 					<kv-loading-spinner
@@ -53,18 +52,18 @@
 					</p>
 					<template v-if="!enrollmentPending">
 						<kv-button
-							class="smallest expanded"
+							class="tw-w-full tw-mb-2"
 							type="button"
-							:disabled="$v.phoneNumber.$invalid"
-							@click.native="startEnrollment('SMS')"
+							:state="$v.phoneNumber.$invalid ? 'disabled' : ''"
+							@click="startEnrollment('SMS')"
 						>
 							Text message
 						</kv-button>
 						<kv-button
-							class="smallest expanded"
+							class="tw-w-full"
 							type="button"
-							:disabled="$v.phoneNumber.$invalid"
-							@click.native="startEnrollment('voice')"
+							:state="$v.phoneNumber.$invalid ? 'disabled' : ''"
+							@click="startEnrollment('voice')"
 						>
 							Phone call
 						</kv-button>
@@ -79,15 +78,17 @@
 				<form
 					@submit.prevent="submitVerification"
 				>
-					<p>Enter the code sent to <span class="fs-exclude">{{ phoneNumber }}</span>.</p>
+					<p class="tw-mb-2">
+						Enter the code sent to <span class="fs-exclude">{{ phoneNumber }}</span>.
+					</p>
 					<label
 						for="verification_code"
-						class="phone-authentication__label"
+						class="phone-authentication__label tw-text-h4 tw-mb-1"
 					>
 						Enter your 6-digit code here:
 					</label>
 					<kv-verification-code-input
-						class="verification-code__input fs-exclude"
+						class="verification-code__input fs-exclude tw-mb-4"
 						id="verification_code"
 						ref="userVerificationCodeInput"
 						v-model="userVerificationCode"
@@ -96,24 +97,27 @@
 					<kv-loading-spinner
 						v-if="verificationPending"
 					/>
-					<p class="phone-authentication__error" v-if="verificationError && !verificationPending">
+					<p
+						class="phone-authentication__error tw-text-danger tw-mb-2"
+						v-if="verificationError && !verificationPending"
+					>
 						{{ verificationError }}
 					</p>
 					<template v-if="!verificationPending">
 						<kv-button
-							class="expanded"
+							class="tw-w-full tw-mb-2"
 							type="submit"
-							:disabled="$v.userVerificationCode.$invalid"
+							:state="$v.userVerificationCode.$invalid ? 'disabled' : ''"
 						>
 							Done
 						</kv-button>
-						<kv-button
-							class="text-link expanded"
+						<button
+							class="tw-text-link tw-font-medium tw-w-full"
 							type="button"
-							@click.native="startEnrollment(enrollmentType)"
+							@click="startEnrollment(enrollmentType)"
 						>
 							Resend Code
-						</kv-button>
+						</button>
 					</template>
 				</form>
 			</section>
@@ -124,6 +128,7 @@
 					@done="confirmRecoveryCode"
 				/>
 			</section>
+
 			<section class="phone-authentication__body" v-if="step === 4">
 				<first-m-f-a-setup />
 			</section>
@@ -137,8 +142,6 @@ import {
 	required, minLength, maxLength, numeric
 } from 'vuelidate/lib/validators';
 import * as Sentry from '@sentry/vue';
-import KvButton from '@/components/Kv/KvButton';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvPhoneInput from '@/components/Kv/KvPhoneInput';
 import KvVerificationCodeInput from '@/components/Kv/KvVerificationCodeInput';
@@ -150,6 +153,8 @@ import enrollVoiceAuthenticatorMutation from '@/graphql/mutation/mfa/enrollVoice
 import confirmSMSAuthenticatorEnrollmentMutation from '@/graphql/mutation/mfa/confirmSMSAuthenticatorEnroll.graphql';
 import confirmVoiceAuthenticatorEnrollmentMutation from
 	'@/graphql/mutation/mfa/confirmVoiceAuthenticatorEnroll.graphql';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	components: {
@@ -358,30 +363,7 @@ export default {
 
 .phone-authentication {
 	&__body {
-		max-width: rem-calc(380);
-	}
-
-	&__legend,
-	&__phone {
-		margin-bottom: 1rem;
-	}
-
-	&__label {
-		font-weight: bold;
-		font-size: 1rem;
-		margin-bottom: 0.5rem;
-	}
-
-	&__phone-input {
-		&--error {
-			::v-deep .kv-phone-input__input {
-				border-color: $kiva-accent-red;
-			}
-		}
-	}
-
-	&__error {
-		color: $kiva-accent-red;
+		max-width: rem-calc(382);
 	}
 
 	.verification-code {

@@ -42,16 +42,17 @@
 				+{{ countryCallingCode }}
 			</span>
 
-			<input type="tel"
+			<kv-text-input type="tel"
 				class="kv-phone-input__input"
 				:id="id"
 				:placeholder="placeholderNumber"
 				:value="displayNumber"
 				:disabled="disabled"
+				:valid="valid"
 				v-bind="$attrs"
 				v-on="inputListeners"
 				@input="onInputPhoneNumber"
-			>
+			/>
 		</div>
 	</div>
 </template>
@@ -67,6 +68,7 @@ import {
 } from 'libphonenumber-js';
 import exampleNumbers from 'libphonenumber-js/examples.mobile.json'; // used for populating placeholders
 import KvFlag from '@/components/Kv/KvFlag';
+import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 const supportedCountryCodes = getSupportedCountryCodes();
 const countryList = getCountryList() // get all country names and codes
@@ -76,6 +78,7 @@ const countryList = getCountryList() // get all country names and codes
 export default {
 	components: {
 		KvFlag,
+		KvTextInput
 	},
 	model: {
 		prop: 'value',
@@ -93,7 +96,11 @@ export default {
 		disabled: {
 			type: Boolean,
 			default: false
-		}
+		},
+		valid: {
+			type: Boolean,
+			default: true
+		},
 	},
 	data() {
 		return {
@@ -150,8 +157,8 @@ export default {
 			this.displayNumber = this.formatPhoneNumber(this.displayNumber);
 			this.emitUpdatedNumber();
 		},
-		onInputPhoneNumber(e) {
-			this.displayNumber = this.formatPhoneNumber(e.target.value);
+		onInputPhoneNumber(value) {
+			this.displayNumber = this.formatPhoneNumber(value);
 			this.emitUpdatedNumber();
 		},
 		emitUpdatedNumber() {
@@ -196,7 +203,7 @@ export default {
 	}
 
 	&__country-prefix {
-		margin: 0 0.5rem 1rem;
+		margin: 0 0.5rem;
 	}
 
 	&__select-wrapper {
@@ -204,8 +211,8 @@ export default {
 	}
 
 	&__select-country {
-		width: rem-calc(80);
-		margin-bottom: 1rem;
+		width: rem-calc(56);
+		height: rem-calc(56 * 0.75);
 	}
 
 	&__select-flag {
