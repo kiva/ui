@@ -3,12 +3,12 @@ name: Ui Tests
 on:
   push:
     branches:
-      - master
-      - 'release-*'
+      - main
+      - next
   pull_request:
     branches:
-      - master
-      - 'release-*'
+      - main
+      - next
 
 jobs:
   build:

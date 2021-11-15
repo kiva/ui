@@ -7,6 +7,7 @@
 		:body="body"
 		:image-url="imageUrl"
 		:is-open="isOpen"
+		:disclaimer="hasDisclaimer"
 		@toggle-banner="onToggleBanner"
 		@amount-selected="onAmountSelected"
 	/>
@@ -70,6 +71,9 @@ export default {
 			return this.appealBannerContent?.additionalContent
 				?.find(content => content?.fields?.name === 'Progress Meter Image')
 				.fields?.images?.[0]?.fields?.file?.url || '';
+		},
+		hasDisclaimer() {
+			return this.appealBannerContent?.disclaimer !== '';
 		}
 	},
 	created() {

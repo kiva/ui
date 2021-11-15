@@ -96,7 +96,7 @@ export default {
 		appliedPromoCredits() {
 			if (this.creditsUsed.length) {
 				const appliedCredits = this.creditsUsed.filter(credit => {
-					return credit.applied !== null && credit.creditType !== 'kiva_credit';
+					return credit.creditType !== 'kiva_credit';
 				});
 				return appliedCredits.length ? appliedCredits : [];
 			}
