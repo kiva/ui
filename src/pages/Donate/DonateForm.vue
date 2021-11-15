@@ -44,7 +44,7 @@
 				</kv-button>
 				<!-- Donation Disclaimer should always be present if we have a payment option active -->
 				<div
-					class="attribution-text tw-text-center"
+					class="tw-text-base tw-mt-3 tw-text-action tw-text-center"
 					v-if="showDisclaimer && !isMonthly && !subscriptionApplied"
 					v-html="formDisclaimerCopy"
 				></div>
@@ -247,20 +247,9 @@ export default {
 	position: relative;
 }
 
-.attribution-text {
-	color: $kiva-text-light;
-	margin-top: 1.5625rem;
-	font-size: 1rem;
-}
-
 .submit-btn {
 	width: 100%;
 	margin: 0.5rem 0;
-}
-
-::v-deep label,
-::v-deep input {
-	font-weight: 700;
 }
 
 ::v-deep .validation-errors {
