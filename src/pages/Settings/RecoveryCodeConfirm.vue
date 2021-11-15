@@ -1,38 +1,36 @@
 <template>
 	<div class="recovery-code-confirm">
-		<h2 class="recovery-code-confirm__heading">
+		<h2 class="tw-mb-2">
 			2-step verification is on
 		</h2>
-		<p class="recovery-code-confirm__description">
+		<p class="tw-mb-2">
 			Copy this recovery code and keep it somewhere safe. You'll
 			need it if you want to log in without your device.
 		</p>
-		<div class="recovery-code fs-exclude">
+		<div class="fs-exclude tw-mb-2 tw-text-center tw-font-medium tw-p-2 tw-bg-tertiary tw-rounded-sm tw-border">
 			{{ mfaRecoveryCode }}
 		</div>
 		<div>
 			<kv-button
-				class="secondary smallest expanded copy-code"
-				@click.native.prevent="copyToClipboard(mfaRecoveryCode)"
+				variant="secondary"
+				class="tw-w-full tw-mb-2 copy-code"
+				@click="copyToClipboard(mfaRecoveryCode)"
 			>
 				Copy code
 			</kv-button>
-		</div>
-		<div>
+
 			<kv-checkbox
 				id="codeVerify"
-				class="verified-checkbox"
-				radio-value="I have safely recorded this code"
+				class="verified-checkbox tw-mb-2"
 				v-model="verified"
 			>
 				I have safely recorded this code
 			</kv-checkbox>
-		</div>
-		<div>
+
 			<kv-button
-				class="expanded smaller"
-				:disabled="isDisabled"
-				@click.native.prevent="$emit('done')"
+				class="tw-w-full"
+				:state="isDisabled ? 'disabled' : ''"
+				@click="$emit('done')"
 			>
 				Done
 			</kv-button>
@@ -41,8 +39,8 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
-import KvCheckbox from '@/components/Kv/KvCheckbox';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 
 export default {
 	inject: ['apollo'],
@@ -79,37 +77,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.recovery-code-confirm {
-	&__heading {
-		font-weight: bold;
-		text-align: left;
-	}
-
-	&__description {
-		text-align: left;
-	}
-
-	.recovery-code {
-		text-align: center;
-		font-weight: bold;
-		line-height: 2.5;
-		cursor: text;
-		background-color: $kiva-bg-darkgray;
-		border-radius: rem-calc(2);
-		border: 1px solid black;
-		margin-bottom: rem-calc(15);
-	}
-
-	.copy-code {
-		font-size: 1rem;
-	}
-
-	.verified-checkbox {
-		margin-bottom: 1rem;
-	}
-}
-</style>

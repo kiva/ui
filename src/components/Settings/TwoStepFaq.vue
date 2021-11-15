@@ -13,7 +13,7 @@
 		<ul>
 			<li>
 				<button
-					class="tw-text-link tw-font-medium"
+					class="tw-text-link tw-font-medium tw-text-left"
 					@click="triggerWhatIsLightbox"
 				>
 					What is 2-step Verification?
@@ -21,7 +21,7 @@
 			</li>
 			<li>
 				<button
-					class="tw-text-link tw-font-medium"
+					class="tw-text-link tw-font-medium tw-text-left"
 					@click="triggerHowItWorksLightbox"
 				>
 					How does it work?
@@ -29,7 +29,7 @@
 			</li>
 			<li>
 				<button
-					class="tw-text-link tw-font-medium"
+					class="tw-text-link tw-font-medium tw-text-left"
 					@click="triggerHowItProtectsLightbox"
 				>
 					How does it protect you?
