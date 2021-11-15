@@ -30,6 +30,7 @@
 				v-if="previousLoanId"
 				:loan-id="loanId"
 				:previous-loan-id="previousLoanId"
+				:borrower-or-group-name="borrowerOrGroupName"
 			/>
 
 			<section v-if="storyTranslation">
@@ -128,8 +129,8 @@ export default {
 			default: () => {},
 		},
 		previousLoanId: { // LoanBasic.previousLoanId
-			type: Number,
-			default: 0,
+			type: String,
+			default: '',
 		},
 		loanId: {
 			type: Number,
