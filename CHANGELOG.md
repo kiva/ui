@@ -1,3 +1,10 @@
+## [2.9.0](https://github.com/kiva/ui/compare/v2.8.0...v2.9.0) (2021-11-15)
+
+
+### Features
+
+* core-251 adding previous loan link to borrower profile ([16de5b5](https://github.com/kiva/ui/commit/16de5b5be62efe704bb1e89952c84fda118a8aeb))
+
 ## [2.8.0](https://github.com/kiva/ui/compare/v2.7.0...v2.8.0) (2021-11-12)
 
 
