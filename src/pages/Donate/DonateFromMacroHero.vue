@@ -16,8 +16,8 @@
 						overlay-column columns
 						medium-10 medium-offset-1 large-8 large-offset-0 xlarge-7 xxlarge-6"
 				>
-					<h1 class="donate-headline" v-html="headlineCopy"></h1>
-					<p class="donate-subhead" v-html="subheadCopy"></p>
+					<h1 class="tw-text-h2" v-html="headlineCopy"></h1>
+					<p class="tw-my-2" v-html="subheadCopy"></p>
 					<donate-form
 						:key="1"
 						:button-text="buttonCopy"
@@ -200,16 +200,4 @@ export default {
 	}
 }
 
-.donation-headline {
-	@include large-text();
-
-	margin-bottom: 0.25rem;
-}
-
-.donation-subhead {
-	@include medium-text();
-
-	padding: 0;
-	margin-bottom: 1.5rem;
-}
 </style>
