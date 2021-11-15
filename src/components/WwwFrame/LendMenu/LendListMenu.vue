@@ -260,7 +260,7 @@ export default {
 /* stylelint-disable no-descending-specificity */
 .lend-list-menu--mg-exp {
 	&__link {
-		color: $kiva-accent-blue;
+		color: rgb(var(--text-action));
 	}
 
 	// Second level drop down items
