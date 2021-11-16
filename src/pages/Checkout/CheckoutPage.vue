@@ -477,6 +477,9 @@ export default {
 			}
 			return false;
 		},
+		instantLendingLoanAdded() {
+			return this.$route?.query?.instantLending === 'loan-added';
+		},
 		checkoutSteps() {
 			return ['Basket', 'Payment', 'Thank You!'];
 		},
@@ -493,7 +496,7 @@ export default {
 			return parseFloat(this.creditNeeded) === 0;
 		},
 		showKivaCardForm() {
-			return this.checkingOutAsGuest === false;
+			return this.checkingOutAsGuest === false && !this.instantLendingLoanAdded;
 		},
 		eligibleForGuestCheckout() {
 			// Checking if guest checkout is enabled
