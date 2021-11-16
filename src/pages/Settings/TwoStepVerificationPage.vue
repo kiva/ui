@@ -1,5 +1,8 @@
 <template>
-	<www-page class="two-step-verification" :gray-background="true">
+	<www-page
+		class="two-step-verification"
+		:header-theme="headerTheme"
+	>
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
@@ -137,6 +140,7 @@ import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import { lightHeader } from '@/util/siteThemes';
 import mfaQuery from '@/graphql/query/mfa/mfaQuery.graphql';
 import removeMfa from '@/graphql/mutation/mfa/removeMfa.graphql';
 import removeOneMfaMethod from '@/graphql/mutation/mfa/removeOneMfaMethod.graphql';
@@ -150,6 +154,7 @@ export default {
 			mfaMethods: [],
 			isLoading: true,
 			pageError: '',
+			headerTheme: lightHeader,
 		};
 	},
 	components: {

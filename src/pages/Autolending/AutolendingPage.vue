@@ -1,5 +1,8 @@
 <template>
-	<www-page class="autolending" :gray-background="true">
+	<www-page
+		class="autolending"
+		:header-theme="headerTheme"
+	>
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
@@ -19,8 +22,14 @@
 <script>
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import { lightHeader } from '@/util/siteThemes';
 
 export default {
+	data() {
+		return {
+			headerTheme: lightHeader,
+		};
+	},
 	components: {
 		TheMyKivaSecondaryMenu,
 		WwwPage,

@@ -1,5 +1,7 @@
 <template>
-	<www-page :gray-background="true">
+	<www-page
+		:header-theme="headerTheme"
+	>
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
@@ -164,6 +166,7 @@ import gql from 'graphql-tag';
 
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import { lightHeader } from '@/util/siteThemes';
 
 const pageQuery = gql`query settingsQuery {
 	my {
@@ -194,6 +197,7 @@ export default {
 		return {
 			isMfaActive: false,
 			isSubscriber: false,
+			headerTheme: lightHeader,
 		};
 	},
 	apollo: {

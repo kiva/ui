@@ -1,5 +1,7 @@
 <template>
-	<www-page>
+	<www-page
+		:header-theme="headerTheme"
+	>
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
@@ -41,8 +43,14 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
+import { lightHeader } from '@/util/siteThemes';
 
 export default {
+	data() {
+		return {
+			headerTheme: lightHeader,
+		};
+	},
 	components: {
 		WwwPage,
 		DeveloperSecondaryMenu,

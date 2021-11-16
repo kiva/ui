@@ -1,5 +1,8 @@
 <template>
-	<www-page class="email-settings" :gray-background="true">
+	<www-page
+		class="email-settings"
+		:header-theme="headerTheme"
+	>
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
@@ -323,6 +326,7 @@ import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import PushRepaymentUpdates from '@/components/Settings/PushRepaymentUpdates';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import { lightHeader } from '@/util/siteThemes';
 
 const pageQuery = gql`
 	query communicationPreferences {
@@ -406,6 +410,7 @@ export default {
 	},
 	data() {
 		return {
+			headerTheme: lightHeader,
 			// Email Settings Values
 			form: {
 				globalUnsubscribed: false,

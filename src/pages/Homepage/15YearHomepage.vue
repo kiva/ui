@@ -249,7 +249,7 @@
 </template>
 
 <script>
-import { fifteenYearHeaderTheme, fifteenYearFooterTheme } from '@/util/siteThemes';
+import { lightHeader, fifteenYearFooterTheme } from '@/util/siteThemes';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
@@ -275,7 +275,7 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: fifteenYearHeaderTheme,
+			headerTheme: lightHeader,
 			footerTheme: fifteenYearFooterTheme,
 			loanNotDonationImgs: {
 				header: [

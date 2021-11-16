@@ -1,5 +1,7 @@
 <template>
-	<www-page>
+	<www-page
+		:header-theme="headerTheme"
+	>
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
@@ -45,6 +47,7 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
+import { lightHeader } from '@/util/siteThemes';
 
 export default {
 	components: {
@@ -56,6 +59,7 @@ export default {
 	},
 	data() {
 		return {
+			headerTheme: lightHeader,
 			topics: ['Creation of Synthetic Datasets', 'Recommendation systems', 'Social Good ML Applications',
 				'Pro-Social Behaviorial Psychology', 'Fairness Research', 'Social Impact Assessments'],
 			years: [2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],

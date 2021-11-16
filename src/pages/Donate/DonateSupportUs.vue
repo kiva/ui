@@ -1,6 +1,7 @@
 <template>
 	<www-page
 		id="support-us-landing"
+		:header-theme="headerTheme"
 	>
 		<div class="row page-content">
 			<div class="small-12 large-7 columns donation-form-holder">
@@ -33,6 +34,7 @@
 
 <script>
 import gql from 'graphql-tag';
+import { lightHeader } from '@/util/siteThemes';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
@@ -61,6 +63,7 @@ export default {
 	},
 	data() {
 		return {
+			headerTheme: lightHeader,
 			pageData: {},
 			defaultHeadlineCopy: 'Donate to Kiva',
 			// eslint-disable-next-line max-len

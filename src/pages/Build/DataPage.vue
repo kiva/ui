@@ -1,5 +1,7 @@
 <template>
-	<www-page>
+	<www-page
+		:header-theme="headerTheme"
+	>
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
@@ -72,6 +74,7 @@
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
 import KvCodeBlock from '@/components/Kv/KvCodeBlock';
+import { lightHeader } from '@/util/siteThemes';
 
 export default {
 	components: {
@@ -100,7 +103,8 @@ export default {
  }`,
 			csvSchema:
 `borrower_names,borrower_genders,borrower_pictured
-"Bunsuor, Chamroen","male, male","true, true"`
+"Bunsuor, Chamroen","male, male","true, true"`,
+			headerTheme: lightHeader,
 		};
 	}
 };

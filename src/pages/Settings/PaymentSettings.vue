@@ -1,5 +1,8 @@
 <template>
-	<www-page class="payments" :gray-background="true">
+	<www-page
+		class="payments"
+		:header-theme="headerTheme"
+	>
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
@@ -174,6 +177,7 @@ import KvRadio from '@/components/Kv/KvRadio';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import { lightHeader } from '@/util/siteThemes';
 
 const pageQuery = gql`query paymentMethodVault {
   my {
@@ -209,6 +213,7 @@ export default {
 	},
 	data() {
 		return {
+			headerTheme: lightHeader,
 			isClientReady: false,
 			isProcessing: false,
 			savedPaymentMethods: [],

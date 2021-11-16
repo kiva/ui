@@ -1,5 +1,8 @@
 <template>
-	<www-page class="loan-channel-page category-page" :gray-background="true">
+	<www-page
+		class="loan-channel-page category-page"
+		:header-theme="headerTheme"
+	>
 		<div class="row">
 			<div class="small-12 columns heading-region">
 				<view-toggle browse-url="/lend-by-category" :filter-url="filterUrl" />
@@ -94,6 +97,7 @@ import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
+import { lightHeader } from '@/util/siteThemes';
 
 const loansPerPage = 12;
 
@@ -158,6 +162,7 @@ export default {
 	},
 	data() {
 		return {
+			headerTheme: lightHeader,
 			offset: 0,
 			limit: loansPerPage,
 			filters: { },

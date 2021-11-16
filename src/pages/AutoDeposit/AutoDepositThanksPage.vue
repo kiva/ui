@@ -1,5 +1,7 @@
 <template>
-	<www-page>
+	<www-page
+		:header-theme="headerTheme"
+	>
 		<!-- Auto Deposit Thanks Page -->
 		<div class="row align-center auto-deposit-thanks-page text-center">
 			<div class="small-12 medium-11 large-8 column">
@@ -35,7 +37,7 @@
 <script>
 import gql from 'graphql-tag';
 import numeral from 'numeral';
-
+import { lightHeader } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvIcon from '@/components/Kv/KvIcon';
 
@@ -60,6 +62,7 @@ export default {
 			totalAmount: 0,
 			donationAmount: 0,
 			autoDepositAmount: 0,
+			headerTheme: lightHeader,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],

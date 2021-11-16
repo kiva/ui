@@ -1,5 +1,7 @@
 <template>
-	<www-page>
+	<www-page
+		:header-theme="headerTheme"
+	>
 		<div v-if="typeof loan !== 'undefined'">
 			<div class="row borrower-profile-wrapper">
 				<div class="small-12 medium-4 columns">
@@ -104,6 +106,7 @@ import basketItems from '@/graphql/query/basketItems.graphql';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import { lightHeader } from '@/util/siteThemes';
 
 export default {
 	components: {
@@ -118,6 +121,7 @@ export default {
 		return {
 			loan: () => {},
 			itemsInBasket: [],
+			headerTheme: lightHeader,
 		};
 	},
 	apollo: {

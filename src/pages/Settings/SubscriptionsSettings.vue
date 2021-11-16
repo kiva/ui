@@ -1,5 +1,8 @@
 <template>
-	<www-page class="subscriptions" :gray-background="true">
+	<www-page
+		class="subscriptions"
+		:header-theme="headerTheme"
+	>
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
@@ -15,9 +18,15 @@
 <script>
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import { lightHeader } from '@/util/siteThemes';
 import SubscriptionsSettingsCards from '@/components/Settings/SubscriptionsSettingsCards';
 
 export default {
+	data() {
+		return {
+			headerTheme: lightHeader,
+		};
+	},
 	components: {
 		SubscriptionsSettingsCards,
 		TheMyKivaSecondaryMenu,

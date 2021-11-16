@@ -1,5 +1,8 @@
 <template>
-	<www-page class="security-login-page" :gray-background="true">
+	<www-page
+		class="security-login-page"
+		:header-theme="headerTheme"
+	>
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
@@ -28,8 +31,14 @@ import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSeconda
 import Password from '@/components/Settings/Password';
 import TwoStepVerification from '@/components/Settings/TwoStepVerification';
 import TwoStepFaq from '@/components/Settings/TwoStepFaq';
+import { lightHeader } from '@/util/siteThemes';
 
 export default {
+	data() {
+		return {
+			headerTheme: lightHeader,
+		};
+	},
 	components: {
 		WwwPage,
 		TheMyKivaSecondaryMenu,

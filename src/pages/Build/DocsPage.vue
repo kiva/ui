@@ -1,5 +1,7 @@
 <template>
-	<www-page>
+	<www-page
+		:header-theme="headerTheme"
+	>
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
@@ -55,6 +57,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
 import KvMultiCodeBlock from '@/components/Kv/KvMultiCodeBlock';
 import KvCodeBlock from '@/components/Kv/KvCodeBlock';
+import { lightHeader } from '@/util/siteThemes';
 
 export default {
 	components: {
@@ -68,6 +71,7 @@ export default {
 	},
 	data() {
 		return {
+			headerTheme: lightHeader,
 			sampleJson:
 `{'data': {'lend': {'loan': {'id': 1568001,
 			   'name': 'Leydi'} } } }`,

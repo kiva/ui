@@ -1,5 +1,7 @@
 <template>
-	<www-page>
+	<www-page
+		:header-theme="headerTheme"
+	>
 		<div id="checkout-slim" class="row page-content">
 			<div class="columns">
 				<div v-if="!emptyBasket" class="basket-wrap" :class="{'pre-login': !preCheckoutStep}">
@@ -245,6 +247,7 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
+import { lightHeader } from '@/util/siteThemes';
 
 export default {
 	components: {
@@ -271,6 +274,7 @@ export default {
 	},
 	data() {
 		return {
+			headerTheme: lightHeader,
 			myBalance: null,
 			myId: null,
 			loans: [],

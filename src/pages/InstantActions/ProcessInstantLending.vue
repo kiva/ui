@@ -1,5 +1,8 @@
 <template>
-	<www-page class="instant-lending-processor kv-tailwind">
+	<www-page
+		class="instant-lending-processor kv-tailwind"
+		:header-theme="headerTheme"
+	>
 		<kv-page-container class="
 			tw-pt-4 tw-pb-8
 			md:tw-pt-6 md:tw-pb-12
@@ -61,6 +64,8 @@
 </template>
 
 <script>
+
+import { lightHeader } from '@/util/siteThemes';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
@@ -99,6 +104,7 @@ export default {
 	},
 	data() {
 		return {
+			headerTheme: lightHeader,
 			errorCode: this.$route.query.error,
 			errorDescription: this.$route.query.error_description,
 			loading: false,

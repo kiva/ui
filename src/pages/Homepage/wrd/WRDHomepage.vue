@@ -204,7 +204,7 @@
 </template>
 
 <script>
-import { wrdHeaderTheme, wrdFooterTheme } from '@/util/siteThemes';
+import { lightHeader, wrdFooterTheme } from '@/util/siteThemes';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
@@ -231,7 +231,7 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: wrdHeaderTheme,
+			headerTheme: lightHeader,
 			footerTheme: wrdFooterTheme,
 			heroImageSet: [
 				['small', wrdImagesRequire('./banner_sm.jpg')],
