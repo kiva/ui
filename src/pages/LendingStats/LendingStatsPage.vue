@@ -3,58 +3,62 @@
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
-		<div class="row page-content">
-			<the-portfolio-tertiary-menu class="show-for-large" />
-			<div class="small-12 large-9 columns">
-				<h1>Lending stats</h1>
-				<p>
-					This is a snapshot of your lending activity on Kiva.
-					Use this page to collect loans and hit milestones along the way.
-				</p>
-				<hr>
-				<stats-section
-					title="Countries &amp; Territories*"
-					noun="country"
-					:not-lent-to="countriesNotLentTo"
-					:lent-to="countriesLentTo"
-					:total="totalCountries"
-					item-key="isoCode"
-					unlent-url="/lend/countries-not-lent"
-				/>
-				<hr>
-				<stats-section
-					title="Sectors"
-					noun="sector"
-					:not-lent-to="sectorsNotLentTo"
-					:lent-to="sectorsLentTo"
-					:icon-key="iconForSector"
-				/>
-				<hr>
-				<stats-section
-					title="Activities"
-					noun="activity"
-					:not-lent-to="activitiesNotLentTo"
-					:lent-to="activitiesLentTo"
-				/>
-				<hr>
-				<stats-section
-					title="Field Partners*"
-					noun="Field Partner"
-					:not-lent-to="partnersNotLentTo"
-					:lent-to="partnersLentTo"
-					:total="totalPartners"
-					query="partner"
-				/>
-				<hr>
-				<p>
-					* Please note, Kiva is continually adding and ending partnerships as we deem necessary.
-					This means, you may end up supporting a loan in a country or through a Field Partner that
-					is no longer active and therefore not included in the total number of countries or partners
-					noted on this page. For this reason, it is possible to see discrepancies between the number
-					you've supported and the number to go.
-				</p>
+		<kv-default-wrapper>
+			<div class="row">
+				<the-portfolio-tertiary-menu class="show-for-large" />
+				<div class="small-12 large-9 columns">
+					<h1 class="tw-mb-4">
+						Lending stats
+					</h1>
+					<p class="tw-mb-2">
+						This is a snapshot of your lending activity on Kiva.
+						Use this page to collect loans and hit milestones along the way.
+					</p>
+					<hr class="tw-border-tertiary tw-my-4">
+					<stats-section
+						title="Countries &amp; Territories*"
+						noun="country"
+						:not-lent-to="countriesNotLentTo"
+						:lent-to="countriesLentTo"
+						:total="totalCountries"
+						item-key="isoCode"
+						unlent-url="/lend/countries-not-lent"
+					/>
+					<hr class="tw-border-tertiary tw-my-4">
+					<stats-section
+						title="Sectors"
+						noun="sector"
+						:not-lent-to="sectorsNotLentTo"
+						:lent-to="sectorsLentTo"
+						:icon-key="iconForSector"
+					/>
+					<hr class="tw-border-tertiary tw-my-4">
+					<stats-section
+						title="Activities"
+						noun="activity"
+						:not-lent-to="activitiesNotLentTo"
+						:lent-to="activitiesLentTo"
+					/>
+					<hr class="tw-border-tertiary tw-my-4">
+					<stats-section
+						title="Field Partners*"
+						noun="Field Partner"
+						:not-lent-to="partnersNotLentTo"
+						:lent-to="partnersLentTo"
+						:total="totalPartners"
+						query="partner"
+					/>
+					<hr class="tw-border-tertiary tw-my-4">
+					<p>
+						* Please note, Kiva is continually adding and ending partnerships as we deem necessary.
+						This means, you may end up supporting a loan in a country or through a Field Partner that
+						is no longer active and therefore not included in the total number of countries or partners
+						noted on this page. For this reason, it is possible to see discrepancies between the number
+						you've supported and the number to go.
+					</p>
+				</div>
 			</div>
-		</div>
+		</kv-default-wrapper>
 	</www-page>
 </template>
 
@@ -67,10 +71,12 @@ import lendingStatsQuery from '@/graphql/query/myLendingStats.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
+import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 import StatsSection from './StatsSection';
 
 export default {
 	components: {
+		KvDefaultWrapper,
 		WwwPage,
 		TheMyKivaSecondaryMenu,
 		ThePortfolioTertiaryMenu,
@@ -124,11 +130,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-.page-content {
-	padding: 1.625rem 0;
-}
-</style>

@@ -1,17 +1,24 @@
 <template>
 	<ul class="lending-stats-item-list">
-		<li v-for="item in items" :key="item[itemKey]">
+		<li
+			v-for="item in items"
+			:key="item[itemKey]"
+			class="tw-flex tw-items-center tw-float-left tw-w-full md:tw-w-1/2 tw-pb-0.5"
+		>
 			<kv-flag
 				v-if="isCountry"
 				:country="item.isoCode"
-				class="item-flag"
+				class="item-flag tw-w-2 tw-mr-0.5 tw-flex-shrink-0"
 			/>
 			<kv-icon
 				v-else
 				:name="iconKey(item)"
-				class="item-icon"
+				class="item-icon tw-w-2 tw-h-1.5 tw-mr-0.5 tw-flex-shrink-0"
 			/>
-			<router-link :to="{ path: '/lend', query: { [param]: item[itemKey] }}">
+			<router-link
+				:to="{ path: '/lend', query: { [param]: item[itemKey] }}"
+				class="tw-overflow-hidden tw-whitespace-nowrap tw-overflow-ellipsis"
+			>
 				{{ item.name }}
 			</router-link>
 		</li>
@@ -49,42 +56,3 @@ export default {
 	components: { KvIcon, KvFlag },
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-.lending-stats-item-list {
-	margin: 0;
-
-	li {
-		list-style: none;
-		display: flex;
-		align-items: center;
-		float: left;
-		width: 100%;
-		padding-bottom: 0.25rem;
-		@include small-text();
-
-		@include breakpoint(xlarge) {
-			width: 50%;
-		}
-	}
-
-	a {
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-	}
-
-	.item-flag,
-	.item-icon {
-		width: rem-calc(16);
-		margin-right: 0.25rem;
-		flex-shrink: 0;
-	}
-
-	.item-icon {
-		height: rem-calc(12);
-	}
-}
-</style>
