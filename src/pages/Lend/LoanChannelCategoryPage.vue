@@ -2,6 +2,7 @@
 	<www-page
 		class="loan-channel-page category-page"
 		:header-theme="headerTheme"
+		:gray-background="true"
 	>
 		<div class="row">
 			<div class="small-12 columns heading-region">

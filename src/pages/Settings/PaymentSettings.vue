@@ -2,6 +2,7 @@
 	<www-page
 		class="payments"
 		:header-theme="headerTheme"
+		:gray-background="true"
 	>
 		<template #secondary>
 			<the-my-kiva-secondary-menu />

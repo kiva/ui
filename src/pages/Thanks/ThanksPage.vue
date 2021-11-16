@@ -1,6 +1,7 @@
 <template>
 	<www-page
 		:header-theme="headerTheme"
+		:gray-background="true"
 	>
 		<div class="row page-content">
 			<div class="small-12 columns thanks">

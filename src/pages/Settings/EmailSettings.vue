@@ -2,6 +2,7 @@
 	<www-page
 		class="email-settings"
 		:header-theme="headerTheme"
+		:gray-background="true"
 	>
 		<template #secondary>
 			<the-my-kiva-secondary-menu />

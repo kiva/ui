@@ -2,6 +2,7 @@
 	<www-page
 		class="lend-page"
 		:header-theme="headerTheme"
+		:gray-background="true"
 	>
 		<div class="row">
 			<div class="small-12 columns heading-region">

@@ -2,6 +2,7 @@
 	<www-page
 		class="lend-filter-page"
 		:header-theme="headerTheme"
+		:gray-background="true"
 		:hide-search-in-header="algoliaSearchEnabled"
 	>
 		<kv-message>

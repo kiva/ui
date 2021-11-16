@@ -1,6 +1,7 @@
 <template>
 	<www-page
 		:header-theme="headerTheme"
+		:gray-background="true"
 	>
 		<lend-header
 			:side-arrows-padding="false"
