@@ -826,7 +826,7 @@ export default {
 		},
 		getPromoInformationFromBasket() {
 			const basketItems = this.apollo.query({
-				fetchPolicy: 'network-only',
+				fetchPolicy: 'no-cache',
 				query: basketItemsQuery,
 				variables: {
 					basketId: this.cookieStore.get('kvbskt')
@@ -962,7 +962,7 @@ export default {
 				variables: {
 					basketId
 				},
-				fetchPolicy: 'network-only',
+				fetchPolicy: 'no-cache',
 			});
 			basketItems.then(({ data }) => {
 				// Validate baseline promo + basket state (1 loan, 1 credit, 0 donation)

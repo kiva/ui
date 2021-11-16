@@ -38,6 +38,16 @@
 				</div>
 				<div class="appeal-banner__content small-12 columns">
 					<h3 class="appeal-banner__title strong" v-html="headline"></h3>
+					<a
+						v-if="disclaimer"
+						@click="scrollToSection('#disclaimers')"
+						class="appeal-banner__disclaimer-indicator"
+						v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
+					>
+						<sup>
+							1
+						</sup>
+					</a>
 					<div class="appeal-banner__body" v-html="body"></div>
 					<ul class="appeal-banner__amount-list">
 						<li v-for="(buttonAmount, index) in buttonAmounts"
@@ -96,6 +106,16 @@
 			<div class="appeal-banner__content row align-middle">
 				<div class="columns">
 					<h4 class="appeal-banner__title" v-html="headline"></h4>
+					<a
+						v-if="disclaimer"
+						href="#disclaimers"
+						class="appeal-banner__disclaimer-indicator"
+						v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
+					>
+						<sup>
+							1
+						</sup>
+					</a>
 				</div>
 				<div class="shrink columns">
 					<kv-button
@@ -118,6 +138,7 @@
 <script>
 // import numeral from 'numeral';
 import smoothReflow from 'vue-smooth-reflow';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -131,7 +152,7 @@ export default {
 		KvProgressCircle,
 		KvContentfulImg
 	},
-	mixins: [smoothReflow],
+	mixins: [smoothReflow, smoothScrollMixin],
 	props: {
 		targetAmount: {
 			type: Number,
@@ -161,6 +182,10 @@ export default {
 			type: Boolean,
 			default: true
 		},
+		disclaimer: {
+			type: Boolean,
+			default: false
+		}
 	},
 	computed: {
 		isLoading() {
@@ -193,6 +218,11 @@ export default {
 		onClickToggleBanner() {
 			this.$emit('toggle-banner', !this.isOpen);
 		},
+		scrollToSection(sectionId) {
+			const elementToScrollTo = document.querySelector(sectionId);
+			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop ?? 0;
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+		}
 	},
 	mounted() {
 		this.$smoothReflow();
@@ -224,7 +254,11 @@ export default {
 	}
 
 	&__title {
-		margin-bottom: rem-calc(4);
+		display: inline;
+	}
+
+	&__disclaimer-indicator {
+		color: $kiva-text-dark;
 	}
 
 	&__amount-list {
@@ -303,6 +337,7 @@ export default {
 	}
 
 	&__body {
+		margin-top: rem-calc(4);
 		margin-bottom: 1rem;
 		white-space: pre-wrap;
 

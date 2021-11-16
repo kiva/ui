@@ -1,7 +1,6 @@
 <template>
 	<section>
 		<kv-text-link
-			v-if="previousLoanId"
 			v-kv-track-event="['Borrower profile', 'click-Loan details', 'Show previous loan details', this.loanId]"
 			@click.prevent="performClick"
 		>
@@ -25,6 +24,19 @@
 					v-html="paragraph"
 				>
 				</p>
+
+				<router-link
+					v-if="previousLoanId && this.borrowerOrGroupName !== ''"
+					:to="`/lend/${previousLoanId}`"
+					v-kv-track-event="[
+						'Borrower profile',
+						'Loan details',
+						'Borrower\'s previous loan',
+						previousLoanId
+					]"
+				>
+					{{ this.borrowerOrGroupName }}'s previous loan
+				</router-link>
 			</div>
 		</kv-expandable>
 	</section>
@@ -67,8 +79,12 @@ export default {
 			default: 0,
 		},
 		previousLoanId: {
-			type: Number,
-			default: 0,
+			type: String,
+			default: '',
+		},
+		borrowerOrGroupName: {
+			type: String,
+			default: ''
 		}
 	},
 	computed: {
