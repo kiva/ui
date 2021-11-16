@@ -290,7 +290,7 @@
 </template>
 
 <script>
-import { lightHeader, iwdFooterTheme } from '@/util/siteThemes';
+import { iwdHeaderTheme, iwdFooterTheme } from '@/util/siteThemes';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
@@ -352,7 +352,7 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
+			headerTheme: iwdHeaderTheme,
 			footerTheme: iwdFooterTheme,
 			heroImageSet: [
 				['small', iwdImagesRequire('./banner_sm.png')],

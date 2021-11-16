@@ -29,7 +29,7 @@
 
 <script>
 
-import { lightHeader, fifteenYearFooterTheme } from '@/util/siteThemes';
+import { fifteenYearHeaderTheme, fifteenYearFooterTheme } from '@/util/siteThemes';
 import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
 import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
 import FifteenYearsIndividuals from '@/components/15Years/15YearsIndividuals';
@@ -53,7 +53,7 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
+			headerTheme: fifteenYearHeaderTheme,
 			footerTheme: fifteenYearFooterTheme,
 		};
 	},

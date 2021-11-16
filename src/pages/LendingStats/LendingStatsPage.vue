@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-	>
+	<www-page>
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
@@ -69,7 +67,6 @@ import lendingStatsQuery from '@/graphql/query/myLendingStats.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
-import { lightHeader } from '@/util/siteThemes';
 import StatsSection from './StatsSection';
 
 export default {
@@ -85,7 +82,6 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
 			countriesLentTo: [],
 			countriesNotLentTo: [],
 			totalCountries: 0,
