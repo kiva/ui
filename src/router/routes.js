@@ -122,6 +122,10 @@ export default [
 			result: route.params.result,
 		})
 	},
+	{
+		path: '/instant-lending-error',
+		component: () => import('@/pages/InstantActions/InstantLendingError')
+	},
 	{ path: '/join-team', component: () => import('@/pages/LoginAndRegister/JoinTeam') },
 	{
 		path: '/legal',
@@ -208,18 +212,12 @@ export default [
 	},
 	{ path: '/process-browser-auth', component: () => import('@/pages/ProcessBrowserAuth') },
 	{
-		path: '/process-instant-lending/:token/:loanId/:lendAmount',
+		path: '/process-instant-lending/:loanId/:lendAmount',
 		component: () => import('@/pages/InstantActions/ProcessInstantLending'),
 		props: route => ({
-			token: route.params.token,
 			loanId: Number(route.params.loanId),
 			lendAmount: Number(route.params.lendAmount)
 		}),
-	},
-	{
-		path: '/process-instant-lending-error/:errorType',
-		component: () => import('@/pages/InstantActions/ProcessInstantLending'),
-		props: route => ({ errorType: route.params.errorType })
 	},
 	{ path: '/protocol', component: () => import('@/pages/Protocol') },
 	{ path: '/register/social', component: () => import('@/pages/LoginAndRegister/RegisterSocial') },
