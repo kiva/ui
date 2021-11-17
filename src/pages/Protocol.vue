@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-	>
+	<www-page>
 		<div id="banner-container">
 			<div id="banner-content">
 				<div id="banner-text">
@@ -148,7 +146,6 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
 import KvCustomDonation from '@/components/Kv/KvCustomDonation';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import { lightHeader } from '@/util/siteThemes';
 
 const billionImpactImagesRequire = require.context('@/assets/images/10-years-billion-impact', true);
 
@@ -178,7 +175,6 @@ export default {
 				['small', billionImpactImagesRequire('./10-years-billion-impact.jpg')],
 				['small retina', billionImpactImagesRequire('./10-years-billion-impact_2x.jpg')],
 			],
-			headerTheme: lightHeader,
 		};
 	},
 	metaInfo: {

@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-	>
+	<www-page>
 		<kv-hero
 			class="mg-hero bg-overlay"
 			:class="{ experiment: isExperimentActive }"
@@ -93,7 +91,6 @@ import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import { processPageContent } from '@/util/contentfulUtils';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import { lightHeader } from '@/util/siteThemes';
 
 import KvHero from '@/components/Kv/KvHero';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
@@ -152,7 +149,6 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
 			isExperimentActive: false,
 			isMonthlyGoodSubscriber: false,
 			monthlyGoodAmount: 25,

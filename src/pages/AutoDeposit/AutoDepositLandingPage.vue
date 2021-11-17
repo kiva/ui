@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-	>
+	<www-page>
 		<!-- Auto Deposit Text -->
 		<div class="auto-deposit-setup">
 			<div class="row">
@@ -84,7 +82,6 @@
 
 <script>
 import gql from 'graphql-tag';
-import { lightHeader } from '@/util/siteThemes';
 import { processPageContent } from '@/util/contentfulUtils';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -132,7 +129,6 @@ export default {
 			hasAutoDeposits: false,
 			hasLegacySubscription: false,
 			pageData: null,
-			headerTheme: lightHeader,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],

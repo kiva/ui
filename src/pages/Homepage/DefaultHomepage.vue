@@ -1,8 +1,5 @@
 <template>
-	<www-page
-		id="homepage"
-		:header-theme="headerTheme"
-	>
+	<www-page id="homepage">
 		<m-g-covid-hero
 			v-if="isExperimentActive"
 		/>
@@ -21,7 +18,6 @@
 
 <script>
 import gql from 'graphql-tag';
-import { lightHeader } from '@/util/siteThemes';
 
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
@@ -55,7 +51,6 @@ export default {
 			experimentVersion: null,
 			promoEnabled: false,
 			showSlideShow: null,
-			headerTheme: lightHeader,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],

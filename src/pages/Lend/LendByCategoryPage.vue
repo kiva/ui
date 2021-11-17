@@ -1,7 +1,6 @@
 <template>
 	<www-page
 		class="lend-by-category-page"
-		:header-theme="headerTheme"
 	>
 		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true" />
 
@@ -86,7 +85,6 @@
 </template>
 
 <script>
-import { lightHeader } from '@/util/siteThemes';
 import _each from 'lodash/each';
 import _filter from 'lodash/filter';
 import _get from 'lodash/get';
@@ -160,7 +158,6 @@ export default {
 			showHoverLoanCards: false,
 			recommendedLoans: [],
 			mlServiceBanditExpVersion: null,
-			headerTheme: lightHeader,
 		};
 	},
 	computed: {

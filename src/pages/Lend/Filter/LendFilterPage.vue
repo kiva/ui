@@ -1,7 +1,6 @@
 <template>
 	<www-page
 		class="lend-filter-page"
-		:header-theme="headerTheme"
 		:gray-background="true"
 		:hide-search-in-header="algoliaSearchEnabled"
 	>
@@ -127,7 +126,6 @@ import KvMessage from '@/components/Kv/KvMessage';
 import lendFilterPageQuery from '@/graphql/query/lendFilterPage.graphql';
 
 import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
-import { lightHeader } from '@/util/siteThemes';
 
 export default {
 	components: {
@@ -179,7 +177,6 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
 			itemsInBasket: null,
 			isLoggedIn: false,
 			userId: '',

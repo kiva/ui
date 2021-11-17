@@ -1,8 +1,5 @@
 <template>
-	<www-page
-		class="start-verification-page"
-		:header-theme="headerTheme"
-	>
+	<www-page class="start-verification-page">
 		<div class="page-content row align-center">
 			<div class="columns shrink" data-test="withdraw-verification-text">
 				<template v-if="!sent">

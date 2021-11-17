@@ -1,8 +1,5 @@
 <template>
-	<www-page
-		class="ui-error-page"
-		:header-theme="headerTheme"
-	>
+	<www-page class="ui-error-page">
 		<div class="page-content row align-center">
 			<div class="columns shrink">
 				<template v-if="errorDescription === 'force_password_reset'">
@@ -35,7 +32,6 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import logFormatter from '@/util/logFormatter';
-import { lightHeader } from '@/util/siteThemes';
 
 export default {
 	inject: ['locale'],
@@ -49,7 +45,6 @@ export default {
 			errorDescription: this.$route.query.error_description,
 			clientId: this.$route.query.client_id,
 			lenderLogin: this.$route.query.lender_login !== '0',
-			headerTheme: lightHeader,
 		};
 	},
 	computed: {
