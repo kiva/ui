@@ -6,13 +6,14 @@
 	>
 		<ais-sort-by :items="defaultSortIndices">
 			<ul slot-scope="{ items, currentRefinement, refine }">
-				<li v-for="item in items" :key="item.value" :value="item.value" class="sort">
-					<a href="#"
-						:class="{ 'selected': item.value === currentRefinement }"
-						@click.prevent="refine(item.value)"
+				<li v-for="item in items" :key="item.value" :value="item.value" class="tw-mb-2">
+					<button
+						class="tw-text-small"
+						:class="{ 'tw-text-action tw-font-medium': item.value === currentRefinement }"
+						@click="refine(item.value)"
 					>
 						{{ item.label | changeCase('sentenceCase') }}
-					</a>
+					</button>
 				</li>
 			</ul>
 		</ais-sort-by>
@@ -40,23 +41,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-li.sort {
-	margin-bottom: rem-calc(12);
-
-	a {
-		color: $charcoal;
-		font-size: rem-calc(14);
-		font-weight: 300;
-		text-decoration: none;
-
-		&.selected {
-			color: $kiva-green;
-			font-weight: bold;
-		}
-	}
-}
-</style>
