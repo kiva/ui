@@ -5,15 +5,20 @@
 			class="two-step-card-wrapper__two-step-card"
 		>
 			<template #content>
-				<h3 class="strong tw-mb-2">
+				<h3 class="tw-mb-2">
 					Status:
 					<kv-loading-placeholder
-						class="two-step-card-wrapper__two-step-card--loading"
+						class="tw-inline-block tw-w-4"
+						style="top: 0.125rem; height: 1.2rem;"
 						v-if="isLoading"
 					/>
 					<span
 						v-if="!isLoading"
-						:class="`two-step-card-wrapper__two-step-card--mfa-${MFAStatus}`"
+						class="tw-capitalize"
+						:class="{
+							'tw-text-danger' : MFAStatus === 'off',
+							'tw-text-brand' : MFAStatus === 'on'
+						}"
 					>
 						{{ MFAStatus }}
 					</span>
@@ -26,7 +31,6 @@
 				</p>
 				<kv-button
 					to="/settings/security/mfa"
-					class="smallest"
 				>
 					Manage 2-step verification
 				</kv-button>
@@ -40,8 +44,8 @@ import * as Sentry from '@sentry/vue';
 import gql from 'graphql-tag';
 
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import KvButton from '@/components/Kv/KvButton';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const pageQuery = gql`query mfaQuery($mfa_token: String!) {
 	my {
@@ -119,28 +123,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.two-step-card-wrapper {
-	&__two-step-card {
-		&--mfa-off {
-			color: $kiva-accent-red;
-			text-transform: capitalize;
-		}
-
-		&--mfa-on {
-			color: $kiva-green;
-			text-transform: capitalize;
-		}
-
-		&--loading {
-			width: 2rem;
-			height: 1.2rem;
-			display: inline-block;
-			top: 0.125rem;
-		}
-	}
-}
-</style>

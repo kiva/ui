@@ -7,22 +7,22 @@
 			@lightbox-closed="completeSetup"
 		>
 			<section class="app-authentication__body" v-if="step === 0">
-				<h2 class="app-authentication__heading">
+				<h2 class="app-authentication__heading tw-mb-2">
 					Use an authenticator app
 				</h2>
 				<kv-loading-spinner v-if="fetchingEnrollment" />
-				<p class="app-authentication__error" v-if="enrollmentError">
+				<p class="tw-text-danger tw-mb-2" v-if="enrollmentError">
 					{{ enrollmentError }}
 				</p>
 				<template v-if="!fetchingEnrollment && !enrollmentError">
-					<p class="app-authentication__description">
+					<p class="app-authentication__description tw-mb-2">
 						Download the Google Authenticator, Duo, or Authy app on your
 						phone or computer. Then tap the “+” in the authenticator app
 						and scan the image below.
 					</p>
-					<kv-button class="text-link" :href="barcodeURI">
+					<a class="tw-font-medium" :href="barcodeURI">
 						Set up on this device
-					</kv-button>
+					</a>
 					<vue-qrcode
 						class="app-authentication__barcode"
 						:value="barcodeURI"
@@ -30,32 +30,32 @@
 						error-correction-level="low"
 						v-if="barcodeURI"
 					/>
-					<kv-button class="expanded" @click.native="afterScan">
+					<kv-button class="tw-w-full tw-mb-2" @click="afterScan">
 						Continue
 					</kv-button>
-					<kv-button class="text-link" @click.native="cannotScan">
+					<button class="tw-text-link tw-font-medium" @click="cannotScan">
 						Can't scan it?
-					</kv-button>
+					</button>
 				</template>
 			</section>
 			<section class="app-authentication__body" v-if="step === 1 || step === 2">
 				<template v-if="step === 1">
-					<h2 class="app-authentication__heading">
+					<h2 class="app-authentication__heading tw-mb-2">
 						Set up authenticator
 					</h2>
-					<p class="app-authentication__description">
+					<p class="app-authentication__description tw-mb-2">
 						Enter the code shown in your authenticator app.
 					</p>
 				</template>
 				<template v-else>
-					<h2 class="app-authentication__heading">
+					<h2 class="app-authentication__heading tw-mb-2">
 						Can't scan the barcode?
 					</h2>
-					<p class="app-authentication__description">
+					<p class="app-authentication__description tw-mb-2">
 						Instead of scanning, use your authenticator app's "Manual entry" or equivalent option
 						and enter the code below. Your app will generate a 6-digit code, which you’ll use below.
 					</p>
-					<div class="app-authentication__secret">
+					<div class="tw-bg-tertiary tw-border tw-rounded-sm tw-font-medium tw-p-1 tw-mb-2">
 						{{ secret }}
 					</div>
 				</template>
@@ -71,13 +71,15 @@
 					<kv-loading-spinner
 						v-if="verificationPending"
 					/>
-					<p class="app-authentication__error" v-if="verificationError && !verificationPending">
+					<p class="tw-text-danger tw-mb-2"
+						v-if="verificationError && !verificationPending"
+					>
 						{{ verificationError }}
 					</p>
 					<kv-button
-						class="expanded"
+						class="tw-w-full"
 						type="submit"
-						:disabled="$v.userVerificationCode.$invalid"
+						:state="$v.userVerificationCode.$invalid ? 'disabled' : ''"
 						v-if="!verificationPending"
 					>
 						Done
@@ -104,7 +106,6 @@ import {
 	required, minLength, maxLength, numeric
 } from 'vuelidate/lib/validators';
 import VueQrcode from 'vue-qrcode';
-import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvVerificationCodeInput from '@/components/Kv/KvVerificationCodeInput';
@@ -112,6 +113,7 @@ import FirstMFASetup from '@/pages/Settings/FirstMFASetup';
 import RecoveryCodeConfirm from '@/pages/Settings/RecoveryCodeConfirm';
 import confirmOTPAuthenticatorEnrollment from '@/graphql/mutation/mfa/confirmOTPAuthenticatorEnrollment.graphql';
 import enrollOTPAuthenticator from '@/graphql/mutation/mfa/enrollOTPAuthenticator.graphql';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	inject: ['apollo', 'kvAuth0'],
@@ -296,20 +298,6 @@ export default {
 		margin: 1rem auto 1.5rem;
 	}
 
-	&__secret {
-		background-color: $kiva-bg-darkgray;
-		border: 1px solid $umbreon;
-		border-radius: rem-calc(2);
-		font-weight: bold;
-		padding: 0.5rem;
-		margin-bottom: 1rem;
-		font-size: 0.75rem;
-
-		@include breakpoint(medium) {
-			font-size: 1rem;
-		}
-	}
-
 	.verification-code {
 		&__label {
 			text-align: left;
@@ -323,10 +311,6 @@ export default {
 				font-size: 3rem;
 			}
 		}
-	}
-
-	&__error {
-		color: $kiva-accent-red;
 	}
 
 	.loading-spinner {
