@@ -1,8 +1,6 @@
 <template>
 	<www-page
 		id="co19-landing"
-		:header-theme="headerTheme"
-		:footer-theme="footerTheme"
 	>
 		<m-g-covid-hero />
 
@@ -25,7 +23,6 @@
 </template>
 
 <script>
-import { lightHeader, lightFooter } from '@/util/siteThemes';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
@@ -53,8 +50,6 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
-			footerTheme: lightFooter,
 			isExperimentActive: true,
 			isMonthlyGoodSubscriber: false,
 		};

@@ -1,5 +1,7 @@
 <template>
-	<www-page>
+	<www-page
+		:header-theme="greenHeader"
+	>
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
@@ -170,9 +172,15 @@
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import { greenHeader } from '@/util/siteThemes';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
 
 export default {
+	data() {
+		return {
+			greenHeader,
+		};
+	},
 	components: {
 		WwwPage,
 		DeveloperSecondaryMenu,
