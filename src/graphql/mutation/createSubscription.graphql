@@ -17,25 +17,6 @@ mutation createSubscription($nonce: String!, $deviceData: String!, $amount: Mone
 				}
 			}
 		) {
-			amount
-			category {
-				id
-				description
-				name
-				enabled
-				savedSearch {
-					id
-				}
-				subscriptionType
-			}
-			donation
 			id
-			noteSize
-			userId
-			schedule {
-				dayOfMonth
-				lendingDelay
-				period
-			}
 		}
 }

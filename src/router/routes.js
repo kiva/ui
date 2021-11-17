@@ -58,6 +58,10 @@ export default [
 				props: route => ({
 					cause: route.query.cause
 				})
+			},
+			{
+				path: 'thanks',
+				component: () => import('@/pages/Causes/Thanks'),
 			}
 		]
 	},

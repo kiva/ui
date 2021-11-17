@@ -136,29 +136,26 @@ export default {
 						// Payment method failed, unselect attempted payment method
 						this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
 						// exit
+						this.submitting = false;
 						return kivaBraintreeResponse;
 					}
-					console.log(kivaBraintreeResponse, paymentType);
 
-					// TODO handle success and emit success event
 					// Transaction is complete
 					// eslint-disable-next-line max-len
-					// const subscriptionCreatedSuccessfully = kivaBraintreeResponse.data?.my?.createMonthlyGoodSubscription;
+					const causeSignUpSuccess = kivaBraintreeResponse.data?.id;
 
-					// if (subscriptionCreatedSuccessfully) {
-					// 	// fire BT Success event
-					// 	this.$kvTrackEvent(
-					// 		this.action,
-					// 		`${paymentType} Braintree DropIn Subscription Payment`,
-					// 		`${this.action.toLowerCase()}-monthly-good-submit`
-					// 	);
+					if (causeSignUpSuccess) {
+						// fire BT Success event
+						this.$kvTrackEvent(
+							this.action,
+							`${paymentType} Braintree DropIn Causes Payment`,
+							`${this.action.toLowerCase()}-causes-submit`
+						);
 
-					// 	// Complete transaction handles additional analytics + redirect
-					// 	this.$emit('complete-transaction', paymentType);
-					// }
+						// Complete transaction handles additional analytics + redirect
+						this.$emit('complete-transaction', paymentType);
+					}
 					return kivaBraintreeResponse;
-				}).finally(() => {
-					this.submitting = false;
 				});
 			}
 		},
@@ -170,6 +167,5 @@ export default {
 			return '';
 		}
 	}
-
 };
 </script>

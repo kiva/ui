@@ -31,37 +31,39 @@
 						@submit.prevent=""
 						novalidate
 					>
-						<label
-							class="tw-text-h4"
-							for="amount"
-						>
-							Monthly Amount
-						</label>
-						<kv-select
-							class="tw-w-full tw-mt-2"
-							id="amount"
-							v-model="amount"
-						>
-							<option
-								v-for="(option, index) in mgAmountOptions"
-								:value="option.value"
-								:key="index"
+						<fieldset :disabled="true">
+							<label
+								class="tw-text-h4"
+								for="amount"
 							>
-								{{ option.label }}
-							</option>
-						</kv-select>
+								Monthly Amount
+							</label>
+							<kv-select
+								class="tw-w-full tw-mt-2"
+								id="amount"
+								v-model="amount"
+							>
+								<option
+									v-for="(option, index) in mgAmountOptions"
+									:value="option.value"
+									:key="index"
+								>
+									{{ option.label }}
+								</option>
+							</kv-select>
 
-						<p class="tw-mt-2 tw-text-base">
-							<!-- eslint-disable-next-line max-len -->
-							Your subscription will renew automatically every month on the 1st. You can cancel any time.
-						</p>
+							<p class="tw-mt-2 tw-text-base">
+								<!-- eslint-disable-next-line max-len -->
+								Your subscription will renew automatically every month on the 1st. You can cancel any time.
+							</p>
 
-						<causes-drop-in-payment-wrapper
-							class="tw-mt-4 tw-mx-auto"
-							:amount="amount"
-							:category="cause"
-							@complete-transaction="completeCausesBraintree"
-						/>
+							<causes-drop-in-payment-wrapper
+								class="tw-mt-4 tw-mx-auto"
+								:amount="amount"
+								:category="cause"
+								@complete-transaction="completeCausesBraintree"
+							/>
+						</fieldset>
 					</form>
 				</div>
 			</kv-grid>
@@ -136,21 +138,19 @@ export default {
 					label: `${numeral(100).format('$0,0')}`,
 				},
 			],
-			amount: 5
+			amount: 5,
+			success: false
 		};
 	},
 	inject: ['apollo'],
 	methods: {
 		completeCausesBraintree() {
-			// TODO handle success and send to thanks page
-			// this.showLoadingOverlay = true;
-			// this.$kvTrackEvent('Registration', 'successful-auto-deposit-reg', 'register-auto-deposit');
-			// // Send to thanks page
-			// this.$router.push({
-			// 	path: `${this.$route.path}/thanks`,
-			// }).finally(() => {
-			// 	this.showLoadingOverlay = false;
-			// });
+			// disable form inputs while routing to thanks
+			this.success = true;
+			this.$kvTrackEvent('Registration', 'successful-causes-reg', 'register-causes');
+			this.$router.push({
+				path: 'causes/thanks',
+			});
 		},
 	},
 };
