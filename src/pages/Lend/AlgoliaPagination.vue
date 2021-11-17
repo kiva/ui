@@ -196,7 +196,7 @@ export default {
 	text-align: center;
 
 	.ais-Pagination-item {
-		color: $kiva-text-light;
+		color: rgb(var(--text-secondary));
 	}
 
 	.ais-Pagination-item--previousPage .icon {
@@ -210,14 +210,14 @@ export default {
 	.ais-Pagination-item--previousPage,
 	.ais-Pagination-item--nextPage {
 		.icon {
-			fill: $kiva-textlink;
+			fill: rgb(var(--text-action));
 			height: 1rem;
 			margin-top: rem-calc(9);
 			width: 1rem;
 
 			&.disabled {
-				color: $kiva-text-light;
-				fill: $kiva-text-light;
+				color: rgb(var(--text-secondary));
+				fill: rgb(var(--text-secondary));
 			}
 		}
 
@@ -227,7 +227,7 @@ export default {
 		}
 
 		a:hover .icon {
-			fill: $kiva-textlink-hover;
+			fill: rgb(var(--text-action-highlight));
 		}
 	}
 

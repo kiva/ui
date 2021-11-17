@@ -1,10 +1,10 @@
 <template>
-	<div
-		class="clear-all-refinements"
-		@click.prevent="clearAll"
+	<button
+		class="clear-all-refinements tw-text-small tw-text-link"
+		@click="clearAll"
 	>
 		Reset all
-	</div>
+	</button>
 </template>
 
 <script>
@@ -17,15 +17,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.clear-all-refinements {
-	color: $faded-blue;
-	cursor: pointer;
-	display: inline;
-	font-size: rem-calc(14);
-	user-select: none;
-}
-</style>

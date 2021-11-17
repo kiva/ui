@@ -2,9 +2,7 @@
 	<ais-range-input
 		:attribute="queryAttribute"
 		:precision="precision"
-		:class-names="{
-			'ais-RangeInput': 'range-input',
-		}"
+		class="tw-mb-2"
 	>
 		<div slot-scope="{ currentRefinement, range, refine }">
 			<filter-range-slider
@@ -89,10 +87,3 @@ export default {
 	},
 };
 </script>
-<style lang="scss" scoped>
-@import 'settings';
-
-.ais-RangeInput {
-	margin-bottom: rem-calc(15);
-}
-</style>

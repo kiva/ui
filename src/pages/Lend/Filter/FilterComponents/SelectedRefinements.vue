@@ -23,19 +23,22 @@
 					<div class="small-12 large-2 columns">
 						<div v-if="isCollapsible" class="filter-summary-container">
 							<div class="show-all-container">
-								<div class="show-all" v-if="isCollapsed" @click="handleClickShowMore">
+								<button class="show-all tw-text-small tw-text-link"
+									v-if="isCollapsed"
+									@click="handleClickShowMore"
+								>
 									Show all {{ items.length }} filters
-								</div>
+								</button>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div v-if="!isCollapsed && isCollapsible" class="hide-reset-toggle-container">
-					<div @click="handleClickShowFewer" class="hide-filter align-middle">
+					<button @click="handleClickShowFewer" class="hide-filter align-middle tw-text-small tw-text-link">
 						Hide filters
-					</div>
+					</button>
 
-					<ais-clear-refinements class="clear-all align-middle">
+					<ais-clear-refinements class="clear-all align-middle tw-text-small tw-text-link">
 						<clear-all-refinements
 							slot-scope="{ canRefine, refine }"
 							@clear-all-refinements="refine"
@@ -240,20 +243,8 @@ export default {
 		}
 	}
 
-	.toggle-container {
-		color: $faded-blue;
-		font-size: rem-calc(14);
-		user-select: none;
-	}
-
 	.show-all-container {
-		@extend .toggle-container;
-
 		width: 100%;
-
-		.show-all {
-			cursor: pointer;
-		}
 
 		@include breakpoint(large) {
 			text-align: right;
@@ -261,13 +252,10 @@ export default {
 	}
 
 	.hide-reset-toggle-container {
-		@extend .toggle-container;
-
 		height: rem-calc(20);
 		margin-left: rem-calc(1);
 
 		.hide-buttons {
-			cursor: pointer;
 			display: inline-block;
 			height: rem-calc(20);
 		}

@@ -1,6 +1,6 @@
 <template>
 	<kv-pill-toggle
-		class="gender-pill-toggle"
+		class="tw-text-small tw-flex tw-my-1"
 		id="gender-options"
 		:options="genderOptions"
 		:selected="genderOptionSelected"
@@ -58,13 +58,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.gender-pill-toggle {
-	display: flex;
-	font-size: 0.875rem;
-	margin: 0.5rem 0;
-}
-</style>
