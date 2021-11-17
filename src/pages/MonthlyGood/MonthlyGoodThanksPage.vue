@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-	>
+	<www-page>
 		<div class="row align-center monthly-good-thanks-page">
 			<div class="small-12 medium-11 large-8 column">
 				<h1 class="text-center impact-text">
@@ -43,7 +41,6 @@ import numeral from 'numeral';
 import { addMonths, formatDistanceToNow } from 'date-fns';
 import KvIcon from '@/components/Kv/KvIcon';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import { lightHeader } from '@/util/siteThemes';
 
 const pageQuery = gql`query monthlyGoodThanksPage {
 	my {
@@ -80,7 +77,6 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
 			mgAmount: 0,
 			donation: 0,
 			autoDepositAmount: 0,

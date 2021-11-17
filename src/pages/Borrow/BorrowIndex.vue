@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-	>
+	<www-page>
 		<div class="row">
 			<div class="container">
 				<div class="small-12 columns">
@@ -16,14 +14,8 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import BorrowIntro from '@/pages/Borrow/BorrowIntro';
-import { lightHeader } from '@/util/siteThemes';
 
 export default {
-	data() {
-		return {
-			headerTheme: lightHeader,
-		};
-	},
 	components: {
 		BorrowIntro,
 		WwwPage

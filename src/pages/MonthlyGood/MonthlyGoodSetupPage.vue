@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-	>
+	<www-page>
 		<div class="monthly-good-setup-page">
 			<div class="row align-center text-center auto-lending-notice"
 				v-if="balance > autoDepositNoticeThreshold"
@@ -305,7 +303,6 @@ import KvSelect from '@/components/Kv/KvSelect';
 import LegacySubscriberNotice from '@/components/MonthlyGood/LegacySubscriberNotice';
 import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import { lightHeader } from '@/util/siteThemes';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 const pageQuery = gql`query monthlyGoodSetupPageControl {
@@ -398,7 +395,6 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
 			selectedGroup: 'default',
 			mgAmount: 25,
 			isDayInputShown: false,

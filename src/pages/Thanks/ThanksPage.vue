@@ -1,6 +1,5 @@
 <template>
 	<www-page
-		:header-theme="headerTheme"
 		:gray-background="true"
 	>
 		<div class="row page-content">
@@ -73,7 +72,6 @@ import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import MonthlyGoodCTA from '@/components/Checkout/MonthlyGoodCTA';
 import SocialShare from '@/components/Checkout/SocialShare';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import { lightHeader } from '@/util/siteThemes';
 import ThanksLayoutV2 from '@/components/Thanks/ThanksLayoutV2';
 
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
@@ -111,7 +109,6 @@ export default {
 			isMonthlyGoodSubscriber: false,
 			isGuest: false,
 			pageData: {},
-			headerTheme: lightHeader,
 		};
 	},
 	apollo: {

@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-	>
+	<www-page>
 		<template #secondary>
 			<custom-secondary-menu
 
@@ -30,7 +28,6 @@
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TertiaryMenu from '@/components/WwwFrame/TertiaryMenu';
 import CustomSecondaryMenu from '@/components/WwwFrame/Menus/CustomSecondaryMenu';
-import { lightHeader } from '@/util/siteThemes';
 
 export default {
 	components: {
@@ -43,7 +40,6 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
 			menuItems: [
 				{
 					name: 'Privacy Policy',

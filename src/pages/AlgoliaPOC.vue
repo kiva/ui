@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-	>
+	<www-page>
 		<div class="row page-content">
 			<div class="small-12 columns">
 				<h1>Algolia Search!</h1>
@@ -151,7 +149,6 @@ import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _forEach from 'lodash/forEach';
 import _union from 'lodash/union';
-import { lightHeader } from '@/util/siteThemes';
 
 // Import your specific Algolia Components here
 // https://www.algolia.com/doc/api-reference/widgets/instantsearch/vue/
@@ -276,7 +273,6 @@ export default {
 			// },
 			itemsInBasket: null,
 			isLoggedIn: false,
-			headerTheme: lightHeader,
 		};
 	},
 	computed: {

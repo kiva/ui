@@ -1,7 +1,6 @@
 <template>
 	<www-page
 		class="lend-page"
-		:header-theme="headerTheme"
 		:gray-background="true"
 	>
 		<div class="row">
@@ -47,7 +46,6 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvPagination from '@/components/Kv/KvPagination';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import { lightHeader } from '@/util/siteThemes';
 
 const loansPerPage = 12;
 
@@ -98,7 +96,6 @@ export default {
 			isVisitor: true,
 			itemsInBasket: [],
 			loading: false,
-			headerTheme: lightHeader,
 		};
 	},
 	computed: {

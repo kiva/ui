@@ -1,21 +1,13 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-	>
+	<www-page>
 		<router-view />
 	</www-page>
 </template>
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import { lightHeader } from '@/util/siteThemes';
 
 export default {
-	data() {
-		return {
-			headerTheme: lightHeader,
-		};
-	},
 	components: {
 		WwwPage
 	},

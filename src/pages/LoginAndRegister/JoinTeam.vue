@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-	>
+	<www-page>
 		<div class="row page-content">
 			<join-team-form />
 		</div>
@@ -11,14 +9,8 @@
 <script>
 import JoinTeamForm from '@/components/Forms/JoinTeamForm';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import { lightHeader } from '@/util/siteThemes';
 
 export default {
-	data() {
-		return {
-			headerTheme: lightHeader,
-		};
-	},
 	components: {
 		WwwPage,
 		JoinTeamForm

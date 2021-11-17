@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-	>
+	<www-page>
 		<!-- Auto Deposit Thanks Page -->
 		<div class="row align-center auto-deposit-thanks-page text-center">
 			<div class="small-12 medium-11 large-8 column">
