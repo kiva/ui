@@ -1,5 +1,8 @@
 <template>
-	<www-page :gray-background="true">
+	<www-page
+		:header-theme="headerTheme"
+		:gray-background="true"
+	>
 		<lend-header
 			:side-arrows-padding="false"
 			browse-url="/lend-by-category"
@@ -167,6 +170,7 @@ import {
 } from 'vue-instantsearch';
 import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import { lightHeader } from '@/util/siteThemes';
 import LendHeader from '@/pages/Lend/LendHeader';
 // This mixin provides some algolia search instance initialization on mounted
 import algoliaInit from '@/plugins/algolia-init-mixin';
@@ -194,6 +198,7 @@ export default {
 		return {
 			toFor: 'to',
 			itemsInBasket: null,
+			headerTheme: lightHeader,
 		};
 	},
 	inject: [

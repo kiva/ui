@@ -1,5 +1,8 @@
 <template>
-	<www-page :gray-background="true">
+	<www-page
+		:header-theme="headerTheme"
+		:gray-background="true"
+	>
 		<div class="row page-content">
 			<div class="small-12 columns thanks">
 				<div class="thanks__checkout-steps-wrapper hide-for-print">
@@ -70,6 +73,7 @@ import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import MonthlyGoodCTA from '@/components/Checkout/MonthlyGoodCTA';
 import SocialShare from '@/components/Checkout/SocialShare';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import { lightHeader } from '@/util/siteThemes';
 import ThanksLayoutV2 from '@/components/Thanks/ThanksLayoutV2';
 
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
@@ -107,6 +111,7 @@ export default {
 			isMonthlyGoodSubscriber: false,
 			isGuest: false,
 			pageData: {},
+			headerTheme: lightHeader,
 		};
 	},
 	apollo: {

@@ -1,5 +1,8 @@
 <template>
-	<www-page class="start-verification-page">
+	<www-page
+		class="start-verification-page"
+		:header-theme="headerTheme"
+	>
 		<div class="page-content row align-center">
 			<div class="columns shrink" data-test="withdraw-verification-text">
 				<template v-if="!sent">
@@ -36,6 +39,7 @@ import * as Sentry from '@sentry/vue';
 import KvButton from '@/components/Kv/KvButton';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import { lightHeader } from '@/util/siteThemes';
 
 function getFullPath(url = '/') {
 	if (url.startsWith('/')) {
@@ -79,6 +83,7 @@ export default {
 			process: '',
 			sent: false,
 			sending: false,
+			headerTheme: lightHeader,
 		};
 	},
 	apollo: {
