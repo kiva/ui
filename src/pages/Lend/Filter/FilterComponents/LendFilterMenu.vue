@@ -183,7 +183,7 @@ export default {
 
 #lend-filter-menu {
 	$filter-transition: 0.25s ease-out;
-	$filter-border-radius: rem-calc(3);
+	$filter-border-radius: rem-calc(3); /* stylelint-disable-line */
 
 	margin-bottom: rem-calc(10);
 

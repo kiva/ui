@@ -1,4 +1,5 @@
 ## [2.10.0-next.1](https://github.com/kiva/ui/compare/v2.9.0...v2.10.0-next.1) (2021-11-16)
+## [2.10.0](https://github.com/kiva/ui/compare/v2.9.0...v2.10.0) (2021-11-16)
 
 
 ### Features
@@ -68,6 +69,9 @@
 * use Kv form elements in KvBaseInput ([627c89b](https://github.com/kiva/ui/commit/627c89b3edf84dd8390e072ae0aa6467bb5aee84))
 * use KvDefaultPageWrapper ([e7ddf6b](https://github.com/kiva/ui/commit/e7ddf6b835309dad73b7bc21defd7374c2d9f7fb))
 * use new KvTextInput inside KvCurrencyInput ([547f201](https://github.com/kiva/ui/commit/547f2017cfb72be495f5b0a6949cc1285c552f64))
+* handle incoming instantLending query param to hide kiva card row ([f42f500](https://github.com/kiva/ui/commit/f42f5003eefd78202ef7ff0cb0223797a95eb118))
+* process add to basket for loan id for instant lending and extract error scenarios ([badd420](https://github.com/kiva/ui/commit/badd4207c7a296db51edd1056c59d70241e2690c))
+* setup instant lending error page and content from contentful ([a27a5ad](https://github.com/kiva/ui/commit/a27a5adb9821d3b2556e31faf9ba3175c8cc730a))
 
 
 ### Bug Fixes
@@ -90,6 +94,7 @@
 * set background opacity to previous opacity value ([232844c](https://github.com/kiva/ui/commit/232844ca6d1e99d5b91b5da2110072499b9ae354))
 * typo on [@click](https://github.com/click) ([730645d](https://github.com/kiva/ui/commit/730645dc9b6aba45b940c0a1bdbde491da15181c))
 * use router-link instead of anchor tag ([dfc5301](https://github.com/kiva/ui/commit/dfc5301219a805d383b6a256cac92d814c3cdc60))
+* update routes for instant lending ([f658b48](https://github.com/kiva/ui/commit/f658b488acc79bf1e68eabfddce320a1c20d0eb3))
 
 ## [2.9.0](https://github.com/kiva/ui/compare/v2.8.0...v2.9.0) (2021-11-15)
 
