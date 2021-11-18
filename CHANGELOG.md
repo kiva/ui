@@ -1,3 +1,10 @@
+## [2.12.0](https://github.com/kiva/ui/compare/v2.11.0...v2.12.0) (2021-11-18)
+
+
+### Features
+
+* enable redirect to instant lending if atb query param is present ([bcc9a28](https://github.com/kiva/ui/commit/bcc9a289d33e66eacbab1a9fee03e4c37f809d3f))
+
 ## [2.11.0](https://github.com/kiva/ui/compare/v2.10.0...v2.11.0) (2021-11-18)
 
 
