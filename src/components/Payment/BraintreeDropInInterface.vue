@@ -417,6 +417,11 @@ $border-width: 1px;
 <style lang="postcss">
 	/* New Tailwind Styles */
 
+	/* Small margin for loader */
+	.loading-spinner {
+		@apply tw-mb-2;
+	}
+
 	/* Braintree section headings
 	'Choose a way to pay'
 	'Paying with Card'

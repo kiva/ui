@@ -54,7 +54,14 @@ export default [
 		children: [
 			{
 				path: 'signup',
-				component: () => import('@/pages/Causes/Signup')
+				component: () => import('@/pages/Causes/Signup'),
+				props: route => ({
+					cause: route.query.cause
+				})
+			},
+			{
+				path: 'thanks',
+				component: () => import('@/pages/Causes/Thanks'),
 			}
 		]
 	},
