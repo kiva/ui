@@ -17,26 +17,26 @@
 				</div>
 				<div class="small-12 medium-8 columns">
 					<h2
-						class="strong funding-status"
+						class="tw-text-action tw-inline-block"
 						v-if="loan.status==='funded'"
 					>
 						100%
 					</h2>
-					<h2 class="strong funding-status">
+					<h2 class="tw-text-action tw-inline-block tw-capitalize">
 						{{ loan.status }}
 					</h2>
 					<!-- Total funded/loan amount -->
-					<div class="loan-total-text">
+					<div class="tw-mt-1">
 						Total loan: ${{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }}
 					</div>
 					<!-- Borrower Name -->
 					<h1> {{ loan.name }} </h1>
 					<!-- Borrower location -->
-					<div>
+					<div class="tw-mt-2">
 						<div class="loan-location-flag">
 							<kv-flag :country="`${ loan.geocode.country.isoCode }`" />
 						</div>
-						<span class="loan-location-text">
+						<span>
 							{{ loan.geocode.city }}, {{ loan.geocode.state }}, {{ loan.geocode.country.name }}
 							/ {{ loan.sector.name }}
 						</span>
@@ -56,28 +56,29 @@
 			<!-- Loans you might light section -->
 			<div class="row lyml-wrapper">
 				<div class="small-12 columns">
-					<hr>
-					<h3 class="lyml-text tw-text-center" v-html="lymlHeading"></h3>
+					<hr class="tw-border-tertiary">
+					<h3 class="tw-text-center tw-mb-2 tw-mt-3" v-html="lymlHeading"></h3>
 					<l-y-m-l
+						class="tw-mb-3"
 						:basketed-loans="itemsInBasket"
 						:target-loan="loan"
 						@add-to-basket="handleAddToBasket"
 					/>
 				</div>
 			</div>
-			<hr>
+			<hr class="tw-border-tertiary">
 			<div class="row">
-				<div class="small-12 columns tw-text-center">
+				<div class="small-12 columns tw-text-center tw-py-4">
 					<!-- Loan use -->
-					<h2 class="loan-use-text">
+					<h2>
 						A loan helped {{ loan.use }}
 					</h2>
 				</div>
 			</div>
-			<hr>
+			<hr class="tw-border-tertiary">
 			<div class="row">
-				<div class="small-12 columns loan-description-wrapper">
-					<h2 class="loan-description-heading-text">
+				<div class="small-12 columns loan-description-wrapper tw-pt-4">
+					<h2 class="tw-mb-4">
 						{{ loan.name }}'s story
 					</h2>
 					<!-- Loan description -->
@@ -191,21 +192,6 @@ export default {
 
 .borrower-profile-wrapper {
 	padding-top: 1rem;
-}
-
-.funding-status {
-	color: $kiva-green;
-	font-size: 2.5rem;
-	display: inline-block;
-	text-transform: capitalize;
-}
-
-.loan-use-text,
-.loan-total-text,
-.loan-description-heading-text,
-.loan-location-text,
-.lyml-text {
-	font-weight: $button-font-weight;
 }
 
 .loan-location-flag {
