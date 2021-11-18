@@ -10,7 +10,7 @@
 				:id="item.region|changeCase('paramCase')"
 				:class="{open: isRegionOpen(item.region)}"
 			>
-				<div
+				<button
 					class="region-title-row"
 					@click="toggleRegionOpenState(item.region)"
 				>
@@ -25,25 +25,27 @@
 					>
 						{{ item.label }} ({{ item.count }})
 					</div>
-				</div>
+				</button>
 				<div
 					v-if="isRegionOpen(item.region)"
 					class="select-all-toggle-container"
 				>
-					<div
+					<button
 						v-if="!item.allCountriesSelected"
+						class="tw-text-link"
 						@click="selectAllCountries(item.countries, item.region)"
 						:id="'select-all-'+item.region|changeCase('paramCase')"
 					>
 						Select all
-					</div>
-					<div
+					</button>
+					<button
 						v-else
+						class="tw-text-link"
 						@click="deselectAllCountries(item.countries, item.region)"
 						:id="'deselect-all-'+item.region|changeCase('paramCase')"
 					>
 						Deselect all
-					</div>
+					</button>
 				</div>
 			</div>
 			<kv-checkbox
@@ -181,6 +183,7 @@ export default {
 
 	.region-children {
 		margin-left: 1.5rem;
+		margin-bottom: 0.5rem;
 	}
 
 	.region {
@@ -209,7 +212,6 @@ export default {
 			@extend .region-children;
 
 			margin-bottom: rem-calc(6);
-			color: $blue;
 		}
 
 		&.open {

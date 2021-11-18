@@ -1,6 +1,6 @@
 <template>
-	<div class="hits-per-page">
-		<div class="title">
+	<div class="hits-per-page tw-flex tw-items-center tw-justify-center tw-my-3">
+		<div class="title tw-text-secondary tw-whitespace-nowrap tw-mr-2">
 			Loans per page
 		</div>
 		<ais-hits-per-page :items="[
@@ -22,39 +22,12 @@ export default {
 };
 </script>
 
-<style lang="scss">
-@import 'settings';
-
-.hits-per-page {
-	align-items: center;
-	display: flex;
-	justify-content: center;
-	margin-top: rem-calc(24);
-	margin-bottom: rem-calc(24);
-	max-height: rem-calc(32);
-	text-align: center;
-
-	.title {
-		color: $gray;
-		font-size: rem-calc(15);
-		height: rem-calc(45);
-		margin-right: rem-calc(23);
-		white-space: nowrap;
-		width: rem-calc(102);
-	}
-
-	.ais-HitsPerPage {
-		max-width: rem-calc(61);
-
-		.ais-HitsPerPage-select {
-			background-color: $white;
-			border: 1px solid $light-gray;
-			color: $charcoal;
-			font-size: rem-calc(16);
-			height: rem-calc(34);
-			line-height: rem-calc(16);
-			width: rem-calc(61);
-		}
-	}
+<style lang="postcss">
+.ais-HitsPerPage-select {
+	/* from kv-select */
+	@apply tw-text-base tw-bg-primary;
+	@apply tw-w-full tw-h-6 tw-px-2;
+	@apply tw-border tw-border-tertiary tw-rounded-sm tw-ring-inset;
+	@apply focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-action focus:tw-border-transparent;
 }
 </style>
