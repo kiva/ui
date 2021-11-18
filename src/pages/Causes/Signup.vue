@@ -33,6 +33,16 @@ const pageQuery = gql`query causesSignupEligibilityQuery {
 			}
 		}
 	}
+	mySubscriptions {
+		values {
+			id
+			enabled
+			category {
+				id
+				subscriptionType
+			}
+		}
+	}
 }`;
 
 export default {
@@ -56,6 +66,7 @@ export default {
 			hasAutoDeposits: false,
 			hasLegacySubscription: false,
 			hasMadeLoan: false,
+			mySubscriptions: []
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -92,6 +103,7 @@ export default {
 			const legacySubs = pageQueryResult?.my?.subscriptions?.values ?? [];
 			this.hasLegacySubscription = legacySubs.length > 0;
 			this.hasMadeLoan = pageQueryResult?.my?.lender?.loanCount > 0;
+			this.mySubscriptions = pageQueryResult?.mySubscriptions?.values ?? [];
 		} catch (e) {
 			logReadQueryError(e, 'Causes Signup causesSignupEligibilityQuery');
 		}
@@ -102,14 +114,28 @@ export default {
 			return this.$route.query.beta === 'true';
 		},
 		isEligibleForCausesSignup() {
-			// TODO Update this, see GD-161
 			/** A user is eligible if:
 			* no existing MG subscription
 			* no legacy subscription
 			* no have auto-deposit
-			* no traditional loan purchases
+			* no traditional loan purchases and also has never had a cause subscription
 			*/
-			return !this.isMonthlyGoodSubscriber && !this.hasAutoDeposits && !this.hasAutoDeposits && !this.hasMadeLoan;
+			const causesSubscriptions = this.mySubscriptions.filter(
+				subscription => subscription.category.subscriptionType === 'CAUSES'
+			);
+
+			const hasActiveCauseSubscription = causesSubscriptions.find(
+				subscription => subscription.enabled
+			);
+			const hasInactiveCauseSubscription = causesSubscriptions.find(
+				subscription => !subscription.enabled
+			);
+
+			return !hasActiveCauseSubscription
+				&& !this.isMonthlyGoodSubscriber
+				&& !this.hasAutoDeposits
+				&& !this.hasLegacySubscription
+				&& (!this.hasMadeLoan && !hasInactiveCauseSubscription);
 		}
 	},
 };
