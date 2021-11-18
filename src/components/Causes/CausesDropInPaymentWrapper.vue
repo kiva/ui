@@ -55,7 +55,7 @@ export default {
 			type: Number,
 			default: 1
 		},
-		category: {
+		causeCategoryId: {
 			type: String,
 			default: ''
 		},
@@ -121,8 +121,7 @@ export default {
 						nonce,
 						deviceData,
 						amount: numeral(this.amount).format('0.00'),
-						// TODO -- this is the static id for climate on dev. This id must be fetched from API
-						categoryId: '732c6689-58b7-4e31-b305-d7862d040509',
+						categoryId: this.causeCategoryId,
 						donation: 0,
 						noteSize: 5, // TODO make this some kind of global setting?
 						dayOfMonth: numeral(this.dayOfMonth).value(),

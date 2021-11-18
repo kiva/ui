@@ -31,7 +31,7 @@
 						@submit.prevent=""
 						novalidate
 					>
-						<fieldset :disabled="true">
+						<fieldset :disabled="success">
 							<label
 								class="tw-text-h4"
 								for="amount"
@@ -60,7 +60,7 @@
 							<causes-drop-in-payment-wrapper
 								class="tw-mt-4 tw-mx-auto"
 								:amount="amount"
-								:category="cause"
+								:cause-category-id="causeCategoryId"
 								@complete-transaction="completeCausesBraintree"
 							/>
 						</fieldset>
@@ -72,6 +72,7 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
 
 import { validationMixin } from 'vuelidate';
 import numeral from 'numeral';
@@ -83,6 +84,17 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 const causesIconImgRequire = require.context('@/assets/images/causes-icons/', true);
+
+const pageQuery = gql`query causesCategoryIds {
+  getCategories(subscriptionType: "CAUSES") {
+    totalCount
+    values {
+      enabled
+      id
+      name
+    }
+  }
+}`;
 
 export default {
 	props: {
@@ -139,10 +151,18 @@ export default {
 				},
 			],
 			amount: 5,
-			success: false
+			success: false,
+			causesCategories: [],
 		};
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
+	apollo: {
+		query: pageQuery,
+		preFetch: true,
+		result(result) {
+			this.causesCategories = result?.data?.getCategories?.values ?? [];
+		},
+	},
 	methods: {
 		completeCausesBraintree() {
 			// disable form inputs while routing to thanks
@@ -152,6 +172,21 @@ export default {
 				path: 'causes/thanks',
 			});
 		},
+	},
+	computed: {
+		causeCategoryId() {
+			switch (this.cause) {
+				case 'climate':
+					return this.causesCategories.find(category => category.name === 'Climate Change')?.id;
+				case 'education':
+					return this.causesCategories.find(category => category.name === 'Education')?.id;
+				case 'women':
+					return this.causesCategories.find(category => category.name === 'Support Women')?.id;
+				default:
+					console.log(`Did not find category id for this.cause: "${this.cause}"`, 'warning');
+					return '';
+			}
+		}
 	},
 };
 </script>

@@ -22,7 +22,7 @@
 					<p class="tw-text-h3 tw-text-secondary tw-mt-3 tw-text-center tw-px-2.5 tw-mb-4">
 						Check the app for regular inspiration and updates on your impact.
 					</p>
-					<div class="tw-m-auto tw-max-w-[220px]">
+					<div class="tw-m-auto tw-max-w-[210px]">
 						<a
 							class="tw-inline-block tw-mb-3 tw-w-full"
 							:href="appStoreUrl"
