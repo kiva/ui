@@ -33,8 +33,8 @@
 						overlay-column columns
 						medium-10 medium-offset-1 large-8 large-offset-0 xlarge-7 xxlarge-6"
 				>
-					<h1 class="mg-headline" v-html="pageCopy.headline"></h1>
-					<p class="mg-subhead" v-html="pageCopy.subhead"></p>
+					<h1 class="tw-mb-2 tw-text-h2" v-html="pageCopy.headline"></h1>
+					<p class="tw-mb-4" v-html="pageCopy.subhead"></p>
 					<covid-landing-form
 						:key="1"
 						:button-text="pageCopy.button"
@@ -253,19 +253,6 @@ export default {
 	@include breakpoint(xga) {
 		min-height: 27rem;
 	}
-}
-
-.mg-headline {
-	@include large-text();
-
-	margin-bottom: 0.25rem;
-}
-
-.mg-subhead {
-	@include medium-text();
-
-	padding: 0;
-	margin-bottom: 1.5rem;
 }
 
 .video-column {
