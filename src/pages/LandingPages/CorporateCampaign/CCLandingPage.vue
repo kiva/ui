@@ -1,7 +1,5 @@
 <template>
 	<www-page-corporate
-		:header-theme="headerTheme"
-		:footer-theme="footerTheme"
 		:corporate-logo-url="corporateLogoUrl"
 	>
 		<div class="corporate-campaign-landing">
@@ -236,7 +234,6 @@ import LoanSearchFilters, { getSearchableFilters } from '@/api/fixtures/LoanSear
 import syncDate from '@/util/syncDate';
 import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import { lightHeader, lightFooter } from '@/util/siteThemes';
 import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
@@ -500,8 +497,6 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
-			footerTheme: lightFooter,
 			rawPageData: null,
 			pageData: null,
 			hasFreeCredits: null,

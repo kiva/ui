@@ -1,7 +1,6 @@
 <template>
 	<www-page id="homepage"
 		class="lend-by-category-homepage"
-		:header-theme="headerTheme"
 	>
 		<hero-slideshow
 			v-if="heroPromoEnabled && heroPromoContent"
@@ -241,7 +240,6 @@
 import gql from 'graphql-tag';
 import { settingEnabled } from '@/util/settingsUtils';
 import { formatGenericContentBlock } from '@/util/contentfulUtils';
-import { lightHeader } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
@@ -290,7 +288,6 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
 			howItWorksImgs: {
 				borrower: [
 					['small', imgRequire('./how-it-works-borrower.png')],

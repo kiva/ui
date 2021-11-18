@@ -1,5 +1,7 @@
 <template>
-	<www-page :gray-background="true">
+	<www-page
+		:gray-background="true"
+	>
 		<div class="row page-content">
 			<div class="small-12 columns thanks">
 				<div class="thanks__checkout-steps-wrapper hide-for-print">

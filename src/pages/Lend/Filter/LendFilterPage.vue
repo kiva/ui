@@ -1,5 +1,9 @@
 <template>
-	<www-page class="lend-filter-page" :gray-background="true" :hide-search-in-header="algoliaSearchEnabled">
+	<www-page
+		class="lend-filter-page"
+		:gray-background="true"
+		:hide-search-in-header="algoliaSearchEnabled"
+	>
 		<kv-message>
 			Welcome to Kiva's new filter page! Take it for a spin below, or
 			<a @click="exitLendFilterExp('click-return-classic')">return to the classic view</a> at any time.

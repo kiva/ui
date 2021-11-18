@@ -1,7 +1,6 @@
 <template>
 	<www-page
 		id="lend-filter-alpha"
-		:header-theme="headerTheme"
 		:main-class="'kv-tailwind'"
 	>
 		<article class="tw-bg-secondary tw-relative tw-pt-6">
@@ -148,7 +147,6 @@
 
 <script>
 import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
-import { lightHeader } from '@/util/siteThemes';
 import {
 	fetchData, filterGender, filterSector, fetchSectors, fetchCountryFacets, filterCountry, filterLoanTerm,
 } from '@/util/flssUtils';
@@ -177,7 +175,6 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
 			loanId: Number(this.$route.params.id || 0),
 			loanQueryFilters: {},
 			totalCount: 0,

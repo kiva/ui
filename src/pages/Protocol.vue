@@ -174,7 +174,7 @@ export default {
 			billionImpactImages: [
 				['small', billionImpactImagesRequire('./10-years-billion-impact.jpg')],
 				['small retina', billionImpactImagesRequire('./10-years-billion-impact_2x.jpg')],
-			]
+			],
 		};
 	},
 	metaInfo: {

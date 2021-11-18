@@ -181,7 +181,7 @@
 							<img
 								:src="profilePic"
 								alt="My portfolio"
-								class="fs-mask"
+								class="fs-mask tw-inline-block"
 							>
 						</span>
 					</router-link>
@@ -620,12 +620,12 @@ export default {
 $top-nav-font-size: 1.125rem;
 $header-height: rem-calc(45);
 $header-height-large: rem-calc(64);
-$header-background-color: $kiva-green;
-$header-text-color: $white;
-$header-logo-color: $white;
-$header-link-color: $white;
-$header-link-hover-color: $kiva-navdivider-green;
-$header-separator-color: $kiva-navdivider-green;
+$header-background-color: $white;
+$header-text-color: $link-gray;
+$header-logo-color: $kiva-green;
+$header-link-color: $link-gray;
+$header-link-hover-color: $platinum;
+$header-separator-color: $white;
 $form-padding: 0.32rem;
 $form-padding-large: 0.6rem;
 $close-search-button-size: 2.5rem;
@@ -637,7 +637,7 @@ $close-search-button-size: 2.5rem;
 	color: var(--kv-header-text-color, $header-text-color);
 	font-size: $top-nav-font-size;
 	font-weight: $global-weight-highlight;
-	box-shadow: var(--kv-header-shadow, 'none');
+	box-shadow: var(--kv-header-shadow, $navbar-shadow);
 	z-index: 1000;
 
 	.amount {

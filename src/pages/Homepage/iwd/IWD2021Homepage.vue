@@ -1,7 +1,6 @@
 <template>
 	<www-page id="homepage"
 		class="iwd-2021-homepage"
-		:header-theme="headerTheme"
 	>
 		<dynamic-hero class="section"
 			v-if="heroContentGroup"
@@ -53,8 +52,6 @@ import HomepageCorporateSponsors from '@/components/Homepage/HomepageCorporateSp
 import HomepageTestimonials from '@/components/Homepage/HomepageTestimonials';
 import HomepageBottomCTA from '@/components/Homepage/HomepageBottomCTA';
 
-import { lightHeader } from '@/util/siteThemes';
-
 export default {
 	components: {
 		WwwPage,
@@ -79,11 +76,6 @@ export default {
 				};
 			}
 		},
-	},
-	data() {
-		return {
-			headerTheme: lightHeader,
-		};
 	},
 	computed: {
 		heroContentGroup() {

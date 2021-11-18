@@ -1,5 +1,9 @@
 <template>
-	<www-page class="email-settings" :gray-background="true">
+	<www-page
+		class="email-settings"
+		:gray-background="true"
+		:header-theme="greenHeader"
+	>
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
@@ -323,6 +327,7 @@ import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import PushRepaymentUpdates from '@/components/Settings/PushRepaymentUpdates';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import { greenHeader } from '@/util/siteThemes';
 
 const pageQuery = gql`
 	query communicationPreferences {
@@ -437,6 +442,7 @@ export default {
 			hasTeams: false,
 			teamsShown: false,
 			isMonthlyGoodSubscriber: false,
+			greenHeader,
 		};
 	},
 	apollo: {

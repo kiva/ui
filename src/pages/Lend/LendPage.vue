@@ -1,5 +1,8 @@
 <template>
-	<www-page class="lend-page" :gray-background="true">
+	<www-page
+		class="lend-page"
+		:gray-background="true"
+	>
 		<div class="row">
 			<div class="small-12 columns heading-region">
 				<h1>Make a loan, change a life</h1>
