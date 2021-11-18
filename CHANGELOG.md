@@ -1,3 +1,12 @@
+## [2.11.0-next.2](https://github.com/kiva/ui/compare/v2.11.0-next.1...v2.11.0-next.2) (2021-11-18)
+
+
+### Features
+
+* donate components were updated to have tw classes in typography ([e2f72e7](https://github.com/kiva/ui/commit/e2f72e75289a9885c26fd0bbc6e19007291d4d6e))
+* fundedborrowerprofile component was updated in order to have tw clasess for typography tags ([1746fcf](https://github.com/kiva/ui/commit/1746fcf971a86e23c1a9646adff7617e6e4d6b48))
+* mgcovid19 components were updated in order to have tw clasess for typography ([945a8f0](https://github.com/kiva/ui/commit/945a8f00d6d7e4f20f199423f723399f74a18bb9))
+
 ## [2.11.0-next.1](https://github.com/kiva/ui/compare/v2.10.0...v2.11.0-next.1) (2021-11-18)
 
 
