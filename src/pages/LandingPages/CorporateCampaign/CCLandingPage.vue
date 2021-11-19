@@ -198,7 +198,6 @@
 				<campaign-logo-group
 					class="campaign-thanks__logos"
 					:corporate-logo-url="corporateLogoUrl"
-					:style="`--logo-color: ${headerTheme.logoColor}`"
 				/>
 				<campaign-status
 					v-if="!hideStatusBar && hasFreeCredits && campaignPartnerName"
