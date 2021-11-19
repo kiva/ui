@@ -147,13 +147,13 @@
 					</span>
 					<p
 						v-if="freeCreditWarning"
-						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full"
+						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
 					>
 						Not eligible for lending credit
 					</p>
 					<p
 						v-if="allSharesReserved"
-						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full"
+						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
 					>
 						All shares reserved
 					</p>

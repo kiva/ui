@@ -39,6 +39,9 @@
 						:disbursal-date="loan.disbursalDate"
 						@show-definition="showDefinition"
 					/>
+					<repayment-schedule
+						:loan-id="loanId"
+					/>
 				</kv-tab-panel>
 				<kv-tab-panel :id="partnerTabId" v-if="isPartnerLoan">
 					<field-partner-details
@@ -93,6 +96,7 @@ import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
 import FieldPartnerDetails from './FieldPartnerDetails';
 import LoanDetails from './LoanDetails';
 import TrusteeDetails from './TrusteeDetails';
+import RepaymentSchedule from './RepaymentSchedule';
 
 export default {
 	inject: ['apollo'],
@@ -105,6 +109,7 @@ export default {
 		KvTabs,
 		LoanDetails,
 		TrusteeDetails,
+		RepaymentSchedule,
 	},
 	props: {
 		loanId: {
