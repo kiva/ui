@@ -1130,7 +1130,11 @@ export default {
 				query: myTeamsQuery
 			}).then(({ data }) => {
 				this.myTeams = data.my?.lender?.teams?.values ?? [];
-				this.addTeamToLoans();
+				if (this.teamJoinStatus !== 'declined') {
+					this.addTeamToLoans();
+				} else {
+					this.showCheckout();
+				}
 			});
 		},
 		addTeamToLoans() {
