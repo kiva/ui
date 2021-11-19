@@ -33,7 +33,7 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
-$logo-color: $white;
+$logo-color: $green;
 
 .campaign-logo-group {
 	align-self: center;
