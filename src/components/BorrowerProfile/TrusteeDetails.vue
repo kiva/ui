@@ -38,7 +38,7 @@
 			:href="`/trustees/${trusteeId}`"
 			target="_blank"
 		>
-			More about this trustee
+			{{ noTrusteeState ? 'More about loans without endorsements' : 'More about this trustee' }}
 		</kv-text-link>
 		<div v-if="endorsement" class="tw-prose tw-my-3">
 			<h3>{{ endorsementTitle }}</h3>
@@ -100,6 +100,9 @@ export default {
 	computed: {
 		endorsementTitle() {
 			return `Why are you endorsing ${this.trusteeName}?`;
+		},
+		noTrusteeState() {
+			return this.trusteeName === 'No Trustee Endorsement';
 		},
 		totalLoansValueFormatted() {
 			return numeral(this.totalLoansValue).format('$0,0[.]00');
