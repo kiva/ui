@@ -1,3 +1,11 @@
+### [2.14.3](https://github.com/kiva/ui/compare/v2.14.2...v2.14.3) (2021-11-22)
+
+
+### Bug Fixes
+
+* prevent content from breaking mobile layout ([116fda2](https://github.com/kiva/ui/commit/116fda29c5ed6223f8964d955fad505ad6d79d05))
+* prevent javascript error if there's no loan ([0a18ad3](https://github.com/kiva/ui/commit/0a18ad33f225eff38184791cc803f80f368cb1cb))
+
 ### [2.14.2](https://github.com/kiva/ui/compare/v2.14.1...v2.14.2) (2021-11-22)
 
 
