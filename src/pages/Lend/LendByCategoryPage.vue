@@ -1,5 +1,7 @@
 <template>
-	<www-page class="lend-by-category-page">
+	<www-page
+		class="lend-by-category-page"
+	>
 		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true" />
 
 		<featured-hero-loan-wrapper

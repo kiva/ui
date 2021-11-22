@@ -59,6 +59,7 @@
 //  54. Tooltip
 //  55. Top Bar
 //  56. Xy Grid
+//  57. Navbar
 
 @import 'node_modules/foundation-sites/scss/util/util.scss';
 
@@ -97,6 +98,7 @@ $very-light-gray: #eee;
 $light-gray: #d8d8d8;
 $subtle-gray: #c3c3c3;
 $gray: #9d9c9e;
+$link-gray: #767676;
 $medium-gray: $gray;
 $dark-gray: #666;
 $charcoal: #484848;
@@ -1125,3 +1127,8 @@ $grid-padding-gutters: $grid-margin-gutters;
 $grid-container-padding: $grid-padding-gutters;
 $grid-container-max: $global-width;
 $xy-block-grid-max: 8;
+
+// 57. Xy Grid
+// -----------
+
+$navbar-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.15);

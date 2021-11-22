@@ -1,5 +1,9 @@
 <template>
-	<www-page class="autolending" :gray-background="true">
+	<www-page
+		class="autolending"
+		:gray-background="true"
+		:header-theme="greenHeader"
+	>
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
@@ -22,8 +26,14 @@
 import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import { greenHeader } from '@/util/siteThemes';
 
 export default {
+	data() {
+		return {
+			greenHeader,
+		};
+	},
 	components: {
 		KvDefaultWrapper,
 		TheMyKivaSecondaryMenu,

@@ -1,5 +1,7 @@
 <template>
-	<www-page>
+	<www-page
+		:header-theme="greenHeader"
+	>
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
@@ -67,6 +69,7 @@
 </template>
 
 <script>
+import { greenHeader } from '@/util/siteThemes';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
 import KvCodeBlock from '@/components/Kv/KvCodeBlock';
 import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
@@ -84,6 +87,7 @@ export default {
 	},
 	data() {
 		return {
+			greenHeader,
 			fileStructure:
 `kiva_ds_json/
 	lenders.json

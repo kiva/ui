@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		id="support-us-landing"
-	>
+	<www-page id="support-us-landing">
 		<div class="row page-content">
 			<div class="small-12 large-7 columns donation-form-holder">
 				<h1 class="donate-headline" v-html="headlineCopy"></h1>

@@ -1,8 +1,6 @@
 <template>
 	<www-page id="homepage"
 		class="homepage-top-message"
-		:header-theme="headerTheme"
-		:footer-theme="footerTheme"
 	>
 		<div class="row align-center">
 			<div class="columns small-12" v-html="content">
@@ -13,7 +11,6 @@
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import { lightHeader, lightFooter } from '@/util/siteThemes';
 
 export default {
 	components: {
@@ -24,12 +21,6 @@ export default {
 			type: String,
 			default: '',
 		},
-	},
-	data() {
-		return {
-			headerTheme: lightHeader,
-			footerTheme: lightFooter,
-		};
 	},
 };
 </script>

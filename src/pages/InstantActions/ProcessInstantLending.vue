@@ -1,7 +1,6 @@
 <template>
 	<www-page
 		id="instant-lending-processor"
-		:header-theme="lightHeader"
 		main-class="kv-tailwind"
 	>
 		<kv-page-container class="
@@ -101,7 +100,6 @@ import logFormatter from '@/util/logFormatter';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import { formatContentGroupsFlat } from '@/util/contentfulUtils';
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
-import { lightHeader } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
@@ -176,7 +174,6 @@ export default {
 	},
 	data() {
 		return {
-			lightHeader,
 			loading: false,
 			loan: () => {},
 			loanAdded: false,

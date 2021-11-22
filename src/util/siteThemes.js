@@ -9,6 +9,17 @@ export const lightHeader = {
 	textColor: '#484848',
 };
 
+export const greenHeader = {
+	themeKey: 'greenHeader',
+	backgroundColor: '#4faf4e',
+	logoColor: '#fff',
+	linkColor: '#fff',
+	linkHoverColor: '#49953f',
+	separatorColor: '#49953f',
+	shadow: 'none',
+	textColor: '#fff',
+};
+
 export const lightFooter = {
 	themeKey: 'lightFooter',
 	backgroundColor: '#fff',
