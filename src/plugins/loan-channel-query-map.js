@@ -210,7 +210,7 @@ export default {
 				},
 				{
 					id: 59,
-					url: 'loans-that-expire-soon',
+					url: 'loans-that-are-ending-soon',
 					queryParams: 'status=fundRaising&riskRating=0,5',
 					algoliaParams: 'sortBy=expiringSoon'
 				},
