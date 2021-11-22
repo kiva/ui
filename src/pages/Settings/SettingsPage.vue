@@ -1,5 +1,8 @@
 <template>
-	<www-page :gray-background="true">
+	<www-page
+		:header-theme="greenHeader"
+		:gray-background="true"
+	>
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
@@ -170,6 +173,7 @@ import gql from 'graphql-tag';
 import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import { greenHeader } from '@/util/siteThemes';
 
 const pageQuery = gql`query settingsQuery {
 	my {
@@ -201,6 +205,7 @@ export default {
 		return {
 			isMfaActive: false,
 			isSubscriber: false,
+			greenHeader,
 		};
 	},
 	apollo: {

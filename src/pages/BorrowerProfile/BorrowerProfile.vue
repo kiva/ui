@@ -1,7 +1,6 @@
 <template>
 	<www-page
 		id="borrower-profile"
-		:header-theme="headerTheme"
 	>
 		<article class="tw-relative tw-bg-secondary">
 			<div class="tw-relative">
@@ -56,7 +55,6 @@
 </template>
 
 <script>
-import { lightHeader } from '@/util/siteThemes';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
@@ -89,7 +87,6 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
 			loanId: Number(this.$route.params.id || 0),
 			showLenders: true,
 			showTeams: true,

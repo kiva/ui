@@ -1,7 +1,6 @@
 <template>
 	<www-page
 		id="confirm-instant-donation"
-		:header-theme="lightHeader"
 		main-class="kv-tailwind"
 	>
 		<kv-page-container class="
@@ -53,7 +52,6 @@
 import gql from 'graphql-tag';
 import { formatContentGroupsFlat } from '@/util/contentfulUtils';
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
-import { lightHeader } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
@@ -88,7 +86,6 @@ export default {
 	},
 	data() {
 		return {
-			lightHeader,
 			contentfulContent: null,
 		};
 	},

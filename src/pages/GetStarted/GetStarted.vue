@@ -1,5 +1,5 @@
 <template>
-	<www-page-minimal :header-theme="headerTheme">
+	<www-page-minimal>
 		<div class="tw-relative tw-overflow-hidden md:tw-bg-secondary">
 			<router-view />
 		</div>
@@ -8,7 +8,6 @@
 
 <script>
 import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
-import { lightHeader } from '@/util/siteThemes';
 
 export default {
 	components: {
@@ -16,11 +15,6 @@ export default {
 	},
 	metaInfo: {
 		title: 'Get Started'
-	},
-	data() {
-		return {
-			headerTheme: lightHeader
-		};
 	},
 };
 </script>

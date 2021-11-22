@@ -1,5 +1,8 @@
 <template>
-	<www-page class="lend-page" :gray-background="true">
+	<www-page
+		class="lend-page"
+		:gray-background="true"
+	>
 		<div class="row">
 			<div class="small-12 columns tw-mt-3 tw-p-2">
 				<h1 class="tw-mb-2">

@@ -1,5 +1,7 @@
 <template>
-	<www-page>
+	<www-page
+		:header-theme="greenHeader"
+	>
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
@@ -49,6 +51,7 @@
 </template>
 
 <script>
+import { greenHeader } from '@/util/siteThemes';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
 import KvCodeBlock from '@/components/Kv/KvCodeBlock';
 import KvMultiCodeBlock from '@/components/Kv/KvMultiCodeBlock';
@@ -68,6 +71,7 @@ export default {
 	},
 	data() {
 		return {
+			greenHeader,
 			sampleJson:
 `{'data': {'lend': {'loan': {'id': 1568001,
 			   'name': 'Leydi'} } } }`,

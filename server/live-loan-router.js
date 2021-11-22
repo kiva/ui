@@ -45,12 +45,18 @@ async function getLoanForRequest(type, cache, req) {
 async function redirectToUrl(type, cache, req, res) {
 	try {
 		const loan = await getLoanForRequest(type, cache, req);
-
+		// Standard destination is the borrower profile page
 		let redirect = `/lend/${loan.id}`;
 		// If the original request had query params on it, forward those along
 		const requestUrl = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
 		const queryParams = new URLSearchParams(requestUrl.search);
 		if (queryParams) {
+			// Update redirect destination for an Instant Lending add to basket flow
+			if (queryParams.get('atb') === 'true') {
+				const loanShareAmount = queryParams.get('amount') || '25';
+				redirect = `/process-instant-lending/${loan.id}/${loanShareAmount}`;
+			}
+			// Apply and Pass all original query params
 			redirect += `?${queryParams}`;
 		}
 		res.redirect(302, redirect);

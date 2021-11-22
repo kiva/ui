@@ -92,6 +92,7 @@ import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import { processPageContent } from '@/util/contentfulUtils';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
+
 import KvHero from '@/components/Kv/KvHero';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';

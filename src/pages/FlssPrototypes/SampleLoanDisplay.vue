@@ -1,8 +1,5 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-		:footer-theme="footerTheme"
-	>
+	<www-page>
 		<div class="simple-campaign-landing">
 			<hr>
 
@@ -48,7 +45,6 @@
 <script>
 
 import gql from 'graphql-tag';
-import { lightHeader, lightFooter } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import FlssLoans from '@/pages/FlssPrototypes/FlssLoanRow';
 
@@ -92,8 +88,6 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
-			footerTheme: lightFooter,
 			rawPageData: null,
 			pageData: null,
 			showLoans: false,

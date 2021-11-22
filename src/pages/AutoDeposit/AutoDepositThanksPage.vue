@@ -42,7 +42,6 @@
 <script>
 import gql from 'graphql-tag';
 import numeral from 'numeral';
-
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 import { mdiCheckboxMarkedCircle, mdiEmailOutline } from '@mdi/js';

@@ -7,14 +7,7 @@ export default [
 			contentfulPage: () => 'home',
 		},
 	},
-	{
-		path: '/homepage-classic',
-		name: 'homepage-classic',
-		component: () => import('@/pages/Homepage/Homepage'),
-		meta: {
-			contentfulPage: () => 'home-classic',
-		},
-	},
+	{ path: '/homepage-classic', redirect: '/' },
 	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
 	{
 		path: '/auto-deposit',
@@ -54,7 +47,14 @@ export default [
 		children: [
 			{
 				path: 'signup',
-				component: () => import('@/pages/Causes/Signup')
+				component: () => import('@/pages/Causes/Signup'),
+				props: route => ({
+					cause: route.query.cause
+				})
+			},
+			{
+				path: 'thanks',
+				component: () => import('@/pages/Causes/Thanks'),
 			}
 		]
 	},

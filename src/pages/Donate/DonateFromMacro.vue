@@ -1,9 +1,5 @@
 <template>
-	<www-page
-		id="donate-landing"
-		:header-theme="headerTheme"
-		:footer-theme="footerTheme"
-	>
+	<www-page id="donate-landing">
 		<donate-from-macro-hero
 			:data="heroContentGroup"
 		/>
@@ -36,7 +32,6 @@
 <script>
 import gql from 'graphql-tag';
 
-import { lightHeader, lightFooter } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DonateFromMacroHero from '@/pages/Donate/DonateFromMacroHero';
 import { processPageContentFlat } from '@/util/contentfulUtils';
@@ -60,8 +55,6 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
-			footerTheme: lightFooter,
 			pageData: {},
 		};
 	},

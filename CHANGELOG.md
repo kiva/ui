@@ -1,3 +1,80 @@
+### [2.14.2](https://github.com/kiva/ui/compare/v2.14.1...v2.14.2) (2021-11-22)
+
+
+### Bug Fixes
+
+* update layout of global promo banner to ensure an inline display of the disclaimer link ([7a5503c](https://github.com/kiva/ui/commit/7a5503cbc3491bb98e4f8875ad20fd67859c8381))
+
+### [2.14.1](https://github.com/kiva/ui/compare/v2.14.0...v2.14.1) (2021-11-19)
+
+
+### Bug Fixes
+
+* sync browser clock before checkout page loads VUE-847 ([98f7aed](https://github.com/kiva/ui/commit/98f7aedbc6aae20eb9d188444cdf1f7723879106))
+
+## [2.14.0](https://github.com/kiva/ui/compare/v2.13.2...v2.14.0) (2021-11-19)
+
+
+### Features
+
+* remove experiment around homepage versions and redirects ([016d09b](https://github.com/kiva/ui/commit/016d09b6f348bd884e8700b8b8e6f99c114c63cb))
+
+
+### Bug Fixes
+
+* redirect /homepage-classic to root now that experiment has ended ([74ea22a](https://github.com/kiva/ui/commit/74ea22aa6b98bff99bc59c596b423a3114d5b000))
+
+### [2.13.2](https://github.com/kiva/ui/compare/v2.13.1...v2.13.2) (2021-11-19)
+
+
+### Bug Fixes
+
+* remove theme logo color from use in corporate landing page ([7fdb548](https://github.com/kiva/ui/commit/7fdb548120f9054045dec1ad2ea6b3d4a68e4c34))
+* update default logo color to ([13f85d5](https://github.com/kiva/ui/commit/13f85d5c910cfa08f303412f465d6e09667b335e))
+
+### [2.13.1](https://github.com/kiva/ui/compare/v2.13.0...v2.13.1) (2021-11-19)
+
+
+### Bug Fixes
+
+* ensure corporate lenders opting-out of a team don't have that team applied to their loans ([b49f0c8](https://github.com/kiva/ui/commit/b49f0c8cda5a4294d5b049eaf2abeee89267c24f))
+* ensure team attribution component is reactive with updated, incoming props ([78eb6e8](https://github.com/kiva/ui/commit/78eb6e886b44814c5bc36f5825961d0afb88c586))
+
+## [2.13.0](https://github.com/kiva/ui/compare/v2.12.0...v2.13.0) (2021-11-19)
+
+
+### Features
+
+* add mutation for signing up for a cause subscription ([d81c22c](https://github.com/kiva/ui/commit/d81c22ce4a9a8f38d39197400fa320ec299b39f0))
+* added login protection to causes/signup route and variable template ([7023c59](https://github.com/kiva/ui/commit/7023c597e89a4a8d09a4f6fb1b53d22b68c3f689))
+* added thanks page and success events for causes ([9fef538](https://github.com/kiva/ui/commit/9fef538254d4c0cf9055004fe0ca79e72dbf6ca2))
+* causes signup form initial work ([29bf81a](https://github.com/kiva/ui/commit/29bf81a80ac3c02f2d48d205c571f3a2f37b6987))
+* get cause category id from API ([7d80ede](https://github.com/kiva/ui/commit/7d80edef297b8e29409c4f837025c15218d1f980))
+* modified eligibility check to sign up for cause ([3d58aa6](https://github.com/kiva/ui/commit/3d58aa6ca81bc45a27ebe09a27e82d3b6807f27d))
+
+## [2.12.0](https://github.com/kiva/ui/compare/v2.11.0...v2.12.0) (2021-11-18)
+
+
+### Features
+
+* enable redirect to instant lending if atb query param is present ([bcc9a28](https://github.com/kiva/ui/commit/bcc9a289d33e66eacbab1a9fee03e4c37f809d3f))
+
+## [2.11.0](https://github.com/kiva/ui/compare/v2.10.0...v2.11.0) (2021-11-18)
+
+
+### Features
+
+* green header theme was created and added to settings, portfolio and build pages and cleaning ([6e6bb3a](https://github.com/kiva/ui/commit/6e6bb3a6ab0aec9e89a822ccdb1f542a7dbba277))
+* light header theme was added to every page having the www-page component ([657df20](https://github.com/kiva/ui/commit/657df207cdc3c053bd9b19cbef64a308fd8a7c7d))
+
+
+### Bug Fixes
+
+* code cleaning for lightheader theme ([c317630](https://github.com/kiva/ui/commit/c317630875f6686f2c8f1f512dc037a24f7c68c0))
+* code cleaning for lightheader theme ([4b8a837](https://github.com/kiva/ui/commit/4b8a83765088733bae6fb4da944bc064acd4f782))
+* gray background option was reverted for some pages ([5f7c08b](https://github.com/kiva/ui/commit/5f7c08b140a3666590e6c6d9c3ce6058d1f7c51e))
+* some pages were updated to revert the header theme update ([58ae5df](https://github.com/kiva/ui/commit/58ae5dff171c419031ad1cbcc957f5754242d8f6))
+
 ## [2.10.0](https://github.com/kiva/ui/compare/v2.9.0...v2.10.0) (2021-11-16)
 
 
