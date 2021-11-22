@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<div class="tw-prose">
+		<div class="tw-prose tw-overflow-auto">
 			<h2>
 				More about this loan
 			</h2>
