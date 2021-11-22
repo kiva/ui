@@ -287,8 +287,8 @@ export default {
 				this.loan.loanTermLenderRepaymentTerm = loan?.terms?.lenderRepaymentTerm ?? 0;
 				this.loan.lossLiabilityCurrencyExchange = loan?.terms?.lossLiabilityCurrencyExchange ?? '';
 				this.loan.repaymentInterval = loan?.repaymentInterval ?? '';
-				this.loan.disbursalDate = loan.disbursalDate ?? '';
-				this.loan.status = loan.status ?? '';
+				this.loan.disbursalDate = loan?.disbursalDate ?? '';
+				this.loan.status = loan?.status ?? '';
 
 				this.partner.arrearsRate = partner?.arrearsRate ?? 0;
 				this.partner.avgBorrowerCost = partner?.avgBorrowerCost ?? 0;
