@@ -1,3 +1,10 @@
+## [2.15.0](https://github.com/kiva/ui/compare/v2.14.3...v2.15.0) (2021-11-22)
+
+
+### Features
+
+* if a user is logged in and has an account, get their email for the waitlist signup ([7bb75a2](https://github.com/kiva/ui/commit/7bb75a2c3708f2628113aa288e030861f10a2dd9))
+
 ### [2.14.3](https://github.com/kiva/ui/compare/v2.14.2...v2.14.3) (2021-11-22)
 
 
