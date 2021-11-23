@@ -31,20 +31,21 @@
 							@submit.prevent="submitForm"
 							novalidate
 						>
-							<label class="tw-sr-only" for="email">Email</label>
-							<kv-text-input
-								id="email"
-								placeholder="Enter your email"
-								class="fs-exclude tw-w-full"
-								v-model="email"
-								:valid="!$v.email.$error"
-							>
+							<div v-if="!hasUserEmail">
+								<label class="tw-sr-only" for="email">Email</label>
+								<kv-text-input
+									id="email"
+									placeholder="Enter your email"
+									class="fs-exclude tw-w-full"
+									v-model="email"
+									:valid="!$v.email.$error"
 								>
-								<template #error v-if="$v.email.$dirty && $v.email.$error">
-									Valid email required
-								</template>
-							</kv-text-input>
-
+									>
+									<template #error v-if="$v.email.$dirty && $v.email.$error">
+										Valid email required
+									</template>
+								</kv-text-input>
+							</div>
 							<p class="tw-mt-2 tw-text-base">
 								Please send me an email me when the app is available.
 							</p>
@@ -86,7 +87,7 @@
 </template>
 
 <script>
-
+import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, email } from 'vuelidate/lib/validators';
 
@@ -96,6 +97,15 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 const causesIconImgRequire = require.context('@/assets/images/causes-icons/', true);
+
+const userQuery = gql`query getUserEmail {
+	my {
+		userAccount {
+			id
+			email
+		}
+	}
+}`;
 
 export default {
 	components: {
@@ -119,9 +129,20 @@ export default {
 			email: null,
 			step: 'join',
 			causesIconImgRequire,
+			hasUserEmail: false
 		};
 	},
-	inject: ['apollo'],
+	apollo: {
+		query: userQuery,
+		preFetch: true,
+		result({ data }) {
+			if (data?.my?.userAccount?.email) {
+				this.hasUserEmail = true;
+				this.email = data?.my?.userAccount?.email;
+			}
+		},
+	},
+	inject: ['apollo', 'cookieStore'],
 	methods: {
 		async submitForm() {
 			const isProd = window.location.hostname === 'www.kiva.org';

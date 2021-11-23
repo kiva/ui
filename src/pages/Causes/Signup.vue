@@ -94,18 +94,21 @@ export default {
 		}
 	},
 	created() {
-		try {
-			const pageQueryResult = this.apollo.readQuery({
-				query: pageQuery,
-			});
-			this.isMonthlyGoodSubscriber = pageQueryResult?.my?.autoDeposit?.isSubscriber ?? false;
-			this.hasAutoDeposits = pageQueryResult?.my?.autoDeposit ?? false;
-			const legacySubs = pageQueryResult?.my?.subscriptions?.values ?? [];
-			this.hasLegacySubscription = legacySubs.length > 0;
-			this.hasMadeLoan = pageQueryResult?.my?.lender?.loanCount > 0;
-			this.mySubscriptions = pageQueryResult?.mySubscriptions?.values ?? [];
-		} catch (e) {
-			logReadQueryError(e, 'Causes Signup causesSignupEligibilityQuery');
+		// TODO temporary beta query param
+		if (this.$route.query.beta === 'true') {
+			try {
+				const pageQueryResult = this.apollo.readQuery({
+					query: pageQuery,
+				});
+				this.isMonthlyGoodSubscriber = pageQueryResult?.my?.autoDeposit?.isSubscriber ?? false;
+				this.hasAutoDeposits = pageQueryResult?.my?.autoDeposit ?? false;
+				const legacySubs = pageQueryResult?.my?.subscriptions?.values ?? [];
+				this.hasLegacySubscription = legacySubs.length > 0;
+				this.hasMadeLoan = pageQueryResult?.my?.lender?.loanCount > 0;
+				this.mySubscriptions = pageQueryResult?.mySubscriptions?.values ?? [];
+			} catch (e) {
+				logReadQueryError(e, 'Causes Signup causesSignupEligibilityQuery');
+			}
 		}
 	},
 	computed: {

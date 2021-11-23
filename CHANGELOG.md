@@ -1,3 +1,40 @@
+### [2.16.2](https://github.com/kiva/ui/compare/v2.16.1...v2.16.2) (2021-11-23)
+
+
+### Bug Fixes
+
+* ensure disclaimer icon on appeal banner only shows when disclaimer is present ([caa456d](https://github.com/kiva/ui/commit/caa456d0afc3a026bc991b1b53084efb6bc92af0))
+* ensure richText content shows for globalPromo banners and hide disclaimer link when not present ([8001539](https://github.com/kiva/ui/commit/8001539a0bd54a5f095e73e293cb73018481b3d8))
+
+### [2.16.1](https://github.com/kiva/ui/compare/v2.16.0...v2.16.1) (2021-11-23)
+
+
+### Bug Fixes
+
+* make lightHeader and lightFooter cssVars available for header and footer ([6f99f93](https://github.com/kiva/ui/commit/6f99f93824cfb7cb3b94b39a34082fc06ce091f3))
+
+## [2.16.0](https://github.com/kiva/ui/compare/v2.15.0...v2.16.0) (2021-11-23)
+
+
+### Features
+
+* show no trustee state with updated tab name and link text ([857ae26](https://github.com/kiva/ui/commit/857ae26b4403dc631eb259f666c0948e96f1f513))
+
+## [2.15.0](https://github.com/kiva/ui/compare/v2.14.3...v2.15.0) (2021-11-22)
+
+
+### Features
+
+* if a user is logged in and has an account, get their email for the waitlist signup ([7bb75a2](https://github.com/kiva/ui/commit/7bb75a2c3708f2628113aa288e030861f10a2dd9))
+
+### [2.14.3](https://github.com/kiva/ui/compare/v2.14.2...v2.14.3) (2021-11-22)
+
+
+### Bug Fixes
+
+* prevent content from breaking mobile layout ([116fda2](https://github.com/kiva/ui/commit/116fda29c5ed6223f8964d955fad505ad6d79d05))
+* prevent javascript error if there's no loan ([0a18ad3](https://github.com/kiva/ui/commit/0a18ad33f225eff38184791cc803f80f368cb1cb))
+
 ### [2.14.2](https://github.com/kiva/ui/compare/v2.14.1...v2.14.2) (2021-11-22)
 
 
