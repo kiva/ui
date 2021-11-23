@@ -46,7 +46,7 @@
 									</template>
 								</kv-text-input>
 							</div>
-							<p class="tw-mt-2 tw-text-base">
+							<p class="tw-mt-2 tw-text-base" :class="{ 'tw-text-center': hasUserEmail }">
 								Please send me an email me when the app is available.
 							</p>
 
