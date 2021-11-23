@@ -1,3 +1,10 @@
+## [2.16.0](https://github.com/kiva/ui/compare/v2.15.0...v2.16.0) (2021-11-23)
+
+
+### Features
+
+* show no trustee state with updated tab name and link text ([857ae26](https://github.com/kiva/ui/commit/857ae26b4403dc631eb259f666c0948e96f1f513))
+
 ## [2.15.0](https://github.com/kiva/ui/compare/v2.14.3...v2.15.0) (2021-11-22)
 
 
