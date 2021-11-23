@@ -1,3 +1,11 @@
+### [2.16.2](https://github.com/kiva/ui/compare/v2.16.1...v2.16.2) (2021-11-23)
+
+
+### Bug Fixes
+
+* ensure disclaimer icon on appeal banner only shows when disclaimer is present ([caa456d](https://github.com/kiva/ui/commit/caa456d0afc3a026bc991b1b53084efb6bc92af0))
+* ensure richText content shows for globalPromo banners and hide disclaimer link when not present ([8001539](https://github.com/kiva/ui/commit/8001539a0bd54a5f095e73e293cb73018481b3d8))
+
 ### [2.16.1](https://github.com/kiva/ui/compare/v2.16.0...v2.16.1) (2021-11-23)
 
 
