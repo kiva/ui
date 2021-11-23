@@ -1,3 +1,10 @@
+### [2.16.1](https://github.com/kiva/ui/compare/v2.16.0...v2.16.1) (2021-11-23)
+
+
+### Bug Fixes
+
+* make lightHeader and lightFooter cssVars available for header and footer ([6f99f93](https://github.com/kiva/ui/commit/6f99f93824cfb7cb3b94b39a34082fc06ce091f3))
+
 ## [2.16.0](https://github.com/kiva/ui/compare/v2.15.0...v2.16.0) (2021-11-23)
 
 
