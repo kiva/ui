@@ -1,4 +1,5 @@
 import StoryRouter from 'storybook-vue-router';
+import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
 
@@ -63,7 +64,7 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		WwwPage
 	},
-	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin ],
 	template: `
 	<www-page
 		:gray-background="grayBackground"
