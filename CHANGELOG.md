@@ -1,3 +1,10 @@
+## [2.17.0](https://github.com/kiva/ui/compare/v2.16.2...v2.17.0) (2021-11-23)
+
+
+### Features
+
+* adds dynamic date to causes signup form ([5a26a05](https://github.com/kiva/ui/commit/5a26a054cc11ce4005c63b69f437c7ed4962fbc7))
+
 ### [2.16.2](https://github.com/kiva/ui/compare/v2.16.1...v2.16.2) (2021-11-23)
 
 

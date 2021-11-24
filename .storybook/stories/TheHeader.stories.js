@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import StoryRouter from 'storybook-vue-router';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
+import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
 import {
 	lightHeader,
@@ -70,7 +71,7 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		TheHeader
 	},
-	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin],
 	template: `
 		<the-header
 			:minimal="minimal"
