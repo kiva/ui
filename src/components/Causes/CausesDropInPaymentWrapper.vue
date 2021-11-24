@@ -141,7 +141,7 @@ export default {
 
 					// Transaction is complete
 					// eslint-disable-next-line max-len
-					const causeSignUpSuccess = kivaBraintreeResponse.data?.id;
+					const causeSignUpSuccess = kivaBraintreeResponse.data?.createSubscription?.id;
 
 					if (causeSignUpSuccess) {
 						// fire BT Success event
