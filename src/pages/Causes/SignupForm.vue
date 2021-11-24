@@ -174,7 +174,7 @@ export default {
 			this.success = true;
 			this.$kvTrackEvent('Registration', 'successful-causes-reg', 'register-causes');
 			this.$router.push({
-				path: 'causes/thanks',
+				path: '/causes/thanks',
 			});
 		},
 	},
