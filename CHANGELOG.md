@@ -1,3 +1,10 @@
+### [2.17.5](https://github.com/kiva/ui/compare/v2.17.4...v2.17.5) (2021-11-29)
+
+
+### Performance Improvements
+
+* increase min/max replicas for giving tuesday ([8df5e8e](https://github.com/kiva/ui/commit/8df5e8eeb1e069352e8b625a37e513a71693a852))
+
 ### [2.17.4](https://github.com/kiva/ui/compare/v2.17.3...v2.17.4) (2021-11-29)
 
 
