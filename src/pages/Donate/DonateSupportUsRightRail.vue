@@ -51,31 +51,18 @@ export default {
 	computed: {
 		donationCallouts() {
 			const callouts = [];
+			const textEntries = this.content?.contents?.filter(
+				item => item.contentType === 'richTextContent'
+			) || [];
+			const mediaEntries = this.content?.media ?? [];
 
-			const makeLoansHappenCopy = this.content?.contents?.find(
-				item => item.key === 'web-donate-support-us-callout-1'
-			) || {};
-			const makeLoansHappenImage = this.content?.media?.find(
-				image => image.title === 'homepage-stats-icon-1'
-			);
-			callouts.push({
-				title: makeLoansHappenCopy.name || '',
-				subHead: documentToHtmlString(makeLoansHappenCopy.richText) || '',
-				imageTitle: makeLoansHappenImage.title || '',
-				imageUrl: makeLoansHappenImage.file?.url || '',
-			});
-
-			const fundInnovationCopy = this.content?.contents?.find(
-				item => item.key === 'web-donate-support-us-callout-2'
-			) || {};
-			const fundInnovationImage = this.content?.media?.find(
-				image => image.title === 'Globe Grid Illustration'
-			);
-			callouts.push({
-				title: fundInnovationCopy.name || '',
-				subHead: documentToHtmlString(fundInnovationCopy.richText) || '',
-				imageTitle: fundInnovationImage.title || '',
-				imageUrl: fundInnovationImage.file?.url || '',
+			textEntries.forEach((entry, index) => {
+				callouts.push({
+					title: entry?.name || '',
+					subHead: documentToHtmlString(entry?.richText) || '',
+					imageTitle: mediaEntries[index]?.title || '',
+					imageUrl: mediaEntries[index]?.file?.url || '',
+				});
 			});
 
 			return callouts;
