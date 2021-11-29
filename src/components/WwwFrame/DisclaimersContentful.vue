@@ -16,6 +16,7 @@ import _get from 'lodash/get';
 import numeral from 'numeral';
 import gql from 'graphql-tag';
 import { settingEnabled, settingWithinDateRange } from '@/util/settingsUtils';
+import isExcludedUrl from '@/util/urlUtils';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 const disclaimerQuery = gql`query disclaimerQuery($basketId: String) {
@@ -76,6 +77,10 @@ export default {
 			// if setting is enabled determine which banner to display
 			if (isGlobalSettingEnabled) {
 				const activePromoBanner = uiGlobalPromoSetting?.fields?.content?.find(promoContent => {
+					// exclude items that are not global-promo-banners
+					const isGlobalPromo = promoContent?.sys?.contentType?.sys?.id === 'globalPromoBanner';
+					if (!isGlobalPromo) return false;
+					// check global promo banner fields
 					return settingEnabled(
 						promoContent.fields,
 						'active',
@@ -86,11 +91,13 @@ export default {
 
 				// gather all inactive promo banners by their start and end dates
 				const inactivePromoBanners = uiGlobalPromoSetting?.fields?.content?.filter(promoContent => {
+					// exclude items that are not global-promo-banners
+					const isGlobalPromo = promoContent?.sys?.contentType?.sys?.id === 'globalPromoBanner';
+					if (!isGlobalPromo) return false;
+					// check for visibility based on current route and hiddenUrls field
 					const hiddenUrls = promoContent?.fields?.hiddenUrls ?? [];
-					// check hiddenUrl for display of disclaimers
-					if (hiddenUrls.includes(this.$route.path)) {
-						return false;
-					}
+					if (isExcludedUrl(hiddenUrls, this.$route.path)) return false;
+
 					if (promoContent.fields.active) {
 						return false;
 					}
@@ -103,10 +110,8 @@ export default {
 
 				if (activePromoBanner) {
 					// check for visibility based on current route and hiddenUrls field
-					const hiddenUrls = _get(activePromoBanner, 'fields.hiddenUrls', []);
-					if (hiddenUrls.includes(this.$route.path)) {
-						return false;
-					}
+					const hiddenUrls = activePromoBanner?.fields?.hiddenUrls ?? [];
+					if (isExcludedUrl(hiddenUrls, this.$route.path)) return false;
 
 					// check for visibility on promo session override
 					const showForPromo = _get(activePromoBanner, 'fields.showForPromo', false);
