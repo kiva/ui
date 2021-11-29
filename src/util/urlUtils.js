@@ -6,7 +6,7 @@ export const globalBannerDenyList = [
 	'/confirm-instant-donation/*',
 	'/donate/support-kiva',
 	'/error',
-	'/instant-donation-thanks',
+	'/instant-donation-thanks/*',
 	'/instant-lending-error',
 	'/join-team',
 	'/register/social',
