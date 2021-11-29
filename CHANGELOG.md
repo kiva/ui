@@ -1,3 +1,10 @@
+### [2.17.7](https://github.com/kiva/ui/compare/v2.17.6...v2.17.7) (2021-11-29)
+
+
+### Bug Fixes
+
+* changed month end copy for causes signup ([c827246](https://github.com/kiva/ui/commit/c827246d49ee6d7a8687e24de5cb071546078210))
+
 ### [2.17.6](https://github.com/kiva/ui/compare/v2.17.5...v2.17.6) (2021-11-29)
 
 
