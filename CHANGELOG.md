@@ -1,3 +1,10 @@
+### [2.17.6](https://github.com/kiva/ui/compare/v2.17.5...v2.17.6) (2021-11-29)
+
+
+### Bug Fixes
+
+* ensure instant donation thanks is excluded ([10d3aab](https://github.com/kiva/ui/commit/10d3aabe6b842e3f3b8b527efdeecf2dba46151d))
+
 ### [2.17.5](https://github.com/kiva/ui/compare/v2.17.4...v2.17.5) (2021-11-29)
 
 
