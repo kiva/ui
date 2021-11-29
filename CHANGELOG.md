@@ -1,3 +1,10 @@
+### [2.17.2](https://github.com/kiva/ui/compare/v2.17.1...v2.17.2) (2021-11-29)
+
+
+### Bug Fixes
+
+* remove hard-coded image designations in favor of the ordered objects from contentful ([f653a3a](https://github.com/kiva/ui/commit/f653a3a2bdec601e9234ce50b0232174665940ce))
+
 ### [2.17.1](https://github.com/kiva/ui/compare/v2.17.0...v2.17.1) (2021-11-24)
 
 
