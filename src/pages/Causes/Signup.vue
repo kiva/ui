@@ -28,9 +28,7 @@ const pageQuery = gql`query causesSignupEligibilityQuery {
 		}
 		lender {
 			id
-			loans {
-				totalCount
-			}
+			loanCount
 		}
 	}
 	mySubscriptions(includeDisabled: true) {
@@ -87,7 +85,7 @@ export default {
 			}).catch(() => {
 				// Auth error will be caught here, redirect to login.
 				return Promise.reject({
-					path: `/ui-login?cause=${this.cause}`,
+					path: `/ui-login?cause=${route.query.cause}`,
 					query: { force: true, doneUrl: route.fullPath }
 				});
 			});
