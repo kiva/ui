@@ -319,13 +319,13 @@ export default {
 				// TODO: remove once bonus credit functionality is added
 				if (hasFreeCredits || lendingRewardOffered) {
 					// cancel the promise, returning a route for redirect
-					// return Promise.reject({
-					// 	path: '/basket',
-					// 	query: {
-					// 		kexpn: 'checkout_beta.minimal_checkout',
-					// 		kexpv: 'a'
-					// 	}
-					// });
+					return Promise.reject({
+						path: '/basket',
+						query: {
+							kexpn: 'checkout_beta.minimal_checkout',
+							kexpv: 'a'
+						}
+					});
 				}
 				return data;
 			}).then(() => {

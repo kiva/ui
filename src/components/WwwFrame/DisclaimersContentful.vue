@@ -16,7 +16,7 @@ import _get from 'lodash/get';
 import numeral from 'numeral';
 import gql from 'graphql-tag';
 import { settingEnabled, settingWithinDateRange } from '@/util/settingsUtils';
-import isExcludedUrl from '@/util/urlUtils';
+import { globalBannerDenyList, isExcludedUrl } from '@/util/urlUtils';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 const disclaimerQuery = gql`query disclaimerQuery($basketId: String) {
@@ -56,6 +56,9 @@ export default {
 		query: disclaimerQuery,
 		preFetch: true,
 		result({ data }) {
+			// Hide ALL banners on these pages
+			if (isExcludedUrl(globalBannerDenyList, this.$route.path)) return false;
+
 			this.disclaimerContent = [];
 			// gather contentful content and the uiSetting key ui-global-promo
 			const contentfulContent = data?.contentful?.entries?.items ?? [];

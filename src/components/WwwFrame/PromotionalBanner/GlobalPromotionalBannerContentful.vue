@@ -17,7 +17,7 @@ import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
 import { settingEnabled } from '@/util/settingsUtils';
-import isExcludedUrl from '@/util/urlUtils';
+import { globalBannerDenyList, isExcludedUrl } from '@/util/urlUtils';
 
 import AppealBannerCircularContainer
 	from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircularContainer';
@@ -49,18 +49,6 @@ export default {
 			appealBannerContent: {},
 			appealEnabled: false,
 			customAppealEnabled: false,
-			globalBannerDenyList: [
-				'/checkout',
-				'/confirm-instant-donation/*',
-				'/donate/support-kiva',
-				'/error',
-				'/instant-donation-thanks',
-				'/join-team',
-				'/register/social',
-				'/possibility/giving-tuesday',
-				'/possibility/12-days-of-lending',
-				'/possibility/year-end'
-			]
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -69,7 +57,7 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			// Hide ALL banners on these pages
-			if (isExcludedUrl(this.globalBannerDenyList, this.$route.path)) return false;
+			if (isExcludedUrl(globalBannerDenyList, this.$route.path)) return false;
 
 			// returns the contentful content of the uiSetting key ui-global-promo or empty object
 			// it should always be the first and only item in the array, since we pass the variable to the query above
@@ -137,7 +125,7 @@ export default {
 	computed: {
 		showAppeal() {
 			// Check if Appeal Banner is active and the user is not on a denied page URL
-			if (this.appealEnabled && !isExcludedUrl(this.globalBannerDenyList, this.$route.path)) return true;
+			if (this.appealEnabled && !isExcludedUrl(globalBannerDenyList, this.$route.path)) return true;
 			return false;
 		},
 	},
