@@ -1,5 +1,5 @@
 <template>
-	<div class="dropin-payment-holder">
+	<div class="dropin-payment-holder tw-px-0 tw-max-w-md">
 		<braintree-drop-in-interface
 			v-if="isClientReady"
 			ref="braintreeDropInInterface"
@@ -9,7 +9,7 @@
 			:preselect-vaulted-payment-method="action === 'Registration'"
 			@transactions-enabled="enableConfirmButton = $event"
 		/>
-		<div id="dropin-button" class="tw-w-full">
+		<div id="dropin-submit" class="tw-w-full">
 			<kv-button
 				:state="buttonState"
 				@click="submitDropInCauses"
@@ -99,6 +99,7 @@ export default {
 						this.doBraintreeCausesSubscription(transactionNonce, deviceData, paymentType);
 					}
 				}).catch(btSubmitError => {
+					this.submitting = false;
 					console.error(btSubmitError);
 					// Fire specific exception to Sentry/Raven
 					Sentry.withScope(scope => {
