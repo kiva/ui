@@ -117,10 +117,11 @@ export default {
 						// Promo Banner
 						// parse the contentful richText into an html string
 						this.promoBannerContent = {
+							disclaimer: activePromoBanner?.fields?.disclaimers?.content?.[0] ?? null,
 							kvTrackEvent: activePromoBanner.fields.kvTrackEvent,
 							link: activePromoBanner.fields.link,
 							richText: documentToHtmlString(activePromoBanner.fields.richText),
-							iconKey: _get(activePromoBanner, 'fields.iconKey', 'present')
+							iconKey: _get(activePromoBanner, 'fields.iconKey', 'present'),
 						};
 						this.isPromoEnabled = true;
 					}

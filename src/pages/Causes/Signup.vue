@@ -1,154 +1,143 @@
 <template>
-	<article class="tw-relative">
-		<kv-page-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-8">
-			<kv-grid class="tw-grid-cols-12">
-				<div :class="[
-					'tw-px-1',
-					'tw-mb-14',
-					'tw-col-span-12',
-					'md:tw-col-span-8',
-					'md:tw-col-start-3',
-					'lg:tw-col-span-6',
-					'lg:tw-col-start-4'
-				]"
-				>
-					<!-- Sign Up Form -->
-					<div v-if="step === 'join'">
-						<img
-							class="tw-h-16 tw-w-16 tw-mx-auto tw-mb-4"
-							:src="causesIconImgRequire(`./heart-icon.svg`)"
-						>
-						<h1 class="tw-text-center">
-							Get on the list!
-						</h1>
-						<p class="tw-text-h3 tw-text-secondary tw-mt-3 tw-text-center tw-px-2.5">
-							We’re still building the app. If it looks exciting, join our waiting list.
-						</p>
-						<!-- Iterable Form Code -->
-						<form
-							name="iterable_optin"
-							class="tw-mt-3"
-							@submit.prevent="submitForm"
-							novalidate
-						>
-							<label class="tw-sr-only" for="email">Email</label>
-							<kv-text-input
-								id="email"
-								placeholder="Enter your email"
-								class="fs-exclude tw-w-full"
-								v-model="email"
-								:valid="!$v.email.$error"
-							>
-								>
-								<template #error v-if="$v.email.$dirty && $v.email.$error">
-									Valid email required
-								</template>
-							</kv-text-input>
-
-							<p class="tw-mt-2 tw-text-base">
-								Please send me an email me when the app is available.
-							</p>
-
-							<div class="tw-text-center">
-								<kv-button
-									type="submit"
-									:state="$v.email.$invalid ? 'disabled' : ''"
-									class="tw-w-full md:tw-w-auto tw-mt-4 tw-mb-4 tw-mx-auto"
-									v-kv-track-event="[
-										'Causes',
-										'Sign Up',
-										'Join the waiting list'
-									]"
-								>
-									Join the waiting list
-								</kv-button>
-							</div>
-						</form>
-					</div>
-
-					<!-- Thank You -->
-					<div v-if="step === 'thanks'">
-						<img
-							class="tw-h-16 tw-w-16 tw-mx-auto tw-mb-4"
-							:src="causesIconImgRequire(`./mail-icon.svg`)"
-						>
-						<h1 class="tw-text-center">
-							We got it!
-						</h1>
-						<p class="tw-text-h3 tw-text-secondary tw-mt-3 tw-text-center tw-px-2.5">
-							You’ll hear from us when the app is ready to use.
-						</p>
-					</div>
-				</div>
-			</kv-grid>
-		</kv-page-container>
-	</article>
+	<div>
+		<signup-waitlist v-if="!isEligibleForCausesSignup || !isBeta" />
+		<signup-form v-if="isEligibleForCausesSignup && isBeta" :cause="cause" />
+	</div>
 </template>
 
 <script>
+import gql from 'graphql-tag';
+import logReadQueryError from '@/util/logReadQueryError';
 
-import { validationMixin } from 'vuelidate';
-import { required, email } from 'vuelidate/lib/validators';
+import SignupWaitlist from '@/pages/Causes/SignupWaitlist';
+import SignupForm from '@/pages/Causes/SignupForm';
 
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import authenticationQuery from '@/graphql/query/authenticationQuery.graphql';
 
-const causesIconImgRequire = require.context('@/assets/images/causes-icons/', true);
+const pageQuery = gql`query causesSignupEligibilityQuery {
+	my {
+		subscriptions {
+			values {
+				id
+				subscrId
+			}
+		}
+		autoDeposit {
+			id
+			isSubscriber
+		}
+		lender {
+			id
+			loans {
+				totalCount
+			}
+		}
+	}
+	mySubscriptions(includeDisabled: true) {
+		values {
+			id
+			enabled
+			category {
+				id
+				subscriptionType
+			}
+		}
+	}
+}`;
 
 export default {
-	components: {
-		KvButton,
-		KvGrid,
-		KvPageContainer,
-		KvTextInput,
-	},
-	metaInfo: {
-		title: 'Get Started',
-	},
-	mixins: [validationMixin],
-	validations: {
-		email: {
-			required,
-			email,
+	props: {
+		cause: {
+			type: String,
+			default: 'climate',
+			validator: value => {
+				return ['climate', 'education', 'women'].indexOf(value) !== -1;
+			}
 		},
+	},
+	components: {
+		SignupForm,
+		SignupWaitlist,
 	},
 	data() {
 		return {
-			email: null,
-			step: 'join',
-			causesIconImgRequire,
+			// user flags
+			isMonthlyGoodSubscriber: false,
+			hasAutoDeposits: false,
+			hasLegacySubscription: false,
+			hasMadeLoan: false,
+			mySubscriptions: []
 		};
 	},
-	inject: ['apollo'],
-	methods: {
-		async submitForm() {
-			const isProd = window.location.hostname === 'www.kiva.org';
-			const iterableListIdString = isProd
-				? '1a075918-42c4-49f8-a3e9-e797dcf7c9b4'
-				: 'bacb00cb-ae81-4ab6-8981-b4fafb2026ce';
-
-			this.$v.$touch();
-			if (!this.$v.$invalid) {
-				// Track facebook event
-				if (typeof window !== 'undefined' && typeof fbq === 'function') {
-					window.fbq('track', 'Contact');
-				}
-
-				// eslint-disable-next-line max-len
-				const response = await fetch(`//links.iterable.com/lists/publicAddSubscriberForm?publicIdString=${iterableListIdString}`, {
-					method: 'POST',
-					body: new URLSearchParams({
-						email: this.email,
-					})
-				});
-				if (response.status === 200) {
-					this.step = 'thanks';
-				} else {
-					this.$showTipMsg('An Error has occured. Please refresh the page and try again.', 'error');
-				}
+	inject: ['apollo', 'cookieStore'],
+	apollo: {
+		preFetch(config, client, { route }) {
+			// TODO temporary beta query param
+			if (route.query.beta !== 'true') {
+				return Promise.resolve({});
 			}
+			return client.query({
+				query: authenticationQuery,
+				fetchPolicy: 'network-only',
+			}).then(({ data }) => {
+				if (!data.my) {
+					throw new Error('api.authenticationRequired');
+				}
+				return client.query({ query: pageQuery });
+			}).catch(() => {
+				// Auth error will be caught here, redirect to login.
+				return Promise.reject({
+					path: `/ui-login?cause=${this.cause}`,
+					query: { force: true, doneUrl: route.fullPath }
+				});
+			});
+		}
+	},
+	created() {
+		// TODO temporary beta query param
+		if (this.$route.query.beta === 'true') {
+			try {
+				const pageQueryResult = this.apollo.readQuery({
+					query: pageQuery,
+				});
+				this.isMonthlyGoodSubscriber = pageQueryResult?.my?.autoDeposit?.isSubscriber ?? false;
+				this.hasAutoDeposits = pageQueryResult?.my?.autoDeposit ?? false;
+				const legacySubs = pageQueryResult?.my?.subscriptions?.values ?? [];
+				this.hasLegacySubscription = legacySubs.length > 0;
+				this.hasMadeLoan = pageQueryResult?.my?.lender?.loanCount > 0;
+				this.mySubscriptions = pageQueryResult?.mySubscriptions?.values ?? [];
+			} catch (e) {
+				logReadQueryError(e, 'Causes Signup causesSignupEligibilityQuery');
+			}
+		}
+	},
+	computed: {
+		// Temporary query param feature flag
+		isBeta() {
+			return this.$route.query.beta === 'true';
+		},
+		isEligibleForCausesSignup() {
+			/** A user is eligible if:
+			* no existing MG subscription
+			* no legacy subscription
+			* no have auto-deposit
+			* no traditional loan purchases and also has never had a cause subscription
+			*/
+			const causesSubscriptions = this.mySubscriptions.filter(
+				subscription => subscription.category.subscriptionType === 'CAUSES'
+			);
+
+			const hasActiveCauseSubscription = causesSubscriptions.find(
+				subscription => subscription.enabled
+			);
+			const hasInactiveCauseSubscription = causesSubscriptions.find(
+				subscription => !subscription.enabled
+			);
+			return !hasActiveCauseSubscription
+				&& !this.isMonthlyGoodSubscriber
+				&& !this.hasAutoDeposits
+				&& !this.hasLegacySubscription
+				&& (!this.hasMadeLoan || hasInactiveCauseSubscription);
 		}
 	},
 };

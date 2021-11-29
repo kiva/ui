@@ -21,7 +21,7 @@
 					Field Partner
 				</kv-tab>
 				<kv-tab :for="trusteeTabId" v-if="hasTrustee">
-					Trustee
+					{{ noTrusteeState ? 'No Trustee' : 'Trustee' }}
 				</kv-tab>
 			</template>
 			<template #tabPanels>
@@ -169,10 +169,13 @@ export default {
 			return !!this.partner?.name;
 		},
 		hasTrustee() {
-			return !this.isPartnerLoan && this.trustee?.name && this.trustee?.name !== 'No Trustee Endorsement';
+			return !this.isPartnerLoan && this.trustee?.name;
 		},
 		loanTabId() {
 			return `tab-panel-${this.name}-loan-details`;
+		},
+		noTrusteeState() {
+			return this.trustee?.name === 'No Trustee Endorsement';
 		},
 		partnerTabId() {
 			return `tab-panel-${this.name}-field-partner`;
@@ -292,8 +295,8 @@ export default {
 				this.loan.loanTermLenderRepaymentTerm = loan?.terms?.lenderRepaymentTerm ?? 0;
 				this.loan.lossLiabilityCurrencyExchange = loan?.terms?.lossLiabilityCurrencyExchange ?? '';
 				this.loan.repaymentInterval = loan?.repaymentInterval ?? '';
-				this.loan.disbursalDate = loan.disbursalDate ?? '';
-				this.loan.status = loan.status ?? '';
+				this.loan.disbursalDate = loan?.disbursalDate ?? '';
+				this.loan.status = loan?.status ?? '';
 
 				this.partner.arrearsRate = partner?.arrearsRate ?? 0;
 				this.partner.avgBorrowerCost = partner?.avgBorrowerCost ?? 0;

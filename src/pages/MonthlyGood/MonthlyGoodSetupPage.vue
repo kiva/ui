@@ -303,7 +303,6 @@ import KvSelect from '@/components/Kv/KvSelect';
 import LegacySubscriberNotice from '@/components/MonthlyGood/LegacySubscriberNotice';
 import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 const pageQuery = gql`query monthlyGoodSetupPageControl {

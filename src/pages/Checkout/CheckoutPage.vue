@@ -364,6 +364,14 @@ export default {
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
 		}
 	},
+	beforeRouteEnter(to, from, next) {
+		// Ensure browser clock is correct before loading the page
+		if (typeof window !== 'undefined') {
+			syncDate().then(next).catch(next);
+		} else {
+			next();
+		}
+	},
 	created() {
 		// show guest account claim confirmation message
 		if (this.myId && this.$route.query?.claimed === '1') {
@@ -432,22 +440,19 @@ export default {
 		}
 	},
 	mounted() {
-		// Ensure browser clock is correct before using current time
-		syncDate().then(() => {
-			// update current time every second for reactivity
-			this.currentTimeInterval = setInterval(() => {
-				this.currentTime = Date.now();
-			}, 1000);
+		// update current time every second for reactivity
+		this.currentTimeInterval = setInterval(() => {
+			this.currentTime = Date.now();
+		}, 1000);
 
-			this.$nextTick(() => {
-				// fire tracking event when the page loads
-				// - this event will be duplicated when the page reloads with a newly registered/logged in user
-				let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
-				if (this.isActivelyLoggedIn) {
-					userStatus = 'Actively Logged-In';
-				}
-				this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
-			});
+		this.$nextTick(() => {
+			// fire tracking event when the page loads
+			// - this event will be duplicated when the page reloads with a newly registered/logged in user
+			let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
+			if (this.isActivelyLoggedIn) {
+				userStatus = 'Actively Logged-In';
+			}
+			this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
 		});
 
 		// cover ssr or spa page load
@@ -477,6 +482,9 @@ export default {
 			}
 			return false;
 		},
+		instantLendingLoanAdded() {
+			return this.$route?.query?.instantLending === 'loan-added';
+		},
 		checkoutSteps() {
 			return ['Basket', 'Payment', 'Thank You!'];
 		},
@@ -493,7 +501,7 @@ export default {
 			return parseFloat(this.creditNeeded) === 0;
 		},
 		showKivaCardForm() {
-			return this.checkingOutAsGuest === false;
+			return this.checkingOutAsGuest === false && !this.instantLendingLoanAdded;
 		},
 		eligibleForGuestCheckout() {
 			// Checking if guest checkout is enabled

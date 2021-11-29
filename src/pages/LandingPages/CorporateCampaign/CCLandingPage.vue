@@ -1,8 +1,8 @@
 <template>
 	<www-page-corporate
-		:header-theme="headerTheme"
-		:footer-theme="footerTheme"
 		:corporate-logo-url="corporateLogoUrl"
+		:header-theme="lightHeader"
+		:footer-theme="lightFooter"
 	>
 		<div class="corporate-campaign-landing">
 			<kv-loading-overlay
@@ -200,7 +200,6 @@
 				<campaign-logo-group
 					class="campaign-thanks__logos"
 					:corporate-logo-url="corporateLogoUrl"
-					:style="`--logo-color: ${headerTheme.logoColor}`"
 				/>
 				<campaign-status
 					v-if="!hideStatusBar && hasFreeCredits && campaignPartnerName"
@@ -233,10 +232,10 @@ import logFormatter from '@/util/logFormatter';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
 import LoanSearchFilters, { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
+import { lightHeader, lightFooter } from '@/util/siteThemes';
 import syncDate from '@/util/syncDate';
 import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import { lightHeader, lightFooter } from '@/util/siteThemes';
 import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
@@ -500,8 +499,6 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: lightHeader,
-			footerTheme: lightFooter,
 			rawPageData: null,
 			pageData: null,
 			hasFreeCredits: null,
@@ -545,7 +542,9 @@ export default {
 			initialFilters: {},
 			verificationSumbitted: false,
 			loadingPage: false,
-			showVerifyRemovePromoCredit: false
+			showVerifyRemovePromoCredit: false,
+			lightHeader,
+			lightFooter,
 		};
 	},
 	metaInfo() {
@@ -1135,7 +1134,11 @@ export default {
 				query: myTeamsQuery
 			}).then(({ data }) => {
 				this.myTeams = data.my?.lender?.teams?.values ?? [];
-				this.addTeamToLoans();
+				if (this.teamJoinStatus !== 'declined') {
+					this.addTeamToLoans();
+				} else {
+					this.showCheckout();
+				}
 			});
 		},
 		addTeamToLoans() {

@@ -1,27 +1,27 @@
 <template>
 	<div class="row align-center generic-banner">
-		<component
-			:is="currentWrapperComponent"
-			:to="trimmedLink"
-			:href="trimmedLink"
-			:target="isExternalLink ? '_blank' : '_self'"
-			:class="{ 'banner-link' : trimmedLink, 'banner-wrapper' : !trimmedLink}"
-			v-kv-track-event="handleTracking"
-		>
-			<kv-icon :name="iconKey" :class="`${iconKey}-icon icon`" />
-			<div class="content" v-html="promoBannerContent.richText">
-			</div>
-		</component>
-		<a
-			v-if="hasDisclaimer"
-			@click="scrollToSection('#disclaimers')"
-			class="disclaimer-indicator"
-			v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
-		>
-			<sup>
-				1
-			</sup>
-		</a>
+		<kv-icon :name="iconKey" :class="`${iconKey}-icon icon`" />
+		<span class="text-center">
+			<component
+				:is="currentWrapperComponent"
+				:to="trimmedLink"
+				:href="trimmedLink"
+				:target="isExternalLink ? '_blank' : '_self'"
+				:class="{ 'banner-link' : trimmedLink, 'banner-wrapper' : !trimmedLink}"
+				v-kv-track-event="handleTracking"
+				v-html="processedContent"
+			/>
+			<a
+				v-if="hasDisclaimer"
+				@click="scrollToSection('#disclaimers')"
+				class="disclaimer-indicator"
+				v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
+			>
+				<sup>
+					1
+				</sup>
+			</a>
+		</span>
 	</div>
 </template>
 
@@ -85,11 +85,17 @@ export default {
 			}
 			return this.promoBannerContent.kvTrackEvent;
 		},
+		processedContent() {
+			// Remove all p tags from contentful rich text
+			const contentfulRichText = this.promoBannerContent?.richText ?? '';
+			return contentfulRichText.replace(/<p>/g, '').replace(/<\/p>/g, '');
+		},
 		trimmedLink() {
 			return this.promoBannerContent?.link?.trim() ?? '';
 		},
 		hasDisclaimer() {
-			return this.promoBannerContent.disclaimer !== '';
+			const disclaimer = this.promoBannerContent?.disclaimer ?? '';
+			return disclaimer !== '';
 		}
 	},
 };
@@ -103,32 +109,21 @@ export default {
 	max-width: 100%;
 }
 
-.content {
-	text-align: center;
-	display: block;
-	// contentful rich text content is wrapped in a p tag, this removes all styles from it
-	::v-deep p {
-		display: inline;
-		margin: 0;
-		padding: 0;
-	}
-}
-
 .generic-banner {
 	background-image: url('~@/assets/images/backgrounds/tipbar-bg-small.jpg');
 	background-position: bottom;
-
-	.icon {
-		flex-shrink: 0;
-	}
+	padding: 0.365rem;
+	flex-wrap: unset;
 
 	& [class*="-icon"] {
 		display: block;
+		align-self: center;
 		height: rem-calc(22);
 		width: rem-calc(22);
-		margin-right: rem-calc(10);
-		margin-top: -0.2rem;
+		min-width: rem-calc(22);
+		max-width: rem-calc(22);
 		fill: $kiva-icon-green;
+		margin: 0 rem-calc(10);
 	}
 
 	.icon-corporate,
@@ -147,13 +142,11 @@ export default {
 
 	.banner-link,
 	.banner-wrapper {
-		display: flex;
-		align-items: center;
 		color: $kiva-icon-green;
 		text-decoration: none;
 		text-align: center;
-		padding: 0.365rem;
 		line-height: 1.25;
+		vertical-align: bottom;
 	}
 
 	.banner-link {

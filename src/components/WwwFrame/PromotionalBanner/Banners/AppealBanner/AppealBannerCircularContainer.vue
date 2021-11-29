@@ -73,7 +73,8 @@ export default {
 				.fields?.images?.[0]?.fields?.file?.url || '';
 		},
 		hasDisclaimer() {
-			return this.appealBannerContent?.disclaimer !== '';
+			const disclaimer = this.appealBannerContent?.disclaimers?.content?.[0] ?? '';
+			return disclaimer !== '';
 		}
 	},
 	created() {

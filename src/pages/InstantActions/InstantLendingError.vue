@@ -1,6 +1,6 @@
 <template>
 	<www-page
-		id="confirm-instant-donation"
+		id="instant-lending-processor"
 		main-class="kv-tailwind"
 	>
 		<kv-page-container class="
@@ -25,22 +25,24 @@
 							:alt="mediaProperties.description || mediaProperties.title"
 						/>
 					</div>
-					<h1
-						v-if="headline"
-						class="tw-text-h2 tw-pb-4 tw-text-center"
-						v-html="headline"
-					></h1>
-					<h3 v-if="subHeadline" class="tw-pb-2 tw-text-center" v-html="subHeadline"></h3>
-					<div v-if="userConfirmation" class="fs-exclude tw-pb-2 tw-prose" v-html="userConfirmation"></div>
-					<div v-if="bodyCopy" class="tw-pb-8 tw-prose" v-html="bodyCopy"></div>
-					<div v-if="contentfulCta && contentfulCta.linkText" class="tw-text-right">
-						<kv-button
-							:href="contentfulCta.href"
-							v-kv-track-event="contentfulCta.analytics"
-							class="tw-mb-2"
-						>
-							{{ contentfulCta.linkText }}
-						</kv-button>
+					<div>
+						<h1
+							v-if="headline"
+							class="tw-text-h2 tw-mb-2 tw-text-center"
+							v-html="headline"
+						></h1>
+						<h3 v-if="subHeadline" class="tw-mb-2 tw-text-center" v-html="subHeadline"></h3>
+						<div v-if="bodyCopy" class="tw-mb-5 tw-prose" v-html="bodyCopy"></div>
+
+						<div v-if="contentfulCta && contentfulCta.linkText" class="tw-flex tw-justify-center tw-mb-5">
+							<kv-button
+								:href="contentfulCta.href"
+								v-kv-track-event="contentfulCta.analytics"
+								class="tw-mb-2 tw-w-full md:tw-w-auto"
+							>
+								{{ contentfulCta.linkText }}
+							</kv-button>
+						</div>
 					</div>
 				</div>
 			</kv-grid>
@@ -58,9 +60,9 @@ import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
-const contentfulContentQuery = gql`query instantDonationThanksContent {
+const instantLendingErrorContent = gql`query instantLendingContent {
 	contentful {
-		entries(contentKey:"instant-donation-thanks-cg", contentType: "contentGroup")
+		entries(contentKey:"instant-lending-loan-error-cg", contentType: "contentGroup")
 	}
 }`;
 
@@ -68,7 +70,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
 		return {
-			title: 'Thanks for your donation!'
+			title: 'Instant Lending Error'
 		};
 	},
 	components: {
@@ -76,36 +78,23 @@ export default {
 		KvContentfulImg,
 		KvGrid,
 		KvPageContainer,
-		WwwPage,
-	},
-	props: {
-		result: {
-			type: String,
-			default: null
-		},
-	},
-	data() {
-		return {
-			contentfulContent: null,
-		};
+		WwwPage
 	},
 	apollo: {
-		query: contentfulContentQuery,
+		query: instantLendingErrorContent,
 		preFetch: true,
 		result({ data }) {
 			const contentfulData = data?.contentful?.entries?.items ?? null;
 			this.contentfulContent = contentfulData ? formatContentGroupsFlat(contentfulData) : {};
+			this.loan = data?.lend?.loan ?? {};
 		}
 	},
 	computed: {
-		resultData() {
-			const resultDecoded = this.result ? atob(this.result) : '';
-			const resultArray = resultDecoded.split('|');
-			return {
-				amount: resultArray?.[0],
-				user: resultArray?.[1],
-				transactionId: resultArray?.[2],
-			};
+		bodyCopy() {
+			const defaultContent = 'It looks like this loan isn\'t available anymore.';
+			const contentfulRichText = this.genericContentBlock?.bodyCopy ?? null;
+			const bodyCopy = contentfulRichText ? richTextRenderer(contentfulRichText) : defaultContent;
+			return bodyCopy;
 		},
 		contentfulCta() {
 			return {
@@ -114,14 +103,25 @@ export default {
 				linkText: this.genericContentBlock.primaryCtaText ?? null,
 			};
 		},
+		errorType() {
+			return this.$route?.query?.instantLending ?? null;
+		},
 		genericContentBlock() {
-			return this.contentfulContent?.instantDonationThanksCg?.contents?.[0] ?? {};
+			return this.contentfulContent?.instantLendingLoanErrorCg?.contents?.[0] ?? {};
 		},
 		headline() {
-			return this.genericContentBlock?.headline ?? 'You\'re the best!';
+			const contentfulHeadline = this.genericContentBlock?.headline ?? 'Oops!';
+			return contentfulHeadline;
+		},
+		loanFunded() {
+			return this.errorType?.indexOf('loan-funded') !== -1;
+		},
+		loanNotFound() {
+			return this.errorType?.indexOf('missing-loanid') !== -1
+			|| this.errorType?.indexOf('failed-to-add-loan') !== -1;
 		},
 		mediaProperties() {
-			const media = this.contentfulContent?.instantDonationThanksCg?.media?.[0] ?? {};
+			const media = this.contentfulContent?.instantLendingLoanErrorCg?.media?.[0] ?? {};
 			return {
 				description: media?.description ?? '',
 				title: media?.title ?? '',
@@ -130,23 +130,11 @@ export default {
 				url: media?.file?.url ?? null
 			};
 		},
-		bodyCopy() {
-			const defaultContent = `Every $25 Kiva loan costs us at least $3 to distribute, so your donations
-				are essential to our operations. Your donations also help us build innovative solutions
-				for financial inclusion around the world.`;
-			const contentfulRichText = this.genericContentBlock?.bodyCopy ?? null;
-			const bodyCopy = contentfulRichText ? richTextRenderer(contentfulRichText) : defaultContent;
-			return bodyCopy;
-		},
 		subHeadline() {
-			return this.genericContentBlock.subHeadline ?? 'Thanks for supporting our work at Kiva.';
+			return this.genericContentBlock.subHeadline ?? null;
 		},
-		userConfirmation() {
-			const userId = this.resultData?.user ?? null;
-			if (userId) {
-				return `We've emailed your donation details to ${userId}.`;
-			}
-			return 'Please check your email for a donation receipt.';
+		tokenValidationFailed() {
+			return this.errorType?.indexOf('validation-failed') !== -1;
 		}
 	}
 };

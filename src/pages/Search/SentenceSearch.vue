@@ -1,5 +1,7 @@
 <template>
-	<www-page :gray-background="true">
+	<www-page
+		:gray-background="true"
+	>
 		<lend-header
 			:side-arrows-padding="false"
 			browse-url="/lend-by-category"

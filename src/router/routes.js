@@ -7,14 +7,7 @@ export default [
 			contentfulPage: () => 'home',
 		},
 	},
-	{
-		path: '/homepage-classic',
-		name: 'homepage-classic',
-		component: () => import('@/pages/Homepage/Homepage'),
-		meta: {
-			contentfulPage: () => 'home-classic',
-		},
-	},
+	{ path: '/homepage-classic', redirect: '/' },
 	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
 	{
 		path: '/auto-deposit',
@@ -54,7 +47,14 @@ export default [
 		children: [
 			{
 				path: 'signup',
-				component: () => import('@/pages/Causes/Signup')
+				component: () => import('@/pages/Causes/Signup'),
+				props: route => ({
+					cause: route.query.cause
+				})
+			},
+			{
+				path: 'thanks',
+				component: () => import('@/pages/Causes/Thanks'),
 			}
 		]
 	},
@@ -121,6 +121,10 @@ export default [
 		props: route => ({
 			result: route.params.result,
 		})
+	},
+	{
+		path: '/instant-lending-error',
+		component: () => import('@/pages/InstantActions/InstantLendingError')
 	},
 	{ path: '/join-team', component: () => import('@/pages/LoginAndRegister/JoinTeam') },
 	{
@@ -208,18 +212,12 @@ export default [
 	},
 	{ path: '/process-browser-auth', component: () => import('@/pages/ProcessBrowserAuth') },
 	{
-		path: '/process-instant-lending/:token/:loanId/:lendAmount',
+		path: '/process-instant-lending/:loanId/:lendAmount',
 		component: () => import('@/pages/InstantActions/ProcessInstantLending'),
 		props: route => ({
-			token: route.params.token,
 			loanId: Number(route.params.loanId),
 			lendAmount: Number(route.params.lendAmount)
 		}),
-	},
-	{
-		path: '/process-instant-lending-error/:errorType',
-		component: () => import('@/pages/InstantActions/ProcessInstantLending'),
-		props: route => ({ errorType: route.params.errorType })
 	},
 	{ path: '/protocol', component: () => import('@/pages/Protocol') },
 	{ path: '/register/social', component: () => import('@/pages/LoginAndRegister/RegisterSocial') },

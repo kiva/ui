@@ -36,6 +36,7 @@ import * as Sentry from '@sentry/vue';
 import KvButton from '@/components/Kv/KvButton';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import { lightHeader } from '@/util/siteThemes';
 
 function getFullPath(url = '/') {
 	if (url.startsWith('/')) {
@@ -79,6 +80,7 @@ export default {
 			process: '',
 			sent: false,
 			sending: false,
+			headerTheme: lightHeader,
 		};
 	},
 	apollo: {

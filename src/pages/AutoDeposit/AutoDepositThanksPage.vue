@@ -35,7 +35,7 @@
 <script>
 import gql from 'graphql-tag';
 import numeral from 'numeral';
-
+import { lightHeader } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvIcon from '@/components/Kv/KvIcon';
 
@@ -60,6 +60,7 @@ export default {
 			totalAmount: 0,
 			donationAmount: 0,
 			autoDepositAmount: 0,
+			headerTheme: lightHeader,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],

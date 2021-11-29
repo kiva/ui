@@ -1,5 +1,8 @@
 <template>
-	<www-page class="loan-channel-page category-page" :gray-background="true">
+	<www-page
+		class="loan-channel-page category-page"
+		:gray-background="true"
+	>
 		<div class="row">
 			<div class="small-12 columns heading-region">
 				<view-toggle browse-url="/lend-by-category" :filter-url="filterUrl" />
