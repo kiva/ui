@@ -1,3 +1,10 @@
+### [2.17.4](https://github.com/kiva/ui/compare/v2.17.3...v2.17.4) (2021-11-29)
+
+
+### Bug Fixes
+
+* fixes causes signup eligibility issues and login query param messaging ([4b16b4a](https://github.com/kiva/ui/commit/4b16b4a2aa8de6f5f038a7928b02669a814da7ae))
+
 ### [2.17.3](https://github.com/kiva/ui/compare/v2.17.2...v2.17.3) (2021-11-29)
 
 
