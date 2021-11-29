@@ -1,3 +1,11 @@
+### [2.17.3](https://github.com/kiva/ui/compare/v2.17.2...v2.17.3) (2021-11-29)
+
+
+### Bug Fixes
+
+* move and update global exclude list ([4d3a787](https://github.com/kiva/ui/commit/4d3a787a2efd8ddc0a168ec180358f5f226a1f36))
+* update handling for pages that should not show promotions or their disclaimers ([038ec3e](https://github.com/kiva/ui/commit/038ec3e6cce7431378bc1f507fb45af2d7607d16))
+
 ### [2.17.2](https://github.com/kiva/ui/compare/v2.17.1...v2.17.2) (2021-11-29)
 
 
