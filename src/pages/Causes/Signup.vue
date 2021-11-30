@@ -33,7 +33,7 @@ const pageQuery = gql`query causesSignupEligibilityQuery {
 			}
 		}
 	}
-	mySubscriptions {
+	mySubscriptions(includeDisabled: true) {
 		values {
 			id
 			enabled
@@ -133,12 +133,11 @@ export default {
 			const hasInactiveCauseSubscription = causesSubscriptions.find(
 				subscription => !subscription.enabled
 			);
-
 			return !hasActiveCauseSubscription
 				&& !this.isMonthlyGoodSubscriber
 				&& !this.hasAutoDeposits
 				&& !this.hasLegacySubscription
-				&& (!this.hasMadeLoan && !hasInactiveCauseSubscription);
+				&& (!this.hasMadeLoan || hasInactiveCauseSubscription);
 		}
 	},
 };

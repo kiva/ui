@@ -52,14 +52,18 @@
 								</option>
 							</kv-select>
 
-							<p class="tw-mt-2 tw-text-base">
+							<p class="tw-mt-2 tw-text-base" v-if="dayOfMonth < 31">
 								<!-- eslint-disable-next-line max-len -->
-								Your subscription will renew automatically every month on the 1st. You can cancel any time.
+								Your subscription will renew automatically every month on the {{ dayOfMonth | numeral('Oo') }}. You can cancel any time.
 							</p>
-
+							<p class="tw-mt-2 tw-text-base" v-else>
+								<!-- eslint-disable-next-line max-len -->
+								Your subscription will renew automatically on the last day of each month. You can cancel any time.
+							</p>
 							<causes-drop-in-payment-wrapper
 								class="tw-mt-4 tw-mx-auto"
 								:amount="amount"
+								:day-of-month="dayOfMonth"
 								:cause-category-id="causeCategoryId"
 								@complete-transaction="completeCausesBraintree"
 							/>
@@ -123,6 +127,7 @@ export default {
 	},
 	data() {
 		return {
+			dayOfMonth: new Date().getDate(),
 			causesIconImgRequire,
 			mgAmountOptions: [
 				{
