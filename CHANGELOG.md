@@ -1,3 +1,10 @@
+### [2.17.10](https://github.com/kiva/ui/compare/v2.17.9...v2.17.10) (2021-11-30)
+
+
+### Bug Fixes
+
+* fixes issue with double initializing of BT drop in ([b3b2161](https://github.com/kiva/ui/commit/b3b21612b0edc08dd823bdcc383c2f2cc5787134))
+
 ### [2.17.9](https://github.com/kiva/ui/compare/v2.17.8...v2.17.9) (2021-11-30)
 
 
