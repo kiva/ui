@@ -1,3 +1,10 @@
+### [2.17.9](https://github.com/kiva/ui/compare/v2.17.8...v2.17.9) (2021-11-30)
+
+
+### Bug Fixes
+
+* fixes BT error if BT drop in gets initialized multiple times ([444a8e8](https://github.com/kiva/ui/commit/444a8e81c2b3767ac1be6267dde67626004408af))
+
 ### [2.17.8](https://github.com/kiva/ui/compare/v2.17.7...v2.17.8) (2021-11-30)
 
 
