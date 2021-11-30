@@ -1,16 +1,18 @@
 <template>
 	<div class="row align-right">
 		<div class="dropin-payment-holder small-12 columns">
-			<braintree-drop-in-interface
-				v-if="isClientReady"
-				ref="braintreeDropInInterface"
-				:amount="amount"
-				flow="checkout"
-				:payment-types="paymentTypes"
-				:preselect-vaulted-payment-method="!isGuestCheckout"
-				:auth="isGuestCheckout ? 'token-key' : 'client-token'"
-				@transactions-enabled="enableCheckoutButton = $event"
-			/>
+			<keep-alive>
+				<braintree-drop-in-interface
+					v-if="isClientReady"
+					ref="braintreeDropInInterface"
+					:amount="amount"
+					flow="checkout"
+					:payment-types="paymentTypes"
+					:preselect-vaulted-payment-method="!isGuestCheckout"
+					:auth="isGuestCheckout ? 'token-key' : 'client-token'"
+					@transactions-enabled="enableCheckoutButton = $event"
+				/>
+			</keep-alive>
 			<div v-if="isGuestCheckout" id="guest-checkout">
 				<label class="input-label" for="email">
 					Where should we email your receipt?

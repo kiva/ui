@@ -1,14 +1,16 @@
 <template>
 	<div class="dropin-payment-holder tw-px-0 tw-max-w-md">
-		<braintree-drop-in-interface
-			v-if="isClientReady"
-			ref="braintreeDropInInterface"
-			:amount="amount | numeral('0.00')"
-			flow="vault"
-			:payment-types="['paypal', 'card']"
-			:preselect-vaulted-payment-method="action === 'Registration'"
-			@transactions-enabled="enableConfirmButton = $event"
-		/>
+		<keep-alive>
+			<braintree-drop-in-interface
+				v-if="isClientReady"
+				ref="braintreeDropInInterface"
+				:amount="amount | numeral('0.00')"
+				flow="vault"
+				:payment-types="['paypal', 'card']"
+				:preselect-vaulted-payment-method="action === 'Registration'"
+				@transactions-enabled="enableConfirmButton = $event"
+			/>
+		</keep-alive>
 		<div id="dropin-submit" class="tw-w-full">
 			<kv-button
 				:state="buttonState"

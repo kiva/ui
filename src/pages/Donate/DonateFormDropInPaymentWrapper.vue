@@ -18,15 +18,17 @@
 					subscription settings
 				</router-link>.
 			</kv-alert>
-			<braintree-drop-in-interface
-				v-if="isClientReady && isLoggedIn && !hasExistingAutoDeposit"
-				ref="braintreeDropInInterface"
-				:amount="donateAmountAsString"
-				flow="vault"
-				:payment-types="['paypal', 'card']"
-				:preselect-vaulted-payment-method="true"
-				@transactions-enabled="enableConfirmButton = $event"
-			/>
+			<keep-alive>
+				<braintree-drop-in-interface
+					v-if="isClientReady && isLoggedIn && !hasExistingAutoDeposit"
+					ref="braintreeDropInInterface"
+					:amount="donateAmountAsString"
+					flow="vault"
+					:payment-types="['paypal', 'card']"
+					:preselect-vaulted-payment-method="true"
+					@transactions-enabled="enableConfirmButton = $event"
+				/>
+			</keep-alive>
 			<kv-button
 				v-if="isLoggedIn && !hasExistingAutoDeposit"
 				class="dropin-submit"
