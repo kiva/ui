@@ -1,5 +1,6 @@
 <template>
-	<footer class="tw-min-h-[17.5rem] lg:tw-min-h-[25rem] tw-p-2 md:tw-p-3 lg:tw-px-2 lg:tw-py-3 tw-bg-tertiary tw-text-primary print:tw-p-0 print:tw-font-book print:tw-h-auto">
+	<footer class="tw-min-h-[17.5rem] lg:tw-min-h-[25rem] tw-p-2 md:tw-p-3
+				lg:tw-px-2 lg:tw-py-3 tw-bg-tertiary tw-text-primary print:tw-p-0 print:tw-font-book print:tw-h-auto">
 		<disclaimers />
 		<nav class="tw-block lg:tw-hidden" aria-label="Footer navigation">
 			<div class="tw-mt-3 tw-mb-2">
@@ -338,7 +339,10 @@
 						rel="noopener"
 						v-kv-track-event="['Footer', 'click-social-icon', 'Facebook']"
 					>
-						<kv-icon name="facebook-round" title="Facebook" class="tw-mr-3 tw-w-3 tw-h-3" />
+						<kv-material-icon
+							class="tw-mr-2.5 tw-w-3 tw-h-3 tw-text-tertiary"
+							:icon="mdiFacebook"
+						/>
 					</a>
 					<a
 						href="//www.instagram.com/kiva.org"
@@ -346,7 +350,10 @@
 						rel="noopener"
 						v-kv-track-event="['Footer', 'click-social-icon', 'Instagram']"
 					>
-						<kv-icon name="instagram" title="Instagram" class="tw-mr-3 tw-w-3 tw-h-3 tw-ml-3" />
+						<kv-material-icon
+							class="tw-mr-2.5 tw-w-3 tw-h-3 tw-text-tertiary"
+							:icon="mdiInstagram"
+						/>
 					</a>
 					<a
 						href="//twitter.com/kiva"
@@ -354,7 +361,10 @@
 						rel="noopener"
 						v-kv-track-event="['Footer', 'click-social-icon', 'Twitter']"
 					>
-						<kv-icon name="twitter" title="Twitter" class="tw-mr-3 tw-w-3 tw-h-3 tw-ml-3" />
+						<kv-material-icon
+							class="tw-mr-2.5 tw-w-3 tw-h-3 tw-text-tertiary"
+							:icon="mdiTwitter"
+						/>
 					</a>
 				</div>
 			</div>
@@ -663,7 +673,8 @@
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-Careers']"
-									class="tw-text-small tw-whitespace-nowrap tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
+									class="tw-text-small tw-whitespace-nowrap
+										tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
 								>
 									Careers
 								</a>
@@ -672,7 +683,8 @@
 								<router-link
 									to="/work-with-us/internvolunteers"
 									v-kv-track-event="['Footer', 'click-Work with us-Volunteer interships']"
-									class="tw-text-small tw-whitespace-nowrap tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
+									class="tw-text-small tw-whitespace-nowrap
+										tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
 								>
 									Volunteer internships
 								</router-link>
@@ -683,7 +695,8 @@
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-Kiva fellows']"
-									class="tw-text-small tw-whitespace-nowrap tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
+									class="tw-text-small tw-whitespace-nowrap
+										tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
 								>
 									Kiva fellows
 								</a>
@@ -692,7 +705,8 @@
 								<router-link
 									to="/work-with-us/reviewers"
 									v-kv-track-event="['Footer', 'click-Work with us-Review and translation']"
-									class="tw-text-small tw-whitespace-nowrap tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
+									class="tw-text-small tw-whitespace-nowrap
+										tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
 								>
 									Review and translation
 								</router-link>
@@ -703,7 +717,8 @@
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-US Hubs']"
-									class="tw-text-small tw-whitespace-nowrap tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
+									class="tw-text-small tw-whitespace-nowrap
+										tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
 								>
 									US Hubs
 								</a>
@@ -770,19 +785,20 @@
 import { getYear } from 'date-fns';
 import getCacheKey from '@/util/getCacheKey';
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
-import KvIcon from '@/components/Kv/KvIcon';
 import Disclaimers from '@/components/WwwFrame/DisclaimersContentful';
+import { mdiFacebook, mdiInstagram, mdiTwitter } from '@mdi/js';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'TheFooter',
 	components: {
 		KvAccordionItem,
-		KvIcon,
 		Disclaimers,
 		KvGrid,
-		KvPageContainer
+		KvPageContainer,
+		KvMaterialIcon
 	},
 	serverCacheKey: props => getCacheKey(props.theme ? `footerThemed${props.theme.themeKey}` : 'footer'),
 	props: {
@@ -805,7 +821,10 @@ export default {
 			privacyUrl: '/legal/privacy',
 			termsUrl: '/legal/terms',
 			appStoreUrl: 'https://apps.apple.com/app/id1453093374',
-			playStoreUrl: 'https://play.google.com/store/apps/details?id=org.kiva.lending'
+			playStoreUrl: 'https://play.google.com/store/apps/details?id=org.kiva.lending',
+			mdiFacebook,
+			mdiInstagram,
+			mdiTwitter
 		};
 	},
 };

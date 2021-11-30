@@ -6,6 +6,8 @@ import {
 	blueFooter
 } from '@/util/siteThemes';
 import StoryRouter from 'storybook-vue-router';
+import apolloStoryMixin from '../mixins/apollo-story-mixin';
+import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 
 import TheFooter from '@/components/WwwFrame/TheFooter';
 
@@ -35,6 +37,7 @@ export default {
 
 export const Default = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
+	mixins: [apolloStoryMixin(), cookieStoreStoryMixin()],
 	components: {
 		TheFooter
 	},
