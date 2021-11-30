@@ -1,3 +1,10 @@
+### [2.17.8](https://github.com/kiva/ui/compare/v2.17.7...v2.17.8) (2021-11-30)
+
+
+### Bug Fixes
+
+* fixes issues with BT drop in and causes signup ([f675ac1](https://github.com/kiva/ui/commit/f675ac197a969ba3d3527ae1c4eb2c39caaf4753))
+
 ### [2.17.7](https://github.com/kiva/ui/compare/v2.17.6...v2.17.7) (2021-11-29)
 
 
