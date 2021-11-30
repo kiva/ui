@@ -1,16 +1,17 @@
 <template>
-	<footer class="www-footer" :style="cssVars">
+	<footer class="tw-min-h-[17.5rem] lg:tw-min-h-[25rem] tw-p-2 md:tw-p-3 lg:tw-px-2 lg:tw-py-3 tw-bg-tertiary tw-text-primary print:tw-p-0 print:tw-font-book print:tw-h-auto">
 		<disclaimers />
-		<nav class="small-footer hide-for-large" aria-label="Footer navigation">
-			<div class="row collapse">
-				<div class="column">
-					<h2>Borrow</h2>
-					<p>Loans for entrepreneurs doing amazing things.</p>
-					<ul>
+		<nav class="tw-block lg:tw-hidden" aria-label="Footer navigation">
+			<div class="tw-mt-3 tw-mb-2">
+				<div>
+					<h2 class="tw-text-h4">Borrow</h2>
+					<p class="tw-text-small">Loans for entrepreneurs doing amazing things.</p>
+					<ul class="tw-mb-2">
 						<li>
 							<router-link
 								:to="applyUrl"
 								v-kv-track-event="['Footer', 'click-Borrow-Apply now']"
+								class="tw-text-small"
 							>
 								Apply now
 							</router-link>
@@ -18,15 +19,17 @@
 					</ul>
 				</div>
 			</div>
-			<div class="row collapse">
-				<div class="column">
-					<h2>Lend</h2>
-					<p>Make a loan, change a life.</p>
-					<ul>
+
+			<div class="tw-mb-2">
+				<div>
+					<h2 class="tw-text-h4">Lend</h2>
+					<p class="tw-text-small">Make a loan, change a life.</p>
+					<ul class="tw-mb-2">
 						<li>
 							<router-link
 								:to="lendByCategoryUrl"
 								v-kv-track-event="['Footer', 'click-Lend-lend now']"
+								class="tw-text-small"
 							>
 								Lend now
 							</router-link>
@@ -35,6 +38,7 @@
 							<router-link
 								:to="monthlyGoodUrl"
 								v-kv-track-event="['Footer', 'click-Lend-Monthly Good']"
+								class="tw-text-small"
 							>
 								Monthly Good
 							</router-link>
@@ -42,41 +46,45 @@
 					</ul>
 				</div>
 			</div>
-			<div class="row collapse">
-				<div class="column">
-					<h2>Donate</h2>
-					<p>
+
+			<div>
+				<div>
+					<h2 class="tw-text-h4">Donate</h2>
+					<p class="tw-text-small">
 						Kiva is a 501(c)3 U.S. nonprofit fueled by passionate people.
 						Founded in 2005, and based in San Francisco, with offices in Bangkok, Nairobi,
 						Portland and staff around the globe.
 					</p>
-					<ul>
+					<ul class="tw-mb-3">
 						<li>
 							<router-link
 								to="/donate/supportus"
 								v-kv-track-event="['Footer', 'click-Donate', 'Donate to Kiva here']"
+								class="tw-text-small"
 							>
 								Donate to Kiva
 							</router-link>
 						</li>
 					</ul>
-					<hr>
+					<hr class="tw-border-tertiary tw-mt-2 tw-mb-0">
 				</div>
 			</div>
-			<div class="row collapse">
-				<div class="column">
+
+			<div>
+				<div>
 					<kv-accordion-item
 						id="get-to-know-us_accordion"
 						:open="false"
 					>
 						<template #header>
-							<h2>Get to know us</h2>
+							<h2 class="tw-text-h4">Get to know us</h2>
 						</template>
-						<ul>
+						<ul class="tw-mb-2">
 							<li>
 								<router-link
 									:to="aboutUrl"
 									v-kv-track-event="['Footer', 'click-Get to know us-About us']"
+									class="tw-text-small"
 								>
 									About us
 								</router-link>
@@ -85,6 +93,7 @@
 								<router-link
 									to="/about/how"
 									v-kv-track-event="['Footer', 'click-Get to know us-How Kiva works']"
+									class="tw-text-small"
 								>
 									How Kiva works
 								</router-link>
@@ -93,6 +102,7 @@
 								<router-link
 									to="/about/how#faq-hkw-section"
 									v-kv-track-event="['Footer', 'click-Get to know us-FAQs']"
+									class="tw-text-small"
 								>
 									FAQs
 								</router-link>
@@ -101,6 +111,7 @@
 								<router-link
 									to="/about/where-kiva-works"
 									v-kv-track-event="['Footer', 'click-Get to know us-Where Kiva works']"
+									class="tw-text-small"
 								>
 									Where Kiva works
 								</router-link>
@@ -109,6 +120,7 @@
 								<router-link
 									to="/blog"
 									v-kv-track-event="['Footer', 'click-Get to know us-Blog']"
+									class="tw-text-small"
 								>
 									Blog
 								</router-link>
@@ -117,6 +129,7 @@
 								<router-link
 									to="/partner-with-us"
 									v-kv-track-event="['Footer', 'click-Get to know us-Partner with us']"
+									class="tw-text-small"
 								>
 									Partner with us
 								</router-link>
@@ -125,6 +138,7 @@
 								<router-link
 									to="/help/contact-us"
 									v-kv-track-event="['Footer', 'click-Get to know us-Contact us']"
+									class="tw-text-small"
 								>
 									Contact us
 								</router-link>
@@ -133,6 +147,7 @@
 								<router-link
 									:to="helpUrl"
 									v-kv-track-event="['Footer', 'click-Get to know us-Help']"
+									class="tw-text-small"
 								>
 									Help
 								</router-link>
@@ -144,13 +159,14 @@
 						:open="false"
 					>
 						<template #header>
-							<h2>Community</h2>
+							<h2 class="tw-text-h4">Community</h2>
 						</template>
-						<ul>
+						<ul class="tw-mb-2">
 							<li>
 								<router-link
 									to="/teams"
 									v-kv-track-event="['Footer', 'click-Community-Teams']"
+									class="tw-text-small"
 								>
 									Teams
 								</router-link>
@@ -159,6 +175,7 @@
 								<router-link
 									to="/kivau/intro"
 									v-kv-track-event="['Footer', 'click-Community-Students and educators']"
+									class="tw-text-small"
 								>
 									Students and educators
 								</router-link>
@@ -170,13 +187,14 @@
 						:open="false"
 					>
 						<template #header>
-							<h2>Explore</h2>
+							<h2 class="tw-text-h4">Explore</h2>
 						</template>
-						<ul>
+						<ul class="tw-mb-2">
 							<li>
 								<router-link
 									to="/protocol"
 									v-kv-track-event="['Footer', 'click-Explore-Protocol']"
+									class="tw-text-small"
 								>
 									Protocol
 								</router-link>
@@ -185,6 +203,7 @@
 								<router-link
 									to="/gifts"
 									v-kv-track-event="['Footer', 'click-Explore-Gifts']"
+									class="tw-text-small"
 								>
 									Gifts
 								</router-link>
@@ -193,6 +212,7 @@
 								<router-link
 									to="/live"
 									v-kv-track-event="['Footer', 'click-Explore-Happening now']"
+									class="tw-text-small"
 								>
 									Happening now
 								</router-link>
@@ -201,6 +221,7 @@
 								<router-link
 									to="/build"
 									v-kv-track-event="['Footer', 'click-Explore-Developer API']"
+									class="tw-text-small"
 								>
 									Developer API
 								</router-link>
@@ -212,15 +233,16 @@
 						:open="false"
 					>
 						<template #header>
-							<h2>Work with us</h2>
+							<h2 class="tw-text-h4">Work with us</h2>
 						</template>
-						<ul>
+						<ul class="tw-mb-2">
 							<li>
 								<a
 									:href="careersUrl"
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-Careers']"
+									class="tw-text-small"
 								>
 									Careers
 								</a>
@@ -229,6 +251,7 @@
 								<router-link
 									to="/work-with-us/internvolunteers"
 									v-kv-track-event="['Footer', 'click-Work with us-Volunteer interships']"
+									class="tw-text-small"
 								>
 									Volunteer internships
 								</router-link>
@@ -239,6 +262,7 @@
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-Kiva fellows']"
+									class="tw-text-small"
 								>
 									Kiva fellows
 								</a>
@@ -247,6 +271,7 @@
 								<router-link
 									to="/work-with-us/reviewers"
 									v-kv-track-event="['Footer', 'click-Work with us-Review and translation']"
+									class="tw-text-small"
 								>
 									Review and translation
 								</router-link>
@@ -257,6 +282,7 @@
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-US Hubs']"
+									class="tw-text-small"
 								>
 									US Hubs
 								</a>
@@ -266,10 +292,11 @@
 					<span></span>
 				</div>
 			</div>
-			<div class="row collapse">
-				<div class="column">
-					<ul class=" download-app-icons">
-						<li>
+
+			<div>
+				<div>
+					<ul class="tw-mt-4 tw-mb-2">
+						<li class="tw-inline-block">
 							<a
 								:href="appStoreUrl"
 								target="_blank"
@@ -277,14 +304,14 @@
 								v-kv-track-event="['global', 'click-app-badge-footer', 'App Store']"
 							>
 								<img
-									class="download-app-ios"
+									class="tw-w-[120px] tw-h-5 tw-mr-1"
 									src="@/assets/icons/app-store.svg"
 									loading="lazy"
 									alt="Check out our new app on the App Store"
 								>
 							</a>
 						</li>
-						<li>
+						<li class="tw-inline-block">
 							<a
 								:href="playStoreUrl"
 								target="_blank"
@@ -292,7 +319,7 @@
 								v-kv-track-event="['global', 'click-app-badge-footer', 'Google Store']"
 							>
 								<img
-									class="download-app-android"
+									class="tw-w-[135px] tw-h-5"
 									src="@/assets/icons/play-store.svg"
 									loading="lazy"
 									alt="Check out our new app on the Play Store"
@@ -302,15 +329,16 @@
 					</ul>
 				</div>
 			</div>
-			<div class="row collapse small-footer__social-icon-row">
-				<div class="column">
+
+			<div class="tw-mt-1 tw-mb-2">
+				<div class="">
 					<a
 						href="//www.facebook.com/kiva/"
 						target="_blank"
 						rel="noopener"
 						v-kv-track-event="['Footer', 'click-social-icon', 'Facebook']"
 					>
-						<kv-icon name="facebook-round" title="Facebook" class="small-footer__social-icon" />
+						<kv-icon name="facebook-round" title="Facebook" class="tw-mr-3 tw-w-3 tw-h-3" />
 					</a>
 					<a
 						href="//www.instagram.com/kiva.org"
@@ -318,7 +346,7 @@
 						rel="noopener"
 						v-kv-track-event="['Footer', 'click-social-icon', 'Instagram']"
 					>
-						<kv-icon name="instagram" title="Instagram" class="small-footer__social-icon" />
+						<kv-icon name="instagram" title="Instagram" class="tw-mr-3 tw-w-3 tw-h-3 tw-ml-3" />
 					</a>
 					<a
 						href="//twitter.com/kiva"
@@ -326,42 +354,46 @@
 						rel="noopener"
 						v-kv-track-event="['Footer', 'click-social-icon', 'Twitter']"
 					>
-						<kv-icon name="twitter" title="Twitter" class="small-footer__social-icon" />
+						<kv-icon name="twitter" title="Twitter" class="tw-mr-3 tw-w-3 tw-h-3 tw-ml-3" />
 					</a>
 				</div>
 			</div>
 
-			<div class="row collapse">
-				<div class="column">
-					<ul class="small-footer__single-line-links">
-						<li>
+			<div>
+				<div>
+					<ul class="tw-mb-2 tw-text-small tw-overflow-hidden">
+						<li class="tw-inline-block tw--translate-x-2">
 							<router-link
 								:to="privacyUrl"
 								v-kv-track-event="['Footer', 'click-Privacy policy']"
+								class="tw-whitespace-nowrap tw-ml-1 tw-border-l tw-border-tertiary tw-pl-1"
 							>
 								Privacy policy
 							</router-link>
 						</li>
-						<li>
+						<li class="tw-inline-block tw--translate-x-2">
 							<router-link
 								:to="cookiesUrl"
 								v-kv-track-event="['Footer', 'click-Cookie policy']"
+								class="tw-whitespace-nowrap tw-ml-1 tw-border-l tw-border-tertiary tw-pl-1"
 							>
 								Cookie and Data Settings
 							</router-link>
 						</li>
-						<li>
+						<li class="tw-inline-block tw--translate-x-2">
 							<router-link
 								:to="termsUrl"
 								v-kv-track-event="['Footer', 'click-Terms of use']"
+								class="tw-whitespace-nowrap tw-ml-1 tw-border-l tw-border-tertiary tw-pl-1"
 							>
 								Terms of use
 							</router-link>
 						</li>
-						<li>
+						<li class="tw-inline-block tw--translate-x-2">
 							<router-link
 								:to="sitemapUrl"
 								v-kv-track-event="['Footer', 'click-Site map']"
+								class="tw-whitespace-nowrap tw-ml-1 tw-border-l tw-border-tertiary tw-pl-1"
 							>
 								Site map
 							</router-link>
@@ -369,9 +401,10 @@
 					</ul>
 				</div>
 			</div>
-			<div class="row collapse">
-				<div class="column">
-					<p class="small-footer__disclaimer">
+
+			<div>
+				<div>
+					<p class="tw-text-small">
 						Lending through Kiva involves risk of principal loss.
 						Kiva does not guarantee repayment or offer a financial return on your loan.
 						<br><br>
@@ -380,31 +413,33 @@
 				</div>
 			</div>
 		</nav>
-		<nav class="large-footer show-for-large" aria-label="Footer navigation">
-			<div class="row collapse tw-text-left">
-				<div class="column narrow hide-for-print">
-					<div class="large-footer__block">
-						<h2>Borrow</h2>
-						<p>Loans for entrepreneurs doing <br class="xxlu">amazing things.</p>
+		<kv-page-container class="tw-hidden lg:tw-block tw-mt-4" aria-label="Footer navigation">
+			<kv-grid class="tw-grid-cols-4 tw-mb-1">
+				<div class="print:tw-hidden">
+					<div class="tw-mb-2">
+						<h2 class="tw-text-h4">Borrow</h2>
+						<p class="tw-text-small">Loans for entrepreneurs doing <br class="xxlu">amazing things.</p>
 						<ul>
 							<li>
 								<router-link
 									:to="applyUrl"
 									v-kv-track-event="['Footer', 'click-Borrow-Apply now']"
+									class="tw-text-small"
 								>
 									Apply now
 								</router-link>
 							</li>
 						</ul>
 					</div>
-					<div class="large-footer__block">
-						<h2>Lend</h2>
-						<p>Make a loan, change a life.</p>
+					<div class="tw-mb-2">
+						<h2 class="tw-text-h4">Lend</h2>
+						<p class="tw-text-small">Make a loan, change a life.</p>
 						<ul>
 							<li>
 								<router-link
 									:to="lendByCategoryUrl"
 									v-kv-track-event="['Footer', 'click-Lend-lend now']"
+									class="tw-text-small"
 								>
 									Lend now
 								</router-link>
@@ -413,19 +448,21 @@
 								<router-link
 									:to="monthlyGoodUrl"
 									v-kv-track-event="['Footer', 'click-Lend-Monthly Good']"
+									class="tw-text-small"
 								>
 									Monthly Good
 								</router-link>
 							</li>
 						</ul>
 					</div>
-					<div class="large-footer__block">
-						<h2>Explore</h2>
+					<div class="tw-mb-2">
+						<h2 class="tw-text-h4">Explore</h2>
 						<ul>
 							<li>
 								<router-link
 									to="/protocol"
 									v-kv-track-event="['Footer', 'click-Explore-Protocol']"
+									class="tw-text-small"
 								>
 									Protocol
 								</router-link>
@@ -434,6 +471,7 @@
 								<router-link
 									to="/gifts"
 									v-kv-track-event="['Footer', 'click-Explore-Gifts']"
+									class="tw-text-small"
 								>
 									Gifts
 								</router-link>
@@ -442,6 +480,7 @@
 								<router-link
 									to="/live"
 									v-kv-track-event="['Footer', 'click-Explore-Happening now']"
+									class="tw-text-small"
 								>
 									Happening now
 								</router-link>
@@ -450,6 +489,7 @@
 								<router-link
 									to="/build"
 									v-kv-track-event="['Footer', 'click-Explore-Developer API']"
+									class="tw-text-small"
 								>
 									Developer API
 								</router-link>
@@ -457,14 +497,15 @@
 						</ul>
 					</div>
 				</div>
-				<div class="column narrow hide-for-print">
-					<div class="large-footer__block hide-for-print">
-						<h2>Get to know us</h2>
+				<div class="print:tw-hidden">
+					<div class="tw-mb-2 print:tw-hidden">
+						<h2 class="tw-text-h4">Get to know us</h2>
 						<ul>
 							<li>
 								<router-link
 									:to="aboutUrl"
 									v-kv-track-event="['Footer', 'click-Get to know us-About us']"
+									class="tw-text-small"
 								>
 									About us
 								</router-link>
@@ -473,6 +514,7 @@
 								<router-link
 									to="/about/how"
 									v-kv-track-event="['Footer', 'click-Get to know us-How Kiva works']"
+									class="tw-text-small"
 								>
 									How Kiva works
 								</router-link>
@@ -481,6 +523,7 @@
 								<router-link
 									to="/about/how#faq-hkw-section"
 									v-kv-track-event="['Footer', 'click-Get to know us-FAQs']"
+									class="tw-text-small"
 								>
 									FAQs
 								</router-link>
@@ -489,6 +532,7 @@
 								<router-link
 									to="/about/where-kiva-works"
 									v-kv-track-event="['Footer', 'click-Get to know us-Where Kiva works']"
+									class="tw-text-small"
 								>
 									Where Kiva works
 								</router-link>
@@ -497,6 +541,7 @@
 								<router-link
 									to="/blog"
 									v-kv-track-event="['Footer', 'click-Get to know us-Blog']"
+									class="tw-text-small"
 								>
 									Blog
 								</router-link>
@@ -505,6 +550,7 @@
 								<router-link
 									to="/partner-with-us"
 									v-kv-track-event="['Footer', 'click-Get to know us-Partner with us']"
+									class="tw-text-small"
 								>
 									Partner with us
 								</router-link>
@@ -513,6 +559,7 @@
 								<router-link
 									to="/help/contact-us"
 									v-kv-track-event="['Footer', 'click-Get to know us-Contact us']"
+									class="tw-text-small"
 								>
 									Contact us
 								</router-link>
@@ -521,19 +568,21 @@
 								<router-link
 									:to="helpUrl"
 									v-kv-track-event="['Footer', 'click-Get to know us-Help']"
+									class="tw-text-small"
 								>
 									Help
 								</router-link>
 							</li>
 						</ul>
 					</div>
-					<div class="large-footer__block hide-for-print">
-						<h2>Community</h2>
+					<div class="tw-mb-2 print:tw-hidden">
+						<h2 class="tw-text-h4">Community</h2>
 						<ul>
 							<li>
 								<router-link
 									to="/teams"
 									v-kv-track-event="['Footer', 'click-Community-Teams']"
+									class="tw-text-small"
 								>
 									Teams
 								</router-link>
@@ -542,6 +591,7 @@
 								<router-link
 									to="/kivau/intro"
 									v-kv-track-event="['Footer', 'click-Community-Students and educators']"
+									class="tw-text-small"
 								>
 									Students and educators
 								</router-link>
@@ -549,50 +599,53 @@
 						</ul>
 					</div>
 				</div>
-				<div class="column large-6 expand-for-print">
-					<div class="large-footer__block">
-						<p>
+				<div class="tw-col-span-2 print:tw-w-full print:tw-max-w-full print:tw-flex-1">
+					<div>
+						<p class="tw-text-small">
 							Kiva is a 501(c)3 U.S. nonprofit fueled by passionate people.
 							Founded in 2005, and based in San Francisco, with offices in Bangkok, Nairobi,
 							Portland and staff around the globe.
 						</p>
-						<ul class="hide-for-print">
+						<ul class="print:tw-hidden">
 							<li>
 								<router-link
 									to="/donate/supportus"
 									v-kv-track-event="['Footer', 'click-Donate', 'Donate to Kiva here']"
+									class="tw-text-small"
 								>
 									Donate to Kiva
 								</router-link>
 							</li>
 						</ul>
 					</div>
-					<div class="large-footer__block hide-for-print">
-						<ul class=" download-app-icons">
-							<li>
+					<div class="print:tw-hidden">
+						<ul class="tw-mt-4">
+							<li class="tw-inline-block">
 								<a
 									:href="appStoreUrl"
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="['global', 'click-app-badge-footer', 'App Store']"
+									class="tw-text-small"
 								>
 									<img
-										class="download-app-ios"
+										class="download-app-ios tw-h-5 tw-mr-1"
 										src="@/assets/icons/app-store.svg"
 										loading="lazy"
 										alt="Check out our new app on the App Store"
 									>
 								</a>
 							</li>
-							<li>
+							<li class="tw-inline-block">
 								<a
 									:href="playStoreUrl"
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="['global', 'click-app-badge-footer', 'Google Store']"
+									class="tw-text-small"
 								>
 									<img
-										class="download-app-android"
+										class="download-app-android tw-h-5"
 										src="@/assets/icons/play-store.svg"
 										loading="lazy"
 										alt="Check out our new app on the Play Store"
@@ -601,51 +654,56 @@
 							</li>
 						</ul>
 					</div>
-					<div class="large-footer__block hide-for-print">
-						<h2>Work with us</h2>
-						<ul class="large-footer__single-line-links large-footer__single-line-links--work-with-us">
-							<li>
+					<div class="print:tw-hidden">
+						<h2 class="tw-text-h4 tw-mt-3">Work with us</h2>
+						<ul class="large-footer__single-line-links tw-mb-2 tw-max-w-md tw-overflow-hidden">
+							<li class="tw-inline-block tw--translate-x-2">
 								<a
 									:href="careersUrl"
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-Careers']"
+									class="tw-text-small tw-whitespace-nowrap tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
 								>
 									Careers
 								</a>
 							</li>
-							<li>
+							<li class="tw-inline-block tw--translate-x-2">
 								<router-link
 									to="/work-with-us/internvolunteers"
 									v-kv-track-event="['Footer', 'click-Work with us-Volunteer interships']"
+									class="tw-text-small tw-whitespace-nowrap tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
 								>
 									Volunteer internships
 								</router-link>
 							</li>
-							<li>
+							<li class="tw-inline-block tw--translate-x-2">
 								<a
 									href="https://www.careers.kiva.org/fellowships"
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-Kiva fellows']"
+									class="tw-text-small tw-whitespace-nowrap tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
 								>
 									Kiva fellows
 								</a>
 							</li>
-							<li>
+							<li class="tw-inline-block tw--translate-x-2">
 								<router-link
 									to="/work-with-us/reviewers"
 									v-kv-track-event="['Footer', 'click-Work with us-Review and translation']"
+									class="tw-text-small tw-whitespace-nowrap tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
 								>
 									Review and translation
 								</router-link>
 							</li>
-							<li>
+							<li class="tw-inline-block tw--translate-x-2">
 								<a
 									href="https://www.kivaushub.org/hubs"
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-US Hubs']"
+									class="tw-text-small tw-whitespace-nowrap tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
 								>
 									US Hubs
 								</a>
@@ -653,52 +711,58 @@
 						</ul>
 					</div>
 				</div>
-			</div>
-			<div class="row column collapse tw-text-left">
-				<ul class="large-footer__single-line-links">
-					<li>
+			</kv-grid>
+
+			<div>
+				<ul class="large-footer__single-line-links tw-mb-2 tw-overflow-hidden">
+					<li class="tw-inline-block tw--translate-x-2">
 						<router-link
 							:to="privacyUrl"
 							v-kv-track-event="['Footer', 'click-Privacy policy']"
+							class="tw-text-small tw-whitespace-nowrap tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
 						>
 							Privacy policy
 						</router-link>
 					</li>
-					<li>
+					<li class="tw-inline-block tw--translate-x-2">
 						<router-link
 							:to="cookiesUrl"
 							v-kv-track-event="['Footer', 'click-Cookie policy']"
+							class="tw-text-small tw-whitespace-nowrap tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
 						>
 							Cookie and Data Settings
 						</router-link>
 					</li>
-					<li>
+					<li class="tw-inline-block tw--translate-x-2">
 						<router-link
 							:to="termsUrl"
 							v-kv-track-event="['Footer', 'click-Terms of use']"
+							class="tw-text-small tw-whitespace-nowrap tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
 						>
 							Terms of use
 						</router-link>
 					</li>
-					<li>
+					<li class="tw-inline-block tw--translate-x-2">
 						<router-link
 							:to="sitemapUrl"
 							v-kv-track-event="['Footer', 'click-Site map']"
+							class="tw-text-small tw-whitespace-nowrap tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
 						>
 							Site map
 						</router-link>
 					</li>
 				</ul>
 			</div>
-			<div class="row column collapse tw-text-left">
-				<p class="large-footer__disclaimer">
+
+			<div>
+				<p class="tw-text-small">
 					Lending through Kiva involves risk of principal loss.
 					Kiva does not guarantee repayment or offer a financial return on your loan.
 					<br><br>
 					&copy; {{ year }} Kiva. All rights reserved.
 				</p>
 			</div>
-		</nav>
+		</kv-page-container>
 	</footer>
 </template>
 
@@ -708,6 +772,8 @@ import getCacheKey from '@/util/getCacheKey';
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import KvIcon from '@/components/Kv/KvIcon';
 import Disclaimers from '@/components/WwwFrame/DisclaimersContentful';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'TheFooter',
@@ -715,6 +781,8 @@ export default {
 		KvAccordionItem,
 		KvIcon,
 		Disclaimers,
+		KvGrid,
+		KvPageContainer
 	},
 	serverCacheKey: props => getCacheKey(props.theme ? `footerThemed${props.theme.themeKey}` : 'footer'),
 	props: {
@@ -740,180 +808,5 @@ export default {
 			playStoreUrl: 'https://play.google.com/store/apps/details?id=org.kiva.lending'
 		};
 	},
-	computed: {
-		cssVars() {
-			if (this.theme) {
-				return {
-					'--kv-footer-background-color': this.theme.backgroundColor || '',
-					'--kv-footer-text-color': this.theme.textColor || '',
-					'--kv-footer-link-color': this.theme.linkColor || '',
-					'--kv-footer-separator-color': this.theme.separatorColor || '',
-				};
-			}
-			return {};
-		}
-	}
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-$footer-background-color: $kiva-bg-lightgray;
-$footer-text-color: $umbreon;
-$footer-link-color: $kiva-darkgreen;
-$footer-separator-color: $magnemite;
-
-.www-footer {
-	background-color: $footer-background-color; // IE11 fallback
-	background-color: var(--kv-footer-background-color, $footer-background-color);
-	color: $footer-text-color; // IE11 fallback
-	color: var(--kv-footer-text-color, $footer-text-color);
-	font-size: rem-calc(14);
-	font-weight: normal;
-	text-align: center;
-	padding: 1rem;
-	min-height: 17.5rem;
-
-	@include breakpoint(medium) {
-		padding: rem-calc(24);
-	}
-
-	@include breakpoint(large) {
-		padding: rem-calc(24) 1rem;
-		min-height: 25rem;
-	}
-
-	@media print {
-		padding: 0;
-		min-height: auto;
-		font-weight: 300;
-	}
-
-	ul {
-		list-style: none;
-		margin: 0;
-	}
-
-	p {
-		margin-bottom: 0;
-		line-height: $small-text-line-height;
-	}
-
-	a {
-		color: $footer-link-color;
-		color: var(--kv-footer-link-color, $footer-link-color);
-
-		&:visited,
-		&:active {
-			color: $footer-link-color;
-			color: var(--kv-footer-link-color, $footer-link-color);
-		}
-	}
-
-	h2 {
-		font-size: 0.875rem;
-		font-weight: $global-weight-bold;
-		letter-spacing: initial;
-		margin: 0;
-		line-height: 1.6;
-	}
-
-	.download-app-icons li {
-		display: inline-block;
-	}
-
-	.download-app-android,
-	.download-app-ios {
-		height: rem-calc(40);
-	}
-
-	.download-app-android {
-		width: rem-calc(135);
-	}
-
-	.download-app-ios {
-		width: rem-calc(120);
-		margin-right: 0.5rem;
-	}
-
-	.small-footer {
-		text-align: left;
-
-		ul {
-			margin-bottom: 1rem;
-		}
-
-		hr {
-			margin: 1rem auto 0 auto;
-			border-bottom: 1px solid $footer-link-color;
-		}
-
-		.kv-accordion {
-			border-bottom: 1px solid $footer-link-color;
-		}
-
-		&__social-icon-row {
-			margin: 0.65rem auto 1rem auto;
-		}
-
-		&__social-icon {
-			width: rem-calc(24);
-			height: rem-calc(24);
-			flex-shrink: 0;
-			margin-right: rem-calc(26);
-			fill: $footer-text-color;
-		}
-	}
-
-	.large-footer {
-		&__block {
-			padding: 1rem 0.9375rem;
-			text-align: left;
-		}
-
-		&__single-line-links--work-with-us {
-			max-width: rem-calc(463);
-		}
-	}
-
-	.large-footer,
-	.small-footer {
-		&__disclaimer {
-			color: $footer-separator-color;
-		}
-
-		&__single-line-links {
-			$spacing: 0.5rem;
-
-			margin-bottom: 1rem;
-			overflow: hidden;
-			width: calc(100% + #{$spacing * 2} + 1px);
-
-			li {
-				display: inline-block;
-				transform: translate3d(calc(-#{$spacing * 2} - 1px), 0, 0); /* stylelint-disable-line */
-				a {
-					padding-left: $spacing;
-					border-left: 1px solid $footer-separator-color; // IE11 fallback
-					border-left: 1px solid var(--kv-footer-separator-color, $footer-separator-color);
-					margin-left: $spacing;
-					white-space: nowrap;
-				}
-			}
-		}
-
-		.download-app-icons {
-			margin-top: 1.65rem;
-		}
-	}
-
-	@media print {
-		.expand-for-print {
-			width: 100%;
-			max-width: 100%;
-			flex: 1;
-		}
-	}
-}
-</style>
