@@ -125,70 +125,74 @@ export default {
 			}
 		},
 		initializeDropIn(authToken) {
-			Dropin.create({
-				authorization: authToken,
-				container: '#dropin-container',
-				dataCollector: {
-					kount: true // Required if Kount fraud data collection is enabled
-				},
-				// vaultManager: true, - Useful for testing and removing payment methods easily.
-				paymentOptionPriority: this.paymentTypes,
-				preselectVaultedPaymentMethod: this.preselectVaultedPaymentMethod,
-				card: {
-					vault: {
-						allowVaultCardOverride: true,
+			// Prevents BT error in the case this component gets initialized multiple times
+			const isElementEmpty = document.getElementById('dropin-container').innerHTML === '';
+			if (isElementEmpty) {
+				Dropin.create({
+					authorization: authToken,
+					container: '#dropin-container',
+					dataCollector: {
+						kount: true // Required if Kount fraud data collection is enabled
 					},
-				},
-				paypal: {
-					flow: this.flow,
-					amount: numeral(this.amount).format('0.00'),
-					currency: 'USD',
-					buttonStyle: {
-						color: 'gold',
-						shape: 'rect',
-						size: 'responsive',
-					}
-				},
-				googlePay: {
-					googlePayVersion: 2,
-					merchantId: this.$appConfig.googlePay.merchantId,
-					transactionInfo: {
-						totalPriceStatus: 'FINAL',
-						totalPrice: numeral(this.amount).format('0.00'),
-						currencyCode: 'USD'
-					},
-					allowedPaymentMethods: [{
-						type: 'CARD',
-						parameters: {
-							billingAddressRequired: true,
-							billingAddressParameters: {
-								format: 'FULL'
-							}
-						}
-					}]
-				},
-				applePay: {
-					displayName: 'Kiva',
-					paymentRequest: {
-						total: {
-							label: 'Kiva',
-							amount: numeral(this.amount).format('0.00'),
+					// vaultManager: true, - Useful for testing and removing payment methods easily.
+					paymentOptionPriority: this.paymentTypes,
+					preselectVaultedPaymentMethod: this.preselectVaultedPaymentMethod,
+					card: {
+						vault: {
+							allowVaultCardOverride: true,
 						},
-						requiredBillingContactFields: ['postalAddress']
+					},
+					paypal: {
+						flow: this.flow,
+						amount: numeral(this.amount).format('0.00'),
+						currency: 'USD',
+						buttonStyle: {
+							color: 'gold',
+							shape: 'rect',
+							size: 'responsive',
+						}
+					},
+					googlePay: {
+						googlePayVersion: 2,
+						merchantId: this.$appConfig.googlePay.merchantId,
+						transactionInfo: {
+							totalPriceStatus: 'FINAL',
+							totalPrice: numeral(this.amount).format('0.00'),
+							currencyCode: 'USD'
+						},
+						allowedPaymentMethods: [{
+							type: 'CARD',
+							parameters: {
+								billingAddressRequired: true,
+								billingAddressParameters: {
+									format: 'FULL'
+								}
+							}
+						}]
+					},
+					applePay: {
+						displayName: 'Kiva',
+						paymentRequest: {
+							total: {
+								label: 'Kiva',
+								amount: numeral(this.amount).format('0.00'),
+							},
+							requiredBillingContactFields: ['postalAddress']
+						}
 					}
-				}
-			}).then(btCreateInstance => {
-				this.btDropinInstance = btCreateInstance;
-				this.initializeDropInActions();
-			}).catch(btCreateError => {
-				console.error(btCreateError);
-				Sentry.withScope(scope => {
-					scope.setTag('bt_stage_dropin', 'btCreateError');
-					scope.setTag('bt_client_create_error', btCreateError.message);
-					Sentry.captureException(btCreateError.code);
+				}).then(btCreateInstance => {
+					this.btDropinInstance = btCreateInstance;
+					this.initializeDropInActions();
+				}).catch(btCreateError => {
+					console.error(btCreateError);
+					Sentry.withScope(scope => {
+						scope.setTag('bt_stage_dropin', 'btCreateError');
+						scope.setTag('bt_client_create_error', btCreateError.message);
+						Sentry.captureException(btCreateError.code);
+					});
+					this.$showTipMsg('An Error has occured. Please refresh the page and try again.', 'error');
 				});
-				this.$showTipMsg('An Error has occured. Please refresh the page and try again.', 'error');
-			});
+			}
 		},
 		initializeDropInActions() {
 			// more info: https://developers.braintreepayments.com/guides/drop-in/customization/javascript/v3#events
