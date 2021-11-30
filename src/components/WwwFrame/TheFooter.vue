@@ -4,423 +4,407 @@
 		<disclaimers />
 		<nav class="tw-block lg:tw-hidden" aria-label="Footer navigation">
 			<div class="tw-mt-3 tw-mb-3">
-				<div>
-					<h2 class="tw-text-h4">Borrow</h2>
-					<p class="tw-text-small">Loans for entrepreneurs doing amazing things.</p>
-					<ul class="tw-mb-2">
-						<li>
-							<router-link
-								:to="applyUrl"
-								v-kv-track-event="['Footer', 'click-Borrow-Apply now']"
-								class="tw-text-small"
-							>
-								Apply now
-							</router-link>
-						</li>
-					</ul>
-				</div>
+				<h2 class="tw-text-h4">Borrow</h2>
+				<p class="tw-text-small">Loans for entrepreneurs doing amazing things.</p>
+				<ul class="tw-mb-2">
+					<li>
+						<router-link
+							:to="applyUrl"
+							v-kv-track-event="['Footer', 'click-Borrow-Apply now']"
+							class="tw-text-small"
+						>
+							Apply now
+						</router-link>
+					</li>
+				</ul>
 			</div>
 
 			<div class="tw-mb-3">
-				<div>
-					<h2 class="tw-text-h4">Lend</h2>
-					<p class="tw-text-small">Make a loan, change a life.</p>
+				<h2 class="tw-text-h4">Lend</h2>
+				<p class="tw-text-small">Make a loan, change a life.</p>
+				<ul class="tw-mb-2">
+					<li>
+						<router-link
+							:to="lendByCategoryUrl"
+							v-kv-track-event="['Footer', 'click-Lend-lend now']"
+							class="tw-text-small"
+						>
+							Lend now
+						</router-link>
+					</li>
+					<li>
+						<router-link
+							:to="monthlyGoodUrl"
+							v-kv-track-event="['Footer', 'click-Lend-Monthly Good']"
+							class="tw-text-small"
+						>
+							Monthly Good
+						</router-link>
+					</li>
+				</ul>
+			</div>
+
+			<div>
+				<h2 class="tw-text-h4">Donate</h2>
+				<p class="tw-text-small">
+					Kiva is a 501(c)3 U.S. nonprofit fueled by passionate people.
+					Founded in 2005, and based in San Francisco, with offices in Bangkok, Nairobi,
+					Portland and staff around the globe.
+				</p>
+				<ul class="tw-mb-3">
+					<li>
+						<router-link
+							to="/donate/supportus"
+							v-kv-track-event="['Footer', 'click-Donate', 'Donate to Kiva here']"
+							class="tw-text-small"
+						>
+							Donate to Kiva
+						</router-link>
+					</li>
+				</ul>
+				<hr class="tw-border-tertiary tw-mt-2 tw-mb-0">
+			</div>
+
+			<div>
+				<kv-accordion-item
+					id="get-to-know-us_accordion"
+					:open="false"
+				>
+					<template #header>
+						<h2 class="tw-text-h4">Get to know us</h2>
+					</template>
 					<ul class="tw-mb-2">
 						<li>
 							<router-link
-								:to="lendByCategoryUrl"
-								v-kv-track-event="['Footer', 'click-Lend-lend now']"
+								:to="aboutUrl"
+								v-kv-track-event="['Footer', 'click-Get to know us-About us']"
 								class="tw-text-small"
 							>
-								Lend now
+								About us
 							</router-link>
 						</li>
 						<li>
 							<router-link
-								:to="monthlyGoodUrl"
-								v-kv-track-event="['Footer', 'click-Lend-Monthly Good']"
+								to="/about/how"
+								v-kv-track-event="['Footer', 'click-Get to know us-How Kiva works']"
 								class="tw-text-small"
 							>
-								Monthly Good
+								How Kiva works
 							</router-link>
 						</li>
-					</ul>
-				</div>
-			</div>
-
-			<div>
-				<div>
-					<h2 class="tw-text-h4">Donate</h2>
-					<p class="tw-text-small">
-						Kiva is a 501(c)3 U.S. nonprofit fueled by passionate people.
-						Founded in 2005, and based in San Francisco, with offices in Bangkok, Nairobi,
-						Portland and staff around the globe.
-					</p>
-					<ul class="tw-mb-3">
 						<li>
 							<router-link
-								to="/donate/supportus"
-								v-kv-track-event="['Footer', 'click-Donate', 'Donate to Kiva here']"
+								to="/about/how#faq-hkw-section"
+								v-kv-track-event="['Footer', 'click-Get to know us-FAQs']"
 								class="tw-text-small"
 							>
-								Donate to Kiva
+								FAQs
+							</router-link>
+						</li>
+						<li>
+							<router-link
+								to="/about/where-kiva-works"
+								v-kv-track-event="['Footer', 'click-Get to know us-Where Kiva works']"
+								class="tw-text-small"
+							>
+								Where Kiva works
+							</router-link>
+						</li>
+						<li>
+							<router-link
+								to="/blog"
+								v-kv-track-event="['Footer', 'click-Get to know us-Blog']"
+								class="tw-text-small"
+							>
+								Blog
+							</router-link>
+						</li>
+						<li>
+							<router-link
+								to="/partner-with-us"
+								v-kv-track-event="['Footer', 'click-Get to know us-Partner with us']"
+								class="tw-text-small"
+							>
+								Partner with us
+							</router-link>
+						</li>
+						<li>
+							<router-link
+								to="/help/contact-us"
+								v-kv-track-event="['Footer', 'click-Get to know us-Contact us']"
+								class="tw-text-small"
+							>
+								Contact us
+							</router-link>
+						</li>
+						<li>
+							<router-link
+								:to="helpUrl"
+								v-kv-track-event="['Footer', 'click-Get to know us-Help']"
+								class="tw-text-small"
+							>
+								Help
 							</router-link>
 						</li>
 					</ul>
-					<hr class="tw-border-tertiary tw-mt-2 tw-mb-0">
-				</div>
-			</div>
-
-			<div>
-				<div>
-					<kv-accordion-item
-						id="get-to-know-us_accordion"
-						:open="false"
-					>
-						<template #header>
-							<h2 class="tw-text-h4">Get to know us</h2>
-						</template>
-						<ul class="tw-mb-2">
-							<li>
-								<router-link
-									:to="aboutUrl"
-									v-kv-track-event="['Footer', 'click-Get to know us-About us']"
-									class="tw-text-small"
-								>
-									About us
-								</router-link>
-							</li>
-							<li>
-								<router-link
-									to="/about/how"
-									v-kv-track-event="['Footer', 'click-Get to know us-How Kiva works']"
-									class="tw-text-small"
-								>
-									How Kiva works
-								</router-link>
-							</li>
-							<li>
-								<router-link
-									to="/about/how#faq-hkw-section"
-									v-kv-track-event="['Footer', 'click-Get to know us-FAQs']"
-									class="tw-text-small"
-								>
-									FAQs
-								</router-link>
-							</li>
-							<li>
-								<router-link
-									to="/about/where-kiva-works"
-									v-kv-track-event="['Footer', 'click-Get to know us-Where Kiva works']"
-									class="tw-text-small"
-								>
-									Where Kiva works
-								</router-link>
-							</li>
-							<li>
-								<router-link
-									to="/blog"
-									v-kv-track-event="['Footer', 'click-Get to know us-Blog']"
-									class="tw-text-small"
-								>
-									Blog
-								</router-link>
-							</li>
-							<li>
-								<router-link
-									to="/partner-with-us"
-									v-kv-track-event="['Footer', 'click-Get to know us-Partner with us']"
-									class="tw-text-small"
-								>
-									Partner with us
-								</router-link>
-							</li>
-							<li>
-								<router-link
-									to="/help/contact-us"
-									v-kv-track-event="['Footer', 'click-Get to know us-Contact us']"
-									class="tw-text-small"
-								>
-									Contact us
-								</router-link>
-							</li>
-							<li>
-								<router-link
-									:to="helpUrl"
-									v-kv-track-event="['Footer', 'click-Get to know us-Help']"
-									class="tw-text-small"
-								>
-									Help
-								</router-link>
-							</li>
-						</ul>
-					</kv-accordion-item>
-					<kv-accordion-item
-						id="community_accordion"
-						:open="false"
-					>
-						<template #header>
-							<h2 class="tw-text-h4">Community</h2>
-						</template>
-						<ul class="tw-mb-2">
-							<li>
-								<router-link
-									to="/teams"
-									v-kv-track-event="['Footer', 'click-Community-Teams']"
-									class="tw-text-small"
-								>
-									Teams
-								</router-link>
-							</li>
-							<li>
-								<router-link
-									to="/kivau/intro"
-									v-kv-track-event="['Footer', 'click-Community-Students and educators']"
-									class="tw-text-small"
-								>
-									Students and educators
-								</router-link>
-							</li>
-						</ul>
-					</kv-accordion-item>
-					<kv-accordion-item
-						id="explore_accordion"
-						:open="false"
-					>
-						<template #header>
-							<h2 class="tw-text-h4">Explore</h2>
-						</template>
-						<ul class="tw-mb-2">
-							<li>
-								<router-link
-									to="/protocol"
-									v-kv-track-event="['Footer', 'click-Explore-Protocol']"
-									class="tw-text-small"
-								>
-									Protocol
-								</router-link>
-							</li>
-							<li>
-								<router-link
-									to="/gifts"
-									v-kv-track-event="['Footer', 'click-Explore-Gifts']"
-									class="tw-text-small"
-								>
-									Gifts
-								</router-link>
-							</li>
-							<li>
-								<router-link
-									to="/live"
-									v-kv-track-event="['Footer', 'click-Explore-Happening now']"
-									class="tw-text-small"
-								>
-									Happening now
-								</router-link>
-							</li>
-							<li>
-								<router-link
-									to="/build"
-									v-kv-track-event="['Footer', 'click-Explore-Developer API']"
-									class="tw-text-small"
-								>
-									Developer API
-								</router-link>
-							</li>
-						</ul>
-					</kv-accordion-item>
-					<kv-accordion-item
-						id="work-with-us_accordion"
-						:open="false"
-					>
-						<template #header>
-							<h2 class="tw-text-h4">Work with us</h2>
-						</template>
-						<ul class="tw-mb-2">
-							<li>
-								<a
-									:href="careersUrl"
-									target="_blank"
-									rel="noopener"
-									v-kv-track-event="['Footer', 'click-Work with us-Careers']"
-									class="tw-text-small"
-								>
-									Careers
-								</a>
-							</li>
-							<li>
-								<router-link
-									to="/work-with-us/internvolunteers"
-									v-kv-track-event="['Footer', 'click-Work with us-Volunteer interships']"
-									class="tw-text-small"
-								>
-									Volunteer internships
-								</router-link>
-							</li>
-							<li>
-								<a
-									href="https://www.careers.kiva.org/fellowships"
-									target="_blank"
-									rel="noopener"
-									v-kv-track-event="['Footer', 'click-Work with us-Kiva fellows']"
-									class="tw-text-small"
-								>
-									Kiva fellows
-								</a>
-							</li>
-							<li>
-								<router-link
-									to="/work-with-us/reviewers"
-									v-kv-track-event="['Footer', 'click-Work with us-Review and translation']"
-									class="tw-text-small"
-								>
-									Review and translation
-								</router-link>
-							</li>
-							<li>
-								<a
-									href="https://www.kivaushub.org/hubs"
-									target="_blank"
-									rel="noopener"
-									v-kv-track-event="['Footer', 'click-Work with us-US Hubs']"
-									class="tw-text-small"
-								>
-									US Hubs
-								</a>
-							</li>
-						</ul>
-					</kv-accordion-item>
-					<span></span>
-				</div>
-			</div>
-
-			<div>
-				<div>
-					<ul class="tw-mt-4 tw-mb-2">
-						<li class="tw-inline-block">
+				</kv-accordion-item>
+				<kv-accordion-item
+					id="community_accordion"
+					:open="false"
+				>
+					<template #header>
+						<h2 class="tw-text-h4">Community</h2>
+					</template>
+					<ul class="tw-mb-2">
+						<li>
+							<router-link
+								to="/teams"
+								v-kv-track-event="['Footer', 'click-Community-Teams']"
+								class="tw-text-small"
+							>
+								Teams
+							</router-link>
+						</li>
+						<li>
+							<router-link
+								to="/kivau/intro"
+								v-kv-track-event="['Footer', 'click-Community-Students and educators']"
+								class="tw-text-small"
+							>
+								Students and educators
+							</router-link>
+						</li>
+					</ul>
+				</kv-accordion-item>
+				<kv-accordion-item
+					id="explore_accordion"
+					:open="false"
+				>
+					<template #header>
+						<h2 class="tw-text-h4">Explore</h2>
+					</template>
+					<ul class="tw-mb-2">
+						<li>
+							<router-link
+								to="/protocol"
+								v-kv-track-event="['Footer', 'click-Explore-Protocol']"
+								class="tw-text-small"
+							>
+								Protocol
+							</router-link>
+						</li>
+						<li>
+							<router-link
+								to="/gifts"
+								v-kv-track-event="['Footer', 'click-Explore-Gifts']"
+								class="tw-text-small"
+							>
+								Gifts
+							</router-link>
+						</li>
+						<li>
+							<router-link
+								to="/live"
+								v-kv-track-event="['Footer', 'click-Explore-Happening now']"
+								class="tw-text-small"
+							>
+								Happening now
+							</router-link>
+						</li>
+						<li>
+							<router-link
+								to="/build"
+								v-kv-track-event="['Footer', 'click-Explore-Developer API']"
+								class="tw-text-small"
+							>
+								Developer API
+							</router-link>
+						</li>
+					</ul>
+				</kv-accordion-item>
+				<kv-accordion-item
+					id="work-with-us_accordion"
+					:open="false"
+				>
+					<template #header>
+						<h2 class="tw-text-h4">Work with us</h2>
+					</template>
+					<ul class="tw-mb-2">
+						<li>
 							<a
-								:href="appStoreUrl"
+								:href="careersUrl"
 								target="_blank"
 								rel="noopener"
-								v-kv-track-event="['global', 'click-app-badge-footer', 'App Store']"
+								v-kv-track-event="['Footer', 'click-Work with us-Careers']"
+								class="tw-text-small"
 							>
-								<img
-									class="tw-w-[120px] tw-h-5 tw-mr-1"
-									src="@/assets/icons/app-store.svg"
-									loading="lazy"
-									alt="Check out our new app on the App Store"
-								>
+								Careers
 							</a>
 						</li>
-						<li class="tw-inline-block">
+						<li>
+							<router-link
+								to="/work-with-us/internvolunteers"
+								v-kv-track-event="['Footer', 'click-Work with us-Volunteer interships']"
+								class="tw-text-small"
+							>
+								Volunteer internships
+							</router-link>
+						</li>
+						<li>
 							<a
-								:href="playStoreUrl"
+								href="https://www.careers.kiva.org/fellowships"
 								target="_blank"
 								rel="noopener"
-								v-kv-track-event="['global', 'click-app-badge-footer', 'Google Store']"
+								v-kv-track-event="['Footer', 'click-Work with us-Kiva fellows']"
+								class="tw-text-small"
 							>
-								<img
-									class="tw-w-[135px] tw-h-5"
-									src="@/assets/icons/play-store.svg"
-									loading="lazy"
-									alt="Check out our new app on the Play Store"
-								>
+								Kiva fellows
+							</a>
+						</li>
+						<li>
+							<router-link
+								to="/work-with-us/reviewers"
+								v-kv-track-event="['Footer', 'click-Work with us-Review and translation']"
+								class="tw-text-small"
+							>
+								Review and translation
+							</router-link>
+						</li>
+						<li>
+							<a
+								href="https://www.kivaushub.org/hubs"
+								target="_blank"
+								rel="noopener"
+								v-kv-track-event="['Footer', 'click-Work with us-US Hubs']"
+								class="tw-text-small"
+							>
+								US Hubs
 							</a>
 						</li>
 					</ul>
-				</div>
+				</kv-accordion-item>
+				<span></span>
+			</div>
+
+			<div>
+				<ul class="tw-mt-4 tw-mb-2">
+					<li class="tw-inline-block">
+						<a
+							:href="appStoreUrl"
+							target="_blank"
+							rel="noopener"
+							v-kv-track-event="['global', 'click-app-badge-footer', 'App Store']"
+						>
+							<img
+								class="tw-w-[120px] tw-h-5 tw-mr-1"
+								src="@/assets/icons/app-store.svg"
+								loading="lazy"
+								alt="Check out our new app on the App Store"
+							>
+						</a>
+					</li>
+					<li class="tw-inline-block">
+						<a
+							:href="playStoreUrl"
+							target="_blank"
+							rel="noopener"
+							v-kv-track-event="['global', 'click-app-badge-footer', 'Google Store']"
+						>
+							<img
+								class="tw-w-[135px] tw-h-5"
+								src="@/assets/icons/play-store.svg"
+								loading="lazy"
+								alt="Check out our new app on the Play Store"
+							>
+						</a>
+					</li>
+				</ul>
 			</div>
 
 			<div class="tw-my-2">
-				<div class="">
-					<a
-						href="//www.facebook.com/kiva/"
-						target="_blank"
-						rel="noopener"
-						v-kv-track-event="['Footer', 'click-social-icon', 'Facebook']"
-					>
-						<kv-material-icon
-							class="tw-mr-2.5 tw-w-3 tw-h-3 tw-text-tertiary"
-							:icon="mdiFacebook"
-						/>
-					</a>
-					<a
-						href="//www.instagram.com/kiva.org"
-						target="_blank"
-						rel="noopener"
-						v-kv-track-event="['Footer', 'click-social-icon', 'Instagram']"
-					>
-						<kv-material-icon
-							class="tw-mr-2.5 tw-w-3 tw-h-3 tw-text-tertiary"
-							:icon="mdiInstagram"
-						/>
-					</a>
-					<a
-						href="//twitter.com/kiva"
-						target="_blank"
-						rel="noopener"
-						v-kv-track-event="['Footer', 'click-social-icon', 'Twitter']"
-					>
-						<kv-material-icon
-							class="tw-mr-2.5 tw-w-3 tw-h-3 tw-text-tertiary"
-							:icon="mdiTwitter"
-						/>
-					</a>
-				</div>
+				<a
+					href="//www.facebook.com/kiva/"
+					target="_blank"
+					rel="noopener"
+					v-kv-track-event="['Footer', 'click-social-icon', 'Facebook']"
+				>
+					<kv-material-icon
+						class="tw-mr-2.5 tw-w-3 tw-h-3 tw-text-tertiary"
+						:icon="mdiFacebook"
+					/>
+				</a>
+				<a
+					href="//www.instagram.com/kiva.org"
+					target="_blank"
+					rel="noopener"
+					v-kv-track-event="['Footer', 'click-social-icon', 'Instagram']"
+				>
+					<kv-material-icon
+						class="tw-mr-2.5 tw-w-3 tw-h-3 tw-text-tertiary"
+						:icon="mdiInstagram"
+					/>
+				</a>
+				<a
+					href="//twitter.com/kiva"
+					target="_blank"
+					rel="noopener"
+					v-kv-track-event="['Footer', 'click-social-icon', 'Twitter']"
+				>
+					<kv-material-icon
+						class="tw-mr-2.5 tw-w-3 tw-h-3 tw-text-tertiary"
+						:icon="mdiTwitter"
+					/>
+				</a>
 			</div>
 
 			<div>
-				<div>
-					<p class="tw-text-small tw-text-tertiary">
-						Lending through Kiva involves risk of principal loss.
-						Kiva does not guarantee repayment or offer a financial return on your loan.
-						<br><br>
-						&copy; {{ year }} Kiva. All rights reserved.
-					</p>
-				</div>
+				<p class="tw-text-small tw-text-tertiary">
+					Lending through Kiva involves risk of principal loss.
+					Kiva does not guarantee repayment or offer a financial return on your loan.
+					<br><br>
+					&copy; {{ year }} Kiva. All rights reserved.
+				</p>
 			</div>
 
 			<div class="tw-my-3">
-				<div>
-					<ul class="tw-mb-2 tw-text-small tw-overflow-hidden">
-						<li class="tw-inline-block tw--translate-x-2">
-							<router-link
-								:to="privacyUrl"
-								v-kv-track-event="['Footer', 'click-Privacy policy']"
-								class="tw-whitespace-nowrap tw-ml-1 tw-border-l tw-border-tertiary tw-pl-1"
-							>
-								Privacy policy
-							</router-link>
-						</li>
-						<li class="tw-inline-block tw--translate-x-2">
-							<router-link
-								:to="cookiesUrl"
-								v-kv-track-event="['Footer', 'click-Cookie policy']"
-								class="tw-whitespace-nowrap tw-ml-1 tw-border-l tw-border-tertiary tw-pl-1"
-							>
-								Cookie and Data Settings
-							</router-link>
-						</li>
-						<li class="tw-inline-block tw--translate-x-2">
-							<router-link
-								:to="termsUrl"
-								v-kv-track-event="['Footer', 'click-Terms of use']"
-								class="tw-whitespace-nowrap tw-ml-1 tw-border-l tw-border-tertiary tw-pl-1"
-							>
-								Terms of use
-							</router-link>
-						</li>
-						<li class="tw-inline-block tw--translate-x-2">
-							<router-link
-								:to="sitemapUrl"
-								v-kv-track-event="['Footer', 'click-Site map']"
-								class="tw-whitespace-nowrap tw-ml-1 tw-border-l tw-border-tertiary tw-pl-1"
-							>
-								Site map
-							</router-link>
-						</li>
-					</ul>
-				</div>
+				<ul class="tw-mb-2 tw-text-small tw-overflow-hidden">
+					<li class="tw-inline-block tw--translate-x-2">
+						<router-link
+							:to="privacyUrl"
+							v-kv-track-event="['Footer', 'click-Privacy policy']"
+							class="tw-whitespace-nowrap tw-ml-1 tw-border-l tw-border-tertiary tw-pl-1"
+						>
+							Privacy policy
+						</router-link>
+					</li>
+					<li class="tw-inline-block tw--translate-x-2">
+						<router-link
+							:to="cookiesUrl"
+							v-kv-track-event="['Footer', 'click-Cookie policy']"
+							class="tw-whitespace-nowrap tw-ml-1 tw-border-l tw-border-tertiary tw-pl-1"
+						>
+							Cookie and Data Settings
+						</router-link>
+					</li>
+					<li class="tw-inline-block tw--translate-x-2">
+						<router-link
+							:to="termsUrl"
+							v-kv-track-event="['Footer', 'click-Terms of use']"
+							class="tw-whitespace-nowrap tw-ml-1 tw-border-l tw-border-tertiary tw-pl-1"
+						>
+							Terms of use
+						</router-link>
+					</li>
+					<li class="tw-inline-block tw--translate-x-2">
+						<router-link
+							:to="sitemapUrl"
+							v-kv-track-event="['Footer', 'click-Site map']"
+							class="tw-whitespace-nowrap tw-ml-1 tw-border-l tw-border-tertiary tw-pl-1"
+						>
+							Site map
+						</router-link>
+					</li>
+				</ul>
 			</div>
 		</nav>
 		<kv-page-container class="tw-hidden lg:tw-block tw-mt-4" aria-label="Footer navigation">
