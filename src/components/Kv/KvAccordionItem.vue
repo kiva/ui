@@ -1,30 +1,26 @@
 <template>
 	<div
-		class="kv-accordion"
-		:class="{
-			'kv-accordion--open' : isOpen,
-		}"
+		class="tw-border-b tw-border-tertiary tw-relative"
 	>
 		<button
-			class="kv-accordion__header-button"
+			class="tw-w-full tw-flex tw-justify-between tw-items-center tw-py-[0.75rem] tw-px-0
+				tw-text-left disabled:tw-cursor-not-allowed disabled:tw-opacity-low"
 			@click.prevent="toggle"
 			:disabled="disabled"
 			:aria-controls="`kv-accordion-${id}`"
 			:aria-expanded="isOpen ? 'true' : 'false'"
 		>
-			<span class="kv-accordion__header-text">
+			<span class="tw-flex-1">
 				<slot name="header"></slot>
 			</span>
-			<kv-icon
-				class="kv-accordion__header-icon"
-				name="small-chevron"
-				:from-sprite="true"
-				aria-hidden="true"
+			<kv-material-icon
+				class="tw-h-3 tw-w-[25px] tw-transition tw-transform tw-duration-500 tw-ease"
+				:class="{ 'tw-rotate-180' : isOpen }"
+				:icon="mdiChevronDown"
 			/>
 		</button>
 		<kv-expandable>
 			<div
-				class="kv-accordion__pane"
 				:id="`kv-accordion-${id}`"
 				v-show="isOpen"
 				:aria-hidden="isOpen ? 'false' : 'true'"
@@ -49,12 +45,13 @@
 // pass a prop like 'tag' that sets the parent node of the button. <accordion tag="h3">...
 
 import KvExpandable from '@/components/Kv/KvExpandable';
-import KvIcon from '@/components/Kv/KvIcon';
+import { mdiChevronDown } from '@mdi/js';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	components: {
+		KvMaterialIcon,
 		KvExpandable,
-		KvIcon,
 	},
 	props: {
 		/**
@@ -82,7 +79,8 @@ export default {
 	},
 	data() {
 		return {
-			isOpen: this.open
+			isOpen: this.open,
+			mdiChevronDown
 		};
 	},
 	methods: {
@@ -111,64 +109,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.kv-accordion {
-	position: relative;
-	border-bottom: 1px solid #ccc;
-
-	&:last-child {
-		border-bottom: 0;
-	}
-
-	&__header-icon {
-		height: 1.5rem;
-		width: rem-calc(25);
-		transition: transform 300ms ease;
-	}
-
-	&__header-button {
-		width: 100%;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 0.75rem 0;
-		text-align: left;
-		color: initial;
-
-		&[disabled] {
-			@include disabled();
-		}
-
-		&:not([disabled]) {
-			&:hover,
-			&:focus {
-				outline: 0;
-				color: $anchor-color-hover;
-				fill: $anchor-color-hover;
-			}
-		}
-	}
-
-	&__header-text {
-		flex: 1;
-
-		> * {
-			margin-bottom: 0;
-		}
-	}
-
-	/* &__pane {
-	} */
-
-	// modifiers
-	&--open {
-		.kv-accordion__header-icon {
-			transform: rotate(-180deg);
-		}
-	}
-}
-
-</style>
