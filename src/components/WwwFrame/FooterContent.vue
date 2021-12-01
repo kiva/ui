@@ -712,6 +712,7 @@ export default {
 		KvAccordionItem,
 		KvIcon,
 	},
+	name: 'FooterContent',
 	serverCacheKey: props => getCacheKey(props.theme ? `footerThemed${props.theme.themeKey}` : 'footer'),
 	props: {
 		theme: {
