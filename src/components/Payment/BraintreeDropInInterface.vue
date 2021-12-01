@@ -227,7 +227,7 @@ export default {
 	},
 	mounted() {
 		// Prevents BT error in the case this component gets initialized multiple times
-		const isElementEmpty = document.getElementById('dropin-container').innerHTML === '';
+		const isElementEmpty = document?.getElementById('dropin-container')?.innerHTML === '';
 		if (isElementEmpty) {
 			this.getDropInAuthToken();
 		}
