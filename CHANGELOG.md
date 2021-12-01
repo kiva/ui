@@ -1,3 +1,10 @@
+### [2.17.11](https://github.com/kiva/ui/compare/v2.17.10...v2.17.11) (2021-12-01)
+
+
+### Bug Fixes
+
+* fixes the drop in error in a more robust way ([b5ee94c](https://github.com/kiva/ui/commit/b5ee94c2b1f8d096b039a04b38042689d16d2a12))
+
 ### [2.17.10](https://github.com/kiva/ui/compare/v2.17.9...v2.17.10) (2021-11-30)
 
 
