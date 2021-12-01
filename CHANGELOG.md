@@ -1,3 +1,10 @@
+### [2.17.12](https://github.com/kiva/ui/compare/v2.17.11...v2.17.12) (2021-12-01)
+
+
+### Bug Fixes
+
+* add name to ensure footer is cached and resolve server render error ([1768bae](https://github.com/kiva/ui/commit/1768baed5a0a5db482ce9010b4a59be9626eadad))
+
 ### [2.17.11](https://github.com/kiva/ui/compare/v2.17.10...v2.17.11) (2021-12-01)
 
 
