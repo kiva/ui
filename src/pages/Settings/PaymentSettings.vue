@@ -61,16 +61,14 @@
 							</kv-button>
 							<transition name="kvfade">
 								<div v-show="showAddACard">
-									<keep-alive>
-										<braintree-drop-in-interface
-											v-if="isClientReady"
-											ref="braintreeDropInInterface"
-											:payment-types="['card']"
-											auth="token-key"
-											:key="dropInComponentKey"
-											@transactions-enabled="enableAddCardButton = $event"
-										/>
-									</keep-alive>
+									<braintree-drop-in-interface
+										v-if="isClientReady"
+										ref="braintreeDropInInterface"
+										:payment-types="['card']"
+										auth="token-key"
+										:key="dropInComponentKey"
+										@transactions-enabled="enableAddCardButton = $event"
+									/>
 								</div>
 							</transition>
 						</fieldset>
