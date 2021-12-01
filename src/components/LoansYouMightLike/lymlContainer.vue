@@ -59,7 +59,6 @@ import _shuffle from 'lodash/shuffle';
 import _uniqBy from 'lodash/uniqBy';
 import _throttle from 'lodash/throttle';
 import _map from 'lodash/map';
-import _filter from 'lodash/filter';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import loansYouMightLikeData from '@/graphql/query/loansYouMightLike/loansYouMightLikeData.graphql';
