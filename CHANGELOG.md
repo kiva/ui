@@ -1,3 +1,10 @@
+## [2.18.0](https://github.com/kiva/ui/compare/v2.17.12...v2.18.0) (2021-12-01)
+
+
+### Features
+
+* causes form and waitlist improvements ([cc88ca5](https://github.com/kiva/ui/commit/cc88ca5480f544b3573262ac64331656646b209c))
+
 ### [2.17.12](https://github.com/kiva/ui/compare/v2.17.11...v2.17.12) (2021-12-01)
 
 
