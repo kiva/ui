@@ -1,3 +1,10 @@
+### [2.18.4](https://github.com/kiva/ui/compare/v2.18.3...v2.18.4) (2021-12-01)
+
+
+### Bug Fixes
+
+* core-185 replacing borrowerName with TrusteeName ([9e94d22](https://github.com/kiva/ui/commit/9e94d227c96bf078901a6a42ce715f4cfa1c172a))
+
 ### [2.18.3](https://github.com/kiva/ui/compare/v2.18.2...v2.18.3) (2021-12-01)
 
 
