@@ -51,6 +51,7 @@
 						:partner-id="partner.id"
 						:partner-name="partner.name"
 						:risk-rating="partner.riskRating"
+						:currency-exchange-loss-rate="partner.currencyExchangeLossRate"
 						@show-definition="showDefinition"
 					/>
 				</kv-tab-panel>
@@ -265,12 +266,14 @@ export default {
 									arrearsRate
 									avgBorrowerCost
 									avgBorrowerCostType
+									avgProfitability
 									chargesFeesInterest
 									defaultRate
 									id
 									loansAtRiskRate
 									name
 									riskRating
+									currencyExchangeLossRate
 								}
 							}
 						}
@@ -303,6 +306,7 @@ export default {
 				this.partner.loansAtRiskRate = partner?.loansAtRiskRate ?? 0;
 				this.partner.name = partner?.name ?? '';
 				this.partner.riskRating = partner?.riskRating ?? 0;
+				this.partner.currencyExchangeLossRate = partner?.currencyExchangeLossRate ?? 0;
 
 				this.trustee.endorsement = loan?.endorsement ?? '';
 				this.trustee.id = trustee?.id ?? 0;
