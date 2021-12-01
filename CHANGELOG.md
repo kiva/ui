@@ -1,3 +1,10 @@
+### [2.18.1](https://github.com/kiva/ui/compare/v2.18.0...v2.18.1) (2021-12-01)
+
+
+### Bug Fixes
+
+* guard against $ char in dynamic link ([488aff0](https://github.com/kiva/ui/commit/488aff00d950bb9f714be8e61b18c6385a0725ea))
+
 ## [2.18.0](https://github.com/kiva/ui/compare/v2.17.12...v2.18.0) (2021-12-01)
 
 
