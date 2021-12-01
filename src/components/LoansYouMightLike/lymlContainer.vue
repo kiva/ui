@@ -222,20 +222,26 @@ export default {
 			}
 		},
 		parseLoansYouMightLike(loansYouMightLike) {
-			const withoutBasketedLoans = _filter(
-				loansYouMightLike || [],
-				loan => this.itemsInBasket.indexOf(loan.id) === -1
-			);
+			const filteredLoans = loansYouMightLike.filter(loan => {
+				// sometimes null comes back from the ml service
+				if (loan === null) return false;
+				return this.itemsInBasket.indexOf(loan.id) === -1;
+			});
 
 			// Pruning out duplicates among queried loan sets
-			const prunedLoansYouMightLike = _uniqBy(withoutBasketedLoans, 'id');
+			const prunedLoansYouMightLike = _uniqBy(filteredLoans, 'id');
 
 			// Randomize array order to be displayed in the front end
 			this.loansYouMightLike = _shuffle(prunedLoansYouMightLike);
 
 			// once we have loans flip the switch to show them
-			this.showLYML = true;
+			this.showLYML = prunedLoansYouMightLike.length > 0 || false;
 			this.loading = false;
+
+			// emit event signifying no recommended loans found
+			if (prunedLoansYouMightLike.length === 0) {
+				this.$emit('no-rec-loans-found');
+			}
 
 			this.fireExperimentTracking();
 
