@@ -1,3 +1,10 @@
+### [2.18.3](https://github.com/kiva/ui/compare/v2.18.2...v2.18.3) (2021-12-01)
+
+
+### Bug Fixes
+
+* core-308 fixing data points that were not hooked up, avgProfitabilty & currencyExchangeLossRate ([087da11](https://github.com/kiva/ui/commit/087da115ec751ab364e2e829e58acf4810a4a86d))
+
 ### [2.18.2](https://github.com/kiva/ui/compare/v2.18.1...v2.18.2) (2021-12-01)
 
 
