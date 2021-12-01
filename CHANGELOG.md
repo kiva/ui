@@ -1,3 +1,10 @@
+### [2.18.2](https://github.com/kiva/ui/compare/v2.18.1...v2.18.2) (2021-12-01)
+
+
+### Bug Fixes
+
+* handle missing params state with more appropriate button option ([990b676](https://github.com/kiva/ui/commit/990b676368e625ac7f9aea46712cb700c458a37d))
+
 ### [2.18.1](https://github.com/kiva/ui/compare/v2.18.0...v2.18.1) (2021-12-01)
 
 
