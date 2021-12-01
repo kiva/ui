@@ -38,7 +38,12 @@ async function fetchGraphQL(request, resultPath) {
 			body: JSON.stringify(request),
 		});
 		const result = await response.json();
-		return get(result, resultPath, []);
+		const data = get(result, resultPath, []);
+		if (Array.isArray(data)) {
+			// Ensure no falsy values are included in the returned array
+			return data.filter(x => x);
+		}
+		return [];
 	} catch (err) {
 		log(`Error fetching loans: ${err}`, 'error');
 	}
