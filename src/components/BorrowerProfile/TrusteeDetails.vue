@@ -63,6 +63,10 @@ export default {
 		KvTextLink,
 	},
 	props: {
+		borrowerName: {
+			type: String,
+			default: '',
+		},
 		endorsement: { // endorsement
 			type: String,
 			default: '',
@@ -99,7 +103,7 @@ export default {
 	},
 	computed: {
 		endorsementTitle() {
-			return `Why are you endorsing ${this.trusteeName}?`;
+			return `Why are you endorsing ${this.borrowerName}?`;
 		},
 		noTrusteeState() {
 			return this.trusteeName === 'No Trustee Endorsement';

@@ -57,6 +57,7 @@
 				</kv-tab-panel>
 				<kv-tab-panel :id="trusteeTabId" v-if="hasTrustee">
 					<trustee-details
+						:borrower-name="loan.name"
 						:endorsement="trustee.endorsement"
 						:num-defaulted-loans="trustee.numDefaultedLoans"
 						:num-loans-endorsed-public="trustee.numLoansEndorsedPublic"
@@ -128,6 +129,7 @@ export default {
 			lightboxContent: null,
 			lightboxTitle: '',
 			loan: {
+				name: '',
 				currency: '',
 				flexibleFundraisingEnabled: false,
 				loanLenderRepaymentTerm: 0,
@@ -237,6 +239,7 @@ export default {
 					lend {
 						loan(id: $loanId) {
 							id
+							name
 							status
 							lenderRepaymentTerm
 							repaymentInterval
@@ -295,6 +298,7 @@ export default {
 				this.loan.repaymentInterval = loan?.repaymentInterval ?? '';
 				this.loan.disbursalDate = loan?.disbursalDate ?? '';
 				this.loan.status = loan?.status ?? '';
+				this.loan.name = loan?.name ?? '';
 
 				this.partner.arrearsRate = partner?.arrearsRate ?? 0;
 				this.partner.avgBorrowerCost = partner?.avgBorrowerCost ?? 0;
