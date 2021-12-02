@@ -1,3 +1,116 @@
+### [2.18.4](https://github.com/kiva/ui/compare/v2.18.3...v2.18.4) (2021-12-01)
+
+
+### Bug Fixes
+
+* core-185 replacing borrowerName with TrusteeName ([9e94d22](https://github.com/kiva/ui/commit/9e94d227c96bf078901a6a42ce715f4cfa1c172a))
+
+### [2.18.3](https://github.com/kiva/ui/compare/v2.18.2...v2.18.3) (2021-12-01)
+
+
+### Bug Fixes
+
+* core-308 fixing data points that were not hooked up, avgProfitabilty & currencyExchangeLossRate ([087da11](https://github.com/kiva/ui/commit/087da115ec751ab364e2e829e58acf4810a4a86d))
+
+### [2.18.2](https://github.com/kiva/ui/compare/v2.18.1...v2.18.2) (2021-12-01)
+
+
+### Bug Fixes
+
+* handle missing params state with more appropriate button option ([990b676](https://github.com/kiva/ui/commit/990b676368e625ac7f9aea46712cb700c458a37d))
+
+### [2.18.1](https://github.com/kiva/ui/compare/v2.18.0...v2.18.1) (2021-12-01)
+
+
+### Bug Fixes
+
+* guard against $ char in dynamic link ([488aff0](https://github.com/kiva/ui/commit/488aff00d950bb9f714be8e61b18c6385a0725ea))
+
+## [2.18.0](https://github.com/kiva/ui/compare/v2.17.12...v2.18.0) (2021-12-01)
+
+
+### Features
+
+* causes form and waitlist improvements ([cc88ca5](https://github.com/kiva/ui/commit/cc88ca5480f544b3573262ac64331656646b209c))
+
+### [2.17.12](https://github.com/kiva/ui/compare/v2.17.11...v2.17.12) (2021-12-01)
+
+
+### Bug Fixes
+
+* add name to ensure footer is cached and resolve server render error ([1768bae](https://github.com/kiva/ui/commit/1768baed5a0a5db482ce9010b4a59be9626eadad))
+
+### [2.17.11](https://github.com/kiva/ui/compare/v2.17.10...v2.17.11) (2021-12-01)
+
+
+### Bug Fixes
+
+* fixes the drop in error in a more robust way ([b5ee94c](https://github.com/kiva/ui/commit/b5ee94c2b1f8d096b039a04b38042689d16d2a12))
+
+### [2.17.10](https://github.com/kiva/ui/compare/v2.17.9...v2.17.10) (2021-11-30)
+
+
+### Bug Fixes
+
+* fixes issue with double initializing of BT drop in ([b3b2161](https://github.com/kiva/ui/commit/b3b21612b0edc08dd823bdcc383c2f2cc5787134))
+
+### [2.17.9](https://github.com/kiva/ui/compare/v2.17.8...v2.17.9) (2021-11-30)
+
+
+### Bug Fixes
+
+* fixes BT error if BT drop in gets initialized multiple times ([444a8e8](https://github.com/kiva/ui/commit/444a8e81c2b3767ac1be6267dde67626004408af))
+
+### [2.17.8](https://github.com/kiva/ui/compare/v2.17.7...v2.17.8) (2021-11-30)
+
+
+### Bug Fixes
+
+* fixes issues with BT drop in and causes signup ([f675ac1](https://github.com/kiva/ui/commit/f675ac197a969ba3d3527ae1c4eb2c39caaf4753))
+
+### [2.17.7](https://github.com/kiva/ui/compare/v2.17.6...v2.17.7) (2021-11-29)
+
+
+### Bug Fixes
+
+* changed month end copy for causes signup ([c827246](https://github.com/kiva/ui/commit/c827246d49ee6d7a8687e24de5cb071546078210))
+
+### [2.17.6](https://github.com/kiva/ui/compare/v2.17.5...v2.17.6) (2021-11-29)
+
+
+### Bug Fixes
+
+* ensure instant donation thanks is excluded ([10d3aab](https://github.com/kiva/ui/commit/10d3aabe6b842e3f3b8b527efdeecf2dba46151d))
+
+### [2.17.5](https://github.com/kiva/ui/compare/v2.17.4...v2.17.5) (2021-11-29)
+
+
+### Performance Improvements
+
+* increase min/max replicas for giving tuesday ([8df5e8e](https://github.com/kiva/ui/commit/8df5e8eeb1e069352e8b625a37e513a71693a852))
+
+### [2.17.4](https://github.com/kiva/ui/compare/v2.17.3...v2.17.4) (2021-11-29)
+
+
+### Bug Fixes
+
+* fixes causes signup eligibility issues and login query param messaging ([4b16b4a](https://github.com/kiva/ui/commit/4b16b4a2aa8de6f5f038a7928b02669a814da7ae))
+
+### [2.17.3](https://github.com/kiva/ui/compare/v2.17.2...v2.17.3) (2021-11-29)
+
+
+### Bug Fixes
+
+* move and update global exclude list ([4d3a787](https://github.com/kiva/ui/commit/4d3a787a2efd8ddc0a168ec180358f5f226a1f36))
+* update handling for pages that should not show promotions or their disclaimers ([038ec3e](https://github.com/kiva/ui/commit/038ec3e6cce7431378bc1f507fb45af2d7607d16))
+
+### [2.17.2](https://github.com/kiva/ui/compare/v2.17.1...v2.17.2) (2021-11-29)
+
+
+### Bug Fixes
+
+* remove hard-coded image designations in favor of the ordered objects from contentful ([f653a3a](https://github.com/kiva/ui/commit/f653a3a2bdec601e9234ce50b0232174665940ce))
+
 ### [2.17.1](https://github.com/kiva/ui/compare/v2.17.0...v2.17.1) (2021-11-24)
 
 

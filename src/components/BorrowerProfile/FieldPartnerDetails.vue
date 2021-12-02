@@ -136,6 +136,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		currencyExchangeLossRate: { // Partner.currencyExchangeLossRate
+			type: Number,
+			default: 0,
+		}
 	},
 	computed: {
 		avgBorrowerCostFormatted() {
