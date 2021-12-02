@@ -1,5 +1,5 @@
 <template>
-	<kv-page-container>
+	<div>
 		<ol id="disclaimers" class="tw-text-small tw-list-decimal tw-list-outside">
 			<li
 				v-for="(disclaimer, index) in fullyBuiltDisclaimerText"
@@ -8,7 +8,7 @@
 			>
 			</li>
 		</ol>
-	</kv-page-container>
+	</div>
 </template>
 
 <script>
@@ -17,7 +17,6 @@ import numeral from 'numeral';
 import gql from 'graphql-tag';
 import { settingEnabled, settingWithinDateRange } from '@/util/settingsUtils';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 const disclaimerQuery = gql`query disclaimerQuery($basketId: String) {
 	contentful {
@@ -166,8 +165,5 @@ export default {
 			return false;
 		}
 	},
-	components: {
-		KvPageContainer
-	}
 };
 </script>

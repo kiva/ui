@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="tw-border-b tw-border-tertiary tw-relative"
+		class="tw-border-b tw-border-tertiary tw-relative last:tw-border-b-0"
 	>
 		<button
 			class="tw-w-full tw-flex tw-justify-between tw-items-center tw-py-1.5 tw-px-0
