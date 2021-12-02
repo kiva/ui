@@ -1,19 +1,27 @@
 <template>
-	<div class="kv-progress-circle">
+	<div>
 		<!-- visually hidden, here for accessibility purposes -->
-		<progress class="kv-progress-circle__native-el" max="100" :value="value"></progress>
+		<progress class="tw-absolute tw-overflow-hidden tw-flex-nowrap"
+			style="height: 1px; width: 1px; clip: rect(1px, 1px, 1px, 1px);"
+			max="100"
+			:value="value"
+		>
+		</progress>
 
-		<div class="kv-progress-circle__wrapper">
+		<div class="tw-w-full">
 			<svg
-				class="kv-progress-circle__svg"
+				class="tw-block tw-overflow-visible"
 
 				xmlns="http://www.w3.org/2000/svg"
 				:viewBox="`0 0 ${radius * 2} ${radius * 2}`"
 			>
 				<!-- ring background -->
 				<circle
-					class="kv-progress-circle__ring-background"
+					class="tw-origin-center tw-text-primary-inverse tw-stroke-current"
 					:stroke-dasharray="circumference + ' ' + circumference"
+					style="fill: transparent;
+						stroke-linecap: round;
+						transition: stroke-dashoffset 0.125s;"
 					:style="{
 						'strokeDashoffset': backgroundStrokeDashoffset,
 						'transform': circleTransform
@@ -26,8 +34,11 @@
 
 				<!-- ring foreground -->
 				<circle
-					class="kv-progress-circle__ring-foreground"
+					class="tw-origin-center tw-text-brand tw-stroke-current"
 					:stroke-dasharray="circumference + ' ' + circumference"
+					style="fill: transparent;
+						stroke-linecap: round;
+						transition: stroke-dashoffset 0.125s;"
 					:style="{
 						'strokeDashoffset': strokeDashoffset,
 						'transform': circleTransform
@@ -48,7 +59,7 @@
 							a ${radius},${radius} 0 1,1 ${radius * 2},0
 							a ${radius},${radius} 0 1,1 -${radius * 2},0
 						`"
-							class="kv-progress-circle__ring-text-path"
+							class="tw-text-transparent tw-fill-current tw-origin-center"
 							id="text_circle"
 							:style="{
 								'transform': `${textCircleTransform}`
@@ -63,7 +74,7 @@
 							a ${radius},${radius} 0 1,0 ${radius * 2},0
 							a ${radius},${radius} 0 1,0 -${radius * 2},0
 						`"
-							class="kv-progress-circle__ring-text-path"
+							class="tw-text-transparent tw-fill-current tw-origin-center"
 							id="text_circle_flipped"
 							:style="{
 								'transform': `${textCircleTransform}`
@@ -73,7 +84,14 @@
 
 					<!-- text background which acts as a stroke -->
 					<text
-						class="kv-progress-circle__ring-text-backdrop"
+						class="kv-progress-circle__ring-text-backdrop tw-text-white tw-fill-current tw-stroke-current"
+						style="paint-order: stroke;
+							stroke-width: 0.675em;
+							stroke-linecap: butt;
+							stroke-linejoin: round;
+							font-weight: 900;
+							text-anchor: start;
+							letter-spacing: 0.1em;"
 						:dy="textDy"
 						:dx="textDx"
 						:font-size="fontSize"
@@ -87,7 +105,10 @@
 
 					<!-- text foreground -->
 					<text
-						class="kv-progress-circle__ring-text"
+						class="kv-progress-circle__ring-text tw-text-brand tw-fill-current tw-stroke-current"
+						style="font-weight: 900;
+							text-anchor: start;
+							letter-spacing: 0.1em;"
 						:dy="textDy"
 						:dx="textDx"
 						:font-size="fontSize"
@@ -194,70 +215,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-
-.kv-progress-circle {
-	$foreground-color: $kiva-accent-blue;
-	$background-color: $kiva-bg-darkgray;
-
-	&__wrapper {
-		width: 100%;
-	}
-
-	&__native-el {
-		@include visually-hidden();
-	}
-
-	&__svg {
-		display: block;
-		overflow: visible;
-	}
-
-	&__ring-text-path {
-		fill: transparent;
-		transform-origin: center;
-	}
-
-	&__ring-text,
-	&__ring-text-backdrop {
-		font-family: $body-font-family;
-		font-weight: 900;
-		text-anchor: start;
-		letter-spacing: 0.1em;
-	}
-
-	&__ring-text {
-		fill: $kiva-accent-blue;
-		fill: var(--kv-progress-circle-foreground-color, $foreground-color);
-	}
-
-	&__ring-text-backdrop {
-		paint-order: stroke;
-		fill: #fff;
-		stroke: #fff;
-		stroke-width: 0.675em;
-		stroke-linecap: butt;
-		stroke-linejoin: round;
-	}
-
-	&__ring-background,
-	&__ring-foreground {
-		fill: transparent;
-		transform-origin: center center;
-		stroke-linecap: round;
-		transition: stroke-dashoffset 0.125s;
-	}
-
-	&__ring-background {
-		stroke: $kiva-bg-lightgray;
-		stroke: var(--kv-progress-circle-background-color, $background-color);
-	}
-
-	&__ring-foreground {
-		stroke: $kiva-accent-blue;
-		stroke: var(--kv-progress-circle-foreground-color, $foreground-color);
-	}
-}
 
 // Sadly firefox doesn't support transforms on SVG in the same way that Chrome and Safari do.
 // Hide the percent text in FF for now since it appears broken otherwise.

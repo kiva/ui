@@ -2,135 +2,144 @@
 	<div>
 		<!-- open banner -->
 		<div
-			class="appeal-banner appeal-banner--open"
+			class="tw-py-2 lg:tw-py-3 tw-bg-brand-100"
 			v-if="isOpen"
 			key="openBanner"
 		>
-			<div class="row align-center align-middle relative">
-				<div class="appeal-banner__indicator shrink small-12 columns">
-					<div
-						class="indicator"
-						:class="isLoading ? 'indicator--is-loading' : ''"
-					>
-						<kv-progress-circle
-							class="indicator__progress-circle"
-							:stroke-width="12"
-							:value="goalPercent"
-							:arc-scale=".8"
-							:rotate="36"
-							:show-number="false"
-						/>
-						<kv-contentful-img
-							v-if="imageUrl"
-							class="indicator__image"
-							:contentful-src="imageUrl"
-							alt=""
-							fallback-format="gif"
-							:height="164"
-							:width="164"
-						/>
+			<kv-page-container>
+				<div class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-relative">
+					<div class="tw-mb-4 lg:tw-m-0">
 						<div
-							class="indicator__goal-status"
-							v-html="goalStatus"
+							class="indicator tw-relative"
+							style="width: 10.25rem; height: 10.25rem;"
 						>
+							<kv-progress-circle
+								class="tw-absolute tw-h-full tw-w-full tw-z-2"
+								:stroke-width="12"
+								:value="goalPercent"
+								:arc-scale=".8"
+								:rotate="36"
+								:show-number="false"
+							/>
+							<kv-contentful-img
+								v-if="imageUrl"
+								class="indicator__image tw-absolute tw-h-full tw-w-full tw-z-1"
+								:class="isLoading ? 'tw-opacity-low' : ''"
+								:contentful-src="imageUrl"
+								alt=""
+								fallback-format="gif"
+								:height="164"
+								:width="164"
+							/>
+							<div class="tw-flex tw-justify-center tw-w-full tw-absolute tw-bottom-0">
+								<p
+									class="tw-w-10 tw-text-center tw-z-2 tw-font-medium tw-text-small
+										tw-my-0 tw-mx-[auto]"
+									style="line-height: 1.2;"
+									v-html="goalStatus"
+								>
+								</p>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="appeal-banner__content small-12 columns">
-					<h3 class="appeal-banner__title strong" v-html="headline"></h3>
-					<a
-						v-if="disclaimer"
-						@click="scrollToSection('#disclaimers')"
-						class="appeal-banner__disclaimer-indicator"
-						v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
-					>
-						<sup>
-							1
-						</sup>
-					</a>
-					<div class="appeal-banner__body" v-html="body"></div>
-					<ul class="appeal-banner__amount-list">
-						<li v-for="(buttonAmount, index) in buttonAmounts"
-							:key="`amount-${index}`"
-							class="appeal-banner__amount-item"
+					<div class="tw-text-center lg:tw-text-left">
+						<h3 class="tw-inline" v-html="headline"></h3>
+						<a
+							v-if="disclaimer"
+							@click="scrollToSection('#disclaimers')"
+							class="tw-text-primary"
+							v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
 						>
-							<kv-button
-								class="appeal-banner__btn rounded"
-								@click.native="onClickAmountBtn(buttonAmount)"
-								v-kv-track-event="[
-									'promo',
-									'click-amount-btn',
-									'AppealBanner',
-									buttonAmount,
-									buttonAmount
-								]"
+							<sup>
+								1
+							</sup>
+						</a>
+						<div class="tw-mt-0.5 tw-mb-2 tw-whitespace-pre-wrap" v-html="body"></div>
+						<ul class="tw-flex tw-flex-wrap tw-list-none tw-m-0">
+							<li v-for="(buttonAmount, index) in buttonAmounts"
+								:key="`amount-${index}`"
+								class="tw-flex-1 tw-mr-1 tw-mb-1"
 							>
-								${{ buttonAmount }}
-							</kv-button>
-						</li>
-						<li class="appeal-banner__amount-item--other">
-							<kv-button
-								class="appeal-banner__btn rounded"
-								to="/donate/supportus"
-								v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0, 0]"
-							>
-								Other
-							</kv-button>
-						</li>
-					</ul>
-					<button
-						class="appeal-banner__close-btn"
-						@click="onClickToggleBanner"
-						v-kv-track-event="[
-							'promo',
-							'click-appeal-banner-close',
-							'x',
-						]"
-					>
-						<kv-icon
-							class="appeal-banner__close-btn-icon"
-							name="small-x"
-							title="Close banner"
-							:from-sprite="true"
-						/>
-					</button>
+								<kv-button
+									@click.native="onClickAmountBtn(buttonAmount)"
+									v-kv-track-event="[
+										'promo',
+										'click-amount-btn',
+										'AppealBanner',
+										buttonAmount,
+										buttonAmount
+									]"
+								>
+									${{ buttonAmount }}
+								</kv-button>
+							</li>
+							<li class="tw-flex-1 tw-mr-0 tw-mb-1 tw-flex-grow">
+								<kv-button
+									to="/donate/supportus"
+									v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0, 0]"
+								>
+									Other
+								</kv-button>
+							</li>
+						</ul>
+						<button
+							class="tw-flex tw-items-center tw-justify-center tw-absolute tw-h-4 tw-w-4
+								tw-top-0 tw-right-2 tw-rounded
+								hover:tw-bg-tertiary focus:tw-bg-tertiary"
+							@click="onClickToggleBanner"
+							v-kv-track-event="[
+								'promo',
+								'click-appeal-banner-close',
+								'x',
+							]"
+						>
+							<kv-material-icon
+								class="tw-h-2 tw-w-2"
+								icon="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,
+								19L19,17.59L13.41,12L19,6.41Z"
+							/>
+						</button>
+					</div>
 				</div>
-			</div>
+			</kv-page-container>
 		</div>
 		<!-- closed banner -->
 		<div
-			class="appeal-banner appeal-banner--closed"
+			class="tw-bg-brand-100"
 			v-if="!isOpen"
 			key="closedBanner"
 		>
-			<div class="appeal-banner__content row align-middle">
-				<div class="columns">
-					<h4 class="appeal-banner__title" v-html="headline"></h4>
-					<a
-						v-if="disclaimer"
-						href="#disclaimers"
-						class="appeal-banner__disclaimer-indicator"
-						v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
-					>
-						<sup>
-							1
-						</sup>
-					</a>
+			<kv-page-container>
+				<div class="tw-flex tw-items-center tw-justify-center tw-text-left tw-text-primary
+						tw-m-0 tw-py-1 lg:tw-my-1.5"
+				>
+					<div class="tw-mx-2">
+						<h4 class="tw-inline" v-html="headline"></h4>
+						<a
+							v-if="disclaimer"
+							href="#disclaimers"
+							v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
+						>
+							<sup>
+								1
+							</sup>
+						</a>
+					</div>
+					<div class="tw-flex-shrink tw-mx-2">
+						<kv-button
+							@click.native="onClickToggleBanner"
+							variant="primary"
+							v-kv-track-event="[
+								'promo',
+								'click-appeal-banner-open',
+								'Donate'
+							]"
+						>
+							Donate
+						</kv-button>
+					</div>
 				</div>
-				<div class="shrink columns">
-					<kv-button
-						class="appeal-banner__btn appeal-banner__btn--toggle-open rounded"
-						@click.native="onClickToggleBanner"
-						v-kv-track-event="[
-							'promo',
-							'click-appeal-banner-open',
-							'Donate'
-						]"
-					>
-						Donate
-					</kv-button>
-				</div>
-			</div>
+			</kv-page-container>
 		</div>
 	</div>
 </template>
@@ -140,17 +149,19 @@
 import smoothReflow from 'vue-smooth-reflow';
 import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 
-import KvButton from '@/components/Kv/KvButton';
-import KvIcon from '@/components/Kv/KvIcon';
 import KvProgressCircle from '@/components/Kv/KvProgressCircle';
-import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
 	components: {
 		KvButton,
-		KvIcon,
 		KvProgressCircle,
-		KvContentfulImg
+		KvContentfulImg,
+		KvPageContainer,
+		KvMaterialIcon
 	},
 	mixins: [smoothReflow, smoothScrollMixin],
 	props: {
@@ -229,199 +240,3 @@ export default {
 	},
 };
 </script>
-
-<style lang='scss' scoped>
-@import 'settings';
-
-.appeal-banner {
-	// border-bottom: 1px solid $twilight;
-	letter-spacing: -0.02em;
-
-	&__indicator {
-		margin-bottom: rem-calc(32);
-		@include breakpoint('large') {
-			margin: 0;
-		}
-	}
-
-	&__content {
-		max-width: rem-calc(381);
-		text-align: center;
-
-		@include breakpoint('large') {
-			text-align: left;
-		}
-	}
-
-	&__title {
-		display: inline;
-	}
-
-	&__disclaimer-indicator {
-		color: $kiva-text-dark;
-	}
-
-	&__amount-list {
-		display: flex;
-		flex-wrap: wrap;
-		list-style: none;
-		margin: 0;
-	}
-
-	&__amount-item {
-		flex: 1;
-		margin-right: rem-calc(8);
-		margin-bottom: rem-calc(8);
-
-		&--other {
-			margin-right: 0;
-			flex-grow: 2;
-		}
-	}
-
-	&__btn {
-		font-size: rem-calc(14);
-		padding: 0.5rem 1rem;
-		border-radius: rem-calc(8);
-		background: $white;
-		color: $kiva-green;
-		box-shadow: none;
-		width: 100%;
-		margin-bottom: 0;
-		border: 1px solid $kiva-green;
-
-		@include breakpoint(large) {
-			padding: 0.75rem 1.5rem;
-		}
-
-		&:hover,
-		&:focus {
-			color: $kiva-green;
-			background: $kiva-bg-darkgray;
-		}
-
-		&--toggle-open {
-			color: $white;
-			background: $kiva-green;
-
-			&:hover,
-			&:focus {
-				color: $white;
-				background: darken($kiva-green, 10%);
-			}
-		}
-	}
-
-	&__close-btn {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: absolute;
-		width: rem-calc(32);
-		height: rem-calc(32);
-		top: 0;
-		right: 1rem;
-		border-radius: rem-calc(12);
-		fill: $kiva-text-medium;
-
-		&:hover,
-		&:focus {
-			background-color: $kiva-bg-darkgray;
-			fill: $dark-charcoal;
-		}
-	}
-
-	&__close-btn-icon {
-		width: rem-calc(16);
-		height: rem-calc(16);
-	}
-
-	&__body {
-		margin-top: rem-calc(4);
-		margin-bottom: 1rem;
-		white-space: pre-wrap;
-
-		&::v-deep {
-			a {
-				color: $kiva-text-dark;
-			}
-		}
-	}
-
-	&--open {
-		padding-top: rem-calc(16);
-		padding-bottom: rem-calc(16);
-		background-color: #EAF6F0;
-
-		@include breakpoint(large) {
-			padding-top: rem-calc(24);
-			padding-bottom: rem-calc(24);
-		}
-	}
-
-	&--closed {
-		background-color: #EAF6F0;
-
-		.appeal-banner__content {
-			padding-top: rem-calc(8);
-			padding-bottom: rem-calc(8);
-			text-align: left;
-
-			@include breakpoint(large) {
-				padding-top: rem-calc(12);
-				padding-bottom: rem-calc(12);
-			}
-		}
-
-		.appeal-banner__title {
-			margin: 0;
-			color: $kiva-text-dark;
-		}
-	}
-}
-
-.indicator {
-	position: relative;
-	width: rem-calc(164);
-	height: rem-calc(164);
-
-	&__progress-circle,
-	&__image {
-		position: absolute;
-		z-index: 1;
-		width: 100%;
-		height: 100%;
-	}
-
-	&__progress-circle {
-		z-index: 2;
-
-		--kv-progress-circle-foreground-color: #{$kiva-green};
-	}
-
-	&__goal-status {
-		$width: 5rem;
-
-		font-weight: bold;
-		font-size: rem-calc(12);
-		line-height: 1.2;
-		text-align: center;
-		width: $width;
-		margin: 0 auto;
-		position: absolute;
-		bottom: 0;
-		left: calc(50% - #{$width / 2});
-		z-index: 2;
-	}
-
-	&--is-loading {
-		.indicator__image {
-			opacity: 0.3;
-		}
-	}
-}
-
-.relative {
-	position: relative;
-}
-</style>
