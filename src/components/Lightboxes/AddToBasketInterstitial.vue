@@ -64,7 +64,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="lightbox-lyml-wrapper" v-if="loan.loan">
+			<div class="lightbox-lyml-wrapper" v-if="loan.loan && showLoansYouMightLike">
 				<div class="additional-loans">
 					<h2>Support more loans like {{ loan.loan.name }}</h2>
 					<l-y-m-l
@@ -74,6 +74,7 @@
 						:visible="showInterstitial"
 						@add-to-basket="handleAddToBasket"
 						@processing-add-to-basket="processingAddToBasket"
+						@no-rec-loans-found="showLoansYouMightLike = false"
 					/>
 				</div>
 			</div>
@@ -125,6 +126,7 @@ export default {
 			loanTotals: '0.00',
 			loading: true,
 			showInterstitial: false,
+			showLoansYouMightLike: true,
 			userPrefHideInterstitial: false,
 		};
 	},
