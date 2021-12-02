@@ -1,3 +1,10 @@
+### [2.18.5](https://github.com/kiva/ui/compare/v2.18.4...v2.18.5) (2021-12-02)
+
+
+### Bug Fixes
+
+* **live-loans:** handles bugs from fewer loans than asked for being returned ([e01eb03](https://github.com/kiva/ui/commit/e01eb03e9e104a50fc12aa52df54755b86041ec9))
+
 ### [2.18.4](https://github.com/kiva/ui/compare/v2.18.3...v2.18.4) (2021-12-01)
 
 
