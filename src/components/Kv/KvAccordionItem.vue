@@ -3,7 +3,7 @@
 		class="tw-border-b tw-border-tertiary tw-relative"
 	>
 		<button
-			class="tw-w-full tw-flex tw-justify-between tw-items-center tw-py-[0.75rem] tw-px-0
+			class="tw-w-full tw-flex tw-justify-between tw-items-center tw-py-1.5 tw-px-0
 				tw-text-left disabled:tw-cursor-not-allowed disabled:tw-opacity-low"
 			@click.prevent="toggle"
 			:disabled="disabled"
@@ -14,7 +14,7 @@
 				<slot name="header"></slot>
 			</span>
 			<kv-material-icon
-				class="tw-h-3 tw-w-[25px] tw-transition tw-transform tw-duration-500 tw-ease"
+				class="tw-h-3 tw-w-3 tw-transition tw-transform tw-duration-500 tw-ease"
 				:class="{ 'tw-rotate-180' : isOpen }"
 				:icon="mdiChevronDown"
 			/>
