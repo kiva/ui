@@ -1,8 +1,7 @@
 <template>
 	<div>
 		<!-- visually hidden, here for accessibility purposes -->
-		<progress class="tw-absolute tw-overflow-hidden tw-flex-nowrap"
-			style="height: 1px; width: 1px; clip: rect(1px, 1px, 1px, 1px);"
+		<progress class="tw-sr-only"
 			max="100"
 			:value="value"
 		>
