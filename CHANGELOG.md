@@ -1,3 +1,10 @@
+### [2.18.6](https://github.com/kiva/ui/compare/v2.18.5...v2.18.6) (2021-12-02)
+
+
+### Bug Fixes
+
+* prevent errors from null items returned in recommended loan query ([18a97a4](https://github.com/kiva/ui/commit/18a97a4a31791d3a03ad6641656574d3994ae235))
+
 ### [2.18.5](https://github.com/kiva/ui/compare/v2.18.4...v2.18.5) (2021-12-02)
 
 
