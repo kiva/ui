@@ -4,7 +4,8 @@
 	>
 		<button
 			class="tw-w-full tw-flex tw-justify-between tw-items-center tw-py-1.5 tw-px-0
-				tw-text-left disabled:tw-cursor-not-allowed disabled:tw-opacity-low"
+				tw-text-left disabled:tw-cursor-not-allowed disabled:tw-opacity-low
+				hover:tw-text-action-highlight focus:tw-text-action-highlight"
 			@click.prevent="toggle"
 			:disabled="disabled"
 			:aria-controls="`kv-accordion-${id}`"
