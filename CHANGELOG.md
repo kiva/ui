@@ -1,3 +1,11 @@
+### [2.18.7](https://github.com/kiva/ui/compare/v2.18.6...v2.18.7) (2021-12-03)
+
+
+### Bug Fixes
+
+* core-316 simple formatting on numBorrowers & numDefaultedLoans ([7469c78](https://github.com/kiva/ui/commit/7469c78780c2ab4005bff9195851afa4a6708c7a))
+* in-component navigation guards should not redirect ([4346689](https://github.com/kiva/ui/commit/43466890450a8dde3016b5958d2b00d317d2992d))
+
 ### [2.18.6](https://github.com/kiva/ui/compare/v2.18.5...v2.18.6) (2021-12-02)
 
 
