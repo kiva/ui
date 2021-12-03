@@ -1,6 +1,6 @@
 <template>
-	<div class="row">
-		<ol id="disclaimers" class="text-left">
+	<div>
+		<ol id="disclaimers" class="tw-text-small tw-list-decimal tw-list-outside">
 			<li
 				v-for="(disclaimer, index) in fullyBuiltDisclaimerText"
 				:key="index"
@@ -164,6 +164,6 @@ export default {
 			}
 			return false;
 		}
-	}
+	},
 };
 </script>
