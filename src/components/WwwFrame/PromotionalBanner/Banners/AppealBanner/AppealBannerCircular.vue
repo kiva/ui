@@ -7,7 +7,9 @@
 			key="openBanner"
 		>
 			<kv-page-container>
-				<div class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-relative">
+				<div class="tw-flex tw-flex-col md:tw-flex-row
+					tw-items-center tw-justify-center tw-relative tw-gap-0 md:tw-gap-3"
+				>
 					<div class="tw-mb-4 lg:tw-m-0">
 						<div
 							class="indicator tw-relative"
@@ -42,7 +44,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="tw-text-center lg:tw-text-left">
+					<div class="tw-text-center md:tw-text-left">
 						<h3 class="tw-inline" v-html="headline"></h3>
 						<a
 							v-if="disclaimer"
@@ -54,34 +56,37 @@
 								1
 							</sup>
 						</a>
-						<div class="tw-mt-0.5 tw-mb-2 tw-whitespace-pre-wrap" v-html="body"></div>
-						<ul class="tw-flex tw-flex-wrap tw-list-none tw-m-0">
-							<li v-for="(buttonAmount, index) in buttonAmounts"
+						<div class="tw-mb-3 tw-mt-0.5 lg:tw-mb-2 tw-whitespace-pre-wrap md:tw-max-w-sm"
+							v-html="body"
+						></div>
+						<div class="tw-flex tw-flex-wrap tw-list-none tw-m-0 tw-gap-x-0.5
+									tw-gap-y-2 md:tw-gap-1.5 tw-justify-between"
+						>
+							<kv-button
+								v-for="(buttonAmount, index) in buttonAmounts"
 								:key="`amount-${index}`"
-								class="tw-flex-1 tw-mr-1 tw-mb-1"
+								variant="secondary"
+								class="tw-border-brand tw-text-brand"
+								@click.native="onClickAmountBtn(buttonAmount)"
+								v-kv-track-event="[
+									'promo',
+									'click-amount-btn',
+									'AppealBanner',
+									buttonAmount,
+									buttonAmount
+								]"
 							>
-								<kv-button
-									@click.native="onClickAmountBtn(buttonAmount)"
-									v-kv-track-event="[
-										'promo',
-										'click-amount-btn',
-										'AppealBanner',
-										buttonAmount,
-										buttonAmount
-									]"
-								>
-									${{ buttonAmount }}
-								</kv-button>
-							</li>
-							<li class="tw-flex-1 tw-mr-0 tw-mb-1 tw-flex-grow">
-								<kv-button
-									to="/donate/supportus"
-									v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0, 0]"
-								>
-									Other
-								</kv-button>
-							</li>
-						</ul>
+								${{ buttonAmount }}
+							</kv-button>
+							<kv-button
+								variant="secondary"
+								class="tw-w-full md:tw-w-auto"
+								to="/donate/supportus"
+								v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0, 0]"
+							>
+								Other
+							</kv-button>
+						</div>
 						<button
 							class="tw-flex tw-items-center tw-justify-center tw-absolute tw-h-4 tw-w-4
 								tw-top-0 tw-right-2 tw-rounded
@@ -95,8 +100,7 @@
 						>
 							<kv-material-icon
 								class="tw-h-2 tw-w-2"
-								icon="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,
-								19L19,17.59L13.41,12L19,6.41Z"
+								:icon="mdiClose"
 							/>
 						</button>
 					</div>
@@ -149,6 +153,7 @@
 import smoothReflow from 'vue-smooth-reflow';
 import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 
+import { mdiClose } from '@mdi/js';
 import KvProgressCircle from '@/components/Kv/KvProgressCircle';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -156,6 +161,11 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
+	data() {
+		return {
+			mdiClose
+		};
+	},
 	components: {
 		KvButton,
 		KvProgressCircle,
