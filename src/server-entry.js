@@ -90,8 +90,8 @@ export default context => {
 		context.renderedNoscript = noscriptTemplate(config);
 		context.renderedExternals = `<script>(${serialize(headScript)})(window.__KV_CONFIG__);</script>`;
 
-		// set router's location
-		router.push(url);
+		// set router's location, ignoring any errors about redirection
+		router.push(url).catch(() => {});
 
 		// wait until router has resolved possible async hooks
 		return router.onReady(() => {
