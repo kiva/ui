@@ -1,3 +1,10 @@
+### [2.18.8](https://github.com/kiva/ui/compare/v2.18.7...v2.18.8) (2021-12-03)
+
+
+### Bug Fixes
+
+* catch redirection errors from router.push ([5efd0e5](https://github.com/kiva/ui/commit/5efd0e54904505c495701d935a49675d490bfbc9))
+
 ### [2.18.7](https://github.com/kiva/ui/compare/v2.18.6...v2.18.7) (2021-12-03)
 
 
