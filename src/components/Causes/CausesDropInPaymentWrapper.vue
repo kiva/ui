@@ -110,11 +110,16 @@ export default {
 				});
 		},
 		doBraintreeCausesSubscription(nonce, deviceData, paymentType) {
-			/** !TODO add if (this.action === 'Update') logic here similar to
+			/** ! TODO add if (this.action === 'Update') logic here similar to
 			* src/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper.vue
 			* for editing a cause subscription GD-155
 			*/
 			if (this.action === 'Registration') {
+				/**  ! TODO the subscription service does not currently support dayOfMonth > 28
+				* if day of month is greater than 28, set it to 28
+				* Remove this workaround and update messaging when service has support.
+				*/
+				const day = this.dayOfMonth > 28 ? 28 : this.dayOfMonth;
 				// Apollo call to the query mutation
 				this.apollo.mutate({
 					mutation: createSubscription,
@@ -125,7 +130,7 @@ export default {
 						categoryId: this.causeCategoryId,
 						donation: 0,
 						noteSize: 5, // TODO make this some kind of global setting?
-						dayOfMonth: numeral(this.dayOfMonth).value(),
+						dayOfMonth: day,
 						lendingDelay: 0,
 						period: 'MONTHLY'
 					}

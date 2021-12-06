@@ -2,23 +2,23 @@
 	<div class="tw-text-primary tw-text-center">
 		<hr class="tw-border-tertiary">
 		<a
-			class="tw-text-primary tw-mr-2.5"
+			class="tw-text-primary tw-mr-2.5 tw-font-medium"
 			v-kv-track-event="['Borrower profile', 'click-jump-link', 'Borrower story']"
 			@click="scrollToSection('#loanStory')"
 		>
 			<kv-material-icon
-				class="tw-my-3 tw-align-middle"
+				class="tw-my-3 tw-align-middle tw-mr-0.5"
 				:icon="mdiAccount"
 			/>
 			Borrower story
 		</a>
 		<a
-			class="tw-text-primary tw-mr-2.5"
+			class="tw-text-primary tw-ml-2 tw-mr-2.5 tw-font-medium"
 			v-kv-track-event="['Borrower profile', 'click-jump-link', 'Loan details']"
 			@click="scrollToSection('#loanDetails')"
 		>
 			<kv-material-icon
-				class="tw-my-3 tw-align-middle"
+				class="tw-my-3 tw-align-middle tw-mr-0.5"
 				:icon="mdiFormatListBulleted"
 			/>
 			Loan details

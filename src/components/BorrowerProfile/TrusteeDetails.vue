@@ -10,7 +10,7 @@
 		<dl class="tw-mb-4">
 			<description-list-item
 				:term="'Kiva borrowers'"
-				:details="numLoansEndorsedPublic"
+				:details="numLoansEndorsedPublicFormatted"
 				@show-definition="$emit('show-definition', {
 					cid: 'bp-def-trustee-kiva-borrowers',
 					sfid: '50150000000s2cE',
@@ -30,7 +30,7 @@
 			/>
 			<description-list-item
 				:term="'Loans defaulted'"
-				:details="numDefaultedLoans"
+				:details="numDefaultedLoansFormatted"
 				@show-definition="$emit('show-definition', {
 					cid: 'bp-def-trustee-loans-defaulted',
 					sfid: '50150000000s2cn',
@@ -84,6 +84,10 @@ export default {
 		KvTextLink,
 	},
 	props: {
+		borrowerName: {
+			type: String,
+			default: '',
+		},
 		endorsement: { // endorsement
 			type: String,
 			default: '',
@@ -120,7 +124,7 @@ export default {
 	},
 	computed: {
 		endorsementTitle() {
-			return `Why are you endorsing ${this.trusteeName}?`;
+			return `Why are you endorsing ${this.borrowerName}?`;
 		},
 		noTrusteeState() {
 			return this.trusteeName === 'No Trustee Endorsement';
@@ -131,6 +135,12 @@ export default {
 		repaymentRateFormatted() {
 			return numeral(this.repaymentRate / 100).format('0%');
 		},
+		numLoansEndorsedPublicFormatted() {
+			return numeral(this.numLoansEndorsedPublic).format('0,0');
+		},
+		numDefaultedLoansFormatted() {
+			return numeral(this.numDefaultedLoans).format('0,0');
+		}
 	},
 };
 

@@ -1,3 +1,81 @@
+### [2.18.10](https://github.com/kiva/ui/compare/v2.18.9...v2.18.10) (2021-12-06)
+
+
+### Bug Fixes
+
+* core-322 increase font-weight and spacing of jump links on borrower profile ([2a9f71e](https://github.com/kiva/ui/commit/2a9f71e6a922f7deab29aac6f4ff19ff180ceaac))
+
+### [2.18.9](https://github.com/kiva/ui/compare/v2.18.8...v2.18.9) (2021-12-06)
+
+
+### Bug Fixes
+
+* updated TOU, updated last changed date and highlighted new substantive changes ([a6435df](https://github.com/kiva/ui/commit/a6435dfde1dc1c79379a093b93f46bef61681d90))
+
+### [2.18.8](https://github.com/kiva/ui/compare/v2.18.7...v2.18.8) (2021-12-03)
+
+
+### Bug Fixes
+
+* catch redirection errors from router.push ([5efd0e5](https://github.com/kiva/ui/commit/5efd0e54904505c495701d935a49675d490bfbc9))
+
+### [2.18.7](https://github.com/kiva/ui/compare/v2.18.6...v2.18.7) (2021-12-03)
+
+
+### Bug Fixes
+
+* core-316 simple formatting on numBorrowers & numDefaultedLoans ([7469c78](https://github.com/kiva/ui/commit/7469c78780c2ab4005bff9195851afa4a6708c7a))
+* in-component navigation guards should not redirect ([4346689](https://github.com/kiva/ui/commit/43466890450a8dde3016b5958d2b00d317d2992d))
+
+### [2.18.6](https://github.com/kiva/ui/compare/v2.18.5...v2.18.6) (2021-12-02)
+
+
+### Bug Fixes
+
+* prevent errors from null items returned in recommended loan query ([18a97a4](https://github.com/kiva/ui/commit/18a97a4a31791d3a03ad6641656574d3994ae235))
+
+### [2.18.5](https://github.com/kiva/ui/compare/v2.18.4...v2.18.5) (2021-12-02)
+
+
+### Bug Fixes
+
+* **live-loans:** handles bugs from fewer loans than asked for being returned ([e01eb03](https://github.com/kiva/ui/commit/e01eb03e9e104a50fc12aa52df54755b86041ec9))
+
+### [2.18.4](https://github.com/kiva/ui/compare/v2.18.3...v2.18.4) (2021-12-01)
+
+
+### Bug Fixes
+
+* core-185 replacing borrowerName with TrusteeName ([9e94d22](https://github.com/kiva/ui/commit/9e94d227c96bf078901a6a42ce715f4cfa1c172a))
+
+### [2.18.3](https://github.com/kiva/ui/compare/v2.18.2...v2.18.3) (2021-12-01)
+
+
+### Bug Fixes
+
+* core-308 fixing data points that were not hooked up, avgProfitabilty & currencyExchangeLossRate ([087da11](https://github.com/kiva/ui/commit/087da115ec751ab364e2e829e58acf4810a4a86d))
+
+### [2.18.2](https://github.com/kiva/ui/compare/v2.18.1...v2.18.2) (2021-12-01)
+
+
+### Bug Fixes
+
+* handle missing params state with more appropriate button option ([990b676](https://github.com/kiva/ui/commit/990b676368e625ac7f9aea46712cb700c458a37d))
+
+### [2.18.1](https://github.com/kiva/ui/compare/v2.18.0...v2.18.1) (2021-12-01)
+
+
+### Bug Fixes
+
+* guard against $ char in dynamic link ([488aff0](https://github.com/kiva/ui/commit/488aff00d950bb9f714be8e61b18c6385a0725ea))
+
+## [2.18.0](https://github.com/kiva/ui/compare/v2.17.12...v2.18.0) (2021-12-01)
+
+
+### Features
+
+* causes form and waitlist improvements ([cc88ca5](https://github.com/kiva/ui/commit/cc88ca5480f544b3573262ac64331656646b209c))
+
 ### [2.17.12](https://github.com/kiva/ui/compare/v2.17.11...v2.17.12) (2021-12-01)
 
 

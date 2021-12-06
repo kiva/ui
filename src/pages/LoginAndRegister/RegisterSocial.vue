@@ -127,21 +127,16 @@ export default {
 		}
 		return validations;
 	},
-	beforeRouteEnter(to, from, next) {
-		// Redirect to error page if query parameters are missing
-		const { state, terms, names } = to.query ?? {};
-		if (!state || !(terms || names)) {
-			next('/error');
-		} else {
-			next();
-		}
-	},
 	created() {
 		if (this.$route.query.terms) {
 			this.needsTerms = true;
 		}
 		if (this.$route.query.names) {
 			this.needsNames = true;
+		}
+		// Support legacy behavior of this page, which was to show the terms checkbox only
+		if (!this.$route.query.terms && !this.$route.query.names) {
+			this.needsTerms = true;
 		}
 	},
 	methods: {
