@@ -1,3 +1,10 @@
+### [2.18.9](https://github.com/kiva/ui/compare/v2.18.8...v2.18.9) (2021-12-06)
+
+
+### Bug Fixes
+
+* updated TOU, updated last changed date and highlighted new substantive changes ([a6435df](https://github.com/kiva/ui/commit/a6435dfde1dc1c79379a093b93f46bef61681d90))
+
 ### [2.18.8](https://github.com/kiva/ui/compare/v2.18.7...v2.18.8) (2021-12-03)
 
 
