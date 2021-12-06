@@ -1,3 +1,10 @@
+## [2.19.0](https://github.com/kiva/ui/compare/v2.18.10...v2.19.0) (2021-12-06)
+
+
+### Features
+
+* **Borrower Profile:** add click tracking on details tabs, definitions and links ([9d4a41d](https://github.com/kiva/ui/commit/9d4a41d94b7376306dc5420c00da8ee290b4627a))
+
 ### [2.18.10](https://github.com/kiva/ui/compare/v2.18.9...v2.18.10) (2021-12-06)
 
 
