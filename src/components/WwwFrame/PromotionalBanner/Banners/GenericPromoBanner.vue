@@ -1,20 +1,24 @@
 <template>
-	<div class="row align-center generic-banner">
-		<kv-icon :name="iconKey" :class="`${iconKey}-icon icon`" />
+	<div class="tw-flex tw-items-center tw-justify-center tw-bg-brand tw-py-1 generic-banner">
+		<kv-icon
+			:name="iconKey"
+			class=" tw-fill-current tw-text-white tw-h-3 tw-w-3 tw-max-w-3 tw-my-0 tw-mx-1.5"
+		/>
 		<span class="text-center">
 			<component
 				:is="currentWrapperComponent"
 				:to="trimmedLink"
 				:href="trimmedLink"
 				:target="isExternalLink ? '_blank' : '_self'"
-				:class="{ 'banner-link' : trimmedLink, 'banner-wrapper' : !trimmedLink}"
+				class="tw-text-center tw-text-white tw-text-base hover:tw-text-white hover:tw-no-underline
+				tw-align-bottom"
 				v-kv-track-event="handleTracking"
 				v-html="processedContent"
 			/>
 			<a
 				v-if="hasDisclaimer"
 				@click="scrollToSection('#disclaimers')"
-				class="disclaimer-indicator"
+				class="tw-text-white"
 				v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
 			>
 				<sup>
@@ -100,69 +104,3 @@ export default {
 	},
 };
 </script>
-
-<style  lang="scss" scoped>
-@import 'settings';
-
-.row {
-	margin: 0;
-	max-width: 100%;
-}
-
-.generic-banner {
-	background-image: url('~@/assets/images/backgrounds/tipbar-bg-small.jpg');
-	background-position: bottom;
-	padding: 0.365rem;
-	flex-wrap: unset;
-
-	& [class*="-icon"] {
-		display: block;
-		align-self: center;
-		height: rem-calc(22);
-		width: rem-calc(22);
-		min-width: rem-calc(22);
-		max-width: rem-calc(22);
-		fill: $kiva-icon-green;
-		margin: 0 rem-calc(10);
-	}
-
-	.icon-corporate,
-	.icon-iwd {
-		fill: inherit;
-	}
-
-	.disclaimer-indicator {
-		color: $kiva-icon-green;
-
-		&:hover,
-		&:active {
-			color: $kiva-darkgreen;
-		}
-	}
-
-	.banner-link,
-	.banner-wrapper {
-		color: $kiva-icon-green;
-		text-decoration: none;
-		text-align: center;
-		line-height: 1.25;
-		vertical-align: bottom;
-	}
-
-	.banner-link {
-		&:hover,
-		&:active {
-			color: $kiva-darkgreen;
-
-			[class*="-icon"] {
-				fill: $kiva-darkgreen;
-			}
-
-			.icon-corporate,
-			.icon-iwd {
-				fill: inherit;
-			}
-		}
-	}
-}
-</style>
