@@ -7,45 +7,73 @@
 			<description-list-item
 				:term="'Average cost to borrower'"
 				:details="avgBorrowerCostFormatted"
-				@show-definition="$emit('show-definition',
-					{cid: 'bp-def-average-cost-to-borrower', sfid: '50150000000T2J1'})"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-average-cost-to-borrower',
+					sfid: '50150000000T2J1',
+					panelName: 'Field-Partner',
+					linkText: 'Average cost to borrower'
+				})"
 			/>
 			<description-list-item
 				:term="'Profitability (return on assets)'"
 				:details="avgProfitabilityFormatted"
-				@show-definition="$emit('show-definition',
-					{cid: 'bp-def-probablility-roa', sfid: '50150000000S17h'})"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-probablility-roa',
+					sfid: '50150000000S17h',
+					panelName: 'Field-Partner',
+					linkText: 'Profitability (return on assets)'
+				})"
 			/>
 			<description-list-item
 				:term="'Delinquency rate'"
 				:details="delinquencyRateFormatted"
-				@show-definition="$emit('show-definition',
-					{cid: 'bp-def-delinquency-rate', sfid: '50150000000SQF1'})"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-delinquency-rate',
+					sfid: '50150000000SQF1',
+					panelName: 'Field-Partner',
+					linkText: 'Delinquency rate'
+				})"
 			/>
 			<description-list-item
 				:term="'Loans at risk rate'"
 				:details="loansAtRiskRateFormatted"
-				@show-definition="$emit('show-definition',
-					{cid: 'bp-def-loans-at-risk-rate', sfid: '50150000000SQI0'})"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-loans-at-risk-rate',
+					sfid: '50150000000SQI0',
+					panelName: 'Field-Partner',
+					linkText: 'Loans at risk rate'
+				})"
 			/>
 			<description-list-item
 				:term="'Default rate'"
 				:details="defaultRateFormatted"
-				@show-definition="$emit('show-definition',
-					{cid: 'bp-def-default-rate', sfid: '50150000000S8gT'})"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-default-rate',
+					sfid: '50150000000S8gT',
+					panelName: 'Field-Partner',
+					linkText: 'Default rate'
+				})"
 			/>
 			<description-list-item
 				:term="'Currency exchange loss rate'"
 				:details="currencyExchangeLossRateFormatted"
-				@show-definition="$emit('show-definition',
-					{cid: 'bp-def-currency-exchange-loss-rate', sfid: '50150000000S186'})"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-currency-exchange-loss-rate',
+					sfid: '50150000000S186',
+					panelName: 'Field-Partner',
+					linkText: 'Currency exchange loss rate'
+				})"
 			/>
 			<div class="tw-flex tw-mb-1.5">
 				<dt class="tw-flex-1 tw-mb-0">
 					<button
 						class="tw-underline tw-font-book"
-						@click="$emit('show-definition',
-							{cid: 'bp-def-risk-rating', sfid: '50150000000s2YH'})"
+						@click="$emit('show-definition', {
+							cid: 'bp-def-risk-rating',
+							sfid: '50150000000s2YH',
+							panelName: 'Field-Partner',
+							linkText: 'Field Partner risk rating'
+						})"
 					>
 						Field Partner risk rating
 					</button>
@@ -67,6 +95,11 @@
 			:icon="mdiArrowRight"
 			:href="`/partners/${partnerId}`"
 			target="_blank"
+			v-kv-track-event="[
+				'Borrower profile',
+				'click-Field-Partner-tab',
+				`More about ${partnerName }`
+			]"
 		>
 			More about {{ partnerName }}
 		</kv-text-link>

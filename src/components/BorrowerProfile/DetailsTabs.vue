@@ -14,13 +14,23 @@
 		</div>
 		<kv-tabs v-else class="tw-prose">
 			<template #tabNav>
-				<kv-tab :for="loanTabId">
+				<kv-tab :for="loanTabId"
+					v-kv-track-event="['Borrower Profile', `click-Loan-Details-tab`, 'Loan Details']"
+				>
 					Loan details
 				</kv-tab>
-				<kv-tab :for="partnerTabId" v-if="isPartnerLoan">
+				<kv-tab :for="partnerTabId" v-if="isPartnerLoan"
+					v-kv-track-event="['Borrower Profile', `click-Field-Partner-tab`, 'Field Partner']"
+				>
 					Field Partner
 				</kv-tab>
-				<kv-tab :for="trusteeTabId" v-if="hasTrustee">
+				<kv-tab :for="trusteeTabId" v-if="hasTrustee"
+					v-kv-track-event="[
+						'Borrower Profile',
+						'click-Trustee-tab',
+						noTrusteeState ? 'No Trustee' : 'Trustee'
+					]"
+				>
 					{{ noTrusteeState ? 'No Trustee' : 'Trustee' }}
 				</kv-tab>
 			</template>
@@ -339,6 +349,9 @@ export default {
 			}
 		},
 		showDefinition(payload) {
+			// track definition pop up click
+			this.$kvTrackEvent('Borrower Profile', `click-${payload.panelName}-tab-definition-link`, payload.linkText);
+
 			if (this.useSalesForce) {
 				this.showSalesforceSolution(payload.sfid);
 			} else {
