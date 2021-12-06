@@ -1,3 +1,10 @@
+### [2.19.1](https://github.com/kiva/ui/compare/v2.19.0...v2.19.1) (2021-12-06)
+
+
+### Bug Fixes
+
+* **Landing Pages:** ensure tip message shows above in context checkout for managed lending ([c51fc5d](https://github.com/kiva/ui/commit/c51fc5d928814c2adefcde5fa02fc316563ad65a))
+
 ## [2.19.0](https://github.com/kiva/ui/compare/v2.18.10...v2.19.0) (2021-12-06)
 
 
