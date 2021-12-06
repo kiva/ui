@@ -19,7 +19,7 @@ async function fetchRecommendedLoans(type, id, cache) {
 	const loanData = await fetchLoansByType(type, id);
 
 	// Set the loan data in memcache, return the loan data
-	if (loanData.length) {
+	if (loanData && loanData.length) {
 		const expires = 10 * 60; // 10 minutes
 		memJsUtils.setToCache(`recommendations-by-${type}-id-${id}`, JSON.stringify(loanData), expires, cache)
 			.catch(err => {
@@ -39,6 +39,10 @@ async function getLoanForRequest(type, cache, req) {
 	const offset = req.params?.offset || 1;
 
 	const loanData = await fetchRecommendedLoans(type, id, cache);
+	// if there are fewer loan results than the offset, return the last result
+	if (offset > loanData.length) {
+		return loanData[loanData.length - 1];
+	}
 	return loanData[offset - 1];
 }
 

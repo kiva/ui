@@ -10,7 +10,7 @@
 		<dl class="tw-mb-4">
 			<description-list-item
 				:term="'Kiva borrowers'"
-				:details="numLoansEndorsedPublic"
+				:details="numLoansEndorsedPublicFormatted"
 				@show-definition="$emit('show-definition',
 					{cid: 'bp-def-trustee-kiva-borrowers', sfid: '50150000000s2cE'})"
 			/>
@@ -22,7 +22,7 @@
 			/>
 			<description-list-item
 				:term="'Loans defaulted'"
-				:details="numDefaultedLoans"
+				:details="numDefaultedLoansFormatted"
 				@show-definition="$emit('show-definition',
 					{cid: 'bp-def-trustee-loans-defaulted', sfid: '50150000000s2cn'})"
 			/>
@@ -114,6 +114,12 @@ export default {
 		repaymentRateFormatted() {
 			return numeral(this.repaymentRate / 100).format('0%');
 		},
+		numLoansEndorsedPublicFormatted() {
+			return numeral(this.numLoansEndorsedPublic).format('0,0');
+		},
+		numDefaultedLoansFormatted() {
+			return numeral(this.numDefaultedLoans).format('0,0');
+		}
 	},
 };
 
