@@ -1,3 +1,10 @@
+### [2.18.10](https://github.com/kiva/ui/compare/v2.18.9...v2.18.10) (2021-12-06)
+
+
+### Bug Fixes
+
+* core-322 increase font-weight and spacing of jump links on borrower profile ([2a9f71e](https://github.com/kiva/ui/commit/2a9f71e6a922f7deab29aac6f4ff19ff180ceaac))
+
 ### [2.18.9](https://github.com/kiva/ui/compare/v2.18.8...v2.18.9) (2021-12-06)
 
 
