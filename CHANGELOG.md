@@ -1,3 +1,10 @@
+### [2.19.2](https://github.com/kiva/ui/compare/v2.19.1...v2.19.2) (2021-12-07)
+
+
+### Bug Fixes
+
+* **Managed Lending:** ensure themes are available as filters and match by name instead of id ([a6d489f](https://github.com/kiva/ui/commit/a6d489f2191796b69820d42e5583a04e6724b69c))
+
 ### [2.19.1](https://github.com/kiva/ui/compare/v2.19.0...v2.19.1) (2021-12-06)
 
 
