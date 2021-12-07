@@ -3,6 +3,7 @@
 		@lightbox-closed="closeLightbox"
 		:visible="visible"
 		title="You are leaving the promotion"
+		style="z-index: 1199 !important;"
 	>
 		<div class="content" style="max-width: 30rem;">
 			<p class="tw-mb-4">

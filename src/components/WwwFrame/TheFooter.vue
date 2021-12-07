@@ -6,8 +6,12 @@
 		<disclaimers />
 		<nav class="tw-block lg:tw-hidden" aria-label="Footer navigation">
 			<div class="tw-mt-3 tw-mb-3">
-				<h2 class="tw-text-h4">Borrow</h2>
-				<p class="tw-text-small">Loans for entrepreneurs doing amazing things.</p>
+				<h2 class="tw-text-h4">
+					Borrow
+				</h2>
+				<p class="tw-text-small">
+					Loans for entrepreneurs doing amazing things.
+				</p>
 				<ul class="tw-mb-2">
 					<li>
 						<router-link
@@ -22,8 +26,12 @@
 			</div>
 
 			<div class="tw-mb-3">
-				<h2 class="tw-text-h4">Lend</h2>
-				<p class="tw-text-small">Make a loan, change a life.</p>
+				<h2 class="tw-text-h4">
+					Lend
+				</h2>
+				<p class="tw-text-small">
+					Make a loan, change a life.
+				</p>
 				<ul class="tw-mb-2">
 					<li>
 						<router-link
@@ -47,7 +55,9 @@
 			</div>
 
 			<div>
-				<h2 class="tw-text-h4">Donate</h2>
+				<h2 class="tw-text-h4">
+					Donate
+				</h2>
 				<p class="tw-text-small">
 					Kiva is a 501(c)3 U.S. nonprofit fueled by passionate people.
 					Founded in 2005, and based in San Francisco, with offices in Bangkok, Nairobi,
@@ -73,7 +83,9 @@
 					:open="false"
 				>
 					<template #header>
-						<h2 class="tw-text-h4">Get to know us</h2>
+						<h2 class="tw-text-h4">
+							Get to know us
+						</h2>
 					</template>
 					<ul class="tw-mb-2">
 						<li>
@@ -155,7 +167,9 @@
 					:open="false"
 				>
 					<template #header>
-						<h2 class="tw-text-h4">Community</h2>
+						<h2 class="tw-text-h4">
+							Community
+						</h2>
 					</template>
 					<ul class="tw-mb-2">
 						<li>
@@ -183,7 +197,9 @@
 					:open="false"
 				>
 					<template #header>
-						<h2 class="tw-text-h4">Explore</h2>
+						<h2 class="tw-text-h4">
+							Explore
+						</h2>
 					</template>
 					<ul class="tw-mb-2">
 						<li>
@@ -229,7 +245,9 @@
 					:open="false"
 				>
 					<template #header>
-						<h2 class="tw-text-h4">Work with us</h2>
+						<h2 class="tw-text-h4">
+							Work with us
+						</h2>
 					</template>
 					<ul class="tw-mb-2">
 						<li>
@@ -413,8 +431,12 @@
 			<kv-grid class="tw-grid-cols-4 tw-mb-1">
 				<div class="print:tw-hidden">
 					<div class="tw-mb-2">
-						<h2 class="tw-text-h4">Borrow</h2>
-						<p class="tw-text-small">Loans for entrepreneurs doing <br class="xxlu">amazing things.</p>
+						<h2 class="tw-text-h4">
+							Borrow
+						</h2>
+						<p class="tw-text-small">
+							Loans for entrepreneurs doing <br class="xxlu">amazing things.
+						</p>
 						<ul>
 							<li>
 								<router-link
@@ -428,8 +450,12 @@
 						</ul>
 					</div>
 					<div class="tw-mb-2">
-						<h2 class="tw-text-h4">Lend</h2>
-						<p class="tw-text-small">Make a loan, change a life.</p>
+						<h2 class="tw-text-h4">
+							Lend
+						</h2>
+						<p class="tw-text-small">
+							Make a loan, change a life.
+						</p>
 						<ul>
 							<li>
 								<router-link
@@ -452,7 +478,9 @@
 						</ul>
 					</div>
 					<div class="tw-mb-2">
-						<h2 class="tw-text-h4">Explore</h2>
+						<h2 class="tw-text-h4">
+							Explore
+						</h2>
 						<ul>
 							<li>
 								<router-link
@@ -495,7 +523,9 @@
 				</div>
 				<div class="print:tw-hidden">
 					<div class="tw-mb-2 print:tw-hidden">
-						<h2 class="tw-text-h4">Get to know us</h2>
+						<h2 class="tw-text-h4">
+							Get to know us
+						</h2>
 						<ul>
 							<li>
 								<router-link
@@ -572,7 +602,9 @@
 						</ul>
 					</div>
 					<div class="tw-mb-2 print:tw-hidden">
-						<h2 class="tw-text-h4">Community</h2>
+						<h2 class="tw-text-h4">
+							Community
+						</h2>
 						<ul>
 							<li>
 								<router-link
@@ -651,7 +683,9 @@
 						</ul>
 					</div>
 					<div class="print:tw-hidden">
-						<h2 class="tw-text-h4 tw-mt-3">Work with us</h2>
+						<h2 class="tw-text-h4 tw-mt-3">
+							Work with us
+						</h2>
 						<ul class="large-footer__single-line-links tw-mb-2 tw-max-w-md tw-overflow-hidden">
 							<li class="tw-inline-block tw--translate-x-2">
 								<a
@@ -769,7 +803,6 @@
 
 <script>
 import { getYear } from 'date-fns';
-import getCacheKey from '@/util/getCacheKey';
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import Disclaimers from '@/components/WwwFrame/DisclaimersContentful';
 import { mdiFacebook, mdiInstagram, mdiTwitter } from '@mdi/js';
@@ -786,7 +819,6 @@ export default {
 		KvPageContainer,
 		KvMaterialIcon
 	},
-	serverCacheKey: props => getCacheKey(props.theme ? `footerThemed${props.theme.themeKey}` : 'footer'),
 	props: {
 		theme: {
 			type: Object,
