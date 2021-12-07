@@ -1,5 +1,5 @@
 <template>
-	<div class="dropin-payment-holder">
+	<div class="dropin-payment-holder tw-px-0 tw-max-w-md">
 		<braintree-drop-in-interface
 			v-if="isClientReady"
 			ref="braintreeDropInInterface"
@@ -9,7 +9,7 @@
 			:preselect-vaulted-payment-method="action === 'Registration'"
 			@transactions-enabled="enableConfirmButton = $event"
 		/>
-		<div id="dropin-button" class="tw-w-full">
+		<div id="dropin-submit" class="tw-w-full">
 			<kv-button
 				:state="buttonState"
 				@click="submitDropInCauses"
@@ -99,6 +99,7 @@ export default {
 						this.doBraintreeCausesSubscription(transactionNonce, deviceData, paymentType);
 					}
 				}).catch(btSubmitError => {
+					this.submitting = false;
 					console.error(btSubmitError);
 					// Fire specific exception to Sentry/Raven
 					Sentry.withScope(scope => {
@@ -109,11 +110,16 @@ export default {
 				});
 		},
 		doBraintreeCausesSubscription(nonce, deviceData, paymentType) {
-			/** !TODO add if (this.action === 'Update') logic here similar to
+			/** ! TODO add if (this.action === 'Update') logic here similar to
 			* src/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper.vue
 			* for editing a cause subscription GD-155
 			*/
 			if (this.action === 'Registration') {
+				/**  ! TODO the subscription service does not currently support dayOfMonth > 28
+				* if day of month is greater than 28, set it to 28
+				* Remove this workaround and update messaging when service has support.
+				*/
+				const day = this.dayOfMonth > 28 ? 28 : this.dayOfMonth;
 				// Apollo call to the query mutation
 				this.apollo.mutate({
 					mutation: createSubscription,
@@ -124,7 +130,7 @@ export default {
 						categoryId: this.causeCategoryId,
 						donation: 0,
 						noteSize: 5, // TODO make this some kind of global setting?
-						dayOfMonth: numeral(this.dayOfMonth).value(),
+						dayOfMonth: day,
 						lendingDelay: 0,
 						period: 'MONTHLY'
 					}
@@ -141,7 +147,7 @@ export default {
 
 					// Transaction is complete
 					// eslint-disable-next-line max-len
-					const causeSignUpSuccess = kivaBraintreeResponse.data?.id;
+					const causeSignUpSuccess = kivaBraintreeResponse.data?.createSubscription?.id;
 
 					if (causeSignUpSuccess) {
 						// fire BT Success event

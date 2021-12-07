@@ -173,6 +173,7 @@ export default {
 						this.doBraintreeAutoDeposit(transactionNonce, deviceData, paymentType);
 					}
 				}).catch(btSubmitError => {
+					this.submitting = false;
 					console.error(btSubmitError);
 					// TODO: alert user about error?
 					// Fire specific exception to Sentry/Raven

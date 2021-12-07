@@ -28,12 +28,10 @@ const pageQuery = gql`query causesSignupEligibilityQuery {
 		}
 		lender {
 			id
-			loans {
-				totalCount
-			}
+			loanCount
 		}
 	}
-	mySubscriptions {
+	mySubscriptions(includeDisabled: true) {
 		values {
 			id
 			enabled
@@ -87,25 +85,28 @@ export default {
 			}).catch(() => {
 				// Auth error will be caught here, redirect to login.
 				return Promise.reject({
-					path: `/ui-login?cause=${this.cause}`,
+					path: `/ui-login?cause=${route.query.cause}`,
 					query: { force: true, doneUrl: route.fullPath }
 				});
 			});
 		}
 	},
 	created() {
-		try {
-			const pageQueryResult = this.apollo.readQuery({
-				query: pageQuery,
-			});
-			this.isMonthlyGoodSubscriber = pageQueryResult?.my?.autoDeposit?.isSubscriber ?? false;
-			this.hasAutoDeposits = pageQueryResult?.my?.autoDeposit ?? false;
-			const legacySubs = pageQueryResult?.my?.subscriptions?.values ?? [];
-			this.hasLegacySubscription = legacySubs.length > 0;
-			this.hasMadeLoan = pageQueryResult?.my?.lender?.loanCount > 0;
-			this.mySubscriptions = pageQueryResult?.mySubscriptions?.values ?? [];
-		} catch (e) {
-			logReadQueryError(e, 'Causes Signup causesSignupEligibilityQuery');
+		// TODO temporary beta query param
+		if (this.$route.query.beta === 'true') {
+			try {
+				const pageQueryResult = this.apollo.readQuery({
+					query: pageQuery,
+				});
+				this.isMonthlyGoodSubscriber = pageQueryResult?.my?.autoDeposit?.isSubscriber ?? false;
+				this.hasAutoDeposits = pageQueryResult?.my?.autoDeposit ?? false;
+				const legacySubs = pageQueryResult?.my?.subscriptions?.values ?? [];
+				this.hasLegacySubscription = legacySubs.length > 0;
+				this.hasMadeLoan = pageQueryResult?.my?.lender?.loanCount > 0;
+				this.mySubscriptions = pageQueryResult?.mySubscriptions?.values ?? [];
+			} catch (e) {
+				logReadQueryError(e, 'Causes Signup causesSignupEligibilityQuery');
+			}
 		}
 	},
 	computed: {
@@ -130,12 +131,11 @@ export default {
 			const hasInactiveCauseSubscription = causesSubscriptions.find(
 				subscription => !subscription.enabled
 			);
-
 			return !hasActiveCauseSubscription
 				&& !this.isMonthlyGoodSubscriber
 				&& !this.hasAutoDeposits
 				&& !this.hasLegacySubscription
-				&& (!this.hasMadeLoan && !hasInactiveCauseSubscription);
+				&& (!this.hasMadeLoan || hasInactiveCauseSubscription);
 		}
 	},
 };

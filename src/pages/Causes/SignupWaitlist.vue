@@ -31,21 +31,22 @@
 							@submit.prevent="submitForm"
 							novalidate
 						>
-							<label class="tw-sr-only" for="email">Email</label>
-							<kv-text-input
-								id="email"
-								placeholder="Enter your email"
-								class="fs-exclude tw-w-full"
-								v-model="email"
-								:valid="!$v.email.$error"
-							>
+							<div v-if="!hasUserEmail">
+								<label class="tw-sr-only" for="email">Email</label>
+								<kv-text-input
+									id="email"
+									placeholder="Enter your email"
+									class="fs-exclude tw-w-full"
+									v-model="email"
+									:valid="!$v.email.$error"
 								>
-								<template #error v-if="$v.email.$dirty && $v.email.$error">
-									Valid email required
-								</template>
-							</kv-text-input>
-
-							<p class="tw-mt-2 tw-text-base">
+									>
+									<template #error v-if="$v.email.$dirty && $v.email.$error">
+										Valid email required
+									</template>
+								</kv-text-input>
+							</div>
+							<p class="tw-mt-2 tw-text-base" :class="{ 'tw-text-center': hasUserEmail }">
 								Please send me an email me when the app is available.
 							</p>
 
@@ -86,7 +87,7 @@
 </template>
 
 <script>
-
+import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, email } from 'vuelidate/lib/validators';
 
@@ -96,6 +97,15 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 const causesIconImgRequire = require.context('@/assets/images/causes-icons/', true);
+
+const userQuery = gql`query getUserEmail {
+	my {
+		userAccount {
+			id
+			email
+		}
+	}
+}`;
 
 export default {
 	components: {
@@ -119,16 +129,22 @@ export default {
 			email: null,
 			step: 'join',
 			causesIconImgRequire,
+			hasUserEmail: false
 		};
 	},
-	inject: ['apollo'],
+	apollo: {
+		query: userQuery,
+		preFetch: true,
+		result({ data }) {
+			if (data?.my?.userAccount?.email) {
+				this.hasUserEmail = true;
+				this.email = data?.my?.userAccount?.email;
+			}
+		},
+	},
+	inject: ['apollo', 'cookieStore'],
 	methods: {
 		async submitForm() {
-			const isProd = window.location.hostname === 'www.kiva.org';
-			const iterableListIdString = isProd
-				? '1a075918-42c4-49f8-a3e9-e797dcf7c9b4'
-				: 'bacb00cb-ae81-4ab6-8981-b4fafb2026ce';
-
 			this.$v.$touch();
 			if (!this.$v.$invalid) {
 				// Track facebook event
@@ -137,7 +153,7 @@ export default {
 				}
 
 				// eslint-disable-next-line max-len
-				const response = await fetch(`//links.iterable.com/lists/publicAddSubscriberForm?publicIdString=${iterableListIdString}`, {
+				const response = await fetch(`//links.iterable.com/lists/publicAddSubscriberForm?publicIdString=${this.iterableListIdString}`, {
 					method: 'POST',
 					body: new URLSearchParams({
 						email: this.email,
@@ -146,9 +162,22 @@ export default {
 				if (response.status === 200) {
 					this.step = 'thanks';
 				} else {
-					this.$showTipMsg('An Error has occured. Please refresh the page and try again.', 'error');
+					this.$showTipMsg('An Error has occurred. Please refresh the page and try again.', 'error');
 				}
 			}
+		}
+	},
+	computed: {
+		iterableListIdString() {
+			const isProd = window.location.hostname === 'www.kiva.org';
+			const isExistingUser = this.hasUserEmail;
+
+			// New user lists
+			if (!isExistingUser) {
+				return isProd ? '1a075918-42c4-49f8-a3e9-e797dcf7c9b4' : 'bacb00cb-ae81-4ab6-8981-b4fafb2026ce';
+			}
+			// Existing user lists
+			return isProd ? '82b25342-0caf-4917-ac47-4fc64e1404be' : 'efc1a3e8-bda2-48a8-a28e-2974cf686fe7';
 		}
 	},
 };

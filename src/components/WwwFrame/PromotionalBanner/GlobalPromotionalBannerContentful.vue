@@ -17,6 +17,7 @@ import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
 import { settingEnabled } from '@/util/settingsUtils';
+import { globalBannerDenyList, isExcludedUrl } from '@/util/urlUtils';
 
 import AppealBannerCircularContainer
 	from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircularContainer';
@@ -48,10 +49,6 @@ export default {
 			appealBannerContent: {},
 			appealEnabled: false,
 			customAppealEnabled: false,
-			globalBannerDenyList: [
-				'/checkout',
-				'/donate/support-kiva'
-			]
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -60,9 +57,7 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			// Hide ALL banners on these pages
-			if (this.globalBannerDenyList.includes(this.$route.path)) {
-				return false;
-			}
+			if (isExcludedUrl(globalBannerDenyList, this.$route.path)) return false;
 
 			// returns the contentful content of the uiSetting key ui-global-promo or empty object
 			// it should always be the first and only item in the array, since we pass the variable to the query above
@@ -94,9 +89,7 @@ export default {
 				if (activePromoBanner) {
 					// check for visibility based on current route and hiddenUrls field
 					const hiddenUrls = _get(activePromoBanner, 'fields.hiddenUrls', []);
-					if (hiddenUrls.includes(this.$route.path)) {
-						return false;
-					}
+					if (isExcludedUrl(hiddenUrls, this.$route.path)) return false;
 
 					// check for visibility on promo session override
 					const showForPromo = _get(activePromoBanner, 'fields.showForPromo', false);
@@ -117,10 +110,11 @@ export default {
 						// Promo Banner
 						// parse the contentful richText into an html string
 						this.promoBannerContent = {
+							disclaimer: activePromoBanner?.fields?.disclaimers?.content?.[0] ?? null,
 							kvTrackEvent: activePromoBanner.fields.kvTrackEvent,
 							link: activePromoBanner.fields.link,
 							richText: documentToHtmlString(activePromoBanner.fields.richText),
-							iconKey: _get(activePromoBanner, 'fields.iconKey', 'present')
+							iconKey: _get(activePromoBanner, 'fields.iconKey', 'present'),
 						};
 						this.isPromoEnabled = true;
 					}
@@ -130,21 +124,8 @@ export default {
 	},
 	computed: {
 		showAppeal() {
-			// make sure the appeal is enabled + we're not on certain pages
-			const appealDenylist = [
-				'/checkout',
-				'/error',
-				'/join-team',
-				'/register/social',
-				'/possibility/giving-tuesday',
-				'/possibility/12-days-of-lending',
-				'/possibility/year-end'
-			];
-			// First check if Appeal Banner
-			// is active and the user is not on a denied page URL
-			if (this.appealEnabled && !appealDenylist.includes(this.$route.path)) {
-				return true;
-			}
+			// Check if Appeal Banner is active and the user is not on a denied page URL
+			if (this.appealEnabled && !isExcludedUrl(globalBannerDenyList, this.$route.path)) return true;
 			return false;
 		},
 	},

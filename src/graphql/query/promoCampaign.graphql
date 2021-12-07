@@ -62,6 +62,7 @@ query promoCampaign($basketId: String, $promoFundId: String) {
 						isMatched
 						sector
 						loanTags
+						theme
 					}
 					sortBy
 				}

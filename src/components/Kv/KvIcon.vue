@@ -1,7 +1,10 @@
 <template>
-	<span class="wrapper">
+	<span class="tw-inline-flex tw-max-h-full">
 		<template v-if="fromSprite">
-			<svg :class="`icon icon-${name}`">
+			<svg
+				:class="`tw-max-h-full tw-max-w-full tw-flex-1 icon-${name}`"
+				style="backface-visibility: hidden;"
+			>
 				<title v-if="title">{{ title }}</title>
 				<use :xlink:href="`#icon-${name}`" />
 			</svg>
@@ -9,9 +12,10 @@
 		<template v-else>
 			<component
 				:is="iconFile"
-				:class="`icon icon-${name}`"
+				:class="`tw-max-h-full tw-max-w-full tw-flex-1 icon-${name}`"
+				style="backface-visibility: hidden;"
 			/>
-			<span v-if="title" class="visually-hidden">{{ title }}</span>
+			<span v-if="title" class="tw-sr-only">{{ title }}</span>
 		</template>
 	</span>
 </template>
@@ -55,22 +59,3 @@ export default {
 	}
 };
 </script>
-<style lang="scss" scoped>
-@import 'settings';
-
-.wrapper {
-	display: inline-flex;
-	max-height: 100%;
-}
-
-.icon {
-	backface-visibility: hidden;
-	flex: 1;
-	max-width: 100%;
-	max-height: 100%;
-}
-
-.visually-hidden {
-	@include visually-hidden();
-}
-</style>

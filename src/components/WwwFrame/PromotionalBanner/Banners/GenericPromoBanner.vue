@@ -9,9 +9,8 @@
 				:target="isExternalLink ? '_blank' : '_self'"
 				:class="{ 'banner-link' : trimmedLink, 'banner-wrapper' : !trimmedLink}"
 				v-kv-track-event="handleTracking"
-			>
-				{{ processedContent }}
-			</component>
+				v-html="processedContent"
+			/>
 			<a
 				v-if="hasDisclaimer"
 				@click="scrollToSection('#disclaimers')"
@@ -95,7 +94,8 @@ export default {
 			return this.promoBannerContent?.link?.trim() ?? '';
 		},
 		hasDisclaimer() {
-			return this.promoBannerContent.disclaimer !== '';
+			const disclaimer = this.promoBannerContent?.disclaimer ?? '';
+			return disclaimer !== '';
 		}
 	},
 };

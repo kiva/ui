@@ -14,14 +14,24 @@
 		</div>
 		<kv-tabs v-else class="tw-prose">
 			<template #tabNav>
-				<kv-tab :for="loanTabId">
+				<kv-tab :for="loanTabId"
+					v-kv-track-event="['Borrower Profile', `click-Loan-Details-tab`, 'Loan Details']"
+				>
 					Loan details
 				</kv-tab>
-				<kv-tab :for="partnerTabId" v-if="isPartnerLoan">
+				<kv-tab :for="partnerTabId" v-if="isPartnerLoan"
+					v-kv-track-event="['Borrower Profile', `click-Field-Partner-tab`, 'Field Partner']"
+				>
 					Field Partner
 				</kv-tab>
-				<kv-tab :for="trusteeTabId" v-if="hasTrustee">
-					Trustee
+				<kv-tab :for="trusteeTabId" v-if="hasTrustee"
+					v-kv-track-event="[
+						'Borrower Profile',
+						'click-Trustee-tab',
+						noTrusteeState ? 'No Trustee' : 'Trustee'
+					]"
+				>
+					{{ noTrusteeState ? 'No Trustee' : 'Trustee' }}
 				</kv-tab>
 			</template>
 			<template #tabPanels>
@@ -51,11 +61,13 @@
 						:partner-id="partner.id"
 						:partner-name="partner.name"
 						:risk-rating="partner.riskRating"
+						:currency-exchange-loss-rate="partner.currencyExchangeLossRate"
 						@show-definition="showDefinition"
 					/>
 				</kv-tab-panel>
 				<kv-tab-panel :id="trusteeTabId" v-if="hasTrustee">
 					<trustee-details
+						:borrower-name="loan.name"
 						:endorsement="trustee.endorsement"
 						:num-defaulted-loans="trustee.numDefaultedLoans"
 						:num-loans-endorsed-public="trustee.numLoansEndorsedPublic"
@@ -127,6 +139,7 @@ export default {
 			lightboxContent: null,
 			lightboxTitle: '',
 			loan: {
+				name: '',
 				currency: '',
 				flexibleFundraisingEnabled: false,
 				loanLenderRepaymentTerm: 0,
@@ -164,10 +177,13 @@ export default {
 			return !!this.partner?.name;
 		},
 		hasTrustee() {
-			return !this.isPartnerLoan && this.trustee?.name && this.trustee?.name !== 'No Trustee Endorsement';
+			return !this.isPartnerLoan && this.trustee?.name;
 		},
 		loanTabId() {
 			return `tab-panel-${this.name}-loan-details`;
+		},
+		noTrusteeState() {
+			return this.trustee?.name === 'No Trustee Endorsement';
 		},
 		partnerTabId() {
 			return `tab-panel-${this.name}-field-partner`;
@@ -233,6 +249,7 @@ export default {
 					lend {
 						loan(id: $loanId) {
 							id
+							name
 							status
 							lenderRepaymentTerm
 							repaymentInterval
@@ -262,12 +279,14 @@ export default {
 									arrearsRate
 									avgBorrowerCost
 									avgBorrowerCostType
+									avgProfitability
 									chargesFeesInterest
 									defaultRate
 									id
 									loansAtRiskRate
 									name
 									riskRating
+									currencyExchangeLossRate
 								}
 							}
 						}
@@ -287,8 +306,9 @@ export default {
 				this.loan.loanTermLenderRepaymentTerm = loan?.terms?.lenderRepaymentTerm ?? 0;
 				this.loan.lossLiabilityCurrencyExchange = loan?.terms?.lossLiabilityCurrencyExchange ?? '';
 				this.loan.repaymentInterval = loan?.repaymentInterval ?? '';
-				this.loan.disbursalDate = loan.disbursalDate ?? '';
-				this.loan.status = loan.status ?? '';
+				this.loan.disbursalDate = loan?.disbursalDate ?? '';
+				this.loan.status = loan?.status ?? '';
+				this.loan.name = loan?.name ?? '';
 
 				this.partner.arrearsRate = partner?.arrearsRate ?? 0;
 				this.partner.avgBorrowerCost = partner?.avgBorrowerCost ?? 0;
@@ -300,6 +320,7 @@ export default {
 				this.partner.loansAtRiskRate = partner?.loansAtRiskRate ?? 0;
 				this.partner.name = partner?.name ?? '';
 				this.partner.riskRating = partner?.riskRating ?? 0;
+				this.partner.currencyExchangeLossRate = partner?.currencyExchangeLossRate ?? 0;
 
 				this.trustee.endorsement = loan?.endorsement ?? '';
 				this.trustee.id = trustee?.id ?? 0;
@@ -328,6 +349,9 @@ export default {
 			}
 		},
 		showDefinition(payload) {
+			// track definition pop up click
+			this.$kvTrackEvent('Borrower Profile', `click-${payload.panelName}-tab-definition-link`, payload.linkText);
+
 			if (this.useSalesForce) {
 				this.showSalesforceSolution(payload.sfid);
 			} else {

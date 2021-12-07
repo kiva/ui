@@ -1,6 +1,8 @@
 <template>
 	<www-page-corporate
 		:corporate-logo-url="corporateLogoUrl"
+		:header-theme="lightHeader"
+		:footer-theme="lightFooter"
 	>
 		<div class="corporate-campaign-landing">
 			<kv-loading-overlay
@@ -134,6 +136,7 @@
 				:no-padding-bottom="true"
 				:no-padding-sides="true"
 				@lightbox-closed="loanDetailsVisible = false"
+				style="z-index: 1199 !important;"
 			>
 				<!-- taken from CategoryRowHOver -->
 				<loan-card-controller
@@ -154,6 +157,7 @@
 				:visible="checkoutVisible"
 				@lightbox-closed="checkoutLightboxClosed"
 				title="Checkout"
+				style="z-index: 1199 !important;"
 			>
 				<campaign-status
 					v-if="!hideStatusBar && activeCreditType === 'lending_reward'"
@@ -191,6 +195,7 @@
 				:prevent-close="preventLightboxClose"
 				:visible="showThanks"
 				@lightbox-closed="thanksLightboxClosed"
+				style="z-index: 1199 !important;"
 			>
 				<campaign-logo-group
 					class="campaign-thanks__logos"
@@ -227,6 +232,7 @@ import logFormatter from '@/util/logFormatter';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
 import LoanSearchFilters, { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
+import { lightHeader, lightFooter } from '@/util/siteThemes';
 import syncDate from '@/util/syncDate';
 import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -536,7 +542,9 @@ export default {
 			initialFilters: {},
 			verificationSumbitted: false,
 			loadingPage: false,
-			showVerifyRemovePromoCredit: false
+			showVerifyRemovePromoCredit: false,
+			lightHeader,
+			lightFooter,
 		};
 	},
 	metaInfo() {
