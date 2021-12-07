@@ -10,22 +10,25 @@
 			title="Loan repayment schedule"
 			@lightbox-closed="closeLightbox"
 		>
-			<span>Repayments began on {{ firstRepaymentDate }} and are {{ repaymentStatus }}.</span>
+			<span>Repayments began on {{ formattedFirstRepaymentDate }} and are {{ repaymentStatus }}.</span>
 			<table>
 				<tr>
 					<th></th>
 					<th>Expected</th>
 					<th>Status</th>
 				</tr>
-				<tr>
+				<tr
+					v-for="(repayment, index) in formatRepaymentSchedule"
+					:key="index"
+				>
 					<!-- v-for goes on the <td> below -->
-					<td></td>
-					<td></td>
-					<td></td>
+					<td>
+						{{ repayment.repaymentDateFormatted }}
+					</td>
+					<td>{{ repayment.repaymentAmountFormatted }}</td>
+					<td>Available: {{ repayment.repaymentDateExpectedFormatted }}</td>
 				</tr>
 			</table>
-			{{ repaymentSchedule }}
-			<!-- <div v-html="lightboxContent" class="tw-prose"></div> -->
 		</kv-lightbox>
 	</div>
 </template>
@@ -33,6 +36,8 @@
 <script>
 import gql from 'graphql-tag';
 import { mdiCheckCircle, mdiMinusCircle } from '@mdi/js';
+import { format, parseISO } from 'date-fns';
+import numeral from 'numeral';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
@@ -79,9 +84,10 @@ export default {
 			mdiCheckCircle,
 			mdiMinusCircle,
 			isLightboxVisible: false,
-			firstRepaymentDate: {},
+			firstRepaymentDate: '',
 			repaymentStatus: '',
-			repaymentSchedule: {},
+			repaymentSchedule: [],
+			repaidAmount: 0
 		};
 	},
 	methods: {
@@ -99,11 +105,43 @@ export default {
 				}
 			}).then(({ data }) => {
 				console.log('data', data);
-				this.repaymentSchedule = data || {};
-				// this.firstRepaymentDate = data.lend.loan.terms.expectedRepayments || {};
-				// this.firstRepaymentDate = data?.lend?.loan?.terms?.expectedRepayments?.dueToKivaDate || '';
+				this.repaymentSchedule = data?.lend?.loan?.terms?.expectedPayments || [];
+				console.log('this.repaymentSchedule', this.repaymentSchedule);
+				this.firstRepaymentDate = this.repaymentSchedule[0].dueToKivaDate || '';
+				this.repaidAmount = data?.lend?.loan?.paidAmount || 0;
+				console.log('repaidAmount', this.repaidAmount);
 			});
 		},
+	},
+	computed: {
+		formattedFirstRepaymentDate() {
+			if (this.firstRepaymentDate !== '') {
+				return format(parseISO(this.firstRepaymentDate), 'MMMM dd, yyyy');
+			}
+			return false;
+		},
+		formatRepaymentSchedule() {
+			const formattedRepaymentSchedule = [];
+			if (this.repaymentSchedule !== '') {
+			// for each object in repaymentSchedule
+				this.repaymentSchedule.forEach((repayment, index) => {
+					console.log('index', index);
+					formattedRepaymentSchedule.push({
+						repaymentDateFormatted: format(parseISO(repayment.dueToKivaDate), 'MMMM dd, yyyy'),
+						repaymentAmountFormatted: numeral(repayment.amount).format('$0,0.00'),
+						repaymentDateExpectedFormatted: format(parseISO(repayment.effectiveDate), 'MMMM dd, yyyy'),
+						repaymentStatus: '',
+						// if repaymentRecievied amount  for this month and any previous
+						// is greater than this.repaidAmount(paidAmount)
+					});
+					// console.log('repaymentGroup', repaymentGroup);
+					// format each expected data
+
+					// format each amount
+				});
+			}
+			return formattedRepaymentSchedule;
+		}
 	},
 	mounted() {
 		this.calculateRepaymentSchedule();
