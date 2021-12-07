@@ -36,6 +36,7 @@
 						<div class="small-4 large-3 xlarge-2 columns">
 							<kv-button variant="secondary"
 								@click="updateKivaCard('redemption_code')"
+								data-testid="apply-card"
 							>
 								Apply
 							</kv-button>

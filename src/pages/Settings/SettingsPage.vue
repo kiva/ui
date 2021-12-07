@@ -14,10 +14,11 @@
 				</h1>
 
 				<div class="settings tw-flex tw-flex-col tw-gap-4">
-					<section class="section">
+					<section data-testid="account-settings-section" class="section">
 						<a
 							class="section__link"
 							href="/settings/account"
+							data-testid="account-settings-lnk"
 						>
 							<h2 class="section__title">Account settings</h2>
 							<ul class="section__list">
@@ -37,12 +38,14 @@
 						</a>
 					</section>
 					<section
+						data-testid="security-settings-section"
 						v-if="isMfaActive"
 						class="section"
 					>
 						<router-link
 							class="section__link"
 							to="/settings/security"
+							data-testid="security-settings-lnk"
 						>
 							<h2 class="section__title">
 								Security settings
@@ -59,10 +62,11 @@
 							</ul>
 						</router-link>
 					</section>
-					<section class="section">
+					<section data-testid="credit-settings-section" class="section">
 						<a
 							class="section__link"
 							href="/settings/credit"
+							data-testid="credit-settings-lnk"
 						>
 							<h2 class="section__title">Credit settings</h2>
 							<ul class="section__list">
@@ -95,10 +99,11 @@
 							</ul>
 						</a>
 					</section>
-					<section class="section">
+					<section data-testid="payment-settings-section" class="section">
 						<a
 							class="section__link"
 							href="/settings/payments"
+							data-testid="payment-settings-lnk"
 						>
 							<h2 class="section__title">Payment settings</h2>
 							<ul class="section__list">
@@ -109,10 +114,11 @@
 							</ul>
 						</a>
 					</section>
-					<section class="section">
+					<section data-testid="email-settings-section" class="section">
 						<a
 							class="section__link"
 							href="/settings/email"
+							data-testid="email-settings-lnk"
 						>
 							<h2 class="section__title">Email preferences</h2>
 							<ul class="section__list">
@@ -131,18 +137,20 @@
 							</ul>
 						</a>
 					</section>
-					<section class="section">
+					<section data-testid="trustee-settings-section" class="section">
 						<a
 							class="section__link"
 							href="/trustees/apply"
+							data-testid="trustee-settings-lnk"
 						>
 							<h2 class="section__title">Trustee settings</h2>
 						</a>
 					</section>
-					<section class="section">
+					<section data-testid="data-settings-section" class="section">
 						<a
 							class="section__link"
 							href="/settings/data"
+							data-testid="data-settings-lnk"
 						>
 							<h2 class="section__title">Data settings</h2>
 							<ul class="section__list">
