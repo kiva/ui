@@ -393,6 +393,7 @@
 import _get from 'lodash/get';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import { lightHeader } from '@/util/siteThemes';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
 import { preFetchAll } from '@/util/apolloPreFetch';
@@ -501,16 +502,19 @@ export default {
 			}
 			return `/ui-login?doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
 		},
+		headerTheme() {
+			return this.theme ? this.theme : lightHeader;
+		},
 		cssVars() {
-			if (this.theme) {
+			if (this.headerTheme) {
 				return {
-					'--kv-header-background-color': this.theme.backgroundColor || '',
-					'--kv-header-text-color': this.theme.textColor || '',
-					'--kv-header-logo-color': this.theme.logoColor || '',
-					'--kv-header-link-color': this.theme.linkColor || '',
-					'--kv-header-link-hover-color': this.theme.linkHoverColor || '',
-					'--kv-header-separator-color': this.theme.separatorColor || '',
-					'--kv-header-shadow': this.theme.shadow || '',
+					'--kv-header-background-color': this.headerTheme.backgroundColor || '',
+					'--kv-header-text-color': this.headerTheme.textColor || '',
+					'--kv-header-logo-color': this.headerTheme.logoColor || '',
+					'--kv-header-link-color': this.headerTheme.linkColor || '',
+					'--kv-header-link-hover-color': this.headerTheme.linkHoverColor || '',
+					'--kv-header-separator-color': this.headerTheme.separatorColor || '',
+					'--kv-header-shadow': this.headerTheme.shadow || '',
 				};
 			}
 			return {};
@@ -840,6 +844,7 @@ $close-search-button-size: 2.5rem;
 	border-right: 1px solid $header-separator-color; // IE11 fallback
 	border-right: 1px solid var(--kv-header-separator-color, $header-separator-color);
 	text-align: center;
+	position: relative;
 
 	@include breakpoint(large) {
 		flex-grow: 1;
