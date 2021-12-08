@@ -10,33 +10,54 @@
 		<dl class="tw-mb-4">
 			<description-list-item
 				:term="'Kiva borrowers'"
-				:details="numLoansEndorsedPublic"
-				@show-definition="$emit('show-definition',
-					{cid: 'bp-def-trustee-kiva-borrowers', sfid: '50150000000s2cE'})"
+				:details="numLoansEndorsedPublicFormatted"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-trustee-kiva-borrowers',
+					sfid: '50150000000s2cE',
+					panelName: 'Trustee',
+					linkText: 'Kiva borrowers'
+				})"
 			/>
 			<description-list-item
 				:term="'Total loans'"
 				:details="totalLoansValueFormatted"
-				@show-definition="$emit('show-definition',
-					{cid: 'bp-def-trustee-total-loans', sfid: '50150000000s2cO'})"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-trustee-total-loans',
+					sfid: '50150000000s2cO',
+					panelName: 'Trustee',
+					linkText: 'Total loans'
+				})"
 			/>
 			<description-list-item
 				:term="'Loans defaulted'"
-				:details="numDefaultedLoans"
-				@show-definition="$emit('show-definition',
-					{cid: 'bp-def-trustee-loans-defaulted', sfid: '50150000000s2cn'})"
+				:details="numDefaultedLoansFormatted"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-trustee-loans-defaulted',
+					sfid: '50150000000s2cn',
+					panelName: 'Trustee',
+					linkText: 'Loans defaulted'
+				})"
 			/>
 			<description-list-item
 				:term="'Repayment rate'"
 				:details="repaymentRateFormatted"
-				@show-definition="$emit('show-definition',
-					{cid: 'bp-def-trustee-repayment-rate', sfid: '50150000000s2cx'})"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-trustee-repayment-rate',
+					sfid: '50150000000s2cx',
+					panelName: 'Trustee',
+					linkText: 'Repayment rate'
+				})"
 			/>
 		</dl>
 		<kv-text-link
 			:icon="mdiArrowRight"
 			:href="`/trustees/${trusteeId}`"
 			target="_blank"
+			v-kv-track-event="[
+				'Borrower profile',
+				'click-Trustee-tab',
+				noTrusteeState ? 'More about loans without endorsements' : 'More about this trustee'
+			]"
 		>
 			{{ noTrusteeState ? 'More about loans without endorsements' : 'More about this trustee' }}
 		</kv-text-link>
@@ -63,6 +84,10 @@ export default {
 		KvTextLink,
 	},
 	props: {
+		borrowerName: {
+			type: String,
+			default: '',
+		},
 		endorsement: { // endorsement
 			type: String,
 			default: '',
@@ -99,7 +124,7 @@ export default {
 	},
 	computed: {
 		endorsementTitle() {
-			return `Why are you endorsing ${this.trusteeName}?`;
+			return `Why are you endorsing ${this.borrowerName}?`;
 		},
 		noTrusteeState() {
 			return this.trusteeName === 'No Trustee Endorsement';
@@ -110,6 +135,12 @@ export default {
 		repaymentRateFormatted() {
 			return numeral(this.repaymentRate / 100).format('0%');
 		},
+		numLoansEndorsedPublicFormatted() {
+			return numeral(this.numLoansEndorsedPublic).format('0,0');
+		},
+		numDefaultedLoansFormatted() {
+			return numeral(this.numDefaultedLoans).format('0,0');
+		}
 	},
 };
 

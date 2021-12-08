@@ -136,6 +136,7 @@
 				:no-padding-bottom="true"
 				:no-padding-sides="true"
 				@lightbox-closed="loanDetailsVisible = false"
+				style="z-index: 1199 !important;"
 			>
 				<!-- taken from CategoryRowHOver -->
 				<loan-card-controller
@@ -156,6 +157,7 @@
 				:visible="checkoutVisible"
 				@lightbox-closed="checkoutLightboxClosed"
 				title="Checkout"
+				style="z-index: 1199 !important;"
 			>
 				<campaign-status
 					v-if="!hideStatusBar && activeCreditType === 'lending_reward'"
@@ -193,6 +195,7 @@
 				:prevent-close="preventLightboxClose"
 				:visible="showThanks"
 				@lightbox-closed="thanksLightboxClosed"
+				style="z-index: 1199 !important;"
 			>
 				<campaign-logo-group
 					class="campaign-thanks__logos"

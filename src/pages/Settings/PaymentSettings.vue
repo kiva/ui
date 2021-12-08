@@ -362,6 +362,7 @@ export default {
 						this.doBraintreeAddACard(transactionNonce, deviceData, paymentType);
 					}
 				}).catch(btSubmitError => {
+					this.isProcessing = false;
 					console.error(btSubmitError);
 					// Fire specific exception to Sentry/Raven
 					Sentry.withScope(scope => {

@@ -73,6 +73,7 @@
 				>
 					<div class="tw-text-center">
 						<kv-button
+							v-if="!missingRequiredParams"
 							:href="confirmationLink"
 							v-kv-track-event="[
 								'InstantDonate',
@@ -84,6 +85,19 @@
 							Confirm donation
 						</kv-button>
 						<kv-button
+							v-else
+							href="/donate/supportus?instantDonation=missing-parameters"
+							v-kv-track-event="[
+								'InstantDonate',
+								'click-instant-donate-missing-params-link',
+								'Choose another amount'
+							]"
+							class="tw-mb-2 tw-w-full"
+						>
+							Choose another amount
+						</kv-button>
+						<kv-button
+							v-if="!missingRequiredParams"
 							class="tw-w-full"
 							variant="ghost"
 							href="/donate/supportus?instantDonation=choose-another-amount"
@@ -104,6 +118,7 @@
 
 <script>
 import gql from 'graphql-tag';
+import numeral from 'numeral';
 import { formatContentGroupsFlat } from '@/util/contentfulUtils';
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -135,7 +150,7 @@ export default {
 	props: {
 		amount: {
 			type: String,
-			default: '0'
+			default: '0.00'
 		},
 		token: {
 			type: String,
@@ -157,10 +172,10 @@ export default {
 	},
 	computed: {
 		confirmationLink() {
-			if (!this.token || this.amount === '0') {
-				return '/donate/supportus?instantDonation=missing-parameters';
-			}
-			return `/oneclick/donateAmount/${this.token}/${this.amount}`;
+			return `/oneclick/donateAmount/${this.token}/${this.formattedAmount}`;
+		},
+		formattedAmount() {
+			return numeral(this.amount).format('0.00');
 		},
 		genericContentBlock() {
 			return this.contentfulContent?.confirmInstantDonationCg?.contents?.[0] ?? {};
@@ -177,6 +192,9 @@ export default {
 				height: media?.file?.details?.image?.height ?? null,
 				url: media?.file?.url ?? null
 			};
+		},
+		missingRequiredParams() {
+			return (!this.token || this.formattedAmount === '0.00');
 		},
 		bodyCopy() {
 			const defaultContent = `By selecting "Confirm donation", you're donating to Kiva's

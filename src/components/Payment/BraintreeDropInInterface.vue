@@ -131,6 +131,7 @@ export default {
 				dataCollector: {
 					kount: true // Required if Kount fraud data collection is enabled
 				},
+				// vaultManager: true, - Useful for testing and removing payment methods easily.
 				paymentOptionPriority: this.paymentTypes,
 				preselectVaultedPaymentMethod: this.preselectVaultedPaymentMethod,
 				card: {
@@ -225,8 +226,12 @@ export default {
 		},
 	},
 	mounted() {
-		this.getDropInAuthToken();
-	}
+		// Prevents BT error in the case this component gets initialized multiple times
+		const isElementEmpty = document?.getElementById('dropin-container')?.innerHTML === '';
+		if (isElementEmpty) {
+			this.getDropInAuthToken();
+		}
+	},
 };
 </script>
 
@@ -278,27 +283,6 @@ $border-width: 1px;
 				height: 1.95rem;
 				width: 1.95rem;
 				margin-right: rem-calc(4);
-			}
-		}
-
-		// Payment method form headers
-		[data-braintree-id="paypal-sheet-header"],
-		[data-braintree-id="apple-pay-sheet-header"],
-		[data-braintree-id="google-pay-sheet-header"],
-		[data-braintree-id="card-sheet-header"] {
-			padding: 0 0 1rem 0;
-			border: 0;
-			background-color: transparent;
-
-			// Payment Method logo in header
-			.braintree-sheet__logo--header {
-				display: none;
-				visibility: hidden;
-			}
-
-			// Moves credit card icons to new line.
-			.braintree-sheet__header-label {
-				width: 100%;
 			}
 		}
 
@@ -430,6 +414,36 @@ $border-width: 1px;
 	#dropin-container [data-braintree-id="methods-label"],
 	#dropin-container [data-braintree-id="other-ways-to-pay"] {
 		@apply tw-text-h4 tw-text-primary tw-text-left;
+	}
+
+	/* Payment method container */
+	#dropin-container [data-braintree-id="sheet-container"] {
+		@apply tw-bg-white;
+	}
+
+	/* Payment method form headers */
+	#dropin-container [data-braintree-id="paypal-sheet-header"],
+	#dropin-container [data-braintree-id="apple-pay-sheet-header"],
+	#dropin-container [data-braintree-id="google-pay-sheet-header"],
+	#dropin-container [data-braintree-id="card-sheet-header"] {
+		/* bottom padding and bottom margin creates spacing around the BT loading indicator */
+		@apply tw-bg-transparent tw-border-0 tw-p-0 tw-pb-1 tw-mb-1;
+	}
+
+	/* Payment Method logo in header */
+	#dropin-container [data-braintree-id="paypal-sheet-header"] .braintree-sheet__logo--header,
+	#dropin-container [data-braintree-id="apple-pay-sheet-header"] .braintree-sheet__logo--header,
+	#dropin-container [data-braintree-id="google-pay-sheet-header"] .braintree-sheet__logo--header,
+	#dropin-container [data-braintree-id="card-sheet-header"] .braintree-sheet__logo--header {
+		@apply tw-hidden;
+	}
+
+	/* Moves credit card icons to new line. */
+	#dropin-container [data-braintree-id="paypal-sheet-header"] .braintree-sheet__header-label,
+	#dropin-container [data-braintree-id="apple-pay-sheet-header"] .braintree-sheet__header-label,
+	#dropin-container [data-braintree-id="google-pay-sheet-header"] .braintree-sheet__header-label,
+	#dropin-container [data-braintree-id="card-sheet-header"] .braintree-sheet__header-label {
+		@apply tw-w-full;
 	}
 
 	/* Payment method form headers text

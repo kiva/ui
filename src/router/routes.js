@@ -220,7 +220,19 @@ export default [
 		}),
 	},
 	{ path: '/protocol', component: () => import('@/pages/Protocol') },
-	{ path: '/register/social', component: () => import('@/pages/LoginAndRegister/RegisterSocial') },
+	{
+		path: '/register/social',
+		component: () => import('@/pages/LoginAndRegister/RegisterSocial'),
+		beforeEnter(to, from, next) {
+			// Redirect to error page if state parameter is missing
+			const { state } = to.query ?? {};
+			if (!state) {
+				next('/error');
+			} else {
+				next();
+			}
+		},
+	},
 	{ path: '/register/guest', component: () => import('@/pages/LoginAndRegister/GuestAccountClaim') },
 	{
 		path: '/register/guest-redirect',
