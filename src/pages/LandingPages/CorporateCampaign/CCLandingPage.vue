@@ -977,6 +977,7 @@ export default {
 
 				this.basketCredits = data.shop?.basket?.credits?.values ?? [];
 				this.hasFreeCredits = data.shop?.basket?.hasFreeCredits ?? false;
+				this.lendingRewardOffered = data.shop?.lendingRewardOffered ?? false;
 			});
 		},
 		validatePromoBasketState(basketState) {
