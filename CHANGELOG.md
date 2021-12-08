@@ -1,3 +1,10 @@
+### [2.20.1](https://github.com/kiva/ui/compare/v2.20.0...v2.20.1) (2021-12-08)
+
+
+### Bug Fixes
+
+* **lending reward:** update typo, refresh lendingRewardOffered on basket update, fix cursor style: ([cbae537](https://github.com/kiva/ui/commit/cbae537c94fb6116edb2fc266ffaf055a01404bb))
+
 ## [2.20.0](https://github.com/kiva/ui/compare/v2.19.2...v2.20.0) (2021-12-08)
 
 
