@@ -219,7 +219,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .table-heading-spacing {
 	@apply tw-py-2.5 tw-pl-1.5;
 }
