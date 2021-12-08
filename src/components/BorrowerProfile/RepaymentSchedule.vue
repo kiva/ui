@@ -219,15 +219,12 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-
-// Was not able to add spacing to the <table> without this .scss
+<style lang="postcss">
 .table-heading-spacing {
-	padding: 1.25rem 0 1.25rem 0.625rem;
+	@apply tw-py-2.5 tw-pl-1.5;
 }
 
 .table-data-spacing {
-	padding: 0.625rem;
+	@apply tw-p-1.5;
 }
-
 </style>
