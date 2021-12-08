@@ -11,49 +11,68 @@
 			title="Loan repayment schedule"
 			@lightbox-closed="closeLightbox"
 		>
-			<div class="tw-prose tw-my-2">
-				Repayments {{ statusLanguageCheck }}
-				<span class="tw-font-medium">
-					{{ formattedFirstRepaymentDate }}
-				</span>
-				and are
-				<span class="tw-font-medium">
-					{{ repaymentStatusCheck }}.
-				</span>
+			<!-- Field Partner loan -->
+			<div v-if="isPartnerLoan" class="tw-prose">
+				<div class="tw-prose tw-my-2">
+					Repayments {{ statusLanguageCheck }}
+					<span class="tw-font-medium">
+						{{ formattedFirstRepaymentDate }}
+					</span>
+					and are
+					<span class="tw-font-medium">
+						{{ repaymentStatusCheck }}.
+					</span>
+				</div>
+				<table class="tw-table-auto">
+					<tr class="tw-bg-secondary tw-text-left">
+						<th></th>
+						<th class="table-heading-spacing">
+							Expected
+						</th>
+						<th class="table-heading-spacing">
+							Status
+						</th>
+					</tr>
+					<tr
+						v-for="(repayment, index) in formatRepaymentSchedule"
+						:key="index"
+						class="tw-mb-1"
+					>
+						<td class="table-data-spacing">
+							{{ repayment.repaymentDateFormatted }}
+						</td>
+						<td class="table-data-spacing">
+							{{ repayment.repaymentAmountFormatted }}
+						</td>
+						<td class="table-data-spacing">
+							Available {{ repayment.repaymentDateExpectedFormatted }}
+						</td>
+					</tr>
+				</table>
 			</div>
-			<table class="tw-table-auto">
-				<tr class="tw-bg-secondary tw-text-left">
-					<th></th>
-					<th class="table-heading-spacing">
-						Expected
-					</th>
-					<th class="table-heading-spacing">
-						Status
-					</th>
-				</tr>
-				<tr
-					v-for="(repayment, index) in formatRepaymentSchedule"
-					:key="index"
-					class="tw-mb-1"
-				>
-					<td class="table-data-spacing">
-						{{ repayment.repaymentDateFormatted }}
-					</td>
-					<td class="table-data-spacing">
-						{{ repayment.repaymentAmountFormatted }}
-					</td>
-					<td class="table-data-spacing">
-						Available {{ repayment.repaymentDateExpectedFormatted }}
-					</td>
-				</tr>
-			</table>
+
+			<!-- Direct loan -->
+			<div v-if="!isPartnerLoan" class="tw-prose">
+				<p>
+					This loan is for {{ loanAmountFormatted }}.
+				</p>
+
+				<p>
+					<!-- eslint-disable-next-line max-len -->
+					Repayments on this loan will be made in monthly installments of {{ calculateMonthlyPayment }} USD over a period of {{ lenderRepaymentTerm }} months. After the funds are disbursed, the borrower(s) will have the standard 1 month before the first payment is due, and may have an additional grace period per the terms outlined in their loan agreement. The detailed repayment schedule will be published here at the time that the funds for this loan are disbursed.<br>
+				</p>
+				<p>
+					<!-- eslint-disable-next-line max-len -->
+					Disbursement and repayments will be made via PayPal, a web-based payment system. Repayments made on delinquent loans will be applied toward the oldest payment due until the loan becomes current.
+				</p>
+			</div>
 		</kv-lightbox>
 	</div>
 </template>
 
 <script>
 import gql from 'graphql-tag';
-import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
+// import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
 import { format, parseISO } from 'date-fns';
 import numeral from 'numeral';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -65,6 +84,7 @@ const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 			repaymentInterval
 			lenderRepaymentTerm
 			paidAmount
+			loanAmount
 			terms {
 				currency
 				currencyFullName
@@ -80,6 +100,12 @@ const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 					localAmount
 					dueToKivaDate
 					effectiveDate
+				}
+			}
+			... on LoanPartner {
+				partner {
+					id
+					name
 				}
 			}
 		}
@@ -103,12 +129,15 @@ export default {
 	},
 	data() {
 		return {
-			mdiCheckboxMarkedCircle,
-			mdiMinusCircle,
+			// mdiCheckboxMarkedCircle,
+			// mdiMinusCircle,
 			isLightboxVisible: false,
 			firstRepaymentDate: '',
 			repaymentSchedule: [],
-			repaidAmount: 0
+			repaidAmount: 0,
+			loanAmount: 0,
+			lenderRepaymentTerm: 0,
+			partnerName: '',
 		};
 	},
 	methods: {
@@ -125,14 +154,21 @@ export default {
 					loanId: this.loanId
 				}
 			}).then(({ data }) => {
-				console.log('data', data);
+				this.partnerName = data?.lend?.loan?.partner?.name || '';
 				this.repaymentSchedule = data?.lend?.loan?.terms?.expectedPayments || [];
-				this.firstRepaymentDate = this.repaymentSchedule[0].dueToKivaDate || '';
 				this.repaidAmount = data?.lend?.loan?.paidAmount || 0;
+				this.loanAmount = data?.lend?.loan?.loanAmount || 0;
+				this.lenderRepaymentTerm = data?.lend?.loan?.terms?.lenderRepaymentTerm || 0;
+				if (this.isPartnerLoan) {
+					this.firstRepaymentDate = this.repaymentSchedule[0].dueToKivaDate || '';
+				}
 			});
 		},
 	},
 	computed: {
+		isPartnerLoan() {
+			return !!this.partnerName;
+		},
 		formattedFirstRepaymentDate() {
 			if (this.firstRepaymentDate !== '') {
 				return format(parseISO(this.firstRepaymentDate), 'MMM yyyy');
@@ -154,17 +190,24 @@ export default {
 		},
 		formatRepaymentSchedule() {
 			const formattedRepaymentSchedule = [];
-			if (this.repaymentSchedule !== '') {
-				this.repaymentSchedule.forEach((repayment, index) => {
-					console.log('index', index);
+			if (this.repaymentSchedule !== []) {
+				this.repaymentSchedule.forEach(repayment => {
 					formattedRepaymentSchedule.push({
 						repaymentDateFormatted: format(parseISO(repayment.dueToKivaDate), 'MMM yyyy'),
 						repaymentAmountFormatted: numeral(repayment.amount).format('$0,0.00'),
+						// Dupe of above line
 						repaymentDateExpectedFormatted: format(parseISO(repayment.dueToKivaDate), 'MMM yyyy'),
 					});
 				});
 			}
 			return formattedRepaymentSchedule;
+		},
+		loanAmountFormatted() {
+			return numeral(this.loanAmount).format('$0,0.00');
+		},
+		calculateMonthlyPayment() {
+			// Used for calculating the monthly payment of a direct loan
+			return numeral(this.loanAmount / this.lenderRepaymentTerm).format('$0,0.00');
 		}
 	},
 	mounted() {

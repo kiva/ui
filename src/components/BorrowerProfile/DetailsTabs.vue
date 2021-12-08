@@ -12,7 +12,7 @@
 				<kv-loading-placeholder :style="{width: 5 + (Math.random() * 5) + '%'}" />
 			</div>
 		</div>
-		<kv-tabs v-else class="tw-prose">
+		<kv-tabs v-else>
 			<template #tabNav>
 				<kv-tab :for="loanTabId">
 					Loan details
