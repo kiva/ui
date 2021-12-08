@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<ol id="disclaimers" class="tw-text-small tw-list-decimal tw-list-outside">
+		<ol id="disclaimers" class="tw-text-small tw-list-decimal tw-list-outside tw-mx-2">
 			<li
 				v-for="(disclaimer, index) in fullyBuiltDisclaimerText"
 				:key="index"
