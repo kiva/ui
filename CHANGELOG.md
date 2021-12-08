@@ -1,3 +1,10 @@
+## [2.20.0](https://github.com/kiva/ui/compare/v2.19.2...v2.20.0) (2021-12-08)
+
+
+### Features
+
+* show donation row when lendingRewardOffered ([e6f1426](https://github.com/kiva/ui/commit/e6f142657b4d93738e60b9e6da7ef5fe6d1c5b73))
+
 ### [2.19.2](https://github.com/kiva/ui/compare/v2.19.1...v2.19.2) (2021-12-07)
 
 
