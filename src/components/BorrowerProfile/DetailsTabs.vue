@@ -41,6 +41,7 @@
 					/>
 					<repayment-schedule
 						:loan-id="loanId"
+						:status="loan.status"
 					/>
 				</kv-tab-panel>
 				<kv-tab-panel :id="partnerTabId" v-if="isPartnerLoan">

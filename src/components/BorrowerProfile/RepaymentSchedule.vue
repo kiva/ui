@@ -2,6 +2,7 @@
 	<div>
 		<button class="tw-text-h4 tw-text-link tw-mt-3"
 			@click="openLightbox"
+			v-if="this.status === 'fundraising'"
 		>
 			Detailed repayment schedule >
 		</button>
@@ -10,23 +11,40 @@
 			title="Loan repayment schedule"
 			@lightbox-closed="closeLightbox"
 		>
-			<span>Repayments began on {{ formattedFirstRepaymentDate }} and are {{ repaymentStatus }}.</span>
-			<table>
-				<tr>
+			<div class="tw-prose tw-my-2">
+				Repayments {{ statusLanguageCheck }}
+				<span class="tw-font-medium">
+					{{ formattedFirstRepaymentDate }}
+				</span>
+				and are
+				<span class="tw-font-medium">
+					{{ repaymentStatusCheck }}.
+				</span>
+			</div>
+			<table class="tw-table-auto">
+				<tr class="tw-bg-secondary tw-text-left">
 					<th></th>
-					<th>Expected</th>
-					<th>Status</th>
+					<th class="table-heading-spacing">
+						Expected
+					</th>
+					<th class="table-heading-spacing">
+						Status
+					</th>
 				</tr>
 				<tr
 					v-for="(repayment, index) in formatRepaymentSchedule"
 					:key="index"
+					class="tw-mb-1"
 				>
-					<!-- v-for goes on the <td> below -->
-					<td>
+					<td class="table-data-spacing">
 						{{ repayment.repaymentDateFormatted }}
 					</td>
-					<td>{{ repayment.repaymentAmountFormatted }}</td>
-					<td>Available: {{ repayment.repaymentDateExpectedFormatted }}</td>
+					<td class="table-data-spacing">
+						{{ repayment.repaymentAmountFormatted }}
+					</td>
+					<td class="table-data-spacing">
+						Available {{ repayment.repaymentDateExpectedFormatted }}
+					</td>
 				</tr>
 			</table>
 		</kv-lightbox>
@@ -35,7 +53,7 @@
 
 <script>
 import gql from 'graphql-tag';
-import { mdiCheckCircle, mdiMinusCircle } from '@mdi/js';
+import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
 import { format, parseISO } from 'date-fns';
 import numeral from 'numeral';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -78,14 +96,17 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		status: {
+			type: String,
+			default: '',
+		},
 	},
 	data() {
 		return {
-			mdiCheckCircle,
+			mdiCheckboxMarkedCircle,
 			mdiMinusCircle,
 			isLightboxVisible: false,
 			firstRepaymentDate: '',
-			repaymentStatus: '',
 			repaymentSchedule: [],
 			repaidAmount: 0
 		};
@@ -106,38 +127,41 @@ export default {
 			}).then(({ data }) => {
 				console.log('data', data);
 				this.repaymentSchedule = data?.lend?.loan?.terms?.expectedPayments || [];
-				console.log('this.repaymentSchedule', this.repaymentSchedule);
 				this.firstRepaymentDate = this.repaymentSchedule[0].dueToKivaDate || '';
 				this.repaidAmount = data?.lend?.loan?.paidAmount || 0;
-				console.log('repaidAmount', this.repaidAmount);
 			});
 		},
 	},
 	computed: {
 		formattedFirstRepaymentDate() {
 			if (this.firstRepaymentDate !== '') {
-				return format(parseISO(this.firstRepaymentDate), 'MMMM dd, yyyy');
+				return format(parseISO(this.firstRepaymentDate), 'MMM yyyy');
 			}
 			return false;
+		},
+		statusLanguageCheck() {
+			if (this.status === 'fundraising') {
+				return 'begin on';
+			}
+			return 'began in';
+		},
+		repaymentStatusCheck() {
+			if (this.status === 'fundraising') {
+				return 'on track';
+			}
+			// TODO: fill out other options for other loan statuses
+			return 'on track';
 		},
 		formatRepaymentSchedule() {
 			const formattedRepaymentSchedule = [];
 			if (this.repaymentSchedule !== '') {
-			// for each object in repaymentSchedule
 				this.repaymentSchedule.forEach((repayment, index) => {
 					console.log('index', index);
 					formattedRepaymentSchedule.push({
-						repaymentDateFormatted: format(parseISO(repayment.dueToKivaDate), 'MMMM dd, yyyy'),
+						repaymentDateFormatted: format(parseISO(repayment.dueToKivaDate), 'MMM yyyy'),
 						repaymentAmountFormatted: numeral(repayment.amount).format('$0,0.00'),
-						repaymentDateExpectedFormatted: format(parseISO(repayment.effectiveDate), 'MMMM dd, yyyy'),
-						repaymentStatus: '',
-						// if repaymentRecievied amount  for this month and any previous
-						// is greater than this.repaidAmount(paidAmount)
+						repaymentDateExpectedFormatted: format(parseISO(repayment.dueToKivaDate), 'MMM yyyy'),
 					});
-					// console.log('repaymentGroup', repaymentGroup);
-					// format each expected data
-
-					// format each amount
 				});
 			}
 			return formattedRepaymentSchedule;
@@ -148,3 +172,16 @@ export default {
 	},
 };
 </script>
+
+<style lang="scss" scoped>
+
+// Was not able to add spacing to the <table> without this .scss
+.table-heading-spacing {
+	padding: 1.25rem 0 1.25rem 0.625rem;
+}
+
+.table-data-spacing {
+	padding: 0.625rem;
+}
+
+</style>
