@@ -1,3 +1,10 @@
+### [2.20.2](https://github.com/kiva/ui/compare/v2.20.1...v2.20.2) (2021-12-08)
+
+
+### Bug Fixes
+
+* **Header:** provide a fallback lightHeader theme, ensures promoBanner styles when page has no theme ([d653823](https://github.com/kiva/ui/commit/d653823461f6815546b2f81db740a79faab41e2c))
+
 ### [2.20.1](https://github.com/kiva/ui/compare/v2.20.0...v2.20.1) (2021-12-08)
 
 
