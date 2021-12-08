@@ -184,7 +184,7 @@
 					:kiva-cards="kivaCards"
 					:teams="myTeams"
 					:totals="basketTotals"
-					:show-donation="isMatchingCampaign"
+					:show-donation="isMatchingCampaign || lendingRewardOffered"
 					:auto-redirect-to-thanks="false"
 					:promo-fund="promoFund"
 					@transaction-complete="transactionComplete"
