@@ -11,18 +11,22 @@
 			title="Loan repayment schedule"
 			@lightbox-closed="closeLightbox"
 		>
-			<!-- Field Partner loan -->
-			<div v-if="isPartnerLoan" class="tw-prose">
-				<div class="tw-prose tw-my-2">
-					Repayments {{ statusLanguageCheck }}
-					<span class="tw-font-medium">
-						{{ formattedFirstRepaymentDate }}
-					</span>
-					and are
-					<span class="tw-font-medium">
+			<!-- Field Partner loan fundraising -->
+			<div v-if="isPartnerLoan">
+				<p class="tw-inline-block tw-pb-3">
+					Repayments {{ statusLanguageCheck }} in
+				</p>
+				<p class="tw-inline-block tw-font-medium ">
+					{{ formattedFirstRepaymentDate }}
+				</p>
+				<span v-if="this.status === 'payingBack'">
+					<p class="tw-inline-block">
+						and are
+					</p>
+					<p class="tw-inline-block tw-font-medium">
 						{{ repaymentStatusCheck }}.
-					</span>
-				</div>
+					</p>
+				</span>
 				<table class="tw-table-auto">
 					<tr class="tw-bg-secondary tw-text-left">
 						<th></th>
@@ -51,12 +55,11 @@
 				</table>
 			</div>
 
-			<!-- Direct loan -->
+			<!-- Direct loan fundraising -->
 			<div v-if="!isPartnerLoan" class="tw-prose">
 				<p>
 					This loan is for {{ loanAmountFormatted }}.
 				</p>
-
 				<p>
 					<!-- eslint-disable-next-line max-len -->
 					Repayments on this loan will be made in monthly installments of {{ calculateMonthlyPayment }} USD over a period of {{ lenderRepaymentTerm }} months. After the funds are disbursed, the borrower(s) will have the standard 1 month before the first payment is due, and may have an additional grace period per the terms outlined in their loan agreement. The detailed repayment schedule will be published here at the time that the funds for this loan are disbursed.<br>
@@ -177,9 +180,9 @@ export default {
 		},
 		statusLanguageCheck() {
 			if (this.status === 'fundraising') {
-				return 'begin on';
+				return 'begin';
 			}
-			return 'began in';
+			return 'began';
 		},
 		repaymentStatusCheck() {
 			if (this.status === 'fundraising') {
