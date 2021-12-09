@@ -82,7 +82,7 @@ export const Visitor = (args, { argTypes }) => ({
 	},
 	mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin],
 	template: `
-		<the-header :minimal="minimal" :corporate="corporate" />
+		<the-header :minimal="minimal" :corporate="corporate" :hide-search-in-header="hideSearchInHeader" />
 	`,
 });
 
@@ -127,6 +127,11 @@ export const LoggedInItemInCart = (args, { argTypes }) => ({
 		<the-header :minimal="minimal" :corporate="corporate" :corporate-logo-url="corporateLogoUrl" />
 	`,
 });
+
+export const HideSearchInHeader = Visitor.bind({});
+HideSearchInHeader.args = {
+	hideSearchInHeader: true,
+};
 
 export const Minimal = Visitor.bind({});
 Minimal.args = {

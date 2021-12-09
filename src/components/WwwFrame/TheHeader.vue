@@ -134,21 +134,6 @@
 							>
 								<kv-material-icon :icon="mdiMagnify" />
 							</button>
-							<!-- <kv-icon
-						v-show="!searchOpen"
-						class="search-icon"
-						name="magnify-glass"
-						:from-sprite="true"
-						title="Open Search"
-					/>
-					<kv-icon
-						v-show="searchOpen"
-						class="close-icon"
-						name="x"
-						:from-sprite="true"
-						title="Close Search"
-					/>-->
-
 							<router-link
 								v-show="hasBasket"
 								to="/basket"
@@ -189,7 +174,10 @@
 
 						<!-- desktop search container -->
 						<div class="header__search tw-hidden md:tw-block">
-							<search-bar ref="search" />
+							<search-bar
+								v-if="!hideSearchInHeader"
+								ref="search"
+							/>
 						</div>
 
 						<!-- mobile search -->
@@ -199,20 +187,6 @@
 								v-if="!hideSearchInHeader"
 								:aria-hidden="searchOpen ? 'false' : 'true'"
 							>
-								<!-- <button class="close-search hide-for-large"
-							:aria-expanded="searchOpen ? 'true' : 'false'"
-							:aria-pressed="searchOpen ? 'true' : 'false'"
-							aria-controls="top-nav-search-area"
-							@click="toggleSearch"
-							v-kv-track-event="['TopNav','click-search-close-mobile']"
-						>
-							<kv-icon
-								class="close-icon"
-								name="x"
-								:from-sprite="true"
-								title="Close Search"
-							/>
-						</button> -->
 								<search-bar
 									ref="search"
 									v-if="searchOpen"
