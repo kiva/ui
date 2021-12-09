@@ -1,23 +1,28 @@
 <template>
-	<form class="search-form"
+	<form class="search-form tw-relative"
 		action="/lend"
 		method="get"
 		autocomplete="off"
 		@submit.prevent="onSubmit"
 	>
-		<kv-icon class="search-icon" name="magnify-glass" :from-sprite="true" />
-		<input type="search"
+		<label for="top-nav-search" class="tw-sr-only">Search all loans</label>
+		<kv-text-input
+			type="text"
+			id="top-nav-search"
 			ref="input"
 			name="queryString"
+			:icon="mdiMagnify"
 			:value="displayTerm"
-			@input="term = $event.target.value"
+			class="tw-w-full"
+			@input="onInput"
 			@focus="onFocus"
 			@blur="onBlur"
 			@keydown.up.prevent="listUp"
 			@keydown.down.prevent="listDown"
 			placeholder="Search all loans"
-		>
-		<ol v-show="showResults" class="search-results">
+		/>
+
+		<ol v-show="showResults" class="search-results tw-bg-primary">
 			<li v-for="section in sections" :key="section.name" class="section">
 				<h2>{{ section.name }}</h2>
 				<ol class="section-results">
@@ -34,7 +39,7 @@
 				</ol>
 			</li>
 		</ol>
-		<input type="submit" class="hidden-submit" aria-hidden="true">
+		<input type="submit" class="tw-sr-only" aria-hidden="true">
 	</form>
 </template>
 
@@ -44,15 +49,16 @@ import _map from 'lodash/map';
 import _take from 'lodash/take';
 import _zip from 'lodash/zip';
 import suggestionsQuery from '@/graphql/query/loanSearchSuggestions.graphql';
-import KvIcon from '@/components/Kv/KvIcon';
 import SearchEngine from '@/util/searchEngine';
 import { indexIn } from '@/util/comparators';
+import { mdiMagnify } from '@mdi/js';
+import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 const engine = new SearchEngine();
 
 export default {
 	components: {
-		KvIcon
+		KvTextInput,
 	},
 	inject: ['apollo'],
 	data() {
@@ -62,6 +68,7 @@ export default {
 			hasFocus: false,
 			searching: false,
 			rawResults: [],
+			mdiMagnify,
 		};
 	},
 	computed: {
@@ -143,6 +150,16 @@ export default {
 			this.hasFocus = false;
 			this.listIndex = -1;
 		},
+		onInput(value) {
+			this.term = value;
+		},
+		onSubmit() {
+			if (this.listIndex > -1) {
+				this.runSearch(this.highlighted);
+			} else {
+				this.runSearch(this.term);
+			}
+		},
 		listDown() {
 			// Highlight the next item down in the result list.
 			this.listIndex += 1;
@@ -158,13 +175,6 @@ export default {
 			}
 			// Highlight the previous item up in the result list.
 			this.listIndex -= 1;
-		},
-		onSubmit() {
-			if (this.listIndex > -1) {
-				this.runSearch(this.highlighted);
-			} else {
-				this.runSearch(this.term);
-			}
 		},
 		runSearch(suggestion) {
 			let query;
@@ -229,41 +239,11 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-form.search-form {
-	position: relative;
-	height: 100%;
-	width: 100%;
-
-	input[type="search"] {
-		height: 100%;
-		width: 100%;
-		margin: 0;
-	}
-
-	.search-icon {
-		fill: $kiva-text-dark;
-		position: absolute;
-		left: 0.4rem;
-		width: 1rem;
-		height: 100%;
-	}
-
-	input[type="submit"].hidden-submit {
-		position: absolute;
-		left: -9999px;
-		width: 1px;
-		height: 1px;
-		visibility: hidden;
-	}
-}
-
 .search-results {
 	$spacing: 0.4rem;
 
 	position: relative;
 	z-index: 10;
-	background-color: $white;
-	color: $kiva-text-dark;
 	border: 1px solid $gray;
 	padding: $spacing;
 
@@ -273,10 +253,7 @@ form.search-form {
 		margin: 0.3rem 0 0.4rem;
 	}
 
-	&,
 	ol {
-		margin: 0;
-		list-style: none;
 		text-align: left;
 	}
 
