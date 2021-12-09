@@ -82,7 +82,7 @@
 
 						@add-to-basket="$emit('add-to-basket', $event)"
 					/>
-					<div v-if="loan.matchingText && !isFunded" class="list-loan-card-matching-text">
+					<div v-if="loan.matchingText && !isFunded && !isMatchAtRisk" class="list-loan-card-matching-text">
 						<matching-text
 							:matching-text="loan.matchingText"
 							:match-ratio="loan.matchRatio"
@@ -135,7 +135,7 @@
 							interactionElement: 'Lend25'
 						})"
 					/>
-					<div class="small-12 columns">
+					<div v-if="!isMatchAtRisk" class="small-12 columns">
 						<div v-if="loan.matchingText && !isFunded" class="list-loan-card-matching-text">
 							<matching-text
 								:matching-text="loan.matchingText"
@@ -202,6 +202,10 @@ export default {
 		isFunded: {
 			type: Boolean,
 			default: false,
+		},
+		isMatchAtRisk: {
+			type: Boolean,
+			default: false
 		},
 		isSelectedByAnother: {
 			type: Boolean,

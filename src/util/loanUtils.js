@@ -59,3 +59,29 @@ export function buildPriceArray(amountLeft, minAmount) {
 export function toParagraphs(text) {
 	return String(text).replace(/\r|\n|<br\s*\/?>/g, '\n').split(/\n+/);
 }
+
+/**
+ * Determines if the remaining amount of a loan is less than the match amount
+ * If the full match amount can't be purchased we hide the match text as the purchase would not be matched
+ *
+ * @param {object} loan from LoanBasic
+ * @returns {boolean}
+ */
+export function isMatchAtRisk(loan) {
+	// exit if this loan isn't matched
+	if (!loan || !loan.matchingText) return false;
+	// get vars
+	const {
+		fundedAmount,
+		reservedAmount
+	} = loan.loanFundraisingInfo;
+	// make strings numbers + perform preliminary calculations
+	const loanAmountCalc = numeral(loan.loanAmount || 0).value();
+	const loanFundraisingCalc = numeral(reservedAmount || 0).add(numeral(fundedAmount || 0).value());
+	const remainingAmountCalculation = loanAmountCalc - loanFundraisingCalc.value();
+	// match ratio * 25 (match purchase) + 25 (lowest lender purchase possible)
+	const matchAmountCalculation = numeral(numeral(loan.matchRatio || 1).multiply(25)).add(25);
+	// final comparison: is the loan amount remaining less than the potential match amount?
+	return numeral(remainingAmountCalculation).value()
+		< numeral(matchAmountCalculation).value();
+}
