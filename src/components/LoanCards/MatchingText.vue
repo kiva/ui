@@ -6,7 +6,6 @@
 			'hide-match': props.isFunded || props.isSelectedByAnother || props.isExpired,
 			'wrap': props.wrap,
 		}"
-		:style="{'background-color:red;': props.isMatchAtRisk}"
 	>
 		{{ props.matchRatio + 1 }}x matching by {{ props.matchingText }}
 	</span>
