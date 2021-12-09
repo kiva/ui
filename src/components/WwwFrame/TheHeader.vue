@@ -622,7 +622,7 @@ export default {
 
 <style lang="postcss" scoped>
 .header__button {
-	@apply tw-flex tw-items-center;
+	@apply tw-flex tw-items-center tw-flex-shrink-0;
 	@apply tw-text-primary hover:tw-text-action-highlight hover:tw-no-underline focus:tw-no-underline;
 	@apply tw-h-8 md:tw-h-9 tw-whitespace-nowrap tw-flex-shrink-0;
 }
@@ -649,7 +649,7 @@ export default {
 @screen lg {
 	.header {
 		grid-template-areas: "left-side search right-side";
-		grid-template-columns: 33% 1fr 33%;
+		grid-template-columns: 33% 1fr minmax(max-content, 33%);
 	}
 }
 </style>
