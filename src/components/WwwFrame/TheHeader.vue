@@ -5,11 +5,11 @@
 			class="tw-bg-primary tw-border-b tw-border-tertiary"
 		>
 			<kv-page-container>
-				<!-- minimal template -->
+				<!-- minimal header -->
 				<template v-if="minimal">
 					<div class="tw-flex tw-justify-center">
 						<router-link
-							class="header-button"
+							class="header__button"
 							to="/"
 							v-kv-track-event="['TopNav','click-Logo']"
 						>
@@ -19,32 +19,31 @@
 					</div>
 				</template>
 
-				<!-- Corporate TODO -->
+				<!-- Corporate header for /cc pages -->
 				<template v-else-if="corporate">
-					<div class="header
-					tw-flex tw-gap-2.5 lg:tw-gap-4 tw-items-center"
+					<div class="
+						tw-flex tw-gap-2.5 lg:tw-gap-4 tw-items-center"
 					>
 						<campaign-logo-group
-							class="header-logo-group"
+							class="tw-h-2.5 lg:tw-h-3.5"
 							:corporate-logo-url="corporateLogoUrl"
 						/>
 						<div class="tw-flex-1"></div>
 						<router-link
 							v-show="hasBasket"
 							:to="addHashToRoute('show-basket')"
-							class="header-button header__basket"
+							class="header__button header__basket"
 							v-kv-track-event="['TopNav','click-Basket']"
 						>
 							<span class="amount">{{ basketCount }}</span>
 							Basket
 						</router-link>
-
 						<router-link
 							v-show="!isVisitor"
 							:id="myKivaMenuId"
 							to="/portfolio"
 							target="_blank"
-							class="header-button header__portfolio"
+							class="header__button header__portfolio"
 							v-kv-track-event="['TopNav','click-Portfolio']"
 						>
 							<span>{{ balance | numeral('$0') }}</span>
@@ -54,11 +53,10 @@
 								class="fs-mask tw-inline-block tw-w-2.5 tw-h-2.5 tw-object-fill"
 							>
 						</router-link>
-
 						<router-link
 							:to="loginUrl"
 							v-show="isVisitor"
-							class="header-button header__log-in"
+							class="header__button header__log-in"
 							:event="showPopupLogin ? '' : 'click'"
 							@click.native="auth0Login"
 							v-kv-track-event="[
@@ -76,12 +74,12 @@
 					<div class="header
 					tw-grid tw-gap-2.5 lg:tw-gap-4 tw-items-center"
 					>
-						<div class="header__left-side-links
+						<div class="header__left-side
 						tw-contents tw-gap-2.5 lg:tw-gap-6 lg:tw-flex tw-justify-start tw-items-center"
 						>
 							<!-- logo -->
 							<router-link
-								class="header__logo header-button"
+								class="header__logo header__button"
 								to="/"
 								v-kv-track-event="['TopNav','click-Logo']"
 							>
@@ -93,7 +91,7 @@
 							<router-link
 								:id="lendMenuId"
 								to="/lend-by-category"
-								class="header-button header__lend"
+								class="header__button header__lend"
 								v-kv-track-event="['TopNav','click-Lend']"
 							>
 								<span class="tw-flex tw-items-center">Lend
@@ -102,13 +100,13 @@
 							</router-link>
 						</div>
 
-						<div class="header__right-side-links
+						<div class="header__right-side
 						tw-flex tw-justify-end tw-gap-2.5 lg:tw-gap-4"
 						>
 							<router-link
 								v-show="isVisitor"
 								to="/borrow"
-								class="header-button header__borrow tw-hidden md:tw-block"
+								class="header__button header__borrow tw-hidden md:tw-block"
 								v-kv-track-event="['TopNav','click-Borrow']"
 							>
 								Borrow
@@ -117,7 +115,7 @@
 								v-show="isVisitor"
 								:id="aboutMenuId"
 								to="/about"
-								class="header-button header__about"
+								class="header__button header__about"
 								v-kv-track-event="['TopNav','click-About']"
 							>
 								<span class="tw-flex">
@@ -126,7 +124,7 @@
 								</span>
 							</router-link>
 							<button
-								class="header-button header__search-icon md:!tw-hidden"
+								class="header__button header__search-icon md:!tw-hidden"
 								:aria-expanded="searchOpen ? 'true' : 'false'"
 								:aria-pressed="searchOpen ? 'true' : 'false'"
 								aria-controls="top-nav-search-area"
@@ -154,7 +152,7 @@
 							<router-link
 								v-show="hasBasket"
 								to="/basket"
-								class="header-button header__basket"
+								class="header__button header__basket"
 								v-kv-track-event="['TopNav','click-Basket']"
 							>
 								<span class="amount">{{ basketCount }}</span>
@@ -164,7 +162,7 @@
 								v-show="!isVisitor"
 								:id="myKivaMenuId"
 								to="/portfolio"
-								class="header-button header__portfolio"
+								class="header__button header__portfolio"
 								v-kv-track-event="['TopNav','click-Portfolio']"
 							>
 								<span>{{ balance | numeral('$0') }}</span>
@@ -177,7 +175,7 @@
 							<router-link
 								:to="loginUrl"
 								v-show="isVisitor"
-								class="header-button header__log-in"
+								class="header__button header__log-in"
 								:event="showPopupLogin ? '' : 'click'"
 								@click.native="auth0Login"
 								v-kv-track-event="[
@@ -446,6 +444,7 @@ import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import MonthlyGoodExpMenuWrapper from '@/components/WwwFrame/LendMenu/MonthlyGoodExpMenuWrapper';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import { mdiMagnify, mdiChevronDown } from '@mdi/js';
+import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import SearchBar from './SearchBar';
@@ -454,6 +453,7 @@ import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
 
 export default {
 	components: {
+		CampaignLogoGroup,
 		KivaLogo,
 		KvDropdown,
 		KvMaterialIcon,
@@ -647,33 +647,34 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.header-button {
+.header__button {
 	@apply tw-flex tw-items-center;
 	@apply tw-text-primary hover:tw-text-action-highlight hover:tw-no-underline focus:tw-no-underline;
 	@apply tw-h-8 md:tw-h-9 tw-whitespace-nowrap tw-flex-shrink-0;
 }
 
+/* CSS grid areas to manage position changes across breakpoints without markup duplication */
 .header__logo { grid-area: logo; }
 .header__lend { grid-area: lend; }
 .header__search { grid-area: search; }
-.header__left-side-links { grid-area: left-side-links; }
-.header__right-side-links { grid-area: right-side-links; }
+.header__left-side { grid-area: left-side; }
+.header__right-side { grid-area: right-side; }
 
 .header {
-	grid-template-areas: "logo lend right-side-links";
+	grid-template-areas: "logo lend right-side";
 	grid-template-columns: 1fr auto auto;
 }
 
 @screen md {
 	.header {
-		grid-template-areas: "logo lend search right-side-links";
+		grid-template-areas: "logo lend search right-side";
 		grid-template-columns: auto auto 1fr auto;
 	}
 }
 
 @screen lg {
 	.header {
-		grid-template-areas: "left-side-links search right-side-links";
+		grid-template-areas: "left-side search right-side";
 		grid-template-columns: 33% 1fr 33%;
 	}
 }

@@ -61,16 +61,17 @@ const provideMockedApollo = (mockedResult) => {
 };
 
 export default {
-	title: 'WwwFrame/TheHeader',
+	title: "WwwFrame/TheHeader",
 	component: TheHeader,
 	decorators: [StoryRouter()],
 	parameters: {
-		layout: 'fullscreen',
+		layout: "fullscreen",
 	},
 	args: {
 		hideSearchInHeader: false,
 		minimal: false,
 		corporate: false,
+		corporateLogoUrl: require("@/assets/images/logos/visa.svg"),
 	},
 };
 
@@ -86,6 +87,7 @@ export const Visitor = (args, { argTypes }) => ({
 });
 
 export const VisitorItemInCart = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
 	components: {
 		TheHeader,
 	},
@@ -99,6 +101,7 @@ export const VisitorItemInCart = (args, { argTypes }) => ({
 });
 
 export const LoggedIn = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
 	components: {
 		TheHeader,
 	},
@@ -112,6 +115,7 @@ export const LoggedIn = (args, { argTypes }) => ({
 });
 
 export const LoggedInItemInCart = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
 	components: {
 		TheHeader,
 	},
@@ -120,7 +124,7 @@ export const LoggedInItemInCart = (args, { argTypes }) => ({
 		apollo: provideMockedApollo(loggedInUserItemInCart),
 	},
 	template: `
-		<the-header :minimal="minimal" :corporate="corporate" />
+		<the-header :minimal="minimal" :corporate="corporate" :corporate-logo-url="corporateLogoUrl" />
 	`,
 });
 
@@ -129,9 +133,46 @@ Minimal.args = {
 	minimal: true,
 };
 
-export const Corporate = Visitor.bind({});
-Corporate.args = {
-	corporate: true,
-};
+export const CorporateVisitorItemInCart = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		TheHeader,
+	},
+	mixins: [kvAuth0StoryMixin],
+	provide: {
+		apollo: provideMockedApollo(itemInCart),
+	},
+	template: `
+	<the-header :corporate="true" :corporate-logo-url="corporateLogoUrl" />
+	`,
+});
+
+export const CorporateLoggedIn = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		TheHeader,
+	},
+	mixins: [cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	provide: {
+		apollo: provideMockedApollo(loggedIn),
+	},
+	template: `
+	<the-header :corporate="true" :corporate-logo-url="corporateLogoUrl" />
+	`,
+});
+
+export const CorporateLoggedInItemInCart = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		TheHeader,
+	},
+	mixins: [cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	provide: {
+		apollo: provideMockedApollo(loggedInUserItemInCart),
+	},
+	template: `
+	<the-header :corporate="true" :corporate-logo-url="corporateLogoUrl" />
+	`,
+});
 
 // TODO: trustee
