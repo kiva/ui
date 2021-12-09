@@ -4,8 +4,19 @@
   "rules": {
     "color-hex-case": null,
     "indentation": "tab",
-    "at-rule-no-unknown": null,
-    "scss/at-rule-no-unknown": true,
+	"at-rule-no-unknown": null,
+    "scss/at-rule-no-unknown": [
+		true,
+		{
+			"ignoreAtRules": [
+				"tailwind",
+				"apply",
+				"variants",
+				"responsive",
+				"screen"
+			]
+		}
+	],
     "at-rule-empty-line-before": null,
     "no-empty-source": null,
     "unit-allowed-list": ["em", "rem", "%", "px", "deg", "vh", "vw", "ms", "s", "fr"],
