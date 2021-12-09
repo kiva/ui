@@ -29,7 +29,7 @@
 				</span>
 				<table class="tw-table-auto">
 					<tr class="tw-bg-secondary tw-text-left">
-						<th></th>
+						<th><span class="tw-sr-only">Date</span></th>
 						<th class="table-heading-spacing">
 							Expected
 						</th>
