@@ -215,7 +215,11 @@
 								title="Close Search"
 							/>
 						</button> -->
-								<search-bar ref="search" v-if="searchOpen" :aria-hidden="searchOpen ? 'false' : 'true'" />
+								<search-bar
+									ref="search"
+									v-if="searchOpen"
+									:aria-hidden="searchOpen ? 'false' : 'true'"
+								/>
 							</div>
 						</div>
 
@@ -359,7 +363,10 @@
 											<li>
 												<router-link
 													:to="`/trustees/${trusteeId}`"
-													v-kv-track-event="['TopNav','click-Portfolio-My public Trustee page']"
+													v-kv-track-event="[
+														'TopNav',
+														'click-Portfolio-My public Trustee page'
+													]"
 												>
 													My public Trustee page
 												</router-link>
