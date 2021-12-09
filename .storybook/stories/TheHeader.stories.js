@@ -1,149 +1,137 @@
-import Vue from 'vue'
-import StoryRouter from 'storybook-vue-router';
-import apolloStoryMixin from '../mixins/apollo-story-mixin';
-import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
-import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
-import {
-	lightHeader,
-	iwdHeaderTheme,
-	wrdHeaderTheme,
-	fifteenYearHeaderTheme,
-	blueHeader
-} from '@/util/siteThemes';
+import Vue from "vue";
+import StoryRouter from "storybook-vue-router";
+import apolloStoryMixin from "../mixins/apollo-story-mixin";
+import cookieStoreStoryMixin from "../mixins/cookie-store-story-mixin";
+import kvAuth0StoryMixin from "../mixins/kv-auth0-story-mixin";
 
-import TheHeader from '@/components/WwwFrame/TheHeader';
+import TheHeader from "@/components/WwwFrame/TheHeader";
 
 // import plugins
-import kivaPlugins from '@/plugins';
+import kivaPlugins from "@/plugins";
 Vue.use(kivaPlugins);
 
-const mockedApolloResponse = {
-		shop: {
-			nonTrivialItemCount: 1,
+const loggedIn = {
+	my: {
+		userAccount: {
+			id: 1017469,
+			balance: "0.00",
+			promoBalance: "0.00",
 		},
-		my: {
-			userAccount: {
-				id: 1017469,
-				balance: "0.00",
-				promoBalance: "0.00",
+		lender: {
+			image: {
+				id: 726677,
+				url:
+					"https://www-dev-kiva-org.freetls.fastly.net/img/s140/726677.jpg",
 			},
-			lender: {
-				image: {
-					id: 726677,
-					url: "https://www-dev-kiva-org.freetls.fastly.net/img/s140/726677.jpg",
-				},
-			},
-			isBorrower: false,
-			mostRecentBorrowedLoan: null,
-			trustee: null,
-		}
-}
+		},
+		isBorrower: false,
+		mostRecentBorrowedLoan: null,
+		trustee: null,
+	},
+};
+
+const itemInCart = {
+	shop: {
+		nonTrivialItemCount: 1234,
+	},
+};
+
+const loggedInUserItemInCart = {
+	...itemInCart,
+	...loggedIn,
+};
+
+const provideMockedApollo = (mockedResult) => {
+	return {
+		readQuery() {
+			return mockedResult;
+		},
+		readFragment() {
+			return mockedResult;
+		},
+		query() {
+			return Promise.resolve(mockedResult);
+		},
+		watchQuery() {
+			return {
+				subscribe() {},
+			};
+		},
+	};
+};
 
 export default {
 	title: 'WwwFrame/TheHeader',
 	component: TheHeader,
 	decorators: [StoryRouter()],
+	parameters: {
+		layout: 'fullscreen',
+	},
 	args: {
 		hideSearchInHeader: false,
 		minimal: false,
 		corporate: false,
-		theme: null,
 	},
-	argTypes: {
-		theme: {
-			control: {
-				type: 'select',
-				options: {
-					'none': null,
-					'lightHeader':lightHeader,
-					'iwdHeaderTheme': iwdHeaderTheme,
-					'wrdHeaderTheme': wrdHeaderTheme,
-					'fifteenYearHeaderTheme': fifteenYearHeaderTheme,
-					'blueHeader': blueHeader,
-				},
-			}
-		},
-	}
 };
 
-export const Default = (args, { argTypes }) => ({
+export const Visitor = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
-		TheHeader
+		TheHeader,
 	},
 	mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin],
 	template: `
-		<the-header
-			:minimal="minimal"
-			:corporate="corporate"
-			:theme="theme"
-			:hide-search-in-header="hideSearchInHeader"
-		/>
+		<the-header :minimal="minimal" :corporate="corporate" />
 	`,
 });
 
-export const HideSearchInHeader = Default.bind({});
-HideSearchInHeader.args = {
-	hideSearchInHeader: true,
-};
+export const VisitorItemInCart = (args, { argTypes }) => ({
+	components: {
+		TheHeader,
+	},
+	mixins: [cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	provide: {
+		apollo: provideMockedApollo(itemInCart),
+	},
+	template: `
+		<the-header :minimal="minimal" :corporate="corporate" />
+	`,
+});
 
-export const Minimal = Default.bind({});
+export const LoggedIn = (args, { argTypes }) => ({
+	components: {
+		TheHeader,
+	},
+	mixins: [cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	provide: {
+		apollo: provideMockedApollo(loggedIn),
+	},
+	template: `
+		<the-header :minimal="minimal" :corporate="corporate" />
+	`,
+});
+
+export const LoggedInItemInCart = (args, { argTypes }) => ({
+	components: {
+		TheHeader,
+	},
+	mixins: [cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	provide: {
+		apollo: provideMockedApollo(loggedInUserItemInCart),
+	},
+	template: `
+		<the-header :minimal="minimal" :corporate="corporate" />
+	`,
+});
+
+export const Minimal = Visitor.bind({});
 Minimal.args = {
 	minimal: true,
 };
 
-export const Corporate = (args, { argTypes }) => ({
-	props: Object.keys(argTypes),
-	components: {
-		TheHeader
-	},
-	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
-	template: `
-		<the-header
-			:theme="theme"
-			:corporate="corporate"
-			:corporate-logo-url="corporateLogoUrl"
-		/>
-	`,
-});
+export const Corporate = Visitor.bind({});
 Corporate.args = {
 	corporate: true,
-	corporateLogoUrl: require('@/assets/images/logos/visa.svg'),
 };
 
-export const CorporateWithoutCorporateLogoUrl = Corporate.bind({});
-CorporateWithoutCorporateLogoUrl.args = {
-	corporate: true,
-	corporateLogoUrl: null,
-};
-
-
-export const Themed = Default.bind({});
-Themed.args = {
-	theme: lightHeader,
-};
-
-export const LoggedInWithCart = (args, { argTypes }) => ({
-	components: {
-		TheHeader
-	},
-	mixins: [kvAuth0StoryMixin],
-	provide: {
-		apollo: {
-			readQuery() {
-				return Promise.resolve(mockedApolloResponse);
-			},
-			query() {
-				return Promise.resolve(mockedApolloResponse);
-			},
-			watchQuery() {
-				return {
-					subscribe() { }
-				}
-			},
-		},
-	},
-	template: `
-		<the-header />
-	`,
-});
+// TODO: trustee
