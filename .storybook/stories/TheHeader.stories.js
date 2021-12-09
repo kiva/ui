@@ -75,16 +75,21 @@ export default {
 	},
 };
 
-export const Visitor = (args, { argTypes }) => ({
+const Default = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		TheHeader,
 	},
 	mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin],
 	template: `
-		<the-header :minimal="minimal" :corporate="corporate" :hide-search-in-header="hideSearchInHeader" />
+		<the-header
+			:minimal="minimal"
+			:hide-search-in-header="hideSearchInHeader"
+		 />
 	`,
 });
+
+export const Visitor = Default.bind({});
 
 export const VisitorItemInCart = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
@@ -96,7 +101,7 @@ export const VisitorItemInCart = (args, { argTypes }) => ({
 		apollo: provideMockedApollo(itemInCart),
 	},
 	template: `
-		<the-header :minimal="minimal" :corporate="corporate" />
+		<the-header />
 	`,
 });
 
@@ -110,7 +115,7 @@ export const LoggedIn = (args, { argTypes }) => ({
 		apollo: provideMockedApollo(loggedIn),
 	},
 	template: `
-		<the-header :minimal="minimal" :corporate="corporate" />
+		<the-header />
 	`,
 });
 
@@ -124,19 +129,9 @@ export const LoggedInItemInCart = (args, { argTypes }) => ({
 		apollo: provideMockedApollo(loggedInUserItemInCart),
 	},
 	template: `
-		<the-header :minimal="minimal" :corporate="corporate" :corporate-logo-url="corporateLogoUrl" />
+		<the-header />
 	`,
 });
-
-export const HideSearchInHeader = Visitor.bind({});
-HideSearchInHeader.args = {
-	hideSearchInHeader: true,
-};
-
-export const Minimal = Visitor.bind({});
-Minimal.args = {
-	minimal: true,
-};
 
 export const CorporateVisitorItemInCart = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
@@ -179,5 +174,15 @@ export const CorporateLoggedInItemInCart = (args, { argTypes }) => ({
 	<the-header :corporate="true" :corporate-logo-url="corporateLogoUrl" />
 	`,
 });
+
+export const HideSearchInHeader = Default.bind({});
+HideSearchInHeader.args = {
+	hideSearchInHeader: true,
+};
+
+export const Minimal = Default.bind({});
+Minimal.args = {
+	minimal: true,
+};
 
 // TODO: trustee
