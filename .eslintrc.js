@@ -28,7 +28,7 @@ module.exports = {
 	env: {
 		browser: true,
 	},
-	extends: ['plugin:vue/strongly-recommended', 'airbnb-base'],
+	extends: ['plugin:vue/strongly-recommended', 'airbnb-base', 'plugin:storybook/recommended'],
 	// required to lint *.vue files
 	plugins: [
 		'graphql',

@@ -12,7 +12,7 @@ import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
 
 
 export default {
-	title: '/Pages/Borrower Profile',
+	title: 'Page/Borrower Profile',
 	component: BorrowerProfile,
 	parameters: {
 		layout: 'fullscreen',

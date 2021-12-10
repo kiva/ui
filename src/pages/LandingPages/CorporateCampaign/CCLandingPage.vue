@@ -181,7 +181,7 @@
 					:kiva-cards="kivaCards"
 					:teams="myTeams"
 					:totals="basketTotals"
-					:show-donation="isMatchingCampaign"
+					:show-donation="isMatchingCampaign || lendingRewardOffered"
 					:auto-redirect-to-thanks="false"
 					:promo-fund="promoFund"
 					@transaction-complete="transactionComplete"
@@ -974,6 +974,7 @@ export default {
 
 				this.basketCredits = data.shop?.basket?.credits?.values ?? [];
 				this.hasFreeCredits = data.shop?.basket?.hasFreeCredits ?? false;
+				this.lendingRewardOffered = data.shop?.lendingRewardOffered ?? false;
 			});
 		},
 		validatePromoBasketState(basketState) {
