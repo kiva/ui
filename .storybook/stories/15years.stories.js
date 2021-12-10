@@ -74,7 +74,7 @@ const recentFundedLoans = {
 };
 
 export default {
-	title: 'Pages/15Years',
+	title: 'Page/15Years',
 	component: FifteenYears,
 	args: {
 		appealBannerContent: appealBanner,

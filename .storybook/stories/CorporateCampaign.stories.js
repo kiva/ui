@@ -14,7 +14,7 @@ import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
 import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
 
 export default {
-	title: 'Pages/CorporateCampaignLanding',
+	title: 'Page/CorporateCampaignLanding',
 	component: CorporateCampaignLanding,
 	args: {
 		heroAreaContent: {
