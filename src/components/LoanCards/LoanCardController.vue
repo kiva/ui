@@ -8,6 +8,7 @@
 		:expiring-soon-message="expiringSoonMessage"
 		:is-favorite="isFavorite"
 		:is-funded="isFunded"
+		:is-match-at-risk="isMatchAtRisk"
 		:is-selected-by-another="isSelectedByAnother"
 		:is-visitor="isVisitor"
 		:items-in-basket="itemsInBasket"
@@ -62,6 +63,7 @@ import {
 	parseISO
 } from 'date-fns';
 import _forEach from 'lodash/forEach';
+import { isMatchAtRisk } from '@/util/loanUtils';
 import AdaptiveMicroLoanCard from '@/components/LoanCards/AdaptiveMicroLoanCard';
 import FeaturedHeroLoan from '@/components/LoansByCategory/FeaturedHeroLoan';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
@@ -188,6 +190,9 @@ export default {
 		},
 		isFunded() {
 			return this.loan.status === 'funded';
+		},
+		isMatchAtRisk() {
+			return isMatchAtRisk(this.loan);
 		},
 		isSelectedByAnother() {
 			return this.amountLeft <= 0 && !this.isFunded;

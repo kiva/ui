@@ -9,6 +9,7 @@
 			:expiring-soon-message="expiringSoonMessage"
 			:is-favorite="isFavorite"
 			:is-funded="isFunded"
+			:is-match-at-risk="isMatchAtRisk"
 			:is-selected-by-another="isSelectedByAnother"
 			:is-visitor="isVisitor"
 			:items-in-basket="itemsInBasket"

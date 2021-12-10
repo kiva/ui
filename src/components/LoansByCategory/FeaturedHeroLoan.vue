@@ -70,6 +70,7 @@
 								/>
 
 								<matching-text
+									v-if="!isMatchAtRisk"
 									:matching-text="loan.matchingText"
 									:match-ratio="loan.matchRatio"
 									:is-funded="isFunded"
@@ -114,6 +115,10 @@ export default {
 			default: ''
 		},
 		isFunded: {
+			type: Boolean,
+			default: false
+		},
+		isMatchAtRisk: {
 			type: Boolean,
 			default: false
 		},
