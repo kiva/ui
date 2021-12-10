@@ -378,10 +378,6 @@ export default {
 				this.lenderCountVisibility = true;
 				this.statScrollAnimation = true;
 			}
-
-			// if (this.lenderCountVisibility || this.matchingTextVisibility) {
-			// 	this.statScrollAnimation = true;
-			// }
 		},
 	},
 	methods: {
