@@ -79,7 +79,7 @@ export function isMatchAtRisk(loan) {
 	const loanAmountCalc = numeral(loan.loanAmount || 0).value();
 	const loanFundraisingCalc = numeral(reservedAmount || 0).add(numeral(fundedAmount || 0).value());
 	const remainingAmountCalculation = loanAmountCalc - loanFundraisingCalc.value();
-	// match ratio * 25 (match purchase) + 25 (lowest lender purchase possible)
+	// 25_hard_coded - match ratio * 25 (match purchase) + 25 (lowest lender purchase possible)
 	const matchAmountCalculation = numeral(numeral(loan.matchRatio || 1).multiply(25)).add(25);
 	// final comparison: is the loan amount remaining less than the potential match amount?
 	return numeral(remainingAmountCalculation).value()
