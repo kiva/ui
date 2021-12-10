@@ -13,7 +13,7 @@ import SecuritySettingsPage from '@/pages/Settings/SecuritySettings';
 import TwoStepVerificationPage from '@/pages/Settings/TwoStepVerificationPage';
 
 export default {
-	title: 'Pages/Security Settings',
+	title: 'Page/Security Settings',
 	component: SecuritySettingsPage,
 	decorators: [StoryRouter()],
 };
