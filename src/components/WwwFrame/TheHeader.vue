@@ -71,8 +71,10 @@
 
 				<!-- default -->
 				<template v-else>
-					<div class="header
-					tw-grid tw-gap-2.5 lg:tw-gap-4 tw-items-center"
+					<div
+						class="header
+							tw-grid tw-gap-x-2.5 lg:tw-gap-x-4 tw-items-center"
+						:class="{'header--mobile-open': searchOpen}"
 					>
 						<div class="header__left-side
 						tw-contents tw-gap-2.5 lg:tw-gap-6 lg:tw-flex tw-justify-start tw-items-center"
@@ -129,7 +131,7 @@
 								:aria-pressed="searchOpen ? 'true' : 'false'"
 								aria-controls="top-nav-search-area"
 								v-show="!hideSearchInHeader"
-								@click="toggleSearch"
+								@click="toggleMobileSearch"
 								v-kv-track-event="['TopNav','click-search-toggle']"
 							>
 								<kv-material-icon :icon="mdiMagnify" />
@@ -172,27 +174,19 @@
 							</router-link>
 						</div>
 
-						<!-- desktop search container -->
-						<div class="header__search tw-hidden md:tw-block">
-							<search-bar
-								v-if="!hideSearchInHeader"
-								ref="search"
-							/>
-						</div>
-
-						<!-- mobile search -->
-						<div class="tw-hidden">
-							<div
-								id="top-nav-search-area"
-								v-if="!hideSearchInHeader"
-								:aria-hidden="searchOpen ? 'false' : 'true'"
-							>
-								<search-bar
-									ref="search"
-									v-if="searchOpen"
-									:aria-hidden="searchOpen ? 'false' : 'true'"
-								/>
-							</div>
+						<!-- search container -->
+						<div
+							v-if="!hideSearchInHeader"
+							id="top-nav-search-area"
+							class="
+								header__search
+								tw-py-1.5 md:py-0
+								tw--mx-2.5 tw-px-2.5 md:tw-mx-0 md:tw-px-0
+								tw-border-t tw-border-tertiary md:tw-border-t-0
+							"
+							:class="{'tw-hidden md:tw-block': !searchOpen}"
+						>
+							<search-bar ref="search" />
 						</div>
 
 						<!-- dropdowns -->
@@ -597,7 +591,7 @@ export default {
 				this.$refs.lendMenu.onLoad();
 			}
 		},
-		toggleSearch() {
+		toggleMobileSearch() {
 			this.searchOpen = !this.searchOpen;
 			document.activeElement.blur();
 			if (this.searchOpen) {
@@ -636,6 +630,13 @@ export default {
 
 .header {
 	grid-template-areas: "logo lend right-side";
+	grid-template-columns: 1fr auto auto;
+}
+
+.header--mobile-open {
+	grid-template-areas:
+		"logo lend right-side"
+		"search search search";
 	grid-template-columns: 1fr auto auto;
 }
 
