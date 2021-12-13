@@ -38,18 +38,20 @@
 						</th>
 					</tr>
 					<tr
-						v-for="(repayment, index) in formatRepaymentSchedule"
+						v-for="(repayment, index) in parsedRepaymentSchedule"
 						:key="index"
 						class="tw-mb-1"
 					>
 						<td class="table-data-spacing">
-							{{ repayment.repaymentDateFormatted }}
+							<!-- {{ repayment.repaymentDateFormatted }} -->
+							{{ repayment.formattedRepaymentDate }}
 						</td>
 						<td class="table-data-spacing">
-							{{ repayment.repaymentAmountFormatted }}
+							<!-- {{ repayment.repaymentAmountFormatted }} -->
+							{{ repayment.formattedTotalMonthlyPayment }}
 						</td>
 						<td class="table-data-spacing">
-							Available {{ repayment.repaymentDateExpectedFormatted }}
+							Available {{ repayment.formattedRepaymentDate }}
 						</td>
 					</tr>
 				</table>
@@ -157,6 +159,7 @@ export default {
 					loanId: this.loanId
 				}
 			}).then(({ data }) => {
+				console.log('data', data);
 				this.partnerName = data?.lend?.loan?.partner?.name || '';
 				this.repaymentSchedule = data?.lend?.loan?.terms?.expectedPayments || [];
 				this.repaidAmount = data?.lend?.loan?.paidAmount || 0;
@@ -191,19 +194,41 @@ export default {
 			// TODO: fill out other options for other loan statuses
 			return 'on track';
 		},
-		formatRepaymentSchedule() {
-			const formattedRepaymentSchedule = [];
+		parsedRepaymentSchedule() {
+			const totalRepaymentsPerMonth = [];
 			if (this.repaymentSchedule !== []) {
-				this.repaymentSchedule.forEach(repayment => {
-					formattedRepaymentSchedule.push({
-						repaymentDateFormatted: format(parseISO(repayment.dueToKivaDate), 'MMM yyyy'),
-						repaymentAmountFormatted: numeral(repayment.amount).format('$0,0.00'),
-						// Dupe of above line
-						repaymentDateExpectedFormatted: format(parseISO(repayment.dueToKivaDate), 'MMM yyyy'),
-					});
+				const repaymentScheduleByDueDate = this.repaymentSchedule.reduce((acc, repaymentItem) => {
+					if (!acc[repaymentItem.dueToKivaDate]) acc[repaymentItem.dueToKivaDate] = [];
+					acc[repaymentItem.dueToKivaDate].push(repaymentItem);
+					return acc;
+				}, {});
+
+				// iterating through the repaymentScheduleByDueDate in order
+				// to pull off the amount field for each payment
+				// Object.entries(repaymentScheduleByDueDate).forEach(([repaymentDate, repaymentItemData]) => {
+				Object.entries(repaymentScheduleByDueDate).forEach(([repaymentDate, repaymentItemData]) => {
+					// iterating through each repaymentItemByDueDate, pulling off the amount from each repaymentItemData
+					// and reducing it down to an array of individual repayments made in a month.
+					const result = repaymentItemData.reduce((arr, val) => {
+						arr.push(val.amount);
+						return (arr);
+					}, []);
+					// Result = ["548.43","548.43","548.43","548.43"]
+
+					// take the array of payments, change them from strings to integers
+					// and add them together, which results in the total in payments for a month.
+					const totalMonthlyPayment = result.reduce((runningTotal, amount) => {
+						return runningTotal + parseFloat(amount);
+					}, 0);
+
+					// pass the repaymentDate(ie.month) and the totalMonthlyPayment
+					const formattedRepaymentDate = format(parseISO(repaymentDate), 'MMM yyyy');
+					const formattedTotalMonthlyPayment = numeral(totalMonthlyPayment).format('$0,0.00');
+
+					totalRepaymentsPerMonth.push({ formattedRepaymentDate, formattedTotalMonthlyPayment });
 				});
 			}
-			return formattedRepaymentSchedule;
+			return totalRepaymentsPerMonth;
 		},
 		loanAmountFormatted() {
 			return numeral(this.loanAmount).format('$0,0.00');
