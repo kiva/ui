@@ -520,7 +520,7 @@ export default {
 		query: headerQuery,
 		preFetch: true,
 		result({ data }) {
-			this.isVisitor = !data?.my?.userAccount?.id ?? false;
+			this.isVisitor = !data?.my?.userAccount?.id;
 			this.isBorrower = data?.my?.isBorrower ?? false;
 			this.loanId = data?.my?.mostRecentBorrowedLoan?.id ?? null;
 			this.trusteeId = data?.my?.trustee?.id ?? null;
