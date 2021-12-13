@@ -1,3 +1,57 @@
+## [2.21.0](https://github.com/kiva/ui/compare/v2.20.2...v2.21.0) (2021-12-10)
+
+
+### Features
+
+* **Matching:** hide match message when remaining loan amount is less than match amount ([02155eb](https://github.com/kiva/ui/commit/02155ebe38473bb8da5cfaf01d5e67b5f9fae745))
+
+
+### Bug Fixes
+
+* remove testing background style ([2fa3f08](https://github.com/kiva/ui/commit/2fa3f08e82ce2994669702f562cb8adc9b367d01))
+
+### [2.20.2](https://github.com/kiva/ui/compare/v2.20.1...v2.20.2) (2021-12-08)
+
+
+### Bug Fixes
+
+* **Header:** provide a fallback lightHeader theme, ensures promoBanner styles when page has no theme ([d653823](https://github.com/kiva/ui/commit/d653823461f6815546b2f81db740a79faab41e2c))
+
+### [2.20.1](https://github.com/kiva/ui/compare/v2.20.0...v2.20.1) (2021-12-08)
+
+
+### Bug Fixes
+
+* **lending reward:** update typo, refresh lendingRewardOffered on basket update, fix cursor style: ([cbae537](https://github.com/kiva/ui/commit/cbae537c94fb6116edb2fc266ffaf055a01404bb))
+
+## [2.20.0](https://github.com/kiva/ui/compare/v2.19.2...v2.20.0) (2021-12-08)
+
+
+### Features
+
+* show donation row when lendingRewardOffered ([e6f1426](https://github.com/kiva/ui/commit/e6f142657b4d93738e60b9e6da7ef5fe6d1c5b73))
+
+### [2.19.2](https://github.com/kiva/ui/compare/v2.19.1...v2.19.2) (2021-12-07)
+
+
+### Bug Fixes
+
+* **Managed Lending:** ensure themes are available as filters and match by name instead of id ([a6d489f](https://github.com/kiva/ui/commit/a6d489f2191796b69820d42e5583a04e6724b69c))
+
+### [2.19.1](https://github.com/kiva/ui/compare/v2.19.0...v2.19.1) (2021-12-06)
+
+
+### Bug Fixes
+
+* **Landing Pages:** ensure tip message shows above in context checkout for managed lending ([c51fc5d](https://github.com/kiva/ui/commit/c51fc5d928814c2adefcde5fa02fc316563ad65a))
+
+## [2.19.0](https://github.com/kiva/ui/compare/v2.18.10...v2.19.0) (2021-12-06)
+
+
+### Features
+
+* **Borrower Profile:** add click tracking on details tabs, definitions and links ([9d4a41d](https://github.com/kiva/ui/commit/9d4a41d94b7376306dc5420c00da8ee290b4627a))
+
 ### [2.18.10](https://github.com/kiva/ui/compare/v2.18.9...v2.18.10) (2021-12-06)
 
 

@@ -11,32 +11,53 @@
 			<description-list-item
 				:term="'Kiva borrowers'"
 				:details="numLoansEndorsedPublicFormatted"
-				@show-definition="$emit('show-definition',
-					{cid: 'bp-def-trustee-kiva-borrowers', sfid: '50150000000s2cE'})"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-trustee-kiva-borrowers',
+					sfid: '50150000000s2cE',
+					panelName: 'Trustee',
+					linkText: 'Kiva borrowers'
+				})"
 			/>
 			<description-list-item
 				:term="'Total loans'"
 				:details="totalLoansValueFormatted"
-				@show-definition="$emit('show-definition',
-					{cid: 'bp-def-trustee-total-loans', sfid: '50150000000s2cO'})"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-trustee-total-loans',
+					sfid: '50150000000s2cO',
+					panelName: 'Trustee',
+					linkText: 'Total loans'
+				})"
 			/>
 			<description-list-item
 				:term="'Loans defaulted'"
 				:details="numDefaultedLoansFormatted"
-				@show-definition="$emit('show-definition',
-					{cid: 'bp-def-trustee-loans-defaulted', sfid: '50150000000s2cn'})"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-trustee-loans-defaulted',
+					sfid: '50150000000s2cn',
+					panelName: 'Trustee',
+					linkText: 'Loans defaulted'
+				})"
 			/>
 			<description-list-item
 				:term="'Repayment rate'"
 				:details="repaymentRateFormatted"
-				@show-definition="$emit('show-definition',
-					{cid: 'bp-def-trustee-repayment-rate', sfid: '50150000000s2cx'})"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-trustee-repayment-rate',
+					sfid: '50150000000s2cx',
+					panelName: 'Trustee',
+					linkText: 'Repayment rate'
+				})"
 			/>
 		</dl>
 		<kv-text-link
 			:icon="mdiArrowRight"
 			:href="`/trustees/${trusteeId}`"
 			target="_blank"
+			v-kv-track-event="[
+				'Borrower profile',
+				'click-Trustee-tab',
+				noTrusteeState ? 'More about loans without endorsements' : 'More about this trustee'
+			]"
 		>
 			{{ noTrusteeState ? 'More about loans without endorsements' : 'More about this trustee' }}
 		</kv-text-link>

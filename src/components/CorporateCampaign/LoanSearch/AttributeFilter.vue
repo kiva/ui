@@ -61,7 +61,7 @@ export default {
 			const eligibleAttributes = this.allAttributes.filter(attribute => {
 				// TODO: potentially exclude some attributes simimlar to lend/filter
 				if (this.initialAttributes.length) {
-					return this.initialAttributes.includes(attribute.id) || false;
+					return this.initialAttributes.includes(attribute.name) || false;
 				}
 				return true;
 			});

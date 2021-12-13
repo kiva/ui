@@ -139,6 +139,7 @@
 				:no-padding-bottom="true"
 				:no-padding-sides="true"
 				@lightbox-closed="loanDetailsVisible = false"
+				style="z-index: 1199 !important;"
 			>
 				<!-- taken from CategoryRowHOver -->
 				<loan-card-controller
@@ -159,6 +160,7 @@
 				:visible="checkoutVisible"
 				@lightbox-closed="checkoutLightboxClosed"
 				title="Checkout"
+				style="z-index: 1199 !important;"
 			>
 				<campaign-status
 					v-if="!hideStatusBar && activeCreditType === 'lending_reward'"
@@ -182,7 +184,7 @@
 					:kiva-cards="kivaCards"
 					:teams="myTeams"
 					:totals="basketTotals"
-					:show-donation="isMatchingCampaign"
+					:show-donation="isMatchingCampaign || lendingRewardOffered"
 					:auto-redirect-to-thanks="false"
 					:promo-fund="promoFund"
 					@transaction-complete="transactionComplete"
@@ -196,6 +198,7 @@
 				:prevent-close="preventLightboxClose"
 				:visible="showThanks"
 				@lightbox-closed="thanksLightboxClosed"
+				style="z-index: 1199 !important;"
 			>
 				<campaign-logo-group
 					class="campaign-thanks__logos"
@@ -974,6 +977,7 @@ export default {
 
 				this.basketCredits = data.shop?.basket?.credits?.values ?? [];
 				this.hasFreeCredits = data.shop?.basket?.hasFreeCredits ?? false;
+				this.lendingRewardOffered = data.shop?.lendingRewardOffered ?? false;
 			});
 		},
 		validatePromoBasketState(basketState) {

@@ -256,7 +256,7 @@
 import { mdiLightningBolt } from '@mdi/js';
 import gql from 'graphql-tag';
 import { setLendAmount } from '@/util/basketUtils';
-import { buildPriceArray } from '@/util/loanUtils';
+import { buildPriceArray, isMatchAtRisk } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
@@ -430,7 +430,7 @@ export default {
 			);
 		},
 		cycleStatsSlot() {
-			if (this.matchingText.length) {
+			if (this.matchingText.length && !isMatchAtRisk) {
 				const cycleSlotMachine = () => {
 					if (this.statScrollAnimation) {
 						this.statScrollAnimation = false;
@@ -453,6 +453,18 @@ export default {
 		isInBasket() {
 			// eslint-disable-next-line no-underscore-dangle
 			return this.basketItems.some(item => item.__typename === 'LoanReservation' && item.id === this.loanId);
+		},
+		isMatchAtRisk() {
+			const mockLoan = {
+				loanAmount: this.loanAmount,
+				loanFundraisingInfo: {
+					fundedAmount: this.fundedAmount,
+					reservedAmount: this.reservedAmount,
+				},
+				matchRatio: this.matchRatio,
+				matchingText: this.matchingText,
+			};
+			return isMatchAtRisk(mockLoan);
 		},
 		prices() {
 			const minAmount = parseFloat(this.minNoteSize);

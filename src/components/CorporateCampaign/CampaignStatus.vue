@@ -32,13 +32,14 @@
 							v-if="promoName && (promoAmount !== '$0.00') && activeCreditType !== 'lending_reward'"
 							@click="handlePromoLinkClick"
 							:class="{ 'tw-underline': inContext, 'tw-cursor-pointer': inContext }"
+							:style="inContext ? 'text-decoration: underline; cursor: pointer;' : ''"
 						>
 							You have ${{ promoAmount | numeral }}
 							<span v-if="promoName">from {{ promoName }}</span>
 							to lend!
 						</span>
 						<span v-if="activeCreditType === 'lending_reward'">
-							Complete a loan to recieve your lending reward
+							Complete a loan to receive your lending reward
 							<span v-if="promoName"> from {{ promoName }}</span>!
 						</span>
 					</template>

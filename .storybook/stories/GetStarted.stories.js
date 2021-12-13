@@ -12,7 +12,7 @@ import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 
 export default {
-	title: 'Pages/GetStarted',
+	title: 'Page/GetStarted',
 	component: GetStartedCauses,
 	decorators: [StoryRouter()],
 };
