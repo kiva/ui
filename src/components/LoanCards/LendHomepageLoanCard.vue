@@ -94,7 +94,11 @@
 						@add-to-basket="handleAddToBasket"
 					/>
 				</div>
-				<div class="lend-homepage-loan-card__matching-text-container" :class="{hide: isFunded || isExpired}">
+				<div
+					v-if="!isMatchAtRisk"
+					class="lend-homepage-loan-card__matching-text-container"
+					:class="{hide: isFunded || isExpired}"
+				>
 					<matching-text
 						:matching-text="loan.matchingText"
 						:match-ratio="loan.matchRatio"
@@ -163,6 +167,10 @@ export default {
 		isFunded: {
 			type: Boolean,
 			default: false,
+		},
+		isMatchAtRisk: {
+			type: Boolean,
+			default: false
 		},
 		isSelectedByAnother: {
 			type: Boolean,

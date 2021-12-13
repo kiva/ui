@@ -66,6 +66,7 @@
 					@add-to-basket="$emit('add-to-basket', $event)"
 				/>
 				<matching-text
+					v-if="!isMatchAtRisk"
 					:matching-text="loan.matchingText"
 					:match-ratio="loan.matchRatio"
 					:is-funded="isFunded"
