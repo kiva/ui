@@ -1,3 +1,10 @@
+## [2.24.0](https://github.com/kiva/ui/compare/v2.23.0...v2.24.0) (2021-12-14)
+
+
+### Features
+
+* map causes category id in signup form using contentful entry key ([c49aabc](https://github.com/kiva/ui/commit/c49aabca96effc7aa38724cddf4809515f351192))
+
 ## [2.23.0](https://github.com/kiva/ui/compare/v2.22.0...v2.23.0) (2021-12-14)
 
 
