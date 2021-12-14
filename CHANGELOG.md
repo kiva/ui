@@ -1,3 +1,20 @@
+## [2.23.0](https://github.com/kiva/ui/compare/v2.22.0...v2.23.0) (2021-12-14)
+
+
+### Features
+
+* core-148 adding table heading for screen readers ([c5ada10](https://github.com/kiva/ui/commit/c5ada109cd637d819fe43cf56bcb6c8588249cdb))
+* core-148 cleaning up fundraising repayment schedule ([f18ad98](https://github.com/kiva/ui/commit/f18ad982abe7fed9e12c9bd098a78ae8dc4beb53))
+* core-148 cleaning up the code, adding comments ([32f9826](https://github.com/kiva/ui/commit/32f9826d7b1d42ca350335502f724704f4947270))
+* core-148 directLoan fundraising repayment schedule built out ([2549ff9](https://github.com/kiva/ui/commit/2549ff90ebcd47b6c77839659b071a011dbab75f))
+* core-148 parsed expected repayment data for loans with multiple payments in the same month ([7621584](https://github.com/kiva/ui/commit/76215848cacc672f142cff510744b2212bfa806b))
+* core-148 placing tw-prose selectively, cleaning up comments ([b8a8bc8](https://github.com/kiva/ui/commit/b8a8bc8ded27434a720a185d14e15db84cddacde))
+* core-148 removing scss and replacing it with postcss and tailwinds classes ([3dd921a](https://github.com/kiva/ui/commit/3dd921acc159bb281094377a90236e7853a4ce89))
+* core-148 repayment schedule trigger and component in place and needed data queried ([1a8a07c](https://github.com/kiva/ui/commit/1a8a07c23437967c09b1d9ffe6fa5623fdf56f18))
+* core-148 scoping the postcss ([b530af3](https://github.com/kiva/ui/commit/b530af366ee085741f573074a5c03ec472ddf8d1))
+* fundraising repayment schedule ([bcea4e7](https://github.com/kiva/ui/commit/bcea4e75420eadfb4beb14794a1f591deed528a7))
+* repayment schedule data parse started ([d7816b4](https://github.com/kiva/ui/commit/d7816b46b3756114d21d0d0eab66f6e6b607c95b))
+
 ## [2.22.0](https://github.com/kiva/ui/compare/v2.21.1...v2.22.0) (2021-12-14)
 
 
