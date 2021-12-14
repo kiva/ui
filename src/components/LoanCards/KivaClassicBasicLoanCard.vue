@@ -117,7 +117,7 @@
 		/>
 
 		<loan-matching-text
-			v-if="!isLoading && loan.matchingText !== ''"
+			v-if="!isLoading && loan.matchingText !== '' && !isMatchAtRisk"
 			class="tw-mb-1.5"
 			:matcher-name="loan.matchingText"
 			:match-ratio="loan.matchRatio"
@@ -168,6 +168,7 @@
 import { mdiChevronRight, mdiMapMarker } from '@mdi/js';
 import gql from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
+import { isMatchAtRisk } from '@/util/loanUtils';
 import LoanUse from '@/components/BorrowerProfile/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
@@ -314,6 +315,9 @@ export default {
 		},
 		isLentTo() {
 			return this.loan?.userProperties?.lentTo;
+		},
+		isMatchAtRisk() {
+			return isMatchAtRisk(this.loan);
 		},
 		sectorName() {
 			return (this.loan?.sector?.name || '').toLowerCase();
