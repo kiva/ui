@@ -90,6 +90,9 @@ const pageQuery = gql`query causesCategoryIds {
       enabled
       id
       name
+	  contentfulEntry {
+		  entry
+	  }
     }
   }
 }`;
@@ -174,11 +177,20 @@ export default {
 		causeCategoryId() {
 			switch (this.cause) {
 				case 'climate':
-					return this.causesCategories.find(category => category.name === 'Climate Change')?.id;
+					return this.causesCategories
+						.find(category => {
+							return category?.contentfulEntry?.entry?.fields?.dataObject?.causeKey === 'climateChange';
+						})?.id;
 				case 'education':
-					return this.causesCategories.find(category => category.name === 'Education')?.id;
+					return this.causesCategories
+						.find(category => {
+							return category?.contentfulEntry?.entry?.fields?.dataObject?.causeKey === 'education';
+						})?.id;
 				case 'women':
-					return this.causesCategories.find(category => category.name === 'Support Women')?.id;
+					return this.causesCategories
+						.find(category => {
+							return category?.contentfulEntry?.entry?.fields?.dataObject?.causeKey === 'genderEquality';
+						})?.id;
 				default:
 					console.log(`Did not find category id for this.cause: "${this.cause}"`, 'warning');
 					return '';
