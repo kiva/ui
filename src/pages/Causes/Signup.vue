@@ -125,10 +125,10 @@ export default {
 				subscription => subscription.category.subscriptionType === 'CAUSES'
 			);
 
-			const hasActiveCauseSubscription = causesSubscriptions.find(
+			const hasActiveCauseSubscription = !!causesSubscriptions.find(
 				subscription => subscription.enabled
 			);
-			const hasInactiveCauseSubscription = causesSubscriptions.find(
+			const hasInactiveCauseSubscription = !!causesSubscriptions.find(
 				subscription => !subscription.enabled
 			);
 			return !hasActiveCauseSubscription

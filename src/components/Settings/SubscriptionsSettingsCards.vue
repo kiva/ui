@@ -16,6 +16,13 @@
 			ref="subscriptionsMonthlyGoodComponent"
 		/>
 
+		<!-- Causes Settings -->
+		<subscriptions-causes
+			v-if="hasActiveCauseSubscription"
+			@cancel-subscription="cancelCause"
+			ref="subscriptionsCausesComponent"
+		/>
+
 		<!-- Auto Deposit Settings -->
 		<subscriptions-auto-deposit
 			v-if="!isOnetime && !isMonthlyGoodSubscriber && !isLegacySubscriber"
@@ -81,7 +88,6 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
 import KvLightbox from '@/components/Kv/KvLightbox';
@@ -93,6 +99,7 @@ import SubscriptionsMonthlyGood from '@/components/Subscriptions/SubscriptionsMo
 import SubscriptionsOneTime from '@/components/Subscriptions/SubscriptionsOneTime';
 import SubscriptionsAutoDeposit from '@/components/Subscriptions/SubscriptionsAutoDeposit';
 import SubscriptionsLegacy from '@/components/Subscriptions/SubscriptionsLegacy';
+import SubscriptionsCauses from '@/components/Subscriptions/SubscriptionsCauses';
 
 const pageQuery = gql`query subscriptionSettingsPage {
 	my {
@@ -107,15 +114,26 @@ const pageQuery = gql`query subscriptionSettingsPage {
 			}
 		}
 	}
+	mySubscriptions(includeDisabled: false) {
+		values {
+			id
+			enabled
+			category {
+				id
+				subscriptionType
+			}
+		}
+	}
 }`;
 
 export default {
 	components: {
 		KvButton,
 		KvLightbox,
-		KvLoadingSpinner,
 		KvLoadingOverlay,
+		KvLoadingSpinner,
 		SubscriptionsAutoDeposit,
+		SubscriptionsCauses,
 		SubscriptionsLegacy,
 		SubscriptionsMonthlyGood,
 		SubscriptionsOneTime,
@@ -123,23 +141,34 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
-			isChanged: false,
-			isSaving: false,
-			isOnetime: false,
 			confirmationText: '',
+			isChanged: false,
+			isLegacySubscriber: false,
+			isMonthlyGoodSubscriber: false,
+			isOnetime: false,
+			isSaving: false,
+			mySubscriptions: [],
 			showLightbox: false,
 			showLoadingOverlay: false,
+			hasActiveCauseSubscription: false,
 		};
 	},
 	apollo: {
 		query: pageQuery,
 		preFetch: true,
 		result({ data }) {
-			this.isOnetime = _get(data, 'my.autoDeposit.isOnetime', false);
-			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
+			this.isOnetime = data?.my?.autoDeposit?.isOnetime ?? false;
+			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
 
-			const legacySubs = _get(data, 'my.subscriptions.values', []);
+			const legacySubs = data?.my?.subscriptions?.values ?? [];
 			this.isLegacySubscriber = legacySubs.length > 0;
+			this.mySubscriptions = data?.mySubscriptions?.values ?? [];
+			const causesSubscriptions = this.mySubscriptions.filter(
+				subscription => subscription.category.subscriptionType === 'CAUSES'
+			);
+			this.hasActiveCauseSubscription = !!causesSubscriptions.find(
+				subscription => subscription.enabled
+			);
 		},
 	},
 	mounted() {
@@ -151,6 +180,31 @@ export default {
 	methods: {
 		setUnsavedChanges(state) {
 			this.isChanged = state;
+		},
+		cancelCause(subscriptionId) {
+			this.showLoadingOverlay = true;
+			this.apollo.mutate({
+				mutation: gql`mutation cancelCause($subscriptionId: ID!) {
+					cancelSubscription(subscriptionId: $subscriptionId) {
+						id
+					}
+				}`,
+				variables: {
+					subscriptionId,
+				},
+				awaitRefetchQueries: true,
+				refetchQueries: [
+					{ query: pageQuery }
+				]
+			}).then(() => {
+				this.$showTipMsg('Your subscription has been cancelled');
+				this.isChanged = false;
+			}).catch(e => {
+				console.error(e);
+				this.$showTipMsg('There was a problem cancelling your subscription', 'error');
+			}).finally(() => {
+				this.showLoadingOverlay = false;
+			});
 		},
 		cancelSubscription() {
 			this.showLoadingOverlay = true;
@@ -184,17 +238,17 @@ export default {
 		saveSubscription() {
 			this.isSaving = true;
 			// Calls the save method in the component if component isChanged is true.
-			if (_get(this.$refs, 'subscriptionsOneTimeComponent.isChanged', false)) {
+			if (this.$refs?.subscriptionsOneTimeComponent?.isChanged) {
 				this.$refs.subscriptionsOneTimeComponent.saveOneTime().finally(() => {
 					this.isSaving = false;
 				});
 			}
-			if (_get(this.$refs, 'subscriptionsMonthlyGoodComponent.isChanged', false)) {
+			if (this.$refs?.subscriptionsMonthlyGoodComponent?.isChanged) {
 				this.$refs.subscriptionsMonthlyGoodComponent.saveMonthlyGood().finally(() => {
 					this.isSaving = false;
 				});
 			}
-			if (_get(this.$refs, 'subscriptionsAutoDepositComponent.isChanged', false)) {
+			if (this.$refs?.subscriptionsAutoDepositComponent?.isChanged) {
 				this.$refs.subscriptionsAutoDepositComponent.saveAutoDeposit().finally(() => {
 					this.isSaving = false;
 				});
