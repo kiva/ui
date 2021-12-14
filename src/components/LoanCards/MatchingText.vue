@@ -2,7 +2,7 @@
 	<span
 		class="tw-text-small tw-text-tertiary matching-text"
 		:class="{
-			'has-match': props.matchingText,
+			'has-match': props.matchingText && !props.isMatchAtRisk,
 			'hide-match': props.isFunded || props.isSelectedByAnother || props.isExpired,
 			'wrap': props.wrap,
 		}"

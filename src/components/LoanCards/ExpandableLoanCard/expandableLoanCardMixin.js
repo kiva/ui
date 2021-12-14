@@ -16,6 +16,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		isMatchAtRisk: {
+			type: Boolean,
+			default: false
+		},
 		isSelectedByAnother: {
 			type: Boolean,
 			default: false,
