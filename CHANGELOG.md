@@ -1,3 +1,10 @@
+## [2.22.0](https://github.com/kiva/ui/compare/v2.21.1...v2.22.0) (2021-12-14)
+
+
+### Features
+
+* allow a causes subscription user to cancel their subscription ([3aa9592](https://github.com/kiva/ui/commit/3aa959271c2f5567344e86ceeb56b8f0f182b672))
+
 ### [2.21.1](https://github.com/kiva/ui/compare/v2.21.0...v2.21.1) (2021-12-14)
 
 
