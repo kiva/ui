@@ -6,7 +6,7 @@
 	>
 		Make a Kiva loan <br class="tw-inline">and receive a $25 free credit to lend again.
 	</div>
-	<div v-else class="bonus-banner-holder tw-bg-brand tw-text-center tw-py-1.5 tw-px-5">
+	<div v-else-if="bonusBalance > 0" class="bonus-banner-holder tw-bg-brand tw-text-center tw-py-1.5 tw-px-5">
 		<router-link
 			v-if="promoData && !promoData.pageId"
 			to="/lend/freeCreditEligible"
