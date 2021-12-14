@@ -19,10 +19,10 @@ service:
 resources:
   requests:
     cpu: 500m
-    memory: 2000Mi
+    memory: 1500Mi
   limits:
     cpu: 500m
-    memory: 2000Mi
+    memory: 1500Mi
 
 replicaCount: 4
 minReplicas: 4
