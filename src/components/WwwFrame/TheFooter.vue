@@ -3,9 +3,7 @@
 				lg:tw-px-2 lg:tw-py-3 tw-bg-secondary tw-text-primary
 				print:tw-p-0 print:tw-font-book print:tw-min-h-[auto]"
 	>
-		<kv-page-container class="tw-px-0">
-			<disclaimers />
-		</kv-page-container>
+		<disclaimers />
 		<nav class="tw-block lg:tw-hidden" aria-label="Footer navigation">
 			<div class="tw-mt-3 tw-mb-3">
 				<h2 class="tw-text-h4">
