@@ -1,5 +1,5 @@
 <template>
-	<section>
+	<section class="tw-prose">
 		<p>
 			Trustees are organizations that refer potential U.S.-based
 			borrowers to Kiva and publicly vouch for them on Kiva.org.

@@ -231,7 +231,7 @@ export default {
 			return numeral(this.loanAmount).format('$0,0.00');
 		},
 		calculateMonthlyPayment() {
-			// calculating the monthly payment of a direct loan
+			// used for calculating the monthly payment of a direct loan
 			return numeral(this.loanAmount / this.lenderRepaymentTerm).format('$0,0.00');
 		}
 	},
