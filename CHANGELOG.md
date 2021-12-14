@@ -1,3 +1,10 @@
+### [2.21.1](https://github.com/kiva/ui/compare/v2.21.0...v2.21.1) (2021-12-14)
+
+
+### Bug Fixes
+
+* ensure matching shows when applicable, clean up initial visibility logic ([a3e034b](https://github.com/kiva/ui/commit/a3e034ba87af0d81160a804b569c86811a2c3091))
+
 ## [2.21.0](https://github.com/kiva/ui/compare/v2.20.2...v2.21.0) (2021-12-10)
 
 

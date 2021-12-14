@@ -235,7 +235,7 @@
 							<span
 								class="tw-inline-block tw-align-middle"
 								key="loanMatchingText"
-								v-if="!statScrollAnimation"
+								v-if="!statScrollAnimation && !isMatchAtRisk"
 							>
 								<span
 									class="tw-text-h3 tw-inline-block tw-align-middle tw-px-1"
@@ -376,9 +376,6 @@ export default {
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;
-			}
-
-			if (this.lenderCountVisibility && this.matching !== '') {
 				this.statScrollAnimation = true;
 			}
 		},
@@ -430,10 +427,10 @@ export default {
 			);
 		},
 		cycleStatsSlot() {
-			if (this.matchingText.length && !isMatchAtRisk) {
+			if (this.matchingText.length) {
 				const cycleSlotMachine = () => {
-					if (this.statScrollAnimation) {
-						this.statScrollAnimation = false;
+					if (!this.isMatchAtRisk) {
+						this.statScrollAnimation = !this.statScrollAnimation;
 					} else {
 						this.statScrollAnimation = true;
 					}
