@@ -43,11 +43,9 @@
 						class="tw-mb-1"
 					>
 						<td class="table-data-spacing">
-							<!-- {{ repayment.repaymentDateFormatted }} -->
 							{{ repayment.formattedRepaymentDate }}
 						</td>
 						<td class="table-data-spacing">
-							<!-- {{ repayment.repaymentAmountFormatted }} -->
 							{{ repayment.formattedTotalMonthlyPayment }}
 						</td>
 						<td class="table-data-spacing">
@@ -159,7 +157,6 @@ export default {
 					loanId: this.loanId
 				}
 			}).then(({ data }) => {
-				console.log('data', data);
 				this.partnerName = data?.lend?.loan?.partner?.name || '';
 				this.repaymentSchedule = data?.lend?.loan?.terms?.expectedPayments || [];
 				this.repaidAmount = data?.lend?.loan?.paidAmount || 0;
@@ -177,7 +174,7 @@ export default {
 		},
 		formattedFirstRepaymentDate() {
 			if (this.firstRepaymentDate !== '') {
-				return format(parseISO(this.firstRepaymentDate), 'MMM yyyy');
+				return format(parseISO(this.firstRepaymentDate), 'MMM dd, yyyy');
 			}
 			return false;
 		},
@@ -205,7 +202,6 @@ export default {
 
 				// iterating through the repaymentScheduleByDueDate in order
 				// to pull off the amount field for each payment
-				// Object.entries(repaymentScheduleByDueDate).forEach(([repaymentDate, repaymentItemData]) => {
 				Object.entries(repaymentScheduleByDueDate).forEach(([repaymentDate, repaymentItemData]) => {
 					// iterating through each repaymentItemByDueDate, pulling off the amount from each repaymentItemData
 					// and reducing it down to an array of individual repayments made in a month.
@@ -213,18 +209,19 @@ export default {
 						arr.push(val.amount);
 						return (arr);
 					}, []);
-					// Result = ["548.43","548.43","548.43","548.43"]
+					// result = ["548.43","548.43","548.43","548.43"]
 
 					// take the array of payments, change them from strings to integers
-					// and add them together, which results in the total in payments for a month.
+					// and add them together, which results in the total payments for a month
 					const totalMonthlyPayment = result.reduce((runningTotal, amount) => {
 						return runningTotal + parseFloat(amount);
 					}, 0);
 
-					// pass the repaymentDate(ie.month) and the totalMonthlyPayment
+					// format the repaymentDate & totalMonthlyPayment value
 					const formattedRepaymentDate = format(parseISO(repaymentDate), 'MMM yyyy');
 					const formattedTotalMonthlyPayment = numeral(totalMonthlyPayment).format('$0,0.00');
-
+					// push the formatted repayment date and totalMonthlyPayment values
+					// into another array to be used for rendering
 					totalRepaymentsPerMonth.push({ formattedRepaymentDate, formattedTotalMonthlyPayment });
 				});
 			}
@@ -234,7 +231,7 @@ export default {
 			return numeral(this.loanAmount).format('$0,0.00');
 		},
 		calculateMonthlyPayment() {
-			// Used for calculating the monthly payment of a direct loan
+			// calculating the monthly payment of a direct loan
 			return numeral(this.loanAmount / this.lenderRepaymentTerm).format('$0,0.00');
 		}
 	},
