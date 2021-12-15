@@ -1,3 +1,10 @@
+### [2.24.1](https://github.com/kiva/ui/compare/v2.24.0...v2.24.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* guard lendingRewardOffered and receipt.values before usage ([6d57635](https://github.com/kiva/ui/commit/6d57635a596be1be1604dd7c49799f2819f9a1c2))
+
 ## [2.24.0](https://github.com/kiva/ui/compare/v2.23.0...v2.24.0) (2021-12-14)
 
 
