@@ -12,7 +12,7 @@
 				<kv-loading-placeholder :style="{width: 5 + (Math.random() * 5) + '%'}" />
 			</div>
 		</div>
-		<kv-tabs v-else class="tw-prose">
+		<kv-tabs v-else>
 			<template #tabNav>
 				<kv-tab :for="loanTabId"
 					v-kv-track-event="['Borrower Profile', `click-Loan-Details-tab`, 'Loan Details']"
@@ -48,6 +48,10 @@
 						:repayment-interval="loan.repaymentInterval"
 						:disbursal-date="loan.disbursalDate"
 						@show-definition="showDefinition"
+					/>
+					<repayment-schedule
+						:loan-id="loanId"
+						:status="loan.status"
 					/>
 				</kv-tab-panel>
 				<kv-tab-panel :id="partnerTabId" v-if="isPartnerLoan">
@@ -105,6 +109,7 @@ import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
 import FieldPartnerDetails from './FieldPartnerDetails';
 import LoanDetails from './LoanDetails';
 import TrusteeDetails from './TrusteeDetails';
+import RepaymentSchedule from './RepaymentSchedule';
 
 export default {
 	inject: ['apollo'],
@@ -117,6 +122,7 @@ export default {
 		KvTabs,
 		LoanDetails,
 		TrusteeDetails,
+		RepaymentSchedule,
 	},
 	props: {
 		loanId: {
