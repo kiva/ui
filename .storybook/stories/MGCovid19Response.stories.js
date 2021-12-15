@@ -10,7 +10,7 @@ import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
 
 export default {
-	title: 'Pages/MGCovid19Response',
+	title: 'Page/MGCovid19Response',
 	component: MGCovid19,
 	decorators: [StoryRouter()],
 };

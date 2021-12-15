@@ -31,6 +31,7 @@
 				:percent-raised="percentRaised"
 				:expanded="expanded"
 				:expiring-soon-message="expiringSoonMessage"
+				:is-match-at-risk="isMatchAtRisk"
 				:is-visitor="isVisitor"
 				:is-selected-by-another="isSelectedByAnother"
 				:items-in-basket="itemsInBasket"
@@ -79,6 +80,10 @@ export default {
 		itemsInBasket: {
 			type: Array,
 			default: () => [],
+		},
+		isMatchAtRisk: {
+			type: Boolean,
+			default: false
 		},
 		isVisitor: {
 			type: Boolean,
