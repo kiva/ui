@@ -89,9 +89,9 @@ import SubscriptionsMonthlyGood from '@/components/Subscriptions/SubscriptionsMo
 import SubscriptionsOneTime from '@/components/Subscriptions/SubscriptionsOneTime';
 import SubscriptionsAutoDeposit from '@/components/Subscriptions/SubscriptionsAutoDeposit';
 import SubscriptionsLegacy from '@/components/Subscriptions/SubscriptionsLegacy';
+import SubscriptionsCauses from '@/components/Subscriptions/SubscriptionsCauses';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import SubscriptionsCauses from '@/components/Subscriptions/SubscriptionsCauses';
 
 const pageQuery = gql`query subscriptionSettingsPage {
 	my {
@@ -123,7 +123,6 @@ export default {
 		KvButton,
 		KvLightbox,
 		KvLoadingOverlay,
-		KvLoadingSpinner,
 		SubscriptionsAutoDeposit,
 		SubscriptionsCauses,
 		SubscriptionsLegacy,
