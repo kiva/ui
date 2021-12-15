@@ -11,10 +11,10 @@
 				By joining the team, you can see your impact, interact with teammates, and get more out of Kiva.
 			</p>
 			<div class="tw-inline-flex tw-gap-2">
-				<kv-button variant="secondary" @click="handleRejectTeam">
+				<kv-button data-testid="no-thanks-button" variant="secondary" @click="handleRejectTeam">
 					No Thanks
 				</kv-button>
-				<kv-button @click="handleJoinTeam">
+				<kv-button data-testid="join-team-button" @click="handleJoinTeam">
 					Join Team
 				</kv-button>
 			</div>
@@ -39,7 +39,7 @@
 					Once your request is approved, you'll have the option to count loans towards this team.
 				</p>
 			</div>
-			<p><a :href="doneUrl">Continue</a></p>
+			<p><a data-testid="join-team-continue-lnk" :href="doneUrl">Continue</a></p>
 		</div>
 	</div>
 </template>

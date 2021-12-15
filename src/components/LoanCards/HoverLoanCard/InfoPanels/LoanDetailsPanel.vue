@@ -15,7 +15,7 @@
 		</div>
 		<div
 			v-else
-			class="loan-details-container"
+			class="loan-details-container tw-prose"
 		>
 			<dl>
 				<div v-if="this.loanLength">

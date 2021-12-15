@@ -101,6 +101,7 @@
 				<kv-checkbox
 					class="teams__checkbox"
 					id="team_invitation"
+					data-testid="team-checkbox"
 					v-model="isTeamInvitation"
 				>
 					Make this a team invitation

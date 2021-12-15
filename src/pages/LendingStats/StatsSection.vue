@@ -1,5 +1,5 @@
 <template>
-	<section class="stats-section">
+	<section :data-testid="sectionId" class="stats-section">
 		<h2 class="tw-flex tw-gap-2 tw-mb-4">
 			<span>{{ title }}</span>
 			<span class="lent-count tw-text-base tw-bg-brand tw-text-white tw-py-0.5 tw-px-1 tw-self-center">
@@ -47,6 +47,7 @@
 				@click="toggle"
 				class="tw-text-link tw-font-medium tw-my-2"
 				:aria-pressed="showingMore ? 'true' : 'false'"
+				:data-testid="showMoreId"
 			>
 				{{ showingMore ? 'Hide' : 'Show more' }}
 			</button>
@@ -54,6 +55,7 @@
 				v-if="hasUnlent"
 				:to="unlentUrlRoute"
 				variant="secondary"
+				:data-testid="lendNewId"
 			>
 				Lend to a new {{ noun }}
 			</kv-button>
@@ -80,6 +82,9 @@ export default {
 		itemKey: { type: String, default: 'id' },
 		iconKey: { type: Function, default: () => 'leaf' },
 		unlentUrl: { default: null }, // eslint-disable-line vue/require-prop-types
+		showMoreId: { type: String, required: true },
+		lendNewId: { type: String, required: true },
+		sectionId: { type: String, required: true },
 	},
 	components: {
 		ItemList,
