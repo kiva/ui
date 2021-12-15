@@ -147,13 +147,13 @@
 					</span>
 					<p
 						v-if="freeCreditWarning"
-						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full"
+						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
 					>
 						Not eligible for lending credit
 					</p>
 					<p
 						v-if="allSharesReserved"
-						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full"
+						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
 					>
 						All shares reserved
 					</p>
@@ -235,7 +235,7 @@
 							<span
 								class="tw-inline-block tw-align-middle"
 								key="loanMatchingText"
-								v-if="!statScrollAnimation"
+								v-if="!statScrollAnimation && !isMatchAtRisk"
 							>
 								<span
 									class="tw-text-h3 tw-inline-block tw-align-middle tw-px-1"
@@ -256,7 +256,7 @@
 import { mdiLightningBolt } from '@mdi/js';
 import gql from 'graphql-tag';
 import { setLendAmount } from '@/util/basketUtils';
-import { buildPriceArray } from '@/util/loanUtils';
+import { buildPriceArray, isMatchAtRisk } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
@@ -376,9 +376,6 @@ export default {
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;
-			}
-
-			if (this.lenderCountVisibility && this.matching !== '') {
 				this.statScrollAnimation = true;
 			}
 		},
@@ -432,8 +429,8 @@ export default {
 		cycleStatsSlot() {
 			if (this.matchingText.length) {
 				const cycleSlotMachine = () => {
-					if (this.statScrollAnimation) {
-						this.statScrollAnimation = false;
+					if (!this.isMatchAtRisk) {
+						this.statScrollAnimation = !this.statScrollAnimation;
 					} else {
 						this.statScrollAnimation = true;
 					}
@@ -453,6 +450,18 @@ export default {
 		isInBasket() {
 			// eslint-disable-next-line no-underscore-dangle
 			return this.basketItems.some(item => item.__typename === 'LoanReservation' && item.id === this.loanId);
+		},
+		isMatchAtRisk() {
+			const mockLoan = {
+				loanAmount: this.loanAmount,
+				loanFundraisingInfo: {
+					fundedAmount: this.fundedAmount,
+					reservedAmount: this.reservedAmount,
+				},
+				matchRatio: this.matchRatio,
+				matchingText: this.matchingText,
+			};
+			return isMatchAtRisk(mockLoan);
 		},
 		prices() {
 			const minAmount = parseFloat(this.minNoteSize);

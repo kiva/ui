@@ -2,7 +2,7 @@
 	<div class="tw-text-primary tw-text-center">
 		<hr class="tw-border-tertiary">
 		<a
-			class="tw-text-primary tw-mr-2.5 tw-font-medium"
+			class="tw-text-primary tw-pr-1 tw-font-medium"
 			v-kv-track-event="['Borrower profile', 'click-jump-link', 'Borrower story']"
 			@click="scrollToSection('#loanStory')"
 		>
@@ -13,7 +13,7 @@
 			Borrower story
 		</a>
 		<a
-			class="tw-text-primary tw-ml-2 tw-mr-2.5 tw-font-medium"
+			class="tw-text-primary tw-pl-1 tw-pr-1 tw-font-medium"
 			v-kv-track-event="['Borrower profile', 'click-jump-link', 'Loan details']"
 			@click="scrollToSection('#loanDetails')"
 		>
