@@ -1,6 +1,6 @@
 {
 	"name": "kvue",
-	"version": "2.17.0",
+	"version": "2.24.1",
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
@@ -190,6 +190,7 @@
 		"ora": "^4.0.2",
 		"postcss": "^8.3.0",
 		"postcss-loader": "^4.3.0",
+		"postcss-prepend-selector": "^0.3.1",
 		"rimraf": "^3.0.2",
 		"sass": "^1.32.13",
 		"sass-loader": "^10.2.0",
