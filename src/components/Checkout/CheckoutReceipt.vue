@@ -305,16 +305,22 @@ export default {
 			return `${format(getUTCDate(this.receipt.transactionTime), 'MMMM dd, yyyy h:mm a')} GMT`;
 		},
 		loans() {
+			if (!this.receiptValues.length) return [];
 			return this.receipt.items.values.filter(item => item.basketItemType === 'loan_reservation');
 		},
 		kivaCards() {
+			if (!this.receiptValues.length) return [];
 			return this.receipt.items.values.filter(item => item.basketItemType === 'kiva_card');
 		},
 		printableKivaCards() {
+			if (!this.receiptValues.length) return [];
 			return this.kivaCards.filter(card => card.kivaCardObject.deliveryType === 'print');
 		},
 		donations() {
 			return this.receipt.items.values.filter(item => item.basketItemType === 'donation');
+		},
+		receiptValues() {
+			return this.receipt?.items?.values ?? [];
 		}
 	},
 	methods: {
