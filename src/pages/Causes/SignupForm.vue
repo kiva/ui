@@ -42,7 +42,7 @@
 						v-model.number="amount"
 					>
 						<option
-							v-for="(option, index) in mgAmountOptions"
+							v-for="(option, index) in causesAmountOptions"
 							:value="option.value"
 							:key="index"
 						>
@@ -124,7 +124,7 @@ export default {
 		return {
 			dayOfMonth: new Date().getDate(),
 			causesIconImgRequire,
-			mgAmountOptions: [
+			causesAmountOptions: [
 				{
 					value: 5,
 					label: `${numeral(5).format('$0,0')}`,
@@ -174,6 +174,11 @@ export default {
 		},
 	},
 	computed: {
+		/**
+		 * Each cause has a linked contentful entry, that entry contains a data Object with a causeKey
+		 * This maps the cause to the causeKey to get the category id. It is necessary
+		 * because the category id's are not constant across environments
+		 */
 		causeCategoryId() {
 			switch (this.cause) {
 				case 'climate':
