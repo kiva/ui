@@ -12,7 +12,7 @@
 		>
 			<button
 				class="kv-carousel__arrows-btn kv-carousel__arrows-btn--left"
-				:disabled="embla && !embla.canScrollPrev()"
+				:disabled="embla && !canScrollPrev"
 				@click="handleUserInteraction(previousIndex, 'click-left-arrow')"
 			>
 				<kv-icon
@@ -24,7 +24,7 @@
 			</button>
 			<button
 				class="kv-carousel__arrows-btn kv-carousel__arrows-btn--right"
-				:disabled="embla && !embla.canScrollNext()"
+				:disabled="embla && !canScrollNext"
 				@click="handleUserInteraction(nextIndex, 'click-right-arrow')"
 			>
 				<kv-icon
@@ -140,6 +140,8 @@ export default {
 		return {
 			embla: null,
 			slides: [],
+			canScrollPrev: false,
+			canScrollNext: true,
 			currentIndex: 0,
 			paused: false,
 			intervalTimerCurrentTime: 0,
@@ -258,6 +260,9 @@ export default {
 				await this.$nextTick(); // wait for embla.
 				this.goToSlide(index);
 			}
+			// Update navigation state
+			this.canScrollPrev = this.embla.canScrollPrev();
+			this.canScrollNext = this.embla.canScrollNext();
 			/**
 			 * Fires when the user interacts with the carousel.
 			 * Contains the interaction type (swipe-left, click-left-arrow, etc.)
