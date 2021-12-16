@@ -20,6 +20,7 @@
 		<subscriptions-causes
 			v-if="hasActiveCauseSubscription"
 			@cancel-subscription="cancelCause"
+			@unsaved-changes="setUnsavedChanges"
 			ref="subscriptionsCausesComponent"
 		/>
 
@@ -250,6 +251,12 @@ export default {
 			}
 			if (this.$refs?.subscriptionsAutoDepositComponent?.isChanged) {
 				this.$refs.subscriptionsAutoDepositComponent.saveAutoDeposit().finally(() => {
+					this.isSaving = false;
+				});
+			}
+
+			if (this.$refs?.subscriptionsCausesComponent?.isChanged) {
+				this.$refs.subscriptionsCausesComponent.saveCausesSubscription().finally(() => {
 					this.isSaving = false;
 				});
 			}
