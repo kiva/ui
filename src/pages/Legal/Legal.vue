@@ -8,7 +8,7 @@
 				/>
 			</template>
 			<div class="row page-content">
-				<tertiary-menu class="show-for-large large-2">
+				<tertiary-menu data-testid="tertiary-menu-terms" class="show-for-large large-2">
 					<ul>
 						<li v-for="{name, routerLink} in menuItems" :key="name" class="tw-mb-2">
 							<router-link

@@ -25,6 +25,9 @@
 						:total="totalCountries"
 						item-key="isoCode"
 						unlent-url="/lend/countries-not-lent"
+						section-id="lend-stat-countries"
+						show-more-id="show-more-countries"
+						lend-new-id="lend-new-country"
 					/>
 					<hr class="tw-border-tertiary tw-my-4">
 					<stats-section
@@ -33,6 +36,9 @@
 						:not-lent-to="sectorsNotLentTo"
 						:lent-to="sectorsLentTo"
 						:icon-key="iconForSector"
+						section-id="lend-stat-sectors"
+						show-more-id="show-more-sectors"
+						lend-new-id="lend-new-sector"
 					/>
 					<hr class="tw-border-tertiary tw-my-4">
 					<stats-section
@@ -40,6 +46,9 @@
 						noun="activity"
 						:not-lent-to="activitiesNotLentTo"
 						:lent-to="activitiesLentTo"
+						section-id="lend-stat-activities"
+						show-more-id="show-more-activities"
+						lend-new-id="lend-new-activities"
 					/>
 					<hr class="tw-border-tertiary tw-my-4">
 					<stats-section
@@ -49,6 +58,9 @@
 						:lent-to="partnersLentTo"
 						:total="totalPartners"
 						query="partner"
+						section-id="lend-stat-fieldpartner"
+						show-more-id="show-more-fieldpartner"
+						lend-new-id="lend-new-fieldpartner"
 					/>
 					<hr class="tw-border-tertiary tw-my-4">
 					<p>
