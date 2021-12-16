@@ -1,3 +1,10 @@
+### [2.25.1](https://github.com/kiva/ui/compare/v2.25.0...v2.25.1) (2021-12-16)
+
+
+### Bug Fixes
+
+* ensure legacy kvCarousel keeps button state up to date ([615f63c](https://github.com/kiva/ui/commit/615f63cf7c027934a2a83d08a91560ee9d8626f6))
+
 ## [2.25.0](https://github.com/kiva/ui/compare/v2.24.1...v2.25.0) (2021-12-16)
 
 
