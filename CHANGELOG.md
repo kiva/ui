@@ -1,3 +1,10 @@
+## [2.25.0](https://github.com/kiva/ui/compare/v2.24.1...v2.25.0) (2021-12-16)
+
+
+### Features
+
+* allow a user to modify their causes subscription ([44565f7](https://github.com/kiva/ui/commit/44565f79d03c7dd817d875d7f790f24668bea395))
+
 ### [2.24.1](https://github.com/kiva/ui/compare/v2.24.0...v2.24.1) (2021-12-15)
 
 
