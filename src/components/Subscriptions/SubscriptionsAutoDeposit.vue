@@ -567,10 +567,6 @@ form {
 		}
 	}
 
-	.button--link {
-		padding: 0.5rem;
-	}
-
 	.icon-pencil {
 		height: 1rem;
 		width: 1rem;

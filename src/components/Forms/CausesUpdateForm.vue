@@ -1,17 +1,18 @@
 <template>
-	<form @submit.prevent novalidate>
+	<form
+		@submit.prevent
+		novalidate
+	>
 		<fieldset :disabled="this.disabled">
 			<div class="row column">
 				<strong>Each month on the</strong>
 				<label
 					class="show-for-sr"
-					:class="{ error: $v.form.dayOfMonth.$invalid }"
-					:for="form.dayOfMonth"
+					:class="{ 'error': $v.form.dayOfMonth.$invalid }" :for="form.dayOfMonth"
 				>
 					Day of the Month
 				</label>
-				<input
-					v-if="isDayInputShown"
+				<kv-text-input v-if="isDayInputShown"
 					@blur="hideDayInput()"
 					class="text-input__day"
 					id="dayOfMonth"
@@ -21,13 +22,13 @@
 					min="1"
 					max="31"
 					v-model.number="form.dayOfMonth"
-				>
+				/>
 				<button
-					class="button--ordinal-day"
+					class="tw-text-link tw-font-medium"
 					@click="isDayInputShown = true"
 					v-if="!isDayInputShown"
 				>
-					<strong>{{ form.dayOfMonth | numeral("Oo") }}</strong>
+					<strong>{{ form.dayOfMonth | numeral('Oo') }}</strong>
 					<kv-icon class="icon-pencil" name="pencil" title="Edit" />
 				</button>
 				<strong>we'll process the following:</strong>
@@ -35,9 +36,7 @@
 					<li v-if="!$v.form.dayOfMonth.required">
 						Field is required
 					</li>
-					<li
-						v-if="!$v.form.dayOfMonth.minValue || !$v.form.dayOfMonth.maxValue"
-					>
+					<li v-if="!$v.form.dayOfMonth.minValue || !$v.form.dayOfMonth.maxValue">
 						Enter day of month between 1 and 31
 					</li>
 				</ul>
@@ -50,13 +49,15 @@
 			<div class="middle-wrapper">
 				<div class="row align-middle">
 					<div class="columns">
-						<span> Deposit for lending </span>
+						<span>
+							Deposit for lending
+						</span>
 					</div>
 
 					<div class="small-6 medium-4 columns">
 						<label
-							class="show-for-sr"
-							:class="{ error: $v.form.amount.$invalid }"
+							class="tw-sr-only"
+							:class="{ 'error': $v.form.amount.$invalid }"
 							for="amount"
 						>
 							Amount
@@ -77,10 +78,7 @@
 					</div>
 				</div>
 				<div class="row columns align-middle">
-					<ul
-						class="text-right validation-errors"
-						v-if="$v.form.amount.$invalid"
-					>
+					<ul class="tw-text-right validation-errors" v-if="$v.form.amount.$invalid">
 						<li v-if="!$v.form.amount.required">
 							Field is required
 						</li>
@@ -92,10 +90,10 @@
 			</div>
 			<div class="row align-middle">
 				<div class="column">
-					<strong>Your contribution will:</strong>
+					<label class="tw-font-medium" for="causes-category-select">Your contribution will:</label>
 				</div>
 				<div class="column">
-					<kv-select v-model="form.categoryId" class="group-dropdown">
+					<kv-select v-model="form.categoryId" class="group-dropdown" id="causes-categories-select">
 						<option
 							v-for="(option, index) in causesList"
 							:value="option.value"
@@ -116,8 +114,9 @@ import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 import gql from 'graphql-tag';
 import numeral from 'numeral';
 
-import KvSelect from '@/components/Kv/KvSelect';
 import KvIcon from '@/components/Kv/KvIcon';
+import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 const pageQuery = gql`
 	query causesCategoryIds {
@@ -144,6 +143,7 @@ export default {
 	components: {
 		KvIcon,
 		KvSelect,
+		KvTextInput,
 	},
 	data() {
 		return {
@@ -243,23 +243,19 @@ export default {
 		 * and emit values on value changes. Setting this in mounted prevents the form
 		 * from being dirty on initial load
 		 */
-		this.$watch(
-			'form',
-			() => {
-				this.$v.$touch();
-				/**
+		this.$watch('form', () => {
+			this.$v.$touch();
+			/**
 				 * Event emitted whenever a form value changes.
 				 * @type {Event}
 				 */
-				this.$emit('form-update', {
-					...this.form,
-					categoryName: this.categoryName,
-					isChanged: this.$v.$dirty,
-					isFormValid: !this.$v.$invalid,
-				});
-			},
-			{ deep: true }
-		);
+			this.$emit('form-update', {
+				...this.form,
+				categoryName: this.categoryName,
+				isChanged: this.$v.$dirty,
+				isFormValid: !this.$v.$invalid,
+			});
+		}, { deep: true });
 	},
 	methods: {
 		hideDayInput() {
@@ -301,31 +297,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import 'settings';
 
 form {
 	.row {
 		margin-bottom: 0.25em;
 	}
 
-	// styles to match KvSelect
-	input.text-input {
-		border: 1px solid $charcoal;
-		border-radius: $button-radius;
-		color: $charcoal;
-		font-size: $medium-text-font-size;
-		font-weight: $global-weight-highlight;
-		margin: 0;
-	}
-
 	.additional-left-pad-currency {
 		padding-left: 0.65rem;
-	}
-
-	.button--ordinal-day {
-		color: $kiva-accent-blue;
-		fill: $kiva-accent-blue;
-		cursor: pointer;
 	}
 
 	.icon-pencil {
@@ -334,14 +314,9 @@ form {
 	}
 
 	.text-input__day {
-		display: inline-block;
-		width: 3.5rem;
-		padding: 0.25rem 0.5rem;
 		margin: 0 0 0 0.25rem;
-		height: 2rem;
 	}
 
-	.text-input,
 	.validation-errors {
 		margin: 0;
 	}

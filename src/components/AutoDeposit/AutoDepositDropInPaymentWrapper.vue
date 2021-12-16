@@ -10,16 +10,14 @@
 				:preselect-vaulted-payment-method="action === 'Registration'"
 				@transactions-enabled="enableConfirmButton = $event"
 			/>
-			<div id="dropin-button">
+			<div id="dropin-submit" class="tw-w-full">
 				<kv-button
 					class="tw-mb-2"
-					value="submit"
-					id="dropin-submit"
-					:state="!enableConfirmButton || submitting ? 'disabled' : ''"
+					:state="buttonState"
 					@click="submitDropInAutoDeposit"
 				>
 					<kv-icon name="lock" />
-					Confirm <kv-loading-spinner v-if="submitting" />
+					Confirm
 				</kv-button>
 			</div>
 
@@ -41,7 +39,6 @@ import braintreeUpdateSubscriptionPaymentMethod from
 	'@/graphql/mutation/braintreeUpdateSubscriptionPaymentMethod.graphql';
 
 import KvIcon from '@/components/Kv/KvIcon';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
@@ -49,7 +46,6 @@ export default {
 		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvButton,
 		KvIcon,
-		KvLoadingSpinner
 	},
 	inject: ['apollo'],
 	mixins: [braintreeDropInError],
@@ -198,5 +194,12 @@ export default {
 			}
 		},
 	},
+	computed: {
+		buttonState() {
+			if (this.submitting) return 'loading';
+			if (!this.enableConfirmButton) return 'disabled';
+			return '';
+		}
+	}
 };
 </script>
