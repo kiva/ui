@@ -130,12 +130,13 @@
 			</div>
 			<div class="row align-middle">
 				<div class="column">
-					<strong>Your contribution will:</strong>
+					<label class="tw-font-medium" for="monthly-good-categories-select">Your contribution will:</label>
 				</div>
 				<div class="column">
 					<kv-select
 						v-model="form.category"
 						class="group-dropdown"
+						id="monthly-good-categories-select"
 					>
 						<option
 							v-for="(option, index) in lendingCategories"
@@ -255,7 +256,7 @@ export default {
 		}
 	},
 	mounted() {
-		/** Accomodate for special cases where MG category might be legacy or null.
+		/** Accommodate for special cases where MG category might be legacy or null.
 		 */
 		if (!this.category) {
 			this.lendingCategories.push(
