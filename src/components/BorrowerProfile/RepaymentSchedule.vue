@@ -102,11 +102,11 @@
 </template>
 
 <script>
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import gql from 'graphql-tag';
 import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
 import { format, parseISO, isBefore } from 'date-fns';
 import numeral from 'numeral';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
@@ -189,7 +189,8 @@ export default {
 			}).then(({ data }) => {
 				this.partnerName = data?.lend?.loan?.partner?.name || '';
 				this.repaymentSchedule = data?.lend?.loan?.terms?.expectedPayments || [];
-				this.repaidAmount = data?.lend?.loan?.paidAmount || 0;
+				this.repaidAmount = 2200.00
+				// data?.lend?.loan?.paidAmount || 0;
 				this.loanAmount = data?.lend?.loan?.loanAmount || 0;
 				this.lenderRepaymentTerm = data?.lend?.loan?.terms?.lenderRepaymentTerm || 0;
 				if (this.isPartnerLoan) {
@@ -216,12 +217,12 @@ export default {
 		},
 		delinquentPayment() {
 			// looking through the parsedRepaymentSchedule for a delinquent payment flag
-			const delinquentPaymentPresent = this.parsedRepaymentSchedule.find( ({ delinquent }) => delinquent === true);
-			return delinquentPaymentPresent !== undefined ? true : false;
+			const delinquentPaymentPresent = this.parsedRepaymentSchedule.find(({ delinquent }) => delinquent === true);
+			return delinquentPaymentPresent !== undefined;
 		},
 		repaymentStatusCheck() {
 			if (this.status === 'payingBack' && this.delinquentPayment) {
-				return 'delinquent'
+				return 'delinquent';
 			}
 			// TODO: fill out other options for other loan statuses
 			return 'on track';
@@ -264,12 +265,12 @@ export default {
 					}, 0);
 
 					// set the repaid boolean
-					repaid = this.repaidAmount > totalMonthlyPaymentValue ? true : false;
+					repaid = this.repaidAmount > totalMonthlyPaymentValue;
 
 					const now = new Date();
 					const parsedRepaymentDate = parseISO(repaymentDate);
 					// if a payment is not repaid and the repayment data is before now, then mark the loan delinquent
-					delinquent = !repaid && isBefore(parsedRepaymentDate, now);
+					delinquent = !repaid && !isBefore(parsedRepaymentDate, now);
 
 					// format date to be displayed
 					const formattedRepaymentDate = format(parseISO(repaymentDate), 'MMM yyyy');
@@ -277,7 +278,13 @@ export default {
 
 					// push the formatted repayment date and totalMonthlyPayment values
 					// into another array to be used for rendering
-					monthlyRepaymentData.push({ formattedRepaymentDate, totalMonthlyPayment, formattedMonthlyPayment, repaid, delinquent});
+					monthlyRepaymentData.push({
+						formattedRepaymentDate,
+						totalMonthlyPayment,
+						formattedMonthlyPayment,
+						repaid,
+						delinquent
+					});
 				});
 			}
 			return monthlyRepaymentData;
