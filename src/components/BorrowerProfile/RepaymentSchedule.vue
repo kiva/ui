@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<!-- only showing a repayment schedule for all fundraising loans
-		and payingBacking filed partner loans -->
+		<!-- showing a repayment schedule on all fundraising loans
+		and field partner loans in the status of payingBack -->
 		<button class="tw-text-h4 tw-text-link tw-mt-3"
 			@click="openLightbox"
 			v-if="this.status === 'fundraising' || this.status === 'payingBack' && isPartnerLoan"
@@ -215,7 +215,7 @@ export default {
 			return 'begin';
 		},
 		delinquentPayment() {
-			// looking through the parsedRepaymentSchedule for a delinquent payment flag
+			// looking through the parsedRepaymentSchedule for a delinquent payment boolean
 			const delinquentPaymentPresent = this.parsedRepaymentSchedule.find(({ delinquent }) => delinquent === true);
 			return delinquentPaymentPresent !== undefined;
 		},
@@ -238,8 +238,6 @@ export default {
 					return acc;
 				}, {});
 
-				// iterating through the repaymentScheduleByDueDate in order
-				// to pull off the amount field for each payment
 				Object.entries(repaymentScheduleByDueDate).forEach(([repaymentDate, repaymentItemData]) => {
 					// iterating through each repaymentItemByDueDate, pulling off the amount from each repaymentItemData
 					// and reducing it down to an array of individual repayments made in a month.
@@ -255,10 +253,10 @@ export default {
 						return runningTotal + parseFloat(amount);
 					}, 0);
 
-					// push the monthly repayments to a new array to later be used to check repayments
+					// push the monthly repayments to a new array to be used to check if repayments are on time
 					monthlyTotalRepayments.push(totalMonthlyPayment);
 
-					// iterate through the monthlyRepayments, adding them together
+					// iterate through the monthlyRepayments and add together each month's payments to get a total monthly payment amount
 					const totalMonthlyPaymentValue = monthlyTotalRepayments.reduce((runningTotal, monthlyAmount) => {
 						return runningTotal + parseFloat(monthlyAmount);
 					}, 0);
@@ -269,14 +267,13 @@ export default {
 					const now = new Date();
 					const parsedRepaymentDate = parseISO(repaymentDate);
 					// if a payment is not repaid and the repayment data is before now, then mark the loan delinquent
-					delinquent = !repaid && !isBefore(parsedRepaymentDate, now);
+					delinquent = !repaid && isBefore(parsedRepaymentDate, now);
 
-					// format date to be displayed
+					// format date and monthly payment amount for display
 					const formattedRepaymentDate = format(parseISO(repaymentDate), 'MMM yyyy');
 					const formattedMonthlyPayment = numeral(totalMonthlyPayment).format('$0,0.00');
 
-					// push the formatted repayment date and totalMonthlyPayment values
-					// into another array to be used for rendering
+					// add all the parsed repayment data into an array used to render
 					monthlyRepaymentData.push({
 						formattedRepaymentDate,
 						totalMonthlyPayment,
@@ -287,9 +284,6 @@ export default {
 				});
 			}
 			return monthlyRepaymentData;
-		},
-		formatDollarAmount(amount) {
-			return numeral(amount).format('$0,0.00');
 		},
 		loanAmountFormatted() {
 			return numeral(this.loanAmount).format('$0,0.00');
