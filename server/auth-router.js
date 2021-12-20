@@ -221,6 +221,14 @@ module.exports = function authRouter(config = {}) {
 		];
 		if (bypassPaths.includes(req.path)) {
 			next();
+		} else if ((req.headers?.cookie ?? '').includes('kvfa=')) {
+			// Skip login sync check if a fake authentication cookie is set
+			console.log(JSON.stringify({
+				meta: {},
+				level: 'log',
+				message: `LoginSyncUI: FakeAuthentication cookie present, skipping sync, session id:${req.sessionID}`,
+			}));
+			next();
 		} else if (isNotedLoggedIn(req) && !req.user) {
 			console.log(JSON.stringify({
 				meta: {},
@@ -251,7 +259,10 @@ module.exports = function authRouter(config = {}) {
 
 	// For all routes, check if the access token is expired and attempt to renew it
 	router.use((req, res, next) => {
-		if (req.user && isExpired(req.user.accessToken)) {
+		if ((req.headers?.cookie ?? '').includes('kvfa=')) {
+			// Skip expiration check if a fake authentication cookie is set
+			next();
+		} else if (req.user && isExpired(req.user.accessToken)) {
 			req.logout(); // Remove expired token from session
 			attemptSilentAuth(req, res, next);
 		} else {
