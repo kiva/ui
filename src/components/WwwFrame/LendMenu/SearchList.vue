@@ -1,10 +1,16 @@
 <template>
 	<ul>
 		<li v-for="search in searches" :key="search.id">
-			<a :href="search.url">{{ search.name }}</a>
+			<a
+				class="tw-text-primary hover:tw-text-action-highlight tw-block tw-w-full tw-py-1"
+				:href="search.url"
+			>{{ search.name }}</a>
 		</li>
 		<li>
-			<router-link to="/lend/saved-search">
+			<router-link
+				to="/lend/saved-search"
+				class="tw-text-primary hover:tw-text-action-highlight tw-block tw-w-full tw-py-1"
+			>
 				Manage saved searches
 			</router-link>
 		</li>

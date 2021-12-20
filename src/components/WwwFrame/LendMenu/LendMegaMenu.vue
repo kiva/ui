@@ -1,128 +1,172 @@
 <template>
-	<div class="lend-mega-menu">
-		<div class="categories-section" :style="{ marginLeft: categoriesMargin }">
-			<h2>Categories</h2>
-			<kv-loading-spinner v-if="isChannelsLoading" />
-			<ul :style="categoriesStyle">
-				<li
-					v-for="(category, index) in categories"
-					ref="categories"
-					:key="index"
-					:class="{ 'last-category': category == categories[categories.length - 1] }"
-				>
-					<a
-						:href="category.url"
-						v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]"
-					>
-						{{ category.name }}
-					</a>
-				</li>
-				<li>
-					<router-link
-						to="/categories"
-						v-kv-track-event="['TopNav','click-Lend-All_Categories']"
-					>
-						All categories
-					</router-link>
-				</li>
-				<li ref="allLoans">
-					<router-link
-						to="/lend"
-						v-kv-track-event="['TopNav','click-Lend-All_Loans']"
-					>
-						All loans
-					</router-link>
-				</li>
-			</ul>
-		</div>
-		<kv-expandable property="width">
-			<div class="close-section" v-show="sectionOpen">
-				<button @click="closeSection">
-					<kv-icon class="close-icon" name="medium-chevron" :from-sprite="true" />
-				</button>
-			</div>
-		</kv-expandable>
-		<div class="middle-section">
-			<h2>Regions</h2>
-			<kv-loading-spinner v-if="isRegionsLoading" />
-			<ul>
-				<li v-for="region in regions" :key="region.name">
+	<div class="lend-mega-menu tw-overflow-hidden tw-hidden lg:tw-block">
+		<div
+			:style="computedStyle"
+			class="tw-transition tw-duration-1000 tw-ease-in-out"
+		>
+			<kv-grid style="grid-template-columns: repeat(18, minmax(0, 1fr));">
+				<!-- categories -->
+				<div class="tw-col-span-7" ref="categories">
+					<h2 class="tw-text-base tw-mb-2">
+						Categories
+					</h2>
+					<kv-loading-spinner
+						v-if="isChannelsLoading"
+						class="tw-mx-auto tw-mt-4 tw-mb-2"
+					/>
+
+					<div class="tw-flex tw-gap-4 tw-whitespace-nowrap">
+						<ul class="category-list">
+							<li
+								v-for="(category, index) in categories"
+								:key="index"
+								class="tw-w-[11rem]"
+							>
+								<a
+									:href="category.url"
+									class="tw-text-primary tw-text-left hover:tw-text-action-highlight
+									tw-py-1 tw-font-medium tw-inline-block"
+									v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]"
+								>
+									{{ category.name }}
+								</a>
+							</li>
+						</ul>
+						<ul>
+							<li class="tw-w-[11rem]">
+								<router-link
+									to="/categories"
+									class="tw-text-primary tw-font-medium
+									hover:tw-text-action-highlight tw-inline-block tw-py-1"
+									v-kv-track-event="['TopNav','click-Lend-All_Categories']"
+								>
+									All categories
+								</router-link>
+							</li>
+							<li class="tw-w-[11rem]" ref="allLoans">
+								<router-link
+									class="tw-text-primary tw-font-medium
+									hover:tw-text-action-highlight tw-inline-block tw-py-1"
+									to="/lend"
+									v-kv-track-event="['TopNav','click-Lend-All_Loans']"
+								>
+									All loans
+								</router-link>
+							</li>
+						</ul>
+					</div>
+
+					<!-- my kiva -->
+					<!-- TODO: Where should this go? -->
+					<div>
+						<h2 v-if="userId" class="tw-text-base">
+							My Kiva
+						</h2>
+						<ul v-if="userId">
+							<li>
+								<router-link
+									v-if="favorites > 0"
+									:to="{ path: '/lend', query: { lenderFavorite: userId } }"
+									v-kv-track-event="['TopNav','click-Lend-Favorites']"
+								>
+									Starred loans
+								</router-link>
+								<span v-else>Starred loans</span>
+							</li>
+							<li>
+								<button
+									v-if="hasSearches"
+									@click="openSection(savedSearchesTitle)"
+									:aria-pressed="isOpenSection(savedSearchesTitle) ? 'true' : 'false'"
+								>
+									{{ savedSearchesTitle }}
+								</button>
+								<span v-else>Saved searches</span>
+								<div v-if="isOpenSection(savedSearchesTitle)" class="right-section">
+									<h2>{{ savedSearchesTitle }}</h2>
+									<search-list :searches="searches" />
+								</div>
+							</li>
+							<li>
+								<router-link
+									to="/lend/countries-not-lent"
+									v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
+								>
+									Countries I haven't lent to
+								</router-link>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="tw-col-span-2">
 					<button
-						@click="openSection(region.name)"
-						:aria-pressed="isOpenSection(region.name) ? 'true' : 'false'"
-						v-kv-track-event="['TopNav','click-Lend-Region', region.name]"
+						class="tw-flex"
+						v-if="sectionOpen"
+						@click="openedSection = ''"
 					>
-						{{ region.name }}
+						<kv-material-icon class="tw-flex-shrink-0" :icon="mdiChevronLeft" />
+						<span class="tw-text-base">
+							Back
+						</span>
 					</button>
-				</li>
-			</ul>
-			<h2 v-if="userId" class="my-kiva-title">
-				My Kiva
-			</h2>
-			<ul v-if="userId">
-				<li>
-					<router-link
-						v-if="favorites > 0"
-						:to="{ path: '/lend', query: { lenderFavorite: userId } }"
-						v-kv-track-event="['TopNav','click-Lend-Favorites']"
-					>
-						Starred loans
-					</router-link>
-					<span v-else>Starred loans</span>
-				</li>
-				<li>
-					<button
-						v-if="hasSearches"
-						@click="openSection(savedSearchesTitle)"
-						:aria-pressed="isOpenSection(savedSearchesTitle) ? 'true' : 'false'"
-					>
-						{{ savedSearchesTitle }}
-					</button>
-					<span v-else>Saved searches</span>
-				</li>
-				<li>
-					<router-link
-						to="/lend/countries-not-lent"
-						v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
-					>
-						Countries I haven't lent to
-					</router-link>
-				</li>
-			</ul>
+				</div>
+
+				<!-- regions -->
+				<div class="tw-col-span-8 tw-flex tw-flex-col">
+					<kv-loading-spinner
+						v-if="isRegionsLoading"
+						class="tw-mx-auto tw-mt-4 tw-mb-2"
+					/>
+					<template v-else>
+						<h2 class="tw-text-base tw-mb-2">
+							Regions
+						</h2>
+						<div class="tw-flex tw-whitespace-nowrap tw-h-full">
+							<ul>
+								<li v-for="region in regions" :key="region.name" class="tw-w-[11rem] tw-mr-4">
+									<button
+										@click="openSection(region.name)"
+										:aria-pressed="isOpenSection(region.name) ? 'true' : 'false'"
+										v-kv-track-event="['TopNav','click-Lend-Region', region.name]"
+										class="tw-text-primary tw-text-left
+											tw-font-medium hover:tw-text-action-highlight tw-py-1"
+										:class="{ 'tw-text-action' : isOpenSection(region.name)}"
+									>
+										{{ region.name }}
+									</button>
+								</li>
+							</ul>
+							<div
+								v-for="region in openRegions"
+								:key="region.name"
+								class="tw-h-full"
+							>
+								<country-list :countries="region.countries" class="region-list tw-h-full" />
+							</div>
+						</div>
+					</template>
+				</div>
+			</kv-grid>
 		</div>
-		<kv-expandable property="width" :skip-leave="true">
-			<div
-				v-for="region in openRegions"
-				:key="region.name"
-				class="right-section"
-			>
-				<h2>{{ region.name }}</h2>
-				<country-list :countries="region.countries" />
-			</div>
-			<div v-if="isOpenSection(savedSearchesTitle)" class="right-section">
-				<h2>{{ savedSearchesTitle }}</h2>
-				<search-list :searches="searches" />
-			</div>
-		</kv-expandable>
 	</div>
 </template>
 
 <script>
-import _get from 'lodash/get';
-import numeral from 'numeral';
-import KvExpandable from '@/components/Kv/KvExpandable';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import { mdiChevronLeft } from '@mdi/js';
+import KvLoadingSpinner from '~/@kiva/kv-components/vue/KvLoadingSpinner';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import CountryList from './CountryList';
 import SearchList from './SearchList';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		KvLoadingSpinner,
 		CountryList,
-		KvExpandable,
-		KvIcon,
+		KvGrid,
+		KvLoadingSpinner,
+		KvMaterialIcon,
 		SearchList,
 	},
 	props: {
@@ -160,17 +204,17 @@ export default {
 			categoriesWidth: null,
 			openedSection: '',
 			savedSearchesTitle: 'Saved searches',
+			mdiChevronLeft,
 		};
 	},
 	computed: {
-		categoriesStyle() {
-			return {
-				height: `${Math.ceil((this.categories.length + 3) / 2) * 1.5}rem`,
-				width: this.categoriesWidth,
-			};
-		},
-		categoriesMargin() {
-			return this.categoriesWidth && this.sectionOpen ? `-${this.categoriesWidth}` : '1rem';
+		computedStyle() {
+			let style = 'width: 150%;';
+			if (this.sectionOpen) {
+				const categoryWidth = this.getRefWidth('categories');
+				style += `transform: translateX(${categoryWidth * -1}px);`;
+			}
+			return style;
 		},
 		hasSearches() {
 			return this.searches.length > 0;
@@ -182,39 +226,10 @@ export default {
 			return this.regions.filter(region => this.isOpenSection(region.name));
 		}
 	},
-	watch: {
-		categories() {
-			this.checkCategoryWidth();
-		}
-	},
 	methods: {
-		// js workaround for flex column wrap bug (https://github.com/philipwalton/flexbugs#flexbug-14)
-		// We expect the categories section to be 2 columns wide. This will force the section to be
-		// that wide if it isn't, due to the flexbox bug mentioned above.
-		checkCategoryWidth() {
-			this.categoriesWidth = null;
-			if (this.categories.length === 0) {
-				// sensible default for categories while they load
-				// avoids resizing the menu too much since the other parts will have loaded already
-				this.categoriesWidth = '257px';
-			} else {
-				this.$nextTick(() => {
-					const firstColumnWidth = this.getRefWidth('categories[0]');
-					const secondColumnWidth = this.getRefWidth('allLoans');
-					this.categoriesWidth = `${firstColumnWidth + secondColumnWidth}px`;
-				});
-			}
-		},
 		getRefWidth(refPath) {
-			const ref = _get(this.$refs, refPath);
-			if (ref) {
-				const widthValue = window.getComputedStyle(ref).getPropertyValue('width');
-				return Math.ceil(numeral(widthValue).value());
-			}
-			return 0;
-		},
-		onOpen() {
-			this.checkCategoryWidth();
+			const ref = this.$refs[refPath] || null;
+			return ref?.clientWidth ?? 0;
 		},
 		onClose() {
 			this.closeSection();
@@ -223,128 +238,25 @@ export default {
 			return this.openedSection === section;
 		},
 		openSection(section) {
-			if (this.isOpenSection(section)) {
-				this.closeSection();
-			} else {
-				this.openedSection = section;
-			}
+			this.openedSection = section;
 		},
 		closeSection() {
 			this.openedSection = '';
 		},
 	},
-	mounted() {
-		this.checkCategoryWidth();
-	},
 };
 </script>
 
-<style lang="scss">
-@import 'settings';
+<style lang="postcss" scoped>
+/* TODO: Tailwind 3 has classes for columns */
+.region-list {
+	column-count: 3;
+	column-fill: auto;
+	column-gap: theme('spacing.4');
+}
 
-.lend-mega-menu {
-	$section-header-font-size: rem-calc(21);
-	$section-padding: 1.5rem;
-
-	display: flex;
-	padding: 1rem 0;
-	white-space: nowrap;
-	overflow: hidden;
-
-	h2 {
-		font-size: $section-header-font-size;
-		font-weight: normal;
-		color: $kiva-text-dark;
-		margin-bottom: 0.5rem;
-	}
-
-	li {
-		font-size: $small-text-font-size;
-		line-height: 1.5rem;
-	}
-
-	button:focus {
-		outline: none;
-	}
-
-	& > * + * {
-		border-left: solid 1px $kiva-stroke-gray;
-	}
-
-	.categories-section {
-		overflow: hidden;
-		transition: margin 500ms ease;
-
-		ul {
-			display: flex;
-			flex-flow: column wrap;
-			justify-content: space-between;
-		}
-
-		li {
-			padding-right: 1rem;
-		}
-
-		.last-category {
-			flex-grow: 1;
-		}
-	}
-
-	.close-section {
-		border-left: none;
-
-		button {
-			padding: 0 1rem;
-		}
-
-		.close-icon {
-			width: 3.25rem;
-			height: 6rem;
-			transform: rotate(90deg);
-		}
-	}
-
-	.middle-section h2,
-	.middle-section button,
-	.middle-section a,
-	.middle-section span,
-	.right-section h2,
-	.right-section a,
-	.right-section span {
-		padding: 0 $section-padding;
-	}
-
-	.middle-section {
-		button {
-			color: rgb(var(--text-action));
-			padding: 0 $section-padding;
-			width: 100%;
-			line-height: inherit;
-			text-align: left;
-
-			&:hover {
-				color: rgb(var(--text-action-highlight));
-				text-decoration: underline;
-			}
-
-			&[aria-pressed="true"] {
-				color: $kiva-text-light;
-				text-decoration: none;
-				background-color: $kiva-bg-darkgray;
-			}
-		}
-
-		span {
-			color: $kiva-text-light;
-		}
-
-		.my-kiva-title {
-			margin-top: 1.5rem;
-		}
-	}
-
-	.right-section span {
-		color: $kiva-text-light;
-	}
+.category-list {
+	column-count: 2;
+	column-gap: theme('spacing.4');
 }
 </style>

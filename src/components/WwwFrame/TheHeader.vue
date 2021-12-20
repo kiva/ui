@@ -2,7 +2,7 @@
 	<header>
 		<nav
 			aria-label="Primary navigation"
-			class="tw-bg-primary tw-border-b tw-border-tertiary"
+			class="tw-bg-primary tw-border-b tw-border-tertiary tw-relative"
 		>
 			<kv-page-container>
 				<!-- minimal header -->
@@ -89,12 +89,13 @@
 								<span class="tw-sr-only">Kiva Home</span>
 							</router-link>
 
-							<!-- links -->
 							<router-link
 								:id="lendMenuId"
 								to="/lend-by-category"
 								class="header__button header__lend"
 								v-kv-track-event="['TopNav','click-Lend']"
+								event
+								@click.native.prevent="showLendMenu"
 							>
 								<span class="tw-flex tw-items-center">Lend
 									<kv-material-icon class="tw-w-3" :icon="mdiChevronDown" />
@@ -106,9 +107,12 @@
 						tw-flex tw-justify-end tw-gap-2.5 lg:tw-gap-4"
 						>
 							<router-link
-								v-show="isVisitor"
 								to="/borrow"
-								class="header__button header__borrow tw-hidden md:tw-block"
+								class="header__borrow"
+								:class="{
+									'tw-hidden': !isVisitor,
+									'header__button !tw-hidden md:!tw-flex': isVisitor
+								}"
 								v-kv-track-event="['TopNav','click-Borrow']"
 							>
 								Borrow
@@ -117,7 +121,11 @@
 								v-show="isVisitor"
 								:id="aboutMenuId"
 								to="/about"
-								class="header__button header__about"
+								class="header__about"
+								:class="{
+									'tw-hidden': !isVisitor,
+									'header__button': isVisitor
+								}"
 								v-kv-track-event="['TopNav','click-About']"
 							>
 								<span class="tw-flex">
@@ -127,10 +135,10 @@
 							</router-link>
 							<button
 								class="header__button header__search-icon md:!tw-hidden"
+								v-show="!hideSearchInHeader && !isVisitor"
 								:aria-expanded="searchOpen ? 'true' : 'false'"
 								:aria-pressed="searchOpen ? 'true' : 'false'"
 								aria-controls="top-nav-search-area"
-								v-show="!hideSearchInHeader"
 								@click="toggleMobileSearch"
 								v-kv-track-event="['TopNav','click-search-toggle']"
 							>
@@ -191,23 +199,24 @@
 
 						<!-- dropdowns -->
 						<div class="tw-contents">
-							<kv-dropdown
-								v-if="mgHighlightInNavVersion === 'shown'"
-								:controller="lendMenuId"
-								@show.once="loadLendInfo"
-								@show="onLendMenuShow"
+							<div
+								v-show="isLendMenuVisible"
+								class="
+							tw-absolute tw-left-0 tw-right-0 tw-top-10 tw-z-dropdown
+							tw-bg-primary tw-border-b tw-border-tertiary tw-pb-2.5 tw-pt-2"
 							>
-								<monthly-good-exp-menu-wrapper ref="mgExpWrapper" />
-							</kv-dropdown>
-							<kv-dropdown
-								v-if="mgHighlightInNavVersion !== 'shown'"
+								<kv-page-container>
+									<the-lend-menu ref="lendMenu" />
+								</kv-page-container>
+							</div>
+							<!-- <kv-dropdown
 								:controller="lendMenuId"
 								@show.once="loadLendInfo"
 								@show="onLendMenuShow"
 								@hide="onLendMenuHide"
 							>
 								<the-lend-menu ref="lendMenu" />
-							</kv-dropdown>
+							</kv-dropdown> -->
 							<kv-dropdown
 								:controller="aboutMenuId"
 								v-show="isVisitor"
@@ -409,7 +418,6 @@ import experimentVersionFragment from '@/graphql/fragments/experimentVersion.gra
 import { preFetchAll } from '@/util/apolloPreFetch';
 
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
-import MonthlyGoodExpMenuWrapper from '@/components/WwwFrame/LendMenu/MonthlyGoodExpMenuWrapper';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import { mdiMagnify, mdiChevronDown } from '@mdi/js';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
@@ -426,7 +434,6 @@ export default {
 		KvDropdown,
 		KvMaterialIcon,
 		KvPageContainer,
-		MonthlyGoodExpMenuWrapper,
 		PromoBannerLarge,
 		PromoBannerSmall,
 		SearchBar,
@@ -437,6 +444,7 @@ export default {
 		return {
 			isVisitor: true,
 			isBorrower: false,
+			isLendMenuVisible: false,
 			loanId: null,
 			trusteeId: null,
 			isFreeTrial: false,
@@ -449,7 +457,6 @@ export default {
 			searchOpen: false,
 			redirectToLoginExperimentVersion: null,
 			basketState: {},
-			mgHighlightInNavVersion: null,
 			mdiMagnify,
 			mdiChevronDown
 		};
@@ -471,21 +478,6 @@ export default {
 			type: String,
 			default: ''
 		},
-	},
-	created() {
-		// EXP SUBS-680 present main nav options for subscription or individual lending
-		const mgHighlightInNav = this.apollo.readFragment({
-			id: 'Experiment:mg_highlight_in_nav',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.mgHighlightInNavVersion = mgHighlightInNav.version;
-
-		// Fire Event for EXP SUBS-680
-		this.$kvTrackEvent(
-			'TopNav',
-			'EXP-SUBS-680-Apr2021',
-			this.mgHighlightInNavVersion === 'shown' ? 'b' : 'a'
-		);
 	},
 	computed: {
 		isTrustee() {
@@ -570,10 +562,11 @@ export default {
 				});
 			}
 		},
+		showLendMenu() {
+			this.isLendMenuVisible = !this.isLendMenuVisible;
+			this.loadLendInfo(); // TODO: can we only run this once like before?
+		},
 		onLendMenuShow() {
-			if (this.mgHighlightInNavVersion !== 'shown') {
-				this.$refs?.lendMenu?.onOpen?.();
-			}
 			this.$kvTrackEvent('TopNav', 'hover-Lend-menu', 'Lend');
 		},
 		onLendMenuHide() {
@@ -585,11 +578,7 @@ export default {
 			return route;
 		},
 		loadLendInfo() {
-			if (this.mgHighlightInNavVersion === 'shown') {
-				this.$refs.mgExpWrapper.onLoad();
-			} else {
-				this.$refs.lendMenu.onLoad();
-			}
+			this.$refs.lendMenu.onLoad();
 		},
 		toggleMobileSearch() {
 			this.searchOpen = !this.searchOpen;
