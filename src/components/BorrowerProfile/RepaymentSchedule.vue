@@ -256,7 +256,8 @@ export default {
 					// push the monthly repayments to a new array to be used to check if repayments are on time
 					monthlyTotalRepayments.push(totalMonthlyPayment);
 
-					// iterate through the monthlyRepayments and add together each month's payments to get a total monthly payment amount
+					// iterate through the monthlyRepayments and add together each
+					// month's payments to get a total monthly payment amount
 					const totalMonthlyPaymentValue = monthlyTotalRepayments.reduce((runningTotal, monthlyAmount) => {
 						return runningTotal + parseFloat(monthlyAmount);
 					}, 0);
