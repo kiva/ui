@@ -189,8 +189,7 @@ export default {
 			}).then(({ data }) => {
 				this.partnerName = data?.lend?.loan?.partner?.name || '';
 				this.repaymentSchedule = data?.lend?.loan?.terms?.expectedPayments || [];
-				this.repaidAmount = 2200.00
-				// data?.lend?.loan?.paidAmount || 0;
+				this.repaidAmount = data?.lend?.loan?.paidAmount || 0;
 				this.loanAmount = data?.lend?.loan?.loanAmount || 0;
 				this.lenderRepaymentTerm = data?.lend?.loan?.terms?.lenderRepaymentTerm || 0;
 				if (this.isPartnerLoan) {
