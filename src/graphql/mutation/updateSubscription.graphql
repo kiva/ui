@@ -1,0 +1,19 @@
+mutation updateSubscription($amount: Money!, $categoryId: String!, $donation: Money!, $filterId: String, $noteSize: Money!, $dayOfMonth: Int!, $lendingDelay: Int!, $period: SchedulePeriodEnum!, $subscriptionId: ID!) {
+		updateSubscription (
+			subscriptionId: $subscriptionId,
+			subscriptionInput: {
+				amount: $amount,
+				categoryId: $categoryId,
+				donation: $donation,
+				filterId: $filterId,
+				noteSize: $noteSize,
+				schedule: {
+					dayOfMonth: $dayOfMonth,
+					lendingDelay: $lendingDelay,
+					period: $period
+				}
+			}
+		) {
+			id
+		}
+}
