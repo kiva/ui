@@ -80,14 +80,16 @@
 						tw-contents tw-gap-2.5 lg:tw-gap-6 lg:tw-flex tw-justify-start tw-items-center"
 						>
 							<!-- logo -->
-							<router-link
-								class="header__logo header__button"
-								to="/"
-								v-kv-track-event="['TopNav','click-Logo']"
-							>
-								<kiva-logo class="tw-w-5 tw-text-brand" />
-								<span class="tw-sr-only">Kiva Home</span>
-							</router-link>
+							<div class="header__logo">
+								<router-link
+									class="header__button"
+									to="/"
+									v-kv-track-event="['TopNav','click-Logo']"
+								>
+									<kiva-logo class="tw-w-5 tw-text-brand" />
+									<span class="tw-sr-only">Kiva Home</span>
+								</router-link>
+							</div>
 
 							<router-link
 								:id="lendMenuId"
@@ -652,7 +654,7 @@ export default {
 
 <style lang="postcss" scoped>
 .header__button {
-	@apply tw-flex tw-items-center tw-flex-shrink-0;
+	@apply tw-inline-flex tw-items-center tw-flex-shrink-0;
 	@apply tw-font-medium tw-text-primary hover:tw-text-action-highlight hover:tw-no-underline focus:tw-no-underline;
 	@apply tw-h-8 md:tw-h-9 tw-whitespace-nowrap tw-flex-shrink-0;
 }
