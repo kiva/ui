@@ -172,7 +172,7 @@ export default {
 			amount, dayOfMonth, categoryId, categoryName, isChanged, isFormValid
 		}) {
 			this.amount = amount;
-			this.dayOfMonth = dayOfMonth > 28 ? 28 : this.dayOfMonth;
+			this.dayOfMonth = dayOfMonth > 28 ? 28 : dayOfMonth;
 			this.categoryId = categoryId;
 			this.isChanged = isChanged;
 			this.isFormValid = isFormValid;
