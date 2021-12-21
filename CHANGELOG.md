@@ -1,3 +1,10 @@
+## [2.27.0](https://github.com/kiva/ui/compare/v2.26.1...v2.27.0) (2021-12-21)
+
+
+### Features
+
+* update causes subscription payment method ([47ecc88](https://github.com/kiva/ui/commit/47ecc8893ba07b090a96beb51622ab8e94c76a9b))
+
 ### [2.26.1](https://github.com/kiva/ui/compare/v2.26.0...v2.26.1) (2021-12-21)
 
 
