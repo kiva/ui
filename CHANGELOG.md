@@ -1,3 +1,10 @@
+### [2.26.1](https://github.com/kiva/ui/compare/v2.26.0...v2.26.1) (2021-12-21)
+
+
+### Bug Fixes
+
+* causes subscription day of month edit not working ([66ef645](https://github.com/kiva/ui/commit/66ef6457583663e02ecbe82ecc2d297aed97eaf5))
+
 ## [2.26.0](https://github.com/kiva/ui/compare/v2.25.1...v2.26.0) (2021-12-20)
 
 
