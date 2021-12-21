@@ -2,7 +2,7 @@
 	<div>
 		<router-link
 			to="/monthlygood"
-			class="tw-flex tw-gap-0.5 tw-py-1 tw-mb-2 tw-border-b tw-border-tertiary tw-font-medium"
+			class="tw-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-border-b tw-border-tertiary tw-font-medium"
 			v-kv-track-event="['TopNav','click-Find-a-Cause', 'Find a cause']"
 		>
 			Find a cause
@@ -29,6 +29,7 @@
 					/>
 					<ul
 						v-else
+						class="tw-font-medium"
 					>
 						<li v-for="(category, index) in categories" :key="index">
 							<a

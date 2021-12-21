@@ -1,5 +1,5 @@
 <template>
-	<div class="lend-mega-menu tw-overflow-hidden tw-hidden lg:tw-block">
+	<div class="lend-mega-menu tw-overflow-hidden tw-hidden lg:tw-block tw-pb-2.5 lg:tw-pt-3">
 		<div
 			:style="computedStyle"
 			class="tw-transition tw-duration-1000 tw-ease-in-out"

@@ -202,8 +202,9 @@
 							<div
 								v-show="isLendMenuVisible"
 								class="
-							tw-absolute tw-left-0 tw-right-0 tw-top-10 tw-z-dropdown
-							tw-bg-primary tw-border-b tw-border-tertiary tw-pb-2.5 tw-pt-2"
+									tw-absolute tw-left-0 tw-right-0 tw-top-8 md:tw-top-9 tw-z-dropdown
+									tw-bg-primary tw-border-b tw-border-tertiary"
+								style="margin-top: 1px;"
 							>
 								<kv-page-container>
 									<the-lend-menu ref="lendMenu" />
@@ -606,7 +607,7 @@ export default {
 <style lang="postcss" scoped>
 .header__button {
 	@apply tw-flex tw-items-center tw-flex-shrink-0;
-	@apply tw-text-primary hover:tw-text-action-highlight hover:tw-no-underline focus:tw-no-underline;
+	@apply tw-font-medium tw-text-primary hover:tw-text-action-highlight hover:tw-no-underline focus:tw-no-underline;
 	@apply tw-h-8 md:tw-h-9 tw-whitespace-nowrap tw-flex-shrink-0;
 }
 

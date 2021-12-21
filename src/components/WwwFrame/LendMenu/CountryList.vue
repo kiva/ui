@@ -1,5 +1,5 @@
 <template>
-	<ul class="tw-whitespace-nowrap">
+	<ul class="tw-whitespace-nowrap tw-font-medium">
 		<li v-for="country in countries" :key="country.isoCode" class="lg:tw-w-[11rem]">
 			<router-link
 				v-if="country.count > 0"
