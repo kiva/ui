@@ -54,6 +54,19 @@
 										@form-update="formUpdated"
 										class="causes-update-lightbox__form"
 									/>
+									<div class="causes-update-lightbox__payment-method">
+										<div class="row">
+											<div class="column text-right">
+												<button
+													class="button--link"
+													@click="toggleSections"
+												>
+													<strong>Update Payment Method</strong>
+													<kv-icon class="icon-pencil" name="pencil" title="Edit" />
+												</button>
+											</div>
+										</div>
+									</div>
 									<kv-button
 										data-test="causes-save-button"
 										class="smaller button"
@@ -66,6 +79,33 @@
 									<kv-button data-test="causes-save-button" class="smaller button" v-else>
 										Saving <kv-loading-spinner />
 									</kv-button>
+								</div>
+								<!-- Payment Methods -->
+								<div
+									v-if="!settingsOpen"
+									class="row column" key="paymentSettings"
+								>
+									<kv-button class="text-link"
+										@click.native.prevent="toggleSections"
+									>
+										<kv-icon
+											class="arrow back-arrow"
+											name="small-chevron"
+											:from-sprite="true"
+										/>
+										Back to deposit settings
+									</kv-button>
+									<div class="causes-update-lightbox__dropin-payment-wrapper">
+										<div class="kv-tailwind">
+											<causes-drop-in-payment-wrapper
+												action="Update"
+												:amount="amount"
+												:day-of-month="dayOfMonth"
+												:subscription-id="subscriptionId"
+												@complete-transaction="completeCausesUpdatePayment"
+											/>
+										</div>
+									</div>
 								</div>
 							</transition>
 						</div>
@@ -95,6 +135,9 @@ import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import KvIcon from '@/components/Kv/KvIcon';
+import CausesDropInPaymentWrapper from '@/components/Causes/CausesDropInPaymentWrapper';
+
 import SubscriptionsCausesCancellationFlow from
 	'@/components/Subscriptions/SubscriptionsCausesCancellationFlow';
 
@@ -120,7 +163,9 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		CausesUpdateForm,
+		CausesDropInPaymentWrapper,
 		KvButton,
+		KvIcon,
 		KvLightbox,
 		KvLoadingSpinner,
 		KvSettingsCard,
@@ -159,6 +204,9 @@ export default {
 		},
 	},
 	methods: {
+		toggleSections() {
+			this.settingsOpen = !this.settingsOpen;
+		},
 		/** This method is triggered when the form is updated.
 		* Sets the values in this component to the form values
 		* @param {Object} form - Update form values
@@ -209,6 +257,15 @@ export default {
 				this.showEditLightbox = false;
 			});
 		},
+		completeCausesUpdatePayment() {
+			this.$kvTrackEvent('Causes', 'successful-update-causes-payment', 'update-causes-payment');
+			this.showEditLightbox = false;
+			// reset lightbox state
+			this.settingsOpen = true;
+			// refetch page query with updated information
+			this.apollo.query({ query: pageQuery, fetchPolicy: 'network-only' });
+			this.$showTipMsg('Payment method updated');
+		},
 		closeLightbox() {
 			/** If form is changed, let parent component know so save button can be displayed
 			 * This method will not be executed when lightbox closes after saving.
@@ -248,6 +305,7 @@ export default {
 	&__payment-method {
 		padding-right: 2rem;
 		margin-bottom: 2rem;
+		margin-top: rem-calc(24);
 	}
 
 	&__dropin-payment-wrapper {
