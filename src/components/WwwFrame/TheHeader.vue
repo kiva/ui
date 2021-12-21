@@ -95,7 +95,9 @@
 								class="header__button header__lend"
 								v-kv-track-event="['TopNav','click-Lend']"
 								event
-								@click.native.prevent="showLendMenu"
+								@pointerover.native.stop="onLendLinkPointerOver"
+								@pointerout.native.stop="onLendLinkPointerOut"
+								@pointerup.native.stop="onLendLinkPointerUp"
 							>
 								<span class="tw-flex tw-items-center">Lend
 									<kv-material-icon class="tw-w-3" :icon="mdiChevronDown" />
@@ -199,25 +201,22 @@
 
 						<!-- dropdowns -->
 						<div class="tw-contents">
-							<div
-								v-show="isLendMenuVisible"
-								class="
+							<transition name="kvfastfade">
+								<div
+									v-show="isLendMenuVisible"
+									class="
 									tw-absolute tw-left-0 tw-right-0 tw-top-8 md:tw-top-9 tw-z-dropdown
 									tw-bg-primary tw-border-b tw-border-tertiary"
-								style="margin-top: 1px;"
-							>
-								<kv-page-container>
-									<the-lend-menu ref="lendMenu" />
-								</kv-page-container>
-							</div>
-							<!-- <kv-dropdown
-								:controller="lendMenuId"
-								@show.once="loadLendInfo"
-								@show="onLendMenuShow"
-								@hide="onLendMenuHide"
-							>
-								<the-lend-menu ref="lendMenu" />
-							</kv-dropdown> -->
+									style="margin-top: 1px;"
+								>
+									<kv-page-container>
+										<the-lend-menu ref="lendMenu"
+											@mouseover.native="onLendMenuMouseOver"
+											@mouseout.native="onLendMenuMouseOut"
+										/>
+									</kv-page-container>
+								</div>
+							</transition>
 							<kv-dropdown
 								:controller="aboutMenuId"
 								v-show="isVisitor"
@@ -445,7 +444,9 @@ export default {
 		return {
 			isVisitor: true,
 			isBorrower: false,
+			isLendMenuDesired: false,
 			isLendMenuVisible: false,
+			hideLendMenuTimeout: null,
 			loanId: null,
 			trusteeId: null,
 			isFreeTrial: false,
@@ -563,9 +564,54 @@ export default {
 				});
 			}
 		},
-		showLendMenu() {
-			this.isLendMenuVisible = !this.isLendMenuVisible;
-			this.loadLendInfo(); // TODO: can we only run this once like before?
+		toggleLendMenu(isTouch = false) {
+			if (isTouch) {
+				// if touch, toggle immediately
+				this.isLendMenuVisible = !this.isLendMenuVisible;
+			} else if (!this.isLendMenuVisible) {
+				// if mouse and menu is hidden, show immediately
+				this.isLendMenuVisible = true;
+			} else {
+				// if mouse and menu is showing,
+				// wait a half second to hide in case is was an accidental mouseout
+				clearTimeout(this.hideLendMenuTimeout);
+				this.hideLendMenuTimeout = setTimeout(() => {
+					if (!this.isLendMenuDesired) {
+						this.isLendMenuVisible = false;
+					}
+				}, 500);
+			}
+		},
+		onLendLinkPointerOver(e) {
+			if (e.pointerType === 'touch') {
+				return;
+			}
+			this.isLendMenuDesired = true;
+			this.toggleLendMenu();
+		},
+		onLendLinkPointerOut(e) {
+			if (e.pointerType === 'touch') {
+				return;
+			}
+			this.isLendMenuDesired = false;
+			this.toggleLendMenu();
+		},
+		onLendLinkPointerUp(e) {
+			if (e.pointerType === 'touch') {
+				this.toggleLendMenu(true);
+			} else {
+				this.$router.push({
+					path: '/lend-by-category'
+				});
+			}
+		},
+		onLendMenuMouseOver() {
+			this.isLendMenuDesired = true;
+			this.toggleLendMenu();
+		},
+		onLendMenuMouseOut() {
+			this.isLendMenuDesired = false;
+			this.toggleLendMenu();
 		},
 		onLendMenuShow() {
 			this.$kvTrackEvent('TopNav', 'hover-Lend-menu', 'Lend');
@@ -609,6 +655,14 @@ export default {
 	@apply tw-flex tw-items-center tw-flex-shrink-0;
 	@apply tw-font-medium tw-text-primary hover:tw-text-action-highlight hover:tw-no-underline focus:tw-no-underline;
 	@apply tw-h-8 md:tw-h-9 tw-whitespace-nowrap tw-flex-shrink-0;
+}
+
+.dropdown-list {
+	@apply tw-px-2;
+}
+
+.dropdown-list a {
+	@apply tw-font-medium tw-text-primary hover:tw-text-action-highlight tw-block tw-w-full tw-py-1;
 }
 
 /* CSS grid areas to manage position changes across breakpoints without markup duplication */
