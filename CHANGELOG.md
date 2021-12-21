@@ -1,3 +1,42 @@
+## [2.27.0](https://github.com/kiva/ui/compare/v2.26.1...v2.27.0) (2021-12-21)
+
+
+### Features
+
+* update causes subscription payment method ([47ecc88](https://github.com/kiva/ui/commit/47ecc8893ba07b090a96beb51622ab8e94c76a9b))
+
+### [2.26.1](https://github.com/kiva/ui/compare/v2.26.0...v2.26.1) (2021-12-21)
+
+
+### Bug Fixes
+
+* causes subscription day of month edit not working ([66ef645](https://github.com/kiva/ui/commit/66ef6457583663e02ecbe82ecc2d297aed97eaf5))
+
+## [2.26.0](https://github.com/kiva/ui/compare/v2.25.1...v2.26.0) (2021-12-20)
+
+
+### Features
+
+* core-148 cleaning up lint error ([6f35e9f](https://github.com/kiva/ui/commit/6f35e9f4c3f9d015fc4b9d4f4c88e31ae93adf8a))
+* core-148 code and comment cleanup ([7b7ba31](https://github.com/kiva/ui/commit/7b7ba313421ba6128585e8ee4b5538cf826368ed))
+* core-148 fixing lint failure ([a064ecb](https://github.com/kiva/ui/commit/a064ecb3ed93a93d7b78e04881ebb0f91c9bc8d0))
+* core-148 parsing monthly repayments for payments received and payments delinquent ([d8fd536](https://github.com/kiva/ui/commit/d8fd536ee177aeb14abd76c61d9b27d38747dc3b))
+* core-148 testing cleanup ([506f2bd](https://github.com/kiva/ui/commit/506f2bd9935684dacbe982a4f5ed8f62382458fe))
+
+### [2.25.1](https://github.com/kiva/ui/compare/v2.25.0...v2.25.1) (2021-12-16)
+
+
+### Bug Fixes
+
+* ensure legacy kvCarousel keeps button state up to date ([615f63c](https://github.com/kiva/ui/commit/615f63cf7c027934a2a83d08a91560ee9d8626f6))
+
+## [2.25.0](https://github.com/kiva/ui/compare/v2.24.1...v2.25.0) (2021-12-16)
+
+
+### Features
+
+* allow a user to modify their causes subscription ([44565f7](https://github.com/kiva/ui/commit/44565f79d03c7dd817d875d7f790f24668bea395))
+
 ### [2.24.1](https://github.com/kiva/ui/compare/v2.24.0...v2.24.1) (2021-12-15)
 
 
