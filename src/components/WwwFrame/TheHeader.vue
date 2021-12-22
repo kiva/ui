@@ -213,8 +213,8 @@
 								>
 									<kv-page-container>
 										<the-lend-menu ref="lendMenu"
-											@mouseover.native="onLendMenuMouseOver"
-											@mouseout.native="onLendMenuMouseOut"
+											@pointerover.native="onLendMenuPointerOver"
+											@pointerout.native="onLendMenuPointerOut"
 										/>
 									</kv-page-container>
 								</div>
@@ -610,11 +610,17 @@ export default {
 				});
 			}
 		},
-		onLendMenuMouseOver() {
+		onLendMenuPointerOver(e) {
+			if (e.pointerType === 'touch') {
+				return;
+			}
 			this.isLendMenuDesired = true;
 			this.toggleLendMenu();
 		},
-		onLendMenuMouseOut() {
+		onLendMenuPointerOut(e) {
+			if (e.pointerType === 'touch') {
+				return;
+			}
 			this.isLendMenuDesired = false;
 			this.toggleLendMenu();
 		},
