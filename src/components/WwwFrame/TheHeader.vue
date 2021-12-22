@@ -97,8 +97,8 @@
 								class="header__button header__lend"
 								v-kv-track-event="['TopNav','click-Lend']"
 								event
-								@pointerover.native.stop="onLendLinkPointerOver"
-								@pointerout.native.stop="onLendLinkPointerOut"
+								@pointerenter.native.stop="onLendLinkPointerEnter"
+								@pointerleave.native.stop="onLendLinkPointerLeave"
 								@pointerup.native.stop="onLendLinkPointerUp"
 							>
 								<span class="tw-flex tw-items-center">Lend
@@ -213,8 +213,8 @@
 								>
 									<kv-page-container>
 										<the-lend-menu ref="lendMenu"
-											@pointerover.native="onLendMenuPointerOver"
-											@pointerout.native="onLendMenuPointerOut"
+											@pointerenter.native="onLendMenuPointerEnter"
+											@pointerleave.native="onLendMenuPointerLeave"
 										/>
 									</kv-page-container>
 								</div>
@@ -566,8 +566,8 @@ export default {
 				});
 			}
 		},
-		toggleLendMenu(isTouch = false) {
-			if (isTouch) {
+		toggleLendMenu(immediate = false) {
+			if (immediate) {
 				// if touch, toggle immediately
 				this.isLendMenuVisible = !this.isLendMenuVisible;
 			} else if (!this.isLendMenuVisible) {
@@ -587,14 +587,16 @@ export default {
 				this.$refs?.lendMenu?.onLoad?.();
 			}
 		},
-		onLendLinkPointerOver(e) {
+		onLendLinkPointerEnter(e) {
+			console.log('onLendLinkPointerEnter');
 			if (e.pointerType === 'touch') {
 				return;
 			}
 			this.isLendMenuDesired = true;
 			this.toggleLendMenu();
 		},
-		onLendLinkPointerOut(e) {
+		onLendLinkPointerLeave(e) {
+			console.log('onLendLinkPointerLeave');
 			if (e.pointerType === 'touch') {
 				return;
 			}
@@ -602,6 +604,7 @@ export default {
 			this.toggleLendMenu();
 		},
 		onLendLinkPointerUp(e) {
+			console.log('onLendLinkPointerUp');
 			if (e.pointerType === 'touch') {
 				this.toggleLendMenu(true);
 			} else {
@@ -610,14 +613,16 @@ export default {
 				});
 			}
 		},
-		onLendMenuPointerOver(e) {
+		onLendMenuPointerEnter(e) {
+			console.log('onLendMenuPointerEnter');
 			if (e.pointerType === 'touch') {
 				return;
 			}
 			this.isLendMenuDesired = true;
 			this.toggleLendMenu();
 		},
-		onLendMenuPointerOut(e) {
+		onLendMenuPointerLeave(e) {
+			console.log('onLendMenuPointerLeave');
 			if (e.pointerType === 'touch') {
 				return;
 			}
