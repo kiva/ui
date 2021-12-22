@@ -652,6 +652,13 @@ export default {
 					this.$refs.search.focus();
 				});
 			}
+		},
+		withinBoundaryCheck(event) {
+			const target = this.$refs.lendMenu.$el; // TODO, make this an argument instead of hardcoded
+			const withinBoundary = event.composedPath().includes(target);
+			if (!withinBoundary) {
+				this.toggleLendMenu(true);
+			}
 		}
 	},
 	watch: {
@@ -661,6 +668,15 @@ export default {
 					this.$refs.userDropdown.remakeDropdown();
 				});
 			}
+		},
+		isLendMenuVisible() {
+			setTimeout(() => {
+				if (this.isLendMenuVisible === true) {
+					document.addEventListener('pointerup', this.withinBoundaryCheck);
+				} else {
+					document.removeEventListener('pointerup', this.withinBoundaryCheck);
+				}
+			});
 		}
 	}
 };
