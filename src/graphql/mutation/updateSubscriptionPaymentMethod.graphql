@@ -1,0 +1,11 @@
+mutation updateSubscriptionPaymentMethod($nonce: String!, $deviceData: String!, $subscriptionId: ID!) {
+		updateSubscriptionPaymentMethod (
+			subscriptionId: $subscriptionId,
+			paymentMethodInput: {
+				nonce: $nonce,
+				deviceData: $deviceData
+			}
+		) {
+			id
+		}
+}

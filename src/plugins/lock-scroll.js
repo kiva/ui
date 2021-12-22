@@ -2,22 +2,22 @@ export default {
 	methods: {
 		lockScroll() {
 			if (typeof window !== 'undefined') {
-				document.body.classList.add('scroll-locked');
+				document.body.classList.add('tw-overflow-hidden');
 			}
 		},
 		unlockScroll() {
 			if (typeof window !== 'undefined') {
-				document.body.classList.remove('scroll-locked');
+				document.body.classList.remove('tw-overflow-hidden');
 			}
 		},
 		lockScrollSmallOnly() {
 			if (typeof window !== 'undefined') {
-				document.body.classList.add('scroll-locked-small-only');
+				document.body.classList.add('tw-overflow-hidden', 'md:tw-overflow-auto');
 			}
 		},
 		unlockScrollSmallOnly() {
 			if (typeof window !== 'undefined') {
-				document.body.classList.remove('scroll-locked-small-only');
+				document.body.classList.remove('tw-overflow-hidden', 'md:tw-overflow-auto');
 			}
 		},
 	},

@@ -33,6 +33,8 @@ import * as Sentry from '@sentry/vue';
 import braintreeDropinError from '@/plugins/braintree-dropin-error-mixin';
 
 import createSubscription from '@/graphql/mutation/createSubscription.graphql';
+import updateSubscriptionPaymentMethod from '@/graphql/mutation/updateSubscriptionPaymentMethod.graphql';
+
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -59,7 +61,7 @@ export default {
 			type: String,
 			default: ''
 		},
-		currentNonce: {
+		subscriptionId: {
 			type: String,
 			default: ''
 		},
@@ -110,10 +112,46 @@ export default {
 				});
 		},
 		doBraintreeCausesSubscription(nonce, deviceData, paymentType) {
-			/** ! TODO add if (this.action === 'Update') logic here similar to
-			* src/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper.vue
-			* for editing a cause subscription GD-155
-			*/
+			if (this.action === 'Update') {
+				// Apollo call to the query mutation
+				this.apollo.mutate({
+					mutation: updateSubscriptionPaymentMethod,
+					variables: {
+						nonce,
+						deviceData,
+						subscriptionId: this.subscriptionId,
+					}
+				}).then(kivaBraintreeResponse => {
+					// Check for errors in transaction
+					if (kivaBraintreeResponse.errors) {
+						this.processBraintreeDropInError(this.action, kivaBraintreeResponse);
+						// Payment method failed, unselect attempted payment method
+						this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
+						// exit
+						return kivaBraintreeResponse;
+					}
+					// Transaction is complete
+
+					// Transaction is complete
+					// eslint-disable-next-line max-len
+					const causeUpdatePaymentSuccess = kivaBraintreeResponse.data?.updateSubscriptionPaymentMethod?.id;
+
+					if (causeUpdatePaymentSuccess) {
+						// fire BT Success event
+						this.$kvTrackEvent(
+							this.action,
+							`${paymentType} Braintree DropIn Causes Payment Update`,
+							`${this.action.toLowerCase()}-causes-payment`
+						);
+
+						// Complete transaction handles additional analytics + redirect
+						this.$emit('complete-transaction', paymentType);
+					}
+					return kivaBraintreeResponse;
+				}).finally(() => {
+					this.submitting = false;
+				});
+			}
 			if (this.action === 'Registration') {
 				/**  ! TODO the subscription service does not currently support dayOfMonth > 28
 				* if day of month is greater than 28, set it to 28
