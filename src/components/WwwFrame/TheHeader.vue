@@ -583,6 +583,9 @@ export default {
 					}
 				}, 500);
 			}
+			if (this.isLendMenuVisible) {
+				this.$refs?.lendMenu?.onLoad?.();
+			}
 		},
 		onLendLinkPointerOver(e) {
 			if (e.pointerType === 'touch') {
