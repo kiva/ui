@@ -41,6 +41,7 @@ module.exports = {
 				AEnMbebwn6LBvxg1iMYczZKoAgdUt37K: 'https://www.kiva.org/ui-login?force=true',
 			},
 			enable: true,
+			checkFakeAuth: false,
 			apiAudience: 'https://api.kivaws.org/graphql',
 			mfaAudience: 'https://kiva-prod.auth0.com/mfa/',
 			browserClientID: 'AEnMbebwn6LBvxg1iMYczZKoAgdUt37K',

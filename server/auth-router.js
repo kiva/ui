@@ -2,6 +2,7 @@ const cookie = require('cookie');
 const express = require('express');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
+const { usingFakeAuth } = require('./util/fakeAuthentication');
 const { isExpired } = require('./util/jwt');
 const { info, warn } = require('./util/log');
 const {
@@ -195,7 +196,7 @@ module.exports = function authRouter(config = {}) {
 		];
 		if (bypassPaths.includes(req.path)) {
 			next();
-		} else if ((req.headers?.cookie ?? '').includes('kvfa=')) {
+		} else if (usingFakeAuth(config, req)) {
 			// Skip login sync check if a fake authentication cookie is set
 			info(`LoginSyncUI: FakeAuthentication cookie present, skipping sync, session id:${req.sessionID}`);
 			next();
@@ -217,10 +218,12 @@ module.exports = function authRouter(config = {}) {
 
 	// For all routes, check if the access token is expired and attempt to renew it
 	router.use((req, res, next) => {
-		if ((req.headers?.cookie ?? '').includes('kvfa=')) {
+		if (usingFakeAuth(config, req)) {
 			// Skip expiration check if a fake authentication cookie is set
+			info(`LoginUI: FakeAuthentication cookie present, skipping token expiration check, session id:${req.sessionID}`); // eslint-disable-line max-len
 			next();
 		} else if (req.user && isExpired(req.user.accessToken)) {
+			info(`LoginUI: access token expired, attempting silent authentication to renew, session id:${req.sessionID}`); // eslint-disable-line max-len
 			req.logout(); // Remove expired token from session
 			attemptSilentAuth(req, res, next);
 		} else {

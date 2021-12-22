@@ -1,8 +1,9 @@
 import KvAuth0, { KIVA_ID_KEY, LAST_LOGIN_KEY, USED_MFA_KEY } from '@/util/KvAuth0';
 
-function getKvAuth0WithFACookie(cookieValue) {
+function getKvAuth0WithFACookie(cookieValue, checkFakeAuth = true, domain = 'login.dev.kiva.org') {
 	return new KvAuth0({
-		domain: '',
+		domain,
+		checkFakeAuth,
 		clientID: '',
 		cookieStore: {
 			get: () => cookieValue,
@@ -14,6 +15,12 @@ function getKvAuth0WithFACookie(cookieValue) {
 describe('KvAuth0', () => {
 	describe('Fake authentication', () => {
 		describe('constructor', () => {
+			it('does not set anything auth related when checkFakeAuth is false', () => {
+				const kvAuth0 = getKvAuth0WithFACookie('123', false);
+				expect(kvAuth0.user).toEqual(null);
+				expect(kvAuth0.accessToken).toEqual('');
+			});
+
 			it('does not set anything auth related when the cookie is undefined', () => {
 				const kvAuth0 = getKvAuth0WithFACookie(undefined);
 				expect(kvAuth0.user).toEqual(null);
@@ -34,12 +41,40 @@ describe('KvAuth0', () => {
 			});
 		});
 
+		describe('fakeAuthAllowed', () => {
+			function expectTrueForSettings(domain, checkFakeAuth) {
+				const kvAuth0 = getKvAuth0WithFACookie('123', checkFakeAuth, domain);
+				expect(kvAuth0.fakeAuthAllowed()).toBe(true);
+			}
+			function expectFalseForSettings(domain, checkFakeAuth) {
+				const kvAuth0 = getKvAuth0WithFACookie('123', checkFakeAuth, domain);
+				expect(kvAuth0.fakeAuthAllowed()).toBe(false);
+			}
+
+			it('returns true for non-production domains with checkFakeAuth enabled', () => {
+				expectTrueForSettings('login.dev.kiva.org', true);
+				expectTrueForSettings('login.stage.kiva.org', true);
+			});
+
+			it('returns false for production domains or when checkFakeAuth is not enabled', () => {
+				expectFalseForSettings('login.dev.kiva.org', false);
+				expectFalseForSettings('login.kiva.org', true);
+				expectFalseForSettings('login.kiva.org', false);
+			});
+		});
+
 		describe('getFakeAuthCookieValue', () => {
 			function expectValuesForCookie(cookie, expected) {
 				const kvAuth0 = getKvAuth0WithFACookie(cookie);
 				const fakeAuthInfo = kvAuth0.getFakeAuthCookieValue();
 				expect(fakeAuthInfo).toEqual(expected);
 			}
+
+			it('returns undefined when checkFakeAuth is false', () => {
+				const kvAuth0 = getKvAuth0WithFACookie('123', false);
+				const fakeAuthInfo = kvAuth0.getFakeAuthCookieValue();
+				expect(fakeAuthInfo).not.toBeDefined();
+			});
 
 			it('returns undefined when no cookie is present', () => {
 				expectValuesForCookie(undefined, undefined);

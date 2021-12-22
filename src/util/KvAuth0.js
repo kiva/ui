@@ -13,6 +13,10 @@ export const KIVA_ID_KEY = 'https://www.kiva.org/kiva_id';
 export const LAST_LOGIN_KEY = 'https://www.kiva.org/last_login';
 export const USED_MFA_KEY = 'https://www.kiva.org/used_mfa';
 const FAKE_AUTH_NAME = 'kvfa';
+const ALLOWED_FAKE_AUTH_DOMAINS = [
+	'login.dev.kiva.org',
+	'login.stage.kiva.org',
+];
 const SYNC_NAME = 'kvls';
 const LOGOUT_VALUE = 'o';
 const COOKIE_OPTIONS = { path: '/', secure: true };
@@ -40,6 +44,7 @@ export default class KvAuth0 {
 	constructor({
 		accessToken = '',
 		audience,
+		checkFakeAuth = false,
 		clientID,
 		cookieStore,
 		domain,
@@ -53,8 +58,10 @@ export default class KvAuth0 {
 		this.user = user;
 		this.accessToken = accessToken;
 		this.isServer = isServer;
+		this.checkFakeAuth = !!checkFakeAuth;
 		this.cookieStore = cookieStore;
 		this.clientID = clientID;
+		this.domain = domain;
 		if (!this.isServer) {
 			// Setup Auth0 WebAuth client for authentication
 			this.webAuth = new auth0js.WebAuth({
@@ -76,11 +83,13 @@ export default class KvAuth0 {
 			});
 		}
 
-		// Set user from fake auth cookie if available
-		const idTokenPayload = this.getFakeIdTokenPayload();
-		if (idTokenPayload) {
-			this[setAuthData]({ idTokenPayload });
-			this[noteLoggedIn]();
+		if (this.fakeAuthAllowed()) {
+			// Set user from fake auth cookie if available
+			const idTokenPayload = this.getFakeIdTokenPayload();
+			if (idTokenPayload) {
+				this[setAuthData]({ idTokenPayload });
+				this[noteLoggedIn]();
+			}
 		}
 	}
 
@@ -155,7 +164,14 @@ export default class KvAuth0 {
 			|| false;
 	}
 
+	// Return true iff fake auth should be checked and fake auth is allowed for the current domain
+	fakeAuthAllowed() {
+		return this.checkFakeAuth && ALLOWED_FAKE_AUTH_DOMAINS.includes(this.domain);
+	}
+
 	getFakeAuthCookieValue() {
+		if (!this.checkFakeAuth) return;
+
 		const cookieValue = this.cookieStore.get(FAKE_AUTH_NAME) ?? '';
 
 		const cookieParts = cookieValue.split(':');

@@ -28,10 +28,10 @@ export default ({ kvAuth0, uri = '' }) => {
 		fetchOptions: { agent }
 	};
 
-	// Add Fake Authentication info to the server URI if it is provided.
+	// Add Fake Authentication info to the server URI if it is provided and allowed.
 	try {
 		const fakeAuthInfo = kvAuth0.getFakeAuthCookieValue();
-		if (fakeAuthInfo) {
+		if (kvAuth0.fakeAuthAllowed() && fakeAuthInfo) {
 			// add params to uri
 			const fakeUri = new URL(uri);
 			fakeUri.searchParams.set('user_id', fakeAuthInfo.userId);
