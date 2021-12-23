@@ -1,3 +1,10 @@
+## [2.28.0-next.2](https://github.com/kiva/ui/compare/v2.28.0-next.1...v2.28.0-next.2) (2021-12-23)
+
+
+### Features
+
+* causes update payment method kiva classic styling ([ea1aa73](https://github.com/kiva/ui/commit/ea1aa7341a5e4a7b64afdc710c631bf8d95d1b57))
+
 ## [2.28.0-next.1](https://github.com/kiva/ui/compare/v2.27.0...v2.28.0-next.1) (2021-12-22)
 
 
