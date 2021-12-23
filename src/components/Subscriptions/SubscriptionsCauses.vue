@@ -55,55 +55,43 @@
 									/>
 									<div class="causes-update-lightbox__payment-method">
 										<div class="row">
-											<div class="column text-right">
+											<div class="column tw-text-right">
 												<button
-													class="button--link"
+													class="tw-text-link tw-font-medium tw-mt-2"
 													@click="toggleSections"
 												>
-													<strong>Update Payment Method</strong>
+													Update Payment Method
 													<kv-icon class="icon-pencil" name="pencil" title="Edit" />
 												</button>
 											</div>
 										</div>
 									</div>
-									<kv-button
-										data-test="causes-save-button"
-										class="smaller button"
-										v-if="!isSaving"
-										@click.native="saveCausesSubscription"
-										:disabled="!isChanged || !isFormValid"
-									>
-										Save Settings
-									</kv-button>
-									<kv-button data-test="causes-save-button" class="smaller button" v-else>
-										Saving <kv-loading-spinner />
-									</kv-button>
 								</div>
 								<!-- Payment Methods -->
 								<div
 									v-if="!settingsOpen"
 									class="row column" key="paymentSettings"
 								>
-									<kv-button class="text-link"
-										@click.native.prevent="toggleSections"
+									<button
+										class="tw-text-link tw-font-medium"
+										@click="toggleSections"
 									>
 										<kv-icon
-											class="arrow back-arrow"
+											class="arrow back-arrow tw-stroke-current"
 											name="small-chevron"
 											:from-sprite="true"
 										/>
 										Back to deposit settings
-									</kv-button>
+									</button>
+
 									<div class="causes-update-lightbox__dropin-payment-wrapper">
-										<div class="kv-tailwind">
-											<causes-drop-in-payment-wrapper
-												action="Update"
-												:amount="amount"
-												:day-of-month="dayOfMonth"
-												:subscription-id="subscriptionId"
-												@complete-transaction="completeCausesUpdatePayment"
-											/>
-										</div>
+										<causes-drop-in-payment-wrapper
+											action="Update"
+											:amount="amount"
+											:day-of-month="dayOfMonth"
+											:subscription-id="subscriptionId"
+											@complete-transaction="completeCausesUpdatePayment"
+										/>
 									</div>
 								</div>
 							</transition>
@@ -113,6 +101,7 @@
 								data-test="causes-save-button"
 								@click="saveCausesSubscription"
 								:state="saveButtonState"
+								v-if="settingsOpen"
 							>
 								Save Settings
 							</kv-button>
@@ -318,8 +307,6 @@ export default {
 
 	&__payment-method {
 		padding-right: 2rem;
-		margin-bottom: 2rem; //TODO remove this
-		margin-top: rem-calc(24); //TODO remove this
 	}
 
 	&__dropin-payment-wrapper {
