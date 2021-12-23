@@ -12,8 +12,8 @@ const emptyComponent = {
 };
 
 describe('TheHeader', () => {
-	it('should hide/show the search area when the search toggle button is clicked', async () => {
-		const { getByText, findByPlaceholderText, queryByPlaceholderText } = render(
+	it('should display a search area', async () => {
+		const { queryByPlaceholderText } = render(
 			TheHeader,
 			{
 				provide: {
@@ -39,23 +39,9 @@ describe('TheHeader', () => {
 			},
 		);
 
-		// Expect the search bar to not exist
-		let searchBar = queryByPlaceholderText('Search all loans');
-		expect(searchBar).toBeNull();
-
-		// Click the search toggle button to open the search
-		const searchToggle = getByText('Open Search');
-		await userEvent.click(searchToggle);
-
-		// Expect the search bar to exist and be focused
-		searchBar = await findByPlaceholderText('Search all loans');
+		// Expect the search bar to exist and be focused on click
+		const searchBar = queryByPlaceholderText('Search all loans');
+		await userEvent.click(searchBar);
 		expect(searchBar).toBe(document.activeElement);
-
-		// Click the search toggle button again to close the search
-		await userEvent.click(searchToggle);
-
-		// Expect the search bar not to exist anymore
-		searchBar = queryByPlaceholderText('Search all loans');
-		expect(searchBar).toBeNull();
 	});
 });
