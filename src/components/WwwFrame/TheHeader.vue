@@ -102,7 +102,11 @@
 								@pointerup.native.stop="onLendLinkPointerUp"
 							>
 								<span class="tw-flex tw-items-center">Lend
-									<kv-material-icon class="tw-w-3" :icon="mdiChevronDown" />
+									<kv-material-icon
+										class="tw-w-3 tw-transition-transform tw-duration-300"
+										:icon="mdiChevronDown"
+										:class="{'tw-rotate-180' : isLendMenuVisible}"
+									/>
 								</span>
 							</router-link>
 						</div>
