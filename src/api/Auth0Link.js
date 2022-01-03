@@ -15,6 +15,9 @@ export default ({ kvAuth0 }) => {
 		// If auth0 is not enabled, don't add anything to the context
 		if (!kvAuth0.enabled) return getAuthContext(previousContext);
 
+		// If using fake authentication, don't add anything to the context
+		if (kvAuth0.getFakeAuthCookieValue()) return getAuthContext(previousContext);
+
 		// If we already have user info, and we don't need to check login, just add that to the context
 		if (kvAuth0.getKivaId() && !kvAuth0.getSyncCookieValue()) {
 			return getAuthContext(previousContext, kvAuth0.user, kvAuth0.accessToken);

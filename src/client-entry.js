@@ -30,6 +30,7 @@ let kvAuth0;
 if (config.auth0.enable) {
 	kvAuth0 = new KvAuth0({
 		audience: config.auth0.apiAudience,
+		checkFakeAuth: config.auth0.checkFakeAuth,
 		clientID: config.auth0.browserClientID,
 		cookieStore,
 		domain: config.auth0.domain,
