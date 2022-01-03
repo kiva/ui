@@ -100,6 +100,7 @@
 								@pointerenter.native.stop="onLendLinkPointerEnter"
 								@pointerleave.native.stop="onLendLinkPointerLeave"
 								@pointerup.native.stop="onLendLinkPointerUp"
+								@click.native.stop="onLendLinkClick"
 							>
 								<span class="tw-flex tw-items-center">Lend
 									<kv-material-icon
@@ -614,8 +615,17 @@ export default {
 			} else {
 				this.$router.push({
 					path: '/lend-by-category'
-				});
+				}).catch(() => {});
 			}
+		},
+		onLendLinkClick(e) {
+			console.log('onLendLinkClick');
+			if (e.pointerType === 'touch') {
+				return;
+			}
+			this.$router.push({
+				path: '/lend-by-category'
+			}).catch(() => {});
 		},
 		onLendMenuPointerEnter(e) {
 			console.log('onLendMenuPointerEnter');
