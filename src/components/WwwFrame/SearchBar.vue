@@ -31,9 +31,11 @@
 				tw-w-full
 				tw-bg-primary
 				tw-p-2.5
+				tw-border
+				tw-border-tertiary
+				tw-fixed
 				tw-z-popover
 
-				tw-fixed
 				tw-right-0
 				tw-bottom-0
 				tw-left-0
