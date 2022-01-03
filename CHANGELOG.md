@@ -1,3 +1,16 @@
+## [2.28.0](https://github.com/kiva/ui/compare/v2.27.1...v2.28.0) (2022-01-03)
+
+
+### Features
+
+* **auth:** set dev graphql query params when fake authentication cookie is present ([b78ff37](https://github.com/kiva/ui/commit/b78ff376b4ed4d814ed0a46be54a2e9bfff58352))
+* avoid fake auth attempts if it is not allowed in the environment VUE-721 ([7ec131d](https://github.com/kiva/ui/commit/7ec131d8390d873ab09096774ecdd57a85e4d4d4))
+
+
+### Bug Fixes
+
+* **live-loan:** use new logging functions ([973f0dd](https://github.com/kiva/ui/commit/973f0dd21a1d2137e126b004a8923297263df1de))
+
 ### [2.27.1](https://github.com/kiva/ui/compare/v2.27.0...v2.27.1) (2022-01-03)
 
 
