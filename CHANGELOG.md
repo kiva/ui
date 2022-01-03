@@ -1,3 +1,18 @@
+## [2.28.0-next.3](https://github.com/kiva/ui/compare/v2.28.0-next.2...v2.28.0-next.3) (2022-01-03)
+
+
+### Features
+
+* add border around search results to prevent them from being lost on white backgrounds ([2261178](https://github.com/kiva/ui/commit/22611784905bbe2382d95d319da4e283f736290d))
+
+
+### Bug Fixes
+
+* allow keyboard enter key presses to navigate to lend page ([591bdd2](https://github.com/kiva/ui/commit/591bdd2a66f5937fa24ce2ad0beb1463bd417e08))
+* move search container into a more logical tab order ([e05df2b](https://github.com/kiva/ui/commit/e05df2b53c42f2b3942387076ce2736d7f8205d8))
+* prevent hidden submit button from keyboard focus ([2ffa9a6](https://github.com/kiva/ui/commit/2ffa9a6b7f7e5fcfba7b8da49282fe752f4c00b3))
+* rotate chevron when menu is open ([eaa287b](https://github.com/kiva/ui/commit/eaa287bc0b330d6a3b61b983fdb41db2dfaccaa5))
+
 ## [2.28.0-next.2](https://github.com/kiva/ui/compare/v2.28.0-next.1...v2.28.0-next.2) (2021-12-23)
 
 
