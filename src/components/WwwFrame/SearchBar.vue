@@ -68,7 +68,7 @@
 				</ol>
 			</li>
 		</ol>
-		<input type="submit" class="tw-sr-only" aria-hidden="true">
+		<input type="submit" class="tw-sr-only" aria-hidden="true" tabindex="-1">
 	</form>
 </template>
 
