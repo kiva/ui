@@ -100,11 +100,31 @@
 								@pointerenter.native.stop="onLendLinkPointerEnter"
 								@pointerleave.native.stop="onLendLinkPointerLeave"
 								@pointerup.native.stop="onLendLinkPointerUp"
+								@click.native.stop="onLendLinkClick"
 							>
 								<span class="tw-flex tw-items-center">Lend
-									<kv-material-icon class="tw-w-3" :icon="mdiChevronDown" />
+									<kv-material-icon
+										class="tw-w-3 tw-transition-transform tw-duration-300"
+										:icon="mdiChevronDown"
+										:class="{'tw-rotate-180' : isLendMenuVisible}"
+									/>
 								</span>
 							</router-link>
+						</div>
+
+						<!-- search container -->
+						<div
+							v-if="!hideSearchInHeader"
+							id="top-nav-search-area"
+							class="
+								header__search
+								tw-py-1.5 md:py-0
+								tw--mx-2.5 tw-px-2.5 md:tw-mx-0 md:tw-px-0
+								tw-border-t tw-border-tertiary md:tw-border-t-0
+							"
+							:class="{'tw-hidden md:tw-block': !searchOpen}"
+						>
+							<search-bar ref="search" />
 						</div>
 
 						<div class="header__right-side
@@ -184,21 +204,6 @@
 							>
 								Log in
 							</router-link>
-						</div>
-
-						<!-- search container -->
-						<div
-							v-if="!hideSearchInHeader"
-							id="top-nav-search-area"
-							class="
-								header__search
-								tw-py-1.5 md:py-0
-								tw--mx-2.5 tw-px-2.5 md:tw-mx-0 md:tw-px-0
-								tw-border-t tw-border-tertiary md:tw-border-t-0
-							"
-							:class="{'tw-hidden md:tw-block': !searchOpen}"
-						>
-							<search-bar ref="search" />
 						</div>
 
 						<!-- dropdowns -->
@@ -610,8 +615,17 @@ export default {
 			} else {
 				this.$router.push({
 					path: '/lend-by-category'
-				});
+				}).catch(() => {});
 			}
+		},
+		onLendLinkClick(e) {
+			console.log('onLendLinkClick');
+			if (e.pointerType === 'touch') {
+				return;
+			}
+			this.$router.push({
+				path: '/lend-by-category'
+			}).catch(() => {});
 		},
 		onLendMenuPointerEnter(e) {
 			console.log('onLendMenuPointerEnter');
