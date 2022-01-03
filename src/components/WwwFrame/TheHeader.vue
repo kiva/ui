@@ -112,6 +112,21 @@
 							</router-link>
 						</div>
 
+						<!-- search container -->
+						<div
+							v-if="!hideSearchInHeader"
+							id="top-nav-search-area"
+							class="
+								header__search
+								tw-py-1.5 md:py-0
+								tw--mx-2.5 tw-px-2.5 md:tw-mx-0 md:tw-px-0
+								tw-border-t tw-border-tertiary md:tw-border-t-0
+							"
+							:class="{'tw-hidden md:tw-block': !searchOpen}"
+						>
+							<search-bar ref="search" />
+						</div>
+
 						<div class="header__right-side
 						tw-flex tw-justify-end tw-gap-2.5 lg:tw-gap-4"
 						>
@@ -189,21 +204,6 @@
 							>
 								Log in
 							</router-link>
-						</div>
-
-						<!-- search container -->
-						<div
-							v-if="!hideSearchInHeader"
-							id="top-nav-search-area"
-							class="
-								header__search
-								tw-py-1.5 md:py-0
-								tw--mx-2.5 tw-px-2.5 md:tw-mx-0 md:tw-px-0
-								tw-border-t tw-border-tertiary md:tw-border-t-0
-							"
-							:class="{'tw-hidden md:tw-block': !searchOpen}"
-						>
-							<search-bar ref="search" />
 						</div>
 
 						<!-- dropdowns -->
