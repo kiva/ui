@@ -1,3 +1,10 @@
+### [2.27.1](https://github.com/kiva/ui/compare/v2.27.0...v2.27.1) (2022-01-03)
+
+
+### Bug Fixes
+
+* add storycard spacing between storycard content and cta ([a0e8eda](https://github.com/kiva/ui/commit/a0e8edab6956daecd28f3323757305952f63f88b))
+
 ## [2.27.0](https://github.com/kiva/ui/compare/v2.26.1...v2.27.0) (2021-12-21)
 
 
