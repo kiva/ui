@@ -23,7 +23,7 @@
 			/>
 		</div>
 
-		<div>
+		<div class="tw-bg-primary">
 			<div
 				class="loan-category-row"
 				:class="{'hover-row': showHoverLoanCards}"
@@ -49,7 +49,7 @@
 			<div class="column small-12">
 				<div v-if="!rowLazyLoadComplete" class="cat-row-loader">
 					<kv-loading-overlay id="updating-overlay" />
-					<h3 class="text-center">
+					<h3 class="tw-text-center">
 						Loading more rows...
 					</h3>
 				</div>
@@ -851,11 +851,6 @@ export default {
 					font-size: 3rem;
 					right: -1.6rem;
 				}
-			}
-
-			&:hover {
-				text-decoration: none;
-				cursor: pointer;
 			}
 		}
 	}

@@ -1,15 +1,20 @@
 <template>
 	<www-page>
-		<div class="monthly-good-setup-page">
-			<div class="row align-center text-center auto-lending-notice"
+		<kv-default-wrapper class="monthly-good-setup-page">
+			<div class="row align-center tw-text-center auto-lending-notice"
 				v-if="balance > autoDepositNoticeThreshold"
 			>
 				<div class="small-12 medium-11 large-10 column">
-					<h2>Heads up! You have {{ balance | numeral('$0') }} available to lend.</h2>
-					<!-- eslint-disable-next-line max-len -->
-					<p>If you sign up for Monthly Good, this balance and all future repayments will be automatically lent. If you prefer to keep choosing your own loans, switch to auto-deposit.</p>
+					<h2 class="tw-mb-4">
+						Heads up! You have {{ balance | numeral('$0') }} available to lend.
+					</h2>
+					<p class="tw-mb-2">
+						<!-- eslint-disable-next-line max-len -->
+						If you sign up for Monthly Good, this balance and all future repayments will be automatically lent. If you prefer to keep choosing your own loans, switch to auto-deposit.
+					</p>
 					<kv-button
-						class="smaller secondary"
+						variant="secondary"
+						class="tw-mb-4"
 						to="/auto-deposit"
 						v-kv-track-event="[
 							'MonthlyGood',
@@ -26,31 +31,31 @@
 				<div class="small-12 medium-11 large-10 column"
 					v-if="!isMonthlyGoodSubscriber && !hasLegacySubscription"
 				>
-					<h1 class="text-center impact-text">
+					<h1 class="tw-text-center tw-mb-2">
 						Confirm your Good
 					</h1>
-					<h3 class="text-center featured-text" v-if="!isOnetime">
+					<h2 class="tw-text-center tw-text-subhead tw-mb-4" v-if="!isOnetime">
 						Review and set up your monthly contribution
-					</h3>
+					</h2>
 					<form
 						class="monthly-good-form"
 						@submit.prevent
 						novalidate
 					>
-						<div class="panel zigzag-bottom">
-							<div class="row align-center text-center">
+						<div class="panel zigzag-bottom tw-bg-secondary">
+							<div class="row align-center tw-text-center">
 								<div class="medium-10 small-12 columns">
 									<div class="row column" v-if="!fromCovidLanding">
 										<strong>Each month on the</strong>
 										<label class="show-for-sr"
-											:class="{ 'error': $v.dayOfMonth.$invalid }"
+											:class="{ 'tw-text-danger': $v.dayOfMonth.$invalid }"
 											:for="dayOfMonth"
 										>
 											Day of the Month
 										</label>
-										<input v-if="isDayInputShown"
+										<kv-text-input v-if="isDayInputShown"
 											@blur="hideDayInput()"
-											class="text-input__day"
+											class="text-input__day tw-w-9 tw-inline-block tw-ml-1"
 											id="dayOfMonth"
 											type="number"
 											placeholder=""
@@ -58,14 +63,14 @@
 											min="1"
 											max="31"
 											v-model.number="dayOfMonth"
-										>
+										/>
 										<button
-											class="button--ordinal-day"
+											class="tw-text-link"
 											@click="isDayInputShown = true"
 											v-if="!isDayInputShown"
 										>
 											<strong>{{ dayOfMonth | numeral('Oo') }}</strong>
-											<kv-icon class="icon-pencil" name="pencil" title="Edit" />
+											<kv-icon class="tw-w-2 tw-h-2" name="pencil" title="Edit" />
 										</button>
 										<ul class="validation-errors" v-if="$v.dayOfMonth.$invalid">
 											<li v-if="!$v.dayOfMonth.required">
@@ -82,9 +87,9 @@
 										</div>
 									</div>
 
-									<div class="row text-left align-middle">
+									<div class="row tw-text-left align-middle">
 										<div class="columns">
-											<span class="additional-left-pad-spans strong">
+											<span class="tw-font-medium tw-ml-3">
 												Deposit for lending
 											</span>
 										</div>
@@ -92,16 +97,20 @@
 										<div class="medium-5 small-6 columns">
 											<label
 												class="show-for-sr"
-												:class="{ 'error': $v.mgAmount.$invalid }"
+												:class="{ 'tw-text-danger': $v.mgAmount.$invalid }"
 												for="amount"
 											>
 												Amount
 											</label>
-											<kv-currency-input class="text-input" id="amount" v-model="mgAmount" />
+											<kv-currency-input
+												class="text-input tw-w-full"
+												id="amount"
+												v-model="mgAmount"
+											/>
 										</div>
 
 										<div class="small-12 columns">
-											<ul class="text-right validation-errors" v-if="$v.mgAmount.$invalid">
+											<ul class="tw-text-right validation-errors" v-if="$v.mgAmount.$invalid">
 												<li v-if="!$v.mgAmount.required">
 													Field is required
 												</li>
@@ -112,34 +121,38 @@
 										</div>
 									</div>
 
-									<div class="row text-left align-middle">
+									<div class="row tw-text-left align-middle">
 										<div class="columns">
 											<kv-checkbox
 												id="donation-checkbox"
+												class="tw--ml-2"
 												v-model="donationCheckbox"
 												@change="donationCheckboxChange()"
-											/>
-											<div class="additional-left-pad-spans display-inline-block">
-												<span class="strong">
+											>
+												<span class="tw-font-medium">
 													Monthly donation to Kiva (optional)
 												</span>
-												<div class="small-text" v-if="isMGTaglineActive">
+												<div class="tw-text-small" v-if="isMGTaglineActive">
 													<!-- eslint-disable-next-line max-len -->
 													Every $25 loan costs more than $3 to facilitate, and our generous supporters are donating $1 for every $3 you donate.
 												</div>
-											</div>
+											</kv-checkbox>
 										</div>
 
 										<div class="medium-5 small-6 columns">
 											<label
 												class="show-for-sr"
-												:class="{ 'error': $v.donation.$invalid }"
-												for="donation"
+												:class="{ 'tw-text-danger': $v.donation.$invalid }"
+												:for="`
+													${donationOptionSelected !== 'other'
+													? 'donation' : 'donation_other'
+												}`"
 											>
 												Donation
 											</label>
 											<kv-select
-												class="donation-dropdown"
+												class="donation-dropdown tw-w-full"
+												id="donation"
 												v-model="donationOptionSelected"
 												v-if="donationOptionSelected !== 'other'"
 											>
@@ -153,14 +166,14 @@
 											</kv-select>
 											<kv-currency-input
 												class="text-input"
-												id="donation"
+												id="donation_other"
 												v-model="donation"
 												v-if="donationOptionSelected === 'other'"
 											/>
 										</div>
 
 										<div class="small-12 columns">
-											<ul class="text-right validation-errors" v-if="$v.donation.$invalid">
+											<ul class="tw-text-right validation-errors" v-if="$v.donation.$invalid">
 												<li v-if="!$v.donation.minValue || !$v.donation.maxValue">
 													Enter an amount of $0-$10,000
 												</li>
@@ -168,22 +181,22 @@
 										</div>
 									</div>
 
-									<div class="row text-left">
+									<div class="row tw-text-left">
 										<div class="columns">
-											<strong v-if="!onetime"
-												class="additional-left-pad-spans"
-											>Total/month</strong>
-											<strong v-else class="additional-left-pad-spans">Total</strong>
+											<span v-if="!onetime"
+												class="tw-font-medium tw-ml-3"
+											>Total/month</span>
+											<span v-else class="tw-font-medium tw-ml-3">Total</span>
 										</div>
 
 										<div class="medium-5 small-6 columns">
-											<strong
-												class="additional-left-pad-currency"
-											>{{ totalCombinedDeposit | numeral('$0,0.00') }}</strong>
+											<span class="tw-ml-1 tw-font-medium">
+												{{ totalCombinedDeposit | numeral('$0,0.00') }}
+											</span>
 										</div>
 
 										<div class="small-12 columns">
-											<ul class="text-center validation-errors"
+											<ul class="tw-text-center validation-errors"
 												v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
 											>
 												<li>
@@ -194,11 +207,17 @@
 										</div>
 									</div>
 
-									<div class="row text-left" v-if="!fromCovidLanding">
+									<div class="row tw-text-left" v-if="!fromCovidLanding">
 										<div class="small-12 columns">
-											<div class="additional-left-pad-spans">
-												Select a category to focus your lending
-												<kv-select v-model="selectedGroup" class="group-dropdown">
+											<div class="tw-ml-3">
+												<label for="lending-category" class="tw-block tw-mb-2">
+													Select a category to focus your lending
+												</label>
+												<kv-select
+													v-model="selectedGroup"
+													class="group-dropdown tw-mb-2"
+													id="lending-category"
+												>
 													<option
 														v-for="(option, index) in lendingCategories"
 														:value="option.value"
@@ -213,15 +232,15 @@
 
 									<div class="row small-collapse" v-if="!isOnetime">
 										<div class="small-12 columns">
-											<em class="text-center">Rest easy, you can cancel anytime.</em>
+											<em class="tw-text-center">Rest easy, you can cancel anytime.</em>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="row align-center text-center">
+						<div class="row align-center tw-text-center">
 							<div class="large-9 medium-10 small-12 columns">
-								<p>
+								<p class="tw-mb-2">
 									<!-- eslint-disable-next-line max-len -->
 									We’ll charge your payment method{{ isOnetime ? '' : ' each month' }}. All credit in your Kiva account, including repayments, will be automatically lent whenever it exceeds $25.
 								</p>
@@ -245,7 +264,6 @@
 								</div>
 								<div class="payment-dropin-wrapper" v-if="!hasActiveLogin">
 									<kv-button
-										title="Continue"
 										:href="`/ui-login?force=true&doneUrl=${loginRedirectUrl}`"
 										v-kv-track-event="[
 											'MonthlyGood',
@@ -275,7 +293,7 @@
 			<kv-loading-overlay
 				v-if="showLoadingOverlay"
 			/>
-		</div>
+		</kv-default-wrapper>
 	</www-page>
 </template>
 
@@ -294,16 +312,18 @@ import authenticationQuery from '@/graphql/query/authenticationQuery.graphql';
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
 
 import AlreadySubscribedNotice from '@/components/MonthlyGood/AlreadySubscribedNotice';
-import KvButton from '@/components/Kv/KvButton';
-import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
+import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import KvSelect from '@/components/Kv/KvSelect';
 import LegacySubscriberNotice from '@/components/MonthlyGood/LegacySubscriberNotice';
 import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 const pageQuery = gql`query monthlyGoodSetupPageControl {
 	general {
@@ -386,9 +406,11 @@ export default {
 		KvButton,
 		KvCheckbox,
 		KvCurrencyInput,
+		KvDefaultWrapper,
 		KvSelect,
 		KvIcon,
 		KvLoadingOverlay,
+		KvTextInput,
 		LegacySubscriberNotice,
 		MonthlyGoodDropInPaymentWrapper,
 		WwwPage,
@@ -740,11 +762,6 @@ export default {
 
 .monthly-good-setup-page {
 	position: relative;
-	padding: 2rem 0 2rem;
-
-	h1 { color: $kiva-green; }
-
-	h3 { padding: 0 2rem; }
 
 	form.monthly-good-form {
 		margin-top: 2rem;
@@ -752,7 +769,6 @@ export default {
 		.panel.zigzag-bottom {
 			margin-bottom: 1.5rem;
 			position: relative;
-			background-color: $kiva-bg-darkgray;
 			padding: 1rem;
 
 			& > .row .row {
@@ -766,8 +782,8 @@ export default {
 
 		.panel.zigzag-bottom::after {
 			background:
-				linear-gradient(-45deg, $white 12px, transparent 0),
-				linear-gradient(45deg, $white 12px, transparent 0);
+				linear-gradient(-45deg, rgb(var(--bg-primary)) 12px, transparent 0),
+				linear-gradient(45deg, rgb(var(--bg-primary)) 12px, transparent 0);
 			background-size: 24px 24px;
 			content: " ";
 			position: absolute;
@@ -777,51 +793,6 @@ export default {
 			height: 24px;
 		}
 
-		//aligns numbers with input
-		.additional-left-pad-currency {
-			padding-left: 0.55rem;
-		}
-
-		//aligns other rows to make room for checkbox
-		.additional-left-pad-spans {
-			padding-left: 1.55rem;
-			display: inline-block;
-		}
-
-		// styles to match KvSelect
-		input.text-input {
-			border: 1px solid $charcoal;
-			border-radius: $button-radius;
-			color: $charcoal;
-			font-size: $medium-text-font-size;
-			font-weight: $global-weight-highlight;
-			margin: 0;
-		}
-
-		.button--ordinal-day {
-			color: $kiva-accent-blue;
-			fill: $kiva-accent-blue;
-			cursor: pointer;
-		}
-
-		.icon-pencil {
-			height: 1rem;
-			width: 1rem;
-		}
-
-		.text-input__day {
-			display: inline-block;
-			width: 3.5rem;
-			padding: 0.25rem 0.5rem;
-			margin: 0 0 0 0.25rem;
-			height: 2rem;
-		}
-
-		.text-input,
-		.validation-errors {
-			margin: 0;
-		}
-
 		.additional-day-info {
 			margin-bottom: 1.25rem;
 
@@ -829,24 +800,6 @@ export default {
 			strong {
 				display: block;
 			}
-		}
-
-		.display-inline-block {
-			display: inline-block;
-		}
-
-		::v-deep .dropdown-wrapper.donation-dropdown .dropdown {
-			margin-bottom: 0;
-			width: 100%;
-		}
-
-		::v-deep .dropdown-wrapper.group-dropdown .dropdown {
-			margin-top: 0.65rem;
-		}
-
-		::v-deep .kv-checkbox {
-			position: absolute;
-			padding-top: 0.15rem;
 		}
 	}
 

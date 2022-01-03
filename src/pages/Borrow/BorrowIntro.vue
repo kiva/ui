@@ -1,97 +1,115 @@
 <template>
 	<div>
-		<div class="intro row">
-			<h2 class="intro__title text-center small-12 columns">
+		<div class="tw-text-center tw-mb-4 md:tw-mb-6">
+			<h1 class="tw-mb-4">
 				Let’s get started.
-			</h2>
-			<p class="intro__body small-12 columns text-center">
+			</h1>
+			<p class="tw-text-subhead tw-text-secondary">
 				There are three steps to applying for a loan on Kiva.<br>
 				You’ll need at least 35 minutes to complete your application, but it might take longer.
 			</p>
 		</div>
-		<ol class="three-steps row">
-			<li class="three-steps__step-wrapper column small-12 large-4">
-				<div class="three-steps__step">
-					<div class="three-steps__icon-wrapper">
-						<borrow-step-1 class="three-steps__icon" />
+
+		<kv-grid as="ol" class="tw-grid-cols-12 tw-text-center tw-mb-4 md:tw-mb-8">
+			<li class="tw-col-span-12 md:tw-col-span-4">
+				<div class="tw-rounded tw-bg-secondary tw-p-4">
+					<div class="tw-flex tw-justify-center tw-mb-1.5">
+						<borrow-step-1 class="tw-block" style="height: 6.25rem;" />
 					</div>
-					<h3 class="three-steps__title">
+					<h2 class="tw-text-h3 tw-mb-2">
 						Step 1: <span class="no-wrap">Pre-check</span>
-					</h3>
-					<div class="three-steps__description">
+					</h2>
+					<p class="tw-mb-2">
 						Quick questions to ensure a Kiva loan is a good match
-					</div>
-					<div class="three-steps__clock">
-						<kv-icon name="clock" class="three-steps__clock-icon" />
+					</p>
+					<p class="tw-flex tw-content-center tw-justify-center">
+						<kv-material-icon
+							:icon="mdiClock"
+							class="tw-fill-current tw-text-tertiary tw-w-3 tw-mr-1"
+						/>
 						<span>5 minutes</span>
-					</div>
+					</p>
 				</div>
 			</li>
-			<li class="three-steps__step-wrapper column small-12 large-4">
-				<div class="three-steps__step">
-					<div class="three-steps__icon-wrapper">
-						<borrow-step-2 class="three-steps__icon three-steps__icon--inbox" />
+			<li class="tw-col-span-12 md:tw-col-span-4">
+				<div class="tw-rounded tw-bg-secondary tw-p-4">
+					<div class="tw-flex tw-justify-center tw-mb-1.5">
+						<borrow-step-2 class="tw-block" style="height: 6.25rem;" />
 					</div>
-					<h3 class="three-steps__title">
+					<h2 class="tw-text-h3 tw-mb-2">
 						Step 2: New account
-					</h3>
-					<div class="three-steps__description">
+					</h2>
+					<p class="tw-mb-2">
 						Create an account and fill out your profile
-					</div>
-					<div class="three-steps__clock">
-						<kv-icon name="clock" class="three-steps__clock-icon" />
+					</p>
+					<p class="tw-flex tw-content-center tw-justify-center">
+						<kv-material-icon
+							:icon="mdiClock"
+							class="tw-fill-current tw-text-tertiary tw-w-3 tw-mr-1"
+						/>
 						<span>5 minutes</span>
-					</div>
+					</p>
 				</div>
 			</li>
-			<li class="three-steps__step-wrapper column small-12 large-4">
-				<div class="three-steps__step">
-					<div class="three-steps__icon-wrapper">
-						<borrow-step-3 class="three-steps__icon" />
+			<li class="tw-col-span-12 md:tw-col-span-4">
+				<div class="tw-rounded tw-bg-secondary tw-p-4">
+					<div class="tw-flex tw-justify-center tw-mb-1.5">
+						<borrow-step-3 class="tw-block" style="height: 6.25rem;" />
 					</div>
-					<h3 class="three-steps__title">
+					<h2 class="tw-text-h3 tw-mb-2">
 						Step 3: Application
-					</h3>
-					<div class="three-steps__description">
+					</h2>
+					<p class="tw-mb-2">
 						Complete your application and submit it to Kiva
-					</div>
-					<div class="three-steps__clock">
-						<kv-icon name="clock" class="three-steps__clock-icon" />
+					</p>
+					<p class="tw-flex tw-content-center tw-justify-center">
+						<kv-material-icon
+							:icon="mdiClock"
+							class="tw-fill-current tw-text-tertiary tw-w-3 tw-mr-1"
+						/>
 						<span>25 minutes</span>
-					</div>
+					</p>
 				</div>
 			</li>
-		</ol>
-		<div class="row">
-			<div class="small-6 columns">
-				<kv-button href="/my/borrower/application" class="secondary cta-btn">
+		</kv-grid>
+
+		<kv-grid class="tw-grid-cols-12">
+			<div class="tw-col-span-6 md:tw-col-span-5 md:tw-col-start-2">
+				<kv-button
+					class="tw-w-full"
+					href="/my/borrower/application"
+					variant="secondary"
+				>
 					Continue my application
 				</kv-button>
 			</div>
-			<div class="small-6 columns">
+			<div class="tw-col-span-6 md:tw-col-span-5 md:tw-col-start-7">
 				<kv-button
+					class="tw-w-full"
 					:to="{
 						path: '/borrow/pre-application/community',
 						query: {
 							refid: $route.query.refid
 						}
 					}"
-					class="smaller cta-btn"
 				>
 					Start Pre-check
 				</kv-button>
 			</div>
-		</div>
+		</kv-grid>
 	</div>
 </template>
 
 <script>
+import { mdiClock } from '@mdi/js';
+
 import BorrowStep1 from '@/assets/inline-svgs/borrow/precheck.svg';
 import BorrowStep2 from '@/assets/inline-svgs/borrow/newaccount.svg';
 import BorrowStep3 from '@/assets/inline-svgs/borrow/application.svg';
 
-import KvIcon from '@/components/Kv/KvIcon';
-import KvButton from '@/components/Kv/KvButton';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 export default {
 	components: {
@@ -99,68 +117,14 @@ export default {
 		BorrowStep2,
 		BorrowStep3,
 		KvButton,
-		KvIcon,
+		KvGrid,
+		KvMaterialIcon,
 	},
+	metaInfo: {
+		title: 'Borrow Pre-application',
+	},
+	data() {
+		return { mdiClock };
+	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.three-steps {
-	list-style: none;
-	margin-bottom: 2rem;
-	padding: 0;
-
-	&__step-wrapper {
-		margin-bottom: 2rem;
-	}
-
-	&__step {
-		border-radius: rem-calc(10);
-		box-shadow: $platinum 0 rem-calc(1) rem-calc(5) rem-calc(2);
-		height: 100%;
-		padding: 2rem;
-		text-align: center;
-	}
-
-	&__icon-wrapper {
-		position: relative;
-		display: flex;
-		justify-content: center;
-		margin-bottom: 0.5rem;
-	}
-
-	&__icon {
-		height: 6.25rem;
-		display: block;
-	}
-
-	&__title {
-		@include featured-text();
-
-		line-height: 1.2;
-		margin-bottom: 0.5rem;
-		font-weight: 700;
-	}
-
-	&__description {
-		text-align: center;
-		line-height: 1.4;
-		margin-bottom: 1rem;
-	}
-
-	&__clock {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	&__clock-icon {
-		width: 1.5rem;
-		margin-right: 0.5rem;
-		fill: $kiva-text-light;
-	}
-}
-
-</style>

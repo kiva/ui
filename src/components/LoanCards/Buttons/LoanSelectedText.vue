@@ -1,15 +1,7 @@
 <template>
-	<div class="loan-selected-text small-text">
+	<p class="loan-selected-text
+		tw-bg-brand-200 tw-text-black tw-text-small tw-text-center tw-p-2"
+	>
 		Another lender has selected this loan. Please choose a different borrower to support.
-	</div>
+	</p>
 </template>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.loan-selected-text {
-	background-color: $very-light-green;
-	padding: 1rem;
-	text-align: center;
-}
-</style>

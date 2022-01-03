@@ -17,7 +17,7 @@
 				:return-focus="true"
 			>
 				<div
-					class="kv-lightbox__container"
+					class="kv-lightbox__container tw-bg-primary"
 					@click.stop
 					tabindex="-1"
 					ref="kvLightbox"
@@ -28,7 +28,7 @@
 				>
 					<div class="kv-lightbox__header">
 						<h2 v-if="title"
-							class="kv-lightbox__title"
+							class="kv-lightbox__title tw-mb-1"
 							id="lightbox-title"
 						>
 							{{ title }}
@@ -205,7 +205,6 @@ export default {
 		overflow: hidden;
 		padding: 1.5rem;
 		max-height: 100%;
-		background: $white;
 		position: absolute;
 		top: 0;
 		left: 0;

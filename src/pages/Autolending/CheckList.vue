@@ -1,16 +1,17 @@
 <template>
 	<div>
-		<button class="toggle-all" @click="emitAll(true)">
+		<button class="tw-text-link tw-mb-1" @click="emitAll(true)">
 			Select All
 		</button>
 		&nbsp;
-		<button class="toggle-all" @click="emitAll(false)">
+		<button class="tw-text-link tw-mb-1" @click="emitAll(false)">
 			Deselect All
 		</button>
 		<ul class="check-list" :class="{ 'use-columns': useColumns }">
 			<li
 				:key="id"
 				v-for="{ id, name, selected } in items"
+				class="tw-mb-0.5"
 			>
 				<kv-checkbox
 					:id="`${name}-${id}` | changeCase('paramCase')"
@@ -54,9 +55,6 @@ export default {
 @import 'settings';
 
 .check-list {
-	list-style: none;
-	margin: 0;
-
 	&.use-columns {
 		li {
 			-webkit-column-break-inside: avoid;
@@ -71,14 +69,6 @@ export default {
 		@include breakpoint(large) {
 			column-count: 3;
 		}
-	}
-}
-
-.toggle-all {
-	color: $kiva-textlink;
-
-	&:hover {
-		color: $kiva-textlink-hover;
 	}
 }
 </style>

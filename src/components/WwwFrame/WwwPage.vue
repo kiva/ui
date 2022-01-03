@@ -99,7 +99,7 @@ export default {
 		mainClasses() {
 			return [
 				this.mainClass,
-				{ 'gray-background': this.grayBackground },
+				{ 'tw-bg-secondary': this.grayBackground },
 			];
 		},
 	}
@@ -124,24 +124,6 @@ export default {
 
 	main {
 		flex-grow: 1;
-
-		&.gray-background {
-			background: $kiva-bg-lightgray;
-		}
 	}
-}
-</style>
-
-<style lang="scss" scoped>
-.tw-bg-primary {
-	background-color: rgb(var(--bg-primary));
-}
-
-.tw-bg-secondary {
-	background-color: rgb(var(--bg-secondary));
-}
-
-.tw-bg-tertiary {
-	background-color: rgb(var(--bg-tertiary));
 }
 </style>

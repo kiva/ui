@@ -1,10 +1,12 @@
 <template>
 	<div class="system-page">
-		<header class="system-page__header">
-			<kiva-logo class="system-page__kiva-logo" />
+		<header class="system-page__header tw-bg-brand">
+			<kiva-logo class="system-page__kiva-logo tw-text-white" />
 		</header>
-		<div class="system-page__content-wrapper">
-			<div class="system-page__content" :data-year="year">
+		<div class="system-page__content-wrapper tw-bg-secondary">
+			<div class="system-page__content tw-bg-primary tw-border-tertiary tw-border tw-rounded-sm"
+				:data-year="year"
+			>
 				<slot></slot>
 			</div>
 		</div>
@@ -38,7 +40,6 @@ export default {
 		top: 0;
 		left: 0;
 		width: 100%;
-		background-color: $kiva-green;
 	}
 
 	&__kiva-logo {
@@ -46,7 +47,6 @@ export default {
 		width: rem-calc(57);
 		height: rem-calc(45);
 		margin: 0 auto;
-		color: $white;
 
 		@include breakpoint(large) {
 			width: rem-calc(72);
@@ -55,7 +55,6 @@ export default {
 	}
 
 	&__content-wrapper {
-		background-color: $kiva-bg-lightgray;
 		display: flex;
 		justify-content: center;
 		align-items: flex-start;
@@ -65,9 +64,6 @@ export default {
 
 	&__content {
 		position: relative;
-		background-color: $white;
-		border: 1px solid $kiva-stroke-gray;
-		border-radius: rem-calc(3);
 		padding: 1rem;
 		margin: 4rem 1rem 3rem;
 
@@ -82,7 +78,7 @@ export default {
 
 		&::after {
 			content: "\00a9 " attr(data-year) " Kiva. All rights reserved.";
-			color: $kiva-text-light;
+			color: rgb(var(--text-secondary));
 			position: absolute;
 			width: 100%;
 			left: 0;

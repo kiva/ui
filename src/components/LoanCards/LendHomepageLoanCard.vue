@@ -25,7 +25,7 @@
 					:disable-link="disableRedirects"
 					:name="loan.name"
 					:loan-id="loan.id"
-					class="borrower-name"
+					class="borrower-name tw-text-h2"
 					@name-click="$emit('name-click', {loanId: loan.id})"
 					@track-loan-card-interaction="trackInteractionBorrowerInfoName"
 				/>

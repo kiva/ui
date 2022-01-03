@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h3 class="filter-title">
+		<h3 class="tw-mb-2">
 			Field Partner risk ratings
 		</h3>
 		<kv-select v-model="riskRating">
@@ -89,6 +89,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss">
-</style>

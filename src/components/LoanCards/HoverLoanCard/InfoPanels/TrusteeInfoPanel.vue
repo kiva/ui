@@ -17,85 +17,85 @@
 			</div>
 		</div>
 		<div v-else>
-			<ul>
-				<li v-if="this.trusteeName">
-					<label>Trustee Name:</label>
+			<dl>
+				<div v-if="this.trusteeName">
+					<dt>Trustee Name:</dt>
 					<span class="data">
 						{{ trusteeName }}
 					</span>
-				</li>
-				<li v-if="this.trusteeType">
-					<label>Trustee type:</label>
-					<span class="data trusteeType">
+				</div>
+				<div v-if="this.trusteeType">
+					<dt>Trustee type:</dt>
+					<dd class="tw-text-brand tw-my-0.5 tw-capitalize">
 						{{ trusteeType }}
-					</span>
-				</li>
-				<li v-if="this.trusteeLocation">
-					<label>Locatiion:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.trusteeLocation">
+					<dt>Locatiion:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ trusteeLocation }}
-					</p>
-				</li>
-				<li v-if="this.timeOnKiva">
-					<label>Time on Kiva:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.timeOnKiva">
+					<dt>Time on Kiva:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ timeOnKivaFormatted }} months
-					</p>
-				</li>
-				<li v-if="this.numBorrowers">
-					<label>Kiva borrowers:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.numBorrowers">
+					<dt>Kiva borrowers:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ numBorrowers }}
-					</p>
-				</li>
-				<li v-if="this.totalLoanDollarValue">
-					<label>Total loans:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.totalLoanDollarValue">
+					<dt>Total loans:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ totalDollarValueFormatted }}
-					</p>
-				</li>
-				<li v-if="this.loansFundraisingRaised">
-					<label>Fundraising/raised:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.loansFundraisingRaised">
+					<dt>Fundraising/raised:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ loansFundraisingRaised }}
-					</p>
-				</li>
-				<li v-if="this.loansPayingBackOnTime">
-					<label>Paying back on time:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.loansPayingBackOnTime">
+					<dt>Paying back on time:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ loansPayingBackOnTime }}
-					</p>
-				</li>
-				<li v-if="this.loansPayingBackLate">
-					<label>Paying back late:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.loansPayingBackLate">
+					<dt>Paying back late:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ loansPayingBackLate }}
-					</p>
-				</li>
-				<li v-if="this.loansRepaidInFull">
-					<label>Repaid in full:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.loansRepaidInFull">
+					<dt>Repaid in full:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ loansRepaidInFull }}
-					</p>
-				</li>
-				<li v-if="this.loansDefaulted">
-					<label>Defaulted:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.loansDefaulted">
+					<dt>Defaulted:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ loansDefaulted }}
-					</p>
-				</li>
-				<li v-if="this.repaymentRate">
-					<label>Repayment rate:</label>
-					<p class="data">
+					</dd>
+				</div>
+				<div v-if="this.repaymentRate">
+					<dt>Repayment rate:</dt>
+					<dd class="tw-text-brand tw-my-0.5">
 						{{ repaymentRateFormatted }}
-					</p>
-				</li>
-			</ul>
+					</dd>
+				</div>
+			</dl>
 			<div v-if="this.endorsement && this.endorsement != ''">
-				<h3 class="loan-endorsement-text">
+				<h3 class="tw-mb-1 tw-mt-4">
 					Why are you endorsing this borrower?
 				</h3>
-				<p class="data">
+				<p class="tw-prose">
 					{{ endorsement }}
 				</p>
 			</div>
@@ -190,25 +190,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-ul {
-	list-style: none;
-	margin-left: 0;
-}
-
-.data {
-	color: $kiva-icon-green;
-	margin-bottom: 0;
-}
-
-.trusteeType {
-	text-transform: capitalize;
-}
-
-.loan-endorsement-text {
-	color: $black;
-}
-</style>

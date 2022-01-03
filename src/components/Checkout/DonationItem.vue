@@ -2,18 +2,21 @@
 	<div class="basket-donation-item row">
 		<div class="hide-for-small-only medium-3 large-2 columns">
 			<div class="donation-icon">
-				<kv-icon class="dedicate-heart" name="dedicate-heart" />
+				<kv-icon
+					class="dedicate-heart tw-border tw-border-tertiary tw-text-brand tw-fill-current"
+					name="dedicate-heart"
+				/>
 			</div>
 		</div>
 		<div class="small-12 medium-5 large-7 columns donation-info-wrapper">
-			<div class="donation-info featured-text">
+			<h2 class="donation-info tw-text-h3">
 				{{ donationTitle }}
-			</div>
+			</h2>
 			<div v-if="hasLoans">
-				<div class="donation-tagline small-text" v-html="donationTagLine">
+				<div class="donation-tagline tw-text-small tw-text-secondary tw-my-1" v-html="donationTagLine">
 				</div>
 				<button
-					class="small-text donation-help-text"
+					class="tw-text-small tw-text-link donation-help-text"
 					@click="triggerDefaultLightbox"
 					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
 				>
@@ -37,24 +40,24 @@
 						role="img"
 						aria-label="Edit Donation"
 						title="Edit Donation"
-						class="edit-donation"
+						class="edit-donation tw-text-action"
 						name="pencil"
 					/>
 				</button>
 			</div>
 			<div v-show="editDonation" class="small-12 columns donation-amount-input-wrapper">
-				<input
-					type="input"
+				<kv-text-input
 					class="donation-amount-input"
 					name="donation"
 					id="donation"
 					v-model="amount"
 					@blur="validateInput"
 					@keyup.enter.prevent="updateDonation()"
-				>
+				/>
 				<kv-button
-					class="secondary update-donation-inline-button"
-					@click.native.prevent.stop="updateDonation()"
+					variant="secondary"
+					class="update-donation-inline-button"
+					@click="updateDonation()"
 				>
 					Update
 				</kv-button>
@@ -62,7 +65,12 @@
 					class="show-for-medium remove-wrapper"
 					@click="updateLoanAmount('remove')"
 				>
-					<kv-icon class="remove-x" name="small-x" :from-sprite="true" title="Remove donation" />
+					<kv-icon
+						class="remove-x tw-text-tertiary"
+						name="small-x"
+						:from-sprite="true"
+						title="Remove donation"
+					/>
 				</button>
 			</div>
 			<donate-repayments
@@ -89,31 +97,33 @@
 			@lightbox-closed="lightboxClosed"
 			title="How does Kiva use donations?"
 		>
-			<p>
-				100% of money lent on Kiva goes to funding loans,
-				so we rely on donations to continue this important work.
-				Each dollar helps us invest in systemic change and spread financial inclusion around the world.
-			</p>
-			<p>
-				We’re investing in lasting solutions for a more inclusive world through your donations.
-				Projects like...
-			</p>
-			<ul style="margin-bottom: 1rem;">
-				<li>
-					Kiva Protocol, giving unbanked people a digital identity and secure control over their
-					own credit information in places like Sierra Leone.
-				</li>
-				<li>
-					Kiva Capital, scaling our model for institutional investors.
-				</li>
-				<li>
-					Kiva Labs, supporting small and growing social enterprises around the world.
-				</li>
-			</ul>
-			<p>
-				Your donations also help over 100 Kiva employees and more than 400 volunteers
-				make your loans happen!
-			</p>
+			<div class="tw-prose">
+				<p>
+					100% of money lent on Kiva goes to funding loans,
+					so we rely on donations to continue this important work.
+					Each dollar helps us invest in systemic change and spread financial inclusion around the world.
+				</p>
+				<p>
+					We’re investing in lasting solutions for a more inclusive world through your donations.
+					Projects like...
+				</p>
+				<ul>
+					<li>
+						Kiva Protocol, giving unbanked people a digital identity and secure control over their
+						own credit information in places like Sierra Leone.
+					</li>
+					<li>
+						Kiva Capital, scaling our model for institutional investors.
+					</li>
+					<li>
+						Kiva Labs, supporting small and growing social enterprises around the world.
+					</li>
+				</ul>
+				<p>
+					Your donations also help over 100 Kiva employees and more than 400 volunteers
+					make your loans happen!
+				</p>
+			</div>
 		</kv-lightbox>
 	</div>
 </template>
@@ -125,8 +135,6 @@ import _forEach from 'lodash/forEach';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 
 import KvIcon from '@/components/Kv/KvIcon';
-import KvButton from '@/components/Kv/KvButton';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import DonateRepayments from '@/components/Checkout/DonateRepaymentsToggle';
 import donationDataQuery from '@/graphql/query/checkout/donationData.graphql';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
@@ -134,6 +142,9 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const donationItemQuery = gql`query donationItemQuery {
 	contentful {
@@ -146,6 +157,7 @@ export default {
 		KvIcon,
 		KvButton,
 		KvLightbox,
+		KvTextInput,
 		DonateRepayments,
 		DonationNudgeLightbox,
 	},
@@ -398,20 +410,9 @@ export default {
 }
 
 .dedicate-heart {
-	border: 1px solid $light-gray;
 	padding: rem-calc(12);
 	height: rem-calc(80);
 	width: rem-calc(80);
-	fill: $kiva-icon-green;
-}
-
-.donation-info {
-	line-height: 1.25;
-	font-weight: $global-weight-highlight;
-}
-
-.donation-tagline {
-	color: $gray;
 }
 
 .donation-help-text {
@@ -478,16 +479,7 @@ export default {
 	@extend .inline-donation-amount;
 
 	display: block;
-	border: 1px solid $charcoal;
-	border-radius: $button-radius;
-	text-align: center;
-	font-weight: $global-weight-highlight;
-	color: $charcoal;
 	margin-bottom: rem-calc(15);
-
-	@include breakpoint(medium) {
-		height: rem-calc(36);
-	}
 }
 
 .show-for-medium {
@@ -498,7 +490,6 @@ export default {
 	}
 
 	.remove-x {
-		fill: $subtle-gray;
 		display: inline-block;
 		width: 1.1rem;
 		height: rem-calc(36);
@@ -509,13 +500,7 @@ input {
 	width: rem-calc(100);
 	text-align: right;
 	padding-right: rem-calc(5);
-	height: rem-calc(50);
 	margin-bottom: rem-calc(20);
-	font-size: $medium-text-font-size;
-
-	@include breakpoint(medium) {
-		height: rem-calc(32);
-	}
 }
 
 .basket-donation-item .secondary {
@@ -534,9 +519,4 @@ input {
 	}
 }
 
-.boost-applied {
-	color: #333;
-	text-decoration: none;
-	cursor: inherit;
-}
 </style>

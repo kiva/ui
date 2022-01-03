@@ -3,8 +3,7 @@
 		<h3 v-if="title">
 			{{ title }}
 		</h3>
-
-		<div class="grid-loan-card">
+		<div class="grid-loan-card tw-bg-primary tw-border tw-border-tertiary">
 			<loan-card-image
 				:loan-id="loan.id"
 				:name="loan.name"
@@ -155,8 +154,6 @@ export default {
 @import 'settings';
 
 .grid-loan-card {
-	background-color: $white;
-	border: 1px solid $kiva-stroke-gray;
 	display: flex;
 	flex-direction: column;
 	height: 100%;

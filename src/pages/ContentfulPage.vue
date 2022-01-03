@@ -111,29 +111,6 @@ const getPageFrameFromType = type => {
 	}
 };
 
-// The components that return kv-tailwind will get wrapped in that class,
-// they have already been migrated to use tailwind CSS. Legacy components
-// should return empty string so they are not wrapped in the kv-tailwind class
-// once all components use tailwind, we can add the 'kv-tailwind' to the
-// :is="pageFrame" component on this page
-const getWrapperClassFromType = type => {
-	switch (type) {
-		case 'cardRow':
-		case 'centeredRichText':
-		case 'dynamicHeroClassic':
-		case 'heroWithCarousel':
-		case 'loansByCategoryCarousel':
-		case 'monthlyGoodSelector':
-		case 'testimonialCards':
-		case 'richTextItemsCentered':
-		case 'mediaItemsCentered':
-		case 'frequentlyAskedQuestions':
-			return 'kv-tailwind';
-		default:
-			return '';
-	}
-};
-
 // Return a component importer function based on content group type from Contentful
 const getComponentFromType = type => {
 	switch (type) {
@@ -202,7 +179,6 @@ const getContentGroups = pageData => {
 	return groups.map(group => ({
 		component: getComponentFromType(group.type),
 		content: group,
-		wrapperClass: getWrapperClassFromType(group.type),
 	})).filter(group => typeof group.component === 'function');
 };
 

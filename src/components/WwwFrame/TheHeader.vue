@@ -60,7 +60,7 @@
 							<img
 								:src="profilePic"
 								alt="My portfolio"
-								class="fs-mask"
+								class="fs-mask tw-inline-block"
 							>
 						</span>
 					</router-link>

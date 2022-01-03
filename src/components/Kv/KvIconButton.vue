@@ -1,5 +1,8 @@
 <template>
-	<kv-button class="icon-btn"
+	<kv-button
+		class="
+		icon-btn
+		tw-text-h3"
 		:style="cssVars"
 	>
 		<div class="icon-btn__icon-background">
@@ -36,16 +39,12 @@ export default {
 		cssVars() {
 			// TODO possibly add other themes
 			if (this.theme === 'default') {
-				// $platinum: #efefef;
-				// $umbreon: #212121;
-				// $white: #fff;
-				// $dark-blue: #006ed3 or 0,100,211
 				return {
-					'--kv-left-icon-background': '#efefef',
-					'--kv-left-icon-color': '#212121',
-					'--kv-left-icon-hover': '#006ed3',
-					'--kv-color-hover': '#fff',
-					'--kv-left-icon-color-active': '0,110,211',
+					'--kv-left-icon-background': 'rgb(var(--bg-secondary))',
+					'--kv-left-icon-color': 'rgb(var(--text-primary))',
+					'--kv-left-icon-hover': 'rgb(var(--bg-action))',
+					'--kv-color-hover': 'rgb(var(--bg-primary))',
+					'--kv-left-icon-color-active': 'var(--bg-action)',
 
 				};
 			}
@@ -60,14 +59,12 @@ export default {
 
 .icon-btn {
 	// Button styles
-	border: rem-calc(1) solid $umbreon;
 	box-shadow: none;
 	border-radius: rem-calc(10);
-	color: $umbreon;
-	background-color: transparent;
+	color: rgb(var(--text-primary));
+	background-color: rgb(var(--bg-primary));
 	padding: rem-calc(24);
-	font-weight: 600;
-	@include medium-text();
+	border-color: rgb(var(--text-primary));
 
 	// Positioning
 	display: flex;
@@ -87,7 +84,7 @@ export default {
 		margin-right: 1rem;
 	}
 
-	&__icon-wrapper ::v-deep div {
+	&__icon-wrapper {
 		display: flex;
 		align-items: center;
 	}
@@ -96,7 +93,7 @@ export default {
 		margin-right: 0.5rem;
 	}
 
-	&__icon--left ::v-deep svg [stroke] {
+	&__icon--left {
 		stroke: var(--kv-left-icon-color);
 	}
 
@@ -112,10 +109,10 @@ export default {
 	}
 
 	&:hover {
-		border-color: $blue;
-		background-color: $blue;
 		box-shadow: none;
-		color: $white;
+		background-color: rgb(var(--bg-action-highlight));
+		color: #fff;
+		border-color: rgb(var(--border-action-highlight));
 
 		.icon-btn__icon--right ::v-deep svg {
 			color: var(--kv-color-hover);
@@ -136,8 +133,8 @@ export default {
 
 	// Active class
 	&.active:not(:hover) {
-		background-color: $white;
-		border: rem-calc(1) solid $white;
+		background-color: rgb(var(--bg-primary));
+		border: rem-calc(1) solid rgb(var(--bg-primary));
 
 		.icon-btn__icon-background {
 			background-color: rgba(var(--kv-left-icon-color-active), 0.3);

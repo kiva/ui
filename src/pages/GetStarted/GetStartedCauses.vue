@@ -1,16 +1,18 @@
 <template>
 	<div class="causes">
 		<kv-progress-bar class="progress-bar" value="33" max="100" />
-		<form class="get-started__form"
+		<form class="get-started__form tw-bg-primary tw-rounded"
 			@submit.prevent="onSubmitForm"
 			:disabled="selectedCauses.length === 0"
 		>
 			<fieldset>
 				<div class="row align-middle collapse">
 					<div class="small-12 xlarge-5 columns get-started__intro">
-						<h1>Choose causes <br class="xlu">you care about</h1>
-						<p>
-							With Kiva, you can choose causes you care about and borrowers to support.<br class="xlu">
+						<h1 class="tw-text-h2">
+							Choose causes <br class="lu">you care about
+						</h1>
+						<p class="tw-text-subhead tw-text-secondary">
+							With Kiva, you can choose causes you care about and borrowers to support.
 							You’ll receive regular updates from borrowers as they receive and repay each loan.
 						</p>
 					</div>
@@ -30,7 +32,7 @@
 							</li>
 						</ul>
 						<p
-							class="get-started__summary text-center"
+							class="get-started__summary tw-text-center"
 							v-html="summaryText"
 						></p>
 					</div>
@@ -243,8 +245,6 @@ export default {
 	&__form {
 		padding: 1.5rem;
 		margin: 2rem auto;
-		background-color: $white;
-		border-radius: 1rem;
 		width: 98%;
 		max-width: rem-calc(1088);
 
@@ -267,20 +267,14 @@ export default {
 		}
 
 		h1 {
-			font-weight: bold;
 			margin-bottom: 1.5rem;
 
 			@include breakpoint(large) {
-				@include large-text();
-
 				margin-bottom: 0;
 			}
 		}
 
 		p {
-			font-size: $medium-text-font-size;
-			line-height: $medium-text-line-height;
-
 			@include breakpoint(xlarge) {
 				padding: 1rem 1.5rem 1rem 0;
 			}
@@ -288,7 +282,6 @@ export default {
 	}
 
 	&__list {
-		list-style: none;
 		display: flex;
 		flex-wrap: wrap;
 		justify-items: center;

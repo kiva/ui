@@ -1,7 +1,7 @@
 <template>
 	<a
 		v-if="countriesNotLentTo.length"
-		class="find-new-country"
+		class="find-new-country tw-block tw-mb-1"
 		:href="searchURL"
 		@click.prevent="startSearch"
 		v-kv-track-event="['Lending', 'click-countries-not-lent']"
@@ -148,10 +148,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-.find-new-country {
-	display: block;
-	margin-bottom: 0.5rem;
-}
-</style>

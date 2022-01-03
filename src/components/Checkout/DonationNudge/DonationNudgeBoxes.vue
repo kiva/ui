@@ -236,7 +236,7 @@
 
 <script>
 import numeral from 'numeral';
-import KvButton from '@/components/Kv/KvButton';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	components: {
@@ -361,6 +361,10 @@ export default {
 	.nudge-boxes-desktop {
 		.nudge-box-button-container {
 			.nudge-box-row {
+				.nudge-box-bottom {
+					margin-bottom: 1rem;
+				}
+
 				.nudge-box-shared {
 					border-left: $nudge-box-border;
 					border-right: $nudge-box-border;
@@ -406,6 +410,8 @@ export default {
 						.nudge-box-input {
 							text-align: center;
 							margin: 0 auto;
+							padding: 0.5rem;
+							border: 1px solid $light-gray;
 
 							&.nudge-box-input-desktop {
 								max-width: rem-calc(115);

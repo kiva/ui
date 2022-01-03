@@ -7,17 +7,20 @@
 					@click.native="pageChange(current - 1, $event)"
 					aria-label="Previous page"
 				>
-					<kv-icon class="icon" name="triangle" :from-sprite="true" />
+					<kv-icon class="icon tw-fill-current" name="triangle" :from-sprite="true" />
 					<span class="show-for-sr">Previous page</span>
 				</router-link>
 			</li>
-			<li v-else class="pagination-previous disabled">
-				<kv-icon class="icon" name="triangle" :from-sprite="true" />
+			<li v-else class="pagination-previous tw-text-tertiary">
+				<kv-icon class="icon tw-fill-current tw-text-tertiary" name="triangle" :from-sprite="true" />
 				<span class="show-for-sr">Previous page</span>
 			</li>
 			<li v-for="(number, index) in numbers"
 				:key="number || -index"
-				:class="{ ellipsis: number === 0, current: number === current }"
+				:class="{
+					ellipsis: number === 0,
+					'tw-text-tertiary': number === current
+				}"
 				:aria-hidden="number === 0"
 			>
 				<router-link v-if="number > 0 && number !== current"
@@ -40,12 +43,12 @@
 					aria-label="Next page"
 				>
 					<span class="show-for-sr">Next page</span>
-					<kv-icon class="icon" name="triangle" :from-sprite="true" />
+					<kv-icon class="icon tw-fill-current" name="triangle" :from-sprite="true" />
 				</router-link>
 			</li>
 			<li v-else class="pagination-next disabled">
 				<span class="show-for-sr">Next page</span>
-				<kv-icon class="icon" name="triangle" :from-sprite="true" />
+				<kv-icon class="icon tw-fill-current tw-text-tertiary" name="triangle" :from-sprite="true" />
 			</li>
 		</ul>
 	</nav>
@@ -184,29 +187,12 @@ export default {
 	vertical-align: text-top;
 }
 
-a .icon {
-	fill: $kiva-textlink;
-}
-
 .pagination-previous .icon {
 	transform: rotate(-90deg);
 }
 
 .pagination-next .icon {
 	transform: rotate(90deg);
-}
-
-.disabled,
-.current {
-	color: $kiva-text-light;
-
-	.icon {
-		fill: $kiva-text-light;
-	}
-}
-
-a:hover .icon {
-	fill: $kiva-textlink-hover;
 }
 
 .ellipsis::after {

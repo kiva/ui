@@ -1,42 +1,53 @@
 <template>
 	<www-page class="start-verification-page">
-		<div class="page-content row align-center">
-			<div class="columns shrink" data-test="withdraw-verification-text">
-				<template v-if="!sent">
-					<h1>Email verification required</h1>
-					<p>To ensure your safety, we added an extra layer of security.</p>
-					<p>Once we verify your account, you can continue {{ process }}!</p>
-					<kv-button data-test="withdraw-send-verification" v-if="!sending" @click.native="send">
-						Send verification link
-					</kv-button>
-					<kv-loading-spinner class="sending-spinner" v-else />
-				</template>
-				<template v-else>
-					<h1>Email verification pending</h1>
-					<p>We sent a validation link <span v-if="email" class="email fs-exclude">to {{ email }}</span>.</p>
-					<p>After receiving the email, follow the link provided to continue {{ process }}.</p>
-					<kv-button data-test="withdraw-resend-verification" v-if="!sending" @click.native="send">
-						Resend email
-					</kv-button>
-					<kv-loading-spinner class="sending-spinner" v-else />
-					<p>
-						<router-link to="/help/contact-us">
-							Need help? Contact us
-						</router-link>
-					</p>
-				</template>
-			</div>
-		</div>
+		<kv-page-container>
+			<kv-default-wrapper>
+				<div class="tw-prose tw-text-center" data-test="withdraw-verification-text">
+					<template v-if="!sent">
+						<h1>Email verification required</h1>
+						<p>To ensure your safety, we added an extra layer of security.</p>
+						<p>Once we verify your account, you can continue {{ process }}!</p>
+						<kv-button
+							data-test="withdraw-send-verification"
+							:state="{'loading': sending}"
+							@click="send"
+						>
+							Send verification link
+						</kv-button>
+					</template>
+					<template v-else>
+						<h1>Email verification pending</h1>
+						<p>
+							We sent a validation link
+							<span v-if="email" class="email fs-exclude">to {{ email }}</span>.
+						</p>
+						<p>After receiving the email, follow the link provided to continue {{ process }}.</p>
+						<kv-button
+							data-test="withdraw-resend-verification"
+							:state="{'loading': sending}"
+							@click="send"
+						>
+							Resend email
+						</kv-button>
+						<p>
+							<router-link to="/help/contact-us">
+								Need help? Contact us
+							</router-link>
+						</p>
+					</template>
+				</div>
+			</kv-default-wrapper>
+		</kv-page-container>
 	</www-page>
 </template>
 
 <script>
 import gql from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
-import KvButton from '@/components/Kv/KvButton';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import { lightHeader } from '@/util/siteThemes';
+import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 function getFullPath(url = '/') {
 	if (url.startsWith('/')) {
@@ -67,9 +78,13 @@ const startEmailVerification = gql`
 `;
 
 export default {
+	metaInfo: {
+		title: 'Email Verification'
+	},
 	components: {
 		KvButton,
-		KvLoadingSpinner,
+		KvDefaultWrapper,
+		KvPageContainer,
 		WwwPage,
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -80,7 +95,6 @@ export default {
 			process: '',
 			sent: false,
 			sending: false,
-			headerTheme: lightHeader,
 		};
 	},
 	apollo: {
@@ -147,18 +161,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-.start-verification-page {
-	.page-content {
-		text-align: center;
-		padding: 1.625rem 0;
-	}
-
-	h1 {
-		margin: 1.5rem 0;
-	}
-}
-</style>

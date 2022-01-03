@@ -18,12 +18,10 @@
 				<donate-support-us-right-rail :content="donationCalloutsCG" />
 			</div>
 			<div class="small-12 columns donation-faq-holder">
-				<div class="kv-tailwind">
-					<kv-frequently-asked-questions
-						:headline="frequentlyAskedQuestionsHeadline"
-						:questions="frequentlyAskedQuestions"
-					/>
-				</div>
+				<kv-frequently-asked-questions
+					:headline="frequentlyAskedQuestionsHeadline"
+					:questions="frequentlyAskedQuestions"
+				/>
 			</div>
 		</div>
 	</www-page>

@@ -1,20 +1,21 @@
 <template>
 	<system-page>
-		<div class="page-content">
-			<h1 class="featured-text">
+		<div class="page-content" style="max-width: 20rem;">
+			<h1 class="tw-text-h2 tw-mb-2">
 				One last thing!
 			</h1>
-			<p>
+			<p class="tw-mb-4">
 				{{ registrationMessage }}
 			</p>
 			<form
 				id="registerSocialTermsForm"
-				class="promptForm"
+				class="promptForm tw-text-left"
 				action="."
 				@submit.prevent.stop="postRegisterSocialForm"
 			>
-				<kv-base-input name="firstName"
-					class="fs-exclude"
+				<kv-base-input
+					name="firstName"
+					class="fs-exclude tw-w-full tw-mb-4"
 					type="text"
 					v-show="needsNames"
 					v-model.trim="firstName"
@@ -25,8 +26,9 @@
 						Enter first name.
 					</template>
 				</kv-base-input>
-				<kv-base-input name="lastName"
-					class="fs-exclude"
+				<kv-base-input
+					name="lastName"
+					class="fs-exclude tw-w-full tw-mb-4"
 					type="text"
 					v-show="needsNames"
 					v-model.trim="lastName"
@@ -37,24 +39,24 @@
 						Enter last name.
 					</template>
 				</kv-base-input>
-				<kv-base-input name="newAcctTerms"
+				<kv-base-input
+					name="newAcctTerms"
+					class="fs-exclude tw-w-full tw-mb-4"
 					type="checkbox"
 					v-show="needsTerms"
 					v-model="newAcctTerms"
 					:validation="$v.newAcctTerms"
 				>
-					<template #after>
-						I have read and agree to the Kiva
-						<a href="/legal/terms" target="_blank">Terms of Use</a>
-						and
-						<a href="/legal/privacy" target="_blank">Privacy Policy</a>
-					</template>
+					I have read and agree to the Kiva
+					<a href="/legal/terms" target="_blank">Terms of Use</a>
+					and
+					<a href="/legal/privacy" target="_blank">Privacy Policy</a>
 					<template #checked>
 						You must agree to the Kiva Terms of Use and Privacy Policy.
 					</template>
 				</kv-base-input>
 				<kv-button
-					class="register-button smaller"
+					class="register-button tw-w-full tw-mb-2"
 					type="submit"
 				>
 					Complete registration
@@ -75,8 +77,8 @@
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
 import KvBaseInput from '@/components/Kv/KvBaseInput';
-import KvButton from '@/components/Kv/KvButton';
 import SystemPage from '@/components/SystemFrame/SystemPage';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	metaInfo() {
@@ -99,7 +101,6 @@ export default {
 			needsTerms: false,
 			needsNames: false,
 			newAcctTerms: false,
-			showNewAcctTermsError: false,
 		};
 	},
 	computed: {

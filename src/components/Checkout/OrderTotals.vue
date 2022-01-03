@@ -4,7 +4,7 @@
 			<strong>Order Total: <span class="total-value">{{ itemTotal }}</span></strong>
 		</div>
 
-		<div v-if="showKivaCredit" class="kiva-credit" data-test="kiva-credit">
+		<div v-if="showKivaCredit" class="kiva-credit tw-font-medium tw-mb-2" data-test="kiva-credit">
 			<span v-if="showRemoveKivaCredit">
 				Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
 			</span>
@@ -16,11 +16,16 @@
 				class="remove-credit"
 				@click="removeCredit('kiva_credit')"
 			>
-				<kv-icon class="remove-credit-icon" name="small-x" :from-sprite="true" title="Remove Credit" />
+				<kv-icon
+					class="remove-credit-icon tw-fill-current tw-text-tertiary"
+					name="small-x"
+					:from-sprite="true"
+					title="Remove Credit"
+				/>
 			</button>
 			<button
 				v-if="showApplyKivaCredit"
-				class="apply-credit small-text"
+				class="apply-credit tw-text-small tw-font-book"
 				@click="addCredit('kiva_credit')"
 			>
 				Apply
@@ -44,11 +49,16 @@
 					class="remove-credit"
 					@click="promoOptOutLightboxVisible = true"
 				>
-					<kv-icon class="remove-credit-icon" name="small-x" :from-sprite="true" title="Remove Credit" />
+					<kv-icon
+						class="remove-credit-icon tw-fill-current tw-text-tertiary"
+						name="small-x"
+						:from-sprite="true"
+						title="Remove Credit"
+					/>
 				</button>
 				<button
 					v-if="showApplyActivePromoCredit"
-					class="apply-credit small-text"
+					class="apply-credit tw-text-small"
 					@click="applyPromoCredit"
 				>
 					Apply
@@ -304,16 +314,6 @@ export default {
 }
 
 .order-totals {
-	.kiva-credit {
-		font-weight: $global-weight-highlight;
-		margin-bottom: 1rem;
-		font-size: $medium-text-font-size;
-	}
-
-	.apply-credit {
-		font-weight: 300;
-	}
-
 	.remove-credit {
 		margin-left: 0.625rem;
 	}
@@ -321,7 +321,6 @@ export default {
 	.remove-credit-icon {
 		width: 1.1rem;
 		height: 1.1rem;
-		fill: $subtle-gray;
 		vertical-align: middle;
 	}
 

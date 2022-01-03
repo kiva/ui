@@ -3,34 +3,33 @@
 		<kv-settings-card class="column large-8" :title="causeName + ' Subscription'">
 			<template #content>
 				<div>
-					<p>
-						On the <kv-button class="text-link"
-							@click.native.prevent="showEditLightbox = true;"
+					<p class="tw-mb-2">
+						On the <button class="tw-text-link tw-font-medium"
+							@click="showEditLightbox = true;"
 						>
 							{{ dayOfMonth | numeral('Oo') }}
-						</kv-button> of each month <kv-button class="text-link"
-							@click.native.prevent="showEditLightbox = true;"
+						</button> of each month <button class="tw-text-link tw-font-medium"
+							@click="showEditLightbox = true;"
 						>
 							{{ amount | numeral('$0,0.00') }}
-						</kv-button> will be
-						transferred <kv-button class="text-link"
-							@click.native.prevent="showEditLightbox = true;"
+						</button> will be
+						transferred <button class="tw-text-link tw-font-medium"
+							@click="showEditLightbox = true;"
 						>
 							for {{ causeName | changeCase('noCase') }}.
-						</kv-button>
+						</button>
 					</p>
-					<p>
-						<kv-button class="text-link"
-							@click.native.prevent="showCancelLightbox = true"
-							v-kv-track-event="[
-								'Causes',
-								'click-cancel-cause-subscription',
-								`Cancel ${causeName} Subscription`
-							]"
-						>
-							Cancel Subscription
-						</kv-button>
-					</p>
+
+					<button class="tw-text-link tw-font-medium"
+						@click="showCancelLightbox = true"
+						v-kv-track-event="[
+							'Causes',
+							'click-cancel-cause-subscription',
+							`Cancel ${causeName} Subscription`
+						]"
+					>
+						Cancel Subscription
+					</button>
 
 					<!-- Edit Causes Lightbox -->
 					<kv-lightbox
@@ -56,59 +55,57 @@
 									/>
 									<div class="causes-update-lightbox__payment-method">
 										<div class="row">
-											<div class="column text-right">
+											<div class="column tw-text-right">
 												<button
-													class="button--link"
+													class="tw-text-link tw-font-medium tw-mt-2"
 													@click="toggleSections"
 												>
-													<strong>Update Payment Method</strong>
+													Update Payment Method
 													<kv-icon class="icon-pencil" name="pencil" title="Edit" />
 												</button>
 											</div>
 										</div>
 									</div>
-									<kv-button
-										data-test="causes-save-button"
-										class="smaller button"
-										v-if="!isSaving"
-										@click.native="saveCausesSubscription"
-										:disabled="!isChanged || !isFormValid"
-									>
-										Save Settings
-									</kv-button>
-									<kv-button data-test="causes-save-button" class="smaller button" v-else>
-										Saving <kv-loading-spinner />
-									</kv-button>
 								</div>
 								<!-- Payment Methods -->
 								<div
 									v-if="!settingsOpen"
 									class="row column" key="paymentSettings"
 								>
-									<kv-button class="text-link"
-										@click.native.prevent="toggleSections"
+									<button
+										class="tw-text-link tw-font-medium"
+										@click="toggleSections"
 									>
 										<kv-icon
-											class="arrow back-arrow"
+											class="arrow back-arrow tw-stroke-current"
 											name="small-chevron"
 											:from-sprite="true"
 										/>
 										Back to deposit settings
-									</kv-button>
+									</button>
+
 									<div class="causes-update-lightbox__dropin-payment-wrapper">
-										<div class="kv-tailwind">
-											<causes-drop-in-payment-wrapper
-												action="Update"
-												:amount="amount"
-												:day-of-month="dayOfMonth"
-												:subscription-id="subscriptionId"
-												@complete-transaction="completeCausesUpdatePayment"
-											/>
-										</div>
+										<causes-drop-in-payment-wrapper
+											action="Update"
+											:amount="amount"
+											:day-of-month="dayOfMonth"
+											:subscription-id="subscriptionId"
+											@complete-transaction="completeCausesUpdatePayment"
+										/>
 									</div>
 								</div>
 							</transition>
 						</div>
+						<template #controls>
+							<kv-button
+								data-test="causes-save-button"
+								@click="saveCausesSubscription"
+								:state="saveButtonState"
+								v-if="settingsOpen"
+							>
+								Save Settings
+							</kv-button>
+						</template>
 					</kv-lightbox>
 				</div>
 
@@ -131,15 +128,14 @@ import gql from 'graphql-tag';
 import updateSubscription from '@/graphql/mutation/updateSubscription.graphql';
 
 import CausesUpdateForm from '@/components/Forms/CausesUpdateForm';
-import KvButton from '@/components/Kv/KvButton';
-import KvLightbox from '@/components/Kv/KvLightbox';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvIcon from '@/components/Kv/KvIcon';
 import CausesDropInPaymentWrapper from '@/components/Causes/CausesDropInPaymentWrapper';
 
 import SubscriptionsCausesCancellationFlow from
 	'@/components/Subscriptions/SubscriptionsCausesCancellationFlow';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const pageQuery = gql`query causeSubscription {
 	mySubscriptions(includeDisabled: false) {
@@ -167,7 +163,6 @@ export default {
 		KvButton,
 		KvIcon,
 		KvLightbox,
-		KvLoadingSpinner,
 		KvSettingsCard,
 		SubscriptionsCausesCancellationFlow,
 	},
@@ -202,6 +197,15 @@ export default {
 		slideTransition() {
 			return this.settingsOpen ? 'kv-slide-right' : 'kv-slide-left';
 		},
+		saveButtonState() {
+			if (!this.isChanged || !this.isFormValid) {
+				return 'disabled';
+			}
+			if (this.isSaving) {
+				return 'loading';
+			}
+			return '';
+		}
 	},
 	methods: {
 		toggleSections() {
@@ -286,7 +290,6 @@ export default {
 	&__content {
 		overflow: hidden;
 		max-width: 100%;
-		margin: 1.5rem 0 0;
 
 		@include breakpoint('large') {
 			width: rem-calc(530);
@@ -304,8 +307,6 @@ export default {
 
 	&__payment-method {
 		padding-right: 2rem;
-		margin-bottom: 2rem;
-		margin-top: rem-calc(24);
 	}
 
 	&__dropin-payment-wrapper {
@@ -323,20 +324,12 @@ export default {
 	}
 
 	.arrow {
-		stroke: $blue;
 		width: rem-calc(13);
 		height: rem-calc(9);
 
 		&.back-arrow {
 			transform: rotate(90deg);
 		}
-	}
-
-	.button--link {
-		color: $kiva-accent-blue;
-		fill: $kiva-accent-blue;
-		cursor: pointer;
-		padding: 0.5rem;
 	}
 
 	.icon-pencil {

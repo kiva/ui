@@ -7,7 +7,7 @@
 			:class="`slide-${index}`"
 		>
 			<div class="row">
-				<div class="columns small-12 hide-for-large small-image text-center">
+				<div class="columns small-12 hide-for-large small-image tw-text-center">
 					<kv-responsive-image :images="images" alt="" />
 				</div>
 				<div class="columns small-12 large-7">

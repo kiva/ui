@@ -1,7 +1,7 @@
 <template>
 	<section-with-background class="how-it-works" :background-content="sectionBackground">
 		<template #content>
-			<section class="section text-center">
+			<section class="section tw-text-center">
 				<div class="row">
 					<p
 						v-html="howItWorksHeadline"

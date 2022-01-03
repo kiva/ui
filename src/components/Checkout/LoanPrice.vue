@@ -1,9 +1,11 @@
 <template>
 	<div class="loan-price-wrapper">
 		<div class="loan-price-select">
-			<select
+			<label for="loan-price" class="tw-sr-only">Loan Price</label>
+			<kv-select
 				v-model="selectedOption"
-				class="loan-price medium-text-font-size"
+				class="loan-price"
+				id="loan-price"
 				@change="updateLoanReservation()"
 			>
 				<option v-for="priceOption in prices"
@@ -12,13 +14,18 @@
 				>
 					${{ priceOption }}
 				</option>
-			</select>
+			</kv-select>
 		</div>
 		<button
 			class="remove-wrapper"
 			@click="updateLoanReservation('remove')"
 		>
-			<kv-icon class="remove-x" name="small-x" :from-sprite="true" title="Remove from cart" />
+			<kv-icon
+				class="remove-x tw-text-tertiary tw-fill-current"
+				name="small-x"
+				:from-sprite="true"
+				title="Remove from cart"
+			/>
 		</button>
 	</div>
 </template>
@@ -30,10 +37,12 @@ import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.grap
 import updateKivaCardAmount from '@/graphql/mutation/updateKivaCardAmount.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import { buildPriceArray } from '@/util/loanUtils';
+import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
 	components: {
-		KvIcon
+		KvIcon,
+		KvSelect
 	},
 	inject: ['apollo'],
 	props: {
@@ -232,7 +241,7 @@ export default {
 	cursor: pointer;
 
 	@include breakpoint(medium) {
-		margin-left: rem-calc(10);
+		margin-left: 0;
 	}
 }
 
@@ -245,42 +254,7 @@ export default {
 	}
 }
 
-.loan-price {
-	border: 1px solid $charcoal;
-	width: rem-calc(132);
-	border-radius: $button-radius;
-	height: rem-calc(50);
-	background-image: url('~@/assets/images/customDropdown.png');
-	background-size: 2rem 2rem;
-	color: $charcoal;
-	font-size: $medium-text-font-size;
-	font-weight: $global-weight-highlight;
-	cursor: pointer;
-
-	@include breakpoint(medium) {
-		height: inherit;
-		width: rem-calc(110);
-		background-size: rem-calc(23) rem-calc(20);
-	}
-}
-
-// Media query targeting IE 10+ only
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-	.loan-price {
-		width: 100%;
-		background-position: left 3.8rem center;
-	}
-}
-
-// Media query targeting IE EDGE
-@supports (-ms-ime-align:auto) {
-	.loan-price {
-		background-position: right -1.2rem center;
-	}
-}
-
 .remove-x {
-	fill: $subtle-gray;
 	display: inline-block;
 	width: 1.1rem;
 	height: rem-calc(50);

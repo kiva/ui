@@ -1,7 +1,6 @@
 <template>
 	<www-page
 		id="borrower-profile"
-		main-class="kv-tailwind"
 	>
 		<article class="tw-relative tw-bg-secondary">
 			<div class="tw-relative">

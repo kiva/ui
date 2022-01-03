@@ -12,7 +12,7 @@
 				>
 					<router-link
 						v-if="showViewAllLink"
-						class="view-all-link"
+						class="view-all-link tw-text-primary"
 						:to="cleanUrl"
 						:title="`View all ${cleanName} loans`"
 						v-kv-track-event="[
@@ -38,7 +38,7 @@
 			@mouseleave="handleMouseLeave"
 		>
 			<span
-				class="arrow left-arrow"
+				class="arrow left-arrow tw-text-secondary"
 				:class="{inactive: scrollPos === 0}"
 				ref="leftArrow"
 				@click="scrollRowLeft"
@@ -94,7 +94,7 @@
 								`Loan card`]"
 						>
 							<div
-								class="see-all-card"
+								class="see-all-card tw-bg-secondary tw-border tw-border-secondary"
 								:class="seeAllCardClass"
 								@mouseenter="updateHoverLoanIndex(null)"
 							>
@@ -107,7 +107,7 @@
 				</div>
 			</div>
 			<span
-				class="arrow right-arrow"
+				class="arrow right-arrow tw-text-secondary"
 				:class="{inactive: scrollPos <= minLeftMargin}"
 				ref="rightArrow"
 				@click="scrollRowRight"
@@ -491,22 +491,16 @@ $row-max-width: 63.75rem;
 	display: flex;
 	position: absolute;
 	top: 0;
-	background: rgba(255, 255, 255, 0.8);
+	background: rgba(var(--bg-primary), 0.8);
 	width: 2.5rem;
 	margin: 0;
 	text-align: center;
 	height: 100%;
 	z-index: 20;
-	color: $kiva-text-light;
 	cursor: pointer;
 	font-size: rem-calc(70);
 	justify-content: center;
 	align-items: center;
-
-	&:hover,
-	&:active {
-		color: $kiva-text-medium;
-	}
 
 	&.inactive,
 	&.inactive:hover,
@@ -547,7 +541,6 @@ $row-max-width: 63.75rem;
 }
 
 .category-text {
-	font-weight: $global-weight-highlight;
 	margin: 0 1.875rem;
 	margin-bottom: 0.5rem;
 
@@ -566,7 +559,6 @@ $row-max-width: 63.75rem;
 .category-description {
 	@extend .category-text;
 
-	font-weight: $global-weight-normal;
 	margin-top: rem-calc(12);
 	margin-bottom: 0;
 	min-height: rem-calc(56);
@@ -575,14 +567,12 @@ $row-max-width: 63.75rem;
 a.view-all-link {
 	display: inline;
 	position: relative;
-	color: $kiva-text-dark;
 
 	.view-all-arrow {
 		position: absolute;
 		bottom: -0.7rem;
 		right: -1.4rem;
 		padding: 0 0.3rem;
-		font-weight: $global-weight-normal;
 		font-size: 2.5rem;
 
 		@include breakpoint(medium) {
@@ -590,12 +580,6 @@ a.view-all-link {
 			bottom: -0.75rem;
 			right: -1.6rem;
 		}
-	}
-
-	&:hover {
-		text-decoration: none;
-		color: $kiva-text-dark;
-		cursor: pointer;
 	}
 }
 
@@ -624,8 +608,6 @@ a.view-all-link {
 	padding-left: 0.625rem;
 
 	.see-all-card {
-		background-color: $very-light-gray;
-		border: 1px solid $kiva-stroke-gray;
 		display: flex;
 		flex-direction: column;
 		padding: rem-calc(50);

@@ -12,7 +12,7 @@
 				>
 					Day of the Month
 				</label>
-				<input v-if="isDayInputShown"
+				<kv-text-input v-if="isDayInputShown"
 					@blur="hideDayInput()"
 					class="text-input__day"
 					id="dayOfMonth"
@@ -22,9 +22,9 @@
 					min="1"
 					max="31"
 					v-model.number="form.dayOfMonth"
-				>
+				/>
 				<button
-					class="button--ordinal-day"
+					class="tw-text-link tw-font-medium"
 					@click="isDayInputShown = true"
 					v-if="!isDayInputShown"
 				>
@@ -56,21 +56,20 @@
 
 					<div class="small-6 medium-4 columns">
 						<label
-							class="show-for-sr"
+							class="tw-sr-only"
 							:class="{ 'error': $v.form.mgAmount.$invalid }"
 							for="amount"
 						>
 							Amount
 						</label>
 						<kv-currency-input
-							class="text-input"
 							id="amount"
 							v-model="form.mgAmount"
 						/>
 					</div>
 				</div>
 				<div class="row columns align-middle">
-					<ul class="text-right validation-errors" v-if="$v.form.mgAmount.$invalid">
+					<ul class="tw-text-right validation-errors" v-if="$v.form.mgAmount.$invalid">
 						<li v-if="!$v.form.mgAmount.required">
 							Field is required
 						</li>
@@ -95,14 +94,13 @@
 							Donation
 						</label>
 						<kv-currency-input
-							class="text-input"
 							id="donation"
 							v-model="form.donation"
 						/>
 					</div>
 				</div>
 				<div class="row column align-middle">
-					<ul class="text-right validation-errors" v-if="$v.form.donation.$invalid">
+					<ul class="tw-text-right validation-errors" v-if="$v.form.donation.$invalid">
 						<li v-if="!$v.form.donation.minValue || !$v.form.donation.maxValue">
 							Enter an amount of $0-$10,000
 						</li>
@@ -120,7 +118,7 @@
 					</div>
 				</div>
 				<div class="row column">
-					<ul class="text-center validation-errors"
+					<ul class="tw-text-center validation-errors"
 						v-if="!$v.form.mgAmount.maxTotal || !$v.form.donation.maxTotal"
 					>
 						<li>
@@ -132,12 +130,13 @@
 			</div>
 			<div class="row align-middle">
 				<div class="column">
-					<strong>Your contribution will:</strong>
+					<label class="tw-font-medium" for="monthly-good-categories-select">Your contribution will:</label>
 				</div>
 				<div class="column">
 					<kv-select
 						v-model="form.category"
 						class="group-dropdown"
+						id="monthly-good-categories-select"
 					>
 						<option
 							v-for="(option, index) in lendingCategories"
@@ -158,10 +157,10 @@ import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
-
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import KvSelect from '@/components/Kv/KvSelect';
 import KvIcon from '@/components/Kv/KvIcon';
+import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 /**
  * This form contains all the fields and validation to modify a MG Subscription
@@ -174,6 +173,7 @@ export default {
 		KvIcon,
 		KvCurrencyInput,
 		KvSelect,
+		KvTextInput,
 	},
 	data() {
 		return {
@@ -256,7 +256,7 @@ export default {
 		}
 	},
 	mounted() {
-		/** Accomodate for special cases where MG category might be legacy or null.
+		/** Accommodate for special cases where MG category might be legacy or null.
 		 */
 		if (!this.category) {
 			this.lendingCategories.push(
@@ -303,24 +303,8 @@ form {
 		margin-bottom: 0.25em;
 	}
 
-	// styles to match KvSelect
-	input.text-input {
-		border: 1px solid $charcoal;
-		border-radius: $button-radius;
-		color: $charcoal;
-		font-size: $medium-text-font-size;
-		font-weight: $global-weight-highlight;
-		margin: 0;
-	}
-
 	.additional-left-pad-currency {
 		padding-left: 0.65rem;
-	}
-
-	.button--ordinal-day {
-		color: $kiva-accent-blue;
-		fill: $kiva-accent-blue;
-		cursor: pointer;
 	}
 
 	.icon-pencil {
@@ -329,14 +313,9 @@ form {
 	}
 
 	.text-input__day {
-		display: inline-block;
-		width: 3.5rem;
-		padding: 0.25rem 0.5rem;
 		margin: 0 0 0 0.25rem;
-		height: 2rem;
 	}
 
-	.text-input,
 	.validation-errors {
 		margin: 0;
 	}

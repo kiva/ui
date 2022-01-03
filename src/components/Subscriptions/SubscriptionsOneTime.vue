@@ -27,7 +27,7 @@
 						@submit.prevent
 						novalidate
 					>
-						<div class="row align-center text-left">
+						<div class="row align-center tw-text-left">
 							<div class="small-12 columns">
 								<div class="row align-middle">
 									<div class="columns">
@@ -52,7 +52,7 @@
 									</div>
 								</div>
 								<div class="row columns align-middle">
-									<ul class="text-right validation-errors" v-if="$v.mgAmount.$invalid">
+									<ul class="tw-text-right validation-errors" v-if="$v.mgAmount.$invalid">
 										<li v-if="!$v.mgAmount.required">
 											Field is required
 										</li>
@@ -85,7 +85,7 @@
 									</div>
 								</div>
 								<div class="row column align-middle">
-									<ul class="text-right validation-errors" v-if="$v.donation.$invalid">
+									<ul class="tw-text-right validation-errors" v-if="$v.donation.$invalid">
 										<li v-if="!$v.donation.minValue || !$v.donation.maxValue">
 											Enter an amount of $0-$10,000
 										</li>
@@ -104,7 +104,7 @@
 									</div>
 								</div>
 								<div class="row column">
-									<ul class="text-center validation-errors"
+									<ul class="tw-text-center validation-errors"
 										v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
 									>
 										<li>

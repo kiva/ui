@@ -9,7 +9,11 @@
 		}, inContextClasses]"
 	>
 		<div class="small-12 columns" :class="{ 'large-8': !inContext }">
-			<div class="campaign-status__message">
+			<div :class="[{
+				'tw-font-medium': inContext,
+				'tw-font-book': !inContext,
+			}]"
+			>
 				<template v-if="statusMessageOverride">
 					<span>{{ statusMessageOverride }}</span>
 				</template>
@@ -129,12 +133,6 @@ export default {
 		padding: 0.875rem;
 	}
 
-	&__message {
-		margin-bottom: 0;
-		line-height: $small-text-line-height;
-		font-weight: bold;
-	}
-
 	&--loading {
 		background-color: $kiva-bg-darkgray;
 	}
@@ -142,12 +140,6 @@ export default {
 	&--error {
 		background-color: $kiva-accent-red;
 		color: $white;
-	}
-
-	&--incontext {
-		.campaign-status__message {
-			font-weight: normal;
-		}
 	}
 
 	&--success {

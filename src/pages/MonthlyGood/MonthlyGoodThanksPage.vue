@@ -1,35 +1,36 @@
 <template>
 	<www-page>
-		<div class="row align-center monthly-good-thanks-page">
-			<div class="small-12 medium-11 large-8 column">
-				<h1 class="text-center impact-text">
-					<kv-icon name="confirmation" class="icon-confirmation" /> {{ headline }}
+		<kv-default-wrapper class="monthly-good-thanks-page row align-center">
+			<div class="small-12 medium-11 large-9 column tw-text-center">
+				<h1 class="tw-text-center tw-mb-2">
+					<kv-material-icon
+						:icon="mdiCheckCircle"
+						style="height: 1em; width: 1em; margin-top: -0.25em;"
+						class="tw-text-brand tw-align-middle"
+					/>
+					{{ headline }}
 				</h1>
-
-				<p class="text-center">
+				<p class="tw-text-subhead tw-mb-6">
 					Your contribution: ${{ mgAmount }}<span v-if="!isOnetime">/month</span>
 					<span v-if="donation > 0">(including your ${{ donation }} donation)</span>
 				</p>
-
-				<div class="panel" v-if="!fromCovidLanding">
-					<p class="text-center">
-						<strong>
+				<div class="tw-font-medium tw-bg-secondary tw-p-4 ">
+					<template v-if="!fromCovidLanding">
+						<p class="tw-mb-2">
 							Based on your contribution, you'll support your first borrower {{ monthWording }}.
-						</strong>
-					</p>
-					<p class="text-center">
-						<strong><em>This is our best guess but loan lengths and repayment rates vary.</em></strong>
-					</p>
-				</div>
-				<div class="panel" v-else>
-					<p class="text-center">
-						<strong>
+						</p>
+						<p>
+							<em>This is our best guess but loan lengths and repayment rates vary.</em>
+						</p>
+					</template>
+					<template v-else>
+						<p>
 							Thank you for choosing to support someone who has been impacted by COVID‑19 coronavirus.
-						</strong>
-					</p>
+						</p>
+					</template>
 				</div>
 			</div>
-		</div>
+		</kv-default-wrapper>
 	</www-page>
 </template>
 
@@ -37,10 +38,12 @@
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import numeral from 'numeral';
+import { mdiCheckCircle } from '@mdi/js';
 
 import { addMonths, formatDistanceToNow } from 'date-fns';
-import KvIcon from '@/components/Kv/KvIcon';
+import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 const pageQuery = gql`query monthlyGoodThanksPage {
 	my {
@@ -57,8 +60,12 @@ const pageQuery = gql`query monthlyGoodThanksPage {
 }`;
 
 export default {
+	metaInfo: {
+		title: 'Joined successfully'
+	},
 	components: {
-		KvIcon,
+		KvDefaultWrapper,
+		KvMaterialIcon,
 		WwwPage,
 	},
 	props: {
@@ -85,7 +92,8 @@ export default {
 			isMonthlyGoodSubscriber: false,
 			isOnetimePayment: null,
 			autoDepositId: null,
-			category: null
+			category: null,
+			mdiCheckCircle,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -157,31 +165,4 @@ export default {
 		}
 	},
 };
-
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.monthly-good-thanks-page {
-	padding-top: 4rem;
-
-	h1 { margin-bottom: 1rem; }
-
-	.icon-confirmation {
-		height: 3rem;
-		width: 3rem;
-		color: $kiva-green;
-		fill: $kiva-green;
-		vertical-align: middle;
-		margin-top: -0.65rem;
-	}
-
-	.panel {
-		border: 1px solid $light-gray;
-		padding: 1rem 1rem 0;
-		background-color: $platinum;
-		margin: 2rem auto;
-	}
-}
-</style>

@@ -1,16 +1,16 @@
 <template>
 	<div class="edit-preferences">
-		<h2 class="edit-preferences__header">
+		<h2 class="tw-mb-2">
 			Looking for different loans?
 		</h2>
-		<p class="edit-preferences__sub-header">
+		<p class="tw-text-subhead tw-mb-4">
 			Change your preferences and find more borrowers to support.
 		</p>
 		<div class="row">
 			<div class="small-12 large-6 columns">
 				<!-- Causes Card -->
-				<div class="edit-preferences__card" v-if="causes.length > 0">
-					<div class="edit-preferences__icon-wrapper">
+				<div class="edit-preferences__card tw-bg-secondary" v-if="causes.length > 0">
+					<div class="edit-preferences__icon-wrapper tw-bg-tertiary">
 						<span class="edit-preferences__icon-background">
 							<kv-icon
 								class="edit-preferences__check-icon"
@@ -19,9 +19,9 @@
 						</span>
 					</div>
 					<div class="edit-preferences__content-wrapper">
-						<div class="row collapse text-left align-middle">
+						<div class="row collapse tw-text-left align-middle">
 							<div class="small-6 large-7 xlarge-6 columns">
-								<h2 class="edit-preferences__card-header">
+								<h2>
 									Your {{ causes.length }} causes
 								</h2>
 								<router-link
@@ -52,17 +52,15 @@
 						</div>
 					</div>
 				</div>
-				<div class="edit-preferences__card" v-if="causes.length === 0">
-					<div class="edit-preferences__icon-wrapper">
+				<div class="edit-preferences__card tw-bg-secondary" v-if="causes.length === 0">
+					<div class="edit-preferences__icon-wrapper tw-bg-tertiary">
 						<span class="edit-preferences__icon-background">
 							<strong>?</strong>
 						</span>
 					</div>
 					<div class="edit-preferences__content-wrapper">
-						<div class="row collapse text-left align-middle column">
-							<h2 class="edit-preferences__card-header">
-								All Causes
-							</h2>
+						<div class="row collapse tw-text-left align-middle column">
+							<h2>All Causes</h2>
 							<router-link
 								class="smallest"
 								to="/get-started"
@@ -76,8 +74,8 @@
 			</div>
 			<div class="small-12 large-6 columns">
 				<!-- Places Card -->
-				<div class="edit-preferences__card" v-if="countries.length > 0">
-					<div class="edit-preferences__icon-wrapper">
+				<div class="edit-preferences__card tw-bg-secondary" v-if="countries.length > 0">
+					<div class="edit-preferences__icon-wrapper tw-bg-tertiary">
 						<span class="edit-preferences__icon-background">
 							<kv-icon
 								class="edit-preferences__check-icon"
@@ -86,11 +84,9 @@
 						</span>
 					</div>
 					<div class="edit-preferences__content-wrapper">
-						<div class="row collapse text-left align-middle">
+						<div class="row collapse tw-text-left align-middle">
 							<div class="small-6 large-7 xlarge-6 columns">
-								<h2 class="edit-preferences__card-header">
-									Your {{ countries.length }} places
-								</h2>
+								<h2>Your {{ countries.length }} places</h2>
 								<router-link
 									class="smallest"
 									to="/get-started/places"
@@ -121,17 +117,15 @@
 						</div>
 					</div>
 				</div>
-				<div class="edit-preferences__card" v-if="countries.length === 0">
-					<div class="edit-preferences__icon-wrapper">
+				<div class="edit-preferences__card tw-bg-secondary" v-if="countries.length === 0">
+					<div class="edit-preferences__icon-wrapper tw-bg-tertiary">
 						<span class="edit-preferences__icon-background">
 							<strong>?</strong>
 						</span>
 					</div>
 					<div class="edit-preferences__content-wrapper">
-						<div class="row collapse text-left align-middle column">
-							<h2 class="edit-preferences__card-header">
-								Everywhere
-							</h2>
+						<div class="row collapse tw-text-left align-middle column">
+							<h2>Everywhere</h2>
 							<router-link
 								class="smallest"
 								to="/get-started/places"
@@ -144,7 +138,7 @@
 				</div>
 			</div>
 		</div>
-		<p class="edit-preferences__outro">
+		<p class="edit-preferences__outro tw-text-subhead">
 			Want to dive even deeper? There are {{ totalCount | numeral(0,0) }} borrowers on Kiva,
 			<router-link
 				to="/lend/filter"
@@ -259,35 +253,15 @@ export default {
 $box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
 
 .edit-preferences {
-	&__header {
-		font-weight: bold;
-
-		@include breakpoint(large) {
-			@include large-text();
-		}
-	}
-
-	&__sub-header {
-		font-size: $medium-text-font-size;
-	}
-
 	&__card {
 		border-radius: 1rem;
-		background-color: $kiva-bg-darkgray;
 		min-height: 11rem;
 		display: flex;
 		margin-top: 1rem;
 		align-items: stretch;
 	}
 
-	&__card-header {
-		margin-bottom: 0;
-		font-size: 2rem;
-		font-weight: $global-weight-highlight;
-	}
-
 	&__icon-wrapper {
-		background-color: $kiva-stroke-gray;
 		border-radius: 1rem 0 0 1rem;
 		width: rem-calc(46);
 	}
@@ -365,7 +339,6 @@ $box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
 	}
 
 	&__outro {
-		font-size: $medium-text-font-size;
 		max-width: 30rem;
 		margin: 2rem auto 0;
 	}

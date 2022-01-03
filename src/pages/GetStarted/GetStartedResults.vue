@@ -1,18 +1,18 @@
 <template>
-	<div class="get-started-results-page">
+	<div class="get-started-results-page tw-bg-primary">
 		<kv-progress-bar class="progress-bar" value="100" max="100" />
 
 		<div class="loan-results">
 			<template v-if="totalPreferredCount > 0">
-				<h1 class="loan-results__headline">
+				<h1 class="tw-text-center tw-mb-4 tw-mx-auto" style="max-width: 50rem;">
 					Out of {{ totalFundRaisingCount | numeral(0,0) }} borrowers, these are your perfect matches.
 				</h1>
 			</template>
 			<template v-else>
-				<h1 class="loan-results__headline loan-results__headline--no-results">
+				<h1 class="tw-text-center tw-mb-4 tw-mx-auto" style="max-width: 50rem;">
 					Sorry, we couldn't find any loans matching your preferences
 				</h1>
-				<p class="loan-results__tagline">
+				<p class="tw-text-center tw-mb-4">
 					<!-- eslint-disable-next-line max-len -->
 					But here {{ countVerb }} {{ countNumber }} {{ countPeople }} who still {{ countNeed }} your support!
 					<router-link
@@ -36,7 +36,7 @@
 		</div>
 
 		<div class="row column edit-preferences-row">
-			<section class="edit-preferences section text-center">
+			<section class="edit-preferences section tw-text-center">
 				<edit-preferences
 					:causes="causeValues"
 					:countries="countriesValues"
@@ -46,8 +46,8 @@
 		</div>
 
 		<div class="row column">
-			<section class="how-it-works section text-center">
-				<h2 class="how-it-works__header">
+			<section class="how-it-works section tw-text-center">
+				<h2 class="tw-mb-4">
 					Here's how it works
 				</h2>
 				<div class="how-it-works__line show-for-large">
@@ -63,7 +63,7 @@
 							loading="lazy"
 							alt=""
 						/>
-						<h3 class="how-it-works__subtitle">
+						<h3 class="tw-mb-1 md:tw-mb-2">
 							Support a loan<br class="xxlu"> today!
 						</h3>
 						<p>
@@ -77,7 +77,7 @@
 							loading="lazy"
 							alt=""
 						/>
-						<h3 class="how-it-works__subtitle">
+						<h3 class="tw-mb-1 md:tw-mb-2">
 							Lenders around the world<br class="xxlu"> help fund the loan
 						</h3>
 						<p>This takes up to thirty days.</p>
@@ -89,7 +89,7 @@
 							loading="lazy"
 							alt=""
 						/>
-						<h3 class="how-it-works__subtitle">
+						<h3 class="tw-mb-1 md:tw-mb-2">
 							Get repaid after your<br class="xxlu"> borrower uses their loan
 						</h3>
 						<p>You can use the repayments to support more borrowers or withdraw it.</p>
@@ -267,42 +267,11 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.get-started-results-page {
-	background-color: $white;
-}
-
 .loan-results {
 	padding-top: 1.5rem;
 
 	@include breakpoint(large up) {
 		padding-top: 6rem;
-	}
-
-	&__headline {
-		text-align: center;
-		font-weight: bold;
-		margin-bottom: 2rem;
-		padding: 0 1rem;
-
-		@include breakpoint(medium down) {
-			font-size: rem-calc(18);
-		}
-
-		&--no-results {
-			margin-bottom: 1rem;
-		}
-	}
-
-	&__tagline {
-		text-align: center;
-		font-size: rem-calc(12);
-		line-height: 1.35;
-		max-width: 14rem;
-		margin: 0 auto 2rem;
-		@include breakpoint(large up) {
-			font-size: rem-calc(20);
-			max-width: 24rem;
-		}
 	}
 
 	&__loans {
@@ -372,15 +341,6 @@ export default {
 
 .how-it-works {
 	position: relative;
-
-	&__header {
-		font-weight: bold;
-		margin-bottom: 2.5rem;
-
-		@include breakpoint(large) {
-			@include large-text();
-		}
-	}
 
 	&__list {
 		list-style: none;
@@ -458,25 +418,17 @@ export default {
 		}
 	}
 
-	&__subtitle {
-		font-weight: bold;
-		margin-bottom: 0.25rem;
-		line-height: 1.25rem;
-
-		@include breakpoint(large) {
-			@include medium-text();
-
-			margin-bottom: 0.85rem;
-		}
-	}
-
 	&__line {
 		border-bottom: 1px solid $kiva-stroke-gray;
 		position: absolute;
-		top: rem-calc(280);
+		top: rem-calc(256);
 		width: 70%;
 		left: 50%;
 		margin-left: -35%;
+
+		@include breakpoint(xlarge) {
+			top: rem-calc(280);
+		}
 	}
 
 	&__circle {
@@ -498,10 +450,6 @@ export default {
 			right: -8.5px;
 			left: auto;
 		}
-	}
-
-	p {
-		line-height: 1rem;
 	}
 }
 

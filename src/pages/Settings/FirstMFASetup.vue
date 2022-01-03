@@ -1,10 +1,10 @@
 <template>
 	<div class="first-mfa-setup">
-		<p class="first-mfa-setup__description">
+		<p class="tw-text-left tw-mb-2">
 			To complete your setup, you will need to enter a 2-step verification code on the login page.
 		</p>
 		<kv-button
-			class="expanded smaller"
+			class="tw-w-full"
 			:to="`/ui-login?doneUrl=${encodeURIComponent('/login?authLevel=mfa&doneUrl=settings/security/mfa')}`"
 		>
 			Continue
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	components: {
@@ -21,18 +21,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.first-mfa-setup {
-	&__heading {
-		font-weight: bold;
-		text-align: left;
-	}
-
-	&__description {
-		text-align: left;
-	}
-}
-</style>

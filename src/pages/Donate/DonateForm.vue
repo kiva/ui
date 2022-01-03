@@ -25,9 +25,7 @@
 					v-model="isMonthly"
 					v-kv-track-event="['Donate form', 'toggle-monthly-donation', 'Make a monthly donation.']"
 				>
-					<template #after>
-						Make a monthly donation.
-					</template>
+					Make a monthly donation.
 				</kv-base-input>
 				<donate-form-drop-in-payment-wrapper
 					v-if="isMonthly"
@@ -39,15 +37,14 @@
 				<kv-button
 					v-if="!isMonthly"
 					class="smaller submit-btn"
-					:class="{'disabled': formSubmitted}"
 					type="submit"
-					:disabled="$v.$invalid"
+					:state="$v.$invalid ? 'disabled' : ''"
 				>
 					{{ buttonText }}
 				</kv-button>
 				<!-- Donation Disclaimer should always be present if we have a payment option active -->
 				<div
-					class="attribution-text text-center"
+					class="tw-text-base tw-mt-3 tw-text-action tw-text-center"
 					v-if="showDisclaimer && !isMonthly && !subscriptionApplied"
 					v-html="formDisclaimerCopy"
 				></div>
@@ -64,8 +61,8 @@ import { minValue, maxValue } from 'vuelidate/lib/validators';
 import DonateFormDropInPaymentWrapper from '@/pages/Donate/DonateFormDropInPaymentWrapper';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
 import KvBaseInput from '@/components/Kv/KvBaseInput';
-import KvButton from '@/components/Kv/KvButton';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	components: {
@@ -250,20 +247,9 @@ export default {
 	position: relative;
 }
 
-.attribution-text {
-	color: $kiva-text-light;
-	margin-top: 1.5625rem;
-	font-size: 1rem;
-}
-
 .submit-btn {
 	width: 100%;
 	margin: 0.5rem 0;
-}
-
-::v-deep label,
-::v-deep input {
-	font-weight: 700;
 }
 
 ::v-deep .validation-errors {

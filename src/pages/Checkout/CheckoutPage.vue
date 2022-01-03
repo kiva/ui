@@ -10,18 +10,19 @@
 								:steps="checkoutSteps"
 								:current-step-index="currentStep"
 							/>
-							<div class="text-center continue-browsing"
+							<div class="tw-text-center continue-browsing"
 								v-if="addToBasketRedirectExperimentShown && !userPrefContinueBrowsing"
 							>
 								<span>Want to add more loans? </span>
 								<router-link
 									to="/lend-by-category"
 									@click.native="handleChangeUserPref"
+									class="tw-font-medium"
 								>
 									Continue browsing
 								</router-link>
 							</div>
-							<hr>
+							<hr class="tw-border-tertiary tw-my-3">
 						</div>
 						<div class="basket-container">
 							<basket-items-list
@@ -36,7 +37,7 @@
 							/>
 						</div>
 						<div v-if="showKivaCardForm">
-							<hr>
+							<hr class="tw-border-tertiary tw-my-3">
 							<div class="basket-container">
 								<kiva-card-redemption
 									:credits="redemption_credits"
@@ -46,7 +47,7 @@
 								/>
 							</div>
 						</div>
-						<hr>
+						<hr class="tw-border-tertiary tw-my-3">
 
 						<div class="basket-container">
 							<div class="row">
@@ -99,22 +100,21 @@
 										into Kiva on current browser -->
 									<kv-button
 										v-if="eligibleForGuestCheckout && !guestCheckoutCTAExpActive"
-										class="guest-checkout-button checkout-button smallest secondary"
+										class="guest-checkout-button checkout-button"
+										variant="secondary"
 										id="guest-checkout-button"
 										v-kv-track-event="['basket', 'click-guest-checkout-cta', 'Checkout as guest']"
-										title="Checkout as guest"
-										@click.native="guestCheckout"
+										@click="guestCheckout"
 									>
 										Continue as guest
 									</kv-button>
 
 									<kv-button
 										v-if="!guestCheckoutCTAExpActive"
-										class="checkout-button smallest"
+										class="checkout-button"
 										id="login-to-continue-button"
 										v-kv-track-event="['basket', 'click-register-cta', 'Continue']"
-										title="Login to Continue Button"
-										@click.native="loginToContinue"
+										@click="loginToContinue"
 										:href="'/ui-login?force=true&doneUrl=/checkout'"
 									>
 										Continue
@@ -122,11 +122,11 @@
 
 									<kv-button
 										v-if="eligibleForGuestCheckout && guestCheckoutCTAExpActive"
-										class="checkout-button smallest secondary"
+										class="checkout-button"
+										variant="secondary"
 										id="create-account-continue-button"
 										v-kv-track-event="['basket', 'click-register-cta', 'Create an account']"
-										title="Create an account"
-										@click.native="loginToContinue"
+										@click="loginToContinue"
 										:href="'/ui-login?force=true&doneUrl=/checkout'"
 									>
 										Create an account
@@ -134,11 +134,10 @@
 
 									<kv-button
 										v-if="eligibleForGuestCheckout && guestCheckoutCTAExpActive"
-										class="checkout-button smallest"
+										class="checkout-button"
 										id="guest-checkout-exp-button"
 										v-kv-track-event="['basket', 'click-guest-checkout-cta', 'Continue as guest']"
-										title="Checkout as guest"
-										@click.native="guestCheckout"
+										@click="guestCheckout"
 									>
 										Continue as guest
 									</kv-button>
@@ -148,7 +147,7 @@
 										&& showLoginContinueButton
 										&& eligibleForGuestCheckout
 										&& guestCheckoutCTAExpActive"
-									class="small-12 columns text-right"
+									class="small-12 columns tw-text-right"
 								>
 									<span>Already have an account?</span>
 									<a
@@ -173,17 +172,17 @@
 					title="This checkout is being tested right now, but doesn't support some functions yet."
 					@lightbox-closed="redirectLightboxClosed"
 				>
-					<p>
+					<p class="tw-mb-4">
 						We'll redirect you so you can get back to changing lives, or click here if you aren't
 						automatically redirected.
 					</p>
 					<p>Thank you for minding our dust.</p>
 					<template #controls>
 						<kv-button
-							class="smaller checkout-button"
+							class="checkout-button"
 							id="Continue-to-legacy-button"
 							v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
-							@click.prevent.native="redirectToLegacy"
+							@click="redirectToLegacy"
 						>
 							Continue
 						</kv-button>
@@ -192,15 +191,17 @@
 			</div>
 		</div>
 		<div v-if="emptyBasket" class="empty-basket">
-			<div class="row display-align text-center">
-				<div class="columns small-12">
-					<h2 class="empty-basket-heading">
+			<div class="row display-align tw-text-center">
+				<div class="columns small-12 tw-mb-4">
+					<h1 class="empty-basket-heading tw-text-h2 tw-mb-2">
 						Your basket is empty!
-					</h2>
-					<p>
+					</h1>
+					<p class="tw-mb-2">
 						But we'd love to help you change that! Please consider
 						supporting one of the borrowers below, or
-						<a href="/lend-by-category">browse all loans</a>.
+						<router-link to="/lend-by-category">
+							browse all loans
+						</router-link>.
 					</p>
 				</div>
 			</div>
@@ -235,16 +236,16 @@ import experimentVersionFragment from '@/graphql/fragments/experimentVersion.gra
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
-import KvButton from '@/components/Kv/KvButton';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import BasketVerification from '@/components/Checkout/BasketVerification';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	components: {
@@ -843,10 +844,6 @@ export default {
 
 .checkout-steps-wrapper {
 	padding-bottom: 1.2rem;
-
-	.continue-browsing {
-		font-weight: $global-weight-highlight;
-	}
 }
 
 .checkout-steps {

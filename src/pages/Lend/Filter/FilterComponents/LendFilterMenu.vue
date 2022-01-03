@@ -1,28 +1,28 @@
 <template>
 	<div id="lend-filter-menu" class="small-12 columns" :class="{open: filterMenuOpen, pinned: filterMenuPinned}">
-		<div id="lend-filter-overlay" @click="hideFilterMenu"></div>
+		<button id="lend-filter-overlay" @click="hideFilterMenu"></button>
 		<div id="lend-filter-wrapper">
-			<div id="filter-toggle" @click="toggleFilterMenu">
+			<button id="filter-toggle" @click="toggleFilterMenu">
 				<div>Filter and sort</div>
 				<kv-icon class="filter-toggle-chevron" name="large-chevron" :from-sprite="true" />
-			</div>
+			</button>
 			<div id="algolia-pagination-stats">
 				<algolia-pagination-stats />
 			</div>
 			<div id="filter-menu">
 				<div id="filter-section-mobile-reset-all" class="filter-section">
 					<ais-clear-refinements class="clear-all-container">
-						<div
+						<button
 							class="filter-mobile-reset-all-link"
 							slot-scope="{ refine }"
 							@click="clearAllRefinementsAndClose(refine)"
 						>
 							Reset all
-						</div>
+						</button>
 					</ais-clear-refinements>
-					<div class="filter-mobile-close-icon-wrapper" @click="hideFilterMenu">
+					<button class="filter-mobile-close-icon-wrapper" @click="hideFilterMenu">
 						<kv-icon class="filter-mobile-close-icon" name="x" :from-sprite="true" />
-					</div>
+					</button>
 				</div>
 				<filter-section-gender :filter-menu-open="filterMenuOpen" class="filter-section" />
 				<filter-section-sort
@@ -183,7 +183,7 @@ export default {
 
 #lend-filter-menu {
 	$filter-transition: 0.25s ease-out;
-	$filter-border-radius: rem-calc(3);
+	$filter-border-radius: rem-calc(3); /* stylelint-disable-line */
 
 	margin-bottom: rem-calc(10);
 
@@ -229,16 +229,16 @@ export default {
 			display: inline-flex;
 			justify-content: flex-start;
 			align-items: center;
-			background-color: $white;
+			background-color: rgb(var(--bg-primary));
 			border-radius: $filter-border-radius;
-			border: 1px solid $blue;
-			color: $blue;
+			border: 1px solid rgb(var(--border-action));
+			color: rgb(var(--text-action));
 			transition: background-color $filter-transition;
 
 			.filter-toggle-chevron {
 				height: rem-calc(5);
 				width: 2rem;
-				stroke: $blue;
+				stroke: rgb(var(--text-action));;
 			}
 		}
 
@@ -265,10 +265,6 @@ export default {
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
-
-					.filter-mobile-reset-all-link {
-						cursor: pointer;
-					}
 
 					.filter-mobile-close-icon-wrapper {
 						width: 2rem;

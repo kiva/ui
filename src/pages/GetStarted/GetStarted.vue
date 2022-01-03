@@ -1,6 +1,6 @@
 <template>
 	<www-page-minimal>
-		<div class="page-wrap">
+		<div class="tw-relative tw-overflow-hidden md:tw-bg-secondary">
 			<router-view />
 		</div>
 	</www-page-minimal>
@@ -18,16 +18,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.page-wrap {
-	position: relative;
-	overflow: hidden;
-
-	@include breakpoint(large) {
-		background: $kiva-bg-lightgray;
-	}
-}
-</style>

@@ -1,13 +1,14 @@
 <template>
-	<www-page
-		class="lend-filter-page"
-		:gray-background="true"
-		:hide-search-in-header="algoliaSearchEnabled"
-	>
-		<kv-message>
-			Welcome to Kiva's new filter page! Take it for a spin below, or
-			<a @click="exitLendFilterExp('click-return-classic')">return to the classic view</a> at any time.
-		</kv-message>
+	<www-page class="lend-filter-page" :gray-background="true" :hide-search-in-header="algoliaSearchEnabled">
+		<div class="tw-flex tw-items-center tw-justify-center tw-px-2 tw-py-1 tw-gap-1 tw-text-center">
+			<span class="tw-bg-caution tw-text-black tw-text-small tw-px-2 tw-py-0.5">Beta</span>
+			<p>
+				Welcome to Kiva's new filter page! Take it for a spin below, or
+				<button class="tw-text-link" @click="exitLendFilterExp('click-return-classic')">
+					return to the classic view
+				</button> at any time.
+			</p>
+		</div>
 		<lend-header
 			:hard-left-align="true"
 			:side-pinned-filter-padding="filterMenuPinned"
@@ -121,7 +122,6 @@ import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrack
 // import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
-import KvMessage from '@/components/Kv/KvMessage';
 
 import lendFilterPageQuery from '@/graphql/query/lendFilterPage.graphql';
 
@@ -129,7 +129,6 @@ import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 
 export default {
 	components: {
-		KvMessage,
 		SelectedRefinements,
 		// TODO: Use this
 		// KvLoadingOverlay,

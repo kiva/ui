@@ -1,5 +1,5 @@
 <template>
-	<section class="homepage-general-stats row align-center text-center">
+	<section class="homepage-general-stats row align-center tw-text-center">
 		<div class="small-12 columns">
 			<img
 				class="homepage-general-stats__img"

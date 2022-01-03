@@ -1,5 +1,5 @@
 <template>
-	<div class="row autolending-messaging-content">
+	<div class="row autolending-messaging-content tw-prose">
 		<template v-if="action == 'opt-out'">
 			<div data-test="opt-out-success" class="small-12 medium-10 columns" v-if="success">
 				<!-- Success -->
@@ -82,6 +82,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

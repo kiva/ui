@@ -22,14 +22,17 @@
 					:current-donation-amount="currentDonationAmount"
 				/>
 				<div>
-					<a
+					<button
+						class="tw-underline tw-text-secondary"
 						id="no-donation-link"
 						@click="setDonationAndClose(0, 'No Donation Link')"
 						tabindex="12"
-					>No donation to Kiva</a>
+					>
+						No donation to Kiva
+					</button>
 				</div>
 			</div>
-			<div id="nudge-donation-bottom" :class="{ 'show-for-large': !experimentalFooter}">
+			<div id="nudge-donation-bottom" class="tw-bg-secondary" :class="{ 'show-for-large': !experimentalFooter}">
 				<div class="row">
 					<div class="large-10 large-offset-1 columns">
 						<kv-charity-navigator
@@ -38,7 +41,7 @@
 							:wide-icon="true"
 							subtitle="Your donation is eligible for a tax deduction if you live in the U.S."
 						/>
-						<div v-else class="charity-overhead text-center">
+						<div v-else class="charity-overhead tw-text-center">
 							<h3><kv-icon name="info" class="info-icon" /> <span>Did you know?</span></h3>
 							<p>
 								Kiva donations are more efficient than the average charity,
@@ -110,29 +113,10 @@ export default {
 
 			margin-bottom: 1.6rem;
 		}
-
-		#no-donation-link {
-			color: #4F4F4F;
-			text-decoration: underline;
-		}
 	}
 
 	#nudge-donation-bottom {
 		padding: 1.5rem 3rem 1.5rem 3rem;
-		background: #F1F1F0;
-
-		#charity-navigator-text {
-			padding: 0 50px;
-		}
-
-		#charity-navigator-image-container {
-			max-width: 50%;
-			margin: 1rem auto;
-		}
-
-		#charity-navigator-tax-deduction {
-			font-size: 0.8rem;
-		}
 
 		.charity-overhead {
 			margin: 0.2rem 0;

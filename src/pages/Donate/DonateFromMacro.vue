@@ -7,10 +7,10 @@
 		<div class="FAQ-wrapper section">
 			<div class="row">
 				<div class="columns">
-					<h2 class="strong">
+					<h2 class="tw-mb-2">
 						Frequently Asked Questions
 					</h2>
-					<div v-html="faqCopy"></div>
+					<div class="faq_copy" v-html="faqCopy"></div>
 				</div>
 			</div>
 		</div>
@@ -21,9 +21,8 @@
 					<kv-responsive-image class="impact-wrapper__img" :images="impactImageSet" alt="" />
 				</div>
 				<div class="small-12 large-6 columns">
-					<h2 class="impact-wrapper__header" v-html="this.impactHeadline">
-					</h2>
-					<div v-html="impactBodyCopy"></div>
+					<h2 class="tw-mb-2" v-html="this.impactHeadline"></h2>
+					<div class="impact_copy" v-html="impactBodyCopy"></div>
 				</div>
 			</div>
 		</div>
@@ -141,7 +140,7 @@ export default {
 		margin-top: 5rem;
 	}
 
-	h2 {
+	.faq_copy >>> p {
 		margin-bottom: 1rem;
 	}
 }
@@ -150,6 +149,10 @@ export default {
 	background: $kiva-bg-lightgray;
 	padding-top: 2rem;
 	padding-bottom: 2rem;
+
+	.impact_copy >>> p {
+		margin-bottom: 1rem;
+	}
 
 	@include breakpoint(xlarge) {
 		padding-top: 5rem;
@@ -164,12 +167,6 @@ export default {
 			margin-bottom: 0;
 			padding-right: 2rem;
 		}
-	}
-
-	&__header {
-		@include large-text();
-
-		margin-bottom: 1rem;
 	}
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<div class="text-center frame">
+	<div class="tw-text-center frame">
 		<h1 class="impact-text heading-text">
 			Browse loans by category
 		</h1>

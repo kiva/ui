@@ -1,7 +1,7 @@
 <template>
 	<section class="lender-quotes section">
 		<div class="row">
-			<h2 class="lender-quotes__header text-center small-12 columns" v-html="headline">
+			<h2 class="lender-quotes__header tw-text-center small-12 columns" v-html="headline">
 			</h2>
 			<div
 				v-for="lenderQuote in lenderQuotes"

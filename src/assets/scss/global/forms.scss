@@ -1,64 +1,17 @@
-@import 'settings';
-
-$placeholder-color: $kiva-text-light;
-$placeholder-font-style: italic;
-
-::-webkit-input-placeholder { /* Chrome, Safari, Opera */
-	color: $placeholder-color;
-	font-style: $placeholder-font-style;
-}
-
-::-moz-placeholder { /* Firefox >=19 */
-	color: $placeholder-color;
-	font-style: $placeholder-font-style;
-	opacity: 1 !important;
-}
-
-::-ms-input-placeholder { /* Edge */
-	color: $placeholder-color;
-	font-style: $placeholder-font-style;
-}
-
-:-moz-placeholder { /* Firefox <18 */
-	color: $placeholder-color;
-	font-style: $placeholder-font-style;
-	opacity: 1 !important;
-}
-
-:-ms-input-placeholder { /* IE10-11 */
-	color: $placeholder-color !important;
-	font-style: $placeholder-font-style !important;
-}
-
-::placeholder { /* CSS Working Draft */
-	color: $placeholder-color;
-	font-style: $placeholder-font-style;
-}
-
-.input-set {
-	label {
-		font-weight: 400;
-		font-size: rem-calc(18);
-	}
-
-	input {
-		padding: rem-calc(5) rem-calc(7);
-		margin-bottom: rem-calc(20);
-	}
-}
+@import "settings";
 
 // Form validation
 label.error {
 	& + input,
 	& + input:focus {
-		border: 1px solid $kiva-accent-red;
+		border: 1px solid rgb(var(--text-danger));
 	}
 }
 
 // for inputs without a label
 input.error,
 input.error:focus {
-	border: 1px solid $kiva-accent-red;
+	border: 1px solid rgb(var(--text-danger));
 }
 
 // validation error text
@@ -69,7 +22,7 @@ input.error:focus {
 .validation-errors li,
 .validation-error {
 	list-style: none;
-	color: $kiva-accent-red;
+	color: rgb(var(--text-danger));
 	font-weight: $global-weight-highlight;
 	font-size: $small-text-font-size;
 }

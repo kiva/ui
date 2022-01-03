@@ -1,6 +1,6 @@
 <template functional>
 	<span
-		class="small-text matching-text"
+		class="tw-text-small tw-text-tertiary matching-text"
 		:class="{
 			'has-match': props.matchingText && !props.isMatchAtRisk,
 			'hide-match': props.isFunded || props.isSelectedByAnother || props.isExpired,
@@ -16,7 +16,6 @@
 
 .matching-text {
 	display: block;
-	color: $kiva-text-light;
 	visibility: hidden;
 	overflow: hidden;
 	text-overflow: ellipsis;

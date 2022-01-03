@@ -10,8 +10,10 @@
 		</div>
 
 		<div class="small-12 medium-5 large-7 columns borrower-info-wrapper">
-			<div class="borrower-info featured-text">
-				{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
+			<div class="borrower-info">
+				<h2 class="tw-text-h3">
+					{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
+				</h2>
 				<loan-matcher
 					v-if="loan.loan.matchingText"
 					:matching-text="loan.loan.matchingText"
@@ -124,10 +126,5 @@ export default {
 
 .basket-item-wrapper {
 	margin-bottom: rem-calc(30);
-}
-
-.borrower-info {
-	line-height: 1.25;
-	font-weight: $global-weight-highlight;
 }
 </style>

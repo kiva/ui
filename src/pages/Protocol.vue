@@ -1,115 +1,32 @@
 <template>
 	<www-page>
 		<div id="banner-container">
-			<div id="banner-content">
-				<div id="banner-text">
+			<div id="banner-content" class="tw-bg-primary">
+				<p id="banner-text" class="tw-text-h1">
 					Building the credit bureau of the future
-				</div>
+				</p>
 				<div id="banner-logo">
 					<img id="banner-logo-image" src="~@/assets/images/protocol/kiva-protocol.svg">
 				</div>
 			</div>
 		</div>
 		<div class="row" id="intro">
-			<div class="small-12 columns">
-				<div id="intro-title">
+			<div class="small-12 columns tw-prose">
+				<p id="intro-title" class="tw-text-subhead">
 					{{ introTitle }}
-				</div>
+				</p>
 				<p v-for="(paragraph, index) in introText" :key="index">
 					{{ paragraph }}
 				</p>
 				<p><a href="https://pages.kiva.org/kiva-protocol-faq">{{ introLinkTitle }}</a></p>
 			</div>
 		</div>
-		<div v-if="showPartners" class="row" id="partners">
-			<div class="small-12 columns">
-				<div id="partners-title">
-					In partnership with
-				</div>
-				<div id="partners-row" class="row">
-					<div class="partners-block small-4 columns">
-						<div>
-							<img
-								class="partners-image"
-								src="~@/assets/images/protocol/partner-sierra-leone.svg"
-								alt="Sierra Leone"
-							>
-						</div>
-						<div class="partner-name">
-							Government of Sierra Leone
-						</div>
-					</div>
-					<div class="partners-block small-4 columns">
-						<div>
-							<img
-								class="partners-image"
-								src="~@/assets/images/protocol/partner-undp.svg"
-								alt="UNDP"
-							>
-						</div>
-						<div class="partner-name">
-							United Nations Development Programme
-						</div>
-					</div>
-					<div class="partners-block small-4 columns">
-						<div>
-							<img
-								class="partners-image"
-								src="~@/assets/images/protocol/partner-uncdf.svg"
-								alt="UNCDF"
-							>
-						</div>
-						<div class="partner-name">
-							United Nations Capital Development Fund
-						</div>
-					</div>
-				</div>
-			</div>
-			<div id="partner-become" class="small-12 columns">
-				<!-- eslint-disable-next-line max-len -->
-				Interested in becoming a partner? Email us at <a href="mailto:contactus@kiva.org?subject=Kiva Protocol partner">contactus@kiva.org</a>
-			</div>
-		</div>
-		<div v-if="showPress" id="press-container">
-			<div class="row" id="press">
-				<div class="press-block">
-					<div>
-						<img class="press-image" src="~@/assets/images/protocol/time.png">
-					</div>
-					<div
-						class="press-text"
-					>
-						"The 0% small business loan that's for real."
-					</div>
-				</div>
-				<div class="press-block">
-					<div>
-						<img class="press-image" src="~@/assets/images/protocol/fast-company.png">
-					</div>
-					<div
-						class="press-text"
-					>
-						"less impersonal than the data-driven approach taken by mainstream lenders..."
-					</div>
-				</div>
-				<div class="press-block">
-					<div>
-						<img class="press-image" src="~@/assets/images/protocol/wired.png">
-					</div>
-					<div
-						class="press-text"
-					>
-						"Best perk: no interest"
-					</div>
-				</div>
-			</div>
-		</div>
 		<div id="support-container">
 			<div class="row">
 				<div id="support-donate-container" class="small-12 large-6 columns">
-					<h1 id="support-title">
+					<h2 id="support-title">
 						Support Kiva innovation
-					</h1>
+					</h2>
 					<div id="support-text">
 						{{ supportText }}
 					</div>
@@ -122,10 +39,12 @@
 				</div>
 			</div>
 		</div>
-		<div id="about-container">
+		<div id="about-container" class="tw-bg-secondary">
 			<div class="row" id="about">
 				<div class="small-12 large-7 columns">
-					<h1>About Kiva</h1>
+					<h2>
+						About Kiva
+					</h2>
 					<p id="about-text">
 						{{ aboutText }}
 					</p>
@@ -169,8 +88,6 @@ export default {
 			introTitle: 'Introducing Kiva Protocol, an exciting new initiative to give unbanked people digital identity and secure control over their own credit information.',
 			supportText: 'Donate to Kiva to help us create innovative solutions to the global challenge of financial inclusion.',
 			/* eslint-enable max-len */
-			showPress: false,
-			showPartners: false,
 			billionImpactImages: [
 				['small', billionImpactImagesRequire('./10-years-billion-impact.jpg')],
 				['small retina', billionImpactImagesRequire('./10-years-billion-impact_2x.jpg')],
@@ -248,7 +165,6 @@ export default {
 	}
 
 	#banner-content {
-		background: #fff;
 		padding: rem-calc(40) rem-calc(60) rem-calc(20) rem-calc(60);
 		max-height: rem-calc(500);
 		max-width: rem-calc(650);
@@ -259,10 +175,7 @@ export default {
 	}
 
 	#banner-text {
-		@include impact-text();
-
 		margin-bottom: rem-calc(20);
-		color: #43657D;
 		text-align: center;
 	}
 
@@ -273,89 +186,7 @@ export default {
 	}
 
 	#intro-title {
-		@include featured-text();
-
 		margin-bottom: 1rem;
-	}
-
-	/* Partners */
-	#partners {
-		margin-bottom: rem-calc(80);
-	}
-
-	#partners-title {
-		padding-bottom: rem-calc(40);
-		text-align: center;
-		font-size: 1rem;
-		font-weight: $global-weight-highlight;
-	}
-
-	.partners-block {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: flex-start;
-	}
-
-	.partners-image {
-		height: rem-calc(80);
-
-		@include breakpoint(medium) {
-			height: rem-calc(120);
-		}
-
-		@include breakpoint(large) {
-			height: rem-calc(140);
-		}
-	}
-
-	.partner-small {
-		text-align: center;
-		line-height: 1.1rem;
-	}
-
-	.partner-name {
-		@extend .partner-small;
-
-		font-size: 0.8rem;
-		padding-top: 0.6rem;
-	}
-
-	#partner-become {
-		@extend .partner-small;
-
-		font-size: 1rem;
-		padding-top: 3rem;
-	}
-
-	/* Press */
-	#press-container {
-		padding: rem-calc(80) 0;
-		background: #EFEFEF;
-	}
-
-	#press {
-		display: flex;
-		justify-content: space-around;
-		align-items: center;
-	}
-
-	.press-block {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: flex-start;
-		width: 30%;
-		height: rem-calc(110);
-	}
-
-	.press-image {
-		height: rem-calc(34);
-	}
-
-	.press-text {
-		margin-top: rem-calc(20);
-		text-align: center;
 	}
 
 	/* Support */
@@ -386,17 +217,11 @@ export default {
 	/* About */
 
 	#about-container {
-		background: #FAFAFA;
 		padding: rem-calc(40) 0 rem-calc(80) 0;
 	}
 
 	#about-text {
 		margin: 1rem 0;
-	}
-
-	h1,
-	h2 {
-		color: $kiva-green;
 	}
 
 	#charity-navigator-container {
