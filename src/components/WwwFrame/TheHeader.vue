@@ -22,7 +22,7 @@
 				<!-- Corporate header for /cc pages -->
 				<template v-else-if="corporate">
 					<div class="
-						tw-flex tw-gap-2.5 lg:tw-gap-4 tw-items-center"
+						tw-flex tw-gap-2.5 lg:tw-gap-6 tw-items-center"
 					>
 						<campaign-logo-group
 							class="tw-h-2.5 lg:tw-h-3.5"
@@ -76,41 +76,37 @@
 							tw-grid tw-gap-x-2.5 lg:tw-gap-x-4 tw-items-center"
 						:class="{'header--mobile-open': searchOpen}"
 					>
-						<div class="header__left-side
-						tw-contents tw-gap-2.5 lg:tw-gap-6 lg:tw-flex tw-justify-start tw-items-center"
-						>
-							<!-- logo -->
-							<div class="header__logo">
-								<router-link
-									class="header__button"
-									to="/"
-									v-kv-track-event="['TopNav','click-Logo']"
-								>
-									<kiva-logo class="tw-w-5 tw-text-brand" />
-									<span class="tw-sr-only">Kiva Home</span>
-								</router-link>
-							</div>
-
+						<!-- logo -->
+						<div class="header__logo">
 							<router-link
-								:id="lendMenuId"
-								to="/lend-by-category"
-								class="header__button header__lend"
-								v-kv-track-event="['TopNav','click-Lend']"
-								event
-								@pointerenter.native.stop="onLendLinkPointerEnter"
-								@pointerleave.native.stop="onLendLinkPointerLeave"
-								@pointerup.native.stop="onLendLinkPointerUp"
-								@click.native.stop="onLendLinkClick"
+								class="header__button"
+								to="/"
+								v-kv-track-event="['TopNav','click-Logo']"
 							>
-								<span class="tw-flex tw-items-center">Lend
-									<kv-material-icon
-										class="tw-w-3 tw-transition-transform tw-duration-300"
-										:icon="mdiChevronDown"
-										:class="{'tw-rotate-180' : isLendMenuVisible}"
-									/>
-								</span>
+								<kiva-logo class="tw-w-5 tw-text-brand" />
+								<span class="tw-sr-only">Kiva Home</span>
 							</router-link>
 						</div>
+
+						<router-link
+							:id="lendMenuId"
+							to="/lend-by-category"
+							class="header__button header__lend"
+							v-kv-track-event="['TopNav','click-Lend']"
+							event
+							@pointerenter.native.stop="onLendLinkPointerEnter"
+							@pointerleave.native.stop="onLendLinkPointerLeave"
+							@pointerup.native.stop="onLendLinkPointerUp"
+							@click.native.stop="onLendLinkClick"
+						>
+							<span class="tw-flex tw-items-center">Lend
+								<kv-material-icon
+									class="tw-w-3 tw-transition-transform tw-duration-300"
+									:icon="mdiChevronDown"
+									:class="{'tw-rotate-180' : isLendMenuVisible}"
+								/>
+							</span>
+						</router-link>
 
 						<!-- search container -->
 						<div
@@ -715,7 +711,6 @@ export default {
 .header__logo { grid-area: logo; }
 .header__lend { grid-area: lend; }
 .header__search { grid-area: search; }
-.header__left-side { grid-area: left-side; }
 .header__right-side { grid-area: right-side; }
 
 .header {
@@ -734,13 +729,6 @@ export default {
 	.header {
 		grid-template-areas: "logo lend search right-side";
 		grid-template-columns: auto auto 1fr auto;
-	}
-}
-
-@screen lg {
-	.header {
-		grid-template-areas: "left-side search right-side";
-		grid-template-columns: 33% 1fr minmax(max-content, 33%);
 	}
 }
 </style>
