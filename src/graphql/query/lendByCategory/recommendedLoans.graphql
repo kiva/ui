@@ -10,8 +10,8 @@ query recommendedLoans(
 	ml {
 		getOrderedChannelsByIds(channelIds: $ids) {
 			__typename
+			id
 			... on RecLoanChannel {
-				id
 				name
 				description
 				loans(limit: $numberOfLoans, offset: $offset) {
