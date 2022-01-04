@@ -126,7 +126,6 @@
 							</button>
 							<search-bar ref="search" v-if="searchOpen" :aria-hidden="searchOpen ? 'false' : 'true'" />
 						</div>
-						<promo-banner-large :basket-state="basketState" />
 					</div>
 					<router-link
 						v-show="isVisitor"
@@ -186,7 +185,6 @@
 						</span>
 					</router-link>
 				</div>
-				<promo-banner-small :basket-state="basketState" />
 				<kv-dropdown
 					v-if="mgHighlightInNavVersion === 'shown'"
 					:controller="lendMenuId"
@@ -386,6 +384,7 @@
 				</kv-dropdown>
 			</template>
 		</nav>
+		<promo-credit-banner />
 	</header>
 </template>
 
@@ -402,8 +401,7 @@ import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup'
 import MonthlyGoodExpMenuWrapper from '@/components/WwwFrame/LendMenu/MonthlyGoodExpMenuWrapper';
 
 import SearchBar from './SearchBar';
-import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
-import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
+import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
 export default {
 	components: {
@@ -412,8 +410,7 @@ export default {
 		KvDropdown,
 		KvIcon,
 		MonthlyGoodExpMenuWrapper,
-		PromoBannerLarge,
-		PromoBannerSmall,
+		PromoCreditBanner,
 		SearchBar,
 		TheLendMenu: () => import('@/components/WwwFrame/LendMenu/TheLendMenu'),
 	},

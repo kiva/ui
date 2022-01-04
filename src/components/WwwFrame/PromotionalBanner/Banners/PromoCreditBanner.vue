@@ -1,13 +1,35 @@
 <template>
-	<component :is="currentActivePromo" :bonus-balance="bonusBalance" :promo-data="promoData" />
+	<div
+		v-if="lendingRewardOffered"
+		class="tw-bg-brand tw-text-white md:tw-py-1.5 md:tw-px-0"
+		v-kv-track-event="['TopNav','click-Promo','Lending Reward Banner']"
+	>
+		Make a Kiva loan <br class="tw-inline">and receive a $25 free credit to lend again.
+	</div>
+	<div v-else-if="bonusBalance > 0" class="bonus-banner-holder tw-bg-brand tw-text-center tw-py-1.5 tw-px-5">
+		<router-link
+			v-if="promoData && !promoData.pageId"
+			to="/lend/freeCreditEligible"
+			class="tw-text-white hover:tw-no-underline hover:tw-text-white"
+			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
+		>
+			Select a borrower to lend your {{ promoData.bonusBalance | numeral('$0.00') }} free credit
+		</router-link>
+		<router-link
+			v-if="promoData && promoData.pageId"
+			:to="`/cc/${promoData.pageId}`"
+			class="tw-text-white hover:tw-no-underline hover:tw-text-white"
+			v-kv-track-event="['TopNav','click-Promo','MVP Bonus Banner']"
+		>
+			You have {{ promoData.available | numeral('$0.00') }} from {{ promoData.displayName }} to lend!
+		</router-link>
+	</div>
 </template>
 
 <script>
 import numeral from 'numeral';
 import gql from 'graphql-tag';
 import { indexIn } from '@/util/comparators';
-import BonusBanner from './Banners/BonusBanner';
-import LendingRewardsBanner from './Banners/LendingRewardsBanner';
 
 const promoCampaignInfo = gql`
 	query promoCampaign($basketId: String, $promoFundId: String) {
@@ -40,7 +62,6 @@ const promoCampaignInfo = gql`
 		}
 	}
 `;
-
 export default {
 	inject: ['apollo'],
 	props: {
@@ -56,16 +77,16 @@ export default {
 			promoCampaignData: null,
 		};
 	},
+	created() {
+		if (this.basketState && Object.entries(this.basketState).length) {
+			this.setPromoState(this.basketState);
+		}
+	},
+	mounted() {
+		// verify promoCampaign information
+		this.fetchManagedAccountCampaign();
+	},
 	computed: {
-		currentActivePromo() {
-			if (this.lendingRewardOffered) {
-				return LendingRewardsBanner;
-			}
-			if (this.bonusBalance > 0) { // TODO: skip if on a checkout/basket page
-				return BonusBanner;
-			}
-			return null;
-		},
 		hasFreeCredits() {
 			return this.basketState?.shop?.basket?.hasFreeCredits ?? false;
 		},
@@ -113,15 +134,6 @@ export default {
 			deep: true,
 		}
 	},
-	created() {
-		if (this.basketState && Object.entries(this.basketState).length) {
-			this.setPromoState(this.basketState);
-		}
-	},
-	mounted() {
-		// verify promoCampaign information
-		this.fetchManagedAccountCampaign();
-	},
 	methods: {
 		fetchManagedAccountCampaign() {
 			// TODO: Create an array of queries if multiple credits have an associated promo fund
@@ -152,15 +164,12 @@ export default {
 			const universalCodeAvailableTotal = numeral(
 				promotionData.shop?.basket?.totals?.universalCodeAvailableTotal
 			).value();
-
 			// prefer promoBalance from the user account if it's larger
 			const promoBalancePrecedence = promoBalance >= bonusAvailableTotal ? promoBalance : bonusAvailableTotal;
-
 			this.bonusBalance = promoBalancePrecedence
 				+ freeTrialAvailableTotal
 				+ redemptionCodeAvailableTotal
 				+ universalCodeAvailableTotal;
-
 			this.lendingRewardOffered = promotionData.shop?.lendingRewardOffered;
 		}
 	}
