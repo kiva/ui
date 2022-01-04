@@ -2,7 +2,7 @@ const get = require('lodash/get');
 const argv = require('../argv');
 const config = require('../../../config/selectConfig')(argv.config);
 const fetch = require('../fetch');
-const log = require('../log');
+const { warn, error } = require('../log');
 
 // Number of loans to fetch
 const loanCount = 4;
@@ -45,7 +45,7 @@ async function fetchGraphQL(request, resultPath) {
 		}
 		return [];
 	} catch (err) {
-		log(`Error fetching loans: ${err}`, 'error');
+		error(`Error fetching loans: ${err}`, { error: err });
 	}
 }
 
@@ -186,7 +186,7 @@ const supportedFilterFLSS = name => {
 		case 'sector':
 			return true;
 		default:
-			log(`Unsupported FLSS filter "${name}"`, 'warning');
+			warn(`Unsupported FLSS filter "${name}"`);
 			return false;
 	}
 };
@@ -237,7 +237,7 @@ const supportedFilterLegacy = name => {
 		case 'theme':
 			return true;
 		default:
-			log(`Unsupported legacy filter "${name}"`, 'warning');
+			warn(`Unsupported legacy filter "${name}"`);
 			return false;
 	}
 };
@@ -263,7 +263,7 @@ async function parseFilterStringLegacy(filterString) {
 	const findFilterOption = (options, name, value) => {
 		const option = options.find(o => o?.name?.toLowerCase() === value);
 		if (!option) {
-			log(`Unknown ${name} "${value}"`, 'warning');
+			warn(`Unknown ${name} "${value}"`);
 		}
 		return option;
 	};

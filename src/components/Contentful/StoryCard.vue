@@ -46,7 +46,7 @@
 				:html="cardTitle"
 			/>
 			<dynamic-rich-text
-				class="story-card__content tw-text-center tw-h-full"
+				class="story-card__content tw-text-center tw-h-full tw-pb-4"
 				:html="cardContent"
 			/>
 			<dynamic-rich-text class="tw-text-center" :html="footer" />

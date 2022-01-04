@@ -41,6 +41,7 @@ module.exports = merge(base, {
 				pK7XVUBouUjPEFm9bz5MN7sjU5HACqqe: 'https://www.stage.kiva.org/ui-login?force=true',
 			},
 			enable: true,
+			checkFakeAuth: true,
 			apiAudience: 'https://api.stage.kivaws.org/graphql',
 			mfaAudience: 'https://kiva-stage.auth0.com/mfa/',
 			browserClientID: 'pK7XVUBouUjPEFm9bz5MN7sjU5HACqqe',
