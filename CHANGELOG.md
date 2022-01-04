@@ -1,3 +1,10 @@
+### [2.30.2](https://github.com/kiva/ui/compare/v2.30.1...v2.30.2) (2022-01-04)
+
+
+### Bug Fixes
+
+* add id to ml service queries for OrderedLoanChannel changes ([c293e82](https://github.com/kiva/ui/commit/c293e821a28eb813079ed1f46c5291453199091b))
+
 ### [2.30.1](https://github.com/kiva/ui/compare/v2.30.0...v2.30.1) (2022-01-04)
 
 
