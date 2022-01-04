@@ -5,6 +5,7 @@
 		<button class="tw-text-h4 tw-text-link tw-mt-3"
 			@click="openLightbox"
 			v-if="this.status === 'fundraising' || this.status === 'payingBack' && isPartnerLoan"
+			v-kv-track-event="['Borrower Profile', 'click-repayment schedule', 'Detailed repayment schedule']"
 		>
 			Detailed repayment schedule >
 		</button>
