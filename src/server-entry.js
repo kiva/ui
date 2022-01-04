@@ -54,6 +54,7 @@ export default context => {
 		if (config.auth0.enable) {
 			kvAuth0 = new KvAuth0({
 				accessToken,
+				checkFakeAuth: config.auth0.checkFakeAuth,
 				cookieStore,
 				user: profile,
 			});

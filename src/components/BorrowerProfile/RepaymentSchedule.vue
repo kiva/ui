@@ -1,8 +1,11 @@
 <template>
 	<div>
+		<!-- showing a repayment schedule on all fundraising loans
+		and field partner loans in the status of payingBack -->
 		<button class="tw-text-h4 tw-text-link tw-mt-3"
 			@click="openLightbox"
-			v-if="this.status === 'fundraising'"
+			v-if="this.status === 'fundraising' || this.status === 'payingBack' && isPartnerLoan"
+			v-kv-track-event="['Borrower Profile', 'click-repayment schedule', 'Detailed repayment schedule']"
 		>
 			Detailed repayment schedule >
 		</button>
@@ -46,16 +49,42 @@
 							{{ repayment.formattedRepaymentDate }}
 						</td>
 						<td class="table-data-spacing">
-							{{ repayment.formattedTotalMonthlyPayment }}
+							{{ repayment.formattedMonthlyPayment }}
 						</td>
-						<td class="table-data-spacing">
+						<td
+							class="table-data-spacing"
+							v-if="!repayment.repaid && !repayment.delinquent"
+						>
 							Available {{ repayment.formattedRepaymentDate }}
+						</td>
+						<td
+							class="table-data-spacing"
+							v-if="repayment.repaid && !repayment.delinquent"
+						>
+							<kv-material-icon
+								:icon="mdiCheckboxMarkedCircle"
+								name="check-mark"
+								class="tw-text-brand-700 tw-align-middle"
+							/>
+							Repayment received
+						</td>
+						<!-- if payment is not received on time -->
+						<td
+							class="table-data-spacing"
+							v-if="!repayment.repaid && repayment.delinquent"
+						>
+							<kv-material-icon
+								name="minus-circle"
+								class="tw-text-danger tw-align-middle"
+								:icon="mdiMinusCircle"
+							/>
+							Delinquent
 						</td>
 					</tr>
 				</table>
 			</div>
 
-			<!-- Direct loan fundraising -->
+			<!-- direct loan in the status="fundraising" -->
 			<div v-if="!isPartnerLoan" class="tw-prose">
 				<p>
 					This loan is for {{ loanAmountFormatted }}.
@@ -75,9 +104,10 @@
 
 <script>
 import gql from 'graphql-tag';
-// import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
-import { format, parseISO } from 'date-fns';
+import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
+import { format, parseISO, isBefore } from 'date-fns';
 import numeral from 'numeral';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
@@ -118,6 +148,7 @@ const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 export default {
 	components: {
 		KvLightbox,
+		KvMaterialIcon,
 	},
 	inject: ['apollo'],
 	props: {
@@ -132,8 +163,8 @@ export default {
 	},
 	data() {
 		return {
-			// mdiCheckboxMarkedCircle,
-			// mdiMinusCircle,
+			mdiCheckboxMarkedCircle,
+			mdiMinusCircle,
 			isLightboxVisible: false,
 			firstRepaymentDate: '',
 			repaymentSchedule: [],
@@ -179,20 +210,28 @@ export default {
 			return false;
 		},
 		statusLanguageCheck() {
-			if (this.status === 'fundraising') {
-				return 'begin';
+			if (this.status === 'payingBack') {
+				return 'began';
 			}
-			return 'began';
+			return 'begin';
+		},
+		delinquentPayment() {
+			// looking through the parsedRepaymentSchedule for a delinquent payment boolean
+			const delinquentPaymentPresent = this.parsedRepaymentSchedule.find(({ delinquent }) => delinquent === true);
+			return delinquentPaymentPresent !== undefined;
 		},
 		repaymentStatusCheck() {
-			if (this.status === 'fundraising') {
-				return 'on track';
+			if (this.status === 'payingBack' && this.delinquentPayment) {
+				return 'delinquent';
 			}
 			// TODO: fill out other options for other loan statuses
 			return 'on track';
 		},
 		parsedRepaymentSchedule() {
-			const totalRepaymentsPerMonth = [];
+			const monthlyRepaymentData = [];
+			const monthlyTotalRepayments = [];
+			let repaid = false;
+			let delinquent = false;
 			if (this.repaymentSchedule !== []) {
 				const repaymentScheduleByDueDate = this.repaymentSchedule.reduce((acc, repaymentItem) => {
 					if (!acc[repaymentItem.dueToKivaDate]) acc[repaymentItem.dueToKivaDate] = [];
@@ -200,8 +239,6 @@ export default {
 					return acc;
 				}, {});
 
-				// iterating through the repaymentScheduleByDueDate in order
-				// to pull off the amount field for each payment
 				Object.entries(repaymentScheduleByDueDate).forEach(([repaymentDate, repaymentItemData]) => {
 					// iterating through each repaymentItemByDueDate, pulling off the amount from each repaymentItemData
 					// and reducing it down to an array of individual repayments made in a month.
@@ -217,15 +254,38 @@ export default {
 						return runningTotal + parseFloat(amount);
 					}, 0);
 
-					// format the repaymentDate & totalMonthlyPayment value
+					// push the monthly repayments to a new array to be used to check if repayments are on time
+					monthlyTotalRepayments.push(totalMonthlyPayment);
+
+					// iterate through the monthlyRepayments and add together each
+					// month's payments to get a total monthly payment amount
+					const totalMonthlyPaymentValue = monthlyTotalRepayments.reduce((runningTotal, monthlyAmount) => {
+						return runningTotal + parseFloat(monthlyAmount);
+					}, 0);
+
+					// set the repaid boolean
+					repaid = this.repaidAmount > totalMonthlyPaymentValue;
+
+					const now = new Date();
+					const parsedRepaymentDate = parseISO(repaymentDate);
+					// if a payment is not repaid and the repayment data is before now, then mark the loan delinquent
+					delinquent = !repaid && isBefore(parsedRepaymentDate, now);
+
+					// format date and monthly payment amount for display
 					const formattedRepaymentDate = format(parseISO(repaymentDate), 'MMM yyyy');
-					const formattedTotalMonthlyPayment = numeral(totalMonthlyPayment).format('$0,0.00');
-					// push the formatted repayment date and totalMonthlyPayment values
-					// into another array to be used for rendering
-					totalRepaymentsPerMonth.push({ formattedRepaymentDate, formattedTotalMonthlyPayment });
+					const formattedMonthlyPayment = numeral(totalMonthlyPayment).format('$0,0.00');
+
+					// add all the parsed repayment data into an array used to render
+					monthlyRepaymentData.push({
+						formattedRepaymentDate,
+						totalMonthlyPayment,
+						formattedMonthlyPayment,
+						repaid,
+						delinquent
+					});
 				});
 			}
-			return totalRepaymentsPerMonth;
+			return monthlyRepaymentData;
 		},
 		loanAmountFormatted() {
 			return numeral(this.loanAmount).format('$0,0.00');
@@ -233,7 +293,7 @@ export default {
 		calculateMonthlyPayment() {
 			// used for calculating the monthly payment of a direct loan
 			return numeral(this.loanAmount / this.lenderRepaymentTerm).format('$0,0.00');
-		}
+		},
 	},
 	mounted() {
 		this.calculateRepaymentSchedule();

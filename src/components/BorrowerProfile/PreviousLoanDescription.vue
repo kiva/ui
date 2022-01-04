@@ -19,7 +19,7 @@
 				<h2>Previous loan details</h2>
 
 				<p
-					v-for="(paragraph, index) in formatedPreviousLoanDescription"
+					v-for="(paragraph, index) in formattedPreviousLoanDescription"
 					:key="index"
 					v-html="paragraph"
 				>
@@ -88,7 +88,7 @@ export default {
 		}
 	},
 	computed: {
-		formatedPreviousLoanDescription() {
+		formattedPreviousLoanDescription() {
 			return toParagraphs(this.previousLoanDescription);
 		},
 	},

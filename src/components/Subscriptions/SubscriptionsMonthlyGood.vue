@@ -146,6 +146,7 @@
 								data-test="monthly-good-save-button"
 								@click="saveMonthlyGood"
 								:state="saveButtonState"
+								v-if="settingsOpen"
 							>
 								Save Settings
 							</kv-button>

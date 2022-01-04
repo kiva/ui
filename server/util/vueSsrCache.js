@@ -1,4 +1,4 @@
-const log = require('./log');
+const { log } = require('./log');
 
 // The Vue ServerSideRenderer requires a cache instance that implements this interface:
 // type RenderCache = {
