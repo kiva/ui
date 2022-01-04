@@ -1,5 +1,13 @@
 <template>
 	<div class="lend-mega-menu tw-overflow-hidden tw-hidden lg:tw-block tw-pb-2.5 lg:tw-pt-3">
+		<router-link
+			to="/monthlygood"
+			class="tw-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-font-medium"
+			v-kv-track-event="['TopNav','click-Find-a-Cause', 'Find a cause']"
+		>
+			Find a cause
+			<kv-material-icon :icon="mdiArrowRight" />
+		</router-link>
 		<div
 			:style="computedStyle"
 			class="tw-transition tw-duration-1000 tw-ease-in-out"
@@ -153,7 +161,7 @@
 </template>
 
 <script>
-import { mdiChevronLeft } from '@mdi/js';
+import { mdiArrowRight, mdiChevronLeft } from '@mdi/js';
 import KvLoadingSpinner from '~/@kiva/kv-components/vue/KvLoadingSpinner';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -204,6 +212,7 @@ export default {
 			categoriesWidth: null,
 			openedSection: '',
 			savedSearchesTitle: 'Saved searches',
+			mdiArrowRight,
 			mdiChevronLeft,
 		};
 	},
