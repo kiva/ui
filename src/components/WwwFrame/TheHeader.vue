@@ -424,10 +424,7 @@
 				</template>
 			</kv-page-container>
 		</nav>
-
-		<!-- promo banner: TODO consolidate these -->
-		<promo-banner-large :basket-state="basketState" />
-		<promo-banner-small :basket-state="basketState" />
+		<promo-credit-banner />
 	</header>
 </template>
 
@@ -443,8 +440,7 @@ import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup'
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import SearchBar from './SearchBar';
-import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
-import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
+import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
 export default {
 	components: {
@@ -453,8 +449,7 @@ export default {
 		KvDropdown,
 		KvMaterialIcon,
 		KvPageContainer,
-		PromoBannerLarge,
-		PromoBannerSmall,
+		PromoCreditBanner,
 		SearchBar,
 		TheLendMenu: () => import('@/components/WwwFrame/LendMenu/TheLendMenu'),
 	},

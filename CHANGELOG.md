@@ -1,3 +1,24 @@
+### [2.30.2](https://github.com/kiva/ui/compare/v2.30.1...v2.30.2) (2022-01-04)
+
+
+### Bug Fixes
+
+* add id to ml service queries for OrderedLoanChannel changes ([c293e82](https://github.com/kiva/ui/commit/c293e821a28eb813079ed1f46c5291453199091b))
+
+### [2.30.1](https://github.com/kiva/ui/compare/v2.30.0...v2.30.1) (2022-01-04)
+
+
+### Bug Fixes
+
+* update references to log function ([7579359](https://github.com/kiva/ui/commit/75793590c30463c0d396e71548193106141b8572))
+
+## [2.30.0](https://github.com/kiva/ui/compare/v2.29.0...v2.30.0) (2022-01-04)
+
+
+### Features
+
+* core-248 Tracking for repayment schedule ([a9d9e82](https://github.com/kiva/ui/commit/a9d9e82bef1e21fde159759a868ad3a5cfa7e898))
+
 ## [2.29.0](https://github.com/kiva/ui/compare/v2.28.0...v2.29.0) (2022-01-03)
 
 
