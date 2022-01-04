@@ -50,7 +50,7 @@
 						@show-definition="showDefinition"
 					/>
 					<repayment-schedule
-						v-if="loan.status !== 'fundraising' || loan.amonimizationLevel !== 'none'"
+						v-if="loan.amonimizationLevel !== 'none'"
 						:loan-id="loanId"
 						:status="loan.status"
 					/>
