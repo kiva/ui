@@ -69,14 +69,14 @@
 					</div>
 				</template>
 
-				<!-- default -->
+				<!-- Default Header -->
 				<template v-else>
 					<div
 						class="header
 							tw-grid tw-gap-x-2.5 lg:tw-gap-x-4 tw-items-center"
 						:class="{'header--mobile-open': searchOpen}"
 					>
-						<!-- logo -->
+						<!-- Logo -->
 						<div class="header__logo">
 							<router-link
 								class="header__button"
@@ -88,6 +88,7 @@
 							</router-link>
 						</div>
 
+						<!-- Lend -->
 						<router-link
 							:id="lendMenuId"
 							to="/lend-by-category"
@@ -107,8 +108,24 @@
 								/>
 							</span>
 						</router-link>
+						<transition name="kvfastfade">
+							<div
+								v-show="isLendMenuVisible"
+								class="
+									tw-absolute tw-left-0 tw-right-0 tw-top-8 md:tw-top-9 tw-z-dropdown
+									tw-bg-primary tw-border-b tw-border-tertiary"
+								style="margin-top: 1px;"
+							>
+								<kv-page-container>
+									<the-lend-menu ref="lendMenu"
+										@pointerenter.native="onLendMenuPointerEnter"
+										@pointerleave.native="onLendMenuPointerLeave"
+									/>
+								</kv-page-container>
+							</div>
+						</transition>
 
-						<!-- search container -->
+						<!-- Search -->
 						<div
 							v-if="!hideSearchInHeader"
 							id="top-nav-search-area"
@@ -126,6 +143,7 @@
 						<div class="header__right-side
 						tw-flex tw-justify-end tw-gap-2.5 lg:tw-gap-4"
 						>
+							<!-- Borrow -->
 							<router-link
 								to="/borrow"
 								class="header__borrow"
@@ -137,24 +155,103 @@
 							>
 								Borrow
 							</router-link>
-							<router-link
-								:id="aboutMenuId"
-								to="/about"
-								class="header__about tw-group"
-								:class="{
-									'tw-hidden': !isVisitor,
-									'header__button': isVisitor
-								}"
-								v-kv-track-event="['TopNav','click-About']"
-							>
-								<span class="tw-flex">
-									About
-									<kv-material-icon
-										class="tw-w-3 tw-transition-transform tw-duration-300 group-hover:tw-rotate-180"
-										:icon="mdiChevronDown"
-									/>
-								</span>
-							</router-link>
+
+							<!-- About -->
+							<div class="tw-group">
+								<router-link
+									:id="aboutMenuId"
+									to="/about"
+									class="header__about"
+									:class="{
+										'tw-hidden': !isVisitor,
+										'header__button': isVisitor
+									}"
+									v-kv-track-event="['TopNav','click-About']"
+								>
+									<span class="tw-flex">
+										About
+										<kv-material-icon
+											class="tw-w-3
+											tw-transition-transform tw-duration-300 group-hover:tw-rotate-180"
+											:icon="mdiChevronDown"
+										/>
+									</span>
+								</router-link>
+								<kv-dropdown
+									:controller="aboutMenuId"
+									v-show="isVisitor"
+									class="dropdown-list"
+								>
+									<ul>
+										<li>
+											<router-link
+												to="/about"
+												v-kv-track-event="['TopNav','click-About-About us']"
+											>
+												About us
+											</router-link>
+										</li>
+										<li>
+											<router-link
+												to="/about/how"
+												v-kv-track-event="['TopNav','click-About-How Kiva works']"
+											>
+												How Kiva works
+											</router-link>
+										</li>
+										<li>
+											<router-link
+												to="/about/where-kiva-works"
+												v-kv-track-event="['TopNav','click-About-Where Kiva works']"
+											>
+												Where Kiva works
+											</router-link>
+										</li>
+										<li>
+											<router-link
+												to="/about/impact"
+												v-kv-track-event="['TopNav','click-About-Impact']"
+											>
+												Impact
+											</router-link>
+										</li>
+										<li>
+											<router-link
+												to="/about/leadership"
+												v-kv-track-event="['TopNav','click-About-Leadership']"
+											>
+												Leadership
+											</router-link>
+										</li>
+										<li>
+											<router-link
+												to="/about/finances"
+												v-kv-track-event="['TopNav','click-About-Finances']"
+											>
+												Finances
+											</router-link>
+										</li>
+										<li>
+											<router-link
+												to="/about/press-center"
+												v-kv-track-event="['TopNav','click-About-Press']"
+											>
+												Press
+											</router-link>
+										</li>
+										<li>
+											<router-link
+												to="/about/due-diligence"
+												v-kv-track-event="['TopNav','click-About-Due diligence']"
+											>
+												Due diligence
+											</router-link>
+										</li>
+									</ul>
+								</kv-dropdown>
+							</div>
+
+							<!-- Mobile Search Toggle -->
 							<button
 								class="header__button header__search-icon md:!tw-hidden"
 								v-show="!hideSearchInHeader && !isVisitor"
@@ -166,6 +263,8 @@
 							>
 								<kv-material-icon :icon="mdiMagnify" />
 							</button>
+
+							<!-- Basket -->
 							<router-link
 								to="/basket"
 								:class="{
@@ -177,6 +276,23 @@
 								<span class="amount">{{ basketCount }}</span>
 								Basket
 							</router-link>
+
+							<!-- Log in Link -->
+							<router-link
+								:to="loginUrl"
+								v-show="isVisitor"
+								class="header__button header__log-in"
+								:event="showPopupLogin ? '' : 'click'"
+								@click.native="auth0Login"
+								v-kv-track-event="[
+									['TopNav','click-Sign-in'],
+									['TopNav','EXP-GROW-282-Oct2020',redirectToLoginExperimentVersion]
+								]"
+							>
+								Log in
+							</router-link>
+
+							<!-- Logged in Profile -->
 							<router-link
 								v-show="!isVisitor"
 								:id="myKivaMenuId"
@@ -191,111 +307,7 @@
 									class="fs-mask tw-inline-block tw-w-2.5 tw-h-2.5 tw-object-fill"
 								>
 							</router-link>
-							<router-link
-								:to="loginUrl"
-								v-show="isVisitor"
-								class="header__button header__log-in"
-								:event="showPopupLogin ? '' : 'click'"
-								@click.native="auth0Login"
-								v-kv-track-event="[
-									['TopNav','click-Sign-in'],
-									['TopNav','EXP-GROW-282-Oct2020',redirectToLoginExperimentVersion]
-								]"
-							>
-								Log in
-							</router-link>
-						</div>
 
-						<!-- dropdowns -->
-						<div class="tw-contents">
-							<transition name="kvfastfade">
-								<div
-									v-show="isLendMenuVisible"
-									class="
-									tw-absolute tw-left-0 tw-right-0 tw-top-8 md:tw-top-9 tw-z-dropdown
-									tw-bg-primary tw-border-b tw-border-tertiary"
-									style="margin-top: 1px;"
-								>
-									<kv-page-container>
-										<the-lend-menu ref="lendMenu"
-											@pointerenter.native="onLendMenuPointerEnter"
-											@pointerleave.native="onLendMenuPointerLeave"
-										/>
-									</kv-page-container>
-								</div>
-							</transition>
-							<kv-dropdown
-								:controller="aboutMenuId"
-								v-show="isVisitor"
-								class="dropdown-list"
-							>
-								<ul>
-									<li>
-										<router-link
-											to="/about"
-											v-kv-track-event="['TopNav','click-About-About us']"
-										>
-											About us
-										</router-link>
-									</li>
-									<li>
-										<router-link
-											to="/about/how"
-											v-kv-track-event="['TopNav','click-About-How Kiva works']"
-										>
-											How Kiva works
-										</router-link>
-									</li>
-									<li>
-										<router-link
-											to="/about/where-kiva-works"
-											v-kv-track-event="['TopNav','click-About-Where Kiva works']"
-										>
-											Where Kiva works
-										</router-link>
-									</li>
-									<li>
-										<router-link
-											to="/about/impact"
-											v-kv-track-event="['TopNav','click-About-Impact']"
-										>
-											Impact
-										</router-link>
-									</li>
-									<li>
-										<router-link
-											to="/about/leadership"
-											v-kv-track-event="['TopNav','click-About-Leadership']"
-										>
-											Leadership
-										</router-link>
-									</li>
-									<li>
-										<router-link
-											to="/about/finances"
-											v-kv-track-event="['TopNav','click-About-Finances']"
-										>
-											Finances
-										</router-link>
-									</li>
-									<li>
-										<router-link
-											to="/about/press-center"
-											v-kv-track-event="['TopNav','click-About-Press']"
-										>
-											Press
-										</router-link>
-									</li>
-									<li>
-										<router-link
-											to="/about/due-diligence"
-											v-kv-track-event="['TopNav','click-About-Due diligence']"
-										>
-											Due diligence
-										</router-link>
-									</li>
-								</ul>
-							</kv-dropdown>
 							<kv-dropdown
 								:controller="myKivaMenuId"
 								v-show="!isVisitor"
