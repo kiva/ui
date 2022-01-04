@@ -50,6 +50,7 @@
 						@show-definition="showDefinition"
 					/>
 					<repayment-schedule
+						v-if="loan.status !== 'fundraising' || loan.amonimizationLevel !== 'none'"
 						:loan-id="loanId"
 						:status="loan.status"
 					/>
@@ -260,6 +261,7 @@ export default {
 							lenderRepaymentTerm
 							repaymentInterval
 							disbursalDate
+							anonymizationLevel
 							terms {
 								currency
 								flexibleFundraisingEnabled
@@ -315,6 +317,7 @@ export default {
 				this.loan.disbursalDate = loan?.disbursalDate ?? '';
 				this.loan.status = loan?.status ?? '';
 				this.loan.name = loan?.name ?? '';
+				this.loan.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
 
 				this.partner.arrearsRate = partner?.arrearsRate ?? 0;
 				this.partner.avgBorrowerCost = partner?.avgBorrowerCost ?? 0;
