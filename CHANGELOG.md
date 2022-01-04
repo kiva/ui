@@ -1,3 +1,10 @@
+## [2.31.0](https://github.com/kiva/ui/compare/v2.30.2...v2.31.0) (2022-01-04)
+
+
+### Features
+
+* promocreditbanner component was created with its story ([74827cf](https://github.com/kiva/ui/commit/74827cf99798f958dd1680b1b8a6bc6687646b1b))
+
 ### [2.30.2](https://github.com/kiva/ui/compare/v2.30.1...v2.30.2) (2022-01-04)
 
 
