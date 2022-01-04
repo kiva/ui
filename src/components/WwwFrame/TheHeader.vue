@@ -165,9 +165,11 @@
 								<kv-material-icon :icon="mdiMagnify" />
 							</button>
 							<router-link
-								v-show="hasBasket"
 								to="/basket"
-								class="header__button header__basket"
+								:class="{
+									'tw-hidden': !hasBasket,
+									'header__button header__basket !tw-hidden md:!tw-flex': hasBasket
+								}"
 								v-kv-track-event="['TopNav','click-Basket']"
 							>
 								<span class="amount">{{ basketCount }}</span>
