@@ -138,10 +138,9 @@
 								Borrow
 							</router-link>
 							<router-link
-								v-show="isVisitor"
 								:id="aboutMenuId"
 								to="/about"
-								class="header__about"
+								class="header__about tw-group"
 								:class="{
 									'tw-hidden': !isVisitor,
 									'header__button': isVisitor
@@ -150,7 +149,10 @@
 							>
 								<span class="tw-flex">
 									About
-									<kv-material-icon class="tw-w-3" :icon="mdiChevronDown" />
+									<kv-material-icon
+										class="tw-w-3 tw-transition-transform tw-duration-300 group-hover:tw-rotate-180"
+										:icon="mdiChevronDown"
+									/>
 								</span>
 							</router-link>
 							<button
