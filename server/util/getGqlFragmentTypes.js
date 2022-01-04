@@ -1,5 +1,5 @@
 const fetch = require('./fetch');
-const log = require('./log');
+const { log } = require('./log');
 
 function fetchGqlFragments(url, cache) {
 	return fetch(url, {
