@@ -50,7 +50,7 @@
 						@show-definition="showDefinition"
 					/>
 					<repayment-schedule
-						v-if="loan.amonimizationLevel !== 'none'"
+						v-if="loan.anonymizationLevel !== 'full'"
 						:loan-id="loanId"
 						:status="loan.status"
 					/>
