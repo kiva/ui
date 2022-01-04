@@ -1,3 +1,10 @@
+## [2.30.0](https://github.com/kiva/ui/compare/v2.29.0...v2.30.0) (2022-01-04)
+
+
+### Features
+
+* core-248 Tracking for repayment schedule ([a9d9e82](https://github.com/kiva/ui/commit/a9d9e82bef1e21fde159759a868ad3a5cfa7e898))
+
 ## [2.29.0](https://github.com/kiva/ui/compare/v2.28.0...v2.29.0) (2022-01-03)
 
 
