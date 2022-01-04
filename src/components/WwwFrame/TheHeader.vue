@@ -13,7 +13,7 @@
 							to="/"
 							v-kv-track-event="['TopNav','click-Logo']"
 						>
-							<kiva-logo class="tw-w-5 tw-text-brand" />
+							<kiva-logo class="tw-w-6 tw-text-brand" style="transform: translateY(-0.1875rem);" />
 							<span class="tw-sr-only">Kiva Home</span>
 						</router-link>
 					</div>
@@ -83,7 +83,7 @@
 								to="/"
 								v-kv-track-event="['TopNav','click-Logo']"
 							>
-								<kiva-logo class="tw-w-5 tw-text-brand" />
+								<kiva-logo class="tw-w-6 tw-text-brand" style="transform: translateY(-0.1875rem);" />
 								<span class="tw-sr-only">Kiva Home</span>
 							</router-link>
 						</div>
