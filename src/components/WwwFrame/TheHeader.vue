@@ -51,7 +51,15 @@
 							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
 								{{ balance | numeral('$0') }}
 							</span>
+							<template v-if="isDefaultProfilePic">
+								<span class="tw-sr-only">My Portfolio</span>
+								<kv-material-icon
+									:icon="mdiAccountCircle"
+									class="tw-inline-block tw-w-2.5 tw-h-2.5"
+								/>
+							</template>
 							<img
+								v-else
 								:src="profilePic"
 								alt="My portfolio"
 								class="fs-mask tw-inline-block tw-w-2.5 tw-h-2.5 tw-object-fill"
@@ -309,7 +317,15 @@
 								<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
 									{{ balance | numeral('$0') }}
 								</span>
+								<template v-if="isDefaultProfilePic">
+									<span class="tw-sr-only">My Portfolio</span>
+									<kv-material-icon
+										:icon="mdiAccountCircle"
+										class="tw-inline-block tw-w-2.5 tw-h-2.5"
+									/>
+								</template>
 								<img
+									v-else
 									:src="profilePic"
 									alt="My portfolio"
 									class="fs-mask tw-inline-block tw-w-2.5 tw-h-2.5 tw-object-fill"
@@ -443,10 +459,11 @@ import { preFetchAll } from '@/util/apolloPreFetch';
 
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KvDropdown from '@/components/Kv/KvDropdown';
-import { mdiMagnify, mdiChevronDown } from '@mdi/js';
+import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
@@ -481,8 +498,9 @@ export default {
 			searchOpen: false,
 			redirectToLoginExperimentVersion: null,
 			basketState: {},
+			mdiAccountCircle,
+			mdiChevronDown,
 			mdiMagnify,
-			mdiChevronDown
 		};
 	},
 	props: {
@@ -506,6 +524,10 @@ export default {
 	computed: {
 		isTrustee() {
 			return !!this.trusteeId;
+		},
+		isDefaultProfilePic() {
+			const defaultProfileIds = ['726677', '315726'];
+			return defaultProfileIds.some(id => this.profilePic.includes(id));
 		},
 		trusteeLoansUrl() {
 			return {
