@@ -99,7 +99,6 @@
 <script>
 import gql from 'graphql-tag';
 import { formatContentGroupsFlat } from '@/util/contentfulUtils';
-import { createIntersectionObserver } from '@/util/observerUtils';
 // TODO: replace the loading placeholder with component from kv-components when available.
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
