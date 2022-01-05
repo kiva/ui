@@ -207,31 +207,6 @@ export default {
 			this.lightboxTitle = '';
 			this.lightboxContent = null;
 		},
-		createObserver() {
-			// Watch for this element being close to entering the viewport
-			this.observer = createIntersectionObserver({
-				targets: [this.$el],
-				rootMargin: '500px',
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							// This element is close to being in the viewport, so load the data.
-							// Because of the apollo cache it's safe to call this repeatedly.
-							this.loadData();
-						}
-					});
-				}
-			});
-			if (!this.observer) {
-				// Observer was not created, so call loadData right away as a fallback.
-				this.loadData();
-			}
-		},
-		destroyObserver() {
-			if (this.observer) {
-				this.observer.disconnect();
-			}
-		},
 		loadContentfulDefintions(contentEntryKey) {
 			this.apollo.query({
 				query: gql`query contentfulDefinitions {
@@ -395,10 +370,8 @@ export default {
 		},
 	},
 	mounted() {
-		this.createObserver();
+		this.loadData();
 	},
-	beforeDestroy() {
-		this.destroyObserver();
-	},
+
 };
 </script>

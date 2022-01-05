@@ -11,8 +11,7 @@
 			title="Loan repayment schedule"
 			@lightbox-closed="closeLightbox"
 		>
-			<!-- Field Partner loan fundraising -->
-			<div v-if="isPartnerLoan || !isPartnerLoan && this.status !== 'fundraising'">
+			<div v-if="isPartnerLoan || !isPartnerLoan && loanDisbursed">
 				<p class="tw-inline-block tw-pb-3">
 					Repayments {{ statusLanguageCheck }} in
 				</p>
@@ -79,15 +78,15 @@
 						</td>
 					</tr>
 				</table>
-				<p v-if="!isPartnerLoan && this.status !== 'fundraising'">
+				<p v-if="!isPartnerLoan && loanDisbursed">
 					<!-- eslint-disable-next-line max-len -->
 					Disbursement and repayments will be made via PayPal, a web-based payment system. Repayments made on delinquent loans will be applied toward the oldest payment due until the loan becomes current.
 				</p>
 			</div>
 
-			<!-- direct loan in the status="fundraising" -->
+			<!-- direct loan before disbursal" -->
 			<div
-				v-if="!isPartnerLoan && this.status === 'fundraising'"
+				v-if="!isPartnerLoan && !loanDisbursed"
 				class="tw-prose"
 			>
 				<p>
@@ -197,7 +196,7 @@ export default {
 				this.repaidAmount = data?.lend?.loan?.paidAmount || 0;
 				this.loanAmount = data?.lend?.loan?.loanAmount || 0;
 				this.lenderRepaymentTerm = data?.lend?.loan?.terms?.lenderRepaymentTerm || 0;
-				this.firstRepaymentDate = this.repaymentSchedule[0].dueToKivaDate || '';
+				this.firstRepaymentDate = this.repaymentSchedule[0]?.dueToKivaDate || '';
 			});
 		},
 	},
@@ -296,6 +295,9 @@ export default {
 			// used for calculating the monthly payment of a direct loan
 			return numeral(this.loanAmount / this.lenderRepaymentTerm).format('$0,0.00');
 		},
+		loanDisbursed() {
+			return this.disbursalDate !== '' && isBefore(parseISO(this.disbursalDate), new Date());
+		}
 	},
 	mounted() {
 		this.calculateRepaymentSchedule();
