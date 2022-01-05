@@ -1,3 +1,10 @@
+### [2.34.2](https://github.com/kiva/ui/compare/v2.34.1...v2.34.2) (2022-01-05)
+
+
+### Bug Fixes
+
+* remove wrapperClass from contentfulPage ([2e507cb](https://github.com/kiva/ui/commit/2e507cb5b16ad611cfc6fab2cc5688d73b734b4e))
+
 ### [2.34.1](https://github.com/kiva/ui/compare/v2.34.0...v2.34.1) (2022-01-05)
 
 
