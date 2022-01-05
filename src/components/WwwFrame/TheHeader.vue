@@ -114,7 +114,7 @@
 						>
 							<span class="tw-flex tw-items-center">Lend
 								<kv-material-icon
-									class="tw-w-3 tw-transition-transform tw-duration-300"
+									class="tw-w-3 tw-h-3 tw-transition-transform tw-duration-300"
 									:icon="mdiChevronDown"
 									:class="{'tw-rotate-180' : isLendMenuVisible}"
 								/>
@@ -183,7 +183,7 @@
 									<span class="tw-flex">
 										About
 										<kv-material-icon
-											class="tw-w-3
+											class="tw-w-3 tw-h-3
 											tw-transition-transform tw-duration-300 group-hover:tw-rotate-180"
 											:icon="mdiChevronDown"
 										/>
@@ -273,7 +273,7 @@
 								@click="toggleMobileSearch"
 								v-kv-track-event="['TopNav','click-search-toggle']"
 							>
-								<kv-material-icon :icon="mdiMagnify" />
+								<kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiMagnify" />
 							</button>
 
 							<!-- Basket -->

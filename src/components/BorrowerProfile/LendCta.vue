@@ -226,7 +226,7 @@
 								v-if="statScrollAnimation"
 							>
 								<kv-material-icon
-									class="tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
+									class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
 									:icon="mdiLightningBolt"
 								/>
 								powered by {{ numLenders }} lenders

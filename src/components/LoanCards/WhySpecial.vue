@@ -8,7 +8,7 @@
 		<div class="tw-bg-tertiary tw-p-1 tw-flex-shrink-0 tw-flex tw-items-center">
 			<kv-material-icon
 				:icon="mdiStar"
-				class="tw-fill-current tw-text-primary-inverse"
+				class="tw-w-3 tw-h-3 tw-fill-current tw-text-primary-inverse"
 			/>
 		</div>
 		<p class="tw-bg-primary tw-p-2 tw-flex-1">

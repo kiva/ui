@@ -7,7 +7,7 @@
 			@click="scrollToSection('#loanStory')"
 		>
 			<kv-material-icon
-				class="tw-my-3 tw-align-middle tw-mr-0.5"
+				class="tw-w-3 tw-h-3 tw-my-3 tw-align-middle tw-mr-0.5"
 				:icon="mdiAccount"
 			/>
 			Borrower story
@@ -18,7 +18,7 @@
 			@click="scrollToSection('#loanDetails')"
 		>
 			<kv-material-icon
-				class="tw-my-3 tw-align-middle tw-mr-0.5"
+				class="tw-w-3 tw-h-3 tw-my-3 tw-align-middle tw-mr-0.5"
 				:icon="mdiFormatListBulleted"
 			/>
 			Loan details
