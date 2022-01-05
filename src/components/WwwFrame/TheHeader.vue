@@ -35,7 +35,9 @@
 							class="header__button header__basket"
 							v-kv-track-event="['TopNav','click-Basket']"
 						>
-							<span class="amount">{{ basketCount }}</span>
+							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+								{{ basketCount }}
+							</span>
 							Basket
 						</router-link>
 						<router-link
@@ -46,7 +48,9 @@
 							class="header__button header__portfolio"
 							v-kv-track-event="['TopNav','click-Portfolio']"
 						>
-							<span>{{ balance | numeral('$0') }}</span>
+							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+								{{ balance | numeral('$0') }}
+							</span>
 							<img
 								:src="profilePic"
 								alt="My portfolio"
@@ -273,7 +277,9 @@
 								}"
 								v-kv-track-event="['TopNav','click-Basket']"
 							>
-								<span class="amount">{{ basketCount }}</span>
+								<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+									{{ basketCount }}
+								</span>
 								Basket
 							</router-link>
 
@@ -300,7 +306,9 @@
 								class="header__button header__portfolio"
 								v-kv-track-event="['TopNav','click-Portfolio']"
 							>
-								<span>{{ balance | numeral('$0') }}</span>
+								<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+									{{ balance | numeral('$0') }}
+								</span>
 								<img
 									:src="profilePic"
 									alt="My portfolio"
