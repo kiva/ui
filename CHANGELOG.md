@@ -1,3 +1,14 @@
+## [2.34.0](https://github.com/kiva/ui/compare/v2.33.1...v2.34.0) (2022-01-05)
+
+
+### Features
+
+* core-357 added loanDisbursed check for directLoans in place, altered how loan details load ([7bb8eae](https://github.com/kiva/ui/commit/7bb8eae3d646c2cd5d3c27633bce8446b3d0b543))
+* core-357 adding anonmizationLevel check for repayment schedule, removing isPartnerLoan checks ([959b547](https://github.com/kiva/ui/commit/959b547c1031d3b41cd8482b0e92280c52ee55e1))
+* core-357 changing anonymizationLevel check to full from none ([d50cff8](https://github.com/kiva/ui/commit/d50cff8490fc0bcea57fdfb667e621c31e0964c2))
+* core-357 cleanup, removed createIntersectionObserver ([72d687c](https://github.com/kiva/ui/commit/72d687c3d1cc48495d1401a329e0c494c1ddf33d))
+* core-357 removing check that loan is not fundraising ([43829ff](https://github.com/kiva/ui/commit/43829ffc75e519c079ebdad9dfb18b011db1056d))
+
 ### [2.33.1](https://github.com/kiva/ui/compare/v2.33.0...v2.33.1) (2022-01-05)
 
 
