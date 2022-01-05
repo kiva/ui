@@ -167,7 +167,13 @@ export default {
 		completeCausesBraintree() {
 			// disable form inputs while routing to thanks
 			this.success = true;
+			// fire events
 			this.$kvTrackEvent('Registration', 'successful-causes-reg', 'register-causes');
+			// Track facebook event
+			if (typeof window !== 'undefined' && typeof fbq === 'function') {
+				window.fbq('track', 'CausesSignUp');
+			}
+			// route to thanks
 			this.$router.push({
 				path: '/causes/thanks',
 			});
