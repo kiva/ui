@@ -1,5 +1,5 @@
 <template>
-	<div class="dropin-payment-holder tw-px-0 tw-max-w-md">
+	<div class="dropin-payment-holder tw-px-0 tw-max-w-md tw-m-auto">
 		<braintree-drop-in-interface
 			v-if="isClientReady"
 			ref="braintreeDropInInterface"
@@ -11,7 +11,7 @@
 		/>
 		<div id="dropin-submit" class="tw-w-full">
 			<kv-button
-				class="tw-mb-2"
+				class="tw-w-full tw-mb-2"
 				:state="buttonState"
 				@click="submitDropInMonthlyGood"
 			>

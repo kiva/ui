@@ -1,30 +1,28 @@
 <template>
-	<div class="row">
-		<div class="dropin-payment-holder small-12 columns">
-			<braintree-drop-in-interface
-				v-if="isClientReady"
-				ref="braintreeDropInInterface"
-				:amount="amount | numeral('0.00')"
-				flow="vault"
-				:payment-types="['paypal', 'card']"
-				:preselect-vaulted-payment-method="action === 'Registration'"
-				@transactions-enabled="enableConfirmButton = $event"
-			/>
-			<div id="dropin-submit" class="tw-w-full">
-				<kv-button
-					class="tw-mb-2"
-					:state="buttonState"
-					@click="submitDropInAutoDeposit"
-				>
-					<kv-icon name="lock" />
-					Confirm
-				</kv-button>
-			</div>
-
-			<p class="dropin-wrapper-attribution-text">
-				Thanks to PayPal, Kiva receives free payment processing for all loans.
-			</p>
+	<div class="dropin-payment-holder tw-px-0 tw-mt-4">
+		<braintree-drop-in-interface
+			v-if="isClientReady"
+			ref="braintreeDropInInterface"
+			:amount="amount | numeral('0.00')"
+			flow="vault"
+			:payment-types="['paypal', 'card']"
+			:preselect-vaulted-payment-method="action === 'Registration'"
+			@transactions-enabled="enableConfirmButton = $event"
+		/>
+		<div id="dropin-submit" class="tw-w-full">
+			<kv-button
+				class="tw-w-full tw-mb-2"
+				:state="buttonState"
+				@click="submitDropInAutoDeposit"
+			>
+				<kv-icon name="lock" />
+				Confirm
+			</kv-button>
 		</div>
+
+		<p class="tw-text-small tw-text-secondary tw-text-center tw-px-2">
+			Thanks to PayPal, Kiva receives free payment processing for all loans.
+		</p>
 	</div>
 </template>
 
