@@ -1,3 +1,10 @@
+## [2.33.0](https://github.com/kiva/ui/compare/v2.32.0...v2.33.0) (2022-01-05)
+
+
+### Features
+
+* add FB tracking event for Causes signup ([6bb4b69](https://github.com/kiva/ui/commit/6bb4b69f55a5e1917e28eebe0273392795cb54b3))
+
 ## [2.32.0](https://github.com/kiva/ui/compare/v2.31.0...v2.32.0) (2022-01-05)
 
 
