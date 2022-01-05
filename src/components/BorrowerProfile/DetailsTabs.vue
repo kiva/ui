@@ -50,6 +50,7 @@
 						@show-definition="showDefinition"
 					/>
 					<repayment-schedule
+						v-if="loan.anonymizationLevel !== 'full'"
 						:loan-id="loanId"
 						:status="loan.status"
 					/>
@@ -98,7 +99,6 @@
 <script>
 import gql from 'graphql-tag';
 import { formatContentGroupsFlat } from '@/util/contentfulUtils';
-import { createIntersectionObserver } from '@/util/observerUtils';
 // TODO: replace the loading placeholder with component from kv-components when available.
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
@@ -206,31 +206,6 @@ export default {
 			this.lightboxTitle = '';
 			this.lightboxContent = null;
 		},
-		createObserver() {
-			// Watch for this element being close to entering the viewport
-			this.observer = createIntersectionObserver({
-				targets: [this.$el],
-				rootMargin: '500px',
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							// This element is close to being in the viewport, so load the data.
-							// Because of the apollo cache it's safe to call this repeatedly.
-							this.loadData();
-						}
-					});
-				}
-			});
-			if (!this.observer) {
-				// Observer was not created, so call loadData right away as a fallback.
-				this.loadData();
-			}
-		},
-		destroyObserver() {
-			if (this.observer) {
-				this.observer.disconnect();
-			}
-		},
 		loadContentfulDefintions(contentEntryKey) {
 			this.apollo.query({
 				query: gql`query contentfulDefinitions {
@@ -260,6 +235,7 @@ export default {
 							lenderRepaymentTerm
 							repaymentInterval
 							disbursalDate
+							anonymizationLevel
 							terms {
 								currency
 								flexibleFundraisingEnabled
@@ -315,6 +291,7 @@ export default {
 				this.loan.disbursalDate = loan?.disbursalDate ?? '';
 				this.loan.status = loan?.status ?? '';
 				this.loan.name = loan?.name ?? '';
+				this.loan.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
 
 				this.partner.arrearsRate = partner?.arrearsRate ?? 0;
 				this.partner.avgBorrowerCost = partner?.avgBorrowerCost ?? 0;
@@ -392,10 +369,8 @@ export default {
 		},
 	},
 	mounted() {
-		this.createObserver();
+		this.loadData();
 	},
-	beforeDestroy() {
-		this.destroyObserver();
-	},
+
 };
 </script>
