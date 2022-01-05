@@ -1,5 +1,5 @@
 <template>
-	<div class="dropin-payment-holder tw-px-0 tw-max-w-md">
+	<div class="dropin-payment-holder tw-px-0 tw-max-w-md tw-m-auto">
 		<braintree-drop-in-interface
 			v-if="isClientReady"
 			ref="braintreeDropInInterface"

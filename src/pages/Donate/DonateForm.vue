@@ -31,7 +31,6 @@
 					v-if="isMonthly"
 					:disclaimer="formDisclaimerCopy"
 					:donate-amount="selectedAmount"
-					:id="id"
 					@completed="subscriptionApplied = true"
 				/>
 				<kv-button
