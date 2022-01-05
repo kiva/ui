@@ -1,3 +1,41 @@
+## [2.32.0](https://github.com/kiva/ui/compare/v2.31.0...v2.32.0) (2022-01-05)
+
+
+### Features
+
+* add background color to cart amount and profile balance ([7c2f93c](https://github.com/kiva/ui/commit/7c2f93ceadfdeedd8b1a703edda2b6e9401d24fd))
+* add border around search results to prevent them from being lost on white backgrounds ([2261178](https://github.com/kiva/ui/commit/22611784905bbe2382d95d319da4e283f736290d))
+* adds find a cause to desktop megamenu ([d60f8d8](https://github.com/kiva/ui/commit/d60f8d8eb46a2a7006c6f05725b65fec8a452f38))
+* bring back hideSearchInHeader ([5eadf68](https://github.com/kiva/ui/commit/5eadf68fce8a59c963601a4f209a15d8b126021e))
+* close the menu if tapping outside of it ([8eb32c4](https://github.com/kiva/ui/commit/8eb32c450b62a654fd5e7cfc94fe40617a01ce64))
+* enlarge logo and tweak vertical alignment ([6b40371](https://github.com/kiva/ui/commit/6b4037114affc8686ff84349fd5e841808bbd771))
+* fill out corporate header ([5f1af80](https://github.com/kiva/ui/commit/5f1af80b88b8707f427067f8a2cb238275736bdc))
+* mouse and touch events for showing the meganav ([81c3f4f](https://github.com/kiva/ui/commit/81c3f4f7546f0448f1e34791eb7a4dc2d2d946b8))
+* progress point for the header mega menu ([b790cb2](https://github.com/kiva/ui/commit/b790cb281d267495da23aa260e0b39e78aa6fac0))
+* remove header themes from WwwPageCorporate ([228d952](https://github.com/kiva/ui/commit/228d952738a19bf5780682c817ecbc6f015a9754))
+* starting point for new header layout ([b6de3e9](https://github.com/kiva/ui/commit/b6de3e97cf99023902228cafc0e515e4e7bbcffc))
+* stop centering the search bar on large screens, continue tablet layout instead ([3e8b001](https://github.com/kiva/ui/commit/3e8b001f0cb9390a35ee3a98e0916aa5bde83a68))
+* update mark styling to match new design ([9a9deca](https://github.com/kiva/ui/commit/9a9decae730b258bda7ee30bf4b814cc26238e2e))
+* use kv-loading-placeholder instead of kv-loading-spinner ([02a6396](https://github.com/kiva/ui/commit/02a6396736b25d3bf0e7179c8676c387ae1fa2c9))
+* use new profile icon if the users image is a default ([86eb248](https://github.com/kiva/ui/commit/86eb248f8d72c908684d272e6c247b9f9f04e355))
+
+
+### Bug Fixes
+
+* allow keyboard enter key presses to navigate to lend page ([591bdd2](https://github.com/kiva/ui/commit/591bdd2a66f5937fa24ce2ad0beb1463bd417e08))
+* ensure we have shop property ([7bea6ff](https://github.com/kiva/ui/commit/7bea6ffdf285c72dc7371fafbbf6d8ba972b22a4))
+* hide basket on mobile since it's at the bottom of the viewport ([e5e04cc](https://github.com/kiva/ui/commit/e5e04cc5138ad76b43419f0fdcce6d7fee5c11e3))
+* load categories and regions on menu load ([94077ba](https://github.com/kiva/ui/commit/94077ba8801c26974bd14e93c75140133e9c7904))
+* misc style touchups ([3b79359](https://github.com/kiva/ui/commit/3b79359fc2b37aaaaf39db528ae5af558fb8d24f))
+* move search container into a more logical tab order ([e05df2b](https://github.com/kiva/ui/commit/e05df2b53c42f2b3942387076ce2736d7f8205d8))
+* prevent hidden submit button from keyboard focus ([2ffa9a6](https://github.com/kiva/ui/commit/2ffa9a6b7f7e5fcfba7b8da49282fe752f4c00b3))
+* prevent logo link from taking up too much area on mobile ([9f845fb](https://github.com/kiva/ui/commit/9f845fb062b79a9d14718e9562c77f55939fdba0))
+* prevent mouseover events from happening on touchend ([1db823c](https://github.com/kiva/ui/commit/1db823cac1f2267674b69d16e210238bf1b5538d))
+* prevent search from overlapping buttons at certain screen sizes ([23669ec](https://github.com/kiva/ui/commit/23669ec61410a6c79a7132480bccd8c768a106f8))
+* rotate chevron when menu is open ([eaa287b](https://github.com/kiva/ui/commit/eaa287bc0b330d6a3b61b983fdb41db2dfaccaa5))
+* rotate the icon on hover for about link ([c7519ba](https://github.com/kiva/ui/commit/c7519ba5b130ba426aa6dc9437e19270b7243f42))
+* update lock-scroll utils to use Tailwind classes ([b094c7b](https://github.com/kiva/ui/commit/b094c7b82d51b02ff66a181d917c5b7313114c38))
+
 ## [2.31.0](https://github.com/kiva/ui/compare/v2.30.2...v2.31.0) (2022-01-04)
 
 
