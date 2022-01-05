@@ -1,3 +1,10 @@
+### [2.34.1](https://github.com/kiva/ui/compare/v2.34.0...v2.34.1) (2022-01-05)
+
+
+### Bug Fixes
+
+* kivaClassic styling tweaks for Causes cancellation and BT drop i… ([#3521](https://github.com/kiva/ui/issues/3521)) ([66a63df](https://github.com/kiva/ui/commit/66a63df6ec5752b038858224286bcf29ae2fd23d))
+
 ## [2.34.0](https://github.com/kiva/ui/compare/v2.33.1...v2.34.0) (2022-01-05)
 
 
