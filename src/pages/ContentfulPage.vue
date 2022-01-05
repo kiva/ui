@@ -5,13 +5,12 @@
 		:main-class="pageBackgroundColor"
 	>
 		<component
-			v-for="({ component, content, wrapperClass }) in contentGroups"
+			v-for="({ component, content }) in contentGroups"
 			:key="content.key"
 			:id="content.key"
 			:is="component"
 			:content="content"
 			v-bind="getComponentOptions(content.key)"
-			:class="wrapperClass"
 			data-section-type="contentful-section"
 		/>
 	</component>
