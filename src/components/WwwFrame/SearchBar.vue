@@ -1,40 +1,74 @@
 <template>
-	<form class="search-form"
+	<form class="search-form tw-relative"
 		action="/lend"
 		method="get"
 		autocomplete="off"
 		@submit.prevent="onSubmit"
 	>
-		<kv-icon class="search-icon" name="magnify-glass" :from-sprite="true" />
-		<input type="search"
+		<label for="top-nav-search" class="tw-sr-only">Search all loans</label>
+		<kv-text-input
+			type="text"
+			id="top-nav-search"
 			ref="input"
 			name="queryString"
+			:icon="mdiMagnify"
 			:value="displayTerm"
-			@input="term = $event.target.value"
+			:can-clear="true"
+			class="tw-w-full"
+			@input="onInput"
 			@focus="onFocus"
 			@blur="onBlur"
 			@keydown.up.prevent="listUp"
 			@keydown.down.prevent="listDown"
 			placeholder="Search all loans"
+		/>
+
+		<ol
+			v-show="showResults"
+			:style="searchResultsStyle"
+			class="
+				search-results
+				tw-w-full
+				tw-bg-primary
+				tw-p-2.5
+				tw-border
+				tw-border-tertiary
+				tw-fixed
+				tw-z-popover
+
+				tw-right-0
+				tw-bottom-0
+				tw-left-0
+				tw-overflow-auto
+
+				md:tw-absolute
+				md:tw-bottom-auto
+				md:tw-top-auto
+			"
 		>
-		<ol v-show="showResults" class="search-results">
 			<li v-for="section in sections" :key="section.name" class="section">
-				<h2>{{ section.name }}</h2>
-				<ol class="section-results">
+				<h2 class="tw-text-base tw-py-0.5">
+					{{ section.name }}
+				</h2>
+				<ol>
 					<li v-for="suggestion in section.suggestions"
 						:key="suggestion.label"
 						@mousedown.prevent
 						@click="runSearch(suggestion)"
 						data-testid="search-bar-result"
-						class="result"
-						:class="{highlighted: suggestion.label === highlighted.label}"
+						class="
+							tw-pl-1.5 tw-py-0.5 tw-rounded-sm
+							tw-font-medium tw-cursor-pointer
+							hover:tw-bg-secondary hover:tw-underline
+						"
+						:class="{'tw-bg-secondary tw-underline': suggestion.label === highlighted.label}"
 					>
 						<span v-html="formatResult(suggestion)"></span>
 					</li>
 				</ol>
 			</li>
 		</ol>
-		<input type="submit" class="hidden-submit" aria-hidden="true">
+		<input type="submit" class="tw-sr-only" aria-hidden="true" tabindex="-1">
 	</form>
 </template>
 
@@ -44,17 +78,22 @@ import _map from 'lodash/map';
 import _take from 'lodash/take';
 import _zip from 'lodash/zip';
 import suggestionsQuery from '@/graphql/query/loanSearchSuggestions.graphql';
-import KvIcon from '@/components/Kv/KvIcon';
 import SearchEngine from '@/util/searchEngine';
 import { indexIn } from '@/util/comparators';
+import { mdiMagnify } from '@mdi/js';
+import lockScrollUtils from '@/plugins/lock-scroll';
+import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 const engine = new SearchEngine();
 
 export default {
 	components: {
-		KvIcon
+		KvTextInput,
 	},
 	inject: ['apollo'],
+	mixins: [
+		lockScrollUtils,
+	],
 	data() {
 		return {
 			term: '',
@@ -62,6 +101,8 @@ export default {
 			hasFocus: false,
 			searching: false,
 			rawResults: [],
+			searchResultsStyle: null,
+			mdiMagnify,
 		};
 	},
 	computed: {
@@ -143,6 +184,16 @@ export default {
 			this.hasFocus = false;
 			this.listIndex = -1;
 		},
+		onInput(value) {
+			this.term = value;
+		},
+		onSubmit() {
+			if (this.listIndex > -1) {
+				this.runSearch(this.highlighted);
+			} else {
+				this.runSearch(this.term);
+			}
+		},
 		listDown() {
 			// Highlight the next item down in the result list.
 			this.listIndex += 1;
@@ -158,13 +209,6 @@ export default {
 			}
 			// Highlight the previous item up in the result list.
 			this.listIndex -= 1;
-		},
-		onSubmit() {
-			if (this.listIndex > -1) {
-				this.runSearch(this.highlighted);
-			} else {
-				this.runSearch(this.term);
-			}
 		},
 		runSearch(suggestion) {
 			let query;
@@ -198,7 +242,8 @@ export default {
 
 			// Build an array of strings, inserting the <mark> tags at the appropriate indices
 			const charArray = _map(label, (character, index) => {
-				const prefix = starts.indexOf(index) > -1 ? '<mark>' : '';
+				const prefix = starts.indexOf(index) > -1
+					? '<mark class="tw-bg-tertiary tw-rounded-sm tw-mix-blend-multiply tw-p-0.5 tw--m-0.5">' : '';
 				const suffix = ends.indexOf(index) > -1 ? '</mark>' : '';
 				return `${prefix}${character}${suffix}`;
 			});
@@ -208,6 +253,17 @@ export default {
 		},
 	},
 	watch: {
+		hasFocus(hasFocus) {
+			if (hasFocus) {
+				// Get the bottom coordinate of the search input for positioning the results
+				// on mobile. This can vary depending on if promo banners are pushing it down.
+				const bottomEdgeOfSearchInput = this.$refs.input.$el.getBoundingClientRect().bottom;
+				this.searchResultsStyle = { '--search-input-bottom': `${bottomEdgeOfSearchInput}px` };
+				this.lockScrollSmallOnly();
+			} else {
+				this.unlockScrollSmallOnly();
+			}
+		},
 		term(term) {
 			// Reset the result list index, since the list is about to change
 			this.listIndex = -1;
@@ -226,87 +282,14 @@ export default {
 };
 </script>
 
-<style lang="scss">
-@import 'settings';
-
-form.search-form {
-	position: relative;
-	height: 100%;
-	width: 100%;
-
-	input[type="search"] {
-		height: 100%;
-		width: 100%;
-		margin: 0;
+<style lang="postcss" scoped>
+	.search-results {
+		top: calc(var(--search-input-bottom) + 1rem);
 	}
 
-	.search-icon {
-		fill: $kiva-text-dark;
-		position: absolute;
-		left: 0.4rem;
-		width: 1rem;
-		height: 100%;
-	}
-
-	input[type="submit"].hidden-submit {
-		position: absolute;
-		left: -9999px;
-		width: 1px;
-		height: 1px;
-		visibility: hidden;
-	}
-}
-
-.search-results {
-	$spacing: 0.4rem;
-
-	position: relative;
-	z-index: 10;
-	background-color: $white;
-	color: $kiva-text-dark;
-	border: 1px solid $gray;
-	padding: $spacing;
-
-	h2 {
-		font-size: $small-text-font-size;
-		font-weight: normal;
-		margin: 0.3rem 0 0.4rem;
-	}
-
-	&,
-	ol {
-		margin: 0;
-		list-style: none;
-		text-align: left;
-	}
-
-	.result {
-		cursor: pointer;
-		padding: $spacing $spacing $spacing 1rem;
-		font-size: $small-text-font-size;
-		line-height: 1.2;
-		font-weight: $global-weight-normal;
-
-		mark {
-			background: none;
-			color: $body-font-color;
-			font-weight: bold;
-			text-decoration: underline;
-		}
-
-		&:hover,
-		&:hover mark,
-		&.highlighted,
-		&.highlighted mark {
-			color: $white;
-			background-color: $kiva-accent-blue;
+	@screen md {
+		.search-results {
+			top: auto;
 		}
 	}
-
-	.result:first-of-type {
-		border-top: 1px solid $light-gray;
-		margin-top: 0.2rem;
-		padding-top: 0.4rem;
-	}
-}
 </style>

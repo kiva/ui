@@ -147,8 +147,8 @@ export default {
 				const promoBalance = numeral(data?.my?.userAccount?.promoBalance ?? 0);
 				const basketPromoBalance = numeral(data?.shop?.totals?.redemptionCodeAvailableTotal ?? 0);
 				this.bonusBalance = promoBalance + basketPromoBalance;
-				this.lendingRewardOffered = data.shop?.lendingRewardOffered ?? false;
-				this.hasFreeCredits = data.shop?.basket?.hasFreeCredits ?? false;
+				this.lendingRewardOffered = data?.shop?.lendingRewardOffered ?? false;
+				this.hasFreeCredits = data?.shop?.basket?.hasFreeCredits ?? false;
 			}
 		}
 	},

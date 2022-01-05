@@ -1,8 +1,8 @@
 <template>
-	<div class="the-lend-menu">
+	<div>
 		<lend-list-menu
 			ref="list"
-			class="hide-for-large"
+			class="lg:tw-hidden"
 			:categories="computedCategories"
 			:regions="regions"
 			:searches="savedSearches"
@@ -13,7 +13,7 @@
 		/>
 		<lend-mega-menu
 			ref="mega"
-			class="show-for-large"
+			class="tw-hidden lg:tw-block"
 			:categories="computedCategories"
 			:regions="regions"
 			:searches="savedSearches"
@@ -171,15 +171,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-.the-lend-menu {
-	.loading-spinner {
-		margin: 1rem;
-		width: 3rem;
-		height: 3rem;
-	}
-}
-</style>

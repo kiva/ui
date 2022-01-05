@@ -74,7 +74,7 @@ describe('SearchBar', () => {
 
 	it('should change the highlighted item when the up/down arrow keys are pressed', async () => {
 		const { getByPlaceholderText, findAllByTestId } = renderSearchBar();
-		const isHighlighted = node => node.classList.contains('highlighted');
+		const isHighlighted = node => node.classList.contains('tw-bg-secondary');
 		const searchTerm = 'a';
 
 		// Type searchTerm in the search bar
