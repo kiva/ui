@@ -11,7 +11,7 @@
 		/>
 		<div id="dropin-submit" class="tw-w-full">
 			<kv-button
-				class="tw-mb-2"
+				class="tw-w-full tw-mb-2"
 				:state="buttonState"
 				@click="submitDropInMonthlyGood"
 			>

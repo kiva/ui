@@ -28,7 +28,7 @@
 			/>
 			<kv-button
 				v-if="isLoggedIn && !hasExistingAutoDeposit"
-				class="dropin-submit"
+				class="tw-w-full tw-mb-2"
 				:id="`${id}-dropin-submit`"
 				:state="submitButtonState"
 				@click="submitDropInAutoDeposit"
@@ -38,7 +38,7 @@
 				Save Monthly Donation
 			</kv-button>
 			<div
-				class="attribution-text tw-text-center"
+				class="tw-text-small tw-text-secondary tw-text-center tw-px-2"
 				v-if="isLoggedIn && !hasExistingAutoDeposit"
 				v-html="disclaimer"
 			></div>
@@ -231,28 +231,23 @@ export default {
 @import "settings";
 
 .donate-form-dropin-payment-wrapper {
-	.dropin-submit {
-		width: 100%;
-		margin-top: 1rem;
+	.icon-lock {
+		height: rem-calc(20);
+		width: rem-calc(20);
+		fill: white;
+		top: rem-calc(3);
+		position: relative;
+		margin-right: rem-calc(8);
+	}
 
-		.icon-lock {
-			height: rem-calc(20);
-			width: rem-calc(20);
-			fill: white;
-			top: rem-calc(3);
-			position: relative;
-			margin-right: rem-calc(8);
-		}
+	.loading-spinner {
+		vertical-align: middle;
+		width: 1rem;
+		height: 1rem;
+	}
 
-		.loading-spinner {
-			vertical-align: middle;
-			width: 1rem;
-			height: 1rem;
-		}
-
-		.loading-spinner .line {
-			background-color: $white;
-		}
+	.loading-spinner .line {
+		background-color: $white;
 	}
 }
 </style>

@@ -8,6 +8,18 @@
 		<div class="causes-cancel-lightbox__content">
 			<label>
 				<textarea
+					class="
+						tw-w-full
+						tw-p-2
+						tw-mb-4
+						tw-border tw-border-tertiary
+						tw-rounded-sm
+						tw-appearance-none
+						tw-text-base
+						tw-bg-primary
+						tw-ring-inset
+						focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-action focus:tw-border-transparent
+					"
 					name="reasonTextArea"
 					rows="8"
 					:placeholder="textAreaPlaceholder"
@@ -16,38 +28,32 @@
 				></textarea>
 			</label>
 			<kv-button
-				class="expanded smaller rounded text-left" @click.native.prevent="trackEvent({
+				class="tw-w-full"
+				@click="trackEvent({
 					label: `Complete cancellation`,
 					property: `${cancelReason}`}); completeCancellation()"
 			>
 				Complete cancellation
-				<kv-icon
-					class="causes-cancel-lightbox__chevron causes-cancel-lightbox__chevron--white"
-					name="fat-chevron"
-					:from-sprite="true"
-				/>
 			</kv-button>
-			<kv-button class="causes-cancel-lightbox__abort text-link"
-				@click.native="trackEvent({
+			<button class="causes-cancel-lightbox__abort tw-text-link tw-font-medium"
+				@click="trackEvent({
 					label: `Wait! I don't want to cancel`,
 					property: 'exit'}); closeLightbox()"
 			>
 				Wait! I don't want to cancel
-			</kv-button>
+			</button>
 		</div>
 	</kv-lightbox>
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvLightbox from '@/components/Kv/KvLightbox';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	inject: ['apollo'],
 	components: {
 		KvButton,
-		KvIcon,
 		KvLightbox,
 	},
 	props: {
@@ -106,10 +112,6 @@ export default {
 @import 'settings';
 
 .causes-cancel-lightbox {
-	.button.text-left {
-		text-align: left;
-	}
-
 	&__content {
 		overflow: hidden;
 		max-width: 100%;
