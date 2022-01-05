@@ -630,7 +630,6 @@ export default {
 			}
 		},
 		onLendLinkPointerEnter(e) {
-			console.log('onLendLinkPointerEnter');
 			if (e.pointerType === 'touch') {
 				return;
 			}
@@ -638,7 +637,6 @@ export default {
 			this.toggleLendMenu();
 		},
 		onLendLinkPointerLeave(e) {
-			console.log('onLendLinkPointerLeave');
 			if (e.pointerType === 'touch') {
 				return;
 			}
@@ -646,7 +644,6 @@ export default {
 			this.toggleLendMenu();
 		},
 		onLendLinkPointerUp(e) {
-			console.log('onLendLinkPointerUp');
 			if (e.pointerType === 'touch') {
 				this.toggleLendMenu(true);
 			} else {
@@ -656,7 +653,6 @@ export default {
 			}
 		},
 		onLendLinkClick(e) {
-			console.log('onLendLinkClick');
 			if (e.pointerType === 'touch') {
 				return;
 			}
@@ -665,7 +661,6 @@ export default {
 			}).catch(() => {});
 		},
 		onLendMenuPointerEnter(e) {
-			console.log('onLendMenuPointerEnter');
 			if (e.pointerType === 'touch') {
 				return;
 			}
@@ -673,7 +668,6 @@ export default {
 			this.toggleLendMenu();
 		},
 		onLendMenuPointerLeave(e) {
-			console.log('onLendMenuPointerLeave');
 			if (e.pointerType === 'touch') {
 				return;
 			}

@@ -136,7 +136,6 @@ export default {
 				}`
 			}).subscribe({
 				next: ({ data }) => {
-					console.log(data);
 					this.countryFacets = _get(data, 'lend.countryFacets');
 					this.isRegionsLoading = false;
 				}
