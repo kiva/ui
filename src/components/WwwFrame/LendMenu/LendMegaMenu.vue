@@ -18,27 +18,38 @@
 					<h2 class="tw-text-base tw-mb-2">
 						Categories
 					</h2>
-					<kv-loading-spinner
-						v-if="isChannelsLoading"
-						class="tw-mx-auto tw-mt-4 tw-mb-2"
-					/>
 
 					<div class="tw-flex tw-gap-4 tw-whitespace-nowrap">
 						<ul class="category-list">
-							<li
-								v-for="(category, index) in categories"
-								:key="index"
-								class="tw-w-[11rem]"
-							>
-								<a
-									:href="category.url"
-									class="tw-text-primary tw-text-left hover:tw-text-action-highlight
-									tw-py-1 tw-font-medium tw-inline-block"
-									v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]"
+							<template v-if="isChannelsLoading">
+								<li
+									v-for="i in 14"
+									:key="i"
+									class="tw-w-[11rem]"
 								>
-									{{ category.name }}
-								</a>
-							</li>
+									<kv-loading-placeholder
+										class="tw-inline-block tw-align-middle"
+										style="height: 1.25rem;"
+									/>
+									<span class="tw-py-1 tw-font-medium tw-inline-block">&nbsp;</span>
+								</li>
+							</template>
+							<template v-else>
+								<li
+									v-for="(category, index) in categories"
+									:key="index"
+									class="tw-w-[11rem]"
+								>
+									<a
+										:href="category.url"
+										class="tw-text-primary tw-text-left hover:tw-text-action-highlight
+									tw-py-1 tw-font-medium tw-inline-block"
+										v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]"
+									>
+										{{ category.name }}
+									</a>
+								</li>
+							</template>
 						</ul>
 						<ul>
 							<li class="tw-w-[11rem]">
@@ -66,8 +77,9 @@
 
 					<!-- my kiva -->
 					<!-- TODO: Where should this go? -->
-					<div>
-						<h2 v-if="userId" class="tw-text-base">
+					<!-- My Kiva -->
+					<div class="tw-mt-6 tw-hidden">
+						<h2 v-if="userId" class="tw-text-base tw-mb-2">
 							My Kiva
 						</h2>
 						<ul v-if="userId">
@@ -76,20 +88,34 @@
 									v-if="favorites > 0"
 									:to="{ path: '/lend', query: { lenderFavorite: userId } }"
 									v-kv-track-event="['TopNav','click-Lend-Favorites']"
+									class="tw-text-primary tw-text-left hover:tw-text-action-highlight
+												tw-py-1 tw-font-medium tw-inline-block"
 								>
 									Starred loans
 								</router-link>
-								<span v-else>Starred loans</span>
+								<span
+									v-else
+									class="tw-text-primary tw-py-1 tw-inline-block"
+								>
+									Starred loans
+								</span>
 							</li>
 							<li>
 								<button
 									v-if="hasSearches"
 									@click="openSection(savedSearchesTitle)"
 									:aria-pressed="isOpenSection(savedSearchesTitle) ? 'true' : 'false'"
+									class="tw-text-primary tw-text-left hover:tw-text-action-highlight
+									tw-py-1 tw-font-medium tw-inline-block"
 								>
 									{{ savedSearchesTitle }}
 								</button>
-								<span v-else>Saved searches</span>
+								<span
+									v-else
+									class="tw-text-primary tw-py-1 tw-inline-block"
+								>
+									Saved searches
+								</span>
 								<div v-if="isOpenSection(savedSearchesTitle)" class="right-section">
 									<h2>{{ savedSearchesTitle }}</h2>
 									<search-list :searches="searches" />
@@ -99,6 +125,8 @@
 								<router-link
 									to="/lend/countries-not-lent"
 									v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
+									class="tw-text-primary tw-text-left hover:tw-text-action-highlight
+												tw-py-1 tw-font-medium tw-inline-block"
 								>
 									Countries I haven't lent to
 								</router-link>
@@ -122,16 +150,25 @@
 
 				<!-- regions -->
 				<div class="tw-col-span-8 tw-flex tw-flex-col">
-					<kv-loading-spinner
-						v-if="isRegionsLoading"
-						class="tw-mx-auto tw-mt-4 tw-mb-2"
-					/>
-					<template v-else>
-						<h2 class="tw-text-base tw-mb-2">
-							Regions
-						</h2>
-						<div class="tw-flex tw-whitespace-nowrap tw-h-full">
-							<ul>
+					<h2 class="tw-text-base tw-mb-2">
+						Regions
+					</h2>
+					<div class="tw-flex tw-whitespace-nowrap tw-h-full">
+						<ul>
+							<template v-if="isRegionsLoading">
+								<li
+									v-for="i in 8"
+									:key="i"
+									class="tw-w-[11rem]"
+								>
+									<kv-loading-placeholder
+										class="tw-inline-block tw-align-middle"
+										style="height: 1.25rem;"
+									/>
+									<span class="tw-py-1 tw-font-medium tw-inline-block">&nbsp;</span>
+								</li>
+							</template>
+							<template v-else>
 								<li v-for="region in regions" :key="region.name" class="tw-w-[11rem] tw-mr-4">
 									<button
 										@click="openSection(region.name)"
@@ -144,16 +181,16 @@
 										{{ region.name }}
 									</button>
 								</li>
-							</ul>
-							<div
-								v-for="region in openRegions"
-								:key="region.name"
-								class="tw-h-full"
-							>
-								<country-list :countries="region.countries" class="region-list tw-h-full" />
-							</div>
+							</template>
+						</ul>
+						<div
+							v-for="region in openRegions"
+							:key="region.name"
+							class="tw-h-full"
+						>
+							<country-list :countries="region.countries" class="region-list tw-h-full" />
 						</div>
-					</template>
+					</div>
 				</div>
 			</kv-grid>
 		</div>
@@ -162,7 +199,7 @@
 
 <script>
 import { mdiArrowRight, mdiChevronLeft } from '@mdi/js';
-import KvLoadingSpinner from '~/@kiva/kv-components/vue/KvLoadingSpinner';
+import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import CountryList from './CountryList';
@@ -173,7 +210,7 @@ export default {
 	components: {
 		CountryList,
 		KvGrid,
-		KvLoadingSpinner,
+		KvLoadingPlaceholder,
 		KvMaterialIcon,
 		SearchList,
 	},

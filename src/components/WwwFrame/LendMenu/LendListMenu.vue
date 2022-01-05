@@ -23,23 +23,33 @@
 			</template>
 			<template #tabPanels>
 				<kv-tab-panel id="nav-lend-categories">
-					<kv-loading-spinner
-						v-if="isChannelsLoading"
-						class="tw-mx-auto tw-mt-4 tw-mb-2"
-					/>
 					<ul
-						v-else
 						class="tw-font-medium"
 					>
-						<li v-for="(category, index) in categories" :key="index">
-							<a
-								:href="category.url"
-								v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]"
-								class="lend-link"
+						<template v-if="isChannelsLoading">
+							<li
+								v-for="i in 14"
+								:key="i"
+								class="tw-w-[11rem] tw-py-1 tw-flex"
 							>
-								{{ category.name }}
-							</a>
-						</li>
+								<kv-loading-placeholder
+									class="tw-inline-block tw-align-middle"
+									style="height: 1rem; display: inline-block;"
+								/>
+								<span class="tw-inline-block">&nbsp;</span>
+							</li>
+						</template>
+						<template v-else>
+							<li v-for="(category, index) in categories" :key="index">
+								<a
+									:href="category.url"
+									v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]"
+									class="lend-link"
+								>
+									{{ category.name }}
+								</a>
+							</li>
+						</template>
 						<li class="tw-border-t tw-border-tertiary">
 							<router-link to="/lend" class="lend-link">
 								All loans
@@ -53,10 +63,24 @@
 					</ul>
 				</kv-tab-panel>
 				<kv-tab-panel id="nav-lend-regions">
-					<kv-loading-spinner
-						v-if="isRegionsLoading"
-						class="tw-mx-auto tw-mt-4 tw-mb-2"
-					/>
+					<template v-if="isRegionsLoading">
+						<kv-accordion-item
+							v-for="i in 8"
+							:key="i"
+							:id="`placeholder-${i}-panel` | changeCase('paramCase')"
+							:disabled="true"
+						>
+							<template #header>
+								<div class="tw-flex">
+									<kv-loading-placeholder
+										class="tw-inline-block tw-align-middle"
+										style="height: 1rem; display: inline-block;"
+									/>
+									<span class="tw-inline-block tw-text-h4">&nbsp;</span>
+								</div>
+							</template>
+						</kv-accordion-item>
+					</template>
 					<template v-else>
 						<kv-accordion-item
 							v-for="region in regions"
@@ -127,9 +151,9 @@
 <script>
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiArrowRight } from '@mdi/js';
+import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import SearchList from './SearchList';
 import CountryList from './CountryList';
-import KvLoadingSpinner from '~/@kiva/kv-components/vue/KvLoadingSpinner';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvTab from '~/@kiva/kv-components/vue/KvTab';
 import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
@@ -144,7 +168,7 @@ export default {
 		KvTab,
 		KvTabPanel,
 		KvTabs,
-		KvLoadingSpinner,
+		KvLoadingPlaceholder,
 		SearchList,
 	},
 	props: {
