@@ -71,6 +71,7 @@ export function richTextRenderer(content) {
 		if (isImage) {
 			return `
 			<kv-contentful-img
+				class="tw-whitespace-normal"
 				contentful-src="${encodeURI(contentfulAssetObject?.file?.url)}"
 				alt="${contentfulAssetObject?.description}"
 				height="${contentfulAssetObject?.file?.details?.image?.height}"
@@ -121,6 +122,7 @@ export function richTextRenderer(content) {
 			const sourceSets = responsiveImageSetSourceSets(formattedResponsiveImageSet);
 			const sourceSetArrayAsString = htmlSafeStringify(sourceSets);
 			return `<kv-contentful-img
+						class="tw-whitespace-normal"
 						contentful-src="${encodeURI(sourceSets[0].url)}"
 						width="${sourceSets[0].width}"
 						height="${sourceSets[0].height}"
@@ -141,9 +143,6 @@ export function richTextRenderer(content) {
 			},
 			[BLOCKS.EMBEDDED_ASSET]: node => {
 				return assetRenderer(node?.data?.target?.fields);
-			},
-			[BLOCKS.DOCUMENT]: (node, next) => {
-				return `<div class="tw-prose tw-whitespace-pre-wrap">${next(node.content)}</div>`;
 			},
 		}
 	};

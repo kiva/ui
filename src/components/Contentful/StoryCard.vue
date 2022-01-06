@@ -46,7 +46,7 @@
 				:html="cardTitle"
 			/>
 			<dynamic-rich-text
-				class="story-card__content tw-text-center tw-h-full tw-pb-4"
+				class="story-card__content tw-text-center tw-h-full tw-pb-4 tw-pt-3"
 				:html="cardContent"
 			/>
 			<dynamic-rich-text class="tw-text-center" :html="footer" />
@@ -172,7 +172,6 @@ export default {
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		justify-content: center;
 	}
 
 	.story-card >>> .tw-prose u {
