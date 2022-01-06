@@ -1,3 +1,10 @@
+### [2.34.4](https://github.com/kiva/ui/compare/v2.34.3...v2.34.4) (2022-01-06)
+
+
+### Bug Fixes
+
+* fixes extra spacing created by images in RTF's from contentful ([81e58bb](https://github.com/kiva/ui/commit/81e58bb9a8c7ac57def3df2906c65c5d499ff4fa))
+
 ### [2.34.3](https://github.com/kiva/ui/compare/v2.34.2...v2.34.3) (2022-01-06)
 
 
