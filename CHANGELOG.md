@@ -1,3 +1,10 @@
+### [2.34.3](https://github.com/kiva/ui/compare/v2.34.2...v2.34.3) (2022-01-06)
+
+
+### Bug Fixes
+
+* prevent kv-material-icons from being huge on Safari ([78a63b5](https://github.com/kiva/ui/commit/78a63b5c41198662b6e11ca80ede9905f44babc4))
+
 ### [2.34.2](https://github.com/kiva/ui/compare/v2.34.1...v2.34.2) (2022-01-05)
 
 
