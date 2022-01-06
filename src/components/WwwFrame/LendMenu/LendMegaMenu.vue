@@ -2,11 +2,11 @@
 	<div class="lend-mega-menu tw-overflow-hidden tw-hidden lg:tw-block tw-pb-2.5 lg:tw-pt-3">
 		<router-link
 			to="/monthlygood"
-			class="tw-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-font-medium"
+			class="tw-inline-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-font-medium"
 			v-kv-track-event="['TopNav','click-Find-a-Cause', 'Find a cause']"
 		>
 			Find a cause
-			<kv-material-icon :icon="mdiArrowRight" />
+			<kv-material-icon :icon="mdiArrowRight" class="tw-w-3 tw-h-3" />
 		</router-link>
 		<div
 			:style="computedStyle"
@@ -141,7 +141,7 @@
 						v-if="sectionOpen"
 						@click="openedSection = ''"
 					>
-						<kv-material-icon class="tw-flex-shrink-0" :icon="mdiChevronLeft" />
+						<kv-material-icon class="tw-flex-shrink-0 tw-w-3 tw-h-3" :icon="mdiChevronLeft" />
 						<span class="tw-text-base">
 							Back
 						</span>

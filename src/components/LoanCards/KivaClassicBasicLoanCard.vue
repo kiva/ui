@@ -142,7 +142,7 @@
 		>
 			View loan
 			<kv-material-icon
-				class="tw-align-middle"
+				class="tw-w-3 tw-h-3 tw-align-middle"
 				:icon="mdiChevronRight"
 			/>
 		</kv-button>

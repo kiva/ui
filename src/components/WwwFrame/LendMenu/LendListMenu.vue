@@ -2,11 +2,11 @@
 	<div>
 		<router-link
 			to="/monthlygood"
-			class="tw-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-border-b tw-border-tertiary tw-font-medium"
+			class="tw-inline-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-border-b tw-border-tertiary tw-font-medium"
 			v-kv-track-event="['TopNav','click-Find-a-Cause', 'Find a cause']"
 		>
 			Find a cause
-			<kv-material-icon :icon="mdiArrowRight" />
+			<kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiArrowRight" />
 		</router-link>
 
 		<kv-tabs>

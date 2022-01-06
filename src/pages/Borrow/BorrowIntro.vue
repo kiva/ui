@@ -25,7 +25,7 @@
 					<p class="tw-flex tw-content-center tw-justify-center">
 						<kv-material-icon
 							:icon="mdiClock"
-							class="tw-fill-current tw-text-tertiary tw-w-3 tw-mr-1"
+							class="tw-fill-current tw-text-tertiary tw-w-3 tw-h-3 tw-mr-1"
 						/>
 						<span>5 minutes</span>
 					</p>
@@ -45,7 +45,7 @@
 					<p class="tw-flex tw-content-center tw-justify-center">
 						<kv-material-icon
 							:icon="mdiClock"
-							class="tw-fill-current tw-text-tertiary tw-w-3 tw-mr-1"
+							class="tw-fill-current tw-text-tertiary tw-w-3 tw-h-3 tw-mr-1"
 						/>
 						<span>5 minutes</span>
 					</p>
@@ -65,7 +65,7 @@
 					<p class="tw-flex tw-content-center tw-justify-center">
 						<kv-material-icon
 							:icon="mdiClock"
-							class="tw-fill-current tw-text-tertiary tw-w-3 tw-mr-1"
+							class="tw-fill-current tw-text-tertiary tw-w-3 tw-h-3 tw-mr-1"
 						/>
 						<span>25 minutes</span>
 					</p>

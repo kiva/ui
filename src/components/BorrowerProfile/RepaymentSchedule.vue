@@ -59,8 +59,7 @@
 						>
 							<kv-material-icon
 								:icon="mdiCheckboxMarkedCircle"
-								name="check-mark"
-								class="tw-text-brand-700 tw-align-middle"
+								class="tw-w-3 tw-h-3 tw-text-brand-700 tw-align-middle"
 							/>
 							Repayment received
 						</td>
@@ -70,8 +69,7 @@
 							v-if="!repayment.repaid && repayment.delinquent"
 						>
 							<kv-material-icon
-								name="minus-circle"
-								class="tw-text-danger tw-align-middle"
+								class="tw-w-3 tw-h-3 tw-text-danger tw-align-middle"
 								:icon="mdiMinusCircle"
 							/>
 							Delinquent
