@@ -27,7 +27,7 @@
 <script>
 import gql from 'graphql-tag';
 import { mdiBookmarkOutline, mdiBookmark } from '@mdi/js';
-import { bookmarkLoan } from '@/util/bookmarkUtil';
+import bookmarkLoan from '@/util/bookmarkUtil';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
