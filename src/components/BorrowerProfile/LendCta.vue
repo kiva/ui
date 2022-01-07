@@ -264,11 +264,11 @@ import { setLendAmount } from '@/util/basketUtils';
 import { buildPriceArray, isMatchAtRisk } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
+import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
 
 export default {
 	inject: ['apollo', 'cookieStore'],

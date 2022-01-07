@@ -94,7 +94,7 @@ export default {
 					if (data.errors) {
 						// error occurred, flip bookmark back because bookmarking failed
 						this.isBookmarked = !this.isBookmarked;
-						forEach(data.errors, ({ message }) => {
+						data.errors.forEach(error, ({ message }) => {
 							this.$showTipMsg(message, 'error');
 						});
 					} else {
