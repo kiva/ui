@@ -92,10 +92,11 @@ export default {
 			bookmarkLoan(this.apollo, this.loanId, this.isBookmarked)
 				.then(data => {
 					if (data.errors) {
+						const errors = data?.errors;
 						// error occurred, flip bookmark back because bookmarking failed
 						this.isBookmarked = !this.isBookmarked;
-						data.errors.forEach(error, ({ message }) => {
-							this.$showTipMsg(message, 'error');
+						errors.forEach(error => {
+							this.$showTipMsg(error, 'error');
 						});
 					} else {
 						this.$kvTrackEvent(

@@ -9,7 +9,7 @@ import loanBookmarkMutation from '@/graphql/mutation/updateLoanFavorite.graphql'
  * @param {Object} apollo Apollo Client instance
  * @returns {Promise}
  */
-export function bookmarkLoan(apollo, loanId, isBookmarked) {
+export default function bookmarkLoan(apollo, loanId, isBookmarked) {
 	return apollo.mutate({
 		mutation: loanBookmarkMutation,
 		variables: {
