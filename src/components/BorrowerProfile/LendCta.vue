@@ -268,7 +268,7 @@ import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import LoanBookmark from './BorrowerProfile/LoanBookmark';
+import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
