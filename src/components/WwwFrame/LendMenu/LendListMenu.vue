@@ -17,7 +17,7 @@
 				<kv-tab for="nav-lend-regions">
 					Regions
 				</kv-tab>
-				<kv-tab for="nav-my-kiva" v-if="userId || true">
+				<kv-tab for="nav-my-kiva" v-if="userId">
 					My Kiva
 				</kv-tab>
 			</template>
@@ -98,7 +98,7 @@
 						</kv-accordion-item>
 					</template>
 				</kv-tab-panel>
-				<kv-tab-panel id="nav-my-kiva" v-if="userId || true">
+				<kv-tab-panel id="nav-my-kiva" v-if="userId">
 					<ul class="tw-font-medium">
 						<li>
 							<router-link
@@ -122,9 +122,9 @@
 								ref="searches"
 							>
 								<template #header>
-									<h3 class="tw-text-base">
+									<p class="tw-font-medium">
 										Saved searches
-									</h3>
+									</p>
 								</template>
 								<search-list :searches="searches" />
 							</kv-accordion-item>

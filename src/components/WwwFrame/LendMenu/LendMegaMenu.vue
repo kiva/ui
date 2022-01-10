@@ -1,5 +1,5 @@
 <template>
-	<div class="lend-mega-menu tw-overflow-hidden tw-hidden lg:tw-block tw-pb-2.5 lg:tw-pt-3">
+	<div class="lend-mega-menu tw-overflow-hidden tw-pb-3 lg:tw-pt-3">
 		<router-link
 			to="/monthlygood"
 			class="tw-inline-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-font-medium"
@@ -20,7 +20,7 @@
 					</h2>
 
 					<div class="tw-flex tw-gap-4 tw-whitespace-nowrap">
-						<ul class="category-list">
+						<ul class="category-list tw-font-medium">
 							<template v-if="isChannelsLoading">
 								<li
 									v-for="i in 14"
@@ -31,7 +31,7 @@
 										class="tw-inline-block tw-align-middle"
 										style="height: 1.25rem;"
 									/>
-									<span class="tw-py-1 tw-font-medium tw-inline-block">&nbsp;</span>
+									<span class="tw-py-1 tw-inline-block">&nbsp;</span>
 								</li>
 							</template>
 							<template v-else>
@@ -43,7 +43,7 @@
 									<a
 										:href="category.url"
 										class="tw-text-primary tw-text-left hover:tw-text-action-highlight
-									tw-py-1 tw-font-medium tw-inline-block"
+									tw-py-1 tw-inline-block"
 										v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]"
 									>
 										{{ category.name }}
@@ -51,87 +51,85 @@
 								</li>
 							</template>
 						</ul>
-						<ul>
-							<li class="tw-w-[11rem]">
-								<router-link
-									to="/categories"
-									class="tw-text-primary tw-font-medium
+						<div>
+							<ul class="tw-font-medium">
+								<li class="tw-w-[11rem]">
+									<router-link
+										to="/categories"
+										class="tw-text-primary
 									hover:tw-text-action-highlight tw-inline-block tw-py-1"
-									v-kv-track-event="['TopNav','click-Lend-All_Categories']"
-								>
-									All categories
-								</router-link>
-							</li>
-							<li class="tw-w-[11rem]" ref="allLoans">
-								<router-link
-									class="tw-text-primary tw-font-medium
+										v-kv-track-event="['TopNav','click-Lend-All_Categories']"
+									>
+										All categories
+									</router-link>
+								</li>
+								<li class="tw-w-[11rem]" ref="allLoans">
+									<router-link
+										class="tw-text-primary
 									hover:tw-text-action-highlight tw-inline-block tw-py-1"
-									to="/lend"
-									v-kv-track-event="['TopNav','click-Lend-All_Loans']"
-								>
-									All loans
-								</router-link>
-							</li>
-						</ul>
-					</div>
+										to="/lend"
+										v-kv-track-event="['TopNav','click-Lend-All_Loans']"
+									>
+										All loans
+									</router-link>
+								</li>
+							</ul>
+							<!-- My Kiva -->
+							<div v-if="userId">
+								<!-- blank line to keep things lined up just right -->
+								<span class="tw-inline-block tw-py-1">&nbsp;</span>
 
-					<!-- my kiva -->
-					<!-- TODO: Where should this go? -->
-					<!-- My Kiva -->
-					<div class="tw-mt-6 tw-hidden">
-						<h2 v-if="userId" class="tw-text-base tw-mb-2">
-							My Kiva
-						</h2>
-						<ul v-if="userId">
-							<li>
-								<router-link
-									v-if="favorites > 0"
-									:to="{ path: '/lend', query: { lenderFavorite: userId } }"
-									v-kv-track-event="['TopNav','click-Lend-Favorites']"
-									class="tw-text-primary tw-text-left hover:tw-text-action-highlight
-												tw-py-1 tw-font-medium tw-inline-block"
-								>
-									Starred loans
-								</router-link>
-								<span
-									v-else
-									class="tw-text-primary tw-py-1 tw-inline-block"
-								>
-									Starred loans
-								</span>
-							</li>
-							<li>
-								<button
-									v-if="hasSearches"
-									@click="openSection(savedSearchesTitle)"
-									:aria-pressed="isOpenSection(savedSearchesTitle) ? 'true' : 'false'"
-									class="tw-text-primary tw-text-left hover:tw-text-action-highlight
-									tw-py-1 tw-font-medium tw-inline-block"
-								>
-									{{ savedSearchesTitle }}
-								</button>
-								<span
-									v-else
-									class="tw-text-primary tw-py-1 tw-inline-block"
-								>
-									Saved searches
-								</span>
-								<div v-if="isOpenSection(savedSearchesTitle)" class="right-section">
-									<h2>{{ savedSearchesTitle }}</h2>
-									<search-list :searches="searches" />
-								</div>
-							</li>
-							<li>
-								<router-link
-									to="/lend/countries-not-lent"
-									v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
-									class="tw-text-primary tw-text-left hover:tw-text-action-highlight
-												tw-py-1 tw-font-medium tw-inline-block"
-								>
-									Countries I haven't lent to
-								</router-link>
-							</li>
-						</ul>
+								<h2 class="tw-text-base tw-my-1">
+									My Kiva
+								</h2>
+								<ul class="tw-font-medium">
+									<li>
+										<router-link
+											v-if="favorites > 0"
+											:to="{ path: '/lend', query: { lenderFavorite: userId } }"
+											v-kv-track-event="['TopNav','click-Lend-Favorites']"
+											class="tw-text-primary tw-text-left hover:tw-text-action-highlight
+												tw-py-1 tw-inline-block"
+										>
+											Starred loans
+										</router-link>
+										<span
+											v-else
+											class="tw-text-secondary tw-py-1 tw-inline-block"
+										>
+											Starred loans
+										</span>
+									</li>
+									<li>
+										<button
+											v-if="hasSearches"
+											@click="openSection(savedSearchesTitle)"
+											:aria-pressed="isOpenSection(savedSearchesTitle) ? 'true' : 'false'"
+											class="tw-text-primary tw-text-left tw-py-1 tw-inline-block
+											hover:tw-text-action-highlight hover:tw-underline"
+										>
+											{{ savedSearchesTitle }}
+										</button>
+										<span
+											v-else
+											class="tw-text-secondary tw-py-1 tw-inline-block"
+										>
+											Saved searches
+										</span>
+									</li>
+									<li>
+										<router-link
+											to="/lend/countries-not-lent"
+											v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
+											class="tw-text-primary tw-text-left hover:tw-text-action-highlight
+												tw-py-1 tw-inline-block"
+										>
+											Countries I haven't lent to
+										</router-link>
+									</li>
+								</ul>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -150,47 +148,58 @@
 
 				<!-- regions -->
 				<div class="tw-col-span-8 tw-flex tw-flex-col">
-					<h2 class="tw-text-base tw-mb-2">
-						Regions
-					</h2>
-					<div class="tw-flex tw-whitespace-nowrap tw-h-full">
-						<ul>
-							<template v-if="isRegionsLoading">
-								<li
-									v-for="i in 8"
-									:key="i"
-									class="tw-w-[11rem]"
-								>
-									<kv-loading-placeholder
-										class="tw-inline-block tw-align-middle"
-										style="height: 1.25rem;"
-									/>
-									<span class="tw-py-1 tw-font-medium tw-inline-block">&nbsp;</span>
-								</li>
-							</template>
-							<template v-else>
-								<li v-for="region in regions" :key="region.name" class="tw-w-[11rem] tw-mr-4">
-									<button
-										@click="openSection(region.name)"
-										:aria-pressed="isOpenSection(region.name) ? 'true' : 'false'"
-										v-kv-track-event="['TopNav','click-Lend-Region', region.name]"
-										class="tw-text-primary tw-text-left
-											tw-font-medium hover:tw-text-action-highlight tw-py-1"
-										:class="{ 'tw-text-action' : isOpenSection(region.name)}"
+					<template v-if="isOpenSection(savedSearchesTitle)">
+						<h2 class="tw-text-base tw-mb-2">
+							Saved Searches
+						</h2>
+						<search-list
+							class="search-list tw-h-full"
+							:searches="searches"
+						/>
+					</template>
+					<template v-else>
+						<h2 class="tw-text-base tw-mb-2">
+							Regions
+						</h2>
+						<div class="tw-flex tw-whitespace-nowrap tw-h-full">
+							<ul class="tw-font-medium">
+								<template v-if="isRegionsLoading">
+									<li
+										v-for="i in 8"
+										:key="i"
+										class="tw-w-[11rem]"
 									>
-										{{ region.name }}
-									</button>
-								</li>
-							</template>
-						</ul>
-						<div
-							v-for="region in openRegions"
-							:key="region.name"
-							class="tw-h-full"
-						>
-							<country-list :countries="region.countries" class="region-list tw-h-full" />
+										<kv-loading-placeholder
+											class="tw-inline-block tw-align-middle"
+											style="height: 1.25rem;"
+										/>
+										<span class="tw-py-1 tw-inline-block">&nbsp;</span>
+									</li>
+								</template>
+								<template v-else>
+									<li v-for="region in regions" :key="region.name" class="tw-w-[11rem] tw-mr-4">
+										<button
+											@click="openSection(region.name)"
+											:aria-pressed="isOpenSection(region.name) ? 'true' : 'false'"
+											v-kv-track-event="['TopNav','click-Lend-Region', region.name]"
+											class="tw-text-primary tw-text-left tw-py-1
+											hover:tw-text-action-highlight hover:tw-underline "
+											:class="{ 'tw-text-action' : isOpenSection(region.name)}"
+										>
+											{{ region.name }}
+										</button>
+									</li>
+								</template>
+							</ul>
+							<div
+								v-for="region in openRegions"
+								:key="region.name"
+								class="tw-h-full"
+							>
+								<country-list :countries="region.countries" class="region-list tw-h-full" />
+							</div>
 						</div>
-					</div>
+					</template>
 				</div>
 			</kv-grid>
 		</div>
@@ -295,7 +304,8 @@ export default {
 
 <style lang="postcss" scoped>
 /* TODO: Tailwind 3 has classes for columns */
-.region-list {
+.region-list,
+.search-list {
 	column-count: 3;
 	column-fill: auto;
 	column-gap: theme('spacing.4');
