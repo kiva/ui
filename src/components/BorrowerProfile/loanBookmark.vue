@@ -49,30 +49,21 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`
-			query loanBookmarked($loanId: Int!) {
+		query: gql`query loanBookmarked($loanId: Int!) {
 				lend {
 					loan(id: $loanId) {
 						id
-						... on LoanDirect {
-							businessName
-							userProperties {
-								favorited
-							}
-						}
-						... on LoanPartner {
-							userProperties {
-								favorited
-							}
+						userProperties {
+							favorited
 						}
 					}
 				}
 			}
 		`,
 		preFetch: true,
-		preFetchVariables() {
+		preFetchVariables({ route }) {
 			return {
-				loanId: this?.loanId,
+				loanId: Number(route?.params?.id ?? 0),
 			};
 		},
 		variables() {
@@ -81,19 +72,19 @@ export default {
 			};
 		},
 		result(result) {
-			const loan = result?.data?.lend?.loan;
-			this.isBookmarked = loan?.userProperties?.favorited;
+			const loan = result?.data?.lend?.loan || {};
+			this.isBookmarked = loan?.userProperties?.favorited || false;
 		},
 	},
 	methods: {
 		toggleBookmark() {
-			// set bookmark
+			// Set bookmark optimistically
 			this.isBookmarked = !this.isBookmarked;
 			bookmarkLoan(this.apollo, this.loanId, this.isBookmarked)
 				.then(data => {
 					if (data.errors) {
 						const errors = data?.errors;
-						// error occurred, flip bookmark back because bookmarking failed
+						// error occurred, change bookmark back due to failure
 						this.isBookmarked = !this.isBookmarked;
 						errors.forEach(error => {
 							this.$showTipMsg(error, 'error');
@@ -112,6 +103,7 @@ export default {
 					}
 					// Catch other errors
 				}).catch(error => {
+					// error occurred, change bookmark back due to failure
 					this.isBookmarked = !this.isBookmarked;
 					console.error(error);
 				});
