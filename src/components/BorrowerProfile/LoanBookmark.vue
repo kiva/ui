@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<span
+		<button
 			v-if="!isBookmarked"
 			class="tw-text-action tw-inline-flex tw-p-1 tw-cursor-pointer tw-whitespace-nowrap"
 			@click="toggleBookmark()"
@@ -10,8 +10,8 @@
 				:icon="mdiBookmarkOutline"
 			/>
 			Save for later
-		</span>
-		<span
+		</button>
+		<button
 			v-if="isBookmarked"
 			class="tw-text-action tw-inline-flex tw-p-1 tw-cursor-pointer"
 			@click="toggleBookmark()"
@@ -21,7 +21,7 @@
 				:icon="mdiBookmark"
 			/>
 			Saved
-		</span>
+		</button>
 	</div>
 </template>
 <script>
