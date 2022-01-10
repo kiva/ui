@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="tw-pb-2">
 		<router-link
 			to="/monthlygood"
 			class="tw-inline-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-border-b tw-border-tertiary tw-font-medium"
@@ -99,7 +99,7 @@
 					</template>
 				</kv-tab-panel>
 				<kv-tab-panel id="nav-my-kiva" v-if="userId || true">
-					<ul>
+					<ul class="tw-font-medium">
 						<li>
 							<router-link
 								v-if="favorites > 0"

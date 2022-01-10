@@ -1,5 +1,5 @@
 <template>
-	<ul>
+	<ul class="tw-font-medium">
 		<li v-for="search in searches" :key="search.id">
 			<a
 				class="tw-text-primary hover:tw-text-action-highlight tw-block tw-w-full tw-py-1"
