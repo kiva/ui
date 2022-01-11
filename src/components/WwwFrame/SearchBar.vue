@@ -33,9 +33,9 @@
 				tw-p-2.5
 				tw-border
 				tw-border-tertiary
+
 				tw-fixed
 				tw-z-popover
-
 				tw-right-0
 				tw-bottom-0
 				tw-left-0
@@ -44,6 +44,7 @@
 				md:tw-absolute
 				md:tw-bottom-auto
 				md:tw-top-auto
+				md:tw-rounded-b
 			"
 		>
 			<li v-for="section in sections" :key="section.name" class="section">

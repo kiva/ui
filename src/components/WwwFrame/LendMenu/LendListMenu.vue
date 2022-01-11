@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="tw-pb-2">
 		<router-link
 			to="/monthlygood"
 			class="tw-inline-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-border-b tw-border-tertiary tw-font-medium"
@@ -17,7 +17,7 @@
 				<kv-tab for="nav-lend-regions">
 					Regions
 				</kv-tab>
-				<kv-tab for="nav-my-kiva" v-if="userId || true">
+				<kv-tab for="nav-my-kiva" v-if="userId">
 					My Kiva
 				</kv-tab>
 			</template>
@@ -98,8 +98,8 @@
 						</kv-accordion-item>
 					</template>
 				</kv-tab-panel>
-				<kv-tab-panel id="nav-my-kiva" v-if="userId || true">
-					<ul>
+				<kv-tab-panel id="nav-my-kiva" v-if="userId">
+					<ul class="tw-font-medium">
 						<li>
 							<router-link
 								v-if="favorites > 0"
@@ -122,9 +122,9 @@
 								ref="searches"
 							>
 								<template #header>
-									<h3 class="tw-text-base">
+									<p class="tw-font-medium">
 										Saved searches
-									</h3>
+									</p>
 								</template>
 								<search-list :searches="searches" />
 							</kv-accordion-item>

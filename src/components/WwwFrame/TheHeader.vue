@@ -735,7 +735,7 @@ export default {
 }
 
 .dropdown-list {
-	@apply tw-px-2;
+	@apply tw-px-2 tw-rounded-b;
 }
 
 .dropdown-list a {
