@@ -11,6 +11,7 @@
 						<router-link
 							class="header__button"
 							to="/"
+							data-testid="header-home"
 							v-kv-track-event="['TopNav','click-Logo']"
 						>
 							<kiva-logo class="tw-w-6 tw-text-brand" style="transform: translateY(-0.1875rem);" />
@@ -32,6 +33,7 @@
 						<router-link
 							v-show="hasBasket"
 							:to="addHashToRoute('show-basket')"
+							data-testid="header-basket"
 							class="header__button header__basket"
 							v-kv-track-event="['TopNav','click-Basket']"
 						>
@@ -44,6 +46,7 @@
 							v-show="!isVisitor"
 							:id="myKivaMenuId"
 							to="/portfolio"
+							data-testid="header-portfolio"
 							target="_blank"
 							class="header__button header__portfolio"
 							v-kv-track-event="['TopNav','click-Portfolio']"
@@ -69,6 +72,7 @@
 							:to="loginUrl"
 							v-show="isVisitor"
 							class="header__button header__log-in"
+							data-testid="header-log-in"
 							:event="showPopupLogin ? '' : 'click'"
 							@click.native="auth0Login"
 							v-kv-track-event="[
@@ -93,6 +97,7 @@
 							<router-link
 								class="header__button"
 								to="/"
+								data-testid="header-home"
 								v-kv-track-event="['TopNav','click-Logo']"
 							>
 								<kiva-logo class="tw-w-6 tw-text-brand" style="transform: translateY(-0.1875rem);" />
@@ -104,6 +109,7 @@
 						<router-link
 							:id="lendMenuId"
 							to="/lend-by-category"
+							data-testid="header-lend"
 							class="header__button header__lend"
 							v-kv-track-event="['TopNav','click-Lend']"
 							event
@@ -158,6 +164,7 @@
 							<!-- Borrow -->
 							<router-link
 								to="/borrow"
+								data-testid="header-borrow"
 								class="header__borrow"
 								:class="{
 									'tw-hidden': !isVisitor,
@@ -173,6 +180,7 @@
 								<router-link
 									:id="aboutMenuId"
 									to="/about"
+									data-testid="header-about"
 									class="header__about"
 									:class="{
 										'tw-hidden': !isVisitor,
@@ -267,6 +275,7 @@
 							<button
 								class="header__button header__search-icon md:!tw-hidden"
 								v-show="!hideSearchInHeader && !isVisitor"
+								data-testid="header-mobile-search-toggle"
 								:aria-expanded="searchOpen ? 'true' : 'false'"
 								:aria-pressed="searchOpen ? 'true' : 'false'"
 								aria-controls="top-nav-search-area"
@@ -279,6 +288,7 @@
 							<!-- Basket -->
 							<router-link
 								to="/basket"
+								data-testid="header-basket"
 								:class="{
 									'tw-hidden': !hasBasket,
 									'header__button header__basket !tw-hidden md:!tw-flex': hasBasket
@@ -295,6 +305,7 @@
 							<router-link
 								:to="loginUrl"
 								v-show="isVisitor"
+								data-testid="header-log-in"
 								class="header__button header__log-in"
 								:event="showPopupLogin ? '' : 'click'"
 								@click.native="auth0Login"
@@ -310,6 +321,7 @@
 							<router-link
 								v-show="!isVisitor"
 								:id="myKivaMenuId"
+								data-testid="header-portfolio"
 								to="/portfolio"
 								class="header__button header__portfolio"
 								v-kv-track-event="['TopNav','click-Portfolio']"
