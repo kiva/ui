@@ -1,3 +1,22 @@
+## [2.35.0](https://github.com/kiva/ui/compare/v2.34.4...v2.35.0) (2022-01-11)
+
+
+### Features
+
+* core-151 cleanup lint error ([ab13f62](https://github.com/kiva/ui/commit/ab13f62f70d4b4bf945521d7f44924d57ea583f4))
+* core-151 cleanup lint error ([753a8ba](https://github.com/kiva/ui/commit/753a8ba504d7752867a6aa30be74169f60416853))
+* core-151 cleanup lint error ([d2d58ce](https://github.com/kiva/ui/commit/d2d58cec5f0dc381735dd2016349cc9b3acf8592))
+* core-151 cleanup lint error ([b492cb1](https://github.com/kiva/ui/commit/b492cb191adbea42fe24898b1f16c1c1da5fc9ee))
+* core-151 cleanup lint error ([b71e27b](https://github.com/kiva/ui/commit/b71e27b16d1e577c56248c5c6446af424a585005))
+* core-151 fixing apollo error caused by not having load id during prefetch ([0f916a4](https://github.com/kiva/ui/commit/0f916a46dfc2b66cde2117ffd9b6cb581f5937d8))
+* core-151 loanBookmarking in place across all screen sizes with a new BookmarkUtil ([9759fbb](https://github.com/kiva/ui/commit/9759fbb9649d6657af290140527cc49f8567acb4))
+* core-151 replacing span with button since it is clickable ([5c99835](https://github.com/kiva/ui/commit/5c99835115ac076e9aedfa30e2bfa390a3b91d11))
+
+
+### Bug Fixes
+
+* update filename ([9c49953](https://github.com/kiva/ui/commit/9c4995365c41bc2f2a47c6e8d0bcb88c5661502f))
+
 ### [2.34.4](https://github.com/kiva/ui/compare/v2.34.3...v2.34.4) (2022-01-06)
 
 
