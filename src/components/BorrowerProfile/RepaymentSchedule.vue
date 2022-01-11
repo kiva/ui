@@ -34,10 +34,10 @@
 						:key="index"
 						class="tw-mb-1"
 					>
-						<td class="
-							tw-inline-block tw-w-full tw-bg-secondary tw-rounded tw-text-center
-							tw-mb-2 tw-pb-1.5
-						">
+						<td class=
+							"tw-inline-block tw-w-full tw-bg-secondary tw-rounded tw-text-center
+							tw-mb-2 tw-pb-1.5"
+						>
 							<p class="tw-text-h4 tw-py-1.5">
 								{{ repayment.formattedRepaymentDate }}
 							</p>
