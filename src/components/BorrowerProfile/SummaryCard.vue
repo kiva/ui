@@ -46,7 +46,7 @@
 			:status="status"
 			:use="use"
 		/>
-		<div class="tw-flex-auto tw-inline-flex">
+		<div class="tw-flex-auto tw-inline-flex tw-w-full">
 			<summary-tag v-if="countryName">
 				<kv-material-icon
 					class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
@@ -63,7 +63,7 @@
 			<loan-bookmark
 				v-if="isLoggedIn"
 				:loan-id="loanId"
-				class="tw-hidden lg:tw-inline-flex tw-right-2.5 tw-absolute"
+				class="tw-hidden lg:tw-inline-flex tw-ml-auto"
 			/>
 		</div>
 		<!-- only show option to bookmark loan if user is logged in -->
