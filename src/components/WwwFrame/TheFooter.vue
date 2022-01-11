@@ -317,7 +317,8 @@
 								v-kv-track-event="['global', 'click-app-badge-footer', 'App Store']"
 							>
 								<img
-									class="tw-w-[120px] tw-h-5 tw-mr-1"
+									class="tw-h-5 tw-mr-1"
+									style="width: 7.5rem;"
 									src="@/assets/icons/app-store.svg"
 									loading="lazy"
 									alt="Check out our new app on the App Store"
@@ -332,7 +333,8 @@
 								v-kv-track-event="['global', 'click-app-badge-footer', 'Google Store']"
 							>
 								<img
-									class="tw-w-[135px] tw-h-5"
+									class="tw-h-5"
+									style="width: 8.4375rem;"
 									src="@/assets/icons/play-store.svg"
 									loading="lazy"
 									alt="Check out our new app on the Play Store"
