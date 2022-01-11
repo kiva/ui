@@ -34,7 +34,7 @@
 						:key="index"
 						class="tw-mb-1"
 					>
-						<div class="tw-bg-secondary tw-rounded tw-text-center tw-mb-2 tw-pb-1.5">
+						<td class="tw-inline-block tw-w-full tw-bg-secondary tw-rounded tw-text-center tw-mb-2 tw-pb-1.5">
 							<p class="tw-text-h4 tw-py-1.5">
 								{{ repayment.formattedRepaymentDate }}
 							</p>
@@ -47,7 +47,8 @@
 							</p>
 							<!-- if payment is received -->
 							<p
-								class="tw-bg-primary tw-mx-auto tw-w-[11.5rem] tw-py-1 tw-rounded"
+								class="tw-bg-primary tw-mx-auto tw-py-1 tw-rounded"
+								style="width: 11.5rem;"
 								v-if="repayment.repaid && !repayment.delinquent"
 							>
 								<kv-material-icon
@@ -58,7 +59,8 @@
 							</p>
 							<!-- if payment is not received on time -->
 							<p
-								class="tw-bg-primary tw-mx-auto tw-w-[7.5rem] tw-py-1 tw-rounded"
+								class="tw-bg-primary tw-mx-auto tw-py-1 tw-rounded"
+								style="width: 7.5rem;"
 								v-if="!repayment.repaid && repayment.delinquent"
 							>
 								<kv-material-icon
@@ -67,7 +69,7 @@
 								/>
 								Delinquent
 							</p>
-						</div>
+						</td>
 					</tr>
 				</table>
 
