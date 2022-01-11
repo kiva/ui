@@ -1,3 +1,11 @@
+## [2.36.0](https://github.com/kiva/ui/compare/v2.35.0...v2.36.0) (2022-01-11)
+
+
+### Features
+
+* add My Kiva and my saved searches ([70249f3](https://github.com/kiva/ui/commit/70249f375f0a3d74da60867c8806b491ad2c978e))
+* misc styling touchups to header ([6ac658e](https://github.com/kiva/ui/commit/6ac658e9136fc295fb92e12373a00eb20f8c6d6f))
+
 ## [2.35.0](https://github.com/kiva/ui/compare/v2.34.4...v2.35.0) (2022-01-11)
 
 
