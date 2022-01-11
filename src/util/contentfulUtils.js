@@ -214,7 +214,10 @@ export function formatCarousel(contentfulContent) {
 /**
  * Format StoryCard (contentful type id: storyCard)
  * Takes raw contentful content object and returns an object with targeted keys/values
- * TODO remove kickerHeadline once content field is fully deprecated from contentful
+ *
+ * Default alignment value is center. This is enforced in the contentful UI,
+ * but legacy story cards before the alignment field was added may have a null value
+ *
  * @param {array} contentfulContent data
  * @returns {object}
  */
@@ -226,7 +229,7 @@ export function formatStoryCard(contentfulContent) {
 		footer: contentfulContent.fields?.footer,
 		key: contentfulContent.fields?.key,
 		theme: contentfulContent.fields?.theme,
-		kickerHeadline: contentfulContent.fields?.kickerHeadline,
+		alignment: contentfulContent.fields?.alignment ?? 'center'
 	};
 }
 

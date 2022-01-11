@@ -28,7 +28,6 @@
 				tw-flex-col
 				tw-h-full
 				tw-justify-between
-				tw-items-center
 				overflow-hidden
 				tw-text-primary
 				tw-px-4
@@ -42,14 +41,19 @@
 			v-else
 		>
 			<dynamic-rich-text
-				class="tw-text-center tw-text-h4 tw-text-action"
+				class="tw-text-h4 tw-text-action"
+				:class="`tw-text-${alignment}`"
 				:html="cardTitle"
 			/>
 			<dynamic-rich-text
-				class="story-card__content tw-text-center tw-h-full tw-pb-4 tw-pt-3"
+				class="story-card__content tw-h-full tw-pb-4 tw-pt-3"
+				:class="`story-card__content--${alignment} tw-text-${alignment}`"
 				:html="cardContent"
 			/>
-			<dynamic-rich-text class="tw-text-center" :html="footer" />
+			<dynamic-rich-text
+				:class="`tw-text-${alignment}`"
+				:html="footer"
+			/>
 		</div>
 	</kv-theme-provider>
 </template>
@@ -87,6 +91,13 @@ export default {
 		return {};
 	},
 	computed: {
+		/**
+		 * Aligns all items of the story card
+		* */
+		alignment() {
+			// Will always be one of: 'right', 'center', 'left'
+			return this.content?.alignment;
+		},
 		theme() {
 			const themeMapper = {
 				kivaCLassicLight: defaultTheme,
@@ -168,10 +179,21 @@ export default {
 
 	// Override default prose layout
 	.story-card__content >>> .tw-prose {
-		align-items: center;
 		display: flex;
 		flex-direction: column;
 		height: 100%;
+	}
+
+	.story-card__content--center >>> .tw-prose {
+		align-items: center;
+	}
+
+	.story-card__content--left >>> .tw-prose {
+		align-items: flex-start;
+	}
+
+	.story-card__content--right >>> .tw-prose {
+		align-items: flex-end;
 	}
 
 	.story-card >>> .tw-prose u {
