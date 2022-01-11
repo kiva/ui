@@ -26,7 +26,58 @@
 						{{ repaymentStatusCheck }}.
 					</p>
 				</span>
-				<table class="tw-table-auto">
+
+				<!-- Table for small screens -->
+				<table class="md:tw-hidden tw-w-full">
+					<tr
+						v-for="(repayment, index) in parsedRepaymentSchedule"
+						:key="index"
+						class="tw-mb-1"
+					>
+						<td class=
+							"tw-inline-block tw-w-full tw-bg-secondary tw-rounded tw-text-center
+							tw-mb-2 tw-pb-1.5"
+						>
+							<p class="tw-text-h4 tw-py-1.5">
+								{{ repayment.formattedRepaymentDate }}
+							</p>
+							<hr class="tw-mb-1.5 tw-mx-1.5">
+							<p class="tw-mb-1.5">
+								Expected: {{ repayment.formattedMonthlyPayment }}
+							</p>
+							<p v-if="!repayment.repaid && !repayment.delinquent">
+								Available {{ repayment.formattedRepaymentDate }}
+							</p>
+							<!-- if payment is received -->
+							<p
+								class="tw-bg-primary tw-mx-auto tw-py-1 tw-rounded"
+								style="width: 11.5rem;"
+								v-if="repayment.repaid && !repayment.delinquent"
+							>
+								<kv-material-icon
+									:icon="mdiCheckboxMarkedCircle"
+									class="tw-w-3 tw-h-3 tw-text-brand-700 tw-align-middle"
+								/>
+								Repayment received
+							</p>
+							<!-- if payment is not received on time -->
+							<p
+								class="tw-bg-primary tw-mx-auto tw-py-1 tw-rounded"
+								style="width: 7.5rem;"
+								v-if="!repayment.repaid && repayment.delinquent"
+							>
+								<kv-material-icon
+									class="tw-w-3 tw-h-3 tw-text-danger tw-align-middle"
+									:icon="mdiMinusCircle"
+								/>
+								Delinquent
+							</p>
+						</td>
+					</tr>
+				</table>
+
+				<!-- Table for medium and up screens -->
+				<table class="tw-table-auto tw-hidden md:tw-table">
 					<tr class="tw-bg-secondary tw-text-left">
 						<th><span class="tw-sr-only">Date</span></th>
 						<th class="table-heading-spacing">
@@ -53,6 +104,7 @@
 						>
 							Available {{ repayment.formattedRepaymentDate }}
 						</td>
+						<!-- if payment is received -->
 						<td
 							class="table-data-spacing"
 							v-if="repayment.repaid && !repayment.delinquent"
