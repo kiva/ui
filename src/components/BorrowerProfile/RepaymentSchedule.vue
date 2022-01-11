@@ -35,7 +35,9 @@
 						class="tw-mb-1"
 					>
 						<div class="tw-bg-secondary tw-rounded tw-text-center tw-mb-2 tw-pb-1.5">
-							<p class="tw-text-h4 tw-py-1.5">{{ repayment.formattedRepaymentDate }}</p>
+							<p class="tw-text-h4 tw-py-1.5">
+								{{ repayment.formattedRepaymentDate }}
+							</p>
 							<hr class="tw-mb-1.5 tw-mx-1.5">
 							<p class="tw-mb-1.5">
 								Expected: {{ repayment.formattedMonthlyPayment }}
