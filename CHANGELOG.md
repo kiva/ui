@@ -1,3 +1,10 @@
+## [2.38.0](https://github.com/kiva/ui/compare/v2.37.0...v2.38.0) (2022-01-11)
+
+
+### Features
+
+* causes homepage redirect experiment ([b70b963](https://github.com/kiva/ui/commit/b70b963816eab23965eea0f4c1080aaf60459f00))
+
 ## [2.37.0](https://github.com/kiva/ui/compare/v2.36.0...v2.37.0) (2022-01-11)
 
 
