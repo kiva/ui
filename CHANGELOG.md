@@ -1,3 +1,14 @@
+## [2.37.0](https://github.com/kiva/ui/compare/v2.36.0...v2.37.0) (2022-01-11)
+
+
+### Features
+
+* core-148 eslint line break fix ([33049a5](https://github.com/kiva/ui/commit/33049a5fdd00c88b026b2d6b977dd9f1a07acc49))
+* core-148 fix line too long lint error ([eb72b58](https://github.com/kiva/ui/commit/eb72b58ced839ff25fc8f5e7d6efed02f27946ac))
+* core-148 fixing syntax warning ([969ca9a](https://github.com/kiva/ui/commit/969ca9a81507455d893a861b1e20ccb4aea0c09d))
+* core-148 fixing up some style definitions and a semantic issue ([2fa729a](https://github.com/kiva/ui/commit/2fa729af39249613182ca1d235de8cb6cb5a3b0e))
+* core-148 mobile view of repayment schedule ([af461b6](https://github.com/kiva/ui/commit/af461b694d6888609a40b27ca1677088b2e66f0f))
+
 ## [2.36.0](https://github.com/kiva/ui/compare/v2.35.0...v2.36.0) (2022-01-11)
 
 
