@@ -198,7 +198,7 @@ export default {
 			return `tab-panel-${this.name}-trustee`;
 		},
 		isSupporter() {
-			return this.loan.lentTo;
+			return this.loan?.lentTo;
 		},
 		displayRepaymentSchedule() {
 			// check anonymization of loan, if it's not set to
