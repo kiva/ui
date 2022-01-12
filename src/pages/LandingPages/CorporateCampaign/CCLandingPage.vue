@@ -12,7 +12,7 @@
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
 			<campaign-status
 				v-if="!hideStatusBar"
-				class="corporate-campaign-landing__status"
+				class="corporate-campaign-landing__status tw-sticky tw-top-8 md:tw-top-9 tw-z-2"
 				:active-credit-type="activeCreditType"
 				:is-matching="isMatchingCampaign"
 				:loading-promotion="loadingPromotion"
@@ -1241,19 +1241,6 @@ export default {
 @import 'settings';
 
 .corporate-campaign-landing {
-	&__status {
-		$header-height: rem-calc(45); // same as TheHeader.vue
-		$header-height-large: rem-calc(64); // same as TheHeader.vue
-
-		position: sticky;
-		top: $header-height;
-		z-index: 2;
-
-		@include breakpoint(large) {
-			top: $header-height-large;
-		}
-	}
-
 	&__status--incontext {
 		position: relative;
 		top: auto;

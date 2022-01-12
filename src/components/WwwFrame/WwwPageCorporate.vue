@@ -1,11 +1,11 @@
 <template>
-	<div class="www-page-corporate">
-		<the-browser-check class="www-page-corporate__browser-check" ref="theBrowserCheck" />
+	<div class="tw-relative">
+		<the-browser-check ref="theBrowserCheck" />
 		<the-header
 			:theme="headerTheme"
 			:corporate="true"
 			:corporate-logo-url="corporateLogoUrl"
-			class="www-page-corporate__header"
+			class="tw-sticky tw-top-0"
 		/>
 		<main>
 			<slot></slot>
@@ -71,16 +71,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.www-page-corporate {
-	position: relative;
-
-	&__header {
-		position: sticky;
-		top: 0;
-	}
-}
-</style>
