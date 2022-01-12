@@ -1,3 +1,13 @@
+### [2.42.1](https://github.com/kiva/ui/compare/v2.42.0...v2.42.1) (2022-01-12)
+
+
+### Bug Fixes
+
+* core-148 adding a nullish coalescing operator ([d06ce59](https://github.com/kiva/ui/commit/d06ce599c29915fd5831c0f49c2e36928cb4f0c0))
+* core-148 adding more complex check in order to display repayment schedule ([2ad65bb](https://github.com/kiva/ui/commit/2ad65bbbd7c6f579925aa1dd91b3e96bdb53880c))
+* core-148 assigning isSupporter with optional chaining ([68bc3ea](https://github.com/kiva/ui/commit/68bc3ea6ebed2f29b46d856191c4a2f77f1a92bd))
+* core-148 fixing eslint error, removing else statement ([6f70d2c](https://github.com/kiva/ui/commit/6f70d2c400094ea184be89ce7280f2b378380246))
+
 ## [2.42.0](https://github.com/kiva/ui/compare/v2.41.1...v2.42.0) (2022-01-12)
 
 
