@@ -46,13 +46,15 @@
 			:status="status"
 			:use="use"
 		/>
-		<div class="tw-flex-auto tw-inline-flex tw-w-full">
+		<div class="tw-flex-auto tw-inline-flex">
 			<summary-tag v-if="countryName">
 				<kv-material-icon
-					class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
+					class="tw-h-2.5 tw-w-2.5 tw-mr-0.5 tw-shrink-0"
 					:icon="mdiMapMarker"
 				/>
-				{{ formattedLocation }}
+				<span class="tw-flex-1">
+					{{ formattedLocation }}
+				</span>
 			</summary-tag>
 
 			<summary-tag v-if="activityName">
@@ -63,7 +65,7 @@
 			<loan-bookmark
 				v-if="isLoggedIn"
 				:loan-id="loanId"
-				class="tw-hidden lg:tw-inline-flex tw-ml-auto"
+				class="tw-hidden lg:tw-inline-flex tw-ml-auto tw-items-center"
 			/>
 		</div>
 		<!-- only show option to bookmark loan if user is logged in -->
