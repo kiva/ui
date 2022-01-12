@@ -16,7 +16,6 @@
 	*-->
 	<span>
 		<button
-			v-if="!isFavorite"
 			class="tw-inline-flex tw-p-1 tw-cursor-pointer tw-bg-primary tw-rounded tw-m-0.5"
 			@click.prevent.stop="toggleFavorite()"
 			:v-kv-track-event="`[
