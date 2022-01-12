@@ -78,10 +78,11 @@
 							<video
 								:src="heroMedia[0].url"
 								class="tw-rounded tw-overflow-hidden"
-								autoplay
+								:autoplay="videoSettings.autoplay === false ? null : true"
+								:muted="videoSettings.muted === false ? null : true"
 								loop
-								muted
 								playsinline
+								:controls="showControls"
 							></video>
 						</template>
 					</div>
@@ -227,6 +228,15 @@ export default {
 			const imageSet = this.content?.contents?.find(({ contentType }) => contentType === 'responsiveImageSet');
 			return imageSet?.description ?? '';
 		},
+		videoSettings() {
+			return this.uiSetting?.dataObject?.video ?? {};
+		},
+		showControls() {
+			if (this.videoSettings.autoplay === false || this.videoSettings.muted === false) {
+				return true;
+			}
+			return null;
+		}
 	},
 };
 </script>
