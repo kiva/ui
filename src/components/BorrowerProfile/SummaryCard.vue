@@ -46,7 +46,7 @@
 			:status="status"
 			:use="use"
 		/>
-		<div class="tw-flex-auto tw-inline-flex">
+		<div class="tw-flex-auto tw-inline-flex tw-w-full">
 			<summary-tag v-if="countryName">
 				<kv-material-icon
 					class="tw-h-2.5 tw-w-2.5 tw-mr-0.5 tw-shrink-0"
