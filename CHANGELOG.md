@@ -1,3 +1,12 @@
+## [2.40.0](https://github.com/kiva/ui/compare/v2.39.0...v2.40.0) (2022-01-12)
+
+
+### Features
+
+* core-151 fixing bookmark placement for large screens ([1072dea](https://github.com/kiva/ui/commit/1072dea4937e6d0d263fa8f1652161897b571f16))
+* core-151 fixing lint error in repaymentSchedule.vue ([8791504](https://github.com/kiva/ui/commit/879150409cfb2f8654a1d94fb9614a1c4fd238a6))
+* core-151 flexing and icon into shape ([296b116](https://github.com/kiva/ui/commit/296b116e9c6d4989b823de859c2739788d08cbf1))
+
 ## [2.39.0](https://github.com/kiva/ui/compare/v2.38.0...v2.39.0) (2022-01-12)
 
 
