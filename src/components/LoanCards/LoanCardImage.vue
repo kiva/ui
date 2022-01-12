@@ -21,7 +21,7 @@
 				loading="lazy"
 			>
 
-			<favorite-star class="favorite-star"
+			<favorite-star class="tw-absolute tw-bottom-0 tw-right-0"
 				v-if="!isVisitor"
 				:is-favorite="isFavorite"
 				:loan-id="loanId"
@@ -114,12 +114,6 @@ export default {
 
 		.borrower-image {
 			position: absolute;
-		}
-
-		.favorite-star {
-			position: absolute;
-			bottom: 0;
-			right: 0;
 		}
 	}
 
