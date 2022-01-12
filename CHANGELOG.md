@@ -1,3 +1,10 @@
+## [2.42.0](https://github.com/kiva/ui/compare/v2.41.1...v2.42.0) (2022-01-12)
+
+
+### Features
+
+* add video options for dynamicHeroClassic ([2902c25](https://github.com/kiva/ui/commit/2902c25cd6991bc615684469078950582ef7aa0d))
+
 ### [2.41.1](https://github.com/kiva/ui/compare/v2.41.0...v2.41.1) (2022-01-12)
 
 
