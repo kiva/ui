@@ -1,3 +1,17 @@
+## [2.43.0](https://github.com/kiva/ui/compare/v2.42.1...v2.43.0) (2022-01-12)
+
+
+### Features
+
+* core-216 updating icon in FavoriteStar.vue replaced with new bookmark icon ([7e6f5ed](https://github.com/kiva/ui/commit/7e6f5ed4e9b6c7bac388fa865f43e2fb2c076d0b))
+
+
+### Bug Fixes
+
+* core-216 adding back tracking events ([33ae5e1](https://github.com/kiva/ui/commit/33ae5e17caccad29f85e4ed39efc7bffb0b58234))
+* core-216 reducing code redundancy ([c6a62d5](https://github.com/kiva/ui/commit/c6a62d5fb1de4a61ce96401e255762dca92b4a3a))
+* core-216 removing v-if, no longer needed ([0a02498](https://github.com/kiva/ui/commit/0a02498f7b208fa5214fcb400e7869336e61da8d))
+
 ### [2.42.1](https://github.com/kiva/ui/compare/v2.42.0...v2.42.1) (2022-01-12)
 
 
