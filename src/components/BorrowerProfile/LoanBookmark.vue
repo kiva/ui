@@ -2,7 +2,7 @@
 	<div>
 		<button
 			v-if="!isBookmarked"
-			class="tw-text-action tw-inline-flex tw-p-1 tw-cursor-pointer tw-whitespace-nowrap"
+			class="tw-text-action tw-inline-flex tw-p-1 tw-cursor-pointer tw-whitespace-nowrap tw-font-medium"
 			@click="toggleBookmark()"
 		>
 			<kv-material-icon
@@ -13,7 +13,7 @@
 		</button>
 		<button
 			v-if="isBookmarked"
-			class="tw-text-action tw-inline-flex tw-p-1 tw-cursor-pointer"
+			class="tw-text-action tw-inline-flex tw-p-1 tw-cursor-pointer tw-font-medium"
 			@click="toggleBookmark()"
 		>
 			<kv-material-icon
