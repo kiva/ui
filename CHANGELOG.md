@@ -1,3 +1,10 @@
+## [2.39.0](https://github.com/kiva/ui/compare/v2.38.0...v2.39.0) (2022-01-12)
+
+
+### Features
+
+* allows StoryCards to be aligned with contentful field ([206d75d](https://github.com/kiva/ui/commit/206d75d764d786e0518af92fd7fc9c71ee412f13))
+
 ## [2.38.0](https://github.com/kiva/ui/compare/v2.37.0...v2.38.0) (2022-01-11)
 
 
