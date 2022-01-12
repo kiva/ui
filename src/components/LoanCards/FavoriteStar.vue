@@ -18,7 +18,8 @@
 		<button
 			v-if="!isFavorite"
 			class="tw-inline-flex tw-p-1 tw-cursor-pointer tw-bg-primary tw-rounded tw-m-0.5"
-			@click="toggleFavorite()"
+			@click.prevent.stop="toggleFavorite()"
+			v-kv-track-event="['Lending', 'click-Favorite star', 'Favorite', loanId, loanId]"
 		>
 			<kv-material-icon
 				class="tw-text-action tw-w-3"
@@ -28,7 +29,8 @@
 		<button
 			v-if="isFavorite"
 			class="tw-inline-flex tw-p-1 tw-cursor-pointer tw-bg-primary tw-rounded tw-m-0.5"
-			@click="toggleFavorite()"
+			@click.prevent.stop="toggleFavorite()"
+			v-kv-track-event="['Lending', 'click-Favorite star', 'Favorite', loanId, loanId]"
 		>
 			<kv-material-icon
 				class="tw-text-action tw-w-3"
