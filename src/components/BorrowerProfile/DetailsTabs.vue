@@ -50,7 +50,7 @@
 						@show-definition="showDefinition"
 					/>
 					<repayment-schedule
-						v-if="loan.anonymizationLevel !== 'full'"
+						v-if="displayRepaymentSchedule"
 						:loan-id="loanId"
 						:status="loan.status"
 					/>
@@ -197,6 +197,26 @@ export default {
 		trusteeTabId() {
 			return `tab-panel-${this.name}-trustee`;
 		},
+		isSupporter() {
+			return this.loan?.lentTo || false;
+		},
+		displayRepaymentSchedule() {
+			// check anonymization of loan, if it's not set to
+			// full anonymization, continue
+			if (this.loan.anonymizationLevel !== 'full') {
+				// if loan is fundraising, always display the repayment schedule
+				if (this.loan.status === 'fundraising') {
+					return true;
+				}
+				// otherwise look at the isSupporter flag to determine if
+				// the repayment schedule should be shown to current user,
+				// if they are logged in
+				return this.isSupporter;
+			}
+			// if loan is set to full anonymization, return false
+			// because the repayment schedule should not be shown.
+			return false;
+		}
 	},
 	methods: {
 		closeLightbox() {
@@ -236,6 +256,9 @@ export default {
 							repaymentInterval
 							disbursalDate
 							anonymizationLevel
+							userProperties {
+								lentTo
+							}
 							terms {
 								currency
 								flexibleFundraisingEnabled
@@ -292,6 +315,7 @@ export default {
 				this.loan.status = loan?.status ?? '';
 				this.loan.name = loan?.name ?? '';
 				this.loan.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
+				this.loan.lentTo = loan?.userProperties?.lendTo ?? false;
 
 				this.partner.arrearsRate = partner?.arrearsRate ?? 0;
 				this.partner.avgBorrowerCost = partner?.avgBorrowerCost ?? 0;
