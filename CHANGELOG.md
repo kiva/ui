@@ -1,3 +1,10 @@
+### [2.40.1](https://github.com/kiva/ui/compare/v2.40.0...v2.40.1) (2022-01-12)
+
+
+### Bug Fixes
+
+* make cc landing page status bar stick at the height of the new header ([f349f9f](https://github.com/kiva/ui/commit/f349f9f5c2dc43fde667c4660c2604cca53dee61))
+
 ## [2.40.0](https://github.com/kiva/ui/compare/v2.39.0...v2.40.0) (2022-01-12)
 
 
