@@ -1,3 +1,11 @@
+### [2.41.1](https://github.com/kiva/ui/compare/v2.41.0...v2.41.1) (2022-01-12)
+
+
+### Bug Fixes
+
+* core-151 increasing fontweight on the loanBookmark text ([ff7ba11](https://github.com/kiva/ui/commit/ff7ba11aff82c77c15b24fa1325595f69b0355a9))
+* core-151 setting width to full, so margin can have space ([871c619](https://github.com/kiva/ui/commit/871c6193afd00a1ed93810ac2f4d98804cd15b76))
+
 ## [2.41.0](https://github.com/kiva/ui/compare/v2.40.1...v2.41.0) (2022-01-12)
 
 
