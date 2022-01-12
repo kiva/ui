@@ -1,40 +1,52 @@
 <template>
-	<router-link
+	<!-- eslint-disable max-len -->
+	<div
 		v-if="count > 0"
-		:to="basketLink"
-		class="basket-bar hide-for-large"
-		:class="{'basket-bar--floating' : floating}"
-		v-kv-track-event="['BasketBar','click-Basket']"
+		class="tw-flex md:tw-hidden tw-fixed tw-z-sticky"
+		:class="[
+			{ 'tw-w-full tw-bg-primary tw-border-t tw-border-tertiary tw-py-1 tw-px-2 tw-left-0 tw-bottom-0' : !floating },
+			{ 'tw-w-auto tw-items-center tw-justify-center tw-bottom-2 tw-right-2 tw-rounded-full tw-p-1.5 ': floating }
+		]"
 	>
-		<template v-if="floating">
-			<kv-icon
-				v-if="floating"
-				class="basket-bar__icon"
-				name="cart"
-				:from-sprite="true"
-			/>
-			<span class="basket-bar__count">{{ count }}</span>
-			<span class="show-for-sr">items in your cart</span>
-		</template>
-
-		<template v-else>
-			Basket ({{ count }})
-		</template>
-	</router-link>
+		<!--eslint-enable max-len -->
+		<kv-button
+			:to="basketLink"
+			v-kv-track-event="['BasketBar','click-Basket']"
+			:class="[
+				{ 'tw-w-full tw-shadow-sm' : !floating },
+			]"
+		>
+			<span v-if="floating" class="tw-flex tw-content-center tw-justify-center tw-gap-1">
+				<kv-material-icon
+					:icon="mdiCart"
+					class="tw-w-3 tw-h-3"
+				/>
+				<span>{{ count }}</span>
+				<span class="tw-sr-only">items in your cart</span>
+			</span>
+			<template v-else>
+				Basket ({{ count }})
+			</template>
+		</kv-button>
+	</div>
 </template>
 
 <script>
 import countQuery from '@/graphql/query/basketCount.graphql';
-import KvIcon from '@/components/Kv/KvIcon';
+import { mdiCart } from '@mdi/js';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	components: {
-		KvIcon
+		KvButton,
+		KvMaterialIcon
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
-			count: 0
+			count: 0,
+			mdiCart
 		};
 	},
 	apollo: {
@@ -68,51 +80,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.basket-bar {
-	display: block;
-	position: fixed;
-	bottom: 0;
-	width: 100%;
-	box-shadow: 0 -1px 3px 0 rgba(51, 51, 51, 0.3);
-	transition: bottom 500ms ease;
-	text-align: center;
-	padding: rem-calc(18) rem-calc(36);
-	color: $white;
-	background-color: $kiva-accent-blue;
-	font-size: rem-calc(20);
-	font-weight: normal;
-	z-index: 1000;
-
-	&:hover,
-	&:focus {
-		color: $white;
-		background-color: $kiva-accent-darkblue;
-		text-decoration: none;
-	}
-
-	&__icon {
-		flex-shrink: 0;
-		fill: $white;
-		width: rem-calc(20);
-		height: rem-calc(20);
-	}
-}
-
-.basket-bar--floating {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	bottom: 1rem;
-	right: 1rem;
-	width: auto;
-	min-width: rem-calc(60);
-	height: rem-calc(60);
-	padding: rem-calc(12);
-	border-radius: rem-calc(60);
-}
-
-</style>
