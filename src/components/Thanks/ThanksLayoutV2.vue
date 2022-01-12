@@ -33,7 +33,7 @@
 				>
 					<template #icon-left>
 						<kv-icon
-							name="alert-circle"
+							name="piggy-bank"
 						/>
 					</template>
 					Auto-deposit
@@ -413,7 +413,7 @@ export default {
 	},
 	methods: {
 		determineIfMobile() {
-			this.isMobile = document.documentElement.clientWidth < 735;
+			this.isMobile = document.documentElement.clientWidth < 681;
 		},
 		setVisibleSection(section) {
 			this.visibleSection = section;

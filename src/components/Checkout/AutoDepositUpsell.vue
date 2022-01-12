@@ -190,20 +190,16 @@ export default {
 			return client.query({
 				query: eligibilityCheckQuery
 			}).then(({ data }) => {
-				console.log(JSON.stringify(data));
 				const isLoggedIn = data?.my?.userAccountId?.id !== null;
 				const hasAutoDeposit = data?.my?.autoDeposit !== null;
 				const hasLegacySubs = data?.my?.subscriptions?.values?.length !== 0;
 				const hasModernSub = data?.mySubscriptions?.values.length !== 0;
 				const upsellEligible = isLoggedIn && !hasAutoDeposit && !hasLegacySubs && !hasModernSub;
-				console.log(isLoggedIn, hasAutoDeposit, hasLegacySubs, hasModernSub, upsellEligible);
 				// if eligible run experiment query
 				if (upsellEligible) {
 					return client.query({ query: experimentAssignmentQuery, variables: { id: 'checkout_ad_upsell' } });
 				}
 				return upsellEligible;
-			}).then(result => {
-				console.log(JSON.stringify(result));
 			}).catch(errorResponse => {
 				console.log(errorResponse);
 			});

@@ -1,19 +1,27 @@
 <template>
-	<div class="auto-deposit-cta tw-text-left md:tw-text-center hide-for-print">
+	<div class="auto-deposit-cta tw-text-center hide-for-print">
+		<div class="tw-m-3">
+			<img
+				class="tw-mx-auto"
+				:src="imageRequire(`./loan-re-cycle.svg`)"
+				alt="loan to loan relending graphic"
+			>
+		</div>
 		<h2 class="auto-deposit-cta__headline">
 			Finish your<br> auto-deposit sign up
 		</h2>
 		<p v-if="bodyCopy" class="auto-deposit-cta__subhead">
 			{{ bodyCopy }}
 		</p>
+		<hr class="tw-my-4">
 		<form
 			class="auto-deposit-cta__form"
 			@submit.prevent
 			novalidate
 		>
 			<div class="">
-				<div>
-					<p class="tw-mb-2">
+				<div class="tw-mb-2 tw-text-left">
+					<p class="tw-mb-1">
 						Starting today, we’ll process the following on the
 						<kv-text-input v-if="isDayInputShown"
 							@blur="hideDayInput()"
@@ -30,12 +38,25 @@
 							class="tw-text-action hover:tw-text-action-highlight"
 							@click="isDayInputShown = true"
 							v-if="!isDayInputShown"
+							v-kv-track-event="['Thanks', 'click-Edit-auto-deposit-date', 'auto-deposit-edit-date']"
 						>
 							<strong>{{ dayOfMonth | numeral('Oo') }}</strong> of each month:
 						</button>
 					</p>
+					<!-- Errors and Messaging -->
+					<ul class="validation-errors tw-mb-1" v-if="$v.dayOfMonth.$invalid">
+						<li v-if="!$v.dayOfMonth.required">
+							Day field is required
+						</li>
+						<li v-if="!$v.dayOfMonth.minValue || !$v.dayOfMonth.maxValue">
+							Enter day of month - 1 to 31
+						</li>
+					</ul>
+					<small v-if="!$v.dayOfMonth.$invalid && dayOfMonth > 28" class="tw-mb-1">
+						(note - deposit may be processed on the last day of the month)
+					</small>
 				</div>
-				<div class="tw-mb-2.5">
+				<div class="tw-mb-2.5 tw-flex">
 					<label
 						class="tw-sr-only"
 						:class="{ 'error': $v.adAmount.$invalid }"
@@ -58,23 +79,36 @@
 						</option>
 					</kv-select>
 					<kv-currency-input
-						class="text-input"
+						class="text-input tw-flex-1"
 						:class="{ 'error': $v.adAmount.$invalid }"
 						id="amount"
 						v-model="adAmount"
 						v-if="adOptionSelected === 'other'"
 						ref="kvCurrencyInputComponentRef"
 					/>
+					<button
+						v-if="adOptionSelected === 'other'"
+						class="tw-flex tw-items-center tw-justify-center tw-h-6 tw-w-4"
+						@click="adOptionSelected = 10"
+						v-kv-track-event="[
+							'Thanks',
+							'click-Close-custom-auto-deposit-amount',
+							'close-auto-deposit-custom-amount']
+						"
+					>
+						<kv-material-icon
+							class="tw-h-3 tw-w-3"
+							:icon="mdiClose"
+						/>
+					</button>
 				</div>
-			</div>
-			<!-- Errors and Messaging -->
-			<div class="row column tw-text-center tw-mb-2.5">
-				<ul class="validation-errors tw-text-danger" v-if="$v.adAmount.$invalid">
+				<!-- Errors and Messaging -->
+				<ul class="validation-errors tw-text-danger tw-mb-2" v-if="$v.adAmount.$invalid">
 					<li v-if="!$v.adAmount.required">
 						Amount field is required
 					</li>
 					<li v-if="!$v.adAmount.minValue || !$v.adAmount.maxValue">
-						Enter an amount of $5-$8,500
+						Enter an amount of $5-$10,000
 					</li>
 				</ul>
 			</div>
@@ -88,6 +122,7 @@
 				<div class="tw-text-center tw-relative">
 					<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
 					<auto-deposit-drop-in-payment-wrapper
+						class="tw-mx-auto"
 						:amount="adAmount"
 						:donate-amount="donation"
 						:day-of-month="dayOfMonth"
@@ -103,12 +138,16 @@
 import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
+import { mdiClose } from '@mdi/js';
 
 import AutoDepositDropInPaymentWrapper from '@/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+
+const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
 
 // arbitrary number below 10k
 const maxAmount = 10000;
@@ -117,6 +156,7 @@ export default {
 	components: {
 		AutoDepositDropInPaymentWrapper,
 		KvCurrencyInput,
+		KvMaterialIcon,
 		KvSelect,
 		KvTextInput,
 	},
@@ -199,10 +239,12 @@ export default {
 					label: 'Other',
 				},
 			],
-			dayOfMonth: new Date().getDate(),
+			dayOfMonth: parseInt(new Date().getDate(), 10),
 			donation: 0,
+			imageRequire,
 			isClientReady: false,
 			isDayInputShown: false,
+			mdiClose,
 			showLoadingOverlay: false
 		};
 	},
@@ -221,14 +263,16 @@ export default {
 				});
 			} else {
 				// set adAmount to dropdown value
-				this.adAmount = newVal;
+				this.adAmount = parseInt(newVal, 10);
 			}
+			this.$kvTrackEvent('Thanks', 'Select-auto-deposit-amount', 'select-auto-deposit-amount', newVal, newVal);
 		}
 	},
 	methods: {
 		completeADBraintree() {
 			this.showLoadingOverlay = true;
-			this.$kvTrackEvent('Registration', 'successful-auto-deposit-reg', 'register-auto-deposit-thanks');
+			this.$kvTrackEvent('Registration', 'successful-auto-deposit-reg', 'register-auto-deposit-upsell');
+			this.$kvTrackEvent('Thanks', 'successful-auto-deposit-reg', 'register-auto-deposit-upsell');
 			// Send to thanks page
 			this.$router.push({
 				path: '/auto-deposit/thanks',
