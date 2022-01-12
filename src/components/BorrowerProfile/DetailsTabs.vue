@@ -207,12 +207,11 @@ export default {
 				// if loan is fundraising, always display the repayment schedule
 				if (this.loan.status === 'fundraising') {
 					return true;
-				} else {
-					// otherwise look at the isSupporter flag to determine if
-					// the repayment schedule should be shown to current user,
-					// if they are logged in
-					return this.isSupporter;
 				}
+				// otherwise look at the isSupporter flag to determine if
+				// the repayment schedule should be shown to current user,
+				// if they are logged in
+				return this.isSupporter;
 			}
 			// if loan is set to full anonymization, return false
 			// because the repayment schedule should not be shown.
