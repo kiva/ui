@@ -114,7 +114,7 @@
 			</div>
 
 			<h3 class="tw-text-right tw-mb-4">
-				Total: {{ adOptionSelected | numeral('$0.00') }}
+				Total: {{ adAmount | numeral('$0.00') }}
 			</h3>
 
 			<div v-if="isClientReady" class="">
