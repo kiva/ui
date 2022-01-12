@@ -1,3 +1,10 @@
+## [2.41.0](https://github.com/kiva/ui/compare/v2.40.1...v2.41.0) (2022-01-12)
+
+
+### Features
+
+* convert TheBasketBar to Kiva Classic ([22019f3](https://github.com/kiva/ui/commit/22019f37f9bceed15893a68e1e21fb29f3045b60))
+
 ### [2.40.1](https://github.com/kiva/ui/compare/v2.40.0...v2.40.1) (2022-01-12)
 
 
