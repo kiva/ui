@@ -120,6 +120,7 @@ export function formatButton(contentfulContent) {
 		webLink: contentfulContent.fields?.webLink,
 		deepLink: contentfulContent.fields?.deepLink,
 		analyticsClickEvent: contentfulContent.fields?.analyticsClickEvent,
+		webClickEventName: contentfulContent.fields?.webClickEventName,
 		filter: contentfulContent.fields?.filter,
 	};
 }
