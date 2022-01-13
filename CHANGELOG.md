@@ -1,3 +1,10 @@
+### [2.43.1](https://github.com/kiva/ui/compare/v2.43.0...v2.43.1) (2022-01-13)
+
+
+### Bug Fixes
+
+* refacator loanBookmark component to decrease redundancy ([6e401e9](https://github.com/kiva/ui/commit/6e401e92c8c48c994f5f681f43086e8dccfe75b1))
+
 ## [2.43.0](https://github.com/kiva/ui/compare/v2.42.1...v2.43.0) (2022-01-12)
 
 
