@@ -1,3 +1,10 @@
+### [2.44.2](https://github.com/kiva/ui/compare/v2.44.1...v2.44.2) (2022-01-13)
+
+
+### Bug Fixes
+
+* core-148 adding data points to complete the data loop ([67d39b9](https://github.com/kiva/ui/commit/67d39b9dd25427eb10ee616d2af8c9216775d4c4))
+
 ### [2.44.1](https://github.com/kiva/ui/compare/v2.44.0...v2.44.1) (2022-01-13)
 
 
