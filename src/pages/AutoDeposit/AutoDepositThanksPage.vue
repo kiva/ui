@@ -68,6 +68,7 @@ import gql from 'graphql-tag';
 import numeral from 'numeral';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
 
@@ -85,6 +86,7 @@ export default {
 	components: {
 		WwwPage,
 		KvDefaultWrapper,
+		KvGrid,
 	},
 	props: { },
 	data() {
