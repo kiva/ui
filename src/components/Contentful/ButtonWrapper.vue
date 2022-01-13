@@ -32,8 +32,8 @@ export default {
 	},
 	computed: {
 		buttonAnalytics() {
-			const contentfulAnaltyicsEvent = this.content?.analyticsClickEvent ?? null;
-			return contentfulAnaltyicsEvent;
+			const contentfulAnalyticsEvent = this.content?.analyticsClickEvent ?? null;
+			return contentfulAnalyticsEvent;
 		},
 		buttonCustomEvent() {
 			return this.content?.webClickEventName ?? null;
