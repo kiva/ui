@@ -233,19 +233,32 @@ export default {
 		},
 	},
 	created() {
-		// CORE-191 Checkout auto deposit upsell experiment
-		const autoDepositUpsellExp = this.apollo.readFragment({
-			id: 'Experiment:checkout_ad_upsell',
-			fragment: experimentVersionFragment,
-		}) || {};
+		const eligibilityCheck = this.apollo.readQuery({
+			query: eligibilityCheckQuery
+		});
+		console.log(eligibilityCheck);
+		const isLoggedIn = eligibilityCheck?.my?.userAccountId?.id !== null;
+		const hasAutoDeposit = eligibilityCheck?.my?.autoDeposit !== null;
+		const hasLegacySubs = eligibilityCheck?.my?.subscriptions?.values?.length !== 0;
+		const hasModernSub = eligibilityCheck?.mySubscriptions?.values.length !== 0;
+		const upsellEligible = isLoggedIn && !hasAutoDeposit && !hasLegacySubs && !hasModernSub;
+		console.log(upsellEligible);
 
-		this.autoDepositUpsellExpVersion = autoDepositUpsellExp.version;
-		if (this.autoDepositUpsellExpVersion) {
-			this.$kvTrackEvent(
-				'Checkout',
-				'EXP-CORE-191-Jan-2022',
-				this.autoDepositUpsellExpVersion,
-			);
+		if (upsellEligible) {
+			// CORE-191 Checkout auto deposit upsell experiment
+			const autoDepositUpsellExp = this.apollo.readFragment({
+				id: 'Experiment:checkout_ad_upsell',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.autoDepositUpsellExpVersion = autoDepositUpsellExp.version;
+			if (this.autoDepositUpsellExpVersion) {
+				this.$kvTrackEvent(
+					'Checkout',
+					'EXP-CORE-191-Jan-2022',
+					this.autoDepositUpsellExpVersion,
+				);
+			}
 		}
 	},
 	mounted() {
