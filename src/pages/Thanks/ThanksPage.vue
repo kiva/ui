@@ -15,7 +15,13 @@
 				</div>
 
 				<div class="thanks__header hide-for-print">
-					<h1 class="thanks__header-h1 tw-mb-4">
+					<div v-if="showAutoDepositUpsell" class="thanks_header-image tw-hidden md:tw-block">
+						<img :src="imageRequire(`./high-five.svg`)" class="tw-mx-auto" alt="high fiving hands">
+					</div>
+					<h1 v-if="showAutoDepositUpsell" class="thanks__header-h1 tw-mb-4">
+						Let’s set up your auto-deposit now!
+					</h1>
+					<h1 v-else class="thanks__header-h1 tw-mb-4">
 						Thank you!
 					</h1>
 					<p v-if="loans.length > 0" class="thanks__header-subhead tw-text-subhead tw-mb-2">
@@ -33,7 +39,8 @@
 		</div>
 
 		<thanks-layout-v2
-			:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest"
+			:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !showAutoDepositUpsell"
+			:show-auto-deposit-upsell="!isAutoDepositSubscriber && showAutoDepositUpsell"
 			:show-guest-upsell="isGuest"
 			:show-share="loans.length > 0"
 		>
@@ -43,6 +50,9 @@
 					:lender="lender"
 					:receipt="receipt"
 				/>
+			</template>
+			<template #ad>
+				<auto-deposit-c-t-a />
 			</template>
 			<template #mg>
 				<monthly-good-c-t-a
@@ -74,6 +84,7 @@ import numeral from 'numeral';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import GuestUpsell from '@/components/Checkout/GuestUpsell';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
+import AutoDepositCTA from '@/components/Checkout/AutoDepositCTA';
 import MonthlyGoodCTA from '@/components/Checkout/MonthlyGoodCTA';
 import SocialShare from '@/components/Checkout/SocialShare';
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -85,8 +96,11 @@ import { processPageContentFlat } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 
+const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
+
 export default {
 	components: {
+		AutoDepositCTA,
 		CheckoutReceipt,
 		GuestUpsell,
 		KvCheckoutSteps,
@@ -103,6 +117,8 @@ export default {
 	},
 	data() {
 		return {
+			autoDepositUpsellCookie: null,
+			imageRequire,
 			lender: {},
 			loans: [],
 			receipt: {},
@@ -111,6 +127,7 @@ export default {
 				'Payment',
 				'Thank You!'
 			],
+			isAutoDepositSubscriber: false,
 			isMonthlyGoodSubscriber: false,
 			isGuest: false,
 			pageData: {},
@@ -140,6 +157,8 @@ export default {
 			};
 
 			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
+			const hasAutoDeposit = data?.my?.autoDeposit?.id ?? false;
+			this.isAutoDepositSubscriber = !!(hasAutoDeposit && !this.isMonthlyGoodSubscriber);
 
 			// The default empty object and the v-if will prevent the
 			// receipt from rendering in the rare cases this query fails.
@@ -166,6 +185,9 @@ export default {
 					{ result }
 				);
 			}
+
+			// check for auto deposit upsell
+			this.autoDepositUpsellCookie = this.cookieStore.get('kv-show-ad-signup') || null;
 
 			// Check for contentful content
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
@@ -196,6 +218,13 @@ export default {
 		ctaButtonText() {
 			return this.ctaContentBlock?.primaryCtaText;
 		},
+		showAutoDepositUpsell() {
+			// Check cookie and eligibility before showing
+			if (!this.isGuest && this.autoDepositUpsellCookie) {
+				return true;
+			}
+			return false;
+		}
 	},
 	mounted() {
 		confetti({

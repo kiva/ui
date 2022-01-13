@@ -49,6 +49,11 @@
 						</div>
 						<hr class="tw-border-tertiary tw-my-3">
 
+						<auto-deposit-upsell
+							v-if="!checkingOutAsGuest && isLoggedIn"
+							:my-id="myId"
+						/>
+
 						<div class="basket-container">
 							<div class="row">
 								<div class="small-9 small-offset-3 large-10 large-offset-2 columns">
@@ -237,6 +242,7 @@ import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import OrderTotals from '@/components/Checkout/OrderTotals';
+import AutoDepositUpsell from '@/components/Checkout/AutoDepositUpsell';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import BasketVerification from '@/components/Checkout/BasketVerification';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
@@ -255,6 +261,7 @@ export default {
 		KvCheckoutSteps,
 		KvLightbox,
 		OrderTotals,
+		AutoDepositUpsell,
 		BasketItemsList,
 		BasketVerification,
 		KivaCardRedemption,
