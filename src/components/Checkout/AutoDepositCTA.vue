@@ -124,6 +124,7 @@
 					<auto-deposit-drop-in-payment-wrapper
 						class="tw-mx-auto"
 						:amount="adAmount"
+						:button-text="buttonText"
 						:donate-amount="donation"
 						:day-of-month="dayOfMonth"
 						@complete-transaction="completeADBraintree"

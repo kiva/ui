@@ -199,7 +199,7 @@ export default {
 				}
 				return upsellEligible;
 			}).catch(errorResponse => {
-				console.log(errorResponse);
+				console.error(errorResponse);
 			});
 		}
 	},
@@ -236,13 +236,11 @@ export default {
 		const eligibilityCheck = this.apollo.readQuery({
 			query: eligibilityCheckQuery
 		});
-		console.log(eligibilityCheck);
 		const isLoggedIn = eligibilityCheck?.my?.userAccountId?.id !== null;
 		const hasAutoDeposit = eligibilityCheck?.my?.autoDeposit !== null;
 		const hasLegacySubs = eligibilityCheck?.my?.subscriptions?.values?.length !== 0;
 		const hasModernSub = eligibilityCheck?.mySubscriptions?.values.length !== 0;
 		const upsellEligible = isLoggedIn && !hasAutoDeposit && !hasLegacySubs && !hasModernSub;
-		console.log(upsellEligible);
 
 		if (upsellEligible) {
 			// CORE-191 Checkout auto deposit upsell experiment
