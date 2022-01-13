@@ -152,6 +152,8 @@ export default {
 				loanTermLenderRepaymentTerm: 0,
 				lossLiabilityCurrencyExchange: '',
 				repaymentInterval: '',
+				anonymizationLevel: '',
+				lentTo: false,
 			},
 			loading: true,
 			observer: null,
