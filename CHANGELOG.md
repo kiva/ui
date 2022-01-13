@@ -1,3 +1,18 @@
+## [2.44.0](https://github.com/kiva/ui/compare/v2.43.1...v2.44.0) (2022-01-13)
+
+
+### Features
+
+* setup auto deposit upsell experiment and interfaces from checkout to thanks ([644ee06](https://github.com/kiva/ui/commit/644ee06d16055544611cef15792d25ba8c861155))
+* update auto-deposit thanks page to kiva classic ([e20ae3c](https://github.com/kiva/ui/commit/e20ae3c8c79be5e67a16e4d75f4fa14f9bdc2f92))
+* update kiva credit checkout button to kiva classic ([64970a2](https://github.com/kiva/ui/commit/64970a2c2fe9cecbece0801a2bd4601a8ca3a320))
+
+
+### Bug Fixes
+
+* ensure custom ad upsell amount is synced ([a193d21](https://github.com/kiva/ui/commit/a193d21fae745f99a997c2c42fd5b2996e636e40))
+* update images, fix validation and layout of custom options ([e3084e3](https://github.com/kiva/ui/commit/e3084e3de70e89ba2204dc954cc6653186cba17d))
+
 ### [2.43.1](https://github.com/kiva/ui/compare/v2.43.0...v2.43.1) (2022-01-13)
 
 
