@@ -17,7 +17,7 @@
 					<span class="tw-underline tw-cursor-pointer" @click="showLightbox">Learn more</span>.
 				</p>
 				<p v-if="adOptIn">
-					🎉 We’ll get you set up once you finish checking out!
+					🎉  We’ll get you set up once you finish checking out!
 				</p>
 			</div>
 		</div>
