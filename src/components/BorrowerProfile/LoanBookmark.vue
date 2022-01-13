@@ -1,26 +1,14 @@
 <template>
 	<div>
 		<button
-			v-if="!isBookmarked"
 			class="tw-text-action tw-inline-flex tw-p-1 tw-cursor-pointer tw-whitespace-nowrap tw-font-medium"
 			@click="toggleBookmark()"
 		>
 			<kv-material-icon
 				class="tw-text-action tw-w-3 tw-mr-0.5"
-				:icon="mdiBookmarkOutline"
+				:icon="`${!isBookmarked ? mdiBookmarkOutline : mdiBookmark}`"
 			/>
-			Save for later
-		</button>
-		<button
-			v-if="isBookmarked"
-			class="tw-text-action tw-inline-flex tw-p-1 tw-cursor-pointer tw-font-medium"
-			@click="toggleBookmark()"
-		>
-			<kv-material-icon
-				class="tw-text-action tw-w-3 tw-mr-0.5"
-				:icon="mdiBookmark"
-			/>
-			Saved
+			{{ bookmarkText }}
 		</button>
 	</div>
 </template>
@@ -75,6 +63,14 @@ export default {
 			const loan = result?.data?.lend?.loan || {};
 			this.isBookmarked = loan?.userProperties?.favorited || false;
 		},
+	},
+	computed: {
+		bookmarkText() {
+			if (this.isBookmarked) {
+				return 'Saved';
+			}
+			return 'Save for later';
+		}
 	},
 	methods: {
 		toggleBookmark() {
