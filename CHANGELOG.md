@@ -1,3 +1,19 @@
+## [2.45.0](https://github.com/kiva/ui/compare/v2.44.2...v2.45.0) (2022-01-13)
+
+
+### Features
+
+* make auto-deposit sign up buttonText configurable ([c2e3ac7](https://github.com/kiva/ui/commit/c2e3ac765af498c8cac302d76eff694ead55205e))
+
+
+### Bug Fixes
+
+* clear auto-deposit hero area for existing ad lenders ([dd0f66c](https://github.com/kiva/ui/commit/dd0f66cdb2f1b93eb87a671e46ca991762459a44))
+* ensure analtyics are fired when activating upsell, various clean up items ([cad31a2](https://github.com/kiva/ui/commit/cad31a26e33a1c3150099dcce6eb2c7feaf5362b))
+* ensure KvGrid is imported and available ([4e9f6e3](https://github.com/kiva/ui/commit/4e9f6e38dd31743ec4f12f7be1181dbd1af78e6f))
+* ensure we check for ad/mg before initializing experiment ([49624ed](https://github.com/kiva/ui/commit/49624eddaec831eac60f47705263b52b932a7cd6))
+* update spacing on ad upsell selection copy ([6369da2](https://github.com/kiva/ui/commit/6369da2ad9658a1d11c41c83d1a23cd5a5cb1f47))
+
 ### [2.44.2](https://github.com/kiva/ui/compare/v2.44.1...v2.44.2) (2022-01-13)
 
 
