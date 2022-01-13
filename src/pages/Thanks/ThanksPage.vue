@@ -15,10 +15,13 @@
 				</div>
 
 				<div class="thanks__header hide-for-print">
-					<div v-if="showAutoDepositUpsell" class="thanks_header-image tw-hidden md:tw-block">
+					<div
+						v-if="!isAutoDepositSubscriber && showAutoDepositUpsell"
+						class="thanks_header-image tw-hidden md:tw-block"
+					>
 						<img :src="imageRequire(`./high-five.svg`)" class="tw-mx-auto" alt="high fiving hands">
 					</div>
-					<h1 v-if="showAutoDepositUpsell" class="thanks__header-h1 tw-mb-4">
+					<h1 v-if="!isAutoDepositSubscriber && showAutoDepositUpsell" class="thanks__header-h1 tw-mb-4">
 						Let’s set up your auto-deposit now!
 					</h1>
 					<h1 v-else class="thanks__header-h1 tw-mb-4">
@@ -187,7 +190,15 @@ export default {
 			}
 
 			// check for auto deposit upsell
-			this.autoDepositUpsellCookie = this.cookieStore.get('kv-show-ad-signup') || null;
+			if (!this.isAutoDepositSubscriber) {
+				this.autoDepositUpsellCookie = this.cookieStore.get('kv-show-ad-signup') || null;
+			} else {
+				try {
+					this.cookieStore.remove('kv-show-ad-signup');
+				} catch (e) {
+					// noop
+				}
+			}
 
 			// Check for contentful content
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;

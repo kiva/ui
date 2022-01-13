@@ -117,13 +117,14 @@
 				Total: {{ adAmount | numeral('$0.00') }}
 			</h3>
 
-			<div v-if="isClientReady" class="">
+			<div v-if="isClientReady">
 				<!-- TODO: Fix activeLoginCheck on thanks route -->
 				<div class="tw-text-center tw-relative">
 					<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
 					<auto-deposit-drop-in-payment-wrapper
 						class="tw-mx-auto"
 						:amount="adAmount"
+						:button-text="buttonText"
 						:donate-amount="donation"
 						:day-of-month="dayOfMonth"
 						@complete-transaction="completeADBraintree"

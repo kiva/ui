@@ -16,11 +16,9 @@
 					up and you get to choose who you help.
 					<span class="tw-underline tw-cursor-pointer" @click="showLightbox">Learn more</span>.
 				</p>
-				<transition>
-					<p v-if="adOptIn">
-						🎉 We’ll get you set up once you finish checking out!
-					</p>
-				</transition>
+				<p v-if="adOptIn">
+					🎉  We’ll get you set up once you finish checking out!
+				</p>
 			</div>
 		</div>
 		<div class="tw-text-right tw-align-bottom">
@@ -113,7 +111,7 @@ const cookieName = 'kv-show-ad-signup';
 
 const eligibilityCheckQuery = gql`query autoDepositEligibilityQuery {
 	general {
-		autoDepositUpsellSeting: uiExperimentSetting(key: "checkout_ad_upsell") {
+		autoDepositUpsellSetting: uiExperimentSetting(key: "checkout_ad_upsell") {
 			key
 			value
 		}
@@ -201,7 +199,7 @@ export default {
 				}
 				return upsellEligible;
 			}).catch(errorResponse => {
-				console.log(errorResponse);
+				console.error(errorResponse);
 			});
 		}
 	},
@@ -220,6 +218,12 @@ export default {
 			if (payload === false) {
 				this.cookieStore.remove(cookieName);
 			}
+
+			this.$kvTrackEvent(
+				'Checkout',
+				'click-Activate-auto-deposit-toggle',
+				payload === true ? 'Activate auto-deposit' : 'De-Activate auto-deposit',
+			);
 		},
 		closeLightbox() {
 			this.lightboxVisible = false;
@@ -229,19 +233,30 @@ export default {
 		},
 	},
 	created() {
-		// CORE-191 Checkout auto deposit upsell experiment
-		const autoDepositUpsellExp = this.apollo.readFragment({
-			id: 'Experiment:checkout_ad_upsell',
-			fragment: experimentVersionFragment,
-		}) || {};
+		const eligibilityCheck = this.apollo.readQuery({
+			query: eligibilityCheckQuery
+		});
+		const isLoggedIn = eligibilityCheck?.my?.userAccountId?.id !== null;
+		const hasAutoDeposit = eligibilityCheck?.my?.autoDeposit !== null;
+		const hasLegacySubs = eligibilityCheck?.my?.subscriptions?.values?.length !== 0;
+		const hasModernSub = eligibilityCheck?.mySubscriptions?.values.length !== 0;
+		const upsellEligible = isLoggedIn && !hasAutoDeposit && !hasLegacySubs && !hasModernSub;
 
-		this.autoDepositUpsellExpVersion = autoDepositUpsellExp.version;
-		if (this.autoDepositUpsellExpVersion) {
-			this.$kvTrackEvent(
-				'Basket',
-				'EXP-CORE-191-Jan-2022',
-				this.autoDepositUpsellExpVersion,
-			);
+		if (upsellEligible) {
+			// CORE-191 Checkout auto deposit upsell experiment
+			const autoDepositUpsellExp = this.apollo.readFragment({
+				id: 'Experiment:checkout_ad_upsell',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.autoDepositUpsellExpVersion = autoDepositUpsellExp.version;
+			if (this.autoDepositUpsellExpVersion) {
+				this.$kvTrackEvent(
+					'Checkout',
+					'EXP-CORE-191-Jan-2022',
+					this.autoDepositUpsellExpVersion,
+				);
+			}
 		}
 	},
 	mounted() {

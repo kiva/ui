@@ -16,7 +16,7 @@
 				@click="submitDropInAutoDeposit"
 			>
 				<kv-icon name="lock" />
-				Confirm
+				{{ buttonText }}
 			</kv-button>
 		</div>
 
@@ -51,6 +51,10 @@ export default {
 		amount: {
 			type: Number,
 			default: 0
+		},
+		buttonText: {
+			type: String,
+			default: 'Confirm'
 		},
 		donateAmount: {
 			type: Number,
