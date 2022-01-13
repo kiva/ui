@@ -16,11 +16,9 @@
 					up and you get to choose who you help.
 					<span class="tw-underline tw-cursor-pointer" @click="showLightbox">Learn more</span>.
 				</p>
-				<transition>
-					<p v-if="adOptIn">
-						🎉 We’ll get you set up once you finish checking out!
-					</p>
-				</transition>
+				<p v-if="adOptIn">
+					🎉 We’ll get you set up once you finish checking out!
+				</p>
 			</div>
 		</div>
 		<div class="tw-text-right tw-align-bottom">
@@ -113,7 +111,7 @@ const cookieName = 'kv-show-ad-signup';
 
 const eligibilityCheckQuery = gql`query autoDepositEligibilityQuery {
 	general {
-		autoDepositUpsellSeting: uiExperimentSetting(key: "checkout_ad_upsell") {
+		autoDepositUpsellSetting: uiExperimentSetting(key: "checkout_ad_upsell") {
 			key
 			value
 		}
@@ -220,6 +218,12 @@ export default {
 			if (payload === false) {
 				this.cookieStore.remove(cookieName);
 			}
+
+			this.$kvTrackEvent(
+				'Checkout',
+				'click-Activate-auto-deposit-toggle',
+				payload === true ? 'Activate auto-deposit' : 'De-Activate auto-deposit',
+			);
 		},
 		closeLightbox() {
 			this.lightboxVisible = false;
@@ -238,7 +242,7 @@ export default {
 		this.autoDepositUpsellExpVersion = autoDepositUpsellExp.version;
 		if (this.autoDepositUpsellExpVersion) {
 			this.$kvTrackEvent(
-				'Basket',
+				'Checkout',
 				'EXP-CORE-191-Jan-2022',
 				this.autoDepositUpsellExpVersion,
 			);

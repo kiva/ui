@@ -117,7 +117,7 @@
 				Total: {{ adAmount | numeral('$0.00') }}
 			</h3>
 
-			<div v-if="isClientReady" class="">
+			<div v-if="isClientReady">
 				<!-- TODO: Fix activeLoginCheck on thanks route -->
 				<div class="tw-text-center tw-relative">
 					<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
