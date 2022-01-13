@@ -1,3 +1,10 @@
+### [2.44.1](https://github.com/kiva/ui/compare/v2.44.0...v2.44.1) (2022-01-13)
+
+
+### Bug Fixes
+
+* buttons in dynamicHeroClassic should fire monthly good selector when webclickevent is defined ([c6e1293](https://github.com/kiva/ui/commit/c6e1293d59ad8862961783d744c02c7be9458546))
+
 ## [2.44.0](https://github.com/kiva/ui/compare/v2.43.1...v2.44.0) (2022-01-13)
 
 
