@@ -78,7 +78,7 @@ describe('RegisterSocial', () => {
 			// Check the terms checkbox
 			cy.findByLabelText('First name', { exact: false }).type('Test');
 			cy.findByLabelText('Last name', { exact: false }).type('Tester');
-			cy.findByLabelText('I have read and agree', { exact: false }).click();
+			cy.findByText('I have read and agree', { exact: false }).click();
 
 			// Expect the error messages not to be present
 			cy.contains('Enter first name.').should('not.exist');
