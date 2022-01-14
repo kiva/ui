@@ -1,3 +1,10 @@
+### [2.45.1](https://github.com/kiva/ui/compare/v2.45.0...v2.45.1) (2022-01-14)
+
+
+### Bug Fixes
+
+* core-151 updating style of bookmark, decreased padding, increase rounded corners ([bb85aac](https://github.com/kiva/ui/commit/bb85aac16f46cd9251f37d7045de7af52ca9ad33))
+
 ## [2.45.0](https://github.com/kiva/ui/compare/v2.44.2...v2.45.0) (2022-01-13)
 
 
