@@ -49,7 +49,7 @@ describe('RegisterSocial', () => {
 			cy.location('pathname').should('eq', registerSocialPath);
 
 			// Check the terms checkbox
-			cy.findByLabelText('I have read and agree', { exact: false }).click();
+			cy.findByLabelText('I have read and agree', { exact: false }).click({ force: true });
 
 			// Expect the error messages not to be present
 			cy.contains('You must agree to the Kiva Terms of Use and Privacy Policy.').should('not.exist');
