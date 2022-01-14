@@ -4,7 +4,6 @@ import _set from 'lodash/set';
 // Experiment Ids from setting that will be passed in the X-Experiment Header
 const targetIds = [
 	'EXP-ML-Service-Bandit-LendByCategory',
-	'ml_loan_to_loan',
 ];
 
 function buildExpHeaders(cookieStore) {
