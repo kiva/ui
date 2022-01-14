@@ -1,3 +1,11 @@
+### [2.45.2](https://github.com/kiva/ui/compare/v2.45.1...v2.45.2) (2022-01-14)
+
+
+### Bug Fixes
+
+* ensure button operates to submit without js ([0c0b2c6](https://github.com/kiva/ui/commit/0c0b2c6c6e0e0ac11e22f867f737764a14273c1f))
+* update test for new ui element ([0bc3641](https://github.com/kiva/ui/commit/0bc364109a141f2d3df152ecad475a49e365d1a6))
+
 ### [2.45.1](https://github.com/kiva/ui/compare/v2.45.0...v2.45.1) (2022-01-14)
 
 
