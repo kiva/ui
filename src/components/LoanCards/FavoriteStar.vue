@@ -16,7 +16,7 @@
 	*-->
 	<span>
 		<button
-			class="tw-inline-flex tw-p-1 tw-cursor-pointer tw-bg-primary tw-rounded tw-m-0.5"
+			class="tw-inline-flex tw-p-0.5 tw-cursor-pointer tw-bg-primary tw-rounded-full tw-m-0.5"
 			@click.prevent.stop="toggleFavorite()"
 			:v-kv-track-event="`[
 				'Lending',
