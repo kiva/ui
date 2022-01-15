@@ -94,7 +94,7 @@ export default {
 						);
 						if (this.isBookmarked === true) {
 							// eslint-disable-next-line max-len
-							this.$showTipMsg('This loan has been saved to your "Saved loans" list, which is accessible under the "Lend" menu in the header.', 'confirm');
+							this.$showTipMsg('This loan has been added to your "Saved loans" list, which is accessible under the "Lend" menu in the header.', 'confirm');
 						}
 					}
 					// Catch other errors
