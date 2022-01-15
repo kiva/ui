@@ -1,3 +1,10 @@
+### [2.45.3](https://github.com/kiva/ui/compare/v2.45.2...v2.45.3) (2022-01-15)
+
+
+### Bug Fixes
+
+* core-216 small lanugage change to tip message so saved isn't stated twice ([388f3f1](https://github.com/kiva/ui/commit/388f3f1741e2e11504efe315494858a17d573c09))
+
 ### [2.45.2](https://github.com/kiva/ui/compare/v2.45.1...v2.45.2) (2022-01-14)
 
 
