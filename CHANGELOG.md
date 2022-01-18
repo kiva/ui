@@ -1,3 +1,10 @@
+### [2.45.4](https://github.com/kiva/ui/compare/v2.45.3...v2.45.4) (2022-01-18)
+
+
+### Bug Fixes
+
+* guard ad upsell readQuery ([ee40be6](https://github.com/kiva/ui/commit/ee40be6cd14e90323d1e3aa8a629fef316ef0660))
+
 ### [2.45.3](https://github.com/kiva/ui/compare/v2.45.2...v2.45.3) (2022-01-15)
 
 
