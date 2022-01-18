@@ -1,3 +1,10 @@
+### [2.45.6](https://github.com/kiva/ui/compare/v2.45.5...v2.45.6) (2022-01-18)
+
+
+### Bug Fixes
+
+* prevent carousel slides from floating above the header ([c1aa1c6](https://github.com/kiva/ui/commit/c1aa1c6bf95d02214ec71431b167ab8853131e4e))
+
 ### [2.45.5](https://github.com/kiva/ui/compare/v2.45.4...v2.45.5) (2022-01-18)
 
 
