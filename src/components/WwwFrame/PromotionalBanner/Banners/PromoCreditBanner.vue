@@ -11,6 +11,7 @@
 			v-if="promoData && !promoData.pageId"
 			to="/lend/freeCreditEligible"
 			class="tw-text-white hover:tw-no-underline hover:tw-text-white"
+			data-testid="free-credit-banner"
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
 			Select a borrower to lend your {{ promoData.bonusBalance | numeral('$0.00') }} free credit
@@ -19,6 +20,7 @@
 			v-if="promoData && promoData.pageId"
 			:to="`/cc/${promoData.pageId}`"
 			class="tw-text-white hover:tw-no-underline hover:tw-text-white"
+			data-testid="cc-promo-banner"
 			v-kv-track-event="['TopNav','click-Promo','MVP Bonus Banner']"
 		>
 			You have {{ promoData.available | numeral('$0.00') }} from {{ promoData.displayName }} to lend!
