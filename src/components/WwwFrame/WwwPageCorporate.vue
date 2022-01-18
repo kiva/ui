@@ -5,7 +5,7 @@
 			:theme="headerTheme"
 			:corporate="true"
 			:corporate-logo-url="corporateLogoUrl"
-			class="tw-sticky tw-top-0"
+			class="tw-sticky tw-z-sticky tw-top-0"
 		/>
 		<main>
 			<slot></slot>
