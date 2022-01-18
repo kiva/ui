@@ -107,12 +107,12 @@
 								class="lend-link"
 								v-kv-track-event="['TopNav','click-Lend-Favorites']"
 							>
-								Starred loans
+								Saved loans
 							</router-link>
 							<span
 								v-else
 								class="tw-block tw-py-1 tw-text-tertiary"
-							>Starred loans</span>
+							>Saved loans</span>
 						</li>
 						<li
 							v-if="hasSearches"
