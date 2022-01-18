@@ -91,13 +91,13 @@
 											class="tw-text-primary tw-text-left hover:tw-text-action-highlight
 												tw-py-1 tw-inline-block"
 										>
-											Starred loans
+											Saved loans
 										</router-link>
 										<span
 											v-else
 											class="tw-text-secondary tw-py-1 tw-inline-block"
 										>
-											Starred loans
+											Saved loans
 										</span>
 									</li>
 									<li>
