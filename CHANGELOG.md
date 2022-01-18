@@ -1,3 +1,10 @@
+### [2.45.5](https://github.com/kiva/ui/compare/v2.45.4...v2.45.5) (2022-01-18)
+
+
+### Bug Fixes
+
+* bump version number ([50cba02](https://github.com/kiva/ui/commit/50cba02b4af8c9dbb8f07f5f5eafaa3a1590953e))
+
 ### [2.45.4](https://github.com/kiva/ui/compare/v2.45.3...v2.45.4) (2022-01-18)
 
 
