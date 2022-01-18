@@ -1,3 +1,10 @@
+### [2.45.7](https://github.com/kiva/ui/compare/v2.45.6...v2.45.7) (2022-01-18)
+
+
+### Bug Fixes
+
+* core-218 updating Starred loans -> Saved loans in lend menu ([8a44417](https://github.com/kiva/ui/commit/8a44417ca6d3a1406921457f3de0481e8dcb715e))
+
 ### [2.45.6](https://github.com/kiva/ui/compare/v2.45.5...v2.45.6) (2022-01-18)
 
 
