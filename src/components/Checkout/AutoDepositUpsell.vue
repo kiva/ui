@@ -98,6 +98,7 @@
 
 <script>
 import gql from 'graphql-tag';
+import logReadQueryError from '@/util/logReadQueryError';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -233,9 +234,15 @@ export default {
 		},
 	},
 	created() {
-		const eligibilityCheck = this.apollo.readQuery({
-			query: eligibilityCheckQuery
-		});
+		let eligibilityCheck = {};
+		try {
+			eligibilityCheck = this.apollo.readQuery({
+				query: eligibilityCheckQuery,
+			});
+		} catch (e) {
+			logReadQueryError(e, 'Chckout adUpsell');
+		}
+
 		const isLoggedIn = eligibilityCheck?.my?.userAccountId?.id !== null;
 		const hasAutoDeposit = eligibilityCheck?.my?.autoDeposit !== null;
 		const hasLegacySubs = eligibilityCheck?.my?.subscriptions?.values?.length !== 0;
