@@ -1,3 +1,10 @@
+### [2.46.6](https://github.com/kiva/ui/compare/v2.46.5...v2.46.6) (2022-01-19)
+
+
+### Bug Fixes
+
+* resets the accordions and open categories when menu is closed ([23c86a0](https://github.com/kiva/ui/commit/23c86a0f98010b9850d4ae03f645c4908869d58d))
+
 ### [2.46.5](https://github.com/kiva/ui/compare/v2.46.4...v2.46.5) (2022-01-19)
 
 
