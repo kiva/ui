@@ -72,7 +72,6 @@ const HomepageMonthlyGoodInfo = () => import('@/components/Homepage/HomepageMont
 
 const CardRow = () => import('@/components/Contentful/CardRow');
 const CenteredRichText = () => import('@/components/Contentful/CenteredRichText');
-const DynamicHero = () => import('@/components/Contentful/DynamicHero');
 const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
 const HeroWithCarousel = () => import('@/components/Contentful/HeroWithCarousel');
 const LoansByCategoryCarousel = () => import('@/components/Contentful/LoansByCategoryCarousel');
@@ -152,8 +151,6 @@ const getComponentFromType = type => {
 			return CardRow;
 		case 'centeredRichText':
 			return CenteredRichText;
-		case 'dynamicHero':
-			return DynamicHero;
 		case 'dynamicHeroClassic':
 			return DynamicHeroClassic;
 		case 'heroWithCarousel':
@@ -184,20 +181,16 @@ const getContentGroups = pageData => {
 // Modifications for Monthly Good Landing pages
 const customMGEventsAndConfig = {
 	// Custom attribute for MG page landing specific button class
-	// TODO deprecate this when DynamicHero.vue and HomepageBottomCTA.vue
-	// are no longer in use
+	// TODO deprecate this when HomepageBottomCTA.vue is no longer in use
 	customCtaButtonClass: 'classic hollow',
 	// Custom attribute for event name emitted with MG landing page button clicks
 	customEventName: 'openMonthlyGoodSelector'
 };
 
-// TODO deprecate this when DynamicHero.vue and HomepageBottomCTA.vue
-// are no longer in use
+// TODO deprecate this when HomepageBottomCTA.vue is no longer in use
 const componentOptions = {
-	// Selected MG Landing page component keys to recieve custom attrubutes
-	'homepage-hero-monthly-good': customMGEventsAndConfig,
+	// Selected MG Landing page component keys to receive custom attributes
 	'homepage-bottom-cta-monthly-good': customMGEventsAndConfig,
-	'landing-mg-wrd-hero': customMGEventsAndConfig,
 	'homepage-bottom-cta-mg-refugees': customMGEventsAndConfig,
 };
 
