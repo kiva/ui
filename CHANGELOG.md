@@ -1,3 +1,12 @@
+### [2.46.2](https://github.com/kiva/ui/compare/v2.46.1...v2.46.2) (2022-01-19)
+
+
+### Bug Fixes
+
+* ensure promo credit banner has basket state and mechanism to dicate it's visibility ([707b7da](https://github.com/kiva/ui/commit/707b7da35b228d4c5ff3e0fdaf44ebbab3025c5f))
+* ensure stable color when clicking promo links ([1feb775](https://github.com/kiva/ui/commit/1feb7753306bf50094b8a0edde5593fa3c8e99fc))
+* remove duplicate data fetch for data provided in basketState ([543bf1f](https://github.com/kiva/ui/commit/543bf1f07ee68b96093272e1279e99959038a938))
+
 ### [2.46.1](https://github.com/kiva/ui/compare/v2.46.0...v2.46.1) (2022-01-19)
 
 
