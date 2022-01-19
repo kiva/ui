@@ -14,9 +14,7 @@
 		<the-footer
 			:theme="footerTheme"
 		/>
-		<the-basket-bar
-			v-if="activeOnPage"
-		/>
+		<the-basket-bar />
 		<cookie-banner />
 	</div>
 </template>
@@ -89,13 +87,6 @@ export default {
 		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
 	},
 	computed: {
-		// Hiding basket footer on /lend-beta page
-		activeOnPage() {
-			if (this.$route.path.includes('lend-beta')) {
-				return false;
-			}
-			return true;
-		},
 		mainClasses() {
 			return [
 				this.mainClass,

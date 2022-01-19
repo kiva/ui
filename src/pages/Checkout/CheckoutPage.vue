@@ -897,10 +897,4 @@ export default {
 		}
 	}
 }
-
-// Hide Basket Bar (this won't work with scoped)
-.basket-bar {
-	display: none !important;
-}
-
 </style>
