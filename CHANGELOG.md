@@ -1,3 +1,11 @@
+### [2.46.4](https://github.com/kiva/ui/compare/v2.46.3...v2.46.4) (2022-01-19)
+
+
+### Bug Fixes
+
+* consolidate basket bar visibility restrictions ([0c2abae](https://github.com/kiva/ui/commit/0c2abaec04ac20032011f5541569403b53db1806))
+* update methods for basket-bar visibility to use route. ensure it's hidden on checkout ([13d4f72](https://github.com/kiva/ui/commit/13d4f72028c1f114ea6162e22847d6dc1158635f))
+
 ### [2.46.3](https://github.com/kiva/ui/compare/v2.46.2...v2.46.3) (2022-01-19)
 
 
