@@ -1,3 +1,10 @@
+## [2.46.0](https://github.com/kiva/ui/compare/v2.45.7...v2.46.0) (2022-01-19)
+
+
+### Features
+
+* deprecates dynamicHero component ([dd9bbb1](https://github.com/kiva/ui/commit/dd9bbb1018af01067b04509ce3a503c8307ccb3e))
+
 ### [2.45.7](https://github.com/kiva/ui/compare/v2.45.6...v2.45.7) (2022-01-18)
 
 
