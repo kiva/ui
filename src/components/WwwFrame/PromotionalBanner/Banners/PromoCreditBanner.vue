@@ -96,18 +96,6 @@ export default {
 			promoCampaignData: null,
 		};
 	},
-	apollo: {
-		query: promoCampaignInfo,
-		preFetch: true,
-		result({ data }) {
-			// Used for calculating if the user has a promotional balance
-			const promoBalance = data?.my?.userAccount?.promoBalance ?? 0;
-			const basketPromoBalance = data?.shop?.basket?.totals?.creditAvailableTotal ?? 0;
-			this.bonusBalance = numeral(promoBalance).add(numeral(basketPromoBalance).value()).value();
-			this.lendingRewardOffered = data?.shop?.lendingRewardOffered;
-			this.hasFreeCredits = data?.shop?.basket?.hasFreeCredits;
-		},
-	},
 	created() {
 		if (this.basketState && Object.entries(this.basketState).length) {
 			this.setPromoState(this.basketState);
@@ -179,7 +167,11 @@ export default {
 			}
 		},
 		setPromoState(promotionData) {
-			const promoBalance = numeral(promotionData.my?.userAccount?.promoBalance).value();
+			// Parse user promoBalance and creditAvailableTotal from basket
+			const userPromoBalance = promotionData?.my?.userAccount?.promoBalance ?? 0;
+			const basketPromoBalance = promotionData?.shop?.basket?.totals?.creditAvailableTotal ?? 0;
+
+			// parse individual promo credit type amounts
 			const bonusAvailableTotal = numeral(
 				promotionData.shop?.basket?.totals?.bonusAvailableTotal
 			).value();
@@ -192,13 +184,26 @@ export default {
 			const universalCodeAvailableTotal = numeral(
 				promotionData.shop?.basket?.totals?.universalCodeAvailableTotal
 			).value();
-			// prefer promoBalance from the user account if it's larger
-			const promoBalancePrecedence = promoBalance >= bonusAvailableTotal ? promoBalance : bonusAvailableTotal;
-			this.bonusBalance = promoBalancePrecedence
-				+ freeTrialAvailableTotal
-				+ redemptionCodeAvailableTotal
-				+ universalCodeAvailableTotal;
+
+			// prefer promoBalance from the user account if it's larger else fallback to basket credit total
+			const promoBalancePrecedence = userPromoBalance >= basketPromoBalance
+				? userPromoBalance : basketPromoBalance;
+			const promoBalance = numeral(promoBalancePrecedence).value();
+
+			// if we have promo balance from the user or the basket proceed with that
+			if (promoBalance > 0) {
+				this.bonusBalance = promoBalance;
+			// else attempt to calculate individual promo credit types
+			} else {
+				this.bonusBalance = bonusAvailableTotal
+					+ freeTrialAvailableTotal
+					+ redemptionCodeAvailableTotal
+					+ universalCodeAvailableTotal;
+			}
+
+			// set other promo credit signifiers
 			this.lendingRewardOffered = promotionData.shop?.lendingRewardOffered;
+			this.hasFreeCredits = promotionData?.shop?.basket?.hasFreeCredits;
 		}
 	}
 };
