@@ -18,6 +18,7 @@ query wwwHeader($basketId: String) {
 				}
 			}
 			totals {
+				creditAvailableTotal
 				bonusAvailableTotal
 				freeTrialAvailableTotal
 				redemptionCodeAvailableTotal

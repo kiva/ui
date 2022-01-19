@@ -460,7 +460,7 @@
 				</template>
 			</kv-page-container>
 		</nav>
-		<promo-credit-banner />
+		<promo-credit-banner v-if="!hidePromoCreditBanner" :basket-state="basketState" />
 	</header>
 </template>
 
@@ -558,6 +558,15 @@ export default {
 			return this.kvAuth0.enabled
 				&& this.$route.fullPath !== '/'
 				&& this.redirectToLoginExperimentVersion !== 'b';
+		},
+		hidePromoCreditBanner() {
+			// hide this banner on managed lending landing + checkout pages
+			const routeExclusions = ['/cc', '/checkout'];
+			const routePath = this.$route?.path;
+			const matchedRoutes = routeExclusions.filter(item => {
+				return routePath.indexOf(item) !== -1;
+			});
+			return matchedRoutes.length > 0;
 		},
 		loginUrl() {
 			if (this.$route.path === '/') {

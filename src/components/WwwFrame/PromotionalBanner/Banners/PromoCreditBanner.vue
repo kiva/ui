@@ -1,29 +1,41 @@
 <template>
 	<div
 		v-if="lendingRewardOffered"
-		class="tw-bg-brand tw-text-white md:tw-py-1.5 md:tw-px-0"
+		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
 		v-kv-track-event="['TopNav','click-Promo','Lending Reward Banner']"
 	>
-		Make a Kiva loan <br class="tw-inline">and receive a $25 free credit to lend again.
+		Make a Kiva loan <br class="sm:tw-inline md:tw-hidden">and receive a $25 free credit to lend again.
 	</div>
-	<div v-else-if="bonusBalance > 0" class="bonus-banner-holder tw-bg-brand tw-text-center tw-py-1.5 tw-px-5">
+	<div
+		v-else-if="bonusBalance > 0"
+		class="bonus-banner-holder tw-bg-brand tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
+	>
 		<router-link
 			v-if="promoData && !promoData.pageId"
 			to="/lend/freeCreditEligible"
-			class="tw-text-white hover:tw-no-underline hover:tw-text-white"
+			class="
+				tw-text-white
+				hover:tw-no-underline hover:tw-text-white
+				active:tw-text-white visited:tw-text-white focus:tw-text-white"
 			data-testid="free-credit-banner"
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
-			Select a borrower to lend your {{ promoData.bonusBalance | numeral('$0.00') }} free credit
+			Select a borrower to <span class="tw-underline">
+				lend your {{ promoData.bonusBalance | numeral('$0.00') }} free credit</span>
 		</router-link>
 		<router-link
 			v-if="promoData && promoData.pageId"
 			:to="`/cc/${promoData.pageId}`"
-			class="tw-text-white hover:tw-no-underline hover:tw-text-white"
+			class="
+				tw-text-white
+				hover:tw-no-underline hover:tw-text-white
+				active:tw-text-white visited:tw-text-white focus:tw-text-white"
 			data-testid="cc-promo-banner"
 			v-kv-track-event="['TopNav','click-Promo','MVP Bonus Banner']"
 		>
-			You have {{ promoData.available | numeral('$0.00') }} from {{ promoData.displayName }} to lend!
+			<span class="tw-underline">
+				You have {{ promoData.available | numeral('$0.00') }} from {{ promoData.displayName }} to lend!
+			</span>
 		</router-link>
 	</div>
 </template>
@@ -35,8 +47,15 @@ import { indexIn } from '@/util/comparators';
 
 const promoCampaignInfo = gql`
 	query promoCampaign($basketId: String, $promoFundId: String) {
+		my {
+			userAccount {
+				id
+				promoBalance
+			}
+		}
 		shop (basketId: $basketId) {
 			id
+			lendingRewardOffered
 			basket {
 				id
 				hasFreeCredits
@@ -48,6 +67,9 @@ const promoCampaignInfo = gql`
 							id
 						}
 					}
+				}
+				totals {
+					creditAvailableTotal
 				}
 			}
 			promoCampaign (promoFundId: $promoFundId) {
@@ -65,7 +87,7 @@ const promoCampaignInfo = gql`
 	}
 `;
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		basketState: {
 			type: Object,
@@ -75,6 +97,7 @@ export default {
 	data() {
 		return {
 			bonusBalance: 0,
+			hasFreeCredits: false,
 			lendingRewardOffered: false,
 			promoCampaignData: null,
 		};
@@ -89,9 +112,6 @@ export default {
 		this.fetchManagedAccountCampaign();
 	},
 	computed: {
-		hasFreeCredits() {
-			return this.basketState?.shop?.basket?.hasFreeCredits ?? false;
-		},
 		priorityBasketCredit() {
 			// get credits list
 			const basketCredits = this.basketState?.shop?.basket?.credits?.values ?? [];
@@ -153,7 +173,11 @@ export default {
 			}
 		},
 		setPromoState(promotionData) {
-			const promoBalance = numeral(promotionData.my?.userAccount?.promoBalance).value();
+			// Parse user promoBalance and creditAvailableTotal from basket
+			const userPromoBalance = promotionData?.my?.userAccount?.promoBalance ?? 0;
+			const basketPromoBalance = promotionData?.shop?.basket?.totals?.creditAvailableTotal ?? 0;
+
+			// parse individual promo credit type amounts
 			const bonusAvailableTotal = numeral(
 				promotionData.shop?.basket?.totals?.bonusAvailableTotal
 			).value();
@@ -166,13 +190,26 @@ export default {
 			const universalCodeAvailableTotal = numeral(
 				promotionData.shop?.basket?.totals?.universalCodeAvailableTotal
 			).value();
-			// prefer promoBalance from the user account if it's larger
-			const promoBalancePrecedence = promoBalance >= bonusAvailableTotal ? promoBalance : bonusAvailableTotal;
-			this.bonusBalance = promoBalancePrecedence
-				+ freeTrialAvailableTotal
-				+ redemptionCodeAvailableTotal
-				+ universalCodeAvailableTotal;
+
+			// prefer promoBalance from the user account if it's larger else fallback to basket credit total
+			const promoBalancePrecedence = userPromoBalance >= basketPromoBalance
+				? userPromoBalance : basketPromoBalance;
+			const promoBalance = numeral(promoBalancePrecedence).value();
+
+			// if we have promo balance from the user or the basket proceed with that
+			if (promoBalance > 0) {
+				this.bonusBalance = promoBalance;
+			// else attempt to calculate individual promo credit types
+			} else {
+				this.bonusBalance = bonusAvailableTotal
+					+ freeTrialAvailableTotal
+					+ redemptionCodeAvailableTotal
+					+ universalCodeAvailableTotal;
+			}
+
+			// set other promo credit signifiers
 			this.lendingRewardOffered = promotionData.shop?.lendingRewardOffered;
+			this.hasFreeCredits = promotionData?.shop?.basket?.hasFreeCredits;
 		}
 	}
 };
