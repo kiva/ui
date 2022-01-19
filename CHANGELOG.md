@@ -1,3 +1,10 @@
+### [2.46.1](https://github.com/kiva/ui/compare/v2.46.0...v2.46.1) (2022-01-19)
+
+
+### Bug Fixes
+
+* make sure webpack includes fonts that Tailwind config references ([65a7200](https://github.com/kiva/ui/commit/65a7200cc4fabcfb873e96ab3168a9c31d11bcda))
+
 ## [2.46.0](https://github.com/kiva/ui/compare/v2.45.7...v2.46.0) (2022-01-19)
 
 
