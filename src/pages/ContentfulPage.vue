@@ -10,7 +10,6 @@
 			:id="content.key"
 			:is="component"
 			:content="content"
-			v-bind="getComponentOptions(content.key)"
 			data-section-type="contentful-section"
 		/>
 	</component>
@@ -178,22 +177,6 @@ const getContentGroups = pageData => {
 	})).filter(group => typeof group.component === 'function');
 };
 
-// Modifications for Monthly Good Landing pages
-const customMGEventsAndConfig = {
-	// Custom attribute for MG page landing specific button class
-	// TODO deprecate this when HomepageBottomCTA.vue is no longer in use
-	customCtaButtonClass: 'classic hollow',
-	// Custom attribute for event name emitted with MG landing page button clicks
-	customEventName: 'openMonthlyGoodSelector'
-};
-
-// TODO deprecate this when HomepageBottomCTA.vue is no longer in use
-const componentOptions = {
-	// Selected MG Landing page component keys to receive custom attributes
-	'homepage-bottom-cta-monthly-good': customMGEventsAndConfig,
-	'homepage-bottom-cta-mg-refugees': customMGEventsAndConfig,
-};
-
 export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
@@ -268,11 +251,6 @@ export default {
 				this.pageFrame = getPageFrameFromType(pageData?.page?.pageType);
 				this.contentGroups = getContentGroups(pageData);
 			}
-		}
-	},
-	methods: {
-		getComponentOptions(key) {
-			return componentOptions[key] || {};
 		}
 	},
 };
