@@ -1,7 +1,7 @@
 <template>
-	<div v-if="showToggle" class="donate-repayments-toggle">
+	<div v-if="showToggle">
 		<kv-checkbox
-			class="donate-repayments-label"
+			class="tw-relative tw-cursor-pointer tw-leading-4 tw-pt-1 tw-pl-1 md:tw-text-right"
 			id="donate-repayments"
 			:checkbox-right="true"
 			v-if="!myDonateRepayments"
@@ -140,35 +140,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.donate-repayments-toggle {
-	.donate-repayments-label {
-		position: relative;
-		padding: 0.5rem 0 0 0.55rem;
-		line-height: 1;
-		cursor: pointer;
-
-		@include breakpoint(medium) {
-			text-align: right;
-			padding: 0.05rem 0 0 0.5rem;
-		}
-	}
-
-	.donate-repayments-icon {
-		margin: 0 0.5rem 0 0;
-		display: inline-block;
-
-		@include breakpoint(medium) {
-			margin: 0 0 0 0.5rem;
-		}
-
-		svg {
-			height: 1.2rem;
-			width: 1.2rem;
-		}
-	}
-}
-</style>
