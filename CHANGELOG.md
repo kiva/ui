@@ -1,3 +1,10 @@
+### [2.46.3](https://github.com/kiva/ui/compare/v2.46.2...v2.46.3) (2022-01-19)
+
+
+### Bug Fixes
+
+* center images in HomepageVerticalCTA, remove event bindings from HomepageBottomCTA ([71a19ed](https://github.com/kiva/ui/commit/71a19edd350b92e5c6197d563bd6095cbe9edb1a))
+
 ### [2.46.2](https://github.com/kiva/ui/compare/v2.46.1...v2.46.2) (2022-01-19)
 
 
