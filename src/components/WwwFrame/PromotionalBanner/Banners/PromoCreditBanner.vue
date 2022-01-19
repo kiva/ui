@@ -13,7 +13,10 @@
 		<router-link
 			v-if="promoData && !promoData.pageId"
 			to="/lend/freeCreditEligible"
-			class="tw-text-white hover:tw-no-underline hover:tw-text-white"
+			class="
+				tw-text-white
+				hover:tw-no-underline hover:tw-text-white
+				active:tw-text-white visited:tw-text-white focus:tw-text-white"
 			data-testid="free-credit-banner"
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
@@ -23,7 +26,10 @@
 		<router-link
 			v-if="promoData && promoData.pageId"
 			:to="`/cc/${promoData.pageId}`"
-			class="tw-text-white hover:tw-no-underline hover:tw-text-white"
+			class="
+				tw-text-white
+				hover:tw-no-underline hover:tw-text-white
+				active:tw-text-white visited:tw-text-white focus:tw-text-white"
 			data-testid="cc-promo-banner"
 			v-kv-track-event="['TopNav','click-Promo','MVP Bonus Banner']"
 		>
