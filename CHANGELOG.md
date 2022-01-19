@@ -1,3 +1,10 @@
+### [2.46.5](https://github.com/kiva/ui/compare/v2.46.4...v2.46.5) (2022-01-19)
+
+
+### Bug Fixes
+
+* add accessible text to social media icons ([83ed035](https://github.com/kiva/ui/commit/83ed0359914150dd677a8bc419b6dd9bb22e1fad))
+
 ### [2.46.4](https://github.com/kiva/ui/compare/v2.46.3...v2.46.4) (2022-01-19)
 
 
