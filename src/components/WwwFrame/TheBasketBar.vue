@@ -1,8 +1,8 @@
 <template>
 	<!-- eslint-disable max-len -->
 	<div
-		v-if="count > 0"
-		class="tw-flex md:tw-hidden tw-fixed tw-z-sticky"
+		v-if="count > 0 && !hideBasketBar"
+		class="basket-bar tw-flex md:tw-hidden tw-fixed tw-z-sticky"
 		:class="[
 			{ 'tw-w-full tw-bg-primary tw-border-t tw-border-tertiary tw-py-1 tw-px-2 tw-left-0 tw-bottom-0' : !floating },
 			{ 'tw-w-auto tw-items-center tw-justify-center tw-bottom-2 tw-right-2 tw-rounded-full tw-p-1.5 ': floating }
@@ -69,6 +69,15 @@ export default {
 	computed: {
 		basketLink() {
 			return this.corporate ? this.addHashToRoute('show-basket') : '/basket';
+		},
+		hideBasketBar() {
+			// hide this banner on managed lending landing + checkout pages
+			const routeExclusions = ['/join-team', '/checkout'];
+			const routePath = this.$route?.path;
+			const matchedRoutes = routeExclusions.filter(item => {
+				return routePath.indexOf(item) !== -1;
+			});
+			return matchedRoutes.length > 0;
 		}
 	},
 	methods: {
