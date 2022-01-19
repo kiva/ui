@@ -347,6 +347,7 @@
 				<div class="tw-my-2">
 					<a
 						href="//www.facebook.com/kiva/"
+						class="tw-inline-flex"
 						target="_blank"
 						rel="noopener"
 						v-kv-track-event="['Footer', 'click-social-icon', 'Facebook']"
@@ -355,9 +356,11 @@
 							class="tw-mr-2.5 tw-w-3 tw-h-3 tw-text-tertiary"
 							:icon="mdiFacebook"
 						/>
+						<span class="tw-sr-only">Kiva on Facebook</span>
 					</a>
 					<a
 						href="//www.instagram.com/kiva.org"
+						class="tw-inline-flex"
 						target="_blank"
 						rel="noopener"
 						v-kv-track-event="['Footer', 'click-social-icon', 'Instagram']"
@@ -366,9 +369,11 @@
 							class="tw-mr-2.5 tw-w-3 tw-h-3 tw-text-tertiary"
 							:icon="mdiInstagram"
 						/>
+						<span class="tw-sr-only">Kiva on Instagram</span>
 					</a>
 					<a
 						href="//twitter.com/kiva"
+						class="tw-inline-flex"
 						target="_blank"
 						rel="noopener"
 						v-kv-track-event="['Footer', 'click-social-icon', 'Twitter']"
@@ -377,6 +382,7 @@
 							class="tw-mr-2.5 tw-w-3 tw-h-3 tw-text-tertiary"
 							:icon="mdiTwitter"
 						/>
+						<span class="tw-sr-only">Kiva on Twitter</span>
 					</a>
 				</div>
 
