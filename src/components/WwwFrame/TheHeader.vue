@@ -738,8 +738,10 @@ export default {
 		isLendMenuVisible() {
 			setTimeout(() => {
 				if (this.isLendMenuVisible === true) {
+					this.onLendMenuShow();
 					document.addEventListener('pointerup', this.withinBoundaryCheck);
 				} else {
+					this.onLendMenuHide();
 					document.removeEventListener('pointerup', this.withinBoundaryCheck);
 				}
 			});

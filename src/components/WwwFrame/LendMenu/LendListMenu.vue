@@ -9,7 +9,7 @@
 			<kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiArrowRight" />
 		</router-link>
 
-		<kv-tabs>
+		<kv-tabs ref="navLendCategories">
 			<template #tabNav>
 				<kv-tab for="nav-lend-categories">
 					Categories
@@ -86,6 +86,7 @@
 							v-for="region in regions"
 							:key="region.name"
 							:id="`lend-menu-${region.name}-panel` | changeCase('paramCase')"
+							ref="regionAccordions"
 						>
 							<template #header>
 								<h3 class="tw-text-h4">
@@ -214,19 +215,22 @@ export default {
 	},
 	methods: {
 		onClose() {
-			// if (this.categories.length) {
-			// 	this.$refs.categories.collapse();
-			// }
-			// if (this.regions.length) {
-			// 	this.$refs.regions.collapse();
-			// 	this.$refs.regionCountries.forEach(region => region.collapse());
-			// }
-			// if (this.userId) {
-			// 	this.$refs.myKiva.collapse();
-			// }
-			// if (this.hasSearches) {
-			// 	this.$refs.searches.collapse();
-			// }
+			// reset the tabs
+			if (this.$refs.navLendCategories) {
+				this.$refs.navLendCategories.setTab(0);
+			}
+
+			// close all region accordions
+			if (this.$refs.regionAccordions) {
+				this.$refs.regionAccordions.forEach(accordionRef => {
+					accordionRef.collapse();
+				});
+			}
+
+			// close saved search accordions
+			if (this.hasSearches && this.$refs.searches) {
+				this.$refs.searches.collapse();
+			}
 		}
 	},
 };
