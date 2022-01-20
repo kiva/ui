@@ -1,9 +1,5 @@
 @import "settings";
 
-h1.huge {
-	@include huge-headline();
-}
-
 .small-text {
 	@include small-text();
 }
