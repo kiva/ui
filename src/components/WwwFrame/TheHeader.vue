@@ -546,9 +546,8 @@ export default {
 			if (!this.profilePicId) {
 				return true;
 			}
-			const defaultProfileIds = ['726677', '315726'];
-			const isDefaultProfile = defaultProfileIds.some(id => this.profilePicId.toString().includes(id));
-			return isDefaultProfile;
+			const defaultProfileIds = [726677, 315726];
+			return defaultProfileIds.some(id => id === this.profilePicId);
 		},
 		trusteeLoansUrl() {
 			return {
