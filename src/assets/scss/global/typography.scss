@@ -1,9 +1,5 @@
 @import "settings";
 
-.small-text {
-	@include small-text();
-}
-
 .featured-text {
 	@include featured-text();
 }

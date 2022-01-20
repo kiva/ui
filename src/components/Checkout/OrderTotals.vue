@@ -64,7 +64,7 @@
 					Apply
 				</button>
 				<div v-if="hasUPCCode" class="upc-disclaimer">
-					<p class="small-text">
+					<p class="tw-text-small">
 						Remember to use all your {{ promoFundDisplayName }} credits in one transaction.
 						You cannot use the remaining credits later.
 					</p>
