@@ -1,6 +1,6 @@
 <template>
 	<div class="tw-text-center frame">
-		<h1 class="impact-text heading-text">
+		<h1 class="heading-text">
 			Browse loans by category
 		</h1>
 		<div class="row card-row small-collapse">
