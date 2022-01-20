@@ -1,3 +1,11 @@
+### [2.47.1](https://github.com/kiva/ui/compare/v2.47.0...v2.47.1) (2022-01-20)
+
+
+### Bug Fixes
+
+* enlarge profile image on medium screens and make the image a circle ([21f910c](https://github.com/kiva/ui/commit/21f910c9c932c1c61a8acaf8715e14fd8b99aebc))
+* use id instead of url to check for default profile image ([6429a04](https://github.com/kiva/ui/commit/6429a048cb03198b2e4e58582c3167fe52b2f678))
+
 ## [2.47.0](https://github.com/kiva/ui/compare/v2.46.6...v2.47.0) (2022-01-20)
 
 
