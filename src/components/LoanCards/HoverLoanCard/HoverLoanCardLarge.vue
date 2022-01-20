@@ -222,7 +222,6 @@ export default {
 
 				.hover-loan-card-action-button {
 					margin: 0;
-					font-size: rem-calc(18);
 					padding: 0.5rem 1.5rem;
 				}
 
