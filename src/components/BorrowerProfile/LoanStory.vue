@@ -22,6 +22,7 @@
 			]"
 		/>
 		<loan-description
+			class="tw-pt-4"
 			:loan-id="loanId"
 			:anonymization-level="anonymizationLevel"
 			:borrower-count="borrowerCount"
