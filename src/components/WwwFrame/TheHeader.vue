@@ -58,14 +58,16 @@
 								<span class="tw-sr-only">My Portfolio</span>
 								<kv-material-icon
 									:icon="mdiAccountCircle"
-									class="tw-inline-block tw-w-2.5 tw-h-2.5"
+									class="tw-inline-block tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5"
 								/>
 							</template>
 							<img
 								v-else
 								:src="profilePic"
 								alt="My portfolio"
-								class="fs-mask tw-inline-block tw-w-2.5 tw-h-2.5 tw-object-fill"
+								class="fs-mask tw-inline-block
+									tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5
+									tw-rounded-full tw-overflow-hidden tw-object-fill"
 							>
 						</router-link>
 						<router-link
@@ -333,14 +335,16 @@
 									<span class="tw-sr-only">My Portfolio</span>
 									<kv-material-icon
 										:icon="mdiAccountCircle"
-										class="tw-inline-block tw-w-2.5 tw-h-2.5"
+										class="tw-inline-block tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5"
 									/>
 								</template>
 								<img
 									v-else
 									:src="profilePic"
 									alt="My portfolio"
-									class="fs-mask tw-inline-block tw-w-2.5 tw-h-2.5 tw-object-fill"
+									class="fs-mask tw-inline-block
+										tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5
+										tw-rounded-full tw-overflow-hidden tw-object-fill"
 								>
 							</router-link>
 
