@@ -504,6 +504,7 @@ export default {
 			basketCount: 0,
 			balance: 0,
 			profilePic: '',
+			profilePicId: null,
 			aboutMenuId: 'about-header-dropdown',
 			lendMenuId: 'lend-header-dropdown',
 			myKivaMenuId: 'my-kiva-header-dropdown',
@@ -538,8 +539,12 @@ export default {
 			return !!this.trusteeId;
 		},
 		isDefaultProfilePic() {
+			if (!this.profilePicId) {
+				return true;
+			}
 			const defaultProfileIds = ['726677', '315726'];
-			return defaultProfileIds.some(id => this.profilePic.includes(id));
+			const isDefaultProfile = defaultProfileIds.some(id => this.profilePicId.toString().includes(id));
+			return isDefaultProfile;
 		},
 		trusteeLoansUrl() {
 			return {
@@ -586,6 +591,7 @@ export default {
 			this.basketCount = data?.shop?.nonTrivialItemCount ?? 0;
 			this.balance = Math.floor(data?.my?.userAccount?.balance ?? 0);
 			this.profilePic = data?.my?.lender?.image?.url ?? '';
+			this.profilePicId = data?.my?.lender?.image?.id ?? null;
 			this.basketState = data || {};
 
 			// GROW-280 redirect to login instead of popup login experiment
