@@ -1,3 +1,10 @@
+## [2.47.0](https://github.com/kiva/ui/compare/v2.46.6...v2.47.0) (2022-01-20)
+
+
+### Features
+
+* sort category names alphabetically ([52b3c03](https://github.com/kiva/ui/commit/52b3c03a3a3d08472876585f671c0b1116c8d474))
+
 ### [2.46.6](https://github.com/kiva/ui/compare/v2.46.5...v2.46.6) (2022-01-19)
 
 
