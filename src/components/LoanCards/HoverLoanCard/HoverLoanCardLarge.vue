@@ -52,7 +52,10 @@
 				@track-loan-card-interaction="trackInteraction"
 			/>
 			<div class="action-row">
-				<div class="action-button-container" :class="{'full-width': isFunded || isExpired}">
+				<div
+					class="action-button-container"
+					:class="{'full-width': isFunded || isExpired || isSelectedByAnother}"
+				>
 					<action-button
 						class="hover-loan-card-action-button"
 						:loan-id="loan.id"
