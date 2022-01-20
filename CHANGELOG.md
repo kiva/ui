@@ -1,3 +1,10 @@
+### [2.47.2](https://github.com/kiva/ui/compare/v2.47.1...v2.47.2) (2022-01-20)
+
+
+### Bug Fixes
+
+* bump spacing between borrower image and name in LoanStory component ([024398f](https://github.com/kiva/ui/commit/024398f1d983dcc50358a0d77cdd067115a97379))
+
 ### [2.47.1](https://github.com/kiva/ui/compare/v2.47.0...v2.47.1) (2022-01-20)
 
 
