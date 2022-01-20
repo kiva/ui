@@ -47,7 +47,7 @@
 								<div class="medium-10 small-12 columns">
 									<div class="row column" v-if="!fromCovidLanding">
 										<strong>Each month on the</strong>
-										<label class="show-for-sr"
+										<label class="tw-sr-only"
 											:class="{ 'tw-text-danger': $v.dayOfMonth.$invalid }"
 											:for="dayOfMonth"
 										>
@@ -96,7 +96,7 @@
 
 										<div class="medium-5 small-6 columns">
 											<label
-												class="show-for-sr"
+												class="tw-sr-only"
 												:class="{ 'tw-text-danger': $v.mgAmount.$invalid }"
 												for="amount"
 											>
@@ -141,7 +141,7 @@
 
 										<div class="medium-5 small-6 columns">
 											<label
-												class="show-for-sr"
+												class="tw-sr-only"
 												:class="{ 'tw-text-danger': $v.donation.$invalid }"
 												:for="`
 													${donationOptionSelected !== 'other'

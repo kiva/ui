@@ -7,7 +7,7 @@
 			<div class="row column">
 				<strong>Each month on the</strong>
 				<label
-					class="show-for-sr"
+					class="tw-sr-only"
 					:class="{ 'error': $v.form.dayOfMonth.$invalid }" :for="form.dayOfMonth"
 				>
 					Day of the Month
@@ -87,7 +87,7 @@
 
 					<div class="small-6 medium-4 columns">
 						<label
-							class="show-for-sr"
+							class="tw-sr-only"
 							:class="{ 'error': $v.form.donation.$invalid }"
 							for="donation"
 						>
