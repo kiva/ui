@@ -230,7 +230,9 @@ export function formatStoryCard(contentfulContent) {
 		footer: contentfulContent.fields?.footer,
 		key: contentfulContent.fields?.key,
 		theme: contentfulContent.fields?.theme,
-		alignment: contentfulContent.fields?.alignment ?? 'center'
+		alignment: contentfulContent.fields?.alignment ?? 'center',
+		link: contentfulContent.fields?.link,
+		analyticsClickEvent: contentfulContent.fields?.analyticsClickEvent
 	};
 }
 
