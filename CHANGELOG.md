@@ -1,3 +1,10 @@
+### [2.48.1](https://github.com/kiva/ui/compare/v2.48.0...v2.48.1) (2022-01-21)
+
+
+### Bug Fixes
+
+* allow website link to be processed, fire sentry in the client only ([2b180ac](https://github.com/kiva/ui/commit/2b180ac109e522462fad44adf96be151887e54c5))
+
 ## [2.48.0](https://github.com/kiva/ui/compare/v2.47.4...v2.48.0) (2022-01-21)
 
 
