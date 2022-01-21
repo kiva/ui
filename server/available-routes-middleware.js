@@ -26,11 +26,6 @@ function buildRouteJSON() {
 		if (cleanString !== '*' && cleanString !== '' && cleanString.indexOf('/') === 0) {
 			paths.push(cleanString);
 		}
-		// allow styleguide children
-		// TODO: find some better way to handle children arrays
-		if (cleanString === '/styleguide') {
-			paths.push('/styleguide/:any');
-		}
 	}
 	// add /static path and anything against it to allow initial calls for static assets
 	paths.push('/static/:any');
