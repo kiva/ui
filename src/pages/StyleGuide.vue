@@ -12,9 +12,21 @@
 				<h2>Technical resources</h2>
 				<!-- eslint-disable max-len -->
 				<ul>
-					<li><h3><a href="https://github.com/kiva/kv-ui-elements/tree/main/%40kiva/kv-components">Component Library <kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiGithub" /></a></h3></li>
-					<li><h3><a href="https://github.com/kiva/kv-ui-elements/tree/main/%40kiva/kv-tokens">Design Tokens &amp; Tailwind Config <kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiGithub" /></a></h3></li>
-					<li><h3><a href="https://main--608b4cf87f686c00213841b1.chromatic.com/?path=/docs/base-styling-primitives--primitives">Storybook</a></h3></li>
+					<li>
+						<h3>
+							<a href="https://github.com/kiva/kv-ui-elements/tree/main/%40kiva/kv-components">Component Library <kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiGithub" /></a>
+						</h3>
+					</li>
+					<li>
+						<h3>
+							<a href="https://github.com/kiva/kv-ui-elements/tree/main/%40kiva/kv-tokens">Design Tokens &amp; Tailwind Config <kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiGithub" /></a>
+						</h3>
+					</li>
+					<li>
+						<h3>
+							<a href="https://main--608b4cf87f686c00213841b1.chromatic.com/?path=/docs/base-styling-primitives--primitives">Storybook</a>
+						</h3>
+					</li>
 				</ul>
 				<!-- eslint-enable max-len -->
 			</section>
