@@ -2,9 +2,28 @@
 	<div
 		v-if="lendingRewardOffered"
 		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
-		v-kv-track-event="['TopNav','click-Promo','Lending Reward Banner']"
 	>
-		Make a Kiva loan <br class="sm:tw-inline md:tw-hidden">and receive a $25 free credit to lend again.
+		<template v-if="promoData.displayName && promoData.pageId">
+			<router-link
+				:to="`/cc/${promoData.pageId}`"
+				class="
+					tw-text-white
+					hover:tw-no-underline hover:tw-text-white
+					active:tw-text-white visited:tw-text-white focus:tw-text-white"
+				data-testid="cc-promo-banner"
+				v-kv-track-event="['TopNav','click-Promo','Lending Reward Banner']"
+			>
+				<span class="tw-underline">
+					Complete a loan to receive your lending reward from {{ promoData.displayName }}!
+				</span>
+			</router-link>
+		</template>
+		<template
+			v-else
+			v-kv-track-event="['TopNav','click-Promo','Lending Reward Banner']"
+		>
+			Make a Kiva loan <br class="sm:tw-inline md:tw-hidden">and receive a $25 free credit to lend again.
+		</template>
 	</div>
 	<div
 		v-else-if="bonusBalance > 0"
@@ -128,10 +147,12 @@ export default {
 			return this.priorityBasketCredit?.available ?? null;
 		},
 		promoFundId() {
-			return this.priorityBasketCredit?.promoFund?.id ?? null;
+			const promoCampaignIdFallback = this.promoCampaignData?.promoFund?.id ?? null;
+			return this.priorityBasketCredit?.promoFund?.id ?? promoCampaignIdFallback;
 		},
 		promoFundDisplayName() {
-			return this.priorityBasketCredit?.promoFund?.displayName ?? null;
+			const promoCampaignNameFallback = this.promoCampaignData?.promoFund?.displayName ?? null;
+			return this.priorityBasketCredit?.promoFund?.displayName ?? promoCampaignNameFallback;
 		},
 		managedAccountPageId() {
 			return this.promoCampaignData?.managedAccount?.pageId ?? null;
@@ -158,25 +179,17 @@ export default {
 	},
 	methods: {
 		fetchManagedAccountCampaign() {
-			// TODO: Create an array of queries if multiple credits have an associated promo fund
-			// extended promotion information from managed account
-			if (this.promoFundId && this.hasFreeCredits && this.creditAvailable) {
-				this.apollo.query({
-					query: promoCampaignInfo,
-					variables: {
-						promoFundId: String(this.promoFundId)
-					}
-				})
-					.then(({ data }) => {
-						this.promoCampaignData = data?.shop?.promoCampaign ?? null;
-					});
-			}
+			this.apollo.query({
+				query: promoCampaignInfo,
+				variables: this.promoFundId ? {
+					promoFundId: String(this.promoFundId)
+				} : {}
+			})
+				.then(({ data }) => {
+					this.promoCampaignData = data?.shop?.promoCampaign ?? null;
+				});
 		},
 		setPromoState(promotionData) {
-			// Parse user promoBalance and creditAvailableTotal from basket
-			const userPromoBalance = promotionData?.my?.userAccount?.promoBalance ?? 0;
-			const basketPromoBalance = promotionData?.shop?.basket?.totals?.creditAvailableTotal ?? 0;
-
 			// parse individual promo credit type amounts
 			const bonusAvailableTotal = numeral(
 				promotionData.shop?.basket?.totals?.bonusAvailableTotal
@@ -191,21 +204,16 @@ export default {
 				promotionData.shop?.basket?.totals?.universalCodeAvailableTotal
 			).value();
 
-			// prefer promoBalance from the user account if it's larger else fallback to basket credit total
-			const promoBalancePrecedence = userPromoBalance >= basketPromoBalance
-				? userPromoBalance : basketPromoBalance;
-			const promoBalance = numeral(promoBalancePrecedence).value();
+			const basketPromoBalance = bonusAvailableTotal
+				+ freeTrialAvailableTotal
+				+ redemptionCodeAvailableTotal
+				+ universalCodeAvailableTotal;
 
+			// Parse user promoBalance and creditAvailableTotal from basket
+			const userPromoBalance = numeral(promotionData?.my?.userAccount?.promoBalance ?? 0).value();
 			// if we have promo balance from the user or the basket proceed with that
-			if (promoBalance > 0) {
-				this.bonusBalance = promoBalance;
-			// else attempt to calculate individual promo credit types
-			} else {
-				this.bonusBalance = bonusAvailableTotal
-					+ freeTrialAvailableTotal
-					+ redemptionCodeAvailableTotal
-					+ universalCodeAvailableTotal;
-			}
+			this.bonusBalance = userPromoBalance >= basketPromoBalance
+				? userPromoBalance : basketPromoBalance;
 
 			// set other promo credit signifiers
 			this.lendingRewardOffered = promotionData.shop?.lendingRewardOffered;
