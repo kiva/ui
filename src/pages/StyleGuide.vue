@@ -1,167 +1,56 @@
 <template>
-	<div class="styleguide-wrap">
-		<header class="top-nav">
-			<div class="header-row row">
-				<router-link class="header-logo header-button" to="/" v-kv-track-event="['TopNav','click-Logo']">
-					<kiva-logo class="icon" />
-				</router-link>
-				<a href="/lend" id="lend-header-dropdown" class="header-button"><span>Lend</span></a>
-			</div>
-		</header>
-		<div class="page-content">
-			<div class="row">
-				<div class="columns small-12">
-					<h1>UI Styleguide</h1>
-				</div>
-			</div>
-			<div class="row">
-				<div class="columns small-12 large-3">
-					<ul>
-						<li>
-							<router-link to="/styleguide">
-								Intro
+	<www-page>
+		<build-page-wrapper class="tw-prose">
+			<h1>Styleguide</h1>
+
+			<p class="tw-text-subhead tw-text-secondary">
+				Kiva.org's frontend is built using a Vue.js component library
+				and a custom Tailwind.css configuration for styling.
+			</p>
+
+			<section class="tw-mb-8">
+				<h2>Technical resources</h2>
+				<!-- eslint-disable max-len -->
+				<ul>
+					<li><h3><a href="https://github.com/kiva/kv-ui-elements/tree/main/%40kiva/kv-components">Component Library <kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiGithub" /></a></h3></li>
+					<li><h3><a href="https://github.com/kiva/kv-ui-elements/tree/main/%40kiva/kv-tokens">Design Tokens &amp; Tailwind Config <kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiGithub" /></a></h3></li>
+					<li><h3><a href="https://main--608b4cf87f686c00213841b1.chromatic.com/?path=/docs/base-styling-primitives--primitives">Storybook</a></h3></li>
+				</ul>
+				<!-- eslint-enable max-len -->
+			</section>
+			<section>
+				<h2>Brand guidelines</h2>
+				<ul>
+					<li>
+						<h3>
+							<router-link to="/design">
+								kiva.org/design
 							</router-link>
-						</li>
-						<li>
-							<router-link to="/styleguide/typography">
-								Typography
-							</router-link>
-						</li>
-						<li>
-							<router-link to="/styleguide/copy">
-								Copy
-							</router-link>
-						</li>
-						<li>
-							<router-link to="/styleguide/buttons">
-								Buttons
-							</router-link>
-						</li>
-						<li>
-							<router-link to="/styleguide/colors">
-								Colors
-							</router-link>
-						</li>
-						<li>
-							<router-link to="/styleguide/forms">
-								Forms
-							</router-link>
-						</li>
-						<li>
-							<router-link to="/styleguide/images">
-								Images
-							</router-link>
-						</li>
-						<li>
-							<router-link to="/styleguide/icons">
-								Icons
-							</router-link>
-						</li>
-					</ul>
-				</div>
-				<div class="small-12 large-9 columns">
-					<router-view />
-				</div>
-			</div>
-		</div>
-	</div>
+						</h3>
+					</li>
+				</ul>
+			</section>
+		</build-page-wrapper>
+	</www-page>
 </template>
 
 <script>
-import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
+import { mdiGithub } from '@mdi/js';
+import WwwPage from '@/components/WwwFrame/WwwPage';
+import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	components: {
-		KivaLogo,
+		BuildPageWrapper,
+		KvMaterialIcon,
+		WwwPage,
 	},
+	metaInfo: {
+		title: 'Styleguide'
+	},
+	data() {
+		return { mdiGithub };
+	}
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-.page-content {
-	padding: 1.625rem 0;
-}
-
-$text-color: $white;
-$hover-color: $kiva-navdivider-green;
-$divider-color: $kiva-navdivider-green;
-$top-nav-font-size: 1.125rem;
-$header-color: $kiva-green;
-$header-height: rem-calc(45);
-$header-height-large: rem-calc(64);
-
-.styleguide-wrap .top-nav {
-	background-color: $header-color;
-	font-size: $top-nav-font-size;
-	font-weight: $global-weight-highlight;
-
-	.header-row {
-		position: relative;
-		display: flex;
-		align-items: stretch;
-		flex-wrap: nowrap;
-		height: $header-height;
-
-		@include breakpoint(large) {
-			height: $header-height-large;
-		}
-	}
-
-	.header-logo {
-		.icon {
-			display: unset;
-			width: rem-calc(57);
-			height: 100%;
-			margin: rem-calc(-3) auto 0;
-			color: $text-color;
-			max-height: $header-height;
-
-			@include breakpoint(large) {
-				max-height: $header-height-large;
-			}
-		}
-	}
-
-	.header-button {
-		border-right: 1px solid $divider-color;
-		text-align: center;
-		white-space: nowrap;
-		flex-grow: 2;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-
-		&:last-child {
-			border-right: none;
-		}
-
-		&:link,
-		&:visited,
-		&:active {
-			color: white;
-			text-decoration: none;
-		}
-
-		@include breakpoint(large) {
-			flex-grow: 0;
-			padding: 0 1rem;
-		}
-	}
-
-	.header-button:hover {
-		background-color: $hover-color;
-		color: $text-color;
-	}
-}
-
-.styleguide-wrap .elem-desc {
-	border-bottom: 1px solid #eee;
-	color: #888;
-	font-size: 80%;
-}
-
-</style>
