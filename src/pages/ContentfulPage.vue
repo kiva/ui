@@ -57,7 +57,6 @@ const CampaignLogoGroup = () => import('@/components/CorporateCampaign/CampaignL
 const CampaignPartner = () => import('@/components/CorporateCampaign/CampaignPartner');
 const CampaignThanks = () => import('@/components/CorporateCampaign/CampaignThanks');
 
-const HomepageBottomCTA = () => import('@/components/Homepage/HomepageBottomCTA');
 const HomepageCorporateSponsors = () => import('@/components/Homepage/HomepageCorporateSponsors');
 // const HomepageGeneralStats = () => import('@/components/Homepage/HomepageGeneralStats');
 const HomepageHowItWorks = () => import('@/components/Homepage/HomepageHowItWorks');
@@ -111,8 +110,6 @@ const getPageFrameFromType = type => {
 // Return a component importer function based on content group type from Contentful
 const getComponentFromType = type => {
 	switch (type) {
-		case 'homepageBottomCTA':
-			return HomepageBottomCTA;
 		case 'homepageHowItWorks':
 			return HomepageHowItWorks;
 		case 'homepageLenderQuotes':
