@@ -1,3 +1,11 @@
+### [2.47.3](https://github.com/kiva/ui/compare/v2.47.2...v2.47.3) (2022-01-21)
+
+
+### Bug Fixes
+
+* let message take up the full width if the loan is selected by another lender ([5c2cefc](https://github.com/kiva/ui/commit/5c2cefcc37098bdc782ff64f266c6025168900ac))
+* remove font-size with higher specificy than tailwind class ([fe14842](https://github.com/kiva/ui/commit/fe148422799b5e427a3f36282b3e11c128db07e4))
+
 ### [2.47.2](https://github.com/kiva/ui/compare/v2.47.1...v2.47.2) (2022-01-20)
 
 
