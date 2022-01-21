@@ -154,7 +154,7 @@ export default {
 			}
 		},
 		verifyUrl(value) {
-			if (this.filteredSocialLinks.length) {
+			if (value) {
 				try {
 					let validatedUrl = value;
 					if (!value.startsWith('http')) {
@@ -163,11 +163,13 @@ export default {
 					validatedUrl = new URL(validatedUrl);
 					return validatedUrl.href;
 				} catch (err) {
-					Sentry.withScope(scope => {
-						scope.setTag('borrower_profile', 'social_link');
-						Sentry.captureMessage(`Invalid url ${value} for ${this.loanId}`);
-					});
-					return '';
+					if (!this.$$isServer) {
+						Sentry.withScope(scope => {
+							scope.setTag('borrower_profile', 'social_link');
+							Sentry.captureMessage(`Invalid url ${value} for ${this.loanId}`);
+						});
+						return '';
+					}
 				}
 			}
 		}
