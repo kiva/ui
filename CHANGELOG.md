@@ -1,3 +1,10 @@
+## [2.48.0](https://github.com/kiva/ui/compare/v2.47.4...v2.48.0) (2022-01-21)
+
+
+### Features
+
+* deprecate HomepageBottomCTA Component ([f301f8a](https://github.com/kiva/ui/commit/f301f8ad65850c021b5bf1c87d39206235dd5b17))
+
 ### [2.47.4](https://github.com/kiva/ui/compare/v2.47.3...v2.47.4) (2022-01-21)
 
 
