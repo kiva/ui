@@ -1,3 +1,10 @@
+### [2.47.4](https://github.com/kiva/ui/compare/v2.47.3...v2.47.4) (2022-01-21)
+
+
+### Bug Fixes
+
+* ensure only promo credit notices show, add links for lending reward ([4015058](https://github.com/kiva/ui/commit/40150587c8e16da828fe9efdb267bff03424dd94))
+
 ### [2.47.3](https://github.com/kiva/ui/compare/v2.47.2...v2.47.3) (2022-01-21)
 
 
