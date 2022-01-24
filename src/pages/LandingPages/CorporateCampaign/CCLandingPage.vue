@@ -79,6 +79,7 @@
 							:is-visible="!showLoanRows"
 							:is-visitor="isVisitor"
 							:items-in-basket="itemsInBasket"
+							:promo-only="promoOnlyQuery"
 							:show-loans="showLoans"
 							:sort-by="sortBy"
 							@add-to-basket="handleAddToBasket"
