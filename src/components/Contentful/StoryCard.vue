@@ -8,14 +8,21 @@
 			:class="themeClass"
 			v-if="hasBackgroundImage"
 		>
-			<kv-contentful-img
-				class="kv-contentful-img tw-h-full tw-w-full tw-object-cover"
-				:width="520"
-				fallback-format="jpg"
-				:contentful-src="backgroundImage.url"
-				:alt="backgroundImage.description"
-			/>
-			<p class="story-card__imageCard-title tw-text-h4">
+			<component
+				:is="cardLink ? 'a' : 'div'"
+				:href="cardLink ? cardLink : null"
+				v-kv-track-event="cardAnalytics"
+				class="tw-block"
+			>
+				<kv-contentful-img
+					class="kv-contentful-img tw-h-full tw-w-full tw-object-cover"
+					:width="520"
+					fallback-format="jpg"
+					:contentful-src="backgroundImage.url"
+					:alt="backgroundImage.description"
+				/>
+			</component>
+			<p class="story-card__imageCard-title tw-text-h4" v-if="!cardLink">
 				{{ backgroundImage.title }}
 			</p>
 		</div>
@@ -122,6 +129,13 @@ export default {
 		footer() {
 			const text = this.content?.footer ?? '';
 			return text ? richTextRenderer(text) : '';
+		},
+		cardLink() {
+			return this.content?.link ?? '';
+		},
+		cardAnalytics() {
+			const contentfulAnalyticsEvent = this.content?.analyticsClickEvent ?? null;
+			return contentfulAnalyticsEvent;
 		},
 		backgroundImage() {
 			return {
