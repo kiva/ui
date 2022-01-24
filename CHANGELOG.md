@@ -1,3 +1,10 @@
+## [2.49.0](https://github.com/kiva/ui/compare/v2.48.1...v2.49.0) (2022-01-24)
+
+
+### Features
+
+* clickable imageCard theme story cards ([98ef7bc](https://github.com/kiva/ui/commit/98ef7bc6be2ef3bcb4c061ae399332006941f65a))
+
 ### [2.48.1](https://github.com/kiva/ui/compare/v2.48.0...v2.48.1) (2022-01-21)
 
 
