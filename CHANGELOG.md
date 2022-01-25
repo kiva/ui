@@ -1,3 +1,10 @@
+### [2.49.1](https://github.com/kiva/ui/compare/v2.49.0...v2.49.1) (2022-01-25)
+
+
+### Bug Fixes
+
+* ensure promoOnly basket context is passed to grid view ([6f3b728](https://github.com/kiva/ui/commit/6f3b728f9078d8bea76cb74fbaaa8032d0fe2774))
+
 ## [2.49.0](https://github.com/kiva/ui/compare/v2.48.1...v2.49.0) (2022-01-24)
 
 
