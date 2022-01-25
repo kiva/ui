@@ -30,7 +30,7 @@
 				</ul>
 				<!-- eslint-enable max-len -->
 			</section>
-			<section>
+			<section class="tw-mb-8">
 				<h2>Brand guidelines</h2>
 				<ul>
 					<li>
@@ -42,6 +42,13 @@
 					</li>
 				</ul>
 			</section>
+			<p class="tw-bg-caution tw-text-black tw-text-center tw-py-2 tw-px-4">
+				Note: Some areas of the site use Foundation's
+				<a href="https://get.foundation/sites/docs/flex-grid.html" target="_blank">
+					Flex Grid
+				</a>
+				for layout and other style rules which we are incrementally replacing.
+			</p>
 		</build-page-wrapper>
 	</www-page>
 </template>
