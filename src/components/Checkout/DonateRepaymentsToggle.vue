@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<div v-if="showToggle"
+		<div
+			v-if="showToggle"
 			:class="{ 'tw-flex tw-mt-2' : checkboxRight }"
 		>
 			<label
@@ -70,11 +71,9 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import _forEach from 'lodash/forEach';
 import numeral from 'numeral';
-// import KvCheckbox from '@/components/Kv/KvCheckbox';
-// import KvTooltip from '@/components/Kv/KvTooltip';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import updateLoanReservationDonateRepayments from '@/graphql/mutation/updateLoanReservationDonateRepayments.graphql';
-
+import KvTooltip from '@/components/Kv/KvTooltip';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
@@ -84,6 +83,7 @@ export default {
 		KvCheckbox,
 		KvLightbox,
 		KvTextLink,
+		KvTooltip,
 	},
 	inject: ['apollo'],
 	data() {
