@@ -1,3 +1,10 @@
+## [2.50.0](https://github.com/kiva/ui/compare/v2.49.1...v2.50.0) (2022-01-26)
+
+
+### Features
+
+* remove beta query param for causes ([f53cfdf](https://github.com/kiva/ui/commit/f53cfdfd6c81f6494021e02b9b3f3be43d5103b6))
+
 ### [2.49.1](https://github.com/kiva/ui/compare/v2.49.0...v2.49.1) (2022-01-25)
 
 
