@@ -1,3 +1,10 @@
+### [2.50.1](https://github.com/kiva/ui/compare/v2.50.0...v2.50.1) (2022-01-26)
+
+
+### Bug Fixes
+
+* ensure team id is synced properly when present or 0 when not present ([b7ef7cf](https://github.com/kiva/ui/commit/b7ef7cf22a0f087b63dd10d1395b94b949003a35))
+
 ## [2.50.0](https://github.com/kiva/ui/compare/v2.49.1...v2.50.0) (2022-01-26)
 
 
