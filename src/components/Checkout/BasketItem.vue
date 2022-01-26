@@ -27,7 +27,7 @@
 					v-if="teams.length"
 					:teams="teams"
 					:loan-id="loan.id"
-					:team-id="loan.team ? loan.team.id : null"
+					:team-id="loan.team ? loan.team.id : 0"
 				/>
 				<loan-promo-credits
 					:applied-promo-credits="appliedPromoCredits"
