@@ -2,7 +2,8 @@
 	<div>
 		<div
 			v-if="showToggle"
-			:class="{ 'tw-flex tw-mt-2' : checkboxRight }"
+			class="tw-mt-2"
+			:class="{ 'tw-flex' : checkboxRight }"
 		>
 			<label
 				v-if="checkboxRight"
