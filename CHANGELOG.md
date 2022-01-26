@@ -1,3 +1,10 @@
+### [2.50.2](https://github.com/kiva/ui/compare/v2.50.1...v2.50.2) (2022-01-26)
+
+
+### Bug Fixes
+
+* core-411 only fetching fundraising loan data if loan is fundraising ([d2123ff](https://github.com/kiva/ui/commit/d2123ffb131e1bccdeecc17c62588e4432797229))
+
 ### [2.50.1](https://github.com/kiva/ui/compare/v2.50.0...v2.50.1) (2022-01-26)
 
 
