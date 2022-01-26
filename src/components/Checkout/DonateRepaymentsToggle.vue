@@ -132,9 +132,10 @@ export default {
 	},
 	methods: {
 		toggleCheckbox() {
-			// flip the donateRepayments value, in order to trigger the checkbox
+			// toggle the donateRepayments value, in order
+			// to trigger the donateRepayments checkbox
 			this.donateRepayments = !this.donateRepayments;
-			// then call the toggleDonatRepayments function to handle the rest
+			// then call the toggleDonateRepayments function to handle the rest
 			this.toggleDonateRepayments();
 		},
 		toggleDonateRepayments() {
