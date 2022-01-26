@@ -235,6 +235,7 @@ const filterOptionsQuery = gql`
 			tag {
 				id
 				name
+				vocabularyId
 			}
 		}
 	}
