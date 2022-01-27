@@ -13,6 +13,7 @@
 				:href="cardLink ? cardLink : null"
 				v-kv-track-event="cardAnalytics"
 				class="tw-block"
+				:class="{ 'tw-h-full': cardLink }"
 			>
 				<kv-contentful-img
 					class="kv-contentful-img tw-h-full tw-w-full tw-object-cover"
@@ -166,7 +167,7 @@ export default {
 		position: relative;
 	}
 
-	.story-card__imageCard >>> .kv-contentful-img::after,
+	.story-card__imageCard >>> div .kv-contentful-img::after,
 	.story-card__imageCard-title {
 		bottom: 0.5rem;
 		content: "";
@@ -175,7 +176,7 @@ export default {
 		text-transform: uppercase;
 	}
 
-	.story-card__imageCard >>> .kv-contentful-img::after {
+	.story-card__imageCard >>> div .kv-contentful-img::after {
 		background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
 		bottom: 0;
 		content: "";
