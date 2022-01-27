@@ -1,3 +1,10 @@
+## [2.52.0](https://github.com/kiva/ui/compare/v2.51.1...v2.52.0) (2022-01-27)
+
+
+### Features
+
+* remove HomepageMidrollCTA component ([eea129d](https://github.com/kiva/ui/commit/eea129d26a0e9cbfccac68146a807bac61ca520f))
+
 ### [2.51.1](https://github.com/kiva/ui/compare/v2.51.0...v2.51.1) (2022-01-27)
 
 
