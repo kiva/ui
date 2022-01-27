@@ -5,6 +5,7 @@
 			class="tw-mt-2 tw-flex donate-repayments-toggle"
 		>
 			<button
+				v-if="!myDonateRepayments"
 				class="tw-flex-1 tw-pt-0.5 md:tw-pt-0 tw-text-base
 					tw-font-medium tw-text-left md:tw-text-right tw-mr-2
 					tw-cursor-pointer"
@@ -39,10 +40,13 @@
 				Repayments from selected loans will not be added back to your account as Kiva credit.
 			</kv-lightbox>
 		</div>
-		<div class="tw-flex tw-mt-2">
+		<div
+			v-if="showToggle"
+			class="tw-flex tw-mt-2"
+		>
 			<kv-text-link
 				@click="isLightboxVisible = true;"
-				class="tw-text-base tw-text-left md:tw-text-right tw-w-full"
+				class="tw-text-left md:tw-text-right tw-w-full"
 			>
 				Learn more
 			</kv-text-link>
