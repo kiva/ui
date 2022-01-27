@@ -170,14 +170,14 @@
 								Donation to Kiva
 							</h3>
 							<router-link
-								v-if="receipt.totals.donationTotal > 0"
+								v-if="donationTotal > 0"
 								class="smallest"
 								to="/portfolio/donations"
 							>
 								Print Donation Information
 							</router-link>
 							<div class="loan__amount tw-text-h3">
-								${{ receipt.totals.donationTotal }}
+								${{ donationTotal }}
 							</div>
 						</div>
 					</li>
@@ -266,6 +266,7 @@
 </template>
 
 <script>
+import numeral from 'numeral';
 import { format } from 'date-fns';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvTooltip from '@/components/Kv/KvTooltip';
@@ -307,6 +308,10 @@ export default {
 		},
 	},
 	computed: {
+		donationTotal() {
+			const donationTotal = this.receipt?.totals?.donationTotal ?? 0;
+			return numeral(donationTotal).format('0.00');
+		},
 		formattedTransactionTime() {
 			return `${format(getUTCDate(this.receipt.transactionTime), 'MMMM dd, yyyy h:mm a')} GMT`;
 		},

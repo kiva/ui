@@ -124,7 +124,7 @@ export default {
 			imageRequire,
 			lender: {},
 			loans: [],
-			receipt: {},
+			receipt: null,
 			checkoutSteps: [
 				'Basket',
 				'Payment',
@@ -166,7 +166,7 @@ export default {
 			// The default empty object and the v-if will prevent the
 			// receipt from rendering in the rare cases this query fails.
 			// But it will not throw a server error.
-			this.receipt = data?.shop?.receipt;
+			this.receipt = data?.shop?.receipt ?? null;
 			this.isGuest = this.receipt && !data?.my?.userAccount;
 
 			const loansResponse = this.receipt?.items?.values ?? [];
