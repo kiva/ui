@@ -62,7 +62,6 @@ const HomepageCorporateSponsors = () => import('@/components/Homepage/HomepageCo
 const HomepageHowItWorks = () => import('@/components/Homepage/HomepageHowItWorks');
 const HomepageLenderQuotes = () => import('@/components/Homepage/HomepageLenderQuotes');
 const HomepageLoanCategories = () => import('@/components/Homepage/HomepageLoanCategories');
-const HomepageMidrollCTA = () => import('@/components/Homepage/HomepageMidrollCTA');
 const HomepageStatistics = () => import('@/components/Homepage/HomepageStatistics');
 const HomepageTestimonials = () => import('@/components/Homepage/HomepageTestimonials');
 const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
@@ -116,8 +115,6 @@ const getComponentFromType = type => {
 			return HomepageLenderQuotes;
 		case 'homepageLoanCategories':
 			return HomepageLoanCategories;
-		case 'homepageMidrollCta':
-			return HomepageMidrollCTA;
 		case 'homepageStatistics':
 			// return HomepageGeneralStats;
 			return HomepageStatistics;
