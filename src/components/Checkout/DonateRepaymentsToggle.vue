@@ -5,22 +5,20 @@
 			class="tw-mt-2"
 			:class="{ 'tw-flex' : checkboxRight }"
 		>
-			<label
+			<button
 				v-if="checkboxRight"
-				for="donateRepayments"
-				id="donate-repayments-tooltip"
 				class="tw-flex-1 tw-pt-0.5 md:tw-pt-0 tw-text-base
 					tw-font-medium tw-text-left md:tw-text-right tw-mr-2
 					tw-cursor-pointer"
 				@click="toggleCheckbox"
+				aria-hidden="true"
 			>
 				Donate loan repayments instead?
-			</label>
+			</button>
 			<kv-checkbox
 				class="tw-relative tw-cursor-pointer md:tw-text-right kv-checkbox"
 				:class="{ 'tw-pt-0 ' : checkboxRight }"
-				id="donateRepayments"
-				ref="donateRepayments"
+				id="donate-repayments"
 				v-if="!myDonateRepayments"
 				v-model="donateRepayments"
 				@change="toggleDonateRepayments"
