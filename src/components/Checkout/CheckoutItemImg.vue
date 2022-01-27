@@ -4,10 +4,7 @@
 		:to="`/lend/${loanId}`"
 		v-kv-track-event="['basket', 'click-Read more', 'Photo', loanId, loanId]"
 	>
-		<img class="loan-img"
-			width="80"
-			height="80"
-			style="width: 5rem; height: 5rem;"
+		<img class="loan-img tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
 			:src="imageUrl"
 			:alt="'photo of ' + name"
 		>

@@ -1,10 +1,11 @@
 <template>
-	<div class="loan-price-wrapper">
-		<div class="loan-price-select">
+	<div class="loan-price-wrapper tw-flex">
+		<div class="loan-price-select tw-flex-grow">
 			<label for="loan-price" class="tw-sr-only">Loan Price</label>
 			<kv-select
 				v-model="selectedOption"
-				class="loan-price"
+				class="loan-price tw-w-full"
+				style="max-width: 18rem;"
 				id="loan-price"
 				@change="updateLoanReservation()"
 			>
@@ -16,17 +17,15 @@
 				</option>
 			</kv-select>
 		</div>
-		<button
-			class="remove-wrapper"
-			@click="updateLoanReservation('remove')"
-		>
-			<kv-icon
-				class="remove-x tw-text-tertiary tw-fill-current"
-				name="small-x"
-				:from-sprite="true"
-				title="Remove from cart"
-			/>
-		</button>
+
+		<remove-basket-item
+			class="tw-hidden tw-flex-none tw-ml-2 tw-py-0.5 md:tw-py-1 md:tw-flex tw-items-center"
+			:loan-id="loanId"
+			:ids-in-group="idsInGroup"
+			:type="type"
+			@refreshtotals="$emit('refreshtotals', $event)"
+			@updating-totals="$emit('updating-totals', $event)"
+		/>
 	</div>
 </template>
 
@@ -35,14 +34,14 @@ import numeral from 'numeral';
 import _forEach from 'lodash/forEach';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import updateKivaCardAmount from '@/graphql/mutation/updateKivaCardAmount.graphql';
-import KvIcon from '@/components/Kv/KvIcon';
+import RemoveBasketItem from '@/components/Checkout/RemoveBasketItem';
 import { buildPriceArray } from '@/util/loanUtils';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
 	components: {
-		KvIcon,
-		KvSelect
+		KvSelect,
+		RemoveBasketItem,
 	},
 	inject: ['apollo'],
 	props: {
@@ -118,18 +117,13 @@ export default {
 		}
 	},
 	methods: {
-		updateLoanReservation(changeType) {
+		updateLoanReservation() {
 			if (this.type === 'loan') {
 				if (this.selectedOption !== this.price) {
 					this.$emit('updating-totals', true);
-					let updatedPrice;
-					// If the loan remove X is clicked: set updatedPrice to 0
-					// else pull the value out of the loanPrice select and keep moving through method
-					if (changeType === 'remove') {
-						updatedPrice = 0;
-					} else {
-						updatedPrice = numeral(this.selectedOption).format('0.00');
-					}
+
+					const updatedPrice = numeral(this.selectedOption).format('0.00');
+
 					this.apollo.mutate({
 						mutation: updateLoanReservation,
 						variables: {
@@ -159,12 +153,12 @@ export default {
 							this.$kvTrackEvent(
 								'basket',
 								'Update Loan Amount',
-								updatedPrice === 0 ? 'Loan Removed' : 'Update Success',
+								'Update Success',
 								// pass updated loan amount as whole number
 								numeral(updatedPrice).value(),
 								numeral(updatedPrice).value()
 							);
-							this.$emit('refreshtotals', this.changeType === 'remove' ? 'removeLoan' : '');
+							this.$emit('refreshtotals');
 							this.$emit('updating-totals', false);
 							this.cachedSelection = this.selectedOption;
 						}
@@ -176,14 +170,9 @@ export default {
 			} else if (this.type === 'kivaCard') {
 				if (this.selectedOption !== this.price) {
 					this.$emit('updating-totals', true);
-					let updatedPrice;
-					// If the loan remove X is clicked: set updatedPrice to 0
-					// else pull the value out of the loanPrice select and keep moving through method
-					if (changeType === 'remove') {
-						updatedPrice = 0;
-					} else {
-						updatedPrice = numeral(this.selectedOption).format('0.00');
-					}
+
+					const updatedPrice = numeral(this.selectedOption).format('0.00');
+
 					this.apollo.mutate({
 						mutation: updateKivaCardAmount,
 						variables: {
@@ -201,11 +190,11 @@ export default {
 							this.$kvTrackEvent(
 								'basket',
 								'Update Kiva Card Amount',
-								updatedPrice === 0 ? 'Kiva Card Removed' : 'Update Success',
+								'Update Success',
 								// pass updated Kiva Card amount as whole number
 								numeral(updatedPrice).value()
 							);
-							this.$emit('refreshtotals', this.changeType === 'remove' ? 'removeLoan' : '');
+							this.$emit('refreshtotals');
 							this.$emit('updating-totals', false);
 							this.cachedSelection = this.selectedOption;
 						}
@@ -220,47 +209,3 @@ export default {
 };
 
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.loan-price-wrapper {
-	display: flex;
-	align-items: flex-start;
-	white-space: nowrap;
-	justify-content: flex-start;
-
-	@include breakpoint(medium) {
-		justify-content: flex-end;
-	}
-}
-
-.remove-wrapper {
-	display: inline-block;
-	margin-left: rem-calc(56);
-	cursor: pointer;
-
-	@include breakpoint(medium) {
-		margin-left: 0;
-	}
-}
-
-.loan-price-select {
-	float: left;
-	width: rem-calc(95);
-
-	@include breakpoint(medium) {
-		margin-right: rem-calc(20);
-	}
-}
-
-.remove-x {
-	display: inline-block;
-	width: 1.1rem;
-	height: rem-calc(50);
-
-	@include breakpoint(medium) {
-		height: rem-calc(36);
-	}
-}
-</style>

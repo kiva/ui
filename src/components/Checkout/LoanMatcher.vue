@@ -1,5 +1,5 @@
 <template functional>
-	<p class="tw-text-small tw-text-secondary tw-my-1 matching-text">
+	<p class="tw-text-small tw-text-secondary matching-text">
 		Matched by {{ props.matchingText }}
 	</p>
 </template>
