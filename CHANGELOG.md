@@ -1,3 +1,16 @@
+## [2.53.0](https://github.com/kiva/ui/compare/v2.52.0...v2.53.0) (2022-01-27)
+
+
+### Features
+
+* core-370 optional styles for swapping the checkbox and label for the  vintage KvCheckbox ([4ca52b3](https://github.com/kiva/ui/commit/4ca52b3cf6ae5b30e9dffab37bf4350e613ba439))
+
+
+### Bug Fixes
+
+* core-370 fixing the tool tip, and ensuring both checkbox right and checkbox left look right ([9b20185](https://github.com/kiva/ui/commit/9b2018547887f2d35dc1c05a893fde551b75227c))
+* core-370 tailwinds adjustments, removing tw-mt-2 from conditional and displaying it always. ([816c130](https://github.com/kiva/ui/commit/816c1302d54f3f554c3e2f12156b1f3d3797c61d))
+
 ## [2.52.0](https://github.com/kiva/ui/compare/v2.51.1...v2.52.0) (2022-01-27)
 
 
