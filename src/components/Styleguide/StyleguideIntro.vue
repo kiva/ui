@@ -33,15 +33,15 @@
 
 		<div class="callout warning">
 			<h3><strong>No Foundation Javascript</strong></h3>
-			<p class="small-text">
+			<p class="tw-text-small">
 				We only use the scss portion of the Foundation toolset, opting NOT to include any of their
 				javascript or any components that depend on that inclusion.
 			</p>
-			<p class="small-text">
+			<p class="tw-text-small">
 				This decision was made primarily due to the additional filesize that including
 				jQuery and other associated scripts would add.
 			</p>
-			<p class="small-text">
+			<p class="tw-text-small">
 				<strong>Look for Foundation Callouts in other sections for tips on how the framework is used.</strong>
 			</p>
 		</div>

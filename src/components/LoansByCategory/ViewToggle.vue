@@ -10,7 +10,7 @@
 					name="browse-toggle"
 					class="browse-toggle-icon"
 				/>
-				<span class="small-text show-for-xlarge view-text">Explore</span>
+				<span class="tw-text-small show-for-xlarge view-text">Explore</span>
 			</span>
 		</router-link>
 		<router-link
@@ -23,7 +23,7 @@
 					name="filters-toggle"
 					class="filter-toggle-icon"
 				/>
-				<span class="small-text show-for-xlarge view-text">Filter</span>
+				<span class="tw-text-small show-for-xlarge view-text">Filter</span>
 			</span>
 		</router-link>
 	</div>

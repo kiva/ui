@@ -38,7 +38,7 @@
 
 									<div class="small-6 medium-4 columns">
 										<label
-											class="show-for-sr"
+											class="tw-sr-only"
 											:class="{ 'error': $v.mgAmount.$invalid }"
 											for="amount"
 										>
@@ -71,7 +71,7 @@
 
 									<div class="small-6 medium-4 columns">
 										<label
-											class="show-for-sr"
+											class="tw-sr-only"
 											:class="{ 'error': $v.donation.$invalid }"
 											for="amount"
 										>

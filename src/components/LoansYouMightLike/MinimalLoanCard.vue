@@ -17,7 +17,7 @@
 					:loan-id="loan.id"
 					:name="loan.name"
 					:title="loan.name"
-					class="small-text name"
+					class="tw-text-small name"
 				>
 					{{ loan.name }}
 				</p>
@@ -31,7 +31,7 @@
 				/>
 				<!-- Country -->
 				<p
-					class="small-text loan-data tw-text-secondary"
+					class="tw-text-small loan-data tw-text-secondary"
 					:country="loan.geocode.country.name"
 					:sector="loan.activity.name"
 				>

@@ -1,13 +1,5 @@
 @import "settings";
 
-h1.huge {
-	@include huge-headline();
-}
-
-.small-text {
-	@include small-text();
-}
-
 .featured-text {
 	@include featured-text();
 }
@@ -18,12 +10,4 @@ h1.huge {
 
 .large-text {
 	@include large-text();
-}
-
-.impact-text {
-	@include impact-text();
-}
-
-.strong {
-	font-weight: bold;
 }

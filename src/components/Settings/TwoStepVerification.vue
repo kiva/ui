@@ -26,7 +26,9 @@
 				<p class="tw-mb-4">
 					Protect your Kiva account with an extra layer of security by requiring access
 					to your phone. Once configured, you'll be required to enter
-					<span class="strong">both your password and an authenication code from your mobile phone</span>
+					<span class="tw-font-medium">
+						both your password and an authenication code from your mobile phone
+					</span>
 					in order to access your account.
 				</p>
 				<kv-button

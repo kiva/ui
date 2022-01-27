@@ -8,12 +8,12 @@
 					aria-label="Previous page"
 				>
 					<kv-icon class="icon tw-fill-current" name="triangle" :from-sprite="true" />
-					<span class="show-for-sr">Previous page</span>
+					<span class="tw-sr-only">Previous page</span>
 				</router-link>
 			</li>
 			<li v-else class="pagination-previous tw-text-tertiary">
 				<kv-icon class="icon tw-fill-current tw-text-tertiary" name="triangle" :from-sprite="true" />
-				<span class="show-for-sr">Previous page</span>
+				<span class="tw-sr-only">Previous page</span>
 			</li>
 			<li v-for="(number, index) in numbers"
 				:key="number || -index"
@@ -32,7 +32,7 @@
 					{{ number }}
 				</router-link>
 				<span v-if="number === current">
-					<span class="show-for-sr">You're on page </span>
+					<span class="tw-sr-only">You're on page </span>
 					{{ number }}
 				</span>
 			</li>
@@ -42,12 +42,12 @@
 					@click.native="pageChange(current + 1, $event)"
 					aria-label="Next page"
 				>
-					<span class="show-for-sr">Next page</span>
+					<span class="tw-sr-only">Next page</span>
 					<kv-icon class="icon tw-fill-current" name="triangle" :from-sprite="true" />
 				</router-link>
 			</li>
 			<li v-else class="pagination-next disabled">
-				<span class="show-for-sr">Next page</span>
+				<span class="tw-sr-only">Next page</span>
 				<kv-icon class="icon tw-fill-current tw-text-tertiary" name="triangle" :from-sprite="true" />
 			</li>
 		</ul>

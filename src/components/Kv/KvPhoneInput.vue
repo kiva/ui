@@ -8,7 +8,7 @@
 	>
 		<div class="kv-phone-input__wrapper">
 			<label
-				class="show-for-sr"
+				class="tw-sr-only"
 				:for="`country_select_${id}`"
 			>
 				Select your country

@@ -11,7 +11,7 @@
 			:use-default-styles="false"
 		/>
 		<div class="minimal-loan-card-data-wrap">
-			<p class="small-text name">
+			<p class="tw-text-small name">
 				{{ loan.name }}
 			</p>
 			<!-- loan meter	 -->
@@ -24,7 +24,7 @@
 				/>
 			</div>
 			<!-- Country -->
-			<p class="small-text loan-data">
+			<p class="tw-text-small loan-data">
 				<span>{{ loan.geocode.country.name }}</span>
 				<span>{{ loan.activity.name }}</span>
 			</p>

@@ -3,7 +3,7 @@
 		v-if="isUnsupportedBrowser"
 		variant="caution"
 	>
-		<div class="tw-text-center strong">
+		<div class="tw-text-center tw-font-medium">
 			Your browser is unsupported.
 			Please use
 			<template v-if="isAppleDevice">
