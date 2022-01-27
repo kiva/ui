@@ -1,3 +1,10 @@
+### [2.53.1](https://github.com/kiva/ui/compare/v2.53.0...v2.53.1) (2022-01-27)
+
+
+### Bug Fixes
+
+* remove gradient from imageCard link storycards ([a35135c](https://github.com/kiva/ui/commit/a35135c552589c50909d41f641b9492a0cd1a1ac))
+
 ## [2.53.0](https://github.com/kiva/ui/compare/v2.52.0...v2.53.0) (2022-01-27)
 
 
