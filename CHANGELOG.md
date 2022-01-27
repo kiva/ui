@@ -1,3 +1,10 @@
+## [2.51.0](https://github.com/kiva/ui/compare/v2.50.2...v2.51.0) (2022-01-27)
+
+
+### Features
+
+* restrict Causes users from seeing MG and AD signups ([12796dd](https://github.com/kiva/ui/commit/12796dde9909f33fded468f045450d821607eadf))
+
 ### [2.50.2](https://github.com/kiva/ui/compare/v2.50.1...v2.50.2) (2022-01-26)
 
 
