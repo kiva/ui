@@ -42,8 +42,8 @@
 		</div>
 
 		<thanks-layout-v2
-			:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !showAutoDepositUpsell"
-			:show-auto-deposit-upsell="!isAutoDepositSubscriber && showAutoDepositUpsell"
+			:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !showAutoDepositUpsell && !hasModernSub"
+			:show-auto-deposit-upsell="!isAutoDepositSubscriber && showAutoDepositUpsell && !hasModernSub"
 			:show-guest-upsell="isGuest"
 			:show-share="loans.length > 0"
 		>
@@ -132,6 +132,7 @@ export default {
 			],
 			isAutoDepositSubscriber: false,
 			isMonthlyGoodSubscriber: false,
+			hasModernSub: false,
 			isGuest: false,
 			pageData: {},
 		};
@@ -162,6 +163,9 @@ export default {
 			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
 			const hasAutoDeposit = data?.my?.autoDeposit?.id ?? false;
 			this.isAutoDepositSubscriber = !!(hasAutoDeposit && !this.isMonthlyGoodSubscriber);
+
+			const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+			this.hasModernSub = modernSubscriptions.length !== 0;
 
 			// The default empty object and the v-if will prevent the
 			// receipt from rendering in the rare cases this query fails.

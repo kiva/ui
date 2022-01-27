@@ -50,8 +50,6 @@ export default {
 	},
 	data() {
 		return {
-			isExperimentActive: true,
-			isMonthlyGoodSubscriber: false,
 		};
 	},
 };
