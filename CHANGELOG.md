@@ -1,3 +1,10 @@
+### [2.51.1](https://github.com/kiva/ui/compare/v2.51.0...v2.51.1) (2022-01-27)
+
+
+### Bug Fixes
+
+* exclude private tags from the tag filter list ([58ae628](https://github.com/kiva/ui/commit/58ae628396e31f296855bce7a86648dcf8c8e9db))
+
 ## [2.51.0](https://github.com/kiva/ui/compare/v2.50.2...v2.51.0) (2022-01-27)
 
 
