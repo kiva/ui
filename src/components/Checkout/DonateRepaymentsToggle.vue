@@ -2,11 +2,9 @@
 	<div>
 		<div
 			v-if="showToggle"
-			class="tw-mt-2"
-			:class="{ 'tw-flex' : checkboxRight }"
+			class="tw-mt-2 tw-flex donate-repayments-toggle"
 		>
 			<button
-				v-if="checkboxRight"
 				class="tw-flex-1 tw-pt-0.5 md:tw-pt-0 tw-text-base
 					tw-font-medium tw-text-left md:tw-text-right tw-mr-2
 					tw-cursor-pointer"
@@ -16,17 +14,17 @@
 				Donate loan repayments instead?
 			</button>
 			<kv-checkbox
-				class="tw-relative tw-cursor-pointer md:tw-text-right kv-checkbox"
-				:class="{ 'tw-pt-0 ' : checkboxRight }"
+				class="tw-relative tw-cursor-pointer md:tw-text-right kv-checkbox tw-pt-0 donate-repayments-label"
 				id="donate-repayments"
+				data-testid="donate-repayments"
 				v-if="!myDonateRepayments"
 				v-model="donateRepayments"
 				@change="toggleDonateRepayments"
 			>
 				<span
 					id="donate-repayments-tooltip"
-					class="tw-text-small tw-font-medium"
-					:class="{ 'tw-sr-only' : checkboxRight }"
+					data-testid="donate-repayments-tooltip"
+					class="tw-text-small tw-font-medium tw-sr-only"
 				>
 					Donate loan repayments instead?
 				</span>
@@ -40,21 +38,8 @@
 				helping us cover operating costs and reach even more borrowers worldwide.
 				Repayments from selected loans will not be added back to your account as Kiva credit.
 			</kv-lightbox>
-
-			<kv-tooltip v-if="!checkboxRight" controller="donate-repayments-tooltip" theme="mint">
-				<template #title>
-					Thanks for your support!
-				</template>
-				When you check this box, repayments go back to Kiva in the form of donations,
-				helping us cover operating costs and reach even more borrowers worldwide.
-				<br>
-				Repayments from selected loans will not be added back to your account as Kiva credit.
-			</kv-tooltip>
 		</div>
-		<div
-			v-if="checkboxRight"
-			class="tw-flex tw-mt-2"
-		>
+		<div class="tw-flex tw-mt-2">
 			<kv-text-link
 				@click="isLightboxVisible = true;"
 				class="tw-text-base tw-text-left md:tw-text-right tw-w-full"
@@ -72,7 +57,6 @@ import _forEach from 'lodash/forEach';
 import numeral from 'numeral';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import updateLoanReservationDonateRepayments from '@/graphql/mutation/updateLoanReservationDonateRepayments.graphql';
-import KvTooltip from '@/components/Kv/KvTooltip';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
@@ -82,7 +66,6 @@ export default {
 		KvCheckbox,
 		KvLightbox,
 		KvTextLink,
-		KvTooltip,
 	},
 	inject: ['apollo'],
 	data() {
@@ -92,7 +75,6 @@ export default {
 			totals: {},
 			loans: [],
 			isLightboxVisible: false,
-			checkboxRight: true,
 		};
 	},
 	created() {
