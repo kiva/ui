@@ -29,7 +29,7 @@
 			</div>
 			<div class="row align-center">
 				<div class="small-12 medium-11 large-10 column"
-					v-if="!isMonthlyGoodSubscriber && !hasLegacySubscription"
+					v-if="!isMonthlyGoodSubscriber && !hasLegacySubscription && !hasModernSub"
 				>
 					<h1 class="tw-text-center tw-mb-2">
 						Confirm your Good
@@ -280,7 +280,7 @@
 				</div>
 				<already-subscribed-notice
 					class="small-12 medium-11 large-8 column"
-					v-if="isMonthlyGoodSubscriber"
+					v-if="isMonthlyGoodSubscriber || hasModernSub"
 					:onetime="isOnetime"
 				/>
 				<legacy-subscriber-notice
@@ -354,6 +354,12 @@ const pageQuery = gql`query monthlyGoodSetupPageControl {
 		userAccount {
 			id
 			balance
+		}
+	}
+	mySubscriptions(includeDisabled: false) {
+		values {
+			id
+			enabled
 		}
 	}
 }`;
@@ -433,6 +439,7 @@ export default {
 			hasAutoDeposits: false,
 			hasAutoLending: false,
 			hasLegacySubscription: false,
+			hasModernSub: false,
 			isMGTaglineActive: false,
 			hasActiveLogin: false,
 			balance: 0,
@@ -528,6 +535,8 @@ export default {
 			this.hasLegacySubscription = this.legacySubs.length > 0;
 			this.hasActiveLogin = !!pageQueryResult?.my;
 			this.balance = Math.floor(pageQueryResult?.my?.userAccount?.balance ?? 0);
+			const modernSubscriptions = pageQueryResult?.mySubscriptions?.values ?? [];
+			this.hasModernSub = modernSubscriptions.length !== 0;
 		} catch (e) {
 			logReadQueryError(e, 'MonthlyGoodSetupPage pageQuery');
 		}

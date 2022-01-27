@@ -24,21 +24,21 @@
 							:selected-group.sync="selectedGroup"
 							key="top"
 							:button-text="heroPrimaryCtaText"
-							v-if="!isMonthlyGoodSubscriber && !isExperimentActive"
+							v-if="!isMonthlyGoodSubscriber && !isExperimentActive && !hasModernSub"
 						/>
 						<landing-form-experiment
 							:amount.sync="monthlyGoodAmount"
 							:selected-group.sync="selectedGroup"
 							key="top"
 							:button-text="heroPrimaryCtaText"
-							v-if="!isMonthlyGoodSubscriber && isExperimentActive"
+							v-if="!isMonthlyGoodSubscriber && isExperimentActive && !hasModernSub"
 						/>
 						<div
 							class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
-							v-if="isMonthlyGoodSubscriber"
+							v-if="isMonthlyGoodSubscriber || hasModernSub"
 						>
 							<p class="tw-font-medium tw-mb-2">
-								You're already signed up for Monthly Good. Changes to this
+								You're already signed up for a subscription. Changes to this
 								contribution can be made in your
 								<a href="/settings/subscriptions">subscription settings</a>.
 							</p>
@@ -55,15 +55,15 @@
 					:amount.sync="monthlyGoodAmount"
 					:selected-group.sync="selectedGroup"
 					key="bottom"
-					v-if="!isMonthlyGoodSubscriber"
+					v-if="!isMonthlyGoodSubscriber && !hasModernSub"
 					:button-text="heroPrimaryCtaText"
 				/>
 				<div
 					class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
-					v-if="isMonthlyGoodSubscriber"
+					v-if="isMonthlyGoodSubscriber || hasModernSub"
 				>
-					<p class="tw-font-medium">
-						You're already signed up for Monthly Good. Changes to this
+					<p class="tw-font-medium tw-mb-2">
+						You're already signed up for a subscription. Changes to this
 						contribution can be made in your
 						<a href="/settings/subscriptions">subscription settings</a>.
 					</p>
@@ -122,6 +122,12 @@ const pageQuery = gql`
 		}
 		contentful {
 			entries(contentType: "page", contentKey: "monthlygood")
+		}
+		mySubscriptions(includeDisabled: false) {
+			values {
+				id
+				enabled
+			}
 		}
 	}
 `;
@@ -182,6 +188,7 @@ export default {
 					media: 'min-width: 0px',
 				},
 			],
+			hasModernSub: false,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -201,6 +208,9 @@ export default {
 		},
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
+
+			const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+			this.hasModernSub = modernSubscriptions.length !== 0;
 
 			// Monthly Good Amount Selector Experiment - EXP-GROW-11-Apr2020
 			const mgAmountSelectorExperiment = this.apollo.readFragment({

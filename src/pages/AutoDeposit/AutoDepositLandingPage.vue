@@ -46,8 +46,20 @@
 				</div>
 			</div>
 
-			<!-- Auto Deposit What To Expect -->
+			<!-- Modern Sub Notice -->
+			<div class="row" v-if="hasModernSub">
+				<div class="small-12 columns">
+					<div class="tw-p-2 tw-mb-4 tw-bg-caution tw-text-black">
+						<p class="tw-text-h3">
+							Auto Deposit is not available to current subscribers.
+							Changes can be made in your
+							<a href="/settings/subscriptions">subscription settings</a>.
+						</p>
+					</div>
+				</div>
+			</div>
 		</section>
+		<!-- Auto Deposit What To Expect -->
 		<section class="tw-py-4 md:tw-py-6 lg:tw-py-8 tw-text-center tw-bg-secondary">
 			<div class="row">
 				<h2 class="small-12 column tw-mb-4">
@@ -117,6 +129,12 @@ const pageQuery = gql`query autoDepositLandingPage {
 			isSubscriber
 		}
 	}
+	mySubscriptions(includeDisabled: false) {
+		values {
+			id
+			enabled
+		}
+	}
 	contentful {
 		entries(contentType: "page", contentKey: "auto-deposit")
 	}
@@ -140,6 +158,7 @@ export default {
 			hasAutoDeposits: false,
 			hasLegacySubscription: false,
 			pageData: null,
+			hasModernSub: false,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -156,6 +175,9 @@ export default {
 
 			const legacySubs = data?.my?.subscriptions?.values ?? [];
 			this.hasLegacySubscription = legacySubs.length > 0;
+
+			const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+			this.hasModernSub = modernSubscriptions.length !== 0;
 		},
 	},
 	computed: {
@@ -163,7 +185,10 @@ export default {
 			return this.pageData?.page?.pageLayout?.contentGroups ?? [];
 		},
 		canDisplayForm() {
-			return !this.isMonthlyGoodSubscriber && !this.hasAutoDeposits && !this.hasLegacySubscription;
+			return !this.isMonthlyGoodSubscriber
+				&& !this.hasAutoDeposits
+				&& !this.hasLegacySubscription
+				&& !this.hasModernSub;
 		},
 		faqContentGroup() {
 			return this.contentGroups?.find(({ type }) => {
