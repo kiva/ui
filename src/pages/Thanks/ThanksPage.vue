@@ -82,7 +82,9 @@
 
 <script>
 import confetti from 'canvas-confetti';
+import gql from 'graphql-tag';
 import numeral from 'numeral';
+import logReadQueryError from '@/util/logReadQueryError';
 
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import GuestUpsell from '@/components/Checkout/GuestUpsell';
@@ -100,6 +102,15 @@ import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 
 const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
+
+const mySubscriptionsQuery = gql`query mySubscriptionsQuery {
+	mySubscriptions(includeDisabled: false) {
+		values {
+			id
+			enabled
+		}
+	}
+}`;
 
 export default {
 	components: {
@@ -124,7 +135,7 @@ export default {
 			imageRequire,
 			lender: {},
 			loans: [],
-			receipt: {},
+			receipt: null,
 			checkoutSteps: [
 				'Basket',
 				'Payment',
@@ -164,13 +175,14 @@ export default {
 			const hasAutoDeposit = data?.my?.autoDeposit?.id ?? false;
 			this.isAutoDepositSubscriber = !!(hasAutoDeposit && !this.isMonthlyGoodSubscriber);
 
-			const modernSubscriptions = data?.mySubscriptions?.values ?? [];
-			this.hasModernSub = modernSubscriptions.length !== 0;
+			// TOOD: Re-enable in preFetch once all envs have this endpoint
+			// const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+			// this.hasModernSub = modernSubscriptions.length !== 0;
 
 			// The default empty object and the v-if will prevent the
 			// receipt from rendering in the rare cases this query fails.
 			// But it will not throw a server error.
-			this.receipt = data?.shop?.receipt;
+			this.receipt = data?.shop?.receipt ?? null;
 			this.isGuest = this.receipt && !data?.my?.userAccount;
 
 			const loansResponse = this.receipt?.items?.values ?? [];
@@ -239,6 +251,20 @@ export default {
 				return true;
 			}
 			return false;
+		}
+	},
+	created() {
+		// extract mySubscriptions query so we can guard with try catch
+		let mySubsCheck = {};
+		try {
+			mySubsCheck = this.apollo.readQuery({
+				query: mySubscriptionsQuery,
+			});
+
+			const modernSubscriptions = mySubsCheck?.mySubscriptions?.values ?? [];
+			this.hasModernSub = modernSubscriptions.length !== 0;
+		} catch (e) {
+			logReadQueryError(e, 'Thanks mySubscriptions query');
 		}
 	},
 	mounted() {
