@@ -1,3 +1,10 @@
+## [2.54.0](https://github.com/kiva/ui/compare/v2.53.1...v2.54.0) (2022-01-28)
+
+
+### Features
+
+* update basket items with Kiva Classic and extract a removeBasketItem component ([b36797d](https://github.com/kiva/ui/commit/b36797d94cbc8c1e577107d9e6b26ec564a54edc))
+
 ### [2.53.1](https://github.com/kiva/ui/compare/v2.53.0...v2.53.1) (2022-01-27)
 
 
