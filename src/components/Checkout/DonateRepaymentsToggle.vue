@@ -63,14 +63,12 @@ import numeral from 'numeral';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import updateLoanReservationDonateRepayments from '@/graphql/mutation/updateLoanReservationDonateRepayments.graphql';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 
 export default {
 	components: {
 		KvCheckbox,
 		KvLightbox,
-		KvTextLink,
 	},
 	inject: ['apollo'],
 	data() {
