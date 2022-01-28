@@ -1,3 +1,16 @@
+## [2.56.0](https://github.com/kiva/ui/compare/v2.55.1...v2.56.0) (2022-01-28)
+
+
+### Features
+
+* remove unused styleguide routes and components ([680b9f7](https://github.com/kiva/ui/commit/680b9f7dcbc25b4c1b61a97be8952a859e69bcea))
+* update /styleguide page content to point to Kiva Classic resources ([87686a9](https://github.com/kiva/ui/commit/87686a9bbad6276ab3e6c66c017e0daf5a39ba2d))
+
+
+### Bug Fixes
+
+* redirect child styleguide routes to new styleguide page ([80cf0bc](https://github.com/kiva/ui/commit/80cf0bcb2cc333d3a3424b67354cbeeee2a2764d))
+
 ### [2.55.1](https://github.com/kiva/ui/compare/v2.55.0...v2.55.1) (2022-01-28)
 
 
