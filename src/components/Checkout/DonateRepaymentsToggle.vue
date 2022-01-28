@@ -44,12 +44,13 @@
 			v-if="showToggle"
 			class="tw-flex tw-mt-2"
 		>
-			<kv-text-link
+			<button
+				class="tw-text-link tw-text-left md:tw-text-right tw-w-full"
 				@click="isLightboxVisible = true;"
-				class="tw-text-left md:tw-text-right tw-w-full"
+				v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
 			>
 				Learn more
-			</kv-text-link>
+			</button>
 		</div>
 	</div>
 </template>
