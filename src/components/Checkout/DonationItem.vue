@@ -1,94 +1,44 @@
 <template>
-	<div>
-		<div class="tw-flex tw-flex-col md:tw-flex-row tw-pb-5">
-			<!-- donation image -->
-			<div class="tw-hidden md:tw-block tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
-				<img class="donation-img tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
-					:src="imageRequire(`./peace-sign-holding-money.svg`)"
-					alt="donation line item image"
-				>
-			</div>
-
-			<!-- donation text -->
-			<div class="tw-flex-auto">
-				<div class="tw-mb-0.5">
-					<div class="tw-w-full tw-flex">
-						<h2 class="tw-flex-1 md:tw-flex-grow tw-text-h3">
-							{{ donationTitle }}
-						</h2>
-						<button
-							class="donation-amount md:tw-hidden tw-flex-none tw-align-middle"
-							v-kv-track-event="['basket', 'Edit Donation']"
-							@click="enterEditDonation"
-							title="Edit Donation"
-						>
-							<kv-material-icon
-								role="img"
-								aria-label="Edit Donation"
-								title="Edit Donation"
-								class="edit-donation tw-text-action
-								tw-w-3.5
-								tw-h-3.5
-								md:tw-hidden"
-								name="pencil"
-								:icon="mdiPencil"
-							/>
-						</button>
-					</div>
-
-					<div
-						v-show="!editDonation"
-						class="md:tw-hidden"
-					>
-						<button
-							class="donation-amount"
-							v-kv-track-event="['basket', 'Edit Donation']"
-							@click="enterEditDonation"
-							title="Edit Donation"
-						>
-							{{ formattedAmount }}
-							<kv-material-icon
-								role="img"
-								aria-label="Edit Donation"
-								title="Edit Donation"
-								class="edit-donation tw-text-action
-								tw-w-3.5
-								tw-h-3.5
-								tw-hidden md:tw-inline-block
-								"
-								name="pencil"
-								:icon="mdiPencil"
-							/>
-						</button>
-					</div>
-
-					<div v-if="hasLoans">
-						<div class="donation-tagline tw-text-small tw-text-secondary tw-my-1" v-html="donationTagLine">
-						</div>
-						<button
-							class="tw-text-small tw-text-link"
-							@click="triggerDefaultLightbox"
-							v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
-						>
-							{{ donationDetailsLink }}
-						</button>
-					</div>
-				</div>
-			</div>
-
-			<!-- donation total -->
-			<div class="
-				tw-flex-none
-				tw-w-full
-				md:tw-w-auto
-				md:tw-ml-3
-				lg:tw-ml-4.5
-				tw-mt-1.5
-				md:tw-mt-0"
+	<div class="tw-flex tw-flex-col md:tw-flex-row tw-pb-5">
+		<!-- donation image -->
+		<div class="tw-hidden md:tw-block tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
+			<img class="donation-img tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
+				:src="imageRequire(`./peace-sign-holding-money.svg`)"
+				alt="donation line item image"
 			>
+		</div>
+
+		<!-- donation text -->
+		<div class="tw-flex-auto">
+			<div class="tw-mb-0.5">
+				<div class="tw-w-full tw-flex">
+					<h2 class="tw-flex-1 md:tw-flex-grow tw-text-h3">
+						{{ donationTitle }}
+					</h2>
+					<button
+						class="donation-amount md:tw-hidden tw-flex-none tw-align-middle"
+						v-kv-track-event="['basket', 'Edit Donation']"
+						@click="enterEditDonation"
+						title="Edit Donation"
+					>
+						<kv-material-icon
+							role="img"
+							aria-label="Edit Donation"
+							title="Edit Donation"
+							class="edit-donation tw-text-action
+								tw-w-3.5
+								tw-h-3.5
+								tw-py-0.5
+								md:tw-hidden"
+							name="pencil"
+							:icon="mdiPencil"
+						/>
+					</button>
+				</div>
+
 				<div
 					v-show="!editDonation"
-					class="tw-hidden md:tw-block"
+					class="md:tw-hidden"
 				>
 					<button
 						class="donation-amount"
@@ -104,97 +54,149 @@
 							class="edit-donation tw-text-action
 								tw-w-3.5
 								tw-h-3.5
+								tw-py-0.5
+								tw-hidden md:tw-inline-block
 								"
 							name="pencil"
 							:icon="mdiPencil"
 						/>
 					</button>
 				</div>
-				<div v-show="editDonation" class="small-12 columns donation-amount-input-wrapper">
-					<kv-text-input
-						class="donation-amount-input"
-						name="donation"
-						id="donation"
-						v-model="amount"
-						@blur="validateInput"
-						@keyup.enter.prevent="updateDonation()"
-					/>
-					<kv-button
-						variant="secondary"
-						class="update-donation-inline-button"
-						@click="updateDonation()"
-					>
-						Update
-					</kv-button>
+
+				<div v-if="hasLoans">
+					<div class="donation-tagline tw-text-small tw-text-secondary tw-my-1" v-html="donationTagLine">
+					</div>
 					<button
-						class="show-for-medium remove-wrapper"
-						@click="updateLoanAmount('remove')"
+						class="tw-text-small tw-text-link"
+						@click="triggerDefaultLightbox"
+						v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
 					>
-						<kv-material-icon
-							class="remove-x tw-text-tertiary"
-							name="small-x"
-							:from-sprite="true"
-							title="Remove donation"
-						/>
+						{{ donationDetailsLink }}
 					</button>
 				</div>
-				<donate-repayments
-					v-if="hasLoans"
-					@updating-totals="$emit('updating-totals', $event)"
-					@refreshtotals="$emit('refreshtotals')"
-				/>
 			</div>
-
-			<!-- Donation nudge lightbox -->
-			<donation-nudge-lightbox
-				ref="nudgeLightbox"
-				:loan-count="loanCount"
-				:loan-reservation-total="loanReservationTotal"
-				:nudge-lightbox-visible="nudgeLightboxVisible"
-				:close-nudge-lightbox="closeNudgeLightbox"
-				:update-donation-to="updateDonationTo"
-				:has-custom-donation="hasCustomDonation"
-				:experimental-footer="showCharityOverheadFooter"
-				:description="donationNudgeDescription()"
-				:percentage-rows="donationNudgePercentageRows"
-				:current-donation-amount="amount"
-			/>
-
-			<!-- How kiva use's donations lightbox -->
-			<kv-lightbox
-				:visible="defaultLbVisible"
-				@lightbox-closed="lightboxClosed"
-				title="How does Kiva use donations?"
-			>
-				<div class="tw-prose">
-					<p>
-						100% of money lent on Kiva goes to funding loans,
-						so we rely on donations to continue this important work.
-						Each dollar helps us invest in systemic change and spread financial inclusion around the world.
-					</p>
-					<p>
-						We’re investing in lasting solutions for a more inclusive world through your donations.
-						Projects like...
-					</p>
-					<ul>
-						<li>
-							Kiva Protocol, giving unbanked people a digital identity and secure control over their
-							own credit information in places like Sierra Leone.
-						</li>
-						<li>
-							Kiva Capital, scaling our model for institutional investors.
-						</li>
-						<li>
-							Kiva Labs, supporting small and growing social enterprises around the world.
-						</li>
-					</ul>
-					<p>
-						Your donations also help over 100 Kiva employees and more than 400 volunteers
-						make your loans happen!
-					</p>
-				</div>
-			</kv-lightbox>
 		</div>
+
+		<!-- donation total -->
+		<div class="
+				tw-flex-none
+				tw-w-full
+				md:tw-w-auto
+				md:tw-ml-3
+				lg:tw-ml-4.5
+				tw-mt-1.5
+				md:tw-mt-0"
+		>
+			<div
+				v-show="!editDonation"
+				class="tw-hidden md:tw-block tw-text-right"
+			>
+				<button
+					class="donation-amount"
+					v-kv-track-event="['basket', 'Edit Donation']"
+					@click="enterEditDonation"
+					title="Edit Donation"
+				>
+					{{ formattedAmount }}
+					<kv-material-icon
+						role="img"
+						aria-label="Edit Donation"
+						title="Edit Donation"
+						class="edit-donation tw-text-action
+								tw-w-3.5
+								tw-h-3.5
+								tw-py-0.5
+								tw-align-bottom
+								"
+						name="pencil"
+						:icon="mdiPencil"
+					/>
+				</button>
+			</div>
+			<div v-show="editDonation" class="small-12 columns donation-amount-input-wrapper">
+				<kv-text-input
+					class="donation-amount-input"
+					name="donation"
+					id="donation"
+					v-model="amount"
+					@blur="validateInput"
+					@keyup.enter.prevent="updateDonation()"
+				/>
+				<kv-button
+					variant="secondary"
+					class="update-donation-inline-button"
+					@click="updateDonation()"
+				>
+					Update
+				</kv-button>
+				<button
+					class="show-for-medium remove-wrapper"
+					@click="updateLoanAmount('remove')"
+				>
+					<kv-material-icon
+						class="remove-x tw-text-tertiary"
+						name="small-x"
+						:from-sprite="true"
+						title="Remove donation"
+					/>
+				</button>
+			</div>
+			<donate-repayments
+				v-if="hasLoans"
+				@updating-totals="$emit('updating-totals', $event)"
+				@refreshtotals="$emit('refreshtotals')"
+			/>
+		</div>
+
+		<!-- Donation nudge lightbox -->
+		<donation-nudge-lightbox
+			ref="nudgeLightbox"
+			:loan-count="loanCount"
+			:loan-reservation-total="loanReservationTotal"
+			:nudge-lightbox-visible="nudgeLightboxVisible"
+			:close-nudge-lightbox="closeNudgeLightbox"
+			:update-donation-to="updateDonationTo"
+			:has-custom-donation="hasCustomDonation"
+			:experimental-footer="showCharityOverheadFooter"
+			:description="donationNudgeDescription()"
+			:percentage-rows="donationNudgePercentageRows"
+			:current-donation-amount="amount"
+		/>
+
+		<!-- How kiva use's donations lightbox -->
+		<kv-lightbox
+			:visible="defaultLbVisible"
+			@lightbox-closed="lightboxClosed"
+			title="How does Kiva use donations?"
+		>
+			<div class="tw-prose">
+				<p>
+					100% of money lent on Kiva goes to funding loans,
+					so we rely on donations to continue this important work.
+					Each dollar helps us invest in systemic change and spread financial inclusion around the world.
+				</p>
+				<p>
+					We’re investing in lasting solutions for a more inclusive world through your donations.
+					Projects like...
+				</p>
+				<ul>
+					<li>
+						Kiva Protocol, giving unbanked people a digital identity and secure control over their
+						own credit information in places like Sierra Leone.
+					</li>
+					<li>
+						Kiva Capital, scaling our model for institutional investors.
+					</li>
+					<li>
+						Kiva Labs, supporting small and growing social enterprises around the world.
+					</li>
+				</ul>
+				<p>
+					Your donations also help over 100 Kiva employees and more than 400 volunteers
+					make your loans happen!
+				</p>
+			</div>
+		</kv-lightbox>
 	</div>
 </template>
 
