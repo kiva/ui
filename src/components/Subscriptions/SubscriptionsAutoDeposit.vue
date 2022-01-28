@@ -53,7 +53,7 @@
 												<div class="small-12 columns">
 													<div class="row column">
 														<strong>Each month on the</strong>
-														<label class="show-for-sr"
+														<label class="tw-sr-only"
 															:class="{ 'error': $v.dayOfMonth.$invalid }"
 															for="dayOfMonth"
 														>
@@ -105,7 +105,7 @@
 
 															<div class="small-6 medium-4 columns">
 																<label
-																	class="show-for-sr"
+																	class="tw-sr-only"
 																	:class="{ 'error': $v.mgAmount.$invalid }"
 																	for="amount"
 																>
@@ -142,7 +142,7 @@
 
 															<div class="small-6 medium-4 columns">
 																<label
-																	class="show-for-sr"
+																	class="tw-sr-only"
 																	:class="{ 'error': $v.donation.$invalid }"
 																	for="amount"
 																>

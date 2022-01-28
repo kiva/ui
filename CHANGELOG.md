@@ -1,3 +1,99 @@
+### [2.55.1](https://github.com/kiva/ui/compare/v2.55.0...v2.55.1) (2022-01-28)
+
+
+### Bug Fixes
+
+* cleaning up file includes ([dc0ec24](https://github.com/kiva/ui/commit/dc0ec24b011b46e951642344f2798697eb63e7ea))
+* swapping link type to get the right font. ([9f2aa33](https://github.com/kiva/ui/commit/9f2aa33b10fe65e3a387fe2e9e8b51edaf12b007))
+
+## [2.55.0](https://github.com/kiva/ui/compare/v2.54.1...v2.55.0) (2022-01-28)
+
+
+### Features
+
+* core-381 reworking DonationItem.vue with tailwinds classes and to match the new design ([9355169](https://github.com/kiva/ui/commit/935516912368c5c88408244bcbe9fb0f1d4e80f7))
+
+
+### Bug Fixes
+
+* core-381 icon size adjustments across screen sizes and locations ([420292b](https://github.com/kiva/ui/commit/420292b3b278fbbc6e0d807b92a507484d5d83b7))
+
+### [2.54.1](https://github.com/kiva/ui/compare/v2.54.0...v2.54.1) (2022-01-28)
+
+
+### Bug Fixes
+
+* guard against missing graphql endpoint in test envs and an empty receipt ([026a95e](https://github.com/kiva/ui/commit/026a95e552091489eacec341aac7354593da923c))
+
+## [2.54.0](https://github.com/kiva/ui/compare/v2.53.1...v2.54.0) (2022-01-28)
+
+
+### Features
+
+* update basket items with Kiva Classic and extract a removeBasketItem component ([b36797d](https://github.com/kiva/ui/commit/b36797d94cbc8c1e577107d9e6b26ec564a54edc))
+
+### [2.53.1](https://github.com/kiva/ui/compare/v2.53.0...v2.53.1) (2022-01-27)
+
+
+### Bug Fixes
+
+* remove gradient from imageCard link storycards ([a35135c](https://github.com/kiva/ui/commit/a35135c552589c50909d41f641b9492a0cd1a1ac))
+
+## [2.53.0](https://github.com/kiva/ui/compare/v2.52.0...v2.53.0) (2022-01-27)
+
+
+### Features
+
+* core-370 optional styles for swapping the checkbox and label for the  vintage KvCheckbox ([4ca52b3](https://github.com/kiva/ui/commit/4ca52b3cf6ae5b30e9dffab37bf4350e613ba439))
+
+
+### Bug Fixes
+
+* core-370 fixing the tool tip, and ensuring both checkbox right and checkbox left look right ([9b20185](https://github.com/kiva/ui/commit/9b2018547887f2d35dc1c05a893fde551b75227c))
+* core-370 tailwinds adjustments, removing tw-mt-2 from conditional and displaying it always. ([816c130](https://github.com/kiva/ui/commit/816c1302d54f3f554c3e2f12156b1f3d3797c61d))
+
+## [2.52.0](https://github.com/kiva/ui/compare/v2.51.1...v2.52.0) (2022-01-27)
+
+
+### Features
+
+* remove HomepageMidrollCTA component ([eea129d](https://github.com/kiva/ui/commit/eea129d26a0e9cbfccac68146a807bac61ca520f))
+
+### [2.51.1](https://github.com/kiva/ui/compare/v2.51.0...v2.51.1) (2022-01-27)
+
+
+### Bug Fixes
+
+* exclude private tags from the tag filter list ([58ae628](https://github.com/kiva/ui/commit/58ae628396e31f296855bce7a86648dcf8c8e9db))
+
+## [2.51.0](https://github.com/kiva/ui/compare/v2.50.2...v2.51.0) (2022-01-27)
+
+
+### Features
+
+* restrict Causes users from seeing MG and AD signups ([12796dd](https://github.com/kiva/ui/commit/12796dde9909f33fded468f045450d821607eadf))
+
+### [2.50.2](https://github.com/kiva/ui/compare/v2.50.1...v2.50.2) (2022-01-26)
+
+
+### Bug Fixes
+
+* core-411 only fetching fundraising loan data if loan is fundraising ([d2123ff](https://github.com/kiva/ui/commit/d2123ffb131e1bccdeecc17c62588e4432797229))
+
+### [2.50.1](https://github.com/kiva/ui/compare/v2.50.0...v2.50.1) (2022-01-26)
+
+
+### Bug Fixes
+
+* ensure team id is synced properly when present or 0 when not present ([b7ef7cf](https://github.com/kiva/ui/commit/b7ef7cf22a0f087b63dd10d1395b94b949003a35))
+
+## [2.50.0](https://github.com/kiva/ui/compare/v2.49.1...v2.50.0) (2022-01-26)
+
+
+### Features
+
+* remove beta query param for causes ([f53cfdf](https://github.com/kiva/ui/commit/f53cfdfd6c81f6494021e02b9b3f3be43d5103b6))
+
 ### [2.49.1](https://github.com/kiva/ui/compare/v2.49.0...v2.49.1) (2022-01-25)
 
 

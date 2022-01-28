@@ -29,7 +29,7 @@
 			</div>
 			<div class="row align-center">
 				<div class="small-12 medium-11 large-10 column"
-					v-if="!isMonthlyGoodSubscriber && !hasLegacySubscription"
+					v-if="!isMonthlyGoodSubscriber && !hasLegacySubscription && !hasModernSub"
 				>
 					<h1 class="tw-text-center tw-mb-2">
 						Confirm your Good
@@ -47,7 +47,7 @@
 								<div class="medium-10 small-12 columns">
 									<div class="row column" v-if="!fromCovidLanding">
 										<strong>Each month on the</strong>
-										<label class="show-for-sr"
+										<label class="tw-sr-only"
 											:class="{ 'tw-text-danger': $v.dayOfMonth.$invalid }"
 											:for="dayOfMonth"
 										>
@@ -96,7 +96,7 @@
 
 										<div class="medium-5 small-6 columns">
 											<label
-												class="show-for-sr"
+												class="tw-sr-only"
 												:class="{ 'tw-text-danger': $v.mgAmount.$invalid }"
 												for="amount"
 											>
@@ -141,7 +141,7 @@
 
 										<div class="medium-5 small-6 columns">
 											<label
-												class="show-for-sr"
+												class="tw-sr-only"
 												:class="{ 'tw-text-danger': $v.donation.$invalid }"
 												:for="`
 													${donationOptionSelected !== 'other'
@@ -280,7 +280,7 @@
 				</div>
 				<already-subscribed-notice
 					class="small-12 medium-11 large-8 column"
-					v-if="isMonthlyGoodSubscriber"
+					v-if="isMonthlyGoodSubscriber || hasModernSub"
 					:onetime="isOnetime"
 				/>
 				<legacy-subscriber-notice
@@ -354,6 +354,12 @@ const pageQuery = gql`query monthlyGoodSetupPageControl {
 		userAccount {
 			id
 			balance
+		}
+	}
+	mySubscriptions(includeDisabled: false) {
+		values {
+			id
+			enabled
 		}
 	}
 }`;
@@ -433,6 +439,7 @@ export default {
 			hasAutoDeposits: false,
 			hasAutoLending: false,
 			hasLegacySubscription: false,
+			hasModernSub: false,
 			isMGTaglineActive: false,
 			hasActiveLogin: false,
 			balance: 0,
@@ -528,6 +535,8 @@ export default {
 			this.hasLegacySubscription = this.legacySubs.length > 0;
 			this.hasActiveLogin = !!pageQueryResult?.my;
 			this.balance = Math.floor(pageQueryResult?.my?.userAccount?.balance ?? 0);
+			const modernSubscriptions = pageQueryResult?.mySubscriptions?.values ?? [];
+			this.hasModernSub = modernSubscriptions.length !== 0;
 		} catch (e) {
 			logReadQueryError(e, 'MonthlyGoodSetupPage pageQuery');
 		}

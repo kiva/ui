@@ -1,33 +1,95 @@
 <template>
-	<div class="basket-donation-item row">
-		<div class="hide-for-small-only medium-3 large-2 columns">
-			<div class="donation-icon">
-				<kv-icon
-					class="dedicate-heart tw-border tw-border-tertiary tw-text-brand tw-fill-current"
-					name="dedicate-heart"
-				/>
-			</div>
+	<div class="tw-flex tw-flex-col md:tw-flex-row tw-pb-5">
+		<!-- donation image -->
+		<div class="tw-hidden md:tw-block tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
+			<img class="donation-img tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
+				:src="imageRequire(`./peace-sign-holding-money.svg`)"
+				alt="donation line item image"
+			>
 		</div>
-		<div class="small-12 medium-5 large-7 columns donation-info-wrapper">
-			<h2 class="donation-info tw-text-h3">
-				{{ donationTitle }}
-			</h2>
-			<div v-if="hasLoans">
-				<div class="donation-tagline tw-text-small tw-text-secondary tw-my-1" v-html="donationTagLine">
+
+		<!-- donation text -->
+		<div class="tw-flex-auto">
+			<div class="tw-mb-0.5">
+				<div class="tw-w-full tw-flex">
+					<h2 class="tw-flex-1 md:tw-flex-grow tw-text-h3">
+						{{ donationTitle }}
+					</h2>
+					<button
+						class="donation-amount md:tw-hidden tw-flex-none tw-align-middle"
+						v-kv-track-event="['basket', 'Edit Donation']"
+						@click="enterEditDonation"
+						title="Edit Donation"
+					>
+						<kv-material-icon
+							role="img"
+							aria-label="Edit Donation"
+							title="Edit Donation"
+							class="edit-donation tw-text-action
+								tw-w-3.5
+								tw-h-3.5
+								tw-py-0.5
+								md:tw-hidden"
+							name="pencil"
+							:icon="mdiPencil"
+						/>
+					</button>
 				</div>
-				<button
-					class="tw-text-small tw-text-link donation-help-text"
-					@click="triggerDefaultLightbox"
-					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
+
+				<div
+					v-show="!editDonation"
+					class="md:tw-hidden"
 				>
-					{{ donationDetailsLink }}
-				</button>
+					<button
+						class="donation-amount"
+						v-kv-track-event="['basket', 'Edit Donation']"
+						@click="enterEditDonation"
+						title="Edit Donation"
+					>
+						{{ formattedAmount }}
+						<kv-material-icon
+							role="img"
+							aria-label="Edit Donation"
+							title="Edit Donation"
+							class="edit-donation tw-text-action
+								tw-w-3.5
+								tw-h-3.5
+								tw-py-0.5
+								tw-hidden md:tw-inline-block
+								"
+							name="pencil"
+							:icon="mdiPencil"
+						/>
+					</button>
+				</div>
+
+				<div v-if="hasLoans">
+					<div class="donation-tagline tw-text-small tw-text-secondary tw-my-1" v-html="donationTagLine">
+					</div>
+					<button
+						class="tw-text-small tw-text-link"
+						@click="triggerDefaultLightbox"
+						v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
+					>
+						{{ donationDetailsLink }}
+					</button>
+				</div>
 			</div>
 		</div>
-		<div class="small-12 medium-4 large-3 columns medium-text-font-size">
+
+		<!-- donation total -->
+		<div class="
+				tw-flex-none
+				tw-w-full
+				md:tw-w-auto
+				md:tw-ml-3
+				lg:tw-ml-4.5
+				tw-mt-1.5
+				md:tw-mt-0"
+		>
 			<div
 				v-show="!editDonation"
-				class="donation-amount-wrapper"
+				class="tw-hidden md:tw-block tw-text-right"
 			>
 				<button
 					class="donation-amount"
@@ -36,12 +98,18 @@
 					title="Edit Donation"
 				>
 					{{ formattedAmount }}
-					<kv-icon
+					<kv-material-icon
 						role="img"
 						aria-label="Edit Donation"
 						title="Edit Donation"
-						class="edit-donation tw-text-action"
+						class="edit-donation tw-text-action
+								tw-w-3.5
+								tw-h-3.5
+								tw-py-0.5
+								tw-align-bottom
+								"
 						name="pencil"
+						:icon="mdiPencil"
 					/>
 				</button>
 			</div>
@@ -65,7 +133,7 @@
 					class="show-for-medium remove-wrapper"
 					@click="updateLoanAmount('remove')"
 				>
-					<kv-icon
+					<kv-material-icon
 						class="remove-x tw-text-tertiary"
 						name="small-x"
 						:from-sprite="true"
@@ -79,6 +147,8 @@
 				@refreshtotals="$emit('refreshtotals')"
 			/>
 		</div>
+
+		<!-- Donation nudge lightbox -->
 		<donation-nudge-lightbox
 			ref="nudgeLightbox"
 			:loan-count="loanCount"
@@ -92,6 +162,8 @@
 			:percentage-rows="donationNudgePercentageRows"
 			:current-donation-amount="amount"
 		/>
+
+		<!-- How kiva use's donations lightbox -->
 		<kv-lightbox
 			:visible="defaultLbVisible"
 			@lightbox-closed="lightboxClosed"
@@ -133,18 +205,19 @@ import numeral from 'numeral';
 import gql from 'graphql-tag';
 import _forEach from 'lodash/forEach';
 import { processPageContentFlat } from '@/util/contentfulUtils';
+import { mdiPencil } from '@mdi/js';
 
-import KvIcon from '@/components/Kv/KvIcon';
 import DonateRepayments from '@/components/Checkout/DonateRepaymentsToggle';
 import donationDataQuery from '@/graphql/query/checkout/donationData.graphql';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+
+const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
 
 const donationItemQuery = gql`query donationItemQuery {
 	contentful {
@@ -154,7 +227,7 @@ const donationItemQuery = gql`query donationItemQuery {
 
 export default {
 	components: {
-		KvIcon,
+		KvMaterialIcon,
 		KvButton,
 		KvLightbox,
 		KvTextInput,
@@ -191,7 +264,9 @@ export default {
 			donationNudgeBorrowerImageExperiment: false,
 			donationDetailsLink: 'How Kiva uses donations',
 			showCharityOverheadFooter: false,
-			dynamicDonationItem: ''
+			dynamicDonationItem: '',
+			mdiPencil,
+			imageRequire,
 		};
 	},
 	apollo: {
@@ -202,10 +277,6 @@ export default {
 					query: donationDataQuery
 				}).then(() => {
 					Promise.all([
-						// Get the assigned experiment version for Donation Nudge Borrower Image Experiment
-						client.query({ query: experimentAssignmentQuery, variables: { id: 'charity_overhead' } }),
-						// Get the assigned experiment version for GROW-74
-						client.query({ query: experimentAssignmentQuery, variables: { id: 'checkout_donation_tag_line' } }), // eslint-disable-line max-len
 						// Get contentful dynamic content
 						client.query({ query: donationItemQuery })
 					]).then(resolve).catch(reject);
@@ -214,7 +285,6 @@ export default {
 		}
 	},
 	created() {
-		this.setupExperimentState();
 		this.setupContentfulContent();
 	},
 	watch: {
@@ -307,36 +377,6 @@ export default {
 				this.dynamicDonationItem = pageData?.page?.contentGroups?.checkoutDonationItem?.contents?.[0]?.richText ?? '';
 			}
 		},
-		setupExperimentState() {
-			// get experiment data from apollo cache
-			// CASH-1022: Show charity overhead footer
-			if (this.hasLoans) {
-				const charityOverheadExp = this.apollo.readFragment({
-					id: 'Experiment:charity_overhead',
-					fragment: experimentVersionFragment,
-				}) || {};
-				if (charityOverheadExp.version === 'control') {
-					this.$kvTrackEvent('basket', 'EXP-CASH-1022-Jul2019', 'a');
-				} else if (charityOverheadExp.version === 'shown') {
-					this.$kvTrackEvent('basket', 'EXP-CASH-1022-Jul2019', 'b');
-					this.showCharityOverheadFooter = true;
-				}
-			}
-
-			// GROW-74: Donation tag line
-			if (this.hasLoans) {
-				const donationTagLineExperiment = this.apollo.readFragment({
-					id: 'Experiment:checkout_donation_tag_line',
-					fragment: experimentVersionFragment,
-				}) || {};
-				if (donationTagLineExperiment.version === 'control') {
-					this.$kvTrackEvent('Checkout', 'EXP-GROW-74-Apr2020', 'a');
-				} else if (donationTagLineExperiment.version === 'shown') {
-					this.$kvTrackEvent('Checkout', 'EXP-GROW-74-Apr2020', 'b');
-					this.donationTagLineExperiment = true;
-				}
-			}
-		},
 		updateDonation() {
 			this.editDonation = false;
 			this.$emit('updating-totals', true);
@@ -405,55 +445,6 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.donation-icon {
-	padding: 0;
-}
-
-.dedicate-heart {
-	padding: rem-calc(12);
-	height: rem-calc(80);
-	width: rem-calc(80);
-}
-
-.donation-help-text {
-	display: block;
-	margin-bottom: rem-calc(15);
-}
-
-.donation-amount-wrapper {
-	margin-left: 0.6rem;
-	width: 10.8rem;
-	text-align: left;
-
-	@include breakpoint(medium) {
-		margin: 0;
-		width: auto;
-		text-align: right;
-	}
-
-	.donation-amount {
-		display: inline-block;
-		cursor: pointer;
-		font-weight: $global-weight-highlight;
-		font-size: $medium-text-font-size;
-		min-height: 2rem;
-		vertical-align: top;
-
-		.edit-donation {
-			width: 1rem;
-			height: 1rem;
-			margin: 0 0.4rem 0 0.6rem;
-			cursor: pointer;
-
-			@include breakpoint(medium) {
-				width: 0.8rem;
-				height: 0.8rem;
-				margin: 0 0.2rem 0 0.8rem;
-			}
-		}
-	}
-}
-
 .inline-donation-amount {
 	width: rem-calc(132);
 
@@ -492,29 +483,6 @@ export default {
 	.remove-x {
 		display: inline-block;
 		width: 1.1rem;
-		height: rem-calc(36);
-	}
-}
-
-input {
-	width: rem-calc(100);
-	text-align: right;
-	padding-right: rem-calc(5);
-	margin-bottom: rem-calc(20);
-}
-
-.basket-donation-item .secondary {
-	color: $kiva-accent-blue;
-	border: 1px solid $kiva-accent-blue;
-	box-shadow: 0 1px $kiva-accent-blue;
-	visibility: visible;
-	font-size: $medium-text-font-size;
-
-	@include breakpoint(medium) {
-		padding: rem-calc(6) 0;
-		margin-bottom: rem-calc(19);
-		width: inherit;
-		font-size: $normal-text-font-size;
 		height: rem-calc(36);
 	}
 }

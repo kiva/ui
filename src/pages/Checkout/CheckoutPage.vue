@@ -24,7 +24,7 @@
 							</div>
 							<hr class="tw-border-tertiary tw-my-3">
 						</div>
-						<div class="basket-container">
+						<div class="basket-container tw-mx-auto tw-my-0" style="max-width: 800px;">
 							<basket-items-list
 								:loans="loans"
 								:donations="donations"
@@ -38,7 +38,7 @@
 						</div>
 						<div v-if="showKivaCardForm">
 							<hr class="tw-border-tertiary tw-my-3">
-							<div class="basket-container">
+							<div class="basket-container tw-mx-auto tw-my-0" style="max-width: 800px;">
 								<kiva-card-redemption
 									:credits="redemption_credits"
 									:totals="totals"
@@ -54,7 +54,7 @@
 							:my-id="myId"
 						/>
 
-						<div class="basket-container">
+						<div class="basket-container tw-mx-auto tw-my-0" style="max-width: 800px;">
 							<div class="row">
 								<div class="small-9 small-offset-3 large-10 large-offset-2 columns">
 									<checkout-holiday-promo
@@ -757,10 +757,10 @@ export default {
 	}
 }
 
-.basket-container {
-	max-width: rem-calc(800);
-	margin: 0 auto;
-}
+// .basket-container {
+// 	max-width: rem-calc(800);
+// 	margin: 0 auto;
+// }
 
 .page-content {
 	padding: 1.625rem 0;

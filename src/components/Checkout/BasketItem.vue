@@ -1,6 +1,6 @@
 <template>
-	<div v-show="loanVisible" class="basket-item-wrapper row">
-		<div class="hide-for-small-only medium-3 large-2 columns">
+	<div v-show="loanVisible" class="basket-item-wrapper tw-flex tw-flex-col md:tw-flex-row tw-pb-5">
+		<div class="tw-hidden md:tw-block tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
 			<checkout-item-img
 				:disable-link="disableRedirects"
 				:loan-id="loan.id"
@@ -8,33 +8,53 @@
 				:image-url="loan.loan.image.url"
 			/>
 		</div>
-
-		<div class="small-12 medium-5 large-7 columns borrower-info-wrapper">
+		<div class="tw-flex-auto borrower-info-wrapper">
 			<div class="borrower-info">
-				<h2 class="tw-text-h3">
-					{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
-				</h2>
+				<div class="tw-flex tw-mb-0.5">
+					<h2 class="tw-text-h3 tw-flex-grow">
+						{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
+					</h2>
+					<remove-basket-item
+						class="md:tw-hidden tw-flex-none tw-ml-1 tw-mt-0.5 tw-h-1.5"
+						:loan-id="loan.id"
+						type="loan"
+						@refreshtotals="onLoanUpdate($event)"
+						@updating-totals="$emit('updating-totals', $event)"
+					/>
+				</div>
 				<loan-matcher
+					class="tw-mb-1"
 					v-if="loan.loan.matchingText"
 					:matching-text="loan.loan.matchingText"
 				/>
 				<loan-reservation
+					class="tw-mb-1"
 					:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 					:is-funded="loan.isFunded"
 					:expiry-time="loan.expiryTime"
 				/>
 				<team-attribution
+					class="tw-mb-1 tw-mt-0.5"
 					v-if="teams.length"
 					:teams="teams"
 					:loan-id="loan.id"
-					:team-id="loan.team ? loan.team.id : null"
+					:team-id="loan.team ? loan.team.id : 0"
 				/>
 				<loan-promo-credits
 					:applied-promo-credits="appliedPromoCredits"
 				/>
 			</div>
 		</div>
-		<div class="small-12 medium-4 large-3 columns loan-res-price-wrapper">
+		<div class="
+			tw-flex-none
+			tw-w-full
+			md:tw-w-auto
+			md:tw-ml-3
+			lg:tw-ml-4.5
+			tw-mt-1.5
+			md:tw-mt-0
+			loan-res-price-wrapper"
+		>
 			<loan-price
 				:price="loan.price"
 				:loan-id="loan.id"
@@ -57,6 +77,7 @@ import LoanMatcher from '@/components/Checkout/LoanMatcher';
 import LoanPromoCredits from '@/components/Checkout/LoanPromoCredits';
 import LoanReservation from '@/components/Checkout/LoanReservation';
 import LoanPrice from '@/components/Checkout/LoanPrice';
+import RemoveBasketItem from '@/components/Checkout/RemoveBasketItem';
 import TeamAttribution from '@/components/Checkout/TeamAttribution';
 
 export default {
@@ -66,6 +87,7 @@ export default {
 		LoanPromoCredits,
 		LoanReservation,
 		LoanPrice,
+		RemoveBasketItem,
 		TeamAttribution
 	},
 	inject: ['apollo'],
@@ -118,13 +140,4 @@ export default {
 		}
 	},
 };
-
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.basket-item-wrapper {
-	margin-bottom: rem-calc(30);
-}
-</style>

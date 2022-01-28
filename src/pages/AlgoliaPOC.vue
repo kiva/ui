@@ -25,7 +25,7 @@
 						>
 							<!-- <div slot-scope="{ searchParameters }">
 								AisConfigure: Search Parameters
-								<p class="small-text"><pre>{{ searchParameters }}</pre></p>
+								<p class="tw-text-small"><pre>{{ searchParameters }}</pre></p>
 							</div> -->
 						</ais-configure>
 
