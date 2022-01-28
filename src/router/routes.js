@@ -334,49 +334,8 @@ export default [
 	{
 		path: '/styleguide',
 		component: () => import('@/pages/StyleGuide'),
-		children: [
-			{
-				path: '',
-				name: 'foundation',
-				component: () => import('@/components/Styleguide/StyleguideIntro')
-			},
-			{
-				path: 'typography',
-				name: 'typography',
-				component: () => import('@/components/Styleguide/StyleguideTypography')
-			},
-			{
-				path: 'copy',
-				name: 'copy',
-				component: () => import('@/components/Styleguide/StyleguideCopy')
-			},
-			{
-				path: 'buttons',
-				name: 'buttons',
-				component: () => import('@/components/Styleguide/StyleguideButtons')
-			},
-			{
-				path: 'colors',
-				name: 'colors',
-				component: () => import('@/components/Styleguide/StyleguideColors')
-			},
-			{
-				path: 'forms',
-				name: 'forms',
-				component: () => import('@/components/Styleguide/StyleguideForms')
-			},
-			{
-				path: 'images',
-				name: 'images',
-				component: () => import('@/components/Styleguide/StyleguideImages')
-			},
-			{
-				path: 'icons',
-				name: 'icons',
-				component: () => import('@/components/Styleguide/StyleguideIcons')
-			},
-		]
 	},
+	{ path: '/styleguide/*', redirect: '/styleguide' },
 	{ path: '/ui-site-map', component: () => import('@/pages/UiSiteMap/UiSiteMapPage') },
 	{ path: '/UI_REVISION', component: () => import('@/pages/UiRevision') },
 	// These are Demo Pages
