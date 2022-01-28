@@ -1,3 +1,15 @@
+## [2.55.0](https://github.com/kiva/ui/compare/v2.54.1...v2.55.0) (2022-01-28)
+
+
+### Features
+
+* core-381 reworking DonationItem.vue with tailwinds classes and to match the new design ([9355169](https://github.com/kiva/ui/commit/935516912368c5c88408244bcbe9fb0f1d4e80f7))
+
+
+### Bug Fixes
+
+* core-381 icon size adjustments across screen sizes and locations ([420292b](https://github.com/kiva/ui/commit/420292b3b278fbbc6e0d807b92a507484d5d83b7))
+
 ### [2.54.1](https://github.com/kiva/ui/compare/v2.54.0...v2.54.1) (2022-01-28)
 
 
