@@ -1,8 +1,6 @@
 <template>
 	<www-page-corporate
 		:corporate-logo-url="corporateLogoUrl"
-		:header-theme="lightHeader"
-		:footer-theme="lightFooter"
 	>
 		<div class="corporate-campaign-landing">
 			<kv-loading-overlay
@@ -233,7 +231,6 @@ import logFormatter from '@/util/logFormatter';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
 import LoanSearchFilters, { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
-import { lightHeader, lightFooter } from '@/util/siteThemes';
 import syncDate from '@/util/syncDate';
 import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -544,8 +541,6 @@ export default {
 			verificationSumbitted: false,
 			loadingPage: false,
 			showVerifyRemovePromoCredit: false,
-			lightHeader,
-			lightFooter,
 		};
 	},
 	metaInfo() {

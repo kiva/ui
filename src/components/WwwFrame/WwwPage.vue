@@ -3,7 +3,6 @@
 		<the-banner-area v-show="!isKivaAppReferral" />
 		<the-header v-show="!isKivaAppReferral"
 			:hide-search-in-header="hideSearchInHeader"
-			:theme="headerTheme"
 		/>
 		<slot name="secondary" v-if="!isKivaAppReferral"></slot>
 
@@ -11,9 +10,7 @@
 			<slot name="tertiary"></slot>
 			<slot></slot>
 		</main>
-		<the-footer
-			:theme="footerTheme"
-		/>
+		<the-footer	/>
 		<the-basket-bar />
 		<cookie-banner />
 	</div>
@@ -53,14 +50,6 @@ export default {
 		hideSearchInHeader: {
 			type: Boolean,
 			default: false,
-		},
-		headerTheme: {
-			type: Object,
-			default: null,
-		},
-		footerTheme: {
-			type: Object,
-			default: null,
 		},
 		mainClass: {
 			type: [Object, String],

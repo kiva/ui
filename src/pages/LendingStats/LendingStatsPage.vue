@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		:header-theme="greenHeader"
-	>
+	<www-page>
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
@@ -83,7 +81,6 @@ import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
 import lendingStatsQuery from '@/graphql/query/myLendingStats.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import { greenHeader } from '@/util/siteThemes';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
@@ -113,7 +110,6 @@ export default {
 			partnersLentTo: [],
 			partnersNotLentTo: [],
 			totalPartners: 0,
-			greenHeader,
 		};
 	},
 	apollo: {

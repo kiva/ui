@@ -2,7 +2,6 @@
 	<div class="tw-relative">
 		<the-browser-check ref="theBrowserCheck" />
 		<the-header
-			:theme="headerTheme"
 			:corporate="true"
 			:corporate-logo-url="corporateLogoUrl"
 			class="tw-sticky tw-z-sticky tw-top-0"
@@ -11,7 +10,6 @@
 			<slot></slot>
 		</main>
 		<the-footer-corporate
-			:theme="footerTheme"
 			:corporate-logo-url="corporateLogoUrl"
 		/>
 		<the-basket-bar
@@ -45,14 +43,6 @@ export default {
 		TheHeader,
 	},
 	props: {
-		headerTheme: {
-			type: Object,
-			default() {},
-		},
-		footerTheme: {
-			type: Object,
-			default() {},
-		},
 		corporateLogoUrl: {
 			type: String,
 			default: ''

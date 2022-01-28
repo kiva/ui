@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		:header-theme="greenHeader"
-	>
+	<www-page>
 		<template #secondary>
 			<developer-secondary-menu />
 		</template>
@@ -42,7 +40,6 @@
 </template>
 
 <script>
-import { greenHeader } from '@/util/siteThemes';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
 import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -58,7 +55,6 @@ export default {
 	},
 	data() {
 		return {
-			greenHeader,
 			topics: ['Creation of Synthetic Datasets', 'Recommendation systems', 'Social Good ML Applications',
 				'Pro-Social Behaviorial Psychology', 'Fairness Research', 'Social Impact Assessments'],
 			years: [2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],
