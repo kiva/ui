@@ -335,6 +335,7 @@ export default [
 		path: '/styleguide',
 		component: () => import('@/pages/StyleGuide'),
 	},
+	{ path: '/styleguide/*', redirect: '/styleguide' },
 	{ path: '/ui-site-map', component: () => import('@/pages/UiSiteMap/UiSiteMapPage') },
 	{ path: '/UI_REVISION', component: () => import('@/pages/UiRevision') },
 	// These are Demo Pages
