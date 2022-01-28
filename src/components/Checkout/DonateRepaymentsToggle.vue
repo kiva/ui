@@ -44,12 +44,13 @@
 			v-if="showToggle"
 			class="tw-flex tw-mt-2"
 		>
-			<kv-text-link
+			<button
+				class="tw-text-link tw-text-left md:tw-text-right tw-w-full"
 				@click="isLightboxVisible = true;"
-				class="tw-text-left md:tw-text-right tw-w-full"
+				v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
 			>
 				Learn more
-			</kv-text-link>
+			</button>
 		</div>
 	</div>
 </template>
@@ -62,14 +63,12 @@ import numeral from 'numeral';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import updateLoanReservationDonateRepayments from '@/graphql/mutation/updateLoanReservationDonateRepayments.graphql';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 
 export default {
 	components: {
 		KvCheckbox,
 		KvLightbox,
-		KvTextLink,
 	},
 	inject: ['apollo'],
 	data() {
