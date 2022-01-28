@@ -1,3 +1,10 @@
+### [2.54.1](https://github.com/kiva/ui/compare/v2.54.0...v2.54.1) (2022-01-28)
+
+
+### Bug Fixes
+
+* guard against missing graphql endpoint in test envs and an empty receipt ([026a95e](https://github.com/kiva/ui/commit/026a95e552091489eacec341aac7354593da923c))
+
 ## [2.54.0](https://github.com/kiva/ui/compare/v2.53.1...v2.54.0) (2022-01-28)
 
 
