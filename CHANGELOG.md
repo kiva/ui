@@ -1,3 +1,11 @@
+### [2.55.1](https://github.com/kiva/ui/compare/v2.55.0...v2.55.1) (2022-01-28)
+
+
+### Bug Fixes
+
+* cleaning up file includes ([dc0ec24](https://github.com/kiva/ui/commit/dc0ec24b011b46e951642344f2798697eb63e7ea))
+* swapping link type to get the right font. ([9f2aa33](https://github.com/kiva/ui/commit/9f2aa33b10fe65e3a387fe2e9e8b51edaf12b007))
+
 ## [2.55.0](https://github.com/kiva/ui/compare/v2.54.1...v2.55.0) (2022-01-28)
 
 
