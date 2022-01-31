@@ -1,3 +1,10 @@
+### [2.56.1](https://github.com/kiva/ui/compare/v2.56.0...v2.56.1) (2022-01-31)
+
+
+### Reverts
+
+* Revert "fix: core-411 only fetching fundraising loan data if loan is fundraising" ([bb06c51](https://github.com/kiva/ui/commit/bb06c515a0cc01533c9d5990d12b026317717b36))
+
 ## [2.56.0](https://github.com/kiva/ui/compare/v2.55.1...v2.56.0) (2022-01-28)
 
 
