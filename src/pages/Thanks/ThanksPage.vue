@@ -15,33 +15,47 @@
 				</div>
 
 				<div class="thanks__header hide-for-print">
-					<div
-						v-if="!isAutoDepositSubscriber && showAutoDepositUpsell"
-						class="thanks_header-image tw-hidden md:tw-block"
-					>
-						<img :src="imageRequire(`./high-five.svg`)" class="tw-mx-auto" alt="high fiving hands">
-					</div>
-					<h1 v-if="!isAutoDepositSubscriber && showAutoDepositUpsell" class="thanks__header-h1 tw-mb-4">
-						Let’s set up your auto-deposit now!
-					</h1>
-					<h1 v-else class="thanks__header-h1 tw-mb-4">
-						Thank you!
-					</h1>
-					<p v-if="loans.length > 0" class="thanks__header-subhead tw-text-subhead tw-mb-2">
-						Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
-					</p>
-					<p v-if="lender.email" class="hide-for-print">
-						We've emailed your order confirmation to
-						<strong class="fs-exclude">{{ lender.email }}</strong>
-					</p>
-					<p v-else class="hide-for-print">
-						We've emailed your order confirmation to you.
-					</p>
+					<template v-if="receipt">
+						<div
+							v-if="!isAutoDepositSubscriber && showAutoDepositUpsell"
+							class="thanks_header-image tw-hidden md:tw-block"
+						>
+							<img :src="imageRequire(`./high-five.svg`)" class="tw-mx-auto" alt="high fiving hands">
+						</div>
+						<h1 v-if="!isAutoDepositSubscriber && showAutoDepositUpsell" class="thanks__header-h1 tw-mb-4">
+							Let’s set up your auto-deposit now!
+						</h1>
+						<h1 v-else class="thanks__header-h1 tw-mb-4">
+							Thank you!
+						</h1>
+						<p v-if="loans.length > 0" class="thanks__header-subhead tw-text-subhead tw-mb-2">
+							Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
+						</p>
+						<p v-if="lender.email" class="hide-for-print">
+							We've emailed your order confirmation to
+							<strong class="fs-exclude">{{ lender.email }}</strong>
+						</p>
+						<p v-else class="hide-for-print">
+							We've emailed your order confirmation to you.
+						</p>
+					</template>
+
+					<template v-else>
+						<h1 class="tw-mb-4">
+							Please log in to see your receipt.
+						</h1>
+						<kv-button
+							:href="`/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`"
+						>
+							Log in to continue
+						</kv-button>
+					</template>
 				</div>
 			</div>
 		</div>
 
 		<thanks-layout-v2
+			v-if="receipt"
 			:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !showAutoDepositUpsell && !hasModernSub"
 			:show-auto-deposit-upsell="!isAutoDepositSubscriber && showAutoDepositUpsell && !hasModernSub"
 			:show-guest-upsell="isGuest"
@@ -100,6 +114,7 @@ import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
 
@@ -117,6 +132,7 @@ export default {
 		AutoDepositCTA,
 		CheckoutReceipt,
 		GuestUpsell,
+		KvButton,
 		KvCheckoutSteps,
 		MonthlyGoodCTA,
 		SocialShare,
@@ -268,15 +284,17 @@ export default {
 		}
 	},
 	mounted() {
-		confetti({
-			origin: {
-				y: 0.2
-			},
-			particleCount: 150,
-			spread: 200,
-			colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c'], // misc. kiva colors
-			disableForReducedMotion: true,
-		});
+		if (this.receipt) {
+			confetti({
+				origin: {
+					y: 0.2
+				},
+				particleCount: 150,
+				spread: 200,
+				colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c'],
+				disableForReducedMotion: true,
+			});
+		}
 	},
 };
 
