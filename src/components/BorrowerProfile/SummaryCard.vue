@@ -142,41 +142,6 @@ export default {
 			state: '',
 		};
 	},
-	methods: {
-		fetchFundraisingData() {
-			this.apollo.query({
-				query: gql`query repaymentData($loanId: Int!) {
-					lend {
-						loan(id: $loanId) {
-							id
-							loanAmount
-							loanFundraisingInfo {
-								fundedAmount
-								reservedAmount
-							}
-							plannedExpirationDate
-							fundraisingPercent @client
-							fundraisingTimeLeft @client
-							unreservedAmount @client
-						}
-					}
-				}`,
-				variables: {
-					loanId: this.loanId
-				},
-			}).then(result => {
-				const loan = result?.data?.lend?.loan;
-				this.fundraisingPercent = loan?.fundraisingPercent ?? 0;
-				this.unreservedAmount = loan?.unreservedAmount ?? '0';
-				this.timeLeft = loan?.fundraisingTimeLeft ?? '';
-
-				// If all shares are reserved in baskets, set the fundraising meter to 100%
-				if (this.unreservedAmount === '0') {
-					this.fundraisingPercent = 1;
-				}
-			});
-		},
-	},
 	computed: {
 		imageShareUrl() {
 			if (!this.hash) return '';
@@ -229,6 +194,8 @@ export default {
 						}
 						borrowerCount
 						distributionModel
+						fundraisingPercent @client
+						fundraisingTimeLeft @client
 						geocode {
 							city
 							state
@@ -248,6 +215,7 @@ export default {
 						name
 						plannedExpirationDate
 						status
+						unreservedAmount @client
 						use
 					}
 				}
@@ -278,18 +246,21 @@ export default {
 			this.businessName = loan?.businessName ?? '';
 			this.countryName = loan?.geocode?.country?.name ?? '';
 			this.fallbackImage = loan?.image?.urlSm1x ?? '';
+			this.fundraisingPercent = loan?.fundraisingPercent ?? 0;
 			this.hash = loan?.image?.hash ?? '';
 			this.loanAmount = loan?.loanAmount ?? '0';
 			this.name = loan?.name ?? '';
 			this.status = loan?.status ?? '';
+			this.timeLeft = loan?.fundraisingTimeLeft ?? '';
+			this.unreservedAmount = loan?.unreservedAmount ?? '0';
 			this.use = loan?.use ?? '';
 			this.distributionModel = loan?.distributionModel ?? '';
 			this.city = loan?.geocode?.city ?? '';
 			this.state = loan?.geocode?.state ?? '';
 
-			// Only fetch fundraising related data if the loan is fundraising
-			if (this.status === 'fundraising') {
-				this.fetchFundraisingData();
+			// If all shares are reserved in baskets, set the fundraising meter to 100%
+			if (this.unreservedAmount === '0') {
+				this.fundraisingPercent = 1;
 			}
 		},
 	},
