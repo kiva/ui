@@ -49,7 +49,7 @@
 			v-else
 		>
 			<dynamic-rich-text
-				class="tw-text-h4 tw-text-action"
+				class="tw-text-action"
 				:class="`tw-text-${alignment}`"
 				:html="cardTitle"
 			/>
@@ -60,7 +60,7 @@
 			/>
 			<dynamic-rich-text
 				:class="`tw-text-${alignment}`"
-				:html="footer"
+				:html="cardFooter"
 			/>
 		</div>
 	</kv-theme-provider>
@@ -127,7 +127,7 @@ export default {
 			const text = this.content?.cardContent ?? '';
 			return text ? richTextRenderer(text) : '';
 		},
-		footer() {
+		cardFooter() {
 			const text = this.content?.footer ?? '';
 			return text ? richTextRenderer(text) : '';
 		},
