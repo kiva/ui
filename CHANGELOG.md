@@ -1,3 +1,10 @@
+## [2.57.0](https://github.com/kiva/ui/compare/v2.56.1...v2.57.0) (2022-01-31)
+
+
+### Features
+
+* prevent thanks page errors when user is not logged or did not come from guest checkout ([e6c620a](https://github.com/kiva/ui/commit/e6c620a7c8449e663505e42c97ad758169e94cd0))
+
 ### [2.56.1](https://github.com/kiva/ui/compare/v2.56.0...v2.56.1) (2022-01-31)
 
 
