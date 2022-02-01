@@ -20,6 +20,10 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
+		mlRecommendedRowAlgo: uiExperimentSetting(key: "EXP-VUE-937-recommended-row-algo") {
+			key
+			value
+		}
 		hoverLoanCards: uiExperimentSetting(key: "hover_loan_cards") {
 			key
 			value
