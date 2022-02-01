@@ -1,3 +1,10 @@
+### [2.58.1](https://github.com/kiva/ui/compare/v2.58.0...v2.58.1) (2022-02-01)
+
+
+### Bug Fixes
+
+* remove guards for new subs service from MG and AD landing pages ([c79afa7](https://github.com/kiva/ui/commit/c79afa7ea10181a970e7261cfc40fdbf7097db18))
+
 ## [2.58.0](https://github.com/kiva/ui/compare/v2.57.0...v2.58.0) (2022-02-01)
 
 
