@@ -1,3 +1,10 @@
+## [2.58.0](https://github.com/kiva/ui/compare/v2.57.0...v2.58.0) (2022-02-01)
+
+
+### Features
+
+* storyCard component enhancements ([e5a5ffe](https://github.com/kiva/ui/commit/e5a5ffe324b15ba321cb55421ba27983077f6c2a))
+
 ## [2.57.0](https://github.com/kiva/ui/compare/v2.56.1...v2.57.0) (2022-01-31)
 
 
