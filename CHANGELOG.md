@@ -1,3 +1,10 @@
+## [2.59.0](https://github.com/kiva/ui/compare/v2.58.1...v2.59.0) (2022-02-01)
+
+
+### Features
+
+* tracking for recommended row algorithm experiment VUE-937 ([62a3a0e](https://github.com/kiva/ui/commit/62a3a0ee720a8a663a4f00ed92a3667750729e0f))
+
 ### [2.58.1](https://github.com/kiva/ui/compare/v2.58.0...v2.58.1) (2022-02-01)
 
 
