@@ -123,12 +123,12 @@ const pageQuery = gql`
 		contentful {
 			entries(contentType: "page", contentKey: "monthlygood")
 		}
-		mySubscriptions(includeDisabled: false) {
-			values {
-				id
-				enabled
-			}
-		}
+		# mySubscriptions(includeDisabled: false) {
+		# 	values {
+		# 		id
+		# 		enabled
+		# 	}
+		# }
 	}
 `;
 
@@ -209,8 +209,9 @@ export default {
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
 
-			const modernSubscriptions = data?.mySubscriptions?.values ?? [];
-			this.hasModernSub = modernSubscriptions.length !== 0;
+			// TODO! Add this back in when service supports non-logged in users
+			// const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+			// this.hasModernSub = modernSubscriptions.length !== 0;
 
 			// Monthly Good Amount Selector Experiment - EXP-GROW-11-Apr2020
 			const mgAmountSelectorExperiment = this.apollo.readFragment({
