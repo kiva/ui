@@ -20,7 +20,7 @@
 					</h2>
 
 					<div class="tw-flex tw-gap-4 tw-whitespace-nowrap">
-						<ul class="category-list tw-font-medium">
+						<ul class="tw-columns-2 tw-gap-4 tw-font-medium">
 							<template v-if="isChannelsLoading">
 								<li
 									v-for="i in 14"
@@ -303,16 +303,9 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-/* TODO: Tailwind 3 has classes for columns */
 .region-list,
 .search-list {
-	column-count: 3;
-	column-fill: auto;
-	column-gap: theme('spacing.4');
-}
-
-.category-list {
-	column-count: 2;
-	column-gap: theme('spacing.4');
+	column-fill: auto; /* Tailwind doesnt have a column-fill option currently */
+	@apply tw-columns-3 tw-gap-4;
 }
 </style>

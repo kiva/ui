@@ -17,7 +17,7 @@
 			/>
 			<router-link
 				:to="{ path: '/lend', query: { [param]: item[itemKey] }}"
-				class="tw-overflow-hidden tw-whitespace-nowrap tw-overflow-ellipsis"
+				class="tw-overflow-hidden tw-whitespace-nowrap tw-text-ellipsis"
 			>
 				{{ item.name }}
 			</router-link>
