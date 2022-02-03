@@ -213,13 +213,12 @@ export default {
 				id: 'EXP-VUE-399-subscription-appeal-personalization',
 				fragment: experimentVersionFragment,
 			}) || {};
-			if (
-				subscriptionAppealPersonalization.version
-				&& subscriptionAppealPersonalization.version.version !== 'unassigned'
+			if (subscriptionAppealPersonalization.version
+				&& subscriptionAppealPersonalization.version !== 'unassigned'
 			) {
 				if (this.subscriptionAppealPersonalization === 'shown') {
 					// Direct users to new monthly good page here
-					this.$router.push({ path: '/lp/monthlygood/personalized' });
+					this.$router.push({ path: '/monthlygood/personalized' });
 				} else {
 					this.$kvTrackEvent('MonthlyGood', 'EXP-CORE-399-Feb2022', 'a');
 				}
