@@ -219,7 +219,6 @@ export default [
 			lendAmount: Number(route.params.lendAmount)
 		}),
 	},
-	{ path: '/protocol', component: () => import('@/pages/Protocol') },
 	{
 		path: '/register/social',
 		component: () => import('@/pages/LoginAndRegister/RegisterSocial'),
