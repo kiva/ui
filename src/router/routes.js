@@ -76,6 +76,10 @@ export default [
 		component: () => import('@/pages/Thanks/ThanksPage'),
 	},
 	{
+		path: '/choose-a-cause',
+		component: () => import('@/pages/Causes/ChooseACause'),
+	},
+	{
 		path: '/confirm-instant-donation/:token/:amount',
 		component: () => import('@/pages/InstantActions/ConfirmInstantDonation'),
 		props: route => ({
