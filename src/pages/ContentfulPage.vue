@@ -1,7 +1,5 @@
 <template>
 	<component :is="pageFrame"
-		:header-theme="headerTheme"
-		:footer-theme="footerTheme"
 		:main-class="pageBackgroundColor"
 	>
 		<component
@@ -39,7 +37,6 @@ To use, simply create a route that defines contentfulPage in the meta data, e.g.
 import { preFetchAll } from '@/util/apolloPreFetch';
 import { processPageContent } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
-import * as siteThemes from '@/util/siteThemes';
 import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
 
 // Page frames
@@ -177,8 +174,6 @@ export default {
 		return {
 			pageBackgroundColor: '',
 			contentGroups: [],
-			footerTheme: {},
-			headerTheme: {},
 			pageError: false,
 			pageFrame: WwwPage,
 			title: undefined,
@@ -240,8 +235,6 @@ export default {
 			} else {
 				this.title = (pageData?.page?.pageLayout?.pageTitle || pageData?.page?.pageTitle) ?? undefined;
 				this.pageBackgroundColor = pageData?.page?.pageLayout?.pageBackgroundColor ?? '';
-				this.headerTheme = siteThemes[pageData?.page?.pageLayout?.headerTheme] || {};
-				this.footerTheme = siteThemes[pageData?.page?.pageLayout?.footerTheme] || {};
 				this.pageFrame = getPageFrameFromType(pageData?.page?.pageType);
 				this.contentGroups = getContentGroups(pageData);
 			}

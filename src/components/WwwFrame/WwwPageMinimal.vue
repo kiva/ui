@@ -1,15 +1,12 @@
 <template>
 	<div class="www-page">
 		<the-header
-			:theme="headerTheme"
 			:minimal="true"
 		/>
 		<main>
 			<slot></slot>
 		</main>
-		<the-footer
-			:theme="footerTheme"
-		/>
+		<the-footer />
 		<the-basket-bar />
 		<cookie-banner />
 	</div>
@@ -39,16 +36,6 @@ export default {
 	mixins: [
 		appInstallMixin
 	],
-	props: {
-		headerTheme: {
-			type: Object,
-			default() {},
-		},
-		footerTheme: {
-			type: Object,
-			default() {},
-		},
-	},
 	apollo: {
 		preFetch(config, client, args) {
 			return Promise.all([
