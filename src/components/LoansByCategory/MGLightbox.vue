@@ -1,13 +1,13 @@
 <template>
 	<kv-lightbox
-		:visible="isLightboxVisible"
+		:visible="mgDriverEnabled && isLightboxVisible"
 		title="Find the best loans for you"
 		@lightbox-closed="closeLightbox"
 	>
 		<div class="tw-flex tw-flex-col md:tw-flex-row-reverse tw-mb-4">
-			<div class="tw-w-full md:tw-w-auto tw-mb-4 md:tw-mb-0">
+			<div class="tw-w-full tw-mb-4 md:tw-mb-0">
 				<img
-					class="tw-mx-auto"
+					class="tw-mx-auto tw-w-full"
 					style="max-width: 374px;"
 					:src="imageSource"
 					alt="Learn about Monthly Good"
@@ -18,7 +18,7 @@
 					For as little as $5 a month, we’ll help you automatically lend to borrowers around the world.
 				</p>
 				<kv-button
-					class=""
+					class="tw-w-full md:tw-w-auto"
 					to="/monthlygood"
 					v-kv-track-event="['Lend','click-Learn-More-MG-Lightbox', 'Learn More']"
 				>
@@ -58,48 +58,81 @@ export default {
 			mgDriverEnabled: false,
 			showLightbox: false,
 			mgTimer: null,
-			timerDuration: 7000,
+			mgLightboxDelay: 7000,
 		};
 	},
 	mounted() {
 		this.fetchMgDriverSetting();
 	},
 	methods: {
-		closeLightbox(context) {
-			console.log('close lightbox context: ', JSON.stringify(context));
+		closeLightbox() {
 			this.isLightboxVisible = false;
-			this.$kvTrackEvent('Lend', 'close-mg-lightbox');
+			this.$kvTrackEvent('Lend', 'close-mg-lightbox', 'Close MG lightbox');
 		},
 		fetchMgDriverSetting() {
+			// skip fetching and setting this if they've already seen the lightbox
+			if (this.mgDriverPreviouslyShown()) {
+				return false;
+			}
+
 			// Fetch setting ui.lbc_mg_driver
-			const mgDriverSetting = gql`query mySubscriptionsQuery {
+			const mgDriverEligibilityQuery = gql`query mgDriverEligibilityQuery($basketId: String) {
 				general {
 					mgDriver: uiConfigSetting(key: "lbc_mg_driver") {
 						key
 						value
 					}
 				}
+				shop (basketId: $basketId) {
+					id
+					nonTrivialItemCount
+				}
+				my {
+					autoDeposit {
+						id
+						isSubscriber
+						isOnetime
+					}
+					subscriptions {
+						values {
+							id
+						}
+					}
+				}
 			}`;
+
 			this.apollo.query({
-				query: mgDriverSetting
+				query: mgDriverEligibilityQuery
 			}).then(({ data }) => {
-				console.log(data?.general?.mgDriver);
+				// check for existing mg subs
+				const isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
+				// check for legacy subs
+				const hasLegacySubs = (data?.my?.subscriptions?.values?.length ?? 0) > 0;
+				// check for basket items
+				const basketCount = data?.shop?.nonTrivialItemCount ?? 0;
+				// establish feature flag state
 				const mgDriverEnabled = (data?.general?.mgDriver?.value ?? false) === 'true';
-				this.mgDriverEnabled = mgDriverEnabled;
-				if (mgDriverEnabled) {
+
+				if (!basketCount && !isMonthlyGoodSubscriber && !hasLegacySubs && mgDriverEnabled) {
+					this.mgDriverEnabled = mgDriverEnabled;
 					this.initializeMgDriveLightbox();
 				}
 			});
 		},
 		initializeMgDriveLightbox() {
-			this.mgTimer = setInterval(this.showMgDriverLightbox, this.timerDuration);
+			this.mgTimer = setTimeout(this.showMgDriverLightbox, this.mgLightboxDelay);
+		},
+		mgDriverPreviouslyShown() {
+			return this.cookieStore.get('mg-lightbox-shown-in-session') === 'true' || false;
 		},
 		showMgDriverLightbox() {
+			this.cookieStore.set('mg-lightbox-shown-in-session', true);
 			this.isLightboxVisible = true;
-		}
+			this.$kvTrackEvent('Lend', 'show-mg-lightbox', 'Learn about Monthly Good Lightbox');
+		},
 	},
 	onBeforeDestroy() {
-		clearInterval(this.mgTimer);
+		clearTimeout(this.mgTimer);
 	}
 };
 </script>
