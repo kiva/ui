@@ -200,15 +200,31 @@ export default {
 					query: pageQuery,
 				})
 				.then(() => {
-					return client.query({
-						query: experimentQuery,
-						variables: { id: 'mg_amount_selector' },
-					});
+					return Promise.all([
+						client.query({ query: experimentQuery, variables: { id: 'mg_amount_selector' } }),
+						// eslint-disable-next-line max-len
+						client.query({ query: experimentQuery, variables: { id: 'EXP-VUE-399-subscription-appeal-personalization' } })
+					]);
 				});
 		},
 		result({ data }) {
-			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
+			// Core-399 Subscriptions Appeal Personalization Experiment
+			const subscriptionAppealPersonalization = this.apollo.readFragment({
+				id: 'EXP-VUE-399-subscription-appeal-personalization',
+				fragment: experimentVersionFragment,
+			}) || {};
+			if (subscriptionAppealPersonalization.version
+				&& subscriptionAppealPersonalization.version !== 'unassigned'
+			) {
+				if (this.subscriptionAppealPersonalization === 'shown') {
+					// Direct users to new monthly good page here
+					this.$router.push({ path: '/monthlygood/personalized' });
+				} else {
+					this.$kvTrackEvent('MonthlyGood', 'EXP-CORE-399-Feb2022', 'a');
+				}
+			}
 
+			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
 			// TODO! Add this back in when service supports non-logged in users
 			// const modernSubscriptions = data?.mySubscriptions?.values ?? [];
 			// this.hasModernSub = modernSubscriptions.length !== 0;

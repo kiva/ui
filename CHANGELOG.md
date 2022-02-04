@@ -1,3 +1,16 @@
+## [2.60.0](https://github.com/kiva/ui/compare/v2.59.0...v2.60.0) (2022-02-04)
+
+
+### Features
+
+* core-399 adding tracking into conditional to only throw if experiment is active and user is in group A" ([d999ff2](https://github.com/kiva/ui/commit/d999ff2c4071d26a71e84b09529a1d59edde2548))
+* core-399 Monthlygood appeal personalized experiment setup ([759ba60](https://github.com/kiva/ui/commit/759ba60af1c534cd1559267a6b85b21589fb0723))
+
+
+### Bug Fixes
+
+* core-399 fixing tracking event from A -> B ([92cc33f](https://github.com/kiva/ui/commit/92cc33f0f0c8d03fead137bda4e4432de196f786))
+
 ## [2.59.0](https://github.com/kiva/ui/compare/v2.58.1...v2.59.0) (2022-02-01)
 
 
