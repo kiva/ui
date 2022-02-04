@@ -59,7 +59,7 @@ export default {
 				&& subscriptionAppealPersonalization.version !== 'unassigned'
 				&& this.subscriptionAppealPersonalization === 'shown'
 			) {
-				this.$kvTrackEvent('MonthlyGood', 'EXP-CORE-399-Feb2022', 'a');
+				this.$kvTrackEvent('MonthlyGood', 'EXP-CORE-399-Feb2022', 'b');
 			}
 		},
 	},
