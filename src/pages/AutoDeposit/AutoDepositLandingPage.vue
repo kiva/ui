@@ -129,12 +129,12 @@ const pageQuery = gql`query autoDepositLandingPage {
 			isSubscriber
 		}
 	}
-	mySubscriptions(includeDisabled: false) {
-		values {
-			id
-			enabled
-		}
-	}
+	# mySubscriptions(includeDisabled: false) {
+	# 	values {
+	# 		id
+	# 		enabled
+	# 	}
+	# }
 	contentful {
 		entries(contentType: "page", contentKey: "auto-deposit")
 	}
@@ -176,8 +176,9 @@ export default {
 			const legacySubs = data?.my?.subscriptions?.values ?? [];
 			this.hasLegacySubscription = legacySubs.length > 0;
 
-			const modernSubscriptions = data?.mySubscriptions?.values ?? [];
-			this.hasModernSub = modernSubscriptions.length !== 0;
+			// TODO! Add this back in when service supports non-logged in users
+			// const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+			// this.hasModernSub = modernSubscriptions.length !== 0;
 		},
 	},
 	computed: {

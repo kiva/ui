@@ -1,3 +1,31 @@
+## [2.59.0](https://github.com/kiva/ui/compare/v2.58.1...v2.59.0) (2022-02-01)
+
+
+### Features
+
+* tracking for recommended row algorithm experiment VUE-937 ([62a3a0e](https://github.com/kiva/ui/commit/62a3a0ee720a8a663a4f00ed92a3667750729e0f))
+
+### [2.58.1](https://github.com/kiva/ui/compare/v2.58.0...v2.58.1) (2022-02-01)
+
+
+### Bug Fixes
+
+* remove guards for new subs service from MG and AD landing pages ([c79afa7](https://github.com/kiva/ui/commit/c79afa7ea10181a970e7261cfc40fdbf7097db18))
+
+## [2.58.0](https://github.com/kiva/ui/compare/v2.57.0...v2.58.0) (2022-02-01)
+
+
+### Features
+
+* storyCard component enhancements ([e5a5ffe](https://github.com/kiva/ui/commit/e5a5ffe324b15ba321cb55421ba27983077f6c2a))
+
+## [2.57.0](https://github.com/kiva/ui/compare/v2.56.1...v2.57.0) (2022-01-31)
+
+
+### Features
+
+* prevent thanks page errors when user is not logged or did not come from guest checkout ([e6c620a](https://github.com/kiva/ui/commit/e6c620a7c8449e663505e42c97ad758169e94cd0))
+
 ### [2.56.1](https://github.com/kiva/ui/compare/v2.56.0...v2.56.1) (2022-01-31)
 
 
