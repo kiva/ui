@@ -1,3 +1,10 @@
+## [2.61.0](https://github.com/kiva/ui/compare/v2.60.0...v2.61.0) (2022-02-04)
+
+
+### Features
+
+* choose a cause page ([351416f](https://github.com/kiva/ui/commit/351416fa2f9817cf70b47f5f99d5ebf1798e98b8))
+
 ## [2.60.0](https://github.com/kiva/ui/compare/v2.59.0...v2.60.0) (2022-02-04)
 
 
