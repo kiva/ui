@@ -25,7 +25,7 @@
 					Learn More
 					<kv-material-icon
 						:icon="mdiChevronRight"
-						class="tw-w-2 tw-h-2"
+						class="tw-w-2.5 tw-h-2.5 tw-align-text-bottom"
 					/>
 				</kv-button>
 			</div>
