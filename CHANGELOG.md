@@ -1,3 +1,11 @@
+## [2.62.0](https://github.com/kiva/ui/compare/v2.61.0...v2.62.0) (2022-02-07)
+
+
+### Features
+
+* gaurd lightbox visibility on mg, subs + basket state ([d7e02cb](https://github.com/kiva/ui/commit/d7e02cbcb075f7f56f04849bd43bd1ee6dedd760))
+* setup new timed lightbox on lend-by-category for mg upsell ([92ab3de](https://github.com/kiva/ui/commit/92ab3dee152542d6c6e8ac8e8ecdfebee093ab18))
+
 ## [2.61.0](https://github.com/kiva/ui/compare/v2.60.0...v2.61.0) (2022-02-04)
 
 
