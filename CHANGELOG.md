@@ -1,3 +1,10 @@
+### [2.62.2](https://github.com/kiva/ui/compare/v2.62.1...v2.62.2) (2022-02-07)
+
+
+### Bug Fixes
+
+* update button icon size and position ([54c5416](https://github.com/kiva/ui/commit/54c541685ea21e6d501b29445459de2756775eec))
+
 ### [2.62.1](https://github.com/kiva/ui/compare/v2.62.0...v2.62.1) (2022-02-07)
 
 
