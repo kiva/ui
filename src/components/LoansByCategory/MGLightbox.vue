@@ -20,7 +20,7 @@
 				<kv-button
 					class="tw-w-full md:tw-w-auto"
 					to="/monthlygood"
-					v-kv-track-event="['Lend','click-Learn-More-MG-Lightbox', 'Learn More']"
+					v-kv-track-event="['Lending','click-Learn-More-MG-Lightbox', 'Learn More']"
 				>
 					Learn More
 					<kv-material-icon
@@ -67,7 +67,7 @@ export default {
 	methods: {
 		closeLightbox() {
 			this.isLightboxVisible = false;
-			this.$kvTrackEvent('Lend', 'close-mg-lightbox', 'Close MG lightbox');
+			this.$kvTrackEvent('Lending', 'close-mg-lightbox', 'Close MG lightbox');
 		},
 		fetchMgDriverSetting() {
 			// skip fetching and setting this if they've already seen the lightbox
@@ -128,7 +128,7 @@ export default {
 		showMgDriverLightbox() {
 			this.cookieStore.set('mg-lightbox-shown-in-session', true);
 			this.isLightboxVisible = true;
-			this.$kvTrackEvent('Lend', 'show-mg-lightbox', 'Learn about Monthly Good Lightbox');
+			this.$kvTrackEvent('Lending', 'show-mg-lightbox', 'Learn about Monthly Good Lightbox');
 		},
 	},
 	onBeforeDestroy() {
