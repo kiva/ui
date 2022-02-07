@@ -1,3 +1,10 @@
+### [2.62.1](https://github.com/kiva/ui/compare/v2.62.0...v2.62.1) (2022-02-07)
+
+
+### Bug Fixes
+
+* alight analtyics event category ([7c4a14a](https://github.com/kiva/ui/commit/7c4a14a655811ed34a079720c5bf74e210575bc4))
+
 ## [2.62.0](https://github.com/kiva/ui/compare/v2.61.0...v2.62.0) (2022-02-07)
 
 
