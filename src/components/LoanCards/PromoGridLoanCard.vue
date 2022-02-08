@@ -22,8 +22,7 @@
 					We’ll make a loan for you every month with a Monthly Good subscription.
 				</p>
 				<kv-button
-					:class="compact ? 'smallest' : 'small'"
-					:href="categoryUrl"
+					:to="categoryUrl"
 					v-kv-track-event="['Lending', 'PromoGridCard-click-Learn more', 'CASH-1426 Dec2019']"
 				>
 					Learn more
@@ -36,8 +35,8 @@
 <script>
 import { paramCase } from 'change-case';
 
-import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const promoLoanImageRequire = require.context('@/assets/images/mg-promo-loan-card/', true);
 

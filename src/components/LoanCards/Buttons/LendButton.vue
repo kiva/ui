@@ -1,34 +1,25 @@
 <template>
-	<kv-button @click.native="addToBasket"
-		v-kv-track-event="['Lending', 'Add to basket', 'lend-button-click', loanId, loanId]"
-		v-if="!loading"
-		class="lend-button"
-	>
-		<slot>Lend now</slot>
-	</kv-button>
 	<kv-button
-		v-else
-		class="lend-button adding-to-basket"
-		:class="{'hide-adding-to-basket-text': hideAddingToBasketText}"
+		v-kv-track-event="['Lending', 'Add to basket', 'lend-button-click', loanId, loanId]"
+		:state="buttonState"
+		@click="addToBasket"
 	>
-		<kv-loading-spinner />
-		<span v-if="!hideAddingToBasketText">Adding to basket</span>
+		<slot v-if="!loading">
+			Lend now
+		</slot>
 	</kv-button>
 </template>
 
 <script>
-import _forEach from 'lodash/forEach';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
-import KvButton from '@/components/Kv/KvButton';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	components: {
 		KvButton,
-		KvLoadingSpinner,
 	},
 	inject: ['apollo'],
 	props: {
@@ -39,10 +30,6 @@ export default {
 		price: {
 			type: [Number, String],
 			default: 25,
-		},
-		hideAddingToBasketText: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	data() {
@@ -67,7 +54,7 @@ export default {
 
 				if (errors) {
 					// Handle errors from adding to basket
-					_forEach(errors, error => {
+					errors.forEach(error => {
 						this.$showTipMsg(error.message, 'error');
 						try {
 							this.$kvTrackEvent(
@@ -111,45 +98,12 @@ export default {
 			this.$emit('update:loading', isLoading);
 		},
 	},
+	computed: {
+		buttonState() {
+			if (this.loading) return 'loading';
+			return '';
+		}
+	}
 };
 
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.loading-spinner {
-	width: 1.5rem;
-	height: 1.5rem;
-	vertical-align: middle;
-	margin-right: 3px;
-}
-
-.lend-by-category-page .loading-spinner {
-	width: 1.25rem;
-	height: 1.25rem;
-}
-
-.loading-spinner >>> .line {
-	background-color: $white;
-}
-
-.secondary .loading-spinner >>> .line {
-	background-color: $charcoal;
-}
-
-.secondary:hover .loading-spinner >>> .line {
-	background-color: $kiva-accent-blue;
-}
-
-.lend-by-category-page .adding-to-basket.button.smaller {
-	font-size: 1rem;
-
-	&.hide-adding-to-basket-text {
-		.loading-spinner {
-			height: 1.125rem;
-			width: 1.125rem;
-		}
-	}
-}
-</style>

@@ -1,11 +1,9 @@
 <template>
 	<component
 		:is="currentButtonState"
-		class="action-button smaller"
 		:disable-redirects="disableRedirects"
 		:loan-id="loanId"
 		:loan="loan"
-		:hide-adding-to-basket-text="hideAddingToBasketText"
 		:minimal-checkout-button="minimalCheckoutButton"
 		@add-to-basket="handleAddToBasketEvent"
 	/>
@@ -78,10 +76,6 @@ export default {
 		isSimpleLendButton: {
 			type: Boolean,
 			default: false
-		},
-		hideAddingToBasketText: {
-			type: Boolean,
-			default: false,
 		},
 		minimalCheckoutButton: {
 			type: Boolean,
@@ -186,13 +180,3 @@ export default {
 };
 
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.action-button {
-	margin-top: rem-calc(30);
-	margin-bottom: rem-calc(10);
-	width: 100%;
-}
-</style>

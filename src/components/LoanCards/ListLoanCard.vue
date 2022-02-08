@@ -73,8 +73,7 @@
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
 						:is-expired="isExpired"
-						class="list-loan-card-action-button"
-
+						class="tw-mt-0"
 						@click.native="trackInteraction({
 							interactionType: 'addToBasket',
 							interactionElement: 'Lend25'
@@ -128,7 +127,7 @@
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
 						:is-expired="isExpired"
-						class="list-loan-card-action-button"
+						class="tw-mt-0"
 
 						@click.native="trackInteraction({
 							interactionType: 'addToBasket',
@@ -288,11 +287,6 @@ export default {
 				.country {
 					margin-bottom: 0;
 				}
-			}
-
-			.list-loan-card-action-button {
-				margin-top: rem-calc(20);
-				margin-bottom: 0;
 			}
 		}
 
