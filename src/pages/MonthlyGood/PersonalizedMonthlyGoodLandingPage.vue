@@ -1,6 +1,10 @@
 <template>
 	<www-page>
 		TESTING
+		<personalized-mg-lightbox
+			:show-lightbox="showLightbox"
+			@hide-lightbox="showLightbox = false"
+		/>
 	</www-page>
 </template>
 
@@ -8,6 +12,7 @@
 import gql from 'graphql-tag';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+import PersonalizedMgLightbox from '@/components/MonthlyGood/PersonalizedMgLightbox';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 const pageQuery = gql`
@@ -23,12 +28,14 @@ export default {
 		title: 'Personalized Monthly Good',
 	},
 	components: {
-		WwwPage,
+		PersonalizedMgLightbox,
+		WwwPage
 	},
 	props: {
 	},
 	data() {
 		return {
+			showLightbox: false,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
