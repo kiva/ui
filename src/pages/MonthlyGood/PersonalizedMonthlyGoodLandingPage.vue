@@ -13,13 +13,16 @@
 			</template>
 			<template #overlayContent>
 				<form @submit.prevent.stop="submit" novalidate>
-					<div class="tw-bg-primary-inverse tw-bg-opacity-low md:tw-max-w-xs md:tw-ml-4 lg:tw-ml-10">
-						<div class="tw-p-1.5">
-							<h2 class="tw-text-primary-inverse " v-html="heroHeadline"></h2>
+					<div class="tw-bg-primary-inverse tw-bg-opacity-low
+						md:tw-max-w-sm md:tw-ml-4
+						lg:tw-max-w-md lg:tw-ml-16"
+					>
+						<div class="tw-p-1.5 lg:tw-p-3 tw-mb-1.5">
+							<h2 class="tw-text-primary-inverse tw-mb-2" v-html="heroHeadline"></h2>
 							<p class="tw-text-subhead tw-text-primary-inverse" v-html="heroBody"></p>
 						</div>
 						<fieldset class="tw-mb-2 tw-flex">
-							<div class="tw-inline tw-max-w-xs tw-flex-1 tw-px-1">
+							<div class="tw-inline tw-max-w-xs tw-flex-1 tw-px-1 lg:tw-px-3">
 								<label
 									class="tw-sr-only"
 									:class="{ 'tw-text-danger': $v.$invalid }" :for="'amount-' + componentKey"
@@ -42,7 +45,7 @@
 								</ul>
 							</div>
 							<kv-button
-								class="tw-flex-1 tw-mb-2 tw-inline tw-px-1"
+								class="tw-flex-1 tw-mb-2 tw-inline tw-px-1 lg:tw-px-3"
 								type="submit"
 								:disabled="$v.$invalid"
 								v-kv-track-event="[
@@ -177,15 +180,8 @@ export default {
 		},
 	},
 	methods: {
-		// Emits values to parent component to allow the synchronization of 2 landing
-		// forms on the same page
-		updateSelected(value) {
-			this.$emit('update:selectedGroup', value);
-		},
-		// Emits values to parent component to allow the synchronization of 2 landing
-		// forms on the same page
 		updateAmount(value) {
-			this.$emit('update:amount', value);
+			this.amount = value;
 		},
 		submit() {
 			this.$router.push({
