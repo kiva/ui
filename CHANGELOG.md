@@ -1,3 +1,11 @@
+## [2.63.0](https://github.com/kiva/ui/compare/v2.62.2...v2.63.0) (2022-02-09)
+
+
+### Features
+
+* core-404 personalized mg hero in place, only cleanup needed ([0ad5b1a](https://github.com/kiva/ui/commit/0ad5b1a83ef1a49c23f7b086ed112e4ee0951ed5))
+* core-404 style touch up for the personalized monthly good landing page hero ([e799e47](https://github.com/kiva/ui/commit/e799e479f94e126bb883f197443c49c50371dcbd))
+
 ### [2.62.2](https://github.com/kiva/ui/compare/v2.62.1...v2.62.2) (2022-02-07)
 
 
