@@ -81,7 +81,7 @@
 					if you’re interested in lending every month!
 				</p>
 				<kv-button
-					to="/monthlygood/signup"
+					to="/monthlygood/setup"
 					class="tw-w-full tw-mb-2"
 					style="max-width: 350px;"
 					v-kv-track-event="[
