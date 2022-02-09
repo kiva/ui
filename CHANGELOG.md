@@ -1,3 +1,16 @@
+## [2.64.0](https://github.com/kiva/ui/compare/v2.63.0...v2.64.0) (2022-02-09)
+
+
+### Features
+
+* enable lightbox with interest form for personalized mg ([d1cad74](https://github.com/kiva/ui/commit/d1cad746e3aef52959138e6330162515f72cbee9))
+
+
+### Bug Fixes
+
+* clean up merge conflicts ([0159165](https://github.com/kiva/ui/commit/01591657f7dcfb7965183caab8bc6e700b7b16bb))
+* show lightbox and update tracking on form submit ([dfed907](https://github.com/kiva/ui/commit/dfed9079d1f68300dbb0bf6d28c288d43394dcaf))
+
 ## [2.63.0](https://github.com/kiva/ui/compare/v2.62.2...v2.63.0) (2022-02-09)
 
 
