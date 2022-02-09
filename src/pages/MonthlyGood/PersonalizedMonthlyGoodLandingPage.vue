@@ -47,12 +47,7 @@
 							<kv-button
 								class="tw-flex-1 tw-mb-2 tw-inline tw-px-1 lg:tw-px-3"
 								type="submit"
-								:disabled="$v.$invalid"
-								v-kv-track-event="[
-									'MonthlyGood',
-									`click-start-form-${componentKey}`,
-									heroPrimaryCtaText
-								]"
+								:state="$v.$invalid ? 'disabled' : ''"
 							>
 								{{ heroPrimaryCtaText }}
 							</kv-button>
@@ -61,6 +56,11 @@
 				</form>
 			</template>
 		</kv-hero>
+
+		<personalized-mg-lightbox
+			:show-lightbox="showLightbox"
+			@hide-lightbox="showLightbox = false"
+		/>
 	</www-page>
 </template>
 
@@ -70,6 +70,7 @@ import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+import PersonalizedMgLightbox from '@/components/MonthlyGood/PersonalizedMgLightbox';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvHero from '@/components/Kv/KvHero';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
@@ -94,6 +95,7 @@ export default {
 		validationMixin,
 	],
 	components: {
+		PersonalizedMgLightbox,
 		WwwPage,
 		KvHero,
 		KvCurrencyInput,
@@ -111,6 +113,7 @@ export default {
 	},
 	data() {
 		return {
+			showLightbox: false,
 			monthlyGoodAmount: 25,
 			amount: 25,
 			selectedGroup: this.category || 'default',
@@ -184,13 +187,8 @@ export default {
 			this.amount = value;
 		},
 		submit() {
-			this.$router.push({
-				path: '/monthlygood/setup',
-				query: {
-					amount: this.amount,
-					category: this.selectedGroup,
-				}
-			});
+			this.$kvTrackEvent('Monthly Good', 'click-personalized-MG-signup-cta', 'Get started');
+			this.showLightbox = true;
 		}
 	},
 	computed: {
