@@ -1,66 +1,96 @@
 <template>
 	<www-page>
-		<kv-hero class="mg-hero bg-overlay">
-			<template #images>
-				<kv-contentful-img
-					:contentful-src="heroImage"
-					fallback-format="jpg"
-					:width="1440"
-					:alt="heroImageAlt"
-					:source-sizes="sourceSizes"
-					crop="&fit=fill&f=face"
-				/>
-			</template>
-			<template #overlayContent>
-				<form @submit.prevent.stop="submit" novalidate>
-					<div class="tw-bg-primary-inverse tw-bg-opacity-low
+		<section>
+			<kv-hero class="mg-hero bg-overlay">
+				<template #images>
+					<kv-contentful-img
+						:contentful-src="heroImage"
+						fallback-format="jpg"
+						:width="1440"
+						:alt="heroImageAlt"
+						:source-sizes="sourceSizes"
+						crop="&fit=fill&f=face"
+					/>
+				</template>
+				<template #overlayContent>
+					<form @submit.prevent.stop="submit" novalidate>
+						<div class="tw-bg-primary-inverse tw-bg-opacity-low
 						md:tw-max-w-sm md:tw-ml-4
 						lg:tw-max-w-md lg:tw-ml-16"
-					>
-						<div class="tw-p-1.5 lg:tw-p-3 tw-mb-1.5">
-							<h2 class="tw-text-primary-inverse tw-mb-2" v-html="heroHeadline"></h2>
-							<p class="tw-text-subhead tw-text-primary-inverse" v-html="heroBody"></p>
-						</div>
-						<fieldset class="tw-mb-2 tw-flex">
-							<div class="tw-inline tw-max-w-xs tw-flex-1 tw-px-1 lg:tw-px-3">
-								<label
-									class="tw-sr-only"
-									:class="{ 'tw-text-danger': $v.$invalid }" :for="'amount-' + componentKey"
-								>
-									Amount
-								</label>
-								<kv-currency-input
-									:id="'amount-' + componentKey"
-									:value="amount"
-									@input="updateAmount"
-									class=""
-								/>
-								<ul class="validation-errors tw-text-danger" v-if="$v.$invalid">
-									<li v-if="!$v.amount.required">
-										Field is required
-									</li>
-									<li v-if="!$v.amount.minValue || !$v.amount.maxValue">
-										Enter an amount of $5-$8,500
-									</li>
-								</ul>
+						>
+							<div class="tw-p-1.5 lg:tw-p-3 tw-mb-1.5">
+								<h2 class="tw-text-primary-inverse tw-mb-2" v-html="heroHeadline"></h2>
+								<p class="tw-text-subhead tw-text-primary-inverse" v-html="heroBody"></p>
 							</div>
-							<kv-button
-								class="tw-flex-1 tw-mb-2 tw-inline tw-px-1 lg:tw-px-3"
-								type="submit"
-								:state="$v.$invalid ? 'disabled' : ''"
-							>
-								{{ heroPrimaryCtaText }}
-							</kv-button>
-						</fieldset>
-					</div>
-				</form>
-			</template>
-		</kv-hero>
+							<fieldset class="tw-mb-2 tw-flex">
+								<div class="tw-inline tw-max-w-xs tw-flex-1 tw-px-1 lg:tw-px-3">
+									<label
+										class="tw-sr-only"
+										:class="{ 'tw-text-danger': $v.$invalid }" :for="'amount-' + componentKey"
+									>
+										Amount
+									</label>
+									<kv-currency-input
+										:id="'amount-' + componentKey"
+										:value="amount"
+										@input="updateAmount"
+										class=""
+									/>
+									<ul class="validation-errors tw-text-danger" v-if="$v.$invalid">
+										<li v-if="!$v.amount.required">
+											Field is required
+										</li>
+										<li v-if="!$v.amount.minValue || !$v.amount.maxValue">
+											Enter an amount of $5-$8,500
+										</li>
+									</ul>
+								</div>
+								<kv-button
+									class="tw-flex-1 tw-mb-2 tw-inline tw-px-1 lg:tw-px-3"
+									type="submit"
+									:state="$v.$invalid ? 'disabled' : ''"
+								>
+									{{ heroPrimaryCtaText }}
+								</kv-button>
+							</fieldset>
+						</div>
+					</form>
+				</template>
+			</kv-hero>
 
-		<personalized-mg-lightbox
-			:show-lightbox="showLightbox"
-			@hide-lightbox="showLightbox = false"
-		/>
+			<personalized-mg-lightbox
+				:show-lightbox="showLightbox"
+				@hide-lightbox="showLightbox = false"
+			/>
+		</section>
+
+		<section class="row md:tw-flex">
+			<div class="tw-block md:tw-hidden">
+				<kv-contentful-img
+					:contentful-src="valueImage"
+					fallback-format="jpg"
+					:width="1440"
+					:alt="valueImageAlt"
+					crop="&fit=fill&f=face"
+				/>
+			</div>
+			<div class="tw-flex-1 tw-self-center">
+				<h2
+					v-html="valueHeadline"
+					class="tw-mb-4"
+				></h2>
+				<p v-html="valueBody"></p>
+			</div>
+			<div class="tw-flex-1 tw-hidden md:tw-block">
+				<kv-contentful-img
+					:contentful-src="valueImage"
+					fallback-format="jpg"
+					:width="1440"
+					:alt="valueImageAlt"
+					crop="&fit=fill&f=face"
+				/>
+			</div>
+		</section>
 	</www-page>
 </template>
 
@@ -82,7 +112,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 const pageQuery = gql`
 	query monthlyGoodPersonalizedLandingPage {
 		contentful {
-			entries(contentType: "page", contentKey: "/lp/monthlygood/personalized")
+			entries(contentType: "page", contentKey: "monthlygood/personalized")
 		}
 	}
 `;
@@ -228,6 +258,31 @@ export default {
 		heroPrimaryCtaText() {
 			return this.heroText?.primaryCtaText ?? 'Start Monthly Good';
 		},
+		valueContentGroup() {
+			return this.contentGroups?.find(({ key }) => {
+				return key ? key === 'personalized-mg-landing-value-prop' : false;
+			});
+		},
+		valueImage() {
+			return this.valueContentGroup?.media?.[0]?.file?.url ?? '';
+		},
+		valueImageAlt() {
+			return this.valueContentGroup?.media?.[0]?.description ?? '';
+		},
+		valueText() {
+			// This contentGroup doesnt have a type, so find by key
+			return this.valueContentGroup?.contents?.find(contentItem => {
+				return contentItem.key === 'personalized-mg-landing-value-text';
+			});
+		},
+		valueHeadline() {
+			return this.valueText?.headline ?? 'Automatically support borrower picked for you.';
+		},
+		valueBody() {
+			// eslint-disable-next-line max-len
+			const text = this.valueText?.bodyCopy ?? 'Make loans to matching borrowers in categories and regions you typically support. Always lend to women in South America? No problem. Refugees in North Africa? You got it.';
+			return documentToHtmlString(text).replace(/\n/g, '<br />');
+		}
 	}
 };
 </script>
