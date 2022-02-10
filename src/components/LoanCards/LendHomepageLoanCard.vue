@@ -55,7 +55,6 @@
 			/>
 			<div class="lend-homepage-loan-card__action-row">
 				<div
-					class="lend-homepage-loan-card__action-button-container"
 					:class="{'full-width': isFunded || isExpired}"
 				>
 					<kv-button
@@ -83,7 +82,6 @@
 						:is-expired="isExpired"
 						:is-selected-by-another="isSelectedByAnother"
 						:is-simple-lend-button="true"
-						:hide-adding-to-basket-text="true"
 						:minimal-checkout-button="true"
 
 						@click.native="trackInteraction({
@@ -309,9 +307,6 @@ export default {
 	}
 
 	&__action-button-container {
-		width: rem-calc(150);
-		flex-grow: 1;
-
 		&.full-width {
 			width: 100%;
 		}

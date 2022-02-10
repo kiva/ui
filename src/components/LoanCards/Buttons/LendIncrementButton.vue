@@ -1,8 +1,8 @@
 <template>
-	<div class="lend-increment-container">
-		<div class="lend-increment-dropdown-container" v-if="!loading">
-			<select
-				class="lend-increment-dropdown"
+	<div class="tw-flex tw-justify-between sm:tw-gap-1 md:tw-gap-2">
+		<div class="tw-w-12" v-if="!loading">
+			<kv-select
+				id="lend-increment-amount"
 				v-model="selectedOption"
 			>
 				<option
@@ -12,11 +12,12 @@
 				>
 					${{ price }}
 				</option>
-			</select>
+			</kv-select>
 		</div>
+
 		<lend-button
-			class="lend-increment-button smaller"
-			:class="{ 'is-loading': loading }"
+			class="tw-grow"
+			:class="{ 'tw-w-full': loading }"
 			:price="selectedOption"
 			:loan-id="loanId"
 			:loading.sync="loading"
@@ -28,9 +29,11 @@
 <script>
 import LendButton from '@/components/LoanCards/Buttons/LendButton';
 import { buildPriceArray } from '@/util/loanUtils';
+import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
 	components: {
+		KvSelect,
 		LendButton,
 	},
 	data() {
@@ -83,46 +86,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.lend-increment-container {
-	display: flex;
-	justify-content: space-between;
-
-	.lend-increment-dropdown-container {
-		width: 6rem;
-
-		.lend-increment-dropdown {
-			margin: 0;
-			height: 54px;
-			box-shadow: 0 2px #333;
-			border: 1px solid #333;
-			border-bottom: none;
-			color: #484848;
-		}
-
-		@include breakpoint(340px down) {
-			width: 4.75rem;
-		}
-
-		@include breakpoint(medium) {
-			width: 5rem;
-		}
-	}
-
-	.lend-increment-button {
-		margin-bottom: 0;
-		flex-grow: 1;
-		margin-left: 0.8rem;
-		// override only left + right padding
-		padding-right: 1rem;
-		padding-left: 1rem;
-
-		&.is-loading {
-			width: 100%;
-		}
-	}
-}
-</style>

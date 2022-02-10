@@ -89,7 +89,7 @@
 				<div class="row">
 					<div class="columns small-12 large-expand">
 						<action-button
-							class="expandable-loan-card-action-button"
+							class="tw-mt-2"
 							:loan-id="loan.id"
 							:loan="loan"
 							:items-in-basket="itemsInBasket"
