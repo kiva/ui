@@ -48,7 +48,7 @@
 					:is-funded="isFunded"
 					:is-selected-by-another="isSelectedByAnother"
 					class="tw-mt-2"
-					:class="{'tw-mb-2' : !isMatchAtRisk}"
+					:class="{'tw-mb-2' : !isMatchAtRisk && !isFunded}"
 					@click.native="trackInteraction({
 						interactionType: 'addToBasket',
 						interactionElement: 'Lend25'
