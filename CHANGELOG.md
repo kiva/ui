@@ -1,3 +1,16 @@
+## [2.67.0](https://github.com/kiva/ui/compare/v2.66.0...v2.67.0) (2022-02-10)
+
+
+### Features
+
+* kvcustomdonation component was removed because not used in other pages ([68ac1e7](https://github.com/kiva/ui/commit/68ac1e7998ba0ce0a8c2cba36dcaf3d8848dcc17))
+* protocol page and its route were removed ([cddb86b](https://github.com/kiva/ui/commit/cddb86b243b9accc7a5ec48fcf6468b13a319f35))
+
+
+### Bug Fixes
+
+* fix margin on funded text in loan card ([9fd34ed](https://github.com/kiva/ui/commit/9fd34ed44c5f6ff24081b8f7453f88ce3a9955d3))
+
 ## [2.66.0](https://github.com/kiva/ui/compare/v2.65.0...v2.66.0) (2022-02-10)
 
 
