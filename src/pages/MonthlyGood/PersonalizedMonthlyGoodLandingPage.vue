@@ -82,6 +82,19 @@
 				/>
 			</div>
 		</section>
+		<how-it-works />
+		<email-preview />
+		<kiva-as-expert />
+		<more-about-kiva />
+		<!-- Monthly Good Frequently Asked Questions -->
+		<div class="row">
+			<kv-frequently-asked-questions
+				class="span-12 column
+					tw-py-4 md:tw-py-6 lg:tw-py-8"
+				:headline="frequentlyAskedQuestionsHeadline"
+				:questions="frequentlyAskedQuestions"
+			/>
+		</div>
 	</www-page>
 </template>
 
@@ -97,8 +110,13 @@ import KvHero from '@/components/Kv/KvHero';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import { processPageContent } from '@/util/contentfulUtils';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
+import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import HowItWorks from './HowItWorks';
+import EmailPreview from './EmailPreview';
+import MoreAboutKiva from './MoreAboutKiva';
+import KivaAsExpert from './KivaAsExpert';
 
 const pageQuery = gql`
 	query monthlyGoodPersonalizedLandingPage {
@@ -122,6 +140,11 @@ export default {
 		KvCurrencyInput,
 		KvButton,
 		KvContentfulImg,
+		HowItWorks,
+		EmailPreview,
+		KivaAsExpert,
+		MoreAboutKiva,
+		KvFrequentlyAskedQuestions,
 	},
 	validations: {
 		amount: {
@@ -248,6 +271,17 @@ export default {
 		},
 		heroPrimaryCtaText() {
 			return this.heroText?.primaryCtaText ?? 'Start Monthly Good';
+		},
+		faqContentGroup() {
+			return this.contentGroups?.find(({ type }) => {
+				return type ? type === 'frequentlyAskedQuestions' : false;
+			});
+		},
+		frequentlyAskedQuestionsHeadline() {
+			return this.faqContentGroup?.title ?? null;
+		},
+		frequentlyAskedQuestions() {
+			return this.faqContentGroup?.contents ?? null;
 		},
 		valueContentGroup() {
 			return this.contentGroups?.find(({ key }) => {
