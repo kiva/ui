@@ -1,3 +1,10 @@
+## [2.66.0](https://github.com/kiva/ui/compare/v2.65.0...v2.66.0) (2022-02-10)
+
+
+### Features
+
+* kiva classic lend now and lend 25 buttons ([6f8eb8d](https://github.com/kiva/ui/commit/6f8eb8de495e726cc53166c34974d76fb55e4b02))
+
 ## [2.65.0](https://github.com/kiva/ui/compare/v2.64.0...v2.65.0) (2022-02-10)
 
 
