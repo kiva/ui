@@ -64,24 +64,15 @@
 			/>
 		</section>
 
-		<section class="row md:tw-flex">
-			<div class="tw-block md:tw-hidden">
-				<kv-contentful-img
-					:contentful-src="valueImage"
-					fallback-format="jpg"
-					:width="1440"
-					:alt="valueImageAlt"
-					crop="&fit=fill&f=face"
-				/>
-			</div>
-			<div class="tw-flex-1 tw-self-center">
+		<section class="row tw-flex">
+			<div class="tw-flex-1 tw-self-center tw-order-last md:tw-order-first">
 				<h2
 					v-html="valueHeadline"
 					class="tw-mb-4"
 				></h2>
 				<p v-html="valueBody"></p>
 			</div>
-			<div class="tw-flex-1 tw-hidden md:tw-block">
+			<div class="tw-flex-1 tw-block tw-order-first md:t-order-last">
 				<kv-contentful-img
 					:contentful-src="valueImage"
 					fallback-format="jpg"
