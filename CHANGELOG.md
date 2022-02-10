@@ -1,3 +1,16 @@
+## [2.68.0](https://github.com/kiva/ui/compare/v2.67.1...v2.68.0) (2022-02-10)
+
+
+### Features
+
+* core-420 rest of the personalized monthly good page in place ([4c2c1b5](https://github.com/kiva/ui/commit/4c2c1b57a87558715f80f77c52b0ca3643ede481))
+* core-420, rest of the personalized monthly good landing page, ported from monthly good page ([4b7d022](https://github.com/kiva/ui/commit/4b7d022f1e0e5df89247c7b5f254cacbad3753eb))
+
+
+### Bug Fixes
+
+* core-420 removing 2 form on page ([5a601f0](https://github.com/kiva/ui/commit/5a601f05d505dcd76af48db01aebb472ca45ca8c))
+
 ### [2.67.1](https://github.com/kiva/ui/compare/v2.67.0...v2.67.1) (2022-02-10)
 
 
