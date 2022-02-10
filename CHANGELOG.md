@@ -1,3 +1,15 @@
+## [2.65.0](https://github.com/kiva/ui/compare/v2.64.0...v2.65.0) (2022-02-10)
+
+
+### Features
+
+* core-405 MG personalized value prop ([38c0c57](https://github.com/kiva/ui/commit/38c0c57cdc5595d529a067848685d198aecc735f))
+
+
+### Bug Fixes
+
+* core-405 using flexbox instead of replicating content. ([bb9369d](https://github.com/kiva/ui/commit/bb9369d488c35c77eb15e871c1b937f0e97411ce))
+
 ## [2.64.0](https://github.com/kiva/ui/compare/v2.63.0...v2.64.0) (2022-02-09)
 
 
