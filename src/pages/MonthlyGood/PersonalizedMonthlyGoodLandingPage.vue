@@ -84,27 +84,7 @@
 		</section>
 		<how-it-works />
 		<email-preview />
-		<kiva-as-expert>
-			<!-- <template #form> -->
-			<!-- <landing-form
-					:amount.sync="monthlyGoodAmount"
-					:selected-group.sync="selectedGroup"
-					key="bottom"
-					v-if="!isMonthlyGoodSubscriber && !hasModernSub"
-					:button-text="heroPrimaryCtaText"
-				/> -->
-			<!-- <div
-				class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
-				v-if="isMonthlyGoodSubscriber || hasModernSub"
-			>
-				<p class="tw-font-medium tw-mb-2">
-					You're already signed up for a subscription. Changes to this
-					contribution can be made in your
-					<a href="/settings/subscriptions">subscription settings</a>.
-				</p>
-			</div> -->
-			<!-- </template> -->
-		</kiva-as-expert>
+		<kiva-as-expert />
 		<more-about-kiva />
 		<!-- Monthly Good Frequently Asked Questions -->
 		<div class="row">
