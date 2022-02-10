@@ -61,6 +61,39 @@
 			:show-lightbox="showLightbox"
 			@hide-lightbox="showLightbox = false"
 		/>
+		<how-it-works />
+		<email-preview />
+		<kiva-as-expert>
+			<!-- <template #form> -->
+			<!-- <landing-form
+					:amount.sync="monthlyGoodAmount"
+					:selected-group.sync="selectedGroup"
+					key="bottom"
+					v-if="!isMonthlyGoodSubscriber && !hasModernSub"
+					:button-text="heroPrimaryCtaText"
+				/> -->
+			<!-- <div
+				class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
+				v-if="isMonthlyGoodSubscriber || hasModernSub"
+			>
+				<p class="tw-font-medium tw-mb-2">
+					You're already signed up for a subscription. Changes to this
+					contribution can be made in your
+					<a href="/settings/subscriptions">subscription settings</a>.
+				</p>
+			</div> -->
+			<!-- </template> -->
+		</kiva-as-expert>
+		<more-about-kiva />
+		<!-- Monthly Good Frequently Asked Questions -->
+		<div class="row">
+			<kv-frequently-asked-questions
+				class="span-12 column
+					tw-py-4 md:tw-py-6 lg:tw-py-8"
+				:headline="frequentlyAskedQuestionsHeadline"
+				:questions="frequentlyAskedQuestions"
+			/>
+		</div>
 	</www-page>
 </template>
 
@@ -76,8 +109,13 @@ import KvHero from '@/components/Kv/KvHero';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import { processPageContent } from '@/util/contentfulUtils';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
+import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import HowItWorks from './HowItWorks';
+import EmailPreview from './EmailPreview';
+import MoreAboutKiva from './MoreAboutKiva';
+import KivaAsExpert from './KivaAsExpert';
 
 const pageQuery = gql`
 	query monthlyGoodPersonalizedLandingPage {
@@ -101,6 +139,11 @@ export default {
 		KvCurrencyInput,
 		KvButton,
 		KvContentfulImg,
+		HowItWorks,
+		EmailPreview,
+		KivaAsExpert,
+		MoreAboutKiva,
+		KvFrequentlyAskedQuestions,
 	},
 	validations: {
 		amount: {
@@ -227,6 +270,17 @@ export default {
 		},
 		heroPrimaryCtaText() {
 			return this.heroText?.primaryCtaText ?? 'Start Monthly Good';
+		},
+		faqContentGroup() {
+			return this.contentGroups?.find(({ type }) => {
+				return type ? type === 'frequentlyAskedQuestions' : false;
+			});
+		},
+		frequentlyAskedQuestionsHeadline() {
+			return this.faqContentGroup?.title ?? null;
+		},
+		frequentlyAskedQuestions() {
+			return this.faqContentGroup?.contents ?? null;
 		},
 	}
 };
