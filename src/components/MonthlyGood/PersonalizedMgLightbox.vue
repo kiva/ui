@@ -77,8 +77,8 @@
 					Thanks!
 				</h2>
 				<p class="tw-mb-2">
-					In the meantime, you can continue to signup to monthly good
-					if you’re interested in lending every month!
+					In the meantime, continue signing up for Monthly Good
+					if you're interested in lending every month!
 				</p>
 				<kv-button
 					to="/monthlygood/setup"
