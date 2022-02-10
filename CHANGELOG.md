@@ -1,3 +1,10 @@
+### [2.67.1](https://github.com/kiva/ui/compare/v2.67.0...v2.67.1) (2022-02-10)
+
+
+### Bug Fixes
+
+* update copy for thanks state lightbox ([ee70695](https://github.com/kiva/ui/commit/ee70695012cbf99253fe2a12a38f3195838c86a9))
+
 ## [2.67.0](https://github.com/kiva/ui/compare/v2.66.0...v2.67.0) (2022-02-10)
 
 
