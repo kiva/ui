@@ -16,7 +16,7 @@
 			</template>
 			<template #overlayContent>
 				<div class="row">
-					<div class="overlay-column columns tw-bg-primary-inverse tw-bg-opacity-low medium-12 large-8">
+					<div class="overlay-column columns tw-bg-primary-inverse tw-bg-opacity-[75%] medium-12 large-8">
 						<h1 class="mg-headline tw-text-primary-inverse" v-html="heroHeadline"></h1>
 						<p class="mg-subhead tw-text-subhead tw-text-primary-inverse" v-html="heroBody"></p>
 						<landing-form
