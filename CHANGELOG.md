@@ -1,3 +1,10 @@
+### [2.69.1](https://github.com/kiva/ui/compare/v2.69.0...v2.69.1) (2022-02-11)
+
+
+### Bug Fixes
+
+* ensure loan category selection fires an analytics event ([2389172](https://github.com/kiva/ui/commit/2389172f7e77d8306f0d1a28d6e46ae78d0378ff))
+
 ## [2.69.0](https://github.com/kiva/ui/compare/v2.68.0...v2.69.0) (2022-02-11)
 
 
