@@ -13,11 +13,10 @@
 					/>
 				</template>
 				<template #overlayContent>
-					<form @submit.prevent.stop="submit" novalidate>
-						<div class="tw-bg-primary-inverse
-							tw-bg-opacity-[75%]
-							md:tw-max-w-sm md:tw-ml-4
-							lg:tw-max-w-md lg:tw-ml-16"
+					<form @submit.prevent.stop="submit" novalidate class="tw-px-2">
+						<div class="tw-bg-primary-inverse tw-bg-opacity-[75%]
+						md:tw-max-w-sm md:tw-ml-4
+						lg:tw-max-w-md lg:tw-ml-14"
 						>
 							<div class="tw-p-1.5 lg:tw-p-3 tw-mb-1.5">
 								<h2 class="tw-text-primary-inverse tw-mb-2" v-html="heroHeadline"></h2>
@@ -51,7 +50,8 @@
 										tw-flex-1
 										tw-mb-2
 										tw-inline
-										tw-px-1
+										tw-pr-1
+										md:tw-px-1
 										lg:tw-px-3"
 									type="submit"
 									:state="$v.$invalid ? 'disabled' : ''"
