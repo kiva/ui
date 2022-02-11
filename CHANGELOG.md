@@ -1,3 +1,11 @@
+### [2.69.3](https://github.com/kiva/ui/compare/v2.69.2...v2.69.3) (2022-02-11)
+
+
+### Bug Fixes
+
+* udpate pmg thanks copy ([f3f1510](https://github.com/kiva/ui/commit/f3f1510cce0b1d803d0326d521018b4d315070d0))
+* update pmg analtyics events and thanks lightbox copy ([5c68021](https://github.com/kiva/ui/commit/5c680216f55ffbbe4ef51a41173cd35b7fe83265))
+
 ### [2.69.2](https://github.com/kiva/ui/compare/v2.69.1...v2.69.2) (2022-02-11)
 
 
