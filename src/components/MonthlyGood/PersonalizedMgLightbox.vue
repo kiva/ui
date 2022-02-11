@@ -77,8 +77,8 @@
 					Thanks!
 				</h2>
 				<p class="tw-mb-2">
-					In the meantime, continue signing up for Monthly Good
-					if you're interested in lending every month!
+					Personalized lending is not available yet, but you can still
+					continue signing up for Monthly Good if you’re interested in lending every month.
 				</p>
 				<kv-button
 					to="/monthlygood/setup"
