@@ -7,7 +7,7 @@
 			class="tw-mx-1 md:tw-mb-3 tw-whitespace-nowrap"
 			v-for="category in loanChannels" :key="category.id"
 			:variant="selectedChannel === category.id ? 'link' : 'ghost'"
-			@click="handleCategoryClick(category.id)"
+			@click="handleCategoryClick(category)"
 		>
 			{{ category.shortName }}
 		</kv-button>
@@ -35,7 +35,20 @@ export default {
 		}
 	},
 	methods: {
-		handleCategoryClick(categoryId) {
+		handleCategoryClick(category) {
+			const categoryId = category?.id ?? null;
+			const categoryShortName = category?.shortName ?? '';
+			// build event category from url, special case for homepage, clean page path otherwise
+			const eventContext = this.$route.fullPath === '/'
+				? 'homepage'
+				: this.$route.fullPath.replace(/\//g, '-').replace('-', '');
+			this.$kvTrackEvent(
+				eventContext,
+				'click-contentful-loan-carousel-category',
+				categoryShortName,
+				categoryId,
+				categoryId
+			);
 			this.$emit('handle-category-click', { categoryId });
 			return false;
 		}
