@@ -14,7 +14,7 @@
 				</template>
 				<template #overlayContent>
 					<form @submit.prevent.stop="submit" novalidate>
-						<div class="tw-bg-primary-inverse tw-bg-opacity-low
+						<div class="tw-bg-primary-inverse tw-bg-opacity-[75%]
 						md:tw-max-w-sm md:tw-ml-4
 						lg:tw-max-w-md lg:tw-ml-16"
 						>
