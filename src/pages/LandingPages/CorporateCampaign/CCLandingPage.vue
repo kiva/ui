@@ -115,7 +115,7 @@
 				:pf-id="String(promoFundId)"
 				:user-id="this.myId"
 				@verification-complete="verificationComplete"
-				@opt-out="showVerifyRemovePromoCredit = true"
+				@campaign-verification-opt-out="handleVerificationOptOut"
 			/>
 
 			<!-- Warn about removing promo credit -->
@@ -125,7 +125,7 @@
 				:promo-fund-display-name="campaignPartnerName"
 				:active-credit-type="activeCreditType"
 				@credit-removed="handleCreditRemoved"
-				@lightbox-closed="showVerifyRemovePromoCredit = false"
+				@promo-opt-out-lightbox-closed="handleCancelPromoOptOut"
 			/>
 
 			<kv-lightbox
@@ -1073,7 +1073,9 @@ export default {
 				this.showTeamForm = true;
 				this.checkoutVisible = false;
 			} else {
-				// signify checkout is ready
+				// Show checkout if:
+				// - Not actively logged in, with a "Continue" button that goes to login
+				// - Checkout is ready
 				this.showCheckout();
 			}
 		},
@@ -1159,6 +1161,14 @@ export default {
 
 		verificationComplete() {
 			this.verificationSumbitted = true;
+			this.handleBasketValidation();
+		},
+		handleVerificationOptOut() {
+			this.showVerification = false;
+			this.showVerifyRemovePromoCredit = true;
+		},
+		handleCancelPromoOptOut() {
+			this.showVerifyRemovePromoCredit = false;
 			this.handleBasketValidation();
 		},
 		verifyPromoMatchesPageId(pageId) {

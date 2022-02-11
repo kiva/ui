@@ -84,7 +84,7 @@ export default {
 			this.$emit('updating-totals', state);
 		},
 		closeLightbox() {
-			this.$emit('lightbox-closed');
+			this.$emit('promo-opt-out-lightbox-closed');
 		}
 	}
 };
