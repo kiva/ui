@@ -1,3 +1,10 @@
+## [2.69.0](https://github.com/kiva/ui/compare/v2.68.0...v2.69.0) (2022-02-11)
+
+
+### Features
+
+* core-439 fixing opacity in monthly good cta boxes ([27ef0ef](https://github.com/kiva/ui/commit/27ef0ef283ad2c76111caffea49f4a19050fcaeb))
+
 ## [2.68.0](https://github.com/kiva/ui/compare/v2.67.1...v2.68.0) (2022-02-10)
 
 
