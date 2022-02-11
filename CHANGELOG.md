@@ -1,3 +1,10 @@
+### [2.69.2](https://github.com/kiva/ui/compare/v2.69.1...v2.69.2) (2022-02-11)
+
+
+### Bug Fixes
+
+* fixing alignment of value prop across screen sizes ([3d30348](https://github.com/kiva/ui/commit/3d30348504201bf297800237151bb5b305d421ba))
+
 ### [2.69.1](https://github.com/kiva/ui/compare/v2.69.0...v2.69.1) (2022-02-11)
 
 
