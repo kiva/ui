@@ -249,7 +249,7 @@ export default {
 			this.amount = value;
 		},
 		submit() {
-			this.$kvTrackEvent('Monthly Good', 'click-personalized-MG-signup-cta', 'Get started', this.amount);
+			this.$kvTrackEvent('MonthlyGood', 'click-personalized-MG-signup-cta', 'Get started', this.amount);
 			this.showLightbox = true;
 		}
 	},

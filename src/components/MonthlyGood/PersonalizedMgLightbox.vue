@@ -53,7 +53,7 @@
 							:state="$v.email.$invalid ? 'disabled' : ''"
 							class="tw-w-full"
 							v-kv-track-event="[
-								'Monthly Good',
+								'MonthlyGood',
 								'click-personalized-MG-false-door-cta',
 								'Stay up to date'
 							]"
@@ -77,15 +77,15 @@
 					Thanks!
 				</h2>
 				<p class="tw-mb-2">
-					In the meantime, continue signing up for Monthly Good
-					if you're interested in lending every month!
+					Personalized lending is not available yet, but you can still
+					continue signing up for Monthly Good if you’re interested in lending every month.
 				</p>
 				<kv-button
 					to="/monthlygood/setup"
 					class="tw-w-full tw-mb-2"
 					style="max-width: 350px;"
 					v-kv-track-event="[
-						'Monthly Good',
+						'MonthlyGood',
 						'click-personalized-MG-thanks-cta',
 						'Continue to monthly good setup'
 					]"
@@ -98,7 +98,7 @@
 					class="tw-w-full tw-mb-2"
 					style="max-width: 350px;"
 					v-kv-track-event="[
-						'Monthly Good',
+						'MonthlyGood',
 						'click-personalized-MG-thanks-cta',
 						'Go to lending home'
 					]"
@@ -165,14 +165,14 @@ export default {
 	methods: {
 		closeLightbox() {
 			this.isLightboxVisible = false;
-			this.$kvTrackEvent('Monthly Good', 'click-personalized-MG-false-door-x', 'Close MG Personalized lightbox');
+			this.$kvTrackEvent('MonthlyGood', 'click-personalized-MG-false-door-x', 'Close MG Personalized lightbox');
 			this.$emit('hide-lightbox');
 		},
 		async submitForm() {
 			this.$v.$touch();
 			if (!this.$v.$invalid) {
 				this.$kvTrackEvent(
-					'Monthly Good',
+					'MonthlyGood',
 					'click-Stay-up-to-date-submit-form',
 					'Stay up to date'
 				);
@@ -194,13 +194,13 @@ export default {
 		trackShowLightbox() {
 			if (this.step === 'join') {
 				this.$kvTrackEvent(
-					'Monthly Good',
+					'MonthlyGood',
 					'show-personalized-MG-false-door-lightbox',
 					'view-coming-soon-screen'
 				);
 			} else {
 				this.$kvTrackEvent(
-					'Monthly Good',
+					'MonthlyGood',
 					'show-personalized-MG-false-door-lightbox',
 					'view-thanks-screen'
 				);
