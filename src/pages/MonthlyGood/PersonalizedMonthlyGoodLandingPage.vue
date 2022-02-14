@@ -14,9 +14,10 @@
 				</template>
 				<template #overlayContent>
 					<form @submit.prevent.stop="submit" novalidate class="tw-px-2">
-						<div class="tw-bg-primary-inverse tw-bg-opacity-[75%]
+						<div
+							class="tw-bg-primary-inverse tw-bg-opacity-[75%]
 						md:tw-max-w-sm md:tw-ml-4
-						lg:tw-max-w-md lg:tw-ml-14"
+						lg:tw-max-w-md lg:new-spacing"
 						>
 							<div class="tw-p-1.5 lg:tw-p-3 tw-mb-1.5">
 								<h2 class="tw-text-primary-inverse tw-mb-2" v-html="heroHeadline"></h2>
@@ -67,6 +68,7 @@
 			<personalized-mg-lightbox
 				:show-lightbox="showLightbox"
 				@hide-lightbox="showLightbox = false"
+				:amount="amount"
 			/>
 		</section>
 
@@ -176,7 +178,7 @@ export default {
 	data() {
 		return {
 			showLightbox: false,
-			monthlyGoodAmount: 25,
+			// monthlyGoodAmount: 25,
 			amount: 25,
 			selectedGroup: this.category || 'default',
 			sourceSizes: [
@@ -329,3 +331,10 @@ export default {
 	}
 };
 </script>
+
+<style lang="scss" scoped>
+.new-spacing {
+	margin-left: 16%;
+}
+
+</style>

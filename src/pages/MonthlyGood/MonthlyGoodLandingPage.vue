@@ -17,7 +17,9 @@
 			<template #overlayContent>
 				<div class="row">
 					<div class="overlay-column columns tw-bg-primary-inverse tw-bg-opacity-[75%] medium-12 large-8">
-						<h1 class="mg-headline tw-text-primary-inverse" v-html="heroHeadline"></h1>
+						<h1 class="mg-headline tw-text-primary-inverse
+							tw-text-h2 md:tw-text-h1" v-html="heroHeadline"
+						></h1>
 						<p class="mg-subhead tw-text-subhead tw-text-primary-inverse" v-html="heroBody"></p>
 						<landing-form
 							:amount.sync="monthlyGoodAmount"
