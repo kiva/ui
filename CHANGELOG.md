@@ -1,3 +1,13 @@
+### [2.69.4](https://github.com/kiva/ui/compare/v2.69.3...v2.69.4) (2022-02-14)
+
+
+### Bug Fixes
+
+* core-400 fixes to monthlygood personalized hero, and monthly good hero for sm screens ([b1b2ae3](https://github.com/kiva/ui/commit/b1b2ae316979a3c39d797cef9e29ef067a20815d))
+* core-400 spacing in hero for large screens. ([ccf708d](https://github.com/kiva/ui/commit/ccf708d79449c3009cdd70216957d352352be7c3))
+* correctly passing amount through to MG/setup page, removing unused function ([99d9c64](https://github.com/kiva/ui/commit/99d9c6443a353e46833b6e6afa16cce0b59fa9b3))
+* refinements to MG hero on personalized page ([0954014](https://github.com/kiva/ui/commit/0954014c125be4e08794701034a5be0023f83a37))
+
 ### [2.69.3](https://github.com/kiva/ui/compare/v2.69.2...v2.69.3) (2022-02-11)
 
 
