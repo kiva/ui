@@ -1,3 +1,10 @@
+## [2.70.0](https://github.com/kiva/ui/compare/v2.69.6...v2.70.0) (2022-02-14)
+
+
+### Features
+
+* improve employee verification form check and process flow ([edec517](https://github.com/kiva/ui/commit/edec517f498821e8e24ddde182dd68f074fd16cc))
+
 ### [2.69.6](https://github.com/kiva/ui/compare/v2.69.5...v2.69.6) (2022-02-14)
 
 
