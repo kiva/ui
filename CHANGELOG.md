@@ -1,3 +1,10 @@
+### [2.69.5](https://github.com/kiva/ui/compare/v2.69.4...v2.69.5) (2022-02-14)
+
+
+### Bug Fixes
+
+* core-400 cleaning up a console.log ([c05a36c](https://github.com/kiva/ui/commit/c05a36ccf781e01c92a86c5f92adf7874e4796f2))
+
 ### [2.69.4](https://github.com/kiva/ui/compare/v2.69.3...v2.69.4) (2022-02-14)
 
 
