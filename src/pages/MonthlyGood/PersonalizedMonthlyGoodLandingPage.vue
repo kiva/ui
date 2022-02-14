@@ -234,13 +234,13 @@ export default {
 		result({ data }) {
 			// Core-399 Subscriptions Appeal Personalization Experiment
 			const subscriptionAppealPersonalization = this.apollo.readFragment({
-				id: 'EXP-VUE-399-subscription-appeal-personalization',
+				id: 'Experiment:EXP-VUE-399-subscription-appeal-personalization',
 				fragment: experimentVersionFragment,
 			}) || {};
 
 			if (subscriptionAppealPersonalization.version
 				&& subscriptionAppealPersonalization.version !== 'unassigned'
-				&& this.subscriptionAppealPersonalization === 'shown'
+				&& subscriptionAppealPersonalization.version === 'b'
 			) {
 				this.$kvTrackEvent('MonthlyGood', 'EXP-CORE-399-Feb2022', 'b');
 			}
