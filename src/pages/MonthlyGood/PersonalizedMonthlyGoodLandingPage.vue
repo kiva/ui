@@ -13,55 +13,62 @@
 					/>
 				</template>
 				<template #overlayContent>
-					<form @submit.prevent.stop="submit" novalidate class="tw-px-2">
-						<div
-							class="tw-bg-primary-inverse tw-bg-opacity-[75%]
-						md:tw-max-w-sm md:tw-ml-4
-						lg:tw-max-w-md lg:new-spacing"
+					<div class="tw-mx-auto"
+						style="max-width: 990px;"
+					>
+						<form
+							@submit.prevent.stop="submit"
+							novalidate
+							class="tw-px-2"
 						>
-							<div class="tw-p-1.5 lg:tw-p-3 tw-mb-1.5">
-								<h2 class="tw-text-primary-inverse tw-mb-2" v-html="heroHeadline"></h2>
-								<p class="tw-text-subhead tw-text-primary-inverse" v-html="heroBody"></p>
-							</div>
-							<fieldset class="tw-mb-2 tw-flex">
-								<div class="tw-inline tw-max-w-xs tw-flex-1 tw-px-1 lg:tw-px-3">
-									<label
-										class="tw-sr-only"
-										:class="{ 'tw-text-danger': $v.$invalid }" :for="'amount-' + componentKey"
-									>
-										Amount
-									</label>
-									<kv-currency-input
-										:id="'amount-' + componentKey"
-										:value="amount"
-										@input="updateAmount"
-										class=""
-									/>
-									<ul class="validation-errors tw-text-danger" v-if="$v.$invalid">
-										<li v-if="!$v.amount.required">
-											Field is required
-										</li>
-										<li v-if="!$v.amount.minValue || !$v.amount.maxValue">
-											Enter an amount of $5-$8,500
-										</li>
-									</ul>
+							<div
+								class="tw-bg-primary-inverse tw-bg-opacity-[75%]
+								md:tw-max-w-sm
+								lg:tw-max-w-md"
+							>
+								<div class="tw-p-1.5 lg:tw-p-3 tw-mb-1.5">
+									<h2 class="tw-text-primary-inverse tw-mb-2" v-html="heroHeadline"></h2>
+									<p class="tw-text-subhead tw-text-primary-inverse" v-html="heroBody"></p>
 								</div>
-								<kv-button
-									class="
+								<fieldset class="tw-mb-2 tw-flex">
+									<div class="tw-inline tw-max-w-xs tw-flex-1 tw-px-1 lg:tw-px-3">
+										<label
+											class="tw-sr-only"
+											:class="{ 'tw-text-danger': $v.$invalid }" :for="'amount-' + componentKey"
+										>
+											Amount
+										</label>
+										<kv-currency-input
+											:id="'amount-' + componentKey"
+											:value="amount"
+											@input="updateAmount"
+										/>
+										<ul class="validation-errors tw-text-danger" v-if="$v.$invalid">
+											<li v-if="!$v.amount.required">
+												Field is required
+											</li>
+											<li v-if="!$v.amount.minValue || !$v.amount.maxValue">
+												Enter an amount of $5-$8,500
+											</li>
+										</ul>
+									</div>
+									<kv-button
+										class="
 										tw-flex-1
 										tw-mb-2
 										tw-inline
 										tw-pr-1
 										md:tw-px-1
 										lg:tw-px-3"
-									type="submit"
-									:state="$v.$invalid ? 'disabled' : ''"
-								>
-									{{ heroPrimaryCtaText }}
-								</kv-button>
-							</fieldset>
-						</div>
-					</form>
+										type="submit"
+										:state="$v.$invalid ? 'disabled' : ''"
+									>
+										{{ heroPrimaryCtaText }}
+									</kv-button>
+								</fieldset>
+							</div>
+						</form>
+					</div>
 				</template>
 			</kv-hero>
 
@@ -178,7 +185,6 @@ export default {
 	data() {
 		return {
 			showLightbox: false,
-			// monthlyGoodAmount: 25,
 			amount: 25,
 			selectedGroup: this.category || 'default',
 			sourceSizes: [
@@ -331,10 +337,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-.new-spacing {
-	margin-left: 16%;
-}
-
-</style>
