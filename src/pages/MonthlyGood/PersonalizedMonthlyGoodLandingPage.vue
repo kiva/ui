@@ -232,8 +232,6 @@ export default {
 				});
 		},
 		result({ data }) {
-			console.log('data', data);
-
 			// Core-399 Subscriptions Appeal Personalization Experiment
 			const subscriptionAppealPersonalization = this.apollo.readFragment({
 				id: 'EXP-VUE-399-subscription-appeal-personalization',
