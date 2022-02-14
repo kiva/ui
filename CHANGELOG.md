@@ -1,3 +1,10 @@
+### [2.69.6](https://github.com/kiva/ui/compare/v2.69.5...v2.69.6) (2022-02-14)
+
+
+### Bug Fixes
+
+* update experiment assignment logic flow and tracking ([d036c7e](https://github.com/kiva/ui/commit/d036c7e3ef15d49a13b102c952aa8d9d7b0b12c7))
+
 ### [2.69.5](https://github.com/kiva/ui/compare/v2.69.4...v2.69.5) (2022-02-14)
 
 
