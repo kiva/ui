@@ -80,11 +80,15 @@
 					Personalized lending is not available yet, but you can still
 					continue signing up for Monthly Good if you’re interested in lending every month.
 				</p>
-				<!-- to="/monthlygood/setup" -->
 				<kv-button
 					class="tw-w-full tw-mb-2"
 					style="max-width: 350px;"
-					@click="continueToMGSetup"
+					:to="{
+						path: '/monthlygood/setup',
+						query: {
+							amount: this.amount,
+						}
+					}"
 					v-kv-track-event="[
 						'MonthlyGood',
 						'click-personalized-MG-thanks-cta',
@@ -211,14 +215,6 @@ export default {
 				);
 			}
 		},
-		continueToMGSetup() {
-			this.$router.push({
-				path: '/monthlygood/setup',
-				query: {
-					amount: this.amount,
-				}
-			});
-		}
 	},
 };
 </script>
