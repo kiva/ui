@@ -1,3 +1,164 @@
+### [2.69.5](https://github.com/kiva/ui/compare/v2.69.4...v2.69.5) (2022-02-14)
+
+
+### Bug Fixes
+
+* core-400 cleaning up a console.log ([c05a36c](https://github.com/kiva/ui/commit/c05a36ccf781e01c92a86c5f92adf7874e4796f2))
+
+### [2.69.4](https://github.com/kiva/ui/compare/v2.69.3...v2.69.4) (2022-02-14)
+
+
+### Bug Fixes
+
+* core-400 fixes to monthlygood personalized hero, and monthly good hero for sm screens ([b1b2ae3](https://github.com/kiva/ui/commit/b1b2ae316979a3c39d797cef9e29ef067a20815d))
+* core-400 spacing in hero for large screens. ([ccf708d](https://github.com/kiva/ui/commit/ccf708d79449c3009cdd70216957d352352be7c3))
+* correctly passing amount through to MG/setup page, removing unused function ([99d9c64](https://github.com/kiva/ui/commit/99d9c6443a353e46833b6e6afa16cce0b59fa9b3))
+* refinements to MG hero on personalized page ([0954014](https://github.com/kiva/ui/commit/0954014c125be4e08794701034a5be0023f83a37))
+
+### [2.69.3](https://github.com/kiva/ui/compare/v2.69.2...v2.69.3) (2022-02-11)
+
+
+### Bug Fixes
+
+* udpate pmg thanks copy ([f3f1510](https://github.com/kiva/ui/commit/f3f1510cce0b1d803d0326d521018b4d315070d0))
+* update pmg analtyics events and thanks lightbox copy ([5c68021](https://github.com/kiva/ui/commit/5c680216f55ffbbe4ef51a41173cd35b7fe83265))
+
+### [2.69.2](https://github.com/kiva/ui/compare/v2.69.1...v2.69.2) (2022-02-11)
+
+
+### Bug Fixes
+
+* fixing alignment of value prop across screen sizes ([3d30348](https://github.com/kiva/ui/commit/3d30348504201bf297800237151bb5b305d421ba))
+
+### [2.69.1](https://github.com/kiva/ui/compare/v2.69.0...v2.69.1) (2022-02-11)
+
+
+### Bug Fixes
+
+* ensure loan category selection fires an analytics event ([2389172](https://github.com/kiva/ui/commit/2389172f7e77d8306f0d1a28d6e46ae78d0378ff))
+
+## [2.69.0](https://github.com/kiva/ui/compare/v2.68.0...v2.69.0) (2022-02-11)
+
+
+### Features
+
+* core-439 fixing opacity in monthly good cta boxes ([27ef0ef](https://github.com/kiva/ui/commit/27ef0ef283ad2c76111caffea49f4a19050fcaeb))
+
+## [2.68.0](https://github.com/kiva/ui/compare/v2.67.1...v2.68.0) (2022-02-10)
+
+
+### Features
+
+* core-420 rest of the personalized monthly good page in place ([4c2c1b5](https://github.com/kiva/ui/commit/4c2c1b57a87558715f80f77c52b0ca3643ede481))
+* core-420, rest of the personalized monthly good landing page, ported from monthly good page ([4b7d022](https://github.com/kiva/ui/commit/4b7d022f1e0e5df89247c7b5f254cacbad3753eb))
+
+
+### Bug Fixes
+
+* core-420 removing 2 form on page ([5a601f0](https://github.com/kiva/ui/commit/5a601f05d505dcd76af48db01aebb472ca45ca8c))
+
+### [2.67.1](https://github.com/kiva/ui/compare/v2.67.0...v2.67.1) (2022-02-10)
+
+
+### Bug Fixes
+
+* update copy for thanks state lightbox ([ee70695](https://github.com/kiva/ui/commit/ee70695012cbf99253fe2a12a38f3195838c86a9))
+
+## [2.67.0](https://github.com/kiva/ui/compare/v2.66.0...v2.67.0) (2022-02-10)
+
+
+### Features
+
+* kvcustomdonation component was removed because not used in other pages ([68ac1e7](https://github.com/kiva/ui/commit/68ac1e7998ba0ce0a8c2cba36dcaf3d8848dcc17))
+* protocol page and its route were removed ([cddb86b](https://github.com/kiva/ui/commit/cddb86b243b9accc7a5ec48fcf6468b13a319f35))
+
+
+### Bug Fixes
+
+* fix margin on funded text in loan card ([9fd34ed](https://github.com/kiva/ui/commit/9fd34ed44c5f6ff24081b8f7453f88ce3a9955d3))
+
+## [2.66.0](https://github.com/kiva/ui/compare/v2.65.0...v2.66.0) (2022-02-10)
+
+
+### Features
+
+* kiva classic lend now and lend 25 buttons ([6f8eb8d](https://github.com/kiva/ui/commit/6f8eb8de495e726cc53166c34974d76fb55e4b02))
+
+## [2.65.0](https://github.com/kiva/ui/compare/v2.64.0...v2.65.0) (2022-02-10)
+
+
+### Features
+
+* core-405 MG personalized value prop ([38c0c57](https://github.com/kiva/ui/commit/38c0c57cdc5595d529a067848685d198aecc735f))
+
+
+### Bug Fixes
+
+* core-405 using flexbox instead of replicating content. ([bb9369d](https://github.com/kiva/ui/commit/bb9369d488c35c77eb15e871c1b937f0e97411ce))
+
+## [2.64.0](https://github.com/kiva/ui/compare/v2.63.0...v2.64.0) (2022-02-09)
+
+
+### Features
+
+* enable lightbox with interest form for personalized mg ([d1cad74](https://github.com/kiva/ui/commit/d1cad746e3aef52959138e6330162515f72cbee9))
+
+
+### Bug Fixes
+
+* clean up merge conflicts ([0159165](https://github.com/kiva/ui/commit/01591657f7dcfb7965183caab8bc6e700b7b16bb))
+* show lightbox and update tracking on form submit ([dfed907](https://github.com/kiva/ui/commit/dfed9079d1f68300dbb0bf6d28c288d43394dcaf))
+
+## [2.63.0](https://github.com/kiva/ui/compare/v2.62.2...v2.63.0) (2022-02-09)
+
+
+### Features
+
+* core-404 personalized mg hero in place, only cleanup needed ([0ad5b1a](https://github.com/kiva/ui/commit/0ad5b1a83ef1a49c23f7b086ed112e4ee0951ed5))
+* core-404 style touch up for the personalized monthly good landing page hero ([e799e47](https://github.com/kiva/ui/commit/e799e479f94e126bb883f197443c49c50371dcbd))
+
+### [2.62.2](https://github.com/kiva/ui/compare/v2.62.1...v2.62.2) (2022-02-07)
+
+
+### Bug Fixes
+
+* update button icon size and position ([54c5416](https://github.com/kiva/ui/commit/54c541685ea21e6d501b29445459de2756775eec))
+
+### [2.62.1](https://github.com/kiva/ui/compare/v2.62.0...v2.62.1) (2022-02-07)
+
+
+### Bug Fixes
+
+* alight analtyics event category ([7c4a14a](https://github.com/kiva/ui/commit/7c4a14a655811ed34a079720c5bf74e210575bc4))
+
+## [2.62.0](https://github.com/kiva/ui/compare/v2.61.0...v2.62.0) (2022-02-07)
+
+
+### Features
+
+* gaurd lightbox visibility on mg, subs + basket state ([d7e02cb](https://github.com/kiva/ui/commit/d7e02cbcb075f7f56f04849bd43bd1ee6dedd760))
+* setup new timed lightbox on lend-by-category for mg upsell ([92ab3de](https://github.com/kiva/ui/commit/92ab3dee152542d6c6e8ac8e8ecdfebee093ab18))
+
+## [2.61.0](https://github.com/kiva/ui/compare/v2.60.0...v2.61.0) (2022-02-04)
+
+
+### Features
+
+* choose a cause page ([351416f](https://github.com/kiva/ui/commit/351416fa2f9817cf70b47f5f99d5ebf1798e98b8))
+
+## [2.60.0](https://github.com/kiva/ui/compare/v2.59.0...v2.60.0) (2022-02-04)
+
+
+### Features
+
+* core-399 adding tracking into conditional to only throw if experiment is active and user is in group A" ([d999ff2](https://github.com/kiva/ui/commit/d999ff2c4071d26a71e84b09529a1d59edde2548))
+* core-399 Monthlygood appeal personalized experiment setup ([759ba60](https://github.com/kiva/ui/commit/759ba60af1c534cd1559267a6b85b21589fb0723))
+
+
+### Bug Fixes
+
+* core-399 fixing tracking event from A -> B ([92cc33f](https://github.com/kiva/ui/commit/92cc33f0f0c8d03fead137bda4e4432de196f786))
+
 ## [2.59.0](https://github.com/kiva/ui/compare/v2.58.1...v2.59.0) (2022-02-01)
 
 

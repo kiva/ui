@@ -81,6 +81,8 @@
 			:right-arrow-position="rightArrowPosition"
 			:left-arrow-position="leftArrowPosition"
 		/>
+
+		<m-g-lightbox />
 	</www-page>
 </template>
 
@@ -107,6 +109,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import CategoryRowHover from '@/components/LoansByCategory/CategoryRowHover';
 import FeaturedHeroLoanWrapper from '@/components/LoansByCategory/FeaturedHeroLoanWrapper';
+import MGLightbox from '@/components/LoansByCategory/MGLightbox';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
@@ -128,6 +131,7 @@ export default {
 		AddToBasketInterstitial,
 		ExpandableLoanCardExpanded,
 		FavoriteCountryLoans,
+		MGLightbox,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo: {

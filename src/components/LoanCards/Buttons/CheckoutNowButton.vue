@@ -1,23 +1,34 @@
 <template>
 	<kv-button
-		class="checkout-now-button secondary"
-		v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
+		class="tw-w-full tw-mb-2 tw-align-middle"
 		:to="disableRedirects ? null : '/basket'"
-		@click.native="checkoutBtnAction"
+		variant="secondary"
+		v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
+		@click="checkoutBtnAction"
 	>
-		<kv-icon class="icon" name="checkmark" v-if="!minimalCheckoutButton" />
+		<kv-material-icon
+			v-if="!minimalCheckoutButton"
+			class="tw-w-3 tw-mr-0.5 tw-align-middle"
+			:icon="mdiCheckboxMarkedCircleOutline"
+		/>
 		Checkout<span v-if="!minimalCheckoutButton"> now</span>
 	</kv-button>
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
-import KvButton from '@/components/Kv/KvButton';
+import { mdiCheckboxMarkedCircleOutline } from '@mdi/js';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	components: {
-		KvIcon,
 		KvButton,
+		KvMaterialIcon
+	},
+	data() {
+		return {
+			mdiCheckboxMarkedCircleOutline
+		};
 	},
 	props: {
 		disableRedirects: {
