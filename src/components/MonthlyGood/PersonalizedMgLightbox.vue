@@ -81,9 +81,14 @@
 					continue signing up for Monthly Good if you’re interested in lending every month.
 				</p>
 				<kv-button
-					to="/monthlygood/setup"
 					class="tw-w-full tw-mb-2"
 					style="max-width: 350px;"
+					:to="{
+						path: '/monthlygood/setup',
+						query: {
+							amount: this.amount,
+						}
+					}"
 					v-kv-track-event="[
 						'MonthlyGood',
 						'click-personalized-MG-thanks-cta',
@@ -134,6 +139,10 @@ export default {
 		showLightbox: {
 			type: Boolean,
 			default: false,
+		},
+		amount: {
+			type: Number,
+			default: 25,
 		}
 	},
 	data() {
@@ -205,7 +214,7 @@ export default {
 					'view-thanks-screen'
 				);
 			}
-		}
+		},
 	},
 };
 </script>
