@@ -60,12 +60,12 @@
 							nudge-box-custom-donation"
 						>
 							<kv-text-input
+								id="customDonationInput"
 								type="text"
 								ref="customDonationInputDesktop"
 								name="customDonationInputTextDesktop"
 								maxlength="10"
 								tabindex="10"
-								id="customDonationInput"
 								@click.capture="formatAndSubmitOnEnter"
 								class="nudge-box-input tw-text-center tw-mx-auto tw-p-2
 								nudge-box-input-desktop"
@@ -81,7 +81,7 @@
 						class="medium-4 columns nudge-box-bottom-container nudge-box-container"
 					>
 						<div
-							class="nudge-box-bottom tw-bg-primary tw-cursor-pointer tw-select-none tw-mb-4 tw-pb-4"
+							class="nudge-box-bottom tw-bg-primary tw-cursor-pointer tw-select-none tw-pb-4"
 							@click="setDonationAndClose(getDonationByPercent(percentage))"
 						>
 							<!-- style="border: 1px solid #DFDFDF" -->
@@ -109,13 +109,13 @@
 						class="medium-4 columns nudge-box-bottom-container nudge-box-container nudge-box-custom-donation-container"
 					>
 						<div
-							class="nudge-box-bottom tw-bg-primary tw-cursor-pointer tw-select-none tw-mb-4 tw-pb-4
+							class="nudge-box-bottom tw-bg-primary tw-cursor-pointer tw-select-none tw-pb-4
 							nudge-box-custom-donation"
 							@click="setCustomDonationAndClose"
 						>
 							<!-- style="border: 1px solid #DFDFDF" -->
 							<kv-button
-								class="smallest nudge-box-button custom-amount-submit"
+								class="smallest nudge-box-button custom-amount-submit tw-w-full"
 								tabindex="11"
 							>
 								Submit
@@ -136,6 +136,7 @@
 					>
 						<label class="nudge-box-radio-label ">
 							<kv-text-input
+								id="donationInputRadio"
 								type="radio"
 								class="nudge-box-radio-button"
 								name="selected-donation-radio"
@@ -171,6 +172,7 @@
 					nudge-box-column-amount tw-font-medium lg:tw-font-text-xl tw-text-base tw-text-right"
 					>
 						<kv-text-input
+							id="donationInputDesktopRadio"
 							type="text"
 							ref="customDonationInputDesktopRadio"
 							name="customDonationInputTextDesktopRadio"
@@ -256,6 +258,7 @@
 					nudge-box-column-appeal tw-justify-start"
 					>
 						<kv-text-input
+							id="customDonationInputMobile"
 							type="text"
 							ref="customDonationInputMobile"
 							name="customDonationInputTextMobile"
@@ -337,7 +340,7 @@ export default {
 
 			// Setting up listener for customInput field
 			customInput.addEventListener('keyup', event => {
-				// When keyup event happens on the Enter key perform the following fuctions
+				// When keyup event happens on the Enter key perform the following functions
 				if (event.keyCode === 13) {
 					customInput.blur();
 					customInputButton.click();

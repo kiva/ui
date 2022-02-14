@@ -8,7 +8,7 @@
 		:title="header"
 	>
 		<div id="nudge-donation-container">
-			<div id="nudge-donation-top" class="tw-pb-6">
+			<div id="nudge-donation-top">
 				<p>{{ description }}</p>
 				<donation-nudge-boxes
 					ref="nudgeBoxes"
@@ -20,7 +20,7 @@
 					:set-donation-and-close="setDonationAndClose"
 					:current-donation-amount="currentDonationAmount"
 				/>
-				<div class="tw-text-center">
+				<div class="tw-text-center tw-pb-4">
 					<button
 						class="tw-text-link"
 						id="no-donation-link"
@@ -32,7 +32,7 @@
 				</div>
 			</div>
 			<div id="nudge-donation-bottom"
-				class="tw-py-6 tw-px-12 tw-bg-secondary"
+				class="tw-px-12"
 				:class="{ 'show-for-large': !experimentalFooter}"
 			>
 				<div class="row">
