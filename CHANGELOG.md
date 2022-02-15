@@ -1,3 +1,10 @@
+### [2.71.1](https://github.com/kiva/ui/compare/v2.71.0...v2.71.1) (2022-02-15)
+
+
+### Bug Fixes
+
+* core-400 altering contentful to read subHeading instead of Headline ([397a104](https://github.com/kiva/ui/commit/397a104a1c9cb06e67981449e505b8ba23b6673d))
+
 ## [2.71.0](https://github.com/kiva/ui/compare/v2.70.0...v2.71.0) (2022-02-15)
 
 
