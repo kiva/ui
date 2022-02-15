@@ -16,29 +16,31 @@
 			</template>
 			<template #overlayContent>
 				<div class="row">
-					<div class="overlay-column columns tw-bg-primary-inverse tw-bg-opacity-low medium-12 large-8">
-						<h1 class="mg-headline tw-text-primary-inverse" v-html="heroHeadline"></h1>
+					<div class="overlay-column columns tw-bg-primary-inverse tw-bg-opacity-[75%] medium-12 large-8">
+						<h1 class="mg-headline tw-text-primary-inverse
+							tw-text-h2 md:tw-text-h1" v-html="heroHeadline"
+						></h1>
 						<p class="mg-subhead tw-text-subhead tw-text-primary-inverse" v-html="heroBody"></p>
 						<landing-form
 							:amount.sync="monthlyGoodAmount"
 							:selected-group.sync="selectedGroup"
 							key="top"
 							:button-text="heroPrimaryCtaText"
-							v-if="!isMonthlyGoodSubscriber && !isExperimentActive"
+							v-if="!isMonthlyGoodSubscriber && !isExperimentActive && !hasModernSub"
 						/>
 						<landing-form-experiment
 							:amount.sync="monthlyGoodAmount"
 							:selected-group.sync="selectedGroup"
 							key="top"
 							:button-text="heroPrimaryCtaText"
-							v-if="!isMonthlyGoodSubscriber && isExperimentActive"
+							v-if="!isMonthlyGoodSubscriber && isExperimentActive && !hasModernSub"
 						/>
 						<div
 							class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
-							v-if="isMonthlyGoodSubscriber"
+							v-if="isMonthlyGoodSubscriber || hasModernSub"
 						>
 							<p class="tw-font-medium tw-mb-2">
-								You're already signed up for Monthly Good. Changes to this
+								You're already signed up for a subscription. Changes to this
 								contribution can be made in your
 								<a href="/settings/subscriptions">subscription settings</a>.
 							</p>
@@ -55,15 +57,15 @@
 					:amount.sync="monthlyGoodAmount"
 					:selected-group.sync="selectedGroup"
 					key="bottom"
-					v-if="!isMonthlyGoodSubscriber"
+					v-if="!isMonthlyGoodSubscriber && !hasModernSub"
 					:button-text="heroPrimaryCtaText"
 				/>
 				<div
 					class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
-					v-if="isMonthlyGoodSubscriber"
+					v-if="isMonthlyGoodSubscriber || hasModernSub"
 				>
-					<p class="tw-font-medium">
-						You're already signed up for Monthly Good. Changes to this
+					<p class="tw-font-medium tw-mb-2">
+						You're already signed up for a subscription. Changes to this
 						contribution can be made in your
 						<a href="/settings/subscriptions">subscription settings</a>.
 					</p>
@@ -115,7 +117,11 @@ const pageQuery = gql`
 			}
 		}
 		general {
-			uiExperimentSetting(key: "mg_amount_selector") {
+			mgAmount: uiExperimentSetting(key: "mg_amount_selector") {
+				key
+				value
+			}
+			mgPersonalized: uiExperimentSetting(key: "EXP-VUE-399-subscription-appeal-personalization") {
 				key
 				value
 			}
@@ -123,6 +129,12 @@ const pageQuery = gql`
 		contentful {
 			entries(contentType: "page", contentKey: "monthlygood")
 		}
+		# mySubscriptions(includeDisabled: false) {
+		# 	values {
+		# 		id
+		# 		enabled
+		# 	}
+		# }
 	}
 `;
 
@@ -182,6 +194,7 @@ export default {
 					media: 'min-width: 0px',
 				},
 			],
+			hasModernSub: false,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -193,14 +206,34 @@ export default {
 					query: pageQuery,
 				})
 				.then(() => {
-					return client.query({
-						query: experimentQuery,
-						variables: { id: 'mg_amount_selector' },
-					});
+					return Promise.all([
+						client.query({ query: experimentQuery, variables: { id: 'mg_amount_selector' } }),
+						// eslint-disable-next-line max-len
+						client.query({ query: experimentQuery, variables: { id: 'EXP-VUE-399-subscription-appeal-personalization' } })
+					]);
 				});
 		},
 		result({ data }) {
+			// Core-399 Subscriptions Appeal Personalization Experiment
+			const subscriptionAppealPersonalization = this.apollo.readFragment({
+				id: 'Experiment:EXP-VUE-399-subscription-appeal-personalization',
+				fragment: experimentVersionFragment,
+			}) || {};
+			if (subscriptionAppealPersonalization.version
+				&& subscriptionAppealPersonalization.version !== 'unassigned'
+			) {
+				if (subscriptionAppealPersonalization.version === 'b') {
+					// Direct users to new monthly good page here
+					this.$router.push({ path: '/monthlygood/personalized' }).catch({});
+				} else {
+					this.$kvTrackEvent('MonthlyGood', 'EXP-CORE-399-Feb2022', 'a');
+				}
+			}
+
 			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
+			// TODO! Add this back in when service supports non-logged in users
+			// const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+			// this.hasModernSub = modernSubscriptions.length !== 0;
 
 			// Monthly Good Amount Selector Experiment - EXP-GROW-11-Apr2020
 			const mgAmountSelectorExperiment = this.apollo.readFragment({

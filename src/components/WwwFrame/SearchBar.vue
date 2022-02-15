@@ -33,9 +33,9 @@
 				tw-p-2.5
 				tw-border
 				tw-border-tertiary
+
 				tw-fixed
 				tw-z-popover
-
 				tw-right-0
 				tw-bottom-0
 				tw-left-0
@@ -44,6 +44,7 @@
 				md:tw-absolute
 				md:tw-bottom-auto
 				md:tw-top-auto
+				md:tw-rounded-b
 			"
 		>
 			<li v-for="section in sections" :key="section.name" class="section">
@@ -57,11 +58,11 @@
 						@click="runSearch(suggestion)"
 						data-testid="search-bar-result"
 						class="
-							tw-pl-1.5 tw-py-0.5
+							tw-pl-1.5 tw-py-0.5 tw-rounded-sm
 							tw-font-medium tw-cursor-pointer
-							hover:tw-bg-action-highlight hover:tw-text-white
+							hover:tw-bg-secondary hover:tw-underline
 						"
-						:class="{'tw-bg-action-highlight tw-text-white': suggestion.label === highlighted.label}"
+						:class="{'tw-bg-secondary tw-underline': suggestion.label === highlighted.label}"
 					>
 						<span v-html="formatResult(suggestion)"></span>
 					</li>
@@ -242,7 +243,8 @@ export default {
 
 			// Build an array of strings, inserting the <mark> tags at the appropriate indices
 			const charArray = _map(label, (character, index) => {
-				const prefix = starts.indexOf(index) > -1 ? '<mark>' : '';
+				const prefix = starts.indexOf(index) > -1
+					? '<mark class="tw-bg-tertiary tw-rounded-sm tw-mix-blend-multiply tw-p-0.5 tw--m-0.5">' : '';
 				const suffix = ends.indexOf(index) > -1 ? '</mark>' : '';
 				return `${prefix}${character}${suffix}`;
 			});

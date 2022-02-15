@@ -1,5 +1,5 @@
 const express = require('express');
-const log = require('./util/log');
+const { error } = require('./util/log');
 const memJsUtils = require('./util/memJsUtils');
 const drawLoanCard = require('./util/live-loan/live-loan-draw');
 const fetchLoansByType = require('./util/live-loan/live-loan-fetch');
@@ -12,7 +12,7 @@ async function fetchRecommendedLoans(type, id, cache) {
 			return JSON.parse(cachedLoanData);
 		}
 	} catch (err) {
-		log(`Error reading from memjs, ${err}`, 'error');
+		error(`Error reading from memjs, ${err}`, { error: err });
 	}
 
 	// Otherwise we need to hit the graphql endpoint.
@@ -23,7 +23,7 @@ async function fetchRecommendedLoans(type, id, cache) {
 		const expires = 10 * 60; // 10 minutes
 		memJsUtils.setToCache(`recommendations-by-${type}-id-${id}`, JSON.stringify(loanData), expires, cache)
 			.catch(err => {
-				log(`Error setting loan data to cache, ${err}`, 'error');
+				error(`Error setting loan data to cache, ${err}`, { error: err });
 			});
 		// Return before setting to the cache completes to speed up response times
 		return loanData;
@@ -65,7 +65,7 @@ async function redirectToUrl(type, cache, req, res) {
 		}
 		res.redirect(302, redirect);
 	} catch (err) {
-		log(`Error redirecting to url, ${err}`, 'error');
+		error(`Error redirecting to url, ${err}`, { error: err });
 		res.redirect(302, '/lend-by-category/');
 	}
 }
@@ -82,7 +82,7 @@ async function serveImg(type, cache, req, res) {
 			loanImg = await drawLoanCard(loan);
 			const expires = 10 * 60; // 10 minutes
 			memJsUtils.setToCache(`loan-card-img-${loan.id}`, loanImg, expires, cache).catch(err => {
-				log(`Error setting loan data to cache, ${err}`, 'error');
+				error(`Error setting loan data to cache, ${err}`, { error: err });
 			});
 			// Continue before setting to the cache completes to speed up response times
 		}
@@ -94,7 +94,7 @@ async function serveImg(type, cache, req, res) {
 		]);
 		res.send(loanImg);
 	} catch (err) {
-		log(`Error serving image, ${err}`, 'error');
+		error(`Error serving image, ${err}`, { error: err });
 		res.sendStatus(500);
 	}
 }

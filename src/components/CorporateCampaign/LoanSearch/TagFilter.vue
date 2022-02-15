@@ -66,6 +66,10 @@ export default {
 				if (this.initialTags.length) {
 					return this.initialTags.includes(tag.id) || false;
 				}
+				// omit private tags
+				if (tag.vocabularyId === 3) {
+					return false;
+				}
 				return true;
 			});
 			return eligibleTags || [];

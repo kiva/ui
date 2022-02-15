@@ -1,8 +1,6 @@
 <template>
 	<www-page-corporate
 		:corporate-logo-url="corporateLogoUrl"
-		:header-theme="lightHeader"
-		:footer-theme="lightFooter"
 	>
 		<div class="corporate-campaign-landing">
 			<kv-loading-overlay
@@ -12,7 +10,7 @@
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
 			<campaign-status
 				v-if="!hideStatusBar"
-				class="corporate-campaign-landing__status"
+				class="corporate-campaign-landing__status tw-sticky tw-top-8 md:tw-top-9 tw-z-2"
 				:active-credit-type="activeCreditType"
 				:is-matching="isMatchingCampaign"
 				:loading-promotion="loadingPromotion"
@@ -79,6 +77,7 @@
 							:is-visible="!showLoanRows"
 							:is-visitor="isVisitor"
 							:items-in-basket="itemsInBasket"
+							:promo-only="promoOnlyQuery"
 							:show-loans="showLoans"
 							:sort-by="sortBy"
 							@add-to-basket="handleAddToBasket"
@@ -232,7 +231,6 @@ import logFormatter from '@/util/logFormatter';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
 import LoanSearchFilters, { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
-import { lightHeader, lightFooter } from '@/util/siteThemes';
 import syncDate from '@/util/syncDate';
 import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -543,8 +541,6 @@ export default {
 			verificationSumbitted: false,
 			loadingPage: false,
 			showVerifyRemovePromoCredit: false,
-			lightHeader,
-			lightFooter,
 		};
 	},
 	metaInfo() {
@@ -1241,19 +1237,6 @@ export default {
 @import 'settings';
 
 .corporate-campaign-landing {
-	&__status {
-		$header-height: rem-calc(45); // same as TheHeader.vue
-		$header-height-large: rem-calc(64); // same as TheHeader.vue
-
-		position: sticky;
-		top: $header-height;
-		z-index: 2;
-
-		@include breakpoint(large) {
-			top: $header-height-large;
-		}
-	}
-
 	&__status--incontext {
 		position: relative;
 		top: auto;

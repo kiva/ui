@@ -1,17 +1,15 @@
 <template>
-	<div class="www-page-corporate">
-		<the-browser-check class="www-page-corporate__browser-check" ref="theBrowserCheck" />
+	<div class="tw-relative">
+		<the-browser-check ref="theBrowserCheck" />
 		<the-header
-			:theme="headerTheme"
 			:corporate="true"
 			:corporate-logo-url="corporateLogoUrl"
-			class="www-page-corporate__header"
+			class="tw-sticky tw-z-sticky tw-top-0"
 		/>
 		<main>
 			<slot></slot>
 		</main>
 		<the-footer-corporate
-			:theme="footerTheme"
 			:corporate-logo-url="corporateLogoUrl"
 		/>
 		<the-basket-bar
@@ -45,14 +43,6 @@ export default {
 		TheHeader,
 	},
 	props: {
-		headerTheme: {
-			type: Object,
-			default() {},
-		},
-		footerTheme: {
-			type: Object,
-			default() {},
-		},
 		corporateLogoUrl: {
 			type: String,
 			default: ''
@@ -71,16 +61,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.www-page-corporate {
-	position: relative;
-
-	&__header {
-		position: sticky;
-		top: 0;
-	}
-}
-</style>

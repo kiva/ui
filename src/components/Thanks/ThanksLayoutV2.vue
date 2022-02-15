@@ -18,8 +18,29 @@
 					Create your account
 					<template #icon-right>
 						<kv-icon
-							class="arrow-icon"
+							class="arrow-icon tw-w-3 tw-h-3"
 							:class="{ obfuscate: !isGuestSelected }"
+							name="arrow"
+						/>
+					</template>
+				</kv-icon-button>
+				<kv-icon-button
+					data-test="thanks-page-button--ad"
+					class="thanks-page__icon-button expanded"
+					v-if="showAutoDepositUpsell"
+					:class="{ active: isAdSelected }"
+					@click.native="setVisibleSection('ad')"
+				>
+					<template #icon-left>
+						<kv-icon
+							name="piggy-bank"
+						/>
+					</template>
+					Auto-deposit
+					<template #icon-right>
+						<kv-icon
+							class="arrow-icon tw-w-3 tw-h-3"
+							:class="{ obfuscate: !isAdSelected }"
 							name="arrow"
 						/>
 					</template>
@@ -39,7 +60,7 @@
 					Monthly Good
 					<template #icon-right>
 						<kv-icon
-							class="arrow-icon"
+							class="arrow-icon tw-w-3 tw-h-3"
 							:class="{ obfuscate: !isMgSelected }"
 							name="arrow"
 						/>
@@ -59,7 +80,7 @@
 					Order Confirmation
 					<template #icon-right>
 						<kv-icon
-							class="arrow-icon"
+							class="arrow-icon tw-w-3 tw-h-3"
 							:class="{ obfuscate: !isReceiptSelected }"
 							name="arrow"
 						/>
@@ -80,7 +101,7 @@
 					Share
 					<template #icon-right>
 						<kv-icon
-							class="arrow-icon"
+							class="arrow-icon tw-w-3 tw-h-3"
 							:class="{ obfuscate: !isShareSelected }"
 							name="arrow"
 						/>
@@ -95,6 +116,15 @@
 					data-test="thanks-page-content--guest"
 				>
 					<slot name="guest">
+					</slot>
+				</div>
+				<div
+					v-if="showAutoDepositUpsell"
+					v-show="isAdSelected"
+					class="thanks-page__content-area thanks-page__content-area--ad"
+					data-test="thanks-page-content--ad"
+				>
+					<slot v-if="!isMobile" name="ad">
 					</slot>
 				</div>
 				<div
@@ -150,6 +180,7 @@
 						Create your account
 						<template #icon-right>
 							<kv-icon
+								class="tw-w-2.5 tw-h-2.5"
 								name="fat-chevron"
 								:from-sprite="true"
 							/>
@@ -164,6 +195,47 @@
 						>
 							<hr>
 							<slot name="guest">
+							</slot>
+						</div>
+					</kv-expandable>
+				</div>
+				<!-- auto deposit (ad) -->
+				<div
+					class="kv-accordion thanks-page__content-area thanks-page__content-area--ad"
+					:class="{
+						'kv-accordion--open' : isAdSelected,
+					}"
+					v-if="showAutoDepositUpsell"
+				>
+					<kv-icon-button class="thanks-page__icon-button expanded"
+						:class="{ active: isAdSelected }"
+						aria-controls="`kv-accordion-mg-accordion`"
+						:aria-expanded="isAdSelected ? 'true' : 'false'"
+						@click.native="setVisibleSection('ad')"
+					>
+						<template #icon-left>
+							<kv-icon
+								name="alert-circle"
+							/>
+						</template>
+						Auto-deposit
+						<template #icon-right>
+							<kv-icon
+								class="tw-w-2.5 tw-h-2.5"
+								name="fat-chevron"
+								:from-sprite="true"
+							/>
+						</template>
+					</kv-icon-button>
+					<kv-expandable>
+						<div
+							class="kv-accordion__pane"
+							id="kv-accordion-ad-accordion"
+							v-show="isAdSelected"
+							:aria-hidden="isAdSelected ? 'false' : 'true'"
+						>
+							<hr>
+							<slot v-if="isMobile" name="ad">
 							</slot>
 						</div>
 					</kv-expandable>
@@ -190,6 +262,7 @@
 						Monthly Good
 						<template #icon-right>
 							<kv-icon
+								class="tw-w-2.5 tw-h-2.5"
 								name="fat-chevron"
 								:from-sprite="true"
 							/>
@@ -229,6 +302,7 @@
 						Order Confirmation
 						<template #icon-right>
 							<kv-icon
+								class="tw-w-2.5 tw-h-2.5"
 								name="fat-chevron"
 								:from-sprite="true"
 							/>
@@ -269,6 +343,7 @@
 						Share
 						<template #icon-right>
 							<kv-icon
+								class="tw-w-3 tw-h-3"
 								name="fat-chevron"
 								:from-sprite="true"
 							/>
@@ -293,6 +368,7 @@
 </template>
 
 <script>
+import _throttle from 'lodash/throttle';
 import KvIconButton from '@/components/Kv/KvIconButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvExpandable from '@/components/Kv/KvExpandable';
@@ -304,6 +380,10 @@ export default {
 		KvIconButton,
 	},
 	props: {
+		showAutoDepositUpsell: {
+			type: Boolean,
+			default: false
+		},
 		showGuestUpsell: {
 			type: Boolean,
 			default: false
@@ -323,17 +403,26 @@ export default {
 			visibleSection = 'guest';
 		} else if (this.showMgCta) {
 			visibleSection = 'mg';
+		} else if (this.showAutoDepositUpsell) {
+			visibleSection = 'ad';
 		}
 		return {
+			isMobile: false,
 			visibleSection,
 		};
 	},
 	methods: {
+		determineIfMobile() {
+			this.isMobile = document.documentElement.clientWidth < 681;
+		},
 		setVisibleSection(section) {
 			this.visibleSection = section;
 		}
 	},
 	computed: {
+		isAdSelected() {
+			return this.visibleSection === 'ad';
+		},
 		isGuestSelected() {
 			return this.visibleSection === 'guest';
 		},
@@ -346,6 +435,18 @@ export default {
 		isShareSelected() {
 			return this.visibleSection === 'share';
 		}
+	},
+	beforeDestroy() {
+		window.removeEventListener('resize', _throttle(() => {
+			this.determineIfMobile();
+		}, 200));
+	},
+	mounted() {
+		window.addEventListener('resize', _throttle(() => {
+			this.determineIfMobile();
+		}, 200));
+
+		this.determineIfMobile();
 	},
 };
 </script>

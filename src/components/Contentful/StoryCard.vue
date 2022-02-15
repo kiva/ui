@@ -8,14 +8,22 @@
 			:class="themeClass"
 			v-if="hasBackgroundImage"
 		>
-			<kv-contentful-img
-				class="kv-contentful-img tw-h-full tw-w-full tw-object-cover"
-				:width="520"
-				fallback-format="jpg"
-				:contentful-src="backgroundImage.url"
-				:alt="backgroundImage.description"
-			/>
-			<p class="story-card__imageCard-title tw-text-h4">
+			<component
+				:is="cardLink ? 'a' : 'div'"
+				:href="cardLink ? cardLink : null"
+				v-kv-track-event="cardAnalytics"
+				class="tw-block"
+				:class="{ 'tw-h-full': cardLink }"
+			>
+				<kv-contentful-img
+					class="kv-contentful-img tw-h-full tw-w-full tw-object-cover"
+					:width="520"
+					fallback-format="jpg"
+					:contentful-src="backgroundImage.url"
+					:alt="backgroundImage.description"
+				/>
+			</component>
+			<p class="story-card__imageCard-title tw-text-h4" v-if="!cardLink">
 				{{ backgroundImage.title }}
 			</p>
 		</div>
@@ -28,7 +36,6 @@
 				tw-flex-col
 				tw-h-full
 				tw-justify-between
-				tw-items-center
 				overflow-hidden
 				tw-text-primary
 				tw-px-4
@@ -42,14 +49,19 @@
 			v-else
 		>
 			<dynamic-rich-text
-				class="tw-text-center tw-text-h4 tw-text-action"
+				class="tw-text-action"
+				:class="`tw-text-${alignment}`"
 				:html="cardTitle"
 			/>
 			<dynamic-rich-text
-				class="story-card__content tw-text-center tw-h-full"
+				class="story-card__content tw-h-full tw-pb-4 tw-pt-3"
+				:class="`story-card__content--${alignment} tw-text-${alignment}`"
 				:html="cardContent"
 			/>
-			<dynamic-rich-text class="tw-text-center" :html="footer" />
+			<dynamic-rich-text
+				:class="`tw-text-${alignment}`"
+				:html="cardFooter"
+			/>
 		</div>
 	</kv-theme-provider>
 </template>
@@ -87,6 +99,13 @@ export default {
 		return {};
 	},
 	computed: {
+		/**
+		 * Aligns all items of the story card
+		* */
+		alignment() {
+			// Will always be one of: 'right', 'center', 'left'
+			return this.content?.alignment;
+		},
 		theme() {
 			const themeMapper = {
 				kivaCLassicLight: defaultTheme,
@@ -108,9 +127,16 @@ export default {
 			const text = this.content?.cardContent ?? '';
 			return text ? richTextRenderer(text) : '';
 		},
-		footer() {
+		cardFooter() {
 			const text = this.content?.footer ?? '';
 			return text ? richTextRenderer(text) : '';
+		},
+		cardLink() {
+			return this.content?.link ?? '';
+		},
+		cardAnalytics() {
+			const contentfulAnalyticsEvent = this.content?.analyticsClickEvent ?? null;
+			return contentfulAnalyticsEvent;
 		},
 		backgroundImage() {
 			return {
@@ -141,7 +167,7 @@ export default {
 		position: relative;
 	}
 
-	.story-card__imageCard >>> .kv-contentful-img::after,
+	.story-card__imageCard >>> div .kv-contentful-img::after,
 	.story-card__imageCard-title {
 		bottom: 0.5rem;
 		content: "";
@@ -150,7 +176,7 @@ export default {
 		text-transform: uppercase;
 	}
 
-	.story-card__imageCard >>> .kv-contentful-img::after {
+	.story-card__imageCard >>> div .kv-contentful-img::after {
 		background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
 		bottom: 0;
 		content: "";
@@ -168,11 +194,21 @@ export default {
 
 	// Override default prose layout
 	.story-card__content >>> .tw-prose {
-		align-items: center;
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		justify-content: center;
+	}
+
+	.story-card__content--center >>> .tw-prose {
+		align-items: center;
+	}
+
+	.story-card__content--left >>> .tw-prose {
+		align-items: flex-start;
+	}
+
+	.story-card__content--right >>> .tw-prose {
+		align-items: flex-end;
 	}
 
 	.story-card >>> .tw-prose u {

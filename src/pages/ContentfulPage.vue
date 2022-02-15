@@ -1,17 +1,13 @@
 <template>
 	<component :is="pageFrame"
-		:header-theme="headerTheme"
-		:footer-theme="footerTheme"
 		:main-class="pageBackgroundColor"
 	>
 		<component
-			v-for="({ component, content, wrapperClass }) in contentGroups"
+			v-for="({ component, content }) in contentGroups"
 			:key="content.key"
 			:id="content.key"
 			:is="component"
 			:content="content"
-			v-bind="getComponentOptions(content.key)"
-			:class="wrapperClass"
 			data-section-type="contentful-section"
 		/>
 	</component>
@@ -41,7 +37,6 @@ To use, simply create a route that defines contentfulPage in the meta data, e.g.
 import { preFetchAll } from '@/util/apolloPreFetch';
 import { processPageContent } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
-import * as siteThemes from '@/util/siteThemes';
 import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
 
 // Page frames
@@ -59,13 +54,11 @@ const CampaignLogoGroup = () => import('@/components/CorporateCampaign/CampaignL
 const CampaignPartner = () => import('@/components/CorporateCampaign/CampaignPartner');
 const CampaignThanks = () => import('@/components/CorporateCampaign/CampaignThanks');
 
-const HomepageBottomCTA = () => import('@/components/Homepage/HomepageBottomCTA');
 const HomepageCorporateSponsors = () => import('@/components/Homepage/HomepageCorporateSponsors');
 // const HomepageGeneralStats = () => import('@/components/Homepage/HomepageGeneralStats');
 const HomepageHowItWorks = () => import('@/components/Homepage/HomepageHowItWorks');
 const HomepageLenderQuotes = () => import('@/components/Homepage/HomepageLenderQuotes');
 const HomepageLoanCategories = () => import('@/components/Homepage/HomepageLoanCategories');
-const HomepageMidrollCTA = () => import('@/components/Homepage/HomepageMidrollCTA');
 const HomepageStatistics = () => import('@/components/Homepage/HomepageStatistics');
 const HomepageTestimonials = () => import('@/components/Homepage/HomepageTestimonials');
 const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
@@ -73,7 +66,6 @@ const HomepageMonthlyGoodInfo = () => import('@/components/Homepage/HomepageMont
 
 const CardRow = () => import('@/components/Contentful/CardRow');
 const CenteredRichText = () => import('@/components/Contentful/CenteredRichText');
-const DynamicHero = () => import('@/components/Contentful/DynamicHero');
 const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
 const HeroWithCarousel = () => import('@/components/Contentful/HeroWithCarousel');
 const LoansByCategoryCarousel = () => import('@/components/Contentful/LoansByCategoryCarousel');
@@ -114,16 +106,12 @@ const getPageFrameFromType = type => {
 // Return a component importer function based on content group type from Contentful
 const getComponentFromType = type => {
 	switch (type) {
-		case 'homepageBottomCTA':
-			return HomepageBottomCTA;
 		case 'homepageHowItWorks':
 			return HomepageHowItWorks;
 		case 'homepageLenderQuotes':
 			return HomepageLenderQuotes;
 		case 'homepageLoanCategories':
 			return HomepageLoanCategories;
-		case 'homepageMidrollCta':
-			return HomepageMidrollCTA;
 		case 'homepageStatistics':
 			// return HomepageGeneralStats;
 			return HomepageStatistics;
@@ -153,8 +141,6 @@ const getComponentFromType = type => {
 			return CardRow;
 		case 'centeredRichText':
 			return CenteredRichText;
-		case 'dynamicHero':
-			return DynamicHero;
 		case 'dynamicHeroClassic':
 			return DynamicHeroClassic;
 		case 'heroWithCarousel':
@@ -182,34 +168,12 @@ const getContentGroups = pageData => {
 	})).filter(group => typeof group.component === 'function');
 };
 
-// Modifications for Monthly Good Landing pages
-const customMGEventsAndConfig = {
-	// Custom attribute for MG page landing specific button class
-	// TODO deprecate this when DynamicHero.vue and HomepageBottomCTA.vue
-	// are no longer in use
-	customCtaButtonClass: 'classic hollow',
-	// Custom attribute for event name emitted with MG landing page button clicks
-	customEventName: 'openMonthlyGoodSelector'
-};
-
-// TODO deprecate this when DynamicHero.vue and HomepageBottomCTA.vue
-// are no longer in use
-const componentOptions = {
-	// Selected MG Landing page component keys to recieve custom attrubutes
-	'homepage-hero-monthly-good': customMGEventsAndConfig,
-	'homepage-bottom-cta-monthly-good': customMGEventsAndConfig,
-	'landing-mg-wrd-hero': customMGEventsAndConfig,
-	'homepage-bottom-cta-mg-refugees': customMGEventsAndConfig,
-};
-
 export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			pageBackgroundColor: '',
 			contentGroups: [],
-			footerTheme: {},
-			headerTheme: {},
 			pageError: false,
 			pageFrame: WwwPage,
 			title: undefined,
@@ -271,16 +235,9 @@ export default {
 			} else {
 				this.title = (pageData?.page?.pageLayout?.pageTitle || pageData?.page?.pageTitle) ?? undefined;
 				this.pageBackgroundColor = pageData?.page?.pageLayout?.pageBackgroundColor ?? '';
-				this.headerTheme = siteThemes[pageData?.page?.pageLayout?.headerTheme] || {};
-				this.footerTheme = siteThemes[pageData?.page?.pageLayout?.footerTheme] || {};
 				this.pageFrame = getPageFrameFromType(pageData?.page?.pageType);
 				this.contentGroups = getContentGroups(pageData);
 			}
-		}
-	},
-	methods: {
-		getComponentOptions(key) {
-			return componentOptions[key] || {};
 		}
 	},
 };

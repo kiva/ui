@@ -60,7 +60,7 @@
 				]"
 				@click="handleUserInteraction(index, 'click-indicator-button')"
 			>
-				<span class="show-for-sr">Show slide {{ index + 1 }}</span>
+				<span class="tw-sr-only">Show slide {{ index + 1 }}</span>
 			</button>
 		</div>
 	</div>

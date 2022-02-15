@@ -83,7 +83,7 @@
 						<kv-material-icon
 							v-for="i in 5"
 							:key="i"
-							class="tw-text-primary"
+							class="tw-text-primary tw-w-3 tw-h-3"
 							:icon="getStarIcon(i)"
 						/>
 					</div>

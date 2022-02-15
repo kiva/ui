@@ -10,7 +10,7 @@
 			>
 				<kv-contentful-img
 					v-if="image.url"
-					class="small-12 columns vertical-cta__image"
+					class="tw-mx-auto vertical-cta__image"
 					:contentful-src="image.url"
 					:alt="image.description"
 					:width="250"
@@ -33,8 +33,8 @@ import gql from 'graphql-tag';
 
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import SectionWithBackground from '@/components/Contentful/SectionWithBackground';
+import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 const pageQuery = gql`

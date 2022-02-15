@@ -1,40 +1,64 @@
 <template>
 	<www-page>
-		<kv-default-wrapper>
-			<!-- Auto Deposit Thanks Page -->
-			<div class="row align-center auto-deposit-thanks-page tw-text-center">
-				<div class="small-12 medium-11 large-8 column">
-					<h1 class="tw-mb-4 tw-flex tw-gap-1 tw-items-center tw-justify-center">
-						<kv-material-icon
-							:icon="mdiCheckboxMarkedCircle"
-							class="tw-h-6 tw-w-6 tw-text-brand tw-fill-current"
-						/>
-						<span>Thanks!</span>
+		<kv-default-wrapper class="tw-bg-secondary">
+			<kv-grid class="tw-grid-cols-12">
+				<div class="
+					tw-col-span-12 md:tw-col-span-10 lg:tw-col-span-8
+					md:tw-col-start-2 lg:tw-col-start-3
+					auto-deposit-thanks-page"
+				>
+					<!-- Auto Deposit Thanks Page -->
+					<div class="tw-my-3">
+						<img
+							class="tw-mx-auto"
+							:src="imageRequire(`./thumbs-up.svg`)"
+							alt="loan to loan relending graphic"
+						>
+					</div>
+					<h1 class="tw-mb-3 tw-text-center">
+						<span>Thank you!</span>
 					</h1>
-					<p class="tw-mb-4">
-						Every month your balance will grow by ${{ autoDepositAmount }}!
+					<p class="tw-text-subhead tw-mb-3 tw-text-left md:tw-text-center">
+						Thanks for being a part of our community and keeping the momentum going.
+					</p>
+					<p class="tw-mb-3 tw-text-left md:tw-text-center">
+						Now, your balance will grow by ${{ autoDepositAmount }} every month.
+						We’ll email you when you have enough balance to support more borrowers.
 						<template v-if="donationAmount > 0">
 							<br>
-							<em>You’re also making a ${{ donationAmount }} donation to Kiva each month – thank you!</em>
+							<em>You’re also making a ${{ donationAmount }}
+								donation to Kiva each month – thank you!</em>
 						</template>
 					</p>
-					<kv-material-icon
-						:icon="mdiEmailOutline"
-						class="tw-h-6 tw-w-6 tw-mb-1 tw-text-brand tw-fill-current"
-					/>
-					<p class="tw-mb-4">
-						You’ll get an email after each deposit so you can make more loans.
-					</p>
-					<div class="tw-border tw-border-tertiary tw-bg-secondary tw-p-2">
-						<p class="tw-font-medium">
-							Auto lending is the fastest way to lend your balance
+					<div class="tw-mb-3">
+						<img
+							class="tw-mx-auto"
+							:src="imageRequire(`./email-opening.svg`)"
+							alt="loan to loan relending graphic"
+						>
+					</div>
+					<div
+						class="tw-bg-white tw-p-3.5 tw-rounded tw-mx-auto"
+						style="max-width: 35rem;"
+					>
+						<p class="tw-text-center">
+							Auto-lending is the fastest way to fund borrowers
+							<br>
+							<router-link
+								class="tw-underline"
+								to="/settings/autolending"
+								v-kv-track-event="[
+									'Auto-deposit',
+									'click-Define-auto-lend-settings',
+									'Define your criteria'
+								]"
+							>
+								Define your criteria
+							</router-link>
 						</p>
-						<router-link to="/settings/autolending">
-							Define your criteria
-						</router-link>
 					</div>
 				</div>
-			</div>
+			</kv-grid>
 		</kv-default-wrapper>
 	</www-page>
 </template>
@@ -44,8 +68,9 @@ import gql from 'graphql-tag';
 import numeral from 'numeral';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
-import { mdiCheckboxMarkedCircle, mdiEmailOutline } from '@mdi/js';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+
+const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
 
 const pageQuery = gql`query autoDepositThanksPage {
 	my {
@@ -61,7 +86,7 @@ export default {
 	components: {
 		WwwPage,
 		KvDefaultWrapper,
-		KvMaterialIcon,
+		KvGrid,
 	},
 	props: { },
 	data() {
@@ -69,8 +94,7 @@ export default {
 			totalAmount: 0,
 			donationAmount: 0,
 			autoDepositAmount: 0,
-			mdiCheckboxMarkedCircle,
-			mdiEmailOutline,
+			imageRequire,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],

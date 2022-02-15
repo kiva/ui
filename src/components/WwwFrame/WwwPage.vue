@@ -3,7 +3,6 @@
 		<the-banner-area v-show="!isKivaAppReferral" />
 		<the-header v-show="!isKivaAppReferral"
 			:hide-search-in-header="hideSearchInHeader"
-			:theme="headerTheme"
 		/>
 		<slot name="secondary" v-if="!isKivaAppReferral"></slot>
 
@@ -11,12 +10,8 @@
 			<slot name="tertiary"></slot>
 			<slot></slot>
 		</main>
-		<the-footer
-			:theme="footerTheme"
-		/>
-		<the-basket-bar
-			v-if="activeOnPage"
-		/>
+		<the-footer	/>
+		<the-basket-bar />
 		<cookie-banner />
 	</div>
 </template>
@@ -56,14 +51,6 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		headerTheme: {
-			type: Object,
-			default: null,
-		},
-		footerTheme: {
-			type: Object,
-			default: null,
-		},
 		mainClass: {
 			type: [Object, String],
 			default: '',
@@ -89,13 +76,6 @@ export default {
 		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
 	},
 	computed: {
-		// Hiding basket footer on /lend-beta page
-		activeOnPage() {
-			if (this.$route.path.includes('lend-beta')) {
-				return false;
-			}
-			return true;
-		},
 		mainClasses() {
 			return [
 				this.mainClass,

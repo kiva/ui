@@ -1,5 +1,5 @@
 <template>
-	<div class="promo-tags">
+	<div class="promo-tags tw-clear-both tw-mt-0.5 tw-mx-0 tw-mb-0.5">
 		<template
 			v-for="(promoCredit, index) in appliedPromoCredits"
 		>
@@ -32,9 +32,6 @@ export default {
 @import 'settings';
 
 .promo-tags {
-	clear: both;
-	margin: 0.375rem 0 0.5rem;
-
 	&__item-credit {
 		display: inline-block;
 		margin-bottom: 0.25rem;

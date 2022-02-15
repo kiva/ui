@@ -76,6 +76,10 @@ export default [
 		component: () => import('@/pages/Thanks/ThanksPage'),
 	},
 	{
+		path: '/choose-a-cause',
+		component: () => import('@/pages/Causes/ChooseACause'),
+	},
+	{
 		path: '/confirm-instant-donation/:token/:amount',
 		component: () => import('@/pages/InstantActions/ConfirmInstantDonation'),
 		props: route => ({
@@ -186,6 +190,11 @@ export default [
 		}
 	},
 	{
+		path: '/monthlygood/personalized',
+		component: () => import('@/pages/MonthlyGood/PersonalizedMonthlyGoodLandingPage'),
+		props: route => ({ category: route.query.category })
+	},
+	{
 		path: '/portfolio/lending-stats',
 		component: () => import('@/pages/LendingStats/LendingStatsPage'),
 		meta: {
@@ -219,7 +228,6 @@ export default [
 			lendAmount: Number(route.params.lendAmount)
 		}),
 	},
-	{ path: '/protocol', component: () => import('@/pages/Protocol') },
 	{
 		path: '/register/social',
 		component: () => import('@/pages/LoginAndRegister/RegisterSocial'),
@@ -334,49 +342,8 @@ export default [
 	{
 		path: '/styleguide',
 		component: () => import('@/pages/StyleGuide'),
-		children: [
-			{
-				path: '',
-				name: 'foundation',
-				component: () => import('@/components/Styleguide/StyleguideIntro')
-			},
-			{
-				path: 'typography',
-				name: 'typography',
-				component: () => import('@/components/Styleguide/StyleguideTypography')
-			},
-			{
-				path: 'copy',
-				name: 'copy',
-				component: () => import('@/components/Styleguide/StyleguideCopy')
-			},
-			{
-				path: 'buttons',
-				name: 'buttons',
-				component: () => import('@/components/Styleguide/StyleguideButtons')
-			},
-			{
-				path: 'colors',
-				name: 'colors',
-				component: () => import('@/components/Styleguide/StyleguideColors')
-			},
-			{
-				path: 'forms',
-				name: 'forms',
-				component: () => import('@/components/Styleguide/StyleguideForms')
-			},
-			{
-				path: 'images',
-				name: 'images',
-				component: () => import('@/components/Styleguide/StyleguideImages')
-			},
-			{
-				path: 'icons',
-				name: 'icons',
-				component: () => import('@/components/Styleguide/StyleguideIcons')
-			},
-		]
 	},
+	{ path: '/styleguide/*', redirect: '/styleguide' },
 	{ path: '/ui-site-map', component: () => import('@/pages/UiSiteMap/UiSiteMapPage') },
 	{ path: '/UI_REVISION', component: () => import('@/pages/UiRevision') },
 	// These are Demo Pages

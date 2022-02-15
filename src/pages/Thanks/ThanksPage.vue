@@ -15,25 +15,49 @@
 				</div>
 
 				<div class="thanks__header hide-for-print">
-					<h1 class="thanks__header-h1 tw-mb-4">
-						Thank you!
-					</h1>
-					<p v-if="loans.length > 0" class="thanks__header-subhead tw-text-subhead tw-mb-2">
-						Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
-					</p>
-					<p v-if="lender.email" class="hide-for-print">
-						We've emailed your order confirmation to
-						<strong class="fs-exclude">{{ lender.email }}</strong>
-					</p>
-					<p v-else class="hide-for-print">
-						We've emailed your order confirmation to you.
-					</p>
+					<template v-if="receipt">
+						<div
+							v-if="!isAutoDepositSubscriber && showAutoDepositUpsell"
+							class="thanks_header-image tw-hidden md:tw-block"
+						>
+							<img :src="imageRequire(`./high-five.svg`)" class="tw-mx-auto" alt="high fiving hands">
+						</div>
+						<h1 v-if="!isAutoDepositSubscriber && showAutoDepositUpsell" class="thanks__header-h1 tw-mb-4">
+							Let’s set up your auto-deposit now!
+						</h1>
+						<h1 v-else class="thanks__header-h1 tw-mb-4">
+							Thank you!
+						</h1>
+						<p v-if="loans.length > 0" class="thanks__header-subhead tw-text-subhead tw-mb-2">
+							Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
+						</p>
+						<p v-if="lender.email" class="hide-for-print">
+							We've emailed your order confirmation to
+							<strong class="fs-exclude">{{ lender.email }}</strong>
+						</p>
+						<p v-else class="hide-for-print">
+							We've emailed your order confirmation to you.
+						</p>
+					</template>
+
+					<template v-else>
+						<h1 class="tw-mb-4">
+							Please log in to see your receipt.
+						</h1>
+						<kv-button
+							:href="`/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`"
+						>
+							Log in to continue
+						</kv-button>
+					</template>
 				</div>
 			</div>
 		</div>
 
 		<thanks-layout-v2
-			:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest"
+			v-if="receipt"
+			:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !showAutoDepositUpsell && !hasModernSub"
+			:show-auto-deposit-upsell="!isAutoDepositSubscriber && showAutoDepositUpsell && !hasModernSub"
 			:show-guest-upsell="isGuest"
 			:show-share="loans.length > 0"
 		>
@@ -43,6 +67,9 @@
 					:lender="lender"
 					:receipt="receipt"
 				/>
+			</template>
+			<template #ad>
+				<auto-deposit-c-t-a />
 			</template>
 			<template #mg>
 				<monthly-good-c-t-a
@@ -69,11 +96,14 @@
 
 <script>
 import confetti from 'canvas-confetti';
+import gql from 'graphql-tag';
 import numeral from 'numeral';
+import logReadQueryError from '@/util/logReadQueryError';
 
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import GuestUpsell from '@/components/Checkout/GuestUpsell';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
+import AutoDepositCTA from '@/components/Checkout/AutoDepositCTA';
 import MonthlyGoodCTA from '@/components/Checkout/MonthlyGoodCTA';
 import SocialShare from '@/components/Checkout/SocialShare';
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -84,11 +114,25 @@ import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+
+const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
+
+const mySubscriptionsQuery = gql`query mySubscriptionsQuery {
+	mySubscriptions(includeDisabled: false) {
+		values {
+			id
+			enabled
+		}
+	}
+}`;
 
 export default {
 	components: {
+		AutoDepositCTA,
 		CheckoutReceipt,
 		GuestUpsell,
+		KvButton,
 		KvCheckoutSteps,
 		MonthlyGoodCTA,
 		SocialShare,
@@ -103,15 +147,19 @@ export default {
 	},
 	data() {
 		return {
+			autoDepositUpsellCookie: null,
+			imageRequire,
 			lender: {},
 			loans: [],
-			receipt: {},
+			receipt: null,
 			checkoutSteps: [
 				'Basket',
 				'Payment',
 				'Thank You!'
 			],
+			isAutoDepositSubscriber: false,
 			isMonthlyGoodSubscriber: false,
+			hasModernSub: false,
 			isGuest: false,
 			pageData: {},
 		};
@@ -140,11 +188,17 @@ export default {
 			};
 
 			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
+			const hasAutoDeposit = data?.my?.autoDeposit?.id ?? false;
+			this.isAutoDepositSubscriber = !!(hasAutoDeposit && !this.isMonthlyGoodSubscriber);
+
+			// TOOD: Re-enable in preFetch once all envs have this endpoint
+			// const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+			// this.hasModernSub = modernSubscriptions.length !== 0;
 
 			// The default empty object and the v-if will prevent the
 			// receipt from rendering in the rare cases this query fails.
 			// But it will not throw a server error.
-			this.receipt = data?.shop?.receipt;
+			this.receipt = data?.shop?.receipt ?? null;
 			this.isGuest = this.receipt && !data?.my?.userAccount;
 
 			const loansResponse = this.receipt?.items?.values ?? [];
@@ -165,6 +219,17 @@ export default {
 					'error',
 					{ result }
 				);
+			}
+
+			// check for auto deposit upsell
+			if (!this.isAutoDepositSubscriber) {
+				this.autoDepositUpsellCookie = this.cookieStore.get('kv-show-ad-signup') || null;
+			} else {
+				try {
+					this.cookieStore.remove('kv-show-ad-signup');
+				} catch (e) {
+					// noop
+				}
 			}
 
 			// Check for contentful content
@@ -196,17 +261,40 @@ export default {
 		ctaButtonText() {
 			return this.ctaContentBlock?.primaryCtaText;
 		},
+		showAutoDepositUpsell() {
+			// Check cookie and eligibility before showing
+			if (!this.isGuest && this.autoDepositUpsellCookie) {
+				return true;
+			}
+			return false;
+		}
+	},
+	created() {
+		// extract mySubscriptions query so we can guard with try catch
+		let mySubsCheck = {};
+		try {
+			mySubsCheck = this.apollo.readQuery({
+				query: mySubscriptionsQuery,
+			});
+
+			const modernSubscriptions = mySubsCheck?.mySubscriptions?.values ?? [];
+			this.hasModernSub = modernSubscriptions.length !== 0;
+		} catch (e) {
+			logReadQueryError(e, 'Thanks mySubscriptions query');
+		}
 	},
 	mounted() {
-		confetti({
-			origin: {
-				y: 0.2
-			},
-			particleCount: 150,
-			spread: 200,
-			colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c'], // misc. kiva colors
-			disableForReducedMotion: true,
-		});
+		if (this.receipt) {
+			confetti({
+				origin: {
+					y: 0.2
+				},
+				particleCount: 150,
+				spread: 200,
+				colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c'],
+				disableForReducedMotion: true,
+			});
+		}
 	},
 };
 

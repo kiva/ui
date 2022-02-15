@@ -186,6 +186,11 @@
 						'lg:tw-px-0',
 					]"
 				>
+					<loan-bookmark
+						v-if="isLoggedIn"
+						:loan-id="loanId"
+						class="tw-hidden md:tw-inline-block tw-mt-1 lg:tw-hidden"
+					/>
 					<div
 						key="wrapper"
 						:class="[
@@ -226,7 +231,7 @@
 								v-if="statScrollAnimation"
 							>
 								<kv-material-icon
-									class="tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
+									class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
 									:icon="mdiLightningBolt"
 								/>
 								powered by {{ numLenders }} lenders
@@ -259,6 +264,7 @@ import { setLendAmount } from '@/util/basketUtils';
 import { buildPriceArray, isMatchAtRisk } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
+import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -278,9 +284,11 @@ export default {
 		KvUiButton,
 		KvUiSelect,
 		JumpLinks,
+		LoanBookmark,
 	},
 	data() {
 		return {
+			isLoggedIn: false,
 			mdiLightningBolt,
 			defaultSelectorAmount: 25,
 			selectedOption: '25',
@@ -346,6 +354,11 @@ export default {
 						}
 					}
 				}
+				my {
+					userAccount {
+						id
+					}
+				}
 			}
 		`,
 		preFetch: false,
@@ -359,6 +372,7 @@ export default {
 			const loan = result?.data?.lend?.loan;
 			const basket = result?.data?.shop?.basket;
 
+			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
 			this.loanAmount = loan?.loanAmount ?? '0';
 			this.status = loan?.status ?? '';
 			this.minNoteSize = loan?.minNoteSize ?? '';

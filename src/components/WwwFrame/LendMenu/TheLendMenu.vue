@@ -101,11 +101,12 @@ export default {
 			return regions.sort(indexIn(this.regionDisplayOrder, 'name'));
 		},
 		computedCategories() {
-			return _map(this.categories, category => {
+			const categories = _map(this.categories, category => {
 				const updatedCat = JSON.parse(JSON.stringify(category));
 				updatedCat.url = updatedCat.url.replace('lend', 'lend-by-category');
 				return updatedCat;
 			});
+			return _sortBy(categories, 'name');
 		},
 		hasUserId() {
 			return !!this.userId;
@@ -136,7 +137,6 @@ export default {
 				}`
 			}).subscribe({
 				next: ({ data }) => {
-					console.log(data);
 					this.countryFacets = _get(data, 'lend.countryFacets');
 					this.isRegionsLoading = false;
 				}

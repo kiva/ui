@@ -81,6 +81,8 @@
 			:right-arrow-position="rightArrowPosition"
 			:left-arrow-position="leftArrowPosition"
 		/>
+
+		<m-g-lightbox />
 	</www-page>
 </template>
 
@@ -107,6 +109,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import CategoryRowHover from '@/components/LoansByCategory/CategoryRowHover';
 import FeaturedHeroLoanWrapper from '@/components/LoansByCategory/FeaturedHeroLoanWrapper';
+import MGLightbox from '@/components/LoansByCategory/MGLightbox';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
@@ -128,6 +131,7 @@ export default {
 		AddToBasketInterstitial,
 		ExpandableLoanCardExpanded,
 		FavoriteCountryLoans,
+		MGLightbox,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo: {
@@ -535,6 +539,21 @@ export default {
 				);
 			}
 		},
+		initializeRecommendedRowAlgoExp() {
+			// experiment: VUE-937 for "recommend by others" row backing algorithm
+			const experimentId = 'EXP-VUE-937-recommended-row-algo';
+
+			// get experiment assignment
+			const { version } = this.apollo.readFragment({
+				id: `Experiment:${experimentId}`,
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			// track version if it is set
+			if (version && version !== 'unassigned') {
+				this.$kvTrackEvent('Lending', experimentId, version);
+			}
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -550,6 +569,8 @@ export default {
 				return Promise.all([
 					// experiment: GROW-330 Machine Learning Category row
 					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
+					// experiment: VUE-937 for "recommend by others" row backing algorithm
+					client.query({ query: experimentQuery, variables: { id: 'EXP-VUE-937-recommended-row-algo' } }),
 					// experiment: category description
 					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
 					// experiment: add to basket interstitial
@@ -620,6 +641,9 @@ export default {
 	created() {
 		// Initialize GROW-330: Machine Learning served rows
 		this.initializeMLServiceBanditRowExp();
+
+		// Initialize VUE-937: Recommended row backing algorithm experiment
+		this.initializeRecommendedRowAlgoExp();
 
 		// Read the page data from the cache
 		let baseData = {};

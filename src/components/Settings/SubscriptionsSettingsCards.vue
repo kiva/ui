@@ -10,7 +10,7 @@
 
 		<!-- Monthly Good Settings -->
 		<subscriptions-monthly-good
-			v-if="!isOnetime"
+			v-if="!isOnetime && !hasModernSub"
 			@cancel-subscription="cancelSubscription"
 			@unsaved-changes="setUnsavedChanges"
 			ref="subscriptionsMonthlyGoodComponent"
@@ -26,7 +26,7 @@
 
 		<!-- Auto Deposit Settings -->
 		<subscriptions-auto-deposit
-			v-if="!isOnetime && !isMonthlyGoodSubscriber && !isLegacySubscriber"
+			v-if="!isOnetime && !isMonthlyGoodSubscriber && !isLegacySubscriber && !hasModernSub"
 			@cancel-subscription="showConfirmationPrompt('Auto Deposit')"
 			@unsaved-changes="setUnsavedChanges"
 			ref="subscriptionsAutoDepositComponent"
@@ -139,10 +139,11 @@ export default {
 			isMonthlyGoodSubscriber: false,
 			isOnetime: false,
 			isSaving: false,
-			mySubscriptions: [],
 			showLightbox: false,
 			showLoadingOverlay: false,
 			hasActiveCauseSubscription: false,
+			hasModernSub: false,
+
 		};
 	},
 	apollo: {
@@ -154,13 +155,13 @@ export default {
 
 			const legacySubs = data?.my?.subscriptions?.values ?? [];
 			this.isLegacySubscriber = legacySubs.length > 0;
-			this.mySubscriptions = data?.mySubscriptions?.values ?? [];
-			const causesSubscriptions = this.mySubscriptions.filter(
+
+			const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+			this.hasModernSub = modernSubscriptions.length !== 0;
+			const causesSubscriptions = modernSubscriptions.filter(
 				subscription => subscription.category.subscriptionType === 'CAUSES'
 			);
-			this.hasActiveCauseSubscription = !!causesSubscriptions.find(
-				subscription => subscription.enabled
-			);
+			this.hasActiveCauseSubscription = causesSubscriptions.length !== 0;
 		},
 	},
 	mounted() {

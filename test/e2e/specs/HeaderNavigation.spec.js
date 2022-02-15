@@ -11,10 +11,8 @@ describe('Header Navigation', () => {
 
 		// Go to the home page
 		cy.visit('/');
-		// Open the search bar in the header
-		cy.contains('Open Search').click();
-		// Type 'f' in the currently focused element (the search bar)
-		cy.focused().type('f');
+		// Type 'f' in the search bar
+		cy.findByPlaceholderText('Search all loans').type('f');
 		// Wait for search results request to complete
 		cy.wait('@gqlloanSearchSuggestionsQuery');
 		// Click on the "Fabrics" tag in the search results

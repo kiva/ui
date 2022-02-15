@@ -1,18 +1,46 @@
 <template>
-	<button
-		v-kv-track-event="['Lending', 'click-Favorite star', 'Favorite', loanId, loanId]"
-		@click.prevent.stop="toggleFavorite"
-	>
-		<kv-icon name="star" :from-sprite="true" class="icon-star" :class="{ 'is-favorite': isFavorite }" />
-	</button>
+	<!--
+	*
+	*
+	*
+	*
+	*
+		This is a old file, we don't want to use moving forward
+		if you're looking to implement loan bookmarking behavior
+		please use:
+			src/components/BorrowerProfile/LoanBookmark.vue
+	*
+	*
+	*
+	*
+	*-->
+	<span>
+		<button
+			class="tw-inline-flex tw-p-0.5 tw-cursor-pointer tw-bg-primary tw-rounded-full tw-m-0.5"
+			@click.prevent.stop="toggleFavorite()"
+			:v-kv-track-event="`[
+				'Lending',
+				'click-Favorite star',
+				${isFavorite ? 'Favorite' : 'Remove favorite',
+				loanId,
+				loanId
+			}]`"
+		>
+			<kv-material-icon
+				class="tw-text-action tw-w-3"
+				:icon="`${isFavorite ? mdiBookmark : mdiBookmarkOutline}`"
+			/>
+		</button>
+	</span>
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
+import { mdiBookmarkOutline, mdiBookmark } from '@mdi/js';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	components: {
-		KvIcon
+		KvMaterialIcon,
 	},
 	props: {
 		isFavorite: {
@@ -24,6 +52,12 @@ export default {
 			default: null
 		},
 	},
+	data() {
+		return {
+			mdiBookmarkOutline,
+			mdiBookmark,
+		};
+	},
 	methods: {
 		toggleFavorite() {
 			this.$emit('favorite-toggled');
@@ -31,27 +65,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-	@import 'settings';
-
-	button {
-		outline-style: none;
-	}
-
-	.icon-star {
-		height: 2rem;
-		width: 2rem;
-		fill: transparent;
-		color: $white;
-		opacity: 0.5;
-		background-color: $kiva-text-dark;
-		padding: 0.5rem;
-		vertical-align: bottom;
-	}
-
-	.is-favorite {
-		opacity: 1;
-		color: $kiva-alert-yellow;
-	}
-</style>

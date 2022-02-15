@@ -120,6 +120,7 @@ export function formatButton(contentfulContent) {
 		webLink: contentfulContent.fields?.webLink,
 		deepLink: contentfulContent.fields?.deepLink,
 		analyticsClickEvent: contentfulContent.fields?.analyticsClickEvent,
+		webClickEventName: contentfulContent.fields?.webClickEventName,
 		filter: contentfulContent.fields?.filter,
 	};
 }
@@ -214,7 +215,10 @@ export function formatCarousel(contentfulContent) {
 /**
  * Format StoryCard (contentful type id: storyCard)
  * Takes raw contentful content object and returns an object with targeted keys/values
- * TODO remove kickerHeadline once content field is fully deprecated from contentful
+ *
+ * Default alignment value is center. This is enforced in the contentful UI,
+ * but legacy story cards before the alignment field was added may have a null value
+ *
  * @param {array} contentfulContent data
  * @returns {object}
  */
@@ -226,7 +230,9 @@ export function formatStoryCard(contentfulContent) {
 		footer: contentfulContent.fields?.footer,
 		key: contentfulContent.fields?.key,
 		theme: contentfulContent.fields?.theme,
-		kickerHeadline: contentfulContent.fields?.kickerHeadline,
+		alignment: contentfulContent.fields?.alignment ?? 'center',
+		link: contentfulContent.fields?.link,
+		analyticsClickEvent: contentfulContent.fields?.analyticsClickEvent
 	};
 }
 
@@ -435,8 +441,6 @@ export function processPageContent(entryItem) {
 			name: entryItem.fields?.pageLayout?.fields?.name,
 			pageTitle: entryItem.fields?.pageLayout?.fields?.pageTitle,
 			pageBackgroundColor: entryItem.fields?.pageLayout?.fields?.pageBackgroundColor,
-			headerTheme: entryItem.fields?.pageLayout?.fields?.headerTheme,
-			footerTheme: entryItem.fields?.pageLayout?.fields?.footerTheme,
 		},
 		settings: entryItem.fields?.settings
 			? formatContentTypes(entryItem.fields?.settings) : []
@@ -490,8 +494,6 @@ export function processPageContentFlat(entryItem) {
 		pageLayout: {
 			name: entryItem.fields?.pageLayout?.fields?.name,
 			pageTitle: entryItem.fields?.pageLayout?.fields?.pageTitle,
-			headerTheme: entryItem.fields?.pageLayout?.fields?.headerTheme,
-			footerTheme: entryItem.fields?.pageLayout?.fields?.footerTheme,
 		},
 		settings: entryItem.fields?.settings
 			? formatContentTypes(entryItem.fields?.settings) : []

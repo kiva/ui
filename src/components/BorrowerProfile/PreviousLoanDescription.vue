@@ -7,7 +7,7 @@
 			Show previous loan details
 			<kv-material-icon
 				:icon="mdiChevronDown"
-				class="tw-align-middle tw-mb-0.5 tw-transition-transform tw-ease-in-out tw-duration-500"
+				class="tw-w-3 tw-h-3 tw-align-middle tw-mb-0.5 tw-transition-transform tw-ease-in-out tw-duration-500"
 				:class="{'tw-rotate-180' : previousLoanDetailsOpen}"
 			/>
 		</kv-text-link>

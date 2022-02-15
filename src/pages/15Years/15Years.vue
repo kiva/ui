@@ -1,7 +1,5 @@
 <template>
 	<www-page
-		:header-theme="headerTheme"
-		:footer-theme="footerTheme"
 		class="fifteen-years-page"
 	>
 		<div class="page-wrap">
@@ -29,7 +27,6 @@
 
 <script>
 
-import { fifteenYearHeaderTheme, fifteenYearFooterTheme } from '@/util/siteThemes';
 import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
 import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
 import FifteenYearsIndividuals from '@/components/15Years/15YearsIndividuals';
@@ -50,12 +47,6 @@ export default {
 	},
 	metaInfo: {
 		title: '15 Years'
-	},
-	data() {
-		return {
-			headerTheme: fifteenYearHeaderTheme,
-			footerTheme: fifteenYearFooterTheme,
-		};
 	},
 };
 </script>

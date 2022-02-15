@@ -24,7 +24,7 @@
 							</div>
 							<hr class="tw-border-tertiary tw-my-3">
 						</div>
-						<div class="basket-container">
+						<div class="basket-container tw-mx-auto tw-my-0" style="max-width: 800px;">
 							<basket-items-list
 								:loans="loans"
 								:donations="donations"
@@ -38,7 +38,7 @@
 						</div>
 						<div v-if="showKivaCardForm">
 							<hr class="tw-border-tertiary tw-my-3">
-							<div class="basket-container">
+							<div class="basket-container tw-mx-auto tw-my-0" style="max-width: 800px;">
 								<kiva-card-redemption
 									:credits="redemption_credits"
 									:totals="totals"
@@ -49,7 +49,12 @@
 						</div>
 						<hr class="tw-border-tertiary tw-my-3">
 
-						<div class="basket-container">
+						<auto-deposit-upsell
+							v-if="!checkingOutAsGuest && isLoggedIn"
+							:my-id="myId"
+						/>
+
+						<div class="basket-container tw-mx-auto tw-my-0" style="max-width: 800px;">
 							<div class="row">
 								<div class="small-9 small-offset-3 large-10 large-offset-2 columns">
 									<checkout-holiday-promo
@@ -237,6 +242,7 @@ import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import OrderTotals from '@/components/Checkout/OrderTotals';
+import AutoDepositUpsell from '@/components/Checkout/AutoDepositUpsell';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import BasketVerification from '@/components/Checkout/BasketVerification';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
@@ -255,6 +261,7 @@ export default {
 		KvCheckoutSteps,
 		KvLightbox,
 		OrderTotals,
+		AutoDepositUpsell,
 		BasketItemsList,
 		BasketVerification,
 		KivaCardRedemption,
@@ -750,10 +757,10 @@ export default {
 	}
 }
 
-.basket-container {
-	max-width: rem-calc(800);
-	margin: 0 auto;
-}
+// .basket-container {
+// 	max-width: rem-calc(800);
+// 	margin: 0 auto;
+// }
 
 .page-content {
 	padding: 1.625rem 0;
@@ -890,10 +897,4 @@ export default {
 		}
 	}
 }
-
-// Hide Basket Bar (this won't work with scoped)
-.basket-bar {
-	display: none !important;
-}
-
 </style>

@@ -242,10 +242,6 @@ export default {
 @import 'settings';
 
 .mg-cancel-lightbox {
-	.button.tw-text-left {
-		text-align: left;
-	}
-
 	&__content {
 		overflow: hidden;
 		max-width: 100%;

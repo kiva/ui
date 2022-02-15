@@ -8,7 +8,7 @@
 			>
 				<div class="sitewide-header small-12 medium-9 medium-offset-2 large-9 large-offset-2  columns">
 					<h2>
-						<span v-html="bannerHeadline" class="strong"></span>
+						<span v-html="bannerHeadline" class="tw-font-medium"></span>
 						<kv-icon
 							@click="toggleAccordion"
 							:class="{ flipped: open }"

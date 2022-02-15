@@ -1,15 +1,15 @@
 <template>
-	<div>
+	<div class="tw-pb-2">
 		<router-link
 			to="/monthlygood"
-			class="tw-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-border-b tw-border-tertiary tw-font-medium"
+			class="tw-inline-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-border-b tw-border-tertiary tw-font-medium"
 			v-kv-track-event="['TopNav','click-Find-a-Cause', 'Find a cause']"
 		>
 			Find a cause
-			<kv-material-icon :icon="mdiArrowRight" />
+			<kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiArrowRight" />
 		</router-link>
 
-		<kv-tabs>
+		<kv-tabs ref="navLendCategories">
 			<template #tabNav>
 				<kv-tab for="nav-lend-categories">
 					Categories
@@ -17,29 +17,39 @@
 				<kv-tab for="nav-lend-regions">
 					Regions
 				</kv-tab>
-				<kv-tab for="nav-my-kiva" v-if="userId || true">
+				<kv-tab for="nav-my-kiva" v-if="userId">
 					My Kiva
 				</kv-tab>
 			</template>
 			<template #tabPanels>
 				<kv-tab-panel id="nav-lend-categories">
-					<kv-loading-spinner
-						v-if="isChannelsLoading"
-						class="tw-mx-auto tw-mt-4 tw-mb-2"
-					/>
 					<ul
-						v-else
 						class="tw-font-medium"
 					>
-						<li v-for="(category, index) in categories" :key="index">
-							<a
-								:href="category.url"
-								v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]"
-								class="lend-link"
+						<template v-if="isChannelsLoading">
+							<li
+								v-for="i in 14"
+								:key="i"
+								class="tw-w-[11rem] tw-py-1 tw-flex"
 							>
-								{{ category.name }}
-							</a>
-						</li>
+								<kv-loading-placeholder
+									class="tw-inline-block tw-align-middle"
+									style="height: 1rem; display: inline-block;"
+								/>
+								<span class="tw-inline-block">&nbsp;</span>
+							</li>
+						</template>
+						<template v-else>
+							<li v-for="(category, index) in categories" :key="index">
+								<a
+									:href="category.url"
+									v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]"
+									class="lend-link"
+								>
+									{{ category.name }}
+								</a>
+							</li>
+						</template>
 						<li class="tw-border-t tw-border-tertiary">
 							<router-link to="/lend" class="lend-link">
 								All loans
@@ -53,15 +63,30 @@
 					</ul>
 				</kv-tab-panel>
 				<kv-tab-panel id="nav-lend-regions">
-					<kv-loading-spinner
-						v-if="isRegionsLoading"
-						class="tw-mx-auto tw-mt-4 tw-mb-2"
-					/>
+					<template v-if="isRegionsLoading">
+						<kv-accordion-item
+							v-for="i in 8"
+							:key="i"
+							:id="`placeholder-${i}-panel` | changeCase('paramCase')"
+							:disabled="true"
+						>
+							<template #header>
+								<div class="tw-flex">
+									<kv-loading-placeholder
+										class="tw-inline-block tw-align-middle"
+										style="height: 1rem; display: inline-block;"
+									/>
+									<span class="tw-inline-block tw-text-h4">&nbsp;</span>
+								</div>
+							</template>
+						</kv-accordion-item>
+					</template>
 					<template v-else>
 						<kv-accordion-item
 							v-for="region in regions"
 							:key="region.name"
 							:id="`lend-menu-${region.name}-panel` | changeCase('paramCase')"
+							ref="regionAccordions"
 						>
 							<template #header>
 								<h3 class="tw-text-h4">
@@ -74,8 +99,8 @@
 						</kv-accordion-item>
 					</template>
 				</kv-tab-panel>
-				<kv-tab-panel id="nav-my-kiva" v-if="userId || true">
-					<ul>
+				<kv-tab-panel id="nav-my-kiva" v-if="userId">
+					<ul class="tw-font-medium">
 						<li>
 							<router-link
 								v-if="favorites > 0"
@@ -83,12 +108,12 @@
 								class="lend-link"
 								v-kv-track-event="['TopNav','click-Lend-Favorites']"
 							>
-								Starred loans
+								Saved loans
 							</router-link>
 							<span
 								v-else
 								class="tw-block tw-py-1 tw-text-tertiary"
-							>Starred loans</span>
+							>Saved loans</span>
 						</li>
 						<li
 							v-if="hasSearches"
@@ -98,9 +123,9 @@
 								ref="searches"
 							>
 								<template #header>
-									<h3 class="tw-text-base">
+									<p class="tw-font-medium">
 										Saved searches
-									</h3>
+									</p>
 								</template>
 								<search-list :searches="searches" />
 							</kv-accordion-item>
@@ -127,9 +152,9 @@
 <script>
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiArrowRight } from '@mdi/js';
+import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import SearchList from './SearchList';
 import CountryList from './CountryList';
-import KvLoadingSpinner from '~/@kiva/kv-components/vue/KvLoadingSpinner';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvTab from '~/@kiva/kv-components/vue/KvTab';
 import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
@@ -144,7 +169,7 @@ export default {
 		KvTab,
 		KvTabPanel,
 		KvTabs,
-		KvLoadingSpinner,
+		KvLoadingPlaceholder,
 		SearchList,
 	},
 	props: {
@@ -190,19 +215,22 @@ export default {
 	},
 	methods: {
 		onClose() {
-			// if (this.categories.length) {
-			// 	this.$refs.categories.collapse();
-			// }
-			// if (this.regions.length) {
-			// 	this.$refs.regions.collapse();
-			// 	this.$refs.regionCountries.forEach(region => region.collapse());
-			// }
-			// if (this.userId) {
-			// 	this.$refs.myKiva.collapse();
-			// }
-			// if (this.hasSearches) {
-			// 	this.$refs.searches.collapse();
-			// }
+			// reset the tabs
+			if (this.$refs.navLendCategories) {
+				this.$refs.navLendCategories.setTab(0);
+			}
+
+			// close all region accordions
+			if (this.$refs.regionAccordions) {
+				this.$refs.regionAccordions.forEach(accordionRef => {
+					accordionRef.collapse();
+				});
+			}
+
+			// close saved search accordions
+			if (this.hasSearches && this.$refs.searches) {
+				this.$refs.searches.collapse();
+			}
 		}
 	},
 };

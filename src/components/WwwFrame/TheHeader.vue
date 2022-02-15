@@ -11,9 +11,10 @@
 						<router-link
 							class="header__button"
 							to="/"
+							data-testid="header-home"
 							v-kv-track-event="['TopNav','click-Logo']"
 						>
-							<kiva-logo class="tw-w-5 tw-text-brand" />
+							<kiva-logo class="tw-w-6 tw-text-brand" style="transform: translateY(-0.1875rem);" />
 							<span class="tw-sr-only">Kiva Home</span>
 						</router-link>
 					</div>
@@ -22,7 +23,7 @@
 				<!-- Corporate header for /cc pages -->
 				<template v-else-if="corporate">
 					<div class="
-						tw-flex tw-gap-2.5 lg:tw-gap-4 tw-items-center"
+						tw-flex tw-gap-2.5 lg:tw-gap-6 tw-items-center"
 					>
 						<campaign-logo-group
 							class="tw-h-2.5 lg:tw-h-3.5"
@@ -32,31 +33,48 @@
 						<router-link
 							v-show="hasBasket"
 							:to="addHashToRoute('show-basket')"
+							data-testid="header-basket"
 							class="header__button header__basket"
 							v-kv-track-event="['TopNav','click-Basket']"
 						>
-							<span class="amount">{{ basketCount }}</span>
+							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+								{{ basketCount }}
+							</span>
 							Basket
 						</router-link>
 						<router-link
 							v-show="!isVisitor"
 							:id="myKivaMenuId"
 							to="/portfolio"
+							data-testid="header-portfolio"
 							target="_blank"
 							class="header__button header__portfolio"
 							v-kv-track-event="['TopNav','click-Portfolio']"
 						>
-							<span>{{ balance | numeral('$0') }}</span>
+							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+								{{ balance | numeral('$0') }}
+							</span>
+							<template v-if="isDefaultProfilePic">
+								<span class="tw-sr-only">My Portfolio</span>
+								<kv-material-icon
+									:icon="mdiAccountCircle"
+									class="tw-inline-block tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5"
+								/>
+							</template>
 							<img
+								v-else
 								:src="profilePic"
 								alt="My portfolio"
-								class="fs-mask tw-inline-block tw-w-2.5 tw-h-2.5 tw-object-fill"
+								class="fs-mask tw-inline-block
+									tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5
+									tw-rounded-full tw-overflow-hidden tw-object-fill"
 							>
 						</router-link>
 						<router-link
 							:to="loginUrl"
 							v-show="isVisitor"
 							class="header__button header__log-in"
+							data-testid="header-log-in"
 							:event="showPopupLogin ? '' : 'click'"
 							@click.native="auth0Login"
 							v-kv-track-event="[
@@ -69,50 +87,65 @@
 					</div>
 				</template>
 
-				<!-- default -->
+				<!-- Default Header -->
 				<template v-else>
 					<div
 						class="header
 							tw-grid tw-gap-x-2.5 lg:tw-gap-x-4 tw-items-center"
 						:class="{'header--mobile-open': searchOpen}"
 					>
-						<div class="header__left-side
-						tw-contents tw-gap-2.5 lg:tw-gap-6 lg:tw-flex tw-justify-start tw-items-center"
-						>
-							<!-- logo -->
-							<div class="header__logo">
-								<router-link
-									class="header__button"
-									to="/"
-									v-kv-track-event="['TopNav','click-Logo']"
-								>
-									<kiva-logo class="tw-w-5 tw-text-brand" />
-									<span class="tw-sr-only">Kiva Home</span>
-								</router-link>
-							</div>
-
+						<!-- Logo -->
+						<div class="header__logo">
 							<router-link
-								:id="lendMenuId"
-								to="/lend-by-category"
-								class="header__button header__lend"
-								v-kv-track-event="['TopNav','click-Lend']"
-								event
-								@pointerenter.native.stop="onLendLinkPointerEnter"
-								@pointerleave.native.stop="onLendLinkPointerLeave"
-								@pointerup.native.stop="onLendLinkPointerUp"
-								@click.native.stop="onLendLinkClick"
+								class="header__button"
+								to="/"
+								data-testid="header-home"
+								v-kv-track-event="['TopNav','click-Logo']"
 							>
-								<span class="tw-flex tw-items-center">Lend
-									<kv-material-icon
-										class="tw-w-3 tw-transition-transform tw-duration-300"
-										:icon="mdiChevronDown"
-										:class="{'tw-rotate-180' : isLendMenuVisible}"
-									/>
-								</span>
+								<kiva-logo class="tw-w-6 tw-text-brand" style="transform: translateY(-0.1875rem);" />
+								<span class="tw-sr-only">Kiva Home</span>
 							</router-link>
 						</div>
 
-						<!-- search container -->
+						<!-- Lend -->
+						<router-link
+							:id="lendMenuId"
+							to="/lend-by-category"
+							data-testid="header-lend"
+							class="header__button header__lend"
+							v-kv-track-event="['TopNav','click-Lend']"
+							event
+							@pointerenter.native.stop="onLendLinkPointerEnter"
+							@pointerleave.native.stop="onLendLinkPointerLeave"
+							@pointerup.native.stop="onLendLinkPointerUp"
+							@click.native.stop="onLendLinkClick"
+						>
+							<span class="tw-flex tw-items-center">Lend
+								<kv-material-icon
+									class="tw-w-3 tw-h-3 tw-transition-transform tw-duration-300"
+									:icon="mdiChevronDown"
+									:class="{'tw-rotate-180' : isLendMenuVisible}"
+								/>
+							</span>
+						</router-link>
+						<transition name="kvfastfade">
+							<div
+								v-show="isLendMenuVisible"
+								class="
+									tw-absolute tw-left-0 tw-right-0 tw-top-8 md:tw-top-9 tw-z-dropdown
+									tw-bg-primary tw-border-b tw-border-tertiary"
+								style="margin-top: 1px;"
+							>
+								<kv-page-container>
+									<the-lend-menu ref="lendMenu"
+										@pointerenter.native="onLendMenuPointerEnter"
+										@pointerleave.native="onLendMenuPointerLeave"
+									/>
+								</kv-page-container>
+							</div>
+						</transition>
+
+						<!-- Search -->
 						<div
 							v-if="!hideSearchInHeader"
 							id="top-nav-search-area"
@@ -130,8 +163,10 @@
 						<div class="header__right-side
 						tw-flex tw-justify-end tw-gap-2.5 lg:tw-gap-4"
 						>
+							<!-- Borrow -->
 							<router-link
 								to="/borrow"
+								data-testid="header-borrow"
 								class="header__borrow"
 								:class="{
 									'tw-hidden': !isVisitor,
@@ -141,59 +176,138 @@
 							>
 								Borrow
 							</router-link>
-							<router-link
-								v-show="isVisitor"
-								:id="aboutMenuId"
-								to="/about"
-								class="header__about"
-								:class="{
-									'tw-hidden': !isVisitor,
-									'header__button': isVisitor
-								}"
-								v-kv-track-event="['TopNav','click-About']"
-							>
-								<span class="tw-flex">
-									About
-									<kv-material-icon class="tw-w-3" :icon="mdiChevronDown" />
-								</span>
-							</router-link>
+
+							<!-- About -->
+							<div class="tw-group">
+								<router-link
+									:id="aboutMenuId"
+									to="/about"
+									data-testid="header-about"
+									class="header__about"
+									:class="{
+										'tw-hidden': !isVisitor,
+										'header__button': isVisitor
+									}"
+									v-kv-track-event="['TopNav','click-About']"
+								>
+									<span class="tw-flex">
+										About
+										<kv-material-icon
+											class="tw-w-3 tw-h-3
+											tw-transition-transform tw-duration-300 group-hover:tw-rotate-180"
+											:icon="mdiChevronDown"
+										/>
+									</span>
+								</router-link>
+								<kv-dropdown
+									:controller="aboutMenuId"
+									v-show="isVisitor"
+									class="dropdown-list"
+								>
+									<ul>
+										<li>
+											<router-link
+												to="/about"
+												v-kv-track-event="['TopNav','click-About-About us']"
+											>
+												About us
+											</router-link>
+										</li>
+										<li>
+											<router-link
+												to="/about/how"
+												v-kv-track-event="['TopNav','click-About-How Kiva works']"
+											>
+												How Kiva works
+											</router-link>
+										</li>
+										<li>
+											<router-link
+												to="/about/where-kiva-works"
+												v-kv-track-event="['TopNav','click-About-Where Kiva works']"
+											>
+												Where Kiva works
+											</router-link>
+										</li>
+										<li>
+											<router-link
+												to="/about/impact"
+												v-kv-track-event="['TopNav','click-About-Impact']"
+											>
+												Impact
+											</router-link>
+										</li>
+										<li>
+											<router-link
+												to="/about/leadership"
+												v-kv-track-event="['TopNav','click-About-Leadership']"
+											>
+												Leadership
+											</router-link>
+										</li>
+										<li>
+											<router-link
+												to="/about/finances"
+												v-kv-track-event="['TopNav','click-About-Finances']"
+											>
+												Finances
+											</router-link>
+										</li>
+										<li>
+											<router-link
+												to="/about/press-center"
+												v-kv-track-event="['TopNav','click-About-Press']"
+											>
+												Press
+											</router-link>
+										</li>
+										<li>
+											<router-link
+												to="/about/due-diligence"
+												v-kv-track-event="['TopNav','click-About-Due diligence']"
+											>
+												Due diligence
+											</router-link>
+										</li>
+									</ul>
+								</kv-dropdown>
+							</div>
+
+							<!-- Mobile Search Toggle -->
 							<button
 								class="header__button header__search-icon md:!tw-hidden"
 								v-show="!hideSearchInHeader && !isVisitor"
+								data-testid="header-mobile-search-toggle"
 								:aria-expanded="searchOpen ? 'true' : 'false'"
 								:aria-pressed="searchOpen ? 'true' : 'false'"
 								aria-controls="top-nav-search-area"
 								@click="toggleMobileSearch"
 								v-kv-track-event="['TopNav','click-search-toggle']"
 							>
-								<kv-material-icon :icon="mdiMagnify" />
+								<kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiMagnify" />
 							</button>
+
+							<!-- Basket -->
 							<router-link
-								v-show="hasBasket"
 								to="/basket"
-								class="header__button header__basket"
+								data-testid="header-basket"
+								:class="{
+									'tw-hidden': !hasBasket,
+									'header__button header__basket !tw-hidden md:!tw-flex': hasBasket
+								}"
 								v-kv-track-event="['TopNav','click-Basket']"
 							>
-								<span class="amount">{{ basketCount }}</span>
+								<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+									{{ basketCount }}
+								</span>
 								Basket
 							</router-link>
-							<router-link
-								v-show="!isVisitor"
-								:id="myKivaMenuId"
-								to="/portfolio"
-								class="header__button header__portfolio"
-								v-kv-track-event="['TopNav','click-Portfolio']"
-							>
-								<span>{{ balance | numeral('$0') }}</span>
-								<img
-									:src="profilePic"
-									alt="My portfolio"
-									class="fs-mask tw-inline-block tw-w-2.5 tw-h-2.5 tw-object-fill"
-								>
-							</router-link>
+
+							<!-- Log in Link -->
 							<router-link
 								:to="loginUrl"
 								v-show="isVisitor"
+								data-testid="header-log-in"
 								class="header__button header__log-in"
 								:event="showPopupLogin ? '' : 'click'"
 								@click.native="auth0Login"
@@ -204,98 +318,36 @@
 							>
 								Log in
 							</router-link>
-						</div>
 
-						<!-- dropdowns -->
-						<div class="tw-contents">
-							<transition name="kvfastfade">
-								<div
-									v-show="isLendMenuVisible"
-									class="
-									tw-absolute tw-left-0 tw-right-0 tw-top-8 md:tw-top-9 tw-z-dropdown
-									tw-bg-primary tw-border-b tw-border-tertiary"
-									style="margin-top: 1px;"
-								>
-									<kv-page-container>
-										<the-lend-menu ref="lendMenu"
-											@pointerenter.native="onLendMenuPointerEnter"
-											@pointerleave.native="onLendMenuPointerLeave"
-										/>
-									</kv-page-container>
-								</div>
-							</transition>
-							<kv-dropdown
-								:controller="aboutMenuId"
-								v-show="isVisitor"
-								class="dropdown-list"
+							<!-- Logged in Profile -->
+							<router-link
+								v-show="!isVisitor"
+								:id="myKivaMenuId"
+								data-testid="header-portfolio"
+								to="/portfolio"
+								class="header__button header__portfolio"
+								v-kv-track-event="['TopNav','click-Portfolio']"
 							>
-								<ul>
-									<li>
-										<router-link
-											to="/about"
-											v-kv-track-event="['TopNav','click-About-About us']"
-										>
-											About us
-										</router-link>
-									</li>
-									<li>
-										<router-link
-											to="/about/how"
-											v-kv-track-event="['TopNav','click-About-How Kiva works']"
-										>
-											How Kiva works
-										</router-link>
-									</li>
-									<li>
-										<router-link
-											to="/about/where-kiva-works"
-											v-kv-track-event="['TopNav','click-About-Where Kiva works']"
-										>
-											Where Kiva works
-										</router-link>
-									</li>
-									<li>
-										<router-link
-											to="/about/impact"
-											v-kv-track-event="['TopNav','click-About-Impact']"
-										>
-											Impact
-										</router-link>
-									</li>
-									<li>
-										<router-link
-											to="/about/leadership"
-											v-kv-track-event="['TopNav','click-About-Leadership']"
-										>
-											Leadership
-										</router-link>
-									</li>
-									<li>
-										<router-link
-											to="/about/finances"
-											v-kv-track-event="['TopNav','click-About-Finances']"
-										>
-											Finances
-										</router-link>
-									</li>
-									<li>
-										<router-link
-											to="/about/press-center"
-											v-kv-track-event="['TopNav','click-About-Press']"
-										>
-											Press
-										</router-link>
-									</li>
-									<li>
-										<router-link
-											to="/about/due-diligence"
-											v-kv-track-event="['TopNav','click-About-Due diligence']"
-										>
-											Due diligence
-										</router-link>
-									</li>
-								</ul>
-							</kv-dropdown>
+								<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+									{{ balance | numeral('$0') }}
+								</span>
+								<template v-if="isDefaultProfilePic">
+									<span class="tw-sr-only">My Portfolio</span>
+									<kv-material-icon
+										:icon="mdiAccountCircle"
+										class="tw-inline-block tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5"
+									/>
+								</template>
+								<img
+									v-else
+									:src="profilePic"
+									alt="My portfolio"
+									class="fs-mask tw-inline-block
+										tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5
+										tw-rounded-full tw-overflow-hidden tw-object-fill"
+								>
+							</router-link>
+
 							<kv-dropdown
 								:controller="myKivaMenuId"
 								v-show="!isVisitor"
@@ -412,10 +464,7 @@
 				</template>
 			</kv-page-container>
 		</nav>
-
-		<!-- promo banner: TODO consolidate these -->
-		<promo-banner-large :basket-state="basketState" />
-		<promo-banner-small :basket-state="basketState" />
+		<promo-credit-banner v-if="!hidePromoCreditBanner" :basket-state="basketState" />
 	</header>
 </template>
 
@@ -426,13 +475,13 @@ import { preFetchAll } from '@/util/apolloPreFetch';
 
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KvDropdown from '@/components/Kv/KvDropdown';
-import { mdiMagnify, mdiChevronDown } from '@mdi/js';
+import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+
 import SearchBar from './SearchBar';
-import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
-import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
+import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
 export default {
 	components: {
@@ -441,8 +490,7 @@ export default {
 		KvDropdown,
 		KvMaterialIcon,
 		KvPageContainer,
-		PromoBannerLarge,
-		PromoBannerSmall,
+		PromoCreditBanner,
 		SearchBar,
 		TheLendMenu: () => import('@/components/WwwFrame/LendMenu/TheLendMenu'),
 	},
@@ -460,14 +508,16 @@ export default {
 			basketCount: 0,
 			balance: 0,
 			profilePic: '',
+			profilePicId: null,
 			aboutMenuId: 'about-header-dropdown',
 			lendMenuId: 'lend-header-dropdown',
 			myKivaMenuId: 'my-kiva-header-dropdown',
 			searchOpen: false,
 			redirectToLoginExperimentVersion: null,
 			basketState: {},
+			mdiAccountCircle,
+			mdiChevronDown,
 			mdiMagnify,
-			mdiChevronDown
 		};
 	},
 	props: {
@@ -492,6 +542,13 @@ export default {
 		isTrustee() {
 			return !!this.trusteeId;
 		},
+		isDefaultProfilePic() {
+			if (!this.profilePicId) {
+				return true;
+			}
+			const defaultProfileIds = [726677, 315726];
+			return defaultProfileIds.some(id => id === this.profilePicId);
+		},
 		trusteeLoansUrl() {
 			return {
 				path: '/lend',
@@ -509,6 +566,15 @@ export default {
 			return this.kvAuth0.enabled
 				&& this.$route.fullPath !== '/'
 				&& this.redirectToLoginExperimentVersion !== 'b';
+		},
+		hidePromoCreditBanner() {
+			// hide this banner on managed lending landing + checkout pages
+			const routeExclusions = ['/cc', '/checkout'];
+			const routePath = this.$route?.path;
+			const matchedRoutes = routeExclusions.filter(item => {
+				return routePath.indexOf(item) !== -1;
+			});
+			return matchedRoutes.length > 0;
 		},
 		loginUrl() {
 			if (this.$route.path === '/') {
@@ -528,6 +594,7 @@ export default {
 			this.basketCount = data?.shop?.nonTrivialItemCount ?? 0;
 			this.balance = Math.floor(data?.my?.userAccount?.balance ?? 0);
 			this.profilePic = data?.my?.lender?.image?.url ?? '';
+			this.profilePicId = data?.my?.lender?.image?.id ?? null;
 			this.basketState = data || {};
 
 			// GROW-280 redirect to login instead of popup login experiment
@@ -593,7 +660,6 @@ export default {
 			}
 		},
 		onLendLinkPointerEnter(e) {
-			console.log('onLendLinkPointerEnter');
 			if (e.pointerType === 'touch') {
 				return;
 			}
@@ -601,7 +667,6 @@ export default {
 			this.toggleLendMenu();
 		},
 		onLendLinkPointerLeave(e) {
-			console.log('onLendLinkPointerLeave');
 			if (e.pointerType === 'touch') {
 				return;
 			}
@@ -609,7 +674,6 @@ export default {
 			this.toggleLendMenu();
 		},
 		onLendLinkPointerUp(e) {
-			console.log('onLendLinkPointerUp');
 			if (e.pointerType === 'touch') {
 				this.toggleLendMenu(true);
 			} else {
@@ -619,7 +683,6 @@ export default {
 			}
 		},
 		onLendLinkClick(e) {
-			console.log('onLendLinkClick');
 			if (e.pointerType === 'touch') {
 				return;
 			}
@@ -628,7 +691,6 @@ export default {
 			}).catch(() => {});
 		},
 		onLendMenuPointerEnter(e) {
-			console.log('onLendMenuPointerEnter');
 			if (e.pointerType === 'touch') {
 				return;
 			}
@@ -636,7 +698,6 @@ export default {
 			this.toggleLendMenu();
 		},
 		onLendMenuPointerLeave(e) {
-			console.log('onLendMenuPointerLeave');
 			if (e.pointerType === 'touch') {
 				return;
 			}
@@ -686,8 +747,10 @@ export default {
 		isLendMenuVisible() {
 			setTimeout(() => {
 				if (this.isLendMenuVisible === true) {
+					this.onLendMenuShow();
 					document.addEventListener('pointerup', this.withinBoundaryCheck);
 				} else {
+					this.onLendMenuHide();
 					document.removeEventListener('pointerup', this.withinBoundaryCheck);
 				}
 			});
@@ -704,7 +767,7 @@ export default {
 }
 
 .dropdown-list {
-	@apply tw-px-2;
+	@apply tw-px-2 tw-rounded-b;
 }
 
 .dropdown-list a {
@@ -715,7 +778,6 @@ export default {
 .header__logo { grid-area: logo; }
 .header__lend { grid-area: lend; }
 .header__search { grid-area: search; }
-.header__left-side { grid-area: left-side; }
 .header__right-side { grid-area: right-side; }
 
 .header {
@@ -734,13 +796,6 @@ export default {
 	.header {
 		grid-template-areas: "logo lend search right-side";
 		grid-template-columns: auto auto 1fr auto;
-	}
-}
-
-@screen lg {
-	.header {
-		grid-template-areas: "left-side search right-side";
-		grid-template-columns: 33% 1fr minmax(max-content, 33%);
 	}
 }
 </style>

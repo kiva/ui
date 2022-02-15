@@ -317,7 +317,8 @@
 								v-kv-track-event="['global', 'click-app-badge-footer', 'App Store']"
 							>
 								<img
-									class="tw-w-[120px] tw-h-5 tw-mr-1"
+									class="tw-h-5 tw-mr-1"
+									style="width: 7.5rem;"
 									src="@/assets/icons/app-store.svg"
 									loading="lazy"
 									alt="Check out our new app on the App Store"
@@ -332,7 +333,8 @@
 								v-kv-track-event="['global', 'click-app-badge-footer', 'Google Store']"
 							>
 								<img
-									class="tw-w-[135px] tw-h-5"
+									class="tw-h-5"
+									style="width: 8.4375rem;"
 									src="@/assets/icons/play-store.svg"
 									loading="lazy"
 									alt="Check out our new app on the Play Store"
@@ -345,6 +347,7 @@
 				<div class="tw-my-2">
 					<a
 						href="//www.facebook.com/kiva/"
+						class="tw-inline-flex"
 						target="_blank"
 						rel="noopener"
 						v-kv-track-event="['Footer', 'click-social-icon', 'Facebook']"
@@ -353,9 +356,11 @@
 							class="tw-mr-2.5 tw-w-3 tw-h-3 tw-text-tertiary"
 							:icon="mdiFacebook"
 						/>
+						<span class="tw-sr-only">Kiva on Facebook</span>
 					</a>
 					<a
 						href="//www.instagram.com/kiva.org"
+						class="tw-inline-flex"
 						target="_blank"
 						rel="noopener"
 						v-kv-track-event="['Footer', 'click-social-icon', 'Instagram']"
@@ -364,9 +369,11 @@
 							class="tw-mr-2.5 tw-w-3 tw-h-3 tw-text-tertiary"
 							:icon="mdiInstagram"
 						/>
+						<span class="tw-sr-only">Kiva on Instagram</span>
 					</a>
 					<a
 						href="//twitter.com/kiva"
+						class="tw-inline-flex"
 						target="_blank"
 						rel="noopener"
 						v-kv-track-event="['Footer', 'click-social-icon', 'Twitter']"
@@ -375,6 +382,7 @@
 							class="tw-mr-2.5 tw-w-3 tw-h-3 tw-text-tertiary"
 							:icon="mdiTwitter"
 						/>
+						<span class="tw-sr-only">Kiva on Twitter</span>
 					</a>
 				</div>
 

@@ -12,7 +12,7 @@
 					:style="{ backgroundPositionY: spriteYPosition + '%' }"
 				></div>
 			</template>
-			<span class="show-for-sr">{{ countryName }}</span>
+			<span class="tw-sr-only">{{ countryName }}</span>
 		</div>
 	</div>
 </template>

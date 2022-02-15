@@ -49,7 +49,7 @@ describe('RegisterSocial', () => {
 			cy.location('pathname').should('eq', registerSocialPath);
 
 			// Check the terms checkbox
-			cy.findByLabelText('I have read and agree', { exact: false }).click();
+			cy.findByLabelText('I have read and agree', { exact: false }).click({ force: true });
 
 			// Expect the error messages not to be present
 			cy.contains('You must agree to the Kiva Terms of Use and Privacy Policy.').should('not.exist');
@@ -78,7 +78,7 @@ describe('RegisterSocial', () => {
 			// Check the terms checkbox
 			cy.findByLabelText('First name', { exact: false }).type('Test');
 			cy.findByLabelText('Last name', { exact: false }).type('Tester');
-			cy.findByLabelText('I have read and agree', { exact: false }).click();
+			cy.findByText('I have read and agree', { exact: false }).click();
 
 			// Expect the error messages not to be present
 			cy.contains('Enter first name.').should('not.exist');

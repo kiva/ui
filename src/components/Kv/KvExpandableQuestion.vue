@@ -7,7 +7,7 @@
 				{{ title }}
 			</h3>
 			<kv-material-icon
-				class="tw-h-4"
+				class="tw-w-4 tw-h-4"
 				@click="open = !open"
 				:icon="open ? mdiChevronUp : mdiChevronDown"
 			/>

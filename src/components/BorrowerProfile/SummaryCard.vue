@@ -1,6 +1,8 @@
 <template>
 	<section class="
+		tw-pb-0
 		md:tw-bg-primary
+		md:tw-pb-2.5
 		tw-py-2.5 md:tw-p-3 lg:tw-p-4
 		md:tw-rounded-t lg:tw-rounded"
 	>
@@ -44,19 +46,34 @@
 			:status="status"
 			:use="use"
 		/>
-		<div class="tw-flex-auto tw-inline-flex">
+		<div class="tw-flex-auto tw-inline-flex tw-w-full">
 			<summary-tag v-if="countryName">
 				<kv-material-icon
-					class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
+					class="tw-h-2.5 tw-w-2.5 tw-mr-0.5 tw-shrink-0"
 					:icon="mdiMapMarker"
 				/>
-				{{ formattedLocation }}
+				<span class="tw-flex-1">
+					{{ formattedLocation }}
+				</span>
 			</summary-tag>
 
 			<summary-tag v-if="activityName">
 				{{ activityName }}
 			</summary-tag>
+
+			<!-- only show option to bookmark loan if user is logged in -->
+			<loan-bookmark
+				v-if="isLoggedIn"
+				:loan-id="loanId"
+				class="tw-hidden lg:tw-inline-flex tw-ml-auto tw-items-center"
+			/>
 		</div>
+		<!-- only show option to bookmark loan if user is logged in -->
+		<loan-bookmark
+			v-if="isLoggedIn"
+			:loan-id="loanId"
+			class="md:tw-hidden"
+		/>
 	</section>
 </template>
 
@@ -70,6 +87,7 @@ import BorrowerName from './BorrowerName';
 import LoanProgress from './LoanProgress';
 import LoanUse from './LoanUse';
 import SummaryTag from './SummaryTag';
+import LoanBookmark from './LoanBookmark';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
@@ -80,6 +98,7 @@ export default {
 		LoanProgress,
 		LoanUse,
 		SummaryTag,
+		LoanBookmark,
 	},
 	metaInfo() {
 		return {
@@ -103,6 +122,8 @@ export default {
 	},
 	data() {
 		return {
+			isLoggedIn: false,
+			loanId: 0,
 			activityName: '',
 			borrowerCount: 0,
 			countryName: '',
@@ -196,9 +217,11 @@ export default {
 						status
 						unreservedAmount @client
 						use
-						... on LoanDirect {
-							businessName
-						}
+					}
+				}
+				my {
+					userAccount {
+						id
 					}
 				}
 			}
@@ -216,6 +239,8 @@ export default {
 		},
 		result(result) {
 			const loan = result?.data?.lend?.loan;
+			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
+			this.loanId = loan?.id ?? 0;
 			this.activityName = loan?.activity?.name ?? '';
 			this.borrowerCount = loan?.borrowerCount ?? 0;
 			this.businessName = loan?.businessName ?? '';

@@ -1,4 +1,4 @@
-const log = require('./log');
+const { log } = require('./log');
 
 module.exports = {
 	getFromCache: (key, cache) => {

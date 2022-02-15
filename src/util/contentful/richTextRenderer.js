@@ -32,21 +32,24 @@ function htmlSafeStringify(value) {
  * @returns {object} RTF object containing RTF nodes without trailing empty <p> tag
  */
 export function removeTrailingParagraphTag(content) {
-	// Remove empty <p> inserted by contentful
-	const innerContent = content.content;
-	const lastRTFElement = innerContent[innerContent.length - 1];
+	if (content) {
+		// Remove empty <p> inserted by contentful
+		const innerContent = content?.content;
+		const lastRTFElement = innerContent[innerContent.length - 1];
 
-	const contentWithoutTrailingEmptyParagraph = { ...content };
+		const contentWithoutTrailingEmptyParagraph = { ...content };
 
-	// If last item is an empty paragraph, which contains an empty text node, remove it
-	if (lastRTFElement.nodeType === 'paragraph'
-		&& Object.keys(lastRTFElement.data).length === 0
-		&& lastRTFElement.content.length === 1
-		&& lastRTFElement.content?.[0]?.value === ''
-		&& lastRTFElement.content?.[0]?.nodeType === 'text') {
-		contentWithoutTrailingEmptyParagraph.content = contentWithoutTrailingEmptyParagraph.content.slice(0, -1);
+		// If last item is an empty paragraph, which contains an empty text node, remove it
+		if (lastRTFElement.nodeType === 'paragraph'
+			&& Object.keys(lastRTFElement.data).length === 0
+			&& lastRTFElement.content.length === 1
+			&& lastRTFElement.content?.[0]?.value === ''
+			&& lastRTFElement.content?.[0]?.nodeType === 'text') {
+			contentWithoutTrailingEmptyParagraph.content = contentWithoutTrailingEmptyParagraph.content.slice(0, -1);
+		}
+		return contentWithoutTrailingEmptyParagraph;
 	}
-	return contentWithoutTrailingEmptyParagraph;
+	return content;
 }
 
 /**
@@ -68,6 +71,7 @@ export function richTextRenderer(content) {
 		if (isImage) {
 			return `
 			<kv-contentful-img
+				class="tw-whitespace-normal"
 				contentful-src="${encodeURI(contentfulAssetObject?.file?.url)}"
 				alt="${contentfulAssetObject?.description}"
 				height="${contentfulAssetObject?.file?.details?.image?.height}"
@@ -118,6 +122,7 @@ export function richTextRenderer(content) {
 			const sourceSets = responsiveImageSetSourceSets(formattedResponsiveImageSet);
 			const sourceSetArrayAsString = htmlSafeStringify(sourceSets);
 			return `<kv-contentful-img
+						class="tw-whitespace-normal"
 						contentful-src="${encodeURI(sourceSets[0].url)}"
 						width="${sourceSets[0].width}"
 						height="${sourceSets[0].height}"
@@ -138,9 +143,6 @@ export function richTextRenderer(content) {
 			},
 			[BLOCKS.EMBEDDED_ASSET]: node => {
 				return assetRenderer(node?.data?.target?.fields);
-			},
-			[BLOCKS.DOCUMENT]: (node, next) => {
-				return `<div class="tw-prose tw-whitespace-pre-wrap">${next(node.content)}</div>`;
 			},
 		}
 	};

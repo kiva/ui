@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<signup-waitlist v-if="!isEligibleForCausesSignup || !isBeta" />
-		<signup-form v-if="isEligibleForCausesSignup && isBeta" :cause="cause" />
+		<signup-waitlist v-if="!isEligibleForCausesSignup" />
+		<signup-form v-if="isEligibleForCausesSignup" :cause="cause" />
 	</div>
 </template>
 
@@ -70,10 +70,6 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, { route }) {
-			// TODO temporary beta query param
-			if (route.query.beta !== 'true') {
-				return Promise.resolve({});
-			}
 			return client.query({
 				query: authenticationQuery,
 				fetchPolicy: 'network-only',
@@ -92,28 +88,21 @@ export default {
 		}
 	},
 	created() {
-		// TODO temporary beta query param
-		if (this.$route.query.beta === 'true') {
-			try {
-				const pageQueryResult = this.apollo.readQuery({
-					query: pageQuery,
-				});
-				this.isMonthlyGoodSubscriber = pageQueryResult?.my?.autoDeposit?.isSubscriber ?? false;
-				this.hasAutoDeposits = pageQueryResult?.my?.autoDeposit ?? false;
-				const legacySubs = pageQueryResult?.my?.subscriptions?.values ?? [];
-				this.hasLegacySubscription = legacySubs.length > 0;
-				this.hasMadeLoan = pageQueryResult?.my?.lender?.loanCount > 0;
-				this.mySubscriptions = pageQueryResult?.mySubscriptions?.values ?? [];
-			} catch (e) {
-				logReadQueryError(e, 'Causes Signup causesSignupEligibilityQuery');
-			}
+		try {
+			const pageQueryResult = this.apollo.readQuery({
+				query: pageQuery,
+			});
+			this.isMonthlyGoodSubscriber = pageQueryResult?.my?.autoDeposit?.isSubscriber ?? false;
+			this.hasAutoDeposits = pageQueryResult?.my?.autoDeposit ?? false;
+			const legacySubs = pageQueryResult?.my?.subscriptions?.values ?? [];
+			this.hasLegacySubscription = legacySubs.length > 0;
+			this.hasMadeLoan = pageQueryResult?.my?.lender?.loanCount > 0;
+			this.mySubscriptions = pageQueryResult?.mySubscriptions?.values ?? [];
+		} catch (e) {
+			logReadQueryError(e, 'Causes Signup causesSignupEligibilityQuery');
 		}
 	},
 	computed: {
-		// Temporary query param feature flag
-		isBeta() {
-			return this.$route.query.beta === 'true';
-		},
 		isEligibleForCausesSignup() {
 			/** A user is eligible if:
 			* no existing MG subscription

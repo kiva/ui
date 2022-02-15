@@ -51,30 +51,27 @@
 				@read-more-link="updateDetailedLoanIndex"
 				@track-loan-card-interaction="trackInteraction"
 			/>
-			<div class="action-row">
-				<div class="action-button-container" :class="{'full-width': isFunded || isExpired}">
-					<action-button
-						class="hover-loan-card-action-button"
-						:loan-id="loan.id"
-						:loan="loan"
-						:items-in-basket="itemsInBasket"
-						:is-lent-to="loan.userProperties.lentTo"
-						:is-funded="isFunded"
-						:is-expired="isExpired"
-						:is-selected-by-another="isSelectedByAnother"
-						:is-simple-lend-button="true"
-						:hide-adding-to-basket-text="true"
-						:minimal-checkout-button="true"
+			<div class="tw-gap-1 tw-flex tw-w-full">
+				<action-button
+					class="tw-py-1 tw-px-0 tw-m-0 tw-w-2/4 tw-shrink-0"
+					:loan-id="loan.id"
+					:loan="loan"
+					:items-in-basket="itemsInBasket"
+					:is-lent-to="loan.userProperties.lentTo"
+					:is-funded="isFunded"
+					:is-expired="isExpired"
+					:is-selected-by-another="isSelectedByAnother"
+					:is-simple-lend-button="true"
+					:minimal-checkout-button="true"
 
-						@click.native="trackInteraction({
-							interactionType: 'addToBasket',
-							interactionElement: 'Lend25'
-						})"
+					@click.native="trackInteraction({
+						interactionType: 'addToBasket',
+						interactionElement: 'Lend25'
+					})"
 
-						@add-to-basket="handleAddToBasket"
-					/>
-				</div>
-				<div v-if="!isMatchAtRisk" class="matching-text-container" :class="{hide: isFunded || isExpired}">
+					@add-to-basket="handleAddToBasket"
+				/>
+				<div v-if="!isMatchAtRisk" class="tw-mt-1" :class="{hide: isFunded || isExpired}">
 					<matching-text
 						:matching-text="loan.matchingText"
 						:match-ratio="loan.matchRatio"
@@ -211,29 +208,6 @@ export default {
 		.flag {
 			width: rem-calc(20);
 			margin-right: 0.25rem;
-		}
-
-		.action-row {
-			display: flex;
-
-			.action-button-container {
-				width: rem-calc(126);
-				flex-shrink: 0;
-
-				.hover-loan-card-action-button {
-					margin: 0;
-					font-size: rem-calc(18);
-					padding: 0.5rem 1.5rem;
-				}
-
-				&.full-width {
-					width: 100%;
-				}
-			}
-
-			.matching-text-container {
-				padding-left: 1rem;
-			}
 		}
 	}
 

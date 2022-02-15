@@ -1,4 +1,4 @@
-import { differenceInMilliseconds } from 'date-fns';
+import { differenceInMilliseconds, sub } from 'date-fns';
 import _get from 'lodash/get';
 import _over from 'lodash/over';
 import * as Sentry from '@sentry/vue';
@@ -9,6 +9,14 @@ const isServer = typeof window === 'undefined';
 // only require auth0-js if we are not in a server environment
 const auth0js = !isServer ? require('auth0-js') : null;
 
+export const KIVA_ID_KEY = 'https://www.kiva.org/kiva_id';
+export const LAST_LOGIN_KEY = 'https://www.kiva.org/last_login';
+export const USED_MFA_KEY = 'https://www.kiva.org/used_mfa';
+const FAKE_AUTH_NAME = 'kvfa';
+const ALLOWED_FAKE_AUTH_DOMAINS = [
+	'login.dev.kiva.org',
+	'login.stage.kiva.org',
+];
 const SYNC_NAME = 'kvls';
 const LOGOUT_VALUE = 'o';
 const COOKIE_OPTIONS = { path: '/', secure: true };
@@ -36,6 +44,7 @@ export default class KvAuth0 {
 	constructor({
 		accessToken = '',
 		audience,
+		checkFakeAuth = false,
 		clientID,
 		cookieStore,
 		domain,
@@ -49,7 +58,10 @@ export default class KvAuth0 {
 		this.user = user;
 		this.accessToken = accessToken;
 		this.isServer = isServer;
+		this.checkFakeAuth = !!checkFakeAuth;
 		this.cookieStore = cookieStore;
+		this.clientID = clientID;
+		this.domain = domain;
 		if (!this.isServer) {
 			// Setup Auth0 WebAuth client for authentication
 			this.webAuth = new auth0js.WebAuth({
@@ -69,6 +81,15 @@ export default class KvAuth0 {
 				responseType: 'token',
 				scope: 'enroll read:authenticators remove:authenticators',
 			});
+		}
+
+		if (this.fakeAuthAllowed()) {
+			// Set user from fake auth cookie if available
+			const idTokenPayload = this.getFakeIdTokenPayload();
+			if (idTokenPayload) {
+				this[setAuthData]({ idTokenPayload });
+				this[noteLoggedIn]();
+			}
 		}
 	}
 
@@ -126,24 +147,72 @@ export default class KvAuth0 {
 
 	// Return the kiva id for the current user (or undefined)
 	getKivaId() {
-		const kivaIdKey = 'https://www.kiva.org/kiva_id';
-		return _get(this, `user["${kivaIdKey}"]`)
-			|| _get(this, `user._json["${kivaIdKey}"]`);
+		return _get(this, `user["${KIVA_ID_KEY}"]`)
+			|| _get(this, `user._json["${KIVA_ID_KEY}"]`);
 	}
 
 	// Return the last login timestamp for the current user (or 0)
 	getLastLogin() {
-		const lastLoginKey = 'https://www.kiva.org/last_login';
-		return _get(this, `user["${lastLoginKey}"]`)
-			|| _get(this, `user._json["${lastLoginKey}"]`)
+		return _get(this, `user["${LAST_LOGIN_KEY}"]`)
+			|| _get(this, `user._json["${LAST_LOGIN_KEY}"]`)
 			|| 0;
 	}
 
 	isMfaAuthenticated() {
-		const usedMfaKey = 'https://www.kiva.org/used_mfa';
-		return _get(this, `user["${usedMfaKey}"]`)
-			|| _get(this, `user._json["${usedMfaKey}"]`)
+		return _get(this, `user["${USED_MFA_KEY}"]`)
+			|| _get(this, `user._json["${USED_MFA_KEY}"]`)
 			|| false;
+	}
+
+	// Return true iff fake auth should be checked and fake auth is allowed for the current domain
+	fakeAuthAllowed() {
+		return this.checkFakeAuth && ALLOWED_FAKE_AUTH_DOMAINS.includes(this.domain);
+	}
+
+	getFakeAuthCookieValue() {
+		if (!this.checkFakeAuth) return;
+
+		const cookieValue = this.cookieStore.get(FAKE_AUTH_NAME) ?? '';
+
+		const cookieParts = cookieValue.split(':');
+		const userId = parseInt(cookieParts[0], 10);
+
+		if (userId) {
+			const scopes = (cookieParts[1] ?? '').split('/').filter(x => x);
+
+			return { userId, scopes };
+		}
+	}
+
+	getFakeIdTokenPayload() {
+		const { userId, scopes } = this.getFakeAuthCookieValue() ?? {};
+
+		if (userId) {
+			try {
+				let lastLogin;
+				const now = new Date();
+				if (scopes.includes('recent')) {
+					// current time
+					lastLogin = now.getTime();
+				} else if (scopes.includes('active')) {
+					// current time - 5:01
+					lastLogin = sub(now, { minutes: 5, seconds: 1 }).getTime();
+				} else {
+					// current time - 1:00:01
+					lastLogin = sub(now, { hours: 1, seconds: 1 }).getTime();
+				}
+
+				return {
+					[KIVA_ID_KEY]: userId,
+					[LAST_LOGIN_KEY]: lastLogin,
+					[USED_MFA_KEY]: scopes.includes('mfa'),
+					scopes,
+				};
+			} catch (e) {
+				console.error(e);
+				Sentry.captureException(e);
+			}
+		}
 	}
 
 	getSyncCookieValue() {
@@ -352,6 +421,8 @@ export const MockKvAuth0 = {
 	getKivaId: () => undefined,
 	getLastLogin: () => 0,
 	getMfaEnrollToken: () => Promise.resolve({}),
+	getFakeAuthCookieValue: () => undefined,
+	getFakeIdTokenPayload: () => undefined,
 	getSyncCookieValue: () => null,
 	isNotedLoggedIn: () => false,
 	isNotedLoggedOut: () => false,

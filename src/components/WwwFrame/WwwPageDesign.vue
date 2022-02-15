@@ -102,7 +102,7 @@
 											class="tw-inline-flex tw-gap-1"
 										>
 											<span>Type</span>
-											<kv-material-icon class="tw-w-2" :icon="mdiEmailOutline" />
+											<kv-material-icon class="tw-w-2 tw-h-2" :icon="mdiEmailOutline" />
 										</a>
 									</li>
 								</ul>

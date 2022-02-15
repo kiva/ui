@@ -2,7 +2,6 @@
 	<www-page
 		class="security-login-page"
 		:gray-background="true"
-		:header-theme="greenHeader"
 	>
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
@@ -33,14 +32,8 @@ import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSeconda
 import Password from '@/components/Settings/Password';
 import TwoStepVerification from '@/components/Settings/TwoStepVerification';
 import TwoStepFaq from '@/components/Settings/TwoStepFaq';
-import { greenHeader } from '@/util/siteThemes';
 
 export default {
-	data() {
-		return {
-			greenHeader
-		};
-	},
 	components: {
 		KvDefaultWrapper,
 		WwwPage,

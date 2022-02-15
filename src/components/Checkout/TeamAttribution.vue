@@ -74,7 +74,7 @@ export default {
 	},
 	methods: {
 		updateLoanReservation() {
-			if (this.selectedId !== this.loanId) {
+			if (this.selectedId !== this.teamId) {
 				this.$emit('updating-totals', true);
 				const updatedTeamId = numeral(this.selectedId).value();
 
