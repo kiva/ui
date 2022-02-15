@@ -64,16 +64,7 @@ export default {
 				return preFetchAll([component], client, args);
 			});
 		},
-		result({ data }) {
-			// Setup unbounce event trigger which is restricted to non-logged-in and unknown users
-			this.hasEverLoggedIn = data?.hasEverLoggedIn ?? true;
-			// Check for hasEverLoggedIn
-			if (!this.hasEverLoggedIn) {
-				// push data object if eligible + assigned
-				if (typeof window !== 'undefined') {
-					window.dataLayer.push({ event: 'activateUnbounceEvent' });
-				}
-			}
+		result() {
 			// Mobile Causes homepage experiment (GD-205)
 			const causesHomeExp = this.apollo.readFragment({
 				id: 'Experiment:home_mobile_causes',

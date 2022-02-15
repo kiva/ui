@@ -14,12 +14,14 @@
 import '@/assets/scss/tailwind/tailwind.css';
 import TheTipMessage from '@/components/WwwFrame/TheTipMessage';
 import webmanifest from '@/manifest.webmanifest';
+import unbounceEventMixin from '@/plugins/unbounce-event-mixin';
 
 export default {
 	name: 'App',
 	components: {
 		TheTipMessage,
 	},
+	mixins: [unbounceEventMixin],
 	metaInfo() {
 		return {
 			title: 'Loans that change lives',

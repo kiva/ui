@@ -5,6 +5,7 @@ export default [
 		component: () => import('@/pages/Homepage/Homepage'),
 		meta: {
 			contentfulPage: () => 'home',
+			unbounce: true,
 		},
 	},
 	{ path: '/homepage-classic', redirect: '/' },
@@ -96,7 +97,13 @@ export default [
 		},
 	},
 	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/DonateFromMacro') },
-	{ path: '/donate/supportus', component: () => import('@/pages/Donate/DonateSupportUs') },
+	{
+		path: '/donate/supportus',
+		component: () => import('@/pages/Donate/DonateSupportUs'),
+		meta: {
+			unbounce: true,
+		},
+	},
 	{ path: '/error', component: () => import('@/pages/Error') },
 	{ path: '/flss', component: () => import('@/pages/FlssPrototypes/SampleLoanDisplay') },
 	{ path: '/funded/:id', component: () => import('@/pages/BorrowerProfile/fundedBorrowerProfile') },
@@ -145,13 +152,35 @@ export default [
 			},
 		]
 	},
-	{ path: '/lend-by-category', component: () => import('@/pages/Lend/LendByCategoryPage') },
-	{ path: '/lend-by-category/:category', component: () => import('@/pages/Lend/LoanChannelCategoryPage') },
-	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
+	{
+		path: '/lend-by-category',
+		component: () => import('@/pages/Lend/LendByCategoryPage'),
+		meta: {
+			unbounce: true,
+		},
+	},
+	{
+		path: '/lend-by-category/:category',
+		component: () => import('@/pages/Lend/LoanChannelCategoryPage'),
+		meta: {
+			unbounce: true,
+		},
+	},
+	{
+		path: '/lend/filter',
+		component: () => import('@/pages/Lend/Filter/LendFilterPage'),
+		meta: {
+			unbounce: true,
+		},
+	},
 	{ path: '/lend/filter-alpha', component: () => import('@/pages/Lend/FilterAlpha/LendFilterAlpha') },
-
-	{ path: '/lend-beta/:id', component: () => import('@/pages/BorrowerProfile/BorrowerProfile') },
-
+	{
+		path: '/lend-beta/:id',
+		component: () => import('@/pages/BorrowerProfile/BorrowerProfile'),
+		meta: {
+			unbounce: true,
+		},
+	},
 	{
 		path: '/lp/:dynamicRoute',
 		component: () => import('@/pages/ContentfulPage'),
@@ -162,7 +191,10 @@ export default [
 	{
 		path: '/monthlygood',
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage'),
-		props: route => ({ category: route.query.category })
+		props: route => ({ category: route.query.category }),
+		meta: {
+			unbounce: true,
+		},
 	},
 	{
 		path: '/monthlygood/setup',
@@ -331,7 +363,13 @@ export default [
 			activeLoginRequired: true,
 		}
 	},
-	{ path: '/start', component: () => import('@/pages/Search/SentenceSearch') },
+	{
+		path: '/start',
+		component: () => import('@/pages/Search/SentenceSearch'),
+		meta: {
+			unbounce: true,
+		},
+	},
 	{
 		path: '/start-verification',
 		component: () => import('@/pages/StartVerification'),
