@@ -325,7 +325,7 @@ export default {
 			});
 		},
 		valueHeadline() {
-			return this.valueText?.headline ?? 'Automatically support borrower picked for you.';
+			return this.valueText?.subHeadline ?? 'Automatically support borrowers picked for you.';
 		},
 		valueBody() {
 			// eslint-disable-next-line max-len
