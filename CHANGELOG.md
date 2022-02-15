@@ -1,3 +1,10 @@
+## [2.70.0-next.1](https://github.com/kiva/ui/compare/v2.69.6...v2.70.0-next.1) (2022-02-15)
+
+
+### Features
+
+* modifies cause hp experiment to include non mobile users as well ([0d5a7c0](https://github.com/kiva/ui/commit/0d5a7c085a7c98171786b079c0c42aa5791cd2d0))
+
 ### [2.69.6](https://github.com/kiva/ui/compare/v2.69.5...v2.69.6) (2022-02-14)
 
 
