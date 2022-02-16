@@ -9,7 +9,11 @@ export default {
 
 		// Set cookie to disabled unbounce for future visits
 		if (utmEmailMedium) {
-			this.cookieStore.set('kvutm_medium_email', true);
+			this.cookieStore.set(
+				'kvutm_medium_email',
+				true,
+				{ expires: new Date(new Date().setFullYear(new Date().getFullYear() + 2)) }
+			);
 		}
 
 		const utmEmailMediumCookie = this.cookieStore.get('kvutm_medium_email');
