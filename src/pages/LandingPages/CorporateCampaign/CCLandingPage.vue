@@ -183,6 +183,7 @@
 					:show-donation="isMatchingCampaign || lendingRewardOffered"
 					:auto-redirect-to-thanks="false"
 					:promo-fund="promoFund"
+					@credit-removed="handleCreditRemoved"
 					@transaction-complete="transactionComplete"
 					@refresh-totals="refreshTotals"
 					ref="inContextCheckoutRef"
