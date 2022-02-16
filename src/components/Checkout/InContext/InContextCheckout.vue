@@ -22,6 +22,7 @@
 			class="in-context-checkout__order-totals"
 			:totals="totals"
 			:promo-fund="derivedPromoFund"
+			@credit-removed="$emit('credit-removed')"
 			@refreshtotals="$emit('refresh-totals')"
 			@updating-totals="setUpdatingTotals"
 		/>
@@ -70,10 +71,10 @@ import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
-import KvButton from '@/components/Kv/KvButton';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import OrderTotals from '@/components/Checkout/OrderTotals';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	inject: ['apollo', 'cookieStore'],

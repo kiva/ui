@@ -294,7 +294,9 @@ export default {
 			this.$emit('updating-totals', state);
 		},
 		handleCreditRemoved() {
+			this.promoOptOutLightboxVisible = false;
 			this.$emit('refreshtotals');
+			this.$emit('credit-removed');
 			this.$router.push(this.$route.path); // remove promo query param from url
 		}
 	}
