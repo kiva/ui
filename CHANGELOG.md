@@ -1,3 +1,10 @@
+### [2.71.3](https://github.com/kiva/ui/compare/v2.71.2...v2.71.3) (2022-02-16)
+
+
+### Bug Fixes
+
+* **FakeAuthentication:** set auth domain from server entry ([1a43a48](https://github.com/kiva/ui/commit/1a43a4860f87ca0934f800dd220edb657fe2da37))
+
 ### [2.71.2](https://github.com/kiva/ui/compare/v2.71.1...v2.71.2) (2022-02-16)
 
 
