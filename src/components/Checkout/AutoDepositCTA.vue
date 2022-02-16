@@ -8,9 +8,9 @@
 			>
 		</div>
 		<h2 class="auto-deposit-cta__headline">
-			Finish your<br> auto-deposit sign up
+			{{ headline }}
 		</h2>
-		<p v-if="bodyCopy" class="auto-deposit-cta__subhead">
+		<p v-if="bodyCopy" class="auto-deposit-cta__subhead tw-text-left">
 			{{ bodyCopy }}
 		</p>
 		<hr class="tw-my-4">
@@ -165,18 +165,18 @@ export default {
 		// TODO: Implement Contentful Driven Content
 		headline: {
 			type: String,
-			default: 'Finish your auto-deposit sign up'
+			default: 'Never forget to lend'
 		},
 		// TODO: Implement Contentful Driven Content
 		bodyCopy: {
 			type: String,
 			// eslint-disable-next-line max-len
-			default: ''
+			default: 'Do more good by setting aside money each month. It’s easy to set up and you get to choose every borrower you support.'
 		},
 		// TODO: Implement Contentful Driven Content
 		buttonText: {
 			type: String,
-			default: 'Complete auto-deposit'
+			default: 'Join today'
 		}
 
 	},
