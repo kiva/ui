@@ -1,3 +1,10 @@
+### [2.71.2](https://github.com/kiva/ui/compare/v2.71.1...v2.71.2) (2022-02-16)
+
+
+### Bug Fixes
+
+* ensure promo credit opt-out is removed after removing credit ([bce07a1](https://github.com/kiva/ui/commit/bce07a1e5e48ac5e5dee1b54700fc652f1d4dc34))
+
 ### [2.71.1](https://github.com/kiva/ui/compare/v2.71.0...v2.71.1) (2022-02-15)
 
 
