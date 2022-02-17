@@ -3,9 +3,9 @@
 		<router-link
 			to="/monthlygood"
 			class="tw-inline-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-font-medium"
-			v-kv-track-event="['TopNav','click-Find-a-Cause', 'Find a cause']"
+			@click="trackMgLinkClick"
 		>
-			Find a cause
+			{{ mgLinkText }}
 			<kv-material-icon :icon="mdiArrowRight" class="tw-w-3 tw-h-3" />
 		</router-link>
 		<div
@@ -252,6 +252,10 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		swapMgLinkCopy: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -279,6 +283,9 @@ export default {
 		},
 		openRegions() {
 			return this.regions.filter(region => this.isOpenSection(region.name));
+		},
+		mgLinkText() {
+			return this.swapMgLinkCopy ? 'Lend monthly' : 'Find a cause';
 		}
 	},
 	methods: {
@@ -298,6 +305,13 @@ export default {
 		closeSection() {
 			this.openedSection = '';
 		},
+		trackMgLinkClick() {
+			if (this.swapMgLinkCopy) {
+				this.$kvTrackEvent('TopNav', 'click-Lend-Menu-Monthly-Good', 'Lend monthly');
+			} else {
+				this.$kvTrackEvent('TopNav', 'click-Find-a-Cause', 'Find a cause');
+			}
+		}
 	},
 };
 </script>

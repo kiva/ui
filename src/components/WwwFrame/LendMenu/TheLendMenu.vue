@@ -10,6 +10,7 @@
 			:user-id="userId"
 			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
+			:swap-mg-link-copy="swapLendMenuMgCopy"
 		/>
 		<lend-mega-menu
 			ref="mega"
@@ -21,6 +22,7 @@
 			:user-id="userId"
 			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
+			:swap-mg-link-copy="swapLendMenuMgCopy"
 		/>
 	</div>
 </template>
@@ -71,7 +73,8 @@ export default {
 			],
 			loadingSemaphore: 0,
 			isRegionsLoading: true,
-			isChannelsLoading: true
+			isChannelsLoading: true,
+			swapLendMenuMgCopy: false,
 		};
 	},
 	apollo: {
@@ -169,6 +172,21 @@ export default {
 				this.onOpen();
 			});
 		}
+
+		// CORE-392 fetch link swap setting
+		this.apollo.query({
+			query: gql`query mgLinkText {
+				general {
+					mg_link_text: uiConfigSetting(key: "lend_menu_mg_link_swap") {
+						key
+						value
+					}
+				}
+			}`
+		}).then(({ data }) => {
+			const swapLendMenuMgCopySetting = data?.general?.lend_menu_mg_link?.value ?? false;
+			this.swapLendMenuMgCopy = swapLendMenuMgCopySetting === 'true';
+		});
 	}
 };
 </script>
