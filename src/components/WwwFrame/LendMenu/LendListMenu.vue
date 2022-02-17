@@ -3,9 +3,9 @@
 		<router-link
 			to="/monthlygood"
 			class="tw-inline-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-border-b tw-border-tertiary tw-font-medium"
-			v-kv-track-event="['TopNav','click-Find-a-Cause', 'Find a cause']"
+			@click="trackMgLinkClick"
 		>
-			Find a cause
+			{{ mgLinkText }}
 			<kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiArrowRight" />
 		</router-link>
 
@@ -201,6 +201,10 @@ export default {
 			type: Boolean,
 			default: true,
 		},
+		swapMgLinkCopy: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -212,6 +216,9 @@ export default {
 		hasSearches() {
 			return this.searches.length > 0;
 		},
+		mgLinkText() {
+			return this.swapMgLinkCopy ? 'Lend monthly' : 'Find a cause';
+		}
 	},
 	methods: {
 		onClose() {
@@ -230,6 +237,13 @@ export default {
 			// close saved search accordions
 			if (this.hasSearches && this.$refs.searches) {
 				this.$refs.searches.collapse();
+			}
+		},
+		trackMgLinkClick() {
+			if (this.swapMgLinkCopy) {
+				this.$kvTrackEvent('TopNav', 'click-Lend-Menu-Monthly-Good', 'Lend monthly');
+			} else {
+				this.$kvTrackEvent('TopNav', 'click-Find-a-Cause', 'Find a cause');
 			}
 		}
 	},
