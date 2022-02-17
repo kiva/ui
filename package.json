@@ -13,6 +13,7 @@
 		"inspect-dev": "cross-env NODE_ENV=development node --inspect --max-old-space-size=4096 server/dev-server.js",
 		"inspect": "cross-env NODE_ENV=production node --inspect --max-old-space-size=4096 server/index.js",
 		"build": "rimraf dist && node --max-old-space-size=4096 build/build.js",
+		"build:vm": "rimraf dist && node --max-old-space-size=2048 build/build.js",
 		"build:cypress": "rimraf dist && node --max-old-space-size=4096 build/build.cypress.js",
 		"build:report": "rimraf dist/client-bundle-stats.json && rimraf dist/static && node --max-old-space-size=4096 build/build.report.js",
 		"build:report-webpack": "webpack --config build/webpack.client.report.conf.js --progress=profile",
