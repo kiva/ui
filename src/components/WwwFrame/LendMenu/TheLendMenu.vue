@@ -184,7 +184,7 @@ export default {
 				}
 			}`
 		}).then(({ data }) => {
-			const swapLendMenuMgCopySetting = data?.general?.lend_menu_mg_link?.value ?? false;
+			const swapLendMenuMgCopySetting = data?.general?.mg_link_text?.value ?? false;
 			this.swapLendMenuMgCopy = swapLendMenuMgCopySetting === 'true';
 		});
 	}
