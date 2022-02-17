@@ -1,3 +1,16 @@
+## [2.72.0](https://github.com/kiva/ui/compare/v2.71.3...v2.72.0) (2022-02-17)
+
+
+### Features
+
+* provide setting to swap copy for mg link in lend menu ([8cf4489](https://github.com/kiva/ui/commit/8cf44894b4ff0bc89b98895f47ce631644e02078))
+* v2 of thanks auto-deposit upsell. required moving thanks data setup into created ([35a9810](https://github.com/kiva/ui/commit/35a9810e12d9c290235c71b99e78649319c7fe95))
+
+
+### Bug Fixes
+
+* replicate deep styles for mg hero contentful image ([95675cd](https://github.com/kiva/ui/commit/95675cdb0d1c3e888a6f4fe03edef539efa0bb3e))
+
 ### [2.71.3](https://github.com/kiva/ui/compare/v2.71.2...v2.71.3) (2022-02-16)
 
 
