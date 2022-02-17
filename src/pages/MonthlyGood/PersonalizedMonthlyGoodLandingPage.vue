@@ -335,3 +335,16 @@ export default {
 	}
 };
 </script>
+
+<style lang="scss" scoped>
+@import "settings";
+
+.hero.mg-hero {
+	::v-deep .kv-contentful-img,
+	::v-deep .kv-contentful-img__img {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+}
+</style>
