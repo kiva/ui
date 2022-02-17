@@ -97,6 +97,17 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			email
 			inviterName
 		}
+		subscriptions {
+			values {
+				id
+			}
+		}
+	}
+	general {
+		autoDepositUpsellSetting: uiExperimentSetting(key: "thanks_ad_upsell") {
+			key
+			value
+		}
 	}
 	# mySubscriptions(includeDisabled: false) {
 	# 	values {

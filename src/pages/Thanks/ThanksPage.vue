@@ -18,17 +18,26 @@
 					<template v-if="receipt">
 						<div
 							v-if="!isAutoDepositSubscriber && showAutoDepositUpsell"
-							class="thanks_header-image tw-hidden md:tw-block"
+							class="thanks_header-image tw-hidden md:tw-block tw-mb-3"
 						>
 							<img :src="imageRequire(`./high-five.svg`)" class="tw-mx-auto" alt="high fiving hands">
 						</div>
-						<h1 v-if="!isAutoDepositSubscriber && showAutoDepositUpsell" class="thanks__header-h1 tw-mb-4">
-							Let’s set up your auto-deposit now!
-						</h1>
-						<h1 v-else class="thanks__header-h1 tw-mb-4">
+						<h1
+							class="thanks__header-h1 tw-mb-3"
+							:class="{
+								'tw-text-h2': showAutoDepositUpsell
+							}"
+						>
 							Thank you!
 						</h1>
-						<p v-if="loans.length > 0" class="thanks__header-subhead tw-text-subhead tw-mb-2">
+						<p
+							v-if="loans.length > 0"
+							class="thanks__header-subhead"
+							:class="{
+								'tw-text-base tw-mb-0': showAutoDepositUpsell,
+								'tw-text-subhead tw-mb-2': !showAutoDepositUpsell
+							}"
+						>
 							Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
 						</p>
 						<p v-if="lender.email" class="hide-for-print">
@@ -60,6 +69,9 @@
 			:show-auto-deposit-upsell="!isAutoDepositSubscriber && showAutoDepositUpsell && !hasModernSub"
 			:show-guest-upsell="isGuest"
 			:show-share="loans.length > 0"
+			:class="{
+				'tw-mt-4': showAutoDepositUpsell
+			}"
 		>
 			<template #receipt>
 				<checkout-receipt
@@ -99,7 +111,8 @@ import confetti from 'canvas-confetti';
 import gql from 'graphql-tag';
 import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
-
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import GuestUpsell from '@/components/Checkout/GuestUpsell';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
@@ -148,6 +161,7 @@ export default {
 	data() {
 		return {
 			autoDepositUpsellCookie: null,
+			autoDepositUpsellExpVersion: null,
 			imageRequire,
 			lender: {},
 			loans: [],
@@ -165,77 +179,33 @@ export default {
 		};
 	},
 	apollo: {
-		query: thanksPageQuery,
-		preFetch: true,
-		preFetchVariables({ cookieStore, route }) {
-			return {
-				checkoutId: numeral(route.query.kiva_transaction_id).value(),
-				visitorId: cookieStore.get('uiv') || null,
-			};
-		},
-		variables() {
-			return {
-				checkoutId: numeral(this.$route.query.kiva_transaction_id).value(),
-				visitorId: this.cookieStore.get('uiv') || null,
-			};
-		},
-		result(result) {
-			const { data } = result;
-
-			this.lender = {
-				...(data?.my?.userAccount ?? {}),
-				teams: data?.my?.teams?.values?.map(value => value.team) ?? [],
-			};
-
-			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
-			const hasAutoDeposit = data?.my?.autoDeposit?.id ?? false;
-			this.isAutoDepositSubscriber = !!(hasAutoDeposit && !this.isMonthlyGoodSubscriber);
-
-			// TOOD: Re-enable in preFetch once all envs have this endpoint
-			// const modernSubscriptions = data?.mySubscriptions?.values ?? [];
-			// this.hasModernSub = modernSubscriptions.length !== 0;
-
-			// The default empty object and the v-if will prevent the
-			// receipt from rendering in the rare cases this query fails.
-			// But it will not throw a server error.
-			this.receipt = data?.shop?.receipt ?? null;
-			this.isGuest = this.receipt && !data?.my?.userAccount;
-
-			const loansResponse = this.receipt?.items?.values ?? [];
-			this.loans = loansResponse
-				.filter(item => item.basketItemType === 'loan_reservation')
-				.map(item => item.loan);
-
-			if (!this.isGuest && !data?.my?.userAccount) {
-				logFormatter(
-					`Failed to get lender for transaction id: ${this.$route.query.kiva_transaction_id}`,
-					'error',
-					{ result }
-				);
-			}
-			if (!this.receipt) {
-				logFormatter(
-					`Failed to get receipt for transaction id: ${this.$route.query.kiva_transaction_id}`,
-					'error',
-					{ result }
-				);
-			}
-
-			// check for auto deposit upsell
-			if (!this.isAutoDepositSubscriber) {
-				this.autoDepositUpsellCookie = this.cookieStore.get('kv-show-ad-signup') || null;
-			} else {
-				try {
-					this.cookieStore.remove('kv-show-ad-signup');
-				} catch (e) {
-					// noop
+		preFetch(config, client, { cookieStore, route }) {
+			return client.query({
+				query: thanksPageQuery,
+				variables: {
+					checkoutId: numeral(route.query.kiva_transaction_id).value(),
+					visitorId: cookieStore.get('uiv') || null,
 				}
-			}
-
-			// Check for contentful content
-			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
-			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
-		},
+			}).then(({ data }) => {
+				const isLoggedIn = data?.my?.userAccountId?.id !== null;
+				const hasAutoDeposit = data?.my?.autoDeposit !== null;
+				const hasLegacySubs = data?.my?.subscriptions?.values?.length !== 0;
+				const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+				const hasModernSub = modernSubscriptions.length !== 0;
+				const upsellEligible = isLoggedIn && !hasAutoDeposit && !hasLegacySubs && !hasModernSub;
+				// if eligible run experiment query
+				if (upsellEligible) {
+					return client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_ad_upsell' } });
+				}
+				return data;
+			}).catch(errorResponse => {
+				logFormatter(
+					'Thanks page preFetch failed: ',
+					'error',
+					{ errorResponse }
+				);
+			});
+		}
 	},
 	computed: {
 		borrowerSupport() {
@@ -263,7 +233,7 @@ export default {
 		},
 		showAutoDepositUpsell() {
 			// Check cookie and eligibility before showing
-			if (!this.isGuest && this.autoDepositUpsellCookie) {
+			if (!this.isGuest && this.autoDepositUpsellExpVersion === 'b') {
 				return true;
 			}
 			return false;
@@ -271,16 +241,90 @@ export default {
 	},
 	created() {
 		// extract mySubscriptions query so we can guard with try catch
-		let mySubsCheck = {};
 		try {
-			mySubsCheck = this.apollo.readQuery({
+			this.apollo.query({
 				query: mySubscriptionsQuery,
+			}).then(({ data }) => {
+				const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+				this.hasModernSub = modernSubscriptions.length !== 0;
 			});
-
-			const modernSubscriptions = mySubsCheck?.mySubscriptions?.values ?? [];
-			this.hasModernSub = modernSubscriptions.length !== 0;
 		} catch (e) {
 			logReadQueryError(e, 'Thanks mySubscriptions query');
+		}
+
+		// Retrieve and apply Page level data + experiment state
+		let data = {};
+		try {
+			data = this.apollo.readQuery({
+				query: thanksPageQuery,
+				variables: {
+					checkoutId: numeral(this.$route.query.kiva_transaction_id).value(),
+					visitorId: this.cookieStore.get('uiv') || null,
+				}
+			});
+		} catch (e) {
+			logReadQueryError(e, 'Thanks Page Data');
+		}
+
+		this.lender = {
+			...(data?.my?.userAccount ?? {}),
+			teams: data?.my?.teams?.values?.map(value => value.team) ?? [],
+		};
+
+		this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
+		const hasAutoDeposit = data?.my?.autoDeposit?.id ?? false;
+		this.isAutoDepositSubscriber = !!(hasAutoDeposit && !this.isMonthlyGoodSubscriber);
+
+		const isLoggedIn = data?.my?.userAccountId?.id !== null;
+		const hasLegacySubs = data?.my?.subscriptions?.values?.length !== 0;
+		const upsellEligible = isLoggedIn && !hasAutoDeposit && !hasLegacySubs && !this.hasModernSub;
+
+		// The default empty object and the v-if will prevent the
+		// receipt from rendering in the rare cases this query fails.
+		// But it will not throw a server error.
+		this.receipt = data?.shop?.receipt ?? null;
+		this.isGuest = this.receipt && !data?.my?.userAccount;
+
+		const loansResponse = this.receipt?.items?.values ?? [];
+		this.loans = loansResponse
+			.filter(item => item.basketItemType === 'loan_reservation')
+			.map(item => item.loan);
+
+		if (!this.isGuest && !data?.my?.userAccount) {
+			logFormatter(
+				`Failed to get lender for transaction id: ${this.$route.query.kiva_transaction_id}`,
+				'error',
+				{ data }
+			);
+		}
+		if (!this.receipt) {
+			logFormatter(
+				`Failed to get receipt for transaction id: ${this.$route.query.kiva_transaction_id}`,
+				'error',
+				{ data }
+			);
+		}
+
+		// Check for contentful content
+		const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
+		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
+
+		// Check for upsell eligibility and experiment state
+		if (upsellEligible) {
+			// CORE-427 Thanks auto deposit upsell experiment
+			const autoDepositUpsellExp = this.apollo.readFragment({
+				id: 'Experiment:thanks_ad_upsell',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.autoDepositUpsellExpVersion = autoDepositUpsellExp.version;
+			if (this.autoDepositUpsellExpVersion) {
+				this.$kvTrackEvent(
+					'Thanks',
+					'EXP-CORE-427-Feb-2022',
+					this.autoDepositUpsellExpVersion,
+				);
+			}
 		}
 	},
 	mounted() {
