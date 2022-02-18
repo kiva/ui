@@ -1,3 +1,10 @@
+### [2.72.1](https://github.com/kiva/ui/compare/v2.72.0...v2.72.1) (2022-02-18)
+
+
+### Bug Fixes
+
+* update address of date from query for mg lend menu setting ([a7eb5f0](https://github.com/kiva/ui/commit/a7eb5f0c2398991e1ffc326fffe0ddfdd7ea8dfd))
+
 ## [2.72.0](https://github.com/kiva/ui/compare/v2.71.3...v2.72.0) (2022-02-17)
 
 
