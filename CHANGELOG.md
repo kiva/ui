@@ -1,3 +1,10 @@
+### [2.72.2](https://github.com/kiva/ui/compare/v2.72.1...v2.72.2) (2022-02-18)
+
+
+### Bug Fixes
+
+* lend button spacing ([7f9bd27](https://github.com/kiva/ui/commit/7f9bd274feb443995f9203a7441692b78c9172e2))
+
 ### [2.72.1](https://github.com/kiva/ui/compare/v2.72.0...v2.72.1) (2022-02-18)
 
 
