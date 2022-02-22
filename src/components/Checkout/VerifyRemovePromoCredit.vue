@@ -18,12 +18,14 @@
 				variant="secondary"
 				v-kv-track-event="['promoCampaign', 'Cancel Promo Opt-out Button']"
 				@click="closeLightbox"
+				data-testid="remove-promo-cancel-opt-out"
 			>
 				Cancel
 			</kv-button>
 			<kv-button
 				v-kv-track-event="['promoCampaign', 'Promo Opt-out Button']"
 				@click="removePromoCredit"
+				data-testid="remove-promo-credit-confirmation"
 			>
 				Remove Credit
 			</kv-button>

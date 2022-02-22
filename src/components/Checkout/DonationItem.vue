@@ -5,6 +5,7 @@
 			<img class="donation-img tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
 				:src="imageRequire(`./peace-sign-holding-money.svg`)"
 				alt="donation line item image"
+				data-testid="basket-donation-image"
 			>
 		</div>
 
@@ -12,11 +13,15 @@
 		<div class="tw-flex-auto">
 			<div class="tw-mb-0.5">
 				<div class="tw-w-full tw-flex">
-					<h2 class="tw-flex-1 md:tw-flex-grow tw-text-h3">
+					<h2
+						class="tw-flex-1 md:tw-flex-grow tw-text-h3"
+						data-testid="basket-donation-title"
+					>
 						{{ donationTitle }}
 					</h2>
 					<button
 						class="donation-amount md:tw-hidden tw-flex-none tw-align-middle"
+						data-testid="basket-donation-edit-button"
 						v-kv-track-event="['basket', 'Edit Donation']"
 						@click="enterEditDonation"
 						title="Edit Donation"
@@ -42,6 +47,7 @@
 				>
 					<button
 						class="donation-amount"
+						data-testid="basket-donation-edit-button"
 						v-kv-track-event="['basket', 'Edit Donation']"
 						@click="enterEditDonation"
 						title="Edit Donation"
@@ -64,10 +70,15 @@
 				</div>
 
 				<div v-if="hasLoans">
-					<div class="donation-tagline tw-text-small tw-text-secondary tw-my-1" v-html="donationTagLine">
+					<div
+						class="donation-tagline tw-text-small tw-text-secondary tw-my-1"
+						data-testid="basket-donation-tagline"
+						v-html="donationTagLine"
+					>
 					</div>
 					<button
 						class="tw-text-small tw-text-link"
+						data-testid="basket-donation-info-lightbox"
 						@click="triggerDefaultLightbox"
 						v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
 					>
@@ -93,6 +104,7 @@
 			>
 				<button
 					class="donation-amount"
+					data-testid="basket-donation-edit-button"
 					v-kv-track-event="['basket', 'Edit Donation']"
 					@click="enterEditDonation"
 					title="Edit Donation"
@@ -116,6 +128,7 @@
 			<div v-show="editDonation" class="small-12 columns donation-amount-input-wrapper">
 				<kv-text-input
 					class="donation-amount-input"
+					data-testid="basket-donation-edit-input"
 					name="donation"
 					id="donation"
 					v-model="amount"
@@ -125,6 +138,7 @@
 				<kv-button
 					variant="secondary"
 					class="update-donation-inline-button"
+					data-testid="basket-donation-edit-submit"
 					@click="updateDonation()"
 				>
 					Update
@@ -132,6 +146,7 @@
 				<button
 					class="show-for-medium remove-wrapper"
 					@click="updateLoanAmount('remove')"
+					data-testid="basket-donation-remove"
 				>
 					<kv-material-icon
 						class="remove-x tw-text-tertiary"
@@ -168,6 +183,7 @@
 			:visible="defaultLbVisible"
 			@lightbox-closed="lightboxClosed"
 			title="How does Kiva use donations?"
+			data-testid="basket-donation-how-kiva-uses-lightbox"
 		>
 			<div class="tw-prose">
 				<p>

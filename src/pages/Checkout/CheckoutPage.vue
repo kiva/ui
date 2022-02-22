@@ -1,6 +1,6 @@
 <template>
 	<www-page>
-		<div id="checkout-slim" class="row page-content">
+		<div id="checkout-slim" class="row page-content" data-testid="checkout">
 			<div class="columns">
 				<div v-if="!emptyBasket" class="basket-wrap" :class="{'pre-login': !preCheckoutStep}">
 					<div>
@@ -60,6 +60,7 @@
 							</div>
 
 							<order-totals
+								data-testid="order-totals-section"
 								:totals="totals"
 								@refreshtotals="refreshTotals"
 								@updating-totals="setUpdatingTotals"
@@ -77,6 +78,7 @@
 											@complete-transaction="completeTransaction"
 											class=" checkout-button"
 											id="kiva-credit-payment-button"
+											data-testid="kiva-credit-payment-button"
 										/>
 									</form>
 
@@ -103,6 +105,7 @@
 										class="guest-checkout-button checkout-button"
 										variant="secondary"
 										id="guest-checkout-button"
+										data-testid="guest-checkout-button"
 										v-kv-track-event="['basket', 'click-guest-checkout-cta', 'Checkout as guest']"
 										@click="guestCheckout"
 									>
@@ -113,6 +116,7 @@
 										v-if="!guestCheckoutCTAExpActive"
 										class="checkout-button"
 										id="login-to-continue-button"
+										data-testid="login-to-continue-button"
 										v-kv-track-event="['basket', 'click-register-cta', 'Continue']"
 										@click="loginToContinue"
 										:href="'/ui-login?force=true&doneUrl=/checkout'"
@@ -125,6 +129,7 @@
 										class="checkout-button"
 										variant="secondary"
 										id="create-account-continue-button"
+										data-testid="create-account-continue-button"
 										v-kv-track-event="['basket', 'click-register-cta', 'Create an account']"
 										@click="loginToContinue"
 										:href="'/ui-login?force=true&doneUrl=/checkout'"
@@ -136,6 +141,7 @@
 										v-if="eligibleForGuestCheckout && guestCheckoutCTAExpActive"
 										class="checkout-button"
 										id="guest-checkout-exp-button"
+										data-testid="guest-checkout-exp-button"
 										v-kv-track-event="['basket', 'click-guest-checkout-cta', 'Continue as guest']"
 										@click="guestCheckout"
 									>
@@ -154,6 +160,7 @@
 										href="/login?force=true&amp;loginHint=login&amp;doneUrl=checkout"
 										v-kv-track-event="['basket', 'click-sign—in-cta', 'Sign in here']"
 										title="Sign in here"
+										data-testid="sign-in-button"
 									>Sign in here</a>
 								</div>
 							</div>
@@ -161,6 +168,7 @@
 
 						<kv-loading-overlay
 							v-if="updatingTotals"
+							data-testid="updating-overlay"
 							id="updating-overlay"
 							class="updating-totals-overlay"
 						/>
@@ -181,6 +189,7 @@
 						<kv-button
 							class="checkout-button"
 							id="Continue-to-legacy-button"
+							data-testid="continue-to-legacy-button"
 							v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
 							@click="redirectToLegacy"
 						>
@@ -190,7 +199,7 @@
 				</kv-lightbox>
 			</div>
 		</div>
-		<div v-if="emptyBasket" class="empty-basket">
+		<div v-if="emptyBasket" class="empty-basket" data-testid="empty-basket">
 			<div class="row display-align tw-text-center">
 				<div class="columns small-12 tw-mb-4">
 					<h1 class="empty-basket-heading tw-text-h2 tw-mb-2">
@@ -199,19 +208,24 @@
 					<p class="tw-mb-2">
 						But we'd love to help you change that! Please consider
 						supporting one of the borrowers below, or
-						<router-link to="/lend-by-category">
+						<router-link to="/lend-by-category" data-testid="empty-basket-loans-link">
 							browse all loans
 						</router-link>.
 					</p>
 				</div>
 			</div>
 
-			<div class="empty-basket-loans">
+			<div class="empty-basket-loans" data-testid="empty-basket-loans">
 				<random-loan-selector
 					@updating-totals="setUpdatingTotals"
 					@refreshtotals="refreshTotals"
 				/>
-				<kv-loading-overlay v-if="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
+				<kv-loading-overlay
+					v-if="updatingTotals"
+					data-testid="updating-overlay"
+					id="updating-overlay"
+					class="updating-totals-overlay"
+				/>
 			</div>
 		</div>
 	</www-page>

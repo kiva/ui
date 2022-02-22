@@ -10,6 +10,7 @@
 					tw-font-medium tw-text-left md:tw-text-right tw-mr-2
 					tw-cursor-pointer"
 				@click="toggleCheckbox"
+				data-testid="basket-donation-repayments-button"
 				aria-hidden="true"
 			>
 				Donate loan repayments instead?
@@ -47,6 +48,7 @@
 			<button
 				class="tw-text-link tw-text-left md:tw-text-right tw-w-full"
 				@click="isLightboxVisible = true;"
+				data-testid="basket-donation-repayments-lightbox"
 				v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
 			>
 				Learn more
