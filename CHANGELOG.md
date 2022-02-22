@@ -1,3 +1,10 @@
+## [2.74.0](https://github.com/kiva/ui/compare/v2.73.0...v2.74.0) (2022-02-22)
+
+
+### Features
+
+* kvanalytics plugin was updated to work as an isolated plugin ([796055f](https://github.com/kiva/ui/commit/796055f9f65df60bfea159469313807440ec9550))
+
 ## [2.73.0](https://github.com/kiva/ui/compare/v2.72.2...v2.73.0) (2022-02-22)
 
 
