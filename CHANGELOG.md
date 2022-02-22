@@ -1,3 +1,12 @@
+## [2.73.0](https://github.com/kiva/ui/compare/v2.72.2...v2.73.0) (2022-02-22)
+
+
+### Features
+
+* add cookie expiration to 2 years ([30f2599](https://github.com/kiva/ui/commit/30f2599050c5d1f20bb9e4007c93bd3813e5deea))
+* add unbounce capture to additional routes ([c5ac4db](https://github.com/kiva/ui/commit/c5ac4dba1bb81a3e0d77f74938f236d77196dc86))
+* do not fire unbounce event if utm_medium is email ([081a4fb](https://github.com/kiva/ui/commit/081a4fbef3312c1b821ac1d75563c7cf2d8d5f1d))
+
 ### [2.72.2](https://github.com/kiva/ui/compare/v2.72.1...v2.72.2) (2022-02-18)
 
 
