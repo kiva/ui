@@ -1,12 +1,11 @@
 <template>
 	<div
-		class="tw-flex tw-flex-col tw-h-full tw-w-full"
+		id="app"
+		class="tw-h-full tw-bg-primary"
 	>
-		<div id="app" class="tw-bg-primary tw-flex-grow">
-			<router-view />
-			<vue-progress-bar />
-			<the-tip-message />
-		</div>
+		<router-view />
+		<vue-progress-bar />
+		<the-tip-message />
 	</div>
 </template>
 
