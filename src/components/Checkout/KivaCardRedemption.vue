@@ -1,7 +1,7 @@
 <template>
 	<div class="kiva-card-entry-wrapper row">
 		<div class="small-3 large-2 columns">
-			<button @click="toggleAccordion">
+			<button @click="toggleAccordion" data-testid="basket-code-entry-toggle-icon">
 				<kv-icon
 					:class="{ flipped: open }"
 					class="toggle-arrow"
@@ -13,6 +13,7 @@
 		<button
 			class="tw-text-h3 tw-text-left accordion-title small-9 large-10 columns"
 			@click="toggleAccordion"
+			data-testid="basket-code-entry-toggle-text"
 		>
 			Have a Kiva Card?
 		</button>
@@ -27,6 +28,7 @@
 							<label for="kiva_card_input" class="tw-sr-only">Kiva Card Code</label>
 							<kv-text-input
 								id="kiva_card_input"
+								data-testid="basket-code-entry-input"
 								placeholder="ABCD-1234-EFGH-5678"
 								class="kiva-card-input tw-w-full tw-mb-2"
 								v-model="kivaCardCode"
@@ -46,11 +48,13 @@
 							<button
 								class="help-lightbox-trigger tw-text-link tw-font-medium"
 								@click="triggerDefaultLightbox"
+								data-testid="basket-code-entry-help-text-button"
 							>
 								Need help?
 							</button>
 						</div>
 						<kv-lightbox
+							data-testid="basket-code-entry-lightbox"
 							:visible="defaultLbVisible"
 							@lightbox-closed="lightboxClosed"
 							title="Where can I find my Kiva Card code?"
@@ -89,11 +93,16 @@
 						</kv-lightbox>
 
 						<ul class="redemption-items">
-							<li v-for="(credit, index) in credits" :key="index">
+							<li
+								v-for="(credit, index) in credits"
+								:key="index"
+								:data-testid="`basket-code-entry-applied-credit-${index}`"
+							>
 								<span class="heading">Kiva Card value: </span>
 								<span class="value">${{ credit.applied }}</span>
 								<button class="remove-wrapper"
 									@click.prevent.stop="removeCredit('redemption_code', credit.id)"
+									:data-testid="`basket-code-entry-remove-applied-credit-${index}`"
 								>
 									<kv-icon
 										class="remove-x tw-fill-current tw-text-tertiary"

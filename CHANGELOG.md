@@ -1,3 +1,95 @@
+## [2.74.0](https://github.com/kiva/ui/compare/v2.73.0...v2.74.0) (2022-02-22)
+
+
+### Features
+
+* kvanalytics plugin was updated to work as an isolated plugin ([796055f](https://github.com/kiva/ui/commit/796055f9f65df60bfea159469313807440ec9550))
+
+## [2.73.0](https://github.com/kiva/ui/compare/v2.72.2...v2.73.0) (2022-02-22)
+
+
+### Features
+
+* add cookie expiration to 2 years ([30f2599](https://github.com/kiva/ui/commit/30f2599050c5d1f20bb9e4007c93bd3813e5deea))
+* add unbounce capture to additional routes ([c5ac4db](https://github.com/kiva/ui/commit/c5ac4dba1bb81a3e0d77f74938f236d77196dc86))
+* do not fire unbounce event if utm_medium is email ([081a4fb](https://github.com/kiva/ui/commit/081a4fbef3312c1b821ac1d75563c7cf2d8d5f1d))
+
+### [2.72.2](https://github.com/kiva/ui/compare/v2.72.1...v2.72.2) (2022-02-18)
+
+
+### Bug Fixes
+
+* lend button spacing ([7f9bd27](https://github.com/kiva/ui/commit/7f9bd274feb443995f9203a7441692b78c9172e2))
+
+### [2.72.1](https://github.com/kiva/ui/compare/v2.72.0...v2.72.1) (2022-02-18)
+
+
+### Bug Fixes
+
+* update address of date from query for mg lend menu setting ([a7eb5f0](https://github.com/kiva/ui/commit/a7eb5f0c2398991e1ffc326fffe0ddfdd7ea8dfd))
+
+## [2.72.0](https://github.com/kiva/ui/compare/v2.71.3...v2.72.0) (2022-02-17)
+
+
+### Features
+
+* provide setting to swap copy for mg link in lend menu ([8cf4489](https://github.com/kiva/ui/commit/8cf44894b4ff0bc89b98895f47ce631644e02078))
+* v2 of thanks auto-deposit upsell. required moving thanks data setup into created ([35a9810](https://github.com/kiva/ui/commit/35a9810e12d9c290235c71b99e78649319c7fe95))
+
+
+### Bug Fixes
+
+* replicate deep styles for mg hero contentful image ([95675cd](https://github.com/kiva/ui/commit/95675cdb0d1c3e888a6f4fe03edef539efa0bb3e))
+
+### [2.71.3](https://github.com/kiva/ui/compare/v2.71.2...v2.71.3) (2022-02-16)
+
+
+### Bug Fixes
+
+* **FakeAuthentication:** set auth domain from server entry ([1a43a48](https://github.com/kiva/ui/commit/1a43a4860f87ca0934f800dd220edb657fe2da37))
+
+### [2.71.2](https://github.com/kiva/ui/compare/v2.71.1...v2.71.2) (2022-02-16)
+
+
+### Bug Fixes
+
+* ensure promo credit opt-out is removed after removing credit ([bce07a1](https://github.com/kiva/ui/commit/bce07a1e5e48ac5e5dee1b54700fc652f1d4dc34))
+
+### [2.71.1](https://github.com/kiva/ui/compare/v2.71.0...v2.71.1) (2022-02-15)
+
+
+### Bug Fixes
+
+* core-400 altering contentful to read subHeading instead of Headline ([397a104](https://github.com/kiva/ui/commit/397a104a1c9cb06e67981449e505b8ba23b6673d))
+
+## [2.71.0](https://github.com/kiva/ui/compare/v2.70.0...v2.71.0) (2022-02-15)
+
+
+### Features
+
+* modifies cause hp experiment to include non mobile users as well ([9e62299](https://github.com/kiva/ui/commit/9e62299babac4a1832a8ba3a32fdfdd78650491b))
+
+## [2.70.0](https://github.com/kiva/ui/compare/v2.69.6...v2.70.0) (2022-02-14)
+
+
+### Features
+
+* improve employee verification form check and process flow ([edec517](https://github.com/kiva/ui/commit/edec517f498821e8e24ddde182dd68f074fd16cc))
+
+### [2.69.6](https://github.com/kiva/ui/compare/v2.69.5...v2.69.6) (2022-02-14)
+
+
+### Bug Fixes
+
+* update experiment assignment logic flow and tracking ([d036c7e](https://github.com/kiva/ui/commit/d036c7e3ef15d49a13b102c952aa8d9d7b0b12c7))
+
+### [2.69.6](https://github.com/kiva/ui/compare/v2.69.5...v2.69.6) (2022-02-14)
+
+
+### Bug Fixes
+
+* update experiment assignment logic flow and tracking ([d036c7e](https://github.com/kiva/ui/commit/d036c7e3ef15d49a13b102c952aa8d9d7b0b12c7))
+
 ### [2.69.5](https://github.com/kiva/ui/compare/v2.69.4...v2.69.5) (2022-02-14)
 
 

@@ -56,6 +56,7 @@ export default context => {
 				accessToken,
 				checkFakeAuth: config.auth0.checkFakeAuth,
 				cookieStore,
+				domain: config.auth0.domain,
 				user: profile,
 			});
 		} else {

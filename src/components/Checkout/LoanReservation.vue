@@ -13,7 +13,9 @@
 			</p>
 			<!-- Not Reserved -->
 			<p class="loan-message tw-my-1" v-if="loanReservationMsg1">
-				Loan not reserved. <button class="tw-text-link tw-font-medium" @click="triggerDefaultLightbox">
+				Loan not reserved. <button class="tw-text-link tw-font-medium" @click="triggerDefaultLightbox"
+					data-testid="basket-loan-reservation-why"
+				>
 					Why?
 				</button>
 			</p>
@@ -29,6 +31,7 @@
 		<!-- TODO: Replace this lightbox with a Popper tip message. -->
 		<kv-lightbox
 			class="loanNotReservedLightbox"
+			data-testid="basket-loan-why-lightbox"
 			:visible="defaultLbVisible"
 			@lightbox-closed="lightboxClosed"
 			title="What does it mean that my loan is not reserved?"

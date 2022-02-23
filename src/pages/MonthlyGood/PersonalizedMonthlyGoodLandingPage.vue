@@ -234,13 +234,13 @@ export default {
 		result({ data }) {
 			// Core-399 Subscriptions Appeal Personalization Experiment
 			const subscriptionAppealPersonalization = this.apollo.readFragment({
-				id: 'EXP-VUE-399-subscription-appeal-personalization',
+				id: 'Experiment:EXP-VUE-399-subscription-appeal-personalization',
 				fragment: experimentVersionFragment,
 			}) || {};
 
 			if (subscriptionAppealPersonalization.version
 				&& subscriptionAppealPersonalization.version !== 'unassigned'
-				&& this.subscriptionAppealPersonalization === 'shown'
+				&& subscriptionAppealPersonalization.version === 'b'
 			) {
 				this.$kvTrackEvent('MonthlyGood', 'EXP-CORE-399-Feb2022', 'b');
 			}
@@ -325,7 +325,7 @@ export default {
 			});
 		},
 		valueHeadline() {
-			return this.valueText?.headline ?? 'Automatically support borrower picked for you.';
+			return this.valueText?.subHeadline ?? 'Automatically support borrowers picked for you.';
 		},
 		valueBody() {
 			// eslint-disable-next-line max-len
@@ -335,3 +335,16 @@ export default {
 	}
 };
 </script>
+
+<style lang="scss" scoped>
+@import "settings";
+
+.hero.mg-hero {
+	::v-deep .kv-contentful-img,
+	::v-deep .kv-contentful-img__img {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+}
+</style>

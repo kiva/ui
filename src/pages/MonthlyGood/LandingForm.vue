@@ -21,7 +21,7 @@
 			</fieldset>
 			<fieldset class="large-8 medium-7 small-12 columns">
 				<label for="borrower-categories" class="tw-sr-only">Lending category to support</label>
-				<kv-select class="tw-w-full" id="borrower-categories" :value="selectedGroup" @input="updateSelected">
+				<kv-select class="tw-w-full" id="borrower-categories" :value="selectedGroup" @change="updateSelected">
 					<option v-for="(option, index) in lendingCategories" :value="option.value" :key="index">
 						{{ option.label }}
 					</option>

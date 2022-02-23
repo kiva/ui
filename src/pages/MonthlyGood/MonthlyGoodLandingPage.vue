@@ -117,7 +117,11 @@ const pageQuery = gql`
 			}
 		}
 		general {
-			uiExperimentSetting(key: "mg_amount_selector") {
+			mgAmount: uiExperimentSetting(key: "mg_amount_selector") {
+				key
+				value
+			}
+			mgPersonalized: uiExperimentSetting(key: "EXP-VUE-399-subscription-appeal-personalization") {
 				key
 				value
 			}
@@ -212,15 +216,15 @@ export default {
 		result({ data }) {
 			// Core-399 Subscriptions Appeal Personalization Experiment
 			const subscriptionAppealPersonalization = this.apollo.readFragment({
-				id: 'EXP-VUE-399-subscription-appeal-personalization',
+				id: 'Experiment:EXP-VUE-399-subscription-appeal-personalization',
 				fragment: experimentVersionFragment,
 			}) || {};
 			if (subscriptionAppealPersonalization.version
 				&& subscriptionAppealPersonalization.version !== 'unassigned'
 			) {
-				if (this.subscriptionAppealPersonalization === 'shown') {
+				if (subscriptionAppealPersonalization.version === 'b') {
 					// Direct users to new monthly good page here
-					this.$router.push({ path: '/monthlygood/personalized' });
+					this.$router.push({ path: '/monthlygood/personalized' }).catch({});
 				} else {
 					this.$kvTrackEvent('MonthlyGood', 'EXP-CORE-399-Feb2022', 'a');
 				}

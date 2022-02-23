@@ -19,6 +19,7 @@
 					type="email"
 					name="email"
 					v-model="email"
+					data-testid="basket-guest-email-input"
 					id="email"
 					class="fs-exclude tw-mb-2 tw-w-full"
 					@focus="$kvTrackEvent(
@@ -31,6 +32,7 @@
 					Valid email required.
 				</p>
 				<kv-checkbox
+					data-testid="basket-guest-terms-agreement"
 					id="termsAgreement"
 					name="termsAgreement"
 					class="checkbox tw-text-small tw-mb-2"
@@ -60,6 +62,7 @@
 					</p>
 				</kv-checkbox>
 				<kv-checkbox
+					data-testid="basket-guest-email-updates"
 					id="emailUpdates"
 					class="checkbox tw-text-small tw-mb-2"
 					name="emailUpdates"
@@ -80,6 +83,7 @@
 				<kv-button
 					value="submit"
 					id="dropin-submit"
+					data-testid="basket-dropin-submit"
 					class="tw-mb-2"
 					:state="`${!enableCheckoutButton ? 'disabled' : ''}`"
 					@click="submit"

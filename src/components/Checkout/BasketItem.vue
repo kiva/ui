@@ -2,6 +2,7 @@
 	<div v-show="loanVisible" class="basket-item-wrapper tw-flex tw-flex-col md:tw-flex-row tw-pb-5">
 		<div class="tw-hidden md:tw-block tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
 			<checkout-item-img
+				data-testid="basket-loan-image"
 				:disable-link="disableRedirects"
 				:loan-id="loan.id"
 				:name="loan.loan.name"
@@ -9,9 +10,9 @@
 			/>
 		</div>
 		<div class="tw-flex-auto borrower-info-wrapper">
-			<div class="borrower-info">
+			<div class="borrower-info" data-testid="basket-loan-info">
 				<div class="tw-flex tw-mb-0.5">
-					<h2 class="tw-text-h3 tw-flex-grow">
+					<h2 class="tw-text-h3 tw-flex-grow" data-testid="basket-loan-name">
 						{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
 					</h2>
 					<remove-basket-item
@@ -24,11 +25,13 @@
 				</div>
 				<loan-matcher
 					class="tw-mb-1"
+					data-testid="basket-loan-matching-text"
 					v-if="loan.loan.matchingText"
 					:matching-text="loan.loan.matchingText"
 				/>
 				<loan-reservation
 					class="tw-mb-1"
+					data-testid="basket-loan-reservation-text"
 					:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 					:is-funded="loan.isFunded"
 					:expiry-time="loan.expiryTime"
@@ -56,6 +59,7 @@
 			loan-res-price-wrapper"
 		>
 			<loan-price
+				data-testid="basket-loan-price-selector"
 				:price="loan.price"
 				:loan-id="loan.id"
 				type="loan"

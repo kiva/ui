@@ -1,8 +1,9 @@
 <template>
-	<div class="basket-items-list">
+	<div class="basket-items-list" data-testid="basket-items-list">
 		<ul>
-			<li v-for="loan in loans" :key="loan.id">
+			<li v-for="(loan, index) in loans" :key="loan.id">
 				<basket-item
+					:data-testid="`basket-loan-${index}`"
 					:disable-redirects="disableRedirects"
 					:loan="loan"
 					:teams="teams"
@@ -11,15 +12,17 @@
 					@updating-totals="$emit('updating-totals', $event)"
 				/>
 			</li>
-			<li v-for="kivaCard in kivaCards" :key="kivaCard.id">
+			<li v-for="(kivaCard, index) in kivaCards" :key="kivaCard.id">
 				<kiva-card-item
+					:data-testid="`basket-kiva-card-${index}`"
 					:kiva-card="kivaCard"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
 				/>
 			</li>
-			<li v-for="donation in donations" :key="donation.id">
+			<li v-for="(donation, index) in donations" :key="donation.id">
 				<donation-item
+					:data-testid="`basket-donation-${index}`"
 					:donation="donation"
 					:loan-count="loans.length"
 					:loan-reservation-total="loanReservationTotal"

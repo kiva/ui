@@ -4,9 +4,9 @@
 
 <script>
 import gql from 'graphql-tag';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
-import { parseExpCookie } from '@/util/experimentUtils';
 
 const ContentfulPage = () => import('@/pages/ContentfulPage');
 
@@ -39,16 +39,24 @@ export default {
 	apollo: {
 		query: homePageQuery,
 		preFetch(config, client, args) {
-			const assignments = parseExpCookie(args.cookieStore.get('uiab'));
-			if (assignments?.home_mobile_causes?.version === 'shown') {
-				// cancel the promise, returning a route for redirect
-				return Promise.reject({
-					path: '/lp/causes'
-				});
-			}
 			return client.query({
 				query: homePageQuery
-			}).then(() => {
+			}).then(pageQueryResult => {
+				if (!pageQueryResult?.data?.hasEverLoggedIn) {
+					return client.query({
+						query: experimentAssignmentQuery,
+						variables: { id: 'home_mobile_causes' },
+					}).then(expResult => {
+						// Redirect to path: '/lp/causes' if experiment is active
+						if (expResult?.data?.experiment?.version === 'shown') {
+							// cancel the promise, returning a route for redirect
+							return Promise.reject({
+								path: '/lp/causes'
+							});
+						}
+						return ContentfulPage();
+					});
+				}
 				return ContentfulPage();
 			}).then(resolvedImport => {
 				// Call preFetch for the active homepage
@@ -56,54 +64,20 @@ export default {
 				return preFetchAll([component], client, args);
 			});
 		},
-		result({ data }) {
-			// Setup unbounce event trigger which is restricted to non-logged-in and unknown users
-			this.hasEverLoggedIn = data?.hasEverLoggedIn ?? true;
-			// Check for hasEverLoggedIn
-			if (!this.hasEverLoggedIn) {
-				// push data object if eligible + assigned
-				if (typeof window !== 'undefined') {
-					window.dataLayer.push({ event: 'activateUnbounceEvent' });
-				}
+		result() {
+			// Mobile Causes homepage experiment (GD-205)
+			const causesHomeExp = this.apollo.readFragment({
+				id: 'Experiment:home_mobile_causes',
+				fragment: experimentVersionFragment,
+			}) || {};
+			// Fire Event for EXP-GD-205
+			if (causesHomeExp.version && causesHomeExp.version !== 'unassigned') {
+				this.$kvTrackEvent(
+					'Causes',
+					'EXP-GD-205-Jan2022',
+					causesHomeExp.version === 'shown' ? 'b' : 'a',
+				);
 			}
-		}
-	},
-	created() {
-		// Mobile Causes homepage experiment (GD-205)
-		// Only mobile new users are eligible to be in experiment
-		if (this.isMobile && this.isNewUser) {
-			// Assign Experiment
-			this.apollo.query({
-				query: experimentAssignmentQuery,
-				variables: { id: 'home_mobile_causes' }
-			}).then(({ data }) => {
-				// track exp
-				// Fire Event for (GD-205)
-				if (data?.experiment?.version) {
-					this.$kvTrackEvent(
-						'Causes',
-						'EXP-GD-205-Jan2022',
-						data?.experiment?.version === 'shown' ? 'b' : 'a'
-					);
-					if (data?.experiment?.version === 'shown') {
-						// redirect user
-						this.$router.push({
-							path: '/lp/causes'
-						});
-					}
-				}
-			});
-		}
-	},
-	computed: {
-		isMobile() {
-			if (!this.$isServer) {
-				return document?.documentElement?.clientWidth < 735 ?? false;
-			}
-			return false;
-		},
-		isNewUser() {
-			return !this.hasEverLoggedIn;
 		}
 	},
 };

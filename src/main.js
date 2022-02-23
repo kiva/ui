@@ -10,6 +10,7 @@ import App from '@/App';
 import createRouter from '@/router';
 import createApolloClient from '@/api/apollo';
 import kivaPlugins from '@/plugins';
+import kvAnalytics from '@/plugins/kv-analytics-plugin';
 
 // Track if plugins have already been installed (in case this is SSR)
 let pluginsInstalled = false;
@@ -31,6 +32,7 @@ export default function createApp({
 
 		Vue.use(Meta);
 		Vue.use(kivaPlugins);
+		Vue.use(kvAnalytics);
 		Vue.use(Vue2TouchEvents);
 		Vue.use(VueProgressBar, {
 			color: '#26b6e8',

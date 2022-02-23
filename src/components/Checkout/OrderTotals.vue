@@ -1,10 +1,15 @@
 <template>
-	<div class="order-totals">
-		<div v-if="showPromoCreditTotal" class="order-total" data-test="order-total">
+	<div class="order-totals" data-testid="basket-order-totals-section">
+		<div v-if="showPromoCreditTotal" class="order-total" data-test="order-total" data-testid="basket-order-total">
 			<strong>Order Total: <span class="total-value">{{ itemTotal }}</span></strong>
 		</div>
 
-		<div v-if="showKivaCredit" class="kiva-credit tw-font-medium tw-mb-2" data-test="kiva-credit">
+		<div
+			v-if="showKivaCredit"
+			class="kiva-credit tw-font-medium tw-mb-2"
+			data-test="kiva-credit"
+			data-testid="basket-kiva-credit"
+		>
 			<span v-if="showRemoveKivaCredit">
 				Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
 			</span>
@@ -15,6 +20,7 @@
 				v-if="showRemoveKivaCredit"
 				class="remove-credit"
 				@click="removeCredit('kiva_credit')"
+				data-testid="basket-remove-kiva-credit"
 			>
 				<kv-icon
 					class="remove-credit-icon tw-fill-current tw-text-tertiary"
@@ -27,19 +33,21 @@
 				v-if="showApplyKivaCredit"
 				class="apply-credit tw-text-small tw-font-book"
 				@click="addCredit('kiva_credit')"
+				data-testid="basket-apply-kiva-credit"
 			>
 				Apply
 			</button>
 		</div>
 
 		<div v-if="showPromoCreditTotal">
-			<div class="order-total" data-test="promo-total">
+			<div class="order-total" data-test="promo-total" data-testid="basket-promo-total">
 				<template v-if="availablePromoTotal">
 					{{ availablePromoTotal }}
 				</template>
 				<kv-button
 					class="text-link"
 					id="promo_name"
+					data-testid="basket-promo-name"
 					v-if="promoFundDisplayName"
 				>
 					{{ promoFundDisplayName }}
@@ -48,6 +56,7 @@
 					v-if="showRemoveActivePromoCredit"
 					class="remove-credit"
 					@click="promoOptOutLightboxVisible = true"
+					data-testid="basket-remove-active-promo"
 				>
 					<kv-icon
 						class="remove-credit-icon tw-fill-current tw-text-tertiary"
@@ -60,10 +69,11 @@
 					v-if="showApplyActivePromoCredit"
 					class="apply-credit tw-text-small"
 					@click="applyPromoCredit"
+					data-testid="basket-apply-active-promo"
 				>
 					Apply
 				</button>
-				<div v-if="hasUPCCode" class="upc-disclaimer">
+				<div v-if="hasUPCCode" class="upc-disclaimer" data-testid="basket-upc-promo-disclaimer">
 					<p class="tw-text-small">
 						Remember to use all your {{ promoFundDisplayName }} credits in one transaction.
 						You cannot use the remaining credits later.
@@ -84,12 +94,13 @@
 			<strong>
 				<template v-if="!showPromoCreditTotal">Total: </template>
 				<template v-else>Total Due: </template>
-				<span class="total-value">{{ creditAmountNeeded }}</span>
+				<span class="total-value" data-testid="basket-total-due-amount">{{ creditAmountNeeded }}</span>
 			</strong>
 		</div>
 
 		<!-- Warn about removing promo credit -->
 		<verify-remove-promo-credit
+			data-testid="basket-remove-promo-verification"
 			:visible="promoOptOutLightboxVisible"
 			:applied-promo-total="appliedPromoTotal"
 			:promo-fund-display-name="promoFundDisplayName"
@@ -294,7 +305,9 @@ export default {
 			this.$emit('updating-totals', state);
 		},
 		handleCreditRemoved() {
+			this.promoOptOutLightboxVisible = false;
 			this.$emit('refreshtotals');
+			this.$emit('credit-removed');
 			this.$router.push(this.$route.path); // remove promo query param from url
 		}
 	}
