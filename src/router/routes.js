@@ -384,6 +384,7 @@ export default [
 	{ path: '/styleguide/*', redirect: '/styleguide' },
 	{ path: '/ui-site-map', component: () => import('@/pages/UiSiteMap/UiSiteMapPage') },
 	{ path: '/UI_REVISION', component: () => import('@/pages/UiRevision') },
+	{ path: '/ub1', component: () => import('@/pages/LandingPages/Unbounce/UB1') },
 	// These are Demo Pages
 	{
 		path: '/algolia-vue',
