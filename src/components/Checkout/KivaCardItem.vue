@@ -1,7 +1,7 @@
 <template>
 	<div class="basket-item-wrapper tw-flex tw-flex-col md:tw-flex-row tw-pb-5">
 		<div class="tw-hidden md:tw-block tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
-			<div class="kiva-card-icon">
+			<div class="kiva-card-icon" data-testid="basket-kiva-card-image-container">
 				<!-- Print Kiva Card -->
 				<img
 					v-if="cardType == 'print'"
@@ -30,22 +30,23 @@
 			<div class="kiva-card-info">
 				<div class="tw-flex tw-mb-0.5">
 					<!-- Print Kiva Card -->
-					<h2 class="tw-text-h3" v-if="cardType == 'print'">
+					<h2 class="tw-text-h3" v-if="cardType == 'print'" data-testid="basket-kiva-card-title">
 						Print-it-yourself Kiva Card
 						<span v-if="quantity > 1">({{ quantity }})</span>
 					</h2>
 					<!-- Postal Kiva Card -->
-					<h2 class="tw-text-h3" v-if="cardType == 'postal'">
+					<h2 class="tw-text-h3" v-if="cardType == 'postal'" data-testid="basket-kiva-card-title">
 						Postal delivery Kiva Card
 						<span v-if="quantity > 1">({{ quantity }})</span>
 					</h2>
 					<!-- Email Kiva Card -->
-					<h2 class="tw-text-h3" v-if="cardType == 'email'">
+					<h2 class="tw-text-h3" v-if="cardType == 'email'" data-testid="basket-kiva-card-title">
 						Email delivery Kiva Card
 					</h2>
 
 					<a
 						class="tw-flex-none tw-mr-auto tw-ml-1"
+						data-testid="basket-kiva-card-edit-button"
 						style="margin-top: 0.25rem;"
 						:href="formedEditUrl"
 						v-kv-track-event="['basket', 'Edit Kiva Card', cardType]"
@@ -68,16 +69,16 @@
 				<div class="tw-text-secondary">
 					<!-- Print Kiva Card -->
 					<div v-if="cardType == 'print'">
-						<p class="tw-text-small tw-mb-1">
+						<p class="tw-text-small tw-mb-1" data-testid="basket-kiva-card-info-1">
 							Available after checkout
 						</p>
-						<p class="tw-text-small tw-mb-1" v-if="recipientName">
+						<p class="tw-text-small tw-mb-1" v-if="recipientName" data-testid="basket-kiva-card-info-2">
 							For {{ recipientName }}
 						</p>
 					</div>
 					<!-- Postal Kiva Card -->
 					<div v-if="cardType == 'postal'">
-						<p class="tw-text-small tw-mb-1">
+						<p class="tw-text-small tw-mb-1" data-testid="basket-kiva-card-info-1">
 							{{ mailingFirstName }}
 							{{ mailingLastName }}
 							{{ mailingStreet }}
@@ -88,10 +89,10 @@
 					</div>
 					<!-- Email Kiva Card -->
 					<div v-if="cardType == 'email'">
-						<p class="tw-text-small tw-mb-1">
+						<p class="tw-text-small tw-mb-1" data-testid="basket-kiva-card-info-1">
 							Scheduled to be sent  {{ deliveryDate }}
 						</p>
-						<p class="tw-text-small tw-mb-1">
+						<p class="tw-text-small tw-mb-1" data-testid="basket-kiva-card-info-2">
 							For {{ recipientName }} {{ recipientEmail }}
 						</p>
 					</div>
@@ -110,6 +111,7 @@
 		>
 			<!-- Kiva card amount dropdown section -->
 			<loan-price
+				data-testid="basket-kiva-card-price-selector"
 				:ids-in-group="kivaCard.idsInGroup"
 				:price="kivaCard.individualPrice"
 				type="kivaCard"

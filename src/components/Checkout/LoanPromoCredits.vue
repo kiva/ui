@@ -3,7 +3,7 @@
 		<template
 			v-for="(promoCredit, index) in appliedPromoCredits"
 		>
-			<div class="tw-text-small tw-text-secondary" :key="index">
+			<div class="tw-text-small tw-text-secondary" :key="index" data-testid="basket-loan-promo-credit">
 				<span class="promo-tags__item-credit tw-text-brand-1000 tw-bg-secondary">
 					<strong>{{ promoCredit.amount }} credit applied</strong>
 				</span>

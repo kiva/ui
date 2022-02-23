@@ -10,6 +10,7 @@
 		<kv-lightbox
 			:visible="visible && verificationState === 'required'"
 			class="verification-required"
+			data-testid="basket-verification-lightbox"
 			title="Verify your email"
 			@lightbox-closed="close"
 		>
@@ -19,13 +20,14 @@
 			<p class="tw-mb-4">
 				Once we verify your account, you can continue checking out!
 			</p>
-			<kv-button v-if="!sending" @click.native="send">
+			<kv-button v-if="!sending" @click.native="send" data-testid="basket-verification-send-button">
 				Send verification link
 			</kv-button>
 			<kv-loading-spinner class="sending-spinner" v-else />
 		</kv-lightbox>
 
 		<kv-lightbox
+			data-testid="basket-verification-pending-lightbox"
 			:visible="visible && verificationState === 'pending'"
 			class="verification-pending"
 			title="Verification link sent"
@@ -37,7 +39,7 @@
 			<p class="tw-mb-4">
 				After receiving the email, follow the link provided to continue checking out with your Kiva Credit.
 			</p>
-			<kv-button v-if="!sending" @click.native="send">
+			<kv-button v-if="!sending" @click.native="send" data-testid="basket-verification-resend-button">
 				Resend email
 			</kv-button>
 			<kv-loading-spinner class="sending-spinner" v-else />
