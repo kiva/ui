@@ -37,11 +37,11 @@
 					name="termsAgreement"
 					class="checkbox tw-text-small tw-mb-2"
 					v-model="termsAgreement"
-					@change="$kvTrackEvent(
+					@update:modelValue="$kvTrackEvent(
 						'basket',
 						'click-terms-of-use',
 						'I have read and agree to the Terms of Use and Privacy Policy.',
-						termsAgreement ? 1 : 0
+						$event ? 1 : 0
 					)"
 				>
 					I have read and agree to the
@@ -67,13 +67,12 @@
 					class="checkbox tw-text-small tw-mb-2"
 					name="emailUpdates"
 					v-model="emailUpdates"
-					@change="$kvTrackEvent(
+					@update:modelValue="$kvTrackEvent(
 						'basket',
 						'click-marketing-updates',
 						'Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.', // eslint-disable-line
-						emailUpdates ? 1 : 0
+						$event ? 1 : 0
 					)"
-					:checked="true"
 				>
 					Receive email updates from Kiva (including borrower updates
 					and promos). You can unsubscribe anytime.

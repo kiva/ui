@@ -21,7 +21,7 @@
 				data-testid="donate-repayments"
 				v-if="!myDonateRepayments"
 				v-model="donateRepayments"
-				@change="toggleDonateRepayments"
+				@update:modelValue="setDonateRepayments"
 			>
 				<span
 					id="donate-repayments-tooltip"

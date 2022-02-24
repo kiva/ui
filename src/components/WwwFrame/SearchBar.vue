@@ -12,7 +12,7 @@
 			ref="input"
 			name="queryString"
 			:icon="mdiMagnify"
-			:value="displayTerm"
+			:model-value="displayTerm"
 			:can-clear="true"
 			class="tw-w-full"
 			@input="onInput"
