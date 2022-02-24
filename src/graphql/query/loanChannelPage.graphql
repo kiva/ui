@@ -13,10 +13,4 @@ query loanChannelPage {
 			}
 		}
 	}
-	general {
-		addToBasketPopup: uiExperimentSetting(key: "add_to_basket_v2") {
-			key
-			value
-		}
-	}
 }
