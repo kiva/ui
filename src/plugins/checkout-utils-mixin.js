@@ -114,36 +114,42 @@ export default {
 		/* Handle Various errors from GraphQL
 		 * @param {Object} errorResponse contains errors node with array of errors
 		 */
-		showCheckoutError(errorResponse, ignoreAuth = false) {
+		showCheckoutError(errorResponse = [], ignoreAuth = false) {
 			checkInjections(this, injections);
 
 			// const errors = _get(errorResponse, 'errors');
 			let errorMessages = '';
 			// When validation or checkout fails and errors object is returned along with the data
-			errorResponse.forEach(({ error, value }) => {
-				let errorMessage = value;
+			errorResponse.forEach(({
+				error,
+				value,
+				extension,
+				message
+			}) => {
+				let errorMessage = value || message;
+				const errorType = error || extension?.code;
 
 				/* eslint-disable max-len */
 				// update error messages for new checkout context (Original messages reference a different user flow)
-				if (error === 'ERROR_OWN_LOAN') {
+				if (errorType === 'ERROR_OWN_LOAN') {
 					// Original Message: As a Kiva borrower, you cannot support your own fundraising loan on Kiva.  Please go back to the basket to remove your loan.
 					errorMessage = 'As a Kiva borrower, you cannot support your own fundraising loan on Kiva. Please remove your loan before completing checkout.';
 				}
-				if (error === 'ERROR_OVER_DAILY_LIMIT') {
+				if (errorType === 'ERROR_OVER_DAILY_LIMIT') {
 					// Original Message: You can not purchase more than $2,000 of Kiva Codes per day. Please click the back button amd remove Kiva Card(s)
 					errorMessage = 'You can not purchase more than $2,000 of Kiva Codes per day. Please remove the Kiva Card(s) from your basket.';
 				}
 				/* eslint-enable max-len */
 
-				if (error === 'api.authenticationRequired' && ignoreAuth) {
+				if (errorType === 'api.authenticationRequired' && ignoreAuth) {
 					return;
 				}
 
 				// Log validation errors
-				Sentry.captureException(`${error}:${value}`);
+				Sentry.captureException(`${errorType}:${errorMessage}`);
 
 				// Show the verification lightbox if basket is not verified, and don't show a tip message
-				if (error === 'basket_requires_verification') {
+				if (errorType === 'basket_requires_verification') {
 					this.apollo.mutate({ mutation: showVerificationLightbox });
 					return;
 				}
