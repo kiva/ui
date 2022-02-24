@@ -206,7 +206,7 @@ module.exports = {
 							// node_modules will not use this project's babel config; they will use their own babel
 							// config file, or no config at all if they do not have one.
 							babelrc: false,
-							configFile: resolve('.babelrc'),
+							configFile: resolve('babel.config.js'),
 						},
 					},
 				],
