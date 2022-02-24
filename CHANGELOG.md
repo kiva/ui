@@ -1,3 +1,10 @@
+### [2.74.1](https://github.com/kiva/ui/compare/v2.74.0...v2.74.1) (2022-02-23)
+
+
+### Bug Fixes
+
+* use change event to ensure bound events in the parent are triggered ([51f05f3](https://github.com/kiva/ui/commit/51f05f338cde4adc72950bb29fb0fdfcc3b3813d))
+
 ## [2.74.0](https://github.com/kiva/ui/compare/v2.73.0...v2.74.0) (2022-02-22)
 
 
