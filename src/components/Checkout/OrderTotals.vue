@@ -107,7 +107,7 @@
 			:active-credit-type="activeCreditType"
 			@credit-removed="handleCreditRemoved"
 			@updating-totals="setUpdating($event)"
-			@lightbox-closed="promoOptOutLightboxVisible = false"
+			@promo-opt-out-lightbox-closed="promoOptOutLightboxVisible = false"
 		/>
 	</div>
 </template>
