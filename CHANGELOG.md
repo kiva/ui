@@ -1,3 +1,10 @@
+### [2.74.2](https://github.com/kiva/ui/compare/v2.74.1...v2.74.2) (2022-02-25)
+
+
+### Bug Fixes
+
+* ensure kiva credit checkout errors bubble up and show a toast message ([6444182](https://github.com/kiva/ui/commit/64441827121a2358223c2af54da5f6ce450d5748))
+
 ### [2.74.1](https://github.com/kiva/ui/compare/v2.74.0...v2.74.1) (2022-02-23)
 
 
