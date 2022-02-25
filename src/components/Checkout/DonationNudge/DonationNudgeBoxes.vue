@@ -1,7 +1,7 @@
 <template>
 	<div class="donation-nudge-boxes-container">
 		<div class="show-for-large nudge-boxes-desktop tw-text-center">
-			<div v-if="!desktopUsingRadioButtons" class="nudge-box-button-container">
+			<div class="nudge-box-button-container">
 				<div class="row
 				nudge-box-row tw-align-center tw-h-10 tw-my-2.5"
 				>
@@ -124,119 +124,25 @@
 					</div>
 				</div>
 			</div>
-			<div v-else class="nudge-box-radio-container">
-				<div
-					v-for="{percentage, appeal} in percentageRows"
-					:key="percentage"
-					class="row nudge-box-row tw-align-center tw-h-10 tw-my-2.5"
-				>
-					<div class="small-12 columns
-					nudge-box-column tw-flex tw-items-center
-					nudge-box-column-appeal tw-justify-start"
-					>
-						<label class="nudge-box-radio-label ">
-							<kv-text-input
-								id="donationInputRadio"
-								type="radio"
-								class="nudge-box-radio-button"
-								name="selected-donation-radio"
-								:value="percentage"
-								v-model="selectedDonationRadio"
-							/>
-							<!-- eslint-disable-next-line max-len -->
-							<span class="nudge-box-radio-label-amount">${{ getDonationByPercent(percentage) }}</span> — {{ appeal }}
-						</label>
-					</div>
-				</div>
-				<div
-					v-if="hasCustomDonation"
-					class="row nudge-box-row tw-align-center tw-h-10 tw-my-2.5"
-				>
-					<div class="small-8 columns
-					nudge-box-column tw-flex tw-items-center
-					nudge-box-column-appeal tw-justify-start"
-					>
-						<label class="nudge-box-radio-label">
-							<input
-								type="radio"
-								class="nudge-box-radio-button"
-								name="selected-donation-radio"
-								value="custom"
-								v-model="selectedDonationRadio"
-							>
-							You decide — enter custom amount
-						</label>
-					</div>
-					<div class="small-4 columns
-					nudge-box-column tw-flex tw-items-center
-					nudge-box-column-amount tw-font-medium lg:tw-font-text-xl tw-text-base tw-text-right"
-					>
-						<kv-text-input
-							id="donationInputDesktopRadio"
-							type="text"
-							ref="customDonationInputDesktopRadio"
-							name="customDonationInputTextDesktopRadio"
-							maxlength="10"
-							class="nudge-box-input nudge-box-input-desktop-radio"
-							@blur="validateInputDesktopRadio"
-							@focus="selectRadioCustom"
-						/>
-					</div>
-				</div>
-				<div
-					class="row nudge-box-row tw-align-center tw-h-10 tw-my-2.5"
-				>
-					<div class="small-12 columns
-					nudge-box-column tw-flex tw-items-center
-					nudge-box-column-appeal tw-justify-start"
-					>
-						<label class="nudge-box-radio-label">
-							<button
-								type="radio"
-								class="nudge-box-radio-button tw-text-link"
-								name="selected-donation-radio"
-								:value="0"
-							>
-								<!-- v-model="selectedDonationRadio" -->
-								No donation to Kiva
-							</button>
-						</label>
-					</div>
-				</div>
-				<kv-button
-					class="smallest nudge-box-button"
-					@click.native="setRadioDonationAndClose"
-				>
-					Update Donation
-				</kv-button>
-				<div class="nudge-box-tax-deduction tw-font-small tw-text-secondary">
-					Your Donation is eligible for a tax deduction if you live in the U.S.
-				</div>
-			</div>
 		</div>
-		<div class="hide-for-large nudge-boxes-mobile tw-text-left tw-mx-2">
+		<div class="hide-for-large nudge-boxes-mobile tw-text-left tw-mt-4 md:tw-mt-6">
 			<div
-				v-for="{percentage, appeal} in percentageRows"
+				v-for="({percentage, appeal}, index) in percentageRows"
 				:key="percentage"
-				class="nudge-box-wrapper nudge-box-wrapper-mobile tw-my-2"
+				class="tw-p-2 tw-border tw-border-tertiary"
+				:class="{
+					'tw-rounded-t tw-border-b-0': index === 0,
+					'tw-rounded-b tw-border-t-0': index === 2
+				}"
 				@click="setDonationAndClose(getDonationByPercent(percentage))"
 			>
-				<!-- style="border: 1px solid #DFDFDF" -->
-				<div class="row nudge-box-row tw-align-center tw-h-10">
-					<div class="small-7
-					columns
-					nudge-box-column tw-flex tw-items-center
-					nudge-box-column-appeal tw-justify-start"
-					>
+				<div class="tw-flex tw-align-center tw-items-stretch">
+					<div class="tw-self-center tw-flex-grow tw-mr-1">
 						{{ appeal }}
 					</div>
-					<div class="small-5
-					columns
-					nudge-box-column tw-flex tw-items-center
-					nudge-box-column-button tw-justify-end"
-					>
+					<div class="tw-self-center">
 						<kv-button
-							class="smallest nudge-box-button"
+							class="tw-w-14"
 						>
 							${{ getDonationByPercent(percentage) }}
 						</kv-button>
@@ -245,34 +151,24 @@
 			</div>
 			<div
 				v-if="hasCustomDonation"
-				class="nudge-box-wrapper nudge-box-wrapper-mobile
-				tw-flex tw-flex-col tw-py-2
-				nudge-box-wrapper-mobile-custom-donation"
+				class="tw-p-2 tw-border tw-border-tertiary tw-rounded-b tw-border-t-0"
 			>
-				<!-- style="border: 1px solid #DFDFDF" -->
 				<div>You decide — enter custom amount</div>
-				<div class="row nudge-box-row tw-align-center tw-h-10">
-					<div class="small-7
-					columns
-					nudge-box-column tw-flex tw-items-center
-					nudge-box-column-appeal tw-justify-start"
-					>
+				<div class="tw-flex tw-align-center tw-items-center tw-mt-1">
+					<div class="tw-self-center tw-flex-grow tw-mr-1">
 						<kv-text-input
 							id="customDonationInputMobile"
 							type="text"
 							ref="customDonationInputMobile"
 							name="customDonationInputTextMobile"
 							maxlength="10"
-							class="nudge-box-input nudge-box-input-mobile"
+							class=""
 							@blur="validateInputMobile"
 						/>
 					</div>
-					<div class="small-5 columns
-					nudge-box-column tw-flex tw-items-center
-					nudge-box-column-button tw-justify-end"
-					>
+					<div class="tw-self-center">
 						<kv-button
-							class="smallest nudge-box-button"
+							class="tw-w-14"
 							@click.native="setCustomDonationAndClose"
 						>
 							Apply
@@ -309,10 +205,6 @@ export default {
 			required: true,
 		},
 		hasCustomDonation: {
-			type: Boolean,
-			default: false,
-		},
-		desktopUsingRadioButtons: {
 			type: Boolean,
 			default: false,
 		},
@@ -375,11 +267,7 @@ export default {
 			}
 		},
 		setInputs(value) {
-			if (this.desktopUsingRadioButtons) {
-				this.$refs.customDonationInputDesktopRadio.value = value;
-			} else {
-				this.$refs.customDonationInputDesktop.value = value;
-			}
+			this.$refs.customDonationInputDesktop.value = value;
 			this.$refs.customDonationInputMobile.value = value;
 		},
 		selectRadioCustom() {
@@ -387,9 +275,6 @@ export default {
 		},
 		validateInputDesktop() {
 			this.setInputs(numeral(this.$refs.customDonationInputDesktop.value).format('$0,0.00'));
-		},
-		validateInputDesktopRadio() {
-			this.setInputs(numeral(this.$refs.customDonationInputDesktopRadio.value).format('$0,0.00'));
 		},
 		validateInputMobile() {
 			this.setInputs(numeral(this.$refs.customDonationInputMobile.value).format('$0,0.00'));
