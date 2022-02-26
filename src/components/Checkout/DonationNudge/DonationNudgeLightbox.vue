@@ -7,7 +7,7 @@
 		@lightbox-closed="closeNudgeLightbox"
 		:title="header"
 	>
-		<div id="nudge-donation-container">
+		<div id="nudge-donation-container" data-testid="nudge-donation-container">
 			<div id="nudge-donation-top">
 				<p>{{ description }}</p>
 				<donation-nudge-boxes
@@ -25,6 +25,7 @@
 						class="tw-text-link"
 						id="no-donation-link"
 						@click="setDonationAndClose(0, 'No Donation Link')"
+						data-testid="nudge-donation-no-donoation-btn"
 						tabindex="12"
 					>
 						No donation to Kiva

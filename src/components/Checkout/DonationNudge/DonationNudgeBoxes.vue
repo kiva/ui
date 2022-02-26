@@ -1,178 +1,85 @@
 <template>
 	<div class="donation-nudge-boxes-container">
-		<div class="show-for-large nudge-boxes-desktop tw-text-center">
-			<div class="nudge-box-button-container">
-				<div class="row
-				nudge-box-row tw-align-center tw-h-10 tw-my-2.5"
-				>
-					<div
-						v-for="{percentage, appeal, appealIsHorizontallyPadded} in percentageRows"
-						:key="percentage"
-						class="medium-4 columns nudge-box-top-container nudge-box-container"
-					>
-						<div
-							:class="`nudge-box-top tw-flex tw-align-center tw-justify-center tw-pt-4
-							tw-bg-primary tw-cursor-pointer tw-select-none
-							${appealIsHorizontallyPadded ? 'tw-px-8' : ''}`"
-							@click="setDonationAndClose(getDonationByPercent(percentage))"
-						>
-							{{ appeal }}
-						</div>
-					</div>
-					<!-- eslint-disable max-len -->
-					<div
-						v-if="hasCustomDonation"
-						class="medium-4 columns nudge-box-top-container nudge-box-container nudge-box-custom-donation-container"
-					>
-						<!-- eslint-enable max-len -->
-						<div
-							class="nudge-box-top tw-flex tw-align-center tw-justify-center tw-pt-4
-							tw-bg-primary tw-cursor-pointer tw-select-none
-							nudge-box-custom-donation"
-						>
-							You decide — enter custom amount
-						</div>
-					</div>
-				</div>
-				<div class="row nudge-box-row">
-					<div
-						v-for="{percentage} in percentageRows"
-						:key="percentage"
-						class="medium-4 columns nudge-box-middle-container nudge-box-container"
-					>
-						<h3
-							class="nudge-box-middle
-							tw-bg-primary tw-cursor-pointer tw-select-none"
-							@click="setDonationAndClose(getDonationByPercent(percentage))"
-						>
-							${{ getDonationByPercent(percentage) }}
-						</h3>
-					</div>
-					<!-- eslint-disable max-len -->
-					<div
-						v-if="hasCustomDonation"
-						class="medium-4 columns nudge-box-middle-container nudge-box-container nudge-box-custom-donation-container"
-					>
-						<!-- eslint-disable max-len -->
-						<div
-							class="nudge-box-middle
-							tw-bg-primary tw-cursor-pointer tw-select-none
-							nudge-box-custom-donation"
-						>
-							<kv-text-input
-								id="customDonationInput"
-								type="text"
-								ref="customDonationInputDesktop"
-								name="customDonationInputTextDesktop"
-								maxlength="10"
-								tabindex="10"
-								@click.capture="formatAndSubmitOnEnter"
-								class="nudge-box-input tw-text-center tw-mx-auto tw-p-2
-								nudge-box-input-desktop"
-								@blur="validateInputDesktop"
-							/>
-						</div>
-					</div>
-				</div>
-				<div class="row nudge-box-row">
-					<div
-						v-for="({percentage}, index) in percentageRows"
-						:key="percentage"
-						class="medium-4 columns nudge-box-bottom-container nudge-box-container"
-					>
-						<div
-							class="nudge-box-bottom tw-bg-primary tw-cursor-pointer tw-select-none tw-pb-4"
-							@click="setDonationAndClose(getDonationByPercent(percentage))"
-						>
-							<!-- style="border: 1px solid #DFDFDF" -->
-							<kv-button
-								v-if="index === 0"
-								id="first-button"
-								:tabindex="index + 1"
-								class="smallest
-								nudge-box-button tw-mb-0 tw-w-full"
-							>
-								Select
-							</kv-button>
-							<kv-button
-								v-else
-								:tabindex="index + 1"
-								class="smallest
-								nudge-box-button tw-mb-0 tw-w-full"
-							>
-								Select
-							</kv-button>
-						</div>
-					</div>
-					<div
-						v-if="hasCustomDonation"
-						class="medium-4 columns nudge-box-bottom-container nudge-box-container nudge-box-custom-donation-container"
-					>
-						<div
-							class="nudge-box-bottom tw-bg-primary tw-cursor-pointer tw-select-none tw-pb-4
-							nudge-box-custom-donation"
-							@click="setCustomDonationAndClose"
-						>
-							<!-- style="border: 1px solid #DFDFDF" -->
-							<kv-button
-								class="smallest nudge-box-button custom-amount-submit tw-w-full"
-								tabindex="11"
-							>
-								Submit
-							</kv-button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="hide-for-large nudge-boxes-mobile tw-text-left tw-mt-4 md:tw-mt-6">
+		<div class="md:visible tw-text-left tw-mt-4 md:tw-mt-6
+			md:tw-flex md:tw-flex-1 md:tw-flex-space-3 md:tw-gap-3"
+		>
 			<div
 				v-for="({percentage, appeal}, index) in percentageRows"
 				:key="percentage"
-				class="tw-p-2 tw-border tw-border-tertiary"
+				class="tw-p-2 md:tw-px-3 md:tw-py-4 tw-border tw-border-tertiary"
 				:class="{
-					'tw-rounded-t tw-border-b-0': index === 0,
-					'tw-rounded-b tw-border-t-0': index === 2
+					'tw-rounded-t tw-border-b-0 md:tw-border-b md:tw-rounded': index === 0,
+					'md:tw-rounded': index === 1
 				}"
 				@click="setDonationAndClose(getDonationByPercent(percentage))"
 			>
-				<div class="tw-flex tw-align-center tw-items-stretch">
-					<div class="tw-self-center tw-flex-grow tw-mr-1">
+				<div class="tw-flex tw-flex-row tw-align-center tw-items-stretch
+					md:tw-flex-col md:tw-justify-between tw-h-full"
+				>
+					<div class="tw-self-center tw-flex-grow tw-mr-1 md:tw-mr-0 tw-text-left md:tw-text-center">
 						{{ appeal }}
 					</div>
-					<div class="tw-self-center">
+					<p
+						class="tw-hidden md:tw-block tw-text-h3 md:tw-flex-grow md:tw-my-2 tw-text-center"
+						data-testid="`donation-amount-${index}`"
+					>
+						${{ getDonationByPercent(percentage) }}
+					</p>
+					<div class="tw-self-center md:tw-w-full">
 						<kv-button
-							class="tw-w-14"
+							class="md:tw-hidden tw-w-14"
+							:data-testid="`donation-btn-amount-${index}`"
 						>
 							${{ getDonationByPercent(percentage) }}
+						</kv-button>
+						<kv-button
+							class="tw-hidden md:tw-block tw-w-14 md:tw-w-full"
+							:data-testid="`donation-btn-select-${index}`"
+						>
+							Select
 						</kv-button>
 					</div>
 				</div>
 			</div>
 			<div
 				v-if="hasCustomDonation"
-				class="tw-p-2 tw-border tw-border-tertiary tw-rounded-b tw-border-t-0"
+				class="tw-p-2 md:tw-px-3 md:tw-py-4
+					tw-border tw-border-tertiary tw-rounded-b
+					tw-border-t-0 md:tw-border-t md:tw-rounded"
 			>
-				<div>You decide — enter custom amount</div>
-				<div class="tw-flex tw-align-center tw-items-center tw-mt-1">
-					<div class="tw-self-center tw-flex-grow tw-mr-1">
-						<kv-text-input
-							id="customDonationInputMobile"
-							type="text"
-							ref="customDonationInputMobile"
-							name="customDonationInputTextMobile"
-							maxlength="10"
-							class=""
-							@blur="validateInputMobile"
-						/>
+				<div class="tw-items-center
+					md:tw-flex md:tw-flex-col md:tw-justify-between tw-h-full"
+				>
+					<div class="tw-align-center md:tw-text-center">
+						You decide — enter custom amount
 					</div>
-					<div class="tw-self-center">
-						<kv-button
-							class="tw-w-14"
-							@click.native="setCustomDonationAndClose"
-						>
-							Apply
-						</kv-button>
+					<div class="tw-flex tw-align-center tw-items-center tw-mt-1 md:tw-mt-0
+						md:tw-flex-col md:tw-justify-between md:tw-h-full"
+					>
+						<div class="tw-self-center tw-flex-grow tw-mr-2 md:tw-mr-0 md:tw-my-2">
+							<kv-text-input
+								class="md:tw-text-center"
+								id="customDonationInput"
+								data-testid="custom-donation-input"
+								type="text"
+								ref="customDonationInput"
+								name="customDonationInputText"
+								maxlength="10"
+								v-model="customDonationAmount"
+								@blur="validateInput"
+								@keyup.enter.prevent="formatAndSubmitOnEnter"
+							/>
+						</div>
+						<div class="tw-self-center md:tw-w-full">
+							<kv-button
+								class="tw-w-14 md:tw-w-full"
+								@click.native="setCustomDonationAndClose"
+								id="customDonationSubmitBtn"
+								data-testid="custom-donation-submit-btn"
+							>
+								Select
+							</kv-button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -182,7 +89,6 @@
 
 <script>
 import numeral from 'numeral';
-// import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -215,6 +121,7 @@ export default {
 	},
 	data() {
 		return {
+			customDonationAmount: null,
 			selectedDonationRadio: 15,
 		};
 	},
@@ -228,16 +135,10 @@ export default {
 	methods: {
 		formatAndSubmitOnEnter() {
 			const customInput = document.getElementById('customDonationInput');
-			const customInputButton = document.querySelector('.custom-amount-submit');
+			const customInputButton = document.getElementById('customDonationSubmitBtn');
 
-			// Setting up listener for customInput field
-			customInput.addEventListener('keyup', event => {
-				// When keyup event happens on the Enter key perform the following functions
-				if (event.keyCode === 13) {
-					customInput.blur();
-					customInputButton.click();
-				}
-			});
+			customInput.blur();
+			customInputButton.click();
 		},
 		afterLightboxOpens() {
 			if (this.currentDonationAmount && this.customDonationSelected) {
@@ -256,28 +157,13 @@ export default {
 			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');
 		},
 		setCustomDonationAndClose() {
-			this.setDonationAndClose(numeral(this.$refs.customDonationInputMobile.value).value());
-		},
-		setRadioDonationAndClose() {
-			// eslint-disable-next-line no-restricted-globals
-			if (this.selectedDonationRadio === 'custom') {
-				this.setCustomDonationAndClose();
-			} else {
-				this.setDonationAndClose(this.getDonationByPercent(this.selectedDonationRadio));
-			}
+			this.setDonationAndClose(numeral(this.$refs.customDonationInput.value).value());
 		},
 		setInputs(value) {
-			this.$refs.customDonationInputDesktop.value = value;
-			this.$refs.customDonationInputMobile.value = value;
+			this.customDonationAmount = value;
 		},
-		selectRadioCustom() {
-			this.selectedDonationRadio = 'custom';
-		},
-		validateInputDesktop() {
-			this.setInputs(numeral(this.$refs.customDonationInputDesktop.value).format('$0,0.00'));
-		},
-		validateInputMobile() {
-			this.setInputs(numeral(this.$refs.customDonationInputMobile.value).format('$0,0.00'));
+		validateInput() {
+			this.setInputs(numeral(this.customDonationAmount).format('$0,0.00'));
 		},
 	},
 };
