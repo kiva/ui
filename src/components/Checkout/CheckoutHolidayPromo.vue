@@ -1,6 +1,6 @@
 <template>
-	<div class="checkout-holiday-promo">
-		<kv-icon name="present" class="holiday-present-icon" />
+	<div class="checkout-holiday-promo tw-flex tw-justify-center tw-mb-4">
+		<kv-icon name="present" class="holiday-present-icon tw-w-3 tw-h-3 tw-mr-2" />
 		<div>
 			Give hope this holiday season.
 			<button class="tw-text-link"
@@ -42,23 +42,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-// Holiday Promo
-.checkout-holiday-promo {
-	display: flex;
-	align-items: center;
-
-	@include breakpoint(medium) {
-		margin-bottom: 2rem;
-	}
-
-	.holiday-present-icon {
-		height: 1.25rem;
-		width: 1.25rem;
-		flex-shrink: 0;
-		margin-right: 0.75rem;
-	}
-}
-</style>
