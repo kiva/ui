@@ -1,3 +1,10 @@
+## [2.75.0](https://github.com/kiva/ui/compare/v2.74.2...v2.75.0) (2022-02-28)
+
+
+### Features
+
+* lbc experimental page template ([a1ebcc8](https://github.com/kiva/ui/commit/a1ebcc8963f0f4f980c2ff015f8f96f194c0443e))
+
 ### [2.74.2](https://github.com/kiva/ui/compare/v2.74.1...v2.74.2) (2022-02-25)
 
 
