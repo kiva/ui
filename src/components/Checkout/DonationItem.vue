@@ -21,7 +21,7 @@
 					</h2>
 					<button
 						class="donation-amount md:tw-hidden tw-flex-none tw-align-middle"
-						data-testid="basket-donation-edit-button"
+						data-testid="basket-donation-edit-button-mobile-pencil"
 						v-kv-track-event="['basket', 'Edit Donation']"
 						@click="enterEditDonation"
 						title="Edit Donation"
@@ -47,7 +47,7 @@
 				>
 					<button
 						class="donation-amount"
-						data-testid="basket-donation-edit-button"
+						data-testid="basket-donation-edit-button-mobile-amount"
 						v-kv-track-event="['basket', 'Edit Donation']"
 						@click="enterEditDonation"
 						title="Edit Donation"
@@ -104,7 +104,7 @@
 			>
 				<button
 					class="donation-amount"
-					data-testid="basket-donation-edit-button"
+					data-testid="basket-donation-edit-button-combined"
 					v-kv-track-event="['basket', 'Edit Donation']"
 					@click="enterEditDonation"
 					title="Edit Donation"
