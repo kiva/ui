@@ -1,3 +1,10 @@
+### [2.75.1](https://github.com/kiva/ui/compare/v2.75.0...v2.75.1) (2022-03-01)
+
+
+### Bug Fixes
+
+* for proper mounting after ssr App.vue root element must have id `app` ([9d9af8d](https://github.com/kiva/ui/commit/9d9af8dbc053b4fb6356a737c6b45548f69784c5))
+
 ## [2.75.0](https://github.com/kiva/ui/compare/v2.74.2...v2.75.0) (2022-02-28)
 
 
