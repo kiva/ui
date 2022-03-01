@@ -1,5 +1,6 @@
 <template>
-	<div class="tw-flex tw-flex-col md:tw-flex-row tw-pb-5">
+	<!-- DO NOT REMOVE basket-donation-item class -->
+	<div class="basket-donation-item tw-flex tw-flex-col md:tw-flex-row tw-pb-5">
 		<!-- donation image -->
 		<div class="tw-hidden md:tw-block tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
 			<img class="donation-img tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
