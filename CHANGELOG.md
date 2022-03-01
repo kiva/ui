@@ -1,3 +1,17 @@
+## [2.76.0](https://github.com/kiva/ui/compare/v2.75.2...v2.76.0) (2022-03-01)
+
+
+### Features
+
+* core-369 lots of style cleanup while transitioning to tailwind ([2fde3b9](https://github.com/kiva/ui/commit/2fde3b9540d50d07ffe448776ddd00294cf1cab9))
+* refactor mobile and desktop into single donation selection interface ([bc212fa](https://github.com/kiva/ui/commit/bc212fa3797bc3f0248908434e15cd325c43e9f4))
+* update mobile donation lightbox to kiva classic ([89d676b](https://github.com/kiva/ui/commit/89d676b548de3592261cfb8b685b6a9cebab9a9f))
+
+
+### Bug Fixes
+
+* core-369 wrapping up tailwinds cleanup. ([3d4f0b2](https://github.com/kiva/ui/commit/3d4f0b26da1dc1688cf5fdc721aea3b5fe3d8c14))
+
 ### [2.75.2](https://github.com/kiva/ui/compare/v2.75.1...v2.75.2) (2022-03-01)
 
 
