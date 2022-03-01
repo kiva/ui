@@ -1,3 +1,10 @@
+## [2.77.0](https://github.com/kiva/ui/compare/v2.76.0...v2.77.0) (2022-03-01)
+
+
+### Features
+
+* convert checkout layout to kiva classic + tailwind ([98a040e](https://github.com/kiva/ui/commit/98a040e0102452fc2e7847a304b2b081666add86))
+
 ## [2.76.0](https://github.com/kiva/ui/compare/v2.75.2...v2.76.0) (2022-03-01)
 
 
