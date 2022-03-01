@@ -1,3 +1,10 @@
+### [2.75.2](https://github.com/kiva/ui/compare/v2.75.1...v2.75.2) (2022-03-01)
+
+
+### Bug Fixes
+
+* update donation interface test ids ([5103818](https://github.com/kiva/ui/commit/5103818704be77eb9033a29268b40fc18739b5cf))
+
 ### [2.75.1](https://github.com/kiva/ui/compare/v2.75.0...v2.75.1) (2022-03-01)
 
 
