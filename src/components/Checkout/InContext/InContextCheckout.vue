@@ -238,6 +238,7 @@ export default {
 		}
 	}
 
+	// DO NOT REMOVE
 	&__basket-items {
 		&--hide-donation {
 			::v-deep .basket-donation-item {
