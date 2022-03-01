@@ -1,3 +1,10 @@
+### [2.77.1](https://github.com/kiva/ui/compare/v2.77.0...v2.77.1) (2022-03-01)
+
+
+### Bug Fixes
+
+* renable hiding donation option during promo checkout ([591d31c](https://github.com/kiva/ui/commit/591d31c9d0dfd1c8cc0503507f3e68f549ba3b41))
+
 ## [2.77.0](https://github.com/kiva/ui/compare/v2.76.0...v2.77.0) (2022-03-01)
 
 
