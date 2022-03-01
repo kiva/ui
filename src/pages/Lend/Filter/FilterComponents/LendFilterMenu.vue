@@ -26,6 +26,7 @@
 				</div>
 				<filter-section-gender :filter-menu-open="filterMenuOpen" class="filter-section" />
 				<filter-section-sort
+					v-if="!hideNonFlssFilters"
 					:default-sort-indices="defaultSortIndices"
 					class="filter-section"
 					:initial-accordian-state-open="initiallyExpandedFilters"
@@ -48,9 +49,20 @@
 					:all-sector-names="allSectorNames"
 					:initial-accordian-state-open="initiallyExpandedFilters"
 				/>
-				<filter-section-attributes class="filter-section" :all-loan-theme-names="allLoanThemeNames" />
-				<filter-section-tags class="filter-section" :all-tag-names="allTagNames" />
-				<filter-section-loan-details class="filter-section" />
+				<filter-section-attributes
+					v-if="!hideNonFlssFilters"
+					class="filter-section"
+					:all-loan-theme-names="allLoanThemeNames"
+				/>
+				<filter-section-tags
+					v-if="!hideNonFlssFilters"
+					class="filter-section"
+					:all-tag-names="allTagNames"
+				/>
+				<filter-section-loan-details
+					v-if="!hideNonFlssFilters"
+					class="filter-section"
+				/>
 
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
 					Advanced filters
@@ -141,6 +153,10 @@ export default {
 			default: () => []
 		},
 		filterMenuPinned: {
+			type: Boolean,
+			default: false,
+		},
+		hideNonFlssFilters: {
 			type: Boolean,
 			default: false,
 		},

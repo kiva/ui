@@ -32,6 +32,7 @@
 					:all-loan-theme-names="allLoanThemeNames"
 					:all-tag-names="allTagNames"
 					:filter-menu-pinned="filterMenuPinned"
+					:hide-non-flss-filters="hideNonFlssFilters"
 					:initially-expanded-filters="initiallyExpandedFilters"
 					@clear-custom-categories="clearCustomCategories"
 					@hide-filter-menu="hideFilterMenu"
@@ -55,7 +56,10 @@
 						@remove-custom-category="removeCustomCategory"
 						@clear-custom-categories="clearCustomCategories"
 					/>
-					<algolia-search-box class="algolia-search-box-component" v-if="algoliaSearchEnabled" />
+					<algolia-search-box
+						class="algolia-search-box-component"
+						v-if="algoliaSearchEnabled && !hideNonFlssFilters"
+					/>
 					<!-- eslint-disable-next-line max-len -->
 					<algolia-pagination-stats class="algolia-pagination-stats-component" />
 					<ais-state-results class="ais-state-results-component">
@@ -99,6 +103,9 @@
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _forEach from 'lodash/forEach';
+
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 // Algolia Imports
 import {
@@ -173,6 +180,25 @@ export default {
 
 		// Get Lend Filter Exp version
 		this.getLendFilterExpVersion();
+
+		// EXP to Hide filters not available in FLSS (VUE-970)
+		const lendFilterFlssExp = this.apollo.readFragment({
+			id: 'Experiment:lend_filter_flss_mock',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		if (lendFilterFlssExp.version && lendFilterFlssExp.version !== 'unassigned') {
+			if (lendFilterFlssExp.version === 'b') {
+				this.hideNonFlssFilters = true;
+				this.initiallyExpandedFilters = true;
+			}
+
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-VUE-970-Mar2022',
+				lendFilterFlssExp.version
+			);
+		}
 	},
 	data() {
 		return {
@@ -180,6 +206,7 @@ export default {
 			isLoggedIn: false,
 			userId: '',
 			filterMenuOpen: false,
+			hideNonFlssFilters: false,
 			selectedCustomCategories: {},
 			filterMenuPinned: false,
 			algoliaSearchEnabled: true,
@@ -233,6 +260,11 @@ export default {
 				variables: {
 					basketId: cookieStore.get('kvbskt')
 				},
+			}).then(() => {
+				return client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: 'lend_filter_flss_mock' },
+				});
 			});
 		}
 	},
