@@ -1,3 +1,10 @@
+## [2.78.0](https://github.com/kiva/ui/compare/v2.77.1...v2.78.0) (2022-03-02)
+
+
+### Features
+
+* setup filters visibility experiment on lend/filter ([5765092](https://github.com/kiva/ui/commit/57650926373e647eb04b2c129ece046901e647fa))
+
 ### [2.77.1](https://github.com/kiva/ui/compare/v2.77.0...v2.77.1) (2022-03-01)
 
 
