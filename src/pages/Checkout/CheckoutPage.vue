@@ -182,6 +182,7 @@
 				:visible="redirectLightboxVisible"
 				title="This checkout is being tested right now, but doesn't support some functions yet."
 				@lightbox-closed="redirectLightboxClosed"
+				data-testid="checkout-legacy-redirect-lightbox"
 			>
 				<p class="tw-mb-4">
 					We'll redirect you so you can get back to changing lives, or click here if you aren't
