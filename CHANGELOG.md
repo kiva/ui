@@ -1,3 +1,12 @@
+### [2.74.3-next.2](https://github.com/kiva/ui/compare/v2.74.3-next.1...v2.74.3-next.2) (2022-03-03)
+
+
+### Bug Fixes
+
+* add mobile view link tracking ([3fd598b](https://github.com/kiva/ui/commit/3fd598b58b4ccecf35974fa7938ed6a5b9d8ec6a))
+* ensure link tracking on lend monthly link ([cc0a389](https://github.com/kiva/ui/commit/cc0a38995f2812a6ecfdd1336ab61364cb970e88))
+* for proper mounting after ssr App.vue root element must have id `app` ([82d427a](https://github.com/kiva/ui/commit/82d427aa8864aef9eac8eeb9255fa8aaa409d47b))
+
 ### [2.74.3-next.1](https://github.com/kiva/ui/compare/v2.74.2...v2.74.3-next.1) (2022-03-01)
 
 
