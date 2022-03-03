@@ -1,3 +1,10 @@
+## [2.79.0](https://github.com/kiva/ui/compare/v2.78.2...v2.79.0) (2022-03-03)
+
+
+### Features
+
+* remove checkout steps from interface ([9509ab5](https://github.com/kiva/ui/commit/9509ab54e5a086114390aeae14c49a9e61779375))
+
 ### [2.78.2](https://github.com/kiva/ui/compare/v2.78.1...v2.78.2) (2022-03-03)
 
 
