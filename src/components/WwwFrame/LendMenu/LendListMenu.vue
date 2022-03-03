@@ -6,8 +6,9 @@
 			@click.native="trackMgLinkClick"
 		>
 			{{ mgLinkText }}
-			<kv-material-icon :icon="mdiArrowRight" class="tw-w-3 tw-h-3" />
+			<kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiArrowRight" />
 		</router-link>
+
 		<kv-tabs ref="navLendCategories">
 			<template #tabNav>
 				<kv-tab for="nav-lend-categories">
@@ -53,7 +54,7 @@
 							<router-link
 								to="/lend"
 								class="lend-link"
-								v-kv-track-event.native="['TopNav','click-Lend-All_Loans']"
+								v-kv-track-event="['TopNav','click-Lend-All_Loans']"
 							>
 								All loans
 							</router-link>
@@ -62,7 +63,7 @@
 							<router-link
 								to="/categories"
 								class="lend-link"
-								v-kv-track-event.native="['TopNav','click-Lend-All_Categories']"
+								v-kv-track-event="['TopNav','click-Lend-All_Categories']"
 							>
 								All categories
 							</router-link>
@@ -113,7 +114,7 @@
 								v-if="favorites > 0"
 								:to="{ path: '/lend', query: { lenderFavorite: userId } }"
 								class="lend-link"
-								v-kv-track-event.native="['TopNav','click-Lend-Favorites']"
+								v-kv-track-event="['TopNav','click-Lend-Favorites']"
 							>
 								Saved loans
 							</router-link>
@@ -144,7 +145,7 @@
 							<router-link
 								to="/lend/countries-not-lent"
 								class="lend-link"
-								v-kv-track-event.native="['TopNav','click-Lend-Countries_Not_Lent']"
+								v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
 							>
 								Countries I haven't lent to
 							</router-link>
