@@ -1,3 +1,10 @@
+### [2.78.2](https://github.com/kiva/ui/compare/v2.78.1...v2.78.2) (2022-03-03)
+
+
+### Bug Fixes
+
+* ensure mobile spacing between button and select ([cfe48a1](https://github.com/kiva/ui/commit/cfe48a1d127138ea520b0d91eb0d0061999b5e9b))
+
 ### [2.78.1](https://github.com/kiva/ui/compare/v2.78.0...v2.78.1) (2022-03-03)
 
 
