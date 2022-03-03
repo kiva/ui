@@ -1,3 +1,16 @@
+### [2.79.1](https://github.com/kiva/ui/compare/v2.79.0...v2.79.1) (2022-03-03)
+
+
+### Bug Fixes
+
+* add mobile view link tracking ([a3eaff8](https://github.com/kiva/ui/commit/a3eaff8d29a1d8194fd61ad01cb38ff3932871ae))
+* ensure link tracking on lend monthly link ([052482c](https://github.com/kiva/ui/commit/052482c21f468f91b48b69fc2c0735e7bd4120b6))
+
+
+### Reverts
+
+* Revert "fix: ensure link tracking is active on router-links" ([99af1b4](https://github.com/kiva/ui/commit/99af1b41341dfe41bf64a383fdf505f5bbe4c533))
+
 ## [2.79.0](https://github.com/kiva/ui/compare/v2.78.2...v2.79.0) (2022-03-03)
 
 
