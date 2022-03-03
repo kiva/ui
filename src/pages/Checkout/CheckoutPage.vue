@@ -1,6 +1,15 @@
 <template>
 	<www-page>
-		<kv-page-container id="checkout-slim" data-testid="checkout" class="tw-py-3.5">
+		<kv-page-container
+			id="checkout-slim"
+			data-testid="checkout"
+			class="tw-py-3.5"
+			:class="{
+				'not-logged-in': !isLoggedIn,
+				'login-active': isLoggedIn,
+				'login-guest': checkingOutAsGuest
+			}"
+		>
 			<div
 				v-if="!emptyBasket"
 				class="basket-wrap tw-relative tw-mb-1"
@@ -8,11 +17,9 @@
 			>
 				<div>
 					<div class="checkout-steps-wrapper tw-pb-3 hide-for-print">
-						<kv-checkout-steps
-							class="checkout-steps tw-mx-auto tw-mb-4"
-							:steps="checkoutSteps"
-							:current-step-index="currentStep"
-						/>
+						<h1 class="tw-text-h2 tw-mb-3">
+							Your basket
+						</h1>
 						<hr class="tw-border-tertiary tw-my-3">
 					</div>
 					<div class="basket-container tw-mx-auto tw-my-0" style="max-width: 800px;">
@@ -195,19 +202,23 @@
 			</kv-lightbox>
 
 			<div v-if="emptyBasket" class="empty-basket tw-relative tw-mx-auto" data-testid="empty-basket">
-				<div class="tw-inline tw-text-center">
-					<div class="tw-mb-4">
-						<h1 class="tw-text-h2 tw-mb-2">
-							Your basket is empty!
-						</h1>
-						<p class="tw-mb-2">
-							But we'd love to help you change that! Please consider
-							supporting one of the borrowers below, or
-							<router-link to="/lend-by-category" data-testid="empty-basket-loans-link">
-								browse all loans
-							</router-link>.
-						</p>
-					</div>
+				<div class="tw-mb-4">
+					<h1 class="tw-text-h2 tw-mb-2">
+						Your basket is empty!
+					</h1>
+					<p class="tw-mb-2">
+						But we'd love to help you change that! Please consider
+						supporting one of the borrowers below, or
+						<router-link
+							to="/lend-by-category"
+							data-testid="empty-basket-loans-link"
+							v-kv-track-event.native="
+								['basket', 'click-empty-basket-browse-all-loans', 'browse all loans']
+							"
+						>
+							browse all loans
+						</router-link>.
+					</p>
 				</div>
 
 				<div
@@ -247,7 +258,6 @@ import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheck
 import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
@@ -266,7 +276,6 @@ export default {
 		WwwPage,
 		KivaCreditPayment,
 		KvButton,
-		KvCheckoutSteps,
 		KvLightbox,
 		OrderTotals,
 		BasketItemsList,
@@ -484,12 +493,6 @@ export default {
 		},
 		instantLendingLoanAdded() {
 			return this.$route?.query?.instantLending === 'loan-added';
-		},
-		checkoutSteps() {
-			return ['Basket', 'Payment', 'Thank You!'];
-		},
-		currentStep() {
-			return this.isLoggedIn ? 1 : 0;
 		},
 		creditNeeded() {
 			return this.totals.creditAmountNeeded || '0.00';
@@ -739,10 +742,6 @@ export default {
 	.pre-login #updating-overlay {
 		margin-top: 0;
 	}
-}
-
-.checkout-steps {
-	max-width: 40rem;
 }
 
 .empty-basket {
