@@ -3,7 +3,7 @@
 		<router-link
 			to="/monthlygood"
 			class="tw-inline-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-font-medium"
-			@click.native="trackMgLinkClick"
+			@click="trackMgLinkClick"
 		>
 			{{ mgLinkText }}
 			<kv-material-icon :icon="mdiArrowRight" class="tw-w-3 tw-h-3" />
@@ -58,7 +58,7 @@
 										to="/categories"
 										class="tw-text-primary
 									hover:tw-text-action-highlight tw-inline-block tw-py-1"
-										v-kv-track-event.native="['TopNav','click-Lend-All_Categories']"
+										v-kv-track-event="['TopNav','click-Lend-All_Categories']"
 									>
 										All categories
 									</router-link>
@@ -68,7 +68,7 @@
 										class="tw-text-primary
 									hover:tw-text-action-highlight tw-inline-block tw-py-1"
 										to="/lend"
-										v-kv-track-event.native="['TopNav','click-Lend-All_Loans']"
+										v-kv-track-event="['TopNav','click-Lend-All_Loans']"
 									>
 										All loans
 									</router-link>
@@ -87,7 +87,7 @@
 										<router-link
 											v-if="favorites > 0"
 											:to="{ path: '/lend', query: { lenderFavorite: userId } }"
-											v-kv-track-event.native="['TopNav','click-Lend-Favorites']"
+											v-kv-track-event="['TopNav','click-Lend-Favorites']"
 											class="tw-text-primary tw-text-left hover:tw-text-action-highlight
 												tw-py-1 tw-inline-block"
 										>
@@ -120,7 +120,7 @@
 									<li>
 										<router-link
 											to="/lend/countries-not-lent"
-											v-kv-track-event.native="['TopNav','click-Lend-Countries_Not_Lent']"
+											v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
 											class="tw-text-primary tw-text-left hover:tw-text-action-highlight
 												tw-py-1 tw-inline-block"
 										>
