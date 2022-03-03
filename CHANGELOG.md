@@ -1,3 +1,10 @@
+### [2.78.1](https://github.com/kiva/ui/compare/v2.78.0...v2.78.1) (2022-03-03)
+
+
+### Bug Fixes
+
+* ensure link tracking is active on router-links ([1602e45](https://github.com/kiva/ui/commit/1602e457697f067092597be29d9e85dcc98490b9))
+
 ## [2.78.0](https://github.com/kiva/ui/compare/v2.77.1...v2.78.0) (2022-03-02)
 
 
