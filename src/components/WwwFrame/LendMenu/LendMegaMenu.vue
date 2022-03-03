@@ -3,7 +3,7 @@
 		<router-link
 			to="/monthlygood"
 			class="tw-inline-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-font-medium"
-			@click="trackMgLinkClick"
+			@click.native="trackMgLinkClick"
 		>
 			{{ mgLinkText }}
 			<kv-material-icon :icon="mdiArrowRight" class="tw-w-3 tw-h-3" />
