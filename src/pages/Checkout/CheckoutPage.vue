@@ -13,18 +13,6 @@
 							:steps="checkoutSteps"
 							:current-step-index="currentStep"
 						/>
-						<div class="tw-text-center continue-browsing"
-							v-if="addToBasketRedirectExperimentShown && !userPrefContinueBrowsing"
-						>
-							<span>Want to add more loans? </span>
-							<router-link
-								to="/lend-by-category"
-								@click.native="handleChangeUserPref"
-								class="tw-font-medium"
-							>
-								Continue browsing
-							</router-link>
-						</div>
 						<hr class="tw-border-tertiary tw-my-3">
 					</div>
 					<div class="basket-container tw-mx-auto tw-my-0" style="max-width: 800px;">
@@ -247,7 +235,6 @@
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
-import store2 from 'store2';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import syncDate from '@/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
@@ -322,8 +309,6 @@ export default {
 			holidayModeEnabled: false,
 			currentTime: Date.now(),
 			currentTimeInterval: null,
-			userPrefContinueBrowsing: false,
-			addToBasketRedirectExperimentShown: false,
 			loginButtonExperimentVersion: null,
 			redirectToLoginExperimentVersion: null,
 			isGuestCheckoutEnabled: false,
@@ -418,18 +403,6 @@ export default {
 		// TODO: Implement check against contentful setting
 		// to signify if holiday mode is enabled
 
-		// GROW-127 Add to basket redirect experiment
-		const addToBasketRedirectExperiment = this.apollo.readFragment({
-			id: 'Experiment:add_to_basket_redirect',
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		if (addToBasketRedirectExperiment.version === 'control') {
-			this.addToBasketRedirectExperimentShown = false;
-		} else if (addToBasketRedirectExperiment.version === 'shown') {
-			this.addToBasketRedirectExperimentShown = true;
-		}
-
 		// GROW-203 login/registration CTA experiment
 		const loginButtonExperiment = this.apollo.readFragment({
 			id: 'Experiment:checkout_login_cta',
@@ -488,8 +461,6 @@ export default {
 		if (this.isLoggedIn) {
 			this.logBasketState();
 		}
-
-		this.userPrefContinueBrowsing = store2('userPrefContinueBrowsing') === true; // read from localstorage
 
 		// show toast for specified scenario
 		this.handleToast();
@@ -716,14 +687,6 @@ export default {
 		},
 		redirectLightboxClosed() {
 			this.redirectLightboxVisible = false;
-		},
-		handleChangeUserPref() {
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-GROW-127-Jul2020',
-				'click-continue-browsing'
-			);
-			store2('userPrefContinueBrowsing', true); // store userpref in localstorage
 		},
 		logBasketState() {
 			const creditNeededInt = numeral(this.creditNeeded).value();
