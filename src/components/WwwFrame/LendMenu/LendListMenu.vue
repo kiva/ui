@@ -51,12 +51,20 @@
 							</li>
 						</template>
 						<li class="tw-border-t tw-border-tertiary">
-							<router-link to="/lend" class="lend-link">
+							<router-link
+								to="/lend"
+								class="lend-link"
+								v-kv-track-event="['TopNav','click-Lend-All_Loans']"
+							>
 								All loans
 							</router-link>
 						</li>
 						<li>
-							<router-link to="/categories" class="lend-link">
+							<router-link
+								to="/categories"
+								class="lend-link"
+								v-kv-track-event="['TopNav','click-Lend-All_Categories']"
+							>
 								All categories
 							</router-link>
 						</li>
