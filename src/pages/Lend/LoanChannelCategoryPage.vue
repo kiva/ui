@@ -7,7 +7,7 @@
 			<loan-channel-category-control />
 		</div>
 		<div v-if="pageLayout === 'experiment'">
-			<loan-channel-category-experiment :targeted-loan-channel="targetedLoanChannel" />
+			<loan-channel-category-experiment />
 		</div>
 
 		<add-to-basket-interstitial v-show="addToBasketExpActive" />
