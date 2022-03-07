@@ -80,7 +80,6 @@ import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
@@ -229,21 +228,16 @@ export default {
 				// extract query
 				const pageQuery = _get(args, 'route.query');
 
-				return Promise.all([
-					// query our targeted loan channel
-					client.query({
-						query: loanChannelQuery,
-						variables: _merge(
-							{
-								ids: [targetedLoanChannelID],
-								limit: loansPerPage
-							},
-							fromUrlParams(pageQuery)
-						)
-					}),
-					// experiment: add to basket interstitial
-					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_v2' } }),
-				]);
+				return client.query({
+					query: loanChannelQuery,
+					variables: _merge(
+						{
+							ids: [targetedLoanChannelID],
+							limit: loansPerPage
+						},
+						fromUrlParams(pageQuery)
+					)
+				});
 			});
 		}
 	},
