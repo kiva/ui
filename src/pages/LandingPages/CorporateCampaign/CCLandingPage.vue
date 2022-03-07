@@ -42,6 +42,7 @@
 							:initial-filters="initialFilters"
 							:excluded-tags="excludedTags"
 							:initial-sort-by="initialSortBy"
+							:active-loan-display="activeLoanDisplay"
 							:show-loan-display-toggle="showLoanDisplayToggle"
 							:total-count="totalCount"
 							@updated-filters="handleUpdatedFilters"
@@ -535,6 +536,7 @@ export default {
 			sortBy: 'popularity',
 			teamJoinStatus: null,
 			transactionId: null,
+			activeLoanDisplay: 'rows',
 			showLoanRows: true,
 			loanDetailsVisible: false,
 			detailedLoan: null,
@@ -596,8 +598,8 @@ export default {
 		// check for loan display settings from contentful
 		if (this.contentfulLoanDisplaySetting !== null) {
 			// check for default, if grid swap showLoanRows
-			if (this.contentfulLoanDisplaySetting.default === 'row') {
-				this.showLoanRows = false;
+			if (this.contentfulLoanDisplaySetting.default === 'grid') {
+				this.handleLoanDisplayType(false);
 			}
 			// check for loan display toggle override
 			if (this.contentfulLoanDisplaySetting.hideToggle) {
@@ -1148,6 +1150,8 @@ export default {
 			this.showLoans = false;
 			// set new loan display type
 			this.showLoanRows = state;
+			// udpate loan display
+			this.activeLoanDisplay = state ? 'rows' : 'grid';
 			// pause a moment to let the above affects play out
 			this.$nextTick(() => {
 				// re-enable visibility of loans, activates loan fetch within loan display
