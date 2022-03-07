@@ -1,3 +1,17 @@
+## [2.80.0](https://github.com/kiva/ui/compare/v2.79.1...v2.80.0) (2022-03-07)
+
+
+### Features
+
+* activate contentful controls for setting default loan display and toggle visibility ([85884bd](https://github.com/kiva/ui/commit/85884bd279f0537b8c0f59d119866b72842a0804))
+* use v-if for loan display visibility + wire up optional setting ([b9b3b9e](https://github.com/kiva/ui/commit/b9b3b9e4b7f868dab11e7904354138243030e4f2))
+
+
+### Bug Fixes
+
+* update comments around loan display settings from contentful ([663f6a9](https://github.com/kiva/ui/commit/663f6a9ec6212f2d56f9d73ca9f0825eea57f956))
+* updated corporate campaign footer styles to tailwind from broken green theme ([058b43c](https://github.com/kiva/ui/commit/058b43c6b5f5afdf5cefffc4c2bed6369b065bac))
+
 ### [2.79.1](https://github.com/kiva/ui/compare/v2.79.0...v2.79.1) (2022-03-03)
 
 
