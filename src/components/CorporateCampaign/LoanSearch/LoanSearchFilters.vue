@@ -18,7 +18,7 @@
 				<span class="tw-font-medium tw-whitespace-nowrap">{{ totalCount }} loans</span>
 			</div>
 
-			<div class="loan-filters__loan-display">
+			<div v-if="showLoanDisplayToggle" class="loan-filters__loan-display">
 				<kv-pill-toggle
 					id="pill"
 					:options="[
@@ -277,6 +277,10 @@ export default {
 		initialSortBy: {
 			type: String,
 			default: 'popularity',
+		},
+		showLoanDisplayToggle: {
+			type: Boolean,
+			default: true
 		},
 		totalCount: {
 			type: Number,

@@ -42,6 +42,7 @@
 							:initial-filters="initialFilters"
 							:excluded-tags="excludedTags"
 							:initial-sort-by="initialSortBy"
+							:show-loan-display-toggle="showLoanDisplayToggle"
 							:total-count="totalCount"
 							@updated-filters="handleUpdatedFilters"
 							@updated-sort-by="handleUpdatedSortBy"
@@ -50,7 +51,7 @@
 						/>
 
 						<campaign-loan-row
-							v-show="showLoanRows"
+							v-if="showLoanRows"
 							id="campaignLoanRowDisplay"
 							:filters="filters"
 							:is-visitor="isVisitor"
@@ -69,7 +70,7 @@
 						/>
 
 						<campaign-loan-grid-display
-							v-show="!showLoanRows"
+							v-if="!showLoanRows"
 							id="campaignLoanDisplay"
 							ref="loandisplayref"
 							:checkout-visible="checkoutVisible || showThanks"
@@ -541,6 +542,7 @@ export default {
 			initialFilters: {},
 			verificationSumbitted: false,
 			loadingPage: false,
+			showLoanDisplayToggle: true,
 			showVerifyRemovePromoCredit: false,
 		};
 	},
@@ -591,6 +593,18 @@ export default {
 		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
 	},
 	mounted() {
+		// check for loan display settings from contentful
+		if (this.contentfulLoanDisplaySetting !== null) {
+			// check for default, if grid swap showLoanRows
+			if (this.contentfulLoanDisplaySetting.default === 'row') {
+				this.showLoanRows = false;
+			}
+			// check for loan display toggle override
+			if (this.contentfulLoanDisplaySetting.hideToggle) {
+				this.showLoanDisplayToggle = false;
+			}
+		}
+
 		// check for applied promo
 		this.verifyOrApplyPromotion();
 
@@ -702,6 +716,11 @@ export default {
 		},
 		isMatchingCampaign() {
 			return this.pageSettingData?.matcherAccountId !== undefined;
+		},
+		contentfulLoanDisplaySetting() {
+			// this page's code defaults to showing a loan row carousel
+			// { default: 'row' or 'grid', showToggle: true or false  }
+			return this.pageSettingData?.loanDisplay ?? null;
 		},
 		contentfulPageId() {
 			return this.promoData?.managedAccount?.pageid ?? null;
@@ -944,7 +963,9 @@ export default {
 			// Query to update basket state
 			this.updateBasketState();
 			// TEMPORARY: Obstruct ability to click the "Checkout" button on the loan card to prevent redirect
-			this.$refs.loandisplayref.loadingLoans = true;
+			if (this.$refs.loandisplayref) {
+				this.$refs.loandisplayref.loadingLoans = true;
+			}
 		},
 		updateBasketState() {
 			// Ensure basket state is loading
@@ -1041,7 +1062,9 @@ export default {
 					this.setAuthStatus(this.kvAuth0?.user ?? {});
 
 					// TEMPORARY: turn off loading loans
-					this.$refs.loandisplayref.loadingLoans = false;
+					if (this.$refs.loandisplayref) {
+						this.$refs.loandisplayref.loadingLoans = false;
+					}
 					if (this.$refs.inContextCheckoutRef) {
 						this.$refs.inContextCheckoutRef.updatingTotals = false;
 					}
@@ -1121,7 +1144,19 @@ export default {
 		},
 		// toggle visible loan types
 		handleLoanDisplayType(state) {
+			// toggle off loan visibility prop passed down to loan displays
+			this.showLoans = false;
+			// set new loan display type
 			this.showLoanRows = state;
+			// pause a moment to let the above affects play out
+			this.$nextTick(() => {
+				// re-enable visibility of loans, activates loan fetch within loan display
+				this.showLoans = true;
+				// up loan query for grid view
+				if (!this.showLoanRows && this.$refs.loandisplayref && this.$route.query.page) {
+					this.$refs.loandisplayref.updateFromParams(this.$route.query);
+				}
+			});
 		},
 
 		handleTeamJoinProcess(payload) {
@@ -1227,11 +1262,16 @@ export default {
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
-			vm.$refs.loandisplayref.updateFromParams(to.query);
+			if (vm.$refs.loandisplayref) {
+				vm.$refs.loandisplayref.updateFromParams(to.query);
+			}
 		});
 	},
 	beforeRouteUpdate(to, from, next) {
-		this.$refs.loandisplayref.updateFromParams(to.query);
+		if (this.$refs.loandisplayref) {
+			this.$refs.loandisplayref.updateFromParams(to.query);
+		}
+
 		if (to.hash === '#show-basket') {
 			this.checkoutVisible = true;
 		}
