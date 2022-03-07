@@ -597,7 +597,7 @@ export default {
 	mounted() {
 		// check for loan display settings from contentful
 		if (this.contentfulLoanDisplaySetting !== null) {
-			// check for default, if grid swap showLoanRows
+			// check for default, if 'grid' swap update loan display. (rows is deafult)
 			if (this.contentfulLoanDisplaySetting.default === 'grid') {
 				this.handleLoanDisplayType(false);
 			}
@@ -721,7 +721,7 @@ export default {
 		},
 		contentfulLoanDisplaySetting() {
 			// this page's code defaults to showing a loan row carousel
-			// { default: 'row' or 'grid', showToggle: true or false  }
+			// { default: 'grid' ('rows' is default), hideToggle: true (false by default) }
 			return this.pageSettingData?.loanDisplay ?? null;
 		},
 		contentfulPageId() {
