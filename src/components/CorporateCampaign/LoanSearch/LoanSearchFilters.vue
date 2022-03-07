@@ -31,7 +31,7 @@
 							key: 'grid',
 						},
 					]"
-					selected="rows"
+					:selected="activeLoanDisplay"
 					@pill-toggled="(val) => { $emit('set-loan-display', val === 'rows') }"
 				/>
 			</div>
@@ -258,6 +258,10 @@ export default {
 		TagFilter
 	},
 	props: {
+		activeLoanDisplay: {
+			type: String,
+			default: 'rows'
+		},
 		appliedFilters: {
 			type: Object,
 			default: () => {}
