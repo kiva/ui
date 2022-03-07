@@ -839,18 +839,19 @@ export default {
 				// filter routes on route.param.category to get current path
 				const targetedCategory = args?.route?.params?.category;
 				const selectedSubCategory = categoryProperties[targetedCategory]?.subCategories[0];
+
 				return Promise.all([
 					client.query({
 						query: itemsInBasketQuery,
 					}),
-					client.query({
+					...(selectedSubCategory ? [client.query({
 						query: basicLoanQuery,
 						variables: {
 							...selectedSubCategory.variables,
 							...fromUrlParams(args?.route?.query),
 							limit: loansPerPage,
 						}
-					})
+					})] : []),
 				]);
 			});
 		}
