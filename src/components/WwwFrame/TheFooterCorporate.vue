@@ -8,7 +8,7 @@
 						:corporate-logo-url="corporateLogoUrl"
 					/>
 				</div>
-				<p class="the-footer-corporate__text tw-text-small tw-mx-auto tw-mb-2" style="max-width: 400px;">
+				<p class="tw-text-small tw-mx-auto tw-mb-2" style="max-width: 400px;">
 					Kiva is a 501(c)3 U.S. nonprofit fueled by passionate people.
 					Founded in 2005, and based in San Francisco, with offices in Bangkok, Nairobi,
 					Portland and staff around the globe.
@@ -38,7 +38,7 @@
 						Terms of use
 					</router-link>
 				</div>
-				<p class="the-footer-corporate__text tw-text-small tw-mx-auto tw-mb-2" style="max-width: 400px;">
+				<p class="tw-text-small tw-mx-auto tw-mb-2" style="max-width: 400px;">
 					Lending through Kiva involves risk of principal loss.
 					Kiva does not guarantee repayment or offer a financial return on your loan.
 				</p>
