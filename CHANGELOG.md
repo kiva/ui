@@ -133,6 +133,21 @@
 * update comments around loan display settings from contentful ([1f9ab46](https://github.com/kiva/ui/commit/1f9ab461a4ad0fd0e8143ebdab698b91623aa33c))
 * updated corporate campaign footer styles to tailwind from broken green theme ([10a62ca](https://github.com/kiva/ui/commit/10a62caa2b0ce89f04dd67052ff9a892ffce0f21))
 
+## [2.75.0-next.1](https://github.com/kiva/ui/compare/v2.74.3-next.2...v2.75.0-next.1) (2022-03-07)
+
+
+### Features
+
+* activate contentful controls for setting default loan display and toggle visibility ([4377716](https://github.com/kiva/ui/commit/4377716628d40272ae93fd5517bd5a63ed7550be))
+* refactor landing page footer to tailwind ([87e7c21](https://github.com/kiva/ui/commit/87e7c2124d2e0dcb477f0abcda84543471a8d368))
+* use v-if for loan display visibility + wire up optional setting ([934b4f0](https://github.com/kiva/ui/commit/934b4f034213ae7319a4b6dc80b23d8e065e9c0c))
+
+
+### Bug Fixes
+
+* update comments around loan display settings from contentful ([1f9ab46](https://github.com/kiva/ui/commit/1f9ab461a4ad0fd0e8143ebdab698b91623aa33c))
+* updated corporate campaign footer styles to tailwind from broken green theme ([10a62ca](https://github.com/kiva/ui/commit/10a62caa2b0ce89f04dd67052ff9a892ffce0f21))
+
 ### [2.74.3-next.2](https://github.com/kiva/ui/compare/v2.74.3-next.1...v2.74.3-next.2) (2022-03-03)
 
 
