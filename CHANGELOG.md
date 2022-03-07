@@ -1,3 +1,10 @@
+## [2.81.0](https://github.com/kiva/ui/compare/v2.80.0...v2.81.0) (2022-03-07)
+
+
+### Features
+
+* lbc experiment layout category definitions and functionality ([c089a57](https://github.com/kiva/ui/commit/c089a5747dfc69f063d7fbefb792d15be6862170))
+
 ## [2.80.0](https://github.com/kiva/ui/compare/v2.79.1...v2.80.0) (2022-03-07)
 
 
