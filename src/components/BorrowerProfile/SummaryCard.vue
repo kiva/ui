@@ -117,7 +117,15 @@ export default {
 					name: 'facebook_label',
 					content: this.pageLabel
 				},
-			] : [])
+			] : []).concat([
+				// Twitter Tags
+				{ name: 'twitter:title', vmid: 'twitter:title', content: `A loan to ${this.name}` },
+				{
+					name: 'twitter:image',
+					vmid: 'twitter:image',
+					content: this.imageShareUrl
+				},
+			])
 		};
 	},
 	data() {

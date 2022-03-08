@@ -100,6 +100,7 @@ export default {
 				},
 				{
 					name: 'twitter:image',
+					vmid: 'twitter:image',
 					content: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-ogtwitter-image.jpg'
 				},
 			]),
