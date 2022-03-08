@@ -1,6 +1,7 @@
 <template>
 	<www-page>
 		<kv-hero
+			v-if="!isImpactVisibilityExperiment"
 			class="mg-hero bg-overlay"
 			:class="{ experiment: isExperimentActive }"
 		>
@@ -46,6 +47,59 @@
 							</p>
 						</div>
 					</div>
+				</div>
+			</template>
+		</kv-hero>
+		<kv-hero v-if="isImpactVisibilityExperiment">
+			<template #images>
+				<div class="tw-relative lg:tw-pt-2">
+					<div class="tw-absolute tw-w-full tw-h-full tw-flex tw-flex-col tw-justify-end
+					tw-text-white tw-p-2 lg:tw-max-w-5xl lg:tw-pb-2 lg:tw-rounded"
+						style="background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(255,255,255,0) 80%);
+							left: 50%; transform: translate(-50%, 0);"
+					>
+						<div class="tw-max-w-xl tw-mx-auto">
+							<h2>It’s easy to do good</h2>
+							<p class="tw-mb-5 tw-text-subhead">
+								Support borrowers worldwide with monthly contributions as little as $5.
+							</p>
+						</div>
+					</div>
+					<div class="tw-p-2 tw-absolute -tw-mt-8 tw-flex tw-justify-center tw-w-full tw-z-10"
+						style="top: 90%"
+					>
+						<div class="tw-bg-white tw-rounded tw-p-2 tw-pb-0"
+							style="box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);"
+						>
+							<landing-form-visibility-exp
+								:amount.sync="monthlyGoodAmount"
+								:selected-group.sync="selectedGroup"
+								key="top"
+								:button-text="heroPrimaryCtaText"
+							/>
+						</div>
+					</div>
+					<img class="tw-object-cover lg:tw-object-contain lg:tw-max-w-5xl tw-mx-auto
+							lg:tw-rounded"
+						style="min-height: 440px;"
+						:src="heroImage" alt=""
+					>
+				</div>
+				<div class="tw-pt-16 md:tw-pt-11 lg:tw-max-w-5xl lg:tw-mx-auto tw-px-2">
+					<h2 class="md:tw-text-center tw-text-subhead">
+						With these settings, you’ll support borrowers like this.
+					</h2>
+
+					<kiva-classic-loan-carousel-exp
+						:is-visible="showCarousel"
+						:loan-ids="selectedChannelLoanIds"
+						:selected-channel="selectedChannel"
+						:show-view-more-card="showViewMoreCard"
+					/>
+
+					<p class="tw-text-small tw-text-center tw-mt-4">
+						You can change your lending settings or cancel at any time.
+					</p>
 				</div>
 			</template>
 		</kv-hero>
@@ -98,11 +152,13 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvHero from '@/components/Kv/KvHero';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
+import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 import LandingForm from './LandingForm';
 import LandingFormExperiment from './LandingFormExperiment';
+import LandingFormVisibilityExp from './LandingFormVisibilityExp';
 import HowItWorks from './HowItWorks';
 import EmailPreview from './EmailPreview';
 import MoreAboutKiva from './MoreAboutKiva';
@@ -151,8 +207,10 @@ export default {
 		KvHero,
 		LandingForm,
 		LandingFormExperiment,
+		LandingFormVisibilityExp,
 		MoreAboutKiva,
 		WwwPage,
+		KivaClassicLoanCarouselExp,
 	},
 	props: {
 		category: {
@@ -163,6 +221,7 @@ export default {
 	data() {
 		return {
 			isExperimentActive: false,
+			isImpactVisibilityExperiment: true,
 			isMonthlyGoodSubscriber: false,
 			monthlyGoodAmount: 25,
 			selectedGroup: this.category || 'default',
@@ -195,6 +254,10 @@ export default {
 				},
 			],
 			hasModernSub: false,
+			selectedChannelLoanIds: [96, 102],
+			selectedChannel: {},
+			showCarousel: true,
+			showViewMoreCard: false
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
