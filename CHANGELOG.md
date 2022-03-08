@@ -1,3 +1,10 @@
+## [2.83.0](https://github.com/kiva/ui/compare/v2.82.0...v2.83.0) (2022-03-08)
+
+
+### Features
+
+* improved open graph/twitter meta properties for sharing borrower profiles ([c8c7589](https://github.com/kiva/ui/commit/c8c758942dd6310af66b8fbe3fd41452f5213658))
+
 ## [2.82.0](https://github.com/kiva/ui/compare/v2.81.0...v2.82.0) (2022-03-08)
 
 
