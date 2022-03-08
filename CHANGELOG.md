@@ -1,3 +1,10 @@
+### [2.83.1](https://github.com/kiva/ui/compare/v2.83.0...v2.83.1) (2022-03-08)
+
+
+### Bug Fixes
+
+* convert mg copy from climate change to earth friendly ([476b6e7](https://github.com/kiva/ui/commit/476b6e710f1f8c5af8ea971f83e6f7720e92030f))
+
 ## [2.83.0](https://github.com/kiva/ui/compare/v2.82.0...v2.83.0) (2022-03-08)
 
 
