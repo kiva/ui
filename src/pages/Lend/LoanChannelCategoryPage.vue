@@ -3,12 +3,8 @@
 		class="loan-channel-page category-page"
 		:gray-background="pageLayout === 'control'"
 	>
-		<div v-if="pageLayout === 'control'">
-			<loan-channel-category-control />
-		</div>
-		<div v-if="pageLayout === 'experiment'">
-			<loan-channel-category-experiment />
-		</div>
+		<loan-channel-category-control v-if="pageLayout === 'control'" />
+		<loan-channel-category-experiment v-if="pageLayout === 'experiment'" />
 
 		<add-to-basket-interstitial v-show="addToBasketExpActive" />
 	</www-page>
@@ -22,11 +18,16 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import LoanChannelCategoryControl from '@/pages/Lend/LoanChannelCategoryControl';
 import LoanChannelCategoryExperiment from '@/pages/Lend/LoanChannelCategoryExperiment';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 const pageQuery = gql`
-	query LoanChannelCategoryPageAddToBasketExp {
+	query LoanChannelCategoryPageExperiments {
 		general {
 			addToBasketPopup: uiExperimentSetting(key: "add_to_basket_v2") {
+				key
+				value
+			}
+			lbcLayout: uiExperimentSetting(key: "lend_by_category_v2") {
 				key
 				value
 			}
@@ -48,14 +49,17 @@ export default {
 			pageLayout: 'control'
 		};
 	},
-	computed: {
-		targetedLoanChannel() {
-			return this.$route?.params?.category ?? '';
-		}
-	},
 	apollo: {
-		query: pageQuery,
-		preFetch: true,
+		preFetch(config, client) {
+			return client.query({
+				query: pageQuery
+			}).then(() => {
+				return Promise.all([
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'lend_by_category_v2' } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'add_to_basket_v2' } }),
+				]);
+			});
+		}
 	},
 	created() {
 		/*
@@ -64,6 +68,28 @@ export default {
 
 		// Add to Basket Interstitial
 		this.initializeAddToBasketInterstitial();
+		// Experimental page layout
+		this.initializeExperimentalLayout();
+	},
+	computed: {
+		targetedLoanChannel() {
+			return this.$route?.params?.category ?? '';
+		},
+		// categories to run ACK-247 experiment on
+		testCategories() {
+			return [
+				'loans-to-women',
+				'women',
+				'kiva-u-s',
+				'agriculture',
+				'eco-friendly',
+				'refugees-and-i-d-ps',
+				'shelter',
+				'single-parents',
+				'conflict-zones',
+				'ending-soon'
+			];
+		}
 	},
 	methods: {
 		initializeAddToBasketInterstitial() {
@@ -89,6 +115,26 @@ export default {
 					'EXP-CASH-612-Apr2019',
 					this.addToBasketExpActive ? 'b' : 'a'
 				);
+			}
+		},
+		initializeExperimentalLayout() {
+			const layoutEXP = this.apollo.readFragment({
+				id: 'Experiment:lend_by_category_v2',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			// Only certain categories are eligible for the experiment
+			if (this.testCategories.includes(this.targetedLoanChannel)) {
+				this.pageLayout = layoutEXP.version === 'shown' ? 'experiment' : 'control';
+
+				// Fire Event for Exp ACK-247 Status
+				if (layoutEXP.version && layoutEXP.version !== 'unassigned') {
+					this.$kvTrackEvent(
+						'lend-by-category',
+						'EXP-ACK-247-Mar2022',
+						layoutEXP.version === 'shown' ? 'b' : 'a'
+					);
+				}
 			}
 		}
 	},
