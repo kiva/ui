@@ -21,6 +21,11 @@ export default {
 		return {
 			meta: [
 				{ property: 'og:description', vmid: 'og:description', content: this.loanUseFiltered },
+				{
+					name: 'twitter:description',
+					vmid: 'twitter:description',
+					content: this.loanUseFiltered
+				},
 			]
 		};
 	},
