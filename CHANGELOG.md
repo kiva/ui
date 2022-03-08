@@ -1,3 +1,10 @@
+### [2.83.2](https://github.com/kiva/ui/compare/v2.83.1...v2.83.2) (2022-03-08)
+
+
+### Bug Fixes
+
+* control mg upsell link visibility more explicity ([065886e](https://github.com/kiva/ui/commit/065886e7f43ca6e3f4eb36b61abc4d304bf4fadc))
+
 ### [2.83.1](https://github.com/kiva/ui/compare/v2.83.0...v2.83.1) (2022-03-08)
 
 
