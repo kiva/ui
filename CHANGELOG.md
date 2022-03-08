@@ -1,3 +1,11 @@
+## [2.82.0](https://github.com/kiva/ui/compare/v2.81.0...v2.82.0) (2022-03-08)
+
+
+### Features
+
+* exclude experiment layout for categories that should not be experimented on ([93faf4e](https://github.com/kiva/ui/commit/93faf4e6ddf82b9f33f08648591ab3b877aacd08))
+* toggle experimental layout in lend by category page ([6fceaf3](https://github.com/kiva/ui/commit/6fceaf3231d8ca61d880a8a1a533d600ebb55221))
+
 ## [2.81.0](https://github.com/kiva/ui/compare/v2.80.0...v2.81.0) (2022-03-07)
 
 
