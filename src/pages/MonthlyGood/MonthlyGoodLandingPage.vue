@@ -55,8 +55,9 @@
 				<div class="tw-relative lg:tw-pt-2">
 					<div class="tw-absolute tw-w-full tw-h-full tw-flex tw-flex-col tw-justify-end
 					tw-text-white tw-p-2 lg:tw-max-w-5xl lg:tw-pb-2 lg:tw-rounded"
-						style="background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(255,255,255,0) 85%);
-							left: 50%; transform: translate(-50%, 0);"
+						style="background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(255, 255, 255, 0) 85%);
+							left: 50%;
+							transform: translate(-50%, 0);"
 					>
 						<div class="tw-max-w-2xl tw-mx-auto">
 							<h2>It’s easy to do good</h2>
@@ -66,10 +67,10 @@
 						</div>
 					</div>
 					<div class="tw-p-2 tw-absolute -tw-mt-8 tw-flex tw-justify-center tw-w-full tw-z-10"
-						style="top: 90%"
+						style="top: 90%;"
 					>
 						<div class="tw-bg-white tw-rounded tw-p-2 tw-pb-0"
-							style="box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);"
+							style="box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);"
 						>
 							<landing-form-visibility-exp
 								:amount.sync="monthlyGoodAmount"
