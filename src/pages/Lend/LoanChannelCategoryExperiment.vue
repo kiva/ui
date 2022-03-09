@@ -54,7 +54,7 @@
 							:loan="loan"
 							loan-card-type="GridLoanCard"
 						/>
-						<div class="column column-block">
+						<div class="column column-block" v-if="mgTargetCategory">
 							<promo-grid-loan-card
 								v-if="mgTargetCategory"
 								:category-url="mgTargetCategory.url"
@@ -155,7 +155,7 @@ const pageQuery = gql`
 const categoryProperties = {
 	women: {
 		title: 'Women',
-		tagline: 'Support women across a variety of causes',
+		tagline: 'Support women across a variety of areas',
 		image: imageRequire('./lbc-women.jpg'),
 		loanChannelId: 5,
 		subCategories: [
@@ -294,7 +294,7 @@ const categoryProperties = {
 				variables: {
 					filters: {
 						distributionModel: 'direct',
-						loanTags: [51],
+						loanTags: [45, 43],
 						country: ['us', 'gu', 'vi', 'pr'],
 						status: 'fundraising'
 					},
@@ -446,18 +446,6 @@ const categoryProperties = {
 		loanChannelId: 32,
 		subCategories: [
 			{
-				name: 'Women',
-				variables: {
-					filters: {
-						distributionModel: 'both',
-						gender: 'female',
-						theme: 'Refugees/Displaced',
-						status: 'fundraising'
-					},
-					sortBy: 'popularity'
-				}
-			},
-			{
 				name: 'Entrepreneurs',
 				variables: {
 					filters: {
@@ -475,6 +463,18 @@ const categoryProperties = {
 					filters: {
 						distributionModel: 'both',
 						sector: [1],
+						theme: 'Refugees/Displaced',
+						status: 'fundraising'
+					},
+					sortBy: 'popularity'
+				}
+			},
+			{
+				name: 'Women',
+				variables: {
+					filters: {
+						distributionModel: 'both',
+						gender: 'female',
 						theme: 'Refugees/Displaced',
 						status: 'fundraising'
 					},
@@ -1069,11 +1069,17 @@ export default {
 /* Medium screens and above */
 @media screen and (min-width: 734px) {
 	.lbc-hero-wrapper {
-		@apply tw-bg-transparent tw-rounded-b-lg;
+		@apply tw-bg-brand tw-rounded-b-lg;
 
-		background-image: linear-gradient(90deg, #26985D 20%, rgba(0, 197, 197, 0) 75%), var(--hero-background);
+		background-image: linear-gradient(90deg, #26985D 30%, rgba(0, 197, 197, 0) 75%), var(--hero-background);
 		background-position: 0, top right;
-		background-size: auto, cover;
+		background-size: auto, 70%;
+	}
+}
+@media screen and (min-width: 1921px) {
+	.lbc-hero-wrapper {
+		background-position: 0, center top;
+		background-size: 1620px, 1620px;
 	}
 }
 </style>
