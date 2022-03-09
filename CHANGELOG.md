@@ -1,3 +1,10 @@
+## [2.84.0](https://github.com/kiva/ui/compare/v2.83.2...v2.84.0) (2022-03-09)
+
+
+### Features
+
+* **lend-by-category:** add experiment for selecting hero loan VUE-917 ([171ea7d](https://github.com/kiva/ui/commit/171ea7d119dccf17b5181ddd3065d8ec90c3469c))
+
 ### [2.83.2](https://github.com/kiva/ui/compare/v2.83.1...v2.83.2) (2022-03-08)
 
 
