@@ -55,10 +55,10 @@
 				<div class="tw-relative lg:tw-pt-2">
 					<div class="tw-absolute tw-w-full tw-h-full tw-flex tw-flex-col tw-justify-end
 					tw-text-white tw-p-2 lg:tw-max-w-5xl lg:tw-pb-2 lg:tw-rounded"
-						style="background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(255,255,255,0) 80%);
+						style="background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(255,255,255,0) 85%);
 							left: 50%; transform: translate(-50%, 0);"
 					>
-						<div class="tw-max-w-xl tw-mx-auto">
+						<div class="tw-max-w-2xl tw-mx-auto">
 							<h2>It’s easy to do good</h2>
 							<p class="tw-mb-5 tw-text-subhead">
 								Support borrowers worldwide with monthly contributions as little as $5.
@@ -153,6 +153,7 @@ import KvHero from '@/components/Kv/KvHero';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
 import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
+import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
@@ -198,6 +199,9 @@ export default {
 	metaInfo: {
 		title: 'Start Monthly Good',
 	},
+	mixins: [
+		loanGroupCategoriesMixin
+	],
 	components: {
 		EmailPreview,
 		HowItWorks,
@@ -254,11 +258,19 @@ export default {
 				},
 			],
 			hasModernSub: false,
-			selectedChannelLoanIds: [96, 102],
+			selectedChannelLoanIds: [2019772, 2319405, 2320176],
 			selectedChannel: {},
 			showCarousel: true,
 			showViewMoreCard: false
 		};
+	},
+	watch: {
+		selectedGroup() {
+			const resultsArray = this.lendingCategories.filter(element => {
+				return element.value === this.selectedGroup;
+			});
+			this.selectedChannelLoanIds = resultsArray[0].expLoansIds;
+		}
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {

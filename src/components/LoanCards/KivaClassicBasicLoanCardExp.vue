@@ -70,18 +70,6 @@
 			style="min-height: 3rem;"
 		/>
 
-		<!-- Amount to go line-->
-		<kv-loading-placeholder
-			v-if="isLoading"
-			class="tw-mb-0.5" :style="{width: 40 + (Math.random() * 15) + '%', height: '1.3rem'}"
-		/>
-
-		<!-- Fundraising bar -->
-		<kv-loading-placeholder
-			v-if="isLoading"
-			class="tw-mb-1.5 tw-rounded" :style="{width: '100%', height: '0.5rem'}"
-		/>
-
 		<!-- LoanUse  -->
 		<kv-loading-paragraph
 			v-if="isLoading"
@@ -116,26 +104,6 @@
 			:reserved-amount="loan.loanFundraisingInfo.reservedAmount"
 			:loan-amount="loan.loanAmount"
 		/>
-
-		<!-- CTA Button -->
-		<kv-loading-placeholder
-			v-if="isLoading"
-			class="tw-rounded tw-self-start" :style="{width: '9rem', height: '3rem'}"
-		/>
-
-		<kv-button
-			v-if="!isLoading && !allSharesReserved"
-			class="tw-mb-2 tw-self-start"
-			:state="`${allSharesReserved ? 'disabled' : ''}`"
-			:to="`/lend/${loanId}`"
-			v-kv-track-event="['Lending', 'click-Read-more', 'View loan', loanId]"
-		>
-			View loan
-			<kv-material-icon
-				class="tw-w-3 tw-h-3 tw-align-middle"
-				:icon="mdiChevronRight"
-			/>
-		</kv-button>
 	</div>
 </template>
 
