@@ -1,3 +1,10 @@
+### [2.84.1](https://github.com/kiva/ui/compare/v2.84.0...v2.84.1) (2022-03-09)
+
+
+### Bug Fixes
+
+* lbc experiment layout minor fixes ([c5d8736](https://github.com/kiva/ui/commit/c5d87363d6a67fdef4d24216281b1735e7eb9c27))
+
 ## [2.84.0](https://github.com/kiva/ui/compare/v2.83.2...v2.84.0) (2022-03-09)
 
 
