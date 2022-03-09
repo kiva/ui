@@ -5,6 +5,7 @@ import _set from 'lodash/set';
 const targetIds = [
 	'EXP-ML-Service-Bandit-LendByCategory',
 	'EXP-VUE-937-recommended-row-algo',
+	'EXP-VUE-917-hero-loan',
 ];
 
 function buildExpHeaders(cookieStore) {
