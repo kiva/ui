@@ -22,7 +22,7 @@
 						</h1>
 						<hr class="tw-border-tertiary tw-my-3">
 					</div>
-					<div class="basket-container tw-mx-auto tw-my-0" style="max-width: 800px;">
+					<div class="basket-container tw-mx-auto tw-my-0">
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
@@ -36,7 +36,7 @@
 					</div>
 					<div v-if="showKivaCardForm">
 						<hr class="tw-border-tertiary tw-my-3">
-						<div class="basket-container tw-mx-auto tw-my-0" style="max-width: 800px;">
+						<div class="basket-container tw-mx-auto tw-my-0">
 							<kiva-card-redemption
 								:credits="redemption_credits"
 								:totals="totals"
@@ -47,7 +47,7 @@
 					</div>
 					<hr class="tw-border-tertiary tw-my-3">
 
-					<div class="basket-container tw-mx-auto tw-my-0" style="max-width: 800px;">
+					<div class="basket-container tw-mx-auto tw-my-0">
 						<checkout-holiday-promo
 							v-if="holidayModeEnabled"
 							@updating-totals="setUpdatingTotals"
@@ -755,13 +755,13 @@ export default {
 			right: 0;
 			bottom: 0;
 			top: 0;
-			background-color: rgba($kiva-bg-lightgray, 0.7);
+			background-color: rgba($white, 0.7);
 
 			.spinner-wrapper {
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				position: relative;
+				position: unset;
 				height: 100%;
 				top: auto;
 				left: auto;
