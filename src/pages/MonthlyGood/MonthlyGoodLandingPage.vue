@@ -545,14 +545,13 @@ export default {
 			max-width: 23rem;
 		}
 	}
-
-}
-
-#carousel_exp >>> section > div:nth-child(1) > div {
-	max-width: 310px !important;
 }
 
 #carousel_exp >>> section > div:nth-child(2) {
 	display: none;
+}
+
+#carousel_exp >>> section > div:nth-child(1) > div {
+	max-width: 310px !important;
 }
 </style>
