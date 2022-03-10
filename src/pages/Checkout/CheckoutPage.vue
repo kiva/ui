@@ -15,13 +15,13 @@
 				class="basket-wrap tw-relative tw-mb-1"
 				:class="{'pre-login': !preCheckoutStep}"
 			>
-				<div>
-					<div class="checkout-steps-wrapper tw-pb-3 hide-for-print">
-						<h1 class="tw-text-h2 tw-mb-3">
-							Your basket
-						</h1>
-						<hr class="tw-border-tertiary tw-my-3">
-					</div>
+				<div class="checkout-header tw-pb-3 hide-for-print">
+					<h1 class="tw-text-h2 tw-mb-3">
+						Your basket
+					</h1>
+					<hr class="tw-border-tertiary tw-my-3">
+				</div>
+				<div class="tw-relative">
 					<div class="basket-container tw-mx-auto tw-my-0">
 						<basket-items-list
 							:loans="loans"
@@ -173,7 +173,7 @@
 						v-if="updatingTotals"
 						data-testid="updating-overlay"
 						id="updating-overlay"
-						class="updating-totals-overlay tw-z-overlay"
+						class="updating-totals-overlay tw-z-overlay tw-bg-white"
 					/>
 				</div>
 			</div>
@@ -203,7 +203,7 @@
 			</kv-lightbox>
 
 			<div v-if="emptyBasket" class="empty-basket tw-relative tw-mx-auto" data-testid="empty-basket">
-				<div class="tw-mb-4">
+				<div class="checkout-header-empty tw-mb-4">
 					<h1 class="tw-text-h2 tw-mb-2">
 						Your basket is empty!
 					</h1>
@@ -235,7 +235,8 @@
 						v-if="updatingTotals"
 						data-testid="updating-overlay"
 						id="updating-overlay"
-						class="updating-totals-overlay"
+						class="updating-totals-overlay tw-z-overlay"
+						style="width: 100vw;"
 					/>
 				</div>
 			</div>
@@ -725,49 +726,11 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-.page-content,
-.empty-basket {
+#checkout-slim {
 	// loading overlay overrides
 	#loading-overlay,
 	#updating-overlay {
 		background-color: rgba(255, 255, 255, 0.7);
-		z-index: 500;
-	}
-
-	#updating-overlay {
-		margin-top: 2rem;
-		height: auto;
-		bottom: 0;
-	}
-
-	.pre-login #updating-overlay {
-		margin-top: 0;
-	}
-}
-
-.empty-basket {
-	.empty-basket-loans {
-		#updating-overlay {
-			z-index: 1000;
-			width: auto;
-			height: auto;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			top: 0;
-			background-color: rgba($white, 0.7);
-
-			.spinner-wrapper {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				position: unset;
-				height: 100%;
-				top: auto;
-				left: auto;
-				transform: none;
-			}
-		}
 	}
 }
 </style>
