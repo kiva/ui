@@ -276,8 +276,8 @@ export default {
 			}
 
 			this.isLoading = false;
-			this.loan = result.data?.lend?.loan || null;
-			this.basketItems = result.data?.shop?.basket?.items?.values || null;
+			this.loan = result.data?.lend?.loan ?? {};
+			this.basketItems = result.data?.shop?.basket?.items?.values ?? [];
 		}
 	},
 	serverPrefetch() {
