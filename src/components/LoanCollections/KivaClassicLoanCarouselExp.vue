@@ -10,7 +10,7 @@
 		</transition>
 
 		<kv-carousel
-			v-if="augmentedLoanIds.length > 0 && isVisible"
+			v-if="loanIds.length > 0 && isVisible"
 			class="tw-w-full tw-overflow-visible md:tw-overflow-hidden"
 			:embla-options="{
 				loop: false,
@@ -21,28 +21,10 @@
 			:slide-max-width="singleSlideWidth"
 			@interact-carousel="onInteractCarousel"
 		>
-			<template v-for="(loanId, index) in augmentedLoanIds" #[`slide${index}`]>
-				<!-- Show View more Card -->
-				<router-link
-					v-if="loanId === 3"
-					:key="`view-more-card-${loanId}`"
-					class="tw-flex tw-items-center tw-h-full tw-w-full
-						hover:tw-bg-action-highlight hover:tw-text-primary-inverse tw-rounded"
-					:to="cleanUrl"
-					v-kv-track-event="[
-						'Homepage',
-						'click-carousel-view-all-category-loans',
-						`${viewAllLoansCategoryTitle}`]"
-				>
-					<div class="tw-w-full tw-text-center">
-						<h3>{{ viewAllLoansCategoryTitle }}</h3>
-					</div>
-				</router-link>
-
+			<template v-for="(loanId, index) in loanIds" #[`slide${index}`]>
 				<!-- show loan card -->
 				<!-- TODO Re-implement card position analytics -->
 				<kiva-classic-basic-loan-card-exp
-					v-else
 					:item-index="index"
 					:key="`loan-${loanId}`"
 					:loan-id="loanId"
@@ -102,60 +84,7 @@ export default {
 	},
 	computed: {
 		isLoading() {
-			return this.augmentedLoanIds.length === 0 && this.isVisible;
-		},
-		augmentedLoanIds() {
-			const clonedLoanIds = [...this.loanIds];
-			// const promoCardId = 1;
-			// const loadMoreCardId = 2;
-			const viewMoreCardId = 3;
-			// TODO: splice if promoCard if active on row
-			// if (this.showPromoCard) {
-			// 	clonedLoanIds.splice(1, 0, promoCardId);
-			// }
-			// TODO: append loadMoreCard if active
-			// if (this.showLoadMoreCard) {
-			// 	clonedLoanIds.push(loadMoreCardId);
-			// 	return clonedLoanIds;
-			// }
-			// append viewMoreCard if active
-			if (this.showViewMoreCard) {
-				clonedLoanIds.push(viewMoreCardId);
-				return clonedLoanIds;
-			}
-			return clonedLoanIds;
-		},
-		cleanUrl() {
-			// Convert LoanChannel Url to use first path segment /lend-by-category instead of /lend
-			// grab last segment of url
-			const lastPathIndex = this.url.lastIndexOf('/');
-			const urlSegment = this.url.slice(lastPathIndex);
-			// ensure string type
-			let cleanUrl = String(urlSegment);
-
-			// empty url value for certain urls and if no url is passed in
-			if (
-				this.url.includes('loans-with-research-backed-impact') === true
-				|| this.url.includes('recently-viewed-loans') === true
-				|| this.url === '') {
-				cleanUrl = '';
-			}
-
-			// retain countries not lent to location in /lend
-			if (this.url.includes('new-countries-for-you')) {
-				return '/lend/countries-not-lent';
-			}
-
-			// special handling for CASH-794 Favorite Country row
-			if (this.url.includes('favorite-countries-link')) {
-				return this.url.replace('favorite-countries-link', '');
-			}
-
-			// otherwise transform to use /lend-by-category as root path
-			return `/lend-by-category${cleanUrl}`;
-		},
-		viewAllLoansCategoryTitle() {
-			return `View all ${this.cleanCategoryName(this.id)}`;
+			return this.loanIds.length === 0 && this.isVisible;
 		},
 		singleSlideWidth() {
 			const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
@@ -186,32 +115,6 @@ export default {
 		},
 	},
 	methods: {
-		// TODO: consider deprecating in favor of Contentful controlled value similar to shortName
-		cleanCategoryName(categoryId) {
-			switch (categoryId) {
-				case 52:
-					return 'loans to women';
-				case 96:
-					return 'COVID-19 loans';
-				case 93:
-					return 'shelter loans';
-				case 89:
-					return 'arts loans';
-				case 87:
-					return 'agriculture loans';
-				case 102:
-					return 'technology loans';
-				case 4:
-					return 'education loans';
-				case 25:
-					return 'health loans';
-				case 32:
-					return 'loans to refugees and IDPs';
-				default:
-					// remove any text contained within square brackets, including the brackets
-					return String(this.name).replace(/\s\[.*\]/g, '');
-			}
-		},
 		// TODO: Review all tracking cateogries
 		onInteractCarousel(interaction) {
 			this.$kvTrackEvent('carousel', 'click-carousel-horizontal-scroll', interaction);

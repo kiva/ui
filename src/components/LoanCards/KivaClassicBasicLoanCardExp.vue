@@ -13,47 +13,41 @@
 			v-if="!isLoading"
 			class="tw-relative"
 		>
-			<!-- If allSharesReserved, disable link by making it a span -->
-			<router-link
-				:is="allSharesReserved ? 'span' : 'router-link'"
-				:to="`/lend/${loanId}`"
-				v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
-			>
-				<borrower-image
-					class="
-					tw-relative
-					tw-w-full
-					tw-bg-black
-					tw-rounded
-				"
-					:alt="'photo of ' + borrowerName"
-					:aspect-ratio="3 / 4"
-					:default-image="{ width: 336 }"
-					:hash="imageHash"
-					:images="[
-						{ width: 336, viewSize: 1024 },
-						{ width: 336, viewSize: 768 },
-						{ width: 416, viewSize: 480 },
-						{ width: 374, viewSize: 414 },
-						{ width: 335, viewSize: 375 },
-						{ width: 280 },
-					]"
-				/>
-				<div v-if="countryName">
-					<summary-tag
-						class="tw-absolute tw-bottom-2 tw-right-1 tw-text-primary"
-						:city="city"
-						:state="state"
-						:country-name="countryName"
-					>
-						<kv-material-icon
-							class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
-							:icon="mdiMapMarker"
-						/>
-						{{ formattedLocation }}
-					</summary-tag>
-				</div>
-			</router-link>
+
+			<borrower-image
+				class="
+				tw-relative
+				tw-w-full
+				tw-bg-black
+				tw-rounded
+			"
+				:alt="'photo of ' + borrowerName"
+				:aspect-ratio="3 / 4"
+				:default-image="{ width: 336 }"
+				:hash="imageHash"
+				:images="[
+					{ width: 336, viewSize: 1024 },
+					{ width: 336, viewSize: 768 },
+					{ width: 416, viewSize: 480 },
+					{ width: 374, viewSize: 414 },
+					{ width: 335, viewSize: 375 },
+					{ width: 280 },
+				]"
+			/>
+			<div v-if="countryName">
+				<summary-tag
+					class="tw-absolute tw-bottom-2 tw-right-1 tw-text-primary"
+					:city="city"
+					:state="state"
+					:country-name="countryName"
+				>
+					<kv-material-icon
+						class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
+						:icon="mdiMapMarker"
+					/>
+					{{ formattedLocation }}
+				</summary-tag>
+			</div>
 		</div>
 
 		<!-- Borrower name-->
@@ -87,23 +81,6 @@
 			:loan-amount="loan.loanAmount"
 			:borrower-count="loan.borrowerCount"
 		/>
-
-		<!-- Matching text  -->
-		<kv-loading-placeholder
-			v-if="isLoading"
-			class="tw-mb-1" :style="{width: 75 + (Math.random() * 15) + '%', height: '1.3rem'}"
-		/>
-
-		<loan-matching-text
-			v-if="!isLoading && loan.matchingText !== '' && !isMatchAtRisk"
-			class="tw-mb-1.5"
-			:matcher-name="loan.matchingText"
-			:match-ratio="loan.matchRatio"
-			:status="loan.status"
-			:funded-amount="loan.loanFundraisingInfo.fundedAmount"
-			:reserved-amount="loan.loanFundraisingInfo.reservedAmount"
-			:loan-amount="loan.loanAmount"
-		/>
 	</div>
 </template>
 
@@ -119,25 +96,10 @@ import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
-import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
-import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
-	shop (basketId: $basketId) {
-		id
-		basket {
-			id
-			# for isInBasket
-			items {
-				values {
-					id
-				}
-			}
-		}
-	}
 	lend {
 		loan(id: $loanId) {
 			id
@@ -155,16 +117,6 @@ const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 				hash
 			}
 			name
-			sector {
-				id
-				name
-			}
-			whySpecial
-
-			# for isLentTo
-			userProperties {
-				lentTo
-			}
 
 			# for loan-use-mixin
 			use
@@ -172,24 +124,6 @@ const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 			loanAmount
 			borrowerCount
 
-			# for percent-raised-mixin
-			loanFundraisingInfo {
-				fundedAmount
-				reservedAmount
-			}
-
-			# for time-left-mixin
-			plannedExpirationDate
-
-			# for loan-progress component
-			unreservedAmount @client
-			fundraisingPercent @client
-			fundraisingTimeLeft @client
-
-			# for matching-text component
-			isMatchable
-			matchingText
-			matchRatio
 		}
 	}
 }`;
@@ -209,9 +143,6 @@ export default {
 		KvLoadingPlaceholder,
 		KvLoadingParagraph,
 		LoanUse,
-		LoanProgressGroup,
-		LoanMatchingText,
-		KvButton,
 		KvMaterialIcon,
 		SummaryTag,
 	},
@@ -256,27 +187,8 @@ export default {
 			const loanIds = loanItems.map(loan => loan.id);
 			return loanIds.indexOf(this.loanId) > -1;
 		},
-		isLentTo() {
-			return this.loan?.userProperties?.lentTo;
-		},
 		isMatchAtRisk() {
 			return isMatchAtRisk(this.loan);
-		},
-		sectorName() {
-			return (this.loan?.sector?.name || '').toLowerCase();
-		},
-		whySpecial() {
-			const text = this.loan?.whySpecial || '';
-			return text.toString().charAt(0).toLowerCase() + text.toString().slice(1);
-		},
-		fundraisingPercent() {
-			return this.loan?.fundraisingPercent ?? 0;
-		},
-		unreservedAmount() {
-			return this.loan?.unreservedAmount ?? '0';
-		},
-		timeLeft() {
-			return this.loan?.fundraisingTimeLeft ?? '';
 		},
 		formattedLocation() {
 			if (this.distributionModel === 'direct') {
