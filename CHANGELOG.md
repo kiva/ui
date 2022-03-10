@@ -1,3 +1,16 @@
+## [2.85.0](https://github.com/kiva/ui/compare/v2.84.1...v2.85.0) (2022-03-10)
+
+
+### Features
+
+* data for loan ids was added to loan group categories file ([f8e9516](https://github.com/kiva/ui/commit/f8e9516d4225ca603e9e2dad9a230969fb77f368))
+* hero section for monthly good landing page was updated with a new design ([3e58b8d](https://github.com/kiva/ui/commit/3e58b8dfdd04e0d612de9fd34e2011851060be6a))
+
+
+### Bug Fixes
+
+* unused code was removed ([4cdd7a9](https://github.com/kiva/ui/commit/4cdd7a9232fc4112243721d9d59e475b11cc9160))
+
 ### [2.84.1](https://github.com/kiva/ui/compare/v2.84.0...v2.84.1) (2022-03-09)
 
 
