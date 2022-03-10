@@ -1,51 +1,52 @@
 <template>
-	<div class="minimal-loan-card tw-bg-primary tw-border-tertiary tw-border">
+	<div
+		class="minimal-loan-card tw-bg-primary tw-border-tertiary tw-border tw-rounded tw-overflow-hidden"
+		style="width: 240px;"
+	>
 		<!-- Image -->
 		<!-- is-visitor set to false is hiding the loan favorite star on borrower images -->
-		<div>
-			<loan-card-image
+		<loan-card-image
+			:loan-id="loan.id"
+			:name="loan.name"
+			:retina-image-url="loan.image.retina"
+			:standard-image-url="loan.image.default"
+			:is-visitor="isVisitor"
+			v-kv-track-event="['basket', 'basket-loan-profile', 'basket-loan-profile']"
+			:open-in-new-tab="true"
+		/>
+		<div class="minimal-loan-card-data-wrap tw-mt-1.5 tw-mx-2">
+			<p
 				:loan-id="loan.id"
 				:name="loan.name"
-				:retina-image-url="loan.image.retina"
-				:standard-image-url="loan.image.default"
-				:is-visitor="isVisitor"
-				v-kv-track-event="['basket', 'basket-loan-profile', 'basket-loan-profile']"
-				:open-in-new-tab="true"
+				:title="loan.name"
+				class="name tw-whitespace-nowrap tw-overflow-hidden tw-text-ellipsis tw-mb-1"
+			>
+				{{ loan.name }}
+			</p>
+			<!-- loan meter	 -->
+			<fundraising-status-meter
+				class="minimal-fundraising-meter-margins"
+				:amount-left="amountLeft"
+				:percent-raised="percentRaised"
+				:is-funded="loan.status==='funded'"
+				:short-meter="true"
 			/>
-			<div class="minimal-loan-card-data-wrap">
-				<p
-					:loan-id="loan.id"
-					:name="loan.name"
-					:title="loan.name"
-					class="tw-text-small name"
-				>
-					{{ loan.name }}
-				</p>
-				<!-- loan meter	 -->
-				<fundraising-status-meter
-					class="minimal-fundraising-meter-margins"
-					:amount-left="amountLeft"
-					:percent-raised="percentRaised"
-					:is-funded="loan.status==='funded'"
-					:short-meter="true"
-				/>
-				<!-- Country -->
-				<p
-					class="tw-text-small loan-data tw-text-secondary"
-					:country="loan.geocode.country.name"
-					:sector="loan.activity.name"
-				>
-					{{ loan.geocode.country.name }} <br> {{ loan.activity.name }}
-				</p>
-			</div>
+			<!-- Country -->
+			<p
+				class="loan-data tw-text-secondary tw-mt-1.5"
+				:country="loan.geocode.country.name"
+				:sector="loan.activity.name"
+			>
+				{{ loan.geocode.country.name }} <br> {{ loan.activity.name }}
+			</p>
 		</div>
 		<!-- Add to basket text -->
-		<div class="minimal-loan-card-action-wrap">
+		<div class="minimal-loan-card-action-wrap tw-mt-3 tw-mb-2 tw-mx-2">
 			<button
 				:loan-id="loan.id"
 				v-if="!itemInBasket"
 				@click="addToBasket()"
-				class="card-action tw-text-link tw-font-medium"
+				class="card-action tw-text-link"
 				v-kv-track-event="[
 					'basket',
 					'basket-loan-upsell',
@@ -170,55 +171,3 @@ export default {
 	},
 };
 </script>
-<style lang="scss" scoped>
-@import "settings";
-
-.minimal-loan-card {
-	width: rem-calc(180);
-	margin: rem-calc(10);
-	display: inline-flex;
-	flex-direction: column;
-	justify-content: space-between;
-
-	&:first-child,
-	&:last-child {
-		margin-left: 0;
-	}
-}
-
-.minimal-loan-card-data-wrap {
-	padding-left: rem-calc(15);
-	padding-right: rem-calc(15);
-	padding-top: rem-calc(15);
-}
-
-.minimal-loan-card-action-wrap {
-	padding-left: rem-calc(15);
-	padding-right: rem-calc(15);
-	padding-bottom: rem-calc(12);
-}
-
-.minimal-fundraising-meter-margins {
-	margin: rem-calc(9) 0;
-}
-
-.name {
-	font-weight: 400;
-	margin-bottom: 0;
-	padding-bottom: rem-calc(6);
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-.loan-data {
-	margin-top: rem-calc(12);
-	margin-bottom: rem-calc(9);
-	line-height: 1.3;
-}
-
-.card-action {
-	font-weight: 400;
-	margin-bottom: 0;
-}
-</style>
