@@ -10,7 +10,7 @@
 
 		<!-- Monthly Good Settings -->
 		<subscriptions-monthly-good
-			v-if="!isOnetime && !hasModernSub"
+			v-if="!isOnetime && (!hasModernSub || hasActiveMonthlyGoodSubscription)"
 			@cancel-subscription="cancelSubscription"
 			@unsaved-changes="setUnsavedChanges"
 			ref="subscriptionsMonthlyGoodComponent"
@@ -142,6 +142,7 @@ export default {
 			showLightbox: false,
 			showLoadingOverlay: false,
 			hasActiveCauseSubscription: false,
+			hasActiveMonthlyGoodSubscription: false,
 			hasModernSub: false,
 
 		};
@@ -162,6 +163,12 @@ export default {
 				subscription => subscription.category.subscriptionType === 'CAUSES'
 			);
 			this.hasActiveCauseSubscription = causesSubscriptions.length !== 0;
+			// Temporarily allow migrated records to be modified in the UI using the monolith API.
+			// TODO: during phase 2, this can be removed in favor of UI that interacts directly with Subscriptions API
+			const monthlyGoodSubscriptions = modernSubscriptions.filter(
+				subscription => subscription.category.subscriptionType === 'MG'
+			);
+			this.hasActiveMonthlyGoodSubscription = monthlyGoodSubscriptions.length !== 0;
 		},
 	},
 	mounted() {
