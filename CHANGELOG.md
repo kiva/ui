@@ -1,3 +1,10 @@
+## [2.87.0](https://github.com/kiva/ui/compare/v2.86.0...v2.87.0) (2022-03-10)
+
+
+### Features
+
+* some elements were hidden to match with ui design ([9fbeb83](https://github.com/kiva/ui/commit/9fbeb83817750735f3e87b49fdaad8159db56812))
+
 ## [2.86.0](https://github.com/kiva/ui/compare/v2.85.0...v2.86.0) (2022-03-10)
 
 
