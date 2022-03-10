@@ -13,7 +13,6 @@
 			v-if="!isLoading"
 			class="tw-relative"
 		>
-
 			<borrower-image
 				class="
 				tw-relative
@@ -99,7 +98,7 @@ import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
-const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
+const loanQuery = gql`query kcBasicLoanCard($loanId: Int!) {
 	lend {
 		loan(id: $loanId) {
 			id
@@ -230,7 +229,6 @@ export default {
 				const data = this.apollo.readQuery({
 					query: loanQuery,
 					variables: {
-						basketId: this.cookieStore.get('kvbskt'),
 						loanId: this.loanId,
 					},
 				});
@@ -252,7 +250,6 @@ export default {
 			this.queryObserver = this.apollo.watchQuery({
 				query: loanQuery,
 				variables: {
-					basketId: this.cookieStore.get('kvbskt'),
 					loanId: this.loanId,
 				},
 			});
