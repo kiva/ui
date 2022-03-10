@@ -1,3 +1,10 @@
+## [2.88.0](https://github.com/kiva/ui/compare/v2.87.0...v2.88.0) (2022-03-10)
+
+
+### Features
+
+* enable mg hero loans experiment ([57dabe9](https://github.com/kiva/ui/commit/57dabe912ccff0be96496f469c65a8ef28a033b1))
+
 ## [2.87.0](https://github.com/kiva/ui/compare/v2.86.0...v2.87.0) (2022-03-10)
 
 
