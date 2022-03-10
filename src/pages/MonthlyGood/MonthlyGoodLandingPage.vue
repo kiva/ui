@@ -184,6 +184,10 @@ const pageQuery = gql`
 				key
 				value
 			}
+			mgHeroExp: uiExperimentSetting(key: "mg_hero_show_loans") {
+				key
+				value
+			}
 		}
 		contentful {
 			entries(contentType: "page", contentKey: "monthlygood")
@@ -227,7 +231,7 @@ export default {
 	data() {
 		return {
 			isExperimentActive: false,
-			isImpactVisibilityExperiment: true,
+			isImpactVisibilityExperiment: false,
 			isMonthlyGoodSubscriber: false,
 			monthlyGoodAmount: 25,
 			selectedGroup: this.category || 'default',
@@ -286,7 +290,8 @@ export default {
 					return Promise.all([
 						client.query({ query: experimentQuery, variables: { id: 'mg_amount_selector' } }),
 						// eslint-disable-next-line max-len
-						client.query({ query: experimentQuery, variables: { id: 'EXP-VUE-399-subscription-appeal-personalization' } })
+						client.query({ query: experimentQuery, variables: { id: 'EXP-VUE-399-subscription-appeal-personalization' } }),
+						client.query({ query: experimentQuery, variables: { id: 'mg_hero_show_loans' } }),
 					]);
 				});
 		},
@@ -327,6 +332,21 @@ export default {
 				);
 			}
 
+			// mg_hero_show_loans
+			// Hero Loan Visibility Experiment - CORE-451
+			const mgHeroLoansExperiment = this.apollo.readFragment({
+				id: 'Experiment:mg_hero_show_loans',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.isImpactVisibilityExperiment = mgHeroLoansExperiment.version === 'b';
+			// Fire Event for EXP-CORE-451-Mar2022
+			if (mgHeroLoansExperiment.version && mgHeroLoansExperiment.version !== 'unassigned') {
+				this.$kvTrackEvent(
+					'MonthlyGood',
+					'EXP-CORE-451-Mar2022',
+					mgHeroLoansExperiment.version
+				);
+			}
 			// Check for contentful content
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
