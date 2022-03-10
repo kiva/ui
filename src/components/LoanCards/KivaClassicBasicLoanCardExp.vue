@@ -79,6 +79,7 @@
 			:status="loan.status"
 			:loan-amount="loan.loanAmount"
 			:borrower-count="loan.borrowerCount"
+			:show-learn-more="false"
 		/>
 	</div>
 </template>

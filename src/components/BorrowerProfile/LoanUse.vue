@@ -2,7 +2,7 @@
 	<p>
 		{{ loanUseFiltered }}
 		<kv-text-link
-			v-if="loanId"
+			v-if="loanId && showLearnMore"
 			:to="`/lend/${loanId}`"
 			v-kv-track-event="['Lending', 'click-Read more', 'Learn more', loanId]"
 		>
@@ -60,6 +60,10 @@ export default {
 		loanId: {
 			type: String,
 			default: '',
+		},
+		showLearnMore: {
+			type: Boolean,
+			default: true,
 		}
 	},
 	computed: {
