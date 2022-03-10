@@ -1,3 +1,16 @@
+## [2.86.0](https://github.com/kiva/ui/compare/v2.85.0...v2.86.0) (2022-03-10)
+
+
+### Features
+
+* convert empty basket loan display + minimal loan card to kiva classic ([850e9d6](https://github.com/kiva/ui/commit/850e9d6850457f5374f1c0d241bb1dd149f6b196))
+
+
+### Bug Fixes
+
+* reduce usage of  legacy override styles ([9ec8357](https://github.com/kiva/ui/commit/9ec83578b15ded1aa57f5d06a3697f4889be2311))
+* remove width restriction on checkout contents ([4180750](https://github.com/kiva/ui/commit/4180750975bc868214f867494faea56e608c948b))
+
 ## [2.85.0](https://github.com/kiva/ui/compare/v2.84.1...v2.85.0) (2022-03-10)
 
 
