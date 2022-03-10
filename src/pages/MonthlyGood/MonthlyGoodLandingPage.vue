@@ -96,6 +96,7 @@
 						:loan-ids="selectedChannelLoanIds"
 						:selected-channel="selectedChannel"
 						:show-view-more-card="showViewMoreCard"
+						id="carousel_exp"
 					/>
 
 					<p class="tw-text-small tw-text-center tw-mt-4">
@@ -544,5 +545,13 @@ export default {
 			max-width: 23rem;
 		}
 	}
+}
+
+#carousel_exp >>> section > div:nth-child(2) {
+	display: none;
+}
+
+#carousel_exp >>> section > div:nth-child(1) > div {
+	max-width: 310px !important;
 }
 </style>
