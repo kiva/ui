@@ -34,25 +34,28 @@
 <script>
 import _filter from 'lodash/filter';
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
 
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import logReadQueryError from '@/util/logReadQueryError';
+import {
+	addCustomChannelInfo,
+	getFeaturedLoanChannelAsync,
+	getFeaturedLoanChannelCached,
+	fallbackCategoryIds,
+	getHeroChannelAsync,
+	getHeroChannelCached,
+} from '@/util/categoryUtils';
 import { isLoanFundraising } from '@/util/loanUtils';
+import {
+	getExperimentSettingAsync,
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
 
-// Fallback featured_loan_channel id
-const featuredCategoryIds = [98];
 const initialLoanCount = 4;
-const pageQuery = gql`query featuredLoanHero {
-	general {
-		uiConfigSetting(key: "featured_loan_channel") {
-			key
-			value
-		}
-	}
-}`;
+const heroChannelExpKey = 'EXP-VUE-917-hero-loan';
 
 export default {
 	components: {
@@ -78,74 +81,79 @@ export default {
 		return {
 			experimentData: {},
 			// Fallback featured_loan_channel id
-			featuredCategoryIds: [98],
+			featuredCategoryIds: fallbackCategoryIds,
 			loan: null,
 			loanChannel: null,
 			loans: [],
 			queryOffset: 0,
 			fundedLoans: [],
 			loading: false,
+			loansQuery: featuredLoansQuery,
 		};
 	},
 	apollo: {
 		preFetch(config, client) {
-			return client.query({
-				query: pageQuery
-			}).then(({ data }) => {
-				// use setting based id if available
-				const featuredChannelIdSetting = _get(data, 'general.uiConfigSetting.value');
-				const featuredChannelId = featuredChannelIdSetting
-					? [parseInt(featuredChannelIdSetting, 10)] : featuredCategoryIds;
-				// query for featued loan channel
-				return client.query({
-					query: featuredLoansQuery,
-					variables: {
-						ids: featuredChannelId,
-						numberOfLoans: initialLoanCount,
-					},
-					fetchPolicy: 'network-only',
+			// check if hero channel experiment is enabled
+			return getExperimentSettingAsync(client, heroChannelExpKey)
+				.then(({ enabled }) => {
+					// use ml query to get loan channel to use if experiment is enabled
+					if (enabled) {
+						return getHeroChannelAsync(client);
+					}
+					// otherwise use default query
+					return getFeaturedLoanChannelAsync(client);
+				}).then(({ loanChannelIds, loansQuery }) => {
+					// fetch the loans for the given loan channel
+					return client.query({
+						query: loansQuery,
+						variables: {
+							ids: loanChannelIds,
+							numberOfLoans: initialLoanCount,
+						},
+						fetchPolicy: 'network-only',
+					});
 				});
-			});
 		},
 	},
 	created() {
 		this.loading = true;
 
-		try {
-			// get setting driven featured loan channel
-			const featuredChannelIdSettingData = this.apollo.readQuery({
-				query: pageQuery
-			});
-			// use setting based id if available
-			const featuredChannelIdSetting = _get(featuredChannelIdSettingData, 'general.uiConfigSetting.value');
-			if (featuredChannelIdSetting) {
-				this.featuredCategoryIds = [parseInt(featuredChannelIdSetting, 10)];
-			}
-		} catch (e) {
-			logReadQueryError(e, 'FeatureHeroLoanWrapper featureLoanChannelSetting');
+		// set featured category id and query to use for loan fetching
+		const { enabled } = getExperimentSettingCached(this.apollo, heroChannelExpKey);
+		if (enabled) {
+			// Use ML heroChannel query if experiment is enabled
+			trackExperimentVersion(this.apollo, this.$kvTrackEvent, 'Lending', heroChannelExpKey);
+			const { loanChannelIds, loansQuery } = getHeroChannelCached(this.apollo);
+			this.featuredCategoryIds = loanChannelIds ?? this.featuredCategoryIds;
+			this.loansQuery = loansQuery ?? this.loansQuery;
+		} else {
+			// Use default featured loans query if experiment is not enabled
+			const { loanChannelIds, loansQuery } = getFeaturedLoanChannelCached(this.apollo);
+			this.featuredCategoryIds = loanChannelIds ?? this.featuredCategoryIds;
+			this.loansQuery = loansQuery ?? this.loansQuery;
 		}
 
 		// fetch cached query data
 		let allLoanData = {};
 		try {
 			allLoanData = this.apollo.readQuery({
-				query: featuredLoansQuery,
+				query: this.loansQuery,
 				variables: {
 					ids: this.featuredCategoryIds,
 					numberOfLoans: initialLoanCount,
 				}
 			});
 		} catch (e) {
-			logReadQueryError(e, 'FeatureHeroLoanWrapper featuredLoansQuery');
+			logReadQueryError(e, 'FeatureHeroLoanWrapper loansQuery');
 		}
 
+		// get array of loan channels, accounting for different structure of loan channel queries
+		const loanChannels = allLoanData?.lend?.featuredLoanChannel ?? allLoanData?.ml?.getOrderedChannelsByIds ?? [];
+		// get featured loan channel and add custom properties to it
+		const loanChannel = loanChannels.find(channel => channel?.id === this.featuredCategoryIds?.[0]);
+		this.loanChannel = addCustomChannelInfo(loanChannel, allLoanData?.my?.userAccount ?? {});
 		// set initial loan data so we ssr with a loan if possible
-		const loanChannelArray = _filter(
-			_get(allLoanData, 'lend.featuredLoanChannel'),
-			['id', this.featuredCategoryIds[0]]
-		);
-		this.loanChannel = _get(loanChannelArray, '[0]');
-		this.setInitialLoan(_get(loanChannelArray, '[0].loans.values'));
+		this.setInitialLoan(loanChannel?.loans?.values ?? []);
 	},
 	mounted() {
 		// if we have no loans due to being funded, fetch some in the client
@@ -198,17 +206,17 @@ export default {
 		},
 		fetchMoreLoans() {
 			this.apollo.query({
-				query: featuredLoansQuery,
+				query: this.loansQuery,
 				variables: {
 					ids: this.featuredCategoryIds,
 					offset: this.queryOffset,
 				}
 			}).then(({ data }) => {
-				const loanArray = _filter(data.lend.featuredLoanChannel, ['id', featuredCategoryIds[0]]);
-				this.loans = _get(
-					loanArray,
-					'[0].loans.values'
-				);
+				// get array of loan channels, accounting for different structure of loan channel queries
+				const loanChannels = data?.lend?.featuredLoanChannel ?? data?.ml?.getOrderedChannelsByIds ?? [];
+				// add loans to loans array
+				const loanChannel = loanChannels.find(channel => channel?.id === this.featuredCategoryIds?.[0]);
+				this.loans = loanChannel?.loans?.values ?? [];
 
 				this.filterFundedLoans();
 			});

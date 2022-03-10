@@ -94,6 +94,7 @@ import _map from 'lodash/map';
 import _take from 'lodash/take';
 import _uniqBy from 'lodash/uniqBy';
 import _without from 'lodash/without';
+import { addCustomChannelInfo } from '@/util/categoryUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
@@ -190,17 +191,8 @@ export default {
 						},
 						url: '',
 					};
-					//	check recChannel.id, if it's 95 update the name and descripton with
-					if (recChannel.id === 95) {
-						if (this.userId) {
-							recChannel.name = `Recommended for ${this.firstName}`;
-							recChannel.description = 'Loans we think you\'ll love based on your lending history.';
-						} else {
-							recChannel.name = 'Recommended by others';
-							recChannel.description = 'Log in for personalized recommendations.';
-						}
-					}
-					return recChannel;
+					// return recomended loan channel with custom title and description added, if needed
+					return addCustomChannelInfo(recChannel, { id: this.userId, firstName: this.firstName });
 				});
 			}
 			// If there are no recommended loan channels fetched yet, return the
