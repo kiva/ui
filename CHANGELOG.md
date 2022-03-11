@@ -1,3 +1,10 @@
+### [2.88.1](https://github.com/kiva/ui/compare/v2.88.0...v2.88.1) (2022-03-11)
+
+
+### Bug Fixes
+
+* add analytics event on mg category selection ([655db3e](https://github.com/kiva/ui/commit/655db3e300249953ee764cdd2cd58f65411eb4fe))
+
 ## [2.88.0](https://github.com/kiva/ui/compare/v2.87.0...v2.88.0) (2022-03-10)
 
 
