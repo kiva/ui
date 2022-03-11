@@ -276,6 +276,11 @@ export default {
 				return element.value === this.selectedGroup;
 			});
 			this.selectedChannelLoanIds = resultsArray[0].expLoansIds;
+			this.$kvTrackEvent(
+				'MonthlyGood',
+				'click-category-option',
+				resultsArray[0]?.marketingName ?? 'category changed'
+			);
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -567,8 +572,10 @@ export default {
 	}
 }
 
-#carousel_exp >>> section > div:nth-child(2) {
-	display: none;
+@include breakpoint(xxlarge) {
+	#carousel_exp >>> section > div:nth-child(2) {
+		display: none;
+	}
 }
 
 #carousel_exp >>> section > div:nth-child(1) > div {
