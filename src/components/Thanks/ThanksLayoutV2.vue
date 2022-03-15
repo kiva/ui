@@ -12,6 +12,7 @@
 				>
 					<template #icon-left>
 						<kv-icon
+							class="tw-w-2.5"
 							name="alert-circle"
 						/>
 					</template>
@@ -33,6 +34,7 @@
 				>
 					<template #icon-left>
 						<kv-icon
+							class="tw-w-2.5"
 							name="piggy-bank"
 						/>
 					</template>
@@ -54,6 +56,7 @@
 				>
 					<template #icon-left>
 						<kv-icon
+							class="tw-w-2.5"
 							name="alert-circle"
 						/>
 					</template>
@@ -74,6 +77,7 @@
 				>
 					<template #icon-left>
 						<kv-icon
+							class="tw-w-2.5"
 							name="receipt-outline"
 						/>
 					</template>
@@ -95,6 +99,7 @@
 				>
 					<template #icon-left>
 						<kv-icon
+							class="tw-w-2.5"
 							name="share"
 						/>
 					</template>
@@ -174,6 +179,7 @@
 					>
 						<template #icon-left>
 							<kv-icon
+								class="tw-w-2.5"
 								name="alert-circle"
 							/>
 						</template>
@@ -215,7 +221,8 @@
 					>
 						<template #icon-left>
 							<kv-icon
-								name="alert-circle"
+								class="tw-w-2.5"
+								name="piggy-bank"
 							/>
 						</template>
 						Auto-deposit
@@ -256,6 +263,7 @@
 					>
 						<template #icon-left>
 							<kv-icon
+								class="tw-w-2.5"
 								name="alert-circle"
 							/>
 						</template>
@@ -296,6 +304,7 @@
 					>
 						<template #icon-left>
 							<kv-icon
+								class="tw-w-2.5"
 								name="receipt-outline"
 							/>
 						</template>
@@ -337,6 +346,7 @@
 					>
 						<template #icon-left>
 							<kv-icon
+								class="tw-w-2.5"
 								name="share"
 							/>
 						</template>
