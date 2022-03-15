@@ -1,3 +1,10 @@
+### [2.88.2](https://github.com/kiva/ui/compare/v2.88.1...v2.88.2) (2022-03-15)
+
+
+### Bug Fixes
+
+* set width on thanks icon buttons ([2f1d1cf](https://github.com/kiva/ui/commit/2f1d1cfc8d90cc31629bf8ccf3748d219cbaa851))
+
 ### [2.88.1](https://github.com/kiva/ui/compare/v2.88.0...v2.88.1) (2022-03-11)
 
 
