@@ -1,3 +1,10 @@
+## [2.89.0](https://github.com/kiva/ui/compare/v2.88.2...v2.89.0) (2022-03-16)
+
+
+### Features
+
+* remove kiva us from lbc page experimental layout ([c4cad7e](https://github.com/kiva/ui/commit/c4cad7e66f1cff2466ffdc6f2530e041df637950))
+
 ### [2.88.2](https://github.com/kiva/ui/compare/v2.88.1...v2.88.2) (2022-03-15)
 
 
