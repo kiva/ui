@@ -7,6 +7,8 @@ import { preFetchAll } from '@/util/apolloPreFetch';
 import renderGlobals from '@/util/renderGlobals';
 import createApp from '@/main';
 import headScript from '@/head/script';
+import oneTrustEvent from '@/head/oneTrustEvent';
+
 import noscriptTemplate from '@/head/noscript.html';
 import { authenticationGuard } from '@/util/authenticationGuard';
 import { contentfulPreviewCookie } from '@/util/contentfulPreviewCookie';
@@ -90,7 +92,8 @@ export default context => {
 		// render content for template
 		context.renderedConfig = renderGlobals({ __KV_CONFIG__: config });
 		context.renderedNoscript = noscriptTemplate(config);
-		context.renderedExternals = `<script>(${serialize(headScript)})(window.__KV_CONFIG__);</script>`;
+		// eslint-disable-next-line max-len
+		context.renderedExternals = `<script>(${serialize(headScript)})(window.__KV_CONFIG__, ${serialize(oneTrustEvent)});</script>`;
 
 		// set router's location, ignoring any errors about redirection
 		router.push(url).catch(() => {});
