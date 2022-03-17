@@ -11,13 +11,13 @@
 
 		<kv-tabs ref="navLendCategories">
 			<template #tabNav>
-				<kv-tab for="nav-lend-categories">
+				<kv-tab for-panel="nav-lend-categories">
 					Categories
 				</kv-tab>
-				<kv-tab for="nav-lend-regions">
+				<kv-tab for-panel="nav-lend-regions">
 					Regions
 				</kv-tab>
-				<kv-tab for="nav-my-kiva" v-if="userId">
+				<kv-tab for-panel="nav-my-kiva" v-if="userId">
 					My Kiva
 				</kv-tab>
 			</template>
