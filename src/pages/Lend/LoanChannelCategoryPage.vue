@@ -84,10 +84,12 @@ export default {
 		},
 		// categories to run ACK-247 experiment on
 		testCategories() {
+			/*	'kiva-u-s' was removed from this list after experiment launch.
+			Category properties and image asset still exist at:
+			src/pages/Lend/LoanChannelCategoryExperiment.vue */
 			return [
 				'loans-to-women',
 				'women',
-				'kiva-u-s',
 				'agriculture',
 				'eco-friendly',
 				'refugees-and-i-d-ps',

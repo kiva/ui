@@ -383,18 +383,20 @@ export default {
 	methods: {
 		async addBundleToBasket() {
 			try {
-				console.log(this.selectedChannelLoanIds);
-				for (let index = 0; index < this.selectedChannelLoanIds.length; index++) {
+				const responses = [];
+				for (let index = 0; index < this.selectedChannelLoanIds.length; index += 1) {
 					const element = this.selectedChannelLoanIds[index];
-					const response = await this.apollo.mutate({
+					const response = this.apollo.mutate({
 						mutation: updateLoanReservation,
 						variables: {
 							loanid: element,
 							price: numeral(25).format('0.00'),
 						},
 					});
-					console.log(response);
+					responses.push(response);
 				}
+				const res = await Promise.all(responses);
+				console.log(res);
 
 				this.$kvTrackEvent(
 					'basket',

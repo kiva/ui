@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="tw-flex tw-flex-col"
-		style="width:100%; height: 100%;"
+		style="width: 100%; height: 100%;"
 		:id="`${loanId}-loan-card`"
 	>
 		<!-- Borrower image w/ location <summary-tag> -->
