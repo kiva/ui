@@ -43,6 +43,7 @@
 
 <script>
 import KivaClassicBasicLoanCardBundleExp from '@/components/LoanCards/KivaClassicBasicLoanCardBundleExp';
+import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
@@ -50,6 +51,7 @@ export default {
 	components: {
 		KvCarousel,
 		KvLoadingSpinner,
+		KivaClassicBasicLoanCardExp,
 		KivaClassicBasicLoanCardBundleExp,
 	},
 	props: {
