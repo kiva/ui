@@ -264,11 +264,17 @@ export default {
 				},
 			],
 			hasModernSub: false,
-			selectedChannelLoanIds: [2019772, 2319405, 2320176],
+			selectedChannelLoanIds: [],
 			selectedChannel: {},
 			showCarousel: true,
 			showViewMoreCard: false
 		};
+	},
+	created() {
+		const resultsArray = this.lendingCategories.filter(element => {
+			return element.value === this.category;
+		});
+		this.selectedChannelLoanIds = resultsArray[0].expLoansIds;
 	},
 	watch: {
 		selectedGroup() {
