@@ -3,7 +3,7 @@
 		<transition name="kvfade">
 			<div
 				v-if="isLoading"
-				class="spinner"
+				class="spinner tw-w-full tw-flex tw-justify-center"
 			>
 				<kv-loading-spinner />
 			</div>
