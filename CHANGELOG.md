@@ -1,3 +1,10 @@
+### [2.89.1](https://github.com/kiva/ui/compare/v2.89.0...v2.89.1) (2022-03-17)
+
+
+### Bug Fixes
+
+* loans are loaded dynamically for every category ([a8a86be](https://github.com/kiva/ui/commit/a8a86be863554b8b5a610b6ee36cc6574485fbb3))
+
 ## [2.89.0](https://github.com/kiva/ui/compare/v2.88.2...v2.89.0) (2022-03-16)
 
 
