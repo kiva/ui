@@ -1,68 +1,126 @@
 <template>
-	<div class="row">
-		<div class="small-12 columns heading-region">
-			<view-toggle browse-url="/lend-by-category" :filter-url="filterUrl" />
-			<p class="tw-text-small">
-				<router-link to="/lend-by-category">
-					All Loans
-				</router-link> >
-				<span class="show-for-large">{{ loanChannelName }}</span>
-			</p>
-			<h1 class="tw-mb-2">
-				{{ loanChannelName }}
-			</h1>
-			<p v-if="loanChannelDescription"
-				class="page-subhead show-for-large tw-mb-4"
-			>
-				{{ loanChannelDescription }}
-			</p>
-			<p v-else>
-				We couldn't find any loans for this search.
-				<router-link to="/lend-by-category">
-					Browse these loans
-				</router-link>.
-			</p>
+	<div>
+		<div class="row">
+			<div class="small-12 columns heading-region">
+				<view-toggle browse-url="/lend-by-category" :filter-url="filterUrl" />
+				<p class="tw-text-small">
+					<router-link to="/lend-by-category">
+						All Loans
+					</router-link> >
+					<span class="show-for-large">{{ loanChannelName }}</span>
+				</p>
+				<h1 class="tw-mb-2">
+					{{ loanChannelName }}
+				</h1>
+				<p v-if="loanChannelDescription"
+					class="page-subhead show-for-large tw-mb-4"
+				>
+					{{ loanChannelDescription }}
+				</p>
+				<p v-else>
+					We couldn't find any loans for this search.
+					<router-link to="/lend-by-category">
+						Browse these loans
+					</router-link>.
+				</p>
+			</div>
+		</div>
+		<div class="tw-bg-brand-100 tw-w-full tw-mb-6 tw-px-2 tw-py-2" v-if="addBundlesExp">
+			<div class="row">
+				<div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-w-full">
+					<div class="tw-w-full lg:tw-w-2/5">
+						<h1 class="tw-text-h1">
+							Bundle your support
+						</h1>
+
+						<p class="tw-text-subhead tw-my-2">
+							Support these three loans for women with just one click.
+						</p>
+
+						<div class="tw-hidden lg:tw-block tw-mt-1">
+							<kv-button type="button"
+								@click="addBundleToBasket"
+								v-kv-track-event="['Lending', 'click-loan-bundle-cta',
+									'Lend to all three now - ' + pageTitle]"
+							>
+								Lend to all three now
+							</kv-button>
+
+							<p class="tw-text-small tw-mt-1">
+								As little as $75
+							</p>
+						</div>
+					</div>
+					<div class="tw-w-full lg:tw-w-3/5">
+						<kiva-classic-loan-carousel-exp
+							:is-visible="showCarousel"
+							:loan-ids="selectedChannelLoanIds"
+							:selected-channel="selectedChannel"
+							:show-view-more-card="showViewMoreCard"
+							:is-bundle="true"
+							id="carousel_exp"
+						/>
+
+						<div class="lg:tw-hidden tw-flex tw-flex-col tw-items-center tw-mt-3">
+							<kv-button type="button"
+								@click="addBundleToBasket"
+								v-kv-track-event="['Lending', 'click-loan-bundle-cta',
+									'Lend to all three now - ' + pageTitle]"
+								class="tw-w-full"
+							>
+								Lend to all three now
+							</kv-button>
+
+							<p class="tw-text-small tw-mt-1">
+								As little as $75
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
-		<div class="columns small-12" v-if="loans.length > 0">
-			<div v-if="!displayLoanPromoCard" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-				<loan-card-controller
-					v-for="loan in loans"
-					:items-in-basket="itemsInBasket"
-					:is-visitor="isVisitor"
-					:key="loan.id"
-					:loan="loan"
-					loan-card-type="GridLoanCard"
-				/>
-			</div>
-			<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-				<loan-card-controller
-					v-for="loan in firstLoan"
-					:items-in-basket="itemsInBasket"
-					:is-visitor="isVisitor"
-					:key="loan.id"
-					:loan="loan"
-					loan-card-type="GridLoanCard"
-				/>
-				<div class="column column-block">
-					<promo-grid-loan-card
-						:category-url="mgTargetCategory.url"
-						:category-label="mgTargetCategory.label"
+		<div class="row">
+			<div class="columns small-12" v-if="loans.length > 0">
+				<div v-if="!displayLoanPromoCard" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
+					<loan-card-controller
+						v-for="loan in loans"
+						:items-in-basket="itemsInBasket"
+						:is-visitor="isVisitor"
+						:key="loan.id"
+						:loan="loan"
+						loan-card-type="GridLoanCard"
 					/>
 				</div>
-				<loan-card-controller
-					v-for="loan in remainingLoans"
-					:items-in-basket="itemsInBasket"
-					:is-visitor="isVisitor"
-					:key="loan.id"
-					:loan="loan"
-					loan-card-type="GridLoanCard"
-				/>
-				<kv-loading-overlay v-if="loading" />
-			</div>
-			<kv-pagination v-if="totalCount > 0" :total="totalCount" :limit="limit" @page-change="pageChange" />
-			<div v-if="totalCount > 0" class="loan-count tw-text-tertiary">
-				{{ totalCount }} loans
+				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
+					<loan-card-controller
+						v-for="loan in firstLoan"
+						:items-in-basket="itemsInBasket"
+						:is-visitor="isVisitor"
+						:key="loan.id"
+						:loan="loan"
+						loan-card-type="GridLoanCard"
+					/>
+					<div class="column column-block">
+						<promo-grid-loan-card
+							:category-url="mgTargetCategory.url"
+							:category-label="mgTargetCategory.label"
+						/>
+					</div>
+					<loan-card-controller
+						v-for="loan in remainingLoans"
+						:items-in-basket="itemsInBasket"
+						:is-visitor="isVisitor"
+						:key="loan.id"
+						:loan="loan"
+						loan-card-type="GridLoanCard"
+					/>
+					<kv-loading-overlay v-if="loading" />
+				</div>
+				<kv-pagination v-if="totalCount > 0" :total="totalCount" :limit="limit" @page-change="pageChange" />
+				<div v-if="totalCount > 0" class="loan-count tw-text-tertiary">
+					{{ totalCount }} loans
+				</div>
 			</div>
 		</div>
 	</div>
@@ -81,6 +139,7 @@ import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import getRelatedLoans from '@/graphql/query/getRelatedLoans.graphql';
 import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
@@ -88,6 +147,10 @@ import KvPagination from '@/components/Kv/KvPagination';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
+import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
+import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
+import { isLoanFundraising } from '@/util/loanUtils';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const loansPerPage = 12;
 
@@ -137,6 +200,8 @@ export default {
 		KvLoadingOverlay,
 		ViewToggle,
 		PromoGridLoanCard,
+		KvButton,
+		KivaClassicLoanCarouselExp,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
@@ -147,6 +212,12 @@ export default {
 		return {
 			title: this.pageTitle
 		};
+	},
+	props: {
+		addBundlesExp: {
+			type: Boolean,
+			required: false
+		},
 	},
 	data() {
 		return {
@@ -162,6 +233,10 @@ export default {
 			lendFilterExpVersion: '',
 			displayLoanPromoCard: false,
 			mgTargetCategory: null,
+			selectedChannelLoanIds: [],
+			selectedChannel: {},
+			showCarousel: true,
+			showViewMoreCard: false
 		};
 	},
 	computed: {
@@ -302,8 +377,33 @@ export default {
 			this.cookieStore.remove('redirectFromUi');
 			this.$router.push(this.getAlgoliaFilterUrl());
 		}
+
+		this.getRelatedLoansExp();
 	},
 	methods: {
+		async addBundleToBasket() {
+			try {
+				console.log(this.selectedChannelLoanIds);
+				for (let index = 0; index < this.selectedChannelLoanIds.length; index++) {
+					const element = this.selectedChannelLoanIds[index];
+					const response = await this.apollo.mutate({
+						mutation: updateLoanReservation,
+						variables: {
+							loanid: element,
+							price: numeral(25).format('0.00'),
+						},
+					});
+					console.log(response);
+				}
+
+				this.$kvTrackEvent(
+					'basket',
+					'bundle-add-to-basket-funded-loan',
+				);
+			} catch (e) {
+				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
+			}
+		},
 		checkIfPageIsOutOfRange(loansArrayLength, pageQueryParam) {
 			// determines if the page query param is for a page that is out of bounds.
 			// if it is, changes page to the last page and displays a tip message
@@ -404,6 +504,30 @@ export default {
 				[this.mgTargetCategory] = matchedRoutes;
 			}
 		},
+		async getRelatedLoansExp() {
+			const loan = this.loans[0];
+			let baseData = {};
+			try {
+				baseData = await this.apollo.query({
+					query: getRelatedLoans,
+					variables: {
+						limit: 12,
+						loanId: loan.id,
+						offset: 0,
+						topics: ['story']
+					},
+				});
+				const relatedArray = baseData.data.ml.relatedLoansByTopics[0].values;
+				let loans = _filter(relatedArray, loanIn => {
+					return isLoanFundraising(loanIn);
+				});
+				loans = loans.slice(0, 3);
+
+				this.selectedChannelLoanIds = loans.map(element => element.id);
+			} catch (e) {
+				console.log(e);
+			}
+		},
 	},
 	watch: {
 		loanIds(newVal, oldVal) {
@@ -473,5 +597,19 @@ export default {
 			max-width: 75%;
 		}
 	}
+}
+
+@include breakpoint(xxlarge) {
+	#carousel_exp >>> section > div:nth-child(2) {
+		display: none;
+	}
+}
+
+#carousel_exp >>> section > div:nth-child(1) {
+	column-gap: 1rem !important;
+}
+
+#carousel_exp >>> section > div:nth-child(1) > div {
+	max-width: 185px !important;
 }
 </style>
