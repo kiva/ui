@@ -18,7 +18,7 @@
 				<span class="tw-font-medium tw-whitespace-nowrap">{{ totalCount }} loans</span>
 			</div>
 
-			<div class="loan-filters__loan-display">
+			<div v-if="showLoanDisplayToggle" class="loan-filters__loan-display">
 				<kv-pill-toggle
 					id="pill"
 					:options="[
@@ -31,7 +31,7 @@
 							key: 'grid',
 						},
 					]"
-					selected="rows"
+					:selected="activeLoanDisplay"
 					@pill-toggled="(val) => { $emit('set-loan-display', val === 'rows') }"
 				/>
 			</div>
@@ -258,6 +258,10 @@ export default {
 		TagFilter
 	},
 	props: {
+		activeLoanDisplay: {
+			type: String,
+			default: 'rows'
+		},
 		appliedFilters: {
 			type: Object,
 			default: () => {}
@@ -277,6 +281,10 @@ export default {
 		initialSortBy: {
 			type: String,
 			default: 'popularity',
+		},
+		showLoanDisplayToggle: {
+			type: Boolean,
+			default: true
 		},
 		totalCount: {
 			type: Number,

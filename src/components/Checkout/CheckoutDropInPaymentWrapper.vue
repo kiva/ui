@@ -1,6 +1,6 @@
 <template>
-	<div class="row align-right">
-		<div class="dropin-payment-holder small-12 columns">
+	<div class="tw-flex tw-justify-center md:tw-justify-end">
+		<div class="dropin-payment-holder" style="padding: 0; max-width: 20rem;">
 			<braintree-drop-in-interface
 				v-if="isClientReady"
 				ref="braintreeDropInInterface"

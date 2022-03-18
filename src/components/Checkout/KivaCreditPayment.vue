@@ -54,7 +54,9 @@ export default {
 					} else {
 						// checkout failed
 						this.$emit('updating-totals', false);
-						this.showCheckoutError(transactionResult);
+						const errorResult = transactionResult?.errors ?? [];
+						this.showCheckoutError(errorResult);
+						this.$emit('checkout-failure', errorResult);
 					}
 				}).catch(errorResponse => {
 					this.$emit('updating-totals', false);

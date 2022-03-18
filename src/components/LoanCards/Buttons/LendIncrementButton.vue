@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-flex tw-justify-between sm:tw-gap-1 md:tw-gap-1">
+	<div class="tw-flex tw-justify-between tw-gap-1">
 		<div class="tw-w-12" v-if="!loading">
 			<kv-select
 				id="lend-increment-amount"

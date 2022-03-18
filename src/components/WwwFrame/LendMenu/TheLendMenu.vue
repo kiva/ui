@@ -10,6 +10,7 @@
 			:user-id="userId"
 			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
+			:show-m-g-upsell-link="showMGUpsellLink"
 			:swap-mg-link-copy="swapLendMenuMgCopy"
 		/>
 		<lend-mega-menu
@@ -22,6 +23,7 @@
 			:user-id="userId"
 			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
+			:show-m-g-upsell-link="showMGUpsellLink"
 			:swap-mg-link-copy="swapLendMenuMgCopy"
 		/>
 	</div>
@@ -74,6 +76,7 @@ export default {
 			loadingSemaphore: 0,
 			isRegionsLoading: true,
 			isChannelsLoading: true,
+			showMGUpsellLink: false,
 			swapLendMenuMgCopy: false,
 		};
 	},
@@ -186,6 +189,10 @@ export default {
 		}).then(({ data }) => {
 			const swapLendMenuMgCopySetting = data?.general?.mg_link_text?.value ?? false;
 			this.swapLendMenuMgCopy = swapLendMenuMgCopySetting === 'true';
+			// additional visibility control delay
+			this.$nextTick(() => {
+				this.showMGUpsellLink = true;
+			});
 		});
 	}
 };

@@ -1,14 +1,19 @@
 <template>
 	<div class="tw-pb-2">
 		<router-link
+			v-if="showMGUpsellLink"
 			to="/monthlygood"
 			class="tw-inline-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-border-b tw-border-tertiary tw-font-medium"
-			@click="trackMgLinkClick"
+			@click.native="trackMgLinkClick"
 		>
 			{{ mgLinkText }}
 			<kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiArrowRight" />
 		</router-link>
-
+		<div v-else class="tw-block tw-py-2 tw-mb-2 tw-w-16">
+			<kv-loading-placeholder
+				style="height: 1.5rem;"
+			/>
+		</div>
 		<kv-tabs ref="navLendCategories">
 			<template #tabNav>
 				<kv-tab for-panel="nav-lend-categories">
@@ -51,12 +56,20 @@
 							</li>
 						</template>
 						<li class="tw-border-t tw-border-tertiary">
-							<router-link to="/lend" class="lend-link">
+							<router-link
+								to="/lend"
+								class="lend-link"
+								v-kv-track-event="['TopNav','click-Lend-All_Loans']"
+							>
 								All loans
 							</router-link>
 						</li>
 						<li>
-							<router-link to="/categories" class="lend-link">
+							<router-link
+								to="/categories"
+								class="lend-link"
+								v-kv-track-event="['TopNav','click-Lend-All_Categories']"
+							>
 								All categories
 							</router-link>
 						</li>
@@ -200,6 +213,10 @@ export default {
 		isChannelsLoading: {
 			type: Boolean,
 			default: true,
+		},
+		showMGUpsellLink: {
+			type: Boolean,
+			default: false,
 		},
 		swapMgLinkCopy: {
 			type: Boolean,

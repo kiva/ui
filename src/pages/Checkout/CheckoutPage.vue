@@ -1,233 +1,246 @@
 <template>
 	<www-page>
-		<div id="checkout-slim" class="row page-content" data-testid="checkout">
-			<div class="columns">
-				<div v-if="!emptyBasket" class="basket-wrap" :class="{'pre-login': !preCheckoutStep}">
-					<div>
-						<div class="checkout-steps-wrapper hide-for-print">
-							<kv-checkout-steps
-								class="checkout-steps"
-								:steps="checkoutSteps"
-								:current-step-index="currentStep"
-							/>
-							<div class="tw-text-center continue-browsing"
-								v-if="addToBasketRedirectExperimentShown && !userPrefContinueBrowsing"
-							>
-								<span>Want to add more loans? </span>
-								<router-link
-									to="/lend-by-category"
-									@click.native="handleChangeUserPref"
-									class="tw-font-medium"
-								>
-									Continue browsing
-								</router-link>
-							</div>
-							<hr class="tw-border-tertiary tw-my-3">
-						</div>
-						<div class="basket-container tw-mx-auto tw-my-0" style="max-width: 800px;">
-							<basket-items-list
-								:loans="loans"
-								:donations="donations"
-								:kiva-cards="kivaCards"
-								:teams="teams"
-								:loan-reservation-total="parseInt(totals.loanReservationTotal)"
-								@validateprecheckout="validatePreCheckout"
-								@refreshtotals="refreshTotals($event)"
-								@updating-totals="setUpdatingTotals"
-							/>
-						</div>
-						<div v-if="showKivaCardForm">
-							<hr class="tw-border-tertiary tw-my-3">
-							<div class="basket-container tw-mx-auto tw-my-0" style="max-width: 800px;">
-								<kiva-card-redemption
-									:credits="redemption_credits"
-									:totals="totals"
-									@refreshtotals="refreshTotals"
-									@updating-totals="setUpdatingTotals"
-								/>
-							</div>
-						</div>
+		<kv-page-container
+			id="checkout-slim"
+			data-testid="checkout"
+			class="tw-py-3.5"
+			:class="{
+				'not-logged-in': !isLoggedIn,
+				'login-active': isLoggedIn,
+				'login-guest': checkingOutAsGuest
+			}"
+		>
+			<div
+				v-if="!emptyBasket"
+				class="basket-wrap tw-relative tw-mb-1"
+				:class="{'pre-login': !preCheckoutStep}"
+			>
+				<div class="checkout-header tw-pb-3 hide-for-print">
+					<h1 class="tw-text-h2 tw-mb-3">
+						Your basket
+					</h1>
+					<hr class="tw-border-tertiary tw-my-3">
+				</div>
+				<div class="tw-relative">
+					<div class="basket-container tw-mx-auto tw-my-0">
+						<basket-items-list
+							:loans="loans"
+							:donations="donations"
+							:kiva-cards="kivaCards"
+							:teams="teams"
+							:loan-reservation-total="parseInt(totals.loanReservationTotal)"
+							@validateprecheckout="validatePreCheckout"
+							@refreshtotals="refreshTotals($event)"
+							@updating-totals="setUpdatingTotals"
+						/>
+					</div>
+					<div v-if="showKivaCardForm">
 						<hr class="tw-border-tertiary tw-my-3">
-
-						<div class="basket-container tw-mx-auto tw-my-0" style="max-width: 800px;">
-							<div class="row">
-								<div class="small-9 small-offset-3 large-10 large-offset-2 columns">
-									<checkout-holiday-promo
-										v-if="holidayModeEnabled"
-										@updating-totals="setUpdatingTotals"
-									/>
-								</div>
-							</div>
-
-							<order-totals
-								data-testid="order-totals-section"
+						<div class="basket-container tw-mx-auto tw-my-0">
+							<kiva-card-redemption
+								:credits="redemption_credits"
 								:totals="totals"
 								@refreshtotals="refreshTotals"
 								@updating-totals="setUpdatingTotals"
 							/>
+						</div>
+					</div>
+					<hr class="tw-border-tertiary tw-my-3">
 
-							<basket-verification />
+					<div class="basket-container tw-mx-auto tw-my-0">
+						<checkout-holiday-promo
+							v-if="holidayModeEnabled"
+							@updating-totals="setUpdatingTotals"
+						/>
 
-							<div class="checkout-actions row">
-								<div v-if="isLoggedIn" class="small-12 columns">
-									<form v-if="showKivaCreditButton" action="/checkout" method="GET">
-										<input type="hidden" name="js_loaded" value="false">
-										<kiva-credit-payment
-											@refreshtotals="refreshTotals"
-											@updating-totals="setUpdatingTotals"
-											@complete-transaction="completeTransaction"
-											class=" checkout-button"
-											id="kiva-credit-payment-button"
-											data-testid="kiva-credit-payment-button"
-										/>
-									</form>
+						<order-totals
+							data-testid="order-totals-section"
+							:totals="totals"
+							@refreshtotals="refreshTotals"
+							@updating-totals="setUpdatingTotals"
+						/>
 
-									<checkout-drop-in-payment-wrapper
-										v-if="!showKivaCreditButton"
-										:amount="creditNeeded"
-										:is-guest-checkout="checkingOutAsGuest"
+						<basket-verification />
+
+						<div class="checkout-actions md:tw-text-right tw-my-6">
+							<div v-if="isLoggedIn" class="">
+								<form v-if="showKivaCreditButton" action="/checkout" method="GET">
+									<input type="hidden" name="js_loaded" value="false">
+									<kiva-credit-payment
 										@refreshtotals="refreshTotals"
 										@updating-totals="setUpdatingTotals"
 										@complete-transaction="completeTransaction"
+										class="checkout-button tw-w-full md:tw-w-auto"
+										id="kiva-credit-payment-button"
+										data-testid="kiva-credit-payment-button"
 									/>
-								</div>
+								</form>
 
-								<div
-									v-else-if="!isActivelyLoggedIn && showLoginContinueButton"
-									class="small-12 columns"
+								<checkout-drop-in-payment-wrapper
+									v-if="!showKivaCreditButton"
+									:amount="creditNeeded"
+									:is-guest-checkout="checkingOutAsGuest"
+									@refreshtotals="refreshTotals"
+									@updating-totals="setUpdatingTotals"
+									@complete-transaction="completeTransaction"
+								/>
+							</div>
+
+							<div
+								v-else-if="!isActivelyLoggedIn && showLoginContinueButton"
+								class=""
+							>
+								<!-- Guest checkout button shown when the uiexp.guest_checkout and
+									feature.guest_checkout are enabled to users in the test group
+									without a 'kvu' cookie which indicates if a user has logged
+									into Kiva on current browser -->
+								<kv-button
+									v-if="eligibleForGuestCheckout && !guestCheckoutCTAExpActive"
+									class="guest-checkout-button checkout-button
+										tw-w-full md:tw-w-auto md:tw-mr-2 tw-mb-2 md:tw-mb-0"
+									variant="secondary"
+									id="guest-checkout-button"
+									data-testid="guest-checkout-button"
+									v-kv-track-event="[
+										'basket',
+										'click-guest-checkout-cta',
+										'Checkout as guest'
+									]"
+									@click="guestCheckout"
 								>
-									<!-- Guest checkout button shown when the uiexp.guest_checkout and
-										feature.guest_checkout are enabled to users in the test group
-										without a 'kvu' cookie which indicates if a user has logged
-										into Kiva on current browser -->
-									<kv-button
-										v-if="eligibleForGuestCheckout && !guestCheckoutCTAExpActive"
-										class="guest-checkout-button checkout-button"
-										variant="secondary"
-										id="guest-checkout-button"
-										data-testid="guest-checkout-button"
-										v-kv-track-event="['basket', 'click-guest-checkout-cta', 'Checkout as guest']"
-										@click="guestCheckout"
-									>
-										Continue as guest
-									</kv-button>
+									Continue as guest
+								</kv-button>
 
-									<kv-button
-										v-if="!guestCheckoutCTAExpActive"
-										class="checkout-button"
-										id="login-to-continue-button"
-										data-testid="login-to-continue-button"
-										v-kv-track-event="['basket', 'click-register-cta', 'Continue']"
-										@click="loginToContinue"
-										:href="'/ui-login?force=true&doneUrl=/checkout'"
-									>
-										Continue
-									</kv-button>
-
-									<kv-button
-										v-if="eligibleForGuestCheckout && guestCheckoutCTAExpActive"
-										class="checkout-button"
-										variant="secondary"
-										id="create-account-continue-button"
-										data-testid="create-account-continue-button"
-										v-kv-track-event="['basket', 'click-register-cta', 'Create an account']"
-										@click="loginToContinue"
-										:href="'/ui-login?force=true&doneUrl=/checkout'"
-									>
-										Create an account
-									</kv-button>
-
-									<kv-button
-										v-if="eligibleForGuestCheckout && guestCheckoutCTAExpActive"
-										class="checkout-button"
-										id="guest-checkout-exp-button"
-										data-testid="guest-checkout-exp-button"
-										v-kv-track-event="['basket', 'click-guest-checkout-cta', 'Continue as guest']"
-										@click="guestCheckout"
-									>
-										Continue as guest
-									</kv-button>
-								</div>
-								<div
-									v-if="!isActivelyLoggedIn
-										&& showLoginContinueButton
-										&& eligibleForGuestCheckout
-										&& guestCheckoutCTAExpActive"
-									class="small-12 columns tw-text-right"
+								<kv-button
+									v-if="!guestCheckoutCTAExpActive"
+									class="checkout-button tw-w-full md:tw-w-auto"
+									id="login-to-continue-button"
+									data-testid="login-to-continue-button"
+									v-kv-track-event="['basket', 'click-register-cta', 'Continue']"
+									@click="loginToContinue"
+									:href="'/ui-login?force=true&doneUrl=/checkout'"
 								>
-									<span>Already have an account?</span>
-									<a
-										href="/login?force=true&amp;loginHint=login&amp;doneUrl=checkout"
-										v-kv-track-event="['basket', 'click-sign—in-cta', 'Sign in here']"
-										title="Sign in here"
-										data-testid="sign-in-button"
-									>Sign in here</a>
-								</div>
+									Continue
+								</kv-button>
+
+								<kv-button
+									v-if="eligibleForGuestCheckout && guestCheckoutCTAExpActive"
+									class="checkout-button tw-w-full md:tw-w-auto"
+									variant="secondary"
+									id="create-account-continue-button"
+									data-testid="create-account-continue-button"
+									v-kv-track-event="['basket', 'click-register-cta', 'Create an account']"
+									@click="loginToContinue"
+									:href="'/ui-login?force=true&doneUrl=/checkout'"
+								>
+									Create an account
+								</kv-button>
+
+								<kv-button
+									v-if="eligibleForGuestCheckout && guestCheckoutCTAExpActive"
+									class="checkout-button tw-w-full md:tw-w-auto"
+									id="guest-checkout-exp-button"
+									data-testid="guest-checkout-exp-button"
+									v-kv-track-event="[
+										'basket',
+										'click-guest-checkout-cta',
+										'Continue as guest'
+									]"
+									@click="guestCheckout"
+								>
+									Continue as guest
+								</kv-button>
+							</div>
+							<div
+								v-if="!isActivelyLoggedIn
+									&& showLoginContinueButton
+									&& eligibleForGuestCheckout
+									&& guestCheckoutCTAExpActive"
+								class="tw-text-right"
+							>
+								<span>Already have an account?</span>
+								<a
+									href="/login?force=true&amp;loginHint=login&amp;doneUrl=checkout"
+									v-kv-track-event="['basket', 'click-sign—in-cta', 'Sign in here']"
+									title="Sign in here"
+									data-testid="sign-in-button"
+								>Sign in here</a>
 							</div>
 						</div>
-
-						<kv-loading-overlay
-							v-if="updatingTotals"
-							data-testid="updating-overlay"
-							id="updating-overlay"
-							class="updating-totals-overlay"
-						/>
 					</div>
-				</div>
 
-				<kv-lightbox
-					:visible="redirectLightboxVisible"
-					title="This checkout is being tested right now, but doesn't support some functions yet."
-					@lightbox-closed="redirectLightboxClosed"
-				>
-					<p class="tw-mb-4">
-						We'll redirect you so you can get back to changing lives, or click here if you aren't
-						automatically redirected.
-					</p>
-					<p>Thank you for minding our dust.</p>
-					<template #controls>
-						<kv-button
-							class="checkout-button"
-							id="Continue-to-legacy-button"
-							data-testid="continue-to-legacy-button"
-							v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
-							@click="redirectToLegacy"
-						>
-							Continue
-						</kv-button>
-					</template>
-				</kv-lightbox>
+					<kv-loading-overlay
+						v-if="updatingTotals"
+						data-testid="updating-overlay"
+						id="updating-overlay"
+						class="updating-totals-overlay tw-z-overlay tw-bg-white"
+					/>
+				</div>
 			</div>
-		</div>
-		<div v-if="emptyBasket" class="empty-basket" data-testid="empty-basket">
-			<div class="row display-align tw-text-center">
-				<div class="columns small-12 tw-mb-4">
-					<h1 class="empty-basket-heading tw-text-h2 tw-mb-2">
+
+			<kv-lightbox
+				:visible="redirectLightboxVisible"
+				title="This checkout is being tested right now, but doesn't support some functions yet."
+				@lightbox-closed="redirectLightboxClosed"
+				data-testid="checkout-legacy-redirect-lightbox"
+			>
+				<p class="tw-mb-4">
+					We'll redirect you so you can get back to changing lives, or click here if you aren't
+					automatically redirected.
+				</p>
+				<p>Thank you for minding our dust.</p>
+				<template #controls>
+					<kv-button
+						class="checkout-button tw-w-full md:tw-w-auto"
+						id="Continue-to-legacy-button"
+						data-testid="continue-to-legacy-button"
+						v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
+						@click="redirectToLegacy"
+					>
+						Continue
+					</kv-button>
+				</template>
+			</kv-lightbox>
+
+			<div v-if="emptyBasket" class="empty-basket tw-relative tw-mx-auto" data-testid="empty-basket">
+				<div class="checkout-header-empty tw-mb-4">
+					<h1 class="tw-text-h2 tw-mb-2">
 						Your basket is empty!
 					</h1>
 					<p class="tw-mb-2">
 						But we'd love to help you change that! Please consider
 						supporting one of the borrowers below, or
-						<router-link to="/lend-by-category" data-testid="empty-basket-loans-link">
+						<router-link
+							to="/lend-by-category"
+							data-testid="empty-basket-loans-link"
+							v-kv-track-event.native="
+								['basket', 'click-empty-basket-browse-all-loans', 'browse all loans']
+							"
+						>
 							browse all loans
 						</router-link>.
 					</p>
 				</div>
-			</div>
 
-			<div class="empty-basket-loans" data-testid="empty-basket-loans">
-				<random-loan-selector
-					@updating-totals="setUpdatingTotals"
-					@refreshtotals="refreshTotals"
-				/>
-				<kv-loading-overlay
-					v-if="updatingTotals"
-					data-testid="updating-overlay"
-					id="updating-overlay"
-					class="updating-totals-overlay"
-				/>
+				<div
+					class="empty-basket-loans tw-relative"
+					data-testid="empty-basket-loans"
+					style="min-height: 23rem;"
+				>
+					<random-loan-selector
+						@updating-totals="setUpdatingTotals"
+						@refreshtotals="refreshTotals"
+					/>
+					<kv-loading-overlay
+						v-if="updatingTotals"
+						data-testid="updating-overlay"
+						id="updating-overlay"
+						class="updating-totals-overlay tw-z-overlay"
+						style="width: 100vw;"
+					/>
+				</div>
 			</div>
-		</div>
+		</kv-page-container>
 	</www-page>
 </template>
 
@@ -235,7 +248,6 @@
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
-import store2 from 'store2';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import syncDate from '@/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
@@ -248,7 +260,6 @@ import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheck
 import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
@@ -260,18 +271,19 @@ import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPa
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	components: {
 		WwwPage,
 		KivaCreditPayment,
 		KvButton,
-		KvCheckoutSteps,
 		KvLightbox,
 		OrderTotals,
 		BasketItemsList,
 		BasketVerification,
 		KivaCardRedemption,
+		KvPageContainer,
 		KvLoadingOverlay,
 		CheckoutHolidayPromo,
 		CheckoutDropInPaymentWrapper,
@@ -308,8 +320,6 @@ export default {
 			holidayModeEnabled: false,
 			currentTime: Date.now(),
 			currentTimeInterval: null,
-			userPrefContinueBrowsing: false,
-			addToBasketRedirectExperimentShown: false,
 			loginButtonExperimentVersion: null,
 			redirectToLoginExperimentVersion: null,
 			isGuestCheckoutEnabled: false,
@@ -404,18 +414,6 @@ export default {
 		// TODO: Implement check against contentful setting
 		// to signify if holiday mode is enabled
 
-		// GROW-127 Add to basket redirect experiment
-		const addToBasketRedirectExperiment = this.apollo.readFragment({
-			id: 'Experiment:add_to_basket_redirect',
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		if (addToBasketRedirectExperiment.version === 'control') {
-			this.addToBasketRedirectExperimentShown = false;
-		} else if (addToBasketRedirectExperiment.version === 'shown') {
-			this.addToBasketRedirectExperimentShown = true;
-		}
-
 		// GROW-203 login/registration CTA experiment
 		const loginButtonExperiment = this.apollo.readFragment({
 			id: 'Experiment:checkout_login_cta',
@@ -475,8 +473,6 @@ export default {
 			this.logBasketState();
 		}
 
-		this.userPrefContinueBrowsing = store2('userPrefContinueBrowsing') === true; // read from localstorage
-
 		// show toast for specified scenario
 		this.handleToast();
 	},
@@ -499,12 +495,6 @@ export default {
 		},
 		instantLendingLoanAdded() {
 			return this.$route?.query?.instantLending === 'loan-added';
-		},
-		checkoutSteps() {
-			return ['Basket', 'Payment', 'Thank You!'];
-		},
-		currentStep() {
-			return this.isLoggedIn ? 1 : 0;
 		},
 		creditNeeded() {
 			return this.totals.creditAmountNeeded || '0.00';
@@ -703,14 +693,6 @@ export default {
 		redirectLightboxClosed() {
 			this.redirectLightboxVisible = false;
 		},
-		handleChangeUserPref() {
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-GROW-127-Jul2020',
-				'click-continue-browsing'
-			);
-			store2('userPrefContinueBrowsing', true); // store userpref in localstorage
-		},
 		logBasketState() {
 			const creditNeededInt = numeral(this.creditNeeded).value();
 			this.$kvTrackEvent(
@@ -744,164 +726,11 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-.page-content,
-.empty-basket {
+#checkout-slim {
 	// loading overlay overrides
 	#loading-overlay,
 	#updating-overlay {
 		background-color: rgba(255, 255, 255, 0.7);
-		z-index: 500;
-	}
-
-	#updating-overlay {
-		margin-top: 2rem;
-		height: auto;
-		bottom: 0;
-	}
-
-	.pre-login #updating-overlay {
-		margin-top: 0;
-	}
-}
-
-// .basket-container {
-// 	max-width: rem-calc(800);
-// 	margin: 0 auto;
-// }
-
-.page-content {
-	padding: 1.625rem 0;
-
-	.basket-wrap {
-		position: relative;
-		padding-bottom: 0.5rem;
-
-		.totals-and-actions {
-			display: block;
-			position: relative;
-
-			.updating-totals-overlay {
-				z-index: 1000;
-			}
-		}
-
-		.checkout-actions {
-			.checkout-button {
-				width: 100%;
-			}
-
-			@include breakpoint(medium) {
-				text-align: right;
-
-				.checkout-button {
-					width: auto;
-				}
-			}
-
-			.guest-checkout-button {
-				@include breakpoint(medium) {
-					margin-right: 1rem;
-				}
-			}
-		}
-
-		.basket-overlay-bg {
-			display: block;
-			position: absolute;
-			top: 3rem;
-			right: 0;
-			left: 0;
-			bottom: 0;
-			z-index: 100;
-			opacity: 0.7;
-			background-image: url('../../assets/images/backgrounds/lines.png');
-			background-color: $white;
-		}
-
-		.basket-overlay-fg {
-			display: block;
-			position: absolute;
-			top: 3rem;
-			right: 0;
-			left: 0;
-			bottom: 0;
-			z-index: 110;
-
-			.basket-overlay {
-				position: relative;
-				top: 10%;
-
-				@include breakpoint(medium) {
-					top: 20%;
-				}
-
-				@include breakpoint(large) {
-					top: 30%;
-				}
-
-				p {
-					font-size: 1.25rem;
-					line-height: 1.5;
-					color: $kiva-text-medium;
-					padding: 1.6rem;
-					border: 1px solid $kiva-text-light;
-					background: $white;
-				}
-			}
-
-			.unhovered {
-				display: none;
-			}
-		}
-	}
-}
-
-.checkout-steps-wrapper {
-	padding-bottom: 1.2rem;
-}
-
-.checkout-steps {
-	margin: 0 auto 2rem;
-	max-width: 40rem;
-}
-
-.display-align {
-	display: inline;
-}
-
-.empty-basket {
-	position: relative;
-	margin: 0 auto;
-
-	.empty-basket-heading {
-		font-weight: 500;
-	}
-
-	.empty-basket-loans {
-		position: relative;
-		min-height: 23rem;
-
-		#updating-overlay {
-			z-index: 1000;
-			width: auto;
-			height: auto;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			top: 0;
-			background-color: rgba($kiva-bg-lightgray, 0.7);
-
-			.spinner-wrapper {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				position: relative;
-				height: 100%;
-				top: auto;
-				left: auto;
-				transform: none;
-			}
-		}
 	}
 }
 </style>

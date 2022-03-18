@@ -4,16 +4,6 @@
 	>
 		<div class="row page-content">
 			<div class="small-12 columns thanks">
-				<div class="thanks__checkout-steps-wrapper hide-for-print">
-					<kv-checkout-steps
-						:steps="checkoutSteps"
-						:current-step-index="2"
-						style="max-width: 40rem;"
-						class="tw-mx-auto"
-					/>
-					<hr class="tw-border-tertiary tw-my-3">
-				</div>
-
 				<div class="thanks__header hide-for-print">
 					<template v-if="receipt">
 						<div
@@ -23,7 +13,7 @@
 							<img :src="imageRequire(`./high-five.svg`)" class="tw-mx-auto" alt="high fiving hands">
 						</div>
 						<h1
-							class="thanks__header-h1 tw-mb-3"
+							class="thanks__header-h1 tw-mt-1 tw-mb-3"
 							:class="{
 								'tw-text-h2': showAutoDepositUpsell
 							}"
@@ -115,7 +105,6 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import GuestUpsell from '@/components/Checkout/GuestUpsell';
-import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import AutoDepositCTA from '@/components/Checkout/AutoDepositCTA';
 import MonthlyGoodCTA from '@/components/Checkout/MonthlyGoodCTA';
 import SocialShare from '@/components/Checkout/SocialShare';
@@ -146,7 +135,6 @@ export default {
 		CheckoutReceipt,
 		GuestUpsell,
 		KvButton,
-		KvCheckoutSteps,
 		MonthlyGoodCTA,
 		SocialShare,
 		ThanksLayoutV2,
@@ -166,11 +154,6 @@ export default {
 			lender: {},
 			loans: [],
 			receipt: null,
-			checkoutSteps: [
-				'Basket',
-				'Payment',
-				'Thank You!'
-			],
 			isAutoDepositSubscriber: false,
 			isMonthlyGoodSubscriber: false,
 			hasModernSub: false,
@@ -367,10 +350,6 @@ export default {
 		@include breakpoint(medium) {
 			text-align: center;
 		}
-	}
-
-	&__checkout-steps-wrapper {
-		padding-bottom: 1.2rem;
 	}
 
 	&__social-share {

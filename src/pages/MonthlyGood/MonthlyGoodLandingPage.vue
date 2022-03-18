@@ -1,6 +1,7 @@
 <template>
 	<www-page>
 		<kv-hero
+			v-if="!isImpactVisibilityExperiment"
 			class="mg-hero bg-overlay"
 			:class="{ experiment: isExperimentActive }"
 		>
@@ -46,6 +47,61 @@
 							</p>
 						</div>
 					</div>
+				</div>
+			</template>
+		</kv-hero>
+		<kv-hero v-if="isImpactVisibilityExperiment">
+			<template #images>
+				<div class="tw-relative lg:tw-pt-2">
+					<div class="tw-absolute tw-w-full tw-h-full tw-flex tw-flex-col tw-justify-end
+					tw-text-white tw-p-2 lg:tw-max-w-5xl lg:tw-pb-2 lg:tw-rounded"
+						style="background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(255, 255, 255, 0) 85%);
+							left: 50%;
+							transform: translate(-50%, 0);"
+					>
+						<div class="tw-max-w-2xl tw-mx-auto">
+							<h2>It’s easy to do good</h2>
+							<p class="tw-mb-5 tw-text-subhead">
+								Support borrowers worldwide with monthly contributions as little as $5.
+							</p>
+						</div>
+					</div>
+					<div class="tw-p-2 tw-absolute -tw-mt-8 tw-flex tw-justify-center tw-w-full tw-z-10"
+						style="top: 90%;"
+					>
+						<div class="tw-bg-white tw-rounded tw-p-2 tw-pb-0"
+							style="box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);"
+						>
+							<landing-form-visibility-exp
+								:amount.sync="monthlyGoodAmount"
+								:selected-group.sync="selectedGroup"
+								key="top"
+								:button-text="heroPrimaryCtaText"
+							/>
+						</div>
+					</div>
+					<img class="tw-object-cover lg:tw-object-contain lg:tw-max-w-5xl tw-mx-auto
+							lg:tw-rounded"
+						style="min-height: 440px;"
+						:src="heroImage" alt=""
+					>
+				</div>
+				<div class="tw-pt-16 md:tw-pt-11 lg:tw-max-w-5xl lg:tw-mx-auto tw-px-2">
+					<h2 class="md:tw-text-center tw-text-subhead">
+						With these settings, you’ll support borrowers like this.
+					</h2>
+
+					<kiva-classic-loan-carousel-exp
+						:is-visible="showCarousel"
+						:loan-ids="selectedChannelLoanIds"
+						:selected-channel="selectedChannel"
+						:show-view-more-card="showViewMoreCard"
+						id="carousel_exp"
+					/>
+
+					<p class="tw-text-small tw-text-center tw-mt-4">
+						You can change your lending settings or cancel at any time.
+					</p>
 				</div>
 			</template>
 		</kv-hero>
@@ -98,11 +154,14 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvHero from '@/components/Kv/KvHero';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
+import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
+import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 import LandingForm from './LandingForm';
 import LandingFormExperiment from './LandingFormExperiment';
+import LandingFormVisibilityExp from './LandingFormVisibilityExp';
 import HowItWorks from './HowItWorks';
 import EmailPreview from './EmailPreview';
 import MoreAboutKiva from './MoreAboutKiva';
@@ -125,6 +184,10 @@ const pageQuery = gql`
 				key
 				value
 			}
+			mgHeroExp: uiExperimentSetting(key: "mg_hero_show_loans") {
+				key
+				value
+			}
 		}
 		contentful {
 			entries(contentType: "page", contentKey: "monthlygood")
@@ -142,6 +205,9 @@ export default {
 	metaInfo: {
 		title: 'Start Monthly Good',
 	},
+	mixins: [
+		loanGroupCategoriesMixin
+	],
 	components: {
 		EmailPreview,
 		HowItWorks,
@@ -151,8 +217,10 @@ export default {
 		KvHero,
 		LandingForm,
 		LandingFormExperiment,
+		LandingFormVisibilityExp,
 		MoreAboutKiva,
 		WwwPage,
+		KivaClassicLoanCarouselExp,
 	},
 	props: {
 		category: {
@@ -163,6 +231,7 @@ export default {
 	data() {
 		return {
 			isExperimentActive: false,
+			isImpactVisibilityExperiment: false,
 			isMonthlyGoodSubscriber: false,
 			monthlyGoodAmount: 25,
 			selectedGroup: this.category || 'default',
@@ -195,7 +264,30 @@ export default {
 				},
 			],
 			hasModernSub: false,
+			selectedChannelLoanIds: [],
+			selectedChannel: {},
+			showCarousel: true,
+			showViewMoreCard: false
 		};
+	},
+	created() {
+		const resultsArray = this.lendingCategories.filter(element => {
+			return element.value === this.category;
+		});
+		this.selectedChannelLoanIds = resultsArray[0].expLoansIds;
+	},
+	watch: {
+		selectedGroup() {
+			const resultsArray = this.lendingCategories.filter(element => {
+				return element.value === this.selectedGroup;
+			});
+			this.selectedChannelLoanIds = resultsArray[0].expLoansIds;
+			this.$kvTrackEvent(
+				'MonthlyGood',
+				'click-category-option',
+				resultsArray[0]?.marketingName ?? 'category changed'
+			);
+		}
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
@@ -209,7 +301,8 @@ export default {
 					return Promise.all([
 						client.query({ query: experimentQuery, variables: { id: 'mg_amount_selector' } }),
 						// eslint-disable-next-line max-len
-						client.query({ query: experimentQuery, variables: { id: 'EXP-VUE-399-subscription-appeal-personalization' } })
+						client.query({ query: experimentQuery, variables: { id: 'EXP-VUE-399-subscription-appeal-personalization' } }),
+						client.query({ query: experimentQuery, variables: { id: 'mg_hero_show_loans' } }),
 					]);
 				});
 		},
@@ -250,6 +343,21 @@ export default {
 				);
 			}
 
+			// mg_hero_show_loans
+			// Hero Loan Visibility Experiment - CORE-451
+			const mgHeroLoansExperiment = this.apollo.readFragment({
+				id: 'Experiment:mg_hero_show_loans',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.isImpactVisibilityExperiment = mgHeroLoansExperiment.version === 'b';
+			// Fire Event for EXP-CORE-451-Mar2022
+			if (mgHeroLoansExperiment.version && mgHeroLoansExperiment.version !== 'unassigned') {
+				this.$kvTrackEvent(
+					'MonthlyGood',
+					'EXP-CORE-451-Mar2022',
+					mgHeroLoansExperiment.version
+				);
+			}
 			// Check for contentful content
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
@@ -468,5 +576,15 @@ export default {
 			max-width: 23rem;
 		}
 	}
+}
+
+@include breakpoint(xxlarge) {
+	#carousel_exp >>> section > div:nth-child(2) {
+		display: none;
+	}
+}
+
+#carousel_exp >>> section > div:nth-child(1) > div {
+	max-width: 310px !important;
 }
 </style>

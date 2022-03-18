@@ -46,6 +46,7 @@
 				id="kiva-credit-payment-button"
 				@refreshtotals="$emit('refresh-totals')"
 				@updating-totals="setUpdatingTotals"
+				@checkout-failure="handleCheckoutFailure"
 			/>
 
 			<checkout-drop-in-payment-wrapper
@@ -199,8 +200,10 @@ export default {
 
 			this.$emit('transaction-complete', transactionData);
 		},
+		handleCheckoutFailure(payload) {
+			this.$emit('checkout-failure', payload);
+		},
 		setUpdatingTotals(payload) {
-			console.log(payload);
 			this.updatingTotals = payload;
 		},
 	}
@@ -235,6 +238,7 @@ export default {
 		}
 	}
 
+	// DO NOT REMOVE
 	&__basket-items {
 		&--hide-donation {
 			::v-deep .basket-donation-item {

@@ -1,3 +1,251 @@
+## [2.91.0](https://github.com/kiva/ui/compare/v2.90.0...v2.91.0) (2022-03-18)
+
+
+### Features
+
+* redirect to checkout was added to lean to three cta ([88fb645](https://github.com/kiva/ui/commit/88fb6458aa1e102b872e48eb8ba9072d6ee22895))
+
+## [2.90.0](https://github.com/kiva/ui/compare/v2.89.1...v2.90.0) (2022-03-18)
+
+
+### Features
+
+* loan bundle added to category page for test ([a6f09f7](https://github.com/kiva/ui/commit/a6f09f755c458e7b80673e876d1dff608f7061e9))
+
+
+### Bug Fixes
+
+* card component re-imported ([fe58604](https://github.com/kiva/ui/commit/fe5860424baf1ba4321dc809881ea738ff5ed32e))
+
+### [2.89.1](https://github.com/kiva/ui/compare/v2.89.0...v2.89.1) (2022-03-17)
+
+
+### Bug Fixes
+
+* loans are loaded dynamically for every category ([a8a86be](https://github.com/kiva/ui/commit/a8a86be863554b8b5a610b6ee36cc6574485fbb3))
+
+## [2.89.0](https://github.com/kiva/ui/compare/v2.88.2...v2.89.0) (2022-03-16)
+
+
+### Features
+
+* remove kiva us from lbc page experimental layout ([c4cad7e](https://github.com/kiva/ui/commit/c4cad7e66f1cff2466ffdc6f2530e041df637950))
+
+### [2.88.2](https://github.com/kiva/ui/compare/v2.88.1...v2.88.2) (2022-03-15)
+
+
+### Bug Fixes
+
+* set width on thanks icon buttons ([2f1d1cf](https://github.com/kiva/ui/commit/2f1d1cfc8d90cc31629bf8ccf3748d219cbaa851))
+
+### [2.88.1](https://github.com/kiva/ui/compare/v2.88.0...v2.88.1) (2022-03-11)
+
+
+### Bug Fixes
+
+* add analytics event on mg category selection ([655db3e](https://github.com/kiva/ui/commit/655db3e300249953ee764cdd2cd58f65411eb4fe))
+
+## [2.88.0](https://github.com/kiva/ui/compare/v2.87.0...v2.88.0) (2022-03-10)
+
+
+### Features
+
+* enable mg hero loans experiment ([57dabe9](https://github.com/kiva/ui/commit/57dabe912ccff0be96496f469c65a8ef28a033b1))
+
+## [2.87.0](https://github.com/kiva/ui/compare/v2.86.0...v2.87.0) (2022-03-10)
+
+
+### Features
+
+* some elements were hidden to match with ui design ([9fbeb83](https://github.com/kiva/ui/commit/9fbeb83817750735f3e87b49fdaad8159db56812))
+
+## [2.86.0](https://github.com/kiva/ui/compare/v2.85.0...v2.86.0) (2022-03-10)
+
+
+### Features
+
+* convert empty basket loan display + minimal loan card to kiva classic ([850e9d6](https://github.com/kiva/ui/commit/850e9d6850457f5374f1c0d241bb1dd149f6b196))
+
+
+### Bug Fixes
+
+* reduce usage of  legacy override styles ([9ec8357](https://github.com/kiva/ui/commit/9ec83578b15ded1aa57f5d06a3697f4889be2311))
+* remove width restriction on checkout contents ([4180750](https://github.com/kiva/ui/commit/4180750975bc868214f867494faea56e608c948b))
+
+## [2.85.0](https://github.com/kiva/ui/compare/v2.84.1...v2.85.0) (2022-03-10)
+
+
+### Features
+
+* data for loan ids was added to loan group categories file ([f8e9516](https://github.com/kiva/ui/commit/f8e9516d4225ca603e9e2dad9a230969fb77f368))
+* hero section for monthly good landing page was updated with a new design ([3e58b8d](https://github.com/kiva/ui/commit/3e58b8dfdd04e0d612de9fd34e2011851060be6a))
+
+
+### Bug Fixes
+
+* unused code was removed ([4cdd7a9](https://github.com/kiva/ui/commit/4cdd7a9232fc4112243721d9d59e475b11cc9160))
+
+### [2.84.1](https://github.com/kiva/ui/compare/v2.84.0...v2.84.1) (2022-03-09)
+
+
+### Bug Fixes
+
+* lbc experiment layout minor fixes ([c5d8736](https://github.com/kiva/ui/commit/c5d87363d6a67fdef4d24216281b1735e7eb9c27))
+
+## [2.84.0](https://github.com/kiva/ui/compare/v2.83.2...v2.84.0) (2022-03-09)
+
+
+### Features
+
+* **lend-by-category:** add experiment for selecting hero loan VUE-917 ([171ea7d](https://github.com/kiva/ui/commit/171ea7d119dccf17b5181ddd3065d8ec90c3469c))
+
+### [2.83.2](https://github.com/kiva/ui/compare/v2.83.1...v2.83.2) (2022-03-08)
+
+
+### Bug Fixes
+
+* control mg upsell link visibility more explicity ([065886e](https://github.com/kiva/ui/commit/065886e7f43ca6e3f4eb36b61abc4d304bf4fadc))
+
+### [2.83.1](https://github.com/kiva/ui/compare/v2.83.0...v2.83.1) (2022-03-08)
+
+
+### Bug Fixes
+
+* convert mg copy from climate change to earth friendly ([476b6e7](https://github.com/kiva/ui/commit/476b6e710f1f8c5af8ea971f83e6f7720e92030f))
+
+## [2.83.0](https://github.com/kiva/ui/compare/v2.82.0...v2.83.0) (2022-03-08)
+
+
+### Features
+
+* improved open graph/twitter meta properties for sharing borrower profiles ([c8c7589](https://github.com/kiva/ui/commit/c8c758942dd6310af66b8fbe3fd41452f5213658))
+
+## [2.82.0](https://github.com/kiva/ui/compare/v2.81.0...v2.82.0) (2022-03-08)
+
+
+### Features
+
+* exclude experiment layout for categories that should not be experimented on ([93faf4e](https://github.com/kiva/ui/commit/93faf4e6ddf82b9f33f08648591ab3b877aacd08))
+* toggle experimental layout in lend by category page ([6fceaf3](https://github.com/kiva/ui/commit/6fceaf3231d8ca61d880a8a1a533d600ebb55221))
+
+## [2.81.0](https://github.com/kiva/ui/compare/v2.80.0...v2.81.0) (2022-03-07)
+
+
+### Features
+
+* lbc experiment layout category definitions and functionality ([c089a57](https://github.com/kiva/ui/commit/c089a5747dfc69f063d7fbefb792d15be6862170))
+
+## [2.80.0](https://github.com/kiva/ui/compare/v2.79.1...v2.80.0) (2022-03-07)
+
+
+### Features
+
+* activate contentful controls for setting default loan display and toggle visibility ([85884bd](https://github.com/kiva/ui/commit/85884bd279f0537b8c0f59d119866b72842a0804))
+* use v-if for loan display visibility + wire up optional setting ([b9b3b9e](https://github.com/kiva/ui/commit/b9b3b9e4b7f868dab11e7904354138243030e4f2))
+
+
+### Bug Fixes
+
+* update comments around loan display settings from contentful ([663f6a9](https://github.com/kiva/ui/commit/663f6a9ec6212f2d56f9d73ca9f0825eea57f956))
+* updated corporate campaign footer styles to tailwind from broken green theme ([058b43c](https://github.com/kiva/ui/commit/058b43c6b5f5afdf5cefffc4c2bed6369b065bac))
+
+### [2.79.1](https://github.com/kiva/ui/compare/v2.79.0...v2.79.1) (2022-03-03)
+
+
+### Bug Fixes
+
+* add mobile view link tracking ([a3eaff8](https://github.com/kiva/ui/commit/a3eaff8d29a1d8194fd61ad01cb38ff3932871ae))
+* ensure link tracking on lend monthly link ([052482c](https://github.com/kiva/ui/commit/052482c21f468f91b48b69fc2c0735e7bd4120b6))
+
+
+### Reverts
+
+* Revert "fix: ensure link tracking is active on router-links" ([99af1b4](https://github.com/kiva/ui/commit/99af1b41341dfe41bf64a383fdf505f5bbe4c533))
+
+## [2.79.0](https://github.com/kiva/ui/compare/v2.78.2...v2.79.0) (2022-03-03)
+
+
+### Features
+
+* remove checkout steps from interface ([9509ab5](https://github.com/kiva/ui/commit/9509ab54e5a086114390aeae14c49a9e61779375))
+
+### [2.78.2](https://github.com/kiva/ui/compare/v2.78.1...v2.78.2) (2022-03-03)
+
+
+### Bug Fixes
+
+* ensure mobile spacing between button and select ([cfe48a1](https://github.com/kiva/ui/commit/cfe48a1d127138ea520b0d91eb0d0061999b5e9b))
+
+### [2.78.1](https://github.com/kiva/ui/compare/v2.78.0...v2.78.1) (2022-03-03)
+
+
+### Bug Fixes
+
+* ensure link tracking is active on router-links ([1602e45](https://github.com/kiva/ui/commit/1602e457697f067092597be29d9e85dcc98490b9))
+
+## [2.78.0](https://github.com/kiva/ui/compare/v2.77.1...v2.78.0) (2022-03-02)
+
+
+### Features
+
+* setup filters visibility experiment on lend/filter ([5765092](https://github.com/kiva/ui/commit/57650926373e647eb04b2c129ece046901e647fa))
+
+### [2.77.1](https://github.com/kiva/ui/compare/v2.77.0...v2.77.1) (2022-03-01)
+
+
+### Bug Fixes
+
+* renable hiding donation option during promo checkout ([591d31c](https://github.com/kiva/ui/commit/591d31c9d0dfd1c8cc0503507f3e68f549ba3b41))
+
+## [2.77.0](https://github.com/kiva/ui/compare/v2.76.0...v2.77.0) (2022-03-01)
+
+
+### Features
+
+* convert checkout layout to kiva classic + tailwind ([98a040e](https://github.com/kiva/ui/commit/98a040e0102452fc2e7847a304b2b081666add86))
+
+## [2.76.0](https://github.com/kiva/ui/compare/v2.75.2...v2.76.0) (2022-03-01)
+
+
+### Features
+
+* core-369 lots of style cleanup while transitioning to tailwind ([2fde3b9](https://github.com/kiva/ui/commit/2fde3b9540d50d07ffe448776ddd00294cf1cab9))
+* refactor mobile and desktop into single donation selection interface ([bc212fa](https://github.com/kiva/ui/commit/bc212fa3797bc3f0248908434e15cd325c43e9f4))
+* update mobile donation lightbox to kiva classic ([89d676b](https://github.com/kiva/ui/commit/89d676b548de3592261cfb8b685b6a9cebab9a9f))
+
+
+### Bug Fixes
+
+* core-369 wrapping up tailwinds cleanup. ([3d4f0b2](https://github.com/kiva/ui/commit/3d4f0b26da1dc1688cf5fdc721aea3b5fe3d8c14))
+
+### [2.75.2](https://github.com/kiva/ui/compare/v2.75.1...v2.75.2) (2022-03-01)
+
+
+### Bug Fixes
+
+* update donation interface test ids ([5103818](https://github.com/kiva/ui/commit/5103818704be77eb9033a29268b40fc18739b5cf))
+
+### [2.75.1](https://github.com/kiva/ui/compare/v2.75.0...v2.75.1) (2022-03-01)
+
+
+### Bug Fixes
+
+* for proper mounting after ssr App.vue root element must have id `app` ([9d9af8d](https://github.com/kiva/ui/commit/9d9af8dbc053b4fb6356a737c6b45548f69784c5))
+
+## [2.75.0](https://github.com/kiva/ui/compare/v2.74.2...v2.75.0) (2022-02-28)
+
+
+### Features
+
+* lbc experimental page template ([a1ebcc8](https://github.com/kiva/ui/commit/a1ebcc8963f0f4f980c2ff015f8f96f194c0443e))
+
+### [2.74.2](https://github.com/kiva/ui/compare/v2.74.1...v2.74.2) (2022-02-25)
+
+
+### Bug Fixes
+
+* ensure kiva credit checkout errors bubble up and show a toast message ([6444182](https://github.com/kiva/ui/commit/64441827121a2358223c2af54da5f6ce450d5748))
+
 ### [2.74.1](https://github.com/kiva/ui/compare/v2.74.0...v2.74.1) (2022-02-23)
 
 

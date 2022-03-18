@@ -2,7 +2,10 @@ import _filter from 'lodash/filter';
 import _map from 'lodash/map';
 import _toPairs from 'lodash/toPairs';
 import { isWithinInterval } from 'date-fns';
-// import { readJSONSetting, hashCode } from '@/util/settingsUtils';
+import experimentSettingQuery from '@/graphql/query/experimentSetting.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import { readJSONSetting } from '@/util/settingsUtils';
+import logReadQueryError from '@/util/logReadQueryError';
 
 /**
  * Parse the experiment cookie value into an object
@@ -156,4 +159,69 @@ export function assignVersion({
 		return 'unassigned';
 	}
 	// doing nothing here returns undefined, indicating that the experiment is not active
+}
+
+/**
+ * Get the experiment setting data for a given experiment key asynchronously.
+ *
+ * @param  {ApolloClient} client     the client to make the request to
+ * @param  {string} key              the experiment key
+ * @return {Promise}                 a promise that resolves to the setting data
+ */
+export function getExperimentSettingAsync(client, key) {
+	return client.query({
+		query: experimentSettingQuery,
+		variables: { key },
+	}).then(({ data }) => {
+		const setting = readJSONSetting(data, 'general.uiExperimentSetting.value') ?? {};
+		return setting;
+	});
+}
+
+/**
+ * Get the experiment setting data for a given experiment key synchronously.
+ *
+ * @param  {ApolloClient} client     the client to read the data from
+ * @param  {string} key              the experiment key
+ * @return {object}                  the cached setting data
+ */
+export function getExperimentSettingCached(client, key) {
+	try {
+		const data = client.readQuery({
+			query: experimentSettingQuery,
+			variables: { key },
+		});
+		const setting = readJSONSetting(data, 'general.uiExperimentSetting.value') ?? {};
+		return setting;
+	} catch (e) {
+		logReadQueryError(e, 'FeatureHeroLoanWrapper experimentSetting');
+		return {};
+	}
+}
+
+/**
+ * Track which experiment version the user is assigned
+ *
+ * @param  {ApolloClient} client       a client with the experiment assignment cached
+ * @param  {Function} trackEvent       the tracking function to call (usually this.$kvTrackEvent)
+ * @param  {string} category           the tracking category
+ * @param  {string} key                the experiment key
+ * @return {Experiment}                the experiment assignment object read from the client cache
+ */
+export function trackExperimentVersion(client, trackEvent, category, key) {
+	// get assignment for experiment key
+	const exp = client.readFragment({
+		id: `Experiment:${key}`,
+		fragment: experimentVersionFragment,
+	}) ?? {};
+
+	// Fire event for experiment key
+	if (exp.version && exp.version !== 'unassigned') {
+		trackEvent(
+			category,
+			key,
+			exp.version,
+		);
+	}
+	return exp;
 }
