@@ -3,7 +3,10 @@
 		class="loan-channel-page category-page"
 		:gray-background="pageLayout === 'control'"
 	>
-		<loan-channel-category-control v-if="pageLayout === 'control'" />
+		<loan-channel-category-control
+			v-if="pageLayout === 'control'"
+			:add-bundles-exp="addBundlesExp"
+		/>
 		<loan-channel-category-experiment v-if="pageLayout === 'experiment'" />
 
 		<add-to-basket-interstitial v-show="addToBasketExpActive" />
@@ -46,7 +49,8 @@ export default {
 	data() {
 		return {
 			addToBasketExpActive: false,
-			pageLayout: 'control'
+			pageLayout: 'control',
+			addBundlesExp: false,
 		};
 	},
 	apollo: {
@@ -57,6 +61,7 @@ export default {
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'lend_by_category_v2' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'add_to_basket_v2' } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'category_loan_bundles' } }),
 				]);
 			});
 		}
@@ -70,6 +75,8 @@ export default {
 		this.initializeAddToBasketInterstitial();
 		// Experimental page layout
 		this.initializeExperimentalLayout();
+		// Loan Bundles Experiment
+		this.initializeLoanBundleExperiment();
 	},
 	computed: {
 		targetedLoanChannel() {
@@ -135,6 +142,30 @@ export default {
 						'lend-by-category',
 						'EXP-ACK-247-Mar2022',
 						layoutEXP.version === 'shown' ? 'b' : 'a'
+					);
+				}
+			}
+		},
+		initializeLoanBundleExperiment() {
+			const layoutEXP = this.apollo.readFragment({
+				id: 'Experiment:category_loan_bundles',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			// Only certain categories are eligible for the experiment
+			if (!this.testCategories.includes(this.targetedLoanChannel)) {
+				if (!!layoutEXP.version && layoutEXP.version === 'b') {
+					this.addBundlesExp = true;
+
+					this.$kvTrackEvent(
+						'Lending',
+						'view-loan-bundle',
+						this.targetedLoanChannel
+					);
+					this.$kvTrackEvent(
+						'Lending',
+						'EXP-CORE-482-Mar2022',
+						layoutEXP.version
 					);
 				}
 			}
