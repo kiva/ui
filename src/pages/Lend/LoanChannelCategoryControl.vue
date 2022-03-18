@@ -395,13 +395,14 @@ export default {
 					});
 					responses.push(response);
 				}
-				const res = await Promise.all(responses);
-				console.log(res);
+				await Promise.all(responses);
 
 				this.$kvTrackEvent(
 					'basket',
 					'bundle-add-to-basket-funded-loan',
 				);
+
+				this.$router.push({ path: '/checkout' });
 			} catch (e) {
 				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
 			}
