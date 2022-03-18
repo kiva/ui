@@ -14,17 +14,17 @@
 		</div>
 		<kv-tabs v-else>
 			<template #tabNav>
-				<kv-tab :for="loanTabId"
+				<kv-tab :for-panel="loanTabId"
 					v-kv-track-event="['Borrower Profile', `click-Loan-Details-tab`, 'Loan Details']"
 				>
 					Loan details
 				</kv-tab>
-				<kv-tab :for="partnerTabId" v-if="isPartnerLoan"
+				<kv-tab :for-panel="partnerTabId" v-if="isPartnerLoan"
 					v-kv-track-event="['Borrower Profile', `click-Field-Partner-tab`, 'Field Partner']"
 				>
 					Field Partner
 				</kv-tab>
-				<kv-tab :for="trusteeTabId" v-if="hasTrustee"
+				<kv-tab :for-panel="trusteeTabId" v-if="hasTrustee"
 					v-kv-track-event="[
 						'Borrower Profile',
 						'click-Trustee-tab',

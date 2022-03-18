@@ -240,19 +240,19 @@ export default {
 	methods: {
 		onClose() {
 			// reset the tabs
-			if (this.$refs.navLendCategories) {
-				this.$refs.navLendCategories.setTab(0);
+			if (this.$refs?.navLendCategories?.tabContext?.setTab) {
+				this.$refs.navLendCategories.tabContext?.setTab(0);
 			}
 
 			// close all region accordions
-			if (this.$refs.regionAccordions) {
+			if (this.$refs?.regionAccordions) {
 				this.$refs.regionAccordions.forEach(accordionRef => {
 					accordionRef.collapse();
 				});
 			}
 
 			// close saved search accordions
-			if (this.hasSearches && this.$refs.searches) {
+			if (this.hasSearches && this.$refs?.searches) {
 				this.$refs.searches.collapse();
 			}
 		},
