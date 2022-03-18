@@ -1,3 +1,15 @@
+## [2.90.0](https://github.com/kiva/ui/compare/v2.89.1...v2.90.0) (2022-03-18)
+
+
+### Features
+
+* loan bundle added to category page for test ([a6f09f7](https://github.com/kiva/ui/commit/a6f09f755c458e7b80673e876d1dff608f7061e9))
+
+
+### Bug Fixes
+
+* card component re-imported ([fe58604](https://github.com/kiva/ui/commit/fe5860424baf1ba4321dc809881ea738ff5ed32e))
+
 ### [2.89.1](https://github.com/kiva/ui/compare/v2.89.0...v2.89.1) (2022-03-17)
 
 
