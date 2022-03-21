@@ -65,7 +65,7 @@
 										'click-Modify loan amount',
 										'open dialog'
 									]"
-									@change="trackLendAmountSelection"
+									@update:modelValue="trackLendAmountSelection"
 								>
 									<option
 										v-for="priceOption in prices"

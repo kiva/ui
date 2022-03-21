@@ -1,4 +1,4 @@
-const kvConfig = require('@kiva/kv-components/tailwind.config.js');
+const kvConfig = require('@kiva/kv-components/tailwind.config.cjs');
 
 module.exports = {
 	presets: [kvConfig],

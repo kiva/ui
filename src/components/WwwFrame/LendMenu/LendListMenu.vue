@@ -16,13 +16,13 @@
 		</div>
 		<kv-tabs ref="navLendCategories">
 			<template #tabNav>
-				<kv-tab for="nav-lend-categories">
+				<kv-tab for-panel="nav-lend-categories">
 					Categories
 				</kv-tab>
-				<kv-tab for="nav-lend-regions">
+				<kv-tab for-panel="nav-lend-regions">
 					Regions
 				</kv-tab>
-				<kv-tab for="nav-my-kiva" v-if="userId">
+				<kv-tab for-panel="nav-my-kiva" v-if="userId">
 					My Kiva
 				</kv-tab>
 			</template>
@@ -240,19 +240,19 @@ export default {
 	methods: {
 		onClose() {
 			// reset the tabs
-			if (this.$refs.navLendCategories) {
-				this.$refs.navLendCategories.setTab(0);
+			if (this.$refs?.navLendCategories?.tabContext?.setTab) {
+				this.$refs.navLendCategories.tabContext?.setTab(0);
 			}
 
 			// close all region accordions
-			if (this.$refs.regionAccordions) {
+			if (this.$refs?.regionAccordions) {
 				this.$refs.regionAccordions.forEach(accordionRef => {
 					accordionRef.collapse();
 				});
 			}
 
 			// close saved search accordions
-			if (this.hasSearches && this.$refs.searches) {
+			if (this.hasSearches && this.$refs?.searches) {
 				this.$refs.searches.collapse();
 			}
 		},

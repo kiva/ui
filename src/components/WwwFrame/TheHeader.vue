@@ -708,7 +708,9 @@ export default {
 			this.$kvTrackEvent('TopNav', 'hover-Lend-menu', 'Lend');
 		},
 		onLendMenuHide() {
-			this.$refs.lendMenu.onClose();
+			if (this.$refs.lendMenu) {
+				this.$refs.lendMenu.onClose();
+			}
 		},
 		addHashToRoute(hash) {
 			const route = { ...this.$route };
@@ -716,7 +718,9 @@ export default {
 			return route;
 		},
 		loadLendInfo() {
-			this.$refs.lendMenu.onLoad();
+			if (this.$refs.lendMenu) {
+				this.$refs.lendMenu.onLoad();
+			}
 		},
 		toggleMobileSearch() {
 			this.searchOpen = !this.searchOpen;
@@ -729,7 +733,8 @@ export default {
 			}
 		},
 		withinBoundaryCheck(event) {
-			const target = this.$refs.lendMenu.$el; // TODO, make this an argument instead of hardcoded
+			const target = this.$refs?.lendMenu?.$el ?? null; // TODO, make this an argument instead of hardcoded
+			if (!target) return false;
 			const withinBoundary = event.composedPath().includes(target);
 			if (!withinBoundary) {
 				this.toggleLendMenu(true);

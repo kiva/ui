@@ -54,7 +54,7 @@
 import IconAutoDepositAlternate from '@/assets/icons/inline/auto-deposit-alternate.svg';
 import IconLend from '@/assets/icons/inline/lend.svg';
 import IconUpdatesAlternate from '@/assets/icons/inline/updates-alternate.svg';
-import { darkGreenTheme } from '~/@kiva/kv-tokens/configs/kivaColors';
+import { darkGreenTheme } from '~/@kiva/kv-tokens/configs/kivaColors.cjs';
 
 import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
 

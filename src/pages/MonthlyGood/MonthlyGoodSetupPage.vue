@@ -127,7 +127,6 @@
 												id="donation-checkbox"
 												class="tw--ml-2"
 												v-model="donationCheckbox"
-												@change="donationCheckboxChange()"
 											>
 												<span class="tw-font-medium">
 													Monthly donation to Kiva (optional)
@@ -588,6 +587,12 @@ export default {
 				this.donationOptionSelected = '0';
 			}
 		},
+		donationCheckbox(newVal) {
+			if (!newVal) {
+				// when box is unchecked, change donation amount to zero.
+				this.donationOptionSelected = '0';
+			}
+		},
 		donationOptionSelected(newVal) {
 			// flag donation options as dirty, which stops the recalculation of the drop down values.
 			this.isDonationOptionsDirty = true;
@@ -643,12 +648,6 @@ export default {
 		hideDayInput() {
 			if (!this.$v.dayOfMonth.$invalid) {
 				this.isDayInputShown = false;
-			}
-		},
-		donationCheckboxChange() {
-			if (!this.donationCheckbox) {
-				// when box is unchecked, change donation amount to zero.
-				this.donationOptionSelected = '0';
 			}
 		},
 		completeMGBraintree(paymentType) {

@@ -25,7 +25,7 @@ import KvPopper from '@/components/Kv/KvPopper';
 import {
 	darkTheme,
 	mintTheme
-} from '~/@kiva/kv-tokens/configs/kivaColors';
+} from '~/@kiva/kv-tokens/configs/kivaColors.cjs';
 import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
 
 export default {

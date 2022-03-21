@@ -22,12 +22,9 @@
 			</div>
 		</div>
 		<div class="tw-text-right tw-align-bottom">
-			<!-- <kv-switch class="kv-switch" v-model="adOptIn" @change="handleSwitch">
+			<kv-switch class="kv-switch" v-model="adOptIn">
 				<span>Activate auto-deposit</span>
-			</kv-switch> -->
-			<kv-checkbox class="kv-checkbox" v-model="adOptIn" @change="handleSwitch">
-				<span>Activate auto-deposit</span>
-			</kv-checkbox>
+			</kv-switch>
 		</div>
 
 		<kv-lightbox
@@ -102,9 +99,7 @@ import logReadQueryError from '@/util/logReadQueryError';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-// TODO: Swap in KvSwitch after reactive bugs are fixed
-// import KvSwitch from '~/@kiva/kv-components/vue/KvSwitch';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import KvSwitch from '~/@kiva/kv-components/vue/KvSwitch';
 
 const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
 
@@ -148,9 +143,8 @@ export default {
 	name: 'AutoDepositUpsell',
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		KvCheckbox,
 		KvLightbox,
-		// KvSwitch,
+		KvSwitch,
 	},
 	props: {
 		myId: {
@@ -204,11 +198,16 @@ export default {
 			});
 		}
 	},
-	methods: {
-		handleSwitch(payload) {
+	watch: {
+		adOptIn(newVal, oldVal) {
+			// stop early if the value has not changed
+			if (newVal === oldVal) {
+				return;
+			}
+
 			// Set cookie for use on Thanks if true
 			// -> Cookie will be deleted with first usage to show the the AD upsell on Thanks Page
-			if (payload === true) {
+			if (newVal === true) {
 				try {
 					this.cookieStore.set(cookieName, true);
 				} catch (e) {
@@ -216,16 +215,18 @@ export default {
 				}
 			}
 			// Remove cookie if next is false
-			if (payload === false) {
+			if (newVal === false) {
 				this.cookieStore.remove(cookieName);
 			}
 
 			this.$kvTrackEvent(
 				'Checkout',
 				'click-Activate-auto-deposit-toggle',
-				payload === true ? 'Activate auto-deposit' : 'De-Activate auto-deposit',
+				newVal === true ? 'Activate auto-deposit' : 'De-Activate auto-deposit',
 			);
 		},
+	},
+	methods: {
 		closeLightbox() {
 			this.lightboxVisible = false;
 		},

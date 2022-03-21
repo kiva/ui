@@ -1,5 +1,6 @@
 /* global UI_COMMIT */
 import Vue from 'vue';
+import VueCompositionAPI from '@vue/composition-api';
 import * as Sentry from '@sentry/vue';
 import { Integrations } from '@sentry/tracing';
 import Meta from 'vue-meta';
@@ -30,6 +31,7 @@ export default function createApp({
 	if (!pluginsInstalled) {
 		pluginsInstalled = true;
 
+		Vue.use(VueCompositionAPI);
 		Vue.use(Meta);
 		Vue.use(kivaPlugins);
 		Vue.use(kvAnalytics);

@@ -74,7 +74,7 @@ import {
 	darkGreenTheme,
 	mintTheme,
 	defaultTheme
-} from '~/@kiva/kv-tokens/configs/kivaColors';
+} from '~/@kiva/kv-tokens/configs/kivaColors.cjs';
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
 /**

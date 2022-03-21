@@ -274,18 +274,18 @@ export default {
 		const resultsArray = this.lendingCategories.filter(element => {
 			return element.value === this.category;
 		});
-		this.selectedChannelLoanIds = resultsArray[0].expLoansIds;
+		this.selectedChannelLoanIds = resultsArray?.[0]?.expLoansIds ?? [];
 	},
 	watch: {
 		selectedGroup() {
 			const resultsArray = this.lendingCategories.filter(element => {
 				return element.value === this.selectedGroup;
 			});
-			this.selectedChannelLoanIds = resultsArray[0].expLoansIds;
+			this.selectedChannelLoanIds = resultsArray?.[0]?.expLoansIds ?? [];
 			this.$kvTrackEvent(
 				'MonthlyGood',
 				'click-category-option',
-				resultsArray[0]?.marketingName ?? 'category changed'
+				resultsArray?.[0]?.marketingName ?? 'category changed'
 			);
 		}
 	},
