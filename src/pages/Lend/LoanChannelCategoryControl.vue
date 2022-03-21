@@ -33,12 +33,7 @@
 							Bundle your support
 						</h1>
 
-						<!-- LoanUse  -->
-						<kv-loading-paragraph
-							v-if="!bundleText"
-							class="tw-text-subhead tw-my-2 tw-pr-3" :style="{width: '100%', height: '6.5rem'}"
-						/>
-						<p v-else class="tw-text-subhead tw-my-2 tw-pr-2">
+						<p class="tw-text-subhead tw-my-2 tw-pr-2">
 							{{ bundleText }}
 						</p>
 
@@ -152,7 +147,6 @@ import KvPagination from '@/components/Kv/KvPagination';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import { isLoanFundraising } from '@/util/loanUtils';
@@ -208,7 +202,6 @@ export default {
 		PromoGridLoanCard,
 		KvButton,
 		KivaClassicLoanCarouselExp,
-		KvLoadingParagraph,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
@@ -299,7 +292,7 @@ export default {
 			return title;
 		},
 		bundleText() {
-			let text = '';
+			let text = 'Support these three loans with just one click.';
 			if (this.bundleLoans[0] && this.bundleLoans[1] && this.bundleLoans[2]) {
 				text = `Support ${this.bundleLoans[0].name}, ${this.bundleLoans[1].name}
 							and ${this.bundleLoans[2].name} with just one click.`;
