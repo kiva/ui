@@ -9,7 +9,7 @@
 						<p>Once we verify your account, you can continue {{ process }}!</p>
 						<kv-button
 							data-test="withdraw-send-verification"
-							:state="{'loading': sending}"
+							:state="sending ? 'loading' : ''"
 							@click="send"
 						>
 							Send verification link
@@ -24,7 +24,7 @@
 						<p>After receiving the email, follow the link provided to continue {{ process }}.</p>
 						<kv-button
 							data-test="withdraw-resend-verification"
-							:state="{'loading': sending}"
+							:state="sending ? 'loading' : ''"
 							@click="send"
 						>
 							Resend email
