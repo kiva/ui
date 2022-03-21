@@ -3,7 +3,10 @@
 		<div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-2">
 			<fieldset class="tw-basis-full md:tw-hidden">
 				<label for="borrower-categories" class="tw-sr-only">Lending category to support</label>
-				<kv-select class="tw-w-full" id="borrower-categories" :value="selectedGroup" @change="updateSelected">
+				<kv-select class="tw-w-full" id="borrower-categories"
+					:model-value="selectedGroup"
+					@update:modelValue="updateSelected"
+				>
 					<option v-for="(option, index) in lendingCategories" :value="option.value" :key="index">
 						{{ option.label }}
 					</option>
@@ -33,8 +36,8 @@
 				<fieldset class="tw-basis-full tw-hidden md:tw-block">
 					<label for="borrower-categories" class="tw-sr-only">Lending category to support</label>
 					<kv-select class="tw-w-full" id="borrower-categories"
-						:value="selectedGroup"
-						@change="updateSelected"
+						:model-value="selectedGroup"
+						@update:modelValue="updateSelected"
 					>
 						<option v-for="(option, index) in lendingCategories" :value="option.value" :key="index">
 							{{ option.label }}
@@ -104,6 +107,10 @@ export default {
 			// If it has a key attribute, then it will be used in the input id to avoid
 			// duplicate inputs with the same id.
 			return this.$vnode.key || '';
+		},
+		selectedGroupValue() {
+			// const selectedGroupValue = this.lendingCategories?.[this.selectedGroup]?.value ?? 'default';
+			return this.lendingCategories?.[this.selectedGroup]?.value ?? 'default';
 		}
 	},
 	methods: {

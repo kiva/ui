@@ -20,8 +20,8 @@
 			<kv-select
 				class="select-category"
 				id="select-category"
-				:value="selectedGroup"
-				@change="updateSelected"
+				:model-value="selectedGroup"
+				@update:modelValue="updateSelected"
 			>
 				<option
 					v-for="(option, index) in lendingCategories"
