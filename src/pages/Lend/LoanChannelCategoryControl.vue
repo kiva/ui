@@ -33,8 +33,13 @@
 							Bundle your support
 						</h1>
 
-						<p class="tw-text-subhead tw-my-2">
-							Support these three loans for women with just one click.
+						<!-- LoanUse  -->
+						<kv-loading-paragraph
+							v-if="!bundleText"
+							class="tw-text-subhead tw-my-2 tw-pr-3" :style="{width: '100%', height: '6.5rem'}"
+						/>
+						<p v-else class="tw-text-subhead tw-my-2 tw-pr-2">
+							{{ bundleText }}
 						</p>
 
 						<div class="tw-hidden lg:tw-block tw-mt-1">
@@ -147,6 +152,7 @@ import KvPagination from '@/components/Kv/KvPagination';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
+import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import { isLoanFundraising } from '@/util/loanUtils';
@@ -202,6 +208,7 @@ export default {
 		PromoGridLoanCard,
 		KvButton,
 		KivaClassicLoanCarouselExp,
+		KvLoadingParagraph,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
@@ -233,6 +240,7 @@ export default {
 			lendFilterExpVersion: '',
 			displayLoanPromoCard: false,
 			mgTargetCategory: null,
+			bundleLoans: [],
 			selectedChannelLoanIds: [],
 			selectedChannel: {},
 			showCarousel: true,
@@ -289,6 +297,14 @@ export default {
 				title = `${this.loanChannel.name}`;
 			}
 			return title;
+		},
+		bundleText() {
+			let text = '';
+			if (this.bundleLoans[0] && this.bundleLoans[1] && this.bundleLoans[2]) {
+				text = `Support ${this.bundleLoans[0].name}, ${this.bundleLoans[1].name}
+							and ${this.bundleLoans[2].name} with just one click.`;
+			}
+			return text;
 		},
 	},
 	apollo: {
@@ -525,7 +541,7 @@ export default {
 					return isLoanFundraising(loanIn);
 				});
 				loans = loans.slice(0, 3);
-
+				this.bundleLoans = loans;
 				this.selectedChannelLoanIds = loans.map(element => element.id);
 			} catch (e) {
 				console.log(e);
