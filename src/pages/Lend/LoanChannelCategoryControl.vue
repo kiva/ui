@@ -33,8 +33,8 @@
 							Bundle your support
 						</h1>
 
-						<p class="tw-text-subhead tw-my-2">
-							Support these three loans for women with just one click.
+						<p class="tw-text-subhead tw-my-2 tw-pr-2">
+							{{ bundleText }}
 						</p>
 
 						<div class="tw-hidden lg:tw-block tw-mt-1">
@@ -233,6 +233,7 @@ export default {
 			lendFilterExpVersion: '',
 			displayLoanPromoCard: false,
 			mgTargetCategory: null,
+			bundleLoans: [],
 			selectedChannelLoanIds: [],
 			selectedChannel: {},
 			showCarousel: true,
@@ -289,6 +290,14 @@ export default {
 				title = `${this.loanChannel.name}`;
 			}
 			return title;
+		},
+		bundleText() {
+			let text = 'Support these three loans with just one click.';
+			if (this.bundleLoans[0] && this.bundleLoans[1] && this.bundleLoans[2]) {
+				text = `Support ${this.bundleLoans[0].name}, ${this.bundleLoans[1].name}
+							and ${this.bundleLoans[2].name} with just one click.`;
+			}
+			return text;
 		},
 	},
 	apollo: {
@@ -520,12 +529,12 @@ export default {
 						topics: ['story']
 					},
 				});
-				const relatedArray = baseData.data.ml.relatedLoansByTopics[0].values;
+				const relatedArray = baseData?.data?.ml?.relatedLoansByTopics?.[0]?.values ?? [];
 				let loans = _filter(relatedArray, loanIn => {
 					return isLoanFundraising(loanIn);
 				});
 				loans = loans.slice(0, 3);
-
+				this.bundleLoans = loans;
 				this.selectedChannelLoanIds = loans.map(element => element.id);
 			} catch (e) {
 				console.log(e);
