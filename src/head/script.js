@@ -1,4 +1,4 @@
-export default config => {
+export default (config, globalOneTrustEvent) => {
 	// check for opt out of 3rd party scripts + cookies
 	const cookies = typeof document !== 'undefined' ? document.cookie.split(';') : [];
 	let optout = false;
@@ -7,7 +7,6 @@ export default config => {
 			optout = true;
 		}
 	}
-
 	// scaffold global dataLayer
 	// - ensures data can be pushed hereafter
 	// - if active, gtm is primary consumer
@@ -182,7 +181,6 @@ export default config => {
 				if (config.algoliaConfig.enableAA && !optout) {
 					OneTrust.InsertHtml('', 'head', insertAlgoliaAnalytics, null, 'C0002');
 				}
-
 				if (config.enableFullStory && !optout) {
 					OneTrust.InsertHtml('', 'head', insertFullStory, null, 'C0002');
 				}
@@ -221,6 +219,9 @@ export default config => {
 			* these sharing tools.
 			* */
 			// Currently any social media scripts are loaded via GTM
+
+			/* fire global event with oneTrust settings */
+			globalOneTrustEvent();
 		};
 		/* eslint-enable */
 	}
