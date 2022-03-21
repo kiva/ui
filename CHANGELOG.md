@@ -1,3 +1,14 @@
+### [2.93.1](https://github.com/kiva/ui/compare/v2.93.0...v2.93.1) (2022-03-21)
+
+
+### Bug Fixes
+
+* add + use composition api ([5f5f83e](https://github.com/kiva/ui/commit/5f5f83e98b96f3fbd4a9f2799732e9d3ebe6d8e9))
+* guard ref usage and update for-label prop on kv tab ([2f06724](https://github.com/kiva/ui/commit/2f067240a38baa58edeb41f82ec59ab18018a36c))
+* update for breaking changes in tailwind config, KvSelect, KvCheckbox, and KvTextInput ([a3c92d4](https://github.com/kiva/ui/commit/a3c92d42b1d16d857fef89bf962208ec2e1e3585))
+* update model-value on mg kv-select and guard loan arrays ([36f2816](https://github.com/kiva/ui/commit/36f2816cd93c73a398fd602efea93c440ebed579))
+* update props and ref usage to match new componenet signatures ([0a7a59a](https://github.com/kiva/ui/commit/0a7a59a37b52102b23d392def35a84ca7f68eb92))
+
 ## [2.93.0](https://github.com/kiva/ui/compare/v2.92.0...v2.93.0) (2022-03-21)
 
 
