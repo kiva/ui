@@ -529,7 +529,7 @@ export default {
 						topics: ['story']
 					},
 				});
-				const relatedArray = baseData.data.ml.relatedLoansByTopics[0].values;
+				const relatedArray = baseData?.data?.ml?.relatedLoansByTopics?.[0]?.values ?? [];
 				let loans = _filter(relatedArray, loanIn => {
 					return isLoanFundraising(loanIn);
 				});
