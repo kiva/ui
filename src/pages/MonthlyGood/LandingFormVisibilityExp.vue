@@ -108,10 +108,6 @@ export default {
 			// duplicate inputs with the same id.
 			return this.$vnode.key || '';
 		},
-		selectedGroupValue() {
-			// const selectedGroupValue = this.lendingCategories?.[this.selectedGroup]?.value ?? 'default';
-			return this.lendingCategories?.[this.selectedGroup]?.value ?? 'default';
-		}
 	},
 	methods: {
 		// Emits values to parent component to allow the synchronization of 2 landing
