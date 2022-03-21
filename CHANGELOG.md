@@ -1,3 +1,16 @@
+## [2.93.0](https://github.com/kiva/ui/compare/v2.92.0...v2.93.0) (2022-03-21)
+
+
+### Features
+
+* dynamic text for bundles was added ([ded87dc](https://github.com/kiva/ui/commit/ded87dc597056b5b7e047194cbeda52821261d3c))
+
+
+### Bug Fixes
+
+* a default value was added to bundle text ([774dbff](https://github.com/kiva/ui/commit/774dbff160a7c80c210706a05bd42469c2e556f3))
+* optional chaining operator was added ([038fa83](https://github.com/kiva/ui/commit/038fa83a86d71543baf903595528823333c9087e))
+
 ## [2.92.0](https://github.com/kiva/ui/compare/v2.91.0...v2.92.0) (2022-03-21)
 
 
