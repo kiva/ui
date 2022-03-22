@@ -165,15 +165,24 @@ async function fetchThemes() {
 	]);
 }
 
+async function fetchTags() {
+	return Promise.resolve([
+		{ id: 43, name: 'U.S. Black-owned Businesses' },
+		{ id: 45, name: 'Latinx/Hispanic Owned Business' },
+		{ id: 28, name: 'Repeat Borrower' }
+	]);
+}
+
 // Parse the filter string and return an array of filter arrays, e.g. [['sector', 'arts'], ['country', 'ke']]
 // Returns an empty array if the filter string does not contain any valid matches.
 const getFilterArrays = filterString => {
 	// This regex matches strings like 'sector_arts,country_ke' and captures each
 	// param name and value (for example 'sector', 'arts', 'country', 'ke' would be captured).
 	// See tests, examples, and a more detailed explanation at regexr.com/659in
-	const searchParamRegex = /(?:([a-z]+)_([a-z0-9 \\/-]+),?)+?/g;
+	const searchParamRegex = /(?:([a-z]+)_([a-z.0-9. \\/-]+),?)+?/g;
 	// Match the regex against the filter string, returning an iterator of all the matches and captured groups
 	const matches = filterString.toLowerCase().matchAll(searchParamRegex);
+
 	// Return an array of the matches as filter names and values, like [['sector', 'arts'], ['country', 'ke']]
 	return [...matches].map(match => [match[1], match[2]]);
 };

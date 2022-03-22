@@ -123,12 +123,12 @@ module.exports = function liveLoanRouter(cache) {
 	});
 
 	// Filter URL Router
-	router.use('/f/:id([a-zA-Z0-9%,_-]{0,})/url/:offset(\\d{0,})', async (req, res) => {
+	router.use('/f/:id([a-z.A-Z.0-9.%,_-]{0,})/url/:offset(\\d{0,})', async (req, res) => {
 		await redirectToUrl('filter', cache, req, res);
 	});
 
 	// Filter IMG Router
-	router.use('/f/:id([a-zA-Z0-9%,_-]{0,})/img/:offset(\\d{0,})', async (req, res) => {
+	router.use('/f/:id([a-z.A-Z.0-9.%,_-]{0,})/img/:offset(\\d{0,})', async (req, res) => {
 		await serveImg('filter', cache, req, res);
 	});
 
