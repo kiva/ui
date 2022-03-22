@@ -244,6 +244,7 @@ const supportedFilterLegacy = name => {
 		case 'sector':
 		case 'sort':
 		case 'theme':
+		case 'tag':
 			return true;
 		default:
 			warn(`Unsupported legacy filter "${name}"`);
@@ -280,7 +281,7 @@ async function parseFilterStringLegacy(filterString) {
 	// only try parsing if the input is valid
 	if (filterString && typeof filterString === 'string') {
 		// Fetch possible filter options
-		const [sectors, themes] = await Promise.all([fetchSectors(), fetchThemes()]);
+		const [sectors, themes, tags] = await Promise.all([fetchSectors(), fetchThemes(), fetchTags()]);
 		// Start parsing the filter string
 		getFilterArrays(filterString)
 			// Remove any unsupported filters
@@ -302,6 +303,11 @@ async function parseFilterStringLegacy(filterString) {
 					const theme = findFilterOption(themes, name, value);
 					if (theme) {
 						addArrayFilterValue(name, theme.name);
+					}
+				} else if (name === 'tag') {
+					const tag = findFilterOption(tags, name, value);
+					if (tag) {
+						addArrayFilterValue(name, tag.name);
 					}
 				}
 			});
