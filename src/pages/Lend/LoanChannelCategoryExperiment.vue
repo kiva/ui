@@ -1,5 +1,6 @@
 <template>
 	<div :style="cssVars">
+		<!-- Removed for v3 of experiment
 		<div
 			class="lbc-hero-wrapper"
 		>
@@ -13,12 +14,25 @@
 					</h3>
 				</div>
 			</div>
-		</div>
+		</div> -->
 
 		<div class="tw-w-full tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
-			<h2 class="tw-text-center tw-my-6">
-				{{ targetedCategory.tagline }}
-			</h2>
+			<div class="tw-mt-2">
+				<p class="tw-text-small">
+					<router-link to="/lend-by-category">
+						All Loans
+					</router-link> >
+					<span class="show-for-large">{{ targetedCategory.title }}</span>
+				</p>
+				<h1>
+					{{ targetedCategory.title }}
+				</h1>
+				<p
+					class="tw-pr-6 tw-mt-2 tw-mb-4 tw-max-w-3xl"
+				>
+					{{ targetedCategory.description }}
+				</p>
+			</div>
 
 			<div
 				class="tw-flex tw-justify-start md:tw-justify-center
@@ -31,6 +45,13 @@
 					@click="handleFilterClick(category)"
 				>
 					{{ category.name }}
+				</kv-button>
+				<kv-button
+					class="tw-mx-1 md:tw-mb-3 tw-whitespace-nowrap"
+					variant="secondary"
+					:href="targetedCategory.filterLink"
+				>
+					More...
 				</kv-button>
 			</div>
 
@@ -94,6 +115,8 @@
 
 <script>
 // TODO some of these computed properties are the same as src/pages/Lend/LoanChannelCategoryControl.vue
+/** TODO - V3 of this experimental layout removed the hero background.
+ * @/assets/images/lend-by-category-page/ are currently unused */
 import gql from 'graphql-tag';
 import numeral from 'numeral';
 
@@ -158,6 +181,7 @@ const categoryProperties = {
 		tagline: 'Support women across a variety of areas',
 		image: imageRequire('./lbc-women.jpg'),
 		loanChannelId: 5,
+		filterLink: '/lend/filter?gender=female&sortBy=popularity',
 		subCategories: [
 			{
 				name: 'Entrepreneurs',
@@ -166,18 +190,6 @@ const categoryProperties = {
 						distributionModel: 'both',
 						gender: 'female',
 						sector: [7, 4],
-						status: 'fundraising'
-					},
-					sortBy: 'popularity'
-				}
-			},
-			{
-				name: 'Single moms',
-				variables: {
-					filters: {
-						distributionModel: 'both',
-						gender: 'female',
-						loanTags: [17],
 						status: 'fundraising'
 					},
 					sortBy: 'popularity'
@@ -252,6 +264,7 @@ const categoryProperties = {
 		tagline: 'Support people across the US',
 		image: imageRequire('./lbc-kivaus.jpg'),
 		loanChannelId: 28,
+		filterLink: '/lend/filter?countries=North%20America%20>%20United%20States&sortBy=popularity',
 		subCategories: [
 			{
 				name: 'Women',
@@ -319,6 +332,7 @@ const categoryProperties = {
 		tagline: 'Support agriculture across a variety of areas',
 		image: imageRequire('./lbc-agriculture.jpg'),
 		loanChannelId: 8,
+		filterLink: '/lend/filter?sector=Agriculture&sortBy=popularity',
 		subCategories: [
 			{
 				name: 'Women',
@@ -389,6 +403,7 @@ const categoryProperties = {
 		tagline: 'Support eco-friendly causes in multiple ways',
 		image: imageRequire('./lbc-ecofriendly.jpg'),
 		loanChannelId: 18,
+		filterLink: '/lend/filter?tags=%23Eco-friendly~%23Sustainable%20Ag&sortBy=popularity',
 		subCategories: [
 			{
 				name: 'Women',
@@ -444,6 +459,7 @@ const categoryProperties = {
 		tagline: 'Support refugees and IDPs in multiple ways',
 		image: imageRequire('./lbc-refugees.jpg'),
 		loanChannelId: 32,
+		filterLink: '/lend/filter?attributes=Refugees%2FDisplaced&sortBy=popularity',
 		subCategories: [
 			{
 				name: 'Entrepreneurs',
@@ -499,6 +515,7 @@ const categoryProperties = {
 		tagline: 'Support housing across a variety of areas',
 		image: imageRequire('./lbc-shelter.jpg'),
 		loanChannelId: 6,
+		filterLink: '/lend/filter?sector=Housing&sortBy=popularity',
 		subCategories: [
 			{
 				name: 'Women',
@@ -507,18 +524,6 @@ const categoryProperties = {
 						distributionModel: 'both',
 						gender: 'female',
 						sector: [10],
-						status: 'fundraising'
-					},
-					sortBy: 'popularity'
-				}
-			},
-			{
-				name: 'Water and Sanitation',
-				variables: {
-					filters: {
-						distributionModel: 'both',
-						sector: [10],
-						theme: 'Water and Sanitation',
 						status: 'fundraising'
 					},
 					sortBy: 'popularity'
@@ -581,6 +586,7 @@ const categoryProperties = {
 		tagline: 'Support single parents in multiple ways',
 		image: imageRequire('./lbc-parents.jpg'),
 		loanChannelId: 26,
+		filterLink: '/lend/filter?tags=%23Single%20Parent&sortBy=popularity',
 		subCategories: [
 			{
 				name: 'Single moms',
@@ -631,18 +637,6 @@ const categoryProperties = {
 				}
 			},
 			{
-				name: 'Agriculture',
-				variables: {
-					filters: {
-						distributionModel: 'both',
-						loanTags: [17],
-						sector: [1],
-						status: 'fundraising'
-					},
-					sortBy: 'popularity'
-				}
-			},
-			{
 				name: 'All',
 				variables: {
 					filters: {
@@ -660,6 +654,7 @@ const categoryProperties = {
 		tagline: 'Support people in conflict zones across a variety of areas',
 		image: imageRequire('./lbc-conflict.jpg'),
 		loanChannelId: 7,
+		filterLink: '/lend/filter?attributes=Conflict%20Zones&sortBy=popularity',
 		subCategories: [
 			{
 				name: 'Women',
@@ -730,6 +725,7 @@ const categoryProperties = {
 		tagline: 'Find time-sensitive loans across a variety of areas',
 		image: imageRequire('./lbc-endingsoon.jpg'),
 		loanChannelId: 3,
+		filterLink: '/lend/filter?sortBy=expiringSoon',
 		subCategories: [
 			{
 				name: 'Women',
@@ -773,18 +769,6 @@ const categoryProperties = {
 					filters: {
 						distributionModel: 'both',
 						sector: [10],
-						expiringSoon: true,
-						status: 'fundraising'
-					},
-					sortBy: 'expiringSoon'
-				}
-			},
-			{
-				name: 'Youth',
-				variables: {
-					filters: {
-						distributionModel: 'both',
-						theme: 'Youth',
 						expiringSoon: true,
 						status: 'fundraising'
 					},
