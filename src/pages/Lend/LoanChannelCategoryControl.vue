@@ -25,7 +25,7 @@
 				</p>
 			</div>
 		</div>
-		<div class="tw-bg-brand-100 tw-w-full tw-mb-6 tw-px-2 tw-py-2" v-if="addBundlesExp">
+		<div class="tw-bg-brand-100 tw-w-full tw-mb-8 lg:tw-mb-12 lg:tw-mt-2 tw-px-2 tw-py-2" v-if="addBundlesExp">
 			<div class="row">
 				<div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-w-full">
 					<div class="tw-w-full lg:tw-w-2/5">
