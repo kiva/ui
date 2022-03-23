@@ -307,7 +307,7 @@ async function parseFilterStringLegacy(filterString) {
 				} else if (name === 'tag') {
 					const tag = findFilterOption(tags, name, value);
 					if (tag) {
-						addArrayFilterValue(name, tag.name);
+						addArrayFilterValue('loanTags', tag.id);
 					}
 				}
 			});

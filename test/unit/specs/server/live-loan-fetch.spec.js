@@ -52,13 +52,11 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('theme_refugees/displaced', { theme: ['Refugees/Displaced'] });
 			await testFilterParsing('theme_start-up', { theme: ['Start-Up'] });
 			await testFilterParsing('theme_youth,theme_green', { theme: ['Youth', 'Green'] });
-			await testFilterParsing('tag_u.s. black-owned businesses',
-				{ tag: ['U.S. Black-owned Businesses'] });
+			await testFilterParsing('tag_u.s. black-owned businesses', { loanTags: [43] });
 			await testFilterParsing('tag_u.s. black-owned businesses,theme_green',
-				{ tag: ['U.S. Black-owned Businesses'], theme: ['Green'] });
+				{ loanTags: [43], theme: ['Green'] });
 			await testFilterParsing('tag_latinx/hispanic owned business,tag_u.s. black-owned businesses',
-				{ tag: ['Latinx/Hispanic Owned Business', 'U.S. Black-owned Businesses'] });
-
+				{ loanTags: [45, 43] });
 			await testFilterParsing('notafilter_value', {});
 			await testFilterParsing('sector_notasector', {});
 			await testFilterParsing('theme_notatheme', {});
