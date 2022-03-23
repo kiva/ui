@@ -7,6 +7,6 @@ module.exports = {
 		'./node_modules/@kiva/kv-components/utils/**/*.js',
 		'./server/**/*.html',
 		'./src/**/*.vue',
-		'./tailwind.purge.safelist.txt',
+		'./tailwind.purge.safelist.txt'
 	]
 };

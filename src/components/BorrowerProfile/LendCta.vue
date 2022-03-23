@@ -157,7 +157,17 @@
 					>
 						All shares reserved
 					</p>
-					<jump-links class="tw-hidden lg:tw-block" />
+					<div
+						class="tw-flex lg:tw-justify-center tw-w-full tw-mt-2"
+						:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
+					>
+						<loan-bookmark
+							v-if="isLoggedIn"
+							:loan-id="loanId"
+							class="tw-hidden md:tw-inline-block tw-mt-1 lg:tw-hidden"
+						/>
+						<jump-links class="tw-hidden md:tw-block tw-ml-1 tw-mr-1" style="width:420px;" />
+					</div>
 				</div>
 			</kv-grid>
 
@@ -186,11 +196,6 @@
 						'lg:tw-px-0',
 					]"
 				>
-					<loan-bookmark
-						v-if="isLoggedIn"
-						:loan-id="loanId"
-						class="tw-hidden md:tw-inline-block tw-mt-1 lg:tw-hidden"
-					/>
 					<div
 						key="wrapper"
 						:class="[

@@ -1,8 +1,8 @@
 <template>
 	<div class="tw-text-primary tw-text-center">
-		<hr class="tw-border-tertiary">
+		<hr class="tw-hidden md:tw-block tw-border-tertiary">
 		<a
-			class="tw-text-primary tw-pr-1 tw-font-medium tw-cursor-pointer"
+			class="tw-hidden md:tw-inline tw-text-primary tw-pr-1 tw-font-medium tw-cursor-pointer"
 			v-kv-track-event="['Borrower profile', 'click-jump-link', 'Borrower story']"
 			@click="scrollToSection('#loanStory')"
 		>
