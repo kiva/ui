@@ -1,3 +1,10 @@
+## [2.96.0](https://github.com/kiva/ui/compare/v2.95.0...v2.96.0) (2022-03-23)
+
+
+### Features
+
+* jump links were added for mobile and ipad screens ([b73f505](https://github.com/kiva/ui/commit/b73f5051ae317063b8a1514317a4abec9d5775f3))
+
 ## [2.95.0](https://github.com/kiva/ui/compare/v2.94.0...v2.95.0) (2022-03-22)
 
 
