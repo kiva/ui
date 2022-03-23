@@ -68,12 +68,19 @@
 				class="tw-hidden lg:tw-inline-flex tw-ml-auto tw-items-center"
 			/>
 		</div>
-		<!-- only show option to bookmark loan if user is logged in -->
-		<loan-bookmark
-			v-if="isLoggedIn"
-			:loan-id="loanId"
-			class="md:tw-hidden"
-		/>
+		<div
+			class="tw-flex tw-items-center tw-w-full"
+			:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
+		>
+			<!-- only show option to bookmark loan if user is logged in -->
+			<loan-bookmark
+				v-if="isLoggedIn"
+				:loan-id="loanId"
+				class="md:tw-hidden"
+			/>
+
+			<jump-links class="md:tw-hidden" />
+		</div>
 	</section>
 </template>
 
@@ -88,6 +95,7 @@ import LoanProgress from './LoanProgress';
 import LoanUse from './LoanUse';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
+import JumpLinks from './JumpLinks';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
@@ -99,6 +107,7 @@ export default {
 		LoanUse,
 		SummaryTag,
 		LoanBookmark,
+		JumpLinks,
 	},
 	metaInfo() {
 		return {
