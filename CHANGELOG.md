@@ -1,3 +1,17 @@
+## [2.95.0](https://github.com/kiva/ui/compare/v2.94.0...v2.95.0) (2022-03-22)
+
+
+### Features
+
+* lend by category v3 layout adjustments ([fb3c745](https://github.com/kiva/ui/commit/fb3c7456e9adf7b98ee255323ae701fd29e1e55f))
+
+## [2.94.0](https://github.com/kiva/ui/compare/v2.93.1...v2.94.0) (2022-03-22)
+
+
+### Features
+
+* spaces were added to the hero for desktop ([da853cb](https://github.com/kiva/ui/commit/da853cbbe1d9a0c0462537e1ca5340e0d72a98ee))
+
 ### [2.93.1](https://github.com/kiva/ui/compare/v2.93.0...v2.93.1) (2022-03-21)
 
 

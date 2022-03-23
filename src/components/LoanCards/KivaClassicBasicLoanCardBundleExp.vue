@@ -53,7 +53,7 @@
 			class="tw-mb-1 tw-text-h3"
 			:max-length="50"
 			:name="borrowerName"
-			style="min-height: 3rem;"
+			style="min-height: 3.6rem;"
 		/>
 
 		<!-- LoanUse  -->

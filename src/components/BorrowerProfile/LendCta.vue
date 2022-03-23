@@ -166,7 +166,7 @@
 							:loan-id="loanId"
 							class="tw-hidden md:tw-inline-block tw-mt-1 lg:tw-hidden"
 						/>
-						<jump-links class="tw-hidden md:tw-block tw-ml-1 tw-mr-1" style="width:420px;" />
+						<jump-links class="tw-hidden md:tw-block tw-ml-1 tw-mr-1" style="width: 420px;" />
 					</div>
 				</div>
 			</kv-grid>
