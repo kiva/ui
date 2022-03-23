@@ -179,7 +179,7 @@ const getFilterArrays = filterString => {
 	// This regex matches strings like 'sector_arts,country_ke' and captures each
 	// param name and value (for example 'sector', 'arts', 'country', 'ke' would be captured).
 	// See tests, examples, and a more detailed explanation at regexr.com/659in
-	const searchParamRegex = /(?:([a-z]+)_([a-z.0-9. \\/-]+),?)+?/g;
+	const searchParamRegex = /(?:([a-z]+)_([a-z0-9 .\\/-]+),?)+?/g;
 	// Match the regex against the filter string, returning an iterator of all the matches and captured groups
 	const matches = filterString.toLowerCase().matchAll(searchParamRegex);
 
