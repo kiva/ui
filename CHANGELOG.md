@@ -1,3 +1,10 @@
+### [2.97.1](https://github.com/kiva/ui/compare/v2.97.0...v2.97.1) (2022-03-24)
+
+
+### Bug Fixes
+
+* apostrophe was updated for anonymous loans text ([85913ae](https://github.com/kiva/ui/commit/85913aebd6340fbb97f9477befbb7898a40468a0))
+
 ## [2.97.0](https://github.com/kiva/ui/compare/v2.96.0...v2.97.0) (2022-03-24)
 
 
