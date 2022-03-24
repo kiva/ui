@@ -64,12 +64,20 @@ export default {
 		showLearnMore: {
 			type: Boolean,
 			default: true,
-		}
+		},
+		anonymizationLevel: {
+			type: String,
+			default: 'none',
+		},
 	},
 	computed: {
 		loanUseFiltered() {
 			// eslint-disable-next-line max-len
-			return loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount, this.loanUseMaxLength);
+			if (this.anonymizationLevel !== 'full') {
+				return loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount,
+					this.loanUseMaxLength);
+			}
+			return 'For the borrower´s privacy, this loan has been made anonymous.';
 		},
 	}
 };
