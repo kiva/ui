@@ -77,7 +77,7 @@ export default {
 				return loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount,
 					this.loanUseMaxLength);
 			}
-			return 'For the borrower´s privacy, this loan has been made anonymous.';
+			return 'For the borrower\'s privacy, this loan has been made anonymous.';
 		},
 	}
 };
