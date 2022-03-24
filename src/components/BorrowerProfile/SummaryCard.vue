@@ -45,6 +45,7 @@
 			:name="name"
 			:status="status"
 			:use="use"
+			:anonymization-level="anonymizationLevel"
 		/>
 		<div class="tw-flex-auto tw-inline-flex tw-w-full">
 			<summary-tag v-if="countryName">
@@ -157,6 +158,7 @@ export default {
 			distributionModel: '',
 			city: '',
 			state: '',
+			anonymizationLevel: 'none',
 		};
 	},
 	computed: {
@@ -234,6 +236,7 @@ export default {
 						status
 						unreservedAmount @client
 						use
+						anonymizationLevel
 					}
 				}
 				my {
@@ -274,6 +277,7 @@ export default {
 			this.distributionModel = loan?.distributionModel ?? '';
 			this.city = loan?.geocode?.city ?? '';
 			this.state = loan?.geocode?.state ?? '';
+			this.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
 
 			// If all shares are reserved in baskets, set the fundraising meter to 100%
 			if (this.unreservedAmount === '0') {
