@@ -1,3 +1,10 @@
+## [2.97.0](https://github.com/kiva/ui/compare/v2.96.0...v2.97.0) (2022-03-24)
+
+
+### Features
+
+* specific text was added for anonymous loans in the BP ([cf332d8](https://github.com/kiva/ui/commit/cf332d86017a281bf65bc8b5722ce2592ccbee2d))
+
 ## [2.96.0](https://github.com/kiva/ui/compare/v2.95.0...v2.96.0) (2022-03-23)
 
 
