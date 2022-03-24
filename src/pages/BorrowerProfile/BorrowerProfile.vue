@@ -25,10 +25,11 @@
 				</content-container>
 			</div>
 			<content-container>
-				<more-about-loan class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
-				<borrower-country class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
+				<more-about-loan data-testid="bp-more-about" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
+				<borrower-country data-testid="bp-country" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<lenders-and-teams
 					v-if="showLenders"
+					data-testid="bp-lenders"
 					key="lenders"
 					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
 					:loan-id="loanId"
@@ -37,6 +38,7 @@
 				/>
 				<lenders-and-teams
 					v-if="showTeams"
+					data-testid="bp-teams"
 					key="teams"
 					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
 					:loan-id="loanId"
