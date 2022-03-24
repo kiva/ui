@@ -6,7 +6,7 @@
 			:value="progressPercent * 100"
 		/>
 		<figcaption class="tw-flex">
-			<p class="tw-flex-auto">
+			<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
 				<span class="tw-text-h3 tw-block tw-m-0">
 					{{ timeLeft }}
 				</span>
@@ -15,10 +15,10 @@
 				</span>
 			</p>
 			<div class="tw-flex-auto tw-text-right">
-				<p class="tw-text-h3 tw-m-0">
+				<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
 					{{ moneyLeft | numeral('$0,0[.]00') }} to go
 				</p>
-				<p class="tw-text-h4 tw-text-secondary">
+				<p class="tw-text-h4 tw-text-secondary" data-testid="bp-summary-percent-funded">
 					{{ progressPercent | numeral('0%') }} funded
 				</p>
 			</div>
