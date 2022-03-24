@@ -3,6 +3,7 @@
 		<hr class="tw-hidden md:tw-block tw-border-tertiary">
 		<a
 			class="tw-hidden md:tw-inline tw-text-primary tw-pr-1 tw-font-medium tw-cursor-pointer"
+			data-testid="bp-jump-link-borrower-story"
 			v-kv-track-event="['Borrower profile', 'click-jump-link', 'Borrower story']"
 			@click="scrollToSection('#loanStory')"
 		>
@@ -14,6 +15,7 @@
 		</a>
 		<a
 			class="tw-text-primary tw-pl-1 tw-pr-1 tw-font-medium tw-cursor-pointer"
+			data-testid="bp-jump-link-loan-details"
 			v-kv-track-event="['Borrower profile', 'click-jump-link', 'Loan details']"
 			@click="scrollToSection('#loanDetails')"
 		>

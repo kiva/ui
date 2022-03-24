@@ -47,7 +47,9 @@
 					</p>
 					<span class="tw-flex tw-pb-1 lg:tw-pb-3">
 						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
-							<fieldset class="tw-w-full tw-flex" :disabled="isAdding">
+							<fieldset class="tw-w-full tw-flex" :disabled="isAdding"
+								data-testid="bp-lend-cta-select-and-button"
+							>
 								<label
 									v-if="hideShowLendDropdown"
 									for="LoanAmountDropdown"
@@ -81,6 +83,7 @@
 									key="lendButton"
 									v-if="lendButtonVisibility"
 									class="tw-inline-flex tw-flex-1"
+									data-testid="bp-lend-cta-lend-button"
 									type="submit"
 									v-kv-track-event="[
 										'Lending',
@@ -96,6 +99,7 @@
 									key="lendAgainButton"
 									v-if="this.state === 'lent-to'"
 									class="tw-inline-flex tw-flex-1"
+									data-testid="bp-lend-cta-lend-again-button"
 									type="submit"
 									v-kv-track-event="[
 										'Lending',
@@ -110,6 +114,7 @@
 								<kv-ui-button
 									v-if="isAdding"
 									class="tw-inline-flex tw-flex-1"
+									data-testid="bp-lend-cta-adding-to-basket-button"
 								>
 									Adding to basket...
 								</kv-ui-button>
@@ -120,6 +125,7 @@
 						<kv-ui-button
 							v-if="this.state === 'basketed'"
 							class="tw-inline-flex tw-flex-1"
+							data-testid="bp-lend-cta-checkout-button"
 							to="/basket"
 							v-kv-track-event="[
 								'Lending',
@@ -134,6 +140,7 @@
 						<kv-ui-button
 							v-if="showNonActionableLoanButton"
 							class="tw-inline-flex tw-flex-1"
+							data-testid="bp-lend-cta-non-actionable-loan-button"
 							to="/lend-by-category"
 							v-kv-track-event="[
 								'Lending',
@@ -148,12 +155,14 @@
 					<p
 						v-if="freeCreditWarning"
 						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
+						data-testid="bp-lend-cta-not-eligible-for-credit"
 					>
 						Not eligible for lending credit
 					</p>
 					<p
 						v-if="allSharesReserved"
 						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
+						data-testid="bp-lend-cta-all-shares-reserved"
 					>
 						All shares reserved
 					</p>
@@ -163,10 +172,14 @@
 					>
 						<loan-bookmark
 							v-if="isLoggedIn"
+							data-testid="bp-lend-cta-loan-bookmark"
 							:loan-id="loanId"
 							class="tw-hidden md:tw-inline-block tw-mt-1 lg:tw-hidden"
 						/>
-						<jump-links class="tw-hidden md:tw-block tw-ml-1 tw-mr-1" style="width: 420px;" />
+						<jump-links
+							class="tw-hidden md:tw-block tw-ml-1 tw-mr-1" style="width: 420px;"
+							data-testid="bp-lend-cta-jump-links"
+						/>
 					</div>
 				</div>
 			</kv-grid>
@@ -232,6 +245,7 @@
 						>
 							<span
 								class="tw-inline-block tw-align-middle"
+								data-testid="bp-lend-cta-powered-by-text"
 								key="numLendersStat"
 								v-if="statScrollAnimation"
 							>
@@ -244,6 +258,7 @@
 
 							<span
 								class="tw-inline-block tw-align-middle"
+								data-testid="bp-lend-cta-matched-text"
 								key="loanMatchingText"
 								v-if="!statScrollAnimation && !isMatchAtRisk"
 							>
