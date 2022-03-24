@@ -2,7 +2,7 @@
 	<section>
 		<!-- Display Content -->
 		<div>
-			<h2 class="tw-text-h2">
+			<h2 class="tw-text-h2" :data-testid="`bp-${displayType}-header`">
 				{{ sectionTitle }}
 			</h2>
 
@@ -20,6 +20,7 @@
 				<span
 					v-else
 					class="tw-text-h4"
+					:data-testid="`bp-powered-by-${displayType}-message`"
 				>
 					{{ poweredByText }}
 				</span>
@@ -41,9 +42,14 @@
 				</div>
 			</div>
 
-			<div v-if="!loading" class="section-items tw-grid tw-grid-cols-2 tw-gap-2 tw-mb-3">
+			<div
+				v-if="!loading"
+				class="section-items tw-grid tw-grid-cols-2 tw-gap-2 tw-mb-3"
+				:data-testid="`bp-${displayType}-grid`"
+			>
 				<supporter-details
 					v-if="this.supporterOfLoan"
+					:data-testid="`bp-${displayType}-support-details-supporter`"
 					display-type="lenders"
 					:hash="this.userImageHash"
 					:name="this.userName"
@@ -52,6 +58,7 @@
 				/>
 				<supporter-details
 					v-for="(item, index) in truncatedItemList" :key="index"
+					:data-testid="`bp-${displayType}-support-details-${index}`"
 					:name="item.name"
 					:hash="item.image && item.image.hash ? item.image.hash : ''"
 					:item-data="item"
@@ -61,6 +68,7 @@
 				/>
 				<supporter-details
 					v-if="this.hasAnonymousSupporters && this.displayType === 'lenders'"
+					:data-testid="`bp-${displayType}-support-details-anonymous`"
 					name="+ Anonymous lenders"
 					display-type="lenders"
 					:has-anonymous-supporters="this.hasAnonymousSupporters"
@@ -69,6 +77,7 @@
 
 			<kv-text-link
 				v-if="totalItemCount > initialItemLimit"
+				:data-testid="`bp-${displayType}-see-all-link`"
 				@click="openLightbox"
 			>
 				{{ seeAllLinkText }}
@@ -76,6 +85,7 @@
 		</div>
 
 		<kv-lightbox
+			:data-testid="`bp-${displayType}-lightbox`"
 			:visible="isLightboxVisible"
 			:title="sectionTitle"
 			@lightbox-closed="isLightboxVisible = false"
@@ -89,13 +99,17 @@
 						class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
 						:icon="mdiLightningBolt"
 					/>
-					<span>{{ poweredByText }}</span>
+					<span :data-testid="`bp-${displayType}-lightbox-powered-by-message`">{{ poweredByText }}</span>
 				</div>
 			</template>
 
-			<div class="tw-mb-3 tw-grid tw-grid-cols-2 md:tw-grid-cols-3 tw-gap-2">
+			<div
+				class="tw-mb-3 tw-grid tw-grid-cols-2 md:tw-grid-cols-3 tw-gap-2"
+				:data-testid="`bp-lightbox-${displayType}-grid`"
+			>
 				<supporter-details
 					v-if="this.supporterOfLoan"
+					:data-testid="`bp-lightbox-${displayType}-support-details-supporter`"
 					display-type="lenders"
 					:hash="this.userImageHash"
 					:name="this.userName"
@@ -104,6 +118,7 @@
 				/>
 				<supporter-details
 					v-for="(item, index) in filteredItemList" :key="`lb_item_${index}`"
+					:data-testid="`bp-lightbox-${displayType}-support-details-${index}`"
 					:name="item.name"
 					:hash="item.image && item.image.hash ? item.image.hash : ''"
 					:item-data="item"
@@ -113,6 +128,7 @@
 				/>
 				<supporter-details
 					v-if="this.hasAnonymousSupporters && this.displayType === 'lenders'"
+					:data-testid="`bp-lightbox-${displayType}-support-details-anonymous`"
 					name="+ Anonymous lenders"
 					display-type="lenders"
 					:has-anonymous-supporters="this.hasAnonymousSupporters"
@@ -121,6 +137,7 @@
 
 			<kv-button
 				v-if="items.length < totalItemCount"
+				:data-testid="`bp-lightbox-${displayType}-load-more-button`"
 				class="tw-w-full"
 				@click.prevent="loadMore"
 				:state="fetchingLightboxItems ? 'loading' : ''"

@@ -79,7 +79,7 @@
 				class="md:tw-hidden"
 			/>
 
-			<jump-links class="md:tw-hidden" />
+			<jump-links class="md:tw-hidden" data-testid="bp-summary-card-jump-links" />
 		</div>
 	</section>
 </template>

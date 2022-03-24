@@ -94,6 +94,7 @@
 		<kv-tooltip
 			class="tooltip"
 			:controller="toolTipId"
+			:data-testid="`tooltip-id-${toolTipId}`"
 			theme="dark"
 			v-if="teamTooltipData"
 		>
