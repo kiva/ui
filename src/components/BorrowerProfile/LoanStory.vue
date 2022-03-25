@@ -8,6 +8,7 @@
 				tw--mb-1.5
 				md:tw--mb-1
 			"
+			data-testid="bp-story-borrower-image"
 			:alt="name"
 			:aspect-ratio="16 / 25"
 			:default-image="{ width: 612 }"

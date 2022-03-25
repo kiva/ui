@@ -1,5 +1,5 @@
 <template>
-	<section>
+	<section data-testid="bp-story-previous-loan">
 		<kv-text-link
 			v-kv-track-event="['Borrower profile', 'click-Loan details', 'Show previous loan details', this.loanId]"
 			@click.prevent="performClick"
@@ -16,10 +16,13 @@
 			easing="ease-in-out"
 		>
 			<div>
-				<h2>Previous loan details</h2>
+				<h2 data-testid="bp-story-previous-loan-header">
+					Previous loan details
+				</h2>
 
 				<p
 					v-for="(paragraph, index) in formattedPreviousLoanDescription"
+					:data-testid="`bp-story-previous-loan-text-${index}`"
 					:key="index"
 					v-html="paragraph"
 				>
@@ -28,6 +31,7 @@
 				<router-link
 					v-if="previousLoanId && this.borrowerOrGroupName !== ''"
 					:to="`/lend/${previousLoanId}`"
+					:data-testid="`bp-story-previous-loan-link`"
 					v-kv-track-event="[
 						'Borrower profile',
 						'Loan details',

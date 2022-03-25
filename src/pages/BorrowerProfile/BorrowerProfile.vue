@@ -8,7 +8,7 @@
 					<hero-background />
 				</div>
 				<content-container class="md:tw-pt-6 lg:tw-pt-8">
-					<summary-card class="tw-relative lg:tw--mb-1.5 tw-z-1" />
+					<summary-card data-testid="bp-summary" class="tw-relative lg:tw--mb-1.5 tw-z-1" />
 				</content-container>
 			</div>
 			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8 tw-pointer-events-none">
@@ -17,11 +17,16 @@
 				</sidebar-container>
 			</div>
 			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-8">
-				<loan-story id="loanStory" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
+				<loan-story
+					id="loanStory"
+					data-testid="bp-loan-story"
+					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+					:loan-id="loanId"
+				/>
 			</content-container>
 			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
 				<content-container>
-					<why-special :loan-id="loanId" />
+					<why-special data-testid="bp-why-special" :loan-id="loanId" />
 				</content-container>
 			</div>
 			<content-container>
