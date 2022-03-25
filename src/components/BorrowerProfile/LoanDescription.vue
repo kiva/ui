@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<div class="tw-prose">
+		<div class="tw-prose" data-testid="bp-story-header">
 			<h2
 				v-if="isAnonymizationLevelFull"
 			>
@@ -14,6 +14,7 @@
 			<section v-if="storyDescription">
 				<p
 					v-for="(paragraph, index) in storyDescriptionParagraphs"
+					:data-testid="`bp-story-description-${index}`"
 					:key="`storyDescription-${index}`"
 					v-html="paragraph"
 				>
@@ -21,7 +22,7 @@
 			</section>
 
 			<section v-if="borrowersList">
-				<p>
+				<p data-testid="bp-story-borrower-list">
 					{{ borrowersList }}
 				</p>
 			</section>
@@ -35,25 +36,27 @@
 
 			<section v-if="storyTranslation">
 				<p>
-					<em>
+					<em data-testid="bp-story-translate-info">
 						Translated from {{ language }}
 						<span v-if="reviewerName">
 							by
 							<span v-if="!showReviewersName">a</span>
 							<!-- eslint-disable max-len -->
-							<a
+							<a data-testid="bp-story-translate-volunteer-link"
 								href="/work-with-us/reviewers"
 								title="Learn more about volunteering at Kiva"
 								v-kv-track-event="['Borrower profile', 'click-Kiva review volunteer', 'Kiva volunteer', this.loanId]"
 							>
 								Kiva volunteer<span v-if="!showReviewersName">.</span>
 							</a>
-							<span v-if="showReviewersName">
+							<span data-testid="bp-story-translate-reviewer"
+								v-if="showReviewersName"
+							>
 								{{ reviewerName }}.
 							</span>
 						</span>
 
-						<a
+						<a data-testid="bp-story-translate-view-original-language-link"
 							@click="openLightbox"
 							v-if="descriptionInOriginalLanguage !== '' "
 							v-kv-track-event="['Borrower profile', 'click-Original language lightbox', 'View original language description', this.loanId]"
@@ -66,6 +69,7 @@
 			</section>
 		</div>
 		<kv-lightbox
+			data-testid="bp-lightbox-story-translate-original-language"
 			:visible="isLightboxVisible"
 			:title="lightboxTitle"
 			@lightbox-closed="closeLightbox"

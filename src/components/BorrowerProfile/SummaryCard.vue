@@ -13,6 +13,7 @@
 				lg:tw-w-10 lg:tw-h-10 lg:tw-mr-4 lg:tw-mb-4"
 			>
 				<borrower-image
+					data-testid="bp-summary-image"
 					class="tw-w-full tw-rounded-full tw-bg-brand"
 					:alt="name"
 					:aspect-ratio="1"
@@ -27,10 +28,12 @@
 			</div>
 			<div class="tw-flex-auto">
 				<borrower-name
+					data-testid="bp-summary-borrower-name"
 					class="md:tw-mb-1.5 lg:tw-mb-2"
 					:name="name"
 				/>
 				<loan-progress
+					data-testid="bp-summary-progress"
 					class="tw-mb-2"
 					:money-left="unreservedAmount"
 					:progress-percent="fundraisingPercent"
@@ -40,6 +43,7 @@
 		</div>
 		<loan-use
 			class="tw-flex-none tw-w-full tw-mb-2 tw-text-h2"
+			data-testid="bp-summary-loan-use"
 			:borrower-count="borrowerCount"
 			:loan-amount="loanAmount"
 			:name="name"
@@ -53,12 +57,12 @@
 					class="tw-h-2.5 tw-w-2.5 tw-mr-0.5 tw-shrink-0"
 					:icon="mdiMapMarker"
 				/>
-				<span class="tw-flex-1">
+				<span class="tw-flex-1" data-testid="bp-summary-country-tag">
 					{{ formattedLocation }}
 				</span>
 			</summary-tag>
 
-			<summary-tag v-if="activityName">
+			<summary-tag data-testid="bp-summary-activity-tag" v-if="activityName">
 				{{ activityName }}
 			</summary-tag>
 
@@ -67,6 +71,7 @@
 				v-if="isLoggedIn"
 				:loan-id="loanId"
 				class="tw-hidden lg:tw-inline-flex tw-ml-auto tw-items-center"
+				data-testid="bp-summary-bookmark"
 			/>
 		</div>
 		<div
@@ -78,6 +83,7 @@
 				v-if="isLoggedIn"
 				:loan-id="loanId"
 				class="md:tw-hidden"
+				data-testid="bp-mobile-summary-bookmark"
 			/>
 
 			<jump-links class="md:tw-hidden" data-testid="bp-summary-card-jump-links" />
