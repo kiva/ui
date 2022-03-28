@@ -109,12 +109,12 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			value
 		}
 	}
-	# mySubscriptions(includeDisabled: false) {
-	# 	values {
-	# 		id
-	# 		enabled
-	# 	}
-	# }
+	mySubscriptions(includeDisabled: false) {
+		values {
+			id
+			enabled
+		}
+	}
 	contentful {
 		entries(contentType: "page", contentKey: "thanks")
 	}
