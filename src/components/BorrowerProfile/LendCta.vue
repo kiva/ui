@@ -423,9 +423,13 @@ export default {
 				loanId: this.loanId,
 			}).then(() => {
 				this.isAdding = false;
-			}).catch(() => {
+			}).catch(e => {
 				this.isAdding = false;
-				this.$showTipMsg('There was a problem adding the loan to your basket', 'error');
+				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
+					? e[0].message
+					: 'There was a problem adding the loan to your basket';
+
+				this.$showTipMsg(msg, 'error');
 			});
 		},
 		createWrapperObserver() {
