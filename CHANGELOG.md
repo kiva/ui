@@ -1,3 +1,17 @@
+## [2.99.0](https://github.com/kiva/ui/compare/v2.98.0...v2.99.0) (2022-03-29)
+
+
+### Features
+
+* deprecate start page ([4141060](https://github.com/kiva/ui/commit/4141060549373127773bcfe060406958d91854cd))
+
+## [2.98.0](https://github.com/kiva/ui/compare/v2.97.1...v2.98.0) (2022-03-28)
+
+
+### Features
+
+* error message for addtobasket function was updated ([d8079c0](https://github.com/kiva/ui/commit/d8079c03855872caf56d4cb9bb3be4bffaa05f27))
+
 ### [2.97.1](https://github.com/kiva/ui/compare/v2.97.0...v2.97.1) (2022-03-24)
 
 
