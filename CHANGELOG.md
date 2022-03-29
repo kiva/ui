@@ -1,3 +1,10 @@
+## [2.99.0](https://github.com/kiva/ui/compare/v2.98.0...v2.99.0) (2022-03-29)
+
+
+### Features
+
+* deprecate start page ([4141060](https://github.com/kiva/ui/commit/4141060549373127773bcfe060406958d91854cd))
+
 ## [2.98.0](https://github.com/kiva/ui/compare/v2.97.1...v2.98.0) (2022-03-28)
 
 
