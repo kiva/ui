@@ -51,6 +51,11 @@ module.exports = merge(base, {
 			serverCallbackUri: 'https://www.test.kiva.org/process-ssr-auth',
 			domain: 'login.test.kiva.org',
 		},
+		oneTrust: {
+			enable: true,
+			key: 'db9dcf94-1c32-40fb-9a57-cefafea1088d',
+			domainSuffix: '-test',
+		},
 		paypal : {
 			url: 'www.sandbox.paypal.com',
 			environment: 'sandbox'
