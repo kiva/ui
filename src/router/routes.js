@@ -359,13 +359,6 @@ export default [
 		}
 	},
 	{
-		path: '/start',
-		component: () => import('@/pages/Search/SentenceSearch'),
-		meta: {
-			unbounce: true,
-		},
-	},
-	{
 		path: '/start-verification',
 		component: () => import('@/pages/StartVerification'),
 		meta: {
