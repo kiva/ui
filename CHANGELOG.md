@@ -1,3 +1,10 @@
+### [2.99.1](https://github.com/kiva/ui/compare/v2.99.0...v2.99.1) (2022-03-30)
+
+
+### Bug Fixes
+
+* addtobasket method was updated for a bug adding double donation ([d22b23e](https://github.com/kiva/ui/commit/d22b23ebebf00a7730c79ccb20639a9c9be8163b))
+
 ## [2.99.0](https://github.com/kiva/ui/compare/v2.98.0...v2.99.0) (2022-03-29)
 
 
