@@ -157,7 +157,7 @@ export default {
 			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');
 		},
 		setCustomDonationAndClose() {
-			this.setDonationAndClose(numeral(this.$refs.customDonationInput.value).value());
+			this.setDonationAndClose(numeral(this.customDonationAmount).value());
 		},
 		setInputs(value) {
 			this.customDonationAmount = value;
