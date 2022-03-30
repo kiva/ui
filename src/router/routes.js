@@ -222,11 +222,6 @@ export default [
 		}
 	},
 	{
-		path: '/monthlygood/personalized',
-		component: () => import('@/pages/MonthlyGood/PersonalizedMonthlyGoodLandingPage'),
-		props: route => ({ category: route.query.category })
-	},
-	{
 		path: '/portfolio/lending-stats',
 		component: () => import('@/pages/LendingStats/LendingStatsPage'),
 		meta: {
