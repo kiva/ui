@@ -1,3 +1,10 @@
+### [2.99.2](https://github.com/kiva/ui/compare/v2.99.1...v2.99.2) (2022-03-30)
+
+
+### Bug Fixes
+
+* ensure custom donation amount is propagated to parent context ([c7ea61f](https://github.com/kiva/ui/commit/c7ea61f17f90e90e873ae26be12adacff5021d33))
+
 ### [2.99.1](https://github.com/kiva/ui/compare/v2.99.0...v2.99.1) (2022-03-30)
 
 
