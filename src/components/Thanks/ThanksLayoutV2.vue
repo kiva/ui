@@ -4,7 +4,7 @@
 		<div class="row show-for-large thanks-page--large-up">
 			<div class="small-6 columns hide-for-print">
 				<kv-icon-button
-					data-test="thanks-page-button--guest"
+					data-testid="thanks-page-button--guest"
 					class="thanks-page__icon-button expanded"
 					v-if="showGuestUpsell"
 					:class="{ active: isGuestSelected }"
@@ -26,7 +26,7 @@
 					</template>
 				</kv-icon-button>
 				<kv-icon-button
-					data-test="thanks-page-button--ad"
+					data-testid="thanks-page-button--ad"
 					class="thanks-page__icon-button expanded"
 					v-if="showAutoDepositUpsell"
 					:class="{ active: isAdSelected }"
@@ -48,7 +48,7 @@
 					</template>
 				</kv-icon-button>
 				<kv-icon-button
-					data-test="thanks-page-button--mg"
+					data-testid="thanks-page-button--mg"
 					class="thanks-page__icon-button expanded"
 					v-if="showMgCta"
 					:class="{ active: isMgSelected }"
@@ -70,7 +70,7 @@
 					</template>
 				</kv-icon-button>
 				<kv-icon-button
-					data-test="thanks-page-button--receipt"
+					data-testid="thanks-page-button--receipt"
 					class="thanks-page__icon-button expanded"
 					:class="{ active: isReceiptSelected }"
 					@click.native="setVisibleSection('receipt')"
@@ -91,7 +91,7 @@
 					</template>
 				</kv-icon-button>
 				<kv-icon-button
-					data-test="thanks-page-button--share"
+					data-testid="thanks-page-button--share"
 					class="thanks-page__icon-button expanded"
 					:class="{ active: isShareSelected }"
 					@click.native="setVisibleSection('share')"
@@ -118,7 +118,7 @@
 					v-if="showGuestUpsell"
 					v-show="isGuestSelected"
 					class="thanks-page__content-area thanks-page__content-area--guest"
-					data-test="thanks-page-content--guest"
+					data-testid="thanks-page-content--guest"
 				>
 					<slot name="guest">
 					</slot>
@@ -127,7 +127,7 @@
 					v-if="showAutoDepositUpsell"
 					v-show="isAdSelected"
 					class="thanks-page__content-area thanks-page__content-area--ad"
-					data-test="thanks-page-content--ad"
+					data-testid="thanks-page-content--ad"
 				>
 					<slot v-if="!isMobile" name="ad">
 					</slot>
@@ -136,7 +136,7 @@
 					v-if="showMgCta"
 					v-show="isMgSelected"
 					class="thanks-page__content-area thanks-page__content-area--mg"
-					data-test="thanks-page-content--mg"
+					data-testid="thanks-page-content--mg"
 				>
 					<slot name="mg">
 					</slot>
@@ -144,7 +144,7 @@
 				<div
 					v-show="isReceiptSelected"
 					class="thanks-page__content-area thanks-page__content-area--receipt"
-					data-test="thanks-page-content--receipt"
+					data-testid="thanks-page-content--receipt"
 				>
 					<slot name="receipt">
 					</slot>
@@ -152,7 +152,7 @@
 				<div
 					v-show="isShareSelected"
 					class="thanks-page__content-area thanks-page__content-area--share"
-					data-test="thanks-page-content--share"
+					data-testid="thanks-page-content--share"
 				>
 					<slot name="share">
 					</slot>

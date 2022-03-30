@@ -90,7 +90,7 @@
 			</kv-tooltip>
 		</div>
 
-		<div class="order-total" data-test="total-due">
+		<div class="order-total" data-test="total-due" data-testid="total-due">
 			<strong>
 				<template v-if="!showPromoCreditTotal">Total: </template>
 				<template v-else>Total Due: </template>

@@ -4,7 +4,7 @@
 			Order Confirmation
 		</h2>
 		<div class="checkout-receipt__wrapper tw-bg-primary tw-p-4 tw-rounded-sm tw-border tw-border-tertiary">
-			<section data-test="lender-info" class="section section--lender-info">
+			<section data-testid="lender-info" class="section section--lender-info">
 				<div>{{ formattedTransactionTime }}</div>
 				<div class="fs-exclude">
 					{{ lender.firstName }} {{ lender.lastName }}
@@ -15,7 +15,7 @@
 			</section>
 			<section>
 				<div
-					data-test="print-kcard-msg"
+					data-testid="print-kcard-msg"
 					class="section tw-text-center hide-for-print"
 					v-if="printableKivaCards.length > 0"
 				>
@@ -35,7 +35,7 @@
 						:key="loan.id"
 					>
 						<div
-							data-test="loan"
+							data-testid="loan"
 							class="loan"
 						>
 							<h3 class="loan__name fs-exclude">
@@ -74,7 +74,7 @@
 						:key="card.id"
 					>
 						<div
-							data-test="kcard"
+							data-testid="kcard"
 							class="loan kcard"
 						>
 							<template v-if="card.kivaCardObject.deliveryType === 'print'">
@@ -146,7 +146,7 @@
 						</div>
 					</li>
 					<li
-						data-test="kcard-portfolio"
+						data-testid="kcard-portfolio"
 						class="section tw-text-center"
 						v-if="kivaCards.length > 0"
 					>
@@ -164,7 +164,7 @@
 					<li class="section">
 						<div
 							class="loan"
-							data-test="donation"
+							data-testid="donation"
 						>
 							<h3 class="loan__name">
 								Donation to Kiva
@@ -182,7 +182,7 @@
 						</div>
 					</li>
 					<li
-						data-test="receipt-total"
+						data-testid="receipt-total"
 						class="section total"
 					>
 						<h3 class="total__header tw-text-h3">
@@ -198,7 +198,7 @@
 				</h3>
 				<ul class="payments__list">
 					<li
-						data-test="kcard-payment"
+						data-testid="kcard-payment"
 						class="total"
 						v-if="receipt.totals.redemptionCodeAppliedTotal > 0"
 					>
@@ -208,7 +208,7 @@
 						</span>
 					</li>
 					<li
-						data-test="free-trial"
+						data-testid="free-trial"
 						class="total"
 						v-if="receipt.totals.freeTrialAppliedTotal > 0"
 					>
@@ -216,7 +216,7 @@
 						<span class="total__amount tw-text-h3">Free!</span>
 					</li>
 					<li
-						data-test="free-credit"
+						data-testid="free-credit"
 						class="total"
 						v-if="receipt.totals.bonusAppliedTotal > 0"
 					>
@@ -224,7 +224,7 @@
 						<span class="total__amount tw-text-h3">{{ receipt.totals.bonusAppliedTotal }}</span>
 					</li>
 					<li
-						data-test="kiva-credit-added"
+						data-testid="kiva-credit-added"
 						class="total"
 						v-if="receipt.totals.depositTotals.kivaCreditAdded > 0"
 					>
@@ -234,7 +234,7 @@
 						</span>
 					</li>
 					<li
-						data-test="kiva-credit-used"
+						data-testid="kiva-credit-used"
 						class="total"
 						v-if="receipt.totals.depositTotals.kivaCreditUsed > 0"
 					>
@@ -244,7 +244,7 @@
 						</span>
 					</li>
 					<li
-						data-test="amount-charged"
+						data-testid="amount-charged"
 						class="total"
 						v-if="parseFloat(receipt.totals.depositTotals.depositTotal) > 0"
 					>
