@@ -392,19 +392,11 @@ export default {
 	methods: {
 		async addBundleToBasket() {
 			try {
-				const responses = [];
-				for (let index = 0; index < this.selectedChannelLoanIds.length; index += 1) {
-					const element = this.selectedChannelLoanIds[index];
-					const response = this.apollo.mutate({
-						mutation: updateLoanReservation,
-						variables: {
-							loanid: element,
-							price: numeral(25).format('0.00'),
-						},
+				await this.updateLoanReservation(0).then(async () => {
+					await this.updateLoanReservation(1).then(async () => {
+						await this.updateLoanReservation(2);
 					});
-					responses.push(response);
-				}
-				await Promise.all(responses);
+				});
 
 				this.$kvTrackEvent(
 					'basket',
@@ -424,6 +416,17 @@ export default {
 				this.$showTipMsg(`There are currently ${this.lastLoanPage} pages of results. We’ve loaded the last page for you.`); // eslint-disable-line max-len
 				this.pageChange(this.lastLoanPage);
 			}
+		},
+		updateLoanReservation(id) {
+			return Promise.resolve(
+				this.apollo.mutate({
+					mutation: updateLoanReservation,
+					variables: {
+						loanid: this.selectedChannelLoanIds[id],
+						price: numeral(25).format('0.00'),
+					},
+				})
+			);
 		},
 		pageChange(number) {
 			const offset = loansPerPage * (number - 1);
