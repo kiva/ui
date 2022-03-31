@@ -1,3 +1,12 @@
+## [2.100.0](https://github.com/kiva/ui/compare/v2.99.2...v2.100.0) (2022-03-31)
+
+
+### Features
+
+* automaticallysupportnotice component was created ([48b891e](https://github.com/kiva/ui/commit/48b891ea4de019ff768e7701a021340c79391062))
+* personalized mg page was removed and related components ([b37f1d1](https://github.com/kiva/ui/commit/b37f1d126f9c72859d7c355d8a6063a3a7f4f2df))
+* query and initialization for mg personalization experiment were removed ([2c55c8b](https://github.com/kiva/ui/commit/2c55c8b7775e8436bc08d920bdf6825fd91e974b))
+
 ### [2.99.2](https://github.com/kiva/ui/compare/v2.99.1...v2.99.2) (2022-03-30)
 
 
