@@ -1,3 +1,26 @@
+## [2.100.0](https://github.com/kiva/ui/compare/v2.99.2...v2.100.0) (2022-03-31)
+
+
+### Features
+
+* automaticallysupportnotice component was created ([48b891e](https://github.com/kiva/ui/commit/48b891ea4de019ff768e7701a021340c79391062))
+* personalized mg page was removed and related components ([b37f1d1](https://github.com/kiva/ui/commit/b37f1d126f9c72859d7c355d8a6063a3a7f4f2df))
+* query and initialization for mg personalization experiment were removed ([2c55c8b](https://github.com/kiva/ui/commit/2c55c8b7775e8436bc08d920bdf6825fd91e974b))
+
+### [2.99.2](https://github.com/kiva/ui/compare/v2.99.1...v2.99.2) (2022-03-30)
+
+
+### Bug Fixes
+
+* ensure custom donation amount is propagated to parent context ([c7ea61f](https://github.com/kiva/ui/commit/c7ea61f17f90e90e873ae26be12adacff5021d33))
+
+### [2.99.1](https://github.com/kiva/ui/compare/v2.99.0...v2.99.1) (2022-03-30)
+
+
+### Bug Fixes
+
+* addtobasket method was updated for a bug adding double donation ([d22b23e](https://github.com/kiva/ui/commit/d22b23ebebf00a7730c79ccb20639a9c9be8163b))
+
 ## [2.99.0](https://github.com/kiva/ui/compare/v2.98.0...v2.99.0) (2022-03-29)
 
 
