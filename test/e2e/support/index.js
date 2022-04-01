@@ -13,5 +13,3 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 import './commands';
-
-// beforeEach(() => cy.lunar('reset'));
