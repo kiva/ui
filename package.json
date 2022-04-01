@@ -98,8 +98,6 @@
 		"locale": "^0.1.0",
 		"lodash": "^4.17.20",
 		"lru-cache": "^6.0.0",
-		"lunar-core": "^1.0.0",
-		"lunar-express": "0.0.3",
 		"memcached": "^2.2.2",
 		"memjs": "^1.2.2",
 		"minimist": "^1.2.5",
