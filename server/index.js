@@ -8,7 +8,6 @@ const helmet = require('helmet');
 const locale = require('locale');
 const serverRoutes = require('./available-routes-middleware');
 const authRouter = require('./auth-router');
-const mockGraphQLRouter = require('./mock-graphql-router');
 const sessionRouter = require('./session-router');
 const timesyncRouter = require('./timesync-router');
 const liveLoanRouter = require('./live-loan-router');
@@ -65,13 +64,6 @@ app.use(express.static('dist', {
 // Setup Request Logger
 // -> placed here to exclude static
 app.use(logger.requestLogger);
-
-// Setup optional mock graphql server
-if (argv.mock) {
-	app.use('/', mockGraphQLRouter(config.app.graphqlUri));
-	config.app.graphqlUri = `http://localhost:${port}/graphql`;
-	config.app.auth0.enable = false;
-}
 
 // Read locale from request
 app.use(locale(config.app.locale.supported, config.app.locale.default));
@@ -139,6 +131,7 @@ if (config.server.disableCluster) {
 		}
 
 		// Check if work id is died
+		// eslint-disable-next-line no-unused-vars
 		cluster.on('exit', (worker, code, signal) => {
 			console.info(JSON.stringify({
 				meta: {},
