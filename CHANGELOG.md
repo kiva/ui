@@ -1,3 +1,10 @@
+### [2.101.1](https://github.com/kiva/ui/compare/v2.101.0...v2.101.1) (2022-04-01)
+
+
+### Bug Fixes
+
+* set node and npm version on ui storybook job ([fab0d76](https://github.com/kiva/ui/commit/fab0d76281b67e1d0182b6f8f99dc1e450e2028b))
+
 ## [2.101.0](https://github.com/kiva/ui/compare/v2.100.0...v2.101.0) (2022-04-01)
 
 
