@@ -2,13 +2,13 @@
 	<www-page class="start-verification-page">
 		<kv-page-container>
 			<kv-default-wrapper>
-				<div class="tw-prose tw-text-center" data-test="withdraw-verification-text">
+				<div class="tw-prose tw-text-center" data-testid="withdraw-verification-text">
 					<template v-if="!sent">
 						<h1>Email verification required</h1>
 						<p>To ensure your safety, we added an extra layer of security.</p>
 						<p>Once we verify your account, you can continue {{ process }}!</p>
 						<kv-button
-							data-test="withdraw-send-verification"
+							data-testid="withdraw-send-verification"
 							:state="sending ? 'loading' : ''"
 							@click="send"
 						>
@@ -23,7 +23,7 @@
 						</p>
 						<p>After receiving the email, follow the link provided to continue {{ process }}.</p>
 						<kv-button
-							data-test="withdraw-resend-verification"
+							data-testid="withdraw-resend-verification"
 							:state="sending ? 'loading' : ''"
 							@click="send"
 						>
