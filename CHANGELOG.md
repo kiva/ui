@@ -1,3 +1,16 @@
+## [2.101.0](https://github.com/kiva/ui/compare/v2.100.0...v2.101.0) (2022-04-01)
+
+
+### Features
+
+* remove lunar dependencies and unused graphql mock ([2f28195](https://github.com/kiva/ui/commit/2f28195fd60c30b5eec847298543876067688668))
+* update vue, vue-template-compiler and vue-server-renderer ([aeeff09](https://github.com/kiva/ui/commit/aeeff090c139aba8c79866ef1a39eafa5f32fe29))
+
+
+### Bug Fixes
+
+* update unit test node version ([49ee83f](https://github.com/kiva/ui/commit/49ee83ff0a933de1807f6b66b37f6685836db17e))
+
 ## [2.100.0](https://github.com/kiva/ui/compare/v2.99.2...v2.100.0) (2022-03-31)
 
 
