@@ -1,3 +1,11 @@
+### [2.101.2](https://github.com/kiva/ui/compare/v2.101.1...v2.101.2) (2022-04-01)
+
+
+### Bug Fixes
+
+* remove duplicate/old data-test attributes ([2061ec5](https://github.com/kiva/ui/commit/2061ec54f2765ab5545b7027e5689feb905c61bb))
+* use data-testid instead of data-test for element attributes ([3a70160](https://github.com/kiva/ui/commit/3a701601eb5b00ecf6ee20f2e9cdc04f4035a282))
+
 ### [2.101.1](https://github.com/kiva/ui/compare/v2.101.0...v2.101.1) (2022-04-01)
 
 
