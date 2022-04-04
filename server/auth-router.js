@@ -84,12 +84,6 @@ module.exports = function authRouter(config = {}) {
 			})}`;
 		}
 
-		if (req.query.cause) {
-			options.login_hint = `signUp|${JSON.stringify({
-				cause: req.query.cause,
-			})}`;
-		}
-
 		if (req.query.loginHint) {
 			options.login_hint = req.query.loginHint;
 		}
