@@ -38,7 +38,6 @@ import { preFetchAll } from '@/util/apolloPreFetch';
 import { processPageContent } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
 import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 // Page frames
 const WwwPage = () => import('@/components/WwwFrame/WwwPage');
@@ -238,24 +237,6 @@ export default {
 				this.pageBackgroundColor = pageData?.page?.pageLayout?.pageBackgroundColor ?? '';
 				this.pageFrame = getPageFrameFromType(pageData?.page?.pageType);
 				this.contentGroups = getContentGroups(pageData);
-			}
-		}
-	},
-	created() {
-		// Trigger route specific functions
-		if (this.$route.path === '/lp/causes') {
-			// Mobile Causes homepage experiment (GD-205)
-			const causesHomeExp = this.apollo.readFragment({
-				id: 'Experiment:home_mobile_causes',
-				fragment: experimentVersionFragment,
-			}) || {};
-			// Fire Event for EXP-GD-205
-			if (causesHomeExp.version && causesHomeExp.version !== 'unassigned') {
-				this.$kvTrackEvent(
-					'Causes',
-					'EXP-GD-205-Jan2022',
-					causesHomeExp.version === 'shown' ? 'b' : 'a',
-				);
 			}
 		}
 	},
