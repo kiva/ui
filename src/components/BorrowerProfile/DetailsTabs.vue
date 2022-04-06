@@ -15,16 +15,19 @@
 		<kv-tabs v-else>
 			<template #tabNav>
 				<kv-tab :for-panel="loanTabId"
+					data-testid="bp-detail-loan-details-tab"
 					v-kv-track-event="['Borrower Profile', `click-Loan-Details-tab`, 'Loan Details']"
 				>
 					Loan details
 				</kv-tab>
 				<kv-tab :for-panel="partnerTabId" v-if="isPartnerLoan"
+					data-testid="bp-detail-field-partner-tab"
 					v-kv-track-event="['Borrower Profile', `click-Field-Partner-tab`, 'Field Partner']"
 				>
 					Field Partner
 				</kv-tab>
 				<kv-tab :for-panel="trusteeTabId" v-if="hasTrustee"
+					data-testid="bp-detail-trustee-tab"
 					v-kv-track-event="[
 						'Borrower Profile',
 						'click-Trustee-tab',
@@ -35,7 +38,7 @@
 				</kv-tab>
 			</template>
 			<template #tabPanels>
-				<kv-tab-panel :id="loanTabId">
+				<kv-tab-panel :id="loanTabId" data-testid="bp-detail-loan-detail-panel">
 					<loan-details
 						:status="loan.status"
 						:charges-fees-interest="partner.chargesFeesInterest"
@@ -55,7 +58,9 @@
 						:status="loan.status"
 					/>
 				</kv-tab-panel>
-				<kv-tab-panel :id="partnerTabId" v-if="isPartnerLoan">
+				<kv-tab-panel :id="partnerTabId" v-if="isPartnerLoan"
+					data-testid="bp-detail-field-partner-panel"
+				>
 					<field-partner-details
 						:arrears-rate="partner.arrearsRate"
 						:avg-borrower-cost="partner.avgBorrowerCost"
@@ -70,7 +75,9 @@
 						@show-definition="showDefinition"
 					/>
 				</kv-tab-panel>
-				<kv-tab-panel :id="trusteeTabId" v-if="hasTrustee">
+				<kv-tab-panel :id="trusteeTabId" v-if="hasTrustee"
+					data-testid="bp-detail-trustee-panel"
+				>
 					<trustee-details
 						:borrower-name="loan.name"
 						:endorsement="trustee.endorsement"
