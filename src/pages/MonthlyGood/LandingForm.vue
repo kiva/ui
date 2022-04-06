@@ -1,29 +1,10 @@
 <template>
 	<form @submit.prevent.stop="submit" novalidate>
-		<div class="row">
-			<fieldset class="large-4 medium-5 small-12 columns tw-mb-2">
-				<label class="tw-sr-only" :class="{ 'tw-text-danger': $v.$invalid }" :for="'amount-' + componentKey">
-					Amount
-				</label>
-				<kv-currency-input
-					:id="'amount-' + componentKey"
-					:value="amount"
-					@input="updateAmount"
-				/>
-				<ul class="validation-errors tw-text-danger" v-if="$v.$invalid">
-					<li v-if="!$v.amount.required">
-						Field is required
-					</li>
-					<li v-if="!$v.amount.minValue || !$v.amount.maxValue">
-						Enter an amount of $5-$8,500
-					</li>
-				</ul>
-			</fieldset>
-			<fieldset class="large-8 medium-7 small-12 columns">
+		<div class="tw-flex tw-flex-col tw-gap-2">
+			<fieldset class="tw-basis-full">
+				<p class="tw-text-h4 tw-mb-2">CHOOSE A CATEGORY</p>
 				<label for="borrower-categories" class="tw-sr-only">Lending category to support</label>
-				<kv-select
-					class="tw-w-full"
-					id="borrower-categories"
+				<kv-select class="tw-w-full" id="borrower-categories"
 					:model-value="selectedGroup"
 					@update:modelValue="updateSelected"
 				>
@@ -32,19 +13,42 @@
 					</option>
 				</kv-select>
 			</fieldset>
+			<div class="tw-flex tw-items-center tw-gap-2">
+				<fieldset class="tw-basis-2/6">
+					<label class="tw-sr-only" :class="{ 'tw-text-danger': $v.$invalid }"
+						:for="'amount-' + componentKey"
+					>
+						Amount
+					</label>
+					<kv-currency-input
+						:id="'amount-' + componentKey"
+						:value="amount"
+						@input="updateAmount"
+					/>
+					<ul class="validation-errors tw-text-danger" v-if="$v.$invalid">
+						<li v-if="!$v.amount.required">
+							Field is required
+						</li>
+						<li v-if="!$v.amount.minValue || !$v.amount.maxValue">
+							Enter an amount of $5-$8,500
+						</li>
+					</ul>
+				</fieldset>
+				<kv-button
+					class="tw-basis-4/6"
+					style="margin-top: 0;"
+					type="submit"
+					:disabled="$v.$invalid"
+					v-kv-track-event="[
+						'MonthlyGood',
+						`click-start-form-${componentKey}`,
+						buttonText
+					]"
+				>
+					{{ buttonText }}
+				</kv-button>
+			</div>
 		</div>
-		<kv-button
-			class="tw-mb-2"
-			type="submit"
-			:disabled="$v.$invalid"
-			v-kv-track-event="[
-				'MonthlyGood',
-				`click-start-form-${componentKey}`,
-				buttonText
-			]"
-		>
-			{{ buttonText }}
-		</kv-button>
 	</form>
 </template>
 
