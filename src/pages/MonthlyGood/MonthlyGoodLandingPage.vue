@@ -554,7 +554,6 @@ export default {
 .mg-hero.experiment {
 	min-height: 52rem;
 	background: #4faf4e;
-
 	@include breakpoint(medium) {
 		min-height: 8rem;
 	}
@@ -580,7 +579,6 @@ export default {
 			top: 2rem;
 			margin-left: 1rem;
 		}
-
 	}
 
 	.mg-headline,
