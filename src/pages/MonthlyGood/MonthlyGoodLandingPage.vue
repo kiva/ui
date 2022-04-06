@@ -2,7 +2,7 @@
 	<www-page>
 		<kv-hero
 			v-if="!isImpactVisibilityExperiment"
-			class="mg-hero bg-overlay"
+			style="margin-bottom: 0;"
 			:class="{ experiment: isExperimentActive }"
 		>
 			<template #images>
@@ -18,10 +18,10 @@
 			<template #overlayContent>
 				<div class="row">
 					<div class="tw-max-w-sm tw-bg-white tw-rounded tw-hidden md:tw-block tw-ml-2 tw-p-2">
-						<h1 class="mg-headline tw-text-primary
+						<h1 class="tw-text-primary
 							tw-text-h2" v-html="heroHeadline"
 						></h1>
-						<p class="mg-subhead tw-text-subhead tw-text-primary" v-html="heroBody"></p>
+						<p class="tw-mt-2 tw-mb-3 tw-text-subhead tw-text-primary" v-html="heroBody"></p>
 						<landing-form
 							:amount.sync="monthlyGoodAmount"
 							:selected-group.sync="selectedGroup"
@@ -453,103 +453,6 @@ export default {
 
 <style lang="scss" scoped>
 @import "settings";
-
-.hero.mg-hero {
-	::v-deep .overlay-content {
-		.overlay-column {
-			max-width: none;
-			@include breakpoint(medium) {
-				max-width: 32.25rem;
-			}
-		}
-	}
-
-	::v-deep .kv-contentful-img,
-	::v-deep .kv-contentful-img__img {
-		display: block;
-		width: 100%;
-		height: auto;
-	}
-
-	::v-deep form {
-		// overwrite styles for error display over hero image
-		.validation-errors {
-			border: 1px solid $charcoal;
-			background-color: rgba(255, 255, 255, 0.7);
-		}
-	}
-
-	margin-bottom: 0;
-	//set min height to improve sizing when image has not loaded yet
-	min-height: 6.25rem;
-	@include breakpoint(xlarge) {
-		min-height: 20rem;
-	}
-	@include breakpoint(xxlarge) {
-		min-height: 24.65rem;
-	}
-	@include breakpoint(xga) {
-		min-height: 27rem;
-	}
-}
-
-.page-content {
-	padding: 1.625rem 0;
-}
-
-.mg-headline,
-.mg-subhead {
-	text-shadow: 1px 1px 3px #333;
-}
-
-.mg-subhead {
-	padding: 0;
-	margin-bottom: 0.65rem;
-
-	@include breakpoint(xlarge) {
-		padding-top: 0.875rem;
-		margin-bottom: 1rem;
-	}
-}
-
-// Experiment Styles - CASH-1774
-.mg-hero.bg-overlay {
-	::v-deep .overlay-content {
-		bottom: 0;
-		top: auto;
-		transform: none;
-		@include breakpoint(large) {
-			top: 50%;
-			bottom: auto;
-			transform: translateY(-50%);
-		}
-	}
-
-	::v-deep .images > div,
-	::v-deep .images img {
-		min-height: 22.75rem;
-		object-fit: cover;
-	}
-
-	.mg-headline,
-	.mg-subhead {
-		text-shadow: none;
-		padding-top: 0;
-	}
-
-	::v-deep form {
-		button {
-			width: 100%;
-			margin-top: 0.75rem;
-		}
-	}
-
-	.mg-subhead {
-		max-width: 28.125rem;
-		margin: 1rem 0 1.35rem 0;
-	}
-}
-
 // Experiment Styles - GROW-11
 .mg-hero.experiment {
 	min-height: 52rem;
@@ -579,11 +482,6 @@ export default {
 			top: 2rem;
 			margin-left: 1rem;
 		}
-	}
-
-	.mg-headline,
-	.mg-subhead {
-		color: #484848;
 	}
 
 	::v-deep form {
