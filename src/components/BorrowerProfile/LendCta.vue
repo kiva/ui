@@ -61,6 +61,7 @@
 									v-if="hideShowLendDropdown"
 									id="LoanAmountDropdown"
 									class="tw-pr-2.5 tw--mb-2"
+									data-testid="bp-lend-cta-amount-dropdown"
 									v-model="selectedOption"
 									v-kv-track-event="[
 										'Lending',

@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<button class="tw-text-h4 tw-text-link tw-mt-3"
+			data-testid="bp-loan-detail-full-repayment-schedule-lightbox-btn"
 			@click="openLightbox"
 			v-kv-track-event="['Borrower Profile', 'click-repayment schedule', 'Detailed repayment schedule']"
 		>

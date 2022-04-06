@@ -1,6 +1,8 @@
 <template>
-	<section class="tw-rounded tw-border-tertiary tw-bg-primary tw-p-2.5 md:tw-p-3.5 lg:tw-p-4">
-		<h2 class="tw-mt-0 tw-mb-1">
+	<section class="tw-rounded tw-border-tertiary tw-bg-primary tw-p-2.5 md:tw-p-3.5 lg:tw-p-4"
+		data-test-id="bp-direct-business-info"
+	>
+		<h2 class="tw-mt-0 tw-mb-1" data-testid="bp-direct-business-name">
 			About {{ borrowerBusinessName }}
 		</h2>
 
@@ -8,20 +10,21 @@
 			v-if="processedWebsite"
 			:icon="mdiArrowTopRight"
 			class="tw-mb-2"
+			data-testid="bp-direct-business-website"
 			target="_blank"
 			:href="processedWebsite"
 		>
 			View Website
 		</kv-text-link>
 
-		<h3 v-if="sector" class="tw-mb-0">
+		<h3 v-if="sector" class="tw-mb-0" data-testid="bp-direct-business-industry">
 			{{ sector }}
 		</h3>
 		<p class="tw-text-h4 tw-text-secondary tw-mb-2">
 			Industry
 		</p>
 
-		<h3 class="tw-mb-0">
+		<h3 class="tw-mb-0" data-testid="bp-direct-business-years">
 			{{ yearsInBusinessFormatted }}
 		</h3>
 		<p class="tw-text-h4 tw-text-secondary">
@@ -36,6 +39,7 @@
 					tw-inline-flex tw-items-center tw-justify-center
 					tw-mt-2 tw-mr-2
 					tw-h-6 tw-w-6"
+			:data-testid="`bp-direct-business-social-links-${index}`"
 			:href="verifyUrl(link.url)"
 			v-kv-track-event="['Borrower Profile', 'EXP-GROW-655-Aug2021', 'click-social-', link.type]"
 		>
