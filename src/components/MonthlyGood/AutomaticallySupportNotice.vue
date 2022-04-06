@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
 	props: {
