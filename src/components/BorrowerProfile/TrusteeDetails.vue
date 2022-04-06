@@ -1,14 +1,15 @@
 <template>
 	<section class="tw-prose">
-		<p>
+		<p data-testid="bp-details-trustee-description">
 			Trustees are organizations that refer potential U.S.-based
 			borrowers to Kiva and publicly vouch for them on Kiva.org.
 		</p>
-		<h2>
+		<h2 data-testid="bp-details-trustee-name">
 			{{ trusteeName }}
 		</h2>
 		<dl class="tw-mb-4">
 			<description-list-item
+				data-testid="bp-details-trustee-kiva-borrowers"
 				:term="'Kiva borrowers'"
 				:details="numLoansEndorsedPublicFormatted"
 				@show-definition="$emit('show-definition', {
@@ -19,6 +20,7 @@
 				})"
 			/>
 			<description-list-item
+				data-testid="bp-details-trustee-total-loans"
 				:term="'Total loans'"
 				:details="totalLoansValueFormatted"
 				@show-definition="$emit('show-definition', {
@@ -29,6 +31,7 @@
 				})"
 			/>
 			<description-list-item
+				data-testid="bp-details-trustee-loans-defaulted"
 				:term="'Loans defaulted'"
 				:details="numDefaultedLoansFormatted"
 				@show-definition="$emit('show-definition', {
@@ -39,6 +42,7 @@
 				})"
 			/>
 			<description-list-item
+				data-testid="bp-details-trustee-repayment-rate"
 				:term="'Repayment rate'"
 				:details="repaymentRateFormatted"
 				@show-definition="$emit('show-definition', {
@@ -50,6 +54,7 @@
 			/>
 		</dl>
 		<kv-text-link
+			data-testid="bp-details-trustee-more-about-link"
 			:icon="mdiArrowRight"
 			:href="`/trustees/${trusteeId}`"
 			target="_blank"
@@ -61,10 +66,10 @@
 		>
 			{{ noTrusteeState ? 'More about loans without endorsements' : 'More about this trustee' }}
 		</kv-text-link>
-		<div v-if="endorsement" class="tw-prose tw-my-3">
+		<div v-if="endorsement" class="tw-prose tw-my-3" data-testid="bp-details-trustee-endorsement">
 			<h3>{{ endorsementTitle }}</h3>
 			<blockquote>
-				<p>
+				<p data-testid="bp-details-trustee-endorsement-text">
 					{{ endorsement }}
 				</p>
 			</blockquote>
