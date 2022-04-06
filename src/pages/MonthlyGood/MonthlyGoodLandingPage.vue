@@ -12,16 +12,16 @@
 					:width="1440"
 					:alt="heroImageAlt"
 					:source-sizes="sourceSizes"
-					crop="&fit=fill&f=face"
+					crop="&fit=fill&f=top"
 				/>
 			</template>
 			<template #overlayContent>
 				<div class="row">
-					<div class="overlay-column columns tw-bg-primary-inverse tw-bg-opacity-[75%] medium-12 large-8">
-						<h1 class="mg-headline tw-text-primary-inverse
-							tw-text-h2 md:tw-text-h1" v-html="heroHeadline"
+					<div class="tw-max-w-sm tw-bg-white tw-rounded tw-hidden md:tw-block tw-ml-2 tw-p-2">
+						<h1 class="mg-headline tw-text-primary
+							tw-text-h2" v-html="heroHeadline"
 						></h1>
-						<p class="mg-subhead tw-text-subhead tw-text-primary-inverse" v-html="heroBody"></p>
+						<p class="mg-subhead tw-text-subhead tw-text-primary" v-html="heroBody"></p>
 						<landing-form
 							:amount.sync="monthlyGoodAmount"
 							:selected-group.sync="selectedGroup"
@@ -105,6 +105,43 @@
 				</div>
 			</template>
 		</kv-hero>
+		<div class="tw-bg-white tw-rounded md:tw-hidden tw-px-2">
+			<h1 class="tw-text-primary tw-shadow-transparent tw-mt-2
+				tw-text-h2" v-html="heroHeadline"
+			></h1>
+			<p class="tw-text-subhead tw-text-primary tw-my-2" v-html="heroBody"></p>
+			<landing-form
+				:amount.sync="monthlyGoodAmount"
+				:selected-group.sync="selectedGroup"
+				key="top"
+				:button-text="heroPrimaryCtaText"
+				v-if="!isMonthlyGoodSubscriber && !isExperimentActive && !hasModernSub"
+			/>
+			<landing-form-experiment
+				:amount.sync="monthlyGoodAmount"
+				:selected-group.sync="selectedGroup"
+				key="top"
+				:button-text="heroPrimaryCtaText"
+				v-if="!isMonthlyGoodSubscriber && isExperimentActive && !hasModernSub"
+			/>
+			<div
+				class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
+				v-if="isMonthlyGoodSubscriber || hasModernSub"
+			>
+				<p class="tw-font-medium tw-mb-2">
+					You're already signed up for a subscription. Changes to this
+					contribution can be made in your
+					<a href="/settings/subscriptions">subscription settings</a>.
+				</p>
+			</div>
+		</div>
+		<automatically-support-notice
+			:value-headline="personalizedHeadline"
+			:value-body="personalizedBody"
+			:value-image="personalizedImage"
+			:value-image-alt="personalizedImageAlt"
+			class="tw-my-8"
+		/>
 		<how-it-works :is-experiment-active="isExperimentActive" />
 		<email-preview />
 		<kiva-as-expert>
@@ -155,6 +192,7 @@ import KvHero from '@/components/Kv/KvHero';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
 import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
+import AutomaticallySupportNotice from '@/components/MonthlyGood/AutomaticallySupportNotice';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
@@ -217,6 +255,7 @@ export default {
 		MoreAboutKiva,
 		WwwPage,
 		KivaClassicLoanCarouselExp,
+		AutomaticallySupportNotice,
 	},
 	props: {
 		category: {
@@ -245,12 +284,12 @@ export default {
 				},
 				{
 					width: 1024,
-					height: 441,
+					height: 620,
 					media: 'min-width: 681px',
 				},
 				{
 					width: 680,
-					height: 372,
+					height: 441,
 					media: 'min-width: 481px',
 				},
 				{
@@ -379,10 +418,34 @@ export default {
 			return documentToHtmlString(text).replace(/\n/g, '<br />');
 		},
 		heroHeadline() {
-			return this.heroText?.headline ?? "It's easy to do good.";
+			return this.heroText?.headline ?? 'Monthly lending personalized for you.';
 		},
 		heroPrimaryCtaText() {
 			return this.heroText?.primaryCtaText ?? 'Start Monthly Good';
+		},
+		personalizedContentGroup() {
+			return this.contentGroups?.find(({ key }) => {
+				return key ? key === 'personalized-mg-landing-value-prop' : false;
+			});
+		},
+		personalizedText() {
+			// This contentGroup doesnt have a type, so find by key
+			return this.personalizedContentGroup?.contents?.find(contentItem => {
+				return contentItem.key === 'personalized-mg-landing-value-text';
+			});
+		},
+		personalizedHeadline() {
+			return this.personalizedText?.headline ?? 'Automatically support borrowers chosen for you.';
+		},
+		personalizedBody() {
+			const text = this.personalizedText?.bodyCopy ?? '';
+			return documentToHtmlString(text).replace(/\n/g, '<br />');
+		},
+		personalizedImage() {
+			return this.personalizedContentGroup?.media?.[0]?.file?.url ?? '';
+		},
+		personalizedImageAlt() {
+			return this.personalizedContentGroup?.media?.[0]?.description ?? '';
 		},
 	},
 };
@@ -460,15 +523,6 @@ export default {
 			bottom: auto;
 			transform: translateY(-50%);
 		}
-
-		.overlay-column {
-			max-width: none;
-			padding: 1.5rem 1rem 0.5rem;
-			@include breakpoint(large) {
-				max-width: 32.25rem;
-				padding: 1.5rem 2rem 1.25rem 2rem;
-			}
-		}
 	}
 
 	::v-deep .images > div,
@@ -527,22 +581,6 @@ export default {
 			margin-left: 1rem;
 		}
 
-		.overlay-column {
-			background-color: white;
-			padding: 2rem 2rem 1.25rem;
-			border-radius: 1rem;
-			max-width: 26rem !important;
-			margin: 0 auto;
-
-			@include breakpoint(large) {
-				max-width: 22rem !important;
-				margin: 0;
-			}
-
-			@include breakpoint(xlarge) {
-				max-width: 26rem !important;
-			}
-		}
 	}
 
 	.mg-headline,
