@@ -14,19 +14,21 @@ const homePageQuery = gql`query homepageFrame {
 
 export default {
 	inject: ['apollo', 'cookieStore'],
-	metaInfo: {
-		title: 'Make a loan, change a life',
-		meta: [
-			{
-				name: 'google-site-verification', // for Google Search Console
-				content: 'vpxnq5XBGa1PgE4hhyEollJr4uEzN7mrC30iJxzuW_M'
-			},
-			{
-				name: 'description',
-				content: 'Kiva is the world\'s first online lending platform. '
-					+ 'For as little as $25 you can lend to an entrepreneur around the world. Learn more here.'
-			}
-		],
+	metaInfo() {
+		return {
+			title: 'Make a loan, change a life',
+			meta: [
+				{
+					name: 'google-site-verification', // for Google Search Console
+					content: 'vpxnq5XBGa1PgE4hhyEollJr4uEzN7mrC30iJxzuW_M'
+				},
+				{
+					name: 'description',
+					content: 'Kiva is the world\'s first online lending platform. '
+						+ 'For as little as $25 you can lend to an entrepreneur around the world. Learn more here.'
+				}
+			]
+		};
 	},
 	data() {
 		return {
