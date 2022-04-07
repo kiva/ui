@@ -22,9 +22,9 @@
 				v-show="open"
 				class="accordion-info row small-12 columns"
 			>
-				<div class="small-9 small-offset-3 large-10 large-offset-2 columns">
+				<div class="small-12 large-10 large-offset-2 columns">
 					<div class="row">
-						<div class="small-9 large-5 columns">
+						<div class="small-12 large-5 columns">
 							<label for="kiva_card_input" class="tw-sr-only">Kiva Card Code</label>
 							<kv-text-input
 								id="kiva_card_input"
@@ -35,18 +35,19 @@
 								@keyup.enter.prevent="updateKivaCard('redemption_code')"
 							/>
 						</div>
-						<div class="small-4 large-3 xlarge-2 columns">
+						<div class="small-12 large-3 xlarge-2 columns">
 							<kv-button variant="secondary"
 								@click="updateKivaCard('redemption_code')"
 								data-testid="apply-card"
+								class="tw-w-full"
 							>
 								Apply
 							</kv-button>
 						</div>
-						<div class="small-4 columns align-self-middle">
+						<div class="small-12 columns align-self-middle">
 							<!-- This lightbox will be replaced with a Popper tip message. -->
 							<button
-								class="help-lightbox-trigger tw-text-link tw-font-medium"
+								class="help-lightbox-trigger tw-text-link tw-font-medium tw-mt-3 md:tw-mt-0"
 								@click="triggerDefaultLightbox"
 								data-testid="basket-code-entry-help-text-button"
 							>
