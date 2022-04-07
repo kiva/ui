@@ -4,7 +4,6 @@
 			class="how-works-section-wrapper
 			tw-bg-primary
 			tw-py-4 md:tw-py-6 lg:tw-py-8"
-			:class="{'experiment':isExperimentActive}"
 			id="how-it-works"
 		>
 			<div class="row">
@@ -65,11 +64,6 @@ export default {
 		IconUpdatesAlternate,
 		KvThemeProvider,
 	},
-	props: {
-		isExperimentActive: {
-			type: Boolean
-		}
-	},
 	data() {
 		return { darkGreenTheme };
 	}
@@ -89,17 +83,4 @@ export default {
 	}
 }
 
-.how-works-section-wrapper.experiment {
-	@include breakpoint(medium) {
-		padding-top: 12rem;
-	}
-
-	@include breakpoint(large) {
-		padding-top: 6rem;
-	}
-
-	@include breakpoint(xlarge) {
-		padding-top: 1rem;
-	}
-}
 </style>
