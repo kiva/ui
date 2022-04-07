@@ -32,6 +32,12 @@ export default {
 					vmid: 'referrer',
 					name: 'referrer',
 					content: 'strict-origin-when-cross-origin'
+				},
+				{
+					vmid: 'description',
+					name: 'description',
+					// eslint-disable-next-line max-len
+					content: 'Make a loan to an entrepreneur across the globe for as little as $25. Kiva is the world\'s first online lending platform connecting online lenders to entrepreneurs across the globe.'
 				}
 			].concat(this.$appConfig.enableFB ? [
 				// Facebook Specific Tags

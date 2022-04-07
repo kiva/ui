@@ -23,6 +23,7 @@ export default {
 					content: 'vpxnq5XBGa1PgE4hhyEollJr4uEzN7mrC30iJxzuW_M'
 				},
 				{
+					vmid: 'description',
 					name: 'description',
 					content: 'Kiva is the world\'s first online lending platform. '
 						+ 'For as little as $25 you can lend to an entrepreneur around the world. Learn more here.'

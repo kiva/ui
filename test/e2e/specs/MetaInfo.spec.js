@@ -8,7 +8,7 @@ describe('Meta information', () => {
 					+ 'For as little as $25 you can lend to an entrepreneur around the world. Learn more here.');
 	});
 
-	it('Homepage', () => {
+	it('Covid 19 Response Page', () => {
 		cy.visit('/covid19response');
 
 		cy.title().should('eq', "Join Kiva's Global COVID-19 Response | Kiva");
