@@ -14,7 +14,7 @@
 			Borrower story
 		</a>
 		<a
-			class="tw-text-primary tw-pl-1 tw-pr-1 tw-font-medium tw-cursor-pointer"
+			class="tw-text-primary tw-pl-1 tw-pr-1 tw-font-medium tw-cursor-pointer tw-whitespace-nowrap"
 			data-testid="bp-jump-link-loan-details"
 			v-kv-track-event="['Borrower profile', 'click-jump-link', 'Loan details']"
 			@click="scrollToSection('#loanDetails')"

@@ -17,18 +17,6 @@ import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 const loanUseFilter = require('../../plugins/loan-use-filter');
 
 export default {
-	metaInfo() {
-		return {
-			meta: [
-				{ property: 'og:description', vmid: 'og:description', content: this.loanUseFiltered },
-				{
-					name: 'twitter:description',
-					vmid: 'twitter:description',
-					content: this.loanUseFiltered
-				},
-			]
-		};
-	},
 	components: {
 		KvTextLink,
 	},
