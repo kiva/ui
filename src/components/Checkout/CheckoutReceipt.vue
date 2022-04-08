@@ -269,7 +269,7 @@
 			</section>
 			<section class="section section--print hide-for-print">
 				<button data-testid="print-receipt"
-					class="print tw-text-link tw-flex tw-items-center tw-gap-1" 
+					class="print tw-text-link tw-flex tw-items-center tw-gap-1"
 					@click="printReceipt"
 				>
 					<kv-icon name="print" class="print__icon tw-fill-current" />
