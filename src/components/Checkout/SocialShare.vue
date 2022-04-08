@@ -1,6 +1,6 @@
 <template>
 	<section class="share hide-for-print">
-		<h2 class="share__headline">
+		<h2 class="share__headline" data-testid="share-headline">
 			Feeling good? Extend your impact
 		</h2>
 
@@ -10,6 +10,7 @@
 					v-for="(loan, index) in loans.slice(0,3)"
 					:key="loan.id"
 					class="loans__circle"
+					:data-testid="`share-loan-${index}`"
 					:class="{ 'loans__circle--selected': index === selectedLoanIndex }"
 					@click="onLoanSelect(index)"
 				>
@@ -34,6 +35,7 @@
 					Message
 				</label>
 				<textarea
+					data-testid="share-message-textbox"
 					class="message__textbox tw-w-full tw-bg-primary tw-border tw-border-tertiary fs-mask"
 					id="message-textbox"
 					:placeholder="placeholderMessage"
@@ -42,6 +44,7 @@
 				></textarea>
 				<transition name="kvfastfade">
 					<button
+						data-testid="share-suggested-message-button"
 						class="message__suggested-btn tw-text-tertiary"
 						v-if="!isSuggestedMessage"
 						@click="useSuggestedMessage"
@@ -49,13 +52,14 @@
 						Suggested message
 					</button>
 				</transition>
-				<div class="message__charcount tw-text-tertiary">
+				<div class="message__charcount tw-text-tertiary" data-testid="share-message-character-count">
 					{{ message.length }}/{{ maxMessageLength }}
 				</div>
 			</div>
 
 			<div class="share__social social">
 				<a
+					data-testid="share-facebook-button"
 					class="social__btn social__btn--facebook"
 					:href="facebookShareUrl"
 					v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Facebook-share']"
@@ -64,6 +68,7 @@
 					<span>Share</span>
 				</a>
 				<a
+					data-testid="share-twitter-button"
 					class="social__btn social__btn--twitter"
 					:href="twitterShareUrl"
 					target="_blank"
@@ -75,6 +80,7 @@
 					<span>Tweet</span>
 				</a>
 				<a
+					data-testid="share-linkedin-button"
 					class="social__btn social__btn--linkedin"
 					:href="linkedInShareUrl"
 					target="_blank"
@@ -86,6 +92,7 @@
 					<span>Share</span>
 				</a>
 				<button
+					data-testid="share-copy-link-button"
 					class="social__btn social__btn--link tw-text-link tw-border-tertiary tw-border"
 					:class="copyStatus.class"
 					:disabled="copyStatus.disabled"
@@ -101,7 +108,7 @@
 				<kv-checkbox
 					class="teams__checkbox"
 					id="team_invitation"
-					data-testid="team-checkbox"
+					data-testid="share-team-checkbox"
 					v-model="isTeamInvitation"
 				>
 					Make this a team invitation
@@ -115,6 +122,7 @@
 						Team
 					</label>
 					<kv-select
+						data-testid="share-team-selection"
 						class="teams__select"
 						id="team_select"
 						v-model="selectedLenderTeam"
