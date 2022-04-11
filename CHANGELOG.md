@@ -1,3 +1,20 @@
+## [2.104.0](https://github.com/kiva/ui/compare/v2.103.1...v2.104.0) (2022-04-11)
+
+
+### Features
+
+* add and update meta info ([0000d82](https://github.com/kiva/ui/commit/0000d821ea4507d1d9d7edf2d29d693fe6587095))
+* add meta information ([432ed48](https://github.com/kiva/ui/commit/432ed48fcb7393c0a08fb532808c47f240b3af26))
+* adding tags to parser filter string logic ([c234d52](https://github.com/kiva/ui/commit/c234d5264c3c8b3742f95676a1df94add077c42d))
+* allowing dots in router and filter parser ([4548376](https://github.com/kiva/ui/commit/454837633f2be8eadfa6ff6d145b8614f9248f7e))
+* avoid unnecessary dot use in regex ([1fd6912](https://github.com/kiva/ui/commit/1fd691235d1f658f067462ab09e6abe39928d864))
+* change tests to get expected result ([883456e](https://github.com/kiva/ui/commit/883456eaa532d7c003e9971a05a5e0c89ab6f366))
+
+
+### Bug Fixes
+
+* adding vmid to override meta description tag ([2678936](https://github.com/kiva/ui/commit/2678936e07e43cd0de4724fb981498ee14cbefa2))
+
 ### [2.103.1](https://github.com/kiva/ui/compare/v2.103.0...v2.103.1) (2022-04-11)
 
 
