@@ -2,6 +2,7 @@
 	<div
 		v-if="lendingRewardOffered"
 		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
+		data-testid="lending-reward-banner"
 	>
 		<template v-if="promoData.displayName && promoData.pageId">
 			<router-link
@@ -28,6 +29,7 @@
 	<div
 		v-else-if="bonusBalance > 0"
 		class="bonus-banner-holder tw-bg-brand tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
+		data-testid="bonus-banner"
 	>
 		<router-link
 			v-if="promoData && !promoData.pageId"
