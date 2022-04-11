@@ -1,3 +1,12 @@
+### [2.103.1](https://github.com/kiva/ui/compare/v2.103.0...v2.103.1) (2022-04-11)
+
+
+### Bug Fixes
+
+* added needed testid for header and banner ([242f669](https://github.com/kiva/ui/commit/242f6691cbe228ea2b696666a12bf4bc8b818980))
+* added some top level data-testids for elements with same data-testid ([4bfd733](https://github.com/kiva/ui/commit/4bfd733760f780fc2990b00aa307a399dcf53f1d))
+* fix SearchBar.spec.js test ([20ea3d5](https://github.com/kiva/ui/commit/20ea3d5f3668038b4e6cfab55431fae335f4a0c5))
+
 ## [2.103.0](https://github.com/kiva/ui/compare/v2.102.0...v2.103.0) (2022-04-11)
 
 
