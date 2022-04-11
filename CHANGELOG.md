@@ -1,3 +1,10 @@
+## [2.103.0](https://github.com/kiva/ui/compare/v2.102.0...v2.103.0) (2022-04-11)
+
+
+### Features
+
+* all the setting for mg_amount_selector experiment were removed ([17d2b5f](https://github.com/kiva/ui/commit/17d2b5fce8f72cfe6383e464abdd8cd86006f281))
+
 ## [2.102.0](https://github.com/kiva/ui/compare/v2.101.2...v2.102.0) (2022-04-05)
 
 
