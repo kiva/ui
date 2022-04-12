@@ -1,3 +1,10 @@
+### [2.104.1](https://github.com/kiva/ui/compare/v2.104.0...v2.104.1) (2022-04-12)
+
+
+### Bug Fixes
+
+* loan bundles initialization was updated ([bf33fd6](https://github.com/kiva/ui/commit/bf33fd69cb689768b3a9491feacf4ecb8eaedbdb))
+
 ## [2.104.0](https://github.com/kiva/ui/compare/v2.103.1...v2.104.0) (2022-04-11)
 
 
