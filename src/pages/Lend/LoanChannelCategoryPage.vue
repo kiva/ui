@@ -34,6 +34,10 @@ const pageQuery = gql`
 				key
 				value
 			}
+			bundlesLayout: uiExperimentSetting(key: "category_loan_bundles") {
+				key
+				value
+			}
 		}
 	}
 `;
@@ -154,14 +158,15 @@ export default {
 
 			// Only certain categories are eligible for the experiment
 			if (!this.testCategories.includes(this.targetedLoanChannel)) {
-				if (!!layoutEXP.version && layoutEXP.version === 'b') {
-					this.addBundlesExp = true;
-
-					this.$kvTrackEvent(
-						'Lending',
-						'view-loan-bundle',
-						this.targetedLoanChannel
-					);
+				if (layoutEXP.version) {
+					if (layoutEXP.version === 'b') {
+						this.addBundlesExp = true;
+						this.$kvTrackEvent(
+							'Lending',
+							'view-loan-bundle',
+							this.targetedLoanChannel
+						);
+					}
 					this.$kvTrackEvent(
 						'Lending',
 						'EXP-CORE-482-Mar2022',
