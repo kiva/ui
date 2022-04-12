@@ -7,6 +7,7 @@ const compression = require('compression');
 const helmet = require('helmet');
 const locale = require('locale');
 const serverRoutes = require('./available-routes-middleware');
+const sitemapMiddleware = require('./sitemap/middleware');
 const authRouter = require('./auth-router');
 const sessionRouter = require('./session-router');
 const timesyncRouter = require('./timesync-router');
@@ -70,6 +71,9 @@ app.use(locale(config.app.locale.supported, config.app.locale.default));
 
 // Apply serverRoutes middleware to expose available routes
 app.use('/ui-routes', serverRoutes);
+
+// Apply sitemap middleware to expose routes we want search engine crawlers to see
+app.use('/sitemaps/ui.xml', sitemapMiddleware(config.app, cache));
 
 // Handle time sychronization requests
 app.use('/', timesyncRouter());
