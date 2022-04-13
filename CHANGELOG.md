@@ -1,3 +1,12 @@
+## [2.105.0](https://github.com/kiva/ui/compare/v2.104.2...v2.105.0) (2022-04-13)
+
+
+### Features
+
+* kvcontenfulimg component was replace for our kv-components one ([1438e7c](https://github.com/kiva/ui/commit/1438e7cfbccd5fda9554cfd6639ba81ccec34a9f))
+* mg page was updated to have a new style in the signup form ([27d2fc4](https://github.com/kiva/ui/commit/27d2fc47945fe4190b6d4b949b3909d56f6f139e))
+* unused css classes were removed ([1f3cd14](https://github.com/kiva/ui/commit/1f3cd14fc6c5d564d0c33574980d4fc3e5453abf))
+
 ### [2.104.2](https://github.com/kiva/ui/compare/v2.104.1...v2.104.2) (2022-04-13)
 
 
