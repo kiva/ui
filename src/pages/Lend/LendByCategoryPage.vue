@@ -135,8 +135,18 @@ export default {
 		MGLightbox,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
-	metaInfo: {
-		title: 'Loans by category'
+	metaInfo() {
+		return {
+			title: 'See loans by category',
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: 'Choose a category, lend to borrowers, and make an impact. '
+					+ 'Each Kiva loan helps people build a better future for themselves and their families.'
+				}
+			]
+		};
 	},
 	data() {
 		return {
