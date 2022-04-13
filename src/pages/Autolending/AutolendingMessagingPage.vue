@@ -61,17 +61,6 @@
 <script>
 
 export default {
-	metaInfo() {
-		return {
-			link: [
-				{
-					vmid: 'canonical',
-					rel: 'canonical',
-					href: `https://${this.$appConfig.host}${this.$route.path}/${this.action}`
-				}
-			]
-		};
-	},
 	props: {
 		success: {
 			type: Boolean,
