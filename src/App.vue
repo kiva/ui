@@ -114,6 +114,11 @@ export default {
 					sizes: '152x152',
 					href: require('@/assets/images/favicons/apple-touch-icon-152x152.png')
 				},
+				{
+					vmid: 'canonical',
+					rel: 'canonical',
+					href: `https://${this.$appConfig.host}${this.$route.path}`
+				}
 			].concat([
 				// Standard Favicons + Android favicons
 				{

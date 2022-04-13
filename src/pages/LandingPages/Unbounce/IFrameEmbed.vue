@@ -29,6 +29,17 @@ import oneTrustGlobalEvent from '@/head/oneTrustEvent';
 import _throttle from 'lodash/throttle';
 
 export default {
+	metaInfo() {
+		return {
+			link: [
+				{
+					vmid: 'canonical',
+					rel: 'canonical',
+					href: `https://${this.$appConfig.host}${this.$route.path}/${this.unbouncePath}`
+				}
+			]
+		};
+	},
 	components: {
 		KvLoadingSpinner,
 		WwwPage,

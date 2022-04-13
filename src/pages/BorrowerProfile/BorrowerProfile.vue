@@ -77,6 +77,18 @@ import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 
 export default {
+	metaInfo() {
+		const canonicalUrl = `https://${this.$appConfig.host}${this.$route.path}}`.replace('-beta', '');
+		return {
+			link: [
+				{
+					vmid: 'canonical',
+					rel: 'canonical',
+					href: canonicalUrl
+				}
+			]
+		};
+	},
 	inject: ['cookieStore'],
 	components: {
 		BorrowerCountry,
