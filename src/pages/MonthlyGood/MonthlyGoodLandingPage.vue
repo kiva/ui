@@ -2,7 +2,8 @@
 	<www-page>
 		<kv-hero
 			v-if="!isImpactVisibilityExperiment"
-			class="mg-hero bg-overlay"
+			style="margin-bottom: 0;"
+			:class="{ experiment: isExperimentActive }"
 		>
 			<template #images>
 				<kv-contentful-img
@@ -11,16 +12,16 @@
 					:width="1440"
 					:alt="heroImageAlt"
 					:source-sizes="sourceSizes"
-					crop="&fit=fill&f=face"
+					crop="&fit=fill&f=top"
 				/>
 			</template>
 			<template #overlayContent>
 				<div class="row">
-					<div class="overlay-column columns tw-bg-primary-inverse tw-bg-opacity-[75%] medium-12 large-8">
-						<h1 class="mg-headline tw-text-primary-inverse
-							tw-text-h2 md:tw-text-h1" v-html="heroHeadline"
+					<div class="tw-max-w-sm tw-bg-white tw-rounded tw-hidden md:tw-block tw-ml-2 tw-p-2">
+						<h1 class="tw-text-primary
+							tw-text-h2" v-html="heroHeadline"
 						></h1>
-						<p class="mg-subhead tw-text-subhead tw-text-primary-inverse" v-html="heroBody"></p>
+						<p class="tw-mt-2 tw-mb-3 tw-text-subhead tw-text-primary" v-html="heroBody"></p>
 						<landing-form
 							:amount.sync="monthlyGoodAmount"
 							:selected-group.sync="selectedGroup"
@@ -97,7 +98,44 @@
 				</div>
 			</template>
 		</kv-hero>
-		<how-it-works />
+		<div class="tw-bg-white tw-rounded md:tw-hidden tw-px-2">
+			<h1 class="tw-text-primary tw-shadow-transparent tw-mt-2
+				tw-text-h2" v-html="heroHeadline"
+			></h1>
+			<p class="tw-text-subhead tw-text-primary tw-my-2" v-html="heroBody"></p>
+			<landing-form
+				:amount.sync="monthlyGoodAmount"
+				:selected-group.sync="selectedGroup"
+				key="top"
+				:button-text="heroPrimaryCtaText"
+				v-if="!isMonthlyGoodSubscriber && !isExperimentActive && !hasModernSub"
+			/>
+			<landing-form-experiment
+				:amount.sync="monthlyGoodAmount"
+				:selected-group.sync="selectedGroup"
+				key="top"
+				:button-text="heroPrimaryCtaText"
+				v-if="!isMonthlyGoodSubscriber && isExperimentActive && !hasModernSub"
+			/>
+			<div
+				class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
+				v-if="isMonthlyGoodSubscriber || hasModernSub"
+			>
+				<p class="tw-font-medium tw-mb-2">
+					You're already signed up for a subscription. Changes to this
+					contribution can be made in your
+					<a href="/settings/subscriptions">subscription settings</a>.
+				</p>
+			</div>
+		</div>
+		<automatically-support-notice
+			:value-headline="personalizedHeadline"
+			:value-body="personalizedBody"
+			:value-image="personalizedImage"
+			:value-image-alt="personalizedImageAlt"
+			class="tw-my-8"
+		/>
+		<how-it-works :is-experiment-active="isExperimentActive" />
 		<email-preview />
 		<kiva-as-expert>
 			<template #form>
@@ -147,6 +185,7 @@ import KvHero from '@/components/Kv/KvHero';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
 import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
+import AutomaticallySupportNotice from '@/components/MonthlyGood/AutomaticallySupportNotice';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
@@ -203,6 +242,7 @@ export default {
 		MoreAboutKiva,
 		WwwPage,
 		KivaClassicLoanCarouselExp,
+		AutomaticallySupportNotice,
 	},
 	props: {
 		category: {
@@ -230,12 +270,12 @@ export default {
 				},
 				{
 					width: 1024,
-					height: 441,
+					height: 620,
 					media: 'min-width: 681px',
 				},
 				{
 					width: 680,
-					height: 372,
+					height: 441,
 					media: 'min-width: 481px',
 				},
 				{
@@ -348,10 +388,34 @@ export default {
 			return documentToHtmlString(text).replace(/\n/g, '<br />');
 		},
 		heroHeadline() {
-			return this.heroText?.headline ?? "It's easy to do good.";
+			return this.heroText?.headline ?? 'Monthly lending personalized for you.';
 		},
 		heroPrimaryCtaText() {
 			return this.heroText?.primaryCtaText ?? 'Start Monthly Good';
+		},
+		personalizedContentGroup() {
+			return this.contentGroups?.find(({ key }) => {
+				return key ? key === 'personalized-mg-landing-value-prop' : false;
+			});
+		},
+		personalizedText() {
+			// This contentGroup doesnt have a type, so find by key
+			return this.personalizedContentGroup?.contents?.find(contentItem => {
+				return contentItem.key === 'personalized-mg-landing-value-text';
+			});
+		},
+		personalizedHeadline() {
+			return this.personalizedText?.headline ?? 'Automatically support borrowers chosen for you.';
+		},
+		personalizedBody() {
+			const text = this.personalizedText?.bodyCopy ?? '';
+			return documentToHtmlString(text).replace(/\n/g, '<br />');
+		},
+		personalizedImage() {
+			return this.personalizedContentGroup?.media?.[0]?.file?.url ?? '';
+		},
+		personalizedImageAlt() {
+			return this.personalizedContentGroup?.media?.[0]?.description ?? '';
 		},
 	},
 };
@@ -359,109 +423,41 @@ export default {
 
 <style lang="scss" scoped>
 @import "settings";
+// Experiment Styles - GROW-11
+.mg-hero.experiment {
+	min-height: 52rem;
+	background: #4faf4e;
+	@include breakpoint(medium) {
+		min-height: 8rem;
+	}
 
-.hero.mg-hero {
-	::v-deep .overlay-content {
-		.overlay-column {
-			max-width: none;
-			@include breakpoint(medium) {
-				max-width: 32.25rem;
-			}
+	::v-deep .overlay-holder {
+		picture {
+			height: 32rem;
+			overflow: hidden;
 		}
 	}
 
-	::v-deep .kv-contentful-img,
-	::v-deep .kv-contentful-img__img {
-		display: block;
-		width: 100%;
-		height: auto;
-	}
-
-	::v-deep form {
-		// overwrite styles for error display over hero image
-		.validation-errors {
-			border: 1px solid $charcoal;
-			background-color: rgba(255, 255, 255, 0.7);
-		}
-	}
-
-	margin-bottom: 0;
-	//set min height to improve sizing when image has not loaded yet
-	min-height: 6.25rem;
-	@include breakpoint(xlarge) {
-		min-height: 20rem;
-	}
-	@include breakpoint(xxlarge) {
-		min-height: 24.65rem;
-	}
-	@include breakpoint(xga) {
-		min-height: 27rem;
-	}
-}
-
-.page-content {
-	padding: 1.625rem 0;
-}
-
-.mg-headline,
-.mg-subhead {
-	text-shadow: 1px 1px 3px #333;
-}
-
-.mg-subhead {
-	padding: 0;
-	margin-bottom: 0.65rem;
-
-	@include breakpoint(xlarge) {
-		padding-top: 0.875rem;
-		margin-bottom: 1rem;
-	}
-}
-
-// Experiment Styles - CASH-1774
-.mg-hero.bg-overlay {
 	::v-deep .overlay-content {
-		bottom: 0;
 		top: auto;
+		bottom: 0;
 		transform: none;
-		@include breakpoint(large) {
-			top: 50%;
+
+		@include breakpoint(medium) {
+			top: 17rem;
 			bottom: auto;
-			transform: translateY(-50%);
 		}
 
-		.overlay-column {
-			max-width: none;
-			padding: 1.5rem 1rem 0.5rem;
-			@include breakpoint(large) {
-				max-width: 32.25rem;
-				padding: 1.5rem 2rem 1.25rem 2rem;
-			}
+		@include breakpoint(large) {
+			top: 2rem;
+			margin-left: 1rem;
 		}
-	}
-
-	::v-deep .images > div,
-	::v-deep .images img {
-		min-height: 22.75rem;
-		object-fit: cover;
-	}
-
-	.mg-headline,
-	.mg-subhead {
-		text-shadow: none;
-		padding-top: 0;
 	}
 
 	::v-deep form {
-		button {
-			width: 100%;
-			margin-top: 0.75rem;
+		@include breakpoint(large) {
+			max-width: 23rem;
 		}
-	}
-
-	.mg-subhead {
-		max-width: 28.125rem;
-		margin: 1rem 0 1.35rem 0;
 	}
 }
 
