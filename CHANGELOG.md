@@ -1,3 +1,10 @@
+### [2.104.2](https://github.com/kiva/ui/compare/v2.104.1...v2.104.2) (2022-04-13)
+
+
+### Bug Fixes
+
+* thanks page layout and upsell for new subscription service users ([98eb2a8](https://github.com/kiva/ui/commit/98eb2a803f86ef9b543fab2bcbc06720e17b7463))
+
 ### [2.104.1](https://github.com/kiva/ui/compare/v2.104.0...v2.104.1) (2022-04-12)
 
 
