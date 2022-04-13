@@ -27,14 +27,7 @@
 							:selected-group.sync="selectedGroup"
 							key="top"
 							:button-text="heroPrimaryCtaText"
-							v-if="!isMonthlyGoodSubscriber && !isExperimentActive && !hasModernSub"
-						/>
-						<landing-form-experiment
-							:amount.sync="monthlyGoodAmount"
-							:selected-group.sync="selectedGroup"
-							key="top"
-							:button-text="heroPrimaryCtaText"
-							v-if="!isMonthlyGoodSubscriber && isExperimentActive && !hasModernSub"
+							v-if="!isMonthlyGoodSubscriber && !hasModernSub"
 						/>
 						<div
 							class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
@@ -198,7 +191,6 @@ import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 import LandingForm from './LandingForm';
-import LandingFormExperiment from './LandingFormExperiment';
 import LandingFormVisibilityExp from './LandingFormVisibilityExp';
 import HowItWorks from './HowItWorks';
 import EmailPreview from './EmailPreview';
@@ -214,10 +206,6 @@ const pageQuery = gql`
 			}
 		}
 		general {
-			mgAmount: uiExperimentSetting(key: "mg_amount_selector") {
-				key
-				value
-			}
 			mgHeroExp: uiExperimentSetting(key: "mg_hero_show_loans") {
 				key
 				value
@@ -250,7 +238,6 @@ export default {
 		KvFrequentlyAskedQuestions,
 		KvHero,
 		LandingForm,
-		LandingFormExperiment,
 		LandingFormVisibilityExp,
 		MoreAboutKiva,
 		WwwPage,
@@ -265,7 +252,6 @@ export default {
 	},
 	data() {
 		return {
-			isExperimentActive: false,
 			isImpactVisibilityExperiment: false,
 			isMonthlyGoodSubscriber: false,
 			monthlyGoodAmount: 25,
@@ -334,7 +320,6 @@ export default {
 				})
 				.then(() => {
 					return Promise.all([
-						client.query({ query: experimentQuery, variables: { id: 'mg_amount_selector' } }),
 						// eslint-disable-next-line max-len
 						client.query({ query: experimentQuery, variables: { id: 'mg_hero_show_loans' } }),
 					]);
@@ -345,21 +330,6 @@ export default {
 			// TODO! Add this back in when service supports non-logged in users
 			// const modernSubscriptions = data?.mySubscriptions?.values ?? [];
 			// this.hasModernSub = modernSubscriptions.length !== 0;
-
-			// Monthly Good Amount Selector Experiment - EXP-GROW-11-Apr2020
-			const mgAmountSelectorExperiment = this.apollo.readFragment({
-				id: 'Experiment:mg_amount_selector',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.isExperimentActive = mgAmountSelectorExperiment.version === 'shown';
-			// Fire Event for EXP-GROW-11-Apr2020
-			if (mgAmountSelectorExperiment.version && mgAmountSelectorExperiment.version !== 'unassigned') {
-				this.$kvTrackEvent(
-					'MonthlyGood',
-					'EXP-GROW-11-Apr2020',
-					mgAmountSelectorExperiment.version === 'shown' ? 'b' : 'a'
-				);
-			}
 
 			// mg_hero_show_loans
 			// Hero Loan Visibility Experiment - CORE-451

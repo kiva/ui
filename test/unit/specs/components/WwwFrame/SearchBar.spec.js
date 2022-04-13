@@ -59,7 +59,7 @@ describe('SearchBar', () => {
 		userEvent.type(input, 'ak');
 
 		// Expect only 3 results to be displayed
-		const results = await findAllByTestId('search-bar-result');
+		const results = await findAllByTestId('header-search-result-item');
 		expect(results.length).toBe(3);
 
 		// Expect that these groups are displayed
@@ -82,7 +82,7 @@ describe('SearchBar', () => {
 		userEvent.type(input, searchTerm);
 
 		// Wait for results to be displayed
-		const [first, second] = await findAllByTestId('search-bar-result');
+		const [first, second] = await findAllByTestId('header-search-result-item');
 
 		// Confirm first element is not already highlighted
 		expect(isHighlighted(first)).toBe(false);

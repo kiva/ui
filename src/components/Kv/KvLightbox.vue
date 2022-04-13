@@ -22,7 +22,7 @@
 					tabindex="-1"
 					ref="kvLightbox"
 					role="dialog"
-					data-test="kv-lightbox"
+					data-testid="kv-lightbox"
 					:aria-labelledby="title ? 'lightbox-title' : null"
 					aria-modal="true"
 				>

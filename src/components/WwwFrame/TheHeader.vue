@@ -134,6 +134,7 @@
 								class="
 									tw-absolute tw-left-0 tw-right-0 tw-top-8 md:tw-top-9 tw-z-dropdown
 									tw-bg-primary tw-border-b tw-border-tertiary"
+								data-testid="header-lend-dropdown-list"
 								style="margin-top: 1px;"
 							>
 								<kv-page-container>
@@ -148,6 +149,7 @@
 						<!-- Search -->
 						<div
 							v-if="!hideSearchInHeader"
+							data-testid="header-search-area"
 							id="top-nav-search-area"
 							class="
 								header__search
@@ -203,6 +205,7 @@
 									:controller="aboutMenuId"
 									v-show="isVisitor"
 									class="dropdown-list"
+									data-testid="header-about-dropdown-list"
 								>
 									<ul>
 										<li>
@@ -352,6 +355,7 @@
 								:controller="myKivaMenuId"
 								v-show="!isVisitor"
 								class="dropdown-list"
+								data-testid="header-my-kiva-dropdown-list"
 								id="my-kiva-dropdown"
 								ref="userDropdown"
 							>

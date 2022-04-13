@@ -1,3 +1,50 @@
+### [2.104.2](https://github.com/kiva/ui/compare/v2.104.1...v2.104.2) (2022-04-13)
+
+
+### Bug Fixes
+
+* thanks page layout and upsell for new subscription service users ([98eb2a8](https://github.com/kiva/ui/commit/98eb2a803f86ef9b543fab2bcbc06720e17b7463))
+
+### [2.104.1](https://github.com/kiva/ui/compare/v2.104.0...v2.104.1) (2022-04-12)
+
+
+### Bug Fixes
+
+* loan bundles initialization was updated ([bf33fd6](https://github.com/kiva/ui/commit/bf33fd69cb689768b3a9491feacf4ecb8eaedbdb))
+
+## [2.104.0](https://github.com/kiva/ui/compare/v2.103.1...v2.104.0) (2022-04-11)
+
+
+### Features
+
+* add and update meta info ([0000d82](https://github.com/kiva/ui/commit/0000d821ea4507d1d9d7edf2d29d693fe6587095))
+* add meta information ([432ed48](https://github.com/kiva/ui/commit/432ed48fcb7393c0a08fb532808c47f240b3af26))
+* adding tags to parser filter string logic ([c234d52](https://github.com/kiva/ui/commit/c234d5264c3c8b3742f95676a1df94add077c42d))
+* allowing dots in router and filter parser ([4548376](https://github.com/kiva/ui/commit/454837633f2be8eadfa6ff6d145b8614f9248f7e))
+* avoid unnecessary dot use in regex ([1fd6912](https://github.com/kiva/ui/commit/1fd691235d1f658f067462ab09e6abe39928d864))
+* change tests to get expected result ([883456e](https://github.com/kiva/ui/commit/883456eaa532d7c003e9971a05a5e0c89ab6f366))
+
+
+### Bug Fixes
+
+* adding vmid to override meta description tag ([2678936](https://github.com/kiva/ui/commit/2678936e07e43cd0de4724fb981498ee14cbefa2))
+
+### [2.103.1](https://github.com/kiva/ui/compare/v2.103.0...v2.103.1) (2022-04-11)
+
+
+### Bug Fixes
+
+* added needed testid for header and banner ([242f669](https://github.com/kiva/ui/commit/242f6691cbe228ea2b696666a12bf4bc8b818980))
+* added some top level data-testids for elements with same data-testid ([4bfd733](https://github.com/kiva/ui/commit/4bfd733760f780fc2990b00aa307a399dcf53f1d))
+* fix SearchBar.spec.js test ([20ea3d5](https://github.com/kiva/ui/commit/20ea3d5f3668038b4e6cfab55431fae335f4a0c5))
+
+## [2.103.0](https://github.com/kiva/ui/compare/v2.102.0...v2.103.0) (2022-04-11)
+
+
+### Features
+
+* all the setting for mg_amount_selector experiment were removed ([17d2b5f](https://github.com/kiva/ui/commit/17d2b5fce8f72cfe6383e464abdd8cd86006f281))
+
 ## [2.102.0](https://github.com/kiva/ui/compare/v2.101.2...v2.102.0) (2022-04-05)
 
 
