@@ -60,17 +60,6 @@ import _range from 'lodash/range';
 import KvIcon from './KvIcon';
 
 export default {
-	metaInfo() {
-		return {
-			link: [
-				{
-					vmid: 'canonical',
-					rel: 'canonical',
-					href: `https://${this.$appConfig.host}${this.$route.path}/${this.current > 1 ? this.current : ''}`
-				}
-			]
-		};
-	},
 	components: {
 		KvIcon,
 	},

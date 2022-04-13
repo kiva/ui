@@ -78,7 +78,7 @@ import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 
 export default {
 	metaInfo() {
-		const canonicalUrl = `https://${this.$appConfig.host}${this.$route.path}}`.replace('-beta', '');
+		const canonicalUrl = `https://${this.$appConfig.host}${this.$route.path}`.replace('-beta', '');
 		return {
 			link: [
 				{

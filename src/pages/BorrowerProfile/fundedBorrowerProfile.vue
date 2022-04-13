@@ -107,6 +107,18 @@ import LYML from '@/components/LoansYouMightLike/lymlContainer';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
+	metaInfo() {
+		const canonicalUrl = `https://${this.$appConfig.host}${this.$route.path}`.replace('funded', 'lend');
+		return {
+			link: [
+				{
+					vmid: 'canonical',
+					rel: 'canonical',
+					href: canonicalUrl
+				}
+			]
+		};
+	},
 	components: {
 		WwwPage,
 		LoanCardImage,
