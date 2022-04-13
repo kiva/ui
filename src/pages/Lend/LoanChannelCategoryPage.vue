@@ -69,8 +69,8 @@ export default {
 			pageLayout: 'control',
 			addBundlesExp: false,
 			meta: {
-				title: '',
-				description: ''
+				title: undefined,
+				description: undefined
 			}
 		};
 	},
