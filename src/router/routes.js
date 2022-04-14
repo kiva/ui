@@ -43,23 +43,6 @@ export default [
 	{ path: '/build/research', component: () => import('@/pages/Build/Research') },
 	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
 	{
-		path: '/causes',
-		component: () => import('@/pages/Causes/Causes'),
-		children: [
-			{
-				path: 'signup',
-				component: () => import('@/pages/Causes/Signup'),
-				props: route => ({
-					cause: route.query.cause
-				})
-			},
-			{
-				path: 'thanks',
-				component: () => import('@/pages/Causes/Thanks'),
-			}
-		]
-	},
-	{
 		path: '/cc/:dynamicRoute',
 		component: () => import('@/pages/LandingPages/CorporateCampaign/CCLandingPage'),
 		props: route => ({
@@ -75,10 +58,6 @@ export default [
 	{
 		path: '/checkout/thanks',
 		component: () => import('@/pages/Thanks/ThanksPage'),
-	},
-	{
-		path: '/choose-a-cause',
-		component: () => import('@/pages/Causes/ChooseACause'),
 	},
 	{
 		path: '/confirm-instant-donation/:token/:amount',
@@ -220,11 +199,6 @@ export default [
 		meta: {
 			activeLoginRequired: true,
 		}
-	},
-	{
-		path: '/monthlygood/personalized',
-		component: () => import('@/pages/MonthlyGood/PersonalizedMonthlyGoodLandingPage'),
-		props: route => ({ category: route.query.category })
 	},
 	{
 		path: '/portfolio/lending-stats',

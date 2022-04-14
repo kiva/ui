@@ -32,8 +32,18 @@ import MGCovidFaq from './MGCovidFAQ';
 import MGCovidHero from './MGCovidHero';
 
 export default {
-	metaInfo: {
-		title: "Join Kiva's Global COVID-19 Response"
+	metaInfo() {
+		return 	{
+			title: "Join Kiva's Global COVID-19 Response",
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: 'Help provide relief to small businesses impacted by COVID-19. For as little as $25,'
+						+ ' you can contribute—and get repaid so you can lend again. Find out more here.'
+				}
+			]
+		};
 	},
 	components: {
 		WwwPage,

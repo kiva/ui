@@ -1,6 +1,7 @@
 <template>
 	<article>
 		<kv-map
+			data-testid="bp-country-map"
 			class="
 				tw-rounded
 				tw-overflow-hidden

@@ -5,6 +5,7 @@
 		</h2>
 		<dl class="tw-mb-4">
 			<description-list-item
+				data-testid="bp-field-partner-details-avg-cost"
 				:term="'Average cost to borrower'"
 				:details="avgBorrowerCostFormatted"
 				@show-definition="$emit('show-definition', {
@@ -15,6 +16,7 @@
 				})"
 			/>
 			<description-list-item
+				data-testid="bp-field-partner-details-profitability"
 				:term="'Profitability (return on assets)'"
 				:details="avgProfitabilityFormatted"
 				@show-definition="$emit('show-definition', {
@@ -25,6 +27,7 @@
 				})"
 			/>
 			<description-list-item
+				data-testid="bp-field-partner-details-delinquency-rate"
 				:term="'Delinquency rate'"
 				:details="delinquencyRateFormatted"
 				@show-definition="$emit('show-definition', {
@@ -35,6 +38,7 @@
 				})"
 			/>
 			<description-list-item
+				data-testid="bp-field-partner-details-loans-risk-rate"
 				:term="'Loans at risk rate'"
 				:details="loansAtRiskRateFormatted"
 				@show-definition="$emit('show-definition', {
@@ -45,6 +49,7 @@
 				})"
 			/>
 			<description-list-item
+				data-test-id="bp-field-partner-details-default-rate"
 				:term="'Default rate'"
 				:details="defaultRateFormatted"
 				@show-definition="$emit('show-definition', {
@@ -55,6 +60,7 @@
 				})"
 			/>
 			<description-list-item
+				data-test-id="bp-field-partner-details-currency-loss"
 				:term="'Currency exchange loss rate'"
 				:details="currencyExchangeLossRateFormatted"
 				@show-definition="$emit('show-definition', {
@@ -64,10 +70,11 @@
 					linkText: 'Currency exchange loss rate'
 				})"
 			/>
-			<div class="tw-flex tw-mb-1.5">
+			<div class="tw-flex tw-mb-1.5" data-testid="bp-field-partner-details-partner-risk-rate">
 				<dt class="tw-flex-1 tw-mb-0">
 					<button
 						class="tw-underline tw-font-book"
+						data-testid="bp-details-lightbox-btn"
 						@click="$emit('show-definition', {
 							cid: 'bp-def-risk-rating',
 							sfid: '50150000000s2YH',
@@ -79,7 +86,7 @@
 					</button>
 				</dt>
 				<dd>
-					<div class="tw-flex">
+					<div class="tw-flex" data-testid="bp-details-value">
 						<kv-material-icon
 							v-for="i in 5"
 							:key="i"
@@ -92,6 +99,7 @@
 		</dl>
 
 		<kv-text-link
+			data-testid="bp-field-partner-details-more-about"
 			:icon="mdiArrowRight"
 			:href="`/partners/${partnerId}`"
 			target="_blank"

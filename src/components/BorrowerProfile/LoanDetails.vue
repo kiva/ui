@@ -1,6 +1,7 @@
 <template>
 	<dl>
 		<description-list-item
+			data-testid="bp-loan-detail-loan-length"
 			:term="'Loan length'"
 			:details="`${loanLength} months`"
 			@show-definition="$emit('show-definition', {
@@ -11,6 +12,7 @@
 			})"
 		/>
 		<description-list-item
+			data-testid="bp-loan-detail-repayment-schedule"
 			:term="'Repayment schedule'"
 			:details="repaymentSchedule"
 			@show-definition="$emit('show-definition', {
@@ -21,6 +23,7 @@
 			})"
 		/>
 		<description-list-item
+			data-testid="bp-loan-detail-disbursed-date"
 			:term="'Disbursed date'"
 			:details="disbursedDate"
 			@show-definition="$emit('show-definition', {
@@ -31,6 +34,7 @@
 			})"
 		/>
 		<description-list-item
+			data-testid="bp-loan-detail-funding-model"
 			:term="'Funding model'"
 			:details="fundingModel"
 			@show-definition="$emit('show-definition', {
@@ -41,6 +45,7 @@
 			})"
 		/>
 		<description-list-item
+			data-testid="bp-loan-detail-currency-loss"
 			:term="currencyLossScenarioTerm"
 			:details="currencyLossScenarioDetails"
 			@show-definition="$emit('show-definition', {
@@ -51,6 +56,7 @@
 			})"
 		/>
 		<description-list-item
+			data-testid="bp-loan-detail-paying-interest"
 			:term="'Is borrower paying interest?'"
 			:details="borrowerPayingInterest"
 			@show-definition="$emit('show-definition', {

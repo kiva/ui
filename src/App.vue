@@ -33,7 +33,6 @@ export default {
 					name: 'referrer',
 					content: 'strict-origin-when-cross-origin'
 				},
-				// General Meta Tags
 				{
 					vmid: 'description',
 					name: 'description',

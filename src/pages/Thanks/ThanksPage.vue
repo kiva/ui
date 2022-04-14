@@ -98,7 +98,6 @@
 
 <script>
 import confetti from 'canvas-confetti';
-import gql from 'graphql-tag';
 import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
@@ -119,15 +118,6 @@ import { joinArray } from '@/util/joinArray';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
-
-const mySubscriptionsQuery = gql`query mySubscriptionsQuery {
-	mySubscriptions(includeDisabled: false) {
-		values {
-			id
-			enabled
-		}
-	}
-}`;
 
 export default {
 	components: {
@@ -223,18 +213,6 @@ export default {
 		}
 	},
 	created() {
-		// extract mySubscriptions query so we can guard with try catch
-		try {
-			this.apollo.query({
-				query: mySubscriptionsQuery,
-			}).then(({ data }) => {
-				const modernSubscriptions = data?.mySubscriptions?.values ?? [];
-				this.hasModernSub = modernSubscriptions.length !== 0;
-			});
-		} catch (e) {
-			logReadQueryError(e, 'Thanks mySubscriptions query');
-		}
-
 		// Retrieve and apply Page level data + experiment state
 		let data = {};
 		try {
@@ -249,6 +227,8 @@ export default {
 			logReadQueryError(e, 'Thanks Page Data');
 		}
 
+		const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+		this.hasModernSub = modernSubscriptions.length !== 0;
 		this.lender = {
 			...(data?.my?.userAccount ?? {}),
 			teams: data?.my?.teams?.values?.map(value => value.team) ?? [],

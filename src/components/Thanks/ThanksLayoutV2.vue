@@ -1,10 +1,12 @@
 <template>
 	<div class="thanks-page">
 		<!-- Thanks Page V2 - Desktop -->
-		<div class="row show-for-large thanks-page--large-up">
+		<div class="row show-for-large thanks-page--large-up"
+			data-testid="thanks-page-large-up"
+		>
 			<div class="small-6 columns hide-for-print">
 				<kv-icon-button
-					data-test="thanks-page-button--guest"
+					data-testid="thanks-page-button-guest"
 					class="thanks-page__icon-button expanded"
 					v-if="showGuestUpsell"
 					:class="{ active: isGuestSelected }"
@@ -26,7 +28,7 @@
 					</template>
 				</kv-icon-button>
 				<kv-icon-button
-					data-test="thanks-page-button--ad"
+					data-testid="thanks-page-button-ad"
 					class="thanks-page__icon-button expanded"
 					v-if="showAutoDepositUpsell"
 					:class="{ active: isAdSelected }"
@@ -48,7 +50,7 @@
 					</template>
 				</kv-icon-button>
 				<kv-icon-button
-					data-test="thanks-page-button--mg"
+					data-testid="thanks-page-button-mg"
 					class="thanks-page__icon-button expanded"
 					v-if="showMgCta"
 					:class="{ active: isMgSelected }"
@@ -70,7 +72,7 @@
 					</template>
 				</kv-icon-button>
 				<kv-icon-button
-					data-test="thanks-page-button--receipt"
+					data-testid="thanks-page-button-receipt"
 					class="thanks-page__icon-button expanded"
 					:class="{ active: isReceiptSelected }"
 					@click.native="setVisibleSection('receipt')"
@@ -91,7 +93,7 @@
 					</template>
 				</kv-icon-button>
 				<kv-icon-button
-					data-test="thanks-page-button--share"
+					data-testid="thanks-page-button-share"
 					class="thanks-page__icon-button expanded"
 					:class="{ active: isShareSelected }"
 					@click.native="setVisibleSection('share')"
@@ -118,7 +120,7 @@
 					v-if="showGuestUpsell"
 					v-show="isGuestSelected"
 					class="thanks-page__content-area thanks-page__content-area--guest"
-					data-test="thanks-page-content--guest"
+					data-testid="thanks-page-content-guest"
 				>
 					<slot name="guest">
 					</slot>
@@ -127,7 +129,7 @@
 					v-if="showAutoDepositUpsell"
 					v-show="isAdSelected"
 					class="thanks-page__content-area thanks-page__content-area--ad"
-					data-test="thanks-page-content--ad"
+					data-testid="thanks-page-content-ad"
 				>
 					<slot v-if="!isMobile" name="ad">
 					</slot>
@@ -136,7 +138,7 @@
 					v-if="showMgCta"
 					v-show="isMgSelected"
 					class="thanks-page__content-area thanks-page__content-area--mg"
-					data-test="thanks-page-content--mg"
+					data-testid="thanks-page-content-mg"
 				>
 					<slot name="mg">
 					</slot>
@@ -144,7 +146,7 @@
 				<div
 					v-show="isReceiptSelected"
 					class="thanks-page__content-area thanks-page__content-area--receipt"
-					data-test="thanks-page-content--receipt"
+					data-testid="thanks-page-content-receipt"
 				>
 					<slot name="receipt">
 					</slot>
@@ -152,7 +154,7 @@
 				<div
 					v-show="isShareSelected"
 					class="thanks-page__content-area thanks-page__content-area--share"
-					data-test="thanks-page-content--share"
+					data-testid="thanks-page-content-share"
 				>
 					<slot name="share">
 					</slot>
@@ -161,7 +163,9 @@
 		</div>
 
 		<!-- Thanks Page V2 - Mobile -->
-		<div class="row hide-for-large thanks-page--medium-down">
+		<div class="row hide-for-large thanks-page--medium-down"
+			data-testid="thanks-page-medium-down"
+		>
 			<div class="small-12 columns">
 				<!-- guest -->
 				<div
@@ -171,7 +175,7 @@
 					}"
 					v-if="showGuestUpsell"
 				>
-					<kv-icon-button class="thanks-page__icon-button expanded"
+					<kv-icon-button data-testid="thanks-page-guest-button" class="thanks-page__icon-button expanded"
 						:class="{ active: isGuestSelected }"
 						aria-controls="`kv-accordion-mg-accordion`"
 						:aria-expanded="isGuestSelected ? 'true' : 'false'"
@@ -194,6 +198,7 @@
 					</kv-icon-button>
 					<kv-expandable>
 						<div
+							data-testid="thanks-page-accordion-guest"
 							class="kv-accordion__pane"
 							id="kv-accordion-guest-accordion"
 							v-show="isGuestSelected"
@@ -213,7 +218,7 @@
 					}"
 					v-if="showAutoDepositUpsell"
 				>
-					<kv-icon-button class="thanks-page__icon-button expanded"
+					<kv-icon-button data-testid="thanks-page-ad-button" class="thanks-page__icon-button expanded"
 						:class="{ active: isAdSelected }"
 						aria-controls="`kv-accordion-mg-accordion`"
 						:aria-expanded="isAdSelected ? 'true' : 'false'"
@@ -236,6 +241,7 @@
 					</kv-icon-button>
 					<kv-expandable>
 						<div
+							data-testid="thanks-page-accordion-ad"
 							class="kv-accordion__pane"
 							id="kv-accordion-ad-accordion"
 							v-show="isAdSelected"
@@ -255,7 +261,7 @@
 					}"
 					v-if="showMgCta"
 				>
-					<kv-icon-button class="thanks-page__icon-button expanded"
+					<kv-icon-button data-testid="thanks-page-mg-button" class="thanks-page__icon-button expanded"
 						:class="{ active: isMgSelected }"
 						aria-controls="`kv-accordion-mg-accordion`"
 						:aria-expanded="isMgSelected ? 'true' : 'false'"
@@ -278,6 +284,7 @@
 					</kv-icon-button>
 					<kv-expandable>
 						<div
+							data-testid="thanks-page-accordion-mg"
 							class="kv-accordion__pane"
 							id="kv-accordion-mg-accordion"
 							v-show="isMgSelected"
@@ -296,7 +303,7 @@
 						'kv-accordion--open' : isReceiptSelected,
 					}"
 				>
-					<kv-icon-button class="thanks-page__icon-button expanded"
+					<kv-icon-button data-testid="thanks-page-receipt-button" class="thanks-page__icon-button expanded"
 						:class="{ active: isReceiptSelected }"
 						aria-controls="`kv-accordion-receipt-accordion`"
 						:aria-expanded="isReceiptSelected ? 'true' : 'false'"
@@ -319,6 +326,7 @@
 					</kv-icon-button>
 					<kv-expandable>
 						<div
+							data-testid="thanks-page-accordion-receipt"
 							class="kv-accordion__pane"
 							id="kv-accordion-receipt-accordion"
 							v-show="isReceiptSelected"
@@ -338,7 +346,7 @@
 					}"
 					v-if="showShare"
 				>
-					<kv-icon-button class=" thanks-page__icon-button expanded"
+					<kv-icon-button data-testid="thanks-page-share-button" class=" thanks-page__icon-button expanded"
 						:class="{ active: isShareSelected }"
 						aria-controls="`kv-accordion-share-accordion`"
 						:aria-expanded="isShareSelected ? 'true' : 'false'"
@@ -361,6 +369,7 @@
 					</kv-icon-button>
 					<kv-expandable>
 						<div
+							data-testid="thanks-page-maccordion-share"
 							class="kv-accordion__pane"
 							id="kv-accordion-share-accordion"
 							v-show="isShareSelected"
