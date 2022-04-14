@@ -44,7 +44,7 @@ const pageQuery = gql`
 
 export default {
 	metaInfo() {
-		this.retrieveMetaInfo();
+		this.getMetaInfo();
 		return {
 			title: this.meta.title,
 			meta: [
@@ -53,7 +53,29 @@ export default {
 					name: 'description',
 					content: this.meta.description
 				}
-			]
+			].concat([
+				{
+					vmid: 'og:title',
+					property: 'og:title',
+					content: this.meta.title
+				},
+				{
+					vmid: 'og:description',
+					property: 'og:description',
+					content: this.meta.description
+				},
+			]).concat([
+				{
+					vmid: 'twitter:title',
+					name: 'twitter:title',
+					content: this.meta.title
+				},
+				{
+					name: 'twitter:description',
+					vmid: 'twitter:description',
+					content: this.meta.description
+				}
+			])
 		};
 	},
 	components: {
@@ -187,7 +209,7 @@ export default {
 				}
 			}
 		},
-		retrieveMetaInfo() {
+		getMetaInfo() {
 			switch (this.targetedLoanChannel) {
 				case 'agriculture':
 					this.meta.title = 'Support farmers around the world';
