@@ -109,13 +109,6 @@
 				:button-text="heroPrimaryCtaText"
 				v-if="!isMonthlyGoodSubscriber && !isExperimentActive && !hasModernSub"
 			/>
-			<landing-form-experiment
-				:amount.sync="monthlyGoodAmount"
-				:selected-group.sync="selectedGroup"
-				key="top"
-				:button-text="heroPrimaryCtaText"
-				v-if="!isMonthlyGoodSubscriber && isExperimentActive && !hasModernSub"
-			/>
 			<div
 				class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
 				v-if="isMonthlyGoodSubscriber || hasModernSub"
