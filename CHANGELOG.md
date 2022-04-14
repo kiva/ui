@@ -1,3 +1,10 @@
+## [2.107.0](https://github.com/kiva/ui/compare/v2.106.0...v2.107.0) (2022-04-14)
+
+
+### Features
+
+* optional choice test settings were built ([9b41401](https://github.com/kiva/ui/commit/9b414011541da160dda93701dd66f959d05d6b8d))
+
 ## [2.106.0](https://github.com/kiva/ui/compare/v2.105.0...v2.106.0) (2022-04-14)
 
 
