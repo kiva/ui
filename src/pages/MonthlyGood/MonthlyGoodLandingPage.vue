@@ -210,6 +210,10 @@ const pageQuery = gql`
 				key
 				value
 			}
+			mgOptionalChoiceExp: uiExperimentSetting(key: "mg_optional_choice") {
+				key
+				value
+			}
 		}
 		contentful {
 			entries(contentType: "page", contentKey: "monthlygood")
@@ -252,6 +256,7 @@ export default {
 	},
 	data() {
 		return {
+			isOptionalChoiceExperiment: false,
 			isImpactVisibilityExperiment: false,
 			isMonthlyGoodSubscriber: false,
 			monthlyGoodAmount: 25,
@@ -322,6 +327,7 @@ export default {
 					return Promise.all([
 						// eslint-disable-next-line max-len
 						client.query({ query: experimentQuery, variables: { id: 'mg_hero_show_loans' } }),
+						client.query({ query: experimentQuery, variables: { id: 'mg_optional_choice' } }),
 					]);
 				});
 		},
@@ -344,6 +350,20 @@ export default {
 					'MonthlyGood',
 					'EXP-CORE-451-Mar2022',
 					mgHeroLoansExperiment.version
+				);
+			}
+			// MG Optional Choice Experiment - CORE-526
+			const mgOptionalChoiceExperiment = this.apollo.readFragment({
+				id: 'Experiment:mg_optional_choice',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.isOptionalChoiceExperiment = mgOptionalChoiceExperiment.version === 'b';
+			// Fire Event for EXP-CORE-526-April2022
+			if (mgOptionalChoiceExperiment.version) {
+				this.$kvTrackEvent(
+					'Monthly Good',
+					'EXP-CORE-526-April2022',
+					mgOptionalChoiceExperiment.version
 				);
 			}
 			// Check for contentful content
