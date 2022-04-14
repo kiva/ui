@@ -1,3 +1,10 @@
+## [2.106.0](https://github.com/kiva/ui/compare/v2.105.0...v2.106.0) (2022-04-14)
+
+
+### Features
+
+* enhance borrower profile meta previews ([4ce0c63](https://github.com/kiva/ui/commit/4ce0c63457ab6bdacf9b0a5cd3ec3cd7e119aa1a))
+
 ## [2.105.0](https://github.com/kiva/ui/compare/v2.104.2...v2.105.0) (2022-04-13)
 
 
