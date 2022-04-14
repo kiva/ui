@@ -94,7 +94,6 @@
 <script>
 import gql from 'graphql-tag';
 import { mdiMapMarker } from '@mdi/js';
-import { getKivaImageUrl } from '@/util/imageUtils';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
@@ -116,34 +115,6 @@ export default {
 		LoanBookmark,
 		JumpLinks,
 	},
-	metaInfo() {
-		return {
-			title: this.pageTitle,
-			meta: [
-				{ property: 'og:title', vmid: 'og:title', content: `A loan to ${this.name}` },
-				{ property: 'og:type', vmid: 'og:type', content: 'kivadotorg:loan' },
-				{
-					property: 'og:image',
-					vmid: 'og:image',
-					content: this.imageShareUrl
-				},
-			].concat(this.$appConfig.enableFB ? [
-				{
-					vmid: 'facebook_label',
-					name: 'facebook_label',
-					content: this.pageLabel
-				},
-			] : []).concat([
-				// Twitter Tags
-				{ name: 'twitter:title', vmid: 'twitter:title', content: `A loan to ${this.name}` },
-				{
-					name: 'twitter:image',
-					vmid: 'twitter:image',
-					content: this.imageShareUrl
-				},
-			])
-		};
-	},
 	data() {
 		return {
 			isLoggedIn: false,
@@ -151,7 +122,6 @@ export default {
 			activityName: '',
 			borrowerCount: 0,
 			countryName: '',
-			fallbackImage: '',
 			fundraisingPercent: 0,
 			hash: '',
 			loanAmount: '0',
@@ -168,26 +138,6 @@ export default {
 		};
 	},
 	computed: {
-		imageShareUrl() {
-			if (!this.hash) return '';
-			return getKivaImageUrl({
-				height: 630,
-				width: 1200,
-				base: this.$appConfig.photoPath,
-				hash: this.hash,
-			});
-		},
-		pageLabel() {
-			return `Kiva - ${this.pageTitle}`;
-		},
-		pageTitle() {
-			// eslint-disable-next-line prefer-destructuring
-			let name = this.name;
-			if (this.businessName) {
-				name = `${name}, ${this.businessName}`;
-			}
-			return `${name} - ${this.countryName}`;
-		},
 		formattedLocation() {
 			if (this.distributionModel === 'direct') {
 				const formattedString = `${this.city}, ${this.state}, ${this.countryName}`;
@@ -269,9 +219,7 @@ export default {
 			this.loanId = loan?.id ?? 0;
 			this.activityName = loan?.activity?.name ?? '';
 			this.borrowerCount = loan?.borrowerCount ?? 0;
-			this.businessName = loan?.businessName ?? '';
 			this.countryName = loan?.geocode?.country?.name ?? '';
-			this.fallbackImage = loan?.image?.urlSm1x ?? '';
 			this.fundraisingPercent = loan?.fundraisingPercent ?? 0;
 			this.hash = loan?.image?.hash ?? '';
 			this.loanAmount = loan?.loanAmount ?? '0';
@@ -284,7 +232,6 @@ export default {
 			this.city = loan?.geocode?.city ?? '';
 			this.state = loan?.geocode?.state ?? '';
 			this.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
-
 			// If all shares are reserved in baskets, set the fundraising meter to 100%
 			if (this.unreservedAmount === '0') {
 				this.fundraisingPercent = 1;
