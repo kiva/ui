@@ -1,3 +1,10 @@
+### [2.108.1](https://github.com/kiva/ui/compare/v2.108.0...v2.108.1) (2022-04-15)
+
+
+### Bug Fixes
+
+* mobile styles for kiva card updated ([45f5138](https://github.com/kiva/ui/commit/45f513898bc32c4b2d45bf50fb42e9e3898b813b))
+
 ## [2.108.0](https://github.com/kiva/ui/compare/v2.107.0...v2.108.0) (2022-04-15)
 
 
