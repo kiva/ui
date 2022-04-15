@@ -1,3 +1,16 @@
+## [2.108.0](https://github.com/kiva/ui/compare/v2.107.0...v2.108.0) (2022-04-15)
+
+
+### Features
+
+* settings for mg_amount_selector experiment were removed ([bf686ce](https://github.com/kiva/ui/commit/bf686ce03ee888e997762f3efed29fffe72500e3))
+
+
+### Bug Fixes
+
+* component usage was removed ([6e9399f](https://github.com/kiva/ui/commit/6e9399f1d4c023065c4efecd31fe530de440d963))
+* unused variable was removed ([55351c5](https://github.com/kiva/ui/commit/55351c504725aa8f0436a105e2edd40b10c61222))
+
 ## [2.107.0](https://github.com/kiva/ui/compare/v2.106.0...v2.107.0) (2022-04-14)
 
 
