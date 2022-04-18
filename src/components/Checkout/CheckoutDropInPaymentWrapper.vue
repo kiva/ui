@@ -110,7 +110,6 @@ import braintreeDropInError from '@/plugins/braintree-dropin-error-mixin';
 
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 
-import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
@@ -118,7 +117,6 @@ import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 export default {
 	components: {
 		KvButton,
-		KvIcon,
 		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvCheckbox,
 		KvTextInput,
