@@ -1,3 +1,10 @@
+## [2.109.0](https://github.com/kiva/ui/compare/v2.108.2...v2.109.0) (2022-04-18)
+
+
+### Features
+
+* customized faqs were added for optional choice experiment ([7721fc0](https://github.com/kiva/ui/commit/7721fc038e4ae7da3e37bd7486ceefd5956abd30))
+
 ### [2.108.2](https://github.com/kiva/ui/compare/v2.108.1...v2.108.2) (2022-04-18)
 
 
