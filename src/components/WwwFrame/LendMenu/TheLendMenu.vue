@@ -39,8 +39,15 @@ import gql from 'graphql-tag';
 import { indexIn } from '@/util/comparators';
 import publicLendMenuQuery from '@/graphql/query/lendMenuData.graphql';
 import privateLendMenuQuery from '@/graphql/query/lendMenuPrivateData.graphql';
+import {
+	getExperimentSettingAsync,
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
 import LendListMenu from './LendListMenu';
 import LendMegaMenu from './LendMegaMenu';
+
+const lendMenuExpKey = 'EXP-MARS-89-Mar2022';
 
 const pageQuery = gql`query lendMenu {
 		my {
@@ -54,6 +61,13 @@ export default {
 	components: {
 		LendListMenu,
 		LendMegaMenu,
+	},
+	created() {
+		const { enabled } = getExperimentSettingCached(this.apollo, lendMenuExpKey);
+		if (enabled) {
+			trackExperimentVersion(this.apollo, this.$kvTrackEvent, 'TopNav', lendMenuExpKey);
+		}
+		this.weighedCategoriesExp = enabled;
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
@@ -78,11 +92,17 @@ export default {
 			isChannelsLoading: true,
 			showMGUpsellLink: false,
 			swapLendMenuMgCopy: false,
+			weighedCategoriesExp: false
 		};
 	},
 	apollo: {
 		query: pageQuery,
-		preFetch: true,
+		preFetch(config, client) {
+			return getExperimentSettingAsync(client, lendMenuExpKey)
+				.then(({ enabled }) => {
+					this.weighedCategoriesExp = enabled;
+				});
+		},
 		result({ data }) {
 			this.userId = _get(data, 'my.userAccount.id');
 		},
@@ -112,7 +132,7 @@ export default {
 				updatedCat.url = updatedCat.url.replace('lend', 'lend-by-category');
 				return updatedCat;
 			});
-			return _sortBy(categories, 'name');
+			return this.weighedCategoriesExp ? categories : _sortBy(categories, 'name');
 		},
 		hasUserId() {
 			return !!this.userId;
