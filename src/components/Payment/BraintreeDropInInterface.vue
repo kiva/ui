@@ -464,7 +464,7 @@ $border-width: 1px;
 
 	/* Saved payment methods container
 	List of vaulted cards */
-	#dropin-container [data-braintree-id="upper-container"]:before {
+	#dropin-container [data-braintree-id="upper-container"]::before {
 		background-color: transparent;
 	}
 
