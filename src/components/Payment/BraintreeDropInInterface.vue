@@ -464,8 +464,12 @@ $border-width: 1px;
 
 	/* Saved payment methods container
 	List of vaulted cards */
+	#dropin-container [data-braintree-id="upper-container"]:before {
+		background-color: transparent;
+	}
+
 	#dropin-container [data-braintree-id="methods-container"] .braintree-method {
-		@apply tw-border-solid tw-border-tertiary tw-w-full tw-border;
+		@apply tw-border-solid tw-border-tertiary tw-w-full tw-border tw-p-2;
 	}
 
 	#dropin-container [data-braintree-id="methods-container"] .braintree-method:first-child {
@@ -478,7 +482,7 @@ $border-width: 1px;
 
 	/* Payment Option buttons on initial UI */
 	#dropin-container [data-braintree-id="payment-options-container"] .braintree-option {
-		@apply tw-border-solid tw-border-tertiary tw-w-full tw-border tw-border-b-0;
+		@apply tw-border-solid tw-border-tertiary tw-w-full tw-border tw-border-b-0 tw-p-2;
 	}
 
 	#dropin-container [data-braintree-id="payment-options-container"] .braintree-option:first-child {

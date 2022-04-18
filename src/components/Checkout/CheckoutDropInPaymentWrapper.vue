@@ -87,8 +87,7 @@
 					:state="`${!enableCheckoutButton ? 'disabled' : ''}`"
 					@click="submit"
 				>
-					<kv-icon name="lock" />
-					Checkout
+					Complete order
 				</kv-button>
 			</div>
 			<p class="dropin-wrapper-attribution-text">
