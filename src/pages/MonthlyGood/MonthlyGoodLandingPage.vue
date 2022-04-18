@@ -372,10 +372,18 @@ export default {
 				return type ? type === 'frequentlyAskedQuestions' : false;
 			});
 		},
+		faqChoiceTestGroup() {
+			return this.contentGroups?.find(({ key }) => {
+				return key ? key === 'monthly-good-faqs-choice-test' : false;
+			});
+		},
 		frequentlyAskedQuestionsHeadline() {
 			return this.faqContentGroup?.title ?? null;
 		},
 		frequentlyAskedQuestions() {
+			if (this.isOptionalChoiceExperiment) {
+				return this.faqChoiceTestGroup?.contents ?? null;
+			}
 			return this.faqContentGroup?.contents ?? null;
 		},
 		heroContentGroup() {
