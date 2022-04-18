@@ -1,133 +1,167 @@
 <template>
 	<www-page>
-		<kv-hero
-			v-if="!isImpactVisibilityExperiment"
-			style="margin-bottom: 0;"
-		>
-			<template #images>
-				<kv-contentful-img
-					:contentful-src="heroImage"
-					fallback-format="jpg"
-					:width="1440"
-					:alt="heroImageAlt"
-					:source-sizes="sourceSizes"
-					crop="&fit=fill&f=top"
-				/>
-			</template>
-			<template #overlayContent>
-				<div class="row">
-					<div class="tw-max-w-sm tw-bg-white tw-rounded tw-hidden md:tw-block tw-ml-2 tw-p-2">
-						<h1 class="tw-text-primary
+		<template v-if="!isOptionalChoiceExperiment">
+			<kv-hero
+				v-if="!isImpactVisibilityExperiment"
+				style="margin-bottom: 0;"
+			>
+				<template #images>
+					<kv-contentful-img
+						:contentful-src="heroImage"
+						fallback-format="jpg"
+						:width="1440"
+						:alt="heroImageAlt"
+						:source-sizes="sourceSizes"
+						crop="&fit=fill&f=top"
+					/>
+				</template>
+				<template #overlayContent>
+					<div class="row">
+						<div class="tw-max-w-sm tw-bg-white tw-rounded tw-hidden md:tw-block tw-ml-2 tw-p-2">
+							<h1 class="tw-text-primary
 							tw-text-h2" v-html="heroHeadline"
-						></h1>
-						<p class="tw-mt-2 tw-mb-3 tw-text-subhead tw-text-primary" v-html="heroBody"></p>
-						<landing-form
+							></h1>
+							<p class="tw-mt-2 tw-mb-3 tw-text-subhead tw-text-primary" v-html="heroBody"></p>
+							<landing-form
+								:amount.sync="monthlyGoodAmount"
+								:selected-group.sync="selectedGroup"
+								key="top"
+								:button-text="heroPrimaryCtaText"
+								v-if="!isMonthlyGoodSubscriber && !hasModernSub"
+							/>
+							<div
+								class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
+								v-if="isMonthlyGoodSubscriber || hasModernSub"
+							>
+								<p class="tw-font-medium tw-mb-2">
+									You're already signed up for a subscription. Changes to this
+									contribution can be made in your
+									<a href="/settings/subscriptions">subscription settings</a>.
+								</p>
+							</div>
+						</div>
+					</div>
+				</template>
+			</kv-hero>
+			<kv-hero v-if="isImpactVisibilityExperiment">
+				<template #images>
+					<div class="tw-relative lg:tw-pt-2">
+						<div class="tw-absolute tw-w-full tw-h-full tw-flex tw-flex-col tw-justify-end
+					tw-text-white tw-p-2 lg:tw-max-w-5xl lg:tw-pb-2 lg:tw-rounded"
+							style="background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(255, 255, 255, 0) 85%);
+							left: 50%;
+							transform: translate(-50%, 0);"
+						>
+							<div class="tw-max-w-2xl tw-mx-auto">
+								<h2>It’s easy to do good</h2>
+								<p class="tw-mb-5 tw-text-subhead">
+									Support borrowers worldwide with monthly contributions as little as $5.
+								</p>
+							</div>
+						</div>
+						<div class="tw-p-2 tw-absolute -tw-mt-8 tw-flex tw-justify-center tw-w-full tw-z-10"
+							style="top: 90%;"
+						>
+							<div class="tw-bg-white tw-rounded tw-p-2 tw-pb-0"
+								style="box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);"
+							>
+								<landing-form-visibility-exp
+									:amount.sync="monthlyGoodAmount"
+									:selected-group.sync="selectedGroup"
+									key="top"
+									:button-text="heroPrimaryCtaText"
+								/>
+							</div>
+						</div>
+						<img class="tw-object-cover lg:tw-object-contain lg:tw-max-w-5xl tw-mx-auto
+							lg:tw-rounded"
+							style="min-height: 440px;"
+							:src="heroImage" alt=""
+						>
+					</div>
+					<div class="tw-pt-16 md:tw-pt-11 lg:tw-max-w-5xl lg:tw-mx-auto tw-px-2">
+						<h2 class="md:tw-text-center tw-text-subhead">
+							With these settings, you’ll support borrowers like this.
+						</h2>
+
+						<kiva-classic-loan-carousel-exp
+							:is-visible="showCarousel"
+							:loan-ids="selectedChannelLoanIds"
+							:selected-channel="selectedChannel"
+							:show-view-more-card="showViewMoreCard"
+							id="carousel_exp"
+						/>
+
+						<p class="tw-text-small tw-text-center tw-mt-4">
+							You can change your lending settings or cancel at any time.
+						</p>
+					</div>
+				</template>
+			</kv-hero>
+			<div class="tw-bg-white tw-rounded md:tw-hidden tw-px-2">
+				<h1 class="tw-text-primary tw-shadow-transparent tw-mt-2
+				tw-text-h2" v-html="heroHeadline"
+				></h1>
+				<p class="tw-text-subhead tw-text-primary tw-my-2" v-html="heroBody"></p>
+				<landing-form
+					:amount.sync="monthlyGoodAmount"
+					:selected-group.sync="selectedGroup"
+					key="top"
+					:button-text="heroPrimaryCtaText"
+					v-if="!isMonthlyGoodSubscriber && !hasModernSub"
+				/>
+				<div
+					class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
+					v-if="isMonthlyGoodSubscriber || hasModernSub"
+				>
+					<p class="tw-font-medium tw-mb-2">
+						You're already signed up for a subscription. Changes to this
+						contribution can be made in your
+						<a href="/settings/subscriptions">subscription settings</a>.
+					</p>
+				</div>
+			</div>
+			<automatically-support-notice
+				:value-headline="personalizedHeadline"
+				:value-body="personalizedBody"
+				:value-image="personalizedImage"
+				:value-image-alt="personalizedImageAlt"
+				class="tw-my-8"
+			/>
+		</template>
+		<template v-if="isOptionalChoiceExperiment">
+			<div class="tw-bg-secondary tw-py-4 md:tw-py-6 lg:tw-py-8">
+				<div class="row">
+					<div class="small-12 large-6 columns tw-mb-4">
+						<div class="tw-mb-3">
+							<h1 class="tw-text-h1 tw-mb-3">
+								Choose from borrowers handpicked for you.
+							</h1>
+							<h2 class="tw-text-subhead">
+								Support a loan every month from a personalized selection for as little as $5.
+								It's easy to do good.
+							</h2>
+						</div>
+						<landing-form-optional-choice-exp
 							:amount.sync="monthlyGoodAmount"
 							:selected-group.sync="selectedGroup"
 							key="top"
 							:button-text="heroPrimaryCtaText"
 							v-if="!isMonthlyGoodSubscriber && !hasModernSub"
 						/>
-						<div
-							class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
-							v-if="isMonthlyGoodSubscriber || hasModernSub"
-						>
-							<p class="tw-font-medium tw-mb-2">
-								You're already signed up for a subscription. Changes to this
-								contribution can be made in your
-								<a href="/settings/subscriptions">subscription settings</a>.
-							</p>
-						</div>
+					</div>
+					<div class="landingpage-img small-12 large-6 columns tw-place-self-center">
+						<kv-responsive-image
+							:images="landingPageImages"
+							class="tw-drop-shadow-lg tw-rounded tw-overflow-hidden"
+							alt="Choose your loan this month!"
+						/>
 					</div>
 				</div>
-			</template>
-		</kv-hero>
-		<kv-hero v-if="isImpactVisibilityExperiment">
-			<template #images>
-				<div class="tw-relative lg:tw-pt-2">
-					<div class="tw-absolute tw-w-full tw-h-full tw-flex tw-flex-col tw-justify-end
-					tw-text-white tw-p-2 lg:tw-max-w-5xl lg:tw-pb-2 lg:tw-rounded"
-						style="background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(255, 255, 255, 0) 85%);
-							left: 50%;
-							transform: translate(-50%, 0);"
-					>
-						<div class="tw-max-w-2xl tw-mx-auto">
-							<h2>It’s easy to do good</h2>
-							<p class="tw-mb-5 tw-text-subhead">
-								Support borrowers worldwide with monthly contributions as little as $5.
-							</p>
-						</div>
-					</div>
-					<div class="tw-p-2 tw-absolute -tw-mt-8 tw-flex tw-justify-center tw-w-full tw-z-10"
-						style="top: 90%;"
-					>
-						<div class="tw-bg-white tw-rounded tw-p-2 tw-pb-0"
-							style="box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);"
-						>
-							<landing-form-visibility-exp
-								:amount.sync="monthlyGoodAmount"
-								:selected-group.sync="selectedGroup"
-								key="top"
-								:button-text="heroPrimaryCtaText"
-							/>
-						</div>
-					</div>
-					<img class="tw-object-cover lg:tw-object-contain lg:tw-max-w-5xl tw-mx-auto
-							lg:tw-rounded"
-						style="min-height: 440px;"
-						:src="heroImage" alt=""
-					>
-				</div>
-				<div class="tw-pt-16 md:tw-pt-11 lg:tw-max-w-5xl lg:tw-mx-auto tw-px-2">
-					<h2 class="md:tw-text-center tw-text-subhead">
-						With these settings, you’ll support borrowers like this.
-					</h2>
-
-					<kiva-classic-loan-carousel-exp
-						:is-visible="showCarousel"
-						:loan-ids="selectedChannelLoanIds"
-						:selected-channel="selectedChannel"
-						:show-view-more-card="showViewMoreCard"
-						id="carousel_exp"
-					/>
-
-					<p class="tw-text-small tw-text-center tw-mt-4">
-						You can change your lending settings or cancel at any time.
-					</p>
-				</div>
-			</template>
-		</kv-hero>
-		<div class="tw-bg-white tw-rounded md:tw-hidden tw-px-2">
-			<h1 class="tw-text-primary tw-shadow-transparent tw-mt-2
-				tw-text-h2" v-html="heroHeadline"
-			></h1>
-			<p class="tw-text-subhead tw-text-primary tw-my-2" v-html="heroBody"></p>
-			<landing-form
-				:amount.sync="monthlyGoodAmount"
-				:selected-group.sync="selectedGroup"
-				key="top"
-				:button-text="heroPrimaryCtaText"
-				v-if="!isMonthlyGoodSubscriber && !hasModernSub"
-			/>
-			<div
-				class="tw-p-2 tw-bg-caution tw-text-black tw-mt-4"
-				v-if="isMonthlyGoodSubscriber || hasModernSub"
-			>
-				<p class="tw-font-medium tw-mb-2">
-					You're already signed up for a subscription. Changes to this
-					contribution can be made in your
-					<a href="/settings/subscriptions">subscription settings</a>.
-				</p>
 			</div>
-		</div>
-		<automatically-support-notice
-			:value-headline="personalizedHeadline"
-			:value-body="personalizedBody"
-			:value-image="personalizedImage"
-			:value-image-alt="personalizedImageAlt"
-			class="tw-my-8"
-		/>
-		<how-it-works />
+		</template>
+		<how-it-works-optional-choice-exp v-if="isOptionalChoiceExperiment" />
+		<how-it-works v-else />
 		<email-preview />
 		<kiva-as-expert>
 			<template #form>
@@ -151,6 +185,7 @@
 			</template>
 		</kiva-as-expert>
 		<more-about-kiva />
+
 		<!-- Monthly Good Frequently Asked Questions -->
 		<div class="row">
 			<kv-frequently-asked-questions
@@ -175,6 +210,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 
 import KvHero from '@/components/Kv/KvHero';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
 import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
 import AutomaticallySupportNotice from '@/components/MonthlyGood/AutomaticallySupportNotice';
@@ -184,10 +220,14 @@ import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 import LandingForm from './LandingForm';
 import LandingFormVisibilityExp from './LandingFormVisibilityExp';
+import LandingFormOptionalChoiceExp from './LandingFormOptionalChoiceExp';
 import HowItWorks from './HowItWorks';
+import HowItWorksOptionalChoiceExp from './HowItWorksOptionalChoiceExp';
 import EmailPreview from './EmailPreview';
 import MoreAboutKiva from './MoreAboutKiva';
 import KivaAsExpert from './KivaAsExpert';
+
+const mgLandingPageImageRequire = require.context('@/assets/images/mg-landing-page', true);
 
 const pageQuery = gql`
 	query monthlyGoodLandingPage {
@@ -229,12 +269,15 @@ export default {
 	components: {
 		EmailPreview,
 		HowItWorks,
+		HowItWorksOptionalChoiceExp,
 		KivaAsExpert,
 		KvContentfulImg,
 		KvFrequentlyAskedQuestions,
 		KvHero,
+		KvResponsiveImage,
 		LandingForm,
 		LandingFormVisibilityExp,
+		LandingFormOptionalChoiceExp,
 		MoreAboutKiva,
 		WwwPage,
 		KivaClassicLoanCarouselExp,
@@ -280,6 +323,10 @@ export default {
 					height: 540,
 					media: 'min-width: 0px',
 				},
+			],
+			landingPageImages: [
+				['small', mgLandingPageImageRequire('./mg-chooseloan-mobile.png')],
+				['xga', mgLandingPageImageRequire('./mg-chooseloan-desktop.png')],
 			],
 			hasModernSub: false,
 			selectedChannelLoanIds: [],
