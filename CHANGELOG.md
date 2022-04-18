@@ -1,3 +1,37 @@
+### [2.108.2](https://github.com/kiva/ui/compare/v2.108.1...v2.108.2) (2022-04-18)
+
+
+### Bug Fixes
+
+* thanks page button focus styling ([dfe0cb9](https://github.com/kiva/ui/commit/dfe0cb9435ea25cd006b8ec7b1b8a470a928c5de))
+
+### [2.108.1](https://github.com/kiva/ui/compare/v2.108.0...v2.108.1) (2022-04-15)
+
+
+### Bug Fixes
+
+* mobile styles for kiva card updated ([45f5138](https://github.com/kiva/ui/commit/45f513898bc32c4b2d45bf50fb42e9e3898b813b))
+
+## [2.108.0](https://github.com/kiva/ui/compare/v2.107.0...v2.108.0) (2022-04-15)
+
+
+### Features
+
+* settings for mg_amount_selector experiment were removed ([bf686ce](https://github.com/kiva/ui/commit/bf686ce03ee888e997762f3efed29fffe72500e3))
+
+
+### Bug Fixes
+
+* component usage was removed ([6e9399f](https://github.com/kiva/ui/commit/6e9399f1d4c023065c4efecd31fe530de440d963))
+* unused variable was removed ([55351c5](https://github.com/kiva/ui/commit/55351c504725aa8f0436a105e2edd40b10c61222))
+
+## [2.107.0](https://github.com/kiva/ui/compare/v2.106.0...v2.107.0) (2022-04-14)
+
+
+### Features
+
+* optional choice test settings were built ([9b41401](https://github.com/kiva/ui/commit/9b414011541da160dda93701dd66f959d05d6b8d))
+
 ## [2.106.0](https://github.com/kiva/ui/compare/v2.105.0...v2.106.0) (2022-04-14)
 
 

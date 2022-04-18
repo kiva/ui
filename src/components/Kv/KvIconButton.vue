@@ -135,6 +135,7 @@ export default {
 	&.active:not(:hover) {
 		background-color: rgb(var(--bg-primary));
 		border: rem-calc(1) solid rgb(var(--bg-primary));
+		color: rgb(var(--text-primary));
 
 		.icon-btn__icon-background {
 			background-color: rgba(var(--kv-left-icon-color-active), 0.3);
