@@ -1,3 +1,10 @@
+### [2.108.2](https://github.com/kiva/ui/compare/v2.108.1...v2.108.2) (2022-04-18)
+
+
+### Bug Fixes
+
+* thanks page button focus styling ([dfe0cb9](https://github.com/kiva/ui/commit/dfe0cb9435ea25cd006b8ec7b1b8a470a928c5de))
+
 ### [2.108.1](https://github.com/kiva/ui/compare/v2.108.0...v2.108.1) (2022-04-15)
 
 
