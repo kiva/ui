@@ -64,17 +64,19 @@ export default {
 		LendMegaMenu,
 	},
 	created() {
-		const { enabled } = getExperimentSettingCached(this.apollo, lendMenuExpKey);
-		if (enabled) {
-			trackExperimentVersion(this.apollo, this.$kvTrackEvent, 'TopNav', lendMenuExpKey);
-			getExperimentSettingAsync(this.apollo, lendMenuExpKey)
-				.then(({ version }) => {
-					this.weighedCategoriesExp = version === 'shown';
-					this.apollo.query({
-						query: experimentAssignmentQuery,
-						variables: { id: lendMenuExpKey }
+		if (!this.$isServer) {
+			const { enabled } = getExperimentSettingCached(this.apollo, lendMenuExpKey);
+			if (enabled) {
+				trackExperimentVersion(this.apollo, this.$kvTrackEvent, 'TopNav', lendMenuExpKey);
+				getExperimentSettingAsync(this.apollo, lendMenuExpKey)
+					.then(({ version }) => {
+						this.weighedCategoriesExp = version === 'shown';
+						this.apollo.query({
+							query: experimentAssignmentQuery,
+							variables: { id: lendMenuExpKey }
+						});
 					});
-				});
+			}
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
