@@ -1,3 +1,10 @@
+## [2.111.0](https://github.com/kiva/ui/compare/v2.110.0...v2.111.0) (2022-04-19)
+
+
+### Features
+
+* trackers were updated for the loan bundles experiment ([252eaf5](https://github.com/kiva/ui/commit/252eaf55fda71dc92723e79c1bcd7ac9ad771a3b))
+
 ## [2.110.0](https://github.com/kiva/ui/compare/v2.109.0...v2.110.0) (2022-04-19)
 
 
