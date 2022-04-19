@@ -1,3 +1,20 @@
+## [2.112.0](https://github.com/kiva/ui/compare/v2.111.0...v2.112.0) (2022-04-19)
+
+
+### Features
+
+* add meta info to lend-by-category pages ([74e6cf6](https://github.com/kiva/ui/commit/74e6cf68ca7e11be1aac521e593bbc6fd64af359))
+* add og and twitter meta tags ([7220a7b](https://github.com/kiva/ui/commit/7220a7b5ce531b7b0a40e2ddb07e69e1a024247c))
+* dynamic sitemap route generator for contentful landing pages MARS-42 ([4526c41](https://github.com/kiva/ui/commit/4526c41625a71039def50bd40d33bdfc6ffc0001))
+* dynamic sitemap route generator for lending category pages MARS-42 ([5c5f1e5](https://github.com/kiva/ui/commit/5c5f1e590f85e37908c37cca005b2883265d8f29))
+* sitemap middleware for ui-server routes MARS-42 ([9bf9825](https://github.com/kiva/ui/commit/9bf982589dade31a5fa393b63615dfd4011492f0))
+* static sitemap route generator MARS-42 ([76f2c08](https://github.com/kiva/ui/commit/76f2c088240a7af4fda9386b430017a98ae5d591))
+
+
+### Bug Fixes
+
+* changing meta default value to undefined ([33c1467](https://github.com/kiva/ui/commit/33c1467fee8083644cdde84f10b9a426ffd8fa76))
+
 ## [2.111.0](https://github.com/kiva/ui/compare/v2.110.0...v2.111.0) (2022-04-19)
 
 
