@@ -44,10 +44,11 @@ import {
 	getExperimentSettingCached,
 	trackExperimentVersion
 } from '@/util/experimentUtils';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import LendListMenu from './LendListMenu';
 import LendMegaMenu from './LendMegaMenu';
 
-const lendMenuExpKey = 'EXP-MARS-89-Mar2022';
+const lendMenuExpKey = 'lend_menu_category_sort';
 
 const pageQuery = gql`query lendMenu {
 		my {
@@ -101,6 +102,10 @@ export default {
 			return getExperimentSettingAsync(client, lendMenuExpKey)
 				.then(({ enabled }) => {
 					this.weighedCategoriesExp = enabled;
+					return client.query({
+						query: experimentAssignmentQuery,
+						variables: { id: 'lend_menu_category_sort' }
+					});
 				});
 		},
 		result({ data }) {
