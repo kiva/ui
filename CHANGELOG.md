@@ -1,3 +1,17 @@
+## [2.110.0](https://github.com/kiva/ui/compare/v2.109.0...v2.110.0) (2022-04-19)
+
+
+### Features
+
+* clean up styles ([ed37553](https://github.com/kiva/ui/commit/ed37553fab6c00468443abc5783050d189366f56))
+* update braintree styles ([d0463f0](https://github.com/kiva/ui/commit/d0463f0562948ae30ef97b6409bca6ac478c5a0d))
+
+
+### Bug Fixes
+
+* another lint commit ([38c9e72](https://github.com/kiva/ui/commit/38c9e7281ab996ee52d26b60c7cd062e3293af47))
+* lint errors ([903d94f](https://github.com/kiva/ui/commit/903d94f56d086d6a4764be4d2be169652e3da1e7))
+
 ## [2.109.0](https://github.com/kiva/ui/compare/v2.108.2...v2.109.0) (2022-04-18)
 
 
