@@ -161,11 +161,6 @@ export default {
 				if (layoutEXP.version) {
 					if (layoutEXP.version === 'b') {
 						this.addBundlesExp = true;
-						this.$kvTrackEvent(
-							'Lending',
-							'view-loan-bundle',
-							this.targetedLoanChannel
-						);
 					}
 					this.$kvTrackEvent(
 						'Lending',

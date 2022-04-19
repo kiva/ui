@@ -387,7 +387,9 @@ export default {
 			this.$router.push(this.getAlgoliaFilterUrl());
 		}
 
-		this.getRelatedLoansExp();
+		if (this.addBundlesExp) {
+			this.getRelatedLoansExp();
+		}
 	},
 	methods: {
 		async addBundleToBasket() {
@@ -401,6 +403,14 @@ export default {
 				this.$kvTrackEvent(
 					'basket',
 					'bundle-add-to-basket-funded-loan',
+				);
+
+				this.$kvTrackEvent(
+					'Lending',
+					'click-loan-bundle-cta',
+					`Lend to all three now - ${this.loanChannelName}`,
+					null,
+					this.selectedChannelLoanIds.join(', ')
 				);
 
 				this.$router.push({ path: '/checkout' });
@@ -539,6 +549,14 @@ export default {
 				loans = loans.slice(0, 3);
 				this.bundleLoans = loans;
 				this.selectedChannelLoanIds = loans.map(element => element.id);
+
+				this.$kvTrackEvent(
+					'Lending',
+					'view-loan-bundle',
+					this.loanChannelName,
+					null,
+					this.selectedChannelLoanIds.join(', ')
+				);
 			} catch (e) {
 				console.log(e);
 			}
