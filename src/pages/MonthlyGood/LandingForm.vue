@@ -92,7 +92,7 @@ export default {
 		buttonText: {
 			type: String,
 			default: 'Contribute monthly'
-		}
+		},
 	},
 	computed: {
 		componentKey() {
