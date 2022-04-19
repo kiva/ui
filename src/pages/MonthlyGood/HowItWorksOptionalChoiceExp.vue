@@ -1,7 +1,7 @@
 <template>
 	<kv-theme-provider :theme="darkGreenTheme">
 		<div
-			class="how-works-section-wrapper
+			class="
 			tw-bg-primary
 			tw-py-4 md:tw-py-6 lg:tw-py-8"
 			id="how-it-works"
@@ -11,7 +11,7 @@
 					How Monthly Good works
 				</h1>
 				<div class="small-12 large-4 column tw-mb-4 tw-text-center">
-					<icon-support class="mg-image tw-text-brand-700" />
+					<icon-support class="tw-mt-0 tw-mb-4 tw-mx-auto tw-w-6 tw-white tw-block tw-text-brand-700" />
 					<h3 class="tw-mb-2">
 						Start supporting
 					</h3>
@@ -20,7 +20,7 @@
 					</p>
 				</div>
 				<div class="small-12 large-4 column tw-mb-4 tw-text-center">
-					<icon-borrower class="mg-image tw-text-brand" />
+					<icon-borrower class="tw-mt-0 tw-mb-4 tw-mx-auto tw-w-6 tw-white tw-block tw-text-brand" />
 					<h3 class="tw-mb-2">
 						Pick a borrower or let us do it.
 					</h3>
@@ -29,7 +29,7 @@
 					</p>
 				</div>
 				<div class="small-12 large-4 column tw-mb-4 tw-text-center">
-					<icon-relend class="mg-image tw-text-brand-700" />
+					<icon-relend class="tw-mt-0 tw-mb-4 tw-mx-auto tw-w-6 tw-white tw-block tw-text-brand-700" />
 					<h3 class="tw-mb-2">
 						Stay updated
 					</h3>
@@ -63,17 +63,3 @@ export default {
 };
 
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.how-works-section-wrapper {
-	.mg-image {
-		fill: $white;
-		width: 3.125rem;
-		display: block;
-		margin: 0 auto 1rem auto;
-	}
-}
-
-</style>
