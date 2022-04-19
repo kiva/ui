@@ -67,8 +67,15 @@ export default {
 		const { enabled } = getExperimentSettingCached(this.apollo, lendMenuExpKey);
 		if (enabled) {
 			trackExperimentVersion(this.apollo, this.$kvTrackEvent, 'TopNav', lendMenuExpKey);
+			getExperimentSettingAsync(this.apollo, lendMenuExpKey)
+				.then(({ version }) => {
+					this.weighedCategoriesExp = version === 'shown';
+					this.apollo.query({
+						query: experimentAssignmentQuery,
+						variables: { id: lendMenuExpKey }
+					});
+				});
 		}
-		this.weighedCategoriesExp = enabled;
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
@@ -98,16 +105,7 @@ export default {
 	},
 	apollo: {
 		query: pageQuery,
-		preFetch(config, client) {
-			return getExperimentSettingAsync(client, lendMenuExpKey)
-				.then(({ enabled }) => {
-					this.weighedCategoriesExp = enabled;
-					return client.query({
-						query: experimentAssignmentQuery,
-						variables: { id: 'lend_menu_category_sort' }
-					});
-				});
-		},
+		preFetch: true,
 		result({ data }) {
 			this.userId = _get(data, 'my.userAccount.id');
 		},
