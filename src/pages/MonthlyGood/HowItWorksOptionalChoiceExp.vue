@@ -11,7 +11,7 @@
 					How Monthly Good works
 				</h1>
 				<div class="small-12 large-4 column tw-mb-4 tw-text-center">
-					<icon-auto-deposit-alternate class="mg-image tw-text-brand-700" />
+					<icon-support class="mg-image tw-text-brand-700" />
 					<h3 class="tw-mb-2">
 						Start supporting
 					</h3>
@@ -20,7 +20,7 @@
 					</p>
 				</div>
 				<div class="small-12 large-4 column tw-mb-4 tw-text-center">
-					<icon-lend class="mg-image tw-text-brand" />
+					<icon-borrower class="mg-image tw-text-brand" />
 					<h3 class="tw-mb-2">
 						Pick a borrower or let us do it.
 					</h3>
@@ -29,7 +29,7 @@
 					</p>
 				</div>
 				<div class="small-12 large-4 column tw-mb-4 tw-text-center">
-					<icon-updates-alternate class="mg-image tw-text-brand-700" />
+					<icon-relend class="mg-image tw-text-brand-700" />
 					<h3 class="tw-mb-2">
 						Stay updated
 					</h3>
@@ -43,18 +43,18 @@
 </template>
 
 <script>
-import IconAutoDepositAlternate from '@/assets/icons/inline/auto-deposit-alternate.svg';
-import IconLend from '@/assets/icons/inline/lend.svg';
-import IconUpdatesAlternate from '@/assets/icons/inline/updates-alternate.svg';
+import IconSupport from '@/assets/icons/inline/sparkle-support.svg';
+import IconBorrower from '@/assets/icons/inline/pick-borrower-click.svg';
+import IconRelend from '@/assets/icons/inline/relend.svg';
 import { darkGreenTheme } from '~/@kiva/kv-tokens/configs/kivaColors.cjs';
 
 import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
 
 export default {
 	components: {
-		IconAutoDepositAlternate,
-		IconLend,
-		IconUpdatesAlternate,
+		IconSupport,
+		IconBorrower,
+		IconRelend,
 		KvThemeProvider,
 	},
 	data() {

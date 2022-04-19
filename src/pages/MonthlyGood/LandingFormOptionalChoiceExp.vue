@@ -43,7 +43,7 @@
 					:disabled="$v.$invalid"
 					v-kv-track-event="[
 						'MonthlyGood',
-						`click-start-form-${componentKey}`,
+						`click-optional-choice-MG-signup-cta`,
 						buttonText
 					]"
 				>
@@ -113,7 +113,7 @@ export default {
 		updateAmount(value) {
 			this.$emit('update:amount', value);
 		},
-		submit() {
+		submit() { // TODO: CORE-529 update to show false door exp when built out
 			this.$router.push({
 				path: '/monthlygood/setup',
 				query: {
