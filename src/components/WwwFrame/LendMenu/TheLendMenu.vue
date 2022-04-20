@@ -70,7 +70,7 @@ export default {
 				trackExperimentVersion(this.apollo, this.$kvTrackEvent, 'TopNav', lendMenuExpKey);
 				getExperimentSettingAsync(this.apollo, lendMenuExpKey)
 					.then(({ version }) => {
-						this.weighedCategoriesExp = version === 'shown';
+						this.weighedCategoriesExp = version === 'b';
 						this.apollo.query({
 							query: experimentAssignmentQuery,
 							variables: { id: lendMenuExpKey }
