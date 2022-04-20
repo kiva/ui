@@ -1,3 +1,17 @@
+## [2.113.0](https://github.com/kiva/ui/compare/v2.112.0...v2.113.0) (2022-04-20)
+
+
+### Features
+
+* init landing page work ([05a05cd](https://github.com/kiva/ui/commit/05a05cd5540bf410fd76d0f5ddc77f45d1018dbf))
+* update mg icons and add todo for false door ([4d33a1a](https://github.com/kiva/ui/commit/4d33a1add9828464e9a5e4b1deb43834c84c4deb))
+
+
+### Bug Fixes
+
+* remove unnecessary change ([ecc8dca](https://github.com/kiva/ui/commit/ecc8dca1fac53ac624e3093257bc316a0725e8c4))
+* update styles ([a293bd8](https://github.com/kiva/ui/commit/a293bd81ac5d82d2687a1df5560338fd04be3501))
+
 ## [2.112.0](https://github.com/kiva/ui/compare/v2.111.0...v2.112.0) (2022-04-19)
 
 
