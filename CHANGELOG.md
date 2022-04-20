@@ -1,3 +1,10 @@
+### [2.115.1](https://github.com/kiva/ui/compare/v2.115.0...v2.115.1) (2022-04-20)
+
+
+### Bug Fixes
+
+* type name should not be part of id argument ([3814c76](https://github.com/kiva/ui/commit/3814c765513529b1ba8918275f9dba036fb58c6b))
+
 ## [2.115.0](https://github.com/kiva/ui/compare/v2.114.0...v2.115.0) (2022-04-20)
 
 
