@@ -159,7 +159,13 @@ export default {
 					const version = _get(data, 'experiment.version');
 					const { enabled } = getExperimentSettingCached(this.apollo, lendMenuExpKey);
 					if (enabled) {
-						trackExperimentVersion(this.apollo, this.$kvTrackEvent, 'TopNav', lendMenuExpKey);
+						trackExperimentVersion(
+							this.apollo,
+							this.$kvTrackEvent,
+							'TopNav',
+							lendMenuExpKey,
+							'EXP-MARS-89-Apr2022'
+						);
 						this.weighedCategoriesExp = version === 'b';
 					}
 					this.categories = _get(data, 'lend.loanChannels.values');
