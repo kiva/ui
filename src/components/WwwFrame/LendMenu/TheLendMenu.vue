@@ -40,11 +40,9 @@ import { indexIn } from '@/util/comparators';
 import publicLendMenuQuery from '@/graphql/query/lendMenuData.graphql';
 import privateLendMenuQuery from '@/graphql/query/lendMenuPrivateData.graphql';
 import {
-	getExperimentSettingAsync,
 	getExperimentSettingCached,
 	trackExperimentVersion
 } from '@/util/experimentUtils';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import LendListMenu from './LendListMenu';
 import LendMegaMenu from './LendMegaMenu';
 
