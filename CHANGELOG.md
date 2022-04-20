@@ -1,3 +1,21 @@
+## [2.114.0](https://github.com/kiva/ui/compare/v2.113.0...v2.114.0) (2022-04-20)
+
+
+### Features
+
+* add experiment assignment ([53f2de2](https://github.com/kiva/ui/commit/53f2de264c8e67e4280599822a60b1251e104122))
+* add optional action arg to track experiments ([eefaf92](https://github.com/kiva/ui/commit/eefaf92294903d39d96294fa9515e0afd3eb108e))
+* avoid categories sorting within control experiment ([7fed0d1](https://github.com/kiva/ui/commit/7fed0d1f28aff19f411034aaefa36c08b529fed7))
+
+
+### Bug Fixes
+
+* change variant key to b ([78d4c25](https://github.com/kiva/ui/commit/78d4c25cfb9db3899e1e3e3e15b63a9319d407ef))
+* delete unused variables ([57c69ab](https://github.com/kiva/ui/commit/57c69ab887ce6c9c6bb2708cef373fa07cb53a31))
+* ensure exp run only in the browser ([89410de](https://github.com/kiva/ui/commit/89410de6f5c1e8e8689170c46f18701d6045a09a))
+* set exp in wwwheader file ([7f198b6](https://github.com/kiva/ui/commit/7f198b648704ff7e5524fb7c26378c40a7913fd7))
+* use apollo watch instead of created hook to get exp data ([68188bb](https://github.com/kiva/ui/commit/68188bb7ab6322ee61879ec0edc5af1f13da7220))
+
 ## [2.113.0](https://github.com/kiva/ui/compare/v2.112.0...v2.113.0) (2022-04-20)
 
 
