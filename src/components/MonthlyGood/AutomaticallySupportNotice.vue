@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
+
 export default {
 	props: {
 		valueHeadline: {
@@ -51,5 +53,8 @@ export default {
 			default: '',
 		},
 	},
+	components: {
+		KvContentfulImg
+	}
 };
 </script>

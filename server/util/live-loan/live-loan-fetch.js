@@ -1,7 +1,4 @@
-const get = require('lodash/get');
-const argv = require('../argv');
-const config = require('../../../config/selectConfig')(argv.config);
-const fetch = require('../fetch');
+const fetchGraphQL = require('../fetchGraphQL');
 const { warn, error } = require('../log');
 
 // Number of loans to fetch
@@ -29,16 +26,9 @@ const loanValues = `values {
 }`;
 
 // Make a graphql query <request> and return the results found at <resultPath>
-async function fetchGraphQL(request, resultPath) {
+async function fetchLoansFromGraphQL(request, resultPath) {
 	try {
-		const endpoint = config.app.graphqlUri;
-		const response = await fetch(endpoint, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(request),
-		});
-		const result = await response.json();
-		const data = get(result, resultPath, []);
+		const data = await fetchGraphQL(request, resultPath);
 		if (Array.isArray(data)) {
 			// Ensure no falsy values are included in the returned array
 			return data.filter(x => x);
@@ -51,7 +41,7 @@ async function fetchGraphQL(request, resultPath) {
 
 // Get per-user recommended loans from the ML service
 async function fetchRecommendationsByLoginId(id) {
-	return fetchGraphQL(
+	return fetchLoansFromGraphQL(
 		{
 			query: `{
 				ml {
@@ -72,7 +62,7 @@ async function fetchRecommendationsByLoginId(id) {
 
 // Get loan-to-loan recommended loans from the ML service
 async function fetchRecommendationsByLoanId(id) {
-	return fetchGraphQL(
+	return fetchLoansFromGraphQL(
 		{
 			query: `{
 				ml {
@@ -221,7 +211,7 @@ const parseFilterStringFLSS = filterString => {
 
 // Get loans from the Fundraising Loan Search Service matching a set of filters
 async function fetchRecommendationsByFilter(filterString) {
-	return fetchGraphQL(
+	return fetchLoansFromGraphQL(
 		{
 			query: `query($filters: [FundraisingLoanSearchFilterInput!]) {
 				fundraisingLoans(pageNumber:0, limit: ${loanCount}, filters: $filters) {
@@ -348,7 +338,7 @@ async function fetchRecommendationsByLegacyFilter(filterString) {
 		parseFilterStringLegacy(filterString),
 		parseSortStringLegacy(filterString)
 	]);
-	return fetchGraphQL(
+	return fetchLoansFromGraphQL(
 		{
 			query: `query($filters: LoanSearchFiltersInput, $sort: LoanSearchSortByEnum) {
 				lend {

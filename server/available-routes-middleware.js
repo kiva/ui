@@ -38,6 +38,8 @@ function buildRouteJSON() {
 	paths.push('/timesync');
 	// add paths for healthcheck
 	paths.push('/healthcheck');
+	// add paths for sitemap
+	paths.push('/sitemaps/ui.xml');
 
 	return paths;
 }

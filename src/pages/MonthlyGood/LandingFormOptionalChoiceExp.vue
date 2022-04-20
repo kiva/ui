@@ -1,9 +1,9 @@
 <template>
 	<form @submit.prevent.stop="submit" novalidate>
-		<div class="tw-flex tw-flex-col tw-gap-2">
+		<div class="tw-flex tw-flex-col tw-gap-2 sm:tw-w-full md:tw-w-3/4">
 			<fieldset class="tw-basis-full">
 				<p class="tw-text-h4 tw-mb-2">
-					CHOOSE A CATEGORY
+					CHOOSE A SUBSCRIPTION CATEGORY
 				</p>
 				<label for="borrower-categories" class="tw-sr-only">Lending category to support</label>
 				<kv-select class="tw-w-full" id="borrower-categories"
@@ -43,7 +43,7 @@
 					:disabled="$v.$invalid"
 					v-kv-track-event="[
 						'MonthlyGood',
-						`click-start-form-${componentKey}`,
+						`click-optional-choice-MG-signup-cta`,
 						buttonText
 					]"
 				>
@@ -92,7 +92,7 @@ export default {
 		buttonText: {
 			type: String,
 			default: 'Contribute monthly'
-		},
+		}
 	},
 	computed: {
 		componentKey() {
@@ -113,7 +113,7 @@ export default {
 		updateAmount(value) {
 			this.$emit('update:amount', value);
 		},
-		submit() {
+		submit() { // TODO: CORE-529 update to show false door exp when built out
 			this.$router.push({
 				path: '/monthlygood/setup',
 				query: {

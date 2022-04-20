@@ -413,7 +413,7 @@ $border-width: 1px;
 	#dropin-container [data-braintree-id="choose-a-way-to-pay"],
 	#dropin-container [data-braintree-id="methods-label"],
 	#dropin-container [data-braintree-id="other-ways-to-pay"] {
-		@apply tw-text-h4 tw-text-primary tw-text-left;
+		@apply tw-text-small tw-text-primary tw-text-tertiary tw-w-full;
 	}
 
 	/* Payment method container */
@@ -464,35 +464,39 @@ $border-width: 1px;
 
 	/* Saved payment methods container
 	List of vaulted cards */
+	#dropin-container [data-braintree-id="upper-container"]::before {
+		background-color: transparent;
+	}
+
 	#dropin-container [data-braintree-id="methods-container"] .braintree-method {
-		@apply tw-border-solid tw-border-tertiary tw-w-full tw-border;
+		@apply tw-border-solid tw-border-tertiary tw-w-full tw-border tw-p-2;
 	}
 
 	#dropin-container [data-braintree-id="methods-container"] .braintree-method:first-child {
-		@apply tw-rounded-tr-sm tw-rounded-tl-sm tw-rounded-bl-none tw-rounded-br-none;
+		@apply tw-rounded-tr tw-rounded-tl tw-rounded-bl-none tw-rounded-br-none;
 	}
 
 	#dropin-container [data-braintree-id="methods-container"] .braintree-method:last-child {
-		@apply tw-rounded-br-sm tw-rounded-bl-sm;
+		@apply tw-rounded-br tw-rounded-bl;
 	}
 
 	/* Payment Option buttons on initial UI */
 	#dropin-container [data-braintree-id="payment-options-container"] .braintree-option {
-		@apply tw-border-solid tw-border-tertiary tw-w-full tw-border tw-border-b-0;
+		@apply tw-border-solid tw-border-tertiary tw-w-full tw-border tw-border-b-0 tw-p-2;
 	}
 
 	#dropin-container [data-braintree-id="payment-options-container"] .braintree-option:first-child {
-		@apply tw-rounded-tr-sm tw-rounded-tl-sm tw-rounded-bl-none tw-rounded-br-none;
+		@apply tw-rounded-tr tw-rounded-tl tw-rounded-bl-none tw-rounded-br-none;
 	}
 
 	#dropin-container [data-braintree-id="payment-options-container"] .braintree-option:last-child {
-		@apply tw-rounded-br-sm tw-rounded-bl-sm tw-border-b;
+		@apply tw-rounded-br tw-rounded-bl tw-border-b;
 	}
 
 	/* 'Choose another way to pay' text */
 	#dropin-container [data-braintree-id="toggle"],
 	#dropin-container [data-braintree-id="toggle"]:hover {
-		@apply tw-bg-transparent;
+		@apply tw-bg-transparent tw-text-h4 tw-text-link;
 	}
 
 	#dropin-container [data-braintree-id="toggle"] span,

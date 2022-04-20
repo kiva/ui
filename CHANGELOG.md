@@ -1,3 +1,119 @@
+## [2.113.0](https://github.com/kiva/ui/compare/v2.112.0...v2.113.0) (2022-04-20)
+
+
+### Features
+
+* init landing page work ([05a05cd](https://github.com/kiva/ui/commit/05a05cd5540bf410fd76d0f5ddc77f45d1018dbf))
+* update mg icons and add todo for false door ([4d33a1a](https://github.com/kiva/ui/commit/4d33a1add9828464e9a5e4b1deb43834c84c4deb))
+
+
+### Bug Fixes
+
+* remove unnecessary change ([ecc8dca](https://github.com/kiva/ui/commit/ecc8dca1fac53ac624e3093257bc316a0725e8c4))
+* update styles ([a293bd8](https://github.com/kiva/ui/commit/a293bd81ac5d82d2687a1df5560338fd04be3501))
+
+## [2.112.0](https://github.com/kiva/ui/compare/v2.111.0...v2.112.0) (2022-04-19)
+
+
+### Features
+
+* add meta info to lend-by-category pages ([74e6cf6](https://github.com/kiva/ui/commit/74e6cf68ca7e11be1aac521e593bbc6fd64af359))
+* add og and twitter meta tags ([7220a7b](https://github.com/kiva/ui/commit/7220a7b5ce531b7b0a40e2ddb07e69e1a024247c))
+* dynamic sitemap route generator for contentful landing pages MARS-42 ([4526c41](https://github.com/kiva/ui/commit/4526c41625a71039def50bd40d33bdfc6ffc0001))
+* dynamic sitemap route generator for lending category pages MARS-42 ([5c5f1e5](https://github.com/kiva/ui/commit/5c5f1e590f85e37908c37cca005b2883265d8f29))
+* sitemap middleware for ui-server routes MARS-42 ([9bf9825](https://github.com/kiva/ui/commit/9bf982589dade31a5fa393b63615dfd4011492f0))
+* static sitemap route generator MARS-42 ([76f2c08](https://github.com/kiva/ui/commit/76f2c088240a7af4fda9386b430017a98ae5d591))
+
+
+### Bug Fixes
+
+* changing meta default value to undefined ([33c1467](https://github.com/kiva/ui/commit/33c1467fee8083644cdde84f10b9a426ffd8fa76))
+
+## [2.111.0](https://github.com/kiva/ui/compare/v2.110.0...v2.111.0) (2022-04-19)
+
+
+### Features
+
+* trackers were updated for the loan bundles experiment ([252eaf5](https://github.com/kiva/ui/commit/252eaf55fda71dc92723e79c1bcd7ac9ad771a3b))
+
+## [2.110.0](https://github.com/kiva/ui/compare/v2.109.0...v2.110.0) (2022-04-19)
+
+
+### Features
+
+* clean up styles ([ed37553](https://github.com/kiva/ui/commit/ed37553fab6c00468443abc5783050d189366f56))
+* update braintree styles ([d0463f0](https://github.com/kiva/ui/commit/d0463f0562948ae30ef97b6409bca6ac478c5a0d))
+
+
+### Bug Fixes
+
+* another lint commit ([38c9e72](https://github.com/kiva/ui/commit/38c9e7281ab996ee52d26b60c7cd062e3293af47))
+* lint errors ([903d94f](https://github.com/kiva/ui/commit/903d94f56d086d6a4764be4d2be169652e3da1e7))
+
+## [2.109.0](https://github.com/kiva/ui/compare/v2.108.2...v2.109.0) (2022-04-18)
+
+
+### Features
+
+* customized faqs were added for optional choice experiment ([7721fc0](https://github.com/kiva/ui/commit/7721fc038e4ae7da3e37bd7486ceefd5956abd30))
+
+### [2.108.2](https://github.com/kiva/ui/compare/v2.108.1...v2.108.2) (2022-04-18)
+
+
+### Bug Fixes
+
+* thanks page button focus styling ([dfe0cb9](https://github.com/kiva/ui/commit/dfe0cb9435ea25cd006b8ec7b1b8a470a928c5de))
+
+### [2.108.1](https://github.com/kiva/ui/compare/v2.108.0...v2.108.1) (2022-04-15)
+
+
+### Bug Fixes
+
+* mobile styles for kiva card updated ([45f5138](https://github.com/kiva/ui/commit/45f513898bc32c4b2d45bf50fb42e9e3898b813b))
+
+## [2.108.0](https://github.com/kiva/ui/compare/v2.107.0...v2.108.0) (2022-04-15)
+
+
+### Features
+
+* settings for mg_amount_selector experiment were removed ([bf686ce](https://github.com/kiva/ui/commit/bf686ce03ee888e997762f3efed29fffe72500e3))
+
+
+### Bug Fixes
+
+* component usage was removed ([6e9399f](https://github.com/kiva/ui/commit/6e9399f1d4c023065c4efecd31fe530de440d963))
+* unused variable was removed ([55351c5](https://github.com/kiva/ui/commit/55351c504725aa8f0436a105e2edd40b10c61222))
+
+## [2.107.0](https://github.com/kiva/ui/compare/v2.106.0...v2.107.0) (2022-04-14)
+
+
+### Features
+
+* optional choice test settings were built ([9b41401](https://github.com/kiva/ui/commit/9b414011541da160dda93701dd66f959d05d6b8d))
+
+## [2.106.0](https://github.com/kiva/ui/compare/v2.105.0...v2.106.0) (2022-04-14)
+
+
+### Features
+
+* enhance borrower profile meta previews ([4ce0c63](https://github.com/kiva/ui/commit/4ce0c63457ab6bdacf9b0a5cd3ec3cd7e119aa1a))
+
+## [2.105.0](https://github.com/kiva/ui/compare/v2.104.2...v2.105.0) (2022-04-13)
+
+
+### Features
+
+* kvcontenfulimg component was replace for our kv-components one ([1438e7c](https://github.com/kiva/ui/commit/1438e7cfbccd5fda9554cfd6639ba81ccec34a9f))
+* mg page was updated to have a new style in the signup form ([27d2fc4](https://github.com/kiva/ui/commit/27d2fc47945fe4190b6d4b949b3909d56f6f139e))
+* unused css classes were removed ([1f3cd14](https://github.com/kiva/ui/commit/1f3cd14fc6c5d564d0c33574980d4fc3e5453abf))
+
+### [2.104.2](https://github.com/kiva/ui/compare/v2.104.1...v2.104.2) (2022-04-13)
+
+
+### Bug Fixes
+
+* thanks page layout and upsell for new subscription service users ([98eb2a8](https://github.com/kiva/ui/commit/98eb2a803f86ef9b543fab2bcbc06720e17b7463))
+
 ### [2.104.1](https://github.com/kiva/ui/compare/v2.104.0...v2.104.1) (2022-04-12)
 
 
