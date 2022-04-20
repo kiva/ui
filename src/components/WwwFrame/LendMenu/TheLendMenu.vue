@@ -63,22 +63,6 @@ export default {
 		LendListMenu,
 		LendMegaMenu,
 	},
-	created() {
-		if (!this.$isServer) {
-			const { enabled } = getExperimentSettingCached(this.apollo, lendMenuExpKey);
-			if (enabled) {
-				trackExperimentVersion(this.apollo, this.$kvTrackEvent, 'TopNav', lendMenuExpKey);
-				getExperimentSettingAsync(this.apollo, lendMenuExpKey)
-					.then(({ version }) => {
-						this.weighedCategoriesExp = version === 'b';
-						this.apollo.query({
-							query: experimentAssignmentQuery,
-							variables: { id: lendMenuExpKey }
-						});
-					});
-			}
-		}
-	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
@@ -174,6 +158,12 @@ export default {
 			});
 			this.apollo.watchQuery({ query: publicLendMenuQuery }).subscribe({
 				next: ({ data }) => {
+					const version = _get(data, 'experiment.version');
+					const { enabled } = getExperimentSettingCached(this.apollo, lendMenuExpKey);
+					if (enabled) {
+						trackExperimentVersion(this.apollo, this.$kvTrackEvent, 'TopNav', lendMenuExpKey);
+						this.weighedCategoriesExp = version === 'b';
+					}
 					this.categories = _get(data, 'lend.loanChannels.values');
 					this.isChannelsLoading = false;
 				}
