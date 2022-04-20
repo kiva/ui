@@ -210,7 +210,15 @@ export default {
 	],
 	metaInfo() {
 		return {
-			title: this.pageTitle
+			title: this.pageTitle,
+			link: [
+				{
+					vmid: 'canonical',
+					rel: 'canonical',
+					href: `https://${this.$appConfig.host}${this.$route.path}?`
+					+ `page=${this.urlParams?.page ? this.urlParams.page : '1'}`
+				}
+			]
 		};
 	},
 	props: {
