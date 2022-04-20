@@ -1,3 +1,17 @@
+## [2.115.0](https://github.com/kiva/ui/compare/v2.114.0...v2.115.0) (2022-04-20)
+
+
+### Features
+
+* canonical url for loan-by-category page ([1d38637](https://github.com/kiva/ui/commit/1d38637681d37a3a3b3dac27cae3942efaadda61))
+* set canonical urls ([aab0958](https://github.com/kiva/ui/commit/aab09581eedf1eeb89c4f2148569d0e245b54214))
+
+
+### Bug Fixes
+
+* avoiding setting canonical url in some components ([d5ca249](https://github.com/kiva/ui/commit/d5ca24942f254da29026b8990595e6880b05f203))
+* solve conflicts ([fa380e1](https://github.com/kiva/ui/commit/fa380e1bc75b191e493b4d7658150aee820c8acc))
+
 ## [2.114.0](https://github.com/kiva/ui/compare/v2.113.0...v2.114.0) (2022-04-20)
 
 
