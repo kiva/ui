@@ -241,7 +241,7 @@
 							<div class="large-9 medium-10 small-12 columns">
 								<p class="tw-mb-2">
 									<!-- eslint-disable-next-line max-len -->
-									We’ll charge your payment method{{ isOnetime ? '' : ' each month' }}. All credit in your Kiva account, including repayments, will be automatically lent whenever it exceeds $25.
+									We’ll charge your payment method{{ isOnetime ? '' : ' each month' }}. All credit in your Kiva account, including repayments, will be automatically lent whenever it exceeds $5.
 								</p>
 								<p class="conditional-messaging">
 									<!-- eslint-disable-next-line max-len -->
