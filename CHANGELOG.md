@@ -1,3 +1,26 @@
+## [2.104.0-next.1](https://github.com/kiva/ui/compare/v2.103.1...v2.104.0-next.1) (2022-04-20)
+
+
+### Features
+
+* add experiment assignment ([0db9c67](https://github.com/kiva/ui/commit/0db9c67f55159fa2a598a9562e09f618c4181953))
+* add optional action arg to track experiments ([d7e2809](https://github.com/kiva/ui/commit/d7e2809d58a8359bcaeaf9c2bfd99da28a35a4bb))
+* avoid categories sorting within control experiment ([322b2da](https://github.com/kiva/ui/commit/322b2da14748afb1aabad15c804882b697909681))
+* kvcontenfulimg component was replace for our kv-components one ([230e441](https://github.com/kiva/ui/commit/230e4416d6e15200be76e91d52068e5c0ecbf265))
+* mg page was updated to have a new style in the signup form ([bbdaba6](https://github.com/kiva/ui/commit/bbdaba6fa07cf6f82b9ed5bdfc9dfc0115aab3b5))
+* unused css classes were removed ([8b4b19b](https://github.com/kiva/ui/commit/8b4b19b3df71d4b7eb367737e1dc6a5d672d0966))
+
+
+### Bug Fixes
+
+* change variant key to b ([48a6b7a](https://github.com/kiva/ui/commit/48a6b7a03992750c155f518bf25c0bbdaa398a19))
+* delete unused variables ([61c6811](https://github.com/kiva/ui/commit/61c681145940240c2e65e2f95847896105606a6c))
+* ensure exp run only in the browser ([9a4ad58](https://github.com/kiva/ui/commit/9a4ad584b7fc0e49b4758a082b9aaa149c140716))
+* loan bundles initialization was updated ([f6f29c5](https://github.com/kiva/ui/commit/f6f29c592e52a2dc005634e68ea5c0df81a73bc0))
+* set exp in wwwheader file ([9798abb](https://github.com/kiva/ui/commit/9798abb539f83f54179ab8ebfe6af27137594c8c))
+* type name should not be part of id argument ([3333f27](https://github.com/kiva/ui/commit/3333f274b4083a86967eb3b7334331678e5d9217))
+* use apollo watch instead of created hook to get exp data ([9008b65](https://github.com/kiva/ui/commit/9008b65f2cf758b75fba6e4a1f04005abb67edcc))
+
 ### [2.103.1](https://github.com/kiva/ui/compare/v2.103.0...v2.103.1) (2022-04-11)
 
 
