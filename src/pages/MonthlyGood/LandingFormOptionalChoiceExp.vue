@@ -37,9 +37,8 @@
 					</ul>
 				</fieldset>
 				<kv-button
-					class="tw-basis-4/6"
-					style="margin-top: 0;"
-					type="submit"
+					class="tw-basis-4/6 tw-mt-0"
+					@click="showLightbox"
 					:disabled="$v.$invalid"
 					v-kv-track-event="[
 						'MonthlyGood',
@@ -92,6 +91,10 @@ export default {
 		buttonText: {
 			type: String,
 			default: 'Contribute monthly'
+		},
+		showLightbox: {
+			type: Function,
+			default: () => {}
 		}
 	},
 	computed: {
@@ -113,15 +116,6 @@ export default {
 		updateAmount(value) {
 			this.$emit('update:amount', value);
 		},
-		submit() { // TODO: CORE-529 update to show false door exp when built out
-			this.$router.push({
-				path: '/monthlygood/setup',
-				query: {
-					amount: this.amount,
-					category: this.selectedGroup
-				}
-			});
-		}
 	},
 };
 

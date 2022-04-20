@@ -130,7 +130,7 @@
 			/>
 		</template>
 		<template v-if="isOptionalChoiceExperiment">
-			<div class="tw-bg-secondary tw-py-4 md:tw-py-6 lg:tw-py-8">
+			<div class="mg-landing-page-optional-choice tw-bg-secondary tw-py-4 md:tw-py-6 lg:tw-py-8">
 				<div class="row">
 					<div class="small-12 large-6 columns tw-mb-4">
 						<div class="tw-mb-3">
@@ -147,6 +147,7 @@
 							:selected-group.sync="selectedGroup"
 							key="top"
 							:button-text="heroPrimaryCtaText"
+							:show-lightbox="showLightbox"
 							v-if="!isMonthlyGoodSubscriber && !hasModernSub"
 						/>
 					</div>
@@ -195,6 +196,41 @@
 				:questions="frequentlyAskedQuestions"
 			/>
 		</div>
+
+		<!-- Monthly Good False Door Exp Optional Choice -->
+		<kv-lightbox
+			title="Thanks for your interest!"
+			:visible="showActiveLightbox"
+			@lightbox-closed="closeLightbox"
+		>
+			<div class="tw-text-center tw-flex tw-flex-col tw-gap-3 tw-my-8 lg:tw-w-8/12 md:tw-w-full">
+				<!-- eslint-disable-next-line max-len -->
+				<p>Choosing a loan in Monthly Good is not yet available. If you want to choose a loan each month, you may like auto-deposit.</p>
+				<div class="tw-flex tw-flex-col tw-gap-2 lg:tw-w-10/12 md:tw-w-full tw-self-center">
+					<kv-button
+						@click="redirectAutodeposit"
+						v-kv-track-event="[
+							'Monthly Good',
+							'click-optional-choice-MG-false-door-cta',
+							'Go to Auto Deposit'
+						]"
+					>
+						Go to Auto-deposit
+					</kv-button>
+					<kv-button
+						variant="secondary"
+						@click="redirectMonthlyGoodSignup"
+						v-kv-track-event="[
+							'Monthly Good',
+							'click-optional-choice-MG-false-door-cta',
+							'Continue to sign-up for monthly good'
+						]"
+					>
+						Continue to sign-up for Monthly Good
+					</kv-button>
+				</div>
+			</div>
+		</kv-lightbox>
 	</www-page>
 </template>
 
@@ -210,11 +246,13 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 
 import KvHero from '@/components/Kv/KvHero';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+import KvLightbox from '@/components/Kv/KvLightbox';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
 import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
 import AutomaticallySupportNotice from '@/components/MonthlyGood/AutomaticallySupportNotice';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
@@ -271,9 +309,11 @@ export default {
 		HowItWorks,
 		HowItWorksOptionalChoiceExp,
 		KivaAsExpert,
+		KvButton,
 		KvContentfulImg,
 		KvFrequentlyAskedQuestions,
 		KvHero,
+		KvLightbox,
 		KvResponsiveImage,
 		LandingForm,
 		LandingFormVisibilityExp,
@@ -332,7 +372,8 @@ export default {
 			selectedChannelLoanIds: [],
 			selectedChannel: {},
 			showCarousel: true,
-			showViewMoreCard: false
+			showViewMoreCard: false,
+			showActiveLightbox: false,
 		};
 	},
 	created() {
@@ -485,6 +526,39 @@ export default {
 			return this.personalizedContentGroup?.media?.[0]?.description ?? '';
 		},
 	},
+	methods: {
+		showLightbox() {
+			this.$kvTrackEvent(
+				'Monthly Good',
+				'show-optional-choice-MG-false-door',
+				'view-false-door-screen'
+			);
+			this.showActiveLightbox = true;
+		},
+		closeLightbox() {
+			this.$kvTrackEvent(
+				'Monthly Good',
+				'click-optional-choice-MG-false-door-x',
+				'close'
+			);
+			this.showActiveLightbox = false;
+			return this.showActiveLightbox;
+		},
+		redirectAutodeposit() {
+			this.$router.push({
+				path: '/auto-deposit',
+			});
+		},
+		redirectMonthlyGoodSignup() {
+			this.$router.push({
+				path: '/monthlygood/setup',
+				query: {
+					amount: this.monthlyGoodAmount,
+					category: this.selectedGroup
+				}
+			});
+		},
+	}
 };
 </script>
 
@@ -499,5 +573,20 @@ export default {
 
 #carousel_exp >>> section > div:nth-child(1) > div {
 	max-width: 310px !important;
+}
+
+.mg-landing-page-optional-choice {
+	.row {
+		max-width: 80rem;
+	}
+}
+
+::v-deep .kv-lightbox__title {
+	text-align: center;
+}
+
+::v-deep .kv-lightbox__body-columns {
+	display: flex;
+	justify-content: center;
 }
 </style>
