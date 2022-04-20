@@ -8,7 +8,7 @@ query lendMenuData {
 			}
 		}
 	}
-	experiment(id: "Experiment:lend_menu_category_sort") @client {
+	experiment(id: "lend_menu_category_sort") @client {
 		id
 		version
 	}
