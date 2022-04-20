@@ -206,7 +206,7 @@
 			<div class="tw-text-center tw-flex tw-flex-col tw-gap-3 tw-my-8 lg:tw-w-8/12 md:tw-w-full">
 				<!-- eslint-disable-next-line max-len -->
 				<p>Choosing a loan in Monthly Good is not yet available. If you want to choose a loan each month, you may like auto-deposit.</p>
-				<div class="tw-flex tw-flex-col tw-gap-2 lg:tw-w-10/12 md:tw-w-full tw-self-center">
+				<div class="tw-flex tw-flex-col tw-gap-2 tw-self-center" style="max-width: 342px;">
 					<kv-button
 						@click="redirectAutodeposit"
 						v-kv-track-event="[
