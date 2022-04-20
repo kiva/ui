@@ -8,4 +8,8 @@ query lendMenuData {
 			}
 		}
 	}
+	experiment(id: "Experiment:lend_menu_category_sort") @client {
+		id
+		version
+	}
 }
