@@ -1,3 +1,10 @@
+### [2.115.2](https://github.com/kiva/ui/compare/v2.115.1...v2.115.2) (2022-04-21)
+
+
+### Performance Improvements
+
+* lazy-loading for homepage loan cards MARS-74 ([b219304](https://github.com/kiva/ui/commit/b2193049c00b7112d1ad549aea85aef919880f67))
+
 ### [2.115.1](https://github.com/kiva/ui/compare/v2.115.0...v2.115.1) (2022-04-20)
 
 
