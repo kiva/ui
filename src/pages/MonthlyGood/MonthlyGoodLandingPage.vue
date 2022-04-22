@@ -199,10 +199,12 @@
 
 		<!-- Monthly Good False Door Exp Optional Choice -->
 		<kv-lightbox
-			title="Thanks for your interest!"
 			:visible="showActiveLightbox"
 			@lightbox-closed="closeLightbox"
 		>
+			<h2 class="tw-text-h2 tw-text-center">
+				Thanks for your interest!
+			</h2>
 			<div class="tw-text-center tw-flex tw-flex-col tw-gap-3 tw-my-8 lg:tw-w-8/12 md:tw-w-full">
 				<!-- eslint-disable-next-line max-len -->
 				<p>Choosing a loan in Monthly Good is not yet available. If you want to choose a loan each month, you may like auto-deposit.</p>
@@ -246,12 +248,12 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 
 import KvHero from '@/components/Kv/KvHero';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
 import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
 import AutomaticallySupportNotice from '@/components/MonthlyGood/AutomaticallySupportNotice';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
@@ -581,12 +583,9 @@ export default {
 	}
 }
 
-::v-deep .kv-lightbox__title {
-	text-align: center;
-}
-
-::v-deep .kv-lightbox__body-columns {
+::v-deep #kvLightboxBody {
 	display: flex;
-	justify-content: center;
+	flex-direction: column;
+	align-items: center;
 }
 </style>
