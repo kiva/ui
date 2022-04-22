@@ -1,3 +1,17 @@
+## [2.116.0](https://github.com/kiva/ui/compare/v2.115.2...v2.116.0) (2022-04-22)
+
+
+### Features
+
+* monthly good optional choice exp false door lightbox ([6688fc9](https://github.com/kiva/ui/commit/6688fc90dfce14e2f364530c8cb69eb906abb720))
+
+
+### Bug Fixes
+
+* remove package lock commit ([664fe7d](https://github.com/kiva/ui/commit/664fe7d1fa65e9285417c7e296aa0461ab1bd712))
+* update width for buttons ([8a70b4d](https://github.com/kiva/ui/commit/8a70b4d6de39f7cd9cc3c4a8803d01453fe33b06))
+* use new lightbox component ([82b4aa6](https://github.com/kiva/ui/commit/82b4aa60af3e896b72f678840073a9e163b417c8))
+
 ### [2.115.2](https://github.com/kiva/ui/compare/v2.115.1...v2.115.2) (2022-04-21)
 
 
