@@ -93,6 +93,19 @@ describe('loan.js', () => {
 			});
 		});
 
+		it('Returns 1 if loan is over-reserved', () => {
+			testFundraisingPercent({
+				loan: {
+					loanAmount: '200.00',
+					loanFundraisingInfo: {
+						fundedAmount: '185.00',
+						reservedAmount: '20.00'
+					},
+				},
+				expected: 1,
+			});
+		});
+
 		describe('Returns 0 if required fields are missing', () => {
 			function testConsoleError(field) {
 				expect(console.error.mock.calls.length).toBe(1);
@@ -260,6 +273,19 @@ describe('loan.js', () => {
 					loanFundraisingInfo: {
 						fundedAmount: '90.00',
 						reservedAmount: '10.00'
+					},
+				},
+				expected: '0.00',
+			});
+		});
+
+		it('Returns the 0.00 if loan is over-reserved', () => {
+			testUnreservedAmount({
+				loan: {
+					loanAmount: '200.00',
+					loanFundraisingInfo: {
+						fundedAmount: '185.00',
+						reservedAmount: '20.00'
 					},
 				},
 				expected: '0.00',
