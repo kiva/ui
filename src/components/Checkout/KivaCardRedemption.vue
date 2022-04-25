@@ -26,9 +26,7 @@
 					<div class="tw-flex tw-flex-col tw-w-full lg:tw-w-2/3">
 						<div class="tw-flex tw-flex-col md:tw-flex-row">
 							<div class="tw-w-full md:tw-mr-4">
-								<label for="kiva_card_input" class="tw-sr-only"
-									>Kiva Card Code</label
-								>
+								<label for="kiva_card_input" class="tw-sr-only">Kiva Card Code</label>
 								<kv-text-input
 									id="kiva_card_input"
 									data-testid="basket-code-entry-input"
