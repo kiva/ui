@@ -1,3 +1,12 @@
+### [2.116.3](https://github.com/kiva/ui/compare/v2.116.2...v2.116.3) (2022-04-25)
+
+
+### Bug Fixes
+
+* tw-w-kiva card lint fixes ([0def5dc](https://github.com/kiva/ui/commit/0def5dccdc21aa250fea3f1798073a1c1c7c10b5))
+* tw-w-kiva card updated ([5ee6158](https://github.com/kiva/ui/commit/5ee6158b0b8dc1a1ee0d29c896edc8476820bc0c))
+* tw-w-kiva card updated ([675f727](https://github.com/kiva/ui/commit/675f727febb1e9d47e3539599a5377a5308a70c5))
+
 ### [2.116.2](https://github.com/kiva/ui/compare/v2.116.1...v2.116.2) (2022-04-25)
 
 
