@@ -151,7 +151,12 @@ function unreservedAmount(loan) {
 
 	// Calculate unfunded and unreserved amounts
 	const unfunded = loanAmount - fundedAmount;
-	const unreserved = unfunded - reservedAmount;
+	let unreserved = unfunded - reservedAmount;
+
+	// For presentational purposes we prevent a negative unreservedAmoount from showing
+	if (unreserved <= 0) {
+		unreserved = 0;
+	}
 
 	// Format as string to match Money type
 	return numeral(unreserved).format('0.00');
