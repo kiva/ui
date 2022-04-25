@@ -1,3 +1,10 @@
+### [2.116.2](https://github.com/kiva/ui/compare/v2.116.1...v2.116.2) (2022-04-25)
+
+
+### Bug Fixes
+
+* remove /lp/* routes from the sitemap ([#3754](https://github.com/kiva/ui/issues/3754)) ([ca3d25f](https://github.com/kiva/ui/commit/ca3d25fe0a10f7d861c860d476cd076847ec403d))
+
 ### [2.116.1](https://github.com/kiva/ui/compare/v2.116.0...v2.116.1) (2022-04-25)
 
 
