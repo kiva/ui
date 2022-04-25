@@ -52,7 +52,8 @@
 						<div>
 							<!-- This lightbox will be replaced with a Popper tip message. -->
 							<button
-								class="help-lightbox-trigger tw-text-link tw-text-left tw-font-medium tw-mt-3 md:tw-mt-0"
+								class="help-lightbox-trigger tw-text-link tw-text-left
+								tw-font-medium tw-mt-3 md:tw-mt-0"
 								@click="triggerDefaultLightbox"
 								data-testid="basket-code-entry-help-text-button"
 							>
@@ -70,30 +71,36 @@
 								print-it-yourself cards, email delivery and
 								postal delivery.
 							</p>
-							<p class="tw-mb-2">Print-it-yourself:</p>
+							<p class="tw-mb-2">
+								Print-it-yourself:
+							</p>
 							<img
 								alt="print-kiva-card"
 								class="tw-mb-6 tw-border tw-border-secondary"
 								height="116"
 								src="~@/assets/images/checkout/printcard_codelocation.jpg"
 								width="450"
-							/>
-							<p class="tw-mb-2">Email delivery:</p>
+							>
+							<p class="tw-mb-2">
+								Email delivery:
+							</p>
 							<img
 								alt="email-kiva-card"
 								class="tw-mb-6 tw-border tw-border-secondary"
 								height="199"
 								src="~@/assets/images/checkout/emailcard_codelocation.jpg"
 								width="450"
-							/>
-							<p class="tw-mb-2">Postal delivery:</p>
+							>
+							<p class="tw-mb-2">
+								Postal delivery:
+							</p>
 							<img
 								alt="postal-kiva-card"
 								class="tw-mb-6 tw-border tw-border-secondary"
 								height="158"
 								src="~@/assets/images/checkout/physicalcard_codelocation.jpg"
 								width="430"
-							/>
+							>
 						</kv-lightbox>
 
 						<ul class="redemption-items">
@@ -197,7 +204,7 @@ export default {
 						redemptionCode: this.kivaCardCode,
 					},
 				})
-				.then((data) => {
+				.then(data => {
 					if (data.errors) {
 						_forEach(data.errors, ({ message }) => {
 							this.$showTipMsg(message, 'error');
@@ -212,7 +219,7 @@ export default {
 						);
 					}
 				})
-				.catch((error) => {
+				.catch(error => {
 					console.error(error);
 					this.$emit('updating-totals', false);
 				});
@@ -236,7 +243,7 @@ export default {
 					);
 					this.$emit('refreshtotals');
 				})
-				.catch((error) => {
+				.catch(error => {
 					console.error(error);
 					this.$emit('updating-totals', false);
 				});
