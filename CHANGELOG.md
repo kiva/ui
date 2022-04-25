@@ -1,3 +1,10 @@
+### [2.116.1](https://github.com/kiva/ui/compare/v2.116.0...v2.116.1) (2022-04-25)
+
+
+### Bug Fixes
+
+* prevent unreservedAmount from being less than zero ([94d7fd9](https://github.com/kiva/ui/commit/94d7fd9e437858696216bf3c9420ecf0655901b8))
+
 ## [2.116.0](https://github.com/kiva/ui/compare/v2.115.2...v2.116.0) (2022-04-22)
 
 
