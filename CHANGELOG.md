@@ -1,3 +1,10 @@
+## [2.117.0](https://github.com/kiva/ui/compare/v2.116.3...v2.117.0) (2022-04-26)
+
+
+### Features
+
+* loan bundles experiment is able to all categories ([69cfd95](https://github.com/kiva/ui/commit/69cfd9579d2cd744496f0386fb8c84b53fad42a8))
+
 ### [2.116.3](https://github.com/kiva/ui/compare/v2.116.2...v2.116.3) (2022-04-25)
 
 
