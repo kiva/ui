@@ -153,6 +153,7 @@
 							{{ ctaButtonText }}
 						</kv-ui-button>
 					</span>
+					<borrower-social-share :sector="sector" :borrower-name="name" />
 					<p
 						v-if="freeCreditWarning"
 						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
@@ -286,6 +287,7 @@ import { buildPriceArray, isMatchAtRisk } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
+import BorrowerSocialShare from '@/components/BorrowerProfile/BorrowerSocialShare';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -306,6 +308,7 @@ export default {
 		KvUiSelect,
 		JumpLinks,
 		LoanBookmark,
+		BorrowerSocialShare
 	},
 	data() {
 		return {
@@ -335,6 +338,8 @@ export default {
 			isSticky: false,
 			wrapperHeight: 0,
 			wrapperObserver: null,
+			name: '',
+			sector: '',
 		};
 	},
 	apollo: {
@@ -343,6 +348,7 @@ export default {
 				lend {
 					loan(id: $loanId) {
 						id
+						name
 						status
 						minNoteSize
 						loanAmount
@@ -361,6 +367,10 @@ export default {
 						lenders{
 							totalCount
 						}
+						sector {
+							id
+              				name
+            			}
 					}
 				}
 				shop (basketId: $basketId) {
@@ -408,6 +418,8 @@ export default {
 			this.basketItems = basket?.items?.values ?? [];
 			this.matchingText = loan?.matchingText ?? '';
 			this.matchRatio = loan?.matchRatio ?? 0;
+			this.sector = loan?.sector?.name ?? '';
+			this.name = loan?.name ?? '';
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;

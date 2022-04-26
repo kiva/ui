@@ -78,6 +78,7 @@ import BorrowerCountry from '@/components/BorrowerProfile/BorrowerCountry';
 import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
+import BorrowerSocialShare from '@/components/BorrowerProfile/BorrowerSocialShare';
 
 const loanUseFilter = require('../../plugins/loan-use-filter');
 
@@ -96,6 +97,7 @@ export default {
 		SummaryCard,
 		WhySpecial,
 		WwwPage,
+		BorrowerSocialShare
 	},
 	metaInfo() {
 		const canonicalUrl = `https://${this.$appConfig.host}${this.$route.path}`.replace('-beta', '');
