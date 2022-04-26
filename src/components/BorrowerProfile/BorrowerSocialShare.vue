@@ -1,5 +1,8 @@
 <template>
 	<section class="share hide-for-print">
+		<h1 class="share__title lg:tw-text-h2">
+			Help by sharing
+		</h1>
 		<div class="share__social social">
 			<a
 				data-testid="share-facebook-button"
@@ -34,13 +37,17 @@
 			<a
 				data-testid="share-copy-link-button"
 				class="social__btn social__btn--link"
-				:class="copyStatus.class"
 				:disabled="copyStatus.disabled"
 				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Copy-link-share']"
 				@click="copyLink"
 			>
 				<kv-icon name="link" tile="Copy Link" class="social__icon" />
-				<span>{{ this.copyStatus.text }}</span>
+				<span
+					class="tooltip tw-p-1 tw-text-small"
+					:class="copyStatus.class"
+				>
+					{{ this.copyStatus.text }}
+				</span>
 			</a>
 		</div>
 	</section>
@@ -183,6 +190,13 @@ $color-twitter: #08a0e9;
 $color-email: #AB4147;
 $color-clipboard: #DEB13C;
 
+.tooltip {
+    visibility: hidden;
+    position: absolute;
+    margin-bottom: rem-calc(69);
+    margin-left: rem-calc(-15);
+}
+
 // layout of blocks
 .share {
 	width: 100%;
@@ -199,6 +213,14 @@ $color-clipboard: #DEB13C;
 			flex-wrap: wrap;
 		}
 	}
+
+    &__title {
+        display: none;
+        @include breakpoint(large) {
+            display: block;
+            margin-bottom: rem-calc(24);
+		}
+    }
 
 	&__message {
 		flex: 1;
@@ -339,8 +361,11 @@ $color-clipboard: #DEB13C;
 
 		&--success,
 		&--error {
-			color: #fff;
+			color: #000;
+            background-color: white;
 			cursor: default;
+            visibility: visible;
+            box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 			transition:
 				background-color 0.25s ease-out,
 				border-color 0.25s ease-out,
