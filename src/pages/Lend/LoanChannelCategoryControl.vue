@@ -210,7 +210,6 @@ export default {
 	],
 	metaInfo() {
 		return {
-			title: this.pageTitle,
 			link: [
 				{
 					vmid: 'canonical',
