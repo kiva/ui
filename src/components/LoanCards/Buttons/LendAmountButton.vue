@@ -4,7 +4,7 @@
 		:loan-id="loanId"
 		@add-to-basket="$emit('add-to-basket', $event)"
 	>
-		Lend ${{ amountLeft }} <span v-if="showNow">now</span>
+		Lend ${{ amountLeft }}<span v-if="showNow"> now</span>
 	</lend-button>
 </template>
 
@@ -30,6 +30,7 @@ export default {
 		}
 	},
 	computed: {
+		// TODO: we should swap this out for a prop if the parent component needs to calculate this anyway
 		amountLeft() {
 			const { loanAmount, loanFundraisingInfo } = this.loan;
 			const { isExpiringSoon, fundedAmount, reservedAmount } = loanFundraisingInfo;
