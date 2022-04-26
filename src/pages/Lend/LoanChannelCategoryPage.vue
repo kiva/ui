@@ -195,18 +195,15 @@ export default {
 				fragment: experimentVersionFragment,
 			}) || {};
 
-			// Only certain categories are eligible for the experiment
-			if (!this.testCategories.includes(this.targetedLoanChannel)) {
-				if (layoutEXP.version) {
-					if (layoutEXP.version === 'b') {
-						this.addBundlesExp = true;
-					}
-					this.$kvTrackEvent(
-						'Lending',
-						'EXP-CORE-482-Mar2022',
-						layoutEXP.version
-					);
+			if (layoutEXP.version) {
+				if (layoutEXP.version === 'b') {
+					this.addBundlesExp = true;
 				}
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CORE-482-Mar2022',
+					layoutEXP.version
+				);
 			}
 		},
 		getMetaInfo() {
