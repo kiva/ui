@@ -12,6 +12,7 @@
 <script>
 import _includes from 'lodash/includes';
 import addToBasketInsterstitial from '@/plugins/add-to-basket-show-interstitial';
+import LendAmountButton from './LendAmountButton';
 import Lend25Button from './Lend25Button';
 import LendIncrementButton from './LendIncrementButton';
 import CheckoutNowButton from './CheckoutNowButton';
@@ -62,6 +63,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		isAmountLendButton: {
+			type: Boolean,
+			default: false
+		},
 		minimalCheckoutButton: {
 			type: Boolean,
 			default: false,
@@ -87,7 +92,7 @@ export default {
 			if (this.isSelectedByAnother) {
 				return LoanSelectedText;
 			}
-
+			if (this.isAmountLendButton) return LendAmountButton;
 			return this.isSimpleLendButton ? Lend25Button : LendIncrementButton;
 		},
 	},
