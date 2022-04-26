@@ -1,3 +1,15 @@
+## [2.118.0](https://github.com/kiva/ui/compare/v2.117.0...v2.118.0) (2022-04-26)
+
+
+### Features
+
+* dynamic lend amount button ([c9874fd](https://github.com/kiva/ui/commit/c9874fdac90605b6498bfde5d8b559c5c5a0425a))
+
+
+### Bug Fixes
+
+* remove space and add todo ([bc193e8](https://github.com/kiva/ui/commit/bc193e87329a3a52cf7c6670c84ce3a9602a83ec))
+
 ## [2.117.0](https://github.com/kiva/ui/compare/v2.116.3...v2.117.0) (2022-04-26)
 
 
