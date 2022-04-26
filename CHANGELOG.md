@@ -1,3 +1,10 @@
+### [2.118.1](https://github.com/kiva/ui/compare/v2.118.0...v2.118.1) (2022-04-26)
+
+
+### Bug Fixes
+
+* category control component overwriting meta title ([#3757](https://github.com/kiva/ui/issues/3757)) ([1b8c533](https://github.com/kiva/ui/commit/1b8c533558d4975a0ef56ff589ec5bbddea7f132))
+
 ## [2.118.0](https://github.com/kiva/ui/compare/v2.117.0...v2.118.0) (2022-04-26)
 
 
