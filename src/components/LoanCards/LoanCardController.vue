@@ -186,7 +186,8 @@ export default {
 				fundedAmount,
 				reservedAmount
 			} = this.loan.loanFundraisingInfo;
-			return this.loan.loanAmount - fundedAmount - reservedAmount;
+			const amountLeft = this.loan.loanAmount - fundedAmount - reservedAmount;
+			return amountLeft < 0 ? 0 : amountLeft;
 		},
 		isFunded() {
 			return this.loan.status === 'funded';
