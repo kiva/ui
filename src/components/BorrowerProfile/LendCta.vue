@@ -154,7 +154,7 @@
 						</kv-ui-button>
 					</span>
 					<borrower-social-share
-						v-show="socialShareExp"
+						v-if="socialShareExp"
 						class="md:tw-hidden tw-block"
 						:sector="sector"
 						:borrower-name="name"

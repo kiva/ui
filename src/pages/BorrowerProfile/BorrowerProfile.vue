@@ -17,7 +17,7 @@
 						:social-share-exp="showSocialShareBlock"
 					/>
 					<borrower-social-share
-						v-show="showSocialShareBlock"
+						v-if="showSocialShareBlock"
 						class="tw-hidden md:tw-block tw-pointer-events-auto"
 						:sector="sector"
 						:borrower-name="name"
@@ -92,7 +92,6 @@ import {
 	getExperimentSettingCached,
 	trackExperimentVersion
 } from '@/util/experimentUtils';
-import _get from 'lodash/get';
 
 const socialShareExpKey = 'borrower_social_share';
 
@@ -273,7 +272,6 @@ export default {
 		// EXP-MARS-95-May2022
 		this.apollo.watchQuery({ query: publicSocialShareQuery }).subscribe({
 			next: ({ data }) => {
-				const version = _get(data, 'experiment.version');
 				const { enabled } = getExperimentSettingCached(this.apollo, socialShareExpKey);
 
 				if (enabled) {
@@ -284,7 +282,7 @@ export default {
 						socialShareExpKey,
 						'EXP-MARS-95-May2022'
 					);
-					this.showSocialShareBlock = version === 'b';
+					this.showSocialShareBlock = data?.experiment?.version === 'b';
 				}
 			}
 		});
