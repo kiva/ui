@@ -1,3 +1,10 @@
+### [2.119.1](https://github.com/kiva/ui/compare/v2.119.0...v2.119.1) (2022-04-27)
+
+
+### Bug Fixes
+
+* enable checking fake authentication info in qa environment ([#3761](https://github.com/kiva/ui/issues/3761)) ([b463594](https://github.com/kiva/ui/commit/b46359415ba43d15460695b9f980c01512307631))
+
 ## [2.119.0](https://github.com/kiva/ui/compare/v2.118.1...v2.119.0) (2022-04-27)
 
 
