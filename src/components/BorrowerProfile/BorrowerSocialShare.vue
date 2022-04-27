@@ -178,7 +178,7 @@ $color-clipboard: #DEB13C;
 	width: 100%;
 	max-width: rem-calc(600);
 	margin: rem-calc(21) auto;
-    padding: 0 rem-calc(15) 0 rem-calc(15);
+	padding: 0 rem-calc(15) 0 rem-calc(15);
 
 	@include breakpoint(large) {
 		background: white;
@@ -186,20 +186,20 @@ $color-clipboard: #DEB13C;
 		border-radius: 14px;
 	}
 
-    &__title {
-        display: none;
-        @include breakpoint(large) {
-            display: block;
-            margin-bottom: rem-calc(24);
+	&__title {
+		display: none;
+		@include breakpoint(large) {
+			display: block;
+			margin-bottom: rem-calc(24);
 		}
-    }
+	}
 }
 
 // blocks
 
 .social {
 	display: flex;
-    justify-content: space-between;
+	justify-content: space-between;
 	flex-wrap: wrap;
 
 	&__icon {
@@ -219,7 +219,7 @@ $color-clipboard: #DEB13C;
 	&__btn {
 		display: flex;
 		align-items: center;
-        border-radius: 100%;
+		border-radius: 100%;
 		padding: rem-calc(12);
 		font-weight: $button-font-weight;
 		line-height: 1;
@@ -241,7 +241,7 @@ $color-clipboard: #DEB13C;
 		}
 
 		&--link {
-            @include button-style($color-clipboard, auto, #fff);
+			@include button-style($color-clipboard, auto, #fff);
 			transition:
 				background-color 0.25s ease-in,
 				border-color 0.25s ease-in,
@@ -256,7 +256,7 @@ $color-clipboard: #DEB13C;
 		&--success {
 			background-color: rgb(var(--bg-brand));
 			border-color: rgb(var(--bg-brand));
-            z-index: 10;
+			z-index: 10;
 		}
 
 		&--error {
@@ -267,10 +267,10 @@ $color-clipboard: #DEB13C;
 		&--success,
 		&--error {
 			color: #000;
-            background-color: white;
+			background-color: white;
 			cursor: default;
-            visibility: visible;
-            box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+			visibility: visible;
+			box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 			transition:
 				background-color 0.25s ease-out,
 				border-color 0.25s ease-out,
