@@ -242,6 +242,7 @@ $color-clipboard: #DEB13C;
 
 		&--link {
 			@include button-style($color-clipboard, auto, #fff);
+
 			transition:
 				background-color 0.25s ease-in,
 				border-color 0.25s ease-in,
@@ -270,7 +271,7 @@ $color-clipboard: #DEB13C;
 			background-color: white;
 			cursor: default;
 			visibility: visible;
-			box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+			box-shadow: rgba(100, 100, 111, 0.2) 0 rem-calc(7) rem-calc(29) 0;
 			transition:
 				background-color 0.25s ease-out,
 				border-color 0.25s ease-out,
