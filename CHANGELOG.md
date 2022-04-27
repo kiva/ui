@@ -1,3 +1,10 @@
+### [2.120.1](https://github.com/kiva/ui/compare/v2.120.0...v2.120.1) (2022-04-27)
+
+
+### Bug Fixes
+
+* ensure dynamic amount is passed to button component ([efde1d6](https://github.com/kiva/ui/commit/efde1d6201c7d59adaa2ff335c0024cc8e523f1f))
+
 ## [2.120.0](https://github.com/kiva/ui/compare/v2.119.1...v2.120.0) (2022-04-27)
 
 
