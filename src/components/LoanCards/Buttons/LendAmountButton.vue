@@ -2,7 +2,6 @@
 	<lend-button
 		price="amountLeft"
 		:loan-id="loanId"
-		v-kv-track-event="['Lending', 'Add to basket (Partial Share)', 'lend-button-click', loanId, amountLeft]"
 		@add-to-basket="addToBasket($event)"
 	>
 		Lend ${{ amountLeft }}<span v-if="showNow"> now</span>
