@@ -3,7 +3,7 @@
 		price="amountLeft"
 		:loan-id="loanId"
 		v-kv-track-event="['Lending', 'Add to basket (Partial Share)', 'lend-button-click', loanId, amountLeft]"
-		@add-to-basket="$emit('add-to-basket', $event)"
+		@add-to-basket="addToBasket($event)"
 	>
 		Lend ${{ amountLeft }}<span v-if="showNow"> now</span>
 	</lend-button>
@@ -34,5 +34,12 @@ export default {
 			default: 20
 		}
 	},
+	methods: {
+		addToBasket(event) {
+			// eslint-disable-next-line max-len
+			this.$kvTrackEvent('Lending', 'Add to basket (Partial Share)', 'lend-button-click', this.loanId, this.amountLeft);
+			this.$emit('add-to-basket', event);
+		}
+	}
 };
 </script>
