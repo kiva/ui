@@ -1,3 +1,19 @@
+## [2.119.0](https://github.com/kiva/ui/compare/v2.118.1...v2.119.0) (2022-04-27)
+
+
+### Features
+
+* update LBC to accommodate less than 25 lend button + add tracking ([67506d0](https://github.com/kiva/ui/commit/67506d04f85e14e787bab078f47e5fda7c94fb32))
+
+
+### Bug Fixes
+
+* progress bar fix ([166ef23](https://github.com/kiva/ui/commit/166ef23b586baac653d14b3fefd20b3b02d9f7ff))
+* tracking ([4a181f5](https://github.com/kiva/ui/commit/4a181f5ee687e8e74e360393977f25450bee4639))
+* update default vals ([3bbd2d0](https://github.com/kiva/ui/commit/3bbd2d03704bd687638e1169b3c24a9c76189a2c))
+* update tracking ([35465ff](https://github.com/kiva/ui/commit/35465ff2e6c28ff111390e91a6ca61b2a4b80e77))
+* update tracking for real this time ([854f09b](https://github.com/kiva/ui/commit/854f09ba4d626b2520dbe231f16ca4784033e29c))
+
 ### [2.118.1](https://github.com/kiva/ui/compare/v2.118.0...v2.118.1) (2022-04-26)
 
 
