@@ -1,3 +1,10 @@
+## [2.121.0](https://github.com/kiva/ui/compare/v2.120.1...v2.121.0) (2022-04-27)
+
+
+### Features
+
+* amount lend button support was added to list loand card for lend filter page ([24b2bd0](https://github.com/kiva/ui/commit/24b2bd007d5ccfca94956ff73eaf1f6db6df582b))
+
 ### [2.120.1](https://github.com/kiva/ui/compare/v2.120.0...v2.120.1) (2022-04-27)
 
 
