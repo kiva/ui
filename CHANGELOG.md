@@ -1,3 +1,10 @@
+## [2.122.0](https://github.com/kiva/ui/compare/v2.121.0...v2.122.0) (2022-04-27)
+
+
+### Features
+
+* use transform/translate instead left for place holder animation ([048cdf2](https://github.com/kiva/ui/commit/048cdf29fb3e412a09f7375080fc4f9dc53e0553))
+
 ## [2.121.0](https://github.com/kiva/ui/compare/v2.120.1...v2.121.0) (2022-04-27)
 
 
