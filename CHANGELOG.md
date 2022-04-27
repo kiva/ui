@@ -1,3 +1,10 @@
+## [2.120.0](https://github.com/kiva/ui/compare/v2.119.1...v2.120.0) (2022-04-27)
+
+
+### Features
+
+* component renamed and route updated ([f9ed805](https://github.com/kiva/ui/commit/f9ed805b12ddc7c341e889c67d02625753938cdd))
+
 ### [2.119.1](https://github.com/kiva/ui/compare/v2.119.0...v2.119.1) (2022-04-27)
 
 
