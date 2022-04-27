@@ -1,6 +1,6 @@
 <template>
 	<kv-button
-		v-kv-track-event="['Lending', 'Add to basket', 'lend-button-click', loanId, loanId]"
+		v-kv-track-event="['Lending', eventInfo, 'lend-button-click', loanId, loanId]"
 		:state="buttonState"
 		@click="addToBasket"
 	>
@@ -31,6 +31,10 @@ export default {
 			type: [Number, String],
 			default: 25,
 		},
+		isPartialShare: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	data() {
 		return {
@@ -102,7 +106,10 @@ export default {
 		buttonState() {
 			if (this.loading) return 'loading';
 			return '';
-		}
+		},
+		eventInfo() {
+			return this.isPartialShare ? 'Add to basket (Partial Share)' : 'Add to basket';
+		},
 	}
 };
 

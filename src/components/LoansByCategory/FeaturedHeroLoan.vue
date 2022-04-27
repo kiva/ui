@@ -61,7 +61,9 @@
 									:is-lent-to="loan.userProperties.lentTo"
 									:is-funded="isFunded"
 									:is-selected-by-another="isSelectedByAnother"
-
+									:is-amount-lend-button="lessThan25"
+									:amount-left="amountLeft"
+									:show-now="true"
 									@click.native="trackInteraction({
 										interactionType: 'addToBasket',
 										interactionElement: 'Lend25'
@@ -169,6 +171,9 @@ export default {
 		showReadMore() {
 			return !!(this.loanUse.length > this.loanUseMaxLength);
 		},
+		lessThan25() {
+			return this.amountLeft < 25 && this.amountLeft !== 0;
+		}
 	},
 	methods: {
 		toggleFavorite() {
