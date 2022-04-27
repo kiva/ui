@@ -75,11 +75,11 @@ export default {
 		},
 		showNow: {
 			type: Boolean,
-			default: null
+			default: false
 		},
 		amountLeft: {
 			type: Number,
-			default: null,
+			default: 0,
 		}
 	},
 	data() {
