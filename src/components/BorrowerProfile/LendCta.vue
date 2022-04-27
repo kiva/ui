@@ -153,7 +153,12 @@
 							{{ ctaButtonText }}
 						</kv-ui-button>
 					</span>
-					<borrower-social-share :sector="sector" :borrower-name="name" />
+					<borrower-social-share
+						v-show="socialShareExp"
+						class="md:tw-hidden tw-block"
+						:sector="sector"
+						:borrower-name="name"
+					/>
 					<p
 						v-if="freeCreditWarning"
 						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
@@ -300,6 +305,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		socialShareExp: {
+			type: Boolean,
+			default: false
+		}
 	},
 	components: {
 		KvGrid,

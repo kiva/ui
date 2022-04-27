@@ -13,7 +13,15 @@
 			</div>
 			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8 tw-pointer-events-none">
 				<sidebar-container class="lg:tw-sticky lg:tw-top-12 lg:tw-mt-10 lg:tw-pb-8">
-					<lend-cta class="tw-pointer-events-auto" :loan-id="loanId" />
+					<lend-cta class="tw-pointer-events-auto" :loan-id="loanId"
+						:social-share-exp="showSocialShareBlock"
+					/>
+					<borrower-social-share
+						v-show="showSocialShareBlock"
+						class="tw-hidden md:tw-block tw-pointer-events-auto"
+						:sector="sector"
+						:borrower-name="name"
+					/>
 				</sidebar-container>
 			</div>
 			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-8">
@@ -79,6 +87,14 @@ import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import BorrowerSocialShare from '@/components/BorrowerProfile/BorrowerSocialShare';
+import publicSocialShareQuery from '@/graphql/query/borrowerSocialShareData.graphql';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
+import _get from 'lodash/get';
+
+const socialShareExpKey = 'borrower_social_share';
 
 const loanUseFilter = require('../../plugins/loan-use-filter');
 
@@ -178,6 +194,8 @@ export default {
 			status: '',
 			use: '',
 			description: '',
+			sector: '',
+			showSocialShareBlock: false
 		};
 	},
 	apollo: {
@@ -209,6 +227,10 @@ export default {
 						status
 						use
 						description
+						sector {
+							id
+							name
+						}
 					}
 				}
 			}
@@ -238,6 +260,7 @@ export default {
 			this.status = loan?.status ?? '';
 			this.use = loan?.use ?? '';
 			this.description = loan?.description ?? '';
+			this.sector = loan?.sector?.name ?? '';
 		},
 	},
 	mounted() {
@@ -247,6 +270,24 @@ export default {
 		if (expCookieSignifier === 'b') {
 			this.$kvTrackEvent('Borrower Profile', 'EXP-GROW-655-Aug2021', expCookieSignifier);
 		}
+		// EXP-MARS-95-May2022
+		this.apollo.watchQuery({ query: publicSocialShareQuery }).subscribe({
+			next: ({ data }) => {
+				const version = _get(data, 'experiment.version');
+				const { enabled } = getExperimentSettingCached(this.apollo, socialShareExpKey);
+
+				if (enabled) {
+					trackExperimentVersion(
+						this.apollo,
+						this.$kvTrackEvent,
+						'Borrower Profile',
+						socialShareExpKey,
+						'EXP-MARS-95-May2022'
+					);
+					this.showSocialShareBlock = version === 'b';
+				}
+			}
+		});
 	},
 	computed: {
 		imageShareUrl() {

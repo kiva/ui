@@ -1,14 +1,14 @@
 <template>
 	<section class="share hide-for-print">
-		<h1 class="share__title lg:tw-text-h2">
+		<h2 class="share__title">
 			Help by sharing
-		</h1>
+		</h2>
 		<div class="share__social social">
 			<a
 				data-testid="share-facebook-button"
 				class="social__btn social__btn--facebook"
 				:href="facebookShareUrl"
-				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Facebook-share']"
+				v-kv-track-event="['Borrower Profile', 'Social-Share-Lightbox', 'click-Facebook-share']"
 			>
 				<kv-icon name="facebook" title="Facebook" class="social__icon" />
 			</a>
@@ -18,7 +18,7 @@
 				:href="twitterShareUrl"
 				target="_blank"
 				rel="noopener"
-				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Twitte.r-share']"
+				v-kv-track-event="['Borrower Profile', 'Social-Share-Lightbox', 'click-Twitter-share']"
 				@click="$showTipMsg('Thanks for tweeting!')"
 			>
 				<kv-icon name="twitter" title="Twitter" class="social__icon" />
@@ -29,7 +29,7 @@
 				:href="emailShareUrl"
 				target="_blank"
 				rel="noopener"
-				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Email-share']"
+				v-kv-track-event="['Borrower Profile', 'Social-Share-Lightbox', 'click-Email-share']"
 				@click="$showTipMsg('Thanks for sharing!')"
 			>
 				<kv-icon name="email" title="Email" class="social__icon" />
@@ -38,12 +38,12 @@
 				data-testid="share-copy-link-button"
 				class="social__btn social__btn--link"
 				:disabled="copyStatus.disabled"
-				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Copy-link-share']"
+				v-kv-track-event="['Borrower Profile', 'Social-Share-Lightbox', 'click-Copy-link-share']"
 				@click="copyLink"
 			>
 				<kv-icon name="link" tile="Copy Link" class="social__icon" />
 				<span
-					class="tooltip tw-p-1 tw-text-small"
+					class="social__tooltip tw-p-1 tw-text-small"
 					:class="copyStatus.class"
 				>
 					{{ this.copyStatus.text }}
@@ -80,42 +80,28 @@ export default {
 				disabled: false,
 				text: ''
 			},
-			isTeamInvitation: false,
-			maxMessageLength: 280,
-			message: 'This is a simple message',
-			selectedLoanIndex: 0,
-			selectedLenderTeam: this.lender?.teams?.[0]?.teamPublicId
+			shareMessage: '',
+			shareLink: `https://${this.$appConfig.host}${this.$route.path}`
 		};
 	},
 	computed: {
-		isSuggestedMessage() {
-			return this.message.trim() === this.suggestedMessage;
-		},
-		shareMessage() {
-			return this.message.trim() || this.suggestedMessage;
-		},
-		shareLink() {
-			const base = `https://${this.$appConfig.host}`;
-			return base;
-		},
 		facebookShareUrl() {
-			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
 			return this.getFullUrl('https://www.facebook.com/dialog/share', {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
 				href: `${this.shareLink}?utm_source=facebook.com&utm_medium=social&utm_campaign=social_share_checkout`,
-				redirect_uri: `${pageUrl}?kiva_transaction_id=${this.$route.query.kiva_transaction_id}`,
+				redirect_uri: `${this.shareLink}?kiva_transaction_id=${this.$route.query.kiva_transaction_id}`,
 				quote: this.shareMessage,
 			});
 		},
 		emailShareUrl() {
-			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
-			// eslint-disable-next-line max-len
-			return this.getFullUrl(`Mailto:?Subject=Help fund ${this.borrowerName} 's ${this.sector} loan through Kiva!&Body=Hello,%0d%0dI thought you might be interested in supporting this Kiva loan, ${pageUrl}.%0d%0dEven a small amount could help fund ${this.borrowerName}'s loan. And if you can't make a donation, it would be great if you could share the fundraiser to help spread the word.%0d%0dThanks for taking a look!.`, {
-				mini: 'true',
-				source: `https://${this.$appConfig.host}`,
-				summary: this.shareMessage.substring(0, 256),
-				url: `${this.shareLink}?utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout`
+			return this.getFullUrl('Mailto:', {
+				Subject: `Help fund ${this.borrowerName} 's ${this.sector} loan through Kiva!`,
+				// eslint-disable-next-line max-len
+				Body: `Hello,\n\nI thought you might be interested in supporting this Kiva loan, ${this.shareLink}.\n\n`
+					+ `Even a small amount could help fund ${this.borrowerName}'s loan. And if you can't make a `
+					+ 'donation, it would be great if you could share the fundraiser to help spread the word.'
+					+ '\n\nThanks for taking a look!.',
 			});
 		},
 		twitterShareUrl() {
@@ -145,9 +131,6 @@ export default {
 					this.$showTipMsg('Thanks for sharing to Facebook!');
 				}
 			}
-		},
-		useSuggestedMessage() {
-			this.message = this.suggestedMessage;
 		},
 		async copyLink() {
 			const url = `${this.shareLink}?utm_source=social_share_link&utm_campaign=social_share_checkout`;
@@ -190,13 +173,6 @@ $color-twitter: #08a0e9;
 $color-email: #AB4147;
 $color-clipboard: #DEB13C;
 
-.tooltip {
-    visibility: hidden;
-    position: absolute;
-    margin-bottom: rem-calc(69);
-    margin-left: rem-calc(-15);
-}
-
 // layout of blocks
 .share {
 	width: 100%;
@@ -204,14 +180,10 @@ $color-clipboard: #DEB13C;
 	margin: rem-calc(21) auto;
     padding: 0 rem-calc(15) 0 rem-calc(15);
 
-	&__wrapper {
-		display: flex;
-		flex-direction: column;
-
-		@include breakpoint(large) {
-			flex-direction: row;
-			flex-wrap: wrap;
-		}
+	@include breakpoint(large) {
+		background: white;
+		padding: 32px;
+		border-radius: 14px;
 	}
 
     &__title {
@@ -221,85 +193,27 @@ $color-clipboard: #DEB13C;
             margin-bottom: rem-calc(24);
 		}
     }
-
-	&__message {
-		flex: 1;
-		margin: 1rem 0;
-
-		@include breakpoint(large) {
-			margin: 0 1rem 1rem 1rem;
-		}
-	}
-
-	&__social {
-		@include breakpoint(large) {
-			width: rem-calc(135);
-		}
-	}
-
-	&__teams {
-		flex-basis: 100%;
-		justify-content: center;
-	}
-
-	&__headline {
-		@include big-text();
-
-		text-align: center;
-		margin-bottom: 1.5rem;
-		margin-top: 1rem;
-	}
 }
 
 // blocks
-
-.message {
-	position: relative;
-
-	&__label {
-		@include visually-hidden();
-	}
-
-	&__textbox {
-		resize: none;
-		height: rem-calc(274);
-		font-style: italic;
-		margin: 0;
-		padding: 1rem 1rem 3rem 1rem;
-	}
-
-	&__charcount,
-	&__suggested-btn {
-		position: absolute;
-		bottom: 1rem;
-	}
-
-	&__charcount {
-		right: 1rem;
-		user-select: none;
-	}
-
-	&__suggested-btn {
-		left: 1rem;
-		font-weight: unset;
-		text-decoration: underline;
-	}
-}
 
 .social {
 	display: flex;
     justify-content: space-between;
 	flex-wrap: wrap;
 
-	@include breakpoint(large) {
-		flex-direction: column;
-	}
-
 	&__icon {
 		width: rem-calc(28);
 		height: rem-calc(28);
 		flex-shrink: 0;
 		fill: #fff;
+	}
+
+	&__tooltip {
+		visibility: hidden;
+		position: absolute;
+		margin-bottom: rem-calc(69);
+		margin-left: rem-calc(-15);
 	}
 
 	&__btn {
@@ -312,15 +226,6 @@ $color-clipboard: #DEB13C;
 
 		&:nth-child(2n) {
 			margin-right: 0;
-		}
-
-		@include breakpoint(large) {
-			width: 100%;
-			margin-right: 0;
-
-			&:last-child {
-				margin-bottom: 0;
-			}
 		}
 
 		&--facebook {

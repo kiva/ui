@@ -1,0 +1,14 @@
+query borrowerSocialShareData {
+	general {
+		socialShareExperiment: uiExperimentSetting(
+			key: "borrower_social_share"
+		) {
+			key
+			value
+		}
+	}
+	experiment(id: "borrower_social_share") @client {
+		id
+		version
+	}
+}
