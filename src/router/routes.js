@@ -222,7 +222,7 @@ module.exports = [
 	},
 	{
 		path: '/lend/filter-alpha',
-		component: () => import('@/pages/Lend/FilterAlpha/LendFilterAlpha'),
+		component: () => import('@/pages/Lend/LoanSearchPage'),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}
