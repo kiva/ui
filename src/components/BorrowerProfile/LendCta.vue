@@ -484,6 +484,12 @@ export default {
 				this.cycleStatsSlot();
 			}
 		},
+		unreservedAmount(newValue, previousValue) {
+			// set initial selected value for sub 25 loan if shown
+			if (newValue !== previousValue && previousValue === '' && newValue < 25) {
+				this.selectedOption = parseInt(newValue, 10);
+			}
+		}
 	},
 	computed: {
 		isInBasket() {
@@ -503,7 +509,9 @@ export default {
 			return isMatchAtRisk(mockLoan);
 		},
 		prices() {
-			const minAmount = parseFloat(this.minNoteSize);
+			// We don't want to open up $5 loan shares for loans with more than $25 at this time
+			// IF we wanted to show this interface on loans with less than 25 remaining they would see the selector
+			const minAmount = parseFloat(this.unreservedAmount < 25 ? this.minNoteSize : 25); // 25_hard_coded
 			// limit at 20 price options
 			return buildPriceArray(parseFloat(this.unreservedAmount), minAmount).slice(0, 20);
 		},
