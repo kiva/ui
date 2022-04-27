@@ -102,7 +102,7 @@ export default {
 		buttonState() {
 			if (this.loading) return 'loading';
 			return '';
-		}
+		},
 	}
 };
 

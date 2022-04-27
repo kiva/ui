@@ -98,6 +98,9 @@
 							:is-selected-by-another="isSelectedByAnother"
 							:is-simple-lend-button="false"
 							:disable-redirects="disableRedirects"
+							:is-amount-lend-button="lessThan25"
+							:amount-left="amountLeft"
+							:show-now="true"
 							@click.native="trackInteraction({
 								interactionType: 'addToBasket',
 								interactionElement: 'Lend25'
@@ -328,6 +331,9 @@ export default {
 		mobileSections() {
 			return this.tabs.filter(({ component }) => component);
 		},
+		lessThan25() {
+			return this.amountLeft < 25 && this.amountLeft !== 0;
+		}
 	},
 	methods: {
 		trackInteraction(args) {

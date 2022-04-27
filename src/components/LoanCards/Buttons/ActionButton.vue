@@ -6,6 +6,8 @@
 		:loan="loan"
 		:minimal-checkout-button="minimalCheckoutButton"
 		@add-to-basket="handleAddToBasketEvent"
+		:show-now="showNow"
+		:amount-left="amountLeft"
 	/>
 </template>
 
@@ -71,6 +73,14 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		showNow: {
+			type: Boolean,
+			default: false
+		},
+		amountLeft: {
+			type: Number,
+			default: 0,
+		}
 	},
 	data() {
 		return {};

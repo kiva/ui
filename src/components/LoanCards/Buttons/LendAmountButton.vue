@@ -2,7 +2,7 @@
 	<lend-button
 		price="amountLeft"
 		:loan-id="loanId"
-		@add-to-basket="$emit('add-to-basket', $event)"
+		@add-to-basket="addToBasket($event)"
 	>
 		Lend ${{ amountLeft }}<span v-if="showNow"> now</span>
 	</lend-button>
@@ -27,18 +27,17 @@ export default {
 		showNow: {
 			type: Boolean,
 			default: false
+		},
+		amountLeft: {
+			type: Number,
+			default: 20
 		}
 	},
-	computed: {
-		// TODO: we should swap this out for a prop if the parent component needs to calculate this anyway
-		amountLeft() {
-			const { loanAmount, loanFundraisingInfo } = this.loan;
-			const { isExpiringSoon, fundedAmount, reservedAmount } = loanFundraisingInfo;
-			let remainingAmount = parseFloat(loanAmount) - parseFloat(fundedAmount);
-			if (!isExpiringSoon) {
-				remainingAmount -= parseFloat(reservedAmount);
-			}
-			return parseInt(remainingAmount, 10);
+	methods: {
+		addToBasket(event) {
+			// eslint-disable-next-line max-len
+			this.$kvTrackEvent('Lending', 'Add to basket (Partial Share)', 'lend-button-click', this.loanId, this.amountLeft);
+			this.$emit('add-to-basket', event);
 		}
 	}
 };
