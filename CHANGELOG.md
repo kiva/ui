@@ -1,3 +1,11 @@
+### [2.122.1](https://github.com/kiva/ui/compare/v2.122.0...v2.122.1) (2022-04-27)
+
+
+### Bug Fixes
+
+* set initially select value for sub 25 loans if the drop down is shown ([00fbb07](https://github.com/kiva/ui/commit/00fbb07750fb4b6fde4ad76d2737afbea24f676f))
+* use a 25 increment in the dropdown for loans with 25 or more remaining ([9547254](https://github.com/kiva/ui/commit/954725402157f8e57443248c9c7f2ff7c6e96687))
+
 ## [2.122.0](https://github.com/kiva/ui/compare/v2.121.0...v2.122.0) (2022-04-27)
 
 
