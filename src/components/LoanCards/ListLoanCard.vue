@@ -73,7 +73,10 @@
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
 						:is-expired="isExpired"
-						class="tw-mt-0"
+						:is-amount-lend-button="lessThan25"
+						:amount-left="amountLeft"
+						:show-now="true"
+						class="tw-mt-0 tw-w-full"
 						@click.native="trackInteraction({
 							interactionType: 'addToBasket',
 							interactionElement: 'Lend25'
@@ -118,7 +121,7 @@
 				</div>
 			</div>
 			<div class="row hide-for-large">
-				<div class="small-12 medium-8 medium-offset-2 columns">
+				<div class="small-12 medium-8 medium-offset-2 columns tw-py-1">
 					<action-button
 						:loan-id="loan.id"
 						:loan="loan"
@@ -127,7 +130,10 @@
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
 						:is-expired="isExpired"
-						class="tw-mt-0"
+						:is-amount-lend-button="lessThan25"
+						:amount-left="amountLeft"
+						:show-now="true"
+						class="tw-mt-0 tw-w-full"
 
 						@click.native="trackInteraction({
 							interactionType: 'addToBasket',
@@ -226,6 +232,11 @@ export default {
 			type: Number,
 			default: 0,
 		},
+	},
+	computed: {
+		lessThan25() {
+			return this.amountLeft < 25 && this.amountLeft !== 0;
+		}
 	},
 	methods: {
 		toggleFavorite() {
