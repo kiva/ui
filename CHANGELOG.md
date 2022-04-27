@@ -1,3 +1,11 @@
+## [2.123.0](https://github.com/kiva/ui/compare/v2.122.1...v2.123.0) (2022-04-27)
+
+
+### Features
+
+* loanprice component was updated to hide the dropdown component if the price is less than 25 ([837f018](https://github.com/kiva/ui/commit/837f0183c9a3683a28165d1c81e708700f414e73))
+* price was added as a text representation ([bff48c7](https://github.com/kiva/ui/commit/bff48c7b2f85eb3cfb1a6b08950f714239f1d654))
+
 ### [2.122.1](https://github.com/kiva/ui/compare/v2.122.0...v2.122.1) (2022-04-27)
 
 
