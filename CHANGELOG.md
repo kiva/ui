@@ -1,3 +1,10 @@
+## [2.125.0-next.1](https://github.com/kiva/ui/compare/v2.124.2...v2.125.0-next.1) (2022-04-28)
+
+
+### Features
+
+* include optimizely snippet ([4b9e5eb](https://github.com/kiva/ui/commit/4b9e5eb3c5c0089b0719384064ea8a0d5696b851))
+
 ### [2.124.2](https://github.com/kiva/ui/compare/v2.124.1...v2.124.2) (2022-04-28)
 
 
