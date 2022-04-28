@@ -120,7 +120,7 @@
 									:show-now="true"
 									:amount-left="unreservedAmount"
 									@add-to-basket="addToBasket"
-									v-if="lendButtonVisibility && isLessThan25"
+									v-if="(lendButtonVisibility || this.state === 'lent-to') && isLessThan25"
 								/>
 
 								<!-- Adding to basket button -->
