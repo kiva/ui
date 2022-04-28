@@ -1,3 +1,10 @@
+### [2.124.1](https://github.com/kiva/ui/compare/v2.124.0...v2.124.1) (2022-04-28)
+
+
+### Bug Fixes
+
+* quick prop cleanup ([9f5d4d4](https://github.com/kiva/ui/commit/9f5d4d452fb503f16368856e5e679608e32ab8fb))
+
 ## [2.124.0](https://github.com/kiva/ui/compare/v2.123.0...v2.124.0) (2022-04-28)
 
 
