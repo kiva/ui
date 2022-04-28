@@ -73,10 +73,12 @@
 					<action-button
 						v-else
 						class="action-button"
+						:amount-left="amountLeft"
 						:disable-redirects="disableRedirects"
 						:loan-id="loan.id"
 						:loan="loan"
 						:items-in-basket="itemsInBasket"
+						:is-amount-lend-button="lessThan25"
 						:is-lent-to="loan.userProperties.lentTo"
 						:is-funded="isFunded"
 						:is-expired="isExpired"
@@ -199,6 +201,11 @@ export default {
 			type: Number,
 			default: 0,
 		},
+	},
+	computed: {
+		lessThan25() {
+			return this.amountLeft < 25 && this.amountLeft !== 0;
+		}
 	},
 	methods: {
 		trackInteraction(args) {
