@@ -1,6 +1,6 @@
 <template>
 	<lend-button
-		price="amountLeft"
+		:price="amountLeft"
 		:loan-id="loanId"
 		@add-to-basket="addToBasket($event)"
 	>

@@ -46,19 +46,20 @@
 						{{ lgScreenheadline }}
 					</p>
 					<span class="tw-flex tw-pb-1 lg:tw-pb-3">
+						<!-- eslint-disable-next-line max-len -->
 						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
 							<fieldset class="tw-w-full tw-flex" :disabled="isAdding"
 								data-testid="bp-lend-cta-select-and-button"
 							>
 								<label
-									v-if="hideShowLendDropdown"
+									v-if="hideShowLendDropdown && isLessThan25"
 									for="LoanAmountDropdown"
 									class="tw-sr-only"
 								>
 									Lend amount
 								</label>
 								<kv-ui-select
-									v-if="hideShowLendDropdown"
+									v-if="hideShowLendDropdown && !isLessThan25"
 									id="LoanAmountDropdown"
 									class="tw-pr-2.5 tw--mb-2"
 									data-testid="bp-lend-cta-amount-dropdown"
@@ -82,7 +83,7 @@
 								<!-- Lend button -->
 								<kv-ui-button
 									key="lendButton"
-									v-if="lendButtonVisibility"
+									v-if="lendButtonVisibility && !isLessThan25"
 									class="tw-inline-flex tw-flex-1"
 									data-testid="bp-lend-cta-lend-button"
 									type="submit"
@@ -98,7 +99,7 @@
 								<!-- Lend again/lent previously button -->
 								<kv-ui-button
 									key="lendAgainButton"
-									v-if="this.state === 'lent-to'"
+									v-if="this.state === 'lent-to' && !isLessThan25"
 									class="tw-inline-flex tw-flex-1"
 									data-testid="bp-lend-cta-lend-again-button"
 									type="submit"
@@ -110,6 +111,17 @@
 								>
 									Lend again
 								</kv-ui-button>
+
+								<!-- Stranded loans -->
+								<lend-amount-button
+									class="tw-w-full"
+									:loan-id="loanId"
+									:loan="loan"
+									:show-now="true"
+									:amount-left="unreservedAmount"
+									@add-to-basket="addToBasket"
+									v-if="lendButtonVisibility && isLessThan25"
+								/>
 
 								<!-- Adding to basket button -->
 								<kv-ui-button
@@ -286,6 +298,7 @@ import { buildPriceArray, isMatchAtRisk } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
+import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -300,6 +313,7 @@ export default {
 		},
 	},
 	components: {
+		LendAmountButton,
 		KvGrid,
 		KvMaterialIcon,
 		KvUiButton,
@@ -309,6 +323,14 @@ export default {
 	},
 	data() {
 		return {
+			loan: {
+				userProperties: {},
+				loanFundraisingInfo: {},
+				geocode: {
+					country: {},
+				},
+				image: {},
+			},
 			isLoggedIn: false,
 			mdiLightningBolt,
 			defaultSelectorAmount: 25,
@@ -393,6 +415,7 @@ export default {
 			const loan = result?.data?.lend?.loan;
 			const basket = result?.data?.shop?.basket;
 
+			this.loan = loan;
 			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
 			this.loanAmount = loan?.loanAmount ?? '0';
 			this.status = loan?.status ?? '';
@@ -419,7 +442,7 @@ export default {
 		addToBasket() {
 			this.isAdding = true;
 			setLendAmount({
-				amount: this.selectedOption,
+				amount: this.isLessThan25 ? this.unreservedAmount : this.selectedOption,
 				apollo: this.apollo,
 				loanId: this.loanId,
 			}).then(() => {
@@ -601,6 +624,9 @@ export default {
 			}
 			return 'tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7';
 		},
+		isLessThan25() {
+			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
+		}
 	},
 	mounted() {
 		this.createWrapperObserver();
