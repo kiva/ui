@@ -1,6 +1,6 @@
 <template>
 	<section
-		style="max-width: 600px"
+		style="max-width: 600px;"
 		class="tw-my-2.5 tw-px-2 md:tw-bg-primary md:tw-p-4 md:tw-rounded"
 	>
 		<p class="tw-text-h3 tw-hidden md:tw-block tw-mb-3">
