@@ -1,3 +1,5 @@
+import { cy, it } from "date-fns/locale";
+
 describe('Meta information', () => {
 	it('Homepage', () => {
 		cy.visit('/');
@@ -30,5 +32,23 @@ describe('Meta information', () => {
 		cy.visit('/lend-by-category/women');
 
 		cy.title().should('eq', 'Loan to women around the world | Kiva');
+	});
+
+	it('Auto Deposit Landing Page', () => {
+		cy.visit('/auto-deposit');
+
+		cy.title().should('eq', 'Set up an Auto Deposit | Kiva');
+		cy.document().get('head meta[name="description"]')
+			.should('have.attr', 'content', 'With Auto Deposit, your funds are automatically added into your '
+				+ 'Kiva lending account, so you can continue to change lives without even thinking about it.');
+	});
+
+	it('Monthly Good Landing Page', () => {
+		cy.visit('/monthlygood');
+
+		cy.title().should('eq', 'Make an impact with Monthly Good | Kiva');
+		cy.document().get('head meta[name="description"]')
+			.should('have.attr', 'content', 'Monthly good allows you to support borrowers worldwide with as '
+			+ 'little as $5 a month. 100% of your loan goes to the field - make a difference today!');
 	});
 });

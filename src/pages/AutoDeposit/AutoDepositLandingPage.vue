@@ -141,8 +141,18 @@ const pageQuery = gql`query autoDepositLandingPage {
 }`;
 
 export default {
-	metaInfo: {
-		title: 'Auto Deposit',
+	metaInfo() {
+		return 	{
+			title: 'Set up an Auto Deposit | Kiva',
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: 'With Auto Deposit, your funds are automatically added into your Kiva lending account,'
+						+ ' so you can continue to change lives without even thinking about it.'
+				}
+			]
+		};
 	},
 	components: {
 		AutoDepositSignUpForm,
