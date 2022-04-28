@@ -1,3 +1,16 @@
+## [2.124.0](https://github.com/kiva/ui/compare/v2.123.0...v2.124.0) (2022-04-28)
+
+
+### Features
+
+* stranded loans lend button on borrower profile ([4f67928](https://github.com/kiva/ui/commit/4f67928a75d6ee1edbd21b5e5904f39e4e4c5d21))
+
+
+### Bug Fixes
+
+* small typo ([83c3729](https://github.com/kiva/ui/commit/83c37299aa6def76b0664fea69a530cd4d1075c2))
+* update for previously lent ([3ed170b](https://github.com/kiva/ui/commit/3ed170b61ac562379593907b80b91381aa9fe393))
+
 ## [2.123.0](https://github.com/kiva/ui/compare/v2.122.1...v2.123.0) (2022-04-27)
 
 
