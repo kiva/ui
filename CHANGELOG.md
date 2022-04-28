@@ -1,3 +1,11 @@
+### [2.124.2](https://github.com/kiva/ui/compare/v2.124.1...v2.124.2) (2022-04-28)
+
+
+### Bug Fixes
+
+* add dollar sign on text value ([bf3de28](https://github.com/kiva/ui/commit/bf3de28470317c5e57e1e7ff800a59bfd4dc726e))
+* ensure sub 25 lend button is present for loans with less than 25 remaining ([4e0dabc](https://github.com/kiva/ui/commit/4e0dabc319813fb7cbf59508d3e0e24b1b263c24))
+
 ### [2.124.1](https://github.com/kiva/ui/compare/v2.124.0...v2.124.1) (2022-04-28)
 
 
