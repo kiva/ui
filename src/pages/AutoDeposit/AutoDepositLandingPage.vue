@@ -143,7 +143,7 @@ const pageQuery = gql`query autoDepositLandingPage {
 export default {
 	metaInfo() {
 		return 	{
-			title: 'Set up an Auto Deposit | Kiva',
+			title: 'Set up an Auto Deposit',
 			meta: [
 				{
 					vmid: 'description',

@@ -302,7 +302,7 @@ const pageQuery = gql`
 export default {
 	metaInfo() {
 		return	{
-			title: 'Make an impact with Monthly Good | Kiva',
+			title: 'Make an impact with Monthly Good',
 			meta: [
 				{
 					vmid: 'description',

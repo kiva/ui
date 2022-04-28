@@ -1,5 +1,3 @@
-import { cy, it } from "date-fns/locale";
-
 describe('Meta information', () => {
 	it('Homepage', () => {
 		cy.visit('/');
