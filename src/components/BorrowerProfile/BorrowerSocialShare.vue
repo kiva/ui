@@ -1,8 +1,8 @@
 <template>
-	<section class="share hide-for-print">
-		<h2 class="share__title">
+	<section class="tw-my-[21px] tw-px-[15px] tw-max-w-[600px] md:tw-bg-primary md:tw-p-4 md:tw-rounded">
+		<p class="tw-text-h3 tw-hidden lg:tw-block tw-mb-3">
 			Help by sharing
-		</h2>
+		</p>
 		<div class="share__social social">
 			<a
 				data-testid="share-facebook-button"
@@ -80,24 +80,27 @@ export default {
 				disabled: false,
 				text: ''
 			},
-			shareMessage: '',
-			shareLink: `https://${this.$appConfig.host}${this.$route.path}`
+			shareMessage: ''
 		};
 	},
 	computed: {
+		shareLink() {
+			return `https://${this.$appConfig.host}${this.$route.path}`.replace('-beta', '');
+		},
 		facebookShareUrl() {
+			const fbLink = `${this.shareLink}?utm_source=facebook.com`
+				+ '&utm_medium=social&utm_campaign=social_share_checkout';
 			return this.getFullUrl('https://www.facebook.com/dialog/share', {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
-				href: `${this.shareLink}?utm_source=facebook.com&utm_medium=social&utm_campaign=social_share_checkout`,
-				redirect_uri: `${this.shareLink}?kiva_transaction_id=${this.$route.query.kiva_transaction_id}`,
+				href: fbLink,
+				redirect_uri: fbLink,
 				quote: this.shareMessage,
 			});
 		},
 		emailShareUrl() {
 			return this.getFullUrl('Mailto:', {
 				Subject: `Help fund ${this.borrowerName} 's ${this.sector} loan through Kiva!`,
-				// eslint-disable-next-line max-len
 				Body: `Hello,\n\nI thought you might be interested in supporting this Kiva loan, ${this.shareLink}.\n\n`
 					+ `Even a small amount could help fund ${this.borrowerName}'s loan. And if you can't make a `
 					+ 'donation, it would be great if you could share the fundraiser to help spread the word.'
@@ -173,38 +176,15 @@ $color-twitter: #08a0e9;
 $color-email: #AB4147;
 $color-clipboard: #DEB13C;
 
-// layout of blocks
-.share {
-	width: 100%;
-	max-width: rem-calc(600);
-	margin: rem-calc(21) auto;
-	padding: 0 rem-calc(15) 0 rem-calc(15);
-
-	@include breakpoint(large) {
-		background: white;
-		padding: 32px;
-		border-radius: 14px;
-	}
-
-	&__title {
-		display: none;
-		@include breakpoint(large) {
-			display: block;
-			margin-bottom: rem-calc(24);
-		}
-	}
-}
-
 // blocks
-
 .social {
 	display: flex;
 	justify-content: space-between;
 	flex-wrap: wrap;
 
 	&__icon {
-		width: rem-calc(28);
-		height: rem-calc(28);
+		width: rem-calc(26);
+		height: rem-calc(26);
 		flex-shrink: 0;
 		fill: #fff;
 	}
@@ -220,7 +200,7 @@ $color-clipboard: #DEB13C;
 		display: flex;
 		align-items: center;
 		border-radius: 100%;
-		padding: rem-calc(12);
+		padding: rem-calc(11);
 		font-weight: $button-font-weight;
 		line-height: 1;
 
