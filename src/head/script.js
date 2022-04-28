@@ -118,6 +118,14 @@ export default (config, globalOneTrustEvent) => {
 		/* eslint-enable */
 	};
 
+	// Optimizely experiment loader
+	const insertOptimizely = () => {
+		const p = document.getElementsByTagName('script')[0];
+		const s = document.createElement('script');
+		s.src = 'https://cdn.optimizely.com/js/21296940167.js';
+		p.parentNode.insertBefore(s, p);
+	};
+
 	// Always load
 	// PerimeterX snippet
 	if (config.enablePerimeterx) {
@@ -172,6 +180,9 @@ export default (config, globalOneTrustEvent) => {
 			* monitor its performance.
 			* */
 			if (config.enableAnalytics) {
+				if (!optout) {
+					OneTrust.InsertHtml('', 'head', insertOptimizely, null, 'C0002');
+				}
 				if (config.enableGA && !optout) {
 					OneTrust.InsertHtml('', 'head', insertGoogleAnalytics, null, 'C0002');
 				}
