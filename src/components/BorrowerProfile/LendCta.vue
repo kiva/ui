@@ -116,7 +116,6 @@
 								<lend-amount-button
 									class="tw-w-full"
 									:loan-id="loanId"
-									:loan="loan"
 									:show-now="true"
 									:amount-left="unreservedAmount"
 									@add-to-basket="addToBasket"
@@ -323,14 +322,6 @@ export default {
 	},
 	data() {
 		return {
-			loan: {
-				userProperties: {},
-				loanFundraisingInfo: {},
-				geocode: {
-					country: {},
-				},
-				image: {},
-			},
 			isLoggedIn: false,
 			mdiLightningBolt,
 			defaultSelectorAmount: 25,
@@ -415,7 +406,6 @@ export default {
 			const loan = result?.data?.lend?.loan;
 			const basket = result?.data?.shop?.basket;
 
-			this.loan = loan;
 			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
 			this.loanAmount = loan?.loanAmount ?? '0';
 			this.status = loan?.status ?? '';

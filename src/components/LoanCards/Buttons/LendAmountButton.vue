@@ -20,10 +20,6 @@ export default {
 			type: Number,
 			default: null
 		},
-		loan: {
-			type: Object,
-			default: () => {}
-		},
 		showNow: {
 			type: Boolean,
 			default: false
