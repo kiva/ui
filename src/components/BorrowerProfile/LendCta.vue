@@ -52,7 +52,7 @@
 								data-testid="bp-lend-cta-select-and-button"
 							>
 								<label
-									v-if="hideShowLendDropdown && isLessThan25"
+									v-if="hideShowLendDropdown && !isLessThan25"
 									for="LoanAmountDropdown"
 									class="tw-sr-only"
 								>
