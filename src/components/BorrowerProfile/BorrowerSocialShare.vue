@@ -1,6 +1,9 @@
 <template>
-	<section class="tw-my-[21px] tw-px-[15px] tw-max-w-[600px] md:tw-bg-primary md:tw-p-4 md:tw-rounded">
-		<p class="tw-text-h3 tw-hidden lg:tw-block tw-mb-3">
+	<section
+		style="max-width: 600px"
+		class="tw-my-2.5 tw-px-2 md:tw-bg-primary md:tw-p-4 md:tw-rounded"
+	>
+		<p class="tw-text-h3 tw-hidden md:tw-block tw-mb-3">
 			Help by sharing
 		</p>
 		<div class="share__social social">
