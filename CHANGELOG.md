@@ -1,3 +1,10 @@
+## [2.125.0](https://github.com/kiva/ui/compare/v2.124.2...v2.125.0) (2022-04-29)
+
+
+### Features
+
+* extract func from filteralpha to loansearch ([51f0cbb](https://github.com/kiva/ui/commit/51f0cbbfa271a1c10c0aea20af88c6faef98aefc))
+
 ### [2.124.2](https://github.com/kiva/ui/compare/v2.124.1...v2.124.2) (2022-04-28)
 
 
