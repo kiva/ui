@@ -89,7 +89,7 @@ import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import BorrowerSocialShare from '@/components/BorrowerProfile/BorrowerSocialShare';
 import publicSocialShareQuery from '@/graphql/query/borrowerSocialShareData.graphql';
 import {
-	getExperimentSettingCached,
+	getExperimentSettingAsync,
 	trackExperimentVersion
 } from '@/util/experimentUtils';
 
@@ -272,18 +272,19 @@ export default {
 		// EXP-MARS-95-May2022
 		this.apollo.watchQuery({ query: publicSocialShareQuery }).subscribe({
 			next: ({ data }) => {
-				const { enabled } = getExperimentSettingCached(this.apollo, socialShareExpKey);
-
-				if (enabled) {
-					trackExperimentVersion(
-						this.apollo,
-						this.$kvTrackEvent,
-						'Borrower Profile',
-						socialShareExpKey,
-						'EXP-MARS-95-May2022'
-					);
-					this.showSocialShareBlock = data?.experiment?.version === 'b';
-				}
+				return getExperimentSettingAsync(this.apollo, socialShareExpKey)
+					.then(({ enabled }) => {
+						if (enabled) {
+							trackExperimentVersion(
+								this.apollo,
+								this.$kvTrackEvent,
+								'Borrower Profile',
+								socialShareExpKey,
+								'EXP-MARS-95-May2022'
+							);
+							this.showSocialShareBlock = data?.experiment?.version === 'b';
+						}
+					});
 			}
 		});
 	},

@@ -7,8 +7,4 @@ query borrowerSocialShareData {
 			value
 		}
 	}
-	experiment(id: "borrower_social_share") @client {
-		id
-		version
-	}
 }
