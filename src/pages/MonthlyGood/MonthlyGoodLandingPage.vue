@@ -300,8 +300,18 @@ const pageQuery = gql`
 `;
 
 export default {
-	metaInfo: {
-		title: 'Start Monthly Good',
+	metaInfo() {
+		return	{
+			title: 'Make an impact with Monthly Good',
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: 'Monthly good allows you to support borrowers worldwide with as little as $5 a month.'
+						+ ' 100% of your loan goes to the field - make a difference today!'
+				}
+			]
+		};
 	},
 	mixins: [
 		loanGroupCategoriesMixin
