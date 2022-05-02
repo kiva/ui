@@ -45,8 +45,15 @@ const pageQuery = gql`query donateContent {
 
 export default {
 	metaInfo() {
-		return {
-			title: `${this.pageTitle}`,
+		return 	{
+			title: 'Donate to Kiva and create real change',
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: 'Donations from people like you allow Kiva to support more people worldwide. Donate today to help us build a more financially inclusive world.'
+				}
+			]
 		};
 	},
 	components: {
@@ -81,11 +88,6 @@ export default {
 	computed: {
 		page() {
 			return this.pageData?.page;
-		},
-		pageTitle() {
-			const layoutTitle = this.page?.pageLayout?.pageTitle;
-			const pageTitle = this.page?.pageTitle ?? 'Loans that change lives';
-			return layoutTitle || pageTitle;
 		},
 		heroContentGroup() {
 			return this.page?.contentGroups?.webLenderDonationHero || {};

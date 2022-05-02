@@ -45,8 +45,18 @@ export default {
 			default: null,
 		},
 	},
-	metaInfo: {
-		title: 'Donate to Kiva today!'
+	metaInfo() {
+		return 	{
+			title: 'Donate to Kiva and support our mission!',
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: 'Your generous donations help Kiva continue and grow our mission of financial inclusivity.'
+						+ ' Click here to learn more and make a difference.'
+				}
+			]
+		};
 	},
 	components: {
 		DonateForm,
