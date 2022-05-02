@@ -1,3 +1,15 @@
+## [2.126.0](https://github.com/kiva/ui/compare/v2.125.0...v2.126.0) (2022-05-02)
+
+
+### Features
+
+* added meta information ([a1420cf](https://github.com/kiva/ui/commit/a1420cf19e25736f4c5203409a0f1a68ac26d9a5))
+
+
+### Bug Fixes
+
+* small adjustments on e2e test ([8ce7d95](https://github.com/kiva/ui/commit/8ce7d9534be681af8c592d6b09f89c53d0e65636))
+
 ## [2.125.0](https://github.com/kiva/ui/compare/v2.124.2...v2.125.0) (2022-04-29)
 
 
