@@ -2,9 +2,13 @@ export default (config, globalOneTrustEvent) => {
 	// check for opt out of 3rd party scripts + cookies
 	const cookies = typeof document !== 'undefined' ? document.cookie.split(';') : [];
 	let optout = false;
+	let optimizelyConsent = false;
 	for (let i = 0; i < cookies.length; i++) { // eslint-disable-line
 		if (cookies[i].indexOf('kvgdpr') !== -1 && cookies[i].indexOf('opted_out=true') !== -1) {
 			optout = true;
+		}
+		if (!optout && cookies[i].indexOf('optimizelyOptOut') !== -1 && cookies[i].indexOf('false') !== -1) {
+			optimizelyConsent = true;
 		}
 	}
 	// scaffold global dataLayer
@@ -119,11 +123,25 @@ export default (config, globalOneTrustEvent) => {
 	};
 
 	// Optimizely experiment loader
-	const insertOptimizely = () => {
+	if (!optimizelyConsent) {
+		window.optimizely = window.optimizely || [];
+		window.optimizely.push({
+			type: 'optOut',
+			isOptOut: true,
+		});
+	}
+	(function loadOptimizely() {
 		const p = document.getElementsByTagName('script')[0];
 		const s = document.createElement('script');
 		s.src = 'https://cdn.optimizely.com/js/21296940167.js';
 		p.parentNode.insertBefore(s, p);
+	}());
+	const insertOptimizely = () => {
+		window.optimizely = window.optimizely || [];
+		window.optimizely.push({
+			type: 'optOut',
+			isOptOut: false,
+		});
 	};
 
 	// Always load
