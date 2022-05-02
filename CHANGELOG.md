@@ -1,3 +1,10 @@
+## [2.127.0](https://github.com/kiva/ui/compare/v2.126.0...v2.127.0) (2022-05-02)
+
+
+### Features
+
+* condtion for existing users was added to mg pop up ([2db4778](https://github.com/kiva/ui/commit/2db47784d27a398971ef4031e227cbcc0e79213a))
+
 ## [2.126.0](https://github.com/kiva/ui/compare/v2.125.0...v2.126.0) (2022-05-02)
 
 
