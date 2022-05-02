@@ -49,4 +49,22 @@ describe('Meta information', () => {
 			.should('have.attr', 'content', 'Monthly good allows you to support borrowers worldwide with as '
 			+ 'little as $5 a month. 100% of your loan goes to the field - make a difference today!');
 	});
+
+	it('Donate Support Kiva Page', () => {
+		cy.visit('/donate/support-kiva');
+
+		cy.title().should('eq', 'Donate to Kiva and support our mission! | Kiva');
+		cy.document().get('head meta[name="description"]')
+			.should('have.attr', 'content', 'Your generous donations help Kiva continue and grow our mission of financial inclusivity.'
+						+ ' Click here to learn more and make a difference.');
+	});
+
+	it('Donate Support Us Page', () => {
+		cy.visit('/donate/supportus');
+
+		cy.title().should('eq', 'Donate to Kiva and create real change | Kiva');
+		cy.document().get('head meta[name="description"]')
+			.should('have.attr', 'content', 'Donations from people like you allow Kiva to support more people worldwide. Donate today'
+						+ ' to help us build a more financially inclusive world.');
+	});
 });

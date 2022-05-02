@@ -51,7 +51,8 @@ export default {
 				{
 					vmid: 'description',
 					name: 'description',
-					content: 'Donations from people like you allow Kiva to support more people worldwide. Donate today to help us build a more financially inclusive world.'
+					content: 'Donations from people like you allow Kiva to support more people worldwide. Donate today'
+						+ ' to help us build a more financially inclusive world.'
 				}
 			]
 		};
