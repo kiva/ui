@@ -1,3 +1,11 @@
+### [2.127.1](https://github.com/kiva/ui/compare/v2.127.0...v2.127.1) (2022-05-03)
+
+
+### Performance Improvements
+
+* delay loading auth0 client until needed ([#3749](https://github.com/kiva/ui/issues/3749)) ([e8c1d02](https://github.com/kiva/ui/commit/e8c1d02f3d6d9bd0344dd7a9d02a86bf82b6bc4f))
+* dynamically load loan card components VUE-486 ([#3750](https://github.com/kiva/ui/issues/3750)) ([be07ee7](https://github.com/kiva/ui/commit/be07ee730aa10a25939bd657447861cd9787ee99))
+
 ## [2.127.0](https://github.com/kiva/ui/compare/v2.126.0...v2.127.0) (2022-05-02)
 
 
