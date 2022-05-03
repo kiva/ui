@@ -8,19 +8,19 @@
 							<h1 class="tw-mb-2">
 								Make a loan, change a life
 							</h1>
-							<p class="tw-mb-3p tw-hidden md:tw-block">
+							<span class="better-future md:tw-w-2/3 tw-mb-3p tw-hidden md:tw-block">
 								Each Kiva loan helps people build a better future for themselves and their families.
-							</p>
+							</span>
 						</div>
-						<button class="tw-mb-2 tw-border-r tw-border-tertiary tw-px-1 md:tw-px-2">
-							<kv-material-icon :icon="mdiCompassRose" class="tw-text-secondary tw-w-5 tw-h-5" />
-							<p class="tw-hidden md:tw-block">
+						<button class="tw-mb-2 tw-mt-3 tw-border-r tw-border-tertiary tw-px-1 md:tw-px-2">
+							<kv-material-icon :icon="mdiEarth" class="tw-text-secondary tw-w-3 tw-h-3" />
+							<p class="text-gray tw-hidden md:tw-block">
 								Explore
 							</p>
 						</button>
-						<button class="tw-mb-2 tw-px-1 md:tw-px-2">
-							<kv-material-icon :icon="mdiFilterVariant" class="tw-text-brand tw-w-5 tw-h-5" />
-							<p class="tw-hidden md:tw-block">
+						<button class="tw-mb-2  tw-mt-3 tw-px-1 md:tw-px-2">
+							<kv-material-icon :icon="mdiFilter" class="tw-text-brand tw-w-3 tw-h-3" />
+							<p class="text-gray tw-hidden md:tw-block">
 								Filters
 							</p>
 						</button>
@@ -37,7 +37,7 @@
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanSearchInterface from '@/components/Lend/LoanSearch/LoanSearchInterface';
-import { mdiCompassRose, mdiFilterVariant } from '@mdi/js';
+import { mdiEarth, mdiFilter } from '@mdi/js';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -50,9 +50,22 @@ export default {
 	},
 	data() {
 		return {
-			mdiCompassRose,
-			mdiFilterVariant
+			mdiEarth,
+			mdiFilter
 		};
 	},
 };
 </script>
+
+<style lang="scss" scoped>
+	.better-future{
+		font-size: 1.5rem;
+		color: gray;
+		font-weight: bolder;
+		letter-spacing: -1px;
+		line-height: 1.75rem;
+	}
+	.text-gray{
+		color: gray;
+	}
+</style>
