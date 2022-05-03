@@ -282,6 +282,14 @@
 * delay loading auth0 client until needed ([#3749](https://github.com/kiva/ui/issues/3749)) ([e8c1d02](https://github.com/kiva/ui/commit/e8c1d02f3d6d9bd0344dd7a9d02a86bf82b6bc4f))
 * dynamically load loan card components VUE-486 ([#3750](https://github.com/kiva/ui/issues/3750)) ([be07ee7](https://github.com/kiva/ui/commit/be07ee730aa10a25939bd657447861cd9787ee99))
 
+## [2.128.0-next.1](https://github.com/kiva/ui/compare/v2.127.0...v2.128.0-next.1) (2022-05-03)
+
+
+### Features
+
+* activate onetrust in test ([e3d2f19](https://github.com/kiva/ui/commit/e3d2f1973463bf062915c0eb3549f73a7fbdca72))
+* add vwo for trial purposes in test env ([361e909](https://github.com/kiva/ui/commit/361e909cd64871f5492566c89f7d920533076703))
+
 ## [2.127.0](https://github.com/kiva/ui/compare/v2.126.0...v2.127.0) (2022-05-02)
 
 
