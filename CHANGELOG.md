@@ -326,6 +326,14 @@
 * activate onetrust in test ([e3d2f19](https://github.com/kiva/ui/commit/e3d2f1973463bf062915c0eb3549f73a7fbdca72))
 * add vwo for trial purposes in test env ([361e909](https://github.com/kiva/ui/commit/361e909cd64871f5492566c89f7d920533076703))
 
+## [2.128.0-next.1](https://github.com/kiva/ui/compare/v2.127.0...v2.128.0-next.1) (2022-05-03)
+
+
+### Features
+
+* activate onetrust in test ([e3d2f19](https://github.com/kiva/ui/commit/e3d2f1973463bf062915c0eb3549f73a7fbdca72))
+* add vwo for trial purposes in test env ([361e909](https://github.com/kiva/ui/commit/361e909cd64871f5492566c89f7d920533076703))
+
 ## [2.127.0](https://github.com/kiva/ui/compare/v2.126.0...v2.127.0) (2022-05-02)
 
 
