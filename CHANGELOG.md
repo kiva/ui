@@ -1,3 +1,10 @@
+## [2.128.0-next.2](https://github.com/kiva/ui/compare/v2.128.0-next.1...v2.128.0-next.2) (2022-05-03)
+
+
+### Bug Fixes
+
+* deactivate optimizely ([d5d092a](https://github.com/kiva/ui/commit/d5d092acc8ea9347a521ed3d4b08a039f7546933))
+
 ## [2.128.0-next.1](https://github.com/kiva/ui/compare/v2.127.0...v2.128.0-next.1) (2022-05-03)
 
 
