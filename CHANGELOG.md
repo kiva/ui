@@ -1,3 +1,10 @@
+### [2.127.2](https://github.com/kiva/ui/compare/v2.127.1...v2.127.2) (2022-05-03)
+
+
+### Bug Fixes
+
+* add design page to lighthouse prod ([ea6a880](https://github.com/kiva/ui/commit/ea6a880531cec75a75fd24f3ddb010ff900ee934))
+
 ### [2.127.1](https://github.com/kiva/ui/compare/v2.127.0...v2.127.1) (2022-05-03)
 
 
