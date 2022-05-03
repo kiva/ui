@@ -58,14 +58,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-	.better-future{
+	.better-future {
 		font-size: 1.5rem;
 		color: gray;
 		font-weight: bolder;
 		letter-spacing: -1px;
 		line-height: 1.75rem;
 	}
-	.text-gray{
+
+	.text-gray {
 		color: gray;
 	}
 </style>
