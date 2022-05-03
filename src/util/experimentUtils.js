@@ -1,11 +1,38 @@
-import _filter from 'lodash/filter';
-import _map from 'lodash/map';
-import _toPairs from 'lodash/toPairs';
-import { isWithinInterval } from 'date-fns';
 import experimentSettingQuery from '@/graphql/query/experimentSetting.graphql';
+import experimentIdsQuery from '@/graphql/query/experimentIds.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import { readJSONSetting } from '@/util/settingsUtils';
+import { readJSONSetting, hashCode } from '@/util/settingsUtils';
 import logReadQueryError from '@/util/logReadQueryError';
+import logFormatter from '@/util/logFormatter';
+
+/**
+ * Fetch pre-determined list of experiment settings
+ *
+ * @param  {ApolloClient} apolloClient
+ * @return {string[]} array of active experiment IDs
+ */
+export function fetchActiveExperiments(apolloClient) {
+	return new Promise((resolve, reject) => {
+		apolloClient.query({
+			query: experimentIdsQuery,
+		}).then(results => {
+			if (results?.errors) {
+				logFormatter(results.errors, 'error');
+				reject();
+			} else {
+				try {
+					const setting = results?.data?.general?.activeExperiments?.value;
+					const parsed = JSON.parse(setting) ?? '';
+					const activeExperiments = parsed.split(',').map(id => id.trim()).filter(id => id);
+					resolve(activeExperiments || []);
+				} catch {
+					resolve([]);
+				}
+				resolve(readJSONSetting(results, 'data.general.activeExperiments.value') ?? []);
+			}
+		}).catch(reject);
+	});
+}
 
 /**
  * Parse the experiment cookie value into an object
@@ -48,16 +75,12 @@ export function parseExpCookie(cookie) {
 export function serializeExpCookie(assignments) {
 	if (!assignments) return '';
 
-	const expStrings = _map(assignments, ({
-		id,
-		version,
-		hash,
-		population,
-	}) => {
-		return `${id}:${version}:${hash || 'no-hash'}:${population || 'no-pop'}`;
+	const expStrings = Object.keys(assignments).map(id => {
+		const { version, hash, population } = assignments[id];
+		return `${id}:${version}:${hash || 'n'}:${population || 'n'}`;
 	});
 	// filter out strings that end with a ':', as they have no assignment
-	const filteredStrings = _filter(expStrings, s => s.slice(-1) !== ':');
+	const filteredStrings = expStrings.filter(s => s.slice(-1) !== ':');
 	return filteredStrings.join('|');
 }
 
@@ -95,11 +118,7 @@ export function matchTargets(targets, cookieStore) {
  *
  * An example json value for the experiment data stored in SettingsManager:
  * {
- *     "id":"test",
  *     "name": "TestUiExp",
- *     "enabled": true,
- *     "startTime": "2018-01-01",
- *     "endTime": "2019-01-01",
  *     "distribution": {
  *         "control": 0.5,
  *         "a": 0.2,
@@ -112,53 +131,44 @@ export function matchTargets(targets, cookieStore) {
  * }
  *
  * @param {object} experiment - The experiment data
- * @param {boolean} experiment.enabled - Is the experiment enabled
- * @param {string} experiment.startTime - A date string for the starting time of the experiment
- * @param {string} experiment.endTime - A date string for the ending time of the experiment
+ * @param {string} experiment - The experiment name, typocally used for tracking
  * @param {object} experiment.distribution - An object of the variant weights, where each key is the
  *     variant id and the value is the weight of the variant. The weight must be a number between 0 and 1.
  * @param {number} experiment.population - A number between 0 and 1 representing the fraction of the population
  *     that should be included in the experiment.
+ * @param {object} experiment.targets
  * @returns {string|number|undefined} Returns a variant id or undefined if the experiment is not enabled
  */
 export function assignVersion({
-	enabled,
-	startTime,
-	endTime,
 	distribution,
 	population,
 	targets
 }, cookieStore) {
-	// only try to assign a version if the experiment is enabled
-	if (!enabled) return undefined;
 	// only try to assign a version if the experiment targets match
 	if (!matchTargets(targets, cookieStore)) return undefined;
-	// only try to assign a version if the experiment is enabled, started, and not ended
-	if (isWithinInterval(new Date(), { start: new Date(startTime), end: new Date(endTime) })) {
-		// Based on Algo from Manager.php
-		const marker = Math.random();
-		let cutoff = 0;
 
-		// turn the distribution object into an array for easier iterating
-		const weights = _toPairs(distribution);
+	// Based on Algo from Manager.php
+	const marker = Math.random();
+	let cutoff = 0;
 
-		// now loop through and see which element of the distribution that num falls into
-		for (let i = 0; i < weights.length; i += 1) {
-			const [key, weight] = weights[i];
-			// add the current distribution to our cutoff
-			if (typeof population === 'undefined') {
-				cutoff += weight;
-			} else {
-				cutoff += weight * population;
-			}
-			// exit the loop and return the current version
-			if (marker <= cutoff) return key;
+	// turn the distribution object into an array for easier iterating
+	const weights = Object.keys(distribution).map(key => [key, distribution[key]]);
+
+	// now loop through and see which element of the distribution that num falls into
+	for (let i = 0; i < weights.length; i += 1) {
+		const [key, weight] = weights[i];
+		// add the current distribution to our cutoff
+		if (typeof population === 'undefined') {
+			cutoff += weight;
+		} else {
+			cutoff += weight * population;
 		}
-		// if no version was selected, mark them as 'unassigned' so that they will be re-assigned
-		// if/when the population percent changes.
-		return 'unassigned';
+		// exit the loop and return the current version
+		if (marker <= cutoff) return key;
 	}
-	// doing nothing here returns undefined, indicating that the experiment is not active
+	// if no version was selected, mark them as 'unassigned' so that they will be re-assigned
+	// if/when the population percent changes.
+	return 'unassigned';
 }
 
 /**
@@ -224,4 +234,83 @@ export function trackExperimentVersion(client, trackEvent, category, key, action
 		);
 	}
 	return exp;
+}
+
+/**
+ * Calculate a hash representation of the experiment
+ *
+ * @param  {object} experiment
+ * @return {int}
+ */
+export function calculateHash(experiment) {
+	// Create targeted subset of experiment setting to use in hash
+	// Changing the Name, Distribution, Variants, or Control values will "reset" an experiment assignment
+	const {
+		name, distribution, variants, control
+	} = experiment || {};
+	const experimentSubset = {
+		name, distribution, variants, control
+	};
+
+	// Get the hash for our current experiment setting
+	return hashCode(JSON.stringify(experimentSubset));
+}
+
+/**
+ * Remove inactive experiments and null versions from assignments list
+ *
+ * @param  {object} assignments
+ * @param  {string[]} activeExperiments
+ * @return {object}
+ */
+export function cleanAssignments(assignments, activeExperiments) {
+	const cleaned = {};
+	// only save assignments that are in the active experiment list and have a version
+	Object.keys(assignments).forEach(assignmentId => {
+		if (activeExperiments.indexOf(assignmentId) > -1 && assignments[assignmentId].version) {
+			cleaned[assignmentId] = assignments[assignmentId];
+		}
+	});
+	return cleaned;
+}
+
+/**
+ * Get current experiment assignments
+ *
+ * @param  {CookieStore} cookieStore
+ * @param  {VueRouter} router
+ * @return {object}
+ */
+export function getAssignments(cookieStore, router) {
+	// initialize the assignments from the experiment cookie
+	const cookieAssignments = parseExpCookie(cookieStore.get('uiab'));
+
+	// read route query
+	const routeQuery = router?.currentRoute?.query?.setuiab ?? [];
+	// convert both a single string and an array of strings to an array of strings.
+	const arrayOfSetuiabValues = [].concat(routeQuery);
+	// parse forced experiment assignments
+	const routeAssignments = {};
+	arrayOfSetuiabValues.forEach(uiabvalue => {
+		const forcedExp = uiabvalue.split('.');
+		const id = encodeURIComponent(forcedExp[0]);
+		const version = encodeURIComponent(forcedExp[1]);
+		routeAssignments[id] = { id, version };
+	});
+
+	// merge for current assignments
+	return {
+		...cookieAssignments,
+		...routeAssignments
+	};
+}
+
+/**
+ * Save assignments object to experiment cookie
+ *
+ * @param  {CookieStore} cookieStore
+ * @param  {object} assignments
+ */
+export function saveAssignments(cookieStore, assignments) {
+	cookieStore.set('uiab', serializeExpCookie(assignments), { path: '/' });
 }

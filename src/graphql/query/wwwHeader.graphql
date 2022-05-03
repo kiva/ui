@@ -47,12 +47,12 @@ query wwwHeader($basketId: String) {
 			id
 		}
 	}
-	general {
-		lend_menu_category_sort_exp: uiExperimentSetting(
-			key: "lend_menu_category_sort"
-		) {
-			key
-			value
-		}
+	lend_menu_category_sort: experiment(id: "lend_menu_category_sort") @client {
+		id
+		version
+	}
+	redirect_to_login: experiment(id: "redirect_to_login") @client {
+		id
+		version
 	}
 }

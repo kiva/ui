@@ -18,8 +18,6 @@
 
 <script>
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
-
-import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
 import TheHeader from './TheHeader';
@@ -62,15 +60,9 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client, { route }) {
-			return Promise.all([
-				client.query({ query: hasEverLoggedInQuery }),
-				fetchAllExpSettings(config, client, {
-					query: route?.query,
-					path: route?.path
-				})
-			]);
-		},
+		// ensure hasEverLoggedIn is set in cache from server for all pages
+		query: hasEverLoggedInQuery,
+		preFetch: true,
 	},
 	created() {
 		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';

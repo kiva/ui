@@ -21,9 +21,7 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
-import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
 import TheBasketBar from '@/components/WwwFrame/TheBasketBar';
 import TheBrowserCheck from '@/components/WwwFrame/TheBrowserCheck';
@@ -49,15 +47,9 @@ export default {
 		}
 	},
 	apollo: {
-		preFetch(config, client, args) {
-			return Promise.all([
-				client.query({ query: hasEverLoggedInQuery }),
-				fetchAllExpSettings(config, client, {
-					query: _get(args, 'route.query'),
-					path: _get(args, 'route.path')
-				}),
-			]);
-		}
+		// ensure hasEverLoggedIn is set in cache from server for all pages
+		query: hasEverLoggedInQuery,
+		preFetch: true,
 	}
 };
 </script>

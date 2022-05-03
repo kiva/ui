@@ -19,6 +19,7 @@ export default function createApolloClient({
 	appConfig,
 	cookieStore,
 	kvAuth0,
+	router,
 	types = [],
 	uri,
 }) {
@@ -41,7 +42,12 @@ export default function createApolloClient({
 	});
 
 	// initialize local state resolvers
-	const { resolvers, defaults } = initState({ appConfig, cookieStore, kvAuth0 });
+	const { resolvers, defaults } = initState({
+		appConfig,
+		cookieStore,
+		kvAuth0,
+		router,
+	});
 
 	const client = new ApolloClient({
 		link: ApolloLink.from([
