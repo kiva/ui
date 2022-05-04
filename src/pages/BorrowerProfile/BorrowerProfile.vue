@@ -8,7 +8,11 @@
 					<hero-background />
 				</div>
 				<content-container class="md:tw-pt-6 lg:tw-pt-8">
-					<summary-card data-testid="bp-summary" class="tw-relative lg:tw--mb-1.5 tw-z-1" />
+					<summary-card
+						data-testid="bp-summary"
+						class="tw-relative lg:tw--mb-1.5 tw-z-1"
+						:show-urgency-exp="showUrgencyExp"
+					/>
 				</content-container>
 			</div>
 			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8 tw-pointer-events-none">
@@ -63,8 +67,11 @@
 
 <script>
 import { getKivaImageUrl } from '@/util/imageUtils';
-import { format, parseISO } from 'date-fns';
+import {
+	format, parseISO, differenceInCalendarDays
+} from 'date-fns';
 import gql from 'graphql-tag';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
@@ -80,6 +87,45 @@ import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 
 const loanUseFilter = require('../../plugins/loan-use-filter');
+
+const pageQuery = gql`
+	query borrowerProfileMeta($loanId: Int!) {
+		general {
+			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
+				key
+				value
+			}
+		}
+		lend {
+			loan(id: $loanId) {
+				id
+				borrowerCount
+				name
+				... on LoanDirect {
+					businessName
+				}
+				geocode {
+					country {
+						name
+					}
+				}
+				image {
+					id
+					hash
+				}
+				plannedExpirationDate
+				lenders {
+					totalCount
+				}
+				anonymizationLevel
+				loanAmount
+				status
+				use
+				description
+			}
+		}
+	}
+`;
 
 export default {
 	inject: ['apollo', 'cookieStore'],
@@ -164,7 +210,8 @@ export default {
 			loanId: Number(this.$route.params.id || 0),
 			showLenders: true,
 			showTeams: true,
-
+			isUrgencyExpVersionShown: false,
+			hasThreeDaysOrLessLeft: false,
 			// meta fields
 			endDate: '',
 			numLenders: 0,
@@ -179,38 +226,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`
-			query borrowerProfileMeta($loanId: Int!) {
-				lend {
-					loan(id: $loanId) {
-						id
-						borrowerCount
-						name
-						... on LoanDirect {
-							businessName
-						}
-						geocode {
-							country {
-								name
-							}
-						}
-						image {
-							id
-							hash
-						}
-						plannedExpirationDate
-						lenders {
-							totalCount
-						}
-						anonymizationLevel
-						loanAmount
-						status
-						use
-						description
-					}
-				}
-			}
-		`,
+		query: pageQuery,
 		preFetch: true,
 		preFetchVariables({ route }) {
 			return {
@@ -236,6 +252,9 @@ export default {
 			this.status = loan?.status ?? '';
 			this.use = loan?.use ?? '';
 			this.description = loan?.description ?? '';
+
+			const diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
+			this.hasThreeDaysOrLessLeft = diffInDays <= 3;
 		},
 	},
 	mounted() {
@@ -275,7 +294,31 @@ export default {
 				return `${loanUse}\n\n${this.description.substring(0, 120)}...`;
 			}
 			return 'For the borrower\'s privacy, this loan has been made anonymous.';
+		},
+		showUrgencyExp() {
+			return this.hasThreeDaysOrLessLeft && this.isUrgencyExpVersionShown;
 		}
+	},
+	created() {
+		/*
+		 * Experiment Initializations
+		*/
+		this.apollo.query({ query: experimentAssignmentQuery, variables: { id: 'lend_urgency' } })
+			.then(result => {
+				const urgencyEXP = result?.data?.experiment;
+				// Only track event if loan is expiring soon
+				this.isUrgencyExpVersionShown = urgencyEXP.version === 'shown';
+				if (this.hasThreeDaysOrLessLeft) {
+					// Fire Event for Exp ACK-291 Urgency Experiment
+					if (urgencyEXP.version && urgencyEXP.version !== 'unassigned') {
+						this.$kvTrackEvent(
+							'Lending',
+							'EXP-ACK-291-May2022',
+							this.isUrgencyExpVersionShown ? 'b' : 'a'
+						);
+					}
+				}
+			});
 	},
 };
 </script>
