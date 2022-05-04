@@ -4,7 +4,7 @@
 		:loan-id="loanId"
 		@add-to-basket="addToBasket($event)"
 	>
-		Lend ${{ amountLeft }}<span v-if="showNow"> now</span>
+		Lend ${{ amountValue }}<span v-if="showNow"> now</span>
 	</lend-button>
 </template>
 
@@ -25,8 +25,13 @@ export default {
 			default: false
 		},
 		amountLeft: {
-			type: Number,
+			type: [Number, String],
 			default: 20
+		}
+	},
+	computed: {
+		amountValue() {
+			return parseFloat(this.amountLeft);
 		}
 	},
 	methods: {
