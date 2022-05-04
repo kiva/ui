@@ -1,3 +1,16 @@
+## [2.129.0](https://github.com/kiva/ui/compare/v2.128.0...v2.129.0) (2022-05-04)
+
+
+### Features
+
+* decimal place was removed from the lendamountbutton component ([c24adcf](https://github.com/kiva/ui/commit/c24adcf975bdda1b72a62cf7f7a106963e17c83d))
+* tests were added to check both types of input in the loanamountbutton component ([02e5450](https://github.com/kiva/ui/commit/02e54503a92ecd7372e07dcc33a5878c83556049))
+
+
+### Bug Fixes
+
+* parseInt method was added in the lendamountbutton component ([8d9f84c](https://github.com/kiva/ui/commit/8d9f84caa6989cf5c5c38cb0184ddee67b45ff2d))
+
 ## [2.128.0](https://github.com/kiva/ui/compare/v2.127.2...v2.128.0) (2022-05-04)
 
 
