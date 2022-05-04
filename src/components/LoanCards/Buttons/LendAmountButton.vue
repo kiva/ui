@@ -31,7 +31,7 @@ export default {
 	},
 	computed: {
 		amountValue() {
-			return parseFloat(this.amountLeft);
+			return parseInt(parseFloat(this.amountLeft), 10);
 		}
 	},
 	methods: {
