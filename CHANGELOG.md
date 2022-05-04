@@ -1,3 +1,10 @@
+## [2.128.0](https://github.com/kiva/ui/compare/v2.127.2...v2.128.0) (2022-05-04)
+
+
+### Features
+
+* prices array was reduced in the checkout dropdown ([0282cb0](https://github.com/kiva/ui/commit/0282cb02378a26167fc622fe490e2ecfe2dbc80e))
+
 ### [2.127.2](https://github.com/kiva/ui/compare/v2.127.1...v2.127.2) (2022-05-03)
 
 
