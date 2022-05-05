@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import LoanCardController from '@/components/LoanCards/LoanCardController';
+// import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KivaClassicBasicLoanCardBundleExp from '@/components/LoanCards/KivaClassicBasicLoanCardBundleExp';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -81,7 +81,7 @@ export default {
 		KvLoadingSpinner,
 		KivaClassicBasicLoanCardExp,
 		KivaClassicBasicLoanCardBundleExp,
-		LoanCardController,
+		// LoanCardController,
 	},
 	inject: ['apollo'],
 	props: {
