@@ -146,27 +146,27 @@ export default (config, globalOneTrustEvent) => {
 	if (config.enableOptimizely) {
 		console.log('optimizely consent', optimizelyConsent);
 		if (!optimizelyConsent) {
-			window.optimizely = window.optimizely || [];
-			window.optimizely.push({
-				type: 'optOut',
-				isOptOut: true,
-			});
+			// window.optimizely = window.optimizely || [];
+			// window.optimizely.push({
+			// 	type: 'optOut',
+			// 	isOptOut: true,
+			// });
 		}
 		const s = document.createElement('script');
 		s.src = 'https://cdn.optimizely.com/js/21296940167.js';
 		document.getElementsByTagName('head')[0].appendChild(s);
-		console.log('inserted optimizely');
+		console.log('inserted optimizely', document.cookie);
 		console.log('init', window.optimizely);
 	}
 	const insertOptimizely = () => {
 		console.log('optimizely optout set to false');
-		window.optimizely = window.optimizely || [];
-		window.optimizely.push({
-			type: 'optOut',
-			isOptOut: false,
-		});
+		// window.optimizely = window.optimizely || [];
+		// window.optimizely.push({
+		// 	type: 'optOut',
+		// 	isOptOut: false,
+		// });
 		console.log('insert', window.optimizely);
-		setTimeout(() => console.log('last', window.optimizely), 2000);
+		setTimeout(() => console.log('last', window.optimizely, document.cookie), 2000);
 		// const p = document.getElementsByTagName('script')[0];
 		// const s = document.createElement('script');
 		// s.src = 'https://cdn.optimizely.com/js/21296940167.js';
