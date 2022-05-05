@@ -152,10 +152,9 @@ export default (config, globalOneTrustEvent) => {
 				isOptOut: true,
 			});
 		}
-		const p = document.getElementsByTagName('script')[0];
 		const s = document.createElement('script');
 		s.src = 'https://cdn.optimizely.com/js/21296940167.js';
-		p.parentNode.insertBefore(s, p);
+		document.getElementsByTagName('head')[0].appendChild(s);
 		console.log('inserted optimizely');
 		console.log('init', window.optimizely);
 	}
