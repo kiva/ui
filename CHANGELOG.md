@@ -1,3 +1,10 @@
+## [2.128.0-next.5](https://github.com/kiva/ui/compare/v2.128.0-next.4...v2.128.0-next.5) (2022-05-05)
+
+
+### Bug Fixes
+
+* log optimizely loading steps ([367a2c6](https://github.com/kiva/ui/commit/367a2c68ee90fbbebfe39a1a329feb874e270b7f))
+
 ## [2.128.0-next.4](https://github.com/kiva/ui/compare/v2.128.0-next.3...v2.128.0-next.4) (2022-05-05)
 
 
