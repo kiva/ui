@@ -80,7 +80,7 @@
 				@click="handleReadMoreLink"
 				v-kv-track-event="['Lending', 'click-read-more-loan-bundle-cta', 'Read more', loanId]"
 				class="tw-inline"
-				style="cursor:pointer;"
+				style="cursor: pointer;"
 			>
 				Read more
 			</a>
