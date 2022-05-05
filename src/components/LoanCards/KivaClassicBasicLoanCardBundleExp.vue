@@ -75,11 +75,12 @@
 				:borrower-count="loan.borrowerCount"
 				:show-learn-more="false"
 			/>
+
 			<a
-				:href="`/lend/${loanId}`"
-				target="_blank"
+				@click="handleReadMoreLink"
 				v-kv-track-event="['Lending', 'click-read-more-loan-bundle-cta', 'Read more', loanId]"
 				class="tw-inline"
+				style="cursor:pointer;"
 			>
 				Read more
 			</a>
@@ -137,7 +138,11 @@ export default {
 		loanId: {
 			type: Number,
 			required: true,
-		}
+		},
+		readMoreLink: {
+			type: Function,
+			default: () => {},
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],
@@ -214,6 +219,17 @@ export default {
 		},
 	},
 	methods: {
+		handleReadMoreLink(event) {
+			this.$emit('read-more-link', event);
+			if (this.disableLink) {
+				event.preventDefault();
+				return;
+			}
+			this.$emit('track-loan-card-interaction', {
+				interactionType: 'viewBorrowerPage',
+				interactionElement: 'readMore'
+			});
+		},
 		createViewportObserver() {
 			// Watch for this element being in the viewport
 			this.viewportObserver = createIntersectionObserver({
