@@ -1,3 +1,20 @@
+## [2.130.0](https://github.com/kiva/ui/compare/v2.129.0...v2.130.0) (2022-05-05)
+
+
+### Features
+
+* filter menu ([d4771fc](https://github.com/kiva/ui/commit/d4771fcbf341aba7352b9e3a2ca0228901f59ad7))
+* wip ([31a8847](https://github.com/kiva/ui/commit/31a88472472b23ddce9ca7242d3b28d3541b1fca))
+* wip creating self element ([284c965](https://github.com/kiva/ui/commit/284c965063b2623450d97136ecd9c010f6607bce))
+
+
+### Bug Fixes
+
+* cleanup page frame ([6f31c7b](https://github.com/kiva/ui/commit/6f31c7b1a5821506aa31936c63c18ef826a0d15f))
+* eslint fixes ([4209958](https://github.com/kiva/ui/commit/42099583370b73e21b3bfee10d6c4353b0c665ec))
+* font styles ([24c73b3](https://github.com/kiva/ui/commit/24c73b387f72b47218a544b31cc26030f0f5973e))
+* removed custom classes ([21725a0](https://github.com/kiva/ui/commit/21725a019f21822fa1f2e70e176f8ec60a3f12fb))
+
 ## [2.129.0](https://github.com/kiva/ui/compare/v2.128.0...v2.129.0) (2022-05-04)
 
 
