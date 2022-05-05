@@ -1,3 +1,10 @@
+## [2.128.0-next.7](https://github.com/kiva/ui/compare/v2.128.0-next.6...v2.128.0-next.7) (2022-05-05)
+
+
+### Bug Fixes
+
+* check for cookies set by optimizely ([21fa5ff](https://github.com/kiva/ui/commit/21fa5ff51fc3ca0f921dee97a477665e8386f3ee))
+
 ## [2.128.0-next.6](https://github.com/kiva/ui/compare/v2.128.0-next.5...v2.128.0-next.6) (2022-05-05)
 
 
