@@ -1,7 +1,7 @@
 <template>
-	<div class="tw-bg-white tw-border tw-border-gray-200 tw-rounded-sm tw-p-1">
+	<div class="tw-bg-white tw-border-primary-inverse tw-rounded tw-p-3">
 		<p>Reset all</p>
-		<hr>
+		<hr class="tw-border-tertiary tw-my-1">
 		<fieldset>
 			<kv-radio class="tw-text-left" value="female" v-model="gender">
 				Women
@@ -14,7 +14,7 @@
 			</kv-radio>
 			<span>gender: {{ gender }}</span>
 		</fieldset>
-		<hr>
+		<hr class="tw-border-tertiary tw-my-1">
 		<fieldset>
 			<legend>Sector</legend>
 			<kv-checkbox
@@ -44,14 +44,14 @@
 			</kv-select>
 		</fieldset>
 		<br>
-		<hr>
+		<hr class="tw-border-tertiary tw-my-1">
 		<kv-button v-model="loanQueryFilters" @click="updateQuery">
 			Search
 		</kv-button>
 		<kv-button v-model="loanQueryFilters" @click="resetFilter">
 			Reset Filters
 		</kv-button>
-		<hr>
+		<hr class="tw-border-tertiary tw-my-1">
 	</div>
 </template>
 

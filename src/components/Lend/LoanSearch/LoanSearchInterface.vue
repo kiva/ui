@@ -1,5 +1,10 @@
 <template>
 	<div class="tw-flex">
+		<div id="mobile-menu" class="tw-rounded md:tw-hidden
+				tw-z-dropdown tw-drop-shadow tw-absolute tw-top-4 md:tw-top-0"
+		>
+			<loan-search-filter />
+		</div>
 		<div class="tw-flex tw-flex-col tw-mr-4">
 			<div class="md:tw-hidden tw-mb-3">
 				<kv-button variant="secondary">
@@ -52,3 +57,9 @@ export default {
 	},
 };
 </script>
+
+<style lang="scss" scoped>
+	#mobile-menu {
+		width: 285px;
+	}
+</style>
