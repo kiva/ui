@@ -1,13 +1,19 @@
 <template>
-	<kv-grid class="tw-grid-cols-2 md:tw-grid-cols-3">
-		<loan-search-filter />
-		<div class="md:tw-hidden">
+	<div class="tw-flex">
+		<div class="tw-flex tw-flex-col tw-mr-4">
+			<div class="md:tw-hidden tw-mb-3">
+				<kv-button variant="secondary">
+					Filter & Sort
+				</kv-button>
+			</div>
+			<div class="tw-hidden md:tw-block">
+				<loan-search-filter />
+			</div>
+		</div>
+		<div class="md:tw-hidden tw-pt-1.5">
 			<p>{{ totalCount }} Loans</p>
 		</div>
 		<div class="tw-col-span-2">
-			<div class="tw-bg-tertiary tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
-				Search Loans
-			</div>
 			<div class="tw-hidden md:tw-block tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
 				<p>{{ totalCount }} Loans</p>
 			</div>
@@ -22,18 +28,20 @@
 				/>
 			</kv-grid>
 		</div>
-	</kv-grid>
+	</div>
 </template>
 
 <script>
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	components: {
 		LoanCardController,
 		KvGrid,
+		KvButton,
 		LoanSearchFilter
 	},
 	data() {
