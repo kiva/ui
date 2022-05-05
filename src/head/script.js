@@ -2,9 +2,13 @@ export default (config, globalOneTrustEvent) => {
 	// check for opt out of 3rd party scripts + cookies
 	const cookies = typeof document !== 'undefined' ? document.cookie.split(';') : [];
 	let optout = false;
+	let optimizelyConsent = false;
 	for (let i = 0; i < cookies.length; i++) { // eslint-disable-line
 		if (cookies[i].indexOf('kvgdpr') !== -1 && cookies[i].indexOf('opted_out=true') !== -1) {
 			optout = true;
+		}
+		if (!optout && cookies[i].indexOf('optimizelyOptOut') !== -1 && cookies[i].indexOf('false') !== -1) {
+			optimizelyConsent = true;
 		}
 	}
 	// scaffold global dataLayer
@@ -137,6 +141,28 @@ export default (config, globalOneTrustEvent) => {
 		/* eslint-enable */
 	};
 
+	// Optimizely experiment loader
+	if (config.enableOptimizely) {
+		if (!optimizelyConsent) {
+			window.optimizely = window.optimizely || [];
+			window.optimizely.push({
+				type: 'optOut',
+				isOptOut: true,
+			});
+		}
+		const p = document.getElementsByTagName('script')[0];
+		const s = document.createElement('script');
+		s.src = 'https://cdn.optimizely.com/js/21296940167.js';
+		p.parentNode.insertBefore(s, p);
+	}
+	const insertOptimizely = () => {
+		window.optimizely = window.optimizely || [];
+		window.optimizely.push({
+			type: 'optOut',
+			isOptOut: false,
+		});
+	};
+
 	// Always load
 	// PerimeterX snippet
 	if (config.enablePerimeterx) {
@@ -227,6 +253,10 @@ export default (config, globalOneTrustEvent) => {
 				// TODO: Move to Functional category before launching
 				if (config.enableVWO && !optout) {
 					OneTrust.InsertHtml('', 'head', insertVWO, null, 'C0004');
+				}
+				// TODO: Move to Functional category before launching
+				if (config.enableOptimizely && !optout) {
+					OneTrust.InsertHtml('', 'head', insertOptimizely, null, 'C0004');
 				}
 				if (config.enableGTM && !optout) {
 					OneTrust.InsertHtml('', 'head', insertGTM, null, 'C0004');
