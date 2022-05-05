@@ -155,7 +155,7 @@ export default {
 			showExpandableLoanCards: false,
 			rightArrowPosition: undefined,
 			leftArrowPosition: undefined,
-			showHoverLoanCards: false,
+			showHoverLoanCards: true,
 			recommendedLoans: [],
 			mlServiceBanditExpVersion: null,
 		};
@@ -324,28 +324,8 @@ export default {
 			this.setLeftArrowPosition();
 		},
 		initializeHoverLoanCard() {
-			// CASH-521: Hover loan card experiment
-			const hoverLoanCardExperiment = this.apollo.readFragment({
-				id: 'Experiment:hover_loan_cards',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			if (hoverLoanCardExperiment.version === 'variant-a') {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CASH-521-Jun2019',
-					'a',
-				);
-			} else if (hoverLoanCardExperiment.version === 'variant-b') {
-				this.showHoverLoanCards = true;
-				// We shouldn't run both expandable and hover loan cards at the same time for now
-				this.showExpandableLoanCards = false;
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CASH-521-Jun2019',
-					'b',
-				);
-			}
+			// We shouldn't run both expandable and hover loan cards at the same time for now
+			this.showExpandableLoanCards = false;
 		},
 		initializeRecommendedLoanRows() {
 			const recLoanChannels = this.categorySetting.filter(setting => {
@@ -456,10 +436,6 @@ export default {
 			}).then(({ data }) => {
 				// Get the array of channel objects from settings
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
-				return Promise.all([
-					// experiment: CASH-521 Hover Loan Card Experiment
-					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
-				]);
 			}).then(() => {
 				// Get all channel ids for the row data
 				const ids = _map(rowData, 'id');
@@ -468,15 +444,8 @@ export default {
 				const recChannelIds = _map(recChannels, 'id');
 				const hasRecRow = recChannels.length > 0;
 
-				// Read hover loan card experiment version assignment
-				const hoverLoanCardExperiment = client.readFragment({
-					id: 'Experiment:hover_loan_cards',
-					fragment: experimentVersionFragment,
-				}) || {};
-				const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
-
-				const imgDefaultSize = hoverCards ? 'w480h300' : 'w480h360';
-				const imgRetinaSize = hoverCards ? 'w960h600' : 'w960h720';
+				const imgDefaultSize = 'w480h300';
+				const imgRetinaSize = 'w960h600';
 
 				// Pre-fetch all the data for SSR targeted channels
 				return Promise.all([
@@ -515,7 +484,6 @@ export default {
 			logReadQueryError(e, 'LendByCategory lendByCategoryQuery');
 		}
 
-		// Initialize CASH-521: Hover loan card experiment
 		this.initializeHoverLoanCard();
 
 		// Copy basic data from query into instance variables
