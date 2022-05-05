@@ -516,8 +516,6 @@ export default {
 				// Get the array of channel objects from settings
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				return Promise.all([
-					// experiment: category description
-					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
 					// experiment: add to basket interstitial
 					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_v2' } }),
 					// experiment: // CASH-794 Favorite Country Row
@@ -681,23 +679,8 @@ export default {
 			this.$kvTrackSelfDescribingEvent(pageViewTrackData);
 		});
 
-		// Only allow experiment when in show-for-large (>= 1024px) screen size
 		if (window.innerWidth >= 680) {
-			// CASH-658 : Experiment : Category description
-			const categoryDescriptionExperiment = this.apollo.readFragment({
-				id: 'Experiment:category_description',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			this.categoryDescriptionExperimentVersion = categoryDescriptionExperiment.version;
-
-			if (this.categoryDescriptionExperimentVersion === 'variant-a') {
-				this.showCategoryDescription = false;
-				this.$kvTrackEvent('Lending', 'EXP-CASH-658-Mar2019', 'a');
-			} else if (this.categoryDescriptionExperimentVersion === 'variant-b') {
-				this.showCategoryDescription = true;
-				this.$kvTrackEvent('Lending', 'EXP-CASH-658-Mar2019', 'b');
-			}
+			this.showCategoryDescription = true;
 		}
 
 		// CASH-676: Expandable Loan Card Experiment

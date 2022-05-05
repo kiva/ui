@@ -4,10 +4,6 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
-		categoryDescriptionExperiment: uiExperimentSetting(key: "category_description") {
-			key
-			value
-		}
 		addToBasketPopup: uiExperimentSetting(key: "add_to_basket_v2") {
 			key
 			value
