@@ -88,7 +88,6 @@ import logReadQueryError from '@/util/logReadQueryError';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
 import { isLoanFundraising } from '@/util/loanUtils';
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
