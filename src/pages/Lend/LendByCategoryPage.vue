@@ -71,7 +71,7 @@
 			</div>
 		</div> -->
 
-		<add-to-basket-interstitial v-show="addToBasketExpActive" />
+		<add-to-basket-interstitial />
 
 		<expandable-loan-card-expanded
 			v-if="showExpandableLoanCards"
@@ -105,7 +105,6 @@ import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.g
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import recommendedLoansQuery from '@/graphql/query/lendByCategory/recommendedLoans.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
-import mlOrderedLoanChannels from '@/graphql/query/lendByCategory/mlOrderedLoanChannels.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import CategoryRowHover from '@/components/LoansByCategory/CategoryRowHover';
@@ -163,7 +162,6 @@ export default {
 			rowLazyLoadComplete: false,
 			showCategoryDescription: false,
 			categoryDescriptionExperimentVersion: null,
-			addToBasketExpActive: false,
 			lendFilterExpVersion: '',
 			showExpandableLoanCards: false,
 			rightArrowPosition: undefined,
@@ -516,8 +514,6 @@ export default {
 				// Get the array of channel objects from settings
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				return Promise.all([
-					// experiment: add to basket interstitial
-					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_v2' } }),
 					// experiment: // CASH-794 Favorite Country Row
 					client.query({ query: experimentQuery, variables: { id: 'favorite_country' } }),
 					// experiment: CASH-521 Hover Loan Card Experiment
@@ -615,29 +611,12 @@ export default {
 		// Initialize CASH-794 Favorite Country Row
 		this.initializeFavoriteCountryRowExp();
 
-		// get assignment for add to basket interstitial
-		const addToBasketPopupEXP = this.apollo.readFragment({
-			id: 'Experiment:add_to_basket_v2',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.addToBasketExpActive = addToBasketPopupEXP.version === 'shown';
-		// Update @client state if interstitial exp is active
-		if (this.addToBasketExpActive) {
-			this.apollo.mutate({
-				mutation: updateAddToBasketInterstitial,
-				variables: {
-					active: true,
-				}
-			});
-		}
-		// Fire Event for Exp CASH-612 Status
-		if (addToBasketPopupEXP.version && addToBasketPopupEXP.version !== 'unassigned') {
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-CASH-612-Apr2019',
-				this.addToBasketExpActive ? 'b' : 'a'
-			);
-		}
+		this.apollo.mutate({
+			mutation: updateAddToBasketInterstitial,
+			variables: {
+				active: true,
+			}
+		});
 
 		const lendFilterEXP = this.apollo.readFragment({
 			id: 'Experiment:lend_filter_v2',
