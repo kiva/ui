@@ -12,17 +12,6 @@
 			:show-category-description="showCategoryDescription"
 		/>
 
-		<div v-if="showFavoriteCountryRow">
-			<favorite-country-loans
-				:items-in-basket="itemsInBasket"
-				ref="favoriteCountries"
-				:show-category-description="showCategoryDescription"
-				:is-logged-in="isLoggedIn"
-				:show-expandable-loan-cards="showExpandableLoanCards"
-				@scrolling-row="handleScrollingRow"
-			/>
-		</div>
-
 		<div class="tw-bg-primary">
 			<div
 				class="loan-category-row"
@@ -166,8 +155,6 @@ export default {
 			showExpandableLoanCards: false,
 			rightArrowPosition: undefined,
 			leftArrowPosition: undefined,
-			hasFavoriteCountry: false,
-			favoriteCountryExpVersion: 'control',
 			showHoverLoanCards: false,
 			recommendedLoans: [],
 			mlServiceBanditExpVersion: null,
@@ -219,12 +206,6 @@ export default {
 		leadHeaderFilterLink() {
 			return this.lendFilterExpVersion === 'b' ? '/lend/filter' : '/lend';
 		},
-		showFavoriteCountryRow() {
-			if (this.hasFavoriteCountry && this.isLoggedIn && this.favoriteCountryExpVersion === 'shown') {
-				return true;
-			}
-			return false;
-		},
 		categoryRowType() {
 			return this.showHoverLoanCards ? CategoryRowHover : CategoryRow;
 		},
@@ -252,20 +233,6 @@ export default {
 				});
 			}
 
-			// track cash 794 if shown
-			if (this.showFavoriteCountryRow) {
-				const favoriteCountryLoans = _get(this.$refs, 'favoriteCountries.favoriteCountryLoans');
-				if (favoriteCountryLoans !== undefined && favoriteCountryLoans.length > 0) {
-					_each(favoriteCountryLoans, (loan, loanIndex) => {
-						loanIds.push({
-							r: -1,
-							p: loanIndex + 1,
-							c: 99,
-							l: loan.id
-						});
-					});
-				}
-			}
 			_each(categories, (category, catIndex) => {
 				_each(category.loans.values, (loan, loanIndex) => {
 					loanIds.push({
@@ -327,8 +294,6 @@ export default {
 					this.userId = _get(data, 'my.userAccount.id') || null;
 					this.firstName = _get(data, 'my.userAccount.firstName') || 'you';
 					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
-					// CASH-794 Favorite Country Row
-					this.hasFavoriteCountry = !!_get(data, 'my.recommendations.topCountry');
 				},
 			});
 		},
@@ -357,28 +322,6 @@ export default {
 			}
 			this.setRightArrowPosition();
 			this.setLeftArrowPosition();
-		},
-		initializeFavoriteCountryRowExp() {
-			// experiment: CASH-794 Favorite Country Row
-			// get assignment
-			const favoriteCountryRowEXP = this.apollo.readFragment({
-				id: 'Experiment:favorite_country',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.favoriteCountryExpVersion = favoriteCountryRowEXP.version;
-			// Only track and activate if these conditions exist
-			if (this.hasFavoriteCountry
-				&& this.isLoggedIn
-				&& this.favoriteCountryExpVersion
-				&& this.favoriteCountryExpVersion !== 'unassigned'
-			) {
-				// Fire Event for Exp CASH-794
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CASH-794-June2019',
-					this.favoriteCountryExpVersion === 'shown' ? 'b' : 'a'
-				);
-			}
 		},
 		initializeHoverLoanCard() {
 			// CASH-521: Hover loan card experiment
@@ -514,8 +457,6 @@ export default {
 				// Get the array of channel objects from settings
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				return Promise.all([
-					// experiment: // CASH-794 Favorite Country Row
-					client.query({ query: experimentQuery, variables: { id: 'favorite_country' } }),
 					// experiment: CASH-521 Hover Loan Card Experiment
 					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
 				]);
@@ -584,9 +525,6 @@ export default {
 		this.userId = _get(baseData, 'my.userAccount.id') || null;
 		this.firstName = _get(baseData, 'my.userAccount.firstName') || 'you';
 
-		// CASH-794 Favorite Country Row
-		this.hasFavoriteCountry = !!_get(baseData, 'my.recommendations.topCountry');
-
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 
 		// Initialize Recommended Loan Rows
@@ -607,9 +545,6 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'LendByCategory loanChannelQuery');
 		}
-
-		// Initialize CASH-794 Favorite Country Row
-		this.initializeFavoriteCountryRowExp();
 
 		this.apollo.mutate({
 			mutation: updateAddToBasketInterstitial,
