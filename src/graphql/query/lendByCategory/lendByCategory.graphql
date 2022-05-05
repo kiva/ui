@@ -16,10 +16,6 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
-		mlServiceBandit: uiExperimentSetting(key: "EXP-ML-Service-Bandit-LendByCategory") {
-			key
-			value
-		}
 		mlRecommendedRowAlgo: uiExperimentSetting(key: "EXP-VUE-937-recommended-row-algo") {
 			key
 			value

@@ -282,24 +282,8 @@ export default {
 			return pageViewTrackData;
 		},
 		setRows(data) {
-			if (this.mlServiceBanditExpVersion !== null) {
-				let baseData = {};
-				try {
-					baseData = this.apollo.readQuery({
-						query: mlOrderedLoanChannels,
-					});
-				} catch (e) {
-					logReadQueryError(e, 'LendByCategory mlOrderedLoanChannels');
-				}
-
-				// Get the array of channel objects from the ml multi-armed bandit
-				this.categorySetting = _get(baseData, 'ml.orderedLoanChannels') || [];
-				this.categorySetId = this.mlServiceBanditExpVersion;
-			} else {
-				// Get the array of channel objects from settings
-				this.categorySetting = readJSONSetting(data, 'general.rows.value') || [];
-				this.categorySetId = 'default';
-			}
+			this.categorySetting = readJSONSetting(data, 'general.rows.value') || [];
+			this.categorySetId = 'default';
 		},
 		fetchRemainingLoanChannels() {
 			const ssrLoanIds = [];
@@ -521,26 +505,6 @@ export default {
 			}
 			return Promise.resolve();
 		},
-		initializeMLServiceBanditRowExp() {
-			// experiment: GROW-330 by MultiArmed Bandit algorithm experiment
-			// get assignment
-			const mlServiceBandit = 0;
-			const mlServiceBanditEXP = this.apollo.readFragment({
-				id: 'Experiment:EXP-ML-Service-Bandit-LendByCategory',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.mlServiceBanditExpVersion = mlServiceBanditEXP.version;
-
-			if (this.mlServiceBanditExpVersion && this.mlServiceBanditExpVersion !== 'unassigned') {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-ML-Service-Bandit-LendByCategory',
-					this.mlServiceBanditExpVersion,
-					this.mlServiceBanditExpVersion === 'b' ? mlServiceBandit : null,
-					this.mlServiceBanditExpVersion === 'b' ? mlServiceBandit : null
-				);
-			}
-		},
 		initializeRecommendedRowAlgoExp() {
 			// experiment: VUE-937 for "recommend by others" row backing algorithm
 			const experimentId = 'EXP-VUE-937-recommended-row-algo';
@@ -560,8 +524,6 @@ export default {
 	apollo: {
 		preFetch(config, client) {
 			let rowData;
-			let expRowData;
-			let expResults;
 
 			return client.query({
 				query: lendByCategoryQuery
@@ -569,8 +531,6 @@ export default {
 				// Get the array of channel objects from settings
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				return Promise.all([
-					// experiment: GROW-330 Machine Learning Category row
-					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
 					// experiment: VUE-937 for "recommend by others" row backing algorithm
 					client.query({ query: experimentQuery, variables: { id: 'EXP-VUE-937-recommended-row-algo' } }),
 					// experiment: category description
@@ -582,68 +542,48 @@ export default {
 					// experiment: CASH-521 Hover Loan Card Experiment
 					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
 				]);
-			}).then(expAssignments => {
-				expResults = expAssignments;
-				return client.query({
-					query: mlOrderedLoanChannels
-				});
-			}).then(({ data }) => {
-				// Get the array of channel objects from the ml multi-armed bandit
-				expRowData = _get(data, 'ml.orderedLoanChannels') || [];
+			}).then(() => {
+				// Get all channel ids for the row data
+				const ids = _map(rowData, 'id');
+				// Filter other channel types as custom categories
+				const recChannels = _filter(rowData, { __typename: 'RecLoanChannel' });
+				const recChannelIds = _map(recChannels, 'id');
+				const hasRecRow = recChannels.length > 0;
 
-				const mlServiceBanditExpVersion = _get(expResults, '[0].data.experiment.version');
+				// Read hover loan card experiment version assignment
+				const hoverLoanCardExperiment = client.readFragment({
+					id: 'Experiment:hover_loan_cards',
+					fragment: experimentVersionFragment,
+				}) || {};
+				const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
 
-				if (mlServiceBanditExpVersion !== null) {
-					rowData = expRowData;
-				}
+				const imgDefaultSize = hoverCards ? 'w480h300' : 'w480h360';
+				const imgRetinaSize = hoverCards ? 'w960h600' : 'w960h720';
 
-				return rowData;
-			})
-				.then(() => {
-					// Get all channel ids for the row data
-					const ids = _map(rowData, 'id');
-					// Filter other channel types as custom categories
-					const recChannels = _filter(rowData, { __typename: 'RecLoanChannel' });
-					const recChannelIds = _map(recChannels, 'id');
-					const hasRecRow = recChannels.length > 0;
-
-					// Read hover loan card experiment version assignment
-					const hoverLoanCardExperiment = client.readFragment({
-						id: 'Experiment:hover_loan_cards',
-						fragment: experimentVersionFragment,
-					}) || {};
-					const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
-
-					const imgDefaultSize = hoverCards ? 'w480h300' : 'w480h360';
-					const imgRetinaSize = hoverCards ? 'w960h600' : 'w960h720';
-
-					// Pre-fetch all the data for SSR targeted channels
-					return Promise.all([
-						client.query({
-							query: loanChannelQuery,
-							variables: {
-								// exclude custom rows + limit for ssr
-								ids: _take(_without(ids, ...recChannelIds), ssrRowLimiter),
-								imgDefaultSize,
-								imgRetinaSize,
-							},
-						}),
-						hasRecRow ? client.query({
-							query: recommendedLoansQuery,
-							variables: {
-								ids: recChannelIds,
-								imgDefaultSize,
-								imgRetinaSize,
-							}
-						}) : Promise.resolve(),
-					]);
-				});
+				// Pre-fetch all the data for SSR targeted channels
+				return Promise.all([
+					client.query({
+						query: loanChannelQuery,
+						variables: {
+							// exclude custom rows + limit for ssr
+							ids: _take(_without(ids, ...recChannelIds), ssrRowLimiter),
+							imgDefaultSize,
+							imgRetinaSize,
+						},
+					}),
+					hasRecRow ? client.query({
+						query: recommendedLoansQuery,
+						variables: {
+							ids: recChannelIds,
+							imgDefaultSize,
+							imgRetinaSize,
+						}
+					}) : Promise.resolve(),
+				]);
+			});
 		},
 	},
 	created() {
-		// Initialize GROW-330: Machine Learning served rows
-		this.initializeMLServiceBanditRowExp();
-
 		// Initialize VUE-937: Recommended row backing algorithm experiment
 		this.initializeRecommendedRowAlgoExp();
 
