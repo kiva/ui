@@ -505,21 +505,6 @@ export default {
 			}
 			return Promise.resolve();
 		},
-		initializeRecommendedRowAlgoExp() {
-			// experiment: VUE-937 for "recommend by others" row backing algorithm
-			const experimentId = 'EXP-VUE-937-recommended-row-algo';
-
-			// get experiment assignment
-			const { version } = this.apollo.readFragment({
-				id: `Experiment:${experimentId}`,
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			// track version if it is set
-			if (version && version !== 'unassigned') {
-				this.$kvTrackEvent('Lending', experimentId, version);
-			}
-		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -531,8 +516,6 @@ export default {
 				// Get the array of channel objects from settings
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				return Promise.all([
-					// experiment: VUE-937 for "recommend by others" row backing algorithm
-					client.query({ query: experimentQuery, variables: { id: 'EXP-VUE-937-recommended-row-algo' } }),
 					// experiment: category description
 					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
 					// experiment: add to basket interstitial
@@ -584,9 +567,6 @@ export default {
 		},
 	},
 	created() {
-		// Initialize VUE-937: Recommended row backing algorithm experiment
-		this.initializeRecommendedRowAlgoExp();
-
 		// Read the page data from the cache
 		let baseData = {};
 		try {
