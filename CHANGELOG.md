@@ -1,3 +1,10 @@
+## [2.131.0](https://github.com/kiva/ui/compare/v2.130.0...v2.131.0) (2022-05-05)
+
+
+### Features
+
+* how works and about sections were updated in the mg page ([b107ef7](https://github.com/kiva/ui/commit/b107ef7c8d4b1f6c849d30feeafba66860f52f6c))
+
 ## [2.130.0](https://github.com/kiva/ui/compare/v2.129.0...v2.130.0) (2022-05-05)
 
 
