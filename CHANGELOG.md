@@ -1,3 +1,10 @@
+## [2.128.0-next.6](https://github.com/kiva/ui/compare/v2.128.0-next.5...v2.128.0-next.6) (2022-05-05)
+
+
+### Bug Fixes
+
+* append optimizely script to head ([a550008](https://github.com/kiva/ui/commit/a5500080cdf24087e14a0bbda9320e1cd06f440f))
+
 ## [2.128.0-next.5](https://github.com/kiva/ui/compare/v2.128.0-next.4...v2.128.0-next.5) (2022-05-05)
 
 
