@@ -83,7 +83,6 @@
 			<template #share>
 				<social-share
 					class="thanks__social-share"
-					:lender="lender"
 					:loans="loans"
 				/>
 			</template>

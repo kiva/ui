@@ -1,142 +1,58 @@
 <template>
 	<section class="share hide-for-print">
 		<h2 class="share__headline" data-testid="share-headline">
-			Feeling good? Extend your impact
+			Help {{selectedLoan.name}} spread the word.
+			<p class="share__small__message">
+				You can make change happen faster for {{selectedLoan.name}} by getting the word out. Share their loan with others and have an even bigger impact.
+			</p>
 		</h2>
 
-		<div class="share__wrapper">
-			<div class="share__loans loans">
-				<button
-					v-for="(loan, index) in loans.slice(0,3)"
-					:key="loan.id"
-					class="loans__circle"
-					:data-testid="`share-loan-${index}`"
-					:class="{ 'loans__circle--selected': index === selectedLoanIndex }"
-					@click="onLoanSelect(index)"
-				>
-					<img
-						class="loans__img"
-						:src="loan.image.url"
-						:alt="`${loan.name} profile image`"
-					>
-				</button>
-			</div>
 
-			<div class="share__message message">
-				<div
-					class="message__triangle"
-					:class="`message__triangle--loan${selectedLoanIndex + 1}`"
-				>
-				</div>
-				<label
-					class="message__label"
-					for="message-textbox"
-				>
-					Message
-				</label>
-				<textarea
-					data-testid="share-message-textbox"
-					class="message__textbox tw-w-full tw-bg-primary tw-border tw-border-tertiary fs-mask"
-					id="message-textbox"
-					:placeholder="placeholderMessage"
-					:maxlength="maxMessageLength"
-					v-model="message"
-				></textarea>
-				<transition name="kvfastfade">
-					<button
-						data-testid="share-suggested-message-button"
-						class="message__suggested-btn tw-text-tertiary"
-						v-if="!isSuggestedMessage"
-						@click="useSuggestedMessage"
-					>
-						Suggested message
-					</button>
-				</transition>
-				<div class="message__charcount tw-text-tertiary" data-testid="share-message-character-count">
-					{{ message.length }}/{{ maxMessageLength }}
-				</div>
-			</div>
-
-			<div class="share__social social">
-				<a
-					data-testid="share-facebook-button"
-					class="social__btn social__btn--facebook"
-					:href="facebookShareUrl"
-					v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Facebook-share']"
-				>
-					<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
-					<span>Share</span>
-				</a>
-				<a
-					data-testid="share-twitter-button"
-					class="social__btn social__btn--twitter"
-					:href="twitterShareUrl"
-					target="_blank"
-					rel="noopener"
-					v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Twitter-share']"
-					@click="$showTipMsg('Thanks for tweeting!')"
-				>
-					<kv-icon name="twitter" title="Twitter" class="social__icon" />
-					<span>Tweet</span>
-				</a>
-				<a
-					data-testid="share-linkedin-button"
-					class="social__btn social__btn--linkedin"
-					:href="linkedInShareUrl"
-					target="_blank"
-					rel="noopener"
-					v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-LinkedIn-share']"
-					@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
-				>
-					<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
-					<span>Share</span>
-				</a>
-				<button
-					data-testid="share-copy-link-button"
-					class="social__btn social__btn--link tw-text-link tw-border-tertiary tw-border"
-					:class="copyStatus.class"
-					:disabled="copyStatus.disabled"
-					v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Copy-link-share']"
-					@click="copyLink"
-				>
-					<kv-icon name="clipboard" class="social__icon" />
-					<span>{{ this.copyStatus.text }}</span>
-				</button>
-			</div>
-
-			<div class="share__teams teams" v-if="lender.teams.length > 0">
-				<kv-checkbox
-					class="teams__checkbox"
-					id="team_invitation"
-					data-testid="share-team-checkbox"
-					v-model="isTeamInvitation"
-				>
-					Make this a team invitation
-				</kv-checkbox>
-
-				<div v-if="isTeamInvitation">
-					<label
-						class="teams__select-label"
-						for="team_select"
-					>
-						Team
-					</label>
-					<kv-select
-						data-testid="share-team-selection"
-						class="teams__select"
-						id="team_select"
-						v-model="selectedLenderTeam"
-					>
-						<option
-							v-for="team in lender.teams"
-							:key="team.teamPublicId"
-							:value="team.teamPublicId"
-						>
-							{{ team.name }}
-						</option>
-					</kv-select>
-				</div>
-			</div>
+		<div class="share__social social">
+			<a
+				data-testid="share-facebook-button"
+				class="social__btn social__btn--facebook"
+				:href="facebookShareUrl"
+				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Facebook-share']"
+			>
+				<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
+				<span>Share</span>
+			</a>
+			<a
+				data-testid="share-twitter-button"
+				class="social__btn social__btn--twitter"
+				:href="twitterShareUrl"
+				target="_blank"
+				rel="noopener"
+				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Twitter-share']"
+				@click="$showTipMsg('Thanks for tweeting!')"
+			>
+				<kv-icon name="twitter" title="Twitter" class="social__icon" />
+				<span>Tweet</span>
+			</a>
+			<a
+				data-testid="share-linkedin-button"
+				class="social__btn social__btn--linkedin"
+				:href="linkedInShareUrl"
+				target="_blank"
+				rel="noopener"
+				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-LinkedIn-share']"
+				@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
+			>
+				<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
+				<span>Share</span>
+			</a>
+			<button
+				data-testid="share-copy-link-button"
+				class="social__btn social__btn--link tw-text-link tw-border-tertiary tw-border"
+				:class="copyStatus.class"
+				:disabled="copyStatus.disabled"
+				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Copy-link-share']"
+				@click="copyLink"
+			>
+				<kv-icon name="clipboard" class="social__icon" />
+				<span>{{ this.copyStatus.text }}</span>
+			</button>
 		</div>
 	</section>
 </template>
@@ -147,6 +63,7 @@ import clipboardCopy from 'clipboard-copy';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import {orderBy} from 'lodash'
 
 export default {
 	inject: ['apollo'],
@@ -156,10 +73,6 @@ export default {
 		KvIcon
 	},
 	props: {
-		lender: {
-			type: Object,
-			required: true
-		},
 		loans: {
 			type: Array,
 			required: true
@@ -176,12 +89,12 @@ export default {
 			maxMessageLength: 280,
 			message: '',
 			selectedLoanIndex: 0,
-			selectedLenderTeam: this.lender?.teams?.[0]?.teamPublicId
 		};
 	},
 	computed: {
 		selectedLoan() {
-			return this.loans[this.selectedLoanIndex] || {};
+			const orderedLoans = orderBy(this.loans, ['unreservedAmount'], ['desc'])
+			return orderedLoans[0] || {}
 		},
 		placeholderMessage() {
 			return this.selectedLoan.name ? `Why did you lend to ${this.selectedLoan.name}?` : '';
@@ -201,11 +114,8 @@ export default {
 		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
-			if (this.selectedLoan.id && this.lender.inviterName) {
-				if (this.isTeamInvitation) {
-					return `${base}/invitedto/${this.selectedLenderTeam}/by/${this.lender.inviterName}/for/${this.selectedLoan.id}`; // eslint-disable-line max-len
-				}
-				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoan.id}`;
+			if (this.selectedLoan.id && this.selectedLoan.name) {
+				return `${base}/invitedby/${this.selectedLoan.name}/for/${this.selectedLoan.id}`;
 			}
 			return base;
 		},
@@ -360,9 +270,14 @@ $loan-triangle-size: rem-calc(12);
 	&__headline {
 		@include big-text();
 
-		text-align: center;
+		text-align: center !important;
 		margin-bottom: 1.5rem;
 		margin-top: 1rem;
+	}
+
+	&__small__message {
+		font-size: 0.5em;
+		line-height: 1.5rem
 	}
 }
 
@@ -527,8 +442,8 @@ $loan-triangle-size: rem-calc(12);
 }
 
 .social {
-	display: flex;
 	flex-wrap: wrap;
+	flex-shrink: 0;
 
 	@include breakpoint(large) {
 		flex-direction: column;
@@ -543,13 +458,13 @@ $loan-triangle-size: rem-calc(12);
 	}
 
 	&__btn {
-		display: flex;
 		align-items: center;
-		width: calc(50% - 0.5rem);
-		margin: 0 1rem 1rem 0;
+		width: 100% !important;
+		margin: 0 0 1rem 0;
 		padding: 1rem rem-calc(9) 1rem 1rem;
 		font-weight: $button-font-weight;
 		line-height: 1;
+		flex-shrink: 0;
 
 		&:nth-child(2n) {
 			margin-right: 0;
@@ -566,14 +481,20 @@ $loan-triangle-size: rem-calc(12);
 
 		&--facebook {
 			@include button-style($color-facebook, auto, #fff);
+			display: flex;
+			justify-content: center;
 		}
 
 		&--twitter {
 			@include button-style($color-twitter, auto, #fff);
+			display: flex;
+			justify-content: center;
 		}
 
 		&--linkedin {
 			@include button-style($color-linkedin, auto, #fff);
+			display: flex;
+			justify-content: center;
 		}
 
 		&--link {
@@ -581,6 +502,8 @@ $loan-triangle-size: rem-calc(12);
 				background-color 0.25s ease-in,
 				border-color 0.25s ease-in,
 				color 0.25s ease-in;
+				display: flex;
+				justify-content: center;
 
 			.social__icon {
 				fill: $medium-gray;
