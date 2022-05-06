@@ -418,7 +418,9 @@ export default {
 	},
 	data() {
 		let visibleSection = 'receipt';
-		if (this.showGuestUpsell) {
+		if (this.showShare) {
+			visibleSection = 'share';
+		} else if (this.showGuestUpsell) {
 			visibleSection = 'guest';
 		} else if (this.showMgCta) {
 			visibleSection = 'mg';

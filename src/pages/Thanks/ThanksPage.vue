@@ -81,7 +81,7 @@
 				/>
 			</template>
 			<template #share>
-				<social-share
+				<social-share-v2
 					class="thanks__social-share"
 					:lender="lender"
 					:loans="loans"
@@ -106,7 +106,7 @@ import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import GuestUpsell from '@/components/Checkout/GuestUpsell';
 import AutoDepositCTA from '@/components/Checkout/AutoDepositCTA';
 import MonthlyGoodCTA from '@/components/Checkout/MonthlyGoodCTA';
-import SocialShare from '@/components/Checkout/SocialShare';
+import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ThanksLayoutV2 from '@/components/Thanks/ThanksLayoutV2';
 
@@ -126,9 +126,9 @@ export default {
 		GuestUpsell,
 		KvButton,
 		MonthlyGoodCTA,
-		SocialShare,
+		SocialShareV2,
 		ThanksLayoutV2,
-		WwwPage,
+		WwwPage
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
