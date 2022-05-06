@@ -88,11 +88,13 @@ import logReadQueryError from '@/util/logReadQueryError';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
 import { isLoanFundraising } from '@/util/loanUtils';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import recommendedLoansQuery from '@/graphql/query/lendByCategory/recommendedLoans.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
+import mlOrderedLoanChannels from '@/graphql/query/lendByCategory/mlOrderedLoanChannels.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import CategoryRowHover from '@/components/LoansByCategory/CategoryRowHover';
@@ -246,8 +248,24 @@ export default {
 			return pageViewTrackData;
 		},
 		setRows(data) {
-			this.categorySetting = readJSONSetting(data, 'general.rows.value') || [];
-			this.categorySetId = 'default';
+			if (this.mlServiceBanditExpVersion !== null) {
+				let baseData = {};
+				try {
+					baseData = this.apollo.readQuery({
+						query: mlOrderedLoanChannels,
+					});
+				} catch (e) {
+					logReadQueryError(e, 'LendByCategory mlOrderedLoanChannels');
+				}
+
+				// Get the array of channel objects from the ml multi-armed bandit
+				this.categorySetting = _get(baseData, 'ml.orderedLoanChannels') || [];
+				this.categorySetId = this.mlServiceBanditExpVersion;
+			} else {
+				// Get the array of channel objects from settings
+				this.categorySetting = readJSONSetting(data, 'general.rows.value') || [];
+				this.categorySetId = 'default';
+			}
 		},
 		fetchRemainingLoanChannels() {
 			const ssrLoanIds = [];
@@ -425,51 +443,96 @@ export default {
 			}
 			return Promise.resolve();
 		},
+		initializeMLServiceBanditRowExp() {
+			// experiment: GROW-330 by MultiArmed Bandit algorithm experiment
+			// get assignment
+			const mlServiceBandit = 0;
+			const mlServiceBanditEXP = this.apollo.readFragment({
+				id: 'Experiment:EXP-ML-Service-Bandit-LendByCategory',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.mlServiceBanditExpVersion = mlServiceBanditEXP.version;
+
+			if (this.mlServiceBanditExpVersion && this.mlServiceBanditExpVersion !== 'unassigned') {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-ML-Service-Bandit-LendByCategory',
+					this.mlServiceBanditExpVersion,
+					this.mlServiceBanditExpVersion === 'b' ? mlServiceBandit : null,
+					this.mlServiceBanditExpVersion === 'b' ? mlServiceBandit : null
+				);
+			}
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
 			let rowData;
-
+			let expRowData;
+			let expResults;
 			return client.query({
 				query: lendByCategoryQuery
 			}).then(({ data }) => {
 				// Get the array of channel objects from settings
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
-			}).then(() => {
-				// Get all channel ids for the row data
-				const ids = _map(rowData, 'id');
-				// Filter other channel types as custom categories
-				const recChannels = _filter(rowData, { __typename: 'RecLoanChannel' });
-				const recChannelIds = _map(recChannels, 'id');
-				const hasRecRow = recChannels.length > 0;
-
-				const imgDefaultSize = 'w480h300';
-				const imgRetinaSize = 'w960h600';
-
-				// Pre-fetch all the data for SSR targeted channels
 				return Promise.all([
-					client.query({
-						query: loanChannelQuery,
-						variables: {
-							// exclude custom rows + limit for ssr
-							ids: _take(_without(ids, ...recChannelIds), ssrRowLimiter),
-							imgDefaultSize,
-							imgRetinaSize,
-						},
-					}),
-					hasRecRow ? client.query({
-						query: recommendedLoansQuery,
-						variables: {
-							ids: recChannelIds,
-							imgDefaultSize,
-							imgRetinaSize,
-						}
-					}) : Promise.resolve(),
+					// experiment: GROW-330 Machine Learning Category row
+					client.query({ query: experimentQuery, variables: { id: 'EXP-VUE-937-recommended-row-algo' } }),
 				]);
-			});
+			}).then(expAssignments => {
+				expResults = expAssignments;
+				return client.query({
+					query: mlOrderedLoanChannels
+				});
+			}).then(({ data }) => {
+				// Get the array of channel objects from the ml multi-armed bandit
+				expRowData = _get(data, 'ml.orderedLoanChannels') || [];
+
+				const mlServiceBanditExpVersion = _get(expResults, '[0].data.experiment.version');
+
+				if (mlServiceBanditExpVersion !== null) {
+					rowData = expRowData;
+				}
+
+				return rowData;
+			})
+				.then(() => {
+				// Get all channel ids for the row data
+					const ids = _map(rowData, 'id');
+					// Filter other channel types as custom categories
+					const recChannels = _filter(rowData, { __typename: 'RecLoanChannel' });
+					const recChannelIds = _map(recChannels, 'id');
+					const hasRecRow = recChannels.length > 0;
+
+					const imgDefaultSize = 'w480h300';
+					const imgRetinaSize = 'w960h600';
+
+					// Pre-fetch all the data for SSR targeted channels
+					return Promise.all([
+						client.query({
+							query: loanChannelQuery,
+							variables: {
+							// exclude custom rows + limit for ssr
+								ids: _take(_without(ids, ...recChannelIds), ssrRowLimiter),
+								imgDefaultSize,
+								imgRetinaSize,
+							},
+						}),
+						hasRecRow ? client.query({
+							query: recommendedLoansQuery,
+							variables: {
+								ids: recChannelIds,
+								imgDefaultSize,
+								imgRetinaSize,
+							}
+						}) : Promise.resolve(),
+					]);
+				});
 		},
 	},
 	created() {
+		// Initialize GROW-330: Machine Learning served rows
+		this.initializeMLServiceBanditRowExp();
+
 		// Read the page data from the cache
 		let baseData = {};
 		try {

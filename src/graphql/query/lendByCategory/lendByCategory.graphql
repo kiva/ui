@@ -4,6 +4,10 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
+		mlServiceBandit: uiExperimentSetting(key: "EXP-ML-Service-Bandit-LendByCategory") {
+			key
+			value
+		}
 	}
 	my {
 		isAdmin
