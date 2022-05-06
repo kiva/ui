@@ -1,12 +1,11 @@
 <template>
 	<section class="share hide-for-print">
 		<h2 class="share__headline" data-testid="share-headline">
-			Help {{selectedLoan.name}} spread the word.
+			Help {{ selectedLoan.name }} spread the word.
 			<p class="share__small__message">
-				{{shareSubtitle}}
+				{{ shareSubtitle }}
 			</p>
 		</h2>
-
 
 		<div class="share__social social">
 			<a
@@ -59,17 +58,13 @@
 
 <script>
 import _map from 'lodash/map';
-import {orderBy} from 'lodash'
+import { orderBy } from 'lodash';
 import clipboardCopy from 'clipboard-copy';
 import KvIcon from '@/components/Kv/KvIcon';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
 	inject: ['apollo'],
 	components: {
-		KvCheckbox,
-		KvSelect,
 		KvIcon
 	},
 	props: {
@@ -93,8 +88,8 @@ export default {
 	},
 	computed: {
 		selectedLoan() {
-			const orderedLoans = orderBy(this.loans, ['unreservedAmount'], ['desc'])
-			return orderedLoans[0] || {}
+			const orderedLoans = orderBy(this.loans, ['unreservedAmount'], ['desc']);
+			return orderedLoans[0] || {};
 		},
 		placeholderMessage() {
 			return this.selectedLoan.name ? `Why did you lend to ${this.selectedLoan.name}?` : '';
@@ -146,7 +141,7 @@ export default {
 			});
 		},
 		shareSubtitle() {
-			return `You can make change happen faster for ${this.selectedLoan.name} by getting the word out. Share their loan with others and have an even bigger impact.`  // eslint-disable-line max-len
+			return `You can make change happen faster for ${this.selectedLoan.name} by getting the word out. Share their loan with others and have an even bigger impact.`; // eslint-disable-line max-len
 		}
 	},
 	methods: {
@@ -280,7 +275,7 @@ $loan-triangle-size: rem-calc(12);
 
 	&__small__message {
 		font-size: 0.5em;
-		line-height: 1.5rem
+		line-height: 1.5rem;
 	}
 }
 
@@ -483,30 +478,30 @@ $loan-triangle-size: rem-calc(12);
 		}
 
 		&--facebook {
-			@include button-style($color-facebook, auto, #fff);
 			display: flex;
 			justify-content: center;
+			@include button-style($color-facebook, auto, #fff);
 		}
 
 		&--twitter {
-			@include button-style($color-twitter, auto, #fff);
 			display: flex;
 			justify-content: center;
+			@include button-style($color-twitter, auto, #fff);
 		}
 
 		&--linkedin {
-			@include button-style($color-linkedin, auto, #fff);
 			display: flex;
 			justify-content: center;
+			@include button-style($color-linkedin, auto, #fff);
 		}
 
 		&--link {
+			display: flex;
+			justify-content: center;
 			transition:
 				background-color 0.25s ease-in,
 				border-color 0.25s ease-in,
 				color 0.25s ease-in;
-				display: flex;
-				justify-content: center;
 
 			.social__icon {
 				fill: $medium-gray;
