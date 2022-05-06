@@ -3,7 +3,7 @@
 		<h2 class="share__headline" data-testid="share-headline">
 			Help {{selectedLoan.name}} spread the word.
 			<p class="share__small__message">
-				You can make change happen faster for {{selectedLoan.name}} by getting the word out. Share their loan with others and have an even bigger impact.
+				{{shareSubtitle}}
 			</p>
 		</h2>
 
@@ -59,11 +59,11 @@
 
 <script>
 import _map from 'lodash/map';
+import {orderBy} from 'lodash'
 import clipboardCopy from 'clipboard-copy';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
-import {orderBy} from 'lodash'
 
 export default {
 	inject: ['apollo'],
@@ -145,6 +145,9 @@ export default {
 				via: 'Kiva',
 			});
 		},
+		shareSubtitle() {
+			return `You can make change happen faster for ${this.selectedLoan.name} by getting the word out. Share their loan with others and have an even bigger impact.`  // eslint-disable-line max-len
+		}
 	},
 	methods: {
 		getFullUrl(base, args) {
