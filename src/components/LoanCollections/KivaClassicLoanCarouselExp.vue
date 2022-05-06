@@ -29,7 +29,7 @@
 					:item-index="index"
 					:key="`loan-bundle-${loanId}`"
 					:loan-id="loanId"
-					@read-more-link="updateDetailedLoanIndex(index)"
+					@read-more-link="getLoanDetails"
 				/>
 				<kiva-classic-basic-loan-card-exp
 					v-else
@@ -39,51 +39,22 @@
 				/>
 			</template>
 		</kv-carousel>
-		<p>all loan ids - {{ loanIds }} </p>
-		<p>loan index - {{ detailedLoanIndex }} </p>
-		<p>loan cache id - {{ detailedLoanCacheId }} </p>
-		<kv-expandable :delay="150" easing="linear">
-			<div v-if="detailedLoanCacheId" ref="detailedLoanCardContainer">
-				<!-- TODO: figure out where to get catSetId from -->
-				<!-- <loan-card-controller
-					class="expanded-card-row"
-					loan-card-type="DetailedLoanCard"
-					:loan="detailedLoan"
-					:items-in-basket="itemsInBasket"
-					:category-id="id"
-					category-set-id="a"
-					:row-number="rowNumber"
-					:card-number="detailedLoanIndex + 1"
-					:enable-tracking="true"
-					:is-visitor="!isLoggedIn"
-					@close-detailed-loan-card="detailedLoanIndex = null"
-				/> -->
-				<h3>Detailed Loan Info</h3>
-				{{ detailedLoan }}
-			</div>
-		</kv-expandable>
 	</div>
 </template>
 
 <script>
-// import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KivaClassicBasicLoanCardBundleExp from '@/components/LoanCards/KivaClassicBasicLoanCardBundleExp';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvExpandable from '@/components/Kv/KvExpandable';
-import detailedLoanCardFragment from '@/graphql/fragments/detailedLoanCard.graphql';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
 	components: {
 		KvCarousel,
-		KvExpandable,
 		KvLoadingSpinner,
 		KivaClassicBasicLoanCardExp,
 		KivaClassicBasicLoanCardBundleExp,
-		// LoanCardController,
 	},
-	inject: ['apollo'],
 	props: {
 		isLoggedIn: {
 			type: Boolean,
@@ -121,30 +92,20 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		getDetailedLoan: {
+			type: Function,
+			default: () => {}
+		}
 	},
 	data() {
 		return {
 			name: '',
 			id: 0,
 			url: '',
-			detailedLoanIndex: 0, // TODO: this should be null
+			detailedLoan: null,
 		};
 	},
 	computed: {
-		detailedLoan() {
-			return this.apollo.readFragment({
-				id: this.detailedLoanCacheId,
-				fragment: detailedLoanCardFragment,
-			}) || {};
-			// return this.detailedLoanCacheId;
-		},
-		detailedLoanCacheId() {
-			// if (this.detailedLoanIndex === null) {
-			// 	return '';
-			// }
-			// eslint-disable-next-line no-underscore-dangle
-			return `${this.loans[this.detailedLoanIndex].__typename}:${this.loanIds[this.detailedLoanIndex]}`;
-		},
 		isLoading() {
 			return this.loanIds.length === 0 && this.isVisible;
 		},
@@ -181,8 +142,8 @@ export default {
 		onInteractCarousel(interaction) {
 			this.$kvTrackEvent('carousel', 'click-carousel-horizontal-scroll', interaction);
 		},
-		updateDetailedLoanIndex(detailedLoanIndex) {
-			this.detailedLoanIndex = detailedLoanIndex;
+		getLoanDetails(event) {
+			this.$emit('get-detailed-loan', event);
 		},
 	},
 };

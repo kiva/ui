@@ -77,7 +77,7 @@
 			/>
 
 			<a
-				@click="handleReadMoreLink"
+				@click="handleReadMoreLink(loan)"
 				v-kv-track-event="['Lending', 'click-read-more-loan-bundle-cta', 'Read more', loanId]"
 				class="tw-inline"
 				style="cursor: pointer;"
@@ -110,25 +110,56 @@ const loanQuery = gql`query kcBasicLoanCard($loanId: Int!) {
 			id
 			distributionModel
 			geocode {
-				city
-				state
-				country {
-					name
+			city
+			country {
 					isoCode
+					name
+					region
 				}
+			}
+			name
+			use
+			activity {
+				id
+				name
+			}
+			sector {
+				id
+				name
+			}
+			status
+			borrowerCount
+			whySpecial
+			lenderRepaymentTerm
+			loanAmount
+			minNoteSize
+			loanFundraisingInfo {
+				fundedAmount
+				reservedAmount
+				isExpiringSoon
+			}
+			plannedExpirationDate
+			matchingText
+			matchRatio
+			userProperties {
+				favorited
+				lentTo
+			}
+			lenders(limit: 0) {
+				totalCount
+			}
+			... on LoanPartner {
+				partnerName
+			}
+			...on LoanDirect {
+				trusteeName
 			}
 			image {
 				id
+				default: url(customSize: "w480h300")
+				retina: url(customSize: "w960h600")
 				hash
 			}
-			name
-
-			# for loan-use-mixin
-			use
-			status
-			loanAmount
-			borrowerCount
-
 		}
 	}
 }`;

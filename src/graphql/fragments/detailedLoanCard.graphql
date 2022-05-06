@@ -8,47 +8,47 @@ fragment detailedLoanCard on LoanBasic {
 		country {
 			isoCode
 			name
-			# region
+			region
 		}
 	}
 	use
-	# activity {
-	# 	id
-	# 	name
-	# }
-	# sector {
-	# 	id
-	# 	name
-	# }
-	# whySpecial
-	# lenderRepaymentTerm
+	activity {
+		id
+		name
+	}
+	sector {
+		id
+		name
+	}
+	whySpecial
+	lenderRepaymentTerm
 	loanAmount
-	# minNoteSize
-	# loanFundraisingInfo {
-	# 	fundedAmount
-	# 	reservedAmount
-	# 	isExpiringSoon
-	# }
-	# plannedExpirationDate
-	# matchingText
-	# matchRatio
-	# userProperties {
-	# 	favorited
-	# 	lentTo
-	# }
-	# lenders(limit: 0) {
-	# 	totalCount
-	# }
-	# ... on LoanPartner {
-	# 	partnerName
-	# }
-	# ...on LoanDirect {
-	# 	trusteeName
-	# }
+	minNoteSize
+	loanFundraisingInfo {
+		fundedAmount
+		reservedAmount
+		isExpiringSoon
+	}
+	plannedExpirationDate
+	matchingText
+	matchRatio
+	userProperties {
+		favorited
+		lentTo
+	}
+	lenders(limit: 0) {
+		totalCount
+	}
+	... on LoanPartner {
+		partnerName
+	}
+	...on LoanDirect {
+		trusteeName
+	}
 	image {
 		id
-		# default: url(customSize: "w480h300")
-		# retina: url(customSize: "w960h600")
+		default: url(customSize: "w480h300")
+		retina: url(customSize: "w960h600")
 		hash
 	}
 }
