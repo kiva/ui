@@ -58,13 +58,4 @@ describe('Meta information', () => {
 			.should('have.attr', 'content', 'Your generous donations help Kiva continue and grow our mission of financial inclusivity.'
 						+ ' Click here to learn more and make a difference.');
 	});
-
-	it('Donate Support Us Page', () => {
-		cy.visit('/donate/supportus');
-
-		cy.title().should('eq', 'Donate to Kiva and create real change | Kiva');
-		cy.document().get('head meta[name="description"]')
-			.should('have.attr', 'content', 'Donations from people like you allow Kiva to support more people worldwide. Donate today'
-						+ ' to help us build a more financially inclusive world.');
-	});
 });
