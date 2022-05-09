@@ -58,7 +58,7 @@
 
 <script>
 import _map from 'lodash/map';
-import { orderBy } from 'lodash';
+import orderBy from 'lodash/orderBy';
 import clipboardCopy from 'clipboard-copy';
 import KvIcon from '@/components/Kv/KvIcon';
 
