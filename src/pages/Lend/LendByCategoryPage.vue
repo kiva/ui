@@ -476,7 +476,7 @@ export default {
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				return Promise.all([
 					// experiment: GROW-330 Machine Learning Category row
-					client.query({ query: experimentQuery, variables: { id: 'EXP-VUE-937-recommended-row-algo' } }),
+					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
 				]);
 			}).then(expAssignments => {
 				expResults = expAssignments;
