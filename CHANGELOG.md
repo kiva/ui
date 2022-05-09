@@ -1,3 +1,10 @@
+## [2.128.0-next.10](https://github.com/kiva/ui/compare/v2.128.0-next.9...v2.128.0-next.10) (2022-05-09)
+
+
+### Features
+
+* hide VWO blur filter ([94640c6](https://github.com/kiva/ui/commit/94640c63970cc0864428aeb34ce59277696b4fe3))
+
 ## [2.128.0-next.9](https://github.com/kiva/ui/compare/v2.128.0-next.8...v2.128.0-next.9) (2022-05-09)
 
 
