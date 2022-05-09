@@ -1,3 +1,10 @@
+## [2.128.0-next.9](https://github.com/kiva/ui/compare/v2.128.0-next.8...v2.128.0-next.9) (2022-05-09)
+
+
+### Bug Fixes
+
+* use full smart-code from VWO for blur filter ([9e31940](https://github.com/kiva/ui/commit/9e319406129e5c3498538d085332060951274aac))
+
 ## [2.128.0-next.8](https://github.com/kiva/ui/compare/v2.128.0-next.7...v2.128.0-next.8) (2022-05-09)
 
 
