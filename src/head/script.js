@@ -267,8 +267,10 @@ export default (config, globalOneTrustEvent) => {
 					// You can change the styling to suit your requirements
 					// This is the default CSS filters VWO provides
 					// NOTE: do not change any class names IMPORTANT ...
-					var vwoFilter = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100%; width: 100%; -webkit-filter: blur(5px); filter: blur(5px);  backdrop-filter: saturate(180%) blur(3px); -webkit-backdrop-filter: saturate(180%) blur(3px); z-index:' + (popupZIndex - 1) + ';',
-					vwoLoaderCss = ' .vwo-content-loader{ border: 16px solid #f3f3f3; border-top: 16px solid #3498db; border-radius: 50%; width: 90px; height: 90px; position: fixed; top: 50%; left: 50%; -webkit-transform: translate(-50%, -50%); -ms-transform: translate(-50%, -50%); transform: translate(-50%, -50%); animation: vwo-spin 2s linear infinite; z-index:' + (popupZIndex - 1) + '; }' + '@keyframes vwo-spin { 0% { -webkit-transform: translate(-50%, -50%) rotate(0deg); transform: translate(-50%, -50%) rotate(0deg); } 100% { -webkit-transform: translate(-50%, -50%) rotate(360deg); transform: translate(-50%, -50%) rotate(360deg); } }';
+					// var vwoFilter = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100%; width: 100%; -webkit-filter: blur(5px); filter: blur(5px);  backdrop-filter: saturate(180%) blur(3px); -webkit-backdrop-filter: saturate(180%) blur(3px); z-index:' + (popupZIndex - 1) + ';',
+					// vwoLoaderCss = ' .vwo-content-loader{ border: 16px solid #f3f3f3; border-top: 16px solid #3498db; border-radius: 50%; width: 90px; height: 90px; position: fixed; top: 50%; left: 50%; -webkit-transform: translate(-50%, -50%); -ms-transform: translate(-50%, -50%); transform: translate(-50%, -50%); animation: vwo-spin 2s linear infinite; z-index:' + (popupZIndex - 1) + '; }' + '@keyframes vwo-spin { 0% { -webkit-transform: translate(-50%, -50%) rotate(0deg); transform: translate(-50%, -50%) rotate(0deg); } 100% { -webkit-transform: translate(-50%, -50%) rotate(360deg); transform: translate(-50%, -50%) rotate(360deg); } }';
+					var vwoFilter = 'display: none;',
+					vwoLoaderCss = ' .vwo-content-loader { display: none; }';
 
 					/**
 					* This below written code should not be tweaked
