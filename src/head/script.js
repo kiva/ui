@@ -3,6 +3,7 @@ export default (config, globalOneTrustEvent) => {
 	const cookies = typeof document !== 'undefined' ? document.cookie.split(';') : [];
 	let optout = false;
 	let optimizelyConsent = false;
+	let vwoConsent = false;
 	for (let i = 0; i < cookies.length; i++) { // eslint-disable-line
 		if (cookies[i].indexOf('kvgdpr') !== -1 && cookies[i].indexOf('opted_out=true') !== -1) {
 			optout = true;
@@ -124,7 +125,7 @@ export default (config, globalOneTrustEvent) => {
 	};
 
 	// VWO scripts
-	const insertVWO = () => {
+	if (config.enableVWO) {
 		/* eslint-disable */
 		(function(){
 			window._vwo_code = window._vwo_code || (function(){
@@ -139,7 +140,27 @@ export default (config, globalOneTrustEvent) => {
 			f=false,d=document,code={use_existing_jquery:function(){return use_existing_jquery;},library_tolerance:function(){return library_tolerance;},finish:function(){if(!f){f=true;var a=d.getElementById('_vis_opt_path_hides');if(a)a.parentNode.removeChild(a);}},finished:function(){return f;},load:function(a){var b=d.createElement('script');b.src=a;b.type='text/javascript';b.innerText;b.onerror=function(){_vwo_code.finish();};d.getElementsByTagName('head')[0].appendChild(b);},init:function(){
 			window.settings_timer=setTimeout(function () {_vwo_code.finish() },settings_tolerance);var a=d.createElement('style'),b=hide_element?hide_element+'{opacity:0 !important;filter:alpha(opacity=0) !important;background:none !important;}':'',h=d.getElementsByTagName('head')[0];a.setAttribute('id','_vis_opt_path_hides');a.setAttribute('type','text/css');if(a.styleSheet)a.styleSheet.cssText=b;else a.appendChild(d.createTextNode(b));h.appendChild(a);this.load('https://dev.visualwebsiteoptimizer.com/j.php?a='+account_id+'&u='+encodeURIComponent(d.URL)+'&f='+(+is_spa)+'&r='+Math.random());return settings_timer; }};window._vwo_settings_timer = code.init(); return code; }());
 		}());
+		window._vwo_code.setFilterConfigAndApplyFilter({
+			popupSelector: '#onetrust-banner-sdk',
+			filterTime: 'best',
+			isConsentGiven: function() {
+				// "1" - Accepted - SmartCode will execute straightaway
+				// "2" - Denied - SmartCode will not  be executed
+				// "3" - UNKNOWN - CSS FILTER will be applied since consent is unknown
+				if (optout) {
+					return '2';
+				}
+				if (vwoConsent) {
+					return '1';
+				}
+				return '3';
+			},
+			filterTolerance: 30000
+		});
 		/* eslint-enable */
+	}
+	const insertVWO = () => {
+		vwoConsent = true;
 	};
 
 	// Optimizely experiment loader
