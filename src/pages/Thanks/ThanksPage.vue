@@ -301,18 +301,18 @@ export default {
 			}
 		}
 
-		// CORE-427 Thanks auto deposit upsell experiment
-		const autoDepositUpsellExp = this.apollo.readFragment({
+		// MARS-96 Simplified social share experiment
+		const simpleSocialShareExp = this.apollo.readFragment({
 			id: 'Experiment:simple_thanks_share',
 			fragment: experimentVersionFragment,
 		}) || {};
 
-		this.simpleSocialShareVersion = autoDepositUpsellExp.version; // either 'a' or 'b' or undefined
-		if (this.autoDepositUpsellExpVersion) {
+		this.simpleSocialShareVersion = simpleSocialShareExp.version;
+		if (this.simpleSocialShareVersion) {
 			this.$kvTrackEvent(
 				'Thanks',
 				'EXP-MARS-96-May2022',
-				this.autoDepositUpsellExpVersion,
+				this.simpleSocialShareVersion,
 			);
 		}
 	},
