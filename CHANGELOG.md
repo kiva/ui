@@ -1,3 +1,10 @@
+### [2.131.1](https://github.com/kiva/ui/compare/v2.131.0...v2.131.1) (2022-05-09)
+
+
+### Bug Fixes
+
+* ensure only the url path is used to create the event category ([37ae6c4](https://github.com/kiva/ui/commit/37ae6c4d4fae2cfc971132541d4eb78212157e60))
+
 ## [2.131.0](https://github.com/kiva/ui/compare/v2.130.0...v2.131.0) (2022-05-05)
 
 
