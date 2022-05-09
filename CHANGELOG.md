@@ -1,3 +1,10 @@
+## [2.128.0-next.8](https://github.com/kiva/ui/compare/v2.128.0-next.7...v2.128.0-next.8) (2022-05-09)
+
+
+### Features
+
+* cookie consent filter for vwo smartcode loading ([083d291](https://github.com/kiva/ui/commit/083d291bb5efe3e3e1cf280447fd72a74a896ac6))
+
 ## [2.128.0-next.7](https://github.com/kiva/ui/compare/v2.128.0-next.6...v2.128.0-next.7) (2022-05-05)
 
 
