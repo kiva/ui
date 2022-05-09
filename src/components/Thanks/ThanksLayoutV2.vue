@@ -415,10 +415,14 @@ export default {
 			type: Boolean,
 			default: true
 		},
+		thanksSocialShareVersion: {
+			type: String,
+			default: ''
+		}
 	},
 	data() {
 		let visibleSection = 'receipt';
-		if (this.showShare) {
+		if (this.showShare && this.thanksSocialShareVersion === 'b') {
 			visibleSection = 'share';
 		} else if (this.showGuestUpsell) {
 			visibleSection = 'guest';
