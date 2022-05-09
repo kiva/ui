@@ -68,10 +68,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		loans: {
-			type: Array,
-			default: () => [],
-		},
 		loanIds: {
 			type: Array,
 			default: () => [],

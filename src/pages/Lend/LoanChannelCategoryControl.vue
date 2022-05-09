@@ -55,7 +55,6 @@
 						<kiva-classic-loan-carousel-exp
 							:is-visible="showCarousel"
 							:loan-ids="selectedChannelLoanIds"
-							:loans="loans"
 							:selected-channel="selectedChannel"
 							:show-view-more-card="showViewMoreCard"
 							:is-bundle="true"

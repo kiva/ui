@@ -116,8 +116,6 @@
 
 		<kv-expandable :delay="150" easing="linear">
 			<div v-if="detailedLoanCacheId" ref="detailedLoanCardContainer">
-				Detailed Loan Cache ID: {{ detailedLoanCacheId }}
-				Set ID: {{ setId }}
 				<loan-card-controller
 					class="expanded-card-row"
 					loan-card-type="DetailedLoanCard"
