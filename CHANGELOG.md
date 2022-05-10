@@ -1,3 +1,26 @@
+## [2.132.0](https://github.com/kiva/ui/compare/v2.131.1...v2.132.0) (2022-05-09)
+
+
+### Features
+
+* implement detailed loan cards on lbc ([43d44a7](https://github.com/kiva/ui/commit/43d44a784806ab15daf12b4828ac4ec0c309754f))
+* temp push, getting detailed loan info ([f951875](https://github.com/kiva/ui/commit/f951875055f2557969eeb34926831e8a92186338))
+
+
+### Bug Fixes
+
+* comment out breaking imports ([5078062](https://github.com/kiva/ui/commit/50780626105195766cf6a461546e62a900095389))
+* lint fix ([4414230](https://github.com/kiva/ui/commit/44142308af64f636c3249de58b6cc4396b2e763e))
+* missed some stuff ([297a1b3](https://github.com/kiva/ui/commit/297a1b3295d9504b2942fea6dce208698ec44d65))
+* use tw class ([96e4f5f](https://github.com/kiva/ui/commit/96e4f5f78b31f299ad686c1ddb422ca1a14fcc53))
+
+### [2.131.1](https://github.com/kiva/ui/compare/v2.131.0...v2.131.1) (2022-05-09)
+
+
+### Bug Fixes
+
+* ensure only the url path is used to create the event category ([37ae6c4](https://github.com/kiva/ui/commit/37ae6c4d4fae2cfc971132541d4eb78212157e60))
+
 ## [2.131.0](https://github.com/kiva/ui/compare/v2.130.0...v2.131.0) (2022-05-05)
 
 
