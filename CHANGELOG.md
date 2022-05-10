@@ -1,3 +1,10 @@
+## [2.133.0](https://github.com/kiva/ui/compare/v2.132.0...v2.133.0) (2022-05-10)
+
+
+### Features
+
+* loans bundle test was added to lend by category page ([42c8318](https://github.com/kiva/ui/commit/42c8318cbc1c16547641088eaa8287b3cd78fb37))
+
 ## [2.132.0](https://github.com/kiva/ui/compare/v2.131.1...v2.132.0) (2022-05-09)
 
 
