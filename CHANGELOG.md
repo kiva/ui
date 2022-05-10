@@ -1,3 +1,10 @@
+### [2.133.1](https://github.com/kiva/ui/compare/v2.133.0...v2.133.1) (2022-05-10)
+
+
+### Bug Fixes
+
+* remove conditional render preventing cards from showing ([4f80ff5](https://github.com/kiva/ui/commit/4f80ff5ab25e3dd98e164917837936b410b90a01))
+
 ## [2.133.0](https://github.com/kiva/ui/compare/v2.132.0...v2.133.0) (2022-05-10)
 
 
