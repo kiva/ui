@@ -1,3 +1,10 @@
+## [2.134.0](https://github.com/kiva/ui/compare/v2.133.1...v2.134.0) (2022-05-10)
+
+
+### Features
+
+* flss filter styles ([13dd6dc](https://github.com/kiva/ui/commit/13dd6dc38255328089790d79127806d1ac82827f))
+
 ### [2.133.1](https://github.com/kiva/ui/compare/v2.133.0...v2.133.1) (2022-05-10)
 
 
