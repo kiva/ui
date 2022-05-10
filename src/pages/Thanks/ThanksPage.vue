@@ -59,6 +59,7 @@
 			:show-auto-deposit-upsell="!isAutoDepositSubscriber && showAutoDepositUpsell && !hasModernSub"
 			:show-guest-upsell="isGuest"
 			:show-share="loans.length > 0"
+			:thanks-social-share-version="simpleSocialShareVersion"
 			:class="{
 				'tw-mt-4': showAutoDepositUpsell
 			}"
@@ -82,6 +83,13 @@
 			</template>
 			<template #share>
 				<social-share
+					v-if="receipt && simpleSocialShareVersion !== 'b'"
+					class="thanks__social-share"
+					:lender="lender"
+					:loans="loans"
+				/>
+				<social-share-v2
+					v-if="receipt && simpleSocialShareVersion === 'b'"
 					class="thanks__social-share"
 					:lender="lender"
 					:loans="loans"
@@ -107,6 +115,7 @@ import GuestUpsell from '@/components/Checkout/GuestUpsell';
 import AutoDepositCTA from '@/components/Checkout/AutoDepositCTA';
 import MonthlyGoodCTA from '@/components/Checkout/MonthlyGoodCTA';
 import SocialShare from '@/components/Checkout/SocialShare';
+import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ThanksLayoutV2 from '@/components/Thanks/ThanksLayoutV2';
 
@@ -127,8 +136,9 @@ export default {
 		KvButton,
 		MonthlyGoodCTA,
 		SocialShare,
+		SocialShareV2,
 		ThanksLayoutV2,
-		WwwPage,
+		WwwPage
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -149,6 +159,7 @@ export default {
 			hasModernSub: false,
 			isGuest: false,
 			pageData: {},
+			simpleSocialShareVersion: '',
 		};
 	},
 	apollo: {
@@ -166,11 +177,11 @@ export default {
 				const modernSubscriptions = data?.mySubscriptions?.values ?? [];
 				const hasModernSub = modernSubscriptions.length !== 0;
 				const upsellEligible = isLoggedIn && !hasAutoDeposit && !hasLegacySubs && !hasModernSub;
-				// if eligible run experiment query
-				if (upsellEligible) {
-					return client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_ad_upsell' } });
-				}
-				return data;
+
+				return Promise.all([
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'simple_thanks_share' } }),
+					upsellEligible ? client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_ad_upsell' } }) : Promise.resolve() // eslint-disable-line max-len
+				]);
 			}).catch(errorResponse => {
 				logFormatter(
 					'Thanks page preFetch failed: ',
@@ -286,6 +297,23 @@ export default {
 					'Thanks',
 					'EXP-CORE-427-Feb-2022',
 					this.autoDepositUpsellExpVersion,
+				);
+			}
+		}
+
+		if (!this.isGuest) {
+			// MARS-96 Simplified social share experiment
+			const simpleSocialShareExp = this.apollo.readFragment({
+				id: 'Experiment:simple_thanks_share',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.simpleSocialShareVersion = simpleSocialShareExp.version;
+			if (this.simpleSocialShareVersion) {
+				this.$kvTrackEvent(
+					'Thanks',
+					'EXP-MARS-96-May2022',
+					this.simpleSocialShareVersion,
 				);
 			}
 		}

@@ -39,6 +39,7 @@
 		:shift-increment="shiftIncrement"
 		:time-left-message="timeLeftMessage"
 		:prevent-updating-detailed-card="preventUpdatingDetailedCard"
+		:hide-lend-cta="hideLendCta"
 
 		@update-detailed-loan-index="updateDetailedLoanIndex"
 		@update-hover-loan-index="updateHoverLoanIndex"
@@ -169,6 +170,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		hideLendCta: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	inject: ['apollo'],
 	computed: {

@@ -1,3 +1,103 @@
+## [2.135.0](https://github.com/kiva/ui/compare/v2.134.0...v2.135.0) (2022-05-10)
+
+
+### Features
+
+* added e2e test ([3a50eea](https://github.com/kiva/ui/commit/3a50eea3b2f409a237bd602d9d5cf9e0e177a1ed))
+* added experiment tracking ([5f810aa](https://github.com/kiva/ui/commit/5f810aa7d96792270bfacb4042dc758156976dfb))
+* donate page seo updates ([6ddbc3d](https://github.com/kiva/ui/commit/6ddbc3dcd630ffc7125c36b582daa97bdcad70ba))
+* new thanks page sharing experience ([ba4da1b](https://github.com/kiva/ui/commit/ba4da1ba813cf6cb5e0fa69fb3508c24632028f9))
+* small adjustemt related to guest users ([6946fc7](https://github.com/kiva/ui/commit/6946fc72d4c91122625bd662b2733c2bd54319fc))
+* small fixes on experiment tracking ([41b6398](https://github.com/kiva/ui/commit/41b63981f4fea50d45e18b333dd7e425d2635dd5))
+
+
+### Bug Fixes
+
+* import from lodash ([a72f8a9](https://github.com/kiva/ui/commit/a72f8a967104cce9661aae12458334379e2a21bc))
+* rensome variables ([920f4a7](https://github.com/kiva/ui/commit/920f4a76327e22bf1477ff872a15b991943d029a))
+* revert changes on DonateSupportUs.vue file ([5e23219](https://github.com/kiva/ui/commit/5e232197f3a0e44e5cd0f90c3fdf7c8eba046793))
+
+## [2.134.0](https://github.com/kiva/ui/compare/v2.133.1...v2.134.0) (2022-05-10)
+
+
+### Features
+
+* flss filter styles ([13dd6dc](https://github.com/kiva/ui/commit/13dd6dc38255328089790d79127806d1ac82827f))
+
+### [2.133.1](https://github.com/kiva/ui/compare/v2.133.0...v2.133.1) (2022-05-10)
+
+
+### Bug Fixes
+
+* remove conditional render preventing cards from showing ([4f80ff5](https://github.com/kiva/ui/commit/4f80ff5ab25e3dd98e164917837936b410b90a01))
+
+## [2.133.0](https://github.com/kiva/ui/compare/v2.132.0...v2.133.0) (2022-05-10)
+
+
+### Features
+
+* loans bundle test was added to lend by category page ([42c8318](https://github.com/kiva/ui/commit/42c8318cbc1c16547641088eaa8287b3cd78fb37))
+
+## [2.132.0](https://github.com/kiva/ui/compare/v2.131.1...v2.132.0) (2022-05-09)
+
+
+### Features
+
+* implement detailed loan cards on lbc ([43d44a7](https://github.com/kiva/ui/commit/43d44a784806ab15daf12b4828ac4ec0c309754f))
+* temp push, getting detailed loan info ([f951875](https://github.com/kiva/ui/commit/f951875055f2557969eeb34926831e8a92186338))
+
+
+### Bug Fixes
+
+* comment out breaking imports ([5078062](https://github.com/kiva/ui/commit/50780626105195766cf6a461546e62a900095389))
+* lint fix ([4414230](https://github.com/kiva/ui/commit/44142308af64f636c3249de58b6cc4396b2e763e))
+* missed some stuff ([297a1b3](https://github.com/kiva/ui/commit/297a1b3295d9504b2942fea6dce208698ec44d65))
+* use tw class ([96e4f5f](https://github.com/kiva/ui/commit/96e4f5f78b31f299ad686c1ddb422ca1a14fcc53))
+
+### [2.131.1](https://github.com/kiva/ui/compare/v2.131.0...v2.131.1) (2022-05-09)
+
+
+### Bug Fixes
+
+* ensure only the url path is used to create the event category ([37ae6c4](https://github.com/kiva/ui/commit/37ae6c4d4fae2cfc971132541d4eb78212157e60))
+
+## [2.131.0](https://github.com/kiva/ui/compare/v2.130.0...v2.131.0) (2022-05-05)
+
+
+### Features
+
+* how works and about sections were updated in the mg page ([b107ef7](https://github.com/kiva/ui/commit/b107ef7c8d4b1f6c849d30feeafba66860f52f6c))
+
+## [2.130.0](https://github.com/kiva/ui/compare/v2.129.0...v2.130.0) (2022-05-05)
+
+
+### Features
+
+* filter menu ([d4771fc](https://github.com/kiva/ui/commit/d4771fcbf341aba7352b9e3a2ca0228901f59ad7))
+* wip ([31a8847](https://github.com/kiva/ui/commit/31a88472472b23ddce9ca7242d3b28d3541b1fca))
+* wip creating self element ([284c965](https://github.com/kiva/ui/commit/284c965063b2623450d97136ecd9c010f6607bce))
+
+
+### Bug Fixes
+
+* cleanup page frame ([6f31c7b](https://github.com/kiva/ui/commit/6f31c7b1a5821506aa31936c63c18ef826a0d15f))
+* eslint fixes ([4209958](https://github.com/kiva/ui/commit/42099583370b73e21b3bfee10d6c4353b0c665ec))
+* font styles ([24c73b3](https://github.com/kiva/ui/commit/24c73b387f72b47218a544b31cc26030f0f5973e))
+* removed custom classes ([21725a0](https://github.com/kiva/ui/commit/21725a019f21822fa1f2e70e176f8ec60a3f12fb))
+
+## [2.129.0](https://github.com/kiva/ui/compare/v2.128.0...v2.129.0) (2022-05-04)
+
+
+### Features
+
+* decimal place was removed from the lendamountbutton component ([c24adcf](https://github.com/kiva/ui/commit/c24adcf975bdda1b72a62cf7f7a106963e17c83d))
+* tests were added to check both types of input in the loanamountbutton component ([02e5450](https://github.com/kiva/ui/commit/02e54503a92ecd7372e07dcc33a5878c83556049))
+
+
+### Bug Fixes
+
+* parseInt method was added in the lendamountbutton component ([8d9f84c](https://github.com/kiva/ui/commit/8d9f84caa6989cf5c5c38cb0184ddee67b45ff2d))
+
 ## [2.128.0](https://github.com/kiva/ui/compare/v2.127.2...v2.128.0) (2022-05-04)
 
 

@@ -415,16 +415,23 @@ export default {
 			type: Boolean,
 			default: true
 		},
+		thanksSocialShareVersion: {
+			type: String,
+			default: ''
+		}
 	},
 	data() {
 		let visibleSection = 'receipt';
 		if (this.showGuestUpsell) {
 			visibleSection = 'guest';
+		} else if (this.showShare && this.thanksSocialShareVersion === 'b') {
+			visibleSection = 'share';
 		} else if (this.showMgCta) {
 			visibleSection = 'mg';
 		} else if (this.showAutoDepositUpsell) {
 			visibleSection = 'ad';
 		}
+
 		return {
 			isMobile: false,
 			visibleSection,

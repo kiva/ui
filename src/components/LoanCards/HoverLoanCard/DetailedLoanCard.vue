@@ -86,7 +86,7 @@
 						:time-left-message="timeLeftMessage"
 					/>
 				</div>
-				<div class="row">
+				<div class="row" v-if="!hideLendCta">
 					<div class="columns small-12 large-expand">
 						<action-button
 							class="tw-mt-2"
@@ -239,6 +239,10 @@ export default {
 			default: false
 		},
 		disableRedirects: {
+			type: Boolean,
+			default: false,
+		},
+		hideLendCta: {
 			type: Boolean,
 			default: false,
 		}
