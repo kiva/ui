@@ -1,6 +1,9 @@
 <template>
-	<div class="tw-bg-white tw-border-primary-inverse tw-rounded tw-p-3">
-		<p>Reset all</p>
+	<div class="tw-bg-white tw-border-primary-inverse tw-rounded tw-p-3 filter-min-w tw-relative">
+		<kv-material-icon :icon="mdiClose" class="tw-w-2.5 tw-h-2.5" />
+		<p class="tw-text-h4 tw-inline-block tw-ml-3 tw-absolute">
+			Reset All
+		</p>
 		<hr class="tw-border-tertiary tw-my-1">
 		<fieldset>
 			<kv-radio class="tw-text-left" value="female" v-model="gender">
@@ -12,46 +15,72 @@
 			<kv-radio class="tw-text-left" value="both" v-model="gender">
 				All
 			</kv-radio>
-			<span>gender: {{ gender }}</span>
 		</fieldset>
 		<hr class="tw-border-tertiary tw-my-1">
-		<fieldset>
-			<legend>Sector</legend>
-			<kv-checkbox
-				class="tw-text-left"
-				v-for="sectorBox in allSectors"
-				name="sectorBox.name"
-				v-model="sector"
-				:key="sectorBox.id"
-				:value="sectorBox.name"
-			>
-				{{ sectorBox.name }}
-			</kv-checkbox>
-		</fieldset>
-		<br>
-		<fieldset>
-			<label class="tw-text-h4 tw-block" for="loanTerm"> Loan Term Filter </label>
-			<kv-select class="tw-mt-2" id="loanTerm" v-model="lenderTermLimit">
-				<option value="0">
-					All Loans
-				</option>
-				<option value="24">
-					Up to 24 months
-				</option>
-				<option value="12">
-					Up to 12 months
-				</option>
-			</kv-select>
-		</fieldset>
-		<br>
-		<hr class="tw-border-tertiary tw-my-1">
-		<kv-button v-model="loanQueryFilters" @click="updateQuery">
-			Search
-		</kv-button>
-		<kv-button v-model="loanQueryFilters" @click="resetFilter">
-			Reset Filters
-		</kv-button>
-		<hr class="tw-border-tertiary tw-my-1">
+		<kv-accordion-item id="acc-location" :open="false">
+			<template #header>
+				<h2 class="tw-text-h4">
+					Location
+				</h2>
+			</template>
+			<fieldset>
+				<legend>Sector</legend>
+				<kv-checkbox
+					class="tw-text-left"
+					v-for="sectorBox in allSectors"
+					name="sectorBox.name"
+					v-model="sector"
+					:key="sectorBox.id"
+					:value="sectorBox.name"
+				>
+					{{ sectorBox.name }}
+				</kv-checkbox>
+			</fieldset>
+		</kv-accordion-item>
+		<kv-accordion-item id="acc-sectors" :open="false">
+			<template #header>
+				<h2 class="tw-text-h4">
+					Sectors
+				</h2>
+			</template>
+			<fieldset>
+				<legend>Sector</legend>
+				<kv-checkbox
+					class="tw-text-left"
+					v-for="sectorBox in allSectors"
+					name="sectorBox.name"
+					v-model="sector"
+					:key="sectorBox.id"
+					:value="sectorBox.name"
+				>
+					{{ sectorBox.name }}
+				</kv-checkbox>
+			</fieldset>
+		</kv-accordion-item>
+		<kv-accordion-item id="acc-attributes" :open="false">
+			<template #header>
+				<h2 class="tw-text-h4">
+					Attributes
+				</h2>
+			</template>
+			<fieldset>
+				<legend>Sector</legend>
+				<kv-checkbox
+					class="tw-text-left"
+					v-for="sectorBox in allSectors"
+					name="sectorBox.name"
+					v-model="sector"
+					:key="sectorBox.id"
+					:value="sectorBox.name"
+				>
+					{{ sectorBox.name }}
+				</kv-checkbox>
+			</fieldset>
+		</kv-accordion-item>
+		<h2 class="tw-text-h4 tw-mt-2">
+			Advanced filters
+			<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1 tw-absolute" />
+		</h2>
 	</div>
 </template>
 
@@ -66,21 +95,24 @@ import {
 	filterCountry,
 	filterLoanTerm,
 } from '@/util/flssUtils';
+import KvAccordionItem from '@/components/Kv/KvAccordionItem';
+import { mdiClose, mdiArrowRight } from '@mdi/js';
 import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	inject: ['apollo'],
 	components: {
 		KvRadio,
-		KvButton,
 		KvCheckbox,
-		KvSelect,
+		KvAccordionItem,
+		KvMaterialIcon
 	},
 	data() {
 		return {
+			mdiClose,
+			mdiArrowRight,
 			loanId: Number(this.$route.params.id || 0),
 			loanQueryFilters: {},
 			totalCount: 0,
@@ -180,3 +212,9 @@ export default {
 	},
 };
 </script>
+
+<style lang="scss" scoped>
+	.filter-min-w {
+		min-width: 285px;
+	}
+</style>
