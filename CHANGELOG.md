@@ -1,3 +1,22 @@
+## [2.135.0](https://github.com/kiva/ui/compare/v2.134.0...v2.135.0) (2022-05-10)
+
+
+### Features
+
+* added e2e test ([3a50eea](https://github.com/kiva/ui/commit/3a50eea3b2f409a237bd602d9d5cf9e0e177a1ed))
+* added experiment tracking ([5f810aa](https://github.com/kiva/ui/commit/5f810aa7d96792270bfacb4042dc758156976dfb))
+* donate page seo updates ([6ddbc3d](https://github.com/kiva/ui/commit/6ddbc3dcd630ffc7125c36b582daa97bdcad70ba))
+* new thanks page sharing experience ([ba4da1b](https://github.com/kiva/ui/commit/ba4da1ba813cf6cb5e0fa69fb3508c24632028f9))
+* small adjustemt related to guest users ([6946fc7](https://github.com/kiva/ui/commit/6946fc72d4c91122625bd662b2733c2bd54319fc))
+* small fixes on experiment tracking ([41b6398](https://github.com/kiva/ui/commit/41b63981f4fea50d45e18b333dd7e425d2635dd5))
+
+
+### Bug Fixes
+
+* import from lodash ([a72f8a9](https://github.com/kiva/ui/commit/a72f8a967104cce9661aae12458334379e2a21bc))
+* rensome variables ([920f4a7](https://github.com/kiva/ui/commit/920f4a76327e22bf1477ff872a15b991943d029a))
+* revert changes on DonateSupportUs.vue file ([5e23219](https://github.com/kiva/ui/commit/5e232197f3a0e44e5cd0f90c3fdf7c8eba046793))
+
 ## [2.134.0](https://github.com/kiva/ui/compare/v2.133.1...v2.134.0) (2022-05-10)
 
 
