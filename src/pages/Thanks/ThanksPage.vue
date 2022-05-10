@@ -301,19 +301,21 @@ export default {
 			}
 		}
 
-		// MARS-96 Simplified social share experiment
-		const simpleSocialShareExp = this.apollo.readFragment({
-			id: 'Experiment:simple_thanks_share',
-			fragment: experimentVersionFragment,
-		}) || {};
+		if (!this.isGuest) {
+			// MARS-96 Simplified social share experiment
+			const simpleSocialShareExp = this.apollo.readFragment({
+				id: 'Experiment:simple_thanks_share',
+				fragment: experimentVersionFragment,
+			}) || {};
 
-		this.simpleSocialShareVersion = simpleSocialShareExp.version;
-		if (this.simpleSocialShareVersion) {
-			this.$kvTrackEvent(
-				'Thanks',
-				'EXP-MARS-96-May2022',
-				this.simpleSocialShareVersion,
-			);
+			this.simpleSocialShareVersion = simpleSocialShareExp.version;
+			if (this.simpleSocialShareVersion) {
+				this.$kvTrackEvent(
+					'Thanks',
+					'EXP-MARS-96-May2022',
+					this.simpleSocialShareVersion,
+				);
+			}
 		}
 	},
 	mounted() {
