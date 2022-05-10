@@ -219,7 +219,7 @@ export default {
 			return _without(this.categoryIds, ...this.customCategoryIds);
 		},
 		leadHeaderFilterLink() {
-			return '/lend';
+			return '/lend/filter';
 		},
 		showFavoriteCountryRow() {
 			if (this.hasFavoriteCountry && this.isLoggedIn && this.favoriteCountryExpVersion === 'shown') {
