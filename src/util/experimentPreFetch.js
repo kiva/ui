@@ -11,7 +11,6 @@ import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.
 // Pre-fetch pre-determined list of experiment settings
 // TODO: Centralize this in Settings Manager or elsewhere, then Fetch it First
 let activeExperiments = [
-	'lend_filter_v2',
 	'expandable_loan_cards',
 	'checkout_login_cta',
 	'homepage_force_dismiss_overlay',

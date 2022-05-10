@@ -30,10 +30,6 @@ const pageQuery = gql`
 				key
 				value
 			}
-			lbcLayout: uiExperimentSetting(key: "lend_by_category_v2") {
-				key
-				value
-			}
 			bundlesLayout: uiExperimentSetting(key: "category_loan_bundles") {
 				key
 				value
@@ -102,7 +98,6 @@ export default {
 				query: pageQuery
 			}).then(() => {
 				return Promise.all([
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'lend_by_category_v2' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'add_to_basket_v2' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'category_loan_bundles' } }),
 				]);
@@ -116,8 +111,6 @@ export default {
 
 		// Add to Basket Interstitial
 		this.initializeAddToBasketInterstitial();
-		// Experimental page layout
-		this.initializeExperimentalLayout();
 		// Loan Bundles Experiment
 		this.initializeLoanBundleExperiment();
 	},
@@ -167,26 +160,6 @@ export default {
 					'EXP-CASH-612-Apr2019',
 					this.addToBasketExpActive ? 'b' : 'a'
 				);
-			}
-		},
-		initializeExperimentalLayout() {
-			const layoutEXP = this.apollo.readFragment({
-				id: 'Experiment:lend_by_category_v2',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			// Only certain categories are eligible for the experiment
-			if (this.testCategories.includes(this.targetedLoanChannel)) {
-				this.pageLayout = layoutEXP.version === 'shown' ? 'experiment' : 'control';
-
-				// Fire Event for Exp ACK-247 Status
-				if (layoutEXP.version && layoutEXP.version !== 'unassigned') {
-					this.$kvTrackEvent(
-						'lend-by-category',
-						'EXP-ACK-247-Mar2022',
-						layoutEXP.version === 'shown' ? 'b' : 'a'
-					);
-				}
 			}
 		},
 		initializeLoanBundleExperiment() {

@@ -308,9 +308,7 @@ export default {
 		filterUrl() {
 			// initial release sends us back to /lend
 			// return `/lend/${this.$route.params.category || ''}`;
-			return this.lendFilterExpVersion === 'b'
-				? this.getAlgoliaFilterUrl()
-				: `/lend/${this.$route.params.category || ''}`;
+			return `/lend/${this.$route.params.category || ''}`;
 		},
 		pageTitle() {
 			let title = 'Fundraising loans';
@@ -524,12 +522,6 @@ export default {
 			return '/lend/filter';
 		},
 		initializeLendFilterRedirects() {
-			const lendFilterEXP = this.apollo.readFragment({
-				id: 'Experiment:lend_filter_v2',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.lendFilterExpVersion = lendFilterEXP.version;
-
 			// Update Lend Filter Exp CASH-545
 			this.getLendFilterExpVersion();
 		},
