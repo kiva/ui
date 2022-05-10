@@ -1,5 +1,3 @@
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.graphql';
 import checkInjections from '@/util/injectionCheck';
 
 const injections = ['apollo', 'cookieStore'];
