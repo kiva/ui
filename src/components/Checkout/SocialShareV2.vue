@@ -2,11 +2,10 @@
 	<section class="share hide-for-print">
 		<h2 class="share__headline" data-testid="share-headline">
 			Help {{ selectedLoan.name }} spread the word.
-			<p class="share__small__message">
-				{{ shareSubtitle }}
-			</p>
 		</h2>
-
+		<p class="share__small__message">
+			{{ shareSubtitle }}
+		</p>
 		<div class="share__social social">
 			<a
 				data-testid="share-facebook-button"
@@ -201,7 +200,7 @@ export default {
 						disabled: false,
 						text: 'Copy Link'
 					};
-				}, 2500);
+				}, 500);
 			}
 		}
 	},
@@ -274,8 +273,9 @@ $loan-triangle-size: rem-calc(12);
 	}
 
 	&__small__message {
-		font-size: 0.5em;
+		font-size: 1em;
 		line-height: 1.5rem;
+		margin-bottom: 1.5rem;
 	}
 }
 
