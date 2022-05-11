@@ -92,7 +92,6 @@ import _each from 'lodash/each';
 import _filter from 'lodash/filter';
 import _get from 'lodash/get';
 import _map from 'lodash/map';
-import _take from 'lodash/take';
 import _uniqBy from 'lodash/uniqBy';
 import _without from 'lodash/without';
 import { addCustomChannelInfo } from '@/util/categoryUtils';
