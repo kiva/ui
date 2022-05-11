@@ -7,7 +7,6 @@
 			v-if="pageLayout === 'control'"
 			:add-bundles-exp="addBundlesExp"
 		/>
-		<loan-channel-category-experiment v-if="pageLayout === 'experiment'" />
 
 		<add-to-basket-interstitial v-show="addToBasketExpActive" />
 	</www-page>
@@ -20,7 +19,6 @@ import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketI
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import LoanChannelCategoryControl from '@/pages/Lend/LoanChannelCategoryControl';
-import LoanChannelCategoryExperiment from '@/pages/Lend/LoanChannelCategoryExperiment';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 const pageQuery = gql`
@@ -77,7 +75,6 @@ export default {
 	components: {
 		AddToBasketInterstitial,
 		LoanChannelCategoryControl,
-		LoanChannelCategoryExperiment,
 		WwwPage,
 	},
 	inject: ['apollo', 'cookieStore'],
