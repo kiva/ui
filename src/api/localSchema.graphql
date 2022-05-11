@@ -54,18 +54,21 @@ extend type My {
 extend interface LoanBasic {
 	fundraisingPercent: Float!
 	fundraisingTimeLeft: String!
+	fundraisingTimeLeftMilliseconds: String!
 	unreservedAmount: Money!
 }
 
 extend type LoanPartner {
 	fundraisingPercent: Float!
 	fundraisingTimeLeft: String!
+	fundraisingTimeLeftMilliseconds: String!
 	unreservedAmount: Money!
 }
 
 extend type LoanDirect {
 	fundraisingPercent: Float!
 	fundraisingTimeLeft: String!
+	fundraisingTimeLeftMilliseconds: String!
 	unreservedAmount: Money!
 }
 
