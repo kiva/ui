@@ -1,3 +1,15 @@
+## [2.138.0](https://github.com/kiva/ui/compare/v2.137.0...v2.138.0) (2022-05-11)
+
+
+### Features
+
+* added property to enable rounded corners on the list loan card ([d5ec761](https://github.com/kiva/ui/commit/d5ec761ab83f9e7229619f41d887846ece4e7266))
+
+
+### Bug Fixes
+
+* simplified conditional CSS ([2af987d](https://github.com/kiva/ui/commit/2af987de4532384cede9193672c8e4ccdf8c7d48))
+
 ## [2.137.0](https://github.com/kiva/ui/compare/v2.136.1...v2.137.0) (2022-05-11)
 
 
