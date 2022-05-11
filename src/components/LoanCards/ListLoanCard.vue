@@ -1,9 +1,6 @@
 <template>
-	<div class="row list-loan-card" :class="{ 'tw-rounded': roundedCorners }">
-		<div
-			class="list-loan-card-desktop-column show-for-large large-4 xlarge-4 columns"
-			:class="{ 'tw-rounded-l': roundedCorners }"
-		>
+	<div class="row list-loan-card tw-overflow-hidden" :class="{ 'tw-rounded': roundedCorners }">
+		<div class="list-loan-card-desktop-column show-for-large large-4 xlarge-4 columns">
 			<div class="list-loan-card-desktop-column-container row">
 				<div class="small-12 columns">
 					<div class="list-loan-card-desktop-column-image-wrapper">
