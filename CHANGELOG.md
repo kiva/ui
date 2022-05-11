@@ -1,3 +1,10 @@
+### [2.136.1](https://github.com/kiva/ui/compare/v2.136.0...v2.136.1) (2022-05-11)
+
+
+### Bug Fixes
+
+* fixed visual issues ([940b376](https://github.com/kiva/ui/commit/940b3764f265415350f8cd69db738044111c4f7a))
+
 ## [2.136.0](https://github.com/kiva/ui/compare/v2.135.0...v2.136.0) (2022-05-11)
 
 
