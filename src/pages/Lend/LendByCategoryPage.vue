@@ -29,6 +29,7 @@
 				:class="{'hover-row': showHoverLoanCards}"
 				v-for="(category, index) in categories"
 				:key="category.id"
+				ref="categoryContainer"
 			>
 				<component
 					:is="categoryRowType"
@@ -45,7 +46,7 @@
 			</div>
 		</div>
 
-		<div class="row pre-footer">
+		<div class="row pre-footer" ref="bottom">
 			<div class="column small-12">
 				<div v-if="!rowLazyLoadComplete" class="cat-row-loader">
 					<kv-loading-overlay id="updating-overlay" />
@@ -116,6 +117,7 @@ import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import ExpandableLoanCardExpanded from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardExpanded';
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
+import { createIntersectionObserver } from '@/util/observerUtils';
 
 // Row Limiter
 // > This controls how may rows are loaded on the server
@@ -173,6 +175,9 @@ export default {
 			showHoverLoanCards: false,
 			recommendedLoans: [],
 			mlServiceBanditExpVersion: null,
+			viewportObserver: null,
+			fetchCategoryIds: [],
+			expResults: null
 		};
 	},
 	computed: {
@@ -556,6 +561,69 @@ export default {
 				this.$kvTrackEvent('Lending', experimentId, version);
 			}
 		},
+		createViewportObserver() {
+			// Watch for this element being in the viewport
+			this.viewportObserver = createIntersectionObserver({
+				targets: [this.$refs.bottom],
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.isIntersecting) {
+							// This element is in the viewport, so load the data.\
+							this.fetchLoanData();
+							// this.loadData();
+						}
+					});
+				}
+			});
+			if (!this.viewportObserver) {
+				// Observer was not created, so call loadData right away as a fallback.
+				this.fetchLoanData();
+				// this.loadData();
+			}
+		},
+		destroyViewportObserver() {
+			if (this.viewportObserver) {
+				this.viewportObserver.disconnect();
+			}
+		},
+		fetchLoanData() {
+			const id = this.fetchCategoryIds.shift();
+			this.rowLazyLoadComplete = false;
+			if (this.fetchCategoryIds.length) {
+				try {
+					this.apollo.watchQuery({
+						query: loanChannelQuery,
+						variables: {
+							ids: [id],
+							imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
+							imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+						},
+					}).subscribe({
+						next: ({ data }) => {
+							this.realCategories = [...this.realCategories, _get(data, 'lend.loanChannelsById')[0]];
+							this.rowLazyLoadComplete = true;
+						},
+					});
+				} catch (e) {
+					logReadQueryError(e, 'LendByCategory loanChannelQuery');
+				}
+			} else {
+				this.getRemainingLoans();
+			}
+		},
+		getRemainingLoans() {
+			Promise.all([
+				this.fetchRemainingLoanChannels(),
+				this.fetchRecommendedLoans(20)
+			]).then(() => {
+				this.rowLazyLoadComplete = true;
+
+				this.activateWatchers();
+
+				const pageViewTrackData = this.assemblePageViewData(this.categories);
+				this.$kvTrackSelfDescribingEvent(pageViewTrackData);
+			});
+		}
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -676,23 +744,7 @@ export default {
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 
 		// Initialize Recommended Loan Rows
-		this.initializeRecommendedLoanRows();
-
-		// Read the SSR ready loan channels from the cache
-		try {
-			const categoryData = this.apollo.readQuery({
-				query: loanChannelQuery,
-				variables: {
-					ids: _take(_without(this.categoryIds, ...this.customCategoryIds), ssrRowLimiter),
-					basketId: this.cookieStore.get('kvbskt'),
-					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
-					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-				},
-			});
-			this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
-		} catch (e) {
-			logReadQueryError(e, 'LendByCategory loanChannelQuery');
-		}
+		// this.initializeRecommendedLoanRows();
 
 		// Initialize CASH-794 Favorite Country Row
 		this.initializeFavoriteCountryRowExp();
@@ -749,18 +801,8 @@ export default {
 		}
 	},
 	mounted() {
-		Promise.all([
-			this.fetchRemainingLoanChannels(),
-			this.fetchRecommendedLoans(20)
-		]).then(() => {
-			this.rowLazyLoadComplete = true;
-
-			this.activateWatchers();
-
-			const pageViewTrackData = this.assemblePageViewData(this.categories);
-			this.$kvTrackSelfDescribingEvent(pageViewTrackData);
-		});
-
+		this.fetchCategoryIds = _without(this.categoryIds, ...this.customCategoryIds);
+		this.fetchLoanData();
 		// Only allow experiment when in show-for-large (>= 1024px) screen size
 		if (window.innerWidth >= 680) {
 			// CASH-658 : Experiment : Category description
@@ -786,11 +828,14 @@ export default {
 			this.setRightArrowPosition();
 			this.setLeftArrowPosition();
 		}
+
+		this.createViewportObserver();
 	},
 	beforeDestroy() {
 		if (this.showExpandableLoanCards) {
 			window.removeEventListener('resize', this.handleResize);
 		}
+		this.destroyViewportObserver();
 	},
 };
 
