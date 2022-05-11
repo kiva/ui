@@ -427,46 +427,6 @@ export default {
 				);
 			}
 		},
-		initializeRecommendedLoanRows() {
-			const recLoanChannels = this.categorySetting.filter(setting => {
-				// eslint-disable-next-line no-underscore-dangle
-				return setting.__typename === 'RecLoanChannel';
-			});
-
-			if (recLoanChannels.length) {
-				// Load recommended loan data
-				try {
-					const variables = {
-						basketId: this.cookieStore.get('kvbskt'),
-						ids: recLoanChannels.map(channel => channel.id),
-						imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
-						imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-					};
-					const data = this.apollo.readQuery({
-						query: recommendedLoansQuery,
-						variables,
-					});
-
-					const allRecLoanChannels = data.ml?.getOrderedChannelsByIds ?? [];
-
-					const allRecLoans = allRecLoanChannels.map(channel => {
-						const channelLoans = channel.loans?.values ?? [];
-						if (channelLoans.length) {
-							return {
-								values: this.filterFundedLoans(channelLoans),
-								id: channel.id,
-								name: channel.name,
-								description: channel.description,
-							};
-						}
-						return [];
-					});
-					this.recommendedLoans = allRecLoans;
-				} catch (e) {
-					logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
-				}
-			}
-		},
 		fetchRecommendedLoans(offset = 0) {
 			const lengthCheck = this.recommendedLoans.map(channel => {
 				const loanCount = channel.values?.length ?? 0;
@@ -577,8 +537,16 @@ export default {
 			});
 			if (!this.viewportObserver) {
 				// Observer was not created, so call loadData right away as a fallback.
-				this.fetchLoanData();
-				// this.loadData();
+				Promise.all([
+					this.fetchRemainingLoanChannels(),
+					this.fetchRecommendedLoans(20)
+				]).then(() => {
+					this.rowLazyLoadComplete = true;
+					this.activateWatchers();
+
+					const pageViewTrackData = this.assemblePageViewData(this.categories);
+					this.$kvTrackSelfDescribingEvent(pageViewTrackData);
+				});
 			}
 		},
 		destroyViewportObserver() {
@@ -587,55 +555,74 @@ export default {
 			}
 		},
 		fetchLoanData() {
-			const id = this.fetchCategoryIds.shift();
-			this.rowLazyLoadComplete = false;
+			const category = this.fetchCategoryIds.shift();
 			if (this.fetchCategoryIds.length) {
-				try {
-					this.apollo.watchQuery({
-						query: loanChannelQuery,
-						variables: {
-							ids: [id],
+				this.rowLazyLoadComplete = false;
+				// eslint-disable-next-line no-underscore-dangle
+				if (category.__typename === 'RecLoanChannel') {
+					try {
+						const variables = {
+							ids: [category.id],
 							imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 							imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-						},
-					}).subscribe({
-						next: ({ data }) => {
-							this.realCategories = [...this.realCategories, _get(data, 'lend.loanChannelsById')[0]];
+						};
+						return this.apollo.query({
+							query: recommendedLoansQuery,
+							variables,
+						}).then(({ data }) => {
+							const allRecLoanChannels = data.ml?.getOrderedChannelsByIds ?? [];
+
+							const allRecLoans = allRecLoanChannels.map(channel => {
+								const channelLoans = channel.loans?.values ?? [];
+								if (channelLoans.length) {
+									return {
+										values: this.filterFundedLoans(channelLoans),
+										id: channel.id,
+										name: channel.name,
+										description: channel.description,
+									};
+								}
+								return [];
+							});
+							this.recommendedLoans = allRecLoans;
 							this.rowLazyLoadComplete = true;
-						},
-					});
-				} catch (e) {
-					logReadQueryError(e, 'LendByCategory loanChannelQuery');
+						});
+					} catch (e) {
+						logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
+					}
+				} else {
+					try {
+						return this.apollo.watchQuery({
+							query: loanChannelQuery,
+							variables: {
+								ids: [category.id],
+								imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
+								imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+							},
+						}).subscribe({
+							next: ({ data }) => {
+								this.realCategories = [...this.realCategories, _get(data, 'lend.loanChannelsById')[0]];
+								this.rowLazyLoadComplete = true;
+							},
+						});
+					} catch (e) {
+						logReadQueryError(e, 'LendByCategory loanChannelQuery');
+					}
 				}
 			} else {
-				this.getRemainingLoans();
-			}
-		},
-		getRemainingLoans() {
-			Promise.all([
-				this.fetchRemainingLoanChannels(),
-				this.fetchRecommendedLoans(20)
-			]).then(() => {
-				this.rowLazyLoadComplete = true;
-
 				this.activateWatchers();
 
 				const pageViewTrackData = this.assemblePageViewData(this.categories);
 				this.$kvTrackSelfDescribingEvent(pageViewTrackData);
-			});
-		}
+			}
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
-			let rowData;
-			let expRowData;
-			let expResults;
-
 			return client.query({
 				query: lendByCategoryQuery
-			}).then(({ data }) => {
+			}).then(() => {
 				// Get the array of channel objects from settings
-				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				return Promise.all([
 					// experiment: GROW-330 Machine Learning Category row
 					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
@@ -650,61 +637,11 @@ export default {
 					// experiment: CASH-521 Hover Loan Card Experiment
 					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
 				]);
-			}).then(expAssignments => {
-				expResults = expAssignments;
-				return client.query({
-					query: mlOrderedLoanChannels
-				});
-			}).then(({ data }) => {
-				// Get the array of channel objects from the ml multi-armed bandit
-				expRowData = _get(data, 'ml.orderedLoanChannels') || [];
-
-				const mlServiceBanditExpVersion = _get(expResults, '[0].data.experiment.version');
-
-				if (mlServiceBanditExpVersion !== null) {
-					rowData = expRowData;
-				}
-
-				return rowData;
 			})
 				.then(() => {
-					// Get all channel ids for the row data
-					const ids = _map(rowData, 'id');
-					// Filter other channel types as custom categories
-					const recChannels = _filter(rowData, { __typename: 'RecLoanChannel' });
-					const recChannelIds = _map(recChannels, 'id');
-					const hasRecRow = recChannels.length > 0;
-
-					// Read hover loan card experiment version assignment
-					const hoverLoanCardExperiment = client.readFragment({
-						id: 'Experiment:hover_loan_cards',
-						fragment: experimentVersionFragment,
-					}) || {};
-					const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
-
-					const imgDefaultSize = hoverCards ? 'w480h300' : 'w480h360';
-					const imgRetinaSize = hoverCards ? 'w960h600' : 'w960h720';
-
-					// Pre-fetch all the data for SSR targeted channels
-					return Promise.all([
-						client.query({
-							query: loanChannelQuery,
-							variables: {
-								// exclude custom rows + limit for ssr
-								ids: _take(_without(ids, ...recChannelIds), ssrRowLimiter),
-								imgDefaultSize,
-								imgRetinaSize,
-							},
-						}),
-						hasRecRow ? client.query({
-							query: recommendedLoansQuery,
-							variables: {
-								ids: recChannelIds,
-								imgDefaultSize,
-								imgRetinaSize,
-							}
-						}) : Promise.resolve(),
-					]);
+					return client.query({
+						query: mlOrderedLoanChannels
+					});
 				});
 		},
 	},
@@ -742,9 +679,6 @@ export default {
 		this.hasFavoriteCountry = !!_get(baseData, 'my.recommendations.topCountry');
 
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
-
-		// Initialize Recommended Loan Rows
-		// this.initializeRecommendedLoanRows();
 
 		// Initialize CASH-794 Favorite Country Row
 		this.initializeFavoriteCountryRowExp();
@@ -801,7 +735,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.fetchCategoryIds = _without(this.categoryIds, ...this.customCategoryIds);
+		this.fetchCategoryIds = [...this.categorySetting];
 		this.fetchLoanData();
 		// Only allow experiment when in show-for-large (>= 1024px) screen size
 		if (window.innerWidth >= 680) {
