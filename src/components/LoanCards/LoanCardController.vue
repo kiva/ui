@@ -33,6 +33,7 @@
 		:row-number="rowNumber"
 		:right-arrow-position="rightArrowPosition"
 		:left-arrow-position="leftArrowPosition"
+		:rounded-corners="roundedCorners"
 
 		:detailed-loan-index="detailedLoanIndex"
 		:hover-loan-index="hoverLoanIndex"
@@ -149,6 +150,10 @@ export default {
 		leftArrowPosition: {
 			type: Number,
 			default: undefined,
+		},
+		roundedCorners: {
+			type: Boolean,
+			default: false
 		},
 		detailedLoanIndex: {
 			type: Number,

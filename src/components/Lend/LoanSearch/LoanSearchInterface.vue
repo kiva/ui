@@ -30,6 +30,7 @@
 					:key="loan.id"
 					:loan="loan"
 					loan-card-type="ListLoanCard"
+					rounded-corners="true"
 				/>
 			</kv-grid>
 		</div>
