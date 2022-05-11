@@ -56,6 +56,7 @@
 						<order-totals
 							data-testid="order-totals-section"
 							:totals="totals"
+							:promo-fund="derivedPromoFund"
 							@refreshtotals="refreshTotals"
 							@updating-totals="setUpdatingTotals"
 						/>
@@ -337,12 +338,11 @@ export default {
 			}).then(() => {
 				return client.query({ query: checkoutSettings, fetchPolicy: 'network-only' });
 			}).then(({ data }) => {
-				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 				const lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
 				// check for free credit, bonus credit or lending rewards and redirect if present
 				// IMPORTANT: THIS IS DEPENDENT ON THE CheckoutBeta Experiment
 				// TODO: remove once bonus credit functionality is added
-				if (hasFreeCredits || lendingRewardOffered) {
+				if (lendingRewardOffered) {
 					// cancel the promise, returning a route for redirect
 					return Promise.reject({
 						path: '/basket',
@@ -533,6 +533,21 @@ export default {
 			}
 			return false;
 		},
+		derivedPromoFund() {
+			const appliedCreditsPromoFunds = this.loans?.filter(loan => {
+				const hasCredits = loan.creditsUsed.length > 0;
+				let hasPromoFund = false;
+				if (hasCredits) {
+					hasPromoFund = loan.creditsUsed.filter(credit => credit.promoFund !== null).length > 0;
+				}
+				return hasPromoFund;
+			}).map(loan => {
+				// return first credit's promoFund
+				return loan.creditsUsed[0]?.promoFund;
+			});
+			// Using the first promoFund available
+			return appliedCreditsPromoFunds[0] || null;
+		}
 	},
 	methods: {
 		loginToContinue(event) {

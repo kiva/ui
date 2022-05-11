@@ -49,6 +49,18 @@ query initializeCheckout($basketId: String) {
 			items {
 				totalCount
 				values {
+					creditsUsed {
+						amount
+						applied
+						available
+						creditType
+						id
+						promoFund {
+							id
+							displayName
+							displayDescription
+						}
+					}
 					id
 					price
 					... on LoanReservation {
