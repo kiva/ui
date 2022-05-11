@@ -18,7 +18,8 @@ let activeExperiments = [
 	'redirect_to_login',
 	'guest_checkout_cta',
 	'mg_highlight_in_nav',
-	'unbounce_trigger'
+	'unbounce_trigger',
+	'lend_urgency'
 ];
 
 // TODO: Enhance Error handling
