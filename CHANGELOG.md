@@ -1,3 +1,20 @@
+## [2.132.0-next.1](https://github.com/kiva/ui/compare/v2.131.1...v2.132.0-next.1) (2022-05-11)
+
+
+### Features
+
+* added experiment tracking ([1c5f1d6](https://github.com/kiva/ui/commit/1c5f1d6e4126a620d3c85768b39025b14ad4ad22))
+* new thanks page sharing experience ([8284549](https://github.com/kiva/ui/commit/8284549909fc9f7d1ea6de64c2e3889f9ee8fa5b))
+* small adjustemt related to guest users ([fd852f3](https://github.com/kiva/ui/commit/fd852f37255e1ff2f979846d9faad9d853d7b148))
+* small fixes on experiment tracking ([a04c660](https://github.com/kiva/ui/commit/a04c66048b815410904a2afda905e30173be59d5))
+
+
+### Bug Fixes
+
+* fixed visual issues ([988e789](https://github.com/kiva/ui/commit/988e78979c0c3d208f4bf5d9991b7c88ac777de6))
+* import from lodash ([a598f17](https://github.com/kiva/ui/commit/a598f17a3af3e5d153d5f15e7142ab853ce9b111))
+* rensome variables ([5d5095f](https://github.com/kiva/ui/commit/5d5095f719831486f012a6f1f7d2fb1482a010ea))
+
 ### [2.131.1](https://github.com/kiva/ui/compare/v2.131.0...v2.131.1) (2022-05-09)
 
 
