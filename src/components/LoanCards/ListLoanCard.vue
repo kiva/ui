@@ -1,5 +1,5 @@
 <template>
-	<div class="row list-loan-card">
+	<div class="row list-loan-card tw-overflow-hidden" :class="{ 'tw-rounded': roundedCorners }">
 		<div class="list-loan-card-desktop-column show-for-large large-4 xlarge-4 columns">
 			<div class="list-loan-card-desktop-column-container row">
 				<div class="small-12 columns">
@@ -11,6 +11,7 @@
 							:standard-image-url="loan.image.default"
 							:is-visitor="isVisitor"
 							:is-favorite="isFavorite"
+							:class="{ 'tw-rounded-tl': roundedCorners }"
 
 							@track-loan-card-interaction="trackInteraction"
 							@favorite-toggled="toggleFavorite"
@@ -50,6 +51,7 @@
 						:is-visitor="isVisitor"
 						:is-favorite="isFavorite"
 						class="list-loan-card-mobile-borrower-image"
+						:class="{ 'tw-rounded': roundedCorners }"
 
 						@track-loan-card-interaction="trackInteraction"
 						@favorite-toggled="toggleFavorite"
@@ -232,6 +234,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		roundedCorners: {
+			type: Boolean,
+			default: false
+		}
 	},
 	computed: {
 		lessThan25() {
