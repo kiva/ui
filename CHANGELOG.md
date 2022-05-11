@@ -1,3 +1,10 @@
+## [2.136.0](https://github.com/kiva/ui/compare/v2.135.0...v2.136.0) (2022-05-11)
+
+
+### Features
+
+* add promo creds to checkout page ([dd0e5ea](https://github.com/kiva/ui/commit/dd0e5eaeed21d37e394f27d98a21381a457b2020))
+
 ## [2.135.0](https://github.com/kiva/ui/compare/v2.134.0...v2.135.0) (2022-05-10)
 
 
