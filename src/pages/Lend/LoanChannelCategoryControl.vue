@@ -305,9 +305,7 @@ export default {
 			};
 		},
 		filterUrl() {
-			// initial release sends us back to /lend
-			// return `/lend/${this.$route.params.category || ''}`;
-			return `/lend/${this.$route.params.category || ''}`;
+			return this.getAlgoliaFilterUrl();
 		},
 		pageTitle() {
 			let title = 'Fundraising loans';
