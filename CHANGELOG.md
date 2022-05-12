@@ -1,3 +1,10 @@
+## [2.140.0](https://github.com/kiva/ui/compare/v2.139.0...v2.140.0) (2022-05-12)
+
+
+### Features
+
+* lend urgency homepage experiment ([d7621ec](https://github.com/kiva/ui/commit/d7621ece944ecf617aeffd8ae9f423d520a70270))
+
 ## [2.139.0](https://github.com/kiva/ui/compare/v2.138.0...v2.139.0) (2022-05-12)
 
 
