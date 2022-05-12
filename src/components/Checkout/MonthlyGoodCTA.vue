@@ -190,10 +190,10 @@ export default {
 	},
 	computed: {
 		selectedAmountTracking() {
-			return ['MonthlyGood', 'click-amount-option', `[actual amount selected - ${this.mgOptionSelected}]`];
+			return ['MonthlyGood', 'click-amount-option', numeral(this.mgOptionSelected).format('$0,0.00')];
 		},
 		selectedCategoryTracking() {
-			return ['MonthlyGood', 'click-category-option', `[actual category select - ${this.selectedGroup}]`];
+			return ['MonthlyGood', 'click-category-option', this.selectedGroup];
 		},
 	},
 	watch: {
