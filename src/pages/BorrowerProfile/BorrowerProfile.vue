@@ -71,7 +71,7 @@ import {
 	format, parseISO, differenceInCalendarDays
 } from 'date-fns';
 import gql from 'graphql-tag';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
@@ -300,25 +300,24 @@ export default {
 		}
 	},
 	created() {
-		/*
-		 * Experiment Initializations
-		*/
-		this.apollo.query({ query: experimentAssignmentQuery, variables: { id: 'lend_urgency' } })
-			.then(result => {
-				const urgencyEXP = result?.data?.experiment;
-				// Only track event if loan is expiring soon
-				this.isUrgencyExpVersionShown = urgencyEXP.version === 'shown';
-				if (this.hasThreeDaysOrLessLeft) {
-					// Fire Event for Exp ACK-291 Urgency Experiment
-					if (urgencyEXP.version && urgencyEXP.version !== 'unassigned') {
-						this.$kvTrackEvent(
-							'Lending',
-							'EXP-ACK-291-May2022',
-							this.isUrgencyExpVersionShown ? 'b' : 'a'
-						);
-					}
-				}
-			});
+		// this experiment is assigned in experimentPreFetch.js
+		const urgencyExperiment = this.apollo.readFragment({
+			id: 'Experiment:lend_urgency',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		this.isUrgencyExpVersionShown = urgencyExperiment.version === 'shown';
+
+		if (this.hasThreeDaysOrLessLeft) {
+			// Fire Event for Exp ACK-291 Urgency Experiment
+			if (urgencyExperiment.version && urgencyExperiment.version !== 'unassigned') {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-ACK-291-May2022',
+					this.isUrgencyExpVersionShown ? 'b' : 'a'
+				);
+			}
+		}
 	},
 };
 </script>
