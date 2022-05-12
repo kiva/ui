@@ -165,6 +165,7 @@ export default {
 			showCategoryDescription: false,
 			categoryDescriptionExperimentVersion: null,
 			addToBasketExpActive: false,
+			lendFilterExpVersion: '',
 			showExpandableLoanCards: false,
 			rightArrowPosition: undefined,
 			leftArrowPosition: undefined,
