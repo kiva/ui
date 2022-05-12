@@ -1,3 +1,10 @@
+## [2.139.0](https://github.com/kiva/ui/compare/v2.138.0...v2.139.0) (2022-05-12)
+
+
+### Features
+
+* performance improvement ([2bcce52](https://github.com/kiva/ui/commit/2bcce52d2308300ab6d283e2fd5a8230664ed07b))
+
 ## [2.138.0](https://github.com/kiva/ui/compare/v2.137.0...v2.138.0) (2022-05-11)
 
 
