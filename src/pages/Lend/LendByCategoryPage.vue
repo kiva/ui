@@ -29,7 +29,6 @@
 				:class="{'hover-row': showHoverLoanCards}"
 				v-for="(category, index) in categories"
 				:key="category.id"
-				ref="categoryContainer"
 			>
 				<component
 					:is="categoryRowType"
