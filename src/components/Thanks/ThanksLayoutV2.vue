@@ -265,6 +265,7 @@
 						:class="{ active: isMgSelected }"
 						aria-controls="`kv-accordion-mg-accordion`"
 						:aria-expanded="isMgSelected ? 'true' : 'false'"
+						v-kv-track-event="['thanks', 'click-Monthly-Good', 'Monthly Good']"
 						@click.native="setVisibleSection('mg')"
 					>
 						<template #icon-left>
@@ -307,6 +308,7 @@
 						:class="{ active: isReceiptSelected }"
 						aria-controls="`kv-accordion-receipt-accordion`"
 						:aria-expanded="isReceiptSelected ? 'true' : 'false'"
+						v-kv-track-event="['thanks', 'click-Order-Confirmation', 'Order Confirmation']"
 						@click.native="setVisibleSection('receipt')"
 					>
 						<template #icon-left>
@@ -350,6 +352,7 @@
 						:class="{ active: isShareSelected }"
 						aria-controls="`kv-accordion-share-accordion`"
 						:aria-expanded="isShareSelected ? 'true' : 'false'"
+						v-kv-track-event="['thanks', 'click-Share', 'Share']"
 						@click.native="setVisibleSection('share')"
 					>
 						<template #icon-left>
