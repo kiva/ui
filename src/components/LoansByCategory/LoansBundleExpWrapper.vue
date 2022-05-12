@@ -22,7 +22,7 @@
 							</kv-button>
 
 							<p class="tw-text-small tw-mt-1">
-								Lend now for as little as $75
+								Lend now for as little as ${{ totalAmount }}
 							</p>
 						</div>
 					</div>
@@ -49,7 +49,7 @@
 							</kv-button>
 
 							<p class="tw-text-small tw-mt-1">
-								Lend now for as little as $75
+								Lend now for as little as ${{ totalAmount }}
 							</p>
 						</div>
 					</div>
@@ -125,6 +125,20 @@ export default {
 			}
 			return text;
 		},
+		totalAmount() {
+			let total = 0;
+			this.personalizedLoans.forEach(element => {
+				const { loanAmount, loanFundraisingInfo } = element;
+				const { fundedAmount } = loanFundraisingInfo;
+				const leftAmount = loanAmount - fundedAmount;
+				if (leftAmount < 25) {
+					total += leftAmount;
+				} else {
+					total += 25;
+				}
+			});
+			return total;
+		}
 	},
 	methods: {
 		async addBundleToBasket() {
