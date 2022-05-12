@@ -1,3 +1,5 @@
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.graphql';
 import checkInjections from '@/util/injectionCheck';
 
 const injections = ['apollo', 'cookieStore'];
@@ -23,6 +25,13 @@ export default {
 				this.lendFilterExpVersion = lendListViewExpLegacy;
 				// Once Mounted we need to update the ui cookie to ensure future continuity between stacks
 				this.shouldUpdateLendFilterExpCookie = true;
+			} else {
+				// we have no legacy exp setup, use ui assignment
+				const lendFilterEXP = this.apollo.readFragment({
+					id: 'Experiment:lend_filter_v2',
+					fragment: experimentVersionFragment,
+				}) || {};
+				this.lendFilterExpVersion = lendFilterEXP.version;
 			}
 			// Set Active Status
 			this.lendFilterExpActive = this.lendFilterExpVersion === 'b';
@@ -36,6 +45,20 @@ export default {
 					'EXP-CASH-545-Apr2019',
 					this.lendFilterExpVersion
 				);
+			}
+			// if we've recieved + overridden the ui assignment with a legacy assignment
+			if (this.shouldUpdateLendFilterExpCookie || this.lendFilterExpVersion === 'c') {
+				// re-assign uiab cookie using our legacy assignment
+				this.apollo.mutate({
+					mutation: updateExperimentVersion,
+					variables: {
+						id: 'lend_filter_v2',
+						version: this.lendFilterExpVersion
+					}
+				}).then(() => {
+					// remove legacy cookie
+					this.cookieStore.remove('kvlendfilter');
+				});
 			}
 		},
 		exitLendFilterExp(click) {

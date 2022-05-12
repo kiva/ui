@@ -130,6 +130,7 @@ export default {
 		KvLoadingOverlay,
 		LendHeader,
 		AddToBasketInterstitial,
+		lendFilterExpVersion: '',
 		ExpandableLoanCardExpanded,
 		FavoriteCountryLoans,
 		MGLightbox,
@@ -219,7 +220,7 @@ export default {
 			return _without(this.categoryIds, ...this.customCategoryIds);
 		},
 		leadHeaderFilterLink() {
-			return '/lend/filter';
+			return this.lendFilterExpVersion === 'b' ? '/lend/filter' : '/lend';
 		},
 		showFavoriteCountryRow() {
 			if (this.hasFavoriteCountry && this.isLoggedIn && this.favoriteCountryExpVersion === 'shown') {
@@ -739,6 +740,12 @@ export default {
 				this.addToBasketExpActive ? 'b' : 'a'
 			);
 		}
+
+		const lendFilterEXP = this.apollo.readFragment({
+			id: 'Experiment:lend_filter_v2',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.lendFilterExpVersion = lendFilterEXP.version;
 
 		// CASH-676: Expandable loan card experiment
 		const expandableLoanCardExperiment = this.apollo.readFragment({
