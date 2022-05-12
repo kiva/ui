@@ -130,7 +130,6 @@ export default {
 		KvLoadingOverlay,
 		LendHeader,
 		AddToBasketInterstitial,
-		lendFilterExpVersion: '',
 		ExpandableLoanCardExpanded,
 		FavoriteCountryLoans,
 		MGLightbox,
