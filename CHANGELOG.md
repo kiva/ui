@@ -1,3 +1,15 @@
+## [2.141.0](https://github.com/kiva/ui/compare/v2.140.0...v2.141.0) (2022-05-12)
+
+
+### Features
+
+* update event tracking for checkout/thanks page ([f35649d](https://github.com/kiva/ui/commit/f35649df248a5b6bdd715801701428f282120232))
+
+
+### Bug Fixes
+
+* added small fixes after pr reviews ([596ece4](https://github.com/kiva/ui/commit/596ece4833edc1c11add840b75b576a5db8eca32))
+
 ## [2.140.0](https://github.com/kiva/ui/compare/v2.139.0...v2.140.0) (2022-05-12)
 
 
