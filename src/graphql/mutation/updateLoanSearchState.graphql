@@ -1,0 +1,6 @@
+mutation updateLoanSearch($searchParams: LoanSearchState!) {
+	updateLoanSearch (searchParams: $searchParams) @client {
+		gender
+		id
+	}
+}
