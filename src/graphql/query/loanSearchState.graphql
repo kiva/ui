@@ -1,0 +1,10 @@
+query loanSearchStateQuery {
+	loanSearchState @client {
+		id
+		gender
+		sectorId
+		countryIsoCode
+		theme
+		sortBy
+	}
+}
