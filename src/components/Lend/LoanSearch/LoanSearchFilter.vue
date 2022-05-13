@@ -75,24 +75,24 @@
 </template>
 
 <script>
-
 import {
-	fetchData,
-	filterGender,
-	filterSector,
+	// fetchData,
+	// filterGender,
+	// filterSector,
 	fetchSectors,
 	fetchCountryFacets,
-	filterCountry,
-	filterLoanTerm,
+	// filterCountry,
+	// filterLoanTerm,
 } from '@/util/flssUtils';
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiClose, mdiArrowRight } from '@mdi/js';
 import LoanSearchGenderFilter from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
+import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvCheckbox,
 		KvAccordionItem,
@@ -104,7 +104,7 @@ export default {
 			mdiClose,
 			mdiArrowRight,
 			loanId: Number(this.$route.params.id || 0),
-			loanQueryFilters: {},
+			loanQueryFilters: () => {},
 			totalCount: 0,
 			loans: [],
 			zeroLoans: false,
@@ -133,73 +133,74 @@ export default {
 			this.allIsoCodes = countryFacets.map(cf => cf.country.isoCode);
 		},
 		resetFilter() {
-			this.gender = 'both';
-			this.sector = [];
-			this.country = [];
-			this.lenderTermLimit = 0;
+			// this.gender = 'both';
+			// this.sector = [];
+			// this.country = [];
+			// this.lenderTermLimit = 0;
 			this.loanQueryFilters = {};
-			this.runQuery(this.loanQueryFilters);
 		},
-		runQuery(loanQueryFilters) {
-			console.log('filters into runQuery:', loanQueryFilters);
-			fetchData(loanQueryFilters, this.apollo).then(flssData => {
-				this.loans = flssData.values ?? [];
-				this.totalCount = flssData.totalCount;
-				console.log('num loans:', this.totalCount);
-				console.log('loans from runQuery()', this.loans);
-
-				if (this.totalCount === 0) {
-					this.zeroLoans = true;
+		// updateQuery() {
+		// 	const updatedQueryFilters = this.queryFilters;
+		// 	console.log('from updateQuery', updatedQueryFilters);
+		// 	console.log('new query ran, yes!');
+		// },
+		// TODO: Extract to plugin/util for use in each filter component
+		updateSearchState() {
+			return this.apollo.mutate({
+				mutation: updateLoanSearchMutation,
+				variables: {
+					searchParams: {
+						...this.loanQueryFilters
+					}
 				}
 			});
-		},
-		updateQuery() {
-			const updatedQueryFilters = this.queryFilters;
-			console.log('from updateQuery', updatedQueryFilters);
-			console.log('new query ran, yes!');
-			this.runQuery(updatedQueryFilters);
-		},
+		}
 	},
 	mounted() {
 		this.getSectors();
 		this.getAllCountries();
-		this.loanQueryFilters = { countryIsoCode: { any: ['US'] } };
+
+		// TODO: Remove this is just a quick hard-coded query to initialize loans
+		// Each Filter type will use the updateSearchState method to set this when filters are selected
+		this.loanQueryFilters = { countryIsoCode: ['US'], sectorId: [9] };
 		console.log('mounted query ran:', this.loanQueryFilters);
-		this.runQuery(this.loanQueryFilters);
-		console.log('loans from mounted:', this.loans);
+		// this.updateSearchState();
+		this.updateSearchState().then(updateResponse => {
+			console.log(updateResponse);
+		});
 	},
 	computed: {
-		queryFilters() {
-			// // TODO: enable genderFilter when its working
-			const genderFilter = filterGender(this.gender);
-			console.log('this is filtergender', genderFilter);
+		// queryFilters() {
+		// 	// // TODO: enable genderFilter when its working
+		// 	const genderFilter = filterGender(this.gender);
+		// 	console.log('this is filtergender', genderFilter);
 
-			const sectorFilter = filterSector(this.sector, this.allSectors);
-			console.log('this is filterSector', sectorFilter);
+		// 	const sectorFilter = filterSector(this.sector, this.allSectors);
+		// 	console.log('this is filterSector', sectorFilter);
 
-			const countryFilter = filterCountry(this.country, this.allIsoCodes);
-			console.log('this is countryFilter', countryFilter);
+		// 	const countryFilter = filterCountry(this.country, this.allIsoCodes);
+		// 	console.log('this is countryFilter', countryFilter);
 
-			const loanTermFilter = filterLoanTerm(this.lenderTermLimit);
-			console.log('this is filterLoanTerm', loanTermFilter);
+		// 	const loanTermFilter = filterLoanTerm(this.lenderTermLimit);
+		// 	console.log('this is filterLoanTerm', loanTermFilter);
 
-			const loanQueryFilters = {
-				countryIsoCode: countryFilter,
-				lenderRepaymentTerm: loanTermFilter,
-				// TODO: enable genderFilter when its working
-				// gender: genderFilter,
-				sector: sectorFilter,
-			};
-			console.log('yo! from queryFilters', loanQueryFilters);
-			return loanQueryFilters;
-		},
+		// 	const loanQueryFilters = {
+		// 		countryIsoCode: countryFilter,
+		// 		// lenderRepaymentTerm: loanTermFilter,
+		// 		// TODO: enable genderFilter when its working
+		// 		// gender: genderFilter,
+		// 		sector: sectorFilter,
+		// 	};
+		// 	console.log('yo! from queryFilters', loanQueryFilters);
+		// 	return loanQueryFilters;
+		// },
 	},
-	watch: {
-		gender: { handler: 'updateQuery' },
-		sector: { handler: 'updateQuery' },
-		country: { handler: 'updateQuery' },
-		loanTermLimit: { handler: 'updateQuery' },
-	},
+	// watch: {
+	// 	gender: { handler: 'updateQuery' },
+	// 	sector: { handler: 'updateQuery' },
+	// 	country: { handler: 'updateQuery' },
+	// 	loanTermLimit: { handler: 'updateQuery' },
+	// },
 };
 </script>
 

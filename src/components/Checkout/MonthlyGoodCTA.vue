@@ -19,6 +19,7 @@
 					<kv-select
 						v-model="mgOptionSelected"
 						class="monthly-good-cta__dropdown tw-mb-2"
+						v-kv-track-event="selectedAmountTracking"
 						v-if="mgOptionSelected !== 'other'"
 						id="amount"
 					>
@@ -49,6 +50,7 @@
 					<kv-select
 						v-model="selectedGroup"
 						id="cause"
+						v-kv-track-event="selectedCategoryTracking"
 						class="monthly-good-cta__dropdown tw-mb-2"
 					>
 						<option
@@ -185,6 +187,14 @@ export default {
 				},
 			]
 		};
+	},
+	computed: {
+		selectedAmountTracking() {
+			return ['MonthlyGood', 'click-amount-option', numeral(this.mgOptionSelected).format('$0,0.00')];
+		},
+		selectedCategoryTracking() {
+			return ['MonthlyGood', 'click-category-option', this.selectedGroup];
+		},
 	},
 	watch: {
 		mgOptionSelected(newVal) {
