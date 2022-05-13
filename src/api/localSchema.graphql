@@ -34,7 +34,7 @@ extend type Mutation {
 	autolending: AutolendingMutation
 	showVerificationLightbox: Boolean
 	closeVerificationLightbox: Boolean
-	updateLoanSearch(searchParams: Object): LoanSearchState
+	updateLoanSearch(searchParams: JSONObject): LoanSearchState
 }
 
 extend type Query {
