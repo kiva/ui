@@ -1,3 +1,12 @@
+### [2.143.1](https://github.com/kiva/ui/compare/v2.143.0...v2.143.1) (2022-05-13)
+
+
+### Bug Fixes
+
+* cleanup theme option on loanSearchState localSchema ([0c32d93](https://github.com/kiva/ui/commit/0c32d93e4a8fed488c1d28d0ba80d79f6eef8476))
+* stub out loanSearchState subscription, mark cruft for removal ([eceb335](https://github.com/kiva/ui/commit/eceb33529e1bd26288e1fa62fcdfdc5961736bc1))
+* use JSONObject type on update mutation param ([04d9c1a](https://github.com/kiva/ui/commit/04d9c1a5299d2da9e6fee2be4a3acd103f9ef146))
+
 ## [2.143.0](https://github.com/kiva/ui/compare/v2.142.0...v2.143.0) (2022-05-13)
 
 
