@@ -429,13 +429,6 @@ export default {
 			);
 		}
 
-		// GROW-280 redirect to login instead of popup login experiment
-		const redirectToLoginExperiment = this.apollo.readFragment({
-			id: 'Experiment:redirect_to_login',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
-
 		if (this.eligibleForGuestCheckout) {
 			const guestCheckoutCTAExperiment = this.apollo.readFragment({
 				id: 'Experiment:guest_checkout_cta',

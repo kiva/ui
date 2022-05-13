@@ -474,7 +474,6 @@
 
 <script>
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
 
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
@@ -600,13 +599,6 @@ export default {
 			this.profilePic = data?.my?.lender?.image?.url ?? '';
 			this.profilePicId = data?.my?.lender?.image?.id ?? null;
 			this.basketState = data || {};
-
-			// GROW-280 redirect to login instead of popup login experiment
-			const redirectToLoginExperiment = this.apollo.readFragment({
-				id: 'Experiment:redirect_to_login',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
 		},
 		errorHandlers: {
 			'shop.invalidBasketId': ({ cookieStore, route }) => {
