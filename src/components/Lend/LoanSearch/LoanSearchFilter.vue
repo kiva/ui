@@ -5,17 +5,7 @@
 			Reset All
 		</p>
 		<hr class="tw-border-tertiary tw-my-1">
-		<fieldset>
-			<kv-radio class="tw-text-left" value="female" v-model="gender">
-				Women
-			</kv-radio>
-			<kv-radio class="tw-text-left" value="male" v-model="gender">
-				Men
-			</kv-radio>
-			<kv-radio class="tw-text-left" value="both" v-model="gender">
-				All
-			</kv-radio>
-		</fieldset>
+		<loan-search-gender-filter />
 		<hr class="tw-border-tertiary tw-my-1">
 		<kv-accordion-item id="acc-location" :open="false">
 			<template #header>
@@ -97,17 +87,17 @@ import {
 } from '@/util/flssUtils';
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiClose, mdiArrowRight } from '@mdi/js';
-import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
+import LoanSearchGenderFilter from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	inject: ['apollo'],
 	components: {
-		KvRadio,
 		KvCheckbox,
 		KvAccordionItem,
-		KvMaterialIcon
+		KvMaterialIcon,
+		LoanSearchGenderFilter,
 	},
 	data() {
 		return {
