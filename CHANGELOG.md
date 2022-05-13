@@ -1,3 +1,102 @@
+## [2.141.0](https://github.com/kiva/ui/compare/v2.140.0...v2.141.0) (2022-05-12)
+
+
+### Features
+
+* update event tracking for checkout/thanks page ([f35649d](https://github.com/kiva/ui/commit/f35649df248a5b6bdd715801701428f282120232))
+
+
+### Bug Fixes
+
+* added small fixes after pr reviews ([596ece4](https://github.com/kiva/ui/commit/596ece4833edc1c11add840b75b576a5db8eca32))
+
+## [2.140.0](https://github.com/kiva/ui/compare/v2.139.0...v2.140.0) (2022-05-12)
+
+
+### Features
+
+* lend urgency homepage experiment ([d7621ec](https://github.com/kiva/ui/commit/d7621ece944ecf617aeffd8ae9f423d520a70270))
+
+## [2.139.0](https://github.com/kiva/ui/compare/v2.138.0...v2.139.0) (2022-05-12)
+
+
+### Features
+
+* performance improvement ([2bcce52](https://github.com/kiva/ui/commit/2bcce52d2308300ab6d283e2fd5a8230664ed07b))
+
+## [2.138.0](https://github.com/kiva/ui/compare/v2.137.0...v2.138.0) (2022-05-11)
+
+
+### Features
+
+* added property to enable rounded corners on the list loan card ([d5ec761](https://github.com/kiva/ui/commit/d5ec761ab83f9e7229619f41d887846ece4e7266))
+
+
+### Bug Fixes
+
+* simplified conditional CSS ([2af987d](https://github.com/kiva/ui/commit/2af987de4532384cede9193672c8e4ccdf8c7d48))
+
+## [2.137.0](https://github.com/kiva/ui/compare/v2.136.1...v2.137.0) (2022-05-11)
+
+
+### Features
+
+* borrower profile urgency experiment ([f63ff0d](https://github.com/kiva/ui/commit/f63ff0d71617c39b0abd9cb908d104c32d1a9081))
+
+### [2.136.1](https://github.com/kiva/ui/compare/v2.136.0...v2.136.1) (2022-05-11)
+
+
+### Bug Fixes
+
+* fixed visual issues ([940b376](https://github.com/kiva/ui/commit/940b3764f265415350f8cd69db738044111c4f7a))
+
+## [2.136.0](https://github.com/kiva/ui/compare/v2.135.0...v2.136.0) (2022-05-11)
+
+
+### Features
+
+* add promo creds to checkout page ([dd0e5ea](https://github.com/kiva/ui/commit/dd0e5eaeed21d37e394f27d98a21381a457b2020))
+
+## [2.135.0](https://github.com/kiva/ui/compare/v2.134.0...v2.135.0) (2022-05-10)
+
+
+### Features
+
+* added e2e test ([3a50eea](https://github.com/kiva/ui/commit/3a50eea3b2f409a237bd602d9d5cf9e0e177a1ed))
+* added experiment tracking ([5f810aa](https://github.com/kiva/ui/commit/5f810aa7d96792270bfacb4042dc758156976dfb))
+* donate page seo updates ([6ddbc3d](https://github.com/kiva/ui/commit/6ddbc3dcd630ffc7125c36b582daa97bdcad70ba))
+* new thanks page sharing experience ([ba4da1b](https://github.com/kiva/ui/commit/ba4da1ba813cf6cb5e0fa69fb3508c24632028f9))
+* small adjustemt related to guest users ([6946fc7](https://github.com/kiva/ui/commit/6946fc72d4c91122625bd662b2733c2bd54319fc))
+* small fixes on experiment tracking ([41b6398](https://github.com/kiva/ui/commit/41b63981f4fea50d45e18b333dd7e425d2635dd5))
+
+
+### Bug Fixes
+
+* import from lodash ([a72f8a9](https://github.com/kiva/ui/commit/a72f8a967104cce9661aae12458334379e2a21bc))
+* rensome variables ([920f4a7](https://github.com/kiva/ui/commit/920f4a76327e22bf1477ff872a15b991943d029a))
+* revert changes on DonateSupportUs.vue file ([5e23219](https://github.com/kiva/ui/commit/5e232197f3a0e44e5cd0f90c3fdf7c8eba046793))
+
+## [2.134.0](https://github.com/kiva/ui/compare/v2.133.1...v2.134.0) (2022-05-10)
+
+
+### Features
+
+* flss filter styles ([13dd6dc](https://github.com/kiva/ui/commit/13dd6dc38255328089790d79127806d1ac82827f))
+
+### [2.133.1](https://github.com/kiva/ui/compare/v2.133.0...v2.133.1) (2022-05-10)
+
+
+### Bug Fixes
+
+* remove conditional render preventing cards from showing ([4f80ff5](https://github.com/kiva/ui/commit/4f80ff5ab25e3dd98e164917837936b410b90a01))
+
+## [2.133.0](https://github.com/kiva/ui/compare/v2.132.0...v2.133.0) (2022-05-10)
+
+
+### Features
+
+* loans bundle test was added to lend by category page ([42c8318](https://github.com/kiva/ui/commit/42c8318cbc1c16547641088eaa8287b3cd78fb37))
+
 ## [2.132.0](https://github.com/kiva/ui/compare/v2.131.1...v2.132.0) (2022-05-09)
 
 

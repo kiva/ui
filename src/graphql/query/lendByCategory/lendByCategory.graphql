@@ -28,6 +28,10 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
+		loanBundle: uiExperimentSetting(key: "by_category_loan_bundles") {
+			key
+			value
+		}
 	}
 	my {
 		isAdmin

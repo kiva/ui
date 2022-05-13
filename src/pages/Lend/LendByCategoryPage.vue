@@ -175,7 +175,8 @@ export default {
 			mlServiceBanditExpVersion: null,
 			viewportObserver: null,
 			fetchCategoryIds: [],
-			expResults: null
+			expResults: null,
+			addBundleExp: false,
 		};
 	},
 	computed: {
@@ -614,6 +615,23 @@ export default {
 				this.$kvTrackSelfDescribingEvent(pageViewTrackData);
 			}
 		},
+		initializeLoanBundleExperiment() {
+			const layoutEXP = this.apollo.readFragment({
+				id: 'Experiment:by_category_loan_bundles',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			if (layoutEXP.version) {
+				if (layoutEXP.version === 'b') {
+					this.addBundleExp = true;
+				}
+				this.$kvTrackEvent(
+					'Lend by category',
+					'EXP-CORE-588-May-2022',
+					layoutEXP.version
+				);
+			}
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -634,6 +652,8 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'favorite_country' } }),
 					// experiment: CASH-521 Hover Loan Card Experiment
 					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
+					// experiment: CORE-588 Loans bundle experiment
+					client.query({ query: experimentQuery, variables: { id: 'by_category_loan_bundles' } }),
 				]);
 			})
 				.then(() => {
@@ -731,6 +751,9 @@ export default {
 				'b',
 			);
 		}
+
+		// Initialize CORE-588 Loan Bundle
+		this.initializeLoanBundleExperiment();
 	},
 	mounted() {
 		this.fetchCategoryIds = [...this.categorySetting];

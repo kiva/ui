@@ -1,6 +1,6 @@
 {
 	"name": "kvue",
-	"version": "2.132.0",
+	"version": "2.141.0",
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
@@ -42,6 +42,7 @@
 		"@babel/eslint-parser": "^7.15.4",
 		"@babel/polyfill": "^7.10.4",
 		"@babel/runtime": "^7.12.5",
+		"@chenfengyuan/vue-countdown": "^1.1.5",
 		"@contentful/rich-text-html-renderer": "^14.1.1",
 		"@contentful/rich-text-types": "^14.1.2",
 		"@godaddy/terminus": "^4.4.1",

@@ -81,7 +81,7 @@
 			</div>
 			<div class="row">
 				<kv-expandable :delay="150" easing="linear">
-					<div v-if="detailedLoan" ref="detailedLoanCardContainer" class="tw-w-full tw-mt-2">
+					<div ref="detailedLoanCardContainer" class="tw-w-full tw-mt-2">
 						<loan-card-controller
 							v-if="detailedLoan"
 							loan-card-type="DetailedLoanCard"
