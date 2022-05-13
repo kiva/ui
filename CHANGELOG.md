@@ -1,3 +1,40 @@
+## [2.142.0](https://github.com/kiva/ui/compare/v2.141.0...v2.142.0) (2022-05-13)
+
+
+### Features
+
+* remove code related to lend_filter_v2 and lend_by_category_v2 experiments ([0f59bd7](https://github.com/kiva/ui/commit/0f59bd7ba9aa69fe0fd549f74726b162d70be9a5))
+* remove code related to lend_filter_v2 and lend_by_category_v2 experiments ([4b69820](https://github.com/kiva/ui/commit/4b698209f760335ed989e69426d1e882160b4ac8))
+* removed LoanChannelCategoryExperiment.vue component ([f6a9d02](https://github.com/kiva/ui/commit/f6a9d02b2b44162244d1fdc70931b2f84341b1b6))
+* revert small change on filterUrl function ([1643105](https://github.com/kiva/ui/commit/1643105637966910b8770fc8d4989d21e2271bec))
+
+
+### Bug Fixes
+
+* fix wrong filter url ([17a18a1](https://github.com/kiva/ui/commit/17a18a1593c55ba520adc80ec480fb5dc0e7ad94))
+* remove variable from wrong place ([e2742ae](https://github.com/kiva/ui/commit/e2742ae2b06435942e6bb37253f6a6dbb8c613f2))
+* reverted code related to experiment lend_filter_v2 ([8aa42d4](https://github.com/kiva/ui/commit/8aa42d45f866883c9ffca8433444378565949180))
+* small missing variable in data ([80fe114](https://github.com/kiva/ui/commit/80fe114c2ca559de3430887487937f6be8096d2a))
+
+## [2.141.0](https://github.com/kiva/ui/compare/v2.140.0...v2.141.0) (2022-05-12)
+
+
+### Features
+
+* update event tracking for checkout/thanks page ([f35649d](https://github.com/kiva/ui/commit/f35649df248a5b6bdd715801701428f282120232))
+
+
+### Bug Fixes
+
+* added small fixes after pr reviews ([596ece4](https://github.com/kiva/ui/commit/596ece4833edc1c11add840b75b576a5db8eca32))
+
+## [2.140.0](https://github.com/kiva/ui/compare/v2.139.0...v2.140.0) (2022-05-12)
+
+
+### Features
+
+* lend urgency homepage experiment ([d7621ec](https://github.com/kiva/ui/commit/d7621ece944ecf617aeffd8ae9f423d520a70270))
+
 ## [2.139.0](https://github.com/kiva/ui/compare/v2.138.0...v2.139.0) (2022-05-12)
 
 
