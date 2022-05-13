@@ -1,3 +1,10 @@
+## [2.144.0](https://github.com/kiva/ui/compare/v2.143.1...v2.144.0) (2022-05-13)
+
+
+### Features
+
+* dedicated new gender radio filter using KvRadio ([8d7537d](https://github.com/kiva/ui/commit/8d7537d339a1b99ca55fcacf0c9cc0e606cfa1ed))
+
 ### [2.143.1](https://github.com/kiva/ui/compare/v2.143.0...v2.143.1) (2022-05-13)
 
 
