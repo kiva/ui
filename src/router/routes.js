@@ -199,6 +199,18 @@ module.exports = [
 		]
 	},
 	{
+		path: '/lend-by-category/loan-to-women',
+		redirect: to => {
+			return { path: '/lend-by-category/women' }
+		}
+	},
+	{
+		path: '/lend-by-category/loans-for-education',
+		redirect: to => {
+			return { path: '/lend-by-category/education'}
+		}
+	},
+	{
 		path: '/lend-by-category',
 		component: () => import('@/pages/Lend/LendByCategoryPage'),
 		meta: {
