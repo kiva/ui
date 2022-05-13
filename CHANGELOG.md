@@ -1,3 +1,17 @@
+## [2.143.0](https://github.com/kiva/ui/compare/v2.142.0...v2.143.0) (2022-05-13)
+
+
+### Features
+
+* setup basic local resolver for loanSearchState to help facilitate filter state transport ([874d325](https://github.com/kiva/ui/commit/874d325aa69e58f141f38eed59a8f8ba14310bc8))
+
+
+### Bug Fixes
+
+* add query file for loanSearchState ([e286cd1](https://github.com/kiva/ui/commit/e286cd117c8492982179312a24dc1825436b06ae))
+* cleanup theme option on loanSearchState localSchema ([8e5694a](https://github.com/kiva/ui/commit/8e5694a6bb98efbe05a868b100e98bfa5ccb620f))
+* use graphql compatible JSONObject instead of object ([e8b3ca5](https://github.com/kiva/ui/commit/e8b3ca5d1c11041ea1a9b50e30ee560166b5bcaa))
+
 ## [2.142.0](https://github.com/kiva/ui/compare/v2.141.0...v2.142.0) (2022-05-13)
 
 
