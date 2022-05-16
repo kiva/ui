@@ -9,9 +9,12 @@
 				<kv-lightbox
 					:visible="isLightboxVisible"
 					variant="lightbox"
-					title=""
+					title="Loan filter controls"
 					@lightbox-closed="closeLightbox"
 				>
+					<template #header>
+						{{ null }}
+					</template>
 					<loan-search-filter id="filter-menu" />
 				</kv-lightbox>
 			</div>
