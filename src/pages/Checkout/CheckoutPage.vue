@@ -322,7 +322,6 @@ export default {
 			currentTime: Date.now(),
 			currentTimeInterval: null,
 			loginButtonExperimentVersion: null,
-			redirectToLoginExperimentVersion: null,
 			isGuestCheckoutEnabled: false,
 			guestCheckoutCTAExpActive: false,
 			checkingOutAsGuest: false,
@@ -544,19 +543,10 @@ export default {
 	},
 	methods: {
 		loginToContinue(event) {
-			if (this.redirectToLoginExperimentVersion) {
-				this.$kvTrackEvent(
-					'Basket',
-					'EXP-GROW-282-Oct2020',
-					this.redirectToLoginExperimentVersion,
-				);
-			}
-
-			if (this.redirectToLoginExperimentVersion !== 'b' && this.kvAuth0.enabled) {
+			if (this.kvAuth0.enabled) {
 				event.preventDefault();
 				this.doPopupLogin();
 			}
-
 			// Doing nothing here allows the normal link handling to happen, which will send the user to /ui-login
 		},
 		guestCheckout() {

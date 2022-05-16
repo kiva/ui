@@ -77,10 +77,6 @@
 							data-testid="header-log-in"
 							:event="showPopupLogin ? '' : 'click'"
 							@click.native="auth0Login"
-							v-kv-track-event="[
-								['TopNav','click-Sign-in'],
-								['TopNav','EXP-GROW-282-Oct2020',redirectToLoginExperimentVersion]
-							]"
 						>
 							Log in
 						</router-link>
@@ -314,10 +310,6 @@
 								class="header__button header__log-in"
 								:event="showPopupLogin ? '' : 'click'"
 								@click.native="auth0Login"
-								v-kv-track-event="[
-									['TopNav','click-Sign-in'],
-									['TopNav','EXP-GROW-282-Oct2020',redirectToLoginExperimentVersion]
-								]"
 							>
 								Log in
 							</router-link>
@@ -516,7 +508,6 @@ export default {
 			lendMenuId: 'lend-header-dropdown',
 			myKivaMenuId: 'my-kiva-header-dropdown',
 			searchOpen: false,
-			redirectToLoginExperimentVersion: null,
 			basketState: {},
 			mdiAccountCircle,
 			mdiChevronDown,
@@ -567,8 +558,7 @@ export default {
 		},
 		showPopupLogin() {
 			return this.kvAuth0.enabled
-				&& this.$route.fullPath !== '/'
-				&& this.redirectToLoginExperimentVersion !== 'b';
+				&& this.$route.fullPath !== '/';
 		},
 		hidePromoCreditBanner() {
 			// hide this banner on managed lending landing + checkout pages
