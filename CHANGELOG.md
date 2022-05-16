@@ -1,3 +1,15 @@
+## [2.145.0](https://github.com/kiva/ui/compare/v2.144.0...v2.145.0) (2022-05-16)
+
+
+### Features
+
+* kvlightbox added ([6a1dc51](https://github.com/kiva/ui/commit/6a1dc519f5e894acb35f949e9c4b84f037b8c84d))
+
+
+### Bug Fixes
+
+* unused lines removed ([240c29d](https://github.com/kiva/ui/commit/240c29db4e4b7aa5cf8e0bfb8e0dab6367abad88))
+
 ## [2.144.0](https://github.com/kiva/ui/compare/v2.143.1...v2.144.0) (2022-05-13)
 
 
