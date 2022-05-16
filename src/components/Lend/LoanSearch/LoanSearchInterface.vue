@@ -1,15 +1,14 @@
 <template>
 	<div class="tw-flex">
-		<div id="mobile-menu" class="tw-rounded md:tw-hidden
-				tw-z-dropdown tw-drop-shadow tw-absolute tw-top-4 md:tw-top-0"
-		>
-			<loan-search-filter />
-		</div>
 		<div class="tw-flex tw-flex-col tw-mr-4">
 			<div class="md:tw-hidden tw-mb-3">
-				<kv-button variant="secondary">
+				<kv-button variant="secondary" @click="openLightbox">
 					Filter & Sort
 				</kv-button>
+
+				<kv-lightbox :visible="isLightboxVisible" variant="lightbox" @lightbox-closed="closeLightbox">
+					<loan-search-filter id="filter-menu" />
+				</kv-lightbox>
 			</div>
 			<div class="tw-hidden md:tw-block">
 				<loan-search-filter />
@@ -44,6 +43,7 @@ import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
@@ -51,13 +51,15 @@ export default {
 		LoanCardController,
 		KvGrid,
 		KvButton,
-		LoanSearchFilter
+		LoanSearchFilter,
+		KvLightbox
 	},
 	data() {
 		return {
 			totalCount: 0,
 			loans: [],
 			zeroLoans: false,
+			isLightboxVisible: false
 		};
 	},
 	mounted() {
@@ -90,12 +92,18 @@ export default {
 				}
 			});
 		},
-	}
+		openLightbox() {
+			this.isLightboxVisible = true;
+		},
+		closeLightbox() {
+			this.isLightboxVisible = false;
+		},
+	},
 };
 </script>
 
 <style lang="scss" scoped>
-	#mobile-menu {
+	#filter-menu {
 		width: 285px;
 	}
 </style>
