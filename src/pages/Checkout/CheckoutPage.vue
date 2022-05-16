@@ -179,6 +179,15 @@
 				</div>
 			</div>
 
+			<campaign-verification-form
+				:form-id="externalFormId"
+				:ma-id="String(managedAccountId)"
+				:pf-id="String(promoFundId)"
+				:user-id="String(this.myId)"
+				@verification-complete="verificationComplete"
+				@campaign-verification-opt-out="handleVerificationOptOut"
+			/>
+
 			<kv-lightbox
 				:visible="redirectLightboxVisible"
 				title="This checkout is being tested right now, but doesn't support some functions yet."
@@ -252,6 +261,7 @@ import numeral from 'numeral';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import syncDate from '@/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
+import { getPromoFromBasket } from '@/util/campaignUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import checkoutSettings from '@/graphql/query/checkout/checkoutSettings.graphql';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
@@ -267,6 +277,7 @@ import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import BasketVerification from '@/components/Checkout/BasketVerification';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
+import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
@@ -286,6 +297,7 @@ export default {
 		KivaCardRedemption,
 		KvPageContainer,
 		KvLoadingOverlay,
+		CampaignVerificationForm,
 		CheckoutHolidayPromo,
 		CheckoutDropInPaymentWrapper,
 		RandomLoanSelector,
@@ -327,6 +339,9 @@ export default {
 			guestCheckoutCTAExpActive: false,
 			checkingOutAsGuest: false,
 			hasEverLoggedIn: false,
+			promoData: {},
+			verificationSubmitted: false,
+			showVerification: false,
 		};
 	},
 	apollo: {
@@ -475,6 +490,17 @@ export default {
 
 		// show toast for specified scenario
 		this.handleToast();
+		this.getPromoInformationFromBasket();
+
+		if (
+			this.isActivelyLoggedIn
+			&& this.verificationRequired
+			&& this.externalFormId
+			&& !this.verificationSubmitted
+			&& this.basketLoans.length
+		) {
+			this.showVerification = true;
+		}
 	},
 	computed: {
 		isLoggedIn() {
@@ -547,7 +573,22 @@ export default {
 			});
 			// Using the first promoFund available
 			return appliedCreditsPromoFunds[0] || null;
-		}
+		},
+		externalFormId() {
+			return this.promoData?.managedAccount?.formId ?? null;
+		},
+		managedAccountId() {
+			return this.promoData?.managedAccount?.id ?? null;
+		},
+		promoFundId() {
+			return this.promoData?.promoFund?.id ?? null;
+		},
+		verificationRequired() {
+			if (this.promoData?.managedAccount?.isEmployee && this.promoData?.managedAccount?.formId) {
+				return true;
+			}
+			return false;
+		},
 	},
 	methods: {
 		loginToContinue(event) {
@@ -730,7 +771,20 @@ export default {
 					clearTimeout(toastTimeout);
 				}, 1000);
 			}
-		}
+		},
+		getPromoInformationFromBasket() {
+			getPromoFromBasket(this.derivedPromoFund?.id, this.apollo).then(({ data }) => {
+				console.log('Promo From Basket Data');
+				console.log(data);
+				this.promoData = data?.shop?.promoCampaign;
+			});
+		},
+		verificationComplete() {
+			this.verificationSubmitted = true;
+		},
+		handleVerificationOptOut() {
+			this.showVerification = false;
+		},
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
