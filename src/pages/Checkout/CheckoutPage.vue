@@ -118,7 +118,6 @@
 									id="login-to-continue-button"
 									data-testid="login-to-continue-button"
 									v-kv-track-event="['basket', 'click-register-cta', 'Continue']"
-									@click="loginToContinue"
 									:href="'/ui-login?force=true&doneUrl=/checkout'"
 								>
 									Continue
@@ -131,7 +130,6 @@
 									id="create-account-continue-button"
 									data-testid="create-account-continue-button"
 									v-kv-track-event="['basket', 'click-register-cta', 'Create an account']"
-									@click="loginToContinue"
 									:href="'/ui-login?force=true&doneUrl=/checkout'"
 								>
 									Create an account
@@ -542,10 +540,6 @@ export default {
 		}
 	},
 	methods: {
-		loginToContinue(event) {
-			event.preventDefault();
-			// Doing nothing here allows the normal link handling to happen, which will send the user to /ui-login
-		},
 		guestCheckout() {
 			this.checkingOutAsGuest = true;
 		},
