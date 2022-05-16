@@ -1,3 +1,10 @@
+### [2.145.1](https://github.com/kiva/ui/compare/v2.145.0...v2.145.1) (2022-05-16)
+
+
+### Bug Fixes
+
+* remove extra margins on collapsed banner state ([5a4f0f5](https://github.com/kiva/ui/commit/5a4f0f5704c134c35ac561af51664f8d4249849f))
+
 ## [2.145.0](https://github.com/kiva/ui/compare/v2.144.0...v2.145.0) (2022-05-16)
 
 
