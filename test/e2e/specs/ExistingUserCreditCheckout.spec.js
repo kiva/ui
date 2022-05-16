@@ -1,17 +1,16 @@
-function subtract(a, b) {
-	return a - b;
-}
-
 describe('Existing User Checkout with Kiva Credit', () => {
 	it('Baskets a loan, proceed to checkout, log in user with credit and purchases using kiva credit', () => {
+		let beginBalance;
+		let newBalance;
+
 		// Mock log in
 		cy.setCookie('kvfa', '1003394:recent/active/mfa', 'domain=.kiva.org');
 		// go to portfolio and get current credit
 		cy.visit('/portfolio');
 		cy.get('.strong .kiva-green').invoke('text').then(fullText => {
 			const number = fullText.match(/[0-9]+/);
-			return +number; // text to numeric
-		}).as('beginBalance');
+			beginBalance = Number(number); // text to numeric
+		});
 		// Go to lend page
 		cy.visit('/lend?x');
 		// Set sort to random
@@ -41,17 +40,16 @@ describe('Existing User Checkout with Kiva Credit', () => {
 		cy.findAllByTestId('total-amount').first().should('to.contain', '$28.75');
 		cy.findAllByTestId('total-amount').first().invoke('text').then(fullText => {
 			const number = fullText.match(/[0-9]+/);
-			return +number; // text to numeric
-		})
-			.as('usedBalance');
+			const usedBalance = Number(number); // text to numeric
+			newBalance = beginBalance - usedBalance;
+		});
 		cy.findAllByTestId('payment-kiva-credit-used').first().should('to.contain', 'Kiva credit:');
 		// return to portfolio and get new balance
 		cy.visit('/portfolio');
 		cy.get('.strong .kiva-green').invoke('text').then(fullText => {
 			const number = fullText.match(/[0-9]+/);
-			return +number; // text to numeric
-		}).as('endBalance');
-		subtract('@beginBalance', '@usedBalance').as('newBalance');
-		expect('@newBalance').to.eq('@endBalance');
+			const endBalance = Number(number); // text to numeric
+			expect(endBalance).to.eq(newBalance);
+		});
 	});
 });
