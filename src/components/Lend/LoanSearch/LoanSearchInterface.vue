@@ -6,7 +6,12 @@
 					Filter & Sort
 				</kv-button>
 
-				<kv-lightbox :visible="isLightboxVisible" variant="lightbox" @lightbox-closed="closeLightbox">
+				<kv-lightbox
+					:visible="isLightboxVisible"
+					variant="lightbox"
+					title=""
+					@lightbox-closed="closeLightbox"
+				>
 					<loan-search-filter id="filter-menu" />
 				</kv-lightbox>
 			</div>
@@ -29,7 +34,7 @@
 					:key="loan.id"
 					:loan="loan"
 					loan-card-type="ListLoanCard"
-					rounded-corners="true"
+					:rounded-corners="true"
 				/>
 			</kv-grid>
 		</div>
