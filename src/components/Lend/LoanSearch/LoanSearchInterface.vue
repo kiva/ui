@@ -6,7 +6,7 @@
 					Filter & Sort
 				</kv-button>
 
-				<kv-lightbox :visible="isLightboxVisible" title="" variant="lightbox" @lightbox-closed="closeLightbox">
+				<kv-lightbox :visible="isLightboxVisible" variant="lightbox" @lightbox-closed="closeLightbox">
 					<loan-search-filter id="filter-menu" />
 				</kv-lightbox>
 			</div>
@@ -97,8 +97,6 @@ export default {
 		},
 		closeLightbox() {
 			this.isLightboxVisible = false;
-			this.lightboxTitle = '';
-			this.lightboxContent = null;
 		},
 	},
 };
