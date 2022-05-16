@@ -774,8 +774,6 @@ export default {
 		},
 		getPromoInformationFromBasket() {
 			getPromoFromBasket(this.derivedPromoFund?.id, this.apollo).then(({ data }) => {
-				console.log('Promo From Basket Data');
-				console.log(data);
 				this.promoData = data?.shop?.promoCampaign;
 			});
 		},
