@@ -115,7 +115,7 @@
 		>
 			<kv-page-container>
 				<div class="tw-flex tw-items-center tw-justify-center tw-text-left tw-text-primary
-						tw-m-0 tw-py-1 lg:tw-my-1.5"
+						tw-m-0 tw-py-1"
 				>
 					<div class="tw-mx-2">
 						<h4 class="tw-inline" v-html="headline"></h4>
