@@ -543,10 +543,7 @@ export default {
 	},
 	methods: {
 		loginToContinue(event) {
-			if (this.kvAuth0.enabled) {
-				event.preventDefault();
-				this.doPopupLogin();
-			}
+			event.preventDefault();
 			// Doing nothing here allows the normal link handling to happen, which will send the user to /ui-login
 		},
 		guestCheckout() {
