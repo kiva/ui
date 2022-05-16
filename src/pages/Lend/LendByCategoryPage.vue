@@ -83,6 +83,7 @@
 		/>
 
 		<m-g-lightbox />
+		<m-g-digest-lightbox v-if="showMGDigestLightbox" />
 	</www-page>
 </template>
 
@@ -110,6 +111,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import CategoryRowHover from '@/components/LoansByCategory/CategoryRowHover';
 import FeaturedHeroLoanWrapper from '@/components/LoansByCategory/FeaturedHeroLoanWrapper';
+import MGDigestLightbox from '@/components/LoansByCategory/MGDigestLightbox';
 import MGLightbox from '@/components/LoansByCategory/MGLightbox';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LendHeader from '@/pages/Lend/LendHeader';
@@ -132,6 +134,7 @@ export default {
 		AddToBasketInterstitial,
 		ExpandableLoanCardExpanded,
 		FavoriteCountryLoans,
+		MGDigestLightbox,
 		MGLightbox,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
@@ -174,6 +177,7 @@ export default {
 			recommendedLoans: [],
 			mlServiceBanditExpVersion: null,
 			addBundleExp: false,
+			showMGDigestLightbox: false,
 		};
 	},
 	computed: {
@@ -808,6 +812,10 @@ export default {
 			window.addEventListener('resize', this.handleResize);
 			this.setRightArrowPosition();
 			this.setLeftArrowPosition();
+		}
+
+		if (this.$route.query.utm_campaign === 'liked_loan') {
+			this.showMGDigestLightbox = true;
 		}
 	},
 	beforeDestroy() {
