@@ -311,6 +311,7 @@
 								class="header__button header__log-in"
 								:event="showPopupLogin ? '' : 'click'"
 								@click.native="auth0Login"
+								v-kv-track-event="['TopNav','click-Sign-in']"
 							>
 								Log in
 							</router-link>
