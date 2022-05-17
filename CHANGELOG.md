@@ -1,3 +1,10 @@
+## [2.147.0](https://github.com/kiva/ui/compare/v2.146.0...v2.147.0) (2022-05-17)
+
+
+### Features
+
+* create gender-equality route and redirect /lp/own-the-change-gender-equality to this new route ([6a70b3b](https://github.com/kiva/ui/commit/6a70b3bde3f45f6ebd4a547b186cafa7cd9ceccf))
+
 ## [2.146.0](https://github.com/kiva/ui/compare/v2.145.2...v2.146.0) (2022-05-17)
 
 
