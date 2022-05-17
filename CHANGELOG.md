@@ -1,3 +1,18 @@
+## [2.146.0](https://github.com/kiva/ui/compare/v2.145.2...v2.146.0) (2022-05-17)
+
+
+### Features
+
+* created new loan search utils file ([c972bc4](https://github.com/kiva/ui/commit/c972bc4962d30ef737ecbba30ce48e36efb14a25))
+
+
+### Bug Fixes
+
+* added missing mocked function for auth0 that was causing error on load locally ([a40276e](https://github.com/kiva/ui/commit/a40276e694e7510559d818a6ccc3170534e6823a))
+* changed undefined fakeAuthAllowed mock to false ([7f083f1](https://github.com/kiva/ui/commit/7f083f19211df0c2ca8361f7eb40856f25c55a3a))
+* include aria-label for lightbox but not visible title ([1b8a474](https://github.com/kiva/ui/commit/1b8a4742d42c6505d0de4427024abc1f7d19901a))
+* resolved vue errors on load: missing title and wrong boolean prop ([47de4c5](https://github.com/kiva/ui/commit/47de4c50d16e52de1940588f4b0816673e179997))
+
 ### [2.145.2](https://github.com/kiva/ui/compare/v2.145.1...v2.145.2) (2022-05-16)
 
 
