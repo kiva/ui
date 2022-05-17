@@ -179,30 +179,6 @@
 				</div>
 			</div>
 
-			<kv-lightbox
-				:visible="redirectLightboxVisible"
-				title="This checkout is being tested right now, but doesn't support some functions yet."
-				@lightbox-closed="redirectLightboxClosed"
-				data-testid="checkout-legacy-redirect-lightbox"
-			>
-				<p class="tw-mb-4">
-					We'll redirect you so you can get back to changing lives, or click here if you aren't
-					automatically redirected.
-				</p>
-				<p>Thank you for minding our dust.</p>
-				<template #controls>
-					<kv-button
-						class="checkout-button tw-w-full md:tw-w-auto"
-						id="Continue-to-legacy-button"
-						data-testid="continue-to-legacy-button"
-						v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
-						@click="redirectToLegacy"
-					>
-						Continue
-					</kv-button>
-				</template>
-			</kv-lightbox>
-
 			<div v-if="emptyBasket" class="empty-basket tw-relative tw-mx-auto" data-testid="empty-basket">
 				<div class="checkout-header-empty tw-mb-4">
 					<h1 class="tw-text-h2 tw-mb-2">
@@ -271,7 +247,6 @@ import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
@@ -279,7 +254,6 @@ export default {
 		WwwPage,
 		KivaCreditPayment,
 		KvButton,
-		KvLightbox,
 		OrderTotals,
 		BasketItemsList,
 		BasketVerification,
@@ -316,7 +290,6 @@ export default {
 			lastActiveLogin: 0,
 			preCheckoutStep: '',
 			preValidationErrors: [],
-			redirectLightboxVisible: false,
 			teams: [],
 			holidayModeEnabled: false,
 			currentTime: Date.now(),
@@ -688,18 +661,6 @@ export default {
 		},
 		setUpdatingTotals(state) {
 			this.updatingTotals = state;
-		},
-		redirectToLegacy() {
-			this.$router.push({
-				path: '/basket',
-				query: {
-					kexpn: 'checkout_beta.minimal_checkout',
-					kexpv: 'a'
-				}
-			});
-		},
-		redirectLightboxClosed() {
-			this.redirectLightboxVisible = false;
 		},
 		logBasketState() {
 			const creditNeededInt = numeral(this.creditNeeded).value();
