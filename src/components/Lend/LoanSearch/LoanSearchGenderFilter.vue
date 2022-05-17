@@ -30,7 +30,6 @@ export default {
 	props: {
 		gender: {
 			type: String,
-			// TODO: determine if the default should be "null" (old component behavior) or "both"
 			default: BOTH_KEY
 		}
 	},
@@ -56,14 +55,13 @@ export default {
 	methods: {
 		setGender(nextGender) {
 			if (nextGender !== this.selectedGender) {
-				// TODO: update the filters in cache, either here or emitted to parent
 				this.selectedGender = nextGender;
+				this.$emit('updated', { gender: this.selectedGender === BOTH_KEY ? null : this.selectedGender });
 			}
 		},
 	},
 	watch: {
 		gender(nextGender) {
-			// TODO: determine if filter shouldn't change after user makes selection (old component behavior)
 			if (!GENDER_KEYS.includes(nextGender)) {
 				// Fallback to both if the prop isn't a valid key
 				this.selectedGender = BOTH_KEY;

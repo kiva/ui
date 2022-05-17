@@ -83,11 +83,12 @@ export default {
 	methods: {
 		// Temporary location for some of this logic
 		// NOTICE!!! Add your new filter to flssCompatibleFilters below if it's missing
-		runFLSSQuery(loanSearchState) {
+		runFLSSQuery(loanSearchState = {}) {
 			console.log('filters into runQuery:', loanSearchState);
 			const flssCompatibleFilters = {
-				countryIsoCode: { any: loanSearchState?.countryIsoCode ?? [] },
-				sectorId: { any: loanSearchState?.sectorId ?? [] },
+				...(loanSearchState.gender && { gender: { any: loanSearchState.gender } }),
+				// countryIsoCode: { any: loanSearchState?.countryIsoCode ?? [] },
+				// sectorId: { any: loanSearchState?.sectorId ?? [] },
 			};
 			fetchData(flssCompatibleFilters, this.apollo).then(flssData => {
 				this.loans = flssData.values ?? [];

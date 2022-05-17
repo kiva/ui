@@ -5,7 +5,7 @@
 			Reset All
 		</p>
 		<hr class="tw-border-tertiary tw-my-1">
-		<loan-search-gender-filter />
+		<loan-search-gender-filter @updated="handleUpdatedFilters" />
 		<hr class="tw-border-tertiary tw-my-1">
 		<kv-accordion-item id="acc-location" :open="false">
 			<template #header>
@@ -104,11 +104,10 @@ export default {
 			mdiClose,
 			mdiArrowRight,
 			loanId: Number(this.$route.params.id || 0),
-			loanQueryFilters: () => {},
+			queryFilters: {},
 			totalCount: 0,
 			loans: [],
 			zeroLoans: false,
-			gender: 'both',
 			sector: ['Food', 'Education'],
 			country: ['TZ', 'KE'],
 			lenderTermLimit: 0,
@@ -137,8 +136,11 @@ export default {
 			// this.sector = [];
 			// this.country = [];
 			// this.lenderTermLimit = 0;
-			this.loanQueryFilters = {};
+			// this.queryFilters = {};
 		},
+		handleUpdatedFilters(payload) {
+			this.queryFilters = { ...this.queryFilters, ...payload };
+		}
 		// updateQuery() {
 		// 	const updatedQueryFilters = this.queryFilters;
 		// 	console.log('from updateQuery', updatedQueryFilters);
@@ -146,15 +148,9 @@ export default {
 		// },
 	},
 	async mounted() {
+		// Initialize filter options
 		this.getSectors();
 		this.getAllCountries();
-
-		// TODO: Remove this is just a quick hard-coded query to initialize loans
-		// Each Filter type will use the updateSearchState method to set this when filters are selected
-		this.loanQueryFilters = { countryIsoCode: ['US'], sectorId: [9] };
-		console.log('mounted query ran:', this.loanQueryFilters);
-		const response = await updateSearchState(this.apollo, this.loanQueryFilters);
-		console.log('mounted query response:', response);
 	},
 	computed: {
 		// queryFilters() {
@@ -182,12 +178,11 @@ export default {
 		// 	return loanQueryFilters;
 		// },
 	},
-	// watch: {
-	// 	gender: { handler: 'updateQuery' },
-	// 	sector: { handler: 'updateQuery' },
-	// 	country: { handler: 'updateQuery' },
-	// 	loanTermLimit: { handler: 'updateQuery' },
-	// },
+	watch: {
+		async queryFilters(newFilters) {
+			await updateSearchState(this.apollo, newFilters);
+		}
+	},
 };
 </script>
 
