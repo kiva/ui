@@ -8,7 +8,6 @@
 			Thank you for the feedback!
 		</h2>
 		<div class="tw-text-center tw-flex tw-flex-col tw-gap-3 tw-my-8 tw-w-full">
-			<!-- eslint-disable-next-line max-len -->
 			<p class="LightboxText">
 				We'll continue to do our best to pick the loans you'll love.
 			</p>
@@ -79,6 +78,7 @@ export default {
 	.LightboxText {
 		min-width: 800px;
 	}
+
 	.LightboxButtons {
 		max-width: 342px;
 	}
