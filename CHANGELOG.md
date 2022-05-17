@@ -1,3 +1,11 @@
+### [2.150.1](https://github.com/kiva/ui/compare/v2.150.0...v2.150.1) (2022-05-17)
+
+
+### Bug Fixes
+
+* remove legacy redirect for promo code state when adding a promo code in new checkout ([ed076c5](https://github.com/kiva/ui/commit/ed076c5b0f28e3be60054d94820a2d55db99e73c))
+* remove redirect to legacy lightbox + associated methods ([589a3ab](https://github.com/kiva/ui/commit/589a3abe75da2d4c34c0fdc806dd1c91ba4d15f0))
+
 ## [2.150.0](https://github.com/kiva/ui/compare/v2.149.0...v2.150.0) (2022-05-17)
 
 
