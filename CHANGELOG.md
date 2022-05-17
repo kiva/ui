@@ -1,3 +1,26 @@
+## [2.149.0-next.1](https://github.com/kiva/ui/compare/v2.148.0...v2.149.0-next.1) (2022-05-17)
+
+
+### Features
+
+* activate onetrust in test ([cb9fdc0](https://github.com/kiva/ui/commit/cb9fdc0797b46e3196ac7d237d684be67046b499))
+* add vwo for trial purposes in test env ([c49d06c](https://github.com/kiva/ui/commit/c49d06c42cddb320872d41eb352b4ca32eaf4391))
+* cookie consent filter for vwo smartcode loading ([d816a03](https://github.com/kiva/ui/commit/d816a0389847cb37f1c03cc21f44d4055afe60ac))
+* enable optimizely ([9e983dc](https://github.com/kiva/ui/commit/9e983dc583189fe1f1dd2cb5322f3f945ce48f69))
+* enable optimizely ([20ea8ba](https://github.com/kiva/ui/commit/20ea8ba3dd2e145f8b25fb8f90ddb3bc9de37540))
+* hide VWO blur filter ([a9ee338](https://github.com/kiva/ui/commit/a9ee33806fb7c31375238fe9aa82273c16b586ea))
+
+
+### Bug Fixes
+
+* append optimizely script to head ([5312150](https://github.com/kiva/ui/commit/5312150d0fd5e47cd2719312126f1609ddd1ebe2))
+* check for cookies set by optimizely ([217f1af](https://github.com/kiva/ui/commit/217f1af89048507932963c354f20dfb0386533c2))
+* deactivate optimizely ([d231c11](https://github.com/kiva/ui/commit/d231c11ade4479df3791e18c97a868e9e797ebc7))
+* delete filter timer and enable VWO ([0c02314](https://github.com/kiva/ui/commit/0c02314d4fcbfea0d8ff6c63f8b308d74a07a346))
+* log optimizely loading steps ([e3b1ec3](https://github.com/kiva/ui/commit/e3b1ec35d6714c6a932f230cf5ca14db794f2185))
+* run optimzely without onetrust ([986c732](https://github.com/kiva/ui/commit/986c732f867aadd93333994122bb73387a1af4d0))
+* use full smart-code from VWO for blur filter ([ebf6aa6](https://github.com/kiva/ui/commit/ebf6aa695412c837828a7bbc4feb1e9aca6a85ae))
+
 ## [2.148.0](https://github.com/kiva/ui/compare/v2.147.0...v2.148.0) (2022-05-17)
 
 
