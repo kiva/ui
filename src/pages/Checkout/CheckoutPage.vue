@@ -645,19 +645,12 @@ export default {
 				query: shopBasketUpdate,
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
-				// when updating basket state, check for free credits and redirect if present
+				// when updating basket state, check for free credits and remove guest checkout option
 				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
-				if (hasFreeCredits) {
-					if (refreshEvent === 'kiva-card-applied') {
-						this.$kvTrackEvent('basket', 'free credits applied', 'exit to legacy');
-						this.disableGuestCheckout();
-					}
-					this.redirectLightboxVisible = true;
-					// automatically redirect to legacy after 7 seconds
-					window.setTimeout(this.redirectToLegacy, 7000);
-				} else {
-					this.setUpdatingTotals(false);
+				if (hasFreeCredits && refreshEvent === 'kiva-card-applied') {
+					this.disableGuestCheckout();
 				}
+				this.setUpdatingTotals(false);
 			}).catch(response => {
 				console.error(`failed to update totals: ${response}`);
 				this.setUpdatingTotals(false);
