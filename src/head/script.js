@@ -334,8 +334,7 @@ export default (config, globalOneTrustEvent) => {
 					return '1';
 				}
 				return '3';
-			},
-			filterTolerance: 30000
+			}
 		});
 		/* eslint-enable */
 	}
