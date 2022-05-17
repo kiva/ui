@@ -178,7 +178,6 @@
 					/>
 				</div>
 			</div>
-
 			<campaign-verification-form
 				:form-id="externalFormId"
 				:ma-id="String(managedAccountId)"
@@ -186,6 +185,14 @@
 				:user-id="String(this.myId)"
 				@verification-complete="verificationComplete"
 				@campaign-verification-opt-out="handleVerificationOptOut"
+			/>
+			<verify-remove-promo-credit
+				:visible="showVerifyRemovePromoCredit"
+				:applied-promo-total="promoAmount"
+				:promo-fund-display-name="campaignPartnerName"
+				:active-credit-type="activeCreditType"
+				@credit-removed="handleCreditRemoved"
+				@promo-opt-out-lightbox-closed="handleVerificationOptOut"
 			/>
 
 			<kv-lightbox
@@ -281,6 +288,7 @@ import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVer
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
+import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -301,6 +309,7 @@ export default {
 		CheckoutHolidayPromo,
 		CheckoutDropInPaymentWrapper,
 		RandomLoanSelector,
+		VerifyRemovePromoCredit
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [
@@ -342,6 +351,7 @@ export default {
 			promoData: {},
 			verificationSubmitted: false,
 			showVerification: false,
+			showVerifyRemovePromoCredit: false,
 		};
 	},
 	apollo: {
@@ -574,6 +584,9 @@ export default {
 			// Using the first promoFund available
 			return appliedCreditsPromoFunds[0] || null;
 		},
+		campaignPartnerName() {
+			return this.promoData?.promoFund?.displayName;
+		},
 		externalFormId() {
 			return this.promoData?.managedAccount?.formId ?? null;
 		},
@@ -589,6 +602,12 @@ export default {
 			}
 			return false;
 		},
+		activeCreditType() {
+			return this.promoData?.promoGroup?.type ?? null;
+		},
+		promoAmount() {
+			return this.promoData?.promoFund?.promoPrice ?? null;
+		}
 	},
 	methods: {
 		loginToContinue(event) {
@@ -782,6 +801,16 @@ export default {
 		},
 		handleVerificationOptOut() {
 			this.showVerification = false;
+			this.showVerifyRemovePromoCredit = true;
+		},
+		handleCreditRemoved() {
+			this.showVerification = false;
+			this.$router.push(this.$route.path); // remove promo query param from url
+			this.refreshTotals();
+			this.verificationComplete();
+		},
+		handleCancelPromoOptOut() {
+			this.showVerifyRemovePromoCredit = false;
 		},
 	},
 	destroyed() {
