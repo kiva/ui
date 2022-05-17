@@ -118,7 +118,6 @@
 									id="login-to-continue-button"
 									data-testid="login-to-continue-button"
 									v-kv-track-event="['basket', 'click-register-cta', 'Continue']"
-									@click="loginToContinue"
 									:href="'/ui-login?force=true&doneUrl=/checkout'"
 								>
 									Continue
@@ -131,7 +130,6 @@
 									id="create-account-continue-button"
 									data-testid="create-account-continue-button"
 									v-kv-track-event="['basket', 'click-register-cta', 'Create an account']"
-									@click="loginToContinue"
 									:href="'/ui-login?force=true&doneUrl=/checkout'"
 								>
 									Create an account
@@ -322,7 +320,6 @@ export default {
 			currentTime: Date.now(),
 			currentTimeInterval: null,
 			loginButtonExperimentVersion: null,
-			redirectToLoginExperimentVersion: null,
 			isGuestCheckoutEnabled: false,
 			guestCheckoutCTAExpActive: false,
 			checkingOutAsGuest: false,
@@ -428,13 +425,6 @@ export default {
 				this.loginButtonExperimentVersion,
 			);
 		}
-
-		// GROW-280 redirect to login instead of popup login experiment
-		const redirectToLoginExperiment = this.apollo.readFragment({
-			id: 'Experiment:redirect_to_login',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
 
 		if (this.eligibleForGuestCheckout) {
 			const guestCheckoutCTAExperiment = this.apollo.readFragment({
@@ -550,22 +540,6 @@ export default {
 		}
 	},
 	methods: {
-		loginToContinue(event) {
-			if (this.redirectToLoginExperimentVersion) {
-				this.$kvTrackEvent(
-					'Basket',
-					'EXP-GROW-282-Oct2020',
-					this.redirectToLoginExperimentVersion,
-				);
-			}
-
-			if (this.redirectToLoginExperimentVersion !== 'b' && this.kvAuth0.enabled) {
-				event.preventDefault();
-				this.doPopupLogin();
-			}
-
-			// Doing nothing here allows the normal link handling to happen, which will send the user to /ui-login
-		},
 		guestCheckout() {
 			this.checkingOutAsGuest = true;
 		},
