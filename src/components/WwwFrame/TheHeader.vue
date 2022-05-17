@@ -75,8 +75,6 @@
 							v-show="isVisitor"
 							class="header__button header__log-in"
 							data-testid="header-log-in"
-							:event="showPopupLogin ? '' : 'click'"
-							@click.native="auth0Login"
 							v-kv-track-event="['TopNav','click-Sign-in']"
 						>
 							Log in
@@ -309,8 +307,6 @@
 								v-show="isVisitor"
 								data-testid="header-log-in"
 								class="header__button header__log-in"
-								:event="showPopupLogin ? '' : 'click'"
-								@click.native="auth0Login"
 								v-kv-track-event="['TopNav','click-Sign-in']"
 							>
 								Log in
@@ -558,10 +554,6 @@ export default {
 		hasBasket() {
 			return this.basketCount > 0 && !this.isFreeTrial;
 		},
-		showPopupLogin() {
-			return this.kvAuth0.enabled
-				&& this.$route.fullPath !== '/';
-		},
 		hidePromoCreditBanner() {
 			// hide this banner on managed lending landing + checkout pages
 			const routeExclusions = ['/cc', '/checkout'];
@@ -605,27 +597,6 @@ export default {
 		}
 	},
 	methods: {
-		auth0Login() {
-			if (this.showPopupLogin) {
-				this.kvAuth0.popupLogin().then(result => {
-					// Only refetch data if login was successful
-					if (result) {
-						// Refetch the queries for all the components in this route. All the components that use
-						// the default options for the apollo plugin or that setup their own query observer will update
-						// @todo maybe show a loding state until this completes?
-						const matched = this.$router.getMatchedComponents(this.$route);
-						return preFetchAll(matched, this.apollo, {
-							route: this.$route,
-							kvAuth0: this.kvAuth0,
-						}).catch(error => {
-							if (error.path) {
-								this.$router.push(error);
-							}
-						});
-					}
-				});
-			}
-		},
 		toggleLendMenu(immediate = false) {
 			if (immediate) {
 				// if touch, toggle immediately
