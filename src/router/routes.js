@@ -199,18 +199,12 @@ module.exports = [
 		]
 	},
 	{
-		path: '/lend-by-category/loan-to-women',
-		// eslint-disable-next-line no-unused-vars
-		redirect: to => {
-			return { path: '/lend-by-category/women' };
-		}
+		path: '/lend-by-category/loans-to-women',
+		redirect: '/lend-by-category/women'
 	},
 	{
 		path: '/lend-by-category/loans-for-education',
-		// eslint-disable-next-line no-unused-vars
-		redirect: to => {
-			return { path: '/lend-by-category/education' };
-		}
+		redirect: '/lend-by-category/education'
 	},
 	{
 		path: '/lend-by-category',
