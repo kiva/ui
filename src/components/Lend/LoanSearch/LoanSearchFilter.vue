@@ -87,7 +87,7 @@ import {
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiClose, mdiArrowRight } from '@mdi/js';
 import LoanSearchGenderFilter from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
-import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
+import { updateSearchState } from '@/util/loanSearchUtils';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -124,7 +124,7 @@ export default {
 		},
 		async getAllCountries() {
 			// data pull only from production endpoint,
-			// not implmented with a component until design path
+			// not implemented with a component until design path
 			// with product is completed.
 			const countryFacets = await fetchCountryFacets(this.apollo);
 			this.allCountries = countryFacets.map(cf => cf.country.name);
@@ -144,19 +144,8 @@ export default {
 		// 	console.log('from updateQuery', updatedQueryFilters);
 		// 	console.log('new query ran, yes!');
 		// },
-		// TODO: Extract to plugin/util for use in each filter component
-		updateSearchState() {
-			return this.apollo.mutate({
-				mutation: updateLoanSearchMutation,
-				variables: {
-					searchParams: {
-						...this.loanQueryFilters
-					}
-				}
-			});
-		}
 	},
-	mounted() {
+	async mounted() {
 		this.getSectors();
 		this.getAllCountries();
 
@@ -164,10 +153,8 @@ export default {
 		// Each Filter type will use the updateSearchState method to set this when filters are selected
 		this.loanQueryFilters = { countryIsoCode: ['US'], sectorId: [9] };
 		console.log('mounted query ran:', this.loanQueryFilters);
-		// this.updateSearchState();
-		this.updateSearchState().then(updateResponse => {
-			console.log(updateResponse);
-		});
+		const response = await updateSearchState(this.apollo, this.loanQueryFilters);
+		console.log('mounted query response:', response);
 	},
 	computed: {
 		// queryFilters() {
