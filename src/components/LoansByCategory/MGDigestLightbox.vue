@@ -7,10 +7,12 @@
 		<h2 class="tw-text-h2 tw-text-center">
 			Thank you for the feedback!
 		</h2>
-		<div class="tw-text-center tw-flex tw-flex-col tw-gap-3 tw-my-8 lg:tw-w-8/12 md:tw-w-full">
+		<div class="tw-text-center tw-flex tw-flex-col tw-gap-3 tw-my-8 tw-w-full">
 			<!-- eslint-disable-next-line max-len -->
-			<p>We'll continue to do our best to pick the loans you'll love.</p>
-			<div class="tw-flex tw-flex-col tw-gap-2 tw-self-center" style="max-width: 342px;">
+			<p class="LightboxText">
+				We'll continue to do our best to pick the loans you'll love.
+			</p>
+			<div class="tw-flex tw-flex-col tw-gap-2 tw-self-center tw-w-full LightboxButtons">
 				<kv-button
 					@click="redirectExploreLoans"
 					v-kv-track-event="[
@@ -69,3 +71,22 @@ export default {
 	},
 };
 </script>
+
+<style lang="scss" scoped>
+@import 'settings';
+
+@media (min-width: 1024px) {
+	.LightboxText {
+		min-width: 800px;
+	}
+	.LightboxButtons {
+		max-width: 342px;
+	}
+}
+
+@media (max-width: 480px) {
+	::v-deep #kvLightboxBody {
+		min-height: 750px;
+	}
+}
+</style>
