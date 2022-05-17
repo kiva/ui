@@ -464,8 +464,6 @@
 
 <script>
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
-import { preFetchAll } from '@/util/apolloPreFetch';
-
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
