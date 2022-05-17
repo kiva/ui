@@ -47,12 +47,4 @@ query wwwHeader($basketId: String) {
 			id
 		}
 	}
-	general {
-		lend_menu_category_sort_exp: uiExperimentSetting(
-			key: "lend_menu_category_sort"
-		) {
-			key
-			value
-		}
-	}
 }
