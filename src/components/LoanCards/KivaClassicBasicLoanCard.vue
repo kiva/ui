@@ -421,8 +421,8 @@ export default {
 				this.viewportObserver.disconnect();
 			}
 		},
-		handleAddToBasket() {
-			this.$emit('add-to-basket');
+		handleAddToBasket(payload) {
+			this.$emit('add-to-basket', payload);
 			this.updateBasketItems();
 		},
 		loadData() {
