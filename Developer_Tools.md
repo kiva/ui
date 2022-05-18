@@ -37,6 +37,7 @@ Command Shift P - to install extensions manually
 - [Stylelint - stylelint.vscode-stylelint](https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint) for scss linting.
 - [Vue VSCode Snippets - sdras.vue-vscode-snippets](https://marketplace.visualstudio.com/items?itemName=sdras.vue-vscode-snippets) VueJS code snippets
 - [GraphQL - prisma.vscode-graphql](https://marketplace.visualstudio.com/items?itemName=Prisma.vscode-graphql) GraphQL Syntax support.
+- [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss) Quickly find Tailwind class options
 
 > Search the name (ex. octref.vetur or shinn.stylelint) into the Extensions area to install within VSCode
 
