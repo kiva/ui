@@ -7,6 +7,7 @@
 			@handle-category-click="handleCategoryClick"
 		/>
 		<kiva-classic-loan-carousel
+			:in-context-checkout="inContextCheckout"
 			:is-visible="showCarousel"
 			:loan-ids="selectedChannelLoanIds"
 			:selected-channel="selectedChannel"
@@ -67,6 +68,9 @@ export default {
 				const matchedLoanChannel = this.loanChannelData.find(lc => lc.id === channel.id);
 				return { ...matchedLoanChannel, ...channel };
 			});
+		},
+		inContextCheckout() {
+			return this.loanDisplaySettings?.inContextCheckout ?? false;
 		},
 		loanChannelIds() {
 			return this.loanChannelsWithUrgencyExperiment.map(channelSetting => {
