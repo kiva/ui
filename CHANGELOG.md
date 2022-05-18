@@ -1,3 +1,11 @@
+## [2.151.0](https://github.com/kiva/ui/compare/v2.150.1...v2.151.0) (2022-05-18)
+
+
+### Features
+
+* dynamic amount was added to loan bundle wrapper ([7426f9f](https://github.com/kiva/ui/commit/7426f9f9c0197ecda1665896371f2a2fc50dc956))
+* loans bundle experiment was added to lbc page ([eb78469](https://github.com/kiva/ui/commit/eb78469dd7eb6b8141c7cad4c061c053c5043199))
+
 ### [2.150.1](https://github.com/kiva/ui/compare/v2.150.0...v2.150.1) (2022-05-17)
 
 
