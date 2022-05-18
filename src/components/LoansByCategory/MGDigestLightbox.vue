@@ -1,9 +1,14 @@
 <template>
 	<kv-lightbox
+		title="Thank you for the feedback!"
 		:visible="isLightboxVisible"
-		title=""
 		@lightbox-closed="closeLightbox"
 	>
+		<template #header>
+			<h2 class="tw-hidden">
+				Thank you for the feedback!
+			</h2>
+		</template>
 		<h2 class="tw-text-h2 tw-text-center">
 			Thank you for the feedback!
 		</h2>
@@ -78,7 +83,6 @@ export default {
 	.LightboxText {
 		min-width: 800px;
 	}
-
 	.LightboxButtons {
 		max-width: 342px;
 	}

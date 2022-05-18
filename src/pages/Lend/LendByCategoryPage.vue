@@ -816,6 +816,11 @@ export default {
 
 		if (this.$route.query.utm_campaign === 'liked_loan') {
 			this.showMGDigestLightbox = true;
+			if (this.$route.query.utm_content === 'yes') {
+				this.$kvTrackEvent('Monthly Digest', 'loan-feedback', 'like');
+			} else if (this.$route.query.utm_content === 'no') {
+				this.$kvTrackEvent('Monthly Digest', 'loan-feedback', 'dislike');
+			}
 		}
 	},
 	beforeDestroy() {
