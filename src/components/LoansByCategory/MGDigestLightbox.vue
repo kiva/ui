@@ -83,6 +83,7 @@ export default {
 	.LightboxText {
 		min-width: 800px;
 	}
+
 	.LightboxButtons {
 		max-width: 342px;
 	}
