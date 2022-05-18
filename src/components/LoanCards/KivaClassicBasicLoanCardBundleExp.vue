@@ -78,10 +78,11 @@
 
 			<a
 				@click="handleReadMoreLink(loan)"
-				v-kv-track-event="['Lending', 'click-read-more-loan-bundle-cta', 'Read more', loanId]"
+				v-kv-track-event="['Lending', 'click-read-more-loan-bundle-cta',
+					isPersonalized ? 'Read more - personalized' : 'Read more', loanId]"
 				class="tw-inline tw-cursor-pointer"
 			>
-				Read more
+				More
 			</a>
 		</div>
 	</div>
@@ -172,6 +173,10 @@ export default {
 		readMoreLink: {
 			type: Function,
 			default: () => {},
+		},
+		isPersonalized: {
+			type: Boolean,
+			default: false
 		},
 	},
 	inject: ['apollo', 'cookieStore'],
