@@ -75,12 +75,7 @@
 							v-show="isVisitor"
 							class="header__button header__log-in"
 							data-testid="header-log-in"
-							:event="showPopupLogin ? '' : 'click'"
-							@click.native="auth0Login"
-							v-kv-track-event="[
-								['TopNav','click-Sign-in'],
-								['TopNav','EXP-GROW-282-Oct2020',redirectToLoginExperimentVersion]
-							]"
+							v-kv-track-event="['TopNav','click-Sign-in']"
 						>
 							Log in
 						</router-link>
@@ -312,12 +307,7 @@
 								v-show="isVisitor"
 								data-testid="header-log-in"
 								class="header__button header__log-in"
-								:event="showPopupLogin ? '' : 'click'"
-								@click.native="auth0Login"
-								v-kv-track-event="[
-									['TopNav','click-Sign-in'],
-									['TopNav','EXP-GROW-282-Oct2020',redirectToLoginExperimentVersion]
-								]"
+								v-kv-track-event="['TopNav','click-Sign-in']"
 							>
 								Log in
 							</router-link>
@@ -474,9 +464,6 @@
 
 <script>
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import { preFetchAll } from '@/util/apolloPreFetch';
-
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
@@ -517,7 +504,6 @@ export default {
 			lendMenuId: 'lend-header-dropdown',
 			myKivaMenuId: 'my-kiva-header-dropdown',
 			searchOpen: false,
-			redirectToLoginExperimentVersion: null,
 			basketState: {},
 			mdiAccountCircle,
 			mdiChevronDown,
@@ -566,11 +552,6 @@ export default {
 		hasBasket() {
 			return this.basketCount > 0 && !this.isFreeTrial;
 		},
-		showPopupLogin() {
-			return this.kvAuth0.enabled
-				&& this.$route.fullPath !== '/'
-				&& this.redirectToLoginExperimentVersion !== 'b';
-		},
 		hidePromoCreditBanner() {
 			// hide this banner on managed lending landing + checkout pages
 			const routeExclusions = ['/cc', '/checkout'];
@@ -600,13 +581,6 @@ export default {
 			this.profilePic = data?.my?.lender?.image?.url ?? '';
 			this.profilePicId = data?.my?.lender?.image?.id ?? null;
 			this.basketState = data || {};
-
-			// GROW-280 redirect to login instead of popup login experiment
-			const redirectToLoginExperiment = this.apollo.readFragment({
-				id: 'Experiment:redirect_to_login',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
 		},
 		errorHandlers: {
 			'shop.invalidBasketId': ({ cookieStore, route }) => {
@@ -621,27 +595,6 @@ export default {
 		}
 	},
 	methods: {
-		auth0Login() {
-			if (this.showPopupLogin) {
-				this.kvAuth0.popupLogin().then(result => {
-					// Only refetch data if login was successful
-					if (result) {
-						// Refetch the queries for all the components in this route. All the components that use
-						// the default options for the apollo plugin or that setup their own query observer will update
-						// @todo maybe show a loding state until this completes?
-						const matched = this.$router.getMatchedComponents(this.$route);
-						return preFetchAll(matched, this.apollo, {
-							route: this.$route,
-							kvAuth0: this.kvAuth0,
-						}).catch(error => {
-							if (error.path) {
-								this.$router.push(error);
-							}
-						});
-					}
-				});
-			}
-		},
 		toggleLendMenu(immediate = false) {
 			if (immediate) {
 				// if touch, toggle immediately

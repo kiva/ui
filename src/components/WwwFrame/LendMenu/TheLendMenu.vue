@@ -39,14 +39,8 @@ import gql from 'graphql-tag';
 import { indexIn } from '@/util/comparators';
 import publicLendMenuQuery from '@/graphql/query/lendMenuData.graphql';
 import privateLendMenuQuery from '@/graphql/query/lendMenuPrivateData.graphql';
-import {
-	getExperimentSettingCached,
-	trackExperimentVersion
-} from '@/util/experimentUtils';
 import LendListMenu from './LendListMenu';
 import LendMegaMenu from './LendMegaMenu';
-
-const lendMenuExpKey = 'lend_menu_category_sort';
 
 const pageQuery = gql`query lendMenu {
 		my {
@@ -83,8 +77,7 @@ export default {
 			isRegionsLoading: true,
 			isChannelsLoading: true,
 			showMGUpsellLink: false,
-			swapLendMenuMgCopy: false,
-			weighedCategoriesExp: false
+			swapLendMenuMgCopy: false
 		};
 	},
 	apollo: {
@@ -119,7 +112,7 @@ export default {
 				updatedCat.url = updatedCat.url.replace('lend', 'lend-by-category');
 				return updatedCat;
 			});
-			return this.weighedCategoriesExp ? categories : _sortBy(categories, 'name');
+			return _sortBy(categories, 'name');
 		},
 		hasUserId() {
 			return !!this.userId;
@@ -156,18 +149,6 @@ export default {
 			});
 			this.apollo.watchQuery({ query: publicLendMenuQuery }).subscribe({
 				next: ({ data }) => {
-					const version = _get(data, 'experiment.version');
-					const { enabled } = getExperimentSettingCached(this.apollo, lendMenuExpKey);
-					if (enabled) {
-						trackExperimentVersion(
-							this.apollo,
-							this.$kvTrackEvent,
-							'TopNav',
-							lendMenuExpKey,
-							'EXP-MARS-89-Apr2022'
-						);
-						this.weighedCategoriesExp = version === 'b';
-					}
 					this.categories = _get(data, 'lend.loanChannels.values');
 					this.isChannelsLoading = false;
 				}
