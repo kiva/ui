@@ -48,6 +48,7 @@
 					:key="`loan-${loanId}`"
 					:loan-id="loanId"
 					:show-lend-cta="true"
+					@add-to-basket="handleAddToBasket"
 				/>
 			</template>
 		</kv-carousel>
@@ -213,6 +214,10 @@ export default {
 					// remove any text contained within square brackets, including the brackets
 					return String(this.name).replace(/\s\[.*\]/g, '');
 			}
+		},
+		handleAddToBasket(payload) {
+			console.log(payload);
+			// TODO: Show incontext checkout
 		},
 		// TODO: Review all tracking cateogries
 		onInteractCarousel(interaction) {
