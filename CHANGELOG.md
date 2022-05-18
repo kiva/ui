@@ -1,3 +1,19 @@
+## [2.152.0](https://github.com/kiva/ui/compare/v2.151.0...v2.152.0) (2022-05-18)
+
+
+### Features
+
+* add tracking and fix lightbox ([dec1fe8](https://github.com/kiva/ui/commit/dec1fe80a9f64aae3667f11847e3b432d1b294b3))
+* implement mg digest lightbox ([34b9023](https://github.com/kiva/ui/commit/34b902347b6957f3908eb8a8300e4e86722dbe7a))
+
+
+### Bug Fixes
+
+* lint error ([5dc93c4](https://github.com/kiva/ui/commit/5dc93c4d2b11d374864ac5ddc5b4783ccf712742))
+* merge conflict fix ([af223f7](https://github.com/kiva/ui/commit/af223f79b2a141482409323801670a4be377fb26))
+* remove comments ([4bcfda1](https://github.com/kiva/ui/commit/4bcfda1966e9800bbb7bf1b0677ad4f3be96d8c3))
+* some styling to match figma ([b076391](https://github.com/kiva/ui/commit/b076391f1033c20b9d9364e7086f948fe2aa3a5e))
+
 ## [2.151.0](https://github.com/kiva/ui/compare/v2.150.1...v2.151.0) (2022-05-18)
 
 
