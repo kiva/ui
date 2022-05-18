@@ -43,9 +43,11 @@
 				<!-- TODO Re-implement card position analytics -->
 				<kiva-classic-basic-loan-card
 					v-else
+					:disable-redirects="true"
 					:item-index="index"
 					:key="`loan-${loanId}`"
 					:loan-id="loanId"
+					:show-lend-cta="true"
 				/>
 			</template>
 		</kv-carousel>

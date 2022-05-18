@@ -133,19 +133,44 @@
 			class="tw-rounded tw-self-start" :style="{width: '9rem', height: '3rem'}"
 		/>
 
-		<kv-button
-			v-if="!isLoading && !allSharesReserved"
-			class="tw-mb-2 tw-self-start"
-			:state="`${allSharesReserved ? 'disabled' : ''}`"
-			:to="`/lend/${loanId}`"
-			v-kv-track-event="['Lending', 'click-Read-more', 'View loan', loanId]"
-		>
-			View loan
-			<kv-material-icon
-				class="tw-w-3 tw-h-3 tw-align-middle"
-				:icon="mdiChevronRight"
+		<template v-if="!isLoading && !allSharesReserved">
+			<kv-button
+				v-if="!showLendCta"
+				class="tw-mb-2 tw-self-start"
+				:state="`${allSharesReserved ? 'disabled' : ''}`"
+				:to="`/lend/${loanId}`"
+				v-kv-track-event="['Lending', 'click-Read-more', 'View loan', loanId]"
+			>
+				View loan
+				<kv-material-icon
+					class="tw-w-3 tw-h-3 tw-align-middle"
+					:icon="mdiChevronRight"
+				/>
+			</kv-button>
+			<action-button
+				v-else
+				class="action-button"
+				:amount-left="parseFloat(unreservedAmount)"
+				:disable-redirects="disableRedirects"
+				:loan-id="loanId"
+				:loan="loan"
+				:items-in-basket="itemsInBasket"
+				:is-amount-lend-button="lessThan25"
+				:is-lent-to="isLentTo"
+				:is-funded="allSharesReserved"
+				:is-expired="allSharesReserved"
+				:is-selected-by-another="allSharesReserved"
+				:is-simple-lend-button="true"
+				:minimal-checkout-button="true"
+
+				@click.native="trackInteraction({
+					interactionType: 'addToBasket',
+					interactionElement: 'Lend25'
+				})"
+
+				@add-to-basket="handleAddToBasket"
 			/>
-		</kv-button>
+		</template>
 
 		<!-- If allSharesReserved show message and hide cta button -->
 		<div
@@ -170,9 +195,11 @@ import gql from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
 import { isMatchAtRisk, watchLoanData } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
+import basketItemsQuery from '@/graphql/query/basketItems.graphql';
 import LoanUse from '@/components/BorrowerProfile/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
+import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
@@ -254,14 +281,23 @@ const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 
 export default {
 	props: {
+		disableRedirects: {
+			type: Boolean,
+			default: false,
+		},
 		loanId: {
 			type: Number,
 			required: true,
+		},
+		showLendCta: {
+			type: Boolean,
+			default: false
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],
 	components: {
+		ActionButton,
 		BorrowerImage,
 		BorrowerName,
 		KvLoadingPlaceholder,
@@ -321,6 +357,12 @@ export default {
 		isMatchAtRisk() {
 			return isMatchAtRisk(this.loan);
 		},
+		itemsInBasket() {
+			return this.basketItems.map(item => item.id);
+		},
+		lessThan25() {
+			return this.unreservedAmount < 25 && this.unreservedAmount !== 0;
+		},
 		sectorName() {
 			return (this.loan?.sector?.name || '').toLowerCase();
 		},
@@ -379,6 +421,10 @@ export default {
 				this.viewportObserver.disconnect();
 			}
 		},
+		handleAddToBasket() {
+			this.$emit('add-to-basket');
+			this.updateBasketItems();
+		},
 		loadData() {
 			if (!this.queryObserver) {
 				this.queryObserver = watchLoanData({
@@ -408,6 +454,18 @@ export default {
 			this.isLoading = false;
 			this.loan = result.data?.lend?.loan || null;
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
+		},
+		trackInteraction(args) {
+			this.$emit('track-interaction', args);
+		},
+		updateBasketItems() {
+			this.apollo.query({
+				query: basketItemsQuery,
+				fetchPolicy: 'network-only',
+			}).then(({ data }) => {
+				// need to update this.itemsInBasket here.
+				this.basketItems = data?.shop?.basket?.items?.values;
+			});
 		}
 	},
 	mounted() {
