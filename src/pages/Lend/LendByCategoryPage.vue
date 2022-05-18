@@ -117,10 +117,6 @@ import ExpandableLoanCardExpanded from '@/components/LoanCards/ExpandableLoanCar
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
 import { createIntersectionObserver } from '@/util/observerUtils';
 
-// Row Limiter
-// > This controls how may rows are loaded on the server
-const ssrRowLimiter = 2;
-
 export default {
 	components: {
 		// CategoryAdminControls: () => import('./admin/CategoryAdminControls'),
@@ -177,6 +173,7 @@ export default {
 			fetchCategoryIds: [],
 			expResults: null,
 			addBundleExp: false,
+			activatedWatchers: false,
 		};
 	},
 	computed: {
@@ -317,7 +314,7 @@ export default {
 			return this.apollo.query({
 				query: loanChannelQuery,
 				variables: {
-					ids: this.realCategoryIds.slice(ssrRowLimiter),
+					ids: this.realCategoryIds,
 					excludeIds: ssrLoanIds,
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
@@ -330,29 +327,43 @@ export default {
 		},
 		activateWatchers() {
 			// Create an observer for changes to the categories (and their loans)
-			this.apollo.watchQuery({
-				query: loanChannelQuery,
-				variables: {
-					ids: this.realCategoryIds,
-					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
-					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-				},
-			}).subscribe({
-				next: ({ data }) => {
-					this.realCategories = _get(data, 'lend.loanChannelsById') || this.realCategories;
-				},
-			});
-			this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
-				next: ({ data }) => {
-					this.isAdmin = !!_get(data, 'my.isAdmin');
-					this.isLoggedIn = !!_get(data, 'my');
-					this.userId = _get(data, 'my.userAccount.id') || null;
-					this.firstName = _get(data, 'my.userAccount.firstName') || 'you';
-					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
-					// CASH-794 Favorite Country Row
-					this.hasFavoriteCountry = !!_get(data, 'my.recommendations.topCountry');
-				},
-			});
+			if (!this.activatedWatchers) {
+				this.apollo.watchQuery({
+					query: loanChannelQuery,
+					variables: {
+						ids: this.realCategoryIds,
+						imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
+						imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+					},
+				}).subscribe({
+					next: ({ data }) => {
+						this.rowLazyLoadComplete = false;
+						const ssrLoanIds = []
+						_each(this.categories, category => {
+							ssrLoanIds.push(category.id);
+						});
+						const loanChannels = _get(data, 'lend.loanChannelsById')
+						const filteredLoanChannels = loanChannels.filter((loan) => {
+							return !ssrLoanIds.includes(loan.id)
+						});
+
+						this.realCategories = [...this.realCategories, ...filteredLoanChannels];
+						this.rowLazyLoadComplete = true;
+					},
+				});
+				this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
+					next: ({ data }) => {
+						this.isAdmin = !!_get(data, 'my.isAdmin');
+						this.isLoggedIn = !!_get(data, 'my');
+						this.userId = _get(data, 'my.userAccount.id') || null;
+						this.firstName = _get(data, 'my.userAccount.firstName') || 'you';
+						this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+						// CASH-794 Favorite Country Row
+						this.hasFavoriteCountry = !!_get(data, 'my.recommendations.topCountry');
+					},
+				});
+				this.activatedWatchers = true
+			}
 		},
 		handleScrollingRow() {
 			if (this.showExpandableLoanCards && this.$refs.expandableLoanCardComponent) {
@@ -555,7 +566,7 @@ export default {
 		},
 		fetchLoanData() {
 			const category = this.fetchCategoryIds.shift();
-			if (this.fetchCategoryIds.length) {
+			if (category) {
 				this.rowLazyLoadComplete = false;
 				// eslint-disable-next-line no-underscore-dangle
 				if (category.__typename === 'RecLoanChannel') {
@@ -583,28 +594,33 @@ export default {
 								}
 								return [];
 							});
-							this.recommendedLoans = allRecLoans;
+							this.recommendedLoans = [...this.recommendedLoans, ...allRecLoans];
 							this.rowLazyLoadComplete = true;
 						});
 					} catch (e) {
 						logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
+						this.rowLazyLoadComplete = true;
 					}
 				} else {
 					try {
-						return this.apollo.watchQuery({
+						return this.apollo.query({
 							query: loanChannelQuery,
 							variables: {
 								ids: [category.id],
 								imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 								imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
 							},
-						}).subscribe({
-							next: ({ data }) => {
-								this.realCategories = [...this.realCategories, _get(data, 'lend.loanChannelsById')[0]];
+						}).then(({ data }) => {
+							const categories = _get(data, 'lend.loanChannelsById')[0];
+							if(categories.loans?.values?.length) {
+								this.realCategories = [...this.realCategories, categories];
 								this.rowLazyLoadComplete = true;
-							},
+							} else {
+								this.fetchLoanData();
+							}
 						});
 					} catch (e) {
+						this.rowLazyLoadComplete = true;
 						logReadQueryError(e, 'LendByCategory loanChannelQuery');
 					}
 				}
