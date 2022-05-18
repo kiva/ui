@@ -14,20 +14,10 @@
 					Your contribution: ${{ mgAmount }}<span v-if="!isOnetime">/month</span>
 					<span v-if="donation > 0">(including your ${{ donation }} donation)</span>
 				</p>
-				<div class="tw-font-medium tw-bg-secondary tw-p-4 ">
-					<template v-if="!fromCovidLanding">
-						<p class="tw-mb-2">
-							Based on your contribution, you'll support your first borrower {{ monthWording }}.
-						</p>
-						<p>
-							<em>This is our best guess but loan lengths and repayment rates vary.</em>
-						</p>
-					</template>
-					<template v-else>
-						<p>
-							Thank you for choosing to support someone who has been impacted by COVID‑19 coronavirus.
-						</p>
-					</template>
+				<div v-if="fromCovidLanding" class="tw-font-medium tw-bg-secondary tw-p-4 ">
+					<p>
+						Thank you for choosing to support someone who has been impacted by COVID‑19 coronavirus.
+					</p>
 				</div>
 			</div>
 		</kv-default-wrapper>
