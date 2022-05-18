@@ -69,6 +69,7 @@ export default {
 				return contentType ? contentType === 'uiSetting' : false;
 			});
 			return {
+				inContextCheckout: uiSetting?.dataObject?.inContextCheckout ?? false,
 				loanLimit: uiSetting?.dataObject?.loanLimit ?? 1,
 				showViewMoreCard: uiSetting?.dataObject?.showViewMoreCard ?? false
 			};

@@ -66,6 +66,10 @@ export default {
 		KivaClassicBasicLoanCard,
 	},
 	props: {
+		inContextCheckout: {
+			type: Boolean,
+			default: false
+		},
 		isLoggedIn: {
 			type: Boolean,
 			default: false
