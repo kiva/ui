@@ -338,13 +338,13 @@ export default {
 				}).subscribe({
 					next: ({ data }) => {
 						this.rowLazyLoadComplete = false;
-						const ssrLoanIds = []
+						const ssrLoanIds = [];
 						_each(this.categories, category => {
 							ssrLoanIds.push(category.id);
 						});
-						const loanChannels = _get(data, 'lend.loanChannelsById')
-						const filteredLoanChannels = loanChannels.filter((loan) => {
-							return !ssrLoanIds.includes(loan.id)
+						const loanChannels = _get(data, 'lend.loanChannelsById');
+						const filteredLoanChannels = loanChannels.filter(loan => {
+							return !ssrLoanIds.includes(loan.id);
 						});
 
 						this.realCategories = [...this.realCategories, ...filteredLoanChannels];
@@ -362,7 +362,7 @@ export default {
 						this.hasFavoriteCountry = !!_get(data, 'my.recommendations.topCountry');
 					},
 				});
-				this.activatedWatchers = true
+				this.activatedWatchers = true;
 			}
 		},
 		handleScrollingRow() {
@@ -612,7 +612,7 @@ export default {
 							},
 						}).then(({ data }) => {
 							const categories = _get(data, 'lend.loanChannelsById')[0];
-							if(categories.loans?.values?.length) {
+							if (categories.loans?.values?.length) {
 								this.realCategories = [...this.realCategories, categories];
 								this.rowLazyLoadComplete = true;
 							} else {
