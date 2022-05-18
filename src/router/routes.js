@@ -133,6 +133,13 @@ module.exports = [
 		}
 	},
 	{
+		path: '/gender-equality',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: {
+			contentfulPage: () => 'gender-equality',
+		},
+	},
+	{
 		path: '/get-started',
 		component: () => import('@/pages/GetStarted/GetStarted'),
 		children: [
@@ -234,6 +241,10 @@ module.exports = [
 			excludeFromStaticSitemap: true,
 			unbounce: true,
 		},
+	},
+	{
+		path: '/lp/own-the-change-gender-equality',
+		redirect: '/gender-equality'
 	},
 	{
 		path: '/lp/:dynamicRoute',

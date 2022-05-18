@@ -1,3 +1,85 @@
+## [2.151.0](https://github.com/kiva/ui/compare/v2.150.1...v2.151.0) (2022-05-18)
+
+
+### Features
+
+* dynamic amount was added to loan bundle wrapper ([7426f9f](https://github.com/kiva/ui/commit/7426f9f9c0197ecda1665896371f2a2fc50dc956))
+* loans bundle experiment was added to lbc page ([eb78469](https://github.com/kiva/ui/commit/eb78469dd7eb6b8141c7cad4c061c053c5043199))
+
+### [2.150.1](https://github.com/kiva/ui/compare/v2.150.0...v2.150.1) (2022-05-17)
+
+
+### Bug Fixes
+
+* remove legacy redirect for promo code state when adding a promo code in new checkout ([ed076c5](https://github.com/kiva/ui/commit/ed076c5b0f28e3be60054d94820a2d55db99e73c))
+* remove redirect to legacy lightbox + associated methods ([589a3ab](https://github.com/kiva/ui/commit/589a3abe75da2d4c34c0fdc806dd1c91ba4d15f0))
+
+## [2.150.0](https://github.com/kiva/ui/compare/v2.149.0...v2.150.0) (2022-05-17)
+
+
+### Features
+
+* add verify remove promo credit lightbox ([21c32a6](https://github.com/kiva/ui/commit/21c32a693c7a63c4df075ac80d83ca391bfc6c5f))
+* implement campaign verif form on checkout ([b5d727b](https://github.com/kiva/ui/commit/b5d727b9bbbfa842810878775cdddf443cfd97ea))
+
+
+### Bug Fixes
+
+* remove console log ([87cd349](https://github.com/kiva/ui/commit/87cd349f618b008abd8834430edd378e0749bcb2))
+
+## [2.149.0](https://github.com/kiva/ui/compare/v2.148.0...v2.149.0) (2022-05-17)
+
+
+### Features
+
+* removed header experiment code ([5914e03](https://github.com/kiva/ui/commit/5914e031bacc770fcba4913d2f26d27d1ffb7119))
+
+
+### Bug Fixes
+
+* linting issues ([6a749c8](https://github.com/kiva/ui/commit/6a749c86285062a1adead7938209fdf48a20a506))
+* more code removed ([1514a83](https://github.com/kiva/ui/commit/1514a832fc0c976d0d07e0e6811c0fa58bb58db4))
+* remove more refereces to experiment code ([92fdecf](https://github.com/kiva/ui/commit/92fdecf8f08163ba81dc781475f4187b547ae543))
+* removed more code related to experiment ([d4b0181](https://github.com/kiva/ui/commit/d4b0181b5f666fe9c9f5bf72e0f5e56834a9c9cf))
+* restored track event ([4f9868d](https://github.com/kiva/ui/commit/4f9868d52d44f04e759f33016d7ab7d7e0c48cc4))
+* small adjustment ([67a41e4](https://github.com/kiva/ui/commit/67a41e46ac46a7188438b69b4614e19090b69e94))
+
+## [2.148.0](https://github.com/kiva/ui/compare/v2.147.0...v2.148.0) (2022-05-17)
+
+
+### Features
+
+* connected gender filter to new apollo cache ([127432b](https://github.com/kiva/ui/commit/127432ba508e95c6b9f04d43a2b2d10c2749228c))
+
+## [2.147.0](https://github.com/kiva/ui/compare/v2.146.0...v2.147.0) (2022-05-17)
+
+
+### Features
+
+* create gender-equality route and redirect /lp/own-the-change-gender-equality to this new route ([6a70b3b](https://github.com/kiva/ui/commit/6a70b3bde3f45f6ebd4a547b186cafa7cd9ceccf))
+
+## [2.146.0](https://github.com/kiva/ui/compare/v2.145.2...v2.146.0) (2022-05-17)
+
+
+### Features
+
+* created new loan search utils file ([c972bc4](https://github.com/kiva/ui/commit/c972bc4962d30ef737ecbba30ce48e36efb14a25))
+
+
+### Bug Fixes
+
+* added missing mocked function for auth0 that was causing error on load locally ([a40276e](https://github.com/kiva/ui/commit/a40276e694e7510559d818a6ccc3170534e6823a))
+* changed undefined fakeAuthAllowed mock to false ([7f083f1](https://github.com/kiva/ui/commit/7f083f19211df0c2ca8361f7eb40856f25c55a3a))
+* include aria-label for lightbox but not visible title ([1b8a474](https://github.com/kiva/ui/commit/1b8a4742d42c6505d0de4427024abc1f7d19901a))
+* resolved vue errors on load: missing title and wrong boolean prop ([47de4c5](https://github.com/kiva/ui/commit/47de4c50d16e52de1940588f4b0816673e179997))
+
+### [2.145.2](https://github.com/kiva/ui/compare/v2.145.1...v2.145.2) (2022-05-16)
+
+
+### Bug Fixes
+
+* updated elements package for radio button fix ([1b89ba2](https://github.com/kiva/ui/commit/1b89ba2e7433b2f3ec6ac1d2ab62316ce2b26fb8))
+
 ### [2.145.1](https://github.com/kiva/ui/compare/v2.145.0...v2.145.1) (2022-05-16)
 
 

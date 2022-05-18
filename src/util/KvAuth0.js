@@ -357,6 +357,7 @@ export const MockKvAuth0 = {
 	getKivaId: () => undefined,
 	getLastLogin: () => 0,
 	getMfaEnrollToken: () => Promise.resolve({}),
+	fakeAuthAllowed: () => false,
 	getFakeAuthCookieValue: () => undefined,
 	getFakeIdTokenPayload: () => undefined,
 	getSyncCookieValue: () => null,

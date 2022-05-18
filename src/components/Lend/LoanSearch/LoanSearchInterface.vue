@@ -6,7 +6,15 @@
 					Filter & Sort
 				</kv-button>
 
-				<kv-lightbox :visible="isLightboxVisible" variant="lightbox" @lightbox-closed="closeLightbox">
+				<kv-lightbox
+					:visible="isLightboxVisible"
+					variant="lightbox"
+					title="Loan filter controls"
+					@lightbox-closed="closeLightbox"
+				>
+					<template #header>
+						{{ null }}
+					</template>
 					<loan-search-filter id="filter-menu" />
 				</kv-lightbox>
 			</div>
@@ -29,7 +37,7 @@
 					:key="loan.id"
 					:loan="loan"
 					loan-card-type="ListLoanCard"
-					rounded-corners="true"
+					:rounded-corners="true"
 				/>
 			</kv-grid>
 		</div>
@@ -75,11 +83,12 @@ export default {
 	methods: {
 		// Temporary location for some of this logic
 		// NOTICE!!! Add your new filter to flssCompatibleFilters below if it's missing
-		runFLSSQuery(loanSearchState) {
+		runFLSSQuery(loanSearchState = {}) {
 			console.log('filters into runQuery:', loanSearchState);
 			const flssCompatibleFilters = {
-				countryIsoCode: { any: loanSearchState?.countryIsoCode ?? [] },
-				sectorId: { any: loanSearchState?.sectorId ?? [] },
+				...(loanSearchState.gender && { gender: { any: loanSearchState.gender } }),
+				// countryIsoCode: { any: loanSearchState?.countryIsoCode ?? [] },
+				// sectorId: { any: loanSearchState?.sectorId ?? [] },
 			};
 			fetchData(flssCompatibleFilters, this.apollo).then(flssData => {
 				this.loans = flssData.values ?? [];
