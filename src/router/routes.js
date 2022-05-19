@@ -292,6 +292,13 @@ module.exports = [
 		}
 	},
 	{
+		path: '/personalization-wizard-results',
+		component: () => import('@/pages/PersonalizationWizard/PersonalizationWizardResults'),
+		meta: {
+			unbounce: true,
+		},
+	},
+	{
 		path: '/portfolio/lending-stats',
 		component: () => import('@/pages/LendingStats/LendingStatsPage'),
 		meta: {
