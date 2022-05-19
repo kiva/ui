@@ -1,3 +1,10 @@
+## [2.153.0](https://github.com/kiva/ui/compare/v2.152.1...v2.153.0) (2022-05-19)
+
+
+### Features
+
+* wrong message was removed in MG thanks page ([ed31d79](https://github.com/kiva/ui/commit/ed31d7917c10c95f640cf0186b39320d0a2314ac))
+
 ### [2.152.1](https://github.com/kiva/ui/compare/v2.152.0...v2.152.1) (2022-05-18)
 
 
