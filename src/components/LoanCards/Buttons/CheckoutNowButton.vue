@@ -1,6 +1,6 @@
 <template>
 	<kv-button
-		class="tw-w-full tw-mb-2 tw-align-middle"
+		class="tw-w-full tw-align-middle"
 		:to="disableRedirects ? null : '/basket'"
 		variant="secondary"
 		v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"

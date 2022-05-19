@@ -224,7 +224,7 @@ export default {
 
 					this.loadingCheckout = false;
 
-					if (this.loans.length === 0 && this.donations.length === 0) {
+					if (this.loans.length === 0 && this.donations[0]?.price === '0.00') {
 						this.checkoutVisible = false;
 					}
 				});
