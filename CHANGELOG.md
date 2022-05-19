@@ -1,3 +1,10 @@
+### [2.153.2](https://github.com/kiva/ui/compare/v2.153.1...v2.153.2) (2022-05-19)
+
+
+### Bug Fixes
+
+* fix kiva classic checkout promos ([6881ac9](https://github.com/kiva/ui/commit/6881ac9dadc818f38549d3fe588ee6cd2ec19193))
+
 ### [2.153.1](https://github.com/kiva/ui/compare/v2.153.0...v2.153.1) (2022-05-19)
 
 
