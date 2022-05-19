@@ -4,7 +4,7 @@
 			class="rec-loan-card__sector rec-loan-card__sector--loading"
 			v-if="isLoading"
 		/>
-		<div class="rec-loan-card__sector" v-show="!isLoading">
+		<div class="rec-loan-card__sector" v-show="!isLoading" v-if="!hideSectorData">
 			A loan for <strong class="tw-text-brand tw-font-book">{{ sectorName }}</strong>
 			in <strong class="tw-text-brand tw-font-book">{{ countryName }}</strong>
 		</div>
@@ -70,6 +70,7 @@
 					class="rec-loan-card__button rec-loan-card__button--loading"
 					v-if="isLoading"
 				/>
+				<loan-voting v-if="showVoting" />
 				<lend-button class="rec-loan-card__button rounded"
 					v-show="!isLoading"
 					:loan-id="loanId"
@@ -96,6 +97,7 @@ import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LendButton from '@/components/LoanCards/Buttons/LendButton2';
 import WhySpecial from '@/components/LoanCards/WhySpecial';
+import LoanVoting from '@/components/LoanCards/LoanVoting';
 
 const loanQuery = gql`query recLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
@@ -159,6 +161,14 @@ export default {
 		loanId: {
 			type: Number,
 			required: true,
+		},
+		hideSectorData: {
+			type: Boolean,
+			default: false,
+		},
+		showVoting: {
+			type: Boolean,
+			default: false,
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -170,6 +180,7 @@ export default {
 		KvLoadingParagraph,
 		LendButton,
 		WhySpecial,
+		LoanVoting
 	},
 	data() {
 		return {
