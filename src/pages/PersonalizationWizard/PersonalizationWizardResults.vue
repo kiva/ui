@@ -21,6 +21,7 @@
 						>
 							<template v-for="(loanId, index) in loanIds" #[`slide${index}`]>
 								<recommended-loan-card
+									class=""
 									:key="loanId"
 									:loan-id="loanId"
 									:hide-sector-data="true"
@@ -59,18 +60,6 @@ export default {
 		return {
 			currentIndex: 0,
 		};
-	},
-	computed: {
-		singleSlideWidth() {
-			const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
-			// handle tiny screens
-			if (viewportWidth < 414) {
-				return `${viewportWidth - 80}px`;
-			}
-			if (viewportWidth >= 414 && viewportWidth < 768) return '278px';
-			if (viewportWidth >= 768 && viewportWidth < 1024) return '336px';
-			return '336px';
-		},
 	},
 };
 </script>

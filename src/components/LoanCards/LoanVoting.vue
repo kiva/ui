@@ -20,19 +20,6 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 export default {
 	components: {
 		KvButton
-	},
-	data() {
-		return {
-			likedLoan: null,
-		};
-	},
-	methods: {
-		likeLoan() {
-			this.likedLoan = true;
-		},
-		dislikeLoan() {
-			this.likedLoan = false;
-		}
-	},
+	}
 };
 </script>
