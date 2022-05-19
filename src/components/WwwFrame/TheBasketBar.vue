@@ -72,7 +72,7 @@ export default {
 		},
 		hideBasketBar() {
 			// hide this banner on managed lending landing + checkout pages
-			const routeExclusions = ['/join-team', '/checkout', '/lend-beta'];
+			const routeExclusions = ['/join-team', '/checkout', '/lend-beta', '/lp'];
 			const routePath = this.$route?.path;
 			const matchedRoutes = routeExclusions.filter(item => {
 				return routePath.indexOf(item) !== -1;
