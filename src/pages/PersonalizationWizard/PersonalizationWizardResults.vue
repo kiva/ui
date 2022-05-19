@@ -15,12 +15,10 @@
 <script>
 // import gql from 'graphql-tag';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	components: {
-		KvGrid,
 		KvPageContainer,
 		WwwPage
 	},
