@@ -1,6 +1,6 @@
 <template>
 	<div class="tw-flex tw-justify-center tw-mb-2">
-		<p style="font-size: 12px" class="tw-self-center tw-mr-2">
+		<p style="font-size: 12px;" class="tw-self-center tw-mr-2">
 			Do you like this loan?
 		</p>
 		<div>
