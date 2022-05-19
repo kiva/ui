@@ -281,7 +281,7 @@ export default {
 			donationNudgeBorrowerImageExperiment: false,
 			donationDetailsLink: 'How Kiva uses donations',
 			showCharityOverheadFooter: false,
-			dynamicDonationItem: '',
+			dynamicDonationItem: null,
 			mdiPencil,
 			imageRequire,
 		};
@@ -326,12 +326,13 @@ export default {
 		donationTagLine() {
 			const loanCost = numeral(Math.floor(this.loanReservationTotal * 0.12)).format('$0,0');
 			// if there is dynamic donation tagline from contentful, use that.
-			if (this.dynamicDonationItem) {
-				// process contentful content as rich text
-				const contentfulHTML = documentToHtmlString(this.dynamicDonationItem);
-				// replace magic variable ###loan_costs###
-				return contentfulHTML.replace(/###loan_costs###/g, loanCost);
-			}
+			// if (this.dynamicDonationItem) {
+			// 	// process contentful content as rich text
+			// 	const contentfulHTML = documentToHtmlString(this.dynamicDonationItem);
+			// 	console.log(contentfulHTML);
+			// 	// replace magic variable ###loan_costs###
+			// 	return contentfulHTML.replace(/###loan_costs###/g, loanCost);
+			// }
 
 			let coverOurCosts = `${this.loanCount > 1 ? 'These loans cost' : 'This loan costs'}`;
 			if (this.donationTagLineExperiment) {
@@ -390,8 +391,12 @@ export default {
 				});
 				const pageEntry = contentfulContentRaw?.contentful?.entries?.items?.[0] ?? null;
 				const pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
+				console.log(pageData);
+				const donationRTE = pageData?.page?.contentGroups?.checkoutDonationItem?.contents?.[0]?.richText ?? '';
+				console.log(donationRTE);
+				this.dynamicDonationItem = donationRTE;
 				// eslint-disable-next-line max-len
-				this.dynamicDonationItem = pageData?.page?.contentGroups?.checkoutDonationItem?.contents?.[0]?.richText ?? '';
+				// this.dynamicDonationItem = pageData?.page?.contentGroups?.checkoutDonationItem?.contents?.[0]?.richText ?? '';
 			}
 		},
 		updateDonation() {
