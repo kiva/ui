@@ -8,6 +8,7 @@
 			:id="content.key"
 			:is="component"
 			:content="content"
+			:class="{ 'tw-relative tw-z-overlay': content.key === 'matt-leo-hackathon-loan-row' }"
 			data-section-type="contentful-section"
 		/>
 	</component>
