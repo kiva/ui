@@ -13,7 +13,7 @@
 				Make a loan, <br class="hide-for-medium">change a life
 			</h1>
 
-			<a @click="showPersonalizationWizard()" class="tw-cursor-pointer"> Help me choose the perfect loan.</a>
+			<a @click="showPersonalizationWizard()" class="tw-cursor-pointer"> Help me choose </a>
 
 			<kv-material-icon :icon="mdiChevronRight" />
 
@@ -27,15 +27,19 @@
 <script>
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import {mdiChevronRight} from '@mdi/js';
 
 export default {
 	components: {
 		ViewToggle,
-		KvMaterialIcon
+		KvMaterialIcon,
+		mdiChevronRight
 	},
 	data() {
 		return {
-			showedWizard: false
+			showedWizard: false,
+			KvMaterialIcon,
+			mdiChevronRight
 		};
 	},
 	props: {
