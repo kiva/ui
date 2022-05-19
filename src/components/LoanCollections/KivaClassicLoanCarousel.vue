@@ -52,16 +52,20 @@
 				/>
 			</template>
 		</kv-carousel>
+
+		<in-context-checkout-wrapper v-if="inContextCheckout" :show-checkout="showCheckout" />
 	</div>
 </template>
 
 <script>
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import InContextCheckoutWrapper from '@/components/Checkout/InContext/InContextCheckoutWrapper';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
 	components: {
+		InContextCheckoutWrapper,
 		KvCarousel,
 		KvLoadingSpinner,
 		KivaClassicBasicLoanCard,
@@ -105,6 +109,8 @@ export default {
 			name: '',
 			id: 0,
 			url: '',
+			showCheckout: false,
+			showThanks: false,
 		};
 	},
 	computed: {
@@ -221,7 +227,11 @@ export default {
 		},
 		handleAddToBasket(payload) {
 			console.log(payload);
-			// TODO: Show incontext checkout
+			this.showCheckout = true;
+			const clearCheckoutState = setTimeout(() => {
+				this.showCheckout = false;
+				clearTimeout(clearCheckoutState);
+			}, 500);
 		},
 		// TODO: Review all tracking cateogries
 		onInteractCarousel(interaction) {
