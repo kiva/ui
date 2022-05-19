@@ -15,7 +15,7 @@
 
 			<a @click="showPersonalizationWizard()" class="tw-cursor-pointer"> Help me choose the perfect loan.</a>
 
-			<kv-material-icon :icon="mdiChevronRight"/>
+			<kv-material-icon :icon="mdiChevronRight" />
 
 			<p class="page-subhead show-for-large tw-mb-4">
 				Each Kiva loan helps people build a better future for themselves and their families.
