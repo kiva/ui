@@ -470,7 +470,7 @@ export default {
 			&& this.verificationRequired
 			&& this.externalFormId
 			&& !this.verificationSubmitted
-			&& this.basketLoans.length
+			&& this.loans.length
 		) {
 			this.showVerification = true;
 		}
