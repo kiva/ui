@@ -148,7 +148,7 @@
 				/>
 			</kv-button>
 			<action-button
-				v-else-if="isLentTo || itemsInBasket.includes(loanId)"
+				v-else-if="itemsInBasket.includes(loanId)"
 				class="action-button"
 				:amount-left="parseFloat(unreservedAmount)"
 				:disable-redirects="disableRedirects"
@@ -172,21 +172,20 @@
 			/>
 			<div
 				v-else
-				class="tw-flex"
+				class="tw-flex tw-gap-1"
 			>
 				<!-- :amount-left="parseFloat(unreservedAmount)" -->
 				<action-button
-					v-for="(value, index) in [5, 15, 25]"
+					v-for="value in [5, 15, 25]"
 					:key="value"
 					class="action-button"
-					:class="{ 'tw-mx-1': index === 1 }"
 					:amount-left="value"
 					:disable-redirects="disableRedirects"
 					:loan-id="loanId"
 					:loan="loan"
 					:items-in-basket="itemsInBasket"
 					:is-amount-lend-button="true"
-					:is-lent-to="isLentTo"
+					:is-lent-to="false"
 					:is-funded="allSharesReserved"
 					:is-expired="allSharesReserved"
 					:is-selected-by-another="allSharesReserved"
