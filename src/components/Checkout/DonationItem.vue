@@ -229,7 +229,7 @@ import donationDataQuery from '@/graphql/query/checkout/donationData.graphql';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+// import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
