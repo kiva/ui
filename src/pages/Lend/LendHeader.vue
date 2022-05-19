@@ -26,8 +26,8 @@
 
 <script>
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
+import { mdiChevronRight } from '@mdi/js';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import {mdiChevronRight} from '@mdi/js';
 
 export default {
 	components: {
