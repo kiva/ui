@@ -1,3 +1,10 @@
+### [2.153.1](https://github.com/kiva/ui/compare/v2.153.0...v2.153.1) (2022-05-19)
+
+
+### Bug Fixes
+
+* update variable name ([0abddaf](https://github.com/kiva/ui/commit/0abddaf5b79df3aa4f866257444b7c0cca21776d))
+
 ## [2.153.0](https://github.com/kiva/ui/compare/v2.152.1...v2.153.0) (2022-05-19)
 
 
