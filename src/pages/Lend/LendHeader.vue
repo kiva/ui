@@ -32,7 +32,7 @@ export default {
 	data() {
 		return {
 			showedWizard: false
-		}
+		};
 	},
 	props: {
 		browseUrl: {
