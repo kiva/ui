@@ -2,11 +2,11 @@ describe('Existing User Checkout with Kiva Credit', () => {
 	it('Baskets a loan, proceed to checkout, log in user with credit and purchases using kiva credit', () => {
 		let beginBalance;
 		let newBalance;
-		// Cypress.env();
+		// get the test user id from cypress.env.json and set the cookie variable
 		const lenderID = Cypress.env().userInfo.kivaCreditLender.userID;
 		const loginCookie = `${lenderID}:recent/active/mfa`;
 
-		// Mock log in as kivaquality7
+		// Mock login our test lender
 		cy.setCookie('kvfa', loginCookie, 'domain=.kiva.org');
 		// go to portfolio and get current credit for later calculations
 		cy.visit('/portfolio');
