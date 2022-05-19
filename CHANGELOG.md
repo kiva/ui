@@ -1,3 +1,10 @@
+## [2.149.0-next.2](https://github.com/kiva/ui/compare/v2.149.0-next.1...v2.149.0-next.2) (2022-05-19)
+
+
+### Bug Fixes
+
+* enable optimizely ([f5a5485](https://github.com/kiva/ui/commit/f5a54855a617de6ba490cdc91a34242a09663860))
+
 ## [2.149.0-next.1](https://github.com/kiva/ui/compare/v2.148.0...v2.149.0-next.1) (2022-05-17)
 
 
