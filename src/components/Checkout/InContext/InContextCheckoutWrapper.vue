@@ -50,6 +50,7 @@
 import checkoutSettings from '@/graphql/query/checkout/checkoutSettings.graphql';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import setupBasketForUserMutation from '@/graphql/mutation/shopSetupBasketForUser.graphql';
+import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
 import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
@@ -90,7 +91,7 @@ export default {
 			redemption_credits: [],
 			showThanks: false,
 			teams: [],
-			totals: {},
+			totals: () => {},
 			transactionId: null,
 		};
 	},
@@ -114,6 +115,7 @@ export default {
 	watch: {
 		showCheckout(next) {
 			if (next) {
+				this.refreshTotals();
 				this.checkoutVisible = true;
 			}
 		}
@@ -142,6 +144,7 @@ export default {
 					return this.apollo.query({ query: initializeCheckout, fetchPolicy: 'network-only' });
 				})
 					.then(({ data }) => {
+						console.log(data);
 						// Checking if guest checkout feature is enabled in Admin settingsManager
 						this.isGuestCheckoutEnabled = data?.general?.guestCheckoutEnabled?.value === 'true';
 						// user data
@@ -183,6 +186,8 @@ export default {
 		refreshTotals(payload) {
 			// noop
 			console.log('refreshTotals payload', payload);
+			// this.initializeCheckout();
+			this.apollo.query({ query: shopBasketUpdate, fetchPolicy: 'network-only' });
 		},
 		thanksLightboxClosed() {
 			// noop
@@ -190,6 +195,9 @@ export default {
 		transactionComplete(payload) {
 			// noop
 			console.log('transactionComplete payload', payload);
+			this.transactionId = payload.transactionId;
+			this.checkoutVisible = false;
+			this.showThanks = true;
 		}
 	}
 };
