@@ -12,6 +12,9 @@
 			<h1 class="tw-mb-2">
 				Make a loan, <br class="hide-for-medium">change a life
 			</h1>
+
+			<a @click="showPersonalizationWizard()" class="tw-cursor-pointer"> Help me choose the perfect loan.</a>
+
 			<p class="page-subhead show-for-large tw-mb-4">
 				Each Kiva loan helps people build a better future for themselves and their families.
 			</p>
@@ -25,6 +28,11 @@ import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 export default {
 	components: {
 		ViewToggle,
+	},
+	data() {
+		return {
+			showedWizard: false
+		}
 	},
 	props: {
 		browseUrl: {
@@ -48,6 +56,11 @@ export default {
 			default: false,
 		},
 	},
+	methods: {
+		showPersonalizationWizard() {
+			this.showedWizard = true;
+		}
+	}
 };
 </script>
 
