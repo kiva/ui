@@ -148,7 +148,7 @@
 				/>
 			</kv-button>
 			<action-button
-				v-else
+				v-else-if="isLentTo || itemsInBasket.includes(loanId)"
 				class="action-button"
 				:amount-left="parseFloat(unreservedAmount)"
 				:disable-redirects="disableRedirects"
@@ -170,6 +170,37 @@
 
 				@add-to-basket="handleAddToBasket"
 			/>
+			<div
+				v-else
+				class="tw-flex"
+			>
+				<!-- :amount-left="parseFloat(unreservedAmount)" -->
+				<action-button
+					v-for="(value, index) in [5, 15, 25]"
+					:key="value"
+					class="action-button"
+					:class="{ 'tw-mx-1': index === 1 }"
+					:amount-left="value"
+					:disable-redirects="disableRedirects"
+					:loan-id="loanId"
+					:loan="loan"
+					:items-in-basket="itemsInBasket"
+					:is-amount-lend-button="true"
+					:is-lent-to="isLentTo"
+					:is-funded="allSharesReserved"
+					:is-expired="allSharesReserved"
+					:is-selected-by-another="allSharesReserved"
+					:is-simple-lend-button="true"
+					:minimal-checkout-button="true"
+
+					@click.native="trackInteraction({
+						interactionType: 'addToBasket',
+						interactionElement: 'Lend25'
+					})"
+
+					@add-to-basket="handleAddToBasket"
+				/>
+			</div>
 		</template>
 
 		<!-- If allSharesReserved show message and hide cta button -->

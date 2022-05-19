@@ -229,6 +229,7 @@ export default {
 		},
 		thanksLightboxClosed() {
 			// noop
+			this.showThanks = false;
 		},
 		transactionComplete(payload) {
 			// noop

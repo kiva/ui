@@ -203,6 +203,10 @@ export default {
 		handleCheckoutFailure(payload) {
 			this.$emit('checkout-failure', payload);
 		},
+		refreshTotals() {
+			this.$emit('refresh-totals');
+			this.setUpdatingTotals(false);
+		},
 		setUpdatingTotals(payload) {
 			this.updatingTotals = payload;
 		},
