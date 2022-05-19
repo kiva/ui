@@ -4,6 +4,7 @@
 			:visible="checkoutVisible"
 			@lightbox-closed="checkoutLightboxClosed"
 			title="Checkout"
+			class="tw-z-stratosphere"
 		>
 			<template #header>
 				{{ null }}
@@ -32,6 +33,7 @@
 			title="Thanks!"
 			:visible="showThanks"
 			@lightbox-closed="thanksLightboxClosed"
+			class="tw-z-stratosphere"
 		>
 			<template #header>
 				{{ null }}
@@ -221,6 +223,10 @@ export default {
 					this.activeLoginDuration = parseInt(data?.general?.activeLoginDuration?.value, 10) || 3600;
 
 					this.loadingCheckout = false;
+
+					if (this.loans.length === 0 && this.donations.length === 0) {
+						this.checkoutVisible = false;
+					}
 				});
 		},
 		thanksLightboxClosed() {

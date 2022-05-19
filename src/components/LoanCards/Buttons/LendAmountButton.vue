@@ -4,7 +4,7 @@
 		:loan-id="loanId"
 		@add-to-basket="addToBasket($event)"
 	>
-		Lend ${{ amountValue }}<span v-if="showNow"> now</span>
+		${{ amountValue }}<span v-if="showNow"> now</span>
 	</lend-button>
 </template>
 

@@ -6,6 +6,13 @@
 			:selected-channel="selectedChannel.id"
 			@handle-category-click="handleCategoryClick"
 		/>
+		<div
+			v-if="isLoading"
+			class="spinner tw-flex tw-justify-center tw-items-center"
+			style="min-height: 25rem;"
+		>
+			<kv-loading-spinner />
+		</div>
 		<kiva-classic-loan-carousel
 			:in-context-checkout="inContextCheckout"
 			:is-visible="showCarousel"
@@ -21,12 +28,14 @@ import gql from 'graphql-tag';
 import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
 import KivaClassicLoanCategorySelector from '@/components/LoanCollections/KivaClassicLoanCategorySelector';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import KvLoadingSpinner from '~/@kiva/kv-components/vue/KvLoadingSpinner';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KivaClassicLoanCarousel,
 		KivaClassicLoanCategorySelector,
+		KvLoadingSpinner,
 	},
 	props: {
 		/**
@@ -49,6 +58,7 @@ export default {
 	},
 	data() {
 		return {
+			isLoading: false,
 			loanChannelData: [],
 			selectedChannel: {},
 			showCarousel: false,
@@ -120,6 +130,7 @@ export default {
 			);
 		},
 		fetchLoanChannel() {
+			this.isLoading = true;
 			this.apollo.query({
 				query: gql`query selectedLoanCategory($loanChannelIds: [Int]!, $loanLimit: Int) {
 					lend {
@@ -149,6 +160,7 @@ export default {
 				this.selectedChannel = initialChannel;
 				// Make the carousel visible
 				this.showCarousel = true;
+				this.isLoading = false;
 			});
 		},
 	}
