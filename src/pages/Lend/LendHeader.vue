@@ -15,7 +15,7 @@
 
 			<a @click="showPersonalizationWizard()" class="tw-cursor-pointer"> Help me choose </a>
 
-			<kv-material-icon 
+			<kv-material-icon
 				:icon="mdiChevronRight" 
 			/>
 
