@@ -131,8 +131,7 @@ export default {
 		initializeCheckout() {
 			this.apollo.query({
 				query: initializeCheckout
-			}).then(response => {
-				console.log(response);
+			}).then(() => {
 				// using the prefetch function form allows us to act on data before the page loads
 				this.apollo.mutate({
 					mutation: setupBasketForUserMutation
@@ -183,10 +182,7 @@ export default {
 					});
 			});
 		},
-		refreshTotals(payload) {
-			// noop
-			console.log('refreshTotals payload', payload);
-			// this.initializeCheckout();
+		refreshTotals() {
 			this.apollo.query({ query: shopBasketUpdate, fetchPolicy: 'network-only' })
 				.then(({ data }) => {
 					console.log(data);
@@ -228,12 +224,10 @@ export default {
 				});
 		},
 		thanksLightboxClosed() {
-			// noop
 			this.showThanks = false;
+			window.location.reload(true);
 		},
 		transactionComplete(payload) {
-			// noop
-			console.log('transactionComplete payload', payload);
 			this.transactionId = payload.transactionId;
 			this.checkoutVisible = false;
 			this.showThanks = true;
