@@ -20,3 +20,4 @@ build/schema.graphql
 .config.env
 config.env
 jsconfig.json
+cypress.env.json

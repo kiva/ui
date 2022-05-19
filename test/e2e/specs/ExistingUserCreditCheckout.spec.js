@@ -2,14 +2,17 @@ describe('Existing User Checkout with Kiva Credit', () => {
 	it('Baskets a loan, proceed to checkout, log in user with credit and purchases using kiva credit', () => {
 		let beginBalance;
 		let newBalance;
+		// Cypress.env();
+		const lenderID = Cypress.env().userInfo.kivaCreditLender.userID;
+		const loginCookie = `${lenderID}:recent/active/mfa`;
 
-		// Mock log in
-		cy.setCookie('kvfa', '1003394:recent/active/mfa', 'domain=.kiva.org');
-		// go to portfolio and get current credit
+		// Mock log in as kivaquality7
+		cy.setCookie('kvfa', loginCookie, 'domain=.kiva.org');
+		// go to portfolio and get current credit for later calculations
 		cy.visit('/portfolio');
 		cy.get('.strong .kiva-green').invoke('text').then(fullText => {
-			const number = fullText.match(/[0-9]+/);
-			beginBalance = Number(number); // text to numeric
+			const number = fullText.match(/[0-9,.]+/);
+			beginBalance = parseFloat(number); // text to float
 		});
 		// Go to lend page
 		cy.visit('/lend?x');
@@ -22,33 +25,30 @@ describe('Existing User Checkout with Kiva Credit', () => {
 		cy.findAllByText('Lend $25', { timeout: 10000 }).first().click();
 		// Wait for the checkout button to exist, then click it
 		cy.findByText('Checkout now', { timeout: 10000 }).click();
-		// Wait for basket to load and check for login  button
+		// Wait for basket to load and check for complete order button
 		cy.findByText('Basket', { timeout: 5000 }).click();
-		// // Mock log in
-		// cy.setCookie('kvfa', '1003394:recent/active/mfa', 'domain=.kiva.org');
 		cy.reload();
-		// cy.get('[data-testid="login-to-continue-button"] span span', { timeout: 8000 }).should('not.exist');
-		// cy.findByText('Continue', { timeout: 8000 }).should('not.exist');
-		// click the complet order button
-		// cy.get('[data-testid="kiva-credit-payment-button"]', { timeout: 8000 }).should('be.enabled').click();
 		cy.findByText('Complete order', { timeout: 8000 }).click();
 		// wait for order confirmation page to load
-		// cy.get('.thanks-page', { timeout: 10000 }).should('exist');
 		cy.findByText('Thank you!', { timeout: 8000 });
-		// cy.findByText('Order Confirmation').click();
+		// expand the receipt section
 		cy.findByTestId('thanks-page-button-receipt').click();
+		// validate kiva credit was used and order total is correct
+		cy.findAllByTestId('payment-kiva-credit-used').first().should('to.contain', 'Kiva credit:');
 		cy.findAllByTestId('total-amount').first().should('to.contain', '$28.75');
+		// get the order total and convert it to a float for caluations
 		cy.findAllByTestId('total-amount').first().invoke('text').then(fullText => {
-			const number = fullText.match(/[0-9]+/);
-			const usedBalance = Number(number); // text to numeric
+			const number = fullText.match(/[0-9,.]+/);
+			const usedBalance = parseFloat(number); // text to float
+			// subtract order total from beginning to get new balance
 			newBalance = beginBalance - usedBalance;
 		});
-		cy.findAllByTestId('payment-kiva-credit-used').first().should('to.contain', 'Kiva credit:');
 		// return to portfolio and get new balance
 		cy.visit('/portfolio');
 		cy.get('.strong .kiva-green').invoke('text').then(fullText => {
-			const number = fullText.match(/[0-9]+/);
-			const endBalance = Number(number); // text to numeric
+			const number = fullText.match(/[0-9,.]+/);
+			const endBalance = parseFloat(number); // text to float
+			// validate that portfolio balance is equal to expected new balance
 			expect(endBalance).to.eq(newBalance);
 		});
 	});
