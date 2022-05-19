@@ -177,6 +177,7 @@
 				</div>
 			</div>
 			<campaign-verification-form
+				v-if="showVerification"
 				:form-id="externalFormId"
 				:ma-id="String(managedAccountId)"
 				:pf-id="String(promoFundId)"
@@ -190,7 +191,7 @@
 				:promo-fund-display-name="campaignPartnerName"
 				:active-credit-type="activeCreditType"
 				@credit-removed="handleCreditRemoved"
-				@promo-opt-out-lightbox-closed="handleVerificationOptOut"
+				@promo-opt-out-lightbox-closed="handleCancelPromoOptOut"
 			/>
 
 			<div v-if="emptyBasket" class="empty-basket tw-relative tw-mx-auto" data-testid="empty-basket">
@@ -464,16 +465,6 @@ export default {
 		// show toast for specified scenario
 		this.handleToast();
 		this.getPromoInformationFromBasket();
-
-		if (
-			this.isActivelyLoggedIn
-			&& this.verificationRequired
-			&& this.externalFormId
-			&& !this.verificationSubmitted
-			&& this.loans.length
-		) {
-			this.showVerification = true;
-		}
 	},
 	computed: {
 		isLoggedIn() {
@@ -722,6 +713,18 @@ export default {
 		getPromoInformationFromBasket() {
 			getPromoFromBasket(this.derivedPromoFund?.id, this.apollo).then(({ data }) => {
 				this.promoData = data?.shop?.promoCampaign;
+
+				this.$nextTick(() => {
+					if (
+						this.isActivelyLoggedIn
+						&& this.verificationRequired
+						&& this.externalFormId
+						&& !this.verificationSubmitted
+						&& this.loans.length
+					) {
+						this.showVerification = true;
+					}
+				});
 			});
 		},
 		verificationComplete() {
@@ -731,14 +734,23 @@ export default {
 			this.showVerification = false;
 			this.showVerifyRemovePromoCredit = true;
 		},
+		handleCancelPromoOptOut() {
+			this.showVerifyRemovePromoCredit = false;
+			if (
+				this.isActivelyLoggedIn
+				&& this.verificationRequired
+				&& this.externalFormId
+				&& !this.verificationSumbitted
+				&& this.loans.length
+			) {
+				this.showVerification = true;
+			}
+		},
 		handleCreditRemoved() {
 			this.showVerification = false;
 			this.$router.push(this.$route.path); // remove promo query param from url
 			this.refreshTotals();
 			this.verificationComplete();
-		},
-		handleCancelPromoOptOut() {
-			this.showVerifyRemovePromoCredit = false;
 		},
 	},
 	destroyed() {
