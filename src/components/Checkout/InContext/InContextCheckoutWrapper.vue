@@ -19,7 +19,7 @@
 				:kiva-cards="kivaCards"
 				:teams="teams"
 				:totals="totals"
-				:show-donation="false"
+				:show-donation="true"
 				:auto-redirect-to-thanks="false"
 				:promo-fund="null"
 				@transaction-complete="transactionComplete"
@@ -187,7 +187,45 @@ export default {
 			// noop
 			console.log('refreshTotals payload', payload);
 			// this.initializeCheckout();
-			this.apollo.query({ query: shopBasketUpdate, fetchPolicy: 'network-only' });
+			this.apollo.query({ query: shopBasketUpdate, fetchPolicy: 'network-only' })
+				.then(({ data }) => {
+					console.log(data);
+					// Checking if guest checkout feature is enabled in Admin settingsManager
+					this.isGuestCheckoutEnabled = data?.general?.guestCheckoutEnabled?.value === 'true';
+					// user data
+					this.myBalance = data?.my?.userAccount?.balance;
+					this.myId = data?.my?.userAccount?.id;
+					this.teams = data?.my?.lender?.teams?.values;
+					this.lastActiveLogin = data?.my?.lastLoginTimestamp ?? 0;
+					this.hasEverLoggedIn = data?.hasEverLoggedIn ?? false;
+					// basket data
+					this.totals = data?.shop?.basket?.totals ?? {};
+					this.loans = data?.shop?.basket?.items?.values.filter(
+						// eslint-disable-next-line no-underscore-dangle
+						item => item?.__typename === 'LoanReservation'
+					);
+					this.donations = data?.shop?.basket?.items?.values.filter(
+						// eslint-disable-next-line no-underscore-dangle
+						item => item?.__typename === 'Donation'
+					);
+					this.kivaCards = data?.shop?.basket?.items?.values.filter(
+						// eslint-disable-next-line no-underscore-dangle
+						item => item?.__typename === 'KivaCard'
+					);
+					this.redemption_credits = data?.shop?.basket?.items?.values.filter(
+						// eslint-disable-next-line no-underscore-dangle
+						item => item?.__typename === 'Credit' && item?.creditType === 'redemption_code'
+					);
+					this.hasFreeCredits = data?.shop?.basket?.hasFreeCredits;
+					if (this.redemption_credits.length || this.hasFreeCredits !== false) {
+						this.disableGuestCheckout();
+					}
+
+					// general data
+					this.activeLoginDuration = parseInt(data?.general?.activeLoginDuration?.value, 10) || 3600;
+
+					this.loadingCheckout = false;
+				});
 		},
 		thanksLightboxClosed() {
 			// noop
