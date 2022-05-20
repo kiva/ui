@@ -12,6 +12,13 @@
 			<h1 class="tw-mb-2">
 				Make a loan, <br class="hide-for-medium">change a life
 			</h1>
+
+			<a @click="showPersonalizationWizard()" class="tw-cursor-pointer"> Help me choose </a>
+
+			<kv-material-icon
+				:icon="mdiChevronRight" 
+			/>
+
 			<p class="page-subhead show-for-large tw-mb-4">
 				Each Kiva loan helps people build a better future for themselves and their families.
 			</p>
@@ -21,10 +28,19 @@
 
 <script>
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
+import { mdiChevronRight } from '@mdi/js';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	components: {
 		ViewToggle,
+		KvMaterialIcon,
+	},
+	data() {
+		return {
+			showedWizard: false,
+			mdiChevronRight
+		};
 	},
 	props: {
 		browseUrl: {
@@ -48,6 +64,11 @@ export default {
 			default: false,
 		},
 	},
+	methods: {
+		showPersonalizationWizard() {
+			this.showedWizard = true;
+		}
+	}
 };
 </script>
 
