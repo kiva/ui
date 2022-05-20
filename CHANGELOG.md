@@ -1,3 +1,10 @@
+### [2.154.1](https://github.com/kiva/ui/compare/v2.154.0...v2.154.1) (2022-05-20)
+
+
+### Bug Fixes
+
+* map title card name for category id 5 ([78af324](https://github.com/kiva/ui/commit/78af324515b81fcd8204636b109b81daa5efa112))
+
 ## [2.154.0](https://github.com/kiva/ui/compare/v2.153.2...v2.154.0) (2022-05-20)
 
 
