@@ -184,6 +184,7 @@ export default {
 		// TODO: consider deprecating in favor of Contentful controlled value similar to shortName
 		cleanCategoryName(categoryId) {
 			switch (categoryId) {
+				case 5:
 				case 52:
 					return 'loans to women';
 				case 96:
