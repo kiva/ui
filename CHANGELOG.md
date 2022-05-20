@@ -1,3 +1,10 @@
+### [2.154.2](https://github.com/kiva/ui/compare/v2.154.1...v2.154.2) (2022-05-20)
+
+
+### Bug Fixes
+
+* fix query param check and lbc route ([ef90cc0](https://github.com/kiva/ui/commit/ef90cc00aeeb9f3e93794906aad24d742494360a))
+
 ### [2.154.1](https://github.com/kiva/ui/compare/v2.154.0...v2.154.1) (2022-05-20)
 
 
