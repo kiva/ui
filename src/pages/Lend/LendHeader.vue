@@ -13,15 +13,13 @@
 				Make a loan, <br class="hide-for-medium">change a life
 			</h1>
 
-			<a @click="showPersonalizationWizard()" class="tw-cursor-pointer"> Help me choose </a>
-
-			<kv-material-icon
-				:icon="mdiChevronRight" 
-			/>
-
 			<p class="page-subhead show-for-large tw-mb-4">
 				Each Kiva loan helps people build a better future for themselves and their families.
 			</p>
+
+			<a @click="showPersonalizationWizard()" class="tw-cursor-pointer tw-flex">
+				<span>Help me choose</span> <kv-material-icon :icon="mdiChevronRight" />
+			</a>
 		</div>
 	</div>
 </template>
@@ -38,7 +36,6 @@ export default {
 	},
 	data() {
 		return {
-			showedWizard: false,
 			mdiChevronRight
 		};
 	},
@@ -66,7 +63,7 @@ export default {
 	},
 	methods: {
 		showPersonalizationWizard() {
-			this.showedWizard = true;
+			this.$emit('showed-wizard', true);
 		}
 	}
 };

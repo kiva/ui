@@ -9,7 +9,7 @@
 					<p class="tw-mb-4">
 						Check out this Kiva loan for food in Nicaragua.
 					</p>
-					<div>
+					<div class="tw-mb-2 tw-p-2" id="carousel_exp">
 						<kv-carousel
 							:embla-options="{
 								loop: true,
@@ -21,7 +21,7 @@
 						>
 							<template v-for="(loanId, index) in loanIds" #[`slide${index}`]>
 								<recommended-loan-card
-									class=""
+									class="tw-p-2 tw-pb-4"
 									:key="loanId"
 									:loan-id="loanId"
 									:hide-sector-data="true"
@@ -63,3 +63,21 @@ export default {
 	},
 };
 </script>
+
+<style lang="scss" scoped>
+@import 'settings';
+
+@include breakpoint(xxlarge) {
+	#carousel_exp >>> section > div:nth-child(2) {
+		display: none;
+	}
+}
+
+#carousel_exp >>> section > div:nth-child(1) {
+	column-gap: 1rem !important;
+}
+
+#carousel_exp >>> section > div:nth-child(1) > div {
+	max-width: 32% !important;
+}
+</style>

@@ -1,0 +1,15 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="46.5" y="41" width="40" height="60" rx="4" fill="#BFE5D1"/>
+<path d="M53.5 22C53.5 20.8954 54.3954 20 55.5 20H67.5C68.6046 20 69.5 20.8954 69.5 22V28H53.5V22Z" stroke="#26985D" stroke-width="4"/>
+<rect x="53.5" y="28" width="16" height="12" stroke="#26985D" stroke-width="4"/>
+<path d="M51.5 41L51.5 45.2353C51.5 47.3153 49.8153 49 47.7353 49L43.5 49" stroke="#26985D" stroke-width="4" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M79.5 49H75.2647C73.1847 49 71.5 47.3153 71.5 45.2353V41" stroke="#26985D" stroke-width="4" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M51.5 58V82" stroke="#26985D" stroke-width="4" stroke-linecap="round"/>
+<path d="M61.5 58V82" stroke="#26985D" stroke-width="4" stroke-linecap="round"/>
+<path d="M71.5 58V82" stroke="#26985D" stroke-width="4" stroke-linecap="round"/>
+<path d="M71.5 99L71.5 94.7647C71.5 92.6847 73.1847 91 75.2647 91L79.5 91" stroke="#26985D" stroke-width="4" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M43.5 91L47.7353 91C49.8153 91 51.5 92.6847 51.5 94.7647L51.5 99" stroke="#26985D" stroke-width="4" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="41.5" y="40" width="40" height="60" rx="4" stroke="#26985D" stroke-width="4"/>
+<circle cx="45.5" cy="104" r="4" stroke="#26985D" stroke-width="4"/>
+<circle cx="77.5" cy="104" r="4" stroke="#26985D" stroke-width="4"/>
+</svg>

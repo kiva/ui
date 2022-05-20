@@ -2,7 +2,9 @@
 	<www-page
 		class="lend-by-category-page"
 	>
-		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true" />
+		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true"
+			@showed-wizard="showedWizard = true"
+		/>
 
 		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan && !addBundleExp"
@@ -106,6 +108,7 @@
 
 		<m-g-lightbox />
 		<m-g-digest-lightbox v-if="showMGDigestLightbox" />
+		<personalization-wizard-lightbox :is-lightbox-visible="showedWizard" @close-lightbox="showedWizard = false" />
 	</www-page>
 </template>
 
@@ -142,6 +145,7 @@ import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketIntersti
 import ExpandableLoanCardExpanded from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardExpanded';
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
 import LoansBundleExpWrapper from '@/components/LoansByCategory/LoansBundleExpWrapper';
+import PersonalizationWizardLightbox from '@/pages/PersonalizationWizard/PersonalizationWizardLightbox';
 
 // Row Limiter
 // > This controls how may rows are loaded on the server
@@ -161,6 +165,7 @@ export default {
 		MGDigestLightbox,
 		MGLightbox,
 		LoansBundleExpWrapper,
+		PersonalizationWizardLightbox
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo() {
@@ -204,6 +209,7 @@ export default {
 			addBundleExp: false,
 			showMGDigestLightbox: false,
 			personalizedLoans: [],
+			showedWizard: false
 		};
 	},
 	computed: {

@@ -106,12 +106,22 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		hackathonTest: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	computed: {
 		causeImageSrc() {
+			if (this.hackathonTest) {
+				return imageRequire(`./${paramCase(this.cause)}.svg`);
+			}
 			return imageRequire(`./${paramCase(this.cause)}.png`);
 		},
 		causeImage2xSrc() {
+			if (this.hackathonTest) {
+				return imageRequire(`./${paramCase(this.cause)}_2x.svg`);
+			}
 			return imageRequire(`./${paramCase(this.cause)}_2x.png`);
 		},
 	},
