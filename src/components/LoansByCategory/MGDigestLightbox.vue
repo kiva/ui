@@ -63,9 +63,7 @@ export default {
 			this.$kvTrackEvent('Lending', 'close-personalized-MG-feedback', 'Close');
 		},
 		redirectExploreLoans() {
-			this.$router.push({
-				path: '/lend-by-category',
-			});
+			this.isLightboxVisible = false;
 		},
 		redirectPortfolio() {
 			this.$router.push({
