@@ -206,6 +206,14 @@ module.exports = [
 		]
 	},
 	{
+		path: '/lend-by-category/loans-to-women',
+		redirect: '/lend-by-category/women'
+	},
+	{
+		path: '/lend-by-category/loans-for-education',
+		redirect: '/lend-by-category/education'
+	},
+	{
 		path: '/lend-by-category',
 		component: () => import('@/pages/Lend/LendByCategoryPage'),
 		meta: {
