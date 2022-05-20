@@ -47,6 +47,13 @@ export default {
 	metaInfo() {
 		return {
 			title: `${this.pageTitle}`,
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: this.pageDescription,
+				}
+			],
 		};
 	},
 	components: {
@@ -86,6 +93,11 @@ export default {
 			const layoutTitle = this.page?.pageLayout?.pageTitle;
 			const pageTitle = this.page?.pageTitle ?? 'Loans that change lives';
 			return layoutTitle || pageTitle;
+		},
+		pageDescription() {
+			const layoutDescription = this.page?.pageLayout?.pageDescription;
+			const pageDescription = this.page?.pageDescription ?? undefined;
+			return layoutDescription || pageDescription;
 		},
 		heroContentGroup() {
 			return this.page?.contentGroups?.webLenderDonationHero || {};

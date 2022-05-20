@@ -177,11 +177,27 @@ export default {
 			pageError: false,
 			pageFrame: WwwPage,
 			title: undefined,
+			description: undefined,
+			canonicalUrl: undefined,
 		};
 	},
 	metaInfo() {
 		return {
 			title: this.title,
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: this.description,
+				}
+			],
+			link: [
+				{
+					vmid: 'canonical',
+					rel: 'canonical',
+					href: this.canonicalUrl,
+				}
+			],
 		};
 	},
 	apollo: {
@@ -233,9 +249,13 @@ export default {
 				this.pageError = true;
 				this.pageFrame = ErrorPage;
 			} else {
-				this.title = (pageData?.page?.pageLayout?.pageTitle || pageData?.page?.pageTitle) ?? undefined;
-				this.pageBackgroundColor = pageData?.page?.pageLayout?.pageBackgroundColor ?? '';
-				this.pageFrame = getPageFrameFromType(pageData?.page?.pageType);
+				const page = pageData?.page ?? {};
+				const pageLayout = page.pageLayout ?? {};
+				this.title = (pageLayout.pageTitle || page.pageTitle) ?? undefined;
+				this.description = (pageLayout.pageDescription || page.pageDescription) ?? undefined;
+				this.canonicalUrl = page.canonicalUrl ?? undefined;
+				this.pageBackgroundColor = pageLayout.pageBackgroundColor ?? '';
+				this.pageFrame = getPageFrameFromType(page.pageType);
 				this.contentGroups = getContentGroups(pageData);
 			}
 		}
