@@ -5,22 +5,33 @@
 		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true" />
 
 		<featured-hero-loan-wrapper
-			v-if="showFeaturedHeroLoan"
+			v-if="showFeaturedHeroLoan && !addBundleExp"
 			ref="featured"
 			:is-logged-in="isLoggedIn"
 			:items-in-basket="itemsInBasket"
 			:show-category-description="showCategoryDescription"
 		/>
 
-		<div v-if="showFavoriteCountryRow">
-			<favorite-country-loans
-				:items-in-basket="itemsInBasket"
-				ref="favoriteCountries"
-				:show-category-description="showCategoryDescription"
-				:is-logged-in="isLoggedIn"
-				:show-expandable-loan-cards="showExpandableLoanCards"
-				@scrolling-row="handleScrollingRow"
+		<div class="tw-bg-secondary tw-mb-4" v-if="addBundleExp">
+			<loans-bundle-exp-wrapper
+				:first-name="firstName"
+				:personalized-loans="personalizedLoans"
+				:recommended-loans="recommendedLoans"
 			/>
+			<div class="loan-category-row recommended-exp">
+				<component
+					:is="categoryRowType"
+					:loan-channel="recommendedObject"
+					:items-in-basket="itemsInBasket"
+					:row-number="0"
+					:set-id="categorySetId"
+					:is-logged-in="isLoggedIn"
+					:show-category-description="showCategoryDescription"
+					:show-expandable-loan-cards="showExpandableLoanCards"
+					ref="categoryRowExp"
+					@scrolling-row="handleScrollingRow"
+				/>
+			</div>
 		</div>
 
 		<div class="tw-bg-primary">
@@ -71,7 +82,7 @@
 			</div>
 		</div> -->
 
-		<add-to-basket-interstitial v-show="addToBasketExpActive" />
+		<add-to-basket-interstitial />
 
 		<expandable-loan-card-expanded
 			v-if="showExpandableLoanCards"
@@ -83,6 +94,7 @@
 		/>
 
 		<m-g-lightbox />
+		<m-g-digest-lightbox v-if="showMGDigestLightbox" />
 	</www-page>
 </template>
 
@@ -103,12 +115,14 @@ import experimentVersionFragment from '@/graphql/fragments/experimentVersion.gra
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import recommendedLoansQuery from '@/graphql/query/lendByCategory/recommendedLoans.graphql';
+import personalizedLoansQuery from '@/graphql/query/lendByCategory/personalizedLoans.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import mlOrderedLoanChannels from '@/graphql/query/lendByCategory/mlOrderedLoanChannels.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import CategoryRowHover from '@/components/LoansByCategory/CategoryRowHover';
 import FeaturedHeroLoanWrapper from '@/components/LoansByCategory/FeaturedHeroLoanWrapper';
+import MGDigestLightbox from '@/components/LoansByCategory/MGDigestLightbox';
 import MGLightbox from '@/components/LoansByCategory/MGLightbox';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LendHeader from '@/pages/Lend/LendHeader';
@@ -116,6 +130,7 @@ import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketIntersti
 import ExpandableLoanCardExpanded from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardExpanded';
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
 import { createIntersectionObserver } from '@/util/observerUtils';
+import LoansBundleExpWrapper from '@/components/LoansByCategory/LoansBundleExpWrapper';
 
 export default {
 	components: {
@@ -128,7 +143,9 @@ export default {
 		AddToBasketInterstitial,
 		ExpandableLoanCardExpanded,
 		FavoriteCountryLoans,
+		MGDigestLightbox,
 		MGLightbox,
+		LoansBundleExpWrapper,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo() {
@@ -159,14 +176,11 @@ export default {
 			rowLazyLoadComplete: false,
 			showCategoryDescription: false,
 			categoryDescriptionExperimentVersion: null,
-			addToBasketExpActive: false,
 			lendFilterExpVersion: '',
 			showExpandableLoanCards: false,
 			rightArrowPosition: undefined,
 			leftArrowPosition: undefined,
-			hasFavoriteCountry: false,
-			favoriteCountryExpVersion: 'control',
-			showHoverLoanCards: false,
+			showHoverLoanCards: true,
 			recommendedLoans: [],
 			mlServiceBanditExpVersion: null,
 			viewportObserver: null,
@@ -174,6 +188,8 @@ export default {
 			expResults: null,
 			addBundleExp: false,
 			activatedWatchers: false,
+			showMGDigestLightbox: false,
+			personalizedLoans: [],
 		};
 	},
 	computed: {
@@ -182,12 +198,18 @@ export default {
 		},
 		categories() {
 			// merge realCategories & customCategories
-			const categories = _uniqBy(this.realCategories.concat(this.customCategories, this.clientCategories), 'id');
+			const categories = _uniqBy(this.realCategories.concat(!this.addBundleExp ? this.customCategories : [],
+				this.clientCategories), 'id');
 			return categories
 				// fiter our any empty categories and categories with 0 loans
 				.filter(channel => _get(channel, 'loans.values.length') > 0)
 				// and re-order to match the setting
 				.sort(indexIn(this.categoryIds, 'id'));
+		},
+		recommendedObject() {
+			const obj = this.customCategories[0];
+			obj.name = `More Recommendations for ${this.firstName}`;
+			return obj;
 		},
 		customCategories() {
 			if (this.recommendedLoans.length) {
@@ -202,6 +224,9 @@ export default {
 						},
 						url: '',
 					};
+					if (this.addBundleExp && channel.id === 95) {
+						recChannel.name = `More Recommendations for ${this.firstName}`;
+					}
 					// return recomended loan channel with custom title and description added, if needed
 					return addCustomChannelInfo(recChannel, { id: this.userId, firstName: this.firstName });
 				});
@@ -221,12 +246,6 @@ export default {
 		},
 		leadHeaderFilterLink() {
 			return this.lendFilterExpVersion === 'b' ? '/lend/filter' : '/lend';
-		},
-		showFavoriteCountryRow() {
-			if (this.hasFavoriteCountry && this.isLoggedIn && this.favoriteCountryExpVersion === 'shown') {
-				return true;
-			}
-			return false;
 		},
 		categoryRowType() {
 			return this.showHoverLoanCards ? CategoryRowHover : CategoryRow;
@@ -255,20 +274,6 @@ export default {
 				});
 			}
 
-			// track cash 794 if shown
-			if (this.showFavoriteCountryRow) {
-				const favoriteCountryLoans = _get(this.$refs, 'favoriteCountries.favoriteCountryLoans');
-				if (favoriteCountryLoans !== undefined && favoriteCountryLoans.length > 0) {
-					_each(favoriteCountryLoans, (loan, loanIndex) => {
-						loanIds.push({
-							r: -1,
-							p: loanIndex + 1,
-							c: 99,
-							l: loan.id
-						});
-					});
-				}
-			}
 			_each(categories, (category, catIndex) => {
 				_each(category.loans.values, (loan, loanIndex) => {
 					loanIds.push({
@@ -391,51 +396,9 @@ export default {
 			this.setRightArrowPosition();
 			this.setLeftArrowPosition();
 		},
-		initializeFavoriteCountryRowExp() {
-			// experiment: CASH-794 Favorite Country Row
-			// get assignment
-			const favoriteCountryRowEXP = this.apollo.readFragment({
-				id: 'Experiment:favorite_country',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.favoriteCountryExpVersion = favoriteCountryRowEXP.version;
-			// Only track and activate if these conditions exist
-			if (this.hasFavoriteCountry
-				&& this.isLoggedIn
-				&& this.favoriteCountryExpVersion
-				&& this.favoriteCountryExpVersion !== 'unassigned'
-			) {
-				// Fire Event for Exp CASH-794
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CASH-794-June2019',
-					this.favoriteCountryExpVersion === 'shown' ? 'b' : 'a'
-				);
-			}
-		},
 		initializeHoverLoanCard() {
-			// CASH-521: Hover loan card experiment
-			const hoverLoanCardExperiment = this.apollo.readFragment({
-				id: 'Experiment:hover_loan_cards',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			if (hoverLoanCardExperiment.version === 'variant-a') {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CASH-521-Jun2019',
-					'a',
-				);
-			} else if (hoverLoanCardExperiment.version === 'variant-b') {
-				this.showHoverLoanCards = true;
-				// We shouldn't run both expandable and hover loan cards at the same time for now
-				this.showExpandableLoanCards = false;
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CASH-521-Jun2019',
-					'b',
-				);
-			}
+			// We shouldn't run both expandable and hover loan cards at the same time for now
+			this.showExpandableLoanCards = false;
 		},
 		fetchRecommendedLoans(offset = 0) {
 			const lengthCheck = this.recommendedLoans.map(channel => {
@@ -492,6 +455,30 @@ export default {
 						return [];
 					});
 					this.recommendedLoans = allRecLoans;
+				});
+			}
+			return Promise.resolve();
+		},
+		fetchPersonalizedLoans(limit = 3) {
+			// Load personalized loans data
+			const variables = {
+				limit
+			};
+			if (this.addBundleExp) {
+				return this.apollo.query({
+					query: personalizedLoansQuery,
+					variables,
+				}).then(({ data }) => {
+					const personalizedLoans = data?.fundraisingLoans?.values ?? [];
+					this.personalizedLoans = personalizedLoans;
+					const personalizedLoanIds = this.personalizedLoans.map(element => element.id);
+					this.$kvTrackEvent(
+						'Lend by category',
+						'view-loan-bundle',
+						'personalized',
+						null,
+						personalizedLoanIds.join(', ')
+					);
 				});
 			}
 			return Promise.resolve();
@@ -658,16 +645,6 @@ export default {
 				return Promise.all([
 					// experiment: GROW-330 Machine Learning Category row
 					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
-					// experiment: VUE-937 for "recommend by others" row backing algorithm
-					client.query({ query: experimentQuery, variables: { id: 'EXP-VUE-937-recommended-row-algo' } }),
-					// experiment: category description
-					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
-					// experiment: add to basket interstitial
-					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_v2' } }),
-					// experiment: // CASH-794 Favorite Country Row
-					client.query({ query: experimentQuery, variables: { id: 'favorite_country' } }),
-					// experiment: CASH-521 Hover Loan Card Experiment
-					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
 					// experiment: CORE-588 Loans bundle experiment
 					client.query({ query: experimentQuery, variables: { id: 'by_category_loan_bundles' } }),
 				]);
@@ -683,9 +660,6 @@ export default {
 		// Initialize GROW-330: Machine Learning served rows
 		this.initializeMLServiceBanditRowExp();
 
-		// Initialize VUE-937: Recommended row backing algorithm experiment
-		this.initializeRecommendedRowAlgoExp();
-
 		// Read the page data from the cache
 		let baseData = {};
 		try {
@@ -699,7 +673,6 @@ export default {
 			logReadQueryError(e, 'LendByCategory lendByCategoryQuery');
 		}
 
-		// Initialize CASH-521: Hover loan card experiment
 		this.initializeHoverLoanCard();
 
 		// Copy basic data from query into instance variables
@@ -708,9 +681,6 @@ export default {
 		this.isLoggedIn = !!_get(baseData, 'my');
 		this.userId = _get(baseData, 'my.userAccount.id') || null;
 		this.firstName = _get(baseData, 'my.userAccount.firstName') || 'you';
-
-		// CASH-794 Favorite Country Row
-		this.hasFavoriteCountry = !!_get(baseData, 'my.recommendations.topCountry');
 
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 
@@ -740,6 +710,12 @@ export default {
 				this.addToBasketExpActive ? 'b' : 'a'
 			);
 		}
+		this.apollo.mutate({
+			mutation: updateAddToBasketInterstitial,
+			variables: {
+				active: true,
+			}
+		});
 
 		const lendFilterEXP = this.apollo.readFragment({
 			id: 'Experiment:lend_filter_v2',
@@ -769,28 +745,16 @@ export default {
 		}
 
 		// Initialize CORE-588 Loan Bundle
-		this.initializeLoanBundleExperiment();
+		if (this.isLoggedIn) {
+			this.initializeLoanBundleExperiment();
+		}
 	},
 	mounted() {
 		this.fetchCategoryIds = [...this.categorySetting];
 		this.fetchLoanData();
 		// Only allow experiment when in show-for-large (>= 1024px) screen size
 		if (window.innerWidth >= 680) {
-			// CASH-658 : Experiment : Category description
-			const categoryDescriptionExperiment = this.apollo.readFragment({
-				id: 'Experiment:category_description',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			this.categoryDescriptionExperimentVersion = categoryDescriptionExperiment.version;
-
-			if (this.categoryDescriptionExperimentVersion === 'variant-a') {
-				this.showCategoryDescription = false;
-				this.$kvTrackEvent('Lending', 'EXP-CASH-658-Mar2019', 'a');
-			} else if (this.categoryDescriptionExperimentVersion === 'variant-b') {
-				this.showCategoryDescription = true;
-				this.$kvTrackEvent('Lending', 'EXP-CASH-658-Mar2019', 'b');
-			}
+			this.showCategoryDescription = true;
 		}
 
 		// CASH-676: Expandable Loan Card Experiment
@@ -801,6 +765,14 @@ export default {
 		}
 
 		this.createViewportObserver();
+		if (this.$route.query.utm_campaign === 'liked_loan') {
+			this.showMGDigestLightbox = true;
+			if (this.$route.query.utm_content === 'yes') {
+				this.$kvTrackEvent('Monthly Digest', 'loan-feedback', 'like');
+			} else if (this.$route.query.utm_content === 'no') {
+				this.$kvTrackEvent('Monthly Digest', 'loan-feedback', 'dislike');
+			}
+		}
 	},
 	beforeDestroy() {
 		if (this.showExpandableLoanCards) {
@@ -896,5 +868,9 @@ export default {
 			}
 		}
 	}
+}
+
+.recommended-exp >>> .arrow {
+	background: transparent !important;
 }
 </style>

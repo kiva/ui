@@ -1,15 +1,22 @@
 <template>
 	<div class="tw-flex">
-		<div id="mobile-menu" class="tw-rounded md:tw-hidden
-				tw-z-dropdown tw-drop-shadow tw-absolute tw-top-4 md:tw-top-0"
-		>
-			<loan-search-filter />
-		</div>
 		<div class="tw-flex tw-flex-col tw-mr-4">
 			<div class="md:tw-hidden tw-mb-3">
-				<kv-button variant="secondary">
+				<kv-button variant="secondary" @click="openLightbox">
 					Filter & Sort
 				</kv-button>
+
+				<kv-lightbox
+					:visible="isLightboxVisible"
+					variant="lightbox"
+					title="Loan filter controls"
+					@lightbox-closed="closeLightbox"
+				>
+					<template #header>
+						{{ null }}
+					</template>
+					<loan-search-filter id="filter-menu" />
+				</kv-lightbox>
 			</div>
 			<div class="tw-hidden md:tw-block">
 				<loan-search-filter />
@@ -30,7 +37,7 @@
 					:key="loan.id"
 					:loan="loan"
 					loan-card-type="ListLoanCard"
-					rounded-corners="true"
+					:rounded-corners="true"
 				/>
 			</kv-grid>
 		</div>
@@ -38,29 +45,74 @@
 </template>
 
 <script>
+import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
+import { fetchData } from '@/util/flssUtils';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		LoanCardController,
 		KvGrid,
 		KvButton,
-		LoanSearchFilter
+		LoanSearchFilter,
+		KvLightbox
 	},
 	data() {
 		return {
 			totalCount: 0,
 			loans: [],
+			zeroLoans: false,
+			isLightboxVisible: false
 		};
+	},
+	mounted() {
+		// Here we subscribe to the loanSearchState and run the loan query when it updates
+		// TODO: work some guards to prevent duplicate queries and throttling to more carefully control # of queries
+		this.apollo.watchQuery({ query: loanSearchStateQuery }).subscribe({
+			next: ({ data }) => {
+				console.log('subscribed loanSearchState', data);
+				this.runFLSSQuery(data?.loanSearchState);
+			},
+		});
+	},
+	methods: {
+		// Temporary location for some of this logic
+		// NOTICE!!! Add your new filter to flssCompatibleFilters below if it's missing
+		runFLSSQuery(loanSearchState = {}) {
+			console.log('filters into runQuery:', loanSearchState);
+			const flssCompatibleFilters = {
+				...(loanSearchState.gender && { gender: { any: loanSearchState.gender } }),
+				// countryIsoCode: { any: loanSearchState?.countryIsoCode ?? [] },
+				// sectorId: { any: loanSearchState?.sectorId ?? [] },
+			};
+			fetchData(flssCompatibleFilters, this.apollo).then(flssData => {
+				this.loans = flssData.values ?? [];
+				this.totalCount = flssData.totalCount;
+				console.log('num loans:', this.totalCount);
+				console.log('loans from runQuery()', this.loans);
+
+				if (this.totalCount === 0) {
+					this.zeroLoans = true;
+				}
+			});
+		},
+		openLightbox() {
+			this.isLightboxVisible = true;
+		},
+		closeLightbox() {
+			this.isLightboxVisible = false;
+		},
 	},
 };
 </script>
 
 <style lang="scss" scoped>
-	#mobile-menu {
+	#filter-menu {
 		width: 285px;
 	}
 </style>

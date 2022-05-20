@@ -8,7 +8,6 @@
 					:loan-channel="favoriteCountryCategory"
 					:items-in-basket="itemsInBasket"
 					:row-number="-1"
-					set-id="CASH-794-favorite-country"
 					:is-logged-in="isLoggedIn"
 					:show-category-description="showCategoryDescription"
 					:show-expandable-loan-cards="showExpandableLoanCards"
