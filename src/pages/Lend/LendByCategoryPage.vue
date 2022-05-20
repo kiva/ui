@@ -5,12 +5,34 @@
 		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true" />
 
 		<featured-hero-loan-wrapper
-			v-if="showFeaturedHeroLoan"
+			v-if="showFeaturedHeroLoan && !addBundleExp"
 			ref="featured"
 			:is-logged-in="isLoggedIn"
 			:items-in-basket="itemsInBasket"
 			:show-category-description="showCategoryDescription"
 		/>
+
+		<div class="tw-bg-secondary tw-mb-4" v-if="addBundleExp">
+			<loans-bundle-exp-wrapper
+				:first-name="firstName"
+				:personalized-loans="personalizedLoans"
+				:recommended-loans="recommendedLoans"
+			/>
+			<div class="loan-category-row recommended-exp">
+				<component
+					:is="categoryRowType"
+					:loan-channel="recommendedObject"
+					:items-in-basket="itemsInBasket"
+					:row-number="0"
+					:set-id="categorySetId"
+					:is-logged-in="isLoggedIn"
+					:show-category-description="showCategoryDescription"
+					:show-expandable-loan-cards="showExpandableLoanCards"
+					ref="categoryRowExp"
+					@scrolling-row="handleScrollingRow"
+				/>
+			</div>
+		</div>
 
 		<div class="tw-bg-primary">
 			<div
@@ -72,6 +94,7 @@
 		/>
 
 		<m-g-lightbox />
+		<m-g-digest-lightbox v-if="showMGDigestLightbox" />
 	</www-page>
 </template>
 
@@ -93,18 +116,21 @@ import experimentVersionFragment from '@/graphql/fragments/experimentVersion.gra
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import recommendedLoansQuery from '@/graphql/query/lendByCategory/recommendedLoans.graphql';
+import personalizedLoansQuery from '@/graphql/query/lendByCategory/personalizedLoans.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import mlOrderedLoanChannels from '@/graphql/query/lendByCategory/mlOrderedLoanChannels.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import CategoryRowHover from '@/components/LoansByCategory/CategoryRowHover';
 import FeaturedHeroLoanWrapper from '@/components/LoansByCategory/FeaturedHeroLoanWrapper';
+import MGDigestLightbox from '@/components/LoansByCategory/MGDigestLightbox';
 import MGLightbox from '@/components/LoansByCategory/MGLightbox';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import ExpandableLoanCardExpanded from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardExpanded';
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
+import LoansBundleExpWrapper from '@/components/LoansByCategory/LoansBundleExpWrapper';
 
 // Row Limiter
 // > This controls how may rows are loaded on the server
@@ -121,7 +147,9 @@ export default {
 		AddToBasketInterstitial,
 		ExpandableLoanCardExpanded,
 		FavoriteCountryLoans,
+		MGDigestLightbox,
 		MGLightbox,
+		LoansBundleExpWrapper,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo() {
@@ -159,6 +187,9 @@ export default {
 			showHoverLoanCards: true,
 			recommendedLoans: [],
 			mlServiceBanditExpVersion: null,
+			addBundleExp: false,
+			showMGDigestLightbox: false,
+			personalizedLoans: [],
 		};
 	},
 	computed: {
@@ -167,12 +198,18 @@ export default {
 		},
 		categories() {
 			// merge realCategories & customCategories
-			const categories = _uniqBy(this.realCategories.concat(this.customCategories, this.clientCategories), 'id');
+			const categories = _uniqBy(this.realCategories.concat(!this.addBundleExp ? this.customCategories : [],
+				this.clientCategories), 'id');
 			return categories
 				// fiter our any empty categories and categories with 0 loans
 				.filter(channel => _get(channel, 'loans.values.length') > 0)
 				// and re-order to match the setting
 				.sort(indexIn(this.categoryIds, 'id'));
+		},
+		recommendedObject() {
+			const obj = this.customCategories[0];
+			obj.name = `More Recommendations for ${this.firstName}`;
+			return obj;
 		},
 		customCategories() {
 			if (this.recommendedLoans.length) {
@@ -187,6 +224,9 @@ export default {
 						},
 						url: '',
 					};
+					if (this.addBundleExp && channel.id === 95) {
+						recChannel.name = `More Recommendations for ${this.firstName}`;
+					}
 					// return recomended loan channel with custom title and description added, if needed
 					return addCustomChannelInfo(recChannel, { id: this.userId, firstName: this.firstName });
 				});
@@ -443,6 +483,30 @@ export default {
 			}
 			return Promise.resolve();
 		},
+		fetchPersonalizedLoans(limit = 3) {
+			// Load personalized loans data
+			const variables = {
+				limit
+			};
+			if (this.addBundleExp) {
+				return this.apollo.query({
+					query: personalizedLoansQuery,
+					variables,
+				}).then(({ data }) => {
+					const personalizedLoans = data?.fundraisingLoans?.values ?? [];
+					this.personalizedLoans = personalizedLoans;
+					const personalizedLoanIds = this.personalizedLoans.map(element => element.id);
+					this.$kvTrackEvent(
+						'Lend by category',
+						'view-loan-bundle',
+						'personalized',
+						null,
+						personalizedLoanIds.join(', ')
+					);
+				});
+			}
+			return Promise.resolve();
+		},
 		initializeMLServiceBanditRowExp() {
 			// experiment: GROW-330 by MultiArmed Bandit algorithm experiment
 			// get assignment
@@ -463,6 +527,23 @@ export default {
 				);
 			}
 		},
+		initializeLoanBundleExperiment() {
+			const layoutEXP = this.apollo.readFragment({
+				id: 'Experiment:by_category_loan_bundles',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			if (layoutEXP.version) {
+				if (layoutEXP.version === 'b') {
+					this.addBundleExp = true;
+				}
+				this.$kvTrackEvent(
+					'Lend by category',
+					'EXP-CORE-588-May-2022',
+					layoutEXP.version
+				);
+			}
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -477,6 +558,8 @@ export default {
 				return Promise.all([
 					// experiment: GROW-330 Machine Learning Category row
 					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
+					// experiment: CORE-588 Loans bundle experiment
+					client.query({ query: experimentQuery, variables: { id: 'by_category_loan_bundles' } }),
 				]);
 			}).then(expAssignments => {
 				expResults = expAssignments;
@@ -609,11 +692,17 @@ export default {
 				'b',
 			);
 		}
+
+		// Initialize CORE-588 Loan Bundle
+		if (this.isLoggedIn) {
+			this.initializeLoanBundleExperiment();
+		}
 	},
 	mounted() {
 		Promise.all([
 			this.fetchRemainingLoanChannels(),
-			this.fetchRecommendedLoans(20)
+			this.fetchRecommendedLoans(20),
+			this.fetchPersonalizedLoans()
 		]).then(() => {
 			this.rowLazyLoadComplete = true;
 
@@ -632,6 +721,15 @@ export default {
 			window.addEventListener('resize', this.handleResize);
 			this.setRightArrowPosition();
 			this.setLeftArrowPosition();
+		}
+
+		if (this.$route.query.utm_campaign === 'liked_loan') {
+			this.showMGDigestLightbox = true;
+			if (this.$route.query.utm_content === 'yes') {
+				this.$kvTrackEvent('Monthly Digest', 'loan-feedback', 'like');
+			} else if (this.$route.query.utm_content === 'no') {
+				this.$kvTrackEvent('Monthly Digest', 'loan-feedback', 'dislike');
+			}
 		}
 	},
 	beforeDestroy() {
@@ -727,5 +825,9 @@ export default {
 			}
 		}
 	}
+}
+
+.recommended-exp >>> .arrow {
+	background: transparent !important;
 }
 </style>

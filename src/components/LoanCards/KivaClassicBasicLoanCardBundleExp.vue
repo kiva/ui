@@ -75,13 +75,14 @@
 				:borrower-count="loan.borrowerCount"
 				:show-learn-more="false"
 			/>
+
 			<a
-				:href="`/lend/${loanId}`"
-				target="_blank"
-				v-kv-track-event="['Lending', 'click-read-more-loan-bundle-cta', 'Read more', loanId]"
-				class="tw-inline"
+				@click="handleReadMoreLink(loan)"
+				v-kv-track-event="['Lending', 'click-read-more-loan-bundle-cta',
+					isPersonalized ? 'Read more - personalized' : 'Read more', loanId]"
+				class="tw-inline tw-cursor-pointer"
 			>
-				Read more
+				More
 			</a>
 		</div>
 	</div>
@@ -109,25 +110,56 @@ const loanQuery = gql`query kcBasicLoanCard($loanId: Int!) {
 			id
 			distributionModel
 			geocode {
-				city
-				state
-				country {
-					name
+			city
+			country {
 					isoCode
+					name
+					region
 				}
+			}
+			name
+			use
+			activity {
+				id
+				name
+			}
+			sector {
+				id
+				name
+			}
+			status
+			borrowerCount
+			whySpecial
+			lenderRepaymentTerm
+			loanAmount
+			minNoteSize
+			loanFundraisingInfo {
+				fundedAmount
+				reservedAmount
+				isExpiringSoon
+			}
+			plannedExpirationDate
+			matchingText
+			matchRatio
+			userProperties {
+				favorited
+				lentTo
+			}
+			lenders(limit: 0) {
+				totalCount
+			}
+			... on LoanPartner {
+				partnerName
+			}
+			...on LoanDirect {
+				trusteeName
 			}
 			image {
 				id
+				default: url(customSize: "w480h300")
+				retina: url(customSize: "w960h600")
 				hash
 			}
-			name
-
-			# for loan-use-mixin
-			use
-			status
-			loanAmount
-			borrowerCount
-
 		}
 	}
 }`;
@@ -137,7 +169,15 @@ export default {
 		loanId: {
 			type: Number,
 			required: true,
-		}
+		},
+		readMoreLink: {
+			type: Function,
+			default: () => {},
+		},
+		isPersonalized: {
+			type: Boolean,
+			default: false
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],
@@ -214,6 +254,17 @@ export default {
 		},
 	},
 	methods: {
+		handleReadMoreLink(event) {
+			this.$emit('read-more-link', event);
+			if (this.disableLink) {
+				event.preventDefault();
+				return;
+			}
+			this.$emit('track-loan-card-interaction', {
+				interactionType: 'viewBorrowerPage',
+				interactionElement: 'readMore'
+			});
+		},
 		createViewportObserver() {
 			// Watch for this element being in the viewport
 			this.viewportObserver = createIntersectionObserver({

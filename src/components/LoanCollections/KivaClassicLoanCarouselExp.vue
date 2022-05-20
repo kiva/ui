@@ -29,6 +29,8 @@
 					:item-index="index"
 					:key="`loan-bundle-${loanId}`"
 					:loan-id="loanId"
+					@read-more-link="getLoanDetails"
+					:is-personalized="isPersonalized"
 				/>
 				<kiva-classic-basic-loan-card-exp
 					v-else
@@ -87,12 +89,21 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		isPersonalized: {
+			type: Boolean,
+			default: false
+		},
+		getDetailedLoan: {
+			type: Function,
+			default: () => {}
+		}
 	},
 	data() {
 		return {
 			name: '',
 			id: 0,
 			url: '',
+			detailedLoan: null,
 		};
 	},
 	computed: {
@@ -131,6 +142,9 @@ export default {
 		// TODO: Review all tracking cateogries
 		onInteractCarousel(interaction) {
 			this.$kvTrackEvent('carousel', 'click-carousel-horizontal-scroll', interaction);
+		},
+		getLoanDetails(event) {
+			this.$emit('get-detailed-loan', event);
 		},
 	},
 };

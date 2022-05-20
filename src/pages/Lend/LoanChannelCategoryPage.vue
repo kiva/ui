@@ -7,7 +7,6 @@
 			v-if="pageLayout === 'control'"
 			:add-bundles-exp="addBundlesExp"
 		/>
-		<loan-channel-category-experiment v-if="pageLayout === 'experiment'" />
 
 		<add-to-basket-interstitial />
 	</www-page>
@@ -20,16 +19,11 @@ import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketI
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import LoanChannelCategoryControl from '@/pages/Lend/LoanChannelCategoryControl';
-import LoanChannelCategoryExperiment from '@/pages/Lend/LoanChannelCategoryExperiment';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 const pageQuery = gql`
 	query LoanChannelCategoryPageExperiments {
 		general {
-			lbcLayout: uiExperimentSetting(key: "lend_by_category_v2") {
-				key
-				value
-			}
 			bundlesLayout: uiExperimentSetting(key: "category_loan_bundles") {
 				key
 				value
@@ -77,7 +71,6 @@ export default {
 	components: {
 		AddToBasketInterstitial,
 		LoanChannelCategoryControl,
-		LoanChannelCategoryExperiment,
 		WwwPage,
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -97,7 +90,6 @@ export default {
 				query: pageQuery
 			}).then(() => {
 				return Promise.all([
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'lend_by_category_v2' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'category_loan_bundles' } }),
 				]);
 			});
@@ -110,8 +102,6 @@ export default {
 
 		// Add to Basket Interstitial
 		this.initializeAddToBasketInterstitial();
-		// Experimental page layout
-		this.initializeExperimentalLayout();
 		// Loan Bundles Experiment
 		this.initializeLoanBundleExperiment();
 	},
@@ -145,26 +135,6 @@ export default {
 					active: true,
 				}
 			});
-		},
-		initializeExperimentalLayout() {
-			const layoutEXP = this.apollo.readFragment({
-				id: 'Experiment:lend_by_category_v2',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			// Only certain categories are eligible for the experiment
-			if (this.testCategories.includes(this.targetedLoanChannel)) {
-				this.pageLayout = layoutEXP.version === 'shown' ? 'experiment' : 'control';
-
-				// Fire Event for Exp ACK-247 Status
-				if (layoutEXP.version && layoutEXP.version !== 'unassigned') {
-					this.$kvTrackEvent(
-						'lend-by-category',
-						'EXP-ACK-247-Mar2022',
-						layoutEXP.version === 'shown' ? 'b' : 'a'
-					);
-				}
-			}
 		},
 		initializeLoanBundleExperiment() {
 			const layoutEXP = this.apollo.readFragment({

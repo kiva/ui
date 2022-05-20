@@ -33,12 +33,14 @@
 		:row-number="rowNumber"
 		:right-arrow-position="rightArrowPosition"
 		:left-arrow-position="leftArrowPosition"
+		:rounded-corners="roundedCorners"
 
 		:detailed-loan-index="detailedLoanIndex"
 		:hover-loan-index="hoverLoanIndex"
 		:shift-increment="shiftIncrement"
 		:time-left-message="timeLeftMessage"
 		:prevent-updating-detailed-card="preventUpdatingDetailedCard"
+		:hide-lend-cta="hideLendCta"
 
 		@update-detailed-loan-index="updateDetailedLoanIndex"
 		@update-hover-loan-index="updateHoverLoanIndex"
@@ -149,6 +151,10 @@ export default {
 			type: Number,
 			default: undefined,
 		},
+		roundedCorners: {
+			type: Boolean,
+			default: false
+		},
 		detailedLoanIndex: {
 			type: Number,
 			default: null,
@@ -169,6 +175,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		hideLendCta: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	inject: ['apollo'],
 	computed: {

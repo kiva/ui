@@ -34,6 +34,7 @@ extend type Mutation {
 	autolending: AutolendingMutation
 	showVerificationLightbox: Boolean
 	closeVerificationLightbox: Boolean
+	updateLoanSearch(searchParams: JSONObject): LoanSearchState
 }
 
 extend type Query {
@@ -45,6 +46,7 @@ extend type Query {
 	autolending: Autolending
 	verificationLightbox: VerificationLightbox
 	hasEverLoggedIn: Boolean
+	loanSearchState: LoanSearchState
 }
 
 extend type My {
@@ -54,19 +56,31 @@ extend type My {
 extend interface LoanBasic {
 	fundraisingPercent: Float!
 	fundraisingTimeLeft: String!
+	fundraisingTimeLeftMilliseconds: String!
 	unreservedAmount: Money!
 }
 
 extend type LoanPartner {
 	fundraisingPercent: Float!
 	fundraisingTimeLeft: String!
+	fundraisingTimeLeftMilliseconds: String!
 	unreservedAmount: Money!
 }
 
 extend type LoanDirect {
 	fundraisingPercent: Float!
 	fundraisingTimeLeft: String!
+	fundraisingTimeLeftMilliseconds: String!
 	unreservedAmount: Money!
+}
+
+type LoanSearchState {
+	id: String
+	gender: String
+	countryIsoCode: [Int]
+	sectorId: [Int]
+	sortBy: String
+	theme: [String]
 }
 
 type TipMessage {
