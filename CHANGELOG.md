@@ -1,3 +1,20 @@
+## [2.154.0](https://github.com/kiva/ui/compare/v2.153.2...v2.154.0) (2022-05-20)
+
+
+### Features
+
+* added redirects for women and education pages ([9e10d49](https://github.com/kiva/ui/commit/9e10d4980d9b9bd4cdbea96c8b00bc92779643b8))
+* set page meta description and canonical url from contentful MARS-114 ([6d8ae3b](https://github.com/kiva/ui/commit/6d8ae3bc8e182e082b044c9fd9f4f68e4f3a6fd2))
+
+
+### Bug Fixes
+
+* fixed linting issues ([8e69a35](https://github.com/kiva/ui/commit/8e69a358b72e0012b70ea73a28f6f996a62c0044))
+* re-establish service bandit experiment query ([f7a10bf](https://github.com/kiva/ui/commit/f7a10bfc2efada886491aa37027ddbb170f9f394))
+* remove experimentAssigment query ([09248f8](https://github.com/kiva/ui/commit/09248f8053927db8624acb3c179befa57de82e5a))
+* restore Ml bandit algo experiment ([de881a3](https://github.com/kiva/ui/commit/de881a368f9d6a34cf12d6bb2d8a92cc7cb7f855))
+* small adjustment on routes ([2b50a6e](https://github.com/kiva/ui/commit/2b50a6e70173f947d0e229094c37f518f8312a8d))
+
 ### [2.153.2](https://github.com/kiva/ui/compare/v2.153.1...v2.153.2) (2022-05-19)
 
 
