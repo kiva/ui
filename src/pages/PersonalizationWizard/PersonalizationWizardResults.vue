@@ -53,7 +53,7 @@ export default {
 	props: {
 		loanIds: {
 			type: Array,
-			default() { return [2370373, 2373062, 2370587]; },
+			default() { return [2370373, 2373062, 2370587, 2373377, 2367870]; },
 		}
 	},
 	data() {

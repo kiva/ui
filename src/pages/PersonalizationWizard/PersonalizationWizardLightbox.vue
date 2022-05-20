@@ -7,7 +7,7 @@
 		<div>
 			<div class="tw-flex tw-gap-2" v-show="step == 1" style="min-height: 530px;">
 				<div class="tw-w-1/2 tw-flex tw-items-center">
-					<h3 class="tw-text-h3">
+					<h3 class="tw-text-base">
 						Do you want to help others locally or internationally?
 					</h3>
 				</div>
@@ -25,7 +25,7 @@
 			</div>
 			<div class="tw-flex tw-gap-2" v-show="step == 2" style="min-height: 530px;">
 				<div class="tw-w-1/2 tw-flex tw-items-center">
-					<h3 class="tw-text-h3">
+					<h3 class="tw-text-base">
 						Which of these areas are you most passionate about?
 					</h3>
 				</div>
@@ -42,7 +42,7 @@
 			</div>
 			<div class="tw-flex tw-gap-2" v-show="step == 3" style="min-height: 530px;">
 				<div class="tw-w-1/2 tw-flex tw-items-center">
-					<h3 class="tw-text-h3">
+					<h3 class="tw-text-base">
 						How much are you interested in lending?
 					</h3>
 				</div>
