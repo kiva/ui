@@ -8,7 +8,7 @@
 			:add-bundles-exp="addBundlesExp"
 		/>
 
-		<add-to-basket-interstitial v-show="addToBasketExpActive" />
+		<add-to-basket-interstitial />
 	</www-page>
 </template>
 
@@ -24,10 +24,6 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 const pageQuery = gql`
 	query LoanChannelCategoryPageExperiments {
 		general {
-			addToBasketPopup: uiExperimentSetting(key: "add_to_basket_v2") {
-				key
-				value
-			}
 			bundlesLayout: uiExperimentSetting(key: "category_loan_bundles") {
 				key
 				value
@@ -80,7 +76,6 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
-			addToBasketExpActive: false,
 			pageLayout: 'control',
 			addBundlesExp: false,
 			meta: {
@@ -95,7 +90,6 @@ export default {
 				query: pageQuery
 			}).then(() => {
 				return Promise.all([
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'add_to_basket_v2' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'category_loan_bundles' } }),
 				]);
 			});
@@ -135,29 +129,12 @@ export default {
 	},
 	methods: {
 		initializeAddToBasketInterstitial() {
-			// get assignment for add to basket interstitial
-			const addToBasketPopupEXP = this.apollo.readFragment({
-				id: 'Experiment:add_to_basket_v2',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.addToBasketExpActive = addToBasketPopupEXP.version === 'shown';
-			// Update @client state if interstitial exp is active
-			if (this.addToBasketExpActive) {
-				this.apollo.mutate({
-					mutation: updateAddToBasketInterstitial,
-					variables: {
-						active: true,
-					}
-				});
-			}
-			// Fire Event for Exp CASH-612 Status
-			if (addToBasketPopupEXP.version && addToBasketPopupEXP.version !== 'unassigned') {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CASH-612-Apr2019',
-					this.addToBasketExpActive ? 'b' : 'a'
-				);
-			}
+			this.apollo.mutate({
+				mutation: updateAddToBasketInterstitial,
+				variables: {
+					active: true,
+				}
+			});
 		},
 		initializeLoanBundleExperiment() {
 			const layoutEXP = this.apollo.readFragment({

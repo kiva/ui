@@ -4,27 +4,7 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
-		categoryDescriptionExperiment: uiExperimentSetting(key: "category_description") {
-			key
-			value
-		}
-		addToBasketPopup: uiExperimentSetting(key: "add_to_basket_v2") {
-			key
-			value
-		}
-		favoriteCountryRow: uiExperimentSetting(key: "favorite_country") {
-			key
-			value
-		}
 		mlServiceBandit: uiExperimentSetting(key: "EXP-ML-Service-Bandit-LendByCategory") {
-			key
-			value
-		}
-		mlRecommendedRowAlgo: uiExperimentSetting(key: "EXP-VUE-937-recommended-row-algo") {
-			key
-			value
-		}
-		hoverLoanCards: uiExperimentSetting(key: "hover_loan_cards") {
 			key
 			value
 		}
