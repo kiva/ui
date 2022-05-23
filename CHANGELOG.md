@@ -1,3 +1,131 @@
+### [2.154.2](https://github.com/kiva/ui/compare/v2.154.1...v2.154.2) (2022-05-20)
+
+
+### Bug Fixes
+
+* fix query param check and lbc route ([ef90cc0](https://github.com/kiva/ui/commit/ef90cc00aeeb9f3e93794906aad24d742494360a))
+
+### [2.154.1](https://github.com/kiva/ui/compare/v2.154.0...v2.154.1) (2022-05-20)
+
+
+### Bug Fixes
+
+* map title card name for category id 5 ([78af324](https://github.com/kiva/ui/commit/78af324515b81fcd8204636b109b81daa5efa112))
+
+## [2.154.0](https://github.com/kiva/ui/compare/v2.153.2...v2.154.0) (2022-05-20)
+
+
+### Features
+
+* added redirects for women and education pages ([9e10d49](https://github.com/kiva/ui/commit/9e10d4980d9b9bd4cdbea96c8b00bc92779643b8))
+* set page meta description and canonical url from contentful MARS-114 ([6d8ae3b](https://github.com/kiva/ui/commit/6d8ae3bc8e182e082b044c9fd9f4f68e4f3a6fd2))
+
+
+### Bug Fixes
+
+* fixed linting issues ([8e69a35](https://github.com/kiva/ui/commit/8e69a358b72e0012b70ea73a28f6f996a62c0044))
+* re-establish service bandit experiment query ([f7a10bf](https://github.com/kiva/ui/commit/f7a10bfc2efada886491aa37027ddbb170f9f394))
+* remove experimentAssigment query ([09248f8](https://github.com/kiva/ui/commit/09248f8053927db8624acb3c179befa57de82e5a))
+* restore Ml bandit algo experiment ([de881a3](https://github.com/kiva/ui/commit/de881a368f9d6a34cf12d6bb2d8a92cc7cb7f855))
+* small adjustment on routes ([2b50a6e](https://github.com/kiva/ui/commit/2b50a6e70173f947d0e229094c37f518f8312a8d))
+
+### [2.153.2](https://github.com/kiva/ui/compare/v2.153.1...v2.153.2) (2022-05-19)
+
+
+### Bug Fixes
+
+* fix kiva classic checkout promos ([6881ac9](https://github.com/kiva/ui/commit/6881ac9dadc818f38549d3fe588ee6cd2ec19193))
+
+### [2.153.1](https://github.com/kiva/ui/compare/v2.153.0...v2.153.1) (2022-05-19)
+
+
+### Bug Fixes
+
+* update variable name ([0abddaf](https://github.com/kiva/ui/commit/0abddaf5b79df3aa4f866257444b7c0cca21776d))
+
+## [2.153.0](https://github.com/kiva/ui/compare/v2.152.1...v2.153.0) (2022-05-19)
+
+
+### Features
+
+* wrong message was removed in MG thanks page ([ed31d79](https://github.com/kiva/ui/commit/ed31d7917c10c95f640cf0186b39320d0a2314ac))
+
+### [2.152.1](https://github.com/kiva/ui/compare/v2.152.0...v2.152.1) (2022-05-18)
+
+
+### Bug Fixes
+
+* ensure redemption code amount is shown in the list ([d07bb8f](https://github.com/kiva/ui/commit/d07bb8f7e9a59266c4f4bcabdf63790d33a8a93c))
+
+## [2.152.0](https://github.com/kiva/ui/compare/v2.151.0...v2.152.0) (2022-05-18)
+
+
+### Features
+
+* add tracking and fix lightbox ([dec1fe8](https://github.com/kiva/ui/commit/dec1fe80a9f64aae3667f11847e3b432d1b294b3))
+* implement mg digest lightbox ([34b9023](https://github.com/kiva/ui/commit/34b902347b6957f3908eb8a8300e4e86722dbe7a))
+
+
+### Bug Fixes
+
+* lint error ([5dc93c4](https://github.com/kiva/ui/commit/5dc93c4d2b11d374864ac5ddc5b4783ccf712742))
+* merge conflict fix ([af223f7](https://github.com/kiva/ui/commit/af223f79b2a141482409323801670a4be377fb26))
+* remove comments ([4bcfda1](https://github.com/kiva/ui/commit/4bcfda1966e9800bbb7bf1b0677ad4f3be96d8c3))
+* some styling to match figma ([b076391](https://github.com/kiva/ui/commit/b076391f1033c20b9d9364e7086f948fe2aa3a5e))
+
+## [2.151.0](https://github.com/kiva/ui/compare/v2.150.1...v2.151.0) (2022-05-18)
+
+
+### Features
+
+* dynamic amount was added to loan bundle wrapper ([7426f9f](https://github.com/kiva/ui/commit/7426f9f9c0197ecda1665896371f2a2fc50dc956))
+* loans bundle experiment was added to lbc page ([eb78469](https://github.com/kiva/ui/commit/eb78469dd7eb6b8141c7cad4c061c053c5043199))
+
+### [2.150.1](https://github.com/kiva/ui/compare/v2.150.0...v2.150.1) (2022-05-17)
+
+
+### Bug Fixes
+
+* remove legacy redirect for promo code state when adding a promo code in new checkout ([ed076c5](https://github.com/kiva/ui/commit/ed076c5b0f28e3be60054d94820a2d55db99e73c))
+* remove redirect to legacy lightbox + associated methods ([589a3ab](https://github.com/kiva/ui/commit/589a3abe75da2d4c34c0fdc806dd1c91ba4d15f0))
+
+## [2.150.0](https://github.com/kiva/ui/compare/v2.149.0...v2.150.0) (2022-05-17)
+
+
+### Features
+
+* add verify remove promo credit lightbox ([21c32a6](https://github.com/kiva/ui/commit/21c32a693c7a63c4df075ac80d83ca391bfc6c5f))
+* implement campaign verif form on checkout ([b5d727b](https://github.com/kiva/ui/commit/b5d727b9bbbfa842810878775cdddf443cfd97ea))
+
+
+### Bug Fixes
+
+* remove console log ([87cd349](https://github.com/kiva/ui/commit/87cd349f618b008abd8834430edd378e0749bcb2))
+
+## [2.149.0](https://github.com/kiva/ui/compare/v2.148.0...v2.149.0) (2022-05-17)
+
+
+### Features
+
+* removed header experiment code ([5914e03](https://github.com/kiva/ui/commit/5914e031bacc770fcba4913d2f26d27d1ffb7119))
+
+
+### Bug Fixes
+
+* linting issues ([6a749c8](https://github.com/kiva/ui/commit/6a749c86285062a1adead7938209fdf48a20a506))
+* more code removed ([1514a83](https://github.com/kiva/ui/commit/1514a832fc0c976d0d07e0e6811c0fa58bb58db4))
+* remove more refereces to experiment code ([92fdecf](https://github.com/kiva/ui/commit/92fdecf8f08163ba81dc781475f4187b547ae543))
+* removed more code related to experiment ([d4b0181](https://github.com/kiva/ui/commit/d4b0181b5f666fe9c9f5bf72e0f5e56834a9c9cf))
+* restored track event ([4f9868d](https://github.com/kiva/ui/commit/4f9868d52d44f04e759f33016d7ab7d7e0c48cc4))
+* small adjustment ([67a41e4](https://github.com/kiva/ui/commit/67a41e46ac46a7188438b69b4614e19090b69e94))
+
+## [2.148.0](https://github.com/kiva/ui/compare/v2.147.0...v2.148.0) (2022-05-17)
+
+
+### Features
+
+* connected gender filter to new apollo cache ([127432b](https://github.com/kiva/ui/commit/127432ba508e95c6b9f04d43a2b2d10c2749228c))
+
 ## [2.147.0](https://github.com/kiva/ui/compare/v2.146.0...v2.147.0) (2022-05-17)
 
 

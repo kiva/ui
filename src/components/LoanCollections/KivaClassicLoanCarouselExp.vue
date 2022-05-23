@@ -30,6 +30,7 @@
 					:key="`loan-bundle-${loanId}`"
 					:loan-id="loanId"
 					@read-more-link="getLoanDetails"
+					:is-personalized="isPersonalized"
 				/>
 				<kiva-classic-basic-loan-card-exp
 					v-else
@@ -85,6 +86,10 @@ export default {
 			default: false
 		},
 		isBundle: {
+			type: Boolean,
+			default: false
+		},
+		isPersonalized: {
 			type: Boolean,
 			default: false
 		},
