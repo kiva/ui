@@ -13,6 +13,7 @@ const emptyComponent = {
 
 describe('TheHeader', () => {
 	it('should display a search area', async () => {
+		const user = userEvent.setup();
 		const { queryByPlaceholderText } = render(
 			TheHeader,
 			{
@@ -41,7 +42,7 @@ describe('TheHeader', () => {
 
 		// Expect the search bar to exist and be focused on click
 		const searchBar = queryByPlaceholderText('Search all loans');
-		await userEvent.click(searchBar);
+		await user.click(searchBar);
 		expect(searchBar).toBe(document.activeElement);
 	});
 });
