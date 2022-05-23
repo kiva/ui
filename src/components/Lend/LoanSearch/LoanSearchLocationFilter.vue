@@ -39,7 +39,7 @@ import { getIsoCodes } from '@/util/loanSearchUtils';
  * @param {Object} item The region/country item for generating the label
  * @returns {string} The item label
  */
-export const getLabel = item => `${item.region || item.name} (${item.numLoansFundraising})`;
+export const getLabel = item => `${item.name || item.region} (${item.numLoansFundraising})`;
 
 export default {
 	components: {
