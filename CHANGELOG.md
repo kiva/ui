@@ -1,3 +1,10 @@
+### [2.155.1](https://github.com/kiva/ui/compare/v2.155.0...v2.155.1) (2022-05-23)
+
+
+### Bug Fixes
+
+* country name was showing region name after refactor ([64558c8](https://github.com/kiva/ui/commit/64558c8868618c979961a60e430661df8adc3b79))
+
 ## [2.155.0](https://github.com/kiva/ui/compare/v2.154.2...v2.155.0) (2022-05-23)
 
 
