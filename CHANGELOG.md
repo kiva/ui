@@ -1,3 +1,15 @@
+## [2.155.0](https://github.com/kiva/ui/compare/v2.154.2...v2.155.0) (2022-05-23)
+
+
+### Features
+
+* implemented loan search location filter and generic checkbox list ([5041501](https://github.com/kiva/ui/commit/5041501e67d26a1ab8573fc5f75f83edeecdc010))
+
+
+### Bug Fixes
+
+* updated userEvent usage in other unit tests ([af5ea5c](https://github.com/kiva/ui/commit/af5ea5c6fb052e99741e6217b4f5f771dbf1912e))
+
 ### [2.154.2](https://github.com/kiva/ui/compare/v2.154.1...v2.154.2) (2022-05-20)
 
 
