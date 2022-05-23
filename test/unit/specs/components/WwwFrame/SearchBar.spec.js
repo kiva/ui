@@ -37,13 +37,14 @@ function renderSearchBar(apollo = getMockApollo()) {
 
 describe('SearchBar', () => {
 	it('should fetch suggestions when it gains focus', async () => {
+		const user = userEvent.setup();
 		const apollo = getMockApollo();
 		const { getByPlaceholderText } = renderSearchBar(apollo);
 
 		const input = getByPlaceholderText('Search all loans');
-		await userEvent.click(input); // click into the search bar
-		await userEvent.tab(); // tab away from the search bar
-		await userEvent.click(input); // click into the search bar again
+		await user.click(input); // click into the search bar
+		await user.tab(); // tab away from the search bar
+		await user.click(input); // click into the search bar again
 
 		// Expect apollo.query to have been called twice with the suggestions query
 		expect(apollo.query.mock.calls.length).toBe(2);
@@ -52,11 +53,12 @@ describe('SearchBar', () => {
 	});
 
 	it('should show filtered results when a search term is entered', async () => {
+		const user = userEvent.setup();
 		const { getByPlaceholderText, findAllByTestId, findByText } = renderSearchBar();
 
 		// Type 'ak' in the search bar
 		const input = getByPlaceholderText('Search all loans');
-		userEvent.type(input, 'ak');
+		await user.type(input, 'ak');
 
 		// Expect only 3 results to be displayed
 		const results = await findAllByTestId('header-search-result-item');
@@ -73,13 +75,14 @@ describe('SearchBar', () => {
 	});
 
 	it('should change the highlighted item when the up/down arrow keys are pressed', async () => {
+		const user = userEvent.setup();
 		const { getByPlaceholderText, findAllByTestId } = renderSearchBar();
 		const isHighlighted = node => node.classList.contains('tw-bg-secondary');
 		const searchTerm = 'a';
 
 		// Type searchTerm in the search bar
 		const input = getByPlaceholderText('Search all loans');
-		userEvent.type(input, searchTerm);
+		await user.type(input, searchTerm);
 
 		// Wait for results to be displayed
 		const [first, second] = await findAllByTestId('header-search-result-item');
@@ -88,26 +91,26 @@ describe('SearchBar', () => {
 		expect(isHighlighted(first)).toBe(false);
 
 		// Arrowing down should highlight the first result and fill the search input with the first result
-		await userEvent.type(input, '{arrowdown}');
+		await user.type(input, '{arrowdown}');
 		expect(isHighlighted(first)).toBe(true);
 		expect(input.value).toBe(first.textContent);
 
 		// Arrowing down again should highlight the second result, unhighlight the first result,
 		// and fill the search input with the second result
-		await userEvent.type(input, '{arrowdown}');
+		await user.type(input, '{arrowdown}');
 		expect(isHighlighted(second)).toBe(true);
 		expect(isHighlighted(first)).toBe(false);
 		expect(input.value).toBe(second.textContent);
 
 		// Arrowing up should highlight the first result again, unhighlight the second result,
 		// and fill the search input with the first result again
-		await userEvent.type(input, '{arrowup}');
+		await user.type(input, '{arrowup}');
 		expect(isHighlighted(first)).toBe(true);
 		expect(isHighlighted(second)).toBe(false);
 		expect(input.value).toBe(first.textContent);
 
 		// Arrowing up again should unhighlight the first result and fill the search input with the original search term
-		await userEvent.type(input, '{arrowup}');
+		await user.type(input, '{arrowup}');
 		expect(isHighlighted(first)).toBe(false);
 		expect(input.value).toBe(searchTerm);
 	});

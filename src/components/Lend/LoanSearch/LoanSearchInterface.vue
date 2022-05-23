@@ -87,8 +87,9 @@ export default {
 			console.log('filters into runQuery:', loanSearchState);
 			const flssCompatibleFilters = {
 				...(loanSearchState.gender && { gender: { any: loanSearchState.gender } }),
-				// countryIsoCode: { any: loanSearchState?.countryIsoCode ?? [] },
-				// sectorId: { any: loanSearchState?.sectorId ?? [] },
+				...(loanSearchState.countryIsoCode.length && {
+					countryIsoCode: { any: loanSearchState.countryIsoCode }
+				}),
 			};
 			fetchData(flssCompatibleFilters, this.apollo).then(flssData => {
 				this.loans = flssData.values ?? [];

@@ -13,19 +13,7 @@
 					Location
 				</h2>
 			</template>
-			<fieldset>
-				<legend>Sector</legend>
-				<kv-checkbox
-					class="tw-text-left"
-					v-for="sectorBox in allSectors"
-					name="sectorBox.name"
-					v-model="sector"
-					:key="sectorBox.id"
-					:value="sectorBox.name"
-				>
-					{{ sectorBox.name }}
-				</kv-checkbox>
-			</fieldset>
+			<loan-search-location-filter :regions="regions" @updated="handleUpdatedFilters" />
 		</kv-accordion-item>
 		<kv-accordion-item id="acc-sectors" :open="false">
 			<template #header>
@@ -87,7 +75,8 @@ import {
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiClose, mdiArrowRight } from '@mdi/js';
 import LoanSearchGenderFilter from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
-import { updateSearchState } from '@/util/loanSearchUtils';
+import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
+import { transformCountryFacets, updateSearchState } from '@/util/loanSearchUtils';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -98,6 +87,7 @@ export default {
 		KvAccordionItem,
 		KvMaterialIcon,
 		LoanSearchGenderFilter,
+		LoanSearchLocationFilter,
 	},
 	data() {
 		return {
@@ -109,11 +99,9 @@ export default {
 			loans: [],
 			zeroLoans: false,
 			sector: ['Food', 'Education'],
-			country: ['TZ', 'KE'],
 			lenderTermLimit: 0,
 			allSectors: [],
-			allCountries: [],
-			allIsoCodes: [],
+			regions: [],
 		};
 	},
 	methods: {
@@ -121,15 +109,9 @@ export default {
 			const sectorInfo = await fetchSectors(this.apollo);
 			this.allSectors = sectorInfo;
 		},
-		async getAllCountries() {
-			// data pull only from production endpoint,
-			// not implemented with a component until design path
-			// with product is completed.
+		async getRegions() {
 			const countryFacets = await fetchCountryFacets(this.apollo);
-			this.allCountries = countryFacets.map(cf => cf.country.name);
-			// pulled in IsoCodes b/c the loan query filters are currently coded
-			// to use ISO Codes instead of country names in queryFilters() right now
-			this.allIsoCodes = countryFacets.map(cf => cf.country.isoCode);
+			this.regions = transformCountryFacets(countryFacets);
 		},
 		resetFilter() {
 			// this.gender = 'both';
@@ -147,10 +129,10 @@ export default {
 		// 	console.log('new query ran, yes!');
 		// },
 	},
-	async mounted() {
+	mounted() {
 		// Initialize filter options
 		this.getSectors();
-		this.getAllCountries();
+		this.getRegions();
 	},
 	computed: {
 		// queryFilters() {
