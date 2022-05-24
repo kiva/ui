@@ -1,3 +1,10 @@
+### [2.155.2](https://github.com/kiva/ui/compare/v2.155.1...v2.155.2) (2022-05-24)
+
+
+### Bug Fixes
+
+* pull in kv-components update to solve KvCarousel proxy error ([51222a5](https://github.com/kiva/ui/commit/51222a5dd2868fae6a3c61c932c7d4fbecc0e22f))
+
 ### [2.155.1](https://github.com/kiva/ui/compare/v2.155.0...v2.155.1) (2022-05-23)
 
 
