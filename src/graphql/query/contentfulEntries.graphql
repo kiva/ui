@@ -12,8 +12,4 @@ query contentfulEntries(
 			preview: $preview
 		)
 	}
-	experiment(id: "Experiment:manual_lending_lp") @client {
-		id
-		version
-	}
 }

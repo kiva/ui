@@ -38,13 +38,28 @@ import { preFetchAll } from '@/util/apolloPreFetch';
 import { processPageContent } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
 import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
+import gql from 'graphql-tag';
 import {
 	getExperimentSettingCached,
 	trackExperimentVersion
 } from '@/util/experimentUtils';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 // MARS-124 experiment
 const manualLendingLPExpKey = 'manual_lending_lp';
+
+const pageQuery = gql`
+  query manualLendingLP {
+    general {
+		manual_lending_lp_exp: uiExperimentSetting(
+			key: "manual_lending_lp"
+		) {
+			key
+			value
+		}
+	}
+  }
+`;
 
 // Page frames
 const WwwPage = () => import('@/components/WwwFrame/WwwPage');
@@ -251,25 +266,35 @@ export default {
 			});
 		},
 		result({ data }) {
-			const pageData = getPageData(data);
-			const version = data?.experiment?.version;
-			const { enabled } = getExperimentSettingCached(this.apollo, manualLendingLPExpKey);
-			if (enabled && this.$route.path === '/lp/home-ml') {
-				trackExperimentVersion(
-					this.apollo,
-					this.$kvTrackEvent,
-					'Paid home',
-					manualLendingLPExpKey,
-					'EXP-MARS-124-May2022'
-				);
-				if (version === 'b') {
-					this.$router.push({
-						path: '/lp/home-mlv',
-						query: this.$route.query,
-						hash: this.$route.hash,
-					});
-				}
+			if (this.$route.path === '/lp/home-ml') {
+				this.apollo.query({ query: pageQuery }).then(() => {
+					return Promise.all([
+						this.apollo.query({ query: experimentQuery, variables: { id: manualLendingLPExpKey } })
+					]);
+				}).then(result => {
+					const version = result?.data?.experiment?.version;
+					const { enabled } = getExperimentSettingCached(this.apollo, manualLendingLPExpKey);
+
+					if (enabled) {
+						trackExperimentVersion(
+							this.apollo,
+							this.$kvTrackEvent,
+							'Paid home',
+							manualLendingLPExpKey,
+							'EXP-MARS-124-May2022'
+						);
+						if (version === 'b') {
+							this.$router.push({
+								path: '/lp/home-mlv',
+								query: this.$route.query,
+								hash: this.$route.hash,
+							});
+						}
+					}
+					// });
+				});
 			}
+			const pageData = getPageData(data);
 			if (pageData.error) {
 				this.pageError = true;
 				this.pageFrame = ErrorPage;

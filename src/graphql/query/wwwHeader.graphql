@@ -47,12 +47,4 @@ query wwwHeader($basketId: String) {
 			id
 		}
 	}
-	general {
-		manual_lending_lp_exp: uiExperimentSetting(
-			key: "manual_lending_lp"
-		) {
-			key
-			value
-		}
-	}
 }
