@@ -38,6 +38,13 @@ import { preFetchAll } from '@/util/apolloPreFetch';
 import { processPageContent } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
 import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
+
+// MARS-124 experiment
+const manualLendingLPExpKey = 'manual_lending_lp';
 
 // Page frames
 const WwwPage = () => import('@/components/WwwFrame/WwwPage');
@@ -245,6 +252,24 @@ export default {
 		},
 		result({ data }) {
 			const pageData = getPageData(data);
+			const version = data?.experiment?.version;
+			const { enabled } = getExperimentSettingCached(this.apollo, manualLendingLPExpKey);
+			if (enabled && this.$route.path === '/lp/home-ml') {
+				trackExperimentVersion(
+					this.apollo,
+					this.$kvTrackEvent,
+					'Paid home',
+					manualLendingLPExpKey,
+					'EXP-MARS-124-May2022'
+				);
+				if (version === 'b') {
+					this.$router.push({
+						path: '/lp/home-mlv',
+						query: this.$route.query,
+						hash: this.$route.hash,
+					});
+				}
+			}
 			if (pageData.error) {
 				this.pageError = true;
 				this.pageFrame = ErrorPage;
