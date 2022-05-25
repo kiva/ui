@@ -24,6 +24,7 @@
 import KvButton from '@/components/Kv/KvButton';
 
 export default {
+	name: 'CookieBanner',
 	inject: ['cookieStore'],
 	components: {
 		KvButton

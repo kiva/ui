@@ -9,7 +9,7 @@
 
 <script>
 export default {
-	name: "ClearAllRefinements",
+	name: 'ClearAllRefinements',
 	methods: {
 		clearAll() {
 			this.$emit('clear-all-refinements');

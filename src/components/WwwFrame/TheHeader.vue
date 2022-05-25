@@ -475,6 +475,7 @@ import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
 export default {
+	name: 'TheHeader',
 	components: {
 		CampaignLogoGroup,
 		KivaLogo,

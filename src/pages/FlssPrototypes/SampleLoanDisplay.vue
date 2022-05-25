@@ -70,6 +70,7 @@ const pageQuery = gql`query pageContent($basketId: String!) {
 }`;
 
 export default {
+	name: 'SampleLoanDisplay',
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	components: {
 		WwwPage,

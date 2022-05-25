@@ -1,5 +1,6 @@
 <script>
 export default {
+	name: '15YearsButton',
 	render(createElement) {
 		const options = {
 			class: ['fifteen-yr-button', this.variant ? `fifteen-yr-button--${this.variant}` : ''],

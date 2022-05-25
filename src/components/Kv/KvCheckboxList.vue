@@ -17,6 +17,7 @@
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 
 export default {
+	name: 'KvCheckboxList',
 	components: {
 		KvCheckbox,
 	},

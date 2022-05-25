@@ -61,6 +61,7 @@
 <script>
 
 export default {
+	name: 'AutolendingMessagingPage',
 	props: {
 		success: {
 			type: Boolean,

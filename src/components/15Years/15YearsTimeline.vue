@@ -170,6 +170,7 @@ import slideData from './15YearsTimelineData';
 const fifteenYearsImagesRequire = require.context('@/assets/images/15-years/', true);
 
 export default {
+	name: '15YearsTimeline',
 	components: {
 		KvCarousel,
 		KvCarouselSlide,

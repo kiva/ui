@@ -39,6 +39,7 @@ import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import DonateForm from './DonateForm';
 
 export default {
+	name: 'DonateFromMacroHero',
 	props: {
 		data: {
 			type: Object,

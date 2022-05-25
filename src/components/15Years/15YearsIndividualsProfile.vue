@@ -134,6 +134,7 @@ const getRandomInt = (minimum, maximum) => {
 };
 
 export default {
+	name: '15YearsIndividualsProfile',
 	components: {
 		FifteenYearsButton,
 	},

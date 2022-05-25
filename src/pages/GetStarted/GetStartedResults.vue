@@ -123,6 +123,7 @@ import logFormatter from '@/util/logFormatter';
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
 
 export default {
+	name: 'GetStartedResults',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		FrequentlyAskedQuestions,

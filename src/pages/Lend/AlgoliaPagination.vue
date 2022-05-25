@@ -77,6 +77,7 @@ import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	name: 'AlgoliaPagination',
 	components: {
 		KvIcon,
 	},

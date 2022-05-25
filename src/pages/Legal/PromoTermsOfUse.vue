@@ -55,6 +55,7 @@
 <script>
 
 export default {
+	name: 'PromoTermsOfUse',
 	metaInfo: {
 		title: 'Promotional Lending Terms and Conditions'
 	},

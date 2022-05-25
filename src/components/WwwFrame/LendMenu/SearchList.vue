@@ -19,6 +19,7 @@
 
 <script>
 export default {
+	name: 'SearchList',
 	props: {
 		searches: {
 			type: Array,

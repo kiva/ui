@@ -48,7 +48,7 @@ import emptyBasketData from '@/graphql/query/checkout/emptyBasketData.graphql';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
-	name: 'randomLoanSelector',
+	name: 'RandomLoanSelector',
 	components: {
 		KvCarousel,
 		MinimalLoanCard,
