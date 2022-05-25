@@ -237,6 +237,34 @@ export default {
 			};
 		},
 		preFetch(config, client, args) {
+			if (args?.route?.path === '/lp/home-ml') {
+				client.query({ query: pageQuery }).then(() => {
+					return Promise.all([
+						client.query({ query: experimentQuery, variables: { id: manualLendingLPExpKey } })
+					]);
+				}).then(result => {
+					const version = result?.data?.experiment?.version;
+					const { enabled } = getExperimentSettingCached(client, manualLendingLPExpKey);
+
+					if (enabled) {
+						trackExperimentVersion(
+							client,
+							this.$kvTrackEvent,
+							'Paid home',
+							manualLendingLPExpKey,
+							'EXP-MARS-124-May2022'
+						);
+						if (version === 'b') {
+							return Promise.reject({
+								path: '/lp/home-mlv',
+								query: args?.route?.query,
+								hash: args?.route?.hash,
+							});
+						}
+					}
+				});
+			}
+
 			return client.query({
 				query: contentfulEntries,
 				variables: {
@@ -244,33 +272,6 @@ export default {
 					contentKey: args?.route?.meta?.contentfulPage(args?.route)?.trim(),
 				}
 			}).then(({ data }) => {
-				if (args?.route?.path === '/lp/home-ml') {
-					client.query({ query: pageQuery }).then(() => {
-						return Promise.all([
-							client.query({ query: experimentQuery, variables: { id: manualLendingLPExpKey } })
-						]);
-					}).then(result => {
-						const version = result?.data?.experiment?.version;
-						const { enabled } = getExperimentSettingCached(client, manualLendingLPExpKey);
-
-						if (enabled) {
-							trackExperimentVersion(
-								client,
-								this.$kvTrackEvent,
-								'Paid home',
-								manualLendingLPExpKey,
-								'EXP-MARS-124-May2022'
-							);
-							if (version === 'b') {
-								return Promise.reject({
-									path: '/lp/home-mlv',
-									query: args?.route?.query,
-									hash: args?.route?.hash,
-								});
-							}
-						}
-					});
-				}
 				// Get Contentful page data
 				const pageData = getPageData(data);
 				if (pageData.error) {
