@@ -49,14 +49,14 @@ describe('KvCheckboxList', () => {
 
 		let toggle = getByText('Select all');
 		await user.click(toggle);
-		items.forEach(async item => {
+		items.forEach(item => {
 			const checkbox = getByLabelText(item.title);
 			expect(checkbox.checked).toBeTruthy();
 		});
 
 		toggle = getByText('Deselect all');
 		await user.click(toggle);
-		items.forEach(async item => {
+		items.forEach(item => {
 			const checkbox = getByLabelText(item.title);
 			expect(checkbox.checked).toBeFalsy();
 		});
@@ -73,7 +73,7 @@ describe('KvCheckboxList', () => {
 
 		getByText('Deselect all');
 
-		items.forEach(async item => {
+		items.forEach(item => {
 			const checkbox = getByLabelText(item.title);
 			expect(checkbox.checked).toBeTruthy();
 		});
@@ -86,5 +86,16 @@ describe('KvCheckboxList', () => {
 		await user.click(getByLabelText(items[0].title));
 
 		expect(emitted().updated[0]).toEqual([[items[0].value]]);
+	});
+
+	it('should disable checkboxes', () => {
+		const { getByLabelText } = render(KvCheckboxList, {
+			props: { items: items.map(i => ({ ...i, disabled: true })) }
+		});
+
+		items.forEach(item => {
+			const checkbox = getByLabelText(item.title);
+			expect(checkbox.disabled).toBeTruthy();
+		});
 	});
 });

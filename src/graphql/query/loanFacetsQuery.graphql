@@ -1,0 +1,15 @@
+query loanFacets {
+	lend {
+		countryFacets {
+			country {
+				name
+				region
+				isoCode
+			}
+		}
+		sector {
+      		id
+      		name
+    	}
+	}
+}

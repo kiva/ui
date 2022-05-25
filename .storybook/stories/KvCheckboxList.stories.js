@@ -25,3 +25,5 @@ export const Default = story({ items });
 export const ShowSelectAll = story({ items, showSelectAll: true });
 
 export const InitialSelected = story({ items, initialSelected: items.slice(0, 2).map(i => i.value) });
+
+export const Disabled = story({ items: items.map(i => ({ ...i, disabled: true })) });
