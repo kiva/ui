@@ -1,6 +1,6 @@
 query flssLoanFacets($filterObject: [FundraisingLoanSearchFilterInput!]) {
 	fundraisingLoans(filters: $filterObject) {
-    	facets {
+		facets {
 			isoCode {
 				key
 				value
