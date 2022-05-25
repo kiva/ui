@@ -157,6 +157,7 @@ import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'PhoneAuthentication',
 	components: {
 		FirstMFASetup,
 		KvButton,

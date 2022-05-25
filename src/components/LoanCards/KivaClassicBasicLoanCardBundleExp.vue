@@ -165,6 +165,7 @@ const loanQuery = gql`query kcBasicLoanCard($loanId: Int!) {
 }`;
 
 export default {
+	name: 'KivaClassicBasicLoanCardBundleExp',
 	props: {
 		loanId: {
 			type: Number,

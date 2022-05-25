@@ -25,6 +25,7 @@ import algoliaLoanStatus from '@/graphql/query/algoliaLoanStatus.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 
 export default {
+	name: 'AlgoliaLoanCardAdapter',
 	components: {
 		LoanCardController,
 	},

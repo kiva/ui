@@ -80,6 +80,7 @@ import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MatchingText from '@/components/LoanCards/MatchingText';
 
 export default {
+	name: 'GridLoanCard',
 	components: {
 		ActionButton,
 		BorrowerInfo,

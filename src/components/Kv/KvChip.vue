@@ -14,6 +14,7 @@
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	name: 'KvChip',
 	components: { KvIcon },
 	props: {
 		title: {

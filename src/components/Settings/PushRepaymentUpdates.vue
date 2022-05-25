@@ -14,6 +14,7 @@ import KvCheckbox from '@/components/Kv/KvCheckbox';
 import { registerServiceWorker, isSubscribed, unsubscribe } from '@/util/pushNotificationsManager';
 
 export default {
+	name: 'PushRepaymentUpdates',
 	data() {
 		return {
 			pushNotificationsActive: false

@@ -22,6 +22,7 @@ import KivaClassicLoanCategorySelector from '@/components/LoanCollections/KivaCl
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 export default {
+	name: 'KivaClassicMultiCategoryCarousel',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KivaClassicLoanCarousel,

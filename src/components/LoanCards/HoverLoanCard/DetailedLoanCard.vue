@@ -195,6 +195,7 @@ import PartnerInfoPanel from './InfoPanels/PartnerInfoPanel';
 import TrusteeInfoPanel from './InfoPanels/TrusteeInfoPanel';
 
 export default {
+	name: 'DetailedLoanCard',
 	props: {
 		loan: {
 			type: Object,

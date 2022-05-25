@@ -19,6 +19,7 @@ import {
 } from '@/util/touchEvents';
 
 export default {
+	name: 'KvDropdown',
 	inject: ['apollo', 'cookieStore'],
 	props: {
 		controller: { type: String, required: true },

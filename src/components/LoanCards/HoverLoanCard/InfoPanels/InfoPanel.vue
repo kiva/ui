@@ -29,6 +29,7 @@ import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	name: 'InfoPanel',
 	components: {
 		KvExpandable,
 		KvIcon,

@@ -41,6 +41,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 const promoLoanImageRequire = require.context('@/assets/images/mg-promo-loan-card/', true);
 
 export default {
+	name: 'PromoGridLoanCard',
 	components: {
 		KvButton,
 		KvResponsiveImage

@@ -24,6 +24,7 @@ export const MALE_TITLE = 'Men';
 const GENDER_KEYS = [BOTH_KEY, FEMALE_KEY, MALE_KEY];
 
 export default {
+	name: 'LoanSearchGenderFilter',
 	components: {
 		KvRadio,
 	},

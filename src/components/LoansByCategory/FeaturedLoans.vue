@@ -92,6 +92,7 @@ const largeCardWidthPlusPadding = 300;
 const featuredCategoryIds = [56, 60, 54];
 
 export default {
+	name: 'FeaturedLoans',
 	components: {
 		LoanCardController,
 	},

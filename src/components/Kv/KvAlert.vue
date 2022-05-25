@@ -29,6 +29,7 @@
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	name: 'KvAlert',
 	props: {
 		/**
 		 * Styling variant

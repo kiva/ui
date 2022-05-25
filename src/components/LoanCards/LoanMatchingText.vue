@@ -29,6 +29,7 @@
 const imgRequire = require.context('@/assets/images/', true);
 
 export default {
+	name: 'LoanMatchingText',
 	props: {
 		matcherName: {
 			type: String,

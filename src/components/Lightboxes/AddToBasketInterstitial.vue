@@ -108,6 +108,7 @@ import LoanReservation from '@/components/Checkout/LoanReservation';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
 
 export default {
+	name: 'AddToBasketInterstitial',
 	components: {
 		KvButton,
 		KvCheckbox,

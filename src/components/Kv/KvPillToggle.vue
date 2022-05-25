@@ -26,6 +26,7 @@
 
 <script>
 export default {
+	name: 'KvPillToggle',
 	props: {
 		id: {
 			type: String,

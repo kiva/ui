@@ -24,6 +24,7 @@ import LoanSelectedText from './LoanSelectedText';
 import LoanExpiredText from './LoanExpiredText';
 
 export default {
+	name: 'ActionButton',
 	mixins: [
 		addToBasketInsterstitial
 	],
