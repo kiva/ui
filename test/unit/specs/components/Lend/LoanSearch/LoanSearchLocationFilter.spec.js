@@ -4,18 +4,19 @@ import LoanSearchLocationFilter, { getLabel } from '@/components/Lend/LoanSearch
 
 const NUM_ITEMS = 4;
 
-const regions = [...Array(NUM_ITEMS)].map((_r, i) => ({
+const getRegions = (disabled = false) => [...Array(NUM_ITEMS)].map((_r, i) => ({
 	region: `Region ${i}`,
-	numLoansFundraising: 20,
+	numLoansFundraising: disabled ? 0 : 20,
 	countries: [...Array(NUM_ITEMS)].map((_c, j) => ({
 		name: `Country ${j}`,
 		isoCode: `ISO ${j}`,
-		numLoansFundraising: 5
+		numLoansFundraising: disabled ? 0 : 5
 	}))
 }));
 
 describe('LoanSearchLocationFilter', () => {
 	it('should display regions', () => {
+		const regions = getRegions();
 		const { getByText } = render(LoanSearchLocationFilter, { props: { regions } });
 		regions.forEach(async region => {
 			getByText(getLabel(region));
@@ -24,6 +25,7 @@ describe('LoanSearchLocationFilter', () => {
 
 	it('should toggle regions', async () => {
 		const user = userEvent.setup();
+		const regions = getRegions();
 		const { getByText, queryAllByText } = render(LoanSearchLocationFilter, { props: { regions } });
 
 		// Open all regions
@@ -47,6 +49,7 @@ describe('LoanSearchLocationFilter', () => {
 
 	it('should emit updated', async () => {
 		const user = userEvent.setup();
+		const regions = getRegions();
 		const { getByText, emitted } = render(LoanSearchLocationFilter, { props: { regions } });
 
 		// Open first region
@@ -59,5 +62,18 @@ describe('LoanSearchLocationFilter', () => {
 
 		// Expect ISO code to be emitted
 		expect(emitted().updated[0]).toEqual([{ countryIsoCode: [regions[0].countries[0].isoCode] }]);
+	});
+
+	it('should disable checkboxes when no fundraising loans', async () => {
+		const user = userEvent.setup();
+		const { getByText, getByLabelText, updateProps } = render(LoanSearchLocationFilter, {
+			props: { regions: getRegions() }
+		});
+
+		const regions = getRegions(true);
+		await updateProps({ regions });
+
+		await user.click(getByText(getLabel(regions[0])));
+		regions[0].countries.map(c => expect(getByLabelText(getLabel(c)).disabled).toBeTruthy());
 	});
 });

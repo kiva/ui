@@ -6,7 +6,7 @@
 			</button>
 		</li>
 		<li v-for="(item, i) in items" :key="i">
-			<kv-checkbox :value="item.value" v-model="selected">
+			<kv-checkbox :value="item.value" :disabled="item.disabled" v-model="selected">
 				{{ item.title }}
 			</kv-checkbox>
 		</li>
@@ -31,7 +31,7 @@ export default {
 		},
 		/**
 		 * The items to display in the checkbox list
-		 * Expected format: { value: 'value', title: 'title' }
+		 * Expected format: { value: 'value', title: 'title', disabled: true }
 		 */
 		items: {
 			type: Array,
@@ -39,7 +39,7 @@ export default {
 		},
 		/**
 		 * The initially selected items
-		 * Expected format: { value: 'value', title: 'title' }
+		 * Expected format: { value: 'value', title: 'title', disabled: true }
 		 */
 		initialSelected: {
 			type: Array,

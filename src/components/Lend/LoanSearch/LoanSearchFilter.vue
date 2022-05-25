@@ -13,7 +13,7 @@
 					Location
 				</h2>
 			</template>
-			<loan-search-location-filter :regions="regions" @updated="handleUpdatedFilters" />
+			<loan-search-location-filter :regions="facets.regions" @updated="handleUpdatedFilters" />
 		</kv-accordion-item>
 		<kv-accordion-item id="acc-sectors" :open="false">
 			<template #header>
@@ -25,9 +25,8 @@
 				<legend>Sector</legend>
 				<kv-checkbox
 					class="tw-text-left"
-					v-for="sectorBox in allSectors"
+					v-for="sectorBox in facets.sectors"
 					name="sectorBox.name"
-					v-model="sector"
 					:key="sectorBox.id"
 					:value="sectorBox.name"
 				>
@@ -45,9 +44,8 @@
 				<legend>Sector</legend>
 				<kv-checkbox
 					class="tw-text-left"
-					v-for="sectorBox in allSectors"
+					v-for="sectorBox in facets.sectors"
 					name="sectorBox.name"
-					v-model="sector"
 					:key="sectorBox.id"
 					:value="sectorBox.name"
 				>
@@ -63,20 +61,11 @@
 </template>
 
 <script>
-import {
-	// fetchData,
-	// filterGender,
-	// filterSector,
-	fetchSectors,
-	fetchCountryFacets,
-	// filterCountry,
-	// filterLoanTerm,
-} from '@/util/flssUtils';
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiClose, mdiArrowRight } from '@mdi/js';
 import LoanSearchGenderFilter from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
 import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
-import { transformCountryFacets, updateSearchState } from '@/util/loanSearchUtils';
+import { updateSearchState } from '@/util/loanSearchUtils';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -90,76 +79,51 @@ export default {
 		LoanSearchGenderFilter,
 		LoanSearchLocationFilter,
 	},
+	props: {
+		/**
+		 * Facet options based on the loans available. Format:
+		 * {
+		 *   regions: [
+		 *     {
+		 *       region: '',
+		 *       numLoansFundraising: 1,
+		 *       countries: [
+		 *         {
+		 *           name: '',
+		 *           region: '',
+		 *           isoCode: '',
+		 *           numLoansFundraising: 1,
+		 *         }
+		 *       ]
+		 *     }
+		 *   ],
+		 *   sectors: [
+		 *     {
+		 *       id: 1,
+		 *       name: '',
+		 *     }
+		 *   ]
+		 * }
+		 */
+		facets: {
+			type: Object,
+			required: true
+		}
+	},
 	data() {
 		return {
 			mdiClose,
 			mdiArrowRight,
-			loanId: Number(this.$route.params.id || 0),
 			queryFilters: {},
-			totalCount: 0,
-			loans: [],
-			zeroLoans: false,
-			sector: ['Food', 'Education'],
-			lenderTermLimit: 0,
-			allSectors: [],
-			regions: [],
 		};
 	},
 	methods: {
-		async getSectors() {
-			const sectorInfo = await fetchSectors(this.apollo);
-			this.allSectors = sectorInfo;
-		},
-		async getRegions() {
-			const countryFacets = await fetchCountryFacets(this.apollo);
-			this.regions = transformCountryFacets(countryFacets);
-		},
 		resetFilter() {
-			// this.gender = 'both';
-			// this.sector = [];
-			// this.country = [];
-			// this.lenderTermLimit = 0;
 			// this.queryFilters = {};
 		},
 		handleUpdatedFilters(payload) {
 			this.queryFilters = { ...this.queryFilters, ...payload };
 		}
-		// updateQuery() {
-		// 	const updatedQueryFilters = this.queryFilters;
-		// 	console.log('from updateQuery', updatedQueryFilters);
-		// 	console.log('new query ran, yes!');
-		// },
-	},
-	mounted() {
-		// Initialize filter options
-		this.getSectors();
-		this.getRegions();
-	},
-	computed: {
-		// queryFilters() {
-		// 	// // TODO: enable genderFilter when its working
-		// 	const genderFilter = filterGender(this.gender);
-		// 	console.log('this is filtergender', genderFilter);
-
-		// 	const sectorFilter = filterSector(this.sector, this.allSectors);
-		// 	console.log('this is filterSector', sectorFilter);
-
-		// 	const countryFilter = filterCountry(this.country, this.allIsoCodes);
-		// 	console.log('this is countryFilter', countryFilter);
-
-		// 	const loanTermFilter = filterLoanTerm(this.lenderTermLimit);
-		// 	console.log('this is filterLoanTerm', loanTermFilter);
-
-		// 	const loanQueryFilters = {
-		// 		countryIsoCode: countryFilter,
-		// 		// lenderRepaymentTerm: loanTermFilter,
-		// 		// TODO: enable genderFilter when its working
-		// 		// gender: genderFilter,
-		// 		sector: sectorFilter,
-		// 	};
-		// 	console.log('yo! from queryFilters', loanQueryFilters);
-		// 	return loanQueryFilters;
-		// },
 	},
 	watch: {
 		async queryFilters(newFilters) {

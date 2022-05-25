@@ -1,6 +1,6 @@
 <template>
 	<form class="tw-flex tw-flex-col tw-gap-1.5 tw-mb-2" @submit.prevent>
-		<fieldset v-for="option in regions" :key="option.region">
+		<fieldset v-for="option in displayedRegions" :key="option.region">
 			<legend>
 				<button
 					class="tw-transition-all"
@@ -31,7 +31,7 @@
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
 import KvCheckboxList from '@/components/Kv/KvCheckboxList';
-import { getIsoCodes } from '@/util/loanSearchUtils';
+import { getIsoCodes, getUpdatedRegions } from '@/util/loanSearchUtils';
 
 /**
  * Returns the item label with fundraising amount in parens
@@ -57,17 +57,18 @@ export default {
 		 *     countries: [{
 		 *       name: 'name',
 		 *       isoCode: 'US',
-		 *       numLoansFundraising: 1
+		 *       numLoansFundraising: 1,
 		 *     }]
 		 *   }
 		 */
 		regions: {
 			type: Array,
-			default: () => []
+			default: undefined
 		}
 	},
 	data() {
 		return {
+			displayedRegions: this.regions,
 			selectedCountries: {},
 			openRegions: [],
 			getLabel
@@ -75,7 +76,8 @@ export default {
 	},
 	methods: {
 		getItems(countries) {
-			return countries.map(c => ({ value: c.name, title: getLabel(c) }));
+			// Disable checkboxes based on whether the current applied filters have loans fundraising for that country
+			return countries.map(c => ({ value: c.name, title: getLabel(c), disabled: c.numLoansFundraising === 0 }));
 		},
 		isOpenRegion(region) {
 			return this.openRegions.includes(region);
@@ -93,9 +95,12 @@ export default {
 		},
 	},
 	watch: {
+		regions(nextRegions) {
+			this.displayedRegions = getUpdatedRegions(this.displayedRegions, nextRegions);
+		},
 		selectedCountries: {
 			handler(nextCountries) {
-				this.$emit('updated', { countryIsoCode: getIsoCodes(this.regions, nextCountries) });
+				this.$emit('updated', { countryIsoCode: getIsoCodes(this.displayedRegions, nextCountries) });
 			},
 			deep: true,
 		}
