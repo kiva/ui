@@ -1,3 +1,10 @@
+### [2.155.3](https://github.com/kiva/ui/compare/v2.155.2...v2.155.3) (2022-05-24)
+
+
+### Bug Fixes
+
+* a bug when adding the bundle and design fixes are done ([ab058bf](https://github.com/kiva/ui/commit/ab058bfeb28a025f5b4dc48b17d936fbb1c3ca1f))
+
 ### [2.155.2](https://github.com/kiva/ui/compare/v2.155.1...v2.155.2) (2022-05-24)
 
 
