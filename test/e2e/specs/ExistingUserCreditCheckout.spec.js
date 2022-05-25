@@ -1,5 +1,5 @@
 describe('Existing User Checkout with Kiva Credit', () => {
-	it('Baskets a loan, proceed to checkout, log in user with credit and purchases using kiva credit', () => {
+	it('Logs in user with credit, baskets a loan, proceed to checkout, and purchases using kiva credit', () => {
 		let beginBalance;
 		let newBalance;
 		// get the test user id from cypress.env.json and set the cookie variable
@@ -14,20 +14,16 @@ describe('Existing User Checkout with Kiva Credit', () => {
 			const number = fullText.match(/[0-9,.]+/);
 			beginBalance = parseFloat(number); // text to float
 		});
-		// Go to lend page
-		cy.visit('/lend?x');
-		// Set sort to random
-		cy.get('#filter-loan-sort-dropdown', { timeout: 10000 }).as('sortFilter');
-		cy.wait(5000);
-		cy.get('@sortFilter', { timeout: 8000 }).select('random');
-		// Wait for the lend button to exist, then click it
-		cy.get('.loading-overlay', { timeout: 10000 }).should('not.be.visible');
-		cy.findAllByText('Lend $25', { timeout: 10000 }).first().click();
-		// Wait for the checkout button to exist, then click it
-		cy.findByText('Checkout now', { timeout: 10000 }).click();
+		// Go to category page for women
+		cy.visit('/lend-by-category/women');
+		// // Wait for the lend or lend again button to exist, then click it
+		cy.findAllByText('Lend now', { timeout: 10000 }).first().click();
+		// wait for the basket add lightbox
+		cy.get('.kv-lightbox', { timeout: 8000 }).should('be.visible');
+		// Wait for the checkout button to exist in the lightbox, then click it
+		cy.get('.button-checkout', { timeout: 8000 }).click();
 		// Wait for basket to load and check for complete order button
 		cy.findByText('Basket', { timeout: 5000 }).click();
-		cy.reload();
 		cy.findByText('Complete order', { timeout: 8000 }).click();
 		// wait for order confirmation page to load
 		cy.findByText('Thank you!', { timeout: 8000 });
