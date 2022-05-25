@@ -19,6 +19,7 @@
 
 <script>
 export default {
+	name: 'LoanPromoCredits',
 	props: {
 		appliedPromoCredits: {
 			type: Array,

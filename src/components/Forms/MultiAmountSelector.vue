@@ -51,6 +51,7 @@ import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 
 export default {
+	name: 'MultiAmountSelector',
 	components: {
 		KvCurrencyInput
 	},

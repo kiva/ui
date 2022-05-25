@@ -148,6 +148,7 @@ import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 export default {
+	name: 'KivaCardRedemption',
 	components: {
 		KvButton,
 		KvIcon,

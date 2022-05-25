@@ -200,6 +200,7 @@ const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 }`;
 
 export default {
+	name: 'RepaymentSchedule',
 	components: {
 		KvLightbox,
 		KvMaterialIcon,

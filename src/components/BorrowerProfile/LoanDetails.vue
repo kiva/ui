@@ -74,6 +74,7 @@ import { format, parseISO } from 'date-fns';
 import DescriptionListItem from '@/components/BorrowerProfile/DescriptionListItem';
 
 export default {
+	name: 'LoanDetails',
 	components: {
 		DescriptionListItem,
 	},

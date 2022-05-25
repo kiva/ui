@@ -23,6 +23,7 @@ import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBac
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
+	name: 'LoansByCategoryCarousel',
 	components: {
 		KivaClassicMultiCategoryCarousel,
 		KvPageContainer,

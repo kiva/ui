@@ -156,6 +156,7 @@ import KvFlag from '@/components/Kv/KvFlag';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	name: 'EditPreferences',
 	components: {
 		KvCauseSelector,
 		KvFlag,

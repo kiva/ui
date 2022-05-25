@@ -39,6 +39,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'CausesDropInPaymentWrapper',
 	components: {
 		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvButton,

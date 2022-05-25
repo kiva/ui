@@ -22,6 +22,7 @@ import { mdiStar } from '@mdi/js';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
+	name: 'LoanCarsWhySpecial',
 	props: {
 		text: {
 			type: String,

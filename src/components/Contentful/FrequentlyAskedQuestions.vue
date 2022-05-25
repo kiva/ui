@@ -21,6 +21,7 @@ import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestio
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
+	name: 'ContentfulFrequentlyAskedQuestions',
 	components: {
 		KvFrequentlyAskedQuestions,
 		KvPageContainer,
