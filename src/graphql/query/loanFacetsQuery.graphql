@@ -8,8 +8,8 @@ query loanFacets {
 			}
 		}
 		sector {
-      		id
-      		name
-    	}
+			id
+			name
+		}
 	}
 }
