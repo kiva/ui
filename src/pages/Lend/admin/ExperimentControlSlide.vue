@@ -19,6 +19,7 @@ import ExperimentSlide from './ExperimentSlide';
 const defaultName = 'Control';
 
 export default {
+	name: 'ExperimentControlSlide',
 	components: {
 		ExperimentSlide,
 	},

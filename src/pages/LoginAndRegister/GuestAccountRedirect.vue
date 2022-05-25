@@ -6,6 +6,7 @@
 import gql from 'graphql-tag';
 
 export default {
+	name: 'GuestAccountRedirect',
 	apollo: {
 		preFetch(config, client) {
 			return client.query({

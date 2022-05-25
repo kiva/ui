@@ -137,6 +137,7 @@ import LoansBundleExpWrapper from '@/components/LoansByCategory/LoansBundleExpWr
 const ssrRowLimiter = 2;
 
 export default {
+	name: 'LendByCategoryPage',
 	components: {
 		// CategoryAdminControls: () => import('./admin/CategoryAdminControls'),
 		CategoryRow,

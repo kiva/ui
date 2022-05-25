@@ -37,6 +37,7 @@ import LocationMultiRefinements from './LocationMultiRefinements';
 import FindNewCountry from './FindNewCountry';
 
 export default {
+	name: 'FilterSectionLocationMulti',
 	components: {
 		FilterMenuSection,
 		FindNewCountry,
