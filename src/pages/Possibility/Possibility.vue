@@ -8,6 +8,7 @@
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
+	name: 'Possibility',
 	components: {
 		WwwPage
 	},

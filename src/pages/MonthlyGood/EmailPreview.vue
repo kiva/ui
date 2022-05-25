@@ -28,6 +28,7 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 const emailPreviewImageRequire = require.context('@/assets/images/mg-email-preview', true);
 
 export default {
+	name: 'EmailPreview',
 	components: {
 		KvResponsiveImage,
 	},

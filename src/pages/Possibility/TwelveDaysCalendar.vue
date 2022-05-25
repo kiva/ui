@@ -94,6 +94,7 @@ import StarBig from '@/assets/inline-svgs/12-days-of-lending/star_big.svg';
 import StarLittle from '@/assets/inline-svgs/12-days-of-lending/star_little.svg';
 
 export default {
+	name: 'TwelveDaysCalendar',
 	components: {
 		Number1,
 		Number2,

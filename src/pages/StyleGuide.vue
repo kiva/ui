@@ -60,6 +60,7 @@ import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
+	name: 'StyleGuide',
 	components: {
 		BuildPageWrapper,
 		KvMaterialIcon,

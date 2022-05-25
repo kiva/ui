@@ -129,6 +129,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
 
 export default {
+	name: 'ThanksPage',
 	components: {
 		AutoDepositCTA,
 		CheckoutReceipt,
