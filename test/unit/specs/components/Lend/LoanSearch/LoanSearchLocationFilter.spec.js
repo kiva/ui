@@ -1,6 +1,7 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import LoanSearchLocationFilter, { getLabel } from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
+import { getCheckboxLabel } from '@/util/loanSearchUtils';
+import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
 
 const NUM_ITEMS = 4;
 
@@ -19,7 +20,7 @@ describe('LoanSearchLocationFilter', () => {
 		const regions = getRegions();
 		const { getByText } = render(LoanSearchLocationFilter, { props: { regions } });
 		regions.forEach(async region => {
-			getByText(getLabel(region));
+			getByText(getCheckboxLabel(region));
 		});
 	});
 
@@ -30,20 +31,20 @@ describe('LoanSearchLocationFilter', () => {
 
 		// Open all regions
 		await Promise.all(regions.map(async region => {
-			const button = getByText(getLabel(region));
+			const button = getByText(getCheckboxLabel(region));
 			await user.click(button);
 		}));
 
-		let countries = queryAllByText(getLabel(regions[0].countries[0]));
+		let countries = queryAllByText(getCheckboxLabel(regions[0].countries[0]));
 		expect(countries.length).toBe(NUM_ITEMS);
 
 		// Close all regions
 		await Promise.all(regions.map(async region => {
-			const button = getByText(getLabel(region));
+			const button = getByText(getCheckboxLabel(region));
 			await user.click(button);
 		}));
 
-		countries = queryAllByText(getLabel(regions[0].countries[0]));
+		countries = queryAllByText(getCheckboxLabel(regions[0].countries[0]));
 		expect(countries.length).toBe(0);
 	});
 
@@ -53,11 +54,11 @@ describe('LoanSearchLocationFilter', () => {
 		const { getByText, emitted } = render(LoanSearchLocationFilter, { props: { regions } });
 
 		// Open first region
-		const region = getByText(getLabel(regions[0]));
+		const region = getByText(getCheckboxLabel(regions[0]));
 		await user.click(region);
 
 		// Select first country
-		const country = getByText(getLabel(regions[0].countries[0]));
+		const country = getByText(getCheckboxLabel(regions[0].countries[0]));
 		await user.click(country);
 
 		// Expect ISO code to be emitted
@@ -73,7 +74,7 @@ describe('LoanSearchLocationFilter', () => {
 		const regions = getRegions(true);
 		await updateProps({ regions });
 
-		await user.click(getByText(getLabel(regions[0])));
-		regions[0].countries.map(c => expect(getByLabelText(getLabel(c)).disabled).toBeTruthy());
+		await user.click(getByText(getCheckboxLabel(regions[0])));
+		regions[0].countries.forEach(c => expect(getByLabelText(getCheckboxLabel(c)).disabled).toBeTruthy());
 	});
 });

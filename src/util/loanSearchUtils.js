@@ -1,5 +1,6 @@
 import orderBy from 'lodash/orderBy';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
+import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
 import { fetchFacets, fetchLoan } from '@/util/flssUtils';
 
 /**
@@ -39,6 +40,7 @@ export function sortRegions(regions) {
  * Transforms ISO codes into regions usable by the filters
  *
  * @param {Array<Object>} countryFacets The ISO codes from FLSS
+ * @param {Array<Object>} allCountryFacets The countries from lend API
  * @returns {Array<Object>} Regions with lists of countries
  */
 export function transformIsoCodes(filteredIsoCodes, allCountryFacets = []) {
@@ -64,6 +66,26 @@ export function transformIsoCodes(filteredIsoCodes, allCountryFacets = []) {
 }
 
 /**
+ * Transforms filtered themes into a form usable by the filters
+ *
+ * @param {Array<Object>} filteredThemes The themes from FLSS
+ * @param {Array<Object>} allThemes The themes from lend API
+ * @returns {Array<Object>} Themes with number of loans fundraising
+ */
+export function transformThemes(filteredThemes, allThemes = []) {
+	const transformed = [];
+
+	filteredThemes.forEach(({ key: name, value: numLoansFundraising }) => {
+		const lookupTheme = allThemes.find(a => a.name === name);
+		if (!lookupTheme) return;
+		const theme = { ...lookupTheme, numLoansFundraising };
+		transformed.push(theme);
+	});
+
+	return orderBy(transformed, 'name');
+}
+
+/**
  * Gets an updated regions list to display in the filter with updated numLoansFundraising
  *
  * @param {Array<Object>} regions The regions previously displayed in the filter
@@ -74,7 +96,6 @@ export function getUpdatedRegions(regions, nextRegions) {
 	// Default to nextRegions
 	if (!regions) return nextRegions;
 
-	// Ensure function is pure
 	const updated = [];
 
 	// Get updated numLoansFundraising
@@ -127,6 +148,40 @@ export function getUpdatedRegions(regions, nextRegions) {
 }
 
 /**
+ * Gets an updated themes list to display in the filter with updated numLoansFundraising
+ *
+ * @param {Array<Object>} themes The themes previously displayed in the filter
+ * @param {Array<Object>} nextThemes The themes returned by the FLSS facets query
+ * @returns {Array<Object>} The updated themes list
+ */
+export function getUpdatedThemes(themes, nextThemes) {
+	// Default to next
+	if (!themes) return nextThemes;
+
+	const updated = [];
+
+	// Get updated numLoansFundraising
+	themes.forEach(theme => {
+		const nextTheme = nextThemes.find(a => a.id === theme.id);
+		const updatedTheme = {
+			...theme,
+			numLoansFundraising: nextTheme?.numLoansFundraising || 0,
+		};
+
+		updated.push(updatedTheme);
+	});
+
+	// Add missing themes that have been added since previous query
+	nextThemes.forEach(theme => {
+		if (!updated.find(a => a.id === theme.id)) {
+			updated.push({ ...theme });
+		}
+	});
+
+	return orderBy(updated, 'name');
+}
+
+/**
  * Builds a flattened list of the ISO codes of the provided regions with countries
  *
  * @param {Array<Object>} regions All of the regions with countries
@@ -155,6 +210,9 @@ export function getFlssFilters(loanSearchState) {
 		...(loanSearchState?.countryIsoCode?.length && {
 			countryIsoCode: { any: loanSearchState.countryIsoCode }
 		}),
+		...(loanSearchState?.theme?.length && {
+			theme: { any: loanSearchState.theme }
+		}),
 	};
 }
 
@@ -170,7 +228,10 @@ export async function runFacetsQueries(apollo, loanSearchState = {}) {
 	const isoCodeFilters = { ...getFlssFilters(loanSearchState), countryIsoCode: undefined };
 	const isoCodes = (await fetchFacets(apollo, isoCodeFilters))?.isoCode || [];
 
-	return { isoCodes };
+	const themeFilters = { ...getFlssFilters(loanSearchState), theme: undefined };
+	const themes = (await fetchFacets(apollo, themeFilters))?.themes || [];
+
+	return { isoCodes, themes };
 }
 
 /**
@@ -184,4 +245,34 @@ export async function runLoansQuery(apollo, loanSearchState = {}) {
 	const flssData = await fetchLoan(apollo, getFlssFilters(loanSearchState));
 
 	return { loans: flssData?.values || [], totalCount: flssData?.totalCount || 0 };
+}
+
+/**
+ * Fetches the facets data from the lend API
+ *
+ * @param {Object} apollo The apollo client instance
+ * @returns {Promise<Array<Object>>} Promise for facets data
+ */
+export async function fetchLoanFacets(apollo) {
+	try {
+		const result = await apollo.query({ query: loanFacetsQuery, fetchPolicy: 'network-only' });
+
+		return {
+			countryFacets: result.data?.lend?.countryFacets || [],
+			sectorFacets: result.data?.lend?.sector || [],
+			themeFacets: result.data?.lend?.loanThemeFilter || [],
+		};
+	} catch (e) {
+		console.log('Fetching loan facets failed:', e.message);
+	}
+}
+
+/**
+ * Returns the item label with fundraising amount in parens
+ *
+ * @param {Object} item The item for generating the label
+ * @returns {string} The item label
+ */
+export function getCheckboxLabel(item) {
+	return `${item.name || item.region} (${item.numLoansFundraising})`;
 }

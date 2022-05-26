@@ -1,6 +1,5 @@
 import numeral from 'numeral';
 import _get from 'lodash/get';
-import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
 
 /** Utility functions for working with loan objects */
 
@@ -136,23 +135,4 @@ export function watchLoanData({
 
 	// Return the observer to allow modification of variables
 	return queryObserver;
-}
-
-/**
- * Fetches the facets data from the lend API
- *
- * @param {Object} apollo The apollo client instance
- * @returns {Promise<Array<Object>>} Promise for facets data
- */
-export async function fetchLoanFacets(apollo) {
-	try {
-		const result = await apollo.query({ query: loanFacetsQuery, fetchPolicy: 'network-only' });
-
-		return {
-			countryFacets: result.data?.lend?.countryFacets || [],
-			sectorFacets: result.data?.lend?.sector || []
-		};
-	} catch (e) {
-		console.log('Fetching loan facets failed:', e.message);
-	}
 }
