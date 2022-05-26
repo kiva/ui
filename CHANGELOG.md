@@ -1,3 +1,16 @@
+## [2.156.0](https://github.com/kiva/ui/compare/v2.155.3...v2.156.0) (2022-05-26)
+
+
+### Features
+
+* location filter options are now updated based on fundraising loans available ([3a48c26](https://github.com/kiva/ui/commit/3a48c26ea82d2b55a818708f2566db86edd9752c))
+
+
+### Bug Fixes
+
+* another whitspace fix ([9d713cc](https://github.com/kiva/ui/commit/9d713ccf4d3ef43fa43e2b2729506dbc2d0ddddb))
+* whitespace fix ([fe25827](https://github.com/kiva/ui/commit/fe2582767e6c3ce1d312d167732cd7ee08c69d21))
+
 ### [2.155.3](https://github.com/kiva/ui/compare/v2.155.2...v2.155.3) (2022-05-24)
 
 
