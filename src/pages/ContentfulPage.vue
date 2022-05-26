@@ -258,35 +258,35 @@ export default {
 						});
 					}
 				}
-			} else {
-				return client.query({
-					query: contentfulEntries,
-					variables: {
-						contentType: 'page',
-						contentKey: args?.route?.meta?.contentfulPage(args?.route)?.trim(),
-					}
-				}).then(({ data }) => {
-					// Get Contentful page data
-					const pageData = getPageData(data);
-					if (pageData.error) {
-						// Only import the error page if there is a contentful error
-						return Promise.all([ErrorPage()]);
-					}
-					// Get page frame component
-					const pageFrame = getPageFrameFromType(pageData?.page?.pageType);
-					// Get components for content groups
-					const contentGroups = getContentGroups(pageData);
-					// Start importing all components
-					return Promise.all([
-						pageFrame(),
-						...contentGroups.map(g => g.component()),
-					]);
-				}).then(resolvedImports => {
-					// Call preFetch for page frame and content group components
-					const components = resolvedImports.map(resolvedImport => resolvedImport.default);
-					return preFetchAll(components, client, args);
-				});
 			}
+
+			return client.query({
+				query: contentfulEntries,
+				variables: {
+					contentType: 'page',
+					contentKey: args?.route?.meta?.contentfulPage(args?.route)?.trim(),
+				}
+			}).then(({ data }) => {
+				// Get Contentful page data
+				const pageData = getPageData(data);
+				if (pageData.error) {
+					// Only import the error page if there is a contentful error
+					return Promise.all([ErrorPage()]);
+				}
+				// Get page frame component
+				const pageFrame = getPageFrameFromType(pageData?.page?.pageType);
+				// Get components for content groups
+				const contentGroups = getContentGroups(pageData);
+				// Start importing all components
+				return Promise.all([
+					pageFrame(),
+					...contentGroups.map(g => g.component()),
+				]);
+			}).then(resolvedImports => {
+				// Call preFetch for page frame and content group components
+				const components = resolvedImports.map(resolvedImport => resolvedImport.default);
+				return preFetchAll(components, client, args);
+			});
 		},
 		result({ data }) {
 			const pageData = getPageData(data);
