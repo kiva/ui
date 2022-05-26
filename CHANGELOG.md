@@ -1,3 +1,10 @@
+### [2.156.1](https://github.com/kiva/ui/compare/v2.156.0...v2.156.1) (2022-05-26)
+
+
+### Bug Fixes
+
+* guard for missing displayName, cleanup template syntax and use tailwind classes ([dfb1e1f](https://github.com/kiva/ui/commit/dfb1e1f5f4094d89b2ccb1fa6bd7c1aa7a65d07f))
+
 ## [2.156.0](https://github.com/kiva/ui/compare/v2.155.3...v2.156.0) (2022-05-26)
 
 
