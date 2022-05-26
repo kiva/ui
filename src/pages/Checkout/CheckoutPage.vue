@@ -264,6 +264,7 @@ import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
@@ -323,6 +324,7 @@ export default {
 			verificationSubmitted: false,
 			showVerification: false,
 			showVerifyRemovePromoCredit: false,
+			isUpsellsExperimentEnabled: false,
 		};
 	},
 	apollo: {
@@ -354,11 +356,24 @@ export default {
 			})
 				.then(() => {
 					return Promise.all([
-						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' })
+						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
+						client.query({ query: experimentQuery, variables: { id: 'upsells_checkout' } }),
 					]);
 				});
 		},
 		result({ data }) {
+			const upsellsExperiment = this.apollo.readFragment({
+				id: 'Experiment:upsells_checkout',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.isUpsellsExperimentEnabled = upsellsExperiment.version === 'b';
+			if (upsellsExperiment.version) {
+				this.$kvTrackEvent(
+					'Basket',
+					'EXP-CORE-602-May-2022',
+					upsellsExperiment.version
+				);
+			}
 			// Checking if guest checkout feature is enabled in Admin settingsManager
 			this.isGuestCheckoutEnabled = data?.general?.guestCheckoutEnabled?.value === 'true';
 			// user data

@@ -30,6 +30,10 @@ query initializeCheckout($basketId: String) {
 			value
 			description
 		}
+		upsellsEnabled: uiExperimentSetting(key: "upsells_checkout") {
+			key
+			value
+		}
 	}
 	shop (basketId: $basketId) {
 		id
