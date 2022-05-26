@@ -1,3 +1,10 @@
+### [2.158.1](https://github.com/kiva/ui/compare/v2.158.0...v2.158.1) (2022-05-26)
+
+
+### Bug Fixes
+
+* call trackExperimentVersion in mounted hook ([a0a1aec](https://github.com/kiva/ui/commit/a0a1aeca9ad5e3f97f58af35598c4e7a929bed83))
+
 ## [2.158.0](https://github.com/kiva/ui/compare/v2.157.0...v2.158.0) (2022-05-26)
 
 
