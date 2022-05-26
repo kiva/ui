@@ -250,17 +250,26 @@ export default {
 			};
 		},
 		async preFetch(config, client, args) {
-			if (args?.route?.path === '/lp/home-ml') {
+			if (args?.route?.path === '/lp/home-ml' || args?.route?.path === '/lp/home-mlv') {
 				await client.query({ query: pageQuery });
 				const result = await client.query({ query: experimentQuery, variables: { id: manualLendingLPExpKey } });
 				const version = result?.data?.experiment?.version;
 				const { enabled } = getExperimentSettingCached(client, manualLendingLPExpKey);
-				if (enabled && version === 'b') {
-					return Promise.reject({
-						path: '/lp/home-mlv',
-						query: args?.route?.query,
-						hash: args?.route?.hash,
-					});
+				if (enabled) {
+					if (version === 'b' && args?.route?.path === '/lp/home-ml') {
+						return Promise.reject({
+							path: '/lp/home-mlv',
+							query: args?.route?.query,
+							hash: args?.route?.hash,
+						});
+					}
+					if (version === 'a' && args?.route?.path === '/lp/home-mlv') {
+						return Promise.reject({
+							path: '/lp/home-ml',
+							query: args?.route?.query,
+							hash: args?.route?.hash,
+						});
+					}
 				}
 			}
 
