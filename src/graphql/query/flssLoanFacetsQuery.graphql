@@ -1,0 +1,10 @@
+query flssLoanFacets($filterObject: [FundraisingLoanSearchFilterInput!]) {
+	fundraisingLoans(filters: $filterObject) {
+		facets {
+			isoCode {
+				key
+				value
+			}
+		}
+  	}
+}
