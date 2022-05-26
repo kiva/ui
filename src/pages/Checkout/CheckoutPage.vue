@@ -362,18 +362,6 @@ export default {
 				});
 		},
 		result({ data }) {
-			const upsellsExperiment = this.apollo.readFragment({
-				id: 'Experiment:upsells_checkout',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.isUpsellsExperimentEnabled = upsellsExperiment.version === 'b';
-			if (upsellsExperiment.version) {
-				this.$kvTrackEvent(
-					'Basket',
-					'EXP-CORE-602-May-2022',
-					upsellsExperiment.version
-				);
-			}
 			// Checking if guest checkout feature is enabled in Admin settingsManager
 			this.isGuestCheckoutEnabled = data?.general?.guestCheckoutEnabled?.value === 'true';
 			// user data
@@ -409,6 +397,18 @@ export default {
 		}
 	},
 	created() {
+		const upsellsExperiment = this.apollo.readFragment({
+			id: 'Experiment:upsells_checkout',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.isUpsellsExperimentEnabled = upsellsExperiment.version === 'b';
+		if (upsellsExperiment.version) {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-CORE-602-May-2022',
+				upsellsExperiment.version
+			);
+		}
 		// show guest account claim confirmation message
 		if (this.myId && this.$route.query?.claimed === '1') {
 			this.$showTipMsg('Account created');
