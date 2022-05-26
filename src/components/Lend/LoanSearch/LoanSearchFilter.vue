@@ -40,7 +40,7 @@
 					Attributes
 				</h2>
 			</template>
-			<loan-search-attribute-filter :attributes="facets.attributes" @updated="handleUpdatedFilters" />
+			<loan-search-theme-filter :themes="facets.themes" @updated="handleUpdatedFilters" />
 		</kv-accordion-item>
 		<h2 class="tw-text-h4 tw-mt-2">
 			Advanced filters
@@ -54,7 +54,7 @@ import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiClose, mdiArrowRight } from '@mdi/js';
 import LoanSearchGenderFilter from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
 import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
-import LoanSearchAttributeFilter from '@/components/Lend/LoanSearch/LoanSearchAttributeFilter';
+import LoanSearchThemeFilter from '@/components/Lend/LoanSearch/LoanSearchThemeFilter';
 import { updateSearchState } from '@/util/loanSearchUtils';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -68,7 +68,7 @@ export default {
 		KvMaterialIcon,
 		LoanSearchGenderFilter,
 		LoanSearchLocationFilter,
-		LoanSearchAttributeFilter,
+		LoanSearchThemeFilter,
 	},
 	props: {
 		/**
@@ -94,7 +94,7 @@ export default {
 		 *       name: '',
 		 *     }
 		 *   ],
-		 *   attributes: [
+		 *   themes: [
 		 *     {
 		 *       id: 1,
 		 *       name: '',

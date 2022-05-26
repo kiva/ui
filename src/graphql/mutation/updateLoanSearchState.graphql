@@ -5,6 +5,6 @@ mutation updateLoanSearch($searchParams: JSONObject) {
 		countryIsoCode
 		sectorId
 		sortBy
-		attribute
+		theme
 	}
 }

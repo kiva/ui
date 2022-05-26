@@ -66,20 +66,20 @@ export function transformIsoCodes(filteredIsoCodes, allCountryFacets = []) {
 }
 
 /**
- * Transforms filtered attributes into a form usable by the filters
+ * Transforms filtered themes into a form usable by the filters
  *
- * @param {Array<Object>} filteredAttributes The attributes from FLSS
- * @param {Array<Object>} allAttributes The attributes from lend API
- * @returns {Array<Object>} Attributes with number of loans fundraising
+ * @param {Array<Object>} filteredThemes The themes from FLSS
+ * @param {Array<Object>} allThemes The themes from lend API
+ * @returns {Array<Object>} Themes with number of loans fundraising
  */
-export function transformAttributes(filteredAttributes, allAttributes = []) {
+export function transformThemes(filteredThemes, allThemes = []) {
 	const transformed = [];
 
-	filteredAttributes.forEach(({ key: name, value: numLoansFundraising }) => {
-		const lookupAttribute = allAttributes.find(a => a.name === name);
-		if (!lookupAttribute) return;
-		const attribute = { ...lookupAttribute, numLoansFundraising };
-		transformed.push(attribute);
+	filteredThemes.forEach(({ key: name, value: numLoansFundraising }) => {
+		const lookupTheme = allThemes.find(a => a.name === name);
+		if (!lookupTheme) return;
+		const theme = { ...lookupTheme, numLoansFundraising };
+		transformed.push(theme);
 	});
 
 	return orderBy(transformed, 'name');
@@ -148,33 +148,33 @@ export function getUpdatedRegions(regions, nextRegions) {
 }
 
 /**
- * Gets an updated attributes list to display in the filter with updated numLoansFundraising
+ * Gets an updated themes list to display in the filter with updated numLoansFundraising
  *
- * @param {Array<Object>} attributes The attributes previously displayed in the filter
- * @param {Array<Object>} nextAttributes The attributes returned by the FLSS facets query
- * @returns {Array<Object>} The updated attributes list
+ * @param {Array<Object>} themes The themes previously displayed in the filter
+ * @param {Array<Object>} nextThemes The themes returned by the FLSS facets query
+ * @returns {Array<Object>} The updated themes list
  */
-export function getUpdatedAttributes(attributes, nextAttributes) {
+export function getUpdatedThemes(themes, nextThemes) {
 	// Default to next
-	if (!attributes) return nextAttributes;
+	if (!themes) return nextThemes;
 
 	const updated = [];
 
 	// Get updated numLoansFundraising
-	attributes.forEach(attribute => {
-		const nextAttribute = nextAttributes.find(a => a.id === attribute.id);
-		const updatedAttribute = {
-			...attribute,
-			numLoansFundraising: nextAttribute?.numLoansFundraising || 0,
+	themes.forEach(theme => {
+		const nextTheme = nextThemes.find(a => a.id === theme.id);
+		const updatedTheme = {
+			...theme,
+			numLoansFundraising: nextTheme?.numLoansFundraising || 0,
 		};
 
-		updated.push(updatedAttribute);
+		updated.push(updatedTheme);
 	});
 
-	// Add missing attributes that have been added since previous query
-	nextAttributes.forEach(attribute => {
-		if (!updated.find(a => a.id === attribute.id)) {
-			updated.push({ ...attribute });
+	// Add missing themes that have been added since previous query
+	nextThemes.forEach(theme => {
+		if (!updated.find(a => a.id === theme.id)) {
+			updated.push({ ...theme });
 		}
 	});
 
@@ -210,8 +210,8 @@ export function getFlssFilters(loanSearchState) {
 		...(loanSearchState?.countryIsoCode?.length && {
 			countryIsoCode: { any: loanSearchState.countryIsoCode }
 		}),
-		...(loanSearchState?.attribute?.length && {
-			theme: { any: loanSearchState.attribute }
+		...(loanSearchState?.theme?.length && {
+			theme: { any: loanSearchState.theme }
 		}),
 	};
 }
@@ -228,10 +228,10 @@ export async function runFacetsQueries(apollo, loanSearchState = {}) {
 	const isoCodeFilters = { ...getFlssFilters(loanSearchState), countryIsoCode: undefined };
 	const isoCodes = (await fetchFacets(apollo, isoCodeFilters))?.isoCode || [];
 
-	const attributeFilters = { ...getFlssFilters(loanSearchState), theme: undefined };
-	const attributes = (await fetchFacets(apollo, attributeFilters))?.themes || [];
+	const themeFilters = { ...getFlssFilters(loanSearchState), theme: undefined };
+	const themes = (await fetchFacets(apollo, themeFilters))?.themes || [];
 
-	return { isoCodes, attributes };
+	return { isoCodes, themes };
 }
 
 /**
@@ -260,7 +260,7 @@ export async function fetchLoanFacets(apollo) {
 		return {
 			countryFacets: result.data?.lend?.countryFacets || [],
 			sectorFacets: result.data?.lend?.sector || [],
-			attributeFacets: result.data?.lend?.loanThemeFilter || [],
+			themeFacets: result.data?.lend?.loanThemeFilter || [],
 		};
 	} catch (e) {
 		console.log('Fetching loan facets failed:', e.message);

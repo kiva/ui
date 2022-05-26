@@ -50,7 +50,7 @@ import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
 import {
 	runFacetsQueries,
 	transformIsoCodes,
-	transformAttributes,
+	transformThemes,
 	runLoansQuery,
 	fetchLoanFacets
 } from '@/util/loanSearchUtils';
@@ -86,7 +86,7 @@ export default {
 			 *       name: '',
 			 *     }
 			 *   ],
-			 *   attributeFacets: [
+			 *   themeFacets: [
 			 *     {
 			 *       id: 1,
 			 *       name: '',
@@ -118,7 +118,7 @@ export default {
 			 *       name: '',
 			 *     }
 			 *   ],
-			 *   attributes: [
+			 *   themes: [
 			 *     {
 			 *       id: 1,
 			 *       name: '',
@@ -142,13 +142,13 @@ export default {
 				if (!this.allFacets) this.allFacets = await fetchLoanFacets(this.apollo);
 
 				// Get filtered facet options from FLSS
-				const { isoCodes, attributes } = await runFacetsQueries(this.apollo, data?.loanSearchState);
+				const { isoCodes, themes } = await runFacetsQueries(this.apollo, data?.loanSearchState);
 
 				// Merge all facet options with filtered options
 				this.facets = {
 					regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 					sectors: this.allFacets?.sectorFacets || [],
-					attributes: transformAttributes(attributes, this.allFacets?.attributeFacets)
+					themes: transformThemes(themes, this.allFacets?.themeFacets)
 				};
 
 				// Get filtered loans from FLSS

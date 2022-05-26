@@ -11,7 +11,7 @@ const __typename = 'LoanSearchState';
 // 		countryIsoCode
 // 		sectorId
 // 		sortBy
-// 		attribute
+// 		theme
 // 	}
 // `;
 
@@ -25,7 +25,7 @@ export default () => {
 				countryIsoCode: [], // expects an array of strings
 				sectorId: [], // expects an array of ints
 				sortBy: '', // expects a string
-				attribute: [], // expects an array of strings
+				theme: [], // expects an array of strings
 				__typename,
 			},
 		},

@@ -1,42 +1,42 @@
 <template>
 	<form class="tw-flex tw-flex-col tw-gap-1.5 tw-mb-2" @submit.prevent>
 		<fieldset>
-			<kv-checkbox-list :items="items" @updated="updateAttributes" />
+			<kv-checkbox-list :items="items" @updated="updateThemes" />
 		</fieldset>
 	</form>
 </template>
 
 <script>
 import KvCheckboxList from '@/components/Kv/KvCheckboxList';
-import { getUpdatedAttributes, getCheckboxLabel } from '@/util/loanSearchUtils';
+import { getUpdatedThemes, getCheckboxLabel } from '@/util/loanSearchUtils';
 
 export default {
-	name: 'LoanSearchAttributeFilter',
+	name: 'LoanSearchThemeFilter',
 	components: {
 		KvCheckboxList,
 	},
 	props: {
 		/**
-		 * The attributes list to display has checkboxes. Expected format:
+		 * The themes list to display has checkboxes. Expected format:
 		 * [{
 		 *   id: 1,
 		 *   name: '',
 		 *   numLoansFundraising: 1,
 		 * }]
 		 */
-		attributes: {
+		themes: {
 			type: Array,
 			default: () => []
 		}
 	},
 	data() {
 		return {
-			displayedAttributes: this.attributes,
+			displayedThemes: this.themes,
 		};
 	},
 	computed: {
 		items() {
-			return this.displayedAttributes.map(c => ({
+			return this.displayedThemes.map(c => ({
 				value: c.name,
 				title: getCheckboxLabel(c),
 				disabled: c.numLoansFundraising === 0
@@ -44,13 +44,13 @@ export default {
 		}
 	},
 	methods: {
-		updateAttributes(attributes) {
-			this.$emit('updated', { attribute: attributes });
+		updateThemes(themes) {
+			this.$emit('updated', { theme: themes });
 		}
 	},
 	watch: {
-		attributes(nextAttributes) {
-			this.displayedAttributes = getUpdatedAttributes(this.displayedAttributes, nextAttributes);
+		themes(nextThemes) {
+			this.displayedThemes = getUpdatedThemes(this.displayedThemes, nextThemes);
 		},
 	},
 };
