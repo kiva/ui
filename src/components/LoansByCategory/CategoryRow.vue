@@ -97,6 +97,7 @@ const largeCardWidthPlusPadding = 300;
 const expandableCardWidthPlusPadding = 274;
 
 export default {
+	name: 'CategoryRow',
 	components: {
 		LoanCardController,
 	},

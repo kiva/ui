@@ -39,6 +39,7 @@
 import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
 
 export default {
+	name: 'FundraisingStatus',
 	components: {
 		FundraisingStatusMeter,
 	},

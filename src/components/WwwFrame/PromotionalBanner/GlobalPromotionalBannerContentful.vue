@@ -32,6 +32,7 @@ const bannerQuery = gql`query bannerQuery {
 }`;
 
 export default {
+	name: 'GlobalPromotionalBannerContentful',
 	components: {
 		AppealBannerCircularContainer,
 		GenericPromoBanner,

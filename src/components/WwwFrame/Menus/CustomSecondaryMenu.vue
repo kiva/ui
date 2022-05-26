@@ -59,6 +59,7 @@ import SecondaryMenu from '@/components/WwwFrame/SecondaryMenu';
 import KvExpandable from '@/components/Kv/KvExpandable';
 
 export default {
+	name: 'CustomSecondaryMenu',
 	components: {
 		KvIcon,
 		SecondaryMenu,

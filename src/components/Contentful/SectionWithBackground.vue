@@ -33,6 +33,7 @@ import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 * */
 
 export default {
+	name: 'SectionWithBackground',
 	components: {
 		KvContentfulImg,
 	},

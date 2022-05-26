@@ -198,6 +198,7 @@ const pageQuery = gql`query paymentMethodVault {
 }`;
 
 export default {
+	name: 'PaymentSettings',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),

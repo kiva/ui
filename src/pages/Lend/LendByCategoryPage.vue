@@ -137,6 +137,7 @@ import LoansBundleExpWrapper from '@/components/LoansByCategory/LoansBundleExpWr
 const ssrRowLimiter = 2;
 
 export default {
+	name: 'LendByCategoryPage',
 	components: {
 		// CategoryAdminControls: () => import('./admin/CategoryAdminControls'),
 		CategoryRow,
@@ -723,7 +724,9 @@ export default {
 			this.setLeftArrowPosition();
 		}
 
-		if (this.$route.query.utm_campaign === 'liked_loan' || this.$route.query.utm_campaign.includes('liked_loan')) {
+		if (this.$route?.query?.utm_campaign === 'liked_loan'
+			|| this.$route?.query?.utm_campaign?.includes('liked_loan')
+		) {
 			this.showMGDigestLightbox = true;
 			if (this.$route.query.utm_content === 'yes') {
 				this.$kvTrackEvent('Monthly Digest', 'loan-feedback', 'like');

@@ -135,6 +135,7 @@ import lendFilterPageQuery from '@/graphql/query/lendFilterPage.graphql';
 import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 
 export default {
+	name: 'LendFilterPage',
 	components: {
 		SelectedRefinements,
 		// TODO: Use this

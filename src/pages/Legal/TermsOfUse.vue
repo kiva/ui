@@ -888,6 +888,7 @@
 <script>
 
 export default {
+	name: 'TermsOfUse',
 	metaInfo: {
 		title: 'Terms Of Use'
 	},

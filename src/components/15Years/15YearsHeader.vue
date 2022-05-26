@@ -160,6 +160,7 @@ const countryQuery = gql`query featuredCountry {
 }`;
 
 export default {
+	name: '15YearsHeader',
 	components: {
 		FifteenYearsButton,
 		FifteenYearsHeaderCard,

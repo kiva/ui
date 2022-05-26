@@ -155,6 +155,7 @@ const loanQuery = gql`query recLoanCard($basketId: String, $loanId: Int!) {
 }`;
 
 export default {
+	name: 'RecommendedLoanCard',
 	props: {
 		loanId: {
 			type: Number,

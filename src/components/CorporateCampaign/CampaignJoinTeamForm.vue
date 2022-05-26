@@ -70,6 +70,7 @@ import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
+	name: 'CampaignJoinTeamForm',
 	inject: ['apollo'],
 	components: {
 		KvButton,

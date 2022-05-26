@@ -48,6 +48,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
+	name: 'MGDigestLightbox',
 	components: {
 		KvButton,
 		KvLightbox,

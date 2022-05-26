@@ -24,6 +24,7 @@
 import KvExpandable from '@/components/Kv/KvExpandable';
 
 export default {
+	name: 'ExpandableListItem',
 	components: {
 		KvExpandable
 	},

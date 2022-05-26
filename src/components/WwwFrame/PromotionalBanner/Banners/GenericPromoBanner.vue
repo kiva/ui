@@ -34,6 +34,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 
 export default {
+	name: 'GenericPromoBanner',
 	components: {
 		KvIcon
 	},

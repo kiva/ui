@@ -44,6 +44,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 const imageRequire = require.context('@/assets/images', true);
 
 export default {
+	name: 'MGLightbox',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvButton,

@@ -130,6 +130,7 @@ import RemoveBasketItem from '@/components/Checkout/RemoveBasketItem';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
+	name: 'KivaCardItem',
 	components: {
 		KvMaterialIcon,
 		LoanPrice,

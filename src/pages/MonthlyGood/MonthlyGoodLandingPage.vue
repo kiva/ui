@@ -302,6 +302,7 @@ const pageQuery = gql`
 `;
 
 export default {
+	name: 'MonthlyGoodLandingPage',
 	metaInfo() {
 		return	{
 			title: 'Make an impact with Monthly Good',

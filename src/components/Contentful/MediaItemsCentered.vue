@@ -41,6 +41,7 @@ import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
+	name: 'MediaItemsCentered',
 	components: {
 		KvGrid,
 		KvPageContainer,

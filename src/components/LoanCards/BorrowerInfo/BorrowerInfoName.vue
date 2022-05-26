@@ -14,6 +14,7 @@
 
 <script>
 export default {
+	name: 'BorrowerInfoName',
 	props: {
 		disableLink: {
 			type: Boolean,

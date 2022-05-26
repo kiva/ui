@@ -34,6 +34,7 @@ import KvCheckboxList from '@/components/Kv/KvCheckboxList';
 import { getIsoCodes, getUpdatedRegions, getCheckboxLabel } from '@/util/loanSearchUtils';
 
 export default {
+	name: 'LoanSearchLocationFilter',
 	components: {
 		KvIcon,
 		KvCheckboxList,

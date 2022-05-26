@@ -4,5 +4,6 @@
 
 <script>
 export default {
+	name: 'LoanStoryPanel'
 };
 </script>

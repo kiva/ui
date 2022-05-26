@@ -39,6 +39,7 @@ import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/Fun
 import hoverLoanCardMixin from '@/components/LoanCards/HoverLoanCard/hoverLoanCardMixin';
 
 export default {
+	name: 'HoverLoanCardSmall',
 	components: {
 		LoanCardImage,
 		FundraisingStatusMeter,

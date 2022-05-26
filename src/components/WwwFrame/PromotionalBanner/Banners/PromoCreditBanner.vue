@@ -108,6 +108,7 @@ const promoCampaignInfo = gql`
 	}
 `;
 export default {
+	name: 'PromoCreditBanner',
 	inject: ['apollo', 'cookieStore'],
 	props: {
 		basketState: {

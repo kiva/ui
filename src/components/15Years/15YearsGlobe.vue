@@ -17,7 +17,7 @@ import textureKiva from '@/assets/images/15-years/texture-kiva.png';
 import FifteenYearsGlobeCTA from '@/components/15Years/15YearsGlobeCTA';
 
 export default {
-	name: 'FifteenYearsGlobe',
+	name: '15YearsGlobe',
 	components: {
 		FifteenYearsGlobeCTA,
 	},

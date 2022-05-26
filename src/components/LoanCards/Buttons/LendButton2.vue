@@ -41,6 +41,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
+	name: 'LendButton2',
 	inject: ['apollo', 'cookieStore'],
 	props: {
 		loanId: {

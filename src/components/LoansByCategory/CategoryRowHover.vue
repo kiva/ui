@@ -152,6 +152,7 @@ const hoverCardSmallPaddingTop = 87;
 const cardExpansionDuration = 150;
 
 export default {
+	name: 'CategoryRowHover',
 	components: {
 		LoanCardController,
 		KvExpandable,

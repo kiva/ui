@@ -44,6 +44,7 @@ const pageQuery = gql`query donateContent {
 }`;
 
 export default {
+	name: 'DonateSupportUs',
 	metaInfo() {
 		return {
 			title: `${this.pageTitle}`,

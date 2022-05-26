@@ -20,6 +20,7 @@ import { differenceInCalendarDays } from 'date-fns';
 import numeral from 'numeral';
 
 export default {
+	name: 'LendTimingMessaging',
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {

@@ -7,6 +7,7 @@
 <script>
 
 export default {
+	name: 'BorrowerName',
 	props: {
 		maxLength: {
 			type: Number,

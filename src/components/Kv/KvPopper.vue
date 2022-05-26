@@ -22,6 +22,7 @@ import {
 } from '@/util/touchEvents';
 
 export default {
+	name: 'KvPopper',
 	mixins: [usingTouchMixin],
 	props: {
 		controller: { type: String, required: true },

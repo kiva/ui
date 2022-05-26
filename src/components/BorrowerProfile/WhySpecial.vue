@@ -24,6 +24,7 @@ import { formatWhySpecial } from '@/util/loanUtils';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 
 export default {
+	name: 'WhySpecial',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvLoadingPlaceholder,

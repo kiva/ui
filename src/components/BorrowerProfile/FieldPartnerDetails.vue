@@ -127,6 +127,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 export default {
+	name: 'FieldPartnerDetails',
 	components: {
 		DescriptionListItem,
 		KvMaterialIcon,

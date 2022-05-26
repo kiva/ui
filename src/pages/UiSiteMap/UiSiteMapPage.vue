@@ -15,6 +15,7 @@ import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 import RouteListing from './RouteListing';
 
 export default {
+	name: 'UiSiteMapPage',
 	components: {
 		KvDefaultWrapper,
 		RouteListing,

@@ -156,6 +156,7 @@ const pageQuery = gql`query causeSubscription {
 }`;
 
 export default {
+	name: 'SubscriptionsCauses',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		CausesUpdateForm,

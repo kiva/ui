@@ -33,6 +33,7 @@ const pageQuery = gql`
 `;
 
 export default {
+	name: 'LoanChannelCategoryPage',
 	metaInfo() {
 		this.getMetaInfo();
 		return {

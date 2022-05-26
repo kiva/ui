@@ -793,6 +793,7 @@ const categoryProperties = {
 categoryProperties['loans-to-women'] = categoryProperties.women;
 
 export default {
+	name: 'LoanChannelCategoryExperiment',
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {

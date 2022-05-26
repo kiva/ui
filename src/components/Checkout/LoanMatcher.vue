@@ -6,6 +6,7 @@
 
 <script>
 export default {
+	name: 'LoanMatcher',
 	props: {
 		matchingText: {
 			type: String,

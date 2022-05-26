@@ -201,6 +201,7 @@ const pageQuery = gql`query monthlyGoodSubscription {
 }`;
 
 export default {
+	name: 'SubscriptionsMonthlyGood',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvButton,

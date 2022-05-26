@@ -20,6 +20,7 @@
 // import logFormatter from '@/util/logFormatter';
 
 export default {
+	name: 'LendingNoLoanId',
 	inject: ['locale'],
 	metaInfo: {
 		title: 'Error'

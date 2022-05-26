@@ -62,6 +62,7 @@ import clipboardCopy from 'clipboard-copy';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	name: 'SocialShareV2',
 	inject: ['apollo'],
 	components: {
 		KvIcon

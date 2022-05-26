@@ -18,6 +18,7 @@
 import KvRadio from '@/components/Kv/KvRadio';
 
 export default {
+	name: 'SortOrder',
 	components: {
 		KvRadio
 	},

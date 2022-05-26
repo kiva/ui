@@ -34,7 +34,7 @@ import * as CustomEase from '../../util/animation/CustomEase';
 import * as MorphSVGPlugin from '../../util/animation/MorphSVGPlugin';
 
 export default {
-	name: 'FifteenYearsOilyBackground',
+	name: '15YearsOilyBackground',
 	mounted() {
 		gsap.registerPlugin(MorphSVGPlugin, CustomEase);
 		const standardEase = CustomEase.CustomEase.create('custom', 'M0,0,C0.025,0,0.975,1,1,1');

@@ -37,6 +37,7 @@
 import numeral from 'numeral';
 
 export default {
+	name: 'HomepageGeneralStats',
 	props: {
 		content: {
 			type: Object,

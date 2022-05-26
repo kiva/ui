@@ -82,6 +82,7 @@ import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 
 export default {
+	name: 'FlssLoanRow',
 	inject: ['apollo'],
 	components: {
 		KvCarousel,

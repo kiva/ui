@@ -21,6 +21,7 @@
 import kivaLogoMg from '@/assets/inline-svgs/logos/kivalogo_credibility_mg.svg';
 
 export default {
+	name: 'MoreAboutKiva',
 	components: {
 		kivaLogoMg
 	},

@@ -140,6 +140,7 @@ const pageQuery = gql`
  * so a parent component can access them.
  */
 export default {
+	name: 'CausesUpdateForm',
 	components: {
 		KvIcon,
 		KvSelect,

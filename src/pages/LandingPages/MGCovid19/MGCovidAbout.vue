@@ -40,6 +40,7 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 const billionImpactImagesRequire = require.context('@/assets/images/10-years-billion-impact', true);
 
 export default {
+	name: 'MGCovidAbout',
 	components: {
 		KvResponsiveImage
 	},

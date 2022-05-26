@@ -36,6 +36,7 @@ import FifteenYearsTimeline from '@/components/15Years/15YearsTimeline';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
+	name: '15Years',
 	components: {
 		FifteenYearsHeader,
 		FifteenYearsHowKivaWorks,

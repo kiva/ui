@@ -40,6 +40,7 @@ import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSe
 import HierarchicalMenuList from '@/pages/Lend/Filter/FilterComponents/HierarchicalMenuList';
 
 export default {
+	name: 'FilterSectionLocation',
 	components: {
 		FilterMenuSection,
 		AisHierarchicalMenu,

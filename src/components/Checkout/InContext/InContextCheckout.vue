@@ -78,6 +78,7 @@ import OrderTotals from '@/components/Checkout/OrderTotals';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'InContextCheckout',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BasketItemsList,

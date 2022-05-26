@@ -15,6 +15,7 @@
 
 <script>
 export default {
+	name: 'KvCharityNavigator',
 	props: {
 		title: {
 			type: String,

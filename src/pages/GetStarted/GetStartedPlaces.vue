@@ -197,6 +197,7 @@ const lendingPreferencesPlaces = gql`query lendingPreferences($visitorId: String
 }`;
 
 export default {
+	name: 'GetStartedPlaces',
 	components: {
 		KvButton,
 		KvFlag,

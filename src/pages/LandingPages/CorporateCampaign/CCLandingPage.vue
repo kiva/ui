@@ -453,6 +453,7 @@ const myTeamsQuery = gql`query myTeamsQuery {
 }`;
 
 export default {
+	name: 'CCLandingPage',
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	components: {
 		CampaignHero,
