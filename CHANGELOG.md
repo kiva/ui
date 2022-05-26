@@ -1,3 +1,11 @@
+### [2.156.2](https://github.com/kiva/ui/compare/v2.156.1...v2.156.2) (2022-05-26)
+
+
+### Bug Fixes
+
+* optional chaining added to the fix ([3cc61b8](https://github.com/kiva/ui/commit/3cc61b8ed0135b99b8add7ba6a54625863c4d23d))
+* validation was added for utm campaign ([8b5704e](https://github.com/kiva/ui/commit/8b5704e0943cb99e2ff3ffd65aa22b28722acf94))
+
 ### [2.156.1](https://github.com/kiva/ui/compare/v2.156.0...v2.156.1) (2022-05-26)
 
 
