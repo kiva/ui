@@ -11,6 +11,7 @@ import KvCheckboxList from '@/components/Kv/KvCheckboxList';
 import { getUpdatedAttributes, getCheckboxLabel } from '@/util/loanSearchUtils';
 
 export default {
+	name: 'LoanSearchAttributeFilter',
 	components: {
 		KvCheckboxList,
 	},
