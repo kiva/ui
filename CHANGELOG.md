@@ -1,3 +1,10 @@
+### [2.158.3](https://github.com/kiva/ui/compare/v2.158.2...v2.158.3) (2022-05-26)
+
+
+### Bug Fixes
+
+* only check experiment on experiment pages ([f8e7ca9](https://github.com/kiva/ui/commit/f8e7ca9fb0e47b7a18b672898be47dd9a3155155))
+
 ### [2.158.2](https://github.com/kiva/ui/compare/v2.158.1...v2.158.2) (2022-05-26)
 
 
