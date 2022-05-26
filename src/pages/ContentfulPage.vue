@@ -222,6 +222,18 @@ export default {
 			],
 		};
 	},
+	mounted() {
+		const { enabled } = getExperimentSettingCached(this.apollo, manualLendingLPExpKey);
+		if (enabled && (this.$route.path === '/lp/home-ml' || this.$route.path === '/lp/home-mlv')) {
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Paid home',
+				manualLendingLPExpKey,
+				'EXP-MARS-124-May2022'
+			);
+		}
+	},
 	apollo: {
 		query: contentfulEntries,
 		preFetchVariables({ route }) {
@@ -242,21 +254,12 @@ export default {
 				const result = await client.query({ query: experimentQuery, variables: { id: manualLendingLPExpKey } });
 				const version = result?.data?.experiment?.version;
 				const { enabled } = getExperimentSettingCached(client, manualLendingLPExpKey);
-				if (enabled) {
-					trackExperimentVersion(
-						client,
-						this.$kvTrackEvent,
-						'Paid home',
-						manualLendingLPExpKey,
-						'EXP-MARS-124-May2022'
-					);
-					if (version === 'b') {
-						return Promise.reject({
-							path: '/lp/home-mlv',
-							query: args?.route?.query,
-							hash: args?.route?.hash,
-						});
-					}
+				if (enabled && version === 'b') {
+					return Promise.reject({
+						path: '/lp/home-mlv',
+						query: args?.route?.query,
+						hash: args?.route?.hash,
+					});
 				}
 			}
 
