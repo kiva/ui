@@ -1,3 +1,10 @@
+### [2.158.2](https://github.com/kiva/ui/compare/v2.158.1...v2.158.2) (2022-05-26)
+
+
+### Bug Fixes
+
+* always prefetch experiment info and redirect in other direction if necessary ([f312aed](https://github.com/kiva/ui/commit/f312aed1b7f6382ff0ee555d3f4ded9fb1d9070c))
+
 ### [2.158.1](https://github.com/kiva/ui/compare/v2.158.0...v2.158.1) (2022-05-26)
 
 
