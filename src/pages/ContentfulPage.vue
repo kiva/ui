@@ -236,62 +236,57 @@ export default {
 				contentKey: this.$route?.meta?.contentfulPage(this.$route)?.trim(),
 			};
 		},
-		preFetch(config, client, args) {
+		async preFetch(config, client, args) {
 			if (args?.route?.path === '/lp/home-ml') {
-				client.query({ query: pageQuery }).then(() => {
-					return Promise.all([
-						client.query({ query: experimentQuery, variables: { id: manualLendingLPExpKey } })
-					]);
-				}).then(result => {
-					const version = result?.data?.experiment?.version;
-					const { enabled } = getExperimentSettingCached(client, manualLendingLPExpKey);
-
-					if (enabled) {
-						trackExperimentVersion(
-							client,
-							this.$kvTrackEvent,
-							'Paid home',
-							manualLendingLPExpKey,
-							'EXP-MARS-124-May2022'
-						);
-						if (version === 'b') {
-							return Promise.reject({
-								path: '/lp/home-mlv',
-								query: args?.route?.query,
-								hash: args?.route?.hash,
-							});
-						}
+				await client.query({ query: pageQuery });
+				const result = await client.query({ query: experimentQuery, variables: { id: manualLendingLPExpKey } });
+				const version = result?.data?.experiment?.version;
+				const { enabled } = getExperimentSettingCached(client, manualLendingLPExpKey);
+				if (enabled) {
+					trackExperimentVersion(
+						client,
+						this.$kvTrackEvent,
+						'Paid home',
+						manualLendingLPExpKey,
+						'EXP-MARS-124-May2022'
+					);
+					if (version === 'b') {
+						return Promise.reject({
+							path: '/lp/home-mlv',
+							query: args?.route?.query,
+							hash: args?.route?.hash,
+						});
 					}
+				}
+			} else {
+				return client.query({
+					query: contentfulEntries,
+					variables: {
+						contentType: 'page',
+						contentKey: args?.route?.meta?.contentfulPage(args?.route)?.trim(),
+					}
+				}).then(({ data }) => {
+					// Get Contentful page data
+					const pageData = getPageData(data);
+					if (pageData.error) {
+						// Only import the error page if there is a contentful error
+						return Promise.all([ErrorPage()]);
+					}
+					// Get page frame component
+					const pageFrame = getPageFrameFromType(pageData?.page?.pageType);
+					// Get components for content groups
+					const contentGroups = getContentGroups(pageData);
+					// Start importing all components
+					return Promise.all([
+						pageFrame(),
+						...contentGroups.map(g => g.component()),
+					]);
+				}).then(resolvedImports => {
+					// Call preFetch for page frame and content group components
+					const components = resolvedImports.map(resolvedImport => resolvedImport.default);
+					return preFetchAll(components, client, args);
 				});
 			}
-
-			return client.query({
-				query: contentfulEntries,
-				variables: {
-					contentType: 'page',
-					contentKey: args?.route?.meta?.contentfulPage(args?.route)?.trim(),
-				}
-			}).then(({ data }) => {
-				// Get Contentful page data
-				const pageData = getPageData(data);
-				if (pageData.error) {
-					// Only import the error page if there is a contentful error
-					return Promise.all([ErrorPage()]);
-				}
-				// Get page frame component
-				const pageFrame = getPageFrameFromType(pageData?.page?.pageType);
-				// Get components for content groups
-				const contentGroups = getContentGroups(pageData);
-				// Start importing all components
-				return Promise.all([
-					pageFrame(),
-					...contentGroups.map(g => g.component()),
-				]);
-			}).then(resolvedImports => {
-				// Call preFetch for page frame and content group components
-				const components = resolvedImports.map(resolvedImport => resolvedImport.default);
-				return preFetchAll(components, client, args);
-			});
 		},
 		result({ data }) {
 			const pageData = getPageData(data);
