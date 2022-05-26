@@ -141,6 +141,7 @@ const processInstantLendingContent = gql`query instantLendingContent($loanId: In
 }`;
 
 export default {
+	name: 'ProcessInstantLending',
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
 		return {

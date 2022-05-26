@@ -34,6 +34,7 @@
 <script>
 
 export default {
+	name: 'HomepageCorporateSponsors',
 	props: {
 		content: {
 			type: Object,

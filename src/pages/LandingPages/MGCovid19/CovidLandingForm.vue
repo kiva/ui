@@ -86,6 +86,7 @@ const pageQuery = gql`query covidLandingPage {
 }`;
 
 export default {
+	name: 'CovidLandingForm',
 	components: {
 		KvButton,
 		KvPillToggle,

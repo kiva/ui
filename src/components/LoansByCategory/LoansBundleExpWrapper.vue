@@ -84,6 +84,7 @@ import KvExpandable from '@/components/Kv/KvExpandable';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'LoansBundleExpWrapper',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvExpandable,

@@ -16,6 +16,7 @@
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'FirstMFASetup',
 	components: {
 		KvButton,
 	},

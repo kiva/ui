@@ -161,6 +161,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
+	name: 'AppealBannerCircular',
 	data() {
 		return {
 			mdiClose

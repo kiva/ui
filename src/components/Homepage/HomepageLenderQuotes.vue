@@ -41,6 +41,7 @@
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 
 export default {
+	name: 'HomepageLenderQuotes',
 	components: {
 		KvContentfulImg,
 	},

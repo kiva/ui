@@ -45,6 +45,7 @@ import BorrowerImage from './BorrowerImage';
 import LoanDescription from './LoanDescription';
 
 export default {
+	name: 'LoanStory',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BorrowerImage,

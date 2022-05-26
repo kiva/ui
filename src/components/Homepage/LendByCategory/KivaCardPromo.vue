@@ -38,6 +38,7 @@ import KvButton from '@/components/Kv/KvButton';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
+	name: 'KivaCardPromo',
 	components: {
 		KvButton,
 	},

@@ -15,6 +15,7 @@
 
 <script>
 export default {
+	name: 'LegacySubscriberNotice',
 	props: {
 		legacySubscriptions: {
 			type: Array,

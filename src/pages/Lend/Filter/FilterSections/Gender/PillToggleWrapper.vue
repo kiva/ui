@@ -12,6 +12,7 @@
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 
 export default {
+	name: 'PillToggleWrapper',
 	components: {
 		KvPillToggle,
 	},

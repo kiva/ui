@@ -38,6 +38,7 @@ import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 
 export default {
+	name: 'ExpandableLoanCardExpanded',
 	components: {
 		LoanCardController,
 	},

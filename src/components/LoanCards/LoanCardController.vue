@@ -81,6 +81,7 @@ const LendHomepageLoanCard = () => import('@/components/LoanCards/LendHomepageLo
 const ListLoanCard = () => import('@/components/LoanCards/ListLoanCard');
 
 export default {
+	name: 'LoanCardController',
 	props: {
 		disableRedirects: {
 			type: Boolean,

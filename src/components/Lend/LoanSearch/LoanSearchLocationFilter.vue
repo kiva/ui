@@ -42,6 +42,7 @@ import { getIsoCodes, getUpdatedRegions } from '@/util/loanSearchUtils';
 export const getLabel = item => `${item.name || item.region} (${item.numLoansFundraising})`;
 
 export default {
+	name: 'LoanSearchLocationFilter',
 	components: {
 		KvIcon,
 		KvCheckboxList,

@@ -39,6 +39,7 @@
 
 <script>
 export default {
+	name: 'DonationNudgeIntro',
 	props: {
 		header: {
 			type: String,

@@ -62,6 +62,7 @@ import startBasketVerificationMutation from '@/graphql/mutation/checkout/startBa
 import closeVerificationLightboxMutation from '@/graphql/mutation/checkout/closeVerificationLightbox.graphql';
 
 export default {
+	name: 'BasketVerification',
 	components: {
 		KvButton,
 		KvLightbox,

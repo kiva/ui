@@ -93,6 +93,7 @@ import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'DonationNudgeBoxes',
 	components: {
 		KvButton,
 		KvTextInput

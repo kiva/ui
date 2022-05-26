@@ -51,6 +51,7 @@ const pageQuery = gql`query lendMenu {
 	}`;
 
 export default {
+	name: 'TheLendMenu',
 	components: {
 		LendListMenu,
 		LendMegaMenu,

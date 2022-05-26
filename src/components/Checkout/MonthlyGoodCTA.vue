@@ -115,6 +115,7 @@ import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 const maxAmount = 8500;
 
 export default {
+	name: 'MonthlyGoodCTA',
 	components: {
 		KvButton,
 		KvCurrencyInput,

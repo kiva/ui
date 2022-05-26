@@ -396,6 +396,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import KvExpandable from '@/components/Kv/KvExpandable';
 
 export default {
+	name: 'ThanksLayoutV2',
 	components: {
 		KvExpandable,
 		KvIcon,

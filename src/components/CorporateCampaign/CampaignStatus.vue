@@ -61,6 +61,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
+	name: 'CampaignStatus',
 	components: {
 		KvIcon,
 		KvLoadingSpinner,

@@ -154,6 +154,7 @@ import SectorRadios from './SectorRadios';
 import WhoYoullSupportText from './WhoYoullSupportText';
 
 export default {
+	name: 'AutolendingWho',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		AttributeFilter,

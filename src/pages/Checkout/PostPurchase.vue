@@ -5,6 +5,7 @@ import parseGACookie from '@/util/parseGACookie';
 import parseSPCookie from '@/util/parseSPCookie';
 
 export default {
+	name: 'PostPurchase',
 	render(h) {
 		return h('div');
 	},

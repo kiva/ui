@@ -26,6 +26,7 @@
 
 <script>
 export default {
+	name: 'KvRangeSlider',
 	model: {
 		prop: 'value',
 		event: 'input'

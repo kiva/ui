@@ -23,6 +23,7 @@
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 
 export default {
+	name: 'LendHeader',
 	components: {
 		ViewToggle,
 	},

@@ -32,6 +32,7 @@ import MGCovidFaq from './MGCovidFAQ';
 import MGCovidHero from './MGCovidHero';
 
 export default {
+	name: 'MGCovid19',
 	metaInfo() {
 		return 	{
 			title: "Join Kiva's Global COVID-19 Response",

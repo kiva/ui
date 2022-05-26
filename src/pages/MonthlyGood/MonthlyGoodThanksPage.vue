@@ -50,6 +50,7 @@ const pageQuery = gql`query monthlyGoodThanksPage {
 }`;
 
 export default {
+	name: 'MonthlyGoodThanksPage',
 	metaInfo: {
 		title: 'Joined successfully'
 	},

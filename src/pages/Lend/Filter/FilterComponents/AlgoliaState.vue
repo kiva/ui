@@ -4,6 +4,7 @@
 
 <script>
 export default {
+	name: 'AlgoliaState',
 	props: {
 		stateData: {
 			type: Object,

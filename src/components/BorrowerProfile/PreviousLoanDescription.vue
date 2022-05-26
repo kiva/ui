@@ -64,6 +64,7 @@ const previousLoanQuery = gql`query previousLoanQuery($id: Int!) {
 }`;
 
 export default {
+	name: 'PreviousLoanDescription',
 	components: {
 		KvTextLink,
 		KvMaterialIcon,

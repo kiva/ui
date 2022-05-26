@@ -33,6 +33,7 @@
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	name: 'ViewToggle',
 	components: {
 		KvIcon,
 	},

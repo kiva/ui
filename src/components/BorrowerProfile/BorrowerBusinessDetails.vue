@@ -66,6 +66,7 @@ const InstagramLogo = () => import('@/assets/inline-svgs/logos/instagram-logo.sv
 const LinkedinLogo = () => import('@/assets/inline-svgs/logos/linkedin-logo.svg');
 
 export default {
+	name: 'BorrowerBusinessDetails',
 	components: {
 		KvTextLink,
 		TwitterLogo,

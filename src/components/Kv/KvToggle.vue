@@ -22,6 +22,7 @@
 
 <script>
 export default {
+	name: 'KvToggle',
 	model: {
 		prop: 'checked',
 		event: 'change'

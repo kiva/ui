@@ -169,6 +169,7 @@ const getContentGroups = pageData => {
 };
 
 export default {
+	name: 'ContentfulPage',
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {

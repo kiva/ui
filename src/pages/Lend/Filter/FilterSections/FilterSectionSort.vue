@@ -25,6 +25,7 @@ import { AisSortBy } from 'vue-instantsearch';
 import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
 
 export default {
+	name: 'FilterSectionSort',
 	components: {
 		AisSortBy,
 		FilterMenuSection,

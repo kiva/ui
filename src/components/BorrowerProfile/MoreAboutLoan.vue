@@ -100,6 +100,7 @@ import BorrowerBusinessDetails from '@/components/BorrowerProfile/BorrowerBusine
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 
 export default {
+	name: 'MoreAboutLoan',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BorrowerBusinessDetails,

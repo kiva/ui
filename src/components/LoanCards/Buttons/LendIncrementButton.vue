@@ -32,6 +32,7 @@ import { buildPriceArray } from '@/util/loanUtils';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
+	name: 'LendIncrementButton',
 	components: {
 		KvSelect,
 		LendButton,

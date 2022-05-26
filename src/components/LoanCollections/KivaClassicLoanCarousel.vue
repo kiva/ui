@@ -58,6 +58,7 @@ import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
+	name: 'KivaClassicLoanCarousel',
 	components: {
 		KvCarousel,
 		KvLoadingSpinner,

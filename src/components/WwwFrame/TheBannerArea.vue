@@ -13,6 +13,7 @@ import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
 import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerContentful';
 
 export default {
+	name: 'TheBannerArea',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		GlobalPromoContentful,

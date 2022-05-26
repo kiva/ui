@@ -52,6 +52,7 @@ const {
 	router,
 	apolloClient,
 } = createApp({
+	name: '',
 	appConfig: config,
 	apollo: {
 		uri: config.graphqlUri,

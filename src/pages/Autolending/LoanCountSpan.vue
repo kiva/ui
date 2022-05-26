@@ -11,6 +11,7 @@
 import KvLoadingSpinner from '~/@kiva/kv-components/vue/KvLoadingSpinner';
 
 export default {
+	name: 'LoanCountSpan',
 	props: {
 		count: {
 			type: Number,

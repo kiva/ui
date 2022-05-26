@@ -58,6 +58,7 @@ import { differenceInYears } from 'date-fns';
 import homepageStatistics from '@/graphql/query/whyKivaData.graphql';
 
 export default {
+	name: 'HomepageStatisticsLegacy',
 	data() {
 		return {
 			amountFunded: 1.4,

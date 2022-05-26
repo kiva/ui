@@ -12,6 +12,7 @@
 import LendButton from './LendButton';
 
 export default {
+	name: 'LendAmountButton',
 	components: {
 		LendButton,
 	},

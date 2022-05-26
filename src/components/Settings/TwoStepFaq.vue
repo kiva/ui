@@ -77,6 +77,7 @@
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
+	name: 'TwoStepFaq',
 	components: {
 		KvLightbox,
 	},

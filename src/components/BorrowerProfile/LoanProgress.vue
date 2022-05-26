@@ -37,6 +37,7 @@ import CountdownTimer from '@/components/BorrowerProfile/CountdownTimer';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
 export default {
+	name: 'LoanProgress',
 	components: {
 		CountdownTimer,
 		KvProgressBar,

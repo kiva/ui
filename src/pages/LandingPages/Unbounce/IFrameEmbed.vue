@@ -29,6 +29,7 @@ import oneTrustGlobalEvent from '@/head/oneTrustEvent';
 import _throttle from 'lodash/throttle';
 
 export default {
+	name: 'IFrameEmbed',
 	components: {
 		KvLoadingSpinner,
 		WwwPage,

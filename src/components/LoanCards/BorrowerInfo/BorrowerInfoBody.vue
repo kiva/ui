@@ -22,6 +22,7 @@
 
 <script>
 export default {
+	name: 'BorrowerInfoBody',
 	props: {
 		amount: {
 			type: String,

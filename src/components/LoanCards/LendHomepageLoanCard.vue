@@ -129,6 +129,7 @@ import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoNa
  * width is set to the effective width of the loan image
  */
 export default {
+	name: 'LendHomepageLoanCard',
 	components: {
 		BorrowerInfoBody,
 		KvFlag,

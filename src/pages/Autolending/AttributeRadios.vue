@@ -41,6 +41,7 @@ import KvRadio from '@/components/Kv/KvRadio';
 import anyOrSelectedAutolendingRadio from '@/plugins/any-or-selected-autolending-radio-mixin';
 
 export default {
+	name: 'AttributeRadios',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvIcon,

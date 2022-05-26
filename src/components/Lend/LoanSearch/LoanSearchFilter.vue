@@ -70,6 +70,7 @@ import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
+	name: 'LoanSearchFilter',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvCheckbox,

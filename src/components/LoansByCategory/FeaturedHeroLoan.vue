@@ -94,6 +94,7 @@ import MatchingText from '@/components/LoanCards/MatchingText';
 import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
 
 export default {
+	name: 'FeaturedHeroLoan',
 	components: {
 		ActionButton,
 		FundraisingStatus,

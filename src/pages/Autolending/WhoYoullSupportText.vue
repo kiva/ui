@@ -52,6 +52,7 @@ import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
 export default {
+	name: 'WhoYoullSupportText',
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {

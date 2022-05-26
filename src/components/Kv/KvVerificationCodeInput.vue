@@ -43,6 +43,7 @@
 // https://www.twilio.com/blog/html-attributes-two-factor-authentication-autocomplete
 
 export default {
+	name: 'KvVerificationCodeInput',
 	model: {
 		prop: 'value',
 		event: 'input'

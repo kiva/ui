@@ -17,6 +17,7 @@
 import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
 
 export default {
+	name: 'BorrowerInfoHeader',
 	components: {
 		BorrowerInfoName,
 	},

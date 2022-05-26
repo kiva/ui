@@ -56,6 +56,7 @@ import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'JoinTeamForm',
 	components: {
 		KvButton,
 		KvLoadingOverlay,

@@ -38,6 +38,7 @@ import loanDescriptionQuery from '@/graphql/query/loanDescription.graphql';
 import InfoPanel from './InfoPanel';
 
 export default {
+	name: 'BorrowerStoryPanel',
 	components: {
 		InfoPanel,
 		KvLoadingSpinner

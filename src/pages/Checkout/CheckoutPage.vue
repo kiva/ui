@@ -262,12 +262,13 @@ import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
-import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
+import RandomLoanSelector from '@/components/RandomLoanSelector/RandomLoanSelector';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
+	name: 'CheckoutPage',
 	components: {
 		WwwPage,
 		KivaCreditPayment,

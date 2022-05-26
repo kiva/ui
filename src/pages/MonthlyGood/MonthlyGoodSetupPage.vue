@@ -376,6 +376,7 @@ const startDay = nextmonth => {
 };
 
 export default {
+	name: 'MonthlyGoodSetupPage',
 	props: {
 		amount: {
 			type: Number,

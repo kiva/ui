@@ -26,6 +26,7 @@ import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import logReadQueryError from '@/util/logReadQueryError';
 
 export default {
+	name: 'FavoriteCountryLoans',
 	components: {
 		CategoryRow,
 	},

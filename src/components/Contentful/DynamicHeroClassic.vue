@@ -137,6 +137,7 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 * */
 
 export default {
+	name: 'DynamicHeroClassic',
 	components: {
 		ButtonWrapper,
 		KvCarousel: () => import('@/components/Kv/KvCarousel'),

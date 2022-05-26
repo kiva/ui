@@ -11,6 +11,7 @@ import _throttle from 'lodash/throttle';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
+	name: 'KvLoadingOverlay',
 	components: {
 		KvLoadingSpinner
 	},

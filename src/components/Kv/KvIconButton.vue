@@ -26,6 +26,7 @@ import KvButton from '@/components/Kv/KvButton';
  * until site-wide button styling is finalized.
  */
 export default {
+	name: 'KvIconButton',
 	components: {
 		KvButton,
 	},

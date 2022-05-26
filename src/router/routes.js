@@ -127,7 +127,7 @@ module.exports = [
 	},
 	{
 		path: '/funded/:id',
-		component: () => import('@/pages/BorrowerProfile/fundedBorrowerProfile'),
+		component: () => import('@/pages/BorrowerProfile/FundedBorrowerProfile'),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}

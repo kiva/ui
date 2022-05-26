@@ -45,6 +45,7 @@ import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSe
 import RangeSliderWrapper from '@/pages/Lend/Filter/FilterSections/LoanDetails/RangeSliderWrapper';
 
 export default {
+	name: 'FilterSectionLoanDetails',
 	components: {
 		FilterMenuSection,
 		RangeSliderWrapper,

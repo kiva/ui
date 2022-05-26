@@ -22,6 +22,7 @@ import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
+	name: 'CampaignLogoGroup',
 	components: {
 		KvContentfulImg,
 		KivaLogo,
