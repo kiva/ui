@@ -2,31 +2,43 @@ describe('Existing User Checkout with Kiva Credit', () => {
 	it('Logs in user with credit, baskets a loan, proceed to checkout, and purchases using kiva credit', () => {
 		let beginBalance;
 		let newBalance;
+
 		// get the test user id from cypress.env.json and set the cookie variable
 		const lenderID = Cypress.env().userInfo.kivaCreditLender.userID;
 		const loginCookie = `${lenderID}:recent/active/mfa`;
 
+		// Spy on GraphQL requests
+		cy.intercept('POST', '**/graphql*').as('graphqlRequest');
 		// Mock login our test lender
 		cy.setCookie('kvfa', loginCookie, 'domain=.kiva.org');
+
 		// go to portfolio and get current credit for later calculations
 		cy.visit('/portfolio');
 		cy.get('.strong .kiva-green').invoke('text').then(fullText => {
 			const number = fullText.match(/[0-9,.]+/);
 			beginBalance = parseFloat(number); // text to float
 		});
+
 		// Go to category page for women
 		cy.visit('/lend-by-category/women');
-		// // Wait for the lend or lend again button to exist, then click it
-		cy.findAllByText('Lend now', { timeout: 10000 }).first().click();
+
+		// Wait for a lend now button to exist, then click it
+		cy.get('@graphqlRequest.all');
+		cy.findAllByText('Lend now').first().click();
 		// wait for the basket add lightbox
-		cy.get('.kv-lightbox', { timeout: 8000 }).should('be.visible');
-		// Wait for the checkout button to exist in the lightbox, then click it
-		cy.get('.button-checkout', { timeout: 8000 }).click();
-		// Wait for basket to load and check for complete order button
-		cy.findByText('Basket', { timeout: 5000 }).click();
-		cy.findByText('Complete order', { timeout: 8000 }).click();
+		cy.get('@graphqlRequest.all');
+		cy.get('.kv-lightbox').should('be.visible');
+		// see that checkout button exist in the lightbox, then click it
+		cy.get('.button-checkout').click();
+
+		// Wait for basket to load and check for complete order button, click it
+		cy.get('@graphqlRequest.all');
+		cy.findByText('Basket').click();
+		cy.findByText('Complete order').click();
+
 		// wait for order confirmation page to load
-		cy.findByText('Thank you!', { timeout: 8000 });
+		cy.get('@graphqlRequest.all');
+		cy.findByText('Thank you!');
 		// expand the receipt section
 		cy.findByTestId('thanks-page-button-receipt').click();
 		// validate kiva credit was used and order total is correct
@@ -39,6 +51,7 @@ describe('Existing User Checkout with Kiva Credit', () => {
 			// subtract order total from beginning to get new balance
 			newBalance = beginBalance - usedBalance;
 		});
+
 		// return to portfolio and get new balance
 		cy.visit('/portfolio');
 		cy.get('.strong .kiva-green').invoke('text').then(fullText => {
