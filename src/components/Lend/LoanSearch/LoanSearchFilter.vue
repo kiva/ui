@@ -6,7 +6,7 @@
 		</p>
 		<hr class="tw-border-tertiary tw-my-1">
 		<loan-search-gender-filter @updated="handleUpdatedFilters" />
-		<hr class="tw-border-tertiary tw-my-1">
+		<hr class="tw-border-tertiary tw-mt-1">
 		<kv-accordion-item id="acc-location" :open="false">
 			<template #header>
 				<h2 class="tw-text-h4">
@@ -40,18 +40,7 @@
 					Attributes
 				</h2>
 			</template>
-			<fieldset>
-				<legend>Sector</legend>
-				<kv-checkbox
-					class="tw-text-left"
-					v-for="sectorBox in facets.sectors"
-					name="sectorBox.name"
-					:key="sectorBox.id"
-					:value="sectorBox.name"
-				>
-					{{ sectorBox.name }}
-				</kv-checkbox>
-			</fieldset>
+			<loan-search-attribute-filter :attributes="facets.attributes" @updated="handleUpdatedFilters" />
 		</kv-accordion-item>
 		<h2 class="tw-text-h4 tw-mt-2">
 			Advanced filters
@@ -65,6 +54,7 @@ import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiClose, mdiArrowRight } from '@mdi/js';
 import LoanSearchGenderFilter from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
 import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
+import LoanSearchAttributeFilter from '@/components/Lend/LoanSearch/LoanSearchAttributeFilter';
 import { updateSearchState } from '@/util/loanSearchUtils';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -77,6 +67,7 @@ export default {
 		KvMaterialIcon,
 		LoanSearchGenderFilter,
 		LoanSearchLocationFilter,
+		LoanSearchAttributeFilter,
 	},
 	props: {
 		/**
@@ -101,7 +92,14 @@ export default {
 		 *       id: 1,
 		 *       name: '',
 		 *     }
-		 *   ]
+		 *   ],
+		 *   attributes: [
+		 *     {
+		 *       id: 1,
+		 *       name: '',
+		 *       numLoansFundraising: 1,
+		 *     }
+		 *   ],
 		 * }
 		 */
 		facets: {

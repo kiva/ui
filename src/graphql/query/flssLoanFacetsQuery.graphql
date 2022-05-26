@@ -5,6 +5,10 @@ query flssLoanFacets($filterObject: [FundraisingLoanSearchFilterInput!]) {
 				key
 				value
 			}
+			themes {
+				key
+				value
+			}
 		}
   	}
 }

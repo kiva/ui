@@ -47,8 +47,13 @@
 import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
-import { runFacetsQueries, transformIsoCodes, runLoansQuery } from '@/util/loanSearchUtils';
-import { fetchLoanFacets } from '@/util/loanUtils';
+import {
+	runFacetsQueries,
+	transformIsoCodes,
+	transformAttributes,
+	runLoansQuery,
+	fetchLoanFacets
+} from '@/util/loanSearchUtils';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -79,7 +84,13 @@ export default {
 			 *       id: 1,
 			 *       name: '',
 			 *     }
-			 *   ]
+			 *   ],
+			 *   attributeFacets: [
+			 *     {
+			 *       id: 1,
+			 *       name: '',
+			 *     }
+			 *   ],
 			 * }
 			 */
 			allFacets: undefined,
@@ -105,7 +116,14 @@ export default {
 			 *       id: 1,
 			 *       name: '',
 			 *     }
-			 *   ]
+			 *   ],
+			 *   attributes: [
+			 *     {
+			 *       id: 1,
+			 *       name: '',
+			 *       numLoansFundraising: 1,
+			 *     }
+			 *   ],
 			 * }
 			 */
 			facets: {},
@@ -123,12 +141,13 @@ export default {
 				if (!this.allFacets) this.allFacets = await fetchLoanFacets(this.apollo);
 
 				// Get filtered facet options from FLSS
-				const { isoCodes } = await runFacetsQueries(this.apollo, data?.loanSearchState);
+				const { isoCodes, attributes } = await runFacetsQueries(this.apollo, data?.loanSearchState);
 
 				// Merge all facet options with filtered options
 				this.facets = {
 					regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 					sectors: this.allFacets?.sectorFacets || [],
+					attributes: transformAttributes(attributes, this.allFacets?.attributeFacets)
 				};
 
 				// Get filtered loans from FLSS

@@ -1,6 +1,10 @@
 mutation updateLoanSearch($searchParams: JSONObject) {
 	updateLoanSearch (searchParams: $searchParams) @client {
-		gender
 		id
+		gender
+		countryIsoCode
+		sectorId
+		sortBy
+		attribute
 	}
 }
