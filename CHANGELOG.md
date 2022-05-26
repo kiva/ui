@@ -1,3 +1,23 @@
+## [2.157.0](https://github.com/kiva/ui/compare/v2.156.2...v2.157.0) (2022-05-26)
+
+
+### Features
+
+* added name to kv components group 1 ([7cda7cd](https://github.com/kiva/ui/commit/7cda7cde39b887236375168ad154813793729589))
+* added name to kv components group 1 ([8b2e9fb](https://github.com/kiva/ui/commit/8b2e9fb649d1f903ebc3338099c01c70fc1cc053))
+* added name to kv components group 2 ([b5f76b7](https://github.com/kiva/ui/commit/b5f76b7fe42238ac2f974d378bdca12dfe6e3d2b))
+* added name to kv components group 3 ([c71eaba](https://github.com/kiva/ui/commit/c71eabab1ec19cc502b636e780a8dd10840a9122))
+* added name to kv components group 4 ([7319504](https://github.com/kiva/ui/commit/7319504362d964470ba5859540fe6ff6013b10b4))
+* location filter options are now updated based on fundraising loans available ([4618bd0](https://github.com/kiva/ui/commit/4618bd02e3a3caebee51180b015ef8275dc201a5))
+
+
+### Bug Fixes
+
+* another whitspace fix ([dc731a8](https://github.com/kiva/ui/commit/dc731a819f08a45e4424d35fd37e18e173d0a01d))
+* fix formatting on eslintrc.js file ([501d900](https://github.com/kiva/ui/commit/501d9007810853ce326f9938ab131f56ec715052))
+* resolve conflicts ([d7e0843](https://github.com/kiva/ui/commit/d7e0843d6a13c24ef80e62a906cb435a1f30b660))
+* whitespace fix ([11c706b](https://github.com/kiva/ui/commit/11c706be7bf8738bdf53adf0713a7e578916197a))
+
 ### [2.156.2](https://github.com/kiva/ui/compare/v2.156.1...v2.156.2) (2022-05-26)
 
 ### Bug Fixes
