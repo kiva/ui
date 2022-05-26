@@ -1,3 +1,10 @@
+## [2.158.0](https://github.com/kiva/ui/compare/v2.157.0...v2.158.0) (2022-05-26)
+
+
+### Features
+
+* redirect to new variant for paid ads lp ([054a95c](https://github.com/kiva/ui/commit/054a95c72a48528fee1b37c4e2163e5187909833))
+
 ## [2.157.0](https://github.com/kiva/ui/compare/v2.156.2...v2.157.0) (2022-05-26)
 
 
