@@ -12,6 +12,7 @@
 
 <script>
 export default {
+	name: 'KvHamburgerIcon',
 	props: {
 		open: {
 			type: Boolean,

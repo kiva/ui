@@ -31,6 +31,7 @@ import TheFooterCorporate from '@/components/WwwFrame/TheFooterCorporate';
 import TheHeader from '@/components/WwwFrame/TheHeader';
 
 export default {
+	name: 'WwwPageCorporate',
 	inject: [
 		'apollo',
 		'cookieStore',

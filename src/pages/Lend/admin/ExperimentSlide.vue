@@ -13,6 +13,7 @@ import _isEqual from 'lodash/isEqual';
 import CategorySet from './CategorySet';
 
 export default {
+	name: 'ExperimentSlide',
 	components: {
 		CategorySet,
 	},

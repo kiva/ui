@@ -21,6 +21,7 @@
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	name: 'FilterMenuSection',
 	components: { KvIcon },
 	props: {
 		title: {

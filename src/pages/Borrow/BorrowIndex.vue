@@ -13,6 +13,7 @@ import BorrowIntro from '@/pages/Borrow/BorrowIntro';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
+	name: 'BorrowIndex',
 	components: {
 		BorrowIntro,
 		KvPageContainer,

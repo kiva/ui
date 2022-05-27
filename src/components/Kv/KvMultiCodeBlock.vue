@@ -26,6 +26,7 @@ import KvCodeBlock from '@/components/Kv/KvCodeBlock';
 import KvHamburgerIcon from './KvHamburgerIcon';
 
 export default {
+	name: 'KvMultiCodeBlock',
 	components: {
 		KvHamburgerIcon,
 		KvCodeBlock,

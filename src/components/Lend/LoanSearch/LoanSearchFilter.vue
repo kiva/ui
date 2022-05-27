@@ -5,27 +5,27 @@
 			Reset All
 		</p>
 		<hr class="tw-border-tertiary tw-my-1">
-		<loan-search-gender-filter />
+		<loan-search-gender-filter @updated="handleUpdatedFilters" />
 		<hr class="tw-border-tertiary tw-my-1">
+		<kv-accordion-item id="acc-sort-by" :open="false">
+			<template #header>
+				<h2 class="tw-text-h4">
+					Sort order
+				</h2>
+			</template>
+			<loan-search-sort-by
+				:all-sort-options="facets.sortOptions"
+				:initial-sort="null"
+				@updated="handleUpdatedFilters"
+			/>
+		</kv-accordion-item>
 		<kv-accordion-item id="acc-location" :open="false">
 			<template #header>
 				<h2 class="tw-text-h4">
 					Location
 				</h2>
 			</template>
-			<fieldset>
-				<legend>Sector</legend>
-				<kv-checkbox
-					class="tw-text-left"
-					v-for="sectorBox in allSectors"
-					name="sectorBox.name"
-					v-model="sector"
-					:key="sectorBox.id"
-					:value="sectorBox.name"
-				>
-					{{ sectorBox.name }}
-				</kv-checkbox>
-			</fieldset>
+			<loan-search-location-filter :regions="facets.regions" @updated="handleUpdatedFilters" />
 		</kv-accordion-item>
 		<kv-accordion-item id="acc-sectors" :open="false">
 			<template #header>
@@ -37,9 +37,8 @@
 				<legend>Sector</legend>
 				<kv-checkbox
 					class="tw-text-left"
-					v-for="sectorBox in allSectors"
+					v-for="sectorBox in facets.sectors"
 					name="sectorBox.name"
-					v-model="sector"
 					:key="sectorBox.id"
 					:value="sectorBox.name"
 				>
@@ -53,19 +52,7 @@
 					Attributes
 				</h2>
 			</template>
-			<fieldset>
-				<legend>Sector</legend>
-				<kv-checkbox
-					class="tw-text-left"
-					v-for="sectorBox in allSectors"
-					name="sectorBox.name"
-					v-model="sector"
-					:key="sectorBox.id"
-					:value="sectorBox.name"
-				>
-					{{ sectorBox.name }}
-				</kv-checkbox>
-			</fieldset>
+			<loan-search-theme-filter :themes="facets.themes" @updated="handleUpdatedFilters" />
 		</kv-accordion-item>
 		<h2 class="tw-text-h4 tw-mt-2">
 			Advanced filters
@@ -75,132 +62,86 @@
 </template>
 
 <script>
-import {
-	// fetchData,
-	// filterGender,
-	// filterSector,
-	fetchSectors,
-	fetchCountryFacets,
-	// filterCountry,
-	// filterLoanTerm,
-} from '@/util/flssUtils';
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiClose, mdiArrowRight } from '@mdi/js';
 import LoanSearchGenderFilter from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
-import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
+import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
+import LoanSearchThemeFilter from '@/components/Lend/LoanSearch/LoanSearchThemeFilter';
+import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
+import { updateSearchState } from '@/util/loanSearchUtils';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
+	name: 'LoanSearchFilter',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvCheckbox,
 		KvAccordionItem,
 		KvMaterialIcon,
 		LoanSearchGenderFilter,
+		LoanSearchLocationFilter,
+		LoanSearchThemeFilter,
+		LoanSearchSortBy,
+	},
+	props: {
+		/**
+		 * Facet options based on the loans available. Format:
+		 * {
+		 *   regions: [
+		 *     {
+		 *       region: '',
+		 *       numLoansFundraising: 1,
+		 *       countries: [
+		 *         {
+		 *           name: '',
+		 *           region: '',
+		 *           isoCode: '',
+		 *           numLoansFundraising: 1,
+		 *         }
+		 *       ]
+		 *     }
+		 *   ],
+		 *   sectors: [
+		 *     {
+		 *       id: 1,
+		 *       name: '',
+		 *     }
+		 *   ],
+		 *   themes: [
+		 *     {
+		 *       id: 1,
+		 *       name: '',
+		 *       numLoansFundraising: 1,
+		 *     }
+		 *   ],
+		 * }
+		 */
+		facets: {
+			type: Object,
+			required: true
+		}
 	},
 	data() {
 		return {
 			mdiClose,
 			mdiArrowRight,
-			loanId: Number(this.$route.params.id || 0),
-			loanQueryFilters: () => {},
-			totalCount: 0,
-			loans: [],
-			zeroLoans: false,
-			gender: 'both',
-			sector: ['Food', 'Education'],
-			country: ['TZ', 'KE'],
-			lenderTermLimit: 0,
-			allSectors: [],
-			allCountries: [],
-			allIsoCodes: [],
+			queryFilters: {},
 		};
 	},
 	methods: {
-		async getSectors() {
-			const sectorInfo = await fetchSectors(this.apollo);
-			this.allSectors = sectorInfo;
-		},
-		async getAllCountries() {
-			// data pull only from production endpoint,
-			// not implmented with a component until design path
-			// with product is completed.
-			const countryFacets = await fetchCountryFacets(this.apollo);
-			this.allCountries = countryFacets.map(cf => cf.country.name);
-			// pulled in IsoCodes b/c the loan query filters are currently coded
-			// to use ISO Codes instead of country names in queryFilters() right now
-			this.allIsoCodes = countryFacets.map(cf => cf.country.isoCode);
-		},
 		resetFilter() {
-			// this.gender = 'both';
-			// this.sector = [];
-			// this.country = [];
-			// this.lenderTermLimit = 0;
-			this.loanQueryFilters = {};
+			// this.queryFilters = {};
 		},
-		// updateQuery() {
-		// 	const updatedQueryFilters = this.queryFilters;
-		// 	console.log('from updateQuery', updatedQueryFilters);
-		// 	console.log('new query ran, yes!');
-		// },
-		// TODO: Extract to plugin/util for use in each filter component
-		updateSearchState() {
-			return this.apollo.mutate({
-				mutation: updateLoanSearchMutation,
-				variables: {
-					searchParams: {
-						...this.loanQueryFilters
-					}
-				}
-			});
+		handleUpdatedFilters(payload) {
+			this.queryFilters = { ...this.queryFilters, ...payload };
 		}
 	},
-	mounted() {
-		this.getSectors();
-		this.getAllCountries();
-
-		// TODO: Remove this is just a quick hard-coded query to initialize loans
-		// Each Filter type will use the updateSearchState method to set this when filters are selected
-		this.loanQueryFilters = { countryIsoCode: ['US'], sectorId: [9] };
-		console.log('mounted query ran:', this.loanQueryFilters);
-		// this.updateSearchState();
-		this.updateSearchState().then(updateResponse => {
-			console.log(updateResponse);
-		});
+	watch: {
+		async queryFilters(newFilters) {
+			await updateSearchState(this.apollo, newFilters);
+		}
 	},
-	computed: {
-		// queryFilters() {
-		// 	// // TODO: enable genderFilter when its working
-		// 	const genderFilter = filterGender(this.gender);
-		// 	console.log('this is filtergender', genderFilter);
-
-		// 	const sectorFilter = filterSector(this.sector, this.allSectors);
-		// 	console.log('this is filterSector', sectorFilter);
-
-		// 	const countryFilter = filterCountry(this.country, this.allIsoCodes);
-		// 	console.log('this is countryFilter', countryFilter);
-
-		// 	const loanTermFilter = filterLoanTerm(this.lenderTermLimit);
-		// 	console.log('this is filterLoanTerm', loanTermFilter);
-
-		// 	const loanQueryFilters = {
-		// 		countryIsoCode: countryFilter,
-		// 		// lenderRepaymentTerm: loanTermFilter,
-		// 		// TODO: enable genderFilter when its working
-		// 		// gender: genderFilter,
-		// 		sector: sectorFilter,
-		// 	};
-		// 	console.log('yo! from queryFilters', loanQueryFilters);
-		// 	return loanQueryFilters;
-		// },
-	},
-	// watch: {
-	// 	gender: { handler: 'updateQuery' },
-	// 	sector: { handler: 'updateQuery' },
-	// 	country: { handler: 'updateQuery' },
-	// 	loanTermLimit: { handler: 'updateQuery' },
-	// },
 };
 </script>
 

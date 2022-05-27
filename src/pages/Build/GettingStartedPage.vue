@@ -62,6 +62,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
 
 export default {
+	name: 'GettingStartedPage',
 	components: {
 		DeveloperSecondaryMenu,
 		BuildPageWrapper,

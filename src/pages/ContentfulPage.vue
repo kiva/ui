@@ -38,6 +38,28 @@ import { preFetchAll } from '@/util/apolloPreFetch';
 import { processPageContent } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
 import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
+import gql from 'graphql-tag';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+
+// MARS-124 experiment
+const manualLendingLPExpKey = 'manual_lending_lp';
+
+const pageQuery = gql`
+  query manualLendingLP {
+    general {
+		manual_lending_lp_exp: uiExperimentSetting(
+			key: "manual_lending_lp"
+		) {
+			key
+			value
+		}
+	}
+  }
+`;
 
 // Page frames
 const WwwPage = () => import('@/components/WwwFrame/WwwPage');
@@ -169,6 +191,7 @@ const getContentGroups = pageData => {
 };
 
 export default {
+	name: 'ContentfulPage',
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
@@ -177,12 +200,42 @@ export default {
 			pageError: false,
 			pageFrame: WwwPage,
 			title: undefined,
+			description: undefined,
+			canonicalUrl: undefined,
 		};
 	},
 	metaInfo() {
 		return {
 			title: this.title,
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: this.description,
+				}
+			],
+			link: [
+				{
+					vmid: 'canonical',
+					rel: 'canonical',
+					href: this.canonicalUrl,
+				}
+			],
 		};
+	},
+	mounted() {
+		if (this.$route.path === '/lp/home-ml' || this.$route.path === '/lp/home-mlv') {
+			const { enabled } = getExperimentSettingCached(this.apollo, manualLendingLPExpKey);
+			if (enabled) {
+				trackExperimentVersion(
+					this.apollo,
+					this.$kvTrackEvent,
+					'Paid home',
+					manualLendingLPExpKey,
+					'EXP-MARS-124-May2022'
+				);
+			}
+		}
 	},
 	apollo: {
 		query: contentfulEntries,
@@ -198,7 +251,30 @@ export default {
 				contentKey: this.$route?.meta?.contentfulPage(this.$route)?.trim(),
 			};
 		},
-		preFetch(config, client, args) {
+		async preFetch(config, client, args) {
+			if (args?.route?.path === '/lp/home-ml' || args?.route?.path === '/lp/home-mlv') {
+				await client.query({ query: pageQuery });
+				const result = await client.query({ query: experimentQuery, variables: { id: manualLendingLPExpKey } });
+				const version = result?.data?.experiment?.version;
+				const { enabled } = getExperimentSettingCached(client, manualLendingLPExpKey);
+				if (enabled) {
+					if (version === 'b' && args?.route?.path === '/lp/home-ml') {
+						return Promise.reject({
+							path: '/lp/home-mlv',
+							query: args?.route?.query,
+							hash: args?.route?.hash,
+						});
+					}
+					if (version === 'a' && args?.route?.path === '/lp/home-mlv') {
+						return Promise.reject({
+							path: '/lp/home-ml',
+							query: args?.route?.query,
+							hash: args?.route?.hash,
+						});
+					}
+				}
+			}
+
 			return client.query({
 				query: contentfulEntries,
 				variables: {
@@ -233,9 +309,13 @@ export default {
 				this.pageError = true;
 				this.pageFrame = ErrorPage;
 			} else {
-				this.title = (pageData?.page?.pageLayout?.pageTitle || pageData?.page?.pageTitle) ?? undefined;
-				this.pageBackgroundColor = pageData?.page?.pageLayout?.pageBackgroundColor ?? '';
-				this.pageFrame = getPageFrameFromType(pageData?.page?.pageType);
+				const page = pageData?.page ?? {};
+				const pageLayout = page.pageLayout ?? {};
+				this.title = (pageLayout.pageTitle || page.pageTitle) ?? undefined;
+				this.description = (pageLayout.pageDescription || page.pageDescription) ?? undefined;
+				this.canonicalUrl = page.canonicalUrl ?? undefined;
+				this.pageBackgroundColor = pageLayout.pageBackgroundColor ?? '';
+				this.pageFrame = getPageFrameFromType(page.pageType);
 				this.contentGroups = getContentGroups(pageData);
 			}
 		}

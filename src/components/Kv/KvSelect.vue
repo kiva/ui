@@ -15,6 +15,7 @@
 import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
 
 export default {
+	name: 'KvSelect',
 	mixins: [inputWrapperMixin]
 };
 </script>

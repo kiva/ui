@@ -58,6 +58,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 const imageRequire = require.context('@/assets/images/cause-selector/', true);
 
 export default {
+	name: 'KvCauseSelector',
 	components: {
 		KvIcon
 	},

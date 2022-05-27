@@ -77,7 +77,7 @@ extend type LoanDirect {
 type LoanSearchState {
 	id: String
 	gender: String
-	countryIsoCode: [Int]
+	countryIsoCode: [String]
 	sectorId: [Int]
 	sortBy: String
 	theme: [String]

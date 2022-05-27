@@ -90,6 +90,7 @@ import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	name: 'ExpandableLoanCard',
 	components: {
 		ActionButton,
 		BorrowerInfoHeaderExpandable,

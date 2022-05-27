@@ -20,6 +20,7 @@ import updateKivaCardAmount from '@/graphql/mutation/updateKivaCardAmount.graphq
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
+	name: 'RemoveBasketItem',
 	components: {
 		KvMaterialIcon,
 	},

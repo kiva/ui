@@ -41,6 +41,7 @@ import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 * */
 
 export default {
+	name: 'SectionWithBackgroundClassic',
 	components: {
 		KvContentfulImg,
 	},

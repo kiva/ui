@@ -30,6 +30,7 @@ import gql from 'graphql-tag';
 import KvSelect from '@/components/Kv/KvSelect';
 
 export default {
+	name: 'LendTimingDropdown',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvSelect,

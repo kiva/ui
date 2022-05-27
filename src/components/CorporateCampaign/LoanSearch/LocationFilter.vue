@@ -29,6 +29,7 @@ import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolendin
 import CheckList from '@/pages/Autolending/CheckList';
 
 export default {
+	name: 'LocationFilter',
 	components: {
 		CheckList,
 	},

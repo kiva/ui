@@ -130,6 +130,7 @@ import KvTooltip from '@/components/Kv/KvTooltip';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 
 export default {
+	name: 'OrderTotals',
 	components: {
 		KvButton,
 		KvIcon,

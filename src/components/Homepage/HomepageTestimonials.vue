@@ -53,6 +53,7 @@
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 
 export default {
+	name: 'HomepageTestimonials',
 	components: {
 		KvContentfulImg,
 	},

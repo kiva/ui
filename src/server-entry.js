@@ -72,6 +72,7 @@ export default context => {
 			router,
 			apolloClient,
 		} = createApp({
+			name: '',
 			appConfig: config,
 			apollo: {
 				uri: config.graphqlUri,

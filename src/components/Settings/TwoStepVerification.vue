@@ -60,6 +60,7 @@ const pageQuery = gql`query mfaQuery($mfa_token: String!) {
 }`;
 
 export default {
+	name: 'TwoStepVerification',
 	components: {
 		KvSettingsCard,
 		KvButton,

@@ -134,6 +134,7 @@ const contentfulContentQuery = gql`query confirmDonationContent {
 }`;
 
 export default {
+	name: 'ConfirmInstantDonation',
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
 		return {

@@ -40,6 +40,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 export default {
+	name: 'BorrowHowLong',
 	components: {
 		IntroGraphic,
 		KvButton,

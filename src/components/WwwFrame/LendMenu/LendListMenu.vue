@@ -174,6 +174,7 @@ import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
 import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
 
 export default {
+	name: 'LendListMenu',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		CountryList,

@@ -14,8 +14,6 @@ let activeExperiments = [
 	'lend_filter_v2',
 	'expandable_loan_cards',
 	'checkout_login_cta',
-	'homepage_force_dismiss_overlay',
-	'redirect_to_login',
 	'guest_checkout_cta',
 	'mg_highlight_in_nav',
 	'unbounce_trigger',

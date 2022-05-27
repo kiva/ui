@@ -13,6 +13,7 @@ const homePageQuery = gql`query homepageFrame {
 }`;
 
 export default {
+	name: 'Homepage',
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
 		return {

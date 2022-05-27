@@ -154,6 +154,7 @@ const imageRequire = require.context('@/assets/images/kiva-classic-illustrations
 const maxAmount = 10000;
 
 export default {
+	name: 'AutoDepositCTA',
 	components: {
 		AutoDepositDropInPaymentWrapper,
 		KvCurrencyInput,

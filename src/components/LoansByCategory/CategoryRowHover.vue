@@ -152,6 +152,7 @@ const hoverCardSmallPaddingTop = 87;
 const cardExpansionDuration = 150;
 
 export default {
+	name: 'CategoryRowHover',
 	components: {
 		LoanCardController,
 		KvExpandable,
@@ -225,11 +226,6 @@ export default {
 			// retain countries not lent to location in /lend
 			if (this.url.includes('new-countries-for-you')) {
 				return '/lend/countries-not-lent';
-			}
-
-			// special handling for CASH-794 Favorite Country row
-			if (this.url.includes('favorite-countries-link')) {
-				return this.url.replace('favorite-countries-link', '');
 			}
 
 			// otherwise transform to use /lend-by-category as root path

@@ -75,6 +75,7 @@ import KivaContentBlock from '@/pages/Possibility/KivaContentBlock';
 const yearEndImagesRequire = require.context('@/assets/images/possibilities-banners/', true);
 
 export default {
+	name: 'YearEnd',
 	components: {
 		KvButton,
 		KvHero,

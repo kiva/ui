@@ -18,6 +18,7 @@ function checkHashSuccess(hash) {
 }
 
 export default {
+	name: 'ProcessBrowserAuth',
 	inject: ['kvAuth0'],
 	mounted() {
 		const hashKey = 'auth0.browser_hash';

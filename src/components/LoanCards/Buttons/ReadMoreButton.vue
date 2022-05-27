@@ -8,6 +8,7 @@
 import KvButton from '@/components/Kv/KvButton';
 
 export default {
+	name: 'ReadMoreButton',
 	components: {
 		KvButton,
 	},

@@ -15,6 +15,7 @@
 
 <script>
 export default {
+	name: 'DescriptionListItem',
 	props: {
 		term: {
 			type: String,

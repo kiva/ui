@@ -73,6 +73,7 @@ import EmblaCarousel from 'embla-carousel';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	name: 'KvCarousel',
 	components: {
 		KvIcon,
 	},

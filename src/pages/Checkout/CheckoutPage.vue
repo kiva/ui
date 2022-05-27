@@ -118,7 +118,6 @@
 									id="login-to-continue-button"
 									data-testid="login-to-continue-button"
 									v-kv-track-event="['basket', 'click-register-cta', 'Continue']"
-									@click="loginToContinue"
 									:href="'/ui-login?force=true&doneUrl=/checkout'"
 								>
 									Continue
@@ -131,7 +130,6 @@
 									id="create-account-continue-button"
 									data-testid="create-account-continue-button"
 									v-kv-track-event="['basket', 'click-register-cta', 'Create an account']"
-									@click="loginToContinue"
 									:href="'/ui-login?force=true&doneUrl=/checkout'"
 								>
 									Create an account
@@ -178,30 +176,23 @@
 					/>
 				</div>
 			</div>
-
-			<kv-lightbox
-				:visible="redirectLightboxVisible"
-				title="This checkout is being tested right now, but doesn't support some functions yet."
-				@lightbox-closed="redirectLightboxClosed"
-				data-testid="checkout-legacy-redirect-lightbox"
-			>
-				<p class="tw-mb-4">
-					We'll redirect you so you can get back to changing lives, or click here if you aren't
-					automatically redirected.
-				</p>
-				<p>Thank you for minding our dust.</p>
-				<template #controls>
-					<kv-button
-						class="checkout-button tw-w-full md:tw-w-auto"
-						id="Continue-to-legacy-button"
-						data-testid="continue-to-legacy-button"
-						v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
-						@click="redirectToLegacy"
-					>
-						Continue
-					</kv-button>
-				</template>
-			</kv-lightbox>
+			<campaign-verification-form
+				v-if="showVerification"
+				:form-id="externalFormId"
+				:ma-id="String(managedAccountId)"
+				:pf-id="String(promoFundId)"
+				:user-id="String(this.myId)"
+				@verification-complete="verificationComplete"
+				@campaign-verification-opt-out="handleVerificationOptOut"
+			/>
+			<verify-remove-promo-credit
+				:visible="showVerifyRemovePromoCredit"
+				:applied-promo-total="promoAmount"
+				:promo-fund-display-name="campaignPartnerName"
+				:active-credit-type="activeCreditType"
+				@credit-removed="handleCreditRemoved"
+				@promo-opt-out-lightbox-closed="handleCancelPromoOptOut"
+			/>
 
 			<div v-if="emptyBasket" class="empty-basket tw-relative tw-mx-auto" data-testid="empty-basket">
 				<div class="checkout-header-empty tw-mb-4">
@@ -252,6 +243,7 @@ import numeral from 'numeral';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import syncDate from '@/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
+import { getPromoFromBasket } from '@/util/campaignUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import checkoutSettings from '@/graphql/query/checkout/checkoutSettings.graphql';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
@@ -267,28 +259,31 @@ import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import BasketVerification from '@/components/Checkout/BasketVerification';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
+import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
-import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
+import RandomLoanSelector from '@/components/RandomLoanSelector/RandomLoanSelector';
+import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
+	name: 'CheckoutPage',
 	components: {
 		WwwPage,
 		KivaCreditPayment,
 		KvButton,
-		KvLightbox,
 		OrderTotals,
 		BasketItemsList,
 		BasketVerification,
 		KivaCardRedemption,
 		KvPageContainer,
 		KvLoadingOverlay,
+		CampaignVerificationForm,
 		CheckoutHolidayPromo,
 		CheckoutDropInPaymentWrapper,
 		RandomLoanSelector,
+		VerifyRemovePromoCredit
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [
@@ -316,17 +311,19 @@ export default {
 			lastActiveLogin: 0,
 			preCheckoutStep: '',
 			preValidationErrors: [],
-			redirectLightboxVisible: false,
 			teams: [],
 			holidayModeEnabled: false,
 			currentTime: Date.now(),
 			currentTimeInterval: null,
 			loginButtonExperimentVersion: null,
-			redirectToLoginExperimentVersion: null,
 			isGuestCheckoutEnabled: false,
 			guestCheckoutCTAExpActive: false,
 			checkingOutAsGuest: false,
 			hasEverLoggedIn: false,
+			promoData: {},
+			verificationSubmitted: false,
+			showVerification: false,
+			showVerifyRemovePromoCredit: false,
 		};
 	},
 	apollo: {
@@ -429,13 +426,6 @@ export default {
 			);
 		}
 
-		// GROW-280 redirect to login instead of popup login experiment
-		const redirectToLoginExperiment = this.apollo.readFragment({
-			id: 'Experiment:redirect_to_login',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
-
 		if (this.eligibleForGuestCheckout) {
 			const guestCheckoutCTAExperiment = this.apollo.readFragment({
 				id: 'Experiment:guest_checkout_cta',
@@ -475,6 +465,7 @@ export default {
 
 		// show toast for specified scenario
 		this.handleToast();
+		this.getPromoInformationFromBasket();
 	},
 	computed: {
 		isLoggedIn() {
@@ -547,25 +538,33 @@ export default {
 			});
 			// Using the first promoFund available
 			return appliedCreditsPromoFunds[0] || null;
+		},
+		campaignPartnerName() {
+			return this.promoData?.promoFund?.displayName;
+		},
+		externalFormId() {
+			return this.promoData?.managedAccount?.formId ?? null;
+		},
+		managedAccountId() {
+			return this.promoData?.managedAccount?.id ?? null;
+		},
+		promoFundId() {
+			return this.promoData?.promoFund?.id ?? null;
+		},
+		verificationRequired() {
+			if (this.promoData?.managedAccount?.isEmployee && this.promoData?.managedAccount?.formId) {
+				return true;
+			}
+			return false;
+		},
+		activeCreditType() {
+			return this.promoData?.promoGroup?.type ?? null;
+		},
+		promoAmount() {
+			return this.promoData?.promoFund?.promoPrice ?? null;
 		}
 	},
 	methods: {
-		loginToContinue(event) {
-			if (this.redirectToLoginExperimentVersion) {
-				this.$kvTrackEvent(
-					'Basket',
-					'EXP-GROW-282-Oct2020',
-					this.redirectToLoginExperimentVersion,
-				);
-			}
-
-			if (this.redirectToLoginExperimentVersion !== 'b' && this.kvAuth0.enabled) {
-				event.preventDefault();
-				this.doPopupLogin();
-			}
-
-			// Doing nothing here allows the normal link handling to happen, which will send the user to /ui-login
-		},
 		guestCheckout() {
 			this.checkingOutAsGuest = true;
 		},
@@ -645,19 +644,12 @@ export default {
 				query: shopBasketUpdate,
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
-				// when updating basket state, check for free credits and redirect if present
+				// when updating basket state, check for free credits and remove guest checkout option
 				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
-				if (hasFreeCredits) {
-					if (refreshEvent === 'kiva-card-applied') {
-						this.$kvTrackEvent('basket', 'free credits applied', 'exit to legacy');
-						this.disableGuestCheckout();
-					}
-					this.redirectLightboxVisible = true;
-					// automatically redirect to legacy after 7 seconds
-					window.setTimeout(this.redirectToLegacy, 7000);
-				} else {
-					this.setUpdatingTotals(false);
+				if (hasFreeCredits && refreshEvent === 'kiva-card-applied') {
+					this.disableGuestCheckout();
 				}
+				this.setUpdatingTotals(false);
 			}).catch(response => {
 				console.error(`failed to update totals: ${response}`);
 				this.setUpdatingTotals(false);
@@ -696,18 +688,6 @@ export default {
 		setUpdatingTotals(state) {
 			this.updatingTotals = state;
 		},
-		redirectToLegacy() {
-			this.$router.push({
-				path: '/basket',
-				query: {
-					kexpn: 'checkout_beta.minimal_checkout',
-					kexpv: 'a'
-				}
-			});
-		},
-		redirectLightboxClosed() {
-			this.redirectLightboxVisible = false;
-		},
 		logBasketState() {
 			const creditNeededInt = numeral(this.creditNeeded).value();
 			this.$kvTrackEvent(
@@ -730,7 +710,49 @@ export default {
 					clearTimeout(toastTimeout);
 				}, 1000);
 			}
-		}
+		},
+		getPromoInformationFromBasket() {
+			getPromoFromBasket(this.derivedPromoFund?.id, this.apollo).then(({ data }) => {
+				this.promoData = data?.shop?.promoCampaign;
+
+				this.$nextTick(() => {
+					if (
+						this.isActivelyLoggedIn
+						&& this.verificationRequired
+						&& this.externalFormId
+						&& !this.verificationSubmitted
+						&& this.loans.length
+					) {
+						this.showVerification = true;
+					}
+				});
+			});
+		},
+		verificationComplete() {
+			this.verificationSubmitted = true;
+		},
+		handleVerificationOptOut() {
+			this.showVerification = false;
+			this.showVerifyRemovePromoCredit = true;
+		},
+		handleCancelPromoOptOut() {
+			this.showVerifyRemovePromoCredit = false;
+			if (
+				this.isActivelyLoggedIn
+				&& this.verificationRequired
+				&& this.externalFormId
+				&& !this.verificationSumbitted
+				&& this.loans.length
+			) {
+				this.showVerification = true;
+			}
+		},
+		handleCreditRemoved() {
+			this.showVerification = false;
+			this.$router.push(this.$route.path); // remove promo query param from url
+			this.refreshTotals();
+			this.verificationComplete();
+		},
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);

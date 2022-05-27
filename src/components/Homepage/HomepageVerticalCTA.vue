@@ -53,6 +53,7 @@ const pageQuery = gql`
 `;
 
 export default {
+	name: 'HomepageVerticalCTA',
 	components: {
 		KvContentfulImg,
 		SectionWithBackground,

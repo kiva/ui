@@ -68,6 +68,7 @@ import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 
 export default {
+	name: 'DonateRepaymentsToggle',
 	components: {
 		KvCheckbox,
 		KvLightbox,

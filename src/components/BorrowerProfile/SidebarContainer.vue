@@ -13,6 +13,7 @@ import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
+	name: 'SidebarContainer',
 	components: {
 		KvGrid,
 		KvPageContainer,

@@ -1,4 +1,5 @@
-import { render, fireEvent } from '@testing-library/vue';
+import { render } from '@testing-library/vue';
+import userEvent from '@testing-library/user-event';
 import LoanSearchGenderFilter,
 {
 	BOTH_KEY,
@@ -10,7 +11,7 @@ import LoanSearchGenderFilter,
 } from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
 
 describe('LoanSearchGenderFilter', () => {
-	it('should default to both', async () => {
+	it('should default to both', () => {
 		const { getByLabelText } = render(LoanSearchGenderFilter);
 		const radio = getByLabelText(BOTH_TITLE);
 		expect(radio.checked).toBeTruthy();
@@ -40,6 +41,7 @@ describe('LoanSearchGenderFilter', () => {
 	});
 
 	it('should select based on click', async () => {
+		const user = userEvent.setup();
 		const { getByLabelText } = render(LoanSearchGenderFilter, { props: { gender: BOTH_KEY } });
 
 		let radio = getByLabelText(BOTH_TITLE);
@@ -47,12 +49,12 @@ describe('LoanSearchGenderFilter', () => {
 
 		radio = getByLabelText(FEMALE_TITLE);
 		expect(radio.checked).toBeFalsy();
-		await fireEvent.click(radio);
+		await user.click(radio);
 		expect(radio.checked).toBeTruthy();
 
 		radio = getByLabelText(MALE_TITLE);
 		expect(radio.checked).toBeFalsy();
-		await fireEvent.click(radio);
+		await user.click(radio);
 		expect(radio.checked).toBeTruthy();
 	});
 });

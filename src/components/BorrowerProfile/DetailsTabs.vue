@@ -119,6 +119,7 @@ import TrusteeDetails from './TrusteeDetails';
 import RepaymentSchedule from './RepaymentSchedule';
 
 export default {
+	name: 'DetailsTabs',
 	inject: ['apollo'],
 	components: {
 		FieldPartnerDetails,

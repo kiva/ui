@@ -13,6 +13,7 @@
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 
 export default {
+	name: 'GenderFilter',
 	inject: ['apollo'],
 	components: {
 		KvPillToggle,

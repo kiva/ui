@@ -76,6 +76,7 @@ const countryList = getCountryList() // get all country names and codes
 	.sort((a, b) => a.name.localeCompare(b.name)); // alphabetize
 
 export default {
+	name: 'KvPhoneInput',
 	components: {
 		KvFlag,
 		KvTextInput

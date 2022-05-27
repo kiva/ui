@@ -125,6 +125,7 @@ import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSeconda
 import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
 
 export default {
+	name: 'CodeOfConductPage',
 	components: {
 		DeveloperSecondaryMenu,
 		BuildPageWrapper,

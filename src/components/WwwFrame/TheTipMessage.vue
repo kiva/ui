@@ -12,6 +12,7 @@ import tipMessageData from '@/graphql/query/tipMessage/tipMessageData.graphql';
 import KvToast from '~/@kiva/kv-components/vue/KvToast';
 
 export default {
+	name: 'TheTipMessage',
 	components: {
 		KvToast,
 	},

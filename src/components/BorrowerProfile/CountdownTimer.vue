@@ -10,6 +10,7 @@
 import VueCountdown from '@chenfengyuan/vue-countdown';
 
 export default {
+	name: 'CountdownTimer',
 	components: {
 		VueCountdown,
 	},

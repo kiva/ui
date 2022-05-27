@@ -13,6 +13,7 @@
 
 <script>
 export default {
+	name: 'CheckoutItemImg',
 	props: {
 		disableLink: {
 			type: Boolean,

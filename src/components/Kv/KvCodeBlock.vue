@@ -7,6 +7,7 @@
 
 <script>
 export default {
+	name: 'KvCodeBlock',
 	props: {
 		code: {
 			type: String,

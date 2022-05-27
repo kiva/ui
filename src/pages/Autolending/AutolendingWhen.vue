@@ -104,6 +104,7 @@ import LendTimingDropdown from './LendTimingDropdown';
 import LendTimingMessaging from './LendTimingMessaging';
 
 export default {
+	name: 'AutolendingWhen',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvButton,

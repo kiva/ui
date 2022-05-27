@@ -67,6 +67,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 
 export default {
+	name: 'LocationMultiRefinements',
 	components: {
 		KvCheckbox,
 		KvIcon,

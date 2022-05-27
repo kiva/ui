@@ -11,6 +11,7 @@
 import { expand, collapse } from '@/util/expander';
 
 export default {
+	name: 'KvExpandable',
 	props: {
 		property: {
 			type: String,

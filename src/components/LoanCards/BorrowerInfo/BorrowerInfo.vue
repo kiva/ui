@@ -26,6 +26,7 @@ import BorrowerInfoHeader from '@/components/LoanCards/BorrowerInfo/BorrowerInfo
 import BorrowerInfoBody from '@/components/LoanCards/BorrowerInfo/BorrowerInfoBody';
 
 export default {
+	name: 'BorrowerInfo',
 	props: {
 		use: {
 			type: String,

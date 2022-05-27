@@ -66,7 +66,7 @@
 			<loan-use
 				v-if="!isLoading"
 				class="tw-inline"
-				:loan-use-max-length="82"
+				:loan-use-max-length="40"
 				:loan-id="`${allSharesReserved ? '' : loanId}`"
 				:use="loan.use"
 				:name="borrowerName"
@@ -78,10 +78,11 @@
 
 			<a
 				@click="handleReadMoreLink(loan)"
-				v-kv-track-event="['Lending', 'click-read-more-loan-bundle-cta', 'Read more', loanId]"
+				v-kv-track-event="['Lending', 'click-read-more-loan-bundle-cta',
+					isPersonalized ? 'Read more - personalized' : 'Read more', loanId]"
 				class="tw-inline tw-cursor-pointer"
 			>
-				Read more
+				More
 			</a>
 		</div>
 	</div>
@@ -164,6 +165,7 @@ const loanQuery = gql`query kcBasicLoanCard($loanId: Int!) {
 }`;
 
 export default {
+	name: 'KivaClassicBasicLoanCardBundleExp',
 	props: {
 		loanId: {
 			type: Number,
@@ -172,6 +174,10 @@ export default {
 		readMoreLink: {
 			type: Function,
 			default: () => {},
+		},
+		isPersonalized: {
+			type: Boolean,
+			default: false
 		},
 	},
 	inject: ['apollo', 'cookieStore'],
