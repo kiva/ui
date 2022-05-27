@@ -197,7 +197,6 @@ import LYML from '@/components/LoansYouMightLike/lymlContainer';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
-import SidebarContainer from '@/components/BorrowerProfile/SidebarContainer';
 import HeroBackground from '@/components/BorrowerProfile/HeroBackground';
 import SummaryCard from '@/components/BorrowerProfile/SummaryCard';
 import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
@@ -238,8 +237,6 @@ export default {
 		LYML,
 		KvLoadingSpinner,
 		HeroBackground,
-		ContentContainer,
-		SummaryCard,
 		BorrowerName,
 		LoanProgress,
 		BorrowerImage,
@@ -247,7 +244,6 @@ export default {
 		KvPageContainer,
 		KivaClassicLoanCarousel,
 		LoanCardController,
-		KvLoadingOverlay
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {

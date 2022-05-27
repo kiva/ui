@@ -206,7 +206,6 @@ import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import { setLendAmount } from '@/util/basketUtils';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -300,7 +299,6 @@ export default {
 		LoanUse,
 		LoanProgressGroup,
 		LoanMatchingText,
-		KvButton,
 		KvMaterialIcon,
 		SummaryTag,
 		KvUiButton
