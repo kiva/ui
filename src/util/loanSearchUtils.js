@@ -268,7 +268,7 @@ export async function runLoansQuery(apollo, loanSearchState = {}) {
 	const flssData = await fetchLoans(
 		apollo,
 		getFlssFilters(loanSearchState),
-		loanSearchState?.sortBy
+		loanSearchState?.sortBy ?? null
 	);
 
 	return { loans: flssData?.values || [], totalCount: flssData?.totalCount || 0 };

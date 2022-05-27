@@ -293,13 +293,13 @@ describe('loanSearchUtils.js', () => {
 	});
 
 	describe('runLoansQuery', () => {
-		let spyFetchLoan;
+		let spyFetchLoans;
 		const apollo = {};
 		const loans = [{ test: 'test' }];
 		const totalCount = 5;
 
 		beforeEach(() => {
-			spyFetchLoan = jest.spyOn(flssUtils, 'fetchLoan')
+			spyFetchLoans = jest.spyOn(flssUtils, 'fetchLoans')
 				.mockImplementation(() => Promise.resolve({ values: loans, totalCount }));
 		});
 
@@ -307,7 +307,7 @@ describe('loanSearchUtils.js', () => {
 
 		it('should return loans', async () => {
 			const result = await runLoansQuery(apollo);
-			expect(spyFetchLoan).toHaveBeenCalledWith(apollo, {});
+			expect(spyFetchLoans).toHaveBeenCalledWith(apollo, {}, null);
 			expect(result).toEqual({ loans, totalCount });
 		});
 	});
@@ -316,6 +316,8 @@ describe('loanSearchUtils.js', () => {
 		const countryFacets = ['a'];
 		const sector = ['b'];
 		const loanThemeFilter = ['c'];
+		const standardSorts = [];
+		const flssSorts = [];
 
 		it('should pass the correct query variables to apollo', async () => {
 			const apollo = { query: jest.fn(() => Promise.resolve({})) };
@@ -328,14 +330,36 @@ describe('loanSearchUtils.js', () => {
 			const dataObj = { data: { lend: { } } };
 			const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
 			const data = await fetchLoanFacets(apollo);
-			expect(data).toEqual({ countryFacets: [], sectorFacets: [], themeFacets: [] });
+			expect(data).toEqual({
+				countryFacets: [],
+				sectorFacets: [],
+				themeFacets: [],
+				standardSorts: [],
+				flssSorts: []
+			});
 		});
 
 		it('should return the facets data', async () => {
-			const dataObj = { data: { lend: { countryFacets, sector, loanThemeFilter } } };
+			const dataObj = {
+				data: {
+					lend: {
+						countryFacets,
+						sector,
+						loanThemeFilter,
+						standardSorts,
+						flssSorts
+					}
+				}
+			};
 			const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
 			const data = await fetchLoanFacets(apollo);
-			expect(data).toEqual({ countryFacets, sectorFacets: sector, themeFacets: loanThemeFilter });
+			expect(data).toEqual({
+				countryFacets,
+				sectorFacets: sector,
+				themeFacets: loanThemeFilter,
+				standardSorts,
+				flssSorts
+			});
 		});
 	});
 

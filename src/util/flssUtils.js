@@ -37,7 +37,7 @@ export async function fetchLoans(apollo, loanQueryFilters, sortBy = null, pageOf
 			variables: {
 				filterObject: loanQueryFilters,
 				sortBy,
-				pageNumber: pageOffset, // TODO: adjust for query type
+				pageNumber: pageOffset,
 				limit: 20
 			},
 			fetchPolicy: 'network-only',
