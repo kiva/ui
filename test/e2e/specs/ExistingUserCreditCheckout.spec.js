@@ -1,7 +1,13 @@
+import { skipOn } from '@cypress/skip-test';
+
 describe('Existing User Checkout with Kiva Credit', () => {
 	it('Logs in user with credit, baskets a loan, proceed to checkout, and purchases using kiva credit', () => {
 		let beginBalance;
 		let newBalance;
+
+		// skip test if test user does not exists in the env file
+		const testUsers = Cypress.env('userInfo');
+		skipOn(!('kivaCreditLender' in testUsers));
 
 		// get the test user id from cypress.env.json and set the cookie variable
 		const lenderID = Cypress.env().userInfo.kivaCreditLender.userID;

@@ -138,6 +138,7 @@
 		"@babel/preset-env": "^7.10.1",
 		"@commitlint/cli": "^14.1.0",
 		"@commitlint/config-conventional": "^14.1.0",
+		"@cypress/skip-test": "^2.6.1",
 		"@storybook/addon-a11y": "^6.4.17",
 		"@storybook/addon-essentials": "^6.4.17",
 		"@storybook/addon-knobs": "^6.3.1",
