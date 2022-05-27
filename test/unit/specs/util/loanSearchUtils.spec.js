@@ -139,6 +139,49 @@ describe('loanSearchUtils.js', () => {
 
 			expect(result).toEqual(mockTransformedRegions);
 		});
+
+		it('should transform ISO codes case insensitive', () => {
+			const mockCountryFacets = [
+				{
+					country: {
+						name: 'Zambia',
+						isoCode: 'zm',
+						numLoansFundraising: 100,
+						region: 'Africa',
+					},
+				},
+				{
+					country: {
+						name: 'Colombia',
+						isoCode: 'co',
+						numLoansFundraising: 100,
+						region: 'South America',
+					},
+				},
+				{
+					country: {
+						name: 'Chile',
+						isoCode: 'cl',
+						numLoansFundraising: 100,
+						region: 'South America',
+					},
+				},
+				{
+					country: {
+						name: 'Jordan',
+						isoCode: 'jo',
+						numLoansFundraising: 100,
+						region: 'Middle East',
+					},
+				}
+			];
+
+			const filteredIsoCodes = [{ key: 'JO', value: 44 }, { key: 'CO', value: 152 }, { key: 'CL', value: 20 }];
+
+			const result = transformIsoCodes(filteredIsoCodes, mockCountryFacets);
+
+			expect(result).toEqual(mockTransformedRegions);
+		});
 	});
 
 	describe('transformThemes', () => {
@@ -170,6 +213,38 @@ describe('loanSearchUtils.js', () => {
 				{
 					id: 6,
 					name: 'a',
+				},
+			];
+
+			const result = transformThemes(mockFilteredThemes, mockAllThemes);
+
+			expect(result).toEqual(mockTransformedThemes);
+		});
+
+		it('should filter transform themes case insensitive', () => {
+			const mockFilteredThemes = [
+				{
+					key: 'b',
+					value: 4,
+				},
+				{
+					key: 'a',
+					value: 5,
+				},
+			];
+
+			const mockAllThemes = [
+				{
+					id: 3,
+					name: 'B',
+				},
+				{
+					id: 7,
+					name: 'C',
+				},
+				{
+					id: 6,
+					name: 'A',
 				},
 			];
 

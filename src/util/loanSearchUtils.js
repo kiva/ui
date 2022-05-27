@@ -71,9 +71,12 @@ export function transformIsoCodes(filteredIsoCodes, allCountryFacets = []) {
 
 	filteredIsoCodes.forEach(({ key: isoCode, value: numLoansFundraising }) => {
 		// Create company object based on country defined by lend API
-		const lookupCountry = allCountryFacets.find(({ country }) => country.isoCode === isoCode);
+		const lookupCountry = allCountryFacets.find(({ country }) => {
+			// Case insensitive matching just in case lend and FLSS APIs have different casing
+			return country.isoCode.toUpperCase() === isoCode.toUpperCase();
+		});
 		if (!lookupCountry) return;
-		const country = { ...lookupCountry.country, numLoansFundraising };
+		const country = { ...lookupCountry.country, isoCode, numLoansFundraising };
 
 		// Find existing transformed region or add a new region
 		const region = transformed.find(t => t.region === country.region);
@@ -99,9 +102,10 @@ export function transformThemes(filteredThemes, allThemes = []) {
 	const transformed = [];
 
 	filteredThemes.forEach(({ key: name, value: numLoansFundraising }) => {
-		const lookupTheme = allThemes.find(a => a.name === name);
+		// Case insensitive matching since lend and FLSS APIs can use different casing for themes
+		const lookupTheme = allThemes.find(a => a.name.toUpperCase() === name.toUpperCase());
 		if (!lookupTheme) return;
-		const theme = { ...lookupTheme, numLoansFundraising };
+		const theme = { id: lookupTheme.id, name, numLoansFundraising };
 		transformed.push(theme);
 	});
 
