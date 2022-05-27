@@ -202,6 +202,10 @@ export default {
 <style lang="scss">
 @import 'settings';
 
+.loans-container {
+	max-width: 67rem;
+}
+
 .borrower-profile-wrapper {
 	padding-top: 1rem;
 }
@@ -221,7 +225,7 @@ export default {
 }
 
 #loading-overlay {
-	position: absolute;
+	position: fixed;
 	width: auto;
 	height: auto;
 	left: 1rem;
