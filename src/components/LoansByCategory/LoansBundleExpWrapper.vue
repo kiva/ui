@@ -80,6 +80,7 @@
 import numeral from 'numeral';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -89,7 +90,8 @@ export default {
 	components: {
 		KvExpandable,
 		KvButton,
-		KivaClassicLoanCarouselExp
+		KivaClassicLoanCarouselExp,
+		LoanCardController
 	},
 	props: {
 		firstName: {
@@ -112,6 +114,8 @@ export default {
 			showCarousel: true,
 			showViewMoreCard: false,
 			detailedLoan: null,
+			isVisitor: true,
+			itemsInBasket: [],
 		};
 	},
 	computed: {
@@ -183,6 +187,9 @@ export default {
 		getDetailedLoan(loanDetails) {
 			this.detailedLoan = loanDetails;
 		},
+		handleCloseLoanCard() {
+			this.detailedLoan = null;
+		}
 	}
 };
 </script>
