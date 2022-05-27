@@ -48,6 +48,7 @@ import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
 import {
+	formatSortOptions,
 	runFacetsQueries,
 	transformIsoCodes,
 	transformThemes,
@@ -142,14 +143,18 @@ export default {
 				if (!this.allFacets) this.allFacets = await fetchLoanFacets(this.apollo);
 
 				// Get filtered facet options from FLSS
+				// TODO: Prevent this from running on every query
 				const { isoCodes, themes } = await runFacetsQueries(this.apollo, data?.loanSearchState);
 
 				// Merge all facet options with filtered options
 				this.facets = {
 					regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 					sectors: this.allFacets?.sectorFacets || [],
-					themes: transformThemes(themes, this.allFacets?.themeFacets)
+					themes: transformThemes(themes, this.allFacets?.themeFacets),
+					sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
 				};
+
+				// Extract sortBy + offset
 
 				// Get filtered loans from FLSS
 				const loans = await runLoansQuery(this.apollo, data?.loanSearchState);

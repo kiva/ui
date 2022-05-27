@@ -24,7 +24,7 @@ export default () => {
 				gender: '', // expects a string
 				countryIsoCode: [], // expects an array of strings
 				sectorId: [], // expects an array of ints
-				sortBy: '', // expects a string
+				sortBy: null, // expects a string
 				theme: [], // expects an array of strings
 				__typename,
 			},
