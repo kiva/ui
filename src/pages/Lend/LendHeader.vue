@@ -21,6 +21,7 @@
 
 <script>
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
+import getCacheKey from '@/util/getCacheKey';
 
 export default {
 	name: 'LendHeader',
@@ -48,6 +49,19 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+	},
+	serverCacheKey: props => {
+		const {
+			browseUrl,
+			filterUrl,
+			sidePinnedFilterPadding,
+			hardLeftAlign,
+			sideArrowsPadding
+		} = props;
+		const getValue = value => {
+			return value ? `-${value}` : '';
+		};
+		getCacheKey(`${filterUrl}${getValue(browseUrl)}${getValue(sidePinnedFilterPadding)}${getValue(hardLeftAlign)}${getValue(sideArrowsPadding)}`); // eslint-disable-line max-len
 	},
 };
 </script>

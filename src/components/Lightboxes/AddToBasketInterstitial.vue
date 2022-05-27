@@ -106,9 +106,11 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanReservation from '@/components/Checkout/LoanReservation';
 import LYML from '@/components/LoansYouMightLike/LymlContainer';
+import getCacheKey from '@/util/getCacheKey';
 
 export default {
 	name: 'AddToBasketInterstitial',
+	serverCacheKey: () => getCacheKey('AddToBasketInterstitial'),
 	components: {
 		KvButton,
 		KvCheckbox,
