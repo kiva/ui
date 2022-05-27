@@ -205,8 +205,10 @@ import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
+import { setLendAmount } from '@/util/basketUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
 const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
@@ -312,6 +314,7 @@ export default {
 			mdiChevronRight,
 			mdiMapMarker,
 			viewportObserver: null,
+			isAdding: false
 		};
 	},
 	computed: {
@@ -384,6 +387,18 @@ export default {
 			}
 			return false;
 		},
+		isLessThan25() {
+			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
+		},
+		inBorrowerProfilePage() {
+			return this.$route.path.includes('funded');
+		},
+		lendAmount() {
+			return this.isLessThan25 ? this.unreservedAmount : 25;
+		},
+		ctaButtonText() {
+			return `Lend ${this.lendAmount} now`;
+		},
 	},
 	methods: {
 		createViewportObserver() {
@@ -438,7 +453,24 @@ export default {
 			this.isLoading = false;
 			this.loan = result.data?.lend?.loan || null;
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
-		}
+		},
+		addToBasket() {
+			this.isAdding = true;
+			setLendAmount({
+				amount: this.lendAmount,
+				apollo: this.apollo,
+				loanId: this.loanId,
+			}).then(() => {
+				this.isAdding = false;
+			}).catch(e => {
+				this.isAdding = false;
+				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
+					? e[0].message
+					: 'There was a problem adding the loan to your basket';
+
+				this.$showTipMsg(msg, 'error');
+			});
+		},
 	},
 	mounted() {
 		this.createViewportObserver();
