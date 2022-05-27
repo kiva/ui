@@ -196,9 +196,7 @@ import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import { createIntersectionObserver } from '@/util/observerUtils';
-import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
 import HeroBackground from '@/components/BorrowerProfile/HeroBackground';
-import SummaryCard from '@/components/BorrowerProfile/SummaryCard';
 import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
 import LoanProgress from '@/components/BorrowerProfile/LoanProgress';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
@@ -206,7 +204,6 @@ import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoa
 import personalizedLoansQuery from '@/graphql/query/lendByCategory/personalizedLoans.graphql';
 import mlLoansYouMightLikeData from '@/graphql/query/loansYouMightLike/mlLoansYouMightLikeData.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
-import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import {
 	getExperimentSettingCached,
 	trackExperimentVersion
