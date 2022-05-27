@@ -6,7 +6,19 @@
 		</p>
 		<hr class="tw-border-tertiary tw-my-1">
 		<loan-search-gender-filter @updated="handleUpdatedFilters" />
-		<hr class="tw-border-tertiary tw-mt-1">
+		<hr class="tw-border-tertiary tw-my-1">
+		<kv-accordion-item id="acc-sort-by" :open="false">
+			<template #header>
+				<h2 class="tw-text-h4">
+					Sort order
+				</h2>
+			</template>
+			<loan-search-sort-by
+				:all-sort-options="facets.sortOptions"
+				:initial-sort="null"
+				@updated="handleUpdatedFilters"
+			/>
+		</kv-accordion-item>
 		<kv-accordion-item id="acc-location" :open="false">
 			<template #header>
 				<h2 class="tw-text-h4">
@@ -55,6 +67,7 @@ import { mdiClose, mdiArrowRight } from '@mdi/js';
 import LoanSearchGenderFilter from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
 import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
 import LoanSearchThemeFilter from '@/components/Lend/LoanSearch/LoanSearchThemeFilter';
+import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
 import { updateSearchState } from '@/util/loanSearchUtils';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -69,6 +82,7 @@ export default {
 		LoanSearchGenderFilter,
 		LoanSearchLocationFilter,
 		LoanSearchThemeFilter,
+		LoanSearchSortBy,
 	},
 	props: {
 		/**

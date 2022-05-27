@@ -1,25 +1,29 @@
 #import '../fragments/loanCardFields.graphql'
 
 query flssLoanData(
-  $filterObject: [FundraisingLoanSearchFilterInput!]
-  $imgDefaultSize: String = "w480h360"
-  $imgRetinaSize: String = "w960h720"
-  $limit: Int = 0
-  $offset: Int = 0
+	$filterObject: [FundraisingLoanSearchFilterInput!]
+	$imgDefaultSize: String = "w480h360"
+	$imgRetinaSize: String = "w960h720"
+	$limit: Int = 0
+	$offset: Int = 0
+	$sortBy: SortEnum = personalized
 ) {
-  fundraisingLoans(filters: $filterObject,
-  							limit: $limit,
-  							pageNumber: $offset) {
-    totalCount
-    values {
-      id
-      ...loanCardFields
-      image {
-        id
-        default: url(customSize: $imgDefaultSize)
-        retina: url(customSize: $imgRetinaSize)
-        hash
-      }
-    }
-  }
+	fundraisingLoans(
+		filters: $filterObject,
+		limit: $limit,
+		pageNumber: $offset
+		sortBy: $sortBy
+	) {
+		totalCount
+		values {
+			id
+			...loanCardFields
+			image {
+				id
+				default: url(customSize: $imgDefaultSize)
+				retina: url(customSize: $imgRetinaSize)
+				hash
+			}
+		}
+	}
 }

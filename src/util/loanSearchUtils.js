@@ -1,7 +1,7 @@
 import orderBy from 'lodash/orderBy';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
 import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
-import { fetchFacets, fetchLoan } from '@/util/flssUtils';
+import { fetchFacets, fetchLoans } from '@/util/flssUtils';
 
 /**
  * Updates the search state using the provided apollo client and filters
@@ -19,6 +19,29 @@ export async function updateSearchState(apollo, loanQueryFilters) {
 			}
 		}
 	});
+}
+
+/**
+ * Categorizes Sort Options
+ *
+ * @param {Array<Object>} standardSorts
+ * @param {Array<Object>} flssSorts
+ * @returns New formatted array
+ */
+export function formatSortOptions(standardSorts, flssSorts) {
+	const labeledStandardSorts = standardSorts.map(sort => {
+		return {
+			name: sort.name,
+			sortSrc: 'standard',
+		};
+	});
+	const labeledFlssSorts = flssSorts.map(sort => {
+		return {
+			name: sort.name,
+			sortSrc: 'flss',
+		};
+	});
+	return [...labeledStandardSorts, ...labeledFlssSorts];
 }
 
 /**
@@ -242,7 +265,11 @@ export async function runFacetsQueries(apollo, loanSearchState = {}) {
  * @returns {Object} The results of the loan query
  */
 export async function runLoansQuery(apollo, loanSearchState = {}) {
-	const flssData = await fetchLoan(apollo, getFlssFilters(loanSearchState));
+	const flssData = await fetchLoans(
+		apollo,
+		getFlssFilters(loanSearchState),
+		loanSearchState?.sortBy ?? null
+	);
 
 	return { loans: flssData?.values || [], totalCount: flssData?.totalCount || 0 };
 }
@@ -261,6 +288,8 @@ export async function fetchLoanFacets(apollo) {
 			countryFacets: result.data?.lend?.countryFacets || [],
 			sectorFacets: result.data?.lend?.sector || [],
 			themeFacets: result.data?.lend?.loanThemeFilter || [],
+			flssSorts: result.data?.flssSorts?.enumValues ?? [],
+			standardSorts: result.data?.standardSorts?.enumValues ?? [],
 		};
 	} catch (e) {
 		console.log('Fetching loan facets failed:', e.message);
