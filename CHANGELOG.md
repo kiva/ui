@@ -1,3 +1,15 @@
+## [2.161.0](https://github.com/kiva/ui/compare/v2.160.0...v2.161.0) (2022-05-27)
+
+
+### Features
+
+* add sort by options component to lend filter alpha ([2e9e11b](https://github.com/kiva/ui/commit/2e9e11b4331b7b3fa8f69b686979627797c90c75))
+
+
+### Bug Fixes
+
+* update fetchLoans method name and associated tests ([fe21bc6](https://github.com/kiva/ui/commit/fe21bc613628b29cd49de0d6b3fa7c8aff180769))
+
 ## [2.160.0](https://github.com/kiva/ui/compare/v2.159.0...v2.160.0) (2022-05-27)
 
 
