@@ -77,6 +77,21 @@ npx cypress open --config baseUrl=https://www.stage.kiva.org
 ### Simulating clicks in Jest
 
 ```js
+import { render } from '@testing-library/vue';
+import userEvent from '@testing-library/user-event';
+
+describe('KvCheckboxList', () => {
+	it('should check on click', () => {
+		const user = userEvent.setup();
+		const { getByLabelText } = render(KvCheckboxList, { props: { items } });
+
+		items.forEach(async item => {
+			const checkbox = getByLabelText(item.title);
+			await user.click(checkbox);
+			expect(checkbox.checked).toBeTruthy();
+		});
+	});
+});
 ```
 
 ### Mocking GraphQL requests in Jest
@@ -91,7 +106,8 @@ import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 
 describe('KvTextInput', () => {
-	it('works with v-model', () => {
+	it('works with v-model', async () => {
+		const user = userEvent.setup();
 		const TestComponent = {
 			template:
 				`<div>
@@ -111,12 +127,12 @@ describe('KvTextInput', () => {
 		expect(textInputEl.value).toEqual('abc');
 
 		// Type 'def' in the text input and expect the value to be 'abcdef' now
-		userEvent.type(textInputEl, 'def');
+		await user.type(textInputEl, 'def');
 		expect(getByText('The text value is abcdef')).toBeDefined();
 		expect(textInputEl.value).toEqual('abcdef');
 
 		// Click the reset button and expect the value to be 'abc' again
-		userEvent.click(getByText('reset'));
+		await user.click(getByText('reset'));
 		expect(getByText('The text value is abc')).toBeDefined();
 		expect(textInputEl.value).toEqual('abc');
 	});
@@ -126,9 +142,83 @@ describe('KvTextInput', () => {
 ### Waiting for api requests in Cypress
 
 ```js
+import { aliasQuery } from '../utils/graphql-test-utils';
+
+describe('Aliasing and waiting on API queries', () => {
+	it('Wait for a specific GraphQL request to finish', () => {
+		// Spy on the loanSearchSuggestions query
+		cy.intercept('POST', '**/graphql*', req => {
+			// Setup query alias for specific operations
+			aliasQuery(req, 'loanSearchSuggestions');
+			// Call aliasQuery again here to spy on other queries
+		});
+
+		// Go to the home page
+		cy.visit('/');
+		// Type 'f' in the search bar
+		cy.findByPlaceholderText('Search all loans').type('f');
+		// Wait for search results request to complete
+		cy.wait('@gqlloanSearchSuggestionsQuery');
+		// Find "Fabrics" tag in the search results
+		cy.contains('Fabrics');
+	});
+
+	it('Wait for all GraphQL requests to finish', () => {
+		// Spy on every GraphQL request
+		cy.intercept('POST', '**/graphql*').as('graphqlRequest');
+
+		// Go to category page for women
+		cy.visit('/lend-by-category/women');
+
+		// Wait for a lend now button to exist
+		cy.get('@graphqlRequest.all');
+		cy.findAllByText('Lend now');
+	});
+});
 ```
 
 ### Logging in as a user in Cypress
 
+Using this requires having a copy of our custom cypress.env.json file in the root directory of your local clone of this repo.
+
 ```js
+describe('Logging in', () => {
+	it('Recent login with MFA', () => {
+		// Get the test user id from cypress.env.json
+		const lenderID = Cypress.env().userInfo.kivaCreditLender.userID;
+
+		// Simulate a user that just logged in using MFA
+		const loginCookie = `${lenderID}:recent/active/mfa`;
+		cy.setCookie('kvfa', loginCookie, 'domain=.kiva.org');
+
+		// Visit a page that requires MFA and recent login
+		cy.visit('/settings/security');
+		cy.findByText('Security and login');
+	});
+
+	it('Active login', () => {
+		// Get the test user id from cypress.env.json
+		const lenderID = Cypress.env().userInfo.kivaCreditLender.userID;
+
+		// Simulate a user that has been logged in for less than an hour
+		const loginCookie = `${lenderID}:active`;
+		cy.setCookie('kvfa', loginCookie, 'domain=.kiva.org');
+
+		// Visit a page that requires active login
+		cy.visit('/settings/payments');
+		cy.findByText('Payment Methods');
+	});
+
+	it('Passive login', () => {
+		// Get the test user id from cypress.env.json
+		const lenderID = Cypress.env().userInfo.kivaCreditLender.userID;
+
+		// Simulate a user that has been logged in for more than 1 hour
+		cy.setCookie('kvfa', lenderID, 'domain=.kiva.org');
+
+		// Visit a page that requires any login
+		cy.visit('/portfolio/lending-stats');
+		cy.findByText('Lending stats');
+	});
+});
 ```
