@@ -1,3 +1,10 @@
+## [2.160.0](https://github.com/kiva/ui/compare/v2.159.0...v2.160.0) (2022-05-27)
+
+
+### Features
+
+* expandable component was added to personalized bundling experiment ([56dc9e6](https://github.com/kiva/ui/commit/56dc9e63ee4da953ad5ae01a45eb702229d0587c))
+
 ## [2.159.0](https://github.com/kiva/ui/compare/v2.158.3...v2.159.0) (2022-05-26)
 
 
