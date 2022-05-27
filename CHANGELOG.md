@@ -1,3 +1,23 @@
+## [2.159.0](https://github.com/kiva/ui/compare/v2.158.3...v2.159.0) (2022-05-26)
+
+
+### Features
+
+* implemented attribute/theme filter ([1fd37b9](https://github.com/kiva/ui/commit/1fd37b92cb69e5be36335c68c6a7c227ef60f92d))
+
+
+### Bug Fixes
+
+* added missing component name ([d5ed997](https://github.com/kiva/ui/commit/d5ed997aa0c1439d0647cecc897660cb6cead1b4))
+* realized that "theme" was more appropriate for new features given that FLSS uses "theme" ([3ff09ed](https://github.com/kiva/ui/commit/3ff09ede41799235498d7d996874a35b46cb8931))
+
+### [2.158.3](https://github.com/kiva/ui/compare/v2.158.2...v2.158.3) (2022-05-26)
+
+
+### Bug Fixes
+
+* only check experiment on experiment pages ([f8e7ca9](https://github.com/kiva/ui/commit/f8e7ca9fb0e47b7a18b672898be47dd9a3155155))
+
 ### [2.158.2](https://github.com/kiva/ui/compare/v2.158.1...v2.158.2) (2022-05-26)
 
 

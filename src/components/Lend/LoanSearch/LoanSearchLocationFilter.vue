@@ -13,7 +13,7 @@
 						class="tw-h-1.5 tw-w-1.5 tw-mr-1 tw-transition-all"
 						:class="{ 'tw--rotate-90': !isOpenRegion(option.region) }"
 					/>
-					{{ getLabel(option) }}
+					{{ getCheckboxLabel(option) }}
 				</button>
 			</legend>
 			<kv-checkbox-list
@@ -31,15 +31,7 @@
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
 import KvCheckboxList from '@/components/Kv/KvCheckboxList';
-import { getIsoCodes, getUpdatedRegions } from '@/util/loanSearchUtils';
-
-/**
- * Returns the item label with fundraising amount in parens
- *
- * @param {Object} item The region/country item for generating the label
- * @returns {string} The item label
- */
-export const getLabel = item => `${item.name || item.region} (${item.numLoansFundraising})`;
+import { getIsoCodes, getUpdatedRegions, getCheckboxLabel } from '@/util/loanSearchUtils';
 
 export default {
 	name: 'LoanSearchLocationFilter',
@@ -49,17 +41,16 @@ export default {
 	},
 	props: {
 		/**
-		 * The regions with countries used to build the checkbox lists. Pass FLSS country facets through
-		 * loanSearchUtils.transformCountryFacets in parent component. Expected format:
-		 *   {
-		 *     region: 'region',
+		 * The regions with countries used to build the checkbox lists. Expected format:
+		 * [{
+		 *   region: 'region',
+		 *   numLoansFundraising: 1,
+		 *   countries: [{
+		 *     name: 'name',
+		 *     isoCode: 'US',
 		 *     numLoansFundraising: 1,
-		 *     countries: [{
-		 *       name: 'name',
-		 *       isoCode: 'US',
-		 *       numLoansFundraising: 1,
-		 *     }]
-		 *   }
+		 *   }]
+		 * }]
 		 */
 		regions: {
 			type: Array,
@@ -71,13 +62,17 @@ export default {
 			displayedRegions: this.regions,
 			selectedCountries: {},
 			openRegions: [],
-			getLabel
+			getCheckboxLabel
 		};
 	},
 	methods: {
 		getItems(countries) {
 			// Disable checkboxes based on whether the current applied filters have loans fundraising for that country
-			return countries.map(c => ({ value: c.name, title: getLabel(c), disabled: c.numLoansFundraising === 0 }));
+			return countries.map(c => ({
+				value: c.name,
+				title: getCheckboxLabel(c),
+				disabled: c.numLoansFundraising === 0
+			}));
 		},
 		isOpenRegion(region) {
 			return this.openRegions.includes(region);

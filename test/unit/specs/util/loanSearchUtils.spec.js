@@ -6,10 +6,15 @@ import {
 	updateSearchState,
 	sortRegions,
 	runFacetsQueries,
-	runLoansQuery
+	runLoansQuery,
+	fetchLoanFacets,
+	transformThemes,
+	getUpdatedThemes,
+	getCheckboxLabel,
 } from '@/util/loanSearchUtils';
 import * as flssUtils from '@/util/flssUtils';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
+import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
 
 const mockTransformedMiddleEast = (numLoansFundraising = 44) => ({
 	region: 'Middle East',
@@ -48,6 +53,12 @@ const mockTransformedSouthAmerica = (
 });
 
 const mockTransformedRegions = [mockTransformedMiddleEast(), mockTransformedSouthAmerica()];
+
+const mockATheme = (numLoansFundraising = 5) => ({ id: 6, name: 'a', numLoansFundraising });
+
+const mockBTheme = (numLoansFundraising = 4) => ({ id: 3, name: 'b', numLoansFundraising });
+
+const mockTransformedThemes = [mockATheme(), mockBTheme()];
 
 describe('loanSearchUtils.js', () => {
 	describe('updateSearchState', () => {
@@ -130,6 +141,44 @@ describe('loanSearchUtils.js', () => {
 		});
 	});
 
+	describe('transformThemes', () => {
+		it('should handle empty', () => {
+			expect(transformThemes([])).toEqual([]);
+		});
+
+		it('should filter, transform, and sort', () => {
+			const mockFilteredThemes = [
+				{
+					key: 'b',
+					value: 4,
+				},
+				{
+					key: 'a',
+					value: 5,
+				},
+			];
+
+			const mockAllThemes = [
+				{
+					id: 3,
+					name: 'b',
+				},
+				{
+					id: 7,
+					name: 'c',
+				},
+				{
+					id: 6,
+					name: 'a',
+				},
+			];
+
+			const result = transformThemes(mockFilteredThemes, mockAllThemes);
+
+			expect(result).toEqual(mockTransformedThemes);
+		});
+	});
+
 	describe('getUpdatedRegions', () => {
 		it('should handle undefined and empty', () => {
 			expect(getUpdatedRegions(undefined, [])).toEqual([]);
@@ -159,6 +208,26 @@ describe('loanSearchUtils.js', () => {
 		});
 	});
 
+	describe('getUpdatedThemes', () => {
+		it('should handle undefined and empty', () => {
+			expect(getUpdatedThemes(undefined, [])).toEqual([]);
+			expect(getUpdatedThemes([], [])).toEqual([]);
+		});
+
+		it('should update numLoansFundraising', () => {
+			const nextA = mockATheme(9);
+
+			expect(getUpdatedThemes(mockTransformedThemes, [nextA])).toEqual([nextA, mockBTheme(0)]);
+		});
+
+		it('should add missing themes', () => {
+			const a = mockATheme();
+			const nextB = mockBTheme();
+
+			expect(getUpdatedThemes([a], [a, nextB])).toEqual([a, nextB]);
+		});
+	});
+
 	describe('getIsoCodes', () => {
 		it('should handle empty', () => {
 			expect(getIsoCodes([], {})).toEqual([]);
@@ -182,7 +251,8 @@ describe('loanSearchUtils.js', () => {
 		it('should handle empty', () => {
 			const state = {
 				gender: '',
-				countryIsoCode: []
+				countryIsoCode: [],
+				theme: [],
 			};
 			expect(getFlssFilters(state)).toEqual({});
 		});
@@ -190,31 +260,35 @@ describe('loanSearchUtils.js', () => {
 		it('should return filters', () => {
 			const state = {
 				gender: 'female',
-				countryIsoCode: ['US']
+				countryIsoCode: ['US'],
+				theme: ['test'],
 			};
 			expect(getFlssFilters(state)).toEqual({
 				gender: { any: 'female' },
-				countryIsoCode: { any: ['US'] }
+				countryIsoCode: { any: ['US'] },
+				theme: { any: ['test'] }
 			});
 		});
 	});
 
 	describe('runFacetsQueries', () => {
 		let spyFetchFacets;
-		const apollo = {};
-		const isoCode = [{ key: 'key', value: 1 }];
+		const isoCode = [{ key: 'iso', value: 1 }];
+		const themes = [{ key: 'theme', value: 1 }];
 
 		beforeEach(() => {
 			spyFetchFacets = jest.spyOn(flssUtils, 'fetchFacets')
-				.mockImplementation(() => Promise.resolve({ isoCode }));
+				.mockImplementation(() => Promise.resolve({ isoCode, themes }));
 		});
 
 		afterEach(jest.restoreAllMocks);
 
 		it('should return facets', async () => {
+			const apollo = {};
 			const result = await runFacetsQueries(apollo);
 			expect(spyFetchFacets).toHaveBeenCalledWith(apollo, { countryIsoCode: undefined });
-			expect(result).toEqual({ isoCodes: isoCode });
+			expect(spyFetchFacets).toHaveBeenCalledWith(apollo, { theme: undefined });
+			expect(result).toEqual({ isoCodes: isoCode, themes });
 		});
 	});
 
@@ -235,6 +309,43 @@ describe('loanSearchUtils.js', () => {
 			const result = await runLoansQuery(apollo);
 			expect(spyFetchLoan).toHaveBeenCalledWith(apollo, {});
 			expect(result).toEqual({ loans, totalCount });
+		});
+	});
+
+	describe('fetchLoanFacets', () => {
+		const countryFacets = ['a'];
+		const sector = ['b'];
+		const loanThemeFilter = ['c'];
+
+		it('should pass the correct query variables to apollo', async () => {
+			const apollo = { query: jest.fn(() => Promise.resolve({})) };
+			await fetchLoanFacets(apollo);
+			const apolloVariables = { query: loanFacetsQuery, fetchPolicy: 'network-only' };
+			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
+		});
+
+		it('should handle undefined', async () => {
+			const dataObj = { data: { lend: { } } };
+			const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
+			const data = await fetchLoanFacets(apollo);
+			expect(data).toEqual({ countryFacets: [], sectorFacets: [], themeFacets: [] });
+		});
+
+		it('should return the facets data', async () => {
+			const dataObj = { data: { lend: { countryFacets, sector, loanThemeFilter } } };
+			const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
+			const data = await fetchLoanFacets(apollo);
+			expect(data).toEqual({ countryFacets, sectorFacets: sector, themeFacets: loanThemeFilter });
+		});
+	});
+
+	describe('getCheckboxLabel', () => {
+		it('should handle region', () => {
+			expect(getCheckboxLabel({ region: 'test', numLoansFundraising: 1 })).toBe('test (1)');
+		});
+
+		it('should handle item', () => {
+			expect(getCheckboxLabel({ name: 'test', numLoansFundraising: 1 })).toBe('test (1)');
 		});
 	});
 });

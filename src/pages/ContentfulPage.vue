@@ -224,15 +224,17 @@ export default {
 		};
 	},
 	mounted() {
-		const { enabled } = getExperimentSettingCached(this.apollo, manualLendingLPExpKey);
-		if (enabled && (this.$route.path === '/lp/home-ml' || this.$route.path === '/lp/home-mlv')) {
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Paid home',
-				manualLendingLPExpKey,
-				'EXP-MARS-124-May2022'
-			);
+		if (this.$route.path === '/lp/home-ml' || this.$route.path === '/lp/home-mlv') {
+			const { enabled } = getExperimentSettingCached(this.apollo, manualLendingLPExpKey);
+			if (enabled) {
+				trackExperimentVersion(
+					this.apollo,
+					this.$kvTrackEvent,
+					'Paid home',
+					manualLendingLPExpKey,
+					'EXP-MARS-124-May2022'
+				);
+			}
 		}
 	},
 	apollo: {
