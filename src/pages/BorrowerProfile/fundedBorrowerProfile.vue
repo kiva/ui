@@ -1,6 +1,6 @@
 <template>
-	<www-page>
-		<div v-if="typeof loan !== 'undefined'">
+	<www-page class="relative">
+		<div v-if="!enabledExperiment">
 			<div class="row borrower-profile-wrapper">
 				<div class="small-12 medium-4 columns">
 					<!-- Borrower photo -->
@@ -282,6 +282,15 @@ export default {
 						path: `/lend/${fundedLoanId}?minimal=false`,
 					});
 				}
+
+				return client.query({ query: experimentQuery, variables: { id: newFundedBorrowerPageExpKey } })
+					.then(result => {
+						const version = result?.data?.experiment?.version;
+						const { enabled } = getExperimentSettingCached(client, newFundedBorrowerPageExpKey);
+						if (enabled && version === 'b') {
+							this.enabledExperiment = true;
+						}
+					});
 			});
 		},
 	},
