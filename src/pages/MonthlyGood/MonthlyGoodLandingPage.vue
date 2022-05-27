@@ -84,6 +84,8 @@
 							With these settings, you’ll support borrowers like this.
 						</h2>
 
+						<!-- eslint-disable-next-line max-len -->
+						<!-- TODO: we would want to accommodate LoanDetailsCard here as well if isImpactVisibilityExperiment is true  -->
 						<kiva-classic-loan-carousel-exp
 							:is-visible="showCarousel"
 							:loan-ids="selectedChannelLoanIds"
@@ -300,6 +302,7 @@ const pageQuery = gql`
 `;
 
 export default {
+	name: 'MonthlyGoodLandingPage',
 	metaInfo() {
 		return	{
 			title: 'Make an impact with Monthly Good',

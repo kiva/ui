@@ -96,6 +96,7 @@ import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoNa
 import BorrowerInfoBody from '../BorrowerInfo/BorrowerInfoBody';
 
 export default {
+	name: 'HoverLoanCardLarge',
 	components: {
 		BorrowerInfoBody,
 		KvFlag,

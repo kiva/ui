@@ -59,6 +59,7 @@
 							:show-view-more-card="showViewMoreCard"
 							:is-bundle="true"
 							id="carousel_exp"
+							@get-detailed-loan="getDetailedLoan"
 						/>
 
 						<div class="lg:tw-hidden tw-flex tw-flex-col tw-items-center tw-mt-3">
@@ -77,6 +78,23 @@
 						</div>
 					</div>
 				</div>
+			</div>
+			<div class="row">
+				<kv-expandable :delay="150" easing="linear">
+					<div ref="detailedLoanCardContainer" class="tw-w-full tw-mt-2">
+						<loan-card-controller
+							v-if="detailedLoan"
+							loan-card-type="DetailedLoanCard"
+							:loan="detailedLoan"
+							:items-in-basket="itemsInBasket"
+							:enable-tracking="true"
+							:disable-redirects="true"
+							:is-visitor="isVisitor"
+							:hide-lend-cta="true"
+							@close-detailed-loan-card="handleCloseLoanCard"
+						/>
+					</div>
+				</kv-expandable>
 			</div>
 		</div>
 
@@ -150,6 +168,7 @@ import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import { isLoanFundraising } from '@/util/loanUtils';
+import KvExpandable from '@/components/Kv/KvExpandable';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const loansPerPage = 12;
@@ -194,6 +213,7 @@ function getTargetedChannel(targetedRoute, allChannels) {
 }
 
 export default {
+	name: 'LoanChannelCategoryControl',
 	components: {
 		LoanCardController,
 		KvPagination,
@@ -202,6 +222,7 @@ export default {
 		PromoGridLoanCard,
 		KvButton,
 		KivaClassicLoanCarouselExp,
+		KvExpandable
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
@@ -244,7 +265,8 @@ export default {
 			selectedChannelLoanIds: [],
 			selectedChannel: {},
 			showCarousel: true,
-			showViewMoreCard: false
+			showViewMoreCard: false,
+			detailedLoan: null,
 		};
 	},
 	computed: {
@@ -568,6 +590,12 @@ export default {
 				console.log(e);
 			}
 		},
+		getDetailedLoan(loanDetails) {
+			this.detailedLoan = loanDetails;
+		},
+		handleCloseLoanCard() {
+			this.detailedLoan = null;
+		}
 	},
 	watch: {
 		loanIds(newVal, oldVal) {

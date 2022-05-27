@@ -242,6 +242,7 @@ const filterOptionsQuery = gql`
 `;
 
 export default {
+	name: 'LoanSearchFilters',
 	inject: ['apollo'],
 	components: {
 		KvButton,

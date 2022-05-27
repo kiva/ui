@@ -154,6 +154,7 @@ import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTe
 import TheSettingsTertiaryMenu from '@/components/WwwFrame/Menus/TheSettingsTertiaryMenu';
 
 export default {
+	name: 'TheMyKivaSecondaryMenu',
 	components: {
 		KvDropdown,
 		KvExpandable,

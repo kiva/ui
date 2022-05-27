@@ -81,6 +81,7 @@ import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
 * Story Card Component
 * */
 export default {
+	name: 'StoryCard',
 	components: {
 		DynamicRichText,
 		KvContentfulImg,

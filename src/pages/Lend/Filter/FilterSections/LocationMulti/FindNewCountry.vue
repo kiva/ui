@@ -20,6 +20,7 @@ import userIdQuery from '@/graphql/query/userId.graphql';
 import countriesNotLentQuery from '@/graphql/query/countriesNotLentTo.graphql';
 
 export default {
+	name: 'FindNewCountry',
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
 		createWidgetMixin({

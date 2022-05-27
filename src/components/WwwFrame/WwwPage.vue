@@ -26,6 +26,7 @@ import TheBasketBar from './TheBasketBar';
 import TheBannerArea from './TheBannerArea';
 
 export default {
+	name: 'WwwPage',
 	inject: [
 		'apollo',
 		'cookieStore',

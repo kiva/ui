@@ -169,6 +169,7 @@ import peopleData from './15YearsIndividualsData';
 const imageRequire = require.context('@/assets/images/15-years/profiles', true);
 
 export default {
+	name: '15YearsIndividuals',
 	components: {
 		FifteenYearsIndividualsProfile,
 		FifteenYearsLightbox,

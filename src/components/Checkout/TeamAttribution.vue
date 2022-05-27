@@ -32,6 +32,7 @@ import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationT
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
+	name: 'TeamAttribution',
 	props: {
 		teams: {
 			type: Array,

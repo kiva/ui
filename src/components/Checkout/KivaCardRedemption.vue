@@ -110,7 +110,7 @@
 								:data-testid="`basket-code-entry-applied-credit-${index}`"
 							>
 								<span class="heading">Kiva Card value: </span>
-								<span class="value">${{ credit.applied }}</span>
+								<span class="value">${{ credit.applied ? credit.applied : credit.amount }}</span>
 								<button
 									class="remove-wrapper"
 									@click.prevent.stop="
@@ -148,6 +148,7 @@ import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 export default {
+	name: 'KivaCardRedemption',
 	components: {
 		KvButton,
 		KvIcon,
@@ -283,11 +284,11 @@ export default {
 
 	@include breakpoint(medium) {
 		float: right;
-		margin: 0 0 rem-calc(15) rem-calc(15);
+		margin: 0 0 rem-calc(15);
 	}
 
 	@include breakpoint(large) {
-		margin: rem-calc(15) 0 rem-calc(15) rem-calc(15);
+		margin: rem-calc(15) 0;
 	}
 
 	li {

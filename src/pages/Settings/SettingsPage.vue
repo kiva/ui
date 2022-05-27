@@ -198,6 +198,7 @@ const pageQuery = gql`query settingsQuery {
 }`;
 
 export default {
+	name: 'SettingsPage',
 	components: {
 		KvDefaultWrapper,
 		TheMyKivaSecondaryMenu,

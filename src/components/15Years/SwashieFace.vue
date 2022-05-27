@@ -82,6 +82,7 @@
 <script>
 
 export default {
+	name: 'SwashieFace',
 	props: {
 		percentFull: {
 			type: Number,

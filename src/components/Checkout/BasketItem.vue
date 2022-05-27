@@ -85,6 +85,7 @@ import RemoveBasketItem from '@/components/Checkout/RemoveBasketItem';
 import TeamAttribution from '@/components/Checkout/TeamAttribution';
 
 export default {
+	name: 'BasketItem',
 	components: {
 		CheckoutItemImg,
 		LoanMatcher,

@@ -1,67 +1,30 @@
 <template>
-	<kv-grid class="tw-grid-cols-2 md:tw-grid-cols-3">
-		<div class="tw-bg-tertiary tw-text-left md:tw-text-center">
-			<p>Filters</p>
-			<hr>
-			<fieldset>
-				<legend>Gender Filter</legend>
-				<kv-radio class="tw-text-left" value="female" v-model="gender">
-					Women
-				</kv-radio>
-				<kv-radio class="tw-text-left" value="male" v-model="gender">
-					Men
-				</kv-radio>
-				<kv-radio class="tw-text-left" value="both" v-model="gender">
-					All
-				</kv-radio>
-				<span>gender: {{ gender }}</span>
-			</fieldset>
-			<hr>
-			<fieldset>
-				<legend>Sector</legend>
-				<kv-checkbox
-					class="tw-text-left"
-					v-for="sectorBox in allSectors"
-					name="sectorBox.name"
-					v-model="sector"
-					:key="sectorBox.id"
-					:value="sectorBox.name"
+	<div class="tw-flex">
+		<div class="tw-flex tw-flex-col tw-mr-4">
+			<div class="md:tw-hidden tw-mb-3">
+				<kv-button variant="secondary" @click="toggleLightbox(true)">
+					Filter & Sort
+				</kv-button>
+				<kv-lightbox
+					:visible="isLightboxVisible"
+					variant="lightbox"
+					title="Loan filter controls"
+					@lightbox-closed="toggleLightbox(false)"
 				>
-					{{ sectorBox.name }}
-				</kv-checkbox>
-			</fieldset>
-			<br>
-			<fieldset>
-				<label class="tw-text-h4 tw-block" for="loanTerm"> Loan Term Filter </label>
-				<kv-select class="tw-mt-2" id="loanTerm" v-model="lenderTermLimit">
-					<option value="0">
-						All Loans
-					</option>
-					<option value="24">
-						Up to 24 months
-					</option>
-					<option value="12">
-						Up to 12 months
-					</option>
-				</kv-select>
-			</fieldset>
-			<br>
-			<hr>
-			<kv-button v-model="loanQueryFilters" @click="updateQuery">
-				Search
-			</kv-button>
-			<kv-button v-model="loanQueryFilters" @click="resetFilter">
-				Reset Filters
-			</kv-button>
-			<hr>
+					<template #header>
+						{{ null }} <!-- Hide title text -->
+					</template>
+					<loan-search-filter :facets="facets" />
+				</kv-lightbox>
+			</div>
+			<div class="tw-hidden md:tw-block">
+				<loan-search-filter :facets="facets" />
+			</div>
 		</div>
-		<div class="md:tw-hidden">
+		<div class="md:tw-hidden tw-pt-1.5">
 			<p>{{ totalCount }} Loans</p>
 		</div>
 		<div class="tw-col-span-2">
-			<div class="tw-bg-tertiary tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
-				Search Loans
-			</div>
 			<div class="tw-hidden md:tw-block tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
 				<p>{{ totalCount }} Loans</p>
 			</div>
@@ -73,140 +36,137 @@
 					:key="loan.id"
 					:loan="loan"
 					loan-card-type="ListLoanCard"
+					:rounded-corners="true"
 				/>
 			</kv-grid>
 		</div>
-	</kv-grid>
+	</div>
 </template>
 
 <script>
-import { mdiFilterVariant, mdiCompassRose } from '@mdi/js';
-import {
-	fetchData,
-	filterGender,
-	filterSector,
-	fetchSectors,
-	fetchCountryFacets,
-	filterCountry,
-	filterLoanTerm,
-} from '@/util/flssUtils';
+import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
+import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
+import {
+	formatSortOptions,
+	runFacetsQueries,
+	transformIsoCodes,
+	transformThemes,
+	runLoansQuery,
+	fetchLoanFacets
+} from '@/util/loanSearchUtils';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
-	inject: ['apollo'],
+	name: 'LoanSearchInterface',
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		LoanCardController,
 		KvGrid,
-		KvRadio,
 		KvButton,
-		KvCheckbox,
-		KvSelect,
+		LoanSearchFilter,
+		KvLightbox
 	},
 	data() {
 		return {
-			loanId: Number(this.$route.params.id || 0),
-			loanQueryFilters: {},
-			totalCount: 0,
+			/**
+			 * All available facet options from lend API. Format:
+			 * {
+			 *   countryFacets: [
+			 *     {
+			 *       name: '',
+			 *       isoCode: '',
+			 *       region: '',
+			 *     }
+			 *   ],
+			 *   sectorFacets: [
+			 *     {
+			 *       id: 1,
+			 *       name: '',
+			 *     }
+			 *   ],
+			 *   themeFacets: [
+			 *     {
+			 *       id: 1,
+			 *       name: '',
+			 *     }
+			 *   ],
+			 * }
+			 */
+			allFacets: undefined,
+			/**
+			 * Facet options based on the loans available. Format:
+			 * {
+			 *   regions: [
+			 *     {
+			 *       region: '',
+			 *       numLoansFundraising: 1,
+			 *       countries: [
+			 *         {
+			 *           name: '',
+			 *           region: '',
+			 *           isoCode: '',
+			 *           numLoansFundraising: 1,
+			 *         }
+			 *       ]
+			 *     }
+			 *   ],
+			 *   sectors: [
+			 *     {
+			 *       id: 1,
+			 *       name: '',
+			 *     }
+			 *   ],
+			 *   themes: [
+			 *     {
+			 *       id: 1,
+			 *       name: '',
+			 *       numLoansFundraising: 1,
+			 *     }
+			 *   ],
+			 * }
+			 */
+			facets: {},
 			loans: [],
-			zeroLoans: false,
-			mdiFilterVariant,
-			mdiCompassRose,
-			gender: 'both',
-			sector: ['Food', 'Education'],
-			country: ['TZ', 'KE'],
-			lenderTermLimit: 0,
-			allSectors: [],
-			allCountries: [],
-			allIsoCodes: [],
+			totalCount: 0,
+			isLightboxVisible: false
 		};
 	},
-	methods: {
-		async getSectors() {
-			const sectorInfo = await fetchSectors(this.apollo);
-			this.allSectors = sectorInfo;
-		},
-		async getAllCountries() {
-			// data pull only from production endpoint,
-			// not implmented with a component until design path
-			// with product is completed.
-			const countryFacets = await fetchCountryFacets(this.apollo);
-			this.allCountries = countryFacets.map(cf => cf.country.name);
-			// pulled in IsoCodes b/c the loan query filters are currently coded
-			// to use ISO Codes instead of country names in queryFilters() right now
-			this.allIsoCodes = countryFacets.map(cf => cf.country.isoCode);
-		},
-		resetFilter() {
-			this.gender = 'both';
-			this.sector = [];
-			this.country = [];
-			this.lenderTermLimit = 0;
-			this.loanQueryFilters = {};
-			this.runQuery(this.loanQueryFilters);
-		},
-		runQuery(loanQueryFilters) {
-			console.log('filters into runQuery:', loanQueryFilters);
-			fetchData(loanQueryFilters, this.apollo).then(flssData => {
-				this.loans = flssData.values ?? [];
-				this.totalCount = flssData.totalCount;
-				console.log('num loans:', this.totalCount);
-				console.log('loans from runQuery()', this.loans);
-
-				if (this.totalCount === 0) {
-					this.zeroLoans = true;
-				}
-			});
-		},
-		updateQuery() {
-			const updatedQueryFilters = this.queryFilters;
-			console.log('from updateQuery', updatedQueryFilters);
-			console.log('new query ran, yes!');
-			this.runQuery(updatedQueryFilters);
-		},
-	},
 	mounted() {
-		this.getSectors();
-		this.getAllCountries();
-		this.loanQueryFilters = { countryIsoCode: { any: ['US'] } };
-		console.log('mounted query ran:', this.loanQueryFilters);
-		this.runQuery(this.loanQueryFilters);
-		console.log('loans from mounted:', this.loans);
+		// Here we subscribe to the loanSearchState and run the loan query when it updates
+		// TODO: work some guards to prevent duplicate queries and throttling to more carefully control # of queries
+		this.apollo.watchQuery({ query: loanSearchStateQuery }).subscribe({
+			next: async ({ data }) => {
+				// Get all facet options from lend API. Only fetch once, since the options shouldn't change frequently.
+				if (!this.allFacets) this.allFacets = await fetchLoanFacets(this.apollo);
+
+				// Get filtered facet options from FLSS
+				// TODO: Prevent this from running on every query
+				const { isoCodes, themes } = await runFacetsQueries(this.apollo, data?.loanSearchState);
+
+				// Merge all facet options with filtered options
+				this.facets = {
+					regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
+					sectors: this.allFacets?.sectorFacets || [],
+					themes: transformThemes(themes, this.allFacets?.themeFacets),
+					sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
+				};
+
+				// Extract sortBy + offset
+
+				// Get filtered loans from FLSS
+				const loans = await runLoansQuery(this.apollo, data?.loanSearchState);
+				this.loans = loans.loans;
+				this.totalCount = loans.totalCount;
+			}
+		});
 	},
-	computed: {
-		queryFilters() {
-			// // TODO: enable genderFilter when its working
-			const genderFilter = filterGender(this.gender);
-			console.log('this is filtergender', genderFilter);
-
-			const sectorFilter = filterSector(this.sector, this.allSectors);
-			console.log('this is filterSector', sectorFilter);
-
-			const countryFilter = filterCountry(this.country, this.allIsoCodes);
-			console.log('this is countryFilter', countryFilter);
-
-			const loanTermFilter = filterLoanTerm(this.lenderTermLimit);
-			console.log('this is filterLoanTerm', loanTermFilter);
-
-			const loanQueryFilters = {
-				countryIsoCode: countryFilter,
-				lenderRepaymentTerm: loanTermFilter,
-				// TODO: enable genderFilter when its working
-				// gender: genderFilter,
-				sector: sectorFilter,
-			};
-			console.log('yo! from queryFilters', loanQueryFilters);
-			return loanQueryFilters;
+	methods: {
+		toggleLightbox(toggle) {
+			this.isLightboxVisible = toggle;
 		},
-	},
-	watch: {
-		gender: { handler: 'updateQuery' },
-		sector: { handler: 'updateQuery' },
-		country: { handler: 'updateQuery' },
-		loanTermLimit: { handler: 'updateQuery' },
 	},
 };
 </script>

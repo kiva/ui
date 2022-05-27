@@ -47,12 +47,4 @@ query wwwHeader($basketId: String) {
 			id
 		}
 	}
-	lend_menu_category_sort: experiment(id: "lend_menu_category_sort") @client {
-		id
-		version
-	}
-	redirect_to_login: experiment(id: "redirect_to_login") @client {
-		id
-		version
-	}
 }

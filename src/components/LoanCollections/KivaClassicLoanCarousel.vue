@@ -58,6 +58,7 @@ import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
+	name: 'KivaClassicLoanCarousel',
 	components: {
 		KvCarousel,
 		KvLoadingSpinner,
@@ -146,11 +147,6 @@ export default {
 				return '/lend/countries-not-lent';
 			}
 
-			// special handling for CASH-794 Favorite Country row
-			if (this.url.includes('favorite-countries-link')) {
-				return this.url.replace('favorite-countries-link', '');
-			}
-
 			// otherwise transform to use /lend-by-category as root path
 			return `/lend-by-category${cleanUrl}`;
 		},
@@ -189,6 +185,7 @@ export default {
 		// TODO: consider deprecating in favor of Contentful controlled value similar to shortName
 		cleanCategoryName(categoryId) {
 			switch (categoryId) {
+				case 5:
 				case 52:
 					return 'loans to women';
 				case 96:

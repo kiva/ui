@@ -64,6 +64,7 @@ import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'DonateForm',
 	components: {
 		DonateFormDropInPaymentWrapper,
 		KvBaseInput,

@@ -29,6 +29,7 @@ import {
 import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
 
 export default {
+	name: 'KvTooltip',
 	components: {
 		KvPopper,
 		KvThemeProvider

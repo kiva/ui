@@ -8,6 +8,7 @@
 // import logFormatter from '@/util/logFormatter';
 
 export default {
+	name: 'AddLoanToBasket',
 	inject: ['locale'],
 	metaInfo: {
 		title: 'Error'

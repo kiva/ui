@@ -17,6 +17,7 @@ import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 const loanUseFilter = require('../../plugins/loan-use-filter');
 
 export default {
+	name: 'LoanUse',
 	components: {
 		KvTextLink,
 	},

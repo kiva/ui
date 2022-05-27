@@ -24,6 +24,7 @@ import KvMap from '@/components/Kv/KvMap';
 import CountryInfo from './CountryInfo';
 
 export default {
+	name: 'BorrowerCountry',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		CountryInfo,

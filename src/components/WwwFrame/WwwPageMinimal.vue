@@ -21,6 +21,7 @@ import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
 
 export default {
+	name: 'WwwPageMinimal',
 	inject: [
 		'apollo',
 		'cookieStore',

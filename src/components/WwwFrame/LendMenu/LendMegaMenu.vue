@@ -221,6 +221,7 @@ import CountryList from './CountryList';
 import SearchList from './SearchList';
 
 export default {
+	name: 'LendMegaMenu',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		CountryList,

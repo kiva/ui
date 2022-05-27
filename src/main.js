@@ -99,6 +99,7 @@ export default function createApp({
 	Vue.prototype.$appConfig = appConfig;
 
 	const app = new Vue({
+		name: '',
 		router,
 		render: h => h(App),
 		provide: {

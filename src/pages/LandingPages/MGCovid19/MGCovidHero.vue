@@ -93,6 +93,7 @@ const pageQuery = gql`
 const heroImagesRequire = require.context('@/assets/images/covid-hero-v2', true);
 
 export default {
+	name: 'MGCovidHero',
 	metaInfo: {
 		title: "Join Kiva's Global COVID-19 Response"
 	},

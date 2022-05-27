@@ -41,6 +41,7 @@ import { buildPriceArray } from '@/util/loanUtils';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
+	name: 'LoanPrice',
 	components: {
 		KvSelect,
 		RemoveBasketItem,
@@ -107,7 +108,11 @@ export default {
 				remainingAmount = Math.max(remainingAmount, parseFloat(this.price));
 
 				const minAmount = parseFloat(this.minAmount || 25); // 25_hard_coded
-				return buildPriceArray(remainingAmount, minAmount);
+				const pricesArray = buildPriceArray(remainingAmount, minAmount);
+				const reducedArray = pricesArray.filter(element => {
+					return element % 25 === 0;
+				});
+				return reducedArray;
 			}
 			if (this.type === 'kivaCard') {
 				// convert this to formatted array for our select element

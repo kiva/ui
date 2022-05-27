@@ -64,6 +64,7 @@ import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 * */
 
 export default {
+	name: 'HeroWithCarousel',
 	components: {
 		ButtonWrapper,
 		DynamicRichText,

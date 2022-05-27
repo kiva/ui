@@ -67,6 +67,7 @@ const instantLendingErrorContent = gql`query instantLendingContent {
 }`;
 
 export default {
+	name: 'InstantLendingError',
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
 		return {

@@ -1,7 +1,7 @@
 <template>
 	<kv-lightbox
 		:visible="mgDriverEnabled && isLightboxVisible"
-		title="Find the best loans for you"
+		title="Let Kiva find the best loans for you"
 		@lightbox-closed="closeLightbox"
 	>
 		<div class="tw-flex tw-flex-col md:tw-flex-row-reverse tw-mb-4">
@@ -15,7 +15,8 @@
 			</div>
 			<div class="tw-prose md:tw-mr-4">
 				<p class="tw-text-subhead">
-					For as little as $5 a month, we’ll help you automatically lend to borrowers around the world.
+					For as little as $5 a month, we’ll help you automatically lend to
+					borrowers that meet your lending preferences.
 				</p>
 				<kv-button
 					class="tw-w-full md:tw-w-auto"
@@ -43,6 +44,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 const imageRequire = require.context('@/assets/images', true);
 
 export default {
+	name: 'MGLightbox',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvButton,
@@ -58,7 +60,7 @@ export default {
 			mgDriverEnabled: false,
 			showLightbox: false,
 			mgTimer: null,
-			mgLightboxDelay: 7000,
+			mgLightboxDelay: 10000,
 		};
 	},
 	mounted() {
@@ -77,6 +79,7 @@ export default {
 
 			// Fetch setting ui.lbc_mg_driver
 			const mgDriverEligibilityQuery = gql`query mgDriverEligibilityQuery($basketId: String) {
+				hasEverLoggedIn @client
 				general {
 					mgDriver: uiConfigSetting(key: "lbc_mg_driver") {
 						key
@@ -112,8 +115,10 @@ export default {
 				const basketCount = data?.shop?.nonTrivialItemCount ?? 0;
 				// establish feature flag state
 				const mgDriverEnabled = (data?.general?.mgDriver?.value ?? false) === 'true';
+				// check for existing user
+				const hasEverLoggedIn = data?.hasEverLoggedIn;
 
-				if (!basketCount && !isMonthlyGoodSubscriber && !hasLegacySubs && mgDriverEnabled) {
+				if (!basketCount && !isMonthlyGoodSubscriber && !hasLegacySubs && mgDriverEnabled && hasEverLoggedIn) {
 					this.mgDriverEnabled = mgDriverEnabled;
 					this.initializeMgDriveLightbox();
 				}
@@ -123,10 +128,10 @@ export default {
 			this.mgTimer = setTimeout(this.showMgDriverLightbox, this.mgLightboxDelay);
 		},
 		mgDriverPreviouslyShown() {
-			return this.cookieStore.get('mg-lightbox-shown-in-session') === 'true' || false;
+			return this.cookieStore.get('mg-lightbox-shown-in-session-2') === 'true' || false;
 		},
 		showMgDriverLightbox() {
-			this.cookieStore.set('mg-lightbox-shown-in-session', true);
+			this.cookieStore.set('mg-lightbox-shown-in-session-2', true);
 			this.isLightboxVisible = true;
 			this.$kvTrackEvent('Lending', 'show-mg-lightbox', 'Learn about Monthly Good Lightbox');
 		},

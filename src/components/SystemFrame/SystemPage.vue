@@ -17,6 +17,7 @@
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 
 export default {
+	name: 'SystemPage',
 	components: {
 		KivaLogo,
 	},

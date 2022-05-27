@@ -59,6 +59,7 @@ const passwordResetMutation = gql`mutation passwordReset {
 }`;
 
 export default {
+	name: 'Password',
 	components: {
 		KvAlert,
 		KvButton,

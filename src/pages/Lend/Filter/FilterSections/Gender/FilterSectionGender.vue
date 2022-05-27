@@ -17,6 +17,7 @@ import { AisMenu } from 'vue-instantsearch';
 import PillToggleWrapper from '@/pages/Lend/Filter/FilterSections/Gender/PillToggleWrapper';
 
 export default {
+	name: 'FilterSectionGender',
 	components: {
 		AisMenu,
 		PillToggleWrapper,

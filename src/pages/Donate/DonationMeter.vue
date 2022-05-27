@@ -45,6 +45,7 @@ const meterStatsQuery = gql`query meterInfo {
 }`;
 
 export default {
+	name: 'DonationMeter',
 	components: {
 		KvProgressCircle,
 	},

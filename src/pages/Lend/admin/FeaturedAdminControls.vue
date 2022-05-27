@@ -50,6 +50,7 @@ import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
+	name: 'FeaturedAdminControls',
 	components: {
 		KvButton,
 		KvCheckbox,

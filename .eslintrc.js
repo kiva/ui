@@ -91,5 +91,15 @@ module.exports = {
 		'graphql/no-deprecated-fields': ['warn', graphqlOptions],
 		'graphql/named-operations': ['error', graphqlOptions],
 		'graphql/required-fields': ['error', { ...graphqlOptions, requiredFields: ['id', 'key'] }],
+
+		// require component names that match the file name
+		"vue/require-name-property": "error",
+		"vue/match-component-file-name": [
+			"error",
+			{
+				extensions: ["vue"],
+				shouldMatchCase: true,
+			},
+		],
 	}
 };

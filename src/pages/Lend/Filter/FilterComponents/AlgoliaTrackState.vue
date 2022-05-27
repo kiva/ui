@@ -6,6 +6,7 @@
 import _map from 'lodash/map';
 
 export default {
+	name: 'AlgoliaTrackState',
 	props: {
 		stateDataHits: {
 			type: Array,

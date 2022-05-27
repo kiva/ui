@@ -98,6 +98,7 @@ import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import InfoPanel from './InfoPanel';
 
 export default {
+	name: 'PartnerInfoPanel',
 	components: {
 		InfoPanel,
 		KvLoadingSpinner

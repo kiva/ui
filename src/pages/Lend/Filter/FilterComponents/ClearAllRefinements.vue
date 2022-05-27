@@ -9,6 +9,7 @@
 
 <script>
 export default {
+	name: 'ClearAllRefinements',
 	methods: {
 		clearAll() {
 			this.$emit('clear-all-refinements');

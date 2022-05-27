@@ -111,6 +111,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 const mgSelectorImgRequire = require.context('@/assets/images/mg-selector-icons/', true);
 
 export default {
+	name: 'MonthlyGoodSelectorDesktop',
 	props: {
 		/**
 		 * The category value to preSelect. Or null for no selection

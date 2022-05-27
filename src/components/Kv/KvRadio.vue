@@ -25,6 +25,7 @@
 import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
 
 export default {
+	name: 'KvRadio',
 	props: {
 		id: {
 			type: String,

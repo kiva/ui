@@ -3,45 +3,41 @@
 		<div
 			class="how-works-section-wrapper
 			tw-bg-primary
-			tw-py-4 md:tw-py-6 lg:tw-py-8"
+			tw-py-2 md:tw-pt-6 md:tw-pb-5 lg:tw-py-7"
 			id="how-it-works"
 		>
 			<div class="row">
-				<h1 class="column small-12 tw-text-center tw-mb-4">
+				<h1 class="column small-12 tw-text-center tw-mb-4 tw-text-h2">
 					How it works
 				</h1>
 				<div class="small-12 large-4 column tw-mb-4 tw-text-center">
-					<icon-auto-deposit-alternate class="mg-image tw-text-brand-700" />
-					<h3 class="tw-mb-2">
-						Contribute automatically
+					<icon-borrower-search class="mg-image tw-text-brand-700" />
+					<h3 class="tw-mb-2 tw-text-h3">
+						Subscribe & support
 					</h3>
-					<p class="tw-mb-2">
-						Sign up once by choosing a monthly amount that works for you. Cancel anytime.
+					<p class="tw-mb-2 tw-text-base">
+						You decide who you want to support. Pick a category and we make sure 100%
+						of your funds make it to them.
 					</p>
 				</div>
 				<div class="small-12 large-4 column tw-mb-4 tw-text-center">
-					<icon-lend class="mg-image tw-text-brand" />
-					<h3 class="tw-mb-2">
-						Help entrepreneurs in need
+					<icon-megaphone class="mg-image tw-text-brand" />
+					<h3 class="tw-mb-2 tw-text-h3">
+						Stay up to date
 					</h3>
-					<p class="tw-mb-2">
+					<p class="tw-mb-2 tw-text-base">
 						<!-- eslint-disable-next-line max-len -->
-						Kiva will automatically lend 100% of your funds to borrowers who need help reaching their goals. This could be anyone on Kiva, from farmers to students, artisans to shopkeepers.
+						Every month, hear from your borrowers. Discover their stories and many others around the world.
 					</p>
 				</div>
-				<div class="small-12 large-4 column tw-mb-4 tw-text-center">
-					<icon-updates-alternate class="mg-image tw-text-brand-700" />
-					<h3 class="tw-mb-2">
-						Receive inspiring stories
+				<div class="small-12 large-4 column md:tw-mb-4 tw-text-center">
+					<icon-relend class="mg-image tw-text-brand-700" />
+					<h3 class="tw-mb-2 tw-text-h3">
+						Multiply your impact
 					</h3>
-					<p class="tw-mb-2">
-						We’ll send you an update once a month, including who you supported and why it mattered.
-					</p>
-				</div>
-				<div class="small-12 column tw-text-center">
-					<p class="learn-more-text tw-mb-2">
+					<p class="tw-mb-2 tw-text-base">
 						<!-- eslint-disable-next-line max-len -->
-						As you’re repaid, your funds will be automatically relent to borrowers in need, multiplying your impact
+						It's a loan, not a donation! Contributions and repayments let you help more people, month after month.
 					</p>
 				</div>
 			</div>
@@ -50,18 +46,19 @@
 </template>
 
 <script>
-import IconAutoDepositAlternate from '@/assets/icons/inline/auto-deposit-alternate.svg';
-import IconLend from '@/assets/icons/inline/lend.svg';
-import IconUpdatesAlternate from '@/assets/icons/inline/updates-alternate.svg';
+import IconBorrowerSearch from '@/assets/icons/inline/borrower_search.svg';
+import IconMegaphone from '@/assets/icons/inline/megaphone.svg';
+import IconRelend from '@/assets/icons/inline/relend.svg';
 import { darkGreenTheme } from '~/@kiva/kv-tokens/configs/kivaColors.cjs';
 
 import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
 
 export default {
+	name: 'HowItWorks',
 	components: {
-		IconAutoDepositAlternate,
-		IconLend,
-		IconUpdatesAlternate,
+		IconBorrowerSearch,
+		IconMegaphone,
+		IconRelend,
 		KvThemeProvider,
 	},
 	data() {
