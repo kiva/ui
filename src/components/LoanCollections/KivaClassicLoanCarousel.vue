@@ -46,6 +46,7 @@
 					:item-index="index"
 					:key="`loan-${loanId}`"
 					:loan-id="loanId"
+					:exp-label="expLabel"
 				/>
 			</template>
 		</kv-carousel>
@@ -92,6 +93,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		expLabel: {
+			type: String,
+			default: ''
+		}
 	},
 	data() {
 		return {

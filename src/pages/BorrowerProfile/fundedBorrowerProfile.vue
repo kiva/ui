@@ -86,9 +86,99 @@
 				</div>
 			</div>
 		</div>
-		<div v-else id="loading-overlay">
-			<div class="spinner-wrapper">
-				<kv-loading-spinner />
+		<div v-else>
+			<article class="tw-relative tw-bg-secondary">
+				<div class="tw-relative">
+					<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
+						<hero-background />
+					</div>
+					<kv-page-container>
+						<kv-grid class="md:tw-grid-cols-12 tw-grid tw-relative">
+							<div class="md:tw-col-span-8 md:tw-col-start-3 tw-my-8">
+								<section class="
+									tw-pb-0
+									md:tw-bg-primary
+									md:tw-pb-2.5
+									tw-py-2.5 md:tw-p-3 lg:tw-p-4
+									md:tw-rounded-t lg:tw-rounded"
+								>
+									<div class="tw-flex">
+										<div class="
+									tw-flex-none tw-w-8 tw-h-8 tw-mr-1.5 tw-mb-1.5
+									md:tw-w-9 md:tw-h-9 md:tw-mr-3 md:tw-mb-3
+									lg:tw-w-10 lg:tw-h-10 lg:tw-mr-4 lg:tw-mb-4"
+										>
+											<borrower-image
+												data-testid="bp-summary-image"
+												class="tw-w-full tw-rounded-full tw-bg-brand"
+												:alt="loan.name"
+												:aspect-ratio="1"
+												:hash="hash"
+												:default-image="{ width: 80, faceZoom: 50 }"
+												:images="[
+													{ width: 80, faceZoom: 50, viewSize: 1024 },
+													{ width: 72, faceZoom: 50, viewSize: 734 },
+													{ width: 64, faceZoom: 50 },
+												]"
+											/>
+										</div>
+										<div class="tw-flex-auto">
+											<borrower-name
+												data-testid="bp-summary-borrower-name"
+												:name="loan.name"
+											/>
+											<loan-progress
+												data-testid="bp-summary-progress"
+												class="tw-mb-2"
+												:money-left="'0'"
+												:progress-percent="1"
+												:funded-page="true"
+											/>
+										</div>
+									</div>
+								</section>
+							</div>
+						</kv-grid>
+					</kv-page-container>
+				</div>
+			</article>
+			<div class="tw-mx-2 tw-overflow-auto lg:tw-mx-auto loans-container">
+				<p class="tw-text-center tw-text-h1 tw-my-6">
+					Other Borrowers that need your support
+				</p>
+				<div :key="index" v-for="(category, index) in categories" class="tw-my-6">
+					<p class="tw-text-h2">
+						{{ category.heading }}
+					</p>
+					<div v-if="!category.loan">
+						<kiva-classic-loan-carousel
+							v-if="!category.loan"
+							:is-visible="true"
+							:loan-ids="category.loanIds"
+							:exp-label="category.expLabel"
+						/>
+					</div>
+					<div v-else class="featured-loan-card-row tw-pt-4">
+						<loan-card-controller
+							v-if="category.loan"
+							category-set-id="featured-hero-loan"
+							:enable-tracking="true"
+							:key="category.loan.id"
+							:loan="category.loan"
+							loan-card-type="FeaturedHeroLoan"
+							:position="1"
+							:row-number="0"
+							:is-visitor="isVisitor"
+						/>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div ref="preBottom">
+			<div v-if="isLoading" id="loading-overlay" class="tw-z-overlay">
+				<div class="spinner-wrapper">
+					<kv-loading-spinner />
+				</div>
 			</div>
 		</div>
 	</www-page>
@@ -105,6 +195,28 @@ import basketItems from '@/graphql/query/basketItems.graphql';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import { createIntersectionObserver } from '@/util/observerUtils';
+import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
+import SidebarContainer from '@/components/BorrowerProfile/SidebarContainer';
+import HeroBackground from '@/components/BorrowerProfile/HeroBackground';
+import SummaryCard from '@/components/BorrowerProfile/SummaryCard';
+import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
+import LoanProgress from '@/components/BorrowerProfile/LoanProgress';
+import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
+import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
+import personalizedLoansQuery from '@/graphql/query/lendByCategory/personalizedLoans.graphql';
+import mlLoansYouMightLikeData from '@/graphql/query/loansYouMightLike/mlLoansYouMightLikeData.graphql';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+
+const newFundedBorrowerPageExpKey = 'new_funded_borrower_page';
 
 export default {
 	metaInfo() {
@@ -124,13 +236,32 @@ export default {
 		LoanCardImage,
 		KvFlag,
 		LYML,
-		KvLoadingSpinner
+		KvLoadingSpinner,
+		HeroBackground,
+		ContentContainer,
+		SummaryCard,
+		BorrowerName,
+		LoanProgress,
+		BorrowerImage,
+		KvGrid,
+		KvPageContainer,
+		KivaClassicLoanCarousel,
+		LoanCardController,
+		KvLoadingOverlay
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			loan: () => {},
 			itemsInBasket: [],
+			viewportObserver: null,
+			hash: '',
+			isLoading: false,
+			categories: [],
+			rows: null,
+			isVisitor: true,
+			loanRowsCount: 4,
+			enabledExperiment: true
 		};
 	},
 	apollo: {
@@ -177,11 +308,56 @@ export default {
 			});
 
 			this.loan = _get(loanData, 'lend.loan');
+			this.hash = this.loan?.image?.hash ?? '';
 			this.itemsInBasket = _get(loanData, 'shop.basket.items.values');
 		} catch (e) {
 			logReadQueryError(e, 'FundedBorrowerProfilePage fundedBorrowerProfile');
 			this.$router.push({ path: `/lend/${loanIdFromRoute}?minimal=false` });
 		}
+	},
+	mounted() {
+		const { enabled } = getExperimentSettingCached(this.apollo, newFundedBorrowerPageExpKey);
+		if (enabled) {
+			// TODO: Update Tracking information
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Landing Page',
+				newFundedBorrowerPageExpKey,
+				''
+			);
+		}
+		this.createViewportObserver();
+		this.rows = [
+			{
+				heading: 'Support borrowers in ',
+				onlyLoan: false,
+				limit: 3,
+				filter: { countryIsoCode: { eq: this.loan?.geocode?.country?.isoCode } },
+				loanIds: []
+			},
+			{
+				heading: 'Recommended Borrower',
+				onlyLoan: true,
+				limit: 1,
+				filter: null,
+				loan: null
+			},
+			{
+				heading: 'Lend to ',
+				onlyLoan: false,
+				limit: 3,
+				filter: { gender: { eq: this.loan?.gender } },
+				loanIds: []
+			},
+			{
+				heading: 'Loans for ',
+				onlyLoan: false,
+				limit: 3,
+				filter: { sector: { eq: String(this.loan?.sector?.id) } },
+				loanIds: []
+			}
+		];
 	},
 	methods: {
 		handleAddToBasket(payload) {
@@ -193,6 +369,95 @@ export default {
 					// need to update this.itemsInBasket here.
 					this.itemsInBasket = _get(data, 'data.shop.basket.items.values');
 				});
+			}
+		},
+		fetchLoanData() {
+			const row = this.rows.shift();
+			if (row) {
+				this.isLoading = true;
+				if (!row.onlyLoan) {
+					try {
+						const variables = {
+							limit: row.limit,
+							filters: [
+								row.filter
+							]
+						};
+
+						this.apollo.query({
+							query: personalizedLoansQuery,
+							variables,
+						}).then(({ data }) => {
+							const personalizedLoans = data?.fundraisingLoans?.values ?? [];
+							if (!personalizedLoans.length) {
+								this.isLoading = false;
+								return this.fetchLoanData();
+							}
+							const personalizedLoanIds = personalizedLoans.map(element => element.id);
+							let finalHeading = '';
+							let expLabel = '';
+							if (row?.filter?.gender) {
+								finalHeading = this.loan?.gender;
+								expLabel = this.loan?.gender;
+							}
+							if (row?.filter?.countryIsoCode) {
+								finalHeading = this.loan?.geocode?.country?.name;
+								expLabel = this.loan?.geocode?.country?.isoCode;
+							}
+							if (row?.filter?.sector) {
+								finalHeading = this.loan?.sector?.name;
+								expLabel = this.loan?.sector?.id;
+							}
+							this.categories = [
+								...this.categories, {
+									heading: row.heading + finalHeading,
+									loanIds: personalizedLoanIds,
+									loan: null,
+									expLabel
+								}
+							];
+							this.isLoading = false;
+						});
+					} catch (e) {
+						logReadQueryError(e, 'FundedBorrowerProfile personalizedLoansQuery');
+						this.isLoading = false;
+					}
+				} else {
+					try {
+						return this.apollo.query({
+							query: mlLoansYouMightLikeData,
+							variables: {
+								loanId: parseInt(this.loan.id, 10),
+								limit: row.limit
+							}
+						}).then(data => {
+							const loans = _get(data, 'data.ml.relatedLoansByTopics[0].values');
+							this.categories = [
+								...this.categories,
+								{ heading: row.heading, loan: loans[0], loanIds: [] }
+							];
+							this.isLoading = false;
+						});
+					} catch (e) {
+						logReadQueryError(e, 'FundedBorrowerProfile mlLoansYouMightLikeData');
+						this.isLoading = false;
+					}
+				}
+			}
+		},
+		createViewportObserver() {
+			this.viewportObserver = createIntersectionObserver({
+				targets: [this.$refs.preBottom],
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.isIntersecting) {
+							this.fetchLoanData();
+						}
+					});
+				}
+			});
+			if (!this.viewportObserver) {
+				Array.from({ length: this.loanRowsCount }).map(() => this.fetchLoanData());
 			}
 		},
 	}

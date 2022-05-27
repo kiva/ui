@@ -134,7 +134,7 @@
 		/>
 
 		<kv-button
-			v-if="!isLoading && !allSharesReserved"
+			v-if="!isLoading && !allSharesReserved && !inBorrowerProfilePage"
 			class="tw-mb-2 tw-self-start"
 			:state="`${allSharesReserved ? 'disabled' : ''}`"
 			:to="`/lend/${loanId}`"
@@ -146,6 +146,31 @@
 				:icon="mdiChevronRight"
 			/>
 		</kv-button>
+
+		<!-- Lend button -->
+		<kv-ui-button
+			key="lendButton"
+			v-if="inBorrowerProfilePage && !isAdding"
+			class="tw-inline-flex tw-flex-1"
+			data-testid="bp-lend-cta-lend-button"
+			type="submit"
+			@click="addToBasket"
+			v-kv-track-event="[
+				'Lending',
+				'lend-button-loan-upsell',
+				expLabel
+			]"
+		>
+			{{ ctaButtonText }}
+		</kv-ui-button>
+
+		<kv-ui-button
+			v-if="inBorrowerProfilePage && isAdding"
+			class="tw-inline-flex tw-flex-1"
+			data-testid="bp-lend-cta-adding-to-basket-button"
+		>
+			Adding to basket...
+		</kv-ui-button>
 
 		<!-- If allSharesReserved show message and hide cta button -->
 		<div
@@ -257,6 +282,10 @@ export default {
 		loanId: {
 			type: Number,
 			required: true,
+		},
+		expLabel: {
+			type: String,
+			default: ''
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -272,6 +301,7 @@ export default {
 		KvButton,
 		KvMaterialIcon,
 		SummaryTag,
+		KvUiButton
 	},
 	data() {
 		return {
