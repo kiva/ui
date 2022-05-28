@@ -254,7 +254,7 @@ export default {
 			rows: null,
 			isVisitor: true,
 			loanRowsCount: 4,
-			enabledExperiment: true
+			enabledExperiment: false
 		};
 	},
 	apollo: {
@@ -329,7 +329,7 @@ export default {
 				''
 			);
 		}
-		this.createViewportObserver();
+		if (this.enabledExperiment) this.createViewportObserver();
 		this.rows = [
 			{
 				heading: 'Support borrowers in ',
