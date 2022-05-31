@@ -1,3 +1,10 @@
+### [2.165.1](https://github.com/kiva/ui/compare/v2.165.0...v2.165.1) (2022-05-31)
+
+
+### Bug Fixes
+
+* expandable bug was fixed for lbc page ([5a0e1b6](https://github.com/kiva/ui/commit/5a0e1b6fd51346d6b8c86fe23bf4dd82bc0b277e))
+
 ## [2.165.0](https://github.com/kiva/ui/compare/v2.164.0...v2.165.0) (2022-05-31)
 
 
