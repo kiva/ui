@@ -14,11 +14,11 @@
 					<template #header>
 						{{ null }} <!-- Hide title text -->
 					</template>
-					<loan-search-filter :facets="facets" />
+					<loan-search-filter :facets="facets" :loan-search-state="loanSearchState" />
 				</kv-lightbox>
 			</div>
 			<div class="tw-hidden md:tw-block">
-				<loan-search-filter :facets="facets" />
+				<loan-search-filter :facets="facets" :loan-search-state="loanSearchState" />
 			</div>
 		</div>
 		<div class="md:tw-hidden tw-pt-1.5">
@@ -53,7 +53,8 @@ import {
 	transformIsoCodes,
 	transformThemes,
 	runLoansQuery,
-	fetchLoanFacets
+	fetchLoanFacets,
+	applyQueryParams,
 } from '@/util/loanSearchUtils';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -131,20 +132,27 @@ export default {
 			facets: {},
 			loans: [],
 			totalCount: 0,
-			isLightboxVisible: false
+			isLightboxVisible: false,
+			loanSearchState: {},
 		};
 	},
-	mounted() {
+	async mounted() {
+		// Initialize the search filters with the query string params
+		await applyQueryParams(this.apollo, this.$route.query);
+
 		// Here we subscribe to the loanSearchState and run the loan query when it updates
 		// TODO: work some guards to prevent duplicate queries and throttling to more carefully control # of queries
 		this.apollo.watchQuery({ query: loanSearchStateQuery }).subscribe({
 			next: async ({ data }) => {
+				// Utilize the results of the existing query of the loan search state for updating the filters
+				this.loanSearchState = data?.loanSearchState;
+
 				// Get all facet options from lend API. Only fetch once, since the options shouldn't change frequently.
 				if (!this.allFacets) this.allFacets = await fetchLoanFacets(this.apollo);
 
 				// Get filtered facet options from FLSS
 				// TODO: Prevent this from running on every query
-				const { isoCodes, themes } = await runFacetsQueries(this.apollo, data?.loanSearchState);
+				const { isoCodes, themes } = await runFacetsQueries(this.apollo, this.loanSearchState);
 
 				// Merge all facet options with filtered options
 				this.facets = {
@@ -157,7 +165,7 @@ export default {
 				// Extract sortBy + offset
 
 				// Get filtered loans from FLSS
-				const loans = await runLoansQuery(this.apollo, data?.loanSearchState);
+				const loans = await runLoansQuery(this.apollo, this.loanSearchState);
 				this.loans = loans.loans;
 				this.totalCount = loans.totalCount;
 			}

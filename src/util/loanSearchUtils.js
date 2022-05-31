@@ -2,6 +2,7 @@ import orderBy from 'lodash/orderBy';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
 import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
 import { fetchFacets, fetchLoans } from '@/util/flssUtils';
+import { FEMALE_KEY, MALE_KEY } from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
 
 /**
  * Updates the search state using the provided apollo client and filters
@@ -332,4 +333,16 @@ export async function fetchLoanFacets(apollo) {
  */
 export function getCheckboxLabel(item) {
 	return `${item.name || item.region} (${item.numLoansFundraising})`;
+}
+
+/**
+ * Pulls the query string params using the Vue Router and applies them to the search state
+ *
+ * @param {Object} apollo The Apollo client instance
+ * @param {Object} query The Vue Router query object (this.$route.query)
+ */
+export async function applyQueryParams(apollo, query) {
+	const filters = { ...(query.gender && [FEMALE_KEY, MALE_KEY].includes(query.gender) && { gender: query.gender }) };
+
+	await updateSearchState(apollo, filters);
 }

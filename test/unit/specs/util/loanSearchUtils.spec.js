@@ -11,6 +11,7 @@ import {
 	transformThemes,
 	getUpdatedThemes,
 	getCheckboxLabel,
+	applyQueryParams,
 } from '@/util/loanSearchUtils';
 import * as flssUtils from '@/util/flssUtils';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
@@ -445,6 +446,36 @@ describe('loanSearchUtils.js', () => {
 
 		it('should handle item', () => {
 			expect(getCheckboxLabel({ name: 'test', numLoansFundraising: 1 })).toBe('test (1)');
+		});
+	});
+
+	describe('applyQueryParams', () => {
+		it('should update cache', async () => {
+			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
+			const filters = { gender: 'female' };
+			const params = {
+				mutation: updateLoanSearchMutation,
+				variables: { searchParams: filters }
+			};
+			const query = { gender: 'female' };
+
+			await applyQueryParams(apollo, query);
+
+			expect(apollo.mutate).toHaveBeenCalledWith(params);
+		});
+
+		it('should handle incorrect gender param', async () => {
+			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
+			const filters = {};
+			const params = {
+				mutation: updateLoanSearchMutation,
+				variables: { searchParams: filters }
+			};
+			const query = { gender: 'asd' };
+
+			await applyQueryParams(apollo, query);
+
+			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
 	});
 });
