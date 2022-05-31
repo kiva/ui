@@ -1,3 +1,15 @@
+## [2.164.0](https://github.com/kiva/ui/compare/v2.163.0...v2.164.0) (2022-05-31)
+
+
+### Features
+
+* added loan sector filter ([17f0366](https://github.com/kiva/ui/commit/17f0366500d8c71d56e2474a4183677d3598d9e2))
+
+
+### Bug Fixes
+
+* added filter to loan search utils ([1768f3b](https://github.com/kiva/ui/commit/1768f3bfbe757644e453d397d87c8850dbc47a3a))
+
 ## [2.163.0](https://github.com/kiva/ui/compare/v2.162.1...v2.163.0) (2022-05-31)
 
 
