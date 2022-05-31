@@ -33,18 +33,7 @@
 					Sectors
 				</h2>
 			</template>
-			<fieldset>
-				<legend>Sector</legend>
-				<kv-checkbox
-					class="tw-text-left"
-					v-for="sectorBox in facets.sectors"
-					name="sectorBox.name"
-					:key="sectorBox.id"
-					:value="sectorBox.name"
-				>
-					{{ sectorBox.name }}
-				</kv-checkbox>
-			</fieldset>
+			<loan-search-sector-filter :sectors="facets.sectors" @updated="handleUpdatedFilters" />
 		</kv-accordion-item>
 		<kv-accordion-item id="acc-attributes" :open="false">
 			<template #header>
@@ -66,21 +55,21 @@ import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiClose, mdiArrowRight } from '@mdi/js';
 import LoanSearchGenderFilter from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
 import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
+import LoanSearchSectorFilter from '@/components/Lend/LoanSearch/LoanSearchSectorFilter';
 import LoanSearchThemeFilter from '@/components/Lend/LoanSearch/LoanSearchThemeFilter';
 import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
 import { updateSearchState } from '@/util/loanSearchUtils';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'LoanSearchFilter',
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		KvCheckbox,
 		KvAccordionItem,
 		KvMaterialIcon,
 		LoanSearchGenderFilter,
 		LoanSearchLocationFilter,
+		LoanSearchSectorFilter,
 		LoanSearchThemeFilter,
 		LoanSearchSortBy,
 	},
