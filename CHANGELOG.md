@@ -1,3 +1,10 @@
+### [2.162.1](https://github.com/kiva/ui/compare/v2.162.0...v2.162.1) (2022-05-31)
+
+
+### Bug Fixes
+
+* filters now transformed case insensitive ([2f0f1c5](https://github.com/kiva/ui/commit/2f0f1c52076741962f5d78d347ed6d1e56cee2e2))
+
 ## [2.162.0](https://github.com/kiva/ui/compare/v2.161.0...v2.162.0) (2022-05-31)
 
 
