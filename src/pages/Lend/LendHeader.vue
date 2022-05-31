@@ -61,7 +61,7 @@ export default {
 		const getValue = value => {
 			return value ? `-${value}` : '';
 		};
-		getCacheKey(`${filterUrl}${getValue(browseUrl)}${getValue(sidePinnedFilterPadding)}${getValue(hardLeftAlign)}${getValue(sideArrowsPadding)}`); // eslint-disable-line max-len
+		return getCacheKey(`${filterUrl}${getValue(browseUrl)}${getValue(sidePinnedFilterPadding)}${getValue(hardLeftAlign)}${getValue(sideArrowsPadding)}`); // eslint-disable-line max-len
 	},
 };
 </script>

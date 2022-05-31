@@ -185,10 +185,10 @@ export default {
 	serverCacheKey: props => {
 		const { loanCardType, loan, itemsInBasket } = props;
 
-		const { loanFundraisingInfo, id } = loan;
+		const { loanFundraisingInfo, id, status } = loan;
 		const basket = itemsInBasket.length > 0 ? itemsInBasket.find(element => element === loan.id) : null;
 
-		getCacheKey(`${loanCardType}-${id}-${loanFundraisingInfo.fundedAmount}-${loanFundraisingInfo.reservedAmount}${basket ? `-${basket}` : ''}`); // eslint-disable-line max-len
+		return getCacheKey(`${loanCardType}-${id}-${loanFundraisingInfo.fundedAmount}-${loanFundraisingInfo.reservedAmount}-${status}${basket ? `-${basket}` : ''}`); // eslint-disable-line max-len
 	},
 	inject: ['apollo'],
 	computed: {
