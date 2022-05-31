@@ -264,6 +264,7 @@ import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/RandomLoanSelector';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
@@ -324,6 +325,7 @@ export default {
 			verificationSubmitted: false,
 			showVerification: false,
 			showVerifyRemovePromoCredit: false,
+			isUpsellsExperimentEnabled: false,
 		};
 	},
 	apollo: {
@@ -355,7 +357,8 @@ export default {
 			})
 				.then(() => {
 					return Promise.all([
-						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' })
+						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
+						client.query({ query: experimentQuery, variables: { id: 'upsells_checkout' } }),
 					]);
 				});
 		},
@@ -395,6 +398,18 @@ export default {
 		}
 	},
 	created() {
+		const upsellsExperiment = this.apollo.readFragment({
+			id: 'Experiment:upsells_checkout',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.isUpsellsExperimentEnabled = upsellsExperiment.version === 'b';
+		if (upsellsExperiment.version) {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-CORE-602-May-2022',
+				upsellsExperiment.version
+			);
+		}
 		// show guest account claim confirmation message
 		if (this.myId && this.$route.query?.claimed === '1') {
 			this.$showTipMsg('Account created');
