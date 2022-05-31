@@ -60,6 +60,7 @@ import MonthlyGoodSelectorMobile from '@/components/MonthlyGood/MonthlyGoodSelec
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 export default {
+	name: 'MonthlyGoodSelectorWrapper',
 	props: {
 		/**
 		 * Content group content from Contentful

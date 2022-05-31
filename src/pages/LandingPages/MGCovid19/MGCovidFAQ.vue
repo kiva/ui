@@ -74,6 +74,7 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import CovidLandingForm from './CovidLandingForm';
 
 export default {
+	name: 'MGCovidFAQ',
 	components: {
 		CovidLandingForm,
 		KvLightbox

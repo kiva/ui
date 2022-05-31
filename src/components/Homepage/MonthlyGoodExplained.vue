@@ -76,6 +76,7 @@ import MgStepThree from '@/assets/inline-svgs/hp-mg-3-receive.svg';
 import MgStepFour from '@/assets/inline-svgs/hp-mg-4-multiply.svg';
 
 export default {
+	name: 'MonthlyGoodExplained',
 	components: {
 		MgStepOne,
 		MgStepTwo,

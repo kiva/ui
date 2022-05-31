@@ -228,6 +228,7 @@ const userQuery = gql`query userQuery {
 }`;
 
 export default {
+	name: 'LendersAndTeams',
 	components: {
 		KvButton,
 		KvLightbox,

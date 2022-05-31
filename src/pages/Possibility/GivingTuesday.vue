@@ -57,6 +57,7 @@ import KivaContentBlock from '@/pages/Possibility/KivaContentBlock';
 const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/', true);
 
 export default {
+	name: 'GivingTuesday',
 	components: {
 		KvButton,
 		KvHero,

@@ -16,6 +16,7 @@ import numeral from 'numeral';
 import LoanCountSpan from './LoanCountSpan';
 
 export default {
+	name: 'InlineCounter',
 	inject: ['apollo', 'cookieStore'],
 	props: {
 		strong: {

@@ -79,6 +79,7 @@ import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 // }`;
 
 export default {
+	name: 'AppealBanner15',
 	components: {
 		FifteenYearsButton,
 		// KvProgressCircle,

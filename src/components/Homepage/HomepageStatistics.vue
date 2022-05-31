@@ -51,6 +51,7 @@ import { buildDynamicString } from '@/util/contentfulUtils';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
+	name: 'HomepageStatistics',
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {

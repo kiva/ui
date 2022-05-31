@@ -71,6 +71,7 @@ const lendingPreferencesCauses = gql`query lendingPreferences($visitorId: String
 }`;
 
 export default {
+	name: 'GetStartedCauses',
 	components: {
 		KvButton,
 		KvCauseSelector,

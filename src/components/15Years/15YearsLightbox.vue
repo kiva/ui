@@ -53,6 +53,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import lockScrollUtils from '@/plugins/lock-scroll';
 
 export default {
+	name: '15YearsLightbox',
 	components: {
 		FocusLock,
 		KvIcon,

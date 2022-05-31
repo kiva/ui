@@ -169,6 +169,7 @@ import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
  * so a parent component can access them.
  */
 export default {
+	name: 'MonthlyGoodUpdateForm',
 	components: {
 		KvIcon,
 		KvCurrencyInput,

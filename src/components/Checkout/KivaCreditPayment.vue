@@ -16,6 +16,7 @@ import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'KivaCreditPayment',
 	components: {
 		KvButton
 	},

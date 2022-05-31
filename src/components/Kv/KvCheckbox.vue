@@ -26,6 +26,7 @@
 
 <script>
 export default {
+	name: 'KvCheckbox',
 	model: {
 		prop: 'checked',
 		event: 'change'

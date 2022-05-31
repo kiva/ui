@@ -193,7 +193,7 @@ import KvFlag from '@/components/Kv/KvFlag';
 import fundedBorrowerProfile from '@/graphql/query/fundedBorrowerProfile.graphql';
 import basketItems from '@/graphql/query/basketItems.graphql';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import LYML from '@/components/LoansYouMightLike/lymlContainer';
+import LYML from '@/components/LoansYouMightLike/LymlContainer';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import HeroBackground from '@/components/BorrowerProfile/HeroBackground';
@@ -215,6 +215,7 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 const newFundedBorrowerPageExpKey = 'new_funded_borrower_page';
 
 export default {
+	name: 'FundedBorrowerProfile',
 	metaInfo() {
 		const canonicalUrl = `https://${this.$appConfig.host}${this.$route.path}`.replace('funded', 'lend');
 		return {

@@ -45,6 +45,7 @@ const pageQuery = gql`query donateContent {
 }`;
 
 export default {
+	name: 'DonateFromMacro',
 	metaInfo: {
 		title: 'Donate to help support Kiva today'
 	},

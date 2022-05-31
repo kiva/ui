@@ -66,7 +66,7 @@
 			<loan-use
 				v-if="!isLoading"
 				class="tw-inline"
-				:loan-use-max-length="82"
+				:loan-use-max-length="40"
 				:loan-id="`${allSharesReserved ? '' : loanId}`"
 				:use="loan.use"
 				:name="borrowerName"
@@ -165,6 +165,7 @@ const loanQuery = gql`query kcBasicLoanCard($loanId: Int!) {
 }`;
 
 export default {
+	name: 'KivaClassicBasicLoanCardBundleExp',
 	props: {
 		loanId: {
 			type: Number,

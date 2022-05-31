@@ -71,6 +71,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import lockScrollUtils from '@/plugins/lock-scroll';
 
 export default {
+	name: 'KvLightbox',
 	components: {
 		FocusLock,
 		KvIcon,

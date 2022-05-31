@@ -115,6 +115,7 @@ import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 export default {
+	name: 'CheckoutDropInPaymentWrapper',
 	components: {
 		KvButton,
 		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),

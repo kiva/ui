@@ -213,6 +213,7 @@ function getTargetedChannel(targetedRoute, allChannels) {
 }
 
 export default {
+	name: 'LoanChannelCategoryControl',
 	components: {
 		LoanCardController,
 		KvPagination,

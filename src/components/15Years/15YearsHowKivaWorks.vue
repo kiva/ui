@@ -33,6 +33,7 @@ const step3Video = require('@/assets/media/15-years/step3.mp4');
 const step4Video = require('@/assets/media/15-years/step4.mp4');
 
 export default {
+	name: '15YearsHowKivaWorks',
 	components: {
 		FifteenYearsSectionHeader,
 		FifteenYearsHowKivaWorksCarousel

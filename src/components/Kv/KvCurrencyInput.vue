@@ -15,6 +15,7 @@ import numeral from 'numeral';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 export default {
+	name: 'KvCurrencyInput',
 	components: {
 		KvTextInput
 	},

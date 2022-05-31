@@ -12,6 +12,7 @@
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
 
 export default {
+	name: 'HomepageLoanCategories',
 	components: {
 		LoanCategoriesSection,
 	},

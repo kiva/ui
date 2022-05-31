@@ -37,6 +37,7 @@ import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	name: 'CategorySet',
 	components: {
 		draggable,
 		KvButton,

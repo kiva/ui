@@ -110,6 +110,7 @@ import KvTooltip from '@/components/Kv/KvTooltip';
 import BorrowerImage from './BorrowerImage';
 
 export default {
+	name: 'SupporterDetails',
 	components: {
 		BorrowerImage,
 		KvTooltip

@@ -21,6 +21,7 @@ import AppealBannerCircular from '@/components/WwwFrame/PromotionalBanner/Banner
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
+	name: 'AppealBannerCircularContainer',
 	components: {
 		AppealBannerCircular
 	},

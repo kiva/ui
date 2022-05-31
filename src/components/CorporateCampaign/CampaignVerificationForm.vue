@@ -33,6 +33,7 @@ import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
+	name: 'CampaignVerificationForm',
 	inject: ['apollo', 'cookieStore'],
 	metaInfo: {
 		// script: [

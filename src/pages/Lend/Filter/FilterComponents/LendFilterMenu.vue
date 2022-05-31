@@ -103,6 +103,7 @@ import KvButton from '@/components/Kv/KvButton';
 import lockScrollUtils from '@/plugins/lock-scroll';
 
 export default {
+	name: 'LendFilterMenu',
 	components: {
 		AisClearRefinements,
 		AisStateResults,

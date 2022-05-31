@@ -149,6 +149,7 @@ import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'TwoStepVerificationPage',
 	data() {
 		return {
 			isAuthenticatorLightboxVisible: false,

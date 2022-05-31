@@ -70,6 +70,7 @@
 // Allow lazy loading via image attribute.
 
 export default {
+	name: 'KvContentfulImg',
 	props: {
 		/**
 		 * Large, uncompressed image url that you get back from contentful.

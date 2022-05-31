@@ -23,6 +23,7 @@ import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 export default {
+	name: 'KvFrequentlyAskedQuestions',
 	components: {
 		KvExpandableQuestion,
 		KvGrid,

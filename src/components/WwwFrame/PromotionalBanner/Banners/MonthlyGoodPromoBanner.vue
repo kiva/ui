@@ -18,6 +18,7 @@
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	name: 'MonthlyGoodPromoBanner',
 	components: {
 		KvIcon
 	},

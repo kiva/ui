@@ -27,6 +27,7 @@ import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 
 export default {
+	name: 'RecentlyViewedLoans',
 	components: {
 		CategoryRow,
 		KvLoadingOverlay

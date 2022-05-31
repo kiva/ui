@@ -19,6 +19,7 @@ import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSe
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 
 export default {
+	name: 'FilterSectionCategories',
 	components: {
 		KvCheckbox,
 		FilterMenuSection,

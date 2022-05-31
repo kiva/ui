@@ -320,6 +320,7 @@ const pageQuery = gql`query autoDepositPage {
 }`;
 
 export default {
+	name: 'SubscriptionsAutoDeposit',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		AutoDepositDropInPaymentWrapper,

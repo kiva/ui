@@ -13,6 +13,7 @@
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
+	name: 'KvDefaultWrapper',
 	components: {
 		KvPageContainer,
 	},

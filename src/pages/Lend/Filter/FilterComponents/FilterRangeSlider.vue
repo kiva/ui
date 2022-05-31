@@ -39,6 +39,7 @@
 import KvRangeSlider from '@/components/Kv/KvRangeSlider';
 
 export default {
+	name: 'FilterRangeSlider',
 	components: {
 		KvRangeSlider
 	},

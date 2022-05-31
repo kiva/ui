@@ -1,9 +1,9 @@
 <template>
 	<div class="tw-max-w-5xl tw-mx-auto">
-		<div class="tw-w-full tw-mb-8 lg:tw-mb-12 lg:tw-mt-2 tw-px-2 tw-py-2">
+		<div class="tw-w-full tw-mb-8 lg:tw-mb-12 lg:tw-mt-2 tw-px-2 tw-py-3">
 			<div>
-				<div class="tw-flex tw-flex-col lg:tw-flex-row tw-w-full">
-					<div class="tw-w-full lg:tw-w-2/5 tw-pt-2">
+				<div class="tw-flex tw-flex-col lg:tw-flex-row tw-w-full tw-items-center">
+					<div class="tw-w-full lg:tw-w-2/5 tw-pt-2 lg:tw-pl-3">
 						<h2 class="tw-text-h2">
 							Three borrowers recommended for you.
 						</h2>
@@ -80,14 +80,18 @@
 import numeral from 'numeral';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'LoansBundleExpWrapper',
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvExpandable,
 		KvButton,
-		KivaClassicLoanCarouselExp
+		KivaClassicLoanCarouselExp,
+		LoanCardController
 	},
 	props: {
 		firstName: {
@@ -110,6 +114,8 @@ export default {
 			showCarousel: true,
 			showViewMoreCard: false,
 			detailedLoan: null,
+			isVisitor: true,
+			itemsInBasket: [],
 		};
 	},
 	computed: {
@@ -181,6 +187,9 @@ export default {
 		getDetailedLoan(loanDetails) {
 			this.detailedLoan = loanDetails;
 		},
+		handleCloseLoanCard() {
+			this.detailedLoan = null;
+		}
 	}
 };
 </script>
@@ -195,10 +204,10 @@ export default {
 }
 
 #carousel_exp >>> section > div:nth-child(1) {
-	column-gap: 1rem !important;
+	column-gap: 0.8rem !important;
 }
 
 #carousel_exp >>> section > div:nth-child(1) > div {
-	max-width: 185px !important;
+	max-width: 188px !important;
 }
 </style>

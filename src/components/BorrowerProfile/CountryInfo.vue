@@ -69,6 +69,7 @@ import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'CountryInfo',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvLoadingPlaceholder,

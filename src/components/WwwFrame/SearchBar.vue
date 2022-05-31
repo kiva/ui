@@ -91,6 +91,7 @@ import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 const engine = new SearchEngine();
 
 export default {
+	name: 'SearchBar',
 	components: {
 		KvTextInput,
 	},

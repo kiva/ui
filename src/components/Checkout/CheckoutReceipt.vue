@@ -302,6 +302,7 @@ const getUTCDate = (dateString = Date.now()) => {
 };
 
 export default {
+	name: 'CheckoutReceipt',
 	components: {
 		KvButton,
 		KvIcon,

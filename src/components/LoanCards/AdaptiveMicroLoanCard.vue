@@ -58,6 +58,7 @@ import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/Fun
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 
 export default {
+	name: 'AdaptiveMicroLoanCard',
 	components: {
 		LoanCardImage,
 		FundraisingStatusMeter,

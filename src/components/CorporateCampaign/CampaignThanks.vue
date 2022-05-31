@@ -62,6 +62,7 @@ import { joinArray } from '@/util/joinArray';
 import CampaignPartnerThanks from './CampaignPartnerThanks';
 
 export default {
+	name: 'CampaignThanks',
 	components: {
 		CampaignPartnerThanks,
 		CheckoutReceipt,

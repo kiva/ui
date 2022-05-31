@@ -82,6 +82,7 @@ import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanCategory from '@/components/Homepage/LendByCategory/LoanCategory';
 
 export default {
+	name: 'LoanCategoriesSection',
 	components: {
 		KvButton,
 		KvCarousel,

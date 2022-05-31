@@ -62,6 +62,7 @@ import KvChip from '@/components/Kv/KvChip';
 import ClearAllRefinements from '@/pages/Lend/Filter/FilterComponents/ClearAllRefinements';
 
 export default {
+	name: 'SelectedRefinements',
 	components: {
 		AisCurrentRefinements,
 		AisClearRefinements,

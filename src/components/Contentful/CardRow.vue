@@ -56,6 +56,7 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 * */
 
 export default {
+	name: 'CardRow',
 	components: {
 		KvGrid,
 		KvPageContainer,

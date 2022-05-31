@@ -28,6 +28,7 @@ import { AisPagination } from 'vue-instantsearch';
 import AlgoliaPagination from '@/pages/Lend/AlgoliaPagination';
 
 export default {
+	name: 'AlgoliaPaginationWrapper',
 	components: {
 		AisPagination,
 		AlgoliaPagination,

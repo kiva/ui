@@ -70,6 +70,7 @@ import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
+	name: 'DonationNudgeLightbox',
 	data() {
 		return {
 			mdiInformation,

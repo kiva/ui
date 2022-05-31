@@ -13,6 +13,7 @@ import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 export default {
+	name: 'BuildPageWrapper',
 	components: {
 		KvDefaultWrapper,
 		KvGrid,

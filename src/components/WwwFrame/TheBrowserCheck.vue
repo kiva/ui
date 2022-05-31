@@ -20,6 +20,7 @@
 import KvAlert from '@/components/Kv/KvAlert';
 
 export default {
+	name: 'TheBrowserCheck',
 	inject: ['device'],
 	components: {
 		KvAlert,

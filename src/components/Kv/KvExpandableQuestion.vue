@@ -34,6 +34,7 @@ import KvExpandable from '@/components/Kv/KvExpandable';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
+	name: 'KvExpandableQuestion',
 	components: {
 		KvExpandable,
 		KvMaterialIcon,
