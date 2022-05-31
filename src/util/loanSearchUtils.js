@@ -259,6 +259,7 @@ export function getFlssFilters(loanSearchState) {
 		...(loanSearchState?.theme?.length && {
 			theme: { any: loanSearchState.theme }
 		}),
+		...(loanSearchState?.sectorId?.length && { sectorId: { any: loanSearchState.sectorId } }),
 	};
 }
 

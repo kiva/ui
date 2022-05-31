@@ -33,7 +33,7 @@ export default {
 	data() {
 		return {
 			displayedSectors: this.sectors,
-			// results: []
+			filterResults: []
 		};
 	},
 	computed: {
@@ -46,9 +46,8 @@ export default {
 	},
 	methods: {
 		updateSectors(sectors) {
-			// eslint-disable-next-line radix
-			// this.results = sectors.map(sector => parseInt(sector));
-			this.$emit('updated', { sectorId: sectors });
+			this.filterResults = sectors.map(sector => parseInt(sector, 10));
+			this.$emit('updated', { sectorId: this.filterResults });
 		}
 	},
 	watch: {
