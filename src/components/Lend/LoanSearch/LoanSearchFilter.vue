@@ -5,7 +5,7 @@
 			Reset All
 		</p>
 		<hr class="tw-border-tertiary tw-my-1">
-		<loan-search-gender-filter @updated="handleUpdatedFilters" />
+		<loan-search-gender-filter :gender="loanSearchState.gender" @updated="handleUpdatedFilters" />
 		<hr class="tw-border-tertiary tw-my-1">
 		<kv-accordion-item id="acc-sort-by" :open="false">
 			<template #header>
@@ -120,6 +120,10 @@ export default {
 		facets: {
 			type: Object,
 			required: true
+		},
+		loanSearchState: {
+			type: Object,
+			default: () => {}
 		}
 	},
 	data() {
