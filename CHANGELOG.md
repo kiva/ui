@@ -1,3 +1,34 @@
+## [2.165.0](https://github.com/kiva/ui/compare/v2.164.0...v2.165.0) (2022-05-31)
+
+
+### Features
+
+* add lending page components caching ([bab4857](https://github.com/kiva/ui/commit/bab4857f37a9a9aff5338de1dfaa152e67bc01ce))
+
+
+### Bug Fixes
+
+* small change after code review ([5ec2296](https://github.com/kiva/ui/commit/5ec22969c542769f85c9480d314c243e606f57aa))
+
+## [2.164.0](https://github.com/kiva/ui/compare/v2.163.0...v2.164.0) (2022-05-31)
+
+
+### Features
+
+* added loan sector filter ([17f0366](https://github.com/kiva/ui/commit/17f0366500d8c71d56e2474a4183677d3598d9e2))
+
+
+### Bug Fixes
+
+* added filter to loan search utils ([1768f3b](https://github.com/kiva/ui/commit/1768f3bfbe757644e453d397d87c8850dbc47a3a))
+
+## [2.163.0](https://github.com/kiva/ui/compare/v2.162.1...v2.163.0) (2022-05-31)
+
+
+### Features
+
+* remove default promo banner icon ([de3746f](https://github.com/kiva/ui/commit/de3746fd90964f0b82a68ea08fb9ca2daf6edee5))
+
 ### [2.162.1](https://github.com/kiva/ui/compare/v2.162.0...v2.162.1) (2022-05-31)
 
 
