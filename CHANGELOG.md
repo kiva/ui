@@ -1,3 +1,10 @@
+## [2.166.0](https://github.com/kiva/ui/compare/v2.165.1...v2.166.0) (2022-05-31)
+
+
+### Features
+
+* pre-set the gender filter using the query string param ([acfb2db](https://github.com/kiva/ui/commit/acfb2db4c3a742cbc51de924787d1ed0b6b489d1))
+
 ### [2.165.1](https://github.com/kiva/ui/compare/v2.165.0...v2.165.1) (2022-05-31)
 
 
