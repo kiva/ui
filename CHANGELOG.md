@@ -1,3 +1,16 @@
+## [2.162.0](https://github.com/kiva/ui/compare/v2.161.0...v2.162.0) (2022-05-31)
+
+
+### Features
+
+* upsells checkout a/b test ([bc58fff](https://github.com/kiva/ui/commit/bc58fff8d5280455ef35598da7f16ff21aecf0b0))
+
+
+### Bug Fixes
+
+* add query to checkoutSettings ([06170c9](https://github.com/kiva/ui/commit/06170c976151e9856e05dd44a5e9299df095c9ae))
+* move exp check ([6ab8c79](https://github.com/kiva/ui/commit/6ab8c790bae07122c3061ff195dda63aed96c293))
+
 ## [2.161.0](https://github.com/kiva/ui/compare/v2.160.0...v2.161.0) (2022-05-27)
 
 
