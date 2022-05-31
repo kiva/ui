@@ -1,3 +1,10 @@
+## [2.163.0](https://github.com/kiva/ui/compare/v2.162.1...v2.163.0) (2022-05-31)
+
+
+### Features
+
+* remove default promo banner icon ([de3746f](https://github.com/kiva/ui/commit/de3746fd90964f0b82a68ea08fb9ca2daf6edee5))
+
 ### [2.162.1](https://github.com/kiva/ui/compare/v2.162.0...v2.162.1) (2022-05-31)
 
 
