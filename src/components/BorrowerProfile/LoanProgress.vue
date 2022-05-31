@@ -39,7 +39,12 @@
 						100% funded
 					</p>
 					<p class="tw-text-h4 tw-text-action tw-block">
-						VIEW THE FULL BORROWER PROFILE
+						<router-link
+							:to="{name: 'borrowerProfile', params: {id: this.$route.params.id } }"
+							target="_blank"
+						>
+							VIEW THE FULL BORROWER PROFILE
+						</router-link>
 					</p>
 				</div>
 			</div>

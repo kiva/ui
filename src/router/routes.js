@@ -243,6 +243,7 @@ module.exports = [
 		}
 	},
 	{
+		name: 'borrowerProfile',
 		path: '/lend-beta/:id',
 		component: () => import('@/pages/BorrowerProfile/BorrowerProfile'),
 		meta: {

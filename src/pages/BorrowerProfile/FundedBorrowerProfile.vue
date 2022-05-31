@@ -1,5 +1,5 @@
 <template>
-	<www-page class="relative">
+	<www-page>
 		<div v-if="!enabledExperiment">
 			<div class="row borrower-profile-wrapper">
 				<div class="small-12 medium-4 columns">
@@ -142,7 +142,7 @@
 					</kv-page-container>
 				</div>
 			</article>
-			<div class="tw-mx-2 tw-overflow-auto lg:tw-mx-auto loans-container">
+			<article class="tw-mx-2 tw-overflow-auto lg:tw-mx-auto loans-container">
 				<p class="tw-text-center tw-text-h1 tw-my-6">
 					Other Borrowers that need your support
 				</p>
@@ -172,7 +172,7 @@
 						/>
 					</div>
 				</div>
-			</div>
+			</article>
 		</div>
 		<div ref="preBottom">
 			<div v-if="isLoading" id="loading-overlay" class="tw-z-overlay">
@@ -330,37 +330,39 @@ export default {
 				''
 			);
 		}
-		if (this.enabledExperiment) this.createViewportObserver();
-		this.rows = [
-			{
-				heading: 'Support borrowers in ',
-				onlyLoan: false,
-				limit: 3,
-				filter: { countryIsoCode: { eq: this.loan?.geocode?.country?.isoCode } },
-				loanIds: []
-			},
-			{
-				heading: 'Recommended Borrower',
-				onlyLoan: true,
-				limit: 1,
-				filter: null,
-				loan: null
-			},
-			{
-				heading: 'Lend to ',
-				onlyLoan: false,
-				limit: 3,
-				filter: { gender: { eq: this.loan?.gender } },
-				loanIds: []
-			},
-			{
-				heading: 'Loans for ',
-				onlyLoan: false,
-				limit: 3,
-				filter: { sector: { eq: String(this.loan?.sector?.id) } },
-				loanIds: []
-			}
-		];
+		if (this.enabledExperiment) {
+			this.createViewportObserver();
+			this.rows = [
+				{
+					heading: 'Support borrowers in ',
+					onlyLoan: false,
+					limit: 3,
+					filter: { countryIsoCode: { eq: this.loan?.geocode?.country?.isoCode } },
+					loanIds: []
+				},
+				{
+					heading: 'Recommended Borrower',
+					onlyLoan: true,
+					limit: 1,
+					filter: null,
+					loan: null
+				},
+				{
+					heading: 'Lend to ',
+					onlyLoan: false,
+					limit: 3,
+					filter: { gender: { eq: this.loan?.gender } },
+					loanIds: []
+				},
+				{
+					heading: 'Loans for ',
+					onlyLoan: false,
+					limit: 3,
+					filter: { sector: { eq: String(this.loan?.sector?.id) } },
+					loanIds: []
+				}
+			];
+		}
 	},
 	methods: {
 		handleAddToBasket(payload) {
