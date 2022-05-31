@@ -209,6 +209,29 @@ export function getUpdatedThemes(themes, nextThemes) {
 }
 
 /**
+ * Gets an updated sectors list to display in the filter
+ *
+ * @param {Array<Object>} sectors The sectors previously displayed in the filter
+ * @param {Array<Object>} nextSectors The sectors returned by the FLSS facets query
+ * @returns {Array<Object>} The updated sectors list
+ */
+export function getUpdatedSectors(sectors, nextSectors) {
+	// Default to next
+	if (!sectors) return nextSectors;
+
+	const updated = [];
+
+	// Add missing sectors that have been added since previous query
+	nextSectors.forEach(sector => {
+		if (!updated.find(a => a.id === sector.id)) {
+			updated.push({ ...sector });
+		}
+	});
+
+	return orderBy(updated, 'name');
+}
+
+/**
  * Builds a flattened list of the ISO codes of the provided regions with countries
  *
  * @param {Array<Object>} regions All of the regions with countries
@@ -240,6 +263,7 @@ export function getFlssFilters(loanSearchState) {
 		...(loanSearchState?.theme?.length && {
 			theme: { any: loanSearchState.theme }
 		}),
+		...(loanSearchState?.sectorId?.length && { sectorId: { any: loanSearchState.sectorId } }),
 	};
 }
 
