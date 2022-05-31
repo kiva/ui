@@ -22,9 +22,11 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
+import getCacheKey from '@/util/getCacheKey';
 
 export default {
 	name: 'CookieBanner',
+	serverCacheKey: () => getCacheKey('CookieBanner'),
 	inject: ['cookieStore'],
 	components: {
 		KvButton
