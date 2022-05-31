@@ -1,3 +1,15 @@
+## [2.165.0](https://github.com/kiva/ui/compare/v2.164.0...v2.165.0) (2022-05-31)
+
+
+### Features
+
+* add lending page components caching ([bab4857](https://github.com/kiva/ui/commit/bab4857f37a9a9aff5338de1dfaa152e67bc01ce))
+
+
+### Bug Fixes
+
+* small change after code review ([5ec2296](https://github.com/kiva/ui/commit/5ec22969c542769f85c9480d314c243e606f57aa))
+
 ## [2.164.0](https://github.com/kiva/ui/compare/v2.163.0...v2.164.0) (2022-05-31)
 
 
