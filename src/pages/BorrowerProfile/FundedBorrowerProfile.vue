@@ -100,7 +100,7 @@
 									md:tw-bg-primary
 									md:tw-pb-2.5
 									tw-py-2.5 md:tw-p-3 lg:tw-p-4
-									md:tw-rounded-t lg:tw-rounded"
+									md:tw-rounded"
 								>
 									<div class="tw-flex">
 										<div class="
@@ -175,7 +175,7 @@
 			</article>
 		</div>
 		<div ref="preBottom">
-			<div v-if="isLoading" id="loading-overlay" class="tw-z-overlay">
+			<div v-if="isLoading" id="loading-overlay">
 				<div class="spinner-wrapper">
 					<kv-loading-spinner />
 				</div>
@@ -358,7 +358,7 @@ export default {
 					heading: 'Loans for ',
 					onlyLoan: false,
 					limit: 3,
-					filter: { sector: { eq: String(this.loan?.sector?.id) } },
+					filter: { sector: { eq: this.loan?.sector?.name } },
 					loanIds: []
 				}
 			];
@@ -402,7 +402,7 @@ export default {
 							let finalHeading = '';
 							let expLabel = '';
 							if (row?.filter?.gender) {
-								finalHeading = this.loan?.gender;
+								finalHeading = this.loan?.gender.includes('female') ? 'women' : 'men';
 								expLabel = this.loan?.gender;
 							}
 							if (row?.filter?.countryIsoCode) {
@@ -411,7 +411,7 @@ export default {
 							}
 							if (row?.filter?.sector) {
 								finalHeading = this.loan?.sector?.name;
-								expLabel = this.loan?.sector?.id;
+								expLabel = String(this.loan?.sector?.id);
 							}
 							this.categories = [
 								...this.categories, {
@@ -495,14 +495,14 @@ export default {
 }
 
 #loading-overlay {
-	position: fixed;
+	position: relative;
 	width: auto;
 	height: auto;
 	left: 1rem;
 	right: 1rem;
 	bottom: 0;
 	top: 0;
-	background-color: rgba($platinum, 0.7);
+	min-height: 6rem;
 
 	.spinner-wrapper {
 		display: flex;

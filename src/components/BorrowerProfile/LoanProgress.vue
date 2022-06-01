@@ -32,7 +32,7 @@
 			</div>
 			<div v-else>
 				<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
-					This loan is fully founded!
+					This loan is fully funded!
 				</p>
 				<div class="md:tw-flex tw-gap-2">
 					<p class="tw-text-h4 tw-text-secondary tw-block">
