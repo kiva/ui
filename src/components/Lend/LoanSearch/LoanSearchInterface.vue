@@ -55,6 +55,7 @@ import {
 	runLoansQuery,
 	fetchLoanFacets,
 	applyQueryParams,
+	updateQueryParams,
 } from '@/util/loanSearchUtils';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -147,6 +148,9 @@ export default {
 				// Utilize the results of the existing query of the loan search state for updating the filters
 				this.loanSearchState = data?.loanSearchState;
 
+				// Update the query string with the latest loan search state
+				updateQueryParams(this.loanSearchState, this.$router);
+
 				// Get all facet options from lend API. Only fetch once, since the options shouldn't change frequently.
 				if (!this.allFacets) this.allFacets = await fetchLoanFacets(this.apollo);
 
@@ -176,5 +180,11 @@ export default {
 			this.isLightboxVisible = toggle;
 		},
 	},
+	watch: {
+		$route(to) {
+			// Update the loan search state when the user clicks back/forward in the browser
+			applyQueryParams(this.apollo, to.query);
+		}
+	}
 };
 </script>

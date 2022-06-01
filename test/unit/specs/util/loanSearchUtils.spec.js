@@ -12,6 +12,7 @@ import {
 	getUpdatedThemes,
 	getCheckboxLabel,
 	applyQueryParams,
+	updateQueryParams,
 } from '@/util/loanSearchUtils';
 import * as flssUtils from '@/util/flssUtils';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
@@ -466,7 +467,7 @@ describe('loanSearchUtils.js', () => {
 
 		it('should handle incorrect gender param', async () => {
 			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
-			const filters = {};
+			const filters = { gender: '' };
 			const params = {
 				mutation: updateLoanSearchMutation,
 				variables: { searchParams: filters }
@@ -476,6 +477,39 @@ describe('loanSearchUtils.js', () => {
 			await applyQueryParams(apollo, query);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
+		});
+	});
+
+	describe('updateQueryParams', () => {
+		it('should push new route', async () => {
+			const state = { gender: 'female' };
+			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+
+			updateQueryParams(state, router);
+
+			expect(router.push).toHaveBeenCalledWith({ name: 'name', query: state, params: { noScroll: true } });
+		});
+
+		it('should preserve UTM params', async () => {
+			const state = { gender: 'female' };
+			const router = { currentRoute: { name: 'name', query: { utm_test: 'test' } }, push: jest.fn() };
+
+			updateQueryParams(state, router);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { ...state, utm_test: 'test' },
+				params: { noScroll: true }
+			});
+		});
+
+		it('should not push identical query string', async () => {
+			const state = { gender: 'female' };
+			const router = { currentRoute: { name: 'name', query: { gender: 'female' } }, push: jest.fn() };
+
+			updateQueryParams(state, router);
+
+			expect(router.push).toHaveBeenCalledTimes(0);
 		});
 	});
 });

@@ -342,7 +342,43 @@ export function getCheckboxLabel(item) {
  * @param {Object} query The Vue Router query object (this.$route.query)
  */
 export async function applyQueryParams(apollo, query) {
-	const filters = { ...(query.gender && [FEMALE_KEY, MALE_KEY].includes(query.gender) && { gender: query.gender }) };
+	const filters = { gender: [FEMALE_KEY, MALE_KEY].includes(query.gender) ? query.gender : '' };
 
 	await updateSearchState(apollo, filters);
+}
+
+/**
+ * Pushes a new route to the Vue Router with the updated query string params, which ensures that Vue knows about the
+ * route change, and it enables watching the browser navigation via back/forward buttons to update filters
+ *
+ * @param {Object} loanSearchState The current loan search state from Apollo
+ * @param {Object} router The Vue Router object
+ */
+export function updateQueryParams(loanSearchState, router) {
+	const oldParamKeys = Object.keys(router.currentRoute.query);
+
+	// Preserve UTM params
+	const utmParams = {};
+	oldParamKeys.forEach(key => {
+		if (key.includes('utm_')) {
+			utmParams[key] = router.currentRoute.query[key];
+		}
+	});
+
+	// Create new query params object
+	const newParams = {
+		...(loanSearchState.gender && { gender: loanSearchState.gender }),
+		...utmParams,
+	};
+
+	const newParamKeys = Object.keys(newParams);
+
+	// Check if the query params differ from current route query params
+	const doParamsMatch = [...newParamKeys, ...oldParamKeys]
+		.reduce((prev, key) => prev && router.currentRoute.query[key] === newParams[key], true);
+
+	// Vue throws duplicate navigation exception when identical paths are pushed to the router
+	if (!doParamsMatch) {
+		router.push({ ...router.currentRoute, query: newParams, params: { noScroll: true } });
+	}
 }
