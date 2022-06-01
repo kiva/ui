@@ -67,7 +67,6 @@ import {
 import _forEach from 'lodash/forEach';
 import { isMatchAtRisk } from '@/util/loanUtils';
 import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
-import getCacheKey from '@/util/getCacheKey';
 
 const AdaptiveMicroLoanCard = () => import('@/components/LoanCards/AdaptiveMicroLoanCard');
 const DetailedLoanCard = () => import('@/components/LoanCards/HoverLoanCard/DetailedLoanCard');
@@ -181,14 +180,6 @@ export default {
 			type: Boolean,
 			default: false,
 		}
-	},
-	serverCacheKey: props => {
-		const { loanCardType, loan, itemsInBasket } = props;
-
-		const { loanFundraisingInfo, id, status } = loan;
-		const basket = itemsInBasket.length > 0 ? itemsInBasket.find(element => element === loan.id) : null;
-
-		return getCacheKey(`${loanCardType}-${id}-${loanFundraisingInfo.fundedAmount}-${loanFundraisingInfo.reservedAmount}-${status}${basket ? `-${basket}` : ''}`); // eslint-disable-line max-len
 	},
 	inject: ['apollo'],
 	computed: {
