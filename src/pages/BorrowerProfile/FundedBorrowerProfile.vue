@@ -295,6 +295,15 @@ export default {
 			const customMessage = `${this.loan.name}'s loan finished fundraising,<br class="show-for-medium">
 				but these similar borrowers just need a little more help to reach their goals!`;
 			return this.lymlCustomSort === 'random' ? defaultMessage : customMessage;
+		},
+		refIsVisible() {
+			const { top, bottom } = this.$refs.preBottom.getBoundingClientRect();
+			const vHeight = (window.innerHeight || document.documentElement.clientHeight);
+			console.log('hello');
+			return (
+				(top > 0 || bottom > 0)
+				&& top < vHeight
+			);
 		}
 	},
 	created() {
@@ -422,6 +431,9 @@ export default {
 								}
 							];
 							this.isLoading = false;
+							if (this.refIsVisible) {
+								this.fetchLoanData();
+							}
 						});
 					} catch (e) {
 						logReadQueryError(e, 'FundedBorrowerProfile personalizedLoansQuery');
@@ -442,6 +454,9 @@ export default {
 								{ heading: row.heading, loan: loans[0], loanIds: [] }
 							];
 							this.isLoading = false;
+							if (this.refIsVisible) {
+								this.fetchLoanData();
+							}
 						});
 					} catch (e) {
 						logReadQueryError(e, 'FundedBorrowerProfile mlLoansYouMightLikeData');
