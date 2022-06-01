@@ -1,3 +1,10 @@
+## [2.167.0](https://github.com/kiva/ui/compare/v2.166.0...v2.167.0) (2022-06-01)
+
+
+### Features
+
+* update query string when filters change ([ed7c4c8](https://github.com/kiva/ui/commit/ed7c4c841c1f2125d570d1bc70a15a1139cb26f6))
+
 ## [2.166.0](https://github.com/kiva/ui/compare/v2.165.1...v2.166.0) (2022-05-31)
 
 
