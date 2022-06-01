@@ -84,6 +84,7 @@ import DescriptionListItem from '@/components/BorrowerProfile/DescriptionListIte
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 export default {
+	name: 'TrusteeDetails',
 	components: {
 		DescriptionListItem,
 		KvTextLink,

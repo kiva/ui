@@ -78,6 +78,7 @@ const startEmailVerification = gql`
 `;
 
 export default {
+	name: 'StartVerification',
 	metaInfo: {
 		title: 'Email Verification'
 	},

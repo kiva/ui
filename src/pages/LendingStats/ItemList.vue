@@ -30,6 +30,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import KvFlag from '@/components/Kv/KvFlag';
 
 export default {
+	name: 'ItemList',
 	props: {
 		items: {
 			type: Array,

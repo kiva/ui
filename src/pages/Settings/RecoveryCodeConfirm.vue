@@ -43,6 +43,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 
 export default {
+	name: 'RecoveryCodeConfirm',
 	inject: ['apollo'],
 	data() {
 		return {

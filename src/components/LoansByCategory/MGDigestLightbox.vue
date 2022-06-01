@@ -48,6 +48,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
+	name: 'MGDigestLightbox',
 	components: {
 		KvButton,
 		KvLightbox,
@@ -63,9 +64,7 @@ export default {
 			this.$kvTrackEvent('Lending', 'close-personalized-MG-feedback', 'Close');
 		},
 		redirectExploreLoans() {
-			this.$router.push({
-				path: '/lend-by-category',
-			});
+			this.isLightboxVisible = false;
 		},
 		redirectPortfolio() {
 			this.$router.push({

@@ -10,7 +10,7 @@ import usingTouchQuery from '@/graphql/query/shared/usingTouchClient.graphql';
 import RadialIcon from '@/components/15Years/RadialIcon';
 
 export default {
-	name: 'FifteenYearsGlobeCTA',
+	name: '15YearsGlobeCTA',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		RadialIcon,

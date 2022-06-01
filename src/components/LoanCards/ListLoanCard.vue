@@ -168,6 +168,7 @@ import MatchingText from '@/components/LoanCards/MatchingText';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 
 export default {
+	name: 'ListLoanCard',
 	components: {
 		LoanCardImage,
 		FundraisingStatus,

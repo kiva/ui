@@ -47,6 +47,7 @@ import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import SectionWithBackground from '@/components/Contentful/SectionWithBackground';
 
 export default {
+	name: 'HomepageHowItWorks',
 	components: {
 		KvContentfulImg,
 		SectionWithBackground,

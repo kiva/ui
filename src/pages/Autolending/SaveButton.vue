@@ -44,6 +44,7 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
+	name: 'SaveButton',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvButton,

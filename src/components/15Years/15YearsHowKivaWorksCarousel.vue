@@ -92,6 +92,7 @@ import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	name: '15YearsHowKivaWorksCarousel',
 	components: {
 		KvCarousel,
 		KvCarouselSlide,

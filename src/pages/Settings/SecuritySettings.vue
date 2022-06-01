@@ -34,6 +34,7 @@ import TwoStepVerification from '@/components/Settings/TwoStepVerification';
 import TwoStepFaq from '@/components/Settings/TwoStepFaq';
 
 export default {
+	name: 'SecuritySettings',
 	components: {
 		KvDefaultWrapper,
 		WwwPage,

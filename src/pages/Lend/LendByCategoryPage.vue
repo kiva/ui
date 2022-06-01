@@ -133,6 +133,7 @@ import { createIntersectionObserver } from '@/util/observerUtils';
 import LoansBundleExpWrapper from '@/components/LoansByCategory/LoansBundleExpWrapper';
 
 export default {
+	name: 'LendByCategoryPage',
 	components: {
 		// CategoryAdminControls: () => import('./admin/CategoryAdminControls'),
 		CategoryRow,
@@ -284,6 +285,7 @@ export default {
 					});
 				});
 			});
+			console.log(loanIds);
 			pageViewTrackData.data.loansDisplayed = loanIds;
 			return pageViewTrackData;
 		},
@@ -582,6 +584,8 @@ export default {
 								return [];
 							});
 							this.recommendedLoans = [...this.recommendedLoans, ...allRecLoans];
+							const pageViewTrackData = this.assemblePageViewData([allRecLoans]);
+							this.$kvTrackSelfDescribingEvent(pageViewTrackData);
 							this.rowLazyLoadComplete = true;
 						});
 					} catch (e) {
@@ -602,6 +606,8 @@ export default {
 							if (categories.loans?.values?.length) {
 								this.realCategories = [...this.realCategories, categories];
 								this.rowLazyLoadComplete = true;
+								const pageViewTrackData = this.assemblePageViewData([categories]);
+								this.$kvTrackSelfDescribingEvent(pageViewTrackData);
 							} else {
 								this.fetchLoanData();
 							}
@@ -613,9 +619,6 @@ export default {
 				}
 			} else {
 				this.activateWatchers();
-
-				const pageViewTrackData = this.assemblePageViewData(this.categories);
-				this.$kvTrackSelfDescribingEvent(pageViewTrackData);
 			}
 		},
 		initializeLoanBundleExperiment() {
@@ -685,7 +688,7 @@ export default {
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 
 		// Initialize CASH-794 Favorite Country Row
-		this.initializeFavoriteCountryRowExp();
+		// this.initializeFavoriteCountryRowExp();
 
 		// get assignment for add to basket interstitial
 		const addToBasketPopupEXP = this.apollo.readFragment({
@@ -765,7 +768,9 @@ export default {
 		}
 
 		this.createViewportObserver();
-		if (this.$route.query.utm_campaign === 'liked_loan') {
+		if (this.$route?.query?.utm_campaign === 'liked_loan'
+			|| this.$route?.query?.utm_campaign?.includes('liked_loan')
+		) {
 			this.showMGDigestLightbox = true;
 			if (this.$route.query.utm_content === 'yes') {
 				this.$kvTrackEvent('Monthly Digest', 'loan-feedback', 'like');

@@ -114,7 +114,7 @@
 			>&rsaquo;</span>
 		</div>
 
-		<kv-expandable :delay="150" easing="linear">
+		<kv-expandable :delay="150" easing="linear" :key="detailedLoanCacheId" :skip-leave="true">
 			<div v-if="detailedLoanCacheId" ref="detailedLoanCardContainer">
 				<loan-card-controller
 					class="expanded-card-row"
@@ -152,6 +152,7 @@ const hoverCardSmallPaddingTop = 87;
 const cardExpansionDuration = 150;
 
 export default {
+	name: 'CategoryRowHover',
 	components: {
 		LoanCardController,
 		KvExpandable,

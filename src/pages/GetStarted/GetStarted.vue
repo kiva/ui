@@ -10,6 +10,7 @@
 import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
 
 export default {
+	name: 'GetStarted',
 	components: {
 		WwwPageMinimal,
 	},

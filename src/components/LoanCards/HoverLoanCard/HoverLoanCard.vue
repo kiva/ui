@@ -59,6 +59,7 @@ import HoverLoanCardLarge from './HoverLoanCardLarge';
 import hoverLoanCardMixin from './hoverLoanCardMixin';
 
 export default {
+	name: 'HoverLoanCard',
 	components: {
 		HoverLoanCardSmall,
 		HoverLoanCardLarge,

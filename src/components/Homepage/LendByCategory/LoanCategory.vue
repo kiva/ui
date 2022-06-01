@@ -71,6 +71,7 @@ import LoanCardController from '@/components/LoanCards/LoanCardController';
 // import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
 
 export default {
+	name: 'LoanCategory',
 	components: {
 		KvCarousel,
 		KvCarouselSlide,

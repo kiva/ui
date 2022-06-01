@@ -34,6 +34,7 @@ import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
+	name: 'JumpLinks',
 	components: {
 		KvMaterialIcon,
 	},

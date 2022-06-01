@@ -31,8 +31,11 @@
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
+import getCacheKey from '@/util/getCacheKey';
 
 export default {
+	name: 'ViewToggle',
+	serverCacheKey: props => getCacheKey(`${props.browseUrl}-${props.filterUrl}`),
 	components: {
 		KvIcon,
 	},

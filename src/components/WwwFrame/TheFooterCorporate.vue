@@ -54,6 +54,7 @@
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 
 export default {
+	name: 'TheFooterCorporate',
 	components: {
 		CampaignLogoGroup,
 	},

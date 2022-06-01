@@ -2,24 +2,23 @@
 	<div class="tw-flex">
 		<div class="tw-flex tw-flex-col tw-mr-4">
 			<div class="md:tw-hidden tw-mb-3">
-				<kv-button variant="secondary" @click="openLightbox">
+				<kv-button variant="secondary" @click="toggleLightbox(true)">
 					Filter & Sort
 				</kv-button>
-
 				<kv-lightbox
 					:visible="isLightboxVisible"
 					variant="lightbox"
 					title="Loan filter controls"
-					@lightbox-closed="closeLightbox"
+					@lightbox-closed="toggleLightbox(false)"
 				>
 					<template #header>
-						{{ null }}
+						{{ null }} <!-- Hide title text -->
 					</template>
-					<loan-search-filter id="filter-menu" />
+					<loan-search-filter :facets="facets" :loan-search-state="loanSearchState" />
 				</kv-lightbox>
 			</div>
 			<div class="tw-hidden md:tw-block">
-				<loan-search-filter />
+				<loan-search-filter :facets="facets" :loan-search-state="loanSearchState" />
 			</div>
 		</div>
 		<div class="md:tw-hidden tw-pt-1.5">
@@ -46,14 +45,24 @@
 
 <script>
 import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
-import { fetchData } from '@/util/flssUtils';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
+import {
+	formatSortOptions,
+	runFacetsQueries,
+	transformIsoCodes,
+	transformThemes,
+	runLoansQuery,
+	fetchLoanFacets,
+	applyQueryParams,
+	updateQueryParams,
+} from '@/util/loanSearchUtils';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
+	name: 'LoanSearchInterface',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		LoanCardController,
@@ -64,55 +73,118 @@ export default {
 	},
 	data() {
 		return {
-			totalCount: 0,
+			/**
+			 * All available facet options from lend API. Format:
+			 * {
+			 *   countryFacets: [
+			 *     {
+			 *       name: '',
+			 *       isoCode: '',
+			 *       region: '',
+			 *     }
+			 *   ],
+			 *   sectorFacets: [
+			 *     {
+			 *       id: 1,
+			 *       name: '',
+			 *     }
+			 *   ],
+			 *   themeFacets: [
+			 *     {
+			 *       id: 1,
+			 *       name: '',
+			 *     }
+			 *   ],
+			 * }
+			 */
+			allFacets: undefined,
+			/**
+			 * Facet options based on the loans available. Format:
+			 * {
+			 *   regions: [
+			 *     {
+			 *       region: '',
+			 *       numLoansFundraising: 1,
+			 *       countries: [
+			 *         {
+			 *           name: '',
+			 *           region: '',
+			 *           isoCode: '',
+			 *           numLoansFundraising: 1,
+			 *         }
+			 *       ]
+			 *     }
+			 *   ],
+			 *   sectors: [
+			 *     {
+			 *       id: 1,
+			 *       name: '',
+			 *     }
+			 *   ],
+			 *   themes: [
+			 *     {
+			 *       id: 1,
+			 *       name: '',
+			 *       numLoansFundraising: 1,
+			 *     }
+			 *   ],
+			 * }
+			 */
+			facets: {},
 			loans: [],
-			zeroLoans: false,
-			isLightboxVisible: false
+			totalCount: 0,
+			isLightboxVisible: false,
+			loanSearchState: {},
 		};
 	},
-	mounted() {
+	async mounted() {
+		// Initialize the search filters with the query string params
+		await applyQueryParams(this.apollo, this.$route.query);
+
 		// Here we subscribe to the loanSearchState and run the loan query when it updates
 		// TODO: work some guards to prevent duplicate queries and throttling to more carefully control # of queries
 		this.apollo.watchQuery({ query: loanSearchStateQuery }).subscribe({
-			next: ({ data }) => {
-				console.log('subscribed loanSearchState', data);
-				this.runFLSSQuery(data?.loanSearchState);
-			},
+			next: async ({ data }) => {
+				// Utilize the results of the existing query of the loan search state for updating the filters
+				this.loanSearchState = data?.loanSearchState;
+
+				// Update the query string with the latest loan search state
+				updateQueryParams(this.loanSearchState, this.$router);
+
+				// Get all facet options from lend API. Only fetch once, since the options shouldn't change frequently.
+				if (!this.allFacets) this.allFacets = await fetchLoanFacets(this.apollo);
+
+				// Get filtered facet options from FLSS
+				// TODO: Prevent this from running on every query
+				const { isoCodes, themes } = await runFacetsQueries(this.apollo, this.loanSearchState);
+
+				// Merge all facet options with filtered options
+				this.facets = {
+					regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
+					sectors: this.allFacets?.sectorFacets || [],
+					themes: transformThemes(themes, this.allFacets?.themeFacets),
+					sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
+				};
+
+				// Extract sortBy + offset
+
+				// Get filtered loans from FLSS
+				const loans = await runLoansQuery(this.apollo, this.loanSearchState);
+				this.loans = loans.loans;
+				this.totalCount = loans.totalCount;
+			}
 		});
 	},
 	methods: {
-		// Temporary location for some of this logic
-		// NOTICE!!! Add your new filter to flssCompatibleFilters below if it's missing
-		runFLSSQuery(loanSearchState = {}) {
-			console.log('filters into runQuery:', loanSearchState);
-			const flssCompatibleFilters = {
-				...(loanSearchState.gender && { gender: { any: loanSearchState.gender } }),
-				// countryIsoCode: { any: loanSearchState?.countryIsoCode ?? [] },
-				// sectorId: { any: loanSearchState?.sectorId ?? [] },
-			};
-			fetchData(flssCompatibleFilters, this.apollo).then(flssData => {
-				this.loans = flssData.values ?? [];
-				this.totalCount = flssData.totalCount;
-				console.log('num loans:', this.totalCount);
-				console.log('loans from runQuery()', this.loans);
-
-				if (this.totalCount === 0) {
-					this.zeroLoans = true;
-				}
-			});
-		},
-		openLightbox() {
-			this.isLightboxVisible = true;
-		},
-		closeLightbox() {
-			this.isLightboxVisible = false;
+		toggleLightbox(toggle) {
+			this.isLightboxVisible = toggle;
 		},
 	},
+	watch: {
+		$route(to) {
+			// Update the loan search state when the user clicks back/forward in the browser
+			applyQueryParams(this.apollo, to.query);
+		}
+	}
 };
 </script>
-
-<style lang="scss" scoped>
-	#filter-menu {
-		width: 285px;
-	}
-</style>

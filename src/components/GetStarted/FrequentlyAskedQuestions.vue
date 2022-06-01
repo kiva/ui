@@ -25,6 +25,7 @@
 import KvExpandableQuestion from '@/components/Kv/KvExpandableQuestion';
 
 export default {
+	name: 'FrequentlyAskedQuestions',
 	components: {
 		KvExpandableQuestion
 	},

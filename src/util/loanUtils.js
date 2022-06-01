@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import numeral from 'numeral';
 import _get from 'lodash/get';
 

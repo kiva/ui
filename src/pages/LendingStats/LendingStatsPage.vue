@@ -87,6 +87,7 @@ import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 import StatsSection from './StatsSection';
 
 export default {
+	name: 'LendingStatsPage',
 	components: {
 		KvDefaultWrapper,
 		WwwPage,

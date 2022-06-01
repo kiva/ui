@@ -1,6 +1,7 @@
 <script>
 /* eslint-disable vue/require-prop-types */
 export default {
+	name: 'KvButton',
 	render(createElement) {
 		const options = {
 			class: { button: true },

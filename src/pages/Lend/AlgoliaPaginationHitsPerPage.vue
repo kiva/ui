@@ -16,6 +16,7 @@
 import { AisHitsPerPage } from 'vue-instantsearch';
 
 export default {
+	name: 'AlgoliaPaginationHitsPerPage',
 	components: {
 		AisHitsPerPage,
 	},

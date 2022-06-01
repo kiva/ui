@@ -128,6 +128,7 @@ const pageQuery = gql`
 `;
 
 export default {
+	name: 'BorrowerProfile',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BorrowerCountry,

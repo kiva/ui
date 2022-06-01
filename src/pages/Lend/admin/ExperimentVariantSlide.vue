@@ -21,6 +21,7 @@ import KvButton from '@/components/Kv/KvButton';
 import ExperimentSlide from './ExperimentSlide';
 
 export default {
+	name: 'ExperimentVariantSlide',
 	components: {
 		ExperimentSlide,
 		KvButton,

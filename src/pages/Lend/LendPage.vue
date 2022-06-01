@@ -78,6 +78,7 @@ function fromUrlParams(params) {
 }
 
 export default {
+	name: 'LendPage',
 	components: {
 		WwwPage,
 		LoanCardController,

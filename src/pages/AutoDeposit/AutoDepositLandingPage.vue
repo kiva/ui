@@ -141,6 +141,7 @@ const pageQuery = gql`query autoDepositLandingPage {
 }`;
 
 export default {
+	name: 'AutoDepositLandingPage',
 	metaInfo() {
 		return 	{
 			title: 'Set up an Auto Deposit',

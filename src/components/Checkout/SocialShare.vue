@@ -149,6 +149,7 @@ import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
+	name: 'SocialShare',
 	inject: ['apollo'],
 	components: {
 		KvCheckbox,

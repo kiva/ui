@@ -39,6 +39,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
+	name: 'HomepageMonthlyGoodInfo',
 	components: {
 		KvIcon,
 	},

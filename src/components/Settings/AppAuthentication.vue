@@ -116,6 +116,7 @@ import enrollOTPAuthenticator from '@/graphql/mutation/mfa/enrollOTPAuthenticato
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'AppAuthentication',
 	inject: ['apollo', 'kvAuth0'],
 	mixins: [validationMixin],
 	props: {

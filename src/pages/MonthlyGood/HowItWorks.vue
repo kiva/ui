@@ -54,6 +54,7 @@ import { darkGreenTheme } from '~/@kiva/kv-tokens/configs/kivaColors.cjs';
 import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
 
 export default {
+	name: 'HowItWorks',
 	components: {
 		IconBorrowerSearch,
 		IconMegaphone,

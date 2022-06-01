@@ -10,6 +10,7 @@
 
 <script>
 export default {
+	name: 'UiRevision',
 	data() {
 		return {
 			// eslint-disable-next-line no-undef

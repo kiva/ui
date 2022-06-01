@@ -4,6 +4,7 @@
 * */
 
 export default {
+	name: 'DynamicRichText',
 	props: {
 		html: {
 			type: String,

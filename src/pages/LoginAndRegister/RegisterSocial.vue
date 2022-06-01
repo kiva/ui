@@ -81,6 +81,7 @@ import SystemPage from '@/components/SystemFrame/SystemPage';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'RegisterSocial',
 	metaInfo() {
 		return {
 			title: 'Complete registration'

@@ -32,6 +32,7 @@ const bannerQuery = gql`query bannerQuery {
 }`;
 
 export default {
+	name: 'GlobalPromotionalBannerContentful',
 	components: {
 		AppealBannerCircularContainer,
 		GenericPromoBanner,
@@ -114,7 +115,7 @@ export default {
 							kvTrackEvent: activePromoBanner.fields.kvTrackEvent,
 							link: activePromoBanner.fields.link,
 							richText: documentToHtmlString(activePromoBanner.fields.richText),
-							iconKey: _get(activePromoBanner, 'fields.iconKey', 'present'),
+							iconKey: activePromoBanner?.fields?.iconKey ?? '',
 						};
 						this.isPromoEnabled = true;
 					}

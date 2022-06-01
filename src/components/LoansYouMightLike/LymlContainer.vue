@@ -83,6 +83,7 @@ const expMlLoanToLoanQuery = gql`
 `;
 
 export default {
+	name: 'LymlContainer',
 	components: {
 		LoanCardController,
 		KvLoadingSpinner,

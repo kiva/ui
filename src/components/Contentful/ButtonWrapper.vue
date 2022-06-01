@@ -18,6 +18,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 * Takes a contentful button content type parses button attributes and renders a button
 * */
 export default {
+	name: 'ButtonWrapper',
 	components: {
 		KvButton
 	},

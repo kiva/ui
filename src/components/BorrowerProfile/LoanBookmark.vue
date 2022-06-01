@@ -19,6 +19,7 @@ import bookmarkLoan from '@/util/bookmarkUtil';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
+	name: 'LoanBookmark',
 	components: {
 		KvMaterialIcon,
 	},

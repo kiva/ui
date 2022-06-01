@@ -40,6 +40,7 @@ import DonationItem from '@/components/Checkout/DonationItem';
 import KivaCardItem from '@/components/Checkout/KivaCardItem';
 
 export default {
+	name: 'BasketItemsList',
 	props: {
 		disableRedirects: {
 			type: Boolean,

@@ -12,6 +12,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 
 export default {
+	name: 'JoinTeam',
 	components: {
 		KvDefaultWrapper,
 		WwwPage,

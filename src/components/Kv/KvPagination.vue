@@ -60,6 +60,7 @@ import _range from 'lodash/range';
 import KvIcon from './KvIcon';
 
 export default {
+	name: 'KvPagination',
 	components: {
 		KvIcon,
 	},

@@ -173,6 +173,7 @@ import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
+	name: 'TermsOfService',
 	components: {
 		DeveloperSecondaryMenu,
 		BuildPageWrapper,

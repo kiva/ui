@@ -58,6 +58,7 @@ const initialLoanCount = 4;
 const heroChannelExpKey = 'EXP-VUE-917-hero-loan';
 
 export default {
+	name: 'FeaturedHeroLoanWrapper',
 	components: {
 		LoanCardController,
 		KvLoadingOverlay,

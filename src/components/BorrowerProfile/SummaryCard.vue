@@ -106,6 +106,7 @@ import LoanBookmark from './LoanBookmark';
 import JumpLinks from './JumpLinks';
 
 export default {
+	name: 'SummaryCard',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BorrowerImage,

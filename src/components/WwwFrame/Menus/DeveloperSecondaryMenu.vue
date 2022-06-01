@@ -6,6 +6,7 @@
 import CustomSecondaryMenu from './CustomSecondaryMenu';
 
 export default {
+	name: 'DeveloperSecondaryMenu',
 	components: {
 		CustomSecondaryMenu,
 	},

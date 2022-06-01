@@ -41,6 +41,7 @@ import gql from 'graphql-tag';
 import KvSelect from '@/components/Kv/KvSelect';
 
 export default {
+	name: 'DefaultRateDropdown',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvSelect,

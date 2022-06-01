@@ -91,6 +91,7 @@ import previousLoanDescription from '@/components/BorrowerProfile/PreviousLoanDe
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
+	name: 'LoanDescription',
 	components: {
 		KvLightbox,
 		previousLoanDescription,
