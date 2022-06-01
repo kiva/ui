@@ -465,7 +465,15 @@ export default {
 				Array.from({ length: this.loanRowsCount }).map(() => this.fetchLoanData());
 			}
 		},
-	}
+		destroyViewportObserver() {
+			if (this.viewportObserver) {
+				this.viewportObserver.disconnect();
+			}
+		},
+	},
+	beforeDestroy() {
+		this.destroyViewportObserver();
+	},
 };
 </script>
 
