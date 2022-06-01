@@ -95,6 +95,10 @@ const pageQuery = gql`
 				key
 				value
 			}
+			bpCompleteLoan: uiExperimentSetting(key: "bp_complete_loan") {
+				key
+				value
+			}
 		}
 		lend {
 			loan(id: $loanId) {
@@ -122,6 +126,11 @@ const pageQuery = gql`
 				status
 				use
 				description
+				loanFundraisingInfo{
+					fundedAmount
+					isExpiringSoon
+					reservedAmount
+				}
 			}
 		}
 	}
@@ -224,6 +233,8 @@ export default {
 			status: '',
 			use: '',
 			description: '',
+			completeLoanExpActive: false,
+			loanFundraisingInfo: {}
 		};
 	},
 	apollo: {
@@ -253,6 +264,7 @@ export default {
 			this.status = loan?.status ?? '';
 			this.use = loan?.use ?? '';
 			this.description = loan?.description ?? '';
+			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
 
 			const diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = diffInDays <= 3;
@@ -298,6 +310,9 @@ export default {
 		},
 		showUrgencyExp() {
 			return this.hasThreeDaysOrLessLeft && this.isUrgencyExpVersionShown;
+		},
+		amountLeft() {
+			return this.loanAmount - this.loanFundraisingInfo.fundedAmount;
 		}
 	},
 	created() {
@@ -318,6 +333,23 @@ export default {
 					this.isUrgencyExpVersionShown ? 'b' : 'a'
 				);
 			}
+		}
+
+		// EXP-CORE-607-May-2022
+		const completeLoanEXP = this.apollo.readFragment({
+			id: 'Experiment:bp_complete_loan',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		if (completeLoanEXP.version) {
+			if (completeLoanEXP.version === 'b' && this.amountLeft < 100) {
+				this.completeLoanExpActive = true;
+			}
+			this.$kvTrackEvent(
+				'Borrower Profile',
+				'EXP-CORE-607-May-2022',
+				completeLoanEXP.version
+			);
 		}
 	},
 };
