@@ -10,6 +10,7 @@
 			:is-logged-in="isLoggedIn"
 			:items-in-basket="itemsInBasket"
 			:show-category-description="showCategoryDescription"
+			@loaded="trackFeaturedLoan"
 		/>
 
 		<div class="tw-bg-secondary tw-mb-4" v-if="addBundleExp">
@@ -191,6 +192,7 @@ export default {
 			activatedWatchers: false,
 			showMGDigestLightbox: false,
 			personalizedLoans: [],
+			rowTrackCounter: 0,
 		};
 	},
 	computed: {
@@ -260,34 +262,46 @@ export default {
 				return isLoanFundraising(loan);
 			});
 		},
-		assemblePageViewData(categories) {
-			// eslint-disable-next-line max-len
-			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_4.json#';
-			const loanIds = [];
-			const pageViewTrackData = { schema, data: {} };
-			const featuredCategoryIds = _get(this, '$refs.featured.featuredCategoryIds');
-
-			pageViewTrackData.data.categorySetIdentifier = this.categorySetId || 'default';
-
+		trackLoansDisplayed(loansDisplayed) {
+			const event = {
+				// eslint-disable-next-line max-len
+				schema: 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_5.json#',
+				data: {
+					categorySetIdentifier: this.categorySetId || 'default',
+					loansDisplayed,
+				},
+			};
+			this.$kvTrackSelfDescribingEvent(event);
+		},
+		trackFeaturedLoan() {
 			if (this.showFeaturedHeroLoan) {
-				loanIds.push({
-					r: 0, p: 1, c: featuredCategoryIds[0], l: _get(this, '$refs.featured.loan.id')
-				});
+				this.trackLoansDisplayed([{
+					r: 0,
+					p: 1,
+					c: this.$refs?.featured?.featuredCategoryIds?.[0],
+					l: this.$refs?.featured?.loan?.id
+				}]);
 			}
-
-			_each(categories, (category, catIndex) => {
-				_each(category.loans.values, (loan, loanIndex) => {
-					loanIds.push({
-						r: catIndex + 1,
+		},
+		trackLoanCategories(categories = []) {
+			const loansDisplayed = [];
+			// Add a tracking object for each loan in each category
+			categories.forEach((category, catIndex) => {
+				const loans = category?.loans?.values ?? category?.values ?? [];
+				loans.forEach((loan, loanIndex) => {
+					loansDisplayed.push({
+						r: this.rowTrackCounter + catIndex + 1,
 						p: loanIndex + 1,
 						c: category.id,
 						l: loan.id
 					});
 				});
 			});
-			console.log(loanIds);
-			pageViewTrackData.data.loansDisplayed = loanIds;
-			return pageViewTrackData;
+			if (loansDisplayed.length) {
+				// Keep a count of the rows that have been shown already
+				this.rowTrackCounter += categories.length;
+				this.trackLoansDisplayed(loansDisplayed);
+			}
 		},
 		setRows(data) {
 			if (this.mlServiceBanditExpVersion !== null) {
@@ -542,9 +556,7 @@ export default {
 				]).then(() => {
 					this.rowLazyLoadComplete = true;
 					this.activateWatchers();
-
-					const pageViewTrackData = this.assemblePageViewData(this.categories);
-					this.$kvTrackSelfDescribingEvent(pageViewTrackData);
+					this.trackLoanCategories(this.categories);
 				});
 			}
 		},
@@ -584,9 +596,8 @@ export default {
 								return [];
 							});
 							this.recommendedLoans = [...this.recommendedLoans, ...allRecLoans];
-							const pageViewTrackData = this.assemblePageViewData([allRecLoans]);
-							this.$kvTrackSelfDescribingEvent(pageViewTrackData);
 							this.rowLazyLoadComplete = true;
+							this.trackLoanCategories(allRecLoans);
 						});
 					} catch (e) {
 						logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
@@ -602,12 +613,11 @@ export default {
 								imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
 							},
 						}).then(({ data }) => {
-							const categories = _get(data, 'lend.loanChannelsById')[0];
-							if (categories.loans?.values?.length) {
-								this.realCategories = [...this.realCategories, categories];
+							const fetchedCategory = data?.lend?.loanChannelsById?.[0];
+							if (fetchedCategory?.loans?.values?.length) {
+								this.realCategories = [...this.realCategories, fetchedCategory];
 								this.rowLazyLoadComplete = true;
-								const pageViewTrackData = this.assemblePageViewData([categories]);
-								this.$kvTrackSelfDescribingEvent(pageViewTrackData);
+								this.trackLoanCategories([fetchedCategory]);
 							} else {
 								this.fetchLoanData();
 							}
