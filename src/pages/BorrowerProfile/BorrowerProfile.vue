@@ -146,8 +146,16 @@ export default {
 	},
 	metaInfo() {
 		const canonicalUrl = `https://${this.$appConfig.host}${this.$route.path}`.replace('-beta', '');
+		let title = '';
+		let description = '';
+
+		if (this.$route.path.includes('lend') || this.$route.path.includes('-beta')) {
+			title = `Lend to ${this?.name} in ${this?.countryName}`;
+			description = `A loan of ${this.loanAmount ?? '0'} ${this.use}`;
+		}
+
 		return {
-			title: this.pageTitle,
+			title,
 			link: [
 				{
 					vmid: 'canonical',
@@ -163,6 +171,11 @@ export default {
 					vmid: 'og:image',
 					content: this.imageShareUrl
 				},
+				{
+					vmid: 'description',
+					name: 'description',
+					content: description,
+				}
 			].concat(this.$appConfig.enableFB ? [
 				{
 					vmid: 'facebook_label',
