@@ -262,6 +262,14 @@ export default {
 				return isLoanFundraising(loan);
 			});
 		},
+		refIsVisible() {
+			const { top, bottom } = this.$refs?.bottom?.getBoundingClientRect() ?? {};
+			const vHeight = (window.innerHeight || document.documentElement.clientHeight);
+			return (
+				(top > 0 || bottom > 0)
+				&& top < vHeight
+			);
+		},
 		trackLoansDisplayed(loansDisplayed) {
 			const event = {
 				// eslint-disable-next-line max-len
@@ -598,6 +606,11 @@ export default {
 							this.recommendedLoans = [...this.recommendedLoans, ...allRecLoans];
 							this.rowLazyLoadComplete = true;
 							this.trackLoanCategories(allRecLoans);
+
+							// Fetch another row if we are still at the bottom of the page
+							if (this.refIsVisible()) {
+								this.fetchLoanData();
+							}
 						});
 					} catch (e) {
 						logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
@@ -618,6 +631,11 @@ export default {
 								this.realCategories = [...this.realCategories, fetchedCategory];
 								this.rowLazyLoadComplete = true;
 								this.trackLoanCategories([fetchedCategory]);
+
+								// Fetch another row if we are still at the bottom of the page
+								if (this.refIsVisible()) {
+									this.fetchLoanData();
+								}
 							} else {
 								this.fetchLoanData();
 							}
