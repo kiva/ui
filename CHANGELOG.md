@@ -1,3 +1,10 @@
+### [2.168.2](https://github.com/kiva/ui/compare/v2.168.1...v2.168.2) (2022-06-02)
+
+
+### Bug Fixes
+
+* trackers were updated to include loans ids in lbc page ([efdbc4d](https://github.com/kiva/ui/commit/efdbc4df0751ff243b381b52d848f95a69682079))
+
 ### [2.168.1](https://github.com/kiva/ui/compare/v2.168.0...v2.168.1) (2022-06-02)
 
 
