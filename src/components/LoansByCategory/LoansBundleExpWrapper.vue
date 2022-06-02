@@ -164,7 +164,6 @@ export default {
 					'Lending',
 					'click-loan-bundle-cta',
 					'Lend to all three now - personalized',
-					null,
 					this.selectedChannelLoanIds.join(', ')
 				);
 

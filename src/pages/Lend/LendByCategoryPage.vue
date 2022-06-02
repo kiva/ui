@@ -501,7 +501,6 @@ export default {
 						'Lend by category',
 						'view-loan-bundle',
 						'personalized',
-						null,
 						personalizedLoanIds.join(', ')
 					);
 				});
