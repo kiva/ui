@@ -159,12 +159,13 @@ export default {
 					'basket',
 					'bundle-add-to-basket-funded-loan',
 				);
-
+				const idsString = this.selectedChannelLoanIds.join(', ').toString();
 				this.$kvTrackEvent(
 					'Lending',
 					'click-loan-bundle-cta',
 					'Lend to all three now - personalized',
-					this.selectedChannelLoanIds.join(', ')
+					idsString,
+					null
 				);
 
 				this.$router.push({ path: '/checkout' });
