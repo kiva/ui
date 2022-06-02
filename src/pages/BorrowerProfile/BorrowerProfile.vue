@@ -72,6 +72,7 @@ import {
 } from 'date-fns';
 import gql from 'graphql-tag';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
@@ -239,7 +240,21 @@ export default {
 	},
 	apollo: {
 		query: pageQuery,
-		preFetch: true,
+		preFetch(config, client, { route }) {
+			return client
+				.query({
+					query: pageQuery,
+					variables: {
+						loanId: Number(route.params?.id ?? 0),
+					},
+				})
+				.then(() => {
+					return Promise.all([
+						// eslint-disable-next-line max-len
+						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
+					]);
+				});
+		},
 		preFetchVariables({ route }) {
 			return {
 				loanId: Number(route?.params?.id ?? 0),
@@ -268,6 +283,23 @@ export default {
 
 			const diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = diffInDays <= 3;
+
+			// EXP-CORE-607-May-2022
+			const completeLoanEXP = this.apollo.readFragment({
+				id: 'Experiment:bp_complete_loan',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			if (completeLoanEXP.version) {
+				if (completeLoanEXP.version === 'b' && this.amountLeft < 100) {
+					this.completeLoanExpActive = true;
+				}
+				this.$kvTrackEvent(
+					'Borrower Profile',
+					'EXP-CORE-607-May-2022',
+					completeLoanEXP.version
+				);
+			}
 		},
 	},
 	mounted() {
@@ -333,23 +365,6 @@ export default {
 					this.isUrgencyExpVersionShown ? 'b' : 'a'
 				);
 			}
-		}
-
-		// EXP-CORE-607-May-2022
-		const completeLoanEXP = this.apollo.readFragment({
-			id: 'Experiment:bp_complete_loan',
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		if (completeLoanEXP.version) {
-			if (completeLoanEXP.version === 'b' && this.amountLeft < 100) {
-				this.completeLoanExpActive = true;
-			}
-			this.$kvTrackEvent(
-				'Borrower Profile',
-				'EXP-CORE-607-May-2022',
-				completeLoanEXP.version
-			);
 		}
 	},
 };
