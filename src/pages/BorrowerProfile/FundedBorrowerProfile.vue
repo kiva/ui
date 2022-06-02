@@ -290,14 +290,6 @@ export default {
 				but these similar borrowers just need a little more help to reach their goals!`;
 			return this.lymlCustomSort === 'random' ? defaultMessage : customMessage;
 		},
-		refIsVisible() {
-			const { top, bottom } = this.$refs.preBottom.getBoundingClientRect();
-			const vHeight = (window.innerHeight || document.documentElement.clientHeight);
-			return (
-				(top > 0 || bottom > 0)
-				&& top < vHeight
-			);
-		}
 	},
 	created() {
 		// Read the page data from the cache
@@ -388,6 +380,14 @@ export default {
 				});
 			}
 		},
+		refIsVisible() {
+			const { top, bottom } = this.$refs?.preBottom?.getBoundingClientRect() ?? {};
+			const vHeight = (window.innerHeight || document.documentElement.clientHeight);
+			return (
+				(top > 0 || bottom > 0)
+				&& top < vHeight
+			);
+		},
 		fetchLoanData() {
 			const row = this.rows.shift();
 			if (row) {
@@ -434,7 +434,7 @@ export default {
 								}
 							];
 							this.isLoading = false;
-							if (this.refIsVisible) {
+							if (this.refIsVisible()) {
 								this.fetchLoanData();
 							}
 						});
@@ -457,7 +457,7 @@ export default {
 								{ heading: row.heading, loan: loans[0], loanIds: [] }
 							];
 							this.isLoading = false;
-							if (this.refIsVisible) {
+							if (this.refIsVisible()) {
 								this.fetchLoanData();
 							}
 						});
