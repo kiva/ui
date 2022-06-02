@@ -87,6 +87,7 @@
 					class="thanks__social-share"
 					:lender="lender"
 					:loans="loans"
+					:is-guest="isGuest"
 				/>
 				<social-share-v2
 					v-if="receipt && simpleSocialShareVersion === 'b'"

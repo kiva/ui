@@ -102,6 +102,7 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			lastName
 			email
 			inviterName
+			public
 		}
 		subscriptions {
 			values {
