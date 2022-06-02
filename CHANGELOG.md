@@ -1,3 +1,10 @@
+## [2.168.0](https://github.com/kiva/ui/compare/v2.167.1...v2.168.0) (2022-06-02)
+
+
+### Features
+
+* copy was updated in the mg setup page ([32aea57](https://github.com/kiva/ui/commit/32aea57e6c25eb99196fc791a8dfaab375d8c936))
+
 ### [2.167.1](https://github.com/kiva/ui/compare/v2.167.0...v2.167.1) (2022-06-01)
 
 
