@@ -497,12 +497,13 @@ export default {
 					const personalizedLoans = data?.fundraisingLoans?.values ?? [];
 					this.personalizedLoans = personalizedLoans;
 					const personalizedLoanIds = this.personalizedLoans.map(element => element.id);
+					const idsString = personalizedLoanIds.join(', ').toString();
 					this.$kvTrackEvent(
 						'Lend by category',
 						'view-loan-bundle',
 						'personalized',
-						null,
-						personalizedLoanIds.join(', ')
+						idsString,
+						null
 					);
 				});
 			}
