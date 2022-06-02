@@ -1,3 +1,10 @@
+### [2.167.1](https://github.com/kiva/ui/compare/v2.167.0...v2.167.1) (2022-06-01)
+
+
+### Bug Fixes
+
+* remove cache from loan card controller ([9ce82d4](https://github.com/kiva/ui/commit/9ce82d42a2e024d5ca170f4845767527ceca8681))
+
 ## [2.167.0](https://github.com/kiva/ui/compare/v2.166.0...v2.167.0) (2022-06-01)
 
 
