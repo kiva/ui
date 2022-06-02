@@ -83,6 +83,7 @@ const pageQuery = gql`query autoDepositThanksPage {
 }`;
 
 export default {
+	name: 'AutoDepositThanksPage',
 	components: {
 		WwwPage,
 		KvDefaultWrapper,

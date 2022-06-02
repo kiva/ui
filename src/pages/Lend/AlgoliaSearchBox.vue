@@ -12,6 +12,7 @@ import { AisSearchBox } from 'vue-instantsearch';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	name: 'AlgoliaSearchBox',
 	components: {
 		KvIcon,
 		AisSearchBox,

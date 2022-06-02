@@ -51,6 +51,7 @@ import KvBaseInput from '@/components/Kv/KvBaseInput';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'GuestUpsell',
 	components: {
 		KvButton,
 		KvBaseInput,

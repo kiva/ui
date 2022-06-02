@@ -34,6 +34,7 @@ import ExpandableLoanCard from '@/components/LoanCards/ExpandableLoanCard/Expand
 import expandableLoanCardMixin from '@/components/LoanCards/ExpandableLoanCard/expandableLoanCardMixin';
 
 export default {
+	name: 'ExpandableLoanCardCollapsed',
 	components: {
 		ExpandableLoanCard,
 	},

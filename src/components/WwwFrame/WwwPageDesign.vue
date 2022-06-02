@@ -202,6 +202,7 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
+	name: 'WwwPageDesign',
 	components: {
 		KivaLogo,
 		KivaCreativeStudioLogo,

@@ -87,6 +87,7 @@ function fromUrlParams(params) {
 }
 
 export default {
+	name: 'CampaignLoanGridDisplay',
 	inject: ['apollo'],
 	components: {
 		// KvIcon,

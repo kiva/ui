@@ -37,6 +37,7 @@ import KvDropdown from '@/components/Kv/KvDropdown';
 import TheLendMenu from '@/components/WwwFrame/LendMenu/TheLendMenu';
 
 export default {
+	name: 'MonthlyGoodExpMenuWrapper',
 	components: {
 		KvDropdown,
 		KvIcon,

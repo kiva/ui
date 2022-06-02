@@ -188,6 +188,7 @@ import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import userStatus from '@/graphql/query/userId.graphql';
 
 export default {
+	name: 'AlgoliaPOC',
 	components: {
 		WwwPage,
 		AisConfigure,

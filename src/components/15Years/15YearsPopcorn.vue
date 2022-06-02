@@ -33,6 +33,7 @@
 <script>
 
 export default {
+	name: '15YearsPopcorn',
 	mounted() {
 		const getRandomInt = (minimum, maximum) => {
 			const min = Math.ceil(minimum);

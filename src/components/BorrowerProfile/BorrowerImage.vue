@@ -27,6 +27,7 @@
 import { getKivaImageUrl } from '@/util/imageUtils';
 
 export default {
+	name: 'BorrowerImage',
 	props: {
 		/**
 		 * String to use as the alternative of this image for screen readers.

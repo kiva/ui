@@ -35,6 +35,7 @@
 import FavoriteStar from '@/components/LoanCards/FavoriteStar';
 
 export default {
+	name: 'LoanCardImage',
 	components: {
 		FavoriteStar,
 	},

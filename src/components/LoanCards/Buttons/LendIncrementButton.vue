@@ -32,6 +32,7 @@ import { buildPriceArray } from '@/util/loanUtils';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
+	name: 'LendIncrementButton',
 	components: {
 		KvSelect,
 		LendButton,
@@ -71,7 +72,9 @@ export default {
 			return parseInt(remainingAmount, 10);
 		},
 		prices() {
-			const minAmount = parseFloat(this.loan.minNoteSize || 25); // 25_hard_coded
+			// We don't want to open up $5 loan shares for loans with more than $25 at this time
+			// IF we wanted to show this interface on loans with less than 25 remaining they would see the selector
+			const minAmount = parseFloat(this.amountLeft < 25 ? this.loan.minNoteSize : 25); // 25_hard_coded
 			// cap at 20 prices
 			return buildPriceArray(this.amountLeft, minAmount).slice(0, 20);
 		}

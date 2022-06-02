@@ -18,6 +18,7 @@ import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'LendButton',
 	components: {
 		KvButton,
 	},
@@ -102,7 +103,7 @@ export default {
 		buttonState() {
 			if (this.loading) return 'loading';
 			return '';
-		}
+		},
 	}
 };
 

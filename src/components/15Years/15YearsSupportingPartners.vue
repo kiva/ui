@@ -38,6 +38,7 @@ import FifteenYearsButton from './15YearsButton';
 const imgRequire = require.context('@/assets/images/15-years/partners/', true);
 
 export default {
+	name: '15YearsSupportingPartners',
 	components: {
 		FifteenYearsButton,
 	},

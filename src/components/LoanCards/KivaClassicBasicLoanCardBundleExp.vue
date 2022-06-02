@@ -66,7 +66,7 @@
 			<loan-use
 				v-if="!isLoading"
 				class="tw-inline"
-				:loan-use-max-length="82"
+				:loan-use-max-length="40"
 				:loan-id="`${allSharesReserved ? '' : loanId}`"
 				:use="loan.use"
 				:name="borrowerName"
@@ -75,13 +75,14 @@
 				:borrower-count="loan.borrowerCount"
 				:show-learn-more="false"
 			/>
+
 			<a
-				:href="`/lend/${loanId}`"
-				target="_blank"
-				v-kv-track-event="['Lending', 'click-read-more-loan-bundle-cta', 'Read more', loanId]"
-				class="tw-inline"
+				@click="handleReadMoreLink(loan)"
+				v-kv-track-event="['Lending', 'click-read-more-loan-bundle-cta',
+					isPersonalized ? 'Read more - personalized' : 'Read more', loanId]"
+				class="tw-inline tw-cursor-pointer"
 			>
-				Read more
+				More
 			</a>
 		</div>
 	</div>
@@ -91,7 +92,8 @@
 import { mdiChevronRight, mdiMapMarker } from '@mdi/js';
 import gql from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
-import { isMatchAtRisk } from '@/util/loanUtils';
+import { isMatchAtRisk, watchLoanData } from '@/util/loanUtils';
+import { createIntersectionObserver } from '@/util/observerUtils';
 import LoanUse from '@/components/BorrowerProfile/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
@@ -108,35 +110,75 @@ const loanQuery = gql`query kcBasicLoanCard($loanId: Int!) {
 			id
 			distributionModel
 			geocode {
-				city
-				state
-				country {
-					name
+			city
+			country {
 					isoCode
+					name
+					region
 				}
+			}
+			name
+			use
+			activity {
+				id
+				name
+			}
+			sector {
+				id
+				name
+			}
+			status
+			borrowerCount
+			whySpecial
+			lenderRepaymentTerm
+			loanAmount
+			minNoteSize
+			loanFundraisingInfo {
+				fundedAmount
+				reservedAmount
+				isExpiringSoon
+			}
+			plannedExpirationDate
+			matchingText
+			matchRatio
+			userProperties {
+				favorited
+				lentTo
+			}
+			lenders(limit: 0) {
+				totalCount
+			}
+			... on LoanPartner {
+				partnerName
+			}
+			...on LoanDirect {
+				trusteeName
 			}
 			image {
 				id
+				default: url(customSize: "w480h300")
+				retina: url(customSize: "w960h600")
 				hash
 			}
-			name
-
-			# for loan-use-mixin
-			use
-			status
-			loanAmount
-			borrowerCount
-
 		}
 	}
 }`;
 
 export default {
+	name: 'KivaClassicBasicLoanCardBundleExp',
 	props: {
 		loanId: {
 			type: Number,
 			required: true,
-		}
+		},
+		readMoreLink: {
+			type: Function,
+			default: () => {},
+		},
+		isPersonalized: {
+			type: Boolean,
+			default: false
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],
@@ -153,10 +195,11 @@ export default {
 		return {
 			loan: null,
 			basketItems: null,
-			isLoading: false,
+			isLoading: true,
 			queryObserver: null,
 			mdiChevronRight,
 			mdiMapMarker,
+			viewportObserver: null,
 		};
 	},
 	computed: {
@@ -212,57 +255,50 @@ export default {
 		},
 	},
 	methods: {
-		prefetchLoanData() {
-			if (!this.loan) {
-				this.isLoading = true;
+		handleReadMoreLink(event) {
+			this.$emit('read-more-link', event);
+			if (this.disableLink) {
+				event.preventDefault();
+				return;
 			}
-			// TODO: Create method in loanUtils for the QUERY (pass in apollo, loanid, cookieStore)
-			return this.apollo.query({
-				variables: {
-					loanId: this.loanId,
-				},
-				query: loanQuery,
-			}).then(result => {
-				this.processQueryResult(result);
+			this.$emit('track-loan-card-interaction', {
+				interactionType: 'viewBorrowerPage',
+				interactionElement: 'readMore'
 			});
 		},
-		readLoanData() {
-			// Read loan data from the cache (synchronus)
-			try {
-				// TODO: Create method in loanUtils for the READ query (pass in apollo, loanid, cookieStore)
-				const data = this.apollo.readQuery({
-					query: loanQuery,
-					variables: {
-						loanId: this.loanId,
-					},
-				});
-				if (data.lend) {
-					this.processQueryResult({ data });
-				} else {
-					// Show loading state while watchQuery completes
-					this.isLoading = true;
+		createViewportObserver() {
+			// Watch for this element being in the viewport
+			this.viewportObserver = createIntersectionObserver({
+				targets: [this.$el],
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.target === this.$el && entry.intersectionRatio > 0) {
+							// This element is in the viewport, so load the data.
+							this.loadData();
+						}
+					});
 				}
-			} catch (e) {
-				// if there's an error it means there's no loan data in the cache yet, which means the page
-				// was not server rendered, so just show a loading state and wait for the watchQuery to complete
-				this.isLoading = true;
+			});
+			if (!this.viewportObserver) {
+				// Observer was not created, so call loadData right away as a fallback.
+				this.loadData();
 			}
 		},
-		watchQueryLoanData() {
-			// Setup query observer to watch for changes to the loan data (async)
-			// TODO: Create method in loanUtils for the WATCH query (pass in apollo, loanid, cookieStore)
-			this.queryObserver = this.apollo.watchQuery({
-				query: loanQuery,
-				variables: {
+		destroyViewportObserver() {
+			if (this.viewportObserver) {
+				this.viewportObserver.disconnect();
+			}
+		},
+		loadData() {
+			if (!this.queryObserver) {
+				this.queryObserver = watchLoanData({
+					apollo: this.apollo,
+					cookieStore: this.cookieStore,
 					loanId: this.loanId,
-				},
-			});
-
-			// Subscribe to the observer to see each result
-			this.queryObserver.subscribe({
-				next: result => this.processQueryResult(result),
-				error: error => this.processQueryResult({ error }),
-			});
+					loanQuery,
+					callback: result => this.processQueryResult(result),
+				});
+			}
 		},
 		processQueryResult(result) {
 			if (result.error) {
@@ -284,14 +320,11 @@ export default {
 			this.basketItems = result.data?.shop?.basket?.items?.values ?? [];
 		}
 	},
-	serverPrefetch() {
-		return this.prefetchLoanData();
+	mounted() {
+		this.createViewportObserver();
 	},
-	created() {
-		if (!this.$isServer) {
-			this.readLoanData();
-			this.watchQueryLoanData();
-		}
+	beforeDestroy() {
+		this.destroyViewportObserver();
 	},
 	watch: {
 		// When loan id changes, update watch query variables

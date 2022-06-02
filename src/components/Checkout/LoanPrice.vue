@@ -1,6 +1,6 @@
 <template>
 	<div class="loan-price-wrapper tw-flex">
-		<div class="loan-price-select tw-flex-grow">
+		<div v-if="price > 24" class="loan-price-select tw-flex-grow">
 			<label for="loan-price" class="tw-sr-only">Loan Price</label>
 			<kv-select
 				v-model="selectedOption"
@@ -17,7 +17,9 @@
 				</option>
 			</kv-select>
 		</div>
-
+		<p v-else class="tw-text-h3 tw-mb-0">
+			${{ price }}
+		</p>
 		<remove-basket-item
 			class="tw-hidden tw-flex-none tw-ml-2 tw-py-0.5 md:tw-py-1 md:tw-flex tw-items-center"
 			:loan-id="loanId"
@@ -39,6 +41,7 @@ import { buildPriceArray } from '@/util/loanUtils';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
+	name: 'LoanPrice',
 	components: {
 		KvSelect,
 		RemoveBasketItem,
@@ -105,7 +108,11 @@ export default {
 				remainingAmount = Math.max(remainingAmount, parseFloat(this.price));
 
 				const minAmount = parseFloat(this.minAmount || 25); // 25_hard_coded
-				return buildPriceArray(remainingAmount, minAmount);
+				const pricesArray = buildPriceArray(remainingAmount, minAmount);
+				const reducedArray = pricesArray.filter(element => {
+					return element % 25 === 0;
+				});
+				return reducedArray;
 			}
 			if (this.type === 'kivaCard') {
 				// convert this to formatted array for our select element

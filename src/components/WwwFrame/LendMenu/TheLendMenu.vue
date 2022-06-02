@@ -51,6 +51,7 @@ const pageQuery = gql`query lendMenu {
 	}`;
 
 export default {
+	name: 'TheLendMenu',
 	components: {
 		LendListMenu,
 		LendMegaMenu,
@@ -77,7 +78,7 @@ export default {
 			isRegionsLoading: true,
 			isChannelsLoading: true,
 			showMGUpsellLink: false,
-			swapLendMenuMgCopy: false,
+			swapLendMenuMgCopy: false
 		};
 	},
 	apollo: {

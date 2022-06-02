@@ -17,6 +17,7 @@
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	name: 'GiftBanner',
 	components: {
 		KvIcon
 	},

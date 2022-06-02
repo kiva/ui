@@ -43,6 +43,7 @@ const disclaimerQuery = gql`query disclaimerQuery($basketId: String) {
 }`;
 
 export default {
+	name: 'DisclaimersContentful',
 	data() {
 		return {
 			disclaimerContent: [],

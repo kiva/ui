@@ -24,6 +24,7 @@ import gql from 'graphql-tag';
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
+	name: 'HeroBackground',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvContentfulImg,

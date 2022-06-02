@@ -243,6 +243,7 @@ const donationItemQuery = gql`query donationItemQuery {
 }`;
 
 export default {
+	name: 'DonationItem',
 	components: {
 		KvMaterialIcon,
 		KvButton,

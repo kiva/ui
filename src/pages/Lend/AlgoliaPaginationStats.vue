@@ -12,6 +12,7 @@
 import { AisStats } from 'vue-instantsearch';
 
 export default {
+	name: 'AlgoliaPaginationStats',
 	components: {
 		AisStats,
 	},

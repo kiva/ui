@@ -19,6 +19,7 @@ import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 * https://braintree.github.io/braintree-web-drop-in/docs/current/module-braintree-web-drop-in.html
 * */
 export default {
+	name: 'BraintreeDropInInterface',
 	components: {
 		KvLoadingSpinner,
 	},

@@ -93,6 +93,19 @@ describe('loan.js', () => {
 			});
 		});
 
+		it('Returns 1 if loan is over-reserved', () => {
+			testFundraisingPercent({
+				loan: {
+					loanAmount: '200.00',
+					loanFundraisingInfo: {
+						fundedAmount: '185.00',
+						reservedAmount: '20.00'
+					},
+				},
+				expected: 1,
+			});
+		});
+
 		describe('Returns 0 if required fields are missing', () => {
 			function testConsoleError(field) {
 				expect(console.error.mock.calls.length).toBe(1);
@@ -163,7 +176,7 @@ describe('loan.js', () => {
 			expect(resolvers.LoanDirect.fundraisingTimeLeft).toBe(resolvers.LoanPartner.fundraisingTimeLeft);
 		});
 
-		it('Returns the time remaining before expiration in words', () => {
+		it('Returns the time remaining before expiration in milliseconds', () => {
 			const now = new Date();
 			const tenMinutes = add(now, { minutes: 10 });
 			const twoHours = add(now, { hours: 2 });
@@ -205,6 +218,64 @@ describe('loan.js', () => {
 			expect(console.error.mock.calls.length).toBe(1);
 			expect(console.error.mock.calls[0][0]).toEqual(
 				expect.stringContaining('\'plannedExpirationDate\' for LoanBasic.fundraisingTimeLeft')
+			);
+
+			console.error = originalError;
+		});
+	});
+
+	describe('LoanBasic.fundraisingTimeLeftMilliseconds', () => {
+		function testFundraisingTimeLeftMilliseconds({ loan, expected }) {
+			const { resolvers } = loanResolverFactory();
+			const result = resolvers.LoanPartner.fundraisingTimeLeftMilliseconds(loan);
+			expect(result).toBeCloseTo(expected, -4);
+		}
+
+		it('Exports the same resolver for LoanDirect and LoanPartner', () => {
+			const { resolvers } = loanResolverFactory();
+			expect(resolvers.LoanDirect.fundraisingTimeLeftMilliseconds)
+				.toBe(resolvers.LoanPartner.fundraisingTimeLeftMilliseconds);
+		});
+
+		it('Returns the time remaining before expiration in words', () => {
+			const now = new Date();
+			const tenMinutes = add(now, { minutes: 10 });
+			const twoHours = add(now, { hours: 2 });
+			const fiveDays = add(now, { days: 5 });
+
+			testFundraisingTimeLeftMilliseconds({
+				loan: { plannedExpirationDate: formatISO(tenMinutes) },
+				expected: 10 * 60000,
+			});
+			testFundraisingTimeLeftMilliseconds({
+				loan: { plannedExpirationDate: formatISO(twoHours) },
+				expected: 120 * 60000,
+			});
+			testFundraisingTimeLeftMilliseconds({
+				loan: { plannedExpirationDate: formatISO(fiveDays) },
+				expected: 1440 * 5 * 60000, // 5 days in milliseconds
+			});
+		});
+
+		it('Returns an empty string if plannedExpirationDate is not a valid date', () => {
+			const { resolvers } = loanResolverFactory();
+			const result = resolvers.LoanPartner.fundraisingTimeLeftMilliseconds(
+				{ plannedExpirationDate: 'not a date' }
+			);
+			expect(result).toBe('');
+		});
+
+		it('Returns an empty string if plannedExpirationDate is missing', () => {
+			const originalError = console.error;
+			console.error = jest.fn();
+
+			const { resolvers } = loanResolverFactory();
+			const result = resolvers.LoanPartner.fundraisingTimeLeftMilliseconds({});
+			expect(result).toBe('');
+
+			expect(console.error.mock.calls.length).toBe(1);
+			expect(console.error.mock.calls[0][0]).toEqual(
+				expect.stringContaining('\'plannedExpirationDate\' for LoanBasic.fundraisingTimeLeftMilliseconds')
 			);
 
 			console.error = originalError;
@@ -260,6 +331,19 @@ describe('loan.js', () => {
 					loanFundraisingInfo: {
 						fundedAmount: '90.00',
 						reservedAmount: '10.00'
+					},
+				},
+				expected: '0.00',
+			});
+		});
+
+		it('Returns the 0.00 if loan is over-reserved', () => {
+			testUnreservedAmount({
+				loan: {
+					loanAmount: '200.00',
+					loanFundraisingInfo: {
+						fundedAmount: '185.00',
+						reservedAmount: '20.00'
 					},
 				},
 				expected: '0.00',

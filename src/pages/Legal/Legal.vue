@@ -32,6 +32,7 @@ import CustomSecondaryMenu from '@/components/WwwFrame/Menus/CustomSecondaryMenu
 import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 
 export default {
+	name: 'Legal',
 	components: {
 		KvDefaultWrapper,
 		WwwPage,

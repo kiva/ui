@@ -75,6 +75,7 @@ const pageQuery = gql`query mfaFeatureFlagQuery {
 }`;
 
 export default {
+	name: 'TheSettingsTertiaryMenu',
 	components: { TertiaryMenu },
 	inject: ['apollo', 'cookieStore'],
 	data() {

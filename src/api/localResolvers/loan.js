@@ -3,6 +3,7 @@ import {
 	formatDistanceToNowStrict,
 	parseISO,
 	differenceInDays,
+	differenceInMilliseconds,
 } from 'date-fns';
 import numeral from 'numeral';
 import logFormatter from '@/util/logFormatter';
@@ -118,6 +119,36 @@ function fundraisingTimeLeft(loan) {
 }
 
 /**
+ * Resolves the time left before expiration as milliseconds.
+ *
+ * Example fragment:
+ * ... on LoanBasic {
+	 plannedExpirationDate
+	 fundraisingTimeLeftMilliseconds @client
+ * }
+* */
+function fundraisingTimeLeftMilliseconds(loan) {
+	// Handle missing required field
+	if (missingLoanField({
+		loan,
+		field: 'plannedExpirationDate',
+		resolver: 'fundraisingTimeLeftMilliseconds',
+	})) {
+		return '';
+	}
+
+	// Get planned expiration time as Date
+	const plannedExpirationDate = parseISO(loan.plannedExpirationDate);
+
+	// Return empty string if the result is not a valid date
+	if (!isValidDate(plannedExpirationDate)) {
+		return '';
+	}
+
+	const diffInMs = differenceInMilliseconds(plannedExpirationDate, new Date());
+	return diffInMs;
+}
+/**
  * Resolves the unreserved amount of this loan as a Money string.
  *
  * Example fragment:
@@ -151,7 +182,12 @@ function unreservedAmount(loan) {
 
 	// Calculate unfunded and unreserved amounts
 	const unfunded = loanAmount - fundedAmount;
-	const unreserved = unfunded - reservedAmount;
+	let unreserved = unfunded - reservedAmount;
+
+	// For presentational purposes we prevent a negative unreservedAmount from showing
+	if (unreserved <= 0) {
+		unreserved = 0;
+	}
 
 	// Format as string to match Money type
 	return numeral(unreserved).format('0.00');
@@ -163,11 +199,13 @@ export default () => {
 			LoanPartner: {
 				fundraisingPercent,
 				fundraisingTimeLeft,
+				fundraisingTimeLeftMilliseconds,
 				unreservedAmount,
 			},
 			LoanDirect: {
 				fundraisingPercent,
 				fundraisingTimeLeft,
+				fundraisingTimeLeftMilliseconds,
 				unreservedAmount,
 			},
 		},

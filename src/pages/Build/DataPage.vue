@@ -73,6 +73,7 @@ import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
+	name: 'DataPage',
 	components: {
 		DeveloperSecondaryMenu,
 		KvCodeBlock,

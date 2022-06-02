@@ -35,6 +35,7 @@ import { settingEnabled } from '@/util/settingsUtils';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
+	name: 'DonateSupportUsRightRail',
 	components: {
 		DonationMeter,
 		KvContentfulImg,

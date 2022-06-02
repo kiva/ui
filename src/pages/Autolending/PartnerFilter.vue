@@ -26,6 +26,7 @@ import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolendin
 import CheckList from './CheckList';
 
 export default {
+	name: 'PartnerFilter',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		CheckList,

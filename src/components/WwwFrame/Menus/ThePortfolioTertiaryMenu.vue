@@ -115,6 +115,7 @@ import portfolioTertiaryMenuQuery from '@/graphql/query/portfolioTertiaryMenu.gr
 import TertiaryMenu from '@/components/WwwFrame/TertiaryMenu';
 
 export default {
+	name: 'ThePortfolioTertiaryMenu',
 	components: { TertiaryMenu },
 	inject: ['apollo', 'cookieStore'],
 	data() {

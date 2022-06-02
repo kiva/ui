@@ -18,6 +18,7 @@
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'KivaClassicLoanCategorySelector',
 	components: {
 		KvButton,
 	},
@@ -39,9 +40,9 @@ export default {
 			const categoryId = category?.id ?? null;
 			const categoryShortName = category?.shortName ?? '';
 			// build event category from url, special case for homepage, clean page path otherwise
-			const eventContext = this.$route.fullPath === '/'
+			const eventContext = this.$route.path === '/'
 				? 'homepage'
-				: this.$route.fullPath.replace(/\//g, '-').replace('-', '');
+				: this.$route.path.replace(/\//g, '-').replace('-', '');
 			this.$kvTrackEvent(
 				eventContext,
 				'click-contentful-loan-carousel-category',

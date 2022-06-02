@@ -17,7 +17,7 @@
 		:percent-raised="percentRaised"
 		:show-view-loan-cta="showViewLoanCta"
 		:title="title"
-		:is="loanCardType"
+		:is="loanCardComponent"
 
 		@track-interaction="trackInteraction"
 		@toggle-favorite="toggleFavorite"
@@ -33,12 +33,14 @@
 		:row-number="rowNumber"
 		:right-arrow-position="rightArrowPosition"
 		:left-arrow-position="leftArrowPosition"
+		:rounded-corners="roundedCorners"
 
 		:detailed-loan-index="detailedLoanIndex"
 		:hover-loan-index="hoverLoanIndex"
 		:shift-increment="shiftIncrement"
 		:time-left-message="timeLeftMessage"
 		:prevent-updating-detailed-card="preventUpdatingDetailedCard"
+		:hide-lend-cta="hideLendCta"
 
 		@update-detailed-loan-index="updateDetailedLoanIndex"
 		@update-hover-loan-index="updateHoverLoanIndex"
@@ -64,30 +66,22 @@ import {
 } from 'date-fns';
 import _forEach from 'lodash/forEach';
 import { isMatchAtRisk } from '@/util/loanUtils';
-import AdaptiveMicroLoanCard from '@/components/LoanCards/AdaptiveMicroLoanCard';
-import FeaturedHeroLoan from '@/components/LoansByCategory/FeaturedHeroLoan';
-import GridLoanCard from '@/components/LoanCards/GridLoanCard';
-import ExpandableLoanCardCollapsed from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardCollapsed';
-import ExpandableLoanCard from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCard';
-import ListLoanCard from '@/components/LoanCards/ListLoanCard';
-import HoverLoanCard from '@/components/LoanCards/HoverLoanCard/HoverLoanCard';
-import LendHomepageLoanCard from '@/components/LoanCards/LendHomepageLoanCard';
-
-import DetailedLoanCard from '@/components/LoanCards/HoverLoanCard/DetailedLoanCard';
 import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
 
+const AdaptiveMicroLoanCard = () => import('@/components/LoanCards/AdaptiveMicroLoanCard');
+const DetailedLoanCard = () => import('@/components/LoanCards/HoverLoanCard/DetailedLoanCard');
+const ExpandableLoanCard = () => import('@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCard');
+const ExpandableLoanCardCollapsed = () => {
+	return import('@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardCollapsed');
+};
+const FeaturedHeroLoan = () => import('@/components/LoansByCategory/FeaturedHeroLoan');
+const GridLoanCard = () => import('@/components/LoanCards/GridLoanCard');
+const HoverLoanCard = () => import('@/components/LoanCards/HoverLoanCard/HoverLoanCard');
+const LendHomepageLoanCard = () => import('@/components/LoanCards/LendHomepageLoanCard');
+const ListLoanCard = () => import('@/components/LoanCards/ListLoanCard');
+
 export default {
-	components: {
-		AdaptiveMicroLoanCard,
-		DetailedLoanCard,
-		ExpandableLoanCard,
-		ExpandableLoanCardCollapsed,
-		FeaturedHeroLoan,
-		GridLoanCard,
-		HoverLoanCard,
-		LendHomepageLoanCard,
-		ListLoanCard,
-	},
+	name: 'LoanCardController',
 	props: {
 		disableRedirects: {
 			type: Boolean,
@@ -158,6 +152,10 @@ export default {
 			type: Number,
 			default: undefined,
 		},
+		roundedCorners: {
+			type: Boolean,
+			default: false
+		},
 		detailedLoanIndex: {
 			type: Number,
 			default: null,
@@ -178,15 +176,44 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		hideLendCta: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	inject: ['apollo'],
 	computed: {
+		loanCardComponent() {
+			switch (this.loanCardType) {
+				case 'AdaptiveMicroLoanCard':
+					return AdaptiveMicroLoanCard;
+				case 'DetailedLoanCard':
+					return DetailedLoanCard;
+				case 'ExpandableLoanCard':
+					return ExpandableLoanCard;
+				case 'ExpandableLoanCardCollapsed':
+					return ExpandableLoanCardCollapsed;
+				case 'FeaturedHeroLoan':
+					return FeaturedHeroLoan;
+				case 'GridLoanCard':
+					return GridLoanCard;
+				case 'HoverLoanCard':
+					return HoverLoanCard;
+				case 'LendHomepageLoanCard':
+					return LendHomepageLoanCard;
+				case 'ListLoanCard':
+					return ListLoanCard;
+				default:
+					return null;
+			}
+		},
 		amountLeft() {
 			const {
 				fundedAmount,
 				reservedAmount
 			} = this.loan.loanFundraisingInfo;
-			return this.loan.loanAmount - fundedAmount - reservedAmount;
+			const amountLeft = this.loan.loanAmount - fundedAmount - reservedAmount;
+			return amountLeft < 0 ? 0 : amountLeft;
 		},
 		isFunded() {
 			return this.loan.status === 'funded';

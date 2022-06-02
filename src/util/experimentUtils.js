@@ -208,7 +208,7 @@ export function getExperimentSettingCached(client, key) {
  * @param  {string} key                the experiment key
  * @return {Experiment}                the experiment assignment object read from the client cache
  */
-export function trackExperimentVersion(client, trackEvent, category, key) {
+export function trackExperimentVersion(client, trackEvent, category, key, action) {
 	// get assignment for experiment key
 	const exp = client.readFragment({
 		id: `Experiment:${key}`,
@@ -219,7 +219,7 @@ export function trackExperimentVersion(client, trackEvent, category, key) {
 	if (exp.version && exp.version !== 'unassigned') {
 		trackEvent(
 			category,
-			key,
+			action ?? key,
 			exp.version,
 		);
 	}

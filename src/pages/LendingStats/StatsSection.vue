@@ -72,6 +72,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
+	name: 'StatsSection',
 	props: {
 		title: { type: String, required: true },
 		noun: { type: String, required: true },

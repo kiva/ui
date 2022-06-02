@@ -33,6 +33,7 @@
 import _orderBy from 'lodash/orderBy';
 
 export default {
+	name: 'RouteListing',
 	data() {
 		return {
 			devRoutes: [],

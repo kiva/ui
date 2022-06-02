@@ -30,6 +30,10 @@ query initializeCheckout($basketId: String) {
 			value
 			description
 		}
+		upsellsEnabled: uiExperimentSetting(key: "upsells_checkout") {
+			key
+			value
+		}
 	}
 	shop (basketId: $basketId) {
 		id
@@ -49,6 +53,18 @@ query initializeCheckout($basketId: String) {
 			items {
 				totalCount
 				values {
+					creditsUsed {
+						amount
+						applied
+						available
+						creditType
+						id
+						promoFund {
+							id
+							displayName
+							displayDescription
+						}
+					}
 					id
 					price
 					... on LoanReservation {

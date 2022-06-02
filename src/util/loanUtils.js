@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import numeral from 'numeral';
 import _get from 'lodash/get';
 
@@ -84,4 +83,56 @@ export function isMatchAtRisk(loan) {
 	// final comparison: is the loan amount remaining less than the potential match amount?
 	return numeral(remainingAmountCalculation).value()
 		< numeral(matchAmountCalculation).value();
+}
+
+export function queryLoanData({
+	apollo, cookieStore, loanId, loanQuery
+}) {
+	return apollo.query({
+		query: loanQuery,
+		variables: {
+			basketId: cookieStore.get('kvbskt'),
+			loanId,
+		},
+	});
+}
+
+export function readLoanData({
+	apollo, cookieStore, loanId, loanQuery
+}) {
+	// Read loan data from the cache (synchronus)
+	try {
+		return apollo.readQuery({
+			query: loanQuery,
+			variables: {
+				basketId: cookieStore.get('kvbskt'),
+				loanId,
+			},
+		});
+	} catch (e) {
+		// if there's an error it means there's no loan data in the cache yet, so return null
+		return null;
+	}
+}
+
+export function watchLoanData({
+	apollo, cookieStore, loanId, loanQuery, callback
+}) {
+	// Setup query observer to watch for changes to the loan data (async)
+	const queryObserver = apollo.watchQuery({
+		query: loanQuery,
+		variables: {
+			basketId: cookieStore.get('kvbskt'),
+			loanId,
+		},
+	});
+
+	// Subscribe to the observer to see each result
+	queryObserver.subscribe({
+		next: result => callback(result),
+		error: error => callback({ error }),
+	});
+
+	// Return the observer to allow modification of variables
+	return queryObserver;
 }

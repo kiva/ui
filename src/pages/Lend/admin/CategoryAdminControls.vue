@@ -67,6 +67,7 @@ import ExperimentControlSlide from './ExperimentControlSlide';
 import ExperimentVariantSlide from './ExperimentVariantSlide';
 
 export default {
+	name: 'CategoryAdminControls',
 	components: {
 		ExperimentControlSlide,
 		ExperimentVariantSlide,

@@ -71,6 +71,7 @@ import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
+	name: 'LandingFormVisibilityExp',
 	mixins: [
 		validationMixin,
 		loanGroupCategoriesMixin

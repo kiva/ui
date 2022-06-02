@@ -45,6 +45,7 @@
 
 <script>
 export default {
+	name: 'KvHero',
 	props: {
 		headlineBgColor: {
 			type: String,

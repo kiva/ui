@@ -22,6 +22,7 @@
 
 <script>
 export default {
+	name: '15YearsHeaderCard',
 	props: {
 		title: {
 			type: String,

@@ -47,7 +47,10 @@
 					:is-lent-to="loan.userProperties.lentTo"
 					:is-funded="isFunded"
 					:is-selected-by-another="isSelectedByAnother"
-					class="tw-mt-2"
+					:is-amount-lend-button="lessThan25"
+					:amount-left="amountLeft"
+					:show-now="true"
+					class="tw-mt-2 tw-w-full"
 					:class="{'tw-mb-2' : !isMatchAtRisk && !isFunded}"
 					@click.native="trackInteraction({
 						interactionType: 'addToBasket',
@@ -77,6 +80,7 @@ import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MatchingText from '@/components/LoanCards/MatchingText';
 
 export default {
+	name: 'GridLoanCard',
 	components: {
 		ActionButton,
 		BorrowerInfo,
@@ -139,6 +143,11 @@ export default {
 			type: String,
 			default: ''
 		},
+	},
+	computed: {
+		lessThan25() {
+			return this.amountLeft < 25 && this.amountLeft !== 0;
+		}
 	},
 	methods: {
 		toggleFavorite() {

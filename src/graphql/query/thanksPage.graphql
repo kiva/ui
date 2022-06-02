@@ -69,6 +69,12 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 									name
 								}
 							}
+							loanAmount
+							loanFundraisingInfo {
+								fundedAmount
+								reservedAmount
+							}
+							unreservedAmount @client
 						}
 					}
 				}
@@ -105,6 +111,12 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 	}
 	general {
 		autoDepositUpsellSetting: uiExperimentSetting(key: "thanks_ad_upsell") {
+			key
+			value
+		}
+	}
+	general {
+		simpleThanksShare: uiExperimentSetting(key: "simple_thanks_share") {
 			key
 			value
 		}

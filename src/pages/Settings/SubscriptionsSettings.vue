@@ -24,6 +24,7 @@ import SubscriptionsSettingsCards from '@/components/Settings/SubscriptionsSetti
 import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 
 export default {
+	name: 'SubscriptionsSettings',
 	components: {
 		KvDefaultWrapper,
 		SubscriptionsSettingsCards,

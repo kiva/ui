@@ -9,8 +9,11 @@
 <script>
 import _throttle from 'lodash/throttle';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import getCacheKey from '@/util/getCacheKey';
 
 export default {
+	name: 'KvLoadingOverlay',
+	serverCacheKey: () => getCacheKey('KvLoadingOverlay'),
 	components: {
 		KvLoadingSpinner
 	},

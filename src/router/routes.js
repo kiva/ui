@@ -127,10 +127,17 @@ module.exports = [
 	},
 	{
 		path: '/funded/:id',
-		component: () => import('@/pages/BorrowerProfile/fundedBorrowerProfile'),
+		component: () => import('@/pages/BorrowerProfile/FundedBorrowerProfile'),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}
+	},
+	{
+		path: '/gender-equality',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: {
+			contentfulPage: () => 'gender-equality',
+		},
 	},
 	{
 		path: '/get-started',
@@ -199,6 +206,14 @@ module.exports = [
 		]
 	},
 	{
+		path: '/lend-by-category/loans-to-women',
+		redirect: '/lend-by-category/women'
+	},
+	{
+		path: '/lend-by-category/loans-for-education',
+		redirect: '/lend-by-category/education'
+	},
+	{
 		path: '/lend-by-category',
 		component: () => import('@/pages/Lend/LendByCategoryPage'),
 		meta: {
@@ -221,8 +236,9 @@ module.exports = [
 		},
 	},
 	{
+		name: 'filter-alpha',
 		path: '/lend/filter-alpha',
-		component: () => import('@/pages/Lend/FilterAlpha/LendFilterAlpha'),
+		component: () => import('@/pages/Lend/LoanSearchPage'),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}
@@ -234,6 +250,10 @@ module.exports = [
 			excludeFromStaticSitemap: true,
 			unbounce: true,
 		},
+	},
+	{
+		path: '/lp/own-the-change-gender-equality',
+		redirect: '/gender-equality'
 	},
 	{
 		path: '/lp/:dynamicRoute',

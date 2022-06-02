@@ -38,6 +38,8 @@
 					:money-left="unreservedAmount"
 					:progress-percent="fundraisingPercent"
 					:time-left="timeLeft"
+					:urgency="showUrgencyExp && timeLeftMs > 0"
+					:ms-left="timeLeftMs"
 				/>
 			</div>
 		</div>
@@ -104,6 +106,7 @@ import LoanBookmark from './LoanBookmark';
 import JumpLinks from './JumpLinks';
 
 export default {
+	name: 'SummaryCard',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BorrowerImage,
@@ -114,6 +117,12 @@ export default {
 		SummaryTag,
 		LoanBookmark,
 		JumpLinks,
+	},
+	props: {
+		showUrgencyExp: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	data() {
 		return {
@@ -135,6 +144,7 @@ export default {
 			city: '',
 			state: '',
 			anonymizationLevel: 'none',
+			timeLeftMs: 0,
 		};
 	},
 	computed: {
@@ -171,6 +181,7 @@ export default {
 						distributionModel
 						fundraisingPercent @client
 						fundraisingTimeLeft @client
+						fundraisingTimeLeftMilliseconds @client
 						geocode {
 							city
 							state
@@ -232,6 +243,7 @@ export default {
 			this.city = loan?.geocode?.city ?? '';
 			this.state = loan?.geocode?.state ?? '';
 			this.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
+			this.timeLeftMs = loan?.fundraisingTimeLeftMilliseconds > 0 ? loan?.fundraisingTimeLeftMilliseconds : 0;
 			// If all shares are reserved in baskets, set the fundraising meter to 100%
 			if (this.unreservedAmount === '0') {
 				this.fundraisingPercent = 1;

@@ -30,6 +30,7 @@
  */
 /* eslint-enable max-len */
 export default {
+	name: 'KvIcon',
 	props: {
 		/**
 		 * The name of the svg file without the .svg suffix.

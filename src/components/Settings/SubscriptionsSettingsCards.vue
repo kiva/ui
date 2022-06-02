@@ -120,6 +120,7 @@ const pageQuery = gql`query subscriptionSettingsPage {
 }`;
 
 export default {
+	name: 'SubscriptionsSettingsCards',
 	components: {
 		KvButton,
 		KvLightbox,

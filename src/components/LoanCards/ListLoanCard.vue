@@ -1,5 +1,5 @@
 <template>
-	<div class="row list-loan-card">
+	<div class="row list-loan-card tw-overflow-hidden" :class="{ 'tw-rounded': roundedCorners }">
 		<div class="list-loan-card-desktop-column show-for-large large-4 xlarge-4 columns">
 			<div class="list-loan-card-desktop-column-container row">
 				<div class="small-12 columns">
@@ -11,6 +11,7 @@
 							:standard-image-url="loan.image.default"
 							:is-visitor="isVisitor"
 							:is-favorite="isFavorite"
+							:class="{ 'tw-rounded-tl': roundedCorners }"
 
 							@track-loan-card-interaction="trackInteraction"
 							@favorite-toggled="toggleFavorite"
@@ -50,6 +51,7 @@
 						:is-visitor="isVisitor"
 						:is-favorite="isFavorite"
 						class="list-loan-card-mobile-borrower-image"
+						:class="{ 'tw-rounded': roundedCorners }"
 
 						@track-loan-card-interaction="trackInteraction"
 						@favorite-toggled="toggleFavorite"
@@ -73,7 +75,10 @@
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
 						:is-expired="isExpired"
-						class="tw-mt-0"
+						:is-amount-lend-button="lessThan25"
+						:amount-left="amountLeft"
+						:show-now="true"
+						class="tw-mt-0 tw-w-full"
 						@click.native="trackInteraction({
 							interactionType: 'addToBasket',
 							interactionElement: 'Lend25'
@@ -118,7 +123,7 @@
 				</div>
 			</div>
 			<div class="row hide-for-large">
-				<div class="small-12 medium-8 medium-offset-2 columns">
+				<div class="small-12 medium-8 medium-offset-2 columns tw-py-1">
 					<action-button
 						:loan-id="loan.id"
 						:loan="loan"
@@ -127,7 +132,10 @@
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
 						:is-expired="isExpired"
-						class="tw-mt-0"
+						:is-amount-lend-button="lessThan25"
+						:amount-left="amountLeft"
+						:show-now="true"
+						class="tw-mt-0 tw-w-full"
 
 						@click.native="trackInteraction({
 							interactionType: 'addToBasket',
@@ -160,6 +168,7 @@ import MatchingText from '@/components/LoanCards/MatchingText';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 
 export default {
+	name: 'ListLoanCard',
 	components: {
 		LoanCardImage,
 		FundraisingStatus,
@@ -226,6 +235,15 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		roundedCorners: {
+			type: Boolean,
+			default: false
+		}
+	},
+	computed: {
+		lessThan25() {
+			return this.amountLeft < 25 && this.amountLeft !== 0;
+		}
 	},
 	methods: {
 		toggleFavorite() {

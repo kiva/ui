@@ -36,6 +36,7 @@ import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
+	name: 'CampaignPartnerThanks',
 	components: {
 		KvButton,
 		KvContentfulImg

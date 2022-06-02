@@ -33,6 +33,7 @@ import logFormatter from '@/util/logFormatter';
 import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 
 export default {
+	name: 'Error',
 	inject: ['locale'],
 	components: {
 		WwwPage,

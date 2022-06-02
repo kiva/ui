@@ -1,124 +1,49 @@
-/* eslint-disable import/prefer-default-export */
-import gql from 'graphql-tag';
 import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
+import flssLoanFacetsQuery from '@/graphql/query/flssLoanFacetsQuery.graphql';
 
-export function fetchSectors(apollo) {
-	const sectorQuery = gql`query sectors {lend { sector { id name } } }`;
-
-	return apollo.query({
-		query: sectorQuery,
-	})
-		.then(dataSector => {
-			return dataSector.data.lend.sector.map(sectorInfo => {
-				return {
-					name: sectorInfo.name,
-					id: sectorInfo.id
-				};
-			});
-		})
-		.catch(e => {
-			console.log('Sector Data failed to fetch: ', e.message);
+/**
+ * Fetches the facets with number of fundraising loans from FLSS
+ *
+ * @param {Object} apollo The apollo client instance
+ * @param {Object} loanQueryFilters The filters for the facets query
+ * @returns {Promise<Array<Object>>} Promise for facets data
+ */
+export async function fetchFacets(apollo, loanQueryFilters) {
+	try {
+		const result = await apollo.query({
+			query: flssLoanFacetsQuery,
+			variables: { filterObject: loanQueryFilters },
+			fetchPolicy: 'network-only',
 		});
+		return result.data?.fundraisingLoans?.facets;
+	} catch (e) {
+		console.log('Fetching facets failed:', e.message);
+	}
 }
 
-export function fetchCountryFacets(apollo) {
-	const countryQuery = gql`
-query countryFacets {
-	lend {
-		countryFacets {
-			country {
-				name
-				isoCode
-				geocode {latitude longitude}
-				numLoansFundraising
-				region }
-				}
-			}
-	}`;
-
-	return apollo.query({
-		query: countryQuery,
-	})
-		.then(({ data }) => {
-			return data.lend.countryFacets;
-		})
-		.catch(e => {
-			console.log('CountryFacet Data failed to fetch: ', e.message);
+/**
+ * Fetches the loan data from FLSS
+ *
+ * @param {Object} apollo The apollo client instance
+ * @param {Object} loanQueryFilters The filters for the loan query
+ * @param {String} sortOrder Sort option for the loan query
+ * @param {String} pageOffset PageNumber or Offset (FLSS uses a page number, Lend Loans uses a count offset)
+ * @returns {Promise<Array<Object>>} Promise for loan data
+ */
+export async function fetchLoans(apollo, loanQueryFilters, sortBy = null, pageOffset = 0) {
+	try {
+		const result = await apollo.query({
+			query: flssLoanQuery,
+			variables: {
+				filterObject: loanQueryFilters,
+				sortBy,
+				pageNumber: pageOffset,
+				limit: 20
+			},
+			fetchPolicy: 'network-only',
 		});
-}
-
-export function fetchData(loanQueryFilters, apollo) {
-	return apollo.query({
-		query: flssLoanQuery,
-		variables: {
-			filterObject: loanQueryFilters,
-			limit: 20
-		},
-		fetchPolicy: 'network-only',
-	})
-		.then(({ data }) => {
-			return data.fundraisingLoans;
-		})
-		.catch(e => {
-			console.log('FundraisingLoans Data failed to fetch: ', e.message);
-		});
-}
-
-export function filterGender(gender) {
-	let genderFilter = {};
-	if (!['both', 'male', 'female'].includes(gender)) {
-		return genderFilter;
+		return result.data?.fundraisingLoans;
+	} catch (e) {
+		console.log('Fetching loan failed:', e.message);
 	}
-	if (gender === 'both') {
-		genderFilter = { any: ['female', 'male'] };
-	} else {
-		genderFilter = { any: [gender] };
-	}
-
-	console.log('from filterGender:', genderFilter);
-	return genderFilter;
-}
-
-export function validateSectorInput(sectorListInput, sectorNames) {
-	if (sectorListInput.length > 0) {
-		const isValid = sectorListInput.every(sector => sectorNames.includes(sector));
-		return isValid;
-	}
-	console.log('No sector filters were passed to the query.  \nPlease check the sector input:', sectorListInput);
-	return false;
-}
-
-export function filterSector(sectorList, sectorNames) {
-	// # TODO: collect sector from checkbox inputs
-	// once they're fixed
-	let sectorFilter = { none: [] };
-	if (validateSectorInput(sectorList, sectorNames)) {
-		sectorFilter = { any: sectorList };
-		return sectorFilter;
-	}
-	console.log('from filterSector:', sectorFilter);
-	return sectorFilter;
-}
-
-export function filterCountry(countryList, allCountries) {
-	let countryFilter = { none: [] };
-	if (countryList.length > 1 && countryList.every(country => allCountries.includes(country))) {
-		countryFilter = { any: countryList };
-		return countryFilter;
-	}
-	console.log('from filterCountry:', filterCountry);
-	return countryFilter;
-}
-
-export function filterLoanTerm(loanTermLimit) {
-	const value = parseInt(loanTermLimit, 10);
-	const maxTerm = 60;
-	let loanTermFilter = { range: { lte: maxTerm } };
-
-	if (value > 0 && value <= maxTerm) {
-		loanTermFilter = { range: { lte: value } };
-		return loanTermFilter;
-	}
-	console.log('from filterLoanTerm:', loanTermFilter);
-	return loanTermFilter;
 }

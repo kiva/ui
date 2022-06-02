@@ -453,6 +453,7 @@ const myTeamsQuery = gql`query myTeamsQuery {
 }`;
 
 export default {
+	name: 'CCLandingPage',
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	components: {
 		CampaignHero,
@@ -551,6 +552,13 @@ export default {
 	metaInfo() {
 		return {
 			title: `${this.pageTitle}`,
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: this.pageDescription,
+				}
+			],
 		};
 	},
 	apollo: {
@@ -663,6 +671,11 @@ export default {
 			const layoutTitle = this.pageData?.page?.pageLayout?.pageTitle;
 			const pageTitle = this.pageData?.page?.pageTitle ?? 'Loans that change lives';
 			return layoutTitle || pageTitle;
+		},
+		pageDescription() {
+			const layoutDescription = this.pageData?.page?.pageLayout?.pageDescription;
+			const pageDescription = this.pageData?.page?.pageDescription ?? undefined;
+			return layoutDescription || pageDescription;
 		},
 		heroAreaContent() {
 			return this.pageData?.page?.contentGroups?.mlCampaignHero;

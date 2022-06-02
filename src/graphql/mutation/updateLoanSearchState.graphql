@@ -1,0 +1,10 @@
+mutation updateLoanSearch($searchParams: JSONObject) {
+	updateLoanSearch (searchParams: $searchParams) @client {
+		id
+		gender
+		countryIsoCode
+		sectorId
+		sortBy
+		theme
+	}
+}

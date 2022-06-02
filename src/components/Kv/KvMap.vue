@@ -14,6 +14,7 @@ import { createIntersectionObserver } from '@/util/observerUtils';
 import testDelayedGlobalLibrary from '@/util/timeoutUtils';
 
 export default {
+	name: 'KvMap',
 	metaInfo() {
 		return {
 			script: [].concat(!this.hasWebGL ? [

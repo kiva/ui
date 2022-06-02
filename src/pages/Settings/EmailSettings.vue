@@ -407,6 +407,7 @@ const generateTeamMessageFrequencies = teamValues => {
 };
 
 export default {
+	name: 'EmailSettings',
 	components: {
 		KvButton,
 		KvCheckbox,

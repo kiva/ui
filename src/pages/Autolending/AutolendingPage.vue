@@ -27,6 +27,7 @@ import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSeconda
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
+	name: 'AutolendingPage',
 	components: {
 		KvDefaultWrapper,
 		TheMyKivaSecondaryMenu,

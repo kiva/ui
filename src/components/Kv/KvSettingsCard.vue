@@ -19,6 +19,7 @@
  * Should be used on a page that does not have a white background color.
  */
 export default {
+	name: 'KvSettingsCard',
 	props: {
 		/**
 		 * Title of the Settings Card.

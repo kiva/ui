@@ -17,6 +17,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import shopAddOnePrintKivaCard from '@/graphql/mutation/shopAddOnePrintKivaCard.graphql';
 
 export default {
+	name: 'CheckoutHolidayPromo',
 	components: {
 		KvIcon,
 	},

@@ -23,15 +23,17 @@ async function fetchContentfulPages() {
 // adds a sitemap url for every route that is a landing page (/lp/*).
 module.exports = async function contentfulRouteGenerator() {
 	info('Sitemap: contentfulRouteGenerator: fetching contentful pages');
-	const pages = await fetchContentfulPages();
+	// const pages = await fetchContentfulPages();
 
-	const landingPages = pages
-		// Only use 'landing' page types
-		.filter(({ pageType }) => pageType === 'landing')
-		// Use '/key' as the path if no path is defined
-		.map(({ key, path }) => path ?? `/${key}`)
-		// Only use pages with '/lp/*' paths
-		.filter(path => path.startsWith('/lp/'));
+	// Hide landing pages for now, pending review and updates for SEO
+	const landingPages = [];
+	// const landingPages = pages
+	// 	// Only use 'landing' page types
+	// 	.filter(({ pageType }) => pageType === 'landing')
+	// 	// Use '/key' as the path if no path is defined
+	// 	.map(({ key, path }) => path ?? `/${key}`)
+	// 	// Only use pages with '/lp/*' paths
+	// 	.filter(path => path.startsWith('/lp/'));
 
 	// Do not include corporate campaign pages in the sitemap!
 	// const campaignPages = pages

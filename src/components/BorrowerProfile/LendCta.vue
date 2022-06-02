@@ -46,19 +46,20 @@
 						{{ lgScreenheadline }}
 					</p>
 					<span class="tw-flex tw-pb-1 lg:tw-pb-3">
+						<!-- eslint-disable-next-line max-len -->
 						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
 							<fieldset class="tw-w-full tw-flex" :disabled="isAdding"
 								data-testid="bp-lend-cta-select-and-button"
 							>
 								<label
-									v-if="hideShowLendDropdown"
+									v-if="hideShowLendDropdown && !isLessThan25"
 									for="LoanAmountDropdown"
 									class="tw-sr-only"
 								>
 									Lend amount
 								</label>
 								<kv-ui-select
-									v-if="hideShowLendDropdown"
+									v-if="hideShowLendDropdown && !isLessThan25"
 									id="LoanAmountDropdown"
 									class="tw-pr-2.5 tw--mb-2"
 									data-testid="bp-lend-cta-amount-dropdown"
@@ -82,7 +83,7 @@
 								<!-- Lend button -->
 								<kv-ui-button
 									key="lendButton"
-									v-if="lendButtonVisibility"
+									v-if="lendButtonVisibility && !isLessThan25"
 									class="tw-inline-flex tw-flex-1"
 									data-testid="bp-lend-cta-lend-button"
 									type="submit"
@@ -98,7 +99,7 @@
 								<!-- Lend again/lent previously button -->
 								<kv-ui-button
 									key="lendAgainButton"
-									v-if="this.state === 'lent-to'"
+									v-if="this.state === 'lent-to' && !isLessThan25"
 									class="tw-inline-flex tw-flex-1"
 									data-testid="bp-lend-cta-lend-again-button"
 									type="submit"
@@ -110,6 +111,16 @@
 								>
 									Lend again
 								</kv-ui-button>
+
+								<!-- Stranded loans -->
+								<lend-amount-button
+									class="tw-w-full"
+									:loan-id="loanId"
+									:show-now="true"
+									:amount-left="unreservedAmount"
+									@add-to-basket="addToBasket"
+									v-if="(lendButtonVisibility || this.state === 'lent-to') && isLessThan25"
+								/>
 
 								<!-- Adding to basket button -->
 								<kv-ui-button
@@ -286,12 +297,14 @@ import { buildPriceArray, isMatchAtRisk } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
+import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 export default {
+	name: 'LendCta',
 	inject: ['apollo', 'cookieStore'],
 	props: {
 		loanId: {
@@ -300,6 +313,7 @@ export default {
 		},
 	},
 	components: {
+		LendAmountButton,
 		KvGrid,
 		KvMaterialIcon,
 		KvUiButton,
@@ -419,7 +433,7 @@ export default {
 		addToBasket() {
 			this.isAdding = true;
 			setLendAmount({
-				amount: this.selectedOption,
+				amount: this.isLessThan25 ? this.unreservedAmount : this.selectedOption,
 				apollo: this.apollo,
 				loanId: this.loanId,
 			}).then(() => {
@@ -484,6 +498,12 @@ export default {
 				this.cycleStatsSlot();
 			}
 		},
+		unreservedAmount(newValue, previousValue) {
+			// set initial selected value for sub 25 loan if shown
+			if (newValue !== previousValue && previousValue === '' && newValue < 25) {
+				this.selectedOption = parseInt(newValue, 10);
+			}
+		}
 	},
 	computed: {
 		isInBasket() {
@@ -503,7 +523,9 @@ export default {
 			return isMatchAtRisk(mockLoan);
 		},
 		prices() {
-			const minAmount = parseFloat(this.minNoteSize);
+			// We don't want to open up $5 loan shares for loans with more than $25 at this time
+			// IF we wanted to show this interface on loans with less than 25 remaining they would see the selector
+			const minAmount = parseFloat(this.unreservedAmount < 25 ? this.minNoteSize : 25); // 25_hard_coded
 			// limit at 20 price options
 			return buildPriceArray(parseFloat(this.unreservedAmount), minAmount).slice(0, 20);
 		},
@@ -601,6 +623,9 @@ export default {
 			}
 			return 'tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7';
 		},
+		isLessThan25() {
+			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
+		}
 	},
 	mounted() {
 		this.createWrapperObserver();

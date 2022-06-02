@@ -179,6 +179,7 @@ import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 let frozenDropdownOptions;
 
 export default {
+	name: 'AutoDepositSignUpForm',
 	components: {
 		AutoDepositDropInPaymentWrapper,
 		KvButton,

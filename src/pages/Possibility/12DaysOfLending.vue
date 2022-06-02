@@ -46,6 +46,7 @@ import TwelveDaysCalendar from './TwelveDaysCalendar';
 const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/', true);
 
 export default {
+	name: '12DaysOfLending',
 	components: {
 		KvHero,
 		KvResponsiveImage,

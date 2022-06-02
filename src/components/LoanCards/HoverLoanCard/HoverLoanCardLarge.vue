@@ -63,7 +63,8 @@
 					:is-selected-by-another="isSelectedByAnother"
 					:is-simple-lend-button="true"
 					:minimal-checkout-button="true"
-
+					:is-amount-lend-button="lessThan25"
+					:amount-left="amountLeft"
 					@click.native="trackInteraction({
 						interactionType: 'addToBasket',
 						interactionElement: 'Lend25'
@@ -95,6 +96,7 @@ import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoNa
 import BorrowerInfoBody from '../BorrowerInfo/BorrowerInfoBody';
 
 export default {
+	name: 'HoverLoanCardLarge',
 	components: {
 		BorrowerInfoBody,
 		KvFlag,
@@ -137,6 +139,11 @@ export default {
 			type: Boolean,
 			default: false
 		},
+	},
+	computed: {
+		lessThan25() {
+			return this.amountLeft < 25 && this.amountLeft !== 0;
+		}
 	},
 	methods: {
 		toggleFavorite() {
