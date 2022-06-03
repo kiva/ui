@@ -8,6 +8,9 @@ module.exports = merge(base, devVm, {
 		publicPath: '/',
 		photoPath: 'https://www-dev-kiva-org.freetls.fastly.net/img/',
 		graphqlUri: 'https://marketplace-api.dk1.kiva.org/graphql',
+		enableAnalytics: true,
+		enableSnowplow: true,
+		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
 		auth0: {
 			loginRedirectUrls: {
 				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'https://www.dev.kiva.org/authenticate?authLevel=recent',

@@ -1,41 +1,35 @@
 
-query getPersonalizedLoans(
-  $limit: Int!
-) {
-    fundraisingLoans(
-      limit: $limit
-      sortBy: personalized
-    ){
-      totalCount
-      values{
-        id
-        distributionModel
-        status
-        loanFundraisingInfo{
-          fundedAmount
-          isExpiringSoon
-          reservedAmount
-        }
-        geocode {
-          city
-          state
-          country {
-            name
-            isoCode
-          }
-        }
-        image {
-          id
-          hash
-        }
-        name
+query getPersonalizedLoans($limit: Int!, $filters: [FundraisingLoanSearchFilterInput!]) {
+	fundraisingLoans(limit: $limit, sortBy: personalized, filters: $filters) {
+		totalCount
+		values {
+			id
+			distributionModel
+			status
+			loanFundraisingInfo {
+				fundedAmount
+				isExpiringSoon
+				reservedAmount
+			}
+			geocode {
+				city
+				state
+				country {
+					name
+					isoCode
+				}
+			}
+			image {
+				id
+				hash
+			}
+			name
 
-        # for loan-use-mixin
-        use
-        status
-        loanAmount
-        borrowerCount
-      }
-    }
-
+			# for loan-use-mixin
+			use
+			status
+			loanAmount
+			borrowerCount
+		}
+	}
 }
