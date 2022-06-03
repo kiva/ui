@@ -206,7 +206,7 @@ export default {
 		},
 		utmContent() {
 			if (this.isGuest) return 'guest';
-			if (this.lender?.public) return this.lender?.inviterName;
+			if (this.lender?.public && this.lender?.inviterName) return this.lender?.inviterName;
 			return 'anonymous';
 		},
 		shareLink() {
