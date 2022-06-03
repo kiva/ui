@@ -1,3 +1,10 @@
+## [2.171.0](https://github.com/kiva/ui/compare/v2.170.1...v2.171.0) (2022-06-03)
+
+
+### Features
+
+* sortBy now supported by query params, added filter value validation ([dd00fd8](https://github.com/kiva/ui/commit/dd00fd88eaaae20f3b49b99aaf744d6dad6af249))
+
 ### [2.170.1](https://github.com/kiva/ui/compare/v2.170.0...v2.170.1) (2022-06-03)
 
 
