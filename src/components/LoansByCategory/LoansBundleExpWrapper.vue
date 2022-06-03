@@ -15,8 +15,6 @@
 						<div class="tw-hidden lg:tw-block tw-mt-1">
 							<kv-button type="button"
 								@click="addBundleToBasket"
-								v-kv-track-event="['Lend by category', 'click-loan-bundle-cta',
-									'Lend to all three now - personalized']"
 							>
 								Lend to all three
 							</kv-button>
