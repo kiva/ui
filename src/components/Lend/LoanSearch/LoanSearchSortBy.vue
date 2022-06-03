@@ -8,7 +8,8 @@
 				v-for="(option, index) in validSortOptions"
 				:key="index"
 				:value="option.name"
-				v-model="selectedSort"
+				:checked="option.name === validatedSortBy"
+				@change="setSortBy"
 			>
 				{{ option.label }}
 			</kv-radio>
@@ -21,6 +22,7 @@
 
 <script>
 import { mdiInformation } from '@mdi/js';
+import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE, sortByNameToDisplay } from '@/util/loanSearchUtils';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 
@@ -42,37 +44,24 @@ export default {
 		 */
 		allSortOptions: {
 			type: Array,
-			default: () => []
+			default: undefined
 		},
-		initialSort: {
+		sort: {
 			type: String,
 			default: null
 		},
 		queryType: {
 			type: String,
-			default: 'flss'
+			default: FLSS_QUERY_TYPE
 		}
 	},
 	data() {
+		const defaultSort = this.queryType === FLSS_QUERY_TYPE ? 'personalized' : 'popularity';
+
 		return {
 			mdiInformation,
-			nameToDisplayMap: {
-				// shared
-				expiringSoon: 'Ending soon',
-				// standard
-				amountLeft: 'Amount left',
-				loanAmount: 'Amount: Low to High',
-				loanAmountDesc: 'Amount: High to Low',
-				newest: 'Most recent',
-				popularity: 'Trending now',
-				random: 'Random',
-				repaymentTerm: 'Loan length',
-				// flss specific
-				amountHighToLow: 'Amount: High to Low',
-				amountLowToHigh: 'Amount: Low to High',
-				personalized: 'Recommended'
-			},
-			selectedSort: this.initialSort || (this.queryType === 'flss' ? 'personalized' : 'popularity'),
+			defaultSort,
+			selectedSort: this.sort || defaultSort,
 			// TODO: Setup Lightbox, Finalize copy + use Contentful for content
 			showInfo: true,
 		};
@@ -88,24 +77,41 @@ export default {
 		 */
 		validSortOptions() {
 			return this.allSortOptions?.filter(sortOption => {
-				if (this.queryType === 'flss') {
-					return sortOption.sortSrc === 'flss';
+				if (this.queryType === FLSS_QUERY_TYPE) {
+					return sortOption.sortSrc === FLSS_QUERY_TYPE;
 				}
-				return sortOption.sortSrc === 'standard';
+				return sortOption.sortSrc === STANDARD_QUERY_TYPE;
 			}).map(option => {
 				return {
 					...option,
-					label: this.nameToDisplayMap?.[option.name]
+					label: sortByNameToDisplay[option.name]
 				};
-			});
-		}
+			}) ?? [];
+		},
+		validatedSortBy() {
+			// Handle async loading of search facets
+			if (!this.allSortOptions) return this.selectedSort;
+
+			return this.validSortOptions.map(s => s.name).includes(this.selectedSort)
+				? this.selectedSort
+				: this.defaultSort;
+		},
 	},
-	watch: {
-		selectedSort(next, prev) {
-			if (next !== prev) {
+	methods: {
+		setSortBy(sortBy) {
+			if (sortBy !== this.selectedSort) {
+				this.selectedSort = sortBy;
 				this.$emit('updated', { sortBy: this.selectedSort });
 			}
 		}
+	},
+	watch: {
+		sort(next) {
+			if (next !== this.selectedSort) {
+				// Don't emit when value is changed via the component prop
+				this.selectedSort = next;
+			}
+		},
 	}
 };
 </script>

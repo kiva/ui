@@ -15,7 +15,8 @@
 			</template>
 			<loan-search-sort-by
 				:all-sort-options="facets.sortOptions"
-				:initial-sort="null"
+				:sort="loanSearchState.sortBy"
+				:query-type="queryType"
 				@updated="handleUpdatedFilters"
 			/>
 		</kv-accordion-item>
@@ -58,7 +59,7 @@ import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLoc
 import LoanSearchSectorFilter from '@/components/Lend/LoanSearch/LoanSearchSectorFilter';
 import LoanSearchThemeFilter from '@/components/Lend/LoanSearch/LoanSearchThemeFilter';
 import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
-import { updateSearchState } from '@/util/loanSearchUtils';
+import { FLSS_QUERY_TYPE } from '@/util/loanSearchUtils';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
@@ -113,26 +114,24 @@ export default {
 		loanSearchState: {
 			type: Object,
 			default: () => {}
+		},
+		queryType: {
+			type: String,
+			default: FLSS_QUERY_TYPE
 		}
 	},
 	data() {
 		return {
 			mdiClose,
 			mdiArrowRight,
-			queryFilters: {},
 		};
 	},
 	methods: {
 		resetFilter() {
-			// this.queryFilters = {};
+			// this.$emit('reset');
 		},
 		handleUpdatedFilters(payload) {
-			this.queryFilters = { ...this.queryFilters, ...payload };
-		}
-	},
-	watch: {
-		async queryFilters(newFilters) {
-			await updateSearchState(this.apollo, newFilters);
+			this.$emit('updated', payload);
 		}
 	},
 };
