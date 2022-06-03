@@ -16,6 +16,11 @@ query loanFacets {
 			name
 		}
 	}
+	genderOptions: __type(name: "GenderEnum") {
+		enumValues {
+			name
+		}
+	}
 	standardSorts: __type(name: "LoanSearchSortByEnum") {
 		enumValues {
 			name

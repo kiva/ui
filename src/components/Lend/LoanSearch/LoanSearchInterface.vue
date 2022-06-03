@@ -14,11 +14,19 @@
 					<template #header>
 						{{ null }} <!-- Hide title text -->
 					</template>
-					<loan-search-filter :facets="facets" :loan-search-state="loanSearchState" />
+					<loan-search-filter
+						:facets="facets"
+						:loan-search-state="loanSearchState"
+						@updated="handleUpdatedFilters"
+					/>
 				</kv-lightbox>
 			</div>
 			<div class="tw-hidden md:tw-block">
-				<loan-search-filter :facets="facets" :loan-search-state="loanSearchState" />
+				<loan-search-filter
+					:facets="facets"
+					:loan-search-state="loanSearchState"
+					@updated="handleUpdatedFilters"
+				/>
 			</div>
 		</div>
 		<div class="md:tw-hidden tw-pt-1.5">
@@ -48,6 +56,7 @@ import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
 import {
+	FLSS_QUERY_TYPE,
 	formatSortOptions,
 	runFacetsQueries,
 	transformIsoCodes,
@@ -56,6 +65,7 @@ import {
 	fetchLoanFacets,
 	applyQueryParams,
 	updateQueryParams,
+	updateSearchState,
 } from '@/util/loanSearchUtils';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -135,11 +145,15 @@ export default {
 			totalCount: 0,
 			isLightboxVisible: false,
 			loanSearchState: {},
+			queryType: FLSS_QUERY_TYPE
 		};
 	},
 	async mounted() {
+		// Fetch the facet options from the lend and FLSS APIs
+		this.allFacets = await fetchLoanFacets(this.apollo);
+
 		// Initialize the search filters with the query string params
-		await applyQueryParams(this.apollo, this.$route.query);
+		await applyQueryParams(this.apollo, this.$route.query, this.allFacets, this.queryType);
 
 		// Here we subscribe to the loanSearchState and run the loan query when it updates
 		// TODO: work some guards to prevent duplicate queries and throttling to more carefully control # of queries
@@ -149,10 +163,7 @@ export default {
 				this.loanSearchState = data?.loanSearchState;
 
 				// Update the query string with the latest loan search state
-				updateQueryParams(this.loanSearchState, this.$router);
-
-				// Get all facet options from lend API. Only fetch once, since the options shouldn't change frequently.
-				if (!this.allFacets) this.allFacets = await fetchLoanFacets(this.apollo);
+				updateQueryParams(this.loanSearchState, this.$router, this.queryType);
 
 				// Get filtered facet options from FLSS
 				// TODO: Prevent this from running on every query
@@ -179,11 +190,16 @@ export default {
 		toggleLightbox(toggle) {
 			this.isLightboxVisible = toggle;
 		},
+		handleUpdatedFilters(filters) {
+			const updatedFilters = { ...this.loanSearchState, ...filters };
+
+			updateSearchState(this.apollo, updatedFilters, this.allFacets, this.queryType, this.loanSearchState);
+		}
 	},
 	watch: {
 		$route(to) {
 			// Update the loan search state when the user clicks back/forward in the browser
-			applyQueryParams(this.apollo, to.query);
+			applyQueryParams(this.apollo, to.query, this.allFacets, this.queryType, this.loanSearchState);
 		}
 	}
 };
