@@ -235,8 +235,7 @@ export default {
 				{
 					vmid: 'canonical',
 					rel: 'canonical',
-					href: `https://${this.$appConfig.host}${this.$route.path}?`
-					+ `page=${this.urlParams?.page ? this.urlParams.page : '1'}`
+					href: `${this.handleCanonicalUrl}`
 				}
 			]
 		};
@@ -328,6 +327,13 @@ export default {
 			}
 			return text;
 		},
+		handleCanonicalUrl() {
+			let url = `https://${this.$appConfig.host}${this.$route.path}`;
+			if (this.$route.query.page && Number(this.$route.query.page) > 1) {
+				url = `${url}?page=${this.$route.query.page}`;
+			}
+			return url;
+		}
 	},
 	apollo: {
 		preFetch(config, client, args) {

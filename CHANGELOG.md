@@ -1,3 +1,17 @@
+### [2.170.1](https://github.com/kiva/ui/compare/v2.170.0...v2.170.1) (2022-06-03)
+
+
+### Bug Fixes
+
+* fixed canonical url issues related to pagination query ([372c7b4](https://github.com/kiva/ui/commit/372c7b4bd71edc32691ed55b67bffaee98d610eb))
+
+## [2.170.0](https://github.com/kiva/ui/compare/v2.169.0...v2.170.0) (2022-06-03)
+
+
+### Features
+
+* double tracking for len to all cta was removed ([83a7fc8](https://github.com/kiva/ui/commit/83a7fc83f9c5ba61fbceb0e39c0261df324dfcf3))
+
 ## [2.169.0](https://github.com/kiva/ui/compare/v2.168.2...v2.169.0) (2022-06-03)
 
 
