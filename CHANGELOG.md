@@ -1,3 +1,35 @@
+## [2.169.0](https://github.com/kiva/ui/compare/v2.168.2...v2.169.0) (2022-06-03)
+
+
+### Features
+
+* add link to borrower profile ([43db6f5](https://github.com/kiva/ui/commit/43db6f51bb6c45a79f098e0801b8ca5e4048f207))
+* add page header ([06403b7](https://github.com/kiva/ui/commit/06403b790e8401b36f69c45b402055d8eeec723e))
+* destroy viewport observer ([724e5e8](https://github.com/kiva/ui/commit/724e5e87fa292a06fb04e0eb78c409b5c1b1cf92))
+* event tracking loans per row while loading ([17ef3ac](https://github.com/kiva/ui/commit/17ef3ac8cc0921140e1f013c3f5bf517e183276e))
+* fetch loan data and modify loan card ([d65c4c2](https://github.com/kiva/ui/commit/d65c4c26f27fd493aff93f0dca66da802adff890))
+* fetch real categories using intersection observer ([80dda15](https://github.com/kiva/ui/commit/80dda153dafb30679d76a65e8d879c3b2e33d94e))
+* fetch recommended and remaining loans when intersection observer fails ([3ba124a](https://github.com/kiva/ui/commit/3ba124a51838fc4d9aa1318b33fcada58a0b9e44))
+* load another row when bottom of the page is still in view ([89a105d](https://github.com/kiva/ui/commit/89a105d1002beb89a4ef91f2d13c43c1d3f5ac2d))
+* modify basic loan card with add to basket feature ([cab097f](https://github.com/kiva/ui/commit/cab097f6fc17ea291ffe62b78603a0b8f1c1b481))
+* re-fetch loan data if reference is still in the viewport ([3d3a141](https://github.com/kiva/ui/commit/3d3a141f3a8f25352f412f4176048c680fcc6d68))
+* set experiment ([9b3f207](https://github.com/kiva/ui/commit/9b3f207f3e7c5a46c070272f4985c29db6f00608))
+
+
+### Bug Fixes
+
+* avoid loans rewriting, recall fetch loan function if category has no loans and fetch last category row ([4b50898](https://github.com/kiva/ui/commit/4b50898c81446a35d97dec499731fe40ad33d065))
+* ensure unique row number in lend-by-category tracking events ([ec78348](https://github.com/kiva/ui/commit/ec783482cd7f31d8b4cec1019bd92dbe46f2079b))
+* lint errors ([0e835cd](https://github.com/kiva/ui/commit/0e835cda4b6be98edac9530a1a51048405c1aa50))
+* make copy of original category before modifying it ([0de1c3d](https://github.com/kiva/ui/commit/0de1c3d3e17947a9aaf012d81de14650923493a5))
+* move experiment check to created hook ([e6723cf](https://github.com/kiva/ui/commit/e6723cf8326fa83e863f7c14ca5d34457228cede))
+* move ref visible check to method instead of computed to limit how much it is called ([a51f487](https://github.com/kiva/ui/commit/a51f487159b23c1e26417a0e30b19a4660f9b1da))
+* remove unused import ([d20b083](https://github.com/kiva/ui/commit/d20b08344a0d19c99fab00e60c0f75392ff0ca6c))
+* remove unused import ([6fa65dd](https://github.com/kiva/ui/commit/6fa65dd1ab82ff6adf834f8e8b47baf6b773ed67))
+* remove unused library's function ([5cf3fd4](https://github.com/kiva/ui/commit/5cf3fd47b74cbdc63b1710ec169d068ae99c5168))
+* solve conflicts with main branch ([46ba485](https://github.com/kiva/ui/commit/46ba485be8ee0cf23e8d25a6541865d7d95f9092))
+* solve conflicts with main branch ([ad7171a](https://github.com/kiva/ui/commit/ad7171a100354a896cbb487c8417f44acf25c53c))
+
 ### [2.168.2](https://github.com/kiva/ui/compare/v2.168.1...v2.168.2) (2022-06-02)
 
 
