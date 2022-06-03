@@ -10,6 +10,7 @@
 			:is-logged-in="isLoggedIn"
 			:items-in-basket="itemsInBasket"
 			:show-category-description="showCategoryDescription"
+			@loaded="trackFeaturedLoan"
 		/>
 
 		<div class="tw-bg-secondary tw-mb-4" v-if="addBundleExp">
@@ -56,7 +57,7 @@
 			</div>
 		</div>
 
-		<div class="row pre-footer">
+		<div class="row pre-footer" ref="bottom">
 			<div class="column small-12">
 				<div v-if="!rowLazyLoadComplete" class="cat-row-loader">
 					<kv-loading-overlay id="updating-overlay" />
@@ -103,7 +104,6 @@ import _each from 'lodash/each';
 import _filter from 'lodash/filter';
 import _get from 'lodash/get';
 import _map from 'lodash/map';
-import _take from 'lodash/take';
 import _uniqBy from 'lodash/uniqBy';
 import _without from 'lodash/without';
 import { addCustomChannelInfo } from '@/util/categoryUtils';
@@ -130,11 +130,8 @@ import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import ExpandableLoanCardExpanded from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardExpanded';
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
+import { createIntersectionObserver } from '@/util/observerUtils';
 import LoansBundleExpWrapper from '@/components/LoansByCategory/LoansBundleExpWrapper';
-
-// Row Limiter
-// > This controls how may rows are loaded on the server
-const ssrRowLimiter = 2;
 
 export default {
 	name: 'LendByCategoryPage',
@@ -188,9 +185,14 @@ export default {
 			showHoverLoanCards: true,
 			recommendedLoans: [],
 			mlServiceBanditExpVersion: null,
+			viewportObserver: null,
+			fetchCategoryIds: [],
+			expResults: null,
 			addBundleExp: false,
+			activatedWatchers: false,
 			showMGDigestLightbox: false,
 			personalizedLoans: [],
+			rowTrackCounter: 0,
 		};
 	},
 	computed: {
@@ -260,33 +262,54 @@ export default {
 				return isLoanFundraising(loan);
 			});
 		},
-		assemblePageViewData(categories) {
-			// eslint-disable-next-line max-len
-			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_4.json#';
-			const loanIds = [];
-			const pageViewTrackData = { schema, data: {} };
-			const featuredCategoryIds = _get(this, '$refs.featured.featuredCategoryIds');
-
-			pageViewTrackData.data.categorySetIdentifier = this.categorySetId || 'default';
-
+		refIsVisible() {
+			const { top, bottom } = this.$refs?.bottom?.getBoundingClientRect() ?? {};
+			const vHeight = (window.innerHeight || document.documentElement.clientHeight);
+			return (
+				(top > 0 || bottom > 0)
+				&& top < vHeight
+			);
+		},
+		trackLoansDisplayed(loansDisplayed) {
+			const event = {
+				// eslint-disable-next-line max-len
+				schema: 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_5.json#',
+				data: {
+					categorySetIdentifier: this.categorySetId || 'default',
+					loansDisplayed,
+				},
+			};
+			this.$kvTrackSelfDescribingEvent(event);
+		},
+		trackFeaturedLoan() {
 			if (this.showFeaturedHeroLoan) {
-				loanIds.push({
-					r: 0, p: 1, c: featuredCategoryIds[0], l: _get(this, '$refs.featured.loan.id')
-				});
+				this.trackLoansDisplayed([{
+					r: 0,
+					p: 1,
+					c: this.$refs?.featured?.featuredCategoryIds?.[0],
+					l: this.$refs?.featured?.loan?.id
+				}]);
 			}
-
-			_each(categories, (category, catIndex) => {
-				_each(category.loans.values, (loan, loanIndex) => {
-					loanIds.push({
-						r: catIndex + 1,
+		},
+		trackLoanCategories(categories = []) {
+			const loansDisplayed = [];
+			// Add a tracking object for each loan in each category
+			categories.forEach((category, catIndex) => {
+				const loans = category?.loans?.values ?? category?.values ?? [];
+				loans.forEach((loan, loanIndex) => {
+					loansDisplayed.push({
+						r: this.rowTrackCounter + catIndex + 1,
 						p: loanIndex + 1,
 						c: category.id,
 						l: loan.id
 					});
 				});
 			});
-			pageViewTrackData.data.loansDisplayed = loanIds;
-			return pageViewTrackData;
+			if (loansDisplayed.length) {
+				// Keep a count of the rows that have been shown already
+				this.rowTrackCounter += categories.length;
+				this.trackLoansDisplayed(loansDisplayed);
+			}
 		},
 		setRows(data) {
 			if (this.mlServiceBanditExpVersion !== null) {
@@ -320,7 +343,7 @@ export default {
 			return this.apollo.query({
 				query: loanChannelQuery,
 				variables: {
-					ids: this.realCategoryIds.slice(ssrRowLimiter),
+					ids: this.realCategoryIds,
 					excludeIds: ssrLoanIds,
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
@@ -333,27 +356,43 @@ export default {
 		},
 		activateWatchers() {
 			// Create an observer for changes to the categories (and their loans)
-			this.apollo.watchQuery({
-				query: loanChannelQuery,
-				variables: {
-					ids: this.realCategoryIds,
-					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
-					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-				},
-			}).subscribe({
-				next: ({ data }) => {
-					this.realCategories = _get(data, 'lend.loanChannelsById') || this.realCategories;
-				},
-			});
-			this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
-				next: ({ data }) => {
-					this.isAdmin = !!_get(data, 'my.isAdmin');
-					this.isLoggedIn = !!_get(data, 'my');
-					this.userId = _get(data, 'my.userAccount.id') || null;
-					this.firstName = _get(data, 'my.userAccount.firstName') || 'you';
-					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
-				},
-			});
+			if (!this.activatedWatchers) {
+				this.apollo.watchQuery({
+					query: loanChannelQuery,
+					variables: {
+						ids: this.realCategoryIds,
+						imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
+						imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+					},
+				}).subscribe({
+					next: ({ data }) => {
+						this.rowLazyLoadComplete = false;
+						const ssrLoanIds = [];
+						_each(this.categories, category => {
+							ssrLoanIds.push(category.id);
+						});
+						const loanChannels = _get(data, 'lend.loanChannelsById');
+						const filteredLoanChannels = loanChannels.filter(loan => {
+							return !ssrLoanIds.includes(loan.id);
+						});
+
+						this.realCategories = [...this.realCategories, ...filteredLoanChannels];
+						this.rowLazyLoadComplete = true;
+					},
+				});
+				this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
+					next: ({ data }) => {
+						this.isAdmin = !!_get(data, 'my.isAdmin');
+						this.isLoggedIn = !!_get(data, 'my');
+						this.userId = _get(data, 'my.userAccount.id') || null;
+						this.firstName = _get(data, 'my.userAccount.firstName') || 'you';
+						this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+						// CASH-794 Favorite Country Row
+						this.hasFavoriteCountry = !!_get(data, 'my.recommendations.topCountry');
+					},
+				});
+				this.activatedWatchers = true;
+			}
 		},
 		handleScrollingRow() {
 			if (this.showExpandableLoanCards && this.$refs.expandableLoanCardComponent) {
@@ -384,46 +423,6 @@ export default {
 		initializeHoverLoanCard() {
 			// We shouldn't run both expandable and hover loan cards at the same time for now
 			this.showExpandableLoanCards = false;
-		},
-		initializeRecommendedLoanRows() {
-			const recLoanChannels = this.categorySetting.filter(setting => {
-				// eslint-disable-next-line no-underscore-dangle
-				return setting.__typename === 'RecLoanChannel';
-			});
-
-			if (recLoanChannels.length) {
-				// Load recommended loan data
-				try {
-					const variables = {
-						basketId: this.cookieStore.get('kvbskt'),
-						ids: recLoanChannels.map(channel => channel.id),
-						imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
-						imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-					};
-					const data = this.apollo.readQuery({
-						query: recommendedLoansQuery,
-						variables,
-					});
-
-					const allRecLoanChannels = data.ml?.getOrderedChannelsByIds ?? [];
-
-					const allRecLoans = allRecLoanChannels.map(channel => {
-						const channelLoans = channel.loans?.values ?? [];
-						if (channelLoans.length) {
-							return {
-								values: this.filterFundedLoans(channelLoans),
-								id: channel.id,
-								name: channel.name,
-								description: channel.description,
-							};
-						}
-						return [];
-					});
-					this.recommendedLoans = allRecLoans;
-				} catch (e) {
-					logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
-				}
-			}
 		},
 		fetchRecommendedLoans(offset = 0) {
 			const lengthCheck = this.recommendedLoans.map(channel => {
@@ -529,6 +528,128 @@ export default {
 				);
 			}
 		},
+		initializeRecommendedRowAlgoExp() {
+			// experiment: VUE-937 for "recommend by others" row backing algorithm
+			const experimentId = 'EXP-VUE-937-recommended-row-algo';
+
+			// get experiment assignment
+			const { version } = this.apollo.readFragment({
+				id: `Experiment:${experimentId}`,
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			// track version if it is set
+			if (version && version !== 'unassigned') {
+				this.$kvTrackEvent('Lending', experimentId, version);
+			}
+		},
+		createViewportObserver() {
+			// Watch for this element being in the viewport
+			this.viewportObserver = createIntersectionObserver({
+				targets: [this.$refs.bottom],
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.isIntersecting) {
+							// This element is in the viewport, so load the data.\
+							this.fetchLoanData();
+							// this.loadData();
+						}
+					});
+				}
+			});
+			if (!this.viewportObserver) {
+				// Observer was not created, so call loadData right away as a fallback.
+				Promise.all([
+					this.fetchRemainingLoanChannels(),
+					this.fetchRecommendedLoans(20)
+				]).then(() => {
+					this.rowLazyLoadComplete = true;
+					this.activateWatchers();
+					this.trackLoanCategories(this.categories);
+				});
+			}
+		},
+		destroyViewportObserver() {
+			if (this.viewportObserver) {
+				this.viewportObserver.disconnect();
+			}
+		},
+		fetchLoanData() {
+			const category = this.fetchCategoryIds.shift();
+			if (category) {
+				this.rowLazyLoadComplete = false;
+				// eslint-disable-next-line no-underscore-dangle
+				if (category.__typename === 'RecLoanChannel') {
+					try {
+						const variables = {
+							ids: [category.id],
+							imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
+							imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+						};
+						return this.apollo.query({
+							query: recommendedLoansQuery,
+							variables,
+						}).then(({ data }) => {
+							const allRecLoanChannels = data.ml?.getOrderedChannelsByIds ?? [];
+
+							const allRecLoans = allRecLoanChannels.map(channel => {
+								const channelLoans = channel.loans?.values ?? [];
+								if (channelLoans.length) {
+									return {
+										values: this.filterFundedLoans(channelLoans),
+										id: channel.id,
+										name: channel.name,
+										description: channel.description,
+									};
+								}
+								return [];
+							});
+							this.recommendedLoans = [...this.recommendedLoans, ...allRecLoans];
+							this.rowLazyLoadComplete = true;
+							this.trackLoanCategories(allRecLoans);
+
+							// Fetch another row if we are still at the bottom of the page
+							if (this.refIsVisible()) {
+								this.fetchLoanData();
+							}
+						});
+					} catch (e) {
+						logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
+						this.rowLazyLoadComplete = true;
+					}
+				} else {
+					try {
+						return this.apollo.query({
+							query: loanChannelQuery,
+							variables: {
+								ids: [category.id],
+								imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
+								imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+							},
+						}).then(({ data }) => {
+							const fetchedCategory = data?.lend?.loanChannelsById?.[0];
+							if (fetchedCategory?.loans?.values?.length) {
+								this.realCategories = [...this.realCategories, fetchedCategory];
+								this.rowLazyLoadComplete = true;
+								this.trackLoanCategories([fetchedCategory]);
+
+								// Fetch another row if we are still at the bottom of the page
+								if (this.refIsVisible()) {
+									this.fetchLoanData();
+								}
+							} else {
+								this.fetchLoanData();
+							}
+						});
+					} catch (e) {
+						this.rowLazyLoadComplete = true;
+						logReadQueryError(e, 'LendByCategory loanChannelQuery');
+					}
+				}
+			} else {
+				this.activateWatchers();
+			}
+		},
 		initializeLoanBundleExperiment() {
 			const layoutEXP = this.apollo.readFragment({
 				id: 'Experiment:by_category_loan_bundles',
@@ -549,68 +670,21 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client) {
-			let rowData;
-			let expRowData;
-			let expResults;
 			return client.query({
 				query: lendByCategoryQuery
-			}).then(({ data }) => {
+			}).then(() => {
 				// Get the array of channel objects from settings
-				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				return Promise.all([
 					// experiment: GROW-330 Machine Learning Category row
 					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
 					// experiment: CORE-588 Loans bundle experiment
 					client.query({ query: experimentQuery, variables: { id: 'by_category_loan_bundles' } }),
 				]);
-			}).then(expAssignments => {
-				expResults = expAssignments;
-				return client.query({
-					query: mlOrderedLoanChannels
-				});
-			}).then(({ data }) => {
-				// Get the array of channel objects from the ml multi-armed bandit
-				expRowData = _get(data, 'ml.orderedLoanChannels') || [];
-
-				const mlServiceBanditExpVersion = _get(expResults, '[0].data.experiment.version');
-
-				if (mlServiceBanditExpVersion !== null) {
-					rowData = expRowData;
-				}
-
-				return rowData;
 			})
 				.then(() => {
-				// Get all channel ids for the row data
-					const ids = _map(rowData, 'id');
-					// Filter other channel types as custom categories
-					const recChannels = _filter(rowData, { __typename: 'RecLoanChannel' });
-					const recChannelIds = _map(recChannels, 'id');
-					const hasRecRow = recChannels.length > 0;
-
-					const imgDefaultSize = 'w480h300';
-					const imgRetinaSize = 'w960h600';
-
-					// Pre-fetch all the data for SSR targeted channels
-					return Promise.all([
-						client.query({
-							query: loanChannelQuery,
-							variables: {
-							// exclude custom rows + limit for ssr
-								ids: _take(_without(ids, ...recChannelIds), ssrRowLimiter),
-								imgDefaultSize,
-								imgRetinaSize,
-							},
-						}),
-						hasRecRow ? client.query({
-							query: recommendedLoansQuery,
-							variables: {
-								ids: recChannelIds,
-								imgDefaultSize,
-								imgRetinaSize,
-							}
-						}) : Promise.resolve(),
-					]);
+					return client.query({
+						query: mlOrderedLoanChannels
+					});
 				});
 		},
 	},
@@ -642,25 +716,32 @@ export default {
 
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 
-		// Initialize Recommended Loan Rows
-		this.initializeRecommendedLoanRows();
+		// Initialize CASH-794 Favorite Country Row
+		// this.initializeFavoriteCountryRowExp();
 
-		// Read the SSR ready loan channels from the cache
-		try {
-			const categoryData = this.apollo.readQuery({
-				query: loanChannelQuery,
+		// get assignment for add to basket interstitial
+		const addToBasketPopupEXP = this.apollo.readFragment({
+			id: 'Experiment:add_to_basket_v2',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.addToBasketExpActive = addToBasketPopupEXP.version === 'shown';
+		// Update @client state if interstitial exp is active
+		if (this.addToBasketExpActive) {
+			this.apollo.mutate({
+				mutation: updateAddToBasketInterstitial,
 				variables: {
-					ids: _take(_without(this.categoryIds, ...this.customCategoryIds), ssrRowLimiter),
-					basketId: this.cookieStore.get('kvbskt'),
-					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
-					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-				},
+					active: true,
+				}
 			});
-			this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
-		} catch (e) {
-			logReadQueryError(e, 'LendByCategory loanChannelQuery');
 		}
-
+		// Fire Event for Exp CASH-612 Status
+		if (addToBasketPopupEXP.version && addToBasketPopupEXP.version !== 'unassigned') {
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-CASH-612-Apr2019',
+				this.addToBasketExpActive ? 'b' : 'a'
+			);
+		}
 		this.apollo.mutate({
 			mutation: updateAddToBasketInterstitial,
 			variables: {
@@ -701,19 +782,9 @@ export default {
 		}
 	},
 	mounted() {
-		Promise.all([
-			this.fetchRemainingLoanChannels(),
-			this.fetchRecommendedLoans(20),
-			this.fetchPersonalizedLoans()
-		]).then(() => {
-			this.rowLazyLoadComplete = true;
-
-			this.activateWatchers();
-
-			const pageViewTrackData = this.assemblePageViewData(this.categories);
-			this.$kvTrackSelfDescribingEvent(pageViewTrackData);
-		});
-
+		this.fetchCategoryIds = [...this.categorySetting];
+		this.fetchLoanData();
+		// Only allow experiment when in show-for-large (>= 1024px) screen size
 		if (window.innerWidth >= 680) {
 			this.showCategoryDescription = true;
 		}
@@ -725,6 +796,7 @@ export default {
 			this.setLeftArrowPosition();
 		}
 
+		this.createViewportObserver();
 		if (this.$route?.query?.utm_campaign === 'liked_loan'
 			|| this.$route?.query?.utm_campaign?.includes('liked_loan')
 		) {
@@ -740,6 +812,7 @@ export default {
 		if (this.showExpandableLoanCards) {
 			window.removeEventListener('resize', this.handleResize);
 		}
+		this.destroyViewportObserver();
 	},
 };
 
