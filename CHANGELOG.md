@@ -1,3 +1,11 @@
+### [2.171.1](https://github.com/kiva/ui/compare/v2.171.0...v2.171.1) (2022-06-04)
+
+
+### Bug Fixes
+
+* set meta information only if it defined ([fefd552](https://github.com/kiva/ui/commit/fefd552ddc0b6261ffca7b456f6ff933c2eff0af))
+* update track event details ([5ce026c](https://github.com/kiva/ui/commit/5ce026c19e748707babd1f4cdcc9f0376282c879))
+
 ## [2.171.0](https://github.com/kiva/ui/compare/v2.170.1...v2.171.0) (2022-06-03)
 
 
