@@ -325,13 +325,12 @@ export default {
 	mounted() {
 		const { enabled } = getExperimentSettingCached(this.apollo, newFundedBorrowerPageExpKey);
 		if (enabled) {
-			// TODO: Update Tracking information
 			trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
-				'Landing Page',
+				'Funded borrower profile',
 				newFundedBorrowerPageExpKey,
-				''
+				'EXP-MARS-127-Jun2022'
 			);
 		}
 		if (this.enabledExperiment) {
