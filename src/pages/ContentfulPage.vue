@@ -205,23 +205,29 @@ export default {
 		};
 	},
 	metaInfo() {
-		return {
-			title: this.title,
-			meta: [
+		const metaObj = { title: this.title.replace('| Kiva', '') };
+
+		if (this.description) {
+			metaObj.meta = [
 				{
 					vmid: 'description',
 					name: 'description',
 					content: this.description,
 				}
-			],
-			link: [
+			];
+		}
+
+		if (this.canonicalUrl) {
+			metaObj.link = [
 				{
 					vmid: 'canonical',
 					rel: 'canonical',
 					href: this.canonicalUrl,
 				}
-			],
-		};
+			];
+		}
+
+		return metaObj;
 	},
 	mounted() {
 		if (this.$route.path === '/lp/home-ml' || this.$route.path === '/lp/home-mlv') {
