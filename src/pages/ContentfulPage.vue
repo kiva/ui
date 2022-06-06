@@ -205,7 +205,11 @@ export default {
 		};
 	},
 	metaInfo() {
-		const metaObj = { title: this.title.replace('| Kiva', '') };
+		const metaObj = {};
+
+		if (this.title) {
+			metaObj.title = this.title.replace('| Kiva', '');
+		}
 
 		if (this.description) {
 			metaObj.meta = [
