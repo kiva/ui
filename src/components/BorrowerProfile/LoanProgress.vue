@@ -40,10 +40,10 @@
 					</p>
 					<p class="tw-text-h4 tw-text-action tw-block">
 						<router-link
-							:to="{name: 'borrowerProfile', params: {id: this.$route.params.id } }"
-							target="_blank"
+							:to="`/lend/${$route.params.id}?minimal=false`"
+							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
 						>
-							VIEW THE FULL BORROWER PROFILE
+							View the full borrower profile
 						</router-link>
 					</p>
 				</div>
