@@ -1,3 +1,10 @@
+## [2.173.0](https://github.com/kiva/ui/compare/v2.172.0...v2.173.0) (2022-06-06)
+
+
+### Features
+
+* added unit tests ([08da04a](https://github.com/kiva/ui/commit/08da04a32ce4a01fa3133893de29c82de82ac1b8))
+
 ## [2.172.0](https://github.com/kiva/ui/compare/v2.171.2...v2.172.0) (2022-06-06)
 
 
