@@ -15,8 +15,6 @@
 						<div class="tw-hidden lg:tw-block tw-mt-1">
 							<kv-button type="button"
 								@click="addBundleToBasket"
-								v-kv-track-event="['Lend by category', 'click-loan-bundle-cta',
-									'Lend to all three now - personalized']"
 							>
 								Lend to all three
 							</kv-button>
@@ -41,8 +39,6 @@
 						<div class="lg:tw-hidden tw-flex tw-flex-col tw-items-center tw-mt-3">
 							<kv-button type="button"
 								@click="addBundleToBasket"
-								v-kv-track-event="['Lend by category', 'click-loan-bundle-cta',
-									'Lend to all three now - personalized']"
 								class="tw-w-full"
 							>
 								Lend to all three
@@ -159,13 +155,13 @@ export default {
 					'basket',
 					'bundle-add-to-basket-funded-loan',
 				);
-
+				const idsString = this.selectedChannelLoanIds.join(', ').toString();
 				this.$kvTrackEvent(
 					'Lending',
 					'click-loan-bundle-cta',
 					'Lend to all three now - personalized',
-					null,
-					this.selectedChannelLoanIds.join(', ')
+					idsString,
+					null
 				);
 
 				this.$router.push({ path: '/checkout' });
