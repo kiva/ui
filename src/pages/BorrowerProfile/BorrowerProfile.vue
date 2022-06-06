@@ -150,7 +150,7 @@ export default {
 		let description = '';
 
 		if (this.$route.path.includes('lend') || this.$route.path.includes('-beta')) {
-			title = `Lend to ${this?.name} in ${this?.countryName}`;
+			title = `Lend to ${this.name} in ${this.countryName}`;
 			description = `A loan of ${this.loanAmount ?? '0'} ${this.use}`;
 		}
 
@@ -259,7 +259,7 @@ export default {
 			this.countryName = loan?.geocode?.country?.name ?? '';
 			this.hash = loan?.image?.hash ?? '';
 			this.numLenders = loan?.lenders?.totalCount ?? 0;
-			this.endDate = format(parseISO(loan.plannedExpirationDate), 'M/d') ?? '';
+			this.endDate = format(parseISO(loan?.plannedExpirationDate), 'M/d') ?? '';
 			this.borrowerCount = loan?.borrowerCount ?? 0;
 			this.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
 			this.loanAmount = loan?.loanAmount ?? '0';
