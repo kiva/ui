@@ -1,7 +1,7 @@
 <template>
 	<form class="tw-flex tw-flex-col tw-gap-1.5 tw-mb-2" @submit.prevent>
 		<fieldset>
-			<kv-checkbox-list :items="items" @updated="updateSectors" />
+			<kv-checkbox-list :items="items" :selected-values="selectedValues" @updated="updateSectors" />
 		</fieldset>
 	</form>
 </template>
@@ -28,31 +28,40 @@ export default {
 		sectors: {
 			type: Array,
 			default: () => []
-		}
+		},
+		sectorIds: {
+			type: Array,
+			default: () => []
+		},
 	},
 	data() {
 		return {
 			displayedSectors: this.sectors,
-			filterResults: []
+			selectedSectorIds: this.sectorIds,
 		};
 	},
 	computed: {
 		items() {
-			return this.displayedSectors.map(c => ({
-				value: c.id.toString(),
-				title: c.name,
-			}));
+			return this.displayedSectors.map(s => ({ value: s.id.toString(), title: s.name }));
+		},
+		selectedValues() {
+			return this.selectedSectorIds.map(s => s.toString());
 		}
 	},
 	methods: {
 		updateSectors(sectors) {
-			this.filterResults = sectors.map(sector => parseInt(sector, 10));
-			this.$emit('updated', { sectorId: this.filterResults });
+			this.$emit('updated', { sectorId: sectors.map(s => +s) });
 		}
 	},
 	watch: {
 		sectors(nextSectors) {
 			this.displayedSectors = getUpdatedSectors(this.displayedSectors, nextSectors);
+		},
+		sectorIds(next) {
+			if ([...next].sort().toString() !== [...this.selectedSectorIds].sort().toString()) {
+				// Don't emit when value is changed via the component prop
+				this.selectedSectorIds = next;
+			}
 		},
 	},
 };

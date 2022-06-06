@@ -34,7 +34,11 @@
 					Sectors
 				</h2>
 			</template>
-			<loan-search-sector-filter :sectors="facets.sectors" @updated="handleUpdatedFilters" />
+			<loan-search-sector-filter
+				:sectors="facets.sectors"
+				:sector-ids="loanSearchState.sectorId"
+				@updated="handleUpdatedFilters"
+			/>
 		</kv-accordion-item>
 		<kv-accordion-item id="acc-attributes" :open="false">
 			<template #header>

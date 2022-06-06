@@ -78,10 +78,11 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
  * @returns {Promise<Array>} Promise for the results of the mutation
  */
 export async function updateSearchState(apollo, loanQueryFilters, allFacets, queryType, previousState) {
+	const validatedPreviousFilters = getValidatedSearchState(previousState, allFacets, queryType);
 	const validatedFilters = getValidatedSearchState(loanQueryFilters, allFacets, queryType);
 
 	// Quick JSON compare works because both states are results of getValidatedSearchState
-	if (JSON.stringify(previousState) === JSON.stringify(validatedFilters)) return;
+	if (JSON.stringify(validatedPreviousFilters) === JSON.stringify(validatedFilters)) return;
 
 	return apollo.mutate({
 		mutation: updateLoanSearchMutation,
@@ -394,6 +395,7 @@ export async function fetchLoanFacets(apollo) {
 			countryIsoCodes: countryFacets.map(c => c.country.isoCode.toUpperCase()),
 			sectorFacets,
 			sectorIds: sectorFacets.map(s => s.id),
+			sectorNames: sectorFacets.map(s => s.name.toUpperCase()),
 			themeFacets,
 			themes: themeFacets.map(t => t.name.toUpperCase()),
 			genderFacets,
@@ -417,6 +419,34 @@ export function getCheckboxLabel(item) {
 }
 
 /**
+ * Returns the sector IDs based on the query param. Handles FLSS/legacy and Algolia formats.
+ *
+ * @param {string} sector The sector query param
+ * @param {Object} allFacets All available facets from the APIs
+ * @returns {Array} Valid sector IDs based on the query param
+ */
+export function getSectorIdsFromQueryParam(sector, allFacets) {
+	if (!sector) return;
+
+	// Handles FLSS and legacy query params, such as "1" and "1,2"
+	if (sector.includes(',') || !Number.isNaN(Number(sector))) {
+		return sector.split(',').filter(s => s !== '').map(s => +s);
+	}
+
+	// Handles Algolia query params, such as "Arts" and "Arts~Clothing"
+	return sector.split('~').reduce((prev, current) => {
+		const name = current.toUpperCase();
+		if (allFacets.sectorNames.includes(name)) {
+			const facet = allFacets.sectorFacets.find(s => s.name.toUpperCase() === name);
+			if (facet) {
+				prev.push(facet.id);
+			}
+		}
+		return prev;
+	}, []);
+}
+
+/**
  * Pulls the query string params using the Vue Router and applies them to the search state
  *
  * @param {Object} apollo The Apollo client instance
@@ -429,10 +459,10 @@ export async function applyQueryParams(apollo, query, allFacets, queryType, prev
 	const filters = {
 		gender: query.gender,
 		sortBy: queryType === FLSS_QUERY_TYPE ? lendToFlssSort.get(query.sortBy) : query.sortBy,
+		sectorId: getSectorIdsFromQueryParam(query.sector, allFacets),
 		// TODO: replace previous state usage as query param support expands
 		...(previousState && {
 			countryIsoCode: previousState.countryIsoCode,
-			sectorId: previousState.sectorId,
 			theme: previousState.theme,
 		})
 	};
@@ -468,6 +498,7 @@ export function updateQueryParams(loanSearchState, router, queryType) {
 	// Create new query params object
 	const newParams = {
 		...(loanSearchState.gender && { gender: loanSearchState.gender }),
+		...(loanSearchState.sectorId?.length && { sector: loanSearchState.sectorId.join(',') }),
 		...(queryParamSortBy && { sortBy: queryParamSortBy }),
 		// TODO: add params as query param support expands
 		...utmParams,
