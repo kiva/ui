@@ -1,3 +1,11 @@
+### [2.171.2](https://github.com/kiva/ui/compare/v2.171.1...v2.171.2) (2022-06-06)
+
+
+### Bug Fixes
+
+* check title undefined value ([53a43a8](https://github.com/kiva/ui/commit/53a43a88081f7cafedae9578c547f7ae94993d4d))
+* use old-stack borrower profile url and hide lend button while loading ([4647440](https://github.com/kiva/ui/commit/4647440f20634b51c71c4c35811a04541ddddbf9))
+
 ### [2.171.1](https://github.com/kiva/ui/compare/v2.171.0...v2.171.1) (2022-06-04)
 
 
