@@ -1,3 +1,11 @@
+## [2.172.0](https://github.com/kiva/ui/compare/v2.171.2...v2.172.0) (2022-06-06)
+
+
+### Features
+
+* complet loan experiment setup was added to bp page ([0c16d49](https://github.com/kiva/ui/commit/0c16d491391e46abeb294cb5d2d101fc37918d3b))
+* prefetch method was added to BP page ([0fa67e5](https://github.com/kiva/ui/commit/0fa67e5565ae6cbdaab6199eddeea4596d2c7e5a))
+
 ### [2.171.2](https://github.com/kiva/ui/compare/v2.171.1...v2.171.2) (2022-06-06)
 
 
