@@ -17,6 +17,7 @@ import {
 	FLSS_QUERY_TYPE,
 	STANDARD_QUERY_TYPE,
 	getSectorIdsFromQueryParam,
+	getThemeNamesQueryParam,
 } from '@/util/loanSearchUtils';
 import * as flssUtils from '@/util/flssUtils';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
@@ -27,7 +28,7 @@ const mockState = {
 	countryIsoCode: ['US'],
 	sectorId: [1],
 	sortBy: 'expiringSoon',
-	theme: ['test theme']
+	theme: ['THEME 1']
 };
 
 const mockAllFacets = {
@@ -36,8 +37,8 @@ const mockAllFacets = {
 	sectorFacets: [{ id: 1, name: 'Sector 1' }, { id: 2, name: 'Sector 2' }],
 	sectorIds: [1],
 	sectorNames: ['SECTOR 1', 'SECTOR 2'],
-	themeFacets: [{ name: 'test theme' }],
-	themes: ['TEST THEME'],
+	themeFacets: [{ id: 1, name: 'Theme 1' }, { id: 2, name: 'Theme 2' }],
+	themeNames: ['THEME 1', 'THEME 2'],
 	genderFacets: [{ name: 'female' }, { name: 'male' }],
 	genders: ['FEMALE', 'MALE'],
 	flssSorts: [{ name: 'expiringSoon' }, { name: 'personalized' }],
@@ -505,7 +506,7 @@ describe('loanSearchUtils.js', () => {
 				sectorIds: [],
 				sectorNames: [],
 				themeFacets: [],
-				themes: [],
+				themeNames: [],
 				genderFacets: [],
 				genders: [],
 				flssSorts: [],
@@ -537,7 +538,7 @@ describe('loanSearchUtils.js', () => {
 				sectorIds: [1],
 				sectorNames: ['TEST SECTOR'],
 				themeFacets: loanThemeFilter,
-				themes: ['C'],
+				themeNames: ['C'],
 				genderFacets: [{ name: 'female' }],
 				genders: ['FEMALE'],
 				flssSorts: [{ name: 'expiringSoon' }],
@@ -611,6 +612,61 @@ describe('loanSearchUtils.js', () => {
 		});
 	});
 
+	describe('getThemeNamesQueryParam', () => {
+		it('should handle empty', () => {
+			expect(getThemeNamesQueryParam()).toBe(undefined);
+			expect(getThemeNamesQueryParam('')).toBe(undefined);
+		});
+
+		it('should handle FLSS and legacy single sector', () => {
+			const attribute = '1';
+
+			const result = getThemeNamesQueryParam(attribute, mockAllFacets.themeFacets);
+
+			expect(result).toEqual(['Theme 1']);
+		});
+
+		it('should handle FLSS and legacy list', () => {
+			const attribute = '1,2';
+
+			const result = getThemeNamesQueryParam(attribute, mockAllFacets.themeFacets);
+
+			expect(result).toEqual(['Theme 1', 'Theme 2']);
+		});
+
+		it('should handle FLSS and legacy list trailing separator', () => {
+			const attribute = '1,2,';
+
+			const result = getThemeNamesQueryParam(attribute, mockAllFacets.themeFacets);
+
+			expect(result).toEqual(['Theme 1', 'Theme 2']);
+		});
+
+		it('should handle Algolia single sector', () => {
+			const attribute = 'Theme 1';
+
+			const result = getThemeNamesQueryParam(attribute, mockAllFacets.themeFacets);
+
+			expect(result).toEqual(['Theme 1']);
+		});
+
+		it('should handle Algolia single list', () => {
+			const attribute = 'Theme 1~Theme 2';
+
+			const result = getThemeNamesQueryParam(attribute, mockAllFacets.themeFacets);
+
+			expect(result).toEqual(['Theme 1', 'Theme 2']);
+		});
+
+		it('should handle Algolia single list trailing separator', () => {
+			const attribute = 'Theme 1~Theme 2~';
+
+			const result = getThemeNamesQueryParam(attribute, mockAllFacets.themeFacets);
+
+			expect(result).toEqual(['Theme 1', 'Theme 2']);
+		});
+	});
+
 	describe('applyQueryParams', () => {
 		it('should update cache', async () => {
 			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
@@ -622,11 +678,11 @@ describe('loanSearchUtils.js', () => {
 						countryIsoCode: [],
 						sectorId: [1],
 						sortBy: 'expiringSoon',
-						theme: []
+						theme: ['THEME 1']
 					}
 				}
 			};
-			const query = { ...mockState, sector: mockState.sectorId.toString() };
+			const query = { ...mockState, sector: mockState.sectorId.toString(), attribute: '1' };
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE);
 
@@ -642,11 +698,17 @@ describe('loanSearchUtils.js', () => {
 						...mockState,
 						gender: 'male',
 						sortBy: 'personalized',
-						sectorId: [1]
+						sectorId: [1],
+						theme: ['THEME 1'],
 					}
 				},
 			};
-			const query = { gender: 'male', sortBy: 'popularity', sector: '1' };
+			const query = {
+				gender: 'male',
+				sortBy: 'popularity',
+				sector: '1',
+				attribute: '1'
+			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState);
 
@@ -662,7 +724,8 @@ describe('loanSearchUtils.js', () => {
 						...mockState,
 						gender: null,
 						sortBy: 'personalized',
-						sectorId: []
+						sectorId: [],
+						theme: [],
 					}
 				},
 			};
@@ -682,7 +745,8 @@ describe('loanSearchUtils.js', () => {
 						...mockState,
 						gender: null,
 						sortBy: 'popularity',
-						sectorId: []
+						sectorId: [],
+						theme: [],
 					}
 				},
 			};
@@ -695,7 +759,7 @@ describe('loanSearchUtils.js', () => {
 
 		it('should not update cache when state unchanged', async () => {
 			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
-			const query = { ...mockState, sector: mockState.sectorId.toString() };
+			const query = { ...mockState, sector: mockState.sectorId.toString(), attribute: '1' };
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState);
 
@@ -730,7 +794,7 @@ describe('loanSearchUtils.js', () => {
 			const state = { sectorId: [1, 2] };
 			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
 
-			updateQueryParams(state, router, STANDARD_QUERY_TYPE);
+			updateQueryParams(state, router, mockAllFacets, STANDARD_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
@@ -743,7 +807,33 @@ describe('loanSearchUtils.js', () => {
 			const state = { gender: 'female', sectorId: [] };
 			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
 
-			updateQueryParams(state, router, STANDARD_QUERY_TYPE);
+			updateQueryParams(state, router, mockAllFacets, STANDARD_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { gender: 'female' },
+				params: { noScroll: true }
+			});
+		});
+
+		it('should push theme IDs', async () => {
+			const state = { theme: ['THEME 1', 'THEME 2'] };
+			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+
+			updateQueryParams(state, router, mockAllFacets, STANDARD_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { attribute: '1,2' },
+				params: { noScroll: true }
+			});
+		});
+
+		it('should not push empty theme ID', async () => {
+			const state = { gender: 'female', theme: [] };
+			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+
+			updateQueryParams(state, router, mockAllFacets, STANDARD_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
@@ -756,7 +846,7 @@ describe('loanSearchUtils.js', () => {
 			const state = { sortBy: 'personalized' };
 			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
 
-			updateQueryParams(state, router, FLSS_QUERY_TYPE);
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
@@ -769,7 +859,7 @@ describe('loanSearchUtils.js', () => {
 			const state = { sortBy: 'personalized' };
 			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
 
-			updateQueryParams(state, router, STANDARD_QUERY_TYPE);
+			updateQueryParams(state, router, mockAllFacets, STANDARD_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
@@ -782,7 +872,7 @@ describe('loanSearchUtils.js', () => {
 			const state = { gender: 'female' };
 			const router = { currentRoute: { name: 'name', query: { gender: 'female' } }, push: jest.fn() };
 
-			updateQueryParams(state, router);
+			updateQueryParams(state, router, mockAllFacets);
 
 			expect(router.push).toHaveBeenCalledTimes(0);
 		});

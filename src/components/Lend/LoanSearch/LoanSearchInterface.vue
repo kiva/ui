@@ -163,7 +163,7 @@ export default {
 				this.loanSearchState = data?.loanSearchState;
 
 				// Update the query string with the latest loan search state
-				updateQueryParams(this.loanSearchState, this.$router, this.queryType);
+				updateQueryParams(this.loanSearchState, this.$router, this.allFacets, this.queryType);
 
 				// Get filtered facet options from FLSS
 				// TODO: Prevent this from running on every query

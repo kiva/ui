@@ -56,7 +56,10 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 		?.filter(c => allFacets.countryIsoCodes.includes(c.toUpperCase())) ?? [];
 	const validatedSectorIds = loanSearchState?.sectorId?.filter(s => allFacets.sectorIds.includes(s)) ?? [];
 	const validatedSortBy = validSorts.some(s => s.name === loanSearchState.sortBy) ? loanSearchState.sortBy : null;
-	const validatedThemes = loanSearchState?.theme?.filter(t => allFacets.themes.includes(t.toUpperCase())) ?? [];
+	// TODO: change to theme IDs when theme ID filter is on prod
+	const validatedThemes = (loanSearchState?.theme?.filter(t => allFacets.themeNames.includes(t.toUpperCase())) ?? [])
+		// Handle casing differences between FLSS and lend API theme values. FLSS does case insensitive fuzzy matching.
+		.map(t => t.toUpperCase());
 
 	return {
 		gender: validatedGender,
@@ -397,7 +400,7 @@ export async function fetchLoanFacets(apollo) {
 			sectorIds: sectorFacets.map(s => s.id),
 			sectorNames: sectorFacets.map(s => s.name.toUpperCase()),
 			themeFacets,
-			themes: themeFacets.map(t => t.name.toUpperCase()),
+			themeNames: themeFacets.map(t => t.name.toUpperCase()),
 			genderFacets,
 			genders: genderFacets.map(g => g.name.toUpperCase()),
 			flssSorts: result.data?.flssSorts?.enumValues ?? [],
@@ -447,6 +450,38 @@ export function getSectorIdsFromQueryParam(sector, allFacets) {
 }
 
 /**
+ * Returns the theme names based on the query param. Handles FLSS/legacy and Algolia formats.
+ * TODO: convert to returning theme IDs when theme ID filter is on prod.
+ *
+ * @param {string} param The "attribute" query param
+ * @param {Array} facets All available theme facets from the APIs
+ * @returns {Array} Valid theme names
+ */
+export function getThemeNamesQueryParam(param, facets) {
+	if (!param) return;
+
+	// Handles FLSS and legacy query params, such as "1" and "1,2"
+	if (param.includes(',') || !Number.isNaN(Number(param))) {
+		return param.split(',').filter(s => s !== '').reduce((prev, current) => {
+			const facet = facets.find(s => s.id === +current);
+			if (facet) {
+				prev.push(facet.name);
+			}
+			return prev;
+		}, []);
+	}
+
+	// Handles Algolia query params, such as "Rural Exclusion" and "Rural Exclusion~Conflict Zones"
+	return param.split('~').reduce((prev, current) => {
+		const facet = facets.find(s => s.name.toUpperCase() === current.toUpperCase());
+		if (facet) {
+			prev.push(facet.name);
+		}
+		return prev;
+	}, []);
+}
+
+/**
  * Pulls the query string params using the Vue Router and applies them to the search state
  *
  * @param {Object} apollo The Apollo client instance
@@ -459,12 +494,10 @@ export async function applyQueryParams(apollo, query, allFacets, queryType, prev
 	const filters = {
 		gender: query.gender,
 		sortBy: queryType === FLSS_QUERY_TYPE ? lendToFlssSort.get(query.sortBy) : query.sortBy,
-		sectorId: getSectorIdsFromQueryParam(query.sector, allFacets),
+		sectorId: getSectorIdsFromQueryParam(query.sector, allFacets.sectorNames, allFacets.sectorFacets, true),
+		theme: getThemeNamesQueryParam(query.attribute, allFacets.themeFacets),
 		// TODO: replace previous state usage as query param support expands
-		...(previousState && {
-			countryIsoCode: previousState.countryIsoCode,
-			theme: previousState.theme,
-		})
+		...(previousState && { countryIsoCode: previousState.countryIsoCode })
 	};
 
 	await updateSearchState(apollo, filters, allFacets, queryType, previousState);
@@ -478,7 +511,7 @@ export async function applyQueryParams(apollo, query, allFacets, queryType, prev
  * @param {Object} router The Vue Router object
  * @param {string} queryType The current query type (lend vs FLSS)
  */
-export function updateQueryParams(loanSearchState, router, queryType) {
+export function updateQueryParams(loanSearchState, router, allFacets, queryType) {
 	const oldParamKeys = Object.keys(router.currentRoute.query);
 
 	// Preserve UTM params
@@ -495,10 +528,23 @@ export function updateQueryParams(loanSearchState, router, queryType) {
 		? [...lendToFlssSort].find(([_, value]) => value === loanSearchState.sortBy)?.[0]
 		: loanSearchState.sortBy;
 
+	// Themes are currently filtered by name but displayed by ID in query param
+	// TODO: remove when theme ID filter is on prod
+	const themeIds = loanSearchState.theme?.reduce((prev, current) => {
+		const theme = allFacets.themeFacets.find(t => t.name.toUpperCase() === current.toUpperCase());
+
+		if (theme) {
+			prev.push(theme.id);
+		}
+
+		return prev;
+	}, []);
+
 	// Create new query params object
 	const newParams = {
 		...(loanSearchState.gender && { gender: loanSearchState.gender }),
 		...(loanSearchState.sectorId?.length && { sector: loanSearchState.sectorId.join(',') }),
+		...(loanSearchState.theme?.length && { attribute: themeIds.join(',') }),
 		...(queryParamSortBy && { sortBy: queryParamSortBy }),
 		// TODO: add params as query param support expands
 		...utmParams,

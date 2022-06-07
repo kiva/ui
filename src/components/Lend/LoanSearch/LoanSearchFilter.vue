@@ -46,7 +46,11 @@
 					Attributes
 				</h2>
 			</template>
-			<loan-search-theme-filter :themes="facets.themes" @updated="handleUpdatedFilters" />
+			<loan-search-theme-filter
+				:themes="facets.themes"
+				:theme-names="loanSearchState.theme"
+				@updated="handleUpdatedFilters"
+			/>
 		</kv-accordion-item>
 		<h2 class="tw-text-h4 tw-mt-2">
 			Advanced filters
