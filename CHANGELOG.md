@@ -1,3 +1,10 @@
+### [2.173.3](https://github.com/kiva/ui/compare/v2.173.2...v2.173.3) (2022-06-07)
+
+
+### Bug Fixes
+
+* getter for personalized bundle was re added ([5558673](https://github.com/kiva/ui/commit/555867389147c4b383593bdac9a2f18b92155f9a))
+
 ### [2.173.2](https://github.com/kiva/ui/compare/v2.173.1...v2.173.2) (2022-06-07)
 
 
