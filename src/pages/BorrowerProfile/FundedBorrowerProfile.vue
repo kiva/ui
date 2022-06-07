@@ -212,6 +212,7 @@ import {
 	trackExperimentVersion
 } from '@/util/experimentUtils';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
@@ -258,7 +259,7 @@ export default {
 			rows: null,
 			isVisitor: true,
 			loanRowsCount: 4,
-			enabledExperiment: false
+			enabledExperiment: true
 		};
 	},
 	apollo: {
@@ -280,14 +281,7 @@ export default {
 					});
 				}
 
-				return client.query({ query: experimentQuery, variables: { id: newFundedBorrowerPageExpKey } })
-					.then(result => {
-						const version = result?.data?.experiment?.version;
-						const { enabled } = getExperimentSettingCached(client, newFundedBorrowerPageExpKey);
-						if (enabled && version === 'b') {
-							this.enabledExperiment = true;
-						}
-					});
+				return client.query({ query: experimentQuery, variables: { id: newFundedBorrowerPageExpKey } });
 			});
 		},
 	},
@@ -299,14 +293,6 @@ export default {
 				but these similar borrowers just need a little more help to reach their goals!`;
 			return this.lymlCustomSort === 'random' ? defaultMessage : customMessage;
 		},
-		refIsVisible() {
-			const { top, bottom } = this.$refs.preBottom.getBoundingClientRect();
-			const vHeight = (window.innerHeight || document.documentElement.clientHeight);
-			return (
-				(top > 0 || bottom > 0)
-				&& top < vHeight
-			);
-		}
 	},
 	created() {
 		// Read the page data from the cache
@@ -327,6 +313,16 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'FundedBorrowerProfilePage fundedBorrowerProfile');
 			this.$router.push({ path: `/lend/${loanIdFromRoute}?minimal=false` });
+		}
+
+		// Check if new funded borrower profile experiment is active.
+		const { enabled } = getExperimentSettingCached(this.apollo, newFundedBorrowerPageExpKey);
+		const exp = this.apollo.readFragment({
+			id: `Experiment:${newFundedBorrowerPageExpKey}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
+		if (enabled && exp.version === 'b') {
+			this.enabledExperiment = true;
 		}
 	},
 	mounted() {
@@ -390,6 +386,14 @@ export default {
 				});
 			}
 		},
+		refIsVisible() {
+			const { top, bottom } = this.$refs?.preBottom?.getBoundingClientRect() ?? {};
+			const vHeight = (window.innerHeight || document.documentElement.clientHeight);
+			return (
+				(top > 0 || bottom > 0)
+				&& top < vHeight
+			);
+		},
 		fetchLoanData() {
 			const row = this.rows.shift();
 			if (row) {
@@ -437,7 +441,7 @@ export default {
 								}
 							];
 							this.isLoading = false;
-							if (this.refIsVisible) {
+							if (this.refIsVisible()) {
 								this.fetchLoanData();
 							}
 						});
@@ -462,7 +466,7 @@ export default {
 								}
 							];
 							this.isLoading = false;
-							if (this.refIsVisible) {
+							if (this.refIsVisible()) {
 								this.fetchLoanData();
 							}
 						});

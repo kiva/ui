@@ -34,14 +34,15 @@
 
 <script>
 import { paramCase } from 'change-case';
-
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import getCacheKey from '@/util/getCacheKey';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const promoLoanImageRequire = require.context('@/assets/images/mg-promo-loan-card/', true);
 
 export default {
 	name: 'PromoGridLoanCard',
+	serverCacheKey: props => getCacheKey(`${props.categoryLabel}-${props.categoryUrl}-${props.compact}`),
 	components: {
 		KvButton,
 		KvResponsiveImage
