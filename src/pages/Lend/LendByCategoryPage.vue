@@ -210,7 +210,7 @@ export default {
 				.sort(indexIn(this.categoryIds, 'id'));
 		},
 		recommendedObject() {
-			const obj = this.customCategories[0];
+			const obj = Object.create(this.customCategories[0]);
 			obj.name = `More Recommendations for ${this.firstName}`;
 			return obj;
 		},
@@ -782,6 +782,7 @@ export default {
 		}
 	},
 	mounted() {
+		this.fetchPersonalizedLoans();
 		this.fetchCategoryIds = [...this.categorySetting];
 		this.fetchLoanData();
 		// Only allow experiment when in show-for-large (>= 1024px) screen size
