@@ -144,11 +144,14 @@
 			</article>
 			<article class="tw-mx-2 tw-overflow-auto lg:tw-mx-auto loans-container">
 				<p class="tw-text-center tw-text-h1 tw-my-6">
-					Other Borrowers that need your support
+					Similar borrowers that need your support
 				</p>
 				<div :key="index" v-for="(category, index) in categories" class="tw-my-6">
 					<p class="tw-text-h2">
 						{{ category.heading }}
+					</p>
+					<p v-if="category.subHeading" class="tw-text-subhead">
+						{{ category.subHeading }} {{ loan.name }}'s loan.
 					</p>
 					<div v-if="!category.loan">
 						<kiva-classic-loan-carousel
@@ -299,7 +302,6 @@ export default {
 		refIsVisible() {
 			const { top, bottom } = this.$refs.preBottom.getBoundingClientRect();
 			const vHeight = (window.innerHeight || document.documentElement.clientHeight);
-			console.log('hello');
 			return (
 				(top > 0 || bottom > 0)
 				&& top < vHeight
@@ -342,33 +344,37 @@ export default {
 			this.createViewportObserver();
 			this.rows = [
 				{
-					heading: 'Support borrowers in ',
+					heading: 'Support these loans for ',
+					subHeading: '',
 					onlyLoan: false,
 					limit: 3,
-					filter: { countryIsoCode: { eq: this.loan?.geocode?.country?.isoCode } },
+					filter: { sector: { eq: this.loan?.sector?.name } },
 					loanIds: []
 				},
 				{
 					heading: 'Recommended Borrower',
+					subHeading: 'We selected this loan for you because it\'s similar to ',
 					onlyLoan: true,
 					limit: 1,
 					filter: null,
 					loan: null
 				},
 				{
-					heading: 'Lend to ',
+					heading: 'Support these ',
+					subHeading: '',
 					onlyLoan: false,
 					limit: 3,
 					filter: { gender: { eq: this.loan?.gender } },
 					loanIds: []
 				},
 				{
-					heading: 'Loans for ',
+					heading: 'Support these borrowers in ',
+					subHeading: '',
 					onlyLoan: false,
 					limit: 3,
-					filter: { sector: { eq: this.loan?.sector?.name } },
+					filter: { countryIsoCode: { eq: this.loan?.geocode?.country?.isoCode } },
 					loanIds: []
-				}
+				},
 			];
 		}
 	},
@@ -424,6 +430,7 @@ export default {
 							this.categories = [
 								...this.categories, {
 									heading: row.heading + finalHeading,
+									subHeading: row.subHeading,
 									loanIds: personalizedLoanIds,
 									loan: null,
 									expLabel
@@ -450,7 +457,9 @@ export default {
 							const loans = _get(data, 'data.ml.relatedLoansByTopics[0].values');
 							this.categories = [
 								...this.categories,
-								{ heading: row.heading, loan: loans[0], loanIds: [] }
+								{
+									heading: row.heading, loan: loans[0], loanIds: [], subHeading: row.subHeading
+								}
 							];
 							this.isLoading = false;
 							if (this.refIsVisible) {
