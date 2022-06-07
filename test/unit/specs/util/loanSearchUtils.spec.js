@@ -772,7 +772,7 @@ describe('loanSearchUtils.js', () => {
 			const state = { gender: 'female' };
 			const router = { currentRoute: { name: 'name', query: { utm_test: 'test' } }, push: jest.fn() };
 
-			updateQueryParams(state, router);
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
@@ -785,7 +785,7 @@ describe('loanSearchUtils.js', () => {
 			const state = { gender: 'female' };
 			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
 
-			updateQueryParams(state, router);
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledWith({ name: 'name', query: state, params: { noScroll: true } });
 		});
@@ -794,7 +794,7 @@ describe('loanSearchUtils.js', () => {
 			const state = { sectorId: [1, 2] };
 			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
 
-			updateQueryParams(state, router, mockAllFacets, STANDARD_QUERY_TYPE);
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
@@ -807,7 +807,7 @@ describe('loanSearchUtils.js', () => {
 			const state = { gender: 'female', sectorId: [] };
 			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
 
-			updateQueryParams(state, router, mockAllFacets, STANDARD_QUERY_TYPE);
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
@@ -820,7 +820,7 @@ describe('loanSearchUtils.js', () => {
 			const state = { theme: ['THEME 1', 'THEME 2'] };
 			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
 
-			updateQueryParams(state, router, mockAllFacets, STANDARD_QUERY_TYPE);
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
@@ -833,7 +833,7 @@ describe('loanSearchUtils.js', () => {
 			const state = { gender: 'female', theme: [] };
 			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
 
-			updateQueryParams(state, router, mockAllFacets, STANDARD_QUERY_TYPE);
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
@@ -872,7 +872,7 @@ describe('loanSearchUtils.js', () => {
 			const state = { gender: 'female' };
 			const router = { currentRoute: { name: 'name', query: { gender: 'female' } }, push: jest.fn() };
 
-			updateQueryParams(state, router, mockAllFacets);
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledTimes(0);
 		});
