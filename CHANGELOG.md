@@ -1,3 +1,12 @@
+### [2.173.2](https://github.com/kiva/ui/compare/v2.173.1...v2.173.2) (2022-06-07)
+
+
+### Bug Fixes
+
+* add subheader to recommend borrower and copy tweaks ([418b7a0](https://github.com/kiva/ui/commit/418b7a0b338a009d8a8820cd56136b34e15e79db))
+* set enabledExperiment flag to false ([f613564](https://github.com/kiva/ui/commit/f613564c9d1d6460aab50da2379592894b29f758))
+* solve conflicts with main ([d67765c](https://github.com/kiva/ui/commit/d67765c6b7fea72d2ccee8e57cbd771e052de293))
+
 ### [2.173.1](https://github.com/kiva/ui/compare/v2.173.0...v2.173.1) (2022-06-07)
 
 
