@@ -259,7 +259,7 @@ export default {
 			rows: null,
 			isVisitor: true,
 			loanRowsCount: 4,
-			enabledExperiment: true
+			enabledExperiment: false
 		};
 	},
 	apollo: {
