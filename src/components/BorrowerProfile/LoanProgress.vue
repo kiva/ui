@@ -6,7 +6,7 @@
 			:value="progressPercent * 100"
 		/>
 		<figcaption class="tw-flex">
-			<div v-if="!fundedPage">
+			<template v-if="!fundedPage">
 				<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
 					<countdown-timer
 						v-if="urgency"
@@ -29,8 +29,8 @@
 						{{ progressPercent | numeral('0%') }} funded
 					</p>
 				</div>
-			</div>
-			<div v-else>
+			</template>
+			<template v-else>
 				<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
 					This loan is fully funded!
 				</p>
@@ -47,7 +47,7 @@
 						</router-link>
 					</p>
 				</div>
-			</div>
+			</template>
 		</figcaption>
 	</figure>
 </template>
