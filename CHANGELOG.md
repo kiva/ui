@@ -1,3 +1,11 @@
+### [2.173.1](https://github.com/kiva/ui/compare/v2.173.0...v2.173.1) (2022-06-07)
+
+
+### Bug Fixes
+
+* avoid using tw-flex for experiment version ([a0a9962](https://github.com/kiva/ui/commit/a0a99620463e64a55a09b9448a210675367055f5))
+* change div to template ([2a93215](https://github.com/kiva/ui/commit/2a93215793f08dcf3a8ab5e5b746361c9fcb63c2))
+
 ## [2.173.0](https://github.com/kiva/ui/compare/v2.172.0...v2.173.0) (2022-06-06)
 
 
