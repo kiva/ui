@@ -30,7 +30,7 @@
 					</p>
 				</div>
 			</template>
-			<template v-else>
+			<div v-else>
 				<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
 					This loan is fully funded!
 				</p>
@@ -47,7 +47,7 @@
 						</router-link>
 					</p>
 				</div>
-			</template>
+			</div>
 		</figcaption>
 	</figure>
 </template>
