@@ -1,3 +1,16 @@
+## [2.174.0](https://github.com/kiva/ui/compare/v2.173.3...v2.174.0) (2022-06-08)
+
+
+### Features
+
+* matched loans lightbox ([d06be65](https://github.com/kiva/ui/commit/d06be6551da94c0c33591b82da500e1d2630baf4))
+* require deposits on matched loans exp ([33acee2](https://github.com/kiva/ui/commit/33acee29351d692924056a36b56bbca4438680f7))
+
+
+### Bug Fixes
+
+* oops ([5f674ea](https://github.com/kiva/ui/commit/5f674eace3f1a6bd73ddc173bee35977deacac81))
+
 ### [2.173.3](https://github.com/kiva/ui/compare/v2.173.2...v2.173.3) (2022-06-07)
 
 

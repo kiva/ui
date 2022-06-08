@@ -326,6 +326,7 @@ export default {
 			showVerification: false,
 			showVerifyRemovePromoCredit: false,
 			isUpsellsExperimentEnabled: false,
+			requireDepositsMatchedLoans: false,
 		};
 	},
 	apollo: {
@@ -359,6 +360,7 @@ export default {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 						client.query({ query: experimentQuery, variables: { id: 'upsells_checkout' } }),
+						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 					]);
 				});
 		},
@@ -402,12 +404,24 @@ export default {
 			id: 'Experiment:upsells_checkout',
 			fragment: experimentVersionFragment,
 		}) || {};
+		const matchedLoansExperiment = this.apollo.readFragment({
+			id: 'Experiment:require_deposits_matched_loans',
+			fragment: experimentVersionFragment,
+		}) || {};
 		this.isUpsellsExperimentEnabled = upsellsExperiment.version === 'b';
+		this.requireDepositsMatchedLoans = matchedLoansExperiment.version === 'b';
 		if (upsellsExperiment.version) {
 			this.$kvTrackEvent(
 				'Basket',
 				'EXP-CORE-602-May-2022',
 				upsellsExperiment.version
+			);
+		}
+		if (matchedLoansExperiment.version) {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-CORE-615-May-2022',
+				matchedLoansExperiment.version
 			);
 		}
 		// show guest account claim confirmation message
