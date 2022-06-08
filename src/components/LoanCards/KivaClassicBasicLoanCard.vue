@@ -133,7 +133,7 @@
 			class="tw-rounded tw-self-start" :style="{width: '9rem', height: '3rem'}"
 		/>
 
-		<kv-button
+		<kv-ui-button
 			v-if="!isLoading && !allSharesReserved && !inBorrowerProfilePage"
 			class="tw-mb-2 tw-self-start"
 			:state="`${allSharesReserved ? 'disabled' : ''}`"
@@ -145,7 +145,7 @@
 				class="tw-w-3 tw-h-3 tw-align-middle"
 				:icon="mdiChevronRight"
 			/>
-		</kv-button>
+		</kv-ui-button>
 
 		<!-- Lend button -->
 		<kv-ui-button
