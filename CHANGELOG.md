@@ -1,3 +1,18 @@
+## [2.175.0](https://github.com/kiva/ui/compare/v2.174.1...v2.175.0) (2022-06-08)
+
+
+### Features
+
+* added num loan fundraising counts to sector filters ([9a24a32](https://github.com/kiva/ui/commit/9a24a32a0bbb9ecfa126eff731752622eae17aac))
+* integrate theme filter with query params ([f852af7](https://github.com/kiva/ui/commit/f852af79a5676002b2e206583299618eb7dfb937))
+* sector filter now updates query param and can be initialized via query param ([76b0ca7](https://github.com/kiva/ui/commit/76b0ca7dcfd2fc1341d413090e6b2f575f68fad5))
+
+
+### Bug Fixes
+
+* cleaned up method usage in tests ([120b8cc](https://github.com/kiva/ui/commit/120b8cce1b21f3061a2f8d239e76308fbe8675f2))
+* combined graphql queries in runFacetsQueries ([19e439b](https://github.com/kiva/ui/commit/19e439bce918ffa7b575f3ef0fb039200943e099))
+
 ### [2.174.1](https://github.com/kiva/ui/compare/v2.174.0...v2.174.1) (2022-06-08)
 
 
