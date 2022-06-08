@@ -4,23 +4,20 @@ import flssLoanFacetsQuery from '@/graphql/query/flssLoanFacetsQuery.graphql';
 
 describe('flssUtils.js', () => {
 	describe('fetchFacets', () => {
-		const result = { isoCode: [] };
-		const dataObj = { data: { fundraisingLoans: { facets: result } } };
+		const result = {};
+		const dataObj = { data: result };
 		const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
-		const loanQueryFilters = { any: ['US'] };
-		const apolloVariables = {
-			query: flssLoanFacetsQuery,
-			variables: { filterObject: loanQueryFilters },
-			fetchPolicy: 'network-only',
-		};
+		const filters = { gender: { any: ['FEMALE'] } };
+		const variables = { isoCodeFilters: filters, themeFilters: filters, sectorFilters: filters };
+		const apolloVariables = { query: flssLoanFacetsQuery, variables, fetchPolicy: 'network-only' };
 
 		it('should pass the correct query variables to apollo', async () => {
-			await fetchFacets(apollo, loanQueryFilters);
+			await fetchFacets(apollo, filters, filters, filters);
 			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
 		});
 
 		it('should return the fundraising facets data', async () => {
-			const data = await fetchFacets(apollo, loanQueryFilters);
+			const data = await fetchFacets(apollo, filters, filters, filters);
 			expect(data).toBe(result);
 		});
 	});

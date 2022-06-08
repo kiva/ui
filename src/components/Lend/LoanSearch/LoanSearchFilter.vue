@@ -34,7 +34,11 @@
 					Sectors
 				</h2>
 			</template>
-			<loan-search-sector-filter :sectors="facets.sectors" @updated="handleUpdatedFilters" />
+			<loan-search-sector-filter
+				:sectors="facets.sectors"
+				:sector-ids="loanSearchState.sectorId"
+				@updated="handleUpdatedFilters"
+			/>
 		</kv-accordion-item>
 		<kv-accordion-item id="acc-attributes" :open="false">
 			<template #header>
@@ -42,7 +46,11 @@
 					Attributes
 				</h2>
 			</template>
-			<loan-search-theme-filter :themes="facets.themes" @updated="handleUpdatedFilters" />
+			<loan-search-theme-filter
+				:themes="facets.themes"
+				:theme-names="loanSearchState.theme"
+				@updated="handleUpdatedFilters"
+			/>
 		</kv-accordion-item>
 		<h2 class="tw-text-h4 tw-mt-2">
 			Advanced filters
@@ -96,6 +104,7 @@ export default {
 		 *     {
 		 *       id: 1,
 		 *       name: '',
+		 *       numLoansFundraising: 1,
 		 *     }
 		 *   ],
 		 *   themes: [

@@ -66,6 +66,7 @@ import {
 	applyQueryParams,
 	updateQueryParams,
 	updateSearchState,
+	transformSectors,
 } from '@/util/loanSearchUtils';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -129,6 +130,7 @@ export default {
 			 *     {
 			 *       id: 1,
 			 *       name: '',
+			 *       numLoansFundraising: 1,
 			 *     }
 			 *   ],
 			 *   themes: [
@@ -163,16 +165,16 @@ export default {
 				this.loanSearchState = data?.loanSearchState;
 
 				// Update the query string with the latest loan search state
-				updateQueryParams(this.loanSearchState, this.$router, this.queryType);
+				updateQueryParams(this.loanSearchState, this.$router, this.allFacets, this.queryType);
 
 				// Get filtered facet options from FLSS
 				// TODO: Prevent this from running on every query
-				const { isoCodes, themes } = await runFacetsQueries(this.apollo, this.loanSearchState);
+				const { isoCodes, themes, sectors } = await runFacetsQueries(this.apollo, this.loanSearchState);
 
 				// Merge all facet options with filtered options
 				this.facets = {
 					regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
-					sectors: this.allFacets?.sectorFacets || [],
+					sectors: transformSectors(sectors, this.allFacets?.sectorFacets),
 					themes: transformThemes(themes, this.allFacets?.themeFacets),
 					sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
 				};
