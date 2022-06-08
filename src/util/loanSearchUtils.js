@@ -350,17 +350,17 @@ export function getFlssFilters(loanSearchState) {
  * @returns {Object} The filter facets
  */
 export async function runFacetsQueries(apollo, loanSearchState = {}) {
-	// Filtered ISO codes that match loan results without filtering on ISO code
 	const isoCodeFilters = { ...getFlssFilters(loanSearchState), countryIsoCode: undefined };
-	const isoCodes = (await fetchFacets(apollo, isoCodeFilters))?.isoCode || [];
-
 	const themeFilters = { ...getFlssFilters(loanSearchState), theme: undefined };
-	const themes = (await fetchFacets(apollo, themeFilters))?.themes || [];
-
 	const sectorFilters = { ...getFlssFilters(loanSearchState), sectorId: undefined };
-	const sectors = (await fetchFacets(apollo, sectorFilters))?.sectorId || [];
 
-	return { isoCodes, themes, sectors };
+	const facets = await fetchFacets(apollo, isoCodeFilters, themeFilters, sectorFilters);
+
+	return {
+		isoCodes: facets?.isoCodes?.facets?.isoCode ?? [],
+		themes: facets?.themes?.facets?.themes ?? [],
+		sectors: facets?.sectors?.facets?.sectorId ?? [],
+	};
 }
 
 /**

@@ -530,13 +530,16 @@ describe('loanSearchUtils.js', () => {
 
 	describe('runFacetsQueries', () => {
 		let spyFetchFacets;
-		const isoCode = [{ key: 'iso', value: 1 }];
-		const themes = [{ key: 'theme', value: 1 }];
-		const sectorId = [{ key: 'sector', value: 1 }];
+		const isoCodeFacets = [{ key: 'iso', value: 1 }];
+		const themeFacets = [{ key: 'theme', value: 1 }];
+		const sectorFacets = [{ key: 'sector', value: 1 }];
+		const isoCodes = { facets: { isoCode: isoCodeFacets } };
+		const themes = { facets: { themes: themeFacets } };
+		const sectors = { facets: { sectorId: sectorFacets } };
 
 		beforeEach(() => {
 			spyFetchFacets = jest.spyOn(flssUtils, 'fetchFacets')
-				.mockImplementation(() => Promise.resolve({ isoCode, themes, sectorId }));
+				.mockImplementation(() => Promise.resolve({ isoCodes, themes, sectors }));
 		});
 
 		afterEach(jest.restoreAllMocks);
@@ -544,9 +547,14 @@ describe('loanSearchUtils.js', () => {
 		it('should return facets', async () => {
 			const apollo = {};
 			const result = await runFacetsQueries(apollo);
-			expect(spyFetchFacets).toHaveBeenCalledWith(apollo, { countryIsoCode: undefined });
-			expect(spyFetchFacets).toHaveBeenCalledWith(apollo, { theme: undefined });
-			expect(result).toEqual({ isoCodes: isoCode, themes, sectors: sectorId });
+			expect(spyFetchFacets).toHaveBeenCalledWith(
+				apollo,
+				{ countryIsoCode: undefined },
+				{ theme: undefined },
+				{ sectorId: undefined }
+			);
+			expect(spyFetchFacets).toHaveBeenCalledTimes(1);
+			expect(result).toEqual({ isoCodes: isoCodeFacets, themes: themeFacets, sectors: sectorFacets });
 		});
 	});
 
