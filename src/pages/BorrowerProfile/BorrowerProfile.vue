@@ -100,6 +100,10 @@ const pageQuery = gql`
 				key
 				value
 			}
+			requireDepositsMatchedLoans: uiExperimentSetting(key: "require_deposits_matched_loans") {
+				key
+				value
+			}
 		}
 		lend {
 			loan(id: $loanId) {
@@ -235,7 +239,8 @@ export default {
 			use: '',
 			description: '',
 			completeLoanExpActive: false,
-			loanFundraisingInfo: {}
+			loanFundraisingInfo: {},
+			requireDepositsMatchedLoans: false,
 		};
 	},
 	apollo: {
@@ -252,6 +257,7 @@ export default {
 					return Promise.all([
 						// eslint-disable-next-line max-len
 						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
+						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 					]);
 				});
 		},
@@ -283,6 +289,19 @@ export default {
 
 			const diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = diffInDays <= 3;
+
+			const matchedLoansExperiment = this.apollo.readFragment({
+				id: 'Experiment:require_deposits_matched_loans',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.requireDepositsMatchedLoans = matchedLoansExperiment.version === 'b';
+			if (matchedLoansExperiment.version) {
+				this.$kvTrackEvent(
+					'Basket',
+					'EXP-CORE-615-May-2022',
+					matchedLoansExperiment.version
+				);
+			}
 
 			// EXP-CORE-607-May-2022
 			const completeLoanEXP = this.apollo.readFragment({
