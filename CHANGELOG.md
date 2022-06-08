@@ -1,3 +1,10 @@
+### [2.174.1](https://github.com/kiva/ui/compare/v2.174.0...v2.174.1) (2022-06-08)
+
+
+### Bug Fixes
+
+* typo in tag name ([e32a05b](https://github.com/kiva/ui/commit/e32a05b1b1c24bfd24037f8a54b5c7ea5b03045f))
+
 ## [2.174.0](https://github.com/kiva/ui/compare/v2.173.3...v2.174.0) (2022-06-08)
 
 
