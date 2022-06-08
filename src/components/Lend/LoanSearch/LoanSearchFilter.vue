@@ -104,6 +104,7 @@ export default {
 		 *     {
 		 *       id: 1,
 		 *       name: '',
+		 *       numLoansFundraising: 1,
 		 *     }
 		 *   ],
 		 *   themes: [

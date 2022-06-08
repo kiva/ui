@@ -9,7 +9,8 @@ import {
 	runLoansQuery,
 	fetchLoanFacets,
 	transformThemes,
-	getUpdatedThemes,
+	transformSectors,
+	getUpdatedNumLoansFundraising,
 	getCheckboxLabel,
 	applyQueryParams,
 	updateQueryParams,
@@ -82,6 +83,12 @@ const mockTransformedSouthAmerica = (
 });
 
 const mockTransformedRegions = [mockTransformedMiddleEast(), mockTransformedSouthAmerica()];
+
+const mockASector = (numLoansFundraising = 6) => ({ id: 7, name: 'c', numLoansFundraising });
+
+const mockBSector = (numLoansFundraising = 3) => ({ id: 2, name: 'd', numLoansFundraising });
+
+const mockTransformedSectors = [mockASector(), mockBSector()];
 
 const mockATheme = (numLoansFundraising = 5) => ({ id: 6, name: 'a', numLoansFundraising });
 
@@ -276,6 +283,76 @@ describe('loanSearchUtils.js', () => {
 		});
 	});
 
+	describe('transformSectors', () => {
+		it('should handle empty', () => {
+			expect(transformSectors([])).toEqual([]);
+		});
+
+		it('should filter, transform, and sort', () => {
+			const mockFilteredSectors = [
+				{
+					key: 2,
+					value: 3,
+				},
+				{
+					key: 7,
+					value: 6,
+				},
+			];
+
+			const mockAllSectors = [
+				{
+					id: 2,
+					name: 'd',
+				},
+				{
+					id: 8,
+					name: 'f',
+				},
+				{
+					id: 7,
+					name: 'c',
+				},
+			];
+
+			const result = transformSectors(mockFilteredSectors, mockAllSectors);
+
+			expect(result).toEqual(mockTransformedSectors);
+		});
+
+		it('should filter transform themes with number casting', () => {
+			const mockFilteredSectors = [
+				{
+					key: '2',
+					value: 3,
+				},
+				{
+					key: '7',
+					value: 6,
+				},
+			];
+
+			const mockAllSectors = [
+				{
+					id: 2,
+					name: 'd',
+				},
+				{
+					id: 8,
+					name: 'f',
+				},
+				{
+					id: 7,
+					name: 'c',
+				},
+			];
+
+			const result = transformSectors(mockFilteredSectors, mockAllSectors);
+
+			expect(result).toEqual(mockTransformedSectors);
+		});
+	});
+
 	describe('transformThemes', () => {
 		it('should handle empty', () => {
 			expect(transformThemes([])).toEqual([]);
@@ -375,23 +452,36 @@ describe('loanSearchUtils.js', () => {
 		});
 	});
 
-	describe('getUpdatedThemes', () => {
+	describe('getUpdatedNumLoansFundraising', () => {
 		it('should handle undefined and empty', () => {
-			expect(getUpdatedThemes(undefined, [])).toEqual([]);
-			expect(getUpdatedThemes([], [])).toEqual([]);
+			expect(getUpdatedNumLoansFundraising(undefined, [])).toEqual([]);
+			expect(getUpdatedNumLoansFundraising([], [])).toEqual([]);
 		});
 
-		it('should update numLoansFundraising', () => {
+		it('should update theme numLoansFundraising', () => {
 			const nextA = mockATheme(9);
 
-			expect(getUpdatedThemes(mockTransformedThemes, [nextA])).toEqual([nextA, mockBTheme(0)]);
+			expect(getUpdatedNumLoansFundraising(mockTransformedThemes, [nextA])).toEqual([nextA, mockBTheme(0)]);
 		});
 
 		it('should add missing themes', () => {
 			const a = mockATheme();
 			const nextB = mockBTheme();
 
-			expect(getUpdatedThemes([a], [a, nextB])).toEqual([a, nextB]);
+			expect(getUpdatedNumLoansFundraising([a], [a, nextB])).toEqual([a, nextB]);
+		});
+
+		it('should update sector numLoansFundraising', () => {
+			const nextA = mockASector(9);
+
+			expect(getUpdatedNumLoansFundraising(mockTransformedSectors, [nextA])).toEqual([nextA, mockBSector(0)]);
+		});
+
+		it('should add missing sectors', () => {
+			const a = mockASector();
+			const nextB = mockBSector();
+
+			expect(getUpdatedNumLoansFundraising([a], [a, nextB])).toEqual([a, nextB]);
 		});
 	});
 
@@ -442,10 +532,11 @@ describe('loanSearchUtils.js', () => {
 		let spyFetchFacets;
 		const isoCode = [{ key: 'iso', value: 1 }];
 		const themes = [{ key: 'theme', value: 1 }];
+		const sectorId = [{ key: 'sector', value: 1 }];
 
 		beforeEach(() => {
 			spyFetchFacets = jest.spyOn(flssUtils, 'fetchFacets')
-				.mockImplementation(() => Promise.resolve({ isoCode, themes }));
+				.mockImplementation(() => Promise.resolve({ isoCode, themes, sectorId }));
 		});
 
 		afterEach(jest.restoreAllMocks);
@@ -455,7 +546,7 @@ describe('loanSearchUtils.js', () => {
 			const result = await runFacetsQueries(apollo);
 			expect(spyFetchFacets).toHaveBeenCalledWith(apollo, { countryIsoCode: undefined });
 			expect(spyFetchFacets).toHaveBeenCalledWith(apollo, { theme: undefined });
-			expect(result).toEqual({ isoCodes: isoCode, themes });
+			expect(result).toEqual({ isoCodes: isoCode, themes, sectors: sectorId });
 		});
 	});
 

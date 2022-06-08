@@ -168,6 +168,26 @@ export function transformIsoCodes(filteredIsoCodes, allCountryFacets = []) {
 }
 
 /**
+ * Transforms filtered sectors into a form usable by the filters
+ *
+ * @param {Array<Object>} filteredSectors The sector IDs from FLSS
+ * @param {Array<Object>} allSectors The sectors from lend API
+ * @returns {Array<Object>} Sectors with number of loans fundraising
+ */
+export function transformSectors(filteredSectors, allSectors = []) {
+	const transformed = [];
+
+	filteredSectors.forEach(({ key: id, value: numLoansFundraising }) => {
+		const lookupSector = allSectors.find(s => s.id === +id);
+		if (!lookupSector) return;
+		const sector = { id: lookupSector.id, name: lookupSector.name, numLoansFundraising };
+		transformed.push(sector);
+	});
+
+	return orderBy(transformed, 'name');
+}
+
+/**
  * Transforms filtered themes into a form usable by the filters
  *
  * @param {Array<Object>} filteredThemes The themes from FLSS
@@ -251,56 +271,35 @@ export function getUpdatedRegions(regions, nextRegions) {
 }
 
 /**
- * Gets an updated themes list to display in the filter with updated numLoansFundraising
+ * Gets an updated items list to display in the filter with updated numLoansFundraising. Expected items and next format:
+ * [{
+ *   id: 1,
+ *   name: '',
+ *   numLoansFundraising: 1,
+ * }]
  *
- * @param {Array<Object>} themes The themes previously displayed in the filter
- * @param {Array<Object>} nextThemes The themes returned by the FLSS facets query
- * @returns {Array<Object>} The updated themes list
+ * @param {Array<Object>} items The items previously displayed in the filter
+ * @param {Array<Object>} next The items returned by the FLSS facets query
+ * @returns {Array<Object>} The updated items list
  */
-export function getUpdatedThemes(themes, nextThemes) {
-	// Default to next
-	if (!themes) return nextThemes;
-
+export function getUpdatedNumLoansFundraising(items, next) {
 	const updated = [];
 
 	// Get updated numLoansFundraising
-	themes.forEach(theme => {
-		const nextTheme = nextThemes.find(a => a.id === theme.id);
-		const updatedTheme = {
-			...theme,
-			numLoansFundraising: nextTheme?.numLoansFundraising || 0,
+	items?.forEach(item => {
+		const nextItem = next.find(a => a.id === item.id);
+		const updatedItem = {
+			...item,
+			numLoansFundraising: nextItem?.numLoansFundraising || 0,
 		};
 
-		updated.push(updatedTheme);
+		updated.push(updatedItem);
 	});
 
-	// Add missing themes that have been added since previous query
-	nextThemes.forEach(theme => {
-		if (!updated.find(a => a.id === theme.id)) {
-			updated.push({ ...theme });
-		}
-	});
-
-	return orderBy(updated, 'name');
-}
-
-/**
- * Gets an updated sectors list to display in the filter
- *
- * @param {Array<Object>} sectors The sectors previously displayed in the filter
- * @param {Array<Object>} nextSectors The sectors returned by the FLSS facets query
- * @returns {Array<Object>} The updated sectors list
- */
-export function getUpdatedSectors(sectors, nextSectors) {
-	// Default to next
-	if (!sectors) return nextSectors;
-
-	const updated = [];
-
-	// Add missing sectors that have been added since previous query
-	nextSectors.forEach(sector => {
-		if (!updated.find(a => a.id === sector.id)) {
-			updated.push({ ...sector });
+	// Add missing items that have been added since previous query
+	next?.forEach(item => {
+		if (!updated.find(a => a.id === item.id)) {
+			updated.push({ ...item });
 		}
 	});
 
@@ -358,7 +357,10 @@ export async function runFacetsQueries(apollo, loanSearchState = {}) {
 	const themeFilters = { ...getFlssFilters(loanSearchState), theme: undefined };
 	const themes = (await fetchFacets(apollo, themeFilters))?.themes || [];
 
-	return { isoCodes, themes };
+	const sectorFilters = { ...getFlssFilters(loanSearchState), sectorId: undefined };
+	const sectors = (await fetchFacets(apollo, sectorFilters))?.sectorId || [];
+
+	return { isoCodes, themes, sectors };
 }
 
 /**

@@ -21,5 +21,4 @@ export const Default = story({ sectors: items() });
 
 export const Selected = story({ sectors: items(), sectorIds: items().slice(0, 2).map(t => t.id) });
 
-// TODO: enable story when updating disabled status of sector filter is implemented
-// export const NoneFundraising = story({ sectors: items(true) });
+export const NoneFundraising = story({ sectors: items(true) });

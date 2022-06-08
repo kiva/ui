@@ -9,6 +9,10 @@ query flssLoanFacets($filterObject: [FundraisingLoanSearchFilterInput!]) {
 				key
 				value
 			}
+			sectorId {
+				key
+				value
+			}
 		}
   	}
 }

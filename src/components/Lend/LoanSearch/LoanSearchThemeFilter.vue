@@ -8,7 +8,7 @@
 
 <script>
 import KvCheckboxList from '@/components/Kv/KvCheckboxList';
-import { getUpdatedThemes, getCheckboxLabel } from '@/util/loanSearchUtils';
+import { getUpdatedNumLoansFundraising, getCheckboxLabel } from '@/util/loanSearchUtils';
 
 export default {
 	name: 'LoanSearchThemeFilter',
@@ -41,11 +41,11 @@ export default {
 	},
 	computed: {
 		items() {
-			return this.displayedThemes.map(c => ({
+			return this.displayedThemes.map(t => ({
 				// TODO: change to theme IDs when the theme ID filter is on prod
-				value: c.name.toUpperCase(),
-				title: getCheckboxLabel(c),
-				disabled: c.numLoansFundraising === 0
+				value: t.name.toUpperCase(),
+				title: getCheckboxLabel(t),
+				disabled: t.numLoansFundraising === 0
 			}));
 		},
 	},
@@ -56,7 +56,7 @@ export default {
 	},
 	watch: {
 		themes(nextThemes) {
-			this.displayedThemes = getUpdatedThemes(this.displayedThemes, nextThemes);
+			this.displayedThemes = getUpdatedNumLoansFundraising(this.displayedThemes, nextThemes);
 		},
 		themeNames(next) {
 			if ([...next].sort().toString() !== [...this.selectedThemeNames].sort().toString()) {

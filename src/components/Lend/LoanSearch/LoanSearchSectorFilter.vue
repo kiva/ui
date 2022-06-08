@@ -8,7 +8,7 @@
 
 <script>
 import KvCheckboxList from '@/components/Kv/KvCheckboxList';
-import { getUpdatedSectors } from '@/util/loanSearchUtils';
+import { getUpdatedNumLoansFundraising, getCheckboxLabel } from '@/util/loanSearchUtils';
 
 export default {
 	name: 'LoanSearchSectorFilter',
@@ -18,12 +18,11 @@ export default {
 	props: {
 		/**
 		 * The sectors list to display has checkboxes. Expected format:
-		 *   sectors: [
-		 *     {
-		 *       id: 1,
-		 *       name: '',
-		 *     }
-		 *   ],
+		 * [{
+		 *   id: 1,
+		 *   name: '',
+		 *   numLoansFundraising: 1,
+		 * }],
 		 */
 		sectors: {
 			type: Array,
@@ -42,7 +41,11 @@ export default {
 	},
 	computed: {
 		items() {
-			return this.displayedSectors.map(s => ({ value: s.id.toString(), title: s.name }));
+			return this.displayedSectors.map(s => ({
+				value: s.id.toString(),
+				title: getCheckboxLabel(s),
+				disabled: s.numLoansFundraising === 0
+			}));
 		},
 		selectedValues() {
 			return this.selectedSectorIds.map(s => s.toString());
@@ -55,7 +58,7 @@ export default {
 	},
 	watch: {
 		sectors(nextSectors) {
-			this.displayedSectors = getUpdatedSectors(this.displayedSectors, nextSectors);
+			this.displayedSectors = getUpdatedNumLoansFundraising(this.displayedSectors, nextSectors);
 		},
 		sectorIds(next) {
 			if ([...next].sort().toString() !== [...this.selectedSectorIds].sort().toString()) {
