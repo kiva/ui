@@ -54,10 +54,12 @@
 				@updated="handleUpdatedFilters"
 			/>
 		</kv-accordion-item>
-		<h2 class="tw-text-h4 tw-mt-2">
-			Advanced filters
-			<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1 tw-absolute" />
-		</h2>
+		<button class="tw-mt-2 tw-h-[22px]" @click="advancedFilters">
+			<h2 class="tw-text-h4 tw-flex tw-items-center">
+				Advanced filters
+				<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1" />
+			</h2>
+		</button>
 	</div>
 </template>
 
@@ -142,6 +144,11 @@ export default {
 			this.$emit('reset');
 
 			this.$kvTrackEvent('Lending', 'click-reset-all-filters', 'Reset all');
+		},
+		advancedFilters() {
+			this.$kvTrackEvent('Lending', 'click-advanced-filters', 'Advanced filters');
+
+			window.location.href = '/lend?kexpn=lend_filter.lend_filter_versions&kexpv=c';
 		},
 		handleUpdatedFilters(payload) {
 			this.$emit('updated', payload);
