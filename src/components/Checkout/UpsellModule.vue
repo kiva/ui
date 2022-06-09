@@ -114,6 +114,7 @@ export default {
 @media screen and (min-width: 734px) {
 	.upsellModule {
 		gap: 32px;
+
 		.borrowerImage {
 			width: 128px;
 		}
@@ -123,6 +124,7 @@ export default {
 @media screen and (max-width: 733px) {
 	.upsellModule {
 		gap: 8px;
+
 		.borrowerImage {
 			width: 48px;
 		}
