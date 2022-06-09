@@ -1,3 +1,18 @@
+## [2.176.0](https://github.com/kiva/ui/compare/v2.175.0...v2.176.0) (2022-06-09)
+
+
+### Features
+
+* fix lint ([c9b3968](https://github.com/kiva/ui/commit/c9b39686dcd9c7b0aa283c818aa38c788fbb56a0))
+* init upsell loans on checkout ([4297474](https://github.com/kiva/ui/commit/4297474e949aab9c112a53f95f0d0712d8cfe2ac))
+
+
+### Bug Fixes
+
+* merge conflict ([6e1b9f0](https://github.com/kiva/ui/commit/6e1b9f0f20eb8c20d29ab9bfeb11a71d6fc5f6d2))
+* update styles ([45e0b15](https://github.com/kiva/ui/commit/45e0b15293d4e627aa31f427e2d6d422c6385dd0))
+* update styles and fix NaN ([6b9c302](https://github.com/kiva/ui/commit/6b9c3027f148c831a790b1b4edc539aba772daab))
+
 ## [2.175.0](https://github.com/kiva/ui/compare/v2.174.1...v2.175.0) (2022-06-08)
 
 
