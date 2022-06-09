@@ -339,7 +339,8 @@ export default {
 			showVerifyRemovePromoCredit: false,
 			isUpsellsExperimentEnabled: false,
 			upsellLoan: {},
-			showUpsellModule: true
+			showUpsellModule: true,
+			requireDepositsMatchedLoans: false,
 		};
 	},
 	apollo: {
@@ -373,7 +374,8 @@ export default {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 						client.query({ query: experimentQuery, variables: { id: 'upsells_checkout' } }),
-						client.query({ query: upsellQuery })
+						client.query({ query: upsellQuery }),
+						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 					]);
 				});
 		},
