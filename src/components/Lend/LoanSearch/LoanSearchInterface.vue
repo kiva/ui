@@ -147,7 +147,9 @@ export default {
 			totalCount: 0,
 			isLightboxVisible: false,
 			loanSearchState: {},
-			queryType: FLSS_QUERY_TYPE
+			queryType: FLSS_QUERY_TYPE,
+			// Holds comma-separated list of loan IDs from the query results
+			trackedHits: undefined,
 		};
 	},
 	async mounted() {
@@ -185,10 +187,27 @@ export default {
 				const loans = await runLoansQuery(this.apollo, this.loanSearchState);
 				this.loans = loans.loans;
 				this.totalCount = loans.totalCount;
+
+				// Add analytics event for loans query result
+				this.trackLoans();
 			}
 		});
 	},
 	methods: {
+		trackLoans() {
+			// Check for matching hits, for example when sorting a single page of results
+			const hits = this.loans.map(l => l.id).sort().join();
+			if (hits !== this.trackedHits) {
+				this.$kvTrackEvent(
+					'Lending',
+					hits ? 'loans-shown' : 'zero-loans-shown',
+					hits ? 'loan-ids' : undefined,
+					hits || undefined
+				);
+
+				this.trackedHits = hits;
+			}
+		},
 		toggleLightbox(toggle) {
 			this.isLightboxVisible = toggle;
 		},
