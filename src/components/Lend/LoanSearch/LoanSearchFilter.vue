@@ -1,9 +1,11 @@
 <template>
 	<div class="tw-bg-white tw-border-primary-inverse tw-rounded tw-p-3 filter-min-w tw-relative">
-		<kv-material-icon :icon="mdiClose" class="tw-w-2.5 tw-h-2.5" />
-		<p class="tw-text-h4 tw-inline-block tw-ml-3 tw-absolute">
-			Reset All
-		</p>
+		<button class="tw-flex tw-items-center tw-mb-2 tw-h-[22px]" @click="resetFilters">
+			<kv-material-icon :icon="mdiClose" class="tw-w-2.5 tw-h-2.5" />
+			<p class="tw-text-h4 tw-inline-block tw-ml-3">
+				Reset All
+			</p>
+		</button>
 		<hr class="tw-border-tertiary tw-my-1">
 		<loan-search-gender-filter :gender="loanSearchState.gender" @updated="handleUpdatedFilters" />
 		<hr class="tw-border-tertiary tw-my-1">
@@ -136,8 +138,10 @@ export default {
 		};
 	},
 	methods: {
-		resetFilter() {
-			// this.$emit('reset');
+		resetFilters() {
+			this.$emit('reset');
+
+			this.$kvTrackEvent('Lending', 'click-reset-all-filters', 'Reset all');
 		},
 		handleUpdatedFilters(payload) {
 			this.$emit('updated', payload);

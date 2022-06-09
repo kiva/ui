@@ -18,6 +18,7 @@
 						:facets="facets"
 						:loan-search-state="loanSearchState"
 						@updated="handleUpdatedFilters"
+						@reset="handleResetFilters"
 					/>
 				</kv-lightbox>
 			</div>
@@ -26,6 +27,7 @@
 					:facets="facets"
 					:loan-search-state="loanSearchState"
 					@updated="handleUpdatedFilters"
+					@reset="handleResetFilters"
 				/>
 			</div>
 		</div>
@@ -192,11 +194,15 @@ export default {
 		toggleLightbox(toggle) {
 			this.isLightboxVisible = toggle;
 		},
+		updateState(filters = {}) {
+			updateSearchState(this.apollo, filters, this.allFacets, this.queryType, this.loanSearchState);
+		},
 		handleUpdatedFilters(filters) {
-			const updatedFilters = { ...this.loanSearchState, ...filters };
-
-			updateSearchState(this.apollo, updatedFilters, this.allFacets, this.queryType, this.loanSearchState);
-		}
+			this.updateState({ ...this.loanSearchState, ...filters });
+		},
+		handleResetFilters() {
+			this.updateState();
+		},
 	},
 	watch: {
 		$route(to) {
