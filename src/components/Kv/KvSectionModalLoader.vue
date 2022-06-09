@@ -36,7 +36,8 @@ export default {
 		},
 		size: {
 			type: String,
-			default: 'medium'
+			default: 'medium',
+			validator: value => ['small', 'medium', 'large'].includes(value)
 		},
 	},
 	data() {
