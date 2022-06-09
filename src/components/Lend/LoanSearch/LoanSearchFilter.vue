@@ -5,7 +5,7 @@
 			Reset All
 		</p>
 		<hr class="tw-border-tertiary tw-my-1">
-		<loan-search-gender-filter @updated="handleUpdatedFilters" />
+		<loan-search-gender-filter :gender="loanSearchState.gender" @updated="handleUpdatedFilters" />
 		<hr class="tw-border-tertiary tw-my-1">
 		<kv-accordion-item id="acc-sort-by" :open="false">
 			<template #header>
@@ -15,7 +15,8 @@
 			</template>
 			<loan-search-sort-by
 				:all-sort-options="facets.sortOptions"
-				:initial-sort="null"
+				:sort="loanSearchState.sortBy"
+				:query-type="queryType"
 				@updated="handleUpdatedFilters"
 			/>
 		</kv-accordion-item>
@@ -33,18 +34,11 @@
 					Sectors
 				</h2>
 			</template>
-			<fieldset>
-				<legend>Sector</legend>
-				<kv-checkbox
-					class="tw-text-left"
-					v-for="sectorBox in facets.sectors"
-					name="sectorBox.name"
-					:key="sectorBox.id"
-					:value="sectorBox.name"
-				>
-					{{ sectorBox.name }}
-				</kv-checkbox>
-			</fieldset>
+			<loan-search-sector-filter
+				:sectors="facets.sectors"
+				:sector-ids="loanSearchState.sectorId"
+				@updated="handleUpdatedFilters"
+			/>
 		</kv-accordion-item>
 		<kv-accordion-item id="acc-attributes" :open="false">
 			<template #header>
@@ -52,7 +46,11 @@
 					Attributes
 				</h2>
 			</template>
-			<loan-search-theme-filter :themes="facets.themes" @updated="handleUpdatedFilters" />
+			<loan-search-theme-filter
+				:themes="facets.themes"
+				:theme-names="loanSearchState.theme"
+				@updated="handleUpdatedFilters"
+			/>
 		</kv-accordion-item>
 		<h2 class="tw-text-h4 tw-mt-2">
 			Advanced filters
@@ -66,21 +64,21 @@ import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiClose, mdiArrowRight } from '@mdi/js';
 import LoanSearchGenderFilter from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
 import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
+import LoanSearchSectorFilter from '@/components/Lend/LoanSearch/LoanSearchSectorFilter';
 import LoanSearchThemeFilter from '@/components/Lend/LoanSearch/LoanSearchThemeFilter';
 import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
-import { updateSearchState } from '@/util/loanSearchUtils';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import { FLSS_QUERY_TYPE } from '@/util/loanSearchUtils';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'LoanSearchFilter',
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		KvCheckbox,
 		KvAccordionItem,
 		KvMaterialIcon,
 		LoanSearchGenderFilter,
 		LoanSearchLocationFilter,
+		LoanSearchSectorFilter,
 		LoanSearchThemeFilter,
 		LoanSearchSortBy,
 	},
@@ -106,6 +104,7 @@ export default {
 		 *     {
 		 *       id: 1,
 		 *       name: '',
+		 *       numLoansFundraising: 1,
 		 *     }
 		 *   ],
 		 *   themes: [
@@ -120,26 +119,28 @@ export default {
 		facets: {
 			type: Object,
 			required: true
+		},
+		loanSearchState: {
+			type: Object,
+			default: () => {}
+		},
+		queryType: {
+			type: String,
+			default: FLSS_QUERY_TYPE
 		}
 	},
 	data() {
 		return {
 			mdiClose,
 			mdiArrowRight,
-			queryFilters: {},
 		};
 	},
 	methods: {
 		resetFilter() {
-			// this.queryFilters = {};
+			// this.$emit('reset');
 		},
 		handleUpdatedFilters(payload) {
-			this.queryFilters = { ...this.queryFilters, ...payload };
-		}
-	},
-	watch: {
-		async queryFilters(newFilters) {
-			await updateSearchState(this.apollo, newFilters);
+			this.$emit('updated', payload);
 		}
 	},
 };

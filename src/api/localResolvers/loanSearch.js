@@ -1,5 +1,4 @@
 import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
-// import gql from 'graphql-tag';
 
 // eslint-disable-next-line no-underscore-dangle
 const __typename = 'LoanSearchState';
@@ -24,14 +23,14 @@ export default () => {
 				gender: '', // expects a string
 				countryIsoCode: [], // expects an array of strings
 				sectorId: [], // expects an array of ints
-				sortBy: null, // expects a string
+				sortBy: null, // expects a string that matches the SortEnum
 				theme: [], // expects an array of strings
 				__typename,
 			},
 		},
 		resolvers: {
 			Query: {
-				loanSearchState(_, args, { cache }) {
+				loanSearchState(_, _args, { cache }) {
 					// Retrieve current LoanSearchState from the Apollo cache
 					// - If it's missing the default values will be used to create it
 					const cachedData = cache.readQuery({ query: loanSearchStateQuery });

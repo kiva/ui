@@ -236,6 +236,7 @@ module.exports = [
 		},
 	},
 	{
+		name: 'filter-alpha',
 		path: '/lend/filter-alpha',
 		component: () => import('@/pages/Lend/LoanSearchPage'),
 		meta: {
@@ -243,6 +244,7 @@ module.exports = [
 		}
 	},
 	{
+		name: 'borrowerProfile',
 		path: '/lend-beta/:id',
 		component: () => import('@/pages/BorrowerProfile/BorrowerProfile'),
 		meta: {

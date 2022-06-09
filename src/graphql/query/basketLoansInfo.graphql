@@ -1,19 +1,8 @@
-query fundedBorrowerProfile(
+query basketLoansInfo(
 	$id: Int!
-	$basketId: String
 	$imgDefaultSize: String = "w480h360"
 	$imgRetinaSize: String = "w960h720"
 ) {
-	general {
-		customSort: uiExperimentSetting(key: "funded_lyml_sort") {
-			key
-			value
-		}
-		newFundedBorrowerPage: uiExperimentSetting(key: "new_funded_borrower_page") {
-			key
-			value
-		}
-	}
 	lend {
 		loan(id: $id) {
 			id
@@ -42,17 +31,6 @@ query fundedBorrowerProfile(
 			sector {
 				id
 				name
-			}
-		}
-	}
-	shop(basketId: $basketId) {
-		id
-		basket {
-			id
-			items {
-				values {
-					id
-				}
 			}
 		}
 	}

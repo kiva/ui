@@ -160,6 +160,8 @@ export default {
 		// if we have no loans due to being funded, fetch some in the client
 		if (this.loans && this.loans.length <= 0) {
 			this.fetchMoreLoans();
+		} else {
+			this.$emit('loaded');
 		}
 	},
 	methods: {
@@ -189,6 +191,7 @@ export default {
 				// eslint-disable-next-line prefer-destructuring
 				this.loan = this.loans[0];
 				this.loading = false;
+				this.$emit('loaded');
 			} else if (this.queryOffset <= 20) {
 				// allow up to 4 extra queries to get eligible loans
 				this.queryOffset += 4;
@@ -197,6 +200,7 @@ export default {
 				// fallback for 20 funded loans is to just show a funded loan
 				this.loan = this.fundedLoans[this.fundedLoans.length - 1];
 				this.loading = false;
+				this.$emit('loaded');
 			}
 		},
 		testFundedStatus(loan) {

@@ -17,8 +17,6 @@ const story = (args = {}) => {
 
 export const Default = story();
 
-export const Both = story({ gender: 'both' });
-
 export const Female = story({ gender: 'female' });
 
 export const Male = story({ gender: 'male' });

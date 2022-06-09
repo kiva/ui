@@ -72,6 +72,7 @@ import {
 } from 'date-fns';
 import gql from 'graphql-tag';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
@@ -92,6 +93,14 @@ const pageQuery = gql`
 	query borrowerProfileMeta($loanId: Int!) {
 		general {
 			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
+				key
+				value
+			}
+			bpCompleteLoan: uiExperimentSetting(key: "bp_complete_loan") {
+				key
+				value
+			}
+			requireDepositsMatchedLoans: uiExperimentSetting(key: "require_deposits_matched_loans") {
 				key
 				value
 			}
@@ -122,6 +131,11 @@ const pageQuery = gql`
 				status
 				use
 				description
+				loanFundraisingInfo{
+					fundedAmount
+					isExpiringSoon
+					reservedAmount
+				}
 			}
 		}
 	}
@@ -224,11 +238,29 @@ export default {
 			status: '',
 			use: '',
 			description: '',
+			completeLoanExpActive: false,
+			loanFundraisingInfo: {},
+			requireDepositsMatchedLoans: false,
 		};
 	},
 	apollo: {
 		query: pageQuery,
-		preFetch: true,
+		preFetch(config, client, { route }) {
+			return client
+				.query({
+					query: pageQuery,
+					variables: {
+						loanId: Number(route.params?.id ?? 0),
+					},
+				})
+				.then(() => {
+					return Promise.all([
+						// eslint-disable-next-line max-len
+						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
+						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
+					]);
+				});
+		},
 		preFetchVariables({ route }) {
 			return {
 				loanId: Number(route?.params?.id ?? 0),
@@ -253,9 +285,40 @@ export default {
 			this.status = loan?.status ?? '';
 			this.use = loan?.use ?? '';
 			this.description = loan?.description ?? '';
+			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
 
 			const diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = diffInDays <= 3;
+
+			const matchedLoansExperiment = this.apollo.readFragment({
+				id: 'Experiment:require_deposits_matched_loans',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.requireDepositsMatchedLoans = matchedLoansExperiment.version === 'b';
+			if (matchedLoansExperiment.version) {
+				this.$kvTrackEvent(
+					'Basket',
+					'EXP-CORE-615-May-2022',
+					matchedLoansExperiment.version
+				);
+			}
+
+			// EXP-CORE-607-May-2022
+			const completeLoanEXP = this.apollo.readFragment({
+				id: 'Experiment:bp_complete_loan',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			if (completeLoanEXP.version) {
+				if (completeLoanEXP.version === 'b' && this.amountLeft < 100) {
+					this.completeLoanExpActive = true;
+				}
+				this.$kvTrackEvent(
+					'Borrower Profile',
+					'EXP-CORE-607-May-2022',
+					completeLoanEXP.version
+				);
+			}
 		},
 	},
 	mounted() {
@@ -298,6 +361,9 @@ export default {
 		},
 		showUrgencyExp() {
 			return this.hasThreeDaysOrLessLeft && this.isUrgencyExpVersionShown;
+		},
+		amountLeft() {
+			return this.loanAmount - this.loanFundraisingInfo.fundedAmount;
 		}
 	},
 	created() {

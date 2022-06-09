@@ -1,8 +1,9 @@
 <template>
-	<div class="tw-flex tw-items-center tw-justify-center tw-bg-brand tw-py-1 generic-banner">
+	<div class="tw-flex tw-items-center tw-justify-center tw-bg-brand tw-py-1 tw-pl-1.5 generic-banner">
 		<kv-icon
+			v-if="iconKey"
 			:name="iconKey"
-			class=" tw-fill-current tw-text-white tw-h-3 tw-w-3 tw-max-w-3 tw-my-0 tw-mx-1.5"
+			class=" tw-fill-current tw-text-white tw-h-3 tw-w-3 tw-max-w-3 tw-my-0 tw-mr-1.5"
 		/>
 		<span class="text-center">
 			<component
@@ -42,7 +43,7 @@ export default {
 	props: {
 		iconKey: {
 			type: String,
-			default: 'info'
+			default: ''
 		},
 		promoBannerContent: {
 			type: Object,

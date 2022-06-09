@@ -8,6 +8,10 @@ query checkoutSettings($basketId: String) {
 			key
 			value
 		}
+		requireDepositsMatchedLoans: uiExperimentSetting(key: "require_deposits_matched_loans") {
+			key
+			value
+		}
 	}
 	shop (basketId: $basketId) {
 		id

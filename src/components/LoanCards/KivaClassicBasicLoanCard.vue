@@ -133,8 +133,8 @@
 			class="tw-rounded tw-self-start" :style="{width: '9rem', height: '3rem'}"
 		/>
 
-		<kv-button
-			v-if="!isLoading && !allSharesReserved"
+		<kv-ui-button
+			v-if="!isLoading && !allSharesReserved && !inBorrowerProfilePage"
 			class="tw-mb-2 tw-self-start"
 			:state="`${allSharesReserved ? 'disabled' : ''}`"
 			:to="`/lend/${loanId}`"
@@ -145,7 +145,32 @@
 				class="tw-w-3 tw-h-3 tw-align-middle"
 				:icon="mdiChevronRight"
 			/>
-		</kv-button>
+		</kv-ui-button>
+
+		<!-- Lend button -->
+		<kv-ui-button
+			key="lendButton"
+			v-if="!isLoading && inBorrowerProfilePage && !isAdding"
+			class="tw-inline-flex tw-flex-1"
+			data-testid="bp-lend-cta-lend-button"
+			type="submit"
+			@click="addToBasket"
+			v-kv-track-event="[
+				'Lending',
+				'lend-button-loan-upsell',
+				expLabel
+			]"
+		>
+			{{ ctaButtonText }}
+		</kv-ui-button>
+
+		<kv-ui-button
+			v-if="inBorrowerProfilePage && isAdding"
+			class="tw-inline-flex tw-flex-1"
+			data-testid="bp-lend-cta-adding-to-basket-button"
+		>
+			Adding to basket...
+		</kv-ui-button>
 
 		<!-- If allSharesReserved show message and hide cta button -->
 		<div
@@ -180,8 +205,9 @@ import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import { setLendAmount } from '@/util/basketUtils';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
 const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
@@ -258,6 +284,10 @@ export default {
 		loanId: {
 			type: Number,
 			required: true,
+		},
+		expLabel: {
+			type: String,
+			default: ''
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -270,9 +300,9 @@ export default {
 		LoanUse,
 		LoanProgressGroup,
 		LoanMatchingText,
-		KvButton,
 		KvMaterialIcon,
 		SummaryTag,
+		KvUiButton
 	},
 	data() {
 		return {
@@ -283,6 +313,7 @@ export default {
 			mdiChevronRight,
 			mdiMapMarker,
 			viewportObserver: null,
+			isAdding: false
 		};
 	},
 	computed: {
@@ -355,6 +386,18 @@ export default {
 			}
 			return false;
 		},
+		isLessThan25() {
+			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
+		},
+		inBorrowerProfilePage() {
+			return this.$route.path.includes('funded');
+		},
+		lendAmount() {
+			return this.isLessThan25 ? this.unreservedAmount : 25;
+		},
+		ctaButtonText() {
+			return `Lend ${this.lendAmount} now`;
+		},
 	},
 	methods: {
 		createViewportObserver() {
@@ -409,7 +452,24 @@ export default {
 			this.isLoading = false;
 			this.loan = result.data?.lend?.loan || null;
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
-		}
+		},
+		addToBasket() {
+			this.isAdding = true;
+			setLendAmount({
+				amount: this.lendAmount,
+				apollo: this.apollo,
+				loanId: this.loanId,
+			}).then(() => {
+				this.isAdding = false;
+			}).catch(e => {
+				this.isAdding = false;
+				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
+					? e[0].message
+					: 'There was a problem adding the loan to your basket';
+
+				this.$showTipMsg(msg, 'error');
+			});
+		},
 	},
 	mounted() {
 		this.createViewportObserver();

@@ -15,13 +15,11 @@
 <script>
 import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 
-export const BOTH_KEY = 'both';
 export const BOTH_TITLE = 'All genders';
 export const FEMALE_KEY = 'female';
 export const FEMALE_TITLE = 'Women';
 export const MALE_KEY = 'male';
 export const MALE_TITLE = 'Men';
-const GENDER_KEYS = [BOTH_KEY, FEMALE_KEY, MALE_KEY];
 
 export default {
 	name: 'LoanSearchGenderFilter',
@@ -31,16 +29,16 @@ export default {
 	props: {
 		gender: {
 			type: String,
-			default: BOTH_KEY
+			default: ''
 		}
 	},
 	data() {
 		return {
-			selectedGender: this.gender || BOTH_KEY,
+			selectedGender: this.gender,
 			genderOptions: [
 				{
 					title: BOTH_TITLE,
-					key: BOTH_KEY,
+					key: '',
 				},
 				{
 					title: FEMALE_TITLE,
@@ -54,20 +52,22 @@ export default {
 		};
 	},
 	methods: {
-		setGender(nextGender) {
-			if (nextGender !== this.selectedGender) {
-				this.selectedGender = nextGender;
-				this.$emit('updated', { gender: this.selectedGender === BOTH_KEY ? null : this.selectedGender });
+		setGender(gender) {
+			if (gender !== this.selectedGender) {
+				this.selectedGender = gender;
+				// Return null as default to match GraphQL enum default
+				this.$emit('updated', { gender: this.selectedGender || null });
 			}
 		},
 	},
 	watch: {
-		gender(nextGender) {
-			if (!GENDER_KEYS.includes(nextGender)) {
-				// Fallback to both if the prop isn't a valid key
-				this.selectedGender = BOTH_KEY;
-			} else {
-				this.setGender(nextGender);
+		gender(next) {
+			// The KvRadio component can't handle a null value
+			const nextGender = this.genderOptions.map(g => g.key).includes(next) ? next : '';
+
+			if (nextGender !== this.selectedGender) {
+				// Don't emit when value is changed via the component prop
+				this.selectedGender = nextGender;
 			}
 		},
 	},

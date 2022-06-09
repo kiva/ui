@@ -1,21 +1,22 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
+import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearchUtils';
 
 // Prospective sort options from both APIs (values for flss will expand)
 const allSortOptions = [
-	{ name: 'amountLeft', sortSrc: 'standard' },
-	{ name: 'expiringSoon', sortSrc: 'standard' },
-	{ name: 'loanAmount', sortSrc: 'standard' },
-	{ name: 'loanAmountDesc', sortSrc: 'standard' },
-	{ name: 'newest', sortSrc: 'standard' },
-	{ name: 'popularity', sortSrc: 'standard' },
-	{ name: 'random', sortSrc: 'standard' },
-	{ name: 'repaymentTerm', sortSrc: 'standard' },
-	{ name: 'amountHighToLow', sortSrc: 'flss' },
-	{ name: 'amountLowToHigh', sortSrc: 'flss' },
-	{ name: 'expiringSoon', sortSrc: 'flss' },
-	{ name: 'personalized', sortSrc: 'flss' }
+	{ name: 'amountLeft', sortSrc: STANDARD_QUERY_TYPE },
+	{ name: 'expiringSoon', sortSrc: STANDARD_QUERY_TYPE },
+	{ name: 'loanAmount', sortSrc: STANDARD_QUERY_TYPE },
+	{ name: 'loanAmountDesc', sortSrc: STANDARD_QUERY_TYPE },
+	{ name: 'newest', sortSrc: STANDARD_QUERY_TYPE },
+	{ name: 'popularity', sortSrc: STANDARD_QUERY_TYPE },
+	{ name: 'random', sortSrc: STANDARD_QUERY_TYPE },
+	{ name: 'repaymentTerm', sortSrc: STANDARD_QUERY_TYPE },
+	{ name: 'amountHighToLow', sortSrc: FLSS_QUERY_TYPE },
+	{ name: 'amountLowToHigh', sortSrc: FLSS_QUERY_TYPE },
+	{ name: 'expiringSoon', sortSrc: FLSS_QUERY_TYPE },
+	{ name: 'personalized', sortSrc: FLSS_QUERY_TYPE }
 ];
 
 describe('LoanSearchSortBy', () => {
@@ -40,6 +41,29 @@ describe('LoanSearchSortBy', () => {
 
 		const recommendedSort = getByLabelText('Recommended', { selector: 'input' });
 		expect(recommendedSort.checked).toBeTruthy();
+	});
+
+	it('should select based on prop', async () => {
+		const { getByLabelText, updateProps } = render(LoanSearchSortBy, { props: { allSortOptions } });
+
+		const recommendedSort = getByLabelText('Recommended', { selector: 'input' });
+		expect(recommendedSort.checked).toBeTruthy();
+
+		await updateProps({ sort: 'expiringSoon' });
+		let radio = getByLabelText('Ending soon');
+		expect(radio.checked).toBeTruthy();
+
+		await updateProps({ sort: '' });
+		radio = getByLabelText('Recommended');
+		expect(radio.checked).toBeTruthy();
+
+		await updateProps({ sort: 'asd' });
+		radio = getByLabelText('Recommended');
+		expect(radio.checked).toBeTruthy();
+
+		await updateProps({ sort: null });
+		radio = getByLabelText('Recommended');
+		expect(radio.checked).toBeTruthy();
 	});
 
 	it('should change sort option when clicked', async () => {
