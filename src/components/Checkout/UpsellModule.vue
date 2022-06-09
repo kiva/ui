@@ -10,16 +10,16 @@
 				/>
 			</button>
 		</div>
-		<div class="tw-flex tw-gap-1 md:tw-gap-4 tw-flex-col md:tw-flex-row tw-flex-wrap">
+		<div class="tw-flex tw-flex-col md:tw-flex-row tw-flex-wrap upsellModule">
 			<div>
-				<img :src="imageUrl" class="tw-rounded-full sm:tw-w-6 tw-w-16">
+				<img :src="imageUrl" class="tw-rounded-full sm:tw-w-6 tw-w-16 borrowerImage">
 			</div>
 			<div class="tw-grow tw-flex tw-flex-col tw-justify-center upsellLoanDetails">
 				<h4 class="tw-text-h4 tw-text-action tw-mb-0.5">
 					Support Another Borrower
 				</h4>
 				<h3 class="tw-text-h3 tw-mb-2">
-					Complete {{ loan.name }}'s loan for just ${{ amountLeft }}
+					Complete {{ loan.name }}'s loan for just {{ amountLeft | numeral('$0,0[.]00') }}
 				</h3>
 				<div>
 					<fundraising-status-meter
@@ -37,7 +37,7 @@
 			<div class="tw-grow tw-flex tw-flex-wrap">
 				<div class="tw-w-full tw-text-right tw-self-end">
 					<kv-button variant="link"
-						class="tw-w-full md:tw-w-44 tw-mt-7"
+						class="tw-w-full md:tw-w-44 tw-mt-2 md:tw-mt-7"
 						@click="addToBasket(loanId, amountLeft)"
 					>
 						Add loan to basket
@@ -108,6 +108,24 @@ export default {
 @media screen and (min-width: 1160px) {
 	.upsellLoanDetails {
 		min-width: 600px;
+	}
+}
+
+@media screen and (min-width: 734px) {
+	.upsellModule {
+		gap: 32px;
+		.borrowerImage {
+			width: 128px;
+		}
+	}
+}
+
+@media screen and (max-width: 733px) {
+	.upsellModule {
+		gap: 8px;
+		.borrowerImage {
+			width: 48px;
+		}
 	}
 }
 
