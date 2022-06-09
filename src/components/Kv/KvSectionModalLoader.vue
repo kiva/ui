@@ -3,7 +3,7 @@
 		v-if="loading"
 		:aria-label="LOADING_LABEL"
 		class="tw-absolute tw-w-full tw-h-full tw-bg-opacity-[65%] tw-z-1 tw-top-0 tw-left-0"
-		:class="{ [`tw-bg-${bgColor}`]: bgColor, 'tw-rounded': rounded }"
+		:class="[`tw-bg-${bgColor}`, {'tw-rounded': rounded }]"
 	>
 		<div class="tw-absolute tw-top-5 tw-left-1/2 tw--translate-x-1/2">
 			<kv-loading-spinner :size="size" />
