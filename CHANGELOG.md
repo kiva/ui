@@ -1,3 +1,38 @@
+## [2.179.0](https://github.com/kiva/ui/compare/v2.178.0...v2.179.0) (2022-06-10)
+
+
+### Features
+
+* activated advanced filter link and analytics ([d130cb0](https://github.com/kiva/ui/commit/d130cb0737fa60f65abfdfbe91d6e79d7fab3c01))
+* activated reset filter and added analytics ([d39af89](https://github.com/kiva/ui/commit/d39af89b035221c2e15c25ff5e95c90f89169f71))
+
+## [2.178.0](https://github.com/kiva/ui/compare/v2.177.0...v2.178.0) (2022-06-10)
+
+
+### Features
+
+* section loader for loans and filters ([b292907](https://github.com/kiva/ui/commit/b29290747389d19f9bcd4c8db8473947f57ea62d))
+
+
+### Bug Fixes
+
+* added prop validation ([b61f61a](https://github.com/kiva/ui/commit/b61f61add656ceb21718a26379a1d4a117f3a1f7))
+* better vue class usage ([46fa1ae](https://github.com/kiva/ui/commit/46fa1ae17b22fef3ef47dd8b3980b463e6840170))
+
+## [2.177.0](https://github.com/kiva/ui/compare/v2.176.2...v2.177.0) (2022-06-10)
+
+
+### Features
+
+* changed Braintree dropin error content to include support email ([b2b2698](https://github.com/kiva/ui/commit/b2b269829b4d1e5064d8247db13de75b81c26d2c))
+
+### [2.176.2](https://github.com/kiva/ui/compare/v2.176.1...v2.176.2) (2022-06-10)
+
+
+### Bug Fixes
+
+* add tracking to upsells ([795c9a6](https://github.com/kiva/ui/commit/795c9a6eb23796906790c887c43db9c524d7555c))
+
 ### [2.176.1](https://github.com/kiva/ui/compare/v2.176.0...v2.176.1) (2022-06-10)
 
 
