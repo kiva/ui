@@ -340,7 +340,7 @@ export default {
 			this.createViewportObserver();
 			this.rows = [
 				{
-					heading: 'Support these loans for ',
+					heading: 'Support these ',
 					subHeading: '',
 					onlyLoan: false,
 					limit: 3,
@@ -428,7 +428,7 @@ export default {
 								expLabel = this.loan?.geocode?.country?.isoCode;
 							}
 							if (row?.filter?.sector) {
-								finalHeading = this.loan?.sector?.name;
+								finalHeading = `${this.loan?.sector?.name} loans`;
 								expLabel = String(this.loan?.sector?.id);
 							}
 							this.categories = [
