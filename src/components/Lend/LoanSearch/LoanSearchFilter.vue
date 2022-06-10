@@ -1,10 +1,12 @@
 <template>
 	<div class="tw-bg-white tw-border-primary-inverse tw-rounded tw-p-3 tw-relative">
 		<kv-section-modal-loader :loading="loading" :rounded="true" />
-		<kv-material-icon :icon="mdiClose" class="tw-w-2.5 tw-h-2.5" />
-		<p class="tw-text-h4 tw-inline-block tw-ml-3 tw-absolute">
-			Reset All
-		</p>
+		<button class="tw-flex tw-items-center tw-mb-2 tw-h-[22px]" @click="resetFilters">
+			<kv-material-icon :icon="mdiClose" class="tw-w-2.5 tw-h-2.5" />
+			<p class="tw-text-h4 tw-inline-block tw-ml-3">
+				Reset All
+			</p>
+		</button>
 		<hr class="tw-border-tertiary tw-my-1">
 		<loan-search-gender-filter :gender="loanSearchState.gender" @updated="handleUpdatedFilters" />
 		<hr class="tw-border-tertiary tw-my-1">
@@ -53,10 +55,12 @@
 				@updated="handleUpdatedFilters"
 			/>
 		</kv-accordion-item>
-		<h2 class="tw-text-h4 tw-mt-2">
-			Advanced filters
-			<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1 tw-absolute" />
-		</h2>
+		<button class="tw-mt-2 tw-h-[22px]" @click="advancedFilters">
+			<h2 class="tw-text-h4 tw-flex tw-items-center">
+				Advanced filters
+				<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1" />
+			</h2>
+		</button>
 	</div>
 </template>
 
@@ -143,8 +147,15 @@ export default {
 		};
 	},
 	methods: {
-		resetFilter() {
-			// this.$emit('reset');
+		resetFilters() {
+			this.$emit('reset');
+
+			this.$kvTrackEvent('Lending', 'click-reset-all-filters', 'Reset all');
+		},
+		advancedFilters() {
+			this.$kvTrackEvent('Lending', 'click-advanced-filters', 'Advanced filters');
+
+			window.location.href = '/lend?kexpn=lend_filter.lend_filter_versions&kexpv=c';
 		},
 		handleUpdatedFilters(payload) {
 			this.$emit('updated', payload);
