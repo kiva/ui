@@ -15,25 +15,28 @@
 						{{ null }} <!-- Hide title text -->
 					</template>
 					<loan-search-filter
+						:loading="!initialLoadComplete"
 						:facets="facets"
 						:loan-search-state="loanSearchState"
 						@updated="handleUpdatedFilters"
 					/>
 				</kv-lightbox>
 			</div>
-			<div class="tw-hidden md:tw-block">
+			<div class="tw-hidden md:tw-block tw-w-[285px]">
 				<loan-search-filter
+					:loading="!initialLoadComplete"
 					:facets="facets"
 					:loan-search-state="loanSearchState"
 					@updated="handleUpdatedFilters"
 				/>
 			</div>
 		</div>
-		<div class="md:tw-hidden tw-pt-1.5">
+		<div v-if="initialLoadComplete" class="md:tw-hidden tw-pt-1.5">
 			<p>{{ totalCount }} Loans</p>
 		</div>
-		<div class="tw-col-span-2">
-			<div class="tw-hidden md:tw-block tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
+		<div class="tw-col-span-2 tw-relative tw-grow">
+			<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
+			<div v-if="initialLoadComplete" class="tw-hidden md:tw-block tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
 				<p>{{ totalCount }} Loans</p>
 			</div>
 			<kv-grid class="tw-grid-rows-4">
@@ -68,6 +71,7 @@ import {
 	updateSearchState,
 	transformSectors,
 } from '@/util/loanSearchUtils';
+import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -80,10 +84,13 @@ export default {
 		KvGrid,
 		KvButton,
 		LoanSearchFilter,
-		KvLightbox
+		KvLightbox,
+		KvSectionModalLoader,
 	},
 	data() {
 		return {
+			initialLoadComplete: false,
+			loading: true,
 			/**
 			 * All available facet options from lend API. Format:
 			 * {
@@ -161,15 +168,22 @@ export default {
 		// TODO: work some guards to prevent duplicate queries and throttling to more carefully control # of queries
 		this.apollo.watchQuery({ query: loanSearchStateQuery }).subscribe({
 			next: async ({ data }) => {
+				// Toggle loans modal loader
+				this.loading = true;
+
 				// Utilize the results of the existing query of the loan search state for updating the filters
 				this.loanSearchState = data?.loanSearchState;
 
 				// Update the query string with the latest loan search state
 				updateQueryParams(this.loanSearchState, this.$router, this.allFacets, this.queryType);
 
-				// Get filtered facet options from FLSS
-				// TODO: Prevent this from running on every query
-				const { isoCodes, themes, sectors } = await runFacetsQueries(this.apollo, this.loanSearchState);
+				const [{ isoCodes, themes, sectors }, { loans, totalCount }] = await Promise.all([
+					// Get filtered facet options from FLSS
+					// TODO: Prevent this from running on every query (not needed for sorting and paging)
+					await runFacetsQueries(this.apollo, this.loanSearchState),
+					// Get filtered loans from FLSS
+					await runLoansQuery(this.apollo, this.loanSearchState)
+				]);
 
 				// Merge all facet options with filtered options
 				this.facets = {
@@ -179,12 +193,15 @@ export default {
 					sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
 				};
 
-				// Extract sortBy + offset
+				// Store loan data in component
+				this.loans = loans;
+				this.totalCount = totalCount;
 
-				// Get filtered loans from FLSS
-				const loans = await runLoansQuery(this.apollo, this.loanSearchState);
-				this.loans = loans.loans;
-				this.totalCount = loans.totalCount;
+				// Toggle loading flags
+				if (!this.initialLoadComplete) {
+					this.initialLoadComplete = true;
+				}
+				this.loading = false;
 			}
 		});
 	},
