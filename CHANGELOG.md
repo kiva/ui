@@ -1,3 +1,10 @@
+## [2.177.0](https://github.com/kiva/ui/compare/v2.176.2...v2.177.0) (2022-06-10)
+
+
+### Features
+
+* changed Braintree dropin error content to include support email ([b2b2698](https://github.com/kiva/ui/commit/b2b269829b4d1e5064d8247db13de75b81c26d2c))
+
 ### [2.176.2](https://github.com/kiva/ui/compare/v2.176.1...v2.176.2) (2022-06-10)
 
 
