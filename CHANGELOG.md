@@ -1,3 +1,10 @@
+## [2.180.0](https://github.com/kiva/ui/compare/v2.179.0...v2.180.0) (2022-06-10)
+
+
+### Features
+
+* add tag to UI_REVISION page, add tag as release param in Sentry ([bd4eb9c](https://github.com/kiva/ui/commit/bd4eb9cdb033338a08f6fd63d1830e0e15755e4f))
+
 ## [2.179.0](https://github.com/kiva/ui/compare/v2.178.0...v2.179.0) (2022-06-10)
 
 
