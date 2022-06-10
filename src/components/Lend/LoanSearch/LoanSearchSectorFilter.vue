@@ -52,8 +52,8 @@ export default {
 		}
 	},
 	methods: {
-		updateSectors(sectors) {
-			this.$emit('updated', { sectorId: sectors.map(s => +s) });
+		updateSectors({ values }) {
+			this.$emit('updated', { sectorId: values.map(s => +s) });
 		}
 	},
 	watch: {

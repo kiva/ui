@@ -50,8 +50,8 @@ export default {
 		},
 	},
 	methods: {
-		updateThemes(themes) {
-			this.$emit('updated', { theme: themes });
+		updateThemes({ values }) {
+			this.$emit('updated', { theme: values });
 		}
 	},
 	watch: {
