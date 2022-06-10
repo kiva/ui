@@ -1,3 +1,16 @@
+## [2.178.0](https://github.com/kiva/ui/compare/v2.177.0...v2.178.0) (2022-06-10)
+
+
+### Features
+
+* section loader for loans and filters ([b292907](https://github.com/kiva/ui/commit/b29290747389d19f9bcd4c8db8473947f57ea62d))
+
+
+### Bug Fixes
+
+* added prop validation ([b61f61a](https://github.com/kiva/ui/commit/b61f61add656ceb21718a26379a1d4a117f3a1f7))
+* better vue class usage ([46fa1ae](https://github.com/kiva/ui/commit/46fa1ae17b22fef3ef47dd8b3980b463e6840170))
+
 ## [2.177.0](https://github.com/kiva/ui/compare/v2.176.2...v2.177.0) (2022-06-10)
 
 
