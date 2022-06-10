@@ -1,3 +1,10 @@
+### [2.173.4-next.1](https://github.com/kiva/ui/compare/v2.173.3...v2.173.4-next.1) (2022-06-10)
+
+
+### Bug Fixes
+
+* fixes campaign page loan carousel not scrolling on page load ([6eb7c32](https://github.com/kiva/ui/commit/6eb7c32e6b0cdb12ad4e10580da6ffde33ff5e07))
+
 ### [2.173.3](https://github.com/kiva/ui/compare/v2.173.2...v2.173.3) (2022-06-07)
 
 
