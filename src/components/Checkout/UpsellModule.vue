@@ -2,7 +2,7 @@
 	<div class="tw-bg-brand-100 tw-rounded tw-p-4">
 		<div class="tw-w-full tw-text-right tw-h-3">
 			<button
-				@click="closeUpsellModule()"
+				@click="closeUpsellModule(amountLeft)"
 			>
 				<kv-material-icon
 					class="tw-w-3"
@@ -81,6 +81,15 @@ export default {
 		return {
 			mdiClose,
 		};
+	},
+	mounted() {
+		this.$kvTrackEvent(
+			'Basket',
+			'view-checkout-upsell',
+			'',
+			this.loan?.id,
+			this.amountLeft
+		);
 	},
 	computed: {
 		loanId() {

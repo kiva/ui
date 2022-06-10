@@ -614,7 +614,14 @@ export default {
 		}
 	},
 	methods: {
-		closeUpsellModule() {
+		closeUpsellModule(amountLeft) {
+			this.$kvTrackEvent(
+				'Basket',
+				'click-checkout-close-upsell',
+				'Close',
+				this.upsellLoan?.id,
+				amountLeft
+			);
 			this.showUpsellModule = false;
 		},
 		guestCheckout() {
@@ -840,6 +847,13 @@ export default {
 				} else {
 					// If no errors, update the basket + loan info
 					this.cookieStore.set('upsell-loan-added', true);
+					this.$kvTrackEvent(
+						'Basket',
+						'click-checkout-upsell',
+						'Add loan to basket',
+						loanId,
+						amountLeft
+					);
 					this.showUpsellModule = false;
 					this.refreshTotals();
 				}
