@@ -1,3 +1,11 @@
+## [2.179.0](https://github.com/kiva/ui/compare/v2.178.0...v2.179.0) (2022-06-10)
+
+
+### Features
+
+* activated advanced filter link and analytics ([d130cb0](https://github.com/kiva/ui/commit/d130cb0737fa60f65abfdfbe91d6e79d7fab3c01))
+* activated reset filter and added analytics ([d39af89](https://github.com/kiva/ui/commit/d39af89b035221c2e15c25ff5e95c90f89169f71))
+
 ## [2.178.0](https://github.com/kiva/ui/compare/v2.177.0...v2.178.0) (2022-06-10)
 
 
