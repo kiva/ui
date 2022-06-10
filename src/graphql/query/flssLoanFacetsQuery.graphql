@@ -1,11 +1,27 @@
-query flssLoanFacets($filterObject: [FundraisingLoanSearchFilterInput!]) {
-	fundraisingLoans(filters: $filterObject) {
+query flssLoanFacets(
+	$isoCodeFilters: [FundraisingLoanSearchFilterInput!],
+	$themeFilters: [FundraisingLoanSearchFilterInput!],
+	$sectorFilters: [FundraisingLoanSearchFilterInput!]) {
+	isoCodes: fundraisingLoans(filters: $isoCodeFilters) {
 		facets {
 			isoCode {
 				key
 				value
 			}
+		}
+
+  	}
+	themes: fundraisingLoans(filters: $themeFilters) {
+		facets {
 			themes {
+				key
+				value
+			}
+		}
+	}
+	sectors: fundraisingLoans(filters: $sectorFilters) {
+		facets {
+			sectorId {
 				key
 				value
 			}

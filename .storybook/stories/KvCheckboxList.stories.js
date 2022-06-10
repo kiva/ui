@@ -12,7 +12,7 @@ const story = (args) => {
 		template: `<kv-checkbox-list
 			:show-select-all="showSelectAll"
 			:items="items"
-			:initial-selected="initialSelected" />`,
+			:selected-values="selectedValues" />`,
 	})
 	template.args = args;
 	return template;
@@ -24,6 +24,6 @@ export const Default = story({ items });
 
 export const ShowSelectAll = story({ items, showSelectAll: true });
 
-export const InitialSelected = story({ items, initialSelected: items.slice(0, 2).map(i => i.value) });
+export const SelectedValues = story({ items, selectedValues: items.slice(0, 2).map(i => i.value) });
 
 export const Disabled = story({ items: items.map(i => ({ ...i, disabled: true })) });

@@ -67,7 +67,7 @@ describe('KvCheckboxList', () => {
 			props: {
 				showSelectAll: true,
 				items,
-				initialSelected: items.map(i => i.value)
+				selectedValues: items.map(i => i.value)
 			}
 		});
 

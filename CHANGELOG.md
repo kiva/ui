@@ -1,3 +1,82 @@
+## [2.179.0](https://github.com/kiva/ui/compare/v2.178.0...v2.179.0) (2022-06-10)
+
+
+### Features
+
+* activated advanced filter link and analytics ([d130cb0](https://github.com/kiva/ui/commit/d130cb0737fa60f65abfdfbe91d6e79d7fab3c01))
+* activated reset filter and added analytics ([d39af89](https://github.com/kiva/ui/commit/d39af89b035221c2e15c25ff5e95c90f89169f71))
+
+## [2.178.0](https://github.com/kiva/ui/compare/v2.177.0...v2.178.0) (2022-06-10)
+
+
+### Features
+
+* section loader for loans and filters ([b292907](https://github.com/kiva/ui/commit/b29290747389d19f9bcd4c8db8473947f57ea62d))
+
+
+### Bug Fixes
+
+* added prop validation ([b61f61a](https://github.com/kiva/ui/commit/b61f61add656ceb21718a26379a1d4a117f3a1f7))
+* better vue class usage ([46fa1ae](https://github.com/kiva/ui/commit/46fa1ae17b22fef3ef47dd8b3980b463e6840170))
+
+## [2.177.0](https://github.com/kiva/ui/compare/v2.176.2...v2.177.0) (2022-06-10)
+
+
+### Features
+
+* changed Braintree dropin error content to include support email ([b2b2698](https://github.com/kiva/ui/commit/b2b269829b4d1e5064d8247db13de75b81c26d2c))
+
+### [2.176.2](https://github.com/kiva/ui/compare/v2.176.1...v2.176.2) (2022-06-10)
+
+
+### Bug Fixes
+
+* add tracking to upsells ([795c9a6](https://github.com/kiva/ui/commit/795c9a6eb23796906790c887c43db9c524d7555c))
+
+### [2.176.1](https://github.com/kiva/ui/compare/v2.176.0...v2.176.1) (2022-06-10)
+
+
+### Bug Fixes
+
+* fixes campaign page loan carousel not scrolling on page load ([06c2a94](https://github.com/kiva/ui/commit/06c2a94317f41c97b91d4dda5d0e89ae2811c96f))
+
+## [2.176.0](https://github.com/kiva/ui/compare/v2.175.0...v2.176.0) (2022-06-09)
+
+
+### Features
+
+* fix lint ([c9b3968](https://github.com/kiva/ui/commit/c9b39686dcd9c7b0aa283c818aa38c788fbb56a0))
+* init upsell loans on checkout ([4297474](https://github.com/kiva/ui/commit/4297474e949aab9c112a53f95f0d0712d8cfe2ac))
+
+
+### Bug Fixes
+
+* merge conflict ([6e1b9f0](https://github.com/kiva/ui/commit/6e1b9f0f20eb8c20d29ab9bfeb11a71d6fc5f6d2))
+* update styles ([45e0b15](https://github.com/kiva/ui/commit/45e0b15293d4e627aa31f427e2d6d422c6385dd0))
+* update styles and fix NaN ([6b9c302](https://github.com/kiva/ui/commit/6b9c3027f148c831a790b1b4edc539aba772daab))
+
+## [2.175.0](https://github.com/kiva/ui/compare/v2.174.1...v2.175.0) (2022-06-08)
+
+
+### Features
+
+* added num loan fundraising counts to sector filters ([9a24a32](https://github.com/kiva/ui/commit/9a24a32a0bbb9ecfa126eff731752622eae17aac))
+* integrate theme filter with query params ([f852af7](https://github.com/kiva/ui/commit/f852af79a5676002b2e206583299618eb7dfb937))
+* sector filter now updates query param and can be initialized via query param ([76b0ca7](https://github.com/kiva/ui/commit/76b0ca7dcfd2fc1341d413090e6b2f575f68fad5))
+
+
+### Bug Fixes
+
+* cleaned up method usage in tests ([120b8cc](https://github.com/kiva/ui/commit/120b8cce1b21f3061a2f8d239e76308fbe8675f2))
+* combined graphql queries in runFacetsQueries ([19e439b](https://github.com/kiva/ui/commit/19e439bce918ffa7b575f3ef0fb039200943e099))
+
+### [2.174.1](https://github.com/kiva/ui/compare/v2.174.0...v2.174.1) (2022-06-08)
+
+
+### Bug Fixes
+
+* typo in tag name ([e32a05b](https://github.com/kiva/ui/commit/e32a05b1b1c24bfd24037f8a54b5c7ea5b03045f))
+
 ## [2.174.0](https://github.com/kiva/ui/compare/v2.173.3...v2.174.0) (2022-06-08)
 
 
