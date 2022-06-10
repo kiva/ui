@@ -1,3 +1,10 @@
+### [2.176.2](https://github.com/kiva/ui/compare/v2.176.1...v2.176.2) (2022-06-10)
+
+
+### Bug Fixes
+
+* add tracking to upsells ([795c9a6](https://github.com/kiva/ui/commit/795c9a6eb23796906790c887c43db9c524d7555c))
+
 ### [2.176.1](https://github.com/kiva/ui/compare/v2.176.0...v2.176.1) (2022-06-10)
 
 
