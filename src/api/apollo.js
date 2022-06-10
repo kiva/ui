@@ -21,6 +21,7 @@ export default function createApolloClient({
 	kvAuth0,
 	types = [],
 	uri,
+	fetch
 }) {
 	const cache = new InMemoryCache({
 		fragmentMatcher: new IntrospectionFragmentMatcher({
@@ -51,7 +52,7 @@ export default function createApolloClient({
 			Auth0LinkCreator({ cookieStore, kvAuth0 }),
 			BasketLinkCreator({ cookieStore }),
 			ContentfulPreviewLink({ cookieStore }),
-			HttpLinkCreator({ kvAuth0, uri }),
+			HttpLinkCreator({ kvAuth0, uri, fetch }),
 		]),
 		cache,
 		resolvers,

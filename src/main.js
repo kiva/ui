@@ -27,6 +27,7 @@ export default function createApp({
 	device,
 	kvAuth0,
 	locale,
+	fetch
 } = {}) {
 	if (!pluginsInstalled) {
 		pluginsInstalled = true;
@@ -54,6 +55,7 @@ export default function createApp({
 		appConfig,
 		cookieStore,
 		kvAuth0,
+		fetch
 	});
 
 	const router = createRouter();
