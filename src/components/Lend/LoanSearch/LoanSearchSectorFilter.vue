@@ -52,8 +52,14 @@ export default {
 		}
 	},
 	methods: {
-		updateSectors({ values }) {
+		updateSectors({ values, changed }) {
 			this.$emit('updated', { sectorId: values.map(s => +s) });
+
+			const sector = this.displayedSectors.find(s => s.id === +changed);
+
+			if (sector) {
+				this.$kvTrackEvent?.('Lending', 'click-sector-filter', sector.name);
+			}
 		}
 	},
 	watch: {
