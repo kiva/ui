@@ -1,5 +1,6 @@
 <template>
-	<div class="tw-bg-white tw-border-primary-inverse tw-rounded tw-p-3 filter-min-w tw-relative">
+	<div class="tw-bg-white tw-border-primary-inverse tw-rounded tw-p-3 tw-relative">
+		<kv-section-modal-loader :loading="loading" :rounded="true" />
 		<button class="tw-flex tw-items-center tw-mb-2 tw-h-[22px]" @click="resetFilters">
 			<kv-material-icon :icon="mdiClose" class="tw-w-2.5 tw-h-2.5" />
 			<p class="tw-text-h4 tw-inline-block tw-ml-3">
@@ -72,6 +73,7 @@ import LoanSearchSectorFilter from '@/components/Lend/LoanSearch/LoanSearchSecto
 import LoanSearchThemeFilter from '@/components/Lend/LoanSearch/LoanSearchThemeFilter';
 import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
 import { FLSS_QUERY_TYPE } from '@/util/loanSearchUtils';
+import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
@@ -85,8 +87,13 @@ export default {
 		LoanSearchSectorFilter,
 		LoanSearchThemeFilter,
 		LoanSearchSortBy,
+		KvSectionModalLoader,
 	},
 	props: {
+		loading: {
+			type: Boolean,
+			default: false
+		},
 		/**
 		 * Facet options based on the loans available. Format:
 		 * {
@@ -156,9 +163,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-	.filter-min-w {
-		min-width: 285px;
-	}
-</style>
