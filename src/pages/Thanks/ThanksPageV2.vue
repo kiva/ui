@@ -3,105 +3,113 @@
 		:gray-background="true"
 	>
 		<div class="row page-content">
-			<div class="small-12 columns thanks">
+			<div class="large-2">{{' '}}</div>
+			<div class="small-12 large-8 columns thanks">
 				<div class="thanks__header hide-for-print">
 					<template v-if="receipt">
 						<div
-							v-if="!isAutoDepositSubscriber && showAutoDepositUpsell"
-							class="thanks_header-image tw-hidden md:tw-block tw-mb-3"
-						>
-							<img :src="imageRequire(`./high-five.svg`)" class="tw-mx-auto" alt="high fiving hands">
-						</div>
-						<h1
 							class="thanks__header-h1 tw-mt-1 tw-mb-3"
 							:class="{
 								'tw-text-h2': showAutoDepositUpsell
 							}"
 						>
-							Thank you!
-						</h1>
-						<p
-							v-if="loans.length > 0"
-							class="thanks__header-subhead"
+							<kv-material-icon
+								class="tw-w-3 tw-h-3 tw-my-3 tw-align-middle tw-mr-0.5 success"
+								:icon="mdiCheckAll"
+							/> Success, your receipt has been sent to <strong>{{lender.email}}</strong>
+						</div>
+						<borrower-image
+							class="
+								tw-w-full
+								tw-bg-black
+								tw-rounded
+								tw--mb-1.5
+								md:tw--mb-1
+							"
+							data-testid="bp-story-borrower-image"
+							:alt="selectedLoan.name"
+							:aspect-ratio="2 / 5"
+							:default-image="{ width: 612 }"
+							:hash="selectedLoan.image.hash"
+							:images="[
+								{ width: 612, viewSize: 1024 },
+								{ width: 580, viewSize: 768 },
+								{ width: 416, viewSize: 480 },
+								{ width: 374, viewSize: 414 },
+								{ width: 335, viewSize: 375 },
+								{ width: 280 },
+							]"
+						/>
+						<div class="tw-flex-auto tw-mb-2">
+							<figure>
+								<figcaption class="tw-flex progress">
+									<template v-if="!fundedPage">
+										<div class="tw-flex-auto tw-text-left">
+											<p class="tw-text-h3 tw-m-0 progress__to-go" data-testid="bp-summary-amount-to-go">
+												{{ selectedLoan.unreservedAmount | numeral('$0,0[.]00') }} TO GO
+											</p>
+										</div>
+										<p class="tw-flex-auto tw-text-right progress__days-remaining" data-testid="bp-summary-timeleft">
+											<span lass="tw-text-h3 tw-block tw-m-0">
+												{{ selectedLoan.fundraisingTimeLeft }}
+											</span>
+											<span class="tw-block">
+												days remaining
+											</span>
+										</p>
+									</template>
+									<div v-else>
+										<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
+											This loan is fully funded!
+										</p>
+										<div class="md:tw-flex tw-gap-2">
+											<p class="tw-text-h4 tw-text-secondary tw-block">
+												100% funded
+											</p>
+											<p class="tw-text-h4 tw-text-action tw-block">
+												<router-link
+													:to="`/lend/${$route.params.id}?minimal=false`"
+													v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
+												>
+													View the full borrower profile
+												</router-link>
+											</p>
+										</div>
+									</div>
+								</figcaption>
+								<kv-progress-bar
+									class="tw-mb-1.5 lg:tw-mb-1 tw-bg-tertiary"
+									aria-label="Percent the loan has funded"
+									:value="selectedLoan.fundraisingPercent * 100"
+								/>
+							</figure>
+						</div>
+					</template>
+					<template>
+						<h1
+							class="thanks__headline-h1 tw-mt-1 tw-mb-3"
 							:class="{
-								'tw-text-base tw-mb-0': showAutoDepositUpsell,
-								'tw-text-subhead tw-mb-2': !showAutoDepositUpsell
+								'tw-text-h2': showAutoDepositUpsell
 							}"
 						>
-							Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
-						</p>
-						<p v-if="lender.email" class="hide-for-print">
-							We've emailed your order confirmation to
-							<strong class="fs-exclude">{{ lender.email }}</strong>
-						</p>
-						<p v-else class="hide-for-print">
-							We've emailed your order confirmation to you.
+							Get a $25 lending credit by inspiring others.
+						</h1>
+						<p class="tw-text-h3 tw-m-0 thanks__base-text">
+							Introduce someone new to Kiva and we'll give you $25 to support another borrower. Your Kiva Lending Credit will be applied automatically.
 						</p>
 					</template>
-
-					<template v-else>
-						<h1 class="tw-mb-4">
-							Please log in to see your receipt.
-						</h1>
-						<kv-button
-							:href="`/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`"
-						>
-							Log in to continue
-						</kv-button>
+					<template>
+						<social-share-v2
+							class="thanks__social-share"
+							:lender="lender"
+							:loans="loans"
+							:show-header="false"
+						/>
 					</template>
 				</div>
 			</div>
+			<div class="large-2">{{' '}}</div>
 		</div>
-
-		<thanks-layout-v2
-			v-if="receipt"
-			:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !showAutoDepositUpsell && !hasModernSub"
-			:show-auto-deposit-upsell="!isAutoDepositSubscriber && showAutoDepositUpsell && !hasModernSub"
-			:show-guest-upsell="isGuest"
-			:show-share="loans.length > 0"
-			:thanks-social-share-version="simpleSocialShareVersion"
-			:class="{
-				'tw-mt-4': showAutoDepositUpsell
-			}"
-		>
-			<template #receipt>
-				<checkout-receipt
-					v-if="receipt"
-					:lender="lender"
-					:receipt="receipt"
-				/>
-			</template>
-			<template #ad>
-				<auto-deposit-c-t-a />
-			</template>
-			<template #mg>
-				<monthly-good-c-t-a
-					:headline="ctaHeadline"
-					:body-copy="ctaBodyCopy"
-					:button-text="ctaButtonText"
-				/>
-			</template>
-			<template #share>
-				<social-share
-					v-if="receipt && simpleSocialShareVersion === 'b'"
-					class="thanks__social-share"
-					:lender="lender"
-					:loans="loans"
-				/>
-				<social-share-v2
-					v-if="receipt && simpleSocialShareVersion !== 'b'"
-					class="thanks__social-share"
-					:lender="lender"
-					:loans="loans"
-					:show-header="true"
-				/>
-			</template>
-			<template #guest>
-				<guest-upsell
-					:loans="loans"
-				/>
-			</template>
-		</thanks-layout-v2>
 	</www-page>
 </template>
 
@@ -119,14 +127,16 @@ import SocialShare from '@/components/Checkout/SocialShare';
 import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ThanksLayoutV2 from '@/components/Thanks/ThanksLayoutV2';
-
+import { mdiCheckAll } from '@mdi/js';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
-
+import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
+import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
+import orderBy from 'lodash/orderBy';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
-
 const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
 
 export default {
@@ -140,7 +150,10 @@ export default {
 		SocialShare,
 		SocialShareV2,
 		ThanksLayoutV2,
-		WwwPage
+		WwwPage,
+		KvMaterialIcon,
+		BorrowerImage,
+		KvProgressBar,
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -162,6 +175,9 @@ export default {
 			isGuest: false,
 			pageData: {},
 			simpleSocialShareVersion: '',
+			mdiCheckAll,
+			timeLeftMs: 0,
+			fundedPage: false
 		};
 	},
 	apollo: {
@@ -223,7 +239,12 @@ export default {
 				return true;
 			}
 			return false;
-		}
+		},
+		selectedLoan() {
+			debugger
+			const orderedLoans = orderBy(this.loans, ['unreservedAmount'], ['desc']);
+			return orderedLoans[0] || {};
+		},
 	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
@@ -341,7 +362,7 @@ export default {
 @import 'settings';
 
 .page-content {
-	padding: 1.625rem 0 0 0;
+	padding: 0 10px;
 
 	@media print {
 		padding: 0;
@@ -349,6 +370,29 @@ export default {
 
 	&:last-child {
 		padding-bottom: 5rem;
+	}
+}
+
+.success {
+	color: #1B6E43;
+}
+
+.progress {
+	&__to-go {
+		font-size: 14px;
+		margin-top: 15px;
+		margin-bottom: 5px;
+		color: #212121;
+		font-weight: bold;
+	}
+
+	&__days-remaining {
+		font-size: 14px;
+		margin-top: 15px;
+		margin-bottom: 5px;
+		color: #212121;
+		text-transform: uppercase;
+		font-weight: bold;
 	}
 }
 
@@ -360,6 +404,17 @@ export default {
 		@include breakpoint(medium) {
 			text-align: center;
 		}
+	}
+
+	&__headline {
+		text-align: left;
+	}
+
+	&__base-text {
+		font-weight: 300;
+		font-size: 25px;
+		text-align: left;
+		line-height: 1.4;
 	}
 
 	&__social-share {

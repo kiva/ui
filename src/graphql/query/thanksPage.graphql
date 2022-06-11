@@ -61,8 +61,13 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 							image {
 								id
 								url
+								default: url(customSize: "w480h300")
+								hash
 							}
 							use
+							fundraisingPercent @client
+							fundraisingTimeLeft @client
+							fundraisingTimeLeftMilliseconds @client
 							geocode {
 								city
 								country {
