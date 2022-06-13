@@ -69,13 +69,13 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 		// Handle casing differences between FLSS and lend API theme values. FLSS does case insensitive fuzzy matching.
 		.map(t => t.toUpperCase());
 
-	const validatedPageNumber = isNumber(loanSearchState?.pageNumber)
-		? loanSearchState.pageNumber
-		: defaultLoanSearchState.pageNumber;
+	const validatedPageOffset = isNumber(loanSearchState?.pageOffset)
+		? loanSearchState.pageOffset
+		: defaultLoanSearchState.pageOffset;
 
-	const validatedPageSize = isNumber(loanSearchState?.pageSize)
-		? loanSearchState.pageSize
-		: defaultLoanSearchState.pageSize;
+	const validatedPageLimit = isNumber(loanSearchState?.pageLimit)
+		? loanSearchState.pageLimit
+		: defaultLoanSearchState.pageLimit;
 
 	return {
 		gender: validatedGender,
@@ -83,8 +83,8 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 		sectorId: validatedSectorIds,
 		sortBy: validatedSortBy,
 		theme: validatedThemes,
-		pageNumber: validatedPageNumber,
-		pageSize: validatedPageSize,
+		pageOffset: validatedPageOffset,
+		pageLimit: validatedPageLimit,
 	};
 }
 
@@ -393,8 +393,8 @@ export async function runLoansQuery(apollo, loanSearchState) {
 		apollo,
 		getFlssFilters(loanSearchState),
 		loanSearchState?.sortBy,
-		loanSearchState?.pageNumber,
-		loanSearchState?.pageSize
+		loanSearchState?.pageOffset,
+		loanSearchState?.pageLimit
 	);
 
 	return { loans: flssData?.values ?? [], totalCount: flssData?.totalCount ?? 0 };

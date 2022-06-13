@@ -54,9 +54,9 @@
 			</kv-grid>
 			<kv-pager
 				v-if="totalCount > 0"
-				:page-size="loanSearchState.pageSize"
+				:limit="loanSearchState.pageLimit"
 				:total="totalCount"
-				:current="loanSearchState.pageNumber"
+				:offset="loanSearchState.pageOffset"
 				@page-changed="handleUpdatedFilters"
 			/>
 		</div>

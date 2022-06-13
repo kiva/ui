@@ -4,13 +4,13 @@ query flssLoanData(
 	$filterObject: [FundraisingLoanSearchFilterInput!]
 	$sortBy: SortEnum = personalized
 	$pageNumber: Int = 0
-	$pageSize: Int = 0
+	$pageLimit: Int = 0
 	$imgDefaultSize: String = "w480h360"
 	$imgRetinaSize: String = "w960h720"
 ) {
 	fundraisingLoans(
 		filters: $filterObject,
-		limit: $pageSize,
+		limit: $pageLimit,
 		pageNumber: $pageNumber,
 		sortBy: $sortBy
 	) {

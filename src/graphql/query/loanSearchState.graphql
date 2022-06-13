@@ -6,7 +6,7 @@ query loanSearchStateQuery {
 		countryIsoCode
 		sortBy
 		theme
-		pageNumber
-		pageSize
+		pageOffset
+		pageLimit
 	}
 }

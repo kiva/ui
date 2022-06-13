@@ -20,8 +20,8 @@ export const getDefaultLoanSearchState = () => ({
 	sectorId: [], // Expects an array of ints
 	sortBy: null, // Expects a string that matches the SortEnum
 	theme: [], // Expects an array of strings
-	pageNumber: 0, // Expects a number
-	pageSize: 15, // Expects a number
+	pageOffset: 0, // Expects a number
+	pageLimit: 15, // Expects a number
 });
 
 // export queries, resolvers and defaults for LoanSearchState

@@ -30,8 +30,8 @@ const mockState = {
 	sectorId: [1],
 	sortBy: 'expiringSoon',
 	theme: ['THEME 1'],
-	pageNumber: 1,
-	pageSize: 30,
+	pageOffset: 1,
+	pageLimit: 30,
 };
 
 const mockAllFacets = {
@@ -154,20 +154,20 @@ describe('loanSearchUtils.js', () => {
 			expect(result).toEqual({ ...mockState, theme: [] });
 		});
 
-		it('should validate pageNumber', () => {
-			const state = { ...mockState, pageNumber: 'asd' };
+		it('should validate pageOffset', () => {
+			const state = { ...mockState, pageOffset: 'asd' };
 
 			const result = getValidatedSearchState(state, mockAllFacets, STANDARD_QUERY_TYPE);
 
-			expect(result).toEqual({ ...mockState, pageNumber: 0 });
+			expect(result).toEqual({ ...mockState, pageOffset: 0 });
 		});
 
-		it('should validate pageSize', () => {
-			const state = { ...mockState, pageSize: 'asd' };
+		it('should validate pageLimit', () => {
+			const state = { ...mockState, pageLimit: 'asd' };
 
 			const result = getValidatedSearchState(state, mockAllFacets, STANDARD_QUERY_TYPE);
 
-			expect(result).toEqual({ ...mockState, pageSize: 15 });
+			expect(result).toEqual({ ...mockState, pageLimit: 15 });
 		});
 	});
 
@@ -595,8 +595,8 @@ describe('loanSearchUtils.js', () => {
 				apollo,
 				getFlssFilters(mockState),
 				mockState.sortBy,
-				mockState.pageNumber,
-				mockState.pageSize
+				mockState.pageOffset,
+				mockState.pageLimit
 			);
 			expect(result).toEqual({ loans, totalCount });
 		});
@@ -802,8 +802,8 @@ describe('loanSearchUtils.js', () => {
 						sectorId: [1],
 						sortBy: 'expiringSoon',
 						theme: ['THEME 1'],
-						pageNumber: 0,
-						pageSize: 15,
+						pageOffset: 0,
+						pageLimit: 15,
 					}
 				}
 			};

@@ -29,18 +29,19 @@ export async function fetchFacets(apollo, isoCodeFilters, themeFilters, sectorFi
  * @param {Object} apollo The apollo client instance
  * @param {Object} filterObject The filters for the loan query
  * @param {String} sortOrder Sort option for the loan query
- * @param {String} pageOffset PageNumber or Offset (FLSS uses a page number, Lend Loans uses a count offset)
+ * @param {Int} pageOffset The offset of the page
+ * @param {Int} pageLimit The limit/size of the page
  * @returns {Promise<Array<Object>>} Promise for loan data
  */
-export async function fetchLoans(apollo, filterObject, sortBy = null, pageNumber = 0, pageSize = 15) {
+export async function fetchLoans(apollo, filterObject, sortBy = null, pageOffset = 0, pageLimit = 15) {
 	try {
 		const result = await apollo.query({
 			query: flssLoanQuery,
 			variables: {
 				filterObject,
 				sortBy,
-				pageNumber,
-				pageSize,
+				pageNumber: pageOffset / pageLimit,
+				pageLimit,
 			},
 			fetchPolicy: 'network-only',
 		});

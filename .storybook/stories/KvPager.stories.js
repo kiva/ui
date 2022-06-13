@@ -10,9 +10,9 @@ const story = (args) => {
 		props: Object.keys(argTypes),
 		components: { KvPager },
 		template: `<kv-pager
-			:page-size="pageSize"
+			:limit="limit"
 			:total="total"
-			:current="current"
+			:offset="offset"
 			:extra-pages="extraPages"
 			:scroll-to-top="scrollToTop" />`,
 	})
@@ -20,24 +20,24 @@ const story = (args) => {
 	return template;
 };
 
-export const Default = story({ pageSize: 10, total: 0 });
+export const Default = story({ limit: 10, total: 0 });
 
-export const FewerPages = story({ pageSize: 10, total: 30 });
+export const FewerPages = story({ limit: 10, total: 30 });
 
-export const MorePages = story({ pageSize: 10, total: 1000 });
+export const MorePages = story({ limit: 10, total: 1000 });
 
-export const SecondSelected = story({ pageSize: 10, total: 1000, current: 1 });
+export const SecondSelected = story({ limit: 10, total: 1000, offset: 10 });
 
-export const ThirdSelected = story({ pageSize: 10, total: 1000, current: 2 });
+export const ThirdSelected = story({ limit: 10, total: 1000, offset: 20 });
 
-export const FourthSelected = story({ pageSize: 10, total: 1000, current: 3 });
+export const FourthSelected = story({ limit: 10, total: 1000, offset: 30 });
 
-export const LastSelected = story({ pageSize: 10, total: 1000, current: 99 });
+export const LastSelected = story({ limit: 10, total: 1000, offset: 990 });
 
-export const SecondToLastSelected = story({ pageSize: 10, total: 1000, current: 98 });
+export const SecondToLastSelected = story({ limit: 10, total: 1000, offset: 980 });
 
-export const ThirdToLastSelected = story({ pageSize: 10, total: 1000, current: 97 });
+export const ThirdToLastSelected = story({ limit: 10, total: 1000, offset: 970 });
 
-export const FourthToLastSelected = story({ pageSize: 10, total: 1000, current: 96 });
+export const FourthToLastSelected = story({ limit: 10, total: 1000, offset: 960 });
 
-export const MoreExtraPages = story({ pageSize: 10, total: 1000, extraPages: 6 });
+export const MoreExtraPages = story({ limit: 10, total: 1000, extraPages: 6 });

@@ -14,7 +14,7 @@
 					class="tw-cursor-pointer tw-flex"
 					:class="linkClass(0)"
 					aria-label="Previous page"
-					@click="!isCurrent(0) && pageChange(selectedCurrent - 1)"
+					@click="!isCurrent(0) && pageChange(current - 1)"
 				>
 					<kv-icon
 						name="fat-chevron"
@@ -47,7 +47,7 @@
 					class="tw-cursor-pointer tw-flex"
 					:class="linkClass(totalPages ? totalPages - 1 : 0)"
 					aria-label="Next page"
-					@click="totalPages && !isCurrent(totalPages - 1) && pageChange(selectedCurrent + 1)"
+					@click="totalPages && !isCurrent(totalPages - 1) && pageChange(current + 1)"
 				>
 					<kv-icon
 						name="fat-chevron"
@@ -70,7 +70,7 @@ export default {
 		KvIcon,
 	},
 	props: {
-		pageSize: {
+		limit: {
 			type: Number,
 			required: true,
 			validator: value => value > 0,
@@ -80,7 +80,7 @@ export default {
 			required: true,
 			validator: value => value >= 0,
 		},
-		current: {
+		offset: {
 			type: Number,
 			default: 0,
 			validator: value => value >= 0,
@@ -96,11 +96,14 @@ export default {
 		}
 	},
 	computed: {
-		selectedCurrent() {
-			return this.current < this.totalPages ? this.current : 0;
+		current() {
+			const page = this.offset / this.limit;
+
+			// This component uses a 0-based page index
+			return page < this.totalPages ? page : 0;
 		},
 		totalPages() {
-			return Math.ceil(this.total / this.pageSize);
+			return Math.ceil(this.total / this.limit);
 		},
 		numbers() {
 			// If less than the max, there will be no ellipsis, so just return the numbers
@@ -111,13 +114,13 @@ export default {
 			const numbers = [];
 
 			// Add the 'middle' block of numbers based upon the current page
-			if ([0, 1, 2].includes(this.selectedCurrent)) {
+			if ([0, 1, 2].includes(this.current)) {
 				numbers.push(...this.range(1, this.extraPages));
-			} else if ([this.totalPages - 3, this.totalPages - 2, this.totalPages - 1].includes(this.selectedCurrent)) {
+			} else if ([this.totalPages - 3, this.totalPages - 2, this.totalPages - 1].includes(this.current)) {
 				numbers.push(...this.range(this.totalPages - this.extraPages - 1, this.totalPages - 2));
 			} else {
 				const delta = Math.floor(this.extraPages / 2);
-				numbers.push(...this.range(this.selectedCurrent - delta, this.selectedCurrent + delta));
+				numbers.push(...this.range(this.current - delta, this.current + delta));
 			}
 
 			// Add a placeholder for first ellipsis
@@ -143,7 +146,7 @@ export default {
 			return [...Array(end - start + 1)].map((_, n) => n + start);
 		},
 		isCurrent(number) {
-			return number === this.selectedCurrent;
+			return number === this.current;
 		},
 		isEllipsis(number) {
 			return number === -1;
@@ -156,7 +159,7 @@ export default {
 				window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 			}
 
-			this.$emit('page-changed', { pageNumber: number });
+			this.$emit('page-changed', { pageOffset: number * this.limit });
 		},
 	},
 };
