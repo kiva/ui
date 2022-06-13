@@ -4,7 +4,7 @@
 		:loan-id="loanId"
 		@add-to-basket="addToBasket($event)"
 	>
-		Lend ${{ amountValue }}<span v-if="showNow"> now</span>
+		{{ buttonText }}
 	</lend-button>
 </template>
 
@@ -28,17 +28,46 @@ export default {
 		amountLeft: {
 			type: [Number, String],
 			default: 20
+		},
+		completeLoan: {
+			type: Boolean,
+			default: false
+		},
+	},
+	mounted() {
+		if (this.completeLoan) {
+			// eslint-disable-next-line max-len
+			this.$kvTrackEvent('Borrower profile', 'Complete loan', 'view-amount-left-cta', null, null);
 		}
 	},
 	computed: {
 		amountValue() {
 			return parseFloat(this.amountLeft).toFixed();
+		},
+		buttonText() {
+			let str = '';
+
+			if (this.completeLoan) {
+				str = `Complete loan for $${this.amountValue}`;
+			} else {
+				str = `Lend ${this.amountValue}`;
+				if (this.showNow) {
+					str += ' now';
+				}
+			}
+
+			return str;
 		}
 	},
 	methods: {
 		addToBasket(event) {
-			// eslint-disable-next-line max-len
-			this.$kvTrackEvent('Lending', 'Add to basket (Partial Share)', 'lend-button-click', this.loanId, this.amountLeft);
+			if (this.completeLoan) {
+				// eslint-disable-next-line max-len
+				this.$kvTrackEvent('Borrower profile', 'Complete loan', 'click-amount-left-cta', this.loanId, this.amountLeft);
+			} else {
+				// eslint-disable-next-line max-len
+				this.$kvTrackEvent('Lending', 'Add to basket (Partial Share)', 'lend-button-click', this.loanId, this.amountLeft);
+			}
 			this.$emit('add-to-basket', event);
 		}
 	}
