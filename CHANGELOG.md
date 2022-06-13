@@ -1,3 +1,14 @@
+## [2.181.0](https://github.com/kiva/ui/compare/v2.180.0...v2.181.0) (2022-06-13)
+
+
+### Features
+
+* add contentful page detail to processPageContent func and modify tests ([2fa4fd3](https://github.com/kiva/ui/commit/2fa4fd309a2eafc55daf74c660bc6e5b631b2c9e))
+* add pageDescription and canonicalUrl fields to contentfulObject ([cf9704b](https://github.com/kiva/ui/commit/cf9704bedafb5287fc4da7f852caf39aabbeaad6))
+* add seo information to borrow center ([0e2ead3](https://github.com/kiva/ui/commit/0e2ead34f48b1b97ff13fc9ba1a235c7e2f17cdc))
+* fire events when user cancels, shares or gets an error in facebook share response ([8d4daed](https://github.com/kiva/ui/commit/8d4daed292c1d0a020a739d35cdd592cf4850d06))
+* install optimizely and integrate with snowplow ([6f4b0e1](https://github.com/kiva/ui/commit/6f4b0e1993bc63064b479dfe9f08f7b1daf45138))
+
 ## [2.180.0](https://github.com/kiva/ui/compare/v2.179.0...v2.180.0) (2022-06-10)
 
 

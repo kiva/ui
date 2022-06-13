@@ -46,8 +46,18 @@ export default {
 		KvButton,
 		KvGrid,
 	},
-	metaInfo: {
-		title: 'How Long | Borrow Pre-application',
+	metaInfo() {
+		return {
+			title: 'How Long | Borrow Pre-application',
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: 'Determine how much need to borrow and how long your loan will take to fund'
+					+ ' - at Kiva, with the right preparation, your loan can get funded very quickly!'
+				}
+			]
+		};
 	},
 	computed: {
 		trusteeId() {

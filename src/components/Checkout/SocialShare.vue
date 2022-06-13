@@ -250,9 +250,25 @@ export default {
 				if (code) {
 					// The 4201 error code means the user pressed 'Cancel', so can be ignored
 					if (code !== '4201') {
+						this.$kvTrackEvent(
+							'thanks',
+							'click-Facebook-share',
+							'error-Social-Share-Lightbox'
+						);
 						this.$showTipMsg(`There was a problem sharing to Facebook: ${message}`, 'warning');
+					} else {
+						this.$kvTrackEvent(
+							'thanks',
+							'click-Facebook-share',
+							'canceled-Social-Share-Lightbox'
+						);
 					}
 				} else {
+					this.$kvTrackEvent(
+						'thanks',
+						'click-Facebook-share',
+						'successful-Social-Share-Lightbox'
+					);
 					this.$showTipMsg('Thanks for sharing to Facebook!');
 				}
 			}
