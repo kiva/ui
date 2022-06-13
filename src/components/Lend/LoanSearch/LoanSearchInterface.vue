@@ -214,8 +214,8 @@ export default {
 	},
 	methods: {
 		trackLoans() {
-			// Check for matching hits, for example when sorting a single page of results
-			const hits = this.loans.map(l => l.id).sort().join();
+			const hits = this.loans.map(l => l.id).join();
+
 			if (hits !== this.trackedHits) {
 				this.$kvTrackEvent(
 					'Lending',
