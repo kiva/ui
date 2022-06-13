@@ -1,3 +1,17 @@
+## [2.182.0](https://github.com/kiva/ui/compare/v2.181.0...v2.182.0) (2022-06-13)
+
+
+### Features
+
+* added a couple more filter analytics ([c5b12aa](https://github.com/kiva/ui/commit/c5b12aa862fd82b09ffd9815b97b12412cea15f6))
+* added more filter analytics ([3f730d4](https://github.com/kiva/ui/commit/3f730d479acb0c68ffed186adcc03c0f7caea9a7))
+* loan query results tracking ([b957c1a](https://github.com/kiva/ui/commit/b957c1aecc6dae971de026994a6b429ba5813835))
+
+
+### Bug Fixes
+
+* ensured ID order sent to analytics matches displayed order ([9825f3c](https://github.com/kiva/ui/commit/9825f3cce5d22a29b6652233894b85f560f81f0a))
+
 ## [2.181.0](https://github.com/kiva/ui/compare/v2.180.0...v2.181.0) (2022-06-13)
 
 
