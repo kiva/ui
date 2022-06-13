@@ -85,8 +85,10 @@ export default {
 				this.openRegions.splice(existingIndex, 1);
 			}
 		},
-		updateRegion(region, countries) {
-			this.$set(this.selectedCountries, region, countries);
+		updateRegion(region, { values, changed, wasSelectAll }) {
+			this.$set(this.selectedCountries, region, values);
+
+			this.$kvTrackEvent?.('Lending', 'click-location-filter', wasSelectAll ? region : changed);
 		},
 	},
 	watch: {

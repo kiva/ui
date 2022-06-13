@@ -101,7 +101,10 @@ export default {
 		setSortBy(sortBy) {
 			if (sortBy !== this.selectedSort) {
 				this.selectedSort = sortBy;
+
 				this.$emit('updated', { sortBy: this.selectedSort });
+
+				this.$kvTrackEvent?.('Lending', 'click-sortBy-filter', this.selectedSort);
 			}
 		}
 	},
