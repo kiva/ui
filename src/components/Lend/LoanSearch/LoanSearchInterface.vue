@@ -156,7 +156,9 @@ export default {
 			totalCount: 0,
 			isLightboxVisible: false,
 			loanSearchState: {},
-			queryType: FLSS_QUERY_TYPE
+			queryType: FLSS_QUERY_TYPE,
+			// Holds comma-separated list of loan IDs from the query results
+			trackedHits: undefined,
 		};
 	},
 	async mounted() {
@@ -204,10 +206,27 @@ export default {
 					this.initialLoadComplete = true;
 				}
 				this.loading = false;
+
+				// Add analytics event for loans query result
+				this.trackLoans();
 			}
 		});
 	},
 	methods: {
+		trackLoans() {
+			const hits = this.loans.map(l => l.id).join();
+
+			if (hits !== this.trackedHits) {
+				this.$kvTrackEvent(
+					'Lending',
+					hits ? 'loans-shown' : 'zero-loans-shown',
+					hits ? 'loan-ids' : undefined,
+					hits || undefined
+				);
+
+				this.trackedHits = hits;
+			}
+		},
 		toggleLightbox(toggle) {
 			this.isLightboxVisible = toggle;
 		},
