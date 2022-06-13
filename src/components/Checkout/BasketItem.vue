@@ -28,6 +28,7 @@
 					data-testid="basket-loan-matching-text"
 					v-if="loan.loan.matchingText"
 					:matching-text="loan.loan.matchingText"
+					:disable-matching="appliedPromoCredits.length > 0"
 				/>
 				<loan-reservation
 					class="tw-mb-1"

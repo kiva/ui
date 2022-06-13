@@ -96,6 +96,10 @@
 			</kv-tooltip>
 		</div>
 
+		<div v-if="showMatchedLoanKivaCredit" class="tw-flex tw-flex-row-reverse">
+			<matched-loan-kiva-credit />
+		</div>
+
 		<div class="order-total" data-testid="total-due">
 			<strong>
 				<template v-if="!showPromoCreditTotal">Total: </template>
@@ -128,6 +132,7 @@ import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvTooltip from '@/components/Kv/KvTooltip';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
+import MatchedLoanKivaCredit from '@/components/Checkout/MatchedLoanKivaCredit';
 
 export default {
 	name: 'OrderTotals',
@@ -135,7 +140,8 @@ export default {
 		KvButton,
 		KvIcon,
 		KvTooltip,
-		VerifyRemovePromoCredit
+		VerifyRemovePromoCredit,
+		MatchedLoanKivaCredit
 	},
 	inject: ['apollo'],
 	props: {
@@ -154,6 +160,9 @@ export default {
 		};
 	},
 	computed: {
+		showMatchedLoanKivaCredit() {
+			return true;
+		},
 		showRemoveKivaCredit() {
 			return parseFloat(this.totals.kivaCreditAppliedTotal) > 0;
 		},
