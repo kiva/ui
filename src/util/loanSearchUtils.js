@@ -514,7 +514,7 @@ export function getThemeNamesQueryParam(param, facets) {
  */
 export async function applyQueryParams(apollo, query, allFacets, queryType, previousState = {}) {
 	const filters = {
-		...previousState, // Country ISO code, page number, and page size are not currently in the query params
+		...previousState, // Country ISO code, page offset, and page size are not currently in the query params
 		gender: query.gender,
 		sortBy: queryType === FLSS_QUERY_TYPE ? lendToFlssSort.get(query.sortBy) : query.sortBy,
 		sectorId: getSectorIdsFromQueryParam(query.sector, allFacets.sectorNames, allFacets.sectorFacets, true),
