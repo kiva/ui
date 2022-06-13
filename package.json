@@ -92,7 +92,6 @@
 		"helmet": "^4.6.0",
 		"https": "^1.0.0",
 		"instantsearch.js": "^3.6.0",
-		"isomorphic-fetch": "^3.0.0",
 		"js-cookie": "^2.2.1",
 		"jsonwebtoken": "^8.5.1",
 		"libphonenumber-js": "^1.9.22",
