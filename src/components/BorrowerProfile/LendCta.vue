@@ -442,11 +442,10 @@ export default {
 				loanId: this.loanId,
 			}).then(() => {
 				this.isAdding = false;
+				this.$kvTrackEvent('Lending', 'Add to basket', this.ctaButtonText);
 				if (this.isCompleteLoanActive) {
 					// eslint-disable-next-line max-len
 					this.$kvTrackEvent('Borrower profile', 'Complete loan', 'click-amount-left-cta', this.loanId, this.selectedOption);
-				} else {
-					this.$kvTrackEvent('Lending', 'Add to basket', this.ctaButtonText);
 				}
 			}).catch(e => {
 				this.isAdding = false;
