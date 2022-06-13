@@ -39,10 +39,13 @@ export default (config, globalOneTrustEvent) => {
 		(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
 			p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
 			};p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
-			n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,'script','//cdn.jsdelivr.net/gh/snowplow/sp-js-assets@2.17.0/sp.js','snowplow'));
+			n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,'script','//cdn.jsdelivr.net/gh/snowplow/sp-js-assets@2.18.2/sp.js','snowplow'));
 			window.snowplow('newTracker', 'cf', config.snowplowUri, { // Initialize a tracker
 				appId: 'kiva' ,
 				cookieDomain: '.kiva.org',
+				contexts: {
+					optimizelyXSummary: true
+				},
 				// uncomment this option to examine context information in your vm
 				// encodeBase64: false,
 			});
@@ -118,6 +121,14 @@ export default (config, globalOneTrustEvent) => {
 		/* eslint-enable */
 	};
 
+	// Optimizely experiment loader
+	const insertOptimizely = () => {
+		const p = document.getElementsByTagName('script')[0];
+		const s = document.createElement('script');
+		s.src = `https://cdn.optimizely.com/js/${config.optimizelyProjectId}.js`;
+		p.parentNode.insertBefore(s, p);
+	};
+
 	// Always load
 	// PerimeterX snippet
 	if (config.enablePerimeterx) {
@@ -172,6 +183,9 @@ export default (config, globalOneTrustEvent) => {
 			* monitor its performance.
 			* */
 			if (config.enableAnalytics) {
+				if (config.enableOptimizely && !optout) {
+					OneTrust.InsertHtml('', 'head', insertOptimizely, null, 'C0002');
+				}
 				if (config.enableGA && !optout) {
 					OneTrust.InsertHtml('', 'head', insertGoogleAnalytics, null, 'C0002');
 				}
@@ -229,6 +243,9 @@ export default (config, globalOneTrustEvent) => {
 	// Legacy behavior without oneTrust
 	if (!config.oneTrust || !config.oneTrust.enable) {
 		if (config.enableAnalytics) {
+			if (config.enableOptimizely && !optout) {
+				insertOptimizely();
+			}
 			if (config.enableGA && !optout) {
 				insertGoogleAnalytics();
 			}
