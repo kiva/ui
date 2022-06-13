@@ -437,10 +437,13 @@ export function processPageContent(entryItem) {
 		path: entryItem.fields?.path,
 		pageTitle: entryItem.fields?.pageTitle,
 		pageType: entryItem.fields?.pageType,
+		pageDescription: entryItem.fields?.pageDescription,
+		canonicalUrl: entryItem.fields?.canonicalUrl,
 		pageLayout: {
 			name: entryItem.fields?.pageLayout?.fields?.name,
 			pageTitle: entryItem.fields?.pageLayout?.fields?.pageTitle,
 			pageBackgroundColor: entryItem.fields?.pageLayout?.fields?.pageBackgroundColor,
+			pageDescription: entryItem.fields?.pageLayout?.fields?.pageDescription
 		},
 		settings: entryItem.fields?.settings
 			? formatContentTypes(entryItem.fields?.settings) : []
@@ -486,14 +489,18 @@ export function processPageContentFlat(entryItem) {
 	if (!isPage) return { error: 'Non-Page Type Contentful Response' };
 
 	// extract top level items in the Page, initialize pageLayout and settings
+
 	contentfulContentObject.page = {
 		key: entryItem.fields?.key,
 		path: entryItem.fields?.path,
 		pageTitle: entryItem.fields?.pageTitle,
 		pageType: entryItem.fields?.pageType,
+		pageDescription: entryItem.fields?.pageDescription,
+		canonicalUrl: entryItem.fields?.canonicalUrl,
 		pageLayout: {
 			name: entryItem.fields?.pageLayout?.fields?.name,
 			pageTitle: entryItem.fields?.pageLayout?.fields?.pageTitle,
+			pageDescription: entryItem.fields?.pageLayout?.fields?.pageDescription
 		},
 		settings: entryItem.fields?.settings
 			? formatContentTypes(entryItem.fields?.settings) : []
