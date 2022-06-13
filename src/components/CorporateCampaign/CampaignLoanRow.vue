@@ -33,7 +33,7 @@
 			<kv-carousel-slide
 				v-for="(loan, index) in loans"
 				:key="`loan-${loan.id}-${index}`"
-				class="column cards-wrap"
+				class="loan-row-slide"
 			>
 				<loan-card-controller
 					class="cards-loan-card"
@@ -57,7 +57,7 @@
 
 			<kv-carousel-slide
 				v-if="hasMoreLoansAvailable"
-				class="column cards-wrap"
+				class="loan-row-slide"
 			>
 				<button
 					class="see-all-card"
@@ -167,7 +167,7 @@ export default {
 			}
 		},
 		filters(next) {
-			// TODO: Review process for reseting loans after applying filters
+			// TODO: Review process for resetting loans after applying filters
 			// reset offset
 			this.offset = 0;
 			// reset loans
@@ -177,7 +177,9 @@ export default {
 			this.loanQueryFilters = next;
 
 			// Reset carousel position after applying loan filters
-			this.$refs.campaignLoanCarousel.goToSlide(0);
+			if (this.$refs.campaignLoanCarousel) {
+				this.$refs.campaignLoanCarousel.goToSlide(0);
+			}
 		},
 		isVisible(next) {
 			if (next && this.showLoans) {
@@ -269,10 +271,8 @@ export default {
 	justify-content: center;
 	position: relative;
 
-	// extra specificity to ensure width: auto is respected when bundling css
-	.cards-wrap {
-		display: flex;
-		width: auto;
+	.loan-row-slide {
+		width: rem-calc(328);
 	}
 }
 
@@ -296,6 +296,7 @@ $card-half-space: rem-calc(14/2);
 }
 
 .see-all-card {
+	min-height: rem-calc(475);
 	display: block;
 
 	&:hover {

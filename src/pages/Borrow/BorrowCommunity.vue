@@ -47,8 +47,18 @@ export default {
 		KvButton,
 		KvGrid,
 	},
-	metaInfo: {
-		title: 'Community | Borrow Pre-application',
-	},
+	metaInfo() {
+		return {
+			title: 'Community | Borrow Pre-application',
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: 'Here at Kiva, we believe that if your community will invest in you, '
+						+ 'so will the Kiva lender community. Get started today.'
+				}
+			]
+		};
+	}
 };
 </script>

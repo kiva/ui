@@ -9,13 +9,16 @@ import {
 	runLoansQuery,
 	fetchLoanFacets,
 	transformThemes,
-	getUpdatedThemes,
+	transformSectors,
+	getUpdatedNumLoansFundraising,
 	getCheckboxLabel,
 	applyQueryParams,
 	updateQueryParams,
 	getValidatedSearchState,
 	FLSS_QUERY_TYPE,
 	STANDARD_QUERY_TYPE,
+	getSectorIdsFromQueryParam,
+	getThemeNamesQueryParam,
 } from '@/util/loanSearchUtils';
 import * as flssUtils from '@/util/flssUtils';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
@@ -26,16 +29,17 @@ const mockState = {
 	countryIsoCode: ['US'],
 	sectorId: [1],
 	sortBy: 'expiringSoon',
-	theme: ['test theme']
+	theme: ['THEME 1']
 };
 
 const mockAllFacets = {
 	countryFacets: [{ country: { isoCode: 'US' } }],
 	countryIsoCodes: ['US'],
-	sectorFacets: [{ id: 1 }],
+	sectorFacets: [{ id: 1, name: 'Sector 1' }, { id: 2, name: 'Sector 2' }],
 	sectorIds: [1],
-	themeFacets: [{ name: 'test theme' }],
-	themes: ['TEST THEME'],
+	sectorNames: ['SECTOR 1', 'SECTOR 2'],
+	themeFacets: [{ id: 1, name: 'Theme 1' }, { id: 2, name: 'Theme 2' }],
+	themeNames: ['THEME 1', 'THEME 2'],
 	genderFacets: [{ name: 'female' }, { name: 'male' }],
 	genders: ['FEMALE', 'MALE'],
 	flssSorts: [{ name: 'expiringSoon' }, { name: 'personalized' }],
@@ -79,6 +83,12 @@ const mockTransformedSouthAmerica = (
 });
 
 const mockTransformedRegions = [mockTransformedMiddleEast(), mockTransformedSouthAmerica()];
+
+const mockASector = (numLoansFundraising = 6) => ({ id: 7, name: 'c', numLoansFundraising });
+
+const mockBSector = (numLoansFundraising = 3) => ({ id: 2, name: 'd', numLoansFundraising });
+
+const mockTransformedSectors = [mockASector(), mockBSector()];
 
 const mockATheme = (numLoansFundraising = 5) => ({ id: 6, name: 'a', numLoansFundraising });
 
@@ -273,6 +283,76 @@ describe('loanSearchUtils.js', () => {
 		});
 	});
 
+	describe('transformSectors', () => {
+		it('should handle empty', () => {
+			expect(transformSectors([])).toEqual([]);
+		});
+
+		it('should filter, transform, and sort', () => {
+			const mockFilteredSectors = [
+				{
+					key: 2,
+					value: 3,
+				},
+				{
+					key: 7,
+					value: 6,
+				},
+			];
+
+			const mockAllSectors = [
+				{
+					id: 2,
+					name: 'd',
+				},
+				{
+					id: 8,
+					name: 'f',
+				},
+				{
+					id: 7,
+					name: 'c',
+				},
+			];
+
+			const result = transformSectors(mockFilteredSectors, mockAllSectors);
+
+			expect(result).toEqual(mockTransformedSectors);
+		});
+
+		it('should filter transform themes with number casting', () => {
+			const mockFilteredSectors = [
+				{
+					key: '2',
+					value: 3,
+				},
+				{
+					key: '7',
+					value: 6,
+				},
+			];
+
+			const mockAllSectors = [
+				{
+					id: 2,
+					name: 'd',
+				},
+				{
+					id: 8,
+					name: 'f',
+				},
+				{
+					id: 7,
+					name: 'c',
+				},
+			];
+
+			const result = transformSectors(mockFilteredSectors, mockAllSectors);
+
+			expect(result).toEqual(mockTransformedSectors);
+		});
+	});
+
 	describe('transformThemes', () => {
 		it('should handle empty', () => {
 			expect(transformThemes([])).toEqual([]);
@@ -372,23 +452,36 @@ describe('loanSearchUtils.js', () => {
 		});
 	});
 
-	describe('getUpdatedThemes', () => {
+	describe('getUpdatedNumLoansFundraising', () => {
 		it('should handle undefined and empty', () => {
-			expect(getUpdatedThemes(undefined, [])).toEqual([]);
-			expect(getUpdatedThemes([], [])).toEqual([]);
+			expect(getUpdatedNumLoansFundraising(undefined, [])).toEqual([]);
+			expect(getUpdatedNumLoansFundraising([], [])).toEqual([]);
 		});
 
-		it('should update numLoansFundraising', () => {
+		it('should update theme numLoansFundraising', () => {
 			const nextA = mockATheme(9);
 
-			expect(getUpdatedThemes(mockTransformedThemes, [nextA])).toEqual([nextA, mockBTheme(0)]);
+			expect(getUpdatedNumLoansFundraising(mockTransformedThemes, [nextA])).toEqual([nextA, mockBTheme(0)]);
 		});
 
 		it('should add missing themes', () => {
 			const a = mockATheme();
 			const nextB = mockBTheme();
 
-			expect(getUpdatedThemes([a], [a, nextB])).toEqual([a, nextB]);
+			expect(getUpdatedNumLoansFundraising([a], [a, nextB])).toEqual([a, nextB]);
+		});
+
+		it('should update sector numLoansFundraising', () => {
+			const nextA = mockASector(9);
+
+			expect(getUpdatedNumLoansFundraising(mockTransformedSectors, [nextA])).toEqual([nextA, mockBSector(0)]);
+		});
+
+		it('should add missing sectors', () => {
+			const a = mockASector();
+			const nextB = mockBSector();
+
+			expect(getUpdatedNumLoansFundraising([a], [a, nextB])).toEqual([a, nextB]);
 		});
 	});
 
@@ -437,12 +530,16 @@ describe('loanSearchUtils.js', () => {
 
 	describe('runFacetsQueries', () => {
 		let spyFetchFacets;
-		const isoCode = [{ key: 'iso', value: 1 }];
-		const themes = [{ key: 'theme', value: 1 }];
+		const isoCodeFacets = [{ key: 'iso', value: 1 }];
+		const themeFacets = [{ key: 'theme', value: 1 }];
+		const sectorFacets = [{ key: 'sector', value: 1 }];
+		const isoCodes = { facets: { isoCode: isoCodeFacets } };
+		const themes = { facets: { themes: themeFacets } };
+		const sectors = { facets: { sectorId: sectorFacets } };
 
 		beforeEach(() => {
 			spyFetchFacets = jest.spyOn(flssUtils, 'fetchFacets')
-				.mockImplementation(() => Promise.resolve({ isoCode, themes }));
+				.mockImplementation(() => Promise.resolve({ isoCodes, themes, sectors }));
 		});
 
 		afterEach(jest.restoreAllMocks);
@@ -450,9 +547,14 @@ describe('loanSearchUtils.js', () => {
 		it('should return facets', async () => {
 			const apollo = {};
 			const result = await runFacetsQueries(apollo);
-			expect(spyFetchFacets).toHaveBeenCalledWith(apollo, { countryIsoCode: undefined });
-			expect(spyFetchFacets).toHaveBeenCalledWith(apollo, { theme: undefined });
-			expect(result).toEqual({ isoCodes: isoCode, themes });
+			expect(spyFetchFacets).toHaveBeenCalledWith(
+				apollo,
+				{ countryIsoCode: undefined },
+				{ theme: undefined },
+				{ sectorId: undefined }
+			);
+			expect(spyFetchFacets).toHaveBeenCalledTimes(1);
+			expect(result).toEqual({ isoCodes: isoCodeFacets, themes: themeFacets, sectors: sectorFacets });
 		});
 	});
 
@@ -478,7 +580,7 @@ describe('loanSearchUtils.js', () => {
 
 	describe('fetchLoanFacets', () => {
 		const countryFacets = [{ country: { isoCode: 'a' } }];
-		const sector = [{ id: 1 }];
+		const sector = [{ id: 1, name: 'Test Sector' }];
 		const loanThemeFilter = [{ name: 'c' }];
 		const genderOptions = { enumValues: [{ name: 'female' }] };
 		const flssSorts = { enumValues: [{ name: 'expiringSoon' }] };
@@ -501,8 +603,9 @@ describe('loanSearchUtils.js', () => {
 				countryIsoCodes: [],
 				sectorFacets: [],
 				sectorIds: [],
+				sectorNames: [],
 				themeFacets: [],
-				themes: [],
+				themeNames: [],
 				genderFacets: [],
 				genders: [],
 				flssSorts: [],
@@ -532,8 +635,9 @@ describe('loanSearchUtils.js', () => {
 				countryIsoCodes: ['A'],
 				sectorFacets: sector,
 				sectorIds: [1],
+				sectorNames: ['TEST SECTOR'],
 				themeFacets: loanThemeFilter,
-				themes: ['C'],
+				themeNames: ['C'],
 				genderFacets: [{ name: 'female' }],
 				genders: ['FEMALE'],
 				flssSorts: [{ name: 'expiringSoon' }],
@@ -552,6 +656,116 @@ describe('loanSearchUtils.js', () => {
 		});
 	});
 
+	describe('getSectorIdsFromQueryParam', () => {
+		it('should handle empty', () => {
+			expect(getSectorIdsFromQueryParam()).toBe(undefined);
+			expect(getSectorIdsFromQueryParam('')).toBe(undefined);
+		});
+
+		it('should handle FLSS and legacy single sector', () => {
+			const sector = '1';
+
+			const result = getSectorIdsFromQueryParam(sector, mockAllFacets);
+
+			expect(result).toEqual([1]);
+		});
+
+		it('should handle FLSS and legacy list', () => {
+			const sector = '1,2';
+
+			const result = getSectorIdsFromQueryParam(sector, mockAllFacets);
+
+			expect(result).toEqual([1, 2]);
+		});
+
+		it('should handle FLSS and legacy list trailing separator', () => {
+			const sector = '1,2,';
+
+			const result = getSectorIdsFromQueryParam(sector, mockAllFacets);
+
+			expect(result).toEqual([1, 2]);
+		});
+
+		it('should handle Algolia single sector', () => {
+			const sector = 'Sector 1';
+
+			const result = getSectorIdsFromQueryParam(sector, mockAllFacets);
+
+			expect(result).toEqual([1]);
+		});
+
+		it('should handle Algolia single list', () => {
+			const sector = 'Sector 1~Sector 2';
+
+			const result = getSectorIdsFromQueryParam(sector, mockAllFacets);
+
+			expect(result).toEqual([1, 2]);
+		});
+
+		it('should handle Algolia single list trailing separator', () => {
+			const sector = 'Sector 1~Sector 2~';
+
+			const result = getSectorIdsFromQueryParam(sector, mockAllFacets);
+
+			expect(result).toEqual([1, 2]);
+		});
+	});
+
+	describe('getThemeNamesQueryParam', () => {
+		it('should handle empty', () => {
+			expect(getThemeNamesQueryParam()).toBe(undefined);
+			expect(getThemeNamesQueryParam('')).toBe(undefined);
+		});
+
+		it('should handle FLSS and legacy single sector', () => {
+			const attribute = '1';
+
+			const result = getThemeNamesQueryParam(attribute, mockAllFacets.themeFacets);
+
+			expect(result).toEqual(['Theme 1']);
+		});
+
+		it('should handle FLSS and legacy list', () => {
+			const attribute = '1,2';
+
+			const result = getThemeNamesQueryParam(attribute, mockAllFacets.themeFacets);
+
+			expect(result).toEqual(['Theme 1', 'Theme 2']);
+		});
+
+		it('should handle FLSS and legacy list trailing separator', () => {
+			const attribute = '1,2,';
+
+			const result = getThemeNamesQueryParam(attribute, mockAllFacets.themeFacets);
+
+			expect(result).toEqual(['Theme 1', 'Theme 2']);
+		});
+
+		it('should handle Algolia single sector', () => {
+			const attribute = 'Theme 1';
+
+			const result = getThemeNamesQueryParam(attribute, mockAllFacets.themeFacets);
+
+			expect(result).toEqual(['Theme 1']);
+		});
+
+		it('should handle Algolia single list', () => {
+			const attribute = 'Theme 1~Theme 2';
+
+			const result = getThemeNamesQueryParam(attribute, mockAllFacets.themeFacets);
+
+			expect(result).toEqual(['Theme 1', 'Theme 2']);
+		});
+
+		it('should handle Algolia single list trailing separator', () => {
+			const attribute = 'Theme 1~Theme 2~';
+
+			const result = getThemeNamesQueryParam(attribute, mockAllFacets.themeFacets);
+
+			expect(result).toEqual(['Theme 1', 'Theme 2']);
+		});
+	});
+
 	describe('applyQueryParams', () => {
 		it('should update cache', async () => {
 			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
@@ -561,14 +775,15 @@ describe('loanSearchUtils.js', () => {
 					searchParams: {
 						gender: 'female',
 						countryIsoCode: [],
-						sectorId: [],
+						sectorId: [1],
 						sortBy: 'expiringSoon',
-						theme: []
+						theme: ['THEME 1']
 					}
 				}
 			};
+			const query = { ...mockState, sector: mockState.sectorId.toString(), attribute: '1' };
 
-			await applyQueryParams(apollo, mockState, mockAllFacets, FLSS_QUERY_TYPE);
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
@@ -577,9 +792,22 @@ describe('loanSearchUtils.js', () => {
 			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
 			const params = {
 				mutation: updateLoanSearchMutation,
-				variables: { searchParams: { ...mockState, gender: 'male', sortBy: 'personalized' } },
+				variables: {
+					searchParams: {
+						...mockState,
+						gender: 'male',
+						sortBy: 'personalized',
+						sectorId: [1],
+						theme: ['THEME 1'],
+					}
+				},
 			};
-			const query = { gender: 'male', sortBy: 'popularity' };
+			const query = {
+				gender: 'male',
+				sortBy: 'popularity',
+				sector: '1',
+				attribute: '1'
+			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState);
 
@@ -590,7 +818,15 @@ describe('loanSearchUtils.js', () => {
 			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
 			const params = {
 				mutation: updateLoanSearchMutation,
-				variables: { searchParams: { ...mockState, gender: null, sortBy: 'personalized' } },
+				variables: {
+					searchParams: {
+						...mockState,
+						gender: null,
+						sortBy: 'personalized',
+						sectorId: [],
+						theme: [],
+					}
+				},
 			};
 			const query = { sortBy: 'popularity' };
 
@@ -603,7 +839,15 @@ describe('loanSearchUtils.js', () => {
 			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
 			const params = {
 				mutation: updateLoanSearchMutation,
-				variables: { searchParams: { ...mockState, gender: null, sortBy: 'popularity' } },
+				variables: {
+					searchParams: {
+						...mockState,
+						gender: null,
+						sortBy: 'popularity',
+						sectorId: [],
+						theme: [],
+					}
+				},
 			};
 			const query = { sortBy: 'popularity' };
 
@@ -614,28 +858,20 @@ describe('loanSearchUtils.js', () => {
 
 		it('should not update cache when state unchanged', async () => {
 			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
+			const query = { ...mockState, sector: mockState.sectorId.toString(), attribute: '1' };
 
-			await applyQueryParams(apollo, mockState, mockAllFacets, FLSS_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledTimes(0);
 		});
 	});
 
 	describe('updateQueryParams', () => {
-		it('should push new route', async () => {
-			const state = { gender: 'female' };
-			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
-
-			updateQueryParams(state, router);
-
-			expect(router.push).toHaveBeenCalledWith({ name: 'name', query: state, params: { noScroll: true } });
-		});
-
 		it('should preserve UTM params', async () => {
 			const state = { gender: 'female' };
 			const router = { currentRoute: { name: 'name', query: { utm_test: 'test' } }, push: jest.fn() };
 
-			updateQueryParams(state, router);
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
@@ -644,20 +880,72 @@ describe('loanSearchUtils.js', () => {
 			});
 		});
 
-		it('should not push identical query string', async () => {
+		it('should push gender', async () => {
 			const state = { gender: 'female' };
-			const router = { currentRoute: { name: 'name', query: { gender: 'female' } }, push: jest.fn() };
+			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
 
-			updateQueryParams(state, router);
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
 
-			expect(router.push).toHaveBeenCalledTimes(0);
+			expect(router.push).toHaveBeenCalledWith({ name: 'name', query: state, params: { noScroll: true } });
+		});
+
+		it('should push sector IDs', async () => {
+			const state = { sectorId: [1, 2] };
+			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { sector: '1,2' },
+				params: { noScroll: true }
+			});
+		});
+
+		it('should not push empty sector ID', async () => {
+			const state = { gender: 'female', sectorId: [] };
+			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { gender: 'female' },
+				params: { noScroll: true }
+			});
+		});
+
+		it('should push theme IDs', async () => {
+			const state = { theme: ['THEME 1', 'THEME 2'] };
+			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { attribute: '1,2' },
+				params: { noScroll: true }
+			});
+		});
+
+		it('should not push empty theme ID', async () => {
+			const state = { gender: 'female', theme: [] };
+			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { gender: 'female' },
+				params: { noScroll: true }
+			});
 		});
 
 		it('should push mapped FLSS sort value', async () => {
 			const state = { sortBy: 'personalized' };
 			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
 
-			updateQueryParams(state, router, FLSS_QUERY_TYPE);
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
@@ -670,13 +958,22 @@ describe('loanSearchUtils.js', () => {
 			const state = { sortBy: 'personalized' };
 			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
 
-			updateQueryParams(state, router, STANDARD_QUERY_TYPE);
+			updateQueryParams(state, router, mockAllFacets, STANDARD_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
 				query: { sortBy: 'personalized' },
 				params: { noScroll: true }
 			});
+		});
+
+		it('should not push identical query string', async () => {
+			const state = { gender: 'female' };
+			const router = { currentRoute: { name: 'name', query: { gender: 'female' } }, push: jest.fn() };
+
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledTimes(0);
 		});
 	});
 });

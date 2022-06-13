@@ -100,6 +100,10 @@ const pageQuery = gql`
 				key
 				value
 			}
+			requireDepositsMatchedLoans: uiExperimentSetting(key: "require_deposits_matched_loans") {
+				key
+				value
+			}
 		}
 		lend {
 			loan(id: $loanId) {
@@ -235,7 +239,8 @@ export default {
 			use: '',
 			description: '',
 			completeLoanExpActive: false,
-			loanFundraisingInfo: {}
+			loanFundraisingInfo: {},
+			requireDepositsMatchedLoans: false,
 		};
 	},
 	apollo: {
@@ -252,6 +257,7 @@ export default {
 					return Promise.all([
 						// eslint-disable-next-line max-len
 						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
+						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 					]);
 				});
 		},

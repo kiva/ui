@@ -33,6 +33,12 @@
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
+						<upsell-module
+							v-if="!upsellCookieActive && showUpsellModule && isUpsellsExperimentEnabled "
+							:loan="upsellLoan"
+							:close-upsell-module="closeUpsellModule"
+							:add-to-basket="addToBasket"
+						/>
 					</div>
 					<div v-if="showKivaCardForm">
 						<hr class="tw-border-tertiary tw-my-3">
@@ -265,8 +271,13 @@ import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPa
 import RandomLoanSelector from '@/components/RandomLoanSelector/RandomLoanSelector';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import upsellQuery from '@/graphql/query/checkout/upsellLoans.graphql';
+import UpsellModule from '@/components/Checkout/UpsellModule';
+import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
+import * as Sentry from '@sentry/vue';
+import _forEach from 'lodash/forEach';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'CheckoutPage',
@@ -284,7 +295,8 @@ export default {
 		CheckoutHolidayPromo,
 		CheckoutDropInPaymentWrapper,
 		RandomLoanSelector,
-		VerifyRemovePromoCredit
+		VerifyRemovePromoCredit,
+		UpsellModule
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [
@@ -326,6 +338,9 @@ export default {
 			showVerification: false,
 			showVerifyRemovePromoCredit: false,
 			isUpsellsExperimentEnabled: false,
+			upsellLoan: {},
+			showUpsellModule: true,
+			requireDepositsMatchedLoans: false,
 		};
 	},
 	apollo: {
@@ -359,6 +374,8 @@ export default {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 						client.query({ query: experimentQuery, variables: { id: 'upsells_checkout' } }),
+						client.query({ query: upsellQuery }),
+						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 					]);
 				});
 		},
@@ -402,12 +419,24 @@ export default {
 			id: 'Experiment:upsells_checkout',
 			fragment: experimentVersionFragment,
 		}) || {};
+		const matchedLoansExperiment = this.apollo.readFragment({
+			id: 'Experiment:require_deposits_matched_loans',
+			fragment: experimentVersionFragment,
+		}) || {};
 		this.isUpsellsExperimentEnabled = upsellsExperiment.version === 'b';
+		this.requireDepositsMatchedLoans = matchedLoansExperiment.version === 'b';
 		if (upsellsExperiment.version) {
 			this.$kvTrackEvent(
 				'Basket',
 				'EXP-CORE-602-May-2022',
 				upsellsExperiment.version
+			);
+		}
+		if (matchedLoansExperiment.version) {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-CORE-615-May-2022',
+				matchedLoansExperiment.version
 			);
 		}
 		// show guest account claim confirmation message
@@ -481,8 +510,13 @@ export default {
 		// show toast for specified scenario
 		this.handleToast();
 		this.getPromoInformationFromBasket();
+		this.getUpsellModuleData();
 	},
 	computed: {
+		// show upsell module only once per session
+		upsellCookieActive() {
+			return this.cookieStore.get('upsell-loan-added') === 'true';
+		},
 		isLoggedIn() {
 			if (this.checkingOutAsGuest) {
 				return true;
@@ -580,6 +614,16 @@ export default {
 		}
 	},
 	methods: {
+		closeUpsellModule(amountLeft) {
+			this.$kvTrackEvent(
+				'Basket',
+				'click-checkout-close-upsell',
+				'Close',
+				this.upsellLoan?.id,
+				amountLeft
+			);
+			this.showUpsellModule = false;
+		},
 		guestCheckout() {
 			this.checkingOutAsGuest = true;
 		},
@@ -743,6 +787,14 @@ export default {
 				});
 			});
 		},
+		getUpsellModuleData() {
+			this.apollo.query({
+				query: upsellQuery,
+				fetchPolicy: 'network-only',
+			}).then(({ data }) => {
+				this.upsellLoan = data?.lend?.loans?.values[0];
+			});
+		},
 		verificationComplete() {
 			this.verificationSubmitted = true;
 		},
@@ -768,6 +820,49 @@ export default {
 			this.refreshTotals();
 			this.verificationComplete();
 		},
+		addToBasket(loanId, amountLeft) { // add to basket for upsell module
+			this.setUpdatingTotals(true);
+			this.apollo.mutate({
+				mutation: updateLoanReservation,
+				variables: {
+					loanid: loanId,
+					price: numeral(amountLeft).format('0.00'),
+				},
+			}).then(({ errors }) => {
+				if (errors) {
+					// Handle errors from adding to basket
+					_forEach(errors, error => {
+						this.$showTipMsg(error.message, 'error');
+						try {
+							this.$kvTrackEvent(
+								'Lending',
+								'Add-to-Basket',
+								`Failed: ${error.message.substring(0, 40)}...`
+							);
+							Sentry.captureMessage(`Add to Basket: ${error.message}`);
+						} catch (e) {
+							// no-op
+						}
+					});
+				} else {
+					// If no errors, update the basket + loan info
+					this.cookieStore.set('upsell-loan-added', true);
+					this.$kvTrackEvent(
+						'Basket',
+						'click-checkout-upsell',
+						'Add loan to basket',
+						loanId,
+						amountLeft
+					);
+					this.showUpsellModule = false;
+					this.refreshTotals();
+				}
+			}).catch(error => {
+				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
+				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
+				Sentry.captureException(error);
+			});
+		}
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);

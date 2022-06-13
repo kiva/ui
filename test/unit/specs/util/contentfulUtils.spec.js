@@ -486,6 +486,7 @@ describe('contentfulUtils.js', () => {
 					pageBackgroundColor: undefined,
 					contentGroups: [{}],
 					pageTitle: 'Test Page Layout Title',
+					pageDescription: 'Test Page Layout Description'
 				},
 				settings: [{}]
 			}
@@ -527,8 +528,11 @@ describe('contentfulUtils.js', () => {
 						}]
 					}],
 					pageTitle: 'Test Page Layout Title',
+					pageDescription: 'Test Page Layout Description'
 				},
 				pageTitle: 'Test Page Title',
+				pageDescription: 'Test Page Description',
+				canonicalUrl: 'https://test-canonical.kiva.org/contentful'
 			}
 		};
 
@@ -563,6 +567,7 @@ describe('contentfulUtils.js', () => {
 				pageLayout: {
 					name: 'Promo Campaign Test',
 					pageTitle: 'Test Page Layout Title',
+					pageDescription: 'Test Page Layout Description'
 				},
 				settings: expect.any(Array),
 				contentGroups: expect.any(Object),
@@ -582,6 +587,7 @@ describe('contentfulUtils.js', () => {
 				pageLayout: {
 					name: 'Promo Campaign Test',
 					pageTitle: 'Test Page Layout Title',
+					pageDescription: 'Test Page Layout Description',
 				},
 				settings: expect.any(Array),
 				contentGroups: {
@@ -603,6 +609,8 @@ describe('contentfulUtils.js', () => {
 					}
 				},
 				pageTitle: 'Test Page Title',
+				pageDescription: 'Test Page Description',
+				canonicalUrl: 'https://test-canonical.kiva.org/contentful'
 			}
 		};
 

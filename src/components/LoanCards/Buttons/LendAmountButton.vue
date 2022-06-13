@@ -50,7 +50,7 @@ export default {
 			if (this.completeLoan) {
 				str = `Complete loan for $${this.amountValue}`;
 			} else {
-				str = `Lend ${this.amountValue}`;
+				str = `Lend $${this.amountValue}`;
 				if (this.showNow) {
 					str += ' now';
 				}
