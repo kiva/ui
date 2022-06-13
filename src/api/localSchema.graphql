@@ -81,6 +81,8 @@ type LoanSearchState {
 	sectorId: [Int]
 	sortBy: String
 	theme: [String]
+	pageNumber: [Int]
+	pageSize: [Int]
 }
 
 type TipMessage {

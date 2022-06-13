@@ -33,9 +33,9 @@ describe('flssUtils.js', () => {
 			query: flssLoanQuery,
 			variables: {
 				filterObject: loanQueryFilters,
-				limit: 20,
 				sortBy: 'personalized',
 				pageNumber: 0,
+				pageSize: 15,
 			},
 			fetchPolicy: 'network-only',
 		};

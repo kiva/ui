@@ -4,7 +4,9 @@ query loanSearchStateQuery {
 		gender
 		sectorId
 		countryIsoCode
-		theme
 		sortBy
+		theme
+		pageNumber
+		pageSize
 	}
 }

@@ -2,16 +2,16 @@
 
 query flssLoanData(
 	$filterObject: [FundraisingLoanSearchFilterInput!]
+	$sortBy: SortEnum = personalized
+	$pageNumber: Int = 0
+	$pageSize: Int = 0
 	$imgDefaultSize: String = "w480h360"
 	$imgRetinaSize: String = "w960h720"
-	$limit: Int = 0
-	$offset: Int = 0
-	$sortBy: SortEnum = personalized
 ) {
 	fundraisingLoans(
 		filters: $filterObject,
-		limit: $limit,
-		pageNumber: $offset
+		limit: $pageSize,
+		pageNumber: $pageNumber,
 		sortBy: $sortBy
 	) {
 		totalCount

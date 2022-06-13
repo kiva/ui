@@ -14,18 +14,24 @@ const __typename = 'LoanSearchState';
 // 	}
 // `;
 
+export const getDefaultLoanSearchState = () => ({
+	gender: null, // Expects a string
+	countryIsoCode: [], // Expects an array of strings
+	sectorId: [], // Expects an array of ints
+	sortBy: null, // Expects a string that matches the SortEnum
+	theme: [], // Expects an array of strings
+	pageNumber: 0, // Expects a number
+	pageSize: 15, // Expects a number
+});
+
 // export queries, resolvers and defaults for LoanSearchState
 export default () => {
 	return {
 		defaults: {
 			loanSearchState: {
-				id: 'SearchData', // using a hard-coded id for now to enable cache
-				gender: '', // expects a string
-				countryIsoCode: [], // expects an array of strings
-				sectorId: [], // expects an array of ints
-				sortBy: null, // expects a string that matches the SortEnum
-				theme: [], // expects an array of strings
+				id: 'SearchData', // Using a hard-coded id for now to enable cache
 				__typename,
+				...getDefaultLoanSearchState(),
 			},
 		},
 		resolvers: {
