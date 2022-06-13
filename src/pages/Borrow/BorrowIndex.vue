@@ -14,6 +14,18 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'BorrowIndex',
+	metaInfo() {
+		return {
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: 'Apply for a loan on Kiva in three steps. '
+					+ 'Get started on your application today to receive a 0% interest loan with Kiva.'
+				}
+			]
+		};
+	},
 	components: {
 		BorrowIntro,
 		KvPageContainer,
