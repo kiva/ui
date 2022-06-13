@@ -1,3 +1,18 @@
+## [2.180.0](https://github.com/kiva/ui/compare/v2.179.0...v2.180.0) (2022-06-10)
+
+
+### Features
+
+* add tag to UI_REVISION page, add tag as release param in Sentry ([bd4eb9c](https://github.com/kiva/ui/commit/bd4eb9cdb033338a08f6fd63d1830e0e15755e4f))
+
+## [2.179.0](https://github.com/kiva/ui/compare/v2.178.0...v2.179.0) (2022-06-10)
+
+
+### Features
+
+* activated advanced filter link and analytics ([d130cb0](https://github.com/kiva/ui/commit/d130cb0737fa60f65abfdfbe91d6e79d7fab3c01))
+* activated reset filter and added analytics ([d39af89](https://github.com/kiva/ui/commit/d39af89b035221c2e15c25ff5e95c90f89169f71))
+
 ## [2.178.0](https://github.com/kiva/ui/compare/v2.177.0...v2.178.0) (2022-06-10)
 
 

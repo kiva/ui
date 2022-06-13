@@ -8,8 +8,10 @@ const webpack = require('webpack');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin-fixed-hashbug');
 const gitRevisionPlugin = new GitRevisionPlugin({
-	branch: true
+	branch: true,
+	lightweightTags: true,
 });
+
 const isProd = process.env.NODE_ENV === 'production';
 const isNode = typeof document === 'undefined';
 
@@ -304,7 +306,8 @@ module.exports = {
 		new VueLoaderPlugin(),
 		new webpack.DefinePlugin({
 			UI_COMMIT: JSON.stringify(gitRevisionPlugin.commithash()),
-			UI_BRANCH: JSON.stringify(gitRevisionPlugin.branch())
+			UI_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
+			UI_TAG: JSON.stringify(gitRevisionPlugin.version())
 		}),
 		...(isProd ? [] : [new HardSourceWebpackPlugin.ExcludeModulePlugin([
 			{
