@@ -1,3 +1,11 @@
+## [2.187.0](https://github.com/kiva/ui/compare/v2.186.0...v2.187.0) (2022-06-14)
+
+
+### Features
+
+* added hits length in analytics ([a2b2d2d](https://github.com/kiva/ui/commit/a2b2d2df6f6d7c5cf0559037320fa7e1b5c5a9ed))
+* updated route hook to allow skipping analytics ([484bfe9](https://github.com/kiva/ui/commit/484bfe9ddd69691eb92514870e538b602a39a0fb))
+
 ## [2.186.0](https://github.com/kiva/ui/compare/v2.185.0...v2.186.0) (2022-06-14)
 
 
