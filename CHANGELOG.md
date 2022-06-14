@@ -1,3 +1,16 @@
+## [2.184.0](https://github.com/kiva/ui/compare/v2.183.0...v2.184.0) (2022-06-14)
+
+
+### Features
+
+* new loan filter pager component ([fa04447](https://github.com/kiva/ui/commit/fa044474a0b3ff2a70d0438f0e815be5df6b11e7))
+
+
+### Bug Fixes
+
+* changed page number usage to more generic limit/offset ([35f16f4](https://github.com/kiva/ui/commit/35f16f4edc425f9e21bb8ee0182ad7668aee230a))
+* minor tweaks ([78783df](https://github.com/kiva/ui/commit/78783dff3476b0f779699483259302e90a5986d8))
+
 ## [2.183.0](https://github.com/kiva/ui/compare/v2.182.0...v2.183.0) (2022-06-14)
 
 
