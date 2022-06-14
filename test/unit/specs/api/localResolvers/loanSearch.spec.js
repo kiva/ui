@@ -1,16 +1,6 @@
-import loanSearchFactory from '@/api/localResolvers/loanSearch';
+import loanSearchFactory, { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 
-const defaultLoanSearchState = {
-	loanSearchState: {
-		id: 'SearchData',
-		gender: '',
-		countryIsoCode: [],
-		sectorId: [],
-		sortBy: '',
-		theme: [],
-		__typename: 'LoanSearchState',
-	}
-};
+const defaultLoanSearchState = getDefaultLoanSearchState();
 
 describe('loanSearch.js', () => {
 	describe('Query.loanSearchState', () => {

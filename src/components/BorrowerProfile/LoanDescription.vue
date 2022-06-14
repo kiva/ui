@@ -134,8 +134,8 @@ export default {
 			default: () => {},
 		},
 		previousLoanId: { // LoanBasic.previousLoanId
-			type: String,
-			default: '',
+			type: Number,
+			default: 0,
 		},
 		loanId: {
 			type: Number,
