@@ -29,7 +29,9 @@ const mockState = {
 	countryIsoCode: ['US'],
 	sectorId: [1],
 	sortBy: 'expiringSoon',
-	theme: ['THEME 1']
+	theme: ['THEME 1'],
+	pageOffset: 1,
+	pageLimit: 30,
 };
 
 const mockAllFacets = {
@@ -150,6 +152,22 @@ describe('loanSearchUtils.js', () => {
 			const result = getValidatedSearchState(state, mockAllFacets, STANDARD_QUERY_TYPE);
 
 			expect(result).toEqual({ ...mockState, theme: [] });
+		});
+
+		it('should validate pageOffset', () => {
+			const state = { ...mockState, pageOffset: 'asd' };
+
+			const result = getValidatedSearchState(state, mockAllFacets, STANDARD_QUERY_TYPE);
+
+			expect(result).toEqual({ ...mockState, pageOffset: 0 });
+		});
+
+		it('should validate pageLimit', () => {
+			const state = { ...mockState, pageLimit: 'asd' };
+
+			const result = getValidatedSearchState(state, mockAllFacets, STANDARD_QUERY_TYPE);
+
+			expect(result).toEqual({ ...mockState, pageLimit: 15 });
 		});
 	});
 
@@ -572,8 +590,14 @@ describe('loanSearchUtils.js', () => {
 		afterEach(jest.restoreAllMocks);
 
 		it('should return loans', async () => {
-			const result = await runLoansQuery(apollo);
-			expect(spyFetchLoans).toHaveBeenCalledWith(apollo, {}, null);
+			const result = await runLoansQuery(apollo, mockState);
+			expect(spyFetchLoans).toHaveBeenCalledWith(
+				apollo,
+				getFlssFilters(mockState),
+				mockState.sortBy,
+				mockState.pageOffset,
+				mockState.pageLimit
+			);
 			expect(result).toEqual({ loans, totalCount });
 		});
 	});
@@ -777,7 +801,9 @@ describe('loanSearchUtils.js', () => {
 						countryIsoCode: [],
 						sectorId: [1],
 						sortBy: 'expiringSoon',
-						theme: ['THEME 1']
+						theme: ['THEME 1'],
+						pageOffset: 0,
+						pageLimit: 15,
 					}
 				}
 			};

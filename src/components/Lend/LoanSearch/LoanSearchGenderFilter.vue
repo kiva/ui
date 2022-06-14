@@ -34,7 +34,7 @@ export default {
 	},
 	data() {
 		return {
-			selectedGender: this.gender,
+			selectedGender: this.gender || '',
 			genderOptions: [
 				{
 					title: BOTH_TITLE,

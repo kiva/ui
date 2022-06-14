@@ -2,6 +2,8 @@ import orderBy from 'lodash/orderBy';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
 import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
 import { fetchFacets, fetchLoans } from '@/util/flssUtils';
+import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
+import { isNumber } from '@/util/numberUtils';
 
 /**
  * API query types, FLSS and lend (standard)
@@ -50,23 +52,39 @@ export const sortByNameToDisplay = {
 export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 	const validSorts = queryType === FLSS_QUERY_TYPE ? allFacets.flssSorts : allFacets.standardSorts;
 
+	const defaultLoanSearchState = getDefaultLoanSearchState();
+
 	const validatedGender = allFacets.genders.includes(loanSearchState?.gender?.toUpperCase())
 		? loanSearchState.gender : null;
+
 	const validatedIsoCodes = loanSearchState?.countryIsoCode
 		?.filter(c => allFacets.countryIsoCodes.includes(c.toUpperCase())) ?? [];
+
 	const validatedSectorIds = loanSearchState?.sectorId?.filter(s => allFacets.sectorIds.includes(s)) ?? [];
+
 	const validatedSortBy = validSorts.some(s => s.name === loanSearchState.sortBy) ? loanSearchState.sortBy : null;
+
 	// TODO: change to theme IDs when theme ID filter is on prod
 	const validatedThemes = (loanSearchState?.theme?.filter(t => allFacets.themeNames.includes(t.toUpperCase())) ?? [])
 		// Handle casing differences between FLSS and lend API theme values. FLSS does case insensitive fuzzy matching.
 		.map(t => t.toUpperCase());
+
+	const validatedPageOffset = isNumber(loanSearchState?.pageOffset)
+		? loanSearchState.pageOffset
+		: defaultLoanSearchState.pageOffset;
+
+	const validatedPageLimit = isNumber(loanSearchState?.pageLimit)
+		? loanSearchState.pageLimit
+		: defaultLoanSearchState.pageLimit;
 
 	return {
 		gender: validatedGender,
 		countryIsoCode: validatedIsoCodes,
 		sectorId: validatedSectorIds,
 		sortBy: validatedSortBy,
-		theme: validatedThemes
+		theme: validatedThemes,
+		pageOffset: validatedPageOffset,
+		pageLimit: validatedPageLimit,
 	};
 }
 
@@ -349,7 +367,7 @@ export function getFlssFilters(loanSearchState) {
  * @param {Object} loanSearchState The current loan search state from Apollo
  * @returns {Object} The filter facets
  */
-export async function runFacetsQueries(apollo, loanSearchState = {}) {
+export async function runFacetsQueries(apollo, loanSearchState) {
 	const isoCodeFilters = { ...getFlssFilters(loanSearchState), countryIsoCode: undefined };
 	const themeFilters = { ...getFlssFilters(loanSearchState), theme: undefined };
 	const sectorFilters = { ...getFlssFilters(loanSearchState), sectorId: undefined };
@@ -370,14 +388,16 @@ export async function runFacetsQueries(apollo, loanSearchState = {}) {
  * @param {Object} loanSearchState The current loan search state from Apollo
  * @returns {Object} The results of the loan query
  */
-export async function runLoansQuery(apollo, loanSearchState = {}) {
+export async function runLoansQuery(apollo, loanSearchState) {
 	const flssData = await fetchLoans(
 		apollo,
 		getFlssFilters(loanSearchState),
-		loanSearchState?.sortBy ?? null
+		loanSearchState?.sortBy,
+		loanSearchState?.pageOffset,
+		loanSearchState?.pageLimit
 	);
 
-	return { loans: flssData?.values || [], totalCount: flssData?.totalCount || 0 };
+	return { loans: flssData?.values ?? [], totalCount: flssData?.totalCount ?? 0 };
 }
 
 /**
@@ -434,7 +454,7 @@ export function getSectorIdsFromQueryParam(sector, allFacets) {
 	if (!sector) return;
 
 	// Handles FLSS and legacy query params, such as "1" and "1,2"
-	if (sector.includes(',') || !Number.isNaN(Number(sector))) {
+	if (sector.includes(',') || isNumber(sector)) {
 		return sector.split(',').filter(s => s !== '').map(s => +s);
 	}
 
@@ -463,7 +483,7 @@ export function getThemeNamesQueryParam(param, facets) {
 	if (!param) return;
 
 	// Handles FLSS and legacy query params, such as "1" and "1,2"
-	if (param.includes(',') || !Number.isNaN(Number(param))) {
+	if (param.includes(',') || isNumber(param)) {
 		return param.split(',').filter(s => s !== '').reduce((prev, current) => {
 			const facet = facets.find(s => s.id === +current);
 			if (facet) {
@@ -494,12 +514,11 @@ export function getThemeNamesQueryParam(param, facets) {
  */
 export async function applyQueryParams(apollo, query, allFacets, queryType, previousState = {}) {
 	const filters = {
+		...previousState, // Country ISO code, page offset, and page size are not currently in the query params
 		gender: query.gender,
 		sortBy: queryType === FLSS_QUERY_TYPE ? lendToFlssSort.get(query.sortBy) : query.sortBy,
 		sectorId: getSectorIdsFromQueryParam(query.sector, allFacets.sectorNames, allFacets.sectorFacets, true),
 		theme: getThemeNamesQueryParam(query.attribute, allFacets.themeFacets),
-		// TODO: replace previous state usage as query param support expands
-		...(previousState && { countryIsoCode: previousState.countryIsoCode })
 	};
 
 	await updateSearchState(apollo, filters, allFacets, queryType, previousState);

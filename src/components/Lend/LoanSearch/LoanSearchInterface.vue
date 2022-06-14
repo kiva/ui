@@ -52,6 +52,13 @@
 					:rounded-corners="true"
 				/>
 			</kv-grid>
+			<kv-pager
+				v-if="totalCount > 0"
+				:limit="loanSearchState.pageLimit"
+				:total="totalCount"
+				:offset="loanSearchState.pageOffset"
+				@page-changed="handleUpdatedFilters"
+			/>
 		</div>
 	</div>
 </template>
@@ -74,6 +81,8 @@ import {
 	transformSectors,
 } from '@/util/loanSearchUtils';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
+import KvPager from '@/components/Kv/KvPager';
+import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -88,6 +97,7 @@ export default {
 		LoanSearchFilter,
 		KvLightbox,
 		KvSectionModalLoader,
+		KvPager,
 	},
 	data() {
 		return {
@@ -155,7 +165,7 @@ export default {
 			loans: [],
 			totalCount: 0,
 			isLightboxVisible: false,
-			loanSearchState: {},
+			loanSearchState: getDefaultLoanSearchState(),
 			queryType: FLSS_QUERY_TYPE,
 			// Holds comma-separated list of loan IDs from the query results
 			trackedHits: undefined,
