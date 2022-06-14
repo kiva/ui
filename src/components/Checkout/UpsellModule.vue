@@ -86,7 +86,7 @@ export default {
 		this.$kvTrackEvent(
 			'Basket',
 			'view-checkout-upsell',
-			'',
+			'View',
 			this.loan?.id,
 			this.amountLeft
 		);

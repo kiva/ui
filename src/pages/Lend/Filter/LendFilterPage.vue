@@ -103,8 +103,11 @@
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _forEach from 'lodash/forEach';
-
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import {
+	getExperimentSettingAsync,
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 // Algolia Imports
@@ -133,6 +136,30 @@ import LendHeader from '@/pages/Lend/LendHeader';
 import lendFilterPageQuery from '@/graphql/query/lendFilterPage.graphql';
 
 import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
+
+const lendFilterRedirectEXP = 'lend_filter_flss_v1';
+
+function isFLSSEligible(route = {}) {
+	// check route for eligibility
+	const eligibleQueryParams = ['page', 'sortBy', 'gender', 'registration'];
+	const queryParamKeys = Object.keys(route?.query);
+	const allowedSorts = ['expiringSoon', 'loanAmountDesc', 'loanAmount', 'popularity'];
+	// eligible by default, no params is also eligible
+	let isEligible = true;
+
+	queryParamKeys.forEach(queryParam => {
+		// ensure any query params are eligible
+		if (!eligibleQueryParams.includes(queryParam)) {
+			isEligible = false;
+		}
+		// ensure allowedSorts are observed
+		if (queryParam === 'sortBy' && !allowedSorts.includes(route.query.sortBy)) {
+			isEligible = false;
+		}
+	});
+
+	return isEligible;
+}
 
 export default {
 	name: 'LendFilterPage',
@@ -182,23 +209,18 @@ export default {
 		// Get Lend Filter Exp version
 		this.getLendFilterExpVersion();
 
-		// EXP to Hide filters not available in FLSS (VUE-970)
-		const lendFilterFlssExp = this.apollo.readFragment({
-			id: 'Experiment:lend_filter_flss_mock',
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		if (lendFilterFlssExp.version && lendFilterFlssExp.version !== 'unassigned') {
-			if (lendFilterFlssExp.version === 'b') {
-				this.hideNonFlssFilters = true;
-				this.initiallyExpandedFilters = true;
+		if (isFLSSEligible(this.$route)) {
+			const { enabled } = getExperimentSettingCached(this.apollo, lendFilterRedirectEXP);
+			if (enabled) {
+				// this method will get the version from the apollo cache
+				trackExperimentVersion(
+					this.apollo,
+					this.$kvTrackEvent,
+					'Lending',
+					lendFilterRedirectEXP,
+					'EXP-VUE-1061-June2022'
+				);
 			}
-
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-VUE-970-Mar2022',
-				lendFilterFlssExp.version
-			);
 		}
 	},
 	data() {
@@ -254,7 +276,7 @@ export default {
 		'cookieStore',
 	],
 	apollo: {
-		preFetch(config, client, { cookieStore }) {
+		preFetch(config, client, { cookieStore, route }) {
 			// prefetch page data + experiment settings
 			return client.query({
 				query: lendFilterPageQuery,
@@ -262,10 +284,27 @@ export default {
 					basketId: cookieStore.get('kvbskt')
 				},
 			}).then(() => {
-				return client.query({
-					query: experimentAssignmentQuery,
-					variables: { id: 'lend_filter_flss_mock' },
-				});
+				// check route for eligibility
+				if (isFLSSEligible(route)) {
+					return getExperimentSettingAsync(client, lendFilterRedirectEXP)
+						.then(() => {
+							// Assign the exp
+							return client.query({
+								query: experimentAssignmentQuery,
+								variables: { id: lendFilterRedirectEXP }
+							});
+						}).then(({ data }) => {
+							// Rediect if we are in the experiment group
+							if (data?.experiment?.version === 'b') {
+								return Promise.reject({
+									path: '/lend/filter-alpha',
+									query: route.query,
+								});
+							}
+						});
+				}
+				// Otherwise just resolve
+				Promise.resolve();
 			});
 		}
 	},
