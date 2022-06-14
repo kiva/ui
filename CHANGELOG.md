@@ -1,3 +1,10 @@
+### [2.184.1](https://github.com/kiva/ui/compare/v2.184.0...v2.184.1) (2022-06-14)
+
+
+### Bug Fixes
+
+* add se_label to upsell module tracking ([3009637](https://github.com/kiva/ui/commit/300963752ce71c7e98c452f30acaf8ccb3fbc061))
+
 ## [2.184.0](https://github.com/kiva/ui/compare/v2.183.0...v2.184.0) (2022-06-14)
 
 
