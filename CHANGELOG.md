@@ -1,3 +1,10 @@
+## [2.185.0](https://github.com/kiva/ui/compare/v2.184.1...v2.185.0) (2022-06-14)
+
+
+### Features
+
+* activate redirect experiment to split traffic between lend filter pages ([9e149ef](https://github.com/kiva/ui/commit/9e149ef7053b1e9efc82a60038edd07612dc617e))
+
 ### [2.184.1](https://github.com/kiva/ui/compare/v2.184.0...v2.184.1) (2022-06-14)
 
 
