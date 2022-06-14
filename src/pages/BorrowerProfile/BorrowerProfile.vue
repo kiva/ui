@@ -17,7 +17,7 @@
 			</div>
 			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8 tw-pointer-events-none">
 				<sidebar-container class="lg:tw-sticky lg:tw-top-12 lg:tw-mt-10 lg:tw-pb-8">
-					<lend-cta class="tw-pointer-events-auto" :loan-id="loanId" />
+					<lend-cta class="tw-pointer-events-auto" :loan-id="loanId" :complete-loan="completeLoanExpActive" />
 				</sidebar-container>
 			</div>
 			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-8">
@@ -289,36 +289,6 @@ export default {
 
 			const diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = diffInDays <= 3;
-
-			const matchedLoansExperiment = this.apollo.readFragment({
-				id: 'Experiment:require_deposits_matched_loans',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.requireDepositsMatchedLoans = matchedLoansExperiment.version === 'b';
-			if (matchedLoansExperiment.version) {
-				this.$kvTrackEvent(
-					'Basket',
-					'EXP-CORE-615-May-2022',
-					matchedLoansExperiment.version
-				);
-			}
-
-			// EXP-CORE-607-May-2022
-			const completeLoanEXP = this.apollo.readFragment({
-				id: 'Experiment:bp_complete_loan',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			if (completeLoanEXP.version) {
-				if (completeLoanEXP.version === 'b' && this.amountLeft < 100) {
-					this.completeLoanExpActive = true;
-				}
-				this.$kvTrackEvent(
-					'Borrower Profile',
-					'EXP-CORE-607-May-2022',
-					completeLoanEXP.version
-				);
-			}
 		},
 	},
 	mounted() {
@@ -384,6 +354,23 @@ export default {
 					this.isUrgencyExpVersionShown ? 'b' : 'a'
 				);
 			}
+		}
+
+		// EXP-CORE-607-May-2022
+		const completeLoanEXP = this.apollo.readFragment({
+			id: 'Experiment:bp_complete_loan',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		if (completeLoanEXP.version) {
+			if (completeLoanEXP.version === 'b' && this.amountLeft < 500) {
+				this.completeLoanExpActive = true;
+			}
+			this.$kvTrackEvent(
+				'Borrower Profile',
+				'EXP-CORE-607-May-2022',
+				completeLoanEXP.version
+			);
 		}
 	},
 };
