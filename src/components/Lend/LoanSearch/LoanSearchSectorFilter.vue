@@ -58,7 +58,12 @@ export default {
 			const sector = this.displayedSectors.find(s => s.id === +changed);
 
 			if (sector) {
-				this.$kvTrackEvent?.('Lending', 'click-sector-filter', sector.name);
+				this.$kvTrackEvent?.(
+					'Lending',
+					'click-sector-filter',
+					sector.name,
+					values.includes(sector.id) ? 'selected' : 'deselected'
+				);
 			}
 		}
 	},
