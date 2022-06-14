@@ -902,7 +902,7 @@ describe('loanSearchUtils.js', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
 				query: { ...state, utm_test: 'test' },
-				params: { noScroll: true }
+				params: { noScroll: true, noAnalytics: true }
 			});
 		});
 
@@ -912,7 +912,11 @@ describe('loanSearchUtils.js', () => {
 
 			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
 
-			expect(router.push).toHaveBeenCalledWith({ name: 'name', query: state, params: { noScroll: true } });
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: state,
+				params: { noScroll: true, noAnalytics: true }
+			});
 		});
 
 		it('should push sector IDs', async () => {
@@ -924,7 +928,7 @@ describe('loanSearchUtils.js', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
 				query: { sector: '1,2' },
-				params: { noScroll: true }
+				params: { noScroll: true, noAnalytics: true }
 			});
 		});
 
@@ -937,7 +941,7 @@ describe('loanSearchUtils.js', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
 				query: { gender: 'female' },
-				params: { noScroll: true }
+				params: { noScroll: true, noAnalytics: true }
 			});
 		});
 
@@ -950,7 +954,7 @@ describe('loanSearchUtils.js', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
 				query: { attribute: '1,2' },
-				params: { noScroll: true }
+				params: { noScroll: true, noAnalytics: true }
 			});
 		});
 
@@ -963,7 +967,7 @@ describe('loanSearchUtils.js', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
 				query: { gender: 'female' },
-				params: { noScroll: true }
+				params: { noScroll: true, noAnalytics: true }
 			});
 		});
 
@@ -976,7 +980,7 @@ describe('loanSearchUtils.js', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
 				query: { sortBy: 'popularity' },
-				params: { noScroll: true }
+				params: { noScroll: true, noAnalytics: true }
 			});
 		});
 
@@ -989,7 +993,7 @@ describe('loanSearchUtils.js', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
 				query: { sortBy: 'personalized' },
-				params: { noScroll: true }
+				params: { noScroll: true, noAnalytics: true }
 			});
 		});
 
