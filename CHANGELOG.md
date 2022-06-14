@@ -1,3 +1,10 @@
+## [2.186.0](https://github.com/kiva/ui/compare/v2.185.0...v2.186.0) (2022-06-14)
+
+
+### Features
+
+* add selected and deseleted notation on filter click events ([0565027](https://github.com/kiva/ui/commit/056502729d093a67cb26a10a444b34c35fe228db))
+
 ## [2.185.0](https://github.com/kiva/ui/compare/v2.184.1...v2.185.0) (2022-06-14)
 
 
