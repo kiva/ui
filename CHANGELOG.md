@@ -1,3 +1,10 @@
+### [2.187.1](https://github.com/kiva/ui/compare/v2.187.0...v2.187.1) (2022-06-15)
+
+
+### Bug Fixes
+
+* hide lend button when all shared are reserved ([a5f4a38](https://github.com/kiva/ui/commit/a5f4a387aab57b2906c105ac220b63d935a7d79d))
+
 ## [2.187.0](https://github.com/kiva/ui/compare/v2.186.0...v2.187.0) (2022-06-14)
 
 
