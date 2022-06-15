@@ -1085,7 +1085,7 @@ describe('loanSearchUtils.js', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
 				query: { page: '6' },
-				params: { noScroll: true }
+				params: { noScroll: true, noAnalytics: true }
 			});
 		});
 
@@ -1098,7 +1098,7 @@ describe('loanSearchUtils.js', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
 				query: { },
-				params: { noScroll: true }
+				params: { noScroll: true, noAnalytics: true }
 			});
 		});
 
