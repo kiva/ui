@@ -159,8 +159,11 @@ router.onReady(() => {
 	router.afterEach((to, from) => {
 		// finish loading
 		app.$Progress.finish();
-		// fire pageview
-		app.$fireAsyncPageView(to, from);
+
+		if (!to?.params?.noAnalytics) {
+			// fire pageview
+			app.$fireAsyncPageView(to, from);
+		}
 	});
 
 	router.onError(() => app.$Progress.fail());

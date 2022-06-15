@@ -587,6 +587,6 @@ export function updateQueryParams(loanSearchState, router, allFacets, queryType)
 
 	// Vue throws duplicate navigation exception when identical paths are pushed to the router
 	if (!doParamsMatch) {
-		router.push({ ...router.currentRoute, query: newParams, params: { noScroll: true } });
+		router.push({ ...router.currentRoute, query: newParams, params: { noScroll: true, noAnalytics: true } });
 	}
 }

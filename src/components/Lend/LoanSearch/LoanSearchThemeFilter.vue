@@ -54,7 +54,12 @@ export default {
 			this.$emit('updated', { theme: values });
 
 			// TODO: handle theme ID (converting to theme name) when theme ID filter used
-			this.$kvTrackEvent?.('Lending', 'click-theme-filter', changed);
+			this.$kvTrackEvent?.(
+				'Lending',
+				'click-theme-filter',
+				changed,
+				values.includes(changed) ? 'selected' : 'deselected'
+			);
 		}
 	},
 	watch: {

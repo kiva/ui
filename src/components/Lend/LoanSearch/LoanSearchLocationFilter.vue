@@ -88,7 +88,19 @@ export default {
 		updateRegion(region, { values, changed, wasSelectAll }) {
 			this.$set(this.selectedCountries, region, values);
 
-			this.$kvTrackEvent?.('Lending', 'click-location-filter', wasSelectAll ? region : changed);
+			let appliedState = '';
+			if (wasSelectAll) {
+				appliedState = values.length ? 'select-all' : 'deselect-all';
+			} else {
+				appliedState = values.includes(changed) ? 'selected' : 'deselected';
+			}
+
+			this.$kvTrackEvent?.(
+				'Lending',
+				'click-location-filter',
+				wasSelectAll ? `Region: ${region}` : `Country: ${changed}`,
+				appliedState
+			);
 		},
 	},
 	watch: {

@@ -224,14 +224,16 @@ export default {
 	},
 	methods: {
 		trackLoans() {
-			const hits = this.loans.map(l => l.id).join();
+			const hitIds = this.loans.map(l => l.id);
+			const hits = hitIds.join();
 
 			if (hits !== this.trackedHits) {
 				this.$kvTrackEvent(
 					'Lending',
 					hits ? 'loans-shown' : 'zero-loans-shown',
 					hits ? 'loan-ids' : undefined,
-					hits || undefined
+					hits || undefined,
+					hitIds.length ? hitIds.length : 0,
 				);
 
 				this.trackedHits = hits;
