@@ -30,18 +30,16 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 
 
 
+
 export default {
 	name: 'CategoriesBeta',
 	components: {
-		WwwPage
+        WwwPage
     },
 	data() {
 		return {
 		};
 	}
-	// computed: {
-	// },
-
 };
 
 </script>
