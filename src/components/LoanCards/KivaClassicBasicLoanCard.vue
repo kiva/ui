@@ -150,7 +150,7 @@
 		<!-- Lend button -->
 		<kv-ui-button
 			key="lendButton"
-			v-if="!isLoading && inBorrowerProfilePage && !isAdding"
+			v-if="!allSharesReserved && !isLoading && inBorrowerProfilePage && !isAdding"
 			class="tw-inline-flex tw-flex-1"
 			data-testid="bp-lend-cta-lend-button"
 			type="submit"
