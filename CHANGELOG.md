@@ -1,3 +1,22 @@
+## [2.174.0-next.1](https://github.com/kiva/ui/compare/v2.173.4-next.1...v2.174.0-next.1) (2022-06-15)
+
+
+### Features
+
+* fix lint ([423b204](https://github.com/kiva/ui/commit/423b204fb2b1031568fc40d0fd14ba47c8a4244b))
+* init upsell loans on checkout ([8accea1](https://github.com/kiva/ui/commit/8accea189148b625dcc8291b8fba07367cea20cb))
+
+
+### Bug Fixes
+
+* add se_label to upsell module tracking ([5e07a52](https://github.com/kiva/ui/commit/5e07a527ab9cde7df8478e9fc1191654a38872d7))
+* add tracking to upsells ([e56ef67](https://github.com/kiva/ui/commit/e56ef67d34dc18eeeab764e06c1f672422f90549))
+* hide lend button when all shared are reserved ([226f731](https://github.com/kiva/ui/commit/226f731324d5440a78dcfbfb7260d982270d006d))
+* merge conflict ([f725255](https://github.com/kiva/ui/commit/f725255bac6aef3298bca25f6ee39c789355aaa4))
+* typo in tag name ([0503d79](https://github.com/kiva/ui/commit/0503d7991db4dc257f6ab597c1595e63abfa165a))
+* update styles ([c9f1633](https://github.com/kiva/ui/commit/c9f16337887f22c4eca57c566d6148ebd29d6678))
+* update styles and fix NaN ([5021f4e](https://github.com/kiva/ui/commit/5021f4e473e48d8916522b6c44c8198df00c5993))
+
 ### [2.173.4-next.1](https://github.com/kiva/ui/compare/v2.173.3...v2.173.4-next.1) (2022-06-10)
 
 
