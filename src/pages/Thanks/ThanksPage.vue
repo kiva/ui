@@ -2,8 +2,7 @@
 	<www-page
 		:gray-background="true"
 	>
-		<!-- TODO: Use the correctly experiment variables here -->
-		<div v-if="simpleSocialShareVersion !== 'b'" class="row page-content">
+		<div class="row page-content" v-if="receipt && !showNewThanksPage">
 			<div class="small-12 columns thanks">
 				<div class="thanks__header hide-for-print">
 					<template v-if="receipt">
@@ -52,60 +51,57 @@
 					</template>
 				</div>
 			</div>
+			<thanks-layout-v2
+				v-if="receipt"
+				:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !showAutoDepositUpsell && !hasModernSub"
+				:show-auto-deposit-upsell="!isAutoDepositSubscriber && showAutoDepositUpsell && !hasModernSub"
+				:show-guest-upsell="isGuest"
+				:show-share="loans.length > 0"
+				:thanks-social-share-version="simpleSocialShareVersion"
+				:class="{
+					'tw-mt-4': showAutoDepositUpsell
+				}"
+			>
+				<template #receipt>
+					<checkout-receipt
+						v-if="receipt"
+						:lender="lender"
+						:receipt="receipt"
+					/>
+				</template>
+				<template #ad>
+					<auto-deposit-c-t-a />
+				</template>
+				<template #mg>
+					<monthly-good-c-t-a
+						:headline="ctaHeadline"
+						:body-copy="ctaBodyCopy"
+						:button-text="ctaButtonText"
+					/>
+				</template>
+				<template #share>
+					<social-share
+						v-if="receipt && simpleSocialShareVersion !== 'b'"
+						class="thanks__social-share"
+						:lender="lender"
+						:loans="loans"
+					/>
+					<social-share-v2
+						v-if="receipt && simpleSocialShareVersion === 'b'"
+						class="thanks__social-share"
+						:lender="lender"
+						:loans="loans"
+						:show-header="true"
+					/>
+				</template>
+				<template #guest>
+					<guest-upsell
+						:loans="loans"
+					/>
+				</template>
+			</thanks-layout-v2>
 		</div>
-
-		<!-- TODO: Use the correctly experiment variables here -->
-		<thanks-layout-v2
-			v-if="receipt && simpleSocialShareVersion !== 'b'"
-			:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !showAutoDepositUpsell && !hasModernSub"
-			:show-auto-deposit-upsell="!isAutoDepositSubscriber && showAutoDepositUpsell && !hasModernSub"
-			:show-guest-upsell="isGuest"
-			:show-share="loans.length > 0"
-			:thanks-social-share-version="simpleSocialShareVersion"
-			:class="{
-				'tw-mt-4': showAutoDepositUpsell
-			}"
-		>
-			<template #receipt>
-				<checkout-receipt
-					v-if="receipt"
-					:lender="lender"
-					:receipt="receipt"
-				/>
-			</template>
-			<template #ad>
-				<auto-deposit-c-t-a />
-			</template>
-			<template #mg>
-				<monthly-good-c-t-a
-					:headline="ctaHeadline"
-					:body-copy="ctaBodyCopy"
-					:button-text="ctaButtonText"
-				/>
-			</template>
-			<template #share>
-				<social-share
-					v-if="receipt && simpleSocialShareVersion !== 'b'"
-					class="thanks__social-share"
-					:lender="lender"
-					:loans="loans"
-				/>
-				<social-share-v2
-					v-if="receipt && simpleSocialShareVersion === 'b'"
-					class="thanks__social-share"
-					:lender="lender"
-					:loans="loans"
-					:show-header="true"
-				/>
-			</template>
-			<template #guest>
-				<guest-upsell
-					:loans="loans"
-				/>
-			</template>
-		</thanks-layout-v2>
-		<!-- TODO: Use the correctly experiment variables here -->
-		<thanks-page-share v-if="receipt && simpleSocialShareVersion === 'b'" />
+		<thanks-page-share v-if="receipt && showNewThanksPage" />
 	</www-page>
 </template>
 
@@ -165,7 +161,9 @@ export default {
 			hasModernSub: false,
 			isGuest: false,
 			pageData: {},
+			showNewThanksPage: false,
 			simpleSocialShareVersion: '',
+			newThanksPageModuleVersion: '',
 		};
 	},
 	apollo: {
@@ -321,6 +319,22 @@ export default {
 					'Thanks',
 					'EXP-MARS-96-May2022',
 					this.simpleSocialShareVersion,
+				);
+			}
+
+			// MARS-134 New thanks page share experiment
+			const newThanksShareModule = this.apollo.readFragment({
+				id: 'Experiment:thanks_share_module',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.showNewThanksPage = this.$route.query.setuiab && this.$route.query.setuiab === 'thanks_share_module.b';
+			this.newThanksPageModuleVersion = newThanksShareModule.version;
+			if (this.newThanksPageModuleVersion) {
+				this.$kvTrackEvent(
+					'Thanks',
+					'EXP-MARS-134-Jun2022',
+					this.newThanksPageModuleVersion,
 				);
 			}
 		}

@@ -128,6 +128,12 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			value
 		}
 	}
+	general {
+		thanksShareModule: uiExperimentSetting(key: "thanks_share_module") {
+			key
+			value
+		}
+	}
 	mySubscriptions(includeDisabled: false) {
 		values {
 			id
