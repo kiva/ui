@@ -176,7 +176,7 @@ export default {
 		this.allFacets = await fetchLoanFacets(this.apollo);
 
 		// Initialize the search filters with the query string params
-		await applyQueryParams(this.apollo, this.$route.query, this.allFacets, this.queryType);
+		await applyQueryParams(this.apollo, this.$route.query, this.allFacets, this.queryType, this.loanSearchState);
 
 		// Here we subscribe to the loanSearchState and run the loan query when it updates
 		// TODO: work some guards to prevent duplicate queries and throttling to more carefully control # of queries

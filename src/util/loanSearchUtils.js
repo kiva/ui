@@ -512,13 +512,17 @@ export function getThemeNamesQueryParam(param, facets) {
  * @param {string} queryType The current query type (lend vs FLSS)
  * @param {Object} previousState The previous search state
  */
-export async function applyQueryParams(apollo, query, allFacets, queryType, previousState = {}) {
+export async function applyQueryParams(apollo, query, allFacets, queryType, previousState) {
+	// Convert query param 1-based page to pager 0-based page
+	const page = isNumber(query.page) && query.page > 0 ? query.page - 1 : 0;
+
 	const filters = {
-		...previousState, // Country ISO code, page offset, and page size are not currently in the query params
+		...previousState, // The countryIsoCode and pageLimit are not currently in the query params
 		gender: query.gender,
 		sortBy: queryType === FLSS_QUERY_TYPE ? lendToFlssSort.get(query.sortBy) : query.sortBy,
 		sectorId: getSectorIdsFromQueryParam(query.sector, allFacets.sectorNames, allFacets.sectorFacets, true),
 		theme: getThemeNamesQueryParam(query.attribute, allFacets.themeFacets),
+		pageOffset: page * previousState.pageLimit,
 	};
 
 	await updateSearchState(apollo, filters, allFacets, queryType, previousState);
@@ -561,12 +565,16 @@ export function updateQueryParams(loanSearchState, router, allFacets, queryType)
 		return prev;
 	}, []);
 
+	// Page query param is 1-based
+	const page = (loanSearchState.pageOffset / loanSearchState.pageLimit) + 1;
+
 	// Create new query params object
 	const newParams = {
 		...(loanSearchState.gender && { gender: loanSearchState.gender }),
 		...(loanSearchState.sectorId?.length && { sector: loanSearchState.sectorId.join(',') }),
 		...(loanSearchState.theme?.length && { attribute: themeIds.join(',') }),
 		...(queryParamSortBy && { sortBy: queryParamSortBy }),
+		...(page > 1 && { page: page.toString() }),
 		// TODO: add params as query param support expands
 		...utmParams,
 	};
