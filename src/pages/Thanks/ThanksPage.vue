@@ -2,7 +2,8 @@
 	<www-page
 		:gray-background="true"
 	>
-		<div class="row page-content">
+		<!-- TODO: Use the correctly experiment variables here -->
+		<div v-if="simpleSocialShareVersion !== 'b'" class="row page-content">
 			<div class="small-12 columns thanks">
 				<div class="thanks__header hide-for-print">
 					<template v-if="receipt">
@@ -53,8 +54,9 @@
 			</div>
 		</div>
 
+		<!-- TODO: Use the correctly experiment variables here -->
 		<thanks-layout-v2
-			v-if="receipt"
+			v-if="receipt && simpleSocialShareVersion !== 'b'"
 			:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !showAutoDepositUpsell && !hasModernSub"
 			:show-auto-deposit-upsell="!isAutoDepositSubscriber && showAutoDepositUpsell && !hasModernSub"
 			:show-guest-upsell="isGuest"
@@ -83,13 +85,13 @@
 			</template>
 			<template #share>
 				<social-share
-					v-if="receipt && simpleSocialShareVersion === 'b'"
+					v-if="receipt && simpleSocialShareVersion !== 'b'"
 					class="thanks__social-share"
 					:lender="lender"
 					:loans="loans"
 				/>
 				<social-share-v2
-					v-if="receipt && simpleSocialShareVersion !== 'b'"
+					v-if="receipt && simpleSocialShareVersion === 'b'"
 					class="thanks__social-share"
 					:lender="lender"
 					:loans="loans"
@@ -102,6 +104,8 @@
 				/>
 			</template>
 		</thanks-layout-v2>
+		<!-- TODO: Use the correctly experiment variables here -->
+		<thanks-page-share v-if="receipt && simpleSocialShareVersion === 'b'" />
 	</www-page>
 </template>
 
@@ -119,9 +123,8 @@ import SocialShare from '@/components/Checkout/SocialShare';
 import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ThanksLayoutV2 from '@/components/Thanks/ThanksLayoutV2';
-
+import ThanksPageShare from '@/components/Thanks/ThanksPageShare';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
-
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
@@ -140,7 +143,8 @@ export default {
 		SocialShare,
 		SocialShareV2,
 		ThanksLayoutV2,
-		WwwPage
+		WwwPage,
+		ThanksPageShare
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -182,6 +186,7 @@ export default {
 
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'simple_thanks_share' } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_share_module' } }),
 					upsellEligible ? client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_ad_upsell' } }) : Promise.resolve() // eslint-disable-line max-len
 				]);
 			}).catch(errorResponse => {

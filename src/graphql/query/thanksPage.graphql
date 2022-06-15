@@ -68,6 +68,7 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 							fundraisingPercent @client
 							fundraisingTimeLeft @client
 							fundraisingTimeLeftMilliseconds @client
+							plannedExpirationDate
 							geocode {
 								city
 								country {
@@ -107,6 +108,7 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			lastName
 			email
 			inviterName
+			public
 		}
 		subscriptions {
 			values {

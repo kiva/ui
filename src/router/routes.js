@@ -79,7 +79,7 @@ module.exports = [
 	},
 	{
 		path: '/checkout/thanks',
-		component: () => import('@/pages/Thanks/ThanksPageV2'),
+		component: () => import('@/pages/Thanks/ThanksPage'),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}

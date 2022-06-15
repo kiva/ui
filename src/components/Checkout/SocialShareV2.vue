@@ -2,7 +2,7 @@
 	<section class="share hide-for-print">
 		<div v-if="showHeader">
 			<h2 class="share__headline" data-testid="share-headline">
-			Help {{ selectedLoan.name }} spread the word.
+				Help {{ selectedLoan.name }} spread the word.
 			</h2>
 			<p class="share__small__message">
 				{{ shareSubtitle }}
