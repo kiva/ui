@@ -814,7 +814,7 @@ describe('loanSearchUtils.js', () => {
 				page: '2',
 			};
 
-			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
@@ -841,7 +841,7 @@ describe('loanSearchUtils.js', () => {
 				attribute: '1'
 			};
 
-			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
@@ -863,7 +863,7 @@ describe('loanSearchUtils.js', () => {
 			};
 			const query = { sortBy: 'popularity' };
 
-			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
@@ -885,7 +885,7 @@ describe('loanSearchUtils.js', () => {
 			};
 			const query = { sortBy: 'popularity' };
 
-			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
@@ -907,7 +907,7 @@ describe('loanSearchUtils.js', () => {
 			};
 			const query = { page: '4' };
 
-			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
@@ -929,7 +929,29 @@ describe('loanSearchUtils.js', () => {
 			};
 			const query = { page: '-1' };
 
-			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState.pageLimit, mockState);
+
+			expect(apollo.mutate).toHaveBeenCalledWith(params);
+		});
+
+		it('should handle decimal page', async () => {
+			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
+			const params = {
+				mutation: updateLoanSearchMutation,
+				variables: {
+					searchParams: {
+						...mockState,
+						gender: null,
+						sortBy: null,
+						sectorId: [],
+						theme: [],
+						pageOffset: 5,
+					}
+				},
+			};
+			const query = { page: '2.5' };
+
+			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
@@ -951,7 +973,7 @@ describe('loanSearchUtils.js', () => {
 			};
 			const query = { page: 'asd' };
 
-			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
@@ -965,7 +987,7 @@ describe('loanSearchUtils.js', () => {
 				page: '3',
 			};
 
-			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledTimes(0);
 		});
