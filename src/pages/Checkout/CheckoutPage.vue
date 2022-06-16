@@ -276,6 +276,7 @@ import UpsellModule from '@/components/Checkout/UpsellModule';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
+import { isLoanFundraising } from '@/util/loanUtils';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -793,21 +794,8 @@ export default {
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
 				const loans = data?.lend?.loans?.values;
-				// eslint-disable-next-line no-plusplus
-				for (let i = 0; i < loans.length; i++) {
-					const fundedAmt = Number(loans[i].loanFundraisingInfo?.fundedAmount);
-					const reservedAmt = Number(loans[i].loanFundraisingInfo?.reservedAmount);
-					const loanAmt = Number(loans[i].loanAmount);
-					// temp solution so we don't show reserved loans on upsell
-					if (fundedAmt + reservedAmt < loanAmt) {
-						this.upsellLoan = loans[i];
-						break;
-					}
-				}
-				// fallback behavior
-				if (this.upsellLoan === {}) {
-					this.upsellLoan = data?.lend?.loans?.values[0];
-				}
+				// Temp solution so we don't show reserved loans on upsell
+				this.upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || data?.lend?.loans?.values[0];
 			});
 		},
 		verificationComplete() {
