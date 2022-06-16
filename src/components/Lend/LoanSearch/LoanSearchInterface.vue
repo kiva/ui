@@ -41,6 +41,15 @@
 			<div v-if="initialLoadComplete" class="tw-hidden md:tw-block tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
 				<p>{{ totalCount }} Loans</p>
 			</div>
+			<template v-if="initialLoadComplete && totalCount === 0">
+				<p class="tw-text-center">
+					All borrowers matching this search have been funded.
+				</p>
+				<p class="tw-text-center tw-mt-2">
+					Please adjust your criteria or
+					<a class="tw-cursor-pointer" @click="handleResetFilters">start a new search.</a>
+				</p>
+			</template>
 			<kv-grid class="tw-grid-rows-4">
 				<loan-card-controller
 					v-for="loan in loans"
@@ -52,18 +61,18 @@
 					:rounded-corners="true"
 				/>
 			</kv-grid>
-			<kv-pager
-				v-if="totalCount > 0"
-				:limit="loanSearchState.pageLimit"
-				:total="totalCount"
-				:offset="loanSearchState.pageOffset"
-				@page-changed="handleUpdatedFilters"
-			/>
-			<kv-results-per-page
-				v-if="initialLoadComplete"
-				:selected="loanSearchState.pageLimit"
-				@updated="handleResultsPerPage"
-			/>
+			<template v-if="initialLoadComplete && totalCount > 0">
+				<kv-pager
+					:limit="loanSearchState.pageLimit"
+					:total="totalCount"
+					:offset="loanSearchState.pageOffset"
+					@page-changed="handleUpdatedFilters"
+				/>
+				<kv-results-per-page
+					:selected="loanSearchState.pageLimit"
+					@updated="handleResultsPerPage"
+				/>
+			</template>
 		</div>
 	</div>
 </template>
