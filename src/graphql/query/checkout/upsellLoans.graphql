@@ -1,7 +1,7 @@
 
 query upsellLoans {
 	lend {
-		loans (sortBy: amountLeft, limit: 1) {
+		loans (sortBy: amountLeft, limit: 20) {
           values {
             id
             name
