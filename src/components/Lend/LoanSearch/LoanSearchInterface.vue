@@ -58,12 +58,12 @@
 				<p>{{ totalCount }} Loans</p>
 			</div>
 			<template v-if="initialLoadComplete && totalCount === 0">
-				<p class="tw-text-center">
+				<h3 class="tw-text-center">
 					All borrowers matching this search have been funded.
-				</p>
+				</h3>
 				<p class="tw-text-center tw-mt-2">
 					Please adjust your criteria or
-					<a class="tw-cursor-pointer" @click="handleResetFilters">start a new search.</a>
+					<a class="tw-cursor-pointer" @click="clickZeroLoansReset">start a new search.</a>
 				</p>
 			</template>
 			<kv-grid class="tw-grid-rows-4">
@@ -272,7 +272,7 @@ export default {
 			if (hits !== this.trackedHits) {
 				this.$kvSetCustomUrl();
 
-				this.$kvTrackEvent(
+				this.$kvTrackEvent?.(
 					'Lending',
 					hits ? 'loans-shown' : 'zero-loans-shown',
 					hits ? 'loan-ids' : undefined,
@@ -304,6 +304,11 @@ export default {
 			expires.setFullYear(expires.getFullYear() + 2);
 
 			this.cookieStore.set(COOKIE_KEY, payload.pageLimit, { expires });
+		},
+		clickZeroLoansReset() {
+			this.handleResetFilters();
+
+			this.$kvTrackEvent?.('Lending', 'click-zero-loans-reset');
 		},
 	},
 	watch: {
