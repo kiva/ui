@@ -79,6 +79,11 @@ export default {
 					window.fbq('track', 'PageView');
 				}
 			},
+			setCustomUrl: url => {
+				if (snowplowLoaded) {
+					window.snowplow('setCustomUrl', url);
+				}
+			},
 			trackEvent: (category, action, label, property, value, callback = () => {}) => {
 				const eventLabel = (label !== undefined && label !== null) ? String(label) : undefined;
 				const eventValue = (value !== undefined && value !== null) ? parseInt(value, 10) : undefined;
@@ -429,6 +434,11 @@ export default {
 		// eslint-disable-next-line no-param-reassign
 		Vue.prototype.$fireQueuedEvents = () => {
 			kvActions.fireQueuedEvents();
+		};
+
+		// eslint-disable-next-line no-param-reassign
+		Vue.prototype.$kvSetCustomUrl = (url = window.location.href) => {
+			kvActions.setCustomUrl(url);
 		};
 
 		// eslint-disable-next-line no-param-reassign

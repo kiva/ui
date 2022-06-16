@@ -129,12 +129,14 @@ export function formatSortOptions(standardSorts, flssSorts) {
 			sortSrc: STANDARD_QUERY_TYPE,
 		};
 	});
-	const labeledFlssSorts = flssSorts.map(sort => {
-		return {
-			name: sort.name,
-			sortSrc: FLSS_QUERY_TYPE,
-		};
-	});
+	const labeledFlssSorts = flssSorts.reduce((prev, current) => {
+		// The amountLeft sort is currently returned by the GraphQL enum but isn't fully supported
+		if (current.name !== 'amountLeft') {
+			prev.push({ name: current.name, sortSrc: FLSS_QUERY_TYPE });
+		}
+
+		return prev;
+	}, []);
 	return [...labeledStandardSorts, ...labeledFlssSorts];
 }
 

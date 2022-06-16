@@ -1,3 +1,28 @@
+## [2.189.0](https://github.com/kiva/ui/compare/v2.188.2...v2.189.0) (2022-06-16)
+
+
+### Features
+
+* pager analytics ([caef613](https://github.com/kiva/ui/commit/caef613132144306c2702536bdb78a6739a69ab3))
+* removed amountLeft sort ([d108261](https://github.com/kiva/ui/commit/d108261b83fd5961dca880d5da41dca44d06c821))
+* set analytics URL on filter change ([38d1f3f](https://github.com/kiva/ui/commit/38d1f3f43f2004843cc2a5f996dce9e791152bc8))
+
+### [2.188.2](https://github.com/kiva/ui/compare/v2.188.1...v2.188.2) (2022-06-16)
+
+
+### Bug Fixes
+
+* bugs for complete loan experiment were fixed ([3cb27df](https://github.com/kiva/ui/commit/3cb27dfd1f6c828d5822dc4fb25d24ec06fb6d57))
+
+### [2.188.1](https://github.com/kiva/ui/compare/v2.188.0...v2.188.1) (2022-06-16)
+
+
+### Bug Fixes
+
+* do not show reserved loans for upsells on checkout ([deea573](https://github.com/kiva/ui/commit/deea5733a9885d342a5d69bd5aa50a12b71f0d6f))
+* fallbacks ([65c85c3](https://github.com/kiva/ui/commit/65c85c3ef2bcea90059a46fa7f290247543135a2))
+* update to use method from loan utils ([338b456](https://github.com/kiva/ui/commit/338b456d8ba489619081e3855ad43dcef4a9c23f))
+
 ## [2.188.0](https://github.com/kiva/ui/compare/v2.187.1...v2.188.0) (2022-06-15)
 
 
