@@ -1,3 +1,12 @@
+## [2.174.0-next.2](https://github.com/kiva/ui/compare/v2.174.0-next.1...v2.174.0-next.2) (2022-06-16)
+
+
+### Bug Fixes
+
+* do not show reserved loans for upsells on checkout ([8bf2d46](https://github.com/kiva/ui/commit/8bf2d46fa6f45bda6b8f4e3df0f6b55e9c59d405))
+* fallbacks ([92156da](https://github.com/kiva/ui/commit/92156da44aeb490c15fc86d77b82ed7a305aef5c))
+* update to use method from loan utils ([2ff62bc](https://github.com/kiva/ui/commit/2ff62bca75714f09339279a9c81611e5ac960102))
+
 ## [2.174.0-next.1](https://github.com/kiva/ui/compare/v2.173.4-next.1...v2.174.0-next.1) (2022-06-15)
 
 
