@@ -17,6 +17,7 @@ module.exports = merge(base, {
 		gaAlternateId: 'UA-11686022-8',
 		enableSnowplow: true,
 		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
+		enableOptimizely: false,
 		enableFB: true,
 		fbApplicationId: '370252743225',
 		fbPixelId: '108245819986414',

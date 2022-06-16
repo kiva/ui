@@ -67,7 +67,7 @@ describe('KvCheckboxList', () => {
 			props: {
 				showSelectAll: true,
 				items,
-				initialSelected: items.map(i => i.value)
+				selectedValues: items.map(i => i.value)
 			}
 		});
 
@@ -85,7 +85,24 @@ describe('KvCheckboxList', () => {
 
 		await user.click(getByLabelText(items[0].title));
 
-		expect(emitted().updated[0]).toEqual([[items[0].value]]);
+		const payload = emitted().updated[0][0];
+
+		expect(payload.values).toEqual([items[0].value]);
+		expect(payload.changed).toEqual(items[0].value);
+		expect(payload.wasSelectAll).toBeFalsy();
+	});
+
+	it('should emit select all', async () => {
+		const user = userEvent.setup();
+		const { getByText, emitted } = render(KvCheckboxList, { props: { showSelectAll: true, items } });
+
+		await user.click(getByText('Select all'));
+
+		const payload = emitted().updated[0][0];
+
+		expect(payload.values).toEqual(items.map(item => item.value));
+		expect(payload.changed).toBeFalsy();
+		expect(payload.wasSelectAll).toBeTruthy();
 	});
 
 	it('should disable checkboxes', () => {

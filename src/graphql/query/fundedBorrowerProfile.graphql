@@ -1,11 +1,15 @@
 query fundedBorrowerProfile(
-  	$id: Int!,
-	$basketId: String,
-	$imgDefaultSize: String = "w480h360",
-    $imgRetinaSize: String = "w960h720",
+	$id: Int!
+	$basketId: String
+	$imgDefaultSize: String = "w480h360"
+	$imgRetinaSize: String = "w960h720"
 ) {
 	general {
 		customSort: uiExperimentSetting(key: "funded_lyml_sort") {
+			key
+			value
+		}
+		newFundedBorrowerPage: uiExperimentSetting(key: "new_funded_borrower_page") {
 			key
 			value
 		}
@@ -13,6 +17,7 @@ query fundedBorrowerProfile(
 	lend {
 		loan(id: $id) {
 			id
+			gender
 			image {
 				id
 				default: url(customSize: $imgDefaultSize)
@@ -40,7 +45,7 @@ query fundedBorrowerProfile(
 			}
 		}
 	}
-	shop (basketId: $basketId) {
+	shop(basketId: $basketId) {
 		id
 		basket {
 			id

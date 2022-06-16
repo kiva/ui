@@ -84,8 +84,8 @@ export default {
 			default: 0,
 		},
 		previousLoanId: {
-			type: String,
-			default: '',
+			type: Number,
+			default: 0,
 		},
 		borrowerOrGroupName: {
 			type: String,

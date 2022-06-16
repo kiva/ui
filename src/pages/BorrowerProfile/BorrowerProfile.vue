@@ -17,7 +17,7 @@
 			</div>
 			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8 tw-pointer-events-none">
 				<sidebar-container class="lg:tw-sticky lg:tw-top-12 lg:tw-mt-10 lg:tw-pb-8">
-					<lend-cta class="tw-pointer-events-auto" :loan-id="loanId" />
+					<lend-cta class="tw-pointer-events-auto" :loan-id="loanId" :complete-loan="completeLoanExpActive" />
 				</sidebar-container>
 			</div>
 			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-8">
@@ -72,6 +72,7 @@ import {
 } from 'date-fns';
 import gql from 'graphql-tag';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
@@ -92,6 +93,14 @@ const pageQuery = gql`
 	query borrowerProfileMeta($loanId: Int!) {
 		general {
 			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
+				key
+				value
+			}
+			bpCompleteLoan: uiExperimentSetting(key: "bp_complete_loan") {
+				key
+				value
+			}
+			requireDepositsMatchedLoans: uiExperimentSetting(key: "require_deposits_matched_loans") {
 				key
 				value
 			}
@@ -122,6 +131,11 @@ const pageQuery = gql`
 				status
 				use
 				description
+				loanFundraisingInfo{
+					fundedAmount
+					isExpiringSoon
+					reservedAmount
+				}
 			}
 		}
 	}
@@ -224,11 +238,29 @@ export default {
 			status: '',
 			use: '',
 			description: '',
+			completeLoanExpActive: false,
+			loanFundraisingInfo: {},
+			requireDepositsMatchedLoans: false,
 		};
 	},
 	apollo: {
 		query: pageQuery,
-		preFetch: true,
+		preFetch(config, client, { route }) {
+			return client
+				.query({
+					query: pageQuery,
+					variables: {
+						loanId: Number(route.params?.id ?? 0),
+					},
+				})
+				.then(() => {
+					return Promise.all([
+						// eslint-disable-next-line max-len
+						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
+						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
+					]);
+				});
+		},
 		preFetchVariables({ route }) {
 			return {
 				loanId: Number(route?.params?.id ?? 0),
@@ -253,6 +285,7 @@ export default {
 			this.status = loan?.status ?? '';
 			this.use = loan?.use ?? '';
 			this.description = loan?.description ?? '';
+			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
 
 			const diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = diffInDays <= 3;
@@ -298,6 +331,9 @@ export default {
 		},
 		showUrgencyExp() {
 			return this.hasThreeDaysOrLessLeft && this.isUrgencyExpVersionShown;
+		},
+		amountLeft() {
+			return this.loanAmount - this.loanFundraisingInfo.fundedAmount;
 		}
 	},
 	created() {
@@ -318,6 +354,23 @@ export default {
 					this.isUrgencyExpVersionShown ? 'b' : 'a'
 				);
 			}
+		}
+
+		// EXP-CORE-607-May-2022
+		const completeLoanEXP = this.apollo.readFragment({
+			id: 'Experiment:bp_complete_loan',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		if (completeLoanEXP.version) {
+			if (completeLoanEXP.version === 'b' && this.amountLeft < 500) {
+				this.completeLoanExpActive = true;
+			}
+			this.$kvTrackEvent(
+				'Borrower Profile',
+				'EXP-CORE-607-May-2022',
+				completeLoanEXP.version
+			);
 		}
 	},
 };

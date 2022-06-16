@@ -16,7 +16,7 @@ export const fallbackCategoryIds = [98];
  * @return {LoanChannel}                     the same object as currentChannel, with updated name and/or description
  */
 export function addCustomChannelInfo(currentChannel, userAccount = {}) {
-	const channel = currentChannel || {};
+	const channel = { ...currentChannel } || {};
 	const { id, firstName } = userAccount;
 	//	check channel.id, if it's 95 update the name and descripton with user info
 	if (channel.id === 95) {

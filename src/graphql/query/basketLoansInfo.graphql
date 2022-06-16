@@ -1,0 +1,37 @@
+query basketLoansInfo(
+	$id: Int!
+	$imgDefaultSize: String = "w480h360"
+	$imgRetinaSize: String = "w960h720"
+) {
+	lend {
+		loan(id: $id) {
+			id
+			gender
+			image {
+				id
+				default: url(customSize: $imgDefaultSize)
+				retina: url(customSize: $imgRetinaSize)
+				hash
+			}
+			name
+			status
+			loanFundraisingInfo {
+				fundedAmount
+			}
+			geocode {
+				city
+				state
+				country {
+					name
+					isoCode
+				}
+			}
+			use
+			description
+			sector {
+				id
+				name
+			}
+		}
+	}
+}

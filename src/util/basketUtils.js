@@ -4,6 +4,7 @@ import numeral from 'numeral';
 import logFormatter from '@/util/logFormatter';
 import basketCountQuery from '@/graphql/query/basketCount.graphql';
 import basketItemsQuery from '@/graphql/query/basketItems.graphql';
+import basketLoansInfoQuery from '@/graphql/query/basketLoansInfo.graphql';
 
 function logSetLendAmountError(loanId, err) {
 	logFormatter(err, 'error');
@@ -53,6 +54,7 @@ export function setLendAmount({ amount, apollo, loanId }) {
 			refetchQueries: [
 				{ query: basketCountQuery },
 				{ query: basketItemsQuery },
+				{ query: basketLoansInfoQuery, variables: { id: loanId } }
 			]
 		}).then(result => {
 			if (result.errors) {
