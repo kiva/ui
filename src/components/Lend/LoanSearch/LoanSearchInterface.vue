@@ -228,6 +228,8 @@ export default {
 			const hits = hitIds.join();
 
 			if (hits !== this.trackedHits) {
+				this.$kvSetCustomUrl();
+
 				this.$kvTrackEvent(
 					'Lending',
 					hits ? 'loans-shown' : 'zero-loans-shown',
