@@ -10,14 +10,14 @@
 					future for themselves and their families.
 				</p>
 			</div>
-		</div> 
+		</div>
 		<div class="row">
-		    <div class="small-12 columns">
+			<div class="small-12 columns">
 				<h2 class=" tw-mb-1">
 					Find loans by category
 				</h2>
-		    </div>
-        </div> 
+			</div>
+		</div>
 	</www-page>
 </template>
 
@@ -27,7 +27,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 export default {
 	name: 'CategoriesBeta',
 	components: {
-        WwwPage
-    }
+		WwwPage
+	}
 };
 </script>
