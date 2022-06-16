@@ -1,3 +1,10 @@
+### [2.191.1](https://github.com/kiva/ui/compare/v2.191.0...v2.191.1) (2022-06-16)
+
+
+### Bug Fixes
+
+* double tracking was fixed for complete loan experiment ([dacf346](https://github.com/kiva/ui/commit/dacf346f9dea7bda6aa7e205d42b137d78060de3))
+
 ## [2.191.0](https://github.com/kiva/ui/compare/v2.190.2...v2.191.0) (2022-06-16)
 
 
