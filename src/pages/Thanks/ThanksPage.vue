@@ -94,6 +94,7 @@
 					class="thanks__social-share"
 					:lender="lender"
 					:loans="loans"
+					:is-guest="isGuest"
 				/>
 			</template>
 			<template #guest>

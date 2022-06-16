@@ -213,10 +213,10 @@ export default {
 			const base = `https://${this.$appConfig.host}`;
 			if (this.selectedLoan.id && this.lender.inviterName) {
 				if (this.isTeamInvitation) {
-					return `${base}/invitedto/${this.selectedLenderTeam}/by/${this.lender.inviterName}/for/${this.selectedLoan.id}?${this.utmContent}`; // eslint-disable-line max-len
+					return `${base}/invitedto/${this.selectedLenderTeam}/by/${this.lender.inviterName}/for/${this.selectedLoan.id}?utm_content=${this.utmContent}`; // eslint-disable-line max-len
 				}
 				// eslint-disable-next-line max-len
-				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoan.id}?utmContent=${this.utmContent}`;
+				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoan.id}?utm_content=${this.utmContent}`;
 			}
 			return base;
 		},
