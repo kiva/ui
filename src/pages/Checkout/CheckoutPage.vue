@@ -34,7 +34,11 @@
 							@updating-totals="setUpdatingTotals"
 						/>
 						<upsell-module
-							v-if="!upsellCookieActive && showUpsellModule && isUpsellsExperimentEnabled "
+							v-if="!upsellCookieActive &&
+								showUpsellModule &&
+								isUpsellsExperimentEnabled
+								&& upsellLoan.name
+							"
 							:loan="upsellLoan"
 							:close-upsell-module="closeUpsellModule"
 							:add-to-basket="addToBasket"
@@ -793,9 +797,9 @@ export default {
 				query: upsellQuery,
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
-				const loans = data?.lend?.loans?.values;
+				const loans = data?.lend?.loans?.values || [];
 				// Temp solution so we don't show reserved loans on upsell
-				this.upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || data?.lend?.loans?.values[0];
+				this.upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || {};
 			});
 		},
 		verificationComplete() {
