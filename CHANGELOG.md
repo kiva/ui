@@ -1,3 +1,10 @@
+## [2.191.0](https://github.com/kiva/ui/compare/v2.190.2...v2.191.0) (2022-06-16)
+
+
+### Features
+
+* zero loans reset analytics ([47f4c2c](https://github.com/kiva/ui/commit/47f4c2c0cf38c545fa90254b36499f2f17bf0706))
+
 ### [2.190.2](https://github.com/kiva/ui/compare/v2.190.1...v2.190.2) (2022-06-16)
 
 
