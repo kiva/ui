@@ -545,7 +545,8 @@ export default {
 			const minAmount = parseFloat(this.unreservedAmount < 25 ? this.minNoteSize : 25); // 25_hard_coded
 			// limit at 20 price options
 			const priceArray = buildPriceArray(parseFloat(this.unreservedAmount), minAmount).slice(0, 20);
-			if (this.completeLoan && this.isBetween25And100) {
+			// eslint-disable-next-line
+			if (this.completeLoan && this.isBetween25And100 && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
 			}
 			return priceArray;
@@ -657,11 +658,14 @@ export default {
 			return this.unreservedAmount < 100 && this.unreservedAmount > 25;
 		},
 		isBetween25And500() {
-			return this.unreservedAmount < 500 && this.unreservedAmount > 25;
+			return this.unreservedAmount < 500 && this.unreservedAmount >= 25;
 		},
 		isCompleteLoanActive() {
-			// eslint-disable-next-line
-			return this.completeLoan && (this.isLessThan25) || (this.isBetween25And500 && Number(this.unreservedAmount).toFixed() === this.selectedOption);
+			if (this.completeLoan) {
+				// eslint-disable-next-line
+				return (this.isLessThan25) || (this.isBetween25And500 && Number(this.unreservedAmount).toFixed() === this.selectedOption);
+			}
+			return false;
 		}
 	},
 	mounted() {
