@@ -1,3 +1,15 @@
+## [2.188.0](https://github.com/kiva/ui/compare/v2.187.1...v2.188.0) (2022-06-15)
+
+
+### Features
+
+* page query param support ([99f603f](https://github.com/kiva/ui/commit/99f603f56bbefcd6334acba90b54a18d37834385))
+
+
+### Bug Fixes
+
+* merge issue with tests ([cd596d9](https://github.com/kiva/ui/commit/cd596d9061a0e837e6dac7162e8b91393b269986))
+
 ### [2.187.1](https://github.com/kiva/ui/compare/v2.187.0...v2.187.1) (2022-06-15)
 
 
