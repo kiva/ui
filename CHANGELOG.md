@@ -1,3 +1,12 @@
+## [2.189.0](https://github.com/kiva/ui/compare/v2.188.2...v2.189.0) (2022-06-16)
+
+
+### Features
+
+* pager analytics ([caef613](https://github.com/kiva/ui/commit/caef613132144306c2702536bdb78a6739a69ab3))
+* removed amountLeft sort ([d108261](https://github.com/kiva/ui/commit/d108261b83fd5961dca880d5da41dca44d06c821))
+* set analytics URL on filter change ([38d1f3f](https://github.com/kiva/ui/commit/38d1f3f43f2004843cc2a5f996dce9e791152bc8))
+
 ### [2.188.2](https://github.com/kiva/ui/compare/v2.188.1...v2.188.2) (2022-06-16)
 
 
