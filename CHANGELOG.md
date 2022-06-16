@@ -1,3 +1,10 @@
+### [2.190.2](https://github.com/kiva/ui/compare/v2.190.1...v2.190.2) (2022-06-16)
+
+
+### Bug Fixes
+
+* selected amount was added to view tracking for complete loan test ([b0a5bc8](https://github.com/kiva/ui/commit/b0a5bc8e7a1c7f47c01c77d2484b5c60b0c79463))
+
 ### [2.190.1](https://github.com/kiva/ui/compare/v2.190.0...v2.190.1) (2022-06-16)
 
 
