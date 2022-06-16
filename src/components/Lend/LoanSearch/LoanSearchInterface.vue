@@ -1,8 +1,11 @@
 <template>
-	<div class="tw-flex">
-		<div class="tw-flex tw-flex-col tw-mr-4">
-			<div class="md:tw-hidden tw-mb-3">
-				<kv-button variant="secondary" @click="toggleLightbox(true)">
+	<div class="tw-flex tw-flex-col lg:tw-flex-row">
+		<div class="tw-flex lg:tw-hidden">
+			<div class="tw-mb-3 tw-mr-2">
+				<kv-button
+					variant="secondary"
+					@click="toggleLightbox(true)"
+				>
 					Filter & Sort
 				</kv-button>
 				<kv-lightbox
@@ -15,15 +18,31 @@
 						{{ null }} <!-- Hide title text -->
 					</template>
 					<loan-search-filter
+						style="min-width: 285px;"
 						:loading="!initialLoadComplete"
 						:facets="facets"
 						:loan-search-state="loanSearchState"
 						@updated="handleUpdatedFilters"
 						@reset="handleResetFilters"
 					/>
+					<template #controls>
+						<kv-button
+							v-if="totalCount > 0"
+							class="tw-mt-2 tw-w-full lg:tw-hidden"
+							@click="toggleLightbox(false)"
+							ref="showLoansButton"
+						>
+							Show {{ totalCount }} Loans
+						</kv-button>
+					</template>
 				</kv-lightbox>
 			</div>
-			<div class="tw-hidden md:tw-block tw-w-[285px]">
+			<div v-if="initialLoadComplete" class="tw-pt-1.5">
+				<p>{{ totalCount }} Loans</p>
+			</div>
+		</div>
+		<div class="tw-flex tw-mr-4">
+			<div class="tw-hidden lg:tw-block" style="width: 285px;">
 				<loan-search-filter
 					:loading="!initialLoadComplete"
 					:facets="facets"
@@ -32,9 +51,6 @@
 					@reset="handleResetFilters"
 				/>
 			</div>
-		</div>
-		<div v-if="initialLoadComplete" class="md:tw-hidden tw-pt-1.5">
-			<p>{{ totalCount }} Loans</p>
 		</div>
 		<div class="tw-col-span-2 tw-relative tw-grow">
 			<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
