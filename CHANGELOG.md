@@ -1,3 +1,12 @@
+## [2.190.0](https://github.com/kiva/ui/compare/v2.189.0...v2.190.0) (2022-06-16)
+
+
+### Features
+
+* added 0 loans state ([95b30f9](https://github.com/kiva/ui/commit/95b30f944ddb65d675fcdf3fc41e796cb5098fad))
+* added results per page analytics ([2db1d97](https://github.com/kiva/ui/commit/2db1d9790712098bea2591931f68f8c37650013c))
+* results per page component ([77b4d5f](https://github.com/kiva/ui/commit/77b4d5fcc48e50b947ec9140e4bc206897c80857))
+
 ## [2.189.0](https://github.com/kiva/ui/compare/v2.188.2...v2.189.0) (2022-06-16)
 
 
