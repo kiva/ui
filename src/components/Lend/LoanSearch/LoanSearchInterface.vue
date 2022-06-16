@@ -41,6 +41,15 @@
 			<div v-if="initialLoadComplete" class="tw-hidden md:tw-block tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
 				<p>{{ totalCount }} Loans</p>
 			</div>
+			<template v-if="initialLoadComplete && totalCount === 0">
+				<p class="tw-text-center">
+					All borrowers matching this search have been funded.
+				</p>
+				<p class="tw-text-center tw-mt-2">
+					Please adjust your criteria or
+					<a class="tw-cursor-pointer" @click="handleResetFilters">start a new search.</a>
+				</p>
+			</template>
 			<kv-grid class="tw-grid-rows-4">
 				<loan-card-controller
 					v-for="loan in loans"
@@ -52,13 +61,18 @@
 					:rounded-corners="true"
 				/>
 			</kv-grid>
-			<kv-pager
-				v-if="totalCount > 0"
-				:limit="loanSearchState.pageLimit"
-				:total="totalCount"
-				:offset="loanSearchState.pageOffset"
-				@page-changed="handleUpdatedFilters"
-			/>
+			<template v-if="initialLoadComplete && totalCount > 0">
+				<kv-pager
+					:limit="loanSearchState.pageLimit"
+					:total="totalCount"
+					:offset="loanSearchState.pageOffset"
+					@page-changed="handleUpdatedFilters"
+				/>
+				<kv-results-per-page
+					:selected="loanSearchState.pageLimit"
+					@updated="handleResultsPerPage"
+				/>
+			</template>
 		</div>
 	</div>
 </template>
@@ -82,10 +96,14 @@ import {
 } from '@/util/loanSearchUtils';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import KvPager from '@/components/Kv/KvPager';
+import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
+import { isNumber } from '@/util//numberUtils';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+
+const COOKIE_KEY = 'kv-search-result-count';
 
 export default {
 	name: 'LoanSearchInterface',
@@ -98,6 +116,7 @@ export default {
 		KvLightbox,
 		KvSectionModalLoader,
 		KvPager,
+		KvResultsPerPage,
 	},
 	data() {
 		return {
@@ -176,7 +195,7 @@ export default {
 		this.allFacets = await fetchLoanFacets(this.apollo);
 
 		// Initialize the search filters with the query string params
-		await applyQueryParams(this.apollo, this.$route.query, this.allFacets, this.queryType, this.loanSearchState);
+		await applyQueryParams(this.apollo, this.$route.query, this.allFacets, this.queryType, this.defaultPageLimit);
 
 		// Here we subscribe to the loanSearchState and run the loan query when it updates
 		// TODO: work some guards to prevent duplicate queries and throttling to more carefully control # of queries
@@ -222,6 +241,13 @@ export default {
 			}
 		});
 	},
+	computed: {
+		defaultPageLimit() {
+			const storedPageLimit = this.cookieStore.get(COOKIE_KEY);
+
+			return isNumber(storedPageLimit) ? +storedPageLimit : this.loanSearchState.pageLimit;
+		},
+	},
 	methods: {
 		trackLoans() {
 			const hitIds = this.loans.map(l => l.id);
@@ -253,11 +279,28 @@ export default {
 		handleResetFilters() {
 			this.updateState();
 		},
+		handleResultsPerPage(payload) {
+			// Reset to first page when page limit changes
+			this.updateState({ ...this.loanSearchState, ...payload, pageOffset: 0 });
+
+			// Set cookie with 2 year expiration
+			const expires = new Date();
+			expires.setFullYear(expires.getFullYear() + 2);
+
+			this.cookieStore.set(COOKIE_KEY, payload.pageLimit, { expires });
+		},
 	},
 	watch: {
 		$route(to) {
 			// Update the loan search state when the user clicks back/forward in the browser
-			applyQueryParams(this.apollo, to.query, this.allFacets, this.queryType, this.loanSearchState);
+			applyQueryParams(
+				this.apollo,
+				to.query,
+				this.allFacets,
+				this.queryType,
+				this.loanSearchState.pageLimit,
+				this.loanSearchState
+			);
 		}
 	}
 };
