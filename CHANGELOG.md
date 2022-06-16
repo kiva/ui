@@ -1,3 +1,10 @@
+### [2.190.1](https://github.com/kiva/ui/compare/v2.190.0...v2.190.1) (2022-06-16)
+
+
+### Bug Fixes
+
+* update layout of mobile vs desktop filter interface ([dc69963](https://github.com/kiva/ui/commit/dc6996300a7f3b74f22718ec9f3038dab3b74b07))
+
 ## [2.190.0](https://github.com/kiva/ui/compare/v2.189.0...v2.190.0) (2022-06-16)
 
 
