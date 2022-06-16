@@ -1,3 +1,10 @@
+### [2.188.2](https://github.com/kiva/ui/compare/v2.188.1...v2.188.2) (2022-06-16)
+
+
+### Bug Fixes
+
+* bugs for complete loan experiment were fixed ([3cb27df](https://github.com/kiva/ui/commit/3cb27dfd1f6c828d5822dc4fb25d24ec06fb6d57))
+
 ### [2.188.1](https://github.com/kiva/ui/compare/v2.188.0...v2.188.1) (2022-06-16)
 
 
