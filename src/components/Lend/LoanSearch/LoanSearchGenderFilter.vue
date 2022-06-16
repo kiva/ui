@@ -34,7 +34,7 @@ export default {
 	},
 	data() {
 		return {
-			selectedGender: this.gender,
+			selectedGender: this.gender || '',
 			genderOptions: [
 				{
 					title: BOTH_TITLE,
@@ -55,8 +55,11 @@ export default {
 		setGender(gender) {
 			if (gender !== this.selectedGender) {
 				this.selectedGender = gender;
+
 				// Return null as default to match GraphQL enum default
 				this.$emit('updated', { gender: this.selectedGender || null });
+
+				this.$kvTrackEvent?.('Lending', 'click-gender-filter', this.selectedGender);
 			}
 		},
 	},

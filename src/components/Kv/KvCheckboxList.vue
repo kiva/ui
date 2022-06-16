@@ -6,7 +6,12 @@
 			</button>
 		</li>
 		<li v-for="(item, i) in items" :key="i">
-			<kv-checkbox :value="item.value" :disabled="item.disabled" v-model="selected" @change="updateSelected">
+			<kv-checkbox
+				:value="item.value"
+				:disabled="item.disabled"
+				v-model="selected"
+				@change="updateSelected($event, item.value)"
+			>
 				{{ item.title }}
 			</kv-checkbox>
 		</li>
@@ -65,10 +70,10 @@ export default {
 					if (exists) this.selected.splice(index, 1);
 				} else if (!exists) this.selected.push(item.value);
 			});
-			this.updateSelected(this.selected);
+			this.updateSelected(this.selected, undefined, true);
 		},
-		updateSelected(values) {
-			this.$emit('updated', [...values]);
+		updateSelected(values, changed, wasSelectAll) {
+			this.$emit('updated', { values: [...values], changed, wasSelectAll });
 		},
 	},
 	watch: {

@@ -28,25 +28,26 @@ describe('flssUtils.js', () => {
 		const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
 		const loanQueryFilters = { any: ['US'] };
 		const sortBy = 'personalized';
-		const pageOffset = 0;
+		const pageOffset = 15;
+		const pageLimit = 5;
 		const apolloVariables = {
 			query: flssLoanQuery,
 			variables: {
 				filterObject: loanQueryFilters,
-				limit: 20,
 				sortBy: 'personalized',
-				pageNumber: 0,
+				pageNumber: 3,
+				pageLimit,
 			},
 			fetchPolicy: 'network-only',
 		};
 
 		it('should pass the correct query variables to apollo', async () => {
-			await fetchLoans(apollo, loanQueryFilters, sortBy, pageOffset);
+			await fetchLoans(apollo, loanQueryFilters, sortBy, pageOffset, pageLimit);
 			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
 		});
 
 		it('should return the fundraising loans data', async () => {
-			const data = await fetchLoans(apollo, loanQueryFilters, sortBy, pageOffset);
+			const data = await fetchLoans(apollo, loanQueryFilters, sortBy, pageOffset, pageLimit);
 			expect(data).toBe(result);
 		});
 	});

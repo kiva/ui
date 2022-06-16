@@ -20,15 +20,15 @@ service:
 
 resources:
   requests:
-    cpu: 250m
+    cpu: 350m
     memory: 2000Mi
   limits:
-    cpu: 250m
+    cpu: 350m
     memory: 2000Mi
 
-replicaCount: 28
-minReplicas: 28
-maxReplicas: 80
+replicaCount: 60
+minReplicas: 60
+maxReplicas: 100
 
 metrics:
   name: cpu

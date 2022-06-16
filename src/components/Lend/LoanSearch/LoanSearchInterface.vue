@@ -52,6 +52,13 @@
 					:rounded-corners="true"
 				/>
 			</kv-grid>
+			<kv-pager
+				v-if="totalCount > 0"
+				:limit="loanSearchState.pageLimit"
+				:total="totalCount"
+				:offset="loanSearchState.pageOffset"
+				@page-changed="handleUpdatedFilters"
+			/>
 		</div>
 	</div>
 </template>
@@ -74,6 +81,8 @@ import {
 	transformSectors,
 } from '@/util/loanSearchUtils';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
+import KvPager from '@/components/Kv/KvPager';
+import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -88,6 +97,7 @@ export default {
 		LoanSearchFilter,
 		KvLightbox,
 		KvSectionModalLoader,
+		KvPager,
 	},
 	data() {
 		return {
@@ -155,8 +165,10 @@ export default {
 			loans: [],
 			totalCount: 0,
 			isLightboxVisible: false,
-			loanSearchState: {},
-			queryType: FLSS_QUERY_TYPE
+			loanSearchState: getDefaultLoanSearchState(),
+			queryType: FLSS_QUERY_TYPE,
+			// Holds comma-separated list of loan IDs from the query results
+			trackedHits: undefined,
 		};
 	},
 	async mounted() {
@@ -164,7 +176,7 @@ export default {
 		this.allFacets = await fetchLoanFacets(this.apollo);
 
 		// Initialize the search filters with the query string params
-		await applyQueryParams(this.apollo, this.$route.query, this.allFacets, this.queryType);
+		await applyQueryParams(this.apollo, this.$route.query, this.allFacets, this.queryType, this.loanSearchState);
 
 		// Here we subscribe to the loanSearchState and run the loan query when it updates
 		// TODO: work some guards to prevent duplicate queries and throttling to more carefully control # of queries
@@ -204,10 +216,29 @@ export default {
 					this.initialLoadComplete = true;
 				}
 				this.loading = false;
+
+				// Add analytics event for loans query result
+				this.trackLoans();
 			}
 		});
 	},
 	methods: {
+		trackLoans() {
+			const hitIds = this.loans.map(l => l.id);
+			const hits = hitIds.join();
+
+			if (hits !== this.trackedHits) {
+				this.$kvTrackEvent(
+					'Lending',
+					hits ? 'loans-shown' : 'zero-loans-shown',
+					hits ? 'loan-ids' : undefined,
+					hits || undefined,
+					hitIds.length ? hitIds.length : 0,
+				);
+
+				this.trackedHits = hits;
+			}
+		},
 		toggleLightbox(toggle) {
 			this.isLightboxVisible = toggle;
 		},

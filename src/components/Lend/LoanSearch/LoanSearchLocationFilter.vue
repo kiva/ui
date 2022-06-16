@@ -85,8 +85,22 @@ export default {
 				this.openRegions.splice(existingIndex, 1);
 			}
 		},
-		updateRegion(region, countries) {
-			this.$set(this.selectedCountries, region, countries);
+		updateRegion(region, { values, changed, wasSelectAll }) {
+			this.$set(this.selectedCountries, region, values);
+
+			let appliedState = '';
+			if (wasSelectAll) {
+				appliedState = values.length ? 'select-all' : 'deselect-all';
+			} else {
+				appliedState = values.includes(changed) ? 'selected' : 'deselected';
+			}
+
+			this.$kvTrackEvent?.(
+				'Lending',
+				'click-location-filter',
+				wasSelectAll ? `Region: ${region}` : `Country: ${changed}`,
+				appliedState
+			);
 		},
 	},
 	watch: {
