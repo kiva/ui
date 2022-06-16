@@ -1,10 +1,5 @@
 <template>
 
-<div>
-<span>
-    Hello
-</span>
-</div>
 	
 </template>
 
@@ -16,12 +11,6 @@ export default {
 	components: {
 		
 	},
-	// data() {
-	// 	return {
-	// 	};
-	// },
-	// computed: {
-	// },
 
 };
 

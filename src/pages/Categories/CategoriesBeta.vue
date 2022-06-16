@@ -35,11 +35,7 @@ export default {
 	name: 'CategoriesBeta',
 	components: {
         WwwPage
-    },
-	data() {
-		return {
-		};
-	}
+    }
 };
 
 </script>
