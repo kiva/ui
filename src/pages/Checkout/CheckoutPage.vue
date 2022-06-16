@@ -34,7 +34,11 @@
 							@updating-totals="setUpdatingTotals"
 						/>
 						<upsell-module
-							v-if="!upsellCookieActive && showUpsellModule && isUpsellsExperimentEnabled "
+							v-if="!upsellCookieActive &&
+								showUpsellModule &&
+								isUpsellsExperimentEnabled
+								&& upsellLoan.name
+							"
 							:loan="upsellLoan"
 							:close-upsell-module="closeUpsellModule"
 							:add-to-basket="addToBasket"
@@ -276,6 +280,7 @@ import UpsellModule from '@/components/Checkout/UpsellModule';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
+import { isLoanFundraising } from '@/util/loanUtils';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -792,7 +797,9 @@ export default {
 				query: upsellQuery,
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
-				this.upsellLoan = data?.lend?.loans?.values[0];
+				const loans = data?.lend?.loans?.values || [];
+				// Temp solution so we don't show reserved loans on upsell
+				this.upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || {};
 			});
 		},
 		verificationComplete() {
