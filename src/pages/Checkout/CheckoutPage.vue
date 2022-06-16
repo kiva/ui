@@ -792,7 +792,22 @@ export default {
 				query: upsellQuery,
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
-				this.upsellLoan = data?.lend?.loans?.values[0];
+				const loans = data?.lend?.loans?.values;
+				// eslint-disable-next-line no-plusplus
+				for (let i = 0; i < loans.length; i++) {
+					const fundedAmt = Number(loans[i].loanFundraisingInfo?.fundedAmount);
+					const reservedAmt = Number(loans[i].loanFundraisingInfo?.reservedAmount);
+					const loanAmt = Number(loans[i].loanAmount);
+					// temp solution so we don't show reserved loans on upsell
+					if (fundedAmt + reservedAmt < loanAmt) {
+						this.upsellLoan = loans[i];
+						break;
+					}
+				}
+				// fallback behavior
+				if (this.upsellLoan === {}) {
+					this.upsellLoan = data?.lend?.loans?.values[0];
+				}
 			});
 		},
 		verificationComplete() {
