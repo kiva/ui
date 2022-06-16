@@ -118,6 +118,11 @@ export default {
 					vmid: 'canonical',
 					rel: 'canonical',
 					href: `https://${this.$appConfig.host}${this.$route.path}`
+				},
+				{
+					vmid: 'preconnect',
+					rel: 'preconnect',
+					href: `${this.$appConfig.publicPath}`
 				}
 			].concat([
 				// Standard Favicons + Android favicons
