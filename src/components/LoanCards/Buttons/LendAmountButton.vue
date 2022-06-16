@@ -34,12 +34,6 @@ export default {
 			default: false
 		},
 	},
-	mounted() {
-		if (this.completeLoan) {
-			// eslint-disable-next-line max-len
-			this.$kvTrackEvent('Borrower profile', 'Complete loan', 'view-amount-left-cta', null, null);
-		}
-	},
 	computed: {
 		amountValue() {
 			return parseFloat(this.amountLeft).toFixed();
