@@ -125,7 +125,7 @@ export default {
 			if (this.selectedLoan.id) {
 				return `${base}/lend/${this.selectedLoan.id}?utm_content=${this.utmContent}`;
 			}
-			return base;
+			return `${base}?utm_content=${this.utmContent}`;
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
