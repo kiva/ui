@@ -48,6 +48,8 @@ export default {
 			}
 
 			this.$emit('updated', { pageLimit: +pageLimit });
+
+			this.$kvTrackEvent?.('Lending', 'click-results-per-page', pageLimit);
 		}
 	},
 	watch: {
