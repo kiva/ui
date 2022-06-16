@@ -517,7 +517,8 @@ export default {
 		},
 		isCompleteLoanActive() {
 			if (this.isCompleteLoanActive && this.completeLoanView) {
-				this.$kvTrackEvent('Borrower profile', 'Complete loan', 'view-amount-left-cta', null, null);
+				// eslint-disable-next-line
+				this.$kvTrackEvent('Borrower profile', 'Complete loan', 'view-amount-left-cta', this.loanId, this.selectedOption);
 				this.completeLoanView = false;
 			}
 		}
