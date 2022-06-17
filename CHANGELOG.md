@@ -1,3 +1,10 @@
+### [2.196.1](https://github.com/kiva/ui/compare/v2.196.0...v2.196.1) (2022-06-17)
+
+
+### Bug Fixes
+
+* exclude popularity sort as eligible for the experiment ([cba6595](https://github.com/kiva/ui/commit/cba65957976caac2be1937644f71d13b738b314e))
+
 ## [2.196.0](https://github.com/kiva/ui/compare/v2.195.0...v2.196.0) (2022-06-17)
 
 
