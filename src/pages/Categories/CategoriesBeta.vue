@@ -2,37 +2,36 @@
 	<www-page>
 		<content-container class="md:tw-pt-6 lg:tw-pt-8 ">
 			<h1 class="tw-mb-2">
-					Make a loan, change a life
+				Make a loan, change a life
 			</h1>
 			<p class="tw-mb-4 tw-max-w-screen-lg">
-					Each Kiva loan helps people build a better
-					future for themselves and their families.
+				Each Kiva loan helps people build a better
+				future for themselves and their families.
 			</p>
 		</content-container>
 		<content-container class="md:tw-pt-6 lg:tw-pt-8">
-			<h2 >
-					Find loans by category
+			<h2>
+				Find loans by category
 			</h2>
 		</content-container>
 		<kv-page-container class="sm:tw-pt-4 md:tw-pt-6 lg:tw-pt-8">
 			<kv-grid class="tw-grid-cols-12">
-						<div class="md:tw-col-span-6 lg:tw-col-span-6">
-							<main-category-tile />
-						</div>
-						<div class="md:tw-col-span-6 lg:tw-col-span-6">
-							<main-category-tile/>
-						</div>					
+				<div class="md:tw-col-span-6 lg:tw-col-span-6">
+					<main-category-tile />
+				</div>
+				<div class="md:tw-col-span-6 lg:tw-col-span-6">
+					<main-category-tile />
+				</div>
 			</kv-grid>
 			<kv-grid class="tw-grid-cols-12">
-						<div class="md:tw-col-span-6 lg:tw-col-span-6">
-							<main-category-tile />
-						</div>
-						<div class="md:tw-col-span-6 lg:tw-col-span-6">
-							<main-category-tile/>
-						</div>					
+				<div class="md:tw-col-span-6 lg:tw-col-span-6">
+					<main-category-tile />
+				</div>
+				<div class="md:tw-col-span-6 lg:tw-col-span-6">
+					<main-category-tile />
+				</div>
 			</kv-grid>
 		</kv-page-container>
-		
 	</www-page>
 </template>
 
@@ -42,7 +41,6 @@ import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
 import MainCategoryTile from '@/components/Categories/MainCategoryTile';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-
 
 export default {
 	name: 'CategoriesBeta',
@@ -55,4 +53,3 @@ export default {
 	},
 };
 </script>
-
