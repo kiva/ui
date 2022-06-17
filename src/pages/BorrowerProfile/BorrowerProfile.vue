@@ -150,8 +150,9 @@ export default {
 		let description = '';
 
 		if (this.$route.path.includes('lend') || this.$route.path.includes('-beta')) {
-			title = `Lend to ${this.name} in ${this.countryName}`;
-			description = `A loan of ${this.loanAmount ?? '0'} ${this.use}`;
+			title = this.anonymizationLevel === 'full' ? undefined : `Lend to ${this.name} in ${this.countryName}`;
+			// eslint-disable-next-line max-len
+			description = this.anonymizationLevel === 'full' ? undefined : `A loan of ${this.loanAmount ?? '0'} ${this.use}`;
 		}
 
 		return {
