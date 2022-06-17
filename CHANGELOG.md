@@ -1,3 +1,11 @@
+### [2.191.2](https://github.com/kiva/ui/compare/v2.191.1...v2.191.2) (2022-06-17)
+
+
+### Bug Fixes
+
+* accommodate overreserved loans ([194b8ed](https://github.com/kiva/ui/commit/194b8edd9f3f3b2d3ee1ec463bb46254ffb840ee))
+* whoops ([3643c6e](https://github.com/kiva/ui/commit/3643c6ec7e31eb1e9afd56a88fc63a4c53630ff3))
+
 ### [2.191.1](https://github.com/kiva/ui/compare/v2.191.0...v2.191.1) (2022-06-16)
 
 
