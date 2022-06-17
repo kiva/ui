@@ -1,33 +1,58 @@
 <template>
-	<www-page class="category-beta">
-		<div class="row">
-			<div class="small-12 columns tw-mt-3 tw-p-2">
-				<h1 class="tw-mb-2">
+	<www-page>
+		<content-container class="md:tw-pt-6 lg:tw-pt-8 ">
+			<h1 class="tw-mb-2">
 					Make a loan, change a life
-				</h1>
-				<p class="tw-mb-4 tw-max-w-screen-lg">
+			</h1>
+			<p class="tw-mb-4 tw-max-w-screen-lg">
 					Each Kiva loan helps people build a better
 					future for themselves and their families.
-				</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="small-12 columns">
-				<h2 class=" tw-mb-1">
+			</p>
+		</content-container>
+		<content-container class="md:tw-pt-6 lg:tw-pt-8">
+			<h2 >
 					Find loans by category
-				</h2>
-			</div>
-		</div>
+			</h2>
+		</content-container>
+		<kv-page-container class="sm:tw-pt-4 md:tw-pt-6 lg:tw-pt-8">
+			<kv-grid class="tw-grid-cols-12">
+						<div class="md:tw-col-span-6 lg:tw-col-span-6">
+							<main-category-tile />
+						</div>
+						<div class="md:tw-col-span-6 lg:tw-col-span-6">
+							<main-category-tile/>
+						</div>					
+			</kv-grid>
+			<kv-grid class="tw-grid-cols-12">
+						<div class="md:tw-col-span-6 lg:tw-col-span-6">
+							<main-category-tile />
+						</div>
+						<div class="md:tw-col-span-6 lg:tw-col-span-6">
+							<main-category-tile/>
+						</div>					
+			</kv-grid>
+		</kv-page-container>
+		
 	</www-page>
 </template>
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
+import MainCategoryTile from '@/components/Categories/MainCategoryTile';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+
 
 export default {
 	name: 'CategoriesBeta',
 	components: {
-		WwwPage
-	}
+		WwwPage,
+		ContentContainer,
+		MainCategoryTile,
+		KvGrid,
+		KvPageContainer
+	},
 };
 </script>
+
