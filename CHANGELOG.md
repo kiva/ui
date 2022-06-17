@@ -1,3 +1,10 @@
+## [2.192.0](https://github.com/kiva/ui/compare/v2.191.2...v2.192.0) (2022-06-17)
+
+
+### Features
+
+* reset page offset when filtering, fixed analytics URL ([852c351](https://github.com/kiva/ui/commit/852c351237f26ff3b63bba8d2d88deb419ab0ade))
+
 ### [2.191.2](https://github.com/kiva/ui/compare/v2.191.1...v2.191.2) (2022-06-17)
 
 
