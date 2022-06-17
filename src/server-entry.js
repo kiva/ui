@@ -15,6 +15,8 @@ import { contentfulPreviewCookie } from '@/util/contentfulPreviewCookie';
 
 import logFormatter from '@/util/logFormatter';
 
+const fetch = require('make-fetch-happen');
+
 const isDev = process.env.NODE_ENV !== 'production';
 
 // This exported function will be called by `bundleRenderer`.
@@ -82,6 +84,7 @@ export default context => {
 			device,
 			kvAuth0,
 			locale,
+			fetch
 		});
 
 		// redirect to the resolved url if it does not match the requested url
