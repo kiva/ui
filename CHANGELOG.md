@@ -1,3 +1,10 @@
+## [2.197.0](https://github.com/kiva/ui/compare/v2.196.1...v2.197.0) (2022-06-17)
+
+
+### Features
+
+* show note about Recommended loan sort based on login state ([e2f5d3c](https://github.com/kiva/ui/commit/e2f5d3c15c9b03d98abba9bcc6bb4d1c54a20bdb))
+
 ### [2.196.1](https://github.com/kiva/ui/compare/v2.196.0...v2.196.1) (2022-06-17)
 
 
