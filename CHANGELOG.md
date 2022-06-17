@@ -1,3 +1,10 @@
+## [2.174.0-next.3](https://github.com/kiva/ui/compare/v2.174.0-next.2...v2.174.0-next.3) (2022-06-17)
+
+
+### Bug Fixes
+
+* update loanutils ([18b45ef](https://github.com/kiva/ui/commit/18b45ef2da538daf2ff26ab662ad31aea57f79c8))
+
 ## [2.174.0-next.2](https://github.com/kiva/ui/compare/v2.174.0-next.1...v2.174.0-next.2) (2022-06-16)
 
 
