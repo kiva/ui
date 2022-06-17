@@ -20,6 +20,7 @@
 					<loan-search-filter
 						style="min-width: 285px;"
 						:loading="!initialLoadComplete"
+						:is-logged-in="userId !== null"
 						:facets="facets"
 						:loan-search-state="loanSearchState"
 						@updated="handleUpdatedFilters"
@@ -49,6 +50,7 @@
 				<loan-search-filter
 					:loading="!initialLoadComplete"
 					:facets="facets"
+					:is-logged-in="userId !== null"
 					:loan-search-state="loanSearchState"
 					@updated="handleUpdatedFilters"
 					@reset="handleResetFilters"
@@ -73,7 +75,9 @@
 				<loan-card-controller
 					v-for="loan in loans"
 					:items-in-basket="null"
-					:is-visitor="true"
+					:is-visitor="userId === null"
+					:is-logged-in="userId !== null"
+					:user-id="userId !== null ? userId.toString() : null"
 					:key="loan.id"
 					:loan="loan"
 					loan-card-type="ListLoanCard"
@@ -98,6 +102,7 @@
 
 <script>
 import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
+import userIdQuery from '@/graphql/query/userId.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
 import {
@@ -209,7 +214,15 @@ export default {
 			queryType: FLSS_QUERY_TYPE,
 			// Holds comma-separated list of loan IDs from the query results
 			trackedHits: undefined,
+			userId: null,
 		};
+	},
+	apollo: {
+		query: userIdQuery,
+		preFetch: true,
+		result({ data }) {
+			this.userId = data?.my?.userAccount?.id ?? null;
+		},
 	},
 	async mounted() {
 		// Fetch the facet options from the lend and FLSS APIs
