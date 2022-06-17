@@ -101,7 +101,11 @@
 				</template>
 			</thanks-layout-v2>
 		</div>
-		<thanks-page-share v-if="receipt && showNewThanksPage" />
+		<thanks-page-share v-if="receipt && showNewThanksPage"
+			:lender="lender"
+			:loan="selectedLoan"
+			:simple-social-share-version="simpleSocialShareVersion"
+		/>
 	</www-page>
 </template>
 
@@ -120,6 +124,7 @@ import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ThanksLayoutV2 from '@/components/Thanks/ThanksLayoutV2';
 import ThanksPageShare from '@/components/Thanks/ThanksPageShare';
+import orderBy from 'lodash/orderBy';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
@@ -197,6 +202,10 @@ export default {
 		}
 	},
 	computed: {
+		selectedLoan() {
+			const orderedLoans = orderBy(this.loans, ['unreservedAmount'], ['desc']);
+			return orderedLoans[0] || {};
+		},
 		borrowerSupport() {
 			const loanNames = this.loans.map(loan => loan.name);
 			if (loanNames.length > 3) {

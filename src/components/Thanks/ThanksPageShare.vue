@@ -2,12 +2,7 @@
 	<div>
 		<div class="message-content">
 			<div class="row">
-				<div
-					class="thanks__header-h1 tw-text-left large-3 small-1"
-					:class="{
-						'tw-text-h2': showAutoDepositUpsell
-					}"
-				>
+				<div class="thanks__header-h1 tw-text-left large-3 small-1">
 					<kv-material-icon
 						class="tw-w-3 tw-h-3 tw-my-3 tw-align-middle tw-mr-0.5 message-content__success"
 						:icon="mdiCheckAll"
@@ -37,10 +32,10 @@
 								md:tw--mb-1
 							"
 							data-testid="bp-story-borrower-image"
-							:alt="selectedLoan.name"
-							:aspect-ratio="2 / 5"
+							:alt="loan.name"
+							:aspect-ratio="1 / 2"
 							:default-image="{ width: 612 }"
-							:hash="selectedLoan.image.hash"
+							:hash="loan.image.hash"
 							:images="[
 								{ width: 612, viewSize: 1024 },
 								{ width: 580, viewSize: 768 },
@@ -53,61 +48,38 @@
 						<div class="tw-flex-auto tw-mb-2">
 							<figure>
 								<figcaption class="tw-flex progress">
-									<template v-if="!fundedPage">
+									<template>
 										<div class="tw-flex-auto tw-text-left">
 											<p class="tw-text-h3 tw-m-0 progress__to-go"
 												data-testid="bp-summary-amount-to-go"
 											>
-												{{ selectedLoan.unreservedAmount | numeral('$0,0[.]00') }} TO GO
+												{{ loan.unreservedAmount | numeral('$0,0[.]00') }} TO GO
 											</p>
 										</div>
 										<p class="tw-flex-auto tw-text-right progress__days-remaining"
 											data-testid="bp-summary-timeleft"
 										>
 											<span lass="tw-text-h3 tw-block tw-m-0">
-												{{ selectedLoan.fundraisingTimeLeft }} remaining
+												{{ loan.fundraisingTimeLeft }} remaining
 											</span>
 										</p>
 									</template>
-									<div v-else>
-										<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
-											This loan is fully funded!
-										</p>
-										<div class="md:tw-flex tw-gap-2">
-											<p class="tw-text-h4 tw-text-secondary tw-block">
-												100% funded
-											</p>
-											<p class="tw-text-h4 tw-text-action tw-block">
-												<router-link
-													:to="`/lend/${$route.params.id}?minimal=false`"
-													v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
-												>
-													View the full borrower profile
-												</router-link>
-											</p>
-										</div>
-									</div>
 								</figcaption>
 								<kv-progress-bar
 									class="tw-mb-1.5 lg:tw-mb-1 tw-bg-tertiary"
 									aria-label="Percent the loan has funded"
-									:value="selectedLoan.fundraisingPercent * 100"
+									:value="loan.fundraisingPercent * 100"
 								/>
 							</figure>
 						</div>
 					</template>
 					<template>
-						<h1
-							class="thanks__headline-h1 tw-mt-1 tw-mb-3"
-							:class="{
-								'tw-text-h2': showAutoDepositUpsell
-							}"
-						>
+						<h1	class="thanks__headline-h1 tw-mt-1 tw-mb-3">
 							Get a $25 lending credit by inspiring others.
 						</h1>
 						<p class="tw-text-h3 tw-m-0 thanks__base-text">
 							<!-- eslint-disable-next-line max-len -->
-							Your $25 Kiva Lending Credit will be automatically applied when you successfully refer a friend to support a loan like {{ selectedLoan.name }}.
+							Your $25 Kiva Lending Credit will be automatically applied when you successfully refer a friend to support a loan like {{ loan.name }}.
 						</p>
 					</template>
 					<template>
@@ -170,7 +142,7 @@
 						<div class="continue-link">
 							<router-link
 								to="/portfolio"
-								v-kv-track-event="['SecondaryNav','click-MyKiva-Portfolio']"
+								v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
 							>
 								No, continue to my portfolio
 							</router-link>
@@ -184,19 +156,10 @@
 </template>
 
 <script>
-import confetti from 'canvas-confetti';
-import numeral from 'numeral';
 import clipboardCopy from 'clipboard-copy';
-import logReadQueryError from '@/util/logReadQueryError';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { mdiCheckAll, mdiLink } from '@mdi/js';
-import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
-import orderBy from 'lodash/orderBy';
 import _map from 'lodash/map';
-import { processPageContentFlat } from '@/util/contentfulUtils';
-import logFormatter from '@/util/logFormatter';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -206,13 +169,31 @@ const imageRequire = require.context('@/assets/images/kiva-classic-illustrations
 
 export default {
 	name: 'ThanksPageShare',
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvMaterialIcon,
 		BorrowerImage,
 		KvProgressBar,
 		KvIcon,
 	},
-	inject: ['apollo', 'cookieStore'],
+	props: {
+		receipt: {
+			type: Object,
+			default: () => ({}),
+		},
+		lender: {
+			type: Object,
+			default: () => ({}),
+		},
+		loan: {
+			type: Object,
+			default: () => ({}),
+		},
+		simpleSocialShareVersion: {
+			type: String,
+			default: ''
+		},
+	},
 	metaInfo() {
 		return {
 			title: 'Thank you!'
@@ -220,22 +201,10 @@ export default {
 	},
 	data() {
 		return {
-			autoDepositUpsellCookie: null,
-			autoDepositUpsellExpVersion: null,
 			imageRequire,
-			lender: {},
-			loans: [],
-			receipt: null,
-			isAutoDepositSubscriber: false,
-			isMonthlyGoodSubscriber: false,
-			hasModernSub: false,
 			isGuest: false,
-			pageData: {},
-			simpleSocialShareVersion: '',
 			mdiCheckAll,
 			mdiLink,
-			timeLeftMs: 0,
-			fundedPage: false,
 			message: '',
 			copyStatus: {
 				class: '',
@@ -244,52 +213,11 @@ export default {
 			},
 		};
 	},
-	apollo: {
-		preFetch(config, client, { cookieStore, route }) {
-			return client.query({
-				query: thanksPageQuery,
-				variables: {
-					checkoutId: numeral(route.query.kiva_transaction_id).value(),
-					visitorId: cookieStore.get('uiv') || null,
-				}
-			}).then(({ data }) => {
-				const isLoggedIn = data?.my?.userAccountId?.id !== null;
-				const hasAutoDeposit = data?.my?.autoDeposit !== null;
-				const hasLegacySubs = data?.my?.subscriptions?.values?.length !== 0;
-				const modernSubscriptions = data?.mySubscriptions?.values ?? [];
-				const hasModernSub = modernSubscriptions.length !== 0;
-				const upsellEligible = isLoggedIn && !hasAutoDeposit && !hasLegacySubs && !hasModernSub;
-
-				return Promise.all([
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'simple_thanks_share' } }),
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_share_module' } }),
-					upsellEligible ? client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_ad_upsell' } }) : Promise.resolve() // eslint-disable-line max-len
-				]);
-			}).catch(errorResponse => {
-				logFormatter(
-					'Thanks page preFetch failed: ',
-					'error',
-					{ errorResponse }
-				);
-			});
-		}
-	},
 	computed: {
-		showAutoDepositUpsell() {
-			// Check cookie and eligibility before showing
-			if (!this.isGuest && this.autoDepositUpsellExpVersion === 'b') {
-				return true;
-			}
-			return false;
-		},
-		selectedLoan() {
-			const orderedLoans = orderBy(this.loans, ['unreservedAmount'], ['desc']);
-			return orderedLoans[0] || {};
-		},
 		suggestedMessage() {
-			if (this.selectedLoan.name) {
-				const location = this.selectedLoan?.geocode?.city || this.selectedLoan?.geocode?.country?.name;
-				return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${this.selectedLoan.name} ${location ? `in ${location} ` : ''}to pursue their dream?`; // eslint-disable-line max-len
+			if (this.loan.name) {
+				const location = this.loan?.geocode?.city || this.loan?.geocode?.country?.name;
+				return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${this.loan.name} ${location ? `in ${location} ` : ''}to pursue their dream?`; // eslint-disable-line max-len
 			}
 			return '';
 		},
@@ -306,8 +234,8 @@ export default {
 		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
-			if (this.selectedLoan.id) {
-				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoan.id}?utmContent=${this.utmContent}`; // eslint-disable-line max-len
+			if (this.loan.id) {
+				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utmContent=${this.utmContent}`; // eslint-disable-line max-len
 			}
 			return base;
 		},
@@ -326,7 +254,7 @@ export default {
 				mini: 'true',
 				source: `https://${this.$appConfig.host}`,
 				summary: this.shareMessage.substring(0, 256),
-				title: `A loan for ${this.selectedLoan.name}`,
+				title: `A loan for ${this.loan.name}`,
 				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout_variant` // eslint-disable-line max-len
 			});
 		},
@@ -351,9 +279,25 @@ export default {
 				if (code) {
 					// The 4201 error code means the user pressed 'Cancel', so can be ignored
 					if (code !== '4201') {
+						this.$kvTrackEvent(
+							'thanks',
+							'click-Facebook-share',
+							'error-Social-Share-Lightbox'
+						);
 						this.$showTipMsg(`There was a problem sharing to Facebook: ${message}`, 'warning');
+					} else {
+						this.$kvTrackEvent(
+							'thanks',
+							'click-Facebook-share',
+							'error-Social-Share-Lightbox'
+						);
 					}
 				} else {
+					this.$kvTrackEvent(
+						'thanks',
+						'click-Facebook-share',
+						'error-Social-Share-Lightbox'
+					);
 					this.$showTipMsg('Thanks for sharing to Facebook!');
 				}
 			}
@@ -383,118 +327,9 @@ export default {
 				}, 500);
 			}
 		},
-		redirectPortfolio() {
-			this.$router.push({
-				path: '/portfolio',
-			});
-		},
-	},
-	created() {
-		// Retrieve and apply Page level data + experiment state
-		let data = {};
-		try {
-			data = this.apollo.readQuery({
-				query: thanksPageQuery,
-				variables: {
-					checkoutId: numeral(this.$route.query.kiva_transaction_id).value(),
-					visitorId: this.cookieStore.get('uiv') || null,
-				}
-			});
-		} catch (e) {
-			logReadQueryError(e, 'Thanks Page Data');
-		}
-
-		const modernSubscriptions = data?.mySubscriptions?.values ?? [];
-		this.hasModernSub = modernSubscriptions.length !== 0;
-		this.lender = {
-			...(data?.my?.userAccount ?? {}),
-			teams: data?.my?.teams?.values?.map(value => value.team) ?? [],
-		};
-
-		this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
-		const hasAutoDeposit = data?.my?.autoDeposit?.id ?? false;
-		this.isAutoDepositSubscriber = !!(hasAutoDeposit && !this.isMonthlyGoodSubscriber);
-
-		const isLoggedIn = data?.my?.userAccountId?.id !== null;
-		const hasLegacySubs = data?.my?.subscriptions?.values?.length !== 0;
-		const upsellEligible = isLoggedIn && !hasAutoDeposit && !hasLegacySubs && !this.hasModernSub;
-
-		// The default empty object and the v-if will prevent the
-		// receipt from rendering in the rare cases this query fails.
-		// But it will not throw a server error.
-		this.receipt = data?.shop?.receipt ?? null;
-		this.isGuest = this.receipt && !data?.my?.userAccount;
-
-		const loansResponse = this.receipt?.items?.values ?? [];
-		this.loans = loansResponse
-			.filter(item => item.basketItemType === 'loan_reservation')
-			.map(item => item.loan);
-
-		if (!this.isGuest && !data?.my?.userAccount) {
-			logFormatter(
-				`Failed to get lender for transaction id: ${this.$route.query.kiva_transaction_id}`,
-				'error',
-				{ data }
-			);
-		}
-		if (!this.receipt) {
-			logFormatter(
-				`Failed to get receipt for transaction id: ${this.$route.query.kiva_transaction_id}`,
-				'error',
-				{ data }
-			);
-		}
-
-		// Check for contentful content
-		const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
-		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
-
-		// Check for upsell eligibility and experiment state
-		if (upsellEligible) {
-			// CORE-427 Thanks auto deposit upsell experiment
-			const autoDepositUpsellExp = this.apollo.readFragment({
-				id: 'Experiment:thanks_ad_upsell',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			this.autoDepositUpsellExpVersion = autoDepositUpsellExp.version;
-			if (this.autoDepositUpsellExpVersion) {
-				this.$kvTrackEvent(
-					'Thanks',
-					'EXP-CORE-427-Feb-2022',
-					this.autoDepositUpsellExpVersion,
-				);
-			}
-		}
-
-		if (!this.isGuest) {
-			// MARS-96 Simplified social share experiment
-			const simpleSocialShareExp = this.apollo.readFragment({
-				id: 'Experiment:thanks_share_module',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			this.simpleSocialShareVersion = simpleSocialShareExp.version;
-			if (this.simpleSocialShareVersion) {
-				this.$kvTrackEvent(
-					'Thanks',
-					'EXP-MARS-134-Jun2022',
-					this.simpleSocialShareVersion,
-				);
-			}
-		}
 	},
 	mounted() {
 		if (this.receipt) {
-			confetti({
-				origin: {
-					y: 0.2
-				},
-				particleCount: 150,
-				spread: 200,
-				colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c'],
-				disableForReducedMotion: true,
-			});
 			this.handleFacebookResponse();
 		}
 	},
