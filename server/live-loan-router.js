@@ -3,6 +3,7 @@ const { error } = require('./util/log');
 const memJsUtils = require('./util/memJsUtils');
 const drawLoanCard = require('./util/live-loan/live-loan-draw');
 const fetchLoansByType = require('./util/live-loan/live-loan-fetch');
+const tracer = require('./util/ddTrace');
 
 async function fetchRecommendedLoans(type, id, cache) {
 	// If we have loan data in memjscache return that quickly
@@ -16,7 +17,7 @@ async function fetchRecommendedLoans(type, id, cache) {
 	}
 
 	// Otherwise we need to hit the graphql endpoint.
-	const loanData = await fetchLoansByType(type, id);
+	const loanData = await tracer.trace('fetchLoansByType', { resource: type }, async () => fetchLoansByType(type, id));
 
 	// Set the loan data in memcache, return the loan data
 	if (loanData && loanData.length) {
@@ -38,7 +39,7 @@ async function getLoanForRequest(type, cache, req) {
 	const id = req.params?.id || 0;
 	const offset = req.params?.offset || 1;
 
-	const loanData = await fetchRecommendedLoans(type, id, cache);
+	const loanData = await tracer.trace('fetchRecommendedLoans', async () => fetchRecommendedLoans(type, id, cache));
 	// if there are fewer loan results than the offset, return the last result
 	if (offset > loanData.length) {
 		return loanData[loanData.length - 1];
@@ -48,7 +49,7 @@ async function getLoanForRequest(type, cache, req) {
 
 async function redirectToUrl(type, cache, req, res) {
 	try {
-		const loan = await getLoanForRequest(type, cache, req);
+		const loan = await tracer.trace('getLoanForRequest', async () => getLoanForRequest(type, cache, req));
 		// Standard destination is the borrower profile page
 		let redirect = `/lend/${loan.id}`;
 		// If the original request had query params on it, forward those along
@@ -72,14 +73,14 @@ async function redirectToUrl(type, cache, req, res) {
 
 async function serveImg(type, cache, req, res) {
 	try {
-		const loan = await getLoanForRequest(type, cache, req);
+		const loan = await tracer.trace('getLoanForRequest', async () => getLoanForRequest(type, cache, req));
 
 		let loanImg;
 		const cachedLoanImg = await memJsUtils.getFromCache(`loan-card-img-${loan.id}`, cache);
 		if (cachedLoanImg) {
 			loanImg = cachedLoanImg;
 		} else {
-			loanImg = await drawLoanCard(loan);
+			loanImg = await tracer.trace('drawLoanCard', { resource: loan.id }, async () => drawLoanCard(loan));
 			const expires = 10 * 60; // 10 minutes
 			memJsUtils.setToCache(`loan-card-img-${loan.id}`, loanImg, expires, cache).catch(err => {
 				error(`Error setting loan data to cache, ${err}`, { error: err });
@@ -104,32 +105,44 @@ module.exports = function liveLoanRouter(cache) {
 
 	// User URL Router
 	router.use('/u/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
-		await redirectToUrl('user', cache, req, res);
+		await tracer.trace('live-loan.user.redirectToUrl', { resource: req.path }, async () => {
+			await redirectToUrl('user', cache, req, res);
+		});
 	});
 
 	// User IMG Router
 	router.use('/u/:id(\\d{0,})/img/:offset(\\d{0,})', async (req, res) => {
-		await serveImg('user', cache, req, res);
+		await tracer.trace('live-loan.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', cache, req, res);
+		});
 	});
 
 	// Loan-to-loan URL Router
 	router.use('/l/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
-		await redirectToUrl('loan', cache, req, res);
+		await tracer.trace('live-loan.loan.redirectToUrl', { resource: req.path }, async () => {
+			await redirectToUrl('loan', cache, req, res);
+		});
 	});
 
 	// Loan-to-loan IMG Router
 	router.use('/l/:id(\\d{0,})/img/:offset(\\d{0,})', async (req, res) => {
-		await serveImg('loan', cache, req, res);
+		await tracer.trace('live-loan.loan.serveImg', { resource: req.path }, async () => {
+			await serveImg('loan', cache, req, res);
+		});
 	});
 
 	// Filter URL Router
 	router.use('/f/:id([a-zA-Z0-9.%,_-]{0,})/url/:offset(\\d{0,})', async (req, res) => {
-		await redirectToUrl('filter', cache, req, res);
+		await tracer.trace('live-loan.filter.redirectToUrl', { resource: req.path }, async () => {
+			await redirectToUrl('filter', cache, req, res);
+		});
 	});
 
 	// Filter IMG Router
 	router.use('/f/:id([a-zA-Z0-9.%,_-]{0,})/img/:offset(\\d{0,})', async (req, res) => {
-		await serveImg('filter', cache, req, res);
+		await tracer.trace('live-loan.filter.serveImg', { resource: req.path }, async () => {
+			await serveImg('filter', cache, req, res);
+		});
 	});
 
 	// 404 any /live-loan/* routes that don't match above
