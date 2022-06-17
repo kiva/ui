@@ -1,3 +1,18 @@
+## [2.195.0](https://github.com/kiva/ui/compare/v2.194.0...v2.195.0) (2022-06-17)
+
+
+### Features
+
+* new thanks share page ([80593ba](https://github.com/kiva/ui/commit/80593ba69a0f46e0346126aece7471bd46a6c0ca))
+* work in progress ([550fe07](https://github.com/kiva/ui/commit/550fe070c10db601dc607c61ff7de4d9c417f061))
+
+
+### Bug Fixes
+
+* added receipt propery data ([343751c](https://github.com/kiva/ui/commit/343751c0beedf668e5d4f62c3195554b5947e223))
+* pr corrections after code review ([0f314fa](https://github.com/kiva/ui/commit/0f314fa8a9fa7eb8ed7abbe116e7b74e060a00e5))
+* validate experiment variables ([e891a6d](https://github.com/kiva/ui/commit/e891a6d2585c917494649928fafc635fdc083202))
+
 ## [2.194.0](https://github.com/kiva/ui/compare/v2.193.0...v2.194.0) (2022-06-17)
 
 
