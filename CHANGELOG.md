@@ -1,3 +1,17 @@
+## [2.196.0](https://github.com/kiva/ui/compare/v2.195.0...v2.196.0) (2022-06-17)
+
+
+### Features
+
+* change isomorphic fetch to make fetch happen library in server side ([5b4257c](https://github.com/kiva/ui/commit/5b4257c63f8458b81d7dbdd9c6334967b33c89b4))
+* modify createApolloClient to use fetch func library depending on server/client side ([ae12efd](https://github.com/kiva/ui/commit/ae12efde4ffe7ee4b171dc85e854384b051e9953))
+
+
+### Bug Fixes
+
+* remove redirect routes from site map ([b4d9ac2](https://github.com/kiva/ui/commit/b4d9ac2b1a5c372c271c7a05b7ec02d846be1a49))
+* small improvement ([e740fae](https://github.com/kiva/ui/commit/e740fae4ea4a76f287a82f4d0b3781f213954997))
+
 ## [2.195.0](https://github.com/kiva/ui/compare/v2.194.0...v2.195.0) (2022-06-17)
 
 
