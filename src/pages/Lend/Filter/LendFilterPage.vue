@@ -143,7 +143,7 @@ function isFLSSEligible(route = {}) {
 	// check route for eligibility
 	const eligibleQueryParams = ['page', 'sortBy', 'gender', 'registration'];
 	const queryParamKeys = Object.keys(route?.query);
-	const allowedSorts = ['expiringSoon', 'loanAmountDesc', 'loanAmount', 'popularity'];
+	const allowedSorts = ['expiringSoon', 'loanAmountDesc', 'loanAmount']; // 'popularity'
 	// eligible by default, no params is also eligible
 	let isEligible = true;
 
