@@ -37,6 +37,9 @@
 					</template>
 				</kv-lightbox>
 			</div>
+			<div>
+				<loan-search-filter-chips :loan-search-state="loanSearchState" :all-facets="allFacets" />
+			</div>
 			<div v-if="initialLoadComplete" class="tw-pt-1.5">
 				<p>{{ totalCount }} Loans</p>
 			</div>
@@ -115,6 +118,7 @@ import KvPager from '@/components/Kv/KvPager';
 import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util//numberUtils';
+import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -126,6 +130,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		LoanCardController,
+		LoanSearchFilterChips,
 		KvGrid,
 		KvButton,
 		LoanSearchFilter,
