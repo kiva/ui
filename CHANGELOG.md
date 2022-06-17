@@ -1,3 +1,10 @@
+## [2.194.0](https://github.com/kiva/ui/compare/v2.193.0...v2.194.0) (2022-06-17)
+
+
+### Features
+
+* filter chips ([fbb7ee5](https://github.com/kiva/ui/commit/fbb7ee57025e265c913fd336aedd95b638c5d9ec))
+
 ## [2.193.0](https://github.com/kiva/ui/compare/v2.192.0...v2.193.0) (2022-06-17)
 
 
