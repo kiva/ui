@@ -1,11 +1,13 @@
 <template>
 	<section class="share hide-for-print">
-		<h2 class="share__headline" data-testid="share-headline">
-			Help {{ selectedLoan.name }} spread the word.
-		</h2>
-		<p class="share__small__message">
-			{{ shareSubtitle }}
-		</p>
+		<div v-if="showHeader">
+			<h2 class="share__headline" data-testid="share-headline">
+				Help {{ selectedLoan.name }} spread the word.
+			</h2>
+			<p class="share__small__message">
+				{{ shareSubtitle }}
+			</p>
+		</div>
 		<div class="share__social social">
 			<a
 				data-testid="share-facebook-button"
@@ -72,6 +74,10 @@ export default {
 			type: Array,
 			required: true
 		},
+		showHeader: {
+			type: Boolean,
+			required: false
+		}
 	},
 	data() {
 		return {
