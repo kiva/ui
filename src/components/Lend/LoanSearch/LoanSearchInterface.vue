@@ -82,7 +82,7 @@
 					:limit="loanSearchState.pageLimit"
 					:total="totalCount"
 					:offset="loanSearchState.pageOffset"
-					@page-changed="handleUpdatedFilters"
+					@page-changed="handlePageChange"
 				/>
 				<kv-results-per-page
 					:selected="loanSearchState.pageLimit"
@@ -266,12 +266,12 @@ export default {
 	},
 	methods: {
 		trackLoans() {
+			this.$kvSetCustomUrl();
+
 			const hitIds = this.loans.map(l => l.id);
 			const hits = hitIds.join();
 
 			if (hits !== this.trackedHits) {
-				this.$kvSetCustomUrl();
-
 				this.$kvTrackEvent?.(
 					'Lending',
 					hits ? 'loans-shown' : 'zero-loans-shown',
@@ -290,10 +290,14 @@ export default {
 			updateSearchState(this.apollo, filters, this.allFacets, this.queryType, this.loanSearchState);
 		},
 		handleUpdatedFilters(filters) {
-			this.updateState({ ...this.loanSearchState, ...filters });
+			this.updateState({ ...this.loanSearchState, ...filters, pageOffset: 0 });
 		},
 		handleResetFilters() {
 			this.updateState();
+		},
+		handlePageChange(payload) {
+			// Handle pager separately so that filters can reset the page offset
+			this.updateState({ ...this.loanSearchState, ...payload });
 		},
 		handleResultsPerPage(payload) {
 			// Reset to first page when page limit changes
