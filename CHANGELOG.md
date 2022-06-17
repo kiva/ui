@@ -1,3 +1,10 @@
+## [2.193.0](https://github.com/kiva/ui/compare/v2.192.0...v2.193.0) (2022-06-17)
+
+
+### Features
+
+* add manual tracing ([ef9049e](https://github.com/kiva/ui/commit/ef9049eeef551f4ff990d2a1d7509abc1a54e981))
+
 ## [2.192.0](https://github.com/kiva/ui/compare/v2.191.2...v2.192.0) (2022-06-17)
 
 
