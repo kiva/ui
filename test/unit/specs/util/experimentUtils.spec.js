@@ -1,8 +1,15 @@
+import { createMockClient } from 'mock-apollo-client';
+import experimentIdsQuery from '@/graphql/query/experimentIds.graphql';
 import CookieStore from '@/util/cookieStore';
 import {
 	assignVersion,
+	calculateHash,
+	cleanAssignments,
+	fetchActiveExperiments,
+	getAssignments,
 	matchTargets,
 	parseExpCookie,
+	saveAssignments,
 	serializeExpCookie,
 } from '@/util/experimentUtils';
 
@@ -17,7 +24,7 @@ describe('experimentUtils.js', () => {
 		});
 
 		it('Returns a correctly parsed cookie object', () => {
-			expect(parseExpCookie('ab:x:no-hash:no-pop|cd:y:1234:0.4|ef:z|gh:w:1234')).toEqual({
+			expect(parseExpCookie('ab:x:n:n|cd:y:1234:0.4|ef:z|gh:w:1234')).toEqual({
 				ab: {
 					id: 'ab',
 					version: 'x',
@@ -74,7 +81,7 @@ describe('experimentUtils.js', () => {
 					version: 'w',
 					hash: 1234,
 				},
-			})).toBe('ab:x:no-hash:no-pop|cd:y:1234:0.4|ef:z:no-hash:no-pop|gh:w:1234:no-pop');
+			})).toBe('ab:x:n:n|cd:y:1234:0.4|ef:z:n:n|gh:w:1234:n');
 		});
 	});
 
@@ -114,9 +121,6 @@ describe('experimentUtils.js', () => {
 		beforeEach(() => {
 			// Setup basic experiment object
 			experiment = {
-				enabled: true,
-				startTime: Date.now() - 2000,
-				endTime: Date.now() + 50000,
 				distribution: {
 					control: 0.5,
 					variant: 0.5,
@@ -133,18 +137,8 @@ describe('experimentUtils.js', () => {
 			Math.random = oldRandom;
 		});
 
-		it('Returns undefined when experiment is not enabled', () => {
-			experiment.enabled = false;
-			expect(assignVersion(experiment)).toBeUndefined();
-		});
-
 		it('Returns undefined when targets do not match', () => {
 			experiment.targets = {};
-			expect(assignVersion(experiment)).toBeUndefined();
-		});
-
-		it('Returns undefined when current time is outside of experiment time limits', () => {
-			experiment.endTime = Date.now() - 500;
 			expect(assignVersion(experiment)).toBeUndefined();
 		});
 
@@ -170,6 +164,86 @@ describe('experimentUtils.js', () => {
 		it('Returns a version when the population is undefined', () => {
 			delete experiment.population;
 			expect(['control', 'variant']).toContain(assignVersion(experiment));
+		});
+	});
+
+	describe('calculateHash', () => {
+		const base = { name: 'test', distribution: { a: 0.5, b: 0.5 }, population: 0.1 };
+		const changedPopulation = { name: 'test', distribution: { a: 0.5, b: 0.5 }, population: 1 };
+		const changedDistribution = { name: 'test', distribution: { a: 0, b: 1 }, population: 0.1 };
+		const changedName = { name: 'renamed', distribution: { a: 0.5, b: 0.5 }, population: 0.1 };
+
+		it('generates the same hash when only population changes', () => {
+			expect(calculateHash(base)).toBe(calculateHash(changedPopulation));
+		});
+
+		it('generates a different hash when the name or distribution changes', () => {
+			expect(calculateHash(base)).not.toBe(calculateHash(changedDistribution));
+			expect(calculateHash(base)).not.toBe(calculateHash(changedName));
+		});
+	});
+
+	describe('cleanAssignments', () => {
+		it('removes inactive experiments from the current assignments object', () => {
+			const current = { test1: { version: 'a' }, test2: { version: 'b' } };
+			const active = ['test2', 'test3'];
+			expect(cleanAssignments(current, active)).toEqual({ test2: { version: 'b' } });
+		});
+	});
+
+	describe('getAssignments', () => {
+		it('gets current experiment assignments from uiab cookie and setuiab url parameter', () => {
+			const cookieStore = new CookieStore({ uiab: 'ab:x:n:n|cd:y:1234:0.4' });
+			const router = { currentRoute: { query: { setuiab: 'cd.z' } } };
+			expect(getAssignments(cookieStore, router)).toEqual({
+				ab: {
+					id: 'ab',
+					version: 'x',
+					hash: NaN,
+					population: NaN,
+				},
+				cd: {
+					id: 'cd',
+					version: 'z',
+				},
+			});
+		});
+	});
+
+	describe('saveAssignments', () => {
+		it('stores current assignments in uiab cookie', () => {
+			const cookieStore = new CookieStore();
+			saveAssignments(cookieStore, { ab: { id: 'ab', version: 'x' } });
+			expect(cookieStore.get('uiab')).toEqual('ab:x:n:n');
+		});
+	});
+
+	describe('fetchActiveExperiments', () => {
+		const mockClient = activeExperimentString => {
+			const client = createMockClient();
+			client.setRequestHandler(experimentIdsQuery, () => Promise.resolve({
+				data: {
+					general: {
+						activeExperiments: {
+							key: 'ui.active_experiments',
+							value: activeExperimentString,
+						},
+					},
+				},
+			}));
+			return client;
+		};
+
+		it('Returns array of experiment ids from settings manager', async () => {
+			const client = mockClient('"exp_foo, exp_bar  ,exp_baz"');
+			const result = await fetchActiveExperiments(client);
+			expect(result).toEqual(['exp_foo', 'exp_bar', 'exp_baz']);
+		});
+
+		it('Returns an empty array when setting is missing', async () => {
+			const client = mockClient(null);
+			const result = await fetchActiveExperiments(client);
+			expect(result).toEqual([]);
 		});
 	});
 });

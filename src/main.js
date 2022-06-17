@@ -49,14 +49,15 @@ export default function createApp({
 		});
 	}
 
+	const router = createRouter();
 	const apolloClient = createApolloClient({
 		...apollo,
 		appConfig,
 		cookieStore,
 		kvAuth0,
+		router,
 	});
 
-	const router = createRouter();
 	// Checking that sentry is enabled & is not server side
 	if (appConfig.enableSentry && typeof window !== 'undefined') {
 		Sentry.init({

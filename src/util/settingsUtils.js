@@ -85,6 +85,7 @@ export function settingEnabled(data, enabledKey, startTimeKey, endTimeKey) {
  * Inspiration: https://stackoverflow.com/a/8831937
  *
  * @param {string} source
+ * @return {int}
  */
 
 export function hashCode(source) {
