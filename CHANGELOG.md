@@ -1,3 +1,10 @@
+## [2.198.0](https://github.com/kiva/ui/compare/v2.197.0...v2.198.0) (2022-06-20)
+
+
+### Features
+
+* activate filter chips for individual facet removal ([430ba78](https://github.com/kiva/ui/commit/430ba78becf360894ee8a022af518f36d3208ad1))
+
 ## [2.197.0](https://github.com/kiva/ui/compare/v2.196.1...v2.197.0) (2022-06-17)
 
 
