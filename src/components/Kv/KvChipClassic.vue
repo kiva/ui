@@ -1,27 +1,40 @@
 <template>
-	<button class="tw-rounded tw-bg-tertiary tw-p-1 tw-uppercase tw-text-small tw-shrink-0">
-		<slot></slot> X
+	<button
+		class="
+			tw-bg-tertiary
+			tw-rounded
+			tw-p-1
+			tw-pl-1.5
+			tw-mb-0.5
+			tw-text-small
+			tw-inline-flex
+			tw-items-center
+			tw-shrink-0
+		"
+		@click.prevent="click"
+	>
+		<slot></slot> <kv-material-icon :icon="mdiClose" class="tw-w-2 tw-h-2 tw-ml-1" />
 	</button>
 </template>
 
 <script>
+import { mdiClose } from '@mdi/js';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+
 export default {
 	name: 'KvChipClassic',
-	props: {
-		// eslint-disable-next-line vue/require-default-prop
-		items: {
-			type: Array,
-			required: false,
-		},
+	components: {
+		KvMaterialIcon,
+	},
+	data() {
+		return {
+			mdiClose,
+		};
 	},
 	methods: {
-		onChange(event) {
-			this.$emit('change', event);
+		click(event) {
+			this.$emit('click', event);
 		},
 	}
 };
 </script>
-
-<style>
-
-</style>

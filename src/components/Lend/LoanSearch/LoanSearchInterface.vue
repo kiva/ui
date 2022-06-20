@@ -38,9 +38,6 @@
 					</template>
 				</kv-lightbox>
 			</div>
-			<div>
-				<loan-search-filter-chips :loan-search-state="loanSearchState" :all-facets="allFacets" />
-			</div>
 			<div v-if="initialLoadComplete" class="tw-pt-1.5">
 				<p>{{ totalCount }} Loans</p>
 			</div>
@@ -59,8 +56,15 @@
 		</div>
 		<div class="tw-col-span-2 tw-relative tw-grow">
 			<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
-			<div v-if="initialLoadComplete" class="tw-hidden md:tw-block tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
-				<p>{{ totalCount }} Loans</p>
+			<div v-if="initialLoadComplete">
+				<loan-search-filter-chips
+					:loan-search-state="loanSearchState"
+					:all-facets="allFacets"
+					@updated="handleUpdatedFilters"
+				/>
+				<p class="tw-hidden lg:tw-block tw-mt-1">
+					{{ totalCount }} Loans
+				</p>
 			</div>
 			<template v-if="initialLoadComplete && totalCount === 0">
 				<h3 class="tw-text-center">
