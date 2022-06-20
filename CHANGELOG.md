@@ -1,3 +1,10 @@
+## [2.174.0-next.4](https://github.com/kiva/ui/compare/v2.174.0-next.3...v2.174.0-next.4) (2022-06-20)
+
+
+### Bug Fixes
+
+* hard-coded route to handle forward slash in WRD theme ([1ec1597](https://github.com/kiva/ui/commit/1ec1597f2e01ecb7d1e3cc8b1509504e3136309d))
+
 ## [2.174.0-next.3](https://github.com/kiva/ui/compare/v2.174.0-next.2...v2.174.0-next.3) (2022-06-17)
 
 
