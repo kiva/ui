@@ -137,6 +137,14 @@ module.exports = function liveLoanRouter(cache) {
 			await redirectToUrl('filter', cache, req, res);
 		});
 	});
+	// Filter URL Router (refugees/displaced)
+	router.use('/f/theme_refugees/displaced/url/:offset(\\d{0,})', async (req, res) => {
+		// patch in hard-coded id
+		req.params.id = 'theme_refugees/displaced';
+		await tracer.trace('live-loan.filter.redirectToUrl', { resource: req.path }, async () => {
+			await redirectToUrl('filter', cache, req, res);
+		});
+	});
 
 	// Filter IMG Router
 	router.use('/f/:id([a-zA-Z0-9.%,_-]{0,})/img/:offset(\\d{0,})', async (req, res) => {
