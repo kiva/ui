@@ -80,18 +80,11 @@
 					/>
 				</template>
 				<template #share>
-					<social-share
-						v-if="receipt && simpleSocialShareVersion !== 'b'"
-						class="thanks__social-share"
-						:lender="lender"
-						:loans="loans"
-					/>
 					<social-share-v2
-						v-if="receipt && simpleSocialShareVersion === 'b'"
+						v-if="receipt"
 						class="thanks__social-share"
 						:lender="lender"
 						:loans="loans"
-						:show-header="true"
 					/>
 				</template>
 				<template #guest>
@@ -120,7 +113,6 @@ import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import GuestUpsell from '@/components/Checkout/GuestUpsell';
 import AutoDepositCTA from '@/components/Checkout/AutoDepositCTA';
 import MonthlyGoodCTA from '@/components/Checkout/MonthlyGoodCTA';
-import SocialShare from '@/components/Checkout/SocialShare';
 import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ThanksLayoutV2 from '@/components/Thanks/ThanksLayoutV2';
@@ -142,7 +134,6 @@ export default {
 		GuestUpsell,
 		KvButton,
 		MonthlyGoodCTA,
-		SocialShare,
 		SocialShareV2,
 		ThanksLayoutV2,
 		WwwPage,
@@ -189,7 +180,6 @@ export default {
 				const upsellEligible = isLoggedIn && !hasAutoDeposit && !hasLegacySubs && !hasModernSub;
 
 				return Promise.all([
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'simple_thanks_share' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_share_module' } }),
 					upsellEligible ? client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_ad_upsell' } }) : Promise.resolve() // eslint-disable-line max-len
 				]);
@@ -317,21 +307,6 @@ export default {
 		}
 
 		if (!this.isGuest) {
-			// MARS-96 Simplified social share experiment
-			const simpleSocialShareExp = this.apollo.readFragment({
-				id: 'Experiment:simple_thanks_share',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			this.simpleSocialShareVersion = simpleSocialShareExp.version;
-			if (this.simpleSocialShareVersion) {
-				this.$kvTrackEvent(
-					'Thanks',
-					'EXP-MARS-96-May2022',
-					this.simpleSocialShareVersion,
-				);
-			}
-
 			// MARS-134 New thanks page share experiment
 			const newThanksShareModule = this.apollo.readFragment({
 				id: 'Experiment:thanks_share_module',

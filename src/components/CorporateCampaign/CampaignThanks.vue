@@ -17,7 +17,7 @@
 					<template #header>
 						<h2>Share the Good</h2>
 					</template>
-					<social-share
+					<social-share-v2
 						class="campaign-thanks__social-share"
 						:lender="lender"
 						:loans="loans"
@@ -56,7 +56,7 @@ import confetti from 'canvas-confetti';
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
-import SocialShare from '@/components/Checkout/SocialShare';
+import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { joinArray } from '@/util/joinArray';
 import CampaignPartnerThanks from './CampaignPartnerThanks';
@@ -68,7 +68,7 @@ export default {
 		CheckoutReceipt,
 		KvAccordionItem,
 		KvLoadingSpinner,
-		SocialShare
+		SocialShareV2
 	},
 	inject: ['apollo'],
 	metaInfo() {

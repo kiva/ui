@@ -1,6 +1,6 @@
 <template>
 	<section class="share hide-for-print">
-		<div v-if="showHeader">
+		<div>
 			<h2 class="share__headline" data-testid="share-headline">
 				Help {{ selectedLoan.name }} spread the word.
 			</h2>
@@ -74,10 +74,6 @@ export default {
 			type: Array,
 			required: true
 		},
-		showHeader: {
-			type: Boolean,
-			required: false
-		}
 	},
 	data() {
 		return {

@@ -364,7 +364,7 @@
 						Share
 						<template #icon-right>
 							<kv-icon
-								class="tw-w-3 tw-h-3"
+								class="tw-w-3 tw-h-2.5"
 								name="fat-chevron"
 								:from-sprite="true"
 							/>
@@ -428,7 +428,7 @@ export default {
 		let visibleSection = 'receipt';
 		if (this.showGuestUpsell) {
 			visibleSection = 'guest';
-		} else if (this.showShare && this.thanksSocialShareVersion === 'b') {
+		} else if (this.showShare) {
 			visibleSection = 'share';
 		} else if (this.showMgCta) {
 			visibleSection = 'mg';
