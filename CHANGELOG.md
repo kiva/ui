@@ -1,3 +1,10 @@
+### [2.198.1](https://github.com/kiva/ui/compare/v2.198.0...v2.198.1) (2022-06-20)
+
+
+### Bug Fixes
+
+* create specific route to handle theme_refugees/displaced path segment snafu ([66eeee9](https://github.com/kiva/ui/commit/66eeee99cf43e0658e73425b3deb7e497475d7d7))
+
 ## [2.198.0](https://github.com/kiva/ui/compare/v2.197.0...v2.198.0) (2022-06-20)
 
 
