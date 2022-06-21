@@ -1,21 +1,21 @@
 <template>
 	<www-page>
-		<content-container class="md:tw-pt-6 lg:tw-pt-8">
-			<h1 class="tw-mb-2">
-				Make a loan, change a life
-			</h1>
-			<p class="tw-mb-4 tw-max-w-screen-lg">
-				Each Kiva loan helps people build a better
-				future for themselves and their families.
-			</p>
-		</content-container>
-		<content-container class="md:tw-pt-6 lg:tw-pt-8">
-			<h2>
-				Find loans by category
-			</h2>
-		</content-container>
-		<kv-page-container class="sm:tw-pt-3 md:tw-pt-4 lg:tw-pt-6">
-			<kv-grid class="tw-grid-cols-12">
+		<kv-page-container>
+			<kv-grid class="tw-pt-4 md:tw-pt-6 lg:tw-pt-8">
+				<h1 class="tw-mb-2">
+					Make a loan, change a life
+				</h1>
+				<p class="tw-mb-4 tw-text-subhead tw-text-secondary">
+					Each Kiva loan helps people build a better
+					future for themselves and their families.
+				</p>
+			</kv-grid>
+			<kv-grid class="md:tw-pt-6 lg:tw-pt-8">
+				<h2>
+					Find loans by category
+				</h2>
+			</kv-grid>
+			<kv-grid class="tw-grid-cols-12 tw-pt-3 md:tw-pt-4 lg:tw-pt-6">
 				<div class="tw-col-span-12 md:tw-col-span-6">
 					<main-category-tile tile-size="large" />
 				</div>
@@ -66,7 +66,6 @@
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
 import MainCategoryTile from '@/components/Categories/MainCategoryTile';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -75,7 +74,6 @@ export default {
 	name: 'CategoriesBeta',
 	components: {
 		WwwPage,
-		ContentContainer,
 		MainCategoryTile,
 		KvGrid,
 		KvPageContainer
