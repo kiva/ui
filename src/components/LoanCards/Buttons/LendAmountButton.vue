@@ -55,13 +55,8 @@ export default {
 	},
 	methods: {
 		addToBasket(event) {
-			if (this.completeLoan) {
-				// eslint-disable-next-line max-len
-				this.$kvTrackEvent('Borrower profile', 'Complete loan', 'click-amount-left-cta', this.loanId, this.amountLeft);
-			} else {
-				// eslint-disable-next-line max-len
-				this.$kvTrackEvent('Lending', 'Add to basket (Partial Share)', 'lend-button-click', this.loanId, this.amountLeft);
-			}
+			// eslint-disable-next-line max-len
+			this.$kvTrackEvent('Lending', 'Add to basket (Partial Share)', 'lend-button-click', this.loanId, this.amountLeft);
 			this.$emit('add-to-basket', event);
 		}
 	}
