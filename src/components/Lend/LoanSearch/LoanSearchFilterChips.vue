@@ -109,6 +109,8 @@ export default {
 			const facetType = facet.__typename;
 			const formattedFacet = this.formatRemovedFacet(facetType, facet);
 			this.$emit('updated', formattedFacet);
+
+			this.$kvTrackEvent?.('Lending', 'click-remove-filter-chip', `${facetType}-${facet.name}`);
 		}
 	},
 };
