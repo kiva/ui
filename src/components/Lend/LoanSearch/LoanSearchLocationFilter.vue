@@ -20,7 +20,7 @@
 				v-if="isOpenRegion(option.region)"
 				:show-select-all="true"
 				:items="getItems(option.countries)"
-				:initial-selected="selectedCountries[option.region]"
+				:selected-values="selectedCountries[option.region]"
 				class="tw-pl-3"
 				@updated="updateRegion(option.region, $event)"
 			/>
@@ -31,7 +31,12 @@
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
 import KvCheckboxList from '@/components/Kv/KvCheckboxList';
-import { getIsoCodes, getUpdatedRegions, getCheckboxLabel } from '@/util/loanSearchUtils';
+import {
+	getIsoCodes,
+	getUpdatedRegions,
+	getCheckboxLabel,
+	mapIsoCodesToCountryNames,
+} from '@/util/loanSearchUtils';
 
 export default {
 	name: 'LoanSearchLocationFilter',
@@ -40,6 +45,10 @@ export default {
 		KvCheckboxList,
 	},
 	props: {
+		activeIsoCodes: {
+			type: Array,
+			default: () => []
+		},
 		/**
 		 * The regions with countries used to build the checkbox lists. Expected format:
 		 * [{
@@ -64,6 +73,9 @@ export default {
 			openRegions: [],
 			getCheckboxLabel
 		};
+	},
+	created() {
+		mapIsoCodesToCountryNames(this.activeIsoCodes, this.regions);
 	},
 	methods: {
 		getItems(countries) {
@@ -104,6 +116,11 @@ export default {
 		},
 	},
 	watch: {
+		activeIsoCodes(next, prev) {
+			console.log('activeIsoCodes next: ', next);
+			console.log('activeIsoCodes prev: ', prev);
+			console.log(mapIsoCodesToCountryNames(next, this.regions));
+		},
 		regions(nextRegions) {
 			this.displayedRegions = getUpdatedRegions(this.displayedRegions, nextRegions);
 		},
