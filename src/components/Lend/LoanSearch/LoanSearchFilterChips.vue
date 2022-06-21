@@ -110,11 +110,7 @@ export default {
 			const formattedFacet = this.formatRemovedFacet(facetType, facet);
 			this.$emit('updated', formattedFacet);
 
-			this.$kvTrackEvent?.(
-				'Lending',
-				'click-remove-filter-chip',
-				`${facetType.toLowerCase()}-${facet.name.toLowerCase()}`
-			);
+			this.$kvTrackEvent?.('Lending', 'click-remove-filter-chip', `${facetType}-${facet.name}`);
 		}
 	},
 };
