@@ -153,6 +153,10 @@ export default {
 			type: Object,
 			default: () => {}
 		},
+		showMatchedLoanKivaCredit: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -160,9 +164,6 @@ export default {
 		};
 	},
 	computed: {
-		showMatchedLoanKivaCredit() {
-			return true;
-		},
 		showRemoveKivaCredit() {
 			return parseFloat(this.totals.kivaCreditAppliedTotal) > 0;
 		},
