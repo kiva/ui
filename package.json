@@ -1,6 +1,6 @@
 {
 	"name": "kvue",
-	"version": "2.191.0",
+	"version": "2.199.0",
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
@@ -92,13 +92,13 @@
 		"helmet": "^4.6.0",
 		"https": "^1.0.0",
 		"instantsearch.js": "^3.6.0",
-		"isomorphic-fetch": "^3.0.0",
 		"js-cookie": "^2.2.1",
 		"jsonwebtoken": "^8.5.1",
 		"libphonenumber-js": "^1.9.22",
 		"locale": "^0.1.0",
 		"lodash": "^4.17.20",
 		"lru-cache": "^6.0.0",
+		"make-fetch-happen": "^10.1.7",
 		"memcached": "^2.2.2",
 		"memjs": "^1.2.2",
 		"minimist": "^1.2.5",
@@ -127,6 +127,7 @@
 		"vuedraggable": "^2.23.0",
 		"vuelidate": "^0.7.6",
 		"webpack-merge": "^5.7.3",
+		"whatwg-fetch": "^3.6.2",
 		"winston": "^3.3.3"
 	},
 	"devDependencies": {

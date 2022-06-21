@@ -20,6 +20,7 @@
 					<loan-search-filter
 						style="min-width: 285px;"
 						:loading="!initialLoadComplete"
+						:is-logged-in="userId !== null"
 						:facets="facets"
 						:loan-search-state="loanSearchState"
 						@updated="handleUpdatedFilters"
@@ -46,6 +47,7 @@
 				<loan-search-filter
 					:loading="!initialLoadComplete"
 					:facets="facets"
+					:is-logged-in="userId !== null"
 					:loan-search-state="loanSearchState"
 					@updated="handleUpdatedFilters"
 					@reset="handleResetFilters"
@@ -54,8 +56,15 @@
 		</div>
 		<div class="tw-col-span-2 tw-relative tw-grow">
 			<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
-			<div v-if="initialLoadComplete" class="tw-hidden md:tw-block tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
-				<p>{{ totalCount }} Loans</p>
+			<div v-if="initialLoadComplete">
+				<loan-search-filter-chips
+					:loan-search-state="loanSearchState"
+					:all-facets="allFacets"
+					@updated="handleUpdatedFilters"
+				/>
+				<p class="tw-hidden lg:tw-block tw-mt-1">
+					{{ totalCount }} Loans
+				</p>
 			</div>
 			<template v-if="initialLoadComplete && totalCount === 0">
 				<h3 class="tw-text-center">
@@ -70,7 +79,9 @@
 				<loan-card-controller
 					v-for="loan in loans"
 					:items-in-basket="null"
-					:is-visitor="true"
+					:is-visitor="userId === null"
+					:is-logged-in="userId !== null"
+					:user-id="userId !== null ? userId.toString() : null"
 					:key="loan.id"
 					:loan="loan"
 					loan-card-type="ListLoanCard"
@@ -82,7 +93,7 @@
 					:limit="loanSearchState.pageLimit"
 					:total="totalCount"
 					:offset="loanSearchState.pageOffset"
-					@page-changed="handleUpdatedFilters"
+					@page-changed="handlePageChange"
 				/>
 				<kv-results-per-page
 					:selected="loanSearchState.pageLimit"
@@ -95,6 +106,7 @@
 
 <script>
 import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
+import userIdQuery from '@/graphql/query/userId.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
 import {
@@ -115,6 +127,7 @@ import KvPager from '@/components/Kv/KvPager';
 import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util//numberUtils';
+import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -126,6 +139,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		LoanCardController,
+		LoanSearchFilterChips,
 		KvGrid,
 		KvButton,
 		LoanSearchFilter,
@@ -204,7 +218,15 @@ export default {
 			queryType: FLSS_QUERY_TYPE,
 			// Holds comma-separated list of loan IDs from the query results
 			trackedHits: undefined,
+			userId: null,
 		};
+	},
+	apollo: {
+		query: userIdQuery,
+		preFetch: true,
+		result({ data }) {
+			this.userId = data?.my?.userAccount?.id ?? null;
+		},
 	},
 	async mounted() {
 		// Fetch the facet options from the lend and FLSS APIs
@@ -266,12 +288,12 @@ export default {
 	},
 	methods: {
 		trackLoans() {
+			this.$kvSetCustomUrl();
+
 			const hitIds = this.loans.map(l => l.id);
 			const hits = hitIds.join();
 
 			if (hits !== this.trackedHits) {
-				this.$kvSetCustomUrl();
-
 				this.$kvTrackEvent?.(
 					'Lending',
 					hits ? 'loans-shown' : 'zero-loans-shown',
@@ -290,10 +312,14 @@ export default {
 			updateSearchState(this.apollo, filters, this.allFacets, this.queryType, this.loanSearchState);
 		},
 		handleUpdatedFilters(filters) {
-			this.updateState({ ...this.loanSearchState, ...filters });
+			this.updateState({ ...this.loanSearchState, ...filters, pageOffset: 0 });
 		},
 		handleResetFilters() {
 			this.updateState();
+		},
+		handlePageChange(payload) {
+			// Handle pager separately so that filters can reset the page offset
+			this.updateState({ ...this.loanSearchState, ...payload });
 		},
 		handleResultsPerPage(payload) {
 			// Reset to first page when page limit changes
