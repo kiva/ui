@@ -1,3 +1,10 @@
+### [2.199.1](https://github.com/kiva/ui/compare/v2.199.0...v2.199.1) (2022-06-21)
+
+
+### Bug Fixes
+
+* complete loan tracking was removed from lendamount component ([f02e529](https://github.com/kiva/ui/commit/f02e529199650051065a2e0db0439eea67fe312b))
+
 ## [2.199.0](https://github.com/kiva/ui/compare/v2.198.3...v2.199.0) (2022-06-21)
 
 
