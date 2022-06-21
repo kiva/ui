@@ -78,7 +78,7 @@
 			<kv-grid class="tw-grid-rows-4">
 				<loan-card-controller
 					v-for="loan in loans"
-					:items-in-basket="null"
+					:items-in-basket="itemsInBasket"
 					:is-visitor="userId === null"
 					:is-logged-in="userId !== null"
 					:user-id="userId !== null ? userId.toString() : null"
@@ -105,6 +105,7 @@
 </template>
 
 <script>
+import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
 import userIdQuery from '@/graphql/query/userId.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
@@ -122,6 +123,7 @@ import {
 	updateSearchState,
 	transformSectors,
 } from '@/util/loanSearchUtils';
+import logReadQueryError from '@/util/logReadQueryError';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import KvPager from '@/components/Kv/KvPager';
 import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
@@ -214,6 +216,7 @@ export default {
 			loans: [],
 			totalCount: 0,
 			isLightboxVisible: false,
+			itemsInBasket: [],
 			loanSearchState: getDefaultLoanSearchState(),
 			queryType: FLSS_QUERY_TYPE,
 			// Holds comma-separated list of loan IDs from the query results
@@ -222,11 +225,40 @@ export default {
 		};
 	},
 	apollo: {
-		query: userIdQuery,
-		preFetch: true,
-		result({ data }) {
-			this.userId = data?.my?.userAccount?.id ?? null;
+		preFetch(config, client) {
+			return client.query({
+				query: userIdQuery
+			}).then(() => {
+				return client.query({
+					query: itemsInBasketQuery
+				});
+			});
 		},
+	},
+	created() {
+		const basketId = this.cookieStore.get('kvbskt');
+
+		try {
+			const userIdData = this.apollo.readQuery({
+				query: userIdQuery
+			});
+			this.userId = userIdData?.my?.userAccount?.id ?? null;
+		} catch (e) {
+			logReadQueryError(e, 'LoanSearchInterface userIdQuery');
+		}
+
+		try {
+			this.apollo.watchQuery({
+				query: itemsInBasketQuery,
+				variables: { basketId },
+			}).subscribe({
+				next: ({ data }) => {
+					this.itemsInBasket = data?.shop?.basket?.items?.values.map(item => item.id) ?? [];
+				},
+			});
+		} catch (e) {
+			logReadQueryError(e, 'LoanSearchInterface itemsInBasketQuery');
+		}
 	},
 	async mounted() {
 		// Fetch the facet options from the lend and FLSS APIs
