@@ -1,3 +1,10 @@
+### [2.198.2](https://github.com/kiva/ui/compare/v2.198.1...v2.198.2) (2022-06-21)
+
+
+### Bug Fixes
+
+* sector chips removal updated ([47d6c9f](https://github.com/kiva/ui/commit/47d6c9f190cb846b2188a03ba8305b1fd1fe3b0c))
+
 ### [2.198.1](https://github.com/kiva/ui/compare/v2.198.0...v2.198.1) (2022-06-20)
 
 
