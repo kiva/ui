@@ -1,13 +1,13 @@
 <template>
-	<div v-if="tileSize === 'large'" class="category tw-mb-6">
-		<img class="category__image tw-rounded"
+	<div v-if="tileSize === 'large'" class="tw-mb-6">
+		<img class="tw-rounded tw-w-full"
 			:src="image"
 		>
-		<div id="info">
+		<div class="tw-text-center tw-flex tw-justify-between">
 			<h3 class="tw-mt-3 tw-mb-3">
 				Lend to women
 			</h3>
-			<h4 class="tw-mt-3 tw-mb-3 loans">
+			<h4 class="tw-mt-3 tw-mb-3">
 				258 loans
 			</h4>
 		</div>
@@ -18,8 +18,8 @@
 			</span>
 		</div>
 	</div>
-	<div v-else-if="tileSize === 'medium'" class="category tw-mb-6">
-		<img class="category__medium-image tw-rounded"
+	<div v-else-if="tileSize === 'medium'" class="tw-mb-6">
+		<img class="tw-rounded tw-w-full"
 			:src="image"
 		>
 		<h3 class="tw-mt-2 tw-mb-2">
@@ -36,13 +36,13 @@
 		</h4>
 	</div>
 	<div v-else-if="tileSize === 'small'" class=" tw-mb-3">
-		<div class="small-tile">
-			<div class="category tw-mr-2">
-				<img class="category__small-image tw-rounded"
+		<div class="tw-flex">
+			<div class="tw-mr-2">
+				<img class="tw-rounded"
 					:src="image"
 				>
 			</div>
-			<div class="">
+			<div>
 				<h3 class=" tw-mb-1">
 					Lend to women
 				</h3>
@@ -81,36 +81,4 @@ export default {
 
 <style lang="scss" scoped>
 @import "settings";
-
-.category {
-	&__image {
-		height: 301px;
-		width: 100%;
-	}
-
-	&__medium-image {
-		height: 267px;
-		width: 100%;
-	}
-
-	&__small-image {
-		height: 152px;
-		width: 385px;
-	}
-}
-
-#info {
-	display: flex;
-	text-align: center;
-}
-
-.loans {
-	margin-left: auto;
-	text-align: center;
-	vertical-align: middle;
-}
-
-.small-tile {
-	display: flex;
-}
 </style>
