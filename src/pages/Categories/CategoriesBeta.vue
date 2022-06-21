@@ -14,21 +14,60 @@
 				Find loans by category
 			</h2>
 		</content-container>
-		<kv-page-container class="sm:tw-pt-4 md:tw-pt-6 lg:tw-pt-8">
+		<kv-page-container class="sm:tw-pt-3 md:tw-pt-4 lg:tw-pt-6">
 			<kv-grid class="tw-grid-cols-12">
 				<div class="md:tw-col-span-6 lg:tw-col-span-6">
-					<main-category-tile />
+					<main-category-tile tile-size="large" />
 				</div>
 				<div class="md:tw-col-span-6 lg:tw-col-span-6">
-					<main-category-tile />
+					<main-category-tile tile-size="large" />
 				</div>
 			</kv-grid>
 			<kv-grid class="tw-grid-cols-12">
 				<div class="md:tw-col-span-6 lg:tw-col-span-6">
-					<main-category-tile />
+					<main-category-tile tile-size="large" />
 				</div>
 				<div class="md:tw-col-span-6 lg:tw-col-span-6">
-					<main-category-tile />
+					<main-category-tile tile-size="large" />
+				</div>
+			</kv-grid>
+		</kv-page-container>
+		<kv-page-container class="sm:tw-pt-3 md:tw-pt-5 lg:tw-pt-7">
+			<kv-grid class="tw-grid-cols-12">
+				<div class="md:tw-col-span-4 lg:tw-col-span-4">
+					<main-category-tile tile-size="medium" />
+				</div>
+				<div class="md:tw-col-span-4 lg:tw-col-span-4">
+					<main-category-tile tile-size="medium" />
+				</div>
+				<div class="md:tw-col-span-4 lg:tw-col-span-4">
+					<main-category-tile tile-size="medium" />
+				</div>
+			</kv-grid>
+		</kv-page-container>
+		<kv-page-container class="sm:tw-pt-3 md:tw-pt-5 lg:tw-pt-7">
+			<kv-grid class="tw-grid-cols-12">
+				<div class="md:tw-col-span-6 lg:tw-col-span-6">
+					<main-category-tile tile-size="small" />
+				</div>
+				<div class="md:tw-col-span-6 lg:tw-col-span-6">
+					<main-category-tile tile-size="small" />
+				</div>
+			</kv-grid>
+			<kv-grid class="tw-grid-cols-12">
+				<div class="md:tw-col-span-6 lg:tw-col-span-6">
+					<main-category-tile tile-size="small" />
+				</div>
+				<div class="md:tw-col-span-6 lg:tw-col-span-6">
+					<main-category-tile tile-size="small" />
+				</div>
+			</kv-grid>
+			<kv-grid class="tw-grid-cols-12">
+				<div class="md:tw-col-span-6 lg:tw-col-span-6">
+					<main-category-tile tile-size="small" />
+				</div>
+				<div class="md:tw-col-span-6 lg:tw-col-span-6">
+					<main-category-tile tile-size="small" />
 				</div>
 			</kv-grid>
 		</kv-page-container>
