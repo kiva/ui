@@ -1,3 +1,15 @@
+## [2.199.0](https://github.com/kiva/ui/compare/v2.198.3...v2.199.0) (2022-06-21)
+
+
+### Features
+
+* filter chip click analytics ([6d5e1e2](https://github.com/kiva/ui/commit/6d5e1e24e4816c7fb25a9438891c4de4c21f33c4))
+
+
+### Bug Fixes
+
+* simplified label format ([f107fd5](https://github.com/kiva/ui/commit/f107fd56e1f07f95f9398f41785b93e4a3b68532))
+
 ### [2.198.3](https://github.com/kiva/ui/compare/v2.198.2...v2.198.3) (2022-06-21)
 
 
