@@ -1,3 +1,10 @@
+### [2.198.3](https://github.com/kiva/ui/compare/v2.198.2...v2.198.3) (2022-06-21)
+
+
+### Bug Fixes
+
+* remove promoOnly param from loan query due to empty results when applied ([18dedc4](https://github.com/kiva/ui/commit/18dedc4fcdceae4bd634feeb99c3a01fd28c6289))
+
 ### [2.198.2](https://github.com/kiva/ui/compare/v2.198.1...v2.198.2) (2022-06-21)
 
 
