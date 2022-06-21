@@ -41,6 +41,8 @@ export const sortByNameToDisplay = {
 	personalized: 'Recommended'
 };
 
+export const visibleThemeIds = [2, 6, 8, 11, 14, 28, 29, 32, 36];
+
 /**
  * Returns loan search state that has been validated against the available facets
  *
@@ -217,11 +219,17 @@ export function transformSectors(filteredSectors, allSectors = []) {
 export function transformThemes(filteredThemes, allThemes = []) {
 	const transformed = [];
 
-	filteredThemes.forEach(({ key: name, value: numLoansFundraising }) => {
+	// Always show certain themes regardless of whether there are applicable loans
+	visibleThemeIds.forEach(id => {
+		const themeFromLend = allThemes.find(a => a.id === id);
+
+		if (!themeFromLend) return;
+
 		// Case insensitive matching since lend and FLSS APIs can use different casing for themes
-		const lookupTheme = allThemes.find(a => a.name.toUpperCase() === name.toUpperCase());
-		if (!lookupTheme) return;
-		const theme = { id: lookupTheme.id, name, numLoansFundraising };
+		const themeFromFlss = filteredThemes.find(t => t.key.toUpperCase() === themeFromLend.name.toUpperCase());
+
+		const theme = { id, name: themeFromLend.name, numLoansFundraising: themeFromFlss?.value ?? 0 };
+
 		transformed.push(theme);
 	});
 
