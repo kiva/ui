@@ -74,12 +74,12 @@
 						</div>
 					</template>
 					<template>
-						<h1	class="thanks__headline-h1 tw-mt-1 tw-mb-3">
+						<h1	class="thanks__headline-h1 tw-mt-1 tw-mb-3 tw-text-left">
 							Get a $25 lending credit by inspiring others.
 						</h1>
 						<p class="tw-text-h3 tw-m-0 thanks__base-text">
 							<!-- eslint-disable-next-line max-len -->
-							Your $25 Kiva Lending Credit will be automatically applied when you successfully refer a friend to support a loan like {{ loan.name }}.
+							Introduce someone new to Kiva and we'll give you $25 to support another borrower. Your Kiva Lending Credit will be applied automatically.
 						</p>
 					</template>
 					<template>
