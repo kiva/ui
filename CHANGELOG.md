@@ -1,3 +1,11 @@
+## [2.200.0](https://github.com/kiva/ui/compare/v2.199.1...v2.200.0) (2022-06-21)
+
+
+### Features
+
+* add basket state + keep it up to date after add to basket actions ([a075752](https://github.com/kiva/ui/commit/a07575263f2954886235d287757abd12f2bfcc14))
+* always show certain themes ([53eb420](https://github.com/kiva/ui/commit/53eb42084fddbe38da7c79cbc63354b8762319a3))
+
 ### [2.199.1](https://github.com/kiva/ui/compare/v2.199.0...v2.199.1) (2022-06-21)
 
 
