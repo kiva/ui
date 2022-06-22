@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-flex tw-bg-secondary tw-rounded tw-p-2.5 tw-mb-4 tw-gap-2 MatchedLoanKivaCredit">
+	<div class="tw-flex tw-bg-secondary tw-rounded tw-p-2.5 tw-mb-4 tw-gap-2" style="max-width: 470px;">
 		<div class="tw-flex">
 			<kv-material-icon name="info" :icon="mdiInformationOutline" class="tw-w-2" />
 		</div>
@@ -27,11 +27,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.MatchedLoanKivaCredit {
-	max-width: 470px;
-}
-</style>
