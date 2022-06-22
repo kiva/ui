@@ -1,3 +1,10 @@
+## [2.202.0](https://github.com/kiva/ui/compare/v2.201.0...v2.202.0) (2022-06-22)
+
+
+### Features
+
+* guard added to check if the loan price is included in the prices array for non 25 increments ([e2fe53e](https://github.com/kiva/ui/commit/e2fe53edb3289f2d900ec226aa3e38b49cefc24d))
+
 ## [2.201.0](https://github.com/kiva/ui/compare/v2.200.3...v2.201.0) (2022-06-22)
 
 
