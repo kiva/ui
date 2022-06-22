@@ -1,3 +1,19 @@
+## [2.205.0](https://github.com/kiva/ui/compare/v2.204.0...v2.205.0) (2022-06-22)
+
+
+### Features
+
+* added flssLoanSearchState channel mapping ([b265e6c](https://github.com/kiva/ui/commit/b265e6c75070be7df93e2fca260f58b82d7d9451))
+
+
+### Bug Fixes
+
+* added missing FLSS mapping ([75bfa07](https://github.com/kiva/ui/commit/75bfa076c998cac2cab585f5107a74a3cc1cb223))
+* added some empty FLSS mappings ([4a8665b](https://github.com/kiva/ui/commit/4a8665b4edfec6d8693bfbd727d5c310cad95e4c))
+* simplified mapping name ([1c2086a](https://github.com/kiva/ui/commit/1c2086ab8717c18b90734a301ea353a05246089e))
+* updated incorrect mapping URL ([8182429](https://github.com/kiva/ui/commit/8182429a20d479bd6b1b811ab32da54c9b01a37a))
+* updated to sectorId and removed some incompatible channels ([27948a6](https://github.com/kiva/ui/commit/27948a6b575726023caeb02a92dc9f00d2dba851))
+
 ## [2.204.0](https://github.com/kiva/ui/compare/v2.203.0...v2.204.0) (2022-06-22)
 
 
