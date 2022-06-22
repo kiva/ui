@@ -118,13 +118,14 @@ export default {
 					vmid: 'canonical',
 					rel: 'canonical',
 					href: `https://${this.$appConfig.host}${this.$route.path}`
-				},
-				{
-					vmid: 'preconnect',
-					rel: 'preconnect',
-					href: `${this.$appConfig.publicPath}`
 				}
 			].concat([
+				(/^[a-z]+:\/\//i.test(this.$appConfig?.publicPath) ? {
+					vmid: 'preconnect',
+					rel: 'preconnect',
+					href: `https://${new URL(this.$appConfig.publicPath).hostname}`
+				} :	{})
+			]).concat([
 				// Standard Favicons + Android favicons
 				{
 					rel: 'icon',
