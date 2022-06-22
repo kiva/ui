@@ -64,7 +64,7 @@ export default {
 				},
 				{
 					id: 3,
-					url: 'expiring-soon',
+					url: 'ending-soon',
 					queryParams: 'status=fundRaising&riskRating=0,5&expiringSoon=1',
 					algoliaParams: 'sortBy=expiringSoon',
 					flssLoanSearchState: { sortBy: 'expiringSoon' },
