@@ -444,7 +444,8 @@ export default {
 					id: 44,
 					url: 'hitachi-employees-helping-to-ignite-a-dream',
 					queryParams: 'status=fundRaising&riskRating=3,5&sector=1,14,15,6,10,8,3',
-					algoliaParams: ''
+					algoliaParams: '',
+					flssLoanSearchState: { sector: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13], theme: ['ISLAMIC FINANCE', 'YOUTH', 'START-UP', 'WATER AND SANITATION', 'VULNERABLE GROUPS', 'FAIR TRADE', 'RURAL EXCLUSION', 'MOBILE TECHNOLOGY', 'UNDERFUNDED AREAS', 'CONFLICT ZONES', 'JOB CREATION', 'GROWING BUSINESSES', 'DISASTER RECOVERY', 'INNOVATIVE LOANS', 'REFUGEES/DISPLACED', 'SOCIAL ENTERPRISE', 'CRISIS SUPPORT LOANS'] },
 				},
 				{
 					id: 45,
