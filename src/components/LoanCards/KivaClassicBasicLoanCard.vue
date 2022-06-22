@@ -154,13 +154,15 @@
 			v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
 			to="/basket"
 		>
-			<div class="tw-inline-flex tw-items-center tw-gap-1">
-				Checkout now
-				<kv-material-icon
-					class="tw-w-2.5 tw-h-2.5"
-					:icon="mdiCheckCircleOutline"
-				/>
-			</div>
+			<slot>
+				<div class="tw-inline-flex tw-items-center tw-gap-1">
+					Checkout now
+					<kv-material-icon
+						class="tw-w-2.5 tw-h-2.5"
+						:icon="mdiCheckCircleOutline"
+					/>
+				</div>
+			</slot>
 		</kv-ui-button>
 
 		<!-- Lend button -->
