@@ -29,6 +29,7 @@
 							:kiva-cards="kivaCards"
 							:teams="teams"
 							:loan-reservation-total="parseInt(totals.loanReservationTotal)"
+							:disable-matching="requireDepositsMatchedLoans"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
@@ -69,6 +70,7 @@
 							:promo-fund="derivedPromoFund"
 							@refreshtotals="refreshTotals"
 							@updating-totals="setUpdatingTotals"
+							:show-matched-loan-kiva-credit="showMatchedLoanKivaCredit && requireDepositsMatchedLoans"
 						/>
 
 						<basket-verification />
@@ -518,6 +520,14 @@ export default {
 		this.getUpsellModuleData();
 	},
 	computed: {
+		showMatchedLoanKivaCredit() {
+			const matchedLoansWithCredit = this.loans?.filter(loan => {
+				const hasCredits = loan.creditsUsed?.length > 0;
+				const isMatchedLoan = loan.loan?.matchingText;
+				return hasCredits && isMatchedLoan;
+			});
+			return matchedLoansWithCredit.length > 0;
+		},
 		// show upsell module only once per session
 		upsellCookieActive() {
 			return this.cookieStore.get('upsell-loan-added') === 'true';
