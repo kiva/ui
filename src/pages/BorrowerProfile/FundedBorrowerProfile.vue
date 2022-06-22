@@ -220,18 +220,6 @@ const newFundedBorrowerPageExpKey = 'new_funded_borrower_page';
 
 export default {
 	name: 'FundedBorrowerProfile',
-	metaInfo() {
-		const canonicalUrl = `https://${this.$appConfig.host}${this.$route.path}`.replace('funded', 'lend');
-		return {
-			link: [
-				{
-					vmid: 'canonical',
-					rel: 'canonical',
-					href: canonicalUrl
-				}
-			]
-		};
-	},
 	components: {
 		WwwPage,
 		LoanCardImage,
