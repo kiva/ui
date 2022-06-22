@@ -30,7 +30,11 @@
 					Location
 				</h2>
 			</template>
-			<loan-search-location-filter :regions="facets.regions" @updated="handleUpdatedFilters" />
+			<loan-search-location-filter
+				:active-iso-codes="loanSearchState.countryIsoCode"
+				:regions="facets.regions"
+				@updated="handleUpdatedFilters"
+			/>
 		</kv-accordion-item>
 		<kv-accordion-item id="acc-sectors" :open="false">
 			<template #header>
