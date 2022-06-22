@@ -1,3 +1,10 @@
+### [2.200.1](https://github.com/kiva/ui/compare/v2.200.0...v2.200.1) (2022-06-22)
+
+
+### Bug Fixes
+
+* added small changes to new share thanks page ([5b1d47b](https://github.com/kiva/ui/commit/5b1d47b431359a473138b8b7f1451992faf4265d))
+
 ## [2.200.0](https://github.com/kiva/ui/compare/v2.199.1...v2.200.0) (2022-06-21)
 
 
