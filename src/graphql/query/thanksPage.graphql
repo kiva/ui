@@ -123,12 +123,6 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		}
 	}
 	general {
-		simpleThanksShare: uiExperimentSetting(key: "simple_thanks_share") {
-			key
-			value
-		}
-	}
-	general {
 		thanksShareModule: uiExperimentSetting(key: "thanks_share_module") {
 			key
 			value

@@ -348,7 +348,7 @@
 					}"
 					v-if="showShare"
 				>
-					<kv-icon-button data-testid="thanks-page-share-button" class=" thanks-page__icon-button expanded"
+					<kv-icon-button data-testid="thanks-page-share-button" class="thanks-page__icon-button expanded"
 						:class="{ active: isShareSelected }"
 						aria-controls="`kv-accordion-share-accordion`"
 						:aria-expanded="isShareSelected ? 'true' : 'false'"
@@ -364,7 +364,7 @@
 						Share
 						<template #icon-right>
 							<kv-icon
-								class="tw-w-3 tw-h-3"
+								class="tw-w-3 tw-h-2.5"
 								name="fat-chevron"
 								:from-sprite="true"
 							/>
@@ -428,7 +428,7 @@ export default {
 		let visibleSection = 'receipt';
 		if (this.showGuestUpsell) {
 			visibleSection = 'guest';
-		} else if (this.showShare && this.thanksSocialShareVersion === 'b') {
+		} else if (this.showShare) {
 			visibleSection = 'share';
 		} else if (this.showMgCta) {
 			visibleSection = 'mg';
@@ -496,7 +496,8 @@ export default {
 }
 
 .thanks-page {
-	margin-bottom: 2rem;
+	margin: 0 1rem 2rem 1rem;
+	width: 100%;
 
 	&__content-area {
 		border-radius: rem-calc(10);
