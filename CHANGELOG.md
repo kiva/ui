@@ -1,3 +1,10 @@
+### [2.200.2](https://github.com/kiva/ui/compare/v2.200.1...v2.200.2) (2022-06-22)
+
+
+### Bug Fixes
+
+* update developer tools readme ([8a310bd](https://github.com/kiva/ui/commit/8a310bda2528bb475d95c128f83b968aac213007))
+
 ### [2.200.1](https://github.com/kiva/ui/compare/v2.200.0...v2.200.1) (2022-06-22)
 
 
