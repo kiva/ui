@@ -148,15 +148,19 @@
 		</kv-ui-button>
 
 		<kv-ui-button
-			class="secondary"
+			class="tw-text-secondary"
+			variant="secondary"
 			v-if="isInBasket"
 			v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
 			to="/basket"
 		>
-			<slot name="checkout">
-				<kv-icon class="icon" name="checkmark" />
-				<span>Checkout now</span>
-			</slot>
+			<div class="tw-inline-flex tw-items-center tw-gap-1">
+				Checkout now
+				<kv-material-icon
+					class="tw-w-2.5 tw-h-2.5"
+					:icon="mdiCheckCircleOutline"
+				/>
+			</div>
 		</kv-ui-button>
 
 		<!-- Lend button -->
@@ -202,7 +206,7 @@
 </template>
 
 <script>
-import { mdiChevronRight, mdiMapMarker } from '@mdi/js';
+import { mdiChevronRight, mdiMapMarker, mdiCheckCircleOutline } from '@mdi/js';
 import gql from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
 import { isMatchAtRisk, watchLoanData } from '@/util/loanUtils';
@@ -318,6 +322,7 @@ export default {
 	},
 	data() {
 		return {
+			mdiCheckCircleOutline,
 			loan: null,
 			basketItems: null,
 			isLoading: true,
