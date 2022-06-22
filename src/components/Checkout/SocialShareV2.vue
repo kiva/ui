@@ -272,8 +272,6 @@ $loan-triangle-size: rem-calc(12);
 	}
 
 	&__headline {
-		@include big-text();
-
 		text-align: center !important;
 		margin-bottom: 1.5rem;
 		margin-top: 1rem;

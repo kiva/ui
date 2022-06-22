@@ -348,7 +348,7 @@
 					}"
 					v-if="showShare"
 				>
-					<kv-icon-button data-testid="thanks-page-share-button" class=" thanks-page__icon-button expanded"
+					<kv-icon-button data-testid="thanks-page-share-button" class="thanks-page__icon-button expanded"
 						:class="{ active: isShareSelected }"
 						aria-controls="`kv-accordion-share-accordion`"
 						:aria-expanded="isShareSelected ? 'true' : 'false'"
@@ -496,7 +496,8 @@ export default {
 }
 
 .thanks-page {
-	margin-bottom: 2rem;
+	margin: 0 1rem 2rem 1rem;
+	width: 100%;
 
 	&__content-area {
 		border-radius: rem-calc(10);
