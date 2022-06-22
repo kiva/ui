@@ -147,10 +147,22 @@
 			/>
 		</kv-ui-button>
 
+		<kv-ui-button
+			class="secondary"
+			v-if="isInBasket"
+			v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
+			to="/basket"
+		>
+			<slot name="checkout">
+				<kv-icon class="icon" name="checkmark" />
+				<span>Checkout now</span>
+			</slot>
+		</kv-ui-button>
+
 		<!-- Lend button -->
 		<kv-ui-button
 			key="lendButton"
-			v-if="!allSharesReserved && !isLoading && inBorrowerProfilePage && !isAdding"
+			v-if="!allSharesReserved && !isLoading && inBorrowerProfilePage && !isAdding && !isInBasket"
 			class="tw-inline-flex tw-flex-1"
 			data-testid="bp-lend-cta-lend-button"
 			type="submit"
@@ -396,7 +408,7 @@ export default {
 			return this.isLessThan25 ? this.unreservedAmount : 25;
 		},
 		ctaButtonText() {
-			return `Lend ${this.lendAmount} now`;
+			return `Lend $${this.lendAmount} now`;
 		},
 	},
 	methods: {
