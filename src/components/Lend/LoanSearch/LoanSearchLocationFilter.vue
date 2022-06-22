@@ -69,13 +69,10 @@ export default {
 	data() {
 		return {
 			displayedRegions: this.regions,
-			selectedCountries: {},
+			selectedCountries: mapIsoCodesToCountryNames(this.activeIsoCodes, this.regions) || {},
 			openRegions: [],
 			getCheckboxLabel
 		};
-	},
-	created() {
-		mapIsoCodesToCountryNames(this.activeIsoCodes, this.regions);
 	},
 	methods: {
 		getItems(countries) {
@@ -116,16 +113,17 @@ export default {
 		},
 	},
 	watch: {
-		activeIsoCodes(next, prev) {
-			console.log('activeIsoCodes next: ', next);
-			console.log('activeIsoCodes prev: ', prev);
-			console.log(mapIsoCodesToCountryNames(next, this.regions));
+		activeIsoCodes(nextIsos, prevIsos) {
+			if (nextIsos === prevIsos) return false;
+			const activeCountries = mapIsoCodesToCountryNames(this.activeIsoCodes, this.regions);
+			this.selectedCountries = activeCountries || {};
 		},
 		regions(nextRegions) {
 			this.displayedRegions = getUpdatedRegions(this.displayedRegions, nextRegions);
 		},
 		selectedCountries: {
 			handler(nextCountries) {
+				// TODO: consider added a JSON.stringify check against next + prev
 				this.$emit('updated', { countryIsoCode: getIsoCodes(this.displayedRegions, nextCountries) });
 			},
 			deep: true,

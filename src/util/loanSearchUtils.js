@@ -160,35 +160,31 @@ export function sortRegions(regions) {
 /**
  * Map isoCode to country name
  *
- * @param {string} isoCode
- * @param {array} region
- * @returns string
+ * @param {String} isoCode
+ * @param {Array<Object>} region
+ * @returns String
  */
 export function isoToCountryName(isoCode, countryList = []) {
 	const isoMatch = countryList.find(country => country.isoCode === isoCode);
-	console.log(isoMatch);
 	return isoMatch?.name ?? null;
 }
 
 /**
  * Map isoCode List to region keyed object with country name array
  *
- * @param {*} isoCodes
- * @param {*} regions
- * @returns
+ * @param {Array<String>} isoCodes
+ * @param {Array<Object>} regions
+ * @returns {Object}
  */
 export function mapIsoCodesToCountryNames(isoCodes, regions) {
-	const mappedIsos = regions?.reduce((regionObject, region, regionIndex) => {
-		console.log(regionObject);
-		console.log(region);
-		console.log(regionIndex);
-		const countryNames = isoCodes.filter(iso => {
-			return isoToCountryName(iso, region?.countries) ?? false;
+	const mappedIsos = regions?.reduce((regionObject, region) => {
+		const countryNames = isoCodes.filter(
+			iso => region?.countries?.find(country => country.isoCode === iso)
+		).map(iso => {
+			return isoToCountryName(iso, region?.countries);
 		});
-		console.log(countryNames);
-		return { ...regionObject, [region.region]: countryNames };
+		return countryNames.length ? { ...regionObject, [region.region]: countryNames } : { ...regionObject };
 	}, {});
-	console.log(mappedIsos);
 	return mappedIsos;
 }
 
