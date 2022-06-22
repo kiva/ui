@@ -1,3 +1,10 @@
+### [2.200.3](https://github.com/kiva/ui/compare/v2.200.2...v2.200.3) (2022-06-22)
+
+
+### Bug Fixes
+
+* fixed styles ([f747bf4](https://github.com/kiva/ui/commit/f747bf4fec6fa934c6d8a548c92929c163753e3d))
+
 ### [2.200.2](https://github.com/kiva/ui/compare/v2.200.1...v2.200.2) (2022-06-22)
 
 
