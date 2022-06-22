@@ -1,3 +1,11 @@
+## [2.204.0](https://github.com/kiva/ui/compare/v2.203.0...v2.204.0) (2022-06-22)
+
+
+### Features
+
+* make LoanSearchLocationFilter reactive to loanSearchState ([eccb90e](https://github.com/kiva/ui/commit/eccb90e7662f13382616e3955a6a98ec608f4a05))
+* make location filter state reactive to loanSearchState, add utils for mapping iso to name ([cf4d209](https://github.com/kiva/ui/commit/cf4d2093cf9d8250b89d5977df5bc1835edf4101))
+
 ## [2.203.0](https://github.com/kiva/ui/compare/v2.202.0...v2.203.0) (2022-06-22)
 
 
