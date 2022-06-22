@@ -1,3 +1,23 @@
+## [2.206.0](https://github.com/kiva/ui/compare/v2.205.0...v2.206.0) (2022-06-22)
+
+
+### Features
+
+* add utm content to share link ([f76096a](https://github.com/kiva/ui/commit/f76096a4e87558e640aaada51b889d6fec764f1a))
+* add utm_content to base SocialSharev2 sharelink ([8803edc](https://github.com/kiva/ui/commit/8803edc2c5f450ef91a3f2aad08bb45ec39f71c3))
+* adding utm_content for new social share version component ([72d84e6](https://github.com/kiva/ui/commit/72d84e6d89956c9912bd34ca9ed6da9fa62d6dca))
+* some small updates ([1ea6650](https://github.com/kiva/ui/commit/1ea665067d99e4461c0fa187d0e53b8b09900ac8))
+
+
+### Bug Fixes
+
+* added anonymazation level validation ([072694f](https://github.com/kiva/ui/commit/072694fbbee99df51ef84f162eb717d85d46f9ce))
+* small improvement ([4ecc51b](https://github.com/kiva/ui/commit/4ecc51b0b76de955d854a593d719a60f314c0e25))
+* solve conflicts in Thanks Page ([8e8335d](https://github.com/kiva/ui/commit/8e8335de5259dc006e8ed036d2be8047dd291abd))
+* update changes in copyLink method ([aa6d39a](https://github.com/kiva/ui/commit/aa6d39a1d305cfee95a3eddbf41722c1761fc102))
+* update seo borrower profile title and description ([06a6e00](https://github.com/kiva/ui/commit/06a6e0093daec80995db69b570dfcc642a8acaf2))
+* validate if inviterName prop exists in lender ([dd6fc6a](https://github.com/kiva/ui/commit/dd6fc6a82a0d10cb872ea385bcf1ddf88b27681c))
+
 ## [2.205.0](https://github.com/kiva/ui/compare/v2.204.0...v2.205.0) (2022-06-22)
 
 
