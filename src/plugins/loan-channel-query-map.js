@@ -19,14 +19,14 @@ export default {
 					url: 'agriculture',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=1',
 					algoliaParams: 'sector=Agriculture',
-					flssLoanSearch: { sector: [1] },
+					flssLoanSearch: { sectorId: [1] },
 				},
 				{
 					id: 4,
 					url: 'education',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=15',
 					algoliaParams: 'sector=Education',
-					flssLoanSearch: { sector: [15] },
+					flssLoanSearch: { sectorId: [15] },
 				},
 				{
 					id: 32,
@@ -60,7 +60,7 @@ export default {
 					url: 'arts',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=9',
 					algoliaParams: 'sector=Arts',
-					flssLoanSearch: { sector: [9] },
+					flssLoanSearch: { sectorId: [9] },
 				},
 				{
 					id: 3,
@@ -80,14 +80,14 @@ export default {
 					url: 'health',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=6',
 					algoliaParams: 'sector=Health',
-					flssLoanSearch: { sector: [6] },
+					flssLoanSearch: { sectorId: [6] },
 				},
 				{
 					id: 12,
 					url: 'food',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=12',
 					algoliaParams: 'sector=Food',
-					flssLoanSearch: { sector: [12] },
+					flssLoanSearch: { sectorId: [12] },
 				},
 				{
 					id: 31,
@@ -114,7 +114,7 @@ export default {
 					url: 'shelter',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=10',
 					algoliaParams: 'sector=Housing',
-					flssLoanSearch: { sector: [10] },
+					flssLoanSearch: { sectorId: [10] },
 				},
 				{
 					id: 33,
@@ -137,7 +137,7 @@ export default {
 					url: 'retail-businesses',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=7',
 					algoliaParams: 'sector=Retail',
-					flssLoanSearch: { sector: [7] },
+					flssLoanSearch: { sectorId: [7] },
 				},
 				{
 					id: 17,
@@ -158,7 +158,7 @@ export default {
 					url: 'transport',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=3',
 					algoliaParams: 'sector=Transportation',
-					flssLoanSearch: { sector: [3] },
+					flssLoanSearch: { sectorId: [3] },
 				},
 				{
 					id: 14,
@@ -194,28 +194,26 @@ export default {
 					url: 'loans-for-education',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=15',
 					algoliaParams: 'sector=Education',
-					flssLoanSearch: { sector: [15] },
+					flssLoanSearch: { sectorId: [15] },
 				},
 				{
 					id: 54,
 					url: 'trending-now',
 					queryParams: 'status=fundRaising&riskRating=0,5',
 					algoliaParams: '',
-					flssLoanSearch: {},
 				},
 				{
 					id: 55,
 					url: 'loans-to-farmers',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=1',
 					algoliaParams: 'sector=Agriculture',
-					flssLoanSearch: { sector: [1] },
+					flssLoanSearch: { sectorId: [1] },
 				},
 				{
 					id: 56,
 					url: 'loans-with-research-backed-impact',
 					queryParams: 'status=fundRaising&riskRating=0,5',
 					algoliaParams: '',
-					flssLoanSearch: {},
 				},
 				{
 					id: 57,
@@ -255,7 +253,6 @@ export default {
 					url: 'lenders-like-you-supported-these-loans',
 					queryParams: 'status=fundRaising&riskRating=0,5',
 					algoliaParams: '',
-					flssLoanSearch: {},
 				},
 				{
 					id: 68,
@@ -307,21 +304,21 @@ export default {
 					url: 'agriculture-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=1&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Agriculture&sortBy=popularity',
-					flssLoanSearch: { sector: [1], gender: 'female' },
+					flssLoanSearch: { sectorId: [1], gender: 'female' },
 				},
 				{
 					id: 88,
 					url: 'education-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=15&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Education&sortBy=popularity',
-					flssLoanSearch: { sector: [15], gender: 'female' },
+					flssLoanSearch: { sectorId: [15], gender: 'female' },
 				},
 				{
 					id: 89,
 					url: 'arts-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=9&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Arts&sortBy=popularity',
-					flssLoanSearch: { sector: [9], gender: 'female' },
+					flssLoanSearch: { sectorId: [9], gender: 'female' },
 				},
 				{
 					id: 90,
@@ -334,21 +331,21 @@ export default {
 					url: 'food-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=12&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Food&sortBy=popularity',
-					flssLoanSearch: { sector: [12], gender: 'female' },
+					flssLoanSearch: { sectorId: [12], gender: 'female' },
 				},
 				{
 					id: 93,
 					url: 'shelter-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=10&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Housing&sortBy=popularity',
-					flssLoanSearch: { sector: [10], gender: 'female' },
+					flssLoanSearch: { sectorId: [10], gender: 'female' },
 				},
 				{
 					id: 94,
 					url: 'retail-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=7&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Retail&sortBy=popularity',
-					flssLoanSearch: { sector: [7], gender: 'female' },
+					flssLoanSearch: { sectorId: [7], gender: 'female' },
 				},
 
 				// Misc Promotional or Unsupported URLS
@@ -360,7 +357,7 @@ export default {
 					queryParams: 'distributionModel=both&riskRating=0,5&sector=1,9,5,14,17,12,6,8,7,4,3,13&status=fundRaising&attribute=5,6,7,8,9,10,11,12,13,14,15,17,20,24,28,29&sortBy=popularity',
 					// this will cause legacy lend to load up and apply all params for the Loan Channel
 					fallbackUrl: '/lend/covid-19?filter=bypass',
-					flssLoanSearch: { sector: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13], theme: ['ISLAMIC FINANCE', 'YOUTH', 'START-UP', 'WATER AND SANITATION', 'VULNERABLE GROUPS', 'FAIR TRADE', 'RURAL EXCLUSION', 'MOBILE TECHNOLOGY', 'UNDERFUNDED AREAS', 'CONFLICT ZONES', 'JOB CREATION', 'GROWING BUSINESSES', 'DISASTER RECOVERY', 'INNOVATIVE LOANS', 'REFUGEES/DISPLACED', 'SOCIAL ENTERPRISE'] },
+					flssLoanSearch: { sectorId: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13], theme: ['ISLAMIC FINANCE', 'YOUTH', 'START-UP', 'WATER AND SANITATION', 'VULNERABLE GROUPS', 'FAIR TRADE', 'RURAL EXCLUSION', 'MOBILE TECHNOLOGY', 'UNDERFUNDED AREAS', 'CONFLICT ZONES', 'JOB CREATION', 'GROWING BUSINESSES', 'DISASTER RECOVERY', 'INNOVATIVE LOANS', 'REFUGEES/DISPLACED', 'SOCIAL ENTERPRISE'] },
 				},
 				{
 					id: 97,
@@ -395,7 +392,7 @@ export default {
 					id: 48,
 					url: 'human-flow-fund-support-refugees-and-i-d-ps',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=1,9,5,14,12,8,7,4,3,13&theme=Conflict Zones,Refugees/Displaced&distributionModel=field_partner',
-					flssLoanSearch: { sector: [1, 9, 5, 14, 12, 8, 7, 4, 3, 13], theme: ['CONFLICT ZONES', 'REFUGEES/DISPLACED'] },
+					flssLoanSearch: { sectorId: [1, 9, 5, 14, 12, 8, 7, 4, 3, 13], theme: ['CONFLICT ZONES', 'REFUGEES/DISPLACED'] },
 				},
 				{
 					id: 51,
@@ -443,14 +440,13 @@ export default {
 					url: 'super-power-a-woman-on-kiva',
 					queryParams: 'status=fundRaising&gender=female&riskRating=0,5&distributionModel=field_partner',
 					algoliaParams: 'gender=female',
-					flssLoanSearch: { gender: 'female' },
 				},
 				{
 					id: 44,
 					url: 'hitachi-employees-helping-to-ignite-a-dream',
 					queryParams: 'status=fundRaising&riskRating=3,5&sector=1,14,15,6,10,8,3',
 					algoliaParams: '',
-					flssLoanSearch: { sector: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13], theme: ['ISLAMIC FINANCE', 'YOUTH', 'START-UP', 'WATER AND SANITATION', 'VULNERABLE GROUPS', 'FAIR TRADE', 'RURAL EXCLUSION', 'MOBILE TECHNOLOGY', 'UNDERFUNDED AREAS', 'CONFLICT ZONES', 'JOB CREATION', 'GROWING BUSINESSES', 'DISASTER RECOVERY', 'INNOVATIVE LOANS', 'REFUGEES/DISPLACED', 'SOCIAL ENTERPRISE', 'CRISIS SUPPORT LOANS'] },
+					flssLoanSearch: { sectorId: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13], theme: ['ISLAMIC FINANCE', 'YOUTH', 'START-UP', 'WATER AND SANITATION', 'VULNERABLE GROUPS', 'FAIR TRADE', 'RURAL EXCLUSION', 'MOBILE TECHNOLOGY', 'UNDERFUNDED AREAS', 'CONFLICT ZONES', 'JOB CREATION', 'GROWING BUSINESSES', 'DISASTER RECOVERY', 'INNOVATIVE LOANS', 'REFUGEES/DISPLACED', 'SOCIAL ENTERPRISE', 'CRISIS SUPPORT LOANS'] },
 				},
 				{
 					id: 45,
