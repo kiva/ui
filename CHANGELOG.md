@@ -1,3 +1,44 @@
+## [2.200.0](https://github.com/kiva/ui/compare/v2.199.1...v2.200.0) (2022-06-21)
+
+
+### Features
+
+* add basket state + keep it up to date after add to basket actions ([a075752](https://github.com/kiva/ui/commit/a07575263f2954886235d287757abd12f2bfcc14))
+* always show certain themes ([53eb420](https://github.com/kiva/ui/commit/53eb42084fddbe38da7c79cbc63354b8762319a3))
+
+### [2.199.1](https://github.com/kiva/ui/compare/v2.199.0...v2.199.1) (2022-06-21)
+
+
+### Bug Fixes
+
+* complete loan tracking was removed from lendamount component ([f02e529](https://github.com/kiva/ui/commit/f02e529199650051065a2e0db0439eea67fe312b))
+
+## [2.199.0](https://github.com/kiva/ui/compare/v2.198.3...v2.199.0) (2022-06-21)
+
+
+### Features
+
+* filter chip click analytics ([6d5e1e2](https://github.com/kiva/ui/commit/6d5e1e24e4816c7fb25a9438891c4de4c21f33c4))
+
+
+### Bug Fixes
+
+* simplified label format ([f107fd5](https://github.com/kiva/ui/commit/f107fd56e1f07f95f9398f41785b93e4a3b68532))
+
+### [2.198.3](https://github.com/kiva/ui/compare/v2.198.2...v2.198.3) (2022-06-21)
+
+
+### Bug Fixes
+
+* remove promoOnly param from loan query due to empty results when applied ([18dedc4](https://github.com/kiva/ui/commit/18dedc4fcdceae4bd634feeb99c3a01fd28c6289))
+
+### [2.198.2](https://github.com/kiva/ui/compare/v2.198.1...v2.198.2) (2022-06-21)
+
+
+### Bug Fixes
+
+* sector chips removal updated ([47d6c9f](https://github.com/kiva/ui/commit/47d6c9f190cb846b2188a03ba8305b1fd1fe3b0c))
+
 ### [2.198.1](https://github.com/kiva/ui/compare/v2.198.0...v2.198.1) (2022-06-20)
 
 
