@@ -1,5 +1,6 @@
 const setCookieParser = require('set-cookie-parser');
 const fetch = require('./fetch');
+const tracer = require('./ddTrace');
 
 const getCookieString = cookies => {
 	return Object.keys(cookies)
@@ -15,7 +16,7 @@ const decodeCookieValue = value => {
 	}
 };
 
-module.exports = function getSessionCookies(url = '', requestCookies = {}) {
+function getSessionCookies(url = '', requestCookies = {}) {
 	return new Promise((resolve, reject) => {
 		if (url.length && (!requestCookies.kv || !requestCookies.kvis || !requestCookies.kvbskt)) {
 			fetch(url, {
@@ -41,4 +42,6 @@ module.exports = function getSessionCookies(url = '', requestCookies = {}) {
 			});
 		}
 	});
-};
+}
+
+module.exports = tracer.wrap('getSessionCookies', getSessionCookies);

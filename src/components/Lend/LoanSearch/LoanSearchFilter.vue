@@ -18,6 +18,7 @@
 			</template>
 			<loan-search-sort-by
 				:all-sort-options="facets.sortOptions"
+				:is-logged-in="isLoggedIn"
 				:sort="loanSearchState.sortBy"
 				:query-type="queryType"
 				@updated="handleUpdatedFilters"
@@ -130,6 +131,10 @@ export default {
 		facets: {
 			type: Object,
 			required: true
+		},
+		isLoggedIn: {
+			type: Boolean,
+			default: false
 		},
 		loanSearchState: {
 			type: Object,

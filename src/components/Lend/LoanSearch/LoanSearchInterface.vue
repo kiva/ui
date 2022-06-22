@@ -1,8 +1,11 @@
 <template>
-	<div class="tw-flex">
-		<div class="tw-flex tw-flex-col tw-mr-4">
-			<div class="md:tw-hidden tw-mb-3">
-				<kv-button variant="secondary" @click="toggleLightbox(true)">
+	<div class="tw-flex tw-flex-col lg:tw-flex-row">
+		<div class="tw-flex lg:tw-hidden">
+			<div class="tw-mb-3 tw-mr-2">
+				<kv-button
+					variant="secondary"
+					@click="toggleLightbox(true)"
+				>
 					Filter & Sort
 				</kv-button>
 				<kv-lightbox
@@ -15,56 +18,96 @@
 						{{ null }} <!-- Hide title text -->
 					</template>
 					<loan-search-filter
+						style="min-width: 285px;"
 						:loading="!initialLoadComplete"
+						:is-logged-in="userId !== null"
 						:facets="facets"
 						:loan-search-state="loanSearchState"
 						@updated="handleUpdatedFilters"
 						@reset="handleResetFilters"
 					/>
+					<template #controls>
+						<kv-button
+							v-if="totalCount > 0"
+							class="tw-mt-2 tw-w-full lg:tw-hidden"
+							@click="toggleLightbox(false)"
+							ref="showLoansButton"
+						>
+							Show {{ totalCount }} Loans
+						</kv-button>
+					</template>
 				</kv-lightbox>
 			</div>
-			<div class="tw-hidden md:tw-block tw-w-[285px]">
+			<div v-if="initialLoadComplete" class="tw-pt-1.5">
+				<p>{{ totalCount }} Loans</p>
+			</div>
+		</div>
+		<div class="tw-flex tw-mr-4">
+			<div class="tw-hidden lg:tw-block" style="width: 285px;">
 				<loan-search-filter
 					:loading="!initialLoadComplete"
 					:facets="facets"
+					:is-logged-in="userId !== null"
 					:loan-search-state="loanSearchState"
 					@updated="handleUpdatedFilters"
 					@reset="handleResetFilters"
 				/>
 			</div>
 		</div>
-		<div v-if="initialLoadComplete" class="md:tw-hidden tw-pt-1.5">
-			<p>{{ totalCount }} Loans</p>
-		</div>
 		<div class="tw-col-span-2 tw-relative tw-grow">
 			<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
-			<div v-if="initialLoadComplete" class="tw-hidden md:tw-block tw-h-4 tw-mb-2 md:tw-mb-3 lg:tw-mb-3.5">
-				<p>{{ totalCount }} Loans</p>
+			<div v-if="initialLoadComplete">
+				<loan-search-filter-chips
+					:loan-search-state="loanSearchState"
+					:all-facets="allFacets"
+					@updated="handleUpdatedFilters"
+				/>
+				<p class="tw-hidden lg:tw-block tw-mt-1">
+					{{ totalCount }} Loans
+				</p>
 			</div>
+			<template v-if="initialLoadComplete && totalCount === 0">
+				<h3 class="tw-text-center">
+					All borrowers matching this search have been funded.
+				</h3>
+				<p class="tw-text-center tw-mt-2">
+					Please adjust your criteria or
+					<a class="tw-cursor-pointer" @click="clickZeroLoansReset">start a new search.</a>
+				</p>
+			</template>
 			<kv-grid class="tw-grid-rows-4">
 				<loan-card-controller
 					v-for="loan in loans"
-					:items-in-basket="null"
-					:is-visitor="true"
+					:items-in-basket="itemsInBasket"
+					:is-visitor="userId === null"
+					:is-logged-in="userId !== null"
+					:user-id="userId !== null ? userId.toString() : null"
 					:key="loan.id"
 					:loan="loan"
 					loan-card-type="ListLoanCard"
 					:rounded-corners="true"
 				/>
 			</kv-grid>
-			<kv-pager
-				v-if="totalCount > 0"
-				:limit="loanSearchState.pageLimit"
-				:total="totalCount"
-				:offset="loanSearchState.pageOffset"
-				@page-changed="handleUpdatedFilters"
-			/>
+			<template v-if="initialLoadComplete && totalCount > 0">
+				<kv-pager
+					:limit="loanSearchState.pageLimit"
+					:total="totalCount"
+					:offset="loanSearchState.pageOffset"
+					@page-changed="handlePageChange"
+				/>
+				<kv-results-per-page
+					:selected="loanSearchState.pageLimit"
+					@updated="handleResultsPerPage"
+				/>
+			</template>
 		</div>
 	</div>
 </template>
 
 <script>
+import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
+import userIdQuery from '@/graphql/query/userId.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
 import {
@@ -80,24 +123,32 @@ import {
 	updateSearchState,
 	transformSectors,
 } from '@/util/loanSearchUtils';
+import logReadQueryError from '@/util/logReadQueryError';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import KvPager from '@/components/Kv/KvPager';
+import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
+import { isNumber } from '@/util//numberUtils';
+import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+
+const COOKIE_KEY = 'kv-search-result-count';
 
 export default {
 	name: 'LoanSearchInterface',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		LoanCardController,
+		LoanSearchFilterChips,
 		KvGrid,
 		KvButton,
 		LoanSearchFilter,
 		KvLightbox,
 		KvSectionModalLoader,
 		KvPager,
+		KvResultsPerPage,
 	},
 	data() {
 		return {
@@ -165,18 +216,56 @@ export default {
 			loans: [],
 			totalCount: 0,
 			isLightboxVisible: false,
+			itemsInBasket: [],
 			loanSearchState: getDefaultLoanSearchState(),
 			queryType: FLSS_QUERY_TYPE,
 			// Holds comma-separated list of loan IDs from the query results
 			trackedHits: undefined,
+			userId: null,
 		};
+	},
+	apollo: {
+		preFetch(config, client) {
+			return client.query({
+				query: userIdQuery
+			}).then(() => {
+				return client.query({
+					query: itemsInBasketQuery
+				});
+			});
+		},
+	},
+	created() {
+		const basketId = this.cookieStore.get('kvbskt');
+
+		try {
+			const userIdData = this.apollo.readQuery({
+				query: userIdQuery
+			});
+			this.userId = userIdData?.my?.userAccount?.id ?? null;
+		} catch (e) {
+			logReadQueryError(e, 'LoanSearchInterface userIdQuery');
+		}
+
+		try {
+			this.apollo.watchQuery({
+				query: itemsInBasketQuery,
+				variables: { basketId },
+			}).subscribe({
+				next: ({ data }) => {
+					this.itemsInBasket = data?.shop?.basket?.items?.values.map(item => item.id) ?? [];
+				},
+			});
+		} catch (e) {
+			logReadQueryError(e, 'LoanSearchInterface itemsInBasketQuery');
+		}
 	},
 	async mounted() {
 		// Fetch the facet options from the lend and FLSS APIs
 		this.allFacets = await fetchLoanFacets(this.apollo);
 
 		// Initialize the search filters with the query string params
-		await applyQueryParams(this.apollo, this.$route.query, this.allFacets, this.queryType, this.loanSearchState);
+		await applyQueryParams(this.apollo, this.$route.query, this.allFacets, this.queryType, this.defaultPageLimit);
 
 		// Here we subscribe to the loanSearchState and run the loan query when it updates
 		// TODO: work some guards to prevent duplicate queries and throttling to more carefully control # of queries
@@ -222,13 +311,22 @@ export default {
 			}
 		});
 	},
+	computed: {
+		defaultPageLimit() {
+			const storedPageLimit = this.cookieStore.get(COOKIE_KEY);
+
+			return isNumber(storedPageLimit) ? +storedPageLimit : this.loanSearchState.pageLimit;
+		},
+	},
 	methods: {
 		trackLoans() {
+			this.$kvSetCustomUrl();
+
 			const hitIds = this.loans.map(l => l.id);
 			const hits = hitIds.join();
 
 			if (hits !== this.trackedHits) {
-				this.$kvTrackEvent(
+				this.$kvTrackEvent?.(
 					'Lending',
 					hits ? 'loans-shown' : 'zero-loans-shown',
 					hits ? 'loan-ids' : undefined,
@@ -246,16 +344,42 @@ export default {
 			updateSearchState(this.apollo, filters, this.allFacets, this.queryType, this.loanSearchState);
 		},
 		handleUpdatedFilters(filters) {
-			this.updateState({ ...this.loanSearchState, ...filters });
+			this.updateState({ ...this.loanSearchState, ...filters, pageOffset: 0 });
 		},
 		handleResetFilters() {
 			this.updateState();
+		},
+		handlePageChange(payload) {
+			// Handle pager separately so that filters can reset the page offset
+			this.updateState({ ...this.loanSearchState, ...payload });
+		},
+		handleResultsPerPage(payload) {
+			// Reset to first page when page limit changes
+			this.updateState({ ...this.loanSearchState, ...payload, pageOffset: 0 });
+
+			// Set cookie with 2 year expiration
+			const expires = new Date();
+			expires.setFullYear(expires.getFullYear() + 2);
+
+			this.cookieStore.set(COOKIE_KEY, payload.pageLimit, { expires });
+		},
+		clickZeroLoansReset() {
+			this.handleResetFilters();
+
+			this.$kvTrackEvent?.('Lending', 'click-zero-loans-reset');
 		},
 	},
 	watch: {
 		$route(to) {
 			// Update the loan search state when the user clicks back/forward in the browser
-			applyQueryParams(this.apollo, to.query, this.allFacets, this.queryType, this.loanSearchState);
+			applyQueryParams(
+				this.apollo,
+				to.query,
+				this.allFacets,
+				this.queryType,
+				this.loanSearchState.pageLimit,
+				this.loanSearchState
+			);
 		}
 	}
 };

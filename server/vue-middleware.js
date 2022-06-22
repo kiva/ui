@@ -6,6 +6,7 @@ const { createBundleRenderer } = require('vue-server-renderer');
 const getGqlFragmentTypes = require('./util/getGqlFragmentTypes');
 const getSessionCookies = require('./util/getSessionCookies');
 const vueSsrCache = require('./util/vueSsrCache');
+const tracer = require('./util/ddTrace');
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -54,7 +55,7 @@ module.exports = function createMiddleware({
 		shouldPrefetch: () => false,
 	});
 
-	return function middleware(req, res, next) {
+	function middleware(req, res, next) {
 		const s = Date.now();
 
 		const cookies = cookie.parse(req.headers.cookie || '');
@@ -102,7 +103,7 @@ module.exports = function createMiddleware({
 				// forward any newly fetched 'Set-Cookie' headers
 				cookieInfo.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
 				// render the app
-				return renderer.renderToString(context);
+				return tracer.trace('renderer.renderToString', () => renderer.renderToString(context));
 			}).then(html => {
 				// set any cookies created during the app render
 				context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
@@ -124,5 +125,7 @@ module.exports = function createMiddleware({
 				}
 				handleError(err, req, res, next);
 			});
-	};
+	}
+
+	return tracer.wrap('vue-middleware', middleware);
 };

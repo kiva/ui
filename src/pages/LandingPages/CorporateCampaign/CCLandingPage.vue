@@ -768,9 +768,10 @@ export default {
 			return this.promoData?.promoFund?.id ?? null;
 		},
 		promoOnlyQuery() {
-			if (this.promoApplied && !this.isMatchingCampaign && !this.lendingRewardOffered) {
-				return { basketId: this.cookieStore.get('kvbskt') };
-			}
+			// Temporarily removing application of the is param due to odd/empty results from api
+			// if (this.promoApplied && !this.isMatchingCampaign && !this.lendingRewardOffered) {
+			// 	return { basketId: this.cookieStore.get('kvbskt') };
+			// }
 			return null;
 		},
 		teamId() {

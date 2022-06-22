@@ -19,10 +19,12 @@ import {
 	STANDARD_QUERY_TYPE,
 	getSectorIdsFromQueryParam,
 	getThemeNamesQueryParam,
+	visibleThemeIds,
 } from '@/util/loanSearchUtils';
 import * as flssUtils from '@/util/flssUtils';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
 import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
+import orderBy from 'lodash/orderBy';
 
 const mockState = {
 	gender: 'female',
@@ -95,8 +97,6 @@ const mockTransformedSectors = [mockASector(), mockBSector()];
 const mockATheme = (numLoansFundraising = 5) => ({ id: 6, name: 'a', numLoansFundraising });
 
 const mockBTheme = (numLoansFundraising = 4) => ({ id: 3, name: 'b', numLoansFundraising });
-
-const mockTransformedThemes = [mockATheme(), mockBTheme()];
 
 describe('loanSearchUtils.js', () => {
 	describe('getValidatedSearchState', () => {
@@ -377,67 +377,41 @@ describe('loanSearchUtils.js', () => {
 		});
 
 		it('should filter, transform, and sort', () => {
-			const mockFilteredThemes = [
-				{
-					key: 'b',
-					value: 4,
-				},
-				{
-					key: 'a',
-					value: 5,
-				},
-			];
+			const mockThemes = visibleThemeIds.map(id => ({ id, name: Math.random().toString(36).slice(2, 5) }));
 
-			const mockAllThemes = [
-				{
-					id: 3,
-					name: 'b',
-				},
-				{
-					id: 7,
-					name: 'c',
-				},
-				{
-					id: 6,
-					name: 'a',
-				},
-			];
+			const mockFilteredThemes = mockThemes.map((t, i) => ({ key: t.name, value: i }));
 
-			const result = transformThemes(mockFilteredThemes, mockAllThemes);
+			const expected = orderBy(mockThemes.map((t, i) => ({ ...t, numLoansFundraising: i })), 'name');
 
-			expect(result).toEqual(mockTransformedThemes);
+			const result = transformThemes(mockFilteredThemes, mockThemes);
+
+			expect(result).toEqual(expected);
 		});
 
 		it('should filter transform themes case insensitive', () => {
-			const mockFilteredThemes = [
-				{
-					key: 'b',
-					value: 4,
-				},
-				{
-					key: 'a',
-					value: 5,
-				},
-			];
+			const mockThemes = visibleThemeIds.map(id => ({ id, name: Math.random().toString(36).slice(2, 5) }));
 
-			const mockAllThemes = [
-				{
-					id: 3,
-					name: 'B',
-				},
-				{
-					id: 7,
-					name: 'C',
-				},
-				{
-					id: 6,
-					name: 'A',
-				},
-			];
+			const mockFilteredThemes = mockThemes.map((t, i) => ({ key: t.name.toUpperCase(), value: i }));
 
-			const result = transformThemes(mockFilteredThemes, mockAllThemes);
+			const expected = orderBy(mockThemes.map((t, i) => ({ ...t, numLoansFundraising: i })), 'name');
 
-			expect(result).toEqual(mockTransformedThemes);
+			const result = transformThemes(mockFilteredThemes, mockThemes);
+
+			expect(result).toEqual(expected);
+		});
+
+		it('should always show certain themes', () => {
+			const mockThemes = visibleThemeIds.map(id => ({ id, name: Math.random().toString(36).slice(2, 5) }));
+
+			const mockFilteredThemes = mockThemes.slice(0, 2).map((t, i) => ({ key: t.name, value: i }));
+
+			const expected = orderBy([
+				...mockThemes.slice(0, 2).map((t, i) => ({ ...t, numLoansFundraising: i })),
+				...mockThemes.slice(2).map(t => ({ ...t, numLoansFundraising: 0 }))], 'name');
+
+			const result = transformThemes(mockFilteredThemes, mockThemes);
+
+			expect(result).toEqual(expected);
 		});
 	});
 
@@ -479,7 +453,9 @@ describe('loanSearchUtils.js', () => {
 		it('should update theme numLoansFundraising', () => {
 			const nextA = mockATheme(9);
 
-			expect(getUpdatedNumLoansFundraising(mockTransformedThemes, [nextA])).toEqual([nextA, mockBTheme(0)]);
+			const results = getUpdatedNumLoansFundraising([mockATheme(), mockBTheme()], [nextA]);
+
+			expect(results).toEqual([nextA, mockBTheme(0)]);
 		});
 
 		it('should add missing themes', () => {
@@ -814,7 +790,7 @@ describe('loanSearchUtils.js', () => {
 				page: '2',
 			};
 
-			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
@@ -841,7 +817,7 @@ describe('loanSearchUtils.js', () => {
 				attribute: '1'
 			};
 
-			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
@@ -863,7 +839,7 @@ describe('loanSearchUtils.js', () => {
 			};
 			const query = { sortBy: 'popularity' };
 
-			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
@@ -885,7 +861,7 @@ describe('loanSearchUtils.js', () => {
 			};
 			const query = { sortBy: 'popularity' };
 
-			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
@@ -907,7 +883,7 @@ describe('loanSearchUtils.js', () => {
 			};
 			const query = { page: '4' };
 
-			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
@@ -929,7 +905,29 @@ describe('loanSearchUtils.js', () => {
 			};
 			const query = { page: '-1' };
 
-			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState.pageLimit, mockState);
+
+			expect(apollo.mutate).toHaveBeenCalledWith(params);
+		});
+
+		it('should handle decimal page', async () => {
+			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
+			const params = {
+				mutation: updateLoanSearchMutation,
+				variables: {
+					searchParams: {
+						...mockState,
+						gender: null,
+						sortBy: null,
+						sectorId: [],
+						theme: [],
+						pageOffset: 5,
+					}
+				},
+			};
+			const query = { page: '2.5' };
+
+			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
@@ -951,7 +949,7 @@ describe('loanSearchUtils.js', () => {
 			};
 			const query = { page: 'asd' };
 
-			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, STANDARD_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
@@ -965,7 +963,7 @@ describe('loanSearchUtils.js', () => {
 				page: '3',
 			};
 
-			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState);
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledTimes(0);
 		});

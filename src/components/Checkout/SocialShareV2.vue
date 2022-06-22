@@ -1,11 +1,13 @@
 <template>
 	<section class="share hide-for-print">
-		<h2 class="share__headline" data-testid="share-headline">
-			Help {{ selectedLoan.name }} spread the word.
-		</h2>
-		<p class="share__small__message">
-			{{ shareSubtitle }}
-		</p>
+		<div>
+			<h2 class="share__headline" data-testid="share-headline">
+				Help {{ selectedLoan.name }} spread the word.
+			</h2>
+			<p class="share__small__message">
+				{{ shareSubtitle }}
+			</p>
+		</div>
 		<div class="share__social social">
 			<a
 				data-testid="share-facebook-button"
@@ -279,8 +281,6 @@ $loan-triangle-size: rem-calc(12);
 	}
 
 	&__headline {
-		@include big-text();
-
 		text-align: center !important;
 		margin-bottom: 1.5rem;
 		margin-top: 1rem;

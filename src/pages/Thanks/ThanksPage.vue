@@ -2,7 +2,7 @@
 	<www-page
 		:gray-background="true"
 	>
-		<div class="row page-content">
+		<div class="row page-content" v-if="receipt && !showNewThanksPage">
 			<div class="small-12 columns thanks">
 				<div class="thanks__header hide-for-print">
 					<template v-if="receipt">
@@ -51,58 +51,55 @@
 					</template>
 				</div>
 			</div>
+			<thanks-layout-v2
+				v-if="receipt"
+				:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !showAutoDepositUpsell && !hasModernSub"
+				:show-auto-deposit-upsell="!isAutoDepositSubscriber && showAutoDepositUpsell && !hasModernSub"
+				:show-guest-upsell="isGuest"
+				:show-share="loans.length > 0"
+				:thanks-social-share-version="simpleSocialShareVersion"
+				:class="{
+					'tw-mt-4': showAutoDepositUpsell
+				}"
+			>
+				<template #receipt>
+					<checkout-receipt
+						v-if="receipt"
+						:lender="lender"
+						:receipt="receipt"
+					/>
+				</template>
+				<template #ad>
+					<auto-deposit-c-t-a />
+				</template>
+				<template #mg>
+					<monthly-good-c-t-a
+						:headline="ctaHeadline"
+						:body-copy="ctaBodyCopy"
+						:button-text="ctaButtonText"
+					/>
+				</template>
+				<template #share>
+					<social-share-v2
+						v-if="receipt"
+						class="thanks__social-share"
+						:lender="lender"
+						:loans="loans"
+					/>
+				</template>
+				<template #guest>
+					<guest-upsell
+						:loans="loans"
+					/>
+				</template>
+			</thanks-layout-v2>
 		</div>
-
-		<thanks-layout-v2
-			v-if="receipt"
-			:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !showAutoDepositUpsell && !hasModernSub"
-			:show-auto-deposit-upsell="!isAutoDepositSubscriber && showAutoDepositUpsell && !hasModernSub"
-			:show-guest-upsell="isGuest"
-			:show-share="loans.length > 0"
-			:thanks-social-share-version="simpleSocialShareVersion"
-			:class="{
-				'tw-mt-4': showAutoDepositUpsell
-			}"
-		>
-			<template #receipt>
-				<checkout-receipt
-					v-if="receipt"
-					:lender="lender"
-					:receipt="receipt"
-				/>
-			</template>
-			<template #ad>
-				<auto-deposit-c-t-a />
-			</template>
-			<template #mg>
-				<monthly-good-c-t-a
-					:headline="ctaHeadline"
-					:body-copy="ctaBodyCopy"
-					:button-text="ctaButtonText"
-				/>
-			</template>
-			<template #share>
-				<social-share
-					v-if="receipt && simpleSocialShareVersion !== 'b'"
-					class="thanks__social-share"
-					:lender="lender"
-					:loans="loans"
-					:is-guest="isGuest"
-				/>
-				<social-share-v2
-					v-if="receipt && simpleSocialShareVersion === 'b'"
-					class="thanks__social-share"
-					:lender="lender"
-					:loans="loans"
-					:is-guest="isGuest"
-				/>
-			</template>
-			<template #guest>
-				<guest-upsell
-					:loans="loans"
-				/>
-			</template>
-		</thanks-layout-v2>
+		<thanks-page-share v-if="receipt && showNewThanksPage"
+			:receipt="receipt"
+			:lender="lender"
+			:loan="selectedLoan"
+			:simple-social-share-version="simpleSocialShareVersion"
+		/>
 	</www-page>
 </template>
 
@@ -116,13 +113,12 @@ import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import GuestUpsell from '@/components/Checkout/GuestUpsell';
 import AutoDepositCTA from '@/components/Checkout/AutoDepositCTA';
 import MonthlyGoodCTA from '@/components/Checkout/MonthlyGoodCTA';
-import SocialShare from '@/components/Checkout/SocialShare';
 import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ThanksLayoutV2 from '@/components/Thanks/ThanksLayoutV2';
-
+import ThanksPageShare from '@/components/Thanks/ThanksPageShare';
+import orderBy from 'lodash/orderBy';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
-
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
@@ -138,10 +134,10 @@ export default {
 		GuestUpsell,
 		KvButton,
 		MonthlyGoodCTA,
-		SocialShare,
 		SocialShareV2,
 		ThanksLayoutV2,
-		WwwPage
+		WwwPage,
+		ThanksPageShare
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -162,7 +158,9 @@ export default {
 			hasModernSub: false,
 			isGuest: false,
 			pageData: {},
+			showNewThanksPage: false,
 			simpleSocialShareVersion: '',
+			newThanksPageModuleVersion: '',
 		};
 	},
 	apollo: {
@@ -182,7 +180,7 @@ export default {
 				const upsellEligible = isLoggedIn && !hasAutoDeposit && !hasLegacySubs && !hasModernSub;
 
 				return Promise.all([
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'simple_thanks_share' } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_share_module' } }),
 					upsellEligible ? client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_ad_upsell' } }) : Promise.resolve() // eslint-disable-line max-len
 				]);
 			}).catch(errorResponse => {
@@ -195,6 +193,10 @@ export default {
 		}
 	},
 	computed: {
+		selectedLoan() {
+			const orderedLoans = orderBy(this.loans, ['unreservedAmount'], ['desc']);
+			return orderedLoans[0] || {};
+		},
 		borrowerSupport() {
 			const loanNames = this.loans.map(loan => loan.name);
 			if (loanNames.length > 3) {
@@ -305,18 +307,19 @@ export default {
 		}
 
 		if (!this.isGuest) {
-			// MARS-96 Simplified social share experiment
-			const simpleSocialShareExp = this.apollo.readFragment({
-				id: 'Experiment:simple_thanks_share',
+			// MARS-134 New thanks page share experiment
+			const newThanksShareModule = this.apollo.readFragment({
+				id: 'Experiment:thanks_share_module',
 				fragment: experimentVersionFragment,
 			}) || {};
 
-			this.simpleSocialShareVersion = simpleSocialShareExp.version;
-			if (this.simpleSocialShareVersion) {
+			this.showNewThanksPage = this.$route.query.setuiab && this.$route.query.setuiab === 'thanks_share_module.b';
+			this.newThanksPageModuleVersion = newThanksShareModule.version;
+			if (this.newThanksPageModuleVersion) {
 				this.$kvTrackEvent(
 					'Thanks',
-					'EXP-MARS-96-May2022',
-					this.simpleSocialShareVersion,
+					'EXP-MARS-134-Jun2022',
+					this.newThanksPageModuleVersion,
 				);
 			}
 		}
