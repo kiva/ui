@@ -200,7 +200,8 @@ export default {
 					id: 54,
 					url: 'trending-now',
 					queryParams: 'status=fundRaising&riskRating=0,5',
-					algoliaParams: ''
+					algoliaParams: '',
+					flssLoanSearchState: {},
 				},
 				{
 					id: 55,
@@ -213,7 +214,8 @@ export default {
 					id: 56,
 					url: 'loans-with-research-backed-impact',
 					queryParams: 'status=fundRaising&riskRating=0,5',
-					algoliaParams: ''
+					algoliaParams: '',
+					flssLoanSearchState: {},
 				},
 				{
 					id: 57,
@@ -252,7 +254,8 @@ export default {
 					id: 66,
 					url: 'lenders-like-you-supported-these-loans',
 					queryParams: 'status=fundRaising&riskRating=0,5',
-					algoliaParams: ''
+					algoliaParams: '',
+					flssLoanSearchState: {},
 				},
 				{
 					id: 68,
@@ -404,13 +407,15 @@ export default {
 					id: 61,
 					url: 'flash-match',
 					queryParams: 'status=fundRaising&riskRating=0,5',
-					algoliaParams: ''
+					algoliaParams: '',
+					flssLoanSearchState: {},
 				},
 				{
 					id: 42,
 					url: '1-billion-in-change',
 					queryParams: 'status=fundRaising&riskRating=0,5',
-					algoliaParams: ''
+					algoliaParams: '',
+					flssLoanSearchState: {},
 				},
 				{
 					id: 35,
