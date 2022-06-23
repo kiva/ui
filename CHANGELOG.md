@@ -1,3 +1,10 @@
+### [2.206.3](https://github.com/kiva/ui/compare/v2.206.2...v2.206.3) (2022-06-23)
+
+
+### Bug Fixes
+
+* move exp tracking to mounted hook and remove eligibility gating around analytics on lend/filter ([f942f33](https://github.com/kiva/ui/commit/f942f33ac46f12ed86bf4f6ca6d7f5bbcc7d3b9b))
+
 ### [2.206.2](https://github.com/kiva/ui/compare/v2.206.1...v2.206.2) (2022-06-23)
 
 
