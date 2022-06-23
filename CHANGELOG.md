@@ -1,3 +1,11 @@
+### [2.206.1](https://github.com/kiva/ui/compare/v2.206.0...v2.206.1) (2022-06-23)
+
+
+### Bug Fixes
+
+* error handling for upsell loans ([b7d6599](https://github.com/kiva/ui/commit/b7d6599bd0dedeeb43d70ce98baae944298e9f8e))
+* update tracking info ([4097e1e](https://github.com/kiva/ui/commit/4097e1e36073bf55a142f056f9946f0af94b4d38))
+
 ## [2.206.0](https://github.com/kiva/ui/compare/v2.205.0...v2.206.0) (2022-06-22)
 
 
