@@ -8,5 +8,5 @@ module.exports = {
 		'./server/**/*.html',
 		'./src/**/*.vue',
 		'./tailwind.purge.safelist.txt',
-	],
+	]
 };

@@ -23,7 +23,9 @@
 						tile-size="large"
 						:category-name="category.name"
 						:category-description="category.description"
-						:category-image="category.retinaImage.url"
+						:image-alt="contentfulAlt"
+						:image="category.image && category.image.url ? category.image.url : contentfulSrc "
+						:retina-image="category.retinaImage && category.retinaImage.url ? category.retinaImage.url : ''"
 						:number-loans="category.loans.totalCount"
 					/>
 				</div>
@@ -36,7 +38,9 @@
 						tile-size="medium"
 						:category-name="category.name"
 						:category-description="category.description"
-						:category-image="category.retinaImage.url"
+						:image-alt="contentfulAlt"
+						:image="category.image && category.image.url ? category.image.url : contentfulSrc "
+						:retina-image="category.retinaImage && category.retinaImage.url ? category.retinaImage.url : ''"
 						:number-loans="category.loans.totalCount"
 					/>
 				</div>
@@ -49,7 +53,9 @@
 						tile-size="small"
 						:category-name="category.name"
 						:category-description="category.description"
-						:category-image="category.retinaImage.url"
+						:image-alt="contentfulAlt"
+						:image="category.image && category.image.url ? category.image.url : contentfulSrc "
+						:retina-image="category.retinaImage && category.retinaImage.url ? category.retinaImage.url : ''"
 						:number-loans="category.loans.totalCount"
 					/>
 				</div>
@@ -65,6 +71,32 @@ import gql from 'graphql-tag';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
+const allCategoriesQuery = gql`
+	query allCategoriesQuery {
+		lend {
+			loanChannels (limit: 18, popular: true, applyMinLoanCount: true) {
+				values {
+					id
+					url
+					name
+					description
+					image {
+						id
+						url (customSize: "w520h301")
+					}
+					retinaImage {
+						id
+						url (customSize: "w1040h602")
+					}
+					loans {
+        				totalCount
+        			}
+				}
+			}
+		}
+	}
+`;
+
 export default {
 	name: 'CategoriesBeta',
 	components: {
@@ -76,44 +108,36 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
+			contentfulAlt: '',
+			contentfulSrc: '',
+			placeholderKey: 'bp-hero-country-placeholder',
 			categories: [],
 		};
 	},
-	methods: {
-		gatherCategoryData() {
-			this.apollo.query({
-				query: gql`query categoryRows {
-					lend {
-						loanChannels (limit: 18, popular: true) {
-							values {
-								id
-								url
-								name
-								description
-								image {
-									id
-									url (customSize: "w313h176")
-								}
-								retinaImage {
-									id
-									url (customSize: "w626h352")
-								}
-								loans {
-          							totalCount
-        						}
-							}
-						}
-					}
-				}`,
-			}).then(({ data }) => {
-				this.categories = data?.lend?.loanChannels?.values ?? [];
-				console.log(this.categories);
-			});
+	apollo: {
+		query: allCategoriesQuery,
+		preFetch: true,
+		result(result) {
+			this.categories = result.data?.lend?.loanChannels?.values ?? [];
 		},
 	},
 	mounted() {
-		this.gatherCategoryData();
-		console.log(this.categories);
+		this.apollo.query({
+			query: gql`
+				query bpHeroBackgroundImage($placeholderKey: String) {
+					contentful {
+						placeholder: entries(contentType: "background", contentKey: $placeholderKey)
+					}
+				}
+			`,
+			variables: {
+				placeholderKey: this.placeholderKey,
+			},
+		}).then(result => {
+			const placeholderMedia = result?.data?.contentful?.placeholder?.items?.[0]?.fields?.backgroundMedia ?? {};
+			this.contentfulSrc = (placeholderMedia)?.fields?.file?.url ?? '';
+			this.contentfulAlt = (placeholderMedia)?.fields?.description ?? '';
+		});
 	},
 };
 
