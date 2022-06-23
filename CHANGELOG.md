@@ -1,3 +1,10 @@
+### [2.206.2](https://github.com/kiva/ui/compare/v2.206.1...v2.206.2) (2022-06-23)
+
+
+### Bug Fixes
+
+* add missing word loan ([8df10b5](https://github.com/kiva/ui/commit/8df10b535f84827975bc4e042055fbd2781a25d8))
+
 ### [2.206.1](https://github.com/kiva/ui/compare/v2.206.0...v2.206.1) (2022-06-23)
 
 
