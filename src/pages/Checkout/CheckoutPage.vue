@@ -29,12 +29,17 @@
 							:kiva-cards="kivaCards"
 							:teams="teams"
 							:loan-reservation-total="parseInt(totals.loanReservationTotal)"
+							:disable-matching="requireDepositsMatchedLoans"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
 						<upsell-module
-							v-if="!upsellCookieActive && showUpsellModule && isUpsellsExperimentEnabled "
+							v-if="!upsellCookieActive &&
+								showUpsellModule &&
+								isUpsellsExperimentEnabled
+								&& upsellLoan.name
+							"
 							:loan="upsellLoan"
 							:close-upsell-module="closeUpsellModule"
 							:add-to-basket="addToBasket"
@@ -65,6 +70,7 @@
 							:promo-fund="derivedPromoFund"
 							@refreshtotals="refreshTotals"
 							@updating-totals="setUpdatingTotals"
+							:show-matched-loan-kiva-credit="showMatchedLoanKivaCredit && requireDepositsMatchedLoans"
 						/>
 
 						<basket-verification />
@@ -276,6 +282,7 @@ import UpsellModule from '@/components/Checkout/UpsellModule';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
+import { isLoanFundraising } from '@/util/loanUtils';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -513,6 +520,14 @@ export default {
 		this.getUpsellModuleData();
 	},
 	computed: {
+		showMatchedLoanKivaCredit() {
+			const matchedLoansWithCredit = this.loans?.filter(loan => {
+				const hasCredits = loan.creditsUsed?.length > 0;
+				const isMatchedLoan = loan.loan?.matchingText;
+				return hasCredits && isMatchedLoan;
+			});
+			return matchedLoansWithCredit.length > 0;
+		},
 		// show upsell module only once per session
 		upsellCookieActive() {
 			return this.cookieStore.get('upsell-loan-added') === 'true';
@@ -792,7 +807,9 @@ export default {
 				query: upsellQuery,
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
-				this.upsellLoan = data?.lend?.loans?.values[0];
+				const loans = data?.lend?.loans?.values || [];
+				// Temp solution so we don't show reserved loans on upsell
+				this.upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || {};
 			});
 		},
 		verificationComplete() {

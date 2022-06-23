@@ -1,11 +1,13 @@
 <template>
 	<section class="share hide-for-print">
-		<h2 class="share__headline" data-testid="share-headline">
-			Help {{ selectedLoan.name }} spread the word.
-		</h2>
-		<p class="share__small__message">
-			{{ shareSubtitle }}
-		</p>
+		<div>
+			<h2 class="share__headline" data-testid="share-headline">
+				Help {{ selectedLoan.name }} spread the word.
+			</h2>
+			<p class="share__small__message">
+				{{ shareSubtitle }}
+			</p>
+		</div>
 		<div class="share__social social">
 			<a
 				data-testid="share-facebook-button"
@@ -68,10 +70,18 @@ export default {
 		KvIcon
 	},
 	props: {
+		lender: {
+			type: Object,
+			required: true
+		},
 		loans: {
 			type: Array,
 			required: true
 		},
+		isGuest: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -107,19 +117,24 @@ export default {
 		shareMessage() {
 			return this.message.trim() || this.suggestedMessage;
 		},
+		utmContent() {
+			if (this.isGuest) return 'guest';
+			if (this.lender?.public && this.lender?.inviterName) return this.lender?.inviterName;
+			return 'anonymous';
+		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			if (this.selectedLoan.id) {
-				return `${base}/lend/${this.selectedLoan.id}`;
+				return `${base}/lend/${this.selectedLoan.id}?utm_content=${this.utmContent}`;
 			}
-			return base;
+			return `${base}?utm_content=${this.utmContent}`;
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
 			return this.getFullUrl('https://www.facebook.com/dialog/share', {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
-				href: `${this.shareLink}?utm_source=facebook.com&utm_medium=social&utm_campaign=social_share_checkout`,
+				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social&utm_campaign=social_share_checkout`,
 				redirect_uri: `${pageUrl}?kiva_transaction_id=${this.$route.query.kiva_transaction_id}`,
 				quote: this.shareMessage,
 			});
@@ -130,13 +145,13 @@ export default {
 				source: `https://${this.$appConfig.host}`,
 				summary: this.shareMessage.substring(0, 256),
 				title: `A loan for ${this.selectedLoan.name}`,
-				url: `${this.shareLink}?utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout`
+				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout`
 			});
 		},
 		twitterShareUrl() {
 			return this.getFullUrl('https://twitter.com/intent/tweet', {
 				text: this.shareMessage,
-				url: `${this.shareLink}?utm_source=t.co&utm_medium=social&utm_campaign=social_share_checkout`,
+				url: `${this.shareLink}&utm_source=t.co&utm_medium=social&utm_campaign=social_share_checkout`,
 				via: 'Kiva',
 			});
 		},
@@ -180,7 +195,7 @@ export default {
 			this.message = this.suggestedMessage;
 		},
 		async copyLink() {
-			const url = `${this.shareLink}?utm_source=social_share_link&utm_campaign=social_share_checkout`;
+			const url = `${this.shareLink}&utm_source=social_share_link&utm_campaign=social_share_checkout`;
 			try {
 				await clipboardCopy(url);
 				this.copyStatus = {
@@ -266,8 +281,6 @@ $loan-triangle-size: rem-calc(12);
 	}
 
 	&__headline {
-		@include big-text();
-
 		text-align: center !important;
 		margin-bottom: 1.5rem;
 		margin-top: 1rem;

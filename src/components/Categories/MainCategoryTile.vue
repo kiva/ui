@@ -95,10 +95,10 @@ export default {
 <style lang="scss" scoped>
 @import "settings";
 
-.image-sizing{
-  height: 152px;
-  width: 152px;
-  object-fit: cover;
+.image-sizing {
+	height: 152px;
+	width: 152px;
+	object-fit: cover;
 }
 
 </style>

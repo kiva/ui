@@ -14,7 +14,7 @@
 					class="tw-cursor-pointer tw-flex"
 					:class="linkClass(0)"
 					aria-label="Previous page"
-					@click="!isCurrent(0) && pageChange(current - 1)"
+					@click="!isCurrent(0) && clickPrevious()"
 				>
 					<kv-icon
 						name="fat-chevron"
@@ -36,7 +36,7 @@
 					class="tw-cursor-pointer"
 					:class="linkClass(n)"
 					:aria-label="`Page ${n + 1}`"
-					@click="!isCurrent(n) && pageChange(n)"
+					@click="!isCurrent(n) && clickPage(n)"
 				>
 					<span v-if="isCurrent(n)" class="tw-sr-only">You're on page</span>
 					{{ n + 1 }}
@@ -47,7 +47,7 @@
 					class="tw-cursor-pointer tw-flex"
 					:class="linkClass(totalPages ? totalPages - 1 : 0)"
 					aria-label="Next page"
-					@click="totalPages && !isCurrent(totalPages - 1) && pageChange(current + 1)"
+					@click="totalPages && !isCurrent(totalPages - 1) && clickNext()"
 				>
 					<kv-icon
 						name="fat-chevron"
@@ -160,6 +160,25 @@ export default {
 			}
 
 			this.$emit('page-changed', { pageOffset: number * this.limit });
+		},
+		clickPage(number) {
+			this.pageChange(number);
+
+			this.$kvTrackEvent?.('Lending', 'click-page-pager', number + 1);
+		},
+		clickPrevious() {
+			const previous = this.current - 1;
+
+			this.pageChange(previous);
+
+			this.$kvTrackEvent?.('Lending', 'click-previous-pager', previous + 1);
+		},
+		clickNext() {
+			const next = this.current + 1;
+
+			this.pageChange(next);
+
+			this.$kvTrackEvent?.('Lending', 'click-next-pager', next + 1);
 		},
 	},
 };

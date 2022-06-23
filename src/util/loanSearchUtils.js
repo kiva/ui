@@ -41,6 +41,8 @@ export const sortByNameToDisplay = {
 	personalized: 'Recommended'
 };
 
+export const visibleThemeIds = [2, 6, 8, 11, 14, 28, 29, 32, 36];
+
 /**
  * Returns loan search state that has been validated against the available facets
  *
@@ -129,12 +131,14 @@ export function formatSortOptions(standardSorts, flssSorts) {
 			sortSrc: STANDARD_QUERY_TYPE,
 		};
 	});
-	const labeledFlssSorts = flssSorts.map(sort => {
-		return {
-			name: sort.name,
-			sortSrc: FLSS_QUERY_TYPE,
-		};
-	});
+	const labeledFlssSorts = flssSorts.reduce((prev, current) => {
+		// The amountLeft sort is currently returned by the GraphQL enum but isn't fully supported
+		if (current.name !== 'amountLeft') {
+			prev.push({ name: current.name, sortSrc: FLSS_QUERY_TYPE });
+		}
+
+		return prev;
+	}, []);
 	return [...labeledStandardSorts, ...labeledFlssSorts];
 }
 
@@ -151,6 +155,37 @@ export function sortRegions(regions) {
 	sorted.forEach(region => { region.countries = orderBy(region.countries, 'name'); });
 
 	return sorted;
+}
+
+/**
+ * Map isoCode to country name
+ *
+ * @param {String} isoCode
+ * @param {Array<Object>} region
+ * @returns String
+ */
+export function isoToCountryName(isoCode, countryList = []) {
+	const isoMatch = countryList.find(country => country.isoCode === isoCode);
+	return isoMatch?.name ?? null;
+}
+
+/**
+ * Map isoCode List to region keyed object with country name array
+ *
+ * @param {Array<String>} isoCodes
+ * @param {Array<Object>} regions
+ * @returns {Object}
+ */
+export function mapIsoCodesToCountryNames(isoCodes, regions) {
+	const mappedIsos = regions?.reduce((regionObject, region) => {
+		const countryNames = isoCodes.filter(
+			iso => region?.countries?.find(country => country.isoCode === iso)
+		).map(iso => {
+			return isoToCountryName(iso, region?.countries);
+		});
+		return countryNames.length ? { ...regionObject, [region.region]: countryNames } : { ...regionObject };
+	}, {});
+	return mappedIsos;
 }
 
 /**
@@ -215,11 +250,17 @@ export function transformSectors(filteredSectors, allSectors = []) {
 export function transformThemes(filteredThemes, allThemes = []) {
 	const transformed = [];
 
-	filteredThemes.forEach(({ key: name, value: numLoansFundraising }) => {
+	// Always show certain themes regardless of whether there are applicable loans
+	visibleThemeIds.forEach(id => {
+		const themeFromLend = allThemes.find(a => a.id === id);
+
+		if (!themeFromLend) return;
+
 		// Case insensitive matching since lend and FLSS APIs can use different casing for themes
-		const lookupTheme = allThemes.find(a => a.name.toUpperCase() === name.toUpperCase());
-		if (!lookupTheme) return;
-		const theme = { id: lookupTheme.id, name, numLoansFundraising };
+		const themeFromFlss = filteredThemes.find(t => t.key.toUpperCase() === themeFromLend.name.toUpperCase());
+
+		const theme = { id, name: themeFromLend.name, numLoansFundraising: themeFromFlss?.value ?? 0 };
+
 		transformed.push(theme);
 	});
 
@@ -510,15 +551,21 @@ export function getThemeNamesQueryParam(param, facets) {
  * @param {Object} query The Vue Router query object (this.$route.query)
  * @param {Object} allFacets All available facets from the APIs
  * @param {string} queryType The current query type (lend vs FLSS)
+ * @param {number} pageLimit The limit/size of the page
  * @param {Object} previousState The previous search state
  */
-export async function applyQueryParams(apollo, query, allFacets, queryType, previousState = {}) {
+export async function applyQueryParams(apollo, query, allFacets, queryType, pageLimit, previousState = {}) {
+	// Convert query param 1-based page to pager 0-based page and ensure page is an integer
+	const page = isNumber(query.page) && query.page >= 1 ? Math.floor(query.page) - 1 : 0;
+
 	const filters = {
-		...previousState, // Country ISO code, page offset, and page size are not currently in the query params
 		gender: query.gender,
-		sortBy: queryType === FLSS_QUERY_TYPE ? lendToFlssSort.get(query.sortBy) : query.sortBy,
+		countryIsoCode: previousState.countryIsoCode,
 		sectorId: getSectorIdsFromQueryParam(query.sector, allFacets.sectorNames, allFacets.sectorFacets, true),
+		sortBy: queryType === FLSS_QUERY_TYPE ? lendToFlssSort.get(query.sortBy) : query.sortBy,
 		theme: getThemeNamesQueryParam(query.attribute, allFacets.themeFacets),
+		pageOffset: page * pageLimit,
+		pageLimit,
 	};
 
 	await updateSearchState(apollo, filters, allFacets, queryType, previousState);
@@ -561,12 +608,16 @@ export function updateQueryParams(loanSearchState, router, allFacets, queryType)
 		return prev;
 	}, []);
 
+	// Page query param is 1-based
+	const page = (loanSearchState.pageOffset / loanSearchState.pageLimit) + 1;
+
 	// Create new query params object
 	const newParams = {
 		...(loanSearchState.gender && { gender: loanSearchState.gender }),
 		...(loanSearchState.sectorId?.length && { sector: loanSearchState.sectorId.join(',') }),
 		...(loanSearchState.theme?.length && { attribute: themeIds.join(',') }),
 		...(queryParamSortBy && { sortBy: queryParamSortBy }),
+		...(page > 1 && { page: page.toString() }),
 		// TODO: add params as query param support expands
 		...utmParams,
 	};
@@ -579,6 +630,6 @@ export function updateQueryParams(loanSearchState, router, allFacets, queryType)
 
 	// Vue throws duplicate navigation exception when identical paths are pushed to the router
 	if (!doParamsMatch) {
-		router.push({ ...router.currentRoute, query: newParams, params: { noScroll: true } });
+		router.push({ ...router.currentRoute, query: newParams, params: { noScroll: true, noAnalytics: true } });
 	}
 }

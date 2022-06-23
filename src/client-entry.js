@@ -17,6 +17,8 @@ import { contentfulPreviewCookie } from '@/util/contentfulPreviewCookie';
 import createApp from '@/main';
 import '@/assets/iconLoader';
 
+import { fetch } from 'whatwg-fetch';
+
 const config = window.__KV_CONFIG__ || {};
 
 // Set webpack public asset path based on configuration
@@ -62,6 +64,7 @@ const {
 	device,
 	kvAuth0,
 	locale: getUserLocale(),
+	fetch,
 });
 
 // Show a tip message when there is an unhandled auth0 error
@@ -159,8 +162,11 @@ router.onReady(() => {
 	router.afterEach((to, from) => {
 		// finish loading
 		app.$Progress.finish();
-		// fire pageview
-		app.$fireAsyncPageView(to, from);
+
+		if (!to?.params?.noAnalytics) {
+			// fire pageview
+			app.$fireAsyncPageView(to, from);
+		}
 	});
 
 	router.onError(() => app.$Progress.fail());

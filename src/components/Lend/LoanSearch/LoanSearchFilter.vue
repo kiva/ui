@@ -18,6 +18,7 @@
 			</template>
 			<loan-search-sort-by
 				:all-sort-options="facets.sortOptions"
+				:is-logged-in="isLoggedIn"
 				:sort="loanSearchState.sortBy"
 				:query-type="queryType"
 				@updated="handleUpdatedFilters"
@@ -29,7 +30,11 @@
 					Location
 				</h2>
 			</template>
-			<loan-search-location-filter :regions="facets.regions" @updated="handleUpdatedFilters" />
+			<loan-search-location-filter
+				:active-iso-codes="loanSearchState.countryIsoCode"
+				:regions="facets.regions"
+				@updated="handleUpdatedFilters"
+			/>
 		</kv-accordion-item>
 		<kv-accordion-item id="acc-sectors" :open="false">
 			<template #header>
@@ -130,6 +135,10 @@ export default {
 		facets: {
 			type: Object,
 			required: true
+		},
+		isLoggedIn: {
+			type: Boolean,
+			default: false
 		},
 		loanSearchState: {
 			type: Object,

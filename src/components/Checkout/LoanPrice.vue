@@ -112,6 +112,9 @@ export default {
 				const reducedArray = pricesArray.filter(element => {
 					return element % 25 === 0;
 				});
+				if (!reducedArray.includes(Number(this.price).toFixed())) {
+					reducedArray.push(Number(this.price).toFixed());
+				}
 				return reducedArray;
 			}
 			if (this.type === 'kivaCard') {
