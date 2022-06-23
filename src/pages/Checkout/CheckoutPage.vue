@@ -843,10 +843,9 @@ export default {
 						if (error.extensions?.code === 'no_shares_added_regular_xb') {
 							this.$kvTrackEvent(
 								'Basket',
-								'click-checkout-upsell',
-								'Add loan to basket',
-								loanId,
-								amountLeft
+								'click-checkout-upsell-reserved',
+								'ATC reserved loan attempted',
+								loanId
 							);
 							// eslint-disable-next-line max-len
 							this.$showTipMsg('Looks like that loan was reserved by someone else! Try this one instead.', 'info');
