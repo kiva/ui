@@ -208,20 +208,6 @@ export default {
 
 		// Get Lend Filter Exp version
 		this.getLendFilterExpVersion();
-
-		if (isFLSSEligible(this.$route)) {
-			const { enabled } = getExperimentSettingCached(this.apollo, lendFilterRedirectEXP);
-			if (enabled) {
-				// this method will get the version from the apollo cache
-				trackExperimentVersion(
-					this.apollo,
-					this.$kvTrackEvent,
-					'Lending',
-					lendFilterRedirectEXP,
-					'EXP-VUE-1061-June2022'
-				);
-			}
-		}
 	},
 	data() {
 		return {
@@ -316,6 +302,20 @@ export default {
 
 		// update global lend filter experiment setting
 		this.updateLendFilterExp();
+
+		// Check cached for lend/filter-alpha experiment state and track if present
+		// NOTE: The cached setting/exp state may not be available on subsequent page loads after algolia alters params
+		const { enabled } = getExperimentSettingCached(this.apollo, lendFilterRedirectEXP);
+		if (enabled) {
+			// this method will get the version from the apollo cache
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				lendFilterRedirectEXP,
+				'EXP-VUE-1061-June2022'
+			);
+		}
 	},
 	methods: {
 		hideFilterMenu() {

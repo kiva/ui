@@ -70,7 +70,7 @@ export default {
 				});
 		}
 	},
-	created() {
+	mounted() {
 		const { enabled } = getExperimentSettingCached(this.apollo, lendFilterRedirectEXP);
 		if (enabled) {
 			// this method will get the version from the apollo cache
