@@ -313,8 +313,8 @@ export default {
 				fragment: experimentVersionFragment,
 			}) || {};
 
-			this.showNewThanksPage = this.$route.query.setuiab && this.$route.query.setuiab === 'thanks_share_module.b';
 			this.newThanksPageModuleVersion = newThanksShareModule.version;
+			this.showNewThanksPage = this.newThanksPageModuleVersion === 'b';
 			if (this.newThanksPageModuleVersion) {
 				this.$kvTrackEvent(
 					'Thanks',
