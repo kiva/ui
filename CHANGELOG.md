@@ -1,3 +1,10 @@
+## [2.207.0](https://github.com/kiva/ui/compare/v2.206.4...v2.207.0) (2022-06-24)
+
+
+### Features
+
+* upgrading @kiva/kv-components to v3.0.6 and @kiva/kv-tokens to v.2.1.0 ([#3950](https://github.com/kiva/ui/issues/3950)) ([2328259](https://github.com/kiva/ui/commit/232825995d46ffd1e2c3ded8b531177eec0fe6e2))
+
 ### [2.206.4](https://github.com/kiva/ui/compare/v2.206.3...v2.206.4) (2022-06-24)
 
 
