@@ -128,6 +128,12 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			value
 		}
 	}
+	general {
+		shareCardLanguage: uiExperimentSetting(key: "share_card_language") {
+			key
+			value
+		}
+	}
 	mySubscriptions(includeDisabled: false) {
 		values {
 			id

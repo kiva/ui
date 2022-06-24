@@ -81,6 +81,10 @@ export default {
 		isGuest: {
 			type: Boolean,
 			default: false
+		},
+		shareCardLanguageVersion: {
+			type: String,
+			default: ''
 		}
 	},
 	data() {
@@ -125,9 +129,9 @@ export default {
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			if (this.selectedLoan.id) {
-				return `${base}/lend/${this.selectedLoan.id}?utm_content=${this.utmContent}`;
+				return `${base}/lend/${this.selectedLoan.id}?utm_content=${this.utmContent}&scle=${this.shareCardLanguageVersion}`; // eslint-disable-line max-len
 			}
-			return `${base}?utm_content=${this.utmContent}`;
+			return `${base}?utm_content=${this.utmContent}&scle=${this.shareCardLanguageVersion}`;
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
