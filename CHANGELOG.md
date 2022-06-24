@@ -1,3 +1,10 @@
+### [2.206.4](https://github.com/kiva/ui/compare/v2.206.3...v2.206.4) (2022-06-24)
+
+
+### Bug Fixes
+
+* show experiment thanks page for version b ([e392623](https://github.com/kiva/ui/commit/e3926235d23d4d894f031ea3d0ecf215ef3422ad))
+
 ### [2.206.3](https://github.com/kiva/ui/compare/v2.206.2...v2.206.3) (2022-06-23)
 
 
