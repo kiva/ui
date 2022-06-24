@@ -263,6 +263,7 @@ export default {
 			requireDepositsMatchedLoans: false,
 			shareCardLanguageVersion: '',
 			inviterName: '',
+			inviterIsGuestOrAnonymous: false,
 		};
 	},
 	apollo: {
@@ -311,7 +312,7 @@ export default {
 			this.description = loan?.description ?? '';
 			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
 			// eslint-disable-next-line max-len
-			this.inviterName = this.anonymizationLevel === 'full' ? '' : result?.data?.community?.lender?.name ?? '';
+			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
 
 			const diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = diffInDays <= 3;
@@ -419,6 +420,9 @@ export default {
 			'EXP-MARS-143-Jul2022',
 			this.shareCardLanguageVersion
 		);
+
+		const utmContent = this.$route.query?.utm_content;
+		this.inviterIsGuestOrAnonymous = utmContent === 'anonymous' || utmContent === 'guest';
 	},
 };
 </script>
