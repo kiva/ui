@@ -310,7 +310,8 @@ export default {
 			this.use = loan?.use ?? '';
 			this.description = loan?.description ?? '';
 			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
-			this.inviterName = result?.data?.community?.lender?.name ?? '';
+			// eslint-disable-next-line max-len
+			this.inviterName = this.anonymizationLevel === 'full' ? '' : result?.data?.community?.lender?.name ?? '';
 
 			const diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = diffInDays <= 3;
@@ -367,12 +368,10 @@ export default {
 		},
 		pageTitle() {
 			if (this.shareCardLanguageVersion === 'b') {
-				return `Can you help ${this.inviterName} support ${this.name}`;
+				// eslint-disable-next-line max-len
+				return this.inviterName === '' ? `Can you help support ${this.name}?` : `Can you help ${this.inviterName} support ${this.name}`;
 			}
 
-			if (this.shareCardLanguageVersion === '' || this.inviterName === '') {
-				return `Can you help support ${this.name}?`;
-			}
 			return `Lend to ${this.name} in ${this.countryName}`;
 		}
 	},
