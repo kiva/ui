@@ -120,6 +120,12 @@ export default {
 					href: `https://${this.$appConfig.host}${this.$route.path}`
 				}
 			].concat([
+				(/^[a-z]+:\/\//i.test(this.$appConfig?.publicPath) ? {
+					vmid: 'preconnect',
+					rel: 'preconnect',
+					href: `https://${new URL(this.$appConfig.publicPath).hostname}`
+				} :	{})
+			]).concat([
 				// Standard Favicons + Android favicons
 				{
 					rel: 'icon',
