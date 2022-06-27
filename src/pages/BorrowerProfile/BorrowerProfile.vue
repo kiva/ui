@@ -86,6 +86,7 @@ import BorrowerCountry from '@/components/BorrowerProfile/BorrowerCountry';
 import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
+import { isLoanFundraising } from '@/util/loanUtils';
 
 const loanUseFilter = require('../../plugins/loan-use-filter');
 
@@ -276,7 +277,16 @@ export default {
 						loanId: Number(route.params?.id ?? 0),
 					},
 				})
-				.then(() => {
+				.then(({ data }) => {
+					const loan = data?.lend?.loan;
+					// checks if the loan status is fundraising or not
+					// if not, then redirect to the lend/loan_id page
+					if (loan && !isLoanFundraising(loan)) {
+						return Promise.reject({
+							path: `/lend/${loan.id}`,
+						});
+					}
+
 					return Promise.all([
 						// eslint-disable-next-line max-len
 						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
