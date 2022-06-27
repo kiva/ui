@@ -1,11 +1,14 @@
 <template>
 	<www-page
 		class="loan-channel-page category-page"
-		:gray-background="pageLayout === 'control'"
+		:gray-background="true"
 	>
 		<loan-channel-category-control
-			v-if="pageLayout === 'control'"
+			v-if="targetedLoanChannel !== 'recommended-by-lenders'"
 			:add-bundles-exp="addBundlesExp"
+		/>
+		<loan-channel-category-recommended-by-lenders
+			v-else
 		/>
 
 		<add-to-basket-interstitial />
@@ -19,6 +22,8 @@ import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketI
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import LoanChannelCategoryControl from '@/pages/Lend/LoanChannelCategoryControl';
+import LoanChannelCategoryRecommendedByLenders from '@/pages/Lend/LoanChannelCategoryRecommendedByLenders';
+
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 const pageQuery = gql`
@@ -72,12 +77,12 @@ export default {
 	components: {
 		AddToBasketInterstitial,
 		LoanChannelCategoryControl,
+		LoanChannelCategoryRecommendedByLenders,
 		WwwPage,
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
-			pageLayout: 'control',
 			addBundlesExp: false,
 			meta: {
 				title: undefined,
@@ -110,23 +115,6 @@ export default {
 		targetedLoanChannel() {
 			return this.$route?.params?.category ?? '';
 		},
-		// categories to run ACK-247 experiment on
-		testCategories() {
-			/*	'kiva-u-s' was removed from this list after experiment launch.
-			Category properties and image asset still exist at:
-			src/pages/Lend/LoanChannelCategoryExperiment.vue */
-			return [
-				'loans-to-women',
-				'women',
-				'agriculture',
-				'eco-friendly',
-				'refugees-and-i-d-ps',
-				'shelter',
-				'single-parents',
-				'conflict-zones',
-				'ending-soon'
-			];
-		}
 	},
 	methods: {
 		initializeAddToBasketInterstitial() {
@@ -169,7 +157,7 @@ export default {
 					break;
 				case 'conflict-zones':
 					this.meta.title = 'Lend to business owners in conflict zones';
-					this.meta.description = 'Help fund small business owners in regions affected byviolence'
+					this.meta.description = 'Help fund small business owners in regions affected by violence'
 					+ 'or instability. With just $25, you can support entrepreneurs in areas'
 					+ 'where credit is hard to access. ';
 					break;
