@@ -849,16 +849,30 @@ export default {
 				if (errors) {
 					// Handle errors from adding to basket
 					_forEach(errors, error => {
-						this.$showTipMsg(error.message, 'error');
-						try {
+						// Case if upsell loan gets reserved while user is in basket
+						if (error.extensions?.code === 'no_shares_added_regular_xb') {
 							this.$kvTrackEvent(
-								'Lending',
-								'Add-to-Basket',
-								`Failed: ${error.message.substring(0, 40)}...`
+								'Basket',
+								'click-checkout-upsell-reserved',
+								'ATC reserved loan attempted',
+								loanId
 							);
-							Sentry.captureMessage(`Add to Basket: ${error.message}`);
-						} catch (e) {
+							// eslint-disable-next-line max-len
+							this.$showTipMsg('Looks like that loan was reserved by someone else! Try this one instead.', 'info');
+							this.getUpsellModuleData();
+							this.refreshTotals();
+						} else {
+							this.$showTipMsg(error.message, 'error');
+							try {
+								this.$kvTrackEvent(
+									'Lending',
+									'Add-to-Basket',
+									`Failed: ${error.message.substring(0, 40)}...`
+								);
+								Sentry.captureMessage(`Add to Basket: ${error.message}`);
+							} catch (e) {
 							// no-op
+							}
 						}
 					});
 				} else {

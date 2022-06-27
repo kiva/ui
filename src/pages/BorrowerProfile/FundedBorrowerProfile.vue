@@ -223,7 +223,7 @@ export default {
 	metaInfo() {
 		const canonicalUrl = `https://${this.$appConfig.host}${this.$route.path}`.replace('funded', 'lend');
 		return {
-			title: `${this.loan?.name ?? ''} From ${this.loan.geocode?.country?.name ?? ''}'s has been funded`,
+			title: `${this.loan?.name ?? ''} From ${this.loan.geocode?.country?.name ?? ''}'s loan has been funded`,
 			meta: [
 				{
 					vmid: 'description',

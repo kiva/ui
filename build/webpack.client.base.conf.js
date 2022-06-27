@@ -15,7 +15,11 @@ module.exports = merge(baseWebpackConfig, {
 	optimization: {
 		splitChunks: {
 			chunks: 'all',
-			maxAsyncRequests: 8, // default is 6
+			maxAsyncRequests: Infinity, // default is 6
+			cacheGroups: {
+				default: false,
+				vendors: false
+			}
 		}
 	},
 	plugins: [
