@@ -147,10 +147,28 @@
 			/>
 		</kv-ui-button>
 
+		<kv-ui-button
+			class="tw-text-secondary"
+			variant="secondary"
+			v-if="isInBasket"
+			v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
+			to="/basket"
+		>
+			<slot>
+				<div class="tw-inline-flex tw-items-center tw-gap-1">
+					Checkout now
+					<kv-material-icon
+						class="tw-w-2.5 tw-h-2.5"
+						:icon="mdiCheckCircleOutline"
+					/>
+				</div>
+			</slot>
+		</kv-ui-button>
+
 		<!-- Lend button -->
 		<kv-ui-button
 			key="lendButton"
-			v-if="!allSharesReserved && !isLoading && inBorrowerProfilePage && !isAdding"
+			v-if="!allSharesReserved && !isLoading && inBorrowerProfilePage && !isAdding && !isInBasket"
 			class="tw-inline-flex tw-flex-1"
 			data-testid="bp-lend-cta-lend-button"
 			type="submit"
@@ -190,7 +208,7 @@
 </template>
 
 <script>
-import { mdiChevronRight, mdiMapMarker } from '@mdi/js';
+import { mdiChevronRight, mdiMapMarker, mdiCheckCircleOutline } from '@mdi/js';
 import gql from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
 import { isMatchAtRisk, watchLoanData } from '@/util/loanUtils';
@@ -306,6 +324,7 @@ export default {
 	},
 	data() {
 		return {
+			mdiCheckCircleOutline,
 			loan: null,
 			basketItems: null,
 			isLoading: true,
@@ -396,7 +415,7 @@ export default {
 			return this.isLessThan25 ? this.unreservedAmount : 25;
 		},
 		ctaButtonText() {
-			return `Lend ${this.lendAmount} now`;
+			return `Lend $${this.lendAmount} now`;
 		},
 	},
 	methods: {

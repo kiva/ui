@@ -1,3 +1,73 @@
+### [2.208.2](https://github.com/kiva/ui/compare/v2.208.1...v2.208.2) (2022-06-28)
+
+
+### Bug Fixes
+
+* set missing publicId variable and only include lender info when publicId is set ([4b820c2](https://github.com/kiva/ui/commit/4b820c28973095d270519515c487d5298f070712))
+
+### [2.208.1](https://github.com/kiva/ui/compare/v2.208.0...v2.208.1) (2022-06-28)
+
+
+### Bug Fixes
+
+* error getting cache for viewtoggle component ([437b427](https://github.com/kiva/ui/commit/437b4270157279c9ba6467771f3bcc36e9fcfaa6))
+
+## [2.208.0](https://github.com/kiva/ui/compare/v2.207.0...v2.208.0) (2022-06-27)
+
+
+### Features
+
+* added share car language experiment ([1268710](https://github.com/kiva/ui/commit/12687108e69112e8e3cb36f6c9870f7bb8d91e68))
+* change button message when loan is in basket and add dollar sign in cta button ([cf6a464](https://github.com/kiva/ui/commit/cf6a464d5bd8d3e269186886d674e5e49ec57354))
+* increase number of allowed webpack chunks ([6eb05e5](https://github.com/kiva/ui/commit/6eb05e51a4b3aad354f41e19342061d39eda04c4))
+* preconnect to fastly ([ab3da96](https://github.com/kiva/ui/commit/ab3da96a2cce4a39ffa6feb32a3dfe7cc32b0f2c))
+
+
+### Bug Fixes
+
+* more changes after code review ([e2748e3](https://github.com/kiva/ui/commit/e2748e351c9396397aeb3a6683ef62231e55dbc1))
+* redirect to lend/id when loan status is not fundraising ([85ead44](https://github.com/kiva/ui/commit/85ead444f2d8500b08287c91439b9255b21fbd06))
+* show check icon in checkout button ([4a31a95](https://github.com/kiva/ui/commit/4a31a95a9f596b50ad003e7e1ececaa04a305b6a))
+* small fixes after code review ([321d6ef](https://github.com/kiva/ui/commit/321d6efa34f6a16413a92405a378f723c583d85f))
+* use slot section inside kv-ui-button ([b6c1e50](https://github.com/kiva/ui/commit/b6c1e5084b3559934fdac5f1b96935310d17c41e))
+* validate public path url ([e87947c](https://github.com/kiva/ui/commit/e87947c8b6c0e54b50a9b977846f77bfc1e29b6f))
+
+## [2.207.0](https://github.com/kiva/ui/compare/v2.206.4...v2.207.0) (2022-06-24)
+
+
+### Features
+
+* upgrading @kiva/kv-components to v3.0.6 and @kiva/kv-tokens to v.2.1.0 ([#3950](https://github.com/kiva/ui/issues/3950)) ([2328259](https://github.com/kiva/ui/commit/232825995d46ffd1e2c3ded8b531177eec0fe6e2))
+
+### [2.206.4](https://github.com/kiva/ui/compare/v2.206.3...v2.206.4) (2022-06-24)
+
+
+### Bug Fixes
+
+* show experiment thanks page for version b ([e392623](https://github.com/kiva/ui/commit/e3926235d23d4d894f031ea3d0ecf215ef3422ad))
+
+### [2.206.3](https://github.com/kiva/ui/compare/v2.206.2...v2.206.3) (2022-06-23)
+
+
+### Bug Fixes
+
+* move exp tracking to mounted hook and remove eligibility gating around analytics on lend/filter ([f942f33](https://github.com/kiva/ui/commit/f942f33ac46f12ed86bf4f6ca6d7f5bbcc7d3b9b))
+
+### [2.206.2](https://github.com/kiva/ui/compare/v2.206.1...v2.206.2) (2022-06-23)
+
+
+### Bug Fixes
+
+* add missing word loan ([8df10b5](https://github.com/kiva/ui/commit/8df10b535f84827975bc4e042055fbd2781a25d8))
+
+### [2.206.1](https://github.com/kiva/ui/compare/v2.206.0...v2.206.1) (2022-06-23)
+
+
+### Bug Fixes
+
+* error handling for upsell loans ([b7d6599](https://github.com/kiva/ui/commit/b7d6599bd0dedeeb43d70ce98baae944298e9f8e))
+* update tracking info ([4097e1e](https://github.com/kiva/ui/commit/4097e1e36073bf55a142f056f9946f0af94b4d38))
+
 ## [2.206.0](https://github.com/kiva/ui/compare/v2.205.0...v2.206.0) (2022-06-22)
 
 
