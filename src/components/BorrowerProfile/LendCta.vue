@@ -80,52 +80,82 @@
 									</option>
 								</kv-ui-select>
 
-								<!-- Lend button -->
-								<kv-ui-button
-									key="lendButton"
-									v-if="lendButtonVisibility && !isLessThan25"
-									class="tw-inline-flex tw-flex-1"
-									data-testid="bp-lend-cta-lend-button"
-									type="submit"
+								<!-- Sparkles wrapper -->
+								<div
+									class="tw-relative"
+									:class="{'tw-w-full':isLendAmountButton}"
 								>
-									{{ ctaButtonText }}
-								</kv-ui-button>
+									<!-- Lend button -->
+									<kv-ui-button
+										key="lendButton"
+										v-if="lendButtonVisibility && !isLessThan25"
+										class="tw-inline-flex tw-flex-1"
+										data-testid="bp-lend-cta-lend-button"
+										type="submit"
+									>
+										{{ ctaButtonText }}
+									</kv-ui-button>
 
-								<!-- Lend again/lent previously button -->
-								<kv-ui-button
-									key="lendAgainButton"
-									v-if="this.state === 'lent-to' && !isLessThan25"
-									class="tw-inline-flex tw-flex-1"
-									data-testid="bp-lend-cta-lend-again-button"
-									type="submit"
-									v-kv-track-event="[
-										'Lending',
-										'Add to basket',
-										'Lend again'
-									]"
-								>
-									Lend again
-								</kv-ui-button>
+									<!-- Lend again/lent previously button -->
+									<kv-ui-button
+										key="lendAgainButton"
+										v-if="this.state === 'lent-to' && !isLessThan25"
+										class="tw-inline-flex tw-flex-1"
+										data-testid="bp-lend-cta-lend-again-button"
+										type="submit"
+										v-kv-track-event="[
+											'Lending',
+											'Add to basket',
+											'Lend again'
+										]"
+									>
+										Lend again
+									</kv-ui-button>
 
-								<!-- Stranded loans -->
-								<lend-amount-button
-									class="tw-w-full"
-									:loan-id="loanId"
-									:show-now="true"
-									:amount-left="unreservedAmount"
-									@add-to-basket="addToBasket"
-									:complete-loan="completeLoan"
-									v-if="(lendButtonVisibility || this.state === 'lent-to') && isLessThan25"
-								/>
+									<!-- Stranded loans -->
+									<lend-amount-button
+										class="tw-w-full"
+										:loan-id="loanId"
+										:show-now="true"
+										:amount-left="unreservedAmount"
+										@add-to-basket="addToBasket"
+										:complete-loan="completeLoan"
+										v-if="isLendAmountButton"
+									/>
 
-								<!-- Adding to basket button -->
-								<kv-ui-button
-									v-if="isAdding"
-									class="tw-inline-flex tw-flex-1"
-									data-testid="bp-lend-cta-adding-to-basket-button"
-								>
-									Adding to basket...
-								</kv-ui-button>
+									<!-- Adding to basket button -->
+									<kv-ui-button
+										v-if="isAdding"
+										class="tw-inline-flex tw-flex-1"
+										data-testid="bp-lend-cta-adding-to-basket-button"
+									>
+										Adding to basket...
+									</kv-ui-button>
+
+									<!-- Sparkles section -->
+									<img
+										v-show="isCompleteLoanActive"
+										class="tw-absolute tw--bottom-1 tw--left-1 tw-animate-pulse"
+										src="@/assets/images/sparkle.svg"
+									>
+									<img
+										v-show="isCompleteLoanActive"
+										class="tw-absolute tw--top-2 tw-right-1.5 tw-animate-pulse tw-scale-50"
+										style="animation-delay: 300ms;"
+										src="@/assets/images/sparkle.svg"
+									>
+									<img
+										v-show="isCompleteLoanActive"
+										class="tw-absolute tw--top-1 tw--right-1 tw-animate-pulse"
+										src="@/assets/images/sparkle.svg"
+									>
+									<img
+										v-show="isCompleteLoanActive"
+										class="tw-absolute tw-top-2 tw--right-1.5 tw-animate-pulse tw-scale-75"
+										style="animation-delay: 800ms;"
+										src="@/assets/images/sparkle.svg"
+									>
+								</div>
 							</fieldset>
 						</form>
 
@@ -667,6 +697,9 @@ export default {
 				return (this.isLessThan25) || (this.isBetween25And500 && Number(this.unreservedAmount).toFixed() === this.selectedOption);
 			}
 			return false;
+		},
+		isLendAmountButton() {
+			return (this.lendButtonVisibility || this.state === 'lent-to') && this.isLessThan25;
 		}
 	},
 	mounted() {
