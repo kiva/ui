@@ -6,7 +6,12 @@
 			</button>
 		</li>
 		<li v-for="(item, i) in items" :key="i">
-			<kv-checkbox :value="item.value" :disabled="item.disabled" v-model="selected">
+			<kv-checkbox
+				:value="item.value"
+				:disabled="item.disabled"
+				v-model="selected"
+				@change="updateSelected($event, item.value)"
+			>
 				{{ item.title }}
 			</kv-checkbox>
 		</li>
@@ -38,17 +43,16 @@ export default {
 			required: true,
 		},
 		/**
-		 * The initially selected items
-		 * Expected format: { value: 'value', title: 'title', disabled: true }
+		 * The selected values (array of strings)
 		 */
-		initialSelected: {
+		selectedValues: {
 			type: Array,
 			default: () => []
 		},
 	},
 	data() {
 		return {
-			selected: this.initialSelected,
+			selected: this.selectedValues,
 		};
 	},
 	computed: {
@@ -66,12 +70,19 @@ export default {
 					if (exists) this.selected.splice(index, 1);
 				} else if (!exists) this.selected.push(item.value);
 			});
+			this.updateSelected(this.selected, undefined, true);
+		},
+		updateSelected(values, changed, wasSelectAll) {
+			this.$emit('updated', { values: [...values], changed, wasSelectAll });
 		},
 	},
 	watch: {
-		selected(next) {
-			this.$emit('updated', next);
-		}
-	},
+		selectedValues(next) {
+			if ([...next].sort().toString() !== [...this.selected].sort().toString()) {
+				// Don't emit when value is changed via the component prop
+				this.selected = next;
+			}
+		},
+	}
 };
 </script>

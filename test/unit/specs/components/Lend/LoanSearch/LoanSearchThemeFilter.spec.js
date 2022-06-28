@@ -16,6 +16,29 @@ describe('LoanSearchThemeFilter', () => {
 		themes.forEach(item => getByText(getCheckboxLabel(item)));
 	});
 
+	it('should pre-select', () => {
+		const themes = getItems();
+
+		const { getByLabelText } = render(LoanSearchThemeFilter, { props: { themes, themeNames: ['OPTION 0'] } });
+
+		expect(getByLabelText(getCheckboxLabel(themes[0])).checked).toBeTruthy();
+	});
+
+	it('should select based on prop', async () => {
+		const themes = getItems();
+		const { getByLabelText, updateProps } = render(LoanSearchThemeFilter, { props: { themes } });
+
+		await updateProps({ themeNames: ['OPTION 0'] });
+		expect(getByLabelText(getCheckboxLabel(themes[0])).checked).toBeTruthy();
+
+		await updateProps({ themeNames: ['OPTION 0', 'OPTION 1'] });
+		expect(getByLabelText(getCheckboxLabel(themes[0])).checked).toBeTruthy();
+		expect(getByLabelText(getCheckboxLabel(themes[1])).checked).toBeTruthy();
+
+		await updateProps({ themeNames: [] });
+		themes.forEach(item => expect(getByLabelText(getCheckboxLabel(item)).checked).toBeFalsy());
+	});
+
 	it('should emit updated', async () => {
 		const user = userEvent.setup();
 		const themes = getItems();
@@ -26,7 +49,7 @@ describe('LoanSearchThemeFilter', () => {
 		await user.click(country);
 
 		// Expect theme name to be emitted
-		expect(emitted().updated[0]).toEqual([{ theme: [themes[0].name] }]);
+		expect(emitted().updated[0]).toEqual([{ theme: [themes[0].name.toUpperCase()] }]);
 	});
 
 	it('should disable checkboxes when no fundraising loans', async () => {

@@ -6,7 +6,7 @@ const { info } = require('../../util/log');
 function getRoutes(haystack, root = '') {
 	return haystack
 		// Remove excluded routes
-		.filter(route => !route.meta?.excludeFromStaticSitemap)
+		.filter(route => !route.meta?.excludeFromStaticSitemap && !route.redirect)
 		.map(route => {
 			// ensure route path starts with '/'
 			const routePath = route.path.startsWith('/') ? route.path : `/${route.path}`;

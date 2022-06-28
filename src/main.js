@@ -1,4 +1,4 @@
-/* global UI_COMMIT */
+/* global UI_TAG */
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import * as Sentry from '@sentry/vue';
@@ -27,6 +27,7 @@ export default function createApp({
 	device,
 	kvAuth0,
 	locale,
+	fetch
 } = {}) {
 	if (!pluginsInstalled) {
 		pluginsInstalled = true;
@@ -54,6 +55,7 @@ export default function createApp({
 		appConfig,
 		cookieStore,
 		kvAuth0,
+		fetch
 	});
 
 	const router = createRouter();
@@ -69,7 +71,7 @@ export default function createApp({
 					tracingOrigins: ['localhost', appConfig.host, /^\//],
 				}),
 			],
-			release: UI_COMMIT,
+			release: UI_TAG,
 			beforeSend(event) {
 				// make sentry colleted event easy to compare to
 				const eventAsString = JSON.stringify(event);

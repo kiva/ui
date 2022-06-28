@@ -1,0 +1,22 @@
+
+query upsellLoans {
+	lend {
+		loans (sortBy: amountLeft, limit: 20) {
+          values {
+            id
+            name
+            loanAmount
+			status
+      	    loanFundraisingInfo {
+        	 fundedAmount
+			 reservedAmount
+      	    }
+			image {
+				url
+				id
+				hash
+        	}
+          }
+		}
+	}
+}

@@ -1,5 +1,6 @@
 const fetch = require('./fetch');
 const { log } = require('./log');
+const tracer = require('./ddTrace');
 
 function fetchGqlFragments(url, cache) {
 	return fetch(url, {
@@ -46,10 +47,14 @@ function getGqlFragmentsFromCache(cache) {
 }
 
 module.exports = function getGqlFragmentTypes(url, cache) {
-	return getGqlFragmentsFromCache(cache).then(data => {
-		if (data.length) {
-			return data;
-		}
-		return fetchGqlFragments(url, cache);
+	return tracer.trace('getGqlFragmentTypes', () => {
+		return tracer.trace('getGqlFragmentsFromCache', () => {
+			return getGqlFragmentsFromCache(cache).then(data => {
+				if (data.length) {
+					return data;
+				}
+				return tracer.trace('fetchGqlFragments', () => fetchGqlFragments(url, cache));
+			});
+		});
 	});
 };

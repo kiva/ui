@@ -69,6 +69,7 @@ export default {
 			originalLanguage: {},
 			partnerName: '',
 			reviewer: {},
+			previousLoanId: 0
 		};
 	},
 	apollo: {
@@ -128,7 +129,7 @@ export default {
 			this.originalLanguage = loan?.originalLanguage ?? {};
 			this.partnerName = loan?.partnerName ?? '';
 			this.reviewer = loan?.reviewer ?? {};
-			this.previousLoanId = loan?.previousLoanId ?? '';
+			this.previousLoanId = loan?.previousLoanId ?? 0;
 		},
 	},
 };

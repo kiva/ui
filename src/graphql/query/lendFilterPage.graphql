@@ -15,10 +15,4 @@ query lendFilterPage($basketId: String) {
 			}
 		}
 	}
-	general {
-		lendFilterFlssExp: uiExperimentSetting(key: "lend_filter_flss_mock") {
-			key
-			value
-		}
-	}
 }

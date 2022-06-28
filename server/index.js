@@ -1,7 +1,6 @@
 require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
 const cluster = require('cluster');
 const http = require('http');
-const ddTrace = require('dd-trace');
 const express = require('express');
 const compression = require('compression');
 const helmet = require('helmet');
@@ -22,11 +21,7 @@ const logger = require('./util/errorLogger');
 const initializeTerminus = require('./util/terminusConfig');
 
 // Initialize tracing
-if (config.server.enableDDTrace) {
-	// TODO: consider where it's useful to active plugins and do so via env configs
-	// REF: https://docs.datadoghq.com/tracing/runtime_metrics/nodejs/
-	ddTrace.init({ runtimeMetrics: true });
-}
+require('./util/ddTrace');
 
 // Initialize a Cache instance, Should Only be called once!
 const cache = initCache(config.server);

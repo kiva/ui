@@ -586,7 +586,8 @@
 						"type": "mlCampaignHero"
 					}
 				}],
-				"pageTitle": "Test Page Layout Title"
+				"pageTitle": "Test Page Layout Title",
+				"pageDescription": "Test Page Layout Description"
 			}
 		},
 		"settings": [{
@@ -687,6 +688,8 @@
 		}],
 		"path": "/cc/promo-campaign-test",
 		"pageType": "corporate-campaign",
-		"pageTitle": "Test Page Title"
+		"pageTitle": "Test Page Title",
+		"pageDescription": "Test Page Description",
+		"canonicalUrl": "https://test-canonical.kiva.org/contentful"
 	}
 }

@@ -20,7 +20,7 @@
 				v-if="isOpenRegion(option.region)"
 				:show-select-all="true"
 				:items="getItems(option.countries)"
-				:initial-selected="selectedCountries[option.region]"
+				:selected-values="selectedCountries[option.region]"
 				class="tw-pl-3"
 				@updated="updateRegion(option.region, $event)"
 			/>
@@ -31,7 +31,12 @@
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
 import KvCheckboxList from '@/components/Kv/KvCheckboxList';
-import { getIsoCodes, getUpdatedRegions, getCheckboxLabel } from '@/util/loanSearchUtils';
+import {
+	getIsoCodes,
+	getUpdatedRegions,
+	getCheckboxLabel,
+	mapIsoCodesToCountryNames,
+} from '@/util/loanSearchUtils';
 
 export default {
 	name: 'LoanSearchLocationFilter',
@@ -40,6 +45,10 @@ export default {
 		KvCheckboxList,
 	},
 	props: {
+		activeIsoCodes: {
+			type: Array,
+			default: () => []
+		},
 		/**
 		 * The regions with countries used to build the checkbox lists. Expected format:
 		 * [{
@@ -60,7 +69,7 @@ export default {
 	data() {
 		return {
 			displayedRegions: this.regions,
-			selectedCountries: {},
+			selectedCountries: mapIsoCodesToCountryNames(this.activeIsoCodes, this.regions) || {},
 			openRegions: [],
 			getCheckboxLabel
 		};
@@ -85,16 +94,36 @@ export default {
 				this.openRegions.splice(existingIndex, 1);
 			}
 		},
-		updateRegion(region, countries) {
-			this.$set(this.selectedCountries, region, countries);
+		updateRegion(region, { values, changed, wasSelectAll }) {
+			this.$set(this.selectedCountries, region, values);
+
+			let appliedState = '';
+			if (wasSelectAll) {
+				appliedState = values.length ? 'select-all' : 'deselect-all';
+			} else {
+				appliedState = values.includes(changed) ? 'selected' : 'deselected';
+			}
+
+			this.$kvTrackEvent?.(
+				'Lending',
+				'click-location-filter',
+				wasSelectAll ? `Region: ${region}` : `Country: ${changed}`,
+				appliedState
+			);
 		},
 	},
 	watch: {
+		activeIsoCodes(nextIsos, prevIsos) {
+			if (nextIsos === prevIsos) return false;
+			const activeCountries = mapIsoCodesToCountryNames(this.activeIsoCodes, this.regions);
+			this.selectedCountries = activeCountries || {};
+		},
 		regions(nextRegions) {
 			this.displayedRegions = getUpdatedRegions(this.displayedRegions, nextRegions);
 		},
 		selectedCountries: {
 			handler(nextCountries) {
+				// TODO: consider added a JSON.stringify check against next + prev
 				this.$emit('updated', { countryIsoCode: getIsoCodes(this.displayedRegions, nextCountries) });
 			},
 			deep: true,

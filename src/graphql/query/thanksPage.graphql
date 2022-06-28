@@ -61,8 +61,14 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 							image {
 								id
 								url
+								default: url(customSize: "w480h300")
+								hash
 							}
 							use
+							fundraisingPercent @client
+							fundraisingTimeLeft @client
+							fundraisingTimeLeftMilliseconds @client
+							plannedExpirationDate
 							geocode {
 								city
 								country {
@@ -102,6 +108,7 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			lastName
 			email
 			inviterName
+			public
 		}
 		subscriptions {
 			values {
@@ -116,7 +123,13 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		}
 	}
 	general {
-		simpleThanksShare: uiExperimentSetting(key: "simple_thanks_share") {
+		thanksShareModule: uiExperimentSetting(key: "thanks_share_module") {
+			key
+			value
+		}
+	}
+	general {
+		shareCardLanguage: uiExperimentSetting(key: "share_card_language") {
 			key
 			value
 		}

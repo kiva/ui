@@ -87,11 +87,6 @@
 									class="tw-inline-flex tw-flex-1"
 									data-testid="bp-lend-cta-lend-button"
 									type="submit"
-									v-kv-track-event="[
-										'Lending',
-										'Add to basket',
-										ctaButtonText
-									]"
 								>
 									{{ ctaButtonText }}
 								</kv-ui-button>
@@ -119,6 +114,7 @@
 									:show-now="true"
 									:amount-left="unreservedAmount"
 									@add-to-basket="addToBasket"
+									:complete-loan="completeLoan"
 									v-if="(lendButtonVisibility || this.state === 'lent-to') && isLessThan25"
 								/>
 
@@ -311,6 +307,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		completeLoan: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	components: {
 		LendAmountButton,
@@ -349,6 +349,8 @@ export default {
 			isSticky: false,
 			wrapperHeight: 0,
 			wrapperObserver: null,
+			name: '',
+			completeLoanView: true
 		};
 	},
 	apollo: {
@@ -358,6 +360,7 @@ export default {
 					loan(id: $loanId) {
 						id
 						status
+						name
 						minNoteSize
 						loanAmount
 						matchingText
@@ -422,6 +425,7 @@ export default {
 			this.basketItems = basket?.items?.values ?? [];
 			this.matchingText = loan?.matchingText ?? '';
 			this.matchRatio = loan?.matchRatio ?? 0;
+			this.name = loan?.name ?? '';
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;
@@ -438,6 +442,11 @@ export default {
 				loanId: this.loanId,
 			}).then(() => {
 				this.isAdding = false;
+				this.$kvTrackEvent('Lending', 'Add to basket', this.ctaButtonText);
+				if (this.isCompleteLoanActive) {
+					// eslint-disable-next-line max-len
+					this.$kvTrackEvent('Borrower profile', 'Complete loan', 'click-amount-left-cta', this.loanId, this.selectedOption);
+				}
 			}).catch(e => {
 				this.isAdding = false;
 				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
@@ -500,8 +509,17 @@ export default {
 		},
 		unreservedAmount(newValue, previousValue) {
 			// set initial selected value for sub 25 loan if shown
-			if (newValue !== previousValue && previousValue === '' && newValue < 25) {
+			if (this.completeLoan && this.isBetween25And100) {
+				this.selectedOption = Number(this.unreservedAmount).toFixed();
+			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
 				this.selectedOption = parseInt(newValue, 10);
+			}
+		},
+		isCompleteLoanActive() {
+			if (this.isCompleteLoanActive && this.completeLoanView) {
+				// eslint-disable-next-line
+				this.$kvTrackEvent('Borrower profile', 'Complete loan', 'view-amount-left-cta', this.loanId, this.selectedOption);
+				this.completeLoanView = false;
 			}
 		}
 	},
@@ -527,9 +545,17 @@ export default {
 			// IF we wanted to show this interface on loans with less than 25 remaining they would see the selector
 			const minAmount = parseFloat(this.unreservedAmount < 25 ? this.minNoteSize : 25); // 25_hard_coded
 			// limit at 20 price options
-			return buildPriceArray(parseFloat(this.unreservedAmount), minAmount).slice(0, 20);
+			const priceArray = buildPriceArray(parseFloat(this.unreservedAmount), minAmount).slice(0, 20);
+			// eslint-disable-next-line
+			if (this.completeLoan && this.isBetween25And100 && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
+				priceArray.push(Number(this.unreservedAmount).toFixed());
+			}
+			return priceArray;
 		},
 		lgScreenheadline() {
+			if (this.isCompleteLoanActive) {
+				return `Fully fund ${this.name}'s loan`;
+			}
 			switch (this.state) {
 				case 'loading':
 					return 'Loading...';
@@ -544,6 +570,9 @@ export default {
 			}
 		},
 		ctaButtonText() {
+			if (this.isCompleteLoanActive) {
+				return 'Complete loan';
+			}
 			switch (this.state) {
 				case 'loading':
 					return 'Loading...';
@@ -625,6 +654,19 @@ export default {
 		},
 		isLessThan25() {
 			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
+		},
+		isBetween25And100() {
+			return this.unreservedAmount < 100 && this.unreservedAmount > 25;
+		},
+		isBetween25And500() {
+			return this.unreservedAmount < 500 && this.unreservedAmount >= 25;
+		},
+		isCompleteLoanActive() {
+			if (this.completeLoan) {
+				// eslint-disable-next-line
+				return (this.isLessThan25) || (this.isBetween25And500 && Number(this.unreservedAmount).toFixed() === this.selectedOption);
+			}
+			return false;
 		}
 	},
 	mounted() {

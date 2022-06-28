@@ -23,7 +23,7 @@ export function isLoanFundraising(loan) {
 		return false;
 	}
 	// loan amount vs funded + reserved amount
-	if (loanAmount.value() === (fundedAmount.value() + reservedAmount.value())) {
+	if (loanAmount.value() <= (fundedAmount.value() + reservedAmount.value())) {
 		return false;
 	}
 	// all clear

@@ -14,7 +14,7 @@
 				{{ option.label }}
 			</kv-radio>
 			<span v-if="showInfo" class="tw-text-small tw-text-secondary tw-flex tw-gap-1">
-				<kv-material-icon class="tw-w-2 tw-h-2" :icon="mdiInformation" /> Learn about sort orders
+				<kv-material-icon class="tw-min-w-2 tw-h-2" :icon="mdiInformation" /> {{ infoCopy }}
 			</span>
 		</fieldset>
 	</div>
@@ -46,6 +46,10 @@ export default {
 			type: Array,
 			default: undefined
 		},
+		isLoggedIn: {
+			type: Boolean,
+			default: false
+		},
 		sort: {
 			type: String,
 			default: null
@@ -62,11 +66,16 @@ export default {
 			mdiInformation,
 			defaultSort,
 			selectedSort: this.sort || defaultSort,
-			// TODO: Setup Lightbox, Finalize copy + use Contentful for content
 			showInfo: true,
 		};
 	},
 	computed: {
+		infoCopy() {
+			if (this.isLoggedIn) {
+				return 'Loans we think you\'ll love based on your lending history.';
+			}
+			return 'Loans recommended by others. Log in for personalized recommendations.';
+		},
 		/**
 		 * Produces an array of sort options with mapped label for display
 		 * {
@@ -101,7 +110,10 @@ export default {
 		setSortBy(sortBy) {
 			if (sortBy !== this.selectedSort) {
 				this.selectedSort = sortBy;
+
 				this.$emit('updated', { sortBy: this.selectedSort });
+
+				this.$kvTrackEvent?.('Lending', 'click-sortBy-filter', this.selectedSort);
 			}
 		}
 	},

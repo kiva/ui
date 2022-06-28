@@ -28,6 +28,7 @@
 					data-testid="basket-loan-matching-text"
 					v-if="loan.loan.matchingText"
 					:matching-text="loan.loan.matchingText"
+					:disable-matching="disableMatching && creditsUsed.length > 0"
 				/>
 				<loan-reservation
 					class="tw-mb-1"
@@ -108,6 +109,10 @@ export default {
 		teams: {
 			type: Array,
 			default: () => []
+		},
+		disableMatching: {
+			type: Boolean,
+			default: false,
 		}
 	},
 	data() {
