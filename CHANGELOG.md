@@ -1,3 +1,10 @@
+### [2.208.3](https://github.com/kiva/ui/compare/v2.208.2...v2.208.3) (2022-06-28)
+
+
+### Bug Fixes
+
+* corporate campaign logo in footer distortion ([d414462](https://github.com/kiva/ui/commit/d4144621e167c72b85187a0b96a3701cd478e9c9))
+
 ### [2.208.2](https://github.com/kiva/ui/compare/v2.208.1...v2.208.2) (2022-06-28)
 
 
