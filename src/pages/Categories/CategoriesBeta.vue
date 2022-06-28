@@ -21,10 +21,10 @@
 				>
 					<main-category-tile
 						tile-size="large"
+						:category-url="category.url"
 						:category-name="category.name"
 						:category-description="category.description"
-						:image-alt="contentfulAlt"
-						:image="category.image && category.image.url ? category.image.url : contentfulSrc "
+						:image="category.image && category.image.url ? category.image.url : categoryPlaceholderImgCTF "
 						:retina-image="category.retinaImage && category.retinaImage.url ? category.retinaImage.url : ''"
 						:number-loans="category.loans.totalCount"
 					/>
@@ -36,10 +36,10 @@
 				>
 					<main-category-tile
 						tile-size="medium"
+						:category-url="category.url"
 						:category-name="category.name"
 						:category-description="category.description"
-						:image-alt="contentfulAlt"
-						:image="category.image && category.image.url ? category.image.url : contentfulSrc "
+						:image="category.image && category.image.url ? category.image.url : categoryPlaceholderImgCTF "
 						:retina-image="category.retinaImage && category.retinaImage.url ? category.retinaImage.url : ''"
 						:number-loans="category.loans.totalCount"
 					/>
@@ -51,10 +51,10 @@
 				>
 					<main-category-tile
 						tile-size="small"
+						:category-url="category.url"
 						:category-name="category.name"
 						:category-description="category.description"
-						:image-alt="contentfulAlt"
-						:image="category.image && category.image.url ? category.image.url : contentfulSrc "
+						:image="category.image && category.image.url ? category.image.url : categoryPlaceholderImgCTF "
 						:retina-image="category.retinaImage && category.retinaImage.url ? category.retinaImage.url : ''"
 						:number-loans="category.loans.totalCount"
 					/>
@@ -108,9 +108,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
-			contentfulAlt: '',
-			contentfulSrc: '',
-			placeholderKey: 'bp-hero-country-placeholder',
+			categoryPlaceholderImgCTF: '',
 			categories: [],
 		};
 	},
@@ -131,12 +129,11 @@ export default {
 				}
 			`,
 			variables: {
-				placeholderKey: this.placeholderKey,
+				placeholderKey: 'bp-hero-country-placeholder',
 			},
 		}).then(result => {
 			const placeholderMedia = result?.data?.contentful?.placeholder?.items?.[0]?.fields?.backgroundMedia ?? {};
-			this.contentfulSrc = (placeholderMedia)?.fields?.file?.url ?? '';
-			this.contentfulAlt = (placeholderMedia)?.fields?.description ?? '';
+			this.categoryPlaceholderImgCTF = (placeholderMedia)?.fields?.file?.url ?? '';
 		});
 	},
 };

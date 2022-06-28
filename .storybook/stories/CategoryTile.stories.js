@@ -1,7 +1,7 @@
 import MainCategoryTile from '@/components/Categories/MainCategoryTile';
 
 export default {
-	title: 'Main Category Tile',
+	title: 'Components/Main Category Tile',
 	component: MainCategoryTile,
 };
 
@@ -9,7 +9,15 @@ const story = (args = {}) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { MainCategoryTile },
-		template: '<main-category-tile :tileSize="tileSize" :categoryName="categoryName" :categoryDescription="categoryDescription" :numberLoans="numberLoans" :image="image" :retinaImage="retinaImage" />',
+		template: `
+		<main-category-tile
+		style="width: 500px;"
+		:tileSize="tileSize"
+		:categoryName="categoryName"
+		:categoryDescription="categoryDescription"
+		:numberLoans="numberLoans" :image="image"
+		:retinaImage="retinaImage" />
+		`,
 	})
 	template.args = args;
 	return template;
