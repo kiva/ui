@@ -1,8 +1,13 @@
 <template>
 	<div v-if="tileSize === 'large' || tileSize === 'medium'" class="tw-mb-6">
-		<a
-			style="text-decoration: none; color: black;"
-			:href="cleanURL"
+		<router-link
+			class="tw-no-underline
+			active:tw-no-underline visited:tw-no-underline
+			hover:tw-no-underline focus:tw-no-underline
+			tw-text-black
+			active:tw-text-black visited:tw-text-black
+			hover:tw-text-black focus:tw-text-black"
+			:to="`/lend-by-category/${cleanURL}`"
 			v-kv-track-event="['Lending', 'click-Category', categoryName]"
 		>
 			<kv-responsive-image class="category-image"
@@ -28,15 +33,22 @@
 					</p>
 				</div>
 			</div>
-			<h4 v-if="tileSize === 'medium'" class="tw-mt-1 tw-mb-2 tw-hidden md:tw-block">
+			<h4 v-if="tileSize === 'medium'"
+				class="tw-mt-1 tw-mb-2 tw-hidden md:tw-block"
+			>
 				{{ numberLoans }} loans
 			</h4>
-		</a>
+		</router-link>
 	</div>
 	<div v-else-if="tileSize === 'small'" class=" tw-mb-6">
-		<a
-			style="text-decoration: none; color: black;"
-			:href="cleanURL"
+		<router-link
+			class="tw-no-underline
+			active:tw-no-underline visited:tw-no-underline
+			hover:tw-no-underline focus:tw-no-underline
+			tw-text-black
+			active:tw-text-black visited:tw-text-black
+			hover:tw-text-black focus:tw-text-black"
+			:to="`/lend-by-category/${cleanURL}`"
 			v-kv-track-event="['Lending', 'click-Category', categoryName]"
 		>
 			<div class="tw-flex">
@@ -61,7 +73,7 @@
 					</h4>
 				</div>
 			</div>
-		</a>
+		</router-link>
 	</div>
 </template>
 
@@ -125,7 +137,7 @@ export default {
 			return correctImage;
 		},
 		cleanURL() {
-			return String(this.categoryUrl).replace('lend', 'lend-by-category');
+			return this.categoryUrl.substring(this.categoryUrl.lastIndexOf('/') + 1);
 		}
 	},
 

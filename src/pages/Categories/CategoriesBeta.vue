@@ -24,8 +24,8 @@
 						:category-url="category.url"
 						:category-name="category.name"
 						:category-description="category.description"
-						:image="category.image && category.image.url ? category.image.url : categoryPlaceholderImgCTF "
-						:retina-image="category.retinaImage && category.retinaImage.url ? category.retinaImage.url : ''"
+						:image="getImage(category)"
+						:retina-image="getRetinaImage(category)"
 						:number-loans="category.loans.totalCount"
 					/>
 				</div>
@@ -39,8 +39,8 @@
 						:category-url="category.url"
 						:category-name="category.name"
 						:category-description="category.description"
-						:image="category.image && category.image.url ? category.image.url : categoryPlaceholderImgCTF "
-						:retina-image="category.retinaImage && category.retinaImage.url ? category.retinaImage.url : ''"
+						:image="getImage(category)"
+						:retina-image="getRetinaImage(category)"
 						:number-loans="category.loans.totalCount"
 					/>
 				</div>
@@ -54,8 +54,8 @@
 						:category-url="category.url"
 						:category-name="category.name"
 						:category-description="category.description"
-						:image="category.image && category.image.url ? category.image.url : categoryPlaceholderImgCTF "
-						:retina-image="category.retinaImage && category.retinaImage.url ? category.retinaImage.url : ''"
+						:image="getImage(category)"
+						:retina-image="getRetinaImage(category)"
 						:number-loans="category.loans.totalCount"
 					/>
 				</div>
@@ -108,7 +108,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
-			categoryPlaceholderImgCTF: '',
+			categoryPlaceholderImageCTF: '',
 			categories: [],
 		};
 	},
@@ -118,6 +118,14 @@ export default {
 		result(result) {
 			this.categories = result.data?.lend?.loanChannels?.values ?? [];
 		},
+	},
+	methods: {
+		getImage(category) {
+			return category.image?.url ?? this.categoryPlaceholderImageCTF;
+		},
+		getRetinaImage(category) {
+			return category.retinaImage?.url ?? '';
+		}
 	},
 	mounted() {
 		this.apollo.query({
@@ -133,7 +141,7 @@ export default {
 			},
 		}).then(result => {
 			const placeholderMedia = result?.data?.contentful?.placeholder?.items?.[0]?.fields?.backgroundMedia ?? {};
-			this.categoryPlaceholderImgCTF = (placeholderMedia)?.fields?.file?.url ?? '';
+			this.categoryPlaceholderImageCTF = placeholderMedia?.fields?.file?.url ?? '';
 		});
 	},
 };
