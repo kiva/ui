@@ -91,7 +91,7 @@ import { isLoanFundraising } from '@/util/loanUtils';
 const loanUseFilter = require('../../plugins/loan-use-filter');
 
 const pageQuery = gql`
-	query borrowerProfileMeta($loanId: Int!, $publicId: String!) {
+	query borrowerProfileMeta($loanId: Int!, $publicId: String!, $getInviter: Boolean!) {
 		general {
 			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
 				key
@@ -139,7 +139,7 @@ const pageQuery = gql`
 				}
 			}
 		}
-		community {
+		community @include(if: $getInviter) {
 			lender(publicId: $publicId) {
 				id
 				name
@@ -275,6 +275,8 @@ export default {
 					query: pageQuery,
 					variables: {
 						loanId: Number(route.params?.id ?? 0),
+						publicId: route.query?.utm_content ?? '',
+						getInviter: !!route.query?.utm_content,
 					},
 				})
 				.then(({ data }) => {
@@ -297,13 +299,15 @@ export default {
 		preFetchVariables({ route }) {
 			return {
 				loanId: Number(route?.params?.id ?? 0),
-				publicId: route.query?.utm_content ?? ''
+				publicId: route.query?.utm_content ?? '',
+				getInviter: !!route.query?.utm_content,
 			};
 		},
 		variables() {
 			return {
 				loanId: Number(this.$route?.params?.id ?? 0),
-				publicId: this.$route?.query?.utm_content ?? ''
+				publicId: this.$route?.query?.utm_content ?? '',
+				getInviter: !!this.$route?.query?.utm_content,
 			};
 		},
 		result(result) {
