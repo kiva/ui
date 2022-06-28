@@ -1,3 +1,10 @@
+### [2.208.2](https://github.com/kiva/ui/compare/v2.208.1...v2.208.2) (2022-06-28)
+
+
+### Bug Fixes
+
+* set missing publicId variable and only include lender info when publicId is set ([4b820c2](https://github.com/kiva/ui/commit/4b820c28973095d270519515c487d5298f070712))
+
 ### [2.208.1](https://github.com/kiva/ui/compare/v2.208.0...v2.208.1) (2022-06-28)
 
 
