@@ -1,3 +1,10 @@
+## [2.209.0](https://github.com/kiva/ui/compare/v2.208.3...v2.209.0) (2022-06-28)
+
+
+### Features
+
+* animated sparkles were added to complete loan experiment buttons ([838e013](https://github.com/kiva/ui/commit/838e01322730607b69daa490b3b5c969e237e433))
+
 ### [2.208.3](https://github.com/kiva/ui/compare/v2.208.2...v2.208.3) (2022-06-28)
 
 
