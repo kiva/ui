@@ -8,7 +8,7 @@
 		>+</span>
 		<kv-contentful-img
 			v-if="corporateLogoUrl"
-			class="tw-h-full campaign-logo-group__corporate"
+			class="campaign-logo-group__corporate"
 			:contentful-src="corporateLogoUrl"
 			:height="28"
 			alt=""
