@@ -1,3 +1,10 @@
+### [2.208.1](https://github.com/kiva/ui/compare/v2.208.0...v2.208.1) (2022-06-28)
+
+
+### Bug Fixes
+
+* error getting cache for viewtoggle component ([437b427](https://github.com/kiva/ui/commit/437b4270157279c9ba6467771f3bcc36e9fcfaa6))
+
 ## [2.208.0](https://github.com/kiva/ui/compare/v2.207.0...v2.208.0) (2022-06-27)
 
 
