@@ -155,7 +155,6 @@ import _merge from 'lodash/merge';
 import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
-import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import getRelatedLoans from '@/graphql/query/getRelatedLoans.graphql';
 import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
@@ -169,6 +168,7 @@ import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassic
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import { isLoanFundraising } from '@/util/loanUtils';
 import KvExpandable from '@/components/Kv/KvExpandable';
+import { preFetchChannel, getCachedChannel, watchChannelQuery } from '@/util/loanChannelUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const loansPerPage = 12;
@@ -251,6 +251,7 @@ export default {
 			offset: 0,
 			limit: loansPerPage,
 			filters: { },
+			targetedLoanChannelURL: null,
 			targetedLoanChannelID: null,
 			loanChannel: () => {},
 			isVisitor: true,
@@ -290,7 +291,7 @@ export default {
 			return [this.loans[0]];
 		},
 		remainingLoans() {
-			return _filter(this.loans, (loan, index) => index > 0);
+			return _filter(this.loans, (_loan, index) => index > 0);
 		},
 		loanIds() {
 			return _map(this.loans, 'id');
@@ -302,7 +303,8 @@ export default {
 			return {
 				ids: [this.targetedLoanChannelID],
 				limit: this.limit,
-				offset: this.offset
+				offset: this.offset,
+				basketId: this.cookieStore.get('kvbskt'),
 			};
 		},
 		filterUrl() {
@@ -336,65 +338,64 @@ export default {
 		}
 	},
 	apollo: {
-		preFetch(config, client, args) {
+		preFetch(_config, client, args) {
 			return client.query({
 				query: loanChannelPageQuery
-			}).then(({ data }) => {
-				// filter routes on route.param.category to get current path
+			}).then(async ({ data }) => {
+				// Filter routes on route.param.category to get current path
 				const targetedLoanChannelURL = _get(args, 'route.params.category');
-				// isolate targeted loan channel id
+
+				// Isolate targeted loan channel id
 				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, data);
-				// extract query
+
+				// Extract query
 				const pageQuery = _get(args, 'route.query');
 
-				return client.query({
-					query: loanChannelQuery,
-					variables: _merge(
-						{
-							ids: [targetedLoanChannelID],
-							limit: loansPerPage
-						},
-						fromUrlParams(pageQuery)
-					)
-				});
-			});
+				await preFetchChannel(
+					client,
+					// Access map directly since SSR doesn't have mixins available
+					loanChannelQueryMapMixin.data().loanChannelQueryMap,
+					targetedLoanChannelURL,
+					// Build loanQueryVars since SSR doesn't have same context
+					{ ids: [targetedLoanChannelID], limit: loansPerPage, offset: fromUrlParams(pageQuery).offset }
+				);
+			}).catch(e => logReadQueryError(e, 'LoanChannelCategoryControl preFetch loanChannelPageQuery'));
 		}
 	},
 	created() {
 		let allChannelsData = {};
+
 		try {
 			allChannelsData = this.apollo.readQuery({
 				query: loanChannelPageQuery,
-				variables: {
-					basketId: this.cookieStore.get('kvbskt'),
-				}
+				variables: { basketId: this.loanQueryVars.basketId }
 			});
 		} catch (e) {
-			logReadQueryError(e, 'LoanChannelCategoryPage loanChannelPageQuery');
+			logReadQueryError(e, 'LoanChannelCategoryControl created loanChannelPageQuery');
 		}
 
-		// set user status
+		// Set user status
 		this.isVisitor = !_get(allChannelsData, 'my.userAccount.id');
-		// filter routes on param.category to get current path
-		const targetedLoanChannelURL = _get(this.$route, 'params.category');
-		// isolate targeted loan channel id
-		this.targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, allChannelsData);
-		// extract query
+
+		// Filter routes on param.category to get current path
+		this.targetedLoanChannelURL = _get(this.$route, 'params.category');
+
+		// Isolate targeted loan channel id
+		this.targetedLoanChannelID = getTargetedChannel(this.targetedLoanChannelURL, allChannelsData);
+
+		// Extract query
 		this.pageQuery = _get(this.$route, 'query');
-		// Read the page data from the cache
-		let baseData = {};
-		try {
-			baseData = this.apollo.readQuery({
-				query: loanChannelQuery,
-				variables: _merge(
-					this.loanQueryVars,
-					fromUrlParams(this.pageQuery),
-					{ basketId: this.cookieStore.get('kvbskt') }
-				),
-			});
-		} catch (e) {
-			logReadQueryError(e, 'LoanChannelCategoryPage loanChannelQuery');
-		}
+
+		// Ensure page offset gets set before loading cached data
+		this.updateFromParams(this.pageQuery);
+
+		// Prevent pop-in by loading data from the Apollo cache manually here instead of just using the subscription
+		const baseData = getCachedChannel(
+			this.apollo,
+			this.loanChannelQueryMap,
+			this.targetedLoanChannelURL,
+			this.loanQueryVars
+		);
 
 		// Assign our initial view data
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
@@ -488,26 +489,36 @@ export default {
 			}
 		},
 		activateLoanChannelWatchQuery() {
-			const observer = this.apollo.watchQuery({
-				query: loanChannelQuery,
-				variables: this.loanQueryVars,
-			});
-			this.$watch(() => this.loanQueryVars, vars => {
-				observer.setVariables(vars);
-			}, { deep: true });
-			// Subscribe to the observer to see each result
-			observer.subscribe({
-				next: ({ data, loading }) => {
-					if (loading) {
-						this.loading = true;
-					} else {
-						this.loanChannel = _get(data, 'lend.loanChannelsById[0]');
-						this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
-						this.checkIfPageIsOutOfRange(this.loanChannel.loans.values.length, this.pageQuery.page);
-						this.loading = false;
+			const next = (data, loading) => {
+				if (loading) {
+					this.loading = true;
+				} else {
+					const channel = _get(data, 'lend.loanChannelsById[0]');
+
+					const basket = _map(_get(data, 'shop.basket.items.values'), 'id');
+
+					// Initial data is loaded in created method, so compare before setting to prevent an extra render
+					if (JSON.stringify(channel) !== JSON.stringify(this.loanChannel)) {
+						this.loanChannel = channel;
 					}
+					if (JSON.stringify(basket) !== JSON.stringify(this.itemsInBasket)) {
+						this.itemsInBasket = basket;
+					}
+
+					this.checkIfPageIsOutOfRange(this.loanChannel?.loans?.values?.length ?? 0, this.pageQuery.page);
+
+					this.loading = false;
 				}
-			});
+			};
+
+			watchChannelQuery(
+				this.apollo,
+				this.loanChannelQueryMap,
+				this.targetedLoanChannelURL,
+				this.loanQueryVars,
+				next,
+				callback => this.$watch(() => this.loanQueryVars, callback, { deep: true }),
+			);
 		},
 		getAlgoliaFilterUrl() {
 			// get match channel data
@@ -566,9 +577,8 @@ export default {
 		},
 		async getRelatedLoansExp() {
 			const loan = this.loans[0];
-			let baseData = {};
 			try {
-				baseData = await this.apollo.query({
+				const baseData = await this.apollo.query({
 					query: getRelatedLoans,
 					variables: {
 						limit: 12,
@@ -593,7 +603,7 @@ export default {
 					this.selectedChannelLoanIds.join(', ')
 				);
 			} catch (e) {
-				console.log(e);
+				logReadQueryError(e, 'LoanChannelCategoryControl getRelatedLoansExp getRelatedLoans');
 			}
 		},
 		getDetailedLoan(loanDetails) {
@@ -620,16 +630,16 @@ export default {
 			}
 		}
 	},
-	beforeRouteEnter(to, from, next) {
+	beforeRouteEnter(to, _from, next) {
 		next(vm => {
 			vm.updateFromParams(to.query);
 		});
 	},
-	beforeRouteUpdate(to, from, next) {
+	beforeRouteUpdate(to, _from, next) {
 		this.updateFromParams(to.query);
 		next();
 	},
-	beforeRouteLeave(to, from, next) {
+	beforeRouteLeave(to, _from, next) {
 		if (typeof window !== 'undefined'
 			&& to.path.indexOf('/lend/') !== -1
 			&& to.path.indexOf('/lend/filter') === -1) {

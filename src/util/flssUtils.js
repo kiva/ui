@@ -1,10 +1,31 @@
 import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 import flssLoanFacetsQuery from '@/graphql/query/flssLoanFacetsQuery.graphql';
+import flssLoanChannelQuery from '@/graphql/query/flssLoanChannel.graphql';
+import logReadQueryError from '@/util/logReadQueryError';
+
+/**
+ * Gets the filters for FLSS
+ *
+ * @param {Object} loanSearchState The current loan search state from Apollo
+ * @returns {Object} The filters in the correct FLSS format
+ */
+export function getFlssFilters(loanSearchState) {
+	return {
+		...(loanSearchState?.gender && { gender: { any: loanSearchState.gender } }),
+		...(loanSearchState?.countryIsoCode?.length && {
+			countryIsoCode: { any: loanSearchState.countryIsoCode }
+		}),
+		...(loanSearchState?.theme?.length && {
+			theme: { any: loanSearchState.theme }
+		}),
+		...(loanSearchState?.sectorId?.length && { sectorId: { any: loanSearchState.sectorId } }),
+	};
+}
 
 /**
  * Fetches the facets with number of fundraising loans from FLSS
  *
- * @param {Object} apollo The apollo client instance
+ * @param {Object} apollo The Apollo client instance
  * @param {Object} isoCodeFilters The filters for the ISO code facets
  * @param {Object} themeFilters The filters for the theme facets
  * @param {Object} sectorFilters The filters for the sector facets
@@ -19,14 +40,14 @@ export async function fetchFacets(apollo, isoCodeFilters, themeFilters, sectorFi
 		});
 		return result.data;
 	} catch (e) {
-		console.log('Fetching facets failed:', e.message);
+		logReadQueryError(e, 'flssUtils fetchFacets flssLoanFacetsQuery');
 	}
 }
 
 /**
  * Fetches the loan data from FLSS
  *
- * @param {Object} apollo The apollo client instance
+ * @param {Object} apollo The Apollo client instance
  * @param {Object} filterObject The filters for the loan query
  * @param {String} sortOrder Sort option for the loan query
  * @param {Int} pageOffset The offset of the page
@@ -47,6 +68,80 @@ export async function fetchLoans(apollo, filterObject, sortBy = null, pageOffset
 		});
 		return result.data?.fundraisingLoans;
 	} catch (e) {
-		console.log('Fetching loan failed:', e.message);
+		logReadQueryError(e, 'flssUtils fetchLoans flssLoanQuery');
+	}
+}
+
+/**
+ * Gets the variables for the loan channel query
+ *
+ * @param {Array} queryMapFLSS The query map entry for the channel
+ * @param {Object} loanQueryVars The loan channel query variables
+ * @returns {Object} The variables for the loan channel query
+ */
+export function getLoanChannelVariables(queryMapFLSS, loanQueryVars) {
+	return {
+		ids: [...loanQueryVars.ids],
+		filterObject: getFlssFilters(queryMapFLSS),
+		pageNumber: loanQueryVars.offset / loanQueryVars.limit,
+		pageLimit: loanQueryVars.limit,
+		basketId: loanQueryVars.basketId,
+	};
+}
+
+/**
+ * 	Fetches the data for the loan channel from FLSS
+ *
+ * @param {Object} apollo The Apollo client instance
+ * @param {Array} queryMapFLSS The query map entry for the channel
+ * @param {Object} loanQueryVars The loan channel query variables
+ * @returns {Object} The loan channel data
+ */
+export async function fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars) {
+	try {
+		return (await apollo.query({
+			query: flssLoanChannelQuery,
+			variables: getLoanChannelVariables(queryMapFLSS, loanQueryVars),
+		})).data;
+	} catch (e) {
+		logReadQueryError(e, 'flssUtils fetchLoanChannel flssLoanChannelQuery');
+	}
+}
+
+/**
+ * Gets the cached data for the loan channel
+ *
+ * @param {Object} apollo The Apollo client instance
+ * @param {Array} queryMapFLSS The query map entry for the channel
+ * @param {Object} loanQueryVars The loan channel query variables
+ * @returns {Object} The loan channel data
+ */
+export function getCachedLoanChannel(apollo, queryMapFLSS, loanQueryVars) {
+	try {
+		return apollo.readQuery({
+			query: flssLoanChannelQuery,
+			variables: getLoanChannelVariables(queryMapFLSS, loanQueryVars),
+		});
+	} catch (e) {
+		logReadQueryError(e, 'flssUtils getCachedLoanChannel flssLoanChannelQuery');
+	}
+}
+
+/**
+ * Watches the loan channel query
+ *
+ * @param {Object} apollo The Apollo client instance
+ * @param {Array} queryMapFLSS The query map entry for the channel
+ * @param {Object} loanQueryVars The loan channel query variables
+ * @returns {Object} The Apollo observer
+ */
+export function watchLoanChannel(apollo, queryMapFLSS, loanQueryVars) {
+	try {
+		return apollo.watchQuery({
+			query: flssLoanChannelQuery,
+			variables: getLoanChannelVariables(queryMapFLSS, loanQueryVars),
+		});
+	} catch (e) {
+		logReadQueryError(e, 'flssUtils watchLoanChannel flssLoanChannelQuery');
 	}
 }

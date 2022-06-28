@@ -1,7 +1,7 @@
 import orderBy from 'lodash/orderBy';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
 import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
-import { fetchFacets, fetchLoans } from '@/util/flssUtils';
+import { fetchFacets, fetchLoans, getFlssFilters } from '@/util/flssUtils';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util/numberUtils';
 
@@ -380,25 +380,6 @@ export function getIsoCodes(regions, selectedCountries) {
 			.map(c => c.isoCode);
 		return [...prev, ...(codes || [])];
 	}, []);
-}
-
-/**
- * Gets the filters for FLSS
- *
- * @param {Object} loanSearchState The current loan search state from Apollo
- * @returns {Object} The filters in the correct FLSS format
- */
-export function getFlssFilters(loanSearchState) {
-	return {
-		...(loanSearchState?.gender && { gender: { any: loanSearchState.gender } }),
-		...(loanSearchState?.countryIsoCode?.length && {
-			countryIsoCode: { any: loanSearchState.countryIsoCode }
-		}),
-		...(loanSearchState?.theme?.length && {
-			theme: { any: loanSearchState.theme }
-		}),
-		...(loanSearchState?.sectorId?.length && { sectorId: { any: loanSearchState.sectorId } }),
-	};
 }
 
 /**
