@@ -288,10 +288,11 @@ export default {
 			return _get(this.loanChannel, 'loans.values') || [];
 		},
 		firstLoan() {
-			return [this.loans[0]];
+			// Handle an edge case where a backend error could lead to a null loan
+			return this.loans[0] ? [this.loans[0]] : [];
 		},
 		remainingLoans() {
-			return _filter(this.loans, (_loan, index) => index > 0);
+			return _filter(this.loans, (loan, index) => index > 0);
 		},
 		loanIds() {
 			return _map(this.loans, 'id');
@@ -338,7 +339,7 @@ export default {
 		}
 	},
 	apollo: {
-		preFetch(_config, client, args) {
+		preFetch(config, client, args) {
 			return client.query({
 				query: loanChannelPageQuery
 			}).then(async ({ data }) => {
@@ -359,7 +360,7 @@ export default {
 					// Build loanQueryVars since SSR doesn't have same context
 					{ ids: [targetedLoanChannelID], limit: loansPerPage, offset: fromUrlParams(pageQuery).offset }
 				);
-			}).catch(e => logReadQueryError(e, 'LoanChannelCategoryControl preFetch loanChannelPageQuery'));
+			});
 		}
 	},
 	created() {
@@ -630,16 +631,16 @@ export default {
 			}
 		}
 	},
-	beforeRouteEnter(to, _from, next) {
+	beforeRouteEnter(to, from, next) {
 		next(vm => {
 			vm.updateFromParams(to.query);
 		});
 	},
-	beforeRouteUpdate(to, _from, next) {
+	beforeRouteUpdate(to, from, next) {
 		this.updateFromParams(to.query);
 		next();
 	},
-	beforeRouteLeave(to, _from, next) {
+	beforeRouteLeave(to, from, next) {
 		if (typeof window !== 'undefined'
 			&& to.path.indexOf('/lend/') !== -1
 			&& to.path.indexOf('/lend/filter') === -1) {
