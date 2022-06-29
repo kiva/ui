@@ -45,6 +45,18 @@
 					/>
 				</div>
 			</kv-grid>
+			<kv-grid class="tw-bg-secondary tw-mb-5 tw-rounded">
+				<div class="tw-flex tw-items-center tw-justify-center tw-pt-6 tw-pb-6">
+					<kv-button
+						to="/lend"
+						variant="secondary"
+						state="active"
+						v-kv-track-event="['Lending', 'click-view-all', 'View All']"
+					>
+						View all loans
+					</kv-button>
+				</div>
+			</kv-grid>
 			<kv-grid v-if="categories.length > 0" class="tw-grid-cols-12">
 				<div v-for="category in categories.slice(7, 13)" :key="category.id"
 					class="tw-col-span-12 md:tw-col-span-6"
@@ -70,6 +82,7 @@ import MainCategoryTile from '@/components/Categories/MainCategoryTile';
 import gql from 'graphql-tag';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const allCategoriesQuery = gql`
 	query allCategoriesQuery {
@@ -103,7 +116,8 @@ export default {
 		WwwPage,
 		MainCategoryTile,
 		KvGrid,
-		KvPageContainer
+		KvPageContainer,
+		KvButton
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
