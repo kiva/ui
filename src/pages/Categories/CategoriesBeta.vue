@@ -21,11 +21,11 @@
 				>
 					<main-category-tile
 						tile-size="large"
+						:category-url="category.url"
 						:category-name="category.name"
 						:category-description="category.description"
-						:image-alt="contentfulAlt"
-						:image="category.image && category.image.url ? category.image.url : contentfulSrc "
-						:retina-image="category.retinaImage && category.retinaImage.url ? category.retinaImage.url : ''"
+						:image="getImage(category)"
+						:retina-image="getRetinaImage(category)"
 						:number-loans="category.loans.totalCount"
 					/>
 				</div>
@@ -36,11 +36,11 @@
 				>
 					<main-category-tile
 						tile-size="medium"
+						:category-url="category.url"
 						:category-name="category.name"
 						:category-description="category.description"
-						:image-alt="contentfulAlt"
-						:image="category.image && category.image.url ? category.image.url : contentfulSrc "
-						:retina-image="category.retinaImage && category.retinaImage.url ? category.retinaImage.url : ''"
+						:image="getImage(category)"
+						:retina-image="getRetinaImage(category)"
 						:number-loans="category.loans.totalCount"
 					/>
 				</div>
@@ -51,11 +51,11 @@
 				>
 					<main-category-tile
 						tile-size="small"
+						:category-url="category.url"
 						:category-name="category.name"
 						:category-description="category.description"
-						:image-alt="contentfulAlt"
-						:image="category.image && category.image.url ? category.image.url : contentfulSrc "
-						:retina-image="category.retinaImage && category.retinaImage.url ? category.retinaImage.url : ''"
+						:image="getImage(category)"
+						:retina-image="getRetinaImage(category)"
 						:number-loans="category.loans.totalCount"
 					/>
 				</div>
@@ -108,9 +108,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
-			contentfulAlt: '',
-			contentfulSrc: '',
-			placeholderKey: 'bp-hero-country-placeholder',
+			categoryPlaceholderImageCTF: '',
 			categories: [],
 		};
 	},
@@ -120,6 +118,14 @@ export default {
 		result(result) {
 			this.categories = result.data?.lend?.loanChannels?.values ?? [];
 		},
+	},
+	methods: {
+		getImage(category) {
+			return category.image?.url ?? this.categoryPlaceholderImageCTF;
+		},
+		getRetinaImage(category) {
+			return category.retinaImage?.url ?? '';
+		}
 	},
 	mounted() {
 		this.apollo.query({
@@ -131,12 +137,11 @@ export default {
 				}
 			`,
 			variables: {
-				placeholderKey: this.placeholderKey,
+				placeholderKey: 'bp-hero-country-placeholder',
 			},
 		}).then(result => {
 			const placeholderMedia = result?.data?.contentful?.placeholder?.items?.[0]?.fields?.backgroundMedia ?? {};
-			this.contentfulSrc = (placeholderMedia)?.fields?.file?.url ?? '';
-			this.contentfulAlt = (placeholderMedia)?.fields?.description ?? '';
+			this.categoryPlaceholderImageCTF = placeholderMedia?.fields?.file?.url ?? '';
 		});
 	},
 };
