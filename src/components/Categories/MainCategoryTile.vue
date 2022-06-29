@@ -54,7 +54,7 @@
 			<div class="tw-flex">
 				<div class="tw-mr-2 tw-flex-none">
 					<kv-responsive-image class="category-image-small"
-						:images="chooseSmallImage"
+						:images="chooseImage(tileSize)"
 						loading="lazy"
 						:alt="altText"
 					/>
@@ -132,11 +132,6 @@ export default {
 		},
 		cleanURL() {
 			return this.categoryUrl.substring(this.categoryUrl.lastIndexOf('/') + 1);
-		},
-		chooseSmallImage() {
-			return this.retinaImageExists
-				? [['small', this.image], ['small retina', this.retinaImage]]
-				: [['small', this.image]];
 		}
 	},
 	methods: {
@@ -152,7 +147,10 @@ export default {
 						['large', this.image], ['large retina', this.retinaImage]]
 					: [['small', this.image]];
 			}
-			return [['small', this.image]];
+			// Default case or tileSize === 'small'
+			return this.retinaImageExists
+				? [['small', this.image], ['small retina', this.retinaImage]]
+				: [['small', this.image]];
 		},
 	},
 };
