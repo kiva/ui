@@ -11,7 +11,7 @@
 			v-kv-track-event="['Lending', 'click-Category', categoryName]"
 		>
 			<kv-responsive-image class="category-image"
-				:images="chooseImage"
+				:images="chooseImage(tileSize)"
 				loading="lazy"
 				:alt="altText"
 			/>
@@ -54,7 +54,7 @@
 			<div class="tw-flex">
 				<div class="tw-mr-2 tw-flex-none">
 					<kv-responsive-image class="category-image-small"
-						:images="chooseImage"
+						:images="chooseSmallImage"
 						loading="lazy"
 						:alt="altText"
 					/>
@@ -130,17 +130,31 @@ export default {
 		altText() {
 			return `Kiva loans to ${this.categoryName}`;
 		},
-		chooseImage() {
-			const correctImage = this.retinaImageExists
-				? [['small', this.image], ['small retina', this.retinaImage]]
-				: [['small', this.image]];
-			return correctImage;
-		},
 		cleanURL() {
 			return this.categoryUrl.substring(this.categoryUrl.lastIndexOf('/') + 1);
+		},
+		chooseSmallImage() {
+			return this.retinaImageExists
+				? [['small', this.image], ['small retina', this.retinaImage]]
+				: [['small', this.image]];
 		}
 	},
-
+	methods: {
+		chooseImage(tileSize) {
+			if (tileSize === 'large') {
+				return this.retinaImageExists
+					? [['small', this.retinaImage], ['small retina', this.retinaImage]]
+					: [['small', this.image]];
+			}
+			if (tileSize === 'medium') {
+				return this.retinaImageExists
+					? [['small', this.retinaImage], ['small retina', this.retinaImage],
+						['large', this.image], ['large retina', this.retinaImage]]
+					: [['small', this.image]];
+			}
+			return [['small', this.image]];
+		},
+	},
 };
 </script>
 
