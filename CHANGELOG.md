@@ -1,3 +1,10 @@
+## [2.210.0](https://github.com/kiva/ui/compare/v2.209.0...v2.210.0) (2022-06-29)
+
+
+### Features
+
+* linking categories to category pages and additional PR comments ([#3958](https://github.com/kiva/ui/issues/3958)) ([bb59eed](https://github.com/kiva/ui/commit/bb59eed9a4201113b6d10e5154c9ae78e48d75ac))
+
 ## [2.209.0](https://github.com/kiva/ui/compare/v2.208.3...v2.209.0) (2022-06-28)
 
 
