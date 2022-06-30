@@ -114,17 +114,15 @@ export default {
 </script>
 
 <style scoped>
-    .lenders-container:after {
-        content  : "";
-        position : absolute;
-        z-index  : 1;
-        bottom   : 0;
-        left     : 0;
-        pointer-events   : none;
-        background-image : linear-gradient(to bottom,
-                            transparent,
-                            rgba(245,245,245, 1) 100%);
-        width    : 100%;
-        height   : 4em;
-    }
+	.lenders-container::after {
+		content: "";
+		position: absolute;
+		z-index: 1;
+		bottom: 0;
+		left: 0;
+		pointer-events: none;
+		background-image: linear-gradient(to bottom, transparent, rgba(245, 245, 245, 1) 100%);
+		width: 100%;
+		height: 4em;
+	}
 </style>
