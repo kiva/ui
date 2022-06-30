@@ -250,6 +250,14 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		socialExpEnabled: {
+			type: Boolean,
+			default: false
+		},
+		showLightBoxModal: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {

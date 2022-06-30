@@ -222,7 +222,9 @@
 						key="wrapper"
 						:class="[
 							'tw-z-1',
-							'tw-h-5',
+							{
+								'tw-h-5': !socialExpEnabled,
+							},
 							'tw-overflow-hidden',
 							'tw-col-span-12',
 							'tw-mb-1 tw-p-1',
@@ -241,7 +243,7 @@
 							'lg:tw-col-span-12'
 						]"
 					>
-						<transition
+						<transition-group
 							mode="out-in"
 							key="transition"
 							class="tw-flex tw-flex-col"
@@ -256,7 +258,7 @@
 								class="tw-inline-block tw-align-middle"
 								data-testid="bp-lend-cta-powered-by-text"
 								key="numLendersStat"
-								v-if="statScrollAnimation"
+								v-if="statScrollAnimation && !socialExpEnabled"
 							>
 								<kv-material-icon
 									class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
@@ -264,6 +266,12 @@
 								/>
 								powered by {{ numLenders }} lenders
 							</span>
+							<lenders-list
+								v-if="socialExpEnabled"
+								:lenders="lenders"
+								key="lenderList"
+								@tooglelightbox="toogleLightbox"
+							/>
 
 							<span
 								class="tw-inline-block tw-align-middle"
@@ -278,7 +286,7 @@
 								</span>
 								{{ matchRatio + 1 }}X MATCHED LOAN
 							</span>
-						</transition>
+						</transition-group>
 					</div>
 				</kv-grid>
 			</transition>
@@ -295,6 +303,7 @@ import { createIntersectionObserver } from '@/util/observerUtils';
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
+import LendersList from '@/components/BorrowerProfile/LendersList';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -312,12 +321,17 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		lenders: {
+			type: Array,
+			default: () => []
+		},
 		socialExpEnabled: {
 			type: Boolean,
 			default: false
 		}
 	},
 	components: {
+		LendersList,
 		LendAmountButton,
 		KvGrid,
 		KvMaterialIcon,
@@ -504,6 +518,9 @@ export default {
 				};
 				setInterval(cycleSlotMachine, 5000);
 			}
+		},
+		toogleLightbox() {
+			this.$emit('tooglelightbox');
 		}
 	},
 	watch: {

@@ -23,7 +23,9 @@
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
 						:complete-loan="completeLoanExpActive"
+						:lenders="lenders"
 						:social-exp-enabled="socialExpEnabled"
+						@tooglelightbox="toogleLightbox"
 					/>
 				</sidebar-container>
 			</div>
@@ -44,6 +46,7 @@
 				<more-about-loan data-testid="bp-more-about" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<borrower-country data-testid="bp-country" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<lenders-and-teams
+					ref="lendersComponent"
 					v-if="showLenders"
 					data-testid="bp-lenders"
 					key="lenders"
@@ -51,6 +54,8 @@
 					:loan-id="loanId"
 					display-type="lenders"
 					@hide-section="showLenders = false"
+					:social-exp-enabled="socialExpEnabled"
+					:show-light-box-modal="showLightBoxModal"
 				/>
 				<lenders-and-teams
 					v-if="showTeams"
@@ -288,7 +293,8 @@ export default {
 			inviterName: '',
 			inviterIsGuestOrAnonymous: false,
 			lenders: [],
-			socialExpEnabled: true
+			socialExpEnabled: true,
+			showLightBoxModal: false
 		};
 	},
 	apollo: {
@@ -363,6 +369,11 @@ export default {
 		const expCookieSignifier = this.cookieStore.get('kvlendborrowerbeta');
 		if (expCookieSignifier === 'b') {
 			this.$kvTrackEvent('Borrower Profile', 'EXP-GROW-655-Aug2021', expCookieSignifier);
+		}
+	},
+	methods: {
+		toogleLightbox() {
+			this.$refs.lendersComponent.openLightbox();
 		}
 	},
 	computed: {

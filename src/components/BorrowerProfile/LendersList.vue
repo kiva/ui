@@ -28,6 +28,14 @@
 				</template>
 			</div>
 		</div>
+		<div>
+			<kv-text-link
+				v-if="!isMobile"
+				@click="toogleLightBox"
+			>
+				See all lenders
+			</kv-text-link>
+		</div>
 	</div>
 </template>
 
@@ -35,6 +43,7 @@
 import { mdiLightningBolt } from '@mdi/js';
 import LendersListItem from '@/components/BorrowerProfile/LendersListItem';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 export default {
 	name: 'LendersList',
@@ -47,7 +56,8 @@ export default {
 	},
 	components: {
 		LendersListItem,
-		KvMaterialIcon
+		KvMaterialIcon,
+		KvTextLink
 	},
 	data() {
 		return {
@@ -63,6 +73,9 @@ export default {
 		},
 		isValidLength(idx) {
 			return (this.isMobile && idx < 2) || !this.isMobile;
+		},
+		toogleLightBox() {
+			this.$emit('tooglelightbox');
 		}
 	},
 	mounted() {
