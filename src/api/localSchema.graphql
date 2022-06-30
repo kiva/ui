@@ -80,7 +80,7 @@ type LoanSearchState {
 	countryIsoCode: [String]
 	sectorId: [Int]
 	sortBy: String
-	theme: [String]
+	themeId: [Int]
 	pageOffset: [Int]
 	pageLimit: [Int]
 }

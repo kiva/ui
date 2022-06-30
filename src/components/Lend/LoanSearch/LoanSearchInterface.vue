@@ -278,7 +278,7 @@ export default {
 				this.loanSearchState = data?.loanSearchState;
 
 				// Update the query string with the latest loan search state
-				updateQueryParams(this.loanSearchState, this.$router, this.allFacets, this.queryType);
+				updateQueryParams(this.loanSearchState, this.$router, this.queryType);
 
 				const [{ isoCodes, themes, sectors }, { loans, totalCount }] = await Promise.all([
 					// Get filtered facet options from FLSS

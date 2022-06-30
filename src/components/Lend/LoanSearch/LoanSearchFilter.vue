@@ -42,10 +42,12 @@
 					Sectors
 				</h2>
 			</template>
-			<loan-search-sector-filter
-				:sectors="facets.sectors"
-				:sector-ids="loanSearchState.sectorId"
+			<loan-search-checkbox-list-filter
+				:options="facets.sectors"
+				:ids="loanSearchState.sectorId"
 				@updated="handleUpdatedFilters"
+				filter-key="sectorId"
+				event-action="click-sector-filter"
 			/>
 		</kv-accordion-item>
 		<kv-accordion-item id="acc-attributes" :open="false">
@@ -54,10 +56,12 @@
 					Attributes
 				</h2>
 			</template>
-			<loan-search-theme-filter
-				:themes="facets.themes"
-				:theme-names="loanSearchState.theme"
+			<loan-search-checkbox-list-filter
+				:options="facets.themes"
+				:ids="loanSearchState.themeId"
 				@updated="handleUpdatedFilters"
+				filter-key="themeId"
+				event-action="click-theme-filter"
 			/>
 		</kv-accordion-item>
 		<button class="tw-mt-2 tw-h-[22px]" @click="advancedFilters">
@@ -74,8 +78,7 @@ import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiClose, mdiArrowRight } from '@mdi/js';
 import LoanSearchGenderFilter from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
 import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
-import LoanSearchSectorFilter from '@/components/Lend/LoanSearch/LoanSearchSectorFilter';
-import LoanSearchThemeFilter from '@/components/Lend/LoanSearch/LoanSearchThemeFilter';
+import LoanSearchCheckboxListFilter from '@/components/Lend/LoanSearch/LoanSearchCheckboxListFilter';
 import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
 import { FLSS_QUERY_TYPE } from '@/util/loanSearchUtils';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
@@ -89,8 +92,7 @@ export default {
 		KvMaterialIcon,
 		LoanSearchGenderFilter,
 		LoanSearchLocationFilter,
-		LoanSearchSectorFilter,
-		LoanSearchThemeFilter,
+		LoanSearchCheckboxListFilter,
 		LoanSearchSortBy,
 		KvSectionModalLoader,
 	},
