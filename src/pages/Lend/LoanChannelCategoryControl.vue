@@ -168,7 +168,12 @@ import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassic
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import { isLoanFundraising } from '@/util/loanUtils';
 import KvExpandable from '@/components/Kv/KvExpandable';
-import { preFetchChannel, getCachedChannel, watchChannelQuery } from '@/util/loanChannelUtils';
+import {
+	preFetchChannel,
+	getCachedChannel,
+	trackChannelExperiment,
+	watchChannelQuery,
+} from '@/util/loanChannelUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const loansPerPage = 12;
@@ -427,6 +432,8 @@ export default {
 		if (this.addBundlesExp) {
 			this.getRelatedLoansExp();
 		}
+
+		trackChannelExperiment(this.apollo, this.loanChannelQueryMap, this.targetedLoanChannelURL, this.$kvTrackEvent);
 	},
 	methods: {
 		async addBundleToBasket() {

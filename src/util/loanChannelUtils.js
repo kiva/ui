@@ -6,7 +6,7 @@ import {
 } from '@/util/flssUtils';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
-import { getExperimentSettingAsync } from '@/util/experimentUtils';
+import { getExperimentSettingAsync, getExperimentSettingCached, trackExperimentVersion } from '@/util/experimentUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 
 export const loanChannelFLSSQueryEXP = 'loan_channel_flss_query_v1';
@@ -164,5 +164,23 @@ export function watchChannelQuery(apollo, queryMap, channelUrl, loanQueryVars, n
 		watch(vars => observer.setVariables(experimentActive ? getLoanChannelVariables(queryMapFLSS, vars) : vars));
 
 		return observer;
+	}
+}
+
+/**
+ * Tracks the loan channel FLSS experiment for the current user if the experiment is enabled
+ *
+ * @param {Object} apollo The Apollo client instance
+ * @param {Array} queryMap The map mixin from loan-channel-query-map.js
+ * @param {string} channelUrl The URL of the loan channel
+ * @param {function} trackEvent The method for tracking analytics events
+ */
+export function trackChannelExperiment(apollo, queryMap, channelUrl, trackEvent) {
+	if (getFLSSQueryMap(queryMap, channelUrl)) {
+		const { enabled } = getExperimentSettingCached(apollo, loanChannelFLSSQueryEXP);
+
+		if (enabled) {
+			trackExperimentVersion(apollo, trackEvent, 'Lending', loanChannelFLSSQueryEXP, 'EXP-VUE-1114-July2022');
+		}
 	}
 }

@@ -6,6 +6,7 @@ import {
 	getCachedChannel,
 	watchChannelQuery,
 	loanChannelFLSSQueryEXP,
+	trackChannelExperiment,
 } from '@/util/loanChannelUtils';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
 import * as experimentalUtils from '@/util/experimentUtils';
@@ -334,6 +335,56 @@ describe('loanChannelUtils.js', () => {
 
 			expect(observer.setVariables).toHaveBeenCalledTimes(1);
 			expect(observer.setVariables).toHaveBeenCalledWith(mockLoanQueryVars);
+		});
+	});
+
+	describe('trackChannelExperiment', () => {
+		let spyGetExperimentSettingCached;
+		let spyTrackExperimentVersion;
+		const apollo = {};
+		const trackEvent = {};
+
+		beforeEach(() => {
+			spyGetExperimentSettingCached = jest.spyOn(experimentalUtils, 'getExperimentSettingCached')
+				.mockImplementation(() => {});
+			spyTrackExperimentVersion = jest.spyOn(experimentalUtils, 'trackExperimentVersion')
+				.mockImplementation(() => {});
+		});
+
+		afterEach(jest.clearAllMocks);
+
+		it('should handle missing map', () => {
+			trackChannelExperiment(apollo, mockQueryMap, 'asd', trackEvent);
+
+			expect(spyGetExperimentSettingCached).toHaveBeenCalledTimes(0);
+			expect(spyTrackExperimentVersion).toHaveBeenCalledTimes(0);
+		});
+
+		it('should handle enabled experiment', () => {
+			spyGetExperimentSettingCached.mockReturnValueOnce({ enabled: true });
+
+			trackChannelExperiment(apollo, mockQueryMap, 'women', trackEvent);
+
+			expect(spyGetExperimentSettingCached).toHaveBeenCalledTimes(1);
+			expect(spyGetExperimentSettingCached).toHaveBeenCalledWith(apollo, loanChannelFLSSQueryEXP);
+			expect(spyTrackExperimentVersion).toHaveBeenCalledTimes(1);
+			expect(spyTrackExperimentVersion).toHaveBeenCalledWith(
+				apollo,
+				trackEvent,
+				'Lending',
+				loanChannelFLSSQueryEXP,
+				'EXP-VUE-1114-July2022'
+			);
+		});
+
+		it('should handle disabled experiment', () => {
+			spyGetExperimentSettingCached.mockReturnValueOnce({ enabled: false });
+
+			trackChannelExperiment(apollo, mockQueryMap, 'women', trackEvent);
+
+			expect(spyGetExperimentSettingCached).toHaveBeenCalledTimes(1);
+			expect(spyGetExperimentSettingCached).toHaveBeenCalledWith(apollo, loanChannelFLSSQueryEXP);
+			expect(spyTrackExperimentVersion).toHaveBeenCalledTimes(0);
 		});
 	});
 });
