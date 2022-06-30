@@ -14,6 +14,7 @@
 						:show-urgency-exp="showUrgencyExp"
 						:lenders="lenders"
 						:social-exp-enabled="socialExpEnabled"
+						:is-mobile="isMobile"
 					/>
 				</content-container>
 			</div>
@@ -26,6 +27,7 @@
 						:lenders="lenders"
 						:social-exp-enabled="socialExpEnabled"
 						@tooglelightbox="toogleLightbox"
+						:is-mobile="isMobile"
 					/>
 				</sidebar-container>
 			</div>
@@ -294,7 +296,8 @@ export default {
 			inviterIsGuestOrAnonymous: false,
 			lenders: [],
 			socialExpEnabled: true,
-			showLightBoxModal: false
+			showLightBoxModal: false,
+			isMobile: false
 		};
 	},
 	apollo: {
@@ -370,8 +373,12 @@ export default {
 		if (expCookieSignifier === 'b') {
 			this.$kvTrackEvent('Borrower Profile', 'EXP-GROW-655-Aug2021', expCookieSignifier);
 		}
+		this.determineIfMobile();
 	},
 	methods: {
+		determineIfMobile() {
+			this.isMobile = document.documentElement.clientWidth < 681;
+		},
 		toogleLightbox() {
 			this.$refs.lendersComponent.openLightbox();
 		}

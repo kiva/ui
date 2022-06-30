@@ -1,6 +1,6 @@
 <template>
 	<div ref="wrapper"
-		:class="['tw-mt-1.5', 'lg:tw-mb-1.5', 'tw-relative', 'lenders-container']"
+		:class="['tw-mt-1.5', 'lg:tw-mb-1.5']"
 	>
 		<div
 			:class="[
@@ -9,6 +9,8 @@
 				{
 					'md:tw-static': !isSticky,
 				},
+				'tw-relative',
+				'lenders-container'
 			]"
 		>
 			<span
@@ -28,13 +30,13 @@
 				</template>
 			</div>
 		</div>
-		<div>
-			<kv-text-link
-				v-if="!isMobile"
+		<div v-if="!isMobile" class="tw-mt-2">
+			<button
+				class="tw-bg-transparent tw-border tw-border-black tw-p-2 tw-text-black tw-rounded tw-text-base"
 				@click="toogleLightBox"
 			>
 				See all lenders
-			</kv-text-link>
+			</button>
 		</div>
 	</div>
 </template>
@@ -43,7 +45,6 @@
 import { mdiLightningBolt } from '@mdi/js';
 import LendersListItem from '@/components/BorrowerProfile/LendersListItem';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 export default {
 	name: 'LendersList',
@@ -52,34 +53,30 @@ export default {
 		lenders: {
 			type: Array,
 			default: () => []
+		},
+		isMobile: {
+			type: Boolean,
+			default: false
 		}
 	},
 	components: {
 		LendersListItem,
 		KvMaterialIcon,
-		KvTextLink
 	},
 	data() {
 		return {
-			mdiLightningBolt,
-			isMobile: false
+			mdiLightningBolt
 		};
 	},
 	apollo: {
 	},
 	methods: {
-		determineIfMobile() {
-			this.isMobile = document.documentElement.clientWidth < 681;
-		},
 		isValidLength(idx) {
 			return (this.isMobile && idx < 2) || !this.isMobile;
 		},
 		toogleLightBox() {
 			this.$emit('tooglelightbox');
 		}
-	},
-	mounted() {
-		this.determineIfMobile();
 	},
 	computed: {
 		isSticky() {
@@ -89,19 +86,15 @@ export default {
 			return this.lenders.length > 3 ? 2 : 1;
 		},
 		sortedLenders() {
-			const inviterName = this.$route.query.utm_content ?? 'user_140739';
+			const inviterName = this.$route.query.utm_content ?? '';
 			const inviterIndex = this.lenders.findIndex(lender => {
 				return inviterName.localeCompare(lender?.name) === 0;
 			});
-			const lenders = inviterIndex >= 0 ? [
+			return inviterIndex >= 0 ? [
 				this.lenders[inviterIndex],
 				...this.lenders.slice(0, inviterIndex),
 				...this.lenders.slice(inviterIndex + 1, this.lenders.length - 1)
 			] : this.lenders;
-
-			if (this.isMobile) lenders.pop();
-
-			return lenders;
 		},
 		lendersListName() {
 			if (this.lenders.length < 4) return this.sortedLenders[0].name;
@@ -113,7 +106,7 @@ export default {
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 	.lenders-container::after {
 		content: "";
 		position: absolute;
@@ -121,8 +114,12 @@ export default {
 		bottom: 0;
 		left: 0;
 		pointer-events: none;
+		@media screen and (min-width: 660px) {
+			background-image: linear-gradient(to bottom, transparent, white);
+		}
 		background-image: linear-gradient(to bottom, transparent, rgba(245, 245, 245, 1) 100%);
 		width: 100%;
-		height: 4em;
+		height: 5em;
 	}
+
 </style>
