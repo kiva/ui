@@ -61,3 +61,5 @@ configmap:
     value: "env:dev,app:kiva-ui"
   - key: DD_ENV
     value: "dev"
+  - key: NODE_OPTIONS
+    value: "--max-old-space-size=460"

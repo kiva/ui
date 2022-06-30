@@ -1,3 +1,33 @@
+### [2.212.1](https://github.com/kiva/ui/compare/v2.212.0...v2.212.1) (2022-06-30)
+
+
+### Bug Fixes
+
+* move version tag to template file ([51a06b0](https://github.com/kiva/ui/commit/51a06b03371b7c7746c885c65336dc4ee36bcb04))
+
+## [2.212.0](https://github.com/kiva/ui/compare/v2.211.0...v2.212.0) (2022-06-30)
+
+
+### Features
+
+* matched loans lightbox ([238cddf](https://github.com/kiva/ui/commit/238cddfa0fa48e0251529ca776b32af1119d5edb))
+* update copy text for matched loans ([5837a04](https://github.com/kiva/ui/commit/5837a046ce0adb0085ede8b952f5fba8b15a4bdb))
+* update lightbox ([552c25a](https://github.com/kiva/ui/commit/552c25a3e798783d4347797e722d28dfa62174df))
+
+## [2.211.0](https://github.com/kiva/ui/compare/v2.210.0...v2.211.0) (2022-06-30)
+
+
+### Features
+
+* datadog unified service tagging & profiling, and limit node max old space ([569df67](https://github.com/kiva/ui/commit/569df67d411afad7a40351641cafa934b813e03a))
+
+## [2.210.0](https://github.com/kiva/ui/compare/v2.209.0...v2.210.0) (2022-06-29)
+
+
+### Features
+
+* linking categories to category pages and additional PR comments ([#3958](https://github.com/kiva/ui/issues/3958)) ([bb59eed](https://github.com/kiva/ui/commit/bb59eed9a4201113b6d10e5154c9ae78e48d75ac))
+
 ## [2.209.0](https://github.com/kiva/ui/compare/v2.208.3...v2.209.0) (2022-06-28)
 
 

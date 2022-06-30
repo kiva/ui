@@ -87,4 +87,7 @@ configmap:
     value: 8126
   - key: DD_SERVICE_NAME
     value: "kiva-ui"
-
+  - key: DD_SERVICE
+    value: "kiva-ui"
+  - key: DD_PROFILING_ENABLED
+    value: true
