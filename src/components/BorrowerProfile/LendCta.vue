@@ -378,10 +378,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		numLenders: {
-			type: Number,
-			default: 0
-		},
 		requireDepositsMatchedLoans: {
 			type: Boolean,
 			default: false,
