@@ -59,6 +59,10 @@ export default {
 		isMobile: {
 			type: Boolean,
 			default: false
+		},
+		numLenders: {
+			type: Number,
+			default: 0
 		}
 	},
 	components: {
@@ -105,9 +109,9 @@ export default {
 				.replace(/,\s*$/, '');
 		},
 		poweredByText() {
-			if (this.lenders.length - this.limit <= 0) return `powered by ${this.lendersListName}`;
-			if (this.lenders.length - this.limit === 1) return `powered by ${this.lendersListName} and 1 more`;
-			return `powered by ${this.lendersListName} and ${this.lenders.length - this.limit} others`;
+			if (this.numLenders - this.limit <= 0) return `powered by ${this.lendersListName}`;
+			if (this.numLenders - this.limit === 1) return `powered by ${this.lendersListName} and 1 more`;
+			return `powered by ${this.lendersListName} and ${this.numLenders - this.limit} others`;
 		}
 	}
 };

@@ -115,7 +115,7 @@
 				'tw-mt-1.5'
 			]"
 		>
-			<lenders-list :lenders="lenders" key="lenderList" :is-mobile="isMobile" />
+			<lenders-list :lenders="lenders" key="lenderList" :is-mobile="isMobile" :num-lenders="numLenders" />
 		</div>
 	</section>
 </template>
@@ -163,6 +163,10 @@ export default {
 		isMobile: {
 			type: Boolean,
 			default: false
+		},
+		numLenders: {
+			type: Number,
+			default: 0
 		}
 	},
 	data() {

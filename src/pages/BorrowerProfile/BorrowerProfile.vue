@@ -15,6 +15,7 @@
 						:lenders="lenders"
 						:social-exp-enabled="socialExpEnabled"
 						:is-mobile="isMobile"
+						:num-lenders="numLenders"
 					/>
 				</content-container>
 			</div>
@@ -28,6 +29,7 @@
 						:social-exp-enabled="socialExpEnabled"
 						@tooglelightbox="toogleLightbox"
 						:is-mobile="isMobile"
+						:num-lenders="numLenders"
 					/>
 				</sidebar-container>
 			</div>

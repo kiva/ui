@@ -310,6 +310,7 @@
 							</span>
 							<lenders-list
 								v-if="socialExpEnabled && lenders.length"
+								:num-lenders="numLenders"
 								:lenders="lenders"
 								key="lenderList"
 								@tooglelightbox="toogleLightbox"
@@ -376,6 +377,10 @@ export default {
 		isMobile: {
 			type: Boolean,
 			default: false
+		},
+		numLenders: {
+			type: Number,
+			default: 0
 		},
 		requireDepositsMatchedLoans: {
 			type: Boolean,
