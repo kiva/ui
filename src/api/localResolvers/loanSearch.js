@@ -22,6 +22,7 @@ export const getDefaultLoanSearchState = () => ({
 	theme: [], // Expects an array of strings
 	pageOffset: 0, // Expects a number
 	pageLimit: 15, // Expects a number
+	distributionModel: null // Expects DIRECT or FIELDPARTNER
 });
 
 // export queries, resolvers and defaults for LoanSearchState

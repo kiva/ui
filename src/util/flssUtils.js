@@ -19,6 +19,7 @@ export function getFlssFilters(loanSearchState) {
 			theme: { any: loanSearchState.theme }
 		}),
 		...(loanSearchState?.sectorId?.length && { sectorId: { any: loanSearchState.sectorId } }),
+		...(loanSearchState?.distributionModel && { distributionModel: { eq: loanSearchState.distributionModel } }),
 	};
 }
 

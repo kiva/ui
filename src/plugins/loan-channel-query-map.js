@@ -46,7 +46,7 @@ export default {
 					url: 'kiva-u-s',
 					queryParams: 'status=fundRaising&riskRating=0,5&country=US&distributionModel=direct',
 					algoliaParams: 'countries=North%20America%20%3E%20United%20States',
-					flssLoanSearch: { countryIsoCode: ['US'] },
+					flssLoanSearch: { countryIsoCode: ['US'], distributionModel: 'DIRECT' },
 				},
 				{
 					id: 23,
@@ -171,7 +171,7 @@ export default {
 					url: 'vulnerable-populations',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Vulnerable Groups&distributionModel=field_partner',
 					algoliaParams: 'attributes=Vulnerable%20Groups',
-					flssLoanSearch: { theme: ['VULNERABLE GROUPS'] },
+					flssLoanSearch: { theme: ['VULNERABLE GROUPS'], distributionModel: 'FIELDPARTNER' },
 				},
 
 				// Lend By Category Channels
@@ -276,49 +276,49 @@ export default {
 					url: 'africa-loans',
 					queryParams: 'country=mz,ug,sn,rw,ke,cd,lr,bf,cm,gh,tg,mg,ml,eg&distributionModel=field_partner&gender=female&riskRating=0,5&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&countries=Africa%20>%20Cameroon~Africa%20>%20Congo%20%28DRC%29~Africa%20>%20Egypt~Africa%20>%20Ghana~Africa%20>%20Kenya~Africa%20>%20Liberia~Africa%20>%20Madagascar~Africa%20>%20Mali~Africa%20>%20Mozambique~Africa%20>%20Nigeria~Africa%20>%20Rwanda~Africa%20>%20Senegal~Africa%20>%20Uganda&sortBy=popularity',
-					flssLoanSearch: { countryIsoCode: ['BF', 'CD', 'CM', 'EG', 'GH', 'KE', 'LR', 'MG', 'ML', 'MZ', 'RW', 'SN', 'TG', 'UG'], gender: 'female' },
+					flssLoanSearch: { countryIsoCode: ['BF', 'CD', 'CM', 'EG', 'GH', 'KE', 'LR', 'MG', 'ML', 'MZ', 'RW', 'SN', 'TG', 'UG'], gender: 'female', distributionModel: 'FIELDPARTNER' },
 				},
 				{
 					id: 84,
 					url: 'asia-loans',
 					queryParams: 'country=kh,tj,th,vn,ph,kg,id,pk&distributionModel=field_partner&gender=female&riskRating=0,5&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&countries=Asia%20>%20Cambodia~Asia%20>%20India~Asia%20>%20Kyrgyzstan~Asia%20>%20Nepal~Asia%20>%20Pakistan~Asia%20>%20Philippines~Asia%20>%20Tajikistan~Asia%20>%20Vietnam&sortBy=popularity',
-					flssLoanSearch: { countryIsoCode: ['KH', 'TJ', 'TH', 'VN', 'PH', 'KG', 'ID', 'PK'], gender: 'female' },
+					flssLoanSearch: { countryIsoCode: ['KH', 'TJ', 'TH', 'VN', 'PH', 'KG', 'ID', 'PK'], gender: 'female', distributionModel: 'FIELDPARTNER' },
 				},
 				{
 					id: 85,
 					url: 'latin-america-loans',
 					queryParams: 'country=bo,gt,py,ni,hn,pe,cr,pa,ec,co,sv,mx,br&distributionModel=field_partner&gender=female&riskRating=0,5&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&countries=North%20America%20>%20Mexico~South%20America%20>%20Bolivia~South%20America%20>%20Brazil~South%20America%20>%20Colombia~South%20America%20>%20Ecuador~South%20America%20>%20Paraguay~South%20America%20>%20Peru~Central%20America%20>%20Costa%20Rica~Central%20America%20>%20El%20Salvador~Central%20America%20>%20Guatemala~Central%20America%20>%20Honduras~Central%20America%20>%20Nicaragua~North%20America%20>%20Dominican%20Republic&sortBy=popularity',
-					flssLoanSearch: { countryIsoCode: ['BO', 'GT', 'PY', 'NI', 'HN', 'PE', 'CR', 'PA', 'EC', 'CO', 'SV', 'MX', 'BR'], gender: 'female' },
+					flssLoanSearch: { countryIsoCode: ['BO', 'GT', 'PY', 'NI', 'HN', 'PE', 'CR', 'PA', 'EC', 'CO', 'SV', 'MX', 'BR'], gender: 'female', distributionModel: 'FIELDPARTNER' },
 				},
 				{
 					id: 86,
 					url: 'united-states-loans',
 					queryParams: 'country=us&distributionModel=field_partner&gender=female&riskRating=0,5&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&countries=North%20America%20>%20United%20States&sortBy=popularity',
-					flssLoanSearch: { countryIsoCode: ['US'], gender: 'female' },
+					flssLoanSearch: { countryIsoCode: ['US'], gender: 'female', distributionModel: 'FIELDPARTNER' },
 				},
 				{
 					id: 87,
 					url: 'agriculture-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=1&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Agriculture&sortBy=popularity',
-					flssLoanSearch: { sectorId: [1], gender: 'female' },
+					flssLoanSearch: { sectorId: [1], gender: 'female', distributionModel: 'FIELDPARTNER' },
 				},
 				{
 					id: 88,
 					url: 'education-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=15&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Education&sortBy=popularity',
-					flssLoanSearch: { sectorId: [15], gender: 'female' },
+					flssLoanSearch: { sectorId: [15], gender: 'female', distributionModel: 'FIELDPARTNER' },
 				},
 				{
 					id: 89,
 					url: 'arts-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=9&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Arts&sortBy=popularity',
-					flssLoanSearch: { sectorId: [9], gender: 'female' },
+					flssLoanSearch: { sectorId: [9], gender: 'female', distributionModel: 'FIELDPARTNER' },
 				},
 				{
 					id: 90,
@@ -331,21 +331,21 @@ export default {
 					url: 'food-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=12&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Food&sortBy=popularity',
-					flssLoanSearch: { sectorId: [12], gender: 'female' },
+					flssLoanSearch: { sectorId: [12], gender: 'female', distributionModel: 'FIELDPARTNER' },
 				},
 				{
 					id: 93,
 					url: 'shelter-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=10&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Housing&sortBy=popularity',
-					flssLoanSearch: { sectorId: [10], gender: 'female' },
+					flssLoanSearch: { sectorId: [10], gender: 'female', distributionModel: 'FIELDPARTNER' },
 				},
 				{
 					id: 94,
 					url: 'retail-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=7&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Retail&sortBy=popularity',
-					flssLoanSearch: { sectorId: [7], gender: 'female' },
+					flssLoanSearch: { sectorId: [7], gender: 'female', distributionModel: 'FIELDPARTNER' },
 				},
 
 				// Misc Promotional or Unsupported URLS
@@ -375,7 +375,7 @@ export default {
 					// this will cause legacy lend to load up and apply all params for the Loan Channel
 					// fallbackUrl: '/lend/crisis-support-loans?filter=bypass'
 					algoliaParams: 'attributes=Crisis%20Support%20Loans&sortBy=popularity',
-					flssLoanSearch: { theme: ['CRISIS SUPPORT LOANS'] },
+					flssLoanSearch: { theme: ['CRISIS SUPPORT LOANS'], distributionModel: 'FIELDPARTNER' },
 				},
 				{
 					id: 65,
@@ -392,7 +392,7 @@ export default {
 					id: 48,
 					url: 'human-flow-fund-support-refugees-and-i-d-ps',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=1,9,5,14,12,8,7,4,3,13&theme=Conflict Zones,Refugees/Displaced&distributionModel=field_partner',
-					flssLoanSearch: { sectorId: [1, 9, 5, 14, 12, 8, 7, 4, 3, 13], theme: ['CONFLICT ZONES', 'REFUGEES/DISPLACED'] },
+					flssLoanSearch: { sectorId: [1, 9, 5, 14, 12, 8, 7, 4, 3, 13], theme: ['CONFLICT ZONES', 'REFUGEES/DISPLACED'], distributionModel: 'FIELDPARTNER' },
 				},
 				{
 					id: 51,
