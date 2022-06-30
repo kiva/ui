@@ -101,9 +101,14 @@ import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import { isLoanFundraising } from '@/util/loanUtils';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
 
 const loanUseFilter = require('../../plugins/loan-use-filter');
 
+const socialElementsExpKey = 'social_elements';
 const pageQuery = gql`
 	query borrowerProfileMeta($loanId: Int!, $publicId: String!, $getInviter: Boolean!) {
 		general {
@@ -116,6 +121,10 @@ const pageQuery = gql`
 				value
 			}
 			requireDepositsMatchedLoans: uiExperimentSetting(key: "require_deposits_matched_loans") {
+				key
+				value
+			}
+			socialElements: uiExperimentSetting(key: "social_elements") {
 				key
 				value
 			}
@@ -326,6 +335,7 @@ export default {
 						// eslint-disable-next-line max-len
 						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
+						client.query({ query: experimentQuery, variables: { id: socialElementsExpKey } }),
 					]);
 				});
 		},
@@ -372,6 +382,16 @@ export default {
 		const expCookieSignifier = this.cookieStore.get('kvlendborrowerbeta');
 		if (expCookieSignifier === 'b') {
 			this.$kvTrackEvent('Borrower Profile', 'EXP-GROW-655-Aug2021', expCookieSignifier);
+		}
+		const { enabled } = getExperimentSettingCached(this.apollo, socialElementsExpKey);
+		if (enabled) {
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Borrower Profile',
+				socialElementsExpKey,
+				'EXP-MARS-158-Jul2022'
+			);
 		}
 		this.determineIfMobile();
 	},
@@ -477,6 +497,16 @@ export default {
 			'EXP-MARS-143-Jul2022',
 			this.shareCardLanguageVersion
 		);
+
+		// Check if social elements experiment is active.
+		const { enabled } = getExperimentSettingCached(this.apollo, socialElementsExpKey);
+		const exp = this.apollo.readFragment({
+			id: `Experiment:${socialElementsExpKey}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
+		if (enabled && exp.version === 'b') {
+			this.socialExpEnabled = true;
+		}
 
 		const utmContent = this.$route.query?.utm_content;
 		this.inviterIsGuestOrAnonymous = utmContent === 'anonymous' || utmContent === 'guest';
