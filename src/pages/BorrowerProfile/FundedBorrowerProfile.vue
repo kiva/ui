@@ -221,7 +221,6 @@ const newFundedBorrowerPageExpKey = 'new_funded_borrower_page';
 export default {
 	name: 'FundedBorrowerProfile',
 	metaInfo() {
-		const canonicalUrl = `https://${this.$appConfig.host}${this.$route.path}`.replace('funded', 'lend');
 		return {
 			title: `${this.loan.name} from ${this.loan.geocode?.country?.name}'s loan has been funded!`,
 			meta: [
@@ -229,13 +228,6 @@ export default {
 					vmid: 'description',
 					name: 'description',
 					content: `A loan helped ${this.loan.use}`,
-				}
-			],
-			link: [
-				{
-					vmid: 'canonical',
-					rel: 'canonical',
-					href: canonicalUrl
 				}
 			]
 		};

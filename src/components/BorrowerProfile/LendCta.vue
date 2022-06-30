@@ -305,7 +305,9 @@
 								>
 									🎉
 								</span>
-								{{ matchRatio + 1 }}X MATCHED LOAN
+								{{ matchRatio + 1 }}X
+								<span v-if="requireDepositsMatchedLoans"> MATCHED NEW DEPOSITS</span>
+								<span v-else> MATCHED LOAN</span>
 							</span>
 						</transition>
 					</div>
@@ -341,6 +343,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		requireDepositsMatchedLoans: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	components: {
 		LendAmountButton,

@@ -6,7 +6,9 @@
 		<div>
 			<!-- eslint-disable-next-line max-len -->
 			<p>Loan matching applies when you pay in full with new funds using Card, Paypal, Google Pay, or Apple Pay.</p>
-			<a href="">Learn more</a>
+			<button class="tw-text-link" @click="openLightbox">
+				Learn more
+			</button>
 		</div>
 	</div>
 </template>
@@ -18,12 +20,18 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 export default {
 	name: 'MatchedLoanKivaCredit',
 	components: {
-		KvMaterialIcon
+		KvMaterialIcon,
+	},
+	props: {
+		openLightbox: {
+			type: Function,
+			required: true,
+		}
 	},
 	data() {
 		return {
-			mdiInformationOutline
+			mdiInformationOutline,
 		};
-	}
+	},
 };
 </script>

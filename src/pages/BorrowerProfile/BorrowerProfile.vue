@@ -17,7 +17,11 @@
 			</div>
 			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8 tw-pointer-events-none">
 				<sidebar-container class="lg:tw-sticky lg:tw-top-12 lg:tw-mt-10 lg:tw-pb-8">
-					<lend-cta class="tw-pointer-events-auto" :loan-id="loanId" :complete-loan="completeLoanExpActive" />
+					<lend-cta class="tw-pointer-events-auto"
+						:loan-id="loanId"
+						:complete-loan="completeLoanExpActive"
+						:require-deposits-matched-loans="requireDepositsMatchedLoans"
+					/>
 				</sidebar-container>
 			</div>
 			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-8">
@@ -165,19 +169,11 @@ export default {
 		WwwPage,
 	},
 	metaInfo() {
-		const canonicalUrl = `https://${this.$appConfig.host}${this.$route.path}`.replace('-beta', '');
 		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
 		const description = this.anonymizationLevel === 'full' ? undefined : this.pageDescription;
 
 		return {
 			title,
-			link: [
-				{
-					vmid: 'canonical',
-					rel: 'canonical',
-					href: canonicalUrl
-				}
-			],
 			meta: [
 				{ property: 'og:title', vmid: 'og:title', content: this.shareTitle },
 				{ property: 'og:description', vmid: 'og:description', content: this.shareDescription },
@@ -405,6 +401,19 @@ export default {
 					this.isUrgencyExpVersionShown ? 'b' : 'a'
 				);
 			}
+		}
+
+		const matchedLoansExperiment = this.apollo.readFragment({
+			id: 'Experiment:require_deposits_matched_loans',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.requireDepositsMatchedLoans = matchedLoansExperiment.version === 'b';
+		if (matchedLoansExperiment.version) {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-CORE-615-May-2022',
+				matchedLoansExperiment.version
+			);
 		}
 
 		// EXP-CORE-607-May-2022
