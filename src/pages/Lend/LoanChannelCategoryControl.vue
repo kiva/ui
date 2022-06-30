@@ -347,7 +347,7 @@ export default {
 		preFetch(config, client, args) {
 			return client.query({
 				query: loanChannelPageQuery
-			}).then(async ({ data }) => {
+			}).then(({ data }) => {
 				// Filter routes on route.param.category to get current path
 				const targetedLoanChannelURL = _get(args, 'route.params.category');
 
@@ -357,7 +357,7 @@ export default {
 				// Extract query
 				const pageQuery = _get(args, 'route.query');
 
-				await preFetchChannel(
+				return preFetchChannel(
 					client,
 					// Access map directly since SSR doesn't have mixins available
 					loanChannelQueryMapMixin.data().loanChannelQueryMap,

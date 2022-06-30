@@ -61,14 +61,12 @@ export async function preFetchChannel(apollo, queryMap, channelUrl, loanQueryVar
 		}
 
 		if (experimentActive) {
-			await fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars);
-
-			return;
+			return fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars);
 		}
 	}
 
 	try {
-		await apollo.query({
+		return apollo.query({
 			query: loanChannelQuery,
 			variables: loanQueryVars
 		});
