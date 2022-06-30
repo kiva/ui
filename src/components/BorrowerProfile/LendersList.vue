@@ -114,12 +114,13 @@ export default {
 		bottom: 0;
 		left: 0;
 		pointer-events: none;
-		@media screen and (min-width: 660px) {
-			background-image: linear-gradient(to bottom, transparent, white);
-		}
 		background-image: linear-gradient(to bottom, transparent, rgba(245, 245, 245, 1) 100%);
 		width: 100%;
 		height: 5em;
+
+		@media screen and (min-width: 660px) {
+			background-image: linear-gradient(to bottom, transparent, white);
+		}
 	}
 
 </style>
