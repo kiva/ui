@@ -2,6 +2,8 @@ import {
 	getIsoCodes,
 	getFlssFilters,
 	getUpdatedRegions,
+	isoToCountryName,
+	mapIsoCodesToCountryNames,
 	transformIsoCodes,
 	updateSearchState,
 	sortRegions,
@@ -519,6 +521,36 @@ describe('loanSearchUtils.js', () => {
 				countryIsoCode: { any: ['US'] },
 				theme: { any: ['test'] }
 			});
+		});
+	});
+
+	describe('isoToCountryName', () => {
+		// utilizes mockTransformedMiddleEast
+		it('should return corresponding country name', () => {
+			const mappedName = isoToCountryName('JO', mockTransformedMiddleEast().countries);
+			expect(mappedName).toBe('Jordan');
+		});
+
+		it('should return null if no matching country name', () => {
+			const mappedName = isoToCountryName('MS', mockTransformedMiddleEast().countries);
+			expect(mappedName).toBe(null);
+		});
+	});
+
+	describe('mapIsoCodesToCountryNames', () => {
+		// utilizes mockTransformedRegions
+		const targetIsos = ['JO', 'CL', 'CO'];
+		it('should return region keyed object with array of country names', () => {
+			const selectedCountries = mapIsoCodesToCountryNames(targetIsos, mockTransformedRegions);
+			expect(selectedCountries).toEqual({
+				'Middle East': ['Jordan'],
+				'South America': ['Chile', 'Colombia']
+			});
+		});
+
+		it('should return an empty object if no isos are passed', () => {
+			const selectedCountries = mapIsoCodesToCountryNames([], mockTransformedRegions);
+			expect(selectedCountries).toEqual({});
 		});
 	});
 

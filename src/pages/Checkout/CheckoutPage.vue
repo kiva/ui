@@ -10,6 +10,11 @@
 				'login-guest': checkingOutAsGuest
 			}"
 		>
+			<matched-loans-lightbox
+				:matching-text="matchedText"
+				:show-lightbox="showMatchedLoansLightbox"
+				:close-lightbox="closeMatchedLoansLightbox"
+			/>
 			<div
 				v-if="!emptyBasket"
 				class="basket-wrap tw-relative tw-mb-1"
@@ -29,6 +34,7 @@
 							:kiva-cards="kivaCards"
 							:teams="teams"
 							:loan-reservation-total="parseInt(totals.loanReservationTotal)"
+							:disable-matching="requireDepositsMatchedLoans"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
@@ -69,6 +75,9 @@
 							:promo-fund="derivedPromoFund"
 							@refreshtotals="refreshTotals"
 							@updating-totals="setUpdatingTotals"
+							:show-matched-loan-kiva-credit="showMatchedLoanKivaCredit && requireDepositsMatchedLoans"
+							:matching-text="matchedText"
+							:open-lightbox="openMatchedLoansLightbox"
 						/>
 
 						<basket-verification />
@@ -281,6 +290,7 @@ import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.grap
 import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
 import { isLoanFundraising } from '@/util/loanUtils';
+import MatchedLoansLightbox from '@/components/Checkout/MatchedLoansLightbox';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -301,7 +311,8 @@ export default {
 		CheckoutDropInPaymentWrapper,
 		RandomLoanSelector,
 		VerifyRemovePromoCredit,
-		UpsellModule
+		UpsellModule,
+		MatchedLoansLightbox
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [
@@ -346,6 +357,9 @@ export default {
 			upsellLoan: {},
 			showUpsellModule: true,
 			requireDepositsMatchedLoans: false,
+			showMatchedLoanKivaCredit: false,
+			matchedText: null,
+			showMatchedLoansLightbox: false,
 		};
 	},
 	apollo: {
@@ -490,6 +504,14 @@ export default {
 				);
 			}
 		}
+
+		const matchedLoansWithCredit = this.loans?.filter(loan => {
+			const hasCredits = loan.creditsUsed?.length > 0;
+			const isMatchedLoan = loan.loan?.matchingText;
+			return hasCredits && isMatchedLoan;
+		});
+		this.showMatchedLoanKivaCredit = matchedLoansWithCredit.length > 0;
+		this.matchedText = matchedLoansWithCredit[0]?.loan?.matchingText;
 	},
 	mounted() {
 		// update current time every second for reactivity
@@ -619,6 +641,13 @@ export default {
 		}
 	},
 	methods: {
+		openMatchedLoansLightbox() {
+			this.showMatchedLoansLightbox = true;
+		},
+		closeMatchedLoansLightbox() {
+			this.$kvTrackEvent('Basket', 'close-must-deposit-message', 'Dismiss');
+			this.showMatchedLoansLightbox = false;
+		},
 		closeUpsellModule(amountLeft) {
 			this.$kvTrackEvent(
 				'Basket',
@@ -839,16 +868,30 @@ export default {
 				if (errors) {
 					// Handle errors from adding to basket
 					_forEach(errors, error => {
-						this.$showTipMsg(error.message, 'error');
-						try {
+						// Case if upsell loan gets reserved while user is in basket
+						if (error.extensions?.code === 'no_shares_added_regular_xb') {
 							this.$kvTrackEvent(
-								'Lending',
-								'Add-to-Basket',
-								`Failed: ${error.message.substring(0, 40)}...`
+								'Basket',
+								'click-checkout-upsell-reserved',
+								'ATC reserved loan attempted',
+								loanId
 							);
-							Sentry.captureMessage(`Add to Basket: ${error.message}`);
-						} catch (e) {
+							// eslint-disable-next-line max-len
+							this.$showTipMsg('Looks like that loan was reserved by someone else! Try this one instead.', 'info');
+							this.getUpsellModuleData();
+							this.refreshTotals();
+						} else {
+							this.$showTipMsg(error.message, 'error');
+							try {
+								this.$kvTrackEvent(
+									'Lending',
+									'Add-to-Basket',
+									`Failed: ${error.message.substring(0, 40)}...`
+								);
+								Sentry.captureMessage(`Add to Basket: ${error.message}`);
+							} catch (e) {
 							// no-op
+							}
 						}
 					});
 				} else {

@@ -85,6 +85,7 @@
 						class="thanks__social-share"
 						:lender="lender"
 						:loans="loans"
+						:share-card-language-version="shareCardLanguageVersion"
 					/>
 				</template>
 				<template #guest>
@@ -99,6 +100,7 @@
 			:lender="lender"
 			:loan="selectedLoan"
 			:simple-social-share-version="simpleSocialShareVersion"
+			:share-card-language-version="shareCardLanguageVersion"
 		/>
 	</www-page>
 </template>
@@ -159,6 +161,7 @@ export default {
 			isGuest: false,
 			pageData: {},
 			showNewThanksPage: false,
+			shareCardLanguageVersion: '',
 			simpleSocialShareVersion: '',
 			newThanksPageModuleVersion: '',
 		};
@@ -181,6 +184,7 @@ export default {
 
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_share_module' } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_card_language' } }),
 					upsellEligible ? client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_ad_upsell' } }) : Promise.resolve() // eslint-disable-line max-len
 				]);
 			}).catch(errorResponse => {
@@ -313,8 +317,8 @@ export default {
 				fragment: experimentVersionFragment,
 			}) || {};
 
-			this.showNewThanksPage = this.$route.query.setuiab && this.$route.query.setuiab === 'thanks_share_module.b';
 			this.newThanksPageModuleVersion = newThanksShareModule.version;
+			this.showNewThanksPage = this.newThanksPageModuleVersion === 'b';
 			if (this.newThanksPageModuleVersion) {
 				this.$kvTrackEvent(
 					'Thanks',
@@ -322,6 +326,13 @@ export default {
 					this.newThanksPageModuleVersion,
 				);
 			}
+
+			const shareCardLanguage = this.apollo.readFragment({
+				id: 'Experiment:share_card_language',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.shareCardLanguageVersion = shareCardLanguage.version;
 		}
 	},
 	mounted() {

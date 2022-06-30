@@ -220,6 +220,18 @@ const newFundedBorrowerPageExpKey = 'new_funded_borrower_page';
 
 export default {
 	name: 'FundedBorrowerProfile',
+	metaInfo() {
+		return {
+			title: `${this.loan?.name ?? ''} From ${this.loan.geocode?.country?.name ?? ''}'s loan has been funded`,
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: `A loan helped ${this.loan?.use ?? ''}`,
+				}
+			]
+		};
+	},
 	components: {
 		WwwPage,
 		LoanCardImage,

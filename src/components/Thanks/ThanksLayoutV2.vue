@@ -418,10 +418,6 @@ export default {
 		showShare: {
 			type: Boolean,
 			default: true
-		},
-		thanksSocialShareVersion: {
-			type: String,
-			default: ''
 		}
 	},
 	data() {

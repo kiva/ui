@@ -17,7 +17,11 @@
 			</div>
 			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8 tw-pointer-events-none">
 				<sidebar-container class="lg:tw-sticky lg:tw-top-12 lg:tw-mt-10 lg:tw-pb-8">
-					<lend-cta class="tw-pointer-events-auto" :loan-id="loanId" :complete-loan="completeLoanExpActive" />
+					<lend-cta class="tw-pointer-events-auto"
+						:loan-id="loanId"
+						:complete-loan="completeLoanExpActive"
+						:require-deposits-matched-loans="requireDepositsMatchedLoans"
+					/>
 				</sidebar-container>
 			</div>
 			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-8">
@@ -86,11 +90,12 @@ import BorrowerCountry from '@/components/BorrowerProfile/BorrowerCountry';
 import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
+import { isLoanFundraising } from '@/util/loanUtils';
 
 const loanUseFilter = require('../../plugins/loan-use-filter');
 
 const pageQuery = gql`
-	query borrowerProfileMeta($loanId: Int!) {
+	query borrowerProfileMeta($loanId: Int!, $publicId: String!, $getInviter: Boolean!) {
 		general {
 			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
 				key
@@ -138,6 +143,12 @@ const pageQuery = gql`
 				}
 			}
 		}
+		community @include(if: $getInviter) {
+			lender(publicId: $publicId) {
+				id
+				name
+			}
+		}
 	}
 `;
 
@@ -159,8 +170,17 @@ export default {
 		WwwPage,
 	},
 	metaInfo() {
+		let title = '';
+		let description = '';
+
+		if (this.$route.path.includes('lend') || this.$route.path.includes('-beta')) {
+			title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
+			// eslint-disable-next-line max-len
+			description = this.anonymizationLevel === 'full' ? undefined : `A loan of ${this.loanAmount ?? '0'} ${this.use}`;
+		}
+
 		return {
-			title: this.pageTitle,
+			title,
 			meta: [
 				{ property: 'og:title', vmid: 'og:title', content: `Lend as little as $25 to ${this.name}` },
 				{ property: 'og:type', vmid: 'og:type', content: 'kivadotorg:loan' },
@@ -169,11 +189,16 @@ export default {
 					vmid: 'og:image',
 					content: this.imageShareUrl
 				},
+				{
+					vmid: 'description',
+					name: 'description',
+					content: description,
+				}
 			].concat(this.$appConfig.enableFB ? [
 				{
 					vmid: 'facebook_label',
 					name: 'facebook_label',
-					content: this.pageLabel
+					content: this.facebookPageLabel
 				},
 			] : []).concat([
 				// Twitter Tags
@@ -233,6 +258,9 @@ export default {
 			completeLoanExpActive: false,
 			loanFundraisingInfo: {},
 			requireDepositsMatchedLoans: false,
+			shareCardLanguageVersion: '',
+			inviterName: '',
+			inviterIsGuestOrAnonymous: false,
 		};
 	},
 	apollo: {
@@ -243,9 +271,20 @@ export default {
 					query: pageQuery,
 					variables: {
 						loanId: Number(route.params?.id ?? 0),
+						publicId: route.query?.utm_content ?? '',
+						getInviter: !!route.query?.utm_content,
 					},
 				})
-				.then(() => {
+				.then(({ data }) => {
+					const loan = data?.lend?.loan;
+					// checks if the loan status is fundraising or not
+					// if not, then redirect to the lend/loan_id page
+					if (loan && !isLoanFundraising(loan)) {
+						return Promise.reject({
+							path: `/lend/${loan.id}`,
+						});
+					}
+
 					return Promise.all([
 						// eslint-disable-next-line max-len
 						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
@@ -256,11 +295,15 @@ export default {
 		preFetchVariables({ route }) {
 			return {
 				loanId: Number(route?.params?.id ?? 0),
+				publicId: route.query?.utm_content ?? '',
+				getInviter: !!route.query?.utm_content,
 			};
 		},
 		variables() {
 			return {
 				loanId: Number(this.$route?.params?.id ?? 0),
+				publicId: this.$route?.query?.utm_content ?? '',
+				getInviter: !!this.$route?.query?.utm_content,
 			};
 		},
 		result(result) {
@@ -270,7 +313,7 @@ export default {
 			this.countryName = loan?.geocode?.country?.name ?? '';
 			this.hash = loan?.image?.hash ?? '';
 			this.numLenders = loan?.lenders?.totalCount ?? 0;
-			this.endDate = format(parseISO(loan.plannedExpirationDate), 'M/d') ?? '';
+			this.endDate = format(parseISO(loan?.plannedExpirationDate), 'M/d') ?? '';
 			this.borrowerCount = loan?.borrowerCount ?? 0;
 			this.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
 			this.loanAmount = loan?.loanAmount ?? '0';
@@ -278,6 +321,8 @@ export default {
 			this.use = loan?.use ?? '';
 			this.description = loan?.description ?? '';
 			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
+			// eslint-disable-next-line max-len
+			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
 
 			const diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = diffInDays <= 3;
@@ -301,10 +346,10 @@ export default {
 				hash: this.hash,
 			});
 		},
-		pageLabel() {
-			return `Kiva - ${this.pageTitle}`;
+		facebookPageLabel() {
+			return `Kiva - ${this.facebookPageTitle}`;
 		},
-		pageTitle() {
+		facebookPageTitle() {
 			// eslint-disable-next-line prefer-destructuring
 			let name = this.name;
 			if (this.businessName) {
@@ -313,6 +358,11 @@ export default {
 			return `${name} - ${this.countryName}`;
 		},
 		descriptionMetaContent() {
+			if (this.shareCardLanguageVersion === 'b') {
+				// eslint-disable-next-line max-len
+				return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
+			}
+
 			if (this.anonymizationLevel !== 'full') {
 				// eslint-disable-next-line max-len
 				const loanUse = loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount,
@@ -326,6 +376,14 @@ export default {
 		},
 		amountLeft() {
 			return this.loanAmount - this.loanFundraisingInfo.fundedAmount;
+		},
+		pageTitle() {
+			if (this.shareCardLanguageVersion === 'b') {
+				// eslint-disable-next-line max-len
+				return this.inviterName === '' ? `Can you help support ${this.name}?` : `Can you help ${this.inviterName} support ${this.name}`;
+			}
+
+			return `Lend to ${this.name} in ${this.countryName}`;
 		}
 	},
 	created() {
@@ -348,6 +406,19 @@ export default {
 			}
 		}
 
+		const matchedLoansExperiment = this.apollo.readFragment({
+			id: 'Experiment:require_deposits_matched_loans',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.requireDepositsMatchedLoans = matchedLoansExperiment.version === 'b';
+		if (matchedLoansExperiment.version) {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-CORE-615-May-2022',
+				matchedLoansExperiment.version
+			);
+		}
+
 		// EXP-CORE-607-May-2022
 		const completeLoanEXP = this.apollo.readFragment({
 			id: 'Experiment:bp_complete_loan',
@@ -364,6 +435,17 @@ export default {
 				completeLoanEXP.version
 			);
 		}
+
+		// EXP-MARS-143-Jul2022
+		this.shareCardLanguageVersion = this.$route.query?.scle;
+		this.$kvTrackEvent(
+			'Thanks',
+			'EXP-MARS-143-Jul2022',
+			this.shareCardLanguageVersion
+		);
+
+		const utmContent = this.$route.query?.utm_content;
+		this.inviterIsGuestOrAnonymous = utmContent === 'anonymous' || utmContent === 'guest';
 	},
 };
 </script>

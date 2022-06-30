@@ -1,3 +1,174 @@
+### [2.212.1](https://github.com/kiva/ui/compare/v2.212.0...v2.212.1) (2022-06-30)
+
+
+### Bug Fixes
+
+* move version tag to template file ([51a06b0](https://github.com/kiva/ui/commit/51a06b03371b7c7746c885c65336dc4ee36bcb04))
+
+## [2.212.0](https://github.com/kiva/ui/compare/v2.211.0...v2.212.0) (2022-06-30)
+
+
+### Features
+
+* matched loans lightbox ([238cddf](https://github.com/kiva/ui/commit/238cddfa0fa48e0251529ca776b32af1119d5edb))
+* update copy text for matched loans ([5837a04](https://github.com/kiva/ui/commit/5837a046ce0adb0085ede8b952f5fba8b15a4bdb))
+* update lightbox ([552c25a](https://github.com/kiva/ui/commit/552c25a3e798783d4347797e722d28dfa62174df))
+
+## [2.211.0](https://github.com/kiva/ui/compare/v2.210.0...v2.211.0) (2022-06-30)
+
+
+### Features
+
+* datadog unified service tagging & profiling, and limit node max old space ([569df67](https://github.com/kiva/ui/commit/569df67d411afad7a40351641cafa934b813e03a))
+
+## [2.210.0](https://github.com/kiva/ui/compare/v2.209.0...v2.210.0) (2022-06-29)
+
+
+### Features
+
+* linking categories to category pages and additional PR comments ([#3958](https://github.com/kiva/ui/issues/3958)) ([bb59eed](https://github.com/kiva/ui/commit/bb59eed9a4201113b6d10e5154c9ae78e48d75ac))
+
+## [2.209.0](https://github.com/kiva/ui/compare/v2.208.3...v2.209.0) (2022-06-28)
+
+
+### Features
+
+* animated sparkles were added to complete loan experiment buttons ([838e013](https://github.com/kiva/ui/commit/838e01322730607b69daa490b3b5c969e237e433))
+
+### [2.208.3](https://github.com/kiva/ui/compare/v2.208.2...v2.208.3) (2022-06-28)
+
+
+### Bug Fixes
+
+* corporate campaign logo in footer distortion ([d414462](https://github.com/kiva/ui/commit/d4144621e167c72b85187a0b96a3701cd478e9c9))
+
+### [2.208.2](https://github.com/kiva/ui/compare/v2.208.1...v2.208.2) (2022-06-28)
+
+
+### Bug Fixes
+
+* set missing publicId variable and only include lender info when publicId is set ([4b820c2](https://github.com/kiva/ui/commit/4b820c28973095d270519515c487d5298f070712))
+
+### [2.208.1](https://github.com/kiva/ui/compare/v2.208.0...v2.208.1) (2022-06-28)
+
+
+### Bug Fixes
+
+* error getting cache for viewtoggle component ([437b427](https://github.com/kiva/ui/commit/437b4270157279c9ba6467771f3bcc36e9fcfaa6))
+
+## [2.208.0](https://github.com/kiva/ui/compare/v2.207.0...v2.208.0) (2022-06-27)
+
+
+### Features
+
+* added share car language experiment ([1268710](https://github.com/kiva/ui/commit/12687108e69112e8e3cb36f6c9870f7bb8d91e68))
+* change button message when loan is in basket and add dollar sign in cta button ([cf6a464](https://github.com/kiva/ui/commit/cf6a464d5bd8d3e269186886d674e5e49ec57354))
+* increase number of allowed webpack chunks ([6eb05e5](https://github.com/kiva/ui/commit/6eb05e51a4b3aad354f41e19342061d39eda04c4))
+* preconnect to fastly ([ab3da96](https://github.com/kiva/ui/commit/ab3da96a2cce4a39ffa6feb32a3dfe7cc32b0f2c))
+
+
+### Bug Fixes
+
+* more changes after code review ([e2748e3](https://github.com/kiva/ui/commit/e2748e351c9396397aeb3a6683ef62231e55dbc1))
+* redirect to lend/id when loan status is not fundraising ([85ead44](https://github.com/kiva/ui/commit/85ead444f2d8500b08287c91439b9255b21fbd06))
+* show check icon in checkout button ([4a31a95](https://github.com/kiva/ui/commit/4a31a95a9f596b50ad003e7e1ececaa04a305b6a))
+* small fixes after code review ([321d6ef](https://github.com/kiva/ui/commit/321d6efa34f6a16413a92405a378f723c583d85f))
+* use slot section inside kv-ui-button ([b6c1e50](https://github.com/kiva/ui/commit/b6c1e5084b3559934fdac5f1b96935310d17c41e))
+* validate public path url ([e87947c](https://github.com/kiva/ui/commit/e87947c8b6c0e54b50a9b977846f77bfc1e29b6f))
+
+## [2.207.0](https://github.com/kiva/ui/compare/v2.206.4...v2.207.0) (2022-06-24)
+
+
+### Features
+
+* upgrading @kiva/kv-components to v3.0.6 and @kiva/kv-tokens to v.2.1.0 ([#3950](https://github.com/kiva/ui/issues/3950)) ([2328259](https://github.com/kiva/ui/commit/232825995d46ffd1e2c3ded8b531177eec0fe6e2))
+
+### [2.206.4](https://github.com/kiva/ui/compare/v2.206.3...v2.206.4) (2022-06-24)
+
+
+### Bug Fixes
+
+* show experiment thanks page for version b ([e392623](https://github.com/kiva/ui/commit/e3926235d23d4d894f031ea3d0ecf215ef3422ad))
+
+### [2.206.3](https://github.com/kiva/ui/compare/v2.206.2...v2.206.3) (2022-06-23)
+
+
+### Bug Fixes
+
+* move exp tracking to mounted hook and remove eligibility gating around analytics on lend/filter ([f942f33](https://github.com/kiva/ui/commit/f942f33ac46f12ed86bf4f6ca6d7f5bbcc7d3b9b))
+
+### [2.206.2](https://github.com/kiva/ui/compare/v2.206.1...v2.206.2) (2022-06-23)
+
+
+### Bug Fixes
+
+* add missing word loan ([8df10b5](https://github.com/kiva/ui/commit/8df10b535f84827975bc4e042055fbd2781a25d8))
+
+### [2.206.1](https://github.com/kiva/ui/compare/v2.206.0...v2.206.1) (2022-06-23)
+
+
+### Bug Fixes
+
+* error handling for upsell loans ([b7d6599](https://github.com/kiva/ui/commit/b7d6599bd0dedeeb43d70ce98baae944298e9f8e))
+* update tracking info ([4097e1e](https://github.com/kiva/ui/commit/4097e1e36073bf55a142f056f9946f0af94b4d38))
+
+## [2.206.0](https://github.com/kiva/ui/compare/v2.205.0...v2.206.0) (2022-06-22)
+
+
+### Features
+
+* add utm content to share link ([f76096a](https://github.com/kiva/ui/commit/f76096a4e87558e640aaada51b889d6fec764f1a))
+* add utm_content to base SocialSharev2 sharelink ([8803edc](https://github.com/kiva/ui/commit/8803edc2c5f450ef91a3f2aad08bb45ec39f71c3))
+* adding utm_content for new social share version component ([72d84e6](https://github.com/kiva/ui/commit/72d84e6d89956c9912bd34ca9ed6da9fa62d6dca))
+* some small updates ([1ea6650](https://github.com/kiva/ui/commit/1ea665067d99e4461c0fa187d0e53b8b09900ac8))
+
+
+### Bug Fixes
+
+* added anonymazation level validation ([072694f](https://github.com/kiva/ui/commit/072694fbbee99df51ef84f162eb717d85d46f9ce))
+* small improvement ([4ecc51b](https://github.com/kiva/ui/commit/4ecc51b0b76de955d854a593d719a60f314c0e25))
+* solve conflicts in Thanks Page ([8e8335d](https://github.com/kiva/ui/commit/8e8335de5259dc006e8ed036d2be8047dd291abd))
+* update changes in copyLink method ([aa6d39a](https://github.com/kiva/ui/commit/aa6d39a1d305cfee95a3eddbf41722c1761fc102))
+* update seo borrower profile title and description ([06a6e00](https://github.com/kiva/ui/commit/06a6e0093daec80995db69b570dfcc642a8acaf2))
+* validate if inviterName prop exists in lender ([dd6fc6a](https://github.com/kiva/ui/commit/dd6fc6a82a0d10cb872ea385bcf1ddf88b27681c))
+
+## [2.205.0](https://github.com/kiva/ui/compare/v2.204.0...v2.205.0) (2022-06-22)
+
+
+### Features
+
+* added flssLoanSearchState channel mapping ([b265e6c](https://github.com/kiva/ui/commit/b265e6c75070be7df93e2fca260f58b82d7d9451))
+
+
+### Bug Fixes
+
+* added missing FLSS mapping ([75bfa07](https://github.com/kiva/ui/commit/75bfa076c998cac2cab585f5107a74a3cc1cb223))
+* added some empty FLSS mappings ([4a8665b](https://github.com/kiva/ui/commit/4a8665b4edfec6d8693bfbd727d5c310cad95e4c))
+* simplified mapping name ([1c2086a](https://github.com/kiva/ui/commit/1c2086ab8717c18b90734a301ea353a05246089e))
+* updated incorrect mapping URL ([8182429](https://github.com/kiva/ui/commit/8182429a20d479bd6b1b811ab32da54c9b01a37a))
+* updated to sectorId and removed some incompatible channels ([27948a6](https://github.com/kiva/ui/commit/27948a6b575726023caeb02a92dc9f00d2dba851))
+
+## [2.204.0](https://github.com/kiva/ui/compare/v2.203.0...v2.204.0) (2022-06-22)
+
+
+### Features
+
+* make LoanSearchLocationFilter reactive to loanSearchState ([eccb90e](https://github.com/kiva/ui/commit/eccb90e7662f13382616e3955a6a98ec608f4a05))
+* make location filter state reactive to loanSearchState, add utils for mapping iso to name ([cf4d209](https://github.com/kiva/ui/commit/cf4d2093cf9d8250b89d5977df5bc1835edf4101))
+
+## [2.203.0](https://github.com/kiva/ui/compare/v2.202.0...v2.203.0) (2022-06-22)
+
+
+### Features
+
+* checkout experience for matched loans ([6b0ead5](https://github.com/kiva/ui/commit/6b0ead5a2a7f3753e970e792de1cef9eb43231c6))
+* implement disabled matching when credit applied ([e09cf78](https://github.com/kiva/ui/commit/e09cf789013105918566d85963a5c5f4feaa6333))
+
+
+### Bug Fixes
+
+* remove scss styles ([f510db6](https://github.com/kiva/ui/commit/f510db60352fe6c6c2dd813fe14eb880fd2b4e22))
+
 ## [2.202.0](https://github.com/kiva/ui/compare/v2.201.0...v2.202.0) (2022-06-22)
 
 

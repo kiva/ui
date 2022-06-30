@@ -158,6 +158,37 @@ export function sortRegions(regions) {
 }
 
 /**
+ * Map isoCode to country name
+ *
+ * @param {String} isoCode
+ * @param {Array<Object>} region
+ * @returns String
+ */
+export function isoToCountryName(isoCode, countryList = []) {
+	const isoMatch = countryList.find(country => country.isoCode === isoCode);
+	return isoMatch?.name ?? null;
+}
+
+/**
+ * Map isoCode List to region keyed object with country name array
+ *
+ * @param {Array<String>} isoCodes
+ * @param {Array<Object>} regions
+ * @returns {Object}
+ */
+export function mapIsoCodesToCountryNames(isoCodes, regions) {
+	const mappedIsos = regions?.reduce((regionObject, region) => {
+		const countryNames = isoCodes.filter(
+			iso => region?.countries?.find(country => country.isoCode === iso)
+		).map(iso => {
+			return isoToCountryName(iso, region?.countries);
+		});
+		return countryNames.length ? { ...regionObject, [region.region]: countryNames } : { ...regionObject };
+	}, {});
+	return mappedIsos;
+}
+
+/**
  * Transforms ISO codes into regions usable by the filters
  *
  * @param {Array<Object>} countryFacets The ISO codes from FLSS
