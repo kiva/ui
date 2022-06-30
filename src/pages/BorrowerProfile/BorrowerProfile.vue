@@ -306,7 +306,7 @@ export default {
 			inviterName: '',
 			inviterIsGuestOrAnonymous: false,
 			lenders: [],
-			socialExpEnabled: true,
+			socialExpEnabled: false,
 			showLightBoxModal: false,
 			isMobile: false
 		};
