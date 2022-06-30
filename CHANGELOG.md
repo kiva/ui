@@ -1,3 +1,10 @@
+### [2.213.2](https://github.com/kiva/ui/compare/v2.213.1...v2.213.2) (2022-06-30)
+
+
+### Bug Fixes
+
+* update copy for borrower profile share card ([2033dad](https://github.com/kiva/ui/commit/2033dad7c3fb477f3984b1d806a9708f7fd5909f))
+
 ### [2.213.1](https://github.com/kiva/ui/compare/v2.213.0...v2.213.1) (2022-06-30)
 
 
