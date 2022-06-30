@@ -80,6 +80,7 @@ import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 
 const loansPerPage = 20;
+const routePath = 'recommended-by-lenders';
 
 // A map of functions to transform url query parameters to/from graphql variables.
 // Each key in urlParamTransform is a url query parameter (e.g. the 'page' in ?page=2).
@@ -246,10 +247,10 @@ export default {
 		},
 		filterUrl() {
 			// initial release sends us back to /lend
-			// return `/lend/${this.$route.params.category || ''}`;
+			// return `/lend/recommended-by-lenders`;
 			return this.lendFilterExpVersion === 'b'
 				? this.getAlgoliaFilterUrl()
-				: `/lend/${this.$route.params.category || ''}`;
+				: '/lend/recommended-by-lenders';
 		},
 		handleCanonicalUrl() {
 			let url = `https://${this.$appConfig.host}${this.$route.path}`;
@@ -265,7 +266,7 @@ export default {
 				query: loanChannelPageQuery
 			}).then(({ data }) => {
 				// filter routes on route.param.category to get current path
-				const targetedLoanChannelURL = _get(args, 'route.params.category');
+				const targetedLoanChannelURL = routePath;
 				// isolate targeted loan channel id
 				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, data);
 				// extract query
@@ -300,7 +301,7 @@ export default {
 		// set user status
 		this.isVisitor = !_get(allChannelsData, 'my.userAccount.id');
 		// filter routes on param.category to get current path
-		const targetedLoanChannelURL = _get(this.$route, 'params.category');
+		const targetedLoanChannelURL = routePath;
 		// isolate targeted loan channel id
 		this.targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, allChannelsData);
 		// extract query
@@ -334,7 +335,6 @@ export default {
 		// Setup Reactivity for Loan Data + Basket Status
 		this.activateLoanChannelWatchQuery();
 
-		this.updateLendFilterExp();
 		// check for newly assigned bounceback
 		const redirectFromUiCookie = this.cookieStore.get('redirectFromUi') || '';
 		if (redirectFromUiCookie === 'true') {
@@ -404,7 +404,7 @@ export default {
 			const matchedUrls = _filter(
 				this.loanChannelQueryMap,
 				channel => {
-					return channel.url === this.$route.params.category;
+					return channel.url === routePath;
 				}
 			);
 			// check for fallback url

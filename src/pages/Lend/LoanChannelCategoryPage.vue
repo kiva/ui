@@ -4,11 +4,7 @@
 		:gray-background="true"
 	>
 		<loan-channel-category-control
-			v-if="targetedLoanChannel !== 'recommended-by-lenders'"
 			:add-bundles-exp="addBundlesExp"
-		/>
-		<loan-channel-category-recommended-by-lenders
-			v-else
 		/>
 
 		<add-to-basket-interstitial />
@@ -22,7 +18,6 @@ import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketI
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import LoanChannelCategoryControl from '@/pages/Lend/LoanChannelCategoryControl';
-import LoanChannelCategoryRecommendedByLenders from '@/pages/Lend/LoanChannelCategoryRecommendedByLenders';
 
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
@@ -77,7 +72,6 @@ export default {
 	components: {
 		AddToBasketInterstitial,
 		LoanChannelCategoryControl,
-		LoanChannelCategoryRecommendedByLenders,
 		WwwPage,
 	},
 	inject: ['apollo', 'cookieStore'],
