@@ -43,6 +43,21 @@
 				/>
 			</div>
 		</div>
+		<div
+			v-if="socialExpEnabled"
+			class="tw-flex tw-items-center tw-w-full"
+			:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
+		>
+			<!-- only show option to bookmark loan if user is logged in -->
+			<loan-bookmark
+				v-if="isLoggedIn"
+				:loan-id="loanId"
+				class="md:tw-hidden"
+				data-testid="bp-mobile-summary-bookmark"
+			/>
+
+			<jump-links class="md:tw-hidden" data-testid="bp-summary-card-jump-links" />
+		</div>
 		<loan-use
 			class="tw-flex-none tw-w-full tw-mb-2 tw-text-h2"
 			data-testid="bp-summary-loan-use"
@@ -77,6 +92,7 @@
 			/>
 		</div>
 		<div
+			v-if="!socialExpEnabled"
 			class="tw-flex tw-items-center tw-w-full"
 			:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
 		>
@@ -90,12 +106,24 @@
 
 			<jump-links class="md:tw-hidden" data-testid="bp-summary-card-jump-links" />
 		</div>
+		<div
+			v-if="socialExpEnabled"
+			:class="[
+				'md:tw-hidden',
+				'tw-block',
+				'tw-border-t tw-border-tertiary',
+				'tw-mt-1.5'
+			]"
+		>
+			<lenders-list :lenders="lenders" key="lenderList" />
+		</div>
 	</section>
 </template>
 
 <script>
 import gql from 'graphql-tag';
 import { mdiMapMarker } from '@mdi/js';
+import LendersList from '@/components/BorrowerProfile/LendersList';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
@@ -117,11 +145,20 @@ export default {
 		SummaryTag,
 		LoanBookmark,
 		JumpLinks,
+		LendersList,
 	},
 	props: {
 		showUrgencyExp: {
 			type: Boolean,
 			default: false,
+		},
+		lenders: {
+			type: Array,
+			default: () => []
+		},
+		socialExpEnabled: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {

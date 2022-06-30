@@ -193,6 +193,7 @@
 			</kv-grid>
 
 			<transition
+				v-if="!this.socialExpEnabled"
 				enter-active-class="tw-transition-transform tw-duration-700 tw-delay-300"
 				:enter-class="transitionEnterClasses"
 				enter-to-class="tw-transform tw-translate-y-0 md:tw-translate-y-0 lg:tw-translate-y-0"
@@ -311,6 +312,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		socialExpEnabled: {
+			type: Boolean,
+			default: false
+		}
 	},
 	components: {
 		LendAmountButton,

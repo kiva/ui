@@ -12,12 +12,19 @@
 						data-testid="bp-summary"
 						class="tw-relative lg:tw--mb-1.5 tw-z-1"
 						:show-urgency-exp="showUrgencyExp"
+						:lenders="lenders"
+						:social-exp-enabled="socialExpEnabled"
 					/>
 				</content-container>
 			</div>
 			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8 tw-pointer-events-none">
 				<sidebar-container class="lg:tw-sticky lg:tw-top-12 lg:tw-mt-10 lg:tw-pb-8">
-					<lend-cta class="tw-pointer-events-auto" :loan-id="loanId" :complete-loan="completeLoanExpActive" />
+					<lend-cta
+						class="tw-pointer-events-auto"
+						:loan-id="loanId"
+						:complete-loan="completeLoanExpActive"
+						:social-exp-enabled="socialExpEnabled"
+					/>
 				</sidebar-container>
 			</div>
 			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-8">
@@ -124,7 +131,22 @@ const pageQuery = gql`
 					hash
 				}
 				plannedExpirationDate
-				lenders {
+				lenders(limit: 3) {
+					values {
+						id
+						name
+						publicId
+						image {
+							id
+							url
+						}
+						lenderPage {
+							city
+							country {
+								isoCode
+							}
+						}
+					}
 					totalCount
 				}
 				anonymizationLevel
@@ -265,6 +287,8 @@ export default {
 			shareCardLanguageVersion: '',
 			inviterName: '',
 			inviterIsGuestOrAnonymous: false,
+			lenders: [],
+			socialExpEnabled: true
 		};
 	},
 	apollo: {
@@ -325,6 +349,7 @@ export default {
 			this.use = loan?.use ?? '';
 			this.description = loan?.description ?? '';
 			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
+			this.lenders = loan?.lenders?.values ?? [];
 			// eslint-disable-next-line max-len
 			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
 
