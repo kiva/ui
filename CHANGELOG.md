@@ -1,3 +1,10 @@
+## [2.211.0](https://github.com/kiva/ui/compare/v2.210.0...v2.211.0) (2022-06-30)
+
+
+### Features
+
+* datadog unified service tagging & profiling, and limit node max old space ([569df67](https://github.com/kiva/ui/commit/569df67d411afad7a40351641cafa934b813e03a))
+
 ## [2.210.0](https://github.com/kiva/ui/compare/v2.209.0...v2.210.0) (2022-06-29)
 
 
