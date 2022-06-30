@@ -89,6 +89,5 @@ configmap:
     value: "kiva-ui"
   - key: DD_SERVICE
     value: "kiva-ui"
-  - key: DD_VERSION
-    value: |-
-      {{ .Values.image.tag }}
+  - key: DD_PROFILING_ENABLED
+    value: true

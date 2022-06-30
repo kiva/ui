@@ -59,8 +59,6 @@ configmap:
   data:
   - key: DD_TRACE_GLOBAL_TAGS
     value: "env:dev,app:kiva-ui"
-  - key: DD_PROFILING_ENABLED
-    value: true
   - key: DD_ENV
     value: "dev"
   - key: NODE_OPTIONS
