@@ -1,3 +1,12 @@
+### [2.213.1](https://github.com/kiva/ui/compare/v2.213.0...v2.213.1) (2022-06-30)
+
+
+### Bug Fixes
+
+* add inviter name to shareLink func ([5b112d2](https://github.com/kiva/ui/commit/5b112d2e986c2953591e788ea66d627a2ad0f60f))
+* canonical loop issue ([cd1b224](https://github.com/kiva/ui/commit/cd1b22434fe60935c744dff55e70c026631a4ee0))
+* resolve conflicts ([cf92a18](https://github.com/kiva/ui/commit/cf92a18d5d37153f6fb7e34a8ba84d586f8afe83))
+
 ## [2.213.0](https://github.com/kiva/ui/compare/v2.212.1...v2.213.0) (2022-06-30)
 
 
