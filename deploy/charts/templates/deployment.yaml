@@ -38,6 +38,9 @@ spec:
         ports:
           - name: {{ .Values.service.portName }}
             containerPort: {{ .Values.service.port }}
+        env:
+          - name: DD_VERSION
+            value: {{ .Values.image.tag }}
         envFrom:
           - secretRef:
               name: {{ .Values.secretName }}
