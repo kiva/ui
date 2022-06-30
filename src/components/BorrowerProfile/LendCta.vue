@@ -551,6 +551,13 @@ export default {
 				this.$kvTrackEvent('Borrower profile', 'Complete loan', 'view-amount-left-cta', this.loanId, this.selectedOption);
 				this.completeLoanView = false;
 			}
+		},
+		selectedOption() {
+			if (this.isCompleteLoanActive && this.completeLoanView) {
+				// eslint-disable-next-line
+				this.$kvTrackEvent('Borrower profile', 'Complete loan', 'view-amount-left-cta', this.loanId, this.selectedOption);
+				this.completeLoanView = false;
+			}
 		}
 	},
 	computed: {
@@ -705,6 +712,10 @@ export default {
 	mounted() {
 		this.createWrapperObserver();
 		this.cycleStatsSlot();
+		if (this.isCompleteLoanActive) {
+			// eslint-disable-next-line
+			this.$kvTrackEvent('Borrower profile', 'Complete loan', 'view-amount-left-cta', this.loanId, this.selectedOption);
+		}
 	},
 	beforeDestroy() {
 		this.destroyWrapperObserver();
