@@ -129,7 +129,7 @@ export default {
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			if (this.selectedLoan.id) {
-				return `${base}/lend/${this.selectedLoan.id}?utm_content=${this.utmContent}&scle=${this.shareCardLanguageVersion}`; // eslint-disable-line max-len
+				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoan.id}?utm_content=${this.utmContent}&scle=${this.shareCardLanguageVersion}`; // eslint-disable-line max-len
 			}
 			return `${base}?utm_content=${this.utmContent}&scle=${this.shareCardLanguageVersion}`;
 		},
