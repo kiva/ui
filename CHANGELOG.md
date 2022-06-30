@@ -1,3 +1,10 @@
+### [2.212.1](https://github.com/kiva/ui/compare/v2.212.0...v2.212.1) (2022-06-30)
+
+
+### Bug Fixes
+
+* move version tag to template file ([51a06b0](https://github.com/kiva/ui/commit/51a06b03371b7c7746c885c65336dc4ee36bcb04))
+
 ## [2.212.0](https://github.com/kiva/ui/compare/v2.211.0...v2.212.0) (2022-06-30)
 
 
