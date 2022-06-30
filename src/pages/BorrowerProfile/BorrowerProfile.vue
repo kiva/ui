@@ -170,7 +170,6 @@ export default {
 		WwwPage,
 	},
 	metaInfo() {
-		const canonicalUrl = `https://${this.$appConfig.host}${this.$route.path}`.replace('-beta', '');
 		let title = '';
 		let description = '';
 
@@ -182,13 +181,6 @@ export default {
 
 		return {
 			title,
-			link: [
-				{
-					vmid: 'canonical',
-					rel: 'canonical',
-					href: canonicalUrl
-				}
-			],
 			meta: [
 				{ property: 'og:title', vmid: 'og:title', content: `Lend as little as $25 to ${this.name}` },
 				{ property: 'og:type', vmid: 'og:type', content: 'kivadotorg:loan' },
