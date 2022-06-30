@@ -1,3 +1,15 @@
+## [2.213.0](https://github.com/kiva/ui/compare/v2.212.1...v2.213.0) (2022-06-30)
+
+
+### Features
+
+* recommended by lender category, category page ([dae992f](https://github.com/kiva/ui/commit/dae992f32fdf0e9f0238ede07af54384792712f5))
+
+
+### Bug Fixes
+
+* moved recommended by lenders category page to new route to avoid duplicate prefetch ([b4c255c](https://github.com/kiva/ui/commit/b4c255c10f4149b1f4bd3e363b92d8a6b84f11b4))
+
 ### [2.212.1](https://github.com/kiva/ui/compare/v2.212.0...v2.212.1) (2022-06-30)
 
 
