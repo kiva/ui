@@ -138,7 +138,7 @@ const pageQuery = gql`
 					hash
 				}
 				plannedExpirationDate
-				lenders(limit: 3) {
+				lenders {
 					values {
 						id
 						name
@@ -295,7 +295,7 @@ export default {
 			inviterName: '',
 			inviterIsGuestOrAnonymous: false,
 			lenders: [],
-			socialExpEnabled: true,
+			socialExpEnabled: false,
 			showLightBoxModal: false,
 			isMobile: false
 		};
@@ -309,7 +309,7 @@ export default {
 					variables: {
 						loanId: Number(route.params?.id ?? 0),
 						publicId: route.query?.utm_content ?? '',
-						getInviter: !!route.query?.utm_content,
+						getInviter: !!route.query?.utm_content
 					},
 				})
 				.then(({ data }) => {

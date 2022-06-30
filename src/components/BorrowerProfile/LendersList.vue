@@ -22,17 +22,19 @@
 					class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
 					:icon="mdiLightningBolt"
 				/>
-				powered by {{ lendersListName }} and {{ lenders.length - this.limit }} others
+				{{ poweredByText }}
 			</span>
 			<div v-for="(lender, idx) in sortedLenders" :key="lender.id">
 				<template v-if="isValidLength(idx)">
-					<lenders-list-item :lender="lender" />
+					<lenders-list-item
+						:lender="lender"
+					/>
 				</template>
 			</div>
 		</div>
 		<div v-if="!isMobile" class="tw-mt-2">
 			<button
-				class="tw-bg-transparent tw-border tw-border-black tw-p-2 tw-text-black tw-rounded tw-text-base"
+				class="tw-bg-transparent tw-border tw-border-black tw-px-3 tw-py-1 tw-rounded tw-text-base"
 				@click="toogleLightBox"
 			>
 				See all lenders
@@ -65,14 +67,12 @@ export default {
 	},
 	data() {
 		return {
-			mdiLightningBolt
+			mdiLightningBolt,
 		};
-	},
-	apollo: {
 	},
 	methods: {
 		isValidLength(idx) {
-			return (this.isMobile && idx < 2) || !this.isMobile;
+			return (this.isMobile && idx < 2) || (!this.isMobile && idx < 3);
 		},
 		toogleLightBox() {
 			this.$emit('tooglelightbox');
@@ -98,8 +98,16 @@ export default {
 		},
 		lendersListName() {
 			if (this.lenders.length < 4) return this.sortedLenders[0].name;
+			const filteredLenders = [...this.sortedLenders].slice(0, this.limit);
 			// eslint-disable-next-line max-len
-			return this.sortedLenders.map((lender, idx) => (idx < this.limit ? lender.name : '')).join(', ').replace(/,\s*$/, '');
+			return filteredLenders.map(lender => lender.name)
+				.join(', ')
+				.replace(/,\s*$/, '');
+		},
+		poweredByText() {
+			if (this.lenders.length - this.limit <= 0) return `powered by ${this.lendersListName}`;
+			if (this.lenders.length - this.limit === 1) return `powered by ${this.lendersListName} and 1 more`;
+			return `powered by ${this.lendersListName} and ${this.lenders.length - this.limit} others`;
 		}
 	}
 };

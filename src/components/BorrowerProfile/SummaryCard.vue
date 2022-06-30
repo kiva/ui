@@ -107,7 +107,7 @@
 			<jump-links class="md:tw-hidden" data-testid="bp-summary-card-jump-links" />
 		</div>
 		<div
-			v-if="socialExpEnabled"
+			v-if="socialExpEnabled && lenders.length"
 			:class="[
 				'md:tw-hidden',
 				'tw-block',

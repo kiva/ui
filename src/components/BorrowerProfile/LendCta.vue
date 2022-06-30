@@ -22,7 +22,7 @@
 					'tw-bg-primary',
 					'tw-border-t tw-border-tertiary',
 					{
-						'md:tw-rounded-b md:tw-border-none': !isSticky,
+						'md:tw-rounded-b md:tw-border-none': !isSticky && !socialExpEnabled,
 						'md:tw-px-3': !isSticky,
 						'md:tw-px-4': isSticky,
 					},
@@ -227,12 +227,24 @@
 							},
 							'tw-overflow-hidden',
 							'tw-col-span-12',
-							'tw-mb-1 tw-p-1',
-							'tw-rounded',
+							'tw-mb-1',
+							{
+								'tw-p-1': !socialExpEnabled,
+								'tw-py-1 tw-pr-1 tw-pl-3': socialExpEnabled
+							},
+							{
+								'tw-rounded': !socialExpEnabled,
+								'tw-rounded-b tw-border-t tw-border-tertiary': socialExpEnabled
+							},
 							'tw-bg-primary',
 							'tw-text-h4',
-							'tw-flex tw-justify-center',
-							'tw-mt-1',
+							'tw-justify-center',
+							{
+								'tw-flex': !socialExpEnabled
+							},
+							{
+								'tw-mt-1': !socialExpEnabled,
+							},
 							{
 								'tw-relative': !isSticky,
 								'md:tw-mb-0': !isSticky,
@@ -267,7 +279,7 @@
 								powered by {{ numLenders }} lenders
 							</span>
 							<lenders-list
-								v-if="socialExpEnabled"
+								v-if="socialExpEnabled && lenders.length"
 								:lenders="lenders"
 								key="lenderList"
 								@tooglelightbox="toogleLightbox"
