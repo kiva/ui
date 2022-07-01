@@ -6,9 +6,6 @@
 			:class="[
 				'tw-w-full',
 				'tw-flex tw-flex-col',
-				{
-					'md:tw-static': !isSticky,
-				},
 				'tw-relative',
 				'lenders-container'
 			]"
@@ -83,9 +80,6 @@ export default {
 		}
 	},
 	computed: {
-		isSticky() {
-			return true;
-		},
 		limit() {
 			return this.lenders.length > 3 ? 2 : 1;
 		},
@@ -103,7 +97,6 @@ export default {
 		lendersListName() {
 			if (this.lenders.length < 4) return this.sortedLenders[0].name;
 			const filteredLenders = [...this.sortedLenders].slice(0, this.limit);
-			// eslint-disable-next-line max-len
 			return filteredLenders.map(lender => lender.name)
 				.join(', ')
 				.replace(/,\s*$/, '');
