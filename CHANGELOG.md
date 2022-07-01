@@ -1,3 +1,10 @@
+### [2.214.1](https://github.com/kiva/ui/compare/v2.214.0...v2.214.1) (2022-07-01)
+
+
+### Bug Fixes
+
+* missing punctuation ([d1271c9](https://github.com/kiva/ui/commit/d1271c90f4ad979b4efc6a3fdd7a5b325e0cfbd6))
+
 ## [2.214.0](https://github.com/kiva/ui/compare/v2.213.2...v2.214.0) (2022-07-01)
 
 
