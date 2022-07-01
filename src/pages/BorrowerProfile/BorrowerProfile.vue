@@ -364,7 +364,7 @@ export default {
 		shareTitle() {
 			if (this.shareCardLanguageVersion === 'b') {
 				// eslint-disable-next-line max-len
-				return this.inviterName === '' ? `Can you help support ${this.name}?` : `Can you help ${this.inviterName} support ${this.name}`;
+				return this.inviterName === '' ? `Can you help support ${this.name}?` : `Can you help ${this.inviterName} support ${this.name}?`;
 			}
 
 			return `Lend as little as $25 to ${this.name}`;
