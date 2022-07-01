@@ -97,7 +97,7 @@
 		</div>
 
 		<div v-if="showMatchedLoanKivaCredit" class="tw-flex tw-flex-row-reverse">
-			<matched-loan-kiva-credit />
+			<matched-loan-kiva-credit :open-lightbox="openLightbox" />
 		</div>
 
 		<div class="order-total" data-testid="total-due">
@@ -156,6 +156,10 @@ export default {
 		showMatchedLoanKivaCredit: {
 			type: Boolean,
 			default: false
+		},
+		openLightbox: {
+			type: Function,
+			default: () => {}
 		}
 	},
 	data() {
