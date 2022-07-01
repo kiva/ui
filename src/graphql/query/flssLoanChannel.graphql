@@ -1,0 +1,43 @@
+#import '../fragments/loanCardFields.graphql'
+
+query flssLoanChannel(
+	$ids: [Int],
+	$filterObject: [FundraisingLoanSearchFilterInput!]
+	$pageNumber: Int = 0
+	$pageLimit: Int = 0
+	$imgDefaultSize: String = "w480h360"
+	$imgRetinaSize: String = "w960h720"
+	$basketId: String
+) {
+	lend {
+		loanChannelsById(ids: $ids) {
+			id
+			name
+			description
+			url
+		}
+	}
+	fundraisingLoans(filters: $filterObject, limit: $pageLimit, pageNumber: $pageNumber) {
+		totalCount
+		values {
+			id
+			...loanCardFields
+			image {
+				id
+				default: url(customSize: $imgDefaultSize)
+				retina: url(customSize: $imgRetinaSize)
+			}
+		}
+	}
+	shop (basketId: $basketId) {
+		id
+		basket {
+			id
+			items {
+				values {
+					id
+				}
+			}
+		}
+	}
+}
