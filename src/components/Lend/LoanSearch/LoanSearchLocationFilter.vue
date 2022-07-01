@@ -45,10 +45,6 @@ export default {
 		KvCheckboxList,
 	},
 	props: {
-		activeIsoCodes: {
-			type: Array,
-			default: () => []
-		},
 		/**
 		 * The regions with countries used to build the checkbox lists. Expected format:
 		 * [{
@@ -64,12 +60,16 @@ export default {
 		regions: {
 			type: Array,
 			default: undefined
-		}
+		},
+		activeIsoCodes: {
+			type: Array,
+			default: undefined
+		},
 	},
 	data() {
 		return {
 			displayedRegions: this.regions,
-			selectedCountries: mapIsoCodesToCountryNames(this.activeIsoCodes, this.regions) || {},
+			selectedCountries: mapIsoCodesToCountryNames(this.activeIsoCodes, this.regions),
 			openRegions: [],
 			getCheckboxLabel
 		};
@@ -97,7 +97,10 @@ export default {
 		updateRegion(region, { values, changed, wasSelectAll }) {
 			this.$set(this.selectedCountries, region, values);
 
+			this.$emit('updated', { countryIsoCode: getIsoCodes(this.displayedRegions, this.selectedCountries) });
+
 			let appliedState = '';
+
 			if (wasSelectAll) {
 				appliedState = values.length ? 'select-all' : 'deselect-all';
 			} else {
@@ -111,23 +114,26 @@ export default {
 				appliedState
 			);
 		},
+		updateSelectedCountries(next) {
+			if (!this.activeIsoCodes || !this.regions) return;
+
+			const nextISO = [...(next || this.activeIsoCodes)];
+			const prevISO = getIsoCodes(this.displayedRegions, this.selectedCountries);
+
+			if (nextISO.sort().toString() !== prevISO.sort().toString()) {
+				this.selectedCountries = mapIsoCodesToCountryNames(this.activeIsoCodes, this.regions);
+			}
+		},
 	},
 	watch: {
-		activeIsoCodes(nextIsos, prevIsos) {
-			if (nextIsos === prevIsos) return false;
-			const activeCountries = mapIsoCodesToCountryNames(this.activeIsoCodes, this.regions);
-			this.selectedCountries = activeCountries || {};
+		regions(next) {
+			this.displayedRegions = getUpdatedRegions(this.displayedRegions, next);
+
+			this.updateSelectedCountries();
 		},
-		regions(nextRegions) {
-			this.displayedRegions = getUpdatedRegions(this.displayedRegions, nextRegions);
+		activeIsoCodes(next) {
+			this.updateSelectedCountries(next);
 		},
-		selectedCountries: {
-			handler(nextCountries) {
-				// TODO: consider added a JSON.stringify check against next + prev
-				this.$emit('updated', { countryIsoCode: getIsoCodes(this.displayedRegions, nextCountries) });
-			},
-			deep: true,
-		}
 	},
 };
 </script>
