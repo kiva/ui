@@ -1,3 +1,18 @@
+## [2.214.0](https://github.com/kiva/ui/compare/v2.213.2...v2.214.0) (2022-07-01)
+
+
+### Features
+
+* distribution model to FLSS channel mapping ([7097c4d](https://github.com/kiva/ui/commit/7097c4d986ed6a284a83c183659810cb70a318b3))
+* experiment switching loan channel data to FLSS ([0b8f365](https://github.com/kiva/ui/commit/0b8f36586958eeb380507b8bffbffa67c36a32bd))
+* loan channel FLSS experiment tracking ([c95ab1a](https://github.com/kiva/ui/commit/c95ab1aaa03585462bf483334466cc84d4f57af6))
+
+
+### Bug Fixes
+
+* added defensive code and cleaned up code consistency ([1ff9883](https://github.com/kiva/ui/commit/1ff988332a1dc71c8192679b0c369f5d913ac541))
+* matched the promise chain pattern ([da39b8f](https://github.com/kiva/ui/commit/da39b8f6583802d7b009cc329bacddb401b6c902))
+
 ### [2.213.2](https://github.com/kiva/ui/compare/v2.213.1...v2.213.2) (2022-06-30)
 
 
