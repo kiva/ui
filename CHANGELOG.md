@@ -1,3 +1,46 @@
+## [2.214.0](https://github.com/kiva/ui/compare/v2.213.2...v2.214.0) (2022-07-01)
+
+
+### Features
+
+* distribution model to FLSS channel mapping ([7097c4d](https://github.com/kiva/ui/commit/7097c4d986ed6a284a83c183659810cb70a318b3))
+* experiment switching loan channel data to FLSS ([0b8f365](https://github.com/kiva/ui/commit/0b8f36586958eeb380507b8bffbffa67c36a32bd))
+* loan channel FLSS experiment tracking ([c95ab1a](https://github.com/kiva/ui/commit/c95ab1aaa03585462bf483334466cc84d4f57af6))
+
+
+### Bug Fixes
+
+* added defensive code and cleaned up code consistency ([1ff9883](https://github.com/kiva/ui/commit/1ff988332a1dc71c8192679b0c369f5d913ac541))
+* matched the promise chain pattern ([da39b8f](https://github.com/kiva/ui/commit/da39b8f6583802d7b009cc329bacddb401b6c902))
+
+### [2.213.2](https://github.com/kiva/ui/compare/v2.213.1...v2.213.2) (2022-06-30)
+
+
+### Bug Fixes
+
+* update copy for borrower profile share card ([2033dad](https://github.com/kiva/ui/commit/2033dad7c3fb477f3984b1d806a9708f7fd5909f))
+
+### [2.213.1](https://github.com/kiva/ui/compare/v2.213.0...v2.213.1) (2022-06-30)
+
+
+### Bug Fixes
+
+* add inviter name to shareLink func ([5b112d2](https://github.com/kiva/ui/commit/5b112d2e986c2953591e788ea66d627a2ad0f60f))
+* canonical loop issue ([cd1b224](https://github.com/kiva/ui/commit/cd1b22434fe60935c744dff55e70c026631a4ee0))
+* resolve conflicts ([cf92a18](https://github.com/kiva/ui/commit/cf92a18d5d37153f6fb7e34a8ba84d586f8afe83))
+
+## [2.213.0](https://github.com/kiva/ui/compare/v2.212.1...v2.213.0) (2022-06-30)
+
+
+### Features
+
+* recommended by lender category, category page ([dae992f](https://github.com/kiva/ui/commit/dae992f32fdf0e9f0238ede07af54384792712f5))
+
+
+### Bug Fixes
+
+* moved recommended by lenders category page to new route to avoid duplicate prefetch ([b4c255c](https://github.com/kiva/ui/commit/b4c255c10f4149b1f4bd3e363b92d8a6b84f11b4))
+
 ### [2.212.1](https://github.com/kiva/ui/compare/v2.212.0...v2.212.1) (2022-06-30)
 
 

@@ -1,6 +1,5 @@
 import {
 	getIsoCodes,
-	getFlssFilters,
 	getUpdatedRegions,
 	isoToCountryName,
 	mapIsoCodesToCountryNames,
@@ -27,6 +26,7 @@ import * as flssUtils from '@/util/flssUtils';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
 import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
 import orderBy from 'lodash/orderBy';
+import { getFlssFilters } from '@/util/flssUtils';
 
 const mockState = {
 	gender: 'female',
@@ -493,34 +493,6 @@ describe('loanSearchUtils.js', () => {
 				'Middle East': ['Jordan'],
 				'South America': ['Chile'],
 			}).sort()).toEqual(['JO', 'CL'].sort());
-		});
-	});
-
-	describe('getFlssFilters', () => {
-		it('should handle missing', () => {
-			expect(getFlssFilters({})).toEqual({});
-		});
-
-		it('should handle empty', () => {
-			const state = {
-				gender: '',
-				countryIsoCode: [],
-				theme: [],
-			};
-			expect(getFlssFilters(state)).toEqual({});
-		});
-
-		it('should return filters', () => {
-			const state = {
-				gender: 'female',
-				countryIsoCode: ['US'],
-				theme: ['test'],
-			};
-			expect(getFlssFilters(state)).toEqual({
-				gender: { any: 'female' },
-				countryIsoCode: { any: ['US'] },
-				theme: { any: ['test'] }
-			});
 		});
 	});
 

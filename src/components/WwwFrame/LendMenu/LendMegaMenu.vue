@@ -61,6 +61,16 @@
 							<ul class="tw-font-medium">
 								<li class="tw-w-[11rem]">
 									<router-link
+										to="/lend-by-category/recommended-by-lenders"
+										class="tw-text-brand
+									hover:tw-text-action-highlight tw-inline-block tw-py-1"
+										v-kv-track-event="['TopNav','click-Lend-Recommended-by-lenders']"
+									>
+										Recommended by lenders
+									</router-link>
+								</li>
+								<li class="tw-w-[11rem]">
+									<router-link
 										to="/categories"
 										class="tw-text-primary
 									hover:tw-text-action-highlight tw-inline-block tw-py-1"

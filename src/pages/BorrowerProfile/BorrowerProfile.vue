@@ -107,8 +107,7 @@ import {
 	getExperimentSettingCached,
 	trackExperimentVersion
 } from '@/util/experimentUtils';
-
-const loanUseFilter = require('../../plugins/loan-use-filter');
+import loanUseFilter from '@/plugins/loan-use-filter';
 
 const socialElementsExpKey = 'social_elements';
 const pageQuery = gql`
@@ -206,27 +205,14 @@ export default {
 		WwwPage,
 	},
 	metaInfo() {
-		const canonicalUrl = `https://${this.$appConfig.host}${this.$route.path}`.replace('-beta', '');
-		let title = '';
-		let description = '';
-
-		if (this.$route.path.includes('lend') || this.$route.path.includes('-beta')) {
-			title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
-			// eslint-disable-next-line max-len
-			description = this.anonymizationLevel === 'full' ? undefined : `A loan of ${this.loanAmount ?? '0'} ${this.use}`;
-		}
+		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
+		const description = this.anonymizationLevel === 'full' ? undefined : this.pageDescription;
 
 		return {
 			title,
-			link: [
-				{
-					vmid: 'canonical',
-					rel: 'canonical',
-					href: canonicalUrl
-				}
-			],
 			meta: [
-				{ property: 'og:title', vmid: 'og:title', content: `Lend as little as $25 to ${this.name}` },
+				{ property: 'og:title', vmid: 'og:title', content: this.shareTitle },
+				{ property: 'og:description', vmid: 'og:description', content: this.shareDescription },
 				{ property: 'og:type', vmid: 'og:type', content: 'kivadotorg:loan' },
 				{
 					property: 'og:image',
@@ -246,7 +232,7 @@ export default {
 				},
 			] : []).concat([
 				// Twitter Tags
-				{ name: 'twitter:title', vmid: 'twitter:title', content: `Lend as little as $25 to ${this.name}` },
+				{ name: 'twitter:title', vmid: 'twitter:title', content: this.shareTitle },
 				{
 					name: 'twitter:image',
 					vmid: 'twitter:image',
@@ -272,11 +258,10 @@ export default {
 					vmid: 'twitter:data2',
 					content: this.endDate
 				},
-				{ property: 'og:description', vmid: 'og:description', content: this.descriptionMetaContent },
 				{
 					name: 'twitter:description',
 					vmid: 'twitter:description',
-					content: this.descriptionMetaContent
+					content: this.shareDescription
 				},
 			])
 		};
@@ -334,7 +319,6 @@ export default {
 					}
 
 					return Promise.all([
-						// eslint-disable-next-line max-len
 						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 						client.query({ query: experimentQuery, variables: { id: socialElementsExpKey } }),
@@ -371,7 +355,6 @@ export default {
 			this.description = loan?.description ?? '';
 			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
 			this.lenders = loan?.lenders?.values ?? [];
-			// eslint-disable-next-line max-len
 			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
 
 			const diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
@@ -426,20 +409,6 @@ export default {
 			}
 			return `${name} - ${this.countryName}`;
 		},
-		descriptionMetaContent() {
-			if (this.shareCardLanguageVersion === 'b') {
-				// eslint-disable-next-line max-len
-				return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
-			}
-
-			if (this.anonymizationLevel !== 'full') {
-				// eslint-disable-next-line max-len
-				const loanUse = loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount,
-					this.loanUseMaxLength);
-				return `${loanUse}\n\n${this.description.substring(0, 120)}...`;
-			}
-			return 'For the borrower\'s privacy, this loan has been made anonymous.';
-		},
 		showUrgencyExp() {
 			return this.hasThreeDaysOrLessLeft && this.isUrgencyExpVersionShown;
 		},
@@ -447,13 +416,33 @@ export default {
 			return this.loanAmount - this.loanFundraisingInfo.fundedAmount;
 		},
 		pageTitle() {
+			return `Lend to ${this.name} in ${this.countryName}`;
+		},
+		pageDescription() {
+			return loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount,
+				this.loanUseMaxLength, this.anonymizationLevel);
+		},
+		shareTitle() {
 			if (this.shareCardLanguageVersion === 'b') {
 				// eslint-disable-next-line max-len
-				return this.inviterName === '' ? `Can you help support ${this.name}?` : `Can you help ${this.inviterName} support ${this.name}`;
+				return this.inviterName === '' ? `Can you help support ${this.name}?` : `Can you help ${this.inviterName} support ${this.name}?`;
 			}
 
-			return `Lend to ${this.name} in ${this.countryName}`;
-		}
+			return `Lend as little as $25 to ${this.name}`;
+		},
+		shareDescription() {
+			if (this.shareCardLanguageVersion === 'b') {
+				// eslint-disable-next-line max-len
+				return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
+			}
+
+			if (this.anonymizationLevel !== 'full') {
+				const loanUse = loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount,
+					this.loanUseMaxLength);
+				return `${loanUse}\n\n${this.description.substring(0, 120)}...`;
+			}
+			return 'For the borrower\'s privacy, this loan has been made anonymous.';
+		},
 	},
 	created() {
 		// this experiment is assigned in experimentPreFetch.js
