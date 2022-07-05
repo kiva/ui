@@ -297,7 +297,7 @@ export default {
 					url: 'united-states-loans',
 					queryParams: 'country=us&distributionModel=field_partner&gender=female&riskRating=0,5&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&countries=North%20America%20>%20United%20States&sortBy=popularity',
-					flssLoanSearch: { countryIsoCode: ['US'], gender: 'female', distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: { countryIsoCode: ['US'], gender: 'female' },
 				},
 				{
 					id: 87,

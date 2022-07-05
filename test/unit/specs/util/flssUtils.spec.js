@@ -99,7 +99,7 @@ describe('flssUtils.js', () => {
 
 	describe('getLoanChannelVariables', () => {
 		it('should return variables', () => {
-			const queryMap = { sector: [1, 2, 3] };
+			const queryMap = { sector: [1, 2, 3], sortBy: 'expiringSoon' };
 			const loanQueryVars = {
 				ids: [3],
 				offset: 10,
@@ -111,6 +111,7 @@ describe('flssUtils.js', () => {
 
 			expect(result.ids).toEqual(loanQueryVars.ids);
 			expect(result.filterObject).toEqual(getFlssFilters(queryMap));
+			expect(result.sortBy).toEqual(queryMap.sortBy);
 			expect(result.pageNumber).toBe(loanQueryVars.offset / loanQueryVars.limit);
 			expect(result.pageLimit).toBe(loanQueryVars.limit);
 			expect(result.basketId).toBe(loanQueryVars.basketId);

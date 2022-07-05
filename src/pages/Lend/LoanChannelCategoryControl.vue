@@ -20,7 +20,7 @@
 				<p v-else>
 					We couldn't find any loans for this search.
 					<router-link to="/lend-by-category">
-						Browse these loans
+						<span>Browse these loans</span>
 					</router-link>.
 				</p>
 			</div>
