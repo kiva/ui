@@ -21,10 +21,10 @@
 				/>
 				{{ poweredByText }}
 			</span>
-			<div v-for="(lender, idx) in sortedLenders" :key="lender.id">
+			<div v-for="(item, idx) in sortedLenders" :key="item.id">
 				<template v-if="isValidLength(idx)">
 					<lenders-list-item
-						:lender="lender"
+						:lender="item"
 					/>
 				</template>
 			</div>
@@ -43,6 +43,7 @@
 <script>
 import { mdiLightningBolt } from '@mdi/js';
 import LendersListItem from '@/components/BorrowerProfile/LendersListItem';
+import gql from 'graphql-tag';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
@@ -66,9 +67,55 @@ export default {
 		LendersListItem,
 		KvMaterialIcon,
 	},
+	apollo: {
+		query: gql`
+			query inviterLent($publicId: String!, $loanIds: [Int!]) {
+				community {
+					lender(publicId: $publicId) {
+						id
+ 						name
+ 						publicId
+ 						image {
+ 							id
+ 							url
+ 						}
+ 						lenderPage {
+ 							city
+ 							country {
+ 								isoCode
+ 							}
+ 						}
+						loans(loanIds: $loanIds) {
+							totalCount
+						}
+					}
+				}
+			}
+		`,
+		preFetch: true,
+		preFetchVariables({ route }) {
+			return {
+				publicId: route?.query?.utm_content ?? '',
+				loanIds: [Number(route.params?.id ?? 0)]
+			};
+		},
+		variables() {
+			return {
+				publicId: this.$route?.query?.utm_content ?? '',
+				loanIds: [Number(this.$route.params?.id ?? 0)]
+			};
+		},
+		result(result) {
+			const lender = result?.data?.community?.lender;
+			this.lender = lender;
+			this.inviterLent = lender?.loans?.totalCount ?? 0;
+		}
+	},
 	data() {
 		return {
 			mdiLightningBolt,
+			lender: null,
+			inviterLent: 0
 		};
 	},
 	methods: {
@@ -86,13 +133,22 @@ export default {
 		sortedLenders() {
 			const inviterName = this.$route.query.utm_content ?? '';
 			const inviterIndex = this.lenders.findIndex(lender => {
-				return inviterName.localeCompare(lender?.name) === 0;
+				return inviterName.localeCompare(lender?.publicId) === 0;
 			});
-			return inviterIndex >= 0 ? [
-				this.lenders[inviterIndex],
-				...this.lenders.slice(0, inviterIndex),
-				...this.lenders.slice(inviterIndex + 1, this.lenders.length - 1)
-			] : this.lenders;
+			if (this.inviterLent && inviterIndex >= 0) {
+				return [
+					this.lenders[inviterIndex],
+					...this.lenders.slice(0, inviterIndex),
+					...this.lenders.slice(inviterIndex + 1, this.lenders.length)
+				];
+			}
+			if (this.inviterLent) {
+				return [
+					this.lender,
+					...this.lenders,
+				];
+			}
+			return this.lenders;
 		},
 		lendersListName() {
 			if (this.lenders.length < 4) return this.sortedLenders[0].name;
