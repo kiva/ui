@@ -552,7 +552,7 @@ export async function applyQueryParams(apollo, query, allFacets, queryType, page
 		countryIsoCode: getCountryIsoCodesFromQueryParam(query.country || query.countries, allFacets),
 		sectorId: getIdsFromQueryParam(query.sector, allFacets.sectorNames, allFacets.sectorFacets),
 		sortBy: queryType === FLSS_QUERY_TYPE ? lendToFlssSort.get(query.sortBy) : query.sortBy,
-		themeId: getIdsFromQueryParam(query.attribute, allFacets.themeNames, allFacets.themeFacets),
+		themeId: getIdsFromQueryParam(query.attribute || query.attributes, allFacets.themeNames, allFacets.themeFacets),
 		pageOffset: page * pageLimit,
 		pageLimit,
 	};

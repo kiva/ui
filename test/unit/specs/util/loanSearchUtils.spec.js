@@ -1045,6 +1045,36 @@ describe('loanSearchUtils.js', () => {
 
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
+
+		it('should handle Algolia attributes param', async () => {
+			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
+			const params = {
+				mutation: updateLoanSearchMutation,
+				variables: {
+					searchParams: {
+						gender: 'female',
+						countryIsoCode: ['US'],
+						sectorId: [1],
+						sortBy: 'expiringSoon',
+						themeId: [1],
+						pageOffset: 5,
+						pageLimit: 5,
+					}
+				}
+			};
+			const query = {
+				gender: 'female',
+				countries: 'us',
+				sector: mockState.sectorId.toString(),
+				sortBy: 'expiringSoon',
+				attributes: 'theme 1',
+				page: '2',
+			};
+
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
+
+			expect(apollo.mutate).toHaveBeenCalledWith(params);
+		});
 	});
 
 	describe('updateQueryParams', () => {
