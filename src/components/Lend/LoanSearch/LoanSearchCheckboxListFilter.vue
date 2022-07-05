@@ -58,11 +58,11 @@ export default {
 			const option = this.displayed.find(d => d.id === +changed);
 
 			if (option) {
-				this.$kvTrackEvent?.(
+				this.$kvTrackEvent(
 					'Lending',
 					this.eventAction,
 					option.name,
-					values.includes(option.id) ? 'selected' : 'deselected'
+					values.includes(option.id.toString()) ? 'selected' : 'deselected'
 				);
 			}
 		}

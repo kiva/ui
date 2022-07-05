@@ -382,7 +382,7 @@ export function getIsoCodes(regions, selectedCountries) {
 	}, []);
 }
 
-/*
+/**
  * Runs the query to get the filter facets
  *
  * @param {Object} apollo The Apollo client instance
@@ -592,8 +592,8 @@ export function updateQueryParams(loanSearchState, router, queryType) {
 	const newParams = {
 		...(loanSearchState.gender && { gender: loanSearchState.gender }),
 		...(loanSearchState.countryIsoCode?.length && { country: loanSearchState.countryIsoCode.join() }),
-		...(loanSearchState.sectorId?.length && { sector: loanSearchState.sectorId.join(',') }),
-		...(loanSearchState.themeId?.length && { attribute: loanSearchState.themeId.join(',') }),
+		...(loanSearchState.sectorId?.length && { sector: loanSearchState.sectorId.join() }),
+		...(loanSearchState.themeId?.length && { attribute: loanSearchState.themeId.join() }),
 		...(queryParamSortBy && { sortBy: queryParamSortBy }),
 		...(page > 1 && { page: page.toString() }),
 		...utmParams,
