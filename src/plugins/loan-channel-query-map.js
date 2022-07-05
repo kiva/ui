@@ -33,7 +33,7 @@ export default {
 					url: 'refugees-and-i-d-ps',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Refugees/Displaced',
 					algoliaParams: 'attributes=Refugees%2FDisplaced',
-					flssLoanSearch: { theme: ['REFUGEES/DISPLACED'] },
+					flssLoanSearch: { themeId: [28] },
 				},
 				{
 					id: 18,
@@ -94,14 +94,14 @@ export default {
 					url: 'water-and-sanitation',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Water and Sanitation',
 					algoliaParams: 'attributes=Water%20and%20Sanitation',
-					flssLoanSearch: { theme: ['WATER AND SANITATION'] },
+					flssLoanSearch: { themeId: [8] },
 				},
 				{
 					id: 7,
 					url: 'conflict-zones',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Conflict Zones',
 					algoliaParams: 'attributes=Conflict%20Zones',
-					flssLoanSearch: { theme: ['CONFLICT ZONES'] },
+					flssLoanSearch: { themeId: [14] },
 				},
 				{
 					id: 11,
@@ -130,7 +130,7 @@ export default {
 					url: 'social-enterprises',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Social Enterprise',
 					algoliaParams: 'attributes=Social%20Enterprise',
-					flssLoanSearch: { theme: ['SOCIAL ENTERPRISE'] },
+					flssLoanSearch: { themeId: [29] },
 				},
 				{
 					id: 13,
@@ -151,7 +151,7 @@ export default {
 					url: 'underbanked-areas',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Underfunded Areas',
 					algoliaParams: 'attributes=Underfunded%20Areas',
-					flssLoanSearch: { theme: ['UNDERFUNDED AREAS'] },
+					flssLoanSearch: { themeId: [13] },
 				},
 				{
 					id: 16,
@@ -171,7 +171,7 @@ export default {
 					url: 'vulnerable-populations',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Vulnerable Groups&distributionModel=field_partner',
 					algoliaParams: 'attributes=Vulnerable%20Groups',
-					flssLoanSearch: { theme: ['VULNERABLE GROUPS'], distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: { themeId: [9], distributionModel: 'FIELDPARTNER' },
 				},
 
 				// Lend By Category Channels
@@ -220,7 +220,7 @@ export default {
 					url: 'loans-to-refugees-and-i-d-ps',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Refugees/Displaced',
 					algoliaParams: 'attributes=Refugees%2FDisplaced',
-					flssLoanSearch: { theme: ['REFUGEES/DISPLACED'] },
+					flssLoanSearch: { themeId: [28] },
 				},
 				{
 					id: 58,
@@ -246,7 +246,7 @@ export default {
 					url: 'loans-for-clean-energy',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Clean Energy',
 					algoliaParams: 'attributes=Clean%20Energy',
-					flssLoanSearch: { theme: ['CLEAN ENERGY'] },
+					flssLoanSearch: { themeId: [32] },
 				},
 				{
 					id: 66,
@@ -265,7 +265,7 @@ export default {
 					url: 'world-refugee-day',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Refugees/Displaced',
 					algoliaParams: 'attributes=Refugees%2FDisplaced',
-					flssLoanSearch: { theme: ['REFUGEES/DISPLACED'] },
+					flssLoanSearch: { themeId: [28] },
 				},
 
 				// IWD 2020 Loan Channels
@@ -357,7 +357,7 @@ export default {
 					queryParams: 'distributionModel=both&riskRating=0,5&sector=1,9,5,14,17,12,6,8,7,4,3,13&status=fundRaising&attribute=5,6,7,8,9,10,11,12,13,14,15,17,20,24,28,29&sortBy=popularity',
 					// this will cause legacy lend to load up and apply all params for the Loan Channel
 					fallbackUrl: '/lend/covid-19?filter=bypass',
-					flssLoanSearch: { sectorId: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13], theme: ['ISLAMIC FINANCE', 'YOUTH', 'START-UP', 'WATER AND SANITATION', 'VULNERABLE GROUPS', 'FAIR TRADE', 'RURAL EXCLUSION', 'MOBILE TECHNOLOGY', 'UNDERFUNDED AREAS', 'CONFLICT ZONES', 'JOB CREATION', 'GROWING BUSINESSES', 'DISASTER RECOVERY', 'INNOVATIVE LOANS', 'REFUGEES/DISPLACED', 'SOCIAL ENTERPRISE'] },
+					flssLoanSearch: { sectorId: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13], themeId: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20, 24, 28, 29] },
 				},
 				{
 					id: 97,
@@ -375,7 +375,7 @@ export default {
 					// this will cause legacy lend to load up and apply all params for the Loan Channel
 					// fallbackUrl: '/lend/crisis-support-loans?filter=bypass'
 					algoliaParams: 'attributes=Crisis%20Support%20Loans&sortBy=popularity',
-					flssLoanSearch: { theme: ['CRISIS SUPPORT LOANS'], distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: { themeId: [36], distributionModel: 'FIELDPARTNER' },
 				},
 				{
 					id: 65,
@@ -392,7 +392,7 @@ export default {
 					id: 48,
 					url: 'human-flow-fund-support-refugees-and-i-d-ps',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=1,9,5,14,12,8,7,4,3,13&theme=Conflict Zones,Refugees/Displaced&distributionModel=field_partner',
-					flssLoanSearch: { sectorId: [1, 9, 5, 14, 12, 8, 7, 4, 3, 13], theme: ['CONFLICT ZONES', 'REFUGEES/DISPLACED'], distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: { sectorId: [1, 9, 5, 14, 12, 8, 7, 4, 3, 13], themeId: [14, 28], distributionModel: 'FIELDPARTNER' },
 				},
 				{
 					id: 51,
@@ -446,7 +446,7 @@ export default {
 					url: 'hitachi-employees-helping-to-ignite-a-dream',
 					queryParams: 'status=fundRaising&riskRating=3,5&sector=1,14,15,6,10,8,3',
 					algoliaParams: '',
-					flssLoanSearch: { sectorId: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13], theme: ['ISLAMIC FINANCE', 'YOUTH', 'START-UP', 'WATER AND SANITATION', 'VULNERABLE GROUPS', 'FAIR TRADE', 'RURAL EXCLUSION', 'MOBILE TECHNOLOGY', 'UNDERFUNDED AREAS', 'CONFLICT ZONES', 'JOB CREATION', 'GROWING BUSINESSES', 'DISASTER RECOVERY', 'INNOVATIVE LOANS', 'REFUGEES/DISPLACED', 'SOCIAL ENTERPRISE', 'CRISIS SUPPORT LOANS'] },
+					flssLoanSearch: { sectorId: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13], themeId: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20, 24, 28, 29, 36] },
 				},
 				{
 					id: 45,

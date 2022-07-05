@@ -9,7 +9,7 @@ const loanSearchState = {
 	gender: 'female',
 	countryIsoCode: ['US'],
 	sectorId: [1],
-	theme: ['THEME 1'],
+	themeId: [1],
 };
 
 const allFacets = {

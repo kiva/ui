@@ -21,7 +21,7 @@ describe('flssUtils.js', () => {
 			const state = {
 				gender: '',
 				countryIsoCode: [],
-				theme: [],
+				themeId: [],
 				sectorId: [],
 				distributionModel: null,
 			};
@@ -33,7 +33,7 @@ describe('flssUtils.js', () => {
 			const state = {
 				gender: 'female',
 				countryIsoCode: ['US'],
-				theme: ['test'],
+				themeId: [1],
 				sectorId: [1],
 				distributionModel: 'DIRECT',
 			};
@@ -41,7 +41,7 @@ describe('flssUtils.js', () => {
 			expect(getFlssFilters(state)).toEqual({
 				gender: { any: 'female' },
 				countryIsoCode: { any: ['US'] },
-				theme: { any: ['test'] },
+				themeId: { any: [1] },
 				sectorId: { any: [1] },
 				distributionModel: { eq: 'DIRECT' },
 			});

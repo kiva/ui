@@ -47,11 +47,7 @@ export default {
 						})]
 					};
 				case 'LoanThemeFilter':
-					return {
-						theme: [...this.loanSearchState.theme?.filter(themeName => {
-							return facet?.name?.toUpperCase() !== themeName;
-						})]
-					};
+					return { themeId: [...this.loanSearchState.themeId?.filter(id => facet.id !== id)] };
 				default:
 					return {};
 			}
@@ -78,11 +74,9 @@ export default {
 				itemList = [...itemList, ...sectorFacets];
 			}
 			// Themes/Attributes
-			if (loanSearchState.theme?.length) {
-				const themeFacets = loanSearchState.theme?.map(themeName => {
-					return allFacets.themeFacets?.find(facet => {
-						return facet.name.toUpperCase() === themeName;
-					});
+			if (loanSearchState.themeId?.length) {
+				const themeFacets = loanSearchState.themeId?.map(id => {
+					return allFacets.themeFacets?.find(facet => facet.id === id);
 				});
 				itemList = [...itemList, ...themeFacets];
 			}

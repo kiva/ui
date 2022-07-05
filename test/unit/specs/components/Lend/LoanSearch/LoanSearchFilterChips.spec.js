@@ -7,7 +7,7 @@ const mockState = {
 	gender: 'female',
 	countryIsoCode: ['US'],
 	sectorId: [1],
-	theme: ['THEME 1'],
+	themeId: [1],
 };
 
 const mockAllFacets = {
@@ -134,7 +134,7 @@ describe('LoanSearchFilterChips', () => {
 
 		await user.click(getByText('Theme 1'));
 
-		expect(emitted().updated[0]).toEqual([{ theme: [] }]);
+		expect(emitted().updated[0]).toEqual([{ themeId: [] }]);
 	});
 
 	it('should handle gender chip click', async () => {
