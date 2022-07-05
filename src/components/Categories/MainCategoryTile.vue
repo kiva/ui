@@ -1,23 +1,25 @@
 <template>
-	<div v-if="tileSize === 'large' || tileSize === 'medium'" class="tw-mb-6">
+	<div v-if="tileSize === 'large' || tileSize === 'medium'" class="tw-mb-6 tw-group">
 		<router-link
-			class="tw-no-underline
-			active:tw-no-underline visited:tw-no-underline
-			hover:tw-no-underline focus:tw-no-underline
-			tw-text-black
-			active:tw-text-black visited:tw-text-black
-			hover:tw-text-black focus:tw-text-black"
+			class="remove-link-decoration"
 			:to="`/lend-by-category/${cleanURL}`"
 			v-kv-track-event="['Lending', 'click-Category', categoryName]"
 		>
-			<kv-responsive-image class="category-image"
-				:images="chooseImage(tileSize)"
-				loading="lazy"
-				:alt="altText"
-			/>
+			<div class="tw-relative">
+				<kv-responsive-image class="category-image"
+					:images="chooseImage(tileSize)"
+					loading="lazy"
+					:alt="altText"
+				/>
+				<div class="hover-arrow-fade">
+					<span class="tw-pl-1">
+						&#10132;
+					</span>
+				</div>
+			</div>
 			<div>
 				<div class="tw-text-center tw-flex tw-justify-between">
-					<h3 class="tw-mt-2 tw-mb-2">
+					<h3 class="tw-mt-2 tw-mb-2 group-hover:tw-underline">
 						Lend to {{ categoryName }}
 					</h3>
 					<h4
@@ -40,27 +42,29 @@
 			</h4>
 		</router-link>
 	</div>
-	<div v-else-if="tileSize === 'small'" class=" tw-mb-6">
+	<div v-else-if="tileSize === 'small'" class=" tw-mb-6 tw-group">
 		<router-link
-			class="tw-no-underline
-			active:tw-no-underline visited:tw-no-underline
-			hover:tw-no-underline focus:tw-no-underline
-			tw-text-black
-			active:tw-text-black visited:tw-text-black
-			hover:tw-text-black focus:tw-text-black"
+			class="remove-link-decoration"
 			:to="`/lend-by-category/${cleanURL}`"
 			v-kv-track-event="['Lending', 'click-Category', categoryName]"
 		>
 			<div class="tw-flex">
 				<div class="tw-mr-2 tw-flex-none">
-					<kv-responsive-image class="category-image-small"
-						:images="chooseImage(tileSize)"
-						loading="lazy"
-						:alt="altText"
-					/>
+					<div class="tw-relative">
+						<kv-responsive-image class="category-image category-image__small"
+							:images="chooseImage(tileSize)"
+							loading="lazy"
+							:alt="altText"
+						/>
+						<div class="hover-arrow-fade">
+							<span class="tw-pl-1">
+								&#10132;
+							</span>
+						</div>
+					</div>
 				</div>
 				<div class="tw-grow">
-					<h3 class=" tw-mb-2">
+					<h3 class=" tw-mb-2 group-hover:tw-underline">
 						Lend to {{ categoryName }}
 					</h3>
 					<div>
@@ -158,15 +162,38 @@ export default {
 
 <style lang="postcss" scoped>
 
-.category-image >>> img {
+.category-image {
+	@apply tw-relative;
+	@apply tw-overflow-hidden;
 	@apply tw-rounded;
 }
 
-.category-image-small >>> img {
-	@apply tw-rounded;
+/* This zooms in on the image 10% with slow ease in, ease out. */
+.category-image >>> img {
+	@apply group-hover:tw-scale-110 tw-transition-all tw-duration-500 tw-ease-in-out tw-transform;
+}
+
+.category-image__small >>> img {
 	@apply tw-object-cover;
 	@apply tw-w-[152px];
 	@apply tw-h-[152px];
+}
+
+/* This displays the right arrow on the category image while hovering over tile. */
+.hover-arrow-fade {
+	@apply tw-opacity-[0];
+	@apply group-hover:tw-transition-opacity tw-duration-500;
+	@apply group-hover:tw-opacity-[100];
+	@apply tw-rounded-tl tw-rounded-bl;
+	@apply tw-text-secondary tw-bg-secondary;
+	@apply tw-absolute tw-bottom-2 tw-right-0;
+}
+
+.remove-link-decoration {
+	@apply tw-no-underline active:tw-no-underline;
+	@apply visited:tw-no-underline hover:tw-no-underline focus:tw-no-underline;
+	@apply tw-text-black active:tw-text-black;
+	@apply visited:tw-text-black hover:tw-text-black focus:tw-text-black;
 }
 
 </style>
