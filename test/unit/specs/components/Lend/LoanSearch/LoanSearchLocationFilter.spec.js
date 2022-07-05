@@ -48,6 +48,47 @@ describe('LoanSearchLocationFilter', () => {
 		expect(countries.length).toBe(0);
 	});
 
+	it('should pre-select', async () => {
+		const user = userEvent.setup();
+
+		const regions = getRegions();
+
+		const { getByText, getByLabelText } = render(LoanSearchLocationFilter, {
+			props: { activeIsoCodes: [regions[0].countries[0].isoCode], regions }
+		});
+
+		// Open first region
+		const region = getByText(getCheckboxLabel(regions[0]));
+		await user.click(region);
+
+		expect(getByLabelText(getCheckboxLabel(regions[0].countries[0])).checked).toBeTruthy();
+	});
+
+	it('should select based on prop', async () => {
+		const user = userEvent.setup();
+
+		const regions = getRegions();
+
+		const { getByText, getByLabelText, updateProps } = render(LoanSearchLocationFilter, { props: { regions } });
+
+		// Open first region
+		const region = getByText(getCheckboxLabel(regions[0]));
+		await user.click(region);
+
+		expect(getByLabelText(getCheckboxLabel(regions[0].countries[0])).checked).toBeFalsy();
+
+		await updateProps({ activeIsoCodes: [regions[0].countries[0].isoCode] });
+		expect(getByLabelText(getCheckboxLabel(regions[0].countries[0])).checked).toBeTruthy();
+
+		await updateProps({ activeIsoCodes: [regions[0].countries[0].isoCode, regions[0].countries[1].isoCode] });
+		expect(getByLabelText(getCheckboxLabel(regions[0].countries[0])).checked).toBeTruthy();
+		expect(getByLabelText(getCheckboxLabel(regions[0].countries[1])).checked).toBeTruthy();
+
+		await updateProps({ activeIsoCodes: [] });
+		expect(getByLabelText(getCheckboxLabel(regions[0].countries[0])).checked).toBeFalsy();
+		expect(getByLabelText(getCheckboxLabel(regions[0].countries[1])).checked).toBeFalsy();
+	});
+
 	it('should emit updated', async () => {
 		const user = userEvent.setup();
 		const regions = getRegions();
