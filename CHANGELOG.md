@@ -1,3 +1,10 @@
+## [2.218.0](https://github.com/kiva/ui/compare/v2.217.0...v2.218.0) (2022-07-05)
+
+
+### Features
+
+* adding category mouseover effects ([#3967](https://github.com/kiva/ui/issues/3967)) ([ff887ee](https://github.com/kiva/ui/commit/ff887ee13488feb71a8068a4e0bf93726358b01e))
+
 ## [2.217.0](https://github.com/kiva/ui/compare/v2.216.1...v2.217.0) (2022-07-05)
 
 
