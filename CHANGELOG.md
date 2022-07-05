@@ -1,3 +1,10 @@
+## [2.219.0](https://github.com/kiva/ui/compare/v2.218.0...v2.219.0) (2022-07-05)
+
+
+### Features
+
+* loan filter chips tests and stories ([5e40587](https://github.com/kiva/ui/commit/5e405871a23af63079e9035b0a6a88bd8ca3ca87))
+
 ## [2.218.0](https://github.com/kiva/ui/compare/v2.217.0...v2.218.0) (2022-07-05)
 
 
