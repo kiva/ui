@@ -1,3 +1,15 @@
+## [2.217.0](https://github.com/kiva/ui/compare/v2.216.1...v2.217.0) (2022-07-05)
+
+
+### Features
+
+* watcher added to track event for complete loan experiment ([414a67d](https://github.com/kiva/ui/commit/414a67da21a36c5d3fdf83276a0c5374f6d002ad))
+
+
+### Bug Fixes
+
+* pushing not included amounts to selector for all price ranges ([e855490](https://github.com/kiva/ui/commit/e8554900d23d7a35034d3769853f02242588cb23))
+
 ### [2.216.1](https://github.com/kiva/ui/compare/v2.216.0...v2.216.1) (2022-07-05)
 
 
