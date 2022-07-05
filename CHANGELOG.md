@@ -1,3 +1,10 @@
+### [2.214.2](https://github.com/kiva/ui/compare/v2.214.1...v2.214.2) (2022-07-05)
+
+
+### Bug Fixes
+
+* use automatic handling of memcached connection issues ([879ac88](https://github.com/kiva/ui/commit/879ac88558b185e441769be00681b202cfc9df49))
+
 ### [2.214.1](https://github.com/kiva/ui/compare/v2.214.0...v2.214.1) (2022-07-01)
 
 
