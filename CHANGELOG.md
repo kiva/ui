@@ -1,3 +1,17 @@
+## [2.220.0](https://github.com/kiva/ui/compare/v2.219.0...v2.220.0) (2022-07-05)
+
+
+### Features
+
+* initial theme ID filter implementation ([61678fd](https://github.com/kiva/ui/commit/61678fdb473297d7f4d433fd4548b495369da0bb))
+
+
+### Bug Fixes
+
+* algolia attributes query param wasn't being handled ([bda6898](https://github.com/kiva/ui/commit/bda6898854582625c8741664a26f173f4ec55ba0))
+* cleaned up unit tests so this changeset can be held in the branch for later ([f635ef3](https://github.com/kiva/ui/commit/f635ef380232f110127218f49bbe3426e3a0bea7))
+* missing unit test, analytics bug, minor cleanup ([e9b4639](https://github.com/kiva/ui/commit/e9b463980dc4e9a287ba5375b3a7070ca52a6138))
+
 ## [2.219.0](https://github.com/kiva/ui/compare/v2.218.0...v2.219.0) (2022-07-05)
 
 
