@@ -305,7 +305,9 @@
 								>
 									🎉
 								</span>
-								{{ matchRatio + 1 }}X MATCHED LOAN
+								{{ matchRatio + 1 }}X
+								<span v-if="requireDepositsMatchedLoans"> MATCHED NEW DEPOSITS</span>
+								<span v-else> MATCHED LOAN</span>
 							</span>
 						</transition>
 					</div>
@@ -341,6 +343,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		requireDepositsMatchedLoans: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	components: {
 		LendAmountButton,
@@ -551,7 +557,7 @@ export default {
 				this.$kvTrackEvent('Borrower profile', 'Complete loan', 'view-amount-left-cta', this.loanId, this.selectedOption);
 				this.completeLoanView = false;
 			}
-		}
+		},
 	},
 	computed: {
 		isInBasket() {
@@ -577,7 +583,7 @@ export default {
 			// limit at 20 price options
 			const priceArray = buildPriceArray(parseFloat(this.unreservedAmount), minAmount).slice(0, 20);
 			// eslint-disable-next-line
-			if (this.completeLoan && this.isBetween25And100 && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
+			if (this.completeLoan && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
 			}
 			return priceArray;

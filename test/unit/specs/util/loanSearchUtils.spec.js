@@ -1,6 +1,5 @@
 import {
 	getIsoCodes,
-	getFlssFilters,
 	getUpdatedRegions,
 	isoToCountryName,
 	mapIsoCodesToCountryNames,
@@ -21,11 +20,13 @@ import {
 	STANDARD_QUERY_TYPE,
 	getIdsFromQueryParam,
 	visibleThemeIds,
+	getCountryIsoCodesFromQueryParam,
 } from '@/util/loanSearchUtils';
 import * as flssUtils from '@/util/flssUtils';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
 import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
 import orderBy from 'lodash/orderBy';
+import { getFlssFilters } from '@/util/flssUtils';
 
 const mockState = {
 	gender: 'female',
@@ -38,8 +39,12 @@ const mockState = {
 };
 
 const mockAllFacets = {
-	countryFacets: [{ country: { isoCode: 'US' } }],
-	countryIsoCodes: ['US'],
+	countryFacets: [
+		{ country: { isoCode: 'US', name: 'United States', region: 'North America' } },
+		{ country: { isoCode: 'CA', name: 'Canada', region: 'North America' } }
+	],
+	countryIsoCodes: ['US', 'CA'],
+	countryNames: ['UNITED STATES', 'CANADA'],
 	sectorFacets: [{ id: 1, name: 'Sector 1' }, { id: 2, name: 'Sector 2' }],
 	sectorIds: [1],
 	sectorNames: ['SECTOR 1', 'SECTOR 2'],
@@ -496,36 +501,7 @@ describe('loanSearchUtils.js', () => {
 		});
 	});
 
-	describe('getFlssFilters', () => {
-		it('should handle missing', () => {
-			expect(getFlssFilters({})).toEqual({});
-		});
-
-		it('should handle empty', () => {
-			const state = {
-				gender: '',
-				countryIsoCode: [],
-				themeId: [],
-			};
-			expect(getFlssFilters(state)).toEqual({});
-		});
-
-		it('should return filters', () => {
-			const state = {
-				gender: 'female',
-				countryIsoCode: ['US'],
-				themeId: ['test'],
-			};
-			expect(getFlssFilters(state)).toEqual({
-				gender: { any: 'female' },
-				countryIsoCode: { any: ['US'] },
-				themeId: { any: ['test'] }
-			});
-		});
-	});
-
 	describe('isoToCountryName', () => {
-		// utilizes mockTransformedMiddleEast
 		it('should return corresponding country name', () => {
 			const mappedName = isoToCountryName('JO', mockTransformedMiddleEast().countries);
 			expect(mappedName).toBe('Jordan');
@@ -538,19 +514,24 @@ describe('loanSearchUtils.js', () => {
 	});
 
 	describe('mapIsoCodesToCountryNames', () => {
-		// utilizes mockTransformedRegions
 		const targetIsos = ['JO', 'CL', 'CO'];
+
+		it('should return an empty object if no ISO codes are passed', () => {
+			expect(mapIsoCodesToCountryNames(undefined, mockTransformedRegions)).toEqual({});
+			expect(mapIsoCodesToCountryNames([], mockTransformedRegions)).toEqual({});
+		});
+
+		it('should return an empty object if no regions are passed', () => {
+			expect(mapIsoCodesToCountryNames(targetIsos, undefined)).toEqual({});
+			expect(mapIsoCodesToCountryNames(targetIsos, [])).toEqual({});
+		});
+
 		it('should return region keyed object with array of country names', () => {
 			const selectedCountries = mapIsoCodesToCountryNames(targetIsos, mockTransformedRegions);
 			expect(selectedCountries).toEqual({
 				'Middle East': ['Jordan'],
 				'South America': ['Chile', 'Colombia']
 			});
-		});
-
-		it('should return an empty object if no isos are passed', () => {
-			const selectedCountries = mapIsoCodesToCountryNames([], mockTransformedRegions);
-			expect(selectedCountries).toEqual({});
 		});
 	});
 
@@ -611,7 +592,7 @@ describe('loanSearchUtils.js', () => {
 	});
 
 	describe('fetchLoanFacets', () => {
-		const countryFacets = [{ country: { isoCode: 'a' } }];
+		const countryFacets = [{ country: { isoCode: 'a', name: 'Country' } }];
 		const sector = [{ id: 1, name: 'Test Sector' }];
 		const loanThemeFilter = [{ id: 1, name: 'c' }];
 		const genderOptions = { enumValues: [{ name: 'female' }] };
@@ -633,6 +614,7 @@ describe('loanSearchUtils.js', () => {
 			expect(data).toEqual({
 				countryFacets: [],
 				countryIsoCodes: [],
+				countryNames: [],
 				sectorFacets: [],
 				sectorIds: [],
 				sectorNames: [],
@@ -666,6 +648,7 @@ describe('loanSearchUtils.js', () => {
 			expect(data).toEqual({
 				countryFacets,
 				countryIsoCodes: ['A'],
+				countryNames: ['COUNTRY'],
 				sectorFacets: sector,
 				sectorIds: [1],
 				sectorNames: ['TEST SECTOR'],
@@ -687,6 +670,61 @@ describe('loanSearchUtils.js', () => {
 
 		it('should handle item', () => {
 			expect(getCheckboxLabel({ name: 'test', numLoansFundraising: 1 })).toBe('test (1)');
+		});
+	});
+
+	describe('getCountryIsoCodesFromQueryParam', () => {
+		it('should handle empty', () => {
+			expect(getCountryIsoCodesFromQueryParam()).toBe(undefined);
+			expect(getCountryIsoCodesFromQueryParam('')).toBe(undefined);
+		});
+
+		it('should handle FLSS and legacy single sector', () => {
+			const param = 'us';
+
+			const result = getCountryIsoCodesFromQueryParam(param, mockAllFacets);
+
+			expect(result).toEqual(['US']);
+		});
+
+		it('should handle FLSS and legacy list', () => {
+			const param = 'us,ca';
+
+			const result = getCountryIsoCodesFromQueryParam(param, mockAllFacets);
+
+			expect(result).toEqual(['US', 'CA']);
+		});
+
+		it('should handle FLSS and legacy list trailing separator', () => {
+			const param = 'us,ca,';
+
+			const result = getCountryIsoCodesFromQueryParam(param, mockAllFacets);
+
+			expect(result).toEqual(['US', 'CA']);
+		});
+
+		it('should handle Algolia single sector', () => {
+			const param = 'north%20america%20>%20united%20states';
+
+			const result = getCountryIsoCodesFromQueryParam(param, mockAllFacets);
+
+			expect(result).toEqual(['US']);
+		});
+
+		it('should handle Algolia single list', () => {
+			const param = 'north%20america%20>%20united%20states~north%20america%20>%20canada';
+
+			const result = getCountryIsoCodesFromQueryParam(param, mockAllFacets);
+
+			expect(result).toEqual(['US', 'CA']);
+		});
+
+		it('should handle Algolia single list trailing separator', () => {
+			const param = 'north%20america%20>%20united%20states~north%20america%20>%20canada~';
+
+			const result = getCountryIsoCodesFromQueryParam(param, mockAllFacets);
+
+			expect(result).toEqual(['US', 'CA']);
 		});
 	});
 
@@ -811,37 +849,12 @@ describe('loanSearchUtils.js', () => {
 				}
 			};
 			const query = {
-				...mockState,
+				gender: 'female',
+				country: 'us',
 				sector: mockState.sectorId.toString(),
+				sortBy: 'expiringSoon',
 				attribute: '1',
 				page: '2',
-			};
-
-			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
-
-			expect(apollo.mutate).toHaveBeenCalledWith(params);
-		});
-
-		it('should fallback to previous state', async () => {
-			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
-			const params = {
-				mutation: updateLoanSearchMutation,
-				variables: {
-					searchParams: {
-						...mockState,
-						gender: 'male',
-						sortBy: 'personalized',
-						sectorId: [1],
-						themeId: [1],
-						pageOffset: 0,
-					}
-				},
-			};
-			const query = {
-				gender: 'male',
-				sortBy: 'popularity',
-				sector: '1',
-				attribute: '1'
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -855,12 +868,13 @@ describe('loanSearchUtils.js', () => {
 				mutation: updateLoanSearchMutation,
 				variables: {
 					searchParams: {
-						...mockState,
 						gender: null,
+						countryIsoCode: [],
 						sortBy: 'personalized',
 						sectorId: [],
 						themeId: [],
 						pageOffset: 0,
+						pageLimit: 5,
 					}
 				},
 			};
@@ -877,12 +891,13 @@ describe('loanSearchUtils.js', () => {
 				mutation: updateLoanSearchMutation,
 				variables: {
 					searchParams: {
-						...mockState,
 						gender: null,
+						countryIsoCode: [],
 						sortBy: 'popularity',
 						sectorId: [],
 						themeId: [],
 						pageOffset: 0,
+						pageLimit: 5,
 					}
 				},
 			};
@@ -899,12 +914,13 @@ describe('loanSearchUtils.js', () => {
 				mutation: updateLoanSearchMutation,
 				variables: {
 					searchParams: {
-						...mockState,
 						gender: null,
+						countryIsoCode: [],
 						sortBy: null,
 						sectorId: [],
 						themeId: [],
 						pageOffset: 15,
+						pageLimit: 5,
 					}
 				},
 			};
@@ -921,12 +937,13 @@ describe('loanSearchUtils.js', () => {
 				mutation: updateLoanSearchMutation,
 				variables: {
 					searchParams: {
-						...mockState,
 						gender: null,
+						countryIsoCode: [],
 						sortBy: null,
 						sectorId: [],
 						themeId: [],
 						pageOffset: 0,
+						pageLimit: 5,
 					}
 				},
 			};
@@ -943,12 +960,13 @@ describe('loanSearchUtils.js', () => {
 				mutation: updateLoanSearchMutation,
 				variables: {
 					searchParams: {
-						...mockState,
 						gender: null,
+						countryIsoCode: [],
 						sortBy: null,
 						sectorId: [],
 						themeId: [],
 						pageOffset: 5,
+						pageLimit: 5,
 					}
 				},
 			};
@@ -965,12 +983,13 @@ describe('loanSearchUtils.js', () => {
 				mutation: updateLoanSearchMutation,
 				variables: {
 					searchParams: {
-						...mockState,
 						gender: null,
+						countryIsoCode: [],
 						sortBy: null,
 						sectorId: [],
 						themeId: [],
 						pageOffset: 0,
+						pageLimit: 5,
 					}
 				},
 			};
@@ -984,7 +1003,9 @@ describe('loanSearchUtils.js', () => {
 		it('should not update cache when state unchanged', async () => {
 			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
 			const query = {
-				...mockState,
+				gender: 'female',
+				country: 'us',
+				sortBy: 'expiringSoon',
 				sector: mockState.sectorId.toString(),
 				attribute: '1',
 				page: '3',
@@ -993,6 +1014,36 @@ describe('loanSearchUtils.js', () => {
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledTimes(0);
+		});
+
+		it('should handle Algolia countries param', async () => {
+			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
+			const params = {
+				mutation: updateLoanSearchMutation,
+				variables: {
+					searchParams: {
+						gender: 'female',
+						countryIsoCode: ['US'],
+						sectorId: [1],
+						sortBy: 'expiringSoon',
+						themeId: [1],
+						pageOffset: 5,
+						pageLimit: 5,
+					}
+				}
+			};
+			const query = {
+				gender: 'female',
+				countries: 'us',
+				sector: mockState.sectorId.toString(),
+				sortBy: 'expiringSoon',
+				attribute: '1',
+				page: '2',
+			};
+
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
+
+			expect(apollo.mutate).toHaveBeenCalledWith(params);
 		});
 	});
 
@@ -1123,6 +1174,19 @@ describe('loanSearchUtils.js', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
 				query: { },
+				params: { noScroll: true, noAnalytics: true }
+			});
+		});
+
+		it('should push ISO code', () => {
+			const state = { countryIsoCode: ['US', 'CA'] };
+			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+
+			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { country: 'US,CA' },
 				params: { noScroll: true, noAnalytics: true }
 			});
 		});

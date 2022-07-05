@@ -1,7 +1,7 @@
 import orderBy from 'lodash/orderBy';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
 import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
-import { fetchFacets, fetchLoans } from '@/util/flssUtils';
+import { fetchFacets, fetchLoans, getFlssFilters } from '@/util/flssUtils';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util/numberUtils';
 
@@ -174,7 +174,9 @@ export function isoToCountryName(isoCode, countryList = []) {
  * @returns {Object}
  */
 export function mapIsoCodesToCountryNames(isoCodes, regions) {
-	const mappedIsos = regions?.reduce((regionObject, region) => {
+	if (!isoCodes || !regions) return {};
+
+	const mappedIsos = regions.reduce((regionObject, region) => {
 		const countryNames = isoCodes.filter(
 			iso => region?.countries?.find(country => country.isoCode === iso)
 		).map(iso => {
@@ -182,6 +184,7 @@ export function mapIsoCodesToCountryNames(isoCodes, regions) {
 		});
 		return countryNames.length ? { ...regionObject, [region.region]: countryNames } : { ...regionObject };
 	}, {});
+
 	return mappedIsos;
 }
 
@@ -379,22 +382,7 @@ export function getIsoCodes(regions, selectedCountries) {
 	}, []);
 }
 
-/**
- * Gets the filters for FLSS
- *
- * @param {Object} loanSearchState The current loan search state from Apollo
- * @returns {Object} The filters in the correct FLSS format
- */
-export function getFlssFilters(loanSearchState) {
-	return {
-		...(loanSearchState?.gender && { gender: { any: loanSearchState.gender } }),
-		...(loanSearchState?.countryIsoCode?.length && { countryIsoCode: { any: loanSearchState.countryIsoCode } }),
-		...(loanSearchState?.themeId?.length && { themeId: { any: loanSearchState.themeId } }),
-		...(loanSearchState?.sectorId?.length && { sectorId: { any: loanSearchState.sectorId } }),
-	};
-}
-
-/**
+/*
  * Runs the query to get the filter facets
  *
  * @param {Object} apollo The Apollo client instance
@@ -452,6 +440,7 @@ export async function fetchLoanFacets(apollo) {
 		return {
 			countryFacets,
 			countryIsoCodes: countryFacets.map(c => c.country.isoCode.toUpperCase()),
+			countryNames: countryFacets.map(c => c.country.name.toUpperCase()),
 			sectorFacets,
 			sectorIds: sectorFacets.map(s => s.id),
 			sectorNames: sectorFacets.map(s => s.name.toUpperCase()),
@@ -476,6 +465,40 @@ export async function fetchLoanFacets(apollo) {
  */
 export function getCheckboxLabel(item) {
 	return `${item.name || item.region} (${item.numLoansFundraising})`;
+}
+
+/**
+ * Returns the country ISO codes based on the query param. Handles FLSS/legacy and Algolia formats.
+ *
+ * @param {string} param The query param
+ * @param {Object} allFacets All available facets from the APIs
+ * @returns {Array} Valid sector IDs based on the query param
+ */
+export function getCountryIsoCodesFromQueryParam(param, allFacets) {
+	if (!param) return;
+
+	const decoded = decodeURI(param).toUpperCase();
+
+	// Handles FLSS and legacy query params, such as "do,ht"
+	if (decoded.includes(',') || allFacets.countryIsoCodes.includes(decoded)) {
+		return decoded.split(',').filter(s => s !== '');
+	}
+
+	// Handles Algolia query params, such as "Africa%20>%20Burkina%20Faso~Africa%20>%20Congo%20%28DRC%29"
+	return decoded.split('~').reduce((prev, current) => {
+		const [region, country] = current.toUpperCase().split('>').map(s => s.trim());
+
+		if (allFacets.countryNames.includes(country)) {
+			const facet = allFacets.countryFacets.find(({ country: c }) => (
+				c.region.toUpperCase() === region && c.name.toUpperCase() === country
+			));
+
+			if (facet) {
+				prev.push(facet.country.isoCode);
+			}
+		}
+		return prev;
+	}, []);
 }
 
 /**
@@ -526,7 +549,7 @@ export async function applyQueryParams(apollo, query, allFacets, queryType, page
 
 	const filters = {
 		gender: query.gender,
-		countryIsoCode: previousState.countryIsoCode,
+		countryIsoCode: getCountryIsoCodesFromQueryParam(query.country || query.countries, allFacets),
 		sectorId: getIdsFromQueryParam(query.sector, allFacets.sectorNames, allFacets.sectorFacets),
 		sortBy: queryType === FLSS_QUERY_TYPE ? lendToFlssSort.get(query.sortBy) : query.sortBy,
 		themeId: getIdsFromQueryParam(query.attribute, allFacets.themeNames, allFacets.themeFacets),
@@ -568,11 +591,11 @@ export function updateQueryParams(loanSearchState, router, queryType) {
 	// Create new query params object
 	const newParams = {
 		...(loanSearchState.gender && { gender: loanSearchState.gender }),
+		...(loanSearchState.countryIsoCode?.length && { country: loanSearchState.countryIsoCode.join() }),
 		...(loanSearchState.sectorId?.length && { sector: loanSearchState.sectorId.join(',') }),
 		...(loanSearchState.themeId?.length && { attribute: loanSearchState.themeId.join(',') }),
 		...(queryParamSortBy && { sortBy: queryParamSortBy }),
 		...(page > 1 && { page: page.toString() }),
-		// TODO: add params as query param support expands
 		...utmParams,
 	};
 

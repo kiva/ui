@@ -24,6 +24,9 @@ import config from '../config/local';
 // initialize vue-meta
 Vue.use(Meta);
 
+// Mock the analytics Vue plugin
+Vue.use({ install: Vue => { Vue.prototype.$kvTrackEvent = () => {}; }});
+
 // provide global application config
 Vue.prototype.$appConfig = config.app;
 

@@ -22,8 +22,6 @@ describe('loanUseFilter', () => {
 	describe('shortenedLoanUse', () => {
 		it('Should return string depending on use, name and max length', () => {
 			expect(shortenedLoanUse('loan use', 'Loan name', 12)).toBe('loan use');
-			expect(shortenedLoanUse('', 'loan name', 10))
-				.toBe('For the borrower\'s privacy, this loan has been made anonymous.');
 			expect(shortenedLoanUse('Loan Title', 'Loan Title', 100)).toBe('Loan Title');
 			expect(shortenedLoanUse('this is a very very long loan use',
 				'the loan name is also very long', 5)).toBe('this ...');
@@ -34,8 +32,12 @@ describe('loanUseFilter', () => {
 	});
 	describe('loanUseFilter', () => {
 		it('Combined filter should work', () => {
-			expect(loanUseFilter('loan use', 'loan name', 'fundraising', 500.50, 35, 10))
+			expect(loanUseFilter('loan use', 'loan name', 'fundraising', 500.50, 35, 10, 'none'))
 				.toBe('A loan of $501 helps a member loan use');
+			expect(loanUseFilter('', 'loan name', 'fundraising', 500.50, 35, 10, 'none'))
+				.toBe('For the borrower\'s privacy, this loan has been made anonymous.');
+			expect(loanUseFilter('loan use', 'loan name', 'fundraising', 500.50, 35, 10, 'full'))
+				.toBe('For the borrower\'s privacy, this loan has been made anonymous.');
 		});
 		it('Combined filter should work with missing params and default values', () => {
 			expect(loanUseFilter('loan use', undefined, 'fundraising', 500.50, 35, 10))
@@ -47,6 +49,8 @@ describe('loanUseFilter', () => {
 			expect(loanUseFilter('loan use', 'loan name', 'fundraising', 500.50, undefined, 10))
 				.toBe('A loan of $501 helps loan use');
 			expect(loanUseFilter('loan use', 'loan name', 'fundraising', 500.50, 35, undefined))
+				.toBe('A loan of $501 helps a member loan use');
+			expect(loanUseFilter('loan use', 'loan name', 'fundraising', 500.50, 35, 10, undefined))
 				.toBe('A loan of $501 helps a member loan use');
 		});
 	});
