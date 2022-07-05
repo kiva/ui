@@ -1,3 +1,10 @@
+### [2.216.1](https://github.com/kiva/ui/compare/v2.216.0...v2.216.1) (2022-07-05)
+
+
+### Bug Fixes
+
+* bugs related to FLSS loan channel ([d6b072c](https://github.com/kiva/ui/commit/d6b072cd66000e6148980aabc15f7e45bcca0e26))
+
 ## [2.216.0](https://github.com/kiva/ui/compare/v2.215.0...v2.216.0) (2022-07-05)
 
 
