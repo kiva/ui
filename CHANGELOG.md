@@ -1,3 +1,10 @@
+## [2.215.0](https://github.com/kiva/ui/compare/v2.214.2...v2.215.0) (2022-07-05)
+
+
+### Features
+
+* use canvas pool to reduce live-loan memory usage ([2e474d8](https://github.com/kiva/ui/commit/2e474d834a28cbd627fa4456068262b2d07b2b28))
+
 ### [2.214.2](https://github.com/kiva/ui/compare/v2.214.1...v2.214.2) (2022-07-05)
 
 
