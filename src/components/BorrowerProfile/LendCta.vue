@@ -558,13 +558,6 @@ export default {
 				this.completeLoanView = false;
 			}
 		},
-		selectedOption() {
-			if (this.isCompleteLoanActive && this.completeLoanView) {
-				// eslint-disable-next-line
-				this.$kvTrackEvent('Borrower profile', 'Complete loan', 'view-amount-left-cta', this.loanId, this.selectedOption);
-				this.completeLoanView = false;
-			}
-		}
 	},
 	computed: {
 		isInBasket() {
@@ -590,7 +583,7 @@ export default {
 			// limit at 20 price options
 			const priceArray = buildPriceArray(parseFloat(this.unreservedAmount), minAmount).slice(0, 20);
 			// eslint-disable-next-line
-			if (this.completeLoan && this.isBetween25And100 && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
+			if (this.completeLoan && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
 			}
 			return priceArray;
@@ -718,10 +711,6 @@ export default {
 	mounted() {
 		this.createWrapperObserver();
 		this.cycleStatsSlot();
-		if (this.isCompleteLoanActive) {
-			// eslint-disable-next-line
-			this.$kvTrackEvent('Borrower profile', 'Complete loan', 'view-amount-left-cta', this.loanId, this.selectedOption);
-		}
 	},
 	beforeDestroy() {
 		this.destroyWrapperObserver();
