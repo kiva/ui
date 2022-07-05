@@ -1,3 +1,15 @@
+## [2.216.0](https://github.com/kiva/ui/compare/v2.215.0...v2.216.0) (2022-07-05)
+
+
+### Features
+
+* apply location to query params filtering and shared state ([7eda2a9](https://github.com/kiva/ui/commit/7eda2a9869dbbf8a02e78c747a8bbe6ba42d8984))
+
+
+### Bug Fixes
+
+* missing story for active ISO codes ([08bac1f](https://github.com/kiva/ui/commit/08bac1fe6b0f7c86a3ca2916d5f9849a8370abcc))
+
 ## [2.215.0](https://github.com/kiva/ui/compare/v2.214.2...v2.215.0) (2022-07-05)
 
 
