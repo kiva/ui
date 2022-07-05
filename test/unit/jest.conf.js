@@ -37,5 +37,6 @@ module.exports = {
 		'<rootDir>/node_modules/'
 	],
 	testURL: 'http://localhost',
-	testEnvironment: 'jsdom'
+	testEnvironment: 'jsdom',
+	setupFiles: ['<rootDir>/test/unit/setupJestMocks.js']
 };
