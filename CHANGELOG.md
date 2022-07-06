@@ -1,3 +1,10 @@
+### [2.220.2](https://github.com/kiva/ui/compare/v2.220.1...v2.220.2) (2022-07-06)
+
+
+### Bug Fixes
+
+* add tracking to matched loans ([4c0d149](https://github.com/kiva/ui/commit/4c0d1497bf45d4f06f345ba8a93d5640cab0ac97))
+
 ### [2.220.1](https://github.com/kiva/ui/compare/v2.220.0...v2.220.1) (2022-07-06)
 
 
