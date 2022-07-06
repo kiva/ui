@@ -307,7 +307,7 @@ export default {
 			}
 		},
 		async copyLink() {
-			const url = `${this.shareLink}?utm_source=social_share_link&utm_campaign=social_share_checkout_variant`;
+			const url = `${this.shareLink}&utm_source=social_share_link&utm_campaign=social_share_checkout_variant`;
 			try {
 				await clipboardCopy(url);
 				this.copyStatus = {
