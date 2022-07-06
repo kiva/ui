@@ -45,7 +45,7 @@
 		"@chenfengyuan/vue-countdown": "^1.1.5",
 		"@contentful/rich-text-html-renderer": "^14.1.1",
 		"@contentful/rich-text-types": "^14.1.2",
-		"@godaddy/terminus": "^4.4.1",
+		"@godaddy/terminus": "^4.11.0",
 		"@graphql-tools/load": "^6.2.4",
 		"@graphql-tools/url-loader": "^6.3.0",
 		"@kiva/kv-components": "^3.0.6",
