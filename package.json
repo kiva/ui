@@ -1,6 +1,6 @@
 {
 	"name": "kvue",
-	"version": "2.220.0",
+	"version": "2.220.2",
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
@@ -102,7 +102,7 @@
 		"make-fetch-happen": "^10.1.7",
 		"memcached": "^2.2.2",
 		"memjs": "^1.2.2",
-		"minimist": "^1.2.5",
+		"minimist": "^1.2.6",
 		"numeral": "^2.0.6",
 		"passport": "^0.4.1",
 		"passport-auth0": "^1.3.1",
@@ -127,7 +127,7 @@
 		"vue2-touch-events": "^2.3.2",
 		"vuedraggable": "^2.23.0",
 		"vuelidate": "^0.7.6",
-		"webpack-merge": "^5.7.3",
+		"webpack-merge": "^5.8.0",
 		"whatwg-fetch": "^3.6.2",
 		"winston": "^3.3.3"
 	},

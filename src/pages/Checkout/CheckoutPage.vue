@@ -642,6 +642,7 @@ export default {
 	},
 	methods: {
 		openMatchedLoansLightbox() {
+			this.$kvTrackEvent('Basket', 'click-must-deposit-message-cta', 'Learn more');
 			this.showMatchedLoansLightbox = true;
 		},
 		closeMatchedLoansLightbox() {
