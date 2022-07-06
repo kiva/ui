@@ -1,0 +1,17 @@
+# Github action that  auto assigns a user to a PR.
+# Used for auto assigning dependabot PR's
+# See: https://github.com/kentaro-m/auto-assign-action
+# Config: .github/auto_assign.yml
+
+name: 'Auto Assign'
+
+on:
+  pull_request_target:
+    types: [labeled]
+
+jobs:
+  add-reviews:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: kentaro-m/auto-assign-action@v1.2.1
+
