@@ -1,3 +1,10 @@
+### [2.220.1](https://github.com/kiva/ui/compare/v2.220.0...v2.220.1) (2022-07-06)
+
+
+### Bug Fixes
+
+* fixed copy share link params structure ([df5e50e](https://github.com/kiva/ui/commit/df5e50e141a561a06b6c2037800f50a7af4fac3a))
+
 ## [2.220.0](https://github.com/kiva/ui/compare/v2.219.0...v2.220.0) (2022-07-05)
 
 
