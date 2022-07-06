@@ -10,7 +10,12 @@
 					future for themselves and their families.
 				</p>
 			</kv-grid>
-			<kv-grid class="md:tw-pt-6 lg:tw-pt-8">
+		</kv-page-container>
+		<div class="tw-pt-4 tw-mb-2">
+			<loan-spotlight />
+		</div>
+		<kv-page-container>
+			<kv-grid class="tw-pt-6">
 				<h2>
 					Find loans by category
 				</h2>
@@ -50,7 +55,7 @@
 					<kv-button
 						to="/lend"
 						variant="secondary"
-						state="active"
+						state=""
 						v-kv-track-event="['Lending', 'click-view-all', 'View All']"
 					>
 						View all loans
@@ -79,6 +84,7 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import MainCategoryTile from '@/components/Categories/MainCategoryTile';
+import LoanSpotlight from '@/components/Categories/LoanSpotlight';
 import gql from 'graphql-tag';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -117,7 +123,8 @@ export default {
 		MainCategoryTile,
 		KvGrid,
 		KvPageContainer,
-		KvButton
+		KvButton,
+		LoanSpotlight
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
