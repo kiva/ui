@@ -1,3 +1,10 @@
+### [2.220.3](https://github.com/kiva/ui/compare/v2.220.2...v2.220.3) (2022-07-06)
+
+
+### Bug Fixes
+
+* allow utm query params through into experiment ([f3996c0](https://github.com/kiva/ui/commit/f3996c0d5efdea715d22670770dfd7cdb2072095))
+
 ### [2.220.2](https://github.com/kiva/ui/compare/v2.220.1...v2.220.2) (2022-07-06)
 
 
