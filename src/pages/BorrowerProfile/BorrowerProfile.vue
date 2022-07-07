@@ -384,6 +384,14 @@ export default {
 		},
 	},
 	created() {
+		const expCookieSignifier = this.cookieStore.get('kvlendborrowerbeta');
+		if (expCookieSignifier !== 'b') {
+			const { query } = this.$route;
+			const queryString = Object.keys(query)
+				.map(key => `${key}=${query[key]}`)
+				.join('&');
+			this.$router.push(`/lend-classic/${this.$route.params.id}?query=${queryString}`);
+		}
 		// this experiment is assigned in experimentPreFetch.js
 		const urgencyExperiment = this.apollo.readFragment({
 			id: 'Experiment:lend_urgency',

@@ -243,6 +243,14 @@ module.exports = [
 		},
 	},
 	{
+		path: '/lend/:id(\\d+)',
+		redirect: '/lend-beta/:id'
+	},
+	{
+		path: '/lend/:category',
+		redirect: '/lend-by-category/:category'
+	},
+	{
 		path: '/lend/filter',
 		component: () => import('@/pages/Lend/Filter/LendFilterPage'),
 		meta: {
