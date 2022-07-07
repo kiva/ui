@@ -132,13 +132,6 @@ module.exports = [
 		}
 	},
 	{
-		path: '/funded/:id',
-		component: () => import('@/pages/BorrowerProfile/FundedBorrowerProfile'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		}
-	},
-	{
 		path: '/gender-equality',
 		component: () => import('@/pages/ContentfulPage'),
 		meta: {

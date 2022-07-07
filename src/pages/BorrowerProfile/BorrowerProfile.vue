@@ -2,7 +2,7 @@
 	<www-page
 		id="borrower-profile"
 	>
-		<article class="tw-relative tw-bg-secondary">
+		<article v-if="amountLeft" class="tw-relative tw-bg-secondary">
 			<div class="tw-relative">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 					<hero-background />
@@ -66,6 +66,9 @@
 			</div>
 		</article>
 		<!-- <aside>Similar loans</aside> -->
+		<article v-else>
+			<FundedBorrowerProfile />
+		</article>
 	</www-page>
 </template>
 
@@ -85,6 +88,7 @@ import HeroBackground from '@/components/BorrowerProfile/HeroBackground';
 import SummaryCard from '@/components/BorrowerProfile/SummaryCard';
 import LendCta from '@/components/BorrowerProfile/LendCta';
 import LoanStory from '@/components/BorrowerProfile/LoanStory';
+import FundedBorrowerProfile from '@/components/BorrowerProfile/FundedBorrowerProfile';
 import DetailsTabs from '@/components/BorrowerProfile/DetailsTabs';
 import BorrowerCountry from '@/components/BorrowerProfile/BorrowerCountry';
 import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
@@ -159,6 +163,7 @@ export default {
 		ContentContainer,
 		DetailsTabs,
 		HeroBackground,
+		FundedBorrowerProfile,
 		LendCta,
 		LendersAndTeams,
 		LoanStory,
