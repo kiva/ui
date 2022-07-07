@@ -1,7 +1,7 @@
 <template>
 	<div v-if="items.length">
 		<div class="tw-flex tw-items-start tw-flex-col" :class="{ 'lg:tw-flex-row': isCollapsed }">
-			<div ref="container" class="container tw-overflow-hidden" :style="containerMaxHeight">
+			<div ref="container" class="chip-container tw-overflow-hidden" :style="containerMaxHeight">
 				<div ref="chips" class="tw-flex tw-flex-wrap tw-gap-1.5">
 					<div v-for="(item, i) in items" :key="i">
 						<kv-chip-classic @click="handleChipClick(item)">
@@ -197,7 +197,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-	.container { max-height: 148px; }
+	.chip-container { max-height: 148px; }
 
-	@screen lg { .container { max-height: 44px; } }
+	@screen lg { .chip-container { max-height: 44px; } }
 </style>
