@@ -265,6 +265,9 @@ export default {
 		// Fetch the facet options from the lend and FLSS APIs
 		this.allFacets = await fetchLoanFacets(this.apollo);
 
+		// Load all available facets without loan search state applied
+		await this.fetchFacets();
+
 		// Initialize the search filters with the query string params
 		await applyQueryParams(this.apollo, this.$route.query, this.allFacets, this.queryType, this.defaultPageLimit);
 
@@ -281,21 +284,12 @@ export default {
 				// Update the query string with the latest loan search state
 				updateQueryParams(this.loanSearchState, this.$router, this.queryType);
 
-				const [{ isoCodes, themes, sectors }, { loans, totalCount }] = await Promise.all([
-					// Get filtered facet options from FLSS
-					// TODO: Prevent this from running on every query (not needed for sorting and paging)
-					await runFacetsQueries(this.apollo, this.loanSearchState),
+				const [{ loans, totalCount }] = await Promise.all([
 					// Get filtered loans from FLSS
-					await runLoansQuery(this.apollo, this.loanSearchState)
+					await runLoansQuery(this.apollo, this.loanSearchState),
+					// Get filtered facet options from FLSS
+					await this.fetchFacets(this.loanSearchState)
 				]);
-
-				// Merge all facet options with filtered options
-				this.facets = {
-					regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
-					sectors: transformSectors(sectors, this.allFacets?.sectorFacets),
-					themes: transformThemes(themes, this.allFacets?.themeFacets),
-					sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
-				};
 
 				// Store loan data in component
 				this.loans = loans;
@@ -320,6 +314,18 @@ export default {
 		},
 	},
 	methods: {
+		async fetchFacets(loanSearchState = {}) {
+			// TODO: Prevent this from running on every query (not needed for sorting and paging)
+			const { isoCodes, themes, sectors } = await runFacetsQueries(this.apollo, loanSearchState);
+
+			// Merge all facet options with filtered options
+			this.facets = {
+				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
+				sectors: transformSectors(sectors, this.allFacets?.sectorFacets),
+				themes: transformThemes(themes, this.allFacets?.themeFacets),
+				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
+			};
+		},
 		trackLoans() {
 			this.$kvSetCustomUrl();
 
