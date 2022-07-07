@@ -1,3 +1,45 @@
+### [2.220.4](https://github.com/kiva/ui/compare/v2.220.3...v2.220.4) (2022-07-07)
+
+
+### Bug Fixes
+
+* add snowplow events around employee verification and team join processes ([4269548](https://github.com/kiva/ui/commit/4269548828b61408c355471348686f9134d66c20))
+
+### [2.220.3](https://github.com/kiva/ui/compare/v2.220.2...v2.220.3) (2022-07-06)
+
+
+### Bug Fixes
+
+* allow utm query params through into experiment ([f3996c0](https://github.com/kiva/ui/commit/f3996c0d5efdea715d22670770dfd7cdb2072095))
+
+### [2.220.2](https://github.com/kiva/ui/compare/v2.220.1...v2.220.2) (2022-07-06)
+
+
+### Bug Fixes
+
+* add tracking to matched loans ([4c0d149](https://github.com/kiva/ui/commit/4c0d1497bf45d4f06f345ba8a93d5640cab0ac97))
+
+### [2.220.1](https://github.com/kiva/ui/compare/v2.220.0...v2.220.1) (2022-07-06)
+
+
+### Bug Fixes
+
+* fixed copy share link params structure ([df5e50e](https://github.com/kiva/ui/commit/df5e50e141a561a06b6c2037800f50a7af4fac3a))
+
+## [2.220.0](https://github.com/kiva/ui/compare/v2.219.0...v2.220.0) (2022-07-05)
+
+
+### Features
+
+* initial theme ID filter implementation ([61678fd](https://github.com/kiva/ui/commit/61678fdb473297d7f4d433fd4548b495369da0bb))
+
+
+### Bug Fixes
+
+* algolia attributes query param wasn't being handled ([bda6898](https://github.com/kiva/ui/commit/bda6898854582625c8741664a26f173f4ec55ba0))
+* cleaned up unit tests so this changeset can be held in the branch for later ([f635ef3](https://github.com/kiva/ui/commit/f635ef380232f110127218f49bbe3426e3a0bea7))
+* missing unit test, analytics bug, minor cleanup ([e9b4639](https://github.com/kiva/ui/commit/e9b463980dc4e9a287ba5375b3a7070ca52a6138))
+
 ## [2.219.0](https://github.com/kiva/ui/compare/v2.218.0...v2.219.0) (2022-07-05)
 
 
