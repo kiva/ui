@@ -563,6 +563,19 @@ describe('loanSearchUtils.js', () => {
 			expect(spyFetchFacets).toHaveBeenCalledTimes(1);
 			expect(result).toEqual({ isoCodes: isoCodeFacets, themes: themeFacets, sectors: sectorFacets });
 		});
+
+		it('should return apply filters', async () => {
+			const apollo = {};
+			const result = await runFacetsQueries(apollo, { countryIsoCode: ['US'], themeId: [2], sectorId: [1] });
+			expect(spyFetchFacets).toHaveBeenCalledWith(
+				apollo,
+				{ themeId: { any: [2] }, sectorId: { any: [1] }, countryIsoCode: undefined },
+				{ countryIsoCode: { any: ['US'] }, sectorId: { any: [1] }, themeId: undefined },
+				{ countryIsoCode: { any: ['US'] }, themeId: { any: [2] }, sectorId: undefined }
+			);
+			expect(spyFetchFacets).toHaveBeenCalledTimes(1);
+			expect(result).toEqual({ isoCodes: isoCodeFacets, themes: themeFacets, sectors: sectorFacets });
+		});
 	});
 
 	describe('runLoansQuery', () => {

@@ -389,7 +389,7 @@ export function getIsoCodes(regions, selectedCountries) {
  * @param {Object} loanSearchState The current loan search state from Apollo
  * @returns {Object} The filter facets
  */
-export async function runFacetsQueries(apollo, loanSearchState) {
+export async function runFacetsQueries(apollo, loanSearchState = {}) {
 	const isoCodeFilters = { ...getFlssFilters(loanSearchState), countryIsoCode: undefined };
 	const themeFilters = { ...getFlssFilters(loanSearchState), themeId: undefined };
 	const sectorFilters = { ...getFlssFilters(loanSearchState), sectorId: undefined };
