@@ -1,3 +1,10 @@
+### [2.221.1](https://github.com/kiva/ui/compare/v2.221.0...v2.221.1) (2022-07-07)
+
+
+### Bug Fixes
+
+* use optimized default make-fetch-happen agent instead of custom agent ([a44d1ab](https://github.com/kiva/ui/commit/a44d1ab66be8e8663d5e653a8d19163b87fbd2f8))
+
 ## [2.221.0](https://github.com/kiva/ui/compare/v2.220.4...v2.221.0) (2022-07-07)
 
 
