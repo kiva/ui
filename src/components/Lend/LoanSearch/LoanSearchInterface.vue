@@ -61,6 +61,7 @@
 					:loan-search-state="loanSearchState"
 					:all-facets="allFacets"
 					@updated="handleUpdatedFilters"
+					@reset="handleResetFilters"
 				/>
 				<p class="tw-hidden lg:tw-block tw-mt-1">
 					{{ totalCount }} Loans
