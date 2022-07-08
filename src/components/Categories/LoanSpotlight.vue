@@ -1,49 +1,54 @@
 <template>
-	<div class="tw-bg-primary md:tw-bg-secondary">
-		<kv-page-container>
-			<kv-grid>
-				<h2 class="md:tw-hidden">
+	<div>
+		<h2 class="md:tw-hidden tw-pb-2">
+			Today's loan spotlight
+		</h2>
+		<div class="md:tw-flex md:tw-pt-8 md:tw-pb-8">
+			<kv-loading-placeholder
+				v-if="isLoading"
+				class="tw-mb-1 tw-rounded md:tw-mr-3 lg:tw-mr-4
+				md:tw-flex-none tw-w-full md:tw-w-1/2" :style="{height: '15.75rem'}"
+			/>
+			<div v-if="!isLoading" class="md:tw-mr-3 lg:tw-mr-4 md:tw-flex-none">
+				<kv-responsive-image
+					class="spotlight-loan-image"
+					:images="getSpotlightImage"
+					loading="lazy"
+					:alt="altText"
+				/>
+			</div>
+			<div class="md:tw-grow">
+				<h2 class="tw-hidden md:tw-block tw-pt-1">
 					Today's loan spotlight
 				</h2>
-				<div class="md:tw-flex md:tw-pt-8 md:tw-pb-8">
-					<div class="md:tw-mr-3 lg:tw-mr-4 md:tw-flex-none">
-						<kv-responsive-image
-							class="spotlight-loan-image"
-							:images="getSpotlightImage"
-							loading="lazy"
-							:alt="altText"
-						/>
-					</div>
-					<div class="md:tw-grow">
-						<h2 class="tw-hidden md:tw-block tw-pt-1">
-							Today's loan spotlight
-						</h2>
-						<h3 class="tw-pt-2 tw-mb-1">
-							{{ getSpotlightLoanLocation }}
-						</h3>
-						<span class="tw-line-clamp-5">
-							<p
-								v-for="(paragraph, index) in getSpotlightText"
-								:key="index"
-								v-html="paragraph"
-							>
-							</p>
-						</span>
-						<div class="tw-mt-2">
-							<kv-button
-								class="tw-w-full md:tw-w-auto"
-								:to="`/lend-beta/${this.spotlightLoan.id}`"
-								variant="primary"
-								state=""
-								v-kv-track-event="['Lending', 'click-loan-spotlight', 'View Loan']"
-							>
-								View loan
-							</kv-button>
-						</div>
-					</div>
+				<h3 class="tw-pt-2 tw-mb-1">
+					{{ getSpotlightLoanLocation }}
+				</h3>
+				<kv-loading-paragraph
+					v-if="isLoading"
+					class="tw-mb-1.5 tw-flex-grow" :style="{width: '100%', height: '5.5rem'}"
+				/>
+				<span v-if="!isLoading" class="tw-line-clamp-5">
+					<p
+						v-for="(paragraph, index) in getSpotlightText"
+						:key="index"
+						v-html="paragraph"
+					>
+					</p>
+				</span>
+				<div class="tw-mt-2">
+					<kv-button
+						class="tw-w-full md:tw-w-auto"
+						:to="`/lend-beta/${getSpotlightLoanID}`"
+						variant="primary"
+						state=""
+						v-kv-track-event="['Lending', 'click-loan-spotlight', 'View Loan']"
+					>
+						View loan
+					</kv-button>
 				</div>
-			</kv-grid>
-		</kv-page-container>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -51,13 +56,10 @@
 
 import { toParagraphs } from '@/util/loanUtils';
 import gql from 'graphql-tag';
-import logReadQueryError from '@/util/logReadQueryError';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
-
-const routePath = 'recommended-by-lenders';
 
 const allChannelsQuery = gql`
 	query allChannelsQuery {
@@ -114,21 +116,28 @@ const spotlightLoanQuery = gql`
 	}
 `;
 
-function getTargetedChannel(targetedRoute, allChannels) {
-	const loanChannels = allChannels.lend?.loanChannels?.values;
-	const targetedLoanChannel = loanChannels.filter(
-		loanChannel => loanChannel.url.split('/').pop() === targetedRoute
+function filterChannelsForRoute(routePath, loanChannels) {
+	const filteredChannels = loanChannels.filter(
+		loanChannel => loanChannel.url.split('/').pop() === routePath
 	);
-	// no channel that matches the name recommended-by-lenders
+	return filteredChannels;
+}
+
+function getTargetedChannel(targetedRoutePath, fallbackRoutePath, allChannels) {
+	// const loanChannels = allChannels.lend?.loanChannels?.values;
+	const targetedLoanChannel = filterChannelsForRoute(targetedRoutePath, allChannels);
+	const fallbackLoanChannel = filterChannelsForRoute(fallbackRoutePath, allChannels);
+
+	// no channel that matches the targeted name
 	if (targetedLoanChannel.length === 0) {
-		// return id for channel women
-		return 5;
+		// return id for fallback channel
+		return fallbackLoanChannel[0]?.id || null;
 	}
-	// recommended-by-lenders channel exists but no loans exist within it
+	// targeted channel exists but no loans exist within it
 	if (targetedLoanChannel.length !== 0 && targetedLoanChannel[0].loans.totalCount === 0) {
-		return 5;
+		return fallbackLoanChannel[0]?.id || null;
 	}
-	// isolate recommended-by-lenders channel id
+	// isolate targeted channel id
 	return targetedLoanChannel[0]?.id || null;
 }
 
@@ -142,17 +151,29 @@ function filterByAnonymizationLevel(spotlightData) {
 
 export default {
 	name: 'LoanSpotlight',
+	props: {
+		routeName: {
+			type: String,
+			default: ''
+		},
+		fallbackRouteName: {
+			type: String,
+			default: ''
+		}
+	},
 	components: {
-		KvGrid,
 		KvButton,
-		KvPageContainer,
-		KvResponsiveImage
+		KvResponsiveImage,
+		KvLoadingPlaceholder,
+		KvLoadingParagraph
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			spotlightPlaceholderImageCTF: '',
 			spotlightLoan: {},
+			allChannelsData: {},
+			isLoading: true,
 			targetedLoanChannelID: null
 		};
 	},
@@ -160,14 +181,23 @@ export default {
 		altText() {
 			return "Today's loan spotlight";
 		},
+		getSpotlightLoanID() {
+			return this.spotlightLoan.id ?? '';
+		},
 		getSpotlightText() {
-			return toParagraphs(this.spotlightLoan.description);
+			return toParagraphs(this.spotlightLoan.description) ?? '';
+		},
+		locationExists() {
+			return this.spotlightLoan.geocode ?? '';
 		},
 		getSpotlightLoanLocation() {
-			if (this.spotlightLoan.geocode.city && this.spotlightLoan.geocode.country.name) {
-				return `${this.spotlightLoan.geocode.city}, ${this.spotlightLoan.geocode.country.name}`;
+			if (this.locationExists !== '') {
+				if (this.spotlightLoan.geocode.city && this.spotlightLoan.geocode.country.name) {
+					return `${this.spotlightLoan.geocode.city}, ${this.spotlightLoan.geocode.country.name}`;
+				}
+				return `${this.spotlightLoan.geocode.country.name ?? ''}`;
 			}
-			return `${this.spotlightLoan.geocode?.country?.name ?? ''}`;
+			return '';
 		},
 		imageExists() {
 			return this.spotlightLoan.image?.default ?? '';
@@ -180,49 +210,25 @@ export default {
 		}
 	},
 	apollo: {
-		preFetch(config, client) {
-			return client.query({
-				query: allChannelsQuery
-			}).then(({ data }) => {
-				const targetedLoanChannelURL = routePath;
-				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, data);
-				return client.query({
-					query: spotlightLoanQuery,
-					variables: {
-						ids: [targetedLoanChannelID],
-					},
-				});
-			});
+		query: allChannelsQuery,
+		preFetch: true,
+		result(result) {
+			this.allChannelsData = result.data?.lend?.loanChannels?.values ?? [];
 		},
 	},
 	created() {
-		let allChannelsData = {};
-		try {
-			allChannelsData = this.apollo.readQuery({
-				query: allChannelsQuery,
-			});
-		} catch (e) {
-			logReadQueryError(e);
-		}
+		this.targetedLoanChannelID = getTargetedChannel(this.routeName, this.fallbackRouteName, this.allChannelsData);
 
-		const targetedLoanChannelURL = routePath;
-		// isolate recommended-by-lenders channel id
-		this.targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, allChannelsData);
-
-		// Read the spotlight data from the cache
-		let spotlightData = {};
-		try {
-			spotlightData = this.apollo.readQuery({
-				query: spotlightLoanQuery,
-				variables: {
-					ids: [this.targetedLoanChannelID],
-				},
-			});
-		} catch (e) {
-			logReadQueryError(e);
-		}
-		// filter out loans with anonymizationLevel of full, then take first in list
-		this.spotlightLoan = filterByAnonymizationLevel(spotlightData);
+		this.apollo.query({
+			query: spotlightLoanQuery,
+			variables: {
+				ids: [this.targetedLoanChannelID],
+			},
+		}).then(result => {
+			// filter out loans with anonymizationLevel of full, then take first in list
+			this.isLoading = false;
+			this.spotlightLoan = filterByAnonymizationLevel(result.data);
+		});
 	},
 	mounted() {
 		this.apollo.query({
@@ -247,9 +253,18 @@ export default {
 
 <style lang="postcss" scoped>
 
+/*  ** Reasoning for current dimensions **
+The max heights 280, md/lg:390 and the max width lg:520 are Nathan's original dimensions.
+The max width 390 at medium prevents the wrapping of the title "Today's loan spotlight".
+The min width at md/lg is for the few images that area extremely skinny.
+The min height for md/lg is there so that the text and the button are within the height of the image.
+The mobile image now matches the way it's done on the individual loan page. The images
+are so varied in sizing, so it looks way better if they are just contained on mobile. */
 .spotlight-loan-image >>> img {
-	@apply tw-object-cover tw-object-top tw-rounded;
-	@apply tw-w-full tw-h-full md:tw-w-[390px] md:tw-h-[320px] lg:tw-w-[520px] lg:tw-h-[390px];
+	@apply tw-rounded tw-object-contain tw-bg-black md:tw-object-cover md:tw-object-top;
+	@apply tw-w-full tw-max-h-[280px] md:tw-max-h-[390px];
+	@apply md:tw-max-w-[390px] lg:tw-max-w-[520px];
+	@apply md:tw-min-w-[320px] md:tw-min-h-[320px];
 }
 
 </style>

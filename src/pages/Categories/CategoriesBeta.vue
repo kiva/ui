@@ -1,7 +1,7 @@
 <template>
 	<www-page>
 		<kv-page-container>
-			<kv-grid class="tw-pt-4 md:tw-pt-6 lg:tw-pt-8">
+			<kv-grid class="tw-pt-4 md:tw-pt-6 lg:tw-pt-8 tw-mb-4">
 				<h1 class="tw-mb-2">
 					Make a loan, change a life
 				</h1>
@@ -11,8 +11,15 @@
 				</p>
 			</kv-grid>
 		</kv-page-container>
-		<div class="tw-pt-4 tw-mb-2">
-			<loan-spotlight />
+		<div class="tw-bg-primary md:tw-bg-secondary tw-mb-2">
+			<kv-page-container>
+				<kv-grid>
+					<loan-spotlight
+						route-name="recommended-by-lenders"
+						fallback-route-name="women"
+					/>
+				</kv-grid>
+			</kv-page-container>
 		</div>
 		<kv-page-container>
 			<kv-grid class="tw-pt-6">
