@@ -1,3 +1,10 @@
+### [2.221.3](https://github.com/kiva/ui/compare/v2.221.2...v2.221.3) (2022-07-08)
+
+
+### Bug Fixes
+
+* change back to last page if offset too large for result set ([3850dfb](https://github.com/kiva/ui/commit/3850dfbe76c8988b3c9177c5c992c41e0cde9d79))
+
 ### [2.221.2](https://github.com/kiva/ui/compare/v2.221.1...v2.221.2) (2022-07-07)
 
 
