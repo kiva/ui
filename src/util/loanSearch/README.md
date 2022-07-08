@@ -12,9 +12,9 @@ If the loan filtering needs to be updated, either the `loanSearchState` in the A
 
 ## Facets
 
-The concept of "facets" are the available filters, and the lend API is the source of truth. On the `lend/filter-alpha` page, facet options are only displayed if the option exists in the FLSS API, but the option information is sourced from the lend API. The loan count per facet option is provided by the FLSS API, so consistency remains between the FLSS API loan result count and filter loan counts.
+The concept of "facets" are the available filters, and the lend API is the source of truth. On the `lend/filter-alpha` page, facet options are only displayed if the option exists in the FLSS API, but the option information is sourced from the lend API. The loan count per facet option is provided by the FLSS API, so consistency remains between the FLSS API loan result count and filter loan count.
 
-There is one exception to defining filter options, and that is the theme/attribute filter options. Here there is a collection of themes that are always displayed. The filter option information is once again sourced from the lend API, but the static filter options will be displayed regardless of whether the options are returned by the FLSS API.
+There is one exception to defining filter options and that is the theme/attribute filter options. Here there is a collection of themes that are always displayed. The filter option information is once again sourced from the lend API, but the static filter options will be displayed regardless of whether the options are returned by the FLSS API.
 
 ## searchStateUtils
 
@@ -34,4 +34,4 @@ Whenever data needs to be adjusted before being displayed in the filter UI, an a
 
 ## countryUtils
 
-The country facets, particularly the ISO codes, require special handling and conversions. The facet data from the lend and FLSS APIs have different properties available, but both data sources are needed in order to get the country facets ready for the UI.
+The country facets, particularly the ISO codes, require special handling. The facet data from the lend and FLSS APIs have different properties available, but both data sources are needed in order to get the country facets ready for the UI.
