@@ -495,6 +495,14 @@ module.exports = [
 		}
 	},
 	{
+		path: '/lend/saved-search-beta',
+		component: () => import('@/pages/Settings/SavedSearchBeta'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
 		path: '/ui-site-map',
 		component: () => import('@/pages/UiSiteMap/UiSiteMapPage'),
 		meta: {
