@@ -1,3 +1,10 @@
+### [2.221.4](https://github.com/kiva/ui/compare/v2.221.3...v2.221.4) (2022-07-08)
+
+
+### Bug Fixes
+
+* added missing loan card padding ([18c26e6](https://github.com/kiva/ui/commit/18c26e6fc9143bb0df30eae5e610a7ac5683bc78))
+
 ### [2.221.3](https://github.com/kiva/ui/compare/v2.221.2...v2.221.3) (2022-07-08)
 
 
