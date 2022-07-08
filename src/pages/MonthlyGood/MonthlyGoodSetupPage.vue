@@ -1,7 +1,8 @@
 <template>
 	<www-page>
 		<kv-default-wrapper class="monthly-good-setup-page">
-			<div class="row align-center tw-text-center auto-lending-notice"
+			<div
+				class="row align-center tw-text-center auto-lending-notice"
 				v-if="balance > autoDepositNoticeThreshold"
 			>
 				<div class="small-12 medium-11 large-10 column">
@@ -28,7 +29,8 @@
 				</div>
 			</div>
 			<div class="row align-center">
-				<div class="small-12 medium-11 large-10 column"
+				<div
+					class="small-12 medium-11 large-10 column"
 					v-if="!isMonthlyGoodSubscriber && !hasLegacySubscription && !hasModernSub"
 				>
 					<h1 class="tw-text-center tw-mb-2">
@@ -47,13 +49,15 @@
 								<div class="medium-10 small-12 columns">
 									<div class="row column" v-if="!fromCovidLanding">
 										<strong>Each month on the</strong>
-										<label class="tw-sr-only"
+										<label
+											class="tw-sr-only"
 											:class="{ 'tw-text-danger': $v.dayOfMonth.$invalid }"
 											:for="dayOfMonth"
 										>
 											Day of the Month
 										</label>
-										<kv-text-input v-if="isDayInputShown"
+										<kv-text-input
+											v-if="isDayInputShown"
 											@blur="hideDayInput()"
 											class="text-input__day tw-w-9 tw-inline-block tw-ml-1"
 											id="dayOfMonth"
@@ -182,7 +186,8 @@
 
 									<div class="row tw-text-left">
 										<div class="columns">
-											<span v-if="!onetime"
+											<span
+												v-if="!onetime"
 												class="tw-font-medium tw-ml-3"
 											>Total/month</span>
 											<span v-else class="tw-font-medium tw-ml-3">Total</span>
@@ -195,7 +200,8 @@
 										</div>
 
 										<div class="small-12 columns">
-											<ul class="tw-text-center validation-errors"
+											<ul
+												class="tw-text-center validation-errors"
 												v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
 											>
 												<li>

@@ -3,7 +3,8 @@
 		<div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-2">
 			<fieldset class="tw-basis-full md:tw-hidden">
 				<label for="borrower-categories" class="tw-sr-only">Lending category to support</label>
-				<kv-select class="tw-w-full" id="borrower-categories"
+				<kv-select
+					class="tw-w-full" id="borrower-categories"
 					:model-value="selectedGroup"
 					@update:modelValue="updateSelected"
 				>
@@ -14,7 +15,8 @@
 			</fieldset>
 			<div class="tw-flex tw-gap-2">
 				<fieldset class="tw-basis-2/6">
-					<label class="tw-sr-only" :class="{ 'tw-text-danger': $v.$invalid }"
+					<label
+						class="tw-sr-only" :class="{ 'tw-text-danger': $v.$invalid }"
 						:for="'amount-' + componentKey"
 					>
 						Amount
@@ -35,7 +37,8 @@
 				</fieldset>
 				<fieldset class="tw-basis-full tw-hidden md:tw-block">
 					<label for="borrower-categories" class="tw-sr-only">Lending category to support</label>
-					<kv-select class="tw-w-full" id="borrower-categories"
+					<kv-select
+						class="tw-w-full" id="borrower-categories"
 						:model-value="selectedGroup"
 						@update:modelValue="updateSelected"
 					>

@@ -12,7 +12,8 @@
 				<h1 class="tw-mb-2">
 					{{ loanChannelName }}
 				</h1>
-				<p v-if="loanChannelDescription"
+				<p
+					v-if="loanChannelDescription"
 					class="page-subhead show-for-large tw-mb-4"
 				>
 					{{ loanChannelDescription }}
@@ -38,7 +39,8 @@
 						</p>
 
 						<div class="tw-hidden lg:tw-block tw-mt-1">
-							<kv-button type="button"
+							<kv-button
+								type="button"
 								@click="addBundleToBasket"
 								v-kv-track-event="['Lending', 'click-loan-bundle-cta',
 									'Lend to all three now - ' + pageTitle]"
@@ -63,7 +65,8 @@
 						/>
 
 						<div class="lg:tw-hidden tw-flex tw-flex-col tw-items-center tw-mt-3">
-							<kv-button type="button"
+							<kv-button
+								type="button"
 								@click="addBundleToBasket"
 								v-kv-track-event="['Lending', 'click-loan-bundle-cta',
 									'Lend to all three now - ' + pageTitle]"

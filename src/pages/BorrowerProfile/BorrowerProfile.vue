@@ -17,7 +17,8 @@
 			</div>
 			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8 tw-pointer-events-none">
 				<sidebar-container class="lg:tw-sticky lg:tw-top-12 lg:tw-mt-10 lg:tw-pb-8">
-					<lend-cta class="tw-pointer-events-auto"
+					<lend-cta
+						class="tw-pointer-events-auto"
 						:loan-id="loanId"
 						:complete-loan="completeLoanExpActive"
 						:require-deposits-matched-loans="requireDepositsMatchedLoans"

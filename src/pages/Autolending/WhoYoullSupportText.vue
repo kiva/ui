@@ -2,19 +2,22 @@
 	<div>
 		You’ll automatically lend to
 		<template v-if="kivaChooses">
-			<button class="tw-text-link tw-font-medium"
+			<button
+				class="tw-text-link tw-font-medium"
 				data-test="autolending-who"
 				@click="$emit('click', $event)"
 			>
 				borrowers
 			</button>,
-			<button class="tw-text-link tw-font-medium"
+			<button
+				class="tw-text-link tw-font-medium"
 				data-test="autolending-who"
 				@click="$emit('click', $event)"
 			>
 				countries
 			</button>, and
-			<button class="tw-text-link tw-font-medium"
+			<button
+				class="tw-text-link tw-font-medium"
 				data-test="autolending-who"
 				@click="$emit('click', $event)"
 			>
@@ -22,24 +25,28 @@
 			</button> based on your lending history.
 		</template>
 		<template v-if="!kivaChooses">
-			<button class="tw-text-link tw-font-medium"
+			<button
+				class="tw-text-link tw-font-medium"
 				data-test="autolending-who"
 				@click="$emit('click', $event)"
 			>
 				{{ borrowersText }}
 			</button>, in
-			<button class="tw-text-link tw-font-medium"
+			<button
+				class="tw-text-link tw-font-medium"
 				data-test="autolending-who"
 				@click="$emit('click', $event)"
 			>
 				{{ countriesText }}
 			</button>,
-			and <button class="tw-text-link tw-font-medium"
+			and <button
+				class="tw-text-link tw-font-medium"
 				data-test="autolending-who"
 				@click="$emit('click', $event)"
 			>
 				{{ sectorText }}
-			</button><span v-if="advancedText"> and <button class="tw-text-link tw-font-medium"
+			</button><span v-if="advancedText"> and <button
+				class="tw-text-link tw-font-medium"
 				data-test="autolending-who"
 				@click="$emit('click', $event)"
 			>{{ advancedText }}</button></span>.

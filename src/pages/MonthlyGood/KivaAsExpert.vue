@@ -1,5 +1,6 @@
 <template>
-	<div class="kiva-as-expert-section-wrapper tw-bg-secondary
+	<div
+		class="kiva-as-expert-section-wrapper tw-bg-secondary
 			tw-py-4 md:tw-py-6 lg:tw-py-8"
 		id="kiva-as-expert"
 	>

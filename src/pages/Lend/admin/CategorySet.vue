@@ -1,16 +1,19 @@
 <template>
-	<draggable v-model="list"
+	<draggable
+		v-model="list"
 		element="ul"
 		class="category-list"
 	>
-		<li class="category-item"
+		<li
+			class="category-item"
 			v-for="(category, index) in list"
 			:key="index"
 		>
 			<kv-icon name="list" class="icon" />
 			<span>{{ index + 1 }}.</span>
 			<select v-model="category.id">
-				<option v-for="option in categoryOptions"
+				<option
+					v-for="option in categoryOptions"
 					:key="option.value"
 					:value="option.value"
 					:disabled="option.value === ''"

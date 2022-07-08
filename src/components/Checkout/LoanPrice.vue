@@ -9,7 +9,8 @@
 				id="loan-price"
 				@update:modelValue="updateLoanReservation()"
 			>
-				<option v-for="priceOption in prices"
+				<option
+					v-for="priceOption in prices"
 					:key="priceOption"
 					:value="priceOption"
 				>

@@ -3,7 +3,8 @@
 		<kv-settings-card class="column large-8" title="Global COVID-19 Response Lending">
 			<template #content>
 				<p>
-					Thank you for supporting those affected by COVID-19. Your deposit of <kv-button class="text-link"
+					Thank you for supporting those affected by COVID-19. Your deposit of <kv-button
+						class="text-link"
 						@click.native.prevent="showLightbox = true;"
 					>
 						{{ totalCombinedDeposit | numeral('$0,0.00') }}
@@ -11,7 +12,8 @@
 					after which you will be unable to cancel.
 				</p>
 				<p>
-					<kv-button class="text-link"
+					<kv-button
+						class="text-link"
 						@click.native.prevent="$emit('cancel-subscription')"
 					>
 						Cancel Contribution
@@ -104,7 +106,8 @@
 									</div>
 								</div>
 								<div class="row column">
-									<ul class="tw-text-center validation-errors"
+									<ul
+										class="tw-text-center validation-errors"
 										v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
 									>
 										<li>

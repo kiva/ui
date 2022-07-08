@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-underscore-dangle, vue/multi-word-component-names */
 import '@babel/polyfill';
 import { getUserLocale } from 'get-user-locale';
 import _dropWhile from 'lodash/dropWhile';

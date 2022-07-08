@@ -1,5 +1,6 @@
 <template>
-	<div class="dropdown-pane"
+	<div
+		class="dropdown-pane"
 		:class="{'is-open': show}"
 		:style="styles"
 		:aria-hidden="show ? 'false' : 'true'"

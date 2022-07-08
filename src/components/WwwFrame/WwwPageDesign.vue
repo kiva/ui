@@ -12,7 +12,8 @@
 			</div>
 		</kv-page-container>
 
-		<div class="
+		<div
+			class="
 					tw-bg-secondary md:tw-bg-primary tw-w-full -tw-mx-2.5 md:tw-mx-0
 					tw-sticky tw-z-sticky tw-top-0"
 		>
@@ -26,7 +27,8 @@
 
 					<!-- nav for mobile and desktop -->
 					<nav id="top-nav" class="tw-flex-1">
-						<ul class="
+						<ul
+							class="
 								tw-flex tw-gap-2 tw-items-center md:tw-justify-end tw-py-2.5
 								tw-bg-secondary md:tw-bg-primary"
 						>
