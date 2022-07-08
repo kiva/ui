@@ -1,10 +1,8 @@
 import Vue from 'vue'
-
 // import plugins
 import kivaPlugins from '@/plugins';
 Vue.use(kivaPlugins)
 
-import StoryRouter from 'storybook-vue-router';
 import BorrowerProfile from '@/pages/BorrowerProfile/BorrowerProfile'
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
@@ -17,7 +15,6 @@ export default {
 	parameters: {
 		layout: 'fullscreen',
 	},
-	decorators: [StoryRouter()],
 };
 
 export const Default = () => ({
