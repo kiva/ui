@@ -5,14 +5,11 @@ import {
 	fifteenYearFooterTheme,
 	blueFooter
 } from '@/util/siteThemes';
-import StoryRouter from 'storybook-vue-router';
-
 import TheFooterCorporate from '@/components/WwwFrame/TheFooterCorporate';
 
 export default {
 	title: 'WwwFrame/TheFooterCorporate',
 	component: TheFooterCorporate,
-	decorators: [StoryRouter()],
 	args: {
 		theme: null,
 		corporateLogoUrl: require('@/assets/images/logos/visa.svg'),
