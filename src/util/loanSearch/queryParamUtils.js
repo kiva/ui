@@ -5,7 +5,7 @@ import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
 /**
  * Map used to convert lend <> FLSS sort option values
  */
- const lendToFlssSort = new Map([
+const lendToFlssSort = new Map([
 	['expiringSoon', 'expiringSoon'],
 	['popularity', 'personalized'],
 	['loanAmountDesc', 'amountHighToLow'],
@@ -20,7 +20,7 @@ import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
  * @param {Array} facets Facets from the APIs
  * @returns {Array} Valid IDs based on the query param
  */
- export function getIdsFromQueryParam(param, names, facets) {
+export function getIdsFromQueryParam(param, names, facets) {
 	if (!param) return;
 
 	// Handles FLSS and legacy query params, such as "1" and "1,2"
@@ -51,7 +51,7 @@ import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
  * @param {Object} allFacets All available facets from the APIs
  * @returns {Array} Valid sector IDs based on the query param
  */
- export function getCountryIsoCodesFromQueryParam(param, allFacets) {
+export function getCountryIsoCodesFromQueryParam(param, allFacets) {
 	if (!param) return;
 
 	const decoded = decodeURI(param).toUpperCase();
@@ -88,7 +88,7 @@ import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
  * @param {number} pageLimit The limit/size of the page
  * @param {Object} previousState The previous search state
  */
- export async function applyQueryParams(apollo, query, allFacets, queryType, pageLimit, previousState = {}) {
+export async function applyQueryParams(apollo, query, allFacets, queryType, pageLimit, previousState = {}) {
 	// Convert query param 1-based page to pager 0-based page and ensure page is an integer
 	const page = isNumber(query.page) && query.page >= 1 ? Math.floor(query.page) - 1 : 0;
 
@@ -113,7 +113,7 @@ import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
  * @param {Object} router The Vue Router object
  * @param {string} queryType The current query type (lend vs FLSS)
  */
- export function updateQueryParams(loanSearchState, router, queryType) {
+export function updateQueryParams(loanSearchState, router, queryType) {
 	const oldParamKeys = Object.keys(router.currentRoute.query);
 
 	// Preserve UTM params
