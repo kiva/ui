@@ -10,7 +10,7 @@ import {
 	FLSS_QUERY_TYPE,
 	STANDARD_QUERY_TYPE,
 } from '@/util/loanSearch/filterUtils';
-import orderBy from 'lodash/orderBy';
+import _orderBy from 'lodash/orderBy';
 import {
 	mockTransformedMiddleEast,
 	mockTransformedChile,
@@ -231,7 +231,7 @@ describe('filterUtils.js', () => {
 
 			const mockFilteredThemes = mockThemes.map((t, i) => ({ key: t.name, value: i }));
 
-			const expected = orderBy(mockThemes.map((t, i) => ({ ...t, numLoansFundraising: i })), 'name');
+			const expected = _orderBy(mockThemes.map((t, i) => ({ ...t, numLoansFundraising: i })), 'name');
 
 			const result = transformThemes(mockFilteredThemes, mockThemes);
 
@@ -243,7 +243,7 @@ describe('filterUtils.js', () => {
 
 			const mockFilteredThemes = mockThemes.map((t, i) => ({ key: t.name.toUpperCase(), value: i }));
 
-			const expected = orderBy(mockThemes.map((t, i) => ({ ...t, numLoansFundraising: i })), 'name');
+			const expected = _orderBy(mockThemes.map((t, i) => ({ ...t, numLoansFundraising: i })), 'name');
 
 			const result = transformThemes(mockFilteredThemes, mockThemes);
 
@@ -255,7 +255,7 @@ describe('filterUtils.js', () => {
 
 			const mockFilteredThemes = mockThemes.slice(0, 2).map((t, i) => ({ key: t.name, value: i }));
 
-			const expected = orderBy([
+			const expected = _orderBy([
 				...mockThemes.slice(0, 2).map((t, i) => ({ ...t, numLoansFundraising: i })),
 				...mockThemes.slice(2).map(t => ({ ...t, numLoansFundraising: 0 }))], 'name');
 
