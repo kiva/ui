@@ -281,9 +281,6 @@ export default {
 				// Utilize the results of the existing query of the loan search state for updating the filters
 				this.loanSearchState = data?.loanSearchState;
 
-				// Update the query string with the latest loan search state
-				updateQueryParams(this.loanSearchState, this.$router, this.queryType);
-
 				const [{ loans, totalCount }] = await Promise.all([
 					// Get filtered loans from FLSS
 					await runLoansQuery(this.apollo, this.loanSearchState),
@@ -294,6 +291,18 @@ export default {
 				// Store loan data in component
 				this.loans = loans;
 				this.totalCount = totalCount;
+
+				// Copy state so that the readonly offset can be updated
+				const state = { ...this.loanSearchState };
+
+				// Change back to last page if offset goes beyond available loans
+				if (this.loans.length === 0 && state.pageOffset > 0) {
+					const lastPage = Math.ceil(this.totalCount / state.pageLimit);
+					state.pageOffset = state.pageLimit * ((lastPage || 1) - 1);
+				}
+
+				// Update the query string with the latest loan search state
+				updateQueryParams(state, this.$router, this.queryType);
 
 				// Toggle loading flags
 				if (!this.initialLoadComplete) {
