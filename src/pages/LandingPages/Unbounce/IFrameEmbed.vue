@@ -1,7 +1,8 @@
 <template>
 	<www-page>
 		<div class="tw-bg-primary">
-			<div v-if="!loadFrame"
+			<div
+				v-if="!loadFrame"
 				class="tw-text-center tw-my-4"
 			>
 				<kv-loading-spinner />

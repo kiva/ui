@@ -1,3 +1,18 @@
+## [2.222.0](https://github.com/kiva/ui/compare/v2.221.4...v2.222.0) (2022-07-11)
+
+
+### Features
+
+* readme for loan search ([03a946b](https://github.com/kiva/ui/commit/03a946bc4d03263275c940b1b5a3f5599f50ac19))
+* refactored loanSearchUtils ([e1289b8](https://github.com/kiva/ui/commit/e1289b867343f7227e50ab2969c3ca42df2cda6b))
+
+
+### Bug Fixes
+
+* minor readme adjustments ([b6c7832](https://github.com/kiva/ui/commit/b6c78324a50f9a88d5a46c31cbd4fd8aa9162272))
+* renamed lodash in tests for consistency ([69b58b1](https://github.com/kiva/ui/commit/69b58b1b4a02069a9488d829cc3dd4e497fb1f8b))
+* whitespace issue ([acb8c11](https://github.com/kiva/ui/commit/acb8c11f848dfb7c41b55b73ec17c5e250868d9d))
+
 ### [2.221.4](https://github.com/kiva/ui/compare/v2.221.3...v2.221.4) (2022-07-08)
 
 

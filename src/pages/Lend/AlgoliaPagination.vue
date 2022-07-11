@@ -23,7 +23,8 @@
 			</a>
 		</li>
 
-		<li v-for="(number, index) in numbers"
+		<li
+			v-for="(number, index) in numbers"
 			:key="number || -index"
 			class="ais-Pagination-item"
 			:class="{ ellipsis: number === 0 }"
@@ -36,7 +37,8 @@
 				{{ number }}
 			</span>
 
-			<a v-else-if="number > 0"
+			<a
+				v-else-if="number > 0"
 				:href="createUrl(number - 1)"
 				@click.prevent="goToPage(number - 1)"
 				class="ais-Pagination-link"

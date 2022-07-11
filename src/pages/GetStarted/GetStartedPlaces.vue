@@ -63,7 +63,8 @@
 								/>
 							</button>
 						</div>
-						<div class="
+						<div
+							class="
 							get-started__list-wrapper
 							after:block after:tw-h-4 after:tw-w-full
 							after:tw-bg-gradient-to-t after:tw-from-primary after:tw-to-transparent

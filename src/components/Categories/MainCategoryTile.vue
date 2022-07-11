@@ -6,7 +6,8 @@
 			v-kv-track-event="['Lending', 'click-Category', categoryName]"
 		>
 			<div class="tw-relative">
-				<kv-responsive-image class="category-image"
+				<kv-responsive-image
+					class="category-image"
 					:images="chooseImage(tileSize)"
 					loading="lazy"
 					:alt="altText"
@@ -35,7 +36,8 @@
 					</p>
 				</div>
 			</div>
-			<h4 v-if="tileSize === 'medium'"
+			<h4
+				v-if="tileSize === 'medium'"
 				class="tw-mt-1 tw-mb-2 tw-hidden md:tw-block"
 			>
 				{{ numberLoans }} loans
@@ -51,7 +53,8 @@
 			<div class="tw-flex">
 				<div class="tw-mr-2 tw-flex-none">
 					<div class="tw-relative">
-						<kv-responsive-image class="category-image category-image__small"
+						<kv-responsive-image
+							class="category-image category-image__small"
 							:images="chooseImage(tileSize)"
 							loading="lazy"
 							:alt="altText"

@@ -114,16 +114,13 @@ import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
 import {
 	FLSS_QUERY_TYPE,
 	formatSortOptions,
-	runFacetsQueries,
 	transformIsoCodes,
 	transformThemes,
-	runLoansQuery,
-	fetchLoanFacets,
-	applyQueryParams,
-	updateQueryParams,
-	updateSearchState,
 	transformSectors,
-} from '@/util/loanSearchUtils';
+} from '@/util/loanSearch/filterUtils';
+import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
+import { applyQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
+import { updateSearchState } from '@/util/loanSearch/searchStateUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import KvPager from '@/components/Kv/KvPager';

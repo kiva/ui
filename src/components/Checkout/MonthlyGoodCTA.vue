@@ -76,7 +76,8 @@
 			</div>
 			<div class="row">
 				<div class="column">
-					<kv-button :to="{
+					<kv-button
+						:to="{
 							path: '/monthlygood/setup',
 							query: {
 								amount: this.mgAmount,

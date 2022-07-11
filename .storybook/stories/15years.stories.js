@@ -1,6 +1,4 @@
 import Vue from 'vue';
-import StoryRouter from 'storybook-vue-router';
-import { withKnobs, text, object } from '@storybook/addon-knobs';
 
 // import plugins
 import kivaPlugins from '@/plugins';
@@ -19,6 +17,7 @@ import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
 import {appealBanner} from '../mock-data/contentful-data-mock';
 import countryFacetsDataMock from '../mock-data/country-facets-data-mock';
+import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 
 // This decorator applies the 15 year styles to the individual components in storybook
 // so they can be viewed in the same way they're applied in the 15Year page.
@@ -79,9 +78,7 @@ export default {
 	args: {
 		appealBannerContent: appealBanner,
 	},
-	argTypes: {},
 	layout: 'fullscreen',
-	decorators: [StoryRouter(), withKnobs],
 };
 
 export const Combined = (args, { argTypes }) => ({
@@ -90,7 +87,7 @@ export const Combined = (args, { argTypes }) => ({
 		FifteenYears,
 	},
 	layout: 'fullscreen',
-	mixins: [apolloStoryMixin({ queryResult: countryFacetsDataMock}), kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin({ queryResult: countryFacetsDataMock}),  cookieStoreStoryMixin(), kvAuth0StoryMixin],
 	template: `
 		<div style="margin: -1rem;"><fifteen-years /></div>
 	`,
@@ -101,72 +98,36 @@ export const AppealBanner = (args, { argTypes }) => ({
 		AppealBanner15,
 	},
 	props: Object.keys(argTypes),
-	mixins: [apolloStoryMixin({ queryResult: recentFundedLoans}), kvAuth0StoryMixin],
+	decorators: [FifteenYearsDecorator],
+	mixins: [apolloStoryMixin({ queryResult: recentFundedLoans}), cookieStoreStoryMixin(), kvAuth0StoryMixin],
 	template: `
 		<appeal-banner-15 :appeal-banner-content="appealBannerContent"  />
 	`,
 });
-AppealBanner.decorators = [FifteenYearsDecorator];
 
 export const Header = (args, { argTypes }) => ({
 	components: {
 		FifteenYearsHeader,
 	},
-	// props: Object.keys(argTypes),
-	props: {
-		mainTextSubtitle: {
-			default: text(
-				'Main Text Subtitle',
-				'Join us in celebrating 15 years of impact by supporting 15,000 people around the world.'
-			),
-		},
-		buttonCTAText: {
-			default: text('Button CTA Text', 'Lend now'),
-		},
-		cardData: {
-			default: object('Card Data', [
-				{
-					title: '15 Years of Impact',
-					subtitle: 'The history of Kiva, year by year',
-					href: '#15-years-of-impact',
-					imgSrc: require('@/assets/images/15-years/stickers/Hearts02.svg'),
-					imgTilt:  5
-				},
-				{
-					title: 'The World of Kiva',
-					subtitle: 'The people who make it happen',
-					href: '#world-of-kiva',
-					imgSrc: require('@/assets/images/15-years/stickers/Handshake.svg'),
-					imgTilt:  10
-				},
-				{
-					title: 'Partners',
-					subtitle: 'Organizations making a difference',
-					href: '#orgs-making-difference',
-					imgSrc: require('@/assets/images/15-years/stickers/PlanetEarth.svg'),
-					imgTilt:  15
-				},
-			]),
-		},
-	},
-	mixins: [apolloStoryMixin({ queryResult: countryFacetsDataMock}), kvAuth0StoryMixin],
+	props: Object.keys(argTypes),
+	decorators: [FifteenYearsDecorator],
+	mixins: [apolloStoryMixin({ queryResult: countryFacetsDataMock}), cookieStoreStoryMixin(), kvAuth0StoryMixin],
 	template: `
-		<fifteen-years-header :mainTextSubtitle="mainTextSubtitle" :buttonCTAText="buttonCTAText" :cardData="cardData"/>
+		<fifteen-years-header />
 	`,
 });
-Header.decorators = [FifteenYearsDecorator];
 
 export const Timeline = (args, { argTypes }) => ({
 	components: {
 		FifteenYearsTimeline,
 	},
 	props: Object.keys(argTypes),
+	decorators: [FifteenYearsDecorator],
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	template: `
 		<fifteen-years-timeline />
 	`,
 });
-Timeline.decorators = [FifteenYearsDecorator];
 
 export const Individuals = (args, { argTypes }) => ({
 	components: {
@@ -179,7 +140,6 @@ export const Individuals = (args, { argTypes }) => ({
 		<fifteen-years-individuals />
 	`,
 });
-Individuals.decorators = [FifteenYearsDecorator];
 
 export const Partners = (args, { argTypes }) => ({
 	components: {
@@ -192,7 +152,6 @@ export const Partners = (args, { argTypes }) => ({
 		<fifteen-years-partners />
 	`,
 });
-Partners.decorators = [FifteenYearsDecorator];
 
 export const HowKivaWorks = (args, { argTypes }) => ({
 	components: {
@@ -205,4 +164,3 @@ export const HowKivaWorks = (args, { argTypes }) => ({
 		<fifteen-years-how-kiva-works />
 	`,
 });
-HowKivaWorks.decorators = [FifteenYearsDecorator];

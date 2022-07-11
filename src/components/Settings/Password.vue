@@ -38,6 +38,7 @@
 </template>
 
 <script>
+/* eslint-disable vue/multi-word-component-names */
 import gql from 'graphql-tag';
 import KvAlert from '@/components/Kv/KvAlert';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';

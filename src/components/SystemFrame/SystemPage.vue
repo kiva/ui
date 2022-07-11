@@ -4,7 +4,8 @@
 			<kiva-logo class="system-page__kiva-logo tw-text-white" />
 		</header>
 		<div class="system-page__content-wrapper tw-bg-secondary">
-			<div class="system-page__content tw-bg-primary tw-border-tertiary tw-border tw-rounded-sm"
+			<div
+				class="system-page__content tw-bg-primary tw-border-tertiary tw-border tw-rounded-sm"
 				:data-year="year"
 			>
 				<slot></slot>

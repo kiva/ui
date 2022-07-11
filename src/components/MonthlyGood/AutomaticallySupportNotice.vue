@@ -1,6 +1,7 @@
 <template>
 	<section class="row tw-flex tw-justify-center">
-		<div class="md:tw-flex-1
+		<div
+			class="md:tw-flex-1
 			tw-order-last md:tw-order-first
 			md:tw-mt-2 lg:tw-mt-10
 			tw-max-w-sm
@@ -12,7 +13,8 @@
 			></h2>
 			<p v-html="valueBody"></p>
 		</div>
-		<div class="md:tw-flex-1 tw-block
+		<div
+			class="md:tw-flex-1 tw-block
 			tw-order-first md:tw-order-last
 			md:tw-px-4
 			tw-mb-2 md:tw-mb-4
