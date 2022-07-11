@@ -212,6 +212,13 @@
 				@credit-removed="handleCreditRemoved"
 				@promo-opt-out-lightbox-closed="handleCancelPromoOptOut"
 			/>
+			<campaign-join-team-form
+				v-if="this.showTeamForm"
+				:campaign-name="campaignPartnerName"
+				:team-id="this.teamId"
+				:promo-id="this.promoFundId"
+				@team-process-complete="handleTeamJoinProcess"
+			/>
 
 			<div v-if="emptyBasket" class="empty-basket tw-relative tw-mx-auto" data-testid="empty-basket">
 				<div class="checkout-header-empty tw-mb-4">
@@ -256,6 +263,7 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
@@ -271,6 +279,7 @@ import setupBasketForUserMutation from '@/graphql/mutation/shopSetupBasketForUse
 import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import OrderTotals from '@/components/Checkout/OrderTotals';
@@ -279,6 +288,7 @@ import BasketVerification from '@/components/Checkout/BasketVerification';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
+import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/RandomLoanSelector';
@@ -293,6 +303,21 @@ import { isLoanFundraising } from '@/util/loanUtils';
 import MatchedLoansLightbox from '@/components/Checkout/MatchedLoansLightbox';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+
+// Query to gather user Teams
+const myTeamsQuery = gql`query myTeamsQuery {
+	my {
+		lender {
+			id
+			teams(limit: 100) {
+				values {
+					id
+					name
+				}
+			}
+		}
+	}
+}`;
 
 export default {
 	name: 'CheckoutPage',
@@ -312,7 +337,8 @@ export default {
 		RandomLoanSelector,
 		VerifyRemovePromoCredit,
 		UpsellModule,
-		MatchedLoansLightbox
+		MatchedLoansLightbox,
+		CampaignJoinTeamForm
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [
@@ -360,6 +386,8 @@ export default {
 			showMatchedLoanKivaCredit: false,
 			matchedText: null,
 			showMatchedLoansLightbox: false,
+			showTeamForm: false,
+			teamJoinStatus: null,
 		};
 	},
 	apollo: {
@@ -511,7 +539,7 @@ export default {
 			return hasCredits && isMatchedLoan;
 		});
 		this.showMatchedLoanKivaCredit = matchedLoansWithCredit.length > 0;
-		this.matchedText = matchedLoansWithCredit[0]?.loan?.matchingText;
+		this.matchedText = matchedLoansWithCredit[0]?.loan?.matchingText ?? '';
 	},
 	mounted() {
 		// update current time every second for reactivity
@@ -616,7 +644,10 @@ export default {
 			return appliedCreditsPromoFunds[0] || null;
 		},
 		campaignPartnerName() {
-			return this.promoData?.promoFund?.displayName;
+			return this.promoData?.promoFund?.displayName ?? null;
+		},
+		teamId() {
+			return this.promoData?.promoGroup?.teamId ?? null;
 		},
 		externalFormId() {
 			return this.promoData?.managedAccount?.formId ?? null;
@@ -913,7 +944,45 @@ export default {
 				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
 				Sentry.captureException(error);
 			});
-		}
+		},
+		handleTeamJoinProcess(payload) {
+			this.teamJoinStatus = payload.join;
+			this.$kvTrackEvent(
+				'ManagedLendingCampaign',
+				'modal-join-team-process',
+				`${this.teamJoinStatus} team`
+			);
+			this.fetchMyTeams();
+		},
+		fetchMyTeams() {
+			this.apollo.query({
+				fetchPolicy: 'network-only',
+				query: myTeamsQuery
+			}).then(({ data }) => {
+				this.myTeams = data.my?.lender?.teams?.values ?? [];
+				if (this.teamJoinStatus !== 'declined') {
+					this.addTeamToLoans();
+				}
+			});
+		},
+		addTeamToLoans() {
+			if (this.basketLoans.length && this.teamId) {
+				const loans = [];
+				// TODO Collect these promises and refresh basket once complete
+				this.basketLoans.forEach((loan, index) => {
+					loans[index] = this.apollo.mutate({
+						mutation: updateLoanReservationTeam,
+						variables: {
+							teamId: this.teamId,
+							loanid: loan.id
+						}
+					});
+				});
+				Promise.all(loans).then(() => {
+					this.updateBasketState();
+				});
+			}
+		},
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
