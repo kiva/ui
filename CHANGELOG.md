@@ -1,3 +1,18 @@
+## [2.223.0](https://github.com/kiva/ui/compare/v2.222.0...v2.223.0) (2022-07-11)
+
+
+### Features
+
+* combine pager components ([6d9bac1](https://github.com/kiva/ui/commit/6d9bac1994e7fda6f0f17e9e6ead029579f7e5c6))
+
+
+### Bug Fixes
+
+* added missing semicolon ([ea02c24](https://github.com/kiva/ui/commit/ea02c24b6dc851fc3c6227e7c78f82a2eb0385a3))
+* load first page if offset too large for lend API and watch browser page query change ([38b81d0](https://github.com/kiva/ui/commit/38b81d08059776b8e684b705afe29576e0cd0878))
+* remove unneed template string ([4c8c370](https://github.com/kiva/ui/commit/4c8c37097fb8cf0d3b8778f55a3bbf605774b469))
+* removed JIT tailwind classes and change for new eslint rule ([0323e2e](https://github.com/kiva/ui/commit/0323e2e189b0ed92584b2040b3aacf8606f9f087))
+
 ## [2.222.0](https://github.com/kiva/ui/compare/v2.221.4...v2.222.0) (2022-07-11)
 
 
