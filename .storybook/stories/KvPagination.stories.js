@@ -1,15 +1,15 @@
-import KvPager from '@/components/Kv/KvPager';
+import KvPagination from '@/components/Kv/KvPagination';
 
 export default {
-	title: 'Kv/KvPager',
-	component: KvPager,
+	title: 'Kv/KvPagination',
+	component: KvPagination,
 };
 
 const story = (args) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
-		components: { KvPager },
-		template: `<kv-pager
+		components: { KvPagination },
+		template: `<kv-pagination
 			:limit="limit"
 			:total="total"
 			:offset="offset"

@@ -90,7 +90,7 @@
 				/>
 			</kv-grid>
 			<template v-if="initialLoadComplete && totalCount > 0">
-				<kv-pager
+				<kv-pagination
 					:limit="loanSearchState.pageLimit"
 					:total="totalCount"
 					:offset="loanSearchState.pageOffset"
@@ -123,7 +123,7 @@ import { applyQueryParams, updateQueryParams } from '@/util/loanSearch/queryPara
 import { updateSearchState } from '@/util/loanSearch/searchStateUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
-import KvPager from '@/components/Kv/KvPager';
+import KvPagination from '@/components/Kv/KvPagination';
 import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util//numberUtils';
@@ -145,7 +145,7 @@ export default {
 		LoanSearchFilter,
 		KvLightbox,
 		KvSectionModalLoader,
-		KvPager,
+		KvPagination,
 		KvResultsPerPage,
 	},
 	data() {
