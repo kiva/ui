@@ -1,13 +1,8 @@
 <template>
 	<nav aria-label="Pagination">
-		<ul :class="`
-			tw-text-center
-			tw-mx-auto
-			tw-my-[.75rem]
-			tw-flex
-			tw-justify-between
-			tw-items-center
-			tw-max-w-[17rem]`"
+		<ul
+			:class="`tw-text-center tw-mx-auto tw-my-1.5 tw-flex tw-justify-between tw-items-center`"
+			style="max-width: 17rem"
 		>
 			<li class="pagination-previous">
 				<a
@@ -24,7 +19,8 @@
 					<span class="tw-sr-only">Previous page</span>
 				</a>
 			</li>
-			<li v-for="(n, i) in numbers"
+			<li
+				v-for="(n, i) in numbers"
 				:key="i"
 				:aria-hidden="isEllipsis(n)"
 			>
