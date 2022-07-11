@@ -11,11 +11,7 @@
 					aria-label="Previous page"
 					@click="!isCurrent(0) && clickPrevious()"
 				>
-					<kv-icon
-						name="fat-chevron"
-						:from-sprite="true"
-						class="tw-h-2 tw-w-2 tw-fill-current tw-rotate-90"
-					/>
+					<kv-material-icon :icon="mdiChevronLeft" class="tw-h-4 tw-w-4" />
 					<span class="tw-sr-only">Previous page</span>
 				</a>
 			</li>
@@ -45,11 +41,7 @@
 					aria-label="Next page"
 					@click="totalPages && !isCurrent(totalPages - 1) && clickNext()"
 				>
-					<kv-icon
-						name="fat-chevron"
-						:from-sprite="true"
-						class="tw-h-2 tw-w-2 tw-fill-current tw--rotate-90"
-					/>
+					<kv-material-icon :icon="mdiChevronRight" class="tw-h-4 tw-w-4" />
 					<span class="tw-sr-only">Next page</span>
 				</a>
 			</li>
@@ -58,12 +50,13 @@
 </template>
 
 <script>
-import KvIcon from './KvIcon';
+import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'KvPagination',
 	components: {
-		KvIcon,
+		KvMaterialIcon,
 	},
 	props: {
 		limit: {
@@ -90,6 +83,12 @@ export default {
 			type: Boolean,
 			default: true,
 		},
+	},
+	data() {
+		return {
+			mdiChevronLeft,
+			mdiChevronRight,
+		};
 	},
 	computed: {
 		current() {
