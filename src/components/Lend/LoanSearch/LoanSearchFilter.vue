@@ -80,7 +80,7 @@ import LoanSearchGenderFilter from '@/components/Lend/LoanSearch/LoanSearchGende
 import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
 import LoanSearchCheckboxListFilter from '@/components/Lend/LoanSearch/LoanSearchCheckboxListFilter';
 import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
-import { FLSS_QUERY_TYPE } from '@/util/loanSearchUtils';
+import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
