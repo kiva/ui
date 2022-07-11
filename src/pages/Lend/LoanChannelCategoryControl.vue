@@ -176,7 +176,7 @@ import {
 } from '@/util/loanChannelUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
-const loansPerPage = 12;
+let loansPerPage = 11;
 
 // A map of functions to transform url query parameters to/from graphql variables.
 // Each key in urlParamTransform is a url query parameter (e.g. the 'page' in ?page=2).
@@ -411,15 +411,15 @@ export default {
 		 * Experiment Initializations
 		*/
 
-		// Monthly Good Category Promo
-		this.initializeMonthlyGoodPromo();
-
 		// Lend Filter Redirects
 		this.initializeLendFilterRedirects();
 	},
-	mounted() {
+	async mounted() {
 		// Setup Reactivity for Loan Data + Basket Status
 		this.activateLoanChannelWatchQuery();
+
+		// Monthly Good Category Promo
+		await this.initializeMonthlyGoodPromo();
 
 		this.updateLendFilterExp();
 		// check for newly assigned bounceback
@@ -559,7 +559,7 @@ export default {
 			// Update Lend Filter Exp CASH-545
 			this.getLendFilterExpVersion();
 		},
-		initializeMonthlyGoodPromo() {
+		async initializeMonthlyGoodPromo() {
 			const currentRoute = this.$route.path.replace('/lend-by-category/', '');
 			const targetRoutes = [
 				{ route: 'women', url: '/monthlygood?category=women', label: 'women' },
@@ -577,10 +577,12 @@ export default {
 				{ route: 'united-states-loans', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' },
 			];
 			const matchedRoutes = _filter(targetRoutes, route => route.route === currentRoute);
-
 			if (matchedRoutes.length) {
 				this.displayLoanPromoCard = true;
 				[this.mgTargetCategory] = matchedRoutes;
+			} else {
+				loansPerPage = 12;
+				this.limit = loansPerPage;
 			}
 		},
 		async getRelatedLoansExp() {
@@ -589,7 +591,7 @@ export default {
 				const baseData = await this.apollo.query({
 					query: getRelatedLoans,
 					variables: {
-						limit: 12,
+						limit: loansPerPage,
 						loanId: loan.id,
 						offset: 0,
 						topics: ['story']
