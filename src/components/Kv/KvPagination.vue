@@ -1,7 +1,7 @@
 <template>
 	<nav aria-label="Pagination">
 		<ul
-			:class="`tw-text-center tw-mx-auto tw-my-1.5 tw-flex tw-justify-between tw-items-center`"
+			class="tw-text-center tw-mx-auto tw-my-1.5 tw-flex tw-justify-between tw-items-center"
 			style="max-width: 17rem;"
 		>
 			<li class="pagination-previous">
