@@ -359,8 +359,10 @@ export default {
 			// if it is, changes page to the last page and displays a tip message
 			const loansOutOfRange = loansArrayLength === 0 && pageQueryParam;
 			if (loansOutOfRange) {
-				this.$showTipMsg(`There are currently ${this.lastLoanPage} pages of results. We’ve loaded the last page for you.`); // eslint-disable-line max-len
-				this.pageChange({ pageOffset: loansPerPage * (this.lastLoanPage - 1) });
+				const message = `There are currently ${this.lastLoanPage} pages of results.
+					We’ve loaded the ${this.lastLoanPage === 0 ? 'first' : 'last'} page for you.`;
+				this.$showTipMsg(message);
+				this.pageChange({ pageOffset: loansPerPage * (this.lastLoanPage > 0 ? this.lastLoanPage - 1 : 0) });
 			}
 		},
 		updateLoanReservation(id) {
@@ -456,7 +458,10 @@ export default {
 					);
 				}
 			}
-		}
+		},
+		$route(to) {
+			this.updateFromParams(to.query);
+		},
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
