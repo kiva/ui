@@ -1,5 +1,6 @@
 <template>
-	<div class="tw-max-w-5xl tw-mx-auto
+	<div
+		class="tw-max-w-5xl tw-mx-auto
 			tw-py-3 md:tw-py-6 lg:tw-py-8 tw-px-4 lg:tw-px-2"
 		id="more-about-kiva"
 	>

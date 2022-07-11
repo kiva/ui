@@ -14,7 +14,8 @@
 				v-if="isLoading"
 			/>
 			<div class="rec-loan-card__image-wrapper" v-show="!isLoading">
-				<img class="rec-loan-card__image"
+				<img
+					class="rec-loan-card__image"
 					v-if="imageUrl"
 					:srcset="imageRetinaUrl + ' 2x'"
 					:src="imageUrl"
@@ -22,7 +23,8 @@
 					loading="lazy"
 				>
 				<div class="rec-loan-card__image-overlay">
-					<kv-flag class="rec-loan-card__country-flag"
+					<kv-flag
+						class="rec-loan-card__country-flag"
 						v-if="countryISO"
 						:country="countryISO"
 						aspect-ratio="1x1"
@@ -54,7 +56,8 @@
 				/>
 				<p class="rec-loan-card__loan-use tw-mb-1.5" v-show="!isLoading">
 					{{ loanUse }}
-					<router-link class="rec-loan-card__learn-more"
+					<router-link
+						class="rec-loan-card__learn-more"
 						:to="`/lend/${loanId}`"
 						v-kv-track-event="['Lending', 'click-Read more', 'loan-use-learn-more', loanId, loanId]"
 					>
@@ -70,7 +73,8 @@
 					class="rec-loan-card__button rec-loan-card__button--loading"
 					v-if="isLoading"
 				/>
-				<lend-button class="rec-loan-card__button rounded"
+				<lend-button
+					class="rec-loan-card__button rounded"
 					v-show="!isLoading"
 					:loan-id="loanId"
 					:is-in-basket="isInBasket"

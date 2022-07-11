@@ -28,6 +28,7 @@
 </template>
 
 <script>
+/* eslint-disable vue/multi-word-component-names */
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import logFormatter from '@/util/logFormatter';
 import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';

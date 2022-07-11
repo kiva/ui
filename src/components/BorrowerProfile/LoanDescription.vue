@@ -42,21 +42,24 @@
 							by
 							<span v-if="!showReviewersName">a</span>
 							<!-- eslint-disable max-len -->
-							<a data-testid="bp-story-translate-volunteer-link"
+							<a
+								data-testid="bp-story-translate-volunteer-link"
 								href="/work-with-us/reviewers"
 								title="Learn more about volunteering at Kiva"
 								v-kv-track-event="['Borrower profile', 'click-Kiva review volunteer', 'Kiva volunteer', this.loanId]"
 							>
 								Kiva volunteer<span v-if="!showReviewersName">.</span>
 							</a>
-							<span data-testid="bp-story-translate-reviewer"
+							<span
+								data-testid="bp-story-translate-reviewer"
 								v-if="showReviewersName"
 							>
 								{{ reviewerName }}.
 							</span>
 						</span>
 
-						<a data-testid="bp-story-translate-view-original-language-link"
+						<a
+							data-testid="bp-story-translate-view-original-language-link"
 							@click="openLightbox"
 							v-if="descriptionInOriginalLanguage !== '' "
 							v-kv-track-event="['Borrower profile', 'click-Original language lightbox', 'View original language description', this.loanId]"

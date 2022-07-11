@@ -1,4 +1,5 @@
 /* global UI_TAG */
+/* eslint-disable vue/multi-word-component-names */
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import * as Sentry from '@sentry/vue';
