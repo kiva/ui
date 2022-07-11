@@ -1,3 +1,72 @@
+## [2.222.0](https://github.com/kiva/ui/compare/v2.221.4...v2.222.0) (2022-07-11)
+
+
+### Features
+
+* readme for loan search ([03a946b](https://github.com/kiva/ui/commit/03a946bc4d03263275c940b1b5a3f5599f50ac19))
+* refactored loanSearchUtils ([e1289b8](https://github.com/kiva/ui/commit/e1289b867343f7227e50ab2969c3ca42df2cda6b))
+
+
+### Bug Fixes
+
+* minor readme adjustments ([b6c7832](https://github.com/kiva/ui/commit/b6c78324a50f9a88d5a46c31cbd4fd8aa9162272))
+* renamed lodash in tests for consistency ([69b58b1](https://github.com/kiva/ui/commit/69b58b1b4a02069a9488d829cc3dd4e497fb1f8b))
+* whitespace issue ([acb8c11](https://github.com/kiva/ui/commit/acb8c11f848dfb7c41b55b73ec17c5e250868d9d))
+
+### [2.221.4](https://github.com/kiva/ui/compare/v2.221.3...v2.221.4) (2022-07-08)
+
+
+### Bug Fixes
+
+* added missing loan card padding ([18c26e6](https://github.com/kiva/ui/commit/18c26e6fc9143bb0df30eae5e610a7ac5683bc78))
+
+### [2.221.3](https://github.com/kiva/ui/compare/v2.221.2...v2.221.3) (2022-07-08)
+
+
+### Bug Fixes
+
+* change back to last page if offset too large for result set ([3850dfb](https://github.com/kiva/ui/commit/3850dfbe76c8988b3c9177c5c992c41e0cde9d79))
+
+### [2.221.2](https://github.com/kiva/ui/compare/v2.221.1...v2.221.2) (2022-07-07)
+
+
+### Bug Fixes
+
+* initial load has all facets regardless of query params ([cf5be4e](https://github.com/kiva/ui/commit/cf5be4e35a7065de602188695205be1df2732d72))
+
+### [2.221.1](https://github.com/kiva/ui/compare/v2.221.0...v2.221.1) (2022-07-07)
+
+
+### Bug Fixes
+
+* use optimized default make-fetch-happen agent instead of custom agent ([a44d1ab](https://github.com/kiva/ui/commit/a44d1ab66be8e8663d5e653a8d19163b87fbd2f8))
+
+## [2.221.0](https://github.com/kiva/ui/compare/v2.220.4...v2.221.0) (2022-07-07)
+
+
+### Features
+
+* loan filter chips show/hide toggle ([29a6c71](https://github.com/kiva/ui/commit/29a6c715e93ddf4c3f1de06158648b3997a29812))
+
+
+### Bug Fixes
+
+* more specific container class ([1edd119](https://github.com/kiva/ui/commit/1edd119282a3822bc8eb11b3d3f4a189cde0e356))
+
+### [2.220.4](https://github.com/kiva/ui/compare/v2.220.3...v2.220.4) (2022-07-07)
+
+
+### Bug Fixes
+
+* add snowplow events around employee verification and team join processes ([4269548](https://github.com/kiva/ui/commit/4269548828b61408c355471348686f9134d66c20))
+
+### [2.220.3](https://github.com/kiva/ui/compare/v2.220.2...v2.220.3) (2022-07-06)
+
+
+### Bug Fixes
+
+* allow utm query params through into experiment ([f3996c0](https://github.com/kiva/ui/commit/f3996c0d5efdea715d22670770dfd7cdb2072095))
+
 ### [2.220.2](https://github.com/kiva/ui/compare/v2.220.1...v2.220.2) (2022-07-06)
 
 

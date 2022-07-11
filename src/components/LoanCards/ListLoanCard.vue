@@ -66,7 +66,7 @@
 						@track-loan-card-interaction="trackInteraction"
 					/>
 				</div>
-				<div class="large-7 columns show-for-large">
+				<div class="large-7 columns show-for-large tw-py-1">
 					<action-button
 						:loan-id="loan.id"
 						:loan="loan"

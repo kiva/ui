@@ -12,7 +12,8 @@
 			class="borrower-image-link"
 			:target="linkTarget"
 		>
-			<img class="borrower-image"
+			<img
+				class="borrower-image"
 				:srcset="retinaImageUrl + ' 2x'"
 				:src="standardImageUrl"
 				:alt="'photo of ' + name"
@@ -21,7 +22,8 @@
 				loading="lazy"
 			>
 
-			<favorite-star class="tw-absolute tw-bottom-0 tw-right-0"
+			<favorite-star
+				class="tw-absolute tw-bottom-0 tw-right-0"
 				v-if="!isVisitor"
 				:is-favorite="isFavorite"
 				:loan-id="loanId"

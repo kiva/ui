@@ -7,7 +7,8 @@
 			{{ borrowerUpdateText }}
 		</p>
 		<form id="guestUpsellForm" action="." @submit.prevent.stop="submit">
-			<kv-base-input name="firstName"
+			<kv-base-input
+				name="firstName"
 				class="fs-exclude"
 				type="text"
 				v-model.trim="firstName"
@@ -18,7 +19,8 @@
 					Enter first name.
 				</template>
 			</kv-base-input>
-			<kv-base-input name="lastName"
+			<kv-base-input
+				name="lastName"
 				class="fs-exclude"
 				type="text"
 				v-model.trim="lastName"

@@ -4,14 +4,17 @@
 			<p>
 				Your balance will be automatically lent
 				<span v-if="lendAfterDaysIdle === 0">
-					<button class="tw-text-link tw-font-medium"
+					<button
+						class="tw-text-link tw-font-medium"
 						@click="showLightbox = true;"
 					>as soon as possible</button>
 				</span><span v-if="lendAfterDaysIdle !== 0">
-					if you haven’t made a loan <button class="tw-text-link tw-font-medium"
+					if you haven’t made a loan <button
+						class="tw-text-link tw-font-medium"
 						@click="showLightbox = true;"
 					>after {{ lendAfterDaysIdle }} days</button>
-				</span><span>, and will include a <button class="tw-text-link tw-font-medium"
+				</span><span>, and will include a <button
+					class="tw-text-link tw-font-medium"
 					@click="showLightbox = true;"
 				>{{ donation }}% donation</button> to Kiva.</span>
 			</p>

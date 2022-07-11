@@ -124,7 +124,6 @@ function filterChannelsForRoute(routePath, loanChannels) {
 }
 
 function getTargetedChannel(targetedRoutePath, fallbackRoutePath, allChannels) {
-	// const loanChannels = allChannels.lend?.loanChannels?.values;
 	const targetedLoanChannel = filterChannelsForRoute(targetedRoutePath, allChannels);
 	const fallbackLoanChannel = filterChannelsForRoute(fallbackRoutePath, allChannels);
 
@@ -152,11 +151,11 @@ function filterByAnonymizationLevel(spotlightData) {
 export default {
 	name: 'LoanSpotlight',
 	props: {
-		routeName: {
+		categorySlug: {
 			type: String,
 			default: ''
 		},
-		fallbackRouteName: {
+		fallbackCategorySlug: {
 			type: String,
 			default: ''
 		}
@@ -217,7 +216,8 @@ export default {
 		},
 	},
 	created() {
-		this.targetedLoanChannelID = getTargetedChannel(this.routeName, this.fallbackRouteName, this.allChannelsData);
+		// eslint-disable-next-line max-len
+		this.targetedLoanChannelID = getTargetedChannel(this.categorySlug, this.fallbackCategorySlug, this.allChannelsData);
 
 		this.apollo.query({
 			query: spotlightLoanQuery,

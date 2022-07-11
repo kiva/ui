@@ -3,11 +3,12 @@
 		<div class="title tw-text-secondary tw-whitespace-nowrap tw-mr-2">
 			Loans per page
 		</div>
-		<ais-hits-per-page :items="[
-			{ label: '15', value: 15, default: true },
-			{ label: '25', value: 25 },
-			{ label: '50', value: 50 },
-		]"
+		<ais-hits-per-page
+			:items="[
+				{ label: '15', value: 15, default: true },
+				{ label: '25', value: 25 },
+				{ label: '50', value: 50 },
+			]"
 		/>
 	</div>
 </template>

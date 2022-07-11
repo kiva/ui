@@ -1,5 +1,6 @@
 <template>
-	<div ref="wrapper"
+	<div
+		ref="wrapper"
 		:class="['lg:tw-mb-1.5', { 'md:tw-px-4': isSticky }]"
 		:style="wrapperStyle"
 	>
@@ -48,7 +49,8 @@
 					<span class="tw-flex tw-pb-1 lg:tw-pb-3">
 						<!-- eslint-disable-next-line max-len -->
 						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
-							<fieldset class="tw-w-full tw-flex" :disabled="isAdding"
+							<fieldset
+								class="tw-w-full tw-flex" :disabled="isAdding"
 								data-testid="bp-lend-cta-select-and-button"
 							>
 								<label

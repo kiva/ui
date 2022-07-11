@@ -1,5 +1,6 @@
 <template>
-	<section class="tw-rounded tw-border-tertiary tw-bg-primary tw-p-2.5 md:tw-p-3.5 lg:tw-p-4"
+	<section
+		class="tw-rounded tw-border-tertiary tw-bg-primary tw-p-2.5 md:tw-p-3.5 lg:tw-p-4"
 		data-test-id="bp-direct-business-info"
 	>
 		<h2 class="tw-mt-0 tw-mb-1" data-testid="bp-direct-business-name">

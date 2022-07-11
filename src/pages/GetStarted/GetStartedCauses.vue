@@ -1,7 +1,8 @@
 <template>
 	<div class="causes">
 		<kv-progress-bar class="progress-bar" value="33" max="100" />
-		<form class="get-started__form tw-bg-primary tw-rounded"
+		<form
+			class="get-started__form tw-bg-primary tw-rounded"
 			@submit.prevent="onSubmitForm"
 			:disabled="selectedCauses.length === 0"
 		>

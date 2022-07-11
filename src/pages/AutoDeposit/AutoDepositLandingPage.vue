@@ -71,7 +71,8 @@
 						class="tw-w-9 tw-h-9 tw-mb-2 tw-block tw-mx-auto tw-text-brand"
 						style="fill: #fff;"
 					/>
-					<icon-lend v-if="index == 1"
+					<icon-lend
+						v-if="index == 1"
 						class="tw-w-9 tw-h-9 tw-mb-2 tw-block tw-mx-auto tw-text-brand"
 						style="fill: #fff;"
 					/>

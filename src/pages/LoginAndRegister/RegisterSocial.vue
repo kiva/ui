@@ -63,7 +63,8 @@
 				</kv-button>
 			</form>
 			<div class="small-12">
-				<a :href="`https://${$appConfig.auth0.domain}/v2/logout`"
+				<a
+					:href="`https://${$appConfig.auth0.domain}/v2/logout`"
 					v-kv-track-event="['Register', 'click-register-social-cancel-cta', 'Cancel registration']"
 				>
 					Cancel registration

@@ -1,6 +1,7 @@
 <template>
 	<div class="donation-nudge-boxes-container">
-		<div class="md:visible tw-text-left tw-mt-4 md:tw-mt-6
+		<div
+			class="md:visible tw-text-left tw-mt-4 md:tw-mt-6
 			md:tw-flex md:tw-flex-1 md:tw-flex-space-3 md:tw-gap-3"
 		>
 			<div
@@ -13,7 +14,8 @@
 				}"
 				@click="setDonationAndClose(getDonationByPercent(percentage))"
 			>
-				<div class="tw-flex tw-flex-row tw-align-center tw-items-stretch
+				<div
+					class="tw-flex tw-flex-row tw-align-center tw-items-stretch
 					md:tw-flex-col md:tw-justify-between tw-h-full"
 				>
 					<div class="tw-self-center tw-flex-grow tw-mr-1 md:tw-mr-0 tw-text-left md:tw-text-center">
@@ -47,13 +49,15 @@
 					tw-border tw-border-tertiary tw-rounded-b
 					tw-border-t-0 md:tw-border-t md:tw-rounded"
 			>
-				<div class="tw-items-center
+				<div
+					class="tw-items-center
 					md:tw-flex md:tw-flex-col md:tw-justify-between tw-h-full"
 				>
 					<div class="tw-align-center md:tw-text-center">
 						You decide — enter custom amount
 					</div>
-					<div class="tw-flex tw-align-center tw-items-center tw-mt-1 md:tw-mt-0
+					<div
+						class="tw-flex tw-align-center tw-items-center tw-mt-1 md:tw-mt-0
 						md:tw-flex-col md:tw-justify-between md:tw-h-full"
 					>
 						<div class="tw-self-center tw-flex-grow tw-mr-2 md:tw-mr-0 md:tw-my-2">

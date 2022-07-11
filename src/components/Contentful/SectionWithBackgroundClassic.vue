@@ -12,14 +12,16 @@
 				class="tw-w-full tw-h-full tw-absolute tw-top-0 tw-z--1"
 				:style="backgroundStyle"
 			>
-				<video class="tw-w-full tw-h-full tw-object-cover" v-if="isBackgroundVideo"
+				<video
+					class="tw-w-full tw-h-full tw-object-cover" v-if="isBackgroundVideo"
 					:src="backgroundMedia.url"
 					autoplay
 					loop
 					muted
 					playsinline
 				></video>
-				<kv-contentful-img class="tw-w-full tw-h-full tw-object-cover"
+				<kv-contentful-img
+					class="tw-w-full tw-h-full tw-object-cover"
 					v-if="isBackgroundImage"
 					:width="1440"
 					:contentful-src="backgroundMedia.url"

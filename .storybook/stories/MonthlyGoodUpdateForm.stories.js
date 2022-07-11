@@ -1,11 +1,8 @@
-import StoryRouter from 'storybook-vue-router';
-
 import MonthlyGoodUpdateForm from '@/components/Forms/MonthlyGoodUpdateForm';
 
 export default {
 	title: 'Forms/MonthlyGoodUpdateForm',
 	component: MonthlyGoodUpdateForm,
-	decorators: [StoryRouter()],
 	args: {
 		donation: 3.75,
 		dayOfMonth: 20,

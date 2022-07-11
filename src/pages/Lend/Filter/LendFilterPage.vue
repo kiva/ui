@@ -141,7 +141,15 @@ const lendFilterRedirectEXP = 'lend_filter_flss_v1';
 
 function isFLSSEligible(route = {}) {
 	// check route for eligibility
-	const eligibleQueryParams = ['page', 'sortBy', 'gender', 'registration'];
+	const eligibleQueryParams = [
+		'page',
+		'sortBy',
+		'gender',
+		'registration',
+		'utm_source',
+		'utm_medium',
+		'utm_campaign'
+	];
 	const queryParamKeys = Object.keys(route?.query);
 	const allowedSorts = ['expiringSoon', 'loanAmountDesc', 'loanAmount']; // 'popularity'
 	// eligible by default, no params is also eligible

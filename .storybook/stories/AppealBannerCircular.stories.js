@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import StoryRouter from 'storybook-vue-router';
 import AppealBannerCircular from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircular.vue';
 
 // import plugins
@@ -9,7 +8,6 @@ Vue.use(kivaPlugins)
 export default {
 	title: 'WwwFrame/Banners/AppealBannerCircular',
 	component: AppealBannerCircular,
-	decorators: [StoryRouter()],
 	args: {
 		targetAmount: 450000,
 		amountRaised: 300000,
@@ -50,5 +48,5 @@ export const Default = (args, { argTypes }) => ({
 			console.log(bannerState);
 			// set cookies here and isOpen state here
 		}
-	}
+	},
 });

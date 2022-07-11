@@ -2,7 +2,8 @@
 	<nav aria-label="Pagination">
 		<ul class="pagination">
 			<li v-if="current !== 1" class="pagination-previous">
-				<router-link :to="routeForPage(current - 1)"
+				<router-link
+					:to="routeForPage(current - 1)"
 					:event="linkEventName"
 					@click.native="pageChange(current - 1, $event)"
 					aria-label="Previous page"
@@ -15,7 +16,8 @@
 				<kv-icon class="icon tw-fill-current tw-text-tertiary" name="triangle" :from-sprite="true" />
 				<span class="tw-sr-only">Previous page</span>
 			</li>
-			<li v-for="(number, index) in numbers"
+			<li
+				v-for="(number, index) in numbers"
 				:key="number || -index"
 				:class="{
 					ellipsis: number === 0,
@@ -23,7 +25,8 @@
 				}"
 				:aria-hidden="number === 0"
 			>
-				<router-link v-if="number > 0 && number !== current"
+				<router-link
+					v-if="number > 0 && number !== current"
 					:to="routeForPage(number)"
 					:event="linkEventName"
 					@click.native="pageChange(number, $event)"
@@ -37,7 +40,8 @@
 				</span>
 			</li>
 			<li v-if="current !== totalPages" class="pagination-next">
-				<router-link :to="routeForPage(current + 1)"
+				<router-link
+					:to="routeForPage(current + 1)"
 					:event="linkEventName"
 					@click.native="pageChange(current + 1, $event)"
 					aria-label="Next page"

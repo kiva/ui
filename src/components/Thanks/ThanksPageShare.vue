@@ -50,13 +50,15 @@
 								<figcaption class="tw-flex progress">
 									<template>
 										<div class="tw-flex-auto tw-text-left">
-											<p class="tw-text-h3 tw-m-0 progress__to-go"
+											<p
+												class="tw-text-h3 tw-m-0 progress__to-go"
 												data-testid="bp-summary-amount-to-go"
 											>
 												{{ loan.unreservedAmount | numeral('$0,0[.]00') }} TO GO
 											</p>
 										</div>
-										<p class="tw-flex-auto tw-text-right progress__days-remaining"
+										<p
+											class="tw-flex-auto tw-text-right progress__days-remaining"
 											data-testid="bp-summary-timeleft"
 										>
 											<span lass="tw-text-h3 tw-block tw-m-0">

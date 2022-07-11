@@ -15,8 +15,8 @@
 			<kv-page-container>
 				<kv-grid>
 					<loan-spotlight
-						route-name="recommended-by-lenders"
-						fallback-route-name="women"
+						category-slug="recommended-by-lenders"
+						fallback-category-slug="women"
 					/>
 				</kv-grid>
 			</kv-page-container>
@@ -28,7 +28,8 @@
 				</h2>
 			</kv-grid>
 			<kv-grid v-if="categories.length > 0" class="tw-grid-cols-12 tw-pt-3 md:tw-pt-4 lg:tw-pt-6">
-				<div v-for="category in categories.slice(0, 4)" :key="category.id"
+				<div
+					v-for="category in categories.slice(0, 4)" :key="category.id"
 					class="tw-col-span-12 md:tw-col-span-6"
 				>
 					<main-category-tile
@@ -43,7 +44,8 @@
 				</div>
 			</kv-grid>
 			<kv-grid v-if="categories.length > 0" class="tw-grid-cols-12">
-				<div v-for="category in categories.slice(4, 7)" :key="category.id"
+				<div
+					v-for="category in categories.slice(4, 7)" :key="category.id"
 					class="tw-col-span-12 md:tw-col-span-4"
 				>
 					<main-category-tile
@@ -70,7 +72,8 @@
 				</div>
 			</kv-grid>
 			<kv-grid v-if="categories.length > 0" class="tw-grid-cols-12">
-				<div v-for="category in categories.slice(7, 13)" :key="category.id"
+				<div
+					v-for="category in categories.slice(7, 13)" :key="category.id"
 					class="tw-col-span-12 md:tw-col-span-6"
 				>
 					<main-category-tile

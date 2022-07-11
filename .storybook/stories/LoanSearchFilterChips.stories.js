@@ -52,7 +52,7 @@ const story = (args = {}) => {
 	const template = (_, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { LoanSearchFilterChips },
-		template: '<loan-search-filter-chips :loan-search-state="loanSearchState" :all-facets="allFacets" />',
+		template: '<div style="width: 400px"><loan-search-filter-chips :loan-search-state="loanSearchState" :all-facets="allFacets" /></div>',
 	})
 	template.args = args;
 	return template;

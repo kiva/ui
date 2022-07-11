@@ -1,6 +1,7 @@
 <template>
 	<nav aria-label="Pagination">
-		<ul :class="`
+		<ul
+			:class="`
 			tw-text-center
 			tw-mx-auto
 			tw-my-[.75rem]
@@ -24,7 +25,8 @@
 					<span class="tw-sr-only">Previous page</span>
 				</a>
 			</li>
-			<li v-for="(n, i) in numbers"
+			<li
+				v-for="(n, i) in numbers"
 				:key="i"
 				:aria-hidden="isEllipsis(n)"
 			>

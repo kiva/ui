@@ -12,7 +12,8 @@
 				<h1 class="tw-mb-2">
 					{{ loanChannelName }}
 				</h1>
-				<p v-if="loanChannelDescription"
+				<p
+					v-if="loanChannelDescription"
 					class="page-subhead show-for-large tw-mb-4"
 				>
 					{{ loanChannelDescription }}
