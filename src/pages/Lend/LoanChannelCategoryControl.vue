@@ -269,7 +269,7 @@ export default {
 	data() {
 		return {
 			offset: 0,
-			limit: 0,
+			limit: loansPerPage,
 			filters: { },
 			targetedLoanChannelURL: null,
 			targetedLoanChannelID: null,
@@ -363,17 +363,18 @@ export default {
 			return client.query({
 				query: loanChannelPageQuery
 			}).then(({ data }) => {
+				const { route } = args
+				const { query, params, path } = route;
+
 				// Filter routes on route.param.category to get current path
-				const targetedLoanChannelURL = _get(args, 'route.params.category');
+				const targetedLoanChannelURL = params.category;
 
 				// Isolate targeted loan channel id
 				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, data);
 
-				// Extract query
-				const pageQuery = _get(args, 'route.query');
+				const currentRoute = path.replace('/lend-by-category/', '');
 
-				const currentRoute = _get(args, 'route.path').replace('/lend-by-category/', '');
-				const matchedRoutes = _filter(targetRoutes, route => route.route === currentRoute);
+				const matchedRoutes = targetRoutes.filter(r => r.route === currentRoute);
 
 				loansPerPage = matchedRoutes.length > 0 ? loansPerPage - 1 : loansPerPage;
 
@@ -383,7 +384,7 @@ export default {
 					loanChannelQueryMapMixin.data().loanChannelQueryMap,
 					targetedLoanChannelURL,
 					// Build loanQueryVars since SSR doesn't have same context
-					{ ids: [targetedLoanChannelID], limit: loansPerPage, offset: fromUrlParams(pageQuery).offset }
+					{ ids: [targetedLoanChannelID], limit: loansPerPage, offset: fromUrlParams(query).offset }
 				);
 			});
 		}
@@ -391,7 +392,7 @@ export default {
 	async created() {
 		let allChannelsData = {};
 
-		await this.initializeMonthlyGoodPromo();
+		this.initializeMonthlyGoodPromo();
 
 		try {
 			allChannelsData = this.apollo.readQuery({
@@ -578,7 +579,7 @@ export default {
 			// Update Lend Filter Exp CASH-545
 			this.getLendFilterExpVersion();
 		},
-		async initializeMonthlyGoodPromo() {
+		initializeMonthlyGoodPromo() {
 			const currentRoute = this.$route.path.replace('/lend-by-category/', '');
 			const matchedRoutes = _filter(targetRoutes, route => route.route === currentRoute);
 			if (matchedRoutes.length) {
