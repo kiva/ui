@@ -176,7 +176,22 @@ import {
 } from '@/util/loanChannelUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
-let loansPerPage = 11;
+let loansPerPage = 12;
+const targetRoutes = [
+	{ route: 'women', url: '/monthlygood?category=women', label: 'women' },
+	{ route: 'loans-to-women', url: '/monthlygood?category=women', label: 'women' },
+	{ route: 'education', url: '/monthlygood?category=education', label: 'students' },
+	{ route: 'loans-for-education', url: '/monthlygood?category=education', label: 'students' },
+	{ route: 'refugees-and-i-d-ps', url: '/monthlygood?category=refugees', label: 'refugees' },
+	{ route: 'loans-to-refugees-and-i-d-ps', url: '/monthlygood?category=refugees', label: 'refugees' },
+	{ route: 'eco-friendly', url: '/monthlygood?category=eco_friendly', label: 'eco-friendly loans' },
+	{ route: 'eco-friendly-loans', url: '/monthlygood?category=eco_friendly', label: 'eco-friendly loans' },
+	{ route: 'agriculture', url: '/monthlygood?category=agriculture', label: 'farmers' },
+	{ route: 'loans-to-farmers', url: '/monthlygood?category=agriculture', label: 'farmers' },
+	{ route: 'kiva-u-s', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' },
+	{ route: 'loans-to-u-s-small-businesses', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' }, // eslint-disable-line max-len
+	{ route: 'united-states-loans', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' },
+];
 
 // A map of functions to transform url query parameters to/from graphql variables.
 // Each key in urlParamTransform is a url query parameter (e.g. the 'page' in ?page=2).
@@ -254,7 +269,7 @@ export default {
 	data() {
 		return {
 			offset: 0,
-			limit: loansPerPage,
+			limit: 0,
 			filters: { },
 			targetedLoanChannelURL: null,
 			targetedLoanChannelID: null,
@@ -357,6 +372,11 @@ export default {
 				// Extract query
 				const pageQuery = _get(args, 'route.query');
 
+				const currentRoute = _get(args, 'route.path').replace('/lend-by-category/', '');
+				const matchedRoutes = _filter(targetRoutes, route => route.route === currentRoute);
+
+				loansPerPage = matchedRoutes.length > 0 ? loansPerPage - 1 : loansPerPage;
+
 				return preFetchChannel(
 					client,
 					// Access map directly since SSR doesn't have mixins available
@@ -368,8 +388,10 @@ export default {
 			});
 		}
 	},
-	created() {
+	async created() {
 		let allChannelsData = {};
+
+		await this.initializeMonthlyGoodPromo();
 
 		try {
 			allChannelsData = this.apollo.readQuery({
@@ -414,12 +436,9 @@ export default {
 		// Lend Filter Redirects
 		this.initializeLendFilterRedirects();
 	},
-	async mounted() {
+	mounted() {
 		// Setup Reactivity for Loan Data + Basket Status
 		this.activateLoanChannelWatchQuery();
-
-		// Monthly Good Category Promo
-		await this.initializeMonthlyGoodPromo();
 
 		this.updateLendFilterExp();
 		// check for newly assigned bounceback
@@ -561,27 +580,12 @@ export default {
 		},
 		async initializeMonthlyGoodPromo() {
 			const currentRoute = this.$route.path.replace('/lend-by-category/', '');
-			const targetRoutes = [
-				{ route: 'women', url: '/monthlygood?category=women', label: 'women' },
-				{ route: 'loans-to-women', url: '/monthlygood?category=women', label: 'women' },
-				{ route: 'education', url: '/monthlygood?category=education', label: 'students' },
-				{ route: 'loans-for-education', url: '/monthlygood?category=education', label: 'students' },
-				{ route: 'refugees-and-i-d-ps', url: '/monthlygood?category=refugees', label: 'refugees' },
-				{ route: 'loans-to-refugees-and-i-d-ps', url: '/monthlygood?category=refugees', label: 'refugees' },
-				{ route: 'eco-friendly', url: '/monthlygood?category=eco_friendly', label: 'eco-friendly loans' },
-				{ route: 'eco-friendly-loans', url: '/monthlygood?category=eco_friendly', label: 'eco-friendly loans' },
-				{ route: 'agriculture', url: '/monthlygood?category=agriculture', label: 'farmers' },
-				{ route: 'loans-to-farmers', url: '/monthlygood?category=agriculture', label: 'farmers' },
-				{ route: 'kiva-u-s', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' },
-				{ route: 'loans-to-u-s-small-businesses', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' }, // eslint-disable-line max-len
-				{ route: 'united-states-loans', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' },
-			];
 			const matchedRoutes = _filter(targetRoutes, route => route.route === currentRoute);
 			if (matchedRoutes.length) {
 				this.displayLoanPromoCard = true;
 				[this.mgTargetCategory] = matchedRoutes;
+				this.limit = loansPerPage - 1;
 			} else {
-				loansPerPage = 12;
 				this.limit = loansPerPage;
 			}
 		},
