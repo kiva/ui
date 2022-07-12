@@ -7,24 +7,19 @@
 				</h1>
 			</kv-grid>
 			<kv-grid class="md:tw-pt-6 lg:tw-pt-8">
-				<h2 class="tw-mb-1">
-					<table>
-						<tr>
-							<th class="tab"> Name </th>
-							<th class="tab"> Alerts </th>
-							<th class="tab"> </th>
-						</tr>
-						<tr>
-							<td> </td>
-						</tr>
-					</table>
-				</h2>
+				<div
+					v-for="(search, index) in savedSearches"
+					:key="index"
+				>
+					{{ search.name }}
+				</div>
 			</kv-grid>
 		</kv-page-container>
 	</www-page>
 </template>
 
 <script>
+import gql from 'graphql-tag';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -35,7 +30,6 @@ export default {
 		WwwPage,
 		KvGrid,
 		KvPageContainer,
-		/* totalCount */
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
@@ -44,19 +38,33 @@ export default {
 			savedSearches: () => []
 		};
 	},
-	/* methods : {
-		savedSearches (
-			offset: Int = 0 = 0,
-			limit: Int = 20,
-			sortBy: BasicSortByEnum = newest
-) : SavedSearchCollection
-	}, */
+	created() {
+		this.fetchSavedSearches();
+	},
+	methods: {
+		fetchSavedSearches(offset = 0) {
+			this.apollo.query({
+				query: gql`query savedSearches($offset: Int) {
+					my { 
+						savedSearches(offset: $offset){ 
+							totalCount
+							values {
+								id
+								name
+							} 
+						}
+					}
+					
+				}`,
+				variables: {
+					offset
+				},
+			}).then(result => {
+				const savedSearchData = result?.data?.my?.savedSearches;
+				this.totalCount = savedSearchData?.totalCount ?? 0;
+				this.savedSearches = [...savedSearchData.values];
+			});
+		}
+	}
 };
-
 </script>
-
-<style scoped>
-h1 {
-	font-size: 16px;
-}
-</style>
