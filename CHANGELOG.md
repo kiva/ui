@@ -1,3 +1,10 @@
+## [2.227.0](https://github.com/kiva/ui/compare/v2.226.0...v2.227.0) (2022-07-12)
+
+
+### Features
+
+* created method to get saved searches ([e74f26c](https://github.com/kiva/ui/commit/e74f26ce8867516521ae25c06e62886a2d746dc3))
+
 ## [2.226.0](https://github.com/kiva/ui/compare/v2.225.0...v2.226.0) (2022-07-12)
 
 
