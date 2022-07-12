@@ -1,3 +1,10 @@
+### [2.227.1](https://github.com/kiva/ui/compare/v2.227.0...v2.227.1) (2022-07-12)
+
+
+### Bug Fixes
+
+* update lightbox copy and fix info box ([b753bb4](https://github.com/kiva/ui/commit/b753bb4dd8767636e3afa221873411d8f139df1f))
+
 ## [2.227.0](https://github.com/kiva/ui/compare/v2.226.0...v2.227.0) (2022-07-12)
 
 
