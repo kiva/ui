@@ -7,7 +7,18 @@
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 					<hero-background />
 				</div>
-				<content-container class="md:tw-pt-6 lg:tw-pt-8">
+
+				<top-banner-pfp
+					v-if="inPfp"
+					class="tw-relative tw-z-1"
+					:lenders-needed="pfpMinLenders"
+					:borrower-name="name"
+					:days-left="diffInDays"
+				/>
+				<content-container
+					:class="inPfp ? 'lg:tw-pt-3' : 'lg:tw-pt-8'"
+					class="md:tw-pt-6"
+				>
 					<summary-card
 						data-testid="bp-summary"
 						class="tw-relative lg:tw--mb-1.5 tw-z-1"
@@ -15,8 +26,13 @@
 					/>
 				</content-container>
 			</div>
-			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8 tw-pointer-events-none">
-				<sidebar-container class="lg:tw-sticky lg:tw-top-12 lg:tw-mt-10 lg:tw-pb-8">
+			<div
+				:class="inPfp ? 'lg:tw-pt-16' : 'lg:tw-pt-8'"
+				class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0"
+			>
+				<sidebar-container
+					class="lg:tw-sticky lg:tw-mt-10 lg:tw-pb-8 lg:tw-top-12"
+				>
 					<lend-cta
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
@@ -91,6 +107,8 @@ import BorrowerCountry from '@/components/BorrowerProfile/BorrowerCountry';
 import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
+import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
+
 import { isLoanFundraising } from '@/util/loanUtils';
 import loanUseFilter from '@/plugins/loan-use-filter';
 
@@ -141,6 +159,8 @@ const pageQuery = gql`
 					isExpiringSoon
 					reservedAmount
 				}
+				inPfp
+				pfpMinLenders
 			}
 		}
 		community @include(if: $getInviter) {
@@ -166,6 +186,7 @@ export default {
 		MoreAboutLoan,
 		SidebarContainer,
 		SummaryCard,
+		TopBannerPfp,
 		WhySpecial,
 		WwwPage,
 	},
@@ -255,6 +276,9 @@ export default {
 			shareCardLanguageVersion: '',
 			inviterName: '',
 			inviterIsGuestOrAnonymous: false,
+			inPfp: false,
+			pfpMinLenders: 0,
+			diffInDays: '',
 		};
 	},
 	apollo: {
@@ -301,6 +325,8 @@ export default {
 		},
 		result(result) {
 			const loan = result?.data?.lend?.loan;
+			this.inPfp = loan?.inPfp ?? false;
+			this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
 			this.businessName = loan?.businessName ?? '';
 			this.name = loan?.name ?? '';
 			this.countryName = loan?.geocode?.country?.name ?? '';
@@ -316,8 +342,8 @@ export default {
 			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
 			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
 
-			const diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
-			this.hasThreeDaysOrLessLeft = diffInDays <= 3;
+			this.diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
+			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;
 		},
 	},
 	mounted() {
