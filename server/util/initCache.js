@@ -36,7 +36,9 @@ module.exports = function initCache(config) {
 		// Create a memcached connection
 		// eslint-disable-next-line new-cap
 		return new memjs.Client.create(config.memcachedServers, {
-			retries: 1
+			failover: true,
+			timeout: 1,
+			keepAlive: true,
 		});
 	}
 	// Create a simple local-memory cache

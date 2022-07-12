@@ -23,7 +23,8 @@
 			<label class="tw-sr-only" :class="{ 'error': $v.dayOfMonth.$invalid }" :for="dayOfMonth">
 				Day of the Month
 			</label>
-			<kv-text-input v-if="isDayInputShown"
+			<kv-text-input
+				v-if="isDayInputShown"
 				@blur="hideDayInput()"
 				class="text-input"
 				id="dayOfMonth"
@@ -122,7 +123,8 @@
 			</ul>
 
 			<!-- General Errors & Messaging-->
-			<ul class="validation-errors"
+			<ul
+				class="validation-errors"
 				v-if="!$v.adAmount.combinedTotal || !$v.donation.combinedTotal"
 			>
 				<li>

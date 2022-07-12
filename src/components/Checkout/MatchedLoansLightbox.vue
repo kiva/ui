@@ -35,5 +35,8 @@ export default {
 			default: () => {}
 		}
 	},
+	mounted() {
+		this.$kvTrackEvent('Basket', 'view-must-deposit-message-cta', '');
+	}
 };
 </script>

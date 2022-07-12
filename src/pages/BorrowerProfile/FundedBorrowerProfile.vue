@@ -95,7 +95,8 @@
 					<kv-page-container>
 						<kv-grid class="md:tw-grid-cols-12 tw-grid tw-relative">
 							<div class="md:tw-col-span-8 md:tw-col-start-3 tw-my-8">
-								<section class="
+								<section
+									class="
 									tw-pb-0
 									md:tw-bg-primary
 									md:tw-pb-2.5
@@ -103,7 +104,8 @@
 									md:tw-rounded"
 								>
 									<div class="tw-flex">
-										<div class="
+										<div
+											class="
 									tw-flex-none tw-w-8 tw-h-8 tw-mr-1.5 tw-mb-1.5
 									md:tw-w-9 md:tw-h-9 md:tw-mr-3 md:tw-mb-3
 									lg:tw-w-10 lg:tw-h-10 lg:tw-mr-4 lg:tw-mb-4"
@@ -221,21 +223,13 @@ const newFundedBorrowerPageExpKey = 'new_funded_borrower_page';
 export default {
 	name: 'FundedBorrowerProfile',
 	metaInfo() {
-		const canonicalUrl = `https://${this.$appConfig.host}${this.$route.path}`.replace('funded', 'lend');
 		return {
-			title: `${this.loan?.name ?? ''} From ${this.loan.geocode?.country?.name ?? ''}'s loan has been funded`,
+			title: `${this.loan.name} from ${this.loan.geocode?.country?.name}'s loan has been funded!`,
 			meta: [
 				{
 					vmid: 'description',
 					name: 'description',
-					content: `A loan helped ${this.loan?.use ?? ''}`,
-				}
-			],
-			link: [
-				{
-					vmid: 'canonical',
-					rel: 'canonical',
-					href: canonicalUrl
+					content: `A loan helped ${this.loan.use}`,
 				}
 			]
 		};

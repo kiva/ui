@@ -3,25 +3,15 @@ import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
 // eslint-disable-next-line no-underscore-dangle
 const __typename = 'LoanSearchState';
 
-// Using a fragment is an alternative way to access the cache, requires gql or a new fragment file
-// const loanSearchStateFragment = gql`
-// 	fragment loanSearchState on LoanSearchState @client {
-// 		gender
-// 		countryIsoCode
-// 		sectorId
-// 		sortBy
-// 		theme
-// 	}
-// `;
-
 export const getDefaultLoanSearchState = () => ({
 	gender: null, // Expects a string
 	countryIsoCode: [], // Expects an array of strings
 	sectorId: [], // Expects an array of ints
 	sortBy: null, // Expects a string that matches the SortEnum
-	theme: [], // Expects an array of strings
+	themeId: [], // Expects an array of ints
 	pageOffset: 0, // Expects a number
 	pageLimit: 15, // Expects a number
+	distributionModel: null // Expects DIRECT or FIELDPARTNER
 });
 
 // export queries, resolvers and defaults for LoanSearchState

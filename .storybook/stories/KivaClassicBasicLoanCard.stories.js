@@ -1,4 +1,3 @@
-import StoryRouter from 'storybook-vue-router';
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
@@ -50,7 +49,6 @@ const queryResult = {
 export default {
 	title: 'Loan Cards/Kiva Classic Basic Loan Card',
 	component: KivaClassicBasicLoanCard,
-	decorators: [StoryRouter()],
 };
 
 export const Default = () => ({

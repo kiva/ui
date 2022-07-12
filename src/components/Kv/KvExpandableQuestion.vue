@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<button class="tw-w-full tw-py-2 tw-flex tw-justify-between"
+		<button
+			class="tw-w-full tw-py-2 tw-flex tw-justify-between"
 			@click="toggleFaq"
 		>
 			<h3 class="tw-text-subhead tw-text-left">

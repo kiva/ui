@@ -227,6 +227,14 @@ module.exports = [
 		},
 	},
 	{
+		path: '/lend-by-category/recommended-by-lenders',
+		component: () => import('@/pages/Lend/LoanChannelCategoryPageRecommendedByLenders'),
+		meta: {
+			excludeFromStaticSitemap: true,
+			unbounce: true,
+		},
+	},
+	{
 		path: '/lend-by-category/:category',
 		component: () => import('@/pages/Lend/LoanChannelCategoryPage'),
 		meta: {

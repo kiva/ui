@@ -1,5 +1,6 @@
 <template>
-	<div ref="wrapper"
+	<div
+		ref="wrapper"
 		:class="['lg:tw-mb-1.5', { 'md:tw-px-4': isSticky }]"
 		:style="wrapperStyle"
 	>
@@ -48,7 +49,8 @@
 					<span class="tw-flex tw-pb-1 lg:tw-pb-3">
 						<!-- eslint-disable-next-line max-len -->
 						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
-							<fieldset class="tw-w-full tw-flex" :disabled="isAdding"
+							<fieldset
+								class="tw-w-full tw-flex" :disabled="isAdding"
 								data-testid="bp-lend-cta-select-and-button"
 							>
 								<label
@@ -557,7 +559,7 @@ export default {
 				this.$kvTrackEvent('Borrower profile', 'Complete loan', 'view-amount-left-cta', this.loanId, this.selectedOption);
 				this.completeLoanView = false;
 			}
-		}
+		},
 	},
 	computed: {
 		isInBasket() {
@@ -583,7 +585,7 @@ export default {
 			// limit at 20 price options
 			const priceArray = buildPriceArray(parseFloat(this.unreservedAmount), minAmount).slice(0, 20);
 			// eslint-disable-next-line
-			if (this.completeLoan && this.isBetween25And100 && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
+			if (this.completeLoan && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
 			}
 			return priceArray;

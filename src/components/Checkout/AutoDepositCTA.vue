@@ -23,7 +23,8 @@
 				<div class="tw-mb-2 tw-text-left">
 					<p class="tw-mb-1">
 						Starting today, we’ll process the following on the
-						<kv-text-input v-if="isDayInputShown"
+						<kv-text-input
+							v-if="isDayInputShown"
 							@blur="hideDayInput()"
 							class="text-input"
 							id="dayOfMonth"

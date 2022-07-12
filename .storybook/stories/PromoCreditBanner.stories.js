@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import StoryRouter from 'storybook-vue-router';
 import PromoCreditBanner from '@/components/WwwFrame/PromotionalBanner/Banners/PromoCreditBanner.vue';
 
 // import plugins
@@ -9,7 +8,6 @@ Vue.use(kivaPlugins);
 export default {
 	title: 'WwwFrame/Banners/PromoCreditBanner',
 	component: PromoCreditBanner,
-	decorators: [StoryRouter()],
 	args: {
 		basketState: {
 			shop: {
