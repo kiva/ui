@@ -7,8 +7,9 @@ module.exports = {
 			url: [
 				'https://www.kiva.org/',
 				'https://www.kiva.org/lend/filter',
-				// 'https://www.kiva.org/lend-by-category',
+				'https://www.kiva.org/lend-by-category',
 				'https://www.kiva.org/lend-by-category/women',
+				'https://www.kiva.org/live-loan/f/sort_popularity/url/1',
 				'https://www.kiva.org/ui-site-map',
 				'https://www.kiva.org/cc/kiva-universal',
 				'https://www.kiva.org/lp/support-refugees',
