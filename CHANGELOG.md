@@ -1,3 +1,11 @@
+## [2.225.0](https://github.com/kiva/ui/compare/v2.224.0...v2.225.0) (2022-07-12)
+
+
+### Features
+
+* add new page frame and temporary route ([e0aa24c](https://github.com/kiva/ui/commit/e0aa24c0a1cae5cdc3d949b2f13cbcfef7ad67d9))
+* adding a saved search page frame and temporary route ([006772a](https://github.com/kiva/ui/commit/006772a942cb9abcb62c493d7f730d4fbc755b46))
+
 ## [2.224.0](https://github.com/kiva/ui/compare/v2.223.0...v2.224.0) (2022-07-11)
 
 
