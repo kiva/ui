@@ -363,7 +363,7 @@ export default {
 			return client.query({
 				query: loanChannelPageQuery
 			}).then(({ data }) => {
-				const { route } = args
+				const { route } = args;
 				const { query, params, path } = route;
 
 				// Filter routes on route.param.category to get current path
