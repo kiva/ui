@@ -1,3 +1,10 @@
+## [2.226.0](https://github.com/kiva/ui/compare/v2.225.0...v2.226.0) (2022-07-12)
+
+
+### Features
+
+* track lend-by-category and borrower profile page performance ([becfd4e](https://github.com/kiva/ui/commit/becfd4eb4a8b91fedf26283319cc5d8a6377c74d))
+
 ## [2.225.0](https://github.com/kiva/ui/compare/v2.224.0...v2.225.0) (2022-07-12)
 
 
