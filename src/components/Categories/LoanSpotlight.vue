@@ -9,7 +9,7 @@
 				class="tw-mb-1 tw-rounded md:tw-mr-3 lg:tw-mr-4
 				md:tw-flex-none tw-w-full md:tw-w-1/2" :style="{height: '15.75rem'}"
 			/>
-			<div v-if="!isLoading" class="md:tw-mr-3 lg:tw-mr-4 md:tw-flex-none">
+			<div v-if="!isLoading" class="md:tw-mr-3 lg:tw-mr-4 md:tw-w-1/2">
 				<kv-responsive-image
 					class="spotlight-loan-image"
 					:images="getSpotlightImage"
@@ -36,12 +36,11 @@
 					>
 					</p>
 				</span>
-				<div class="tw-mt-2">
+				<div v-if="!isLoading" class="tw-mt-2">
 					<kv-button
 						class="tw-w-full md:tw-w-auto"
-						:to="`/lend-beta/${getSpotlightLoanID}`"
+						:to="`/lend/${getSpotlightLoanID}`"
 						variant="primary"
-						state=""
 						v-kv-track-event="['Lending', 'click-loan-spotlight', 'View Loan']"
 					>
 						View loan
@@ -140,12 +139,12 @@ function getTargetedChannel(targetedRoutePath, fallbackRoutePath, allChannels) {
 	return targetedLoanChannel[0]?.id || null;
 }
 
-function filterByAnonymizationLevel(spotlightData) {
+function filterByAnonymizationLevelAndImages(spotlightData) {
 	const firstFiveRecommendedLoans = spotlightData.lend?.loanChannelsById[0]?.loans?.values ?? [];
-	const nonAnonymousLoans = firstFiveRecommendedLoans.filter(
-		loan => loan.anonymizationLevel !== 'full'
+	const nonAnonymousLoansWithImages = firstFiveRecommendedLoans.filter(
+		loan => loan.anonymizationLevel !== 'full' && loan.image?.default !== ''
 	);
-	return nonAnonymousLoans[0] || {};
+	return nonAnonymousLoansWithImages[0] || {};
 }
 
 export default {
@@ -178,7 +177,7 @@ export default {
 	},
 	computed: {
 		altText() {
-			return "Today's loan spotlight";
+			return this.spotlightLoan?.description.slice(0, 100) ?? '';
 		},
 		getSpotlightLoanID() {
 			return this.spotlightLoan.id ?? '';
@@ -186,26 +185,20 @@ export default {
 		getSpotlightText() {
 			return toParagraphs(this.spotlightLoan.description) ?? '';
 		},
-		locationExists() {
-			return this.spotlightLoan.geocode ?? '';
-		},
 		getSpotlightLoanLocation() {
-			if (this.locationExists !== '') {
-				if (this.spotlightLoan.geocode.city && this.spotlightLoan.geocode.country.name) {
+			if (this.spotlightLoan.geocode) {
+				if (this.spotlightLoan.geocode?.city && this.spotlightLoan.geocode?.country?.name) {
 					return `${this.spotlightLoan.geocode.city}, ${this.spotlightLoan.geocode.country.name}`;
 				}
-				return `${this.spotlightLoan.geocode.country.name ?? ''}`;
+				return `${this.spotlightLoan.geocode?.country?.name ?? ''}`;
 			}
 			return '';
 		},
-		imageExists() {
-			return this.spotlightLoan.image?.default ?? '';
-		},
 		getSpotlightImage() {
-			if (this.imageExists === '') {
-				return [['small', this.spotlightPlaceholderImageCTF]];
+			if (this.spotlightLoan.image?.retina) {
+				return [['small', this.spotlightLoan.image.retina], ['small retina', this.spotlightLoan.image.retina]];
 			}
-			return [['small', this.spotlightLoan.image.retina], ['small retina', this.spotlightLoan.image.retina]];
+			return [['small', this.spotlightLoan.image?.default ?? '']];
 		}
 	},
 	apollo: {
@@ -227,24 +220,7 @@ export default {
 		}).then(result => {
 			// filter out loans with anonymizationLevel of full, then take first in list
 			this.isLoading = false;
-			this.spotlightLoan = filterByAnonymizationLevel(result.data);
-		});
-	},
-	mounted() {
-		this.apollo.query({
-			query: gql`
-				query bpHeroBackgroundImage($placeholderKey: String) {
-					contentful {
-						placeholder: entries(contentType: "background", contentKey: $placeholderKey)
-					}
-				}
-			`,
-			variables: {
-				placeholderKey: 'bp-hero-country-placeholder',
-			},
-		}).then(result => {
-			const placeholderMedia = result?.data?.contentful?.placeholder?.items?.[0]?.fields?.backgroundMedia ?? {};
-			this.spotlightPlaceholderImageCTF = placeholderMedia?.fields?.file?.url ?? '';
+			this.spotlightLoan = filterByAnonymizationLevelAndImages(result.data);
 		});
 	},
 };
@@ -253,18 +229,10 @@ export default {
 
 <style lang="postcss" scoped>
 
-/*  ** Reasoning for current dimensions **
-The max heights 280, md/lg:390 and the max width lg:520 are Nathan's original dimensions.
-The max width 390 at medium prevents the wrapping of the title "Today's loan spotlight".
-The min width at md/lg is for the few images that area extremely skinny.
-The min height for md/lg is there so that the text and the button are within the height of the image.
-The mobile image now matches the way it's done on the individual loan page. The images
-are so varied in sizing, so it looks way better if they are just contained on mobile. */
 .spotlight-loan-image >>> img {
 	@apply tw-rounded tw-object-contain tw-bg-black md:tw-object-cover md:tw-object-top;
 	@apply tw-w-full tw-max-h-[280px] md:tw-max-h-[390px];
-	@apply md:tw-max-w-[390px] lg:tw-max-w-[520px];
-	@apply md:tw-min-w-[320px] md:tw-min-h-[320px];
+	@apply md:tw-min-h-[320px];
 }
 
 </style>
