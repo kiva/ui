@@ -206,15 +206,16 @@
 					>
 						All shares reserved
 					</p>
+					<hr class="tw-hidden md:tw-block tw-border-tertiary tw-w-full tw-mt-2">
 					<div
-						class="tw-flex lg:tw-justify-center tw-w-full tw-mt-2"
+						class="tw-flex lg:tw-justify-center tw-w-full tw-items-center"
 						:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
 					>
 						<loan-bookmark
 							v-if="isLoggedIn"
 							data-testid="bp-lend-cta-loan-bookmark"
 							:loan-id="loanId"
-							class="tw-hidden md:tw-inline-block tw-mt-1 lg:tw-hidden"
+							class="tw-hidden md:tw-inline-block lg:tw-hidden"
 						/>
 						<jump-links
 							class="tw-hidden md:tw-block tw-ml-1 tw-mr-1" style="width: 420px;"

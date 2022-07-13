@@ -1,12 +1,56 @@
 <template>
 	<figure>
 		<kv-progress-bar
+			v-if="loanStatus === 'pfp'"
+			class="tw-mb-1.5 lg:tw-mb-1"
+			aria-label="Percent completion of private fundraising"
+			:value="pfpProgressPercent"
+		/>
+		<kv-progress-bar
+			v-else
 			class="tw-mb-1.5 lg:tw-mb-1"
 			aria-label="Percent the loan has funded"
 			:value="progressPercent * 100"
 		/>
 		<figcaption class="tw-flex">
-			<template v-if="!fundedPage">
+			<div v-if="loanStatus === 'funded'">
+				<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
+					This loan is fully funded!
+				</p>
+				<div class="md:tw-flex tw-gap-2">
+					<p class="tw-text-h4 tw-text-secondary tw-block">
+						100% funded
+					</p>
+					<p class="tw-text-h4 tw-text-action tw-block">
+						<router-link
+							:to="`/lend/${$route.params.id}?minimal=false`"
+							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
+						>
+							View the full borrower profile
+						</router-link>
+					</p>
+				</div>
+			</div>
+			<template v-if="loanStatus === 'pfp'">
+				<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
+					<span class="tw-text-h3 tw-block tw-m-0">
+						{{ timeLeft }}
+					</span>
+
+					<span class="tw-text-h4 tw-text-secondary tw-block">
+						in private fundraising
+					</span>
+				</p>
+				<div class="tw-flex-auto tw-text-right">
+					<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-lenders-to-go">
+						{{ numberOfLenders }}/{{ pfpMinLenders }} lenders
+					</p>
+					<p class="tw-text-h4 tw-text-secondary" data-testid="bp-summary-amount-to-go">
+						{{ moneyLeft | numeral('$0,0[.]00') }} to go
+					</p>
+				</div>
+			</template>
+			<template v-else>
 				<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
 					<countdown-timer
 						v-if="urgency"
@@ -30,24 +74,6 @@
 					</p>
 				</div>
 			</template>
-			<div v-else>
-				<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
-					This loan is fully funded!
-				</p>
-				<div class="md:tw-flex tw-gap-2">
-					<p class="tw-text-h4 tw-text-secondary tw-block">
-						100% funded
-					</p>
-					<p class="tw-text-h4 tw-text-action tw-block">
-						<router-link
-							:to="`/lend/${$route.params.id}?minimal=false`"
-							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
-						>
-							View the full borrower profile
-						</router-link>
-					</p>
-				</div>
-			</div>
 		</figcaption>
 	</figure>
 </template>
@@ -83,9 +109,25 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		fundedPage: {
-			type: Boolean,
-			default: false
+		loanStatus: {
+			type: String,
+			default: 'fundraising',
+			validator: value => {
+				return ['fundraising', 'funded', 'pfp'].indexOf(value) !== -1;
+			}
+		},
+		numberOfLenders: {
+			type: Number,
+			default: 0,
+		},
+		pfpMinLenders: {
+			type: Number,
+			default: 0,
+		},
+	},
+	computed: {
+		pfpProgressPercent() {
+			return (this.numberOfLenders / this.pfpMinLenders) * 100;
 		}
 	},
 };

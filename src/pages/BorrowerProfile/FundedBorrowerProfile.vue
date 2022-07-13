@@ -134,7 +134,7 @@
 												class="tw-mb-2"
 												:money-left="'0'"
 												:progress-percent="1"
-												:funded-page="true"
+												loan-status="funded"
 											/>
 										</div>
 									</div>
