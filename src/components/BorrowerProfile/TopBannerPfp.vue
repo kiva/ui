@@ -72,9 +72,9 @@ export default {
 				case this.daysLeft < 1:
 					return 'less than 1 day';
 				case this.daysLeft === 1:
-					return `${parseInt(this.daysLeft, 10)} day`;
+					return `${this.daysLeft} day`;
 				default:
-					return `${parseInt(this.daysLeft, 10)} days`;
+					return `${this.daysLeft} days`;
 			}
 		}
 	}

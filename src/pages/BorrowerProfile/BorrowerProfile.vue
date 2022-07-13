@@ -278,7 +278,7 @@ export default {
 			inviterIsGuestOrAnonymous: false,
 			inPfp: false,
 			pfpMinLenders: 0,
-			diffInDays: '',
+			diffInDays: 0,
 		};
 	},
 	apollo: {
