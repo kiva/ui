@@ -144,13 +144,24 @@ export default {
 					rel: 'canonical',
 					href: `https://${this.$appConfig.host}${this.$route.path}`
 				}
-			].concat([
-				(/^[a-z]+:\/\//i.test(this.$appConfig?.publicPath) ? {
+			].concat(/^[a-z]+:\/\//i.test(this.$appConfig?.publicPath) ? [
+				{
+					vmid: 'dns-prefetch',
+					rel: 'dns-prefetch',
+					href: `https://${new URL(this.$appConfig.publicPath).hostname}`
+				},
+				{
 					vmid: 'preconnect',
 					rel: 'preconnect',
 					href: `https://${new URL(this.$appConfig.publicPath).hostname}`
-				} :	{})
-			]).concat([
+				},
+				{
+					vmid: 'preconnect-crossorigin',
+					rel: 'preconnect',
+					crossorigin: '',
+					href: `https://${new URL(this.$appConfig.publicPath).hostname}`
+				},
+			] : []).concat([
 				// Standard Favicons + Android favicons
 				{
 					rel: 'icon',
