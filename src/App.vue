@@ -104,6 +104,31 @@ export default {
 				},
 			]),
 			link: [
+				// Fonts in format woff2nt'
+				{
+					rel: 'preload',
+					href: require('@/assets/fonts/PostGrotesk-BoldItalic.woff2'),
+					crossorigin: 'anonymous',
+					as: 'font'
+				},
+				{
+					rel: 'preload',
+					href: require('@/assets/fonts/PostGrotesk-Book.woff2'),
+					crossorigin: 'anonymous',
+					as: 'font'
+				},
+				{
+					rel: 'preload',
+					href: require('@/assets/fonts/PostGrotesk-BookItalic.woff2'),
+					crossorigin: 'anonymous',
+					as: 'font'
+				},
+				{
+					rel: 'preload',
+					href: require('@/assets/fonts/PostGrotesk-Medium.woff2'),
+					crossorigin: 'anonymous',
+					as: 'font'
+				},
 				// apple icons
 				{
 					rel: 'apple-touch-icon',
@@ -161,7 +186,7 @@ export default {
 					type: 'image/x-icon',
 					href: require('@/assets/images/favicons/favicon-196x196.png'),
 					sizes: '196x196'
-				},
+				}
 			].concat([
 				{
 					// Web Manifest. Required for promoting the Android App on our site with smart-banners.
