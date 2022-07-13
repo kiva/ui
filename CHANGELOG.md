@@ -1,3 +1,17 @@
+## [2.230.0](https://github.com/kiva/ui/compare/v2.229.0...v2.230.0) (2022-07-13)
+
+
+### Features
+
+* add pfp borrower profile progress bar and story ([37426be](https://github.com/kiva/ui/commit/37426be9b94eabeeed1bae23463c556971e2045c))
+* pfp borrower profile top banner ([82be4eb](https://github.com/kiva/ui/commit/82be4eb382409f75589ef93bbdfa64d90d727c52))
+
+
+### Bug Fixes
+
+* move borrower profile horizontal rule and align save button ([568eb13](https://github.com/kiva/ui/commit/568eb131edd810b36c552f6b6ee450041e560330))
+* parseInt for diffInDays ([42f6362](https://github.com/kiva/ui/commit/42f6362506ae17ca13d831fe772b0700d6b8d8b1))
+
 ## [2.229.0](https://github.com/kiva/ui/compare/v2.228.1...v2.229.0) (2022-07-13)
 
 
