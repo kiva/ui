@@ -1,3 +1,15 @@
+## [2.228.0](https://github.com/kiva/ui/compare/v2.227.2...v2.228.0) (2022-07-13)
+
+
+### Features
+
+* optimize font loading process ([2cb92c9](https://github.com/kiva/ui/commit/2cb92c921df015d0af552977fe623f4db5a976c4))
+
+
+### Bug Fixes
+
+* remove old font declarations ([9a4df01](https://github.com/kiva/ui/commit/9a4df0106f577f90a081785ecd987dcd1824e46f))
+
 ### [2.227.2](https://github.com/kiva/ui/compare/v2.227.1...v2.227.2) (2022-07-13)
 
 
