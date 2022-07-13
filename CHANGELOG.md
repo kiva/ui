@@ -1,3 +1,10 @@
+### [2.228.1](https://github.com/kiva/ui/compare/v2.228.0...v2.228.1) (2022-07-13)
+
+
+### Bug Fixes
+
+* recommended by lender menu link accessibility fix ([60f0967](https://github.com/kiva/ui/commit/60f0967c9dc5348122317ec3bdaa29e64bbfffcc))
+
 ## [2.228.0](https://github.com/kiva/ui/compare/v2.227.2...v2.228.0) (2022-07-13)
 
 
