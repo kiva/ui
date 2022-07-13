@@ -1,3 +1,10 @@
+## [2.229.0](https://github.com/kiva/ui/compare/v2.228.1...v2.229.0) (2022-07-13)
+
+
+### Features
+
+* adding loan spotlight ([#4000](https://github.com/kiva/ui/issues/4000)) ([b95fedf](https://github.com/kiva/ui/commit/b95fedf26aa9bf371270236dd0b1812763c06898))
+
 ### [2.228.1](https://github.com/kiva/ui/compare/v2.228.0...v2.228.1) (2022-07-13)
 
 
