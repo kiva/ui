@@ -1,6 +1,6 @@
 <template>
 	<kv-lightbox
-		title="Loan matching for new deposits"
+		title="Matched lending"
 		:visible="showLightbox"
 		@lightbox-closed="closeLightbox"
 	>
