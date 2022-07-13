@@ -179,7 +179,7 @@ export const SpotlightLoanInsideGrid= (args, { argTypes }) => ({
 			</div>
 			<div class="tw-col-span-12 lg:tw-col-span-6 tw-bg-secondary tw-p-5">
 				Other Content
-			/>
+			</div>
 		 </kv-grid>
 	</kv-page-container>
 	`,
