@@ -1,3 +1,10 @@
+### [2.227.2](https://github.com/kiva/ui/compare/v2.227.1...v2.227.2) (2022-07-13)
+
+
+### Bug Fixes
+
+* update lightbox header ([ada31c6](https://github.com/kiva/ui/commit/ada31c67d3d8eda6289e4c2aa0c140200fb41a60))
+
 ### [2.227.1](https://github.com/kiva/ui/compare/v2.227.0...v2.227.1) (2022-07-12)
 
 
