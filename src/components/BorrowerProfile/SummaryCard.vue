@@ -31,7 +31,7 @@
 			<div class="tw-flex-auto">
 				<borrower-name
 					data-testid="bp-summary-borrower-name"
-					class="md:tw-mb-1.5 lg:tw-mb-2"
+					class="tw-mb-0.5 md:tw-mb-1.5 lg:tw-mb-2"
 					:name="name"
 				/>
 				<loan-progress
@@ -42,6 +42,9 @@
 					:time-left="timeLeft"
 					:urgency="showUrgencyExp && timeLeftMs > 0"
 					:ms-left="timeLeftMs"
+					:loan-status="inPfp ? 'pfp' : 'fundraising'"
+					:number-of-lenders="numLenders"
+					:pfp-min-lenders="pfpMinLenders"
 				/>
 			</div>
 		</div>
@@ -148,6 +151,9 @@ export default {
 			state: '',
 			anonymizationLevel: 'none',
 			timeLeftMs: 0,
+			inPfp: false,
+			pfpMinLenders: 0,
+			numLenders: 0,
 		};
 	},
 	computed: {
@@ -207,6 +213,11 @@ export default {
 						unreservedAmount @client
 						use
 						anonymizationLevel
+						inPfp
+						pfpMinLenders
+						lenders {
+							totalCount
+						}
 					}
 				}
 				my {
@@ -229,6 +240,9 @@ export default {
 		},
 		result(result) {
 			const loan = result?.data?.lend?.loan;
+			this.inPfp = loan?.inPfp ?? false;
+			this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
+			this.numLenders = loan?.lenders?.totalCount ?? 0;
 			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
 			this.loanId = loan?.id ?? 0;
 			this.activityName = loan?.activity?.name ?? '';

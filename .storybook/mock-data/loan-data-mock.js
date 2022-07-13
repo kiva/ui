@@ -57,7 +57,11 @@ export default [
 				"retina": "https://www-dev-kiva-org.freetls.fastly.net/img/w960h600/9673d0722a7675b9b8d11f90849d9b44.jpg",
 				"hash": "9673d0722a7675b9b8d11f90849d9b44",
 				"__typename": "Image"
-			}
+			},
+			"anonymizationLevel": "none",
+			"fundraisingTimeLeft": "0 days",
+			"fundraisingPercent": 40,
+			"fundraisingTimeLeftMilliseconds": 123456789,
 		},
 		{
 			"id": 1976581,
@@ -114,7 +118,11 @@ export default [
 				"retina": "https://www-dev-kiva-org.freetls.fastly.net/img/w960h600/6638894152e5ea6f0e65423b7b6cd9bb.jpg",
 				"hash": "6638894152e5ea6f0e65423b7b6cd9bb",
 				"__typename": "Image"
-			}
+			},
+			"anonymizationLevel": "none",
+			"fundraisingTimeLeft": "0 days",
+			"fundraisingPercent": 40,
+			"fundraisingTimeLeftMilliseconds": 123456789,
 		},
 		{
 			"id": 1977174,
@@ -171,6 +179,10 @@ export default [
 				"retina": "https://www-dev-kiva-org.freetls.fastly.net/img/w960h600/131e7cc9d0de32daad20d90b3a39c8a8.jpg",
 				"hash": "131e7cc9d0de32daad20d90b3a39c8a8",
 				"__typename": "Image"
-			}
+			},
+			"anonymizationLevel": "none",
+			"fundraisingTimeLeft": "0 days",
+			"fundraisingPercent": 40,
+			"fundraisingTimeLeftMilliseconds": 123456789,
 		}
 ]

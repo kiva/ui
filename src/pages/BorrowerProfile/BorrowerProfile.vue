@@ -2,7 +2,7 @@
 	<www-page
 		id="borrower-profile"
 	>
-		<article class="tw-relative tw-bg-secondary">
+		<article class="tw-relative md:tw-bg-secondary">
 			<div class="tw-relative">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 					<hero-background />
