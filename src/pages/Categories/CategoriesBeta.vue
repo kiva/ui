@@ -1,7 +1,7 @@
 <template>
 	<www-page>
 		<kv-page-container>
-			<kv-grid class="tw-pt-4 md:tw-pt-6 lg:tw-pt-8">
+			<kv-grid class="tw-pt-4 md:tw-pt-6 lg:tw-pt-8 tw-mb-4">
 				<h1 class="tw-mb-2">
 					Make a loan, change a life
 				</h1>
@@ -10,7 +10,19 @@
 					future for themselves and their families.
 				</p>
 			</kv-grid>
-			<kv-grid class="md:tw-pt-6 lg:tw-pt-8">
+		</kv-page-container>
+		<div class="tw-bg-primary md:tw-bg-secondary tw-mb-2">
+			<kv-page-container>
+				<kv-grid>
+					<loan-spotlight
+						category-slug="recommended-by-lenders"
+						fallback-category-slug="women"
+					/>
+				</kv-grid>
+			</kv-page-container>
+		</div>
+		<kv-page-container>
+			<kv-grid class="tw-pt-6">
 				<h2>
 					Find loans by category
 				</h2>
@@ -52,7 +64,7 @@
 					<kv-button
 						to="/lend"
 						variant="secondary"
-						state="active"
+						state=""
 						v-kv-track-event="['Lending', 'click-view-all', 'View All']"
 					>
 						View all loans
@@ -82,6 +94,7 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import MainCategoryTile from '@/components/Categories/MainCategoryTile';
+import LoanSpotlight from '@/components/Categories/LoanSpotlight';
 import gql from 'graphql-tag';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -120,7 +133,8 @@ export default {
 		MainCategoryTile,
 		KvGrid,
 		KvPageContainer,
-		KvButton
+		KvButton,
+		LoanSpotlight
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
