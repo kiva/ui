@@ -2,18 +2,21 @@
 	<div class="row">
 		<kv-settings-card class="column large-8" title="Auto Deposit">
 			<template #content>
-				<router-link v-if="!isAutoDepositSubscriber"
+				<router-link
+					v-if="!isAutoDepositSubscriber"
 					to="/auto-deposit"
 				>
 					Add money to your account every month
 				</router-link>
 				<div v-if="isAutoDepositSubscriber">
 					<p>
-						On the <button class="tw-text-link tw-font-medium"
+						On the <button
+							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 						>
 							{{ dayOfMonth | numeral('Oo') }}
-						</button> of each month <button class="tw-text-link tw-font-medium"
+						</button> of each month <button
+							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 						>
 							{{ totalCombinedDeposit | numeral('$0,0.00') }}
@@ -21,7 +24,8 @@
 						transferred.
 					</p>
 					<p>
-						<button class="tw-text-link tw-font-medium"
+						<button
+							class="tw-text-link tw-font-medium"
 							@click="$emit('cancel-subscription')"
 						>
 							Cancel Auto Deposit
@@ -53,13 +57,15 @@
 												<div class="small-12 columns">
 													<div class="row column">
 														<strong>Each month on the</strong>
-														<label class="tw-sr-only"
+														<label
+															class="tw-sr-only"
 															:class="{ 'error': $v.dayOfMonth.$invalid }"
 															for="dayOfMonth"
 														>
 															Day of the Month
 														</label>
-														<kv-text-input v-if="isDayInputShown"
+														<kv-text-input
+															v-if="isDayInputShown"
 															@blur="hideDayInput()"
 															class="text-input__day"
 															id="dayOfMonth"
@@ -83,8 +89,9 @@
 															<li v-if="!$v.dayOfMonth.required">
 																Field is required
 															</li>
-															<li v-if="!$v.dayOfMonth.minValue
-																|| !$v.dayOfMonth.maxValue"
+															<li
+																v-if="!$v.dayOfMonth.minValue
+																	|| !$v.dayOfMonth.maxValue"
 															>
 																Enter day of month between 1 and 31
 															</li>
@@ -125,8 +132,9 @@
 																<li v-if="!$v.mgAmount.required">
 																	Field is required
 																</li>
-																<li v-if="!$v.mgAmount.minValue
-																	|| !$v.mgAmount.maxValue"
+																<li
+																	v-if="!$v.mgAmount.minValue
+																		|| !$v.mgAmount.maxValue"
 																>
 																	Enter an amount of $5-$10,000
 																</li>
@@ -159,8 +167,9 @@
 																class="tw-text-right validation-errors"
 																v-if="$v.donation.$invalid"
 															>
-																<li v-if="!$v.donation.minValue
-																	|| !$v.donation.maxValue"
+																<li
+																	v-if="!$v.donation.minValue
+																		|| !$v.donation.maxValue"
 																>
 																	Enter an amount of $0-$10,000
 																</li>
@@ -180,7 +189,8 @@
 															</div>
 														</div>
 														<div class="row column">
-															<ul class="tw-text-center validation-errors"
+															<ul
+																class="tw-text-center validation-errors"
 																v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
 															>
 																<li>
@@ -201,7 +211,8 @@
 										<div class="row">
 											<div class="column">
 												<template v-if="paymentMethod">
-													<img class="ad-update-lightbox__cc-icon tw-inline-block"
+													<img
+														class="ad-update-lightbox__cc-icon tw-inline-block"
 														:src="paymentMethod.imageUrl"
 														alt="credit card"
 													>
@@ -231,7 +242,8 @@
 									v-if="!settingsOpen"
 									class="row column" key="paymentSettings"
 								>
-									<button class="tw-text-link tw-font-medium"
+									<button
+										class="tw-text-link tw-font-medium"
 										@click="toggleSections"
 									>
 										<kv-icon
@@ -251,7 +263,8 @@
 											>
 											{{ paymentMethod.description }}
 										</div>
-										<p v-if="updateToCurrentPaymentMethod"
+										<p
+											v-if="updateToCurrentPaymentMethod"
 											class="validation-error tw-text-center"
 										>
 											<!-- eslint-disable-next-line max-len -->

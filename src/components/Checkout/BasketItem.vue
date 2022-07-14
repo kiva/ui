@@ -49,7 +49,8 @@
 				/>
 			</div>
 		</div>
-		<div class="
+		<div
+			class="
 			tw-flex-none
 			tw-w-full
 			md:tw-w-auto

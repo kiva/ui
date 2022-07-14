@@ -1,7 +1,8 @@
 <template>
 	<div class="www-page">
 		<the-banner-area v-show="!isKivaAppReferral" />
-		<the-header v-show="!isKivaAppReferral"
+		<the-header
+			v-show="!isKivaAppReferral"
 			:hide-search-in-header="hideSearchInHeader"
 		/>
 		<slot name="secondary" v-if="!isKivaAppReferral"></slot>

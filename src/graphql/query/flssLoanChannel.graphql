@@ -3,6 +3,7 @@
 query flssLoanChannel(
 	$ids: [Int],
 	$filterObject: [FundraisingLoanSearchFilterInput!]
+	$sortBy: SortEnum = personalized
 	$pageNumber: Int = 0
 	$pageLimit: Int = 0
 	$imgDefaultSize: String = "w480h360"
@@ -17,7 +18,7 @@ query flssLoanChannel(
 			url
 		}
 	}
-	fundraisingLoans(filters: $filterObject, limit: $pageLimit, pageNumber: $pageNumber) {
+	fundraisingLoans(filters: $filterObject, sortBy: $sortBy, limit: $pageLimit, pageNumber: $pageNumber) {
 		totalCount
 		values {
 			id

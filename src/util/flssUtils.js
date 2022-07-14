@@ -12,12 +12,8 @@ import logReadQueryError from '@/util/logReadQueryError';
 export function getFlssFilters(loanSearchState) {
 	return {
 		...(loanSearchState?.gender && { gender: { any: loanSearchState.gender } }),
-		...(loanSearchState?.countryIsoCode?.length && {
-			countryIsoCode: { any: loanSearchState.countryIsoCode }
-		}),
-		...(loanSearchState?.theme?.length && {
-			theme: { any: loanSearchState.theme }
-		}),
+		...(loanSearchState?.countryIsoCode?.length && { countryIsoCode: { any: loanSearchState.countryIsoCode } }),
+		...(loanSearchState?.themeId?.length && { themeId: { any: loanSearchState.themeId } }),
 		...(loanSearchState?.sectorId?.length && { sectorId: { any: loanSearchState.sectorId } }),
 		...(loanSearchState?.distributionModel && { distributionModel: { eq: loanSearchState.distributionModel } }),
 	};
@@ -84,6 +80,7 @@ export function getLoanChannelVariables(queryMapFLSS, loanQueryVars) {
 	return {
 		ids: [...loanQueryVars.ids],
 		filterObject: getFlssFilters(queryMapFLSS),
+		sortBy: queryMapFLSS.sortBy,
 		pageNumber: loanQueryVars.offset / loanQueryVars.limit,
 		pageLimit: loanQueryVars.limit,
 		basketId: loanQueryVars.basketId,

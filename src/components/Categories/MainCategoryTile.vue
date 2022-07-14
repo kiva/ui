@@ -1,24 +1,20 @@
 <template>
-	<div v-if="tileSize === 'large' || tileSize === 'medium'" class="tw-mb-6">
+	<div v-if="tileSize === 'large' || tileSize === 'medium'" class="tw-mb-6 tw-group">
 		<router-link
-			class="tw-no-underline
-			active:tw-no-underline visited:tw-no-underline
-			hover:tw-no-underline focus:tw-no-underline
-			tw-text-black
-			active:tw-text-black visited:tw-text-black
-			hover:tw-text-black focus:tw-text-black"
+			class="remove-link-decoration"
 			:to="`/lend-by-category/${cleanURL}`"
 			v-kv-track-event="['Lending', 'click-Category', categoryName]"
 		>
-			<kv-responsive-image class="category-image"
+			<kv-responsive-image
+				class="category-image category-image__large"
 				:images="chooseImage(tileSize)"
 				loading="lazy"
 				:alt="altText"
 			/>
 			<div>
 				<div class="tw-text-center tw-flex tw-justify-between">
-					<h3 class="tw-mt-2 tw-mb-2">
-						Lend to {{ categoryName }}
+					<h3 class="tw-mt-2 tw-mb-2 group-hover:tw-underline">
+						{{ categoryName }}
 					</h3>
 					<h4
 						class="tw-mt-2 tw-mb-2"
@@ -33,35 +29,32 @@
 					</p>
 				</div>
 			</div>
-			<h4 v-if="tileSize === 'medium'"
+			<h4
+				v-if="tileSize === 'medium'"
 				class="tw-mt-1 tw-mb-2 tw-hidden md:tw-block"
 			>
 				{{ numberLoans }} loans
 			</h4>
 		</router-link>
 	</div>
-	<div v-else-if="tileSize === 'small'" class=" tw-mb-6">
+	<div v-else-if="tileSize === 'small'" class=" tw-mb-6 tw-group">
 		<router-link
-			class="tw-no-underline
-			active:tw-no-underline visited:tw-no-underline
-			hover:tw-no-underline focus:tw-no-underline
-			tw-text-black
-			active:tw-text-black visited:tw-text-black
-			hover:tw-text-black focus:tw-text-black"
+			class="remove-link-decoration"
 			:to="`/lend-by-category/${cleanURL}`"
 			v-kv-track-event="['Lending', 'click-Category', categoryName]"
 		>
 			<div class="tw-flex">
 				<div class="tw-mr-2 tw-flex-none">
-					<kv-responsive-image class="category-image-small"
+					<kv-responsive-image
+						class="category-image category-image__small"
 						:images="chooseImage(tileSize)"
 						loading="lazy"
 						:alt="altText"
 					/>
 				</div>
 				<div class="tw-grow">
-					<h3 class=" tw-mb-2">
-						Lend to {{ categoryName }}
+					<h3 class=" tw-mb-2 group-hover:tw-underline">
+						{{ categoryName }}
 					</h3>
 					<div>
 						<span class="tw-line-clamp-2">
@@ -86,7 +79,10 @@ export default {
 	props: {
 		tileSize: {
 			type: String,
-			default: 'small'
+			default: 'small',
+			validator: value => {
+				return ['small', 'medium', 'large'].indexOf(value) !== -1;
+			}
 		},
 		categoryName: {
 			type: String,
@@ -158,15 +154,28 @@ export default {
 
 <style lang="postcss" scoped>
 
-.category-image >>> img {
+.category-image {
+	@apply tw-relative;
+	@apply tw-overflow-hidden;
 	@apply tw-rounded;
 }
 
-.category-image-small >>> img {
-	@apply tw-rounded;
+.category-image__large >>> img {
+	@apply group-hover:tw-scale-110 tw-transition-all tw-duration-500 tw-ease-in-out tw-transform;
+}
+
+.category-image__small >>> img {
 	@apply tw-object-cover;
 	@apply tw-w-[152px];
 	@apply tw-h-[152px];
+	@apply group-hover:tw-scale-105 tw-transition-all tw-duration-500 tw-ease-in-out tw-transform;
+}
+
+.remove-link-decoration {
+	@apply tw-no-underline active:tw-no-underline;
+	@apply visited:tw-no-underline hover:tw-no-underline focus:tw-no-underline;
+	@apply tw-text-black active:tw-text-black;
+	@apply visited:tw-text-black hover:tw-text-black focus:tw-text-black;
 }
 
 </style>

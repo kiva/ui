@@ -95,7 +95,8 @@
 				</template>
 			</thanks-layout-v2>
 		</div>
-		<thanks-page-share v-if="receipt && showNewThanksPage"
+		<thanks-page-share
+			v-if="receipt && showNewThanksPage"
 			:receipt="receipt"
 			:lender="lender"
 			:loan="selectedLoan"

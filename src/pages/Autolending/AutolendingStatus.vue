@@ -3,7 +3,8 @@
 		<template #content>
 			<p>
 				Your auto-lending setting is currently
-				<button class="tw-text-link tw-font-medium"
+				<button
+					class="tw-text-link tw-font-medium"
 					@click="showLightbox = true; triggerWatcher()"
 					data-test="autolending-status"
 				>

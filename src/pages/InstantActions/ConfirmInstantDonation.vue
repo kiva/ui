@@ -3,13 +3,15 @@
 		id="confirm-instant-donation"
 		main-class="kv-tailwind"
 	>
-		<kv-page-container class="
+		<kv-page-container
+			class="
 			tw-pt-4 tw-pb-8
 			md:tw-pt-6 md:tw-pb-12
 			lg:tw-pt-8 lg:tw-pb-16"
 		>
 			<kv-grid class="tw-grid-cols-12">
-				<div class="
+				<div
+					class="
 					tw-col-span-12
 					md:tw-col-start-3 md:tw-col-span-8
 					lg:tw-col-start-4 lg:tw-col-span-6"
@@ -66,7 +68,8 @@
 				</div>
 			</kv-grid>
 			<kv-grid class="tw-grid-cols-12">
-				<div class="
+				<div
+					class="
 					tw-col-span-12
 					md:tw-col-start-7 md:tw-col-span-4
 					lg:tw-col-start-7 lg:tw-col-span-3"
