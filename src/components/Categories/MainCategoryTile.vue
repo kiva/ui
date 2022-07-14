@@ -93,7 +93,10 @@ export default {
 	props: {
 		tileSize: {
 			type: String,
-			default: 'small'
+			default: 'small',
+			validator: value => {
+				return ['small', 'medium', 'large'].indexOf(value) !== -1;
+			}
 		},
 		categoryName: {
 			type: String,
