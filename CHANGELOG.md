@@ -1,3 +1,15 @@
+### [2.230.1](https://github.com/kiva/ui/compare/v2.230.0...v2.230.1) (2022-07-14)
+
+
+### Bug Fixes
+
+* added more improvements ([d2f761a](https://github.com/kiva/ui/commit/d2f761a89012fa61c63166fd887503e7e7857d3a))
+* additional preconnect for anonymous crossorigin requests ([5ff5be8](https://github.com/kiva/ui/commit/5ff5be8412c5a46a3af00a6d57dd2effd487de1d))
+* changes after PR review ([5222d82](https://github.com/kiva/ui/commit/5222d825a4ff4df17a8e17c2284dd05f87ead7a4))
+* handle loans per page value according promo card availability ([62a290c](https://github.com/kiva/ui/commit/62a290cd309f75d2b723bf2ef2582ffe88fcaec0))
+* lighthouse run fails when loan is funded, use newest sort instead ([593f450](https://github.com/kiva/ui/commit/593f4507493de89e6fff8a98e6ce86a0f930deaa))
+* linting issues ([70cdc64](https://github.com/kiva/ui/commit/70cdc640ef4b8d99b383ecdfa3e1c64b8e99e85a))
+
 ## [2.230.0](https://github.com/kiva/ui/compare/v2.229.0...v2.230.0) (2022-07-13)
 
 
