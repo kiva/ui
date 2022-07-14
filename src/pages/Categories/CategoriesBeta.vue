@@ -64,7 +64,6 @@
 					<kv-button
 						to="/lend"
 						variant="secondary"
-						state=""
 						v-kv-track-event="['Lending', 'click-view-all', 'View All']"
 					>
 						View all loans
@@ -135,6 +134,19 @@ export default {
 		KvPageContainer,
 		KvButton,
 		LoanSpotlight
+	},
+	metaInfo() {
+		return {
+			title: 'Choose a category and fund a loan',
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: 'Find and lend to the categories that you\'re passionate about, from women to refugees to '
+                    + 'climate, and more. With as little as $25 you can support entrepreneurs around the world on Kiva.'
+				}
+			]
+		};
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
