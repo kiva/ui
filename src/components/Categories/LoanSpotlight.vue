@@ -9,7 +9,7 @@
 				class="tw-mb-1 tw-rounded md:tw-mr-3 lg:tw-mr-4
 				md:tw-flex-none tw-w-full md:tw-w-1/2" :style="{height: '15.75rem'}"
 			/>
-			<div v-if="!isLoading" class="md:tw-mr-3 lg:tw-mr-4 md:tw-w-1/2">
+			<div v-if="!isLoading" class="md:tw-mr-3 lg:tw-mr-4 md:tw-min-w-[40%]">
 				<kv-responsive-image
 					class="spotlight-loan-image"
 					:images="getSpotlightImage"
@@ -231,7 +231,7 @@ export default {
 
 .spotlight-loan-image >>> img {
 	@apply tw-rounded tw-object-contain tw-bg-black md:tw-object-cover md:tw-object-top;
-	@apply tw-w-full tw-max-h-[280px] md:tw-max-h-[390px];
+	@apply tw-w-full tw-max-h-[280px] md:tw-max-h-[450px];
 	@apply md:tw-min-h-[320px];
 }
 
