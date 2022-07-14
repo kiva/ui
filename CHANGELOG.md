@@ -1,3 +1,10 @@
+## [2.231.0](https://github.com/kiva/ui/compare/v2.230.1...v2.231.0) (2022-07-14)
+
+
+### Features
+
+* adding meta tags to categories page and storybook enhancements ([#4021](https://github.com/kiva/ui/issues/4021)) ([3024331](https://github.com/kiva/ui/commit/302433161ec6426e3f405bb85c2a970bd26a88c0))
+
 ### [2.230.1](https://github.com/kiva/ui/compare/v2.230.0...v2.230.1) (2022-07-14)
 
 
