@@ -1,3 +1,10 @@
+### [2.230.1-next.1](https://github.com/kiva/ui/compare/v2.230.0...v2.230.1-next.1) (2022-07-14)
+
+
+### Bug Fixes
+
+* move OneTrust loading to html snippet for faster loading ([6e91505](https://github.com/kiva/ui/commit/6e915056019738b4e65d6ef2ec4c343a7ab1139b))
+
 ## [2.230.0](https://github.com/kiva/ui/compare/v2.229.0...v2.230.0) (2022-07-13)
 
 
