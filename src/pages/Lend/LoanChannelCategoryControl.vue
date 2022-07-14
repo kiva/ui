@@ -155,12 +155,9 @@
 
 <script>
 import _get from 'lodash/get';
-import _invokeMap from 'lodash/invokeMap';
 import _isEqual from 'lodash/isEqual';
 import _map from 'lodash/map';
 import _filter from 'lodash/filter';
-import _mapValues from 'lodash/mapValues';
-import _merge from 'lodash/merge';
 import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
@@ -185,7 +182,9 @@ import {
 } from '@/util/loanChannelUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
-let loansPerPage = 12;
+const defaultLoansPerPage = 12;
+
+// Routes to show monthly good promo
 const targetRoutes = [
 	{ route: 'women', url: '/monthlygood?category=women', label: 'women' },
 	{ route: 'loans-to-women', url: '/monthlygood?category=women', label: 'women' },
@@ -202,32 +201,6 @@ const targetRoutes = [
 	{ route: 'united-states-loans', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' },
 ];
 
-// A map of functions to transform url query parameters to/from graphql variables.
-// Each key in urlParamTransform is a url query parameter (e.g. the 'page' in ?page=2).
-// Each value is then an object with the to/from functions to write/read the url parameter.
-const urlParamTransform = {
-	page: {
-		to({ offset }) {
-			const page = Math.floor(offset / loansPerPage) + 1;
-			return page > 1 ? String(page) : undefined;
-		},
-		from({ page }) {
-			const pagenum = numeral(page).value() - 1;
-			return { offset: pagenum > 0 ? loansPerPage * pagenum : 0 };
-		}
-	},
-};
-
-// Turn an object of graphql variables into an object of url query parameters
-function toUrlParams(variables) {
-	return _mapValues(urlParamTransform, ({ to }) => to(variables));
-}
-
-// Turn an object of url query parameters into an object of graphql variables
-function fromUrlParams(params) {
-	return _merge({}, ..._invokeMap(urlParamTransform, 'from', params));
-}
-
 function getTargetedChannel(targetedRoute, allChannels) {
 	const loanChannels = _get(allChannels, 'lend.loanChannels.values');
 	// map id from loan channels
@@ -239,6 +212,12 @@ function getTargetedChannel(targetedRoute, allChannels) {
 	);
 	// isolate targeted loan channel id
 	return _get(targetedLoanChannel[0], 'id') || null;
+}
+
+function getPageOffset(query, limit) {
+	const pageNum = numeral(query.page).value() - 1;
+
+	return pageNum > 0 ? limit * pageNum : 0;
 }
 
 export default {
@@ -278,7 +257,7 @@ export default {
 	data() {
 		return {
 			offset: 0,
-			limit: loansPerPage,
+			limit: defaultLoansPerPage,
 			filters: { },
 			targetedLoanChannelURL: null,
 			targetedLoanChannelID: null,
@@ -300,9 +279,9 @@ export default {
 	},
 	computed: {
 		urlParams() {
-			return toUrlParams({
-				offset: this.offset,
-			});
+			const page = Math.floor(this.offset / this.limit) + 1;
+
+			return { page: page > 1 ? String(page) : undefined };
 		},
 		lastLoanPage() {
 			return Math.ceil(this.totalCount / this.limit);
@@ -381,11 +360,11 @@ export default {
 				// Isolate targeted loan channel id
 				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, data);
 
+				// Get page limit and offset
 				const currentRoute = path.replace('/lend-by-category/', '');
-
 				const matchedRoutes = targetRoutes.filter(r => r.route === currentRoute);
-
-				loansPerPage = matchedRoutes.length > 0 ? loansPerPage - 1 : loansPerPage;
+				const limit = matchedRoutes.length > 0 ? defaultLoansPerPage - 1 : defaultLoansPerPage;
+				const offset = getPageOffset(query, limit);
 
 				return preFetchChannel(
 					client,
@@ -393,12 +372,12 @@ export default {
 					loanChannelQueryMapMixin.data().loanChannelQueryMap,
 					targetedLoanChannelURL,
 					// Build loanQueryVars since SSR doesn't have same context
-					{ ids: [targetedLoanChannelID], limit: loansPerPage, offset: fromUrlParams(query).offset }
+					{ ids: [targetedLoanChannelID], limit, offset }
 				);
 			});
 		}
 	},
-	async created() {
+	created() {
 		let allChannelsData = {};
 
 		this.initializeMonthlyGoodPromo();
@@ -499,7 +478,7 @@ export default {
 				const message = `There are currently ${this.lastLoanPage} pages of results.
 					We’ve loaded the ${this.lastLoanPage === 0 ? 'first' : 'last'} page for you.`;
 				this.$showTipMsg(message);
-				this.pageChange({ pageOffset: loansPerPage * (this.lastLoanPage > 0 ? this.lastLoanPage - 1 : 0) });
+				this.pageChange({ pageOffset: this.limit * (this.lastLoanPage > 0 ? this.lastLoanPage - 1 : 0) });
 			}
 		},
 		updateLoanReservation(id) {
@@ -518,8 +497,7 @@ export default {
 			this.pushChangesToUrl();
 		},
 		updateFromParams(query) {
-			const { offset } = fromUrlParams(query);
-			this.offset = offset;
+			this.offset = getPageOffset(query, this.limit);
 		},
 		pushChangesToUrl() {
 			if (!_isEqual(this.$route.query, this.urlParams)) {
@@ -595,9 +573,9 @@ export default {
 			if (matchedRoutes.length) {
 				this.displayLoanPromoCard = true;
 				[this.mgTargetCategory] = matchedRoutes;
-				this.limit = loansPerPage - 1;
+				this.limit = defaultLoansPerPage - 1;
 			} else {
-				this.limit = loansPerPage;
+				this.limit = defaultLoansPerPage;
 			}
 		},
 		async getRelatedLoansExp() {
@@ -606,7 +584,7 @@ export default {
 				const baseData = await this.apollo.query({
 					query: getRelatedLoans,
 					variables: {
-						limit: loansPerPage,
+						limit: this.limit,
 						loanId: loan.id,
 						offset: 0,
 						topics: ['story']
