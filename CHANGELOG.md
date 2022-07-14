@@ -1,3 +1,10 @@
+### [2.231.1](https://github.com/kiva/ui/compare/v2.231.0...v2.231.1) (2022-07-14)
+
+
+### Bug Fixes
+
+* category page design revisions ([#4022](https://github.com/kiva/ui/issues/4022)) ([2428951](https://github.com/kiva/ui/commit/2428951fd7f1d094e46efb40ca89b57381dfb29c))
+
 ## [2.231.0](https://github.com/kiva/ui/compare/v2.230.1...v2.231.0) (2022-07-14)
 
 
