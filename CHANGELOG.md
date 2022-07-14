@@ -1,3 +1,10 @@
+### [2.230.1-next.3](https://github.com/kiva/ui/compare/v2.230.1-next.2...v2.230.1-next.3) (2022-07-14)
+
+
+### Bug Fixes
+
+* load optimizely before onetrust ([c5ea038](https://github.com/kiva/ui/commit/c5ea03841252a6dd53881e159f608e752474c89d))
+
 ### [2.230.1-next.2](https://github.com/kiva/ui/compare/v2.230.1-next.1...v2.230.1-next.2) (2022-07-14)
 
 
