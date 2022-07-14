@@ -6,7 +6,8 @@
 					CHOOSE A SUBSCRIPTION CATEGORY
 				</p>
 				<label for="borrower-categories" class="tw-sr-only">Lending category to support</label>
-				<kv-select class="tw-w-full" id="borrower-categories"
+				<kv-select
+					class="tw-w-full" id="borrower-categories"
 					:model-value="selectedGroup"
 					@update:modelValue="updateSelected"
 				>
@@ -17,7 +18,8 @@
 			</fieldset>
 			<div class="tw-flex tw-items-center tw-gap-2">
 				<fieldset class="tw-basis-2/6">
-					<label class="tw-sr-only" :class="{ 'tw-text-danger': $v.$invalid }"
+					<label
+						class="tw-sr-only" :class="{ 'tw-text-danger': $v.$invalid }"
 						:for="'amount-' + componentKey"
 					>
 						Amount

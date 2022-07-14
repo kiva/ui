@@ -1,4 +1,3 @@
-import StoryRouter from 'storybook-vue-router';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import mockedReceiptData from '../mock-data/receipt-data-mock';
 
@@ -18,7 +17,6 @@ const mockedAPIResponse = {
 export default {
 	title: 'Components/CheckoutReceipt',
 	component: CheckoutReceipt,
-	decorators: [StoryRouter()],
 };
 
 export const Default = () => ({

@@ -1,9 +1,6 @@
 import Vue from 'vue'
-import StoryRouter from 'storybook-vue-router';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
-
 import LendHomepageLoanCard from '@/components/LoanCards/LendHomepageLoanCard';
-
 // import plugins
 import kivaPlugins from '@/plugins';
 Vue.use(kivaPlugins)
@@ -11,7 +8,6 @@ Vue.use(kivaPlugins)
 export default {
 	title: 'Loan Cards/Lend Homepage Loan Card',
 	component: LendHomepageLoanCard,
-	decorators: [StoryRouter()],
 	args: {
 		amountLeft: 250,
 		expiringSoonMessage: 'Only 3 Days Left!',

@@ -1,5 +1,6 @@
 <template>
-	<div ref="wrapper"
+	<div
+		ref="wrapper"
 		:class="['lg:tw-mb-1.5', { 'md:tw-px-4': isSticky }]"
 		:style="wrapperStyle"
 	>
@@ -48,7 +49,8 @@
 					<span class="tw-flex tw-pb-1 lg:tw-pb-3">
 						<!-- eslint-disable-next-line max-len -->
 						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
-							<fieldset class="tw-w-full tw-flex" :disabled="isAdding"
+							<fieldset
+								class="tw-w-full tw-flex" :disabled="isAdding"
 								data-testid="bp-lend-cta-select-and-button"
 							>
 								<label
@@ -204,15 +206,16 @@
 					>
 						All shares reserved
 					</p>
+					<hr class="tw-hidden md:tw-block tw-border-tertiary tw-w-full tw-mt-2">
 					<div
-						class="tw-flex lg:tw-justify-center tw-w-full tw-mt-2"
+						class="tw-flex lg:tw-justify-center tw-w-full tw-items-center"
 						:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
 					>
 						<loan-bookmark
 							v-if="isLoggedIn"
 							data-testid="bp-lend-cta-loan-bookmark"
 							:loan-id="loanId"
-							class="tw-hidden md:tw-inline-block tw-mt-1 lg:tw-hidden"
+							class="tw-hidden md:tw-inline-block lg:tw-hidden"
 						/>
 						<jump-links
 							class="tw-hidden md:tw-block tw-ml-1 tw-mr-1" style="width: 420px;"

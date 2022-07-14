@@ -22,7 +22,8 @@
 
 				<!-- Corporate header for /cc pages -->
 				<template v-else-if="corporate">
-					<div class="
+					<div
+						class="
 						tw-flex tw-gap-2.5 lg:tw-gap-6 tw-items-center"
 					>
 						<campaign-logo-group
@@ -133,7 +134,8 @@
 								style="margin-top: 1px;"
 							>
 								<kv-page-container>
-									<the-lend-menu ref="lendMenu"
+									<the-lend-menu
+										ref="lendMenu"
 										@pointerenter.native="onLendMenuPointerEnter"
 										@pointerleave.native="onLendMenuPointerLeave"
 									/>
@@ -157,7 +159,8 @@
 							<search-bar ref="search" />
 						</div>
 
-						<div class="header__right-side
+						<div
+							class="header__right-side
 						tw-flex tw-justify-end tw-gap-2.5 lg:tw-gap-4"
 						>
 							<!-- Borrow -->

@@ -1,8 +1,6 @@
-import StoryRouter from 'storybook-vue-router';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
-
 import {
 	lightHeader,
 	lightFooter,
@@ -21,7 +19,6 @@ import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
 export default {
 	title: 'WwwFrame/WwwPageMinimal',
 	component: WwwPageMinimal,
-	decorators: [StoryRouter()],
 	args: {
 		headerTheme: null,
 		footerTheme: null

@@ -10,7 +10,8 @@
 		</template>
 		<template #overlayContent>
 			<div class="row">
-				<div class="
+				<div
+					class="
 						video-column
 						columns
 						small-12 xlarge-5 xxlarge-6
@@ -29,7 +30,8 @@
 					</div>
 				</div>
 
-				<div class="
+				<div
+					class="
 						overlay-column columns
 						medium-10 medium-offset-1 large-8 large-offset-0 xlarge-7 xxlarge-6"
 				>

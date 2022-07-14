@@ -26,6 +26,7 @@
 </template>
 
 <script>
+/* eslint-disable vue/multi-word-component-names */
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TertiaryMenu from '@/components/WwwFrame/TertiaryMenu';
 import CustomSecondaryMenu from '@/components/WwwFrame/Menus/CustomSecondaryMenu';

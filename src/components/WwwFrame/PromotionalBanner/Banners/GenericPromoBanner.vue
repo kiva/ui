@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-v-text-v-html-on-component -->
 <template>
 	<div class="tw-flex tw-items-center tw-justify-center tw-bg-brand tw-py-1 tw-pl-1.5 generic-banner">
 		<kv-icon

@@ -11,7 +11,6 @@
 			}"
 		>
 			<matched-loans-lightbox
-				:matching-text="matchedText"
 				:show-lightbox="showMatchedLoansLightbox"
 				:close-lightbox="closeMatchedLoansLightbox"
 			/>
@@ -76,7 +75,6 @@
 							@refreshtotals="refreshTotals"
 							@updating-totals="setUpdatingTotals"
 							:show-matched-loan-kiva-credit="showMatchedLoanKivaCredit && requireDepositsMatchedLoans"
-							:matching-text="matchedText"
 							:open-lightbox="openMatchedLoansLightbox"
 						/>
 
@@ -357,8 +355,6 @@ export default {
 			upsellLoan: {},
 			showUpsellModule: true,
 			requireDepositsMatchedLoans: false,
-			showMatchedLoanKivaCredit: false,
-			matchedText: null,
 			showMatchedLoansLightbox: false,
 		};
 	},
@@ -504,14 +500,6 @@ export default {
 				);
 			}
 		}
-
-		const matchedLoansWithCredit = this.loans?.filter(loan => {
-			const hasCredits = loan.creditsUsed?.length > 0;
-			const isMatchedLoan = loan.loan?.matchingText;
-			return hasCredits && isMatchedLoan;
-		});
-		this.showMatchedLoanKivaCredit = matchedLoansWithCredit.length > 0;
-		this.matchedText = matchedLoansWithCredit[0]?.loan?.matchingText;
 	},
 	mounted() {
 		// update current time every second for reactivity
@@ -540,6 +528,14 @@ export default {
 		this.getUpsellModuleData();
 	},
 	computed: {
+		showMatchedLoanKivaCredit() {
+			const matchedLoansWithCredit = this.loans?.filter(loan => {
+				const hasCredits = loan.creditsUsed?.length > 0;
+				const isMatchedLoan = loan.loan?.matchingText;
+				return hasCredits && isMatchedLoan;
+			});
+			return matchedLoansWithCredit.length > 0;
+		},
 		// show upsell module only once per session
 		upsellCookieActive() {
 			return this.cookieStore.get('upsell-loan-added') === 'true';
@@ -642,6 +638,7 @@ export default {
 	},
 	methods: {
 		openMatchedLoansLightbox() {
+			this.$kvTrackEvent('Basket', 'click-must-deposit-message-cta', 'Learn more');
 			this.showMatchedLoansLightbox = true;
 		},
 		closeMatchedLoansLightbox() {

@@ -35,7 +35,8 @@
 			>
 				Complete cancellation
 			</kv-button>
-			<button class="causes-cancel-lightbox__abort tw-text-link tw-font-medium"
+			<button
+				class="causes-cancel-lightbox__abort tw-text-link tw-font-medium"
 				@click="trackEvent({
 					label: `Wait! I don't want to cancel`,
 					property: 'exit'}); closeLightbox()"

@@ -36,7 +36,8 @@
 			</div>
 			<div class="tw-grow tw-flex tw-flex-wrap">
 				<div class="tw-w-full tw-text-right tw-self-end">
-					<kv-button variant="link"
+					<kv-button
+						variant="link"
 						class="tw-w-full md:tw-w-44 tw-mt-2 md:tw-mt-7"
 						@click="addToBasket(loanId, amountLeft)"
 					>

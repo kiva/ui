@@ -1,3 +1,177 @@
+## [2.230.0](https://github.com/kiva/ui/compare/v2.229.0...v2.230.0) (2022-07-13)
+
+
+### Features
+
+* add pfp borrower profile progress bar and story ([37426be](https://github.com/kiva/ui/commit/37426be9b94eabeeed1bae23463c556971e2045c))
+* pfp borrower profile top banner ([82be4eb](https://github.com/kiva/ui/commit/82be4eb382409f75589ef93bbdfa64d90d727c52))
+
+
+### Bug Fixes
+
+* move borrower profile horizontal rule and align save button ([568eb13](https://github.com/kiva/ui/commit/568eb131edd810b36c552f6b6ee450041e560330))
+* parseInt for diffInDays ([42f6362](https://github.com/kiva/ui/commit/42f6362506ae17ca13d831fe772b0700d6b8d8b1))
+
+## [2.229.0](https://github.com/kiva/ui/compare/v2.228.1...v2.229.0) (2022-07-13)
+
+
+### Features
+
+* adding loan spotlight ([#4000](https://github.com/kiva/ui/issues/4000)) ([b95fedf](https://github.com/kiva/ui/commit/b95fedf26aa9bf371270236dd0b1812763c06898))
+
+### [2.228.1](https://github.com/kiva/ui/compare/v2.228.0...v2.228.1) (2022-07-13)
+
+
+### Bug Fixes
+
+* recommended by lender menu link accessibility fix ([60f0967](https://github.com/kiva/ui/commit/60f0967c9dc5348122317ec3bdaa29e64bbfffcc))
+
+## [2.228.0](https://github.com/kiva/ui/compare/v2.227.2...v2.228.0) (2022-07-13)
+
+
+### Features
+
+* optimize font loading process ([2cb92c9](https://github.com/kiva/ui/commit/2cb92c921df015d0af552977fe623f4db5a976c4))
+
+
+### Bug Fixes
+
+* remove old font declarations ([9a4df01](https://github.com/kiva/ui/commit/9a4df0106f577f90a081785ecd987dcd1824e46f))
+
+### [2.227.2](https://github.com/kiva/ui/compare/v2.227.1...v2.227.2) (2022-07-13)
+
+
+### Bug Fixes
+
+* update lightbox header ([ada31c6](https://github.com/kiva/ui/commit/ada31c67d3d8eda6289e4c2aa0c140200fb41a60))
+
+### [2.227.1](https://github.com/kiva/ui/compare/v2.227.0...v2.227.1) (2022-07-12)
+
+
+### Bug Fixes
+
+* update lightbox copy and fix info box ([b753bb4](https://github.com/kiva/ui/commit/b753bb4dd8767636e3afa221873411d8f139df1f))
+
+## [2.227.0](https://github.com/kiva/ui/compare/v2.226.0...v2.227.0) (2022-07-12)
+
+
+### Features
+
+* created method to get saved searches ([e74f26c](https://github.com/kiva/ui/commit/e74f26ce8867516521ae25c06e62886a2d746dc3))
+
+## [2.226.0](https://github.com/kiva/ui/compare/v2.225.0...v2.226.0) (2022-07-12)
+
+
+### Features
+
+* track lend-by-category and borrower profile page performance ([becfd4e](https://github.com/kiva/ui/commit/becfd4eb4a8b91fedf26283319cc5d8a6377c74d))
+
+## [2.225.0](https://github.com/kiva/ui/compare/v2.224.0...v2.225.0) (2022-07-12)
+
+
+### Features
+
+* add new page frame and temporary route ([e0aa24c](https://github.com/kiva/ui/commit/e0aa24c0a1cae5cdc3d949b2f13cbcfef7ad67d9))
+* adding a saved search page frame and temporary route ([006772a](https://github.com/kiva/ui/commit/006772a942cb9abcb62c493d7f730d4fbc755b46))
+
+## [2.224.0](https://github.com/kiva/ui/compare/v2.223.0...v2.224.0) (2022-07-11)
+
+
+### Features
+
+* pager now uses new KvMaterialIcon ([eea560a](https://github.com/kiva/ui/commit/eea560a048c973c791247c3c21d292d5d31aaaa5))
+
+## [2.223.0](https://github.com/kiva/ui/compare/v2.222.0...v2.223.0) (2022-07-11)
+
+
+### Features
+
+* combine pager components ([6d9bac1](https://github.com/kiva/ui/commit/6d9bac1994e7fda6f0f17e9e6ead029579f7e5c6))
+
+
+### Bug Fixes
+
+* added missing semicolon ([ea02c24](https://github.com/kiva/ui/commit/ea02c24b6dc851fc3c6227e7c78f82a2eb0385a3))
+* load first page if offset too large for lend API and watch browser page query change ([38b81d0](https://github.com/kiva/ui/commit/38b81d08059776b8e684b705afe29576e0cd0878))
+* remove unneed template string ([4c8c370](https://github.com/kiva/ui/commit/4c8c37097fb8cf0d3b8778f55a3bbf605774b469))
+* removed JIT tailwind classes and change for new eslint rule ([0323e2e](https://github.com/kiva/ui/commit/0323e2e189b0ed92584b2040b3aacf8606f9f087))
+
+## [2.222.0](https://github.com/kiva/ui/compare/v2.221.4...v2.222.0) (2022-07-11)
+
+
+### Features
+
+* readme for loan search ([03a946b](https://github.com/kiva/ui/commit/03a946bc4d03263275c940b1b5a3f5599f50ac19))
+* refactored loanSearchUtils ([e1289b8](https://github.com/kiva/ui/commit/e1289b867343f7227e50ab2969c3ca42df2cda6b))
+
+
+### Bug Fixes
+
+* minor readme adjustments ([b6c7832](https://github.com/kiva/ui/commit/b6c78324a50f9a88d5a46c31cbd4fd8aa9162272))
+* renamed lodash in tests for consistency ([69b58b1](https://github.com/kiva/ui/commit/69b58b1b4a02069a9488d829cc3dd4e497fb1f8b))
+* whitespace issue ([acb8c11](https://github.com/kiva/ui/commit/acb8c11f848dfb7c41b55b73ec17c5e250868d9d))
+
+### [2.221.4](https://github.com/kiva/ui/compare/v2.221.3...v2.221.4) (2022-07-08)
+
+
+### Bug Fixes
+
+* added missing loan card padding ([18c26e6](https://github.com/kiva/ui/commit/18c26e6fc9143bb0df30eae5e610a7ac5683bc78))
+
+### [2.221.3](https://github.com/kiva/ui/compare/v2.221.2...v2.221.3) (2022-07-08)
+
+
+### Bug Fixes
+
+* change back to last page if offset too large for result set ([3850dfb](https://github.com/kiva/ui/commit/3850dfbe76c8988b3c9177c5c992c41e0cde9d79))
+
+### [2.221.2](https://github.com/kiva/ui/compare/v2.221.1...v2.221.2) (2022-07-07)
+
+
+### Bug Fixes
+
+* initial load has all facets regardless of query params ([cf5be4e](https://github.com/kiva/ui/commit/cf5be4e35a7065de602188695205be1df2732d72))
+
+### [2.221.1](https://github.com/kiva/ui/compare/v2.221.0...v2.221.1) (2022-07-07)
+
+
+### Bug Fixes
+
+* use optimized default make-fetch-happen agent instead of custom agent ([a44d1ab](https://github.com/kiva/ui/commit/a44d1ab66be8e8663d5e653a8d19163b87fbd2f8))
+
+## [2.221.0](https://github.com/kiva/ui/compare/v2.220.4...v2.221.0) (2022-07-07)
+
+
+### Features
+
+* loan filter chips show/hide toggle ([29a6c71](https://github.com/kiva/ui/commit/29a6c715e93ddf4c3f1de06158648b3997a29812))
+
+
+### Bug Fixes
+
+* more specific container class ([1edd119](https://github.com/kiva/ui/commit/1edd119282a3822bc8eb11b3d3f4a189cde0e356))
+
+### [2.220.4](https://github.com/kiva/ui/compare/v2.220.3...v2.220.4) (2022-07-07)
+
+
+### Bug Fixes
+
+* add snowplow events around employee verification and team join processes ([4269548](https://github.com/kiva/ui/commit/4269548828b61408c355471348686f9134d66c20))
+
+### [2.220.3](https://github.com/kiva/ui/compare/v2.220.2...v2.220.3) (2022-07-06)
+
+
+### Bug Fixes
+
+* allow utm query params through into experiment ([f3996c0](https://github.com/kiva/ui/commit/f3996c0d5efdea715d22670770dfd7cdb2072095))
+
+### [2.220.2](https://github.com/kiva/ui/compare/v2.220.1...v2.220.2) (2022-07-06)
+
+
+### Bug Fixes
+
+* add tracking to matched loans ([4c0d149](https://github.com/kiva/ui/commit/4c0d1497bf45d4f06f345ba8a93d5640cab0ac97))
+
 ### [2.220.1](https://github.com/kiva/ui/compare/v2.220.0...v2.220.1) (2022-07-06)
 
 

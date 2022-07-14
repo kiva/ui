@@ -1,7 +1,7 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
-import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearchUtils';
+import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
 
 // Prospective sort options from both APIs (values for flss will expand)
 const allSortOptions = [

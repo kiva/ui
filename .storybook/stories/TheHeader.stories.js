@@ -1,5 +1,4 @@
 import Vue from "vue";
-import StoryRouter from "storybook-vue-router";
 import apolloStoryMixin from "../mixins/apollo-story-mixin";
 import cookieStoreStoryMixin from "../mixins/cookie-store-story-mixin";
 import kvAuth0StoryMixin from "../mixins/kv-auth0-story-mixin";
@@ -63,7 +62,6 @@ const provideMockedApollo = (mockedResult) => {
 export default {
 	title: "WwwFrame/TheHeader",
 	component: TheHeader,
-	decorators: [StoryRouter()],
 	parameters: {
 		layout: "fullscreen",
 	},
@@ -143,7 +141,7 @@ export const CorporateVisitorItemInCart = (args, { argTypes }) => ({
 		apollo: provideMockedApollo(itemInCart),
 	},
 	template: `
-	<the-header :corporate="true" :corporate-logo-url="corporateLogoUrl" />
+		<the-header :corporate="true" :corporate-logo-url="corporateLogoUrl" />
 	`,
 });
 
@@ -157,7 +155,7 @@ export const CorporateLoggedIn = (args, { argTypes }) => ({
 		apollo: provideMockedApollo(loggedIn),
 	},
 	template: `
-	<the-header :corporate="true" :corporate-logo-url="corporateLogoUrl" />
+		<the-header :corporate="true" :corporate-logo-url="corporateLogoUrl" />
 	`,
 });
 

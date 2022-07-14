@@ -1,6 +1,5 @@
 <template>
 	<div class="tw-text-primary tw-text-center">
-		<hr class="tw-hidden md:tw-block tw-border-tertiary">
 		<a
 			class="tw-hidden md:tw-inline tw-text-primary tw-pr-1 tw-font-medium tw-cursor-pointer"
 			data-testid="bp-jump-link-borrower-story"

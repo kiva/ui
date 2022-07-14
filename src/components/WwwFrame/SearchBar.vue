@@ -1,5 +1,6 @@
 <template>
-	<form class="search-form tw-relative"
+	<form
+		class="search-form tw-relative"
 		action="/lend"
 		method="get"
 		autocomplete="off"
@@ -48,14 +49,16 @@
 				md:tw-rounded-b
 			"
 		>
-			<li v-for="section in sections" :key="section.name" class="section"
+			<li
+				v-for="section in sections" :key="section.name" class="section"
 				:data-testid="`header-search-results-${section.name}`"
 			>
 				<h2 class="tw-text-base tw-py-0.5">
 					{{ section.name }}
 				</h2>
 				<ol>
-					<li v-for="suggestion in section.suggestions"
+					<li
+						v-for="suggestion in section.suggestions"
 						:key="suggestion.label"
 						@mousedown.prevent
 						@click="runSearch(suggestion)"
