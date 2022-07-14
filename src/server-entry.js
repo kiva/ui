@@ -18,6 +18,9 @@ import logFormatter from '@/util/logFormatter';
 const fetch = require('make-fetch-happen');
 
 const isDev = process.env.NODE_ENV !== 'production';
+const renderedHeadScript = serialize(headScript);
+const renderedOneTrustEvent = serialize(oneTrustEvent);
+const headSnippet = `<script>(${renderedHeadScript})(window.__KV_CONFIG__, ${renderedOneTrustEvent});</script>`;
 
 // This exported function will be called by `bundleRenderer`.
 // This is where we perform data-prefetching to determine the
@@ -96,8 +99,16 @@ export default context => {
 		// render content for template
 		context.renderedConfig = renderGlobals({ __KV_CONFIG__: config });
 		context.renderedNoscript = noscriptTemplate(config);
-		// eslint-disable-next-line max-len
-		context.renderedExternals = `<script>(${serialize(headScript)})(window.__KV_CONFIG__, ${serialize(oneTrustEvent)});</script>`;
+		context.renderedExternals = '';
+		// add OneTrust loader
+		if (config.oneTrust && config.oneTrust.enable) {
+			const key = `${config.oneTrust.key}${config.oneTrust.domainSuffix}`;
+			const src = `https://cdn.cookielaw.org/consent/${key}/otSDKStub.js`;
+			// eslint-disable-next-line max-len
+			context.renderedExternals += `<script type="text/javascript" data-domain-script="${key}" src="${src}"></script>`;
+		}
+		// Add head script snippet
+		context.renderedExternals += headSnippet;
 
 		// set router's location, ignoring any errors about redirection
 		router.push(url).catch(() => {});
