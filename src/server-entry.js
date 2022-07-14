@@ -100,6 +100,11 @@ export default context => {
 		context.renderedConfig = renderGlobals({ __KV_CONFIG__: config });
 		context.renderedNoscript = noscriptTemplate(config);
 		context.renderedExternals = '';
+		// add Optimizely loader TODO: check optout first
+		if (config.enableAnalytics && config.enableOptimizely) {
+			// eslint-disable-next-line max-len
+			context.renderedExternals += `<script src="https://cdn.optimizely.com/js/${config.optimizelyProjectId}.js"></script><script>window.optimizely = window.optimizely || []; window.optimizely.push({ type: "holdEvents" });</script>`;
+		}
 		// add OneTrust loader
 		if (config.oneTrust && config.oneTrust.enable) {
 			const key = `${config.oneTrust.key}${config.oneTrust.domainSuffix}`;

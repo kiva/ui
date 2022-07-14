@@ -123,10 +123,8 @@ export default (config, globalOneTrustEvent) => {
 
 	// Optimizely experiment loader
 	const insertOptimizely = () => {
-		const p = document.getElementsByTagName('script')[0];
-		const s = document.createElement('script');
-		s.src = `https://cdn.optimizely.com/js/${config.optimizelyProjectId}.js`;
-		p.parentNode.insertBefore(s, p);
+		window.optimizely = window.optimizely || [];
+		window.optimizely.push({ type: 'sendEvents' });
 	};
 
 	// Always load
