@@ -137,7 +137,7 @@ export default {
 	},
 	metaInfo() {
 		return {
-			title: 'Choose a category and fund a loan | Kiva',
+			title: 'Choose a category and fund a loan',
 			meta: [
 				{
 					vmid: 'description',
