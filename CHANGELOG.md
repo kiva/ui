@@ -1,3 +1,10 @@
+### [2.231.2](https://github.com/kiva/ui/compare/v2.231.1...v2.231.2) (2022-07-14)
+
+
+### Bug Fixes
+
+* issue with montly good and loans per page ([11f496b](https://github.com/kiva/ui/commit/11f496bfc2cae84c76db83e5e909183d4a66cd18))
+
 ### [2.231.1](https://github.com/kiva/ui/compare/v2.231.0...v2.231.1) (2022-07-14)
 
 
