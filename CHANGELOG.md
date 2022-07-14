@@ -1,3 +1,10 @@
+### [2.230.1-next.2](https://github.com/kiva/ui/compare/v2.230.1-next.1...v2.230.1-next.2) (2022-07-14)
+
+
+### Bug Fixes
+
+* enable optimizely in test env ([9cc3ac1](https://github.com/kiva/ui/commit/9cc3ac1001a5fd53b613cbc234cb71671048150a))
+
 ### [2.230.1-next.1](https://github.com/kiva/ui/compare/v2.230.0...v2.230.1-next.1) (2022-07-14)
 
 
