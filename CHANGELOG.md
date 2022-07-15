@@ -1,3 +1,10 @@
+## [2.232.0](https://github.com/kiva/ui/compare/v2.231.3...v2.232.0) (2022-07-15)
+
+
+### Features
+
+* add cookie for redirect to categories-beta page ([5f25236](https://github.com/kiva/ui/commit/5f25236a91b6bad0ae54125f965ed7f6ff105358))
+
 ### [2.231.3](https://github.com/kiva/ui/compare/v2.231.2...v2.231.3) (2022-07-15)
 
 
