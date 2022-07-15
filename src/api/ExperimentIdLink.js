@@ -1,4 +1,4 @@
-import { setContext } from 'apollo-link-context';
+import { setContext } from '@apollo/client/link/context';
 import _set from 'lodash/set';
 
 // Experiment Ids from setting that will be passed in the X-Experiment Header

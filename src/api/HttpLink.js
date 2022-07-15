@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/vue';
-import { BatchHttpLink } from 'apollo-link-batch-http';
+import { BatchHttpLink } from '@apollo/client/link/batch-http';
 
 export default ({ kvAuth0, uri = '', fetch }) => {
 	const onVm = uri.indexOf('vm') > -1;
