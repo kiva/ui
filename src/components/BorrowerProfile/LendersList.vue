@@ -1,17 +1,8 @@
 <template>
-	<div ref="wrapper"
-		:class="['tw-mt-1.5', 'lg:tw-mb-1.5']"
-	>
-		<div
-			:class="[
-				'tw-w-full',
-				'tw-flex tw-flex-col',
-				'tw-relative',
-				'lenders-container'
-			]"
-		>
+	<div class="tw-mb-3 lg:tw-mb-4">
+		<div class="tw-w-full tw-relative">
 			<span
-				class="tw-inline-block tw-align-middle tw-mb-2"
+				class="tw-block tw-text-center tw-mb-2"
 				data-testid="bp-lend-cta-powered-by-text"
 				key="numLendersStat"
 			>
@@ -21,21 +12,25 @@
 				/>
 				{{ poweredByText }}
 			</span>
-			<div v-for="(item, idx) in sortedLenders" :key="item.id">
-				<template v-if="isValidLength(idx)">
-					<lenders-list-item
-						:lender="item"
-					/>
-				</template>
-			</div>
+			<lenders-list-item
+				v-for="item in sortedLenders" :key="item.id"
+				:lender="item"
+				class="last-of-type:tw-hidden last-of-type:lg:tw-flex"
+			/>
+			<span
+				class="
+					tw-absolute
+					tw-left-0 tw-bottom-0
+					tw-w-full tw-h-10
+					tw-pointer-events-none
+					tw-bg-gradient-to-b tw-from-transparent tw-to-white
+				"
+			></span>
 		</div>
-		<div v-if="!isMobile" class="tw-mt-2">
-			<button
-				class="tw-bg-transparent tw-border tw-border-black tw-px-3 tw-py-1 tw-rounded tw-text-base"
-				@click="toogleLightBox"
-			>
+		<div class="tw-mt-2 tw-hidden lg:tw-block">
+			<kv-button variant="secondary" @click="toggleLightBox">
 				See all lenders
-			</button>
+			</kv-button>
 		</div>
 	</div>
 </template>
@@ -44,6 +39,7 @@
 import { mdiLightningBolt } from '@mdi/js';
 import LendersListItem from '@/components/BorrowerProfile/LendersListItem';
 import gql from 'graphql-tag';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
@@ -54,10 +50,6 @@ export default {
 			type: Array,
 			default: () => []
 		},
-		isMobile: {
-			type: Boolean,
-			default: false
-		},
 		numLenders: {
 			type: Number,
 			default: 0
@@ -65,6 +57,7 @@ export default {
 	},
 	components: {
 		LendersListItem,
+		KvButton,
 		KvMaterialIcon,
 	},
 	apollo: {
@@ -119,16 +112,13 @@ export default {
 		};
 	},
 	methods: {
-		isValidLength(idx) {
-			return (this.isMobile && idx < 2) || (!this.isMobile && idx < 3);
-		},
-		toogleLightBox() {
-			this.$emit('tooglelightbox');
+		toggleLightBox() {
+			this.$emit('togglelightbox');
 		}
 	},
 	computed: {
 		limit() {
-			return this.lenders.length > 3 ? 2 : 1;
+			return this.numLenders > 3 ? 2 : 1;
 		},
 		sortedLenders() {
 			const inviterName = this.$route.query.utm_content ?? '';
@@ -151,37 +141,18 @@ export default {
 			return this.lenders;
 		},
 		lendersListName() {
-			if (this.lenders.length < 4) return this.sortedLenders[0].name;
+			if (this.numLenders < 4) return this.sortedLenders[0].name;
 			const filteredLenders = [...this.sortedLenders].slice(0, this.limit);
 			return filteredLenders.map(lender => lender.name)
 				.join(', ')
 				.replace(/,\s*$/, '');
 		},
 		poweredByText() {
-			if (this.numLenders - this.limit <= 0) return `powered by ${this.lendersListName}`;
-			if (this.numLenders - this.limit === 1) return `powered by ${this.lendersListName} and 1 more`;
-			return `powered by ${this.lendersListName} and ${this.numLenders - this.limit} others`;
+			if (this.numLenders - this.limit <= 0) return `Powered by ${this.lendersListName}`;
+			if (this.numLenders - this.limit === 1) return `Powered by ${this.lendersListName} and 1 more`;
+			return `Powered by ${this.lendersListName} and ${this.numLenders - this.limit} others`;
 		}
 	}
 };
 
 </script>
-
-<style lang="scss" scoped>
-	.lenders-container::after {
-		content: "";
-		position: absolute;
-		z-index: 1;
-		bottom: 0;
-		left: 0;
-		pointer-events: none;
-		background-image: linear-gradient(to bottom, transparent, rgba(245, 245, 245, 1) 100%);
-		width: 100%;
-		height: 5em;
-
-		@media screen and (min-width: 660px) {
-			background-image: linear-gradient(to bottom, transparent, white);
-		}
-	}
-
-</style>

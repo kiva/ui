@@ -15,7 +15,7 @@
 				<circle cx="2" cy="2.00006" r="2" fill="#28A062" />
 			</svg>
 		</div>
-		<p class="tw-text-small tw-text-secondary tw-font-medium">
+		<p class="tw-text-h4 tw-text-tertiary">
 			{{ location }}
 		</p>
 	</div>

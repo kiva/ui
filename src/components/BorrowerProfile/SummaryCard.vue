@@ -48,21 +48,6 @@
 				/>
 			</div>
 		</div>
-		<div
-			v-if="socialExpEnabled"
-			class="tw-flex tw-items-center tw-w-full"
-			:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
-		>
-			<!-- only show option to bookmark loan if user is logged in -->
-			<loan-bookmark
-				v-if="isLoggedIn"
-				:loan-id="loanId"
-				class="md:tw-hidden"
-				data-testid="bp-mobile-summary-bookmark"
-			/>
-
-			<jump-links class="md:tw-hidden" data-testid="bp-summary-card-jump-links" />
-		</div>
 		<loan-use
 			class="tw-flex-none tw-w-full tw-mb-2 tw-text-h2"
 			data-testid="bp-summary-loan-use"
@@ -96,9 +81,8 @@
 				data-testid="bp-summary-bookmark"
 			/>
 		</div>
-		<hr class="md:tw-hidden tw-border-tertiary tw-w-full tw-mt-2">
+		<hr class="md:tw-hidden tw-border-tertiary tw-w-full tw-my-2">
 		<div
-			v-if="!socialExpEnabled"
 			class="tw-flex tw-items-center tw-w-full"
 			:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
 		>
@@ -117,11 +101,11 @@
 			:class="[
 				'md:tw-hidden',
 				'tw-block',
-				'tw-border-t tw-border-tertiary',
+				/* 'tw-border-t tw-border-tertiary', */
 				'tw-mt-1.5'
 			]"
 		>
-			<lenders-list :lenders="lenders" key="lenderList" :is-mobile="isMobile" :num-lenders="numLenders" />
+			<lenders-list :lenders="lenders" key="lenderList" :num-lenders="numLenders" />
 		</div>
 	</section>
 </template>
@@ -166,10 +150,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		isMobile: {
-			type: Boolean,
-			default: false
-		},
 		numLenders: {
 			type: Number,
 			default: 0
@@ -198,7 +178,6 @@ export default {
 			timeLeftMs: 0,
 			inPfp: false,
 			pfpMinLenders: 0,
-			numLenders: 0,
 		};
 	},
 	computed: {

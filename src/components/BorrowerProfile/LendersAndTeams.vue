@@ -269,7 +269,6 @@ export default {
 			mdiLightningBolt,
 			observer: null,
 			itemQueryLimit: 20,
-			itemQueryOffset: 0,
 			sortBy: 'memberCount',
 			totalItemCount: 0,
 			supporterOfLoan: false,
@@ -283,6 +282,9 @@ export default {
 		};
 	},
 	computed: {
+		itemQueryOffset() {
+			return this.items?.length ?? 0;
+		},
 		countAwareName() {
 			const pluralName = this.displayType;
 			const singularName = pluralName.slice(0, -1);
@@ -394,8 +396,6 @@ export default {
 		},
 		loadMore() {
 			this.fetchingLightboxItems = true;
-			// calculate proper offset after initial item limit
-			this.itemQueryOffset += this.itemQueryLimit;
 			this.fetchItems(true);
 		},
 		openLightbox() {

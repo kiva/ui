@@ -25,7 +25,6 @@
 						:show-urgency-exp="showUrgencyExp"
 						:lenders="lenders"
 						:social-exp-enabled="socialExpEnabled"
-						:is-mobile="isMobile"
 						:num-lenders="numLenders"
 					/>
 				</content-container>
@@ -44,8 +43,7 @@
 						:require-deposits-matched-loans="requireDepositsMatchedLoans"
 						:lenders="lenders"
 						:social-exp-enabled="socialExpEnabled"
-						@tooglelightbox="toogleLightbox"
-						:is-mobile="isMobile"
+						@togglelightbox="toggleLightbox"
 						:num-lenders="numLenders"
 					/>
 				</sidebar-container>
@@ -167,7 +165,7 @@ const pageQuery = gql`
 					hash
 				}
 				plannedExpirationDate
-				lenders {
+				lenders(limit: 3) {
 					values {
 						id
 						name
@@ -318,7 +316,6 @@ export default {
 			lenders: [],
 			socialExpEnabled: false,
 			showLightBoxModal: false,
-			isMobile: false,
 		};
 	},
 	apollo: {
@@ -405,13 +402,9 @@ export default {
 				'EXP-MARS-158-Jul2022'
 			);
 		}
-		this.determineIfMobile();
 	},
 	methods: {
-		determineIfMobile() {
-			this.isMobile = document.documentElement.clientWidth < 681;
-		},
-		toogleLightbox() {
+		toggleLightbox() {
 			this.$refs.lendersComponent.openLightbox();
 		}
 	},

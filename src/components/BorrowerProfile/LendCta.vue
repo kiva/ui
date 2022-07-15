@@ -23,7 +23,8 @@
 					'tw-bg-primary',
 					'tw-border-t tw-border-tertiary',
 					{
-						'md:tw-rounded-b md:tw-border-none': !isSticky && !socialExpEnabled,
+						'md:tw-rounded-b': !isSticky,
+						'md:tw-border-none': !isSticky,
 						'md:tw-px-3': !isSticky,
 						'md:tw-px-4': isSticky,
 					},
@@ -40,7 +41,10 @@
 							'md:tw-col-start-2 md:tw-col-span-10': isSticky,
 						},
 						'lg:tw-col-span-12',
-						'lg:tw-py-1',
+						{
+							'lg:tw-pt-1 lg:tw-pb-1': !socialExpEnabled,
+							'lg:tw-pt-1 lg:tw-pb-0': socialExpEnabled,
+						},
 					]"
 				>
 					<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
@@ -84,7 +88,7 @@
 
 								<!-- Sparkles wrapper -->
 								<div
-									class="tw-relative"
+									class="tw-relative tw-inline-flex tw-flex-1"
 									:class="{'tw-w-full':isLendAmountButton}"
 								>
 									<!-- Lend button -->
@@ -206,7 +210,15 @@
 					>
 						All shares reserved
 					</p>
-					<hr class="tw-hidden md:tw-block tw-border-tertiary tw-w-full tw-mt-2">
+					<hr
+						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full"
+						:class="[
+							{
+								'tw-mt-2': !socialExpEnabled,
+								'tw-my-2 lg:tw-mb-3': socialExpEnabled,
+							}
+						]"
+					>
 					<div
 						class="tw-flex lg:tw-justify-center tw-w-full tw-items-center"
 						:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
@@ -218,15 +230,40 @@
 							class="tw-hidden md:tw-inline-block lg:tw-hidden"
 						/>
 						<jump-links
-							class="tw-hidden md:tw-block tw-ml-1 tw-mr-1" style="width: 420px;"
+							:class="[
+								'tw-hidden md:tw-block',
+								{
+									'tw-my-3': !socialExpEnabled
+								}
+							]"
 							data-testid="bp-lend-cta-jump-links"
 						/>
 					</div>
 				</div>
+				<div
+					v-if="socialExpEnabled"
+					:class="[
+						'tw-hidden',
+						{
+							'md:tw-block': !isSticky,
+						},
+						'tw-col-span-12',
+						'md:tw-col-start-7 md:tw-col-span-6',
+						'lg:tw-col-span-12',
+					]"
+				>
+					<hr class="tw-hidden lg:tw-block tw-border-tertiary tw-w-full tw-mb-3">
+					<lenders-list
+						v-if="socialExpEnabled && lenders.length"
+						:num-lenders="numLenders"
+						:lenders="lenders"
+						key="lenderList"
+						@togglelightbox="toggleLightbox"
+					/>
+				</div>
 			</kv-grid>
 
 			<transition
-				v-if="!socialExpEnabled || (socialExpEnabled && !isMobile)"
 				enter-active-class="tw-transition-transform tw-duration-700 tw-delay-300"
 				:enter-class="transitionEnterClasses"
 				enter-to-class="tw-transform tw-translate-y-0 md:tw-translate-y-0 lg:tw-translate-y-0"
@@ -255,29 +292,15 @@
 						key="wrapper"
 						:class="[
 							'tw-z-1',
-							{
-								'tw-h-5': !socialExpEnabled,
-							},
+							'tw-h-5',
 							'tw-overflow-hidden',
 							'tw-col-span-12',
-							'tw-mb-1',
-							{
-								'tw-p-1': !socialExpEnabled,
-								'tw-py-1 tw-pr-1 tw-pl-3': socialExpEnabled
-							},
-							{
-								'tw-rounded': !socialExpEnabled,
-								'tw-rounded-b tw-border-t tw-border-tertiary': socialExpEnabled
-							},
+							'tw-mb-1 tw-p-1',
+							'tw-rounded',
 							'tw-bg-primary',
 							'tw-text-h4',
-							'tw-justify-center',
-							{
-								'tw-flex': !socialExpEnabled
-							},
-							{
-								'tw-mt-1': !socialExpEnabled,
-							},
+							'tw-flex tw-justify-center',
+							'tw-mt-1',
 							{
 								'tw-relative': !isSticky,
 								'md:tw-mb-0': !isSticky,
@@ -288,7 +311,7 @@
 							'lg:tw-col-span-12'
 						]"
 					>
-						<transition-group
+						<transition
 							mode="out-in"
 							key="transition"
 							class="tw-flex tw-flex-col"
@@ -303,7 +326,7 @@
 								class="tw-inline-block tw-align-middle"
 								data-testid="bp-lend-cta-powered-by-text"
 								key="numLendersStat"
-								v-if="statScrollAnimation && !socialExpEnabled"
+								v-if="statScrollAnimation"
 							>
 								<kv-material-icon
 									class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
@@ -311,13 +334,6 @@
 								/>
 								powered by {{ numLenders }} lenders
 							</span>
-							<lenders-list
-								v-if="socialExpEnabled && lenders.length"
-								:num-lenders="numLenders"
-								:lenders="lenders"
-								key="lenderList"
-								@tooglelightbox="toogleLightbox"
-							/>
 
 							<span
 								class="tw-inline-block tw-align-middle"
@@ -334,7 +350,7 @@
 								<span v-if="requireDepositsMatchedLoans"> MATCHED NEW DEPOSITS</span>
 								<span v-else> MATCHED LOAN</span>
 							</span>
-						</transition-group>
+						</transition>
 					</div>
 				</kv-grid>
 			</transition>
@@ -374,10 +390,6 @@ export default {
 			default: () => []
 		},
 		socialExpEnabled: {
-			type: Boolean,
-			default: false
-		},
-		isMobile: {
 			type: Boolean,
 			default: false
 		},
@@ -501,10 +513,11 @@ export default {
 			this.matchingText = loan?.matchingText ?? '';
 			this.matchRatio = loan?.matchRatio ?? 0;
 			this.name = loan?.name ?? '';
+			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
-				this.lenderCountVisibility = true;
-				this.statScrollAnimation = true;
+				this.lenderCountVisibility = !this.socialExpEnabled;
+				this.statScrollAnimation = !this.socialExpEnabled;
 			}
 		},
 	},
@@ -567,7 +580,11 @@ export default {
 			if (this.matchingText.length) {
 				const cycleSlotMachine = () => {
 					if (!this.isMatchAtRisk) {
-						this.statScrollAnimation = !this.statScrollAnimation;
+						if (this.socialExpEnabled) {
+							this.statScrollAnimation = false;
+						} else {
+							this.statScrollAnimation = !this.statScrollAnimation;
+						}
 					} else {
 						this.statScrollAnimation = true;
 					}
@@ -575,8 +592,8 @@ export default {
 				setInterval(cycleSlotMachine, 5000);
 			}
 		},
-		toogleLightbox() {
-			this.$emit('tooglelightbox');
+		toggleLightbox() {
+			this.$emit('togglelightbox');
 		}
 	},
 	watch: {
