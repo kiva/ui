@@ -150,10 +150,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		numLenders: {
-			type: Number,
-			default: 0
-		}
 	},
 	data() {
 		return {
@@ -178,6 +174,7 @@ export default {
 			timeLeftMs: 0,
 			inPfp: false,
 			pfpMinLenders: 0,
+			numLenders: 0,
 		};
 	},
 	computed: {

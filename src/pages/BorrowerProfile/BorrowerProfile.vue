@@ -25,7 +25,6 @@
 						:show-urgency-exp="showUrgencyExp"
 						:lenders="lenders"
 						:social-exp-enabled="socialExpEnabled"
-						:num-lenders="numLenders"
 					/>
 				</content-container>
 			</div>
