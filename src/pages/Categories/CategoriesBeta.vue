@@ -87,6 +87,9 @@
 				</div>
 			</kv-grid>
 		</kv-page-container>
+		<div>
+			<monthly-good-module />
+		</div>
 	</www-page>
 </template>
 
@@ -94,6 +97,7 @@
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import MainCategoryTile from '@/components/Categories/MainCategoryTile';
 import LoanSpotlight from '@/components/Categories/LoanSpotlight';
+import MonthlyGoodModule from '@/components/Categories/MonthlyGoodModule';
 import gql from 'graphql-tag';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -133,7 +137,8 @@ export default {
 		KvGrid,
 		KvPageContainer,
 		KvButton,
-		LoanSpotlight
+		LoanSpotlight,
+		MonthlyGoodModule
 	},
 	metaInfo() {
 		return {
