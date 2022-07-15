@@ -1,3 +1,10 @@
+### [2.231.3](https://github.com/kiva/ui/compare/v2.231.2...v2.231.3) (2022-07-15)
+
+
+### Bug Fixes
+
+* update paypal config after changes to amount, stup out the same for google and apple ([44bf1ef](https://github.com/kiva/ui/commit/44bf1ef9b1f0825ac96685b17388663f7c8b559e))
+
 ### [2.231.2](https://github.com/kiva/ui/compare/v2.231.1...v2.231.2) (2022-07-14)
 
 
