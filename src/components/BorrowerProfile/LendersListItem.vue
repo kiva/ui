@@ -1,6 +1,24 @@
 <template>
 	<div class="tw-flex tw-items-center tw-mb-1">
+		<div
+			v-if="!this.hash"
+			class="
+				tw-rounded
+				tw-flex
+				tw-items-center
+				tw-justify-center
+				tw-w-6 tw-h-6
+				tw-text-h2
+				tw-text-action
+				tw-bg-brand-50
+			"
+		>
+			<span>
+				{{ lenderNameFirstLetter }}
+			</span>
+		</div>
 		<img
+			v-else
 			class="tw-block tw-rounded-full"
 			:src="lender.image.url"
 			alt="Lender image"
@@ -40,6 +58,12 @@ export default {
 				? `${this.lender?.lenderPage?.city?.toUpperCase()}, ${this.lender?.lenderPage?.country?.isoCode}`
 				: '';
 		},
+		lenderNameFirstLetter() {
+			return this.name.substring(0, 1).toUpperCase();
+		},
+		hash() {
+			return this.lender?.image?.hash ?? '';
+		}
 	}
 };
 </script>

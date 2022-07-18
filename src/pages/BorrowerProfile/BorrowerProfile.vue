@@ -172,6 +172,7 @@ const pageQuery = gql`
 						image {
 							id
 							url
+							hash
 						}
 						lenderPage {
 							city

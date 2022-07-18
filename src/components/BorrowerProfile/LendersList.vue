@@ -120,25 +120,28 @@ export default {
 		limit() {
 			return this.numLenders > 3 ? 2 : 1;
 		},
+		filteredLenders() {
+			return this.lenders.filter(lender => lender?.name?.toLowerCase() !== 'anonymous');
+		},
 		sortedLenders() {
 			const inviterName = this.$route.query.utm_content ?? '';
-			const inviterIndex = this.lenders.findIndex(lender => {
+			const inviterIndex = this.filteredLenders.findIndex(lender => {
 				return inviterName.localeCompare(lender?.publicId) === 0;
 			});
 			if (this.inviterLent && inviterIndex >= 0) {
 				return [
-					this.lenders[inviterIndex],
-					...this.lenders.slice(0, inviterIndex),
-					...this.lenders.slice(inviterIndex + 1, this.lenders.length)
+					this.filteredLenders[inviterIndex],
+					...this.filteredLenders.slice(0, inviterIndex),
+					...this.filteredLenders.slice(inviterIndex + 1, this.filteredLenders.length)
 				];
 			}
 			if (this.inviterLent) {
 				return [
-					this.lender,
-					...this.lenders,
+					this.filteredLenders,
+					...this.filteredLenders,
 				];
 			}
-			return this.lenders;
+			return this.filteredLenders;
 		},
 		lendersListName() {
 			if (this.numLenders < 4) return this.sortedLenders[0].name;
