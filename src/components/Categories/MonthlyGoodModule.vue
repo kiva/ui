@@ -1,14 +1,16 @@
 <template>
-	<div class="tw-relative">
+	<div class="tw-relative tw-mx-auto" style="max-width: 2000px;">
 		<kv-responsive-image
-			class="image-sizing"
+			class="image-sizing image-sizing__height"
 			:images="monthlyGoodImages"
 			loading="lazy"
-			:alt="'Monthly Good'"
+			alt="Monthly Good"
 		/>
 		<div
-			class="md:tw-absolute tw-bg-transparent text-box-position
+			class="md:tw-absolute tw-bg-transparent
+			tw-top-1/4 tw-left-0 tw-right-0
 			tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"
+			style="max-width: 1200px;"
 		>
 			<div class="md:tw-max-w-sm tw-bg-white tw-rounded md:tw-p-2">
 				<div class="md:tw-ml-1">
@@ -45,6 +47,7 @@ export default {
 		KvButton,
 		KvResponsiveImage
 	},
+	mixins: [],
 	data() {
 		return {
 			monthlyGoodImages: [
@@ -68,11 +71,29 @@ export default {
 <style lang="postcss" scoped>
 
 .image-sizing >>> img {
-	@apply tw-w-full tw-max-h-[311px] md:tw-max-h-[428px] md:tw-h-[428px] tw-object-cover tw-object-top;
+	@apply tw-w-full tw-object-cover tw-object-top;
 }
 
-.text-box-position {
-	@apply md:tw-top-[91px] lg:tw-top-[80px] tw-left-[0px] tw-right-[0px] tw-max-w-[1200px];
+</style>
+
+<style lang="scss" scoped>
+
+.image-sizing__height {
+	::v-deep {
+		img {
+			max-height: 311px;
+		}
+	}
+}
+
+@media (min-width: 734px) {
+	.image-sizing__height {
+		::v-deep {
+			img {
+				max-height: 500px;
+			}
+		}
+	}
 }
 
 </style>

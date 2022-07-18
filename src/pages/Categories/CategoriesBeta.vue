@@ -87,9 +87,7 @@
 				</div>
 			</kv-grid>
 		</kv-page-container>
-		<div>
-			<monthly-good-module />
-		</div>
+		<monthly-good-module />
 	</www-page>
 </template>
 
