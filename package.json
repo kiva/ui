@@ -43,7 +43,7 @@
 		"@babel/polyfill": "^7.10.4",
 		"@babel/runtime": "^7.12.5",
 		"@chenfengyuan/vue-countdown": "^1.1.5",
-		"@contentful/rich-text-html-renderer": "^14.1.1",
+		"@contentful/rich-text-html-renderer": "^15.13.1",
 		"@contentful/rich-text-types": "^14.1.2",
 		"@godaddy/terminus": "^4.11.0",
 		"@graphql-tools/load": "^7.7.0",
