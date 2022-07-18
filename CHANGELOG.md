@@ -1,3 +1,17 @@
+## [2.232.0](https://github.com/kiva/ui/compare/v2.231.3...v2.232.0) (2022-07-15)
+
+
+### Features
+
+* add cookie for redirect to categories-beta page ([5f25236](https://github.com/kiva/ui/commit/5f25236a91b6bad0ae54125f965ed7f6ff105358))
+
+### [2.231.3](https://github.com/kiva/ui/compare/v2.231.2...v2.231.3) (2022-07-15)
+
+
+### Bug Fixes
+
+* update paypal config after changes to amount, stup out the same for google and apple ([44bf1ef](https://github.com/kiva/ui/commit/44bf1ef9b1f0825ac96685b17388663f7c8b559e))
+
 ### [2.231.2](https://github.com/kiva/ui/compare/v2.231.1...v2.231.2) (2022-07-14)
 
 
