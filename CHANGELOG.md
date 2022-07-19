@@ -1,3 +1,10 @@
+### [2.233.5](https://github.com/kiva/ui/compare/v2.233.4...v2.233.5) (2022-07-19)
+
+
+### Bug Fixes
+
+* fix incorrect utm_content param ([63064b2](https://github.com/kiva/ui/commit/63064b242ff2c9460afaa8b706004e29b01ae20c))
+
 ### [2.233.4](https://github.com/kiva/ui/compare/v2.233.3...v2.233.4) (2022-07-19)
 
 
