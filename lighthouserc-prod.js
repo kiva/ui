@@ -2,7 +2,8 @@ module.exports = {
 	ci: {
 		collect: {
 			settings: {
-				onlyCategories: ['accessibility', 'best-practices', 'performance', 'seo']
+				onlyCategories: ['accessibility', 'best-practices', 'performance', 'seo'],
+				maxWaitForLoad: 90000,
 			},
 			url: [
 				'https://www.kiva.org/',
