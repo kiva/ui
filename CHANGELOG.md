@@ -1,3 +1,10 @@
+### [2.233.3](https://github.com/kiva/ui/compare/v2.233.2...v2.233.3) (2022-07-19)
+
+
+### Bug Fixes
+
+* test longer lighthouse load time to try and resolve live-loan endpoint ([9e02a52](https://github.com/kiva/ui/commit/9e02a5252fccf879ba27bf0bc350185eebd1bd95))
+
 ### [2.233.2](https://github.com/kiva/ui/compare/v2.233.1...v2.233.2) (2022-07-19)
 
 
