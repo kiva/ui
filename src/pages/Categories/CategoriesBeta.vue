@@ -88,14 +88,20 @@
 			</kv-grid>
 		</kv-page-container>
 		<monthly-good-module />
+		<frequently-asked-questions
+			:content="faqContentGroup"
+		/>
 	</www-page>
 </template>
 
 <script>
+import { processPageContent } from '@/util/contentfulUtils';
+import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import MainCategoryTile from '@/components/Categories/MainCategoryTile';
 import LoanSpotlight from '@/components/Categories/LoanSpotlight';
 import MonthlyGoodModule from '@/components/Categories/MonthlyGoodModule';
+import FrequentlyAskedQuestions from '@/components/Contentful/FrequentlyAskedQuestions';
 import gql from 'graphql-tag';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -127,6 +133,14 @@ const allCategoriesQuery = gql`
 	}
 `;
 
+const faqCategoriesQuery = gql`
+	query faqCategoriesQuery {
+		contentful {
+			entries(contentType: "page", contentKey: "categories")
+		}
+	}
+`;
+
 export default {
 	name: 'CategoriesBeta',
 	components: {
@@ -136,7 +150,8 @@ export default {
 		KvPageContainer,
 		KvButton,
 		LoanSpotlight,
-		MonthlyGoodModule
+		MonthlyGoodModule,
+		FrequentlyAskedQuestions
 	},
 	metaInfo() {
 		return {
@@ -156,14 +171,39 @@ export default {
 		return {
 			categoryPlaceholderImageCTF: '',
 			categories: [],
+			pageData: {},
 		};
 	},
 	apollo: {
-		query: allCategoriesQuery,
-		preFetch: true,
-		result(result) {
-			this.categories = result.data?.lend?.loanChannels?.values ?? [];
+		preFetch(config, client) {
+			return client.query({
+				query: allCategoriesQuery
+			}).then(() => {
+				return client.query({
+					query: faqCategoriesQuery
+				});
+			});
 		},
+	},
+	created() {
+		try {
+			const categoriesData = this.apollo.readQuery({
+				query: allCategoriesQuery
+			});
+			this.categories = categoriesData.lend?.loanChannels?.values ?? [];
+		} catch (e) {
+			logReadQueryError(e, 'CategoriesBeta allCategoriesQuery');
+		}
+
+		try {
+			const faqData = this.apollo.readQuery({
+				query: faqCategoriesQuery,
+			});
+			const pageEntry = faqData.contentful?.entries?.items?.[0] ?? null;
+			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
+		} catch (e) {
+			logReadQueryError(e, 'CategoriesBeta faqCategoriesQuery');
+		}
 	},
 	methods: {
 		getImage(category) {
@@ -172,6 +212,14 @@ export default {
 		getRetinaImage(category) {
 			return category.retinaImage?.url ?? '';
 		}
+	},
+	computed: {
+		contentGroups() {
+			return this.pageData?.page?.pageLayout?.contentGroups ?? [];
+		},
+		faqContentGroup() {
+			return this.contentGroups[0] ?? {};
+		},
 	},
 	mounted() {
 		// EXP-ACK-345-Jul2022
