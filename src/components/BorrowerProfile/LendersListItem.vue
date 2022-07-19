@@ -3,7 +3,7 @@
 		<div
 			v-if="!this.hash"
 			class="
-				tw-rounded
+				tw-rounded-full
 				tw-flex
 				tw-items-center
 				tw-justify-center
