@@ -1,3 +1,29 @@
+## [2.233.0](https://github.com/kiva/ui/compare/v2.232.1...v2.233.0) (2022-07-19)
+
+
+### Features
+
+* add lenders list to desktop version and open lenders modal ([7e3c78f](https://github.com/kiva/ui/commit/7e3c78f077a92571c21013a0f2eff925e3019871))
+* filter anonymous lenders and replace default img with first name letter ([90ef833](https://github.com/kiva/ui/commit/90ef83357a68e853cc2737ae43001cbe4a350bae))
+* highlight inviter in lenders list if has lent to borrower ([b08211f](https://github.com/kiva/ui/commit/b08211f249cbd27d178907ccf2f8fb892569d16f))
+* mobile version of lenders list exp ([8169723](https://github.com/kiva/ui/commit/816972388f12e296a7e70bc51236c5a26accff72))
+* setting social elements experiment config ([b88e2e8](https://github.com/kiva/ui/commit/b88e2e8614c434cbd5b3cd9ea5743c8ab1257aa6))
+
+
+### Bug Fixes
+
+* adjust placement of social lender experiment elements ([739b13b](https://github.com/kiva/ui/commit/739b13b8c3051f729de37eab81a10306d4f85206))
+* css style ([1775c89](https://github.com/kiva/ui/commit/1775c899f07fa06584eb76d1d7162c633a8d56db))
+* duplicate prop ([9440b7e](https://github.com/kiva/ui/commit/9440b7ec1d3fec7369852a00d32bae7e68d82f7f))
+* lenders count in poweredBy text ([9e4b54f](https://github.com/kiva/ui/commit/9e4b54f2d7bbbd8496668f32a89b9c51b2a92a9f))
+* lint css ([1707a75](https://github.com/kiva/ui/commit/1707a75a37b6663caf3a09c35a7e0e09bc9cad4f))
+* remove unused code ([1368c9a](https://github.com/kiva/ui/commit/1368c9a0270596cf8271cc45503f51b6d762f827))
+* socialExpEnabled flag ([50e0bdf](https://github.com/kiva/ui/commit/50e0bdf3ce44cab03d95612c200b97e7861449db))
+* solve conflicts ([69d5147](https://github.com/kiva/ui/commit/69d51473817ce580c62896225d61c7cc980d4232))
+* solve conflicts ([03d0f82](https://github.com/kiva/ui/commit/03d0f82a15dabc34f4da3911e8a9dc3cac5ae1e4))
+* use existing numLenders variable ([feba9b2](https://github.com/kiva/ui/commit/feba9b2f459b74fb82fd8c0276e99462238e8051))
+* verify device width in parent component ([c7408fc](https://github.com/kiva/ui/commit/c7408fc49af7df1aaa416300e3793336702ae298))
+
 ### [2.232.1](https://github.com/kiva/ui/compare/v2.232.0...v2.232.1) (2022-07-19)
 
 
