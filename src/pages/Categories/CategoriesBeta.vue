@@ -218,7 +218,9 @@ export default {
 			return this.pageData?.page?.pageLayout?.contentGroups ?? [];
 		},
 		faqContentGroup() {
-			return this.contentGroups[0] ?? {};
+			return this.contentGroups?.find(({ type }) => {
+				return type ? type === 'frequentlyAskedQuestions' : false;
+			});
 		},
 	},
 	mounted() {
