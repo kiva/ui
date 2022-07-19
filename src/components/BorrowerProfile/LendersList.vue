@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-mb-3 lg:tw-mb-4">
+	<div class="lg:tw-mb-4">
 		<div class="tw-w-full tw-relative">
 			<span
 				class="tw-block tw-text-center tw-mb-2"
