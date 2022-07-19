@@ -47,7 +47,6 @@ export default {
 		KvButton,
 		KvResponsiveImage
 	},
-	mixins: [],
 	data() {
 		return {
 			monthlyGoodImages: [
