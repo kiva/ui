@@ -23,7 +23,8 @@
 					'tw-bg-primary',
 					'tw-border-t tw-border-tertiary',
 					{
-						'md:tw-rounded-b md:tw-border-none': !isSticky,
+						'md:tw-rounded-b': !isSticky,
+						'md:tw-border-none': !isSticky,
 						'md:tw-px-3': !isSticky,
 						'md:tw-px-4': isSticky,
 					},
@@ -40,7 +41,10 @@
 							'md:tw-col-start-2 md:tw-col-span-10': isSticky,
 						},
 						'lg:tw-col-span-12',
-						'lg:tw-py-1',
+						{
+							'lg:tw-pt-1 lg:tw-pb-1': !socialExpEnabled,
+							'lg:tw-pt-1 lg:tw-pb-0': socialExpEnabled,
+						},
 					]"
 				>
 					<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
@@ -84,7 +88,7 @@
 
 								<!-- Sparkles wrapper -->
 								<div
-									class="tw-relative"
+									class="tw-relative tw-inline-flex tw-flex-1"
 									:class="{'tw-w-full':isLendAmountButton}"
 								>
 									<!-- Lend button -->
@@ -206,7 +210,15 @@
 					>
 						All shares reserved
 					</p>
-					<hr class="tw-hidden md:tw-block tw-border-tertiary tw-w-full tw-mt-2">
+					<hr
+						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full"
+						:class="[
+							{
+								'tw-mt-2': !socialExpEnabled,
+								'tw-my-2 lg:tw-mb-3': socialExpEnabled,
+							}
+						]"
+					>
 					<div
 						class="tw-flex lg:tw-justify-center tw-w-full tw-items-center"
 						:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
@@ -218,10 +230,36 @@
 							class="tw-hidden md:tw-inline-block lg:tw-hidden"
 						/>
 						<jump-links
-							class="tw-hidden md:tw-block tw-ml-1 tw-mr-1" style="width: 420px;"
+							:class="[
+								'tw-hidden md:tw-block',
+								{
+									'tw-my-3': !socialExpEnabled
+								}
+							]"
 							data-testid="bp-lend-cta-jump-links"
 						/>
 					</div>
+				</div>
+				<div
+					v-if="socialExpEnabled"
+					:class="[
+						'tw-hidden',
+						{
+							'md:tw-block': !isSticky,
+						},
+						'tw-col-span-12',
+						'md:tw-col-start-7 md:tw-col-span-6',
+						'lg:tw-col-span-12',
+					]"
+				>
+					<hr class="tw-hidden lg:tw-block tw-border-tertiary tw-w-full tw-mb-3">
+					<lenders-list
+						v-if="socialExpEnabled && lenders.length"
+						:num-lenders="numLenders"
+						:lenders="lenders"
+						key="lenderList"
+						@togglelightbox="toggleLightbox"
+					/>
 				</div>
 			</kv-grid>
 
@@ -329,6 +367,7 @@ import { createIntersectionObserver } from '@/util/observerUtils';
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
+import LendersList from '@/components/BorrowerProfile/LendersList';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -346,12 +385,21 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		lenders: {
+			type: Array,
+			default: () => []
+		},
+		socialExpEnabled: {
+			type: Boolean,
+			default: false
+		},
 		requireDepositsMatchedLoans: {
 			type: Boolean,
 			default: false,
 		}
 	},
 	components: {
+		LendersList,
 		LendAmountButton,
 		KvGrid,
 		KvMaterialIcon,
@@ -465,10 +513,11 @@ export default {
 			this.matchingText = loan?.matchingText ?? '';
 			this.matchRatio = loan?.matchRatio ?? 0;
 			this.name = loan?.name ?? '';
+			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
-				this.lenderCountVisibility = true;
-				this.statScrollAnimation = true;
+				this.lenderCountVisibility = !this.socialExpEnabled;
+				this.statScrollAnimation = !this.socialExpEnabled;
 			}
 		},
 	},
@@ -531,13 +580,20 @@ export default {
 			if (this.matchingText.length) {
 				const cycleSlotMachine = () => {
 					if (!this.isMatchAtRisk) {
-						this.statScrollAnimation = !this.statScrollAnimation;
+						if (this.socialExpEnabled) {
+							this.statScrollAnimation = false;
+						} else {
+							this.statScrollAnimation = !this.statScrollAnimation;
+						}
 					} else {
 						this.statScrollAnimation = true;
 					}
 				};
 				setInterval(cycleSlotMachine, 5000);
 			}
+		},
+		toggleLightbox() {
+			this.$emit('togglelightbox');
 		}
 	},
 	watch: {
