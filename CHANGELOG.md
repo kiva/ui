@@ -1,3 +1,10 @@
+### [2.232.1](https://github.com/kiva/ui/compare/v2.232.0...v2.232.1) (2022-07-19)
+
+
+### Bug Fixes
+
+* mg landing header on wide displays styling fix ([6c9cbc3](https://github.com/kiva/ui/commit/6c9cbc33d3b0db3701cc1dd2861485a3293fdbeb))
+
 ## [2.232.0](https://github.com/kiva/ui/compare/v2.231.3...v2.232.0) (2022-07-15)
 
 
