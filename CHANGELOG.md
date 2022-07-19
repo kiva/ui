@@ -1,3 +1,10 @@
+### [2.233.1](https://github.com/kiva/ui/compare/v2.233.0...v2.233.1) (2022-07-19)
+
+
+### Bug Fixes
+
+* guard against missing updateConfiguration method ([59a250f](https://github.com/kiva/ui/commit/59a250fc30be6321586c7921dc3db284216f51ff))
+
 ## [2.233.0](https://github.com/kiva/ui/compare/v2.232.1...v2.233.0) (2022-07-19)
 
 
