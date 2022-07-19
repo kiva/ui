@@ -1,3 +1,10 @@
+### [2.233.2](https://github.com/kiva/ui/compare/v2.233.1...v2.233.2) (2022-07-19)
+
+
+### Bug Fixes
+
+* round first name letter image ([50acf5c](https://github.com/kiva/ui/commit/50acf5c0d8f94e693c6521c36217a0c569e4e67d))
+
 ### [2.233.1](https://github.com/kiva/ui/compare/v2.233.0...v2.233.1) (2022-07-19)
 
 
