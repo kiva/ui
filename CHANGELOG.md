@@ -1,3 +1,10 @@
+### [2.233.4](https://github.com/kiva/ui/compare/v2.233.3...v2.233.4) (2022-07-19)
+
+
+### Bug Fixes
+
+* remove bottom margin in mobile view ([0150104](https://github.com/kiva/ui/commit/0150104ca28ab3e712b0971847b56f8acff47b81))
+
 ### [2.233.3](https://github.com/kiva/ui/compare/v2.233.2...v2.233.3) (2022-07-19)
 
 
