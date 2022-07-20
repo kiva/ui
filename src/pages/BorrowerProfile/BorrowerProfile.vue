@@ -23,7 +23,7 @@
 						data-testid="bp-summary"
 						class="tw-relative lg:tw--mb-1.5"
 						:show-urgency-exp="showUrgencyExp"
-            :lenders="lenders"
+						:lenders="lenders"
 						:social-exp-enabled="socialExpEnabled"
 					>
 						<template #sharebutton v-if="inPfp">
@@ -45,7 +45,7 @@
 						:loan-id="loanId"
 						:complete-loan="completeLoanExpActive"
 						:require-deposits-matched-loans="requireDepositsMatchedLoans"
-            :lenders="lenders"
+						:lenders="lenders"
 						:social-exp-enabled="socialExpEnabled"
 						@togglelightbox="toggleLightbox"
 						:num-lenders="numLenders"
@@ -336,7 +336,7 @@ export default {
 			pfpMinLenders: 0,
 			diffInDays: 0,
 			lender: {},
-			loan: {}
+			loan: {},
 			lenders: [],
 			socialExpEnabled: false,
 			showLightBoxModal: false,
