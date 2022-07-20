@@ -121,7 +121,7 @@ export default {
 			return this.numLenders > 3 ? 2 : 1;
 		},
 		filteredLenders() {
-			return this.lenders.filter(lender => lender?.name?.toLowerCase() !== 'anonymous');
+			return this.lenders.filter(lender => lender?.name?.toLowerCase() !== 'anonymous').slice(0, 3);
 		},
 		sortedLenders() {
 			const inviterName = this.$route.query.utm_content ?? '';

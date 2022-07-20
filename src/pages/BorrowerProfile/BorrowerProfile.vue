@@ -164,7 +164,7 @@ const pageQuery = gql`
 					hash
 				}
 				plannedExpirationDate
-				lenders(limit: 3) {
+				lenders(limit: 10) {
 					values {
 						id
 						name
