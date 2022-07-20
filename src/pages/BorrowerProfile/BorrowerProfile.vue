@@ -23,6 +23,8 @@
 						data-testid="bp-summary"
 						class="tw-relative lg:tw--mb-1.5"
 						:show-urgency-exp="showUrgencyExp"
+            :lenders="lenders"
+						:social-exp-enabled="socialExpEnabled"
 					>
 						<template #sharebutton v-if="inPfp">
 							<!-- Share button for PFP loans -->
@@ -43,6 +45,10 @@
 						:loan-id="loanId"
 						:complete-loan="completeLoanExpActive"
 						:require-deposits-matched-loans="requireDepositsMatchedLoans"
+            :lenders="lenders"
+						:social-exp-enabled="socialExpEnabled"
+						@togglelightbox="toggleLightbox"
+						:num-lenders="numLenders"
 					>
 						<template #sharebutton v-if="inPfp">
 							<!-- Share button for PFP loans -->
@@ -71,6 +77,7 @@
 				<more-about-loan data-testid="bp-more-about" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<borrower-country data-testid="bp-country" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<lenders-and-teams
+					ref="lendersComponent"
 					v-if="showLenders"
 					data-testid="bp-lenders"
 					key="lenders"
@@ -78,6 +85,8 @@
 					:loan-id="loanId"
 					display-type="lenders"
 					@hide-section="showLenders = false"
+					:social-exp-enabled="socialExpEnabled"
+					:show-light-box-modal="showLightBoxModal"
 				/>
 				<lenders-and-teams
 					v-if="showTeams"
@@ -124,8 +133,13 @@ import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import SocialShareButton from '@/components/BorrowerProfile/SocialShareButton';
 
 import { isLoanFundraising } from '@/util/loanUtils';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
 import loanUseFilter from '@/plugins/loan-use-filter';
 
+const socialElementsExpKey = 'social_elements';
 const pageQuery = gql`
 	query borrowerProfileMeta($loanId: Int!, $publicId: String!, $getInviter: Boolean!) {
 		general {
@@ -138,6 +152,10 @@ const pageQuery = gql`
 				value
 			}
 			requireDepositsMatchedLoans: uiExperimentSetting(key: "require_deposits_matched_loans") {
+				key
+				value
+			}
+			socialElements: uiExperimentSetting(key: "social_elements") {
 				key
 				value
 			}
@@ -160,7 +178,23 @@ const pageQuery = gql`
 					hash
 				}
 				plannedExpirationDate
-				lenders {
+				lenders(limit: 10) {
+					values {
+						id
+						name
+						publicId
+						image {
+							id
+							url
+							hash
+						}
+						lenderPage {
+							city
+							country {
+								isoCode
+							}
+						}
+					}
 					totalCount
 				}
 				anonymizationLevel
@@ -303,6 +337,9 @@ export default {
 			diffInDays: 0,
 			lender: {},
 			loan: {}
+			lenders: [],
+			socialExpEnabled: false,
+			showLightBoxModal: false,
 		};
 	},
 	apollo: {
@@ -314,7 +351,7 @@ export default {
 					variables: {
 						loanId: Number(route.params?.id ?? 0),
 						publicId: route.query?.utm_content ?? '',
-						getInviter: !!route.query?.utm_content,
+						getInviter: !!route.query?.utm_content
 					},
 				})
 				.then(({ data }) => {
@@ -330,6 +367,7 @@ export default {
 					return Promise.all([
 						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
+						client.query({ query: experimentQuery, variables: { id: socialElementsExpKey } }),
 					]);
 				});
 		},
@@ -365,6 +403,7 @@ export default {
 			this.use = loan?.use ?? '';
 			this.description = loan?.description ?? '';
 			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
+			this.lenders = loan?.lenders?.values ?? [];
 			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
 
 			this.diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
@@ -378,6 +417,21 @@ export default {
 		const expCookieSignifier = this.cookieStore.get('kvlendborrowerbeta');
 		if (expCookieSignifier === 'b') {
 			this.$kvTrackEvent('Borrower Profile', 'EXP-GROW-655-Aug2021', expCookieSignifier);
+		}
+		const { enabled } = getExperimentSettingCached(this.apollo, socialElementsExpKey);
+		if (enabled) {
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Borrower Profile',
+				socialElementsExpKey,
+				'EXP-MARS-158-Jul2022'
+			);
+		}
+	},
+	methods: {
+		toggleLightbox() {
+			this.$refs.lendersComponent.openLightbox();
 		}
 	},
 	computed: {
@@ -493,6 +547,16 @@ export default {
 			'EXP-MARS-143-Jul2022',
 			this.shareCardLanguageVersion
 		);
+
+		// Check if social elements experiment is active.
+		const { enabled } = getExperimentSettingCached(this.apollo, socialElementsExpKey);
+		const exp = this.apollo.readFragment({
+			id: `Experiment:${socialElementsExpKey}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
+		if (enabled && exp.version === 'b') {
+			this.socialExpEnabled = true;
+		}
 
 		const utmContent = this.$route.query?.utm_content;
 		this.inviterIsGuestOrAnonymous = utmContent === 'anonymous' || utmContent === 'guest';

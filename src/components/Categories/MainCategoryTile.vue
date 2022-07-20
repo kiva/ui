@@ -160,15 +160,18 @@ export default {
 	@apply tw-rounded;
 }
 
+/* tw-transform-gpu is used to eliminate readjustments/wiggles after the zoom effect on the images.
+Rendering by the GPU here instead of the CPU ensures a smoother transition. */
+
 .category-image__large >>> img {
-	@apply group-hover:tw-scale-110 tw-transition-all tw-duration-500 tw-ease-in-out tw-transform;
+	@apply group-hover:tw-scale-110 tw-transition-all tw-duration-500 tw-ease-in-out tw-transform-gpu;
 }
 
 .category-image__small >>> img {
 	@apply tw-object-cover;
 	@apply tw-w-[152px];
 	@apply tw-h-[152px];
-	@apply group-hover:tw-scale-105 tw-transition-all tw-duration-500 tw-ease-in-out tw-transform;
+	@apply group-hover:tw-scale-105 tw-transition-all tw-duration-500 tw-ease-in-out tw-transform-gpu;
 }
 
 .remove-link-decoration {

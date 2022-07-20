@@ -83,3 +83,17 @@ tw-whitespace-pre-wrap
 
 # Additional Grid Classes
 tw-inline-grid
+
+# Absolute Spacing Classes
+tw-top-1/4
+tw-top-1/2
+tw-top-3/4
+tw-bottom-1/4
+tw-bottom-1/2
+tw-bottom-3/4
+tw-left-1/4
+tw-left-1/2
+tw-left-3/4
+tw-right-1/4
+tw-right-1/2
+tw-right-3/4

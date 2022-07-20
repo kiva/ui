@@ -107,9 +107,13 @@ export default {
 	watch: {
 		amount(next, prev) {
 			if (next !== prev) {
-				this.btDropinInstance.updateConfiguration('paypal', 'amount', this.formattedAmount);
-				this.btDropinInstance.updateConfiguration('googlePay', 'transactionInfo', this.googleTransactionInfo);
-				this.btDropinInstance.updateConfiguration('applePay', 'paymentRequest', this.applePaymentRequest);
+				this.btDropinInstance?.updateConfiguration?.('paypal', 'amount', this.formattedAmount);
+				this.btDropinInstance?.updateConfiguration?.(
+					'googlePay',
+					'transactionInfo',
+					this.googleTransactionInfo
+				);
+				this.btDropinInstance?.updateConfiguration?.('applePay', 'paymentRequest', this.applePaymentRequest);
 			}
 		}
 	},

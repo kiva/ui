@@ -3,6 +3,7 @@
 		<template v-if="!isOptionalChoiceExperiment">
 			<kv-hero
 				v-if="!isImpactVisibilityExperiment"
+				class="tw-text-center"
 				style="margin-bottom: 0;"
 			>
 				<template #images>
@@ -17,7 +18,10 @@
 				</template>
 				<template #overlayContent>
 					<div class="row">
-						<div class="tw-max-w-sm tw-bg-white tw-rounded tw-hidden md:tw-block tw-ml-2 tw-p-2">
+						<div
+							class="tw-max-w-sm tw-bg-white tw-rounded tw-hidden
+						md:tw-block tw-ml-2 tw-p-2 tw-text-left"
+						>
 							<h1
 								class="tw-text-primary
 							tw-text-h2" v-html="heroHeadline"
@@ -84,7 +88,7 @@
 							:src="heroImage" alt=""
 						>
 					</div>
-					<div class="tw-pt-16 md:tw-pt-11 lg:tw-max-w-5xl lg:tw-mx-auto tw-px-2">
+					<div class="tw-pt-16 md:tw-pt-11 lg:tw-max-w-5xl lg:tw-mx-auto tw-px-2 tw-text-left">
 						<h2 class="md:tw-text-center tw-text-subhead">
 							With these settings, you’ll support borrowers like this.
 						</h2>
