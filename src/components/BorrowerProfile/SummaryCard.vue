@@ -81,6 +81,7 @@
 				data-testid="bp-summary-bookmark"
 			/>
 		</div>
+		<slot name="sharebutton"></slot>
 		<hr class="md:tw-hidden tw-border-tertiary tw-w-full tw-mt-2">
 		<div
 			class="tw-flex tw-items-center tw-w-full"

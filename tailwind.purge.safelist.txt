@@ -80,3 +80,6 @@ tw-text-link
 # Whitespace Classes
 tw-whitespace-normal
 tw-whitespace-pre-wrap
+
+# Additional Grid Classes
+tw-inline-grid

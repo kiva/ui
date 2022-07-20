@@ -160,8 +160,8 @@
 <script>
 import clipboardCopy from 'clipboard-copy';
 import { mdiCheckAll, mdiLink } from '@mdi/js';
+import { getFullUrl } from '@/util/urlUtils';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
-import _map from 'lodash/map';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -247,7 +247,7 @@ export default {
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
-			return this.getFullUrl('https://www.facebook.com/dialog/share', {
+			return getFullUrl('https://www.facebook.com/dialog/share', {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
 				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social&utm_campaign=social_share_checkout_variant`, // eslint-disable-line max-len
@@ -256,7 +256,7 @@ export default {
 			});
 		},
 		linkedInShareUrl() {
-			return this.getFullUrl('https://www.linkedin.com/shareArticle', {
+			return getFullUrl('https://www.linkedin.com/shareArticle', {
 				mini: 'true',
 				source: `https://${this.$appConfig.host}`,
 				summary: this.shareMessage.substring(0, 256),
@@ -265,7 +265,7 @@ export default {
 			});
 		},
 		twitterShareUrl() {
-			return this.getFullUrl('https://twitter.com/intent/tweet', {
+			return getFullUrl('https://twitter.com/intent/tweet', {
 				text: this.shareMessage,
 				url: `${this.shareLink}&utm_source=t.co&utm_medium=social&utm_campaign=social_share_checkout_variant`,
 				via: 'Kiva',
@@ -273,10 +273,6 @@ export default {
 		},
 	},
 	methods: {
-		getFullUrl(base, args) {
-			const querystring = _map(args, (val, key) => `${key}=${encodeURIComponent(val)}`).join('&');
-			return `${base}?${querystring}`;
-		},
 		handleFacebookResponse() {
 			// Check for the route hash that facebook adds to the request
 			if (this.$route.hash === '#_=_') {

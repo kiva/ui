@@ -10,7 +10,7 @@
 
 				<top-banner-pfp
 					v-if="inPfp"
-					class="tw-relative tw-z-1"
+					class="tw-relative"
 					:lenders-needed="pfpMinLenders"
 					:borrower-name="name"
 					:days-left="diffInDays"
@@ -21,14 +21,19 @@
 				>
 					<summary-card
 						data-testid="bp-summary"
-						class="tw-relative lg:tw--mb-1.5 tw-z-1"
+						class="tw-relative lg:tw--mb-1.5"
 						:show-urgency-exp="showUrgencyExp"
-					/>
+					>
+						<template #sharebutton v-if="inPfp">
+							<!-- Share button for PFP loans -->
+							<social-share-button class="tw-block md:tw-hidden tw-mt-3" :loan="loan" :lender="lender" />
+						</template>
+					</summary-card>
 				</content-container>
 			</div>
 			<div
 				:class="inPfp ? 'lg:tw-pt-16' : 'lg:tw-pt-8'"
-				class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0"
+				class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
 			>
 				<sidebar-container
 					class="lg:tw-sticky lg:tw-mt-10 lg:tw-pb-8 lg:tw-top-12"
@@ -38,14 +43,22 @@
 						:loan-id="loanId"
 						:complete-loan="completeLoanExpActive"
 						:require-deposits-matched-loans="requireDepositsMatchedLoans"
-					/>
+					>
+						<template #sharebutton v-if="inPfp">
+							<!-- Share button for PFP loans -->
+							<social-share-button
+								class="tw-hidden md:tw-block"
+								:loan="loan" :lender="lender"
+							/>
+						</template>
+					</lend-cta>
 				</sidebar-container>
 			</div>
 			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-8">
 				<loan-story
 					id="loanStory"
 					data-testid="bp-loan-story"
-					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8 tw-z-1"
 					:loan-id="loanId"
 				/>
 			</content-container>
@@ -108,6 +121,7 @@ import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
+import SocialShareButton from '@/components/BorrowerProfile/SocialShareButton';
 
 import { isLoanFundraising } from '@/util/loanUtils';
 import loanUseFilter from '@/plugins/loan-use-filter';
@@ -169,6 +183,13 @@ const pageQuery = gql`
 				name
 			}
 		}
+		my {
+			userAccount {
+				id
+				inviterName
+				public
+			}
+		}
 	}
 `;
 
@@ -185,6 +206,7 @@ export default {
 		LoanStory,
 		MoreAboutLoan,
 		SidebarContainer,
+		SocialShareButton,
 		SummaryCard,
 		TopBannerPfp,
 		WhySpecial,
@@ -279,6 +301,8 @@ export default {
 			inPfp: false,
 			pfpMinLenders: 0,
 			diffInDays: 0,
+			lender: {},
+			loan: {}
 		};
 	},
 	apollo: {
@@ -325,6 +349,7 @@ export default {
 		},
 		result(result) {
 			const loan = result?.data?.lend?.loan;
+			this.loan = loan;
 			this.inPfp = loan?.inPfp ?? false;
 			this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
 			this.businessName = loan?.businessName ?? '';
@@ -344,6 +369,7 @@ export default {
 
 			this.diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;
+			this.lender = result?.data?.my?.userAccount ?? {};
 		},
 	},
 	mounted() {
