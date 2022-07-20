@@ -1,3 +1,10 @@
+### [2.233.6](https://github.com/kiva/ui/compare/v2.233.5...v2.233.6) (2022-07-20)
+
+
+### Bug Fixes
+
+* fetch more lenders to avoid small filtered list ([9e72093](https://github.com/kiva/ui/commit/9e720932a1f82ba624449ceb1be75a35dddc5d31))
+
 ### [2.233.5](https://github.com/kiva/ui/compare/v2.233.4...v2.233.5) (2022-07-19)
 
 
