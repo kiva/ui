@@ -39,6 +39,8 @@ import gql from 'graphql-tag';
 import { indexIn } from '@/util/comparators';
 import publicLendMenuQuery from '@/graphql/query/lendMenuData.graphql';
 import privateLendMenuQuery from '@/graphql/query/lendMenuPrivateData.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import LendListMenu from './LendListMenu';
 import LendMegaMenu from './LendMegaMenu';
 
@@ -46,6 +48,12 @@ const pageQuery = gql`query lendMenu {
 		my {
 			userAccount {
 				id
+			}
+		}
+		general {
+			mgEntrypointExp: uiExperimentSetting(key: "topnav_mg_entrypoint") {
+				key
+				value
 			}
 		}
 	}`;
@@ -78,14 +86,41 @@ export default {
 			isRegionsLoading: true,
 			isChannelsLoading: true,
 			showMGUpsellLink: false,
-			swapLendMenuMgCopy: false
+			swapLendMenuMgCopy: false,
+			mgEntrypointExperiment: false
 		};
 	},
 	apollo: {
 		query: pageQuery,
-		preFetch: true,
+		preFetch(config, client) {
+			return client
+				.query({
+					query: pageQuery,
+				})
+				.then(() => {
+					return Promise.all([
+						// eslint-disable-next-line max-len
+						client.query({ query: experimentQuery, variables: { id: 'topnav_mg_entrypoint' } }),
+					]);
+				});
+		},
 		result({ data }) {
 			this.userId = _get(data, 'my.userAccount.id');
+
+			// CORE-641 NEW MG ENTRYPOINT
+			const mgEntrypointExperiment = this.apollo.readFragment({
+				id: 'Experiment:topnav_mg_entrypoint',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.mgEntrypointExperiment = mgEntrypointExperiment.version === 'b';
+			// Fire Event for EXP-CORE-644-June-2022
+			if (mgEntrypointExperiment.version) {
+				this.$kvTrackEvent(
+					'TopNav',
+					'EXP-CORE-644-June-2022',
+					mgEntrypointExperiment.version
+				);
+			}
 		},
 	},
 	computed: {
