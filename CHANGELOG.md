@@ -1,3 +1,10 @@
+## [2.234.0](https://github.com/kiva/ui/compare/v2.233.6...v2.234.0) (2022-07-20)
+
+
+### Features
+
+* adding FAQs to categories page ([#4035](https://github.com/kiva/ui/issues/4035)) ([a53507e](https://github.com/kiva/ui/commit/a53507e9f39f477581b5f1711a2fc5a63a6290f8))
+
 ### [2.233.6](https://github.com/kiva/ui/compare/v2.233.5...v2.233.6) (2022-07-20)
 
 
