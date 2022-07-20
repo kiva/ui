@@ -88,21 +88,26 @@
 			</kv-grid>
 		</kv-page-container>
 		<monthly-good-module />
+		<frequently-asked-questions
+			:content="faqContentGroup"
+		/>
 	</www-page>
 </template>
 
 <script>
+import { processPageContent } from '@/util/contentfulUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import MainCategoryTile from '@/components/Categories/MainCategoryTile';
 import LoanSpotlight from '@/components/Categories/LoanSpotlight';
 import MonthlyGoodModule from '@/components/Categories/MonthlyGoodModule';
+import FrequentlyAskedQuestions from '@/components/Contentful/FrequentlyAskedQuestions';
 import gql from 'graphql-tag';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
-const allCategoriesQuery = gql`
-	query allCategoriesQuery {
+const allCategoriesPageQuery = gql`
+	query allCategoriesPageQuery {
 		lend {
 			loanChannels (limit: 18, popular: true, applyMinLoanCount: true) {
 				values {
@@ -124,6 +129,9 @@ const allCategoriesQuery = gql`
 				}
 			}
 		}
+		contentful {
+			entries(contentType: "page", contentKey: "categories")
+		}
 	}
 `;
 
@@ -136,7 +144,8 @@ export default {
 		KvPageContainer,
 		KvButton,
 		LoanSpotlight,
-		MonthlyGoodModule
+		MonthlyGoodModule,
+		FrequentlyAskedQuestions
 	},
 	metaInfo() {
 		return {
@@ -156,13 +165,16 @@ export default {
 		return {
 			categoryPlaceholderImageCTF: '',
 			categories: [],
+			pageData: {},
 		};
 	},
 	apollo: {
-		query: allCategoriesQuery,
+		query: allCategoriesPageQuery,
 		preFetch: true,
 		result(result) {
 			this.categories = result.data?.lend?.loanChannels?.values ?? [];
+			const pageEntry = result.data?.contentful?.entries?.items?.[0] ?? null;
+			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
 		},
 	},
 	methods: {
@@ -172,6 +184,16 @@ export default {
 		getRetinaImage(category) {
 			return category.retinaImage?.url ?? '';
 		}
+	},
+	computed: {
+		contentGroups() {
+			return this.pageData?.page?.pageLayout?.contentGroups ?? [];
+		},
+		faqContentGroup() {
+			return this.contentGroups?.find(({ type }) => {
+				return type ? type === 'frequentlyAskedQuestions' : false;
+			});
+		},
 	},
 	mounted() {
 		// EXP-ACK-345-Jul2022
