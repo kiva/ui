@@ -96,7 +96,6 @@
 
 <script>
 import { processPageContent } from '@/util/contentfulUtils';
-import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import MainCategoryTile from '@/components/Categories/MainCategoryTile';
 import LoanSpotlight from '@/components/Categories/LoanSpotlight';
@@ -107,8 +106,8 @@ import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
-const allCategoriesQuery = gql`
-	query allCategoriesQuery {
+const allCategoriesPageQuery = gql`
+	query allCategoriesPageQuery {
 		lend {
 			loanChannels (limit: 18, popular: true, applyMinLoanCount: true) {
 				values {
@@ -130,11 +129,6 @@ const allCategoriesQuery = gql`
 				}
 			}
 		}
-	}
-`;
-
-const faqCategoriesQuery = gql`
-	query faqCategoriesQuery {
 		contentful {
 			entries(contentType: "page", contentKey: "categories")
 		}
@@ -175,35 +169,13 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client) {
-			return client.query({
-				query: allCategoriesQuery
-			}).then(() => {
-				return client.query({
-					query: faqCategoriesQuery
-				});
-			});
-		},
-	},
-	created() {
-		try {
-			const categoriesData = this.apollo.readQuery({
-				query: allCategoriesQuery
-			});
-			this.categories = categoriesData.lend?.loanChannels?.values ?? [];
-		} catch (e) {
-			logReadQueryError(e, 'CategoriesBeta allCategoriesQuery');
-		}
-
-		try {
-			const faqData = this.apollo.readQuery({
-				query: faqCategoriesQuery,
-			});
-			const pageEntry = faqData.contentful?.entries?.items?.[0] ?? null;
+		query: allCategoriesPageQuery,
+		preFetch: true,
+		result(result) {
+			this.categories = result.data?.lend?.loanChannels?.values ?? [];
+			const pageEntry = result.data?.contentful?.entries?.items?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
-		} catch (e) {
-			logReadQueryError(e, 'CategoriesBeta faqCategoriesQuery');
-		}
+		},
 	},
 	methods: {
 		getImage(category) {
