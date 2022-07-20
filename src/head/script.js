@@ -129,6 +129,18 @@ export default (config, globalOneTrustEvent) => {
 		p.parentNode.insertBefore(s, p);
 	};
 
+	// Hotjar Snippet
+	const insertHotjar = () => {
+		/* eslint-disable */
+		(function(h,o,t,j,a,r){
+			h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+			h._hjSettings={hjid:config.hotjarId,hjsv:6};
+			a=o.getElementsByTagName('head')[0];
+			r=o.createElement('script');r.async=1;
+			r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+			a.appendChild(r);
+		})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+	};
 	// Always load
 	// PerimeterX snippet
 	if (config.enablePerimeterx) {
@@ -198,6 +210,9 @@ export default (config, globalOneTrustEvent) => {
 				if (config.enableFullStory && !optout) {
 					OneTrust.InsertHtml('', 'head', insertFullStory, null, 'C0002');
 				}
+				if (config.enableHotjar && !optout) {
+					OneTrust.InsertHtml('', 'head', insertHotjar, null, 'C0002');
+				}
 			}
 
 			/** Category 'C0003'
@@ -260,6 +275,9 @@ export default (config, globalOneTrustEvent) => {
 			}
 			if (config.algoliaConfig.enableAA && !optout) {
 				insertAlgoliaAnalytics();
+			}
+			if (config.enableHotjar && !optout) {
+				insertHotjar();
 			}
 		}
 
