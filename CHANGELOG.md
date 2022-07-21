@@ -1,3 +1,10 @@
+### [2.235.2](https://github.com/kiva/ui/compare/v2.235.1...v2.235.2) (2022-07-21)
+
+
+### Bug Fixes
+
+* removes event prop that is throwing a vue warning about deprecated event prop on router link ([c532756](https://github.com/kiva/ui/commit/c532756f9b7858c18a60e6ac67d9ed7231c57eeb))
+
 ### [2.235.1](https://github.com/kiva/ui/compare/v2.235.0...v2.235.1) (2022-07-21)
 
 
