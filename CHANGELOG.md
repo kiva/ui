@@ -1,3 +1,10 @@
+### [2.235.1](https://github.com/kiva/ui/compare/v2.235.0...v2.235.1) (2022-07-21)
+
+
+### Bug Fixes
+
+* various styling issues for pfp share button ([73139bb](https://github.com/kiva/ui/commit/73139bbaf9757b4c8167720cdc5e868d9f5c7051))
+
 ## [2.235.0](https://github.com/kiva/ui/compare/v2.234.0...v2.235.0) (2022-07-21)
 
 
