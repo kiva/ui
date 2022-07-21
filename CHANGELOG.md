@@ -1,3 +1,10 @@
+### [2.235.3](https://github.com/kiva/ui/compare/v2.235.2...v2.235.3) (2022-07-21)
+
+
+### Bug Fixes
+
+* various styling issues for borrower profiles ([d17b0a0](https://github.com/kiva/ui/commit/d17b0a0c639a838756c685ee40583ea14e781753))
+
 ### [2.235.2](https://github.com/kiva/ui/compare/v2.235.1...v2.235.2) (2022-07-21)
 
 
