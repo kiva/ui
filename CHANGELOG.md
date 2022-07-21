@@ -1,3 +1,15 @@
+## [2.235.0](https://github.com/kiva/ui/compare/v2.234.0...v2.235.0) (2022-07-21)
+
+
+### Features
+
+* social media share button on pfp borrower profiles ([36deeb9](https://github.com/kiva/ui/commit/36deeb93295261ee4fad3c871d991874e295a2ba))
+
+
+### Bug Fixes
+
+* spacing ([ddeedbc](https://github.com/kiva/ui/commit/ddeedbc1041b85ec51a50babc6f5cfd672fc7603))
+
 ## [2.234.0](https://github.com/kiva/ui/compare/v2.233.6...v2.234.0) (2022-07-20)
 
 
