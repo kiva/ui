@@ -81,7 +81,8 @@
 				data-testid="bp-summary-bookmark"
 			/>
 		</div>
-		<hr class="md:tw-hidden tw-border-tertiary tw-w-full tw-my-2">
+		<slot name="sharebutton"></slot>
+		<hr class="md:tw-hidden tw-border-tertiary tw-w-full tw-mt-2">
 		<div
 			class="tw-flex tw-items-center tw-w-full"
 			:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"

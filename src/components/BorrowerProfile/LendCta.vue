@@ -17,7 +17,6 @@
 		>
 			<kv-grid
 				:class="[
-					'tw-z-2',
 					'tw-grid-cols-12',
 					'tw-px-2.5',
 					'tw-bg-primary',
@@ -196,6 +195,7 @@
 							{{ ctaButtonText }}
 						</kv-ui-button>
 					</span>
+					<slot name="sharebutton"></slot>
 					<p
 						v-if="freeCreditWarning"
 						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
@@ -366,6 +366,7 @@ import { buildPriceArray, isMatchAtRisk } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
+
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import LendersList from '@/components/BorrowerProfile/LendersList';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
@@ -437,7 +438,7 @@ export default {
 			wrapperHeight: 0,
 			wrapperObserver: null,
 			name: '',
-			completeLoanView: true
+			completeLoanView: true,
 		};
 	},
 	apollo: {
