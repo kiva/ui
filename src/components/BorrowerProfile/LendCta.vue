@@ -49,7 +49,7 @@
 					<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
 						{{ lgScreenheadline }}
 					</p>
-					<span class="tw-flex tw-pb-1 lg:tw-pb-3">
+					<span class="tw-flex tw-pb-1 lg:tw-pb-2.5">
 						<!-- eslint-disable-next-line max-len -->
 						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
 							<fieldset
@@ -214,7 +214,7 @@
 						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full"
 						:class="[
 							{
-								'tw-mt-2': !socialExpEnabled,
+								'md:tw-mt-1': !socialExpEnabled,
 								'tw-my-2 lg:tw-mb-3': socialExpEnabled,
 							}
 						]"
@@ -294,7 +294,6 @@
 					<div
 						key="wrapper"
 						:class="[
-							'tw-z-1',
 							'tw-h-5',
 							'tw-overflow-hidden',
 							'tw-col-span-12',
@@ -309,6 +308,7 @@
 								'md:tw-mb-0': !isSticky,
 								'md:tw-col-start-6 md:tw-col-span-7': !isSticky,
 								'md:tw-col-start-5 md:tw-col-span-6': isSticky,
+								'md:tw-hidden': isSticky,
 							},
 							'lg:tw-mb-0',
 							'lg:tw-col-span-12'

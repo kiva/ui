@@ -95,7 +95,7 @@
 				data-testid="bp-mobile-summary-bookmark"
 			/>
 
-			<jump-links class="md:tw-hidden" data-testid="bp-summary-card-jump-links" />
+			<jump-links class="md:tw-hidden tw-my-2" data-testid="bp-summary-card-jump-links" />
 		</div>
 		<div
 			v-if="socialExpEnabled && lenders.length"
