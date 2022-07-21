@@ -157,10 +157,10 @@ export default {
 		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
-			if (this.loan.id) {
+			if (this.loan.id && this.lender.inviterName) {
 				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utm_content=${this.utmContent}`; // eslint-disable-line max-len
 			}
-			return `${base}?utm_content=${this.utmContent}`;
+			return `${base}${this.$route.path}?utm_content=${this.utmContent}`;
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
