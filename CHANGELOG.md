@@ -1,3 +1,10 @@
+### [2.235.5](https://github.com/kiva/ui/compare/v2.235.4...v2.235.5) (2022-07-21)
+
+
+### Bug Fixes
+
+* remove the live-loans endpoint from our lighthouse run as it fails, dropping all other results ([15705ae](https://github.com/kiva/ui/commit/15705aeb750050c7b35836c707eecf1bfd4fe850))
+
 ### [2.235.4](https://github.com/kiva/ui/compare/v2.235.3...v2.235.4) (2022-07-21)
 
 
