@@ -1,3 +1,10 @@
+### [2.235.4](https://github.com/kiva/ui/compare/v2.235.3...v2.235.4) (2022-07-21)
+
+
+### Bug Fixes
+
+* link url for anonymous users in share button ([0a413af](https://github.com/kiva/ui/commit/0a413af19bfec6288c5489ae12e952508a2a9a8e))
+
 ### [2.235.3](https://github.com/kiva/ui/compare/v2.235.2...v2.235.3) (2022-07-21)
 
 
