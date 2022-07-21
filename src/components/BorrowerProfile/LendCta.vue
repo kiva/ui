@@ -36,7 +36,7 @@
 						'tw-pt-1',
 						'tw-col-span-12',
 						{
-							'md:tw-pt-0 md:tw-pb-2': !isSticky,
+							'md:tw-pt-0': !isSticky,
 							'md:tw-col-start-2 md:tw-col-span-10': isSticky,
 						},
 						'lg:tw-col-span-12',
@@ -195,7 +195,7 @@
 							{{ ctaButtonText }}
 						</kv-ui-button>
 					</span>
-					<slot name="sharebutton"></slot>
+					<slot v-if="!isSticky" name="sharebutton"></slot>
 					<p
 						v-if="freeCreditWarning"
 						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
@@ -252,7 +252,10 @@
 						'lg:tw-col-span-12',
 					]"
 				>
-					<hr class="tw-hidden lg:tw-block tw-border-tertiary tw-w-full tw-mb-3">
+					<hr
+						v-if="socialExpEnabled && lenders.length"
+						class="tw-hidden lg:tw-block tw-border-tertiary tw-w-full tw-mb-3"
+					>
 					<lenders-list
 						v-if="socialExpEnabled && lenders.length"
 						:num-lenders="numLenders"
