@@ -548,7 +548,7 @@ export default {
 			this.$kvTrackEvent(
 				'Thanks',
 				'EXP-MARS-143-Jul2022',
-				this.shareCardLanguageVersion
+				this.shareCardLanguageVersion.replace('-normal', '')
 			);
 		}
 
