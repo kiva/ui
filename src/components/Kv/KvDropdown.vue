@@ -174,7 +174,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import 'settings';
 @import 'foundation';
 @include foundation-dropdown;

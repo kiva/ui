@@ -542,13 +542,15 @@ export default {
 			);
 		}
 
-		// EXP-MARS-143-Jul2022
-		this.shareCardLanguageVersion = this.$route.query?.scle;
-		this.$kvTrackEvent(
-			'Thanks',
-			'EXP-MARS-143-Jul2022',
-			this.shareCardLanguageVersion
-		);
+		if (this.$route.query?.utm_campaign?.includes('scle')) {
+			// EXP-MARS-143-Jul2022
+			this.shareCardLanguageVersion = this.$route.query.utm_campaign.split('_').pop();
+			this.$kvTrackEvent(
+				'Thanks',
+				'EXP-MARS-143-Jul2022',
+				this.shareCardLanguageVersion
+			);
+		}
 
 		// Check if social elements experiment is active.
 		const { enabled } = getExperimentSettingCached(this.apollo, socialElementsExpKey);
