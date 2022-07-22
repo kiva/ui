@@ -91,7 +91,7 @@
 			<loan-bookmark
 				v-if="isLoggedIn"
 				:loan-id="loanId"
-				class="md:tw-hidden"
+				class="md:tw-hidden tw-mt-1"
 				data-testid="bp-mobile-summary-bookmark"
 			/>
 
