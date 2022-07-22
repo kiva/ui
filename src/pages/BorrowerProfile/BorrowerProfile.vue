@@ -544,7 +544,7 @@ export default {
 
 		if (this.$route.query?.utm_campaign?.includes('scle')) {
 			// EXP-MARS-143-Jul2022
-			this.shareCardLanguageVersion = this.$route.query.utm_campaign.split('_').pop();
+			this.shareCardLanguageVersion = this.$route.query?.utm_campaign?.split('_')?.pop()?.replace('-normal', '');
 			this.$kvTrackEvent(
 				'Thanks',
 				'EXP-MARS-143-Jul2022',
