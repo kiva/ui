@@ -1,3 +1,57 @@
+### [2.235.6](https://github.com/kiva/ui/compare/v2.235.5...v2.235.6) (2022-07-22)
+
+
+### Bug Fixes
+
+* kvdropdown menu showing up under borrower profile lend cta ([fe64b13](https://github.com/kiva/ui/commit/fe64b138aab4b3f1ca424a7fc90208ad0624cae2))
+
+### [2.235.5](https://github.com/kiva/ui/compare/v2.235.4...v2.235.5) (2022-07-21)
+
+
+### Bug Fixes
+
+* remove the live-loans endpoint from our lighthouse run as it fails, dropping all other results ([15705ae](https://github.com/kiva/ui/commit/15705aeb750050c7b35836c707eecf1bfd4fe850))
+
+### [2.235.4](https://github.com/kiva/ui/compare/v2.235.3...v2.235.4) (2022-07-21)
+
+
+### Bug Fixes
+
+* link url for anonymous users in share button ([0a413af](https://github.com/kiva/ui/commit/0a413af19bfec6288c5489ae12e952508a2a9a8e))
+
+### [2.235.3](https://github.com/kiva/ui/compare/v2.235.2...v2.235.3) (2022-07-21)
+
+
+### Bug Fixes
+
+* various styling issues for borrower profiles ([d17b0a0](https://github.com/kiva/ui/commit/d17b0a0c639a838756c685ee40583ea14e781753))
+
+### [2.235.2](https://github.com/kiva/ui/compare/v2.235.1...v2.235.2) (2022-07-21)
+
+
+### Bug Fixes
+
+* removes event prop that is throwing a vue warning about deprecated event prop on router link ([c532756](https://github.com/kiva/ui/commit/c532756f9b7858c18a60e6ac67d9ed7231c57eeb))
+
+### [2.235.1](https://github.com/kiva/ui/compare/v2.235.0...v2.235.1) (2022-07-21)
+
+
+### Bug Fixes
+
+* various styling issues for pfp share button ([73139bb](https://github.com/kiva/ui/commit/73139bbaf9757b4c8167720cdc5e868d9f5c7051))
+
+## [2.235.0](https://github.com/kiva/ui/compare/v2.234.0...v2.235.0) (2022-07-21)
+
+
+### Features
+
+* social media share button on pfp borrower profiles ([36deeb9](https://github.com/kiva/ui/commit/36deeb93295261ee4fad3c871d991874e295a2ba))
+
+
+### Bug Fixes
+
+* spacing ([ddeedbc](https://github.com/kiva/ui/commit/ddeedbc1041b85ec51a50babc6f5cfd672fc7603))
+
 ## [2.234.0](https://github.com/kiva/ui/compare/v2.233.6...v2.234.0) (2022-07-20)
 
 

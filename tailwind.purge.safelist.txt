@@ -81,6 +81,9 @@ tw-text-link
 tw-whitespace-normal
 tw-whitespace-pre-wrap
 
+# Additional Grid Classes
+tw-inline-grid
+
 # Absolute Spacing Classes
 tw-top-1/4
 tw-top-1/2

@@ -81,7 +81,8 @@
 				data-testid="bp-summary-bookmark"
 			/>
 		</div>
-		<hr class="md:tw-hidden tw-border-tertiary tw-w-full tw-my-2">
+		<slot name="sharebutton"></slot>
+		<hr class="md:tw-hidden tw-border-tertiary tw-w-full tw-mt-2">
 		<div
 			class="tw-flex tw-items-center tw-w-full"
 			:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
@@ -90,11 +91,11 @@
 			<loan-bookmark
 				v-if="isLoggedIn"
 				:loan-id="loanId"
-				class="md:tw-hidden"
+				class="md:tw-hidden tw-mt-1"
 				data-testid="bp-mobile-summary-bookmark"
 			/>
 
-			<jump-links class="md:tw-hidden" data-testid="bp-summary-card-jump-links" />
+			<jump-links class="md:tw-hidden tw-my-2" data-testid="bp-summary-card-jump-links" />
 		</div>
 		<div
 			v-if="socialExpEnabled && lenders.length"

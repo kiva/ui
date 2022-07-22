@@ -110,7 +110,6 @@
 							data-testid="header-lend"
 							class="header__button header__lend"
 							v-kv-track-event="['TopNav','click-Lend']"
-							event
 							@pointerenter.native.stop="onLendLinkPointerEnter"
 							@pointerleave.native.stop="onLendLinkPointerLeave"
 							@pointerup.native.stop="onLendLinkPointerUp"
