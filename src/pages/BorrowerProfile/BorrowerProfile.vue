@@ -515,7 +515,7 @@ export default {
 		}
 
 		// EXP-MARS-143-Jul2022
-		this.shareCardLanguageVersion = this.$route.query?.scle;
+		this.shareCardLanguageVersion = this.$route.query?.utm_campaign;
 		this.$kvTrackEvent(
 			'Thanks',
 			'EXP-MARS-143-Jul2022',
