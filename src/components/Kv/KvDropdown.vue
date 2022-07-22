@@ -174,8 +174,14 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 @import 'foundation';
 @include foundation-dropdown;
+</style>
+
+<style lang="postcss" scoped>
+.dropdown-pane {
+	@apply !tw-z-overlay;
+}
 </style>

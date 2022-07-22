@@ -29,6 +29,7 @@
 					},
 					'lg:tw-rounded-t',
 					'lg:tw-px-4',
+					'lg:tw-gap-1'
 				]"
 			>
 				<div
@@ -211,16 +212,10 @@
 						All shares reserved
 					</p>
 					<hr
-						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full"
-						:class="[
-							{
-								'md:tw-mt-1': !socialExpEnabled,
-								'tw-my-2 lg:tw-mb-3': socialExpEnabled,
-							}
-						]"
+						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full tw-my-2"
 					>
 					<div
-						class="tw-flex lg:tw-justify-center tw-w-full tw-items-center"
+						class="tw-flex lg:tw-justify-center tw-w-full"
 						:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
 					>
 						<loan-bookmark
@@ -231,9 +226,9 @@
 						/>
 						<jump-links
 							:class="[
-								'tw-hidden md:tw-block',
+								'tw-hidden md:tw-block lg:tw-mb-1.5',
 								{
-									'tw-my-3': !socialExpEnabled
+									'md:tw-mb-3': isSticky || !socialExpEnabled,
 								}
 							]"
 							data-testid="bp-lend-cta-jump-links"
