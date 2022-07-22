@@ -11,7 +11,7 @@
 			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
 			:show-m-g-upsell-link="showMGUpsellLink"
-			:swap-mg-link-copy="swapLendMenuMgCopy"
+			:new-mg-entrypoint="newMgEntrypointExp"
 		/>
 		<lend-mega-menu
 			ref="mega"
@@ -24,7 +24,7 @@
 			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
 			:show-m-g-upsell-link="showMGUpsellLink"
-			:swap-mg-link-copy="swapLendMenuMgCopy"
+			:new-mg-entrypoint="newMgEntrypointExp"
 		/>
 	</div>
 </template>
@@ -48,12 +48,6 @@ const pageQuery = gql`query lendMenu {
 		my {
 			userAccount {
 				id
-			}
-		}
-		general {
-			mgEntrypointExp: uiExperimentSetting(key: "topnav_mg_entrypoint") {
-				key
-				value
 			}
 		}
 	}`;
@@ -86,41 +80,14 @@ export default {
 			isRegionsLoading: true,
 			isChannelsLoading: true,
 			showMGUpsellLink: false,
-			swapLendMenuMgCopy: false,
-			mgEntrypointExperiment: false
+			newMgEntrypointExp: false,
 		};
 	},
 	apollo: {
 		query: pageQuery,
-		preFetch(config, client) {
-			return client
-				.query({
-					query: pageQuery,
-				})
-				.then(() => {
-					return Promise.all([
-						// eslint-disable-next-line max-len
-						client.query({ query: experimentQuery, variables: { id: 'topnav_mg_entrypoint' } }),
-					]);
-				});
-		},
+		preFetch: true,
 		result({ data }) {
 			this.userId = _get(data, 'my.userAccount.id');
-
-			// CORE-641 NEW MG ENTRYPOINT
-			const mgEntrypointExperiment = this.apollo.readFragment({
-				id: 'Experiment:topnav_mg_entrypoint',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.mgEntrypointExperiment = mgEntrypointExperiment.version === 'b';
-			// Fire Event for EXP-CORE-644-June-2022
-			if (mgEntrypointExperiment.version) {
-				this.$kvTrackEvent(
-					'TopNav',
-					'EXP-CORE-644-June-2022',
-					mgEntrypointExperiment.version
-				);
-			}
 		},
 	},
 	computed: {
@@ -212,22 +179,41 @@ export default {
 			});
 		}
 
-		// CORE-392 fetch link swap setting
+		// CORE-641 NEW MG ENTRYPOINT
 		this.apollo.query({
-			query: gql`query mgLinkText {
+			query: gql`query newMgEntrypoint {
 				general {
-					mg_link_text: uiConfigSetting(key: "lend_menu_mg_link_swap") {
+					new_mg_entrypoint: uiConfigSetting(key: "topnav_mg_entrypoint") {
 						key
 						value
 					}
 				}
 			}`
-		}).then(({ data }) => {
-			const swapLendMenuMgCopySetting = data?.general?.mg_link_text?.value ?? false;
-			this.swapLendMenuMgCopy = swapLendMenuMgCopySetting === 'true';
+		}).then(() => {
+			// const swapLendMenuMgCopySetting = data?.general?.new_mg_entrypoint?.value ?? false;
+			// this.swapLendMenuMgCopy = swapLendMenuMgCopySetting === 'true';
 			// additional visibility control delay
 			this.$nextTick(() => {
 				this.showMGUpsellLink = true;
+
+				this.apollo.query({ query: experimentQuery, variables: { id: 'topnav_mg_entrypoint' } })
+					.then(() => {
+						// CORE-641 NEW MG ENTRYPOINT
+						const mgEntrypointExperiment = this.apollo.readFragment({
+							id: 'Experiment:topnav_mg_entrypoint',
+							fragment: experimentVersionFragment,
+						}) || {};
+						console.log(mgEntrypointExperiment);
+						this.newMgEntrypointExp = mgEntrypointExperiment.version === 'b';
+						// Fire Event for EXP-CORE-644-June-2022
+						if (mgEntrypointExperiment.version && mgEntrypointExperiment.version !== 'unassigned') {
+							this.$kvTrackEvent(
+								'TopNav',
+								'EXP-CORE-644-June-2022',
+								mgEntrypointExperiment.version
+							);
+						}
+					});
 			});
 		});
 	}
