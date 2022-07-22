@@ -379,13 +379,15 @@ export default {
 			this.enabledExperiment = true;
 		}
 
-		// EXP-MARS-143-Jul2022
-		this.shareCardLanguageVersion = this.$route.query?.utm_campaign;
-		this.$kvTrackEvent(
-			'Thanks',
-			'EXP-MARS-143-Jul2022',
-			this.shareCardLanguageVersion
-		);
+		if (this.$route.query?.utm_campaign.includes('scle')) {
+			// EXP-MARS-143-Jul2022
+			this.shareCardLanguageVersion = this.$route.query.utm_campaign.split('_').pop();
+			this.$kvTrackEvent(
+				'Thanks',
+				'EXP-MARS-143-Jul2022',
+				this.shareCardLanguageVersion
+			);
+		}
 	},
 	mounted() {
 		const { enabled } = getExperimentSettingCached(this.apollo, newFundedBorrowerPageExpKey);
