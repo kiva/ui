@@ -381,6 +381,7 @@ export default {
 
 		if (this.$route.query?.utm_campaign?.includes('scle')) {
 			// EXP-MARS-143-Jul2022
+			// Extract exp version from utm_campaign
 			this.shareCardLanguageVersion = this.$route.query?.utm_campaign?.split('_')?.pop()?.replace('-normal', '');
 			this.$kvTrackEvent(
 				'Thanks',
