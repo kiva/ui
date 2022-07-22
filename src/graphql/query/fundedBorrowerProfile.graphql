@@ -1,6 +1,8 @@
 query fundedBorrowerProfile(
 	$id: Int!
 	$basketId: String
+	$publicId: String!
+	$getInviter: Boolean!
 	$imgDefaultSize: String = "w480h360"
 	$imgRetinaSize: String = "w960h720"
 ) {
@@ -9,7 +11,9 @@ query fundedBorrowerProfile(
 			key
 			value
 		}
-		newFundedBorrowerPage: uiExperimentSetting(key: "new_funded_borrower_page") {
+		newFundedBorrowerPage: uiExperimentSetting(
+			key: "new_funded_borrower_page"
+		) {
 			key
 			value
 		}
@@ -26,6 +30,9 @@ query fundedBorrowerProfile(
 			}
 			name
 			status
+			anonymizationLevel
+			loanAmount
+			borrowerCount
 			loanFundraisingInfo {
 				fundedAmount
 			}
@@ -43,6 +50,12 @@ query fundedBorrowerProfile(
 				id
 				name
 			}
+		}
+	}
+	community @include(if: $getInviter) {
+		lender(publicId: $publicId) {
+			id
+			name
 		}
 	}
 	shop(basketId: $basketId) {
