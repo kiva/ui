@@ -1,3 +1,10 @@
+### [2.235.10](https://github.com/kiva/ui/compare/v2.235.9...v2.235.10) (2022-07-22)
+
+
+### Bug Fixes
+
+* strip out -normal from exp version field ([ed4482c](https://github.com/kiva/ui/commit/ed4482c0a1252bd9841830f5c6159678b41a3404))
+
 ### [2.235.9](https://github.com/kiva/ui/compare/v2.235.8...v2.235.9) (2022-07-22)
 
 
