@@ -40,7 +40,6 @@ import { indexIn } from '@/util/comparators';
 import publicLendMenuQuery from '@/graphql/query/lendMenuData.graphql';
 import privateLendMenuQuery from '@/graphql/query/lendMenuPrivateData.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import LendListMenu from './LendListMenu';
 import LendMegaMenu from './LendMegaMenu';
 
@@ -180,41 +179,24 @@ export default {
 		}
 
 		// CORE-641 NEW MG ENTRYPOINT
-		this.apollo.query({
-			query: gql`query newMgEntrypoint {
-				general {
-					new_mg_entrypoint: uiConfigSetting(key: "topnav_mg_entrypoint") {
-						key
-						value
-					}
-				}
-			}`
-		}).then(() => {
-			// const swapLendMenuMgCopySetting = data?.general?.new_mg_entrypoint?.value ?? false;
-			// this.swapLendMenuMgCopy = swapLendMenuMgCopySetting === 'true';
-			// additional visibility control delay
-			this.$nextTick(() => {
-				this.showMGUpsellLink = true;
+		// this experiment is assigned in experimentPreFetch.js
+		const newMgEntrypointExperiment = this.apollo.readFragment({
+			id: 'Experiment:topnav_mg_entrypoint',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.newMgEntrypointExp = newMgEntrypointExperiment.version === 'b';
 
-				this.apollo.query({ query: experimentQuery, variables: { id: 'topnav_mg_entrypoint' } })
-					.then(() => {
-						// CORE-641 NEW MG ENTRYPOINT
-						const mgEntrypointExperiment = this.apollo.readFragment({
-							id: 'Experiment:topnav_mg_entrypoint',
-							fragment: experimentVersionFragment,
-						}) || {};
-						console.log(mgEntrypointExperiment);
-						this.newMgEntrypointExp = mgEntrypointExperiment.version === 'b';
-						// Fire Event for EXP-CORE-644-June-2022
-						if (mgEntrypointExperiment.version && mgEntrypointExperiment.version !== 'unassigned') {
-							this.$kvTrackEvent(
-								'TopNav',
-								'EXP-CORE-644-June-2022',
-								mgEntrypointExperiment.version
-							);
-						}
-					});
-			});
+		// Fire Event for EXP-CORE-644-June-2022
+		if (newMgEntrypointExperiment.version) {
+			this.$kvTrackEvent(
+				'TopNav',
+				'EXP-CORE-644-June-2022',
+				newMgEntrypointExperiment.version
+			);
+		}
+
+		this.$nextTick(() => {
+			this.showMGUpsellLink = true;
 		});
 	}
 };
