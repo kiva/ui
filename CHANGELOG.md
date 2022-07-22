@@ -1,3 +1,10 @@
+### [2.235.6](https://github.com/kiva/ui/compare/v2.235.5...v2.235.6) (2022-07-22)
+
+
+### Bug Fixes
+
+* kvdropdown menu showing up under borrower profile lend cta ([fe64b13](https://github.com/kiva/ui/commit/fe64b138aab4b3f1ca424a7fc90208ad0624cae2))
+
 ### [2.235.5](https://github.com/kiva/ui/compare/v2.235.4...v2.235.5) (2022-07-21)
 
 
