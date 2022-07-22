@@ -1,3 +1,10 @@
+### [2.235.7](https://github.com/kiva/ui/compare/v2.235.6...v2.235.7) (2022-07-22)
+
+
+### Bug Fixes
+
+* kvdropdown menu scoped css is breaking padding ([d0b79b4](https://github.com/kiva/ui/commit/d0b79b4da19f7b320c34cedfeacab87e67c54732))
+
 ### [2.235.6](https://github.com/kiva/ui/compare/v2.235.5...v2.235.6) (2022-07-22)
 
 
