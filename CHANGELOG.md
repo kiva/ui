@@ -1,3 +1,13 @@
+### [2.235.8](https://github.com/kiva/ui/compare/v2.235.7...v2.235.8) (2022-07-22)
+
+
+### Bug Fixes
+
+* added shard card experiment tracking to funded borrower profile component ([6a1ddcb](https://github.com/kiva/ui/commit/6a1ddcb4b3b729a520a36a0ff4d508c6a2257aa1))
+* code review changes ([62c977c](https://github.com/kiva/ui/commit/62c977c7ce0918249f05e052ad8e5f85ef32e1e1))
+* removed scle param and move experiment to utm_campaign ([4b7e83a](https://github.com/kiva/ui/commit/4b7e83a924644c38140175ccf2e7861fdc14a7df))
+* small improvement ([f95e532](https://github.com/kiva/ui/commit/f95e532469fe94f11e279289044140ce471e3132))
+
 ### [2.235.7](https://github.com/kiva/ui/compare/v2.235.6...v2.235.7) (2022-07-22)
 
 
