@@ -379,7 +379,7 @@ export default {
 			this.enabledExperiment = true;
 		}
 
-		if (this.$route.query?.utm_campaign.includes('scle')) {
+		if (this.$route.query?.utm_campaign?.includes('scle')) {
 			// EXP-MARS-143-Jul2022
 			this.shareCardLanguageVersion = this.$route.query.utm_campaign.split('_').pop();
 			this.$kvTrackEvent(
