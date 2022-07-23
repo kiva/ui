@@ -1,0 +1,100 @@
+<template>
+	<section>
+		<kv-lightbox
+			:data-testid="`bp-what-is-kiva-lightbox`"
+			:visible="true"
+			:title="title"
+			@lightbox-closed="isLightboxVisible = false"
+			class="tw-px-8"
+			:kiva-module-exp="true"
+		>
+			<template #header>
+				<h2 class="tw-text-h2 md:tw-text-center tw-mb-1">
+					{{ title }}
+				</h2>
+				<div class="tw-mb-3">
+					<p
+						:data-testid="`bp-what-is-kiva-lightbox-description`"
+						class="md:tw-text-center tw-text-subhead"
+					>
+						{{ description }}
+					</p>
+				</div>
+				<h3 class="md:tw-hidden tw-text-action tw-mb-1">
+					How it works
+				</h3>
+				<div class="tw-block md:tw-flex md:tw-gap-3 md:tw-px-2.5 md:tw-mx-4">
+					<div
+						class="tw-flex tw-gap-1 tw-items-center md:tw-block md:tw-flex-1"
+					>
+						<div class="tw-basis-1/3">
+							<icon-lend
+								class="tw-w-12 tw-h-12 tw-block tw-mx-auto tw-text-brand tw-bg-transparent"
+							/>
+						</div>
+						<div class="tw-basis-2/3 md:tw-text-center">
+							<h3>Lend</h3>
+							<p>100% of your money goes to the borrower</p>
+						</div>
+					</div>
+					<div class="tw-flex tw-gap-1 tw-items-center md:tw-block md:tw-flex-1">
+						<div class="tw-basis-1/3">
+							<icon-get-repaid
+								class="tw-w-12 tw-h-12 tw-block tw-mx-auto tw-text-brand tw-bg-transparent"
+							/>
+						</div>
+						<div class="tw-basis-2/3 md:tw-text-center">
+							<h3>Get repaid</h3>
+							<p>As borrowers thrive they pay back your loan</p>
+						</div>
+					</div>
+					<div class="tw-flex tw-gap-1 tw-items-center md:tw-block md:tw-flex-1">
+						<div class="tw-basis-1/3">
+							<icon-auto-deposit
+								class="tw-w-12 tw-h-12 tw-block tw-mx-auto tw-text-brand tw-bg-transparent"
+							/>
+						</div>
+						<div class="tw-basis-2/3 md:tw-text-center">
+							<h3>Repeat</h3>
+							<p>Relend to change even more lives</p>
+						</div>
+					</div>
+				</div>
+			</template>
+			<div>
+				<kv-button
+					class="tw-w-full md:tw-flex md:tw-justify-center md:tw-max-w-sm tw-mx-auto"
+				>
+					Let's get started
+				</kv-button>
+			</div>
+		</kv-lightbox>
+	</section>
+</template>
+
+<script>
+
+import IconAutoDeposit from '@/assets/icons/inline/auto-deposit.svg';
+import IconLend from '@/assets/icons/inline/lend-modal.svg';
+import IconGetRepaid from '@/assets/icons/inline/get-repaid.svg';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+
+export default {
+	name: 'WhatIsKivaModal',
+	components: {
+		KvLightbox,
+		KvButton,
+		IconAutoDeposit,
+		IconLend,
+		IconGetRepaid
+	},
+	data() {
+		return {
+			title: 'Welcome to Kiva! 💚',
+			description: 'Lend as little as $25 to make a big differences in someone\'s life.',
+			isLightboxVisible: true
+		};
+	}
+};
+</script>
