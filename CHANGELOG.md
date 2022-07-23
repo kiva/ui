@@ -1,3 +1,24 @@
+### [2.235.11](https://github.com/kiva/ui/compare/v2.235.10...v2.235.11) (2022-07-22)
+
+
+### Bug Fixes
+
+* notes on exp version extraction ([15f66b1](https://github.com/kiva/ui/commit/15f66b1f5fcd10032efe578d1e317e1687731b54))
+
+### [2.235.10](https://github.com/kiva/ui/compare/v2.235.9...v2.235.10) (2022-07-22)
+
+
+### Bug Fixes
+
+* strip out -normal from exp version field ([ed4482c](https://github.com/kiva/ui/commit/ed4482c0a1252bd9841830f5c6159678b41a3404))
+
+### [2.235.9](https://github.com/kiva/ui/compare/v2.235.8...v2.235.9) (2022-07-22)
+
+
+### Bug Fixes
+
+* strip out -normal from exp version field ([45ede81](https://github.com/kiva/ui/commit/45ede81c64f0b9eeda198537bcaaaeb040da356e))
+
 ### [2.235.8](https://github.com/kiva/ui/compare/v2.235.7...v2.235.8) (2022-07-22)
 
 
