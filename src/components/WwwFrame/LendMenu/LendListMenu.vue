@@ -6,7 +6,7 @@
 			class="tw-inline-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-border-b tw-border-tertiary tw-font-medium"
 			@click.native="trackMgLinkClick"
 		>
-			{{ mgLinkText }}
+			Lend monthly
 			<kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiArrowRight" />
 		</router-link>
 		<div v-else class="tw-block tw-py-2 tw-mb-2 tw-w-16">
@@ -228,7 +228,7 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		swapMgLinkCopy: {
+		newMgEntrypoint: {
 			type: Boolean,
 			default: false,
 		},
@@ -243,9 +243,6 @@ export default {
 		hasSearches() {
 			return this.searches.length > 0;
 		},
-		mgLinkText() {
-			return this.swapMgLinkCopy ? 'Lend monthly' : 'Find a cause';
-		}
 	},
 	methods: {
 		onClose() {
@@ -267,11 +264,7 @@ export default {
 			}
 		},
 		trackMgLinkClick() {
-			if (this.swapMgLinkCopy) {
-				this.$kvTrackEvent('TopNav', 'click-Lend-Menu-Monthly-Good', 'Lend monthly');
-			} else {
-				this.$kvTrackEvent('TopNav', 'click-Find-a-Cause', 'Find a cause');
-			}
+			this.$kvTrackEvent('TopNav', 'click-Lend-Menu-Monthly-Good', 'Lend monthly');
 		}
 	},
 };
