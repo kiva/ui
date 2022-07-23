@@ -1,3 +1,12 @@
+## [2.236.0](https://github.com/kiva/ui/compare/v2.235.11...v2.236.0) (2022-07-23)
+
+
+### Features
+
+* ab test added for new mg entrypoint on topnav ([910ca71](https://github.com/kiva/ui/commit/910ca71bde43ed249ab6629900e48cc38fd70030))
+* mg entrypoint experiment was added as global experiment ([994dba1](https://github.com/kiva/ui/commit/994dba18eda6451c270ceace58e09a1b82278318))
+* queries for mg entrypoint experiments were added ([61bc06a](https://github.com/kiva/ui/commit/61bc06a3cedf1fcf3435bf23e9ad71f9bac47419))
+
 ### [2.235.11](https://github.com/kiva/ui/compare/v2.235.10...v2.235.11) (2022-07-22)
 
 
