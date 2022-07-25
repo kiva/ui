@@ -44,7 +44,8 @@ export default (config, globalOneTrustEvent) => {
 				appId: 'kiva' ,
 				cookieDomain: '.kiva.org',
 				contexts: {
-					optimizelyXSummary: true
+					optimizelyXSummary: true,
+					performanceTiming: true
 				},
 				// uncomment this option to examine context information in your vm
 				// encodeBase64: false,
