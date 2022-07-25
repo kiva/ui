@@ -1,3 +1,10 @@
+## [2.237.0](https://github.com/kiva/ui/compare/v2.236.0...v2.237.0) (2022-07-25)
+
+
+### Features
+
+* enable snowplow performance timing in the snowplow context ([1ffc0c6](https://github.com/kiva/ui/commit/1ffc0c6c5cc4d92ea9ae81ab6297ee37d1eedfe8))
+
 ## [2.236.0](https://github.com/kiva/ui/compare/v2.235.11...v2.236.0) (2022-07-23)
 
 
