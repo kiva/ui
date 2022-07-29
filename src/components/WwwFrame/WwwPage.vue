@@ -83,9 +83,7 @@ export default {
 		});
 
 		const hasLentBefore = result?.my?.loans?.totalCount > 0;
-
-		// eslint-disable-next-line max-len
-		const hasDepositBefore = Math.floor(result?.my?.userAccount?.balance ?? 0) > 0 && !result?.my?.userAccount?.isFirstTimeDepositor;
+		const hasDepositBefore = !result?.my?.userAccount?.isFirstTimeDepositor;
 
 		this.cookieStore.set(hasLentBeforeCookie, hasLentBefore);
 		this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore);
