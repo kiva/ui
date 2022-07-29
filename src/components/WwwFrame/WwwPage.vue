@@ -28,6 +28,9 @@ import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
 import TheBannerArea from './TheBannerArea';
 
+const hasLentBeforeCookie = 'kvu-lent-before';
+const hasDepositBeforeCookie = 'kvu-deposit-before';
+
 export default {
 	name: 'WwwPage',
 	inject: [
@@ -72,9 +75,21 @@ export default {
 					path: route?.path
 				})
 			]);
-		},
+		}
 	},
 	created() {
+		const result = this.apollo.readQuery({
+			query: hasEverLoggedInQuery,
+		});
+
+		const hasLentBefore = result?.my?.loans?.totalCount > 0;
+
+		// eslint-disable-next-line max-len
+		const hasDepositBefore = Math.floor(result?.my?.userAccount?.balance ?? 0) > 0 && !result?.my?.userAccount?.isFirstTimeDepositor;
+
+		this.cookieStore.set(hasLentBeforeCookie, hasLentBefore);
+		this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore);
+
 		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
 	},
 	computed: {
