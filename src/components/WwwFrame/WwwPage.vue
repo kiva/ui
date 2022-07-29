@@ -28,8 +28,8 @@ import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
 import TheBannerArea from './TheBannerArea';
 
-const hasLentBeforeCookie = 'kvu-lent-before';
-const hasDepositBeforeCookie = 'kvu-deposit-before';
+const hasLentBeforeCookie = 'kvu_lent_before';
+const hasDepositBeforeCookie = 'kvu_deposit_before';
 
 export default {
 	name: 'WwwPage',
