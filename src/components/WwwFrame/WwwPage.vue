@@ -19,7 +19,7 @@
 
 <script>
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
-
+import gql from 'graphql-tag';
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
@@ -28,8 +28,20 @@ import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
 import TheBannerArea from './TheBannerArea';
 
-const hasLentBeforeCookie = 'kvu_lent_before';
-const hasDepositBeforeCookie = 'kvu_deposit_before';
+const hasLentBeforeCookie = 'kvu_lb';
+const hasDepositBeforeCookie = 'kvu_db';
+
+const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
+	my {
+		userAccount {
+			id
+			isFirstTimeDepositor
+		}
+		loans {
+			totalCount
+		}
+	}
+}`;
 
 export default {
 	name: 'WwwPage',
@@ -70,6 +82,7 @@ export default {
 		preFetch(config, client, { route }) {
 			return Promise.all([
 				client.query({ query: hasEverLoggedInQuery }),
+				client.query({ query: optimizelyUserDataQuery }),
 				fetchAllExpSettings(config, client, {
 					query: route?.query,
 					path: route?.path
@@ -78,15 +91,17 @@ export default {
 		}
 	},
 	created() {
-		const result = this.apollo.readQuery({
-			query: hasEverLoggedInQuery,
-		});
+		if (this.cookieStore.get(hasLentBeforeCookie) === undefined || this.cookieStore.get(hasDepositBeforeCookie) === undefined) { // eslint-disable-line max-len
+			const result = this.apollo.readQuery({
+				query: optimizelyUserDataQuery,
+			});
 
-		const hasLentBefore = result?.my?.loans?.totalCount > 0;
-		const hasDepositBefore = !result?.my?.userAccount?.isFirstTimeDepositor;
+			const hasLentBefore = result?.my?.loans?.totalCount > 0;
+			const hasDepositBefore = !result?.my?.userAccount?.isFirstTimeDepositor;
 
-		this.cookieStore.set(hasLentBeforeCookie, hasLentBefore);
-		this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore);
+			this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { secure: true, sameSite: 'strict' });
+			this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { secure: true, sameSite: 'strict' });
+		}
 
 		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
 	},

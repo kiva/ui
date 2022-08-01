@@ -1,13 +1,3 @@
 query hasEverLoggedIn {
 	hasEverLoggedIn @client
-	my {
-		userAccount {
-			id
-			balance
-			isFirstTimeDepositor
-		}
-		loans {
-			totalCount
-		}
-	}
 }
