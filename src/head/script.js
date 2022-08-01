@@ -15,19 +15,15 @@ export default (config, globalOneTrustEvent) => {
 	// Google Analytics snippet
 	const insertGoogleAnalytics = () => {
 		/* eslint-disable */
-
 		// Insert + Configure Gtag.js
 		const p = document.getElementsByTagName('script')[0];
 		const s = document.createElement('script');
 		s.src = `https://www.googletagmanager.com/gtag/js?id=${config.gaId}`;
 		p.parentNode.insertBefore(s, p);
-
 		// Data layer is established globally
-		// function gtag(){window.dataLayer.push(arguments);}
 		window.gtag = function(){window.dataLayer.push(arguments);}
 		gtag('js', new Date());
 		gtag('config', config.gaId, { 'send_page_view': false });
-		// https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID
 		/* eslint-enable */
 	};
 
