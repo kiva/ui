@@ -1,3 +1,10 @@
+### [2.237.1](https://github.com/kiva/ui/compare/v2.237.0...v2.237.1) (2022-08-01)
+
+
+### Bug Fixes
+
+* use env specific fastly img url for algolia loan cards ([4956067](https://github.com/kiva/ui/commit/4956067d1ae9acb913848674991a6354f7ccda6d))
+
 ## [2.237.0](https://github.com/kiva/ui/compare/v2.236.0...v2.237.0) (2022-07-25)
 
 
