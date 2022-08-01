@@ -1,3 +1,10 @@
+### [2.237.2](https://github.com/kiva/ui/compare/v2.237.1...v2.237.2) (2022-08-01)
+
+
+### Bug Fixes
+
+* improve error message on failed experiment setting fetch ([ec073d8](https://github.com/kiva/ui/commit/ec073d8923b99228129c25c4dfc72d86097e2786))
+
 ### [2.237.1](https://github.com/kiva/ui/compare/v2.237.0...v2.237.1) (2022-08-01)
 
 
