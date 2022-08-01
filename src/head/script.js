@@ -15,21 +15,19 @@ export default (config, globalOneTrustEvent) => {
 	// Google Analytics snippet
 	const insertGoogleAnalytics = () => {
 		/* eslint-disable */
-		if (config.gaAlternateId) {
-			(function () {
-				const gaALt = document.createElement('script'); gaALt.type = 'text/javascript'; gaALt.async = true;
-				gaALt.src = `${document.location.protocol == 'https:' ? 'https://ssl' : 'http://www'}.google-analytics.com/ga.js`;
-				const s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gaALt, s);
-			}());
-		}
 
-		(function (i, s, o, g, r, a, m) {
-			i.GoogleAnalyticsObject = r; i[r] = i[r] || function () {
-				(i[r].q = i[r].q || []).push(arguments);
-			}, i[r].l = 1 * new Date(); a = s.createElement(o),
-			m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m);
-		}(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga'));
-		ga('create', config.gaId, 'auto');
+		// Insert + Configure Gtag.js
+		const p = document.getElementsByTagName('script')[0];
+		const s = document.createElement('script');
+		s.src = `https://www.googletagmanager.com/gtag/js?id=${config.gaId}`;
+		p.parentNode.insertBefore(s, p);
+
+		// Data layer is established globally
+		// function gtag(){window.dataLayer.push(arguments);}
+		window.gtag = function(){window.dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', config.gaId, { 'send_page_view': false });
+		// https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID
 		/* eslint-enable */
 	};
 
@@ -253,7 +251,7 @@ export default (config, globalOneTrustEvent) => {
 			if (config.enableSnowplow) {
 				insertSnowplow();
 			}
-			if (config.enableGA && !optout) {
+			if (config.enableFullStory && !optout) {
 				insertFullStory();
 			}
 			if (config.enableGTM && !optout) {

@@ -8,6 +8,7 @@ export default {
 		let snowplowLoaded;
 		let gaLoaded;
 		let gaAltLoaded;
+		let gtagLoaded;
 		let fbLoaded;
 		const queue = new SimpleQueue();
 
@@ -16,10 +17,12 @@ export default {
 				gaLoaded = inBrowser && typeof window.ga === 'function';
 				// eslint-disable-next-line no-underscore-dangle
 				gaAltLoaded = inBrowser && typeof window._gaq === 'object';
+				gtagLoaded = inBrowser && typeof window.gtag === 'function';
 				snowplowLoaded = inBrowser && typeof window.snowplow === 'function';
 				fbLoaded = inBrowser && typeof window.fbq === 'function';
 
-				if (typeof window.ga === 'function' && typeof window.snowplow === 'function') {
+				if ((typeof window.ga === 'function' || typeof window.gtag === 'function')
+					&& typeof window.snowplow === 'function') {
 					return true;
 				}
 				return false;
@@ -72,6 +75,20 @@ export default {
 					/* eslint-enable no-underscore-dangle */
 				}
 
+				// gtag.js pageview
+				if (gtagLoaded) {
+					let gaPath = `${window.location.pathname}${window.location.search || ''}`;
+					if (to && to.matched && to.matched.length) {
+						gaPath = to.fullPath;
+					}
+					window.gtag('event', 'page_view', {
+						// page_title: '<Page Title>',
+						// page_location: '<Page Location>',
+						page_path: gaPath,
+						// send_to: '<GA_MEASUREMENT_ID>'
+					});
+				}
+
 				// facebook pixel pageview
 				if (fbLoaded) {
 					// we used to pass a user_type but it's always empty across the site
@@ -94,11 +111,20 @@ export default {
 					// GA API
 					// https://developers.google.com/analytics/devguides/collection/analyticsjs/events
 					// ga('send', 'event', [eventCategory], [eventAction], [eventLabel], [eventValue], [fieldsObject]);
-					window.ga('send', 'event', {
-						eventCategory: String(category),
-						eventAction: String(action),
-						eventLabel,
-						eventValue
+					// window.ga('send', 'event', {
+					// 	eventCategory: String(category),
+					// 	eventAction: String(action),
+					// 	eventLabel,
+					// 	eventValue
+					// });
+				}
+
+				// Attempt gtag event
+				if (gtagLoaded) {
+					window.gtag('event', String(action), {
+						event_category: String(category),
+						event_label: eventLabel,
+						value: eventValue
 					});
 				}
 
@@ -377,12 +403,12 @@ export default {
 							window.snowplow('setUserId', userId);
 						}
 						// Setup Global GA Data
-						if (gaLoaded) {
-							window.ga('set', { userId });
-							window.ga('set', 'useBeacon', true);
-							window.ga('require', 'ec');
-							window.ga('set', 'dimension1', userId);
-						}
+						// if (gaLoaded) {
+						// 	window.ga('set', { userId });
+						// 	window.ga('set', 'useBeacon', true);
+						// 	window.ga('require', 'ec');
+						// 	window.ga('set', 'dimension1', userId);
+						// }
 						// set id on dataLayer
 						if (typeof window.dataLayer === 'object') {
 							window.dataLayer.push({
