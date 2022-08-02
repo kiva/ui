@@ -79,14 +79,16 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client, { route }) {
+		preFetch(config, client, { cookieStore, route }) {
+			const getUserData = cookieStore.get(hasLentBeforeCookie) === undefined || cookieStore.get(hasDepositBeforeCookie) === undefined; // eslint-disable-line max-len
+
 			return Promise.all([
 				client.query({ query: hasEverLoggedInQuery }),
-				client.query({ query: optimizelyUserDataQuery }),
 				fetchAllExpSettings(config, client, {
 					query: route?.query,
 					path: route?.path
-				})
+				}),
+				getUserData ? client.query({ query: optimizelyUserDataQuery }) : Promise.resolve()
 			]);
 		}
 	},
