@@ -603,7 +603,7 @@ export default {
 		},
 		unreservedAmount(newValue, previousValue) {
 			// set initial selected value for sub 25 loan if shown
-			if (this.completeLoan && this.isBetween25And100) {
+			if (this.completeLoan && this.isBetween25And75) {
 				this.selectedOption = Number(this.unreservedAmount).toFixed();
 			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
 				this.selectedOption = parseInt(newValue, 10);
