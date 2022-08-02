@@ -749,8 +749,8 @@ export default {
 		isLessThan25() {
 			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
 		},
-		isBetween25And100() {
-			return this.unreservedAmount < 100 && this.unreservedAmount > 25;
+		isBetween25And75() {
+			return this.unreservedAmount < 75 && this.unreservedAmount > 25;
 		},
 		isBetween25And500() {
 			return this.unreservedAmount < 500 && this.unreservedAmount >= 25;
