@@ -93,14 +93,20 @@ export default {
 		}
 	},
 	created() {
-		if (this.cookieStore.get(hasLentBeforeCookie) === undefined || this.cookieStore.get(hasDepositBeforeCookie) === undefined) { // eslint-disable-line max-len
-			const result = this.apollo.readQuery({
+		let userData = {};
+		const currentHasLentBeforeValue = this.cookieStore.get(hasLentBeforeCookie);
+		const currentHasDepositBeforeValue = this.cookieStore.get(hasDepositBeforeCookie);
+
+		if (!currentHasLentBeforeValue || !currentHasLentBeforeValue) {
+			userData = this.apollo.readQuery({
 				query: optimizelyUserDataQuery,
 			});
+		}
 
-			const hasLentBefore = result?.my?.loans?.totalCount > 0;
-			const hasDepositBefore = !result?.my?.userAccount?.isFirstTimeDepositor;
+		const hasLentBefore = userData?.my?.loans?.totalCount > 0;
+		const hasDepositBefore = !userData?.my?.userAccount?.isFirstTimeDepositor;
 
+		if (currentHasLentBeforeValue !== hasLentBefore.toString() || currentHasDepositBeforeValue !== hasDepositBefore.toString()) { // eslint-disable-line max-len
 			this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { secure: true, sameSite: 'strict' });
 			this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { secure: true, sameSite: 'strict' });
 		}
