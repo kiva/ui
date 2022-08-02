@@ -32,14 +32,13 @@ const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 
 const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
-	my {
-		userAccount {
-			id
-			isFirstTimeDepositor
-		}
-		loans {
-			totalCount
-		}
+  	my {
+    	loans(limit:1) {
+      		totalCount
+    	}
+    	transactions(limit:1, filter:{category:deposit}) {
+      		totalCount
+   		}
 	}
 }`;
 
@@ -79,16 +78,14 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client, { cookieStore, route }) {
-			const getUserData = cookieStore.get(hasLentBeforeCookie) === undefined || cookieStore.get(hasDepositBeforeCookie) === undefined; // eslint-disable-line max-len
-
+		preFetch(config, client, { route }) {
 			return Promise.all([
 				client.query({ query: hasEverLoggedInQuery }),
 				fetchAllExpSettings(config, client, {
 					query: route?.query,
 					path: route?.path
 				}),
-				getUserData ? client.query({ query: optimizelyUserDataQuery }) : Promise.resolve()
+				client.query({ query: optimizelyUserDataQuery })
 			]);
 		}
 	},
@@ -97,14 +94,12 @@ export default {
 		const currentHasLentBeforeValue = this.cookieStore.get(hasLentBeforeCookie);
 		const currentHasDepositBeforeValue = this.cookieStore.get(hasDepositBeforeCookie);
 
-		if (!currentHasLentBeforeValue || !currentHasLentBeforeValue) {
-			userData = this.apollo.readQuery({
-				query: optimizelyUserDataQuery,
-			});
-		}
+		userData = this.apollo.readQuery({
+			query: optimizelyUserDataQuery,
+		});
 
 		const hasLentBefore = userData?.my?.loans?.totalCount > 0;
-		const hasDepositBefore = !userData?.my?.userAccount?.isFirstTimeDepositor;
+		const hasDepositBefore = userData?.my?.transactions?.totalCount > 0;
 
 		if (currentHasLentBeforeValue !== hasLentBefore.toString() || currentHasDepositBeforeValue !== hasDepositBefore.toString()) { // eslint-disable-line max-len
 			this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { secure: true, sameSite: 'strict' });
