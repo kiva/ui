@@ -1,3 +1,12 @@
+### [2.237.3](https://github.com/kiva/ui/compare/v2.237.2...v2.237.3) (2022-08-02)
+
+
+### Bug Fixes
+
+* move and trigger share card experiment in thanks page ([cad31e8](https://github.com/kiva/ui/commit/cad31e86ad103c127f4cb2466976bafec09b7be3))
+* only show expected FLSS sort options ([0381605](https://github.com/kiva/ui/commit/03816056afc4d640a43ec96fee71bf2d8812034a))
+* update experiment details ([5a0593e](https://github.com/kiva/ui/commit/5a0593e27f617005bcfbd35d28e54e9a1630e4fe))
+
 ### [2.237.2](https://github.com/kiva/ui/compare/v2.237.1...v2.237.2) (2022-08-01)
 
 
