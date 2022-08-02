@@ -337,7 +337,7 @@ export default {
 			if (this.shareCardLanguageVersion) {
 				this.$kvTrackEvent(
 					'Thanks',
-					'EXP-MARS-143-Jul2022',
+					'EXP-MARS-143-Jul2022-inviter',
 					this.shareCardLanguageVersion,
 				);
 			}
