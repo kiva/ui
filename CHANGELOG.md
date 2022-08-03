@@ -1,3 +1,10 @@
+## [2.240.0](https://github.com/kiva/ui/compare/v2.239.0...v2.240.0) (2022-08-03)
+
+
+### Features
+
+* test code for checkout upsells was removed becoming a new feature on the page ([e0aa377](https://github.com/kiva/ui/commit/e0aa3775d69926bce44d1ae93cbea5794abbeb20))
+
 ## [2.239.0](https://github.com/kiva/ui/compare/v2.238.0...v2.239.0) (2022-08-03)
 
 
