@@ -19,6 +19,7 @@
 
 <script>
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
+
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
@@ -71,7 +72,7 @@ export default {
 					path: route?.path
 				})
 			]);
-		}
+		},
 	},
 	created() {
 		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
