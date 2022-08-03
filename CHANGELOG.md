@@ -1,3 +1,10 @@
+## [2.238.0](https://github.com/kiva/ui/compare/v2.237.3...v2.238.0) (2022-08-03)
+
+
+### Features
+
+* create SavedSearchItem component + use for entry list (new edits) ([068d6da](https://github.com/kiva/ui/commit/068d6da79fb5e1828f3872b737f02f2a7cb4a273))
+
 ### [2.237.3](https://github.com/kiva/ui/compare/v2.237.2...v2.237.3) (2022-08-02)
 
 
