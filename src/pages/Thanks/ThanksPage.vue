@@ -334,6 +334,13 @@ export default {
 			}) || {};
 
 			this.shareCardLanguageVersion = shareCardLanguage.version;
+			if (this.shareCardLanguageVersion) {
+				this.$kvTrackEvent(
+					'Thanks',
+					'EXP-MARS-143-Jul2022-inviter',
+					this.shareCardLanguageVersion,
+				);
+			}
 		}
 	},
 	mounted() {

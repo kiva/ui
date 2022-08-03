@@ -32,15 +32,6 @@
 				<kv-material-icon :icon="mdiArrowRight" class="tw-w-3 tw-h-3" />
 			</span>
 		</router-link>
-		<!-- <router-link
-			v-if="showMGUpsellLink"
-			to="/monthlygood"
-			class="tw-inline-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-border-b tw-border-tertiary tw-font-medium"
-			@click.native="trackMgLinkClick"
-		>
-			Lend monthly
-			<kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiArrowRight" />
-		</router-link> -->
 		<div v-else class="tw-block tw-py-2 tw-mb-2 tw-w-16">
 			<kv-loading-placeholder
 				style="height: 1.5rem;"
