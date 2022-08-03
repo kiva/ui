@@ -1,74 +1,80 @@
 <template>
 	<section>
-		<kv-lightbox
-			:data-testid="`bp-what-is-kiva-lightbox`"
-			:visible="true"
-			:title="title"
-			@lightbox-closed="isLightboxVisible = false"
-			class="tw-px-8"
-			:kiva-module-exp="true"
+		<transition
+			name="slide-out-bottom"
 		>
-			<template #header>
-				<h2 class="tw-text-h2 md:tw-text-center tw-mb-1">
-					{{ title }}
-				</h2>
-				<div class="tw-mb-3">
-					<p
-						:data-testid="`bp-what-is-kiva-lightbox-description`"
-						class="md:tw-text-center tw-text-subhead"
+			<kv-lightbox
+				v-if="isLightboxVisible"
+				:visible="isLightboxVisible"
+				:data-testid="`bp-what-is-kiva-lightbox`"
+				:title="title"
+				@lightbox-closed="isLightboxVisible = false"
+				class="tw-px-8"
+				:kiva-module-exp="true"
+			>
+				<template #header>
+					<h2 class="tw-text-h2 md:tw-text-center tw-mb-1">
+						{{ title }}
+					</h2>
+					<div class="tw-mb-3">
+						<p
+							:data-testid="`bp-what-is-kiva-lightbox-description`"
+							class="md:tw-text-center tw-text-subhead"
+						>
+							{{ description }}
+						</p>
+					</div>
+					<h3 class="md:tw-hidden tw-text-action tw-mb-1">
+						How it works
+					</h3>
+					<div class="tw-block md:tw-flex md:tw-gap-3 md:tw-px-2.5 md:tw-mx-4">
+						<div
+							class="tw-flex tw-gap-1 tw-items-center md:tw-block md:tw-flex-1"
+						>
+							<div class="tw-basis-1/3">
+								<icon-lend
+									class="tw-w-12 tw-h-12 tw-block tw-mx-auto tw-text-brand tw-bg-transparent"
+								/>
+							</div>
+							<div class="tw-basis-2/3 md:tw-text-center">
+								<h3>Lend</h3>
+								<p>100% of your money goes to the borrower</p>
+							</div>
+						</div>
+						<div class="tw-flex tw-gap-1 tw-items-center md:tw-block md:tw-flex-1">
+							<div class="tw-basis-1/3">
+								<icon-get-repaid
+									class="tw-w-12 tw-h-12 tw-block tw-mx-auto tw-text-brand tw-bg-transparent"
+								/>
+							</div>
+							<div class="tw-basis-2/3 md:tw-text-center">
+								<h3>Get repaid</h3>
+								<p>As borrowers thrive they pay back your loan</p>
+							</div>
+						</div>
+						<div class="tw-flex tw-gap-1 tw-items-center md:tw-block md:tw-flex-1">
+							<div class="tw-basis-1/3">
+								<icon-auto-deposit
+									class="tw-w-12 tw-h-12 tw-block tw-mx-auto tw-text-brand tw-bg-transparent"
+								/>
+							</div>
+							<div class="tw-basis-2/3 md:tw-text-center">
+								<h3>Repeat</h3>
+								<p>Relend to change even more lives</p>
+							</div>
+						</div>
+					</div>
+				</template>
+				<div>
+					<kv-button
+						@click="isLightboxVisible = false"
+						class="tw-w-full md:tw-flex md:tw-justify-center md:tw-max-w-sm tw-mx-auto"
 					>
-						{{ description }}
-					</p>
+						Let's get started
+					</kv-button>
 				</div>
-				<h3 class="md:tw-hidden tw-text-action tw-mb-1">
-					How it works
-				</h3>
-				<div class="tw-block md:tw-flex md:tw-gap-3 md:tw-px-2.5 md:tw-mx-4">
-					<div
-						class="tw-flex tw-gap-1 tw-items-center md:tw-block md:tw-flex-1"
-					>
-						<div class="tw-basis-1/3">
-							<icon-lend
-								class="tw-w-12 tw-h-12 tw-block tw-mx-auto tw-text-brand tw-bg-transparent"
-							/>
-						</div>
-						<div class="tw-basis-2/3 md:tw-text-center">
-							<h3>Lend</h3>
-							<p>100% of your money goes to the borrower</p>
-						</div>
-					</div>
-					<div class="tw-flex tw-gap-1 tw-items-center md:tw-block md:tw-flex-1">
-						<div class="tw-basis-1/3">
-							<icon-get-repaid
-								class="tw-w-12 tw-h-12 tw-block tw-mx-auto tw-text-brand tw-bg-transparent"
-							/>
-						</div>
-						<div class="tw-basis-2/3 md:tw-text-center">
-							<h3>Get repaid</h3>
-							<p>As borrowers thrive they pay back your loan</p>
-						</div>
-					</div>
-					<div class="tw-flex tw-gap-1 tw-items-center md:tw-block md:tw-flex-1">
-						<div class="tw-basis-1/3">
-							<icon-auto-deposit
-								class="tw-w-12 tw-h-12 tw-block tw-mx-auto tw-text-brand tw-bg-transparent"
-							/>
-						</div>
-						<div class="tw-basis-2/3 md:tw-text-center">
-							<h3>Repeat</h3>
-							<p>Relend to change even more lives</p>
-						</div>
-					</div>
-				</div>
-			</template>
-			<div>
-				<kv-button
-					class="tw-w-full md:tw-flex md:tw-justify-center md:tw-max-w-sm tw-mx-auto"
-				>
-					Let's get started
-				</kv-button>
-			</div>
-		</kv-lightbox>
+			</kv-lightbox>
+		</transition>
 	</section>
 </template>
 
@@ -98,3 +104,14 @@ export default {
 	}
 };
 </script>
+
+<style scoped>
+	@media only screen and (max-width: 600px) {
+		.slide-out-bottom-leave-active {
+			transition: all .5s ease-out;
+		}
+		.slide-out-bottom-leave-to {
+			transform: translateY(70%);
+		}
+	}
+</style>
