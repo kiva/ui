@@ -465,7 +465,9 @@
 </template>
 
 <script>
+import logReadQueryError from '@/util/logReadQueryError';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
+import gql from 'graphql-tag';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
@@ -475,6 +477,20 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
+
+const hasLentBeforeCookie = 'kvu_lb';
+const hasDepositBeforeCookie = 'kvu_db';
+
+const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
+  	my {
+    	loans(limit:1) {
+      		totalCount
+    	}
+    	transactions(limit:1, filter:{category:deposit}) {
+      		totalCount
+   		}
+	}
+}`;
 
 export default {
 	name: 'TheHeader',
@@ -572,18 +588,29 @@ export default {
 		},
 	},
 	apollo: {
-		query: headerQuery,
-		preFetch: true,
-		result({ data }) {
-			this.isVisitor = !data?.my?.userAccount?.id;
-			this.isBorrower = data?.my?.isBorrower ?? false;
-			this.loanId = data?.my?.mostRecentBorrowedLoan?.id ?? null;
-			this.trusteeId = data?.my?.trustee?.id ?? null;
-			this.basketCount = data?.shop?.nonTrivialItemCount ?? 0;
-			this.balance = Math.floor(data?.my?.userAccount?.balance ?? 0);
-			this.profilePic = data?.my?.lender?.image?.url ?? '';
-			this.profilePicId = data?.my?.lender?.image?.id ?? null;
-			this.basketState = data || {};
+		preFetch(config, client, { cookieStore }) {
+			return client.query({
+				query: headerQuery,
+			}).then(({ data }) => {
+				this.isVisitor = !data?.my?.userAccount?.id;
+				this.isBorrower = data?.my?.isBorrower ?? false;
+				this.loanId = data?.my?.mostRecentBorrowedLoan?.id ?? null;
+				this.trusteeId = data?.my?.trustee?.id ?? null;
+				this.basketCount = data?.shop?.nonTrivialItemCount ?? 0;
+				this.balance = Math.floor(data?.my?.userAccount?.balance ?? 0);
+				this.profilePic = data?.my?.lender?.image?.url ?? '';
+				this.profilePicId = data?.my?.lender?.image?.id ?? null;
+				this.basketState = data || {};
+
+				const hasLentBeforeValue = cookieStore.get(hasLentBeforeCookie);
+				const hasDepositBeforeValue = cookieStore.get(hasDepositBeforeCookie);
+
+				if (data?.my?.userAccount?.id && (hasLentBeforeValue === undefined || hasDepositBeforeValue === undefined)) { // eslint-disable-line max-len
+					return Promise.all([
+						client.query({ query: optimizelyUserDataQuery })
+					]);
+				}
+			});
 		},
 		errorHandlers: {
 			'shop.invalidBasketId': ({ cookieStore, route }) => {
@@ -594,6 +621,24 @@ export default {
 				}
 				// otherwise on client refresh the page
 				window.location = route.fullPath;
+			}
+		}
+	},
+	created() {
+		if (!this.isVisitor) {
+			try {
+				let userData = {};
+				userData = this.apollo.readQuery({
+					query: optimizelyUserDataQuery,
+				});
+
+				const hasLentBefore = userData?.my?.loans?.totalCount > 0;
+				const hasDepositBefore = userData?.my?.transactions?.totalCount > 0;
+
+				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore);
+				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore);
+			} catch (e) {
+				logReadQueryError(e, 'User Data For Metrics');
 			}
 		}
 	},

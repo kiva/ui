@@ -59,6 +59,7 @@ import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { joinArray } from '@/util/joinArray';
+import handleUserMetricsCookies from '@/util/userMetricsCookie';
 import CampaignPartnerThanks from './CampaignPartnerThanks';
 
 export default {
@@ -70,7 +71,7 @@ export default {
 		KvLoadingSpinner,
 		SocialShareV2
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
 		return {
 			title: 'Thank you!'
@@ -136,6 +137,9 @@ export default {
 				if (!this.receipt) {
 					console.error(`Failed to get receipt for transaction id: ${this.$route.query.kiva_transaction_id}`);
 				}
+
+				// MARS-194-User metrics A/B Optimizely experiment
+				handleUserMetricsCookies(this.cookieStore, this.loans, this.receipt);
 
 				this.showReceipt = true;
 				await this.$nextTick();

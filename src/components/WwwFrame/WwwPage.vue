@@ -19,7 +19,6 @@
 
 <script>
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
-import gql from 'graphql-tag';
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
@@ -27,20 +26,6 @@ import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
 import TheBannerArea from './TheBannerArea';
-
-const hasLentBeforeCookie = 'kvu_lb';
-const hasDepositBeforeCookie = 'kvu_db';
-
-const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
-  	my {
-    	loans(limit:1) {
-      		totalCount
-    	}
-    	transactions(limit:1, filter:{category:deposit}) {
-      		totalCount
-   		}
-	}
-}`;
 
 export default {
 	name: 'WwwPage',
@@ -84,28 +69,11 @@ export default {
 				fetchAllExpSettings(config, client, {
 					query: route?.query,
 					path: route?.path
-				}),
-				client.query({ query: optimizelyUserDataQuery })
+				})
 			]);
 		}
 	},
 	created() {
-		let userData = {};
-		const currentHasLentBeforeValue = this.cookieStore.get(hasLentBeforeCookie);
-		const currentHasDepositBeforeValue = this.cookieStore.get(hasDepositBeforeCookie);
-
-		userData = this.apollo.readQuery({
-			query: optimizelyUserDataQuery,
-		});
-
-		const hasLentBefore = userData?.my?.loans?.totalCount > 0;
-		const hasDepositBefore = userData?.my?.transactions?.totalCount > 0;
-
-		if (currentHasLentBeforeValue !== hasLentBefore.toString() || currentHasDepositBeforeValue !== hasDepositBefore.toString()) { // eslint-disable-line max-len
-			this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { secure: true, sameSite: 'strict' });
-			this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { secure: true, sameSite: 'strict' });
-		}
-
 		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
 	},
 	computed: {

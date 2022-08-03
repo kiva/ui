@@ -123,6 +123,7 @@ import ThanksPageShare from '@/components/Thanks/ThanksPageShare';
 import orderBy from 'lodash/orderBy';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { processPageContentFlat } from '@/util/contentfulUtils';
+import handleUserMetricsCookies from '@/util/userMetricsCookie';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -273,6 +274,9 @@ export default {
 		this.loans = loansResponse
 			.filter(item => item.basketItemType === 'loan_reservation')
 			.map(item => item.loan);
+
+		// MARS-194-User metrics A/B Optimizely experiment
+		handleUserMetricsCookies(this.cookieStore, this.loans, this.receipt);
 
 		if (!this.isGuest && !data?.my?.userAccount) {
 			logFormatter(
