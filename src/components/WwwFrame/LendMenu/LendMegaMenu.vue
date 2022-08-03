@@ -3,11 +3,16 @@
 		<router-link
 			v-if="showMGUpsellLink"
 			to="/monthlygood"
-			class="tw-inline-flex tw-gap-0.5 tw-py-2 tw-mb-2 tw-font-medium"
 			@click.native="trackMgLinkClick"
+			:class="{ 'hover:tw-no-underline': newMgEntrypoint}"
 		>
-			Lend monthly
-			<kv-material-icon :icon="mdiArrowRight" class="tw-w-3 tw-h-3" />
+			<!-- NEW MG ENTRYPOINT CORE-641 -->
+			<monthly-good-entrypoint v-if="newMgEntrypoint" />
+
+			<span class="tw-inline-flex tw-items-center tw-py-2 tw-mb-2 tw-gap-0.5 tw-font-medium" v-else>
+				Lend monthly
+				<kv-material-icon :icon="mdiArrowRight" class="tw-w-3 tw-h-3" />
+			</span>
 		</router-link>
 		<div v-else class="tw-block tw-py-2 tw-mb-2 tw-w-16">
 			<kv-loading-placeholder
@@ -226,6 +231,7 @@ import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import CountryList from './CountryList';
 import SearchList from './SearchList';
+import MonthlyGoodEntrypoint from './MonthlyGoodEntrypoint';
 
 export default {
 	name: 'LendMegaMenu',
@@ -236,6 +242,7 @@ export default {
 		KvLoadingPlaceholder,
 		KvMaterialIcon,
 		SearchList,
+		MonthlyGoodEntrypoint,
 	},
 	props: {
 		categories: {
@@ -321,7 +328,8 @@ export default {
 			this.openedSection = '';
 		},
 		trackMgLinkClick() {
-			this.$kvTrackEvent('TopNav', 'click-Lend-Menu-Monthly-Good', 'Lend monthly');
+			const trackerLA = this.newMgEntrypoint ? 'Become-a-member' : 'Lend-monthly';
+			this.$kvTrackEvent('TopNav', 'click-Lend-Menu-Monthly-Good', trackerLA);
 		}
 	},
 };
