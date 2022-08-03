@@ -8,9 +8,8 @@
 				:visible="isLightboxVisible"
 				:data-testid="`bp-what-is-kiva-lightbox`"
 				:title="title"
-				@lightbox-closed="isLightboxVisible = false"
+				@lightbox-closed="hideLightbox"
 				class="tw-px-8"
-				:kiva-module-exp="true"
 			>
 				<template #header>
 					<h2 class="tw-text-h2 md:tw-text-center tw-mb-1">
@@ -68,6 +67,11 @@
 				<div>
 					<kv-button
 						@click="isLightboxVisible = false"
+						v-kv-track-event="[
+							'Borrower Profile',
+							'click-modal-close',
+							'Let\'s get started'
+						]"
 						class="tw-w-full md:tw-flex md:tw-justify-center md:tw-max-w-sm tw-mx-auto"
 					>
 						Let's get started
@@ -101,6 +105,16 @@ export default {
 			description: 'Lend as little as $25 to make a big differences in someone\'s life.',
 			isLightboxVisible: true
 		};
+	},
+	methods: {
+		hideLightbox(type) {
+			this.isLightboxVisible = false;
+			if (type === 'close-x') {
+				this.$kvTrackEvent('Borrower Profile', 'click-modal-close', 'close');
+			} else if (type === 'background-click') {
+				this.$kvTrackEvent('Borrower Profile', 'click-modal-outside', 'outside');
+			}
+		}
 	}
 };
 </script>
