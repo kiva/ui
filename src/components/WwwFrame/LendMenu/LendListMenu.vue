@@ -6,26 +6,8 @@
 			@click.native="trackMgLinkClick"
 			:class="{ 'hover:tw-no-underline': newMgEntrypoint}"
 		>
-			<div class="tw-mb-4 tw-inline-flex-col tw-items-center" v-if="newMgEntrypoint">
-				<div class="tw-flex-col">
-					<div class="tw-inline-flex">
-						<img class="tw-w-4.5" src="@/assets/images/jill.svg">
-						<img class="tw-w-4.5" src="@/assets/images/lara.svg">
-						<img class="tw-w-4.5" src="@/assets/images/zawa.svg">
-					</div>
-					<h3 class="tw-text-h3 tw-text-primary">
-						Join our community of monthly lenders
-					</h3>
-					<p class="tw-text-base tw-text-secondary">
-						Personalized, automatic lending for you
-					</p>
-				</div>
-				<!-- eslint-disable-next-line max-len -->
-				<span class="tw-inline-flex tw-items-center tw-font-medium tw-gap-0.5 tw-mt-2 tw-text-brand hover:tw-underline">
-					Become a member
-					<kv-material-icon :icon="mdiArrowRight" class="tw-w-3 tw-h-3" />
-				</span>
-			</div>
+			<!-- NEW MG ENTRYPOINT CORE-641 -->
+			<monthly-good-entrypoint v-if="newMgEntrypoint" />
 			<!-- eslint-disable-next-line max-len -->
 			<span v-else class="tw-inline-flex tw-items-center tw-py-2 tw-mb-2 tw-gap-0.5 tw-border-b tw-border-tertiary tw-font-medium">
 				Lend monthly
@@ -204,6 +186,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvTab from '~/@kiva/kv-components/vue/KvTab';
 import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
 import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
+import MonthlyGoodEntrypoint from './MonthlyGoodEntrypoint';
 
 export default {
 	name: 'LendListMenu',
@@ -217,6 +200,7 @@ export default {
 		KvTabs,
 		KvLoadingPlaceholder,
 		SearchList,
+		MonthlyGoodEntrypoint
 	},
 	props: {
 		categories: {
@@ -287,7 +271,7 @@ export default {
 			}
 		},
 		trackMgLinkClick() {
-			const trackerLA = this.newMgEntrypoint ? 'Become a member' : 'Lend monthly';
+			const trackerLA = this.newMgEntrypoint ? 'Become-a-member' : 'Lend-monthly';
 			this.$kvTrackEvent('TopNav', 'click-Lend-Menu-Monthly-Good', trackerLA);
 		}
 	},
