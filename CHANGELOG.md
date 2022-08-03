@@ -1,3 +1,11 @@
+## [2.239.0](https://github.com/kiva/ui/compare/v2.238.0...v2.239.0) (2022-08-03)
+
+
+### Features
+
+* montlhy good entrypoint component was a created for lend menu ([b4be0f4](https://github.com/kiva/ui/commit/b4be0f4bdc84523bb0fdaecfa4e8108d28b8bad1))
+* new design for monthly good link was added to the top navigation ([7586e5b](https://github.com/kiva/ui/commit/7586e5b9302fdd0887d513176a03e94e4582841e))
+
 ## [2.238.0](https://github.com/kiva/ui/compare/v2.237.3...v2.238.0) (2022-08-03)
 
 
