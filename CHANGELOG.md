@@ -1,3 +1,11 @@
+### [2.240.1](https://github.com/kiva/ui/compare/v2.240.0...v2.240.1) (2022-08-04)
+
+
+### Bug Fixes
+
+* update ([f09acf1](https://github.com/kiva/ui/commit/f09acf110062229c0ad5bd9185408123909642c6))
+* update complete this loan price ([212e657](https://github.com/kiva/ui/commit/212e6574c313c7466746be07bfc457bfd5bdad35))
+
 ## [2.240.0](https://github.com/kiva/ui/compare/v2.239.0...v2.240.0) (2022-08-03)
 
 
