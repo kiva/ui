@@ -137,6 +137,7 @@ export default {
 	}
 
 	.section-container__info {
-		@apply tw-basis-2/3 md:tw-text-center
+		@apply tw-basis-2/3 md:tw-text-center;
 	}
+
 </style>
