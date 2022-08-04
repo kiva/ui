@@ -361,14 +361,15 @@ export default {
 							window.snowplow('setUserId', userId);
 						}
 						// Setup Global GA Data
-						if (gtagLoaded && window.__KV_CONFIG__ && window.__KV_CONFIG__.gaId) {
+						if (userId && gtagLoaded && window.__KV_CONFIG__ && window.__KV_CONFIG__.gaId) {
 							window.gtag('config', window.__KV_CONFIG__.gaId, {
 								user_id: userId,
-								dimension1: userId
+								dimension1: userId,
+								send_page_view: false
 							});
 						}
 						// set id on dataLayer
-						if (typeof window.dataLayer === 'object') {
+						if (userId && typeof window.dataLayer === 'object') {
 							window.dataLayer.push({
 								kvuid: userId
 							});

@@ -14,17 +14,19 @@ export default (config, globalOneTrustEvent) => {
 
 	// Google Analytics snippet
 	const insertGoogleAnalytics = () => {
-		/* eslint-disable */
 		// Insert + Configure Gtag.js
 		const p = document.getElementsByTagName('script')[0];
 		const s = document.createElement('script');
 		s.src = `https://www.googletagmanager.com/gtag/js?id=${config.gaId}`;
 		p.parentNode.insertBefore(s, p);
 		// Data layer is established globally
-		window.gtag = function(){window.dataLayer.push(arguments);}
-		gtag('js', new Date());
-		gtag('config', config.gaId, { 'send_page_view': false });
-		/* eslint-enable */
+		window.gtag = function gtag() {
+			// eslint-disable-next-line prefer-rest-params
+			window.dataLayer.push(arguments);
+		};
+		window.gtag('js', new Date());
+		// add "debug_mode: true" to the options object for debugging
+		window.gtag('config', config.gaId, { send_page_view: false });
 	};
 
 	// Snowplow snippet
