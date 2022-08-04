@@ -106,6 +106,7 @@
 				</content-container>
 			</div>
 		</article>
+		<what-is-kiva-modal v-if="kivaModuleExpEnabled && !hasEverLoggedIn" />
 		<!-- <aside>Similar loans</aside> -->
 	</www-page>
 </template>
@@ -133,6 +134,7 @@ import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import SocialShareButton from '@/components/BorrowerProfile/SocialShareButton';
+import WhatIsKivaModal from '@/components/BorrowerProfile/WhatIsKivaModal';
 
 import { isLoanFundraising } from '@/util/loanUtils';
 import {
@@ -142,8 +144,11 @@ import {
 import loanUseFilter from '@/plugins/loan-use-filter';
 
 const socialElementsExpKey = 'social_elements';
+const whatIsKivaExpKey = 'what_is_kiva_module';
+
 const pageQuery = gql`
 	query borrowerProfileMeta($loanId: Int!, $publicId: String!, $getInviter: Boolean!) {
+		hasEverLoggedIn @client
 		general {
 			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
 				key
@@ -247,6 +252,7 @@ export default {
 		TopBannerPfp,
 		WhySpecial,
 		WwwPage,
+		WhatIsKivaModal
 	},
 	metaInfo() {
 		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
@@ -342,6 +348,8 @@ export default {
 			lenders: [],
 			socialExpEnabled: false,
 			showLightBoxModal: false,
+			kivaModuleExpEnabled: false,
+			hasEverLoggedIn: false
 		};
 	},
 	apollo: {
@@ -366,10 +374,13 @@ export default {
 						});
 					}
 
+					this.hasEverLoggedIn = data?.hasEverLoggedIn;
+
 					return Promise.all([
 						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 						client.query({ query: experimentQuery, variables: { id: socialElementsExpKey } }),
+						client.query({ query: experimentQuery, variables: { id: whatIsKivaExpKey } }),
 					]);
 				});
 		},
@@ -428,6 +439,17 @@ export default {
 				'Borrower Profile',
 				socialElementsExpKey,
 				'EXP-MARS-158-Jul2022'
+			);
+		}
+
+		const kivaModuleExpData = getExperimentSettingCached(this.apollo, socialElementsExpKey);
+		if (kivaModuleExpData?.enabled) {
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Borrower Profile',
+				whatIsKivaExpKey,
+				'EXP-MARS-199-Aug2022'
 			);
 		}
 	},
@@ -565,6 +587,15 @@ export default {
 
 		const utmContent = this.$route.query?.utm_content;
 		this.inviterIsGuestOrAnonymous = utmContent === 'anonymous' || utmContent === 'guest';
+
+		const kivaModuleExpData = getExperimentSettingCached(this.apollo, whatIsKivaExpKey);
+		const kivaModuleExp = this.apollo.readFragment({
+			id: `Experiment:${whatIsKivaExpKey}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
+		if (kivaModuleExpData?.enabled && kivaModuleExp.version === 'b') {
+			this.kivaModuleExpEnabled = true;
+		}
 	},
 };
 </script>
