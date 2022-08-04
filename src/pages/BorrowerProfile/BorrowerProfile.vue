@@ -166,6 +166,10 @@ const pageQuery = gql`
 				key
 				value
 			}
+			whatIsKivaModule: uiExperimentSetting(key: "what_is_kiva_module") {
+				key
+				value
+			}
 		}
 		lend {
 			loan(id: $loanId) {
@@ -444,13 +448,16 @@ export default {
 
 		const kivaModuleExpData = getExperimentSettingCached(this.apollo, whatIsKivaExpKey);
 		if (kivaModuleExpData?.enabled) {
-			trackExperimentVersion(
+			const { version } = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
 				'Borrower Profile',
 				whatIsKivaExpKey,
 				'EXP-MARS-199-Aug2022'
 			);
+			if (version === 'b') {
+				this.kivaModuleExpEnabled = true;
+			}
 		}
 	},
 	methods: {
@@ -587,15 +594,6 @@ export default {
 
 		const utmContent = this.$route.query?.utm_content;
 		this.inviterIsGuestOrAnonymous = utmContent === 'anonymous' || utmContent === 'guest';
-
-		const kivaModuleExpData = getExperimentSettingCached(this.apollo, whatIsKivaExpKey);
-		const kivaModuleExp = this.apollo.readFragment({
-			id: `Experiment:${whatIsKivaExpKey}`,
-			fragment: experimentVersionFragment,
-		}) ?? {};
-		if (kivaModuleExpData?.enabled && kivaModuleExp.version === 'b') {
-			this.kivaModuleExpEnabled = true;
-		}
 	},
 };
 </script>
