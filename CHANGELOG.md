@@ -1,3 +1,16 @@
+## [2.241.0](https://github.com/kiva/ui/compare/v2.240.1...v2.241.0) (2022-08-04)
+
+
+### Features
+
+* initial updates to use gtag instead of analytics.js ([811b620](https://github.com/kiva/ui/commit/811b620e1f0dbfb27409ee5709748962c2f4d692))
+
+
+### Bug Fixes
+
+* map ecommerce calls to gtag format + cleanup unused config ([d66df6d](https://github.com/kiva/ui/commit/d66df6dc41c48b6d1838f3cc08337ea8dce2ace8))
+* prevent duplicate pageview on config update + reduce eslint omissions ([0ae543d](https://github.com/kiva/ui/commit/0ae543da2f6d3155862050f382311306a7728dd4))
+
 ### [2.240.1](https://github.com/kiva/ui/compare/v2.240.0...v2.240.1) (2022-08-04)
 
 
