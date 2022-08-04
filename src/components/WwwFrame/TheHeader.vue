@@ -466,6 +466,7 @@
 
 <script>
 import logReadQueryError from '@/util/logReadQueryError';
+import { userHasEverLoggedInBefore } from '@/util/optimizelyUserMetrics';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
 import gql from 'graphql-tag';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
@@ -625,7 +626,14 @@ export default {
 		}
 	},
 	created() {
-		if (!this.isVisitor) {
+		// MARS-194 User Metrics for Optimizely A/B experiment
+		const hasEverLoggedInBefore = this.cookieStore.get('kvu');
+		userHasEverLoggedInBefore(hasEverLoggedInBefore !== undefined);
+
+		const hasLentBeforeValue = this.cookieStore.get(hasLentBeforeCookie);
+		const hasDepositBeforeValue = this.cookieStore.get(hasDepositBeforeCookie);
+
+		if (hasLentBeforeValue === undefined || hasDepositBeforeValue === undefined) {
 			try {
 				let userData = {};
 				userData = this.apollo.readQuery({
@@ -638,7 +646,7 @@ export default {
 				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore);
 				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore);
 			} catch (e) {
-				logReadQueryError(e, 'User Data For Metrics');
+				logReadQueryError(e, 'User Data For Optimizely Metrics');
 			}
 		}
 	},
