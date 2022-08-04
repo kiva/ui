@@ -466,7 +466,7 @@
 
 <script>
 import logReadQueryError from '@/util/logReadQueryError';
-import { userHasEverLoggedInBefore } from '@/util/optimizelyUserMetrics';
+import { userHasEverLoggedInBefore, userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
 import gql from 'graphql-tag';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
@@ -589,20 +589,11 @@ export default {
 		},
 	},
 	apollo: {
+		query: headerQuery,
 		preFetch(config, client, { cookieStore }) {
 			return client.query({
 				query: headerQuery,
 			}).then(({ data }) => {
-				this.isVisitor = !data?.my?.userAccount?.id;
-				this.isBorrower = data?.my?.isBorrower ?? false;
-				this.loanId = data?.my?.mostRecentBorrowedLoan?.id ?? null;
-				this.trusteeId = data?.my?.trustee?.id ?? null;
-				this.basketCount = data?.shop?.nonTrivialItemCount ?? 0;
-				this.balance = Math.floor(data?.my?.userAccount?.balance ?? 0);
-				this.profilePic = data?.my?.lender?.image?.url ?? '';
-				this.profilePicId = data?.my?.lender?.image?.id ?? null;
-				this.basketState = data || {};
-
 				const hasLentBeforeValue = cookieStore.get(hasLentBeforeCookie);
 				const hasDepositBeforeValue = cookieStore.get(hasDepositBeforeCookie);
 
@@ -612,6 +603,17 @@ export default {
 					]);
 				}
 			});
+		},
+		result({ data }) {
+			this.isVisitor = !data?.my?.userAccount?.id;
+			this.isBorrower = data?.my?.isBorrower ?? false;
+			this.loanId = data?.my?.mostRecentBorrowedLoan?.id ?? null;
+			this.trusteeId = data?.my?.trustee?.id ?? null;
+			this.basketCount = data?.shop?.nonTrivialItemCount ?? 0;
+			this.balance = Math.floor(data?.my?.userAccount?.balance ?? 0);
+			this.profilePic = data?.my?.lender?.image?.url ?? '';
+			this.profilePicId = data?.my?.lender?.image?.id ?? null;
+			this.basketState = data || {};
 		},
 		errorHandlers: {
 			'shop.invalidBasketId': ({ cookieStore, route }) => {
@@ -645,6 +647,9 @@ export default {
 
 				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore);
 				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore);
+
+				userHasLentBefore(hasLentBefore);
+				userHasDepositBefore(hasDepositBefore);
 			} catch (e) {
 				logReadQueryError(e, 'User Data For Optimizely Metrics');
 			}
