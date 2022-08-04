@@ -122,8 +122,9 @@ export default {
 <style scoped>
 	@media only screen and (max-width: 600px) {
 		.slide-out-bottom-leave-active {
-			transition: all .5s ease-out;
+			transition: all 0.5s ease-out;
 		}
+
 		.slide-out-bottom-leave-to {
 			transform: translateY(70%);
 		}
