@@ -105,7 +105,7 @@ export default {
 		};
 	},
 	methods: {
-		hideLightbox(type) {
+		hideLightbox({ type }) {
 			this.isLightboxVisible = false;
 			if (type === 'close-x') {
 				this.$kvTrackEvent('Borrower Profile', 'click-modal-close', 'close');
