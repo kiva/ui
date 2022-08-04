@@ -442,7 +442,7 @@ export default {
 			);
 		}
 
-		const kivaModuleExpData = getExperimentSettingCached(this.apollo, socialElementsExpKey);
+		const kivaModuleExpData = getExperimentSettingCached(this.apollo, whatIsKivaExpKey);
 		if (kivaModuleExpData?.enabled) {
 			trackExperimentVersion(
 				this.apollo,
