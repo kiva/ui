@@ -27,37 +27,35 @@
 						How it works
 					</h3>
 					<div class="tw-block md:tw-flex md:tw-gap-3 md:tw-px-2.5 md:tw-mx-4">
-						<div
-							class="tw-flex tw-gap-1 tw-items-center md:tw-block md:tw-flex-1"
-						>
+						<div class="section-container">
 							<div class="tw-basis-1/3">
 								<icon-lend
-									class="tw-w-12 tw-h-12 tw-block tw-mx-auto tw-text-brand tw-bg-transparent"
+									class="section-container__icon"
 								/>
 							</div>
-							<div class="tw-basis-2/3 md:tw-text-center">
+							<div class="section-container__info">
 								<h3>Lend</h3>
 								<p>100% of your money goes to the borrower</p>
 							</div>
 						</div>
-						<div class="tw-flex tw-gap-1 tw-items-center md:tw-block md:tw-flex-1">
+						<div class="section-container">
 							<div class="tw-basis-1/3">
 								<icon-get-repaid
-									class="tw-w-12 tw-h-12 tw-block tw-mx-auto tw-text-brand tw-bg-transparent"
+									class="section-container__icon"
 								/>
 							</div>
-							<div class="tw-basis-2/3 md:tw-text-center">
+							<div class="section-container__info">
 								<h3>Get repaid</h3>
 								<p>As borrowers thrive they pay back your loan</p>
 							</div>
 						</div>
-						<div class="tw-flex tw-gap-1 tw-items-center md:tw-block md:tw-flex-1">
+						<div class="section-container">
 							<div class="tw-basis-1/3">
 								<icon-auto-deposit
-									class="tw-w-12 tw-h-12 tw-block tw-mx-auto tw-text-brand tw-bg-transparent"
+									class="section-container__icon"
 								/>
 							</div>
-							<div class="tw-basis-2/3 md:tw-text-center">
+							<div class="section-container__info">
 								<h3>Repeat</h3>
 								<p>Relend to change even more lives</p>
 							</div>
@@ -119,7 +117,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 	@media only screen and (max-width: 600px) {
 		.slide-out-bottom-leave-active {
 			transition: all 0.5s ease-out;
@@ -128,5 +126,17 @@ export default {
 		.slide-out-bottom-leave-to {
 			transform: translateY(70%);
 		}
+	}
+
+	.section-container {
+		@apply tw-flex tw-gap-1 tw-items-center md:tw-block md:tw-flex-1;
+	}
+
+	.section-container__icon {
+		@apply tw-w-12 tw-h-12 tw-block tw-mx-auto tw-text-brand tw-bg-transparent;
+	}
+
+	.section-container__info {
+		@apply tw-basis-2/3 md:tw-text-center
 	}
 </style>
