@@ -1,3 +1,24 @@
+## [2.242.0](https://github.com/kiva/ui/compare/v2.241.0...v2.242.0) (2022-08-05)
+
+
+### Features
+
+* add new cookies for Optimizely experiment ([fef85e8](https://github.com/kiva/ui/commit/fef85e88bdaa3782ba903f98d8bc83778cd31fd5))
+* rename cookies with underscore ([efd425b](https://github.com/kiva/ui/commit/efd425be56d6fc509c43e631042e8d67b8c0c761))
+* small change on hasDepositBefore ([cf28a34](https://github.com/kiva/ui/commit/cf28a348198ff86b54c915817f70423c3cdfbae4))
+
+
+### Bug Fixes
+
+* added query condition based on cookie value ([a5d90ae](https://github.com/kiva/ui/commit/a5d90ae4c6e56c132fa587240294a26ad8795760))
+* adjustments after code review ([9b2f3ba](https://github.com/kiva/ui/commit/9b2f3ba77eaffa97e3d2bf755ee8b04068ea5416))
+* changed strategy to handle user metrics cookies ([a41cf19](https://github.com/kiva/ui/commit/a41cf19fec17662f46fedfe493e829419a3713b9))
+* more request changes after code review ([97c5109](https://github.com/kiva/ui/commit/97c5109ce34f4a5d6a9b06ae485cb160b3c2128a))
+* revert small changes ([88c65f0](https://github.com/kiva/ui/commit/88c65f01a4a3591c090da03237bae08027e3f480))
+* small improvements ([d710a5a](https://github.com/kiva/ui/commit/d710a5a56f8939bd130046869519e9a458a0f0c0))
+* small improvements ([319c028](https://github.com/kiva/ui/commit/319c028f29cf7dc8602a23c0eceef8c272bc2b88))
+* use optimizely API features ([15ca387](https://github.com/kiva/ui/commit/15ca38760746ec3e3d0e4f0bdef27c6f827193ee))
+
 ## [2.241.0](https://github.com/kiva/ui/compare/v2.240.1...v2.241.0) (2022-08-04)
 
 
