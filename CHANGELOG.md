@@ -1,3 +1,10 @@
+## [2.243.0](https://github.com/kiva/ui/compare/v2.242.1...v2.243.0) (2022-08-08)
+
+
+### Features
+
+* experiment copy for upsells on checkout ([68a5a51](https://github.com/kiva/ui/commit/68a5a517ac1d4c3151554a55e5b426adea191f09))
+
 ### [2.242.1](https://github.com/kiva/ui/compare/v2.242.0...v2.242.1) (2022-08-08)
 
 
