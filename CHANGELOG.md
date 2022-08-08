@@ -1,3 +1,10 @@
+### [2.242.1](https://github.com/kiva/ui/compare/v2.242.0...v2.242.1) (2022-08-08)
+
+
+### Bug Fixes
+
+* fixed promise resolve ([1e18e94](https://github.com/kiva/ui/commit/1e18e949051fc25f67551e77b3bc12b21ba30fe6))
+
 ## [2.242.0](https://github.com/kiva/ui/compare/v2.241.0...v2.242.0) (2022-08-05)
 
 
