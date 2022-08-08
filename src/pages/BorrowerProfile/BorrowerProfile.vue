@@ -310,11 +310,18 @@ export default {
 				},
 			]).concat(isSclePresent ? [
 				{
+					vmid: 'robots',
+					name: 'robots',
+					content: 'noindex',
+				},
+			] : []),
+			link: (isSclePresent ? [
+				{
 					vmid: 'canonical',
 					rel: 'canonical',
-					href: `https://${this.$appConfig.host}${this.$route.path}?${this.$route.query?.utm_campaign}`
+					href: `https://${this.$appConfig.host}${this.$route.fullPath}`,
 				},
-			] : [])
+			] : []),
 		};
 	},
 	data() {
