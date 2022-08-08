@@ -597,11 +597,8 @@ export default {
 				const hasLentBeforeValue = cookieStore.get(hasLentBeforeCookie);
 				const hasDepositBeforeValue = cookieStore.get(hasDepositBeforeCookie);
 
-				if (data?.my?.userAccount?.id && (hasLentBeforeValue === undefined || hasDepositBeforeValue === undefined)) { // eslint-disable-line max-len
-					return Promise.all([
-						client.query({ query: optimizelyUserDataQuery })
-					]);
-				}
+				return data?.my?.userAccount?.id && (hasLentBeforeValue === undefined || hasDepositBeforeValue === undefined) // eslint-disable-line max-len
+					? client.query({ query: optimizelyUserDataQuery }) : Promise.resolve();
 			});
 		},
 		result({ data }) {
