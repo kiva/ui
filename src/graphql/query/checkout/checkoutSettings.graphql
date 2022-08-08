@@ -12,6 +12,10 @@ query checkoutSettings($basketId: String) {
 			key
 			value
 		}
+		upsellsCopy: uiExperimentSetting(key: "upsells_copy") {
+			key
+			value
+		}
 	}
 	shop (basketId: $basketId) {
 		id

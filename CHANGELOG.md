@@ -1,3 +1,120 @@
+## [2.243.0](https://github.com/kiva/ui/compare/v2.242.1...v2.243.0) (2022-08-08)
+
+
+### Features
+
+* experiment copy for upsells on checkout ([68a5a51](https://github.com/kiva/ui/commit/68a5a517ac1d4c3151554a55e5b426adea191f09))
+
+### [2.242.1](https://github.com/kiva/ui/compare/v2.242.0...v2.242.1) (2022-08-08)
+
+
+### Bug Fixes
+
+* fixed promise resolve ([1e18e94](https://github.com/kiva/ui/commit/1e18e949051fc25f67551e77b3bc12b21ba30fe6))
+
+## [2.242.0](https://github.com/kiva/ui/compare/v2.241.0...v2.242.0) (2022-08-05)
+
+
+### Features
+
+* add new cookies for Optimizely experiment ([fef85e8](https://github.com/kiva/ui/commit/fef85e88bdaa3782ba903f98d8bc83778cd31fd5))
+* rename cookies with underscore ([efd425b](https://github.com/kiva/ui/commit/efd425be56d6fc509c43e631042e8d67b8c0c761))
+* small change on hasDepositBefore ([cf28a34](https://github.com/kiva/ui/commit/cf28a348198ff86b54c915817f70423c3cdfbae4))
+
+
+### Bug Fixes
+
+* added query condition based on cookie value ([a5d90ae](https://github.com/kiva/ui/commit/a5d90ae4c6e56c132fa587240294a26ad8795760))
+* adjustments after code review ([9b2f3ba](https://github.com/kiva/ui/commit/9b2f3ba77eaffa97e3d2bf755ee8b04068ea5416))
+* changed strategy to handle user metrics cookies ([a41cf19](https://github.com/kiva/ui/commit/a41cf19fec17662f46fedfe493e829419a3713b9))
+* more request changes after code review ([97c5109](https://github.com/kiva/ui/commit/97c5109ce34f4a5d6a9b06ae485cb160b3c2128a))
+* revert small changes ([88c65f0](https://github.com/kiva/ui/commit/88c65f01a4a3591c090da03237bae08027e3f480))
+* small improvements ([d710a5a](https://github.com/kiva/ui/commit/d710a5a56f8939bd130046869519e9a458a0f0c0))
+* small improvements ([319c028](https://github.com/kiva/ui/commit/319c028f29cf7dc8602a23c0eceef8c272bc2b88))
+* use optimizely API features ([15ca387](https://github.com/kiva/ui/commit/15ca38760746ec3e3d0e4f0bdef27c6f827193ee))
+
+## [2.241.0](https://github.com/kiva/ui/compare/v2.240.1...v2.241.0) (2022-08-04)
+
+
+### Features
+
+* initial updates to use gtag instead of analytics.js ([811b620](https://github.com/kiva/ui/commit/811b620e1f0dbfb27409ee5709748962c2f4d692))
+
+
+### Bug Fixes
+
+* map ecommerce calls to gtag format + cleanup unused config ([d66df6d](https://github.com/kiva/ui/commit/d66df6dc41c48b6d1838f3cc08337ea8dce2ace8))
+* prevent duplicate pageview on config update + reduce eslint omissions ([0ae543d](https://github.com/kiva/ui/commit/0ae543da2f6d3155862050f382311306a7728dd4))
+
+### [2.240.1](https://github.com/kiva/ui/compare/v2.240.0...v2.240.1) (2022-08-04)
+
+
+### Bug Fixes
+
+* update ([f09acf1](https://github.com/kiva/ui/commit/f09acf110062229c0ad5bd9185408123909642c6))
+* update complete this loan price ([212e657](https://github.com/kiva/ui/commit/212e6574c313c7466746be07bfc457bfd5bdad35))
+
+## [2.240.0](https://github.com/kiva/ui/compare/v2.239.0...v2.240.0) (2022-08-03)
+
+
+### Features
+
+* test code for checkout upsells was removed becoming a new feature on the page ([e0aa377](https://github.com/kiva/ui/commit/e0aa3775d69926bce44d1ae93cbea5794abbeb20))
+
+## [2.239.0](https://github.com/kiva/ui/compare/v2.238.0...v2.239.0) (2022-08-03)
+
+
+### Features
+
+* montlhy good entrypoint component was a created for lend menu ([b4be0f4](https://github.com/kiva/ui/commit/b4be0f4bdc84523bb0fdaecfa4e8108d28b8bad1))
+* new design for monthly good link was added to the top navigation ([7586e5b](https://github.com/kiva/ui/commit/7586e5b9302fdd0887d513176a03e94e4582841e))
+
+## [2.238.0](https://github.com/kiva/ui/compare/v2.237.3...v2.238.0) (2022-08-03)
+
+
+### Features
+
+* create SavedSearchItem component + use for entry list (new edits) ([068d6da](https://github.com/kiva/ui/commit/068d6da79fb5e1828f3872b737f02f2a7cb4a273))
+
+### [2.237.3](https://github.com/kiva/ui/compare/v2.237.2...v2.237.3) (2022-08-02)
+
+
+### Bug Fixes
+
+* move and trigger share card experiment in thanks page ([cad31e8](https://github.com/kiva/ui/commit/cad31e86ad103c127f4cb2466976bafec09b7be3))
+* only show expected FLSS sort options ([0381605](https://github.com/kiva/ui/commit/03816056afc4d640a43ec96fee71bf2d8812034a))
+* update experiment details ([5a0593e](https://github.com/kiva/ui/commit/5a0593e27f617005bcfbd35d28e54e9a1630e4fe))
+
+### [2.237.2](https://github.com/kiva/ui/compare/v2.237.1...v2.237.2) (2022-08-01)
+
+
+### Bug Fixes
+
+* improve error message on failed experiment setting fetch ([ec073d8](https://github.com/kiva/ui/commit/ec073d8923b99228129c25c4dfc72d86097e2786))
+
+### [2.237.1](https://github.com/kiva/ui/compare/v2.237.0...v2.237.1) (2022-08-01)
+
+
+### Bug Fixes
+
+* use env specific fastly img url for algolia loan cards ([4956067](https://github.com/kiva/ui/commit/4956067d1ae9acb913848674991a6354f7ccda6d))
+
+## [2.237.0](https://github.com/kiva/ui/compare/v2.236.0...v2.237.0) (2022-07-25)
+
+
+### Features
+
+* enable snowplow performance timing in the snowplow context ([1ffc0c6](https://github.com/kiva/ui/commit/1ffc0c6c5cc4d92ea9ae81ab6297ee37d1eedfe8))
+
+## [2.236.0](https://github.com/kiva/ui/compare/v2.235.11...v2.236.0) (2022-07-23)
+
+
+### Features
+
+* ab test added for new mg entrypoint on topnav ([910ca71](https://github.com/kiva/ui/commit/910ca71bde43ed249ab6629900e48cc38fd70030))
+* mg entrypoint experiment was added as global experiment ([994dba1](https://github.com/kiva/ui/commit/994dba18eda6451c270ceace58e09a1b82278318))
+* queries for mg entrypoint experiments were added ([61bc06a](https://github.com/kiva/ui/commit/61bc06a3cedf1fcf3435bf23e9ad71f9bac47419))
+
 ### [2.235.11](https://github.com/kiva/ui/compare/v2.235.10...v2.235.11) (2022-07-22)
 
 
