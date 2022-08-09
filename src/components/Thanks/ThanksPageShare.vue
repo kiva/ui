@@ -216,7 +216,6 @@ export default {
 		},
 	},
 	metaInfo() {
-		console.log('share ask copy', this.shareAskCopyVersion);
 		return {
 			title: 'Thank you!'
 		};
