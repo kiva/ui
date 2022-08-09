@@ -10,12 +10,16 @@
 				:title="title"
 				@lightbox-closed="hideLightbox"
 				class="tw-px-8"
+				id="what-is-kiva-lightbox"
 			>
 				<template #header>
-					<h2 class="tw-text-h2 md:tw-text-center tw-mb-1">
+					<h1 class="tw-hidden md:tw-block tw-text-h1 tw-text-center tw-mb-1 tw-pl-12 tw-mt-4">
+						{{ title }}
+					</h1>
+					<h2 class="md:tw-hidden tw-text-h2 tw-mb-1 tw-mt-3">
 						{{ title }}
 					</h2>
-					<div class="tw-mb-3">
+					<div class="md:tw-pl-12">
 						<p
 							:data-testid="`bp-what-is-kiva-lightbox-description`"
 							class="md:tw-text-center tw-text-subhead"
@@ -23,45 +27,45 @@
 							{{ description }}
 						</p>
 					</div>
-					<h3 class="md:tw-hidden tw-text-action tw-mb-1">
-						How it works
-					</h3>
-					<div class="tw-block md:tw-flex md:tw-gap-3 md:tw-px-2.5 md:tw-mx-4">
-						<div class="section-container">
-							<div class="tw-basis-1/3">
-								<icon-lend
-									class="section-container__icon"
-								/>
-							</div>
-							<div class="section-container__info">
-								<h3>Lend</h3>
-								<p>100% of your money goes to the borrower</p>
-							</div>
+				</template>
+				<h3 class="md:tw-hidden tw-text-action tw-mb-1">
+					How it works
+				</h3>
+				<div class="tw-block md:tw-flex md:tw-gap-3 md:tw-px-2.5">
+					<div class="section-container">
+						<div class="tw-basis-1/3">
+							<icon-lend
+								class="section-container__icon"
+							/>
 						</div>
-						<div class="section-container">
-							<div class="tw-basis-1/3">
-								<icon-get-repaid
-									class="section-container__icon"
-								/>
-							</div>
-							<div class="section-container__info">
-								<h3>Get repaid</h3>
-								<p>As borrowers thrive they pay back your loan</p>
-							</div>
-						</div>
-						<div class="section-container">
-							<div class="tw-basis-1/3">
-								<icon-auto-deposit
-									class="section-container__icon"
-								/>
-							</div>
-							<div class="section-container__info">
-								<h3>Repeat</h3>
-								<p>Relend to change even more lives</p>
-							</div>
+						<div class="section-container__info">
+							<h3>Lend</h3>
+							<p>100% of your money goes to the borrower</p>
 						</div>
 					</div>
-				</template>
+					<div class="section-container">
+						<div class="tw-basis-1/3">
+							<icon-get-repaid
+								class="section-container__icon"
+							/>
+						</div>
+						<div class="section-container__info">
+							<h3>Get repaid</h3>
+							<p>As borrowers thrive they pay back your loan</p>
+						</div>
+					</div>
+					<div class="section-container">
+						<div class="tw-basis-1/3">
+							<icon-auto-deposit
+								class="section-container__icon"
+							/>
+						</div>
+						<div class="section-container__info">
+							<h3>Repeat</h3>
+							<p>Relend to change even more lives</p>
+						</div>
+					</div>
+				</div>
 				<kv-button
 					@click="isLightboxVisible = false"
 					v-kv-track-event="[
@@ -137,6 +141,11 @@ export default {
 
 	.section-container__info {
 		@apply tw-basis-2/3 md:tw-text-center;
+	}
+
+	/* Hack to force centered content of header area */
+	#what-is-kiva-lightbox div[data-test="kv-lightbox"] > div > div {
+		width: 100%;
 	}
 
 </style>

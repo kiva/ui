@@ -424,7 +424,8 @@ export default {
 			this.diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;
 			this.lender = result?.data?.my?.userAccount ?? {};
-			this.shownModal = !this.cookieStore.get('what-is-kiva-shown') && !result?.data?.hasEverLoggedIn;
+
+			this.shownModal = this.cookieStore.get('what-is-kiva-shown') || result?.data?.hasEverLoggedIn;
 		},
 	},
 	mounted() {
