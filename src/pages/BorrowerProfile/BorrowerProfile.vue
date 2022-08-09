@@ -251,6 +251,7 @@ export default {
 	metaInfo() {
 		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
 		const description = this.anonymizationLevel === 'full' ? undefined : this.pageDescription;
+		const isSclePresent = this.$route.query?.utm_campaign?.includes('scle');
 
 		return {
 			title,
@@ -307,7 +308,20 @@ export default {
 					vmid: 'twitter:description',
 					content: this.shareDescription
 				},
-			])
+			]).concat(isSclePresent ? [
+				{
+					vmid: 'robots',
+					name: 'robots',
+					content: 'noindex',
+				},
+			] : []),
+			link: (isSclePresent ? [
+				{
+					vmid: 'canonical',
+					rel: 'canonical',
+					href: `https://${this.$appConfig.host}${this.$route.fullPath}`,
+				},
+			] : []),
 		};
 	},
 	data() {
