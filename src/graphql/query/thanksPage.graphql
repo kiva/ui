@@ -135,7 +135,7 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		}
 	}
 	general {
-		shareCopyAsk: uiExperimentSetting(key: "share_copy_ask") {
+		shareAskCopy: uiExperimentSetting(key: "share_ask_copy") {
 			key
 			value
 		}

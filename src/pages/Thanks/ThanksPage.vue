@@ -102,7 +102,7 @@
 			:loan="selectedLoan"
 			:simple-social-share-version="simpleSocialShareVersion"
 			:share-card-language-version="shareCardLanguageVersion"
-			:share-ask-copy-version="shareCopyAskVersion"
+			:share-ask-copy-version="shareAskCopyVersion"
 		/>
 	</www-page>
 </template>
@@ -167,7 +167,7 @@ export default {
 			shareCardLanguageVersion: '',
 			simpleSocialShareVersion: '',
 			newThanksPageModuleVersion: '',
-			shareCopyAskVersion: '',
+			shareAskCopyVersion: '',
 		};
 	},
 	apollo: {
@@ -352,17 +352,17 @@ export default {
 			}
 
 			// MARS-202 Share copy ask experiment
-			const shareCopyAskVersion = this.apollo.readFragment({
+			const shareAskCopyVersion = this.apollo.readFragment({
 				id: 'Experiment:share_ask_copy',
 				fragment: experimentVersionFragment,
 			}) || {};
 
-			this.shareCopyAskVersion = shareCopyAskVersion.version;
-			if (this.shareCopyAskVersion) {
+			this.shareAskCopyVersion = shareAskCopyVersion.version;
+			if (this.shareAskCopyVersion) {
 				this.$kvTrackEvent(
 					'Thanks',
 					'EXP-MARS-202-Aug2022',
-					this.shareCopyAskVersion,
+					this.shareAskCopyVersion,
 				);
 			}
 		}
