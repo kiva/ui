@@ -31,8 +31,7 @@
 					With Kiva you can lend as little as $25 and make a big change in someone's life.
 				</p>
 				<div class="tw-flex tw-flex-wrap tw-gap-2">
-					<kv-button
-						class="button smallest"
+					<kv-ui-button
 						@click.native.prevent="jumpToLoans"
 						v-kv-track-event="[
 							'Campaign',
@@ -41,10 +40,10 @@
 						]"
 					>
 						Find a borrower
-					</kv-button>
-					<kv-button
+					</kv-ui-button>
+					<kv-ui-button
 						v-if="secondaryCtaLink && secondaryCtaText"
-						class="button secondary smallest"
+						variant="secondary"
 						:href="secondaryCtaLink"
 						target="_blank"
 						v-kv-track-event="[
@@ -54,7 +53,7 @@
 						]"
 					>
 						{{ secondaryCtaText }}
-					</kv-button>
+					</kv-ui-button>
 				</div>
 			</div>
 		</div>
@@ -62,13 +61,13 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
+import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
 	name: 'CampaignHero',
 	components: {
-		KvButton,
+		KvUiButton,
 	},
 	props: {
 		heroAreaContent: {
