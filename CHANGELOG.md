@@ -1,3 +1,11 @@
+### [2.243.1](https://github.com/kiva/ui/compare/v2.243.0...v2.243.1) (2022-08-09)
+
+
+### Bug Fixes
+
+* add canonical url to Borrower Profile page ([0b15502](https://github.com/kiva/ui/commit/0b15502649d06acfb563deecd30e1f89edf3c729))
+* small improvement and iclude all query string ([0f3d104](https://github.com/kiva/ui/commit/0f3d104c0c29ce5ffc14c481ed6e18d6f77558c8))
+
 ## [2.243.0](https://github.com/kiva/ui/compare/v2.242.1...v2.243.0) (2022-08-08)
 
 
