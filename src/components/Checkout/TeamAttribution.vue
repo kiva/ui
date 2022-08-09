@@ -13,7 +13,8 @@
 				<option value="0">
 					None
 				</option>
-				<option v-for="team in sortTeams"
+				<option
+					v-for="team in sortTeams"
 					:key="team.id"
 					:value="team.id"
 				>

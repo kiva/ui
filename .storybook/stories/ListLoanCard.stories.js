@@ -1,14 +1,11 @@
-import StoryRouter from 'storybook-vue-router';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import ListLoanCard from '@/components/LoanCards/ListLoanCard';
 import { mockLoansArray } from '../utils';
 
 const loan = mockLoansArray(1)[0];
-
 export default {
 	title: 'Loan Cards/List Loan Card',
 	component: ListLoanCard,
-	decorators: [StoryRouter()],
 	args: { loan },
 };
 

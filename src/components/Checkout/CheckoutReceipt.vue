@@ -29,7 +29,8 @@
 				</div>
 				<ul class="checkout-receipt__item-list">
 					<!-- Loans -->
-					<li data-testid="receipt-item-loan"
+					<li
+						data-testid="receipt-item-loan"
 						class="section"
 						v-for="loan in loans"
 						:key="loan.id"
@@ -68,7 +69,8 @@
 						</div>
 					</li>
 					<!-- Kiva Cards -->
-					<li data-testid="receipt-item-kcard"
+					<li
+						data-testid="receipt-item-kcard"
 						class="section"
 						v-for="card in kivaCards"
 						:key="card.id"
@@ -79,7 +81,8 @@
 						>
 							<template v-if="card.kivaCardObject.deliveryType === 'print'">
 								<div>
-									<h3 class="loan__name loan__name--inline"
+									<h3
+										class="loan__name loan__name--inline"
 										data-testid="kcard-type-print"
 									>
 										Print-it-yourself Kiva Card
@@ -90,7 +93,8 @@
 										:id="`print-card-${card.id}`"
 										class="loan__question-icon tw-fill-current tw-text-tertiary"
 									/>
-									<kv-tooltip data-testid="kcard-tool-tip-text"
+									<kv-tooltip
+										data-testid="kcard-tool-tip-text"
 										:controller="`print-card-${card.id}`" theme="mint"
 									>
 										You can print this card now. We'll also send it to
@@ -158,7 +162,8 @@
 						v-if="kivaCards.length > 0"
 					>
 						For more details about all your Kiva Card purchases, please visit your
-						<router-link to="/portfolio/kiva-cards"
+						<router-link
+							to="/portfolio/kiva-cards"
 							v-kv-track-event="['Thanks','click', 'kiva-card-portfolio']"
 						>
 							Kiva portfolio
@@ -196,7 +201,8 @@
 						<h3 class="total__header tw-text-h3">
 							Total:
 						</h3>
-						<span class="total__amount tw-text-h3"
+						<span
+							class="total__amount tw-text-h3"
 							data-testid="total-amount"
 						>${{ receipt.totals.itemTotal }}</span>
 					</li>
@@ -231,7 +237,8 @@
 						v-if="receipt.totals.bonusAppliedTotal > 0"
 					>
 						<span class="total__header tw-text-h3">Free credit:</span>
-						<span class="total__amount tw-text-h3"
+						<span
+							class="total__amount tw-text-h3"
 							data-testid="free-credit-payment-amount"
 						>{{ receipt.totals.bonusAppliedTotal }}</span>
 					</li>
@@ -268,7 +275,8 @@
 				</ul>
 			</section>
 			<section class="section section--print hide-for-print">
-				<button data-testid="print-receipt"
+				<button
+					data-testid="print-receipt"
 					class="print tw-text-link tw-flex tw-items-center tw-gap-1"
 					@click="printReceipt"
 				>

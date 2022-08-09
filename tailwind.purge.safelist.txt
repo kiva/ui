@@ -19,6 +19,22 @@ tw-pt-8
 md:tw-pt-8
 lg:tw-pt-8
 xl:tw-pt-8
+tw-pt-10
+md:tw-pt-10
+lg:tw-pt-10
+xl:tw-pt-10
+tw-pt-12
+md:tw-pt-12
+lg:tw-pt-12
+xl:tw-pt-12
+tw-pt-14
+md:tw-pt-14
+lg:tw-pt-14
+xl:tw-pt-14
+tw-pt-16
+md:tw-pt-16
+lg:tw-pt-16
+xl:tw-pt-16
 tw-pb-0
 md:tw-pb-0
 lg:tw-pb-0
@@ -64,3 +80,20 @@ tw-text-link
 # Whitespace Classes
 tw-whitespace-normal
 tw-whitespace-pre-wrap
+
+# Additional Grid Classes
+tw-inline-grid
+
+# Absolute Spacing Classes
+tw-top-1/4
+tw-top-1/2
+tw-top-3/4
+tw-bottom-1/4
+tw-bottom-1/2
+tw-bottom-3/4
+tw-left-1/4
+tw-left-1/2
+tw-left-3/4
+tw-right-1/4
+tw-right-1/2
+tw-right-3/4

@@ -22,7 +22,7 @@
 
 <script>
 import { mdiInformation } from '@mdi/js';
-import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE, sortByNameToDisplay } from '@/util/loanSearchUtils';
+import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE, sortByNameToDisplay } from '@/util/loanSearch/filterUtils';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 

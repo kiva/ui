@@ -1,5 +1,6 @@
 <template>
-	<div class="dropdown-pane"
+	<div
+		class="dropdown-pane"
 		:class="{'is-open': show}"
 		:style="styles"
 		:aria-hidden="show ? 'false' : 'true'"
@@ -177,4 +178,10 @@ export default {
 @import 'settings';
 @import 'foundation';
 @include foundation-dropdown;
+</style>
+
+<style lang="postcss" scoped>
+.dropdown-pane {
+	@apply !tw-z-overlay;
+}
 </style>

@@ -71,7 +71,8 @@
 					<kv-loading-spinner
 						v-if="verificationPending"
 					/>
-					<p class="tw-text-danger tw-mb-2"
+					<p
+						class="tw-text-danger tw-mb-2"
 						v-if="verificationError && !verificationPending"
 					>
 						{{ verificationError }}

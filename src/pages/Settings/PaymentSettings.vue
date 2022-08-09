@@ -23,7 +23,8 @@
 								<legend v-else class="tw-block tw-mb-2">
 									There are no cards saved to this account
 								</legend>
-								<div v-for="(paymentMethod, index) in savedPaymentMethods"
+								<div
+									v-for="(paymentMethod, index) in savedPaymentMethods"
 									:key="index"
 									class="payment-settings-default-form__cc-wrapper"
 								>
@@ -33,7 +34,8 @@
 										:radio-value="paymentMethod.nonce"
 										v-model="selectedDefaultCardNonce"
 									>
-										<img class="payment-settings-default-form__cc-icon tw-inline-block"
+										<img
+											class="payment-settings-default-form__cc-icon tw-inline-block"
 											:src="paymentMethod.imageUrl"
 											alt="credit card"
 										>
@@ -49,11 +51,13 @@
 								</div>
 							</fieldset>
 							<fieldset>
-								<button class="tw-text-link tw-font-medium payment-settings-default-form__expand-button"
+								<button
+									class="tw-text-link tw-font-medium payment-settings-default-form__expand-button"
 									@click="showAddACard = !showAddACard"
 								>
 									Add a new card
-									<kv-icon class="arrow more-options-arrow tw-stroke-current tw-text-action"
+									<kv-icon
+										class="arrow more-options-arrow tw-stroke-current tw-text-action"
 										:class="{'down': !showAddACard, 'up': showAddACard}"
 										name="small-chevron"
 										:from-sprite="true"

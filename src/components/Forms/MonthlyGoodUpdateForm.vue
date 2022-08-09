@@ -12,7 +12,8 @@
 				>
 					Day of the Month
 				</label>
-				<kv-text-input v-if="isDayInputShown"
+				<kv-text-input
+					v-if="isDayInputShown"
 					@blur="hideDayInput()"
 					class="text-input__day"
 					id="dayOfMonth"
@@ -118,7 +119,8 @@
 					</div>
 				</div>
 				<div class="row column">
-					<ul class="tw-text-center validation-errors"
+					<ul
+						class="tw-text-center validation-errors"
 						v-if="!$v.form.mgAmount.maxTotal || !$v.form.donation.maxTotal"
 					>
 						<li>

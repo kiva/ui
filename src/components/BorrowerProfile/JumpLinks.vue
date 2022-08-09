@@ -1,26 +1,25 @@
 <template>
 	<div class="tw-text-primary tw-text-center">
-		<hr class="tw-hidden md:tw-block tw-border-tertiary">
 		<a
-			class="tw-hidden md:tw-inline tw-text-primary tw-pr-1 tw-font-medium tw-cursor-pointer"
+			class="tw-hidden md:tw-inline tw-text-primary tw-pr-2 tw-font-medium tw-cursor-pointer"
 			data-testid="bp-jump-link-borrower-story"
 			v-kv-track-event="['Borrower profile', 'click-jump-link', 'Borrower story']"
 			@click="scrollToSection('#loanStory')"
 		>
 			<kv-material-icon
-				class="tw-w-3 tw-h-3 tw-my-3 tw-align-middle tw-mr-0.5"
+				class="tw-w-3 tw-h-3 tw-align-middle tw-mr-0.5"
 				:icon="mdiAccount"
 			/>
 			Borrower story
 		</a>
 		<a
-			class="tw-text-primary tw-pl-1 tw-pr-1 tw-font-medium tw-cursor-pointer tw-whitespace-nowrap"
+			class="tw-text-primary tw-pr-2 tw-font-medium tw-cursor-pointer tw-whitespace-nowrap"
 			data-testid="bp-jump-link-loan-details"
 			v-kv-track-event="['Borrower profile', 'click-jump-link', 'Loan details']"
 			@click="scrollToSection('#loanDetails')"
 		>
 			<kv-material-icon
-				class="tw-w-3 tw-h-3 tw-my-3 tw-align-middle tw-mr-0.5"
+				class="tw-w-3 tw-h-3 tw-align-middle tw-mr-0.5"
 				:icon="mdiFormatListBulleted"
 			/>
 			Loan details

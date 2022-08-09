@@ -12,7 +12,8 @@
 		</template>
 		<template #overlayContent>
 			<div class="row">
-				<div class="
+				<div
+					class="
 						overlay-column columns
 						medium-10 medium-offset-1 large-8 large-offset-0 xlarge-7 xxlarge-6"
 				>

@@ -1,7 +1,8 @@
 <template>
 	<div>
 		<!-- visually hidden, here for accessibility purposes -->
-		<progress class="tw-sr-only"
+		<progress
+			class="tw-sr-only"
 			max="100"
 			:value="value"
 		>

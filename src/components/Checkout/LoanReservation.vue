@@ -13,7 +13,8 @@
 			</p>
 			<!-- Not Reserved -->
 			<p class="loan-message tw-my-1" v-if="loanReservationMsg1">
-				Loan not reserved. <button class="tw-text-link tw-font-medium" @click="triggerDefaultLightbox"
+				Loan not reserved. <button
+					class="tw-text-link tw-font-medium" @click="triggerDefaultLightbox"
 					data-testid="basket-loan-reservation-why"
 				>
 					Why?

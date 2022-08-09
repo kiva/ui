@@ -58,9 +58,9 @@
 </template>
 
 <script>
-import _map from 'lodash/map';
 import orderBy from 'lodash/orderBy';
 import clipboardCopy from 'clipboard-copy';
+import { getFullUrl } from '@/util/urlUtils';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
@@ -129,33 +129,34 @@ export default {
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			if (this.selectedLoan.id) {
-				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoan.id}?utm_content=${this.utmContent}&scle=${this.shareCardLanguageVersion}`; // eslint-disable-line max-len
+				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoan.id}?utm_content=${this.utmContent}`; // eslint-disable-line max-len
 			}
-			return `${base}?utm_content=${this.utmContent}&scle=${this.shareCardLanguageVersion}`;
+
+			return `${base}?utm_content=${this.utmContent}&utm_campaign=social_share_checkout_scle_${this.shareCardLanguageVersion}`; // eslint-disable-line max-len
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
-			return this.getFullUrl('https://www.facebook.com/dialog/share', {
+			return getFullUrl('https://www.facebook.com/dialog/share', {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
-				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social&utm_campaign=social_share_checkout`,
+				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social&utm_campaign=social_share_checkout_scle_${this.shareCardLanguageVersion}`, // eslint-disable-line max-len
 				redirect_uri: `${pageUrl}?kiva_transaction_id=${this.$route.query.kiva_transaction_id}`,
 				quote: this.shareMessage,
 			});
 		},
 		linkedInShareUrl() {
-			return this.getFullUrl('https://www.linkedin.com/shareArticle', {
+			return getFullUrl('https://www.linkedin.com/shareArticle', {
 				mini: 'true',
 				source: `https://${this.$appConfig.host}`,
 				summary: this.shareMessage.substring(0, 256),
 				title: `A loan for ${this.selectedLoan.name}`,
-				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout`
+				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout_scle_${this.shareCardLanguageVersion}` // eslint-disable-line max-len
 			});
 		},
 		twitterShareUrl() {
-			return this.getFullUrl('https://twitter.com/intent/tweet', {
+			return getFullUrl('https://twitter.com/intent/tweet', {
 				text: this.shareMessage,
-				url: `${this.shareLink}&utm_source=t.co&utm_medium=social&utm_campaign=social_share_checkout`,
+				url: `${this.shareLink}&utm_source=t.co&utm_medium=social&utm_campaign=social_share_checkout_scle_${this.shareCardLanguageVersion}`, // eslint-disable-line max-len
 				via: 'Kiva',
 			});
 		},
@@ -164,10 +165,6 @@ export default {
 		}
 	},
 	methods: {
-		getFullUrl(base, args) {
-			const querystring = _map(args, (val, key) => `${key}=${encodeURIComponent(val)}`).join('&');
-			return `${base}?${querystring}`;
-		},
 		handleFacebookResponse() {
 			// Check for the route hash that facebook adds to the request
 			if (this.$route.hash === '#_=_') {
@@ -199,7 +196,7 @@ export default {
 			this.message = this.suggestedMessage;
 		},
 		async copyLink() {
-			const url = `${this.shareLink}&utm_source=social_share_link&utm_campaign=social_share_checkout`;
+			const url = `${this.shareLink}&utm_source=social_share_link&utm_campaign=social_share_checkout_scle_${this.shareCardLanguageVersion}`; // eslint-disable-line max-len
 			try {
 				await clipboardCopy(url);
 				this.copyStatus = {

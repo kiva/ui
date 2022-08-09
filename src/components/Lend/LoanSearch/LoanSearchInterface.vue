@@ -61,6 +61,7 @@
 					:loan-search-state="loanSearchState"
 					:all-facets="allFacets"
 					@updated="handleUpdatedFilters"
+					@reset="handleResetFilters"
 				/>
 				<p class="tw-hidden lg:tw-block tw-mt-1">
 					{{ totalCount }} Loans
@@ -89,7 +90,7 @@
 				/>
 			</kv-grid>
 			<template v-if="initialLoadComplete && totalCount > 0">
-				<kv-pager
+				<kv-pagination
 					:limit="loanSearchState.pageLimit"
 					:total="totalCount"
 					:offset="loanSearchState.pageOffset"
@@ -113,19 +114,16 @@ import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
 import {
 	FLSS_QUERY_TYPE,
 	formatSortOptions,
-	runFacetsQueries,
 	transformIsoCodes,
 	transformThemes,
-	runLoansQuery,
-	fetchLoanFacets,
-	applyQueryParams,
-	updateQueryParams,
-	updateSearchState,
 	transformSectors,
-} from '@/util/loanSearchUtils';
+} from '@/util/loanSearch/filterUtils';
+import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
+import { applyQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
+import { updateSearchState } from '@/util/loanSearch/searchStateUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
-import KvPager from '@/components/Kv/KvPager';
+import KvPagination from '@/components/Kv/KvPagination';
 import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util//numberUtils';
@@ -147,7 +145,7 @@ export default {
 		LoanSearchFilter,
 		KvLightbox,
 		KvSectionModalLoader,
-		KvPager,
+		KvPagination,
 		KvResultsPerPage,
 	},
 	data() {
@@ -264,6 +262,9 @@ export default {
 		// Fetch the facet options from the lend and FLSS APIs
 		this.allFacets = await fetchLoanFacets(this.apollo);
 
+		// Load all available facets without loan search state applied
+		await this.fetchFacets();
+
 		// Initialize the search filters with the query string params
 		await applyQueryParams(this.apollo, this.$route.query, this.allFacets, this.queryType, this.defaultPageLimit);
 
@@ -277,28 +278,28 @@ export default {
 				// Utilize the results of the existing query of the loan search state for updating the filters
 				this.loanSearchState = data?.loanSearchState;
 
-				// Update the query string with the latest loan search state
-				updateQueryParams(this.loanSearchState, this.$router, this.queryType);
-
-				const [{ isoCodes, themes, sectors }, { loans, totalCount }] = await Promise.all([
-					// Get filtered facet options from FLSS
-					// TODO: Prevent this from running on every query (not needed for sorting and paging)
-					await runFacetsQueries(this.apollo, this.loanSearchState),
+				const [{ loans, totalCount }] = await Promise.all([
 					// Get filtered loans from FLSS
-					await runLoansQuery(this.apollo, this.loanSearchState)
+					await runLoansQuery(this.apollo, this.loanSearchState),
+					// Get filtered facet options from FLSS
+					await this.fetchFacets(this.loanSearchState)
 				]);
-
-				// Merge all facet options with filtered options
-				this.facets = {
-					regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
-					sectors: transformSectors(sectors, this.allFacets?.sectorFacets),
-					themes: transformThemes(themes, this.allFacets?.themeFacets),
-					sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
-				};
 
 				// Store loan data in component
 				this.loans = loans;
 				this.totalCount = totalCount;
+
+				// Copy state so that the readonly offset can be updated
+				const state = { ...this.loanSearchState };
+
+				// Change back to last page if offset goes beyond available loans
+				if (this.loans.length === 0 && state.pageOffset > 0) {
+					const lastPage = Math.ceil(this.totalCount / state.pageLimit);
+					state.pageOffset = state.pageLimit * ((lastPage || 1) - 1);
+				}
+
+				// Update the query string with the latest loan search state
+				updateQueryParams(state, this.$router, this.queryType);
 
 				// Toggle loading flags
 				if (!this.initialLoadComplete) {
@@ -319,6 +320,18 @@ export default {
 		},
 	},
 	methods: {
+		async fetchFacets(loanSearchState = {}) {
+			// TODO: Prevent this from running on every query (not needed for sorting and paging)
+			const { isoCodes, themes, sectors } = await runFacetsQueries(this.apollo, loanSearchState);
+
+			// Merge all facet options with filtered options
+			this.facets = {
+				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
+				sectors: transformSectors(sectors, this.allFacets?.sectorFacets),
+				themes: transformThemes(themes, this.allFacets?.themeFacets),
+				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
+			};
+		},
 		trackLoans() {
 			this.$kvSetCustomUrl();
 

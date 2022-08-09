@@ -12,7 +12,8 @@
 				<h1 class="tw-mb-2">
 					{{ loanChannelName }}
 				</h1>
-				<p v-if="loanChannelDescription"
+				<p
+					v-if="loanChannelDescription"
 					class="page-subhead show-for-large tw-mb-4"
 				>
 					{{ loanChannelDescription }}
@@ -38,7 +39,13 @@
 						loan-card-type="GridLoanCard"
 					/>
 				</div>
-				<kv-pagination v-if="totalCount > 0" :total="totalCount" :limit="limit" @page-change="pageChange" />
+				<kv-pagination
+					v-if="totalCount > 0"
+					:total="totalCount"
+					:limit="limit"
+					:offset="offset"
+					@page-changed="pageChange"
+				/>
 				<div v-if="totalCount > 0" class="loan-count tw-text-tertiary">
 					{{ totalCount }} loans
 				</div>
@@ -306,6 +313,10 @@ export default {
 		this.targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, allChannelsData);
 		// extract query
 		this.pageQuery = _get(this.$route, 'query');
+
+		// Ensure page offset gets set before loading cached data
+		this.updateFromParams(this.pageQuery);
+
 		// Read the page data from the cache
 		let baseData = {};
 		try {
@@ -348,8 +359,10 @@ export default {
 			// if it is, changes page to the last page and displays a tip message
 			const loansOutOfRange = loansArrayLength === 0 && pageQueryParam;
 			if (loansOutOfRange) {
-				this.$showTipMsg(`There are currently ${this.lastLoanPage} pages of results. We’ve loaded the last page for you.`); // eslint-disable-line max-len
-				this.pageChange(this.lastLoanPage);
+				const message = `There are currently ${this.lastLoanPage} pages of results.
+					We’ve loaded the ${this.lastLoanPage === 0 ? 'first' : 'last'} page for you.`;
+				this.$showTipMsg(message);
+				this.pageChange({ pageOffset: loansPerPage * (this.lastLoanPage > 0 ? this.lastLoanPage - 1 : 0) });
 			}
 		},
 		updateLoanReservation(id) {
@@ -363,9 +376,8 @@ export default {
 				})
 			);
 		},
-		pageChange(number) {
-			const offset = loansPerPage * (number - 1);
-			this.offset = offset;
+		pageChange({ pageOffset }) {
+			this.offset = pageOffset;
 			this.pushChangesToUrl();
 		},
 		updateFromParams(query) {
@@ -446,7 +458,10 @@ export default {
 					);
 				}
 			}
-		}
+		},
+		$route(to) {
+			this.updateFromParams(to.query);
+		},
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {

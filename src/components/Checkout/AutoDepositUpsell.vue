@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-useless-template-attributes -->
 <template>
 	<div
 		v-if="experimentVisible"

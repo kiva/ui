@@ -1,5 +1,6 @@
 <template>
-	<footer class="tw-p-2 md:tw-p-3
+	<footer
+		class="tw-p-2 md:tw-p-3
 				lg:tw-px-2 lg:tw-py-3 tw-bg-secondary tw-text-primary
 				print:tw-p-0 print:tw-font-book print:tw-min-h-[auto]"
 	>

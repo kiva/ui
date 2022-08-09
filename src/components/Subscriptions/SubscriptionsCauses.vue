@@ -4,23 +4,27 @@
 			<template #content>
 				<div>
 					<p class="tw-mb-2">
-						On the <button class="tw-text-link tw-font-medium"
+						On the <button
+							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 						>
 							{{ dayOfMonth | numeral('Oo') }}
-						</button> of each month <button class="tw-text-link tw-font-medium"
+						</button> of each month <button
+							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 						>
 							{{ amount | numeral('$0,0.00') }}
 						</button> will be
-						transferred <button class="tw-text-link tw-font-medium"
+						transferred <button
+							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 						>
 							for {{ causeName | changeCase('noCase') }}.
 						</button>
 					</p>
 
-					<button class="tw-text-link tw-font-medium"
+					<button
+						class="tw-text-link tw-font-medium"
 						@click="showCancelLightbox = true"
 						v-kv-track-event="[
 							'Causes',

@@ -10,12 +10,14 @@
 			data-testid="basket-kiva-credit"
 		>
 			<span v-if="showRemoveKivaCredit">
-				Kiva credit: <span data-testid="applied-kiva-credit-amount"
+				Kiva credit: <span
+					data-testid="applied-kiva-credit-amount"
 					class="total-value"
 				>({{ kivaCredit }})</span>
 			</span>
 			<span v-if="showApplyKivaCredit">
-				<del>Kiva credit:</del> <span data-testid="removed-kiva-credit-amount"
+				<del>Kiva credit:</del> <span
+					data-testid="removed-kiva-credit-amount"
 					class="total-value"
 				><del>({{ kivaCredit }})</del></span>
 			</span>
@@ -54,7 +56,8 @@
 					v-if="promoFundDisplayName"
 				>
 					{{ promoFundDisplayName }}
-				</kv-button> promotion: <span data-testid="promo-amount"
+				</kv-button> promotion: <span
+					data-testid="promo-amount"
 					class="total-value"
 				>({{ appliedPromoTotal }})</span>
 				<button

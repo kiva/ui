@@ -1,8 +1,5 @@
 import Vue from 'vue'
-import StoryRouter from 'storybook-vue-router';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
-
-
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 
 // import plugins
@@ -12,7 +9,6 @@ Vue.use(kivaPlugins)
 export default {
 	title: 'Loan Cards/Grid Loan Card',
 	component: GridLoanCard,
-	decorators: [StoryRouter()],
 	args: {
 		amountLeft: 250,
 		expiringSoonMessage: 'Only 3 Days Left!',
@@ -61,7 +57,6 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		GridLoanCard,
 	},
-
 	template: `
 		<grid-loan-card
 			:items-in-basket="itemsInBasket"

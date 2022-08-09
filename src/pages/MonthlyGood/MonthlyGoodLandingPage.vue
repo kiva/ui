@@ -3,6 +3,7 @@
 		<template v-if="!isOptionalChoiceExperiment">
 			<kv-hero
 				v-if="!isImpactVisibilityExperiment"
+				class="tw-text-center"
 				style="margin-bottom: 0;"
 			>
 				<template #images>
@@ -17,8 +18,12 @@
 				</template>
 				<template #overlayContent>
 					<div class="row">
-						<div class="tw-max-w-sm tw-bg-white tw-rounded tw-hidden md:tw-block tw-ml-2 tw-p-2">
-							<h1 class="tw-text-primary
+						<div
+							class="tw-max-w-sm tw-bg-white tw-rounded tw-hidden
+						md:tw-block tw-ml-2 tw-p-2 tw-text-left"
+						>
+							<h1
+								class="tw-text-primary
 							tw-text-h2" v-html="heroHeadline"
 							></h1>
 							<p class="tw-mt-2 tw-mb-3 tw-text-subhead tw-text-primary" v-html="heroBody"></p>
@@ -46,7 +51,8 @@
 			<kv-hero v-if="isImpactVisibilityExperiment">
 				<template #images>
 					<div class="tw-relative lg:tw-pt-2">
-						<div class="tw-absolute tw-w-full tw-h-full tw-flex tw-flex-col tw-justify-end
+						<div
+							class="tw-absolute tw-w-full tw-h-full tw-flex tw-flex-col tw-justify-end
 					tw-text-white tw-p-2 lg:tw-max-w-5xl lg:tw-pb-2 lg:tw-rounded"
 							style="background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(255, 255, 255, 0) 85%);
 							left: 50%;
@@ -59,10 +65,12 @@
 								</p>
 							</div>
 						</div>
-						<div class="tw-p-2 tw-absolute -tw-mt-8 tw-flex tw-justify-center tw-w-full tw-z-10"
+						<div
+							class="tw-p-2 tw-absolute -tw-mt-8 tw-flex tw-justify-center tw-w-full tw-z-10"
 							style="top: 90%;"
 						>
-							<div class="tw-bg-white tw-rounded tw-p-2 tw-pb-0"
+							<div
+								class="tw-bg-white tw-rounded tw-p-2 tw-pb-0"
 								style="box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);"
 							>
 								<landing-form-visibility-exp
@@ -73,13 +81,14 @@
 								/>
 							</div>
 						</div>
-						<img class="tw-object-cover lg:tw-object-contain lg:tw-max-w-5xl tw-mx-auto
+						<img
+							class="tw-object-cover lg:tw-object-contain lg:tw-max-w-5xl tw-mx-auto
 							lg:tw-rounded"
 							style="min-height: 440px;"
 							:src="heroImage" alt=""
 						>
 					</div>
-					<div class="tw-pt-16 md:tw-pt-11 lg:tw-max-w-5xl lg:tw-mx-auto tw-px-2">
+					<div class="tw-pt-16 md:tw-pt-11 lg:tw-max-w-5xl lg:tw-mx-auto tw-px-2 tw-text-left">
 						<h2 class="md:tw-text-center tw-text-subhead">
 							With these settings, you’ll support borrowers like this.
 						</h2>
@@ -101,7 +110,8 @@
 				</template>
 			</kv-hero>
 			<div class="tw-bg-white tw-rounded md:tw-hidden tw-px-2">
-				<h1 class="tw-text-primary tw-shadow-transparent tw-mt-2
+				<h1
+					class="tw-text-primary tw-shadow-transparent tw-mt-2
 				tw-text-h2" v-html="heroHeadline"
 				></h1>
 				<p class="tw-text-subhead tw-text-primary tw-my-2" v-html="heroBody"></p>

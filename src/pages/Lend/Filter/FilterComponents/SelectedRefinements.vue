@@ -23,7 +23,8 @@
 					<div class="small-12 large-2 columns">
 						<div v-if="isCollapsible" class="filter-summary-container">
 							<div class="show-all-container">
-								<button class="show-all tw-text-small tw-text-link"
+								<button
+									class="show-all tw-text-small tw-text-link"
 									v-if="isCollapsed"
 									@click="handleClickShowMore"
 								>

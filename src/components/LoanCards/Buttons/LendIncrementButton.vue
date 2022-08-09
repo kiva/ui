@@ -27,6 +27,7 @@
 </template>
 
 <script>
+/* eslint-disable vue/no-computed-properties-in-data */
 import LendButton from '@/components/LoanCards/Buttons/LendButton';
 import { buildPriceArray } from '@/util/loanUtils';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';

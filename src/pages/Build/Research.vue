@@ -40,6 +40,7 @@
 </template>
 
 <script>
+/* eslint-disable vue/multi-word-component-names */
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
 import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
 import WwwPage from '@/components/WwwFrame/WwwPage';

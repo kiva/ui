@@ -5,14 +5,16 @@
 			</slot>
 		</div>
 		<div class="section-with-background__background-wrapper" :style="backgroundStyle">
-			<video class="section-with-background__media" v-if="isBackgroundVideo"
+			<video
+				class="section-with-background__media" v-if="isBackgroundVideo"
 				:src="backgroundMedia.url"
 				autoplay
 				loop
 				muted
 				playsinline
 			></video>
-			<kv-contentful-img class="section-with-background__media"
+			<kv-contentful-img
+				class="section-with-background__media"
 				v-if="isBackgroundImage"
 				:width="1440"
 				:contentful-src="backgroundMedia.url"

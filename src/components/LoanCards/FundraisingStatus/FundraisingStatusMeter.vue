@@ -1,11 +1,13 @@
 <template functional>
 	<div class="fundraising-status-meter tw-bg-tertiary" :class="{short: props.shortMeter}">
-		<span v-if="props.isFunded"
+		<span
+			v-if="props.isFunded"
 			class="meter tw-bg-brand"
 			style="width: 100%;"
 		>
 		</span>
-		<span v-else
+		<span
+			v-else
 			class="meter tw-bg-brand"
 			:style="`width: ${(props.percentRaised * 100)}%;`"
 		>

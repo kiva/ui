@@ -8,7 +8,7 @@
 
 <script>
 import KvCheckboxList from '@/components/Kv/KvCheckboxList';
-import { getUpdatedNumLoansFundraising, getCheckboxLabel } from '@/util/loanSearchUtils';
+import { getUpdatedNumLoansFundraising, getCheckboxLabel } from '@/util/loanSearch/filterUtils';
 
 export default {
 	name: 'LoanSearchCheckboxListFilter',

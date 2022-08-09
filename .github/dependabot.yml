@@ -12,4 +12,8 @@ updates:
     - ">= 2.7.a"
   - dependency-name: vue-svg-loader
     versions:
-    - ">= 0.15.0"    
+    - ">= 0.15.0"
+  # Version 2 of this package is for Vue3
+  - dependency-name: vue-countdown
+    versions:
+    - ">= 1.1.5"

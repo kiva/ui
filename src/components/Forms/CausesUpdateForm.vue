@@ -12,7 +12,8 @@
 				>
 					Day of the Month
 				</label>
-				<kv-text-input v-if="isDayInputShown"
+				<kv-text-input
+					v-if="isDayInputShown"
 					@blur="hideDayInput()"
 					class="text-input__day"
 					id="dayOfMonth"

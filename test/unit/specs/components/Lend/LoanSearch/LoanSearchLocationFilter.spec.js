@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import { getCheckboxLabel } from '@/util/loanSearchUtils';
+import { getCheckboxLabel } from '@/util/loanSearch/filterUtils';
 import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
 
 const NUM_ITEMS = 4;

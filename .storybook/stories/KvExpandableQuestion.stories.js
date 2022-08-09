@@ -1,6 +1,4 @@
 import Vue from 'vue'
-import StoryRouter from 'storybook-vue-router';
-
 import KvExpandableQuestion from '@/components/Kv/KvExpandableQuestion';
 
 // import plugins
@@ -10,7 +8,6 @@ Vue.use(kivaPlugins)
 export default {
 	title: 'Kv/KvExpandableQuestion',
 	component: KvExpandableQuestion,
-	decorators: [StoryRouter()],
 	args: {
 		title: 'Can I cancel anytime?',
 		content: '<p>Yes. Auto deposits can be canceled or edited at any time. To do so, go to your <a href="/settings/subscriptions">subscription settings</a>.</p>'

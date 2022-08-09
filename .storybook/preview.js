@@ -2,6 +2,7 @@ import { addParameters } from '@storybook/vue';
 import { MINIMAL_VIEWPORTS} from '@storybook/addon-viewport';
 import Vue from 'vue';
 import Meta from 'vue-meta';
+import VueRouter from 'vue-router'
 import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
 import { defaultTheme } from '@kiva/kv-tokens/configs/kivaColors';
 
@@ -25,7 +26,12 @@ import config from '../config/local';
 Vue.use(Meta);
 
 // Mock the analytics Vue plugin
-Vue.use({ install: Vue => { Vue.prototype.$kvTrackEvent = () => {}; }});
+Vue.use({ install: Vue => {
+	Vue.directive('kv-track-event', () => {});
+	Vue.prototype.$kvTrackEvent = () => {};
+}});
+
+Vue.use(VueRouter)
 
 // provide global application config
 Vue.prototype.$appConfig = config.app;
@@ -96,6 +102,7 @@ addParameters({
 export const decorators = [(story) => ({
 	components: { story, KvThemeProvider },
 	template: '<kv-theme-provider :theme="theme"><story /></kv-theme-provider>',
-	data() { return { theme: defaultTheme } }
+	data() { return { theme: defaultTheme } },
+	router: new VueRouter(),
 })];
 

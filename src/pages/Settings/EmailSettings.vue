@@ -178,7 +178,8 @@
 							</fieldset>
 
 							<!-- User per team preferences -->
-							<fieldset class="email-settings__per-team-prefs tw-mt-4"
+							<fieldset
+								class="email-settings__per-team-prefs tw-mt-4"
 								v-if="hasTeams && form.teamDigests !== 'no'"
 							>
 								<button
@@ -194,7 +195,8 @@
 											:key="`team${index}-label`"
 											class="tw-block tw-mb-1"
 										>{{ team.name }}</label>
-										<kv-select :key="`team${index}-select`"
+										<kv-select
+											:key="`team${index}-select`"
 											id="single-team-digest-input"
 											v-model="team.frequency"
 										>

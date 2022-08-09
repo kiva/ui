@@ -1,5 +1,6 @@
 <template>
-	<div class="kv-phone-input"
+	<div
+		class="kv-phone-input"
 		:class="{
 			'kv-phone-input--is-empty': isEmpty,
 			'kv-phone-input--is-invalid': !isValid,
@@ -42,7 +43,8 @@
 				+{{ countryCallingCode }}
 			</span>
 
-			<kv-text-input type="tel"
+			<kv-text-input
+				type="tel"
 				class="kv-phone-input__input"
 				:id="id"
 				:placeholder="placeholderNumber"

@@ -95,7 +95,8 @@
 				</template>
 			</thanks-layout-v2>
 		</div>
-		<thanks-page-share v-if="receipt && showNewThanksPage"
+		<thanks-page-share
+			v-if="receipt && showNewThanksPage"
 			:receipt="receipt"
 			:lender="lender"
 			:loan="selectedLoan"
@@ -122,6 +123,7 @@ import ThanksPageShare from '@/components/Thanks/ThanksPageShare';
 import orderBy from 'lodash/orderBy';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { processPageContentFlat } from '@/util/contentfulUtils';
+import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -273,6 +275,11 @@ export default {
 			.filter(item => item.basketItemType === 'loan_reservation')
 			.map(item => item.loan);
 
+		// MARS-194-User metrics A/B Optimizely experiment
+		const depositTotal = this.receipt?.totals?.depositTotals?.depositTotal;
+		userHasLentBefore(this.loans.length > 0);
+		userHasDepositBefore(parseFloat(depositTotal) > 0);
+
 		if (!this.isGuest && !data?.my?.userAccount) {
 			logFormatter(
 				`Failed to get lender for transaction id: ${this.$route.query.kiva_transaction_id}`,
@@ -333,6 +340,13 @@ export default {
 			}) || {};
 
 			this.shareCardLanguageVersion = shareCardLanguage.version;
+			if (this.shareCardLanguageVersion) {
+				this.$kvTrackEvent(
+					'Thanks',
+					'EXP-MARS-143-Jul2022-inviter',
+					this.shareCardLanguageVersion,
+				);
+			}
 		}
 	},
 	mounted() {

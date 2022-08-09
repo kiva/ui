@@ -1,5 +1,6 @@
 <template>
-	<section class="
+	<section
+		class="
 		tw-pb-0
 		md:tw-bg-primary
 		md:tw-pb-2.5
@@ -7,7 +8,8 @@
 		md:tw-rounded-t lg:tw-rounded"
 	>
 		<div class="tw-flex">
-			<div class="
+			<div
+				class="
 				tw-flex-none tw-w-8 tw-h-8 tw-mr-1.5 tw-mb-1.5
 				md:tw-w-9 md:tw-h-9 md:tw-mr-3 md:tw-mb-3
 				lg:tw-w-10 lg:tw-h-10 lg:tw-mr-4 lg:tw-mb-4"
@@ -29,7 +31,7 @@
 			<div class="tw-flex-auto">
 				<borrower-name
 					data-testid="bp-summary-borrower-name"
-					class="md:tw-mb-1.5 lg:tw-mb-2"
+					class="tw-mb-0.5 md:tw-mb-1.5 lg:tw-mb-2"
 					:name="name"
 				/>
 				<loan-progress
@@ -40,6 +42,9 @@
 					:time-left="timeLeft"
 					:urgency="showUrgencyExp && timeLeftMs > 0"
 					:ms-left="timeLeftMs"
+					:loan-status="inPfp ? 'pfp' : 'fundraising'"
+					:number-of-lenders="numLenders"
+					:pfp-min-lenders="pfpMinLenders"
 				/>
 			</div>
 		</div>
@@ -76,6 +81,8 @@
 				data-testid="bp-summary-bookmark"
 			/>
 		</div>
+		<slot name="sharebutton"></slot>
+		<hr class="md:tw-hidden tw-border-tertiary tw-w-full tw-mt-2">
 		<div
 			class="tw-flex tw-items-center tw-w-full"
 			:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
@@ -84,11 +91,22 @@
 			<loan-bookmark
 				v-if="isLoggedIn"
 				:loan-id="loanId"
-				class="md:tw-hidden"
+				class="md:tw-hidden tw-mt-1"
 				data-testid="bp-mobile-summary-bookmark"
 			/>
 
-			<jump-links class="md:tw-hidden" data-testid="bp-summary-card-jump-links" />
+			<jump-links class="md:tw-hidden tw-my-2" data-testid="bp-summary-card-jump-links" />
+		</div>
+		<div
+			v-if="socialExpEnabled && lenders.length"
+			:class="[
+				'md:tw-hidden',
+				'tw-block',
+				/* 'tw-border-t tw-border-tertiary', */
+				'tw-mt-1.5'
+			]"
+		>
+			<lenders-list :lenders="lenders" key="lenderList" :num-lenders="numLenders" />
 		</div>
 	</section>
 </template>
@@ -96,6 +114,7 @@
 <script>
 import gql from 'graphql-tag';
 import { mdiMapMarker } from '@mdi/js';
+import LendersList from '@/components/BorrowerProfile/LendersList';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
@@ -117,12 +136,21 @@ export default {
 		SummaryTag,
 		LoanBookmark,
 		JumpLinks,
+		LendersList,
 	},
 	props: {
 		showUrgencyExp: {
 			type: Boolean,
 			default: false,
-		}
+		},
+		lenders: {
+			type: Array,
+			default: () => []
+		},
+		socialExpEnabled: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -145,6 +173,9 @@ export default {
 			state: '',
 			anonymizationLevel: 'none',
 			timeLeftMs: 0,
+			inPfp: false,
+			pfpMinLenders: 0,
+			numLenders: 0,
 		};
 	},
 	computed: {
@@ -204,6 +235,11 @@ export default {
 						unreservedAmount @client
 						use
 						anonymizationLevel
+						inPfp
+						pfpMinLenders
+						lenders {
+							totalCount
+						}
 					}
 				}
 				my {
@@ -226,6 +262,9 @@ export default {
 		},
 		result(result) {
 			const loan = result?.data?.lend?.loan;
+			this.inPfp = loan?.inPfp ?? false;
+			this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
+			this.numLenders = loan?.lenders?.totalCount ?? 0;
 			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
 			this.loanId = loan?.id ?? 0;
 			this.activityName = loan?.activity?.name ?? '';

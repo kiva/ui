@@ -1,68 +1,62 @@
 <template>
 	<nav aria-label="Pagination">
-		<ul class="pagination">
-			<li v-if="current !== 1" class="pagination-previous">
-				<router-link :to="routeForPage(current - 1)"
-					:event="linkEventName"
-					@click.native="pageChange(current - 1, $event)"
+		<ul
+			class="tw-text-center tw-mx-auto tw-my-1.5 tw-flex tw-justify-between tw-items-center"
+			style="max-width: 17rem;"
+		>
+			<li class="pagination-previous">
+				<a
+					class="tw-cursor-pointer tw-flex"
+					:class="linkClass(0)"
 					aria-label="Previous page"
+					@click="!isCurrent(0) && clickPrevious()"
 				>
-					<kv-icon class="icon tw-fill-current" name="triangle" :from-sprite="true" />
+					<kv-material-icon :icon="mdiChevronLeft" class="tw-h-4 tw-w-4" />
 					<span class="tw-sr-only">Previous page</span>
-				</router-link>
+				</a>
 			</li>
-			<li v-else class="pagination-previous tw-text-tertiary">
-				<kv-icon class="icon tw-fill-current tw-text-tertiary" name="triangle" :from-sprite="true" />
-				<span class="tw-sr-only">Previous page</span>
-			</li>
-			<li v-for="(number, index) in numbers"
-				:key="number || -index"
-				:class="{
-					ellipsis: number === 0,
-					'tw-text-tertiary': number === current
-				}"
-				:aria-hidden="number === 0"
+			<li
+				v-for="(n, i) in numbers"
+				:key="i"
+				:aria-hidden="isEllipsis(n)"
 			>
-				<router-link v-if="number > 0 && number !== current"
-					:to="routeForPage(number)"
-					:event="linkEventName"
-					@click.native="pageChange(number, $event)"
-					:aria-label="`Page ${number}`"
+				<template v-if="isEllipsis(n)">
+					...
+				</template>
+				<a
+					v-else
+					class="tw-cursor-pointer"
+					:class="linkClass(n)"
+					:aria-label="`Page ${n + 1}`"
+					@click="!isCurrent(n) && clickPage(n)"
 				>
-					{{ number }}
-				</router-link>
-				<span v-if="number === current">
-					<span class="tw-sr-only">You're on page </span>
-					{{ number }}
-				</span>
+					<span v-if="isCurrent(n)" class="tw-sr-only">You're on page</span>
+					{{ n + 1 }}
+				</a>
 			</li>
-			<li v-if="current !== totalPages" class="pagination-next">
-				<router-link :to="routeForPage(current + 1)"
-					:event="linkEventName"
-					@click.native="pageChange(current + 1, $event)"
+			<li class="pagination-next">
+				<a
+					class="tw-cursor-pointer tw-flex"
+					:class="linkClass(totalPages ? totalPages - 1 : 0)"
 					aria-label="Next page"
+					@click="totalPages && !isCurrent(totalPages - 1) && clickNext()"
 				>
+					<kv-material-icon :icon="mdiChevronRight" class="tw-h-4 tw-w-4" />
 					<span class="tw-sr-only">Next page</span>
-					<kv-icon class="icon tw-fill-current" name="triangle" :from-sprite="true" />
-				</router-link>
-			</li>
-			<li v-else class="pagination-next disabled">
-				<span class="tw-sr-only">Next page</span>
-				<kv-icon class="icon tw-fill-current tw-text-tertiary" name="triangle" :from-sprite="true" />
+				</a>
 			</li>
 		</ul>
 	</nav>
 </template>
 
 <script>
-import _cloneDeep from 'lodash/cloneDeep';
-import _range from 'lodash/range';
-import KvIcon from './KvIcon';
+import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'KvPagination',
 	components: {
-		KvIcon,
+		KvMaterialIcon,
 	},
 	props: {
 		limit: {
@@ -75,128 +69,112 @@ export default {
 			required: true,
 			validator: value => value >= 0,
 		},
+		offset: {
+			type: Number,
+			default: 0,
+			validator: value => value >= 0,
+		},
+		extraPages: {
+			type: Number,
+			default: 3,
+			validator: value => value > 0
+		},
+		scrollToTop: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	data() {
 		return {
-			maxExtraPages: 3,
+			mdiChevronLeft,
+			mdiChevronRight,
 		};
 	},
 	computed: {
 		current() {
-			return Number(this.$route.query.page) || 1;
+			const page = this.offset / this.limit;
+
+			// This component uses a 0-based page index
+			return page < this.totalPages ? page : 0;
 		},
 		totalPages() {
 			return Math.ceil(this.total / this.limit);
 		},
-		// The event that router-link will listen for on the <a> element (normally 'click')
-		linkEventName() {
-			if (this.$listeners && this.$listeners['page-change']) {
-				// There is a listener for the 'page-change' event on this component, so navigation
-				// needs to be prevented.
-				// Making router-link listen for the non-existent 'not-an-event' event on
-				// the <a> element, instead of the 'click' event, will prevent the navigation handler
-				// from ever being called.
-				return 'not-an-event';
-			}
-			// By default, allow normal navigation to happen.
-			return 'click';
-		},
 		numbers() {
-			// if less than the max, there will be no ellipsis, so just return the numbers
-			if (this.totalPages < (this.maxExtraPages + 2)) {
-				return _range(1, this.totalPages + 1);
+			// If less than the max, there will be no ellipsis, so just return the numbers
+			if (this.totalPages < (this.extraPages + 2)) {
+				return this.range(0, this.totalPages - 1);
 			}
 
-			let numbers = [];
+			const numbers = [];
 
-			// add the 'middle' block of numbers based upon the current page
-			if (this.current === 1 || this.current === 2) {
-				numbers = _range(1, this.maxExtraPages + 1);
-			} else if (this.current === this.totalPages - 1 || this.current === this.totalPages) {
-				numbers = _range(this.totalPages - (this.maxExtraPages - 1), this.totalPages + 1);
+			// Add the 'middle' block of numbers based upon the current page
+			if ([0, 1, 2].includes(this.current)) {
+				numbers.push(...this.range(1, this.extraPages));
+			} else if ([this.totalPages - 3, this.totalPages - 2, this.totalPages - 1].includes(this.current)) {
+				numbers.push(...this.range(this.totalPages - this.extraPages - 1, this.totalPages - 2));
 			} else {
-				const delta = Math.floor(this.maxExtraPages / 2);
-				numbers = _range(this.current - delta, this.current + delta + 1);
+				const delta = Math.floor(this.extraPages / 2);
+				numbers.push(...this.range(this.current - delta, this.current + delta));
 			}
 
-			// add the first and last page numbers
-			numbers = numbers.concat([1, this.totalPages]);
-
-			// sort by number & remove duplicates
-			numbers.sort((a, b) => a - b);
-			numbers = [...new Set(numbers)];
-
-			// add a placeholder for first ellipsis, if needed
+			// Add a placeholder for first ellipsis
 			if (numbers[1] !== 2) {
-				numbers.splice(1, 0, 0);
+				numbers.splice(0, 0, -1);
 			}
 
-			// add a placeholder for last ellipsis, if needed
-			if (numbers[numbers.length - 2] !== this.totalPages - 1) {
-				numbers.splice(numbers.length - 1, 0, 0);
+			// Add a placeholder for second ellipsis
+			const totalNumbers = numbers.length;
+			if (numbers[totalNumbers - 1] !== this.totalPages - 2) {
+				numbers.splice(totalNumbers, 0, -1);
 			}
+
+			// Add first and last pages
+			numbers.unshift(0);
+			numbers.push(this.totalPages - 1);
 
 			return numbers;
 		},
 	},
 	methods: {
-		routeForPage(number) {
-			const query = _cloneDeep(this.$route.query);
-			if (number > 1) {
-				query.page = number;
-			} else {
-				delete query.page;
-			}
-			return { query };
+		range(start, end) {
+			return [...Array(end - start + 1)].map((_, n) => n + start);
 		},
-		// This handler gets called when a page number is clicked.
-		// By default it will do nothing, which will let router-link handle the navigation.
-		// However, if there is a listener to the page-change event on this component
-		// (i.e. @page-change="listener"), it will instead prevent any navigation from happening
-		// and emit a 'page-change' event with the page number.
-		pageChange(number, event) {
-			if (this.$listeners && this.$listeners['page-change']) {
-				event.preventDefault();
-				event.stopImmediatePropagation();
-				this.$emit('page-change', number);
+		isCurrent(number) {
+			return number === this.current;
+		},
+		isEllipsis(number) {
+			return number === -1;
+		},
+		linkClass(number) {
+			return { 'tw-text-tertiary': this.isCurrent(number), 'tw-pointer-events-none': this.isCurrent(number) };
+		},
+		pageChange(number) {
+			if (this.scrollToTop && window.scrollTo) {
+				window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 			}
-		}
-	}
+
+			this.$emit('page-changed', { pageOffset: number * this.limit });
+		},
+		clickPage(number) {
+			this.pageChange(number);
+
+			this.$kvTrackEvent?.('Lending', 'click-page-pager', number + 1);
+		},
+		clickPrevious() {
+			const previous = this.current - 1;
+
+			this.pageChange(previous);
+
+			this.$kvTrackEvent?.('Lending', 'click-previous-pager', previous + 1);
+		},
+		clickNext() {
+			const next = this.current + 1;
+
+			this.pageChange(next);
+
+			this.$kvTrackEvent?.('Lending', 'click-next-pager', next + 1);
+		},
+	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import "settings";
-
-.pagination {
-	text-align: center;
-	margin: 0.75rem auto;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	max-width: 17rem;
-
-	li {
-		text-decoration: none;
-		list-style: none;
-	}
-}
-
-.icon {
-	width: 1rem;
-	height: 1rem;
-	vertical-align: text-top;
-}
-
-.pagination-previous .icon {
-	transform: rotate(-90deg);
-}
-
-.pagination-next .icon {
-	transform: rotate(90deg);
-}
-
-.ellipsis::after {
-	content: '\2026';
-}
-</style>

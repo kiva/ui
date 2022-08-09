@@ -1,5 +1,6 @@
 <template>
-	<p class="
+	<p
+		class="
 		tw-bg-secondary
 		tw-rounded
 		tw-p-1

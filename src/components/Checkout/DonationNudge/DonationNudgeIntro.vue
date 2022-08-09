@@ -28,7 +28,8 @@
 			v-if="props.description"
 			:class="{'show-for-large': props.hideDescriptionMobile}"
 		>
-			<div v-if="props.noPaddingDescription"
+			<div
+				v-if="props.noPaddingDescription"
 				class="nudge-donation-top-content tw-w-full"
 				v-html="props.description"
 			></div>

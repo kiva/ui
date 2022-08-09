@@ -21,7 +21,13 @@
 					@name-click="showLoanDetails"
 				/>
 			</div>
-			<kv-pagination v-if="totalCount > 0" :total="totalCount" :limit="limit" @page-change="pageChange" />
+			<kv-pagination
+				v-if="totalCount > 0"
+				:total="totalCount"
+				:limit="limit"
+				:offset="offset"
+				@page-changed="pageChange"
+			/>
 			<div v-if="totalCount > 0" class="loan-count">
 				{{ totalCount }} loans
 			</div>
@@ -240,13 +246,12 @@ export default {
 			// if it is, changes page to the last page and displays a tip message
 			const loansOutOfRange = loansArrayLength === 0 && pageQueryParam;
 			if (loansOutOfRange) {
-				this.pageChange(this.lastLoanPage);
+				this.pageChange({ pageOffset: loansPerPage * (this.lastLoanPage - 1) });
 			}
 		},
-		pageChange(number) {
-			const offset = loansPerPage * (number - 1);
-			this.offset = offset;
-			this.pageQuery = { page: number };
+		pageChange({ pageOffset }) {
+			this.offset = pageOffset;
+			this.pageQuery = { page: this.offset / loansPerPage };
 			this.pushChangesToUrl();
 		},
 		updateFromParams(query) {

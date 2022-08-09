@@ -10,7 +10,8 @@
 		v-kv-track-event="configureTracking"
 		:id="toolTipId"
 	>
-		<div class="
+		<div
+			class="
 			tw-block md:tw-inline-block
 			md:tw-flex-none
 			md:tw-mr-2

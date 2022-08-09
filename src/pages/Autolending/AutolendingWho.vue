@@ -13,7 +13,8 @@
 				<div class="who-inputs-wrapper">
 					<transition :name="slideTransition" mode="out-in">
 						<span v-if="!showSelectedFilterOptions"></span>
-						<button class="tw-text-link back-to-options"
+						<button
+							class="tw-text-link back-to-options"
 							v-if="showSelectedFilterOptions"
 							@click="backToAllOptions"
 						>
@@ -82,7 +83,8 @@
 												<loan-term-dropdown class="tw-mb-4" />
 											</div>
 											<div class="small-12 large-6 columns">
-												<partner-radios class="tw-mb-4"
+												<partner-radios
+													class="tw-mb-4"
 													@change="filterRadioChange"
 													:selector-shown="showSelectedFilterOptions"
 												/>

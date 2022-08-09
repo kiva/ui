@@ -34,7 +34,8 @@
 					title="Show next slide"
 				/>
 			</button>
-			<div class="kv-carousel__viewport"
+			<div
+				class="kv-carousel__viewport"
 				ref="KvCarousel"
 			>
 				<div

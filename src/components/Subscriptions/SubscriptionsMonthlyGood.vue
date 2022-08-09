@@ -2,7 +2,8 @@
 	<div class="row">
 		<kv-settings-card class="column large-8" title="Monthly Good">
 			<template #content>
-				<router-link v-if="!isMonthlyGoodSubscriber"
+				<router-link
+					v-if="!isMonthlyGoodSubscriber"
 					to="/monthlygood"
 				>
 					Sign up for a Kiva Monthly Good subscription
@@ -10,16 +11,19 @@
 
 				<div v-if="isMonthlyGoodSubscriber">
 					<p class="tw-mb-2">
-						On the <button class="tw-text-link tw-font-medium"
+						On the <button
+							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 						>
 							{{ dayOfMonth | numeral('Oo') }}
-						</button> of each month <button class="tw-text-link tw-font-medium"
+						</button> of each month <button
+							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 						>
 							{{ totalCombinedDeposit | numeral('$0,0.00') }}
 						</button> will be
-						transferred <button class="tw-text-link tw-font-medium"
+						transferred <button
+							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 							v-if="selectedGroupDescriptor"
 						>
@@ -28,7 +32,8 @@
 						</button>
 					</p>
 
-					<button class="tw-text-link tw-font-medium"
+					<button
+						class="tw-text-link tw-font-medium"
 						@click="showCancelLightbox = true"
 						v-kv-track-event="[
 							'monthlyGood',
@@ -69,7 +74,8 @@
 										<div class="row">
 											<div class="column">
 												<template v-if="paymentMethod">
-													<img class="mg-update-lightbox__cc-icon tw-inline-block"
+													<img
+														class="mg-update-lightbox__cc-icon tw-inline-block"
 														:src="paymentMethod.imageUrl"
 														alt="credit card"
 													>
@@ -99,7 +105,8 @@
 									v-if="!settingsOpen"
 									class="row column" key="paymentSettings"
 								>
-									<button class="tw-text-link tw-font-medium"
+									<button
+										class="tw-text-link tw-font-medium"
 										@click="toggleSections"
 									>
 										<kv-icon
@@ -121,7 +128,8 @@
 											>
 											{{ paymentMethod.description }}
 										</div>
-										<p v-if="updateToCurrentPaymentMethod"
+										<p
+											v-if="updateToCurrentPaymentMethod"
 											class="validation-error tw-text-center"
 										>
 											<!-- eslint-disable-next-line max-len -->

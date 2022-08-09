@@ -1,15 +1,15 @@
 <template>
 	<kv-lightbox
-		title="Loan matching for new deposits"
+		title="Matched lending"
 		:visible="showLightbox"
 		@lightbox-closed="closeLightbox"
 	>
 		<p class="tw-mb-2">
 			<!-- eslint-disable-next-line max-len -->
-			Matching loans made with new funds allows Kiva to make the most of our matching partnerships and is the best way to responsibly use these funds in support of borrowers around the world.
+			Matching loans with new deposits is the best way to responsibly use funds from matching partnerships in support of borrowers around the world.
 		</p>
 		<!-- eslint-disable-next-line max-len -->
-		<p>This dollar for dollar matching by {{ matchingText }} matches loans purchased in full with new funds Card, Paypal, Google Pay, or Apple Pay. Loans made using Kiva Credit or Free Credit do not qualify.</p>
+		<p>Loan matching only applies when you deposit the full amount with Card, PayPal, Google Pay, or ApplePay. Loans made using Kiva Credit or Free Credit do not qualify.</p>
 	</kv-lightbox>
 </template>
 
@@ -22,10 +22,6 @@ export default {
 		KvLightbox,
 	},
 	props: {
-		matchingText: {
-			type: String,
-			required: true,
-		},
 		showLightbox: {
 			type: Boolean,
 			required: true
@@ -35,5 +31,8 @@ export default {
 			default: () => {}
 		}
 	},
+	mounted() {
+		this.$kvTrackEvent('Basket', 'view-must-deposit-message-cta', '');
+	}
 };
 </script>

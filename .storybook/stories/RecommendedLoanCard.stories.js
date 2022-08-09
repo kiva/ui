@@ -1,4 +1,3 @@
-import StoryRouter from 'storybook-vue-router';
 import RecommendedLoanCard from '@/components/LoanCards/RecommendedLoanCard';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
@@ -44,7 +43,6 @@ const queryResult = {
 export default {
 	title: 'Loan Cards/Recommended Loan Card',
 	component: RecommendedLoanCard,
-	decorators: [StoryRouter()],
 };
 
 export const Default = () => ({

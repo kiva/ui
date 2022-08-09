@@ -7,28 +7,66 @@
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 					<hero-background />
 				</div>
-				<content-container class="md:tw-pt-6 lg:tw-pt-8">
+
+				<top-banner-pfp
+					v-if="inPfp"
+					class="tw-relative"
+					:lenders-needed="pfpMinLenders"
+					:borrower-name="name"
+					:days-left="diffInDays"
+				/>
+				<content-container
+					:class="inPfp ? 'lg:tw-pt-3' : 'lg:tw-pt-8'"
+					class="md:tw-pt-6"
+				>
 					<summary-card
 						data-testid="bp-summary"
-						class="tw-relative lg:tw--mb-1.5 tw-z-1"
+						class="tw-relative lg:tw--mb-1.5"
 						:show-urgency-exp="showUrgencyExp"
-					/>
+						:lenders="lenders"
+						:social-exp-enabled="socialExpEnabled"
+					>
+						<template #sharebutton v-if="inPfp">
+							<!-- Share button for PFP loans -->
+							<social-share-button
+								class="tw-block md:tw-hidden tw-mt-3" :loan="loan" :lender="lender"
+							/>
+						</template>
+					</summary-card>
 				</content-container>
 			</div>
-			<div class="lg:tw-absolute lg:tw-w-full lg:tw-h-full lg:tw-top-0 lg:tw-pt-8 tw-pointer-events-none">
-				<sidebar-container class="lg:tw-sticky lg:tw-top-12 lg:tw-mt-10 lg:tw-pb-8">
-					<lend-cta class="tw-pointer-events-auto"
+			<div
+				:class="inPfp ? 'lg:tw-pt-16' : 'lg:tw-pt-8'"
+				class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
+			>
+				<sidebar-container
+					class="lg:tw-sticky lg:tw-mt-10 lg:tw-pb-8 lg:tw-top-12"
+				>
+					<lend-cta
+						class="tw-pointer-events-auto"
 						:loan-id="loanId"
 						:complete-loan="completeLoanExpActive"
 						:require-deposits-matched-loans="requireDepositsMatchedLoans"
-					/>
+						:lenders="lenders"
+						:social-exp-enabled="socialExpEnabled"
+						@togglelightbox="toggleLightbox"
+						:num-lenders="numLenders"
+					>
+						<template #sharebutton v-if="inPfp">
+							<!-- Share button for PFP loans -->
+							<social-share-button
+								class="tw-hidden md:tw-block lg:tw-mb-1.5"
+								:loan="loan" :lender="lender"
+							/>
+						</template>
+					</lend-cta>
 				</sidebar-container>
 			</div>
 			<content-container class="tw-mt-4 md:tw-mt-6 lg:tw-mt-8">
 				<loan-story
 					id="loanStory"
 					data-testid="bp-loan-story"
-					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8 tw-z-1"
 					:loan-id="loanId"
 				/>
 			</content-container>
@@ -41,6 +79,7 @@
 				<more-about-loan data-testid="bp-more-about" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<borrower-country data-testid="bp-country" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<lenders-and-teams
+					ref="lendersComponent"
 					v-if="showLenders"
 					data-testid="bp-lenders"
 					key="lenders"
@@ -48,6 +87,8 @@
 					:loan-id="loanId"
 					display-type="lenders"
 					@hide-section="showLenders = false"
+					:social-exp-enabled="socialExpEnabled"
+					:show-light-box-modal="showLightBoxModal"
 				/>
 				<lenders-and-teams
 					v-if="showTeams"
@@ -94,9 +135,17 @@ import BorrowerCountry from '@/components/BorrowerProfile/BorrowerCountry';
 import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
+import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
+import SocialShareButton from '@/components/BorrowerProfile/SocialShareButton';
+
 import { isLoanFundraising } from '@/util/loanUtils';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
 import loanUseFilter from '@/plugins/loan-use-filter';
 
+const socialElementsExpKey = 'social_elements';
 const pageQuery = gql`
 	query borrowerProfileMeta($loanId: Int!, $publicId: String!, $getInviter: Boolean!) {
 		general {
@@ -109,6 +158,10 @@ const pageQuery = gql`
 				value
 			}
 			requireDepositsMatchedLoans: uiExperimentSetting(key: "require_deposits_matched_loans") {
+				key
+				value
+			}
+			socialElements: uiExperimentSetting(key: "social_elements") {
 				key
 				value
 			}
@@ -131,7 +184,23 @@ const pageQuery = gql`
 					hash
 				}
 				plannedExpirationDate
-				lenders {
+				lenders(limit: 10) {
+					values {
+						id
+						name
+						publicId
+						image {
+							id
+							url
+							hash
+						}
+						lenderPage {
+							city
+							country {
+								isoCode
+							}
+						}
+					}
 					totalCount
 				}
 				anonymizationLevel
@@ -144,12 +213,21 @@ const pageQuery = gql`
 					isExpiringSoon
 					reservedAmount
 				}
+				inPfp
+				pfpMinLenders
 			}
 		}
 		community @include(if: $getInviter) {
 			lender(publicId: $publicId) {
 				id
 				name
+			}
+		}
+		my {
+			userAccount {
+				id
+				inviterName
+				public
 			}
 		}
 	}
@@ -169,13 +247,16 @@ export default {
 		LoanStory,
 		MoreAboutLoan,
 		SidebarContainer,
+		SocialShareButton,
 		SummaryCard,
+		TopBannerPfp,
 		WhySpecial,
 		WwwPage,
 	},
 	metaInfo() {
 		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
 		const description = this.anonymizationLevel === 'full' ? undefined : this.pageDescription;
+		const isSclePresent = this.$route.query?.utm_campaign?.includes('scle');
 
 		return {
 			title,
@@ -232,7 +313,20 @@ export default {
 					vmid: 'twitter:description',
 					content: this.shareDescription
 				},
-			])
+			]).concat(isSclePresent ? [
+				{
+					vmid: 'robots',
+					name: 'robots',
+					content: 'noindex',
+				},
+			] : []),
+			link: (isSclePresent ? [
+				{
+					vmid: 'canonical',
+					rel: 'canonical',
+					href: `https://${this.$appConfig.host}${this.$route.fullPath}`,
+				},
+			] : []),
 		};
 	},
 	data() {
@@ -259,6 +353,14 @@ export default {
 			shareCardLanguageVersion: '',
 			inviterName: '',
 			inviterIsGuestOrAnonymous: false,
+			inPfp: false,
+			pfpMinLenders: 0,
+			diffInDays: 0,
+			lender: {},
+			loan: {},
+			lenders: [],
+			socialExpEnabled: false,
+			showLightBoxModal: false,
 		};
 	},
 	apollo: {
@@ -270,7 +372,7 @@ export default {
 					variables: {
 						loanId: Number(route.params?.id ?? 0),
 						publicId: route.query?.utm_content ?? '',
-						getInviter: !!route.query?.utm_content,
+						getInviter: !!route.query?.utm_content
 					},
 				})
 				.then(({ data }) => {
@@ -286,6 +388,7 @@ export default {
 					return Promise.all([
 						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
+						client.query({ query: experimentQuery, variables: { id: socialElementsExpKey } }),
 					]);
 				});
 		},
@@ -305,6 +408,9 @@ export default {
 		},
 		result(result) {
 			const loan = result?.data?.lend?.loan;
+			this.loan = loan;
+			this.inPfp = loan?.inPfp ?? false;
+			this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
 			this.businessName = loan?.businessName ?? '';
 			this.name = loan?.name ?? '';
 			this.countryName = loan?.geocode?.country?.name ?? '';
@@ -318,10 +424,12 @@ export default {
 			this.use = loan?.use ?? '';
 			this.description = loan?.description ?? '';
 			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
+			this.lenders = loan?.lenders?.values ?? [];
 			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
 
-			const diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
-			this.hasThreeDaysOrLessLeft = diffInDays <= 3;
+			this.diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
+			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;
+			this.lender = result?.data?.my?.userAccount ?? {};
 		},
 	},
 	mounted() {
@@ -330,6 +438,21 @@ export default {
 		const expCookieSignifier = this.cookieStore.get('kvlendborrowerbeta');
 		if (expCookieSignifier === 'b') {
 			this.$kvTrackEvent('Borrower Profile', 'EXP-GROW-655-Aug2021', expCookieSignifier);
+		}
+		const { enabled } = getExperimentSettingCached(this.apollo, socialElementsExpKey);
+		if (enabled) {
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Borrower Profile',
+				socialElementsExpKey,
+				'EXP-MARS-158-Jul2022'
+			);
+		}
+	},
+	methods: {
+		toggleLightbox() {
+			this.$refs.lendersComponent.openLightbox();
 		}
 	},
 	computed: {
@@ -446,13 +569,26 @@ export default {
 			);
 		}
 
-		// EXP-MARS-143-Jul2022
-		this.shareCardLanguageVersion = this.$route.query?.scle;
-		this.$kvTrackEvent(
-			'Thanks',
-			'EXP-MARS-143-Jul2022',
-			this.shareCardLanguageVersion
-		);
+		if (this.$route.query?.utm_campaign?.includes('scle')) {
+			// EXP-MARS-143-Jul2022
+			// Extract exp version from utm_campaign
+			this.shareCardLanguageVersion = this.$route.query?.utm_campaign?.split('_')?.pop()?.replace('-normal', '');
+			this.$kvTrackEvent(
+				'Thanks',
+				'EXP-MARS-143-Jul2022',
+				this.shareCardLanguageVersion.replace('-normal', '')
+			);
+		}
+
+		// Check if social elements experiment is active.
+		const { enabled } = getExperimentSettingCached(this.apollo, socialElementsExpKey);
+		const exp = this.apollo.readFragment({
+			id: `Experiment:${socialElementsExpKey}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
+		if (enabled && exp.version === 'b') {
+			this.socialExpEnabled = true;
+		}
 
 		const utmContent = this.$route.query?.utm_content;
 		this.inviterIsGuestOrAnonymous = utmContent === 'anonymous' || utmContent === 'guest';

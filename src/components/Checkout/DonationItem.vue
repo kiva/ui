@@ -3,7 +3,8 @@
 	<div class="basket-donation-item tw-flex tw-flex-col md:tw-flex-row tw-pb-5">
 		<!-- donation image -->
 		<div class="tw-hidden md:tw-block tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
-			<img class="donation-img tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
+			<img
+				class="donation-img tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
 				:src="imageRequire(`./peace-sign-holding-money.svg`)"
 				alt="donation line item image"
 				data-testid="basket-donation-image"
@@ -90,7 +91,8 @@
 		</div>
 
 		<!-- donation total -->
-		<div class="
+		<div
+			class="
 				tw-flex-none
 				tw-w-full
 				md:tw-w-auto

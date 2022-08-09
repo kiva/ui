@@ -91,7 +91,13 @@
 							loan-card-type="GridLoanCard"
 						/>
 					</div>
-					<kv-pagination v-if="totalCount > 0" :total="totalCount" :limit="limit" @page-change="pageChange" />
+					<kv-pagination
+						v-if="totalCount > 0"
+						:total="totalCount"
+						:limit="limit"
+						:offset="offset"
+						@page-changed="pageChange"
+					/>
 					<div v-if="totalCount > 0" class="tw-mb-2 tw-text-center tw-text-tertiary">
 						{{ totalCount }} loans
 					</div>
@@ -994,9 +1000,8 @@ export default {
 			const { offset } = fromUrlParams(query);
 			this.offset = offset;
 		},
-		pageChange(number) {
-			const offset = loansPerPage * (number - 1);
-			this.offset = offset;
+		pageChange({ pageOffset }) {
+			this.offset = pageOffset;
 			this.pushChangesToUrl();
 		},
 		pushChangesToUrl() {

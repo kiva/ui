@@ -1,5 +1,5 @@
 import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
-import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearchUtils';
+import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
 
 export default {
 	title: 'Loan Search/Loan Search Sort Order',

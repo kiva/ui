@@ -1,5 +1,6 @@
 <template>
-	<div class="
+	<div
+		class="
 		tw-flex tw-items-stretch tw-flex-nowrap
 		tw-overflow-hidden
 		tw-border tw-border-tertiary

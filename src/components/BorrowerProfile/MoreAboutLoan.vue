@@ -74,7 +74,8 @@
 				class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
 			/>
 			<div v-for="i in 5" :key="`${i}pl1`">
-				<kv-loading-placeholder class="tw-w-full tw-mb-1"
+				<kv-loading-placeholder
+					class="tw-w-full tw-mb-1"
 					:style="{width: 80 + (Math.random() * 15) + '%', height: '1rem'}"
 				/>
 			</div>
@@ -83,7 +84,8 @@
 				class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
 			/>
 			<div v-for="i in 5" :key="`${i}pl2`">
-				<kv-loading-placeholder class="tw-w-full tw-mb-1"
+				<kv-loading-placeholder
+					class="tw-w-full tw-mb-1"
 					:style="{width: 80 + (Math.random() * 15) + '%', height: '1rem'}"
 				/>
 			</div>

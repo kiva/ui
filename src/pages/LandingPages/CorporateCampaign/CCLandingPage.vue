@@ -1103,6 +1103,10 @@ export default {
 				&& this.basketLoans.length
 			) {
 				this.showVerification = true;
+				this.$kvTrackEvent(
+					'ManagedLendingCampaign',
+					'modal-campaign-verification-initialized'
+				);
 			} else if (
 				this.basketLoans.length
 				&& this.isActivelyLoggedIn
@@ -1112,6 +1116,10 @@ export default {
 				// check for team join optionality
 				this.showTeamForm = true;
 				this.checkoutVisible = false;
+				this.$kvTrackEvent(
+					'ManagedLendingCampaign',
+					'modal-team-join-initialized'
+				);
 			} else {
 				// Show checkout if:
 				// - Not actively logged in, with a "Continue" button that goes to login
@@ -1179,6 +1187,11 @@ export default {
 
 		handleTeamJoinProcess(payload) {
 			this.teamJoinStatus = payload.join;
+			this.$kvTrackEvent(
+				'ManagedLendingCampaign',
+				'modal-join-team-process',
+				`${this.teamJoinStatus} team`
+			);
 			this.fetchMyTeams();
 		},
 		fetchMyTeams() {
@@ -1216,6 +1229,15 @@ export default {
 		verificationComplete() {
 			this.verificationSumbitted = true;
 			this.handleBasketValidation();
+			let verificationEventLabel = 'Verification should have completed';
+			if (!this.promoApplied) {
+				verificationEventLabel = 'Verification may have failed or lender opted out';
+			}
+			this.$kvTrackEvent(
+				'ManagedLendingCampaign',
+				'modal-campaign-verification-complete',
+				verificationEventLabel
+			);
 		},
 		handleVerificationOptOut() {
 			this.showVerification = false;

@@ -164,6 +164,10 @@ export default {
 					this.isMember = _get(result.data, 'my.teams.values', []).length;
 					this.showForm = false;
 					this.showSuccess = true;
+					this.$kvTrackEvent(
+						'JoinTeamModal',
+						'modal-join-team-success'
+					);
 				}
 			})
 				.catch(error => {
@@ -174,6 +178,10 @@ export default {
 		},
 		handleRejectTeam() {
 			this.showError = false;
+			this.$kvTrackEvent(
+				'JoinTeamModal',
+				'modal-join-team-skipped'
+			);
 			// eslint-disable-next-line max-len
 			window.location.href = `/declineInvitationToJoinTeam?team_id=${this.teamId}&doneUrl=${this.extractedDoneUrl}`;
 		},

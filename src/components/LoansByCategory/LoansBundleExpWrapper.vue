@@ -13,7 +13,8 @@
 						</p>
 
 						<div class="tw-hidden lg:tw-block tw-mt-1">
-							<kv-button type="button"
+							<kv-button
+								type="button"
 								@click="addBundleToBasket"
 							>
 								Lend to all three
@@ -37,7 +38,8 @@
 						/>
 
 						<div class="lg:tw-hidden tw-flex tw-flex-col tw-items-center tw-mt-3">
-							<kv-button type="button"
+							<kv-button
+								type="button"
 								@click="addBundleToBasket"
 								class="tw-w-full"
 							>

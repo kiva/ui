@@ -1,12 +1,15 @@
-import { number } from '@storybook/addon-knobs';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
 
 export default {
 	title: 'Forms/MultiAmountSelector',
 	component: MultiAmountSelector,
+	args: {
+		minCustomAmount: 5,
+		maxCustomAmount: 1000,
+	},
 };
 
-export const multiAmountSelector = () => ({
+export const multiAmountSelector = (args, { argTypes }) => ({
 	components: {
 		MultiAmountSelector
 	},
@@ -38,14 +41,7 @@ export const multiAmountSelector = () => ({
 			customAmount: 5,
 		};
 	},
-	props: {
-		minCustomAmount: {
-			default: number('minCustomAmount', 5)
-		},
-		maxCustomAmount: {
-			default: number('maxCustomAmount', 10000)
-		}
-	},
+	props: Object.keys(argTypes),
 	template: `
 		<multi-amount-selector
 			id="amount-selector"

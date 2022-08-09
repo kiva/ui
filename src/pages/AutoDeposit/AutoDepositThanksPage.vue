@@ -2,7 +2,8 @@
 	<www-page>
 		<kv-default-wrapper class="tw-bg-secondary">
 			<kv-grid class="tw-grid-cols-12">
-				<div class="
+				<div
+					class="
 					tw-col-span-12 md:tw-col-span-10 lg:tw-col-span-8
 					md:tw-col-start-2 lg:tw-col-start-3
 					auto-deposit-thanks-page"

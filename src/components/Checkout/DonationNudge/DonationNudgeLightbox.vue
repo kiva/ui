@@ -32,7 +32,8 @@
 					</button>
 				</div>
 			</div>
-			<div id="nudge-donation-bottom"
+			<div
+				id="nudge-donation-bottom"
 				class="tw-px-12"
 				:class="{ 'show-for-large': !experimentalFooter}"
 			>

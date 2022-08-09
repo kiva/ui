@@ -9,10 +9,11 @@
 		}, inContextClasses]"
 	>
 		<div class="small-12 columns" :class="{ 'large-8': !inContext }">
-			<div :class="[{
-				'tw-font-medium': inContext,
-				'tw-font-book': !inContext,
-			}]"
+			<div
+				:class="[{
+					'tw-font-medium': inContext,
+					'tw-font-book': !inContext,
+				}]"
 			>
 				<template v-if="statusMessageOverride">
 					<span>{{ statusMessageOverride }}</span>

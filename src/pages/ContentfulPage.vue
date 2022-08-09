@@ -1,5 +1,6 @@
 <template>
-	<component :is="pageFrame"
+	<component
+		:is="pageFrame"
 		:main-class="pageBackgroundColor"
 	>
 		<component

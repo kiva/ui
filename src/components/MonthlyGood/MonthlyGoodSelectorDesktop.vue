@@ -81,7 +81,8 @@
 			</div>
 			<div class="shrink column monthly-selector__take-action-wrapper">
 				<!--  classic hollow -->
-				<kv-button @click.native="navigateToMG"
+				<kv-button
+					@click.native="navigateToMG"
 					class="monthly-selector__take-action"
 					v-kv-track-event="[
 						'homepage',

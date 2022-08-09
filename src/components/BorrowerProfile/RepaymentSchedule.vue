@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<button class="tw-text-h4 tw-text-link tw-mt-3"
+		<button
+			class="tw-text-h4 tw-text-link tw-mt-3"
 			data-testid="bp-loan-detail-full-repayment-schedule-lightbox-btn"
 			@click="openLightbox"
 			v-kv-track-event="['Borrower Profile', 'click-repayment schedule', 'Detailed repayment schedule']"
@@ -35,7 +36,8 @@
 						:key="index"
 						class="tw-mb-1"
 					>
-						<td class="
+						<td
+							class="
 							tw-inline-block tw-w-full tw-bg-secondary tw-rounded tw-text-center
 							tw-mb-2 tw-pb-1.5"
 						>

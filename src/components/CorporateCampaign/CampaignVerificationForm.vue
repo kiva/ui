@@ -104,6 +104,11 @@ export default {
 				if (formSubmittedTime) {
 					// close form and emit completion event if done
 					this.iFrameVisible = false;
+					this.$kvTrackEvent(
+						'ManagedLendingCampaign',
+						'modal-campaign-verification-closed',
+						'Form Submission Exists in FormAssembly Service'
+					);
 					this.$emit('verification-complete');
 				} else {
 					// reinitialize the form
@@ -117,6 +122,10 @@ export default {
 				this.setIFrameDimensions();
 				if (this.formId) {
 					this.iFrameVisible = true;
+					this.$kvTrackEvent(
+						'ManagedLendingCampaign',
+						'modal-campaign-verification-shown'
+					);
 				}
 				window.addEventListener('message', message => {
 					this.handleIFrameMessage(message);
@@ -146,6 +155,11 @@ export default {
 					window.setTimeout(
 						() => {
 							this.iFrameVisible = false;
+							this.$kvTrackEvent(
+								'ManagedLendingCampaign',
+								'modal-campaign-verification-closed',
+								'Form Complete Signal from iframe'
+							);
 							this.$emit('verification-complete');
 						},
 						1000
@@ -162,6 +176,12 @@ export default {
 		optOut() {
 			// hide verification form
 			this.iFrameVisible = false;
+			// track opt-out
+			this.$kvTrackEvent(
+				'ManagedLendingCampaign',
+				'click-campaign-verification-optout',
+				'No thanks, I\'ll opt out'
+			);
 			// initialize opt-out lightbox
 			this.$emit('campaign-verification-opt-out');
 		}

@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-useless-template-attributes -->
 <template>
 	<section-with-background-classic
 		:background-content="background"

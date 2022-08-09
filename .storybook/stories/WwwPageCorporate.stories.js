@@ -1,4 +1,3 @@
-import StoryRouter from 'storybook-vue-router';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
@@ -10,13 +9,11 @@ import {
 	fifteenYearFooterTheme,
 	blueFooter
 } from '@/util/siteThemes';
-
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 
 export default {
 	title: 'WwwFrame/WwwPageCorporate',
 	component: WwwPageCorporate,
-	decorators: [StoryRouter()],
 	args: {
 		footerTheme: null,
 		corporateLogoUrl: require('@/assets/images/logos/visa.svg')

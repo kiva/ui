@@ -194,7 +194,7 @@ export function getExperimentSettingCached(client, key) {
 		const setting = readJSONSetting(data, 'general.uiExperimentSetting.value') ?? {};
 		return setting;
 	} catch (e) {
-		logReadQueryError(e, 'FeatureHeroLoanWrapper experimentSetting');
+		logReadQueryError(e, `getExperimentSettingCached experimentSetting: ${key}`);
 		return {};
 	}
 }

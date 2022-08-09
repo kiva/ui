@@ -22,7 +22,8 @@
 
 				<!-- Corporate header for /cc pages -->
 				<template v-else-if="corporate">
-					<div class="
+					<div
+						class="
 						tw-flex tw-gap-2.5 lg:tw-gap-6 tw-items-center"
 					>
 						<campaign-logo-group
@@ -109,7 +110,6 @@
 							data-testid="header-lend"
 							class="header__button header__lend"
 							v-kv-track-event="['TopNav','click-Lend']"
-							event
 							@pointerenter.native.stop="onLendLinkPointerEnter"
 							@pointerleave.native.stop="onLendLinkPointerLeave"
 							@pointerup.native.stop="onLendLinkPointerUp"
@@ -133,7 +133,8 @@
 								style="margin-top: 1px;"
 							>
 								<kv-page-container>
-									<the-lend-menu ref="lendMenu"
+									<the-lend-menu
+										ref="lendMenu"
 										@pointerenter.native="onLendMenuPointerEnter"
 										@pointerleave.native="onLendMenuPointerLeave"
 									/>
@@ -157,7 +158,8 @@
 							<search-bar ref="search" />
 						</div>
 
-						<div class="header__right-side
+						<div
+							class="header__right-side
 						tw-flex tw-justify-end tw-gap-2.5 lg:tw-gap-4"
 						>
 							<!-- Borrow -->
@@ -463,7 +465,10 @@
 </template>
 
 <script>
+import logReadQueryError from '@/util/logReadQueryError';
+import { userHasEverLoggedInBefore, userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
+import gql from 'graphql-tag';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
@@ -473,6 +478,20 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
+
+const hasLentBeforeCookie = 'kvu_lb';
+const hasDepositBeforeCookie = 'kvu_db';
+
+const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
+  	my {
+    	loans(limit:1) {
+      		totalCount
+    	}
+    	transactions(limit:1, filter:{category:deposit}) {
+      		totalCount
+   		}
+	}
+}`;
 
 export default {
 	name: 'TheHeader',
@@ -571,7 +590,17 @@ export default {
 	},
 	apollo: {
 		query: headerQuery,
-		preFetch: true,
+		preFetch(config, client, { cookieStore }) {
+			return client.query({
+				query: headerQuery,
+			}).then(({ data }) => {
+				const hasLentBeforeValue = cookieStore.get(hasLentBeforeCookie);
+				const hasDepositBeforeValue = cookieStore.get(hasDepositBeforeCookie);
+
+				return data?.my?.userAccount?.id && (hasLentBeforeValue === undefined || hasDepositBeforeValue === undefined) // eslint-disable-line max-len
+					? client.query({ query: optimizelyUserDataQuery }) : Promise.resolve();
+			});
+		},
 		result({ data }) {
 			this.isVisitor = !data?.my?.userAccount?.id;
 			this.isBorrower = data?.my?.isBorrower ?? false;
@@ -592,6 +621,34 @@ export default {
 				}
 				// otherwise on client refresh the page
 				window.location = route.fullPath;
+			}
+		}
+	},
+	created() {
+		// MARS-194 User Metrics for Optimizely A/B experiment
+		const hasEverLoggedInBefore = this.cookieStore.get('kvu');
+		userHasEverLoggedInBefore(hasEverLoggedInBefore !== undefined);
+
+		const hasLentBeforeValue = this.cookieStore.get(hasLentBeforeCookie);
+		const hasDepositBeforeValue = this.cookieStore.get(hasDepositBeforeCookie);
+
+		if (hasLentBeforeValue === undefined || hasDepositBeforeValue === undefined) {
+			try {
+				let userData = {};
+				userData = this.apollo.readQuery({
+					query: optimizelyUserDataQuery,
+				});
+
+				const hasLentBefore = userData?.my?.loans?.totalCount > 0;
+				const hasDepositBefore = userData?.my?.transactions?.totalCount > 0;
+
+				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore);
+				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore);
+
+				userHasLentBefore(hasLentBefore);
+				userHasDepositBefore(hasDepositBefore);
+			} catch (e) {
+				logReadQueryError(e, 'User Data For Optimizely Metrics');
 			}
 		}
 	},

@@ -7,7 +7,8 @@
 			key="openBanner"
 		>
 			<kv-page-container>
-				<div class="tw-flex tw-flex-col md:tw-flex-row
+				<div
+					class="tw-flex tw-flex-col md:tw-flex-row
 					tw-items-center tw-justify-center tw-relative tw-gap-0 md:tw-gap-3"
 				>
 					<div class="tw-mb-4 lg:tw-m-0">
@@ -56,10 +57,12 @@
 								1
 							</sup>
 						</a>
-						<div class="tw-mb-3 tw-mt-0.5 lg:tw-mb-2 tw-whitespace-pre-wrap md:tw-max-w-sm"
+						<div
+							class="tw-mb-3 tw-mt-0.5 lg:tw-mb-2 tw-whitespace-pre-wrap md:tw-max-w-sm"
 							v-html="body"
 						></div>
-						<div class="tw-flex tw-flex-wrap tw-list-none tw-m-0 tw-gap-x-0.5
+						<div
+							class="tw-flex tw-flex-wrap tw-list-none tw-m-0 tw-gap-x-0.5
 									tw-gap-y-2 md:tw-gap-1.5 tw-justify-between"
 						>
 							<kv-button
@@ -114,7 +117,8 @@
 			key="closedBanner"
 		>
 			<kv-page-container>
-				<div class="tw-flex tw-items-center tw-justify-center tw-text-left tw-text-primary
+				<div
+					class="tw-flex tw-items-center tw-justify-center tw-text-left tw-text-primary
 						tw-m-0 tw-py-1"
 				>
 					<div class="tw-mx-2">

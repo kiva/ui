@@ -1,11 +1,9 @@
 import Vue from 'vue'
-import StoryRouter from 'storybook-vue-router';
 import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
 
 // import plugins
 import kivaPlugins from '@/plugins';
 Vue.use(kivaPlugins)
-
 const decodeHTML = function(html) {
 	var txt = document.createElement('textarea');
 	txt.innerHTML = html;
@@ -15,7 +13,6 @@ const decodeHTML = function(html) {
 export default {
 	title: 'WwwFrame/Banners/GenericPromoBanner',
 	component: GenericPromoBanner,
-	decorators: [StoryRouter()],
 	args: {
 		iconKey: 'present',
 		promoBannerContent: {

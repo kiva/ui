@@ -31,12 +31,8 @@
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
 import KvCheckboxList from '@/components/Kv/KvCheckboxList';
-import {
-	getIsoCodes,
-	getUpdatedRegions,
-	getCheckboxLabel,
-	mapIsoCodesToCountryNames,
-} from '@/util/loanSearchUtils';
+import { getUpdatedRegions, getCheckboxLabel } from '@/util/loanSearch/filterUtils';
+import { getIsoCodes, mapIsoCodesToCountryNames } from '@/util/loanSearch/countryUtils';
 
 export default {
 	name: 'LoanSearchLocationFilter',
