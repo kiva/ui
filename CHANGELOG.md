@@ -1,3 +1,10 @@
+### [2.243.2](https://github.com/kiva/ui/compare/v2.243.1...v2.243.2) (2022-08-09)
+
+
+### Bug Fixes
+
+* change primary and secondary CTA in hero section of campaign landing page over to kiva classic ([71861f7](https://github.com/kiva/ui/commit/71861f7df410272b8b25e6271854f02df4135b05))
+
 ### [2.243.1](https://github.com/kiva/ui/compare/v2.243.0...v2.243.1) (2022-08-09)
 
 
