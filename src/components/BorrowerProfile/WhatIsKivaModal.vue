@@ -62,19 +62,17 @@
 						</div>
 					</div>
 				</template>
-				<div>
-					<kv-button
-						@click="isLightboxVisible = false"
-						v-kv-track-event="[
-							'Borrower Profile',
-							'click-modal-close',
-							'Let\'s get started'
-						]"
-						class="tw-w-full md:tw-flex md:tw-justify-center md:tw-max-w-sm tw-mx-auto"
-					>
-						Let's get started
-					</kv-button>
-				</div>
+				<kv-button
+					@click="isLightboxVisible = false"
+					v-kv-track-event="[
+						'Borrower Profile',
+						'click-modal-close',
+						'Let\'s get started'
+					]"
+					class="tw-w-full md:tw-flex md:tw-justify-center md:tw-max-w-sm tw-mx-auto tw-mt-1 md:tw-mt-4 "
+				>
+					Let's get started
+				</kv-button>
 			</kv-lightbox>
 		</transition>
 	</section>
@@ -112,6 +110,7 @@ export default {
 			} else if (type === 'background-click') {
 				this.$kvTrackEvent('Borrower Profile', 'click-modal-outside', 'outside');
 			}
+			this.cookieStore.set('what-is-kiva-shown', true);
 		}
 	}
 };

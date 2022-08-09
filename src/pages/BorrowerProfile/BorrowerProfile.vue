@@ -106,7 +106,7 @@
 				</content-container>
 			</div>
 		</article>
-		<what-is-kiva-modal v-if="kivaModuleExpEnabled && !hasEverLoggedIn" />
+		<what-is-kiva-modal v-if="kivaModuleExpEnabled && !shownModal" />
 		<!-- <aside>Similar loans</aside> -->
 	</www-page>
 </template>
@@ -353,7 +353,7 @@ export default {
 			socialExpEnabled: false,
 			showLightBoxModal: false,
 			kivaModuleExpEnabled: false,
-			hasEverLoggedIn: false
+			shownModal: false
 		};
 	},
 	apollo: {
@@ -377,8 +377,6 @@ export default {
 							path: `/lend/${loan.id}`,
 						});
 					}
-
-					this.hasEverLoggedIn = data?.hasEverLoggedIn;
 
 					return Promise.all([
 						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
@@ -426,6 +424,7 @@ export default {
 			this.diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;
 			this.lender = result?.data?.my?.userAccount ?? {};
+			this.shownModal = !this.cookieStore.get('what-is-kiva-shown') && !result?.data?.hasEverLoggedIn;
 		},
 	},
 	mounted() {
