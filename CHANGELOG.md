@@ -1,3 +1,15 @@
+## [2.245.0](https://github.com/kiva/ui/compare/v2.244.0...v2.245.0) (2022-08-09)
+
+
+### Features
+
+* use script tag for oneTrust loader and cache head script render results MARS-174 ([6e0a30f](https://github.com/kiva/ui/commit/6e0a30f896a83fe86ebe560d20ec3b6b626cdd03))
+
+
+### Bug Fixes
+
+* also check name url param for inviter public id MARS-206 ([7ef0cae](https://github.com/kiva/ui/commit/7ef0cae10f1f2151d9e4e9823452ce8334b3c0e9))
+
 ## [2.244.0](https://github.com/kiva/ui/compare/v2.243.2...v2.244.0) (2022-08-09)
 
 
