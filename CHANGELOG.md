@@ -1,3 +1,18 @@
+## [2.246.0](https://github.com/kiva/ui/compare/v2.245.0...v2.246.0) (2022-08-09)
+
+
+### Features
+
+* added share ask copy experiment ([0b9794a](https://github.com/kiva/ui/commit/0b9794a095cc4ca0bee5f404cfade9138f1dc684))
+
+
+### Bug Fixes
+
+* added PII data masked ([09df998](https://github.com/kiva/ui/commit/09df9984c91ca5b23afb9d8b2c89184f6cdd5e2e))
+* remove console.log ([337e271](https://github.com/kiva/ui/commit/337e271c39b3d86c2e0dd544ec6bd3f7ccf6b3ff))
+* small change ([b3aef15](https://github.com/kiva/ui/commit/b3aef15467c3b2c9e0c15960a81da1bb67539296))
+* typo in experiment key ([6ca8734](https://github.com/kiva/ui/commit/6ca87347f45552b6c7acb25835f34559eba56ff9))
+
 ## [2.245.0](https://github.com/kiva/ui/compare/v2.244.0...v2.245.0) (2022-08-09)
 
 
