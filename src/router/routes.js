@@ -132,6 +132,10 @@ module.exports = [
 		}
 	},
 	{
+		path: '/funded/:id',
+		redirect: '/lend/:id'
+	},
+	{
 		path: '/gender-equality',
 		component: () => import('@/pages/ContentfulPage'),
 		meta: {
@@ -236,8 +240,8 @@ module.exports = [
 		},
 	},
 	{
-		path: '/lend/:id(\\d+)',
-		redirect: '/lend-beta/:id'
+		path: '/lend-beta/:id',
+		redirect: '/lend/:id'
 	},
 	{
 		path: '/lend/:category',
@@ -260,7 +264,7 @@ module.exports = [
 	},
 	{
 		name: 'borrowerProfile',
-		path: '/lend-beta/:id',
+		path: '/lend/:id(\\d+)',
 		component: () => import('@/pages/BorrowerProfile/BorrowerProfile'),
 		meta: {
 			excludeFromStaticSitemap: true,
