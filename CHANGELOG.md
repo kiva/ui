@@ -1,3 +1,10 @@
+## [2.244.0](https://github.com/kiva/ui/compare/v2.243.2...v2.244.0) (2022-08-09)
+
+
+### Features
+
+* use the new flss version of lend/filter ([051ee80](https://github.com/kiva/ui/commit/051ee80f808fe13f621237670ed7cd533fd1bee7))
+
 ### [2.243.2](https://github.com/kiva/ui/compare/v2.243.1...v2.243.2) (2022-08-09)
 
 
