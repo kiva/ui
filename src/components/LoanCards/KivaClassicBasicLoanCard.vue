@@ -134,7 +134,7 @@
 		/>
 
 		<kv-ui-button
-			v-if="!isLoading && !allSharesReserved && !inBorrowerProfilePage"
+			v-if="!isLoading && !allSharesReserved"
 			class="tw-mb-2 tw-self-start"
 			:state="`${allSharesReserved ? 'disabled' : ''}`"
 			:to="`/lend/${loanId}`"
@@ -163,31 +163,6 @@
 					/>
 				</div>
 			</slot>
-		</kv-ui-button>
-
-		<!-- Lend button -->
-		<kv-ui-button
-			key="lendButton"
-			v-if="!allSharesReserved && !isLoading && inBorrowerProfilePage && !isAdding && !isInBasket"
-			class="tw-inline-flex tw-flex-1"
-			data-testid="bp-lend-cta-lend-button"
-			type="submit"
-			@click="addToBasket"
-			v-kv-track-event="[
-				'Lending',
-				'lend-button-loan-upsell',
-				expLabel
-			]"
-		>
-			{{ ctaButtonText }}
-		</kv-ui-button>
-
-		<kv-ui-button
-			v-if="inBorrowerProfilePage && isAdding"
-			class="tw-inline-flex tw-flex-1"
-			data-testid="bp-lend-cta-adding-to-basket-button"
-		>
-			Adding to basket...
 		</kv-ui-button>
 
 		<!-- If allSharesReserved show message and hide cta button -->
@@ -407,9 +382,6 @@ export default {
 		},
 		isLessThan25() {
 			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
-		},
-		inBorrowerProfilePage() {
-			return this.$route.path.includes('funded');
 		},
 		lendAmount() {
 			return this.isLessThan25 ? this.unreservedAmount : 25;
