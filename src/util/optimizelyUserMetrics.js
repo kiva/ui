@@ -11,7 +11,7 @@ function setUserAttribute(key, value) {
 				[key]: value,
 			},
 		});
-	} catch(err) {
+	} catch (err) {
 		console.error(err);
 	}
 }
