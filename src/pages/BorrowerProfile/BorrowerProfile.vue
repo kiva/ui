@@ -108,7 +108,12 @@
 		</article>
 		<!-- <aside>Similar loans</aside> -->
 		<article v-else>
-			<FundedBorrowerProfile />
+			<FundedBorrowerProfile
+				:loan="loan"
+				:hash="hash"
+				:items-in-basket="itemsInBasket"
+				:inviter-name="inviterName"
+			/>
 		</article>
 	</www-page>
 </template>
@@ -138,7 +143,6 @@ import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import SocialShareButton from '@/components/BorrowerProfile/SocialShareButton';
 
-import { isLoanFundraising } from '@/util/loanUtils';
 import {
 	getExperimentSettingCached,
 	trackExperimentVersion
@@ -146,8 +150,17 @@ import {
 import loanUseFilter from '@/plugins/loan-use-filter';
 
 const socialElementsExpKey = 'social_elements';
+const newFundedBorrowerPageExpKey = 'new_funded_borrower_page';
+
 const pageQuery = gql`
-	query borrowerProfileMeta($loanId: Int!, $publicId: String!, $getInviter: Boolean!) {
+	query borrowerProfileMeta(
+		$loanId: Int!,
+		$publicId: String!,
+		$getInviter: Boolean!,
+		$basketId: String,
+		$imgDefaultSize: String = "w480h360",
+		$imgRetinaSize: String = "w960h720"
+	) {
 		general {
 			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
 				key
@@ -165,6 +178,16 @@ const pageQuery = gql`
 				key
 				value
 			}
+			customSort: uiExperimentSetting(key: "funded_lyml_sort") {
+				key
+				value
+			}
+			newFundedBorrowerPage: uiExperimentSetting(
+				key: "new_funded_borrower_page"
+			) {
+				key
+				value
+			}
 		}
 		lend {
 			loan(id: $loanId) {
@@ -175,12 +198,17 @@ const pageQuery = gql`
 					businessName
 				}
 				geocode {
+					city
+					state
 					country {
 						name
+						isoCode
 					}
 				}
 				image {
 					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
 					hash
 				}
 				plannedExpirationDate
@@ -215,6 +243,11 @@ const pageQuery = gql`
 				}
 				inPfp
 				pfpMinLenders
+				gender
+				sector {
+					id
+					name
+				}
 			}
 		}
 		community @include(if: $getInviter) {
@@ -228,6 +261,17 @@ const pageQuery = gql`
 				id
 				inviterName
 				public
+			}
+		}
+		shop(basketId: $basketId) {
+			id
+			basket {
+				id
+				items {
+					values {
+						id
+					}
+				}
 			}
 		}
 	}
@@ -376,7 +420,7 @@ export default {
 						getInviter: !!route.query?.utm_content,
 					},
 				})
-				.then(() => {
+				.then(({ data }) => {
 					const expCookieSignifier = cookieStore.get('kvlendborrowerbeta');
 					if (expCookieSignifier !== 'b') {
 						const { query } = this.$route;
@@ -388,10 +432,19 @@ export default {
 						});
 					}
 
+					const loan = data?.lend?.loan;
+					if (loan === null || loan === 'undefined') {
+					// redirect to legacy borrower profile
+						return Promise.reject({
+							path: `/lend-classic/${Number(route.params?.id ?? 0)}?minimal=false`,
+						});
+					}
+
 					return Promise.all([
 						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 						client.query({ query: experimentQuery, variables: { id: socialElementsExpKey } }),
+						client.query({ query: experimentQuery, variables: { id: newFundedBorrowerPageExpKey } })
 					]);
 				});
 		},
@@ -431,6 +484,7 @@ export default {
 			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
 			this.lenders = loan?.lenders?.values ?? [];
 			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
+			this.itemsInBasket = result?.data?.shop?.basket?.items?.values ?? [];
 
 			this.diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;

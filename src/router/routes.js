@@ -248,6 +248,7 @@ module.exports = [
 		redirect: '/lend-by-category/:category'
 	},
 	{
+		name: 'lend-filter',
 		path: '/lend/filter',
 		component: () => import('@/pages/Lend/Filter/LendFilterPage'),
 		meta: {

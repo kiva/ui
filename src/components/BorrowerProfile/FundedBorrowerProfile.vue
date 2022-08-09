@@ -60,7 +60,7 @@
 					<h3 class="tw-text-center tw-mb-2 tw-mt-3" v-html="lymlHeading"></h3>
 					<l-y-m-l
 						class="tw-mb-3"
-						:basketed-loans="itemsInBasket"
+						:basketed-loans="basketedLoans"
 						:target-loan="loan"
 						@add-to-basket="handleAddToBasket"
 					/>
@@ -213,7 +213,6 @@ import {
 	trackExperimentVersion
 } from '@/util/experimentUtils';
 import loanUseFilter from '@/plugins/loan-use-filter';
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -267,12 +266,27 @@ export default {
 		LoanCardController,
 	},
 	inject: ['apollo', 'cookieStore'],
+	props: {
+		loan: {
+			type: Object,
+			default: () => {}
+		},
+		hash: {
+			type: String,
+			default: ''
+		},
+		itemsInBasket: {
+			type: Array,
+			default: () => []
+		},
+		inviterName: {
+			type: String,
+			default: ''
+		}
+	},
 	data() {
 		return {
-			loan: () => {},
-			itemsInBasket: [],
 			viewportObserver: null,
-			hash: '',
 			isLoading: false,
 			categories: [],
 			rows: null,
@@ -282,33 +296,9 @@ export default {
 			anonymizationLevel: 'none',
 			enabledExperiment: false,
 			shareCardLanguageVersion: '',
-			inviterName: '',
 			inviterIsGuestOrAnonymous: false,
+			basketedLoans: []
 		};
-	},
-	apollo: {
-		preFetch(config, client, { cookieStore, route }) {
-			const fundedLoanId = numeral(route?.params?.id).value();
-			return client.query({
-				query: fundedBorrowerProfile,
-				variables: {
-					id: fundedLoanId,
-					basketId: cookieStore.get('kvbskt'),
-					publicId: route?.query?.utm_content ?? '',
-					getInviter: !!route?.query?.utm_content
-				}
-			}).then(({ data }) => {
-				const loan = _get(data, 'lend.loan');
-				if (loan === null || loan === 'undefined') {
-					// redirect to legacy borrower profile
-					return Promise.reject({
-						path: `/lend/${fundedLoanId}?minimal=false`,
-					});
-				}
-
-				return client.query({ query: experimentQuery, variables: { id: newFundedBorrowerPageExpKey } });
-			});
-		},
 	},
 	computed: {
 		lymlHeading() {
@@ -341,32 +331,7 @@ export default {
 		},
 	},
 	created() {
-		// Read the page data from the cache
-		let loanData = {};
-		const loanIdFromRoute = numeral(_get(this.$route, 'params.id')).value();
-		try {
-			loanData = this.apollo.readQuery({
-				query: fundedBorrowerProfile,
-				variables: {
-					id: loanIdFromRoute,
-					basketId: this.cookieStore.get('kvbskt'),
-					publicId: this.$route?.query?.utm_content ?? '',
-					getInviter: !!this.$route?.query?.utm_content
-				},
-			});
-
-			const utmContent = this.$route.query?.utm_content;
-			this.inviterIsGuestOrAnonymous = utmContent === 'anonymous' || utmContent === 'guest';
-
-			this.loan = _get(loanData, 'lend.loan');
-			this.hash = this.loan?.image?.hash ?? '';
-			this.itemsInBasket = _get(loanData, 'shop.basket.items.values');
-			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : loanData.community?.lender?.name ?? '';
-		} catch (e) {
-			logReadQueryError(e, 'FundedBorrowerProfilePage fundedBorrowerProfile');
-			this.$router.push({ path: `/lend/${loanIdFromRoute}?minimal=false` });
-		}
-
+		this.basketedLoans = [...this.itemsInBasket];
 		// Check if new funded borrower profile experiment is active.
 		const { enabled } = getExperimentSettingCached(this.apollo, newFundedBorrowerPageExpKey);
 		const exp = this.apollo.readFragment({
@@ -445,7 +410,7 @@ export default {
 					fetchPolicy: 'network-only',
 				}).then(data => {
 					// need to update this.itemsInBasket here.
-					this.itemsInBasket = _get(data, 'data.shop.basket.items.values');
+					this.basketedLoans = _get(data, 'data.shop.basket.items.values');
 				});
 			}
 		},
