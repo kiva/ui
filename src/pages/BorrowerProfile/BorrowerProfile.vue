@@ -142,6 +142,7 @@ import {
 import loanUseFilter from '@/plugins/loan-use-filter';
 
 const socialElementsExpKey = 'social_elements';
+const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 const pageQuery = gql`
 	query borrowerProfileMeta($loanId: Int!, $publicId: String!, $getInviter: Boolean!) {
 		general {
@@ -361,13 +362,14 @@ export default {
 	apollo: {
 		query: pageQuery,
 		preFetch(config, client, { route }) {
+			const publicId = getPublicId(route);
 			return client
 				.query({
 					query: pageQuery,
 					variables: {
 						loanId: Number(route.params?.id ?? 0),
-						publicId: route.query?.utm_content ?? '',
-						getInviter: !!route.query?.utm_content
+						publicId,
+						getInviter: !!publicId
 					},
 				})
 				.then(({ data }) => {
@@ -388,17 +390,19 @@ export default {
 				});
 		},
 		preFetchVariables({ route }) {
+			const publicId = getPublicId(route);
 			return {
 				loanId: Number(route?.params?.id ?? 0),
-				publicId: route.query?.utm_content ?? '',
-				getInviter: !!route.query?.utm_content,
+				publicId,
+				getInviter: !!publicId,
 			};
 		},
 		variables() {
+			const publicId = getPublicId(this.$route);
 			return {
 				loanId: Number(this.$route?.params?.id ?? 0),
-				publicId: this.$route?.query?.utm_content ?? '',
-				getInviter: !!this.$route?.query?.utm_content,
+				publicId,
+				getInviter: !!publicId,
 			};
 		},
 		result(result) {
