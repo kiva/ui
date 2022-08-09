@@ -19,6 +19,43 @@ const fetch = require('make-fetch-happen');
 
 const isDev = process.env.NODE_ENV !== 'production';
 
+let renderedConfig = '';
+let renderedNoscript = '';
+let renderedExternals = '';
+
+// This adds non-vue-rendered html strings to the request context.
+// These strings are added to the final html response using server/index.template.html
+function addRenderedHtml(context, config) {
+	// render config if it hasn't been rendered yet
+	if (!renderedConfig) {
+		renderedConfig = renderGlobals({ __KV_CONFIG__: config });
+	}
+	// render noscript tag if it hasn't been rendered yet
+	if (!renderedNoscript) {
+		renderedNoscript = noscriptTemplate(config);
+	}
+	// render externals if they haven't been rendered yet
+	if (!renderedExternals) {
+		// add OneTrust loader
+		if (config.oneTrust && config.oneTrust.enable) {
+			const key = `${config.oneTrust.key}${config.oneTrust.domainSuffix}`;
+			const src = `https://cdn.cookielaw.org/consent/${key}/otSDKStub.js`;
+			// eslint-disable-next-line max-len
+			renderedExternals += `<script type="text/javascript" data-domain-script="${key}" src="${src}"></script>`;
+		}
+		// add primary head script
+		const renderedHeadScript = serialize(headScript);
+		const renderedOneTrustEvent = serialize(oneTrustEvent);
+		// eslint-disable-next-line max-len
+		renderedExternals += `<script>(${renderedHeadScript})(window.__KV_CONFIG__, ${renderedOneTrustEvent});</script>`;
+	}
+
+	// add rendered strings to request render context
+	context.renderedConfig = renderedConfig;
+	context.renderedNoscript = renderedNoscript;
+	context.renderedExternals = renderedExternals;
+}
+
 // This exported function will be called by `bundleRenderer`.
 // This is where we perform data-prefetching to determine the
 // state of our application before actually rendering it.
@@ -94,10 +131,7 @@ export default context => {
 		}
 
 		// render content for template
-		context.renderedConfig = renderGlobals({ __KV_CONFIG__: config });
-		context.renderedNoscript = noscriptTemplate(config);
-		// eslint-disable-next-line max-len
-		context.renderedExternals = `<script>(${serialize(headScript)})(window.__KV_CONFIG__, ${serialize(oneTrustEvent)});</script>`;
+		addRenderedHtml(context, config);
 
 		// set router's location, ignoring any errors about redirection
 		router.push(url).catch(() => {});
