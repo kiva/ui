@@ -13,6 +13,7 @@
 						<div>Success, we've emailed your receipt to you.</div>
 					</div>
 					<div v-else>
+						<!-- eslint-disable-next-line max-len -->
 						<div>Success, your receipt has been sent to <strong class="fs-mask">{{ lender.email }}</strong></div>
 					</div>
 				</div>
@@ -86,11 +87,12 @@
 					</template>
 					<template v-else>
 						<h1	class="thanks__headline-h1 tw-mt-1 tw-mb-3 tw-text-left">
+							<!-- eslint-disable-next-line max-len -->
 							<span class="fs-mask">{{ this.lender.firstName }}</span>, can you share this loan with one more person?
 						</h1>
 						<p class="tw-text-h3 tw-m-0 thanks__base-text">
 							<!-- eslint-disable-next-line max-len -->
-							{{ this.loan.name }} only needs {{ calculatePeopleQtyToGoal() }} more people to lend $25 and their loan could be fully funded in a matter of hours!
+							<span class="fs-mask">{{ this.loan.name }}</span> only needs {{ calculatePeopleQtyToGoal() }} more people to lend $25 and their loan could be fully funded in a matter of hours!
 						</p>
 					</template>
 					<template>
