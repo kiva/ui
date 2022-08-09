@@ -134,6 +134,12 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			value
 		}
 	}
+	general {
+		shareCopyAsk: uiExperimentSetting(key: "share_copy_ask") {
+			key
+			value
+		}
+	}
 	mySubscriptions(includeDisabled: false) {
 		values {
 			id
