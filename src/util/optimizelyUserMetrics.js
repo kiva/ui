@@ -1,17 +1,20 @@
 function setUserAttribute(key, value) {
-	if (typeof window === 'undefined') {
-		return;
+	try {
+		if (typeof window === 'undefined') {
+			return;
+		}
+
+		window.optimizely = window.optimizely || [];
+		window.optimizely.push({
+			type: 'user',
+			attributes: {
+				[key]: value,
+			},
+		});
+	} catch(err) {
+		console.error(err);
 	}
-
-	window.optimizely = window.optimizely || [];
-	window.optimizely.push({
-		type: 'user',
-		attributes: {
-			[key]: value,
-		},
-	});
 }
-
 /**
  * Checks if user has visted kiva before on the.
  * @param {Boolean} hasEverLoggedIn
