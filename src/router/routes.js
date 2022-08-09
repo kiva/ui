@@ -244,6 +244,15 @@ module.exports = [
 		redirect: '/lend/:id'
 	},
 	{
+		name: 'borrowerProfile',
+		path: '/lend/:id(\\d+)',
+		component: () => import('@/pages/BorrowerProfile/BorrowerProfile'),
+		meta: {
+			excludeFromStaticSitemap: true,
+			unbounce: true,
+		}
+	},
+	{
 		path: '/lend/:category',
 		redirect: '/lend-by-category/:category'
 	},
@@ -262,15 +271,6 @@ module.exports = [
 		meta: {
 			excludeFromStaticSitemap: true,
 		}
-	},
-	{
-		name: 'borrowerProfile',
-		path: '/lend/:id(\\d+)',
-		component: () => import('@/pages/BorrowerProfile/BorrowerProfile'),
-		meta: {
-			excludeFromStaticSitemap: true,
-			unbounce: true,
-		},
 	},
 	{
 		path: '/lp/own-the-change-gender-equality',

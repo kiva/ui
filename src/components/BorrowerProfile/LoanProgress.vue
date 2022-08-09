@@ -50,7 +50,7 @@
 					</p>
 				</div>
 			</template>
-			<template v-else>
+			<template v-else-if="loanStatus !== 'funded'">
 				<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
 					<countdown-timer
 						v-if="urgency"
