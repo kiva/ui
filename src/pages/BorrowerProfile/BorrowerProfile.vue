@@ -2,7 +2,7 @@
 	<www-page
 		id="borrower-profile"
 	>
-		<article v-if="amountLeft" class="tw-relative tw-bg-secondary">
+		<article v-if="amountLeft && status !== 'fundraising'" class="tw-relative tw-bg-secondary">
 			<div class="tw-relative">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 					<hero-background />
@@ -365,23 +365,26 @@ export default {
 	},
 	apollo: {
 		query: pageQuery,
-		preFetch(config, client, { route }) {
+		preFetch(config, client, { route, cookieStore }) {
 			return client
 				.query({
 					query: pageQuery,
 					variables: {
 						loanId: Number(route.params?.id ?? 0),
+						basketId: cookieStore.get('kvbskt'),
 						publicId: route.query?.utm_content ?? '',
-						getInviter: !!route.query?.utm_content
+						getInviter: !!route.query?.utm_content,
 					},
 				})
-				.then(({ data }) => {
-					const loan = data?.lend?.loan;
-					// checks if the loan status is fundraising or not
-					// if not, then redirect to the lend/loan_id page
-					if (loan && !isLoanFundraising(loan)) {
+				.then(() => {
+					const expCookieSignifier = cookieStore.get('kvlendborrowerbeta');
+					if (expCookieSignifier !== 'b') {
+						const { query } = this.$route;
+						const queryString = Object.keys(query)
+							.map(key => `${key}=${query[key]}`)
+							.join('&');
 						return Promise.reject({
-							path: `/lend/${loan.id}`,
+							path: `/lend-classic/${this.$route.params.id}?query=${queryString}`,
 						});
 					}
 
@@ -392,9 +395,10 @@ export default {
 					]);
 				});
 		},
-		preFetchVariables({ route }) {
+		preFetchVariables({ route, cookieStore }) {
 			return {
 				loanId: Number(route?.params?.id ?? 0),
+				basketId: cookieStore.get('kvbskt'),
 				publicId: route.query?.utm_content ?? '',
 				getInviter: !!route.query?.utm_content,
 			};
@@ -402,6 +406,7 @@ export default {
 		variables() {
 			return {
 				loanId: Number(this.$route?.params?.id ?? 0),
+				basketId: this.cookieStore.get('kvbskt'),
 				publicId: this.$route?.query?.utm_content ?? '',
 				getInviter: !!this.$route?.query?.utm_content,
 			};
@@ -512,14 +517,6 @@ export default {
 		},
 	},
 	created() {
-		const expCookieSignifier = this.cookieStore.get('kvlendborrowerbeta');
-		if (expCookieSignifier !== 'b') {
-			const { query } = this.$route;
-			const queryString = Object.keys(query)
-				.map(key => `${key}=${query[key]}`)
-				.join('&');
-			this.$router.push(`/lend-classic/${this.$route.params.id}?query=${queryString}`);
-		}
 		// this experiment is assigned in experimentPreFetch.js
 		const urgencyExperiment = this.apollo.readFragment({
 			id: 'Experiment:lend_urgency',
