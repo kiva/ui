@@ -28,9 +28,7 @@
 					v-if="isLoading"
 					class="tw-mb-1.5 tw-flex-grow" :style="{width: '100%', height: '5.5rem'}"
 				/>
-				<span
-					v-if="!isLoading" class="tw-line-clamp-5"
-				>
+				<span v-if="!isLoading" class="tw-line-clamp-5">
 					<p
 						v-for="(paragraph, index) in getSpotlightText"
 						:key="index"

@@ -55,8 +55,8 @@ describe('Meta information', () => {
 
 		cy.title().should('eq', 'Donate to Kiva and support our mission! | Kiva');
 		cy.document().get('head meta[name="description"]')
-			.should('have.attr', 'content', 'Your generous donations help Kiva continue and grow our mission of '
-						+ 'financial inclusivity. Click here to learn more and make a difference.');
+			.should('have.attr', 'content', 'Your generous donations help Kiva continue and grow our mission of financial inclusivity.'
+						+ ' Click here to learn more and make a difference.');
 	});
 
 	it('Categories Beta Page', () => {
