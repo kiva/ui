@@ -1,5 +1,5 @@
 <template>
-	<www-page id="lend-filter-alpha">
+	<www-page id="lend-filter">
 		<article class="tw-bg-secondary tw-relative tw-pt-6">
 			<kv-page-container>
 				<div class="tw-flex tw-items-start tw-pb-8">
@@ -31,19 +31,11 @@
 </template>
 
 <script>
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import {
-	getExperimentSettingAsync,
-	getExperimentSettingCached,
-	trackExperimentVersion
-} from '@/util/experimentUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanSearchInterface from '@/components/Lend/LoanSearch/LoanSearchInterface';
 import { mdiEarth, mdiFilter } from '@mdi/js';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-
-const lendFilterRedirectEXP = 'lend_filter_flss_v1';
 
 export default {
 	name: 'LoanSearchPage',
@@ -59,29 +51,6 @@ export default {
 			mdiEarth,
 			mdiFilter
 		};
-	},
-	apollo: {
-		preFetch(config, client) {
-			// get experiment setting and assignment
-			return getExperimentSettingAsync(client, lendFilterRedirectEXP)
-				.then(() => {
-					// running the assignment query ensures any existing assignment is in the apollo cache
-					return client.query({ query: experimentAssignmentQuery, variables: { id: lendFilterRedirectEXP } });
-				});
-		}
-	},
-	mounted() {
-		const { enabled } = getExperimentSettingCached(this.apollo, lendFilterRedirectEXP);
-		if (enabled) {
-			// this method will get the version from the apollo cache
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				lendFilterRedirectEXP,
-				'EXP-VUE-1061-June2022'
-			);
-		}
 	}
 };
 </script>

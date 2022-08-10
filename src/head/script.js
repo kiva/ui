@@ -144,16 +144,6 @@ export default (config, globalOneTrustEvent) => {
 	// One Trust Cookie Management
 	if (config.oneTrust && config.oneTrust.enable) {
 		/* eslint-disable */
-		(function () {
-			// Main OneTrust script to display cookie notice and set user preferences
-			const p = document.getElementsByTagName('script')[0];
-			const s = document.createElement('script');
-			s.setAttribute('type', 'text/javascript');
-			s.setAttribute('data-domain-script', `${config.oneTrust.key}${config.oneTrust.domainSuffix}`)
-			s.src = `https://cdn.cookielaw.org/consent/${config.oneTrust.key}${config.oneTrust.domainSuffix}/otSDKStub.js`;
-			p.parentNode.insertBefore(s, p);
-		}());
-
 		// Follow up OneTrust function.
 		// This function is called when cookie preferences are changed on the OneTrust widget
 		window.OptanonWrapper = () => {
