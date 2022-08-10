@@ -15,7 +15,6 @@
 			<kv-page-container>
 				<kv-grid>
 					<loan-spotlight
-						data-testid="all-categories-loan-spotlight"
 						category-slug="recommended-by-lenders"
 						fallback-category-slug="women"
 					/>
@@ -34,7 +33,6 @@
 					class="tw-col-span-12 md:tw-col-span-6"
 				>
 					<main-category-tile
-						data-testid="all-categories-tiles"
 						tile-size="large"
 						:category-url="category.url"
 						:category-name="category.name"
@@ -51,7 +49,6 @@
 					class="tw-col-span-12 md:tw-col-span-4"
 				>
 					<main-category-tile
-						data-testid="all-categories-tiles"
 						tile-size="medium"
 						:category-url="category.url"
 						:category-name="category.name"
@@ -79,7 +76,6 @@
 					class="tw-col-span-12 md:tw-col-span-6"
 				>
 					<main-category-tile
-						data-testid="all-categories-tiles"
 						tile-size="small"
 						:category-url="category.url"
 						:category-name="category.name"

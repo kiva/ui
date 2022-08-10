@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div data-testid="all-categories-loan-spotlight">
 		<h2 class="md:tw-hidden tw-pb-2">
 			Today's loan spotlight
 		</h2>
