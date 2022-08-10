@@ -106,7 +106,7 @@
 				</content-container>
 			</div>
 		</article>
-		<what-is-kiva-modal v-if="true" />
+		<what-is-kiva-modal v-if="kivaModuleExpEnabled && !shownModal" />
 		<!-- <aside>Similar loans</aside> -->
 	</www-page>
 </template>
