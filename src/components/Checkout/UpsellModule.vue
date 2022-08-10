@@ -18,7 +18,11 @@
 				<h4 class="tw-text-h4 tw-text-action tw-mb-0.5">
 					Support Another Borrower
 				</h4>
-				<h3 class="tw-text-h3 tw-mb-2">
+				<h3 v-if="enableExperimentCopy" class="tw-text-h3 tw-mb-2">
+					<!-- eslint-disable-next-line max-len -->
+					{{ loan.name }} is missing just {{ amountLeft | numeral('$0,0[.]00') }}! Be the person to complete their loan.
+				</h3>
+				<h3 v-else class="tw-text-h3 tw-mb-2">
 					Complete {{ loan.name }}'s loan for just {{ amountLeft | numeral('$0,0[.]00') }}
 				</h3>
 				<div>
@@ -76,6 +80,10 @@ export default {
 		addToBasket: {
 			type: Function,
 			default: () => {}
+		},
+		enableExperimentCopy: {
+			type: Boolean,
+			default: false,
 		}
 	},
 	data() {

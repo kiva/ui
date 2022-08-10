@@ -102,6 +102,7 @@
 			:loan="selectedLoan"
 			:simple-social-share-version="simpleSocialShareVersion"
 			:share-card-language-version="shareCardLanguageVersion"
+			:share-ask-copy-version="shareAskCopyVersion"
 		/>
 	</www-page>
 </template>
@@ -166,6 +167,7 @@ export default {
 			shareCardLanguageVersion: '',
 			simpleSocialShareVersion: '',
 			newThanksPageModuleVersion: '',
+			shareAskCopyVersion: '',
 		};
 	},
 	apollo: {
@@ -187,6 +189,7 @@ export default {
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_share_module' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_card_language' } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
 					upsellEligible ? client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_ad_upsell' } }) : Promise.resolve() // eslint-disable-line max-len
 				]);
 			}).catch(errorResponse => {
@@ -345,6 +348,21 @@ export default {
 					'Thanks',
 					'EXP-MARS-143-Jul2022-inviter',
 					this.shareCardLanguageVersion,
+				);
+			}
+
+			// MARS-202 Share copy ask experiment
+			const shareAskCopyVersion = this.apollo.readFragment({
+				id: 'Experiment:share_ask_copy',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.shareAskCopyVersion = shareAskCopyVersion.version;
+			if (this.shareAskCopyVersion) {
+				this.$kvTrackEvent(
+					'Thanks',
+					'EXP-MARS-202-Aug2022',
+					this.shareAskCopyVersion,
 				);
 			}
 		}

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The loan search utilities are used for the `lend/filter-alpha` and help to provide filtered loans fetched from the FLSS API. There are a handful of Vue components for rendering the different filters, but the primary business logic exists in `LoanSearchInterface.vue`. The current state of the filters are held in this interface component, and the underlying state is stored in the Apollo cache in the `loanSearchState` object.
+The loan search utilities are used for the `lend/filter` and help to provide filtered loans fetched from the FLSS API. There are a handful of Vue components for rendering the different filters, but the primary business logic exists in `LoanSearchInterface.vue`. The current state of the filters are held in this interface component, and the underlying state is stored in the Apollo cache in the `loanSearchState` object.
 
 Within the `LoanSearchInterface` there is an Apollo `watchQuery` that monitors the `loanSearchState` and runs the filtered loan query. The watch callback also updates the query params.
 
@@ -12,7 +12,7 @@ If the loan filtering needs to be updated, either the `loanSearchState` in the A
 
 ## Facets
 
-The concept of "facets" are the available filters, and the lend API is the source of truth. On the `lend/filter-alpha` page, facet options are only displayed if the option exists in the FLSS API, but the option information is sourced from the lend API. The loan count per facet option is provided by the FLSS API, so consistency remains between the FLSS API loan result count and filter loan count.
+The concept of "facets" are the available filters, and the lend API is the source of truth. On the `lend/filter` page, facet options are only displayed if the option exists in the FLSS API, but the option information is sourced from the lend API. The loan count per facet option is provided by the FLSS API, so consistency remains between the FLSS API loan result count and filter loan count.
 
 There is one exception to defining filter options and that is the theme/attribute filter options. Here there is a collection of themes that are always displayed. The filter option information is once again sourced from the lend API, but the static filter options will be displayed regardless of whether the options are returned by the FLSS API.
 
