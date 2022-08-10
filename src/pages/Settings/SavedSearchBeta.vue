@@ -5,25 +5,22 @@
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
-		<kv-page-container>
-			<kv-grid class="row-column">
-				<h2 class="tw-mb-2 tw-justify-start">
+		<kv-default-wrapper>
+			<kv-grid>
+				<h1 class="tw-mb-2">
 					Saved Searches
-				</h2>
+				</h1>
 			</kv-grid>
 
-			<div>
-				<kv-grid class="tw-row-col tw-p-6 tw-m-1">
-					<save-search-item
-						v-for="(search, index) in savedSearches"
-						class="tw-grid tw-grid-col-1 tw-gap-4 tw-rounded tw-border-transparent
-						tw-max-w-lg tw-bg-primary"
-						:key="index"
-						:saved-search="search"
-					/>
-				</kv-grid>
-			</div>
-		</kv-page-container>
+			<kv-grid class="tw-my-2">
+				<save-search-item
+					v-for="(search, index) in savedSearches"
+					:key="index"
+					:saved-search="search"
+					@delete-saved-search="fetchSavedSearches(0)"
+				/>
+			</kv-grid>
+		</kv-default-wrapper>
 	</www-page>
 </template>
 
@@ -32,8 +29,8 @@ import gql from 'graphql-tag';
 import SaveSearchItem from '@/components/Settings/SaveSearchItem';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
+import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'SavedSearchBeta',
@@ -42,13 +39,13 @@ export default {
 		WwwPage,
 		TheMyKivaSecondaryMenu,
 		KvGrid,
-		KvPageContainer,
+		KvDefaultWrapper,
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			totalCount: 0,
-			savedSearches: () => [],
+			savedSearches: () => []
 		};
 	},
 	created() {
@@ -64,6 +61,11 @@ export default {
 							values {
 								id
 								name
+								isAlert
+								url
+								loanSearchCriteria{
+									sortBy
+								}
 							} 
 						}
 					}
@@ -75,9 +77,12 @@ export default {
 			}).then(result => {
 				const savedSearchData = result?.data?.my?.savedSearches;
 				this.totalCount = savedSearchData?.totalCount ?? 0;
-				this.savedSearches = [...savedSearchData.values];
+				this.savedSearches = [...savedSearchData?.values];
 			});
-		}
+		},
+		deleteSavedSearch(payload) {
+			console.log(payload);
+		},
 	}
 };
 </script>
