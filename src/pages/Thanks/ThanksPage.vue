@@ -2,7 +2,7 @@
 	<www-page
 		:gray-background="true"
 	>
-		<div class="row page-content" v-if="receipt && !showNewThanksPage">
+		<div class="row page-content" v-if="receipt && isGuest">
 			<div class="small-12 columns thanks">
 				<div class="thanks__header hide-for-print">
 					<template v-if="receipt">
@@ -96,7 +96,7 @@
 			</thanks-layout-v2>
 		</div>
 		<thanks-page-share
-			v-if="receipt && showNewThanksPage"
+			v-if="receipt && !isGuest"
 			:receipt="receipt"
 			:lender="lender"
 			:loan="selectedLoan"
@@ -163,10 +163,8 @@ export default {
 			hasModernSub: false,
 			isGuest: false,
 			pageData: {},
-			showNewThanksPage: false,
 			shareCardLanguageVersion: '',
 			simpleSocialShareVersion: '',
-			newThanksPageModuleVersion: '',
 			shareAskCopyVersion: '',
 		};
 	},
@@ -321,22 +319,6 @@ export default {
 		}
 
 		if (!this.isGuest) {
-			// MARS-134 New thanks page share experiment
-			const newThanksShareModule = this.apollo.readFragment({
-				id: 'Experiment:thanks_share_module',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			this.newThanksPageModuleVersion = newThanksShareModule.version;
-			this.showNewThanksPage = this.newThanksPageModuleVersion === 'b';
-			if (this.newThanksPageModuleVersion) {
-				this.$kvTrackEvent(
-					'Thanks',
-					'EXP-MARS-134-Jun2022',
-					this.newThanksPageModuleVersion,
-				);
-			}
-
 			const shareCardLanguage = this.apollo.readFragment({
 				id: 'Experiment:share_card_language',
 				fragment: experimentVersionFragment,
