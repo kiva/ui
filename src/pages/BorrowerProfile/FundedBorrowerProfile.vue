@@ -134,7 +134,7 @@
 												class="tw-mb-2"
 												:money-left="'0'"
 												:progress-percent="1"
-												:funded-page="true"
+												loan-status="funded"
 											/>
 										</div>
 									</div>
@@ -213,6 +213,7 @@ import {
 	getExperimentSettingCached,
 	trackExperimentVersion
 } from '@/util/experimentUtils';
+import loanUseFilter from '@/plugins/loan-use-filter';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
@@ -231,7 +232,25 @@ export default {
 					name: 'description',
 					content: `A loan helped ${this.loan.use}`,
 				}
-			]
+			].concat(
+				[
+					{
+						property: 'og:title',
+						vmid: 'og:title',
+						content: this.shareTitle
+					},
+					{
+						property: 'og:description',
+						vmid: 'og:description',
+						content: this.shareDescription
+					},
+					{
+						name: 'twitter:description',
+						vmid: 'twitter:description',
+						content: this.shareDescription
+					}
+				]
+			)
 		};
 	},
 	components: {
@@ -261,18 +280,24 @@ export default {
 			rows: null,
 			isVisitor: true,
 			loanRowsCount: 4,
-			enabledExperiment: false
+			loanUseMaxLength: 100,
+			anonymizationLevel: 'none',
+			enabledExperiment: false,
+			shareCardLanguageVersion: '',
+			inviterName: '',
+			inviterIsGuestOrAnonymous: false,
 		};
 	},
 	apollo: {
 		preFetch(config, client, { cookieStore, route }) {
 			const fundedLoanId = numeral(route?.params?.id).value();
-
 			return client.query({
 				query: fundedBorrowerProfile,
 				variables: {
 					id: fundedLoanId,
 					basketId: cookieStore.get('kvbskt'),
+					publicId: route?.query?.utm_content ?? '',
+					getInviter: !!route?.query?.utm_content
 				}
 			}).then(({ data }) => {
 				const loan = _get(data, 'lend.loan');
@@ -295,6 +320,27 @@ export default {
 				but these similar borrowers just need a little more help to reach their goals!`;
 			return this.lymlCustomSort === 'random' ? defaultMessage : customMessage;
 		},
+		shareTitle() {
+			if (this.shareCardLanguageVersion === 'b') {
+				// eslint-disable-next-line max-len
+				return this.inviterName === '' ? `Can you help support ${this.loan.name}?` : `Can you help ${this.inviterName} support ${this.loan.name}?`;
+			}
+
+			return `Lend as little as $25 to ${this.loan.name}`;
+		},
+		shareDescription() {
+			if (this.shareCardLanguageVersion === 'b') {
+				// eslint-disable-next-line max-len
+				return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
+			}
+
+			if (this.anonymizationLevel !== 'full') {
+				const loanUse = loanUseFilter(this.loan.use, this.loan.name, this.loan.status, this.loan?.loanAmount,
+					this.loan?.borrowerCount, this.loanUseMaxLength);
+				return `${loanUse}\n\n${this.loan.description.substring(0, 120)}...`;
+			}
+			return 'For the borrower\'s privacy, this loan has been made anonymous.';
+		},
 	},
 	created() {
 		// Read the page data from the cache
@@ -306,12 +352,18 @@ export default {
 				variables: {
 					id: loanIdFromRoute,
 					basketId: this.cookieStore.get('kvbskt'),
+					publicId: this.$route?.query?.utm_content ?? '',
+					getInviter: !!this.$route?.query?.utm_content
 				},
 			});
+
+			const utmContent = this.$route.query?.utm_content;
+			this.inviterIsGuestOrAnonymous = utmContent === 'anonymous' || utmContent === 'guest';
 
 			this.loan = _get(loanData, 'lend.loan');
 			this.hash = this.loan?.image?.hash ?? '';
 			this.itemsInBasket = _get(loanData, 'shop.basket.items.values');
+			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : loanData.community?.lender?.name ?? '';
 		} catch (e) {
 			logReadQueryError(e, 'FundedBorrowerProfilePage fundedBorrowerProfile');
 			this.$router.push({ path: `/lend/${loanIdFromRoute}?minimal=false` });
@@ -325,6 +377,17 @@ export default {
 		}) ?? {};
 		if (enabled && exp.version === 'b') {
 			this.enabledExperiment = true;
+		}
+
+		if (this.$route.query?.utm_campaign?.includes('scle')) {
+			// EXP-MARS-143-Jul2022
+			// Extract exp version from utm_campaign
+			this.shareCardLanguageVersion = this.$route.query?.utm_campaign?.split('_')?.pop()?.replace('-normal', '');
+			this.$kvTrackEvent(
+				'Thanks',
+				'EXP-MARS-143-Jul2022',
+				this.shareCardLanguageVersion.replace('-normal', '')
+			);
 		}
 	},
 	mounted() {

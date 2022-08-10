@@ -17,18 +17,19 @@
 		>
 			<kv-grid
 				:class="[
-					'tw-z-2',
 					'tw-grid-cols-12',
 					'tw-px-2.5',
 					'tw-bg-primary',
 					'tw-border-t tw-border-tertiary',
 					{
-						'md:tw-rounded-b md:tw-border-none': !isSticky,
+						'md:tw-rounded-b': !isSticky,
+						'md:tw-border-none': !isSticky,
 						'md:tw-px-3': !isSticky,
 						'md:tw-px-4': isSticky,
 					},
 					'lg:tw-rounded-t',
 					'lg:tw-px-4',
+					'lg:tw-gap-1'
 				]"
 			>
 				<div
@@ -36,17 +37,20 @@
 						'tw-pt-1',
 						'tw-col-span-12',
 						{
-							'md:tw-pt-0 md:tw-pb-2': !isSticky,
+							'md:tw-pt-0': !isSticky,
 							'md:tw-col-start-2 md:tw-col-span-10': isSticky,
 						},
 						'lg:tw-col-span-12',
-						'lg:tw-py-1',
+						{
+							'lg:tw-pt-1 lg:tw-pb-1': !socialExpEnabled,
+							'lg:tw-pt-1 lg:tw-pb-0': socialExpEnabled,
+						},
 					]"
 				>
 					<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
 						{{ lgScreenheadline }}
 					</p>
-					<span class="tw-flex tw-pb-1 lg:tw-pb-3">
+					<span class="tw-flex tw-pb-1 lg:tw-pb-2.5">
 						<!-- eslint-disable-next-line max-len -->
 						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
 							<fieldset
@@ -84,7 +88,7 @@
 
 								<!-- Sparkles wrapper -->
 								<div
-									class="tw-relative"
+									class="tw-relative tw-inline-flex tw-flex-1"
 									:class="{'tw-w-full':isLendAmountButton}"
 								>
 									<!-- Lend button -->
@@ -192,6 +196,7 @@
 							{{ ctaButtonText }}
 						</kv-ui-button>
 					</span>
+					<slot v-if="!isSticky" name="sharebutton"></slot>
 					<p
 						v-if="freeCreditWarning"
 						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
@@ -206,21 +211,53 @@
 					>
 						All shares reserved
 					</p>
+					<hr
+						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full tw-my-2"
+					>
 					<div
-						class="tw-flex lg:tw-justify-center tw-w-full tw-mt-2"
+						class="tw-flex lg:tw-justify-center tw-w-full"
 						:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
 					>
 						<loan-bookmark
 							v-if="isLoggedIn"
 							data-testid="bp-lend-cta-loan-bookmark"
 							:loan-id="loanId"
-							class="tw-hidden md:tw-inline-block tw-mt-1 lg:tw-hidden"
+							class="tw-hidden md:tw-inline-block lg:tw-hidden"
 						/>
 						<jump-links
-							class="tw-hidden md:tw-block tw-ml-1 tw-mr-1" style="width: 420px;"
+							:class="[
+								'tw-hidden md:tw-block lg:tw-mb-1.5',
+								{
+									'md:tw-mb-3': isSticky || !socialExpEnabled,
+								}
+							]"
 							data-testid="bp-lend-cta-jump-links"
 						/>
 					</div>
+				</div>
+				<div
+					v-if="socialExpEnabled"
+					:class="[
+						'tw-hidden',
+						{
+							'md:tw-block': !isSticky,
+						},
+						'tw-col-span-12',
+						'md:tw-col-start-7 md:tw-col-span-6',
+						'lg:tw-col-span-12',
+					]"
+				>
+					<hr
+						v-if="socialExpEnabled && lenders.length"
+						class="tw-hidden lg:tw-block tw-border-tertiary tw-w-full tw-mb-3"
+					>
+					<lenders-list
+						v-if="socialExpEnabled && lenders.length"
+						:num-lenders="numLenders"
+						:lenders="lenders"
+						key="lenderList"
+						@togglelightbox="toggleLightbox"
+					/>
 				</div>
 			</kv-grid>
 
@@ -252,7 +289,6 @@
 					<div
 						key="wrapper"
 						:class="[
-							'tw-z-1',
 							'tw-h-5',
 							'tw-overflow-hidden',
 							'tw-col-span-12',
@@ -267,6 +303,7 @@
 								'md:tw-mb-0': !isSticky,
 								'md:tw-col-start-6 md:tw-col-span-7': !isSticky,
 								'md:tw-col-start-5 md:tw-col-span-6': isSticky,
+								'md:tw-hidden': isSticky,
 							},
 							'lg:tw-mb-0',
 							'lg:tw-col-span-12'
@@ -327,7 +364,9 @@ import { buildPriceArray, isMatchAtRisk } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
+
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
+import LendersList from '@/components/BorrowerProfile/LendersList';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -345,12 +384,21 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		lenders: {
+			type: Array,
+			default: () => []
+		},
+		socialExpEnabled: {
+			type: Boolean,
+			default: false
+		},
 		requireDepositsMatchedLoans: {
 			type: Boolean,
 			default: false,
 		}
 	},
 	components: {
+		LendersList,
 		LendAmountButton,
 		KvGrid,
 		KvMaterialIcon,
@@ -388,7 +436,7 @@ export default {
 			wrapperHeight: 0,
 			wrapperObserver: null,
 			name: '',
-			completeLoanView: true
+			completeLoanView: true,
 		};
 	},
 	apollo: {
@@ -464,10 +512,11 @@ export default {
 			this.matchingText = loan?.matchingText ?? '';
 			this.matchRatio = loan?.matchRatio ?? 0;
 			this.name = loan?.name ?? '';
+			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
-				this.lenderCountVisibility = true;
-				this.statScrollAnimation = true;
+				this.lenderCountVisibility = !this.socialExpEnabled;
+				this.statScrollAnimation = !this.socialExpEnabled;
 			}
 		},
 	},
@@ -530,13 +579,20 @@ export default {
 			if (this.matchingText.length) {
 				const cycleSlotMachine = () => {
 					if (!this.isMatchAtRisk) {
-						this.statScrollAnimation = !this.statScrollAnimation;
+						if (this.socialExpEnabled) {
+							this.statScrollAnimation = false;
+						} else {
+							this.statScrollAnimation = !this.statScrollAnimation;
+						}
 					} else {
 						this.statScrollAnimation = true;
 					}
 				};
 				setInterval(cycleSlotMachine, 5000);
 			}
+		},
+		toggleLightbox() {
+			this.$emit('togglelightbox');
 		}
 	},
 	watch: {
@@ -547,7 +603,7 @@ export default {
 		},
 		unreservedAmount(newValue, previousValue) {
 			// set initial selected value for sub 25 loan if shown
-			if (this.completeLoan && this.isBetween25And100) {
+			if (this.completeLoan && this.isBetween25And75) {
 				this.selectedOption = Number(this.unreservedAmount).toFixed();
 			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
 				this.selectedOption = parseInt(newValue, 10);
@@ -693,8 +749,8 @@ export default {
 		isLessThan25() {
 			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
 		},
-		isBetween25And100() {
-			return this.unreservedAmount < 100 && this.unreservedAmount > 25;
+		isBetween25And75() {
+			return this.unreservedAmount < 75 && this.unreservedAmount > 25;
 		},
 		isBetween25And500() {
 			return this.unreservedAmount < 500 && this.unreservedAmount >= 25;

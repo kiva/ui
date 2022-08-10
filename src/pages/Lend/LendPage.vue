@@ -26,7 +26,7 @@
 					/>
 					<kv-loading-overlay v-if="loading" />
 				</div>
-				<kv-pagination :total="totalCount" :limit="limit" @page-change="pageChange" />
+				<kv-pagination :total="totalCount" :limit="limit" :offset="offset" @page-changed="pageChange" />
 				<div v-if="totalCount > 0" class="tw-text-center tw-mb-4 tw-text-tertiary">
 					{{ totalCount }} loans
 				</div>
@@ -127,16 +127,15 @@ export default {
 			} else {
 				this.totalCount = data.lend.loans.totalCount;
 				this.loans = data.lend.loans.values;
-				this.itemsInBasket = _map(data.shop.basket.items.values, 'id');
+				this.itemsInBasket = _map(data.shop.basket?.items?.values, 'id');
 				this.isVisitor = !_get(data, 'my.userAccount.id');
 				this.loading = false;
 			}
 		}
 	},
 	methods: {
-		pageChange(number) {
-			const offset = loansPerPage * (number - 1);
-			this.offset = offset;
+		pageChange({ pageOffset }) {
+			this.offset = pageOffset;
 			this.pushChangesToUrl();
 		},
 		updateFromParams(query) {

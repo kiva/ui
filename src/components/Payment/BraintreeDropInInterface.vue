@@ -83,6 +83,40 @@ export default {
 			updatingPaymentWrapper: false,
 		};
 	},
+	computed: {
+		formattedAmount() {
+			return numeral(this.amount).format('0.00');
+		},
+		applePaymentRequest() {
+			return {
+				total: {
+					label: 'Kiva',
+					amount: this.formattedAmount,
+				},
+				requiredBillingContactFields: ['postalAddress']
+			};
+		},
+		googleTransactionInfo() {
+			return {
+				totalPriceStatus: 'FINAL',
+				totalPrice: this.formattedAmount,
+				currencyCode: 'USD',
+			};
+		}
+	},
+	watch: {
+		amount(next, prev) {
+			if (next !== prev) {
+				this.btDropinInstance?.updateConfiguration?.('paypal', 'amount', this.formattedAmount);
+				this.btDropinInstance?.updateConfiguration?.(
+					'googlePay',
+					'transactionInfo',
+					this.googleTransactionInfo
+				);
+				this.btDropinInstance?.updateConfiguration?.('applePay', 'paymentRequest', this.applePaymentRequest);
+			}
+		}
+	},
 	methods: {
 		setUpdatingPaymentWrapper(state) {
 			this.updatingPaymentWrapper = state;
@@ -94,7 +128,7 @@ export default {
 				this.apollo.query({
 					query: getClientToken,
 					variables: {
-						amount: numeral(this.amount).format('0.00'),
+						amount: this.formattedAmount,
 						useCustomerId: true
 					}
 				}).then(response => {
@@ -142,7 +176,7 @@ export default {
 				},
 				paypal: {
 					flow: this.flow,
-					amount: numeral(this.amount).format('0.00'),
+					amount: this.formattedAmount,
 					currency: 'USD',
 					buttonStyle: {
 						color: 'gold',
@@ -153,11 +187,7 @@ export default {
 				googlePay: {
 					googlePayVersion: 2,
 					merchantId: this.$appConfig.googlePay.merchantId,
-					transactionInfo: {
-						totalPriceStatus: 'FINAL',
-						totalPrice: numeral(this.amount).format('0.00'),
-						currencyCode: 'USD'
-					},
+					transactionInfo: this.googleTransactionInfo,
 					allowedPaymentMethods: [{
 						type: 'CARD',
 						parameters: {
@@ -170,13 +200,7 @@ export default {
 				},
 				applePay: {
 					displayName: 'Kiva',
-					paymentRequest: {
-						total: {
-							label: 'Kiva',
-							amount: numeral(this.amount).format('0.00'),
-						},
-						requiredBillingContactFields: ['postalAddress']
-					}
+					paymentRequest: this.applePaymentRequest
 				}
 			}).then(btCreateInstance => {
 				this.btDropinInstance = btCreateInstance;

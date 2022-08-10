@@ -243,8 +243,9 @@ module.exports = [
 		},
 	},
 	{
+		name: 'lend-filter',
 		path: '/lend/filter',
-		component: () => import('@/pages/Lend/Filter/LendFilterPage'),
+		component: () => import('@/pages/Lend/LoanSearchPage'),
 		meta: {
 			unbounce: true,
 		},
@@ -252,10 +253,7 @@ module.exports = [
 	{
 		name: 'filter-alpha',
 		path: '/lend/filter-alpha',
-		component: () => import('@/pages/Lend/LoanSearchPage'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		}
+		redirect: '/lend/filter'
 	},
 	{
 		name: 'borrowerProfile',
@@ -499,6 +497,14 @@ module.exports = [
 		path: '/styleguide/*',
 		redirect: '/styleguide',
 		meta: {
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
+		path: '/lend/saved-search-beta',
+		component: () => import('@/pages/Settings/SavedSearchBeta'),
+		meta: {
+			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
 		}
 	},

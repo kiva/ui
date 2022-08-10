@@ -1,5 +1,5 @@
 /**
- * Global exclude list for promoation banners + disclaimers
+ * Global exclude list for promotion banners + disclaimers
  */
 export const globalBannerDenyList = [
 	'/checkout',
@@ -37,4 +37,21 @@ export function isExcludedUrl(urlArray, route) {
 		}
 	});
 	return excludeUrl;
+}
+
+/**
+ * Given a base url and query params in the form of object key value pair, return a fully formed url
+ *
+ * @param {string} base - The base url string
+ * @param {string} args - query params in the form of object key value pairs
+ * @returns {string}
+ */
+export function getFullUrl(base, args) {
+	if (!args || Object.keys(args).length === 0) return base;
+	const querystring = Object.keys(args)
+		.map(key => {
+			return `${key}=${encodeURIComponent(args[key])}`;
+		})
+		.join('&');
+	return `${base}?${querystring}`;
 }

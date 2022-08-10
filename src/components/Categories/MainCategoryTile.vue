@@ -5,23 +5,16 @@
 			:to="`/lend-by-category/${cleanURL}`"
 			v-kv-track-event="['Lending', 'click-Category', categoryName]"
 		>
-			<div class="tw-relative">
-				<kv-responsive-image
-					class="category-image"
-					:images="chooseImage(tileSize)"
-					loading="lazy"
-					:alt="altText"
-				/>
-				<div class="hover-arrow-fade">
-					<span class="tw-pl-1">
-						&#10132;
-					</span>
-				</div>
-			</div>
+			<kv-responsive-image
+				class="category-image category-image__large"
+				:images="chooseImage(tileSize)"
+				loading="lazy"
+				:alt="altText"
+			/>
 			<div>
 				<div class="tw-text-center tw-flex tw-justify-between">
 					<h3 class="tw-mt-2 tw-mb-2 group-hover:tw-underline">
-						Lend to {{ categoryName }}
+						{{ categoryName }}
 					</h3>
 					<h4
 						class="tw-mt-2 tw-mb-2"
@@ -52,23 +45,16 @@
 		>
 			<div class="tw-flex">
 				<div class="tw-mr-2 tw-flex-none">
-					<div class="tw-relative">
-						<kv-responsive-image
-							class="category-image category-image__small"
-							:images="chooseImage(tileSize)"
-							loading="lazy"
-							:alt="altText"
-						/>
-						<div class="hover-arrow-fade">
-							<span class="tw-pl-1">
-								&#10132;
-							</span>
-						</div>
-					</div>
+					<kv-responsive-image
+						class="category-image category-image__small"
+						:images="chooseImage(tileSize)"
+						loading="lazy"
+						:alt="altText"
+					/>
 				</div>
 				<div class="tw-grow">
 					<h3 class=" tw-mb-2 group-hover:tw-underline">
-						Lend to {{ categoryName }}
+						{{ categoryName }}
 					</h3>
 					<div>
 						<span class="tw-line-clamp-2">
@@ -93,7 +79,10 @@ export default {
 	props: {
 		tileSize: {
 			type: String,
-			default: 'small'
+			default: 'small',
+			validator: value => {
+				return ['small', 'medium', 'large'].indexOf(value) !== -1;
+			}
 		},
 		categoryName: {
 			type: String,
@@ -171,25 +160,18 @@ export default {
 	@apply tw-rounded;
 }
 
-/* This zooms in on the image 10% with slow ease in, ease out. */
-.category-image >>> img {
-	@apply group-hover:tw-scale-110 tw-transition-all tw-duration-500 tw-ease-in-out tw-transform;
+/* tw-transform-gpu is used to eliminate readjustments/wiggles after the zoom effect on the images.
+Rendering by the GPU here instead of the CPU ensures a smoother transition. */
+
+.category-image__large >>> img {
+	@apply group-hover:tw-scale-110 tw-transition-all tw-duration-500 tw-ease-in-out tw-transform-gpu;
 }
 
 .category-image__small >>> img {
 	@apply tw-object-cover;
 	@apply tw-w-[152px];
 	@apply tw-h-[152px];
-}
-
-/* This displays the right arrow on the category image while hovering over tile. */
-.hover-arrow-fade {
-	@apply tw-opacity-[0];
-	@apply group-hover:tw-transition-opacity tw-duration-500;
-	@apply group-hover:tw-opacity-[100];
-	@apply tw-rounded-tl tw-rounded-bl;
-	@apply tw-text-secondary tw-bg-secondary;
-	@apply tw-absolute tw-bottom-2 tw-right-0;
+	@apply group-hover:tw-scale-105 tw-transition-all tw-duration-500 tw-ease-in-out tw-transform-gpu;
 }
 
 .remove-link-decoration {

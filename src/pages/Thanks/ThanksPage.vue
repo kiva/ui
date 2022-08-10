@@ -102,6 +102,7 @@
 			:loan="selectedLoan"
 			:simple-social-share-version="simpleSocialShareVersion"
 			:share-card-language-version="shareCardLanguageVersion"
+			:share-ask-copy-version="shareAskCopyVersion"
 		/>
 	</www-page>
 </template>
@@ -123,6 +124,7 @@ import ThanksPageShare from '@/components/Thanks/ThanksPageShare';
 import orderBy from 'lodash/orderBy';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { processPageContentFlat } from '@/util/contentfulUtils';
+import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -165,6 +167,7 @@ export default {
 			shareCardLanguageVersion: '',
 			simpleSocialShareVersion: '',
 			newThanksPageModuleVersion: '',
+			shareAskCopyVersion: '',
 		};
 	},
 	apollo: {
@@ -186,6 +189,7 @@ export default {
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_share_module' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_card_language' } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
 					upsellEligible ? client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_ad_upsell' } }) : Promise.resolve() // eslint-disable-line max-len
 				]);
 			}).catch(errorResponse => {
@@ -274,6 +278,11 @@ export default {
 			.filter(item => item.basketItemType === 'loan_reservation')
 			.map(item => item.loan);
 
+		// MARS-194-User metrics A/B Optimizely experiment
+		const depositTotal = this.receipt?.totals?.depositTotals?.depositTotal;
+		userHasLentBefore(this.loans.length > 0);
+		userHasDepositBefore(parseFloat(depositTotal) > 0);
+
 		if (!this.isGuest && !data?.my?.userAccount) {
 			logFormatter(
 				`Failed to get lender for transaction id: ${this.$route.query.kiva_transaction_id}`,
@@ -334,6 +343,28 @@ export default {
 			}) || {};
 
 			this.shareCardLanguageVersion = shareCardLanguage.version;
+			if (this.shareCardLanguageVersion) {
+				this.$kvTrackEvent(
+					'Thanks',
+					'EXP-MARS-143-Jul2022-inviter',
+					this.shareCardLanguageVersion,
+				);
+			}
+
+			// MARS-202 Share copy ask experiment
+			const shareAskCopyVersion = this.apollo.readFragment({
+				id: 'Experiment:share_ask_copy',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.shareAskCopyVersion = shareAskCopyVersion.version;
+			if (this.shareAskCopyVersion) {
+				this.$kvTrackEvent(
+					'Thanks',
+					'EXP-MARS-202-Aug2022',
+					this.shareAskCopyVersion,
+				);
+			}
 		}
 	},
 	mounted() {

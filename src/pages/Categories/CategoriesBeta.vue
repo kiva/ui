@@ -1,7 +1,7 @@
 <template>
 	<www-page>
 		<kv-page-container>
-			<kv-grid class="tw-pt-4 md:tw-pt-6 lg:tw-pt-8">
+			<kv-grid class="tw-pt-4 md:tw-pt-6 lg:tw-pt-8 tw-mb-4">
 				<h1 class="tw-mb-2">
 					Make a loan, change a life
 				</h1>
@@ -10,7 +10,19 @@
 					future for themselves and their families.
 				</p>
 			</kv-grid>
-			<kv-grid class="md:tw-pt-6 lg:tw-pt-8">
+		</kv-page-container>
+		<div class="tw-bg-primary md:tw-bg-secondary tw-mb-2">
+			<kv-page-container>
+				<kv-grid>
+					<loan-spotlight
+						category-slug="recommended-by-lenders"
+						fallback-category-slug="women"
+					/>
+				</kv-grid>
+			</kv-page-container>
+		</div>
+		<kv-page-container>
+			<kv-grid class="tw-pt-6">
 				<h2>
 					Find loans by category
 				</h2>
@@ -52,7 +64,6 @@
 					<kv-button
 						to="/lend"
 						variant="secondary"
-						state="active"
 						v-kv-track-event="['Lending', 'click-view-all', 'View All']"
 					>
 						View all loans
@@ -76,19 +87,27 @@
 				</div>
 			</kv-grid>
 		</kv-page-container>
+		<monthly-good-module />
+		<frequently-asked-questions
+			:content="faqContentGroup"
+		/>
 	</www-page>
 </template>
 
 <script>
+import { processPageContent } from '@/util/contentfulUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import MainCategoryTile from '@/components/Categories/MainCategoryTile';
+import LoanSpotlight from '@/components/Categories/LoanSpotlight';
+import MonthlyGoodModule from '@/components/Categories/MonthlyGoodModule';
+import FrequentlyAskedQuestions from '@/components/Contentful/FrequentlyAskedQuestions';
 import gql from 'graphql-tag';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
-const allCategoriesQuery = gql`
-	query allCategoriesQuery {
+const allCategoriesPageQuery = gql`
+	query allCategoriesPageQuery {
 		lend {
 			loanChannels (limit: 18, popular: true, applyMinLoanCount: true) {
 				values {
@@ -110,6 +129,9 @@ const allCategoriesQuery = gql`
 				}
 			}
 		}
+		contentful {
+			entries(contentType: "page", contentKey: "categories")
+		}
 	}
 `;
 
@@ -120,20 +142,39 @@ export default {
 		MainCategoryTile,
 		KvGrid,
 		KvPageContainer,
-		KvButton
+		KvButton,
+		LoanSpotlight,
+		MonthlyGoodModule,
+		FrequentlyAskedQuestions
+	},
+	metaInfo() {
+		return {
+			title: 'Choose a category and fund a loan',
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: 'Find and lend to the categories that you\'re passionate about, from women to refugees to '
+                    + 'climate, and more. With as little as $25 you can support entrepreneurs around the world on Kiva.'
+				}
+			]
+		};
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			categoryPlaceholderImageCTF: '',
 			categories: [],
+			pageData: {},
 		};
 	},
 	apollo: {
-		query: allCategoriesQuery,
+		query: allCategoriesPageQuery,
 		preFetch: true,
 		result(result) {
 			this.categories = result.data?.lend?.loanChannels?.values ?? [];
+			const pageEntry = result.data?.contentful?.entries?.items?.[0] ?? null;
+			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
 		},
 	},
 	methods: {
@@ -144,7 +185,24 @@ export default {
 			return category.retinaImage?.url ?? '';
 		}
 	},
+	computed: {
+		contentGroups() {
+			return this.pageData?.page?.pageLayout?.contentGroups ?? [];
+		},
+		faqContentGroup() {
+			return this.contentGroups?.find(({ type }) => {
+				return type ? type === 'frequentlyAskedQuestions' : false;
+			});
+		},
+	},
 	mounted() {
+		// EXP-ACK-345-Jul2022
+		// This cookie is set during the redirect and signifies the exp is active when landing on this page
+		const expCookieSignifier = this.cookieStore.get('kvcategoriesbeta');
+		if (expCookieSignifier === 'b') {
+			this.$kvTrackEvent('Categories', 'EXP-ACK-345-Jul2022', expCookieSignifier);
+		}
+
 		this.apollo.query({
 			query: gql`
 				query bpHeroBackgroundImage($placeholderKey: String) {
