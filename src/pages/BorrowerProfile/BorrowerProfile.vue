@@ -106,6 +106,7 @@
 				</content-container>
 			</div>
 		</article>
+		<what-is-kiva-modal v-if="kivaModuleExpEnabled && !shownModal" />
 		<!-- <aside>Similar loans</aside> -->
 		<article v-else>
 			<FundedBorrowerProfile
@@ -142,6 +143,7 @@ import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import SocialShareButton from '@/components/BorrowerProfile/SocialShareButton';
+import WhatIsKivaModal from '@/components/BorrowerProfile/WhatIsKivaModal';
 
 import {
 	getExperimentSettingCached,
@@ -150,8 +152,8 @@ import {
 import loanUseFilter from '@/plugins/loan-use-filter';
 
 const socialElementsExpKey = 'social_elements';
-const newFundedBorrowerPageExpKey = 'new_funded_borrower_page';
-
+const whatIsKivaExpKey = 'what_is_kiva_module';
+const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 const pageQuery = gql`
 	query borrowerProfileMeta(
 		$loanId: Int!,
@@ -161,6 +163,7 @@ const pageQuery = gql`
 		$imgDefaultSize: String = "w480h360",
 		$imgRetinaSize: String = "w960h720"
 	) {
+		hasEverLoggedIn @client
 		general {
 			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
 				key
@@ -182,9 +185,11 @@ const pageQuery = gql`
 				key
 				value
 			}
-			newFundedBorrowerPage: uiExperimentSetting(
-				key: "new_funded_borrower_page"
-			) {
+			newFundedBorrowerPage: uiExperimentSetting(key: "new_funded_borrower_page") {
+				key
+				value
+			}
+			whatIsKivaModule: uiExperimentSetting(key: "what_is_kiva_module") {
 				key
 				value
 			}
@@ -296,6 +301,7 @@ export default {
 		TopBannerPfp,
 		WhySpecial,
 		WwwPage,
+		WhatIsKivaModal
 	},
 	metaInfo() {
 		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
@@ -405,19 +411,22 @@ export default {
 			lenders: [],
 			socialExpEnabled: false,
 			showLightBoxModal: false,
+			kivaModuleExpEnabled: false,
+			shownModal: false
 		};
 	},
 	apollo: {
 		query: pageQuery,
 		preFetch(config, client, { route, cookieStore }) {
+			const publicId = getPublicId(route);
 			return client
 				.query({
 					query: pageQuery,
 					variables: {
 						loanId: Number(route.params?.id ?? 0),
-						basketId: cookieStore.get('kvbskt'),
-						publicId: route.query?.utm_content ?? '',
-						getInviter: !!route.query?.utm_content,
+						publicId,
+						getInviter: !!publicId,
+						basketId: cookieStore.get('kvbskt')
 					},
 				})
 				.then(({ data }) => {
@@ -444,24 +453,27 @@ export default {
 						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 						client.query({ query: experimentQuery, variables: { id: socialElementsExpKey } }),
-						client.query({ query: experimentQuery, variables: { id: newFundedBorrowerPageExpKey } })
+						client.query({ query: experimentQuery, variables: { id: whatIsKivaExpKey } }),
+						client.query({ query: experimentQuery, variables: { id: whatIsKivaExpKey } }),
 					]);
 				});
 		},
 		preFetchVariables({ route, cookieStore }) {
+			const publicId = getPublicId(route);
 			return {
 				loanId: Number(route?.params?.id ?? 0),
+				publicId,
+				getInviter: !!publicId,
 				basketId: cookieStore.get('kvbskt'),
-				publicId: route.query?.utm_content ?? '',
-				getInviter: !!route.query?.utm_content,
 			};
 		},
 		variables() {
+			const publicId = getPublicId(this.$route);
 			return {
 				loanId: Number(this.$route?.params?.id ?? 0),
+				publicId,
+				getInviter: !!publicId,
 				basketId: this.cookieStore.get('kvbskt'),
-				publicId: this.$route?.query?.utm_content ?? '',
-				getInviter: !!this.$route?.query?.utm_content,
 			};
 		},
 		result(result) {
@@ -489,6 +501,8 @@ export default {
 			this.diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;
 			this.lender = result?.data?.my?.userAccount ?? {};
+
+			this.shownModal = this.cookieStore.get('what-is-kiva-shown') || result?.data?.hasEverLoggedIn;
 		},
 	},
 	mounted() {
@@ -507,6 +521,20 @@ export default {
 				socialElementsExpKey,
 				'EXP-MARS-158-Jul2022'
 			);
+		}
+
+		const kivaModuleExpData = getExperimentSettingCached(this.apollo, whatIsKivaExpKey);
+		if (kivaModuleExpData?.enabled) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Borrower Profile',
+				whatIsKivaExpKey,
+				'EXP-MARS-199-Aug2022'
+			);
+			if (version === 'b') {
+				this.kivaModuleExpEnabled = true;
+			}
 		}
 	},
 	methods: {

@@ -259,7 +259,7 @@ module.exports = [
 	{
 		name: 'lend-filter',
 		path: '/lend/filter',
-		component: () => import('@/pages/Lend/Filter/LendFilterPage'),
+		component: () => import('@/pages/Lend/LoanSearchPage'),
 		meta: {
 			unbounce: true,
 		},
@@ -267,10 +267,7 @@ module.exports = [
 	{
 		name: 'filter-alpha',
 		path: '/lend/filter-alpha',
-		component: () => import('@/pages/Lend/LoanSearchPage'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		}
+		redirect: '/lend/filter'
 	},
 	{
 		path: '/lp/own-the-change-gender-equality',
