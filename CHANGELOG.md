@@ -1,3 +1,26 @@
+## [2.247.0](https://github.com/kiva/ui/compare/v2.246.0...v2.247.0) (2022-08-10)
+
+
+### Features
+
+* add tracking events ([a4945c1](https://github.com/kiva/ui/commit/a4945c1b7d961d1583a5e3bdbc27b1c1d00a7dcd))
+* create what is kiva modal component with mobile and desktop version ([90b16d1](https://github.com/kiva/ui/commit/90b16d131831b89815e790b470e24b37068f3301))
+* setup exp tracking and condition to make it visible ([1cec02c](https://github.com/kiva/ui/commit/1cec02c9a4b7a60a3de552ca109ec0671efeb2a7))
+* slide out mobile animation ([9f0f549](https://github.com/kiva/ui/commit/9f0f5497b71694d06e94f45924d7903bc4756d81))
+* update package-lock.json for @kiva/kv-components upgrade ([90c1009](https://github.com/kiva/ui/commit/90c10094e844c7d3ed90c50cecb8269465e8273a))
+* validate that modal has not been shown before and remove unnecessary div ([4a8cb16](https://github.com/kiva/ui/commit/4a8cb16f84ff90816f8889ddd5e5801b1f5abcd4))
+
+
+### Bug Fixes
+
+* conflicts ([8d6bcdb](https://github.com/kiva/ui/commit/8d6bcdbcb7e969adb43644a55b32be24ebfa8cda))
+* css lint ([689bf01](https://github.com/kiva/ui/commit/689bf01dd8466697ab154c51201e4d74ac7627a1))
+* css lint ([db53be2](https://github.com/kiva/ui/commit/db53be2143ba8928478db184436a592672b40a1b))
+* experiment key name and update kv-components version ([65522ff](https://github.com/kiva/ui/commit/65522ff71ded72acdf63a76e6776e73253556094))
+* get type prop as an argument ([d806d37](https://github.com/kiva/ui/commit/d806d3719a6ee2bc27728b5ba989babe9096002f))
+* move lightbox body outside header ([ba02815](https://github.com/kiva/ui/commit/ba028158b2acf335bed048feae0c88444065ef7b))
+* resolve conflict ([a1cad64](https://github.com/kiva/ui/commit/a1cad64f23e14551f57044cb3c4fc7247a6642e9))
+
 ## [2.246.0](https://github.com/kiva/ui/compare/v2.245.0...v2.246.0) (2022-08-09)
 
 
