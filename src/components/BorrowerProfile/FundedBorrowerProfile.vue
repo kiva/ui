@@ -191,10 +191,8 @@
 
 <script>
 import _get from 'lodash/get';
-import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import KvFlag from '@/components/Kv/KvFlag';
-import fundedBorrowerProfile from '@/graphql/query/fundedBorrowerProfile.graphql';
 import basketItems from '@/graphql/query/basketItems.graphql';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import LYML from '@/components/LoansYouMightLike/LymlContainer';
