@@ -1,3 +1,10 @@
+### [2.247.2](https://github.com/kiva/ui/compare/v2.247.1...v2.247.2) (2022-08-10)
+
+
+### Bug Fixes
+
+* file conflicts ([f7c618c](https://github.com/kiva/ui/commit/f7c618cd74feef0ddf7dbca883184a38820d5fb6))
+
 ### [2.247.1](https://github.com/kiva/ui/compare/v2.247.0...v2.247.1) (2022-08-10)
 
 
