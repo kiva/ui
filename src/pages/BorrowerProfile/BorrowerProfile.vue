@@ -142,6 +142,7 @@ import {
 import loanUseFilter from '@/plugins/loan-use-filter';
 
 const socialElementsExpKey = 'social_elements';
+const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 const pageQuery = gql`
 	query borrowerProfileMeta($loanId: Int!, $publicId: String!, $getInviter: Boolean!) {
 		general {
@@ -251,6 +252,7 @@ export default {
 	metaInfo() {
 		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
 		const description = this.anonymizationLevel === 'full' ? undefined : this.pageDescription;
+		const isSclePresent = this.$route.query?.utm_campaign?.includes('scle');
 
 		return {
 			title,
@@ -307,7 +309,20 @@ export default {
 					vmid: 'twitter:description',
 					content: this.shareDescription
 				},
-			])
+			]).concat(isSclePresent ? [
+				{
+					vmid: 'robots',
+					name: 'robots',
+					content: 'noindex',
+				},
+			] : []),
+			link: (isSclePresent ? [
+				{
+					vmid: 'canonical',
+					rel: 'canonical',
+					href: `https://${this.$appConfig.host}${this.$route.fullPath}`,
+				},
+			] : []),
 		};
 	},
 	data() {
@@ -347,13 +362,14 @@ export default {
 	apollo: {
 		query: pageQuery,
 		preFetch(config, client, { route }) {
+			const publicId = getPublicId(route);
 			return client
 				.query({
 					query: pageQuery,
 					variables: {
 						loanId: Number(route.params?.id ?? 0),
-						publicId: route.query?.utm_content ?? '',
-						getInviter: !!route.query?.utm_content
+						publicId,
+						getInviter: !!publicId
 					},
 				})
 				.then(({ data }) => {
@@ -374,17 +390,19 @@ export default {
 				});
 		},
 		preFetchVariables({ route }) {
+			const publicId = getPublicId(route);
 			return {
 				loanId: Number(route?.params?.id ?? 0),
-				publicId: route.query?.utm_content ?? '',
-				getInviter: !!route.query?.utm_content,
+				publicId,
+				getInviter: !!publicId,
 			};
 		},
 		variables() {
+			const publicId = getPublicId(this.$route);
 			return {
 				loanId: Number(this.$route?.params?.id ?? 0),
-				publicId: this.$route?.query?.utm_content ?? '',
-				getInviter: !!this.$route?.query?.utm_content,
+				publicId,
+				getInviter: !!publicId,
 			};
 		},
 		result(result) {
