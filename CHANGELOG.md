@@ -1,3 +1,10 @@
+### [2.247.1](https://github.com/kiva/ui/compare/v2.247.0...v2.247.1) (2022-08-10)
+
+
+### Bug Fixes
+
+* set conditional for modal exp ([6a87b66](https://github.com/kiva/ui/commit/6a87b6619c11e8190e3ae563eb7de7dbfa03085d))
+
 ## [2.247.0](https://github.com/kiva/ui/compare/v2.246.0...v2.247.0) (2022-08-10)
 
 
