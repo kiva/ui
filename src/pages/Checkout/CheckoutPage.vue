@@ -26,7 +26,7 @@
 					<hr class="tw-border-tertiary tw-my-3">
 				</div>
 				<div class="tw-relative">
-					<div class="basket-container tw-mx-auto tw-my-0">
+					<div class="basket-list-container basket-container tw-mx-auto tw-my-0">
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
@@ -904,6 +904,10 @@ export default {
 
 <style lang="scss">
 @import 'settings';
+
+.basket-list-container {
+	min-height: 600px;
+}
 
 #checkout-slim {
 	// loading overlay overrides
