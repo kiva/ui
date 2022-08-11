@@ -534,7 +534,7 @@ export default {
 		isUpsellUnder100() {
 			const amountLeft = this.upsellLoan?.loanAmount
 			- this.upsellLoan?.loanFundraisingInfo?.fundedAmount
-			- this.upsellLoan?.loanFundraisingInfo?.reservedAmount;
+			- this.upsellLoan?.loanFundraisingInfo?.reservedAmount || 0;
 			return amountLeft < 100;
 		},
 		showMatchedLoanKivaCredit() {
