@@ -37,9 +37,7 @@ describe('Testing the Categories Beta page elements', () => {
 		// check that the spotlight loan has a location, description, and image
 		cy.get('[data-testid="all-categories-loan-spotlight"]').within(() => {
 			cy.get('h3').invoke('text').should('not.be.empty');
-			cy.get('span').within(() => {
-				cy.get('p').invoke('text').should('not.be.empty');
-			});
+			cy.get('p').invoke('text').should('not.be.empty');
 			cy.get('picture.spotlight-loan-image').within(() => {
 				cy.get('img').invoke('attr', 'src').should('not.be.empty');
 			});
