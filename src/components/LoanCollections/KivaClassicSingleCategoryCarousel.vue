@@ -1,5 +1,5 @@
 <template>
-	<div v-if="loanChannelId">
+	<div v-if="loanChannelId && selectedChannelLoanIds.length > 0">
 		<h2 class="tw-mb-2">
 			{{ selectedChannel.name }}
 		</h2>
@@ -12,6 +12,7 @@
 			:selected-channel="selectedChannel"
 			:show-view-more-card="showViewMoreCard"
 			:lend-now-button="lendNowButton"
+			:show-check-back-message="showCheckBackMessage"
 		/>
 	</div>
 </template>
@@ -63,6 +64,12 @@ export default {
 		},
 		showViewMoreCard() {
 			return this.loanDisplaySettings?.showViewMoreCard ?? false;
+		},
+		showCheckBackMessage() {
+			if (this.loanDisplaySettings?.showCheckBackMessage) {
+				return this.loanQueryLimit > this.selectedChannelLoanIds.length;
+			}
+			return false;
 		},
 		selectedChannelLoanIds() {
 			return this.selectedChannel?.loans?.values?.map(loan => loan.id) ?? [];

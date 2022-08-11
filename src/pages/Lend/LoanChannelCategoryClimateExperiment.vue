@@ -101,8 +101,9 @@ export default {
 			lendFilterExpVersion: '',
 			secondaryLoanChannelIds: [],
 			loanDisplaySettings: {
-				loanLimit: 6,
-				showViewMoreCard: true
+				loanLimit: 9,
+				showViewMoreCard: false,
+				showCheckBackMessage: true
 			}
 		};
 	},
