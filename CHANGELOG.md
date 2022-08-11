@@ -1,3 +1,15 @@
+## [2.249.0](https://github.com/kiva/ui/compare/v2.248.2...v2.249.0) (2022-08-11)
+
+
+### Features
+
+* update upsell styles ([d5d7d06](https://github.com/kiva/ui/commit/d5d7d069f4942d7e634e4ab97f81428cacb11e86))
+
+
+### Bug Fixes
+
+* update handling min height for upsells ([24f46cf](https://github.com/kiva/ui/commit/24f46cfa429e2d166e42f1929600fac18f05b958))
+
 ### [2.248.2](https://github.com/kiva/ui/compare/v2.248.1...v2.248.2) (2022-08-11)
 
 
