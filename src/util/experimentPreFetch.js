@@ -17,7 +17,8 @@ let activeExperiments = [
 	'guest_checkout_cta',
 	'mg_highlight_in_nav',
 	'unbounce_trigger',
-	'lend_urgency'
+	'lend_urgency',
+	'topnav_mg_entrypoint',
 ];
 
 // TODO: Enhance Error handling

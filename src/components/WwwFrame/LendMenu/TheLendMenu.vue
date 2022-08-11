@@ -11,7 +11,7 @@
 			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
 			:show-m-g-upsell-link="showMGUpsellLink"
-			:swap-mg-link-copy="swapLendMenuMgCopy"
+			:new-mg-entrypoint="newMgEntrypointExp"
 		/>
 		<lend-mega-menu
 			ref="mega"
@@ -24,7 +24,7 @@
 			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
 			:show-m-g-upsell-link="showMGUpsellLink"
-			:swap-mg-link-copy="swapLendMenuMgCopy"
+			:new-mg-entrypoint="newMgEntrypointExp"
 		/>
 	</div>
 </template>
@@ -39,6 +39,7 @@ import gql from 'graphql-tag';
 import { indexIn } from '@/util/comparators';
 import publicLendMenuQuery from '@/graphql/query/lendMenuData.graphql';
 import privateLendMenuQuery from '@/graphql/query/lendMenuPrivateData.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import LendListMenu from './LendListMenu';
 import LendMegaMenu from './LendMegaMenu';
 
@@ -78,7 +79,7 @@ export default {
 			isRegionsLoading: true,
 			isChannelsLoading: true,
 			showMGUpsellLink: false,
-			swapLendMenuMgCopy: false
+			newMgEntrypointExp: false,
 		};
 	},
 	apollo: {
@@ -177,23 +178,25 @@ export default {
 			});
 		}
 
-		// CORE-392 fetch link swap setting
-		this.apollo.query({
-			query: gql`query mgLinkText {
-				general {
-					mg_link_text: uiConfigSetting(key: "lend_menu_mg_link_swap") {
-						key
-						value
-					}
-				}
-			}`
-		}).then(({ data }) => {
-			const swapLendMenuMgCopySetting = data?.general?.mg_link_text?.value ?? false;
-			this.swapLendMenuMgCopy = swapLendMenuMgCopySetting === 'true';
-			// additional visibility control delay
-			this.$nextTick(() => {
-				this.showMGUpsellLink = true;
-			});
+		// CORE-641 NEW MG ENTRYPOINT
+		// this experiment is assigned in experimentPreFetch.js
+		const newMgEntrypointExperiment = this.apollo.readFragment({
+			id: 'Experiment:topnav_mg_entrypoint',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.newMgEntrypointExp = newMgEntrypointExperiment.version === 'b';
+
+		// Fire Event for EXP-CORE-644-June-2022
+		if (newMgEntrypointExperiment.version) {
+			this.$kvTrackEvent(
+				'TopNav',
+				'EXP-CORE-644-June-2022',
+				newMgEntrypointExperiment.version
+			);
+		}
+
+		this.$nextTick(() => {
+			this.showMGUpsellLink = true;
 		});
 	}
 };

@@ -179,3 +179,9 @@ export default {
 @import 'foundation';
 @include foundation-dropdown;
 </style>
+
+<style lang="postcss" scoped>
+.dropdown-pane {
+	@apply !tw-z-overlay;
+}
+</style>
