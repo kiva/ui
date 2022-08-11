@@ -47,6 +47,7 @@
 					:key="`loan-${loanId}`"
 					:loan-id="loanId"
 					:exp-label="expLabel"
+					:lend-now-button="lendNowButton"
 				/>
 			</template>
 		</kv-carousel>
@@ -97,6 +98,11 @@ export default {
 		expLabel: {
 			type: String,
 			default: ''
+		},
+		/** Prop to pass down to components to the loan card */
+		lendNowButton: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {

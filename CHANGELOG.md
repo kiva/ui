@@ -1,3 +1,44 @@
+## [2.249.0](https://github.com/kiva/ui/compare/v2.248.2...v2.249.0) (2022-08-11)
+
+
+### Features
+
+* update upsell styles ([d5d7d06](https://github.com/kiva/ui/commit/d5d7d069f4942d7e634e4ab97f81428cacb11e86))
+
+
+### Bug Fixes
+
+* update handling min height for upsells ([24f46cf](https://github.com/kiva/ui/commit/24f46cfa429e2d166e42f1929600fac18f05b958))
+
+### [2.248.2](https://github.com/kiva/ui/compare/v2.248.1...v2.248.2) (2022-08-11)
+
+
+### Bug Fixes
+
+* require loan purchase to display focused share ask on thanks page MARS-218 ([e9cabca](https://github.com/kiva/ui/commit/e9cabca3c7fa54d17a56f11051443be295503cdb))
+
+### [2.248.1](https://github.com/kiva/ui/compare/v2.248.0...v2.248.1) (2022-08-11)
+
+
+### Bug Fixes
+
+* change lbc experiment category name ([4e6fe00](https://github.com/kiva/ui/commit/4e6fe00774db878431c79265741b8101cd7165ea))
+* fixes handling of line clamp for nested html elements in safari and firefox ([cf31b0d](https://github.com/kiva/ui/commit/cf31b0dd127bac27dd4a6a8b3566be78891a8478))
+
+## [2.248.0](https://github.com/kiva/ui/compare/v2.247.2...v2.248.0) (2022-08-11)
+
+
+### Features
+
+* add lbc eco category experimental layout ([d831c9c](https://github.com/kiva/ui/commit/d831c9cea1545828f94971eafaf3067feeb81e5f))
+
+### [2.247.2](https://github.com/kiva/ui/compare/v2.247.1...v2.247.2) (2022-08-10)
+
+
+### Bug Fixes
+
+* file conflicts ([f7c618c](https://github.com/kiva/ui/commit/f7c618cd74feef0ddf7dbca883184a38820d5fb6))
+
 ### [2.247.1](https://github.com/kiva/ui/compare/v2.247.0...v2.247.1) (2022-08-10)
 
 

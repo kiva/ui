@@ -38,16 +38,18 @@
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<upsell-module
-							v-if="!upsellCookieActive &&
-								showUpsellModule &&
-								upsellLoan.name
-							"
-							:loan="upsellLoan"
-							:close-upsell-module="closeUpsellModule"
-							:add-to-basket="addToBasket"
-							:enable-experiment-copy="enableUpsellsCopy"
-						/>
+						<div class="upsellContainer">
+							<upsell-module
+								v-if="!upsellCookieActive &&
+									showUpsellModule &&
+									upsellLoan.name
+								"
+								:loan="upsellLoan"
+								:close-upsell-module="closeUpsellModule"
+								:add-to-basket="addToBasket"
+								:enable-experiment-copy="enableUpsellsCopy"
+							/>
+						</div>
 					</div>
 					<div v-if="showKivaCardForm">
 						<hr class="tw-border-tertiary tw-my-3">
@@ -1008,6 +1010,15 @@ export default {
 
 <style lang="scss">
 @import 'settings';
+
+.upsellContainer {
+	min-height: 250px;
+}
+@media screen and (max-width: 733px) {
+	.upsellContainer {
+		min-height: 300px;
+	}
+}
 
 #checkout-slim {
 	// loading overlay overrides
