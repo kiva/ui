@@ -23,9 +23,15 @@
 
 			<!-- TODO: Alter CTA if Checkout is ready -->
 			<campaign-hero
+				v-show="pageData.page.contentGroups.mlCampaignHero"
 				:hero-area-content="heroAreaContent"
 				@add-to-basket="handleAddToBasket"
 				@jump-to-loans="jumpToLoans"
+			/>
+
+			<dynamic-hero-classic
+				v-show="pageData.page.contentGroups.dynamicHeroClassic"
+				:content="heroAreaContent"
 			/>
 
 			<hr>
@@ -239,6 +245,7 @@ import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
+import DynamicHeroClassic from '@/components/Contentful/DynamicHeroClassic';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
 import CampaignLoanGridDisplay from '@/components/CorporateCampaign/CampaignLoanGridDisplay';
@@ -467,6 +474,7 @@ export default {
 		CampaignStatus,
 		CampaignThanks,
 		CampaignVerificationForm,
+		DynamicHeroClassic,
 		InContextCheckout,
 		KvLightbox,
 		KvLoadingOverlay,
@@ -603,6 +611,8 @@ export default {
 		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
 	},
 	mounted() {
+		this.$root.$on('handleAddToBasket', this.handleAddToBasket);
+		this.$root.$on('jumpToLoans', this.jumpToLoans);
 		// check for loan display settings from contentful
 		if (this.contentfulLoanDisplaySetting !== null) {
 			// check for default, if 'grid' swap update loan display. (rows is deafult)
@@ -678,7 +688,8 @@ export default {
 			return layoutDescription || pageDescription;
 		},
 		heroAreaContent() {
-			return this.pageData?.page?.contentGroups?.mlCampaignHero;
+			return this.pageData?.page?.contentGroups?.dynamicHeroClassic
+				|| this.pageData?.page?.contentGroups?.mlCampaignHero;
 		},
 		partnerAreaContent() {
 			return this.pageData?.page?.contentGroups?.mlCampaignPartnerCopy;
