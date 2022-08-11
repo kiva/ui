@@ -10,7 +10,7 @@
 				/>
 			</button>
 		</div>
-		<div class="tw-flex tw-flex-col md:tw-flex-row tw-flex-wrap upsellModule">
+		<div class="tw-flex tw-flex-col md:tw-flex-row tw-flex-no-wrap upsellModule">
 			<div>
 				<img :src="imageUrl" class="tw-rounded-full sm:tw-w-6 tw-w-16 borrowerImage">
 			</div>
