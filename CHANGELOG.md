@@ -1,3 +1,10 @@
+## [2.250.0](https://github.com/kiva/ui/compare/v2.249.0...v2.250.0) (2022-08-11)
+
+
+### Features
+
+* wiring different buttons and design review changes [VUE 1169, 1170, 1172, 1197] ([2550d29](https://github.com/kiva/ui/commit/2550d2945121da1982cffcbba71d0b16b46beb0e))
+
 ## [2.249.0](https://github.com/kiva/ui/compare/v2.248.2...v2.249.0) (2022-08-11)
 
 
