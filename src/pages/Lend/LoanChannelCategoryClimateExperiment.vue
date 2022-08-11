@@ -120,11 +120,8 @@ export default {
 			};
 		},
 		filterUrl() {
-			// initial release sends us back to /lend
-			// return `/lend/${this.$route.params.category || ''}`;
-			return this.lendFilterExpVersion === 'b'
-				? this.getAlgoliaFilterUrl()
-				: `/lend/${this.$route.params.category || ''}`;
+			// process eligible filter url
+			return this.getFilterUrl();
 		},
 	},
 	apollo: {
@@ -170,11 +167,11 @@ export default {
 		const redirectFromUiCookie = this.cookieStore.get('redirectFromUi') || '';
 		if (redirectFromUiCookie === 'true') {
 			this.cookieStore.remove('redirectFromUi');
-			this.$router.push(this.getAlgoliaFilterUrl());
+			this.$router.push(this.getFilterUrl());
 		}
 	},
 	methods: {
-		getAlgoliaFilterUrl() {
+		getFilterUrl() {
 			// get match channel data
 			const matchedUrls = _filter(
 				this.loanChannelQueryMap,
@@ -187,10 +184,10 @@ export default {
 			if (typeof fallback !== 'undefined') {
 				return fallback;
 			}
-			// use algolia params if available
-			const algoliaParams = _get(matchedUrls, '[0]algoliaParams') || '';
-			if (algoliaParams !== '') {
-				return `/lend/filter?${algoliaParams}`;
+			// use query params if available
+			const queryParams = _get(matchedUrls, '[0]queryParams') || '';
+			if (queryParams !== '') {
+				return `/lend?${queryParams}`;
 			}
 			// use default
 			return '/lend/filter';
