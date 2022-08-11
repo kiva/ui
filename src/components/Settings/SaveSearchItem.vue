@@ -47,7 +47,6 @@ export default {
 	data() {
 		return {
 			showAlerts: this.savedSearch?.isAlert,
-			deleteSearch: () => []
 		};
 	},
 	inject: ['apollo', 'cookieStore'],

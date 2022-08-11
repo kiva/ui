@@ -80,9 +80,6 @@ export default {
 				this.savedSearches = [...savedSearchData?.values];
 			});
 		},
-		deleteSavedSearch(payload) {
-			console.log(payload);
-		},
 	}
 };
 </script>
