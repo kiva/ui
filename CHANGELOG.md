@@ -1,3 +1,10 @@
+### [2.253.1](https://github.com/kiva/ui/compare/v2.253.0...v2.253.1) (2022-08-11)
+
+
+### Bug Fixes
+
+* port filterUrl process to running experiment versions ([770ce27](https://github.com/kiva/ui/commit/770ce27c455c39dffb1c9a71d37500417d69bfbb))
+
 ## [2.253.0](https://github.com/kiva/ui/compare/v2.252.0...v2.253.0) (2022-08-11)
 
 
