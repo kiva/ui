@@ -24,7 +24,7 @@
 				:href="savedSearch.url"
 				class="tw-mr-2 tw-mb-2 md:tw-mb-0"
 			>
-				View Loans
+				View {{ savedSearch.loanSearchCriteria.filters.loanIds }} Loans
 			</kv-button>
 			<kv-button
 				variant="secondary"
@@ -46,7 +46,8 @@ export default {
 	name: 'SaveSearchItem',
 	data() {
 		return {
-			deleteSearch: () => []
+			showAlerts: this.savedSearch?.isAlert,
+			totalCount: this.savedSearch?.loanCriteriaSearch?.filters?.loanIds
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -62,6 +63,29 @@ export default {
 		}
 	},
 	methods: {
+		/* loanTotalCount(id, loanIds) {
+			this.apollo.query({
+				query: gql`query savedSearch($id: Int!) {
+					my{
+						savedSearch(id: $id){
+							id
+							loanSearchCriteria{
+								filters{
+									loanIds
+								}
+							}
+						}
+					}
+				}`,
+				variables: {
+					id: this.savedSearch?.id,
+					loanIds: this.savedSearch?.loanSearchCriteria?.filters?.loanIds
+				}
+			}).then(result => {
+				const totalCountData = result?.data.my?.saveSearch;
+				console.log(totalCountData);
+			});
+		}, */
 		deleteSavedSearch(id) {
 			this.apollo.mutate({
 				mutation: gql`mutation deleteSearch($id: Int!) {
@@ -92,6 +116,9 @@ export default {
 					id: this.savedSearch?.id,
 					savedSearch: { isAlert }
 				}
+			}).then(result => {
+				const emailAlertData = result?.data?.my?.updateSaveSearch;
+				console.log(emailAlertData);
 			});
 		},
 	},

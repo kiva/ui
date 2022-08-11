@@ -11,6 +11,8 @@ module.exports = merge(base, devVm, {
 		enableAnalytics: false,
 		enableSnowplow: false,
 		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
+		enableGA: false,
+		gaId: 'UA-11686022-7', // dev-vm property
 		auth0: {
 			loginRedirectUrls: {
 				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'https://www.dev.kiva.org/authenticate?authLevel=recent',

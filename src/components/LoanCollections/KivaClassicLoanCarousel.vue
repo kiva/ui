@@ -47,8 +47,17 @@
 					:key="`loan-${loanId}`"
 					:loan-id="loanId"
 					:exp-label="expLabel"
+					:lend-now-button="lendNowButton"
 				/>
 			</template>
+			<div
+				v-if="showCheckBackMessage" class="tw-flex tw-items-center tw-h-full tw-w-full
+					tw-border-action-highlight tw-rounded"
+			>
+				<div class="tw-w-full tw-text-center">
+					<h3>Check back later, we add new loans everyday.</h3>
+				</div>
+			</div>
 		</kv-carousel>
 	</div>
 </template>
@@ -94,9 +103,18 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		showCheckBackMessage: {
+			type: Boolean,
+			default: false
+		},
 		expLabel: {
 			type: String,
 			default: ''
+		},
+		/** Prop to pass down to components to the loan card */
+		lendNowButton: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {

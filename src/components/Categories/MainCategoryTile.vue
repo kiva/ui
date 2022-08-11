@@ -1,5 +1,8 @@
 <template>
-	<div v-if="tileSize === 'large' || tileSize === 'medium'" class="tw-mb-6 tw-group">
+	<div
+		v-if="tileSize === 'large' || tileSize === 'medium'" class="tw-mb-6 tw-group"
+		data-testid="all-categories-tiles"
+	>
 		<router-link
 			class="remove-link-decoration"
 			:to="`/lend-by-category/${cleanURL}`"
@@ -37,7 +40,10 @@
 			</h4>
 		</router-link>
 	</div>
-	<div v-else-if="tileSize === 'small'" class=" tw-mb-6 tw-group">
+	<div
+		v-else-if="tileSize === 'small'" class=" tw-mb-6 tw-group"
+		data-testid="all-categories-tiles"
+	>
 		<router-link
 			class="remove-link-decoration"
 			:to="`/lend-by-category/${cleanURL}`"

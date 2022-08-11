@@ -21,7 +21,13 @@ export const sortByNameToDisplay = {
 	personalized: 'Recommended'
 };
 
-export const visibleFLSSSortOptions = ['expiringSoon', 'amountHighToLow', 'amountLowToHigh', 'personalized'];
+export const visibleFLSSSortOptions = [
+	'expiringSoon',
+	'amountHighToLow',
+	'amountLowToHigh',
+	'amountLeft',
+	'personalized'
+];
 
 /**
  * The themes/attributes that are always visible in the filter UI
