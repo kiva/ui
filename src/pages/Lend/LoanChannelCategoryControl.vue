@@ -549,7 +549,7 @@ export default {
 			// use query params if available
 			const queryParams = _get(matchedUrls, '[0]queryParams') || '';
 			if (queryParams !== '') {
-				return `/lend?${queryParams}`;
+				return `/lend/filter?${queryParams}`;
 			}
 			// use default
 			return '/lend/filter';
