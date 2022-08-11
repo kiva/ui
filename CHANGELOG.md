@@ -1,3 +1,10 @@
+## [2.248.0](https://github.com/kiva/ui/compare/v2.247.2...v2.248.0) (2022-08-11)
+
+
+### Features
+
+* add lbc eco category experimental layout ([d831c9c](https://github.com/kiva/ui/commit/d831c9cea1545828f94971eafaf3067feeb81e5f))
+
 ### [2.247.2](https://github.com/kiva/ui/compare/v2.247.1...v2.247.2) (2022-08-10)
 
 
