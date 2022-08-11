@@ -26,7 +26,7 @@
 					<hr class="tw-border-tertiary tw-my-3">
 				</div>
 				<div class="tw-relative">
-					<div class="basket-list-container basket-container tw-mx-auto tw-my-0">
+					<div class="basket-container tw-mx-auto tw-my-0">
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
@@ -38,16 +38,18 @@
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<upsell-module
-							v-if="!upsellCookieActive &&
-								showUpsellModule &&
-								upsellLoan.name
-							"
-							:loan="upsellLoan"
-							:close-upsell-module="closeUpsellModule"
-							:add-to-basket="addToBasket"
-							:enable-experiment-copy="enableUpsellsCopy"
-						/>
+						<div class="upsellContainer">
+							<upsell-module
+								v-if="!upsellCookieActive &&
+									showUpsellModule &&
+									upsellLoan.name
+								"
+								:loan="upsellLoan"
+								:close-upsell-module="closeUpsellModule"
+								:add-to-basket="addToBasket"
+								:enable-experiment-copy="enableUpsellsCopy"
+							/>
+						</div>
 					</div>
 					<div v-if="showKivaCardForm">
 						<hr class="tw-border-tertiary tw-my-3">
@@ -920,8 +922,13 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-.basket-list-container {
-	min-height: 600px;
+.upsellContainer {
+	min-height: 250px;
+}
+@media screen and (max-width: 733px) {
+	.upsellContainer {
+		min-height: 300px;
+	}
 }
 
 #checkout-slim {
