@@ -143,7 +143,7 @@ export default {
 					const { version } = trackExperimentVersion(
 						this.apollo,
 						this.$kvTrackEvent,
-						'lend-by-category',
+						'Lending',
 						'lend_by_category_carousel_layout',
 						'EXP-ACK-357-Aug2022',
 					);
