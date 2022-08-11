@@ -21,7 +21,13 @@ const lendToFlssSort = new Map([
  */
 export function hasExcludedQueryParams(query) {
 	// Handle temporary query param exclusions
-	const excludedParams = ['loanTags', 'partner', 'activity', 'lenderTerm'];
+	const excludedParams = [
+		'activity',
+		'isGroup',
+		'lenderTerm',
+		'loanTags',
+		'partner',
+	];
 	// Check route.query for excluded params
 	const queryContainsExcludedParams = Object.keys(query).filter(key => {
 		return excludedParams.includes(key);
