@@ -1,3 +1,10 @@
+### [2.253.2](https://github.com/kiva/ui/compare/v2.253.1...v2.253.2) (2022-08-11)
+
+
+### Bug Fixes
+
+* update query param defs for categories without them ([ab677a2](https://github.com/kiva/ui/commit/ab677a26bb4db3ba9264fc2892db9f5dae954e93))
+
 ### [2.253.1](https://github.com/kiva/ui/compare/v2.253.0...v2.253.1) (2022-08-11)
 
 
