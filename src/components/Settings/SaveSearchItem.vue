@@ -46,7 +46,7 @@ export default {
 	name: 'SaveSearchItem',
 	data() {
 		return {
-			deleteSearch: () => []
+			showAlerts: this.savedSearch?.isAlert,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -92,6 +92,9 @@ export default {
 					id: this.savedSearch?.id,
 					savedSearch: { isAlert }
 				}
+			}).then(result => {
+				const emailAlertData = result?.data?.my?.updateSaveSearch;
+				console.log(emailAlertData);
 			});
 		},
 	},

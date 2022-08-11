@@ -13,7 +13,8 @@
 						<div>Success, we've emailed your receipt to you.</div>
 					</div>
 					<div v-else>
-						<div>Success, your receipt has been sent to <strong>{{ lender.email }}</strong></div>
+						<!-- eslint-disable-next-line max-len -->
+						<div>Success, your receipt has been sent to <strong class="fs-mask">{{ lender.email }}</strong></div>
 					</div>
 				</div>
 			</div>
@@ -75,13 +76,23 @@
 							</figure>
 						</div>
 					</template>
-					<template>
+					<template v-if="shareAskCopyVersion === null || shareAskCopyVersion === 'a'">
 						<h1	class="thanks__headline-h1 tw-mt-1 tw-mb-3 tw-text-left">
 							Get a $25 lending credit by inspiring others.
 						</h1>
 						<p class="tw-text-h3 tw-m-0 thanks__base-text">
 							<!-- eslint-disable-next-line max-len -->
 							Introduce someone new to Kiva and we'll give you $25 to support another borrower. Your Kiva Lending Credit will be applied automatically.
+						</p>
+					</template>
+					<template v-else>
+						<h1	class="thanks__headline-h1 tw-mt-1 tw-mb-3 tw-text-left">
+							<!-- eslint-disable-next-line max-len -->
+							<span class="fs-mask">{{ this.lender.firstName }}</span>, can you share this loan with one more person?
+						</h1>
+						<p class="tw-text-h3 tw-m-0 thanks__base-text">
+							<!-- eslint-disable-next-line max-len -->
+							<span class="fs-mask">{{ this.loan.name }}</span> only needs {{ calculatePeopleQtyToGoal() }} more people to lend $25 and their loan could be fully funded in a matter of hours!
 						</p>
 					</template>
 					<template>
@@ -198,7 +209,11 @@ export default {
 		shareCardLanguageVersion: {
 			type: String,
 			default: ''
-		}
+		},
+		shareAskCopyVersion: {
+			type: String,
+			default: 'a'
+		},
 	},
 	metaInfo() {
 		return {
@@ -330,6 +345,10 @@ export default {
 				}, 500);
 			}
 		},
+		calculatePeopleQtyToGoal() {
+			const remainingAmount = parseFloat(this.loan.unreservedAmount);
+			return remainingAmount === 0 ? 0 : Math.ceil(remainingAmount / 25);
+		}
 	},
 	mounted() {
 		if (this.receipt) {

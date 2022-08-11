@@ -38,15 +38,19 @@
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<upsell-module
-							v-if="!upsellCookieActive &&
-								showUpsellModule &&
-								upsellLoan.name
-							"
-							:loan="upsellLoan"
-							:close-upsell-module="closeUpsellModule"
-							:add-to-basket="addToBasket"
-						/>
+						<div class="upsellContainer">
+							<upsell-module
+								v-if="!upsellCookieActive &&
+									showUpsellModule &&
+									upsellLoan.name &&
+									isUpsellUnder100
+								"
+								:loan="upsellLoan"
+								:close-upsell-module="closeUpsellModule"
+								:add-to-basket="addToBasket"
+								:enable-experiment-copy="enableUpsellsCopy"
+							/>
+						</div>
 					</div>
 					<div v-if="showKivaCardForm">
 						<hr class="tw-border-tertiary tw-my-3">
@@ -354,6 +358,7 @@ export default {
 			showUpsellModule: true,
 			requireDepositsMatchedLoans: false,
 			showMatchedLoansLightbox: false,
+			enableUpsellsCopy: false,
 		};
 	},
 	apollo: {
@@ -388,6 +393,7 @@ export default {
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 						client.query({ query: upsellQuery }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
+						client.query({ query: experimentQuery, variables: { id: 'upsells_copy' } })
 					]);
 				});
 		},
@@ -427,6 +433,18 @@ export default {
 		}
 	},
 	created() {
+		const upsellsCopyExperiment = this.apollo.readFragment({
+			id: 'Experiment:upsells_copy',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.enableUpsellsCopy = upsellsCopyExperiment.version === 'b';
+		if (upsellsCopyExperiment.version) {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-CORE-678-Aug-2022',
+				upsellsCopyExperiment.version
+			);
+		}
 		const matchedLoansExperiment = this.apollo.readFragment({
 			id: 'Experiment:require_deposits_matched_loans',
 			fragment: experimentVersionFragment,
@@ -513,6 +531,12 @@ export default {
 		this.getUpsellModuleData();
 	},
 	computed: {
+		isUpsellUnder100() {
+			const amountLeft = this.upsellLoan?.loanAmount
+			- this.upsellLoan?.loanFundraisingInfo?.fundedAmount
+			- this.upsellLoan?.loanFundraisingInfo?.reservedAmount || 0;
+			return amountLeft < 100;
+		},
 		showMatchedLoanKivaCredit() {
 			const matchedLoansWithCredit = this.loans?.filter(loan => {
 				const hasCredits = loan.creditsUsed?.length > 0;
@@ -904,6 +928,15 @@ export default {
 
 <style lang="scss">
 @import 'settings';
+
+.upsellContainer {
+	min-height: 250px;
+}
+@media screen and (max-width: 733px) {
+	.upsellContainer {
+		min-height: 300px;
+	}
+}
 
 #checkout-slim {
 	// loading overlay overrides
