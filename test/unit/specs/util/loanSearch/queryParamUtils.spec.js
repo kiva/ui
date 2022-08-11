@@ -110,6 +110,22 @@ describe('queryParamUtils.js', () => {
 
 			expect(result).toEqual([1, 2]);
 		});
+
+		it('should handle theme name single sector', () => {
+			const query = 'Theme 1';
+
+			const result = getIdsFromQueryParam(query, mockAllFacets.themeNames, mockAllFacets.themeFacets);
+
+			expect(result).toEqual([1]);
+		});
+
+		it('should handle theme name list', () => {
+			const query = 'Theme 1,Theme 2';
+
+			const result = getIdsFromQueryParam(query, mockAllFacets.themeNames, mockAllFacets.themeFacets);
+
+			expect(result).toEqual([1, 2]);
+		});
 	});
 
 	describe('getCountryIsoCodesFromQueryParam', () => {
