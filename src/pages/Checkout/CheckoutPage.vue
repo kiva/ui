@@ -561,6 +561,8 @@ export default {
 		this.handleToast();
 		this.getPromoInformationFromBasket();
 		this.getUpsellModuleData();
+		// show join-team form for specified scenario
+		this.handleTeamForm();
 	},
 	computed: {
 		showMatchedLoanKivaCredit() {
@@ -969,10 +971,10 @@ export default {
 			});
 		},
 		addTeamToLoans() {
-			if (this.basketLoans.length && this.teamId) {
+			if (this.loans.length && this.teamId) {
 				const loans = [];
 				// TODO Collect these promises and refresh basket once complete
-				this.basketLoans.forEach((loan, index) => {
+				this.loans.forEach((loan, index) => {
 					loans[index] = this.apollo.mutate({
 						mutation: updateLoanReservationTeam,
 						variables: {
@@ -990,6 +992,17 @@ export default {
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
 	},
+	handleTeamForm() {
+		if (
+			this.loans.length
+			&& this.isActivelyLoggedIn
+			&& this.teamId
+			&& !this.teamJoinStatus
+		) {
+			// check for team join optionality
+			this.showTeamForm = true;
+		}
+	}
 };
 </script>
 
