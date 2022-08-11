@@ -12,28 +12,36 @@ export default {
 					url: 'women',
 					queryParams: 'status=fundRaising&gender=female&riskRating=0,5',
 					algoliaParams: 'gender=female',
-					flssLoanSearch: { gender: 'female' },
+					flssLoanSearch: {
+						gender: 'female'
+					},
 				},
 				{
 					id: 8,
 					url: 'agriculture',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=1',
 					algoliaParams: 'sector=Agriculture',
-					flssLoanSearch: { sectorId: [1] },
+					flssLoanSearch: {
+						sectorId: [1]
+					},
 				},
 				{
 					id: 4,
 					url: 'education',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=15',
 					algoliaParams: 'sector=Education',
-					flssLoanSearch: { sectorId: [15] },
+					flssLoanSearch: {
+						sectorId: [15]
+					},
 				},
 				{
 					id: 32,
 					url: 'refugees-and-i-d-ps',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Refugees/Displaced',
 					algoliaParams: 'attributes=Refugees%2FDisplaced',
-					flssLoanSearch: { themeId: [28] },
+					flssLoanSearch: {
+						themeId: [28]
+					},
 				},
 				{
 					id: 18,
@@ -46,7 +54,10 @@ export default {
 					url: 'kiva-u-s',
 					queryParams: 'status=fundRaising&riskRating=0,5&country=US&distributionModel=direct',
 					algoliaParams: 'countries=North%20America%20%3E%20United%20States',
-					flssLoanSearch: { countryIsoCode: ['US'], distributionModel: 'DIRECT' },
+					flssLoanSearch: {
+						countryIsoCode: ['US'],
+						distributionModel: 'DIRECT'
+					},
 				},
 				{
 					id: 23,
@@ -60,14 +71,18 @@ export default {
 					url: 'arts',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=9',
 					algoliaParams: 'sector=Arts',
-					flssLoanSearch: { sectorId: [9] },
+					flssLoanSearch: {
+						sectorId: [9]
+					},
 				},
 				{
 					id: 3,
 					url: 'ending-soon',
 					queryParams: 'status=fundRaising&riskRating=0,5&sortBy=expiringSoon',
 					algoliaParams: 'sortBy=expiringSoon',
-					flssLoanSearch: { sortBy: 'expiringSoon' },
+					flssLoanSearch: {
+						sortBy: 'expiringSoon'
+					},
 				},
 				{
 					id: 26,
@@ -80,28 +95,36 @@ export default {
 					url: 'health',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=6',
 					algoliaParams: 'sector=Health',
-					flssLoanSearch: { sectorId: [6] },
+					flssLoanSearch: {
+						sectorId: [6]
+					},
 				},
 				{
 					id: 12,
 					url: 'food',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=12',
 					algoliaParams: 'sector=Food',
-					flssLoanSearch: { sectorId: [12] },
+					flssLoanSearch: {
+						sectorId: [12]
+					},
 				},
 				{
 					id: 31,
 					url: 'water-and-sanitation',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Water and Sanitation',
 					algoliaParams: 'attributes=Water%20and%20Sanitation',
-					flssLoanSearch: { themeId: [8] },
+					flssLoanSearch: {
+						themeId: [8]
+					},
 				},
 				{
 					id: 7,
 					url: 'conflict-zones',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Conflict Zones',
 					algoliaParams: 'attributes=Conflict%20Zones',
-					flssLoanSearch: { themeId: [14] },
+					flssLoanSearch: {
+						themeId: [14]
+					},
 				},
 				{
 					id: 11,
@@ -114,7 +137,9 @@ export default {
 					url: 'shelter',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=10',
 					algoliaParams: 'sector=Housing',
-					flssLoanSearch: { sectorId: [10] },
+					flssLoanSearch: {
+						sectorId: [10]
+					},
 				},
 				{
 					id: 33,
@@ -130,35 +155,45 @@ export default {
 					url: 'social-enterprises',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Social Enterprise',
 					algoliaParams: 'attributes=Social%20Enterprise',
-					flssLoanSearch: { themeId: [29] },
+					flssLoanSearch: {
+						themeId: [29]
+					},
 				},
 				{
 					id: 13,
 					url: 'retail-businesses',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=7',
 					algoliaParams: 'sector=Retail',
-					flssLoanSearch: { sectorId: [7] },
+					flssLoanSearch: {
+						sectorId: [7]
+					},
 				},
 				{
 					id: 17,
 					url: 'men',
 					queryParams: 'status=fundRaising&gender=male&riskRating=0,5',
 					algoliaParams: 'gender=male',
-					flssLoanSearch: { gender: 'male' },
+					flssLoanSearch: {
+						gender: 'male'
+					},
 				},
 				{
 					id: 10,
 					url: 'underbanked-areas',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Underfunded Areas',
 					algoliaParams: 'attributes=Underfunded%20Areas',
-					flssLoanSearch: { themeId: [13] },
+					flssLoanSearch: {
+						themeId: [13]
+					},
 				},
 				{
 					id: 16,
 					url: 'transport',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=3',
 					algoliaParams: 'sector=Transportation',
-					flssLoanSearch: { sectorId: [3] },
+					flssLoanSearch: {
+						sectorId: [3]
+					},
 				},
 				{
 					id: 14,
@@ -171,7 +206,10 @@ export default {
 					url: 'vulnerable-populations',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Vulnerable Groups&distributionModel=field_partner',
 					algoliaParams: 'attributes=Vulnerable%20Groups',
-					flssLoanSearch: { themeId: [9], distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: {
+						themeId: [9],
+						distributionModel: 'FIELDPARTNER'
+					},
 				},
 
 				// Lend By Category Channels
@@ -187,14 +225,18 @@ export default {
 					url: 'loans-to-women',
 					queryParams: 'status=fundRaising&gender=female&riskRating=0,5',
 					algoliaParams: 'gender=female',
-					flssLoanSearch: { gender: 'female' },
+					flssLoanSearch: {
+						gender: 'female'
+					},
 				},
 				{
 					id: 53,
 					url: 'loans-for-education',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=15',
 					algoliaParams: 'sector=Education',
-					flssLoanSearch: { sectorId: [15] },
+					flssLoanSearch: {
+						sectorId: [15]
+					},
 				},
 				{
 					id: 54,
@@ -207,7 +249,9 @@ export default {
 					url: 'loans-to-farmers',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=1',
 					algoliaParams: 'sector=Agriculture',
-					flssLoanSearch: { sectorId: [1] },
+					flssLoanSearch: {
+						sectorId: [1]
+					},
 				},
 				{
 					id: 56,
@@ -220,7 +264,9 @@ export default {
 					url: 'loans-to-refugees-and-i-d-ps',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Refugees/Displaced',
 					algoliaParams: 'attributes=Refugees%2FDisplaced',
-					flssLoanSearch: { themeId: [28] },
+					flssLoanSearch: {
+						themeId: [28]
+					},
 				},
 				{
 					id: 58,
@@ -230,10 +276,12 @@ export default {
 				},
 				{
 					id: 59,
-					url: 'loans-that-expire-soon',
-					queryParams: 'status=fundRaising&riskRating=0,5',
+					url: 'loans-that-are-ending-soon',
+					queryParams: 'sortBy=expiringSoon',
 					algoliaParams: 'sortBy=expiringSoon',
-					flssLoanSearch: { sortBy: 'expiringSoon' },
+					flssLoanSearch: {
+						sortBy: 'expiringSoon'
+					},
 				},
 				{
 					id: 60,
@@ -246,7 +294,9 @@ export default {
 					url: 'loans-for-clean-energy',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Clean Energy',
 					algoliaParams: 'attributes=Clean%20Energy',
-					flssLoanSearch: { themeId: [32] },
+					flssLoanSearch: {
+						themeId: [32]
+					},
 				},
 				{
 					id: 66,
@@ -265,7 +315,47 @@ export default {
 					url: 'world-refugee-day',
 					queryParams: 'status=fundRaising&riskRating=0,5&theme=Refugees/Displaced',
 					algoliaParams: 'attributes=Refugees%2FDisplaced',
-					flssLoanSearch: { themeId: [28] },
+					flssLoanSearch: {
+						themeId: [28]
+					},
+				},
+				{
+					id: 72,
+					url: 'loans-to-artisans',
+					queryParams: 'status=fundRaising&sector=9',
+					flssLoanSearch: {
+						sectorId: [9]
+					},
+				},
+				{
+					id: 74,
+					url: 'loans-for-food-producers',
+					queryParams: 'status=fundRaising&sector=12',
+					flssLoanSearch: {
+						sectorId: [12]
+					},
+				},
+				{
+					id: 75,
+					url: 'loans-to-underbanked-areas',
+					queryParams: 'theme=Underfunded Areas',
+					flssLoanSearch: {
+						themeId: [13]
+					},
+				},
+				{
+					id: 77,
+					url: 'loans-for-retail-businesses',
+					queryParams: 'status=fundRaising&sector=7',
+					flssLoanSearch: {
+						sectorId: [7]
+					},
+				},
+				{
+					id: 79,
+					url: 'group-loans',
+					queryParams: 'status=fundRaising&isGroup=1&distributionModel=both',
+					// flssLoanSearch: {},
 				},
 
 				// IWD 2020 Loan Channels
@@ -276,49 +366,76 @@ export default {
 					url: 'africa-loans',
 					queryParams: 'country=mz,ug,sn,rw,ke,cd,lr,bf,cm,gh,tg,mg,ml,eg&distributionModel=field_partner&gender=female&riskRating=0,5&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&countries=Africa%20>%20Cameroon~Africa%20>%20Congo%20%28DRC%29~Africa%20>%20Egypt~Africa%20>%20Ghana~Africa%20>%20Kenya~Africa%20>%20Liberia~Africa%20>%20Madagascar~Africa%20>%20Mali~Africa%20>%20Mozambique~Africa%20>%20Nigeria~Africa%20>%20Rwanda~Africa%20>%20Senegal~Africa%20>%20Uganda&sortBy=popularity',
-					flssLoanSearch: { countryIsoCode: ['BF', 'CD', 'CM', 'EG', 'GH', 'KE', 'LR', 'MG', 'ML', 'MZ', 'RW', 'SN', 'TG', 'UG'], gender: 'female', distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: {
+						countryIsoCode: ['BF', 'CD', 'CM', 'EG', 'GH', 'KE', 'LR', 'MG', 'ML', 'MZ', 'RW', 'SN', 'TG', 'UG'],
+						gender: 'female',
+						distributionModel: 'FIELDPARTNER'
+					},
 				},
 				{
 					id: 84,
 					url: 'asia-loans',
 					queryParams: 'country=kh,tj,th,vn,ph,kg,id,pk&distributionModel=field_partner&gender=female&riskRating=0,5&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&countries=Asia%20>%20Cambodia~Asia%20>%20India~Asia%20>%20Kyrgyzstan~Asia%20>%20Nepal~Asia%20>%20Pakistan~Asia%20>%20Philippines~Asia%20>%20Tajikistan~Asia%20>%20Vietnam&sortBy=popularity',
-					flssLoanSearch: { countryIsoCode: ['KH', 'TJ', 'TH', 'VN', 'PH', 'KG', 'ID', 'PK'], gender: 'female', distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: {
+						countryIsoCode: ['KH', 'TJ', 'TH', 'VN', 'PH', 'KG', 'ID', 'PK'],
+						gender: 'female',
+						distributionModel: 'FIELDPARTNER'
+					},
 				},
 				{
 					id: 85,
 					url: 'latin-america-loans',
 					queryParams: 'country=bo,gt,py,ni,hn,pe,cr,pa,ec,co,sv,mx,br&distributionModel=field_partner&gender=female&riskRating=0,5&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&countries=North%20America%20>%20Mexico~South%20America%20>%20Bolivia~South%20America%20>%20Brazil~South%20America%20>%20Colombia~South%20America%20>%20Ecuador~South%20America%20>%20Paraguay~South%20America%20>%20Peru~Central%20America%20>%20Costa%20Rica~Central%20America%20>%20El%20Salvador~Central%20America%20>%20Guatemala~Central%20America%20>%20Honduras~Central%20America%20>%20Nicaragua~North%20America%20>%20Dominican%20Republic&sortBy=popularity',
-					flssLoanSearch: { countryIsoCode: ['BO', 'GT', 'PY', 'NI', 'HN', 'PE', 'CR', 'PA', 'EC', 'CO', 'SV', 'MX', 'BR'], gender: 'female', distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: {
+						countryIsoCode: ['BO', 'GT', 'PY', 'NI', 'HN', 'PE', 'CR', 'PA', 'EC', 'CO', 'SV', 'MX', 'BR'],
+						gender: 'female',
+						distributionModel: 'FIELDPARTNER'
+					},
 				},
 				{
 					id: 86,
 					url: 'united-states-loans',
 					queryParams: 'country=us&distributionModel=field_partner&gender=female&riskRating=0,5&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&countries=North%20America%20>%20United%20States&sortBy=popularity',
-					flssLoanSearch: { countryIsoCode: ['US'], gender: 'female' },
+					flssLoanSearch: {
+						countryIsoCode: ['US'],
+						gender: 'female'
+					},
 				},
 				{
 					id: 87,
 					url: 'agriculture-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=1&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Agriculture&sortBy=popularity',
-					flssLoanSearch: { sectorId: [1], gender: 'female', distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: {
+						sectorId: [1],
+						gender: 'female',
+						distributionModel: 'FIELDPARTNER'
+					},
 				},
 				{
 					id: 88,
 					url: 'education-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=15&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Education&sortBy=popularity',
-					flssLoanSearch: { sectorId: [15], gender: 'female', distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: {
+						sectorId: [15],
+						gender: 'female',
+						distributionModel: 'FIELDPARTNER'
+					},
 				},
 				{
 					id: 89,
 					url: 'arts-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=9&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Arts&sortBy=popularity',
-					flssLoanSearch: { sectorId: [9], gender: 'female', distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: {
+						sectorId: [9],
+						gender: 'female',
+						distributionModel: 'FIELDPARTNER'
+					},
 				},
 				{
 					id: 90,
@@ -331,21 +448,33 @@ export default {
 					url: 'food-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=12&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Food&sortBy=popularity',
-					flssLoanSearch: { sectorId: [12], gender: 'female', distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: {
+						sectorId: [12],
+						gender: 'female',
+						distributionModel: 'FIELDPARTNER'
+					},
 				},
 				{
 					id: 93,
 					url: 'shelter-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=10&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Housing&sortBy=popularity',
-					flssLoanSearch: { sectorId: [10], gender: 'female', distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: {
+						sectorId: [10],
+						gender: 'female',
+						distributionModel: 'FIELDPARTNER'
+					},
 				},
 				{
 					id: 94,
 					url: 'retail-loans',
 					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=7&status=fundRaising&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Retail&sortBy=popularity',
-					flssLoanSearch: { sectorId: [7], gender: 'female', distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: {
+						sectorId: [7],
+						gender: 'female',
+						distributionModel: 'FIELDPARTNER'
+					},
 				},
 
 				// Misc Promotional or Unsupported URLS
@@ -357,7 +486,10 @@ export default {
 					queryParams: 'distributionModel=both&riskRating=0,5&sector=1,9,5,14,17,12,6,8,7,4,3,13&status=fundRaising&attribute=5,6,7,8,9,10,11,12,13,14,15,17,20,24,28,29&sortBy=popularity',
 					// this will cause legacy lend to load up and apply all params for the Loan Channel
 					fallbackUrl: '/lend/covid-19?filter=bypass',
-					flssLoanSearch: { sectorId: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13], themeId: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20, 24, 28, 29] },
+					flssLoanSearch: {
+						sectorId: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13],
+						themeId: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20, 24, 28, 29]
+					},
 				},
 				{
 					id: 97,
@@ -375,7 +507,16 @@ export default {
 					// this will cause legacy lend to load up and apply all params for the Loan Channel
 					// fallbackUrl: '/lend/crisis-support-loans?filter=bypass'
 					algoliaParams: 'attributes=Crisis%20Support%20Loans&sortBy=popularity',
-					flssLoanSearch: { themeId: [36], distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: {
+						themeId: [36],
+						distributionModel: 'FIELDPARTNER'
+					},
+				},
+				{
+					id: 108,
+					url: 'recommended-by-lenders',
+					queryParams: 'status=fundRaising&riskRating=1,5&lenderTerm=0,10&partner=33,465,265,269,116,271,409,438,34,282,444,310,159,210,268,104,445,32,155,108,158,127,43,106,2,3,4,5,128,36,40,109,355,46,105,37,270,287,356,421,346,107,281,286,153,607,41,47,605,111,110,354,280,288,424,447,347,6,472,112,186,437,162,360,164,184,278,313,267,45,365,478,433,96,290,42,1,8,49,353,7,10,219,53,224,188,427,350,227,9,54,50,55,56,370,11,152,52,212,307,136,51,57,364,291,189,369,481,61,168,220,293,113,165,63,299,384,225,533,131,132,476,480,380,135,304,528,172,170,397,521,66,130,295,306,468,67,144,385,141,228,388,393,137,279,396,559,171,344,377,454,289,245,302,341,455,382,403,477,316,395,441,450,300,71,138,142,392,296,70,13,574,262,567,416,229,214,60,64,247,230,248,244,484,312,321,401,143,198,391,238,241,242,305,213,323,72,200,73,16,82,237,485,249,84,324,487,572,415,254,258,462,407,202,327,332,79,204&defaultRate=,0.01&distributionModel=field_partner',
+					// flssLoanSearch: {},
 				},
 				{
 					id: 65,
@@ -392,7 +533,11 @@ export default {
 					id: 48,
 					url: 'human-flow-fund-support-refugees-and-i-d-ps',
 					queryParams: 'status=fundRaising&riskRating=0,5&sector=1,9,5,14,12,8,7,4,3,13&theme=Conflict Zones,Refugees/Displaced&distributionModel=field_partner',
-					flssLoanSearch: { sectorId: [1, 9, 5, 14, 12, 8, 7, 4, 3, 13], themeId: [14, 28], distributionModel: 'FIELDPARTNER' },
+					flssLoanSearch: {
+						sectorId: [1, 9, 5, 14, 12, 8, 7, 4, 3, 13],
+						themeId: [14, 28],
+						distributionModel: 'FIELDPARTNER'
+					},
 				},
 				{
 					id: 51,
@@ -446,7 +591,10 @@ export default {
 					url: 'hitachi-employees-helping-to-ignite-a-dream',
 					queryParams: 'status=fundRaising&riskRating=3,5&sector=1,14,15,6,10,8,3',
 					algoliaParams: '',
-					flssLoanSearch: { sectorId: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13], themeId: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20, 24, 28, 29, 36] },
+					flssLoanSearch: {
+						sectorId: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13],
+						themeId: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20, 24, 28, 29, 36]
+					},
 				},
 				{
 					id: 45,
