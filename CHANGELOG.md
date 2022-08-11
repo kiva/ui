@@ -1,3 +1,11 @@
+### [2.248.1](https://github.com/kiva/ui/compare/v2.248.0...v2.248.1) (2022-08-11)
+
+
+### Bug Fixes
+
+* change lbc experiment category name ([4e6fe00](https://github.com/kiva/ui/commit/4e6fe00774db878431c79265741b8101cd7165ea))
+* fixes handling of line clamp for nested html elements in safari and firefox ([cf31b0d](https://github.com/kiva/ui/commit/cf31b0dd127bac27dd4a6a8b3566be78891a8478))
+
 ## [2.248.0](https://github.com/kiva/ui/compare/v2.247.2...v2.248.0) (2022-08-11)
 
 
