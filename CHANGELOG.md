@@ -1,3 +1,11 @@
+## [2.253.0](https://github.com/kiva/ui/compare/v2.252.0...v2.253.0) (2022-08-11)
+
+
+### Features
+
+* [revised PR comments and merge branch 'main' of github.com:kiva/ui into VUE-1169] ([a96e55f](https://github.com/kiva/ui/commit/a96e55f6df238e0a3fbb832e8e1c487d0d8f16be))
+* revised PR (wiring different buttons and design review changes [VUE 1169, 1170, 1172, 1197]) ([23f22af](https://github.com/kiva/ui/commit/23f22af0d380d4c403c731c5a63fca9910ccb20d))
+
 ## [2.252.0](https://github.com/kiva/ui/compare/v2.251.0...v2.252.0) (2022-08-11)
 
 
