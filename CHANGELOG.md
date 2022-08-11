@@ -1,3 +1,10 @@
+## [2.251.0](https://github.com/kiva/ui/compare/v2.250.0...v2.251.0) (2022-08-11)
+
+
+### Features
+
+* tweaks to lbc carousel experiment layout ([a381edf](https://github.com/kiva/ui/commit/a381edf8f33990a2f9bb8dff5e13c816c2096167))
+
 ## [2.250.0](https://github.com/kiva/ui/compare/v2.249.0...v2.250.0) (2022-08-11)
 
 
