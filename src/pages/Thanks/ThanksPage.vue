@@ -2,7 +2,7 @@
 	<www-page
 		:gray-background="true"
 	>
-		<div class="row page-content" v-if="receipt && isGuest">
+		<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 			<div class="small-12 columns thanks">
 				<div class="thanks__header hide-for-print">
 					<template v-if="receipt">
@@ -96,7 +96,7 @@
 			</thanks-layout-v2>
 		</div>
 		<thanks-page-share
-			v-if="receipt && !isGuest"
+			v-if="receipt && showFocusedShareAsk"
 			:receipt="receipt"
 			:lender="lender"
 			:loan="selectedLoan"
@@ -229,6 +229,10 @@ export default {
 				return true;
 			}
 			return false;
+		},
+		showFocusedShareAsk() {
+			// Only show focused share ask for non-guest loan purchases
+			return !this.isGuest && this.selectedLoan.id;
 		}
 	},
 	created() {
@@ -309,7 +313,7 @@ export default {
 			}
 		}
 
-		if (!this.isGuest) {
+		if (this.showFocusedShareAsk) {
 			const shareCardLanguage = this.apollo.readFragment({
 				id: 'Experiment:share_card_language',
 				fragment: experimentVersionFragment,
