@@ -28,14 +28,9 @@
 					v-if="isLoading"
 					class="tw-mb-1.5 tw-flex-grow" :style="{width: '100%', height: '5.5rem'}"
 				/>
-				<span v-if="!isLoading" class="tw-line-clamp-5">
-					<p
-						v-for="(paragraph, index) in getSpotlightText"
-						:key="index"
-						v-html="paragraph"
-					>
-					</p>
-				</span>
+				<p v-if="!isLoading" class="tw-line-clamp-5">
+					{{ getSpotlightText }}
+				</p>
 				<div v-if="!isLoading" class="tw-mt-2">
 					<kv-button
 						class="tw-w-full md:tw-w-auto"
@@ -183,7 +178,12 @@ export default {
 			return this.spotlightLoan.id ?? '';
 		},
 		getSpotlightText() {
-			return toParagraphs(this.spotlightLoan.description) ?? '';
+			/**
+			 * process and escape html characters in toParagraphs function
+			 * then join into single string so that we do not have multiple <p>
+			 * tags and can use line-clamp class to clamp the entire text
+			 */
+			return toParagraphs(this.spotlightLoan.description).join(' ') ?? '';
 		},
 		getSpotlightLoanLocation() {
 			if (this.spotlightLoan.geocode) {
