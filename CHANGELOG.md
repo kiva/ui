@@ -1,3 +1,19 @@
+## [2.252.0](https://github.com/kiva/ui/compare/v2.251.0...v2.252.0) (2022-08-11)
+
+
+### Features
+
+* show upsells module only if under 100 ([3574877](https://github.com/kiva/ui/commit/357487770c31b620dc7dd1fca12b0044811f4a75))
+* update filterUrl on category pages and query param handling on lend/filter ([c75e906](https://github.com/kiva/ui/commit/c75e906eb1ba65a1cc4e32db637db14b4ebb4ad8))
+
+
+### Bug Fixes
+
+* adjust setup of category page filterUrl ([3a97ce1](https://github.com/kiva/ui/commit/3a97ce1ad5aa8e36058166c13e769bd22d9bf98d))
+* merge conflict ([306a327](https://github.com/kiva/ui/commit/306a3273953abb2b1b067cd31e01f8a361ccf303))
+* pr comments fix ([43634cf](https://github.com/kiva/ui/commit/43634cfca412d4e7ab5cbb2d0a6c0966685bf7f3))
+* update filterUtils test now that amountLeft is supported in FLSS lend/filter ([7370d48](https://github.com/kiva/ui/commit/7370d48261d5591331a7cd385db3af59ef91a487))
+
 ## [2.251.0](https://github.com/kiva/ui/compare/v2.250.0...v2.251.0) (2022-08-11)
 
 
