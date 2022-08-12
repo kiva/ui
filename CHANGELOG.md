@@ -1,3 +1,10 @@
+### [2.253.3](https://github.com/kiva/ui/compare/v2.253.2...v2.253.3) (2022-08-12)
+
+
+### Bug Fixes
+
+* update loan channel query map with missing categories, adapt for flss, add new excluded params ([7ad451a](https://github.com/kiva/ui/commit/7ad451a8350a104401b983ed90104e2b10897ca1))
+
 ### [2.253.2](https://github.com/kiva/ui/compare/v2.253.1...v2.253.2) (2022-08-11)
 
 
