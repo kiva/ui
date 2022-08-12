@@ -68,8 +68,8 @@
 					<div class="tw-text-h4 tw-mt-4">
 						TEAM LEADERBOARDS
 					</div>
-					<leaderboards board-type="overallLoanedAmount" />
-					<leaderboards board-type="memberCount" />
+					<team-leaderboards board-type="overallLoanedAmount" />
+					<team-leaderboards board-type="memberCount" />
 				</div>
 				<div class="tw-col-span-12
 				md:tw-col-span-6
@@ -89,7 +89,7 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import TeamListing from './TeamListing';
-import Leaderboards from './Leaderboards';
+import TeamLeaderboards from './TeamLeaderboards';
 
 export default {
 	name: 'LendingTeam',
@@ -99,7 +99,7 @@ export default {
 		KvButton,
 		KvGrid,
 		TeamListing,
-		Leaderboards,
+		TeamLeaderboards
 	},
 	methods: {
 		handleSearchQuery(queryString) {

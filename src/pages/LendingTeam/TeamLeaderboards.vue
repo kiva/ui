@@ -139,7 +139,7 @@ import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
 import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
 
 export default {
-	name: 'Leaderboards',
+	name: 'TeamLeaderboards',
 	components: {
 		KvProgressBar,
 		KvTabs,
