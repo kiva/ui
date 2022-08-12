@@ -127,7 +127,7 @@
 		<div v-for="team in teams"
 			:key="team.id"
 			class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2"
-			style="filter: drop-shadow(0px 4px 15px rgba(0, 0, 0, 0.25));"
+			style="filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.25));"
 		>
 			<div class="tw-flex tw-flex-row">
 				<img v-if="team.image && team.image.url"
