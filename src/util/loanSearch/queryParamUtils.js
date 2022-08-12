@@ -23,10 +23,18 @@ export function hasExcludedQueryParams(query) {
 	// Handle temporary query param exclusions
 	const excludedParams = [
 		'activity',
+		'city_state',
+		'defaultRate',
+		// We don't yet officially support this query param, but will soon
+		// Dropping it doesn't have any ill affect on the most popular categories
+		// If problems are reported we can uncomment this one to redirect to legacy
+		// 'distributionModel',
 		'isGroup',
 		'lenderTerm',
 		'loanTags',
 		'partner',
+		'riskRating',
+		'state'
 	];
 	// Check route.query for excluded params
 	const queryContainsExcludedParams = Object.keys(query).filter(key => {
