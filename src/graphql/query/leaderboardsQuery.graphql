@@ -1,0 +1,24 @@
+query leaderboardQuery(
+	$sortOption: TeamSearchSortByEnum
+) {
+	community{
+		teams(
+			sortBy: $sortOption
+			filters: {
+				isActive: true
+			}
+		){
+			values{
+				id
+				name
+				lentAmount
+				lenderCount
+				teamPublicId
+				image{
+					id
+					url
+				}
+			}
+		}
+	}
+}

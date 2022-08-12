@@ -203,6 +203,17 @@ module.exports = [
 		]
 	},
 	{
+		path: '/lending-team',
+		component: () => import('@/pages/LendingTeam/LendingTeam'),
+	},
+	{
+		path: '/kiva-community-guidelines',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: {
+			contentfulPage: () => 'kiva-community-guidelines',
+		},
+	},
+	{
 		path: '/lend-by-category/loans-to-women',
 		redirect: '/lend-by-category/women'
 	},
