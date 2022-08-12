@@ -1,3 +1,10 @@
+### [2.237.4-next.1](https://github.com/kiva/ui/compare/v2.237.3...v2.237.4-next.1) (2022-08-12)
+
+
+### Bug Fixes
+
+* require loan purchase to display focused share ask on thanks page MARS-218 ([b6b8c1b](https://github.com/kiva/ui/commit/b6b8c1b4337f922ff63c1f175e91f8f42aac5250))
+
 ### [2.237.3](https://github.com/kiva/ui/compare/v2.237.2...v2.237.3) (2022-08-02)
 
 
