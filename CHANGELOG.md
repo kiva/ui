@@ -1,3 +1,15 @@
+## [2.254.0](https://github.com/kiva/ui/compare/v2.253.3...v2.254.0) (2022-08-14)
+
+
+### Features
+
+* swap CampaignHero component for the newer Dynamic Hero Classic component ([19d3185](https://github.com/kiva/ui/commit/19d3185215467b30dcbfe65c93cfb29163f2d9b7))
+
+
+### Bug Fixes
+
+* addressed PR comments ([df6f6c2](https://github.com/kiva/ui/commit/df6f6c21434845cd11676e902e9e55de689a0c28))
+
 ### [2.253.3](https://github.com/kiva/ui/compare/v2.253.2...v2.253.3) (2022-08-12)
 
 
