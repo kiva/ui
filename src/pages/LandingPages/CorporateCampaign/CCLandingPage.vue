@@ -23,14 +23,14 @@
 
 			<!-- TODO: Alter CTA if Checkout is ready -->
 			<campaign-hero
-				v-show="pageData.page.contentGroups.mlCampaignHero"
+				v-if="hasCampaignHero"
 				:hero-area-content="heroAreaContent"
 				@add-to-basket="handleAddToBasket"
 				@jump-to-loans="jumpToLoans"
 			/>
 
 			<dynamic-hero-classic
-				v-show="pageData.page.contentGroups.dynamicHeroClassic"
+				v-if="hasDynamicHeroClassic"
 				:content="heroAreaContent"
 			/>
 
@@ -244,8 +244,6 @@ import syncDate from '@/util/syncDate';
 import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
-import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
-import DynamicHeroClassic from '@/components/Contentful/DynamicHeroClassic';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
 import CampaignLoanGridDisplay from '@/components/CorporateCampaign/CampaignLoanGridDisplay';
@@ -262,6 +260,9 @@ import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
+
+const CampaignHero = () => import('@/components/CorporateCampaign/CampaignHero');
+const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
 
 const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
 	contentful {
@@ -611,7 +612,6 @@ export default {
 		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
 	},
 	mounted() {
-		this.$root.$on('handleAddToBasket', this.handleAddToBasket);
 		this.$root.$on('jumpToLoans', this.jumpToLoans);
 		// check for loan display settings from contentful
 		if (this.contentfulLoanDisplaySetting !== null) {
@@ -643,6 +643,9 @@ export default {
 		});
 
 		this.setAuthStatus(this.kvAuth0?.user ?? {});
+	},
+	beforeDestroy() {
+		this.$root.$off('jumpToLoans', this.jumpToLoans);
 	},
 	watch: {
 		initialFilters(next) {
@@ -690,6 +693,12 @@ export default {
 		heroAreaContent() {
 			return this.pageData?.page?.contentGroups?.dynamicHeroClassic
 				|| this.pageData?.page?.contentGroups?.mlCampaignHero;
+		},
+		hasCampaignHero() {
+			return typeof this.pageData?.page?.contentGroups?.mlCampaignHero !== 'undefined';
+		},
+		hasDynamicHeroClassic() {
+			return typeof this.pageData?.page?.contentGroups?.dynamicHeroClassic !== 'undefined';
 		},
 		partnerAreaContent() {
 			return this.pageData?.page?.contentGroups?.mlCampaignPartnerCopy;
