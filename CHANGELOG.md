@@ -1,3 +1,10 @@
+### [2.254.1](https://github.com/kiva/ui/compare/v2.254.0...v2.254.1) (2022-08-15)
+
+
+### Bug Fixes
+
+* typo in channel 90, add mixin for querymap on eco friendlly, custom route url for recommended ([af01782](https://github.com/kiva/ui/commit/af0178262730b91cdfe5780b8c916be5fa7c1b55))
+
 ## [2.254.0](https://github.com/kiva/ui/compare/v2.253.3...v2.254.0) (2022-08-14)
 
 
