@@ -38,6 +38,7 @@ import logReadQueryError from '@/util/logReadQueryError';
 import gql from 'graphql-tag';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
+import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import KivaClassicSingleCategoryCarousel from '@/components/LoanCollections/KivaClassicSingleCategoryCarousel';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -91,6 +92,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
 		lendFilterExpMixin,
+		loanChannelQueryMapMixin,
 	],
 	data() {
 		return {

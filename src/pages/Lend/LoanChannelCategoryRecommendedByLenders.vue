@@ -414,7 +414,7 @@ export default {
 			const matchedUrls = _filter(
 				this.loanChannelQueryMap,
 				channel => {
-					return channel.url === this.$route.params.category;
+					return channel.url === 'recommended-by-lenders';
 				}
 			);
 			// check for fallback url
