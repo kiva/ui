@@ -484,7 +484,7 @@ export default {
 				},
 				{
 					id: 90,
-					url: 'eco-friendly-loans',
+					url: 'ecofriendly-loans',
 					queryParams: 'status=fundRaising&gender=female&loanTags=9&distributionModel=both',
 					algoliaParams: 'gender=female&tags=%23Eco-friendly&sortBy=popularity'
 				},
