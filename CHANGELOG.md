@@ -1,3 +1,19 @@
+## [2.256.0](https://github.com/kiva/ui/compare/v2.255.0...v2.256.0) (2022-08-16)
+
+
+### Features
+
+* add saved search exp ([be56de8](https://github.com/kiva/ui/commit/be56de8a9553527fdcba1f1fabdc7ec419472e68))
+* amount limits and copy for complete loan experiment were updated ([6ae8609](https://github.com/kiva/ui/commit/6ae860935cff2303d73b4b0b80f381af97ba5a0c))
+* kiva protocol copy was removed from donation item lightbox ([da0c567](https://github.com/kiva/ui/commit/da0c567195f99e583afb89eb6fed7742bf1f5c71))
+* lbc experimental layout modifications ([75066c7](https://github.com/kiva/ui/commit/75066c7bc0609a25e68705447ffad0cd5cbf41b8))
+
+
+### Bug Fixes
+
+* don't require lender for social share button ([e7d87bc](https://github.com/kiva/ui/commit/e7d87bc8f7573fbd60376f3b5d137d009c1bf23a))
+* update query name ([4538ee4](https://github.com/kiva/ui/commit/4538ee41d0ee9117632f141ec21c392850933cc9))
+
 ## [2.255.0](https://github.com/kiva/ui/compare/v2.254.1...v2.255.0) (2022-08-16)
 
 
