@@ -213,10 +213,10 @@
 				@promo-opt-out-lightbox-closed="handleCancelPromoOptOut"
 			/>
 			<campaign-join-team-form
-				v-if="this.showTeamForm"
+				v-if="showTeamForm"
 				:campaign-name="campaignPartnerName"
-				:team-id="this.teamId"
-				:promo-id="this.promoFundId"
+				:team-id="teamId"
+				:promo-id="promoFundId"
 				@team-process-complete="handleTeamJoinProcess"
 			/>
 
