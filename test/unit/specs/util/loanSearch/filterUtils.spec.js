@@ -52,7 +52,6 @@ describe('filterUtils.js', () => {
 		it('should exclude non-visible sort options', () => {
 			expect(formatSortOptions(mockStandardSorts, [
 				...mockFLSSSorts,
-				{ name: 'amountLeft' },
 				{ name: 'researchScore' }
 			]))
 				.toEqual([

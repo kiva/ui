@@ -42,7 +42,8 @@
 							<upsell-module
 								v-if="!upsellCookieActive &&
 									showUpsellModule &&
-									upsellLoan.name
+									upsellLoan.name &&
+									isUpsellUnder100
 								"
 								:loan="upsellLoan"
 								:close-upsell-module="closeUpsellModule"
@@ -567,6 +568,12 @@ export default {
 		this.handleTeamForm();
 	},
 	computed: {
+		isUpsellUnder100() {
+			const amountLeft = this.upsellLoan?.loanAmount
+			- this.upsellLoan?.loanFundraisingInfo?.fundedAmount
+			- this.upsellLoan?.loanFundraisingInfo?.reservedAmount || 0;
+			return amountLeft < 100;
+		},
 		showMatchedLoanKivaCredit() {
 			const matchedLoansWithCredit = this.loans?.filter(loan => {
 				const hasCredits = loan.creditsUsed?.length > 0;

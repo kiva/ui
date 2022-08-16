@@ -10,7 +10,38 @@ const lendToFlssSort = new Map([
 	['popularity', 'personalized'],
 	['loanAmountDesc', 'amountHighToLow'],
 	['loanAmount', 'amountLowToHigh'],
+	['amountLeft', 'amountLeft']
 ]);
+
+/**
+ * Check for excluded query params
+ *
+ * @param {Object} query
+ * @returns {boolean}
+ */
+export function hasExcludedQueryParams(query) {
+	// Handle temporary query param exclusions
+	const excludedParams = [
+		'activity',
+		'city_state',
+		'defaultRate',
+		// We don't yet officially support this query param, but will soon
+		// Dropping it doesn't have any ill affect on the most popular categories
+		// If problems are reported we can uncomment this one to redirect to legacy
+		// 'distributionModel',
+		'isGroup',
+		'lenderTerm',
+		'loanTags',
+		'partner',
+		'riskRating',
+		'state'
+	];
+	// Check route.query for excluded params
+	const queryContainsExcludedParams = Object.keys(query).filter(key => {
+		return excludedParams.includes(key);
+	});
+	return queryContainsExcludedParams.length > 0;
+}
 
 /**
  * Returns the sector IDs based on the query param. Handles FLSS/legacy and Algolia formats.
@@ -23,12 +54,25 @@ const lendToFlssSort = new Map([
 export function getIdsFromQueryParam(param, names, facets) {
 	if (!param) return;
 
-	// Handles FLSS and legacy query params, such as "1" and "1,2"
+	// Handles FLSS and legacy query params, such as "1" and "1,2" AND chained theme names
 	if (param.includes(',') || isNumber(param)) {
-		return param.split(',').filter(s => s !== '').map(s => +s);
+		return param.split(',').reduce((prev, current) => {
+			const name = current.toUpperCase();
+			if (names.includes(name)) {
+				const facet = facets.find(s => s.name.toUpperCase() === name);
+
+				if (facet) {
+					prev.push(facet.id);
+				}
+			} else if (current !== '') {
+				return [...prev, parseInt(current, 10)];
+			}
+
+			return prev;
+		}, []);
 	}
 
-	// Handles Algolia query params, such as "Arts" and "Arts~Clothing"
+	// Handles Algolia query params, such as "Arts" and "Arts~Clothing" AND single theme names
 	return param.split('~').reduce((prev, current) => {
 		const name = current.toUpperCase();
 
@@ -97,7 +141,10 @@ export async function applyQueryParams(apollo, query, allFacets, queryType, page
 		countryIsoCode: getCountryIsoCodesFromQueryParam(query.country || query.countries, allFacets),
 		sectorId: getIdsFromQueryParam(query.sector, allFacets.sectorNames, allFacets.sectorFacets),
 		sortBy: queryType === FLSS_QUERY_TYPE ? lendToFlssSort.get(query.sortBy) : query.sortBy,
-		themeId: getIdsFromQueryParam(query.attribute || query.attributes, allFacets.themeNames, allFacets.themeFacets),
+		themeId: getIdsFromQueryParam(
+			query.attribute || query.attributes || query.theme,
+			allFacets.themeNames, allFacets.themeFacets
+		),
 		pageOffset: page * pageLimit,
 		pageLimit,
 	};
