@@ -118,7 +118,7 @@
 		"vue-focus-lock": "^1.4.0",
 		"vue-instantsearch": "^2.4.0",
 		"vue-meta": "^2.4.0",
-		"vue-observe-visibility": "^0.4.6",
+		"vue-observe-visibility": "^1.0.0",
 		"vue-progressbar": "^0.7.3",
 		"vue-qrcode": "^1.0.1",
 		"vue-router": "^3.4.9",
