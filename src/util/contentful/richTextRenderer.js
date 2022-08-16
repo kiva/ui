@@ -151,3 +151,22 @@ export function richTextRenderer(content) {
 
 	return documentToHtmlString(contentWithoutTrailingEmptyParagraph, options);
 }
+
+/* eslint-disable import/prefer-default-export */
+/**
+ * Adds target="_blank" to links so they open in a new tab
+ *
+ * @param {String} String containing html of contentful entry
+ * @returns {void}
+ */
+export function addBlankTargetToExternalLinks(bodyCopy) {
+	// make sure all partner content links open externally
+	if (bodyCopy) {
+		const links = bodyCopy.querySelectorAll('a');
+		if (links.length > 0) {
+			Array.prototype.forEach.call(links, link => {
+				link.target = '_blank';// eslint-disable-line no-param-reassign
+			});
+		}
+	}
+}
