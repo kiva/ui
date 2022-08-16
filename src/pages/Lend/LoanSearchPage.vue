@@ -34,8 +34,20 @@
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanSearchInterface from '@/components/Lend/LoanSearch/LoanSearchInterface';
 import { mdiEarth, mdiFilter } from '@mdi/js';
+import gql from 'graphql-tag';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+
+const pageQuery = gql`query covidLandingPage {
+	general {
+		enableSavedSearch: uiExperimentSetting(key: "saved_search") {
+			key
+			value
+		}
+	}
+}`;
 
 export default {
 	name: 'LoanSearchPage',
@@ -45,12 +57,39 @@ export default {
 		KvMaterialIcon,
 		LoanSearchInterface
 	},
-	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
+			enableSavedSearch: false,
 			mdiEarth,
 			mdiFilter
 		};
-	}
+	},
+	inject: ['apollo', 'cookieStore'],
+	apollo: {
+		query: pageQuery,
+		preFetch(config, client) {
+			return client.query({
+				query: pageQuery
+			}).then(() => {
+				return Promise.all([
+					client.query({ query: experimentQuery, variables: { id: 'saved_search' } }),
+				]);
+			});
+		},
+		result() {
+			const savedSearchExp = this.apollo.readFragment({
+				id: 'Experiment:saved_search',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.enableSavedSearch = savedSearchExp.version === 'b';
+			if (savedSearchExp.version) {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CORE-687-Aug-2022',
+					savedSearchExp.version
+				);
+			}
+		}
+	},
 };
 </script>
