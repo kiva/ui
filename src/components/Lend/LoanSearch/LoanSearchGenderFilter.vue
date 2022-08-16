@@ -20,6 +20,8 @@ export const FEMALE_KEY = 'female';
 export const FEMALE_TITLE = 'Women';
 export const MALE_KEY = 'male';
 export const MALE_TITLE = 'Men';
+export const NON_BINARY_TITLE = 'Non-binary';
+export const NON_BINARY_KEY = 'nonbinary';
 
 export default {
 	name: 'LoanSearchGenderFilter',
@@ -47,6 +49,10 @@ export default {
 				{
 					title: MALE_TITLE,
 					key: MALE_KEY,
+				},
+				{
+					title: NON_BINARY_TITLE,
+					key: NON_BINARY_KEY,
 				},
 			]
 		};
