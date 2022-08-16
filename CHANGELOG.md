@@ -1,3 +1,16 @@
+## [2.255.0](https://github.com/kiva/ui/compare/v2.254.1...v2.255.0) (2022-08-16)
+
+
+### Features
+
+* join team campaign was added to checkout page ([9fedd62](https://github.com/kiva/ui/commit/9fedd6236f9ce5529121257e43feada3acd1d61b))
+* join team form was added to checkout page with a handler to show it ([c1cc52f](https://github.com/kiva/ui/commit/c1cc52f7e9be55e06e69a688244199a31c7d2162))
+
+
+### Bug Fixes
+
+* join team form was cleaned up on checkout page ([b84faf3](https://github.com/kiva/ui/commit/b84faf3dae47dc16b93dd7748fdb1d949a6dc522))
+
 ### [2.254.1](https://github.com/kiva/ui/compare/v2.254.0...v2.254.1) (2022-08-15)
 
 

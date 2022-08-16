@@ -603,7 +603,7 @@ export default {
 		},
 		unreservedAmount(newValue, previousValue) {
 			// set initial selected value for sub 25 loan if shown
-			if (this.completeLoan && this.isBetween25And75) {
+			if (this.completeLoan && this.isBetween25And50) {
 				this.selectedOption = Number(this.unreservedAmount).toFixed();
 			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
 				this.selectedOption = parseInt(newValue, 10);
@@ -648,7 +648,7 @@ export default {
 		},
 		lgScreenheadline() {
 			if (this.isCompleteLoanActive) {
-				return `Fully fund ${this.name}'s loan`;
+				return `${this.name}'s loan is almost funded!`;
 			}
 			switch (this.state) {
 				case 'loading':
@@ -665,7 +665,7 @@ export default {
 		},
 		ctaButtonText() {
 			if (this.isCompleteLoanActive) {
-				return 'Complete loan';
+				return 'Lend now';
 			}
 			switch (this.state) {
 				case 'loading':
@@ -749,8 +749,8 @@ export default {
 		isLessThan25() {
 			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
 		},
-		isBetween25And75() {
-			return this.unreservedAmount < 75 && this.unreservedAmount > 25;
+		isBetween25And50() {
+			return this.unreservedAmount <= 50 && this.unreservedAmount > 25;
 		},
 		isBetween25And500() {
 			return this.unreservedAmount < 500 && this.unreservedAmount >= 25;
