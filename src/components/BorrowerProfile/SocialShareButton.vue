@@ -117,7 +117,7 @@ export default {
 	props: {
 		lender: {
 			type: Object,
-			required: true
+			default: () => {}
 		},
 		loan: {
 			type: Object,
@@ -152,12 +152,12 @@ export default {
 			return '';
 		},
 		utmContent() {
-			if (this.lender?.public && this.lender?.inviterName) return this.lender?.inviterName;
+			if (this.lender?.public && this.lender?.inviterName) return this.lender.inviterName;
 			return 'anonymous';
 		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
-			if (this.loan.id && this.lender.inviterName) {
+			if (this.loan.id && this.lender?.inviterName) {
 				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utm_content=${this.utmContent}`; // eslint-disable-line max-len
 			}
 			return `${base}${this.$route.path}?utm_content=${this.utmContent}`;
