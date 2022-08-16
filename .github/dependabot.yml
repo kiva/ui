@@ -17,3 +17,7 @@ updates:
   - dependency-name: vue-countdown
     versions:
     - ">= 1.1.5"
+  # clipboard-copy v4 drops IE11 support
+  - dependency-name: clipboard-copy
+    versions:
+    - ">= 3.2.0"
