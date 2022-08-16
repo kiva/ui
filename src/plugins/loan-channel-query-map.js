@@ -397,6 +397,29 @@ export default {
 					queryParams: 'status=fundRaising&isGroup=1&distributionModel=both',
 				},
 
+				// Lend By Category Carousel Layout Sub Channels
+				// 	ACK-357 Experiment
+				{
+					id: 116,
+					url: 'solar-energy',
+					queryParams: 'queryString=solar&tag=9&sortBy=popularity'
+				},
+				{
+					id: 117,
+					url: 'sustainable-agriculture',
+					queryParams: 'sector=1&tag=8&sortBy=amountLeft'
+				},
+				{
+					id: 118,
+					url: 'recycle-and-re-use',
+					queryParams: 'queryString=used clothing&distributionModel=field_partner&sortBy=popularity',
+				},
+				{
+					id: 119,
+					url: 'other-eco-friendly-loans',
+					queryParams: 'tag=9,8&distributionModel=field_partner&sortBy=expiringSoon',
+				},
+
 				// IWD 2020 Loan Channels
 				// TODO: Complete legacy query param for each set (already added gender filter)
 				{
