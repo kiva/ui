@@ -40,7 +40,7 @@ import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
-const pageQuery = gql`query covidLandingPage {
+const pageQuery = gql`query loanSearchPage {
 	general {
 		enableSavedSearch: uiExperimentSetting(key: "saved_search") {
 			key
