@@ -360,7 +360,7 @@ export default {
 		}
 
 		if (this.$appConfig.enableOptimizely) {
-			trackOptEvent('loanSharePurchase', {
+			trackOptEvent('loan_share_purchase', {
 				session_includes_loan_purchase: loanShareAmount > 0,
 				loan_share_purchase_amount: loanShareAmount
 			});
