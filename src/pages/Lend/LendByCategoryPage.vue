@@ -28,9 +28,8 @@
 					:set-id="categorySetId"
 					:is-logged-in="isLoggedIn"
 					:show-category-description="showCategoryDescription"
-					:show-expandable-loan-cards="showExpandableLoanCards"
+					:show-expandable-loan-cards="false"
 					ref="categoryRowExp"
-					@scrolling-row="handleScrollingRow"
 				/>
 			</div>
 		</div>
@@ -50,9 +49,8 @@
 					:set-id="categorySetId"
 					:is-logged-in="isLoggedIn"
 					:show-category-description="showCategoryDescription"
-					:show-expandable-loan-cards="showExpandableLoanCards"
+					:show-expandable-loan-cards="false"
 					ref="categoryRow"
-					@scrolling-row="handleScrollingRow"
 				/>
 			</div>
 		</div>
@@ -84,15 +82,6 @@
 		</div> -->
 
 		<add-to-basket-interstitial />
-
-		<expandable-loan-card-expanded
-			v-if="showExpandableLoanCards"
-			ref="expandableLoanCardComponent"
-			:is-visitor="!isLoggedIn"
-			:items-in-basket="itemsInBasket"
-			:right-arrow-position="rightArrowPosition"
-			:left-arrow-position="leftArrowPosition"
-		/>
 
 		<m-g-lightbox />
 		<m-g-digest-lightbox v-if="showMGDigestLightbox" />
@@ -128,7 +117,6 @@ import MGLightbox from '@/components/LoansByCategory/MGLightbox';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
-import ExpandableLoanCardExpanded from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardExpanded';
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import LoansBundleExpWrapper from '@/components/LoansByCategory/LoansBundleExpWrapper';
@@ -143,7 +131,6 @@ export default {
 		KvLoadingOverlay,
 		LendHeader,
 		AddToBasketInterstitial,
-		ExpandableLoanCardExpanded,
 		FavoriteCountryLoans,
 		MGDigestLightbox,
 		MGLightbox,
@@ -179,7 +166,6 @@ export default {
 			showCategoryDescription: false,
 			categoryDescriptionExperimentVersion: null,
 			lendFilterExpVersion: '',
-			showExpandableLoanCards: false,
 			rightArrowPosition: undefined,
 			leftArrowPosition: undefined,
 			showHoverLoanCards: true,
@@ -394,11 +380,6 @@ export default {
 				this.activatedWatchers = true;
 			}
 		},
-		handleScrollingRow() {
-			if (this.showExpandableLoanCards && this.$refs.expandableLoanCardComponent) {
-				this.$refs.expandableLoanCardComponent.collapseCardAndPauseHover(500);
-			}
-		},
 		setRightArrowPosition() {
 			if (this.$refs.categoryRow && this.$refs.categoryRow.length) {
 				this.rightArrowPosition = this.$refs.categoryRow
@@ -419,10 +400,6 @@ export default {
 			}
 			this.setRightArrowPosition();
 			this.setLeftArrowPosition();
-		},
-		initializeHoverLoanCard() {
-			// We shouldn't run both expandable and hover loan cards at the same time for now
-			this.showExpandableLoanCards = false;
 		},
 		fetchRecommendedLoans(offset = 0) {
 			const lengthCheck = this.recommendedLoans.map(channel => {
@@ -705,8 +682,6 @@ export default {
 			logReadQueryError(e, 'LendByCategory lendByCategoryQuery');
 		}
 
-		this.initializeHoverLoanCard();
-
 		// Copy basic data from query into instance variables
 		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
@@ -755,27 +730,6 @@ export default {
 		}) || {};
 		this.lendFilterExpVersion = lendFilterEXP.version;
 
-		// CASH-676: Expandable loan card experiment
-		const expandableLoanCardExperiment = this.apollo.readFragment({
-			id: 'Experiment:expandable_loan_cards',
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		if (expandableLoanCardExperiment.version === 'variant-a') {
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-CASH-676-Apr2019',
-				'a',
-			);
-		} else if (expandableLoanCardExperiment.version === 'variant-b') {
-			this.showExpandableLoanCards = true;
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-CASH-676-Apr2019',
-				'b',
-			);
-		}
-
 		// Initialize CORE-588 Loan Bundle
 		if (this.isLoggedIn) {
 			this.initializeLoanBundleExperiment();
@@ -788,13 +742,6 @@ export default {
 		// Only allow experiment when in show-for-large (>= 1024px) screen size
 		if (window.innerWidth >= 680) {
 			this.showCategoryDescription = true;
-		}
-
-		// CASH-676: Expandable Loan Card Experiment
-		if (this.showExpandableLoanCards) {
-			window.addEventListener('resize', this.handleResize);
-			this.setRightArrowPosition();
-			this.setLeftArrowPosition();
 		}
 
 		this.createViewportObserver();
@@ -810,9 +757,6 @@ export default {
 		}
 	},
 	beforeDestroy() {
-		if (this.showExpandableLoanCards) {
-			window.removeEventListener('resize', this.handleResize);
-		}
 		this.destroyViewportObserver();
 	},
 };
