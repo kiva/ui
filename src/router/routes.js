@@ -509,10 +509,6 @@ module.exports = [
 		}
 	},
 	{
-		path: '/lend/saved-search-beta',
-		redirect: '/lend/saved-search',
-	},
-	{
 		path: '/ui-site-map',
 		component: () => import('@/pages/UiSiteMap/UiSiteMapPage'),
 		meta: {
