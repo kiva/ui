@@ -3,7 +3,7 @@
 		<transition name="kvfade">
 			<div
 				v-if="isLoading"
-				class="spinner"
+				class="spinner tw-text-center"
 			>
 				<kv-loading-spinner />
 			</div>
@@ -22,27 +22,9 @@
 			@interact-carousel="onInteractCarousel"
 		>
 			<template v-for="(loanId, index) in augmentedLoanIds" #[`slide${index}`]>
-				<!-- Show View more Card -->
-				<router-link
-					v-if="loanId === 3"
-					:key="`view-more-card-${loanId}`"
-					class="tw-flex tw-items-center tw-h-full tw-w-full
-						hover:tw-bg-action-highlight hover:tw-text-primary-inverse tw-rounded"
-					:to="cleanUrl"
-					v-kv-track-event="[
-						'Homepage',
-						'click-carousel-view-all-category-loans',
-						`${viewAllLoansCategoryTitle}`]"
-				>
-					<div class="tw-w-full tw-text-center">
-						<h3>{{ viewAllLoansCategoryTitle }}</h3>
-					</div>
-				</router-link>
-
 				<!-- show loan card -->
 				<!-- TODO Re-implement card position analytics -->
 				<kiva-classic-basic-loan-card
-					v-else
 					:item-index="index"
 					:key="`loan-${loanId}`"
 					:loan-id="loanId"
@@ -50,6 +32,22 @@
 					:lend-now-button="lendNowButton"
 				/>
 			</template>
+			<!-- Show View more Card -->
+			<router-link
+				v-if="showViewMoreCard"
+				:key="`view-more-card`"
+				class="tw-flex tw-items-center tw-h-full tw-w-full
+						hover:tw-bg-action-highlight hover:tw-text-primary-inverse tw-rounded"
+				:to="cleanUrl"
+				v-kv-track-event="[
+					'Lending',
+					'click-carousel-view-all-category-loans',
+					`${viewAllLoansCategoryTitle}`]"
+			>
+				<div class="tw-w-full tw-text-center">
+					<h3>{{ viewAllLoansCategoryTitle }}</h3>
+				</div>
+			</router-link>
 			<div
 				v-if="showCheckBackMessage" class="tw-flex tw-items-center tw-h-full tw-w-full
 					tw-border-action-highlight tw-rounded"
@@ -132,7 +130,6 @@ export default {
 			const clonedLoanIds = [...this.loanIds];
 			// const promoCardId = 1;
 			// const loadMoreCardId = 2;
-			const viewMoreCardId = 3;
 			// TODO: splice if promoCard if active on row
 			// if (this.showPromoCard) {
 			// 	clonedLoanIds.splice(1, 0, promoCardId);
@@ -142,11 +139,6 @@ export default {
 			// 	clonedLoanIds.push(loadMoreCardId);
 			// 	return clonedLoanIds;
 			// }
-			// append viewMoreCard if active
-			if (this.showViewMoreCard) {
-				clonedLoanIds.push(viewMoreCardId);
-				return clonedLoanIds;
-			}
 			return clonedLoanIds;
 		},
 		cleanUrl() {

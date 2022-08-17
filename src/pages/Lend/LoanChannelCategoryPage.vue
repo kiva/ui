@@ -1,7 +1,7 @@
 <template>
 	<www-page
 		class="loan-channel-page category-page"
-		:gray-background="true"
+		:gray-background="pageLayout === 'control'"
 	>
 		<loan-channel-category-control
 			v-if="pageLayout === 'control'"
@@ -134,6 +134,20 @@ export default {
 			return this.$route?.params?.category ?? '';
 		},
 	},
+	watch: {
+		/** If route params change, execute this experiment init
+		 * function again to update page layout if needed. This
+		 * allows navigation from an experiment category to a non
+		 * experiment category for users in the experiment.
+		*/
+		'$route.params.category': {
+			handler() {
+				// Experimental page layout
+				this.initializeExperimentalPageLayout();
+			},
+			deep: true,
+		}
+	},
 	methods: {
 		initializeExperimentalPageLayout() {
 			// Only certain categories are eligible for the experiment
@@ -149,6 +163,8 @@ export default {
 					);
 					this.pageLayout = version === 'shown' ? 'experiment' : 'control';
 				}
+			} else {
+				this.pageLayout = 'control';
 			}
 		},
 		initializeAddToBasketInterstitial() {

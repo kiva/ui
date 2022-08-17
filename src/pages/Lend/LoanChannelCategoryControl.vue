@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="tw-relative">
 		<div class="row">
 			<div class="small-12 columns heading-region">
 				<view-toggle browse-url="/lend-by-category" :filter-url="filterUrl" />
@@ -26,6 +26,7 @@
 				</p>
 			</div>
 		</div>
+
 		<div class="tw-bg-brand-100 tw-w-full tw-mb-8 lg:tw-mb-12 lg:tw-mt-2 tw-px-2 tw-py-2" v-if="addBundlesExp">
 			<div class="row">
 				<div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-w-full">
@@ -136,7 +137,6 @@
 						:loan="loan"
 						loan-card-type="GridLoanCard"
 					/>
-					<kv-loading-overlay v-if="loading" />
 				</div>
 				<kv-pagination
 					v-if="totalCount > 0"
@@ -150,6 +150,8 @@
 				</div>
 			</div>
 		</div>
+
+		<kv-loading-overlay v-if="loading" />
 	</div>
 </template>
 
@@ -261,7 +263,7 @@ export default {
 			filters: { },
 			targetedLoanChannelURL: null,
 			targetedLoanChannelID: null,
-			loanChannel: () => {},
+			loanChannel: {},
 			isVisitor: true,
 			itemsInBasket: [],
 			pageQuery: { page: '1' },
@@ -375,6 +377,7 @@ export default {
 		}
 	},
 	created() {
+		this.loading = true;
 		let allChannelsData = {};
 
 		this.initializeMonthlyGoodPromo();
@@ -410,6 +413,8 @@ export default {
 			this.targetedLoanChannelURL,
 			this.loanQueryVars
 		);
+
+		if (baseData) this.loading = false;
 
 		// Assign our initial view data
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');

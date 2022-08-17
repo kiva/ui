@@ -1,5 +1,7 @@
 <template>
-	<div>
+	<div
+		class="tw-mb-4"
+	>
 		<kv-page-container>
 			<div class="heading-region">
 				<view-toggle browse-url="/lend-by-category" :filter-url="filterUrl" />
@@ -13,16 +15,18 @@
 					{{ loanChannelName }}
 				</h1>
 				<p
-					class="show-for-large tw-mb-4"
+					class="tw-w-full show-for-large tw-mb-4 lg:tw-w-2/3"
 				>
 					{{ loanChannelDescription }}
 				</p>
 			</div>
 		</kv-page-container>
 		<kv-page-container v-if="secondaryLoanChannelIds.length > 0">
-			<div v-for="(channelId, index) in secondaryLoanChannelIds" :key="index" class="tw-mt-4">
+			<div v-for="(channel, index) in secondaryLoanChannelIds" :key="index" class="tw-mt-4">
 				<kiva-classic-single-category-carousel
-					:loan-channel-id="channelId"
+					:loan-channel-id="channel.id"
+					:loan-channel-name="channel.name"
+					:loan-channel-description="channel.description"
 					:loan-display-settings="loanDisplaySettings"
 					:lend-now-button="true"
 				/>
@@ -53,8 +57,8 @@ function getTargetedChannel(targetedRoute, allChannels) {
 			return loanChannel.url.split('/').pop() === targetedRoute;
 		}
 	);
-	// isolate targeted loan channel id
-	return targetedLoanChannel[0]?.id ?? null;
+	// return all the props for this loan channel
+	return targetedLoanChannel[0] ?? null;
 }
 
 // This is the same as: loanChannelPage.graphql except description & name has been added
@@ -85,9 +89,9 @@ const secondaryEcoLoanChannels = [
 export default {
 	name: 'LoanChannelCategoryClimateExperiment',
 	components: {
-		ViewToggle,
 		KivaClassicSingleCategoryCarousel,
-		KvPageContainer
+		KvPageContainer,
+		ViewToggle,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
@@ -104,7 +108,7 @@ export default {
 			secondaryLoanChannelIds: [],
 			loanDisplaySettings: {
 				loanLimit: 9,
-				showViewMoreCard: false,
+				showViewMoreCard: true,
 				showCheckBackMessage: true
 			}
 		};
@@ -146,11 +150,13 @@ export default {
 		this.targetedLoanChannelURL = this.$route?.params?.category;
 
 		// Isolate targeted loan channel id
-		this.targetedLoanChannelID = getTargetedChannel(this.targetedLoanChannelURL, allChannelsData);
+		this.targetedLoanChannelID = getTargetedChannel(this.targetedLoanChannelURL, allChannelsData)?.id;
 
 		// Get secondary loan channel id's
 		this.secondaryLoanChannelIds = secondaryEcoLoanChannels
-			.map(secondaryLoanChannelURL => { return getTargetedChannel(secondaryLoanChannelURL, allChannelsData); });
+			.map(secondaryLoanChannelURL => {
+				return getTargetedChannel(secondaryLoanChannelURL, allChannelsData);
+			});
 
 		// Assign our initial loan channel based on the route
 		this.loanChannel = allChannelsData?.lend?.loanChannels?.values
