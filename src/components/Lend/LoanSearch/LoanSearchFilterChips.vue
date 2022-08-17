@@ -123,17 +123,30 @@ export default {
 			}
 			// Gender
 			if (loanSearchState.gender) {
-				const genderFacet = loanSearchState.gender === 'female'
-					? {
-						value: 'female',
-						name: 'Women',
-						__typename: 'Gender'
-					}
-					: {
-						value: 'male',
-						name: 'Men',
-						__typename: 'Gender'
-					};
+				let genderFacet;
+				switch (loanSearchState.gender) {
+					case 'female':
+						genderFacet = {
+							value: 'female',
+							name: 'Women',
+							__typename: 'Gender'
+						};
+						break;
+					case 'male':
+						genderFacet = {
+							value: 'male',
+							name: 'Men',
+							__typename: 'Gender'
+						};
+						break;
+					default:
+						genderFacet = {
+							value: 'nonbinary',
+							name: 'Non-binary',
+							__typename: 'Gender'
+						};
+						break;
+				}
 				itemList.push(genderFacet);
 			}
 			return itemList;

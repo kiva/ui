@@ -6,7 +6,9 @@ import LoanSearchGenderFilter,
 	FEMALE_KEY,
 	FEMALE_TITLE,
 	MALE_KEY,
-	MALE_TITLE
+	MALE_TITLE,
+	NON_BINARY_TITLE,
+	NON_BINARY_KEY
 } from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
 
 describe('LoanSearchGenderFilter', () => {
@@ -28,6 +30,14 @@ describe('LoanSearchGenderFilter', () => {
 
 		await updateProps({ gender: MALE_KEY });
 		radio = getByLabelText(MALE_TITLE);
+		expect(radio.checked).toBeTruthy();
+
+		await updateProps({ gender: MALE_KEY });
+		radio = getByLabelText(MALE_TITLE);
+		expect(radio.checked).toBeTruthy();
+
+		await updateProps({ gender: NON_BINARY_KEY });
+		radio = getByLabelText(NON_BINARY_TITLE);
 		expect(radio.checked).toBeTruthy();
 
 		await updateProps({ gender: '' });
@@ -56,6 +66,11 @@ describe('LoanSearchGenderFilter', () => {
 		expect(radio.checked).toBeTruthy();
 
 		radio = getByLabelText(MALE_TITLE);
+		expect(radio.checked).toBeFalsy();
+		await user.click(radio);
+		expect(radio.checked).toBeTruthy();
+
+		radio = getByLabelText(NON_BINARY_TITLE);
 		expect(radio.checked).toBeFalsy();
 		await user.click(radio);
 		expect(radio.checked).toBeTruthy();

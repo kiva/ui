@@ -20,3 +20,5 @@ export const Default = story();
 export const Female = story({ gender: 'female' });
 
 export const Male = story({ gender: 'male' });
+
+export const Nonbinary = story({ gender: 'nonbinary' });
