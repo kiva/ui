@@ -32,10 +32,6 @@ describe('LoanSearchGenderFilter', () => {
 		radio = getByLabelText(MALE_TITLE);
 		expect(radio.checked).toBeTruthy();
 
-		await updateProps({ gender: MALE_KEY });
-		radio = getByLabelText(MALE_TITLE);
-		expect(radio.checked).toBeTruthy();
-
 		await updateProps({ gender: NON_BINARY_KEY });
 		radio = getByLabelText(NON_BINARY_TITLE);
 		expect(radio.checked).toBeTruthy();
