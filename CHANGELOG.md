@@ -1,3 +1,15 @@
+## [2.257.0](https://github.com/kiva/ui/compare/v2.256.0...v2.257.0) (2022-08-17)
+
+
+### Features
+
+* implement organization schema for Kiva MARS-217 ([31097b3](https://github.com/kiva/ui/commit/31097b3647bbd58d9cdca745860992835ce65219))
+
+
+### Bug Fixes
+
+* add standalone kiva logo ([88c0eae](https://github.com/kiva/ui/commit/88c0eae24b6bc1d0868677901bb0105b624e6cae))
+
 ## [2.256.0](https://github.com/kiva/ui/compare/v2.255.0...v2.256.0) (2022-08-16)
 
 
