@@ -1,3 +1,10 @@
+### [2.257.1](https://github.com/kiva/ui/compare/v2.257.0...v2.257.1) (2022-08-17)
+
+
+### Bug Fixes
+
+* add tag param to query param utils for loan channel filter links ([645f5c5](https://github.com/kiva/ui/commit/645f5c59846d75b003121538751ba1967628dbff))
+
 ## [2.257.0](https://github.com/kiva/ui/compare/v2.256.0...v2.257.0) (2022-08-17)
 
 
