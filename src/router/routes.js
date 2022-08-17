@@ -241,7 +241,7 @@ module.exports = [
 	},
 	{
 		path: '/lend-beta/:id',
-		redirect: '/lend/:id'
+		redirect: { name: 'borrowerProfile' }
 	},
 	{
 		name: 'borrowerProfile',

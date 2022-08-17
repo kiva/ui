@@ -62,7 +62,6 @@
 						class="tw-mb-3"
 						:basketed-loans="itemsInBasket"
 						:target-loan="loan"
-						@add-to-basket="handleAddToBasket"
 					/>
 				</div>
 			</div>
@@ -194,7 +193,6 @@
 import _get from 'lodash/get';
 import logReadQueryError from '@/util/logReadQueryError';
 import KvFlag from '@/components/Kv/KvFlag';
-import basketItems from '@/graphql/query/basketItems.graphql';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import LYML from '@/components/LoansYouMightLike/LymlContainer';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
