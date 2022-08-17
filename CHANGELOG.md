@@ -1,3 +1,10 @@
+### [2.257.2](https://github.com/kiva/ui/compare/v2.257.1...v2.257.2) (2022-08-17)
+
+
+### Bug Fixes
+
+* handleteamform function was added to methods section ([9126df1](https://github.com/kiva/ui/commit/9126df1c5cd6c8e8ff8961d35885efc676c91237))
+
 ### [2.257.1](https://github.com/kiva/ui/compare/v2.257.0...v2.257.1) (2022-08-17)
 
 
