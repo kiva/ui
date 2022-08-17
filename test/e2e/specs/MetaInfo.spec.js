@@ -58,4 +58,14 @@ describe('Meta information', () => {
 			.should('have.attr', 'content', 'Your generous donations help Kiva continue and grow our mission of financial inclusivity.'
 						+ ' Click here to learn more and make a difference.');
 	});
+
+	it('Categories Beta Page', () => {
+		cy.visit('/categories-beta');
+
+		cy.title().should('eq', 'Choose a category and fund a loan | Kiva');
+		cy.document().get('head meta[name="description"]')
+			.should('have.attr', 'content', 'Find and lend to the categories that you\'re passionate about, '
+					+ 'from women to refugees to climate, and more. With as little as $25 you can support '
+					+ 'entrepreneurs around the world on Kiva.');
+	});
 });

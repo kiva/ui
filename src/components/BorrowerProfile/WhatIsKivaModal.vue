@@ -28,7 +28,7 @@
 						</p>
 					</div>
 				</template>
-				<h3 class="md:tw-hidden tw-text-action tw-mb-1">
+				<h3 class="md:tw-text-center tw-text-action tw-mb-1">
 					How it works
 				</h3>
 				<div class="tw-block md:tw-flex md:tw-gap-3 md:tw-px-2.5">
@@ -70,12 +70,12 @@
 					@click="isLightboxVisible = false"
 					v-kv-track-event="[
 						'Borrower Profile',
-						'click-modal-close',
-						'Let\'s get started'
+						'click-modal-cta',
+						'Let\'s go'
 					]"
 					class="tw-w-full md:tw-flex md:tw-justify-center md:tw-max-w-sm tw-mx-auto tw-mt-1 md:tw-mt-4 "
 				>
-					Let's get started
+					Let's go
 				</kv-button>
 			</kv-lightbox>
 		</transition>

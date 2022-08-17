@@ -134,7 +134,7 @@
 		/>
 
 		<kv-ui-button
-			v-if="!isLoading && !allSharesReserved"
+			v-if="!isLoading && !allSharesReserved && !showLendNowButton"
 			class="tw-mb-2 tw-self-start"
 			:state="`${allSharesReserved ? 'disabled' : ''}`"
 			:to="`/lend/${loanId}`"
@@ -163,6 +163,31 @@
 					/>
 				</div>
 			</slot>
+		</kv-ui-button>
+
+		<!-- Lend button -->
+		<kv-ui-button
+			key="lendButton"
+			v-if="!allSharesReserved && !isLoading && showLendNowButton && !isAdding && !isInBasket"
+			class="tw-inline-flex tw-flex-1"
+			data-testid="bp-lend-cta-lend-button"
+			type="submit"
+			@click="addToBasket"
+			v-kv-track-event="[
+				'Lending',
+				'lend-button-loan-upsell',
+				expLabel
+			]"
+		>
+			{{ ctaButtonText }}
+		</kv-ui-button>
+
+		<kv-ui-button
+			v-if="showLendNowButton && isAdding"
+			class="tw-inline-flex tw-flex-1"
+			data-testid="bp-lend-cta-adding-to-basket-button"
+		>
+			Adding to basket...
 		</kv-ui-button>
 
 		<!-- If allSharesReserved show message and hide cta button -->
@@ -281,6 +306,10 @@ export default {
 		expLabel: {
 			type: String,
 			default: ''
+		},
+		lendNowButton: {
+			type: Boolean,
+			default: false
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -389,6 +418,9 @@ export default {
 		ctaButtonText() {
 			return `Lend $${this.lendAmount} now`;
 		},
+		showLendNowButton() {
+			return this.lendNowButton;
+		}
 	},
 	methods: {
 		createViewportObserver() {
