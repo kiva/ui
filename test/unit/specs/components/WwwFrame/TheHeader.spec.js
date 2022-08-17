@@ -21,7 +21,7 @@ describe('TheHeader', () => {
 					apollo: {
 						readFragment: () => {},
 						query: () => Promise.resolve({}),
-						readQuery: () => Promise.resolve({}),
+						readQuery: () => {},
 					},
 					cookieStore: new CookieStore(),
 					kvAuth0: MockKvAuth0,
