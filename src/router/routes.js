@@ -501,12 +501,16 @@ module.exports = [
 		}
 	},
 	{
-		path: '/lend/saved-search-beta',
+		path: '/lend/saved-search',
 		component: () => import('@/pages/Settings/SavedSearchBeta'),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
 		}
+	},
+	{
+		path: '/lend/saved-search-beta',
+		redirect: '/lend/saved-search',
 	},
 	{
 		path: '/ui-site-map',
