@@ -997,21 +997,21 @@ export default {
 				});
 			}
 		},
+		handleTeamForm() {
+			if (
+				this.loans.length
+				&& this.isActivelyLoggedIn
+				&& this.teamId
+				&& !this.teamJoinStatus
+			) {
+				// check for team join optionality
+				this.showTeamForm = true;
+			}
+		}
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
 	},
-	handleTeamForm() {
-		if (
-			this.loans.length
-			&& this.isActivelyLoggedIn
-			&& this.teamId
-			&& !this.teamJoinStatus
-		) {
-			// check for team join optionality
-			this.showTeamForm = true;
-		}
-	}
 };
 </script>
 
