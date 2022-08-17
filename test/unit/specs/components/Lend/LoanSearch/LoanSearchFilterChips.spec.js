@@ -42,8 +42,12 @@ const mockAllFacets = {
 		{ id: 2, name: 'Theme 2', __typename: 'LoanThemeFilter' }
 	],
 	themeNames: ['THEME 1', 'THEME 2'],
-	genderFacets: [{ name: 'female', __typename: 'Gender' }, { name: 'male', __typename: 'Gender' }],
-	genders: ['FEMALE', 'MALE'],
+	genderFacets: [
+		{ name: 'female', __typename: 'Gender' },
+		{ name: 'male', __typename: 'Gender' },
+		{ name: 'nonbinary', __typename: 'Gender' }
+	],
+	genders: ['FEMALE', 'MALE', 'NON-BINARY'],
 };
 
 describe('LoanSearchFilterChips', () => {
