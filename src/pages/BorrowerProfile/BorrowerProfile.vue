@@ -2,7 +2,7 @@
 	<www-page
 		id="borrower-profile"
 	>
-		<article v-if="amountLeft && status === 'fundraising'" class="tw-relative tw-bg-secondary">
+		<article v-if="showFundraising" class="tw-relative tw-bg-secondary">
 			<div class="tw-relative">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 					<hero-background />
@@ -106,8 +106,6 @@
 				</content-container>
 			</div>
 		</article>
-		<what-is-kiva-modal v-if="kivaModuleExpEnabled && !shownModal" />
-		<!-- <aside>Similar loans</aside> -->
 		<article v-else>
 			<FundedBorrowerProfile
 				:loan="loan"
@@ -116,6 +114,8 @@
 				:inviter-name="inviterName"
 			/>
 		</article>
+		<what-is-kiva-modal v-if="kivaModuleExpEnabled && !shownModal" />
+		<!-- <aside>Similar loans</aside> -->
 	</www-page>
 </template>
 
@@ -597,6 +597,9 @@ export default {
 			}
 			return 'For the borrower\'s privacy, this loan has been made anonymous.';
 		},
+		showFundraising() {
+			return this.amountLeft && this.status === 'fundraising';
+		}
 	},
 	created() {
 		// this experiment is assigned in experimentPreFetch.js

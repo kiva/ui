@@ -60,7 +60,7 @@
 					<h3 class="tw-text-center tw-mb-2 tw-mt-3" v-html="lymlHeading"></h3>
 					<l-y-m-l
 						class="tw-mb-3"
-						:basketed-loans="basketedLoans"
+						:basketed-loans="itemsInBasket"
 						:target-loan="loan"
 						@add-to-basket="handleAddToBasket"
 					/>
@@ -161,6 +161,7 @@
 							:is-visible="true"
 							:loan-ids="category.loanIds"
 							:exp-label="category.expLabel"
+							:lend-now-button="true"
 						/>
 					</div>
 					<div v-else class="featured-loan-card-row tw-pt-4">
@@ -329,7 +330,6 @@ export default {
 		},
 	},
 	created() {
-		this.basketedLoans = [...this.itemsInBasket];
 		// Check if new funded borrower profile experiment is active.
 		const { enabled } = getExperimentSettingCached(this.apollo, newFundedBorrowerPageExpKey);
 		const exp = this.apollo.readFragment({
@@ -401,17 +401,6 @@ export default {
 		}
 	},
 	methods: {
-		handleAddToBasket(payload) {
-			if (payload.success) {
-				this.apollo.query({
-					query: basketItems,
-					fetchPolicy: 'network-only',
-				}).then(data => {
-					// need to update this.itemsInBasket here.
-					this.basketedLoans = _get(data, 'data.shop.basket.items.values');
-				});
-			}
-		},
 		refIsVisible() {
 			const { top, bottom } = this.$refs?.preBottom?.getBoundingClientRect() ?? {};
 			const vHeight = (window.innerHeight || document.documentElement.clientHeight);
