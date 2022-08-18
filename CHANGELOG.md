@@ -1,3 +1,10 @@
+### [2.259.2](https://github.com/kiva/ui/compare/v2.259.1...v2.259.2) (2022-08-18)
+
+
+### Bug Fixes
+
+* kivaClassic Loan card should not show checkout now button ([55b16c3](https://github.com/kiva/ui/commit/55b16c35ad5a652cb18e992533e2a4e660cceb99))
+
 ### [2.259.1](https://github.com/kiva/ui/compare/v2.259.0...v2.259.1) (2022-08-18)
 
 
