@@ -1,3 +1,10 @@
+## [2.258.0](https://github.com/kiva/ui/compare/v2.257.3...v2.258.0) (2022-08-18)
+
+
+### Features
+
+* finish deprecating Causes product ([e811f4c](https://github.com/kiva/ui/commit/e811f4ca01a2b5d00933b1e703eeed91787c2118))
+
 ### [2.257.3](https://github.com/kiva/ui/compare/v2.257.2...v2.257.3) (2022-08-18)
 
 
