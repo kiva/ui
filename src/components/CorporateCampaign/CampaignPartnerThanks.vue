@@ -77,7 +77,7 @@ export default {
 	async mounted() {
 		await this.$nextTick();
 		// make sure all partner content links open externally
-		addBlankTargetToExternalLinks(this.$refs.partnerBodyCopy, this.$props.pageSettingData);
+		addBlankTargetToExternalLinks(this.$refs.partnerBodyCopy, this.pageSettingData);
 	}
 };
 </script>

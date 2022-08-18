@@ -65,7 +65,7 @@ export default {
 	},
 	async mounted() {
 		await this.$nextTick();
-		addBlankTargetToExternalLinks(this.$refs.partnerBodyCopy, this.$props.pageSettingData);
+		addBlankTargetToExternalLinks(this.$refs.partnerBodyCopy, this.pageSettingData);
 	}
 };
 </script>

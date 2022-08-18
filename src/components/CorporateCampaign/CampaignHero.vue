@@ -112,7 +112,7 @@ export default {
 	},
 	async mounted() {
 		await this.$nextTick();
-		addBlankTargetToExternalLinks(this.$refs.heroBodyCopy, this.$props.pageSettingData);
+		addBlankTargetToExternalLinks(this.$refs.heroBodyCopy, this.pageSettingData);
 	}
 };
 </script>
