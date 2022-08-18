@@ -1,3 +1,11 @@
+### [2.257.3](https://github.com/kiva/ui/compare/v2.257.2...v2.257.3) (2022-08-18)
+
+
+### Bug Fixes
+
+* added readQuery mock TheHeader.spec.js test ([012c03d](https://github.com/kiva/ui/commit/012c03d3e22803b2f324eda33aa8f16861273753))
+* removed unnecessary promise ([928a4e6](https://github.com/kiva/ui/commit/928a4e679ea01c994d93f43e40982ac087dad61b))
+
 ### [2.257.2](https://github.com/kiva/ui/compare/v2.257.1...v2.257.2) (2022-08-17)
 
 
