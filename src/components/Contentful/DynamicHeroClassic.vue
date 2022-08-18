@@ -158,10 +158,14 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		pageSettingData: {
+			type: Object,
+			default: () => {},
+		},
 	},
 	async mounted() {
 		await this.$nextTick();
-		addBlankTargetToExternalLinks(this.$refs.heroBodyCopy);
+		addBlankTargetToExternalLinks(this.$refs.heroBodyCopy, this.$props.pageSettingData);
 	},
 	computed: {
 		background() {

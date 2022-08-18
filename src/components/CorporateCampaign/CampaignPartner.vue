@@ -42,6 +42,10 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		pageSettingData: {
+			type: Object,
+			default: () => {},
+		},
 	},
 	computed: {
 		partnerImage() {
@@ -61,7 +65,7 @@ export default {
 	},
 	async mounted() {
 		await this.$nextTick();
-		addBlankTargetToExternalLinks(this.$refs.partnerBodyCopy);
+		addBlankTargetToExternalLinks(this.$refs.partnerBodyCopy, this.$props.pageSettingData);
 	}
 };
 </script>

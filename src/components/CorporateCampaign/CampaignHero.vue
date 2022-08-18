@@ -59,7 +59,6 @@
 		</div>
 	</section>
 </template>
-
 <script>
 import { addBlankTargetToExternalLinks } from '@/util/contentful/richTextRenderer';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -72,6 +71,10 @@ export default {
 	},
 	props: {
 		heroAreaContent: {
+			type: Object,
+			default: () => {},
+		},
+		pageSettingData: {
 			type: Object,
 			default: () => {},
 		},
@@ -109,7 +112,7 @@ export default {
 	},
 	async mounted() {
 		await this.$nextTick();
-		addBlankTargetToExternalLinks(this.$refs.heroBodyCopy);
+		addBlankTargetToExternalLinks(this.$refs.heroBodyCopy, this.$props.pageSettingData);
 	}
 };
 </script>
