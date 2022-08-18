@@ -68,8 +68,8 @@ export default {
 	computed: {
 		adaptedLoan() {
 			// TODO: There must be a better way
-			const defaultImage = `https://www-dev-kiva-org.global.ssl.fastly.net/img/w480h360/${_get(this.loan, 'image.hash')}.jpg`; // eslint-disable-line
-			const retinaImage = `https://www-dev-kiva-org.global.ssl.fastly.net/img/w960h720/${_get(this.loan, 'image.hash')}.jpg`; // eslint-disable-line
+			const defaultImage = `${this.$appConfig.photoPath}w480h360/${_get(this.loan, 'image.hash')}.jpg`; // eslint-disable-line
+			const retinaImage = `${this.$appConfig.photoPath}w960h720/${_get(this.loan, 'image.hash')}.jpg`; // eslint-disable-line
 			const exprirationDate = new Date(_get(this.loan, 'plannedExpirationDate') * 1000);
 
 			return {

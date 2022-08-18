@@ -1,35 +1,45 @@
 <template>
-	<www-page>
-		<kv-page-container>
-			<kv-grid class="tw-pt-4 md:tw-pt-6 lg:tw-pt-8">
+	<www-page
+		:gray-background="true"
+	>
+		<template #secondary>
+			<the-my-kiva-secondary-menu />
+		</template>
+		<kv-default-wrapper>
+			<kv-grid>
 				<h1 class="tw-mb-2">
-					Saved searches
+					Saved Searches
 				</h1>
 			</kv-grid>
-			<kv-grid class="md:tw-pt-6 lg:tw-pt-8">
-				<div
+
+			<kv-grid class="tw-my-2">
+				<save-search-item
 					v-for="(search, index) in savedSearches"
 					:key="index"
-				>
-					{{ search.name }}
-				</div>
+					:saved-search="search"
+					@delete-saved-search="fetchSavedSearches(0)"
+				/>
 			</kv-grid>
-		</kv-page-container>
+		</kv-default-wrapper>
 	</www-page>
 </template>
 
 <script>
 import gql from 'graphql-tag';
+import SaveSearchItem from '@/components/Settings/SaveSearchItem';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
+import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'SavedSearchBeta',
 	components: {
+		SaveSearchItem,
 		WwwPage,
+		TheMyKivaSecondaryMenu,
 		KvGrid,
-		KvPageContainer,
+		KvDefaultWrapper,
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
@@ -51,6 +61,11 @@ export default {
 							values {
 								id
 								name
+								isAlert
+								url
+								loanSearchCriteria{
+									sortBy
+								}
 							} 
 						}
 					}
@@ -62,9 +77,9 @@ export default {
 			}).then(result => {
 				const savedSearchData = result?.data?.my?.savedSearches;
 				this.totalCount = savedSearchData?.totalCount ?? 0;
-				this.savedSearches = [...savedSearchData.values];
+				this.savedSearches = [...savedSearchData?.values];
 			});
-		}
+		},
 	}
 };
 </script>

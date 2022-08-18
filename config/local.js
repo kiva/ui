@@ -9,6 +9,10 @@ module.exports = merge(base, {
 		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
 		enablePerimeterx: false,
 		enableAnalytics: false,
+		enableSnowplow: false,
+		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
+		enableGA: false,
+		gaId: 'UA-11686022-7', // dev-vm property
 		enableFullStory: false,
 		enableSentry: false,
 		auth0: {

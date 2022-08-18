@@ -17,7 +17,6 @@
 		>
 			<kv-grid
 				:class="[
-					'tw-z-2',
 					'tw-grid-cols-12',
 					'tw-px-2.5',
 					'tw-bg-primary',
@@ -30,6 +29,7 @@
 					},
 					'lg:tw-rounded-t',
 					'lg:tw-px-4',
+					'lg:tw-gap-1'
 				]"
 			>
 				<div
@@ -37,7 +37,7 @@
 						'tw-pt-1',
 						'tw-col-span-12',
 						{
-							'md:tw-pt-0 md:tw-pb-2': !isSticky,
+							'md:tw-pt-0': !isSticky,
 							'md:tw-col-start-2 md:tw-col-span-10': isSticky,
 						},
 						'lg:tw-col-span-12',
@@ -50,7 +50,7 @@
 					<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
 						{{ lgScreenheadline }}
 					</p>
-					<span class="tw-flex tw-pb-1 lg:tw-pb-3">
+					<span class="tw-flex tw-pb-1 lg:tw-pb-2.5">
 						<!-- eslint-disable-next-line max-len -->
 						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
 							<fieldset
@@ -196,6 +196,7 @@
 							{{ ctaButtonText }}
 						</kv-ui-button>
 					</span>
+					<slot v-if="!isSticky" name="sharebutton"></slot>
 					<p
 						v-if="freeCreditWarning"
 						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
@@ -211,16 +212,10 @@
 						All shares reserved
 					</p>
 					<hr
-						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full"
-						:class="[
-							{
-								'tw-mt-2': !socialExpEnabled,
-								'tw-my-2 lg:tw-mb-3': socialExpEnabled,
-							}
-						]"
+						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full tw-my-2"
 					>
 					<div
-						class="tw-flex lg:tw-justify-center tw-w-full tw-items-center"
+						class="tw-flex lg:tw-justify-center tw-w-full"
 						:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
 					>
 						<loan-bookmark
@@ -231,9 +226,9 @@
 						/>
 						<jump-links
 							:class="[
-								'tw-hidden md:tw-block',
+								'tw-hidden md:tw-block lg:tw-mb-1.5',
 								{
-									'tw-my-3': !socialExpEnabled
+									'md:tw-mb-3': isSticky || !socialExpEnabled,
 								}
 							]"
 							data-testid="bp-lend-cta-jump-links"
@@ -252,7 +247,10 @@
 						'lg:tw-col-span-12',
 					]"
 				>
-					<hr class="tw-hidden lg:tw-block tw-border-tertiary tw-w-full tw-mb-3">
+					<hr
+						v-if="socialExpEnabled && lenders.length"
+						class="tw-hidden lg:tw-block tw-border-tertiary tw-w-full tw-mb-3"
+					>
 					<lenders-list
 						v-if="socialExpEnabled && lenders.length"
 						:num-lenders="numLenders"
@@ -291,7 +289,6 @@
 					<div
 						key="wrapper"
 						:class="[
-							'tw-z-1',
 							'tw-h-5',
 							'tw-overflow-hidden',
 							'tw-col-span-12',
@@ -306,6 +303,7 @@
 								'md:tw-mb-0': !isSticky,
 								'md:tw-col-start-6 md:tw-col-span-7': !isSticky,
 								'md:tw-col-start-5 md:tw-col-span-6': isSticky,
+								'md:tw-hidden': isSticky,
 							},
 							'lg:tw-mb-0',
 							'lg:tw-col-span-12'
@@ -366,6 +364,7 @@ import { buildPriceArray, isMatchAtRisk } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
+
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import LendersList from '@/components/BorrowerProfile/LendersList';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
@@ -437,7 +436,7 @@ export default {
 			wrapperHeight: 0,
 			wrapperObserver: null,
 			name: '',
-			completeLoanView: true
+			completeLoanView: true,
 		};
 	},
 	apollo: {
@@ -604,7 +603,7 @@ export default {
 		},
 		unreservedAmount(newValue, previousValue) {
 			// set initial selected value for sub 25 loan if shown
-			if (this.completeLoan && this.isBetween25And100) {
+			if (this.completeLoan && this.isBetween25And50) {
 				this.selectedOption = Number(this.unreservedAmount).toFixed();
 			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
 				this.selectedOption = parseInt(newValue, 10);
@@ -649,7 +648,7 @@ export default {
 		},
 		lgScreenheadline() {
 			if (this.isCompleteLoanActive) {
-				return `Fully fund ${this.name}'s loan`;
+				return `${this.name}'s loan is almost funded!`;
 			}
 			switch (this.state) {
 				case 'loading':
@@ -666,7 +665,7 @@ export default {
 		},
 		ctaButtonText() {
 			if (this.isCompleteLoanActive) {
-				return 'Complete loan';
+				return 'Lend now';
 			}
 			switch (this.state) {
 				case 'loading':
@@ -750,8 +749,8 @@ export default {
 		isLessThan25() {
 			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
 		},
-		isBetween25And100() {
-			return this.unreservedAmount < 100 && this.unreservedAmount > 25;
+		isBetween25And50() {
+			return this.unreservedAmount <= 50 && this.unreservedAmount > 25;
 		},
 		isBetween25And500() {
 			return this.unreservedAmount < 500 && this.unreservedAmount >= 25;

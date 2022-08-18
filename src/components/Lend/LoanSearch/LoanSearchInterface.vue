@@ -119,7 +119,7 @@ import {
 	transformSectors,
 } from '@/util/loanSearch/filterUtils';
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
-import { applyQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
+import { applyQueryParams, hasExcludedQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
 import { updateSearchState } from '@/util/loanSearch/searchStateUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
@@ -223,7 +223,13 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client) {
+		preFetch(config, client, { route }) {
+			// Handle temporary query param exclusions
+			if (Object.keys(route?.query).length && hasExcludedQueryParams(route?.query)) {
+				// fallback to legacy lend with original query params
+				return Promise.reject({ path: route.fullPath.replace('/filter', '') });
+			}
+
 			return client.query({
 				query: userIdQuery
 			}).then(() => {
@@ -285,8 +291,8 @@ export default {
 					await this.fetchFacets(this.loanSearchState)
 				]);
 
-				// Store loan data in component
-				this.loans = loans;
+				// Store loan data in component, guarding against null loan objects
+				this.loans = loans.filter(loan => loan !== null);
 				this.totalCount = totalCount;
 
 				// Copy state so that the readonly offset can be updated

@@ -14,7 +14,6 @@ module.exports = merge(base, {
 		googleTagmanagerId: 'GTM-WXLS9B',
 		enableGA: true,
 		gaId: 'UA-11686022-4',
-		gaAlternateId: 'UA-11686022-8',
 		enableSnowplow: true,
 		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
 		enableHotjar: false,

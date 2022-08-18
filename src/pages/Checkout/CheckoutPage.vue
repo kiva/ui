@@ -38,16 +38,19 @@
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<upsell-module
-							v-if="!upsellCookieActive &&
-								showUpsellModule &&
-								isUpsellsExperimentEnabled
-								&& upsellLoan.name
-							"
-							:loan="upsellLoan"
-							:close-upsell-module="closeUpsellModule"
-							:add-to-basket="addToBasket"
-						/>
+						<div class="upsellContainer">
+							<upsell-module
+								v-if="!upsellCookieActive &&
+									showUpsellModule &&
+									upsellLoan.name &&
+									isUpsellUnder100
+								"
+								:loan="upsellLoan"
+								:close-upsell-module="closeUpsellModule"
+								:add-to-basket="addToBasket"
+								:enable-experiment-copy="enableUpsellsCopy"
+							/>
+						</div>
 					</div>
 					<div v-if="showKivaCardForm">
 						<hr class="tw-border-tertiary tw-my-3">
@@ -210,6 +213,13 @@
 				@credit-removed="handleCreditRemoved"
 				@promo-opt-out-lightbox-closed="handleCancelPromoOptOut"
 			/>
+			<campaign-join-team-form
+				v-if="showTeamForm"
+				:campaign-name="campaignPartnerName"
+				:team-id="teamId"
+				:promo-id="promoFundId"
+				@team-process-complete="handleTeamJoinProcess"
+			/>
 
 			<div v-if="emptyBasket" class="empty-basket tw-relative tw-mx-auto" data-testid="empty-basket">
 				<div class="checkout-header-empty tw-mb-4">
@@ -254,6 +264,7 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
@@ -269,6 +280,7 @@ import setupBasketForUserMutation from '@/graphql/mutation/shopSetupBasketForUse
 import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import OrderTotals from '@/components/Checkout/OrderTotals';
@@ -277,6 +289,7 @@ import BasketVerification from '@/components/Checkout/BasketVerification';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
+import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/RandomLoanSelector';
@@ -291,6 +304,21 @@ import { isLoanFundraising } from '@/util/loanUtils';
 import MatchedLoansLightbox from '@/components/Checkout/MatchedLoansLightbox';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+
+// Query to gather user Teams
+const myTeamsQuery = gql`query myTeamsQuery {
+	my {
+		lender {
+			id
+			teams(limit: 100) {
+				values {
+					id
+					name
+				}
+			}
+		}
+	}
+}`;
 
 export default {
 	name: 'CheckoutPage',
@@ -310,7 +338,8 @@ export default {
 		RandomLoanSelector,
 		VerifyRemovePromoCredit,
 		UpsellModule,
-		MatchedLoansLightbox
+		MatchedLoansLightbox,
+		CampaignJoinTeamForm
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [
@@ -351,11 +380,13 @@ export default {
 			verificationSubmitted: false,
 			showVerification: false,
 			showVerifyRemovePromoCredit: false,
-			isUpsellsExperimentEnabled: false,
 			upsellLoan: {},
 			showUpsellModule: true,
 			requireDepositsMatchedLoans: false,
 			showMatchedLoansLightbox: false,
+			showTeamForm: false,
+			teamJoinStatus: null,
+			enableUpsellsCopy: false,
 		};
 	},
 	apollo: {
@@ -388,9 +419,9 @@ export default {
 				.then(() => {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
-						client.query({ query: experimentQuery, variables: { id: 'upsells_checkout' } }),
 						client.query({ query: upsellQuery }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
+						client.query({ query: experimentQuery, variables: { id: 'upsells_copy' } })
 					]);
 				});
 		},
@@ -430,23 +461,23 @@ export default {
 		}
 	},
 	created() {
-		const upsellsExperiment = this.apollo.readFragment({
-			id: 'Experiment:upsells_checkout',
+		const upsellsCopyExperiment = this.apollo.readFragment({
+			id: 'Experiment:upsells_copy',
 			fragment: experimentVersionFragment,
 		}) || {};
+		this.enableUpsellsCopy = upsellsCopyExperiment.version === 'b';
+		if (upsellsCopyExperiment.version) {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-CORE-678-Aug-2022',
+				upsellsCopyExperiment.version
+			);
+		}
 		const matchedLoansExperiment = this.apollo.readFragment({
 			id: 'Experiment:require_deposits_matched_loans',
 			fragment: experimentVersionFragment,
 		}) || {};
-		this.isUpsellsExperimentEnabled = upsellsExperiment.version === 'b';
 		this.requireDepositsMatchedLoans = matchedLoansExperiment.version === 'b';
-		if (upsellsExperiment.version) {
-			this.$kvTrackEvent(
-				'Basket',
-				'EXP-CORE-602-May-2022',
-				upsellsExperiment.version
-			);
-		}
 		if (matchedLoansExperiment.version) {
 			this.$kvTrackEvent(
 				'Basket',
@@ -500,6 +531,13 @@ export default {
 				);
 			}
 		}
+		const matchedLoansWithCredit = this.loans?.filter(loan => {
+			const hasCredits = loan.creditsUsed?.length > 0;
+			const isMatchedLoan = loan.loan?.matchingText;
+			return hasCredits && isMatchedLoan;
+		});
+		this.showMatchedLoanKivaCredit = matchedLoansWithCredit.length > 0;
+		this.matchedText = matchedLoansWithCredit[0]?.loan?.matchingText ?? '';
 	},
 	mounted() {
 		// update current time every second for reactivity
@@ -526,8 +564,16 @@ export default {
 		this.handleToast();
 		this.getPromoInformationFromBasket();
 		this.getUpsellModuleData();
+		// show join-team form for specified scenario
+		this.handleTeamForm();
 	},
 	computed: {
+		isUpsellUnder100() {
+			const amountLeft = this.upsellLoan?.loanAmount
+			- this.upsellLoan?.loanFundraisingInfo?.fundedAmount
+			- this.upsellLoan?.loanFundraisingInfo?.reservedAmount || 0;
+			return amountLeft < 100;
+		},
 		showMatchedLoanKivaCredit() {
 			const matchedLoansWithCredit = this.loans?.filter(loan => {
 				const hasCredits = loan.creditsUsed?.length > 0;
@@ -612,7 +658,10 @@ export default {
 			return appliedCreditsPromoFunds[0] || null;
 		},
 		campaignPartnerName() {
-			return this.promoData?.promoFund?.displayName;
+			return this.promoData?.promoFund?.displayName ?? null;
+		},
+		teamId() {
+			return this.promoData?.promoGroup?.teamId ?? null;
 		},
 		externalFormId() {
 			return this.promoData?.managedAccount?.formId ?? null;
@@ -909,6 +958,55 @@ export default {
 				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
 				Sentry.captureException(error);
 			});
+		},
+		handleTeamJoinProcess(payload) {
+			this.teamJoinStatus = payload.join;
+			this.$kvTrackEvent(
+				'ManagedLendingCampaign',
+				'modal-join-team-process',
+				`${this.teamJoinStatus} team`
+			);
+			this.fetchMyTeams();
+		},
+		fetchMyTeams() {
+			this.apollo.query({
+				fetchPolicy: 'network-only',
+				query: myTeamsQuery
+			}).then(({ data }) => {
+				this.myTeams = data.my?.lender?.teams?.values ?? [];
+				if (this.teamJoinStatus !== 'declined') {
+					this.addTeamToLoans();
+				}
+			});
+		},
+		addTeamToLoans() {
+			if (this.loans.length && this.teamId) {
+				const loans = [];
+				// TODO Collect these promises and refresh basket once complete
+				this.loans.forEach((loan, index) => {
+					loans[index] = this.apollo.mutate({
+						mutation: updateLoanReservationTeam,
+						variables: {
+							teamId: this.teamId,
+							loanid: loan.id
+						}
+					});
+				});
+				Promise.all(loans).then(() => {
+					this.updateBasketState();
+				});
+			}
+		},
+		handleTeamForm() {
+			if (
+				this.loans.length
+				&& this.isActivelyLoggedIn
+				&& this.teamId
+				&& !this.teamJoinStatus
+			) {
+				// check for team join optionality
+				this.showTeamForm = true;
+			}
 		}
 	},
 	destroyed() {
@@ -919,6 +1017,15 @@ export default {
 
 <style lang="scss">
 @import 'settings';
+
+.upsellContainer {
+	min-height: 250px;
+}
+@media screen and (max-width: 733px) {
+	.upsellContainer {
+		min-height: 300px;
+	}
+}
 
 #checkout-slim {
 	// loading overlay overrides

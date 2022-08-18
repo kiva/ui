@@ -13,7 +13,8 @@
 						<div>Success, we've emailed your receipt to you.</div>
 					</div>
 					<div v-else>
-						<div>Success, your receipt has been sent to <strong>{{ lender.email }}</strong></div>
+						<!-- eslint-disable-next-line max-len -->
+						<div>Success, your receipt has been sent to <strong class="fs-mask">{{ lender.email }}</strong></div>
 					</div>
 				</div>
 			</div>
@@ -75,13 +76,23 @@
 							</figure>
 						</div>
 					</template>
-					<template>
+					<template v-if="shareAskCopyVersion === null || shareAskCopyVersion === 'a'">
 						<h1	class="thanks__headline-h1 tw-mt-1 tw-mb-3 tw-text-left">
 							Get a $25 lending credit by inspiring others.
 						</h1>
 						<p class="tw-text-h3 tw-m-0 thanks__base-text">
 							<!-- eslint-disable-next-line max-len -->
 							Introduce someone new to Kiva and we'll give you $25 to support another borrower. Your Kiva Lending Credit will be applied automatically.
+						</p>
+					</template>
+					<template v-else>
+						<h1	class="thanks__headline-h1 tw-mt-1 tw-mb-3 tw-text-left">
+							<!-- eslint-disable-next-line max-len -->
+							<span class="fs-mask">{{ this.lender.firstName }}</span>, can you share this loan with one more person?
+						</h1>
+						<p class="tw-text-h3 tw-m-0 thanks__base-text">
+							<!-- eslint-disable-next-line max-len -->
+							<span class="fs-mask">{{ this.loan.name }}</span> only needs {{ calculatePeopleQtyToGoal() }} more people to lend $25 and their loan could be fully funded in a matter of hours!
 						</p>
 					</template>
 					<template>
@@ -160,8 +171,8 @@
 <script>
 import clipboardCopy from 'clipboard-copy';
 import { mdiCheckAll, mdiLink } from '@mdi/js';
+import { getFullUrl } from '@/util/urlUtils';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
-import _map from 'lodash/map';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -198,7 +209,11 @@ export default {
 		shareCardLanguageVersion: {
 			type: String,
 			default: ''
-		}
+		},
+		shareAskCopyVersion: {
+			type: String,
+			default: 'a'
+		},
 	},
 	metaInfo() {
 		return {
@@ -241,42 +256,39 @@ export default {
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			if (this.loan.id) {
-				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utm_content=${this.utmContent}&scle=${this.shareCardLanguageVersion}`; // eslint-disable-line max-len
+				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utm_content=${this.utmContent}`; // eslint-disable-line max-len
 			}
-			return `${base}?utm_content=${this.utmContent}&scle=${this.shareCardLanguageVersion}`;
+
+			return `${base}?utm_content=${this.utmContent}&utm_campaign=social_share_checkout_variant_scle_${this.shareCardLanguageVersion}`; // eslint-disable-line max-len
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
-			return this.getFullUrl('https://www.facebook.com/dialog/share', {
+			return getFullUrl('https://www.facebook.com/dialog/share', {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
-				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social&utm_campaign=social_share_checkout_variant`, // eslint-disable-line max-len
+				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social&utm_campaign=social_share_checkout_variant_scle_${this.shareCardLanguageVersion}`, // eslint-disable-line max-len
 				redirect_uri: `${pageUrl}?kiva_transaction_id=${this.$route.query.kiva_transaction_id}`,
 				quote: this.shareMessage,
 			});
 		},
 		linkedInShareUrl() {
-			return this.getFullUrl('https://www.linkedin.com/shareArticle', {
+			return getFullUrl('https://www.linkedin.com/shareArticle', {
 				mini: 'true',
 				source: `https://${this.$appConfig.host}`,
 				summary: this.shareMessage.substring(0, 256),
 				title: `A loan for ${this.loan.name}`,
-				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout_variant` // eslint-disable-line max-len
+				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout_variant_scle_${this.shareCardLanguageVersion}` // eslint-disable-line max-len
 			});
 		},
 		twitterShareUrl() {
-			return this.getFullUrl('https://twitter.com/intent/tweet', {
+			return getFullUrl('https://twitter.com/intent/tweet', {
 				text: this.shareMessage,
-				url: `${this.shareLink}&utm_source=t.co&utm_medium=social&utm_campaign=social_share_checkout_variant`,
+				url: `${this.shareLink}&utm_source=t.co&utm_medium=social&utm_campaign=social_share_checkout_variant_scle_${this.shareCardLanguageVersion}`, // eslint-disable-line max-len
 				via: 'Kiva',
 			});
 		},
 	},
 	methods: {
-		getFullUrl(base, args) {
-			const querystring = _map(args, (val, key) => `${key}=${encodeURIComponent(val)}`).join('&');
-			return `${base}?${querystring}`;
-		},
 		handleFacebookResponse() {
 			// Check for the route hash that facebook adds to the request
 			if (this.$route.hash === '#_=_') {
@@ -309,7 +321,7 @@ export default {
 			}
 		},
 		async copyLink() {
-			const url = `${this.shareLink}&utm_source=social_share_link&utm_campaign=social_share_checkout_variant`;
+			const url = `${this.shareLink}&utm_source=social_share_link&utm_campaign=social_share_checkout_variant_scle_${this.shareCardLanguageVersion}`; // eslint-disable-line max-len
 			try {
 				await clipboardCopy(url);
 				this.copyStatus = {
@@ -333,6 +345,10 @@ export default {
 				}, 500);
 			}
 		},
+		calculatePeopleQtyToGoal() {
+			const remainingAmount = parseFloat(this.loan.unreservedAmount);
+			return remainingAmount === 0 ? 0 : Math.ceil(remainingAmount / 25);
+		}
 	},
 	mounted() {
 		if (this.receipt) {

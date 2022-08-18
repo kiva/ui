@@ -13,7 +13,6 @@ module.exports = {
 		googleTagmanagerId: 'GTM-PX6FDG',
 		enableGA: true,
 		gaId: 'UA-175897-4',
-		gaAlternateId: 'UA-175897-21',
 		enableSnowplow: true,
 		snowplowUri: 'events.fivetran.com/snowplow/kiva_rules',
 		enableHotjar: false,
