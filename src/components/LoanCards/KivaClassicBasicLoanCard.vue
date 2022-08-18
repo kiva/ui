@@ -147,49 +147,51 @@
 			/>
 		</kv-ui-button>
 
-		<kv-ui-button
-			class="tw-text-secondary"
-			variant="secondary"
-			v-if="isInBasket"
-			v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
-			to="/basket"
-		>
-			<slot>
-				<div class="tw-inline-flex tw-items-center tw-gap-1">
-					Checkout now
-					<kv-material-icon
-						class="tw-w-2.5 tw-h-2.5"
-						:icon="mdiCheckCircleOutline"
-					/>
-				</div>
-			</slot>
-		</kv-ui-button>
+		<!-- Template wrapper for different states of the "lend now" button -->
+		<template v-if="showLendNowButton">
+			<kv-ui-button
+				class="tw-text-secondary"
+				variant="secondary"
+				v-if="isInBasket"
+				v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
+				to="/basket"
+			>
+				<slot>
+					<div class="tw-inline-flex tw-items-center tw-gap-1">
+						Checkout now
+						<kv-material-icon
+							class="tw-w-2.5 tw-h-2.5"
+							:icon="mdiCheckCircleOutline"
+						/>
+					</div>
+				</slot>
+			</kv-ui-button>
 
-		<!-- Lend button -->
-		<kv-ui-button
-			key="lendButton"
-			v-if="!allSharesReserved && !isLoading && showLendNowButton && !isAdding && !isInBasket"
-			class="tw-inline-flex tw-flex-1"
-			data-testid="bp-lend-cta-lend-button"
-			type="submit"
-			@click="addToBasket"
-			v-kv-track-event="[
-				'Lending',
-				'lend-button-loan-upsell',
-				expLabel
-			]"
-		>
-			{{ ctaButtonText }}
-		</kv-ui-button>
+			<!-- Lend button -->
+			<kv-ui-button
+				key="lendButton"
+				v-if="!allSharesReserved && !isLoading && !isAdding && !isInBasket"
+				class="tw-inline-flex tw-flex-1"
+				data-testid="bp-lend-cta-lend-button"
+				type="submit"
+				@click="addToBasket"
+				v-kv-track-event="[
+					'Lending',
+					'lend-button-loan-upsell',
+					expLabel
+				]"
+			>
+				{{ ctaButtonText }}
+			</kv-ui-button>
 
-		<kv-ui-button
-			v-if="showLendNowButton && isAdding"
-			class="tw-inline-flex tw-flex-1"
-			data-testid="bp-lend-cta-adding-to-basket-button"
-		>
-			Adding to basket...
-		</kv-ui-button>
-
+			<kv-ui-button
+				v-if="isAdding"
+				class="tw-inline-flex tw-flex-1"
+				data-testid="bp-lend-cta-adding-to-basket-button"
+			>
+				Adding to basket...
+			</kv-ui-button>
+		</template>
 		<!-- If allSharesReserved show message and hide cta button -->
 		<div
 			v-if="allSharesReserved"
