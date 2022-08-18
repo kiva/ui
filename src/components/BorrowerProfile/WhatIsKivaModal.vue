@@ -92,6 +92,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'WhatIsKivaModal',
+	inject: ['cookieStore'],
 	components: {
 		KvLightbox,
 		KvButton,
