@@ -105,7 +105,7 @@
 							v-html="heroSubHeadline"
 							class="tw-mb-2 md:tw-mb-3"
 						></h2>
-						<div v-if="heroBody" class="tw-prose tw-mb-2 md:tw-mb-3">
+						<div v-if="heroBody" class="tw-prose tw-mb-2 md:tw-mb-3" ref="heroBodyCopy">
 							<dynamic-rich-text :html="heroBody" />
 						</div>
 						<button-wrapper
@@ -122,13 +122,14 @@
 <script>
 import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
-import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import DynamicRichText from '@/components/Contentful/DynamicRichText';
 import ButtonWrapper from '@/components/Contentful/ButtonWrapper';
 import { responsiveImageSetSourceSets } from '@/util/contentfulUtils';
+import { richTextRenderer, addBlankTargetToExternalLinks } from '@/util/contentful/richTextRenderer';
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+
 /**
 * Dynamic Hero Component
 * This component will display a Hero driven by a Contentful Content Group
@@ -157,6 +158,14 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		pageSettingData: {
+			type: Object,
+			default: () => {},
+		},
+	},
+	async mounted() {
+		await this.$nextTick();
+		addBlankTargetToExternalLinks(this.$refs.heroBodyCopy, this.pageSettingData);
 	},
 	computed: {
 		background() {

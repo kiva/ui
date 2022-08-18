@@ -25,6 +25,7 @@
 			<campaign-hero
 				v-if="hasCampaignHero"
 				:hero-area-content="heroAreaContent"
+				:page-setting-data="pageSettingData"
 				@add-to-basket="handleAddToBasket"
 				@jump-to-loans="jumpToLoans"
 			/>
@@ -32,6 +33,7 @@
 			<dynamic-hero-classic
 				v-if="hasDynamicHeroClassic"
 				:content="heroAreaContent"
+				:page-setting-data="pageSettingData"
 			/>
 
 			<hr>
@@ -100,7 +102,10 @@
 			<hr>
 
 			<template v-if="partnerAreaContent">
-				<campaign-partner :partner-area-content="partnerAreaContent" />
+				<campaign-partner
+					:partner-area-content="partnerAreaContent"
+					:page-setting-data="pageSettingData"
+				/>
 				<hr>
 			</template>
 
@@ -678,6 +683,11 @@ export default {
 			const allJsonData = jsonDataArray.reduce((accumulator, settingDataObject) => {
 				return { ...accumulator, ...settingDataObject };
 			}, {});
+			// Make all external links on corporate pages open in a new tab by default
+			// unless the setting is explicitly set to false in contentful
+			if (allJsonData.enableBlankTargetLinks === undefined) {
+				allJsonData.enableBlankTargetLinks = true;
+			}
 			return allJsonData;
 		},
 		pageTitle() {
