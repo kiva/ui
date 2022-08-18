@@ -1,3 +1,15 @@
+## [2.259.0](https://github.com/kiva/ui/compare/v2.258.0...v2.259.0) (2022-08-18)
+
+
+### Features
+
+* activate saved search at it's actual url ([fb4f02a](https://github.com/kiva/ui/commit/fb4f02a86aca3df2cbc9052c0a9cde2a81428ad8))
+
+
+### Bug Fixes
+
+* remove saved-search-beta route ([0847ec7](https://github.com/kiva/ui/commit/0847ec7cc3cc4128710e61ff9ed99154ec23359d))
+
 ## [2.258.0](https://github.com/kiva/ui/compare/v2.257.3...v2.258.0) (2022-08-18)
 
 
