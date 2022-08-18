@@ -1,3 +1,16 @@
+## [2.260.0](https://github.com/kiva/ui/compare/v2.259.2...v2.260.0) (2022-08-18)
+
+
+### Features
+
+* added setting in contentful that allows site admins to toggle ([57f1e72](https://github.com/kiva/ui/commit/57f1e720b0040e24461a91b05b69b989952157ca))
+
+
+### Bug Fixes
+
+* ensure external links open in new tabs ([82a40a5](https://github.com/kiva/ui/commit/82a40a519164d1ea6e4c57d1e5fc8c0d5a525937))
+* no need to use $props to reference component props ([aacaab2](https://github.com/kiva/ui/commit/aacaab2adc7b95d959f7740f39e8e2135aeec086))
+
 ### [2.259.2](https://github.com/kiva/ui/compare/v2.259.1...v2.259.2) (2022-08-18)
 
 
