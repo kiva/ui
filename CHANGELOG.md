@@ -1,3 +1,10 @@
+### [2.259.1](https://github.com/kiva/ui/compare/v2.259.0...v2.259.1) (2022-08-18)
+
+
+### Bug Fixes
+
+* inject cookieStore in whatIsKiva modal ([0c34f66](https://github.com/kiva/ui/commit/0c34f66b8727c667a2cf207e1fc0e709575f8642))
+
 ## [2.259.0](https://github.com/kiva/ui/compare/v2.258.0...v2.259.0) (2022-08-18)
 
 
