@@ -362,11 +362,11 @@ export default {
 		if (this.$appConfig.enableOptimizely) {
 			trackOptEvent('loan_share_purchase', {
 				session_includes_loan_purchase: loanShareAmount > 0,
-				loan_share_purchase_amount: loanShareAmount
+				loan_share_purchase_amount: loanShareAmount ?? 0
 			});
 			trackOptEvent('deposit', {
 				session_includes_deposit: depositTotal > 0,
-				deposit_amount: depositTotal
+				deposit_amount: depositTotal ?? 0
 			});
 		}
 	},
