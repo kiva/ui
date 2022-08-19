@@ -1,6 +1,8 @@
 module.exports = {
 	ci: {
 		collect: {
+			method: 'psi',
+			psiApiKey: process.env.PSI_API_KEY,
 			settings: {
 				onlyCategories: ['accessibility', 'best-practices', 'performance', 'seo'],
 				maxWaitForLoad: 90000,

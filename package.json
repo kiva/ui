@@ -1,6 +1,6 @@
 {
 	"name": "kvue",
-	"version": "2.260.0",
+	"version": "2.261.0",
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
@@ -127,6 +127,7 @@
 		"vue2-touch-events": "^2.3.2",
 		"vuedraggable": "^2.23.0",
 		"vuelidate": "^0.7.6",
+		"web-vitals": "^2.1.4",
 		"webpack-merge": "^5.8.0",
 		"whatwg-fetch": "^3.6.2",
 		"winston": "^3.3.3"
