@@ -1,3 +1,10 @@
+### [2.260.1](https://github.com/kiva/ui/compare/v2.260.0...v2.260.1) (2022-08-19)
+
+
+### Bug Fixes
+
+* kivaClassic Loan card should show checkout now button if loan is in basket ([4732408](https://github.com/kiva/ui/commit/47324080557f849be045b848caab547e639d44b7))
+
 ## [2.260.0](https://github.com/kiva/ui/compare/v2.259.2...v2.260.0) (2022-08-18)
 
 
