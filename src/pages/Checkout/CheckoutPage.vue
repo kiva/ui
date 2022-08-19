@@ -862,6 +862,8 @@ export default {
 						&& this.loans.length
 					) {
 						this.showVerification = true;
+					} else {
+						this.handleTeamForm();
 					}
 				});
 			});
