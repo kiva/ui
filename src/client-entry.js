@@ -13,6 +13,7 @@ import showTipMessage from '@/graphql/mutation/tipMessage/showTipMessage.graphql
 import { preFetchAll } from '@/util/apolloPreFetch';
 import { authenticationGuard } from '@/util/authenticationGuard';
 import { contentfulPreviewCookie } from '@/util/contentfulPreviewCookie';
+import collectWebVitals from '@/util/webVitals';
 
 import createApp from '@/main';
 import '@/assets/iconLoader';
@@ -107,11 +108,12 @@ try {
 	// do nothing (leave user id as null)
 }
 
-// setup global analytics configuratino + data
+// setup global analytics configuration + data
 app.$setKvAnalyticsData(userId).then(() => {
 	// fire server rendered pageview
 	app.$fireServerPageView();
 	app.$fireQueuedEvents();
+	collectWebVitals(app.$kvTrackEvent);
 });
 
 // Setup adding touch info to the state
