@@ -1,3 +1,11 @@
+## [2.261.0](https://github.com/kiva/ui/compare/v2.260.1...v2.261.0) (2022-08-19)
+
+
+### Features
+
+* track web vitals MARS-169 ([111b12e](https://github.com/kiva/ui/commit/111b12ee995cea569e223996330842f7e131f44d))
+* use PageSpeed for Lightouse test and upload to S3 MARS-169 ([a6d07db](https://github.com/kiva/ui/commit/a6d07dbd67978fb5ddd187786bc3dc9656732ed8))
+
 ### [2.260.1](https://github.com/kiva/ui/compare/v2.260.0...v2.260.1) (2022-08-19)
 
 
