@@ -63,29 +63,6 @@ export default {
 		}
 	},
 	methods: {
-		/* loanTotalCount(id, loanIds) {
-			this.apollo.query({
-				query: gql`query savedSearch($id: Int!) {
-					my{
-						savedSearch(id: $id){
-							id
-							loanSearchCriteria{
-								filters{
-									loanIds
-								}
-							}
-						}
-					}
-				}`,
-				variables: {
-					id: this.savedSearch?.id,
-					loanIds: this.savedSearch?.loanSearchCriteria?.filters?.loanIds
-				}
-			}).then(result => {
-				const totalCountData = result?.data.my?.saveSearch;
-				console.log(totalCountData);
-			});
-		}, */
 		deleteSavedSearch(id) {
 			this.apollo.mutate({
 				mutation: gql`mutation deleteSearch($id: Int!) {

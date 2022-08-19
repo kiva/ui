@@ -58,7 +58,7 @@ export default {
 			totalCount: 0,
 			savedSearches: [],
 			offset: 0,
-			limit: 40 // TODO: Limit is curretntly 40 because of an error via (totalCount) API
+			limit: 40 // TODO: Limit is 40 because of an error via (totalCount) API
 
 		};
 	},
