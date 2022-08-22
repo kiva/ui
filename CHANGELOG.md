@@ -1,3 +1,10 @@
+## [2.263.0](https://github.com/kiva/ui/compare/v2.262.0...v2.263.0) (2022-08-22)
+
+
+### Features
+
+* resolving merge conflicts and PR comments from VUE-1127 in VUE-1127.75 ([5f3ddb0](https://github.com/kiva/ui/commit/5f3ddb038520a3dbd2ef0fe974be980879c0f537))
+
 ## [2.262.0](https://github.com/kiva/ui/compare/v2.261.3...v2.262.0) (2022-08-22)
 
 
