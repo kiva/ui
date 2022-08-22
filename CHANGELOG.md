@@ -1,3 +1,10 @@
+### [2.261.1](https://github.com/kiva/ui/compare/v2.261.0...v2.261.1) (2022-08-22)
+
+
+### Bug Fixes
+
+* add alternate vscode dev tool links ([38281e8](https://github.com/kiva/ui/commit/38281e8fef2297512bad7c3ddf3121721be482c0))
+
 ## [2.261.0](https://github.com/kiva/ui/compare/v2.260.1...v2.261.0) (2022-08-19)
 
 
