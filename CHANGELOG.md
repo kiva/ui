@@ -1,3 +1,10 @@
+### [2.261.2](https://github.com/kiva/ui/compare/v2.261.1...v2.261.2) (2022-08-22)
+
+
+### Bug Fixes
+
+* insist on pre-commit hooks ([8139441](https://github.com/kiva/ui/commit/81394414d7865728518d2b4188e18d4586eea53d))
+
 ### [2.261.1](https://github.com/kiva/ui/compare/v2.261.0...v2.261.1) (2022-08-22)
 
 
