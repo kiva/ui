@@ -1,3 +1,11 @@
+## [2.262.0](https://github.com/kiva/ui/compare/v2.261.3...v2.262.0) (2022-08-22)
+
+
+### Features
+
+* handleteamform trigger was added if verification is not needed ([043c3d2](https://github.com/kiva/ui/commit/043c3d21ab91b0a831c302e2d9ef214e53665091))
+* handleteamform trigger was moved after team verification ([3e64d54](https://github.com/kiva/ui/commit/3e64d54849ade139e1f05b0617ab705f0c6aff92))
+
 ### [2.261.3](https://github.com/kiva/ui/compare/v2.261.2...v2.261.3) (2022-08-22)
 
 
