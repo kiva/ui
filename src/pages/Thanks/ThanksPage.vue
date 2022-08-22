@@ -125,7 +125,6 @@ import orderBy from 'lodash/orderBy';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
-import trackOptEvent from '@/util/optimizelyEvents';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -281,11 +280,6 @@ export default {
 			.filter(item => item.basketItemType === 'loan_reservation')
 			.map(item => item.loan);
 
-		const loanShareAmount = this.receipt?.items?.values?.reduce((sum, item) => {
-			if (item?.basketItemType === 'loan_reservation') return sum + item?.price;
-			return sum;
-		}, 0);
-
 		// MARS-194-User metrics A/B Optimizely experiment
 		const depositTotal = parseFloat(this.receipt?.totals?.depositTotals?.depositTotal);
 		userHasLentBefore(this.loans.length > 0);
@@ -357,17 +351,6 @@ export default {
 					this.shareAskCopyVersion,
 				);
 			}
-		}
-
-		if (this.$appConfig.enableOptimizely) {
-			trackOptEvent('loan_share_purchase', {
-				session_includes_loan_purchase: loanShareAmount > 0,
-				loan_share_purchase_amount: loanShareAmount ?? 0
-			});
-			trackOptEvent('deposit', {
-				session_includes_deposit: depositTotal > 0,
-				deposit_amount: depositTotal ?? 0
-			});
 		}
 	},
 	mounted() {
