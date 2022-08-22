@@ -1,3 +1,10 @@
+### [2.261.3](https://github.com/kiva/ui/compare/v2.261.2...v2.261.3) (2022-08-22)
+
+
+### Bug Fixes
+
+* add alternate dev configs to readme ([e9912cf](https://github.com/kiva/ui/commit/e9912cfd6ac8b8cfa3d595b6d2e7fd990250a993))
+
 ### [2.261.2](https://github.com/kiva/ui/compare/v2.261.1...v2.261.2) (2022-08-22)
 
 
