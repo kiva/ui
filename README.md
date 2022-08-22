@@ -20,7 +20,7 @@ Kiva welcomes outside contributions to our UI repository. If you have any ideas 
 # install dependencies
 $ npm install
 
-# optionally install husky git hooks
+# install husky git hooks (powers pre-commit linting)
 $ npx husky install
 
 # serve with hot reload at localhost:8888
