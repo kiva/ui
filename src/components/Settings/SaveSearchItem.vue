@@ -47,6 +47,7 @@ export default {
 	data() {
 		return {
 			showAlerts: this.savedSearch?.isAlert,
+			totalCount: 0,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -104,7 +105,7 @@ export default {
 				this.emailAlert(next);
 			}
 		}
-	},
+	}
 };
 
 </script>
