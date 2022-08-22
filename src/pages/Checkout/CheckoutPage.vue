@@ -387,6 +387,7 @@ export default {
 			showTeamForm: false,
 			teamJoinStatus: null,
 			enableUpsellsCopy: false,
+			myTeams: [],
 		};
 	},
 	apollo: {
@@ -564,8 +565,6 @@ export default {
 		this.handleToast();
 		this.getPromoInformationFromBasket();
 		this.getUpsellModuleData();
-		// show join-team form for specified scenario
-		this.handleTeamForm();
 	},
 	computed: {
 		isUpsellUnder100() {
@@ -863,6 +862,8 @@ export default {
 						&& this.loans.length
 					) {
 						this.showVerification = true;
+					} else {
+						this.handleTeamForm();
 					}
 				});
 			});
@@ -879,6 +880,7 @@ export default {
 		},
 		verificationComplete() {
 			this.verificationSubmitted = true;
+			this.handleTeamForm();
 		},
 		handleVerificationOptOut() {
 			this.showVerification = false;
@@ -991,9 +993,6 @@ export default {
 							loanid: loan.id
 						}
 					});
-				});
-				Promise.all(loans).then(() => {
-					this.updateBasketState();
 				});
 			}
 		},
