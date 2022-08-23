@@ -15,6 +15,7 @@
 			<kv-button
 				variant="secondary"
 				class="savedSearchButton"
+				@click="openModal"
 			>
 				Add to Saved Searches
 			</kv-button>
@@ -32,6 +33,22 @@ export default {
 		KvButton,
 		IconAdd
 	},
+	mounted() {
+		this.$kvTrackEvent(
+			'Lending',
+			'view-new-filter-saved-search',
+			''
+		);
+	},
+	methods: {
+		openModal() {
+			this.$kvTrackEvent(
+				'Lending',
+				'click-new-filter-saved-search',
+				'Add to saved searches'
+			);
+		}
+	}
 };
 </script>
 
