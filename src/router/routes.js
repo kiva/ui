@@ -501,7 +501,7 @@ module.exports = [
 		}
 	},
 	{
-		path: '/lend/saved-search-beta',
+		path: '/lend/saved-search',
 		component: () => import('@/pages/Settings/SavedSearchBeta'),
 		meta: {
 			authenticationRequired: true,

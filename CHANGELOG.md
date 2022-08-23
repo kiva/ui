@@ -1,3 +1,150 @@
+## [2.263.0](https://github.com/kiva/ui/compare/v2.262.0...v2.263.0) (2022-08-22)
+
+
+### Features
+
+* resolving merge conflicts and PR comments from VUE-1127 in VUE-1127.75 ([5f3ddb0](https://github.com/kiva/ui/commit/5f3ddb038520a3dbd2ef0fe974be980879c0f537))
+
+## [2.262.0](https://github.com/kiva/ui/compare/v2.261.3...v2.262.0) (2022-08-22)
+
+
+### Features
+
+* handleteamform trigger was added if verification is not needed ([043c3d2](https://github.com/kiva/ui/commit/043c3d21ab91b0a831c302e2d9ef214e53665091))
+* handleteamform trigger was moved after team verification ([3e64d54](https://github.com/kiva/ui/commit/3e64d54849ade139e1f05b0617ab705f0c6aff92))
+
+### [2.261.3](https://github.com/kiva/ui/compare/v2.261.2...v2.261.3) (2022-08-22)
+
+
+### Bug Fixes
+
+* add alternate dev configs to readme ([e9912cf](https://github.com/kiva/ui/commit/e9912cfd6ac8b8cfa3d595b6d2e7fd990250a993))
+
+### [2.261.2](https://github.com/kiva/ui/compare/v2.261.1...v2.261.2) (2022-08-22)
+
+
+### Bug Fixes
+
+* insist on pre-commit hooks ([8139441](https://github.com/kiva/ui/commit/81394414d7865728518d2b4188e18d4586eea53d))
+
+### [2.261.1](https://github.com/kiva/ui/compare/v2.261.0...v2.261.1) (2022-08-22)
+
+
+### Bug Fixes
+
+* add alternate vscode dev tool links ([38281e8](https://github.com/kiva/ui/commit/38281e8fef2297512bad7c3ddf3121721be482c0))
+
+## [2.261.0](https://github.com/kiva/ui/compare/v2.260.1...v2.261.0) (2022-08-19)
+
+
+### Features
+
+* track web vitals MARS-169 ([111b12e](https://github.com/kiva/ui/commit/111b12ee995cea569e223996330842f7e131f44d))
+* use PageSpeed for Lightouse test and upload to S3 MARS-169 ([a6d07db](https://github.com/kiva/ui/commit/a6d07dbd67978fb5ddd187786bc3dc9656732ed8))
+
+### [2.260.1](https://github.com/kiva/ui/compare/v2.260.0...v2.260.1) (2022-08-19)
+
+
+### Bug Fixes
+
+* kivaClassic Loan card should show checkout now button if loan is in basket ([4732408](https://github.com/kiva/ui/commit/47324080557f849be045b848caab547e639d44b7))
+
+## [2.260.0](https://github.com/kiva/ui/compare/v2.259.2...v2.260.0) (2022-08-18)
+
+
+### Features
+
+* added setting in contentful that allows site admins to toggle ([57f1e72](https://github.com/kiva/ui/commit/57f1e720b0040e24461a91b05b69b989952157ca))
+
+
+### Bug Fixes
+
+* ensure external links open in new tabs ([82a40a5](https://github.com/kiva/ui/commit/82a40a519164d1ea6e4c57d1e5fc8c0d5a525937))
+* no need to use $props to reference component props ([aacaab2](https://github.com/kiva/ui/commit/aacaab2adc7b95d959f7740f39e8e2135aeec086))
+
+### [2.259.2](https://github.com/kiva/ui/compare/v2.259.1...v2.259.2) (2022-08-18)
+
+
+### Bug Fixes
+
+* kivaClassic Loan card should not show checkout now button ([55b16c3](https://github.com/kiva/ui/commit/55b16c35ad5a652cb18e992533e2a4e660cceb99))
+
+### [2.259.1](https://github.com/kiva/ui/compare/v2.259.0...v2.259.1) (2022-08-18)
+
+
+### Bug Fixes
+
+* inject cookieStore in whatIsKiva modal ([0c34f66](https://github.com/kiva/ui/commit/0c34f66b8727c667a2cf207e1fc0e709575f8642))
+
+## [2.259.0](https://github.com/kiva/ui/compare/v2.258.0...v2.259.0) (2022-08-18)
+
+
+### Features
+
+* activate saved search at it's actual url ([fb4f02a](https://github.com/kiva/ui/commit/fb4f02a86aca3df2cbc9052c0a9cde2a81428ad8))
+
+
+### Bug Fixes
+
+* remove saved-search-beta route ([0847ec7](https://github.com/kiva/ui/commit/0847ec7cc3cc4128710e61ff9ed99154ec23359d))
+
+## [2.258.0](https://github.com/kiva/ui/compare/v2.257.3...v2.258.0) (2022-08-18)
+
+
+### Features
+
+* finish deprecating Causes product ([e811f4c](https://github.com/kiva/ui/commit/e811f4ca01a2b5d00933b1e703eeed91787c2118))
+
+### [2.257.3](https://github.com/kiva/ui/compare/v2.257.2...v2.257.3) (2022-08-18)
+
+
+### Bug Fixes
+
+* added readQuery mock TheHeader.spec.js test ([012c03d](https://github.com/kiva/ui/commit/012c03d3e22803b2f324eda33aa8f16861273753))
+* removed unnecessary promise ([928a4e6](https://github.com/kiva/ui/commit/928a4e679ea01c994d93f43e40982ac087dad61b))
+
+### [2.257.2](https://github.com/kiva/ui/compare/v2.257.1...v2.257.2) (2022-08-17)
+
+
+### Bug Fixes
+
+* handleteamform function was added to methods section ([9126df1](https://github.com/kiva/ui/commit/9126df1c5cd6c8e8ff8961d35885efc676c91237))
+
+### [2.257.1](https://github.com/kiva/ui/compare/v2.257.0...v2.257.1) (2022-08-17)
+
+
+### Bug Fixes
+
+* add tag param to query param utils for loan channel filter links ([645f5c5](https://github.com/kiva/ui/commit/645f5c59846d75b003121538751ba1967628dbff))
+
+## [2.257.0](https://github.com/kiva/ui/compare/v2.256.0...v2.257.0) (2022-08-17)
+
+
+### Features
+
+* implement organization schema for Kiva MARS-217 ([31097b3](https://github.com/kiva/ui/commit/31097b3647bbd58d9cdca745860992835ce65219))
+
+
+### Bug Fixes
+
+* add standalone kiva logo ([88c0eae](https://github.com/kiva/ui/commit/88c0eae24b6bc1d0868677901bb0105b624e6cae))
+
+## [2.256.0](https://github.com/kiva/ui/compare/v2.255.0...v2.256.0) (2022-08-16)
+
+
+### Features
+
+* add saved search exp ([be56de8](https://github.com/kiva/ui/commit/be56de8a9553527fdcba1f1fabdc7ec419472e68))
+* amount limits and copy for complete loan experiment were updated ([6ae8609](https://github.com/kiva/ui/commit/6ae860935cff2303d73b4b0b80f381af97ba5a0c))
+* kiva protocol copy was removed from donation item lightbox ([da0c567](https://github.com/kiva/ui/commit/da0c567195f99e583afb89eb6fed7742bf1f5c71))
+* lbc experimental layout modifications ([75066c7](https://github.com/kiva/ui/commit/75066c7bc0609a25e68705447ffad0cd5cbf41b8))
+
+
+### Bug Fixes
+
+* don't require lender for social share button ([e7d87bc](https://github.com/kiva/ui/commit/e7d87bc8f7573fbd60376f3b5d137d009c1bf23a))
+* update query name ([4538ee4](https://github.com/kiva/ui/commit/4538ee41d0ee9117632f141ec21c392850933cc9))
+
 ## [2.255.0](https://github.com/kiva/ui/compare/v2.254.1...v2.255.0) (2022-08-16)
 
 

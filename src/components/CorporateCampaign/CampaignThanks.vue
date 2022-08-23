@@ -11,7 +11,10 @@
 					</p>
 				</header>
 				<section class="campaign-thanks__partner-block">
-					<campaign-partner-thanks :partner-content="partnerContent" />
+					<campaign-partner-thanks
+						:partner-content="partnerContent"
+						:page-setting-data="pageSettingData"
+					/>
 				</section>
 				<kv-accordion-item id="thanks-share">
 					<template #header>
@@ -85,7 +88,11 @@ export default {
 		partnerContent: {
 			type: Object,
 			default() { return {}; }
-		}
+		},
+		pageSettingData: {
+			type: Object,
+			default: () => {},
+		},
 	},
 	data() {
 		return {

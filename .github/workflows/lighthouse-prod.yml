@@ -5,6 +5,10 @@ on:
     # run nightly at midnight
     - cron:  '0 0 * * *'
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   lhci:
     name: Lighthouse
@@ -12,30 +16,25 @@ jobs:
     env:
       LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       LHCI_PROD_BUILD_TOKEN: ${{ secrets.LHCI_PROD_BUILD_TOKEN }}
+      PSI_API_KEY: ${{ secrets.LHCI_PSI_API_KEY }}
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 15.x
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
         with:
-          node-version: 15.x
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-dependencies
-        with:
-          path: |
-            ~/.cache
-            ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - name: npm install, build
+          node-version: 16
+      - name: Run Lighthouse CI
         run: |
-          npm ci --prefer-offline
-          npm run build
-      - name: run Lighthouse CI
-        run: |
-          npm install -g @lhci/cli@0.7.x
+          npm install -g @lhci/cli@0.9.x
           lhci autorun --config=./lighthouserc-prod.js
+          lhci upload --target=filesystem --outputDir=./lhci
+          node format-lh-for-s3.js
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ secrets.LHCI_S3_REGION }}
+          role-to-assume: ${{ secrets.LHCI_AWS_ROLE_TO_ASSUME }}
+          role-session-name: LighthouseGithubAction
+      - name: Upload to S3
+        run: |
+          aws s3 sync lhci/final/ s3://${{ secrets.LHCI_S3_BUCKET }}

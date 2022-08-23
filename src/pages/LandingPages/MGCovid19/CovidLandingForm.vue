@@ -2,7 +2,7 @@
 	<form @submit.prevent.stop="submit" novalidate>
 		<div class="row">
 			<div class="small-12 columns input-wrapper recurring-amounts">
-				<fieldset v-if="!oneTimeOnly && expRecurringOnly !== 'shown'">
+				<fieldset v-if="!oneTimeOnly">
 					<legend class="visually-hidden">
 						Choose how often to contribute
 					</legend>
@@ -17,9 +17,6 @@
 				<fieldset>
 					<legend v-if="oneTimeOnly">
 						Choose a one-time amount to contribute
-					</legend>
-					<legend v-else-if="expRecurringOnly === 'shown'">
-						Contribute monthly:
 					</legend>
 					<legend v-else class="visually-hidden">
 						Choose an amount to contribute
@@ -75,10 +72,6 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 const pageQuery = gql`query covidLandingPage {
 	general {
 		covDefaultAmountExp: uiExperimentSetting(key: "covid19response_default_amount") {
-			key
-			value
-		}
-		mgRecurringOnlyExp: uiExperimentSetting(key: "mg_recurring_only") {
 			key
 			value
 		}
@@ -195,7 +188,6 @@ export default {
 			minOnetimeAmount: 25,
 			maxDepositAmount: 10000,
 			expDefaultAmount: null,
-			expRecurringOnly: null,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -207,7 +199,6 @@ export default {
 			}).then(() => {
 				return Promise.all([
 					client.query({ query: experimentQuery, variables: { id: 'covid19response_default_amount' } }),
-					client.query({ query: experimentQuery, variables: { id: 'mg_recurring_only' } })
 				]);
 			});
 		},
@@ -222,15 +213,6 @@ export default {
 				this.recurringCustomAmount = 25;
 				this.recurringAmount = 25;
 			}
-
-			const mgRecurringOnlyExp = this.apollo.readFragment({
-				id: 'Experiment:mg_recurring_only',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.expRecurringOnly = mgRecurringOnlyExp.version;
-			if (this.expRecurringOnly === 'shown') {
-				this.isRecurring = true;
-			}
 		},
 	},
 	mounted() {
@@ -240,14 +222,6 @@ export default {
 				'Monthly Good',
 				'EXP-GROW-96-May2020',
 				this.expDefaultAmount === 'shown' ? 'b' : 'a'
-			);
-		}
-
-		if (this.expRecurringOnly && this.expRecurringOnly !== 'unassigned') {
-			this.$kvTrackEvent(
-				'MonthlyGood',
-				'EXP-GROW-104-May2020',
-				this.expRecurringOnly === 'shown' ? 'b' : 'a'
 			);
 		}
 
