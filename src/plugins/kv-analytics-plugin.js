@@ -338,23 +338,25 @@ export default {
 				});
 			},
 			trackOPTransaction: transactionData => {
-				window.optimizely.push({
-					type: 'event',
-					name: 'deposit',
-					tags: {
-						session_includes_deposit: transactionData.depositTotal > 0,
-						deposit_amount: transactionData.depositTotal ?? 0
-					}
-				});
+				if (transactionData.depositTotal) {
+					window.optimizely.push({
+						type: 'event',
+						name: 'deposit',
+						tags: {
+							deposit_amount: transactionData.depositTotal
+						}
+					});
+				}
 
-				window.optimizely.push({
-					type: 'event',
-					name: 'loan_share_purchase',
-					tags: {
-						session_includes_loan_purchase: transactionData.loanTotal > 0,
-						loan_share_purchase_amount: transactionData.loanTotal ?? 0
-					}
-				});
+				if (transactionData.loanTotal) {
+					window.optimizely.push({
+						type: 'event',
+						name: 'loan_share_purchase',
+						tags: {
+							loan_share_purchase_amount: transactionData.loanTotal
+						}
+					});
+				}
 			}
 		};
 
