@@ -24,7 +24,7 @@
 						</p>
 					</button>
 				</div>
-				<loan-search-interface />
+				<loan-search-interface :enable-saved-search="enableSavedSearch" />
 			</kv-page-container>
 		</article>
 	</www-page>

@@ -57,6 +57,7 @@
 		<div class="tw-col-span-2 tw-relative tw-grow">
 			<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
 			<div v-if="initialLoadComplete">
+				<loan-search-saved-search v-if="enableSavedSearch && showSavedSearch" />
 				<loan-search-filter-chips
 					:loan-search-state="loanSearchState"
 					:all-facets="allFacets"
@@ -128,6 +129,7 @@ import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util//numberUtils';
 import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
+import LoanSearchSavedSearch from '@/components/Lend/LoanSearch/LoanSearchSavedSearch';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -147,6 +149,13 @@ export default {
 		KvSectionModalLoader,
 		KvPagination,
 		KvResultsPerPage,
+		LoanSearchSavedSearch
+	},
+	props: {
+		enableSavedSearch: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	data() {
 		return {
@@ -324,6 +333,16 @@ export default {
 
 			return isNumber(storedPageLimit) ? +storedPageLimit : this.loanSearchState.pageLimit;
 		},
+		showSavedSearch() {
+			const countryFilterApplied = this.loanSearchState.countryIsoCode.length > 0;
+			const genderFilterApplied = this.loanSearchState.gender;
+			const sectorFilterApplied = this.loanSearchState.sectorId.length > 0;
+			const themeFilterApplied = this.loanSearchState.themeId.length > 0;
+			return countryFilterApplied
+				|| genderFilterApplied
+				|| sectorFilterApplied
+				|| themeFilterApplied;
+		}
 	},
 	methods: {
 		async fetchFacets(loanSearchState = {}) {
@@ -387,6 +406,7 @@ export default {
 
 			this.$kvTrackEvent?.('Lending', 'click-zero-loans-reset');
 		},
+
 	},
 	watch: {
 		$route(to) {
