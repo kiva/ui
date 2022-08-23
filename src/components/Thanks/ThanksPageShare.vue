@@ -253,20 +253,26 @@ export default {
 			if (this.lender?.public && this.lender?.inviterName) return this.lender?.inviterName;
 			return 'anonymous';
 		},
+		getUtmCampaignVersion() {
+			if (this.shareAskCopyVersion === 'b') {
+				return `&utm_campaign=social_share_checkout_variant_scle_${this.shareCardLanguageVersion}`;
+			}
+			return `&utm_campaign=social_share_checkout_control_scle_${this.shareCardLanguageVersion}`;
+		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			if (this.loan.id) {
 				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utm_content=${this.utmContent}`; // eslint-disable-line max-len
 			}
 
-			return `${base}?utm_content=${this.utmContent}&utm_campaign=social_share_checkout_variant_scle_${this.shareCardLanguageVersion}`; // eslint-disable-line max-len
+			return `${base}?utm_content=${this.utmContent}${this.getUtmCampaignVersion}`; // eslint-disable-line max-len
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
 			return getFullUrl('https://www.facebook.com/dialog/share', {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
-				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social&utm_campaign=social_share_checkout_variant_scle_${this.shareCardLanguageVersion}`, // eslint-disable-line max-len
+				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social${this.getUtmCampaignVersion}`, // eslint-disable-line max-len
 				redirect_uri: `${pageUrl}?kiva_transaction_id=${this.$route.query.kiva_transaction_id}`,
 				quote: this.shareMessage,
 			});
@@ -277,13 +283,13 @@ export default {
 				source: `https://${this.$appConfig.host}`,
 				summary: this.shareMessage.substring(0, 256),
 				title: `A loan for ${this.loan.name}`,
-				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout_variant_scle_${this.shareCardLanguageVersion}` // eslint-disable-line max-len
+				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social${this.getUtmCampaignVersion}` // eslint-disable-line max-len
 			});
 		},
 		twitterShareUrl() {
 			return getFullUrl('https://twitter.com/intent/tweet', {
 				text: this.shareMessage,
-				url: `${this.shareLink}&utm_source=t.co&utm_medium=social&utm_campaign=social_share_checkout_variant_scle_${this.shareCardLanguageVersion}`, // eslint-disable-line max-len
+				url: `${this.shareLink}&utm_source=t.co&utm_medium=social${this.getUtmCampaignVersion}`, // eslint-disable-line max-len
 				via: 'Kiva',
 			});
 		},
@@ -321,7 +327,7 @@ export default {
 			}
 		},
 		async copyLink() {
-			const url = `${this.shareLink}&utm_source=social_share_link&utm_campaign=social_share_checkout_variant_scle_${this.shareCardLanguageVersion}`; // eslint-disable-line max-len
+			const url = `${this.shareLink}&utm_source=social_share_link${this.getUtmCampaignVersion}`; // eslint-disable-line max-len
 			try {
 				await clipboardCopy(url);
 				this.copyStatus = {
