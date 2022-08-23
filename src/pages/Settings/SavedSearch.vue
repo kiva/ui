@@ -12,21 +12,25 @@
 				</h1>
 			</kv-grid>
 
-			<kv-grid class="tw-my-2">
+			<kv-grid class="tw-my-2 tw-relative">
 				<save-search-item
 					v-for="(search, index) in savedSearches"
 					:key="index"
 					:saved-search="search"
 					@delete-saved-search="fetchSavedSearches(0)"
 				/>
+				<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
 				<div
-					v-if="showLoadMoreButton"
+					v-if="!loading && showLoadMoreButton"
+					class="tw-my-2 tw-text-center"
 				>
 					<kv-button
 						variant="secondary"
 						class="tw-m-4 tw-center"
 						@click="loadMore"
-					/>
+					>
+						Load more
+					</kv-button>
 				</div>
 			</kv-grid>
 		</kv-default-wrapper>
@@ -39,27 +43,45 @@ import SaveSearchItem from '@/components/Settings/SaveSearchItem';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
+import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
+const pageQuery = gql`query savedSearchPage {
+	my {
+		savedSearches {
+			totalCount
+		}
+	}
+}`;
+
 export default {
-	name: 'SavedSearchBeta',
+	name: 'SavedSearch',
 	components: {
-		SaveSearchItem,
-		WwwPage,
-		TheMyKivaSecondaryMenu,
 		KvButton,
-		KvGrid,
 		KvDefaultWrapper,
+		KvGrid,
+		KvSectionModalLoader,
+		SaveSearchItem,
+		TheMyKivaSecondaryMenu,
+		WwwPage,
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
-			totalCount: 0,
-			savedSearches: [],
+			limit: 10,
+			loading: true,
 			offset: 0,
-			limit: 40 // TODO: Limit is 40 because of an error via (totalCount) API
+			savedSearches: [],
+			totalCount: 0,
 		};
+	},
+	apollo: {
+		query: pageQuery,
+		preFetch: true,
+		result({ data }) {
+			this.totalCount = data?.my?.savedSearches?.totalCount ?? 0;
+		},
 	},
 	created() {
 		this.fetchSavedSearches();
@@ -71,20 +93,69 @@ export default {
 	},
 	methods: {
 		fetchSavedSearches(offset = 0) {
+			this.loading = true;
 			this.apollo.query({
 				query: gql`query savedSearches($offset: Int, $limit: Int) {
-					my { 
-						savedSearches(offset: $offset, limit: $limit){ 
-							totalCount
+					my {
+						savedSearches(offset: $offset, limit: $limit){
 							values {
 								id
 								name
 								isAlert
 								url
-							} 
+								loanSearchCriteria {
+									sortBy
+									filters {
+										activity
+										arrearsRate {
+											min
+											max
+										}
+										avgBorrowerCost {
+											min
+											max
+										}
+										country
+										currencyLossPossible
+										dafEligible
+										defaultRate {
+											min
+											max
+										}
+										distributionModel
+										expiringSoon
+										excludeNonRated
+										gender
+										hasResearchScore
+										isGroup
+										isMatched
+										loanTags
+										loanLimit
+										lenderTerm {
+											min
+											max
+										}
+										lenderFavorite
+										matcherAccountId
+										partner
+										profitability {
+											min
+											max
+										}
+										riskRating {
+											min
+											max
+										}
+										sector
+										status
+										theme
+										trustee
+									}
+								}
+							}
 						}
 					}
-					
+
 				}`,
 				variables: {
 					offset,
@@ -92,10 +163,10 @@ export default {
 				},
 			}).then(result => {
 				const savedSearchData = result?.data?.my?.savedSearches;
-				this.totalCount = savedSearchData?.totalCount ?? 0;
 				const fetchedSavedSearches = [...savedSearchData?.values];
 				const existingSavedSearches = this.savedSearches;
 				this.savedSearches = [...existingSavedSearches, ...fetchedSavedSearches];
+				this.loading = false;
 			});
 		},
 		loadMore() {
