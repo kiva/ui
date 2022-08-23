@@ -42,12 +42,13 @@ export default {
 	.savedSearchContainer {
 		flex-direction: column;
 	}
+
 	.savedSearchButton {
 		&Container {
 			width: 100%;
 		}
+
 		width: 100%;
 	}
 }
-
 </style>
