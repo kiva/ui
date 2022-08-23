@@ -55,6 +55,7 @@ export default {
 	},
 	mounted() {
 		this.determineIsCollapsable();
+
 		window.addEventListener('resize', this.throttledDetermineIsCollapsable);
 	},
 	beforeDestroy() {
