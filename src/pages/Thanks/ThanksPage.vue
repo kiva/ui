@@ -345,12 +345,12 @@ export default {
 			}
 
 			// MARS-202 Share copy ask experiment
-			const shareAskCopyVersion = this.apollo.readFragment({
+			const shareAskCopyResult = this.apollo.readFragment({
 				id: 'Experiment:share_ask_copy',
 				fragment: experimentVersionFragment,
 			}) || {};
 
-			this.shareAskCopyVersion = shareAskCopyVersion.version;
+			this.shareAskCopyVersion = shareAskCopyResult.version;
 			if (this.shareAskCopyVersion) {
 				this.$kvTrackEvent(
 					'Thanks',
