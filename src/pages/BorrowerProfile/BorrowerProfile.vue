@@ -29,7 +29,10 @@
 						<template #sharebutton v-if="inPfp">
 							<!-- Share button for PFP loans -->
 							<social-share-button
-								class="tw-block md:tw-hidden tw-mt-3" :loan="loan" :lender="lender"
+								class="tw-block md:tw-hidden tw-mt-3"
+								:loan="loan"
+								:lender="lender"
+								campaign="social_share_bp_pfp"
 							/>
 						</template>
 					</summary-card>
