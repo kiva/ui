@@ -1,3 +1,11 @@
+### [2.259.3-next.1](https://github.com/kiva/ui/compare/v2.259.2...v2.259.3-next.1) (2022-08-24)
+
+
+### Bug Fixes
+
+* revert previous change and update the strategy to get utm_campaign version ([1e5742a](https://github.com/kiva/ui/commit/1e5742a2191cb927a943efecaf8b7e0147c009d5))
+* update utm_campaign from social_share_checkout_scle to social_share_checkout_control_scle ([0cfac10](https://github.com/kiva/ui/commit/0cfac1096fa5307013303598db628ef65cd91143))
+
 ### [2.259.2](https://github.com/kiva/ui/compare/v2.259.1...v2.259.2) (2022-08-18)
 
 
