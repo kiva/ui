@@ -1,3 +1,10 @@
+## [2.265.0](https://github.com/kiva/ui/compare/v2.264.0...v2.265.0) (2022-08-24)
+
+
+### Features
+
+* css code was replaced with tw clasess in loansearchsavedsearch component ([df4cead](https://github.com/kiva/ui/commit/df4cead0183e58028b095698aeff5e0e643d5747))
+
 ## [2.264.0](https://github.com/kiva/ui/compare/v2.263.2...v2.264.0) (2022-08-24)
 
 
