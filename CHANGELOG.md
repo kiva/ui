@@ -1,3 +1,17 @@
+## [2.269.0](https://github.com/kiva/ui/compare/v2.268.0...v2.269.0) (2022-08-24)
+
+
+### Features
+
+* send optimizely custom events ([2aff748](https://github.com/kiva/ui/commit/2aff748f9eb5feb7d2cf6878db3335e1d598d5e7))
+
+
+### Bug Fixes
+
+* 0 default value for events ([ef279d5](https://github.com/kiva/ui/commit/ef279d59399f90e3518bc62ca03622c661042ae8))
+* change event name format ([945b6f3](https://github.com/kiva/ui/commit/945b6f3583e260f920533f6ada55451e6752761a))
+* push events only when value is greater than 0 ([f744e52](https://github.com/kiva/ui/commit/f744e528768cde6d1a572dfc5e6a72e3eafcf90b))
+
 ## [2.268.0](https://github.com/kiva/ui/compare/v2.267.0...v2.268.0) (2022-08-24)
 
 
