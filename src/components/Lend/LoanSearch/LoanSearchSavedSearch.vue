@@ -1,6 +1,6 @@
 <template>
 	<!-- eslint-disable-next-line max-len -->
-	<div class="savedSearchContainer tw-bg-brand-100 tw-border tw-border-action tw-rounded tw-p-2 tw-flex tw-gap-1 tw-mb-2">
+	<div class="tw-bg-brand-100 tw-border tw-border-action tw-rounded tw-p-2 tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 tw-mb-2">
 		<div class="tw-grow">
 			<div class="tw-flex">
 				<icon-add class="tw-mr-1" />
@@ -11,10 +11,10 @@
 			<!-- eslint-disable-next-line max-len -->
 			Found the perfect filter settings? Add them to your 'Saved Searches' to easily return to the list of borrowers that meet your lending criteria.
 		</div>
-		<div style="min-width: 250px;" class="savedSearchButtonContainer tw-self-center">
+		<div style="min-width: 250px;" class="tw-self-center tw-w-full">
 			<kv-button
 				variant="secondary"
-				class="savedSearchButton"
+				class="tw-w-full"
 				@click="openModal"
 			>
 				Add to Saved Searches
@@ -51,21 +51,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import "settings";
-
-@media screen and (max-width: 733px) {
-	.savedSearchContainer {
-		flex-direction: column;
-	}
-
-	.savedSearchButton {
-		&Container {
-			width: 100%;
-		}
-
-		width: 100%;
-	}
-}
-</style>
