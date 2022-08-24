@@ -288,9 +288,9 @@ export default {
 			.map(item => item.loan);
 
 		// MARS-194-User metrics A/B Optimizely experiment
-		const depositTotal = this.receipt?.totals?.depositTotals?.depositTotal;
+		const depositTotal = parseFloat(this.receipt?.totals?.depositTotals?.depositTotal);
 		userHasLentBefore(this.loans.length > 0);
-		userHasDepositBefore(parseFloat(depositTotal) > 0);
+		userHasDepositBefore(depositTotal > 0);
 
 		if (!this.isGuest && !data?.my?.userAccount) {
 			logFormatter(

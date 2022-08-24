@@ -8,6 +8,7 @@ export default {
 		let snowplowLoaded;
 		let gtagLoaded;
 		let fbLoaded;
+		let optimizelyLoaded;
 		const queue = new SimpleQueue();
 
 		const kvActions = {
@@ -15,6 +16,7 @@ export default {
 				gtagLoaded = inBrowser && typeof window.gtag === 'function';
 				snowplowLoaded = inBrowser && typeof window.snowplow === 'function';
 				fbLoaded = inBrowser && typeof window.fbq === 'function';
+				optimizelyLoaded = inBrowser && typeof window.optimizely === 'object';
 
 				if (typeof window.gtag === 'function' && typeof window.snowplow === 'function') {
 					return true;
@@ -224,6 +226,10 @@ export default {
 				if (gtagLoaded) {
 					kvActions.trackGATransaction(transactionData);
 				}
+				if (optimizelyLoaded) {
+					kvActions.trackOPTransaction(transactionData);
+				}
+
 				kvActions.trackQuantcast(transactionData);
 			},
 			trackFBTransaction: transactionData => {
@@ -331,6 +337,27 @@ export default {
 					event: 'refresh'
 				});
 			},
+			trackOPTransaction: transactionData => {
+				if (transactionData.depositTotal) {
+					window.optimizely.push({
+						type: 'event',
+						name: 'deposit',
+						tags: {
+							deposit_amount: transactionData.depositTotal
+						}
+					});
+				}
+
+				if (transactionData.loanTotal) {
+					window.optimizely.push({
+						type: 'event',
+						name: 'loan_share_purchase',
+						tags: {
+							loan_share_purchase_amount: transactionData.loanTotal
+						}
+					});
+				}
+			}
 		};
 
 		Vue.directive('kv-track-event', {
