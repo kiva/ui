@@ -28,6 +28,7 @@ export const Default = () => ({
 		<social-share-button
 			:lender="lender"
 			:loan="loan"
+			campaign="social_share_bp_pfp"
 		/>
 	`,
 	props: {
