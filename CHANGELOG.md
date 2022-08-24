@@ -1,3 +1,10 @@
+### [2.263.2](https://github.com/kiva/ui/compare/v2.263.1...v2.263.2) (2022-08-24)
+
+
+### Bug Fixes
+
+* revert previous change and update the strategy to get utm_campaign version ([dc95ec0](https://github.com/kiva/ui/commit/dc95ec0f9d06f939221ba1e1f4ca9896d7271b9e))
+
 ### [2.263.1](https://github.com/kiva/ui/compare/v2.263.0...v2.263.1) (2022-08-23)
 
 
