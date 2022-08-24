@@ -3,7 +3,7 @@
 		<h2 class="tw-mb-2">
 			{{ name }}
 		</h2>
-		<p class="tw-mb-2">
+		<p>
 			{{ description }}
 		</p>
 		<div>
@@ -20,8 +20,11 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
 import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
+import {
+	preFetchChannel,
+} from '@/util/loanChannelUtils';
+import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 
 export default {
 	name: 'KivaClassicSingleCategoryCarousel',
@@ -68,13 +71,16 @@ export default {
 		lendNowButton: {
 			type: Boolean,
 			default: false
-		}
+		},
 	},
 	data() {
 		return {
 			selectedChannel: {},
 		};
 	},
+	mixins: [
+		loanChannelQueryMapMixin,
+	],
 	computed: {
 		loanQueryLimit() {
 			return this.loanDisplaySettings?.loanLimit ?? 1;
@@ -104,35 +110,25 @@ export default {
 		},
 	},
 	mounted() {
-		this.fetchLoanChannel();
+		this.fetchLoanChannelFLSS();
 	},
 	methods: {
-		fetchLoanChannel() {
-			this.apollo.query({
-				query: gql`query selectedLoanCategory($loanChannelIds: [Int]!, $loanLimit: Int) {
-					lend {
-						loanChannelsById(ids: $loanChannelIds){
-							id
-							name
-							url
-							description
-							loans(limit: $loanLimit) {
-								values {
-									id
-								}
-							}
-						}
-					}
-				}`,
-				variables: {
-					loanChannelIds: this.loanChannelId,
-					loanLimit: this.loanQueryLimit
-				},
-			}).then(result => {
-				const loanChannelData = result?.data?.lend?.loanChannelsById ?? [];
-				// eslint-disable-next-line prefer-destructuring
-				this.selectedChannel = loanChannelData?.[0] ?? {};
-			});
+		async fetchLoanChannelFLSS() {
+			const channelUrl = this.loanChannelQueryMap.find(c => c.id === this.loanChannelId)?.url;
+			const loanQueryVars = {
+				ids: [this.loanChannelId],
+				offset: 0,
+				limit: this.loanDisplaySettings?.loanLimit ?? 1,
+				basketId: this.cookieStore.get('kvbskt'),
+			};
+			const channelData = await preFetchChannel(
+				this.apollo,
+				this.loanChannelQueryMap,
+				channelUrl,
+				loanQueryVars
+			);
+			const loanChannelData = channelData?.data?.lend?.loanChannelsById ?? [];
+			this.selectedChannel = loanChannelData?.[0];
 		},
 	}
 };
