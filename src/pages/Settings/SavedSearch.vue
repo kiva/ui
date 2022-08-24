@@ -39,6 +39,7 @@
 
 <script>
 import gql from 'graphql-tag';
+import mySavedSearches from '@/graphql/query/mySavedSearches.graphql';
 import SaveSearchItem from '@/components/Settings/SaveSearchItem';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
@@ -95,68 +96,7 @@ export default {
 		fetchSavedSearches(offset = 0) {
 			this.loading = true;
 			this.apollo.query({
-				query: gql`query savedSearches($offset: Int, $limit: Int) {
-					my {
-						savedSearches(offset: $offset, limit: $limit){
-							values {
-								id
-								name
-								isAlert
-								url
-								loanSearchCriteria {
-									sortBy
-									filters {
-										activity
-										arrearsRate {
-											min
-											max
-										}
-										avgBorrowerCost {
-											min
-											max
-										}
-										country
-										currencyLossPossible
-										dafEligible
-										defaultRate {
-											min
-											max
-										}
-										distributionModel
-										expiringSoon
-										excludeNonRated
-										gender
-										hasResearchScore
-										isGroup
-										isMatched
-										loanTags
-										loanLimit
-										lenderTerm {
-											min
-											max
-										}
-										lenderFavorite
-										matcherAccountId
-										partner
-										profitability {
-											min
-											max
-										}
-										riskRating {
-											min
-											max
-										}
-										sector
-										status
-										theme
-										trustee
-									}
-								}
-							}
-						}
-					}
-
-				}`,
+				query: mySavedSearches,
 				variables: {
 					offset,
 					limit: this.limit
