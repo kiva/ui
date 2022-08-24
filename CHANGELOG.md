@@ -1,3 +1,10 @@
+## [2.267.0](https://github.com/kiva/ui/compare/v2.266.1...v2.267.0) (2022-08-24)
+
+
+### Features
+
+* update share button component ([d6b5ac2](https://github.com/kiva/ui/commit/d6b5ac2752e84312f17f9e0dc566744fae053cbf))
+
 ### [2.266.1](https://github.com/kiva/ui/compare/v2.266.0...v2.266.1) (2022-08-24)
 
 
