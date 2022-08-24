@@ -334,6 +334,7 @@ export default {
 			return isNumber(storedPageLimit) ? +storedPageLimit : this.loanSearchState.pageLimit;
 		},
 		showSavedSearch() {
+			// implement more global solution when out of exp phase
 			const countryFilterApplied = this.loanSearchState.countryIsoCode.length > 0;
 			const genderFilterApplied = this.loanSearchState.gender;
 			const sectorFilterApplied = this.loanSearchState.sectorId.length > 0;
@@ -406,7 +407,6 @@ export default {
 
 			this.$kvTrackEvent?.('Lending', 'click-zero-loans-reset');
 		},
-
 	},
 	watch: {
 		$route(to) {
