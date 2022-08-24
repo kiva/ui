@@ -1,3 +1,15 @@
+## [2.266.0](https://github.com/kiva/ui/compare/v2.265.0...v2.266.0) (2022-08-24)
+
+
+### Features
+
+* add loan count to saved search item Find loans button ([9d009ad](https://github.com/kiva/ui/commit/9d009ad34a9a1e67edb0cf683f4d91de11d7d1bc))
+
+
+### Bug Fixes
+
+* enable load more button, add loading state, scaffold lsc in saved search item query ([94b9a89](https://github.com/kiva/ui/commit/94b9a89b9af89de7a397feb828f644d9fcc87796))
+
 ## [2.265.0](https://github.com/kiva/ui/compare/v2.264.0...v2.265.0) (2022-08-24)
 
 
