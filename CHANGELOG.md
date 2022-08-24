@@ -1,3 +1,11 @@
+### [2.266.1](https://github.com/kiva/ui/compare/v2.266.0...v2.266.1) (2022-08-24)
+
+
+### Bug Fixes
+
+* add link to lend-by-category and update styles in lend/filter navigation ([46e3b8a](https://github.com/kiva/ui/commit/46e3b8aca8ea56b9f87b130f067e93d93c8a0e38))
+* temporarily remove amountLeft sort option until index is fixed ([10e5f97](https://github.com/kiva/ui/commit/10e5f978b00cd5e81710f4b75184f8b38c79aab3))
+
 ## [2.266.0](https://github.com/kiva/ui/compare/v2.265.0...v2.266.0) (2022-08-24)
 
 
