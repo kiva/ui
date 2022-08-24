@@ -1,3 +1,10 @@
+## [2.268.0](https://github.com/kiva/ui/compare/v2.267.0...v2.268.0) (2022-08-24)
+
+
+### Features
+
+* improve performance of lbc eco experiment layout and use FLSS ([28856b2](https://github.com/kiva/ui/commit/28856b24f554a960b4d0393b7603eb6c6dd2e0e1))
+
 ## [2.267.0](https://github.com/kiva/ui/compare/v2.266.1...v2.267.0) (2022-08-24)
 
 
