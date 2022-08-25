@@ -1,3 +1,11 @@
+### [2.270.1](https://github.com/kiva/ui/compare/v2.270.0...v2.270.1) (2022-08-25)
+
+
+### Bug Fixes
+
+* update handling for contentful page meta ([0f6e4cb](https://github.com/kiva/ui/commit/0f6e4cb3823bbcd706b69055977eb2dffb024207))
+* update og:description and twitter:description when contentful description is present ([7ebab10](https://github.com/kiva/ui/commit/7ebab10ac2cdfdd3bb62d874673516fa024d1419))
+
 ## [2.270.0](https://github.com/kiva/ui/compare/v2.269.0...v2.270.0) (2022-08-25)
 
 
