@@ -1,3 +1,15 @@
+## [2.270.0](https://github.com/kiva/ui/compare/v2.269.0...v2.270.0) (2022-08-25)
+
+
+### Features
+
+* install hotjar tracking code ([0a6f03b](https://github.com/kiva/ui/commit/0a6f03b944c5624e429b218fad6a42b2e97c44f6))
+
+
+### Bug Fixes
+
+* change hotjarId for envs and enable it on dev ([45af029](https://github.com/kiva/ui/commit/45af029714dda45d7425857b8612f79188185560))
+
 ## [2.269.0](https://github.com/kiva/ui/compare/v2.268.0...v2.269.0) (2022-08-24)
 
 
