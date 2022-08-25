@@ -1,3 +1,10 @@
+### [2.270.3](https://github.com/kiva/ui/compare/v2.270.2...v2.270.3) (2022-08-25)
+
+
+### Bug Fixes
+
+* event name prop ([191a969](https://github.com/kiva/ui/commit/191a969134b83224959ced5d4d4868bd83f94e26))
+
 ### [2.270.2](https://github.com/kiva/ui/compare/v2.270.1...v2.270.2) (2022-08-25)
 
 
