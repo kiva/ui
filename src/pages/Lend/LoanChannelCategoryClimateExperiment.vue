@@ -15,7 +15,7 @@
 					{{ loanChannelName }}
 				</h1>
 				<p
-					class="tw-w-full show-for-large tw-mb-4 lg:tw-w-2/3"
+					class="tw-text-subhead tw-w-full show-for-large tw-mb-4 lg:tw-w-3/4"
 				>
 					{{ loanChannelDescription }}
 				</p>
@@ -151,7 +151,7 @@ export default {
 		this.loanChannel = baseData?.lend?.loanChannelsById.find(channel => channel.id === this.targetedLoanChannelID);
 
 		this.secondaryEcoLoanChannelsResponse = baseData?.lend?.loanChannelsById
-			.filter(channel => channel.id !== this.targetedLoanChannelID);
+			.filter(channel => channel.id !== this.targetedLoanChannelID) ?? [];
 
 		/*
 		 * Experiment Initializations
