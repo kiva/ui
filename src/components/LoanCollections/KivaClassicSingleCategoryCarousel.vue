@@ -3,7 +3,7 @@
 		<h2 class="tw-mb-2">
 			{{ name }}
 		</h2>
-		<p>
+		<p class="tw-text-subhead">
 			{{ description }}
 		</p>
 		<div>
