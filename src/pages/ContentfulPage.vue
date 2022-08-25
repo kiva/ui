@@ -206,14 +206,20 @@ export default {
 		};
 	},
 	metaInfo() {
-		const metaObj = {};
-
-		if (this.title) {
-			metaObj.title = this.title.replace('| Kiva', '');
-		}
-
-		if (this.description) {
-			metaObj.meta = [
+		return {
+			title: this.title ? this.title?.replace('| Kiva', '') : 'Make a loan, change a life',
+			meta: [].concat(this.title ? [
+				{
+					property: 'og:title',
+					vmid: 'og:title',
+					content: this.title?.replace('| Kiva', ''),
+				},
+				{
+					name: 'twitter:title',
+					vmid: 'twitter:title',
+					content: this.title?.replace('| Kiva', ''),
+				},
+			] : []).concat(this.description ? [
 				{
 					vmid: 'description',
 					name: 'description',
@@ -227,23 +233,17 @@ export default {
 				{
 					name: 'twitter:description',
 					vmid: 'twitter:description',
-					// eslint-disable-next-line max-len
 					content: this.description
 				},
-			];
-		}
-
-		if (this.canonicalUrl) {
-			metaObj.link = [
+			] : []),
+			link: [].concat(this.canonicalUrl ? [
 				{
 					vmid: 'canonical',
 					rel: 'canonical',
 					href: this.canonicalUrl,
 				}
-			];
-		}
-
-		return metaObj;
+			] : [])
+		};
 	},
 	mounted() {
 		if (this.$route.path === '/lp/home-ml' || this.$route.path === '/lp/home-mlv') {
