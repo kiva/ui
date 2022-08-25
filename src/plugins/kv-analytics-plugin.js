@@ -341,7 +341,7 @@ export default {
 				if (transactionData.depositTotal) {
 					window.optimizely.push({
 						type: 'event',
-						name: 'deposit',
+						eventName: 'deposit',
 						tags: {
 							deposit_amount: transactionData.depositTotal
 						}
@@ -351,7 +351,7 @@ export default {
 				if (transactionData.loanTotal) {
 					window.optimizely.push({
 						type: 'event',
-						name: 'loan_share_purchase',
+						eventName: 'loan_share_purchase',
 						tags: {
 							loan_share_purchase_amount: transactionData.loanTotal
 						}
