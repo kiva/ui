@@ -218,7 +218,18 @@ export default {
 					vmid: 'description',
 					name: 'description',
 					content: this.description,
-				}
+				},
+				{
+					property: 'og:description',
+					vmid: 'og:description',
+					content: this.description
+				},
+				{
+					name: 'twitter:description',
+					vmid: 'twitter:description',
+					// eslint-disable-next-line max-len
+					content: this.description
+				},
 			];
 		}
 
