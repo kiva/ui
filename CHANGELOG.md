@@ -1,3 +1,10 @@
+### [2.270.2](https://github.com/kiva/ui/compare/v2.270.1...v2.270.2) (2022-08-25)
+
+
+### Bug Fixes
+
+* small tweaks in font size and null check for lbc eco carousel page ([4c9add1](https://github.com/kiva/ui/commit/4c9add18fc1d7f402ff1b3a684b677eb3fa6a3de))
+
 ### [2.270.1](https://github.com/kiva/ui/compare/v2.270.0...v2.270.1) (2022-08-25)
 
 
