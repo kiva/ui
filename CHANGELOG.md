@@ -1,3 +1,10 @@
+### [2.270.4](https://github.com/kiva/ui/compare/v2.270.3...v2.270.4) (2022-08-26)
+
+
+### Bug Fixes
+
+* client side routing when routing to same route, different params ([5bd05c7](https://github.com/kiva/ui/commit/5bd05c778bf552d945806939c8c60e5e6ccce237))
+
 ### [2.270.3](https://github.com/kiva/ui/compare/v2.270.2...v2.270.3) (2022-08-25)
 
 
