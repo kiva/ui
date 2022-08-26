@@ -135,12 +135,22 @@ router.onReady(() => {
 		// get newly activated components
 		const matched = router.getMatchedComponents(to);
 		const prevMatched = router.getMatchedComponents(from);
-		const activated = _dropWhile(matched, (c, i) => prevMatched[i] === c);
+		const areRoutesTheSame = JSON.stringify(to?.matched?.[0]?.path) === JSON.stringify(from?.matched?.[0]?.path);
+		const areParamsTheSame = JSON.stringify(to?.params) === JSON.stringify(from?.params);
+		let activated;
+		/** if route is the same but params are different, do not drop matched components this prevents buggy
+		 * navigation when client side navigating from route to same route with different params
+		 */
+		if (areRoutesTheSame && !areParamsTheSame) {
+			activated = matched;
+		} else {
+			activated = _dropWhile(matched, (c, i) => prevMatched[i] === c);
+		}
 
 		contentfulPreviewCookie({ route: to, cookieStore });
 		authenticationGuard({ route: to, apolloClient, kvAuth0 })
 			.then(() => {
-			// Pre-fetch graphql queries from activated components
+				// Pre-fetch graphql queries from activated components
 				return preFetchAll(activated, apolloClient, {
 					cookieStore,
 					kvAuth0,
