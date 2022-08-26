@@ -1,3 +1,10 @@
+### [2.270.5](https://github.com/kiva/ui/compare/v2.270.4...v2.270.5) (2022-08-26)
+
+
+### Bug Fixes
+
+* add mfa route guard to settings/payments page ([6593194](https://github.com/kiva/ui/commit/65931946ff64848b9ee8d26113b35b0854bab2dd))
+
 ### [2.270.4](https://github.com/kiva/ui/compare/v2.270.3...v2.270.4) (2022-08-26)
 
 
