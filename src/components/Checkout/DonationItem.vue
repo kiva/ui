@@ -200,10 +200,6 @@
 				</p>
 				<ul>
 					<li>
-						Kiva Protocol, giving unbanked people a digital identity and secure control over their
-						own credit information in places like Sierra Leone.
-					</li>
-					<li>
 						Kiva Capital, scaling our model for institutional investors.
 					</li>
 					<li>

@@ -133,77 +133,84 @@
 			class="tw-rounded tw-self-start" :style="{width: '9rem', height: '3rem'}"
 		/>
 
-		<kv-ui-button
-			v-if="!isLoading && !allSharesReserved && !inBorrowerProfilePage"
-			class="tw-mb-2 tw-self-start"
-			:state="`${allSharesReserved ? 'disabled' : ''}`"
-			:to="`/lend/${loanId}`"
-			v-kv-track-event="['Lending', 'click-Read-more', 'View loan', loanId]"
-		>
-			View loan
-			<kv-material-icon
-				class="tw-w-3 tw-h-3 tw-align-middle"
-				:icon="mdiChevronRight"
-			/>
-		</kv-ui-button>
-
-		<kv-ui-button
-			class="tw-text-secondary"
-			variant="secondary"
-			v-if="isInBasket"
-			v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
-			to="/basket"
-		>
-			<slot>
-				<div class="tw-inline-flex tw-items-center tw-gap-1">
-					Checkout now
-					<kv-material-icon
-						class="tw-w-2.5 tw-h-2.5"
-						:icon="mdiCheckCircleOutline"
-					/>
+		<template v-if="!isLoading">
+			<!-- If loan is in basket, always show checkout now button -->
+			<kv-ui-button
+				class="tw-mb-2 tw-text-secondary"
+				variant="secondary"
+				v-if="isInBasket"
+				v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
+				to="/basket"
+			>
+				<slot>
+					<div class="tw-inline-flex tw-items-center tw-gap-1">
+						Checkout now
+						<kv-material-icon
+							class="tw-w-2.5 tw-h-2.5"
+							:icon="mdiCheckCircleOutline"
+						/>
+					</div>
+				</slot>
+			</kv-ui-button>
+			<!-- loan is not in basket -->
+			<template v-if="!isInBasket">
+				<!-- If allSharesReserved show message and hide cta button -->
+				<div
+					v-if="allSharesReserved"
+					class="
+						tw-rounded
+						tw-bg-secondary
+						tw-text-center
+						tw-w-full
+						tw-py-1 tw-px-1.5
+						tw-mb-2 tw-mt-2
+					"
+				>
+					Another lender has selected this loan. Please choose a different borrower to support.
 				</div>
-			</slot>
-		</kv-ui-button>
+				<template v-if="!allSharesReserved">
+					<!-- View Loan button -->
+					<kv-ui-button
+						v-if="!showLendNowButton"
+						class="tw-mb-2 tw-self-start"
+						:state="`${allSharesReserved ? 'disabled' : ''}`"
+						:to="`/lend/${loanId}`"
+						v-kv-track-event="['Lending', 'click-Read-more', 'View loan', loanId]"
+					>
+						View loan
+						<kv-material-icon
+							class="tw-w-3 tw-h-3 tw-align-middle"
+							:icon="mdiChevronRight"
+						/>
+					</kv-ui-button>
 
-		<!-- Lend button -->
-		<kv-ui-button
-			key="lendButton"
-			v-if="!allSharesReserved && !isLoading && inBorrowerProfilePage && !isAdding && !isInBasket"
-			class="tw-inline-flex tw-flex-1"
-			data-testid="bp-lend-cta-lend-button"
-			type="submit"
-			@click="addToBasket"
-			v-kv-track-event="[
-				'Lending',
-				'lend-button-loan-upsell',
-				expLabel
-			]"
-		>
-			{{ ctaButtonText }}
-		</kv-ui-button>
+					<!-- Lend button -->
+					<kv-ui-button
+						key="lendButton"
+						v-if="showLendNowButton && !isAdding"
+						class="tw-inline-flex tw-flex-1"
+						data-testid="bp-lend-cta-lend-button"
+						type="submit"
+						@click="addToBasket"
+						v-kv-track-event="[
+							'Lending',
+							'lend-button-loan-upsell',
+							expLabel
+						]"
+					>
+						{{ ctaButtonText }}
+					</kv-ui-button>
 
-		<kv-ui-button
-			v-if="inBorrowerProfilePage && isAdding"
-			class="tw-inline-flex tw-flex-1"
-			data-testid="bp-lend-cta-adding-to-basket-button"
-		>
-			Adding to basket...
-		</kv-ui-button>
-
-		<!-- If allSharesReserved show message and hide cta button -->
-		<div
-			v-if="allSharesReserved"
-			class="
-				tw-rounded
-				tw-bg-secondary
-				tw-text-center
-				tw-w-full
-				tw-py-1 tw-px-1.5
-				tw-mb-2 tw-mt-2
-			"
-		>
-			Another lender has selected this loan. Please choose a different borrower to support.
-		</div>
+					<kv-ui-button
+						v-if="showLendNowButton && isAdding"
+						class="tw-inline-flex tw-flex-1"
+						data-testid="bp-lend-cta-adding-to-basket-button"
+					>
+						Adding to basket...
+					</kv-ui-button>
+				</template>
+			</template>
+		</template>
 	</div>
 </template>
 
@@ -306,6 +313,10 @@ export default {
 		expLabel: {
 			type: String,
 			default: ''
+		},
+		lendNowButton: {
+			type: Boolean,
+			default: false
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -417,6 +428,10 @@ export default {
 		ctaButtonText() {
 			return `Lend $${this.lendAmount} now`;
 		},
+		// TODO refactor this when inBorrowerProfilePage is removed.
+		showLendNowButton() {
+			return this.inBorrowerProfilePage || this.lendNowButton;
+		}
 	},
 	methods: {
 		createViewportObserver() {

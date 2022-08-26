@@ -2,7 +2,7 @@
 	<www-page
 		:gray-background="true"
 	>
-		<div class="row page-content" v-if="receipt && !showNewThanksPage">
+		<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 			<div class="small-12 columns thanks">
 				<div class="thanks__header hide-for-print">
 					<template v-if="receipt">
@@ -96,12 +96,13 @@
 			</thanks-layout-v2>
 		</div>
 		<thanks-page-share
-			v-if="receipt && showNewThanksPage"
+			v-if="receipt && showFocusedShareAsk"
 			:receipt="receipt"
 			:lender="lender"
 			:loan="selectedLoan"
 			:simple-social-share-version="simpleSocialShareVersion"
 			:share-card-language-version="shareCardLanguageVersion"
+			:share-ask-copy-version="shareAskCopyVersion"
 		/>
 	</www-page>
 </template>
@@ -123,6 +124,7 @@ import ThanksPageShare from '@/components/Thanks/ThanksPageShare';
 import orderBy from 'lodash/orderBy';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { processPageContentFlat } from '@/util/contentfulUtils';
+import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -161,18 +163,21 @@ export default {
 			hasModernSub: false,
 			isGuest: false,
 			pageData: {},
-			showNewThanksPage: false,
 			shareCardLanguageVersion: '',
 			simpleSocialShareVersion: '',
-			newThanksPageModuleVersion: '',
+			shareAskCopyVersion: '',
 		};
 	},
 	apollo: {
 		preFetch(config, client, { cookieStore, route }) {
+			const transactionId = route.query?.kiva_transaction_id
+				? numeral(route.query?.kiva_transaction_id).value()
+				: null;
+
 			return client.query({
 				query: thanksPageQuery,
 				variables: {
-					checkoutId: numeral(route.query.kiva_transaction_id).value(),
+					checkoutId: transactionId,
 					visitorId: cookieStore.get('uiv') || null,
 				}
 			}).then(({ data }) => {
@@ -186,11 +191,12 @@ export default {
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_share_module' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_card_language' } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
 					upsellEligible ? client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_ad_upsell' } }) : Promise.resolve() // eslint-disable-line max-len
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
-					'Thanks page preFetch failed: ',
+					`Thanks page preFetch failed: (transaction_id: ${transactionId})`,
 					'error',
 					{ errorResponse }
 				);
@@ -231,21 +237,28 @@ export default {
 				return true;
 			}
 			return false;
+		},
+		showFocusedShareAsk() {
+			// Only show focused share ask for non-guest loan purchases
+			return !this.isGuest && this.selectedLoan.id;
 		}
 	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
 		let data = {};
+		const transactionId = this.$route.query?.kiva_transaction_id
+			? numeral(this.$route.query?.kiva_transaction_id).value()
+			: null;
 		try {
 			data = this.apollo.readQuery({
 				query: thanksPageQuery,
 				variables: {
-					checkoutId: numeral(this.$route.query.kiva_transaction_id).value(),
+					checkoutId: transactionId,
 					visitorId: this.cookieStore.get('uiv') || null,
 				}
 			});
 		} catch (e) {
-			logReadQueryError(e, 'Thanks Page Data');
+			logReadQueryError(e, `Thanks page readQuery failed: (transaction_id: ${transactionId})`);
 		}
 
 		const modernSubscriptions = data?.mySubscriptions?.values ?? [];
@@ -274,17 +287,22 @@ export default {
 			.filter(item => item.basketItemType === 'loan_reservation')
 			.map(item => item.loan);
 
+		// MARS-194-User metrics A/B Optimizely experiment
+		const depositTotal = parseFloat(this.receipt?.totals?.depositTotals?.depositTotal);
+		userHasLentBefore(this.loans.length > 0);
+		userHasDepositBefore(depositTotal > 0);
+
 		if (!this.isGuest && !data?.my?.userAccount) {
 			logFormatter(
-				`Failed to get lender for transaction id: ${this.$route.query.kiva_transaction_id}`,
-				'error',
+				`Failed to get lender for transaction id: ${transactionId}`,
+				'info',
 				{ data }
 			);
 		}
 		if (!this.receipt) {
 			logFormatter(
-				`Failed to get receipt for transaction id: ${this.$route.query.kiva_transaction_id}`,
-				'error',
+				`Failed to get receipt for transaction id: ${transactionId}`,
+				'info',
 				{ data }
 			);
 		}
@@ -311,29 +329,35 @@ export default {
 			}
 		}
 
-		if (!this.isGuest) {
-			// MARS-134 New thanks page share experiment
-			const newThanksShareModule = this.apollo.readFragment({
-				id: 'Experiment:thanks_share_module',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			this.newThanksPageModuleVersion = newThanksShareModule.version;
-			this.showNewThanksPage = this.newThanksPageModuleVersion === 'b';
-			if (this.newThanksPageModuleVersion) {
-				this.$kvTrackEvent(
-					'Thanks',
-					'EXP-MARS-134-Jun2022',
-					this.newThanksPageModuleVersion,
-				);
-			}
-
+		if (this.showFocusedShareAsk) {
 			const shareCardLanguage = this.apollo.readFragment({
 				id: 'Experiment:share_card_language',
 				fragment: experimentVersionFragment,
 			}) || {};
 
 			this.shareCardLanguageVersion = shareCardLanguage.version;
+			if (this.shareCardLanguageVersion) {
+				this.$kvTrackEvent(
+					'Thanks',
+					'EXP-MARS-143-Jul2022-inviter',
+					this.shareCardLanguageVersion,
+				);
+			}
+
+			// MARS-202 Share copy ask experiment
+			const shareAskCopyResult = this.apollo.readFragment({
+				id: 'Experiment:share_ask_copy',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.shareAskCopyVersion = shareAskCopyResult.version;
+			if (this.shareAskCopyVersion) {
+				this.$kvTrackEvent(
+					'Thanks',
+					'EXP-MARS-202-Aug2022',
+					this.shareAskCopyVersion,
+				);
+			}
 		}
 	},
 	mounted() {

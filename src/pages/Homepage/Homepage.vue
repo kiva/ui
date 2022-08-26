@@ -17,6 +17,7 @@ export default {
 	name: 'Homepage',
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
+		/* eslint-disable global-require */
 		return {
 			title: 'Make a loan, change a life',
 			meta: [
@@ -29,8 +30,47 @@ export default {
 					name: 'description',
 					content: 'Kiva is the world\'s first online lending platform. '
 						+ 'For as little as $25 you can lend to an entrepreneur around the world. Learn more here.'
-				}
-			]
+				},
+			],
+			script: [
+				// Organization schema. This is defined in here in the Homepage instead of App.vue or
+				// somewhere else because the schema should be defined on only one page.
+				{
+					type: 'application/ld+json',
+					json: {
+						'@context': 'https://schema.org',
+						'@type': 'NGO',
+						name: 'Kiva',
+						alternateName: 'Kiva Loans',
+						legalName: 'Kiva Microfunds',
+						url: 'https://www.kiva.org/',
+						logo: require('@/assets/images/kiva_logo_filled.png'),
+						address: {
+							'@type': 'PostalAddress',
+							streetAddress: '986 Mission Street, 4th Floor',
+							addressLocality: 'San Francisco',
+							addressRegion: 'CA',
+							postalCode: '94103',
+							addressCountry: 'USA',
+						},
+						nonprofitStatus: 'Nonprofit501c3',
+						foundingDate: '2005-10-01',
+						telephone: '828-479-5482',
+						sameAs: [
+							'https://www.facebook.com/kiva',
+							'https://twitter.com/Kiva',
+							'https://www.instagram.com/kiva.org/',
+							'https://www.youtube.com/channel/UCr304RURWaQUnDha9hDvW3g',
+							'https://www.linkedin.com/company/kiva-org/',
+							'https://en.wikipedia.org/wiki/Kiva_(organization)',
+							'https://www.pinterest.com/kivaorg/',
+							'https://www.kiva.global/',
+							'https://apps.apple.com/app/id1453093374',
+							'https://play.google.com/store/apps/details?id=org.kiva.lending'
+						]
+					},
+				},
+			],
 		};
 	},
 	data() {

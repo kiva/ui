@@ -31,8 +31,7 @@
 					With Kiva you can lend as little as $25 and make a big change in someone's life.
 				</p>
 				<div class="tw-flex tw-flex-wrap tw-gap-2">
-					<kv-button
-						class="button smallest"
+					<kv-ui-button
 						@click.native.prevent="jumpToLoans"
 						v-kv-track-event="[
 							'Campaign',
@@ -41,10 +40,10 @@
 						]"
 					>
 						Find a borrower
-					</kv-button>
-					<kv-button
+					</kv-ui-button>
+					<kv-ui-button
 						v-if="secondaryCtaLink && secondaryCtaText"
-						class="button secondary smallest"
+						variant="secondary"
 						:href="secondaryCtaLink"
 						target="_blank"
 						v-kv-track-event="[
@@ -54,24 +53,28 @@
 						]"
 					>
 						{{ secondaryCtaText }}
-					</kv-button>
+					</kv-ui-button>
 				</div>
 			</div>
 		</div>
 	</section>
 </template>
-
 <script>
-import KvButton from '@/components/Kv/KvButton';
+import { addBlankTargetToExternalLinks } from '@/util/contentful/richTextRenderer';
+import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
 	name: 'CampaignHero',
 	components: {
-		KvButton,
+		KvUiButton,
 	},
 	props: {
 		heroAreaContent: {
+			type: Object,
+			default: () => {},
+		},
+		pageSettingData: {
 			type: Object,
 			default: () => {},
 		},
@@ -109,15 +112,7 @@ export default {
 	},
 	async mounted() {
 		await this.$nextTick();
-		// make sure all partner content links open externally
-		if (this.$refs.heroBodyCopy) {
-			const links = this.$refs.heroBodyCopy.querySelectorAll('a');
-			if (links.length > 0) {
-				Array.prototype.forEach.call(links, link => {
-					link.target = '_blank';// eslint-disable-line no-param-reassign
-				});
-			}
-		}
+		addBlankTargetToExternalLinks(this.$refs.heroBodyCopy, this.pageSettingData);
 	}
 };
 </script>

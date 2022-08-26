@@ -11,7 +11,10 @@
 					</p>
 				</header>
 				<section class="campaign-thanks__partner-block">
-					<campaign-partner-thanks :partner-content="partnerContent" />
+					<campaign-partner-thanks
+						:partner-content="partnerContent"
+						:page-setting-data="pageSettingData"
+					/>
 				</section>
 				<kv-accordion-item id="thanks-share">
 					<template #header>
@@ -59,6 +62,7 @@ import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { joinArray } from '@/util/joinArray';
+import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
 import CampaignPartnerThanks from './CampaignPartnerThanks';
 
 export default {
@@ -70,7 +74,7 @@ export default {
 		KvLoadingSpinner,
 		SocialShareV2
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
 		return {
 			title: 'Thank you!'
@@ -84,7 +88,11 @@ export default {
 		partnerContent: {
 			type: Object,
 			default() { return {}; }
-		}
+		},
+		pageSettingData: {
+			type: Object,
+			default: () => {},
+		},
 	},
 	data() {
 		return {
@@ -136,6 +144,11 @@ export default {
 				if (!this.receipt) {
 					console.error(`Failed to get receipt for transaction id: ${this.$route.query.kiva_transaction_id}`);
 				}
+
+				// MARS-194-User metrics A/B Optimizely experiment
+				const depositTotal = this.receipt?.totals?.depositTotals?.depositTotal;
+				userHasLentBefore(this.loans.length > 0);
+				userHasDepositBefore(parseFloat(depositTotal) > 0);
 
 				this.showReceipt = true;
 				await this.$nextTick();

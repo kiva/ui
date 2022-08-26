@@ -21,6 +21,13 @@ export const sortByNameToDisplay = {
 	personalized: 'Recommended'
 };
 
+export const visibleFLSSSortOptions = [
+	'expiringSoon',
+	'amountHighToLow',
+	'amountLowToHigh',
+	'personalized'
+];
+
 /**
  * The themes/attributes that are always visible in the filter UI
  */
@@ -51,8 +58,7 @@ export function formatSortOptions(standardSorts, flssSorts) {
 		};
 	}) ?? [];
 	const labeledFlssSorts = flssSorts?.reduce((prev, current) => {
-		// The amountLeft sort is currently returned by the GraphQL enum but isn't fully supported
-		if (current.name !== 'amountLeft') {
+		if (visibleFLSSSortOptions.includes(current.name)) {
 			prev.push({ name: current.name, sortSrc: FLSS_QUERY_TYPE });
 		}
 

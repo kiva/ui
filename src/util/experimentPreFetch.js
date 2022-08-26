@@ -12,12 +12,12 @@ import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.
 // TODO: Centralize this in Settings Manager or elsewhere, then Fetch it First
 let activeExperiments = [
 	'lend_filter_v2',
-	'expandable_loan_cards',
 	'checkout_login_cta',
 	'guest_checkout_cta',
 	'mg_highlight_in_nav',
 	'unbounce_trigger',
-	'lend_urgency'
+	'lend_urgency',
+	'topnav_mg_entrypoint',
 ];
 
 // TODO: Enhance Error handling

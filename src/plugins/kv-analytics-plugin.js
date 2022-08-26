@@ -6,20 +6,19 @@ export default {
 	install: Vue => {
 		const inBrowser = typeof window !== 'undefined';
 		let snowplowLoaded;
-		let gaLoaded;
-		let gaAltLoaded;
+		let gtagLoaded;
 		let fbLoaded;
+		let optimizelyLoaded;
 		const queue = new SimpleQueue();
 
 		const kvActions = {
 			checkLibs: () => {
-				gaLoaded = inBrowser && typeof window.ga === 'function';
-				// eslint-disable-next-line no-underscore-dangle
-				gaAltLoaded = inBrowser && typeof window._gaq === 'object';
+				gtagLoaded = inBrowser && typeof window.gtag === 'function';
 				snowplowLoaded = inBrowser && typeof window.snowplow === 'function';
 				fbLoaded = inBrowser && typeof window.fbq === 'function';
+				optimizelyLoaded = inBrowser && typeof window.optimizely === 'object';
 
-				if (typeof window.ga === 'function' && typeof window.snowplow === 'function') {
+				if (typeof window.gtag === 'function' && typeof window.snowplow === 'function') {
 					return true;
 				}
 				return false;
@@ -50,26 +49,15 @@ export default {
 					window.snowplow('trackPageView');
 				}
 
-				// Google Analytics Pageview
-				if (gaLoaded) {
+				// Google Analytics gtag.js pageview
+				if (gtagLoaded) {
 					let gaPath = `${window.location.pathname}${window.location.search || ''}`;
 					if (to && to.matched && to.matched.length) {
 						gaPath = to.fullPath;
 					}
-					window.ga('set', 'page', gaPath);
-					window.ga('send', 'pageview');
-				}
-
-				// Classic ga.js for utm tracking
-				if (gaAltLoaded) {
-					let gaAltId;
-					/* eslint-disable no-underscore-dangle */
-					if (window.__KV_CONFIG__ && window.__KV_CONFIG__.gaAlternateId) {
-						gaAltId = window.__KV_CONFIG__.gaAlternateId;
-					}
-					window._gaq.push(['_setAccount', gaAltId]);
-					window._gaq.push(['_trackPageview']);
-					/* eslint-enable no-underscore-dangle */
+					window.gtag('event', 'page_view', {
+						page_path: gaPath
+					});
 				}
 
 				// facebook pixel pageview
@@ -89,16 +77,12 @@ export default {
 				const eventValue = (value !== undefined && value !== null) ? parseInt(value, 10) : undefined;
 				const eventProperty = (property !== undefined && property !== null) ? String(property) : undefined;
 
-				// Attempt GA event
-				if (gaLoaded) {
-					// GA API
-					// https://developers.google.com/analytics/devguides/collection/analyticsjs/events
-					// ga('send', 'event', [eventCategory], [eventAction], [eventLabel], [eventValue], [fieldsObject]);
-					window.ga('send', 'event', {
-						eventCategory: String(category),
-						eventAction: String(action),
-						eventLabel,
-						eventValue
+				// Attempt gtag event
+				if (gtagLoaded) {
+					window.gtag('event', String(action), {
+						event_category: String(category),
+						event_label: eventLabel,
+						value: eventValue
 					});
 				}
 
@@ -239,9 +223,13 @@ export default {
 				if (fbLoaded) {
 					kvActions.trackFBTransaction(transactionData);
 				}
-				if (gaLoaded) {
+				if (gtagLoaded) {
 					kvActions.trackGATransaction(transactionData);
 				}
+				if (optimizelyLoaded) {
+					kvActions.trackOPTransaction(transactionData);
+				}
+
 				kvActions.trackQuantcast(transactionData);
 			},
 			trackFBTransaction: transactionData => {
@@ -304,23 +292,25 @@ export default {
 
 				// Add each purchased item to the tracker
 				const allItems = transactionData.loans.concat(transactionData.donations);
-				allItems.forEach(item => {
-					window.ga('ec:addProduct', {
+
+				// Setup purchased items
+				const purchasedItems = allItems.map(item => {
+					return {
 						id: item.id,
 						name: item.__typename, // eslint-disable-line
 						price: item.price,
 						quantity: 1
-					});
+					};
 				});
 
-				// Add the transaction to the tracker
-				window.ga('ec:setAction', 'purchase', {
-					id: transactionData.transactionId,
-					revenue: transactionData.itemTotal
+				// Post transaction information to GA
+				window.gtag('event', 'purchase', {
+					transaction_id: transactionData.transactionId,
+					value: transactionData.itemTotal,
+					currency: 'USD',
+					items: purchasedItems,
+					non_interaction: true
 				});
-
-				// Save transaction information to GA
-				window.ga('send', 'event', 'Ecommerce', 'Purchase', { nonInteraction: 1 });
 			},
 			trackQuantcast: transactionData => {
 				// exit if script is not loaded due to blocking or user choice
@@ -347,6 +337,27 @@ export default {
 					event: 'refresh'
 				});
 			},
+			trackOPTransaction: transactionData => {
+				if (transactionData.depositTotal) {
+					window.optimizely.push({
+						type: 'event',
+						eventName: 'deposit',
+						tags: {
+							deposit_amount: transactionData.depositTotal
+						}
+					});
+				}
+
+				if (transactionData.loanTotal) {
+					window.optimizely.push({
+						type: 'event',
+						eventName: 'loan_share_purchase',
+						tags: {
+							loan_share_purchase_amount: transactionData.loanTotal
+						}
+					});
+				}
+			}
 		};
 
 		Vue.directive('kv-track-event', {
@@ -377,14 +388,15 @@ export default {
 							window.snowplow('setUserId', userId);
 						}
 						// Setup Global GA Data
-						if (gaLoaded) {
-							window.ga('set', { userId });
-							window.ga('set', 'useBeacon', true);
-							window.ga('require', 'ec');
-							window.ga('set', 'dimension1', userId);
+						if (userId && gtagLoaded && window.__KV_CONFIG__ && window.__KV_CONFIG__.gaId) {
+							window.gtag('config', window.__KV_CONFIG__.gaId, {
+								user_id: userId,
+								dimension1: userId,
+								send_page_view: false
+							});
 						}
 						// set id on dataLayer
-						if (typeof window.dataLayer === 'object') {
+						if (userId && typeof window.dataLayer === 'object') {
 							window.dataLayer.push({
 								kvuid: userId
 							});

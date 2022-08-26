@@ -14,23 +14,19 @@ export default (config, globalOneTrustEvent) => {
 
 	// Google Analytics snippet
 	const insertGoogleAnalytics = () => {
-		/* eslint-disable */
-		if (config.gaAlternateId) {
-			(function () {
-				const gaALt = document.createElement('script'); gaALt.type = 'text/javascript'; gaALt.async = true;
-				gaALt.src = `${document.location.protocol == 'https:' ? 'https://ssl' : 'http://www'}.google-analytics.com/ga.js`;
-				const s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gaALt, s);
-			}());
-		}
-
-		(function (i, s, o, g, r, a, m) {
-			i.GoogleAnalyticsObject = r; i[r] = i[r] || function () {
-				(i[r].q = i[r].q || []).push(arguments);
-			}, i[r].l = 1 * new Date(); a = s.createElement(o),
-			m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m);
-		}(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga'));
-		ga('create', config.gaId, 'auto');
-		/* eslint-enable */
+		// Insert + Configure Gtag.js
+		const p = document.getElementsByTagName('script')[0];
+		const s = document.createElement('script');
+		s.src = `https://www.googletagmanager.com/gtag/js?id=${config.gaId}`;
+		p.parentNode.insertBefore(s, p);
+		// Data layer is established globally
+		window.gtag = function gtag() {
+			// eslint-disable-next-line prefer-rest-params
+			window.dataLayer.push(arguments);
+		};
+		window.gtag('js', new Date());
+		// add "debug_mode: true" to the options object for debugging
+		window.gtag('config', config.gaId, { send_page_view: false });
 	};
 
 	// Snowplow snippet
@@ -44,7 +40,8 @@ export default (config, globalOneTrustEvent) => {
 				appId: 'kiva' ,
 				cookieDomain: '.kiva.org',
 				contexts: {
-					optimizelyXSummary: true
+					optimizelyXSummary: true,
+					performanceTiming: true
 				},
 				// uncomment this option to examine context information in your vm
 				// encodeBase64: false,
@@ -129,6 +126,18 @@ export default (config, globalOneTrustEvent) => {
 		p.parentNode.insertBefore(s, p);
 	};
 
+	// Hotjar Snippet
+	const insertHotjar = () => {
+		/* eslint-disable */
+		(function(h,o,t,j,a,r){
+			h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+			h._hjSettings={hjid:config.hotjarId,hjsv:6};
+			a=o.getElementsByTagName('head')[0];
+			r=o.createElement('script');r.async=1;
+			r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+			a.appendChild(r);
+		})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+	};
 	// Always load
 	// PerimeterX snippet
 	if (config.enablePerimeterx) {
@@ -147,16 +156,6 @@ export default (config, globalOneTrustEvent) => {
 	// One Trust Cookie Management
 	if (config.oneTrust && config.oneTrust.enable) {
 		/* eslint-disable */
-		(function () {
-			// Main OneTrust script to display cookie notice and set user preferences
-			const p = document.getElementsByTagName('script')[0];
-			const s = document.createElement('script');
-			s.setAttribute('type', 'text/javascript');
-			s.setAttribute('data-domain-script', `${config.oneTrust.key}${config.oneTrust.domainSuffix}`)
-			s.src = `https://cdn.cookielaw.org/consent/${config.oneTrust.key}${config.oneTrust.domainSuffix}/otSDKStub.js`;
-			p.parentNode.insertBefore(s, p);
-		}());
-
 		// Follow up OneTrust function.
 		// This function is called when cookie preferences are changed on the OneTrust widget
 		window.OptanonWrapper = () => {
@@ -197,6 +196,9 @@ export default (config, globalOneTrustEvent) => {
 				}
 				if (config.enableFullStory && !optout) {
 					OneTrust.InsertHtml('', 'head', insertFullStory, null, 'C0002');
+				}
+				if (config.enableHotjar && !optout) {
+					OneTrust.InsertHtml('', 'head', insertHotjar, null, 'C0002');
 				}
 			}
 
@@ -252,7 +254,7 @@ export default (config, globalOneTrustEvent) => {
 			if (config.enableSnowplow) {
 				insertSnowplow();
 			}
-			if (config.enableGA && !optout) {
+			if (config.enableFullStory && !optout) {
 				insertFullStory();
 			}
 			if (config.enableGTM && !optout) {
@@ -260,6 +262,9 @@ export default (config, globalOneTrustEvent) => {
 			}
 			if (config.algoliaConfig.enableAA && !optout) {
 				insertAlgoliaAnalytics();
+			}
+			if (config.enableHotjar && !optout) {
+				insertHotjar();
 			}
 		}
 

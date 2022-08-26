@@ -33,6 +33,7 @@
 <script>
 import KvButton from '@/components/Kv/KvButton';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+import { addBlankTargetToExternalLinks } from '@/util/contentful/richTextRenderer';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
@@ -46,6 +47,10 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		pageSettingData: {
+			type: Object,
+			default: () => {},
+		}
 	},
 	computed: {
 		partnerImage() {
@@ -72,14 +77,7 @@ export default {
 	async mounted() {
 		await this.$nextTick();
 		// make sure all partner content links open externally
-		if (this.$refs.partnerBodyCopy) {
-			const links = this.$refs.partnerBodyCopy.querySelectorAll('a');
-			if (links.length > 0) {
-				Array.prototype.forEach.call(links, link => {
-					link.target = '_blank';// eslint-disable-line no-param-reassign
-				});
-			}
-		}
+		addBlankTargetToExternalLinks(this.$refs.partnerBodyCopy, this.pageSettingData);
 	}
 };
 </script>

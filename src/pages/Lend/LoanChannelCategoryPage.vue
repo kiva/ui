@@ -1,9 +1,10 @@
 <template>
 	<www-page
 		class="loan-channel-page category-page"
-		:gray-background="true"
+		:gray-background="pageLayout === 'control'"
 	>
-		<loan-channel-category-control
+		<component
+			:is="pageLayoutComponent"
 			:add-bundles-exp="addBundlesExp"
 		/>
 
@@ -12,14 +13,21 @@
 </template>
 
 <script>
+import { preFetchAll } from '@/util/apolloPreFetch';
 import gql from 'graphql-tag';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
-import LoanChannelCategoryControl from '@/pages/Lend/LoanChannelCategoryControl';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
 
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+
+const LoanChannelCategoryControl = () => import('@/pages/Lend/LoanChannelCategoryControl');
+const LoanChannelCategoryClimateExperiment = () => import('@/pages/Lend/LoanChannelCategoryClimateExperiment');
 
 const pageQuery = gql`
 	query LoanChannelCategoryPageExperiments {
@@ -28,9 +36,19 @@ const pageQuery = gql`
 				key
 				value
 			}
+			lbcEcoLayout: uiExperimentSetting(key: "lend_by_category_carousel_layout") {
+				key
+				value
+			}
 		}
 	}
 `;
+
+// categories to run ACK-247 experiment on
+const testCategories = [
+	'eco-friendly-loans',
+	'eco-friendly'
+];
 
 export default {
 	name: 'LoanChannelCategoryPage',
@@ -71,7 +89,6 @@ export default {
 	},
 	components: {
 		AddToBasketInterstitial,
-		LoanChannelCategoryControl,
 		WwwPage,
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -81,17 +98,38 @@ export default {
 			meta: {
 				title: undefined,
 				description: undefined
-			}
+			},
+			pageLayout: 'control',
+			pageLayoutComponent: null
 		};
 	},
 	apollo: {
-		preFetch(config, client) {
+		preFetch(config, client, args) {
+			const { route } = args;
+			const { params } = route;
+
 			return client.query({
 				query: pageQuery
 			}).then(() => {
 				return Promise.all([
+					client.query(
+						{ query: experimentAssignmentQuery, variables: { id: 'lend_by_category_carousel_layout' } }
+					),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'category_loan_bundles' } }),
 				]);
+			}).then(results => {
+				const experimentSettings = results.map(result => result.data.experiment);
+				const ecoLayoutIsShown = experimentSettings
+					.find(setting => setting.id === 'lend_by_category_carousel_layout')?.version === 'b';
+				if (ecoLayoutIsShown && testCategories.includes(params.category)) {
+					// prefetch experimental layout
+					return LoanChannelCategoryClimateExperiment();
+				}
+				return LoanChannelCategoryControl();
+			}).then(resolvedImport => {
+				// Call preFetch for page layout component
+				const component = resolvedImport.default;
+				return preFetchAll([component], client, args);
 			});
 		}
 	},
@@ -104,13 +142,49 @@ export default {
 		this.initializeAddToBasketInterstitial();
 		// Loan Bundles Experiment
 		this.initializeLoanBundleExperiment();
+		// Experimental page layout
+		this.initializeExperimentalPageLayout();
 	},
 	computed: {
 		targetedLoanChannel() {
 			return this.$route?.params?.category ?? '';
 		},
 	},
+	watch: {
+		/** If route params change, execute this experiment init
+		 * function again to update page layout if needed. This
+		 * allows navigation from an experiment category to a non
+		 * experiment category for users in the experiment.
+		*/
+		'$route.params.category': {
+			handler() {
+				// Experimental page layout
+				this.initializeExperimentalPageLayout();
+			},
+			deep: true,
+		}
+	},
 	methods: {
+		initializeExperimentalPageLayout() {
+			// Only certain categories are eligible for the experiment
+			if (testCategories.includes(this.targetedLoanChannel)) {
+				const carouselLayoutExp = getExperimentSettingCached(this.apollo, 'lend_by_category_carousel_layout');
+				if (carouselLayoutExp?.enabled) {
+					const { version } = trackExperimentVersion(
+						this.apollo,
+						this.$kvTrackEvent,
+						'Lending',
+						'lend_by_category_carousel_layout',
+						'EXP-ACK-357-Aug2022',
+					);
+					this.pageLayout = version === 'b' ? 'experiment' : 'control';
+				}
+			} else {
+				this.pageLayout = 'control';
+			}
+			this.pageLayoutComponent = this.pageLayout === 'experiment'
+				? LoanChannelCategoryClimateExperiment : LoanChannelCategoryControl;
+		},
 		initializeAddToBasketInterstitial() {
 			this.apollo.mutate({
 				mutation: updateAddToBasketInterstitial,
@@ -120,19 +194,19 @@ export default {
 			});
 		},
 		initializeLoanBundleExperiment() {
-			const layoutEXP = this.apollo.readFragment({
+			const bundleEXP = this.apollo.readFragment({
 				id: 'Experiment:category_loan_bundles',
 				fragment: experimentVersionFragment,
 			}) || {};
 
-			if (layoutEXP.version) {
-				if (layoutEXP.version === 'b') {
+			if (bundleEXP.version) {
+				if (bundleEXP.version === 'b') {
 					this.addBundlesExp = true;
 				}
 				this.$kvTrackEvent(
 					'Lending',
 					'EXP-CORE-482-Mar2022',
-					layoutEXP.version
+					bundleEXP.version
 				);
 			}
 		},

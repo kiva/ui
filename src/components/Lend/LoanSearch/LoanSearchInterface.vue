@@ -57,6 +57,7 @@
 		<div class="tw-col-span-2 tw-relative tw-grow">
 			<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
 			<div v-if="initialLoadComplete">
+				<loan-search-saved-search v-if="enableSavedSearch && showSavedSearch" />
 				<loan-search-filter-chips
 					:loan-search-state="loanSearchState"
 					:all-facets="allFacets"
@@ -119,7 +120,7 @@ import {
 	transformSectors,
 } from '@/util/loanSearch/filterUtils';
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
-import { applyQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
+import { applyQueryParams, hasExcludedQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
 import { updateSearchState } from '@/util/loanSearch/searchStateUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
@@ -128,6 +129,7 @@ import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util//numberUtils';
 import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
+import LoanSearchSavedSearch from '@/components/Lend/LoanSearch/LoanSearchSavedSearch';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -147,6 +149,13 @@ export default {
 		KvSectionModalLoader,
 		KvPagination,
 		KvResultsPerPage,
+		LoanSearchSavedSearch
+	},
+	props: {
+		enableSavedSearch: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	data() {
 		return {
@@ -223,7 +232,13 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client) {
+		preFetch(config, client, { route }) {
+			// Handle temporary query param exclusions
+			if (Object.keys(route?.query).length && hasExcludedQueryParams(route?.query)) {
+				// fallback to legacy lend with original query params
+				return Promise.reject({ path: route.fullPath.replace('/filter', '') });
+			}
+
 			return client.query({
 				query: userIdQuery
 			}).then(() => {
@@ -285,8 +300,8 @@ export default {
 					await this.fetchFacets(this.loanSearchState)
 				]);
 
-				// Store loan data in component
-				this.loans = loans;
+				// Store loan data in component, guarding against null loan objects
+				this.loans = loans.filter(loan => loan !== null);
 				this.totalCount = totalCount;
 
 				// Copy state so that the readonly offset can be updated
@@ -318,6 +333,17 @@ export default {
 
 			return isNumber(storedPageLimit) ? +storedPageLimit : this.loanSearchState.pageLimit;
 		},
+		showSavedSearch() {
+			// implement more global solution when out of exp phase
+			const countryFilterApplied = this.loanSearchState.countryIsoCode.length > 0;
+			const genderFilterApplied = this.loanSearchState.gender;
+			const sectorFilterApplied = this.loanSearchState.sectorId.length > 0;
+			const themeFilterApplied = this.loanSearchState.themeId.length > 0;
+			return countryFilterApplied
+				|| genderFilterApplied
+				|| sectorFilterApplied
+				|| themeFilterApplied;
+		}
 	},
 	methods: {
 		async fetchFacets(loanSearchState = {}) {

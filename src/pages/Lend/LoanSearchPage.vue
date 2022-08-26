@@ -1,5 +1,5 @@
 <template>
-	<www-page id="lend-filter-alpha">
+	<www-page id="lend-filter">
 		<article class="tw-bg-secondary tw-relative tw-pt-6">
 			<kv-page-container>
 				<div class="tw-flex tw-items-start tw-pb-8">
@@ -11,39 +11,50 @@
 							Each Kiva loan helps people build a better future for themselves and their families.
 						</p>
 					</div>
-					<button class="tw-mb-2 tw-mt-3 tw-border-r tw-border-tertiary tw-px-1 md:tw-px-2">
-						<kv-material-icon :icon="mdiEarth" class="tw-text-secondary tw-w-3 tw-h-3" />
-						<p class="tw-text-tertiary tw-hidden md:tw-block">
+					<a
+						href="/lend-by-category"
+						class="
+							tw-mb-2 tw-mt-3 tw-px-1 md:tw-px-2
+							tw-border-r tw-border-tertiary
+							tw-text-secondary hover:tw-text-action
+							tw-text-center hover:tw-no-underline"
+					>
+						<kv-material-icon :icon="mdiEarth" class=" tw-w-3 tw-h-3" />
+						<span class="tw-hidden md:tw-block">
 							Explore
-						</p>
-					</button>
-					<button class="tw-mb-2  tw-mt-3 tw-px-1 md:tw-px-2">
+						</span>
+					</a>
+					<a class="tw-mb-2 tw-mt-3 tw-px-1 md:tw-px-2 tw-text-center hover:tw-no-underline">
 						<kv-material-icon :icon="mdiFilter" class="tw-text-brand tw-w-3 tw-h-3" />
-						<p class="tw-text-tertiary tw-hidden md:tw-block">
+						<span class="tw-text-secondary tw-hidden md:tw-block">
 							Filters
-						</p>
-					</button>
+						</span>
+					</a>
 				</div>
-				<loan-search-interface />
+				<loan-search-interface :enable-saved-search="enableSavedSearch" />
 			</kv-page-container>
 		</article>
 	</www-page>
 </template>
 
 <script>
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import {
-	getExperimentSettingAsync,
-	getExperimentSettingCached,
-	trackExperimentVersion
-} from '@/util/experimentUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanSearchInterface from '@/components/Lend/LoanSearch/LoanSearchInterface';
 import { mdiEarth, mdiFilter } from '@mdi/js';
+import gql from 'graphql-tag';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
-const lendFilterRedirectEXP = 'lend_filter_flss_v1';
+const pageQuery = gql`query loanSearchPage {
+	general {
+		enableSavedSearch: uiExperimentSetting(key: "saved_search") {
+			key
+			value
+		}
+	}
+}`;
 
 export default {
 	name: 'LoanSearchPage',
@@ -53,35 +64,39 @@ export default {
 		KvMaterialIcon,
 		LoanSearchInterface
 	},
-	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
+			enableSavedSearch: false,
 			mdiEarth,
 			mdiFilter
 		};
 	},
+	inject: ['apollo', 'cookieStore'],
 	apollo: {
+		query: pageQuery,
 		preFetch(config, client) {
-			// get experiment setting and assignment
-			return getExperimentSettingAsync(client, lendFilterRedirectEXP)
-				.then(() => {
-					// running the assignment query ensures any existing assignment is in the apollo cache
-					return client.query({ query: experimentAssignmentQuery, variables: { id: lendFilterRedirectEXP } });
-				});
+			return client.query({
+				query: pageQuery
+			}).then(() => {
+				return Promise.all([
+					client.query({ query: experimentQuery, variables: { id: 'saved_search' } }),
+				]);
+			});
+		},
+		result() {
+			const savedSearchExp = this.apollo.readFragment({
+				id: 'Experiment:saved_search',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.enableSavedSearch = savedSearchExp.version === 'b';
+			if (savedSearchExp.version) {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CORE-687-Aug-2022',
+					savedSearchExp.version
+				);
+			}
 		}
 	},
-	mounted() {
-		const { enabled } = getExperimentSettingCached(this.apollo, lendFilterRedirectEXP);
-		if (enabled) {
-			// this method will get the version from the apollo cache
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				lendFilterRedirectEXP,
-				'EXP-VUE-1061-June2022'
-			);
-		}
-	}
 };
 </script>

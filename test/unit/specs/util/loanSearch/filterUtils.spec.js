@@ -9,6 +9,7 @@ import {
 	formatSortOptions,
 	FLSS_QUERY_TYPE,
 	STANDARD_QUERY_TYPE,
+	visibleFLSSSortOptions,
 } from '@/util/loanSearch/filterUtils';
 import _orderBy from 'lodash/orderBy';
 import {
@@ -32,7 +33,7 @@ const mockBTheme = (numLoansFundraising = 4) => ({ id: 3, name: 'b', numLoansFun
 describe('filterUtils.js', () => {
 	describe('formatSortOptions', () => {
 		const mockStandardSorts = [{ name: 'a' }, { name: 'b' }];
-		const mockFLSSSorts = [{ name: 'c' }, { name: 'd' }];
+		const mockFLSSSorts = visibleFLSSSortOptions.map(f => ({ name: f, sortSrc: FLSS_QUERY_TYPE }));
 
 		it('should handle empty', () => {
 			expect(formatSortOptions()).toEqual([]);
@@ -44,18 +45,20 @@ describe('filterUtils.js', () => {
 			expect(formatSortOptions(mockStandardSorts, mockFLSSSorts)).toEqual([
 				{ name: 'a', sortSrc: STANDARD_QUERY_TYPE },
 				{ name: 'b', sortSrc: STANDARD_QUERY_TYPE },
-				{ name: 'c', sortSrc: FLSS_QUERY_TYPE },
-				{ name: 'd', sortSrc: FLSS_QUERY_TYPE }
+				...mockFLSSSorts
 			]);
 		});
 
-		it('should exclude amountLeft', () => {
-			expect(formatSortOptions(mockStandardSorts, [...mockFLSSSorts, { name: 'amountLeft' }])).toEqual([
-				{ name: 'a', sortSrc: STANDARD_QUERY_TYPE },
-				{ name: 'b', sortSrc: STANDARD_QUERY_TYPE },
-				{ name: 'c', sortSrc: FLSS_QUERY_TYPE },
-				{ name: 'd', sortSrc: FLSS_QUERY_TYPE }
-			]);
+		it('should exclude non-visible sort options', () => {
+			expect(formatSortOptions(mockStandardSorts, [
+				...mockFLSSSorts,
+				{ name: 'researchScore' }
+			]))
+				.toEqual([
+					{ name: 'a', sortSrc: STANDARD_QUERY_TYPE },
+					{ name: 'b', sortSrc: STANDARD_QUERY_TYPE },
+					...mockFLSSSorts
+				]);
 		});
 	});
 

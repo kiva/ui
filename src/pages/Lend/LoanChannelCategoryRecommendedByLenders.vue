@@ -253,11 +253,8 @@ export default {
 			};
 		},
 		filterUrl() {
-			// initial release sends us back to /lend
-			// return `/lend/recommended-by-lenders`;
-			return this.lendFilterExpVersion === 'b'
-				? this.getAlgoliaFilterUrl()
-				: '/lend/recommended-by-lenders';
+			// process eligible filter url
+			return this.getFilterUrl();
 		},
 		handleCanonicalUrl() {
 			let url = `https://${this.$appConfig.host}${this.$route.path}`;
@@ -346,11 +343,12 @@ export default {
 		// Setup Reactivity for Loan Data + Basket Status
 		this.activateLoanChannelWatchQuery();
 
+		this.updateLendFilterExp();
 		// check for newly assigned bounceback
 		const redirectFromUiCookie = this.cookieStore.get('redirectFromUi') || '';
 		if (redirectFromUiCookie === 'true') {
 			this.cookieStore.remove('redirectFromUi');
-			this.$router.push(this.getAlgoliaFilterUrl());
+			this.$router.push(this.getFilterUrl());
 		}
 	},
 	methods: {
@@ -411,12 +409,12 @@ export default {
 				}
 			});
 		},
-		getAlgoliaFilterUrl() {
+		getFilterUrl() {
 			// get match channel data
 			const matchedUrls = _filter(
 				this.loanChannelQueryMap,
 				channel => {
-					return channel.url === routePath;
+					return channel.url === 'recommended-by-lenders';
 				}
 			);
 			// check for fallback url
@@ -424,10 +422,10 @@ export default {
 			if (typeof fallback !== 'undefined') {
 				return fallback;
 			}
-			// use algolia params if available
-			const algoliaParams = _get(matchedUrls, '[0]algoliaParams') || '';
-			if (algoliaParams !== '') {
-				return `/lend/filter?${algoliaParams}`;
+			// use query params if available
+			const queryParams = _get(matchedUrls, '[0]queryParams') || '';
+			if (queryParams !== '') {
+				return `/lend?${queryParams}`;
 			}
 			// use default
 			return '/lend/filter';

@@ -23,9 +23,17 @@
 
 			<!-- TODO: Alter CTA if Checkout is ready -->
 			<campaign-hero
+				v-if="hasCampaignHero"
 				:hero-area-content="heroAreaContent"
+				:page-setting-data="pageSettingData"
 				@add-to-basket="handleAddToBasket"
 				@jump-to-loans="jumpToLoans"
+			/>
+
+			<dynamic-hero-classic
+				v-if="hasDynamicHeroClassic"
+				:content="heroAreaContent"
+				:page-setting-data="pageSettingData"
 			/>
 
 			<hr>
@@ -94,7 +102,10 @@
 			<hr>
 
 			<template v-if="partnerAreaContent">
-				<campaign-partner :partner-area-content="partnerAreaContent" />
+				<campaign-partner
+					:partner-area-content="partnerAreaContent"
+					:page-setting-data="pageSettingData"
+				/>
 				<hr>
 			</template>
 
@@ -238,7 +249,6 @@ import syncDate from '@/util/syncDate';
 import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
-import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
 import CampaignLoanGridDisplay from '@/components/CorporateCampaign/CampaignLoanGridDisplay';
@@ -255,6 +265,9 @@ import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
+
+const CampaignHero = () => import('@/components/CorporateCampaign/CampaignHero');
+const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
 
 const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
 	contentful {
@@ -467,6 +480,7 @@ export default {
 		CampaignStatus,
 		CampaignThanks,
 		CampaignVerificationForm,
+		DynamicHeroClassic,
 		InContextCheckout,
 		KvLightbox,
 		KvLoadingOverlay,
@@ -603,6 +617,7 @@ export default {
 		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
 	},
 	mounted() {
+		this.$root.$on('jumpToLoans', this.jumpToLoans);
 		// check for loan display settings from contentful
 		if (this.contentfulLoanDisplaySetting !== null) {
 			// check for default, if 'grid' swap update loan display. (rows is deafult)
@@ -633,6 +648,9 @@ export default {
 		});
 
 		this.setAuthStatus(this.kvAuth0?.user ?? {});
+	},
+	beforeDestroy() {
+		this.$root.$off('jumpToLoans', this.jumpToLoans);
 	},
 	watch: {
 		initialFilters(next) {
@@ -665,6 +683,11 @@ export default {
 			const allJsonData = jsonDataArray.reduce((accumulator, settingDataObject) => {
 				return { ...accumulator, ...settingDataObject };
 			}, {});
+			// Make all external links on corporate pages open in a new tab by default
+			// unless the setting is explicitly set to false in contentful
+			if (allJsonData.enableBlankTargetLinks === undefined) {
+				allJsonData.enableBlankTargetLinks = true;
+			}
 			return allJsonData;
 		},
 		pageTitle() {
@@ -678,7 +701,14 @@ export default {
 			return layoutDescription || pageDescription;
 		},
 		heroAreaContent() {
-			return this.pageData?.page?.contentGroups?.mlCampaignHero;
+			return this.pageData?.page?.contentGroups?.dynamicHeroClassic
+				|| this.pageData?.page?.contentGroups?.mlCampaignHero;
+		},
+		hasCampaignHero() {
+			return typeof this.pageData?.page?.contentGroups?.mlCampaignHero !== 'undefined';
+		},
+		hasDynamicHeroClassic() {
+			return typeof this.pageData?.page?.contentGroups?.dynamicHeroClassic !== 'undefined';
 		},
 		partnerAreaContent() {
 			return this.pageData?.page?.contentGroups?.mlCampaignPartnerCopy;

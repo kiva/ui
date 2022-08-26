@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="tw-relative">
 		<div class="row">
 			<div class="small-12 columns heading-region">
 				<view-toggle browse-url="/lend-by-category" :filter-url="filterUrl" />
@@ -26,6 +26,7 @@
 				</p>
 			</div>
 		</div>
+
 		<div class="tw-bg-brand-100 tw-w-full tw-mb-8 lg:tw-mb-12 lg:tw-mt-2 tw-px-2 tw-py-2" v-if="addBundlesExp">
 			<div class="row">
 				<div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-w-full">
@@ -136,7 +137,6 @@
 						:loan="loan"
 						loan-card-type="GridLoanCard"
 					/>
-					<kv-loading-overlay v-if="loading" />
 				</div>
 				<kv-pagination
 					v-if="totalCount > 0"
@@ -150,17 +150,16 @@
 				</div>
 			</div>
 		</div>
+
+		<kv-loading-overlay v-if="loading" />
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
-import _invokeMap from 'lodash/invokeMap';
 import _isEqual from 'lodash/isEqual';
 import _map from 'lodash/map';
 import _filter from 'lodash/filter';
-import _mapValues from 'lodash/mapValues';
-import _merge from 'lodash/merge';
 import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
@@ -185,33 +184,24 @@ import {
 } from '@/util/loanChannelUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
-const loansPerPage = 12;
+const defaultLoansPerPage = 12;
 
-// A map of functions to transform url query parameters to/from graphql variables.
-// Each key in urlParamTransform is a url query parameter (e.g. the 'page' in ?page=2).
-// Each value is then an object with the to/from functions to write/read the url parameter.
-const urlParamTransform = {
-	page: {
-		to({ offset }) {
-			const page = Math.floor(offset / loansPerPage) + 1;
-			return page > 1 ? String(page) : undefined;
-		},
-		from({ page }) {
-			const pagenum = numeral(page).value() - 1;
-			return { offset: pagenum > 0 ? loansPerPage * pagenum : 0 };
-		}
-	},
-};
-
-// Turn an object of graphql variables into an object of url query parameters
-function toUrlParams(variables) {
-	return _mapValues(urlParamTransform, ({ to }) => to(variables));
-}
-
-// Turn an object of url query parameters into an object of graphql variables
-function fromUrlParams(params) {
-	return _merge({}, ..._invokeMap(urlParamTransform, 'from', params));
-}
+// Routes to show monthly good promo
+const targetRoutes = [
+	{ route: 'women', url: '/monthlygood?category=women', label: 'women' },
+	{ route: 'loans-to-women', url: '/monthlygood?category=women', label: 'women' },
+	{ route: 'education', url: '/monthlygood?category=education', label: 'students' },
+	{ route: 'loans-for-education', url: '/monthlygood?category=education', label: 'students' },
+	{ route: 'refugees-and-i-d-ps', url: '/monthlygood?category=refugees', label: 'refugees' },
+	{ route: 'loans-to-refugees-and-i-d-ps', url: '/monthlygood?category=refugees', label: 'refugees' },
+	{ route: 'eco-friendly', url: '/monthlygood?category=eco_friendly', label: 'eco-friendly loans' },
+	{ route: 'eco-friendly-loans', url: '/monthlygood?category=eco_friendly', label: 'eco-friendly loans' },
+	{ route: 'agriculture', url: '/monthlygood?category=agriculture', label: 'farmers' },
+	{ route: 'loans-to-farmers', url: '/monthlygood?category=agriculture', label: 'farmers' },
+	{ route: 'kiva-u-s', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' },
+	{ route: 'loans-to-u-s-small-businesses', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' }, // eslint-disable-line max-len
+	{ route: 'united-states-loans', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' },
+];
 
 function getTargetedChannel(targetedRoute, allChannels) {
 	const loanChannels = _get(allChannels, 'lend.loanChannels.values');
@@ -224,6 +214,12 @@ function getTargetedChannel(targetedRoute, allChannels) {
 	);
 	// isolate targeted loan channel id
 	return _get(targetedLoanChannel[0], 'id') || null;
+}
+
+function getPageOffset(query, limit) {
+	const pageNum = numeral(query.page).value() - 1;
+
+	return pageNum > 0 ? limit * pageNum : 0;
 }
 
 export default {
@@ -263,11 +259,11 @@ export default {
 	data() {
 		return {
 			offset: 0,
-			limit: loansPerPage,
+			limit: defaultLoansPerPage,
 			filters: { },
 			targetedLoanChannelURL: null,
 			targetedLoanChannelID: null,
-			loanChannel: () => {},
+			loanChannel: {},
 			isVisitor: true,
 			itemsInBasket: [],
 			pageQuery: { page: '1' },
@@ -285,9 +281,9 @@ export default {
 	},
 	computed: {
 		urlParams() {
-			return toUrlParams({
-				offset: this.offset,
-			});
+			const page = Math.floor(this.offset / this.limit) + 1;
+
+			return { page: page > 1 ? String(page) : undefined };
 		},
 		lastLoanPage() {
 			return Math.ceil(this.totalCount / this.limit);
@@ -323,11 +319,8 @@ export default {
 			};
 		},
 		filterUrl() {
-			// initial release sends us back to /lend
-			// return `/lend/${this.$route.params.category || ''}`;
-			return this.lendFilterExpVersion === 'b'
-				? this.getAlgoliaFilterUrl()
-				: `/lend/${this.$route.params.category || ''}`;
+			// process eligible filter url
+			return this.getFilterUrl();
 		},
 		pageTitle() {
 			let title = 'Fundraising loans';
@@ -357,14 +350,20 @@ export default {
 			return client.query({
 				query: loanChannelPageQuery
 			}).then(({ data }) => {
+				const { route } = args;
+				const { query, params, path } = route;
+
 				// Filter routes on route.param.category to get current path
-				const targetedLoanChannelURL = _get(args, 'route.params.category');
+				const targetedLoanChannelURL = params.category;
 
 				// Isolate targeted loan channel id
 				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, data);
 
-				// Extract query
-				const pageQuery = _get(args, 'route.query');
+				// Get page limit and offset
+				const currentRoute = path.replace('/lend-by-category/', '');
+				const matchedRoutes = targetRoutes.filter(r => r.route === currentRoute);
+				const limit = matchedRoutes.length > 0 ? defaultLoansPerPage - 1 : defaultLoansPerPage;
+				const offset = getPageOffset(query, limit);
 
 				return preFetchChannel(
 					client,
@@ -372,13 +371,16 @@ export default {
 					loanChannelQueryMapMixin.data().loanChannelQueryMap,
 					targetedLoanChannelURL,
 					// Build loanQueryVars since SSR doesn't have same context
-					{ ids: [targetedLoanChannelID], limit: loansPerPage, offset: fromUrlParams(pageQuery).offset }
+					{ ids: [targetedLoanChannelID], limit, offset }
 				);
 			});
 		}
 	},
 	created() {
+		this.loading = true;
 		let allChannelsData = {};
+
+		this.initializeMonthlyGoodPromo();
 
 		try {
 			allChannelsData = this.apollo.readQuery({
@@ -412,6 +414,8 @@ export default {
 			this.loanQueryVars
 		);
 
+		if (baseData) this.loading = false;
+
 		// Assign our initial view data
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 		this.loanChannel = _get(baseData, 'lend.loanChannelsById[0]');
@@ -419,9 +423,6 @@ export default {
 		/*
 		 * Experiment Initializations
 		*/
-
-		// Monthly Good Category Promo
-		this.initializeMonthlyGoodPromo();
 
 		// Lend Filter Redirects
 		this.initializeLendFilterRedirects();
@@ -435,7 +436,7 @@ export default {
 		const redirectFromUiCookie = this.cookieStore.get('redirectFromUi') || '';
 		if (redirectFromUiCookie === 'true') {
 			this.cookieStore.remove('redirectFromUi');
-			this.$router.push(this.getAlgoliaFilterUrl());
+			this.$router.push(this.getFilterUrl());
 		}
 
 		if (this.addBundlesExp) {
@@ -479,7 +480,7 @@ export default {
 				const message = `There are currently ${this.lastLoanPage} pages of results.
 					We’ve loaded the ${this.lastLoanPage === 0 ? 'first' : 'last'} page for you.`;
 				this.$showTipMsg(message);
-				this.pageChange({ pageOffset: loansPerPage * (this.lastLoanPage > 0 ? this.lastLoanPage - 1 : 0) });
+				this.pageChange({ pageOffset: this.limit * (this.lastLoanPage > 0 ? this.lastLoanPage - 1 : 0) });
 			}
 		},
 		updateLoanReservation(id) {
@@ -498,8 +499,7 @@ export default {
 			this.pushChangesToUrl();
 		},
 		updateFromParams(query) {
-			const { offset } = fromUrlParams(query);
-			this.offset = offset;
+			this.offset = getPageOffset(query, this.limit);
 		},
 		pushChangesToUrl() {
 			if (!_isEqual(this.$route.query, this.urlParams)) {
@@ -538,7 +538,7 @@ export default {
 				callback => this.$watch(() => this.loanQueryVars, callback, { deep: true }),
 			);
 		},
-		getAlgoliaFilterUrl() {
+		getFilterUrl() {
 			// get match channel data
 			const matchedUrls = _filter(
 				this.loanChannelQueryMap,
@@ -551,10 +551,10 @@ export default {
 			if (typeof fallback !== 'undefined') {
 				return fallback;
 			}
-			// use algolia params if available
-			const algoliaParams = _get(matchedUrls, '[0]algoliaParams') || '';
-			if (algoliaParams !== '') {
-				return `/lend/filter?${algoliaParams}`;
+			// use query params if available
+			const queryParams = _get(matchedUrls, '[0]queryParams') || '';
+			if (queryParams !== '') {
+				return `/lend/filter?${queryParams}`;
 			}
 			// use default
 			return '/lend/filter';
@@ -571,26 +571,13 @@ export default {
 		},
 		initializeMonthlyGoodPromo() {
 			const currentRoute = this.$route.path.replace('/lend-by-category/', '');
-			const targetRoutes = [
-				{ route: 'women', url: '/monthlygood?category=women', label: 'women' },
-				{ route: 'loans-to-women', url: '/monthlygood?category=women', label: 'women' },
-				{ route: 'education', url: '/monthlygood?category=education', label: 'students' },
-				{ route: 'loans-for-education', url: '/monthlygood?category=education', label: 'students' },
-				{ route: 'refugees-and-i-d-ps', url: '/monthlygood?category=refugees', label: 'refugees' },
-				{ route: 'loans-to-refugees-and-i-d-ps', url: '/monthlygood?category=refugees', label: 'refugees' },
-				{ route: 'eco-friendly', url: '/monthlygood?category=eco_friendly', label: 'eco-friendly loans' },
-				{ route: 'eco-friendly-loans', url: '/monthlygood?category=eco_friendly', label: 'eco-friendly loans' },
-				{ route: 'agriculture', url: '/monthlygood?category=agriculture', label: 'farmers' },
-				{ route: 'loans-to-farmers', url: '/monthlygood?category=agriculture', label: 'farmers' },
-				{ route: 'kiva-u-s', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' },
-				{ route: 'loans-to-u-s-small-businesses', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' }, // eslint-disable-line max-len
-				{ route: 'united-states-loans', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' },
-			];
 			const matchedRoutes = _filter(targetRoutes, route => route.route === currentRoute);
-
 			if (matchedRoutes.length) {
 				this.displayLoanPromoCard = true;
 				[this.mgTargetCategory] = matchedRoutes;
+				this.limit = defaultLoansPerPage - 1;
+			} else {
+				this.limit = defaultLoansPerPage;
 			}
 		},
 		async getRelatedLoansExp() {
@@ -599,7 +586,7 @@ export default {
 				const baseData = await this.apollo.query({
 					query: getRelatedLoans,
 					variables: {
-						limit: 12,
+						limit: this.limit,
 						loanId: loan.id,
 						offset: 0,
 						topics: ['story']

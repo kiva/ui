@@ -151,3 +151,24 @@ export function richTextRenderer(content) {
 
 	return documentToHtmlString(contentWithoutTrailingEmptyParagraph, options);
 }
+
+/* eslint-disable import/prefer-default-export */
+/**
+ * Adds target="_blank" to links so they open in a new tab
+ *
+ * @param {String} bodyCopy String containing html of contentful entry
+ * @param {Object} pageSettings Object containing global page settings of
+ * the page that the contentful entry is from
+ * @returns {void}
+ */
+export function addBlankTargetToExternalLinks(bodyCopy, pageSettings) {
+	// make sure all partner content links open externally
+	if (bodyCopy && pageSettings?.enableBlankTargetLinks) {
+		const links = bodyCopy.querySelectorAll('a');
+		if (links.length > 0) {
+			Array.prototype.forEach.call(links, link => {
+				link.target = '_blank';// eslint-disable-line no-param-reassign
+			});
+		}
+	}
+}
