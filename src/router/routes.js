@@ -433,8 +433,10 @@ module.exports = [
 		path: '/settings/payments',
 		component: () => import('@/pages/Settings/PaymentSettings'),
 		meta: {
-			activeLoginRequired: true,
 			excludeFromStaticSitemap: true,
+			recentLoginRequired: true,
+			mfaRequired: true,
+			process: 'managing your payment settings',
 		},
 	},
 	{
