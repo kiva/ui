@@ -15,7 +15,7 @@ export default () => {
 		resolvers: {
 			Mutation: {
 				showTipMessage(_, { message = '', persist = false, type = '' }, context) {
-					context.cache.writeData({
+					context.cache.writeQuery({
 						data: {
 							tip: {
 								message,
@@ -29,7 +29,7 @@ export default () => {
 					return true;
 				},
 				closeTipMessage(_, data, context) {
-					context.cache.writeData({
+					context.cache.writeQuery({
 						data: {
 							tip: {
 								visible: false,

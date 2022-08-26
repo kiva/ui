@@ -1,4 +1,4 @@
-import { ApolloLink } from '@apollo/client';
+import { ApolloLink } from '@apollo/client/core';
 
 export default ({ cookieStore }) => {
 	return new ApolloLink((operation, forward) => {

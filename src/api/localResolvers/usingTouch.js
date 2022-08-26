@@ -9,7 +9,7 @@ export default () => {
 		resolvers: {
 			Mutation: {
 				updateUsingTouch(_, { usingTouch }, context) {
-					context.cache.writeData({
+					context.cache.writeQuery({
 						data: { usingTouch }
 					});
 					return null;

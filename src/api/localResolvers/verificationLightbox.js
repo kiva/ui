@@ -16,7 +16,7 @@ export default () => {
 		resolvers: {
 			Mutation: {
 				showVerificationLightbox(_, args, context) {
-					context.cache.writeData({
+					context.cache.writeQuery({
 						data: {
 							verificationLightbox: {
 								visible: true,
@@ -27,7 +27,7 @@ export default () => {
 					return true;
 				},
 				closeVerificationLightbox(_, args, context) {
-					context.cache.writeData({
+					context.cache.writeQuery({
 						data: {
 							verificationLightbox: {
 								visible: false,

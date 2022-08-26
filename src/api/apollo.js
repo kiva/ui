@@ -1,10 +1,7 @@
 /* eslint-disable no-underscore-dangle */
-import { ApolloClient, ApolloLink } from '@apollo/client';
-// import {
-// 	IntrospectionFragmentMatcher,
-// 	InMemoryCache,
-// 	defaultDataIdFromObject,
-// } from 'apollo-cache-inmemory';
+import { ApolloLink, ApolloClient } from '@apollo/client/core';
+import { ApolloCache, InMemoryCache } from '@apollo/client/cache';
+
 import Auth0LinkCreator from './Auth0Link';
 import BasketLinkCreator from './BasketLink';
 import ContentfulPreviewLink from './ContentfulPreviewLink';
@@ -13,17 +10,28 @@ import HttpLinkCreator from './HttpLink';
 import NetworkErrorLink from './NetworkErrorLink';
 import SnowplowSessionLink from './SnowplowSessionLink';
 import initState from './localState';
-import cache from './cache';
+import gql from 'graphql-tag';
 
 export default function createApolloClient({
 	appConfig,
 	cookieStore,
 	kvAuth0,
+	types,
 	uri,
 	fetch
 }) {
+	const possibleTypes = {};
+	types.forEach(e=> {
+		const types = [e.possibleTypes.map(type => type.name)];
+		possibleTypes[e.name] = types[0];
+	});
+
+	const cache = new InMemoryCache({
+		possibleTypes
+	});
+
 	// initialize local state resolvers
-	const { defaults } = initState({ appConfig, cookieStore, kvAuth0 });
+	const { resolvers, defaults } = initState({ appConfig, cookieStore, kvAuth0 });
 
 	const client = new ApolloClient({
 		link: ApolloLink.from([
@@ -36,6 +44,7 @@ export default function createApolloClient({
 			HttpLinkCreator({ kvAuth0, uri, fetch }),
 		]),
 		cache,
+		resolvers,
 		defaultOptions: {
 			watchQuery: {
 				errorPolicy: 'all',
@@ -52,9 +61,15 @@ export default function createApolloClient({
 		assumeImmutableResults: true,
 	});
 
-	// set default local state
-	cache.writeData({ data: defaults });
-	client.onResetStore(() => cache.writeData({ data: defaults }));
+	// // set default local state
+	// client.writeQuery({
+	// 	query: gql`
+	// 		query GetCartItems {
+	// 			cartItems
+	// 		}`
+	// 	,
+	// 	data: defaults
+	// })
 
 	return client;
 }

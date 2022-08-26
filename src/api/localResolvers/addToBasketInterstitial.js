@@ -23,7 +23,7 @@ export default () => {
 						}
 					};
 
-					context.cache.writeData({
+					context.cache.writeQuery({
 						data,
 					});
 
