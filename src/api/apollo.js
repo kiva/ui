@@ -62,5 +62,7 @@ export default function createApolloClient({
 		assumeImmutableResults: true,
 	});
 
+	client.resetStore();
+
 	return client;
 }
