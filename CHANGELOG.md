@@ -1,3 +1,11 @@
+### [2.270.6](https://github.com/kiva/ui/compare/v2.270.5...v2.270.6) (2022-08-29)
+
+
+### Bug Fixes
+
+* fix issues related to cookies and setting optimizely attribute values ([6488668](https://github.com/kiva/ui/commit/6488668a5d26358bbac71cdae7feaebf5dbfcd30))
+* remove unnecessary code ([bb16469](https://github.com/kiva/ui/commit/bb1646964dea5cb508fc92febf8ef6741c615a81))
+
 ### [2.270.5](https://github.com/kiva/ui/compare/v2.270.4...v2.270.5) (2022-08-26)
 
 
