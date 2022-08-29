@@ -1,3 +1,10 @@
+## [2.271.0](https://github.com/kiva/ui/compare/v2.270.6...v2.271.0) (2022-08-29)
+
+
+### Features
+
+* setup for mfi recommendations experiment was added to lbc page ([5bec2e6](https://github.com/kiva/ui/commit/5bec2e61a825b6b9fc865c9bfb8ca8ed38a4d8be))
+
 ### [2.270.6](https://github.com/kiva/ui/compare/v2.270.5...v2.270.6) (2022-08-29)
 
 
