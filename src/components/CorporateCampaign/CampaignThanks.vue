@@ -154,11 +154,8 @@ export default {
 				const hasLentBefore = this.loans.length > 0;
 				const hasDepositBefore = parseFloat(depositTotal) > 0;
 
-				this.cookieStore.remove(hasLentBeforeCookie);
-				this.cookieStore.remove(hasDepositBeforeCookie);
-
-				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore);
-				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore);
+				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { path: '/' });
+				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { path: '/' });
 
 				userHasLentBefore(hasLentBefore);
 				userHasDepositBefore(hasDepositBefore);

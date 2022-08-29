@@ -639,8 +639,8 @@ export default {
 				const hasLentBefore = userData?.my?.loans?.totalCount > 0;
 				const hasDepositBefore = userData?.my?.transactions?.totalCount > 0;
 
-				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore);
-				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore);
+				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { path: '/' });
+				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { path: '/' });
 
 				userHasLentBefore(hasLentBefore);
 				userHasDepositBefore(hasDepositBefore);
