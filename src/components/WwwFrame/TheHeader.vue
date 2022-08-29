@@ -466,7 +466,7 @@
 
 <script>
 import logReadQueryError from '@/util/logReadQueryError';
-import { userHasEverLoggedInBefore, userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
+import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
 import gql from 'graphql-tag';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
@@ -626,9 +626,6 @@ export default {
 	},
 	created() {
 		// MARS-194 User Metrics for Optimizely A/B experiment
-		const hasEverLoggedInBefore = this.cookieStore.get('kvu');
-		userHasEverLoggedInBefore(hasEverLoggedInBefore !== undefined);
-
 		const hasLentBeforeValue = this.cookieStore.get(hasLentBeforeCookie);
 		const hasDepositBeforeValue = this.cookieStore.get(hasDepositBeforeCookie);
 

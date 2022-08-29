@@ -131,6 +131,9 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
 
+const hasLentBeforeCookie = 'kvu_lb';
+const hasDepositBeforeCookie = 'kvu_db';
+
 export default {
 	name: 'ThanksPage',
 	components: {
@@ -288,9 +291,19 @@ export default {
 			.map(item => item.loan);
 
 		// MARS-194-User metrics A/B Optimizely experiment
-		const depositTotal = parseFloat(this.receipt?.totals?.depositTotals?.depositTotal);
-		userHasLentBefore(this.loans.length > 0);
-		userHasDepositBefore(depositTotal > 0);
+		const depositTotal = this.receipt?.totals?.depositTotals?.depositTotal;
+
+		const hasLentBefore = this.loans.length > 0;
+		const hasDepositBefore = parseFloat(depositTotal) > 0;
+
+		this.cookieStore.remove(hasLentBeforeCookie);
+		this.cookieStore.remove(hasDepositBeforeCookie);
+
+		this.cookieStore.set(hasLentBeforeCookie, hasLentBefore);
+		this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore);
+
+		userHasLentBefore(hasLentBefore);
+		userHasDepositBefore(hasDepositBefore);
 
 		if (!this.isGuest && !data?.my?.userAccount) {
 			logFormatter(
