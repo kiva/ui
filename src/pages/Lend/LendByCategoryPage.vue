@@ -179,6 +179,7 @@ export default {
 			showMGDigestLightbox: false,
 			personalizedLoans: [],
 			rowTrackCounter: 0,
+			mfiRecommendationsExp: false,
 		};
 	},
 	computed: {
@@ -644,6 +645,23 @@ export default {
 				);
 			}
 		},
+		initializeMFIRecommendationsExperiment() {
+			const layoutEXP = this.apollo.readFragment({
+				id: 'Experiment:mfi_recommendations',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			if (layoutEXP.version) {
+				if (layoutEXP.version === 'b') {
+					this.mfiRecommendationsExp = true;
+				}
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CORE-628-AUG-2022',
+					layoutEXP.version
+				);
+			}
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -656,6 +674,8 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
 					// experiment: CORE-588 Loans bundle experiment
 					client.query({ query: experimentQuery, variables: { id: 'by_category_loan_bundles' } }),
+					// experiment: CORE-698 MFI Recommendations
+					client.query({ query: experimentQuery, variables: { id: 'mfi_recommendations' } }),
 				]);
 			})
 				.then(() => {
@@ -734,6 +754,9 @@ export default {
 		if (this.isLoggedIn) {
 			this.initializeLoanBundleExperiment();
 		}
+
+		// Initialize CORE-698 MFI Recommendations Experiment
+		this.initializeMFIRecommendationsExperiment();
 	},
 	mounted() {
 		this.fetchPersonalizedLoans();
