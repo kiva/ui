@@ -50,6 +50,7 @@
 					/>
 					<kv-button
 						@click.native="saveSavedSearch"
+						:state="savedSearchName.length === 0 && 'disabled'"
 					>
 						Create Saved Search
 					</kv-button>
