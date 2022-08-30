@@ -15,7 +15,7 @@ module.exports = {
 		gaId: 'UA-175897-4',
 		enableSnowplow: true,
 		snowplowUri: 'events.fivetran.com/snowplow/kiva_rules',
-		enableHotjar: false,
+		enableHotjar: true,
 		hotjarId: '3071239',
 		enableOptimizely: true,
 		optimizelyProjectId: '21625780072',
