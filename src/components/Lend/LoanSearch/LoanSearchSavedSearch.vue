@@ -119,9 +119,19 @@ export default {
 		},
 		closeModal() {
 			this.isLightboxVisible = false;
+			this.$kvTrackEvent(
+				'Lending',
+				'click-new-saved-search-modal-dismiss',
+				''
+			);
 		},
 		saveSavedSearch() {
 			this.isLightboxVisible = false;
+			this.$kvTrackEvent(
+				'Lending',
+				'click-create-saved-search-new-modal',
+				'Create saved search'
+			);
 			createSavedSearch(this.apollo, this.reformattedSearchState, this.savedSearchName);
 		}
 	}
