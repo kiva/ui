@@ -5,10 +5,11 @@ mutation createSavedSearch($name: String!, $filters: LoanSearchFiltersInput) {
       name: $name,
       isAlert: false,
       queryString: $name,
-      sortBy: expiringSoon
+      sortBy: popularity
     })
     {
-      name
+		id
+    	name
 	}
   }
 }
