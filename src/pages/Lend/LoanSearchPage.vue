@@ -24,7 +24,9 @@
 						</p>
 					</button>
 				</div>
-				<loan-search-interface :enable-saved-search="enableSavedSearch" />
+				<loan-search-interface
+					:enable-saved-search="enableSavedSearch"
+				/>
 			</kv-page-container>
 		</article>
 	</www-page>
@@ -61,7 +63,7 @@ export default {
 		return {
 			enableSavedSearch: false,
 			mdiEarth,
-			mdiFilter
+			mdiFilter,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
