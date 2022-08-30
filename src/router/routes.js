@@ -435,6 +435,8 @@ module.exports = [
 		meta: {
 			activeLoginRequired: true,
 			excludeFromStaticSitemap: true,
+			mfaRequired: true,
+			recentLoginRequired: true,
 		},
 	},
 	{

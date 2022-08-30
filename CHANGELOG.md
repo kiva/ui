@@ -1,3 +1,25 @@
+## [2.271.0](https://github.com/kiva/ui/compare/v2.270.6...v2.271.0) (2022-08-29)
+
+
+### Features
+
+* setup for mfi recommendations experiment was added to lbc page ([5bec2e6](https://github.com/kiva/ui/commit/5bec2e61a825b6b9fc865c9bfb8ca8ed38a4d8be))
+
+### [2.270.6](https://github.com/kiva/ui/compare/v2.270.5...v2.270.6) (2022-08-29)
+
+
+### Bug Fixes
+
+* fix issues related to cookies and setting optimizely attribute values ([6488668](https://github.com/kiva/ui/commit/6488668a5d26358bbac71cdae7feaebf5dbfcd30))
+* remove unnecessary code ([bb16469](https://github.com/kiva/ui/commit/bb1646964dea5cb508fc92febf8ef6741c615a81))
+
+### [2.270.5](https://github.com/kiva/ui/compare/v2.270.4...v2.270.5) (2022-08-26)
+
+
+### Bug Fixes
+
+* add mfa route guard to settings/payments page ([6593194](https://github.com/kiva/ui/commit/65931946ff64848b9ee8d26113b35b0854bab2dd))
+
 ### [2.270.4](https://github.com/kiva/ui/compare/v2.270.3...v2.270.4) (2022-08-26)
 
 
