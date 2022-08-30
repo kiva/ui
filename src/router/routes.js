@@ -435,6 +435,8 @@ module.exports = [
 		meta: {
 			activeLoginRequired: true,
 			excludeFromStaticSitemap: true,
+			mfaRequired: true,
+			recentLoginRequired: true,
 		},
 	},
 	{
@@ -502,7 +504,7 @@ module.exports = [
 	},
 	{
 		path: '/lend/saved-search',
-		component: () => import('@/pages/Settings/SavedSearchBeta'),
+		component: () => import('@/pages/Settings/SavedSearch'),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,

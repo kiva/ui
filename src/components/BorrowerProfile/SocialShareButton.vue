@@ -123,6 +123,10 @@ export default {
 			type: Object,
 			required: true
 		},
+		campaign: {
+			type: String,
+			required: true
+		}
 	},
 	data() {
 		return {
@@ -167,7 +171,7 @@ export default {
 			return getFullUrl('https://www.facebook.com/dialog/share', {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
-				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social&utm_campaign=social_share_bp_pfp`,
+				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social&utm_campaign=${this.campaign}`,
 				redirect_uri: `${pageUrl}`,
 				quote: this.shareMessage,
 			});
@@ -178,13 +182,13 @@ export default {
 				source: `https://${this.$appConfig.host}`,
 				summary: this.shareMessage.substring(0, 256),
 				title: `A loan for ${this.loan.name}`,
-				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_bp_pfp`
+				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=${this.campaign}`
 			});
 		},
 		twitterShareUrl() {
 			return getFullUrl('https://twitter.com/intent/tweet', {
 				text: this.shareMessage,
-				url: `${this.shareLink}&utm_source=t.co&utm_medium=social&utm_campaign=social_share_bp_pfp`,
+				url: `${this.shareLink}&utm_source=t.co&utm_medium=social&utm_campaign=${this.campaign}`,
 				via: 'Kiva',
 			});
 		},
@@ -206,7 +210,8 @@ export default {
 			}
 		},
 		async copyLink() {
-			const url = `${this.shareLink}&utm_source=social_share_link&utm_campaign=social_share_bp_pfp`;
+			// eslint-disable-next-line max-len
+			const url = `${this.shareLink}&utm_source=social_share_link&utm_medium=referral&utm_campaign=${this.campaign}`;
 			try {
 				await clipboardCopy(url);
 				this.copyStatus = {

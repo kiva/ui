@@ -12,6 +12,10 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
+		mfiRecommendations: uiExperimentSetting(key: "mfi_recommendations") {
+			key
+			value
+		}
 	}
 	my {
 		isAdmin

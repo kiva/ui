@@ -11,18 +11,25 @@
 							Each Kiva loan helps people build a better future for themselves and their families.
 						</p>
 					</div>
-					<button class="tw-mb-2 tw-mt-3 tw-border-r tw-border-tertiary tw-px-1 md:tw-px-2">
-						<kv-material-icon :icon="mdiEarth" class="tw-text-secondary tw-w-3 tw-h-3" />
-						<p class="tw-text-tertiary tw-hidden md:tw-block">
+					<a
+						href="/lend-by-category"
+						class="
+							tw-mb-2 tw-mt-3 tw-px-1 md:tw-px-2
+							tw-border-r tw-border-tertiary
+							tw-text-secondary hover:tw-text-action
+							tw-text-center hover:tw-no-underline"
+					>
+						<kv-material-icon :icon="mdiEarth" class=" tw-w-3 tw-h-3" />
+						<span class="tw-hidden md:tw-block">
 							Explore
-						</p>
-					</button>
-					<button class="tw-mb-2  tw-mt-3 tw-px-1 md:tw-px-2">
+						</span>
+					</a>
+					<a class="tw-mb-2 tw-mt-3 tw-px-1 md:tw-px-2 tw-text-center hover:tw-no-underline">
 						<kv-material-icon :icon="mdiFilter" class="tw-text-brand tw-w-3 tw-h-3" />
-						<p class="tw-text-tertiary tw-hidden md:tw-block">
+						<span class="tw-text-secondary tw-hidden md:tw-block">
 							Filters
-						</p>
-					</button>
+						</span>
+					</a>
 				</div>
 				<loan-search-interface
 					:enable-saved-search="enableSavedSearch"
