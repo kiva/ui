@@ -1,3 +1,10 @@
+## [2.272.0](https://github.com/kiva/ui/compare/v2.271.0...v2.272.0) (2022-08-30)
+
+
+### Features
+
+* activate hotjar on prod ([07376a9](https://github.com/kiva/ui/commit/07376a97a2e8367d0f6a6f4cc2c576f24389fb37))
+
 ## [2.271.0](https://github.com/kiva/ui/compare/v2.270.6...v2.271.0) (2022-08-29)
 
 
