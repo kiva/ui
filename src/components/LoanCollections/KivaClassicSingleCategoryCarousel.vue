@@ -1,8 +1,18 @@
 <template>
 	<div v-if="loanChannelId">
-		<h2 class="tw-mb-2">
-			{{ name }}
-		</h2>
+		<div>
+			<h2 class="tw-mb-2 tw-inline">
+				{{ name }}
+			</h2>
+			<kv-pill class="tw-ml-4.5" v-if="climateChallenge">
+				<template #icon>
+					<icon-climate-challenge class="tw-h-3 tw-w-2 tw-mr-0.5" />
+				</template>
+				<template #text>
+					Climate challenge
+				</template>
+			</kv-pill>
+		</div>
 		<p class="tw-text-subhead">
 			{{ description }}
 		</p>
@@ -20,7 +30,10 @@
 </template>
 
 <script>
+import IconClimateChallenge from '@/assets/icons/inline/globe-leaf.svg';
 import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
+import KvPill from '@/components/Kv/KvPill';
+
 import {
 	preFetchChannel,
 } from '@/util/loanChannelUtils';
@@ -30,7 +43,9 @@ export default {
 	name: 'KivaClassicSingleCategoryCarousel',
 	inject: ['apollo', 'cookieStore'],
 	components: {
+		IconClimateChallenge,
 		KivaClassicLoanCarousel,
+		KvPill,
 	},
 	props: {
 		/**
@@ -69,6 +84,10 @@ export default {
 		},
 		/** Prop to pass down to components to the loan card */
 		lendNowButton: {
+			type: Boolean,
+			default: false
+		},
+		climateChallenge: {
 			type: Boolean,
 			default: false
 		},
@@ -130,6 +149,7 @@ export default {
 			const loanChannelData = channelData?.data?.lend?.loanChannelsById ?? [];
 			this.selectedChannel = loanChannelData?.[0];
 		},
-	}
+	},
+
 };
 </script>

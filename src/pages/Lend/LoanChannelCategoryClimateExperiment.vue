@@ -12,18 +12,27 @@
 					<span class="show-for-large">{{ loanChannelName }}</span>
 				</p>
 				<h1 class="tw-mb-2">
-					{{ loanChannelName }}
+					{{ loanChannelName }} <span v-if="isEcoChallengeExpShown">September Challenge</span>
 				</h1>
 				<p
+					v-if="!isEcoChallengeExpShown"
 					class="tw-text-subhead tw-w-full show-for-large tw-mb-4 lg:tw-w-3/4"
 				>
 					{{ loanChannelDescription }}
 				</p>
+				<p
+					v-else
+					class="tw-text-subhead tw-w-full show-for-large tw-mb-4 lg:tw-w-3/4"
+				>
+					<!-- eslint-disable-next-line max-len -->
+					There are many ways to make a positive impact. Complete the Climate Challenge now by lending to 1 Solar Energy, 1 Sustainable Agriculture, and 1 Recycling loan.
+				</p>
 			</div>
 		</kv-page-container>
-		<kv-page-container v-if="secondaryEcoLoanChannelsResponse.length > 0">
-			<div v-for="(channel, index) in secondaryEcoLoanChannelsResponse" :key="index" class="tw-mt-6">
+		<kv-page-container v-if="secondaryChannels.length > 0">
+			<div v-for="(channel, index) in secondaryChannels" :key="index" class="tw-mt-6">
 				<kiva-classic-single-category-carousel
+					:climate-challenge="isEcoChallengeExpShown"
 					:loan-channel-id="channel.id"
 					:loan-channel-name="channel.name"
 					:loan-channel-description="channel.description"
@@ -47,7 +56,13 @@ import {
 	preFetchChannel,
 	getCachedChannel
 } from '@/util/loanChannelUtils';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+
+const ecoChallengeExpKey = 'eco_challenge';
 
 const secondaryEcoLoanChannelUrls = [
 	'solar-energy',
@@ -86,10 +101,18 @@ export default {
 				loanLimit: 9,
 				showViewMoreCard: true,
 				showCheckBackMessage: true
-			}
+			},
+			isEcoChallengeExpShown: false,
 		};
 	},
 	computed: {
+		challengeChannels() {
+			return [
+				116, // solar energy
+				117, // sustainable agriculture
+				118, // recycle and reuse
+			];
+		},
 		loanChannelName() {
 			return this.loanChannel?.name ?? '';
 		},
@@ -105,6 +128,14 @@ export default {
 			// process eligible filter url
 			return this.getFilterUrl();
 		},
+		secondaryChannels() {
+			// if eco challenge experiment is shown, return only the challenge channels
+			if (this.isEcoChallengeExpShown) {
+				return this.secondaryEcoLoanChannelsResponse
+					.filter(channel => this.challengeChannels.includes(channel.id));
+			}
+			return this.secondaryEcoLoanChannelsResponse;
+		}
 	},
 	apollo: {
 		preFetch(config, client, args) {
@@ -162,6 +193,21 @@ export default {
 	},
 	mounted() {
 		this.updateLendFilterExp();
+
+		const ecoChallengeExpData = getExperimentSettingCached(this.apollo, ecoChallengeExpKey);
+		if (ecoChallengeExpData?.enabled) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				ecoChallengeExpKey,
+				'EXP-ACK-392-Sep2022'
+			);
+			if (version === 'b') {
+				this.isEcoChallengeExpShown = true;
+			}
+		}
+
 		// check for newly assigned bounceback
 		const redirectFromUiCookie = this.cookieStore.get('redirectFromUi') || '';
 		if (redirectFromUiCookie === 'true') {
