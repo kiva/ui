@@ -4,6 +4,11 @@
 	>
 		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true" />
 
+		<!-- MFI Recommendations Section -->
+		<div class="tw-max-w-5xl tw-mx-auto lg:tw-px-6">
+			<m-f-i-hero />
+		</div>
+
 		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan && !addBundleExp"
 			ref="featured"
@@ -120,6 +125,7 @@ import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketIntersti
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import LoansBundleExpWrapper from '@/components/LoansByCategory/LoansBundleExpWrapper';
+import MFIHero from '@/components/LoansByCategory/MFIRecommendations/MFIHero';
 
 export default {
 	name: 'LendByCategoryPage',
@@ -135,6 +141,7 @@ export default {
 		MGDigestLightbox,
 		MGLightbox,
 		LoansBundleExpWrapper,
+		MFIHero,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo() {
