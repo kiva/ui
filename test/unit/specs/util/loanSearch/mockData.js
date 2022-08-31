@@ -8,6 +8,15 @@ export const mockState = {
 	pageLimit: 5,
 };
 
+export const savedSearchParams = {
+	name: 'test saved search',
+	queryString: '{"gender":"female","country":"PH"}',
+	filters: {
+		gender: 'female',
+		country: ['PH']
+	}
+};
+
 export const mockAllFacets = {
 	countryFacets: [
 		{ country: { isoCode: 'US', name: 'United States', region: 'North America' } },
