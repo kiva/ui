@@ -5,7 +5,7 @@
 		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true" />
 
 		<!-- MFI Recommendations Section -->
-		<div class="tw-max-w-5xl tw-mx-auto lg:tw-px-6">
+		<div v-if="mfiRecommendationsExp" class="tw-max-w-5xl tw-mx-auto lg:tw-px-6">
 			<m-f-i-hero />
 		</div>
 

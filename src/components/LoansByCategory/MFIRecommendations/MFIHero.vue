@@ -1,7 +1,8 @@
 <template>
 	<div class="tw-w-full">
 		<div class="tw-flex tw-items-center tw-gap-1 tw-px-2 lg:tw-px-0">
-			<img class="tw-w-4 lg:tw-w-6" src="@/assets/images/mfi_recommendations/earth.svg" alt="">
+			<!-- eslint-disable max-len -->
+			<img class="tw-w-4 lg:tw-w-6" src="@/assets/images/mfi_recommendations/earth.svg" alt="mfi_recommendations">
 			<h3 class="tw-text-h3 tw-text-primary tw-whitespace-nowrap">
 				Field Partner Spotlight
 			</h3>
@@ -16,8 +17,9 @@
 			</h6>
 		</div>
 		<div class="tw-flex tw-flex-col lg:tw-flex-row tw-my-3">
-			<div class="lg:tw-w-2/3 lg:tw-px-2 tw-relative">
-				<img class="lg:tw-rounded" src="@/assets/images/mfi_recommendations/fundacionpromujer.jpg" alt="">
+			<div class="md:tw-w-2/3 md:tw-px-2 tw-relative">
+				<!-- eslint-disable max-len -->
+				<img class="md:tw-rounded" src="@/assets/images/mfi_recommendations/fundacionpromujer.jpg" alt="fundacionpromujer">
 				<span
 					class="tw-absolute tw-bottom-1 tw-left-3 tw-rounded tw-bg-tertiary
 						tw-px-2 tw-py-1 tw-flex tw-items-center tw-text-h4"
@@ -37,31 +39,36 @@
 
 				<ul class="tw-mt-2 tw-px-2">
 					<li class="tw-flex tw-items-center tw-gap-1">
-						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/heart.svg" alt="">
+						<!-- eslint-disable max-len -->
+						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/heart.svg" alt="Anti-poverty focus">
 						<h4 class="tw-uppercase tw-text-h4">
 							Anti-poverty focus
 						</h4>
 					</li>
 					<li class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
-						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/support.svg" alt="">
+						<!-- eslint-disable max-len -->
+						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/support.svg" alt="Entrepreneurial support">
 						<h4 class="tw-uppercase tw-text-h4">
 							Entrepreneurial support
 						</h4>
 					</li>
 					<li class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
-						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/empowerment.svg" alt="">
+						<!-- eslint-disable max-len -->
+						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/empowerment.svg" alt="Family & Community Empowerment">
 						<h4 class="tw-uppercase tw-text-h4">
 							Family & Community Empowerment
 						</h4>
 					</li>
 					<li class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
-						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/savings.svg" alt="">
+						<!-- eslint-disable max-len -->
+						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/savings.svg" alt="Facilitation of savings">
 						<h4 class="tw-uppercase tw-text-h4">
 							Facilitation of savings
 						</h4>
 					</li>
 					<li class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
-						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/client_voice.svg" alt="">
+						<!-- eslint-disable max-len -->
+						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/client_voice.svg" alt="Client voice">
 						<h4 class="tw-uppercase tw-text-h4">
 							Client voice
 						</h4>
