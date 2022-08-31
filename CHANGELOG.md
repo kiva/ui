@@ -1,3 +1,16 @@
+## [2.274.0](https://github.com/kiva/ui/compare/v2.273.0...v2.274.0) (2022-08-31)
+
+
+### Features
+
+* hero component for mfi recommendation was created ([8df8ac7](https://github.com/kiva/ui/commit/8df8ac7a8249630d82ffc2a1e544249a28047037))
+* mfi experiment condition was added to lbc page section ([4ee90aa](https://github.com/kiva/ui/commit/4ee90aab28ceac93e4e9bf644351a71967b336c6))
+
+
+### Bug Fixes
+
+* fundacion pro mujer image was fixed to full width ([5968187](https://github.com/kiva/ui/commit/59681873138f60f3e7fc58abd64acd2ff9d4d674))
+
 ## [2.273.0](https://github.com/kiva/ui/compare/v2.272.0...v2.273.0) (2022-08-31)
 
 
