@@ -134,12 +134,9 @@ export default {
 				'Create saved search'
 			);
 			// We want to exclude sending any utm params
-			const queryParams = Object.fromEntries(
-			// eslint-disable-next-line no-unused-vars
-				Object.entries(this.$route.query).filter(([key, _]) => !key.includes('utm'))
-			);
+			const queryString = window.location.search.replace(/(&|\?)utm_[a-zA-Z0-9]*=[a-zA-Z0-9]*/, '');
 			createSavedSearch(
-				this.apollo, this.reformattedSearchState, JSON.stringify(queryParams), this.savedSearchName
+				this.apollo, this.reformattedSearchState, queryString, this.savedSearchName
 			);
 		}
 	}
