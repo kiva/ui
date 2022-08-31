@@ -19,7 +19,7 @@
 		<div class="tw-flex tw-flex-col lg:tw-flex-row tw-my-3">
 			<div class="md:tw-w-2/3 md:tw-px-2 tw-relative">
 				<!-- eslint-disable max-len -->
-				<img class="md:tw-rounded" src="@/assets/images/mfi_recommendations/fundacionpromujer.jpg" alt="fundacionpromujer">
+				<img class="md:tw-rounded tw-w-full" src="@/assets/images/mfi_recommendations/fundacionpromujer.jpg" alt="fundacionpromujer">
 				<span
 					class="tw-absolute tw-bottom-1 tw-left-3 tw-rounded tw-bg-tertiary
 						tw-px-2 tw-py-1 tw-flex tw-items-center tw-text-h4"
