@@ -82,11 +82,12 @@ export async function updateSearchState(apollo, loanQueryFilters, allFacets, que
  * @param {string} savedSearchName The name of the saved search
  * @returns {Promise<Array>} Promise for the results of the mutation
  */
-export async function createSavedSearch(apollo, loanQueryFilters, savedSearchName) {
+export async function createSavedSearch(apollo, loanQueryFilters, queryString, savedSearchName) {
 	return apollo.mutate({
 		mutation: createSavedSearchMutation,
 		variables: {
 			name: savedSearchName,
+			queryString,
 			filters: loanQueryFilters
 		}
 	});

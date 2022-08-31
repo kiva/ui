@@ -1,10 +1,10 @@
-mutation createSavedSearch($name: String!, $filters: LoanSearchFiltersInput) {
+mutation createSavedSearch($name: String!, $queryString: String!, $filters: LoanSearchFiltersInput) {
   my {
     createSavedSearch (savedSearch :{
       filters: $filters,
       name: $name,
       isAlert: false,
-      queryString: $name,
+      queryString: $queryString,
       sortBy: popularity
     })
     {

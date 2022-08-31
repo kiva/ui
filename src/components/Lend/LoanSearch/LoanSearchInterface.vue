@@ -349,7 +349,7 @@ export default {
 				|| themeFilterApplied;
 		},
 		themeNames() {
-			return this.allFacets?.themeNames;
+			return this.allFacets?.themeNames ?? [];
 		}
 	},
 	methods: {

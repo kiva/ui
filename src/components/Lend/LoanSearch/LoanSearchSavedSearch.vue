@@ -50,7 +50,7 @@
 					/>
 					<kv-button
 						@click.native="saveSavedSearch"
-						:state="savedSearchName.length === 0 && 'disabled'"
+						:state="savedSearchName.length === 0 ? 'disabled' : null"
 					>
 						Create Saved Search
 					</kv-button>
@@ -82,7 +82,7 @@ export default {
 			default: () => {}
 		},
 		themeNames: {
-			type: Object,
+			type: Array,
 			default: () => {}
 		}
 	},
@@ -133,7 +133,14 @@ export default {
 				'click-create-saved-search-new-modal',
 				'Create saved search'
 			);
-			createSavedSearch(this.apollo, this.reformattedSearchState, this.savedSearchName);
+			// We want to exclude sending any utm params
+			const queryParams = Object.fromEntries(
+			// eslint-disable-next-line no-unused-vars
+				Object.entries(this.$route.query).filter(([key, _]) => !key.includes('utm'))
+			);
+			createSavedSearch(
+				this.apollo, this.reformattedSearchState, JSON.stringify(queryParams), this.savedSearchName
+			);
 		}
 	}
 };
