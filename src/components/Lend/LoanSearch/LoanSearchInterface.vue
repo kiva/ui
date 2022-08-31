@@ -57,7 +57,11 @@
 		<div class="tw-col-span-2 tw-relative tw-grow">
 			<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
 			<div v-if="initialLoadComplete">
-				<loan-search-saved-search v-if="enableSavedSearch && showSavedSearch" />
+				<loan-search-saved-search
+					v-if="enableSavedSearch && showSavedSearch"
+					:loan-search-state="loanSearchState"
+					:theme-names="themeNames"
+				/>
 				<loan-search-filter-chips
 					:loan-search-state="loanSearchState"
 					:all-facets="allFacets"
@@ -155,7 +159,7 @@ export default {
 		enableSavedSearch: {
 			type: Boolean,
 			default: false,
-		}
+		},
 	},
 	data() {
 		return {
@@ -343,6 +347,9 @@ export default {
 				|| genderFilterApplied
 				|| sectorFilterApplied
 				|| themeFilterApplied;
+		},
+		themeNames() {
+			return this.allFacets?.themeNames ?? [];
 		}
 	},
 	methods: {

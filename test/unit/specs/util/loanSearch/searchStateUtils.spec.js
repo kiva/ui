@@ -1,7 +1,8 @@
-import { updateSearchState, getValidatedSearchState } from '@/util/loanSearch/searchStateUtils';
+import { updateSearchState, getValidatedSearchState, createSavedSearch } from '@/util/loanSearch/searchStateUtils';
 import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
-import { mockState, mockAllFacets } from './mockData';
+import createSavedSearchMutation from '@/graphql/mutation/createSavedSearch.graphql';
+import { mockState, mockAllFacets, savedSearchParams } from './mockData';
 
 describe('searchStateUtils.js', () => {
 	describe('getValidatedSearchState', () => {
@@ -97,6 +98,28 @@ describe('searchStateUtils.js', () => {
 			await updateSearchState(apollo, mockState, mockAllFacets, FLSS_QUERY_TYPE, mockState);
 
 			expect(apollo.mutate).toHaveBeenCalledTimes(0);
+		});
+	});
+
+	describe('createSavedSearch', () => {
+		const mockResult = { name: 'test saved search' };
+		const apollo = { mutate: jest.fn(() => Promise.resolve(mockResult)) };
+		const params = {
+			mutation: createSavedSearchMutation,
+			variables: savedSearchParams
+		};
+
+		afterEach(jest.clearAllMocks);
+
+		it('should call apollo with provided search params and return an id and name', async () => {
+			const result = await createSavedSearch(
+				apollo,
+				savedSearchParams.filters,
+				savedSearchParams.queryString,
+				savedSearchParams.name
+			);
+			expect(apollo.mutate).toHaveBeenCalledWith(params);
+			expect(result).toHaveProperty('name', 'test saved search');
 		});
 	});
 });
