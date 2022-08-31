@@ -77,6 +77,8 @@ export async function updateSearchState(apollo, loanQueryFilters, allFacets, que
 
 /**
  * Creates a saved search with a name and set of filters
+ * TODO: Move to own file if we move forward with Saved Search exp
+ *
  * @param {Object} apollo The Apollo client instance
  * @param {Object} loanQueryFilters The filters for the saved search
  * @param {string} savedSearchName The name of the saved search
