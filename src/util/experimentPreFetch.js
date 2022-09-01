@@ -18,6 +18,7 @@ let activeExperiments = [
 	'unbounce_trigger',
 	'lend_urgency',
 	'topnav_mg_entrypoint',
+	'eco_challenge',
 ];
 
 // TODO: Enhance Error handling
