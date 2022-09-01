@@ -61,6 +61,7 @@
 					v-if="enableSavedSearch && showSavedSearch"
 					:loan-search-state="loanSearchState"
 					:theme-names="themeNames"
+					:show-success-message="showSavedSearchSuccessMessage"
 				/>
 				<loan-search-filter-chips
 					:loan-search-state="loanSearchState"
@@ -414,6 +415,9 @@ export default {
 
 			this.$kvTrackEvent?.('Lending', 'click-zero-loans-reset');
 		},
+		showSavedSearchSuccessMessage(searchName) {
+			this.$emit('enable-success-saved-search', searchName);
+		}
 	},
 	watch: {
 		$route(to) {
