@@ -350,6 +350,18 @@ export default {
 			return client.query({
 				query: loanChannelPageQuery
 			}).then(({ data }) => {
+				// combine both 'pages' of loan channels
+				const pageQueryData = {
+					...data,
+					lend: {
+						loanChannels: {
+							values: [
+								...(data?.lend?.firstLoanChannels?.values ?? []),
+								...(data?.lend?.secondLoanChannels?.values ?? [])
+							]
+						}
+					}
+				};
 				const { route } = args;
 				const { query, params, path } = route;
 
@@ -357,7 +369,7 @@ export default {
 				const targetedLoanChannelURL = params.category;
 
 				// Isolate targeted loan channel id
-				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, data);
+				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, pageQueryData);
 
 				// Get page limit and offset
 				const currentRoute = path.replace('/lend-by-category/', '');
@@ -391,14 +403,27 @@ export default {
 			logReadQueryError(e, 'LoanChannelCategoryControl created loanChannelPageQuery');
 		}
 
+		// combine both 'pages' of loan channels
+		const pageQueryData = {
+			...allChannelsData,
+			lend: {
+				loanChannels: {
+					values: [
+						...(allChannelsData?.lend?.firstLoanChannels?.values ?? []),
+						...(allChannelsData?.lend?.secondLoanChannels?.values ?? [])
+					]
+				}
+			}
+		};
+
 		// Set user status
-		this.isVisitor = !_get(allChannelsData, 'my.userAccount.id');
+		this.isVisitor = !_get(pageQueryData, 'my.userAccount.id');
 
 		// Filter routes on param.category to get current path
 		this.targetedLoanChannelURL = _get(this.$route, 'params.category');
 
 		// Isolate targeted loan channel id
-		this.targetedLoanChannelID = getTargetedChannel(this.targetedLoanChannelURL, allChannelsData);
+		this.targetedLoanChannelID = getTargetedChannel(this.targetedLoanChannelURL, pageQueryData);
 
 		// Extract query
 		this.pageQuery = _get(this.$route, 'query');
