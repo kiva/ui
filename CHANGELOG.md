@@ -1,3 +1,10 @@
+## [2.275.0](https://github.com/kiva/ui/compare/v2.274.0...v2.275.0) (2022-09-01)
+
+
+### Features
+
+* game version of the eco friendly category page ([bdbcdfe](https://github.com/kiva/ui/commit/bdbcdfef27d067db960af825702c6537d6b84e95))
+
 ## [2.274.0](https://github.com/kiva/ui/compare/v2.273.0...v2.274.0) (2022-08-31)
 
 
