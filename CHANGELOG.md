@@ -1,3 +1,10 @@
+## [2.277.0](https://github.com/kiva/ui/compare/v2.276.1...v2.277.0) (2022-09-01)
+
+
+### Features
+
+* contentful page route for homepage layouts ([0a3b52a](https://github.com/kiva/ui/commit/0a3b52add85ff2278891eb768955662143035f7e))
+
 ### [2.276.1](https://github.com/kiva/ui/compare/v2.276.0...v2.276.1) (2022-09-01)
 
 
