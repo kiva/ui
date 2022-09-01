@@ -1,3 +1,15 @@
+## [2.276.0](https://github.com/kiva/ui/compare/v2.275.2...v2.276.0) (2022-09-01)
+
+
+### Features
+
+* success message for saved search ([0e5468c](https://github.com/kiva/ui/commit/0e5468ce253ae5695c51adf48209cf397190bd44))
+
+
+### Bug Fixes
+
+* pr fixes and tracking update ([6f3b355](https://github.com/kiva/ui/commit/6f3b3555f5b71f25815951eab4afbd3f1a538415))
+
 ### [2.275.2](https://github.com/kiva/ui/compare/v2.275.1...v2.275.2) (2022-09-01)
 
 
