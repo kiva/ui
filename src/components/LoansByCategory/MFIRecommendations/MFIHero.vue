@@ -77,11 +77,11 @@
 			</div>
 		</div>
 		<div>
-			<p class="tw-text-primary tw-text-subhead tw-py-0 lg:tw-py-6 tw-mb-4 tw-px-2 lg:tw-px-0 tw-indent-4">
+			<p class="tw-text-primary tw-text-subhead tw-py-0 lg:tw-py-6 tw-mb-4 tw-px-2 lg:tw-px-0">
 				Fundación Pro Mujer offers Bolivia’s most in-need women the holistic services
 				they need to build livelihoods for themselves and futures for their families.
 				They help borrowers with business training and personal development services and
-				are one of the few parterns to offer low-cost, high-quality healthcare.
+				are one of the few partners to offer low-cost, high-quality healthcare.
 			</p>
 		</div>
 	</div>
