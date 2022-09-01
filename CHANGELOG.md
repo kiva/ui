@@ -1,3 +1,10 @@
+### [2.275.2](https://github.com/kiva/ui/compare/v2.275.1...v2.275.2) (2022-09-01)
+
+
+### Bug Fixes
+
+* typo and indentation removed on mfihero component ([00fb776](https://github.com/kiva/ui/commit/00fb77657509ce0493b4ee3376690cb44d402daf))
+
 ### [2.275.1](https://github.com/kiva/ui/compare/v2.275.0...v2.275.1) (2022-09-01)
 
 
