@@ -97,9 +97,19 @@ export default {
 		enableSuccessSavedSearch(searchName) {
 			this.savedSearchSuccess = true;
 			this.savedSearchName = searchName;
+			this.$kvTrackEvent(
+				'Lending',
+				'view-new-saved-search-success',
+				''
+			);
 		},
 		disableSuccessSavedSearch() {
 			this.savedSearchSuccess = false;
+			this.$kvTrackEvent(
+				'Lending',
+				'close-new-saved-search-success',
+				'Dismiss'
+			);
 		}
 	},
 	inject: ['apollo', 'cookieStore'],

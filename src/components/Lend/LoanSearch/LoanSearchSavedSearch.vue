@@ -63,6 +63,7 @@
 <script>
 import IconAdd from '@/assets/icons/inline/add.svg';
 import { createSavedSearch } from '@/util/loanSearch/searchStateUtils';
+import logFormatter from '@/util/logFormatter';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
@@ -145,8 +146,9 @@ export default {
 			).then(({ data }) => {
 				this.showSuccessMessage(this.savedSearchName);
 			}).catch(errorResponse => {
-				console.error(errorResponse);
-				this.$showTipMsg('There was an error creating your Saved Search. Please try again.', 'error');
+				logFormatter(errorResponse, 'error');
+				// eslint-disable-next-line max-len
+				this.$showTipMsg('There was an error creating your Saved Search, these set of filters may already exist in your Saved Searches. Please try again.', 'error');
 			});
 		}
 	}
