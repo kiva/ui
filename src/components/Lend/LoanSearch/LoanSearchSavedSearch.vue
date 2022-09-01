@@ -84,6 +84,10 @@ export default {
 		themeNames: {
 			type: Array,
 			default: () => {}
+		},
+		showSuccessMessage: {
+			type: Function,
+			default: () => {}
 		}
 	},
 	mounted() {
@@ -137,7 +141,13 @@ export default {
 			const queryString = window.location.search.replace(/(&|\?)utm_[a-zA-Z0-9]*=[a-zA-Z0-9]*/, '');
 			createSavedSearch(
 				this.apollo, this.reformattedSearchState, queryString, this.savedSearchName
-			);
+			// eslint-disable-next-line no-unused-vars
+			).then(({ data }) => {
+				this.showSuccessMessage(this.savedSearchName);
+			}).catch(errorResponse => {
+				console.error(errorResponse);
+				this.$showTipMsg('There was an error creating your Saved Search. Please try again.', 'error');
+			});
 		}
 	}
 };
