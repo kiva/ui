@@ -184,6 +184,10 @@ export default {
 		this.secondaryEcoLoanChannelsResponse = baseData?.lend?.loanChannelsById
 			.filter(channel => channel.id !== this.targetedLoanChannelID) ?? [];
 
+		// filter out any secondary channels that do not have loans
+		this.secondaryEcoLoanChannelsResponse = this.secondaryEcoLoanChannelsResponse
+			.filter(channel => channel.loans.totalCount > 0);
+
 		/*
 		 * Experiment Initializations
 		*/
