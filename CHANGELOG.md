@@ -1,3 +1,10 @@
+### [2.276.1](https://github.com/kiva/ui/compare/v2.276.0...v2.276.1) (2022-09-01)
+
+
+### Bug Fixes
+
+* hide empty categories on the eco experiment layout ([27bdb9b](https://github.com/kiva/ui/commit/27bdb9b0086b033d680cdbcaa9a2fffe32f9b206))
+
 ## [2.276.0](https://github.com/kiva/ui/compare/v2.275.2...v2.276.0) (2022-09-01)
 
 
