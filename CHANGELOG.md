@@ -1,3 +1,10 @@
+### [2.275.1](https://github.com/kiva/ui/compare/v2.275.0...v2.275.1) (2022-09-01)
+
+
+### Bug Fixes
+
+* combine loan channel pages to avoid issues with max limit 100 in prod ([be6fc73](https://github.com/kiva/ui/commit/be6fc73115758adc72499bf0ee923ac7eb4bd873))
+
 ## [2.275.0](https://github.com/kiva/ui/compare/v2.274.0...v2.275.0) (2022-09-01)
 
 
