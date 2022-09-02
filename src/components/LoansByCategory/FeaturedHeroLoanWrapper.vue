@@ -36,6 +36,7 @@ import _filter from 'lodash/filter';
 import _get from 'lodash/get';
 
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
+// import categoryServiceRowsQuery from '@/graphql/query/lendByCategory/categoryServiceLoanChannels.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import logReadQueryError from '@/util/logReadQueryError';
@@ -77,6 +78,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		useCategoryService: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {

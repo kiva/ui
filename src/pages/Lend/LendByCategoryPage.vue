@@ -15,6 +15,7 @@
 			:is-logged-in="isLoggedIn"
 			:items-in-basket="itemsInBasket"
 			:show-category-description="showCategoryDescription"
+			:use-category-service="categoryServiceExpVersion === 'b'"
 			@loaded="trackFeaturedLoan"
 		/>
 
@@ -109,6 +110,7 @@ import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
+import categoryServiceRowsQuery from '@/graphql/query/lendByCategory/categoryServiceLoanChannels.graphql';
 import recommendedLoansQuery from '@/graphql/query/lendByCategory/recommendedLoans.graphql';
 import personalizedLoansQuery from '@/graphql/query/lendByCategory/personalizedLoans.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
@@ -178,6 +180,7 @@ export default {
 			showHoverLoanCards: true,
 			recommendedLoans: [],
 			mlServiceBanditExpVersion: null,
+			categoryServiceExpVersion: null,
 			viewportObserver: null,
 			fetchCategoryIds: [],
 			expResults: null,
@@ -199,7 +202,26 @@ export default {
 				this.clientCategories), 'id');
 			return categories
 				// fiter our any empty categories and categories with 0 loans
-				.filter(channel => _get(channel, 'loans.values.length') > 0)
+				.filter(channel => {
+					return this.categoryServiceExpVersion === 'b'
+						? channel?.savedSearch?.loans?.values?.length > 0
+						: _get(channel, 'loans.values.length') > 0;
+				})
+				// map category server category structure to standard loan channel structure
+				.map(category => {
+					// return standard category
+					if (this.categoryServiceExpVersion === 'a') {
+						return category;
+					}
+					// return mapped Category Service category
+					return {
+						id: category?.loanChannelId,
+						name: category?.name ?? '',
+						description: category?.description ?? '',
+						url: category?.url ?? '',
+						loans: category?.savedSearch?.loans ?? []
+					};
+				})
 				// and re-order to match the setting
 				.sort(indexIn(this.categoryIds, 'id'));
 		},
@@ -335,7 +357,7 @@ export default {
 			});
 			// Client Fetch the remaining category rows
 			return this.apollo.query({
-				query: loanChannelQuery,
+				query: this.categoryServiceExpVersion === 'b' ? categoryServiceRowsQuery : loanChannelQuery,
 				variables: {
 					ids: this.realCategoryIds,
 					excludeIds: ssrLoanIds,
@@ -345,14 +367,16 @@ export default {
 				},
 			}).then(({ data }) => {
 				// add our remaining loan channels
-				this.clientCategories = _get(data, 'lend.loanChannelsById') || [];
+				this.clientCategories = this.categoryServiceExpVersion === 'b'
+					? data?.loanCategoriesByLoanChannelIds
+					: _get(data, 'lend.loanChannelsById') || [];
 			});
 		},
 		activateWatchers() {
 			// Create an observer for changes to the categories (and their loans)
 			if (!this.activatedWatchers) {
 				this.apollo.watchQuery({
-					query: loanChannelQuery,
+					query: this.categoryServiceExpVersion === 'b' ? categoryServiceRowsQuery : loanChannelQuery,
 					variables: {
 						ids: this.realCategoryIds,
 						imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
@@ -365,9 +389,14 @@ export default {
 						_each(this.categories, category => {
 							ssrLoanIds.push(category.id);
 						});
-						const loanChannels = _get(data, 'lend.loanChannelsById');
-						const filteredLoanChannels = loanChannels.filter(loan => {
-							return !ssrLoanIds.includes(loan.id);
+						const loanChannels = this.categoryServiceExpVersion === 'b'
+							? data?.loanCategoriesByLoanChannelIds
+							: _get(data, 'lend.loanChannelsById');
+						const filteredLoanChannels = loanChannels.filter(channel => {
+							return this.categoryServiceExpVersion === 'b'
+								? !ssrLoanIds.includes(channel.loanChannelId)
+								: !ssrLoanIds.includes(channel.id);
+							// return !ssrLoanIds.includes(loan.id);
 						});
 
 						this.realCategories = [...this.realCategories, ...filteredLoanChannels];
@@ -493,6 +522,21 @@ export default {
 			}
 			return Promise.resolve();
 		},
+		initializeCategoryServiceRowExp() {
+			const categoryServiceEXP = this.apollo.readFragment({
+				id: 'Experiment:flss_category_service',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.categoryServiceExpVersion = categoryServiceEXP.version;
+
+			if (this.categoryServiceExpVersion && this.categoryServiceExpVersion !== 'unassigned') {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-VUE-1278-category-service-lbc',
+					this.categoryServiceExpVersion
+				);
+			}
+		},
 		initializeMLServiceBanditRowExp() {
 			// experiment: GROW-330 by MultiArmed Bandit algorithm experiment
 			// get assignment
@@ -605,14 +649,16 @@ export default {
 				} else {
 					try {
 						return this.apollo.query({
-							query: loanChannelQuery,
+							query: this.categoryServiceExpVersion === 'b' ? categoryServiceRowsQuery : loanChannelQuery,
 							variables: {
 								ids: [category.id],
 								imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 								imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
 							},
 						}).then(({ data }) => {
-							const fetchedCategory = data?.lend?.loanChannelsById?.[0];
+							const fetchedCategory = this.categoryServiceExpVersion === 'b'
+								? data?.loanCategoriesByLoanChannelIds?.[0]
+								: data?.lend?.loanChannelsById?.[0];
 							if (fetchedCategory?.loans?.values?.length) {
 								this.realCategories = [...this.realCategories, fetchedCategory];
 								this.rowLazyLoadComplete = true;
@@ -628,7 +674,11 @@ export default {
 						});
 					} catch (e) {
 						this.rowLazyLoadComplete = true;
-						logReadQueryError(e, 'LendByCategory loanChannelQuery');
+						logReadQueryError(
+							e,
+							// eslint-disable-next-line max-len
+							`LendByCategory ${this.categoryServiceExpVersion === 'b' ? 'categoryServiceRowsQuery' : 'loanChannelQuery'}`
+						);
 					}
 				}
 			} else {
@@ -683,6 +733,8 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'by_category_loan_bundles' } }),
 					// experiment: CORE-698 MFI Recommendations
 					client.query({ query: experimentQuery, variables: { id: 'mfi_recommendations' } }),
+					// experiment: VUE- Category Service driven FLSS channels
+					client.query({ query: experimentQuery, variables: { id: 'flss_category_service' } }),
 				]);
 			})
 				.then(() => {
@@ -717,6 +769,9 @@ export default {
 		this.firstName = _get(baseData, 'my.userAccount.firstName') || 'you';
 
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
+
+		// Initialize VUE-1278: Category Service based FLSS rows
+		this.initializeCategoryServiceRowExp();
 
 		// Initialize CASH-794 Favorite Country Row
 		// this.initializeFavoriteCountryRowExp();
