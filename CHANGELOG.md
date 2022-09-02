@@ -1,3 +1,10 @@
+### [2.277.1](https://github.com/kiva/ui/compare/v2.277.0...v2.277.1) (2022-09-02)
+
+
+### Bug Fixes
+
+* update lighthouse config to include cms page server home test route ([f222720](https://github.com/kiva/ui/commit/f22272027530d65e985f551a079a502d41dc7b15))
+
 ## [2.277.0](https://github.com/kiva/ui/compare/v2.276.1...v2.277.0) (2022-09-01)
 
 
