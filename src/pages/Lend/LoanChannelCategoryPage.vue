@@ -5,7 +5,6 @@
 	>
 		<component
 			:is="pageLayoutComponent"
-			:add-bundles-exp="addBundlesExp"
 		/>
 
 		<add-to-basket-interstitial />
@@ -15,7 +14,6 @@
 <script>
 import { preFetchAll } from '@/util/apolloPreFetch';
 import gql from 'graphql-tag';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
@@ -32,10 +30,6 @@ const LoanChannelCategoryClimateExperiment = () => import('@/pages/Lend/LoanChan
 const pageQuery = gql`
 	query LoanChannelCategoryPageExperiments {
 		general {
-			bundlesLayout: uiExperimentSetting(key: "category_loan_bundles") {
-				key
-				value
-			}
 			lbcEcoLayout: uiExperimentSetting(key: "lend_by_category_carousel_layout") {
 				key
 				value
@@ -94,7 +88,6 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
-			addBundlesExp: false,
 			meta: {
 				title: undefined,
 				description: undefined
@@ -114,8 +107,7 @@ export default {
 				return Promise.all([
 					client.query(
 						{ query: experimentAssignmentQuery, variables: { id: 'lend_by_category_carousel_layout' } }
-					),
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'category_loan_bundles' } }),
+					)
 				]);
 			}).then(results => {
 				const experimentSettings = results.map(result => result.data.experiment);
@@ -140,8 +132,6 @@ export default {
 
 		// Add to Basket Interstitial
 		this.initializeAddToBasketInterstitial();
-		// Loan Bundles Experiment
-		this.initializeLoanBundleExperiment();
 		// Experimental page layout
 		this.initializeExperimentalPageLayout();
 	},
@@ -192,23 +182,6 @@ export default {
 					active: true,
 				}
 			});
-		},
-		initializeLoanBundleExperiment() {
-			const bundleEXP = this.apollo.readFragment({
-				id: 'Experiment:category_loan_bundles',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			if (bundleEXP.version) {
-				if (bundleEXP.version === 'b') {
-					this.addBundlesExp = true;
-				}
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CORE-482-Mar2022',
-					bundleEXP.version
-				);
-			}
 		},
 		getMetaInfo() {
 			switch (this.targetedLoanChannel) {
