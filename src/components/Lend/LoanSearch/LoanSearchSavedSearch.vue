@@ -89,6 +89,10 @@ export default {
 		showSuccessMessage: {
 			type: Function,
 			default: () => {}
+		},
+		userId: {
+			type: Number,
+			default: null
 		}
 	},
 	mounted() {
@@ -112,16 +116,26 @@ export default {
 				sector: this.loanSearchState?.sectorId,
 				theme: this.loanSearchState?.themeId.map(themeId => this.themeNames[themeId])
 			};
-		}
+		},
+		loginUrl() {
+			if (this.$route.path === '/') {
+				return '/ui-login';
+			}
+			return `/ui-login?doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
+		},
 	},
 	methods: {
 		openModal() {
-			this.isLightboxVisible = true;
-			this.$kvTrackEvent(
-				'Lending',
-				'click-new-filter-saved-search',
-				'Add to saved searches'
-			);
+			if (this.userId) {
+				this.isLightboxVisible = true;
+				this.$kvTrackEvent(
+					'Lending',
+					'click-new-filter-saved-search',
+					'Add to saved searches'
+				);
+			} else {
+				window.location.href = this.loginUrl;
+			}
 		},
 		closeModal() {
 			this.isLightboxVisible = false;
