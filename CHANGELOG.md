@@ -1,3 +1,16 @@
+## [2.279.0](https://github.com/kiva/ui/compare/v2.278.0...v2.279.0) (2022-09-06)
+
+
+### Features
+
+* loan bundle experiment removed from lbc page ([8149c4d](https://github.com/kiva/ui/commit/8149c4d9fd7eae7134f47c534d370ba496a1e9bb))
+* loan bundle experiment was removed from category page ([832f435](https://github.com/kiva/ui/commit/832f43521fbd1ddd3e2f4fdb539826056ffa867c))
+
+
+### Bug Fixes
+
+* merge conflicts ([e4d2231](https://github.com/kiva/ui/commit/e4d2231dd00891e96d026f60af5f9c3282e39f1b))
+
 ## [2.278.0](https://github.com/kiva/ui/compare/v2.277.1...v2.278.0) (2022-09-06)
 
 
