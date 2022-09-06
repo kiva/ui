@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html data-vue-meta-server-rendered lang="en">
 	<head>
+		{{{ renderedConfig }}}
+		{{{ renderedExternals }}}
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
 		{{{ meta.inject().meta.text() }}}
 		{{{ meta.inject().link.text() }}}
 		{{{ meta.inject().title.text() }}}
 		{{{ renderStyles() }}}
-		{{{ renderedConfig }}}
 		{{{ meta.inject().style.text() }}}
 		{{{ meta.inject().script.text() }}}
-		{{{ renderedExternals }}}
 	</head>
 	<body>
 		{{{ renderedNoscript }}}
