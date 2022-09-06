@@ -24,16 +24,7 @@
 			<template v-for="(loanId, index) in loanIds" #[`slide${index}`]>
 				<!-- show loan card -->
 				<!-- TODO Re-implement card position analytics -->
-				<kiva-classic-basic-loan-card-bundle-exp
-					v-if="isBundle"
-					:item-index="index"
-					:key="`loan-bundle-${loanId}`"
-					:loan-id="loanId"
-					@read-more-link="getLoanDetails"
-					:is-personalized="isPersonalized"
-				/>
 				<kiva-classic-basic-loan-card-exp
-					v-else
 					:item-index="index"
 					:key="`loan-${loanId}`"
 					:loan-id="loanId"
@@ -44,7 +35,6 @@
 </template>
 
 <script>
-import KivaClassicBasicLoanCardBundleExp from '@/components/LoanCards/KivaClassicBasicLoanCardBundleExp';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
@@ -55,7 +45,6 @@ export default {
 		KvCarousel,
 		KvLoadingSpinner,
 		KivaClassicBasicLoanCardExp,
-		KivaClassicBasicLoanCardBundleExp,
 	},
 	props: {
 		isLoggedIn: {
@@ -83,14 +72,6 @@ export default {
 			default: () => {},
 		},
 		showViewMoreCard: {
-			type: Boolean,
-			default: false
-		},
-		isBundle: {
-			type: Boolean,
-			default: false
-		},
-		isPersonalized: {
 			type: Boolean,
 			default: false
 		},
