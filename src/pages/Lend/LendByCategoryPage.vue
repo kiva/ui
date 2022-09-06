@@ -355,7 +355,6 @@ export default {
 					ssrLoanIds.push(loan.id);
 				});
 			});
-			console.log(ssrLoanIds);
 			// Client Fetch the remaining category rows
 			return this.apollo.query({
 				query: this.categoryServiceExpActive ? categoryServiceRowsQuery : loanChannelQuery,
@@ -367,7 +366,6 @@ export default {
 					// @todo variables for fetching data for custom channels
 				},
 			}).then(({ data }) => {
-				console.log(data);
 				// add our remaining loan channels
 				this.clientCategories = this.categoryServiceExpActive
 					? data?.loanCategoriesByLoanChannelIds
@@ -581,15 +579,13 @@ export default {
 					entries.forEach(entry => {
 						if (entry.isIntersecting) {
 							// This element is in the viewport, so load the data.\
-							console.log('fetchLoanData triggered from observer');
 							this.fetchLoanData();
-							// this.loadData();
 						}
 					});
 				}
 			});
 			if (!this.viewportObserver) {
-				// Observer was not created, so call loadData right away as a fallback.
+				// Observer was not created, so call fetch loan data right away as a fallback.
 				Promise.all([
 					this.fetchRemainingLoanChannels(),
 					this.fetchRecommendedLoans(20)
@@ -607,7 +603,6 @@ export default {
 		},
 		fetchLoanData() {
 			const category = this.fetchCategoryIds.shift();
-			console.log('fetchLoanData', category);
 			if (category) {
 				this.rowLazyLoadComplete = false;
 				// eslint-disable-next-line no-underscore-dangle
@@ -662,7 +657,8 @@ export default {
 							const fetchedCategory = this.categoryServiceExpActive
 								? data?.loanCategoriesByLoanChannelIds?.[0]
 								: data?.lend?.loanChannelsById?.[0];
-							if (fetchedCategory?.loans?.values?.length) {
+							if (fetchedCategory?.loans?.values?.length
+								|| fetchedCategory?.savedSearch?.loans?.values?.length) {
 								this.realCategories = [...this.realCategories, fetchedCategory];
 								this.rowLazyLoadComplete = true;
 								this.trackLoanCategories([fetchedCategory]);
