@@ -13,18 +13,22 @@
 </template>
 
 <script>
-import { preFetchAll } from '@/util/apolloPreFetch';
 import gql from 'graphql-tag';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
+
+import { preFetchAll } from '@/util/apolloPreFetch';
 import {
 	getExperimentSettingCached,
-	trackExperimentVersion
+	trackExperimentVersion,
 } from '@/util/experimentUtils';
+import { fetchExperimentSettings } from '@/util/experimentPreFetch';
 
+import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+
+import WwwPage from '@/components/WwwFrame/WwwPage';
+import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 
 const LoanChannelCategoryControl = () => import('@/pages/Lend/LoanChannelCategoryControl');
 const LoanChannelCategoryClimateExperiment = () => import('@/pages/Lend/LoanChannelCategoryClimateExperiment');
@@ -37,6 +41,10 @@ const pageQuery = gql`
 				value
 			}
 			lbcEcoLayout: uiExperimentSetting(key: "lend_by_category_carousel_layout") {
+				key
+				value
+			}
+			ecoChallenge: uiExperimentSetting(key: "eco_challenge") {
 				key
 				value
 			}
@@ -106,19 +114,74 @@ export default {
 	apollo: {
 		preFetch(config, client, args) {
 			const { route } = args;
-			const { params } = route;
-
+			const { params, query } = route;
 			return client.query({
 				query: pageQuery
 			}).then(() => {
+				let gameExperimentAssignments;
+				// If query ?game=on is present, set both of the experiments to version b
+				// These queries are performed here, with a different query param instead of setuiab
+				// so that we can guarantee that version b of the experiments will load on first load.
+				if (query?.game === 'on') {
+					gameExperimentAssignments = [
+						client.query(
+							{
+								query: experimentAssignmentQuery,
+								variables: { id: 'lend_by_category_carousel_layout' }
+							}
+						).then(() => {
+							return client.mutate({
+								mutation: updateExperimentVersion,
+								variables: {
+									id: 'lend_by_category_carousel_layout',
+									version: 'b'
+								}
+							});
+						}).then(() => {
+							return fetchExperimentSettings('lend_by_category_carousel_layout', client);
+						}),
+						client.query(
+							{
+								query: experimentAssignmentQuery,
+								variables: { id: 'eco_challenge' }
+							}
+						).then(() => {
+							return client.mutate({
+								mutation: updateExperimentVersion,
+								variables: {
+									id: 'eco_challenge',
+									version: 'b'
+								}
+							});
+						}).then(() => {
+							return fetchExperimentSettings('eco_challenge', client);
+						})
+					];
+				} else {
+					gameExperimentAssignments = [client.query(
+						{
+							query: experimentAssignmentQuery,
+							variables: { id: 'lend_by_category_carousel_layout' }
+						}
+					)];
+				}
 				return Promise.all([
-					client.query(
-						{ query: experimentAssignmentQuery, variables: { id: 'lend_by_category_carousel_layout' } }
-					),
+					...gameExperimentAssignments,
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'category_loan_bundles' } }),
 				]);
 			}).then(results => {
-				const experimentSettings = results.map(result => result.data.experiment);
+				// manipulate experiment results format
+				const newResults = results.map(promiseResponse => {
+					if (promiseResponse?.data?.updateExperimentVersion) {
+						return {
+							data: {
+								experiment: promiseResponse.data.updateExperimentVersion
+							}
+						};
+					}
+					return promiseResponse;
+				});
+				const experimentSettings = newResults.map(result => result.data.experiment);
 				const ecoLayoutIsShown = experimentSettings
 					.find(setting => setting.id === 'lend_by_category_carousel_layout')?.version === 'b';
 				if (ecoLayoutIsShown && testCategories.includes(params.category)) {
