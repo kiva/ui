@@ -101,6 +101,10 @@ export default {
 			'view-new-filter-saved-search',
 			''
 		);
+
+		if (this.$route?.query?.saved_search ?? false) {
+			this.openModal();
+		}
 	},
 	data() {
 		return {
@@ -121,7 +125,7 @@ export default {
 			if (this.$route.path === '/') {
 				return '/ui-login';
 			}
-			return `/ui-login?doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
+			return `/ui-login?doneUrl=${encodeURIComponent(this.$route.fullPath)}?saved_search=true`;
 		},
 	},
 	methods: {
