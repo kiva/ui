@@ -184,37 +184,4 @@ a.button {
 	}
 }
 
-.left-border {
-	text-align: left;
-	color: $black;
-	display: inline-block;
-	background: transparent;
-	box-shadow: none;
-	padding-left: 0;
-	border-left: 0.2rem solid transparent;
-	@media (min-width: 734px) {
-		padding: 0.75rem 0 0.75rem 1.5rem;
-	}
-
-	&:hover,
-	&:focus {
-		color: darken($kiva-green, 10%);
-		background: transparent;
-	}
-
-	&.active {
-		border-left-color: darken($kiva-green, 10%);
-		@media (max-width: 734px) {
-			border-left: 0;
-		}
-
-		color: darken($kiva-green, 10%);
-
-		&:hover,
-		&:focus {
-			background: transparent;
-		}
-	}
-}
-
 </style>
