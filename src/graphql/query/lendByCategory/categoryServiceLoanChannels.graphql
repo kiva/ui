@@ -9,14 +9,14 @@ query loanChannelData(
 	loanCategoriesByLoanChannelIds(
 		loanChannelIds: $ids
 	) {
+		id
 		... on LoanCategorySearchOutput {
-			id
 			loanChannelId
 			name
 			description
 			savedSearch(limit: $numberOfLoans) {
+				id
 				... on FundraisingLoanSavedSearchPageOutput {
-					id
 					filters
 					loans {
 						values {
