@@ -122,7 +122,8 @@ export default {
 			};
 		},
 		loginUrl() {
-			return `/ui-login?doneUrl=${encodeURIComponent(this.$route.fullPath)}?saved_search=true`;
+			const fullPath = encodeURIComponent(`${this.$route.fullPath}&saved_search=true`);
+			return `/ui-login?doneUrl=${fullPath}`;
 		},
 	},
 	methods: {
