@@ -13,7 +13,7 @@
 		<div class="featured-loan-card-row">
 			<loan-card-controller
 				v-if="loan"
-				:category-id="loanChannel.id"
+				:category-id="useCategoryService ? loanChannel.loanChannelId : loanChannel.id"
 				category-set-id="featured-hero-loan"
 				:enable-tracking="true"
 				:experiment-data="experimentData"
@@ -34,16 +34,14 @@
 <script>
 import _filter from 'lodash/filter';
 import _get from 'lodash/get';
-
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
-// import categoryServiceRowsQuery from '@/graphql/query/lendByCategory/categoryServiceLoanChannels.graphql';
+import categoryServiceRowsQuery from '@/graphql/query/lendByCategory/categoryServiceLoanChannels.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import logReadQueryError from '@/util/logReadQueryError';
 import {
 	addCustomChannelInfo,
-	getFeaturedLoanChannelAsync,
-	getFeaturedLoanChannelCached,
 	fallbackCategoryIds,
 	getHeroChannelAsync,
 	getHeroChannelCached,
@@ -51,12 +49,10 @@ import {
 import { isLoanFundraising } from '@/util/loanUtils';
 import {
 	getExperimentSettingAsync,
-	getExperimentSettingCached,
-	trackExperimentVersion
 } from '@/util/experimentUtils';
 
 const initialLoanCount = 4;
-const heroChannelExpKey = 'EXP-VUE-917-hero-loan';
+const categoryServiceExpKey = 'flss_category_service';
 
 export default {
 	name: 'FeaturedHeroLoanWrapper',
@@ -99,24 +95,26 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client) {
-			// check if hero channel experiment is enabled
-			return getExperimentSettingAsync(client, heroChannelExpKey)
-				.then(({ enabled }) => {
-					// use ml query to get loan channel to use if experiment is enabled
-					if (enabled) {
-						return getHeroChannelAsync(client);
-					}
-					// otherwise use default query
-					return getFeaturedLoanChannelAsync(client);
-				}).then(({ loanChannelIds, loansQuery }) => {
-					// fetch the loans for the given loan channel
+			// check if category service query exp experiment is enabled
+			return getExperimentSettingAsync(client, categoryServiceExpKey)
+				.then(() => {
+					return getHeroChannelAsync(client);
+				})
+				.then(({ loanChannelIds, loansQuery }) => {
 					return client.query({
-						query: loansQuery,
-						variables: {
-							ids: loanChannelIds,
-							numberOfLoans: initialLoanCount,
-						},
-						fetchPolicy: 'network-only',
+						query: experimentAssignmentQuery,
+						variables: { id: categoryServiceExpKey },
+					}).then(({ data }) => {
+						const categoryServiceExpActive = data?.experiment?.version === 'b' || false;
+						// fetch the loans for the given loan channel
+						return client.query({
+							query: categoryServiceExpActive ? categoryServiceRowsQuery : loansQuery,
+							variables: {
+								ids: loanChannelIds,
+								numberOfLoans: initialLoanCount,
+							},
+							fetchPolicy: 'network-only',
+						});
 					});
 				});
 		},
@@ -125,19 +123,9 @@ export default {
 		this.loading = true;
 
 		// set featured category id and query to use for loan fetching
-		const { enabled } = getExperimentSettingCached(this.apollo, heroChannelExpKey);
-		if (enabled) {
-			// Use ML heroChannel query if experiment is enabled
-			trackExperimentVersion(this.apollo, this.$kvTrackEvent, 'Lending', heroChannelExpKey);
-			const { loanChannelIds, loansQuery } = getHeroChannelCached(this.apollo);
-			this.featuredCategoryIds = loanChannelIds ?? this.featuredCategoryIds;
-			this.loansQuery = loansQuery ?? this.loansQuery;
-		} else {
-			// Use default featured loans query if experiment is not enabled
-			const { loanChannelIds, loansQuery } = getFeaturedLoanChannelCached(this.apollo);
-			this.featuredCategoryIds = loanChannelIds ?? this.featuredCategoryIds;
-			this.loansQuery = loansQuery ?? this.loansQuery;
-		}
+		const { loanChannelIds, loansQuery } = getHeroChannelCached(this.apollo);
+		this.featuredCategoryIds = loanChannelIds ?? this.featuredCategoryIds;
+		this.loansQuery = this.useCategoryService ? categoryServiceRowsQuery : loansQuery;
 
 		// fetch cached query data
 		let allLoanData = {};
@@ -153,17 +141,28 @@ export default {
 			logReadQueryError(e, 'FeatureHeroLoanWrapper loansQuery');
 		}
 
-		// get array of loan channels, accounting for different structure of loan channel queries
-		const loanChannels = allLoanData?.lend?.featuredLoanChannel ?? allLoanData?.ml?.getOrderedChannelsByIds ?? [];
+		let loanChannels = [];
+		if (this.useCategoryService) {
+			// get array of loan channels, accounting for different structure of loan channel queries
+			loanChannels = allLoanData?.loanCategoriesByLoanChannelIds ?? [];
+		} else {
+			// get array of loan channels, accounting for different structure of loan channel queries
+			loanChannels = allLoanData?.ml?.getOrderedChannelsByIds ?? allLoanData?.lend?.featuredLoanChannel;
+		}
+
 		// get featured loan channel and add custom properties to it
-		const loanChannel = loanChannels.find(channel => channel?.id === this.featuredCategoryIds?.[0]);
+		const loanChannel = loanChannels.find(channel => {
+			return channel?.id === this.featuredCategoryIds?.[0]
+				|| channel?.loanChannelId === this.featuredCategoryIds?.[0];
+		});
 		this.loanChannel = addCustomChannelInfo(loanChannel, allLoanData?.my?.userAccount ?? {});
+		const loans = this.useCategoryService ? loanChannel?.savedSearch?.loans?.values : loanChannel?.loans?.values;
 		// set initial loan data so we ssr with a loan if possible
-		this.setInitialLoan(loanChannel?.loans?.values ?? []);
+		this.setInitialLoan(loans?.length ? loans : []);
 	},
 	mounted() {
 		// if we have no loans due to being funded, fetch some in the client
-		if (this.loans && this.loans.length <= 0) {
+		if (this.loans && this.loans?.length <= 0) {
 			this.fetchMoreLoans();
 		} else {
 			this.$emit('loaded');
@@ -222,11 +221,25 @@ export default {
 					offset: this.queryOffset,
 				}
 			}).then(({ data }) => {
-				// get array of loan channels, accounting for different structure of loan channel queries
-				const loanChannels = data?.lend?.featuredLoanChannel ?? data?.ml?.getOrderedChannelsByIds ?? [];
-				// add loans to loans array
-				const loanChannel = loanChannels.find(channel => channel?.id === this.featuredCategoryIds?.[0]);
-				this.loans = loanChannel?.loans?.values ?? [];
+				let loanChannels = [];
+				if (this.useCategoryService) {
+					// get array of loan channels, accounting for different structure of loan channel queries
+					loanChannels = data?.loanCategoriesByLoanChannelIds ?? [];
+				} else {
+					// get array of loan channels, accounting for different structure of loan channel queries
+					loanChannels = data?.lend?.featuredLoanChannel ?? data?.ml?.getOrderedChannelsByIds ?? [];
+				}
+
+				// get featured loan channel and add custom properties to it
+				const loanChannel = loanChannels.find(channel => {
+					return channel?.id === this.featuredCategoryIds?.[0]
+						|| channel?.loanChannelId === this.featuredCategoryIds?.[0];
+				});
+				this.loanChannel = addCustomChannelInfo(loanChannel, data?.my?.userAccount ?? {});
+
+				this.loans = this.useCategoryService
+					? loanChannel?.savedSearch?.loans?.values
+					: loanChannel?.loans?.values;
 
 				this.filterFundedLoans();
 			});

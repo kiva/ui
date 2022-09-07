@@ -359,6 +359,7 @@ export default {
 							? data?.loanCategoriesByLoanChannelIds
 							: _get(data, 'lend.loanChannelsById');
 						const filteredLoanChannels = loanChannels.filter(channel => {
+							// TODO: fetchData method checks for loans in the channel before pushing to realCategories
 							return this.categoryServiceExpActive
 								? !ssrLoanIds.includes(channel.loanChannelId)
 								: !ssrLoanIds.includes(channel.id);

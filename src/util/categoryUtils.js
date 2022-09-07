@@ -1,7 +1,6 @@
 import gql from 'graphql-tag';
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
 import recommendedLoansQuery from '@/graphql/query/lendByCategory/recommendedLoans.graphql';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import logReadQueryError from '@/util/logReadQueryError';
 
 // Fallback featured_loan_channel id
@@ -110,13 +109,10 @@ function parseHeroChannelData(data) {
  * @return {Object}                  { loanChannelIds, loansQuery }
  */
 export function getHeroChannelAsync(client) {
-	// get experiment assignment and then hero channel id query
+	// get hero channel id query
 	return client.query({
-		query: experimentAssignmentQuery,
-		variables: { id: 'EXP-VUE-917-hero-loan' },
-	}).then(() => client.query({
 		query: heroChannelIdQuery
-	})).then(({ data }) => {
+	}).then(({ data }) => {
 		return parseHeroChannelData(data);
 	});
 }
