@@ -1,3 +1,10 @@
+### [2.281.2](https://github.com/kiva/ui/compare/v2.281.1...v2.281.2) (2022-09-07)
+
+
+### Bug Fixes
+
+* login url encode was fixed ([cfb595c](https://github.com/kiva/ui/commit/cfb595c9ebf0a6300e63abc3fbb9457182fff7c0))
+
 ### [2.281.1](https://github.com/kiva/ui/compare/v2.281.0...v2.281.1) (2022-09-07)
 
 
