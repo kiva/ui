@@ -122,9 +122,6 @@ export default {
 			};
 		},
 		loginUrl() {
-			if (this.$route.path === '/') {
-				return '/ui-login';
-			}
 			return `/ui-login?doneUrl=${encodeURIComponent(this.$route.fullPath)}?saved_search=true`;
 		},
 	},
