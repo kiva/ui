@@ -188,7 +188,6 @@ export const DefaultGrid = (args, { argTypes }) => ({
 					:loan-channels="combinedLoanChannelData"
 					:selected-channel="selectedChannel.id"
 					@handle-category-click="handleCategoryClick"
-					:new-home="newHome"
 				/>
 			</div>
 
