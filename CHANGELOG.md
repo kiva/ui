@@ -1,3 +1,18 @@
+## [2.281.0](https://github.com/kiva/ui/compare/v2.280.0...v2.281.0) (2022-09-07)
+
+
+### Features
+
+* setup experiment to use category service to drive lend by category rows ([e80d0ad](https://github.com/kiva/ui/commit/e80d0adeafd6628656cc920b986b89d45e1ac8d8))
+* use category service for featured loan query ([21c13d5](https://github.com/kiva/ui/commit/21c13d5298da41271a960c0c822001d6b180e2a0))
+
+
+### Bug Fixes
+
+* clean up repeated code items and unused code ([b96debe](https://github.com/kiva/ui/commit/b96debe1794cf15d028afb2379edb96351ef40f7))
+* ensure lazy load fetch works, check savedSearch loan count to apply prefetched category ([c47d99b](https://github.com/kiva/ui/commit/c47d99bc8f1323dc66f34721884d72d1d253aea4))
+* remove loan channel reassignment in exted fetchMoreLoans method ([69f42e8](https://github.com/kiva/ui/commit/69f42e874373b973d8e7025622585a8a5924463d))
+
 ## [2.280.0](https://github.com/kiva/ui/compare/v2.279.2...v2.280.0) (2022-09-07)
 
 
