@@ -1,3 +1,11 @@
+### [2.279.1](https://github.com/kiva/ui/compare/v2.279.0...v2.279.1) (2022-09-07)
+
+
+### Bug Fixes
+
+* add bool to hide notif when successful ([04eebad](https://github.com/kiva/ui/commit/04eebadd6315d224ec6b2e2ea0c6f73d59491157))
+* update query str and tracking on new saved search ([9f515f1](https://github.com/kiva/ui/commit/9f515f1f3c7919b69a1b9a0a2d2df60f822c2182))
+
 ## [2.279.0](https://github.com/kiva/ui/compare/v2.278.0...v2.279.0) (2022-09-06)
 
 
