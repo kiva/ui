@@ -1,3 +1,10 @@
+### [2.279.2](https://github.com/kiva/ui/compare/v2.279.1...v2.279.2) (2022-09-07)
+
+
+### Bug Fixes
+
+* load head scripts before anything else ([cf7ebae](https://github.com/kiva/ui/commit/cf7ebaed95f4e74c476df6a871c028b20a8db9e9))
+
 ### [2.279.1](https://github.com/kiva/ui/compare/v2.279.0...v2.279.1) (2022-09-07)
 
 
