@@ -12,6 +12,10 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
+		lbcCategoryServiceRows: uiExperimentSetting(key: "flss_category_service") {
+			key
+			value
+		}
 	}
 	my {
 		isAdmin
