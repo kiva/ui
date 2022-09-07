@@ -58,7 +58,7 @@
 			<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
 			<div v-if="initialLoadComplete">
 				<loan-search-saved-search
-					v-if="enableSavedSearch && showSavedSearch"
+					v-if="enableSavedSearch && showSavedSearch && !savedSearchSuccess"
 					:loan-search-state="loanSearchState"
 					:theme-names="themeNames"
 					:show-success-message="showSavedSearchSuccessMessage"
@@ -161,6 +161,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		savedSearchSuccess: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {

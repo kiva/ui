@@ -47,6 +47,7 @@
 				</div>
 				<loan-search-interface
 					:enable-saved-search="enableSavedSearch"
+					:saved-search-success="savedSearchSuccess"
 					@enable-success-saved-search="enableSuccessSavedSearch"
 				/>
 			</kv-page-container>
