@@ -62,6 +62,7 @@
 					:loan-search-state="loanSearchState"
 					:theme-names="themeNames"
 					:show-success-message="showSavedSearchSuccessMessage"
+					:user-id="userId"
 				/>
 				<loan-search-filter-chips
 					:loan-search-state="loanSearchState"

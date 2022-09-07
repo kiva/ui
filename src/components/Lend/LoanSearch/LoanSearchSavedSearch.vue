@@ -89,6 +89,10 @@ export default {
 		showSuccessMessage: {
 			type: Function,
 			default: () => {}
+		},
+		userId: {
+			type: Number,
+			default: null
 		}
 	},
 	mounted() {
@@ -97,6 +101,10 @@ export default {
 			'view-new-filter-saved-search',
 			''
 		);
+
+		if (this.$route?.query?.saved_search ?? false) {
+			this.openModal();
+		}
 	},
 	data() {
 		return {
@@ -112,16 +120,23 @@ export default {
 				sector: this.loanSearchState?.sectorId,
 				theme: this.loanSearchState?.themeId.map(themeId => this.themeNames[themeId])
 			};
-		}
+		},
+		loginUrl() {
+			return `/ui-login?doneUrl=${encodeURIComponent(this.$route.fullPath)}?saved_search=true`;
+		},
 	},
 	methods: {
 		openModal() {
-			this.isLightboxVisible = true;
-			this.$kvTrackEvent(
-				'Lending',
-				'click-new-filter-saved-search',
-				'Add to saved searches'
-			);
+			if (this.userId) {
+				this.isLightboxVisible = true;
+				this.$kvTrackEvent(
+					'Lending',
+					'click-new-filter-saved-search',
+					'Add to saved searches'
+				);
+			} else {
+				window.location.href = this.loginUrl;
+			}
 		},
 		closeModal() {
 			this.isLightboxVisible = false;
