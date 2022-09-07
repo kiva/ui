@@ -1,3 +1,10 @@
+### [2.281.1](https://github.com/kiva/ui/compare/v2.281.0...v2.281.1) (2022-09-07)
+
+
+### Bug Fixes
+
+* set root level id on loanCategoriesByLoanChannelIds query ([677e59d](https://github.com/kiva/ui/commit/677e59d942709615f24aa4a71de21e760ede759c))
+
 ## [2.281.0](https://github.com/kiva/ui/compare/v2.280.0...v2.281.0) (2022-09-07)
 
 
