@@ -42,7 +42,7 @@ export default {
 					],
 					"__typename":"LoanBasicCollection"
 				},
-				"shortName": "Refugees and IDPs",
+				"shortName": "Refugees and IDPs fasfads fdsa fas sd",
 				"__typename":"LoanChannel"
 			},
 			{
@@ -114,43 +114,7 @@ export default {
 					],
 					"__typename":"LoanBasicCollection"
 				},
-				"shortName": "Women",
-				"__typename":"LoanChannel"
-			},
-			{
-				"id":7,
-				"name":"Women",
-				"url":"https://www.dev.kiva.org/lend/women",
-				"loans":{
-					"values":[
-						{
-						"id":2422935,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2421997,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2422009,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2421968,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2422012,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2422036,
-						"__typename":"LoanPartner"
-						}
-					],
-					"__typename":"LoanBasicCollection"
-				},
-				"shortName": "Women",
+				"shortName": "Health",
 				"__typename":"LoanChannel"
 			}
 		],

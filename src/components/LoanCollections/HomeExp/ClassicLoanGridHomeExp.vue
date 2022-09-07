@@ -260,7 +260,7 @@ export default {
 		},
 		// TODO: Review all tracking cateogries
 		onInteractCarousel(interaction) {
-			this.$kvTrackEvent('carousel', 'click-carousel-horizontal-scroll', interaction);
+			this.$kvTrackEvent('sidebar-carousel', 'swipe-carousel-horizontal-scroll', interaction);
 		},
 		goToLendByCategoryPage() {
 			window.location = '/lend-by-category/';

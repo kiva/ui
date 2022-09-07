@@ -18,7 +18,7 @@
 
 <script>
 import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
-import KivaMultiCategoryGrid from '@/components/Homepage/Experiment/KivaMultiCategoryGrid';
+import KivaMultiCategoryGrid from '@/components/Homepage/HomeExp/KivaMultiCategoryGrid';
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 

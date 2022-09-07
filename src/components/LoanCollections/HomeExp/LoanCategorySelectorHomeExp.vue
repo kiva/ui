@@ -3,14 +3,19 @@
 		class="tw-flex tw-justify-start tw-flex-row md:tw-flex-col md:tw-justify-center
 			md:tw-flex-wrap tw-mx-auto tw-overflow-x-auto md:tw-overflow-x-none"
 	>
-		<kv-ui-button
-			class="tw-mx-1 md:tw-mb-3 tw-whitespace-nowrap left-border"
-			:class="selectedChannel === category.id ? 'active' : ''"
-			v-for="category in loanChannels" :key="category.id"
-			@click.native="handleCategoryClick(category)"
-		>
-			{{ category.shortName }}
-		</kv-ui-button>
+		<kv-tabs vertical="true" class="tabs-container">
+			<template #tabNav>
+				<kv-tab
+					class="tw-truncate"
+					:for-panel="`tab-${category.id}`"
+					:vertical="true"
+					v-for="category in loanChannels" :key="category.id"
+					@click.native="handleCategoryClick(category)"
+				>
+					{{ category.shortName }}
+				</kv-tab>
+			</template>
+		</kv-tabs>
 		<kv-button
 			class="tw-hidden md:tw-block tw-mx-1 md:tw-mb-3 tw-whitespace-nowrap"
 			:variant="buttonStyle"
@@ -22,17 +27,18 @@
 </template>
 
 <script>
-import KvUiButton from '@/components/Kv/KvButton';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvTab from '~/@kiva/kv-components/vue/KvTab';
+import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
 
 export default {
 	name: 'LoanCategorySelectorHomeExp',
 	components: {
-		KvButton,
-		KvUiButton
+		KvButton, KvTab, KvTabs
 	},
 	data() {
 		return {
+			categoryBtnStyle: 'vertical-tab',
 			buttonStyle: 'primary'
 		};
 	},
@@ -73,3 +79,10 @@ export default {
 	}
 };
 </script>
+
+<style lang="scss" scoped>
+	.tabs-container {
+		width: 15.25rem;
+		@apply tw-flex md:tw-flex-col;
+	}
+</style>

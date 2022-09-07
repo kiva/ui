@@ -11,7 +11,6 @@
 				@handle-category-click="handleCategoryClick"
 			/>
 		</div>
-
 		<classic-loan-grid-home-exp
 			:is-visible="showCarousel"
 			:loan-ids="selectedChannelLoanIds"
