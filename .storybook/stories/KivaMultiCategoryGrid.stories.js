@@ -1,11 +1,11 @@
-import KivaNewHomeLoanCategorySelector from '@/components/LoanCollections/KivaNewHomeLoanCategorySelector';
+import ClassicLoanGridHomeExp from '@/components/LoanCollections/HomeExp/ClassicLoanGridHomeExp';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
-import KivaClassicLoanGrid from '@/components/LoanCollections/KivaClassicLoanGrid';
+import LoanCategorySelectorHomeExp from '@/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
 
 export default {
 	title: 'New Home Page/Kiva Multi Category Grid',
-	components: {KivaNewHomeLoanCategorySelector, KivaClassicLoanGrid},
+	components: {LoanCategorySelectorHomeExp, ClassicLoanGridHomeExp},
 	args: {
 		showAllButton: true,
 		combinedLoanChannelData: [
@@ -82,11 +82,15 @@ export default {
 				"__typename":"LoanChannel"
 			},
 			{
-				"id":96,
-				"name":"Covid-19",
-				"url":"https://www.dev.kiva.org/lend/covid-19",
+				"id":6,
+				"name":"Health",
+				"url":"https://www.dev.kiva.org/lend/women",
 				"loans":{
 					"values":[
+						{
+						"id":2422935,
+						"__typename":"LoanPartner"
+						},
 						{
 						"id":2421997,
 						"__typename":"LoanPartner"
@@ -106,86 +110,89 @@ export default {
 						{
 						"id":2422036,
 						"__typename":"LoanPartner"
-						},
-						{
-						"id":2422023,
-						"__typename":"LoanPartner"
 						}
 					],
 					"__typename":"LoanBasicCollection"
 				},
-				"shortName": "Covid-19",
+				"shortName": "Women",
 				"__typename":"LoanChannel"
 			},
 			{
-				"id":93,
-				"name":"Shelter loans for women",
-				"url":"https://www.dev.kiva.org/lend/shelter-loans-for-women",
+				"id":7,
+				"name":"Women",
+				"url":"https://www.dev.kiva.org/lend/women",
 				"loans":{
 					"values":[
 						{
-						"id":2421706,
+						"id":2422935,
 						"__typename":"LoanPartner"
 						},
 						{
-						"id":2421755,
+						"id":2421997,
 						"__typename":"LoanPartner"
 						},
 						{
-						"id":2429290,
+						"id":2422009,
 						"__typename":"LoanPartner"
 						},
 						{
-						"id":2428527,
+						"id":2421968,
 						"__typename":"LoanPartner"
 						},
 						{
-						"id":2425729,
+						"id":2422012,
 						"__typename":"LoanPartner"
 						},
 						{
-						"id":2425737,
+						"id":2422036,
 						"__typename":"LoanPartner"
 						}
 					],
 					"__typename":"LoanBasicCollection"
 				},
-				"shortName": "Shelter loans for women",
+				"shortName": "Women",
 				"__typename":"LoanChannel"
 			}
 		],
 		selectedChannel: {
-			id: 32
+			id: 32,
+			url: 'women'
 		},
 		showCarousel: true,
 		showViewMoreCard: false,
 		selectedChannelLoanIds: [
-			2414972, 2411407, 2428657,2422595,2424433,2411368
+			2414972, 2411407, 2428657, 2422009, 2421968, 2422012
 		],
-		newHome: true
+		newHome: true,
+		loanLimit: 6,
 	}
 };
 
 export const DefaultGrid = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
-	components: { KivaNewHomeLoanCategorySelector, KivaClassicLoanGrid },
+	components: { LoanCategorySelectorHomeExp, ClassicLoanGridHomeExp },
 	mixins: [apolloStoryMixin(), cookieStoreStoryMixin()],
 	methods: {
-		handleCategoryClick () {
-			console.log('click');
+		handleCategoryClick (payload) {
+			this.selectedChannel = this.combinedLoanChannelData.find(
+				loanChannel => loanChannel.id === payload.categoryId
+			);
 		}
 	},
 	template: `
 		<div class="md:tw-flex md:tw-items-start">
-			<kiva-new-home-loan-category-selector
-				v-if="combinedLoanChannelData.length > 1"
-				:loan-channels="combinedLoanChannelData"
-				:selected-channel="selectedChannel.id"
-				@handle-category-click="handleCategoryClick"
-				:new-home="newHome"
-			/>
+			<div class="tw-mr-4">
+				<p class="tw-text-h3 tw-font-medium tw-mb-2 tw-text-secondary">I want to support</p>
+				<loan-category-selector-home-exp
+					v-if="combinedLoanChannelData.length > 1"
+					:loan-channels="combinedLoanChannelData"
+					:selected-channel="selectedChannel.id"
+					@handle-category-click="handleCategoryClick"
+					:new-home="newHome"
+				/>
+			</div>
 
-			<kiva-classic-loan-grid
+			<classic-loan-grid-home-exp
 				:is-visible="showCarousel"
 				:loan-ids="selectedChannelLoanIds"
 				:selected-channel="selectedChannel"

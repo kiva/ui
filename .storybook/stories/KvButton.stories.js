@@ -79,3 +79,13 @@ export const AsALink = () => ({
 	components: { KvButton },
 	template: '<kv-button href="http://www.google.com">Button</kv-button>'
 });
+
+export const OnlyLeftBorder = () => ({
+	components: { KvButton },
+	template: '<kv-button class="left-border">Button</kv-button>'
+});
+
+export const ActiveLeftBorder = () => ({
+	components: { KvButton },
+	template: '<kv-button class="left-border active">Button</kv-button>'
+});
