@@ -191,7 +191,7 @@ a.button {
 	background: transparent;
 	box-shadow: none;
 	padding-left: 0;
-	border-left: .2rem solid transparent;
+	border-left: 0.2rem solid transparent;
 	@media (min-width: 734px) {
 		padding: 0.75rem 0 0.75rem 1.5rem;
 	}
