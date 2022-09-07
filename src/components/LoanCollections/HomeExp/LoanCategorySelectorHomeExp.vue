@@ -1,26 +1,40 @@
 <template>
 	<div
-		class="tw-flex md:tw-justify-start md:tw-flex-col sm:tw-flex-row
-            sm:tw-overflow-auto md:tw-overflow-x-visible md:tw-mt-4"
+		class="tw-flex tw-justify-start tw-flex-row md:tw-flex-col md:tw-justify-center
+			md:tw-flex-wrap tw-mx-auto tw-overflow-x-auto md:tw-overflow-x-none"
 	>
-		<kv-button
-			class="tw-mx-1 md:tw-mb-3 tw-whitespace-nowrap"
+		<kv-ui-button
+			class="tw-mx-1 md:tw-mb-3 tw-whitespace-nowrap left-border"
+			:class="selectedChannel === category.id ? 'active' : ''"
 			v-for="category in loanChannels" :key="category.id"
-			:variant="selectedChannel === category.id ? 'active' : 'ghost'"
-			@click="handleCategoryClick(category)"
+			@click.native="handleCategoryClick(category)"
 		>
 			{{ category.shortName }}
+		</kv-ui-button>
+		<kv-button
+			class="tw-hidden md:tw-block tw-mx-1 md:tw-mb-3 tw-whitespace-nowrap"
+			:variant="buttonStyle"
+			@click="goToCategoryPage"
+		>
+			Browse all
 		</kv-button>
 	</div>
 </template>
 
 <script>
+import KvUiButton from '@/components/Kv/KvButton';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
-	name: 'KivaNewHomeLoanCategorySelector',
+	name: 'LoanCategorySelectorHomeExp',
 	components: {
 		KvButton,
+		KvUiButton
+	},
+	data() {
+		return {
+			buttonStyle: 'primary'
+		};
 	},
 	props: {
 		/**
@@ -52,6 +66,9 @@ export default {
 			);
 			this.$emit('handle-category-click', { categoryId });
 			return false;
+		},
+		goToCategoryPage() {
+			window.location = '/lend-by-category/';
 		}
 	}
 };
