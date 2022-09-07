@@ -235,7 +235,6 @@ export default {
 					return channel?.id === this.featuredCategoryIds?.[0]
 						|| channel?.loanChannelId === this.featuredCategoryIds?.[0];
 				});
-				this.loanChannel = addCustomChannelInfo(loanChannel, data?.my?.userAccount ?? {});
 
 				this.loans = this.useCategoryService
 					? loanChannel?.savedSearch?.loans?.values
