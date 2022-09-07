@@ -1,3 +1,16 @@
+## [2.280.0](https://github.com/kiva/ui/compare/v2.279.2...v2.280.0) (2022-09-07)
+
+
+### Features
+
+* login url redirect was added to saved search feature ([84d86c1](https://github.com/kiva/ui/commit/84d86c19374d459614dbb88204665f7d618dd3f2))
+* save search feature expanded to logged out users ([c48da85](https://github.com/kiva/ui/commit/c48da85834a99f1ec15166b19f669f572c45b646))
+
+
+### Bug Fixes
+
+* loginUrl setup for home page was removed ([d47da97](https://github.com/kiva/ui/commit/d47da9700b6972b114fcaafb7c5661c6a888e5e2))
+
 ### [2.279.2](https://github.com/kiva/ui/compare/v2.279.1...v2.279.2) (2022-09-07)
 
 
