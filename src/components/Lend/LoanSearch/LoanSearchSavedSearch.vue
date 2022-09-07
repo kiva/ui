@@ -150,12 +150,14 @@ export default {
 			this.$kvTrackEvent(
 				'Lending',
 				'click-create-saved-search-new-modal',
-				'Create saved search'
+				'Create saved search',
+				this.reformattedSearchState
 			);
 			// We want to exclude sending any utm params
-			const queryString = window.location.search.replace(/(&|\?)utm_[a-zA-Z0-9]*=[a-zA-Z0-9]*/, '');
+			// New lend/filter page doesn't allow for custom keywords ATM - revisit this after exp phase
+			// const queryString = window.location.search.replace(/(&|\?)utm_[a-zA-Z0-9]*=[a-zA-Z0-9]*/, '');
 			createSavedSearch(
-				this.apollo, this.reformattedSearchState, queryString, this.savedSearchName
+				this.apollo, this.reformattedSearchState, '', this.savedSearchName
 			// eslint-disable-next-line no-unused-vars
 			).then(({ data }) => {
 				this.showSuccessMessage(this.savedSearchName);

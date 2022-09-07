@@ -10,34 +10,13 @@
 		</div>
 
 		<featured-hero-loan-wrapper
-			v-if="showFeaturedHeroLoan && !addBundleExp"
+			v-if="showFeaturedHeroLoan"
 			ref="featured"
 			:is-logged-in="isLoggedIn"
 			:items-in-basket="itemsInBasket"
 			:show-category-description="showCategoryDescription"
 			@loaded="trackFeaturedLoan"
 		/>
-
-		<div class="tw-bg-secondary tw-mb-4" v-if="addBundleExp">
-			<loans-bundle-exp-wrapper
-				:first-name="firstName"
-				:personalized-loans="personalizedLoans"
-				:recommended-loans="recommendedLoans"
-			/>
-			<div class="loan-category-row recommended-exp">
-				<component
-					:is="categoryRowType"
-					:loan-channel="recommendedObject"
-					:items-in-basket="itemsInBasket"
-					:row-number="0"
-					:set-id="categorySetId"
-					:is-logged-in="isLoggedIn"
-					:show-category-description="showCategoryDescription"
-					:show-expandable-loan-cards="false"
-					ref="categoryRowExp"
-				/>
-			</div>
-		</div>
 
 		<div class="tw-bg-primary">
 			<div
@@ -110,7 +89,6 @@ import experimentVersionFragment from '@/graphql/fragments/experimentVersion.gra
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import recommendedLoansQuery from '@/graphql/query/lendByCategory/recommendedLoans.graphql';
-import personalizedLoansQuery from '@/graphql/query/lendByCategory/personalizedLoans.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import mlOrderedLoanChannels from '@/graphql/query/lendByCategory/mlOrderedLoanChannels.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -124,7 +102,6 @@ import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
 import { createIntersectionObserver } from '@/util/observerUtils';
-import LoansBundleExpWrapper from '@/components/LoansByCategory/LoansBundleExpWrapper';
 import MFIHero from '@/components/LoansByCategory/MFIRecommendations/MFIHero';
 
 export default {
@@ -140,7 +117,6 @@ export default {
 		FavoriteCountryLoans,
 		MGDigestLightbox,
 		MGLightbox,
-		LoansBundleExpWrapper,
 		MFIHero,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
@@ -181,10 +157,8 @@ export default {
 			viewportObserver: null,
 			fetchCategoryIds: [],
 			expResults: null,
-			addBundleExp: false,
 			activatedWatchers: false,
 			showMGDigestLightbox: false,
-			personalizedLoans: [],
 			rowTrackCounter: 0,
 			mfiRecommendationsExp: false,
 		};
@@ -195,18 +169,12 @@ export default {
 		},
 		categories() {
 			// merge realCategories & customCategories
-			const categories = _uniqBy(this.realCategories.concat(!this.addBundleExp ? this.customCategories : [],
-				this.clientCategories), 'id');
+			const categories = _uniqBy(this.realCategories.concat(this.customCategories, this.clientCategories), 'id');
 			return categories
 				// fiter our any empty categories and categories with 0 loans
 				.filter(channel => _get(channel, 'loans.values.length') > 0)
 				// and re-order to match the setting
 				.sort(indexIn(this.categoryIds, 'id'));
-		},
-		recommendedObject() {
-			const obj = Object.create(this.customCategories[0]);
-			obj.name = `More Recommendations for ${this.firstName}`;
-			return obj;
 		},
 		customCategories() {
 			if (this.recommendedLoans.length) {
@@ -221,9 +189,7 @@ export default {
 						},
 						url: '',
 					};
-					if (this.addBundleExp && channel.id === 95) {
-						recChannel.name = `More Recommendations for ${this.firstName}`;
-					}
+
 					// return recomended loan channel with custom title and description added, if needed
 					return addCustomChannelInfo(recChannel, { id: this.userId, firstName: this.firstName });
 				});
@@ -468,31 +434,6 @@ export default {
 			}
 			return Promise.resolve();
 		},
-		fetchPersonalizedLoans(limit = 3) {
-			// Load personalized loans data
-			const variables = {
-				limit
-			};
-			if (this.addBundleExp) {
-				return this.apollo.query({
-					query: personalizedLoansQuery,
-					variables,
-				}).then(({ data }) => {
-					const personalizedLoans = data?.fundraisingLoans?.values ?? [];
-					this.personalizedLoans = personalizedLoans;
-					const personalizedLoanIds = this.personalizedLoans.map(element => element.id);
-					const idsString = personalizedLoanIds.join(', ').toString();
-					this.$kvTrackEvent(
-						'Lend by category',
-						'view-loan-bundle',
-						'personalized',
-						idsString,
-						null
-					);
-				});
-			}
-			return Promise.resolve();
-		},
 		initializeMLServiceBanditRowExp() {
 			// experiment: GROW-330 by MultiArmed Bandit algorithm experiment
 			// get assignment
@@ -635,23 +576,6 @@ export default {
 				this.activateWatchers();
 			}
 		},
-		initializeLoanBundleExperiment() {
-			const layoutEXP = this.apollo.readFragment({
-				id: 'Experiment:by_category_loan_bundles',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			if (layoutEXP.version) {
-				if (layoutEXP.version === 'b') {
-					this.addBundleExp = true;
-				}
-				this.$kvTrackEvent(
-					'Lend by category',
-					'EXP-CORE-588-May-2022',
-					layoutEXP.version
-				);
-			}
-		},
 		initializeMFIRecommendationsExperiment() {
 			const layoutEXP = this.apollo.readFragment({
 				id: 'Experiment:mfi_recommendations',
@@ -679,8 +603,6 @@ export default {
 				return Promise.all([
 					// experiment: GROW-330 Machine Learning Category row
 					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
-					// experiment: CORE-588 Loans bundle experiment
-					client.query({ query: experimentQuery, variables: { id: 'by_category_loan_bundles' } }),
 					// experiment: CORE-698 MFI Recommendations
 					client.query({ query: experimentQuery, variables: { id: 'mfi_recommendations' } }),
 				]);
@@ -757,16 +679,10 @@ export default {
 		}) || {};
 		this.lendFilterExpVersion = lendFilterEXP.version;
 
-		// Initialize CORE-588 Loan Bundle
-		if (this.isLoggedIn) {
-			this.initializeLoanBundleExperiment();
-		}
-
 		// Initialize CORE-698 MFI Recommendations Experiment
 		this.initializeMFIRecommendationsExperiment();
 	},
 	mounted() {
-		this.fetchPersonalizedLoans();
 		this.fetchCategoryIds = [...this.categorySetting];
 		this.fetchLoanData();
 		// Only allow experiment when in show-for-large (>= 1024px) screen size

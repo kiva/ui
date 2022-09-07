@@ -8,10 +8,6 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
-		loanBundle: uiExperimentSetting(key: "by_category_loan_bundles") {
-			key
-			value
-		}
 		mfiRecommendations: uiExperimentSetting(key: "mfi_recommendations") {
 			key
 			value
