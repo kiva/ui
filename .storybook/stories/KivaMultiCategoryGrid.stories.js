@@ -1,11 +1,11 @@
-import ClassicLoanGridHomeExp from '@/components/LoanCollections/HomeExp/ClassicLoanGridHomeExp';
+import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import LoanCategorySelectorHomeExp from '@/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
 
 export default {
 	title: 'New Home Page/Kiva Multi Category Grid',
-	components: {LoanCategorySelectorHomeExp, ClassicLoanGridHomeExp},
+	components: {LoanCategorySelectorHomeExp, KivaClassicLoanCarousel},
 	args: {
 		showAllButton: true,
 		combinedLoanChannelData: [
@@ -127,14 +127,14 @@ export default {
 		selectedChannelLoanIds: [
 			2414972, 2411407, 2428657, 2422009, 2421968, 2422012
 		],
-		newHome: true,
+		newHomeExp: true,
 		loanLimit: 6,
 	}
 };
 
 export const DefaultGrid = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
-	components: { LoanCategorySelectorHomeExp, ClassicLoanGridHomeExp },
+	components: { LoanCategorySelectorHomeExp, KivaClassicLoanCarousel },
 	mixins: [apolloStoryMixin(), cookieStoreStoryMixin()],
 	methods: {
 		handleCategoryClick (payload) {
@@ -155,7 +155,8 @@ export const DefaultGrid = (args, { argTypes }) => ({
 				/>
 			</div>
 
-			<classic-loan-grid-home-exp
+			<kiva-classic-loan-carousel
+				:new-home-exp="newHomeExp"
 				:is-visible="showCarousel"
 				:loan-ids="selectedChannelLoanIds"
 				:selected-channel="selectedChannel"

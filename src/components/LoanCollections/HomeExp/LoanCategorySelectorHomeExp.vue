@@ -6,7 +6,7 @@
 		<kv-tabs vertical="true" class="tabs-container">
 			<template #tabNav>
 				<kv-tab
-					class="tw-truncate"
+					class="md:tw-truncate"
 					:for-panel="`tab-${category.id}`"
 					:vertical="true"
 					v-for="category in loanChannels" :key="category.id"
@@ -81,8 +81,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-	.tabs-container {
-		width: 15.25rem;
-		@apply tw-flex md:tw-flex-col;
+	@media(min-width: 734px) {
+		.tabs-container {
+			width: 15.25rem;
+			@apply tw-flex md:tw-flex-col;
+		}
 	}
 </style>

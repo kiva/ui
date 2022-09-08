@@ -11,7 +11,8 @@
 				@handle-category-click="handleCategoryClick"
 			/>
 		</div>
-		<classic-loan-grid-home-exp
+		<kiva-classic-loan-carousel
+			:new-home-exp="newHomeExp"
 			:is-visible="showCarousel"
 			:loan-ids="selectedChannelLoanIds"
 			:selected-channel="selectedChannel"
@@ -22,12 +23,12 @@
 
 <script>
 import gql from 'graphql-tag';
-import ClassicLoanGridHomeExp from '@/components/LoanCollections/HomeExp/ClassicLoanGridHomeExp';
+import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
 import LoanCategorySelectorHomeExp from '@/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
 
 export default {
 	name: 'KivaMultiCategoryGrid',
-	components: { LoanCategorySelectorHomeExp, ClassicLoanGridHomeExp },
+	components: { LoanCategorySelectorHomeExp, KivaClassicLoanCarousel },
 	props: {
 		/**
 		 * Array of loan channel data in an object
@@ -45,6 +46,10 @@ export default {
 		loanDisplaySettings: {
 			type: Object,
 			default: () => {}
+		},
+		newHomeExp: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
