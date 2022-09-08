@@ -1,3 +1,10 @@
+### [2.281.3](https://github.com/kiva/ui/compare/v2.281.2...v2.281.3) (2022-09-08)
+
+
+### Bug Fixes
+
+* copy updates to TOU page ([5a48e8a](https://github.com/kiva/ui/commit/5a48e8ae52a11c95afcdf24f7b4733d42b5d20f3))
+
 ### [2.281.2](https://github.com/kiva/ui/compare/v2.281.1...v2.281.2) (2022-09-07)
 
 
