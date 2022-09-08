@@ -81,8 +81,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-	@media(min-width: 734px) {
-
+	@media (min-width: 734px) {
 		.tabs-container {
 			width: 15.25rem;
 			@apply tw-flex md:tw-flex-col;
