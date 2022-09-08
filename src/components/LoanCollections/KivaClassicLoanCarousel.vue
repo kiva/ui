@@ -266,11 +266,7 @@ export default {
 		},
 		// TODO: Review all tracking cateogries
 		onInteractCarousel(interaction) {
-			if (this.newHomeExp) {
-				this.$kvTrackEvent('swipe-carousel', 'swipe-carousel-horizontal-scroll', interaction);
-			} else {
-				this.$kvTrackEvent('carousel', 'click-carousel-horizontal-scroll', interaction);
-			}
+			this.$kvTrackEvent('sidebar-carousel', 'swipe-carousel-horizontal-scroll', interaction);
 		},
 		goToLendByCategoryPage() {
 			window.location = '/lend-by-category/';
