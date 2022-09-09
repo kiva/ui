@@ -7,7 +7,7 @@
 			class="link"
 			:is="allSharesReserved ? 'span' : 'router-link'"
 			:to="`/lend-beta/${loanId}`"
-			v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
+			v-kv-track-event="['Lending', 'click-see more', 'card', loanId]"
 		>
 			<!-- Borrower image w/ location <summary-tag> -->
 			<kv-loading-placeholder
