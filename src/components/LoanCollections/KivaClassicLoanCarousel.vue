@@ -75,14 +75,14 @@
 				<kv-button
 					class="tw-mx-1 tw-mb-3 tw-whitespace-nowrap"
 					:variant="categoryButtonStyle"
-					@click="goToCategoryPage"
+					:to="cleanUrl"
 				>
 					{{ viewAllLoansCategoryTitle }}
 				</kv-button>
 				<kv-button
 					class="tw-block md:tw-hidden tw-mx-1 md:tw-mb-3 tw-whitespace-nowrap"
+					:to="`/lend-by-category`"
 					:variant="browseButtonStyle"
-					@click="goToLendByCategoryPage"
 				>
 					Browse all
 				</kv-button>
@@ -268,12 +268,6 @@ export default {
 		onInteractCarousel(interaction) {
 			this.$kvTrackEvent('sidebar-carousel', 'swipe-carousel-horizontal-scroll', interaction);
 		},
-		goToLendByCategoryPage() {
-			window.location = '/lend-by-category/';
-		},
-		goToCategoryPage() {
-			window.location = `/lend-by-category/${this.selectedChannel?.url}`;
-		}
 	},
 };
 </script>

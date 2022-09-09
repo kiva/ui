@@ -8,118 +8,29 @@ export default {
 	components: {LoanCategorySelectorHomeExp, KivaClassicLoanCarousel},
 	args: {
 		showAllButton: true,
-		combinedLoanChannelData: [
-			{
-				"id":32,
-				"name":"Refugees and IDPs",
-				"url":"https://www.dev.kiva.org/lend/refugees-and-i-d-ps",
-				"loans":{
-					"values":[
-						{
-						"id":2414972,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2411407,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2428657,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2422595,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2424433,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2411368,
-						"__typename":"LoanPartner"
-						}
-					],
-					"__typename":"LoanBasicCollection"
-				},
-				"shortName": "Refugees and IDPs fasfads fdsa fas sd",
-				"__typename":"LoanChannel"
-			},
-			{
-				"id":5,
-				"name":"Women",
-				"url":"https://www.dev.kiva.org/lend/women",
-				"loans":{
-					"values":[
-						{
-						"id":2422935,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2421997,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2422009,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2421968,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2422012,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2422036,
-						"__typename":"LoanPartner"
-						}
-					],
-					"__typename":"LoanBasicCollection"
-				},
-				"shortName": "Women",
-				"__typename":"LoanChannel"
-			},
-			{
-				"id":6,
-				"name":"Health",
-				"url":"https://www.dev.kiva.org/lend/women",
-				"loans":{
-					"values":[
-						{
-						"id":2422935,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2421997,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2422009,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2421968,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2422012,
-						"__typename":"LoanPartner"
-						},
-						{
-						"id":2422036,
-						"__typename":"LoanPartner"
-						}
-					],
-					"__typename":"LoanBasicCollection"
-				},
-				"shortName": "Health",
-				"__typename":"LoanChannel"
-			}
-		],
+		combinedLoanChannelData: [{
+			"id":32,
+			"name":"Refugees and IDPs",
+			"url":"https://www.dev.kiva.org/lend/refugees-and-i-d-ps",
+			"shortName": "Refugees and IDPs",
+			"__typename":"LoanChannel"
+		},
+		{
+			"id":5,
+			"name":"Women",
+			"url":"https://www.dev.kiva.org/lend/women",
+			"shortName": "Women",
+			"__typename":"LoanChannel"
+		},
+		{
+			"id":6,
+			"name":"Health",
+			"url":"https://www.dev.kiva.org/lend/women",
+			"shortName": "Health",
+			"__typename":"LoanChannel"
+		}],
 		selectedChannel: {
-			id: 32,
+			id: 5,
 			url: 'women'
 		},
 		showCarousel: true,

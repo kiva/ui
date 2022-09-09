@@ -39,11 +39,6 @@ export default {
 			default: () => {},
 		},
 	},
-	data() {
-		return {
-
-		};
-	},
 	computed: {
 		/**
 		 * Extract Background content from Contentful

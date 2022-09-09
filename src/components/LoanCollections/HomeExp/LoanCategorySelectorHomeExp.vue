@@ -80,7 +80,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 	@media (min-width: 734px) {
 		.tabs-container {
 			width: 15.25rem;

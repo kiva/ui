@@ -57,17 +57,9 @@ export default {
 			loanChannelData: [],
 			selectedChannel: {},
 			showCarousel: false,
-			isUrgencyExpVersionShown: false
 		};
 	},
 	computed: {
-		loanChannelsWithUrgencyExperiment() {
-			if (this.isUrgencyExpVersionShown) {
-				// if urgency experiment, insert ending soon as first loan channel
-				return [{ id: 3, shortName: 'Ending Soon' }, ...this.contentfulLoanChannels];
-			}
-			return this.contentfulLoanChannels;
-		},
 		combinedLoanChannelData() {
 			return this.loanChannelsWithUrgencyExperiment.map(channel => {
 				const matchedLoanChannel = this.loanChannelData.find(lc => lc.id === channel.id);
@@ -109,7 +101,6 @@ export default {
 							id
 							name
 							url
-							# description
 							loans(limit: $loanLimit) {
 								values {
 									id
