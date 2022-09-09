@@ -57,7 +57,13 @@
 		<div class="tw-col-span-2 tw-relative tw-grow">
 			<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
 			<div v-if="initialLoadComplete">
-				<loan-search-saved-search v-if="enableSavedSearch && showSavedSearch" />
+				<loan-search-saved-search
+					v-if="enableSavedSearch && showSavedSearch && !savedSearchSuccess"
+					:loan-search-state="loanSearchState"
+					:theme-names="themeNames"
+					:show-success-message="showSavedSearchSuccessMessage"
+					:user-id="userId"
+				/>
 				<loan-search-filter-chips
 					:loan-search-state="loanSearchState"
 					:all-facets="allFacets"
@@ -155,6 +161,10 @@ export default {
 		enableSavedSearch: {
 			type: Boolean,
 			default: false,
+		},
+		savedSearchSuccess: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
@@ -343,6 +353,9 @@ export default {
 				|| genderFilterApplied
 				|| sectorFilterApplied
 				|| themeFilterApplied;
+		},
+		themeNames() {
+			return this.allFacets?.themeNames ?? [];
 		}
 	},
 	methods: {
@@ -407,6 +420,9 @@ export default {
 
 			this.$kvTrackEvent?.('Lending', 'click-zero-loans-reset');
 		},
+		showSavedSearchSuccessMessage(searchName) {
+			this.$emit('enable-success-saved-search', searchName);
+		}
 	},
 	watch: {
 		$route(to) {

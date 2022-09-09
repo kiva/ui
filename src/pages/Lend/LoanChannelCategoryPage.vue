@@ -3,11 +3,9 @@
 		class="loan-channel-page category-page"
 		:gray-background="pageLayout === 'control'"
 	>
-		<loan-channel-category-control
-			v-if="pageLayout === 'control'"
-			:add-bundles-exp="addBundlesExp"
+		<component
+			:is="pageLayoutComponent"
 		/>
-		<loan-channel-category-climate-experiment v-if="pageLayout === 'experiment'" />
 
 		<add-to-basket-interstitial />
 	</www-page>
@@ -15,27 +13,31 @@
 
 <script>
 import gql from 'graphql-tag';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
-import LoanChannelCategoryControl from '@/pages/Lend/LoanChannelCategoryControl';
-import LoanChannelCategoryClimateExperiment from '@/pages/Lend/LoanChannelCategoryClimateExperiment';
+import { preFetchAll } from '@/util/apolloPreFetch';
 import {
 	getExperimentSettingCached,
-	trackExperimentVersion
+	trackExperimentVersion,
 } from '@/util/experimentUtils';
+import { fetchExperimentSettings } from '@/util/experimentPreFetch';
 
+import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.graphql';
+import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+
+import WwwPage from '@/components/WwwFrame/WwwPage';
+import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
+
+const LoanChannelCategoryControl = () => import('@/pages/Lend/LoanChannelCategoryControl');
+const LoanChannelCategoryClimateExperiment = () => import('@/pages/Lend/LoanChannelCategoryClimateExperiment');
 
 const pageQuery = gql`
 	query LoanChannelCategoryPageExperiments {
 		general {
-			bundlesLayout: uiExperimentSetting(key: "category_loan_bundles") {
+			lbcEcoLayout: uiExperimentSetting(key: "lend_by_category_carousel_layout") {
 				key
 				value
 			}
-			lbcEcoLayout: uiExperimentSetting(key: "lend_by_category_carousel_layout") {
+			ecoChallenge: uiExperimentSetting(key: "eco_challenge") {
 				key
 				value
 			}
@@ -88,32 +90,100 @@ export default {
 	},
 	components: {
 		AddToBasketInterstitial,
-		LoanChannelCategoryControl,
-		LoanChannelCategoryClimateExperiment,
 		WwwPage,
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
-			addBundlesExp: false,
 			meta: {
 				title: undefined,
 				description: undefined
 			},
-			pageLayout: 'control'
+			pageLayout: 'control',
+			pageLayoutComponent: null
 		};
 	},
 	apollo: {
-		preFetch(config, client) {
+		preFetch(config, client, args) {
+			const { route } = args;
+			const { params, query } = route;
 			return client.query({
 				query: pageQuery
 			}).then(() => {
+				let gameExperimentAssignments;
+				// If query ?game=on is present, set both of the experiments to version b
+				// These queries are performed here, with a different query param instead of setuiab
+				// so that we can guarantee that version b of the experiments will load on first load.
+				if (query?.game === 'on') {
+					gameExperimentAssignments = [
+						client.query(
+							{
+								query: experimentAssignmentQuery,
+								variables: { id: 'lend_by_category_carousel_layout' }
+							}
+						).then(() => {
+							return client.mutate({
+								mutation: updateExperimentVersion,
+								variables: {
+									id: 'lend_by_category_carousel_layout',
+									version: 'b'
+								}
+							});
+						}).then(() => {
+							return fetchExperimentSettings('lend_by_category_carousel_layout', client);
+						}),
+						client.query(
+							{
+								query: experimentAssignmentQuery,
+								variables: { id: 'eco_challenge' }
+							}
+						).then(() => {
+							return client.mutate({
+								mutation: updateExperimentVersion,
+								variables: {
+									id: 'eco_challenge',
+									version: 'b'
+								}
+							});
+						}).then(() => {
+							return fetchExperimentSettings('eco_challenge', client);
+						})
+					];
+				} else {
+					gameExperimentAssignments = [client.query(
+						{
+							query: experimentAssignmentQuery,
+							variables: { id: 'lend_by_category_carousel_layout' }
+						}
+					)];
+				}
 				return Promise.all([
-					client.query(
-						{ query: experimentAssignmentQuery, variables: { id: 'lend_by_category_carousel_layout' } }
-					),
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'category_loan_bundles' } }),
+					...gameExperimentAssignments,
 				]);
+			}).then(results => {
+				// manipulate experiment results format
+				const newResults = results.map(promiseResponse => {
+					if (promiseResponse?.data?.updateExperimentVersion) {
+						return {
+							data: {
+								experiment: promiseResponse.data.updateExperimentVersion
+							}
+						};
+					}
+					return promiseResponse;
+				});
+				const experimentSettings = newResults.map(result => result.data.experiment);
+				const ecoLayoutIsShown = experimentSettings
+					.find(setting => setting.id === 'lend_by_category_carousel_layout')?.version === 'b';
+				if (ecoLayoutIsShown && testCategories.includes(params.category)) {
+					// prefetch experimental layout
+					return LoanChannelCategoryClimateExperiment();
+				}
+				return LoanChannelCategoryControl();
+			}).then(resolvedImport => {
+				// Call preFetch for page layout component
+				const component = resolvedImport.default;
+				return preFetchAll([component], client, args);
 			});
 		}
 	},
@@ -124,8 +194,6 @@ export default {
 
 		// Add to Basket Interstitial
 		this.initializeAddToBasketInterstitial();
-		// Loan Bundles Experiment
-		this.initializeLoanBundleExperiment();
 		// Experimental page layout
 		this.initializeExperimentalPageLayout();
 	},
@@ -161,11 +229,13 @@ export default {
 						'lend_by_category_carousel_layout',
 						'EXP-ACK-357-Aug2022',
 					);
-					this.pageLayout = version === 'shown' ? 'experiment' : 'control';
+					this.pageLayout = version === 'b' ? 'experiment' : 'control';
 				}
 			} else {
 				this.pageLayout = 'control';
 			}
+			this.pageLayoutComponent = this.pageLayout === 'experiment'
+				? LoanChannelCategoryClimateExperiment : LoanChannelCategoryControl;
 		},
 		initializeAddToBasketInterstitial() {
 			this.apollo.mutate({
@@ -174,23 +244,6 @@ export default {
 					active: true,
 				}
 			});
-		},
-		initializeLoanBundleExperiment() {
-			const bundleEXP = this.apollo.readFragment({
-				id: 'Experiment:category_loan_bundles',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			if (bundleEXP.version) {
-				if (bundleEXP.version === 'b') {
-					this.addBundlesExp = true;
-				}
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CORE-482-Mar2022',
-					bundleEXP.version
-				);
-			}
 		},
 		getMetaInfo() {
 			switch (this.targetedLoanChannel) {

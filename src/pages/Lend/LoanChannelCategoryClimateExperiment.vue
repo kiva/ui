@@ -12,18 +12,27 @@
 					<span class="show-for-large">{{ loanChannelName }}</span>
 				</p>
 				<h1 class="tw-mb-2">
-					{{ loanChannelName }}
+					{{ loanChannelName }} <span v-if="isEcoChallengeExpShown">September Challenge</span>
 				</h1>
 				<p
-					class="tw-w-full show-for-large tw-mb-4 lg:tw-w-2/3"
+					v-if="!isEcoChallengeExpShown"
+					class="tw-text-subhead tw-w-full show-for-large tw-mb-4 lg:tw-w-3/4"
 				>
 					{{ loanChannelDescription }}
 				</p>
+				<p
+					v-else
+					class="tw-text-subhead tw-w-full show-for-large tw-mb-4 lg:tw-w-3/4"
+				>
+					<!-- eslint-disable-next-line max-len -->
+					There are many ways to make a positive impact. Complete the Climate Challenge now by lending to 1 Solar Energy, 1 Sustainable Agriculture, and 1 Recycling loan.
+				</p>
 			</div>
 		</kv-page-container>
-		<kv-page-container v-if="secondaryLoanChannelIds.length > 0">
-			<div v-for="(channel, index) in secondaryLoanChannelIds" :key="index" class="tw-mt-4">
+		<kv-page-container v-if="secondaryChannels.length > 0">
+			<div v-for="(channel, index) in secondaryChannels" :key="index" class="tw-mt-6">
 				<kiva-classic-single-category-carousel
+					:climate-challenge="isEcoChallengeExpShown"
 					:loan-channel-id="channel.id"
 					:loan-channel-name="channel.name"
 					:loan-channel-description="channel.description"
@@ -38,53 +47,35 @@
 <script>
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
-import logReadQueryError from '@/util/logReadQueryError';
-import gql from 'graphql-tag';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import KivaClassicSingleCategoryCarousel from '@/components/LoanCollections/KivaClassicSingleCategoryCarousel';
+import {
+	preFetchChannel,
+	getCachedChannel
+} from '@/util/loanChannelUtils';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
-// TODO modernize and make a util function
-function getTargetedChannel(targetedRoute, allChannels) {
-	const loanChannels = allChannels?.lend?.loanChannels?.values;
-	// map id from loan channels
-	const targetedLoanChannel = _filter(
-		loanChannels,
-		loanChannel => {
-			return loanChannel.url.split('/').pop() === targetedRoute;
-		}
-	);
-	// return all the props for this loan channel
-	return targetedLoanChannel[0] ?? null;
-}
+const ecoChallengeExpKey = 'eco_challenge';
 
-// This is the same as: loanChannelPage.graphql except description & name has been added
-const ecoCategoryPageQuery = gql`
-	query ecoCategoryPageQuery {
-		lend {
-			loanChannels(offset:0, limit:1000) {
-				totalCount
-				values {
-					id
-					url
-					description
-					name
-				}
-			}
-		}
-	}
-`;
-
-const secondaryEcoLoanChannels = [
+const secondaryEcoLoanChannelUrls = [
 	'solar-energy',
 	'sustainable-agriculture',
 	'recycle-and-re-use',
 	'responsible-water-collection-and-storage',
 	'other-eco-friendly-loans',
 ];
+
+const secondaryEcoLoanChannels = loanChannelQueryMapMixin.data().loanChannelQueryMap
+	.filter(channel => secondaryEcoLoanChannelUrls.includes(channel.url));
+
+const secondaryEcoLoanChannelIds = secondaryEcoLoanChannels.map(channel => channel.id);
 
 export default {
 	name: 'LoanChannelCategoryClimateExperiment',
@@ -102,18 +93,26 @@ export default {
 		return {
 			targetedLoanChannelURL: null,
 			targetedLoanChannelID: null,
-			loanChannel: () => {},
+			loanChannel: {},
 			loading: false,
 			lendFilterExpVersion: '',
-			secondaryLoanChannelIds: [],
+			secondaryEcoLoanChannelsResponse: [],
 			loanDisplaySettings: {
 				loanLimit: 9,
 				showViewMoreCard: true,
 				showCheckBackMessage: true
-			}
+			},
+			isEcoChallengeExpShown: false,
 		};
 	},
 	computed: {
+		challengeChannels() {
+			return [
+				116, // solar energy
+				117, // sustainable agriculture
+				118, // recycle and reuse
+			];
+		},
 		loanChannelName() {
 			return this.loanChannel?.name ?? '';
 		},
@@ -129,38 +128,65 @@ export default {
 			// process eligible filter url
 			return this.getFilterUrl();
 		},
+		secondaryChannels() {
+			// if eco challenge experiment is shown, return only the challenge channels
+			if (this.isEcoChallengeExpShown) {
+				return this.secondaryEcoLoanChannelsResponse
+					.filter(channel => this.challengeChannels.includes(channel.id));
+			}
+			return this.secondaryEcoLoanChannelsResponse;
+		}
 	},
 	apollo: {
-		preFetch: true,
-		query: ecoCategoryPageQuery
+		preFetch(config, client, args) {
+			const { route } = args;
+			const { params } = route;
+
+			// Filter routes on route.param.category to get current path
+			const targetedLoanChannelURL = params.category;
+
+			// Isolate targeted loan channel id
+			const targetedLoanChannelID = loanChannelQueryMapMixin.data().loanChannelQueryMap
+				.find(channel => channel.url === targetedLoanChannelURL)?.id;
+
+			// Get page limit and offset
+			const limit = 9;
+			const offset = 0;
+			return preFetchChannel(
+				client,
+				// Access map directly since SSR doesn't have mixins available
+				loanChannelQueryMapMixin.data().loanChannelQueryMap,
+				targetedLoanChannelURL,
+				// Build loanQueryVars since SSR doesn't have same context
+				{ ids: [...secondaryEcoLoanChannelIds, targetedLoanChannelID], limit, offset }
+			);
+		}
 	},
 	created() {
-		let allChannelsData = {};
-
-		try {
-			allChannelsData = this.apollo.readQuery({
-				query: ecoCategoryPageQuery,
-				variables: { basketId: this.loanQueryVars.basketId }
-			});
-		} catch (e) {
-			logReadQueryError(e, 'LoanChannelCategoryControl created ecoCategoryPageQuery');
-		}
-
-		// Filter routes on param.category to get current path
 		this.targetedLoanChannelURL = this.$route?.params?.category;
+		this.targetedLoanChannelID = this.loanChannelQueryMap
+			.find(channel => channel.url === this.targetedLoanChannelURL)?.id;
 
-		// Isolate targeted loan channel id
-		this.targetedLoanChannelID = getTargetedChannel(this.targetedLoanChannelURL, allChannelsData)?.id;
+		// Prevent pop-in by loading data from the Apollo cache manually here instead of just using the subscription
+		const baseData = getCachedChannel(
+			this.apollo,
+			this.loanChannelQueryMap,
+			this.targetedLoanChannelURL,
+			{
+				ids: [...secondaryEcoLoanChannelIds, this.targetedLoanChannelID],
+				limit: 9,
+				offset: 0,
+				basketId: this.cookieStore.get('kvbskt'),
+			}
+		);
+		this.loanChannel = baseData?.lend?.loanChannelsById.find(channel => channel.id === this.targetedLoanChannelID);
 
-		// Get secondary loan channel id's
-		this.secondaryLoanChannelIds = secondaryEcoLoanChannels
-			.map(secondaryLoanChannelURL => {
-				return getTargetedChannel(secondaryLoanChannelURL, allChannelsData);
-			});
+		this.secondaryEcoLoanChannelsResponse = baseData?.lend?.loanChannelsById
+			.filter(channel => channel.id !== this.targetedLoanChannelID) ?? [];
 
-		// Assign our initial loan channel based on the route
-		this.loanChannel = allChannelsData?.lend?.loanChannels?.values
-			.filter(channel => channel.id === this.targetedLoanChannelID)?.[0];
+		// filter out any secondary channels that do not have loans
+		this.secondaryEcoLoanChannelsResponse = this.secondaryEcoLoanChannelsResponse
+			.filter(channel => channel.loans.totalCount > 0);
 
 		/*
 		 * Experiment Initializations
@@ -171,6 +197,21 @@ export default {
 	},
 	mounted() {
 		this.updateLendFilterExp();
+
+		const ecoChallengeExpData = getExperimentSettingCached(this.apollo, ecoChallengeExpKey);
+		if (ecoChallengeExpData?.enabled) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				ecoChallengeExpKey,
+				'EXP-ACK-392-Sep2022'
+			);
+			if (version === 'b') {
+				this.isEcoChallengeExpShown = true;
+			}
+		}
+
 		// check for newly assigned bounceback
 		const redirectFromUiCookie = this.cookieStore.get('redirectFromUi') || '';
 		if (redirectFromUiCookie === 'true') {

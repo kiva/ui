@@ -277,6 +277,14 @@ module.exports = [
 		},
 	},
 	{
+		path: '/hp/:dynamicRoute',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: {
+			contentfulPage: route => `hp/${route.params.dynamicRoute}`,
+			excludeFromStaticSitemap: true,
+		},
+	},
+	{
 		path: '/monthlygood',
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage'),
 		props: route => ({ category: route.query.category }),
@@ -435,6 +443,8 @@ module.exports = [
 		meta: {
 			activeLoginRequired: true,
 			excludeFromStaticSitemap: true,
+			mfaRequired: true,
+			recentLoginRequired: true,
 		},
 	},
 	{
@@ -502,7 +512,7 @@ module.exports = [
 	},
 	{
 		path: '/lend/saved-search',
-		component: () => import('@/pages/Settings/SavedSearchBeta'),
+		component: () => import('@/pages/Settings/SavedSearch'),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
