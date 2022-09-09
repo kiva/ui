@@ -298,7 +298,6 @@ export default {
 		},
 		processQueryResult(result) {
 			if (result.error) {
-				console.error(result.error);
 				this.$showTipMsg('There was a problem loading your loan recommendations', 'error');
 				try {
 					Sentry.withScope(scope => {
