@@ -39,9 +39,59 @@ export default {
 			'view-new-filter-saved-search',
 			''
 		);
+
+		if (this.$route?.query?.saved_search ?? false) {
+			this.openModal();
+		}
+	},
+	data() {
+		return {
+			isLightboxVisible: false,
+			savedSearchName: '',
+			closedModal: false
+		};
+	},
+	computed: {
+		reformattedSearchState() {
+			return {
+				country: this.loanSearchState?.countryIsoCode,
+				gender: this.loanSearchState?.gender,
+				sector: this.loanSearchState?.sectorId,
+				theme: this.loanSearchState?.themeId.map(themeId => this.themeNames[themeId])
+			};
+		},
+		loginUrl() {
+			const fullPath = encodeURIComponent(`${this.$route.fullPath}&saved_search=true`);
+			return `/ui-login?doneUrl=${fullPath}`;
+		},
 	},
 	methods: {
 		openModal() {
+			if (this.userId) {
+				this.isLightboxVisible = true;
+				this.closedModal = false;
+				this.$kvTrackEvent(
+					'Lending',
+					'click-new-filter-saved-search',
+					'Add to saved searches'
+				);
+			} else {
+				window.location.href = this.loginUrl;
+			}
+		},
+		closeModal() {
+			this.isLightboxVisible = false;
+			if (!this.closedModal) {
+				this.$kvTrackEvent(
+					'Lending',
+					'click-new-saved-search-modal-dismiss',
+					''
+				);
+				this.closedModal = true;
+			}
+		},
+		saveSavedSearch() {
+			this.isLightboxVisible = false;
 			this.$kvTrackEvent(
 				'Lending',
 				'click-new-filter-saved-search',
