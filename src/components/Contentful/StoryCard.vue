@@ -49,17 +49,21 @@
 			v-else
 		>
 			<dynamic-rich-text
-				class="tw-text-action"
+				class="story-card__title tw-text-action"
 				:class="`tw-text-${alignment}`"
+				v-if="cardTitle"
 				:html="cardTitle"
 			/>
 			<dynamic-rich-text
 				class="story-card__content tw-h-full tw-pb-4 tw-pt-3"
 				:class="`story-card__content--${alignment} tw-text-${alignment}`"
+				v-if="cardContent"
 				:html="cardContent"
 			/>
 			<dynamic-rich-text
+				class="story-card__footer"
 				:class="`tw-text-${alignment}`"
+				v-if="cardFooter"
 				:html="cardFooter"
 			/>
 		</div>
