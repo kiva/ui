@@ -110,6 +110,7 @@ export default {
 		return {
 			isLightboxVisible: false,
 			savedSearchName: '',
+			closedModal: false
 		};
 	},
 	computed: {
@@ -130,6 +131,7 @@ export default {
 		openModal() {
 			if (this.userId) {
 				this.isLightboxVisible = true;
+				this.closedModal = false;
 				this.$kvTrackEvent(
 					'Lending',
 					'click-new-filter-saved-search',
@@ -141,11 +143,14 @@ export default {
 		},
 		closeModal() {
 			this.isLightboxVisible = false;
-			this.$kvTrackEvent(
-				'Lending',
-				'click-new-saved-search-modal-dismiss',
-				''
-			);
+			if (!this.closedModal) {
+				this.$kvTrackEvent(
+					'Lending',
+					'click-new-saved-search-modal-dismiss',
+					''
+				);
+				this.closedModal = true;
+			}
 		},
 		saveSavedSearch() {
 			this.isLightboxVisible = false;
