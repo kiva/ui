@@ -1,3 +1,10 @@
+### [2.281.4](https://github.com/kiva/ui/compare/v2.281.3...v2.281.4) (2022-09-09)
+
+
+### Bug Fixes
+
+* double tracking fire was avoided when closing save search modal ([3f541dd](https://github.com/kiva/ui/commit/3f541ddaaa33429a532928114f22c2b3eac96bd6))
+
 ### [2.281.3](https://github.com/kiva/ui/compare/v2.281.2...v2.281.3) (2022-09-08)
 
 
