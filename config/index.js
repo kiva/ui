@@ -28,7 +28,7 @@ module.exports = {
 		enableSentry: true,
 		sentryURI: 'https://3ab8031cd8bf45d48f79e2b77657e16e@o7540.ingest.sentry.io/1201288',
 		algoliaConfig: {
-			enableAA: true,
+			enableAA: false,
 			group: 'prod',
 			appId: 'H4ONVZQ2C6',
 			apiKey: '82ec72aa3177a6f4fc47b7103e6db786',
