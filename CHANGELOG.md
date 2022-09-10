@@ -1,3 +1,10 @@
+### [2.281.5](https://github.com/kiva/ui/compare/v2.281.4...v2.281.5) (2022-09-10)
+
+
+### Bug Fixes
+
+* turn off algolia analytics ([23e4ee4](https://github.com/kiva/ui/commit/23e4ee40822394cd22d9b519e97d30c26e1206a6))
+
 ### [2.281.4](https://github.com/kiva/ui/compare/v2.281.3...v2.281.4) (2022-09-09)
 
 
