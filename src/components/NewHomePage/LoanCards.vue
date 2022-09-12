@@ -58,12 +58,12 @@
 			<!-- Borrower name-->
 			<kv-loading-placeholder
 				v-if="isLoading"
-				class="tw-mb-0.5 borrower-name" style="min-height: 2rem;"
+				class="tw-mb-0.5" style="min-height: 2rem;"
 			/>
 
 			<borrower-name
 				v-if="!isLoading"
-				class="tw-mb-1 tw-text-h3 borrower-name"
+				class="tw-mb-1 tw-text-h3 tw-mt-[10px]"
 				:max-length="50"
 				:name="borrowerName"
 				style="min-height: 2rem;"
@@ -74,8 +74,8 @@
 				v-if="isLoading"
 				class="tw-mb-1.5 tw-flex-grow"
 			/>
-			<div v-if="!isLoading" class="loan-use-container">
-				<p class="tw-text-h3 tw-m-0 loan-use-text tw-mb-2.5">
+			<div v-if="!isLoading" class="tw-text-left">
+				<p class="tw-m-0 tw-m-h[3rem] tw-overflow-hidden tw-text-ellipsis tw-line-clamp-2 tw-text-md">
 					{{ loanUse }}
 				</p>
 			</div>
@@ -94,18 +94,18 @@
 
 			<div v-if="!isLoading" class="tw-flex-auto tw-mb-2">
 				<figure>
-					<figcaption class="tw-flex progress">
+					<figcaption class="tw-flex">
 						<template>
 							<div class="tw-flex-auto tw-text-left">
 								<p
-									class="tw-text-h3 tw-m-0 progress__to-go"
+									class="tw-text-h3 tw-m-0 progress-text"
 									data-testid="bp-summary-amount-to-go"
 								>
 									{{ Math.floor(fundraisingPercent) }}% FUNDED
 								</p>
 							</div>
 							<p
-								class="tw-flex-auto tw-text-right progress__days-remaining"
+								class="tw-flex-auto tw-text-right progress-text"
 								data-testid="bp-summary-timeleft"
 							>
 								<span lass="tw-text-h3 tw-block tw-m-0">
@@ -332,75 +332,28 @@ export default {
 	},
 };
 </script>
-<style lang="scss" scoped>
-@import 'settings';
-@import "foundation";
 
-$color-text: #212121;
-$background-color: #fff;
+<style lang="postcss" scoped>
 
 .link {
-	color: $color-text;
-	text-decoration: none;
+	@apply tw-no-underline tw-text-black hover:tw-no-underline;
 }
 
 .card-container {
-	min-width: 260px;
-	max-width: 260px;
-	height: 100%;
-	padding: 10px;
-	display: inline-block;
-	background-color: $background-color;
-	border-radius: 8px;
-	-webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-	transition: opacity 0.3s ease-in-out;
+	@apply tw-m-[50px];
+	@apply tw-min-w-[260px] tw-max-w-[260px] tw-h-[100%] tw-p-[10px];
+	@apply tw-inline-block tw-rounded-[8px] tw-transition-all tw-duration-300 tw-ease-in-out;
 }
 
 .card-container:hover {
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-.progress {
-	&__to-go {
-		font-size: 14px;
-		margin-top: 15px;
-		margin-bottom: 5px;
-		color: #212121;
-		font-weight: bold;
-	}
-
-	&__days-remaining {
-		font-size: 14px;
-		margin-top: 15px;
-		margin-bottom: 5px;
-		color: $color-text;
-		text-transform: uppercase;
-		font-weight: bold;
-	}
+.progress-text {
+	@apply tw-text-small tw-mb-[5px] tw-mt-[15px] tw-text-black tw-font-medium;
 }
 
 .borrower-name {
-	font-size: 1.5rem;
-	margin-top: 10px;
-}
-
-.loan-use-container {
-	text-align: left;
-	line-height: 1.5em;
-	max-height: 3em;
-	margin-bottom: 0;
-}
-
-.loan-use-text {
-	font-size: 17px;
-	font-weight: 300;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	display: -webkit-box;
-	-webkit-line-clamp: 2;
-	line-clamp: 2;
-	-webkit-box-orient: vertical;
-	letter-spacing: -0.3px;
-	margin-bottom: 0;
+	@apply tw-mt-[10px];
 }
 </style>
