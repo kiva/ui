@@ -105,13 +105,37 @@
 							v-html="heroSubHeadline"
 							class="tw-mb-2 md:tw-mb-3"
 						></h2>
-						<div v-if="heroBody" class="tw-prose tw-mb-2 md:tw-mb-3" ref="heroBodyCopy">
-							<dynamic-rich-text :html="heroBody" />
+						<div
+							v-if="heroBody" class="tw-prose tw-mb-2 md:tw-mb-3"
+							:class="{'md:tw-grid md:tw-grid-cols-2 md:tw-gap-3' : secondHeroBody}"
+							ref="heroBodyCopy"
+						>
+							<template v-if="secondHeroBody">
+								<dynamic-rich-text :html="heroBody" />
+								<dynamic-rich-text :html="secondHeroBody" />
+							</template>
+							<template v-else>
+								<dynamic-rich-text :html="heroBody" />
+							</template>
 						</div>
-						<button-wrapper
-							class="tw-w-full md:tw-w-auto"
-							:content="buttonContent"
-						/>
+						<template v-if="secondaryCtaText">
+							<div class="tw-flex tw-flex-wrap tw-gap-2">
+								<button-wrapper
+									class="tw-w-full md:tw-w-auto"
+									:content="primaryButtonContent"
+								/>
+								<button-wrapper
+									class="tw-w-full md:tw-w-auto"
+									:content="secondaryButtonContent"
+								/>
+							</div>
+						</template>
+						<template v-else>
+							<button-wrapper
+								class="tw-w-full md:tw-w-auto"
+								:content="primaryButtonContent"
+							/>
+						</template>
 					</div>
 				</kv-grid>
 			</kv-page-container>
@@ -181,6 +205,12 @@ export default {
 		buttonTo() {
 			return this.buttonContent?.webLink ?? '';
 		},
+		secondaryCtaText() {
+			return this.genericContentBlock?.secondaryCtaText || '';
+		},
+		secondaryCtaLink() {
+			return this.genericContentBlock?.secondaryCtaLink || '';
+		},
 		genericContentBlock() {
 			const gcb = this.content?.contents?.find(({ contentType }) => {
 				return contentType ? contentType === 'genericContentBlock' : false;
@@ -189,6 +219,10 @@ export default {
 		},
 		heroBody() {
 			const text = this.genericContentBlock?.bodyCopy ?? '';
+			return text ? richTextRenderer(text) : '';
+		},
+		secondHeroBody() {
+			const text = this.genericContentBlock?.secondBodyCopy ?? '';
 			return text ? richTextRenderer(text) : '';
 		},
 		heroHeadline() {

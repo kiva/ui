@@ -71,3 +71,14 @@ export const StatusRow = (args, { argTypes }) => ({
 		/>
 	`,
 });
+
+export const DynamicHeroClassic = (args, { argTypes }) => ({
+	components: {
+		DynamicHeroClassic,
+	},
+	props: Object.keys(argTypes),
+	mixins: [apolloStoryMixin()],
+	template: `
+		<dynamic-hero-classic :content="heroAreaContent" />
+	`,
+});
