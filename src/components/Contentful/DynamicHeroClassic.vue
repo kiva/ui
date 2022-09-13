@@ -107,22 +107,19 @@
 						></h2>
 						<div
 							v-if="heroBody" class="tw-prose tw-mb-2 md:tw-mb-3"
-							:class="{'md:tw-grid md:tw-grid-cols-2 md:tw-gap-3' : secondHeroBody}"
+							:class="{'md:tw-grid md:tw-grid-cols-2 md:tw-gap-3 md:tw-items-stretch' : secondHeroBody}"
 							ref="heroBodyCopy"
 						>
+							<dynamic-rich-text :html="heroBody" />
 							<template v-if="secondHeroBody">
-								<dynamic-rich-text :html="heroBody" />
-								<dynamic-rich-text :html="secondHeroBody" />
-							</template>
-							<template v-else>
-								<dynamic-rich-text :html="heroBody" />
+								<dynamic-rich-text class="tw-hidden md:tw-block" :html="secondHeroBody" />
 							</template>
 						</div>
-						<template v-if="secondaryCtaText">
+						<template v-if="secondBtnExist">
 							<div class="tw-flex tw-flex-wrap tw-gap-2">
 								<button-wrapper
 									class="tw-w-full md:tw-w-auto"
-									:content="primaryButtonContent"
+									:content="buttonContent"
 								/>
 								<button-wrapper
 									class="tw-w-full md:tw-w-auto"
@@ -133,7 +130,7 @@
 						<template v-else>
 							<button-wrapper
 								class="tw-w-full md:tw-w-auto"
-								:content="primaryButtonContent"
+								:content="buttonContent"
 							/>
 						</template>
 					</div>
@@ -205,11 +202,13 @@ export default {
 		buttonTo() {
 			return this.buttonContent?.webLink ?? '';
 		},
-		secondaryCtaText() {
-			return this.genericContentBlock?.secondaryCtaText || '';
+		secondaryButtonContent() {
+			return this.content?.contents?.findLast(({ contentType }) => {
+				return contentType ? contentType === 'button' : false;
+			});
 		},
-		secondaryCtaLink() {
-			return this.genericContentBlock?.secondaryCtaLink || '';
+		secondBtnExist() {
+			return this.buttonContent?.label !== this.secondaryButtonContent?.label;
 		},
 		genericContentBlock() {
 			const gcb = this.content?.contents?.find(({ contentType }) => {
@@ -221,8 +220,13 @@ export default {
 			const text = this.genericContentBlock?.bodyCopy ?? '';
 			return text ? richTextRenderer(text) : '';
 		},
+		gridBlock() {
+			return this.content?.contents?.find(({ key }) => {
+				return key ? key === 'second-hp-classic-standard-hero-gcb' : false;
+			});
+		},
 		secondHeroBody() {
-			const text = this.genericContentBlock?.secondBodyCopy ?? '';
+			const text = this.gridBlock?.bodyCopy ?? '';
 			return text ? richTextRenderer(text) : '';
 		},
 		heroHeadline() {
