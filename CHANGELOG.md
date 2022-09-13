@@ -1,3 +1,10 @@
+### [2.283.1](https://github.com/kiva/ui/compare/v2.283.0...v2.283.1) (2022-09-13)
+
+
+### Bug Fixes
+
+* update lighthouse checkout step to gain visibility to ancestor hash ([1ab360f](https://github.com/kiva/ui/commit/1ab360f1da1eb0f55a139e3124655950895c9bdd))
+
 ## [2.283.0](https://github.com/kiva/ui/compare/v2.282.0...v2.283.0) (2022-09-13)
 
 
