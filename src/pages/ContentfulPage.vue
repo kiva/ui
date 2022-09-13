@@ -92,16 +92,12 @@ const CenteredRichText = () => import('@/components/Contentful/CenteredRichText'
 const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
 const HeroWithCarousel = () => import('@/components/Contentful/HeroWithCarousel');
 const LoansByCategoryCarousel = () => import('@/components/Contentful/LoansByCategoryCarousel');
-
 const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
-
 const FrequentlyAskedQuestions = () => import('@/components/Contentful/FrequentlyAskedQuestions');
-
 const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
-
 const RichTextItemsCentered = () => import('@/components/Contentful/RichTextItemsCentered');
-
 const MediaItemsCentered = () => import('@/components/Contentful/MediaItemsCentered');
+const StoryCardCarousel = () => import('@/components/Contentful/StoryCardCarousel');
 
 // Get the Contentful Page data from the data of an Apollo query result
 const getPageData = data => {
@@ -174,6 +170,8 @@ const getComponentFromType = type => {
 			return RichTextItemsCentered;
 		case 'mediaItemsCentered':
 			return MediaItemsCentered;
+		case 'storyCardCarousel':
+			return StoryCardCarousel;
 		default:
 			logFormatter(`ContenfulPage: Unknown content group type "${type}"`, 'error');
 			return null;

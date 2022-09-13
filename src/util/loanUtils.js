@@ -136,3 +136,24 @@ export function watchLoanData({
 	// Return the observer to allow modification of variables
 	return queryObserver;
 }
+
+export function watchLoanCardData({
+	apollo, loanId, loanCardQuery, callback
+}) {
+	// Setup query observer to watch for changes to the loan data (async)
+	const queryObserver = apollo.watchQuery({
+		query: loanCardQuery,
+		variables: {
+			loanId,
+		},
+	});
+
+	// Subscribe to the observer to see each result
+	queryObserver.subscribe({
+		next: result => callback(result),
+		error: error => callback({ error }),
+	});
+
+	// Return the observer to allow modification of variables
+	return queryObserver;
+}

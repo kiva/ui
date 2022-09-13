@@ -1,41 +1,39 @@
 <template>
-	<section>
-		<div class="tw-relative">
-			<div
-				class="tw-relative tw-w-full tw-overflow-hidden tw-z-1 tw-top-0"
-				:class="verticalPaddingClasses"
-			>
-				<slot name="content">
-				</slot>
-			</div>
-			<div
-				class="tw-w-full tw-h-full tw-absolute tw-top-0 tw-z--1"
-				:style="backgroundStyle"
-			>
-				<video
-					class="tw-w-full tw-h-full tw-object-cover" v-if="isBackgroundVideo"
-					:src="backgroundMedia.url"
-					autoplay
-					loop
-					muted
-					playsinline
-				></video>
-				<kv-contentful-img
-					class="tw-w-full tw-h-full tw-object-cover"
-					v-if="isBackgroundImage"
-					:width="1440"
-					:contentful-src="backgroundMedia.url"
-					fallback-format="jpg"
-					:alt="backgroundMedia.description"
-					:source-sizes="sourceSizes"
-				/>
-			</div>
+	<section class="tw-relative">
+		<div
+			class="tw-relative tw-w-full tw-overflow-hidden tw-z-1 tw-top-0"
+			:class="verticalPaddingClasses"
+		>
+			<slot name="content">
+			</slot>
+		</div>
+		<div
+			class="tw-w-full tw-h-full tw-absolute tw-top-0 tw-z--1"
+			:style="backgroundStyle"
+		>
+			<video
+				class="tw-w-full tw-h-full tw-object-cover" v-if="isBackgroundVideo"
+				:src="backgroundMedia.url"
+				autoplay
+				loop
+				muted
+				playsinline
+			></video>
+			<kv-contentful-img
+				class="tw-w-full tw-h-full tw-object-cover"
+				v-if="isBackgroundImage"
+				:width="1440"
+				:contentful-src="backgroundMedia.url"
+				fallback-format="jpg"
+				:alt="backgroundMedia.description"
+				:source-sizes="sourceSizes"
+			/>
 		</div>
 	</section>
 </template>
 
 <script>
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
+const KvContentfulImg = () => import('~/@kiva/kv-components/vue/KvContentfulImg');
 
 /**
 * Section Background
