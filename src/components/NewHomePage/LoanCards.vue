@@ -340,7 +340,6 @@ export default {
 }
 
 .card-container {
-	@apply tw-m-[50px];
 	@apply tw-min-w-[260px] tw-max-w-[260px] tw-h-[100%] tw-p-[10px];
 	@apply tw-inline-block tw-rounded-[8px] tw-transition-all tw-duration-300 tw-ease-in-out;
 }
