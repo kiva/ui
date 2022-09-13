@@ -19,7 +19,7 @@
 		<kv-button
 			class="tw-hidden md:tw-block tw-mx-1 md:tw-mb-3 tw-whitespace-nowrap"
 			:variant="buttonStyle"
-			@click="goToCategoryPage"
+			:to="categoryPage"
 		>
 			Browse all
 		</kv-button>
@@ -39,7 +39,8 @@ export default {
 	data() {
 		return {
 			categoryBtnStyle: 'vertical-tab',
-			buttonStyle: 'primary'
+			buttonStyle: 'primary',
+			categoryPage: '/lend-by-category/',
 		};
 	},
 	props: {
@@ -72,9 +73,6 @@ export default {
 			);
 			this.$emit('handle-category-click', { categoryId });
 			return false;
-		},
-		goToCategoryPage() {
-			window.location = '/lend-by-category/';
 		}
 	}
 };
