@@ -11,7 +11,7 @@
 
 		<kv-carousel
 			v-if="augmentedLoanIds.length > 0 && isVisible"
-			class="tw-w-full tw-overflow-visible md:tw-overflow-hidden"
+			:class="['tw-w-full tw-overflow-visible md:tw-overflow-hidden', { 'md:tw-hidden' : newHomeExp }]"
 			:embla-options="{
 				loop: false,
 			}"
@@ -57,6 +57,37 @@
 				</div>
 			</div>
 		</kv-carousel>
+		<template v-if="newHomeExp">
+			<div class="tw-hidden md:tw-grid md:tw-grid-cols-3 md:tw-gap-4">
+				<template v-for="(loanId, index) in augmentedLoanIds">
+					<!-- show loan card -->
+					<!-- TODO Re-implement card position analytics -->
+					<kiva-classic-basic-loan-card
+						:item-index="index"
+						:key="`loan-${loanId}`"
+						:loan-id="loanId"
+						:exp-label="expLabel"
+						:lend-now-button="lendNowButton"
+					/>
+				</template>
+			</div>
+			<div class="tw-mt-4 tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-w-auto tw-mx-auto">
+				<kv-button
+					class="tw-mx-1 tw-mb-3 tw-whitespace-nowrap"
+					:variant="categoryButtonStyle"
+					:to="cleanUrl"
+				>
+					{{ viewAllLoansCategoryTitle }}
+				</kv-button>
+				<kv-button
+					class="tw-block md:tw-hidden tw-mx-1 md:tw-mb-3 tw-whitespace-nowrap"
+					:to="`/lend-by-category`"
+					:variant="browseButtonStyle"
+				>
+					Browse all
+				</kv-button>
+			</div>
+		</template>
 	</div>
 </template>
 
@@ -64,6 +95,7 @@
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'KivaClassicLoanCarousel',
@@ -71,6 +103,7 @@ export default {
 		KvCarousel,
 		KvLoadingSpinner,
 		KivaClassicBasicLoanCard,
+		KvButton
 	},
 	props: {
 		isLoggedIn: {
@@ -113,6 +146,10 @@ export default {
 		lendNowButton: {
 			type: Boolean,
 			default: false
+		},
+		newHomeExp: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
@@ -120,6 +157,9 @@ export default {
 			name: '',
 			id: 0,
 			url: '',
+			browseButtonStyle: 'primary',
+			categoryButtonStyle: 'secondary',
+			lendByCategoryUrl: 'lend-by-category'
 		};
 	},
 	computed: {
