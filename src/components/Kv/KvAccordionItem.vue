@@ -78,10 +78,19 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		active: {
+			type: Boolean,
+			default: false,
+		}
+	},
+	watch: {
+		active(val) {
+			this.isOpen = val;
+		}
 	},
 	data() {
 		return {
-			isOpen: this.open,
+			isOpen: this.active || this.open,
 			mdiChevronDown
 		};
 	},
@@ -95,7 +104,7 @@ export default {
 				 * @event toggle
 				 * @type {Event}
 				 */
-				this.$emit('toggle', { open: this.isOpen });
+				this.$emit('toggle', { open: this.isOpen, id: this.id });
 			}
 		},
 		expand() {
