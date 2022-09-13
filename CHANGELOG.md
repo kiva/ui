@@ -1,3 +1,19 @@
+## [2.283.0](https://github.com/kiva/ui/compare/v2.282.0...v2.283.0) (2022-09-13)
+
+
+### Features
+
+* new hompe page loan cards ([eb7a4b6](https://github.com/kiva/ui/commit/eb7a4b669ba40904c381ec395b1b7cc2515f3260))
+* remove console.log ([5071a8d](https://github.com/kiva/ui/commit/5071a8d0d11a71db34a1e1209e5fa2a58e64e635))
+* stylized carousel for Story Cards MARS-241 ([ea69e31](https://github.com/kiva/ui/commit/ea69e318bddfe43d64d9f1be877d475bbf8a03e8))
+* update track event data ([dfaf354](https://github.com/kiva/ui/commit/dfaf354031b4c6199bb89cd2a0daae7883927a7c))
+
+
+### Bug Fixes
+
+* move styles to tailwind classes ([88920e7](https://github.com/kiva/ui/commit/88920e773bdeb97d1799f07dad595156037282ce))
+* removed unnecessary css style ([31a49c0](https://github.com/kiva/ui/commit/31a49c0aeb51d692ac96f8302a86914d7fb0a190))
+
 ## [2.282.0](https://github.com/kiva/ui/compare/v2.281.5...v2.282.0) (2022-09-13)
 
 
