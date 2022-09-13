@@ -63,6 +63,7 @@
 <script>
 import IconAdd from '@/assets/icons/inline/add.svg';
 import { createSavedSearch } from '@/util/loanSearch/searchStateUtils';
+import logFormatter from '@/util/logFormatter';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
@@ -84,6 +85,14 @@ export default {
 		themeNames: {
 			type: Array,
 			default: () => {}
+		},
+		showSuccessMessage: {
+			type: Function,
+			default: () => {}
+		},
+		userId: {
+			type: Number,
+			default: null
 		}
 	},
 	mounted() {
@@ -92,11 +101,16 @@ export default {
 			'view-new-filter-saved-search',
 			''
 		);
+
+		if (this.$route?.query?.saved_search ?? false) {
+			this.openModal();
+		}
 	},
 	data() {
 		return {
 			isLightboxVisible: false,
 			savedSearchName: '',
+			closedModal: false
 		};
 	},
 	computed: {
@@ -107,37 +121,58 @@ export default {
 				sector: this.loanSearchState?.sectorId,
 				theme: this.loanSearchState?.themeId.map(themeId => this.themeNames[themeId])
 			};
-		}
+		},
+		loginUrl() {
+			const fullPath = encodeURIComponent(`${this.$route.fullPath}&saved_search=true`);
+			return `/ui-login?doneUrl=${fullPath}`;
+		},
 	},
 	methods: {
 		openModal() {
-			this.isLightboxVisible = true;
-			this.$kvTrackEvent(
-				'Lending',
-				'click-new-filter-saved-search',
-				'Add to saved searches'
-			);
+			if (this.userId) {
+				this.isLightboxVisible = true;
+				this.closedModal = false;
+				this.$kvTrackEvent(
+					'Lending',
+					'click-new-filter-saved-search',
+					'Add to saved searches'
+				);
+			} else {
+				window.location.href = this.loginUrl;
+			}
 		},
 		closeModal() {
 			this.isLightboxVisible = false;
-			this.$kvTrackEvent(
-				'Lending',
-				'click-new-saved-search-modal-dismiss',
-				''
-			);
+			if (!this.closedModal) {
+				this.$kvTrackEvent(
+					'Lending',
+					'click-new-saved-search-modal-dismiss',
+					''
+				);
+				this.closedModal = true;
+			}
 		},
 		saveSavedSearch() {
 			this.isLightboxVisible = false;
 			this.$kvTrackEvent(
 				'Lending',
 				'click-create-saved-search-new-modal',
-				'Create saved search'
+				'Create saved search',
+				this.reformattedSearchState
 			);
 			// We want to exclude sending any utm params
-			const queryString = window.location.search.replace(/(&|\?)utm_[a-zA-Z0-9]*=[a-zA-Z0-9]*/, '');
+			// New lend/filter page doesn't allow for custom keywords ATM - revisit this after exp phase
+			// const queryString = window.location.search.replace(/(&|\?)utm_[a-zA-Z0-9]*=[a-zA-Z0-9]*/, '');
 			createSavedSearch(
-				this.apollo, this.reformattedSearchState, queryString, this.savedSearchName
-			);
+				this.apollo, this.reformattedSearchState, '', this.savedSearchName
+			// eslint-disable-next-line no-unused-vars
+			).then(({ data }) => {
+				this.showSuccessMessage(this.savedSearchName);
+			}).catch(errorResponse => {
+				logFormatter(errorResponse, 'error');
+				// eslint-disable-next-line max-len
+				this.$showTipMsg('There was an error creating your Saved Search, these set of filters may already exist in your Saved Searches. Please try again.', 'error');
+			});
 		}
 	}
 };

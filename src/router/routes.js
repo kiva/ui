@@ -277,6 +277,14 @@ module.exports = [
 		},
 	},
 	{
+		path: '/hp/:dynamicRoute',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: {
+			contentfulPage: route => `hp/${route.params.dynamicRoute}`,
+			excludeFromStaticSitemap: true,
+		},
+	},
+	{
 		path: '/monthlygood',
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage'),
 		props: route => ({ category: route.query.category }),

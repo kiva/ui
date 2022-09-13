@@ -1,0 +1,37 @@
+#import '../../fragments/loanCardFields.graphql'
+
+query loanChannelData(
+	$ids: [Int!]!,
+	$numberOfLoans: Int = 11,
+	$imgDefaultSize: String = "w480h360",
+    $imgRetinaSize: String = "w960h720",
+) {
+	loanCategoriesByLoanChannelIds(
+		loanChannelIds: $ids
+	) {
+		id
+		... on LoanCategorySearchOutput {
+			loanChannelId
+			name
+			description
+			savedSearch(limit: $numberOfLoans) {
+				id
+				... on FundraisingLoanSavedSearchPageOutput {
+					filters
+					loans {
+						values {
+							id
+							...loanCardFields
+							image {
+								id
+								default: url(customSize: $imgDefaultSize)
+								retina: url(customSize: $imgRetinaSize)
+								hash
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

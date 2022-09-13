@@ -2,6 +2,20 @@
 	<www-page id="lend-filter">
 		<article class="tw-bg-secondary tw-relative tw-pt-6">
 			<kv-page-container>
+				<!-- eslint-disable-next-line max-len -->
+				<div v-if="savedSearchSuccess" class="tw-flex tw-bg-brand-100 tw-border tw-border-action tw-rounded tw-p-1 tw-mb-2 tw-gap-1">
+					<icon-sparkles class="tw-w-3 tw-h-3 tw-self-center" />
+					<div class="tw-flex-grow">
+						Success! You've added
+						<span class="tw-font-medium">{{ savedSearchName }}</span> to your saved searches.
+					</div>
+					<button
+						class="tw-w-3 tw-h-3"
+						@click="disableSuccessSavedSearch()"
+					>
+						<kv-material-icon :icon="mdiClose" />
+					</button>
+				</div>
 				<div class="tw-flex tw-items-start tw-pb-8">
 					<div class="tw-flex-1">
 						<h1 class="tw-mb-2">
@@ -31,7 +45,11 @@
 						</span>
 					</a>
 				</div>
-				<loan-search-interface :enable-saved-search="enableSavedSearch" />
+				<loan-search-interface
+					:enable-saved-search="enableSavedSearch"
+					:saved-search-success="savedSearchSuccess"
+					@enable-success-saved-search="enableSuccessSavedSearch"
+				/>
 			</kv-page-container>
 		</article>
 	</www-page>
@@ -40,7 +58,8 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanSearchInterface from '@/components/Lend/LoanSearch/LoanSearchInterface';
-import { mdiEarth, mdiFilter } from '@mdi/js';
+import { mdiEarth, mdiFilter, mdiClose } from '@mdi/js';
+import IconSparkles from '@/assets/icons/inline/sparkles-success.svg';
 import gql from 'graphql-tag';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
@@ -62,14 +81,37 @@ export default {
 		WwwPage,
 		KvPageContainer,
 		KvMaterialIcon,
-		LoanSearchInterface
+		LoanSearchInterface,
+		IconSparkles
 	},
 	data() {
 		return {
 			enableSavedSearch: false,
 			mdiEarth,
-			mdiFilter
+			mdiFilter,
+			mdiClose,
+			savedSearchSuccess: false,
+			savedSearchName: '',
 		};
+	},
+	methods: {
+		enableSuccessSavedSearch(searchName) {
+			this.savedSearchSuccess = true;
+			this.savedSearchName = searchName;
+			this.$kvTrackEvent(
+				'Lending',
+				'view-new-saved-search-success',
+				''
+			);
+		},
+		disableSuccessSavedSearch() {
+			this.savedSearchSuccess = false;
+			this.$kvTrackEvent(
+				'Lending',
+				'close-new-saved-search-success',
+				'Dismiss'
+			);
+		}
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
