@@ -92,6 +92,7 @@ const CenteredRichText = () => import('@/components/Contentful/CenteredRichText'
 const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
 const HeroWithCarousel = () => import('@/components/Contentful/HeroWithCarousel');
 const LoansByCategoryCarousel = () => import('@/components/Contentful/LoansByCategoryCarousel');
+const LoansByCategoryGrid = () => import('@/components/Contentful/HomePage/NewHomeLoansByCategoryGrid');
 const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
 const FrequentlyAskedQuestions = () => import('@/components/Contentful/FrequentlyAskedQuestions');
 const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
@@ -166,6 +167,8 @@ const getComponentFromType = type => {
 			return HeroWithCarousel;
 		case 'loansByCategoryCarousel':
 			return LoansByCategoryCarousel;
+		case 'loansByCategoryGrid':
+			return LoansByCategoryGrid;
 		case 'richTextItemsCentered':
 			return RichTextItemsCentered;
 		case 'mediaItemsCentered':
