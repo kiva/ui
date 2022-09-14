@@ -83,100 +83,64 @@ export default {
                 "contentType": "button"
                 },
                 {
-                    "key": "first-grid-item",
-                    "name": "first-grid-item",
+                    "key": "grid",
+                    "name": "grid",
                     "bodyCopy": {
                         "nodeType": "document",
                         "data": {},
                         "content": [
-                        {
-                            "nodeType": "paragraph",
-                            "data": {},
-                            "content": [
                             {
-                                "nodeType": "text",
-                                "value": "1. Laura and her husband, Walcenibier, need a $1000 loan to grow their empanada business",
-                                "marks": [],
-                                "data": {}
+                                "nodeType": "paragraph",
+                                "data": {},
+                                "content": [
+                                {
+                                    "nodeType": "text",
+                                    "value": "1. Laura and her husband, Walcenibier, need a $1000 loan to grow their empanada business",
+                                    "marks": [],
+                                    "data": {}
+                                }
+                                ]
+                            },
+                             {
+                                "nodeType": "paragraph",
+                                "data": {},
+                                "content": [
+                                {
+                                    "nodeType": "text",
+                                    "value": "2. Laura and her husband, Walcenibier, need a $1000 loan to grow their empanada business",
+                                    "marks": [],
+                                    "data": {}
+                                }
+                                ]
+                            },
+                             {
+                                "nodeType": "paragraph",
+                                "data": {},
+                                "content": [
+                                {
+                                    "nodeType": "text",
+                                    "value": "3. 37 people lend money through Kiva to help them fund their loan",
+                                    "marks": [],
+                                    "data": {}
+                                }
+                                ]
+                            },
+                             {
+                                "nodeType": "paragraph",
+                                "data": {},
+                                "content": [
+                                {
+                                    "nodeType": "text",
+                                    "value": "4. 37 people lend money through Kiva to help them fund their loan",
+                                    "marks": [],
+                                    "data": {}
+                                }
+                                ]
                             }
-                            ]
-                        }
-                    ]
-                },
+                        ]
+                    },
                     "headline": "<nobr>Make a loan,</nobr> <nobr><span class=\"tw-text-brand\">change a life</span></nobr>.",
                     "contentType": "genericContentBlock"
-                },
-                {
-                    "key": "second-grid-item",
-                    "name": "second-grid-item",
-                    "bodyCopy": {
-                        "nodeType": "document",
-                        "data": {},
-                        "content": [
-                        {
-                            "nodeType": "paragraph",
-                            "data": {},
-                            "content": [
-                            {
-                                "nodeType": "text",
-                                "value": "2. 37 people lend money through Kiva to help them fund their loan",
-                                "marks": [],
-                                "data": {}
-                            }
-                            ]
-                        }
-                    ]
-                },
-                "headline": "<nobr>Make a loan,</nobr> <nobr><span class=\"tw-text-brand\">change a life</span></nobr>.",
-                "contentType": "genericContentBlock"
-                },
-                 {
-                    "key": "third-grid-item",
-                    "name": "third-grid-item",
-                    "bodyCopy": {
-                        "nodeType": "document",
-                        "data": {},
-                        "content": [
-                        {
-                            "nodeType": "paragraph",
-                            "data": {},
-                            "content": [
-                            {
-                                "nodeType": "text",
-                                "value": "3. 37 people lend money through Kiva to help them fund their loan",
-                                "marks": [],
-                                "data": {}
-                            }
-                            ]
-                        }
-                    ]
-                },
-                "headline": "<nobr>Make a loan,</nobr> <nobr><span class=\"tw-text-brand\">change a life</span></nobr>.",
-                "contentType": "genericContentBlock"
-                },
-                 {
-                    "key": "fourth-grid-item",
-                    "name": "fourth-grid-item",
-                    "bodyCopy": {
-                        "nodeType": "document",
-                        "data": {},
-                        "content": [
-                        {
-                            "nodeType": "paragraph",
-                            "data": {},
-                            "content": [
-                            {
-                                "nodeType": "text",
-                                "value": "4. 37 people lend money through Kiva to help them fund their loan",
-                                "marks": [],
-                                "data": {}
-                            }
-                            ]
-                        }
-                    ]
-                },
-                "headline": "<nobr>Make a loan,</nobr> <nobr><span class=\"tw-text-brand\">change a life</span></nobr>.",
-                "contentType": "genericContentBlock"
                 }
             ],
             "media": [

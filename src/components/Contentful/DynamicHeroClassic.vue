@@ -112,14 +112,8 @@
 						>
 							<dynamic-rich-text :html="heroBody" />
 						</div>
-						<div
-							v-if="gridHeroBody.length"
-							:class="{'tw-grid md:tw-grid-cols-2 md:tw-grid-rows-2 tw-gap-1 md:tw-gap-3'
-								: gridHeroBody.length }"
-						>
-							<template v-if="gridHeroBody.length">
-								<dynamic-rich-text :key="block.id" v-for="block in gridHeroBody" :html="block.text" />
-							</template>
+						<div v-if="gridHeroBody" class="tw-mb-2 md:tw-mb-3">
+							<dynamic-rich-text :body-columns="bodyColumns" :html="gridHeroBody" />
 						</div>
 						<template v-if="secondBtnExist">
 							<div class="tw-flex tw-flex-wrap tw-gap-2">
@@ -231,16 +225,14 @@ export default {
 			const text = this.genericContentBlock?.bodyCopy ?? '';
 			return text ? richTextRenderer(text) : '';
 		},
+		gridContentBlock() {
+			return this.content?.contents?.find(({ key }) => {
+				return key ? key === 'grid' : false;
+			});
+		},
 		gridHeroBody() {
-			return ['first-grid-item', 'second-grid-item', 'third-grid-item', 'fourth-grid-item'].map(el => {
-				const block = this.getGridBlock(el);
-				const text = block?.bodyCopy ?? '';
-				if (!text) return false;
-				return {
-					text: text ? richTextRenderer(text) : '',
-					id: el
-				};
-			}).filter(el => el);
+			const text = this.gridContentBlock?.bodyCopy ?? '';
+			return text ? richTextRenderer(text) : '';
 		},
 		heroHeadline() {
 			return this.genericContentBlock?.headline ?? '';
@@ -299,12 +291,5 @@ export default {
 			return null;
 		}
 	},
-	methods: {
-		getGridBlock(columnKey) {
-			return this.content?.contents?.find(({ key }) => {
-				return key ? key === columnKey : false;
-			});
-		}
-	}
 };
 </script>
