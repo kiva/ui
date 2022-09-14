@@ -1,3 +1,10 @@
+## [2.284.0](https://github.com/kiva/ui/compare/v2.283.2...v2.284.0) (2022-09-14)
+
+
+### Features
+
+* add LoansByCategoryGrid as Content Group type ([bacf38e](https://github.com/kiva/ui/commit/bacf38e5100bf9a7708d195819a0c5a66d12fbff))
+
 ### [2.283.2](https://github.com/kiva/ui/compare/v2.283.1...v2.283.2) (2022-09-14)
 
 
