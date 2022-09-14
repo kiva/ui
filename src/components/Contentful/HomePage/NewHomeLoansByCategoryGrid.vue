@@ -9,6 +9,7 @@
 					<kiva-multi-category-grid
 						:contentful-loan-channels="contentfulLoanChannels"
 						:loan-display-settings="loanDisplaySettings"
+						:new-home-exp="true"
 					/>
 				</div>
 			</kv-page-container>
