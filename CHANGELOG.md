@@ -1,3 +1,11 @@
+### [2.284.1](https://github.com/kiva/ui/compare/v2.284.0...v2.284.1) (2022-09-14)
+
+
+### Bug Fixes
+
+* lint err ([8203bcc](https://github.com/kiva/ui/commit/8203bccf73f6e7495be5681ac5055d4187598556))
+* show saved search notif when user changes filters ([010f607](https://github.com/kiva/ui/commit/010f6072809224919c922bed340e94213762b9c4))
+
 ## [2.284.0](https://github.com/kiva/ui/compare/v2.283.2...v2.284.0) (2022-09-14)
 
 
