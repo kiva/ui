@@ -12,7 +12,8 @@
 					<div
 						class="tw-mx-auto tw-col-span-12"
 						:class="{
-							'md:tw-col-span-6': !singleColumn
+							'md:tw-col-span-6': !singleColumn,
+							'md:tw-col-span-5': gridHeroBody
 						}"
 						:style="maxWidthStyles"
 					>
@@ -91,7 +92,7 @@
 						class="tw-col-span-12"
 						:class="{
 							'tw-order-first': swapOrder,
-							'md:tw-col-span-6': !singleColumn
+							'md:tw-col-span-6': !singleColumn,
 						}"
 						:style="maxWidthStyles"
 					>
@@ -107,12 +108,16 @@
 						></h2>
 						<div
 							v-if="heroBody" class="tw-prose tw-mb-2 md:tw-mb-3"
-							:class="{'md:tw-grid md:tw-grid-cols-2 md:tw-gap-3 md:tw-items-stretch' : secondHeroBody}"
 							ref="heroBodyCopy"
 						>
 							<dynamic-rich-text :html="heroBody" />
-							<template v-if="secondHeroBody">
-								<dynamic-rich-text class="tw-hidden md:tw-block" :html="secondHeroBody" />
+						</div>
+						<div
+							:class="{'tw-grid md:tw-grid-cols-2 md:tw-grid-rows-2 tw-gap-1 md:tw-gap-3 tw-mb-2'
+								: gridHeroBody.length }"
+						>
+							<template v-if="gridHeroBody.length">
+								<dynamic-rich-text :key="block.id" v-for="block in gridHeroBody" :html="block.text" />
 							</template>
 						</div>
 						<template v-if="secondBtnExist">
@@ -184,6 +189,11 @@ export default {
 			default: () => {},
 		},
 	},
+	data() {
+		return {
+			grid: []
+		};
+	},
 	async mounted() {
 		await this.$nextTick();
 		addBlankTargetToExternalLinks(this.$refs.heroBodyCopy, this.pageSettingData);
@@ -220,14 +230,15 @@ export default {
 			const text = this.genericContentBlock?.bodyCopy ?? '';
 			return text ? richTextRenderer(text) : '';
 		},
-		gridBlock() {
-			return this.content?.contents?.find(({ key }) => {
-				return key ? key === 'second-hp-classic-standard-hero-gcb' : false;
+		gridHeroBody() {
+			return ['first-grid-item', 'second-grid-item', 'third-grid-item', 'fourth-grid-item'].map(el => {
+				const block = this.getGridBlock(el);
+				const text = block?.bodyCopy ?? '';
+				return {
+					text: text ? richTextRenderer(text) : '',
+					id: el
+				};
 			});
-		},
-		secondHeroBody() {
-			const text = this.gridBlock?.bodyCopy ?? '';
-			return text ? richTextRenderer(text) : '';
 		},
 		heroHeadline() {
 			return this.genericContentBlock?.headline ?? '';
@@ -286,5 +297,12 @@ export default {
 			return null;
 		}
 	},
+	methods: {
+		getGridBlock(columnKey) {
+			return this.content?.contents?.find(({ key }) => {
+				return key ? key === columnKey : false;
+			});
+		}
+	}
 };
 </script>
