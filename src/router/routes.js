@@ -91,6 +91,13 @@ module.exports = [
 		}
 	},
 	{
+		path: '/checkout/eco-challenge/thanks',
+		component: () => import('@/pages/Thanks/ThanksPageEcoChallenge'),
+		meta: {
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
 		path: '/confirm-instant-donation/:token/:amount',
 		component: () => import('@/pages/InstantActions/ConfirmInstantDonation'),
 		meta: {
