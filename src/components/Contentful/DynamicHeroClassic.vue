@@ -92,7 +92,7 @@
 						class="tw-col-span-12"
 						:class="{
 							'tw-order-first': swapOrder,
-							'md:tw-col-span-6': !singleColumn,
+							'md:tw-col-span-6': !singleColumn
 						}"
 						:style="maxWidthStyles"
 					>
@@ -106,10 +106,7 @@
 							v-html="heroSubHeadline"
 							class="tw-mb-2 md:tw-mb-3"
 						></h2>
-						<div
-							v-if="heroBody" class="tw-prose tw-mb-2 md:tw-mb-3"
-							ref="heroBodyCopy"
-						>
+						<div v-if="heroBody" class="tw-prose tw-mb-2 md:tw-mb-3" ref="heroBodyCopy">
 							<dynamic-rich-text :html="heroBody" />
 						</div>
 						<div v-if="gridHeroBody" class="tw-mb-2 md:tw-mb-3">
@@ -183,11 +180,6 @@ export default {
 			type: Object,
 			default: () => {},
 		},
-	},
-	data() {
-		return {
-			grid: []
-		};
 	},
 	async mounted() {
 		await this.$nextTick();
