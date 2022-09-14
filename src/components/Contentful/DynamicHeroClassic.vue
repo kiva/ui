@@ -235,12 +235,11 @@ export default {
 			return ['first-grid-item', 'second-grid-item', 'third-grid-item', 'fourth-grid-item'].map(el => {
 				const block = this.getGridBlock(el);
 				const text = block?.bodyCopy ?? '';
-				if (text) {
-					return {
-						text: text ? richTextRenderer(text) : '',
-						id: el
-					};
-				}
+				if (!text) return false;
+				return {
+					text: text ? richTextRenderer(text) : '',
+					id: el
+				};
 			}).filter(el => el);
 		},
 		heroHeadline() {
