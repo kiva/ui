@@ -1,3 +1,10 @@
+### [2.284.2](https://github.com/kiva/ui/compare/v2.284.1...v2.284.2) (2022-09-14)
+
+
+### Bug Fixes
+
+* remove commented out code in this config ([8f34378](https://github.com/kiva/ui/commit/8f34378ff06f9dca36ab15788e3b47d635a6a3dc))
+
 ### [2.284.1](https://github.com/kiva/ui/compare/v2.284.0...v2.284.1) (2022-09-14)
 
 
