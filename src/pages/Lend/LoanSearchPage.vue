@@ -108,7 +108,7 @@ export default {
 		disableSuccessSavedSearch(trackEvent) {
 			this.savedSearchSuccess = false;
 			if (trackEvent) {
-					this.$kvTrackEvent(
+				this.$kvTrackEvent(
 					'Lending',
 					'close-new-saved-search-success',
 					'Dismiss'
