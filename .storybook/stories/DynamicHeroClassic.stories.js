@@ -19,7 +19,7 @@ export default {
                     "data": {},
                     "content": [
                     {
-                        "nodeType": "paragraph",
+                        "nodeType": "heading-3",
                         "data": {},
                         "content": [
                         {
@@ -41,11 +41,6 @@ export default {
                                 "data": {}
                             }
                             ]
-                        },
-                        {
-                            "nodeType": "text",
-                            "marks": [],
-                            "data": {}
                         }
                         ]
                     },
@@ -60,19 +55,7 @@ export default {
                             "data": {}
                         }
                         ]
-                    },
-                    {
-                        "nodeType": "d",
-                        "data": {
-                        "0": {
-                            "nodeType": "text",
-                            "value": "heello",
-                            "marks": [],
-                            "data": {}
-                        }
-                        }
-                    }
-                    ]
+                    }]
                 },
                 "headline": "<nobr>Make a loan,</nobr> <nobr><span class=\"tw-text-brand\">change a life</span></nobr>.",
                 "contentType": "genericContentBlock"

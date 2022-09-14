@@ -13,7 +13,7 @@
 						class="tw-mx-auto tw-col-span-12"
 						:class="{
 							'md:tw-col-span-6': !singleColumn,
-							'md:tw-col-span-5': gridHeroBody
+							'md:tw-col-span-5': gridHeroBody.length
 						}"
 						:style="maxWidthStyles"
 					>
@@ -113,7 +113,8 @@
 							<dynamic-rich-text :html="heroBody" />
 						</div>
 						<div
-							:class="{'tw-grid md:tw-grid-cols-2 md:tw-grid-rows-2 tw-gap-1 md:tw-gap-3 tw-mb-2'
+							v-if="gridHeroBody.length"
+							:class="{'tw-grid md:tw-grid-cols-2 md:tw-grid-rows-2 tw-gap-1 md:tw-gap-3'
 								: gridHeroBody.length }"
 						>
 							<template v-if="gridHeroBody.length">
@@ -234,11 +235,13 @@ export default {
 			return ['first-grid-item', 'second-grid-item', 'third-grid-item', 'fourth-grid-item'].map(el => {
 				const block = this.getGridBlock(el);
 				const text = block?.bodyCopy ?? '';
-				return {
-					text: text ? richTextRenderer(text) : '',
-					id: el
-				};
-			});
+				if (text) {
+					return {
+						text: text ? richTextRenderer(text) : '',
+						id: el
+					};
+				}
+			}).filter(el => el);
 		},
 		heroHeadline() {
 			return this.genericContentBlock?.headline ?? '';
