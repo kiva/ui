@@ -1,3 +1,10 @@
+### [2.284.3](https://github.com/kiva/ui/compare/v2.284.2...v2.284.3) (2022-09-14)
+
+
+### Bug Fixes
+
+* add missing injections and props for new loans-by-category grid ([a8ed466](https://github.com/kiva/ui/commit/a8ed46642ab89d6114caf7d30c30b64686ab43af))
+
 ### [2.284.2](https://github.com/kiva/ui/compare/v2.284.1...v2.284.2) (2022-09-14)
 
 
