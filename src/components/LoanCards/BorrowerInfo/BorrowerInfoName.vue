@@ -1,14 +1,12 @@
 <template>
 	<router-link
+		:is="disableLink ? 'span' : 'router-link'"
 		:to="`/lend/${loanId}`"
 		v-kv-track-event="['Lending', 'click-Read more', 'Name', loanId, loanId]"
 	>
-		<span
-			class="tw-block"
-			@click="handleNameClick"
-		>
+		<h1 class="tw-text-h3" @click="handleNameClick">
 			{{ name }}
-		</span>
+		</h1>
 	</router-link>
 </template>
 

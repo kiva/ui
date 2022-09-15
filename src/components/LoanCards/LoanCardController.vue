@@ -77,6 +77,7 @@ const ExpandableLoanCardCollapsed = () => {
 const FeaturedHeroLoan = () => import('@/components/LoansByCategory/FeaturedHeroLoan');
 const GridLoanCard = () => import('@/components/LoanCards/GridLoanCard');
 const HoverLoanCard = () => import('@/components/LoanCards/HoverLoanCard/HoverLoanCard');
+const KivaClassicLendHomepageLoanCard = () => import('@/components/LoanCards/KivaClassicLendHomepageLoanCard');
 const LendHomepageLoanCard = () => import('@/components/LoanCards/LendHomepageLoanCard');
 const ListLoanCard = () => import('@/components/LoanCards/ListLoanCard');
 
@@ -201,6 +202,8 @@ export default {
 					return HoverLoanCard;
 				case 'LendHomepageLoanCard':
 					return LendHomepageLoanCard;
+				case 'KivaClassicLendHomepageLoanCard':
+					return KivaClassicLendHomepageLoanCard;
 				case 'ListLoanCard':
 					return ListLoanCard;
 				default:

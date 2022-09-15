@@ -2,8 +2,9 @@
 	<div class="loan-filters">
 		<div class="loan-filters__top-row">
 			<div class="tw-mb-2 md:tw-mb-0">
-				<kv-button
-					class="loan-filters__toggle rounded smallest secondary tw-mr-2"
+				<kv-ui-button
+					variant="secondary"
+					class="loan-filters__toggle tw-mr-2"
 					@click.native.prevent="showFilters()"
 				>
 					Filter loans
@@ -14,7 +15,7 @@
 						:from-sprite="true"
 						aria-hidden="true"
 					/>
-				</kv-button>
+				</kv-ui-button>
 				<span class="tw-font-medium tw-whitespace-nowrap">{{ totalCount }} loans</span>
 			</div>
 
@@ -60,21 +61,21 @@
 				</div>
 				<div class="small-12 large-4 xxlarge-3 columns">
 					<div class="chips__toggle-container">
-						<kv-button
+						<kv-ui-button
 							v-if="isChipsCollapsable"
 							class="chips__toggle text-link"
 							@click.native="isChipsCollapsed = !isChipsCollapsed"
 						>
 							{{ isChipsCollapsed ? `Show all ${filterChips.length} filters` : 'Hide filters' }}
-						</kv-button>
+						</kv-ui-button>
 						<span v-if="!isInitialFilters && isChipsCollapsable">|</span>
-						<kv-button
+						<kv-ui-button
 							v-if="!isInitialFilters"
 							class="chips__toggle text-link"
 							@click.native="handleResetFilters"
 						>
 							Reset all
-						</kv-button>
+						</kv-ui-button>
 					</div>
 				</div>
 			</div>
@@ -185,12 +186,11 @@
 			</div>
 
 			<template #controls>
-				<kv-button
-					class="button smallest"
+				<kv-ui-button
 					@click.native.prevent="applyFilters"
 				>
 					Apply Filters
-				</kv-button>
+				</kv-ui-button>
 			</template>
 		</kv-lightbox>
 	</div>
@@ -200,9 +200,7 @@
 import _isEqual from 'lodash/isEqual';
 import _sortBy from 'lodash/sortBy';
 import gql from 'graphql-tag';
-import KvButton from '@/components/Kv/KvButton';
 import KvChip from '@/components/Kv/KvChip';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import AttributeFilter from '@/components/CorporateCampaign/LoanSearch/AttributeFilter';
 import GenderFilter from '@/components/CorporateCampaign/LoanSearch/GenderFilter';
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
@@ -212,6 +210,8 @@ import LocationFilter from '@/components/CorporateCampaign/LoanSearch/LocationFi
 import SectorFilter from '@/components/CorporateCampaign/LoanSearch/SectorFilter';
 import SortOrder from '@/components/CorporateCampaign/LoanSearch/SortOrder';
 import TagFilter from '@/components/CorporateCampaign/LoanSearch/TagFilter';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
 const filterOptionsQuery = gql`
 	query filterOptionsQuery {
@@ -245,7 +245,7 @@ export default {
 	name: 'LoanSearchFilters',
 	inject: ['apollo'],
 	components: {
-		KvButton,
+		KvUiButton,
 		KvChip,
 		KvLightbox,
 		KvPillToggle,

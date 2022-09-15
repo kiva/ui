@@ -19,6 +19,7 @@
 			:src="defaultUrl"
 			:alt="alt"
 			loading="lazy"
+			@click="handleImageClick"
 		>
 	</picture>
 </template>
@@ -132,7 +133,19 @@ export default {
 		// Get a string to use in the srcset attribute as the definition for a single image size
 		getSrcsetDef(size) {
 			return `${this.getImgUrl(size)} ${size.width}w`;
-		}
+		},
+		handleImageClick(event) {
+			this.$emit('image-click');
+
+			this.$emit('track-loan-card-interaction', {
+				interactionType: 'viewBorrowerPage',
+				interactionElement: 'photo'
+			});
+
+			if (this.disableLink) {
+				event.preventDefault();
+			}
+		},
 	},
 };
 </script>

@@ -36,7 +36,7 @@
 				<div :key="`loan-${loan.id}-${index}`">
 					<loan-card-controller
 						class="cards-loan-card"
-						loan-card-type="LendHomepageLoanCard"
+						loan-card-type="KivaClassicLendHomepageLoanCard"
 						:loan="loan"
 						:items-in-basket="itemsInBasket"
 						:category-id="index"
@@ -53,11 +53,6 @@
 						@name-click="showLoanDetails"
 					/>
 				</div>
-				<kiva-classic-basic-loan-card
-					:item-index="index"
-					:key="`loan-${loan.id}`"
-					:loan-id="loan.id"
-				/>
 			</template>
 		</kv-carousel>
 	</div>
@@ -67,17 +62,16 @@
 import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
-import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
-import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 import _map from 'lodash/map';
+import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
+
 export default {
 	name: 'CampaignLoanRow',
 	inject: ['apollo'],
 	components: {
 		KvCarousel,
 		KvLoadingSpinner,
-		LoanCardController,
-		KivaClassicBasicLoanCard
+		LoanCardController
 	},
 	props: {
 		filters: {
@@ -139,8 +133,8 @@ export default {
 			};
 		},
 		loanIds() {
-			console.log(_map(this.loans, "id"));
-			return _map(this.loans, "id");
+			console.log(_map(this.loans, 'id'));
+			return _map(this.loans, 'id');
 		},
 		hasMoreLoansAvailable() {
 			return (this.totalCount - this.offset) > this.limit;
@@ -269,7 +263,6 @@ export default {
 @import 'foundation';
 
 .component-wrapper {
-	text-align: center;
 	min-height: rem-calc(500); // prevents layout shift as loans load in
 	display: flex;
 	align-items: center;
@@ -288,7 +281,6 @@ $card-half-space: rem-calc(14/2);
 .cards-loan-card,
 .see-all-card {
 	border-radius: 0.65rem;
-	box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 	width: $card-width;
 	max-width: calc(100vw - 4rem); // ensure some extra card is shown on mobile
 	margin: 1rem 0 2rem 0;

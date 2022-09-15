@@ -38,7 +38,7 @@
 
 			<hr>
 
-			<section class="loan-categories section" id="campaignLoanSection" ref="campaignLoanSection">
+			<section class="loan-categories section tw-mb-4" id="campaignLoanSection" ref="campaignLoanSection">
 				<div class="row">
 					<div class="columns">
 						<h2 class="tw-mb-4 tw-text-center">
@@ -142,6 +142,7 @@
 			/>
 
 			<kv-lightbox
+				title="Loan Details"
 				class="loan-details-lightbox"
 				:visible="loanDetailsVisible"
 				:no-padding-top="true"
@@ -204,6 +205,7 @@
 			</kv-lightbox>
 
 			<kv-lightbox
+				title="Campaign Thanks"
 				class="campaign-thanks"
 				:prevent-close="preventLightboxClose"
 				:visible="showThanks"
@@ -260,11 +262,11 @@ import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
 import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
 import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
 import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const CampaignHero = () => import('@/components/CorporateCampaign/CampaignHero');
 const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');

@@ -13,7 +13,7 @@
 					:is-visitor="isVisitor"
 					:key="loan.id"
 					:loan="loan"
-					loan-card-type="LendHomepageLoanCard"
+					loan-card-type="KivaClassicLendHomepageLoanCard"
 					:disable-redirects="true"
 					@add-to-basket="addToBasket"
 					@image-click="showLoanDetails"
@@ -287,7 +287,6 @@ $card-half-space: rem-calc(14/2);
 
 .campaign-loans {
 	position: relative;
-	background-color: rgba(0, 0, 0, 0.0125);
 	padding: 3rem 0;
 	max-width: inherit;
 
@@ -298,7 +297,6 @@ $card-half-space: rem-calc(14/2);
 
 	.cards-loan-card {
 		border-radius: 0.65rem;
-		box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 		width: $card-width;
 		max-width: $max-card-width;
 		flex: 1 0 auto;

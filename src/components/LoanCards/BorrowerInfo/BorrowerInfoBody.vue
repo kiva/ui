@@ -5,12 +5,12 @@
 			:to="`/lend/${loanId}`"
 			v-kv-track-event="['Lending', 'click-Read more', 'Read more', loanId, loanId]"
 		>
-			<span
+			<kv-text-link
 				@click="handleReadMoreLink"
 				v-if="readMoreLinkText"
 			>
 				{{ readMoreLinkText }}
-			</span>
+			</kv-text-link>
 		</router-link>
 		<!--
         <div v-if="activeSort === 'loanLength'" class="loan-length">
@@ -21,8 +21,13 @@
 </template>
 
 <script>
+import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
+
 export default {
 	name: 'BorrowerInfoBody',
+	components: {
+		KvTextLink,
+	},
 	props: {
 		amount: {
 			type: String,
@@ -82,7 +87,7 @@ export default {
 
 .borrower-info-body {
 	line-height: rem-calc(22);
-
+	
 	/*
 	.loan-length {
 		display: inline-block;
