@@ -129,13 +129,24 @@
 						</div>
 					</div>
 				</div>
-				<div class="tw-mt-3">
+				<div class="tw-mt-3 tw-mb-4 md:tw-mb-6">
 					<p class="tw-text-subhead">
-						Did you know that a biodigester is a system that transforms livestock
-						waste (💩) into organic fertilizer for crops, as well as biogas that can be used for household
-						energy?
+						{{ climateFact }}
 					</p>
-				<!-- TODO add share button here -->
+					<kv-social-share-button
+						class="tw-mt-3"
+						modal-title="Spread the word about climate change solutions"
+						:share-message="climateFact"
+						share-url="/blog/biodigester-borrowers-the-triple-bottom-line?game=won"
+						variant="primary"
+						utm-campaign="social_eco_thanks_page"
+						style="max-width: 190px;"
+					>
+						Share this fact
+						<template #modal-content>
+							{{ climateFact }}
+						</template>
+					</kv-social-share-button>
 				</div>
 			</template>
 		</kv-page-container>
@@ -192,6 +203,7 @@ import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import KvSocialShareButton from '@/components/Kv/KvSocialShareButton';
 
 import IconSun from '@/assets/icons/inline/eco-challenge/sun.svg';
 import IconSunHalf from '@/assets/icons/inline/eco-challenge/sun-half.svg';
@@ -213,6 +225,7 @@ export default {
 		KvMaterialIcon,
 		KvPageContainer,
 		KvProgressBar,
+		KvSocialShareButton,
 		WwwPage,
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -228,7 +241,7 @@ export default {
 			receipt: null,
 			isGuest: false,
 			mdiCheckAll,
-			loansRemainingInChallenge: 1,
+			loansRemainingInChallenge: 0,
 		};
 	},
 	apollo: {
@@ -253,6 +266,10 @@ export default {
 		}
 	},
 	computed: {
+		climateFact() {
+			// eslint-disable-next-line max-len
+			return 'Did you know that a biodigester is a system that transforms livestock waste (💩) into organic fertilizer for crops, as well as biogas that can be used for household energy?';
+		},
 		loan() {
 			const orderedLoans = orderBy(this.loans, ['unreservedAmount'], ['desc']);
 			return orderedLoans[0] || {};
