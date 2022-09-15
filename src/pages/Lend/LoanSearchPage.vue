@@ -11,7 +11,7 @@
 					</div>
 					<button
 						class="tw-w-3 tw-h-3"
-						@click="disableSuccessSavedSearch()"
+						@click="disableSuccessSavedSearch(true)"
 					>
 						<kv-material-icon :icon="mdiClose" />
 					</button>
@@ -49,6 +49,7 @@
 					:enable-saved-search="enableSavedSearch"
 					:saved-search-success="savedSearchSuccess"
 					@enable-success-saved-search="enableSuccessSavedSearch"
+					@disable-success-saved-search="disableSuccessSavedSearch"
 				/>
 			</kv-page-container>
 		</article>
@@ -104,13 +105,15 @@ export default {
 				''
 			);
 		},
-		disableSuccessSavedSearch() {
+		disableSuccessSavedSearch(trackEvent) {
 			this.savedSearchSuccess = false;
-			this.$kvTrackEvent(
-				'Lending',
-				'close-new-saved-search-success',
-				'Dismiss'
-			);
+			if (trackEvent) {
+				this.$kvTrackEvent(
+					'Lending',
+					'close-new-saved-search-success',
+					'Dismiss'
+				);
+			}
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
