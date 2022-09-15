@@ -7,6 +7,6 @@ module.exports = merge(base, {
 	},
 	server: {
 		memcachedEnabled: true,
-		memcachedServers: 'audit-memcached-01:11211',
+		memcachedServers: 'audit-elasticache-01.knmtma.0001.usw2.cache.amazonaws.com:11211',
 	}
 })
