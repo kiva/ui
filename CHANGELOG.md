@@ -1,3 +1,10 @@
+## [2.286.0](https://github.com/kiva/ui/compare/v2.285.0...v2.286.0) (2022-09-15)
+
+
+### Features
+
+* add share button to eco thanks page ([d3b0d17](https://github.com/kiva/ui/commit/d3b0d17d264f267fb02ef4915498cf79eba0252b))
+
 ## [2.285.0](https://github.com/kiva/ui/compare/v2.284.3...v2.285.0) (2022-09-14)
 
 
