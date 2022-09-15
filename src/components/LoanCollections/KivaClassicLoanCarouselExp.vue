@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-pt-4">
+	<div :class="isMfi ? 'tw-pt-2' : 'tw-pt-4'">
 		<transition name="kvfade">
 			<div
 				v-if="isLoading"
@@ -24,7 +24,15 @@
 			<template v-for="(loanId, index) in loanIds" #[`slide${index}`]>
 				<!-- show loan card -->
 				<!-- TODO Re-implement card position analytics -->
+
+				<mfi-loan-card
+					v-if="isMfi"
+					:item-index="index"
+					:key="`loan-mfi-${loanId}`"
+					:loan-id="loanId"
+				/>
 				<kiva-classic-basic-loan-card-exp
+					v-else
 					:item-index="index"
 					:key="`loan-${loanId}`"
 					:loan-id="loanId"
@@ -37,6 +45,7 @@
 <script>
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import MfiLoanCard from '@/components/LoansByCategory/MFIRecommendations/MfiLoanCard';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
@@ -45,6 +54,7 @@ export default {
 		KvCarousel,
 		KvLoadingSpinner,
 		KivaClassicBasicLoanCardExp,
+		MfiLoanCard
 	},
 	props: {
 		isLoggedIn: {
@@ -78,7 +88,11 @@ export default {
 		getDetailedLoan: {
 			type: Function,
 			default: () => {}
-		}
+		},
+		isMfi: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {

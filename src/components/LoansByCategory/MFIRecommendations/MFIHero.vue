@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-w-full">
+	<div class="tw-w-full tw-mb-2">
 		<div class="tw-flex tw-items-center tw-gap-1 tw-px-2 lg:tw-px-0">
 			<!-- eslint-disable max-len -->
 			<img class="tw-w-4 lg:tw-w-6" src="@/assets/images/mfi_recommendations/earth.svg" alt="mfi_recommendations">
@@ -77,7 +77,7 @@
 			</div>
 		</div>
 		<div>
-			<p class="tw-text-primary tw-text-subhead tw-py-0 lg:tw-py-6 tw-mb-4 tw-px-2 lg:tw-px-0">
+			<p class="tw-text-primary tw-text-subhead tw-py-0 lg:tw-pt-5 tw-px-2 lg:tw-px-0">
 				Fundación Pro Mujer offers Bolivia’s most in-need women the holistic services
 				they need to build livelihoods for themselves and futures for their families.
 				They help borrowers with business training and personal development services and
