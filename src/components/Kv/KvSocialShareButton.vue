@@ -9,17 +9,16 @@
 				'click-share-cta',
 				'Share'
 			]"
-			variant="caution"
+			:variant="variant"
 		>
-			Share
+			<slot>Share</slot>
 		</kv-button>
 		<kv-lightbox
 			:visible="isLightboxVisible"
-			:title="`Help ${name} spread the word.`"
+			:title="modalTitle"
 			@lightbox-closed="isLightboxVisible = false"
 		>
-			<!-- eslint-disable-next-line max-len -->
-			<p>You can make change happen faster for {{ name }} by getting the word out. Each lender that supports {{ name }} brings them one step closer to being live for all to see on Kiva.org. Share their loan now.</p>
+			<slot name="modal-content"></slot>
 			<div
 				class="tw-inline-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-1 tw-mt-2.5"
 			>
@@ -108,25 +107,65 @@ import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
-	name: 'SocialShareButton',
+	name: 'KvSocialShareButton',
 	components: {
 		KvButton,
 		KvLightbox,
 		KvMaterialIcon
 	},
 	props: {
-		lender: {
-			type: Object,
-			default: () => {}
+		/**
+		 * Title in the pop up modal
+		 */
+		modalTitle: {
+			type: String,
+			default: 'Help spread the word'
 		},
-		loan: {
-			type: Object,
-			required: true
+		/**
+		 * Linked in supports a title attribute
+		 */
+		linkedInTitle: {
+			type: String,
+			default: ''
 		},
-		campaign: {
+		/**
+		 * Button variant style
+		 */
+		variant: {
+			type: String,
+			validator: value => {
+				return ['primary', 'secondary', 'link', 'ghost', 'danger', 'caution'].indexOf(value) !== -1;
+			},
+			default: 'caution'
+		},
+		/**
+		 * String for utm_campaign parameter
+		 */
+		utmCampaign: {
 			type: String,
 			required: true
-		}
+		},
+		/**
+		 * String for utm_content parameter
+		 */
+		utmContent: {
+			type: String,
+			default: ''
+		},
+		/**
+		 * Relative url for the link being shared
+		 */
+		shareUrl: {
+			type: String,
+			required: true
+		},
+		/**
+		 * The share message to be used in the social media posts
+		 */
+		shareMessage: {
+			type: String,
+			required: true
+		},
 	},
 	data() {
 		return {
@@ -142,36 +181,19 @@ export default {
 		};
 	},
 	computed: {
-		name() {
-			if (this.loan.name && this.loan.anonymization !== 'full') {
-				return this.loan.name;
-			}
-			return 'this lender';
-		},
-		shareMessage() {
-			if (this.loan.name) {
-				const location = this.loan?.geocode?.city || this.loan?.geocode?.country?.name;
-				return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${this.loan.name} ${location ? `in ${location} ` : ''}to pursue their dream?`; // eslint-disable-line max-len
-			}
-			return '';
-		},
-		utmContent() {
-			if (this.lender?.public && this.lender?.inviterName) return this.lender.inviterName;
-			return 'anonymous';
+		utmContentQueryParam() {
+			return this.utmContent ? `?utm_content=${this.utmContent}` : '';
 		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
-			if (this.loan.id && this.lender?.inviterName) {
-				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utm_content=${this.utmContent}`; // eslint-disable-line max-len
-			}
-			return `${base}${this.$route.path}?utm_content=${this.utmContent}`;
+			return `${base}${this.shareUrl}${this.utmContentQueryParam}`;
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
 			return getFullUrl('https://www.facebook.com/dialog/share', {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
-				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social&utm_campaign=${this.campaign}`,
+				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social&utm_campaign=${this.utmCampaign}`,
 				redirect_uri: `${pageUrl}`,
 				quote: this.shareMessage,
 			});
@@ -181,14 +203,14 @@ export default {
 				mini: 'true',
 				source: `https://${this.$appConfig.host}`,
 				summary: this.shareMessage.substring(0, 256),
-				title: `A loan for ${this.loan.name}`,
-				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=${this.campaign}`
+				title: this.linkedInTitle ? this.linkedInTitle : this.modalTitle,
+				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=${this.utmCampaign}`
 			});
 		},
 		twitterShareUrl() {
 			return getFullUrl('https://twitter.com/intent/tweet', {
 				text: this.shareMessage,
-				url: `${this.shareLink}&utm_source=t.co&utm_medium=social&utm_campaign=${this.campaign}`,
+				url: `${this.shareLink}&utm_source=t.co&utm_medium=social&utm_campaign=${this.utmCampaign}`,
 				via: 'Kiva',
 			});
 		},
@@ -211,7 +233,7 @@ export default {
 		},
 		async copyLink() {
 			// eslint-disable-next-line max-len
-			const url = `${this.shareLink}&utm_source=social_share_link&utm_medium=referral&utm_campaign=${this.campaign}`;
+			const url = `${this.shareLink}&utm_source=social_share_link&utm_medium=referral&utm_campaign=${this.utmCampaign}`;
 			try {
 				await clipboardCopy(url);
 				this.copyStatus = {
