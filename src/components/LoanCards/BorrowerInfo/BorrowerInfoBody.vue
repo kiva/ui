@@ -12,11 +12,6 @@
 				{{ readMoreLinkText }}
 			</kv-text-link>
 		</router-link>
-		<!--
-        <div v-if="activeSort === 'loanLength'" class="loan-length">
-            <strong>Loan length:</strong> {{ loanLength }} months
-        </div>
-        -->
 	</div>
 </template>
 
@@ -87,12 +82,5 @@ export default {
 
 .borrower-info-body {
 	line-height: rem-calc(22);
-	
-	/*
-	.loan-length {
-		display: inline-block;
-		margin-top: rem-calc(15);
-	}
-	*/
 }
 </style>
