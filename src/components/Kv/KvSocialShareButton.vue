@@ -181,19 +181,25 @@ export default {
 		};
 	},
 	computed: {
+		utmCampaignQueryParam() {
+			return `&utm_campaign=${this.utmCampaign}`;
+		},
 		utmContentQueryParam() {
-			return this.utmContent ? `?utm_content=${this.utmContent}` : '';
+			return this.utmContent ? `&utm_content=${this.utmContent}` : '';
 		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
-			return `${base}${this.shareUrl}${this.utmContentQueryParam}`;
+			// Get query param string from shareUrl
+			const shareUrlSuffix = this.shareUrl.split('?')[1] ? `?${this.shareUrl.split('?')[1]}&` : '?';
+			return `${base}${this.shareUrl}${shareUrlSuffix}`;
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
 			return getFullUrl('https://www.facebook.com/dialog/share', {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
-				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social&utm_campaign=${this.utmCampaign}`,
+				// eslint-disable-next-line max-len
+				href: `${this.shareLink}utm_source=facebook.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}`,
 				redirect_uri: `${pageUrl}`,
 				quote: this.shareMessage,
 			});
@@ -204,13 +210,15 @@ export default {
 				source: `https://${this.$appConfig.host}`,
 				summary: this.shareMessage.substring(0, 256),
 				title: this.linkedInTitle ? this.linkedInTitle : this.modalTitle,
-				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=${this.utmCampaign}`
+				// eslint-disable-next-line max-len
+				url: `${this.shareLink}utm_source=linkedin.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}`
 			});
 		},
 		twitterShareUrl() {
 			return getFullUrl('https://twitter.com/intent/tweet', {
 				text: this.shareMessage,
-				url: `${this.shareLink}&utm_source=t.co&utm_medium=social&utm_campaign=${this.utmCampaign}`,
+				// eslint-disable-next-line max-len
+				url: `${this.shareLink}utm_source=t.co&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}`,
 				via: 'Kiva',
 			});
 		},
@@ -233,7 +241,7 @@ export default {
 		},
 		async copyLink() {
 			// eslint-disable-next-line max-len
-			const url = `${this.shareLink}&utm_source=social_share_link&utm_medium=referral&utm_campaign=${this.utmCampaign}`;
+			const url = `${this.shareLink}utm_source=social_share_link&utm_medium=referral${this.utmCampaignQueryParam}${this.utmContentQueryParam}`;
 			try {
 				await clipboardCopy(url);
 				this.copyStatus = {
