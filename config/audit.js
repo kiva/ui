@@ -6,7 +6,7 @@ module.exports = merge(base, {
 		host: 'www.audit.kiva.org',
 		publicPath: 'https://www-audit-kiva-org.freetls.fastly.net/ui/',
 		photoPath: 'https://www-audit-kiva-org.freetls.fastly.net/img/',
-		graphqlUri: 'https://marketplace-api.dk1.kiva.org/graphql',
+		graphqlUri: 'https://marketplace-api-audit.dk1.kiva.org/graphql',
 		enablePerimeterx: true,
 		perimeterxAppId: 'PX5u4Lz98O',
 		enableAnalytics: true,
@@ -58,7 +58,7 @@ module.exports = merge(base, {
 		},
 	},
 	server: {
-		graphqlUri: 'https://marketplace-api.dk1.kiva.org/graphql',
+		graphqlUri: 'https://marketplace-api-audit.dk1.kiva.org/graphql',
 		sessionUri: 'https://www.audit.kiva.org/start-ui-session',
 		memcachedEnabled: true,
 		memcachedServers: 'audit-memcached-01:11211',

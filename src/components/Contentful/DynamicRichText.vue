@@ -14,7 +14,7 @@ export default {
 	computed: {
 		dynamicComponent() {
 			return {
-				template: `<div class="tw-prose tw-whitespace-pre-wrap">${this.html}</div>`,
+				template: `<div class="dynamic-rich-text tw-prose tw-whitespace-pre-wrap">${this.html}</div>`,
 				components: {
 					KvContentfulImg: () => import('~/@kiva/kv-components/vue/KvContentfulImg'),
 					ButtonWrapper: () => import('@/components/Contentful/ButtonWrapper')

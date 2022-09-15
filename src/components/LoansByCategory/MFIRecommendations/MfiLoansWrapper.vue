@@ -49,11 +49,11 @@ export default {
 		#carousel_exp {
 			position: relative;
 		}
+
 		#carousel_exp >>> section > div:nth-child(2) {
 			position: absolute;
 			top: -55px;
 			margin-left: -40px;
-
 		}
 
 		#carousel_exp >>> section > div:nth-child(2) > button {
