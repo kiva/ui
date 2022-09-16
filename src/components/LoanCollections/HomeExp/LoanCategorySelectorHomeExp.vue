@@ -79,15 +79,6 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-	.tabs-container >>> div[role=tablist] {
-		display: block;
-	}
-
-	.tabs-container >>> button[role=tab] {
-		width: 100%;
-		text-align: left;
-	}
-
 	@media (min-width: 734px) {
 		.tabs-container {
 			width: 15.25rem;

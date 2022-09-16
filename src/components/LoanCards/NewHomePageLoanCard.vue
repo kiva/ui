@@ -84,13 +84,13 @@
 			<!-- Amount to go line-->
 			<kv-loading-placeholder
 				v-if="isLoading"
-				class="tw-mb-0.5" style="width: 100%; height: 1.3rem;"
+				class="tw-mb-0.5" style="height: 1.3rem;"
 			/>
 
 			<!-- Fundraising bar -->
 			<kv-loading-placeholder
 				v-if="isLoading"
-				class="tw-mb-1.5 tw-rounded" :style="{width: '100%', height: '0.5rem'}"
+				class="tw-mb-1.5 tw-rounded" :style="{height: '0.5rem'}"
 			/>
 
 			<div v-if="!isLoading" class="tw-flex-auto tw-mb-2">
@@ -355,5 +355,9 @@ export default {
 
 .borrower-name {
 	@apply tw-mt-[10px];
+}
+
+.loading-placeholder,.loading-paragraph {
+	@apply tw-min-w-[260px] tw-max-w-[260px]
 }
 </style>

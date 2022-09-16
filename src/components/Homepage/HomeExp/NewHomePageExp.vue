@@ -14,7 +14,7 @@
 						:selected-channel="selectedChannel"
 						:selected-channel-loan-ids="selectedChannelLoanIds"
 					/>
-					//TODO: Add other sections for new home page
+					<!-- TODO: Add other sections for new home page -->
 					<kiva-loan-card-carousel
 						v-if="loanChannelData.length > 0"
 						:selected-channel="selectedChannel"
