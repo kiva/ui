@@ -58,7 +58,7 @@
 			<!-- Borrower name-->
 			<kv-loading-placeholder
 				v-if="isLoading"
-				class="tw-mb-0.5" style="min-height: 2rem;"
+				class="tw-mb-0.5" style="height: 2rem;"
 			/>
 
 			<borrower-name
@@ -73,9 +73,10 @@
 			<kv-loading-paragraph
 				v-if="isLoading"
 				class="tw-mb-1.5 tw-flex-grow"
+				style="min-height: 1rem;"
 			/>
 			<div v-if="!isLoading" class="tw-text-left">
-				<p class="tw-m-0 tw-m-h[3rem] tw-overflow-hidden tw-text-ellipsis tw-line-clamp-2 tw-text-md">
+				<p class="tw-m-0 tw-h-6 tw-m-h[3rem] tw-overflow-hidden tw-text-ellipsis tw-line-clamp-2 tw-text-md">
 					{{ loanUse }}
 				</p>
 			</div>
@@ -170,7 +171,7 @@ const loanCardQuery = gql`query welcomeLoanCard($loanId: Int!) {
 }`;
 
 export default {
-	name: 'LoanCards',
+	name: 'NewHomePageLoanCard',
 	props: {
 		loanId: {
 			type: Number,

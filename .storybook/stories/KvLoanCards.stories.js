@@ -1,4 +1,4 @@
-import NewHomePageLoanCards from '@/components/NewHomePage/LoanCards';
+import NewHomePageLoanCard from '@/components/LoanCards/NewHomePageLoanCard';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 
@@ -30,25 +30,25 @@ const queryResult = {
 
 export default {
 	title: 'Loan Cards/New Home Page Loan Card',
-	component: NewHomePageLoanCards,
+	component: NewHomePageLoanCard,
 };
 
 export const Default = () => ({
 	mixins: [apolloStoryMixin({ queryResult }), cookieStoreStoryMixin()],
-	components: { NewHomePageLoanCards },
+	components: { NewHomePageLoanCard },
 	template: `
 		<div class="kv-tailwind">
-			<new-home-page-loan-cards :loan-id="1998250" />
+			<new-home-page-loan-card :loan-id="1998250" />
 		</div>
 	`,
 });
 
 export const Loading = () => ({
 	mixins: [apolloStoryMixin({ loading: true }), cookieStoreStoryMixin()],
-	components: { NewHomePageLoanCards },
+	components: { NewHomePageLoanCard },
 	template: `
 		<div class="kv-tailwind">
-			<new-home-page-loan-cards :loan-id="1998250" />
+			<new-home-page-loan-card :loan-id="1998250" />
 		</div>
 	`,
 });
