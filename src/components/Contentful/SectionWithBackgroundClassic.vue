@@ -82,7 +82,16 @@ export default {
 			default: () => {},
 		},
 		/**
+		 * Theme name from Contentful settings
 		 *
+		 * Can be one of:
+		 * - 'kivaClassicLight'
+		 * - 'kivaClassicMint'
+		 * - 'kivaClassicGreen'
+		 * - 'kivaClassicDark'
+		 * - 'imageCard'
+		 *
+		 * The default theme 'kivaClassicLight' will be used for any other value.
 		 */
 		themeName: {
 			type: String,
@@ -149,7 +158,7 @@ export default {
 		},
 		themeStyles() {
 			const themeMapper = {
-				kivaCLassicLight: defaultTheme,
+				kivaClassicLight: defaultTheme,
 				kivaClassicMint: mintTheme,
 				kivaClassicGreen: darkGreenTheme,
 				kivaClassicDark: darkTheme,
