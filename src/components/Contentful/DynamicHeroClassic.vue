@@ -200,7 +200,8 @@ export default {
 			return this.buttonContent?.webLink ?? '';
 		},
 		secondaryButtonContent() {
-			return this.content?.contents?.findLast(({ contentType }) => {
+			const contents = this.content?.contents;
+			return contents?.reverse().find(({ contentType }) => {
 				return contentType ? contentType === 'button' : false;
 			});
 		},
