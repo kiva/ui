@@ -3,7 +3,7 @@
 		class="tw-justify-start tw-flex-row md:tw-flex-col md:tw-justify-center
 			md:tw-flex-wrap tw-mx-auto tw-overflow-x-auto md:tw-overflow-x-none"
 	>
-		<kv-tabs vertical="true" class="tabs-container">
+		<kv-tabs :vertical="true" class="tabs-container">
 			<template #tabNav>
 				<kv-tab
 					class="md:tw-truncate"

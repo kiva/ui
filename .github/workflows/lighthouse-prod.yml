@@ -19,6 +19,8 @@ jobs:
       PSI_API_KEY: ${{ secrets.LHCI_PSI_API_KEY }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 30
       - name: Use Node.js 16
         uses: actions/setup-node@v3
         with:

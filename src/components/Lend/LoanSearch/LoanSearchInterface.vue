@@ -393,6 +393,9 @@ export default {
 			this.isLightboxVisible = toggle;
 		},
 		updateState(filters = {}) {
+			if (this.savedSearchSuccess) {
+				this.disableSavedSearchSuccessMessage();
+			}
 			updateSearchState(this.apollo, filters, this.allFacets, this.queryType, this.loanSearchState);
 		},
 		handleUpdatedFilters(filters) {
@@ -422,6 +425,9 @@ export default {
 		},
 		showSavedSearchSuccessMessage(searchName) {
 			this.$emit('enable-success-saved-search', searchName);
+		},
+		disableSavedSearchSuccessMessage() {
+			this.$emit('disable-success-saved-search', false);
 		}
 	},
 	watch: {

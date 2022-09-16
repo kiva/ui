@@ -61,11 +61,20 @@ export default {
 		analyticsCategory: {
 			type: String,
 			default: 'Faq'
+		},
+		active: {
+			type: Boolean,
+			default: false,
+		}
+	},
+	watch: {
+		active(val) {
+			this.open = val;
 		}
 	},
 	data() {
 		return {
-			open: false,
+			open: this.active || false,
 			mdiChevronDown,
 			mdiChevronUp
 		};
@@ -88,6 +97,7 @@ export default {
 				this.$kvTrackEvent(this.analyticsCategory, 'click-faq-expand', this.title);
 			}
 			this.open = !this.open;
+			this.$emit('toggle', { title: this.title });
 		}
 	}
 };
