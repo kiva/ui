@@ -1,3 +1,10 @@
+### [2.286.1](https://github.com/kiva/ui/compare/v2.286.0...v2.286.1) (2022-09-16)
+
+
+### Bug Fixes
+
+* wire-up background and vertical padding controls to StoryCardCarousel MARS-247 ([6c19d9c](https://github.com/kiva/ui/commit/6c19d9cd5912f87f777b84e9f212b35420cfe101))
+
 ## [2.286.0](https://github.com/kiva/ui/compare/v2.285.0...v2.286.0) (2022-09-15)
 
 
