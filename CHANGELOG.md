@@ -1,3 +1,15 @@
+## [2.288.0](https://github.com/kiva/ui/compare/v2.287.0...v2.288.0) (2022-09-16)
+
+
+### Features
+
+* theme controls for SectionWithBackgroundClassic ([76d6003](https://github.com/kiva/ui/commit/76d6003ef66660a8744bfaac03a4bb26ddf4c41b))
+
+
+### Bug Fixes
+
+* fill out doc block for themeName prop ([5c5ff60](https://github.com/kiva/ui/commit/5c5ff602b7d313c8818ad3f8c390c98a6df1a601))
+
 ## [2.287.0](https://github.com/kiva/ui/compare/v2.286.1...v2.287.0) (2022-09-16)
 
 
