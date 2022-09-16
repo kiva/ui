@@ -357,7 +357,11 @@ export default {
 	@apply tw-mt-[10px];
 }
 
-.loading-placeholder,.loading-paragraph {
+.loading-placeholder {
+	@apply tw-min-w-[260px] tw-max-w-[260px]
+}
+
+.loading-paragraph {
 	@apply tw-min-w-[260px] tw-max-w-[260px]
 }
 </style>
