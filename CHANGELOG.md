@@ -1,3 +1,16 @@
+## [2.287.0](https://github.com/kiva/ui/compare/v2.286.1...v2.287.0) (2022-09-16)
+
+
+### Features
+
+* add accordion secction component ([d8f2fbd](https://github.com/kiva/ui/commit/d8f2fbdcb466d22d862c20bf067fb5b0e1dccd1d))
+* create frequently asked question story and add support for only one opened question ([8230c5a](https://github.com/kiva/ui/commit/8230c5ad273535e88769ff69a97599015e768eca))
+
+
+### Bug Fixes
+
+* revert unnecessary modified and created files ([7781233](https://github.com/kiva/ui/commit/7781233ec1661caa1eb2f180140bbbbe33c47a13))
+
 ### [2.286.1](https://github.com/kiva/ui/compare/v2.286.0...v2.286.1) (2022-09-16)
 
 
