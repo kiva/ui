@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<kiva-multi-category-grid
+		<kiva-category-carousel
 			:contentful-loan-channels="contentfulLoanChannels"
 			:loan-display-settings="loanDisplaySettings"
 			:new-home-exp="true"
@@ -9,13 +9,13 @@
 </template>
 
 <script>
+import KivaCategoryCarousel from '@/components/Homepage/HomeExp/KivaCategoryCarousel';
 import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
-import KivaMultiCategoryGrid from '@/components/Homepage/HomeExp/KivaMultiCategoryGrid';
 
 export default {
-	name: 'NewHomeLoansByCategoryGrid',
+	name: 'NewHomeLoansCardCarousel',
 	components: {
-		KivaMultiCategoryGrid,
+		KivaCategoryCarousel,
 	},
 	mixins: [contentfulStylesMixin],
 	props: {

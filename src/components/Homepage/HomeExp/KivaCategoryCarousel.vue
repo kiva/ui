@@ -1,54 +1,42 @@
 <template>
-	<div class="row">
-		<div class="small-12 large-3 medium-3">
-			<div class="md:tw-items-start">
-				<div class="tw-mr-4">
-					<p class="tw-text-h3 tw-font-medium tw-mb-2 tw-text-secondary">
-						I want to support
-					</p>
-					<loan-category-selector-home-exp
-						v-if="combinedLoanChannelData.length > 1"
-						:loan-channels="combinedLoanChannelData"
-						:selected-channel="selectedChannel.id"
-						@handle-category-click="handleCategoryClick"
+	<section-with-background-classic
+		:background-content="background"
+		:vertical-padding="verticalPadding"
+	>
+		<template #content>
+			<kv-page-container>
+				<div>
+					<kiva-loan-card-carousel
+						:selected-channel="selectedChannel"
+						:loan-ids="selectedChannelLoanIds"
 					/>
 				</div>
-			</div>
-		</div>
-		<div class="small-12 large-9 medium-9">
-			<kiva-loan-card-category
-				v-if="combinedLoanChannelData.length > 1"
-				:loan-ids="selectedChannelLoanIds"
-				:selected-channel="selectedChannel"
-				:loan-channels="combinedLoanChannelData"
-			/>
-		</div>
-	</div>
+			</kv-page-container>
+		</template>
+	</section-with-background-classic>
 </template>
 
 <script>
 import gql from 'graphql-tag';
-import KivaLoanCardCategory from '@/components/LoanCollections/HomeExp/KivaLoanCardCategory';
-import LoanCategorySelectorHomeExp from '@/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
+import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
+import KivaLoanCardCarousel from '@/components/LoanCollections/HomeExp/KivaLoanCardCarousel';
+import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
+import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
-	name: 'KivaMultiCategoryGrid',
+	name: 'KivaCategoryCarousel',
 	inject: ['apollo', 'cookieStore'],
-	components: { LoanCategorySelectorHomeExp, KivaLoanCardCategory },
+	components: {
+		KvPageContainer,
+		SectionWithBackgroundClassic,
+		KivaLoanCardCarousel
+	},
+	mixins: [contentfulStylesMixin],
 	props: {
-		/**
-		 * Array of loan channel data in an object
-		 * ex. [{ id: 52, shortName: 'some short name' }]
-		* */
 		contentfulLoanChannels: {
 			type: Array,
 			default: () => [],
 		},
-		/**
-		 * Additional display settings
-		 * Possible Options:
-		 * loanLimit: integer that controls how many loans will be loaded for ALL channels
-		* */
 		loanDisplaySettings: {
 			type: Object,
 			default: () => {}
@@ -66,6 +54,14 @@ export default {
 		};
 	},
 	computed: {
+		/**
+		 * Extract Background content from Contentful
+		* */
+		background() {
+			return this.content?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'background' : false;
+			});
+		},
 		combinedLoanChannelData() {
 			return this.contentfulLoanChannels.map(channel => {
 				const matchedLoanChannel = this.loanChannelData.find(lc => lc.id === channel.id);
@@ -94,11 +90,6 @@ export default {
 		this.fetchLoanChannel();
 	},
 	methods: {
-		handleCategoryClick(payload) {
-			this.selectedChannel = this.combinedLoanChannelData.find(
-				loanChannel => loanChannel.id === payload.categoryId
-			);
-		},
 		fetchLoanChannel() {
 			this.apollo.query({
 				query: gql`query selectedLoanCategory($loanChannelIds: [Int]!, $loanLimit: Int) {
@@ -130,6 +121,6 @@ export default {
 				this.showCarousel = true;
 			});
 		}
-	}
+	},
 };
 </script>

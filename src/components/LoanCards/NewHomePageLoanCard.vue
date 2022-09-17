@@ -42,15 +42,13 @@
 				<div v-if="countryName">
 					<summary-tag
 						class="tw-absolute tw-bottom-2 tw-left-1 tw-text-primary"
-						:city="city"
-						:state="state"
 						:country-name="countryName"
 					>
 						<kv-material-icon
 							class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
 							:icon="mdiMapMarker"
 						/>
-						{{ formattedLocation }}
+						{{ countryName }}
 					</summary-tag>
 				</div>
 			</div>
@@ -209,12 +207,6 @@ export default {
 		countryName() {
 			return this.loan?.geocode?.country?.name || '';
 		},
-		city() {
-			return this.loan?.geocode?.city || '';
-		},
-		state() {
-			return this.loan?.geocode?.state || '';
-		},
 		distributionModel() {
 			return this.loan?.distributionModel || '';
 		},
@@ -238,17 +230,6 @@ export default {
 		},
 		timeLeft() {
 			return this.loan?.fundraisingTimeLeft ?? '';
-		},
-		formattedLocation() {
-			if (this.distributionModel === 'direct') {
-				const formattedString = `${this.city}, ${this.state}, ${this.countryName}`;
-				return formattedString;
-			}
-			if (this.countryName === 'Puerto Rico') {
-				const formattedString = `${this.city}, PR`;
-				return formattedString;
-			}
-			return this.countryName;
 		},
 		allSharesReserved() {
 			if (parseFloat(this.loan?.unreservedAmount) === 0) {
@@ -354,14 +335,16 @@ export default {
 }
 
 .borrower-name {
-	@apply tw-mt-[10px];
+	margin-top: 10px;
 }
 
 .loading-placeholder {
-	@apply tw-min-w-[260px] tw-max-w-[260px];
+	min-width: 260px;
+	max-width: 260px;
 }
 
 .loading-paragraph {
-	@apply tw-min-w-[260px] tw-max-w-[260px];
+	min-width: 260px;
+	max-width: 260px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-pt-4">
+	<div>
 		<transition name="kvfade">
 			<div
 				v-if="isLoading"
@@ -11,7 +11,6 @@
 
 		<kv-carousel
 			id="loan-carousel"
-			style="min-width: 1100px;"
 			v-if="augmentedLoanIds.length > 0"
 			class="tw-w-full tw-overflow-visible md:tw-overflow-hidden"
 			:embla-options="{
@@ -85,28 +84,13 @@ export default {
 		},
 		augmentedLoanIds() {
 			const clonedLoanIds = [...this.loanIds];
-			// const promoCardId = 1;
-			// const loadMoreCardId = 2;
-			// TODO: splice if promoCard if active on row
-			// if (this.showPromoCard) {
-			// 	clonedLoanIds.splice(1, 0, promoCardId);
-			// }
-			// TODO: append loadMoreCard if active
-			// if (this.showLoadMoreCard) {
-			// 	clonedLoanIds.push(loadMoreCardId);
-			// 	return clonedLoanIds;
-			// }
 			return clonedLoanIds;
 		},
 		cleanUrl() {
-			// Convert LoanChannel Url to use first path segment /lend-by-category instead of /lend
-			// grab last segment of url
 			const lastPathIndex = this.url.lastIndexOf('/');
 			const urlSegment = this.url.slice(lastPathIndex);
-			// ensure string type
 			let cleanUrl = String(urlSegment);
 
-			// empty url value for certain urls and if no url is passed in
 			if (
 				this.url.includes('loans-with-research-backed-impact') === true
 				|| this.url.includes('recently-viewed-loans') === true
@@ -127,12 +111,11 @@ export default {
 		},
 		singleSlideWidth() {
 			const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
-			const cardsMaxWidth = '274px';
 			// handle tiny screens
 			if (viewportWidth < 414) {
-				return `${viewportWidth - 80}px`;
+				return '278px';
 			}
-			return cardsMaxWidth;
+			return '267px';
 		},
 	},
 	watch: {
