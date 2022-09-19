@@ -1,3 +1,10 @@
+## [2.289.0](https://github.com/kiva/ui/compare/v2.288.1...v2.289.0) (2022-09-19)
+
+
+### Features
+
+* replace swashie how kiva works section with kiva classic rich text items ([2cacfc4](https://github.com/kiva/ui/commit/2cacfc468f67896b816b6a412706a2ebbfb9491a))
+
 ### [2.288.1](https://github.com/kiva/ui/compare/v2.288.0...v2.288.1) (2022-09-19)
 
 
