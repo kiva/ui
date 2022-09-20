@@ -1,6 +1,7 @@
 <template>
 	<section-with-background-classic
 		:background-content="background"
+		:theme-name="themeName"
 		:vertical-padding="verticalPadding"
 	>
 		<template #content>
@@ -9,6 +10,7 @@
 					<kiva-multi-category-grid
 						:contentful-loan-channels="contentfulLoanChannels"
 						:loan-display-settings="loanDisplaySettings"
+						:new-home-exp="true"
 					/>
 				</div>
 			</kv-page-container>

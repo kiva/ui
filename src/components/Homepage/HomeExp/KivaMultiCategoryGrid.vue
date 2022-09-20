@@ -28,6 +28,7 @@ import LoanCategorySelectorHomeExp from '@/components/LoanCollections/HomeExp/Lo
 
 export default {
 	name: 'KivaMultiCategoryGrid',
+	inject: ['apollo', 'cookieStore'],
 	components: { LoanCategorySelectorHomeExp, KivaClassicLoanCarousel },
 	props: {
 		/**
@@ -61,13 +62,13 @@ export default {
 	},
 	computed: {
 		combinedLoanChannelData() {
-			return this.loanChannelsWithUrgencyExperiment.map(channel => {
+			return this.contentfulLoanChannels.map(channel => {
 				const matchedLoanChannel = this.loanChannelData.find(lc => lc.id === channel.id);
 				return { ...matchedLoanChannel, ...channel };
 			});
 		},
 		loanChannelIds() {
-			return this.loanChannelsWithUrgencyExperiment.map(channelSetting => {
+			return this.contentfulLoanChannels.map(channelSetting => {
 				return channelSetting.id;
 			});
 		},

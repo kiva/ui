@@ -12,6 +12,8 @@
 				:title="question.name"
 				:content="convertFromRichTextToHtml(question.richText)"
 				:id="question.name | changeCase('paramCase')"
+				:active="isActive(question.name)"
+				@toggle="setActiveAccordion"
 			/>
 		</div>
 	</kv-grid>
@@ -27,6 +29,11 @@ export default {
 	components: {
 		KvExpandableQuestion,
 		KvGrid,
+	},
+	data() {
+		return {
+			activeAccordion: '',
+		};
 	},
 	props: {
 		/**
@@ -47,6 +54,12 @@ export default {
 	methods: {
 		convertFromRichTextToHtml(rawRichText) {
 			return rawRichText ? richTextRenderer(rawRichText) : '';
+		},
+		setActiveAccordion({ title }) {
+			this.activeAccordion = title;
+		},
+		isActive(title) {
+			return this.activeAccordion === title;
 		}
 	},
 	mounted() {

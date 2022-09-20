@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import IconClimateChallenge from '@/assets/icons/inline/globe-leaf.svg';
+import IconClimateChallenge from '@/assets/icons/inline/eco-challenge/globe-leaf.svg';
 import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
 import KvPill from '@/components/Kv/KvPill';
 

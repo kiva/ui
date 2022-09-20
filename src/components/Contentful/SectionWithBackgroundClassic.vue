@@ -1,5 +1,5 @@
 <template>
-	<section class="tw-relative">
+	<section class="tw-relative" :style="themeStyles">
 		<div
 			class="tw-relative tw-w-full tw-overflow-hidden tw-z-1 tw-top-0"
 			:class="verticalPaddingClasses"
@@ -33,6 +33,13 @@
 </template>
 
 <script>
+import {
+	darkTheme,
+	darkGreenTheme,
+	mintTheme,
+	defaultTheme
+} from '~/@kiva/kv-tokens/configs/kivaColors.cjs';
+
 const KvContentfulImg = () => import('~/@kiva/kv-components/vue/KvContentfulImg');
 
 /**
@@ -73,6 +80,22 @@ export default {
 		verticalPadding: {
 			type: Object,
 			default: () => {},
+		},
+		/**
+		 * Theme name from Contentful settings
+		 *
+		 * Can be one of:
+		 * - 'kivaClassicLight'
+		 * - 'kivaClassicMint'
+		 * - 'kivaClassicGreen'
+		 * - 'kivaClassicDark'
+		 * - 'imageCard'
+		 *
+		 * The default theme 'kivaClassicLight' will be used for any other value.
+		 */
+		themeName: {
+			type: String,
+			default: '',
 		}
 	},
 	data() {
@@ -113,6 +136,11 @@ export default {
 					'background-color': this.backgroundContent?.backgroundColor
 				};
 			}
+			if (this.themeStyles) {
+				return {
+					'background-color': 'rgb(var(--bg-primary))'
+				};
+			}
 			return {};
 		},
 		isBackgroundVideo() {
@@ -126,6 +154,21 @@ export default {
 				description: this.backgroundContent?.backgroundMedia?.description ?? '',
 				title: this.backgroundContent?.backgroundMedia?.title ?? '',
 				url: this.backgroundContent?.backgroundMedia?.file?.url ?? ''
+			};
+		},
+		themeStyles() {
+			const themeMapper = {
+				kivaClassicLight: defaultTheme,
+				kivaClassicMint: mintTheme,
+				kivaClassicGreen: darkGreenTheme,
+				kivaClassicDark: darkTheme,
+				imageCard: darkTheme
+			};
+			const theme = themeMapper[this.themeName] ?? defaultTheme;
+			// No styles needed if using the default theme
+			return theme === defaultTheme ? {} : {
+				...theme,
+				color: 'rgb(var(--text-primary))',
 			};
 		},
 		/**
