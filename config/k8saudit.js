@@ -7,6 +7,7 @@ module.exports = merge(base, {
 	},
 	server: {
 		memcachedEnabled: true,
-		memcachedServers: 'audit-elasticache-01.knmtma.0001.usw2.cache.amazonaws.com:11211',
+		memcachedServers: 'marketplace-k8s-ui-audit.knmtma.cfg.usw2.cache.amazonaws.com:11211',
+		disableCluster: true,
 	}
 })
