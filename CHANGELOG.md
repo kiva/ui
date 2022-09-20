@@ -1,3 +1,21 @@
+## [2.291.0](https://github.com/kiva/ui/compare/v2.290.1...v2.291.0) (2022-09-20)
+
+
+### Features
+
+* allow two cols and second button ([ca6faca](https://github.com/kiva/ui/commit/ca6faca0242b7f969f9f7c9f874b2afbb018be4c))
+* create hero classic story and show elements in grid ([3b6665a](https://github.com/kiva/ui/commit/3b6665aa098128111e0a34eb88a426140fdff643))
+* show a grid with two genericContentBlocks ([94e44bf](https://github.com/kiva/ui/commit/94e44bf509bda8abd141ef939570dd79c4c7e4fa))
+
+
+### Bug Fixes
+
+* conditional grid and bottom margin when does not appeared ([ec08979](https://github.com/kiva/ui/commit/ec0897907fbe2990a62151b60c7b4d4231143ced))
+* find last button workaround ([c5da7be](https://github.com/kiva/ui/commit/c5da7be69905614e6ff9d5a972c3436bc36598d1))
+* findLast not function error ([a96b77b](https://github.com/kiva/ui/commit/a96b77b580ee7f259e95f9bf15e2eebe793e8e53))
+* no return in map on false condition ([30c2789](https://github.com/kiva/ui/commit/30c2789c2051b65e150c35385191670374fab328))
+* set bodyColumns to null for validation and remove unnecesary content block for grid ([25c8a19](https://github.com/kiva/ui/commit/25c8a1917c1374a7897771da450f1b802e197c21))
+
 ### [2.290.1](https://github.com/kiva/ui/compare/v2.290.0...v2.290.1) (2022-09-20)
 
 
