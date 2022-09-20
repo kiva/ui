@@ -13,8 +13,7 @@
 					<div
 						class="tw-mx-auto tw-col-span-12"
 						:class="{
-							'md:tw-col-span-6': !singleColumn,
-							'md:tw-col-span-5': gridHeroBody.length
+							'md:tw-col-span-6': !singleColumn
 						}"
 						:style="maxWidthStyles"
 					>
@@ -107,11 +106,8 @@
 							v-html="heroSubHeadline"
 							class="tw-mb-2 md:tw-mb-3"
 						></h2>
-						<div v-if="heroBody" class="tw-prose tw-mb-2 md:tw-mb-3" ref="heroBodyCopy">
-							<dynamic-rich-text :html="heroBody" />
-						</div>
-						<div v-if="gridHeroBody" class="tw-mb-2 md:tw-mb-3">
-							<dynamic-rich-text :body-columns="bodyColumns" :html="gridHeroBody" />
+						<div v-if="heroBody" class="tw-mb-2 md:tw-mb-3" ref="heroBodyCopy">
+							<dynamic-rich-text :body-columns="bodyColumns" :html="heroBody" />
 						</div>
 						<template v-if="secondBtnExist">
 							<div class="tw-flex tw-flex-wrap tw-gap-2">
@@ -217,15 +213,6 @@ export default {
 		},
 		heroBody() {
 			const text = this.genericContentBlock?.bodyCopy ?? '';
-			return text ? richTextRenderer(text) : '';
-		},
-		gridContentBlock() {
-			return this.content?.contents?.find(({ key }) => {
-				return key ? key === 'grid' : false;
-			});
-		},
-		gridHeroBody() {
-			const text = this.gridContentBlock?.bodyCopy ?? '';
 			return text ? richTextRenderer(text) : '';
 		},
 		heroHeadline() {

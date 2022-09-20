@@ -18,44 +18,55 @@ export default {
                     "nodeType": "document",
                     "data": {},
                     "content": [
-                    {
-                        "nodeType": "heading-3",
-                        "data": {},
-                        "content": [
                         {
-                            "nodeType": "text",
-                            "value": "With Kiva you can lend as little as $25 and make a big change in someone's life.  ",
-                            "marks": [],
-                            "data": {}
-                        },
-                        {
-                            "nodeType": "hyperlink",
-                            "data": {
-                            "uri": "google.com"
-                            },
+                            "nodeType": "paragraph",
+                            "data": {},
                             "content": [
                             {
                                 "nodeType": "text",
-                                "value": "Test link",
+                                "value": "1. Laura and her husband, Walcenibier, need a $1000 loan to grow their empanada business",
+                                "marks": [],
+                                "data": {}
+                            }
+                            ]
+                        },
+                            {
+                            "nodeType": "paragraph",
+                            "data": {},
+                            "content": [
+                            {
+                                "nodeType": "text",
+                                "value": "2. Laura and her husband, Walcenibier, need a $1000 loan to grow their empanada business",
+                                "marks": [],
+                                "data": {}
+                            }
+                            ]
+                        },
+                            {
+                            "nodeType": "paragraph",
+                            "data": {},
+                            "content": [
+                            {
+                                "nodeType": "text",
+                                "value": "3. 37 people lend money through Kiva to help them fund their loan",
+                                "marks": [],
+                                "data": {}
+                            }
+                            ]
+                        },
+                            {
+                            "nodeType": "paragraph",
+                            "data": {},
+                            "content": [
+                            {
+                                "nodeType": "text",
+                                "value": "4. 37 people lend money through Kiva to help them fund their loan",
                                 "marks": [],
                                 "data": {}
                             }
                             ]
                         }
-                        ]
-                    },
-                    {
-                        "nodeType": "paragraph",
-                        "data": {},
-                        "content": [
-                        {
-                            "nodeType": "text",
-                            "value": "",
-                            "marks": [],
-                            "data": {}
-                        }
-                        ]
-                    }]
+                    ]
                 },
                 "headline": "<nobr>Make a loan,</nobr> <nobr><span class=\"tw-text-brand\">change a life</span></nobr>.",
                 "contentType": "genericContentBlock"
@@ -81,66 +92,6 @@ export default {
                     "Find a borrower"
                 ],
                 "contentType": "button"
-                },
-                {
-                    "key": "grid",
-                    "name": "grid",
-                    "bodyCopy": {
-                        "nodeType": "document",
-                        "data": {},
-                        "content": [
-                            {
-                                "nodeType": "paragraph",
-                                "data": {},
-                                "content": [
-                                {
-                                    "nodeType": "text",
-                                    "value": "1. Laura and her husband, Walcenibier, need a $1000 loan to grow their empanada business",
-                                    "marks": [],
-                                    "data": {}
-                                }
-                                ]
-                            },
-                             {
-                                "nodeType": "paragraph",
-                                "data": {},
-                                "content": [
-                                {
-                                    "nodeType": "text",
-                                    "value": "2. Laura and her husband, Walcenibier, need a $1000 loan to grow their empanada business",
-                                    "marks": [],
-                                    "data": {}
-                                }
-                                ]
-                            },
-                             {
-                                "nodeType": "paragraph",
-                                "data": {},
-                                "content": [
-                                {
-                                    "nodeType": "text",
-                                    "value": "3. 37 people lend money through Kiva to help them fund their loan",
-                                    "marks": [],
-                                    "data": {}
-                                }
-                                ]
-                            },
-                             {
-                                "nodeType": "paragraph",
-                                "data": {},
-                                "content": [
-                                {
-                                    "nodeType": "text",
-                                    "value": "4. 37 people lend money through Kiva to help them fund their loan",
-                                    "marks": [],
-                                    "data": {}
-                                }
-                                ]
-                            }
-                        ]
-                    },
-                    "headline": "<nobr>Make a loan,</nobr> <nobr><span class=\"tw-text-brand\">change a life</span></nobr>.",
-                    "contentType": "genericContentBlock"
                 }
             ],
             "media": [

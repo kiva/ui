@@ -12,7 +12,7 @@ export default {
 		},
 		bodyColumns: {
 			type: Object,
-			default: () => {}
+			default: () => null
 		}
 	},
 	computed: {

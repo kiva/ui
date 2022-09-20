@@ -64,7 +64,7 @@ export default {
 		},
 
 		bodyColumns() {
-			return this.uiSetting?.dataObject?.bodyColumns;
+			return this.uiSetting?.dataObject?.bodyColumns ?? null;
 		}
 	}
 };
