@@ -62,7 +62,7 @@
 			class="tw-mb-1.5 tw-flex-grow" :style="{width: '100%', height: '46px'}"
 		/>
 
-		<div class="flex">
+		<div>
 			<loan-use
 				v-if="!isLoading"
 				class="tw-inline"
@@ -79,7 +79,7 @@
 			<a
 				@click="handleReadMoreLink(loan)"
 				v-kv-track-event="['Lending', 'click-read-more-loan-bundle-cta',
-					isPersonalized ? 'Read more - personalized' : 'Read more', loanId]"
+					'Read more', loanId]"
 				class="tw-inline tw-cursor-pointer"
 			>
 				Read more

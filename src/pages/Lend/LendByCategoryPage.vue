@@ -660,32 +660,26 @@ export default {
 		},
 		fetchMFILoans() {
 			// Load mfi recommendations loans data
-			if (this.mfiRecommendationsExp) {
-				return this.apollo.query({
-					query: mfiRecommendationsLoans,
-				}).then(({ data }) => {
-					console.log(data?.fundraisingLoans?.values ?? []);
-					this.mfiRecommendationsLoans = data?.fundraisingLoans?.values ?? [];
-					const numberLoans = this.mfiRecommendationsLoans.length;
-					if (numberLoans > 0) {
-						console.log('non-zero loans');
-						this.$kvTrackEvent(
-							'Lending',
-							'view-MFI-feature',
-							'pro mujer',
-							'',
-							numberLoans
-						);
-					} else {
-						console.log('zero loans');
-						this.$kvTrackEvent(
-							'Lending',
-							'no-featured-loan-available'
-						);
-					}
-				});
-			}
-			return Promise.resolve();
+			return this.apollo.query({
+				query: mfiRecommendationsLoans,
+			}).then(({ data }) => {
+				this.mfiRecommendationsLoans = data?.fundraisingLoans?.values ?? [];
+				const numberLoans = this.mfiRecommendationsLoans.length;
+				if (numberLoans > 0) {
+					this.$kvTrackEvent(
+						'Lending',
+						'view-MFI-feature',
+						'pro mujer',
+						'',
+						numberLoans
+					);
+				} else {
+					this.$kvTrackEvent(
+						'Lending',
+						'no-featured-loan-available'
+					);
+				}
+			});
 		},
 	},
 	apollo: {
@@ -802,7 +796,9 @@ export default {
 		}
 
 		// Fetching MFI Recommendations Loans
-		this.fetchMFILoans();
+		if (this.mfiRecommendationsExp) {
+			this.fetchMFILoans();
+		}
 	},
 	beforeDestroy() {
 		this.destroyViewportObserver();

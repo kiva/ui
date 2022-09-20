@@ -15,8 +15,13 @@
 		/>
 
 		<div class="tw-flex tw-justify-center tw-mt-4">
-			<!-- eslint-disable max-len -->
-			<a class="tw-text-action tw-text-base" href="https://www.kiva.org/lend?partner=59&status=fundRaising&sortBy=newest">View All</a>
+			<a
+				class="tw-text-action tw-text-base"
+				href="https://www.kiva.org/lend?partner=59&status=fundRaising&sortBy=newest"
+				v-kv-track-event="['Lending', 'click-MFI-feature', 'view all']"
+			>
+				View All
+			</a>
 		</div>
 	</div>
 </template>
