@@ -1,3 +1,10 @@
+## [2.290.0](https://github.com/kiva/ui/compare/v2.289.1...v2.290.0) (2022-09-20)
+
+
+### Features
+
+* eco challenge thanks page ([92f5e9f](https://github.com/kiva/ui/commit/92f5e9f6e9b853c95ef67d19870f54b0a10becde))
+
 ### [2.289.1](https://github.com/kiva/ui/compare/v2.289.0...v2.289.1) (2022-09-20)
 
 
