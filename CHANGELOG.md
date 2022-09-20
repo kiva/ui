@@ -1,3 +1,10 @@
+## [2.293.0](https://github.com/kiva/ui/compare/v2.292.0...v2.293.0) (2022-09-20)
+
+
+### Features
+
+* tracking added to learn more link in mfi hero ([a49f9e6](https://github.com/kiva/ui/commit/a49f9e6b6ca1312d0dd04a637775b70462df69ab))
+
 ## [2.292.0](https://github.com/kiva/ui/compare/v2.291.0...v2.292.0) (2022-09-20)
 
 
