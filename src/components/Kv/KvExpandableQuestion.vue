@@ -14,11 +14,12 @@
 			/>
 		</button>
 		<kv-expandable easing="ease-in-out">
-			<div
-				v-show="open"
-				class="tw-prose tw-pb-4 tw-pt-2"
-				v-html="content"
-			>
+			<div v-show="open">
+				<div
+					class="tw-prose tw-pb-4 tw-pt-2"
+					v-html="content"
+				>
+				</div>
 			</div>
 		</kv-expandable>
 	</div>
