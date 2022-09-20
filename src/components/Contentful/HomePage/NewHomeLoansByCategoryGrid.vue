@@ -1,21 +1,35 @@
 <template>
-	<div>
-		<kiva-multi-category-grid
-			:contentful-loan-channels="contentfulLoanChannels"
-			:loan-display-settings="loanDisplaySettings"
-			:new-home-exp="true"
-		/>
-	</div>
+	<section-with-background-classic
+		:background-content="background"
+		:theme-name="themeName"
+		:vertical-padding="verticalPadding"
+	>
+		<template #content>
+			<kv-page-container>
+				<div>
+					<kiva-multi-category-grid
+						:contentful-loan-channels="contentfulLoanChannels"
+						:loan-display-settings="loanDisplaySettings"
+						:new-home-exp="true"
+					/>
+				</div>
+			</kv-page-container>
+		</template>
+	</section-with-background-classic>
 </template>
 
 <script>
 import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
 import KivaMultiCategoryGrid from '@/components/Homepage/HomeExp/KivaMultiCategoryGrid';
+import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
+import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'NewHomeLoansByCategoryGrid',
 	components: {
 		KivaMultiCategoryGrid,
+		KvPageContainer,
+		SectionWithBackgroundClassic,
 	},
 	mixins: [contentfulStylesMixin],
 	props: {
