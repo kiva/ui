@@ -1,3 +1,10 @@
+## [2.294.0](https://github.com/kiva/ui/compare/v2.293.0...v2.294.0) (2022-09-20)
+
+
+### Features
+
+* add carousels of missing categories in eco challenge thanks page ([c5481ef](https://github.com/kiva/ui/commit/c5481efbc937ba40235afdb8fea9dbf5459b3562))
+
 ## [2.293.0](https://github.com/kiva/ui/compare/v2.292.0...v2.293.0) (2022-09-20)
 
 
