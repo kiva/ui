@@ -74,7 +74,7 @@
 				style="min-height: 1rem;"
 			/>
 			<div v-if="!isLoading" class="tw-text-left">
-				<p class="tw-m-0 tw-overflow-hidden tw-text-ellipsis tw-line-clamp-2 tw-text-md">
+				<p class="tw-m-0 tw-overflow-hidden tw-text-ellipsis tw-line-clamp-2 tw-text-md loan-use">
 					{{ loanUse }}
 				</p>
 			</div>
@@ -342,6 +342,10 @@ export default {
 
 .borrower-name {
 	margin-top: 10px;
+}
+
+.loan-use {
+	min-height: 51px;
 }
 
 .loading-placeholder {

@@ -18,9 +18,12 @@
 		<div class="tw-col-span-12 md:tw-col-span-9">
 			<kiva-loan-card-category
 				v-if="combinedLoanChannelData.length > 1"
+				:is-visible="showCarousel"
 				:loan-ids="selectedChannelLoanIds"
 				:selected-channel="selectedChannel"
 				:loan-channels="combinedLoanChannelData"
+				:new-home-exp="newHomeExp"
+				:show-view-more-card="showViewMoreCard"
 			/>
 		</div>
 	</kv-grid>
