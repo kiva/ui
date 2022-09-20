@@ -1,3 +1,15 @@
+## [2.292.0](https://github.com/kiva/ui/compare/v2.291.0...v2.292.0) (2022-09-20)
+
+
+### Features
+
+* loans carousel was added to mfi experiment ([547ff6b](https://github.com/kiva/ui/commit/547ff6beb052114b0eb809bccf352cd5925e2c93))
+
+
+### Bug Fixes
+
+* code clean up for mfi experiment ([85bc651](https://github.com/kiva/ui/commit/85bc651a294073cc4f90dc3a9d986f5cd7390423))
+
 ## [2.291.0](https://github.com/kiva/ui/compare/v2.290.1...v2.291.0) (2022-09-20)
 
 
