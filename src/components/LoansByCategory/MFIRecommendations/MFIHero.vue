@@ -34,7 +34,13 @@
 			<div class="lg:tw-w-1/3 lg:tw-pl-2 tw-pt-2 lg:tw-pt-0">
 				<p class="tw-px-3 lg:tw-px-0">
 					Fundación Pro Mujer provides so much more than loans to their borrowers.
-					<a target="_blank" href="https://www.kiva.org/about/where-kiva-works/partners/59">Learn More</a>
+					<a
+						target="_blank"
+						href="https://www.kiva.org/about/where-kiva-works/partners/59"
+						v-kv-track-event="['Lending', 'click-MFI-feature', 'learn more']"
+					>
+						Learn More
+					</a>
 				</p>
 
 				<ul class="tw-mt-2 tw-px-2">
