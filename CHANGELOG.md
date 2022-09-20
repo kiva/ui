@@ -1,3 +1,12 @@
+### [2.290.1](https://github.com/kiva/ui/compare/v2.290.0...v2.290.1) (2022-09-20)
+
+
+### Bug Fixes
+
+* turn off cluster mode for audit ([9f18a6a](https://github.com/kiva/ui/commit/9f18a6ae617c824fadec29cca04444be6e7ff045))
+* update audit memcached endpoint to config endpoint ([2bebd12](https://github.com/kiva/ui/commit/2bebd123ed8f56ee38def5b258dd953558dea385))
+* update to audit specific memcached cluster ([4c458a3](https://github.com/kiva/ui/commit/4c458a3f5bc99d100a3d1107b16867dd3e01eeb7))
+
 ## [2.290.0](https://github.com/kiva/ui/compare/v2.289.1...v2.290.0) (2022-09-20)
 
 
