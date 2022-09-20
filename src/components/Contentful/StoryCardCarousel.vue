@@ -1,5 +1,9 @@
 <template>
-	<section-with-background-classic>
+	<section-with-background-classic
+		:background-content="background"
+		:theme-name="themeName"
+		:vertical-padding="verticalPadding"
+	>
 		<template #content>
 			<div
 				class="tw-m-auto tw-pb-4 md:tw-pb-8 tw-bg-secondary tw-rounded"
@@ -21,6 +25,7 @@
 </template>
 
 <script>
+import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
 import StoryCard from '@/components/Contentful/StoryCard';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
@@ -32,6 +37,7 @@ export default {
 		SectionWithBackgroundClassic,
 		StoryCard,
 	},
+	mixins: [contentfulStylesMixin],
 	props: {
 		/**
 		 * Content group content from Contentful
@@ -42,6 +48,11 @@ export default {
 		},
 	},
 	computed: {
+		background() {
+			return this.content?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'background' : false;
+			});
+		},
 		carouselSlides() {
 			return this.content.contents.filter(({ contentType }) => {
 				return contentType ? contentType === 'storyCard' : false;

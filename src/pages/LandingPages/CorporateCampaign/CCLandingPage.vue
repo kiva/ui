@@ -110,7 +110,18 @@
 			</template>
 
 			<campaign-how-kiva-works
+				v-if="hasOldCampaignHowKivaWorks"
 				:is-matching-campaign="isMatchingCampaign"
+			/>
+
+			<centered-rich-text
+				:content="centeredRichTextContent"
+				v-if="hasKivaClassicHowKivaWorks"
+			/>
+
+			<rich-text-items-centered
+				:content="richTextItemsCenteredContent"
+				v-if="hasKivaClassicHowKivaWorks"
 			/>
 
 			<campaign-join-team-form
@@ -266,6 +277,8 @@ import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 
+const CenteredRichText = () => import('@/components/Contentful/CenteredRichText');
+const RichTextItemsCentered = () => import('@/components/Contentful/RichTextItemsCentered');
 const CampaignHero = () => import('@/components/CorporateCampaign/CampaignHero');
 const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
 
@@ -486,7 +499,9 @@ export default {
 		KvLoadingOverlay,
 		LoanCardController,
 		WwwPageCorporate,
-		VerifyRemovePromoCredit
+		VerifyRemovePromoCredit,
+		CenteredRichText,
+		RichTextItemsCentered
 	},
 	mixins: [
 		checkoutUtils
@@ -706,6 +721,24 @@ export default {
 		},
 		hasCampaignHero() {
 			return typeof this.pageData?.page?.contentGroups?.mlCampaignHero !== 'undefined';
+		},
+		hasCenteredRichText() {
+			return typeof this.pageData?.page?.contentGroups?.centeredRichText !== 'undefined';
+		},
+		centeredRichTextContent() {
+			return this.pageData?.page?.contentGroups?.centeredRichText;
+		},
+		hasRichTextItemsCentered() {
+			return typeof this.pageData?.page?.contentGroups?.richTextItemsCentered !== 'undefined';
+		},
+		richTextItemsCenteredContent() {
+			return this.pageData?.page?.contentGroups?.richTextItemsCentered;
+		},
+		hasKivaClassicHowKivaWorks() {
+			return this.hasRichTextItemsCentered && this.hasCenteredRichText;
+		},
+		hasOldCampaignHowKivaWorks() {
+			return !this.hasRichTextItemsCentered || !this.hasCenteredRichText;
 		},
 		hasDynamicHeroClassic() {
 			return typeof this.pageData?.page?.contentGroups?.dynamicHeroClassic !== 'undefined';
