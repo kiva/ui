@@ -62,5 +62,9 @@ export default {
 		verticalPadding() {
 			return this.uiSetting?.dataObject?.verticalPadding ?? {};
 		},
+
+		bodyColumns() {
+			return this.uiSetting?.dataObject?.bodyColumns ?? null;
+		}
 	}
 };
