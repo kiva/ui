@@ -1,6 +1,6 @@
 <template>
-	<div class="row">
-		<div class="small-12 large-3 medium-3">
+	<kv-grid class="tw-grid-cols-12">
+		<div class="tw-col-span-12 md:tw-col-span-3">
 			<div class="md:tw-items-start">
 				<div class="tw-mr-4">
 					<p class="tw-text-h3 tw-font-medium tw-mb-2 tw-text-secondary">
@@ -15,7 +15,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="small-12 large-9 medium-9">
+		<div class="tw-col-span-12 md:tw-col-span-9">
 			<kiva-loan-card-category
 				v-if="combinedLoanChannelData.length > 1"
 				:loan-ids="selectedChannelLoanIds"
@@ -23,18 +23,23 @@
 				:loan-channels="combinedLoanChannelData"
 			/>
 		</div>
-	</div>
+	</kv-grid>
 </template>
 
 <script>
 import gql from 'graphql-tag';
 import KivaLoanCardCategory from '@/components/LoanCollections/HomeExp/KivaLoanCardCategory';
 import LoanCategorySelectorHomeExp from '@/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 export default {
 	name: 'KivaMultiCategoryGrid',
 	inject: ['apollo', 'cookieStore'],
-	components: { LoanCategorySelectorHomeExp, KivaLoanCardCategory },
+	components: {
+		LoanCategorySelectorHomeExp,
+		KivaLoanCardCategory,
+		KvGrid
+	},
 	props: {
 		/**
 		 * Array of loan channel data in an object
