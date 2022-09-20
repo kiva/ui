@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="tw-flex tw-flex-col card-container"
+		class="tw-flex tw-flex-col card-container selected-card tw-rounded-sm"
 		:id="`${loanId}-loan-card`"
 	>
 		<router-link
@@ -61,7 +61,7 @@
 
 			<borrower-name
 				v-if="!isLoading"
-				class="tw-mb-1 tw-text-h3 tw-mt-[10px]"
+				class="tw-mb-1 tw-text-h3 tw-mt-1 tw-overflow-hidden tw-text-ellipsis tw-line-clamp-1"
 				:max-length="50"
 				:name="borrowerName"
 				style="min-height: 2rem;"
@@ -74,7 +74,7 @@
 				style="min-height: 1rem;"
 			/>
 			<div v-if="!isLoading" class="tw-text-left">
-				<p class="tw-m-0 tw-h-6 tw-m-h[3rem] tw-overflow-hidden tw-text-ellipsis tw-line-clamp-2 tw-text-md">
+				<p class="tw-m-0 tw-overflow-hidden tw-text-ellipsis tw-line-clamp-2 tw-text-md">
 					{{ loanUse }}
 				</p>
 			</div>
@@ -97,14 +97,14 @@
 						<template>
 							<div class="tw-flex-auto tw-text-left">
 								<p
-									class="tw-text-h3 tw-m-0 progress-text"
+									class="tw-text-h3 tw-m-0 progress-text tw-mb-2 tw-mt-2"
 									data-testid="bp-summary-amount-to-go"
 								>
 									{{ Math.floor(fundraisingPercent) }}% FUNDED
 								</p>
 							</div>
 							<p
-								class="tw-flex-auto tw-text-right progress-text"
+								class="tw-flex-auto tw-text-right progress-text tw-mb-2 tw-mt-2"
 								data-testid="bp-summary-timeleft"
 							>
 								<span lass="tw-text-h3 tw-block tw-m-0">
@@ -322,16 +322,22 @@ export default {
 }
 
 .card-container {
-	@apply tw-min-w-[260px] tw-max-w-[260px] tw-h-[100%] tw-p-[10px];
-	@apply tw-inline-block tw-rounded-[8px] tw-transition-all tw-duration-300 tw-ease-in-out;
+	min-width: 242px;
+	max-width: 242px;
+	height: 100%;
+	padding: 10px;
 }
 
-.card-container:hover {
+.selected-card {
+	@apply tw-inline-block tw-transition-all tw-duration-300 tw-ease-in-out;
+}
+
+.selected-card:hover {
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .progress-text {
-	@apply tw-text-small tw-mb-[5px] tw-mt-[15px] tw-text-black tw-font-medium;
+	@apply tw-text-small tw-text-black tw-font-medium;
 }
 
 .borrower-name {
@@ -339,12 +345,12 @@ export default {
 }
 
 .loading-placeholder {
-	min-width: 260px;
-	max-width: 260px;
+	min-width: 242px;
+	max-width: 242px;
 }
 
 .loading-paragraph {
-	min-width: 260px;
-	max-width: 260px;
+	min-width: 242px;
+	max-width: 242px;
 }
 </style>
