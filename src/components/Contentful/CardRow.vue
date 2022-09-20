@@ -2,6 +2,7 @@
 <template>
 	<section-with-background-classic
 		:background-content="background"
+		:theme-name="themeName"
 		:vertical-padding="verticalPadding"
 	>
 		<template

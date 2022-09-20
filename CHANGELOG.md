@@ -1,3 +1,70 @@
+## [2.290.0](https://github.com/kiva/ui/compare/v2.289.1...v2.290.0) (2022-09-20)
+
+
+### Features
+
+* eco challenge thanks page ([92f5e9f](https://github.com/kiva/ui/commit/92f5e9f6e9b853c95ef67d19870f54b0a10becde))
+
+### [2.289.1](https://github.com/kiva/ui/compare/v2.289.0...v2.289.1) (2022-09-20)
+
+
+### Bug Fixes
+
+* add other file extensions so [@vueuse](https://github.com/vueuse) modules can be found ([63af411](https://github.com/kiva/ui/commit/63af411ad1621e4b090cb973371efd1e9024e622))
+
+## [2.289.0](https://github.com/kiva/ui/compare/v2.288.1...v2.289.0) (2022-09-19)
+
+
+### Features
+
+* replace swashie how kiva works section with kiva classic rich text items ([2cacfc4](https://github.com/kiva/ui/commit/2cacfc468f67896b816b6a412706a2ebbfb9491a))
+
+### [2.288.1](https://github.com/kiva/ui/compare/v2.288.0...v2.288.1) (2022-09-19)
+
+
+### Bug Fixes
+
+* remove jump of content when toggling FAQs ([9d736b7](https://github.com/kiva/ui/commit/9d736b70816578ac6d1d8a75f5953e165e23a2b8))
+
+## [2.288.0](https://github.com/kiva/ui/compare/v2.287.0...v2.288.0) (2022-09-16)
+
+
+### Features
+
+* theme controls for SectionWithBackgroundClassic ([76d6003](https://github.com/kiva/ui/commit/76d6003ef66660a8744bfaac03a4bb26ddf4c41b))
+
+
+### Bug Fixes
+
+* fill out doc block for themeName prop ([5c5ff60](https://github.com/kiva/ui/commit/5c5ff602b7d313c8818ad3f8c390c98a6df1a601))
+
+## [2.287.0](https://github.com/kiva/ui/compare/v2.286.1...v2.287.0) (2022-09-16)
+
+
+### Features
+
+* add accordion secction component ([d8f2fbd](https://github.com/kiva/ui/commit/d8f2fbdcb466d22d862c20bf067fb5b0e1dccd1d))
+* create frequently asked question story and add support for only one opened question ([8230c5a](https://github.com/kiva/ui/commit/8230c5ad273535e88769ff69a97599015e768eca))
+
+
+### Bug Fixes
+
+* revert unnecessary modified and created files ([7781233](https://github.com/kiva/ui/commit/7781233ec1661caa1eb2f180140bbbbe33c47a13))
+
+### [2.286.1](https://github.com/kiva/ui/compare/v2.286.0...v2.286.1) (2022-09-16)
+
+
+### Bug Fixes
+
+* wire-up background and vertical padding controls to StoryCardCarousel MARS-247 ([6c19d9c](https://github.com/kiva/ui/commit/6c19d9cd5912f87f777b84e9f212b35420cfe101))
+
+## [2.286.0](https://github.com/kiva/ui/compare/v2.285.0...v2.286.0) (2022-09-15)
+
+
+### Features
+
+* add share button to eco thanks page ([d3b0d17](https://github.com/kiva/ui/commit/d3b0d17d264f267fb02ef4915498cf79eba0252b))
+
 ## [2.285.0](https://github.com/kiva/ui/compare/v2.284.3...v2.285.0) (2022-09-14)
 
 
