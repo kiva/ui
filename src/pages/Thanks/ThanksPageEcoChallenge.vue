@@ -18,8 +18,8 @@
 				</div>
 			</div>
 		</div>
-		<kv-page-container>
-			<kv-grid class="tw-grid-cols-12 tw-pt-3 md:tw-pt-4 lg:tw-pt-6 tw-mb-4 md:tw-mb-6" v-if="receipt">
+		<kv-page-container v-if="receipt">
+			<kv-grid class="tw-grid-cols-12 tw-pt-3 md:tw-pt-4 lg:tw-pt-6 tw-mb-4 md:tw-mb-6">
 				<div
 					class="tw-col-span-12 md:tw-col-span-6"
 				>
@@ -150,7 +150,7 @@
 		<!-- Challenge In Progress -->
 		<div
 			class="tw-w-full tw-bg-brand-50 tw-py-4"
-			v-if="loansRemainingInChallenge !== 0"
+			v-if="loansRemainingInChallenge !== 0 && receipt"
 		>
 			<kv-page-container>
 				<div
@@ -184,6 +184,15 @@
 					<!-- eslint-disable-next-line max-len -->
 					On Kiva a little goes a long way in offsetting your carbon footprint. Make a {{ categoriesMissingString }} loan to go greener.
 				</p>
+				<div v-for="(channelId, index) in categoriesMissingIds" :key="index" class="tw-mt-6">
+					<kiva-classic-single-category-carousel
+						:class="{ 'tw-pt-4': index === 0 }"
+						:climate-challenge="true"
+						:loan-channel-id="channelId"
+						:loan-display-settings="loanDisplaySettings"
+						:lend-now-button="true"
+					/>
+				</div>
 			</kv-page-container>
 		</div>
 	</www-page>
@@ -203,6 +212,7 @@ import { missingMilestones, achievementsQueryFromCache, achievementsQuery } from
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvSocialShareButton from '@/components/Kv/KvSocialShareButton';
+import KivaClassicSingleCategoryCarousel from '@/components/LoanCollections/KivaClassicSingleCategoryCarousel';
 
 import IconSun from '@/assets/icons/inline/eco-challenge/sun.svg';
 import IconSunHalf from '@/assets/icons/inline/eco-challenge/sun-half.svg';
@@ -220,6 +230,7 @@ export default {
 		IconSpark,
 		IconSun,
 		IconSunHalf,
+		KivaClassicSingleCategoryCarousel,
 		KvGrid,
 		KvMaterialIcon,
 		KvPageContainer,
@@ -240,6 +251,11 @@ export default {
 			mdiCheckAll,
 			missingMilestones: [],
 			receipt: null,
+			loanDisplaySettings: {
+				loanLimit: 9,
+				showViewMoreCard: true,
+				showCheckBackMessage: true
+			},
 		};
 	},
 	apollo: {
@@ -272,6 +288,26 @@ export default {
 		}
 	},
 	computed: {
+		categoriesMissingIds() {
+			// Category loan channel ids:
+			// 116, solar energy
+			// 117, sustainable agriculture
+			// 118, recycle and reuse
+			const milestoneNames = this.missingMilestones.map(milestone => milestone.milestoneName);
+
+			const arrayOfCategoryIds = [];
+			// If milestoneNames contains category, add id to arrayOfCategoryIds
+			if (milestoneNames.includes('solar')) {
+				arrayOfCategoryIds.push(116);
+			}
+			if (milestoneNames.includes('sustainable-agriculture')) {
+				arrayOfCategoryIds.push(117);
+			}
+			if (milestoneNames.includes('recycle-reuse')) {
+				arrayOfCategoryIds.push(118);
+			}
+			return arrayOfCategoryIds;
+		},
 		categoriesMissingString() {
 			const milestoneNames = this.missingMilestones.map(milestone => milestone.milestoneName);
 			return joinArray(milestoneNames).replaceAll('-', ' ');
