@@ -1,3 +1,10 @@
+### [2.299.2](https://github.com/kiva/ui/compare/v2.299.1...v2.299.2) (2022-09-21)
+
+
+### Bug Fixes
+
+* update KivaMultiCategoryGrid component on story book ([7dd77c9](https://github.com/kiva/ui/commit/7dd77c975e791dfa300922db089ad298611278bc))
+
 ### [2.299.1](https://github.com/kiva/ui/compare/v2.299.0...v2.299.1) (2022-09-21)
 
 
