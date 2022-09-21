@@ -1,3 +1,10 @@
+## [2.295.0](https://github.com/kiva/ui/compare/v2.294.0...v2.295.0) (2022-09-21)
+
+
+### Features
+
+* some tracking events were updated in mfi loan card ([fba6cf0](https://github.com/kiva/ui/commit/fba6cf0abadc8d89f33ba94d02f7a1eca767a040))
+
 ## [2.294.0](https://github.com/kiva/ui/compare/v2.293.0...v2.294.0) (2022-09-20)
 
 
