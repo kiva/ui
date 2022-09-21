@@ -1,3 +1,12 @@
+### [2.299.1](https://github.com/kiva/ui/compare/v2.299.0...v2.299.1) (2022-09-21)
+
+
+### Bug Fixes
+
+* activate excludeIds on category service query and include hero loan id ([050c16f](https://github.com/kiva/ui/commit/050c16fda7057869e599a3369aff8c6fe6ec42b2))
+* ensure RecLoanChannel is blended into Category Service channels + guard excludeIds process ([168ce26](https://github.com/kiva/ui/commit/168ce26804c3962cfbcaa54911ae4ce2bd72fc1f))
+* re-instate excludeIds in lazy loaded loan channel queries ([f10da41](https://github.com/kiva/ui/commit/f10da41f10ea008be97ff948b608f8fc879e4a4e))
+
 ## [2.299.0](https://github.com/kiva/ui/compare/v2.298.0...v2.299.0) (2022-09-21)
 
 
