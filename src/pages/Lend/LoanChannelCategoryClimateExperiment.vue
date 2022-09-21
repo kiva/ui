@@ -12,7 +12,7 @@
 					<span class="show-for-large">{{ loanChannelName }}</span>
 				</p>
 				<h1 class="tw-mb-2">
-					{{ loanChannelName }} <span v-if="isEcoChallengeExpShown">September Challenge</span>
+					{{ loanChannelName }} <span v-if="isEcoChallengeExpShown">October Challenge</span>
 				</h1>
 				<p
 					v-if="!isEcoChallengeExpShown"

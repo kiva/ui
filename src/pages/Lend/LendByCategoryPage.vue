@@ -7,6 +7,13 @@
 		<!-- MFI Recommendations Section -->
 		<div v-if="mfiRecommendationsExp" class="tw-max-w-5xl tw-mx-auto lg:tw-px-6">
 			<m-f-i-hero />
+
+			<mfi-loans-wrapper
+				v-if="selectedChannelLoanIds.length > 0"
+				:selected-channel-loan-ids="selectedChannelLoanIds"
+				:selected-channel="selectedChannel"
+				class="tw-my-4"
+			/>
 		</div>
 
 		<featured-hero-loan-wrapper
@@ -105,6 +112,8 @@ import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketIntersti
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import MFIHero from '@/components/LoansByCategory/MFIRecommendations/MFIHero';
+import MfiLoansWrapper from '@/components/LoansByCategory/MFIRecommendations/MfiLoansWrapper';
+import mfiRecommendationsLoans from '@/graphql/query/lendByCategory/mfiRecommendationsLoans.graphql';
 
 export default {
 	name: 'LendByCategoryPage',
@@ -120,6 +129,7 @@ export default {
 		MGDigestLightbox,
 		MGLightbox,
 		MFIHero,
+		MfiLoansWrapper,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo() {
@@ -164,6 +174,8 @@ export default {
 			showMGDigestLightbox: false,
 			rowTrackCounter: 0,
 			mfiRecommendationsExp: false,
+			mfiRecommendationsLoans: [],
+			selectedChannel: {},
 		};
 	},
 	computed: {
@@ -234,6 +246,9 @@ export default {
 		},
 		categoryRowType() {
 			return this.showHoverLoanCards ? CategoryRowHover : CategoryRow;
+		},
+		selectedChannelLoanIds() {
+			return this.mfiRecommendationsLoans?.map(element => element.id) ?? [];
 		},
 	},
 	methods: {
@@ -643,6 +658,29 @@ export default {
 				);
 			}
 		},
+		fetchMFILoans() {
+			// Load mfi recommendations loans data
+			return this.apollo.query({
+				query: mfiRecommendationsLoans,
+			}).then(({ data }) => {
+				this.mfiRecommendationsLoans = data?.fundraisingLoans?.values ?? [];
+				const numberLoans = this.mfiRecommendationsLoans.length;
+				if (numberLoans > 0) {
+					this.$kvTrackEvent(
+						'Lending',
+						'view-MFI-feature',
+						'pro mujer',
+						'',
+						numberLoans
+					);
+				} else {
+					this.$kvTrackEvent(
+						'Lending',
+						'no-featured-loan-available'
+					);
+				}
+			});
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -755,6 +793,11 @@ export default {
 			} else if (this.$route.query.utm_content === 'no') {
 				this.$kvTrackEvent('Monthly Digest', 'loan-feedback', 'dislike');
 			}
+		}
+
+		// Fetching MFI Recommendations Loans
+		if (this.mfiRecommendationsExp) {
+			this.fetchMFILoans();
 		}
 	},
 	beforeDestroy() {

@@ -106,13 +106,27 @@
 							v-html="heroSubHeadline"
 							class="tw-mb-2 md:tw-mb-3"
 						></h2>
-						<div v-if="heroBody" class="tw-prose tw-mb-2 md:tw-mb-3" ref="heroBodyCopy">
-							<dynamic-rich-text :html="heroBody" />
+						<div v-if="heroBody" class="tw-mb-2 md:tw-mb-3" ref="heroBodyCopy">
+							<dynamic-rich-text :body-columns="bodyColumns" :html="heroBody" />
 						</div>
-						<button-wrapper
-							class="tw-w-full md:tw-w-auto"
-							:content="buttonContent"
-						/>
+						<template v-if="secondBtnExist">
+							<div class="tw-flex tw-flex-wrap tw-gap-2">
+								<button-wrapper
+									class="tw-w-full md:tw-w-auto"
+									:content="buttonContent"
+								/>
+								<button-wrapper
+									class="tw-w-full md:tw-w-auto"
+									:content="secondaryButtonContent"
+								/>
+							</div>
+						</template>
+						<template v-else>
+							<button-wrapper
+								class="tw-w-full md:tw-w-auto"
+								:content="buttonContent"
+							/>
+						</template>
 					</div>
 				</kv-grid>
 			</kv-page-container>
@@ -181,6 +195,15 @@ export default {
 		},
 		buttonTo() {
 			return this.buttonContent?.webLink ?? '';
+		},
+		secondaryButtonContent() {
+			const contents = [...this.content?.contents].reverse();
+			return contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'button' : false;
+			});
+		},
+		secondBtnExist() {
+			return this.buttonContent?.label !== this.secondaryButtonContent?.label;
 		},
 		genericContentBlock() {
 			const gcb = this.content?.contents?.find(({ contentType }) => {

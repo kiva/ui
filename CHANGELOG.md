@@ -1,3 +1,91 @@
+### [2.295.1](https://github.com/kiva/ui/compare/v2.295.0...v2.295.1) (2022-09-21)
+
+
+### Bug Fixes
+
+* update prod lighthouse cron to run at midnight, 8am + 4pm UTC ([c775277](https://github.com/kiva/ui/commit/c7752772acf2947cb04b80ccd4b22e2bc29e948f))
+
+## [2.295.0](https://github.com/kiva/ui/compare/v2.294.0...v2.295.0) (2022-09-21)
+
+
+### Features
+
+* some tracking events were updated in mfi loan card ([fba6cf0](https://github.com/kiva/ui/commit/fba6cf0abadc8d89f33ba94d02f7a1eca767a040))
+
+## [2.294.0](https://github.com/kiva/ui/compare/v2.293.0...v2.294.0) (2022-09-20)
+
+
+### Features
+
+* add carousels of missing categories in eco challenge thanks page ([c5481ef](https://github.com/kiva/ui/commit/c5481efbc937ba40235afdb8fea9dbf5459b3562))
+
+## [2.293.0](https://github.com/kiva/ui/compare/v2.292.0...v2.293.0) (2022-09-20)
+
+
+### Features
+
+* tracking added to learn more link in mfi hero ([a49f9e6](https://github.com/kiva/ui/commit/a49f9e6b6ca1312d0dd04a637775b70462df69ab))
+
+## [2.292.0](https://github.com/kiva/ui/compare/v2.291.0...v2.292.0) (2022-09-20)
+
+
+### Features
+
+* loans carousel was added to mfi experiment ([547ff6b](https://github.com/kiva/ui/commit/547ff6beb052114b0eb809bccf352cd5925e2c93))
+
+
+### Bug Fixes
+
+* code clean up for mfi experiment ([85bc651](https://github.com/kiva/ui/commit/85bc651a294073cc4f90dc3a9d986f5cd7390423))
+
+## [2.291.0](https://github.com/kiva/ui/compare/v2.290.1...v2.291.0) (2022-09-20)
+
+
+### Features
+
+* allow two cols and second button ([ca6faca](https://github.com/kiva/ui/commit/ca6faca0242b7f969f9f7c9f874b2afbb018be4c))
+* create hero classic story and show elements in grid ([3b6665a](https://github.com/kiva/ui/commit/3b6665aa098128111e0a34eb88a426140fdff643))
+* show a grid with two genericContentBlocks ([94e44bf](https://github.com/kiva/ui/commit/94e44bf509bda8abd141ef939570dd79c4c7e4fa))
+
+
+### Bug Fixes
+
+* conditional grid and bottom margin when does not appeared ([ec08979](https://github.com/kiva/ui/commit/ec0897907fbe2990a62151b60c7b4d4231143ced))
+* find last button workaround ([c5da7be](https://github.com/kiva/ui/commit/c5da7be69905614e6ff9d5a972c3436bc36598d1))
+* findLast not function error ([a96b77b](https://github.com/kiva/ui/commit/a96b77b580ee7f259e95f9bf15e2eebe793e8e53))
+* no return in map on false condition ([30c2789](https://github.com/kiva/ui/commit/30c2789c2051b65e150c35385191670374fab328))
+* set bodyColumns to null for validation and remove unnecesary content block for grid ([25c8a19](https://github.com/kiva/ui/commit/25c8a1917c1374a7897771da450f1b802e197c21))
+
+### [2.290.1](https://github.com/kiva/ui/compare/v2.290.0...v2.290.1) (2022-09-20)
+
+
+### Bug Fixes
+
+* turn off cluster mode for audit ([9f18a6a](https://github.com/kiva/ui/commit/9f18a6ae617c824fadec29cca04444be6e7ff045))
+* update audit memcached endpoint to config endpoint ([2bebd12](https://github.com/kiva/ui/commit/2bebd123ed8f56ee38def5b258dd953558dea385))
+* update to audit specific memcached cluster ([4c458a3](https://github.com/kiva/ui/commit/4c458a3f5bc99d100a3d1107b16867dd3e01eeb7))
+
+## [2.290.0](https://github.com/kiva/ui/compare/v2.289.1...v2.290.0) (2022-09-20)
+
+
+### Features
+
+* eco challenge thanks page ([92f5e9f](https://github.com/kiva/ui/commit/92f5e9f6e9b853c95ef67d19870f54b0a10becde))
+
+### [2.289.1](https://github.com/kiva/ui/compare/v2.289.0...v2.289.1) (2022-09-20)
+
+
+### Bug Fixes
+
+* add other file extensions so [@vueuse](https://github.com/vueuse) modules can be found ([63af411](https://github.com/kiva/ui/commit/63af411ad1621e4b090cb973371efd1e9024e622))
+
+## [2.289.0](https://github.com/kiva/ui/compare/v2.288.1...v2.289.0) (2022-09-19)
+
+
+### Features
+
+* replace swashie how kiva works section with kiva classic rich text items ([2cacfc4](https://github.com/kiva/ui/commit/2cacfc468f67896b816b6a412706a2ebbfb9491a))
+
 ### [2.288.1](https://github.com/kiva/ui/compare/v2.288.0...v2.288.1) (2022-09-19)
 
 

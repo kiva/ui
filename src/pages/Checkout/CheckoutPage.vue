@@ -271,6 +271,8 @@ import numeral from 'numeral';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import syncDate from '@/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
+import { achievementsQuery, hasMadeAchievementsProgression } from '@/util/ecoChallengeUtils';
+
 import { getPromoFromBasket } from '@/util/campaignUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import checkoutSettings from '@/graphql/query/checkout/checkoutSettings.graphql';
@@ -302,8 +304,14 @@ import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
 import { isLoanFundraising } from '@/util/loanUtils';
 import MatchedLoansLightbox from '@/components/Checkout/MatchedLoansLightbox';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+
+const ecoChallengeExpKey = 'eco_challenge';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -389,6 +397,7 @@ export default {
 			enableUpsellsCopy: false,
 			myTeams: [],
 			enableDynamicUpsells: false,
+			isEcoChallengeExpShown: false,
 		};
 	},
 	apollo: {
@@ -579,6 +588,20 @@ export default {
 		this.handleToast();
 		this.getPromoInformationFromBasket();
 		this.getUpsellModuleData();
+
+		const ecoChallengeExpData = getExperimentSettingCached(this.apollo, ecoChallengeExpKey);
+		if (ecoChallengeExpData?.enabled) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				ecoChallengeExpKey,
+				'EXP-ACK-392-Sep2022'
+			);
+			if (version === 'b') {
+				this.isEcoChallengeExpShown = true;
+			}
+		}
 	},
 	computed: {
 		isUpsellUnder100() {
@@ -696,6 +719,9 @@ export default {
 		},
 		promoAmount() {
 			return this.promoData?.promoFund?.promoPrice ?? null;
+		},
+		loanIdsInBasket() {
+			return this.loans.map(loan => loan.id);
 		}
 	},
 	methods: {
@@ -807,7 +833,7 @@ export default {
 				this.setUpdatingTotals(false);
 			});
 		},
-		completeTransaction(transactionId) {
+		async completeTransaction(transactionId) {
 			// compile transaction data
 			const transactionData = formatTransactionData(
 				numeral(transactionId).value(),
@@ -820,6 +846,22 @@ export default {
 			// Fetch FTD Status
 			const myFTDQueryUtil = myFTDQuery(this.apollo);
 
+			// Fetch Eco Challenge Game Status
+			// If user is in eco challenge and a loan in basket makes progress towards
+			// eco challenge, set extraQueryParam
+			let extraQueryParam = '';
+			if (this.isEcoChallengeExpShown) {
+				const myAchievements = await achievementsQuery(this.apollo, this.loanIdsInBasket);
+				// eslint-disable-next-line max-len
+				const checkoutMilestoneProgresses = myAchievements?.data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
+				const showEcoThanksPage = hasMadeAchievementsProgression(
+					checkoutMilestoneProgresses,
+					'climate-challenge'
+				);
+				extraQueryParam = showEcoThanksPage ? '&ecoChallenge=true' : '';
+			}
+			// end game code
+
 			myFTDQueryUtil.then(({ data }) => {
 				// determine ftd status
 				const isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
@@ -831,7 +873,8 @@ export default {
 				// redirect to thanks
 				window.setTimeout(
 					() => {
-						this.redirectToThanks(transactionId);
+						this.redirectToThanks(transactionId, extraQueryParam);
+						ß;
 					},
 					800
 				);

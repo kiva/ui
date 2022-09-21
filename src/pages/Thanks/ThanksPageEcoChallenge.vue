@@ -12,17 +12,14 @@
 					:icon="mdiCheckAll"
 				/>
 				<div v-if="receipt">
-					<p v-if="isGuest">
-						Success, we've emailed your receipt to you.
-					</p>
-					<p v-else>
+					<p>
 						Success, your receipt has been sent to <strong class="fs-mask">{{ lender.email }}</strong>
 					</p>
 				</div>
 			</div>
 		</div>
-		<kv-page-container>
-			<kv-grid class="tw-grid-cols-12 tw-pt-3 md:tw-pt-4 lg:tw-pt-6 tw-mb-4 md:tw-mb-6" v-if="receipt">
+		<kv-page-container v-if="receipt">
+			<kv-grid class="tw-grid-cols-12 tw-pt-3 md:tw-pt-4 lg:tw-pt-6 tw-mb-4 md:tw-mb-6">
 				<div
 					class="tw-col-span-12 md:tw-col-span-6"
 				>
@@ -85,7 +82,7 @@
 					<h2>Way to go!</h2>
 					<p class="tw-text-subhead tw-mt-1">
 						<!-- eslint-disable-next-line max-len -->
-						By supporting this eco-friendly loan for solar panels you're helping to building climate resiliency in underserved regions that need it most.
+						By supporting this eco-friendly loan you're helping to building climate resiliency in underserved regions that need it most.
 					</p>
 					<div
 						class="tw-bg-black tw-rounded tw-flex tw-items-center
@@ -153,14 +150,14 @@
 		<!-- Challenge In Progress -->
 		<div
 			class="tw-w-full tw-bg-brand-50 tw-py-4"
-			v-if="loansRemainingInChallenge !== 0"
+			v-if="loansRemainingInChallenge !== 0 && receipt"
 		>
 			<kv-page-container>
 				<div
 					class="tw-flex tw-w-full tw-justify-between"
 				>
 					<h2 class="tw-mr-1.5">
-						X more loans to complete this challenge
+						{{ loansRemainingInChallenge }} more loans to complete this challenge
 					</h2>
 					<div
 						class="tw-flex"
@@ -177,15 +174,25 @@
 								:value="66"
 							/>
 							<p class="tw-text-h4 tw-text-right tw-font-medium tw-mt-1">
-								1 loan to go
+								<!-- eslint-disable-next-line max-len -->
+								{{ loansRemainingInChallenge }} {{ loansRemainingInChallenge == 1 ? 'loan' : 'loans' }} to go
 							</p>
 						</div>
 					</div>
 				</div>
 				<p class="tw-text-subhead">
 					<!-- eslint-disable-next-line max-len -->
-					On Kiva a little goes a long way in offsetting your carbon footprint. Make a {categories missing} to go greener.
+					On Kiva a little goes a long way in offsetting your carbon footprint. Make a {{ categoriesMissingString }} loan to go greener.
 				</p>
+				<div v-for="(channelId, index) in categoriesMissingIds" :key="index" class="tw-mt-6">
+					<kiva-classic-single-category-carousel
+						:class="{ 'tw-pt-4': index === 0 }"
+						:climate-challenge="true"
+						:loan-channel-id="channelId"
+						:loan-display-settings="loanDisplaySettings"
+						:lend-now-button="true"
+					/>
+				</div>
 			</kv-page-container>
 		</div>
 	</www-page>
@@ -201,9 +208,11 @@ import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import logReadQueryError from '@/util/logReadQueryError';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
+import { missingMilestones, achievementsQueryFromCache, achievementsQuery } from '@/util/ecoChallengeUtils';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvSocialShareButton from '@/components/Kv/KvSocialShareButton';
+import KivaClassicSingleCategoryCarousel from '@/components/LoanCollections/KivaClassicSingleCategoryCarousel';
 
 import IconSun from '@/assets/icons/inline/eco-challenge/sun.svg';
 import IconSunHalf from '@/assets/icons/inline/eco-challenge/sun-half.svg';
@@ -221,6 +230,7 @@ export default {
 		IconSpark,
 		IconSun,
 		IconSunHalf,
+		KivaClassicSingleCategoryCarousel,
 		KvGrid,
 		KvMaterialIcon,
 		KvPageContainer,
@@ -238,10 +248,14 @@ export default {
 		return {
 			lender: {},
 			loans: [],
-			receipt: null,
-			isGuest: false,
 			mdiCheckAll,
-			loansRemainingInChallenge: 0,
+			missingMilestones: [],
+			receipt: null,
+			loanDisplaySettings: {
+				loanLimit: 9,
+				showViewMoreCard: true,
+				showCheckBackMessage: true
+			},
 		};
 	},
 	apollo: {
@@ -256,6 +270,14 @@ export default {
 					checkoutId: transactionId,
 					visitorId: cookieStore.get('uiv') || null,
 				}
+			}).then(({ data }) => {
+				const loansResponse = data?.shop?.receipt?.items?.values ?? [];
+				const loans = loansResponse
+					.filter(item => item.basketItemType === 'loan_reservation')
+					.map(item => item.loan);
+
+				const loanIdsInTransaction = loans.map(loan => loan.id);
+				return achievementsQuery(client, loanIdsInTransaction);
 			}).catch(errorResponse => {
 				logFormatter(
 					`Thanks eco challenge page preFetch failed: (transaction_id: ${transactionId})`,
@@ -266,20 +288,71 @@ export default {
 		}
 	},
 	computed: {
+		categoriesMissingIds() {
+			// Category loan channel ids:
+			// 116, solar energy
+			// 117, sustainable agriculture
+			// 118, recycle and reuse
+			const milestoneNames = this.missingMilestones.map(milestone => milestone.milestoneName);
+
+			const arrayOfCategoryIds = [];
+			// If milestoneNames contains category, add id to arrayOfCategoryIds
+			if (milestoneNames.includes('solar')) {
+				arrayOfCategoryIds.push(116);
+			}
+			if (milestoneNames.includes('sustainable-agriculture')) {
+				arrayOfCategoryIds.push(117);
+			}
+			if (milestoneNames.includes('recycle-reuse')) {
+				arrayOfCategoryIds.push(118);
+			}
+			return arrayOfCategoryIds;
+		},
+		categoriesMissingString() {
+			const milestoneNames = this.missingMilestones.map(milestone => milestone.milestoneName);
+			return joinArray(milestoneNames).replaceAll('-', ' ');
+		},
+		loansRemainingInChallenge() {
+			let loansRemaining = 0;
+			this.missingMilestones.forEach(milestone => {
+				loansRemaining += milestone.target - milestone.progress;
+			});
+			return loansRemaining;
+		},
 		climateFact() {
 			// eslint-disable-next-line max-len
 			return 'Did you know that a biodigester is a system that transforms livestock waste (💩) into organic fertilizer for crops, as well as biogas that can be used for household energy?';
 		},
+		// Return the first "eco friendly" loan we find in the loans that are part of this transaction.
+		// If none are found, return the first loan.
+		// Hacky implementation for game test, it should be improved upon.
 		loan() {
 			const orderedLoans = orderBy(this.loans, ['unreservedAmount'], ['desc']);
-			return orderedLoans[0] || {};
-		},
-		borrowerSupport() {
-			const loanNames = this.loans.map(loan => loan.name);
-			if (loanNames.length > 3) {
-				return `these ${loanNames.length} borrowers`;
-			}
-			return joinArray(loanNames, 'and');
+
+			// terms used in solar loans, or reuse loans or sustainable agriculture loans
+			// if this term is in a loan we can assume it was the eco challenge loan that
+			// was part of the checkout
+			const arrayOfTerms = [
+				'solar',
+				'biodigester',
+				'fertilizer',
+				'manure',
+				'livestock',
+				'clothes',
+				'fabric',
+				'shirts',
+				'trousers',
+				'garments'
+			];
+			const ecoLoan = orderedLoans.find(loan => {
+				return arrayOfTerms.some(element => {
+					if (loan.use.includes(element)) {
+						return true;
+					}
+					return false;
+				});
+			});
+			return ecoLoan || orderedLoans[0];
 		},
 	},
 	created() {
@@ -308,14 +381,19 @@ export default {
 		// receipt from rendering in the rare cases this query fails.
 		// But it will not throw a server error.
 		this.receipt = data?.shop?.receipt ?? null;
-		this.isGuest = this.receipt && !data?.my?.userAccount;
 
 		const loansResponse = this.receipt?.items?.values ?? [];
 		this.loans = loansResponse
 			.filter(item => item.basketItemType === 'loan_reservation')
 			.map(item => item.loan);
+		const loanIdsInTransaction = this.loans.map(loan => loan.id);
+		const myAchievements = achievementsQueryFromCache(this.apollo, loanIdsInTransaction);
 
-		if (!this.isGuest && !data?.my?.userAccount) {
+		// eslint-disable-next-line max-len
+		const checkoutMilestoneProgresses = myAchievements?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
+		this.missingMilestones = missingMilestones(checkoutMilestoneProgresses, 'climate-challenge');
+
+		if (!data?.my?.userAccount) {
 			logFormatter(
 				`Failed to get lender for transaction id: ${transactionId}`,
 				'info',
@@ -345,22 +423,4 @@ export default {
 		}
 	},
 };
-
-// sample api response
-// "data": {
-//     "achievementMilestonesForCheckout": {
-//       "checkoutMilestoneProgresses": [
-//         {
-//           "achievement": "climate-challenge",
-//           "milestoneName": "solar-and-used-clothes",
-//           "postCheckoutProgress": 2,
-//           "progress": 0,
-//           "status": "COMPLETABLE",
-//           "target": 2
-//         }
-//       ],
-//       "userId": "3480555"
-//     }
-//   }
-// }
 </script>
