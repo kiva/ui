@@ -17,7 +17,7 @@
 					v-for="(search, index) in savedSearches"
 					:key="index"
 					:saved-search="search"
-					@delete-saved-search="fetchSavedSearches(0)"
+					@delete-saved-search="handleDeletion"
 				/>
 				<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
 				<div
@@ -107,6 +107,12 @@ export default {
 				const existingSavedSearches = this.savedSearches;
 				this.savedSearches = [...existingSavedSearches, ...fetchedSavedSearches];
 				this.loading = false;
+			});
+		},
+		handleDeletion(payload) {
+			// remove the deleted saved search from our savedSearches array
+			this.savedSearches = this.savedSearches.filter(search => {
+				return search?.id !== payload?.id;
 			});
 		},
 		loadMore() {
