@@ -1,3 +1,17 @@
+## [2.296.0](https://github.com/kiva/ui/compare/v2.295.1...v2.296.0) (2022-09-21)
+
+
+### Features
+
+* dynamic upsells a/b test ([dcd2bdb](https://github.com/kiva/ui/commit/dcd2bdb618fb1bb3432705d60341d6fbad0964b8))
+
+
+### Bug Fixes
+
+* merge conflicts with main ([13b0410](https://github.com/kiva/ui/commit/13b041016e4daf1ecc647ae791e3ab22063ac2a9))
+* remove extra char ([af18d14](https://github.com/kiva/ui/commit/af18d14089870b4454685e66efce1671ac32dbb5))
+* update id name ([db0b02b](https://github.com/kiva/ui/commit/db0b02b52f03b44fdd4140d19e551434849937f4))
+
 ### [2.295.1](https://github.com/kiva/ui/compare/v2.295.0...v2.295.1) (2022-09-21)
 
 
