@@ -2,10 +2,11 @@ import KivaLoanCardCategory from '@/components/LoanCollections/HomeExp/KivaLoanC
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import LoanCategorySelectorHomeExp from '@/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 export default {
 	title: 'New Home Page/Kiva Multi Category Grid',
-	components: {LoanCategorySelectorHomeExp, KivaLoanCardCategory},
+	components: {LoanCategorySelectorHomeExp, KivaLoanCardCategory, KvGrid},
 	args: {
 		showAllButton: true,
 		combinedLoanChannelData: [{
@@ -45,7 +46,7 @@ export default {
 
 export const DefaultGrid = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
-	components: { LoanCategorySelectorHomeExp, KivaLoanCardCategory },
+	components: { LoanCategorySelectorHomeExp, KivaLoanCardCategory, KvGrid },
 	mixins: [apolloStoryMixin(), cookieStoreStoryMixin()],
 	methods: {
 		handleCategoryClick (payload) {
@@ -55,22 +56,28 @@ export const DefaultGrid = (args, { argTypes }) => ({
 		}
 	},
 	template: `
-		<div class="md:tw-flex md:tw-items-start">
-			<div class="tw-mr-4">
-				<p class="tw-text-h3 tw-font-medium tw-mb-2 tw-text-secondary">I want to support</p>
-				<loan-category-selector-home-exp
-					v-if="combinedLoanChannelData.length > 1"
-					:loan-channels="combinedLoanChannelData"
-					:selected-channel="selectedChannel.id"
-					@handle-category-click="handleCategoryClick"
+		<kv-grid class="tw-grid-cols-12" style="max-width: 1200px;">
+			<div class="tw-col-span-12 md:tw-col-span-3">
+				<div class="tw-mr-4">
+					<p class="tw-text-h3 tw-font-medium tw-mb-2 tw-text-secondary">I want to support</p>
+					<loan-category-selector-home-exp
+						:loan-channels="combinedLoanChannelData"
+						:selected-channel="selectedChannel.id"
+						@handle-category-click="handleCategoryClick"
+					/>
+				</div>
+			</div>
+			<div class="tw-col-span-12 md:tw-col-span-9">
+				<kiva-loan-card-category
+					:new-home-exp="newHomeExp"
+					:is-visible="showCarousel"
+					:loan-ids="selectedChannelLoanIds"
+					:selected-channel="selectedChannel"
+					:show-view-more-card="showViewMoreCard"
+					:new-home-exp="newHomeExp"
 				/>
 			</div>
-
-			<kiva-loan-card-category
-				:loan-ids="selectedChannelLoanIds"
-				:selected-channel="selectedChannel"
-			/>
-		</div>
+		</kv-grid>
 	`,
 });
 
