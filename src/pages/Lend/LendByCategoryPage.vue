@@ -188,14 +188,16 @@ export default {
 			return categories
 				// fiter our any empty categories and categories with 0 loans
 				.filter(channel => {
-					return this.categoryServiceExpActive
+					// eslint-disable-next-line no-underscore-dangle
+					return this.categoryServiceExpActive && channel?.__typename !== 'RecLoanChannel'
 						? channel?.savedSearch?.loans?.values?.length > 0
 						: _get(channel, 'loans.values.length') > 0;
 				})
 				// map category server category structure to standard loan channel structure
 				.map(category => {
 					// return standard category
-					if (!this.categoryServiceExpActive) {
+					// eslint-disable-next-line no-underscore-dangle
+					if (!this.categoryServiceExpActive || category?.__typename === 'RecLoanChannel') {
 						return category;
 					}
 					// return mapped Category Service category
@@ -222,6 +224,7 @@ export default {
 							values: channel.values,
 						},
 						url: '',
+						__typename: 'RecLoanChannel',
 					};
 
 					// return recomended loan channel with custom title and description added, if needed
@@ -560,14 +563,17 @@ export default {
 		},
 		fetchLoanData() {
 			// extract loan ids currently shown on the page
-			const excludeIds = this.categories.map(category => {
-				return category?.loans?.values.map(loan => loan?.id);
-			}).reduce((allLoanIds, catLoanIds) => {
-				catLoanIds.forEach(id => {
-					allLoanIds.push(id);
+			const excludeIds = this.categories?.map(category => {
+				if (!category?.loans?.values) {
+					return [0];
+				}
+				return category?.loans?.values?.map(loan => loan?.id);
+			})?.reduce((allLoanIds, catLoanIds) => {
+				catLoanIds?.forEach(id => {
+					allLoanIds?.push(id);
 				});
 				return allLoanIds;
-			}, [this.$refs?.featured?.loan?.id ?? 0]);
+			}, [this.$refs?.featured?.loan?.id ?? 0]) ?? [0];
 
 			const category = this.fetchCategoryIds.shift();
 			if (category) {
@@ -795,7 +801,10 @@ export default {
 			this.showCategoryDescription = true;
 		}
 
+		// Setup observer for lazy load
 		this.createViewportObserver();
+
+		// handle tracking for email based visits
 		if (this.$route?.query?.utm_campaign === 'liked_loan'
 			|| this.$route?.query?.utm_campaign?.includes('liked_loan')
 		) {
