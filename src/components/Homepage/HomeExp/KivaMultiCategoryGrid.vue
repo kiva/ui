@@ -1,35 +1,44 @@
 <template>
-	<div class="md:tw-flex md:tw-items-start">
-		<div class="tw-mr-4">
-			<p class="tw-text-h3 tw-font-medium tw-mb-2 tw-text-secondary">
-				I want to support
-			</p>
-			<loan-category-selector-home-exp
-				v-if="combinedLoanChannelData.length > 1"
+	<kv-grid class="tw-grid-cols-12">
+		<div class="tw-col-span-12 md:tw-col-span-3">
+			<div class="tw-mr-4">
+				<p class="tw-text-h3 tw-font-medium tw-mb-2 tw-text-secondary title">
+					I want to support
+				</p>
+				<loan-category-selector-home-exp
+					:loan-channels="combinedLoanChannelData"
+					:selected-channel="selectedChannel.id"
+					@handle-category-click="handleCategoryClick"
+				/>
+			</div>
+		</div>
+		<div class="tw-col-span-12 md:tw-col-span-9">
+			<kiva-loan-card-category
+				:is-visible="showCarousel"
+				:loan-ids="selectedChannelLoanIds"
+				:selected-channel="selectedChannel"
 				:loan-channels="combinedLoanChannelData"
-				:selected-channel="selectedChannel.id"
-				@handle-category-click="handleCategoryClick"
+				:new-home-exp="newHomeExp"
+				:show-view-more-card="showViewMoreCard"
 			/>
 		</div>
-		<kiva-classic-loan-carousel
-			:new-home-exp="newHomeExp"
-			:is-visible="showCarousel"
-			:loan-ids="selectedChannelLoanIds"
-			:selected-channel="selectedChannel"
-			:show-view-more-card="showViewMoreCard"
-		/>
-	</div>
+	</kv-grid>
 </template>
 
 <script>
 import gql from 'graphql-tag';
-import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
+import KivaLoanCardCategory from '@/components/LoanCollections/HomeExp/KivaLoanCardCategory';
 import LoanCategorySelectorHomeExp from '@/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 export default {
 	name: 'KivaMultiCategoryGrid',
 	inject: ['apollo', 'cookieStore'],
-	components: { LoanCategorySelectorHomeExp, KivaClassicLoanCarousel },
+	components: {
+		LoanCategorySelectorHomeExp,
+		KivaLoanCardCategory,
+		KvGrid
+	},
 	props: {
 		/**
 		 * Array of loan channel data in an object
@@ -128,3 +137,8 @@ export default {
 	}
 };
 </script>
+<style lang="postcss" scoped>
+	.title {
+		color: #505050;
+	}
+</style>
