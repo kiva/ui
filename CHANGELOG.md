@@ -1,3 +1,15 @@
+## [2.299.0](https://github.com/kiva/ui/compare/v2.298.0...v2.299.0) (2022-09-21)
+
+
+### Features
+
+* set green text for marks within rich text ([7dabd04](https://github.com/kiva/ui/commit/7dabd0402856c232415be7530330a36c494e6a37))
+
+
+### Bug Fixes
+
+* add semicolon to style ([340b668](https://github.com/kiva/ui/commit/340b668499c3a11e1ae74f78f100b1fb4b2eb9fa))
+
 ## [2.298.0](https://github.com/kiva/ui/compare/v2.297.0...v2.298.0) (2022-09-21)
 
 
