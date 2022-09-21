@@ -66,7 +66,7 @@
 			<loan-use
 				v-if="!isLoading"
 				class="tw-inline"
-				:loan-use-max-length="26"
+				:loan-use-max-length="20"
 				:loan-id="`${allSharesReserved ? '' : loanId}`"
 				:use="loan.use"
 				:name="borrowerName"
@@ -77,9 +77,9 @@
 			/>
 
 			<a
-				@click="handleReadMoreLink(loan)"
-				v-kv-track-event="['Lending', 'click-read-more-loan-bundle-cta',
+				v-kv-track-event="['Lending', 'MFI-feature-click-read-more-cta',
 					'Read more', loanId]"
+				:href="`/lend/${loanId}`"
 				class="tw-inline tw-cursor-pointer"
 			>
 				Read more
@@ -95,7 +95,8 @@
 			:show-now="false"
 			:is-simple-lend-button="true"
 			class="tw-mt-2 tw-w-full"
-
+			v-kv-track-event="['Lending', 'MFI-feature-Add to basket',
+				'lend-button-click', loanId]"
 			@add-to-basket="$emit('add-to-basket', $event)"
 		/>
 	</div>
@@ -273,17 +274,6 @@ export default {
 		},
 	},
 	methods: {
-		handleReadMoreLink(event) {
-			this.$emit('read-more-link', event);
-			if (this.disableLink) {
-				event.preventDefault();
-				return;
-			}
-			this.$emit('track-loan-card-interaction', {
-				interactionType: 'viewBorrowerPage',
-				interactionElement: 'readMore'
-			});
-		},
 		createViewportObserver() {
 			// Watch for this element being in the viewport
 			this.viewportObserver = createIntersectionObserver({
