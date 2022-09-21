@@ -937,10 +937,10 @@ export default {
 				const amountLeft = upsellLoan?.loanAmount
 					- upsellLoan?.loanFundraisingInfo?.fundedAmount
 					- upsellLoan?.loanFundraisingInfo?.reservedAmount;
-				if (amountLeft <= 50) {
-					this.upsellLoan = upsellLoan;
-				} else {
+				if (amountLeft > 50 && this.enableDynamicUpsells) {
 					this.getDynamicUpsellModuleData();
+				} else {
+					this.upsellLoan = upsellLoan;
 				}
 			});
 		},
