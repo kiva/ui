@@ -559,6 +559,16 @@ export default {
 			}
 		},
 		fetchLoanData() {
+			// extract loan ids currently shown on the page
+			const excludeIds = this.categories.map(category => {
+				return category?.loans?.values.map(loan => loan?.id);
+			}).reduce((allLoanIds, catLoanIds) => {
+				catLoanIds.forEach(id => {
+					allLoanIds.push(id);
+				});
+				return allLoanIds;
+			}, []);
+
 			const category = this.fetchCategoryIds.shift();
 			if (category) {
 				this.rowLazyLoadComplete = false;
@@ -569,6 +579,7 @@ export default {
 							ids: [category.id],
 							imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 							imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+							excludeIds
 						};
 						return this.apollo.query({
 							query: recommendedLoansQuery,
@@ -609,6 +620,7 @@ export default {
 								ids: [category.id],
 								imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 								imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+								excludeIds
 							},
 						}).then(({ data }) => {
 							const fetchedCategory = this.categoryServiceExpActive
