@@ -424,7 +424,7 @@ export default {
 						client.query({ query: upsellQuery }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 						client.query({ query: experimentQuery, variables: { id: 'upsells_copy' } }),
-						client.query({ query: experimentQuery, variables: { id: 'upsells_dynamic' } }),
+						client.query({ query: experimentQuery, variables: { id: 'dynamic_upsells' } }),
 					]);
 				});
 		},
