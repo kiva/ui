@@ -567,7 +567,7 @@ export default {
 					allLoanIds.push(id);
 				});
 				return allLoanIds;
-			}, []);
+			}, [this.$refs?.featured?.loan?.id ?? 0]);
 
 			const category = this.fetchCategoryIds.shift();
 			if (category) {
