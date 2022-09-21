@@ -396,6 +396,7 @@ export default {
 			teamJoinStatus: null,
 			enableUpsellsCopy: false,
 			myTeams: [],
+			enableDynamicUpsells: false,
 			isEcoChallengeExpShown: false,
 		};
 	},
@@ -431,7 +432,8 @@ export default {
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 						client.query({ query: upsellQuery }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
-						client.query({ query: experimentQuery, variables: { id: 'upsells_copy' } })
+						client.query({ query: experimentQuery, variables: { id: 'upsells_copy' } }),
+						client.query({ query: experimentQuery, variables: { id: 'dynamic_upsells' } }),
 					]);
 				});
 		},
@@ -471,6 +473,18 @@ export default {
 		}
 	},
 	created() {
+		const upsellsDynamicExperiment = this.apollo.readFragment({
+			id: 'Experiment:dynamic_upsells',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.enableDynamicUpsells = upsellsDynamicExperiment.version === 'b';
+		if (upsellsDynamicExperiment.version) {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-CORE-721-Sept2022',
+				upsellsDynamicExperiment.version
+			);
+		}
 		const upsellsCopyExperiment = this.apollo.readFragment({
 			id: 'Experiment:upsells_copy',
 			fragment: experimentVersionFragment,
