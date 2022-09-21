@@ -79,6 +79,11 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+	button[role=tab] {
+		font-size: 2rem;
+		overflow: initial;
+	}
+
 	@media (min-width: 734px) {
 		.tabs-container {
 			width: 15.25rem;

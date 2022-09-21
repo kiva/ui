@@ -1,23 +1,19 @@
 <template>
 	<kv-grid class="tw-grid-cols-12">
 		<div class="tw-col-span-12 md:tw-col-span-3">
-			<div class="md:tw-items-start">
-				<div class="tw-mr-4">
-					<p class="tw-text-h3 tw-font-medium tw-mb-2 tw-text-secondary">
-						I want to support
-					</p>
-					<loan-category-selector-home-exp
-						v-if="combinedLoanChannelData.length > 1"
-						:loan-channels="combinedLoanChannelData"
-						:selected-channel="selectedChannel.id"
-						@handle-category-click="handleCategoryClick"
-					/>
-				</div>
+			<div class="tw-mr-4">
+				<p class="tw-text-h3 tw-font-medium tw-mb-2 tw-text-secondary title">
+					I want to support
+				</p>
+				<loan-category-selector-home-exp
+					:loan-channels="combinedLoanChannelData"
+					:selected-channel="selectedChannel.id"
+					@handle-category-click="handleCategoryClick"
+				/>
 			</div>
 		</div>
 		<div class="tw-col-span-12 md:tw-col-span-9">
 			<kiva-loan-card-category
-				v-if="combinedLoanChannelData.length > 1"
 				:is-visible="showCarousel"
 				:loan-ids="selectedChannelLoanIds"
 				:selected-channel="selectedChannel"
@@ -141,3 +137,8 @@ export default {
 	}
 };
 </script>
+<style lang="postcss" scoped>
+	.title {
+		color: #505050;
+	}
+</style>

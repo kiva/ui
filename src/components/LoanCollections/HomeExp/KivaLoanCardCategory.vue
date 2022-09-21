@@ -55,7 +55,7 @@
 				</div>
 			</div>
 		</kv-carousel>
-		<template v-if="newHomeExp">
+		<template v-if="newHomeExp && !isLoading">
 			<div class="tw-hidden md:tw-grid md:tw-grid-cols-3 md:tw-gap-4">
 				<template v-for="(loanId, index) in augmentedLoanIds">
 					<!-- show loan card -->
@@ -140,21 +140,10 @@ export default {
 	},
 	computed: {
 		isLoading() {
-			return this.augmentedLoanIds.length === 0 && this.isVisible;
+			return this.augmentedLoanIds.length === 0 && !this.isVisible;
 		},
 		augmentedLoanIds() {
 			const clonedLoanIds = [...this.loanIds];
-			// const promoCardId = 1;
-			// const loadMoreCardId = 2;
-			// TODO: splice if promoCard if active on row
-			// if (this.showPromoCard) {
-			// 	clonedLoanIds.splice(1, 0, promoCardId);
-			// }
-			// TODO: append loadMoreCard if active
-			// if (this.showLoadMoreCard) {
-			// 	clonedLoanIds.push(loadMoreCardId);
-			// 	return clonedLoanIds;
-			// }
 			return clonedLoanIds;
 		},
 		cleanUrl() {
