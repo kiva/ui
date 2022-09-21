@@ -1,3 +1,15 @@
+## [2.297.0](https://github.com/kiva/ui/compare/v2.296.0...v2.297.0) (2022-09-21)
+
+
+### Features
+
+* dynamic upsell when no loans under $50 ([132e906](https://github.com/kiva/ui/commit/132e90695517bf2c860c4c8da1e76ed8e6b538e2))
+
+
+### Bug Fixes
+
+* add check for exp ([2cdd63d](https://github.com/kiva/ui/commit/2cdd63d3011627a720380713076e9070e5125741))
+
 ## [2.296.0](https://github.com/kiva/ui/compare/v2.295.1...v2.296.0) (2022-09-21)
 
 
