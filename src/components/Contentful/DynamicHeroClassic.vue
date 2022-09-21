@@ -107,7 +107,11 @@
 							class="tw-mb-2 md:tw-mb-3"
 						></h2>
 						<div v-if="heroBody" class="tw-mb-2 md:tw-mb-3" ref="heroBodyCopy">
-							<dynamic-rich-text :body-columns="bodyColumns" :html="heroBody" />
+							<dynamic-rich-text
+								class="dynamic-hero-classic"
+								:body-columns="bodyColumns"
+								:html="heroBody"
+							/>
 						</div>
 						<template v-if="secondBtnExist">
 							<div class="tw-flex tw-flex-wrap tw-gap-2">
@@ -274,3 +278,11 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+	.dynamic-hero-classic::v-deep i,
+	.dynamic-hero-classic::v-deep b,
+	.dynamic-hero-classic::v-deep u {
+		color: rgb(var(--text-action))
+	}
+</style>
