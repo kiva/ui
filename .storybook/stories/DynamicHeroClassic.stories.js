@@ -39,6 +39,14 @@ export default {
                                 "value": "2. Laura and her husband, Walcenibier, need a $1000 loan to grow their empanada business",
                                 "marks": [],
                                 "data": {}
+                            },
+                            {
+                                nodeType: 'text',
+                                value: ' Lorem ipsum',
+                                data: {
+                                    class: 'tw-text-brand'
+                                },
+                                marks: [{ type: 'bold'}],
                             }
                             ]
                         },
@@ -51,6 +59,12 @@ export default {
                                 "value": "3. 37 people lend money through Kiva to help them fund their loan",
                                 "marks": [],
                                 "data": {}
+                            },
+                            {
+                                nodeType: 'text',
+                                value: ' Lorem ipsum',
+                                data: {},
+                                marks: [{ type: 'underline'}],
                             }
                             ]
                         },
@@ -63,6 +77,12 @@ export default {
                                 "value": "4. 37 people lend money through Kiva to help them fund their loan",
                                 "marks": [],
                                 "data": {}
+                            },
+                            {
+                                nodeType: 'text',
+                                value: ' Lorem ipsum',
+                                data: {},
+                                marks: [{ type: 'italic'}],
                             }
                             ]
                         }
