@@ -5,6 +5,7 @@ query loanChannelData(
 	$numberOfLoans: Int = 11,
 	$imgDefaultSize: String = "w480h360",
     $imgRetinaSize: String = "w960h720",
+	$excludeIds: [Int!] = [0],
 ) {
 	loanCategoriesByLoanChannelIds(
 		loanChannelIds: $ids
@@ -14,7 +15,7 @@ query loanChannelData(
 			loanChannelId
 			name
 			description
-			savedSearch(limit: $numberOfLoans) {
+			savedSearch(limit: $numberOfLoans, excludeLoanIds: $excludeIds) {
 				id
 				... on FundraisingLoanSavedSearchPageOutput {
 					filters

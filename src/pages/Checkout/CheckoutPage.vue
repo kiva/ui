@@ -42,13 +42,13 @@
 							<upsell-module
 								v-if="!upsellCookieActive &&
 									showUpsellModule &&
-									upsellLoan.name &&
-									isUpsellUnder100
+									upsellLoan.name
 								"
 								:loan="upsellLoan"
 								:close-upsell-module="closeUpsellModule"
 								:add-to-basket="addToBasket"
 								:enable-experiment-copy="enableUpsellsCopy"
+								:use-dynamic-upsell="useDynamicUpsell"
 							/>
 						</div>
 					</div>
@@ -298,6 +298,7 @@ import RandomLoanSelector from '@/components/RandomLoanSelector/RandomLoanSelect
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import upsellQuery from '@/graphql/query/checkout/upsellLoans.graphql';
+import upsellExpiringSoonQuery from '@/graphql/query/checkout/upsellLoansExpiringSoon.graphql';
 import UpsellModule from '@/components/Checkout/UpsellModule';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import * as Sentry from '@sentry/vue';
@@ -396,7 +397,9 @@ export default {
 			teamJoinStatus: null,
 			enableUpsellsCopy: false,
 			myTeams: [],
+			enableDynamicUpsells: false,
 			isEcoChallengeExpShown: false,
+			useDynamicUpsell: false,
 		};
 	},
 	apollo: {
@@ -431,7 +434,8 @@ export default {
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 						client.query({ query: upsellQuery }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
-						client.query({ query: experimentQuery, variables: { id: 'upsells_copy' } })
+						client.query({ query: experimentQuery, variables: { id: 'upsells_copy' } }),
+						client.query({ query: experimentQuery, variables: { id: 'dynamic_upsells' } }),
 					]);
 				});
 		},
@@ -471,6 +475,18 @@ export default {
 		}
 	},
 	created() {
+		const upsellsDynamicExperiment = this.apollo.readFragment({
+			id: 'Experiment:dynamic_upsells',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.enableDynamicUpsells = upsellsDynamicExperiment.version === 'b';
+		if (upsellsDynamicExperiment.version) {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-CORE-721-Sept2022',
+				upsellsDynamicExperiment.version
+			);
+		}
 		const upsellsCopyExperiment = this.apollo.readFragment({
 			id: 'Experiment:upsells_copy',
 			fragment: experimentVersionFragment,
@@ -913,6 +929,25 @@ export default {
 		getUpsellModuleData() {
 			this.apollo.query({
 				query: upsellQuery,
+				fetchPolicy: 'network-only',
+			}).then(({ data }) => {
+				const loans = data?.lend?.loans?.values || [];
+				// Temp solution so we don't show reserved loans on upsell
+				const upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || {};
+				const amountLeft = upsellLoan?.loanAmount
+					- upsellLoan?.loanFundraisingInfo?.fundedAmount
+					- upsellLoan?.loanFundraisingInfo?.reservedAmount;
+				if (amountLeft > 50 && this.enableDynamicUpsells) {
+					this.getDynamicUpsellModuleData();
+				} else {
+					this.upsellLoan = upsellLoan;
+				}
+			});
+		},
+		getDynamicUpsellModuleData() {
+			this.useDynamicUpsell = true;
+			this.apollo.query({
+				query: upsellExpiringSoonQuery,
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
 				const loans = data?.lend?.loans?.values || [];

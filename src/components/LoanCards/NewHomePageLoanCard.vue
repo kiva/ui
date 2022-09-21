@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="tw-flex tw-flex-col card-container"
+		class="tw-flex tw-flex-col card-container selected-card tw-rounded-sm"
 		:id="`${loanId}-loan-card`"
 	>
 		<router-link
@@ -42,15 +42,13 @@
 				<div v-if="countryName">
 					<summary-tag
 						class="tw-absolute tw-bottom-2 tw-left-1 tw-text-primary"
-						:city="city"
-						:state="state"
 						:country-name="countryName"
 					>
 						<kv-material-icon
 							class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
 							:icon="mdiMapMarker"
 						/>
-						{{ formattedLocation }}
+						{{ countryName }}
 					</summary-tag>
 				</div>
 			</div>
@@ -58,12 +56,12 @@
 			<!-- Borrower name-->
 			<kv-loading-placeholder
 				v-if="isLoading"
-				class="tw-mb-0.5" style="min-height: 2rem;"
+				class="tw-mb-0.5" style="height: 2rem;"
 			/>
 
 			<borrower-name
 				v-if="!isLoading"
-				class="tw-mb-1 tw-text-h3 tw-mt-[10px]"
+				class="tw-mb-1 tw-text-h3 tw-mt-1 tw-overflow-hidden tw-text-ellipsis tw-line-clamp-1"
 				:max-length="50"
 				:name="borrowerName"
 				style="min-height: 2rem;"
@@ -73,9 +71,10 @@
 			<kv-loading-paragraph
 				v-if="isLoading"
 				class="tw-mb-1.5 tw-flex-grow"
+				style="min-height: 1rem;"
 			/>
 			<div v-if="!isLoading" class="tw-text-left">
-				<p class="tw-m-0 tw-m-h[3rem] tw-overflow-hidden tw-text-ellipsis tw-line-clamp-2 tw-text-md">
+				<p class="tw-m-0 tw-overflow-hidden tw-text-ellipsis tw-line-clamp-2 tw-text-md loan-use">
 					{{ loanUse }}
 				</p>
 			</div>
@@ -83,13 +82,13 @@
 			<!-- Amount to go line-->
 			<kv-loading-placeholder
 				v-if="isLoading"
-				class="tw-mb-0.5" style="width: 100%; height: 1.3rem;"
+				class="tw-mb-0.5" style="height: 1.3rem;"
 			/>
 
 			<!-- Fundraising bar -->
 			<kv-loading-placeholder
 				v-if="isLoading"
-				class="tw-mb-1.5 tw-rounded" :style="{width: '100%', height: '0.5rem'}"
+				class="tw-mb-1.5 tw-rounded" :style="{height: '0.5rem'}"
 			/>
 
 			<div v-if="!isLoading" class="tw-flex-auto tw-mb-2">
@@ -98,14 +97,14 @@
 						<template>
 							<div class="tw-flex-auto tw-text-left">
 								<p
-									class="tw-text-h3 tw-m-0 progress-text"
+									class="tw-text-h3 tw-m-0 progress-text tw-mb-2 tw-mt-2"
 									data-testid="bp-summary-amount-to-go"
 								>
 									{{ Math.floor(fundraisingPercent) }}% FUNDED
 								</p>
 							</div>
 							<p
-								class="tw-flex-auto tw-text-right progress-text"
+								class="tw-flex-auto tw-text-right progress-text tw-mb-2 tw-mt-2"
 								data-testid="bp-summary-timeleft"
 							>
 								<span lass="tw-text-h3 tw-block tw-m-0">
@@ -170,7 +169,7 @@ const loanCardQuery = gql`query welcomeLoanCard($loanId: Int!) {
 }`;
 
 export default {
-	name: 'LoanCards',
+	name: 'NewHomePageLoanCard',
 	props: {
 		loanId: {
 			type: Number,
@@ -208,12 +207,6 @@ export default {
 		countryName() {
 			return this.loan?.geocode?.country?.name || '';
 		},
-		city() {
-			return this.loan?.geocode?.city || '';
-		},
-		state() {
-			return this.loan?.geocode?.state || '';
-		},
 		distributionModel() {
 			return this.loan?.distributionModel || '';
 		},
@@ -237,17 +230,6 @@ export default {
 		},
 		timeLeft() {
 			return this.loan?.fundraisingTimeLeft ?? '';
-		},
-		formattedLocation() {
-			if (this.distributionModel === 'direct') {
-				const formattedString = `${this.city}, ${this.state}, ${this.countryName}`;
-				return formattedString;
-			}
-			if (this.countryName === 'Puerto Rico') {
-				const formattedString = `${this.city}, PR`;
-				return formattedString;
-			}
-			return this.countryName;
 		},
 		allSharesReserved() {
 			if (parseFloat(this.loan?.unreservedAmount) === 0) {
@@ -340,19 +322,39 @@ export default {
 }
 
 .card-container {
-	@apply tw-min-w-[260px] tw-max-w-[260px] tw-h-[100%] tw-p-[10px];
-	@apply tw-inline-block tw-rounded-[8px] tw-transition-all tw-duration-300 tw-ease-in-out;
+	min-width: 242px;
+	max-width: 242px;
+	height: 100%;
+	padding: 10px;
 }
 
-.card-container:hover {
+.selected-card {
+	@apply tw-inline-block tw-transition-all tw-duration-300 tw-ease-in-out;
+}
+
+.selected-card:hover {
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .progress-text {
-	@apply tw-text-small tw-mb-[5px] tw-mt-[15px] tw-text-black tw-font-medium;
+	@apply tw-text-small tw-text-black tw-font-medium;
 }
 
 .borrower-name {
-	@apply tw-mt-[10px];
+	margin-top: 10px;
+}
+
+.loan-use {
+	min-height: 51px;
+}
+
+.loading-placeholder {
+	min-width: 242px;
+	max-width: 242px;
+}
+
+.loading-paragraph {
+	min-width: 242px;
+	max-width: 242px;
 }
 </style>

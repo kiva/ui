@@ -1,15 +1,15 @@
 <template>
 	<div
-		class="tw-flex tw-justify-start tw-flex-row md:tw-flex-col md:tw-justify-center
+		class="tw-justify-start tw-flex-row md:tw-flex-col md:tw-justify-center
 			md:tw-flex-wrap tw-mx-auto tw-overflow-x-auto md:tw-overflow-x-none"
 	>
 		<kv-tabs :vertical="true" class="tabs-container">
 			<template #tabNav>
 				<kv-tab
 					class="md:tw-truncate"
-					:for-panel="`tab-${category.id}`"
 					:vertical="true"
 					v-for="category in loanChannels" :key="category.id"
+					:for-panel="`tab-${category.id}`"
 					@click.native="handleCategoryClick(category)"
 				>
 					{{ category.shortName }}
@@ -79,6 +79,11 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+	button[role=tab] {
+		font-size: 2rem;
+		overflow: initial;
+	}
+
 	@media (min-width: 734px) {
 		.tabs-container {
 			width: 15.25rem;

@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-w-full">
+	<div class="tw-w-full tw-mb-2">
 		<div class="tw-flex tw-items-center tw-gap-1 tw-px-2 lg:tw-px-0">
 			<!-- eslint-disable max-len -->
 			<img class="tw-w-4 lg:tw-w-6" src="@/assets/images/mfi_recommendations/earth.svg" alt="mfi_recommendations">
@@ -34,7 +34,13 @@
 			<div class="lg:tw-w-1/3 lg:tw-pl-2 tw-pt-2 lg:tw-pt-0">
 				<p class="tw-px-3 lg:tw-px-0">
 					Fundación Pro Mujer provides so much more than loans to their borrowers.
-					<a target="_blank" href="https://www.kiva.org/about/where-kiva-works/partners/59">Learn More</a>
+					<a
+						target="_blank"
+						href="https://www.kiva.org/about/where-kiva-works/partners/59"
+						v-kv-track-event="['Lending', 'click-MFI-feature', 'learn more']"
+					>
+						Learn More
+					</a>
 				</p>
 
 				<ul class="tw-mt-2 tw-px-2">
@@ -77,7 +83,7 @@
 			</div>
 		</div>
 		<div>
-			<p class="tw-text-primary tw-text-subhead tw-py-0 lg:tw-py-6 tw-mb-4 tw-px-2 lg:tw-px-0">
+			<p class="tw-text-primary tw-text-subhead tw-py-0 lg:tw-pt-5 tw-px-2 lg:tw-px-0">
 				Fundación Pro Mujer offers Bolivia’s most in-need women the holistic services
 				they need to build livelihoods for themselves and futures for their families.
 				They help borrowers with business training and personal development services and

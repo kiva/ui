@@ -7,6 +7,13 @@
 		<!-- MFI Recommendations Section -->
 		<div v-if="mfiRecommendationsExp" class="tw-max-w-5xl tw-mx-auto lg:tw-px-6">
 			<m-f-i-hero />
+
+			<mfi-loans-wrapper
+				v-if="selectedChannelLoanIds.length > 0"
+				:selected-channel-loan-ids="selectedChannelLoanIds"
+				:selected-channel="selectedChannel"
+				class="tw-my-4"
+			/>
 		</div>
 
 		<featured-hero-loan-wrapper
@@ -105,6 +112,8 @@ import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketIntersti
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import MFIHero from '@/components/LoansByCategory/MFIRecommendations/MFIHero';
+import MfiLoansWrapper from '@/components/LoansByCategory/MFIRecommendations/MfiLoansWrapper';
+import mfiRecommendationsLoans from '@/graphql/query/lendByCategory/mfiRecommendationsLoans.graphql';
 
 export default {
 	name: 'LendByCategoryPage',
@@ -120,6 +129,7 @@ export default {
 		MGDigestLightbox,
 		MGLightbox,
 		MFIHero,
+		MfiLoansWrapper,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo() {
@@ -164,6 +174,8 @@ export default {
 			showMGDigestLightbox: false,
 			rowTrackCounter: 0,
 			mfiRecommendationsExp: false,
+			mfiRecommendationsLoans: [],
+			selectedChannel: {},
 		};
 	},
 	computed: {
@@ -176,14 +188,16 @@ export default {
 			return categories
 				// fiter our any empty categories and categories with 0 loans
 				.filter(channel => {
-					return this.categoryServiceExpActive
+					// eslint-disable-next-line no-underscore-dangle
+					return this.categoryServiceExpActive && channel?.__typename !== 'RecLoanChannel'
 						? channel?.savedSearch?.loans?.values?.length > 0
 						: _get(channel, 'loans.values.length') > 0;
 				})
 				// map category server category structure to standard loan channel structure
 				.map(category => {
 					// return standard category
-					if (!this.categoryServiceExpActive) {
+					// eslint-disable-next-line no-underscore-dangle
+					if (!this.categoryServiceExpActive || category?.__typename === 'RecLoanChannel') {
 						return category;
 					}
 					// return mapped Category Service category
@@ -210,6 +224,7 @@ export default {
 							values: channel.values,
 						},
 						url: '',
+						__typename: 'RecLoanChannel',
 					};
 
 					// return recomended loan channel with custom title and description added, if needed
@@ -234,6 +249,9 @@ export default {
 		},
 		categoryRowType() {
 			return this.showHoverLoanCards ? CategoryRowHover : CategoryRow;
+		},
+		selectedChannelLoanIds() {
+			return this.mfiRecommendationsLoans?.map(element => element.id) ?? [];
 		},
 	},
 	methods: {
@@ -544,6 +562,19 @@ export default {
 			}
 		},
 		fetchLoanData() {
+			// extract loan ids currently shown on the page
+			const excludeIds = this.categories?.map(category => {
+				if (!category?.loans?.values) {
+					return [0];
+				}
+				return category?.loans?.values?.map(loan => loan?.id);
+			})?.reduce((allLoanIds, catLoanIds) => {
+				catLoanIds?.forEach(id => {
+					allLoanIds?.push(id);
+				});
+				return allLoanIds;
+			}, [this.$refs?.featured?.loan?.id ?? 0]) ?? [0];
+
 			const category = this.fetchCategoryIds.shift();
 			if (category) {
 				this.rowLazyLoadComplete = false;
@@ -554,6 +585,7 @@ export default {
 							ids: [category.id],
 							imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 							imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+							excludeIds
 						};
 						return this.apollo.query({
 							query: recommendedLoansQuery,
@@ -594,6 +626,7 @@ export default {
 								ids: [category.id],
 								imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 								imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+								excludeIds
 							},
 						}).then(({ data }) => {
 							const fetchedCategory = this.categoryServiceExpActive
@@ -642,6 +675,29 @@ export default {
 					layoutEXP.version
 				);
 			}
+		},
+		fetchMFILoans() {
+			// Load mfi recommendations loans data
+			return this.apollo.query({
+				query: mfiRecommendationsLoans,
+			}).then(({ data }) => {
+				this.mfiRecommendationsLoans = data?.fundraisingLoans?.values ?? [];
+				const numberLoans = this.mfiRecommendationsLoans.length;
+				if (numberLoans > 0) {
+					this.$kvTrackEvent(
+						'Lending',
+						'view-MFI-feature',
+						'pro mujer',
+						'',
+						numberLoans
+					);
+				} else {
+					this.$kvTrackEvent(
+						'Lending',
+						'no-featured-loan-available'
+					);
+				}
+			});
 		},
 	},
 	apollo: {
@@ -745,7 +801,10 @@ export default {
 			this.showCategoryDescription = true;
 		}
 
+		// Setup observer for lazy load
 		this.createViewportObserver();
+
+		// handle tracking for email based visits
 		if (this.$route?.query?.utm_campaign === 'liked_loan'
 			|| this.$route?.query?.utm_campaign?.includes('liked_loan')
 		) {
@@ -755,6 +814,11 @@ export default {
 			} else if (this.$route.query.utm_content === 'no') {
 				this.$kvTrackEvent('Monthly Digest', 'loan-feedback', 'dislike');
 			}
+		}
+
+		// Fetching MFI Recommendations Loans
+		if (this.mfiRecommendationsExp) {
+			this.fetchMFILoans();
 		}
 	},
 	beforeDestroy() {

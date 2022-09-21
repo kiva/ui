@@ -1,3 +1,114 @@
+### [2.299.1](https://github.com/kiva/ui/compare/v2.299.0...v2.299.1) (2022-09-21)
+
+
+### Bug Fixes
+
+* activate excludeIds on category service query and include hero loan id ([050c16f](https://github.com/kiva/ui/commit/050c16fda7057869e599a3369aff8c6fe6ec42b2))
+* ensure RecLoanChannel is blended into Category Service channels + guard excludeIds process ([168ce26](https://github.com/kiva/ui/commit/168ce26804c3962cfbcaa54911ae4ce2bd72fc1f))
+* re-instate excludeIds in lazy loaded loan channel queries ([f10da41](https://github.com/kiva/ui/commit/f10da41f10ea008be97ff948b608f8fc879e4a4e))
+
+## [2.299.0](https://github.com/kiva/ui/compare/v2.298.0...v2.299.0) (2022-09-21)
+
+
+### Features
+
+* set green text for marks within rich text ([7dabd04](https://github.com/kiva/ui/commit/7dabd0402856c232415be7530330a36c494e6a37))
+
+
+### Bug Fixes
+
+* add semicolon to style ([340b668](https://github.com/kiva/ui/commit/340b668499c3a11e1ae74f78f100b1fb4b2eb9fa))
+
+## [2.298.0](https://github.com/kiva/ui/compare/v2.297.0...v2.298.0) (2022-09-21)
+
+
+### Features
+
+* add new home page loan card carousel and categories ([c6d2379](https://github.com/kiva/ui/commit/c6d23791db88118bca25740c598710af7644b652))
+* small updates ([d53ba11](https://github.com/kiva/ui/commit/d53ba11a82cf0bd78379e0b8720fc3ef87843a68))
+* small updates ([9ccb542](https://github.com/kiva/ui/commit/9ccb54224abb65f936bf26795a904a9d57d1ccec))
+* small updates ([b5218a4](https://github.com/kiva/ui/commit/b5218a44e02cccf3240a15868010277b3b979f34))
+
+
+### Bug Fixes
+
+* combine NewHomeLoanCardsCarousel and KivaCategoryCarousel components into 1 component ([094a2fb](https://github.com/kiva/ui/commit/094a2fbc2153dda484b1d854fd6e2d322bb73fe5))
+* merge with main branch ([bd10822](https://github.com/kiva/ui/commit/bd1082211396a6fb064048c54af96e2b74fe2dac))
+* more adjustments on new home page stuff ([2bfc9ef](https://github.com/kiva/ui/commit/2bfc9ef4cfad7a5210c8c049736ec2885c0d8ce6))
+* remove grid classed and add KvGrid component ([93f8ce5](https://github.com/kiva/ui/commit/93f8ce54db7edda86c202f2ad147da7274729bb1))
+* resolve conflicts ([847a9c2](https://github.com/kiva/ui/commit/847a9c291289e207d6fdee651030ccb18eb02531))
+* resolved conflicts ([8017e83](https://github.com/kiva/ui/commit/8017e83d2593a1d500770b154b06479d6cad6968))
+* restore carousel on category section ([4da45f2](https://github.com/kiva/ui/commit/4da45f2557fd0d8fed886ffa1906df85b965ea68))
+* revert changes on NewHomeLoansByCategoryGrid.vue component ([b347e5e](https://github.com/kiva/ui/commit/b347e5e5eb5b131d7314c048e72029870c481e67))
+* styling adjustments ([72ab490](https://github.com/kiva/ui/commit/72ab4901b27bb2cfdbea31989e410ac77265b3d8))
+* styling and loading improvements ([5b28294](https://github.com/kiva/ui/commit/5b282943cc8d4604791a8d51a55650beffdb405f))
+
+## [2.297.0](https://github.com/kiva/ui/compare/v2.296.0...v2.297.0) (2022-09-21)
+
+
+### Features
+
+* dynamic upsell when no loans under $50 ([132e906](https://github.com/kiva/ui/commit/132e90695517bf2c860c4c8da1e76ed8e6b538e2))
+
+
+### Bug Fixes
+
+* add check for exp ([2cdd63d](https://github.com/kiva/ui/commit/2cdd63d3011627a720380713076e9070e5125741))
+
+## [2.296.0](https://github.com/kiva/ui/compare/v2.295.1...v2.296.0) (2022-09-21)
+
+
+### Features
+
+* dynamic upsells a/b test ([dcd2bdb](https://github.com/kiva/ui/commit/dcd2bdb618fb1bb3432705d60341d6fbad0964b8))
+
+
+### Bug Fixes
+
+* merge conflicts with main ([13b0410](https://github.com/kiva/ui/commit/13b041016e4daf1ecc647ae791e3ab22063ac2a9))
+* remove extra char ([af18d14](https://github.com/kiva/ui/commit/af18d14089870b4454685e66efce1671ac32dbb5))
+* update id name ([db0b02b](https://github.com/kiva/ui/commit/db0b02b52f03b44fdd4140d19e551434849937f4))
+
+### [2.295.1](https://github.com/kiva/ui/compare/v2.295.0...v2.295.1) (2022-09-21)
+
+
+### Bug Fixes
+
+* update prod lighthouse cron to run at midnight, 8am + 4pm UTC ([c775277](https://github.com/kiva/ui/commit/c7752772acf2947cb04b80ccd4b22e2bc29e948f))
+
+## [2.295.0](https://github.com/kiva/ui/compare/v2.294.0...v2.295.0) (2022-09-21)
+
+
+### Features
+
+* some tracking events were updated in mfi loan card ([fba6cf0](https://github.com/kiva/ui/commit/fba6cf0abadc8d89f33ba94d02f7a1eca767a040))
+
+## [2.294.0](https://github.com/kiva/ui/compare/v2.293.0...v2.294.0) (2022-09-20)
+
+
+### Features
+
+* add carousels of missing categories in eco challenge thanks page ([c5481ef](https://github.com/kiva/ui/commit/c5481efbc937ba40235afdb8fea9dbf5459b3562))
+
+## [2.293.0](https://github.com/kiva/ui/compare/v2.292.0...v2.293.0) (2022-09-20)
+
+
+### Features
+
+* tracking added to learn more link in mfi hero ([a49f9e6](https://github.com/kiva/ui/commit/a49f9e6b6ca1312d0dd04a637775b70462df69ab))
+
+## [2.292.0](https://github.com/kiva/ui/compare/v2.291.0...v2.292.0) (2022-09-20)
+
+
+### Features
+
+* loans carousel was added to mfi experiment ([547ff6b](https://github.com/kiva/ui/commit/547ff6beb052114b0eb809bccf352cd5925e2c93))
+
+
+### Bug Fixes
+
+* code clean up for mfi experiment ([85bc651](https://github.com/kiva/ui/commit/85bc651a294073cc4f90dc3a9d986f5cd7390423))
+
 ## [2.291.0](https://github.com/kiva/ui/compare/v2.290.1...v2.291.0) (2022-09-20)
 
 
