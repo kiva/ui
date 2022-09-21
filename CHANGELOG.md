@@ -1,3 +1,10 @@
+### [2.295.1](https://github.com/kiva/ui/compare/v2.295.0...v2.295.1) (2022-09-21)
+
+
+### Bug Fixes
+
+* update prod lighthouse cron to run at midnight, 8am + 4pm UTC ([c775277](https://github.com/kiva/ui/commit/c7752772acf2947cb04b80ccd4b22e2bc29e948f))
+
 ## [2.295.0](https://github.com/kiva/ui/compare/v2.294.0...v2.295.0) (2022-09-21)
 
 
