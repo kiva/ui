@@ -1,3 +1,27 @@
+## [2.298.0](https://github.com/kiva/ui/compare/v2.297.0...v2.298.0) (2022-09-21)
+
+
+### Features
+
+* add new home page loan card carousel and categories ([c6d2379](https://github.com/kiva/ui/commit/c6d23791db88118bca25740c598710af7644b652))
+* small updates ([d53ba11](https://github.com/kiva/ui/commit/d53ba11a82cf0bd78379e0b8720fc3ef87843a68))
+* small updates ([9ccb542](https://github.com/kiva/ui/commit/9ccb54224abb65f936bf26795a904a9d57d1ccec))
+* small updates ([b5218a4](https://github.com/kiva/ui/commit/b5218a44e02cccf3240a15868010277b3b979f34))
+
+
+### Bug Fixes
+
+* combine NewHomeLoanCardsCarousel and KivaCategoryCarousel components into 1 component ([094a2fb](https://github.com/kiva/ui/commit/094a2fbc2153dda484b1d854fd6e2d322bb73fe5))
+* merge with main branch ([bd10822](https://github.com/kiva/ui/commit/bd1082211396a6fb064048c54af96e2b74fe2dac))
+* more adjustments on new home page stuff ([2bfc9ef](https://github.com/kiva/ui/commit/2bfc9ef4cfad7a5210c8c049736ec2885c0d8ce6))
+* remove grid classed and add KvGrid component ([93f8ce5](https://github.com/kiva/ui/commit/93f8ce54db7edda86c202f2ad147da7274729bb1))
+* resolve conflicts ([847a9c2](https://github.com/kiva/ui/commit/847a9c291289e207d6fdee651030ccb18eb02531))
+* resolved conflicts ([8017e83](https://github.com/kiva/ui/commit/8017e83d2593a1d500770b154b06479d6cad6968))
+* restore carousel on category section ([4da45f2](https://github.com/kiva/ui/commit/4da45f2557fd0d8fed886ffa1906df85b965ea68))
+* revert changes on NewHomeLoansByCategoryGrid.vue component ([b347e5e](https://github.com/kiva/ui/commit/b347e5e5eb5b131d7314c048e72029870c481e67))
+* styling adjustments ([72ab490](https://github.com/kiva/ui/commit/72ab4901b27bb2cfdbea31989e410ac77265b3d8))
+* styling and loading improvements ([5b28294](https://github.com/kiva/ui/commit/5b282943cc8d4604791a8d51a55650beffdb405f))
+
 ## [2.297.0](https://github.com/kiva/ui/compare/v2.296.0...v2.297.0) (2022-09-21)
 
 
