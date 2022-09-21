@@ -1,0 +1,23 @@
+
+query upsellLoansExpiringSoon {
+	lend {
+		loans (sortBy: expiringSoon, limit: 20) {
+          values {
+            id
+            name
+			gender
+            loanAmount
+			status
+      	    loanFundraisingInfo {
+        	 fundedAmount
+			 reservedAmount
+      	    }
+			image {
+				url
+				id
+				hash
+        	}
+          }
+		}
+	}
+}
