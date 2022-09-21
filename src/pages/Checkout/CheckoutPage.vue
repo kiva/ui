@@ -874,7 +874,6 @@ export default {
 				window.setTimeout(
 					() => {
 						this.redirectToThanks(transactionId, extraQueryParam);
-						ß;
 					},
 					800
 				);
