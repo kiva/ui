@@ -7,7 +7,7 @@
  */
 
 import {
-	formatResponsiveImageSet, responsiveImageSetSourceSets
+	formatResponsiveImageSet, responsiveImageSetSourceSets, formatContentTypes
 } from '@/util/contentfulUtils';
 import { BLOCKS, INLINES } from '~/@contentful/rich-text-types';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
@@ -133,7 +133,7 @@ export function richTextRenderer(content) {
 		}
 		if (isFAQ) {
 			return `<kv-frequently-asked-questions
-						:questions="${htmlSafeStringify(entryContent?.fields?.contents)}"
+						:questions="${htmlSafeStringify(formatContentTypes(entryContent?.fields?.contents))}"
 					/>`;
 		}
 		return '';
