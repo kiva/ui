@@ -1,3 +1,10 @@
+## [2.300.0](https://github.com/kiva/ui/compare/v2.299.2...v2.300.0) (2022-09-22)
+
+
+### Features
+
+* code for optional choice in mg page was removed ([9a87e80](https://github.com/kiva/ui/commit/9a87e80129520507fd186c2e9f092dc4d78f0f70))
+
 ### [2.299.2](https://github.com/kiva/ui/compare/v2.299.1...v2.299.2) (2022-09-21)
 
 
