@@ -43,6 +43,7 @@
 					:show-category-description="showCategoryDescription"
 					:show-expandable-loan-cards="false"
 					ref="categoryRow"
+					@add-to-basket="handleAddToBasket"
 				/>
 			</div>
 		</div>
@@ -93,6 +94,7 @@ import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
 import { isLoanFundraising } from '@/util/loanUtils';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+import basketItems from '@/graphql/query/basketItems.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
@@ -255,6 +257,17 @@ export default {
 		},
 	},
 	methods: {
+		handleAddToBasket(payload) {
+			if (payload.success) {
+				this.apollo.query({
+					query: basketItems,
+					fetchPolicy: 'network-only',
+				}).then(({ data }) => {
+					// need to update this.itemsInBasket here.
+					this.itemsInBasket = data?.shop?.basket?.items?.values.map(item => item.id);
+				});
+			}
+		},
 		// Initial set of loans (represented in the 'values' field)
 		filterFundedLoans(loans) {
 			// remove loans that are funded
