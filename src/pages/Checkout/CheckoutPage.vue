@@ -589,7 +589,7 @@ export default {
 		// show toast for specified scenario
 		this.handleToast();
 		this.getPromoInformationFromBasket();
-		if (this.$route.query.forceDynamicUpsell === 'true') {
+		if (this.$route.query.forceDynamicUpsell === 'true' && this.enableDynamicUpsells) {
 			this.getDynamicUpsellModuleData();
 		} else {
 			this.getUpsellModuleData();
@@ -1019,7 +1019,7 @@ export default {
 							);
 							// eslint-disable-next-line max-len
 							this.$showTipMsg('Looks like that loan was reserved by someone else! Try this one instead.', 'info');
-							if (this.$route.query.forceDynamicUpsell === 'true') {
+							if (this.$route.query.forceDynamicUpsell === 'true' && this.enableDynamicUpsells) {
 								this.getDynamicUpsellModuleData();
 							} else {
 								this.getUpsellModuleData();
