@@ -1,3 +1,10 @@
+### [2.300.1](https://github.com/kiva/ui/compare/v2.300.0...v2.300.1) (2022-09-22)
+
+
+### Bug Fixes
+
+* remove deleted saved search from saved search display ([c145c88](https://github.com/kiva/ui/commit/c145c880e08dfefae360e988338324f2621b4150))
+
 ## [2.300.0](https://github.com/kiva/ui/compare/v2.299.2...v2.300.0) (2022-09-22)
 
 
