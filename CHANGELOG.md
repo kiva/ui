@@ -1,3 +1,15 @@
+## [2.301.0](https://github.com/kiva/ui/compare/v2.300.2...v2.301.0) (2022-09-22)
+
+
+### Features
+
+* render faq component ([46e9d00](https://github.com/kiva/ui/commit/46e9d003a9ae3ba0fb16bec6d7fb25be9113345c))
+
+
+### Bug Fixes
+
+* format content type and faq styles ([fcefe4e](https://github.com/kiva/ui/commit/fcefe4e3a6ff2592625adfbc6825e16de77e6553))
+
 ### [2.300.2](https://github.com/kiva/ui/compare/v2.300.1...v2.300.2) (2022-09-22)
 
 
