@@ -133,7 +133,8 @@ export default {
 		amountToAdd() {
 			if (this.useDynamicUpsell) {
 				const basketValues = [5, 10, 15, 20, 25];
-				return basketValues[Math.floor(Math.random() * 5)];
+				const amountToAdd = basketValues[Math.floor(Math.random() * 5)];
+				return amountToAdd < this.amountLeft ? amountToAdd : this.amountLeft;
 			}
 			return this.amountLeft;
 		}

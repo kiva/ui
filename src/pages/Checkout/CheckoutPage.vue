@@ -589,7 +589,11 @@ export default {
 		// show toast for specified scenario
 		this.handleToast();
 		this.getPromoInformationFromBasket();
-		this.getUpsellModuleData();
+		if (this.$route.query.forceDynamicUpsell === 'true') {
+			this.getDynamicUpsellModuleData();
+		} else {
+			this.getUpsellModuleData();
+		}
 
 		const ecoChallengeExpData = getExperimentSettingCached(this.apollo, ecoChallengeExpKey);
 		if (ecoChallengeExpData?.enabled) {
@@ -941,10 +945,22 @@ export default {
 					this.getDynamicUpsellModuleData();
 				} else {
 					this.upsellLoan = upsellLoan;
+					if (this.enableDynamicUpsells) {
+						this.$kvTrackEvent(
+							'Basket',
+							'get-almost-funded-upsells',
+							'Use almost funded upsell loan'
+						);
+					}
 				}
 			});
 		},
 		getDynamicUpsellModuleData() {
+			this.$kvTrackEvent(
+				'Basket',
+				'get-expiring-soon-upsells',
+				'Use expiring soon upsell loan'
+			);
 			this.useDynamicUpsell = true;
 			this.apollo.query({
 				query: upsellExpiringSoonQuery,
@@ -1003,7 +1019,11 @@ export default {
 							);
 							// eslint-disable-next-line max-len
 							this.$showTipMsg('Looks like that loan was reserved by someone else! Try this one instead.', 'info');
-							this.getUpsellModuleData();
+							if (this.$route.query.forceDynamicUpsell === 'true') {
+								this.getDynamicUpsellModuleData();
+							} else {
+								this.getUpsellModuleData();
+							}
 							this.refreshTotals();
 						} else {
 							this.$showTipMsg(error.message, 'error');
