@@ -128,6 +128,7 @@
 					:card-number="detailedLoanIndex + 1"
 					:enable-tracking="true"
 					:is-visitor="!isLoggedIn"
+					@add-to-basket="handleAddToBasket"
 					@close-detailed-loan-card="detailedLoanIndex = null"
 				/>
 			</div>
