@@ -90,7 +90,7 @@
 			v-if="!isLoading"
 			:loan-id="loanId"
 			:loan="loan"
-			:items-in-basket="basketItems"
+			:items-in-basket="basketIds"
 			:is-funded="isFunded"
 			:show-now="false"
 			:is-simple-lend-button="true"
@@ -119,7 +119,18 @@ import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
-const loanQuery = gql`query kcBasicLoanCard($loanId: Int!) {
+const loanQuery = gql`query kcBasicLoanCard($loanId: Int!, $basketId: String) {
+	shop (basketId: $basketId) {
+		id
+		basket {
+			id
+			items {
+				values {
+					id
+				}
+			}
+		}
+	}
 	lend {
 		loan(id: $loanId) {
 			id
@@ -216,6 +227,7 @@ export default {
 			mdiChevronRight,
 			mdiMapMarker,
 			viewportObserver: null,
+			basketIds: []
 		};
 	},
 	computed: {
@@ -303,6 +315,7 @@ export default {
 					apollo: this.apollo,
 					cookieStore: this.cookieStore,
 					loanId: this.loanId,
+					basketId: this.cookieStore.get('kvbskt'),
 					loanQuery,
 					callback: result => this.processQueryResult(result),
 				});
@@ -326,6 +339,7 @@ export default {
 			this.isLoading = false;
 			this.loan = result.data?.lend?.loan ?? {};
 			this.basketItems = result.data?.shop?.basket?.items?.values ?? [];
+			this.basketIds = this.basketItems.map(loan => loan.id);
 		}
 	},
 	mounted() {
