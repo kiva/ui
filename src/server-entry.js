@@ -43,6 +43,13 @@ function addRenderedHtml(context, config) {
 			// eslint-disable-next-line max-len
 			renderedExternals += `<script type="text/javascript" data-domain-script="${key}" src="${src}"></script>`;
 		}
+		// setup Optimizely script
+		if (config?.enableOptimizely && config?.optimizelyProjectId) {
+			// eslint-disable-next-line max-len
+			renderedExternals += '<script type="text/javascript">window["optimizely"]=window["optimizely"]||[];window["optimizely"].push({"type":"holdEvents"});</script>';
+			const optimizelySrc = `https://cdn.optimizely.com/js/${config?.optimizelyProjectId}.js`;
+			renderedExternals += `<script type="text/javascript" src="${optimizelySrc}"></script>`;
+		}
 		// add primary head script
 		const renderedHeadScript = serialize(headScript);
 		const renderedOneTrustEvent = serialize(oneTrustEvent);
