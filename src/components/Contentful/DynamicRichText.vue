@@ -20,6 +20,7 @@ export default {
 			return {
 				template: `<div>${this.html}</div>`,
 				components: {
+					KvFrequentlyAskedQuestions: () => import('@/components/Kv/KvFrequentlyAskedQuestions'),
 					KvContentfulImg: () => import('~/@kiva/kv-components/vue/KvContentfulImg'),
 					ButtonWrapper: () => import('@/components/Contentful/ButtonWrapper')
 				},
