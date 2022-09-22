@@ -1,3 +1,10 @@
+### [2.300.2](https://github.com/kiva/ui/compare/v2.300.1...v2.300.2) (2022-09-22)
+
+
+### Bug Fixes
+
+* items in basket array was fixed for action button in mfi loan card ([f395de8](https://github.com/kiva/ui/commit/f395de8ac7dfa579ed4b1e215f8806170df17523))
+
 ### [2.300.1](https://github.com/kiva/ui/compare/v2.300.0...v2.300.1) (2022-09-22)
 
 
