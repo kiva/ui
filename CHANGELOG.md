@@ -1,3 +1,10 @@
+### [2.302.1](https://github.com/kiva/ui/compare/v2.302.0...v2.302.1) (2022-09-23)
+
+
+### Bug Fixes
+
+* change conditional rendered order of upsell text ([43295d1](https://github.com/kiva/ui/commit/43295d19deb09082ec9b7fdc72965d1ac0939bb1))
+
 ## [2.302.0](https://github.com/kiva/ui/compare/v2.301.1...v2.302.0) (2022-09-23)
 
 
