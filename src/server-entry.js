@@ -43,8 +43,9 @@ function addRenderedHtml(context, config) {
 			// eslint-disable-next-line max-len
 			renderedExternals += `<script type="text/javascript" data-domain-script="${key}" src="${src}"></script>`;
 		}
-		// setup Optimizely script
-		if (config?.enableOptimizely && config?.optimizelyProjectId) {
+		// setup Optimizely script if not opted-out of 3rd party scripts
+		const hasOptOut = context?.cookies?.kvgdpr?.indexOf('opted_out=true') !== -1;
+		if (!hasOptOut && config?.enableOptimizely && config?.optimizelyProjectId) {
 			// eslint-disable-next-line max-len
 			renderedExternals += '<script type="text/javascript">window["optimizely"]=window["optimizely"]||[];window["optimizely"].push({"type":"holdEvents"});</script>';
 			const optimizelySrc = `https://cdn.optimizely.com/js/${config?.optimizelyProjectId}.js`;
