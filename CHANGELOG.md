@@ -1,3 +1,15 @@
+## [2.303.0](https://github.com/kiva/ui/compare/v2.302.1...v2.303.0) (2022-09-23)
+
+
+### Features
+
+* move optimizely script load to server injection and setup optimizely event sequence ([c8f0da5](https://github.com/kiva/ui/commit/c8f0da52a68b24e8337def4e6a4e2fe86144dc1a))
+
+
+### Bug Fixes
+
+* ensure optimizely isn't loaded when Kiva level opt-opt is present ([d647f88](https://github.com/kiva/ui/commit/d647f88d5f990dcac15271673e67dfcd3c4490a1))
+
 ### [2.302.1](https://github.com/kiva/ui/compare/v2.302.0...v2.302.1) (2022-09-23)
 
 
