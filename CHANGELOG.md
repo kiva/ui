@@ -1,3 +1,15 @@
+## [2.302.0](https://github.com/kiva/ui/compare/v2.301.1...v2.302.0) (2022-09-23)
+
+
+### Features
+
+* add query param to force dynamic upsells + tracking ([7ef24b0](https://github.com/kiva/ui/commit/7ef24b047135e731574e4f34f0de8f9a1ea2004f))
+
+
+### Bug Fixes
+
+* additional check ([01e6e5e](https://github.com/kiva/ui/commit/01e6e5e82b30a954c6f427544132a84dcae1f676))
+
 ### [2.301.1](https://github.com/kiva/ui/compare/v2.301.0...v2.301.1) (2022-09-23)
 
 
