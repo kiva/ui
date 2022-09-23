@@ -1,3 +1,11 @@
+### [2.301.1](https://github.com/kiva/ui/compare/v2.301.0...v2.301.1) (2022-09-23)
+
+
+### Bug Fixes
+
+* handle addToBasket event on expanded detailed loan card ([6ee1f3b](https://github.com/kiva/ui/commit/6ee1f3be57f8d92ead16fc33d4b257b43b4f1073))
+* refresh items in basket after add to basket on lbc ([d5129b8](https://github.com/kiva/ui/commit/d5129b8f9b0a983b5b2fd2c81cce6159a1ad36b9))
+
 ## [2.301.0](https://github.com/kiva/ui/compare/v2.300.2...v2.301.0) (2022-09-22)
 
 
