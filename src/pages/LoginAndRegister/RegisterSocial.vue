@@ -62,7 +62,7 @@
 					v-show="needsNews"
 					v-model="newsConsent"
 				>
-					I want to receive special lending deals and news from the Kiva community in my inbox
+					I want to receive important Kiva account updates, news, and promotions in my inbox
 				</kv-base-input>
 				<kv-button
 					class="register-button tw-w-full tw-mb-2"
