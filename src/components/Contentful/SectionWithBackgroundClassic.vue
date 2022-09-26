@@ -37,7 +37,8 @@ import {
 	darkTheme,
 	darkGreenTheme,
 	mintTheme,
-	defaultTheme
+	defaultTheme,
+	darkMintTheme
 } from '~/@kiva/kv-tokens/configs/kivaColors.cjs';
 
 const KvContentfulImg = () => import('~/@kiva/kv-components/vue/KvContentfulImg');
@@ -162,7 +163,8 @@ export default {
 				kivaClassicMint: mintTheme,
 				kivaClassicGreen: darkGreenTheme,
 				kivaClassicDark: darkTheme,
-				imageCard: darkTheme
+				imageCard: darkTheme,
+				kivaDarkMint: darkMintTheme
 			};
 			const theme = themeMapper[this.themeName] ?? defaultTheme;
 			// No styles needed if using the default theme
