@@ -1,3 +1,15 @@
+## [2.306.0](https://github.com/kiva/ui/compare/v2.305.1...v2.306.0) (2022-09-26)
+
+
+### Features
+
+* add new darkmint theme ([5827fa2](https://github.com/kiva/ui/commit/5827fa2d571b705a905ce74843791dbcfdecfd28))
+
+
+### Bug Fixes
+
+* update package.json file ([2780295](https://github.com/kiva/ui/commit/2780295a832ec2b88b1ea5a2c648f61e51e9eb7a))
+
 ### [2.305.1](https://github.com/kiva/ui/compare/v2.305.0...v2.305.1) (2022-09-26)
 
 
