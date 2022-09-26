@@ -5,12 +5,19 @@
 <script>
 /* eslint-disable vue/multi-word-component-names */
 import gql from 'graphql-tag';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
 
 const ContentfulPage = () => import('@/pages/ContentfulPage');
 
 const homePageQuery = gql`query homepageFrame {
 	hasEverLoggedIn @client
+	general {
+		newHomeLayoutExp: uiExperimentSetting(key: "new_home_layout") {
+			key
+			value
+		}
+	}
 }`;
 
 export default {
@@ -85,10 +92,31 @@ export default {
 			return client.query({
 				query: homePageQuery
 			}).then(() => {
-				return ContentfulPage();
-			}).then(resolvedImport => {
+				return Promise.all([client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: 'new_home_layout' }
+				})]);
+			}).then(async result => {
 				// Call preFetch for the active homepage
-				const component = resolvedImport.default;
+				let homePageComponent;
+				const experiment = result[0].data?.experiment;
+
+				switch (experiment?.version) {
+					case 'a':
+						// Should fetch the regular home page
+						homePageComponent = await ContentfulPage();
+						break;
+					case 'b':
+						// Should prefetch the experimental home page
+						homePageComponent = await ContentfulPage();
+						break;
+					default:
+						// Should redirect to /cps/home
+						homePageComponent = await ContentfulPage();
+						break;
+				}
+
+				const component = homePageComponent.default;
 				return preFetchAll([component], client, args);
 			});
 		},
