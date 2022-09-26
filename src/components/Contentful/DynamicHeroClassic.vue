@@ -283,6 +283,6 @@ export default {
 	.dynamic-hero-classic::v-deep i,
 	.dynamic-hero-classic::v-deep b,
 	.dynamic-hero-classic::v-deep u {
-		@apply tw-text-brand-300;
+		color: rgb(var(--text-action));
 	}
 </style>
