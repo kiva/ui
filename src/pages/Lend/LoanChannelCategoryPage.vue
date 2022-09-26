@@ -203,7 +203,11 @@ export default {
 		this.initializeAddToBasketInterstitial();
 		// Experimental page layout
 		this.initializeExperimentalPageLayout();
-		this.initializeQuickFilters();
+		if (this.targetedLoanChannel !== 'women'
+				&& this.targetedLoanChannel !== 'eco-friendly'
+				&& this.targetedLoanChannel !== 'kiva-u-s') {
+			this.initializeQuickFilters();
+		}
 	},
 	computed: {
 		targetedLoanChannel() {
