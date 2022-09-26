@@ -56,7 +56,7 @@
 			</div>
 		</kv-carousel>
 		<template v-if="newHomeExp && !isLoading">
-			<div class="tw-hidden md:tw-grid md:tw-grid-cols-3 md:tw-gap-4">
+			<div class="tw-hidden md:tw-grid md:tw-grid-cols-2 md:tw-gap-4 lg:tw-grid-cols-3">
 				<template v-for="(loanId, index) in augmentedLoanIds">
 					<!-- show loan card -->
 					<!-- TODO Re-implement card position analytics -->
