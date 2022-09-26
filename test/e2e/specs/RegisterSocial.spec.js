@@ -10,6 +10,7 @@ describe('RegisterSocial', () => {
 			cy.contains('First name').should('be.visible');
 			cy.contains('Last name').should('be.visible');
 			cy.contains('I have read and agree').should('not.be.visible');
+			cy.contains('I want to receive').should('not.be.visible');
 
 			// Submit the form without entering anything
 			cy.contains('Complete registration').click();
@@ -38,6 +39,7 @@ describe('RegisterSocial', () => {
 			cy.contains('I have read and agree').should('be.visible');
 			cy.contains('First name').should('not.be.visible');
 			cy.contains('Last name').should('not.be.visible');
+			cy.contains('I want to receive').should('not.be.visible');
 
 			// Submit the form without entering anything
 			cy.contains('Complete registration').click();
@@ -55,14 +57,26 @@ describe('RegisterSocial', () => {
 			cy.contains('You must agree to the Kiva Terms of Use and Privacy Policy.').should('not.exist');
 		});
 
-		it('requires terms agreement and names when all are needed', () => {
-			// Visit to RegisterSocial page requesting names and terms agreement be returned (terms=1&names=1)
-			cy.visit(`${registerSocialPath}?state=abc&terms=1&names=1`);
+		it('displays news consent option when consent has not been decided', () => {
+			// Visit to RegisterSocial page requesting news consent be returned (news=1)
+			cy.visit(`${registerSocialPath}?state=abc&news=1`);
+
+			// Expect only the news input to be displayed
+			cy.contains('I want to receive').should('be.visible');
+			cy.contains('First name').should('not.be.visible');
+			cy.contains('Last name').should('not.be.visible');
+			cy.contains('I have read and agree').should('not.be.visible');
+		});
+
+		it('displays news consent and requires terms agreement and names when all are needed', () => {
+			// Visit to RegisterSocial page requesting names, terms agreement, and news consent (terms=1&names=1&news=1)
+			cy.visit(`${registerSocialPath}?state=abc&terms=1&names=1&news=1`);
 
 			// Expect all inputs to be displayed
 			cy.contains('First name').should('be.visible');
 			cy.contains('Last name').should('be.visible');
 			cy.contains('I have read and agree').should('be.visible');
+			cy.contains('I want to receive').should('be.visible');
 
 			// Submit the form without entering anything
 			cy.contains('Complete registration').click();
