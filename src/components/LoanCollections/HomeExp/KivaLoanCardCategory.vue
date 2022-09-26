@@ -56,7 +56,7 @@
 			</div>
 		</kv-carousel>
 		<template v-if="newHomeExp && !isLoading">
-			<div class="tw-hidden md:tw-grid md:tw-grid-cols-3 md:tw-gap-4 loan-cards-container">
+			<div class="tw-hidden md:tw-grid md:tw-grid-cols-2 md:tw-gap-4 lg:tw-grid-cols-3">
 				<template v-for="(loanId, index) in augmentedLoanIds">
 					<!-- show loan card -->
 					<!-- TODO Re-implement card position analytics -->
@@ -212,11 +212,5 @@ export default {
 
 	section#loan-category-carousel :first-child {
 		column-gap: 0;
-	}
-
-	@media (min-width: 1024px) {
-		.loan-cards-container {
-			@apply md:tw-grid-cols-2;
-		}
 	}
 </style>
