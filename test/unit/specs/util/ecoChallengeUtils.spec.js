@@ -105,4 +105,12 @@ describe('ecoChallengeUtils.js missingMilestones', () => {
 			},
 		]);
 	});
+	test('Should always return an array', () => {
+		expect(missingMilestones([], 'another-challenge')).toEqual([
+		]);
+		expect(missingMilestones(sampleAPIMilestoneProgress, 'challenge-does-not-exist')).toEqual([
+		]);
+		expect(missingMilestones(sampleAPIMilestoneProgress, undefined)).toEqual([
+		]);
+	});
 });

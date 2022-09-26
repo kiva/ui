@@ -32,6 +32,7 @@
 		<kv-page-container v-if="secondaryChannels.length > 0">
 			<div v-for="(channel, index) in secondaryChannels" :key="index" class="tw-mt-6">
 				<kiva-classic-single-category-carousel
+					:id="`carousel-${channel.name}` | changeCase('paramCase')"
 					:climate-challenge="isEcoChallengeExpShown"
 					:loan-channel-id="channel.id"
 					:loan-channel-name="channel.name"

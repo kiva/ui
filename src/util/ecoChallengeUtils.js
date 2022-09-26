@@ -65,7 +65,7 @@ export function hasMadeAchievementsProgression(achievementsQueryResult = [], ach
 
 /**
  * missingMilestones
- * Returns what a user needs to complete the achievement
+ * Returns what a user needs to complete the achievement AFTER this checkout
  *
  * @param {Array} achievementsQueryResult The array of milestones from the request result from the achievementsQuery
  * @param {Object} achievementName String of achievement name as stored in the achievement service
