@@ -214,7 +214,7 @@ export default {
 		column-gap: 0;
 	}
 
-	@media (max-width: 980px) {
+	@media (min-width: 1024px) {
 		.loan-cards-container {
 			@apply md:tw-grid-cols-2;
 		}
