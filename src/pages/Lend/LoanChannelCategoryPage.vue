@@ -23,6 +23,7 @@ import { fetchExperimentSettings } from '@/util/experimentPreFetch';
 import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
@@ -38,6 +39,10 @@ const pageQuery = gql`
 				value
 			}
 			ecoChallenge: uiExperimentSetting(key: "eco_challenge") {
+				key
+				value
+			}
+			quickFilters: uiExperimentSetting(key: "quick_filters") {
 				key
 				value
 			}
@@ -100,7 +105,8 @@ export default {
 				description: undefined
 			},
 			pageLayout: 'control',
-			pageLayoutComponent: null
+			pageLayoutComponent: null,
+			enableQuickFilters: false,
 		};
 	},
 	apollo: {
@@ -159,6 +165,7 @@ export default {
 				}
 				return Promise.all([
 					...gameExperimentAssignments,
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'quick_filters' } }),
 				]);
 			}).then(results => {
 				// manipulate experiment results format
@@ -196,6 +203,7 @@ export default {
 		this.initializeAddToBasketInterstitial();
 		// Experimental page layout
 		this.initializeExperimentalPageLayout();
+		this.initializeQuickFilters();
 	},
 	computed: {
 		targetedLoanChannel() {
@@ -217,6 +225,20 @@ export default {
 		}
 	},
 	methods: {
+		initializeQuickFilters() {
+			const quickFiltersExperiment = this.apollo.readFragment({
+				id: 'Experiment:quick_filters',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.enableQuickFilters = quickFiltersExperiment.version === 'b';
+			if (quickFiltersExperiment.version) {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CORE-729-Sept-2022',
+					quickFiltersExperiment.version
+				);
+			}
+		},
 		initializeExperimentalPageLayout() {
 			// Only certain categories are eligible for the experiment
 			if (testCategories.includes(this.targetedLoanChannel)) {
