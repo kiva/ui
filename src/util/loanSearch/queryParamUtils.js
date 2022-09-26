@@ -35,9 +35,9 @@ export function hasExcludedQueryParams(query) {
 		'partner',
 		'riskRating',
 		'state',
-		'queryString',
+		'queryString', // can be mapped to description
 		'loanLimit',
-		'tag',
+		'tag', // can be mapped to tagId
 	];
 	// Check route.query for excluded params
 	const queryContainsExcludedParams = Object.keys(query).filter(key => {
