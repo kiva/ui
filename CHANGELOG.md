@@ -1,3 +1,10 @@
+### [2.305.1](https://github.com/kiva/ui/compare/v2.305.0...v2.305.1) (2022-09-26)
+
+
+### Bug Fixes
+
+* added media query to fix crashing on category loan cards ([b85b1a9](https://github.com/kiva/ui/commit/b85b1a98413b37fb7947832707e332a65e0577de))
+
 ## [2.305.0](https://github.com/kiva/ui/compare/v2.304.0...v2.305.0) (2022-09-26)
 
 
