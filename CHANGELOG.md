@@ -1,3 +1,15 @@
+## [2.305.0](https://github.com/kiva/ui/compare/v2.304.0...v2.305.0) (2022-09-26)
+
+
+### Features
+
+* a/b test for quick filters ([aace546](https://github.com/kiva/ui/commit/aace5461d04935654cac4e41f2fa31bd6c068dc7))
+
+
+### Bug Fixes
+
+* add exclusions ([2bd85c1](https://github.com/kiva/ui/commit/2bd85c1f660152de10c7558e970527d5c7f4407b))
+
 ## [2.304.0](https://github.com/kiva/ui/compare/v2.303.0...v2.304.0) (2022-09-26)
 
 
