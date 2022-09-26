@@ -1,3 +1,16 @@
+## [2.307.0](https://github.com/kiva/ui/compare/v2.306.0...v2.307.0) (2022-09-26)
+
+
+### Features
+
+* ask consent for marketing emails when getting TOU agreement MARS-260 ([23256fc](https://github.com/kiva/ui/commit/23256fc298fc9f4b9c313ee3c332c3a8c73da06f))
+
+
+### Bug Fixes
+
+* news consent label copy update 2 MARS-260 ([ff27c75](https://github.com/kiva/ui/commit/ff27c750b5fed4217d2cfe1de149d9a1f719a8de))
+* news consent label copy update MARS-260 ([62c6bf1](https://github.com/kiva/ui/commit/62c6bf1ccd3588a31d6a880ba9738b515231f0c3))
+
 ## [2.306.0](https://github.com/kiva/ui/compare/v2.305.1...v2.306.0) (2022-09-26)
 
 
