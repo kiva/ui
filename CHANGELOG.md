@@ -1,3 +1,10 @@
+## [2.304.0](https://github.com/kiva/ui/compare/v2.303.0...v2.304.0) (2022-09-26)
+
+
+### Features
+
+* add game confirmation modal when adding to basket on borrower profile ([c689b24](https://github.com/kiva/ui/commit/c689b24df2e8aaf2ee78fc39eaf0b1b63f30d64a))
+
 ## [2.303.0](https://github.com/kiva/ui/compare/v2.302.1...v2.303.0) (2022-09-23)
 
 
