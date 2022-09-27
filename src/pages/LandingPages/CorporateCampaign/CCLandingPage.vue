@@ -246,7 +246,6 @@ const LoansByCategoryCarousel = () => import('@/components/Contentful/LoansByCat
 const LoansByCategoryGrid = () => import('@/components/Contentful/HomePage/NewHomeLoansByCategoryGrid');
 const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
 const FrequentlyAskedQuestions = () => import('@/components/Contentful/FrequentlyAskedQuestions');
-const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
 const RichTextItemsCentered = () => import('@/components/Contentful/RichTextItemsCentered');
 const MediaItemsCentered = () => import('@/components/Contentful/MediaItemsCentered');
 const StoryCardCarousel = () => import('@/components/Contentful/StoryCardCarousel');
@@ -458,8 +457,6 @@ const getComponentFromType = type => {
 			return MonthlyGoodSelectorWrapper;
 		case 'frequentlyAskedQuestions':
 			return FrequentlyAskedQuestions;
-		case 'testimonialCards':
-			return TestimonialCards;
 		case 'cardRow':
 			return CardRow;
 		case 'centeredRichText':
