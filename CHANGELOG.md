@@ -1,3 +1,10 @@
+### [2.308.1](https://github.com/kiva/ui/compare/v2.308.0...v2.308.1) (2022-09-27)
+
+
+### Bug Fixes
+
+* copy update 3 for MARS-260 ([e9af2e9](https://github.com/kiva/ui/commit/e9af2e96637ee96721b7b1dd9eb87cae0a10eebf))
+
 ## [2.308.0](https://github.com/kiva/ui/compare/v2.307.0...v2.308.0) (2022-09-27)
 
 
