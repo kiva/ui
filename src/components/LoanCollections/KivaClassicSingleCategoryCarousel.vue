@@ -35,7 +35,7 @@ import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoa
 import KvPill from '@/components/Kv/KvPill';
 
 import {
-	preFetchChannel,
+	getLoanChannel,
 } from '@/util/loanChannelUtils';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 
@@ -140,7 +140,7 @@ export default {
 				limit: this.loanDisplaySettings?.loanLimit ?? 1,
 				basketId: this.cookieStore.get('kvbskt'),
 			};
-			const channelData = await preFetchChannel(
+			const channelData = await getLoanChannel(
 				this.apollo,
 				this.loanChannelQueryMap,
 				channelUrl,

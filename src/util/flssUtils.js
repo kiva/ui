@@ -16,6 +16,8 @@ export function getFlssFilters(loanSearchState) {
 		...(loanSearchState?.themeId?.length && { themeId: { any: loanSearchState.themeId } }),
 		...(loanSearchState?.sectorId?.length && { sectorId: { any: loanSearchState.sectorId } }),
 		...(loanSearchState?.distributionModel && { distributionModel: { eq: loanSearchState.distributionModel } }),
+		...(loanSearchState?.tagId?.length && { tagId: { any: loanSearchState.tagId } }),
+		...(loanSearchState?.description && { description: { eq: loanSearchState.description } }),
 	};
 }
 

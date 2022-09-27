@@ -121,6 +121,33 @@ export function getCachedChannel(apollo, queryMap, channelUrl, loanQueryVars) {
 }
 
 /**
+ * Gets the loan channel data from the API
+ *
+ * @param {Object} apollo The Apollo client instance
+ * @param {Array} queryMap The map mixin from loan-channel-query-map.js
+ * @param {string} channelUrl The URL of the loan channel
+ * @param {Object} loanQueryVars The loan channel query variables
+ * @returns {Object} The loan channel data, transformed if FLSS
+ */
+export async function getLoanChannel(apollo, queryMap, channelUrl, loanQueryVars) {
+	const queryMapFLSS = getFLSSQueryMap(queryMap, channelUrl);
+
+	if (queryMapFLSS) {
+		const experimentActive = checkCachedChannelExperiment(apollo);
+
+		if (experimentActive) {
+			return transformFLSSData(await fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars));
+		}
+	}
+
+	try {
+		return apollo.query({ query: loanChannelQuery, variables: loanQueryVars });
+	} catch (e) {
+		logReadQueryError(e, 'loanChannelUtils getLoanChannel loanChannelQuery');
+	}
+}
+
+/**
  * Watches the loan channel query and returns the observer
  *
  * @param {Object} apollo The Apollo client instance

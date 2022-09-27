@@ -402,22 +402,37 @@ export default {
 				{
 					id: 116,
 					url: 'solar-energy',
-					queryParams: 'queryString=solar&tag=9&sortBy=popularity'
+					queryParams: 'queryString=solar',
+					flssLoanSearch: {
+						description: 'solar'
+					},
 				},
 				{
 					id: 117,
 					url: 'sustainable-agriculture',
-					queryParams: 'sector=1&tag=8&sortBy=amountLeft'
+					queryParams: 'sector=1&tag=8&sortBy=amountLeft',
+					flssLoanSearch: {
+						sectorId: [1],
+						tagId: [8]
+					},
 				},
 				{
 					id: 118,
 					url: 'recycle-and-re-use',
-					queryParams: 'queryString=used clothing&distributionModel=field_partner&sortBy=popularity',
+					queryParams: 'queryString=used clothing',
+					flssLoanSearch: {
+						description: 'clothing',
+						tagId: [9],
+					},
 				},
 				{
 					id: 119,
 					url: 'other-eco-friendly-loans',
-					queryParams: 'tag=9,8&distributionModel=field_partner&sortBy=expiringSoon',
+					queryParams: 'tag=9,8&distributionModel=field_partner',
+					flssLoanSearch: {
+						tagId: [8, 9],
+						distributionModel: 'FIELDPARTNER'
+					},
 				},
 
 				// IWD 2020 Loan Channels
