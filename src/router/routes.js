@@ -10,7 +10,8 @@ const routes = [
 				const exp = apollo?.readFragment({
 					id: 'Experiment:new_home_layout',
 					fragment: experimentVersionFragment,
-				});
+				}) || {};
+
 				return exp?.version === 'b' ? 'hp/crowdfund-for-good' : 'home';
 			},
 			unbounce: true,
