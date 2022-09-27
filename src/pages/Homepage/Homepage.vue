@@ -6,6 +6,7 @@
 /* eslint-disable vue/multi-word-component-names */
 import gql from 'graphql-tag';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
 
 const ContentfulPage = () => import('@/pages/ContentfulPage');
@@ -98,11 +99,6 @@ export default {
 				const expVersion = result?.data?.experiment?.version;
 
 				if (expVersion === 'a' || expVersion === 'b') {
-					this.$kvTrackEvent(
-						'Homepage',
-						'EXP-MARS-222-Oct2022',
-						expVersion.version,
-					);
 					const component = await ContentfulPage();
 					return preFetchAll([component.default], client, args);
 				}
@@ -110,6 +106,20 @@ export default {
 				return Promise.reject({	path: '/cps/home' });
 			});
 		},
+	},
+	mounted() {
+		const homePageExp = this.apollo.readFragment({
+			id: 'Experiment:new_home_layout',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		if (homePageExp.version) {
+			this.$kvTrackEvent(
+				'Homepage',
+				'EXP-MARS-222-Oct2022',
+				homePageExp.version,
+			);
+		}
 	},
 };
 </script>
