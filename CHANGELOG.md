@@ -1,3 +1,10 @@
+## [2.308.0](https://github.com/kiva/ui/compare/v2.307.0...v2.308.0) (2022-09-27)
+
+
+### Features
+
+* use flss for lbc page for eco game categories ([5874907](https://github.com/kiva/ui/commit/58749075aa701f6c9fcac693df3973105c5bf909))
+
 ## [2.307.0](https://github.com/kiva/ui/compare/v2.306.0...v2.307.0) (2022-09-26)
 
 
