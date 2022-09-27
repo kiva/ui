@@ -93,16 +93,16 @@ export default {
 			return client.query({
 				query: homePageQuery
 			}).then(() => {
-				return client.query({ query: experimentAssignmentQuery, variables: { id: 'new_home_layout' } });
-			}).then(async result => {
+				return Promise.all([
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'new_home_layout' } }),
+					ContentfulPage(),
+				]);
+			}).then(result => {
 				// Call preFetch for the active homepage
-				const expVersion = result?.data?.experiment?.version;
-
+				const expVersion = result[0]?.data?.experiment?.version;
 				if (expVersion === 'a' || expVersion === 'b') {
-					const component = await ContentfulPage();
-					return preFetchAll([component.default], client, args);
+					return preFetchAll([result[1]?.default], client, args);
 				}
-
 				return Promise.reject({	path: '/cps/home' });
 			});
 		},
@@ -113,7 +113,7 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 
-		if (homePageExp.version) {
+		if (homePageExp?.version === 'a' || homePageExp?.version === 'b') {
 			this.$kvTrackEvent(
 				'Homepage',
 				'EXP-MARS-222-Oct2022',
