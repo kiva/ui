@@ -265,16 +265,16 @@ export default {
 	},
 	apollo: {
 		query: contentfulEntries,
-		preFetchVariables({ route }) {
+		preFetchVariables({ route, client }) {
 			return {
 				contentType: 'page',
-				contentKey: route?.meta?.contentfulPage(route)?.trim(),
+				contentKey: route?.meta?.contentfulPage(route, client)?.trim(),
 			};
 		},
 		variables() {
 			return {
 				contentType: 'page',
-				contentKey: this.$route?.meta?.contentfulPage(this.$route)?.trim(),
+				contentKey: this.$route?.meta?.contentfulPage(this.$route, this.apollo)?.trim(),
 			};
 		},
 		async preFetch(config, client, args) {
