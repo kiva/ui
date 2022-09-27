@@ -92,32 +92,22 @@ export default {
 			return client.query({
 				query: homePageQuery
 			}).then(() => {
-				return Promise.all([client.query({
-					query: experimentAssignmentQuery,
-					variables: { id: 'new_home_layout' }
-				})]);
+				return client.query({ query: experimentAssignmentQuery, variables: { id: 'new_home_layout' } });
 			}).then(async result => {
 				// Call preFetch for the active homepage
-				let homePageComponent;
-				const experiment = result[0].data?.experiment;
+				const expVersion = result?.data?.experiment?.version;
 
-				switch (experiment?.version) {
-					case 'a':
-						// Should fetch the regular home page
-						homePageComponent = await ContentfulPage();
-						break;
-					case 'b':
-						// Should prefetch the experimental home page
-						homePageComponent = await ContentfulPage();
-						break;
-					default:
-						// Should redirect to /cps/home
-						homePageComponent = await ContentfulPage();
-						break;
+				if (expVersion === 'a' || expVersion === 'b') {
+					this.$kvTrackEvent(
+						'Homepage',
+						'EXP-MARS-222-Oct2022',
+						expVersion.version,
+					);
+					const component = await ContentfulPage();
+					return preFetchAll([component.default], client, args);
 				}
 
-				const component = homePageComponent.default;
-				return preFetchAll([component], client, args);
+				return Promise.reject({	path: '/cps/home' });
 			});
 		},
 	},
