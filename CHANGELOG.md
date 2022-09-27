@@ -1,3 +1,15 @@
+## [2.309.0](https://github.com/kiva/ui/compare/v2.308.1...v2.309.0) (2022-09-27)
+
+
+### Features
+
+* enable order of sections to be swapped according to order specified in contentful ([3379c50](https://github.com/kiva/ui/commit/3379c50c53a6ed97d44ca3527818e37752f3a0b2))
+
+
+### Bug Fixes
+
+* don't include testimonial cards in contentful render loop for cc pages ([0e0d85f](https://github.com/kiva/ui/commit/0e0d85f1c31a5484dcd53d083cdc411a81373557))
+
 ### [2.308.1](https://github.com/kiva/ui/compare/v2.308.0...v2.308.1) (2022-09-27)
 
 
