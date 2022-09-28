@@ -5,6 +5,7 @@
 	>
 		<component
 			:is="pageLayoutComponent"
+			:enable-quick-filters="enableQuickFilters"
 		/>
 
 		<add-to-basket-interstitial />
@@ -205,7 +206,11 @@ export default {
 		this.initializeExperimentalPageLayout();
 		if (this.targetedLoanChannel !== 'women'
 				&& this.targetedLoanChannel !== 'eco-friendly'
-				&& this.targetedLoanChannel !== 'kiva-u-s') {
+				&& this.targetedLoanChannel !== 'kiva-u-s'
+				&& this.targetedLoanChannel !== 'ending-soon'
+				&& this.targetedLoanChannel !== 'mission-driven-orgs'
+				&& this.targetedLoanChannel !== 'short-term-loans'
+		) {
 			this.initializeQuickFilters();
 		}
 	},
