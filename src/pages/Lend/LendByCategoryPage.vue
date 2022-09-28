@@ -4,6 +4,38 @@
 	>
 		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true" />
 
+		<!-- Eco Challenge CTA -->
+		<div v-if="ecoChallengeExp" class="tw-bg-brand-50">
+			<div class="tw-max-w-5xl tw-mx-auto lg:tw-px-6 tw-py-2.5 lg:tw-py-4">
+				<div class="tw-flex">
+					<eco-challenge-badge class="tw-h-14 tw-w-12 tw-mr-4 tw-flex-none" />
+					<div class="tw-w-full">
+						<h2>Join Kiva’s October eco-friendly challenge!</h2>
+						<p class="tw-text-subhead tw-mt-2">
+							<!-- eslint-disable-next-line max-len -->
+							Lending can help communities adapt to environmental changes and build a more sustainable future. Protect our planet and support borrowers with loans for solar projects, recycling, and sustainable farming.
+						</p>
+						<div class="tw-flex tw-justify-between tw-items-center tw-mt-1">
+							<div class="tw-flex tw-items-center">
+								<icon-calendar class="tw-h-6 tw-w-6 tw-mr-2" />
+								<h4>for a limited time</h4>
+							</div>
+							<kv-button
+								v-kv-track-event="[
+									'Lending',
+									'click-challenge',
+									'Get started'
+								]"
+								to="/lend-by-category/eco-friendly?game=on"
+							>
+								Get started!
+							</kv-button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<!-- MFI Recommendations Section -->
 		<div v-if="mfiRecommendationsExp" class="tw-max-w-5xl tw-mx-auto lg:tw-px-6">
 			<m-f-i-hero />
@@ -116,6 +148,9 @@ import { createIntersectionObserver } from '@/util/observerUtils';
 import MFIHero from '@/components/LoansByCategory/MFIRecommendations/MFIHero';
 import MfiLoansWrapper from '@/components/LoansByCategory/MFIRecommendations/MfiLoansWrapper';
 import mfiRecommendationsLoans from '@/graphql/query/lendByCategory/mfiRecommendationsLoans.graphql';
+import EcoChallengeBadge from '@/assets/icons/inline/eco-challenge/badge.svg';
+import IconCalendar from '@/assets/icons/inline/eco-challenge/calendar.svg';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'LendByCategoryPage',
@@ -124,6 +159,7 @@ export default {
 		CategoryRow,
 		FeaturedHeroLoanWrapper,
 		WwwPage,
+		KvButton,
 		KvLoadingOverlay,
 		LendHeader,
 		AddToBasketInterstitial,
@@ -132,6 +168,8 @@ export default {
 		MGLightbox,
 		MFIHero,
 		MfiLoansWrapper,
+		EcoChallengeBadge,
+		IconCalendar
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo() {
@@ -178,6 +216,7 @@ export default {
 			mfiRecommendationsExp: false,
 			mfiRecommendationsLoans: [],
 			selectedChannel: {},
+			ecoChallengeExp: false,
 		};
 	},
 	computed: {
@@ -672,6 +711,23 @@ export default {
 				this.activateWatchers();
 			}
 		},
+		initializeEcoChallengeCTAExperiment() {
+			const ecoExp = this.apollo.readFragment({
+				id: 'Experiment:eco_challenge_lbc_cta',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			if (ecoExp.version) {
+				if (ecoExp.version === 'b') {
+					this.ecoChallengeExp = true;
+				}
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-ACK-404-SEPT-2022',
+					ecoExp.version
+				);
+			}
+		},
 		initializeMFIRecommendationsExperiment() {
 			const layoutEXP = this.apollo.readFragment({
 				id: 'Experiment:mfi_recommendations',
@@ -805,6 +861,9 @@ export default {
 
 		// Initialize CORE-698 MFI Recommendations Experiment
 		this.initializeMFIRecommendationsExperiment();
+
+		// Initialize Eco Challenge CTA Experiment ACK-404
+		this.initializeEcoChallengeCTAExperiment();
 	},
 	mounted() {
 		this.fetchCategoryIds = [...this.categorySetting];
