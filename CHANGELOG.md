@@ -1,3 +1,10 @@
+## [2.310.0](https://github.com/kiva/ui/compare/v2.309.0...v2.310.0) (2022-09-28)
+
+
+### Features
+
+* add entry point experiment for the game challenge on lbc page ([0cb3d1b](https://github.com/kiva/ui/commit/0cb3d1b5e10f8a3adca17d97fc0fb7c424d35a26))
+
 ## [2.309.0](https://github.com/kiva/ui/compare/v2.308.1...v2.309.0) (2022-09-27)
 
 
