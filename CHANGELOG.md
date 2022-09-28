@@ -1,3 +1,10 @@
+## [2.311.0](https://github.com/kiva/ui/compare/v2.310.0...v2.311.0) (2022-09-28)
+
+
+### Features
+
+* options for quick filter dropdowns were added via utilities files ([300dab3](https://github.com/kiva/ui/commit/300dab3ce3a7d7d24bbc3a21a85b208899238da6))
+
 ## [2.310.0](https://github.com/kiva/ui/compare/v2.309.0...v2.310.0) (2022-09-28)
 
 
