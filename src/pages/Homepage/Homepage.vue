@@ -100,10 +100,15 @@ export default {
 			}).then(result => {
 				// Call preFetch for the active homepage
 				const expVersion = result[0]?.data?.experiment?.version;
+
+				if (expVersion === 'c') {
+					return Promise.reject({	path: '/cps/home' });
+				}
+
 				if (expVersion === 'a' || expVersion === 'b') {
 					return preFetchAll([result[1]?.default], client, args);
 				}
-				return Promise.reject({	path: '/cps/home' });
+				Promise.resolve();
 			});
 		},
 	},
