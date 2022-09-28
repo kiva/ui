@@ -1,3 +1,18 @@
+## [2.312.0](https://github.com/kiva/ui/compare/v2.311.0...v2.312.0) (2022-09-28)
+
+
+### Features
+
+* add home page experiment setup and tracking ([d38dc97](https://github.com/kiva/ui/commit/d38dc9712da5fb7d0f93301d5422ab846cdc413b))
+* wip new experiment setup ([875de98](https://github.com/kiva/ui/commit/875de98b729c4852f71353286a7b16a2f418c2f1))
+
+
+### Bug Fixes
+
+* added version 'c' validation ([507eed9](https://github.com/kiva/ui/commit/507eed9634a06970e55671a4f79fb03c43d514a1))
+* fix issues with tracking event function ([57e6654](https://github.com/kiva/ui/commit/57e6654a05fb2c586ca9cbdc10aa093f2ca62d74))
+* reduce time loading ([4a7dd59](https://github.com/kiva/ui/commit/4a7dd59f55c9b245371072c7efcb0da7a7c9f482))
+
 ## [2.311.0](https://github.com/kiva/ui/compare/v2.310.0...v2.311.0) (2022-09-28)
 
 
