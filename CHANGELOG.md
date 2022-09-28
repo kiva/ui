@@ -1,3 +1,29 @@
+## [2.310.0](https://github.com/kiva/ui/compare/v2.309.0...v2.310.0) (2022-09-28)
+
+
+### Features
+
+* add entry point experiment for the game challenge on lbc page ([0cb3d1b](https://github.com/kiva/ui/commit/0cb3d1b5e10f8a3adca17d97fc0fb7c424d35a26))
+
+## [2.309.0](https://github.com/kiva/ui/compare/v2.308.1...v2.309.0) (2022-09-27)
+
+
+### Features
+
+* enable order of sections to be swapped according to order specified in contentful ([3379c50](https://github.com/kiva/ui/commit/3379c50c53a6ed97d44ca3527818e37752f3a0b2))
+
+
+### Bug Fixes
+
+* don't include testimonial cards in contentful render loop for cc pages ([0e0d85f](https://github.com/kiva/ui/commit/0e0d85f1c31a5484dcd53d083cdc411a81373557))
+
+### [2.308.1](https://github.com/kiva/ui/compare/v2.308.0...v2.308.1) (2022-09-27)
+
+
+### Bug Fixes
+
+* copy update 3 for MARS-260 ([e9af2e9](https://github.com/kiva/ui/commit/e9af2e96637ee96721b7b1dd9eb87cae0a10eebf))
+
 ## [2.308.0](https://github.com/kiva/ui/compare/v2.307.0...v2.308.0) (2022-09-27)
 
 
