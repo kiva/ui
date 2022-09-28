@@ -37,7 +37,7 @@
 					:page-setting-data="pageSettingData"
 				/>
 				<campaign-loan-wrapper
-					:component-props="getComponentProps({ name:'CampaignLoanWrapper' })"
+					:component-props="campaignLoanWrapperProps"
 				/>
 				<template v-if="partnerAreaContent">
 					<campaign-partner
@@ -74,7 +74,7 @@
 						:is="component"
 						:content="content"
 						data-section-type="contentful-section"
-						:component-props="getComponentProps(component)"
+						:component-props="component === 'CampaignLoanWrapper' ? campaignLoanWrapperProps : null"
 					/>
 				</div>
 			</div>
@@ -927,39 +927,34 @@ export default {
 			}
 			return null;
 		},
+		campaignLoanWrapperProps() {
+			return {
+				filters: this.filters,
+				initialFilters: this.initialFilters,
+				excludedTags: this.excludedTags,
+				initialSortBy: this.initialSortBy,
+				activeLoanDisplay: this.activeLoanDisplay,
+				showLoanDisplayToggle: this.showLoanDisplayToggle,
+				totalCount: this.totalCount,
+				handleUpdatedFilters: this.handleUpdatedFilters,
+				handleUpdatedSortBy: this.handleUpdatedSortBy,
+				handleLoanDisplayType: this.handleLoanDisplayType,
+				handleResetLoanFilters: this.handleResetLoanFilters,
+				showLoanRows: this.showLoanRows,
+				isVisitor: this.isVisitor,
+				itemsInBasket: this.itemsInBasket,
+				promoOnlyQuery: this.promoOnlyQuery,
+				showLoans: this.showLoans,
+				sortBy: this.sortBy,
+				handleAddToBasket: this.handleAddToBasket,
+				setTotalCount: this.setTotalCount,
+				showLoanDetails: this.showLoanDetails,
+				checkoutVisible: this.checkoutVisible,
+				showThanks: this.showThanks,
+			};
+		},
 	},
 	methods: {
-		getComponentProps(component) {
-			switch (component.name) {
-				case 'CampaignLoanWrapper':
-					return {
-						filters: this.filters,
-						initialFilters: this.initialFilters,
-						excludedTags: this.excludedTags,
-						initialSortBy: this.initialSortBy,
-						activeLoanDisplay: this.activeLoanDisplay,
-						showLoanDisplayToggle: this.showLoanDisplayToggle,
-						totalCount: this.totalCount,
-						handleUpdatedFilters: this.handleUpdatedFilters,
-						handleUpdatedSortBy: this.handleUpdatedSortBy,
-						handleLoanDisplayType: this.handleLoanDisplayType,
-						handleResetLoanFilters: this.handleResetLoanFilters,
-						showLoanRows: this.showLoanRows,
-						isVisitor: this.isVisitor,
-						itemsInBasket: this.itemsInBasket,
-						promoOnlyQuery: this.promoOnlyQuery,
-						showLoans: this.showLoans,
-						sortBy: this.sortBy,
-						handleAddToBasket: this.handleAddToBasket,
-						setTotalCount: this.setTotalCount,
-						showLoanDetails: this.showLoanDetails,
-						checkoutVisible: this.checkoutVisible,
-						showThanks: this.showThanks,
-					};
-				default:
-					return null;
-			}
-		},
 		verifyOrApplyPromotion() {
 			// Always apply a promo if activating query params exist
 			const promoQueryKeys = ['upc', 'promoCode', 'lendingReward'];
