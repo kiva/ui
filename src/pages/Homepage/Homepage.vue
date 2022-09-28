@@ -5,12 +5,20 @@
 <script>
 /* eslint-disable vue/multi-word-component-names */
 import gql from 'graphql-tag';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
 
 const ContentfulPage = () => import('@/pages/ContentfulPage');
 
 const homePageQuery = gql`query homepageFrame {
 	hasEverLoggedIn @client
+	general {
+		newHomeLayoutExp: uiExperimentSetting(key: "new_home_layout") {
+			key
+			value
+		}
+	}
 }`;
 
 export default {
@@ -85,13 +93,38 @@ export default {
 			return client.query({
 				query: homePageQuery
 			}).then(() => {
-				return ContentfulPage();
-			}).then(resolvedImport => {
+				return Promise.all([
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'new_home_layout' } }),
+					ContentfulPage(),
+				]);
+			}).then(result => {
 				// Call preFetch for the active homepage
-				const component = resolvedImport.default;
-				return preFetchAll([component], client, args);
+				const expVersion = result[0]?.data?.experiment?.version;
+
+				if (expVersion === 'c') {
+					return Promise.reject({	path: '/cps/home' });
+				}
+
+				if (expVersion === 'a' || expVersion === 'b') {
+					return preFetchAll([result[1]?.default], client, args);
+				}
+				Promise.resolve();
 			});
 		},
+	},
+	mounted() {
+		const homePageExp = this.apollo.readFragment({
+			id: 'Experiment:new_home_layout',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		if (homePageExp?.version === 'a' || homePageExp?.version === 'b') {
+			this.$kvTrackEvent(
+				'Homepage',
+				'EXP-MARS-222-Oct2022',
+				homePageExp.version,
+			);
+		}
 	},
 };
 </script>

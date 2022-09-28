@@ -1,10 +1,19 @@
-module.exports = [
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+
+const routes = [
 	{
 		path: '/',
 		name: 'homepage',
 		component: () => import('@/pages/Homepage/Homepage'),
 		meta: {
-			contentfulPage: () => 'home',
+			contentfulPage: (route, apollo) => {
+				const exp = apollo?.readFragment({
+					id: 'Experiment:new_home_layout',
+					fragment: experimentVersionFragment,
+				}) || {};
+
+				return exp?.version === 'b' ? 'hp/crowdfund-for-good' : 'home';
+			},
 			unbounce: true,
 		},
 	},
@@ -568,3 +577,5 @@ module.exports = [
 		}
 	},
 ];
+
+export default routes;
