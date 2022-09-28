@@ -104,6 +104,12 @@ import {
 	watchChannelQuery,
 } from '@/util/loanChannelUtils';
 
+import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
+import {
+	formatSortOptions,
+	transformIsoCodes,
+} from '@/util/loanSearch/filterUtils';
+
 const defaultLoansPerPage = 12;
 
 // Routes to show monthly good promo
@@ -144,6 +150,12 @@ function getPageOffset(query, limit) {
 
 export default {
 	name: 'LoanChannelCategoryControl',
+	props: {
+		enableQuickFilters: {
+			type: Boolean,
+			default: false,
+		}
+	},
 	components: {
 		LoanCardController,
 		KvPagination,
@@ -187,6 +199,9 @@ export default {
 			showCarousel: true,
 			showViewMoreCard: false,
 			detailedLoan: null,
+			allFacets: [],
+			flssLoanSearch: {},
+			quickFiltersOptions: {}
 		};
 	},
 	computed: {
@@ -354,7 +369,7 @@ export default {
 		// Lend Filter Redirects
 		this.initializeLendFilterRedirects();
 	},
-	mounted() {
+	async mounted() {
 		// Setup Reactivity for Loan Data + Basket Status
 		this.activateLoanChannelWatchQuery();
 
@@ -367,6 +382,13 @@ export default {
 		}
 
 		trackChannelExperiment(this.apollo, this.loanChannelQueryMap, this.targetedLoanChannelURL, this.$kvTrackEvent);
+
+		if (this.enableQuickFilters) {
+			// Fetch the facet options from the lend and FLSS APIs
+			this.allFacets = await fetchLoanFacets(this.apollo);
+			// Load all available facets for specified sector
+			await this.fetchFacets(this.flssLoanSearch);
+		}
 	},
 	methods: {
 		checkIfPageIsOutOfRange(loansArrayLength, pageQueryParam) {
@@ -443,6 +465,10 @@ export default {
 					return channel.url === this.$route.params.category;
 				}
 			);
+
+			// FLSS Parameters for Quick Filters Experiment
+			this.quickFiltersFlssParameters(matchedUrls);
+
 			// check for fallback url
 			const fallback = _get(matchedUrls, '[0]fallbackUrl');
 			if (typeof fallback !== 'undefined') {
@@ -482,6 +508,40 @@ export default {
 		},
 		handleCloseLoanCard() {
 			this.detailedLoan = null;
+		},
+		async fetchFacets(loanSearchState = {}) {
+			// TODO: Prevent this from running on every query (not needed for sorting and paging)
+			const { isoCodes } = await runFacetsQueries(this.apollo, loanSearchState);
+
+			// Merge all facet options with filtered options
+			const facets = {
+				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
+				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
+			};
+
+			this.quickFiltersOptions.location = facets.regions;
+			this.quickFiltersOptions.sorting = facets.sortOptions;
+			this.quickFiltersOptions.gender = [
+				{
+					title: 'All genders',
+					key: '',
+				},
+				{
+					title: 'Women',
+					key: 'female',
+				},
+				{
+					title: 'Men',
+					key: 'male',
+				},
+			];
+		},
+		quickFiltersFlssParameters(matchedUrls = []) {
+			if (this.targetedLoanChannelURL === 'single-parents') {
+				this.flssLoanSearch = { tagId: [17] };
+			} else {
+				this.flssLoanSearch = matchedUrls[0]?.flssLoanSearch ?? {};
+			}
 		}
 	},
 	watch: {
