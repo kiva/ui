@@ -368,7 +368,7 @@ export default {
 			const genderOptions = [
 				{ name: 'Women', key: 'female', __typename: 'GenderEnum' },
 				{ name: 'Men', key: 'male', __typename: 'GenderEnum' },
-				{ name: 'Non-binary', key: 'nonbinary', __typename: 'GenderEnum' },
+				{ name: 'Nonbinary', key: 'nonbinary', __typename: 'GenderEnum' },
 			];
 			const selectedGenderRaw = genderOptions.filter(gender => {
 				if (this.appliedFilters && this.appliedFilters.gender) {

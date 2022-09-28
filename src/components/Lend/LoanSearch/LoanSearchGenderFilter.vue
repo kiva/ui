@@ -20,7 +20,7 @@ export const FEMALE_KEY = 'female';
 export const FEMALE_TITLE = 'Women';
 export const MALE_KEY = 'male';
 export const MALE_TITLE = 'Men';
-export const NON_BINARY_TITLE = 'Non-binary';
+export const NON_BINARY_TITLE = 'Nonbinary';
 export const NON_BINARY_KEY = 'nonbinary';
 
 export default {

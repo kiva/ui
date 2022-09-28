@@ -47,7 +47,7 @@ const mockAllFacets = {
 		{ name: 'male', __typename: 'Gender' },
 		{ name: 'nonbinary', __typename: 'Gender' }
 	],
-	genders: ['FEMALE', 'MALE', 'NON-BINARY'],
+	genders: ['FEMALE', 'MALE', 'NONBINARY'],
 };
 
 describe('LoanSearchFilterChips', () => {

@@ -142,7 +142,7 @@ export default {
 					default:
 						genderFacet = {
 							value: 'nonbinary',
-							name: 'Non-binary',
+							name: 'Nonbinary',
 							__typename: 'Gender'
 						};
 						break;
