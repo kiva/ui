@@ -20,13 +20,42 @@
 				>
 					{{ loanChannelDescription }}
 				</p>
-				<p
-					v-else
-					class="tw-text-subhead tw-w-full show-for-large tw-mb-4 lg:tw-w-3/4"
-				>
-					<!-- eslint-disable-next-line max-len -->
-					There are many ways to make a positive impact. Complete the Climate Challenge now by lending to 1 Solar Energy, 1 Sustainable Agriculture, and 1 Recycling loan.
-				</p>
+				<div v-else>
+					<transition appear name="kvfastfade" mode="out-in">
+						<div class="tw-bg-brand-50 tw-rounded tw-px-4 tw-py-2" v-if="showHowItWorks">
+							<div class="tw-w-full tw-flex tw-justify-between tw-items-center tw-mb-1">
+								<h2>How this works</h2>
+								<button
+									class="tw-h-3"
+									@click="showHowItWorks = false"
+								>
+									<kv-material-icon
+										class="tw-w-3"
+										:icon="mdiClose"
+									/>
+								</button>
+							</div>
+
+							<p class="tw-text-subhead">
+								Welcome to the Eco-friendly October Challenge!
+								Complete the challenge by lending to 1 Solar Energy,
+								1 Sustainable Agriculture, and 1 Recycling loan.
+							</p>
+							<div class="tw-flex tw-justify-between tw-items-center tw-mt-1">
+								<div class="tw-flex tw-items-center">
+									<icon-calendar class="tw-h-6 tw-w-6 tw-mr-2" />
+									<h4>for a limited time</h4>
+								</div>
+							</div>
+						</div>
+						<kv-text-link
+							v-else
+							@click="showHowItWorks = true"
+						>
+							How this challenge works
+						</kv-text-link>
+					</transition>
+				</div>
 			</div>
 		</kv-page-container>
 		<kv-page-container v-if="secondaryChannels.length > 0">
@@ -61,7 +90,13 @@ import {
 	getExperimentSettingCached,
 	trackExperimentVersion
 } from '@/util/experimentUtils';
+import {
+	mdiClose
+} from '@mdi/js';
+import IconCalendar from '@/assets/icons/inline/eco-challenge/calendar.svg';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 const ecoChallengeExpKey = 'eco_challenge';
 
@@ -82,8 +117,11 @@ export default {
 	name: 'LoanChannelCategoryClimateExperiment',
 	components: {
 		KivaClassicSingleCategoryCarousel,
+		KvMaterialIcon,
 		KvPageContainer,
+		KvTextLink,
 		ViewToggle,
+		IconCalendar,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
@@ -104,6 +142,8 @@ export default {
 				showCheckBackMessage: true
 			},
 			isEcoChallengeExpShown: false,
+			showHowItWorks: true,
+			mdiClose,
 		};
 	},
 	computed: {
