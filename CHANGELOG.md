@@ -1,3 +1,10 @@
+### [2.312.1](https://github.com/kiva/ui/compare/v2.312.0...v2.312.1) (2022-09-29)
+
+
+### Bug Fixes
+
+* temporarily remove /cc/kiva-universal from lighthouse as it is failing on most mobile loads ([28b13e5](https://github.com/kiva/ui/commit/28b13e561112c856f11746cfd5abebd728b7ac13))
+
 ## [2.312.0](https://github.com/kiva/ui/compare/v2.311.0...v2.312.0) (2022-09-28)
 
 
