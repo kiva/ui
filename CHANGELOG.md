@@ -1,3 +1,10 @@
+## [2.314.0](https://github.com/kiva/ui/compare/v2.313.0...v2.314.0) (2022-09-29)
+
+
+### Features
+
+* add donate/supportkiva duplicate page ([3da7e65](https://github.com/kiva/ui/commit/3da7e65c5b631a071a0e9104f4c0c8315276d6d4))
+
 ## [2.313.0](https://github.com/kiva/ui/compare/v2.312.1...v2.313.0) (2022-09-29)
 
 
