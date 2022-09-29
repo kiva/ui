@@ -9,7 +9,6 @@
 					:button-text="buttonText"
 					:data="donationValues"
 					:form-disclaimer="formDisclaimer"
-					:form-submit-analytics="formSubmitAnalytics"
 					:show-disclaimer="false"
 					:activate-monthly-option="true"
 				/>
@@ -37,9 +36,9 @@ import DonateForm from '@/pages/Donate/DonateForm';
 import DonateSupportUsRightRail from '@/pages/Donate/DonateSupportUsRightRail';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
-const pageQuery = gql`query donateContent {
+const pageQuery = gql`query donateContent($contentKey: String) {
 	contentful {
-		entries (contentType: "page", contentKey: "web-donate-support-us")
+		entries (contentType: "page", contentKey: $contentKey)
 	}
 }`;
 
@@ -71,16 +70,22 @@ export default {
 			defaultSubHeadCopy: '<p>100% of money lent on Kiva goes to funding loans, so we rely on donations to continue this important work. More than two-thirds of our donations come from individual lenders like you.</p>',
 			defaultDonationValues: [20, 35, 50, 100, 200],
 			defaultButtonText: 'Donate',
-			formSubmitAnalytics: {
-				category: '/donate/supportus',
-				action: 'click-donate-support-us-form',
-			},
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch: true,
 		query: pageQuery,
+		preFetchVariables({ route }) {
+			return {
+				contentKey: route?.meta?.contentfulPage(route)?.trim(),
+			};
+		},
+		variables() {
+			return {
+				contentKey: this.$route?.meta?.contentfulPage(this.$route)?.trim(),
+			};
+		},
 		result({ data }) {
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
