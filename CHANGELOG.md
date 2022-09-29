@@ -1,3 +1,10 @@
+## [2.313.0](https://github.com/kiva/ui/compare/v2.312.1...v2.313.0) (2022-09-29)
+
+
+### Features
+
+* add how it works to LBC climate game page ([b8c7a45](https://github.com/kiva/ui/commit/b8c7a451bce31a91fe205d94b2fa2260e8c1db04))
+
 ### [2.312.1](https://github.com/kiva/ui/compare/v2.312.0...v2.312.1) (2022-09-29)
 
 
