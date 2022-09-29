@@ -130,6 +130,15 @@ const routes = [
 		path: '/donate/supportus',
 		component: () => import('@/pages/Donate/DonateSupportUs'),
 		meta: {
+			contentfulPage: () => 'donate/supportus',
+			unbounce: true,
+		},
+	},
+	{
+		path: '/donate/supportkiva',
+		component: () => import('@/pages/Donate/DonateSupportUs'),
+		meta: {
+			contentfulPage: () => 'donate/supportkiva',
 			unbounce: true,
 		},
 	},
