@@ -1,3 +1,10 @@
+## [2.316.0](https://github.com/kiva/ui/compare/v2.315.0...v2.316.0) (2022-09-30)
+
+
+### Features
+
+* modify contentful content for donate route ([9b024cf](https://github.com/kiva/ui/commit/9b024cf2f750f4266d471a92c7684671757e7e25))
+
 ## [2.315.0](https://github.com/kiva/ui/compare/v2.314.3...v2.315.0) (2022-09-30)
 
 
