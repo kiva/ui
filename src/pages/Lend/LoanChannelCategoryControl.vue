@@ -28,6 +28,15 @@
 		</div>
 
 		<div class="row">
+			<quick-filters
+				class="tw-ml-2"
+				v-if="filtersLoaded"
+				:total-loans="totalCount"
+				:filter-options="quickFiltersOptions"
+			/>
+		</div>
+
+		<div class="row">
 			<div class="columns small-12" v-if="loans.length > 0">
 				<div v-if="!displayLoanPromoCard" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
 					<loan-card-controller
@@ -109,6 +118,7 @@ import {
 	formatSortOptions,
 	transformIsoCodes,
 } from '@/util/loanSearch/filterUtils';
+import QuickFilters from '@/components/LoansByCategory/QuickFilters';
 
 const defaultLoansPerPage = 12;
 
@@ -162,6 +172,7 @@ export default {
 		KvLoadingOverlay,
 		ViewToggle,
 		PromoGridLoanCard,
+		QuickFilters
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
@@ -201,7 +212,8 @@ export default {
 			detailedLoan: null,
 			allFacets: [],
 			flssLoanSearch: {},
-			quickFiltersOptions: {}
+			quickFiltersOptions: {},
+			filtersLoaded: false,
 		};
 	},
 	computed: {
@@ -387,7 +399,7 @@ export default {
 			// Fetch the facet options from the lend and FLSS APIs
 			this.allFacets = await fetchLoanFacets(this.apollo);
 			// Load all available facets for specified sector
-			await this.fetchFacets(this.flssLoanSearch);
+			await this.fetchFacets(this.flssLoanSearch).then(this.filtersLoaded = true);
 		}
 	},
 	methods: {
