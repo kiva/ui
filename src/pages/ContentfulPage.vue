@@ -45,6 +45,7 @@ import {
 	trackExperimentVersion
 } from '@/util/experimentUtils';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 // MARS-124 experiment
 const manualLendingLPExpKey = 'manual_lending_lp';
@@ -268,13 +269,15 @@ export default {
 		preFetchVariables({ route, client }) {
 			return {
 				contentType: 'page',
-				contentKey: route?.meta?.contentfulPage(route, client)?.trim(),
+				contentKey: route?.meta?.contentfulPage(route, client, experimentVersionFragment)?.trim(),
 			};
 		},
 		variables() {
 			return {
 				contentType: 'page',
-				contentKey: this.$route?.meta?.contentfulPage(this.$route, this.apollo)?.trim(),
+				contentKey: this.$route?.meta?.contentfulPage(
+					this.$route, this.apollo, experimentVersionFragment
+				)?.trim(),
 			};
 		},
 		async preFetch(config, client, args) {
@@ -305,7 +308,9 @@ export default {
 				query: contentfulEntries,
 				variables: {
 					contentType: 'page',
-					contentKey: args?.route?.meta?.contentfulPage(args?.route, client)?.trim(),
+					contentKey: args?.route?.meta?.contentfulPage(
+						args?.route, client, experimentVersionFragment
+					)?.trim(),
 				}
 			}).then(({ data }) => {
 				// Get Contentful page data
