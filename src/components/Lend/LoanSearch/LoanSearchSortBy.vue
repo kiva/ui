@@ -46,6 +46,10 @@ export default {
 			type: Array,
 			default: undefined
 		},
+		extendFlssFilters: {
+			type: Boolean,
+			default: false,
+		},
 		isLoggedIn: {
 			type: Boolean,
 			default: false

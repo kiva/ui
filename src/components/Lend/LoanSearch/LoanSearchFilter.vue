@@ -18,6 +18,7 @@
 			</template>
 			<loan-search-sort-by
 				:all-sort-options="facets.sortOptions"
+				:extend-flss-filters="extendFlssFilters"
 				:is-logged-in="isLoggedIn"
 				:sort="loanSearchState.sortBy"
 				:query-type="queryType"
@@ -97,6 +98,10 @@ export default {
 		KvSectionModalLoader,
 	},
 	props: {
+		extendFlssFilters: {
+			type: Boolean,
+			default: false,
+		},
 		loading: {
 			type: Boolean,
 			default: false
