@@ -305,7 +305,7 @@ export default {
 				query: contentfulEntries,
 				variables: {
 					contentType: 'page',
-					contentKey: args?.route?.meta?.contentfulPage(args?.route)?.trim(),
+					contentKey: args?.route?.meta?.contentfulPage(args?.route, client)?.trim(),
 				}
 			}).then(({ data }) => {
 				// Get Contentful page data

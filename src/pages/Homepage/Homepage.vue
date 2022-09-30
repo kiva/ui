@@ -93,24 +93,23 @@ export default {
 			return client.query({
 				query: homePageQuery
 			}).then(() => {
-				return Promise.all([
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'new_home_layout' } }),
-					ContentfulPage(),
-				]);
-			}).then(result => {
+				return client.query({ query: experimentAssignmentQuery, variables: { id: 'new_home_layout' } });
+			}).then(async result => {
 				// Call preFetch for the active homepage
-				const expVersion = result[0]?.data?.experiment?.version;
+				const expVersion = result?.data?.experiment?.version;
 
 				if (expVersion === 'c') {
 					return Promise.reject({	path: '/cps/home' });
 				}
 
 				if (expVersion === 'a' || expVersion === 'b') {
-					return preFetchAll([result[1]?.default], client, args);
+					const component = await ContentfulPage();
+					return preFetchAll([component?.default], client, args);
 				}
+
 				Promise.resolve();
 			});
-		},
+		}
 	},
 	mounted() {
 		const homePageExp = this.apollo.readFragment({
