@@ -30,7 +30,7 @@
 		<div class="row">
 			<quick-filters
 				class="tw-ml-2"
-				v-if="filtersLoaded"
+				v-if="filtersLoaded && enableQuickFilters"
 				:total-loans="totalCount"
 				:filter-options="quickFiltersOptions"
 			/>
@@ -118,7 +118,7 @@ import {
 	formatSortOptions,
 	transformIsoCodes,
 } from '@/util/loanSearch/filterUtils';
-import QuickFilters from '@/components/LoansByCategory/QuickFilters';
+import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
 
 const defaultLoansPerPage = 12;
 
