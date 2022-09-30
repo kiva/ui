@@ -1,3 +1,10 @@
+### [2.316.1](https://github.com/kiva/ui/compare/v2.316.0...v2.316.1) (2022-09-30)
+
+
+### Bug Fixes
+
+* gate lightboxes + contained component initialization, guard ref method calls ([6df76e5](https://github.com/kiva/ui/commit/6df76e57cae730a14ab23ce0201ef16c0d58b49e))
+
 ## [2.316.0](https://github.com/kiva/ui/compare/v2.315.0...v2.316.0) (2022-09-30)
 
 
