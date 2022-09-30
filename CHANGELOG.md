@@ -1,3 +1,20 @@
+## [2.309.0-next.1](https://github.com/kiva/ui/compare/v2.308.1...v2.309.0-next.1) (2022-09-30)
+
+
+### Features
+
+* add home page experiment setup and tracking ([642b2e8](https://github.com/kiva/ui/commit/642b2e8d416153f561cbea7d9dd170e3fef41bb5))
+* wip new experiment setup ([d280c20](https://github.com/kiva/ui/commit/d280c205820d699cdd76d6cca8c4d6387416b28c))
+
+
+### Bug Fixes
+
+* added version 'c' validation ([14fd768](https://github.com/kiva/ui/commit/14fd76823c81b856dfd44988722afb524ef81565))
+* ensure client is passed to all prefetch variable functions ([24b86b0](https://github.com/kiva/ui/commit/24b86b056bb7b56cd9cd21456774640e5858f8ad))
+* fix issues with tracking event function ([6e49ebd](https://github.com/kiva/ui/commit/6e49ebd2d594e17e852422b12169e0e6e9db6999))
+* fixed flash loading home page experiment ([c740a16](https://github.com/kiva/ui/commit/c740a16518595c89c43cbf03d952076fb3564875))
+* reduce time loading ([c0de58f](https://github.com/kiva/ui/commit/c0de58f28f69b98f341250b1b2418d15fd05097a))
+
 ### [2.308.1](https://github.com/kiva/ui/compare/v2.308.0...v2.308.1) (2022-09-27)
 
 
