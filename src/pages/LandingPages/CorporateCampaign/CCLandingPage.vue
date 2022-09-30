@@ -131,6 +131,7 @@
 			</kv-lightbox>
 
 			<kv-lightbox
+				v-if="checkoutVisible"
 				:prevent-close="preventLightboxClose"
 				:visible="checkoutVisible"
 				@lightbox-closed="checkoutLightboxClosed"
@@ -170,6 +171,7 @@
 			</kv-lightbox>
 
 			<kv-lightbox
+				v-if="showThanks"
 				class="campaign-thanks"
 				:prevent-close="preventLightboxClose"
 				:visible="showThanks"
@@ -717,6 +719,7 @@ export default {
 	},
 	beforeDestroy() {
 		this.$root.$off('jumpToLoans', this.jumpToLoans);
+		clearInterval(this.currentTimeInterval);
 	},
 	watch: {
 		initialFilters(next) {
@@ -1451,13 +1454,13 @@ export default {
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
 			if (vm.$refs.loandisplayref) {
-				vm.$refs.loandisplayref.updateFromParams(to.query);
+				vm.$refs.loandisplayref?.updateFromParams(to.query);
 			}
 		});
 	},
 	beforeRouteUpdate(to, from, next) {
 		if (this.$refs.loandisplayref) {
-			this.$refs.loandisplayref.updateFromParams(to.query);
+			this.$refs.loandisplayref?.updateFromParams(to.query);
 		}
 
 		if (to.hash === '#show-basket') {
@@ -1465,9 +1468,6 @@ export default {
 		}
 
 		next();
-	},
-	destroyed() {
-		clearInterval(this.currentTimeInterval);
 	},
 };
 </script>
