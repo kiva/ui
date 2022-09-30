@@ -1,3 +1,15 @@
+## [2.315.0](https://github.com/kiva/ui/compare/v2.314.3...v2.315.0) (2022-09-30)
+
+
+### Features
+
+* gender dropdown ui for quick filters ([5355e57](https://github.com/kiva/ui/commit/5355e574ce51548a4e7118087df94ca2c4b016e4))
+
+
+### Bug Fixes
+
+* update file structure and add conditional ([d756576](https://github.com/kiva/ui/commit/d7565763cc67c5c1a55264fe10ce368a8ed41932))
+
 ### [2.314.3](https://github.com/kiva/ui/compare/v2.314.2...v2.314.3) (2022-09-30)
 
 
