@@ -1,3 +1,11 @@
+### [2.314.1](https://github.com/kiva/ui/compare/v2.314.0...v2.314.1) (2022-09-30)
+
+
+### Bug Fixes
+
+* ensure client is passed to all prefetch variable functions ([b315348](https://github.com/kiva/ui/commit/b315348e1a39836bc5d86e06b34c3dec52426345))
+* fixed flash loading home page experiment ([4d23fa8](https://github.com/kiva/ui/commit/4d23fa867e7771eeec381b451899eaaa0b913798))
+
 ## [2.314.0](https://github.com/kiva/ui/compare/v2.313.0...v2.314.0) (2022-09-29)
 
 
