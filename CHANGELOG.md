@@ -1,3 +1,10 @@
+### [2.314.2](https://github.com/kiva/ui/compare/v2.314.1...v2.314.2) (2022-09-30)
+
+
+### Bug Fixes
+
+* prefetch ContentfulPage in Homepage if not redirecting ([81f4653](https://github.com/kiva/ui/commit/81f465302d563325590644230b41f5d4dda0a1ea))
+
 ### [2.314.1](https://github.com/kiva/ui/compare/v2.314.0...v2.314.1) (2022-09-30)
 
 
