@@ -103,7 +103,7 @@ export default {
 				}
 
 				if (expVersion === 'a' || expVersion === 'b') {
-					const component = await ContentfulPage(expVersion);
+					const component = await ContentfulPage();
 					return preFetchAll([component?.default], client, args);
 				}
 
