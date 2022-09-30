@@ -1,12 +1,10 @@
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-
-const routes = [
+module.exports = [
 	{
 		path: '/',
 		name: 'homepage',
 		component: () => import('@/pages/Homepage/Homepage'),
 		meta: {
-			contentfulPage: (route, apollo) => {
+			contentfulPage: (route, apollo, experimentVersionFragment) => {
 				const exp = apollo?.readFragment({
 					id: 'Experiment:new_home_layout',
 					fragment: experimentVersionFragment,
@@ -577,5 +575,3 @@ const routes = [
 		}
 	},
 ];
-
-export default routes;
