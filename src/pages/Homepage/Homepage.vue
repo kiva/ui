@@ -102,12 +102,8 @@ export default {
 					return Promise.reject({	path: '/cps/home' });
 				}
 
-				if (expVersion === 'a' || expVersion === 'b') {
-					const component = await ContentfulPage();
-					return preFetchAll([component?.default], client, args);
-				}
-
-				Promise.resolve();
+				const component = await ContentfulPage();
+				return preFetchAll([component?.default], client, args);
 			});
 		}
 	},
