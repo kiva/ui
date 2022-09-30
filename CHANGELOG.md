@@ -1,3 +1,10 @@
+### [2.314.3](https://github.com/kiva/ui/compare/v2.314.2...v2.314.3) (2022-09-30)
+
+
+### Bug Fixes
+
+* revert module type for routes file, pass expFragment to prevent importing into routes.js ([31fc1a8](https://github.com/kiva/ui/commit/31fc1a8607461aadef62cc6bd7da4f7f9a30f957))
+
 ### [2.314.2](https://github.com/kiva/ui/compare/v2.314.1...v2.314.2) (2022-09-30)
 
 
