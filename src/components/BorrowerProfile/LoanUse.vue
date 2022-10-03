@@ -3,8 +3,9 @@
 		{{ loanUseFiltered }}
 		<kv-text-link
 			v-if="loanId && showLearnMore"
-			:to="`/lend/${loanId}`"
+			:to="showLoanDetails ? '' : `/lend/${loanId}`"
 			v-kv-track-event="['Lending', 'click-Read more', 'Learn more', loanId]"
+			@click="showLoanDetails({loanId})"
 		>
 			Learn more
 		</kv-text-link>
@@ -58,6 +59,10 @@ export default {
 			type: String,
 			default: 'none',
 		},
+		showLoanDetails: {
+			type: Function,
+			default: () => {}
+		}
 	},
 	computed: {
 		loanUseFiltered() {
