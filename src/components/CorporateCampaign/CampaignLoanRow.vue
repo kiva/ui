@@ -37,16 +37,15 @@
 						:key="`loan-${loan}`"
 						:loan-id="loan"
 						:lend-now-button="true"
-						custom-checkout-route='#show-basket'
+						custom-checkout-route="#show-basket"
 						:show-loan-details="showLoanDetails"
-						:handle-add-to-basket="handleAddToBasket"
+						@add-to-basket="addToBasket"
 					/>
 				</div>
 			</template>
 			<template
 				#[`slide${loanIds.length}`]
 				v-if="hasMoreLoansAvailable"
-				class="loan-row-slide"
 			>
 				<button
 					class="see-all-card"
@@ -68,18 +67,17 @@
 <script>
 import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
 
+import _map from 'lodash/map';
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
-import _map from 'lodash/map';
+
 export default {
 	name: 'CampaignLoanRow',
 	inject: ['apollo'],
 	components: {
 		KvCarousel,
 		KvLoadingSpinner,
-		LoanCardController,
 		KivaClassicBasicLoanCard
 	},
 	props: {
@@ -136,8 +134,8 @@ export default {
 	},
 	computed: {
 		loanIds() {
-			console.log(_map(this.loans, "id"));
-			return _map(this.loans, "id");
+			console.log(_map(this.loans, 'id'));
+			return _map(this.loans, 'id');
 		},
 		singleSlideWidth() {
 			const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
@@ -220,7 +218,7 @@ export default {
 			this.$emit('add-to-basket', payload);
 		},
 		showLoanDetails(payload) {
-			const selectedLoan = this.loans.find(loan => loan.id == payload.loanId);
+			const selectedLoan = this.loans.find(loan => String(loan.id) === String(payload.loanId));
 			this.$emit('show-loan-details', selectedLoan);
 		},
 		fetchLoans() {
