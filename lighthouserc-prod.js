@@ -17,7 +17,7 @@ module.exports = {
 				// 'https://www.kiva.org/cc/kiva-universal',
 				'https://www.kiva.org/lp/support-refugees',
 				'https://www.kiva.org/design',
-				'https://www.kiva.org/cps/home'
+				'https://www.kiva.org/pgtmp/home'
 			],
 			numberOfRuns: 5,
 		},
