@@ -19,6 +19,7 @@
 					</template>
 					<loan-search-filter
 						style="min-width: 285px;"
+						:extend-flss-filters="extendFlssFilters"
 						:loading="!initialLoadComplete"
 						:is-logged-in="userId !== null"
 						:facets="facets"
@@ -45,6 +46,7 @@
 		<div class="tw-flex tw-mr-4">
 			<div class="tw-hidden lg:tw-block" style="width: 285px;">
 				<loan-search-filter
+					:extend-flss-filters="extendFlssFilters"
 					:loading="!initialLoadComplete"
 					:facets="facets"
 					:is-logged-in="userId !== null"
@@ -158,6 +160,10 @@ export default {
 		LoanSearchSavedSearch
 	},
 	props: {
+		extendFlssFilters: {
+			type: Boolean,
+			default: false,
+		},
 		enableSavedSearch: {
 			type: Boolean,
 			default: false,
