@@ -1,3 +1,10 @@
+### [2.317.2](https://github.com/kiva/ui/compare/v2.317.1...v2.317.2) (2022-10-04)
+
+
+### Bug Fixes
+
+* eco challenge thanks redirect ([2bada70](https://github.com/kiva/ui/commit/2bada70a35235c0938bd5c317ad1cde7142c9f21))
+
 ### [2.317.1](https://github.com/kiva/ui/compare/v2.317.0...v2.317.1) (2022-10-04)
 
 
