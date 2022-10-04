@@ -1,3 +1,10 @@
+### [2.317.1](https://github.com/kiva/ui/compare/v2.317.0...v2.317.1) (2022-10-04)
+
+
+### Bug Fixes
+
+* update cps temporary homepage route ([d1c08c6](https://github.com/kiva/ui/commit/d1c08c629c066b470121f611c26ee70095709273))
+
 ## [2.317.0](https://github.com/kiva/ui/compare/v2.316.1...v2.317.0) (2022-10-03)
 
 
