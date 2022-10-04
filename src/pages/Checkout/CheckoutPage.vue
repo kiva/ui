@@ -562,7 +562,6 @@ export default {
 			const isMatchedLoan = loan.loan?.matchingText;
 			return hasCredits && isMatchedLoan;
 		});
-		this.showMatchedLoanKivaCredit = matchedLoansWithCredit.length > 0;
 		this.matchedText = matchedLoansWithCredit[0]?.loan?.matchingText ?? '';
 	},
 	mounted() {
