@@ -99,7 +99,7 @@ export default {
 				const expVersion = result?.data?.experiment?.version;
 
 				if (expVersion === 'c') {
-					return Promise.reject({	path: '/cps/home' });
+					return Promise.reject({	path: '/pgtmp/home' });
 				}
 
 				const component = await ContentfulPage();
