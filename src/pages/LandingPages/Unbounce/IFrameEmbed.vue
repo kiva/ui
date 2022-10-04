@@ -73,7 +73,7 @@ export default {
 			const cookies = typeof document !== 'undefined' ? document.cookie.split(';') : [];
 			let optout = false;
 			for (let i = 0; i < cookies.length; i++) { // eslint-disable-line
-				if (cookies[i].indexOf('kvgdpr') !== -1 && cookies[i].indexOf('opted_out=true') !== -1) {
+				if (cookies[i].indexOf('kvgdpr') > -1 && cookies[i].indexOf('opted_out=true') > -1) {
 					optout = true;
 				}
 			}
