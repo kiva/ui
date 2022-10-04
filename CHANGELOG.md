@@ -1,3 +1,10 @@
+### [2.317.4](https://github.com/kiva/ui/compare/v2.317.3...v2.317.4) (2022-10-04)
+
+
+### Bug Fixes
+
+* update prod lighthouse route for cps homepage ([0735e0a](https://github.com/kiva/ui/commit/0735e0a4f02044c10e9654b9ebe6175c5497ce7e))
+
 ### [2.317.3](https://github.com/kiva/ui/compare/v2.317.2...v2.317.3) (2022-10-04)
 
 
