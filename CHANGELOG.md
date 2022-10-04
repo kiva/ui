@@ -1,3 +1,11 @@
+### [2.317.3](https://github.com/kiva/ui/compare/v2.317.2...v2.317.3) (2022-10-04)
+
+
+### Bug Fixes
+
+* hasOptOut should be false when kvgdpr cookie does not exist ([bbe6d83](https://github.com/kiva/ui/commit/bbe6d83ba8d618e3b1ede3614c5d5f0f1500fc8f))
+* use separate cached strings for opt-in and opt-out script tags ([b4dd6c6](https://github.com/kiva/ui/commit/b4dd6c6b2495d98dfbea861007dbd476c3439c97))
+
 ### [2.317.2](https://github.com/kiva/ui/compare/v2.317.1...v2.317.2) (2022-10-04)
 
 
