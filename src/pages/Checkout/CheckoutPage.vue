@@ -838,7 +838,7 @@ export default {
 				this.setUpdatingTotals(false);
 			});
 		},
-		completeTransaction(transactionId) {
+		async completeTransaction(transactionId) {
 			// compile transaction data
 			const transactionData = formatTransactionData(
 				numeral(transactionId).value(),
@@ -848,53 +848,41 @@ export default {
 				this.totals
 			);
 
-			// Post transaction queries
 			// Fetch FTD Status
 			const myFTDQueryUtil = myFTDQuery(this.apollo);
 
-			// Eco Challenge Query
-			let achievementsQueryUtil;
+			// Fetch Eco Challenge Game Status
+			// If user is in eco challenge and a loan in basket makes progress towards
+			// eco challenge, set extraQueryParam
+			let extraQueryParam = '';
 			if (this.isEcoChallengeExpShown) {
-				achievementsQueryUtil = achievementsQuery(this.apollo, this.loanIdsInBasket);
-			} else {
-				achievementsQueryUtil = Promise.resolve();
+				const myAchievements = await achievementsQuery(this.apollo, this.loanIdsInBasket);
+				// eslint-disable-next-line max-len
+				const checkoutMilestoneProgresses = myAchievements?.data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
+				const showEcoThanksPage = hasMadeAchievementsProgression(
+					checkoutMilestoneProgresses,
+					'climate-challenge'
+				);
+				extraQueryParam = showEcoThanksPage ? '&ecoChallenge=true' : '';
 			}
+			// end game code
 
-			Promise.all([myFTDQueryUtil, achievementsQueryUtil])
-				.then(postTransactionResults => {
-					const myFTDData = postTransactionResults[0]?.data;
-					const achievementsData = postTransactionResults[1]?.data;
+			myFTDQueryUtil.then(({ data }) => {
+				// determine ftd status
+				const isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
+				transactionData.isFTD = isFTD;
 
-					// determine ftd status
-					const isFTD = myFTDData?.my?.userAccount?.isFirstTimeDepositor;
-					transactionData.isFTD = isFTD;
+				// fire transaction events
+				this.$kvTrackTransaction(transactionData);
 
-					// fire transaction events
-					this.$kvTrackTransaction(transactionData);
-
-					// Fetch Eco Challenge Game Status
-					// If user is in eco challenge and a loan in basket makes progress towards
-					// eco challenge, set extraQueryParam
-					let extraQueryParam = '';
-					if (achievementsData) {
-						// eslint-disable-next-line max-len
-						const checkoutMilestoneProgresses = achievementsData?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
-						const showEcoThanksPage = hasMadeAchievementsProgression(
-							checkoutMilestoneProgresses,
-							'climate-challenge'
-						);
-						extraQueryParam = showEcoThanksPage ? '&ecoChallenge=true' : '';
-					}
-					// end game code
-
-					// redirect to thanks
-					window.setTimeout(
-						() => {
-							this.redirectToThanks(transactionId, extraQueryParam);
-						},
-						800
-					);
-				});
+				// redirect to thanks
+				window.setTimeout(
+					() => {
+						this.redirectToThanks(transactionId, extraQueryParam);
+					},
+					800
+				);
+			});
 		},
 		setUpdatingTotals(state) {
 			this.updatingTotals = state;
