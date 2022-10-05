@@ -1,3 +1,15 @@
+### [2.317.6](https://github.com/kiva/ui/compare/v2.317.5...v2.317.6) (2022-10-05)
+
+
+### Bug Fixes
+
+* redirect to eco thanks page on eco checkout ([654c37c](https://github.com/kiva/ui/commit/654c37c31a40ac44848636ef98df9bc625e29ca3))
+
+
+### Reverts
+
+* Revert "fix: eco challenge thanks redirect" ([68fabe7](https://github.com/kiva/ui/commit/68fabe78597dd30cfb4b9f9f98a98ca2873f5843))
+
 ### [2.317.5](https://github.com/kiva/ui/compare/v2.317.4...v2.317.5) (2022-10-05)
 
 
