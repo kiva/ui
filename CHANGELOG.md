@@ -1,3 +1,10 @@
+### [2.317.5](https://github.com/kiva/ui/compare/v2.317.4...v2.317.5) (2022-10-05)
+
+
+### Bug Fixes
+
+* computed property warning on checkoutpage ([5a78f83](https://github.com/kiva/ui/commit/5a78f83a6ea05c6ea96a3c4c0e129ac35ede9794))
+
 ### [2.317.4](https://github.com/kiva/ui/compare/v2.317.3...v2.317.4) (2022-10-04)
 
 
