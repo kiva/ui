@@ -400,6 +400,7 @@ export default {
 			enableDynamicUpsells: false,
 			isEcoChallengeExpShown: false,
 			useDynamicUpsell: false,
+			ecoChallengeRedirectQueryParam: '',
 		};
 	},
 	apollo: {
@@ -605,6 +606,21 @@ export default {
 			);
 			if (version === 'b') {
 				this.isEcoChallengeExpShown = true;
+
+				// Fetch Eco Challenge Game Status
+				// If user is in eco challenge and a loan in basket makes progress towards
+				// eco challenge, set ecoChallengeRedirectQueryParam
+				achievementsQuery(this.apollo, this.loanIdsInBasket)
+					.then(({ data }) => {
+						// eslint-disable-next-line max-len
+						const checkoutMilestoneProgresses = data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
+						const showEcoThanksPage = hasMadeAchievementsProgression(
+							checkoutMilestoneProgresses,
+							'climate-challenge'
+						);
+						this.ecoChallengeRedirectQueryParam = showEcoThanksPage ? '&ecoChallenge=true' : '';
+					});
+				// end game code
 			}
 		}
 	},
@@ -838,7 +854,7 @@ export default {
 				this.setUpdatingTotals(false);
 			});
 		},
-		async completeTransaction(transactionId) {
+		completeTransaction(transactionId) {
 			// compile transaction data
 			const transactionData = formatTransactionData(
 				numeral(transactionId).value(),
@@ -851,22 +867,6 @@ export default {
 			// Fetch FTD Status
 			const myFTDQueryUtil = myFTDQuery(this.apollo);
 
-			// Fetch Eco Challenge Game Status
-			// If user is in eco challenge and a loan in basket makes progress towards
-			// eco challenge, set extraQueryParam
-			let extraQueryParam = '';
-			if (this.isEcoChallengeExpShown) {
-				const myAchievements = await achievementsQuery(this.apollo, this.loanIdsInBasket);
-				// eslint-disable-next-line max-len
-				const checkoutMilestoneProgresses = myAchievements?.data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
-				const showEcoThanksPage = hasMadeAchievementsProgression(
-					checkoutMilestoneProgresses,
-					'climate-challenge'
-				);
-				extraQueryParam = showEcoThanksPage ? '&ecoChallenge=true' : '';
-			}
-			// end game code
-
 			myFTDQueryUtil.then(({ data }) => {
 				// determine ftd status
 				const isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
@@ -878,7 +878,7 @@ export default {
 				// redirect to thanks
 				window.setTimeout(
 					() => {
-						this.redirectToThanks(transactionId, extraQueryParam);
+						this.redirectToThanks(transactionId, this.ecoChallengeRedirectQueryParam);
 					},
 					800
 				);
