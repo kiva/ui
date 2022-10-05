@@ -1,3 +1,10 @@
+### [2.318.1](https://github.com/kiva/ui/compare/v2.318.0...v2.318.1) (2022-10-05)
+
+
+### Bug Fixes
+
+* remove cc/kiva-universal from dev lighthouse ([5cbd50d](https://github.com/kiva/ui/commit/5cbd50dcf77c674671fd17ed525ba9b820416397))
+
 ## [2.318.0](https://github.com/kiva/ui/compare/v2.317.6...v2.318.0) (2022-10-05)
 
 
