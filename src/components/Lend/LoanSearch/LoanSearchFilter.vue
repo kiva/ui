@@ -65,12 +65,29 @@
 				event-action="click-theme-filter"
 			/>
 		</kv-accordion-item>
-		<button class="tw-mt-2 tw-h-[22px]" @click="advancedFilters">
-			<h2 class="tw-text-h4 tw-flex tw-items-center">
-				Advanced filters
-				<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1" />
-			</h2>
-		</button>
+		<template v-if="extendFlssFilters">
+			<kv-accordion-item id="acc-advanced" :open="false">
+				<template #header>
+					<h2 class="tw-text-h4">
+						Advanced filters
+					</h2>
+				</template>
+				<button class="tw-mt-2 tw-h-[22px]" @click="advancedFilters">
+					<h2 class="tw-text-h4 tw-flex tw-items-center">
+						Legacy filters
+						<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1" />
+					</h2>
+				</button>
+			</kv-accordion-item>
+		</template>
+		<template v-else>
+			<button class="tw-mt-2 tw-h-[22px]" @click="advancedFilters">
+				<h2 class="tw-text-h4 tw-flex tw-items-center">
+					Advanced filters
+					<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1" />
+				</h2>
+			</button>
+		</template>
 	</div>
 </template>
 
