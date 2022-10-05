@@ -1,3 +1,10 @@
+## [2.318.0](https://github.com/kiva/ui/compare/v2.317.6...v2.318.0) (2022-10-05)
+
+
+### Features
+
+* advanced filters accordion ([ea4df58](https://github.com/kiva/ui/commit/ea4df58f4d241857e0de5bd295f25a21e4581fe0))
+
 ### [2.317.6](https://github.com/kiva/ui/compare/v2.317.5...v2.317.6) (2022-10-05)
 
 
