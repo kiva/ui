@@ -8,10 +8,10 @@ import ExperimentIdLink from './ExperimentIdLink';
 import HttpLinkCreator from './HttpLink';
 import NetworkErrorLink from './NetworkErrorLink';
 import SnowplowSessionLink from './SnowplowSessionLink';
-import initState from './localState';
+// import initState from './localState';
 
 export default function createApolloClient({
-	appConfig,
+	// appConfig,
 	cookieStore,
 	kvAuth0,
 	types,
@@ -19,7 +19,8 @@ export default function createApolloClient({
 	fetch
 }) {
 	// initialize local state resolvers
-	const { resolvers } = initState({ appConfig, cookieStore, kvAuth0 });
+	// TODO: convert resolvers into typePolicies
+	// const { resolvers } = initState({ appConfig, cookieStore, kvAuth0 });
 
 	const possibleTypes = {};
 	types.forEach(element => {
@@ -31,8 +32,58 @@ export default function createApolloClient({
 	const cache = new InMemoryCache({
 		possibleTypes,
 		typePolicies: {
-			resolvers
-		}
+			activeLoan: {
+				merge: true,
+			},
+			AutolendingMutation: {
+				merge: true,
+			},
+			LoanDirect: {
+				merge: true,
+			},
+			LoanPartner: {
+				merge: true,
+			},
+			LoanChannel: {
+				merge: true,
+				keyFields: ['id'],
+			},
+			RecLoanChannel: {
+				merge: true,
+				keyFields: ['id'],
+			},
+			Manifest: {
+				merge: true,
+				keyFields: ['id'],
+			},
+			Query: {
+				merge: true,
+			},
+			Ml: {
+				merge: true,
+			},
+			General: {
+				merge: true,
+			},
+			Contentful: {
+				merge: true,
+			},
+			Lend: {
+				merge: true,
+			},
+			ShopTotals: {
+				merge: true,
+			},
+			fundraisingLoans: {
+				merge: true,
+			},
+			loanSearchState: {
+				merge: true,
+			},
+			My: {
+				merge: true,
+			},
+		},
 	});
 
 	const client = new ApolloClient({
