@@ -1,3 +1,86 @@
+### [2.318.1](https://github.com/kiva/ui/compare/v2.318.0...v2.318.1) (2022-10-05)
+
+
+### Bug Fixes
+
+* remove cc/kiva-universal from dev lighthouse ([5cbd50d](https://github.com/kiva/ui/commit/5cbd50dcf77c674671fd17ed525ba9b820416397))
+
+## [2.318.0](https://github.com/kiva/ui/compare/v2.317.6...v2.318.0) (2022-10-05)
+
+
+### Features
+
+* advanced filters accordion ([ea4df58](https://github.com/kiva/ui/commit/ea4df58f4d241857e0de5bd295f25a21e4581fe0))
+
+### [2.317.6](https://github.com/kiva/ui/compare/v2.317.5...v2.317.6) (2022-10-05)
+
+
+### Bug Fixes
+
+* redirect to eco thanks page on eco checkout ([654c37c](https://github.com/kiva/ui/commit/654c37c31a40ac44848636ef98df9bc625e29ca3))
+
+
+### Reverts
+
+* Revert "fix: eco challenge thanks redirect" ([68fabe7](https://github.com/kiva/ui/commit/68fabe78597dd30cfb4b9f9f98a98ca2873f5843))
+
+### [2.317.5](https://github.com/kiva/ui/compare/v2.317.4...v2.317.5) (2022-10-05)
+
+
+### Bug Fixes
+
+* computed property warning on checkoutpage ([5a78f83](https://github.com/kiva/ui/commit/5a78f83a6ea05c6ea96a3c4c0e129ac35ede9794))
+
+### [2.317.4](https://github.com/kiva/ui/compare/v2.317.3...v2.317.4) (2022-10-04)
+
+
+### Bug Fixes
+
+* update prod lighthouse route for cps homepage ([0735e0a](https://github.com/kiva/ui/commit/0735e0a4f02044c10e9654b9ebe6175c5497ce7e))
+
+### [2.317.3](https://github.com/kiva/ui/compare/v2.317.2...v2.317.3) (2022-10-04)
+
+
+### Bug Fixes
+
+* hasOptOut should be false when kvgdpr cookie does not exist ([bbe6d83](https://github.com/kiva/ui/commit/bbe6d83ba8d618e3b1ede3614c5d5f0f1500fc8f))
+* use separate cached strings for opt-in and opt-out script tags ([b4dd6c6](https://github.com/kiva/ui/commit/b4dd6c6b2495d98dfbea861007dbd476c3439c97))
+
+### [2.317.2](https://github.com/kiva/ui/compare/v2.317.1...v2.317.2) (2022-10-04)
+
+
+### Bug Fixes
+
+* eco challenge thanks redirect ([2bada70](https://github.com/kiva/ui/commit/2bada70a35235c0938bd5c317ad1cde7142c9f21))
+
+### [2.317.1](https://github.com/kiva/ui/compare/v2.317.0...v2.317.1) (2022-10-04)
+
+
+### Bug Fixes
+
+* update cps temporary homepage route ([d1c08c6](https://github.com/kiva/ui/commit/d1c08c629c066b470121f611c26ee70095709273))
+
+## [2.317.0](https://github.com/kiva/ui/compare/v2.316.1...v2.317.0) (2022-10-03)
+
+
+### Features
+
+* setup experiment scaffold to gate new flss filter additions ([a04aaed](https://github.com/kiva/ui/commit/a04aaeda60c4ceec3bf7c76a12c947d2235b80d7))
+
+### [2.316.1](https://github.com/kiva/ui/compare/v2.316.0...v2.316.1) (2022-09-30)
+
+
+### Bug Fixes
+
+* gate lightboxes + contained component initialization, guard ref method calls ([6df76e5](https://github.com/kiva/ui/commit/6df76e57cae730a14ab23ce0201ef16c0d58b49e))
+
+## [2.316.0](https://github.com/kiva/ui/compare/v2.315.0...v2.316.0) (2022-09-30)
+
+
+### Features
+
+* modify contentful content for donate route ([9b024cf](https://github.com/kiva/ui/commit/9b024cf2f750f4266d471a92c7684671757e7e25))
+
 ## [2.315.0](https://github.com/kiva/ui/compare/v2.314.3...v2.315.0) (2022-09-30)
 
 

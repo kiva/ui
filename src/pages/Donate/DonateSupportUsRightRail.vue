@@ -73,9 +73,9 @@ export default {
 			return this.content.contents?.find(item => item.name === 'Progress Meter Image') || {};
 		},
 		showMeter() {
-			const showMeterSetting = this.content?.contents?.find(
-				item => item.key === 'web-donate-support-us-show-donation-meter'
-			);
+			const showMeterSetting = this.content?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'uiSetting' : false;
+			});
 			if (showMeterSetting) {
 				return settingEnabled(showMeterSetting, 'active', 'startDate', 'endDate');
 			}

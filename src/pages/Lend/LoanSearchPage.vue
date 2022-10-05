@@ -46,6 +46,7 @@
 					</a>
 				</div>
 				<loan-search-interface
+					:extend-flss-filters="extendFlssFilters"
 					:enable-saved-search="enableSavedSearch"
 					:saved-search-success="savedSearchSuccess"
 					@enable-success-saved-search="enableSuccessSavedSearch"
@@ -87,6 +88,7 @@ export default {
 	},
 	data() {
 		return {
+			extendFlssFilters: false,
 			enableSavedSearch: false,
 			mdiEarth,
 			mdiFilter,
@@ -125,6 +127,7 @@ export default {
 			}).then(() => {
 				return Promise.all([
 					client.query({ query: experimentQuery, variables: { id: 'saved_search' } }),
+					client.query({ query: experimentQuery, variables: { id: 'extend_flss_filters' } }),
 				]);
 			});
 		},
@@ -139,6 +142,20 @@ export default {
 					'Lending',
 					'EXP-CORE-687-Aug-2022',
 					savedSearchExp.version
+				);
+			}
+
+			// Extended FLSS Loan Filter Experiment
+			const showMoreFiltersExp = this.apollo.readFragment({
+				id: 'Experiment:extend_flss_filters',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.extendFlssFilters = showMoreFiltersExp.version === 'b';
+			if (showMoreFiltersExp.version) {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-VUE-1323-Nov-2022',
+					showMoreFiltersExp.version
 				);
 			}
 		}

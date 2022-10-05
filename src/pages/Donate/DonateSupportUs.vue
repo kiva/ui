@@ -31,7 +31,7 @@ import gql from 'graphql-tag';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
-import { processPageContentFlat } from '@/util/contentfulUtils';
+import { processPageContent } from '@/util/contentfulUtils';
 import DonateForm from '@/pages/Donate/DonateForm';
 import DonateSupportUsRightRail from '@/pages/Donate/DonateSupportUsRightRail';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
@@ -41,6 +41,24 @@ const pageQuery = gql`query donateContent($contentKey: String) {
 		entries (contentType: "page", contentKey: $contentKey)
 	}
 }`;
+
+/* eslint-disable max-len */
+/** This template is for donate/supportus and donate/supportkiva pages
+	* The contentful page content is different for each page
+	* It expects the contentful content to have the following structure:
+	* Page > Page Layout >
+	* 	- Content Group (key = 'web-lender-donation-hero' || 'web-lender-donation-hero-variant')
+	* 		- Generic Content Block
+	* 		- Rich Text Content
+	* 		- UI Setting
+	* 	- Content Group (key = 'web-donate-support-us-donation-callouts' || 'web-donate-support-us-donation-callouts-variant')
+	* 		- Media Entries (any number)
+	* 		- Rich Text Content (any number)
+	* 		- Responsive Image Set (name = 'Progress Meter Image')
+	* 		- UI Setting
+	* 	- Content Group (type = 'frequentlyAskedQuestions')
+*/
+/* eslint-enable max-len */
 
 export default {
 	name: 'DonateSupportUs',
@@ -88,12 +106,15 @@ export default {
 		},
 		result({ data }) {
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
-			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
+			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
 		},
 	},
 	computed: {
 		page() {
 			return this.pageData?.page;
+		},
+		contentGroups() {
+			return this.page?.pageLayout?.contentGroups ?? [];
 		},
 		pageTitle() {
 			const layoutTitle = this.page?.pageLayout?.pageTitle;
@@ -106,11 +127,17 @@ export default {
 			return layoutDescription || pageDescription;
 		},
 		heroContentGroup() {
-			return this.page?.contentGroups?.webLenderDonationHero || {};
+			return this.contentGroups?.find(({ key }) => {
+				if (key === 'web-lender-donation-hero' || key === 'web-lender-donation-hero-variant') {
+					return true;
+				}
+				return false;
+			});
 		},
 		heroGenericContentBlock() {
-			// eslint-disable-next-line max-len
-			return this.heroContentGroup?.contents?.find(contentBlock => contentBlock.key === 'web-lender-donation-form-copy');
+			return this.heroContentGroup?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'genericContentBlock' : false;
+			});
 		},
 		headlineCopy() {
 			const contentfulHeadlineCopy = this.heroGenericContentBlock?.headline;
@@ -130,8 +157,9 @@ export default {
 			return this.defaultButtonText;
 		},
 		heroSettingsContent() {
-			// eslint-disable-next-line max-len
-			return this.heroContentGroup?.contents?.find(contentBlock => contentBlock.key === 'webLenderDonationAmounts');
+			return this.heroContentGroup?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'uiSetting' : false;
+			});
 		},
 		donationValues() {
 			return this.heroSettingsContent?.dataObject?.amounts.length
@@ -139,8 +167,9 @@ export default {
 				: this.defaultDonationValues;
 		},
 		heroDisclaimerContent() {
-			// eslint-disable-next-line max-len
-			return this.heroContentGroup?.contents?.find(contentBlock => contentBlock.key === 'macro-donate-button-disclaimer');
+			return this.heroContentGroup?.contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'richTextContent' : false;
+			});
 		},
 		formDisclaimer() {
 			const disclaimerRichText = this.heroDisclaimerContent?.richText;
@@ -150,7 +179,9 @@ export default {
 			return '';
 		},
 		faqContentGroup() {
-			return this.page?.contentGroups?.frequentlyAskedQuestions || {};
+			return this.contentGroups?.find(({ type }) => {
+				return type ? type === 'frequentlyAskedQuestions' : false;
+			});
 		},
 		frequentlyAskedQuestionsHeadline() {
 			return this.faqContentGroup?.title ?? null;
@@ -159,7 +190,13 @@ export default {
 			return this.faqContentGroup?.contents ?? null;
 		},
 		donationCalloutsCG() {
-			return this.page?.contentGroups?.webDonateSupportUsDonationCallouts || {};
+			return this.contentGroups?.find(({ key }) => {
+				// eslint-disable-next-line max-len
+				if (key === 'web-donate-support-us-donation-callouts' || key === 'web-donate-support-us-donation-callouts-variant') {
+					return true;
+				}
+				return false;
+			});
 		}
 	},
 	mounted() {
