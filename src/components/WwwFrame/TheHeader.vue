@@ -467,6 +467,7 @@
 <script>
 import logReadQueryError from '@/util/logReadQueryError';
 import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
+import setHotJarUserAttributes from '@/util/hotJarUserAttributes';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
 import gql from 'graphql-tag';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
@@ -483,6 +484,7 @@ const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 
 const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
+	hasEverLoggedIn @client
   	my {
     	loans(limit:1) {
       		totalCount
@@ -528,6 +530,7 @@ export default {
 			mdiAccountCircle,
 			mdiChevronDown,
 			mdiMagnify,
+			userId: 0,
 		};
 	},
 	props: {
@@ -602,6 +605,7 @@ export default {
 			});
 		},
 		result({ data }) {
+			this.userId = data?.my?.userAccount?.id;
 			this.isVisitor = !data?.my?.userAccount?.id;
 			this.isBorrower = data?.my?.isBorrower ?? false;
 			this.loanId = data?.my?.mostRecentBorrowedLoan?.id ?? null;
@@ -644,6 +648,14 @@ export default {
 
 				userHasLentBefore(hasLentBefore);
 				userHasDepositBefore(hasDepositBefore);
+
+				// MARS-246 Hotjar user attributes
+				setHotJarUserAttributes({
+					userId: this.userId,
+					hasEverLoggedIn: userData.hasEverLoggedIn,
+					hasLentBefore,
+					hasDepositBefore,
+				});
 			} catch (e) {
 				logReadQueryError(e, 'User Data For Optimizely Metrics');
 			}
