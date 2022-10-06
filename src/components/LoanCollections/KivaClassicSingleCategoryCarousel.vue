@@ -135,7 +135,7 @@ export default {
 			return this.loanChannelDescription || this.channelData?.description;
 		},
 		channelData() {
-			if (this.prefetchedSelectedChannel) {
+			if (!this.prefetchedSelectedChannel) {
 				return this.selectedChannel;
 			}
 			return this.prefetchedSelectedChannel;
@@ -143,7 +143,7 @@ export default {
 	},
 	mounted() {
 		// if channel data is not passed in, fetch it
-		if (this.prefetchedSelectedChannel) {
+		if (!this.prefetchedSelectedChannel) {
 			this.fetchLoanChannelFLSS();
 		}
 	},
