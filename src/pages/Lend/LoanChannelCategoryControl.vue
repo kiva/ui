@@ -2,7 +2,15 @@
 	<div class="tw-relative">
 		<div class="row">
 			<div class="small-12 columns heading-region">
-				<view-toggle browse-url="/lend-by-category" :filter-url="filterUrl" />
+				<view-toggle v-if="!enableQuickFilters" browse-url="/lend-by-category" :filter-url="filterUrl" />
+				<router-link
+					v-else
+					:to="filterUrl"
+					class="tw-text-action tw-flex tw-items-center tw-float-right"
+				>
+					<img class="tw-w-2 tw-mr-1" src="@/assets/images/tune.svg">
+					Advanced filters
+				</router-link>
 				<p class="tw-text-small">
 					<router-link to="/lend-by-category">
 						All Loans
