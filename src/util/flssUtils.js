@@ -4,6 +4,17 @@ import flssLoanChannelQuery from '@/graphql/query/flssLoanChannel.graphql';
 import logReadQueryError from '@/util/logReadQueryError';
 
 /**
+ * FLSS Query Context Const lists
+ * Each query that resolves loans from FLSS should provide a descriptive origin formatted as web:##page-context##
+ */
+export const FLSS_ORIGIN_NOT_SPECIFIED = 'web:no-context';
+export const FLSS_ORIGIN_CATEGORY = 'web:category';
+export const FLSS_ORIGIN_LEND_BY_CATEGORY = 'web:lend-by-category';
+export const FLSS_ORIGIN_LEND_FILTER = 'web:lend-filter';
+export const FLSS_ORIGIN_BP_FUNDED = 'web:bp-funded';
+export const FLSS_ORIGIN_THANKS = 'web:thanks';
+
+/**
  * Gets the filters for FLSS
  *
  * @param {Object} loanSearchState The current loan search state from Apollo
@@ -25,13 +36,19 @@ export function getFlssFilters(loanSearchState) {
  * Fetches the facets with number of fundraising loans from FLSS
  *
  * @param {Object} apollo The Apollo client instance
+ * @param {String} origin Origin of query formatted as web:##page-context##
  * @param {Object} isoCodeFilters The filters for the ISO code facets
  * @param {Object} themeFilters The filters for the theme facets
  * @param {Object} sectorFilters The filters for the sector facets
- * @param {String} origin Origin of query formatted as web:##page-context##
  * @returns {Promise<Array<Object>>} Promise for facets data
  */
-export async function fetchFacets(apollo, isoCodeFilters, themeFilters, sectorFilters, origin = 'web:no-context') {
+export async function fetchFacets(
+	apollo,
+	origin = FLSS_ORIGIN_NOT_SPECIFIED,
+	isoCodeFilters,
+	themeFilters,
+	sectorFilters,
+) {
 	try {
 		const result = await apollo.query({
 			query: flssLoanFacetsQuery,
@@ -66,7 +83,7 @@ export async function fetchLoans(
 	sortBy = null,
 	pageOffset = 0,
 	pageLimit = 15,
-	origin = 'web:no-context'
+	origin = FLSS_ORIGIN_NOT_SPECIFIED
 ) {
 	try {
 		const result = await apollo.query({
@@ -101,6 +118,7 @@ export function getLoanChannelVariables(queryMapFLSS, loanQueryVars) {
 		pageNumber: loanQueryVars.offset / loanQueryVars.limit,
 		pageLimit: loanQueryVars.limit,
 		basketId: loanQueryVars.basketId,
+		origin: loanQueryVars?.origin ?? FLSS_ORIGIN_NOT_SPECIFIED
 	};
 }
 
@@ -110,14 +128,13 @@ export function getLoanChannelVariables(queryMapFLSS, loanQueryVars) {
  * @param {Object} apollo The Apollo client instance
  * @param {Array} queryMapFLSS The query map entry for the channel
  * @param {Object} loanQueryVars The loan channel query variables
- * @param {String} origin Origin of query formatted as web:##page-context##
  * @returns {Object} The loan channel data
  */
-export async function fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars, origin = 'web:no-context') {
+export async function fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars) {
 	try {
 		return (await apollo.query({
 			query: flssLoanChannelQuery,
-			variables: { ...getLoanChannelVariables(queryMapFLSS, loanQueryVars), origin }
+			variables: getLoanChannelVariables(queryMapFLSS, loanQueryVars),
 		})).data;
 	} catch (e) {
 		logReadQueryError(e, 'flssUtils fetchLoanChannel flssLoanChannelQuery');

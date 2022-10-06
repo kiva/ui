@@ -1,5 +1,10 @@
 import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
-import { fetchFacets, fetchLoans, getFlssFilters } from '@/util/flssUtils';
+import {
+	fetchFacets,
+	fetchLoans,
+	getFlssFilters,
+	FLSS_ORIGIN_NOT_SPECIFIED,
+} from '@/util/flssUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 
 /**
@@ -10,12 +15,12 @@ import logReadQueryError from '@/util/logReadQueryError';
  * @param {String} origin Origin of query formatted as web:##page-context##
  * @returns {Object} The filter facets
  */
-export async function runFacetsQueries(apollo, loanSearchState = {}, origin) {
+export async function runFacetsQueries(apollo, loanSearchState = {}, origin = FLSS_ORIGIN_NOT_SPECIFIED) {
 	const isoCodeFilters = { ...getFlssFilters(loanSearchState), countryIsoCode: undefined };
 	const themeFilters = { ...getFlssFilters(loanSearchState), themeId: undefined };
 	const sectorFilters = { ...getFlssFilters(loanSearchState), sectorId: undefined };
 
-	const facets = await fetchFacets(apollo, isoCodeFilters, themeFilters, sectorFilters, origin);
+	const facets = await fetchFacets(apollo, origin, isoCodeFilters, themeFilters, sectorFilters);
 
 	return {
 		isoCodes: facets?.isoCodes?.facets?.isoCode ?? [],

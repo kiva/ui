@@ -118,6 +118,7 @@ import {
 	formatSortOptions,
 	transformIsoCodes,
 } from '@/util/loanSearch/filterUtils';
+import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
 
 const defaultLoansPerPage = 12;
@@ -237,7 +238,7 @@ export default {
 			return _get(this.loanChannel, 'description') || null;
 		},
 		loans() {
-			return _get(this.loanChannel, 'loans.values') || [];
+			return (this.loanChannel?.loans?.values ?? []).filter(loan => loan !== null);
 		},
 		firstLoan() {
 			// Handle an edge case where a backend error could lead to a null loan
@@ -258,6 +259,7 @@ export default {
 				limit: this.limit,
 				offset: this.offset,
 				basketId: this.cookieStore.get('kvbskt'),
+				origin: FLSS_ORIGIN_CATEGORY
 			};
 		},
 		filterUrl() {
@@ -317,8 +319,12 @@ export default {
 					loanChannelQueryMapMixin.data().loanChannelQueryMap,
 					targetedLoanChannelURL,
 					// Build loanQueryVars since SSR doesn't have same context
-					{ ids: [targetedLoanChannelID], limit, offset },
-					'web:category'
+					{
+						ids: [targetedLoanChannelID],
+						limit,
+						offset,
+						origin: FLSS_ORIGIN_CATEGORY
+					},
 				);
 			});
 		}
@@ -529,7 +535,7 @@ export default {
 		},
 		async fetchFacets(loanSearchState = {}) {
 			// TODO: Prevent this from running on every query (not needed for sorting and paging)
-			const { isoCodes } = await runFacetsQueries(this.apollo, loanSearchState);
+			const { isoCodes } = await runFacetsQueries(this.apollo, loanSearchState, FLSS_ORIGIN_CATEGORY);
 
 			// Merge all facet options with filtered options
 			const facets = {

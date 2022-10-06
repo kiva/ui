@@ -66,6 +66,7 @@
 					:climate-challenge="isEcoChallengeExpShown"
 					:loan-display-settings="loanDisplaySettings"
 					:lend-now-button="true"
+					:query-context="ecoExpQueryContext"
 				/>
 			</div>
 		</kv-page-container>
@@ -80,6 +81,7 @@ import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import KivaClassicSingleCategoryCarousel from '@/components/LoanCollections/KivaClassicSingleCategoryCarousel';
+import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import {
 	preFetchChannel,
 	getCachedChannel
@@ -142,6 +144,7 @@ export default {
 			isEcoChallengeExpShown: false,
 			showHowItWorks: true,
 			mdiClose,
+			ecoExpQueryContext: FLSS_ORIGIN_CATEGORY
 		};
 	},
 	computed: {
@@ -197,8 +200,12 @@ export default {
 				loanChannelQueryMapMixin.data().loanChannelQueryMap,
 				targetedLoanChannelURL,
 				// Build loanQueryVars since SSR doesn't have same context
-				{ ids: [...secondaryEcoLoanChannelIds, targetedLoanChannelID], limit, offset },
-				'web:category'
+				{
+					ids: [...secondaryEcoLoanChannelIds, targetedLoanChannelID],
+					limit,
+					offset,
+					origin: FLSS_ORIGIN_CATEGORY
+				},
 			);
 		}
 	},
@@ -217,6 +224,7 @@ export default {
 				limit: 9,
 				offset: 0,
 				basketId: this.cookieStore.get('kvbskt'),
+				origin: FLSS_ORIGIN_CATEGORY
 			}
 		);
 		this.loanChannel = baseData?.lend?.loanChannelsById.find(channel => channel.id === this.targetedLoanChannelID);

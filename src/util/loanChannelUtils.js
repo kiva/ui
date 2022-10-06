@@ -42,9 +42,8 @@ export function transformFLSSData(data) {
  * @param {Array} queryMap The map mixin from loan-channel-query-map.js
  * @param {string} channelUrl The URL of the loan channel
  * @param {Object} loanQueryVars The loan channel query variables
- * @param {String} origin Origin of query formatted as web:##page-context##
  */
-export async function preFetchChannel(apollo, queryMap, channelUrl, loanQueryVars, origin) {
+export async function preFetchChannel(apollo, queryMap, channelUrl, loanQueryVars) {
 	const queryMapFLSS = getFLSSQueryMap(queryMap, channelUrl);
 
 	if (queryMapFLSS) {
@@ -62,7 +61,7 @@ export async function preFetchChannel(apollo, queryMap, channelUrl, loanQueryVar
 		}
 
 		if (experimentActive) {
-			return fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars, origin);
+			return fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars);
 		}
 	}
 
@@ -129,16 +128,15 @@ export function getCachedChannel(apollo, queryMap, channelUrl, loanQueryVars) {
  * @param {string} channelUrl The URL of the loan channel
  * @param {Object} loanQueryVars The loan channel query variables
  * @returns {Object} The loan channel data, transformed if FLSS
- * @param {String} origin Origin of query formatted as web:##page-context##
  */
-export async function getLoanChannel(apollo, queryMap, channelUrl, loanQueryVars, origin) {
+export async function getLoanChannel(apollo, queryMap, channelUrl, loanQueryVars) {
 	const queryMapFLSS = getFLSSQueryMap(queryMap, channelUrl);
 
 	if (queryMapFLSS) {
 		const experimentActive = checkCachedChannelExperiment(apollo);
 
 		if (experimentActive) {
-			return transformFLSSData(await fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars, origin));
+			return transformFLSSData(await fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars));
 		}
 	}
 
