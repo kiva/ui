@@ -1,3 +1,10 @@
+## [2.319.0](https://github.com/kiva/ui/compare/v2.318.1...v2.319.0) (2022-10-06)
+
+
+### Features
+
+* new location selector was added for quick filters experiment ([fa44fb1](https://github.com/kiva/ui/commit/fa44fb1b5d9d501d0d8d2e7eda368a20d7f7ca9c))
+
 ### [2.318.1](https://github.com/kiva/ui/compare/v2.318.0...v2.318.1) (2022-10-05)
 
 
