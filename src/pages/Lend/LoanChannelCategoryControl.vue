@@ -111,6 +111,7 @@ import {
 	getCachedChannel,
 	trackChannelExperiment,
 	watchChannelQuery,
+	getFilteredLoanChannel
 } from '@/util/loanChannelUtils';
 
 import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
@@ -214,6 +215,7 @@ export default {
 			flssLoanSearch: {},
 			quickFiltersOptions: {},
 			filtersLoaded: false,
+			selectedQuickFilters: {}
 		};
 	},
 	computed: {
@@ -312,7 +314,8 @@ export default {
 					loanChannelQueryMapMixin.data().loanChannelQueryMap,
 					targetedLoanChannelURL,
 					// Build loanQueryVars since SSR doesn't have same context
-					{ ids: [targetedLoanChannelID], limit, offset }
+					{ ids: [targetedLoanChannelID], limit, offset },
+					this.selectedQuickFilters
 				);
 			});
 		}
@@ -361,12 +364,19 @@ export default {
 		this.updateFromParams(this.pageQuery);
 
 		// Prevent pop-in by loading data from the Apollo cache manually here instead of just using the subscription
-		const baseData = getCachedChannel(
-			this.apollo,
-			this.loanChannelQueryMap,
-			this.targetedLoanChannelURL,
-			this.loanQueryVars
-		);
+		const baseData = this.enableQuickFilters
+			? getFilteredLoanChannel(
+				this.apollo,
+				this.loanChannelQueryMap,
+				this.targetedLoanChannelURL,
+				this.loanQueryVars,
+				this.selectedQuickFilters
+			) : getCachedChannel(
+				this.apollo,
+				this.loanChannelQueryMap,
+				this.targetedLoanChannelURL,
+				this.loanQueryVars,
+			);
 
 		if (baseData) this.loading = false;
 
@@ -403,6 +413,9 @@ export default {
 		}
 	},
 	methods: {
+		updateQuickFilters(filter) {
+			this.selectedQuickFilters = { ...this.selectedQuickFilters, filter };
+		},
 		checkIfPageIsOutOfRange(loansArrayLength, pageQueryParam) {
 			// determines if the page query param is for a page that is out of bounds.
 			// if it is, changes page to the last page and displays a tip message
@@ -463,6 +476,7 @@ export default {
 			watchChannelQuery(
 				this.apollo,
 				this.loanChannelQueryMap,
+				this.selectedQuickFilters,
 				this.targetedLoanChannelURL,
 				this.loanQueryVars,
 				next,
@@ -536,7 +550,7 @@ export default {
 			this.quickFiltersOptions.gender = [
 				{
 					title: 'All genders',
-					key: '',
+					key: 'all',
 				},
 				{
 					title: 'Women',
