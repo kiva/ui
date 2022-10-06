@@ -62,10 +62,8 @@
 			<div v-for="(channel, index) in secondaryChannels" :key="index" class="tw-mt-6">
 				<kiva-classic-single-category-carousel
 					:id="`carousel-${channel.name}` | changeCase('paramCase')"
+					:prefetched-selected-channel="channel"
 					:climate-challenge="isEcoChallengeExpShown"
-					:loan-channel-id="channel.id"
-					:loan-channel-name="channel.name"
-					:loan-channel-description="channel.description"
 					:loan-display-settings="loanDisplaySettings"
 					:lend-now-button="true"
 				/>

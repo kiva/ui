@@ -27,12 +27,12 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div v-if="enableQuickFilters" class="row">
 			<quick-filters
 				class="tw-ml-2"
-				v-if="filtersLoaded && enableQuickFilters"
 				:total-loans="totalCount"
 				:filter-options="quickFiltersOptions"
+				:filters-loaded="filtersLoaded"
 			/>
 		</div>
 
@@ -212,7 +212,12 @@ export default {
 			detailedLoan: null,
 			allFacets: [],
 			flssLoanSearch: {},
-			quickFiltersOptions: {},
+			quickFiltersOptions: {
+				gender: [{
+					key: '',
+					title: 'All genders'
+				}]
+			},
 			filtersLoaded: false,
 		};
 	},
@@ -400,7 +405,7 @@ export default {
 			// Fetch the facet options from the lend and FLSS APIs
 			this.allFacets = await fetchLoanFacets(this.apollo);
 			// Load all available facets for specified sector
-			await this.fetchFacets(this.flssLoanSearch).then(this.filtersLoaded = true);
+			await this.fetchFacets(this.flssLoanSearch);
 		}
 	},
 	methods: {
@@ -548,6 +553,8 @@ export default {
 					key: 'male',
 				},
 			];
+
+			this.filtersLoaded = true;
 		},
 		quickFiltersFlssParameters(matchedUrls = []) {
 			if (this.targetedLoanChannelURL === 'single-parents') {
