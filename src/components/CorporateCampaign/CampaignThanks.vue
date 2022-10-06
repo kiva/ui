@@ -63,6 +63,7 @@ import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { joinArray } from '@/util/joinArray';
 import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
+import setHotJarUserAttributes from '@/util/hotJarUserAttributes';
 import CampaignPartnerThanks from './CampaignPartnerThanks';
 
 const hasLentBeforeCookie = 'kvu_lb';
@@ -159,6 +160,14 @@ export default {
 
 				userHasLentBefore(hasLentBefore);
 				userHasDepositBefore(hasDepositBefore);
+
+				// MARS-246 Hotjar user attributes
+				setHotJarUserAttributes({
+					userId: this.userId,
+					hasEverLoggedIn: true,
+					hasLentBefore,
+					hasDepositBefore,
+				});
 
 				this.showReceipt = true;
 				await this.$nextTick();
