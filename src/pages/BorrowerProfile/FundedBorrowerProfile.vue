@@ -469,7 +469,8 @@ export default {
 							limit: row.limit,
 							filters: [
 								row.filter
-							]
+							],
+							origin: 'web:bp-funded'
 						};
 
 						this.apollo.query({

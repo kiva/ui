@@ -144,7 +144,8 @@ export default {
 				this.apollo,
 				this.loanChannelQueryMap,
 				channelUrl,
-				loanQueryVars
+				loanQueryVars,
+				'web:category'
 			);
 			const loanChannelData = channelData?.data?.lend?.loanChannelsById ?? [];
 			this.selectedChannel = loanChannelData?.[0];

@@ -312,7 +312,8 @@ export default {
 					loanChannelQueryMapMixin.data().loanChannelQueryMap,
 					targetedLoanChannelURL,
 					// Build loanQueryVars since SSR doesn't have same context
-					{ ids: [targetedLoanChannelID], limit, offset }
+					{ ids: [targetedLoanChannelID], limit, offset },
+					'web:category'
 				);
 			});
 		}

@@ -28,13 +28,19 @@ export function getFlssFilters(loanSearchState) {
  * @param {Object} isoCodeFilters The filters for the ISO code facets
  * @param {Object} themeFilters The filters for the theme facets
  * @param {Object} sectorFilters The filters for the sector facets
+ * @param {String} origin Origin of query formatted as web:##page-context##
  * @returns {Promise<Array<Object>>} Promise for facets data
  */
-export async function fetchFacets(apollo, isoCodeFilters, themeFilters, sectorFilters) {
+export async function fetchFacets(apollo, isoCodeFilters, themeFilters, sectorFilters, origin = 'web:no-context') {
 	try {
 		const result = await apollo.query({
 			query: flssLoanFacetsQuery,
-			variables: { isoCodeFilters, themeFilters, sectorFilters },
+			variables: {
+				isoCodeFilters,
+				themeFilters,
+				sectorFilters,
+				origin
+			},
 			fetchPolicy: 'network-only',
 		});
 		return result.data;
@@ -51,9 +57,17 @@ export async function fetchFacets(apollo, isoCodeFilters, themeFilters, sectorFi
  * @param {String} sortOrder Sort option for the loan query
  * @param {Int} pageOffset The offset of the page
  * @param {Int} pageLimit The limit/size of the page
+ * @param {String} origin Origin of query formatted as web:##page-context##
  * @returns {Promise<Array<Object>>} Promise for loan data
  */
-export async function fetchLoans(apollo, filterObject, sortBy = null, pageOffset = 0, pageLimit = 15) {
+export async function fetchLoans(
+	apollo,
+	filterObject,
+	sortBy = null,
+	pageOffset = 0,
+	pageLimit = 15,
+	origin = 'web:no-context'
+) {
 	try {
 		const result = await apollo.query({
 			query: flssLoanQuery,
@@ -62,6 +76,7 @@ export async function fetchLoans(apollo, filterObject, sortBy = null, pageOffset
 				sortBy,
 				pageNumber: pageOffset / pageLimit,
 				pageLimit,
+				origin
 			},
 			fetchPolicy: 'network-only',
 		});
@@ -95,13 +110,14 @@ export function getLoanChannelVariables(queryMapFLSS, loanQueryVars) {
  * @param {Object} apollo The Apollo client instance
  * @param {Array} queryMapFLSS The query map entry for the channel
  * @param {Object} loanQueryVars The loan channel query variables
+ * @param {String} origin Origin of query formatted as web:##page-context##
  * @returns {Object} The loan channel data
  */
-export async function fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars) {
+export async function fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars, origin = 'web:no-context') {
 	try {
 		return (await apollo.query({
 			query: flssLoanChannelQuery,
-			variables: getLoanChannelVariables(queryMapFLSS, loanQueryVars),
+			variables: { ...getLoanChannelVariables(queryMapFLSS, loanQueryVars), origin }
 		})).data;
 	} catch (e) {
 		logReadQueryError(e, 'flssUtils fetchLoanChannel flssLoanChannelQuery');

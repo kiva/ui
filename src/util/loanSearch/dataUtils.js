@@ -7,14 +7,15 @@ import logReadQueryError from '@/util/logReadQueryError';
  *
  * @param {Object} apollo The Apollo client instance
  * @param {Object} loanSearchState The current loan search state from Apollo
+ * @param {String} origin Origin of query formatted as web:##page-context##
  * @returns {Object} The filter facets
  */
-export async function runFacetsQueries(apollo, loanSearchState = {}) {
+export async function runFacetsQueries(apollo, loanSearchState = {}, origin) {
 	const isoCodeFilters = { ...getFlssFilters(loanSearchState), countryIsoCode: undefined };
 	const themeFilters = { ...getFlssFilters(loanSearchState), themeId: undefined };
 	const sectorFilters = { ...getFlssFilters(loanSearchState), sectorId: undefined };
 
-	const facets = await fetchFacets(apollo, isoCodeFilters, themeFilters, sectorFilters);
+	const facets = await fetchFacets(apollo, isoCodeFilters, themeFilters, sectorFilters, origin);
 
 	return {
 		isoCodes: facets?.isoCodes?.facets?.isoCode ?? [],
@@ -28,15 +29,17 @@ export async function runFacetsQueries(apollo, loanSearchState = {}) {
  *
  * @param {Object} apollo The Apollo client instance
  * @param {Object} loanSearchState The current loan search state from Apollo
+ * @param {String} origin Origin of query formatted as web:##page-context##
  * @returns {Object} The results of the loan query
  */
-export async function runLoansQuery(apollo, loanSearchState) {
+export async function runLoansQuery(apollo, loanSearchState, origin) {
 	const flssData = await fetchLoans(
 		apollo,
 		getFlssFilters(loanSearchState),
 		loanSearchState?.sortBy,
 		loanSearchState?.pageOffset,
-		loanSearchState?.pageLimit
+		loanSearchState?.pageLimit,
+		origin,
 	);
 
 	return { loans: flssData?.values ?? [], totalCount: flssData?.totalCount ?? 0 };
