@@ -168,11 +168,12 @@ export function getCachedLoanChannel(apollo, queryMapFLSS, loanQueryVars) {
  * @param {Object} loanQueryVars The loan channel query variables
  * @returns {Object} The Apollo observer
  */
-export function watchLoanChannel(apollo, queryMapFLSS, loanQueryVars) {
+export function watchLoanChannel(apollo, queryMapFLSS, loanQueryVars, selectedQuickFilters) {
+	const filterObject = { ...queryMapFLSS, ...selectedQuickFilters };
 	try {
 		return apollo.watchQuery({
 			query: flssLoanChannelQuery,
-			variables: getLoanChannelVariables(queryMapFLSS, loanQueryVars),
+			variables: getLoanChannelVariables(filterObject, loanQueryVars),
 		});
 	} catch (e) {
 		logReadQueryError(e, 'flssUtils watchLoanChannel flssLoanChannelQuery');
