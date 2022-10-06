@@ -78,6 +78,7 @@ describe('dataUtils.js', () => {
 		const countryFacets = [{ country: { isoCode: 'a', name: 'Country' } }];
 		const sector = [{ id: 1, name: 'Test Sector' }];
 		const loanThemeFilter = [{ id: 1, name: 'c' }];
+		const tag = [{ id: 1, name: 'tag' }];
 		const genderOptions = { enumValues: [{ name: 'female' }] };
 		const flssSorts = { enumValues: [{ name: 'expiringSoon' }] };
 		const standardSorts = { enumValues: [{ name: 'expiringSoon' }] };
@@ -104,6 +105,9 @@ describe('dataUtils.js', () => {
 				themeFacets: [],
 				themeIds: [],
 				themeNames: [],
+				tagFacets: [],
+				tagIds: [],
+				tagNames: [],
 				genderFacets: [],
 				genders: [],
 				flssSorts: [],
@@ -118,6 +122,7 @@ describe('dataUtils.js', () => {
 						countryFacets,
 						sector,
 						loanThemeFilter,
+						tag,
 					},
 					genderOptions,
 					flssSorts,
@@ -138,6 +143,9 @@ describe('dataUtils.js', () => {
 				themeFacets: loanThemeFilter,
 				themeIds: [1],
 				themeNames: ['C'],
+				tagFacets: tag,
+				tagIds: [1],
+				tagNames: ['TAG'],
 				genderFacets: [{ name: 'female' }],
 				genders: ['FEMALE'],
 				flssSorts: [{ name: 'expiringSoon' }],

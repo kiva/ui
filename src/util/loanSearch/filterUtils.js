@@ -147,6 +147,37 @@ export function transformThemes(filteredThemes, allThemes = []) {
 }
 
 /**
+ * Transforms tag names for display
+ *
+ * @param {string} name The tag name to transform
+ * @returns The transformed tag name
+ */
+export function transformTagName(name = '') {
+	// Public tags start with a '#' which we don't want to display
+	return name[0] === '#' ? name.substring(1) : name;
+}
+
+/**
+ * Transforms tags into a form usable by the filters
+ *
+ * @param {Array<Object>} allTags The tags from lend API
+ * @returns {Array<Object>} Tags usable by the filters
+ */
+export function transformTags(allTags = []) {
+	// TODO: filter options against FLSS loan counts and add numLoansFundraising (VUE-1335)
+
+	// Public tags have vocabularyId of 2
+	const transformed = allTags.filter(t => t.vocabularyId === 2).map(t => {
+		return {
+			id: t.id,
+			name: transformTagName(t.name),
+		};
+	});
+
+	return _orderBy(transformed, 'name');
+}
+
+/**
  * Gets an updated regions list to display in the filter with updated numLoansFundraising
  *
  * @param {Array<Object>} regions The regions previously displayed in the filter
@@ -226,9 +257,13 @@ export function getUpdatedNumLoansFundraising(items, next) {
 	// Get updated numLoansFundraising
 	items?.forEach(item => {
 		const nextItem = next.find(a => a.id === item.id);
+
+		// Some facets don't have loan counts in FLSS
+		const hasNumLoans = typeof item.numLoansFundraising !== 'undefined';
+
 		const updatedItem = {
 			...item,
-			numLoansFundraising: nextItem?.numLoansFundraising || 0,
+			numLoansFundraising: hasNumLoans ? nextItem?.numLoansFundraising || 0 : undefined,
 		};
 
 		updated.push(updatedItem);
@@ -251,5 +286,7 @@ export function getUpdatedNumLoansFundraising(items, next) {
  * @returns {string} The item label
  */
 export function getCheckboxLabel(item) {
-	return `${item.name || item.region} (${item.numLoansFundraising})`;
+	const countLabel = typeof item.numLoansFundraising !== 'undefined' ? ` (${item.numLoansFundraising})` : '';
+
+	return `${item.name || item.region}${countLabel}`;
 }

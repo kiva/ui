@@ -81,6 +81,7 @@ type LoanSearchState {
 	sectorId: [Int]
 	sortBy: String
 	themeId: [Int]
+	tagId: [Int]
 	pageOffset: [Int]
 	pageLimit: [Int]
 }

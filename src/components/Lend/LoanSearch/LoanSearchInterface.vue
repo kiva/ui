@@ -126,6 +126,7 @@ import {
 	transformIsoCodes,
 	transformThemes,
 	transformSectors,
+	transformTags,
 } from '@/util/loanSearch/filterUtils';
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
 import { applyQueryParams, hasExcludedQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
@@ -177,64 +178,7 @@ export default {
 		return {
 			initialLoadComplete: false,
 			loading: true,
-			/**
-			 * All available facet options from lend API. Format:
-			 * {
-			 *   countryFacets: [
-			 *     {
-			 *       name: '',
-			 *       isoCode: '',
-			 *       region: '',
-			 *     }
-			 *   ],
-			 *   sectorFacets: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *     }
-			 *   ],
-			 *   themeFacets: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *     }
-			 *   ],
-			 * }
-			 */
 			allFacets: undefined,
-			/**
-			 * Facet options based on the loans available. Format:
-			 * {
-			 *   regions: [
-			 *     {
-			 *       region: '',
-			 *       numLoansFundraising: 1,
-			 *       countries: [
-			 *         {
-			 *           name: '',
-			 *           region: '',
-			 *           isoCode: '',
-			 *           numLoansFundraising: 1,
-			 *         }
-			 *       ]
-			 *     }
-			 *   ],
-			 *   sectors: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *       numLoansFundraising: 1,
-			 *     }
-			 *   ],
-			 *   themes: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *       numLoansFundraising: 1,
-			 *     }
-			 *   ],
-			 * }
-			 */
 			facets: {},
 			loans: [],
 			totalCount: 0,
@@ -355,10 +299,12 @@ export default {
 			const genderFilterApplied = this.loanSearchState.gender;
 			const sectorFilterApplied = this.loanSearchState.sectorId.length > 0;
 			const themeFilterApplied = this.loanSearchState.themeId.length > 0;
+			const tagFilterApplied = this.loanSearchState.tagId.length > 0;
 			return countryFilterApplied
 				|| genderFilterApplied
 				|| sectorFilterApplied
-				|| themeFilterApplied;
+				|| themeFilterApplied
+				|| tagFilterApplied;
 		},
 		themeNames() {
 			return this.allFacets?.themeNames ?? [];
@@ -374,7 +320,8 @@ export default {
 				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 				sectors: transformSectors(sectors, this.allFacets?.sectorFacets),
 				themes: transformThemes(themes, this.allFacets?.themeFacets),
-				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
+				tags: transformTags(this.allFacets?.tagFacets ?? []),
+				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? []),
 			};
 		},
 		trackLoans() {

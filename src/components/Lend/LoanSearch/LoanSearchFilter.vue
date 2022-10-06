@@ -65,6 +65,20 @@
 				event-action="click-theme-filter"
 			/>
 		</kv-accordion-item>
+		<kv-accordion-item v-if="extendFlssFilters" id="acc-tags" :open="false">
+			<template #header>
+				<h2 class="tw-text-h4">
+					Tags
+				</h2>
+			</template>
+			<loan-search-checkbox-list-filter
+				:options="facets.tags"
+				:ids="loanSearchState.tagId"
+				@updated="handleUpdatedFilters"
+				filter-key="tagId"
+				event-action="click-tag-filter"
+			/>
+		</kv-accordion-item>
 		<template v-if="extendFlssFilters">
 			<kv-accordion-item id="acc-advanced" :open="false">
 				<template #header>
@@ -123,39 +137,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		/**
-		 * Facet options based on the loans available. Format:
-		 * {
-		 *   regions: [
-		 *     {
-		 *       region: '',
-		 *       numLoansFundraising: 1,
-		 *       countries: [
-		 *         {
-		 *           name: '',
-		 *           region: '',
-		 *           isoCode: '',
-		 *           numLoansFundraising: 1,
-		 *         }
-		 *       ]
-		 *     }
-		 *   ],
-		 *   sectors: [
-		 *     {
-		 *       id: 1,
-		 *       name: '',
-		 *       numLoansFundraising: 1,
-		 *     }
-		 *   ],
-		 *   themes: [
-		 *     {
-		 *       id: 1,
-		 *       name: '',
-		 *       numLoansFundraising: 1,
-		 *     }
-		 *   ],
-		 * }
-		 */
 		facets: {
 			type: Object,
 			required: true

@@ -8,6 +8,7 @@ const mockState = {
 	countryIsoCode: ['US'],
 	sectorId: [1],
 	themeId: [1],
+	tagId: [1],
 };
 
 const mockAllFacets = {
@@ -42,6 +43,11 @@ const mockAllFacets = {
 		{ id: 2, name: 'Theme 2', __typename: 'LoanThemeFilter' }
 	],
 	themeNames: ['THEME 1', 'THEME 2'],
+	tagFacets: [
+		{ id: 1, name: 'Tag 1', __typename: 'Tag' },
+		{ id: 2, name: 'Tag 2', __typename: 'Tag' }
+	],
+	tagNames: ['TAG 1', 'TAG 2'],
 	genderFacets: [{ name: 'female', __typename: 'Gender' }, { name: 'male', __typename: 'Gender' }],
 	genders: ['FEMALE', 'MALE'],
 };
@@ -135,6 +141,21 @@ describe('LoanSearchFilterChips', () => {
 		await user.click(getByText('Theme 1'));
 
 		expect(emitted().updated[0]).toEqual([{ themeId: [] }]);
+	});
+
+	it('should handle tag chip click', async () => {
+		const user = userEvent.setup();
+
+		const { getByText, emitted } = render(LoanSearchFilterChips, {
+			props: {
+				loanSearchState: mockState,
+				allFacets: mockAllFacets
+			}
+		});
+
+		await user.click(getByText('Tag 1'));
+
+		expect(emitted().updated[0]).toEqual([{ tagId: [] }]);
 	});
 
 	it('should handle gender chip click', async () => {

@@ -119,7 +119,8 @@ export default {
 				country: this.loanSearchState?.countryIsoCode,
 				gender: this.loanSearchState?.gender,
 				sector: this.loanSearchState?.sectorId,
-				theme: this.loanSearchState?.themeId.map(themeId => this.themeNames[themeId])
+				theme: this.loanSearchState?.themeId.map(themeId => this.themeNames[themeId]),
+				loanTags: this.loanSearchState?.tagId,
 			};
 		},
 		loginUrl() {
