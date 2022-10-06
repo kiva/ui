@@ -1,3 +1,10 @@
+## [2.321.0](https://github.com/kiva/ui/compare/v2.320.1...v2.321.0) (2022-10-06)
+
+
+### Features
+
+* new advanced filters entrypoint was added for quick filters experiment ([a112703](https://github.com/kiva/ui/commit/a112703e73d52fed342f871908743b4b40b9eb67))
+
 ### [2.320.1](https://github.com/kiva/ui/compare/v2.320.0...v2.320.1) (2022-10-06)
 
 
