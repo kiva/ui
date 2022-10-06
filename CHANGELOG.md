@@ -1,3 +1,45 @@
+## [2.321.0](https://github.com/kiva/ui/compare/v2.320.1...v2.321.0) (2022-10-06)
+
+
+### Features
+
+* new advanced filters entrypoint was added for quick filters experiment ([a112703](https://github.com/kiva/ui/commit/a112703e73d52fed342f871908743b4b40b9eb67))
+
+### [2.320.1](https://github.com/kiva/ui/compare/v2.320.0...v2.320.1) (2022-10-06)
+
+
+### Bug Fixes
+
+* fix amend to previous commit ([3213d36](https://github.com/kiva/ui/commit/3213d3600deb9ed7d967b7ec91f1a9cc42b46664))
+
+## [2.320.0](https://github.com/kiva/ui/compare/v2.319.0...v2.320.0) (2022-10-06)
+
+
+### Features
+
+* remove querying for category info again for single category carousel ([1f9f0bc](https://github.com/kiva/ui/commit/1f9f0bc33a07378a203d5fb9122ba7f290b77c6e))
+
+## [2.319.0](https://github.com/kiva/ui/compare/v2.318.1...v2.319.0) (2022-10-06)
+
+
+### Features
+
+* new location selector was added for quick filters experiment ([fa44fb1](https://github.com/kiva/ui/commit/fa44fb1b5d9d501d0d8d2e7eda368a20d7f7ca9c))
+
+### [2.318.1](https://github.com/kiva/ui/compare/v2.318.0...v2.318.1) (2022-10-05)
+
+
+### Bug Fixes
+
+* remove cc/kiva-universal from dev lighthouse ([5cbd50d](https://github.com/kiva/ui/commit/5cbd50dcf77c674671fd17ed525ba9b820416397))
+
+## [2.318.0](https://github.com/kiva/ui/compare/v2.317.6...v2.318.0) (2022-10-05)
+
+
+### Features
+
+* advanced filters accordion ([ea4df58](https://github.com/kiva/ui/commit/ea4df58f4d241857e0de5bd295f25a21e4581fe0))
+
 ### [2.317.6](https://github.com/kiva/ui/compare/v2.317.5...v2.317.6) (2022-10-05)
 
 

@@ -1,5 +1,5 @@
 <template>
-	<div v-if="loanChannelId">
+	<div>
 		<div>
 			<h2 class="tw-mb-2 tw-inline">
 				{{ name }}
@@ -20,7 +20,7 @@
 			<kiva-classic-loan-carousel
 				:is-visible="true"
 				:loan-ids="selectedChannelLoanIds"
-				:selected-channel="selectedChannel"
+				:selected-channel="channelData"
 				:show-view-more-card="showViewMoreCard"
 				:lend-now-button="lendNowButton"
 				:show-check-back-message="showCheckBackMessage"
@@ -48,6 +48,13 @@ export default {
 		KvPill,
 	},
 	props: {
+		/** prefetched selected channel
+		 * if this data is passed in, it will be used instead of fetching the channel data
+		 * */
+		prefetchedSelectedChannel: {
+			type: Object,
+			default: null
+		},
 		/**
 		 * Loan channel id
 		* */
@@ -117,19 +124,28 @@ export default {
 			return false;
 		},
 		selectedChannelLoanIds() {
-			return this.selectedChannel?.loans?.values?.map(loan => loan.id) ?? [];
+			return this.channelData?.loans?.values?.map(loan => loan.id) ?? [];
 		},
 		name() {
 			// return optional prop value or value from api
-			return this.loanChannelName || this.selectedChannel?.name;
+			return this.loanChannelName || this.channelData?.name;
 		},
 		description() {
 			// return optional prop value or value from api
-			return this.loanChannelDescription || this.selectedChannel?.description;
+			return this.loanChannelDescription || this.channelData?.description;
 		},
+		channelData() {
+			if (!this.prefetchedSelectedChannel) {
+				return this.selectedChannel;
+			}
+			return this.prefetchedSelectedChannel;
+		}
 	},
 	mounted() {
-		this.fetchLoanChannelFLSS();
+		// if channel data is not passed in, fetch it
+		if (!this.prefetchedSelectedChannel) {
+			this.fetchLoanChannelFLSS();
+		}
 	},
 	methods: {
 		async fetchLoanChannelFLSS() {
