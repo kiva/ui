@@ -47,7 +47,10 @@ export default {
 					id: 18,
 					url: 'eco-friendly',
 					queryParams: 'status=fundRaising&loanTags=9,8',
-					algoliaParams: 'tags=%23Eco-friendly~%23Sustainable%20Ag'
+					algoliaParams: 'tags=%23Eco-friendly~%23Sustainable%20Ag',
+					flssLoanSearch: {
+						tagId: [9, 8]
+					}
 				},
 				{
 					id: 28,
@@ -88,7 +91,10 @@ export default {
 					id: 26,
 					url: 'single-parents',
 					queryParams: 'status=fundRaising&loanTags=17',
-					algoliaParams: 'tags=%23Single%20Parent'
+					algoliaParams: 'tags=%23Single%20Parent',
+					flssLoanSearch: {
+						tagId: [17]
+					}
 				},
 				{
 					id: 25,
@@ -218,7 +224,10 @@ export default {
 					id: 67,
 					url: 'loans-to-single-parents',
 					queryParams: 'status=fundRaising&loanTags=17&distributionModel=both',
-					algoliaParams: 'tags=%23Single%20Parent'
+					algoliaParams: 'tags=%23Single%20Parent',
+					flssLoanSearch: {
+						tagId: [17]
+					}
 				},
 				{
 					id: 52,
@@ -272,7 +281,10 @@ export default {
 					id: 58,
 					url: 'eco-friendly-loans',
 					queryParams: 'status=fundRaising&loanTags=9',
-					algoliaParams: 'tags=%23Eco-friendly~%23Sustainable%20Ag'
+					algoliaParams: 'tags=%23Eco-friendly~%23Sustainable%20Ag',
+					flssLoanSearch: {
+						tagId: [9]
+					}
 				},
 				{
 					id: 59,
@@ -524,13 +536,21 @@ export default {
 					id: 90,
 					url: 'ecofriendly-loans',
 					queryParams: 'status=fundRaising&gender=female&loanTags=9&distributionModel=both',
-					algoliaParams: 'gender=female&tags=%23Eco-friendly&sortBy=popularity'
+					algoliaParams: 'gender=female&tags=%23Eco-friendly&sortBy=popularity',
+					flssLoanSearch: {
+						gender: 'female',
+						tagId: [9]
+					}
 				},
 				{
 					id: 91,
 					url: 'ecofriendlyloans',
 					queryParams: 'status=fundRaising&gender=female&loanTags=9&distributionModel=both',
-					algoliaParams: 'gender=female&tags=%23Eco-friendly&sortBy=popularity'
+					algoliaParams: 'gender=female&tags=%23Eco-friendly&sortBy=popularity',
+					flssLoanSearch: {
+						gender: 'female',
+						tagId: [9]
+					}
 				},
 				{
 					id: 92,
@@ -670,6 +690,10 @@ export default {
 					id: 141,
 					url: 'responsible-water-collection-and-storage',
 					queryParams: 'status=fundRaising&loanTags=9,8&distributionModel=field_partner',
+					flssLoanSearch: {
+						tagId: [9, 8],
+						distributionModel: 'FIELDPARTNER'
+					}
 				},
 				{
 					id: 142,
@@ -715,6 +739,11 @@ export default {
 					id: 151,
 					url: 'b-i-p-o-c-business',
 					queryParams: 'status=fundRaising&country=US&loanTags=51&distributionModel=direct',
+					flssLoanSearch: {
+						countryIsoCode: ['US'],
+						sectorId: [51],
+						distributionModel: 'DIRECT'
+					}
 				},
 				{
 					id: 152,
