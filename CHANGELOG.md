@@ -1,3 +1,17 @@
+### [2.320.1](https://github.com/kiva/ui/compare/v2.320.0...v2.320.1) (2022-10-06)
+
+
+### Bug Fixes
+
+* fix amend to previous commit ([3213d36](https://github.com/kiva/ui/commit/3213d3600deb9ed7d967b7ec91f1a9cc42b46664))
+
+## [2.320.0](https://github.com/kiva/ui/compare/v2.319.0...v2.320.0) (2022-10-06)
+
+
+### Features
+
+* remove querying for category info again for single category carousel ([1f9f0bc](https://github.com/kiva/ui/commit/1f9f0bc33a07378a203d5fb9122ba7f290b77c6e))
+
 ## [2.319.0](https://github.com/kiva/ui/compare/v2.318.1...v2.319.0) (2022-10-06)
 
 
