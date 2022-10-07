@@ -4,6 +4,7 @@ export const mockState = {
 	sectorId: [1],
 	sortBy: 'expiringSoon',
 	themeId: [1],
+	tagId: [1],
 	pageOffset: 10,
 	pageLimit: 5,
 };
@@ -30,6 +31,9 @@ export const mockAllFacets = {
 	themeFacets: [{ id: 1, name: 'Theme 1' }, { id: 2, name: 'Theme 2' }],
 	themeIds: [1, 2],
 	themeNames: ['THEME 1', 'THEME 2'],
+	tagFacets: [{ id: 1, name: 'Tag 1' }, { id: 2, name: 'Tag 2' }],
+	tagIds: [1, 2],
+	tagNames: ['TAG 1', 'TAG 2'],
 	genderFacets: [{ name: 'female' }, { name: 'male' }],
 	genders: ['FEMALE', 'MALE'],
 	flssSorts: [{ name: 'expiringSoon' }, { name: 'personalized' }],

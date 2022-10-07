@@ -55,6 +55,7 @@ export async function fetchLoanFacets(apollo) {
 		const countryFacets = result.data?.lend?.countryFacets ?? [];
 		const sectorFacets = result.data?.lend?.sector ?? [];
 		const themeFacets = result.data?.lend?.loanThemeFilter ?? [];
+		const tagFacets = result.data?.lend?.tag ?? [];
 		const genderFacets = result.data?.genderOptions?.enumValues ?? [];
 
 		return {
@@ -67,6 +68,9 @@ export async function fetchLoanFacets(apollo) {
 			themeFacets,
 			themeIds: themeFacets.map(t => t.id),
 			themeNames: themeFacets.map(t => t.name.toUpperCase()),
+			tagFacets,
+			tagIds: tagFacets.map(t => t.id),
+			tagNames: tagFacets.map(t => t.name.toUpperCase()),
 			genderFacets,
 			genders: genderFacets.map(g => g.name.toUpperCase()),
 			flssSorts: result.data?.flssSorts?.enumValues ?? [],

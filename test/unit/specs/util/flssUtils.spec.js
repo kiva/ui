@@ -22,8 +22,10 @@ describe('flssUtils.js', () => {
 				gender: '',
 				countryIsoCode: [],
 				themeId: [],
+				tagId: [],
 				sectorId: [],
 				distributionModel: null,
+				description: null,
 			};
 
 			expect(getFlssFilters(state)).toEqual({});
@@ -34,16 +36,20 @@ describe('flssUtils.js', () => {
 				gender: 'female',
 				countryIsoCode: ['US'],
 				themeId: [1],
+				tagId: [1],
 				sectorId: [1],
 				distributionModel: 'DIRECT',
+				description: 'desc',
 			};
 
 			expect(getFlssFilters(state)).toEqual({
 				gender: { any: 'female' },
 				countryIsoCode: { any: ['US'] },
 				themeId: { any: [1] },
+				tagId: { any: [1] },
 				sectorId: { any: [1] },
 				distributionModel: { eq: 'DIRECT' },
+				description: { eq: 'desc' },
 			});
 		});
 	});

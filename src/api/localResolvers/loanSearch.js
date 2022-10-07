@@ -9,9 +9,10 @@ export const getDefaultLoanSearchState = () => ({
 	sectorId: [], // Expects an array of ints
 	sortBy: null, // Expects a string that matches the SortEnum
 	themeId: [], // Expects an array of ints
+	tagId: [], // Expects an array of ints
 	pageOffset: 0, // Expects a number
 	pageLimit: 15, // Expects a number
-	distributionModel: null // Expects DIRECT or FIELDPARTNER
+	distributionModel: null, // Expects DIRECT or FIELDPARTNER
 });
 
 // export queries, resolvers and defaults for LoanSearchState

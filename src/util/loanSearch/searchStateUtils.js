@@ -29,6 +29,8 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 
 	const validatedThemeIds = loanSearchState?.themeId?.filter(t => allFacets.themeIds.includes(t)) ?? [];
 
+	const validatedTagIds = loanSearchState?.tagId?.filter(t => allFacets.tagIds.includes(t)) ?? [];
+
 	const validatedPageOffset = isNumber(loanSearchState?.pageOffset)
 		? loanSearchState.pageOffset
 		: defaultLoanSearchState.pageOffset;
@@ -43,6 +45,7 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 		sectorId: validatedSectorIds,
 		sortBy: validatedSortBy,
 		themeId: validatedThemeIds,
+		tagId: validatedTagIds,
 		pageOffset: validatedPageOffset,
 		pageLimit: validatedPageLimit,
 	};
