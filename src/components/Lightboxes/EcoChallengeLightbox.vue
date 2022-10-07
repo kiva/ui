@@ -59,19 +59,43 @@
 						Find a loan for {{ step.name | changeCase('noCase') }}!
 					</h3>
 				</div>
-				<kv-button class="tw-mt-2 tw-flex-none" :to="step.url" :key="index">
+				<kv-button
+					class="tw-mt-2 tw-flex-none"
+					:to="step.url"
+					:key="index"
+					v-kv-track-event="[
+						'borrower-profile',
+						'click',
+						'eco-challenge-lightbox-cta',
+						'next-step'
+					]"
+				>
 					{{ step.buttonText }}
 				</kv-button>
 			</div>
 		</div>
 		<template #controls>
-			<kv-button to="/basket" v-if="missingMilestones.length === 0">
+			<kv-button
+				to="/basket" v-if="missingMilestones.length === 0"
+				v-kv-track-event="[
+					'borrower-profile',
+					'click',
+					'eco-challenge-lightbox-cta',
+					'checkout'
+				]"
+			>
 				Continue to Checkout
 			</kv-button>
 			<kv-text-link
 				v-else
 				:icon="mdiArrowRight"
 				href="/basket"
+				v-kv-track-event="[
+					'borrower-profile',
+					'click',
+					'eco-challenge-lightbox-cta',
+					'checkout'
+				]"
 			>
 				Or continue to checkout
 			</kv-text-link>
