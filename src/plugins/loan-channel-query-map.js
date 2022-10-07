@@ -741,7 +741,7 @@ export default {
 					queryParams: 'status=fundRaising&country=US&loanTags=51&distributionModel=direct',
 					flssLoanSearch: {
 						countryIsoCode: ['US'],
-						sectorId: [51],
+						tagId: [51],
 						distributionModel: 'DIRECT'
 					}
 				},
