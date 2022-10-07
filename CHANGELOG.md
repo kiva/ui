@@ -1,3 +1,10 @@
+## [2.323.0](https://github.com/kiva/ui/compare/v2.322.0...v2.323.0) (2022-10-07)
+
+
+### Features
+
+* extend FLSS exp now pulled ([beba440](https://github.com/kiva/ui/commit/beba4401e9094800e8cf500688a768041161de1d))
+
 ## [2.322.0](https://github.com/kiva/ui/compare/v2.321.0...v2.322.0) (2022-10-07)
 
 
