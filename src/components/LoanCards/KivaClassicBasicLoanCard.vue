@@ -231,10 +231,13 @@ import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import { setLendAmount } from '@/util/basketUtils';
+import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
-const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
+const loanQuery = gql`
+	${loanCardFieldsFragment}
+	query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
 		id
 		basket {
@@ -250,55 +253,12 @@ const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	lend {
 		loan(id: $loanId) {
 			id
-			distributionModel
-			geocode {
-				city
-				state
-				country {
-					name
-					isoCode
-				}
-			}
-			image {
-				id
-				hash
-			}
-			name
-			sector {
-				id
-				name
-			}
-			whySpecial
-
-			# for isLentTo
-			userProperties {
-				lentTo
-			}
-
-			# for loan-use-mixin
-			use
-			status
-			loanAmount
-			borrowerCount
-
-			# for percent-raised-mixin
-			loanFundraisingInfo {
-				fundedAmount
-				reservedAmount
-			}
-
-			# for time-left-mixin
-			plannedExpirationDate
+			...loanCardFields
 
 			# for loan-progress component
 			unreservedAmount @client
 			fundraisingPercent @client
 			fundraisingTimeLeft @client
-
-			# for matching-text component
-			isMatchable
-			matchingText
-			matchRatio
 		}
 	}
 }`;
@@ -510,6 +470,22 @@ export default {
 	},
 	beforeDestroy() {
 		this.destroyViewportObserver();
+	},
+	created() {
+		try {
+			// Attempt to read the loan card fragment from the cache
+			// If cache is missing fragment fields, this will throw and invariant error
+			const loanCardFieldFragment = this.apollo.readFragment({
+				id: `LoanPartner:${this.loanId}`,
+				fragment: loanCardFieldsFragment,
+			}) || null;
+			if (loanCardFieldFragment) {
+				this.loan = loanCardFieldFragment;
+				this.isLoading = false;
+			}
+		} catch (e) {
+			// no-op
+		}
 	},
 	watch: {
 		// When loan id changes, update watch query variables
