@@ -1,3 +1,16 @@
+## [2.322.0](https://github.com/kiva/ui/compare/v2.321.0...v2.322.0) (2022-10-07)
+
+
+### Features
+
+* tag loan search filter ([02861f5](https://github.com/kiva/ui/commit/02861f541628c2d9f697d20e33a2711a2c1e4356))
+* updated loan map for tagId ([8a571d1](https://github.com/kiva/ui/commit/8a571d10064f46be9b9aea61406b9e1a587c1687))
+
+
+### Bug Fixes
+
+* updated map prop ([40367fc](https://github.com/kiva/ui/commit/40367fcff414ad55f7bf848f1019ea0a04d86c2d))
+
 ## [2.321.0](https://github.com/kiva/ui/compare/v2.320.1...v2.321.0) (2022-10-06)
 
 
