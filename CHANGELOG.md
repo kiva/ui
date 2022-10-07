@@ -1,3 +1,10 @@
+## [2.324.0](https://github.com/kiva/ui/compare/v2.323.0...v2.324.0) (2022-10-07)
+
+
+### Features
+
+* add event tracking for eco challenge confirmation modal ([d0c872f](https://github.com/kiva/ui/commit/d0c872fce3981dd8689b9b40f0185cd718c28f84))
+
 ## [2.323.0](https://github.com/kiva/ui/compare/v2.322.0...v2.323.0) (2022-10-07)
 
 
