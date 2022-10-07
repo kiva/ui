@@ -650,12 +650,14 @@ export default {
 				userHasDepositBefore(hasDepositBefore);
 
 				// MARS-246 Hotjar user attributes
-				setHotJarUserAttributes({
-					userId: this.userId,
-					hasEverLoggedIn: userData.hasEverLoggedIn,
-					hasLentBefore,
-					hasDepositBefore,
-				});
+				if (this.userId !== 0) {
+					setHotJarUserAttributes({
+						userId: this.userId,
+						hasEverLoggedIn: userData.hasEverLoggedIn,
+						hasLentBefore,
+						hasDepositBefore,
+					});
+				}
 			} catch (e) {
 				logReadQueryError(e, 'User Data For Optimizely Metrics');
 			}
