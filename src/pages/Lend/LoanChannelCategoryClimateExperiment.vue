@@ -66,6 +66,7 @@
 					:climate-challenge="isEcoChallengeExpShown"
 					:loan-display-settings="loanDisplaySettings"
 					:lend-now-button="true"
+					:query-context="ecoExpQueryContext"
 				/>
 			</div>
 		</kv-page-container>
@@ -80,6 +81,7 @@ import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import KivaClassicSingleCategoryCarousel from '@/components/LoanCollections/KivaClassicSingleCategoryCarousel';
+import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import {
 	preFetchChannel,
 	getCachedChannel
@@ -155,6 +157,7 @@ export default {
 			isEcoChallengeExpShown: false,
 			showHowItWorks: true,
 			mdiClose,
+			ecoExpQueryContext: FLSS_ORIGIN_CATEGORY
 		};
 	},
 	computed: {
@@ -204,6 +207,7 @@ export default {
 			// Get page limit and offset
 			const limit = 9;
 			const offset = 0;
+<<<<<<< HEAD
 
 			const promisesArrayOfSecondaryChannels = secondaryEcoLoanChannelIds.map(channelId => {
 				return preFetchChannel(
@@ -222,6 +226,21 @@ export default {
 				},
 			});
 			return Promise.all([mainChannel, ...promisesArrayOfSecondaryChannels]);
+=======
+			return preFetchChannel(
+				client,
+				// Access map directly since SSR doesn't have mixins available
+				loanChannelQueryMapMixin.data().loanChannelQueryMap,
+				targetedLoanChannelURL,
+				// Build loanQueryVars since SSR doesn't have same context
+				{
+					ids: [...secondaryEcoLoanChannelIds, targetedLoanChannelID],
+					limit,
+					offset,
+					origin: FLSS_ORIGIN_CATEGORY
+				},
+			);
+>>>>>>> origin/main
 		}
 	},
 	created() {
@@ -230,6 +249,7 @@ export default {
 			.find(channel => channel.url === this.targetedLoanChannelURL)?.id;
 
 		// Prevent pop-in by loading data from the Apollo cache manually here instead of just using the subscription
+<<<<<<< HEAD
 		const mainChannelData = this.apollo.readQuery({
 			query: mainCategoryQuery,
 			variables: {
@@ -238,6 +258,21 @@ export default {
 		});
 		this.loanChannel = mainChannelData?.lend?.loanChannelsById
 			.find(channel => channel.id === this.targetedLoanChannelID);
+=======
+		const baseData = getCachedChannel(
+			this.apollo,
+			this.loanChannelQueryMap,
+			this.targetedLoanChannelURL,
+			{
+				ids: [...secondaryEcoLoanChannelIds, this.targetedLoanChannelID],
+				limit: 9,
+				offset: 0,
+				basketId: this.cookieStore.get('kvbskt'),
+				origin: FLSS_ORIGIN_CATEGORY
+			}
+		);
+		this.loanChannel = baseData?.lend?.loanChannelsById.find(channel => channel.id === this.targetedLoanChannelID);
+>>>>>>> origin/main
 
 		// Get secondary channels
 		// Prevent pop-in by loading data from the Apollo cache manually here instead of just using the subscription

@@ -1,8 +1,9 @@
 query flssLoanFacets(
 	$isoCodeFilters: [FundraisingLoanSearchFilterInput!],
 	$themeFilters: [FundraisingLoanSearchFilterInput!],
-	$sectorFilters: [FundraisingLoanSearchFilterInput!]) {
-	isoCodes: fundraisingLoans(filters: $isoCodeFilters) {
+	$sectorFilters: [FundraisingLoanSearchFilterInput!],
+	$origin: String) {
+	isoCodes: fundraisingLoans(filters: $isoCodeFilters, origin: $origin) {
 		facets {
 			isoCode {
 				key
@@ -11,7 +12,7 @@ query flssLoanFacets(
 		}
 
   	}
-	themes: fundraisingLoans(filters: $themeFilters) {
+	themes: fundraisingLoans(filters: $themeFilters, origin: $origin) {
 		facets {
 			themes {
 				key
@@ -19,7 +20,7 @@ query flssLoanFacets(
 			}
 		}
 	}
-	sectors: fundraisingLoans(filters: $sectorFilters) {
+	sectors: fundraisingLoans(filters: $sectorFilters, origin: $origin) {
 		facets {
 			sectorId {
 				key

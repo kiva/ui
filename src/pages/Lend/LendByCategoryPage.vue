@@ -124,6 +124,7 @@ import { addCustomChannelInfo } from '@/util/categoryUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
+import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '@/util/flssUtils';
 import { isLoanFundraising } from '@/util/loanUtils';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import basketItems from '@/graphql/query/basketItems.graphql';
@@ -399,6 +400,7 @@ export default {
 					excludeIds: ssrLoanIds,
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+					origin: FLSS_ORIGIN_LEND_BY_CATEGORY
 					// @todo variables for fetching data for custom channels
 				},
 			}).then(({ data }) => {
@@ -417,6 +419,7 @@ export default {
 						ids: this.realCategoryIds,
 						imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 						imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+						origin: FLSS_ORIGIN_LEND_BY_CATEGORY
 					},
 				}).subscribe({
 					next: ({ data }) => {
@@ -499,6 +502,7 @@ export default {
 					ids: recLoanChannels.map(channel => channel.id),
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+					origin: FLSS_ORIGIN_LEND_BY_CATEGORY
 				};
 
 				return this.apollo.query({
@@ -637,7 +641,8 @@ export default {
 							ids: [category.id],
 							imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 							imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-							excludeIds
+							excludeIds,
+							origin: FLSS_ORIGIN_LEND_BY_CATEGORY
 						};
 						return this.apollo.query({
 							query: recommendedLoansQuery,
@@ -678,7 +683,8 @@ export default {
 								ids: [category.id],
 								imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 								imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-								excludeIds
+								excludeIds,
+								origin: FLSS_ORIGIN_LEND_BY_CATEGORY
 							},
 						}).then(({ data }) => {
 							const fetchedCategory = this.categoryServiceExpActive

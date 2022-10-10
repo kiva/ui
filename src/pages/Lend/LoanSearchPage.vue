@@ -74,6 +74,10 @@ const pageQuery = gql`query loanSearchPage {
 			key
 			value
 		}
+		extendFlssFilters: uiExperimentSetting(key: "extend_flss_filters") {
+			key
+			value
+		}
 	}
 }`;
 

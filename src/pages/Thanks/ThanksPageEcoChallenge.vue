@@ -191,6 +191,7 @@
 						:loan-channel-id="channelId"
 						:loan-display-settings="loanDisplaySettings"
 						:lend-now-button="true"
+						:query-context="ecoExpQueryContext"
 					/>
 				</div>
 			</kv-page-container>
@@ -206,6 +207,7 @@ import orderBy from 'lodash/orderBy';
 
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import logReadQueryError from '@/util/logReadQueryError';
+import { FLSS_ORIGIN_THANKS } from '@/util/flssUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import { missingMilestones, achievementsQueryFromCache, achievementsQuery } from '@/util/ecoChallengeUtils';
@@ -256,6 +258,7 @@ export default {
 				showViewMoreCard: true,
 				showCheckBackMessage: true
 			},
+			ecoExpQueryContext: FLSS_ORIGIN_THANKS
 		};
 	},
 	apollo: {
