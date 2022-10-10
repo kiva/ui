@@ -1,3 +1,10 @@
+## [2.326.0](https://github.com/kiva/ui/compare/v2.325.0...v2.326.0) (2022-10-10)
+
+
+### Features
+
+* add origin query param to lbc eco refactor ([1a28f6e](https://github.com/kiva/ui/commit/1a28f6e6d57d7b11314f3ae1f3619eab7915df5e))
+
 ## [2.325.0](https://github.com/kiva/ui/compare/v2.324.1...v2.325.0) (2022-10-10)
 
 
