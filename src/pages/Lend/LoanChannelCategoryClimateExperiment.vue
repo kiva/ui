@@ -92,6 +92,7 @@ import {
 	mdiClose
 } from '@mdi/js';
 import IconCalendar from '@/assets/icons/inline/eco-challenge/calendar.svg';
+import gql from 'graphql-tag';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -111,6 +112,18 @@ const secondaryEcoLoanChannels = loanChannelQueryMapMixin.data().loanChannelQuer
 
 const secondaryEcoLoanChannelIds = secondaryEcoLoanChannels.map(channel => channel.id);
 
+const mainCategoryQuery = gql`
+	query mainCategoryQuery($ids: [Int]) {
+		lend {
+			loanChannelsById (ids: $ids) {
+				id
+				name
+				description
+				url
+			}
+		}
+	}
+`;
 export default {
 	name: 'LoanChannelCategoryClimateExperiment',
 	components: {
@@ -191,14 +204,24 @@ export default {
 			// Get page limit and offset
 			const limit = 9;
 			const offset = 0;
-			return preFetchChannel(
-				client,
-				// Access map directly since SSR doesn't have mixins available
-				loanChannelQueryMapMixin.data().loanChannelQueryMap,
-				targetedLoanChannelURL,
-				// Build loanQueryVars since SSR doesn't have same context
-				{ ids: [...secondaryEcoLoanChannelIds, targetedLoanChannelID], limit, offset }
-			);
+
+			const promisesArrayOfSecondaryChannels = secondaryEcoLoanChannelIds.map(channelId => {
+				return preFetchChannel(
+					client,
+					loanChannelQueryMapMixin.data().loanChannelQueryMap,
+					loanChannelQueryMapMixin.data().loanChannelQueryMap.find(channel => channel.id === channelId)?.url,
+					{ ids: [channelId], limit, offset }
+				);
+			});
+
+			// Just get the description and name of main loan channel
+			const mainChannel = client.query({
+				query: mainCategoryQuery,
+				variables: {
+					ids: [targetedLoanChannelID],
+				},
+			});
+			return Promise.all([mainChannel, ...promisesArrayOfSecondaryChannels]);
 		}
 	},
 	created() {
@@ -207,21 +230,35 @@ export default {
 			.find(channel => channel.url === this.targetedLoanChannelURL)?.id;
 
 		// Prevent pop-in by loading data from the Apollo cache manually here instead of just using the subscription
-		const baseData = getCachedChannel(
-			this.apollo,
-			this.loanChannelQueryMap,
-			this.targetedLoanChannelURL,
-			{
-				ids: [...secondaryEcoLoanChannelIds, this.targetedLoanChannelID],
-				limit: 9,
-				offset: 0,
-				basketId: this.cookieStore.get('kvbskt'),
-			}
-		);
-		this.loanChannel = baseData?.lend?.loanChannelsById.find(channel => channel.id === this.targetedLoanChannelID);
+		const mainChannelData = this.apollo.readQuery({
+			query: mainCategoryQuery,
+			variables: {
+				ids: [this.targetedLoanChannelID],
+			},
+		});
+		this.loanChannel = mainChannelData?.lend?.loanChannelsById
+			.find(channel => channel.id === this.targetedLoanChannelID);
 
-		this.secondaryEcoLoanChannelsResponse = baseData?.lend?.loanChannelsById
-			.filter(channel => channel.id !== this.targetedLoanChannelID) ?? [];
+		// Get secondary channels
+		// Prevent pop-in by loading data from the Apollo cache manually here instead of just using the subscription
+		const secondaryChannelResponse = secondaryEcoLoanChannelIds.map(channelId => {
+			return getCachedChannel(
+				this.apollo,
+				this.loanChannelQueryMap,
+				this.loanChannelQueryMap.find(channel => channel.id === channelId)?.url,
+				{
+					ids: [channelId],
+					limit: 9,
+					offset: 0,
+					basketId: this.cookieStore.get('kvbskt'),
+				}
+			);
+		});
+
+		// Use reduce to combine lend.loanChannelById property into 1 array
+		this.secondaryEcoLoanChannelsResponse = secondaryChannelResponse.reduce((acc, channel) => {
+			return [...acc, ...channel.lend.loanChannelsById];
+		}, []);
 
 		// filter out any secondary channels that do not have loans
 		this.secondaryEcoLoanChannelsResponse = this.secondaryEcoLoanChannelsResponse
