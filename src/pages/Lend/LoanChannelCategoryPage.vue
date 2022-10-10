@@ -5,7 +5,7 @@
 	>
 		<component
 			:is="pageLayoutComponent"
-			:add-bundles-exp="addBundlesExp"
+			:enable-quick-filters="enableQuickFilters"
 		/>
 
 		<add-to-basket-interstitial />
@@ -13,18 +13,21 @@
 </template>
 
 <script>
-import { preFetchAll } from '@/util/apolloPreFetch';
 import gql from 'graphql-tag';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
+import { preFetchAll } from '@/util/apolloPreFetch';
 import {
 	getExperimentSettingCached,
-	trackExperimentVersion
+	trackExperimentVersion,
 } from '@/util/experimentUtils';
+import { fetchExperimentSettings } from '@/util/experimentPreFetch';
 
+import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.graphql';
+import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+
+import WwwPage from '@/components/WwwFrame/WwwPage';
+import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 
 const LoanChannelCategoryControl = () => import('@/pages/Lend/LoanChannelCategoryControl');
 const LoanChannelCategoryClimateExperiment = () => import('@/pages/Lend/LoanChannelCategoryClimateExperiment');
@@ -32,11 +35,15 @@ const LoanChannelCategoryClimateExperiment = () => import('@/pages/Lend/LoanChan
 const pageQuery = gql`
 	query LoanChannelCategoryPageExperiments {
 		general {
-			bundlesLayout: uiExperimentSetting(key: "category_loan_bundles") {
+			lbcEcoLayout: uiExperimentSetting(key: "lend_by_category_carousel_layout") {
 				key
 				value
 			}
-			lbcEcoLayout: uiExperimentSetting(key: "lend_by_category_carousel_layout") {
+			ecoChallenge: uiExperimentSetting(key: "eco_challenge") {
+				key
+				value
+			}
+			quickFilters: uiExperimentSetting(key: "quick_filters") {
 				key
 				value
 			}
@@ -94,31 +101,86 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
-			addBundlesExp: false,
 			meta: {
 				title: undefined,
 				description: undefined
 			},
 			pageLayout: 'control',
-			pageLayoutComponent: null
+			pageLayoutComponent: null,
+			enableQuickFilters: false,
 		};
 	},
 	apollo: {
 		preFetch(config, client, args) {
 			const { route } = args;
-			const { params } = route;
-
+			const { params, query } = route;
 			return client.query({
 				query: pageQuery
 			}).then(() => {
+				let gameExperimentAssignments;
+				// If query ?game=on is present, set both of the experiments to version b
+				// These queries are performed here, with a different query param instead of setuiab
+				// so that we can guarantee that version b of the experiments will load on first load.
+				if (query?.game === 'on') {
+					gameExperimentAssignments = [
+						client.query(
+							{
+								query: experimentAssignmentQuery,
+								variables: { id: 'lend_by_category_carousel_layout' }
+							}
+						).then(() => {
+							return client.mutate({
+								mutation: updateExperimentVersion,
+								variables: {
+									id: 'lend_by_category_carousel_layout',
+									version: 'b'
+								}
+							});
+						}).then(() => {
+							return fetchExperimentSettings('lend_by_category_carousel_layout', client);
+						}),
+						client.query(
+							{
+								query: experimentAssignmentQuery,
+								variables: { id: 'eco_challenge' }
+							}
+						).then(() => {
+							return client.mutate({
+								mutation: updateExperimentVersion,
+								variables: {
+									id: 'eco_challenge',
+									version: 'b'
+								}
+							});
+						}).then(() => {
+							return fetchExperimentSettings('eco_challenge', client);
+						})
+					];
+				} else {
+					gameExperimentAssignments = [client.query(
+						{
+							query: experimentAssignmentQuery,
+							variables: { id: 'lend_by_category_carousel_layout' }
+						}
+					)];
+				}
 				return Promise.all([
-					client.query(
-						{ query: experimentAssignmentQuery, variables: { id: 'lend_by_category_carousel_layout' } }
-					),
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'category_loan_bundles' } }),
+					...gameExperimentAssignments,
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'quick_filters' } }),
 				]);
 			}).then(results => {
-				const experimentSettings = results.map(result => result.data.experiment);
+				// manipulate experiment results format
+				const newResults = results.map(promiseResponse => {
+					if (promiseResponse?.data?.updateExperimentVersion) {
+						return {
+							data: {
+								experiment: promiseResponse.data.updateExperimentVersion
+							}
+						};
+					}
+					return promiseResponse;
+				});
+				const experimentSettings = newResults.map(result => result.data.experiment);
 				const ecoLayoutIsShown = experimentSettings
 					.find(setting => setting.id === 'lend_by_category_carousel_layout')?.version === 'b';
 				if (ecoLayoutIsShown && testCategories.includes(params.category)) {
@@ -140,10 +202,17 @@ export default {
 
 		// Add to Basket Interstitial
 		this.initializeAddToBasketInterstitial();
-		// Loan Bundles Experiment
-		this.initializeLoanBundleExperiment();
 		// Experimental page layout
 		this.initializeExperimentalPageLayout();
+		if (this.targetedLoanChannel !== 'women'
+				&& this.targetedLoanChannel !== 'eco-friendly'
+				&& this.targetedLoanChannel !== 'kiva-u-s'
+				&& this.targetedLoanChannel !== 'ending-soon'
+				&& this.targetedLoanChannel !== 'mission-driven-orgs'
+				&& this.targetedLoanChannel !== 'short-term-loans'
+		) {
+			this.initializeQuickFilters();
+		}
 	},
 	computed: {
 		targetedLoanChannel() {
@@ -165,6 +234,20 @@ export default {
 		}
 	},
 	methods: {
+		initializeQuickFilters() {
+			const quickFiltersExperiment = this.apollo.readFragment({
+				id: 'Experiment:quick_filters',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.enableQuickFilters = quickFiltersExperiment.version === 'b';
+			if (quickFiltersExperiment.version) {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CORE-729-Sept-2022',
+					quickFiltersExperiment.version
+				);
+			}
+		},
 		initializeExperimentalPageLayout() {
 			// Only certain categories are eligible for the experiment
 			if (testCategories.includes(this.targetedLoanChannel)) {
@@ -192,23 +275,6 @@ export default {
 					active: true,
 				}
 			});
-		},
-		initializeLoanBundleExperiment() {
-			const bundleEXP = this.apollo.readFragment({
-				id: 'Experiment:category_loan_bundles',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			if (bundleEXP.version) {
-				if (bundleEXP.version === 'b') {
-					this.addBundlesExp = true;
-				}
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CORE-482-Mar2022',
-					bundleEXP.version
-				);
-			}
 		},
 		getMetaInfo() {
 			switch (this.targetedLoanChannel) {

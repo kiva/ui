@@ -7,7 +7,7 @@
  */
 
 import {
-	formatResponsiveImageSet, responsiveImageSetSourceSets
+	formatResponsiveImageSet, responsiveImageSetSourceSets, formatContentTypes
 } from '@/util/contentfulUtils';
 import { BLOCKS, INLINES } from '~/@contentful/rich-text-types';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
@@ -104,6 +104,7 @@ export function richTextRenderer(content) {
 		const isRichTextContent = entryContentTypeId === 'richTextContent';
 		const isButton = entryContentTypeId === 'button';
 		const isResponsiveImageSet = entryContentTypeId === 'responsiveImageSet';
+		const isFAQ = entryContent?.fields?.type === 'frequentlyAskedQuestions';
 
 		if (isRichTextContent) {
 			const richTextHTML = richTextRenderer(entryContent?.fields?.richText);
@@ -129,6 +130,11 @@ export function richTextRenderer(content) {
 						fallback-format="jpg"
 						alt="${formattedResponsiveImageSet?.description}"
 						:source-sizes="${sourceSetArrayAsString}" />`;
+		}
+		if (isFAQ) {
+			return `<kv-frequently-asked-questions
+						:questions="${htmlSafeStringify(formatContentTypes(entryContent?.fields?.contents))}"
+					/>`;
 		}
 		return '';
 	};

@@ -12,23 +12,61 @@
 					<span class="show-for-large">{{ loanChannelName }}</span>
 				</p>
 				<h1 class="tw-mb-2">
-					{{ loanChannelName }}
+					{{ loanChannelName }} <span v-if="isEcoChallengeExpShown">October Challenge</span>
 				</h1>
 				<p
+					v-if="!isEcoChallengeExpShown"
 					class="tw-text-subhead tw-w-full show-for-large tw-mb-4 lg:tw-w-3/4"
 				>
 					{{ loanChannelDescription }}
 				</p>
+				<div v-else>
+					<transition appear name="kvfastfade" mode="out-in">
+						<div class="tw-bg-brand-50 tw-rounded tw-px-4 tw-py-2" v-if="showHowItWorks">
+							<div class="tw-w-full tw-flex tw-justify-between tw-items-center tw-mb-1">
+								<h2>How this works</h2>
+								<button
+									class="tw-h-3"
+									@click="showHowItWorks = false"
+								>
+									<kv-material-icon
+										class="tw-w-3"
+										:icon="mdiClose"
+									/>
+								</button>
+							</div>
+
+							<p class="tw-text-subhead">
+								Welcome to the Eco-friendly October Challenge!
+								Complete the challenge by lending to 1 Solar Energy,
+								1 Sustainable Agriculture, and 1 Recycling loan.
+							</p>
+							<div class="tw-flex tw-justify-between tw-items-center tw-mt-1">
+								<div class="tw-flex tw-items-center">
+									<icon-calendar class="tw-h-6 tw-w-6 tw-mr-2" />
+									<h4>for a limited time</h4>
+								</div>
+							</div>
+						</div>
+						<kv-text-link
+							v-else
+							@click="showHowItWorks = true"
+						>
+							How this challenge works
+						</kv-text-link>
+					</transition>
+				</div>
 			</div>
 		</kv-page-container>
-		<kv-page-container v-if="secondaryEcoLoanChannelsResponse.length > 0">
-			<div v-for="(channel, index) in secondaryEcoLoanChannelsResponse" :key="index" class="tw-mt-6">
+		<kv-page-container v-if="secondaryChannels.length > 0">
+			<div v-for="(channel, index) in secondaryChannels" :key="index" class="tw-mt-6">
 				<kiva-classic-single-category-carousel
-					:loan-channel-id="channel.id"
-					:loan-channel-name="channel.name"
-					:loan-channel-description="channel.description"
+					:id="`carousel-${channel.name}` | changeCase('paramCase')"
+					:prefetched-selected-channel="channel"
+					:climate-challenge="isEcoChallengeExpShown"
 					:loan-display-settings="loanDisplaySettings"
 					:lend-now-button="true"
+					:query-context="ecoExpQueryContext"
 				/>
 			</div>
 		</kv-page-container>
@@ -43,11 +81,25 @@ import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import KivaClassicSingleCategoryCarousel from '@/components/LoanCollections/KivaClassicSingleCategoryCarousel';
+import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import {
 	preFetchChannel,
 	getCachedChannel
 } from '@/util/loanChannelUtils';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
+import {
+	mdiClose
+} from '@mdi/js';
+import IconCalendar from '@/assets/icons/inline/eco-challenge/calendar.svg';
+import gql from 'graphql-tag';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+
+const ecoChallengeExpKey = 'eco_challenge';
 
 const secondaryEcoLoanChannelUrls = [
 	'solar-energy',
@@ -62,12 +114,27 @@ const secondaryEcoLoanChannels = loanChannelQueryMapMixin.data().loanChannelQuer
 
 const secondaryEcoLoanChannelIds = secondaryEcoLoanChannels.map(channel => channel.id);
 
+const mainCategoryQuery = gql`
+	query mainCategoryQuery($ids: [Int]) {
+		lend {
+			loanChannelsById (ids: $ids) {
+				id
+				name
+				description
+				url
+			}
+		}
+	}
+`;
 export default {
 	name: 'LoanChannelCategoryClimateExperiment',
 	components: {
 		KivaClassicSingleCategoryCarousel,
+		KvMaterialIcon,
 		KvPageContainer,
+		KvTextLink,
 		ViewToggle,
+		IconCalendar,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
@@ -86,10 +153,21 @@ export default {
 				loanLimit: 9,
 				showViewMoreCard: true,
 				showCheckBackMessage: true
-			}
+			},
+			isEcoChallengeExpShown: false,
+			showHowItWorks: true,
+			mdiClose,
+			ecoExpQueryContext: FLSS_ORIGIN_CATEGORY
 		};
 	},
 	computed: {
+		challengeChannels() {
+			return [
+				116, // solar energy
+				117, // sustainable agriculture
+				118, // recycle and reuse
+			];
+		},
 		loanChannelName() {
 			return this.loanChannel?.name ?? '';
 		},
@@ -105,6 +183,14 @@ export default {
 			// process eligible filter url
 			return this.getFilterUrl();
 		},
+		secondaryChannels() {
+			// if eco challenge experiment is shown, return only the challenge channels
+			if (this.isEcoChallengeExpShown) {
+				return this.secondaryEcoLoanChannelsResponse
+					.filter(channel => this.challengeChannels.includes(channel.id));
+			}
+			return this.secondaryEcoLoanChannelsResponse;
+		}
 	},
 	apollo: {
 		preFetch(config, client, args) {
@@ -121,14 +207,26 @@ export default {
 			// Get page limit and offset
 			const limit = 9;
 			const offset = 0;
-			return preFetchChannel(
-				client,
-				// Access map directly since SSR doesn't have mixins available
-				loanChannelQueryMapMixin.data().loanChannelQueryMap,
-				targetedLoanChannelURL,
-				// Build loanQueryVars since SSR doesn't have same context
-				{ ids: [...secondaryEcoLoanChannelIds, targetedLoanChannelID], limit, offset }
-			);
+
+			const promisesArrayOfSecondaryChannels = secondaryEcoLoanChannelIds.map(channelId => {
+				return preFetchChannel(
+					client,
+					loanChannelQueryMapMixin.data().loanChannelQueryMap,
+					loanChannelQueryMapMixin.data().loanChannelQueryMap.find(channel => channel.id === channelId)?.url,
+					{
+						ids: [channelId], limit, offset, origin: FLSS_ORIGIN_CATEGORY
+					}
+				);
+			});
+
+			// Just get the description and name of main loan channel
+			const mainChannel = client.query({
+				query: mainCategoryQuery,
+				variables: {
+					ids: [targetedLoanChannelID],
+				},
+			});
+			return Promise.all([mainChannel, ...promisesArrayOfSecondaryChannels]);
 		}
 	},
 	created() {
@@ -137,21 +235,40 @@ export default {
 			.find(channel => channel.url === this.targetedLoanChannelURL)?.id;
 
 		// Prevent pop-in by loading data from the Apollo cache manually here instead of just using the subscription
-		const baseData = getCachedChannel(
-			this.apollo,
-			this.loanChannelQueryMap,
-			this.targetedLoanChannelURL,
-			{
-				ids: [...secondaryEcoLoanChannelIds, this.targetedLoanChannelID],
-				limit: 9,
-				offset: 0,
-				basketId: this.cookieStore.get('kvbskt'),
-			}
-		);
-		this.loanChannel = baseData?.lend?.loanChannelsById.find(channel => channel.id === this.targetedLoanChannelID);
+		const mainChannelData = this.apollo.readQuery({
+			query: mainCategoryQuery,
+			variables: {
+				ids: [this.targetedLoanChannelID],
+			},
+		});
+		this.loanChannel = mainChannelData?.lend?.loanChannelsById
+			.find(channel => channel.id === this.targetedLoanChannelID);
 
-		this.secondaryEcoLoanChannelsResponse = baseData?.lend?.loanChannelsById
-			.filter(channel => channel.id !== this.targetedLoanChannelID) ?? [];
+		// Get secondary channels
+		// Prevent pop-in by loading data from the Apollo cache manually here instead of just using the subscription
+		const secondaryChannelResponse = secondaryEcoLoanChannelIds.map(channelId => {
+			return getCachedChannel(
+				this.apollo,
+				this.loanChannelQueryMap,
+				this.loanChannelQueryMap.find(channel => channel.id === channelId)?.url,
+				{
+					ids: [channelId],
+					limit: 9,
+					offset: 0,
+					origin: FLSS_ORIGIN_CATEGORY,
+					basketId: this.cookieStore.get('kvbskt'),
+				}
+			);
+		});
+
+		// Use reduce to combine lend.loanChannelById property into 1 array
+		this.secondaryEcoLoanChannelsResponse = secondaryChannelResponse.reduce((acc, channel) => {
+			return [...acc, ...channel.lend.loanChannelsById];
+		}, []);
+
+		// filter out any secondary channels that do not have loans
+		this.secondaryEcoLoanChannelsResponse = this.secondaryEcoLoanChannelsResponse
+			.filter(channel => channel.loans.totalCount > 0);
 
 		/*
 		 * Experiment Initializations
@@ -162,6 +279,21 @@ export default {
 	},
 	mounted() {
 		this.updateLendFilterExp();
+
+		const ecoChallengeExpData = getExperimentSettingCached(this.apollo, ecoChallengeExpKey);
+		if (ecoChallengeExpData?.enabled) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				ecoChallengeExpKey,
+				'EXP-ACK-392-Sep2022'
+			);
+			if (version === 'b') {
+				this.isEcoChallengeExpShown = true;
+			}
+		}
+
 		// check for newly assigned bounceback
 		const redirectFromUiCookie = this.cookieStore.get('redirectFromUi') || '';
 		if (redirectFromUiCookie === 'true') {

@@ -18,6 +18,7 @@
 			</template>
 			<loan-search-sort-by
 				:all-sort-options="facets.sortOptions"
+				:extend-flss-filters="extendFlssFilters"
 				:is-logged-in="isLoggedIn"
 				:sort="loanSearchState.sortBy"
 				:query-type="queryType"
@@ -64,12 +65,43 @@
 				event-action="click-theme-filter"
 			/>
 		</kv-accordion-item>
-		<button class="tw-mt-2 tw-h-[22px]" @click="advancedFilters">
-			<h2 class="tw-text-h4 tw-flex tw-items-center">
-				Advanced filters
-				<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1" />
-			</h2>
-		</button>
+		<kv-accordion-item v-if="extendFlssFilters" id="acc-tags" :open="false">
+			<template #header>
+				<h2 class="tw-text-h4">
+					Tags
+				</h2>
+			</template>
+			<loan-search-checkbox-list-filter
+				:options="facets.tags"
+				:ids="loanSearchState.tagId"
+				@updated="handleUpdatedFilters"
+				filter-key="tagId"
+				event-action="click-tag-filter"
+			/>
+		</kv-accordion-item>
+		<template v-if="extendFlssFilters">
+			<kv-accordion-item id="acc-advanced" :open="false">
+				<template #header>
+					<h2 class="tw-text-h4">
+						Advanced filters
+					</h2>
+				</template>
+				<button class="tw-mt-2 tw-h-[22px]" @click="advancedFilters">
+					<h2 class="tw-text-h4 tw-flex tw-items-center">
+						Legacy filters
+						<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1" />
+					</h2>
+				</button>
+			</kv-accordion-item>
+		</template>
+		<template v-else>
+			<button class="tw-mt-2 tw-h-[22px]" @click="advancedFilters">
+				<h2 class="tw-text-h4 tw-flex tw-items-center">
+					Advanced filters
+					<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1" />
+				</h2>
+			</button>
+		</template>
 	</div>
 </template>
 
@@ -97,43 +129,14 @@ export default {
 		KvSectionModalLoader,
 	},
 	props: {
+		extendFlssFilters: {
+			type: Boolean,
+			default: false,
+		},
 		loading: {
 			type: Boolean,
 			default: false
 		},
-		/**
-		 * Facet options based on the loans available. Format:
-		 * {
-		 *   regions: [
-		 *     {
-		 *       region: '',
-		 *       numLoansFundraising: 1,
-		 *       countries: [
-		 *         {
-		 *           name: '',
-		 *           region: '',
-		 *           isoCode: '',
-		 *           numLoansFundraising: 1,
-		 *         }
-		 *       ]
-		 *     }
-		 *   ],
-		 *   sectors: [
-		 *     {
-		 *       id: 1,
-		 *       name: '',
-		 *       numLoansFundraising: 1,
-		 *     }
-		 *   ],
-		 *   themes: [
-		 *     {
-		 *       id: 1,
-		 *       name: '',
-		 *       numLoansFundraising: 1,
-		 *     }
-		 *   ],
-		 * }
-		 */
 		facets: {
 			type: Object,
 			required: true

@@ -22,6 +22,7 @@ const isDev = process.env.NODE_ENV !== 'production';
 let renderedConfig = '';
 let renderedNoscript = '';
 let renderedExternals = '';
+let renderedExternalsOptIn = '';
 
 // This adds non-vue-rendered html strings to the request context.
 // These strings are added to the final html response using server/index.template.html
@@ -49,11 +50,26 @@ function addRenderedHtml(context, config) {
 		// eslint-disable-next-line max-len
 		renderedExternals += `<script>(${renderedHeadScript})(window.__KV_CONFIG__, ${renderedOneTrustEvent});</script>`;
 	}
+	// render externals for users that are not opted out of 3rd party cookies
+	if (!renderedExternalsOptIn) {
+		// setup Optimizely loader
+		if (config?.enableOptimizely && config?.optimizelyProjectId) {
+			// eslint-disable-next-line max-len
+			renderedExternalsOptIn += '<script type="text/javascript">window["optimizely"]=window["optimizely"]||[];window["optimizely"].push({"type":"holdEvents"});</script>';
+			const optimizelySrc = `https://cdn.optimizely.com/js/${config?.optimizelyProjectId}.js`;
+			renderedExternalsOptIn += `<script type="text/javascript" src="${optimizelySrc}"></script>`;
+		}
+		// append regular externals
+		renderedExternalsOptIn += renderedExternals;
+	}
+
+	// check for 3rd party script opt-out
+	const hasOptOut = context?.cookies?.kvgdpr?.indexOf('opted_out=true') > -1;
 
 	// add rendered strings to request render context
 	context.renderedConfig = renderedConfig;
 	context.renderedNoscript = renderedNoscript;
-	context.renderedExternals = renderedExternals;
+	context.renderedExternals = hasOptOut ? renderedExternals : renderedExternalsOptIn;
 }
 
 // This exported function will be called by `bundleRenderer`.

@@ -55,6 +55,15 @@
 						You must agree to the Kiva Terms of Use and Privacy Policy.
 					</template>
 				</kv-base-input>
+				<kv-base-input
+					name="newsConsent"
+					class="fs-exclude tw-w-full tw-mb-4"
+					type="checkbox"
+					v-show="needsNews"
+					v-model="newsConsent"
+				>
+					I want to receive updates about my loans, Kiva news, and promotions in my inbox
+				</kv-base-input>
 				<kv-button
 					class="register-button tw-w-full tw-mb-2"
 					type="submit"
@@ -102,7 +111,9 @@ export default {
 			lastName: '',
 			needsTerms: false,
 			needsNames: false,
+			needsNews: false,
 			newAcctTerms: false,
+			newsConsent: false,
 		};
 	},
 	computed: {
@@ -114,7 +125,7 @@ export default {
 			if (this.needsTerms) {
 				parts.push('agree to the Terms of Use and Privacy Policy');
 			}
-			return `To finish creating your account, please ${parts.join(' and ')}.`;
+			return parts.length ? `To finish creating your account, please ${parts.join(' and ')}.` : '';
 		},
 	},
 	validations() {
@@ -137,9 +148,13 @@ export default {
 		if (this.$route.query.names) {
 			this.needsNames = true;
 		}
+		if (this.$route.query.news) {
+			this.needsNews = true;
+		}
 		// Support legacy behavior of this page, which was to show the terms checkbox only
-		if (!this.$route.query.terms && !this.$route.query.names) {
+		if (!this.$route.query.terms && !this.$route.query.names && !this.$route.query.news) {
 			this.needsTerms = true;
+			this.needsNews = true;
 		}
 	},
 	methods: {
@@ -151,6 +166,7 @@ export default {
 				this.$kvTrackEvent('Register', 'register-social-success', undefined, undefined, undefined, () => {
 					window.location = `https://${this.$appConfig.auth0.domain}/continue`
 					+ '?agree=yes'
+					+ `&newsConsent=${this.newsConsent ? 'yes' : 'no'}`
 					+ `&firstName=${this.firstName}`
 					+ `&lastName=${this.lastName}`
 					+ `&state=${this.$route.query.state}`;

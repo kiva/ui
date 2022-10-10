@@ -3,115 +3,81 @@
 		:corporate-logo-url="corporateLogoUrl"
 	>
 		<div class="corporate-campaign-landing">
-			<kv-loading-overlay
-				v-if="loadingPage"
-				class="tw-z-1"
-			/>
-			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
-			<campaign-status
-				v-if="!hideStatusBar"
-				class="corporate-campaign-landing__status tw-sticky tw-top-8 md:tw-top-9 tw-z-2"
-				:active-credit-type="activeCreditType"
-				:is-matching="isMatchingCampaign"
-				:loading-promotion="loadingPromotion"
-				:promo-error-message="promoErrorMessage"
-				:promo-applied="promoApplied"
-				:promo-amount="promoAmount"
-				:promo-name="campaignPartnerName"
-				:status-message-override="statusMessageOverride"
-			/>
+			<div v-if="!usesDynamicContentfulRendering">
+				<kv-loading-overlay
+					v-if="loadingPage"
+					class="tw-z-1"
+				/>
+				<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
+				<campaign-status
+					v-if="!hideStatusBar"
+					class="corporate-campaign-landing__status tw-sticky tw-top-8 md:tw-top-9 tw-z-2"
+					:active-credit-type="activeCreditType"
+					:is-matching="isMatchingCampaign"
+					:loading-promotion="loadingPromotion"
+					:promo-error-message="promoErrorMessage"
+					:promo-applied="promoApplied"
+					:promo-amount="promoAmount"
+					:promo-name="campaignPartnerName"
+					:status-message-override="statusMessageOverride"
+				/>
 
-			<!-- TODO: Alter CTA if Checkout is ready -->
-			<campaign-hero
-				v-if="hasCampaignHero"
-				:hero-area-content="heroAreaContent"
-				:page-setting-data="pageSettingData"
-				@add-to-basket="handleAddToBasket"
-				@jump-to-loans="jumpToLoans"
-			/>
+				<!-- TODO: Alter CTA if Checkout is ready -->
+				<campaign-hero
+					v-if="hasCampaignHero"
+					:hero-area-content="heroAreaContent"
+					:page-setting-data="pageSettingData"
+					@add-to-basket="handleAddToBasket"
+					@jump-to-loans="jumpToLoans"
+				/>
 
-			<dynamic-hero-classic
-				v-if="hasDynamicHeroClassic"
-				:content="heroAreaContent"
-				:page-setting-data="pageSettingData"
-			/>
-
-			<hr>
-
-			<section class="loan-categories section" id="campaignLoanSection" ref="campaignLoanSection">
-				<div class="row">
-					<div class="columns">
-						<h2 class="tw-mb-4 tw-text-center">
-							Support causes you care about.
-						</h2>
-
-						<campaign-loan-filters
-							:applied-filters="filters"
-							:initial-filters="initialFilters"
-							:excluded-tags="excludedTags"
-							:initial-sort-by="initialSortBy"
-							:active-loan-display="activeLoanDisplay"
-							:show-loan-display-toggle="showLoanDisplayToggle"
-							:total-count="totalCount"
-							@updated-filters="handleUpdatedFilters"
-							@updated-sort-by="handleUpdatedSortBy"
-							@set-loan-display="handleLoanDisplayType"
-							@reset-loan-filters="handleResetLoanFilters"
-						/>
-
-						<campaign-loan-row
-							v-if="showLoanRows"
-							id="campaignLoanRowDisplay"
-							:filters="filters"
-							:is-visitor="isVisitor"
-							:items-in-basket="itemsInBasket"
-							:is-logged-in="!isVisitor"
-							:is-visible="showLoanRows"
-							:key="'one-category'"
-							:promo-only="promoOnlyQuery"
-							:row-number="1"
-							:show-loans="showLoans"
-							:sort-by="sortBy"
-							@add-to-basket="handleAddToBasket"
-							@update-total-count="setTotalCount"
-							@show-loan-details="showLoanDetails"
-							@reset-loan-filters="handleResetLoanFilters"
-						/>
-
-						<campaign-loan-grid-display
-							v-if="!showLoanRows"
-							id="campaignLoanDisplay"
-							ref="loandisplayref"
-							:checkout-visible="checkoutVisible || showThanks"
-							:filters="filters"
-							:is-visible="!showLoanRows"
-							:is-visitor="isVisitor"
-							:items-in-basket="itemsInBasket"
-							:promo-only="promoOnlyQuery"
-							:show-loans="showLoans"
-							:sort-by="sortBy"
-							@add-to-basket="handleAddToBasket"
-							@update-total-count="setTotalCount"
-							@show-loan-details="showLoanDetails"
-							@reset-loan-filters="handleResetLoanFilters"
-						/>
-					</div>
-				</div>
-			</section>
-
-			<hr>
-
-			<template v-if="partnerAreaContent">
-				<campaign-partner
-					:partner-area-content="partnerAreaContent"
+				<dynamic-hero-classic
+					v-if="hasDynamicHeroClassic"
+					:content="heroAreaContent"
 					:page-setting-data="pageSettingData"
 				/>
-				<hr>
-			</template>
+				<campaign-loan-wrapper
+					:component-props="getComponentProps({ name:'CampaignLoanWrapper' })"
+				/>
+				<template v-if="partnerAreaContent">
+					<campaign-partner
+						:partner-area-content="partnerAreaContent"
+						:page-setting-data="pageSettingData"
+					/>
+					<hr>
+				</template>
 
-			<campaign-how-kiva-works
-				:is-matching-campaign="isMatchingCampaign"
-			/>
+				<campaign-how-kiva-works
+					v-if="hasOldCampaignHowKivaWorks"
+					:is-matching-campaign="isMatchingCampaign"
+				/>
+
+				<centered-rich-text
+					:content="centeredRichTextContent"
+					v-if="hasKivaClassicHowKivaWorks"
+				/>
+
+				<rich-text-items-centered
+					:content="richTextItemsCenteredContent"
+					v-if="hasKivaClassicHowKivaWorks"
+				/>
+			</div>
+			<!-- add wrappers for ml components with necessary props -->
+			<div v-if="usesDynamicContentfulRendering">
+				<div
+					:key="content.key"
+					v-for="({ component, content }) in contentGroups"
+				>
+					<component
+						:name="content.key"
+						:id="content.key"
+						:is="component"
+						:content="content"
+						data-section-type="contentful-section"
+						:component-props="getComponentProps(component)"
+					/>
+				</div>
+			</div>
 
 			<campaign-join-team-form
 				v-if="this.showTeamForm"
@@ -165,6 +131,7 @@
 			</kv-lightbox>
 
 			<kv-lightbox
+				v-if="checkoutVisible"
 				:prevent-close="preventLightboxClose"
 				:visible="checkoutVisible"
 				@lightbox-closed="checkoutLightboxClosed"
@@ -204,6 +171,7 @@
 			</kv-lightbox>
 
 			<kv-lightbox
+				v-if="showThanks"
 				class="campaign-thanks"
 				:prevent-close="preventLightboxClose"
 				:visible="showThanks"
@@ -242,7 +210,7 @@ import gql from 'graphql-tag';
 import numeral from 'numeral';
 import { indexIn } from '@/util/comparators';
 import logFormatter from '@/util/logFormatter';
-import { processPageContentFlat } from '@/util/contentfulUtils';
+import { processPageContentFlat, processPageContent } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
 import LoanSearchFilters, { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
 import syncDate from '@/util/syncDate';
@@ -251,23 +219,38 @@ import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
-import CampaignLoanGridDisplay from '@/components/CorporateCampaign/CampaignLoanGridDisplay';
-import CampaignLoanRow from '@/components/CorporateCampaign/CampaignLoanRow';
-import CampaignLoanFilters from '@/components/CorporateCampaign/LoanSearch/LoanSearchFilters';
-import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
-import CampaignPartner from '@/components/CorporateCampaign/CampaignPartner';
 import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
 import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
-import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
 import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
+import { preFetchAll } from '@/util/apolloPreFetch';
 
+// Error page
+const ErrorPage = () => import('@/pages/Error');
+
+// Content Group Types
+// TODO: update the campaign components to accept "content" prop
 const CampaignHero = () => import('@/components/CorporateCampaign/CampaignHero');
+const CampaignLogoGroup = () => import('@/components/CorporateCampaign/CampaignLogoGroup');
+const CampaignPartner = () => import('@/components/CorporateCampaign/CampaignPartner');
+const CampaignThanks = () => import('@/components/CorporateCampaign/CampaignThanks');
+const CampaignLoanWrapper = () => import('@/components/Contentful/CampaignLoanWrapper');
+
+const CardRow = () => import('@/components/Contentful/CardRow');
+const CenteredRichText = () => import('@/components/Contentful/CenteredRichText');
 const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
+const HeroWithCarousel = () => import('@/components/Contentful/HeroWithCarousel');
+const LoansByCategoryCarousel = () => import('@/components/Contentful/LoansByCategoryCarousel');
+const LoansByCategoryGrid = () => import('@/components/Contentful/HomePage/NewHomeLoansByCategoryGrid');
+const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
+const FrequentlyAskedQuestions = () => import('@/components/Contentful/FrequentlyAskedQuestions');
+const RichTextItemsCentered = () => import('@/components/Contentful/RichTextItemsCentered');
+const MediaItemsCentered = () => import('@/components/Contentful/MediaItemsCentered');
+const StoryCardCarousel = () => import('@/components/Contentful/StoryCardCarousel');
 
 const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
 	contentful {
@@ -465,6 +448,57 @@ const myTeamsQuery = gql`query myTeamsQuery {
 	}
 }`;
 
+// Return a component importer function based on content group type from Contentful
+const getComponentFromType = type => {
+	switch (type) {
+		case 'mlCampaignHero':
+			return CampaignHero;
+		case 'mlLoanDisplay':
+			return CampaignLoanWrapper;
+		case 'monthlyGoodSelector':
+			return MonthlyGoodSelectorWrapper;
+		case 'frequentlyAskedQuestions':
+			return FrequentlyAskedQuestions;
+		case 'cardRow':
+			return CardRow;
+		case 'centeredRichText':
+			return CenteredRichText;
+		case 'dynamicHeroClassic':
+			return DynamicHeroClassic;
+		case 'heroWithCarousel':
+			return HeroWithCarousel;
+		case 'loansByCategoryCarousel':
+			return LoansByCategoryCarousel;
+		case 'loansByCategoryGrid':
+			return LoansByCategoryGrid;
+		case 'richTextItemsCentered':
+			return RichTextItemsCentered;
+		case 'mediaItemsCentered':
+			return MediaItemsCentered;
+		case 'storyCardCarousel':
+			return StoryCardCarousel;
+		default:
+			return null;
+	}
+};
+
+// Return array of Content Group objects with component importer functions and content
+const getContentGroups = pageData => {
+	// Using contentGroups from page.pageLayout
+	const groups = pageData?.page?.pageLayout?.contentGroups ?? [];
+
+	return groups.map(group => ({
+		component: getComponentFromType(group.type),
+		content: group,
+	})).filter(group => typeof group.component === 'function');
+};
+
+// Get the Contentful Page data from the data of an Apollo query result
+const getPageData = data => {
+	const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
+	return pageEntry ? processPageContent(pageEntry) : { error: 'Contentful entry not found' };
+};
+
 export default {
 	name: 'CCLandingPage',
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
@@ -472,9 +506,6 @@ export default {
 		CampaignHero,
 		CampaignHowKivaWorks,
 		CampaignJoinTeamForm,
-		CampaignLoanGridDisplay,
-		CampaignLoanFilters,
-		CampaignLoanRow,
 		CampaignLogoGroup,
 		CampaignPartner,
 		CampaignStatus,
@@ -486,7 +517,11 @@ export default {
 		KvLoadingOverlay,
 		LoanCardController,
 		WwwPageCorporate,
-		VerifyRemovePromoCredit
+		VerifyRemovePromoCredit,
+		CenteredRichText,
+		RichTextItemsCentered,
+		LoansByCategoryCarousel,
+		CampaignLoanWrapper
 	},
 	mixins: [
 		checkoutUtils
@@ -561,6 +596,8 @@ export default {
 			loadingPage: false,
 			showLoanDisplayToggle: true,
 			showVerifyRemovePromoCredit: false,
+			contentGroups: [],
+			pageFrame: WwwPageCorporate,
 		};
 	},
 	metaInfo() {
@@ -576,44 +613,75 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch: true,
-		query: pageQuery,
+		async preFetch(config, client, args) {
+			return client.query({
+				query: pageQuery,
+				variables: {
+					contentType: 'page',
+					contentKey: args?.route.params.dynamicRoute?.trim(),
+				}
+			}).then(({ data }) => {
+				// Get Contentful page data
+				const pageData = getPageData(data);
+				if (pageData.error) {
+					// Only import the error page if there is a contentful error
+					return Promise.all([ErrorPage()]);
+				}
+				// Get components for content groups
+				const contentGroups = getContentGroups(pageData);
+				// Start importing all components
+				return Promise.all([
+					...contentGroups.map(g => g.component()),
+				]);
+			}).then(resolvedImports => {
+				// Call preFetch for page frame and content group components
+				const components = resolvedImports.map(resolvedImport => resolvedImport.default);
+				return preFetchAll(components, client, args);
+			});
+		},
 		// TODO: Convert to prefetch function and check for page path before fetching all content
 		// - Requires extended contentful graphql query options for include depth and query by addtional fields
 		preFetchVariables({ route }) {
-			return { contentKey: route.params.dynamicRoute };
+			return { contentType: 'page', contentKey: route.params.dynamicRoute };
 		},
 		variables() {
-			return { contentKey: this.$route.params.dynamicRoute };
+			return { contentType: 'page', contentKey: this.$route.params.dynamicRoute };
 		},
-		result({ data }) {
-			// extract dynamicRoute param for contentful query
-			const { dynamicRoute } = this.$route.params;
-			// redirect if missing page data and/or route
-			if (typeof dynamicRoute === 'undefined') {
-				this.$router.push('/');
-			}
-			this.rawPageData = data;
-			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
-			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
-
-			this.lendingRewardOffered = data.shop?.lendingRewardOffered ?? false;
-			this.hasFreeCredits = data.shop?.basket?.hasFreeCredits ?? false;
-			this.initialBasketCredits = data.shop?.basket?.credits?.values ?? [];
-
-			const basketItems = data.shop?.basket?.items?.values ?? [];
-			this.itemsInBasket = basketItems.length ? basketItems.map(item => item.id) : [];
-			this.isVisitor = !data.my?.userAccount?.id ?? true;
-		}
 	},
 	created() {
+		let data = {};
+
+		data = this.apollo.readQuery({
+			query: pageQuery,
+			variables: {
+				contentType: 'page',
+				contentKey: this.$route.params.dynamicRoute?.trim(),
+				basketId: this.cookieStore.get('kvbskt')
+			}
+		});
+
+		this.rawPageData = data;
+		const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
+		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
+
+		this.lendingRewardOffered = data.shop?.lendingRewardOffered ?? false;
+		this.hasFreeCredits = data.shop?.basket?.hasFreeCredits ?? false;
+		this.initialBasketCredits = data.shop?.basket?.credits?.values ?? [];
+
+		const basketItems = data.shop?.basket?.items?.values ?? [];
+		this.itemsInBasket = basketItems.length ? basketItems.map(item => item.id) : [];
+		this.isVisitor = !data.my?.userAccount?.id ?? true;
+
+		const pageData = getPageData(data);
+		this.contentGroups = getContentGroups(pageData);
+
 		// extract query
 		this.pageQuery = this.$route.query;
 		// startup campaign status loader
 		this.loadingPromotion = true;
 
 		// show a loading screen if the page loads with an loan in the basket.
-		const basketItems = this.rawPageData?.shop?.basket?.items?.values ?? [];
+		// const basketItems = this.rawPageData?.shop?.basket?.items?.values ?? [];
 		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
 	},
 	mounted() {
@@ -651,6 +719,7 @@ export default {
 	},
 	beforeDestroy() {
 		this.$root.$off('jumpToLoans', this.jumpToLoans);
+		clearInterval(this.currentTimeInterval);
 	},
 	watch: {
 		initialFilters(next) {
@@ -706,6 +775,24 @@ export default {
 		},
 		hasCampaignHero() {
 			return typeof this.pageData?.page?.contentGroups?.mlCampaignHero !== 'undefined';
+		},
+		hasCenteredRichText() {
+			return typeof this.pageData?.page?.contentGroups?.centeredRichText !== 'undefined';
+		},
+		centeredRichTextContent() {
+			return this.pageData?.page?.contentGroups?.centeredRichText;
+		},
+		hasRichTextItemsCentered() {
+			return typeof this.pageData?.page?.contentGroups?.richTextItemsCentered !== 'undefined';
+		},
+		richTextItemsCenteredContent() {
+			return this.pageData?.page?.contentGroups?.richTextItemsCentered;
+		},
+		hasKivaClassicHowKivaWorks() {
+			return this.hasRichTextItemsCentered && this.hasCenteredRichText;
+		},
+		hasOldCampaignHowKivaWorks() {
+			return !this.hasRichTextItemsCentered || !this.hasCenteredRichText;
 		},
 		hasDynamicHeroClassic() {
 			return typeof this.pageData?.page?.contentGroups?.dynamicHeroClassic !== 'undefined';
@@ -782,6 +869,9 @@ export default {
 			}
 			return false;
 		},
+		usesDynamicContentfulRendering() {
+			return this.pageSettingData?.dynamicRendering;
+		},
 		isEmployee() {
 			return this.promoData?.managedAccount?.isEmployee ?? false;
 		},
@@ -842,6 +932,37 @@ export default {
 		},
 	},
 	methods: {
+		getComponentProps(component) {
+			switch (component.name) {
+				case 'CampaignLoanWrapper':
+					return {
+						filters: this.filters,
+						initialFilters: this.initialFilters,
+						excludedTags: this.excludedTags,
+						initialSortBy: this.initialSortBy,
+						activeLoanDisplay: this.activeLoanDisplay,
+						showLoanDisplayToggle: this.showLoanDisplayToggle,
+						totalCount: this.totalCount,
+						handleUpdatedFilters: this.handleUpdatedFilters,
+						handleUpdatedSortBy: this.handleUpdatedSortBy,
+						handleLoanDisplayType: this.handleLoanDisplayType,
+						handleResetLoanFilters: this.handleResetLoanFilters,
+						showLoanRows: this.showLoanRows,
+						isVisitor: this.isVisitor,
+						itemsInBasket: this.itemsInBasket,
+						promoOnlyQuery: this.promoOnlyQuery,
+						showLoans: this.showLoans,
+						sortBy: this.sortBy,
+						handleAddToBasket: this.handleAddToBasket,
+						setTotalCount: this.setTotalCount,
+						showLoanDetails: this.showLoanDetails,
+						checkoutVisible: this.checkoutVisible,
+						showThanks: this.showThanks,
+					};
+				default:
+					return null;
+			}
+		},
 		verifyOrApplyPromotion() {
 			// Always apply a promo if activating query params exist
 			const promoQueryKeys = ['upc', 'promoCode', 'lendingReward'];
@@ -1333,13 +1454,13 @@ export default {
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
 			if (vm.$refs.loandisplayref) {
-				vm.$refs.loandisplayref.updateFromParams(to.query);
+				vm.$refs.loandisplayref?.updateFromParams(to.query);
 			}
 		});
 	},
 	beforeRouteUpdate(to, from, next) {
 		if (this.$refs.loandisplayref) {
-			this.$refs.loandisplayref.updateFromParams(to.query);
+			this.$refs.loandisplayref?.updateFromParams(to.query);
 		}
 
 		if (to.hash === '#show-basket') {
@@ -1347,9 +1468,6 @@ export default {
 		}
 
 		next();
-	},
-	destroyed() {
-		clearInterval(this.currentTimeInterval);
 	},
 };
 </script>

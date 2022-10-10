@@ -14,9 +14,10 @@ module.exports = {
 				'https://www.kiva.org/lend-by-category/women',
 				// 'https://www.kiva.org/live-loan/f/sort_newest/url/1',
 				'https://www.kiva.org/ui-site-map',
-				'https://www.kiva.org/cc/kiva-universal',
+				// 'https://www.kiva.org/cc/kiva-universal',
 				'https://www.kiva.org/lp/support-refugees',
-				'https://www.kiva.org/design'
+				'https://www.kiva.org/design',
+				'https://www.kiva.org/pgtmp/home'
 			],
 			numberOfRuns: 5,
 		},

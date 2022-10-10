@@ -27,7 +27,7 @@ module.exports = merge(base, {
 		enableSentry: true,
 		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@o7540.ingest.sentry.io/1201287',
 		algoliaConfig: {
-			enableAA: true,
+			enableAA: false,
 			group: 'dev',
 			appId: 'testingZ9YK0WNQ85',
 			apiKey: '28aaa1d56e6a1688f13f6b41da0f27a5',

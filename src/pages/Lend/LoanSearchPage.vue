@@ -2,6 +2,20 @@
 	<www-page id="lend-filter">
 		<article class="tw-bg-secondary tw-relative tw-pt-6">
 			<kv-page-container>
+				<!-- eslint-disable-next-line max-len -->
+				<div v-if="savedSearchSuccess" class="tw-flex tw-bg-brand-100 tw-border tw-border-action tw-rounded tw-p-1 tw-mb-2 tw-gap-1">
+					<icon-sparkles class="tw-w-3 tw-h-3 tw-self-center" />
+					<div class="tw-flex-grow">
+						Success! You've added
+						<span class="tw-font-medium">{{ savedSearchName }}</span> to your saved searches.
+					</div>
+					<button
+						class="tw-w-3 tw-h-3"
+						@click="disableSuccessSavedSearch(true)"
+					>
+						<kv-material-icon :icon="mdiClose" />
+					</button>
+				</div>
 				<div class="tw-flex tw-items-start tw-pb-8">
 					<div class="tw-flex-1">
 						<h1 class="tw-mb-2">
@@ -31,7 +45,13 @@
 						</span>
 					</a>
 				</div>
-				<loan-search-interface :enable-saved-search="enableSavedSearch" />
+				<loan-search-interface
+					:extend-flss-filters="extendFlssFilters"
+					:enable-saved-search="enableSavedSearch"
+					:saved-search-success="savedSearchSuccess"
+					@enable-success-saved-search="enableSuccessSavedSearch"
+					@disable-success-saved-search="disableSuccessSavedSearch"
+				/>
 			</kv-page-container>
 		</article>
 	</www-page>
@@ -40,7 +60,8 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanSearchInterface from '@/components/Lend/LoanSearch/LoanSearchInterface';
-import { mdiEarth, mdiFilter } from '@mdi/js';
+import { mdiEarth, mdiFilter, mdiClose } from '@mdi/js';
+import IconSparkles from '@/assets/icons/inline/sparkles-success.svg';
 import gql from 'graphql-tag';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
@@ -53,6 +74,10 @@ const pageQuery = gql`query loanSearchPage {
 			key
 			value
 		}
+		extendFlssFilters: uiExperimentSetting(key: "extend_flss_filters") {
+			key
+			value
+		}
 	}
 }`;
 
@@ -62,14 +87,40 @@ export default {
 		WwwPage,
 		KvPageContainer,
 		KvMaterialIcon,
-		LoanSearchInterface
+		LoanSearchInterface,
+		IconSparkles
 	},
 	data() {
 		return {
+			extendFlssFilters: false,
 			enableSavedSearch: false,
 			mdiEarth,
-			mdiFilter
+			mdiFilter,
+			mdiClose,
+			savedSearchSuccess: false,
+			savedSearchName: '',
 		};
+	},
+	methods: {
+		enableSuccessSavedSearch(searchName) {
+			this.savedSearchSuccess = true;
+			this.savedSearchName = searchName;
+			this.$kvTrackEvent(
+				'Lending',
+				'view-new-saved-search-success',
+				''
+			);
+		},
+		disableSuccessSavedSearch(trackEvent) {
+			this.savedSearchSuccess = false;
+			if (trackEvent) {
+				this.$kvTrackEvent(
+					'Lending',
+					'close-new-saved-search-success',
+					'Dismiss'
+				);
+			}
+		}
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
@@ -80,6 +131,7 @@ export default {
 			}).then(() => {
 				return Promise.all([
 					client.query({ query: experimentQuery, variables: { id: 'saved_search' } }),
+					client.query({ query: experimentQuery, variables: { id: 'extend_flss_filters' } }),
 				]);
 			});
 		},
@@ -94,6 +146,20 @@ export default {
 					'Lending',
 					'EXP-CORE-687-Aug-2022',
 					savedSearchExp.version
+				);
+			}
+
+			// Extended FLSS Loan Filter Experiment
+			const showMoreFiltersExp = this.apollo.readFragment({
+				id: 'Experiment:extend_flss_filters',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.extendFlssFilters = showMoreFiltersExp.version === 'b';
+			if (showMoreFiltersExp.version) {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-VUE-1323-Nov-2022',
+					showMoreFiltersExp.version
 				);
 			}
 		}

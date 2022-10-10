@@ -1,8 +1,18 @@
 <template>
-	<div v-if="loanChannelId">
-		<h2 class="tw-mb-2">
-			{{ name }}
-		</h2>
+	<div>
+		<div>
+			<h2 class="tw-mb-2 tw-inline">
+				{{ name }}
+			</h2>
+			<kv-pill class="tw-ml-4.5" v-if="climateChallenge">
+				<template #icon>
+					<icon-climate-challenge class="tw-h-3 tw-w-2 tw-mr-0.5" />
+				</template>
+				<template #text>
+					Climate challenge
+				</template>
+			</kv-pill>
+		</div>
 		<p class="tw-text-subhead">
 			{{ description }}
 		</p>
@@ -10,7 +20,7 @@
 			<kiva-classic-loan-carousel
 				:is-visible="true"
 				:loan-ids="selectedChannelLoanIds"
-				:selected-channel="selectedChannel"
+				:selected-channel="channelData"
 				:show-view-more-card="showViewMoreCard"
 				:lend-now-button="lendNowButton"
 				:show-check-back-message="showCheckBackMessage"
@@ -20,9 +30,13 @@
 </template>
 
 <script>
+import IconClimateChallenge from '@/assets/icons/inline/eco-challenge/globe-leaf.svg';
 import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
+import KvPill from '@/components/Kv/KvPill';
+import { FLSS_ORIGIN_NOT_SPECIFIED } from '@/util/flssUtils';
+
 import {
-	preFetchChannel,
+	getLoanChannel,
 } from '@/util/loanChannelUtils';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 
@@ -30,9 +44,18 @@ export default {
 	name: 'KivaClassicSingleCategoryCarousel',
 	inject: ['apollo', 'cookieStore'],
 	components: {
+		IconClimateChallenge,
 		KivaClassicLoanCarousel,
+		KvPill,
 	},
 	props: {
+		/** prefetched selected channel
+		 * if this data is passed in, it will be used instead of fetching the channel data
+		 * */
+		prefetchedSelectedChannel: {
+			type: Object,
+			default: null
+		},
 		/**
 		 * Loan channel id
 		* */
@@ -72,6 +95,14 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		climateChallenge: {
+			type: Boolean,
+			default: false
+		},
+		queryContext: {
+			type: String,
+			default: FLSS_ORIGIN_NOT_SPECIFIED,
+		}
 	},
 	data() {
 		return {
@@ -98,19 +129,28 @@ export default {
 			return false;
 		},
 		selectedChannelLoanIds() {
-			return this.selectedChannel?.loans?.values?.map(loan => loan.id) ?? [];
+			return this.channelData?.loans?.values?.map(loan => loan.id) ?? [];
 		},
 		name() {
 			// return optional prop value or value from api
-			return this.loanChannelName || this.selectedChannel?.name;
+			return this.loanChannelName || this.channelData?.name;
 		},
 		description() {
 			// return optional prop value or value from api
-			return this.loanChannelDescription || this.selectedChannel?.description;
+			return this.loanChannelDescription || this.channelData?.description;
 		},
+		channelData() {
+			if (!this.prefetchedSelectedChannel) {
+				return this.selectedChannel;
+			}
+			return this.prefetchedSelectedChannel;
+		}
 	},
 	mounted() {
-		this.fetchLoanChannelFLSS();
+		// if channel data is not passed in, fetch it
+		if (!this.prefetchedSelectedChannel) {
+			this.fetchLoanChannelFLSS();
+		}
 	},
 	methods: {
 		async fetchLoanChannelFLSS() {
@@ -120,16 +160,18 @@ export default {
 				offset: 0,
 				limit: this.loanDisplaySettings?.loanLimit ?? 1,
 				basketId: this.cookieStore.get('kvbskt'),
+				origin: this.queryContext
 			};
-			const channelData = await preFetchChannel(
+			const channelData = await getLoanChannel(
 				this.apollo,
 				this.loanChannelQueryMap,
 				channelUrl,
-				loanQueryVars
+				loanQueryVars,
 			);
 			const loanChannelData = channelData?.data?.lend?.loanChannelsById ?? [];
 			this.selectedChannel = loanChannelData?.[0];
 		},
-	}
+	},
+
 };
 </script>
