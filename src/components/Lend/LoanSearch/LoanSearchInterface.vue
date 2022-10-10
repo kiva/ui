@@ -128,6 +128,7 @@ import {
 	transformSectors,
 	transformTags,
 } from '@/util/loanSearch/filterUtils';
+import { FLSS_ORIGIN_LEND_FILTER } from '@/util/flssUtils';
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
 import { applyQueryParams, hasExcludedQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
 import { updateSearchState } from '@/util/loanSearch/searchStateUtils';
@@ -255,7 +256,7 @@ export default {
 
 				const [{ loans, totalCount }] = await Promise.all([
 					// Get filtered loans from FLSS
-					await runLoansQuery(this.apollo, this.loanSearchState),
+					await runLoansQuery(this.apollo, this.loanSearchState, FLSS_ORIGIN_LEND_FILTER),
 					// Get filtered facet options from FLSS
 					await this.fetchFacets(this.loanSearchState)
 				]);
@@ -313,7 +314,11 @@ export default {
 	methods: {
 		async fetchFacets(loanSearchState = {}) {
 			// TODO: Prevent this from running on every query (not needed for sorting and paging)
-			const { isoCodes, themes, sectors } = await runFacetsQueries(this.apollo, loanSearchState);
+			const { isoCodes, themes, sectors } = await runFacetsQueries(
+				this.apollo,
+				loanSearchState,
+				FLSS_ORIGIN_LEND_FILTER
+			);
 
 			// Merge all facet options with filtered options
 			this.facets = {

@@ -59,16 +59,21 @@ describe('flssUtils.js', () => {
 		const dataObj = { data: result };
 		const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
 		const filters = { gender: { any: ['FEMALE'] } };
-		const variables = { isoCodeFilters: filters, themeFilters: filters, sectorFilters: filters };
+		const variables = {
+			isoCodeFilters: filters,
+			themeFilters: filters,
+			sectorFilters: filters,
+			origin: 'web:test-context'
+		};
 		const apolloVariables = { query: flssLoanFacetsQuery, variables, fetchPolicy: 'network-only' };
 
 		it('should pass the correct query variables to apollo', async () => {
-			await fetchFacets(apollo, filters, filters, filters);
+			await fetchFacets(apollo, 'web:test-context', filters, filters, filters);
 			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
 		});
 
 		it('should return the fundraising facets data', async () => {
-			const data = await fetchFacets(apollo, filters, filters, filters);
+			const data = await fetchFacets(apollo, 'web:test-context', filters, filters, filters);
 			expect(data).toBe(result);
 		});
 	});
@@ -88,6 +93,7 @@ describe('flssUtils.js', () => {
 				sortBy: 'personalized',
 				pageNumber: 3,
 				pageLimit,
+				origin: 'web:no-context'
 			},
 			fetchPolicy: 'network-only',
 		};
