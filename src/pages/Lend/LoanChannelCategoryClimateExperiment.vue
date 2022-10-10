@@ -207,14 +207,15 @@ export default {
 			// Get page limit and offset
 			const limit = 9;
 			const offset = 0;
-<<<<<<< HEAD
 
 			const promisesArrayOfSecondaryChannels = secondaryEcoLoanChannelIds.map(channelId => {
 				return preFetchChannel(
 					client,
 					loanChannelQueryMapMixin.data().loanChannelQueryMap,
 					loanChannelQueryMapMixin.data().loanChannelQueryMap.find(channel => channel.id === channelId)?.url,
-					{ ids: [channelId], limit, offset }
+					{
+						ids: [channelId], limit, offset, origin: FLSS_ORIGIN_CATEGORY
+					}
 				);
 			});
 
@@ -226,21 +227,6 @@ export default {
 				},
 			});
 			return Promise.all([mainChannel, ...promisesArrayOfSecondaryChannels]);
-=======
-			return preFetchChannel(
-				client,
-				// Access map directly since SSR doesn't have mixins available
-				loanChannelQueryMapMixin.data().loanChannelQueryMap,
-				targetedLoanChannelURL,
-				// Build loanQueryVars since SSR doesn't have same context
-				{
-					ids: [...secondaryEcoLoanChannelIds, targetedLoanChannelID],
-					limit,
-					offset,
-					origin: FLSS_ORIGIN_CATEGORY
-				},
-			);
->>>>>>> origin/main
 		}
 	},
 	created() {
@@ -249,7 +235,6 @@ export default {
 			.find(channel => channel.url === this.targetedLoanChannelURL)?.id;
 
 		// Prevent pop-in by loading data from the Apollo cache manually here instead of just using the subscription
-<<<<<<< HEAD
 		const mainChannelData = this.apollo.readQuery({
 			query: mainCategoryQuery,
 			variables: {
@@ -258,21 +243,6 @@ export default {
 		});
 		this.loanChannel = mainChannelData?.lend?.loanChannelsById
 			.find(channel => channel.id === this.targetedLoanChannelID);
-=======
-		const baseData = getCachedChannel(
-			this.apollo,
-			this.loanChannelQueryMap,
-			this.targetedLoanChannelURL,
-			{
-				ids: [...secondaryEcoLoanChannelIds, this.targetedLoanChannelID],
-				limit: 9,
-				offset: 0,
-				basketId: this.cookieStore.get('kvbskt'),
-				origin: FLSS_ORIGIN_CATEGORY
-			}
-		);
-		this.loanChannel = baseData?.lend?.loanChannelsById.find(channel => channel.id === this.targetedLoanChannelID);
->>>>>>> origin/main
 
 		// Get secondary channels
 		// Prevent pop-in by loading data from the Apollo cache manually here instead of just using the subscription
@@ -285,6 +255,7 @@ export default {
 					ids: [channelId],
 					limit: 9,
 					offset: 0,
+					origin: FLSS_ORIGIN_CATEGORY,
 					basketId: this.cookieStore.get('kvbskt'),
 				}
 			);
