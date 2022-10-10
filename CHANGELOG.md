@@ -1,3 +1,11 @@
+### [2.324.1](https://github.com/kiva/ui/compare/v2.324.0...v2.324.1) (2022-10-10)
+
+
+### Bug Fixes
+
+* add flss origin constants and use in all flss queries ([060d7a3](https://github.com/kiva/ui/commit/060d7a3e3a688cb57391b5da3a256c2a76851733))
+* pass query origin context on all flss queries ([21c89ba](https://github.com/kiva/ui/commit/21c89ba5a3eed4fe0fe9953d0820699b229627c5))
+
 ## [2.324.0](https://github.com/kiva/ui/compare/v2.323.0...v2.324.0) (2022-10-07)
 
 
