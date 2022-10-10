@@ -1,3 +1,10 @@
+## [2.325.0](https://github.com/kiva/ui/compare/v2.324.1...v2.325.0) (2022-10-10)
+
+
+### Features
+
+* copy change on eco thanks page ([abc2415](https://github.com/kiva/ui/commit/abc2415f14495fff03952bab687c3945052eaaff))
+
 ### [2.324.1](https://github.com/kiva/ui/compare/v2.324.0...v2.324.1) (2022-10-10)
 
 
