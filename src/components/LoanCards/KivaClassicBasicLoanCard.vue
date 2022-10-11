@@ -472,19 +472,32 @@ export default {
 		this.destroyViewportObserver();
 	},
 	created() {
+		let partnerFragment;
+		let	directFragment;
 		try {
 			// Attempt to read the loan card fragment from the cache
-			// If cache is missing fragment fields, this will throw and invariant error
-			const loanCardFieldFragment = this.apollo.readFragment({
+			// If cache is missing fragment fields, this will throw an invariant error
+			partnerFragment = this.apollo.readFragment({
 				id: `LoanPartner:${this.loanId}`,
 				fragment: loanCardFieldsFragment,
 			}) || null;
-			if (loanCardFieldFragment) {
-				this.loan = loanCardFieldFragment;
-				this.isLoading = false;
-			}
 		} catch (e) {
 			// no-op
+		}
+		try {
+			// Attempt to read the loan card fragment from the cache
+			// If cache is missing fragment fields, this will throw an invariant error
+			directFragment = this.apollo.readFragment({
+				id: `LoanDirect:${this.loanId}`,
+				fragment: loanCardFieldsFragment,
+			}) || null;
+		} catch (e) {
+			// no-op
+		}
+		const loanCardFieldFragment = partnerFragment || directFragment;
+		if (loanCardFieldFragment) {
+			this.loan = loanCardFieldFragment;
+			this.isLoading = false;
 		}
 	},
 	watch: {
