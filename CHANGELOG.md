@@ -1,3 +1,11 @@
+## [2.328.0](https://github.com/kiva/ui/compare/v2.327.0...v2.328.0) (2022-10-11)
+
+
+### Features
+
+* add support for direct or partner for loan card fragment ([a9ae904](https://github.com/kiva/ui/commit/a9ae9045e40fb15e8fc1fcacea9d738fb88d1ef0))
+* use loanCardFields fragment for kiva classic basic loan card ([1ef9ead](https://github.com/kiva/ui/commit/1ef9ead8501222c3afde68eb6edc3f5b4fefac24))
+
 ## [2.327.0](https://github.com/kiva/ui/compare/v2.326.0...v2.327.0) (2022-10-11)
 
 
