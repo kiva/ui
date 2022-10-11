@@ -1,3 +1,5 @@
+import showVerificationLightboxQuery from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
+import closeVerificationLightboxQuery from '@/graphql/mutation/checkout/closeVerificationLightbox.graphql';
 /*
  * VerificationLightbox resolvers
  */
@@ -17,6 +19,7 @@ export default () => {
 			Mutation: {
 				showVerificationLightbox(_, args, context) {
 					context.cache.writeQuery({
+						query: showVerificationLightboxQuery,
 						data: {
 							verificationLightbox: {
 								visible: true,
@@ -28,6 +31,7 @@ export default () => {
 				},
 				closeVerificationLightbox(_, args, context) {
 					context.cache.writeQuery({
+						query: closeVerificationLightboxQuery,
 						data: {
 							verificationLightbox: {
 								visible: false,

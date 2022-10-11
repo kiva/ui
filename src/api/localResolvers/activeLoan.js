@@ -1,3 +1,4 @@
+import query from '@/graphql/mutation/updateActiveLoan.graphql';
 /*
  * Active loan resolvers
  */
@@ -54,6 +55,7 @@ export default () => {
 					};
 
 					context.cache.writeQuery({
+						query,
 						data,
 					});
 

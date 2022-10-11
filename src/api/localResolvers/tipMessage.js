@@ -1,3 +1,5 @@
+import showTipMessageQuery from '@/graphql/mutation/tipMessage/showTipMessage.graphql';
+import closeTipMessageQuery from '@/graphql/mutation/tipMessage/closeTipMessage.graphql';
 /*
  * TipMessage resolvers
  */
@@ -16,6 +18,7 @@ export default () => {
 			Mutation: {
 				showTipMessage(_, { message = '', persist = false, type = '' }, context) {
 					context.cache.writeQuery({
+						query: showTipMessageQuery,
 						data: {
 							tip: {
 								message,
@@ -30,6 +33,7 @@ export default () => {
 				},
 				closeTipMessage(_, data, context) {
 					context.cache.writeQuery({
+						query: closeTipMessageQuery,
 						data: {
 							tip: {
 								visible: false,

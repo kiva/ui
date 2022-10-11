@@ -1,3 +1,4 @@
+import query from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 /*
  * Add to Basket Interstitial resolvers
  */
@@ -24,6 +25,7 @@ export default () => {
 					};
 
 					context.cache.writeQuery({
+						query,
 						data,
 					});
 
