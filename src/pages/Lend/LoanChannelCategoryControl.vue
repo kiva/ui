@@ -33,6 +33,7 @@
 				:total-loans="totalCount"
 				:filter-options="quickFiltersOptions"
 				:filters-loaded="filtersLoaded"
+				:update-filters="updateQuickFilters"
 			/>
 		</div>
 
@@ -419,7 +420,14 @@ export default {
 	},
 	methods: {
 		updateQuickFilters(filter) {
-			this.selectedQuickFilters = { ...this.selectedQuickFilters, filter };
+			if (filter.gender) {
+				this.selectedQuickFilters.gender = filter.gender;
+			} else if (filter.sortBy) {
+				this.selectedQuickFilters.sortBy = filter.sortBy;
+			} else {
+				this.selectedQuickFilters.countryIsoCode = filter.country;
+			}
+			this.activateLoanChannelWatchQuery();
 		},
 		checkIfPageIsOutOfRange(loansArrayLength, pageQueryParam) {
 			// determines if the page query param is for a page that is out of bounds.
