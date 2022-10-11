@@ -1,3 +1,10 @@
+## [2.327.0](https://github.com/kiva/ui/compare/v2.326.0...v2.327.0) (2022-10-11)
+
+
+### Features
+
+* new badge for quick filter experiment was added ([18effb8](https://github.com/kiva/ui/commit/18effb80ccbdf769fdc7e0570eec1e2e8557de59))
+
 ## [2.326.0](https://github.com/kiva/ui/compare/v2.325.0...v2.326.0) (2022-10-10)
 
 
