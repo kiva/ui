@@ -16,7 +16,9 @@ export default () => {
 		},
 		resolvers: {
 			Mutation: {
-				showTipMessage(_, { message = '', persist = false, type = '' }, context) {
+				showTipMessage(_, {
+					message = '', persist = false, type = '', visible = true
+				}, context) {
 					context.cache.writeQuery({
 						query: showTipMessageQuery,
 						data: {
@@ -24,19 +26,19 @@ export default () => {
 								message,
 								persist,
 								type,
-								visible: true,
+								visible,
 								__typename: 'TipMessage',
 							},
 						},
 					});
 					return true;
 				},
-				closeTipMessage(_, data, context) {
+				closeTipMessage(_, { visible = false }, context) {
 					context.cache.writeQuery({
 						query: closeTipMessageQuery,
 						data: {
 							tip: {
-								visible: false,
+								visible,
 								__typename: 'TipMessage',
 							},
 						},

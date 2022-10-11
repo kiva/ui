@@ -17,24 +17,24 @@ export default () => {
 		},
 		resolvers: {
 			Mutation: {
-				showVerificationLightbox(_, args, context) {
+				showVerificationLightbox(_, { visible = true }, context) {
 					context.cache.writeQuery({
 						query: showVerificationLightboxQuery,
 						data: {
 							verificationLightbox: {
-								visible: true,
+								visible,
 								__typename,
 							},
 						},
 					});
 					return true;
 				},
-				closeVerificationLightbox(_, args, context) {
+				closeVerificationLightbox(_, { visible = false }, context) {
 					context.cache.writeQuery({
 						query: closeVerificationLightboxQuery,
 						data: {
 							verificationLightbox: {
-								visible: false,
+								visible,
 								__typename,
 							},
 						},
