@@ -1,3 +1,40 @@
+## [2.330.0](https://github.com/kiva/ui/compare/v2.329.0...v2.330.0) (2022-10-11)
+
+
+### Features
+
+* help me choose feature setup added to category page ([dd72543](https://github.com/kiva/ui/commit/dd7254342ebc9db69fade09d40fde2cba98e7f5e))
+
+## [2.329.0](https://github.com/kiva/ui/compare/v2.328.0...v2.329.0) (2022-10-11)
+
+
+### Features
+
+* display filtered category loans for quick filters ([d13040c](https://github.com/kiva/ui/commit/d13040c59f5e63ea1567e3c97abc5ca5484ba8f0))
+* update category pages to show selected quick filters ([8cafb3f](https://github.com/kiva/ui/commit/8cafb3f94577851c37762c70322e7eda7d412f43))
+
+
+### Bug Fixes
+
+* merge conflicts ([29ffb5d](https://github.com/kiva/ui/commit/29ffb5d97b30eb681ac3655efbc00e6897bd089c))
+* pr comments ([0e6995b](https://github.com/kiva/ui/commit/0e6995b3302d85a4669e809407088078e976c708))
+* unit tests ([a6d01c2](https://github.com/kiva/ui/commit/a6d01c23986a688286a0251ac35be1392b263df3))
+
+## [2.328.0](https://github.com/kiva/ui/compare/v2.327.0...v2.328.0) (2022-10-11)
+
+
+### Features
+
+* add support for direct or partner for loan card fragment ([a9ae904](https://github.com/kiva/ui/commit/a9ae9045e40fb15e8fc1fcacea9d738fb88d1ef0))
+* use loanCardFields fragment for kiva classic basic loan card ([1ef9ead](https://github.com/kiva/ui/commit/1ef9ead8501222c3afde68eb6edc3f5b4fefac24))
+
+## [2.327.0](https://github.com/kiva/ui/compare/v2.326.0...v2.327.0) (2022-10-11)
+
+
+### Features
+
+* new badge for quick filter experiment was added ([18effb8](https://github.com/kiva/ui/commit/18effb80ccbdf769fdc7e0570eec1e2e8557de59))
+
 ## [2.326.0](https://github.com/kiva/ui/compare/v2.325.0...v2.326.0) (2022-10-10)
 
 
