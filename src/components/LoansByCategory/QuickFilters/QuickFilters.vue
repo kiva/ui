@@ -40,6 +40,7 @@
 				:regions="filterOptions.location"
 				:total-loans="totalLoans"
 				:filters-loaded="filtersLoaded"
+				:update-location="updateLocation"
 			/>
 		</div>
 	</div>
@@ -64,6 +65,10 @@ export default {
 		filtersLoaded: {
 			type: Boolean,
 			default: false
+		},
+		updateFilters: {
+			type: Function,
+			required: true
 		}
 	},
 	components: {
@@ -81,6 +86,16 @@ export default {
 		if (!badgeCookie) {
 			this.showBadge = true;
 			this.cookieStore.set('quick_filter_new_badge', true);
+		}
+	},
+	watch: {
+		selectedGender(gender) {
+			this.updateFilters({ gender });
+		},
+	},
+	methods: {
+		updateLocation(location) {
+			this.updateFilters({ country: location });
 		}
 	}
 };

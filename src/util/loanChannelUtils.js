@@ -173,7 +173,7 @@ export function watchChannelQuery(apollo, queryMap, selectedQuickFilters, channe
 		experimentActive = checkCachedChannelExperiment(apollo);
 
 		if (experimentActive) {
-			observer = watchLoanChannel(apollo, queryMapFLSS, loanQueryVars, selectedQuickFilters);
+			observer = watchLoanChannel(apollo, { ...queryMapFLSS, ...selectedQuickFilters }, loanQueryVars);
 		}
 	}
 
@@ -189,8 +189,10 @@ export function watchChannelQuery(apollo, queryMap, selectedQuickFilters, channe
 			}
 		});
 
-		// eslint-disable-next-line max-len
-		watch(vars => observer.setVariables(experimentActive ? getLoanChannelVariables({ ...queryMapFLSS, ...selectedQuickFilters }, vars) : vars));
+		watch(vars => {
+			// eslint-disable-next-line max-len
+			observer.setVariables(experimentActive ? getLoanChannelVariables({ ...queryMapFLSS, ...selectedQuickFilters }, vars) : vars);
+		});
 
 		return observer;
 	}
