@@ -2,6 +2,7 @@
 	<div
 		id="app"
 		class="tw-h-full tw-bg-primary"
+		:data-hydrated="dataHydrated"
 	>
 		<router-view />
 		<vue-progress-bar />
@@ -17,6 +18,11 @@ import unbounceEventMixin from '@/plugins/unbounce-event-mixin';
 
 export default {
 	name: 'App',
+	data() {
+		return {
+			dataHydrated: false
+		};
+	},
 	components: {
 		TheTipMessage,
 	},
@@ -207,6 +213,9 @@ export default {
 			]))
 		};
 	},
+	mounted() {
+		this.dataHydrated = true;
+	}
 };
 </script>
 
