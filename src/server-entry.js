@@ -14,6 +14,8 @@ import { authenticationGuard } from '@/util/authenticationGuard';
 import { contentfulPreviewCookie } from '@/util/contentfulPreviewCookie';
 
 import logFormatter from '@/util/logFormatter';
+import numeral from 'numeral';
+import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 
 const fetch = require('make-fetch-happen');
 
@@ -182,6 +184,30 @@ export default context => {
 					logFormatter(`data pre-fetch: ${Date.now() - s}ms`);
 					sp = new Date();
 				}
+				const transactionId = router.currentRoute.query?.kiva_transaction_id
+					? numeral(router.currentRoute.query?.kiva_transaction_id).value()
+					: null;
+
+				const data = transactionId ? apolloClient.readQuery({
+					query: thanksPageQuery,
+					variables: {
+						checkoutId: transactionId,
+						visitorId: cookieStore.get('uiv') || null,
+					}
+				}) : {};
+
+				const loans = data?.shop?.receipt?.items?.values
+					.filter(item => item.basketItemType === 'loan_reservation')
+					.map(item => item.loan) ?? [];
+
+				const optimizelyData = {
+					viewer: {
+						userId: data?.my?.userAccount?.id,
+						displayName: `${data?.my?.userAccount?.firstName} ${data?.my?.userAccount?.lastName}`,
+						publicProfile: data?.my?.userAccount?.public
+					},
+					loans
+				};
 				// This `rendered` hook is called when the app has finished rendering
 				context.rendered = () => {
 					if (isDev) logFormatter(`vue serverPrefetch: ${Date.now() - sp}ms`);
@@ -195,6 +221,7 @@ export default context => {
 					context.meta = app.$meta();
 					context.renderedState = renderGlobals({
 						__APOLLO_STATE__: apolloClient.cache.extract(),
+						__OPTIMIZELY_DATA__: optimizelyData
 					});
 					context.setCookies = cookieStore.getSetCookies();
 				};
