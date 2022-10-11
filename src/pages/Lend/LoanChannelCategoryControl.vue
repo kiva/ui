@@ -578,7 +578,7 @@ export default {
 			this.quickFiltersOptions.gender = [
 				{
 					title: 'All genders',
-					key: 'all',
+					key: '',
 				},
 				{
 					title: 'Women',
