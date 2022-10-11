@@ -1,3 +1,10 @@
+## [2.330.0](https://github.com/kiva/ui/compare/v2.329.0...v2.330.0) (2022-10-11)
+
+
+### Features
+
+* help me choose feature setup added to category page ([dd72543](https://github.com/kiva/ui/commit/dd7254342ebc9db69fade09d40fde2cba98e7f5e))
+
 ## [2.329.0](https://github.com/kiva/ui/compare/v2.328.0...v2.329.0) (2022-10-11)
 
 
