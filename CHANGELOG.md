@@ -1,3 +1,18 @@
+## [2.329.0](https://github.com/kiva/ui/compare/v2.328.0...v2.329.0) (2022-10-11)
+
+
+### Features
+
+* display filtered category loans for quick filters ([d13040c](https://github.com/kiva/ui/commit/d13040c59f5e63ea1567e3c97abc5ca5484ba8f0))
+* update category pages to show selected quick filters ([8cafb3f](https://github.com/kiva/ui/commit/8cafb3f94577851c37762c70322e7eda7d412f43))
+
+
+### Bug Fixes
+
+* merge conflicts ([29ffb5d](https://github.com/kiva/ui/commit/29ffb5d97b30eb681ac3655efbc00e6897bd089c))
+* pr comments ([0e6995b](https://github.com/kiva/ui/commit/0e6995b3302d85a4669e809407088078e976c708))
+* unit tests ([a6d01c2](https://github.com/kiva/ui/commit/a6d01c23986a688286a0251ac35be1392b263df3))
+
 ## [2.328.0](https://github.com/kiva/ui/compare/v2.327.0...v2.328.0) (2022-10-11)
 
 
