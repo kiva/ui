@@ -82,7 +82,7 @@
 					<h2>Way to go!</h2>
 					<p class="tw-text-subhead tw-mt-1">
 						<!-- eslint-disable-next-line max-len -->
-						By supporting this eco-friendly loan you're helping to building climate resiliency in underserved regions that need it most.
+						By supporting this eco-friendly loan, you're enabling sustainable lifestyles that slow climate change.
 					</p>
 					<div
 						class="tw-bg-black tw-rounded tw-flex tw-items-center
@@ -90,7 +90,7 @@
 						style="max-width: 390px;"
 					>
 						<h3 class="tw-text-primary-inverse tw-mr-1.5">
-							You're on the way to completing your first challenge!
+							You’re on the way to your first achievement!
 						</h3>
 						<icon-sun-half class="tw-h-5 tw-w-5 tw-mr-0.5 tw-flex-none" />
 						<icon-spark class="tw-h-5 tw-w-5 tw-absolute" style="right: -2rem; top: -2rem;" />
@@ -191,6 +191,7 @@
 						:loan-channel-id="channelId"
 						:loan-display-settings="loanDisplaySettings"
 						:lend-now-button="true"
+						:query-context="ecoExpQueryContext"
 					/>
 				</div>
 			</kv-page-container>
@@ -206,6 +207,7 @@ import orderBy from 'lodash/orderBy';
 
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import logReadQueryError from '@/util/logReadQueryError';
+import { FLSS_ORIGIN_THANKS } from '@/util/flssUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import { missingMilestones, achievementsQueryFromCache, achievementsQuery } from '@/util/ecoChallengeUtils';
@@ -256,6 +258,7 @@ export default {
 				showViewMoreCard: true,
 				showCheckBackMessage: true
 			},
+			ecoExpQueryContext: FLSS_ORIGIN_THANKS
 		};
 	},
 	apollo: {

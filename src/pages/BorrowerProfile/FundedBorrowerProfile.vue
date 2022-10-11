@@ -213,6 +213,7 @@ import {
 	getExperimentSettingCached,
 	trackExperimentVersion
 } from '@/util/experimentUtils';
+import { FLSS_ORIGIN_BP_FUNDED } from '@/util/flssUtils';
 import loanUseFilter from '@/plugins/loan-use-filter';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
@@ -469,7 +470,8 @@ export default {
 							limit: row.limit,
 							filters: [
 								row.filter
-							]
+							],
+							origin: FLSS_ORIGIN_BP_FUNDED
 						};
 
 						this.apollo.query({

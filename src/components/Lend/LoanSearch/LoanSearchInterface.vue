@@ -126,7 +126,9 @@ import {
 	transformIsoCodes,
 	transformThemes,
 	transformSectors,
+	transformTags,
 } from '@/util/loanSearch/filterUtils';
+import { FLSS_ORIGIN_LEND_FILTER } from '@/util/flssUtils';
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
 import { applyQueryParams, hasExcludedQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
 import { updateSearchState } from '@/util/loanSearch/searchStateUtils';
@@ -177,64 +179,7 @@ export default {
 		return {
 			initialLoadComplete: false,
 			loading: true,
-			/**
-			 * All available facet options from lend API. Format:
-			 * {
-			 *   countryFacets: [
-			 *     {
-			 *       name: '',
-			 *       isoCode: '',
-			 *       region: '',
-			 *     }
-			 *   ],
-			 *   sectorFacets: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *     }
-			 *   ],
-			 *   themeFacets: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *     }
-			 *   ],
-			 * }
-			 */
 			allFacets: undefined,
-			/**
-			 * Facet options based on the loans available. Format:
-			 * {
-			 *   regions: [
-			 *     {
-			 *       region: '',
-			 *       numLoansFundraising: 1,
-			 *       countries: [
-			 *         {
-			 *           name: '',
-			 *           region: '',
-			 *           isoCode: '',
-			 *           numLoansFundraising: 1,
-			 *         }
-			 *       ]
-			 *     }
-			 *   ],
-			 *   sectors: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *       numLoansFundraising: 1,
-			 *     }
-			 *   ],
-			 *   themes: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *       numLoansFundraising: 1,
-			 *     }
-			 *   ],
-			 * }
-			 */
 			facets: {},
 			loans: [],
 			totalCount: 0,
@@ -311,7 +256,7 @@ export default {
 
 				const [{ loans, totalCount }] = await Promise.all([
 					// Get filtered loans from FLSS
-					await runLoansQuery(this.apollo, this.loanSearchState),
+					await runLoansQuery(this.apollo, this.loanSearchState, FLSS_ORIGIN_LEND_FILTER),
 					// Get filtered facet options from FLSS
 					await this.fetchFacets(this.loanSearchState)
 				]);
@@ -355,10 +300,12 @@ export default {
 			const genderFilterApplied = this.loanSearchState.gender;
 			const sectorFilterApplied = this.loanSearchState.sectorId.length > 0;
 			const themeFilterApplied = this.loanSearchState.themeId.length > 0;
+			const tagFilterApplied = this.loanSearchState.tagId.length > 0;
 			return countryFilterApplied
 				|| genderFilterApplied
 				|| sectorFilterApplied
-				|| themeFilterApplied;
+				|| themeFilterApplied
+				|| tagFilterApplied;
 		},
 		themeNames() {
 			return this.allFacets?.themeNames ?? [];
@@ -367,14 +314,19 @@ export default {
 	methods: {
 		async fetchFacets(loanSearchState = {}) {
 			// TODO: Prevent this from running on every query (not needed for sorting and paging)
-			const { isoCodes, themes, sectors } = await runFacetsQueries(this.apollo, loanSearchState);
+			const { isoCodes, themes, sectors } = await runFacetsQueries(
+				this.apollo,
+				loanSearchState,
+				FLSS_ORIGIN_LEND_FILTER
+			);
 
 			// Merge all facet options with filtered options
 			this.facets = {
 				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 				sectors: transformSectors(sectors, this.allFacets?.sectorFacets),
 				themes: transformThemes(themes, this.allFacets?.themeFacets),
-				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
+				tags: transformTags(this.allFacets?.tagFacets ?? []),
+				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? []),
 			};
 		},
 		trackLoans() {

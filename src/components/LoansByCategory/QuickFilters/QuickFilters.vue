@@ -1,6 +1,15 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-mb-2 tw-w-full">
-		<div class="tw-flex tw-items-center tw-mb-2">
+		<div class="tw-flex tw-items-center tw-mb-2 tw-relative">
+			<div
+				v-show="showBadge"
+				class="tw-hidden lg:tw-flex tw-gap-1 tw-text-base tw-text-primary-inverse
+					tw-rounded tw-bg-brand tw-px-1.5 tw-py-0.5
+					tw-absolute"
+				style="left: -102px;"
+			>
+				<img src="@/assets/images/green_sparkles.svg" alt=""> New!
+			</div>
 			<h3 class="tw-text-h3">
 				Quick filters
 			</h3>
@@ -43,6 +52,7 @@ import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
 	name: 'QuickFilters',
+	inject: ['cookieStore'],
 	props: {
 		totalLoans: {
 			type: Number,
@@ -68,7 +78,8 @@ export default {
 	data() {
 		return {
 			selectedGender: '',
-			selectedLocation: []
+			selectedLocation: [],
+			showBadge: false
 		};
 	},
 	watch: {
@@ -79,6 +90,13 @@ export default {
 	methods: {
 		updateLocation(location) {
 			this.updateFilters({ country: location });
+		}
+	},
+	mounted() {
+		const badgeCookie = this.cookieStore.get('quick_filter_new_badge') === 'true' || false;
+		if (!badgeCookie) {
+			this.showBadge = true;
+			this.cookieStore.set('quick_filter_new_badge', true);
 		}
 	}
 };

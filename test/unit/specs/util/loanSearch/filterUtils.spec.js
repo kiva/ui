@@ -10,6 +10,8 @@ import {
 	FLSS_QUERY_TYPE,
 	STANDARD_QUERY_TYPE,
 	visibleFLSSSortOptions,
+	transformTagName,
+	transformTags,
 } from '@/util/loanSearch/filterUtils';
 import _orderBy from 'lodash/orderBy';
 import {
@@ -268,6 +270,47 @@ describe('filterUtils.js', () => {
 		});
 	});
 
+	describe('transformTagName', () => {
+		it('should handle empty', () => {
+			expect(transformTagName()).toEqual('');
+		});
+
+		it('should remove #', () => {
+			expect(transformTagName('#test')).toEqual('test');
+		});
+
+		it('should leave name without leading # as is', () => {
+			expect(transformTagName('test#')).toEqual('test#');
+		});
+	});
+
+	describe('transformTags', () => {
+		it('should handle empty', () => {
+			expect(transformTags()).toEqual([]);
+			expect(transformTags([])).toEqual([]);
+		});
+
+		it('should transform and sort', () => {
+			const result = transformTags([
+				{ id: 1, name: 'tag', vocabularyId: 2 },
+				{ id: 2, name: '#tag2', vocabularyId: 2 },
+				{ id: 3, name: 'asd', vocabularyId: 2 }
+			]);
+
+			expect(result).toEqual([{ id: 3, name: 'asd' }, { id: 1, name: 'tag' }, { id: 2, name: 'tag2' }]);
+		});
+
+		it('should only return public tags', () => {
+			const result = transformTags([
+				{ id: 1, name: 'tag', vocabularyId: 2 },
+				{ id: 2, name: '#tag2', vocabularyId: 1 },
+				{ id: 3, name: 'asd', vocabularyId: 2 }
+			]);
+
+			expect(result).toEqual([{ id: 3, name: 'asd' }, { id: 1, name: 'tag' }]);
+		});
+	});
+
 	describe('getUpdatedRegions', () => {
 		it('should handle undefined and empty', () => {
 			expect(getUpdatedRegions(undefined, [])).toEqual([]);
@@ -330,6 +373,13 @@ describe('filterUtils.js', () => {
 
 			expect(getUpdatedNumLoansFundraising([a], [a, nextB])).toEqual([a, nextB]);
 		});
+
+		it('should handle missing numLoansFundraising', () => {
+			const a = { id: 1, name: 'a' };
+			const nextA = { id: 1, name: 'a' };
+
+			expect(getUpdatedNumLoansFundraising([a], [nextA])).toEqual([{ ...nextA }]);
+		});
 	});
 
 	describe('getCheckboxLabel', () => {
@@ -339,6 +389,10 @@ describe('filterUtils.js', () => {
 
 		it('should handle item', () => {
 			expect(getCheckboxLabel({ name: 'test', numLoansFundraising: 1 })).toBe('test (1)');
+		});
+
+		it('should handle missing numLoansFundraising', () => {
+			expect(getCheckboxLabel({ name: 'test' })).toBe('test');
 		});
 	});
 });

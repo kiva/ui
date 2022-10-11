@@ -60,6 +60,14 @@ describe('searchStateUtils.js', () => {
 			expect(result).toEqual({ ...mockState, themeId: [] });
 		});
 
+		it('should validate tag', () => {
+			const state = { ...mockState, tagId: ['asd'] };
+
+			const result = getValidatedSearchState(state, mockAllFacets, STANDARD_QUERY_TYPE);
+
+			expect(result).toEqual({ ...mockState, tagId: [] });
+		});
+
 		it('should validate pageOffset', () => {
 			const state = { ...mockState, pageOffset: 'asd' };
 
