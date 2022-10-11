@@ -173,6 +173,10 @@ export default {
 		enableQuickFilters: {
 			type: Boolean,
 			default: false,
+		},
+		enableHelpmeChoose: {
+			type: Boolean,
+			default: false,
 		}
 	},
 	components: {

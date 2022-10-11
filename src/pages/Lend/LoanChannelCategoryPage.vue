@@ -6,6 +6,7 @@
 		<component
 			:is="pageLayoutComponent"
 			:enable-quick-filters="enableQuickFilters"
+			:enable-helpme-choose="enableHelpmeChoose"
 		/>
 
 		<add-to-basket-interstitial />
@@ -44,6 +45,10 @@ const pageQuery = gql`
 				value
 			}
 			quickFilters: uiExperimentSetting(key: "quick_filters") {
+				key
+				value
+			}
+			helpmeChoose: uiExperimentSetting(key: "helpme_choose") {
 				key
 				value
 			}
@@ -108,6 +113,7 @@ export default {
 			pageLayout: 'control',
 			pageLayoutComponent: null,
 			enableQuickFilters: false,
+			enableHelpmeChoose: false,
 		};
 	},
 	apollo: {
@@ -167,6 +173,7 @@ export default {
 				return Promise.all([
 					...gameExperimentAssignments,
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'quick_filters' } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'helpme_choose' } }),
 				]);
 			}).then(results => {
 				// manipulate experiment results format
@@ -204,6 +211,7 @@ export default {
 		this.initializeAddToBasketInterstitial();
 		// Experimental page layout
 		this.initializeExperimentalPageLayout();
+		// Initialize Quick Filters Experiment
 		if (this.targetedLoanChannel !== 'women'
 				&& this.targetedLoanChannel !== 'eco-friendly'
 				&& this.targetedLoanChannel !== 'kiva-u-s'
@@ -212,6 +220,14 @@ export default {
 				&& this.targetedLoanChannel !== 'short-term-loans'
 		) {
 			this.initializeQuickFilters();
+		}
+		// Initialize Help Me Choose Experiment
+		if (this.targetedLoanChannel === 'women'
+				&& this.targetedLoanChannel === 'kiva-u-s'
+				&& this.targetedLoanChannel === 'mission-driven-orgs'
+				&& this.targetedLoanChannel === 'short-term-loans'
+		) {
+			this.initializeHelpmeChoose();
 		}
 	},
 	computed: {
@@ -245,6 +261,20 @@ export default {
 					'Lending',
 					'EXP-CORE-729-Sept-2022',
 					quickFiltersExperiment.version
+				);
+			}
+		},
+		initializeHelpmeChoose() {
+			const helpmeChooseExperiment = this.apollo.readFragment({
+				id: 'Experiment:helpme_choose',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.enableHelpmeChoose = helpmeChooseExperiment.version === 'b';
+			if (helpmeChooseExperiment.version) {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CORE-771-Oct-2022',
+					helpmeChooseExperiment.version
 				);
 			}
 		},
