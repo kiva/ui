@@ -168,12 +168,14 @@ export function watchChannelQuery(apollo, queryMap, selectedQuickFilters, channe
 
 	let experimentActive = false;
 
+	const filterObj = { ...queryMapFLSS, ...selectedQuickFilters };
+
 	// Check if current user should see the FLSS experiment
 	if (queryMapFLSS) {
 		experimentActive = checkCachedChannelExperiment(apollo);
 
 		if (experimentActive) {
-			observer = watchLoanChannel(apollo, { ...queryMapFLSS, ...selectedQuickFilters }, loanQueryVars);
+			observer = watchLoanChannel(apollo, filterObj, loanQueryVars);
 		}
 	}
 
@@ -191,7 +193,7 @@ export function watchChannelQuery(apollo, queryMap, selectedQuickFilters, channe
 
 		watch(vars => {
 			// eslint-disable-next-line max-len
-			observer.setVariables(experimentActive ? getLoanChannelVariables({ ...queryMapFLSS, ...selectedQuickFilters }, vars) : vars);
+			observer.setVariables(experimentActive ? getLoanChannelVariables(filterObj, vars) : vars);
 		});
 
 		return observer;
