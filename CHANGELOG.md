@@ -1,3 +1,10 @@
+### [2.330.1](https://github.com/kiva/ui/compare/v2.330.0...v2.330.1) (2022-10-11)
+
+
+### Bug Fixes
+
+* enable some traffic to landing pages in lighthouse for ui and cps comparison ([0797568](https://github.com/kiva/ui/commit/079756820e1261fac996dd1c7c466c6d88759f89))
+
 ## [2.330.0](https://github.com/kiva/ui/compare/v2.329.0...v2.330.0) (2022-10-11)
 
 
