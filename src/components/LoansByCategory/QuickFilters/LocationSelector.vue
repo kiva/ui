@@ -165,6 +165,10 @@ export default {
 		filtersLoaded: {
 			type: Boolean,
 			default: false
+		},
+		updateLocation: {
+			type: Function,
+			required: true,
 		}
 	},
 	data() {
@@ -182,6 +186,7 @@ export default {
 		toggleRegions() {
 			this.showRegions = !this.showRegions;
 			this.selectedRegion = null;
+			this.updateLocation(this.selectedCountries);
 		},
 		selectRegion(index) {
 			this.selectedRegion = this.selectedRegion === index ? null : index;
