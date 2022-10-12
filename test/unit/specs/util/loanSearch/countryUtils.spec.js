@@ -10,7 +10,7 @@ import {
 	mockTransformedColombia,
 	mockTransformedSouthAmerica,
 	mockTransformedRegions
-} from './mockData';
+} from '../../../fixtures/mockLoanSearchData';
 
 describe('countryUtils.js', () => {
 	describe('sortRegions', () => {

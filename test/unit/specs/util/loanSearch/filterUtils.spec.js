@@ -12,6 +12,15 @@ import {
 	visibleFLSSSortOptions,
 	transformTagName,
 	transformTags,
+	transformRadioGroupOptions,
+	transformGenderOptions,
+	transformDistributionModelOptions,
+	FEMALE_KEY,
+	MALE_KEY,
+	FIELDPARTNER_KEY,
+	DIRECT_KEY,
+	genderDisplayMap,
+	distributionModelDisplayMap,
 } from '@/util/loanSearch/filterUtils';
 import _orderBy from 'lodash/orderBy';
 import {
@@ -20,7 +29,7 @@ import {
 	mockTransformedColombia,
 	mockTransformedSouthAmerica,
 	mockTransformedRegions
-} from './mockData';
+} from '../../../fixtures/mockLoanSearchData';
 
 const mockASector = (numLoansFundraising = 6) => ({ id: 7, name: 'c', numLoansFundraising });
 
@@ -308,6 +317,62 @@ describe('filterUtils.js', () => {
 			]);
 
 			expect(result).toEqual([{ id: 3, name: 'asd' }, { id: 1, name: 'tag' }]);
+		});
+	});
+
+	describe('transformRadioGroupOptions', () => {
+		it('should handle empty', () => {
+			expect(transformRadioGroupOptions([], [], [])).toEqual([]);
+		});
+
+		it('should transform and sort', () => {
+			const options = [{ name: 'b' }, { name: 'c' }, { name: 'a' }];
+
+			const order = ['a', 'b', 'c'];
+
+			const map = { A: 'AA', B: 'BB', C: 'CC' };
+
+			const result = transformRadioGroupOptions(options, order, map);
+
+			expect(result).toEqual([
+				{ name: 'a', title: 'AA' },
+				{ name: 'b', title: 'BB' },
+				{ name: 'c', title: 'CC' }
+			]);
+		});
+	});
+
+	describe('transformGenderOptions', () => {
+		it('should handle empty', () => {
+			expect(transformGenderOptions([])).toEqual([]);
+		});
+
+		it('should transform and sort', () => {
+			const genders = [{ name: MALE_KEY }, { name: FEMALE_KEY }];
+
+			const result = transformGenderOptions(genders);
+
+			expect(result).toEqual([
+				{ name: FEMALE_KEY, title: genderDisplayMap[FEMALE_KEY] },
+				{ name: MALE_KEY, title: genderDisplayMap[MALE_KEY] },
+			]);
+		});
+	});
+
+	describe('transformDistributionModelOptions', () => {
+		it('should handle empty', () => {
+			expect(transformDistributionModelOptions([])).toEqual([]);
+		});
+
+		it('should transform and sort', () => {
+			const distributionModels = [{ name: DIRECT_KEY }, { name: FIELDPARTNER_KEY }];
+
+			const result = transformDistributionModelOptions(distributionModels);
+
+			expect(result).toEqual([
+				{ name: FIELDPARTNER_KEY, title: distributionModelDisplayMap[FIELDPARTNER_KEY] },
+				{ name: DIRECT_KEY, title: distributionModelDisplayMap[DIRECT_KEY] },
+			]);
 		});
 	});
 
