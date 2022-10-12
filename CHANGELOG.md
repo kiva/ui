@@ -1,3 +1,11 @@
+## [2.331.0](https://github.com/kiva/ui/compare/v2.330.1...v2.331.0) (2022-10-12)
+
+
+### Features
+
+* add flag when data is completely loaded for optimizely experiments ([8573c95](https://github.com/kiva/ui/commit/8573c956f161d12393b5ef48dd65dfbae6a49f2a))
+* get thankspage data using window object ([e3df8ee](https://github.com/kiva/ui/commit/e3df8eec35ff106bd85e85e7ad29a254aeb7ae69))
+
 ### [2.330.1](https://github.com/kiva/ui/compare/v2.330.0...v2.330.1) (2022-10-11)
 
 
