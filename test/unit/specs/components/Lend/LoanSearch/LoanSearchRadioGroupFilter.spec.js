@@ -62,4 +62,19 @@ describe('LoanSearchRadioGroupFilter', () => {
 		await user.click(radio);
 		expect(radio.checked).toBeTruthy();
 	});
+
+	it('should set all option title', () => {
+		const options = getOptions();
+
+		const allOptionTitle = 'All stuff';
+
+		const { getByLabelText } = render(LoanSearchRadioGroupFilter, {
+			props: {
+				options, filterKey: 'option', eventAction: 'action', allOptionTitle
+			}
+		});
+
+		const radio = getByLabelText(allOptionTitle);
+		expect(radio.checked).toBeTruthy();
+	});
 });

@@ -38,6 +38,10 @@ export default {
 		eventAction: {
 			type: String,
 			required: true
+		},
+		allOptionTitle: {
+			type: String,
+			default: ALL_LOANS_TITLE
 		}
 	},
 	data() {
@@ -49,7 +53,7 @@ export default {
 		displayedOptions() {
 			return [
 				// Don't show "all" until options have loaded
-				...(this.options.length > 0 ? [{ title: ALL_LOANS_TITLE, name: '' }] : []),
+				...(this.options.length > 0 ? [{ title: this.allOptionTitle, name: '' }] : []),
 				...this.options
 			];
 		}

@@ -13,6 +13,7 @@
 			:selected="loanSearchState.gender"
 			filter-key="gender"
 			event-action="click-gender-filter"
+			all-option-title="All genders"
 			@updated="handleUpdatedFilters"
 		/>
 		<hr class="tw-border-tertiary tw-my-1">
