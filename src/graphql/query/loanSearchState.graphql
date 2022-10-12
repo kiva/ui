@@ -9,5 +9,6 @@ query loanSearchStateQuery {
 		tagId
 		pageOffset
 		pageLimit
+		distributionModel
 	}
 }

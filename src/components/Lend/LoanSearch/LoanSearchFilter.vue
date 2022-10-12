@@ -8,7 +8,13 @@
 			</p>
 		</button>
 		<hr class="tw-border-tertiary tw-my-1">
-		<loan-search-gender-filter :gender="loanSearchState.gender" @updated="handleUpdatedFilters" />
+		<loan-search-radio-group-filter
+			:options="facets.genders"
+			:selected="loanSearchState.gender"
+			filter-key="gender"
+			event-action="click-gender-filter"
+			@updated="handleUpdatedFilters"
+		/>
 		<hr class="tw-border-tertiary tw-my-1">
 		<kv-accordion-item id="acc-sort-by" :open="false">
 			<template #header>
@@ -93,6 +99,20 @@
 					</h2>
 				</button>
 			</kv-accordion-item>
+			<kv-accordion-item id="acc-distribution-model" :open="false">
+				<template #header>
+					<h2 class="tw-text-h4">
+						Loan distribution
+					</h2>
+				</template>
+				<loan-search-radio-group-filter
+					:options="facets.distributionModels"
+					:selected="loanSearchState.distributionModel"
+					filter-key="distributionModel"
+					event-action="click-distributionModel-filter"
+					@updated="handleUpdatedFilters"
+				/>
+			</kv-accordion-item>
 		</template>
 		<template v-else>
 			<button class="tw-mt-2 tw-h-[22px]" @click="advancedFilters">
@@ -108,12 +128,12 @@
 <script>
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiClose, mdiArrowRight } from '@mdi/js';
-import LoanSearchGenderFilter from '@/components/Lend/LoanSearch/LoanSearchGenderFilter';
 import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
 import LoanSearchCheckboxListFilter from '@/components/Lend/LoanSearch/LoanSearchCheckboxListFilter';
 import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
 import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
+import LoanSearchRadioGroupFilter from '@/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
@@ -122,7 +142,7 @@ export default {
 	components: {
 		KvAccordionItem,
 		KvMaterialIcon,
-		LoanSearchGenderFilter,
+		LoanSearchRadioGroupFilter,
 		LoanSearchLocationFilter,
 		LoanSearchCheckboxListFilter,
 		LoanSearchSortBy,

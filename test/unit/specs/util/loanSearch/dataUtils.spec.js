@@ -2,7 +2,7 @@ import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSea
 import * as flssUtils from '@/util/flssUtils';
 import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
 import { getFlssFilters, FLSS_ORIGIN_NOT_SPECIFIED } from '@/util/flssUtils';
-import { mockState } from './mockData';
+import { mockState } from '../../../fixtures/mockLoanSearchData';
 
 describe('dataUtils.js', () => {
 	describe('runFacetsQueries', () => {
@@ -95,6 +95,7 @@ describe('dataUtils.js', () => {
 		const genderOptions = { enumValues: [{ name: 'female' }] };
 		const flssSorts = { enumValues: [{ name: 'expiringSoon' }] };
 		const standardSorts = { enumValues: [{ name: 'expiringSoon' }] };
+		const distributionModelOptions = { enumValues: [{ name: 'direct' }] };
 
 		it('should pass the correct query variables to apollo', async () => {
 			const apollo = { query: jest.fn(() => Promise.resolve({})) };
@@ -124,7 +125,9 @@ describe('dataUtils.js', () => {
 				genderFacets: [],
 				genders: [],
 				flssSorts: [],
-				standardSorts: []
+				standardSorts: [],
+				distributionModelFacets: [],
+				distributionModels: [],
 			});
 		});
 
@@ -140,6 +143,7 @@ describe('dataUtils.js', () => {
 					genderOptions,
 					flssSorts,
 					standardSorts,
+					distributionModelOptions,
 				}
 			};
 
@@ -163,6 +167,8 @@ describe('dataUtils.js', () => {
 				genders: ['FEMALE'],
 				flssSorts: [{ name: 'expiringSoon' }],
 				standardSorts: [{ name: 'expiringSoon' }],
+				distributionModelFacets: [{ name: 'direct' }],
+				distributionModels: ['DIRECT'],
 			});
 		});
 	});
