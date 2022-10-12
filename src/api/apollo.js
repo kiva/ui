@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { ApolloLink, ApolloClient, InMemoryCache } from '@apollo/client/core';
 
+import loanResolverFactory from '@/api/localResolvers/loan';
 import Auth0LinkCreator from './Auth0Link';
 import BasketLinkCreator from './BasketLink';
 import ContentfulPreviewLink from './ContentfulPreviewLink';
@@ -9,6 +10,105 @@ import HttpLinkCreator from './HttpLink';
 import NetworkErrorLink from './NetworkErrorLink';
 import SnowplowSessionLink from './SnowplowSessionLink';
 // import initState from './localState';
+
+const { resolvers } = loanResolverFactory();
+const { LoanPartner, LoanDirect } = resolvers;
+
+export const typePolicies = {
+	activeLoan: {
+		keyFields: ['hoverLoanId', 'xCoordinate', 'yCoordinate']
+	},
+	LoanChannel: {
+		keyFields: ['id'],
+	},
+	RecLoanChannel: {
+		keyFields: ['id'],
+	},
+	LoanPartner: {
+		fundraisingPercent: {
+			// read function spec: https://www.apollographql.com/docs/react/caching/cache-field-behavior/#fieldpolicy-api-reference
+			read(_, { readField }) {
+				return LoanPartner.fundraisingPercent(readField('loan'));
+			}
+		},
+		fundraisingTimeLeft: {
+			read(_, { readField }) {
+				return LoanPartner.fundraisingTimeLeft(readField('loan'));
+			}
+		},
+		unreservedAmount: {
+			read(_, { readField }) {
+				return LoanPartner.unreservedAmount(readField('loan'));
+			}
+		},
+		fundraisingTimeLeftMilliseconds: {
+			read(_, { readField }) {
+				return LoanPartner.fundraisingTimeLeftMilliseconds(readField('loan'));
+			}
+		},
+	},
+	LoanDirect: {
+		fundraisingPercent: {
+			read(_, { readField }) {
+				return LoanDirect.fundraisingPercent(readField('loan'));
+			}
+		},
+		fundraisingTimeLeft: {
+			read(_, { readField }) {
+				return LoanDirect.fundraisingTimeLeft(readField('loan'));
+			}
+		},
+		unreservedAmount: {
+			read(_, { readField }) {
+				return LoanDirect.unreservedAmount(readField('loan'));
+			}
+		},
+		fundraisingTimeLeftMilliseconds: {
+			read(_, { readField }) {
+				return LoanDirect.fundraisingTimeLeftMilliseconds(readField('loan'));
+			}
+		},
+	},
+	loanSearchState: {
+		keyFields: ['id'],
+	},
+	Manifest: {
+		keyFields: ['id'],
+	},
+	Query: {
+		fields: {
+			// The ml field doesn't have an ID
+			Ml: {
+				merge: true,
+			},
+			// The contentful field doesn't have an ID
+			Contentful: {
+				merge: true,
+			},
+			// The lend field doesn't have an ID
+			Lend: {
+				merge: true,
+			},
+			// The my field doesn't have an ID
+			My: {
+				merge: true,
+			},
+			// The ShopTotals field doesn't have an ID
+			ShopTotals: {
+				merge: true,
+			},
+			// The fundraisingLoans field doesn't have an ID
+			fundraisingLoans: {
+				merge: true,
+			},
+		},
+	},
+	Mutation: {
+		AutolendingMutation: {
+			merge: true
+		}
+	}
+};
 
 export default function createApolloClient({
 	// appConfig,
@@ -31,59 +131,7 @@ export default function createApolloClient({
 
 	const cache = new InMemoryCache({
 		possibleTypes,
-		typePolicies: {
-			activeLoan: {
-				merge: true,
-			},
-			AutolendingMutation: {
-				merge: true,
-			},
-			LoanDirect: {
-				merge: true,
-			},
-			LoanPartner: {
-				merge: true,
-			},
-			LoanChannel: {
-				merge: true,
-				keyFields: ['id'],
-			},
-			RecLoanChannel: {
-				merge: true,
-				keyFields: ['id'],
-			},
-			Manifest: {
-				merge: true,
-				keyFields: ['id'],
-			},
-			Query: {
-				merge: true,
-			},
-			Ml: {
-				merge: true,
-			},
-			General: {
-				merge: true,
-			},
-			Contentful: {
-				merge: true,
-			},
-			Lend: {
-				merge: true,
-			},
-			ShopTotals: {
-				merge: true,
-			},
-			fundraisingLoans: {
-				merge: true,
-			},
-			loanSearchState: {
-				merge: true,
-			},
-			My: {
-				merge: true,
-			},
-		},
+		typePolicies
 	});
 
 	const client = new ApolloClient({
