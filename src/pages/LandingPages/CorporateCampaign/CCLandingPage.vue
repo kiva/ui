@@ -37,7 +37,7 @@
 					:page-setting-data="pageSettingData"
 				/>
 				<campaign-loan-wrapper
-					:ref="content.type"
+					ref="mlLoanDisplay"
 					:component-props="campaignLoanWrapperProps"
 				/>
 				<template v-if="partnerAreaContent">
