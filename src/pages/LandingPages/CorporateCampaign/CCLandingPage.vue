@@ -37,6 +37,7 @@
 					:page-setting-data="pageSettingData"
 				/>
 				<campaign-loan-wrapper
+					:ref="content.type"
 					:component-props="campaignLoanWrapperProps"
 				/>
 				<template v-if="partnerAreaContent">
@@ -72,6 +73,7 @@
 						:name="content.key"
 						:id="content.key"
 						:is="component"
+						:ref="content.type"
 						:content="content"
 						data-section-type="contentful-section"
 						:component-props="campaignLoanWrapperProps"
@@ -1413,7 +1415,7 @@ export default {
 			}
 		},
 		jumpToLoans() {
-			this.$refs.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
+			this.$refs.mlLoanDisplay[0].$refs.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
 		},
 		adjustRouteHash(hash) {
 			const route = { ...this.$route };
