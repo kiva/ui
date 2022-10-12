@@ -75,6 +75,17 @@ export const typePolicies = {
 	Manifest: {
 		keyFields: ['id'],
 	},
+	General: {
+		uiConfigSetting: {
+			merge: true
+		},
+		featureSetting: {
+			merge: true
+		},
+		kivaStats: {
+			merge: true
+		}
+	},
 	Query: {
 		fields: {
 			// The ml field doesn't have an ID
@@ -100,7 +111,7 @@ export const typePolicies = {
 			// The fundraisingLoans field doesn't have an ID
 			fundraisingLoans: {
 				merge: true,
-			},
+			}
 		},
 	},
 	Mutation: {
