@@ -41,6 +41,7 @@
 				:total-loans="totalCount"
 				:filter-options="quickFiltersOptions"
 				:filters-loaded="filtersLoaded"
+				:update-filters="updateQuickFilters"
 			/>
 		</div>
 
@@ -119,6 +120,7 @@ import {
 	getCachedChannel,
 	trackChannelExperiment,
 	watchChannelQuery,
+	getFilteredLoanChannel
 } from '@/util/loanChannelUtils';
 
 import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
@@ -171,6 +173,10 @@ export default {
 	name: 'LoanChannelCategoryControl',
 	props: {
 		enableQuickFilters: {
+			type: Boolean,
+			default: false,
+		},
+		enableHelpmeChoose: {
 			type: Boolean,
 			default: false,
 		}
@@ -228,6 +234,7 @@ export default {
 				}]
 			},
 			filtersLoaded: false,
+			selectedQuickFilters: {}
 		};
 	},
 	computed: {
@@ -333,6 +340,7 @@ export default {
 						offset,
 						origin: FLSS_ORIGIN_CATEGORY
 					},
+					this.selectedQuickFilters
 				);
 			});
 		}
@@ -381,12 +389,19 @@ export default {
 		this.updateFromParams(this.pageQuery);
 
 		// Prevent pop-in by loading data from the Apollo cache manually here instead of just using the subscription
-		const baseData = getCachedChannel(
-			this.apollo,
-			this.loanChannelQueryMap,
-			this.targetedLoanChannelURL,
-			this.loanQueryVars
-		);
+		const baseData = this.enableQuickFilters
+			? getFilteredLoanChannel(
+				this.apollo,
+				this.loanChannelQueryMap,
+				this.targetedLoanChannelURL,
+				this.loanQueryVars,
+				this.selectedQuickFilters
+			) : getCachedChannel(
+				this.apollo,
+				this.loanChannelQueryMap,
+				this.targetedLoanChannelURL,
+				this.loanQueryVars,
+			);
 
 		if (baseData) this.loading = false;
 
@@ -423,6 +438,16 @@ export default {
 		}
 	},
 	methods: {
+		updateQuickFilters(filter) {
+			if (filter.gender) {
+				this.selectedQuickFilters.gender = filter.gender;
+			} else if (filter.sortBy) {
+				this.selectedQuickFilters.sortBy = filter.sortBy;
+			} else {
+				this.selectedQuickFilters.countryIsoCode = filter.country;
+			}
+			this.activateLoanChannelWatchQuery();
+		},
 		checkIfPageIsOutOfRange(loansArrayLength, pageQueryParam) {
 			// determines if the page query param is for a page that is out of bounds.
 			// if it is, changes page to the last page and displays a tip message
@@ -483,6 +508,7 @@ export default {
 			watchChannelQuery(
 				this.apollo,
 				this.loanChannelQueryMap,
+				this.selectedQuickFilters,
 				this.targetedLoanChannelURL,
 				this.loanQueryVars,
 				next,

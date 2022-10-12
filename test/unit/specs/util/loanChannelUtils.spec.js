@@ -312,7 +312,7 @@ describe('loanChannelUtils.js', () => {
 		it('should handle channel without FLSS mapping', () => {
 			const next = jest.fn();
 
-			const result = watchChannelQuery(apollo, mockQueryMap, 'asd', mockLoanQueryVars, next, watch);
+			const result = watchChannelQuery(apollo, mockQueryMap, {}, 'asd', mockLoanQueryVars, next, watch);
 
 			expect(spyWatchLoanChannel).toHaveBeenCalledTimes(0);
 			expect(apollo.watchQuery).toHaveBeenCalledTimes(1);
@@ -340,7 +340,7 @@ describe('loanChannelUtils.js', () => {
 
 			const next = jest.fn();
 
-			const result = watchChannelQuery(apollo, mockQueryMap, 'women', mockLoanQueryVars, next, watch);
+			const result = watchChannelQuery(apollo, mockQueryMap, {}, 'women', mockLoanQueryVars, next, watch);
 
 			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
 			expect(apollo.readQuery).toHaveBeenCalledWith(
@@ -373,7 +373,7 @@ describe('loanChannelUtils.js', () => {
 
 			const next = jest.fn();
 
-			const result = watchChannelQuery(apollo, mockQueryMap, 'women', mockLoanQueryVars, next, watch);
+			const result = watchChannelQuery(apollo, mockQueryMap, {}, 'women', mockLoanQueryVars, next, watch);
 
 			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
 			expect(apollo.readQuery).toHaveBeenCalledWith(

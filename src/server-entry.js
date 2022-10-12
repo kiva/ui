@@ -14,6 +14,7 @@ import { authenticationGuard } from '@/util/authenticationGuard';
 import { contentfulPreviewCookie } from '@/util/contentfulPreviewCookie';
 
 import logFormatter from '@/util/logFormatter';
+import { buildUserDataGlobal } from '@/util/optimizelyUserMetrics';
 
 const fetch = require('make-fetch-happen');
 
@@ -182,6 +183,7 @@ export default context => {
 					logFormatter(`data pre-fetch: ${Date.now() - s}ms`);
 					sp = new Date();
 				}
+
 				// This `rendered` hook is called when the app has finished rendering
 				context.rendered = () => {
 					if (isDev) logFormatter(`vue serverPrefetch: ${Date.now() - sp}ms`);
@@ -195,6 +197,7 @@ export default context => {
 					context.meta = app.$meta();
 					context.renderedState = renderGlobals({
 						__APOLLO_STATE__: apolloClient.cache.extract(),
+						pageData: buildUserDataGlobal(router, cookieStore, apolloClient)
 					});
 					context.setCookies = cookieStore.getSetCookies();
 				};

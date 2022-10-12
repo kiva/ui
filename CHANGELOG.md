@@ -1,3 +1,48 @@
+## [2.331.0](https://github.com/kiva/ui/compare/v2.330.1...v2.331.0) (2022-10-12)
+
+
+### Features
+
+* add flag when data is completely loaded for optimizely experiments ([8573c95](https://github.com/kiva/ui/commit/8573c956f161d12393b5ef48dd65dfbae6a49f2a))
+* get thankspage data using window object ([e3df8ee](https://github.com/kiva/ui/commit/e3df8eec35ff106bd85e85e7ad29a254aeb7ae69))
+
+### [2.330.1](https://github.com/kiva/ui/compare/v2.330.0...v2.330.1) (2022-10-11)
+
+
+### Bug Fixes
+
+* enable some traffic to landing pages in lighthouse for ui and cps comparison ([0797568](https://github.com/kiva/ui/commit/079756820e1261fac996dd1c7c466c6d88759f89))
+
+## [2.330.0](https://github.com/kiva/ui/compare/v2.329.0...v2.330.0) (2022-10-11)
+
+
+### Features
+
+* help me choose feature setup added to category page ([dd72543](https://github.com/kiva/ui/commit/dd7254342ebc9db69fade09d40fde2cba98e7f5e))
+
+## [2.329.0](https://github.com/kiva/ui/compare/v2.328.0...v2.329.0) (2022-10-11)
+
+
+### Features
+
+* display filtered category loans for quick filters ([d13040c](https://github.com/kiva/ui/commit/d13040c59f5e63ea1567e3c97abc5ca5484ba8f0))
+* update category pages to show selected quick filters ([8cafb3f](https://github.com/kiva/ui/commit/8cafb3f94577851c37762c70322e7eda7d412f43))
+
+
+### Bug Fixes
+
+* merge conflicts ([29ffb5d](https://github.com/kiva/ui/commit/29ffb5d97b30eb681ac3655efbc00e6897bd089c))
+* pr comments ([0e6995b](https://github.com/kiva/ui/commit/0e6995b3302d85a4669e809407088078e976c708))
+* unit tests ([a6d01c2](https://github.com/kiva/ui/commit/a6d01c23986a688286a0251ac35be1392b263df3))
+
+## [2.328.0](https://github.com/kiva/ui/compare/v2.327.0...v2.328.0) (2022-10-11)
+
+
+### Features
+
+* add support for direct or partner for loan card fragment ([a9ae904](https://github.com/kiva/ui/commit/a9ae9045e40fb15e8fc1fcacea9d738fb88d1ef0))
+* use loanCardFields fragment for kiva classic basic loan card ([1ef9ead](https://github.com/kiva/ui/commit/1ef9ead8501222c3afde68eb6edc3f5b4fefac24))
+
 ## [2.327.0](https://github.com/kiva/ui/compare/v2.326.0...v2.327.0) (2022-10-11)
 
 
