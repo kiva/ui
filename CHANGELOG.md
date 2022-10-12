@@ -1,3 +1,16 @@
+## [2.332.0](https://github.com/kiva/ui/compare/v2.331.0...v2.332.0) (2022-10-12)
+
+
+### Features
+
+* distribution model filter to new loan filter page, abstracted radio button group filter ([3f5c139](https://github.com/kiva/ui/commit/3f5c13998fb21c743cee49c96dc86e7a7d9ef9bf))
+
+
+### Bug Fixes
+
+* made all loans title configurable on new radio button group filter ([ad5c326](https://github.com/kiva/ui/commit/ad5c326f34295986ffcd59a6c3e98bac855b79a0))
+* moved loan distribution filter outside of accordion and above advanced filters ([9c2b823](https://github.com/kiva/ui/commit/9c2b8232485749675c894ad030dd4941e0b75735))
+
 ## [2.331.0](https://github.com/kiva/ui/compare/v2.330.1...v2.331.0) (2022-10-12)
 
 
