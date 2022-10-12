@@ -86,6 +86,17 @@
 			/>
 		</kv-accordion-item>
 		<template v-if="extendFlssFilters">
+			<h2 class="tw-text-h4 tw-pt-2">
+				Loan distribution
+			</h2>
+			<loan-search-radio-group-filter
+				:options="facets.distributionModels"
+				:selected="loanSearchState.distributionModel"
+				filter-key="distributionModel"
+				event-action="click-distributionModel-filter"
+				@updated="handleUpdatedFilters"
+			/>
+			<hr class="tw-border-tertiary tw-my-1">
 			<kv-accordion-item id="acc-advanced" :open="false">
 				<template #header>
 					<h2 class="tw-text-h4">
@@ -98,20 +109,6 @@
 						<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1" />
 					</h2>
 				</button>
-			</kv-accordion-item>
-			<kv-accordion-item id="acc-distribution-model" :open="false">
-				<template #header>
-					<h2 class="tw-text-h4">
-						Loan distribution
-					</h2>
-				</template>
-				<loan-search-radio-group-filter
-					:options="facets.distributionModels"
-					:selected="loanSearchState.distributionModel"
-					filter-key="distributionModel"
-					event-action="click-distributionModel-filter"
-					@updated="handleUpdatedFilters"
-				/>
 			</kv-accordion-item>
 		</template>
 		<template v-else>
