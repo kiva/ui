@@ -56,6 +56,12 @@
 						:loan="loan"
 						loan-card-type="GridLoanCard"
 					/>
+					<helpme-choose-wrapper
+						v-if="enableHelpmeChoose"
+						:remaining-loans="helpmeChooseRemainingLoans"
+						:items-in-basket="itemsInBasket"
+						:is-visitor="isVisitor"
+					/>
 				</div>
 				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
 					<loan-card-controller
@@ -79,6 +85,12 @@
 						:key="loan.id"
 						:loan="loan"
 						loan-card-type="GridLoanCard"
+					/>
+					<helpme-choose-wrapper
+						v-if="enableHelpmeChoose"
+						:remaining-loans="helpmeChooseRemainingLoans"
+						:items-in-basket="itemsInBasket"
+						:is-visitor="isVisitor"
 					/>
 				</div>
 				<kv-pagination
@@ -130,6 +142,7 @@ import {
 } from '@/util/loanSearch/filterUtils';
 import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
+import HelpmeChooseWrapper from '@/components/LoansByCategory/HelpmeChoose/HelpmeChooseWrapper';
 
 const defaultLoansPerPage = 12;
 
@@ -187,7 +200,8 @@ export default {
 		KvLoadingOverlay,
 		ViewToggle,
 		PromoGridLoanCard,
-		QuickFilters
+		QuickFilters,
+		HelpmeChooseWrapper
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
@@ -252,18 +266,33 @@ export default {
 		loanChannelDescription() {
 			return _get(this.loanChannel, 'description') || null;
 		},
-		loans() {
+		allLoans() {
 			return (this.loanChannel?.loans?.values ?? []).filter(loan => loan !== null);
+		},
+		loans() {
+			if (this.enableHelpmeChoose) {
+				return _filter(this.allLoans, (loan, index) => index < 6);
+			}
+			return this.allLoans;
 		},
 		firstLoan() {
 			// Handle an edge case where a backend error could lead to a null loan
-			return this.loans[0] ? [this.loans[0]] : [];
+			return this.allLoans[0] ? [this.loans[0]] : [];
 		},
 		remainingLoans() {
-			return _filter(this.loans, (loan, index) => index > 0);
+			if (this.enableHelpmeChoose) {
+				return _filter(this.allLoans, (loan, index) => index > 0 && index < 5);
+			}
+			return _filter(this.allLoans, (loan, index) => index > 0);
+		},
+		helpmeChooseRemainingLoans() {
+			if (this.displayLoanPromoCard) {
+				return _filter(this.allLoans, (loan, index) => index > 4);
+			}
+			return _filter(this.allLoans, (loan, index) => index > 5);
 		},
 		loanIds() {
-			return _map(this.loans, 'id');
+			return _map(this.allLoans, 'id');
 		},
 		totalCount() {
 			return _get(this.loanChannel, 'loans.totalCount') || 0;
