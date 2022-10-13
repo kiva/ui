@@ -1,3 +1,15 @@
+## [2.333.0](https://github.com/kiva/ui/compare/v2.332.1...v2.333.0) (2022-10-13)
+
+
+### Features
+
+* sort by on quick filters and reset ([764d177](https://github.com/kiva/ui/commit/764d177de6e8b12854dd2a77fe44d069858cdde2))
+
+
+### Bug Fixes
+
+* update min width to show full sort by txt ([c68fc09](https://github.com/kiva/ui/commit/c68fc09d6167e7e646dd21e1900bee765fcbb0ba))
+
 ### [2.332.1](https://github.com/kiva/ui/compare/v2.332.0...v2.332.1) (2022-10-13)
 
 
