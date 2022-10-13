@@ -326,7 +326,9 @@ export default {
 				sectors: transformSectors(sectors, this.allFacets?.sectorFacets),
 				themes: transformThemes(themes, this.allFacets?.themeFacets),
 				tags: transformTags(this.allFacets?.tagFacets ?? []),
-				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? []),
+				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [],
+					this.allFacets?.flssSorts ?? [],
+					this.extendFlssFilters),
 			};
 		},
 		trackLoans() {
