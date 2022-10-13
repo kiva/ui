@@ -3,7 +3,7 @@
 		{{ loanUseFiltered }}
 		<kv-text-link
 			v-if="loanId && showLearnMore"
-			:to="customLoanDetails? '' : `/lend/${loanId}`"
+			:to="customLoanDetails? null : `/lend/${loanId}`"
 			v-kv-track-event="['Lending', 'click-Read more', 'Learn more', loanId]"
 			@click="showLoanDetails"
 		>
