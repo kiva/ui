@@ -98,13 +98,6 @@ export default {
 		},
 		getLabelsFromState(loanSearchState = {}, allFacets) {
 			const itemList = [];
-			if (loanSearchState.gender) {
-				const genderFacet = allFacets.genderFacets?.find(f => f.name === loanSearchState.gender);
-				itemList.push({
-					name: genderDisplayMap[genderFacet?.name.toUpperCase()],
-					__typename: 'Gender'
-				});
-			}
 			if (loanSearchState.countryIsoCode?.length) {
 				const countryFacets = loanSearchState.countryIsoCode?.map(iso => {
 					return allFacets.countryFacets?.find(facet => {
