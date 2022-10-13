@@ -279,7 +279,7 @@ export default {
 		},
 		firstLoan() {
 			// Handle an edge case where a backend error could lead to a null loan
-			return this.allLoans[0] ? [this.loans[0]] : [];
+			return this.allLoans[0] ? [this.allLoans[0]] : [];
 		},
 		remainingLoans() {
 			if (this.enableHelpmeChoose) {
