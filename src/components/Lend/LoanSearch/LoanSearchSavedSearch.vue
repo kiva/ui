@@ -68,6 +68,14 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
+/**
+ * Maps the FLSS enum values to the lend API enum values
+ */
+const distributionModelEnumMap = {
+	FIELDPARTNER: 'fieldPartner',
+	DIRECT: 'direct'
+};
+
 export default {
 	name: 'LoanSearchSavedSearch',
 	components: {
@@ -119,7 +127,9 @@ export default {
 				country: this.loanSearchState?.countryIsoCode,
 				gender: this.loanSearchState?.gender,
 				sector: this.loanSearchState?.sectorId,
-				theme: this.loanSearchState?.themeId.map(themeId => this.themeNames[themeId])
+				theme: this.loanSearchState?.themeId.map(themeId => this.themeNames[themeId]),
+				loanTags: this.loanSearchState?.tagId,
+				distributionModel: distributionModelEnumMap[this.loanSearchState?.distributionModel?.toUpperCase()],
 			};
 		},
 		loginUrl() {

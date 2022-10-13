@@ -2,7 +2,7 @@ import { updateSearchState, getValidatedSearchState, createSavedSearch } from '@
 import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
 import createSavedSearchMutation from '@/graphql/mutation/createSavedSearch.graphql';
-import { mockState, mockAllFacets, savedSearchParams } from './mockData';
+import { mockState, mockAllFacets, savedSearchParams } from '../../../fixtures/mockLoanSearchData';
 
 describe('searchStateUtils.js', () => {
 	describe('getValidatedSearchState', () => {
@@ -60,6 +60,14 @@ describe('searchStateUtils.js', () => {
 			expect(result).toEqual({ ...mockState, themeId: [] });
 		});
 
+		it('should validate tag', () => {
+			const state = { ...mockState, tagId: ['asd'] };
+
+			const result = getValidatedSearchState(state, mockAllFacets, STANDARD_QUERY_TYPE);
+
+			expect(result).toEqual({ ...mockState, tagId: [] });
+		});
+
 		it('should validate pageOffset', () => {
 			const state = { ...mockState, pageOffset: 'asd' };
 
@@ -74,6 +82,14 @@ describe('searchStateUtils.js', () => {
 			const result = getValidatedSearchState(state, mockAllFacets, STANDARD_QUERY_TYPE);
 
 			expect(result).toEqual({ ...mockState, pageLimit: 15 });
+		});
+
+		it('should validate distribution model', () => {
+			const state = { ...mockState, distributionModel: 'asd' };
+
+			const result = getValidatedSearchState(state, mockAllFacets, FLSS_QUERY_TYPE);
+
+			expect(result).toEqual({ ...mockState, distributionModel: null });
 		});
 	});
 

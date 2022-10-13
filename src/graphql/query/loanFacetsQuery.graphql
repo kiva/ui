@@ -15,6 +15,11 @@ query loanFacets {
 			id
 			name
 		}
+		tag {
+			id
+			name
+			vocabularyId
+		}
 	}
 	genderOptions: __type(name: "GenderEnum") {
 		enumValues {
@@ -27,6 +32,11 @@ query loanFacets {
 		}
 	}
 	flssSorts: __type(name: "SortEnum") {
+		enumValues {
+			name
+		}
+	}
+	distributionModelOptions: __type(name: "LoanDistributionModelEnum") {
 		enumValues {
 			name
 		}

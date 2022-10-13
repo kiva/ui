@@ -2,7 +2,15 @@
 	<div class="tw-relative">
 		<div class="row">
 			<div class="small-12 columns heading-region">
-				<view-toggle browse-url="/lend-by-category" :filter-url="filterUrl" />
+				<view-toggle v-if="!enableQuickFilters" browse-url="/lend-by-category" :filter-url="filterUrl" />
+				<router-link
+					v-else
+					:to="filterUrl"
+					class="tw-text-action tw-flex tw-items-center tw-float-right"
+				>
+					<img class="tw-w-2 tw-mr-1" src="@/assets/images/tune.svg">
+					Advanced filters
+				</router-link>
 				<p class="tw-text-small">
 					<router-link to="/lend-by-category">
 						All Loans
@@ -33,6 +41,8 @@
 				:total-loans="totalCount"
 				:filter-options="quickFiltersOptions"
 				:filters-loaded="filtersLoaded"
+				:update-filters="updateQuickFilters"
+				@reset-filters="resetFilters"
 			/>
 		</div>
 
@@ -111,13 +121,16 @@ import {
 	getCachedChannel,
 	trackChannelExperiment,
 	watchChannelQuery,
+	getFilteredLoanChannel
 } from '@/util/loanChannelUtils';
 
 import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
 import {
 	formatSortOptions,
 	transformIsoCodes,
+	sortByNameToDisplay
 } from '@/util/loanSearch/filterUtils';
+import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
 
 const defaultLoansPerPage = 12;
@@ -162,6 +175,10 @@ export default {
 	name: 'LoanChannelCategoryControl',
 	props: {
 		enableQuickFilters: {
+			type: Boolean,
+			default: false,
+		},
+		enableHelpmeChoose: {
 			type: Boolean,
 			default: false,
 		}
@@ -219,6 +236,7 @@ export default {
 				}]
 			},
 			filtersLoaded: false,
+			selectedQuickFilters: {}
 		};
 	},
 	computed: {
@@ -237,7 +255,7 @@ export default {
 			return _get(this.loanChannel, 'description') || null;
 		},
 		loans() {
-			return _get(this.loanChannel, 'loans.values') || [];
+			return (this.loanChannel?.loans?.values ?? []).filter(loan => loan !== null);
 		},
 		firstLoan() {
 			// Handle an edge case where a backend error could lead to a null loan
@@ -258,6 +276,7 @@ export default {
 				limit: this.limit,
 				offset: this.offset,
 				basketId: this.cookieStore.get('kvbskt'),
+				origin: FLSS_ORIGIN_CATEGORY
 			};
 		},
 		filterUrl() {
@@ -317,7 +336,13 @@ export default {
 					loanChannelQueryMapMixin.data().loanChannelQueryMap,
 					targetedLoanChannelURL,
 					// Build loanQueryVars since SSR doesn't have same context
-					{ ids: [targetedLoanChannelID], limit, offset }
+					{
+						ids: [targetedLoanChannelID],
+						limit,
+						offset,
+						origin: FLSS_ORIGIN_CATEGORY
+					},
+					this.selectedQuickFilters
 				);
 			});
 		}
@@ -366,12 +391,19 @@ export default {
 		this.updateFromParams(this.pageQuery);
 
 		// Prevent pop-in by loading data from the Apollo cache manually here instead of just using the subscription
-		const baseData = getCachedChannel(
-			this.apollo,
-			this.loanChannelQueryMap,
-			this.targetedLoanChannelURL,
-			this.loanQueryVars
-		);
+		const baseData = this.enableQuickFilters
+			? getFilteredLoanChannel(
+				this.apollo,
+				this.loanChannelQueryMap,
+				this.targetedLoanChannelURL,
+				this.loanQueryVars,
+				this.selectedQuickFilters
+			) : getCachedChannel(
+				this.apollo,
+				this.loanChannelQueryMap,
+				this.targetedLoanChannelURL,
+				this.loanQueryVars,
+			);
 
 		if (baseData) this.loading = false;
 
@@ -408,6 +440,19 @@ export default {
 		}
 	},
 	methods: {
+		resetFilters() {
+			this.selectedQuickFilters = {};
+		},
+		updateQuickFilters(filter) {
+			if (filter.gender) {
+				this.selectedQuickFilters.gender = filter.gender;
+			} else if (filter.sortBy) {
+				this.selectedQuickFilters.sortBy = filter.sortBy;
+			} else {
+				this.selectedQuickFilters.countryIsoCode = filter.country;
+			}
+			this.activateLoanChannelWatchQuery();
+		},
 		checkIfPageIsOutOfRange(loansArrayLength, pageQueryParam) {
 			// determines if the page query param is for a page that is out of bounds.
 			// if it is, changes page to the last page and displays a tip message
@@ -468,6 +513,7 @@ export default {
 			watchChannelQuery(
 				this.apollo,
 				this.loanChannelQueryMap,
+				this.selectedQuickFilters,
 				this.targetedLoanChannelURL,
 				this.loanQueryVars,
 				next,
@@ -528,16 +574,40 @@ export default {
 		},
 		async fetchFacets(loanSearchState = {}) {
 			// TODO: Prevent this from running on every query (not needed for sorting and paging)
-			const { isoCodes } = await runFacetsQueries(this.apollo, loanSearchState);
+			const { isoCodes } = await runFacetsQueries(this.apollo, loanSearchState, FLSS_ORIGIN_CATEGORY);
 
 			// Merge all facet options with filtered options
 			const facets = {
 				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
+					.map(sortOption => ({ name: sortByNameToDisplay[sortOption.name], key: sortOption.name }))
 			};
 
 			this.quickFiltersOptions.location = facets.regions;
-			this.quickFiltersOptions.sorting = facets.sortOptions;
+			// TODO: Revisit after experiment phase as this returns a bunch of sort options we don't need
+			// this.quickFiltersOptions.sorting = facets.sortOptions;
+			this.quickFiltersOptions.sorting = [
+				{
+					title: 'Recommended',
+					key: 'personalized',
+				},
+				{
+					title: 'Almost funded',
+					key: 'amountLeft',
+				},
+				{
+					title: 'Amount high to low',
+					key: 'amountHighToLow'
+				},
+				{
+					title: 'Amount low to high',
+					key: 'amountLowToHigh'
+				},
+				{
+					title: 'Ending soon',
+					key: 'expiringSoon'
+				}
+			];
 			this.quickFiltersOptions.gender = [
 				{
 					title: 'All genders',

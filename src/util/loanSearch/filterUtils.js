@@ -44,6 +44,42 @@ export const FLSS_QUERY_TYPE = 'flss';
 export const STANDARD_QUERY_TYPE = 'standard';
 
 /**
+ * Key for configuring expected female enum value
+ */
+export const FEMALE_KEY = 'FEMALE';
+
+/**
+ * Key for configuring expected male enum value
+ */
+export const MALE_KEY = 'MALE';
+
+/**
+ * Key for configuring expected field partner enum value
+ */
+export const FIELDPARTNER_KEY = 'FIELDPARTNER';
+
+/**
+ * Key for configuring expected direct enum value
+ */
+export const DIRECT_KEY = 'DIRECT';
+
+/**
+ * Maps the gender enum names to display names
+ */
+export const genderDisplayMap = {
+	[FEMALE_KEY]: 'Women',
+	[MALE_KEY]: 'Men',
+};
+
+/**
+ * Maps the distributor enum names to display names
+ */
+export const distributionModelDisplayMap = {
+	[FIELDPARTNER_KEY]: 'Partner',
+	[DIRECT_KEY]: 'Direct',
+};
+
+/**
  * Categorizes Sort Options
  *
  * @param {Array<Object>} standardSorts Sort options from the lend API
@@ -147,6 +183,78 @@ export function transformThemes(filteredThemes, allThemes = []) {
 }
 
 /**
+ * Transforms tag names for display
+ *
+ * @param {string} name The tag name to transform
+ * @returns The transformed tag name
+ */
+export function transformTagName(name = '') {
+	// Public tags start with a '#' which we don't want to display
+	return name[0] === '#' ? name.substring(1) : name;
+}
+
+/**
+ * Transforms tags into a form usable by the filters
+ *
+ * @param {Array<Object>} allTags The tags from lend API
+ * @returns {Array<Object>} Tags usable by the filters
+ */
+export function transformTags(allTags = []) {
+	// TODO: filter options against FLSS loan counts and add numLoansFundraising (VUE-1335)
+
+	// Public tags have vocabularyId of 2
+	const transformed = allTags.filter(t => t.vocabularyId === 2).map(t => {
+		return {
+			id: t.id,
+			name: transformTagName(t.name),
+		};
+	});
+
+	return _orderBy(transformed, 'name');
+}
+
+/**
+ * Prepares the options to be used by a radio group
+ *
+ * @param {Array<Object>} options The options to transform
+ * @param {Array<string>} order The order of the options (name property)
+ * @param {Object} map Display name map
+ * @returns {Array<Object>} The transformed radio group options
+ */
+export function transformRadioGroupOptions(options, order, map) {
+	const capitalizedOrder = order.map(o => o.toUpperCase());
+
+	const transformed = options.filter(o => capitalizedOrder.includes(o.name.toUpperCase())).map(o => {
+		return {
+			name: o.name,
+			title: map[o.name.toUpperCase()] ?? o
+		};
+	}).sort((a, b) => capitalizedOrder.indexOf(a.name.toUpperCase()) - capitalizedOrder.indexOf(b.name.toUpperCase()));
+
+	return transformed;
+}
+
+/**
+ * Prepares the gender options to be used by a radio group
+ *
+ * @param {Array<Object>} genders The genders to transform
+ * @returns {Array<Object>} The transformed radio group options
+ */
+export function transformGenderOptions(genders) {
+	return transformRadioGroupOptions(genders, [FEMALE_KEY, MALE_KEY], genderDisplayMap);
+}
+
+/**
+ * Prepares the distribution model options to be used by a radio group
+ *
+ * @param {Array<Object>} distributionModels The distribution models to transform
+ * @returns {Array<Object>} The transformed radio group options
+ */
+export function transformDistributionModelOptions(distributionModels) {
+	return transformRadioGroupOptions(distributionModels, [FIELDPARTNER_KEY, DIRECT_KEY], distributionModelDisplayMap);
+}
+
+/**
  * Gets an updated regions list to display in the filter with updated numLoansFundraising
  *
  * @param {Array<Object>} regions The regions previously displayed in the filter
@@ -226,9 +334,13 @@ export function getUpdatedNumLoansFundraising(items, next) {
 	// Get updated numLoansFundraising
 	items?.forEach(item => {
 		const nextItem = next.find(a => a.id === item.id);
+
+		// Some facets don't have loan counts in FLSS
+		const hasNumLoans = typeof item.numLoansFundraising !== 'undefined';
+
 		const updatedItem = {
 			...item,
-			numLoansFundraising: nextItem?.numLoansFundraising || 0,
+			numLoansFundraising: hasNumLoans ? nextItem?.numLoansFundraising || 0 : undefined,
 		};
 
 		updated.push(updatedItem);
@@ -251,5 +363,7 @@ export function getUpdatedNumLoansFundraising(items, next) {
  * @returns {string} The item label
  */
 export function getCheckboxLabel(item) {
-	return `${item.name || item.region} (${item.numLoansFundraising})`;
+	const countLabel = typeof item.numLoansFundraising !== 'undefined' ? ` (${item.numLoansFundraising})` : '';
+
+	return `${item.name || item.region}${countLabel}`;
 }

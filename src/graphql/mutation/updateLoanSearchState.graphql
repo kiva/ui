@@ -6,7 +6,9 @@ mutation updateLoanSearch($searchParams: JSONObject) {
 		sectorId
 		sortBy
 		themeId
+		tagId
 		pageOffset
 		pageLimit
+		distributionModel
 	}
 }

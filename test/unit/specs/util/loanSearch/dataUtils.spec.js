@@ -1,8 +1,8 @@
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
 import * as flssUtils from '@/util/flssUtils';
 import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
-import { getFlssFilters } from '@/util/flssUtils';
-import { mockState } from './mockData';
+import { getFlssFilters, FLSS_ORIGIN_NOT_SPECIFIED } from '@/util/flssUtils';
+import { mockState } from '../../../fixtures/mockLoanSearchData';
 
 describe('dataUtils.js', () => {
 	describe('runFacetsQueries', () => {
@@ -13,19 +13,25 @@ describe('dataUtils.js', () => {
 		const isoCodes = { facets: { isoCode: isoCodeFacets } };
 		const themes = { facets: { themes: themeFacets } };
 		const sectors = { facets: { sectorId: sectorFacets } };
+		const origin = FLSS_ORIGIN_NOT_SPECIFIED;
 
 		beforeEach(() => {
 			spyFetchFacets = jest.spyOn(flssUtils, 'fetchFacets')
-				.mockImplementation(() => Promise.resolve({ isoCodes, themes, sectors }));
+				.mockImplementation(() => Promise.resolve({
+					isoCodes,
+					themes,
+					sectors
+				}));
 		});
 
 		afterEach(jest.restoreAllMocks);
 
 		it('should return facets', async () => {
 			const apollo = {};
-			const result = await runFacetsQueries(apollo);
+			const result = await runFacetsQueries(apollo, {}, origin);
 			expect(spyFetchFacets).toHaveBeenCalledWith(
 				apollo,
+				origin,
 				{ countryIsoCode: undefined },
 				{ themeId: undefined },
 				{ sectorId: undefined }
@@ -36,9 +42,14 @@ describe('dataUtils.js', () => {
 
 		it('should return apply filters', async () => {
 			const apollo = {};
-			const result = await runFacetsQueries(apollo, { countryIsoCode: ['US'], themeId: [2], sectorId: [1] });
+			const result = await runFacetsQueries(
+				apollo,
+				{ countryIsoCode: ['US'], themeId: [2], sectorId: [1] },
+				origin
+			);
 			expect(spyFetchFacets).toHaveBeenCalledWith(
 				apollo,
+				origin,
 				{ themeId: { any: [2] }, sectorId: { any: [1] }, countryIsoCode: undefined },
 				{ countryIsoCode: { any: ['US'] }, sectorId: { any: [1] }, themeId: undefined },
 				{ countryIsoCode: { any: ['US'] }, themeId: { any: [2] }, sectorId: undefined }
@@ -53,6 +64,7 @@ describe('dataUtils.js', () => {
 		const apollo = {};
 		const loans = [{ test: 'test' }];
 		const totalCount = 5;
+		const origin = FLSS_ORIGIN_NOT_SPECIFIED;
 
 		beforeEach(() => {
 			spyFetchLoans = jest.spyOn(flssUtils, 'fetchLoans')
@@ -62,13 +74,14 @@ describe('dataUtils.js', () => {
 		afterEach(jest.restoreAllMocks);
 
 		it('should return loans', async () => {
-			const result = await runLoansQuery(apollo, mockState);
+			const result = await runLoansQuery(apollo, mockState, origin);
 			expect(spyFetchLoans).toHaveBeenCalledWith(
 				apollo,
 				getFlssFilters(mockState),
 				mockState.sortBy,
 				mockState.pageOffset,
-				mockState.pageLimit
+				mockState.pageLimit,
+				origin,
 			);
 			expect(result).toEqual({ loans, totalCount });
 		});
@@ -78,9 +91,11 @@ describe('dataUtils.js', () => {
 		const countryFacets = [{ country: { isoCode: 'a', name: 'Country' } }];
 		const sector = [{ id: 1, name: 'Test Sector' }];
 		const loanThemeFilter = [{ id: 1, name: 'c' }];
+		const tag = [{ id: 1, name: 'tag' }];
 		const genderOptions = { enumValues: [{ name: 'female' }] };
 		const flssSorts = { enumValues: [{ name: 'expiringSoon' }] };
 		const standardSorts = { enumValues: [{ name: 'expiringSoon' }] };
+		const distributionModelOptions = { enumValues: [{ name: 'direct' }] };
 
 		it('should pass the correct query variables to apollo', async () => {
 			const apollo = { query: jest.fn(() => Promise.resolve({})) };
@@ -104,10 +119,15 @@ describe('dataUtils.js', () => {
 				themeFacets: [],
 				themeIds: [],
 				themeNames: [],
+				tagFacets: [],
+				tagIds: [],
+				tagNames: [],
 				genderFacets: [],
 				genders: [],
 				flssSorts: [],
-				standardSorts: []
+				standardSorts: [],
+				distributionModelFacets: [],
+				distributionModels: [],
 			});
 		});
 
@@ -118,10 +138,12 @@ describe('dataUtils.js', () => {
 						countryFacets,
 						sector,
 						loanThemeFilter,
+						tag,
 					},
 					genderOptions,
 					flssSorts,
 					standardSorts,
+					distributionModelOptions,
 				}
 			};
 
@@ -138,10 +160,15 @@ describe('dataUtils.js', () => {
 				themeFacets: loanThemeFilter,
 				themeIds: [1],
 				themeNames: ['C'],
+				tagFacets: tag,
+				tagIds: [1],
+				tagNames: ['TAG'],
 				genderFacets: [{ name: 'female' }],
 				genders: ['FEMALE'],
 				flssSorts: [{ name: 'expiringSoon' }],
 				standardSorts: [{ name: 'expiringSoon' }],
+				distributionModelFacets: [{ name: 'direct' }],
+				distributionModels: ['DIRECT'],
 			});
 		});
 	});

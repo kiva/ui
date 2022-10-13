@@ -28,6 +28,7 @@
 <script>
 import _throttle from 'lodash/throttle';
 import KvChipClassic from '@/components/Kv/KvChipClassic';
+import { transformTagName, genderDisplayMap, distributionModelDisplayMap } from '@/util/loanSearch/filterUtils';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 export default {
@@ -76,9 +77,7 @@ export default {
 		formatRemovedFacet(facetType, facet) {
 			switch (facetType) {
 				case 'Gender':
-					return {
-						gender: null
-					};
+					return { gender: null };
 				case 'Sector':
 					return { sectorId: [...this.loanSearchState.sectorId?.filter(id => facet.id !== id)] };
 				case 'Country':
@@ -89,52 +88,63 @@ export default {
 					};
 				case 'LoanThemeFilter':
 					return { themeId: [...this.loanSearchState.themeId?.filter(id => facet.id !== id)] };
+				case 'Tag':
+					return { tagId: [...this.loanSearchState.tagId?.filter(id => facet.id !== id)] };
+				case 'DistributionModel':
+					return { distributionModel: null };
 				default:
 					return {};
 			}
 		},
 		getLabelsFromState(loanSearchState = {}, allFacets) {
-			let itemList = [];
-			// Check for each section of loanSearchState
-			// Countries
+			const itemList = [];
+			if (loanSearchState.gender) {
+				const genderFacet = allFacets.genderFacets?.find(f => f.name === loanSearchState.gender);
+				itemList.push({
+					name: genderDisplayMap[genderFacet?.name.toUpperCase()],
+					__typename: 'Gender'
+				});
+			}
 			if (loanSearchState.countryIsoCode?.length) {
 				const countryFacets = loanSearchState.countryIsoCode?.map(iso => {
 					return allFacets.countryFacets?.find(facet => {
 						return facet.country.isoCode === iso;
 					})?.country;
 				});
-				itemList = [...countryFacets];
+				itemList.push(...countryFacets);
 			}
-			// Sectors
 			if (loanSearchState.sectorId?.length) {
 				const sectorFacets = loanSearchState.sectorId?.map(sectorId => {
 					return allFacets.sectorFacets?.find(facet => {
 						return facet.id === sectorId;
 					});
 				});
-				itemList = [...itemList, ...sectorFacets];
+				itemList.push(...sectorFacets);
 			}
-			// Themes/Attributes
 			if (loanSearchState.themeId?.length) {
 				const themeFacets = loanSearchState.themeId?.map(id => {
 					return allFacets.themeFacets?.find(facet => facet.id === id);
 				});
-				itemList = [...itemList, ...themeFacets];
+				itemList.push(...themeFacets);
 			}
-			// Gender
-			if (loanSearchState.gender) {
-				const genderFacet = loanSearchState.gender === 'female'
-					? {
-						value: 'female',
-						name: 'Women',
-						__typename: 'Gender'
-					}
-					: {
-						value: 'male',
-						name: 'Men',
-						__typename: 'Gender'
+			if (loanSearchState.tagId?.length) {
+				const tagFacets = loanSearchState.tagId?.map(id => {
+					const tagFacet = allFacets.tagFacets?.find(facet => facet.id === id);
+
+					return {
+						...tagFacet,
+						name: transformTagName(tagFacet?.name)
 					};
-				itemList.push(genderFacet);
+				});
+				itemList.push(...tagFacets);
+			}
+			if (loanSearchState.distributionModel) {
+				const distributionModelFacet = allFacets.distributionModelFacets
+					?.find(f => f.name === loanSearchState.distributionModel);
+				itemList.push({
+					name: distributionModelDisplayMap[distributionModelFacet?.name.toUpperCase()],
+					__typename: 'DistributionModel'
+				});
 			}
 			return itemList;
 		},

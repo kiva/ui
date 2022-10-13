@@ -1,6 +1,6 @@
 
-query getPersonalizedLoans($limit: Int!, $filters: [FundraisingLoanSearchFilterInput!]) {
-	fundraisingLoans(limit: $limit, sortBy: personalized, filters: $filters) {
+query getPersonalizedLoans($limit: Int!, $filters: [FundraisingLoanSearchFilterInput!], $origin: String) {
+	fundraisingLoans(limit: $limit, sortBy: personalized, filters: $filters, origin: $origin) {
 		totalCount
 		values {
 			id

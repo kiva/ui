@@ -1,11 +1,22 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-mb-2 tw-w-full">
-		<div class="tw-flex tw-items-center tw-mb-2">
+		<div class="tw-flex tw-items-center tw-mb-2 tw-relative">
+			<div
+				v-show="showBadge"
+				class="tw-hidden lg:tw-flex tw-gap-1 tw-text-base tw-text-primary-inverse
+					tw-rounded tw-bg-brand tw-px-1.5 tw-py-0.5
+					tw-absolute"
+				style="left: -102px;"
+			>
+				<img src="@/assets/images/green_sparkles.svg" alt=""> New!
+			</div>
 			<h3 class="tw-text-h3">
 				Quick filters
 			</h3>
 			<span v-show="filtersLoaded" class="tw-ml-2 tw-text-small">Showing {{ totalLoans }} loans</span>
-			<span v-show="filtersLoaded" class="tw-ml-2 tw-text-small">Reset filters</span>
+			<button v-show="filtersLoaded" class="tw-ml-2 tw-text-small tw-text-action" @click="resetFilters">
+				Reset filters
+			</button>
 		</div>
 		<div class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 tw-w-full tw-pr-2 lg:tw-pr-0">
 			<div class="tw-flex tw-flex-col tw-order-2 lg:tw-order-1">
@@ -31,7 +42,26 @@
 				:regions="filterOptions.location"
 				:total-loans="totalLoans"
 				:filters-loaded="filtersLoaded"
+				:update-location="updateLocation"
 			/>
+
+			<div class="tw-flex tw-flex-col tw-order-3">
+				<label
+					class="tw-text-h4"
+					for="gender"
+				>
+					Sort By
+				</label>
+				<kv-select :disabled="!filtersLoaded" v-model="sortBy" id="sortBy" style="min-width: 180px;">
+					<option
+						v-for="sortType in filterOptions.sorting"
+						:key="sortType.key"
+						:value="sortType.key"
+					>
+						{{ sortType.title }}
+					</option>
+				</kv-select>
+			</div>
 		</div>
 	</div>
 </template>
@@ -42,6 +72,7 @@ import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
 	name: 'QuickFilters',
+	inject: ['cookieStore'],
 	props: {
 		totalLoans: {
 			type: Number,
@@ -54,6 +85,10 @@ export default {
 		filtersLoaded: {
 			type: Boolean,
 			default: false
+		},
+		updateFilters: {
+			type: Function,
+			required: true
 		}
 	},
 	components: {
@@ -62,8 +97,36 @@ export default {
 	},
 	data() {
 		return {
-			selectedGender: ''
+			selectedGender: '',
+			sortBy: 'personalized',
+			showBadge: false
 		};
 	},
+	watch: {
+		selectedGender(gender) {
+			this.updateFilters({ gender });
+		},
+		sortBy(sortBy) {
+			this.updateFilters({ sortBy });
+		}
+	},
+	methods: {
+		updateLocation(location) {
+			this.updateFilters({ country: location });
+		},
+		resetFilters() {
+			this.$emit('reset-filters');
+			this.selectedGender = '';
+			this.sortBy = 'personalized';
+			this.updateLocation([]);
+		}
+	},
+	mounted() {
+		const badgeCookie = this.cookieStore.get('quick_filter_new_badge') === 'true' || false;
+		if (!badgeCookie) {
+			this.showBadge = true;
+			this.cookieStore.set('quick_filter_new_badge', true);
+		}
+	}
 };
 </script>

@@ -4,7 +4,7 @@
 		title="Added to basket!"
 		@lightbox-closed="closeLightbox"
 	>
-		<div class="tw-flex tw-justify-between tw-items-center">
+		<div class="tw-block md:tw-flex tw-justify-between tw-items-center">
 			<h2 class="tw-pb-3 tw-pr-5 tw-basis-9/12" v-if="missingMilestones.length === 0">
 				Way to go! You’re all set to complete the Climate Challenge.
 			</h2>
@@ -59,19 +59,43 @@
 						Find a loan for {{ step.name | changeCase('noCase') }}!
 					</h3>
 				</div>
-				<kv-button class="tw-mt-2 tw-flex-none" :to="step.url" :key="index">
+				<kv-button
+					class="tw-mt-2 tw-flex-none"
+					:to="step.url"
+					:key="index"
+					v-kv-track-event="[
+						'borrower-profile',
+						'click',
+						'eco-challenge-lightbox-cta',
+						'next-step'
+					]"
+				>
 					{{ step.buttonText }}
 				</kv-button>
 			</div>
 		</div>
 		<template #controls>
-			<kv-button to="/basket" v-if="missingMilestones.length === 0">
+			<kv-button
+				to="/basket" v-if="missingMilestones.length === 0"
+				v-kv-track-event="[
+					'borrower-profile',
+					'click',
+					'eco-challenge-lightbox-cta',
+					'checkout'
+				]"
+			>
 				Continue to Checkout
 			</kv-button>
 			<kv-text-link
 				v-else
 				:icon="mdiArrowRight"
 				href="/basket"
+				v-kv-track-event="[
+					'borrower-profile',
+					'click',
+					'eco-challenge-lightbox-cta',
+					'checkout'
+				]"
 			>
 				Or continue to checkout
 			</kv-text-link>
