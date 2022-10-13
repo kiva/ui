@@ -52,7 +52,7 @@
 				>
 					Sort By
 				</label>
-				<kv-select :disabled="!filtersLoaded" v-model="sortBy" id="sortBy" style="min-width: 140px;">
+				<kv-select :disabled="!filtersLoaded" v-model="sortBy" id="sortBy" style="min-width: 180px;">
 					<option
 						v-for="sortType in filterOptions.sorting"
 						:key="sortType.key"
