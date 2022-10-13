@@ -98,6 +98,13 @@ export default {
 		},
 		getLabelsFromState(loanSearchState = {}, allFacets) {
 			const itemList = [];
+			if (loanSearchState.gender) {
+				const genderFacet = allFacets.genderFacets?.find(f => f.name === loanSearchState.gender);
+				itemList.push({
+					name: genderDisplayMap[genderFacet?.name.toUpperCase()],
+					__typename: 'Gender'
+				});
+			}
 			if (loanSearchState.countryIsoCode?.length) {
 				const countryFacets = loanSearchState.countryIsoCode?.map(iso => {
 					return allFacets.countryFacets?.find(facet => {
@@ -119,16 +126,6 @@ export default {
 					return allFacets.themeFacets?.find(facet => facet.id === id);
 				});
 				itemList.push(...themeFacets);
-			}
-			// Gender
-			if (loanSearchState.gender) {
-				if (loanSearchState.gender) {
-					const genderFacet = allFacets.genderFacets?.find(f => f.name === loanSearchState.gender);
-					itemList.push({
-						name: genderDisplayMap[genderFacet?.name.toUpperCase()],
-						__typename: 'Gender'
-					});
-				}
 			}
 			if (loanSearchState.tagId?.length) {
 				const tagFacets = loanSearchState.tagId?.map(id => {
