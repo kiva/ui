@@ -154,13 +154,13 @@
 		>
 			<kv-page-container>
 				<div
-					class="tw-flex tw-w-full tw-justify-between"
+					class="md:tw-flex tw-w-full tw-justify-between"
 				>
-					<h2 class="tw-mr-1.5">
+					<h2 class="tw-mr-1.5 tw-mb-2">
 						{{ loansRemainingInChallenge }} more loans to complete this challenge
 					</h2>
 					<div
-						class="tw-flex"
+						class="tw-flex tw-mb-2"
 					>
 						<icon-sun-half
 							class="tw-h-6 tw-w-6 tw-mr-3 tw-flex-none tw-mt-0.5"
