@@ -28,7 +28,7 @@
 <script>
 import _throttle from 'lodash/throttle';
 import KvChipClassic from '@/components/Kv/KvChipClassic';
-import { transformTagName, distributionModelDisplayMap } from '@/util/loanSearch/filterUtils';
+import { transformTagName, genderDisplayMap, distributionModelDisplayMap } from '@/util/loanSearch/filterUtils';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 export default {
@@ -122,31 +122,13 @@ export default {
 			}
 			// Gender
 			if (loanSearchState.gender) {
-				let genderFacet;
-				switch (loanSearchState.gender) {
-					case 'female':
-						genderFacet = {
-							value: 'female',
-							name: 'Women',
-							__typename: 'Gender'
-						};
-						break;
-					case 'male':
-						genderFacet = {
-							value: 'male',
-							name: 'Men',
-							__typename: 'Gender'
-						};
-						break;
-					default:
-						genderFacet = {
-							value: 'nonbinary',
-							name: 'Nonbinary',
-							__typename: 'Gender'
-						};
-						break;
+				if (loanSearchState.gender) {
+					const genderFacet = allFacets.genderFacets?.find(f => f.name === loanSearchState.gender);
+					itemList.push({
+						name: genderDisplayMap[genderFacet?.name.toUpperCase()],
+						__typename: 'Gender'
+					});
 				}
-				itemList.push(genderFacet);
 			}
 			if (loanSearchState.tagId?.length) {
 				const tagFacets = loanSearchState.tagId?.map(id => {
