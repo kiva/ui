@@ -1,3 +1,32 @@
+## [2.335.0](https://github.com/kiva/ui/compare/v2.334.0...v2.335.0) (2022-10-13)
+
+
+### Features
+
+* kiva classic loan card ([9927537](https://github.com/kiva/ui/commit/9927537966443a71a6f7a338fadc1f7962c460f7))
+* kiva classic loan card in cc landing pages ([1fe854b](https://github.com/kiva/ui/commit/1fe854b896a2e520f04709ab8fa10cdeb624076c))
+* swap loan row out for kiva classic loan row ([06b60e8](https://github.com/kiva/ui/commit/06b60e806068294a6c4de9d80fe1cea7c2e436a3))
+
+
+### Bug Fixes
+
+* error in ref string ([bad3ab1](https://github.com/kiva/ui/commit/bad3ab1eb4355d73617d9208da7529c27091ec97))
+* fixing nits ([ec30d81](https://github.com/kiva/ui/commit/ec30d813edf0d0505f42bf13919457bbf5927c6b))
+* getting grid loan cards working + bug fixes ([41410df](https://github.com/kiva/ui/commit/41410dff4701a826527ed03450bf8d76921a625f))
+* handling event emission for showing loan details ([81733f8](https://github.com/kiva/ui/commit/81733f87314901bd893447a0927e4c347ef7736b))
+
+## [2.334.0](https://github.com/kiva/ui/compare/v2.333.0...v2.334.0) (2022-10-13)
+
+
+### Features
+
+* loans grid was break in two on category page to include the help me choose wrapper ([13b5342](https://github.com/kiva/ui/commit/13b534203c6a08bc0e89b16141f28eec4dd3d3ea))
+
+
+### Bug Fixes
+
+* all loans parameter fixed ([feed05d](https://github.com/kiva/ui/commit/feed05d5ec8463aa5acd294d71a3e31fcb5c1bb8))
+
 ## [2.333.0](https://github.com/kiva/ui/compare/v2.332.1...v2.333.0) (2022-10-13)
 
 
