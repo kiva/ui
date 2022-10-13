@@ -16,7 +16,7 @@ const { LoanPartner, LoanDirect } = resolvers;
 
 export const typePolicies = {
 	activeLoan: {
-		keyFields: ['hoverLoanId', 'xCoordinate', 'yCoordinate']
+		merge: true
 	},
 	LoanChannel: {
 		keyFields: ['id'],
@@ -75,42 +75,41 @@ export const typePolicies = {
 	Manifest: {
 		keyFields: ['id'],
 	},
-	General: {
-		uiConfigSetting: {
-			merge: true
-		},
-		featureSetting: {
-			merge: true
-		},
-		kivaStats: {
-			merge: true
-		}
+	shop: {
+		keyFields: ['id'],
 	},
 	Query: {
 		fields: {
+			community: {
+				merge: true
+			},
+			general: {
+				merge: true
+			},
 			// The ml field doesn't have an ID
-			Ml: {
+			ml: {
 				merge: true,
 			},
 			// The contentful field doesn't have an ID
-			Contentful: {
+			contentful: {
 				merge: true,
 			},
 			// The lend field doesn't have an ID
-			Lend: {
+			lend: {
 				merge: true,
 			},
 			// The my field doesn't have an ID
-			My: {
+			my: {
 				merge: true,
 			},
-			// The ShopTotals field doesn't have an ID
-			ShopTotals: {
-				merge: true,
+			getCategories: {
+				merge: true
 			},
-			// The fundraisingLoans field doesn't have an ID
+			mySubscriptions: {
+				merge: true
+			},
 			fundraisingLoans: {
-				merge: true,
+				merge: true
 			}
 		},
 	},
