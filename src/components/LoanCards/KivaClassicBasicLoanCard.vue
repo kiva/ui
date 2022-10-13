@@ -466,10 +466,10 @@ export default {
 				loanId: this.loanId,
 			}).then(() => {
 				this.isAdding = false;
-				this.$emit('add-to-basket', { loanId: this.loanId, success: () => true });
+				this.$emit('add-to-basket', { loanId: this.loanId, success: true });
 			}).catch(e => {
 				this.isAdding = false;
-				this.$emit('add-to-basket', { loanId: this.loanId, success: () => false });
+				this.$emit('add-to-basket', { loanId: this.loanId, success: false });
 				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
 					? e[0].message
 					: 'There was a problem adding the loan to your basket';

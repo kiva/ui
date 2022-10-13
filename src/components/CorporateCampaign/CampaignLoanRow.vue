@@ -67,8 +67,6 @@
 <script>
 import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-
-import _map from 'lodash/map';
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
@@ -134,8 +132,7 @@ export default {
 	},
 	computed: {
 		loanIds() {
-			console.log(_map(this.loans, 'id'));
-			return _map(this.loans, 'id');
+			return this.loans?.map((loan) => { return loan.id });
 		},
 		singleSlideWidth() {
 			const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;

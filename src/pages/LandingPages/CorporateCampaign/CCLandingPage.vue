@@ -1415,7 +1415,8 @@ export default {
 			}
 		},
 		jumpToLoans() {
-			this.$refs.mlLoanDisplay[0].$refs.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
+			const loanDisplayComponent = this.$refs?.mlLoanDisplay?.$refs || this.$refs?.mlLoanDisplay?.[0]?.$refs;
+			loanDisplayComponent.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
 		},
 		adjustRouteHash(hash) {
 			const route = { ...this.$route };
