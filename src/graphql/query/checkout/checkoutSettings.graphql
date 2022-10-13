@@ -16,6 +16,10 @@ query checkoutSettings($basketId: String) {
 			key
 			value
 		}
+		dynamicUpsells: uiExperimentSetting(key: "dynamic_upsells") {
+			key
+			value
+		}
 	}
 	shop (basketId: $basketId) {
 		id

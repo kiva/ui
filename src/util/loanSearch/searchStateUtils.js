@@ -1,4 +1,5 @@
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
+import createSavedSearchMutation from '@/graphql/mutation/createSavedSearch.graphql';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util/numberUtils';
 import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
@@ -28,6 +29,8 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 
 	const validatedThemeIds = loanSearchState?.themeId?.filter(t => allFacets.themeIds.includes(t)) ?? [];
 
+	const validatedTagIds = loanSearchState?.tagId?.filter(t => allFacets.tagIds.includes(t)) ?? [];
+
 	const validatedPageOffset = isNumber(loanSearchState?.pageOffset)
 		? loanSearchState.pageOffset
 		: defaultLoanSearchState.pageOffset;
@@ -36,14 +39,21 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 		? loanSearchState.pageLimit
 		: defaultLoanSearchState.pageLimit;
 
+	const validatedDistributionModel = allFacets.distributionModels
+		.includes(loanSearchState?.distributionModel?.toUpperCase())
+		? loanSearchState.distributionModel
+		: null;
+
 	return {
 		gender: validatedGender,
 		countryIsoCode: validatedIsoCodes,
 		sectorId: validatedSectorIds,
 		sortBy: validatedSortBy,
 		themeId: validatedThemeIds,
+		tagId: validatedTagIds,
 		pageOffset: validatedPageOffset,
 		pageLimit: validatedPageLimit,
+		distributionModel: validatedDistributionModel,
 	};
 }
 
@@ -70,6 +80,26 @@ export async function updateSearchState(apollo, loanQueryFilters, allFacets, que
 			searchParams: {
 				...validatedFilters
 			}
+		}
+	});
+}
+
+/**
+ * Creates a saved search with a name and set of filters
+ * TODO: Move to own file if we move forward with Saved Search exp
+ *
+ * @param {Object} apollo The Apollo client instance
+ * @param {Object} loanQueryFilters The filters for the saved search
+ * @param {string} savedSearchName The name of the saved search
+ * @returns {Promise<Array>} Promise for the results of the mutation
+ */
+export async function createSavedSearch(apollo, loanQueryFilters, queryString, savedSearchName) {
+	return apollo.mutate({
+		mutation: createSavedSearchMutation,
+		variables: {
+			name: savedSearchName,
+			queryString,
+			filters: loanQueryFilters
 		}
 	});
 }

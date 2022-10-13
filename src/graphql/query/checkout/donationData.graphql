@@ -1,14 +1,4 @@
 query donationData {
-	general {
-		donationNudgeBorrowerImageExperiment: uiExperimentSetting(key: "charity_overhead") {
-			key
-			value
-		}
-		specificDonationUseTextExperiment: uiExperimentSetting(key: "checkout_donation_tag_line") {
-			key
-			value
-		}
-	}
 	my {
 		loans {
 			totalCount

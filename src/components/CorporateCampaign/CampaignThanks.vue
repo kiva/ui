@@ -11,7 +11,10 @@
 					</p>
 				</header>
 				<section class="campaign-thanks__partner-block">
-					<campaign-partner-thanks :partner-content="partnerContent" />
+					<campaign-partner-thanks
+						:partner-content="partnerContent"
+						:page-setting-data="pageSettingData"
+					/>
 				</section>
 				<kv-accordion-item id="thanks-share">
 					<template #header>
@@ -62,6 +65,9 @@ import { joinArray } from '@/util/joinArray';
 import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
 import CampaignPartnerThanks from './CampaignPartnerThanks';
 
+const hasLentBeforeCookie = 'kvu_lb';
+const hasDepositBeforeCookie = 'kvu_db';
+
 export default {
 	name: 'CampaignThanks',
 	components: {
@@ -85,7 +91,11 @@ export default {
 		partnerContent: {
 			type: Object,
 			default() { return {}; }
-		}
+		},
+		pageSettingData: {
+			type: Object,
+			default: () => {},
+		},
 	},
 	data() {
 		return {
@@ -140,8 +150,15 @@ export default {
 
 				// MARS-194-User metrics A/B Optimizely experiment
 				const depositTotal = this.receipt?.totals?.depositTotals?.depositTotal;
-				userHasLentBefore(this.loans.length > 0);
-				userHasDepositBefore(parseFloat(depositTotal) > 0);
+
+				const hasLentBefore = this.loans.length > 0;
+				const hasDepositBefore = parseFloat(depositTotal) > 0;
+
+				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { path: '/' });
+				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { path: '/' });
+
+				userHasLentBefore(hasLentBefore);
+				userHasDepositBefore(hasDepositBefore);
 
 				this.showReceipt = true;
 				await this.$nextTick();

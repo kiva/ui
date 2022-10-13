@@ -19,7 +19,8 @@
 
 <script>
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
-
+import { userHasEverLoggedInBefore } from '@/util/optimizelyUserMetrics';
+import logReadQueryError from '@/util/logReadQueryError';
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
@@ -75,6 +76,16 @@ export default {
 		},
 	},
 	created() {
+		try {
+			const data = this.apollo.readQuery({
+				query: hasEverLoggedInQuery,
+			});
+
+			userHasEverLoggedInBefore(data?.hasEverLoggedIn);
+		} catch (e) {
+			logReadQueryError(e, 'User has ever logged in');
+		}
+
 		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
 	},
 	computed: {

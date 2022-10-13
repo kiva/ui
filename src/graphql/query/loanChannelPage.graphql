@@ -1,3 +1,5 @@
+# In production our loanChannels are limited to a max limit of 100 channels
+# These 2 aliased calls in effect fetch the first 200 channels in production
 query loanChannelPage {
 	my {
 		userAccount {
@@ -5,8 +7,13 @@ query loanChannelPage {
 		}
 	}
 	lend {
-		loanChannels(offset:0, limit:1000) {
-			totalCount
+		firstLoanChannels: loanChannels(offset:0, limit:100) {
+			values {
+				id
+				url
+			}
+		}
+		secondLoanChannels: loanChannels(offset:100, limit:100) {
 			values {
 				id
 				url

@@ -10,18 +10,10 @@
 
 		<!-- Monthly Good Settings -->
 		<subscriptions-monthly-good
-			v-if="!isOnetime && !hasActiveCauseSubscription"
+			v-if="!isOnetime"
 			@cancel-subscription="cancelSubscription"
 			@unsaved-changes="setUnsavedChanges"
 			ref="subscriptionsMonthlyGoodComponent"
-		/>
-
-		<!-- Causes Settings -->
-		<subscriptions-causes
-			v-if="hasActiveCauseSubscription"
-			@cancel-subscription="cancelCause"
-			@unsaved-changes="setUnsavedChanges"
-			ref="subscriptionsCausesComponent"
 		/>
 
 		<!-- Auto Deposit Settings -->
@@ -90,7 +82,6 @@ import SubscriptionsMonthlyGood from '@/components/Subscriptions/SubscriptionsMo
 import SubscriptionsOneTime from '@/components/Subscriptions/SubscriptionsOneTime';
 import SubscriptionsAutoDeposit from '@/components/Subscriptions/SubscriptionsAutoDeposit';
 import SubscriptionsLegacy from '@/components/Subscriptions/SubscriptionsLegacy';
-import SubscriptionsCauses from '@/components/Subscriptions/SubscriptionsCauses';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
@@ -126,7 +117,6 @@ export default {
 		KvLightbox,
 		KvLoadingOverlay,
 		SubscriptionsAutoDeposit,
-		SubscriptionsCauses,
 		SubscriptionsLegacy,
 		SubscriptionsMonthlyGood,
 		SubscriptionsOneTime,
@@ -142,7 +132,6 @@ export default {
 			isSaving: false,
 			showLightbox: false,
 			showLoadingOverlay: false,
-			hasActiveCauseSubscription: false,
 			hasModernSub: false,
 
 		};
@@ -159,10 +148,6 @@ export default {
 
 			const modernSubscriptions = data?.mySubscriptions?.values ?? [];
 			this.hasModernSub = modernSubscriptions.length !== 0;
-			const causesSubscriptions = modernSubscriptions.filter(
-				subscription => subscription.category.subscriptionType === 'CAUSES'
-			);
-			this.hasActiveCauseSubscription = causesSubscriptions.length !== 0;
 		},
 	},
 	mounted() {
@@ -174,31 +159,6 @@ export default {
 	methods: {
 		setUnsavedChanges(state) {
 			this.isChanged = state;
-		},
-		cancelCause(subscriptionId) {
-			this.showLoadingOverlay = true;
-			this.apollo.mutate({
-				mutation: gql`mutation cancelCause($subscriptionId: ID!) {
-					cancelSubscription(subscriptionId: $subscriptionId) {
-						id
-					}
-				}`,
-				variables: {
-					subscriptionId,
-				},
-				awaitRefetchQueries: true,
-				refetchQueries: [
-					{ query: pageQuery }
-				]
-			}).then(() => {
-				this.$showTipMsg('Your subscription has been cancelled');
-				this.isChanged = false;
-			}).catch(e => {
-				console.error(e);
-				this.$showTipMsg('There was a problem cancelling your subscription', 'error');
-			}).finally(() => {
-				this.showLoadingOverlay = false;
-			});
 		},
 		cancelSubscription() {
 			this.showLoadingOverlay = true;
@@ -247,14 +207,7 @@ export default {
 					this.isSaving = false;
 				});
 			}
-
-			if (this.$refs?.subscriptionsCausesComponent?.isChanged) {
-				this.$refs.subscriptionsCausesComponent.saveCausesSubscription().finally(() => {
-					this.isSaving = false;
-				});
-			}
 		}
-
 	},
 };
 </script>

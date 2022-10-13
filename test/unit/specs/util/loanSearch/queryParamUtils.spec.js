@@ -3,12 +3,57 @@ import {
 	updateQueryParams,
 	getIdsFromQueryParam,
 	getCountryIsoCodesFromQueryParam,
+	hasExcludedQueryParams,
+	getEnumNameFromQueryParam,
 } from '@/util/loanSearch/queryParamUtils';
 import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
-import { mockState, mockAllFacets } from './mockData';
+import { mockState, mockAllFacets } from '../../../fixtures/mockLoanSearchData';
 
 describe('queryParamUtils.js', () => {
+	describe('hasExcludedQueryParams', () => {
+		it('should return true', () => {
+			expect(hasExcludedQueryParams({ activity: [] })).toBe(true);
+			expect(hasExcludedQueryParams({ city_state: [] })).toBe(true);
+			expect(hasExcludedQueryParams({ defaultRate: [] })).toBe(true);
+			expect(hasExcludedQueryParams({ isGroup: [] })).toBe(true);
+			expect(hasExcludedQueryParams({ lenderTerm: [] })).toBe(true);
+			expect(hasExcludedQueryParams({ loanTags: [] })).toBe(true);
+			expect(hasExcludedQueryParams({ partner: [] })).toBe(true);
+			expect(hasExcludedQueryParams({ riskRating: [] })).toBe(true);
+			expect(hasExcludedQueryParams({ state: [] })).toBe(true);
+			expect(hasExcludedQueryParams({ queryString: [] })).toBe(true);
+			expect(hasExcludedQueryParams({ loanLimit: [] })).toBe(true);
+		});
+
+		it('should return false', () => {
+			expect(hasExcludedQueryParams({ test: [] })).toBe(false);
+		});
+	});
+
+	describe('getEnumNameFromQueryParam', () => {
+		const facets = [{ name: 'a' }, { name: 'b' }];
+
+		it('should handle empty', () => {
+			expect(getEnumNameFromQueryParam(undefined, [])).toBe(undefined);
+			expect(getEnumNameFromQueryParam('', [])).toBe(undefined);
+		});
+
+		it('should return undefined when no match', () => {
+			expect(getEnumNameFromQueryParam('asd', [])).toBe(undefined);
+			expect(getEnumNameFromQueryParam('', [{ name: 'asd' }])).toBe(undefined);
+		});
+
+		it('should get name', () => {
+			expect(getEnumNameFromQueryParam('a', facets)).toBe('a');
+		});
+
+		it('should get name regardless of casing', () => {
+			expect(getEnumNameFromQueryParam('A', facets)).toBe('a');
+			expect(getEnumNameFromQueryParam('a', facets.map(f => ({ name: f.name.toUpperCase() })))).toBe('A');
+		});
+	});
+
 	describe('getIdsFromQueryParam', () => {
 		it('should handle empty', () => {
 			expect(getIdsFromQueryParam()).toBe(undefined);
@@ -126,6 +171,54 @@ describe('queryParamUtils.js', () => {
 
 			expect(result).toEqual([1, 2]);
 		});
+
+		it('should handle tag FLSS and legacy single sector', () => {
+			const tag = '1';
+
+			const result = getIdsFromQueryParam(tag, mockAllFacets.tagNames, mockAllFacets.tagFacets);
+
+			expect(result).toEqual([1]);
+		});
+
+		it('should handle tag FLSS and legacy list', () => {
+			const tag = '1,2';
+
+			const result = getIdsFromQueryParam(tag, mockAllFacets.tagNames, mockAllFacets.tagFacets);
+
+			expect(result).toEqual([1, 2]);
+		});
+
+		it('should handle tag FLSS and legacy list trailing separator', () => {
+			const tag = '1,2,';
+
+			const result = getIdsFromQueryParam(tag, mockAllFacets.tagNames, mockAllFacets.tagFacets);
+
+			expect(result).toEqual([1, 2]);
+		});
+
+		it('should handle tag Algolia single sector', () => {
+			const tag = 'Tag 1';
+
+			const result = getIdsFromQueryParam(tag, mockAllFacets.tagNames, mockAllFacets.tagFacets);
+
+			expect(result).toEqual([1]);
+		});
+
+		it('should handle tag Algolia list', () => {
+			const tag = 'Tag 1~Tag 2';
+
+			const result = getIdsFromQueryParam(tag, mockAllFacets.tagNames, mockAllFacets.tagFacets);
+
+			expect(result).toEqual([1, 2]);
+		});
+
+		it('should handle tag Algolia list trailing separator', () => {
+			const tag = 'Tag 1~Tag 2~';
+
+			const result = getIdsFromQueryParam(tag, mockAllFacets.tagNames, mockAllFacets.tagFacets);
+
+			expect(result).toEqual([1, 2]);
+		});
 	});
 
 	describe('getCountryIsoCodesFromQueryParam', () => {
@@ -195,8 +288,10 @@ describe('queryParamUtils.js', () => {
 						sectorId: [1],
 						sortBy: 'expiringSoon',
 						themeId: [1],
+						tagId: [1],
 						pageOffset: 5,
 						pageLimit: 5,
+						distributionModel: 'DIRECT'
 					}
 				}
 			};
@@ -206,7 +301,9 @@ describe('queryParamUtils.js', () => {
 				sector: mockState.sectorId.toString(),
 				sortBy: 'expiringSoon',
 				attribute: '1',
+				tag: '1',
 				page: '2',
+				distributionModel: 'DIRECT'
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -225,8 +322,10 @@ describe('queryParamUtils.js', () => {
 						sortBy: 'personalized',
 						sectorId: [],
 						themeId: [],
+						tagId: [],
 						pageOffset: 0,
 						pageLimit: 5,
+						distributionModel: null,
 					}
 				},
 			};
@@ -248,8 +347,10 @@ describe('queryParamUtils.js', () => {
 						sortBy: 'popularity',
 						sectorId: [],
 						themeId: [],
+						tagId: [],
 						pageOffset: 0,
 						pageLimit: 5,
+						distributionModel: null,
 					}
 				},
 			};
@@ -271,8 +372,10 @@ describe('queryParamUtils.js', () => {
 						sortBy: null,
 						sectorId: [],
 						themeId: [],
+						tagId: [],
 						pageOffset: 15,
 						pageLimit: 5,
+						distributionModel: null,
 					}
 				},
 			};
@@ -294,8 +397,10 @@ describe('queryParamUtils.js', () => {
 						sortBy: null,
 						sectorId: [],
 						themeId: [],
+						tagId: [],
 						pageOffset: 0,
 						pageLimit: 5,
+						distributionModel: null,
 					}
 				},
 			};
@@ -317,8 +422,10 @@ describe('queryParamUtils.js', () => {
 						sortBy: null,
 						sectorId: [],
 						themeId: [],
+						tagId: [],
 						pageOffset: 5,
 						pageLimit: 5,
+						distributionModel: null,
 					}
 				},
 			};
@@ -340,8 +447,10 @@ describe('queryParamUtils.js', () => {
 						sortBy: null,
 						sectorId: [],
 						themeId: [],
+						tagId: [],
 						pageOffset: 0,
 						pageLimit: 5,
+						distributionModel: null,
 					}
 				},
 			};
@@ -360,7 +469,9 @@ describe('queryParamUtils.js', () => {
 				sortBy: 'expiringSoon',
 				sector: mockState.sectorId.toString(),
 				attribute: '1',
+				tag: '1',
 				page: '3',
+				distributionModel: 'DIRECT',
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -379,8 +490,10 @@ describe('queryParamUtils.js', () => {
 						sectorId: [1],
 						sortBy: 'expiringSoon',
 						themeId: [1],
+						tagId: [1],
 						pageOffset: 5,
 						pageLimit: 5,
+						distributionModel: 'DIRECT',
 					}
 				}
 			};
@@ -390,7 +503,9 @@ describe('queryParamUtils.js', () => {
 				sector: mockState.sectorId.toString(),
 				sortBy: 'expiringSoon',
 				attribute: '1',
+				tag: '1',
 				page: '2',
+				distributionModel: 'DIRECT',
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -409,8 +524,10 @@ describe('queryParamUtils.js', () => {
 						sectorId: [1],
 						sortBy: 'expiringSoon',
 						themeId: [1],
+						tagId: [1],
 						pageOffset: 5,
 						pageLimit: 5,
+						distributionModel: 'DIRECT',
 					}
 				}
 			};
@@ -420,7 +537,77 @@ describe('queryParamUtils.js', () => {
 				sector: mockState.sectorId.toString(),
 				sortBy: 'expiringSoon',
 				attributes: 'theme 1',
+				tag: 'tag 1',
 				page: '2',
+				distributionModel: 'DIRECT',
+			};
+
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
+
+			expect(apollo.mutate).toHaveBeenCalledWith(params);
+		});
+
+		it('should handle different gender casing', async () => {
+			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
+			const params = {
+				mutation: updateLoanSearchMutation,
+				variables: {
+					searchParams: {
+						gender: 'female',
+						countryIsoCode: ['US'],
+						sectorId: [1],
+						sortBy: 'expiringSoon',
+						themeId: [1],
+						tagId: [1],
+						pageOffset: 5,
+						pageLimit: 5,
+						distributionModel: 'DIRECT',
+					}
+				}
+			};
+			const query = {
+				gender: 'FEMALE',
+				countries: 'us',
+				sector: mockState.sectorId.toString(),
+				sortBy: 'expiringSoon',
+				attributes: 'theme 1',
+				tag: 'tag 1',
+				page: '2',
+				distributionModel: 'DIRECT',
+			};
+
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
+
+			expect(apollo.mutate).toHaveBeenCalledWith(params);
+		});
+
+		it('should handle different distribution model casing', async () => {
+			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
+			const params = {
+				mutation: updateLoanSearchMutation,
+				variables: {
+					searchParams: {
+						gender: 'female',
+						countryIsoCode: ['US'],
+						sectorId: [1],
+						sortBy: 'expiringSoon',
+						themeId: [1],
+						tagId: [1],
+						pageOffset: 5,
+						pageLimit: 5,
+						distributionModel: 'DIRECT',
+					}
+				}
+			};
+			const query = {
+				gender: 'female',
+				countries: 'us',
+				sector: mockState.sectorId.toString(),
+				sortBy: 'expiringSoon',
+				attributes: 'theme 1',
+				tag: 'tag 1',
+				page: '2',
+				distributionModel: 'direct',
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -430,9 +617,14 @@ describe('queryParamUtils.js', () => {
 	});
 
 	describe('updateQueryParams', () => {
+		const getRouter = (query = {}) => ({
+			currentRoute: { name: 'name', query },
+			push: jest.fn().mockReturnValue({ catch: jest.fn() }),
+		});
+
 		it('should preserve UTM params', () => {
 			const state = { gender: 'female' };
-			const router = { currentRoute: { name: 'name', query: { utm_test: 'test' } }, push: jest.fn() };
+			const router = getRouter({ utm_test: 'test' });
 
 			updateQueryParams(state, router, FLSS_QUERY_TYPE);
 
@@ -445,7 +637,7 @@ describe('queryParamUtils.js', () => {
 
 		it('should push gender', () => {
 			const state = { gender: 'female' };
-			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+			const router = getRouter();
 
 			updateQueryParams(state, router, FLSS_QUERY_TYPE);
 
@@ -458,7 +650,7 @@ describe('queryParamUtils.js', () => {
 
 		it('should push sector IDs', () => {
 			const state = { sectorId: [1, 2] };
-			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+			const router = getRouter();
 
 			updateQueryParams(state, router, FLSS_QUERY_TYPE);
 
@@ -471,7 +663,7 @@ describe('queryParamUtils.js', () => {
 
 		it('should not push empty sector ID', () => {
 			const state = { gender: 'female', sectorId: [] };
-			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+			const router = getRouter();
 
 			updateQueryParams(state, router, FLSS_QUERY_TYPE);
 
@@ -484,7 +676,7 @@ describe('queryParamUtils.js', () => {
 
 		it('should push theme IDs', () => {
 			const state = { themeId: [1, 2] };
-			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+			const router = getRouter();
 
 			updateQueryParams(state, router, FLSS_QUERY_TYPE);
 
@@ -497,7 +689,33 @@ describe('queryParamUtils.js', () => {
 
 		it('should not push empty theme ID', () => {
 			const state = { gender: 'female', themeId: [] };
-			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+			const router = getRouter();
+
+			updateQueryParams(state, router, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { gender: 'female' },
+				params: { noScroll: true, noAnalytics: true }
+			});
+		});
+
+		it('should push tag IDs', () => {
+			const state = { tagId: [1, 2] };
+			const router = getRouter();
+
+			updateQueryParams(state, router, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { tag: '1,2' },
+				params: { noScroll: true, noAnalytics: true }
+			});
+		});
+
+		it('should not push empty tag ID', () => {
+			const state = { gender: 'female', tagId: [] };
+			const router = getRouter();
 
 			updateQueryParams(state, router, FLSS_QUERY_TYPE);
 
@@ -510,7 +728,7 @@ describe('queryParamUtils.js', () => {
 
 		it('should push mapped FLSS sort value', () => {
 			const state = { sortBy: 'personalized' };
-			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+			const router = getRouter();
 
 			updateQueryParams(state, router, FLSS_QUERY_TYPE);
 
@@ -523,7 +741,7 @@ describe('queryParamUtils.js', () => {
 
 		it('should push standard sort value', () => {
 			const state = { sortBy: 'personalized' };
-			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+			const router = getRouter();
 
 			updateQueryParams(state, router, STANDARD_QUERY_TYPE);
 
@@ -536,7 +754,7 @@ describe('queryParamUtils.js', () => {
 
 		it('should push page', () => {
 			const state = { pageOffset: 10, pageLimit: 2 };
-			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+			const router = getRouter();
 
 			updateQueryParams(state, router, STANDARD_QUERY_TYPE);
 
@@ -549,7 +767,7 @@ describe('queryParamUtils.js', () => {
 
 		it('should remove page if first page', () => {
 			const state = { pageOffset: 0, pageLimit: 2 };
-			const router = { currentRoute: { name: 'name', query: { page: '1' } }, push: jest.fn() };
+			const router = getRouter({ page: '1' });
 
 			updateQueryParams(state, router, STANDARD_QUERY_TYPE);
 
@@ -562,7 +780,7 @@ describe('queryParamUtils.js', () => {
 
 		it('should push ISO code', () => {
 			const state = { countryIsoCode: ['US', 'CA'] };
-			const router = { currentRoute: { name: 'name', query: {} }, push: jest.fn() };
+			const router = getRouter();
 
 			updateQueryParams(state, router, mockAllFacets, FLSS_QUERY_TYPE);
 
@@ -575,11 +793,24 @@ describe('queryParamUtils.js', () => {
 
 		it('should not push identical query string', () => {
 			const state = { gender: 'female' };
-			const router = { currentRoute: { name: 'name', query: { gender: 'female' } }, push: jest.fn() };
+			const router = getRouter({ gender: 'female' });
 
 			updateQueryParams(state, router, FLSS_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledTimes(0);
+		});
+
+		it('should push distribution model', () => {
+			const state = { distributionModel: 'DIRECT' };
+			const router = getRouter();
+
+			updateQueryParams(state, router, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: state,
+				params: { noScroll: true, noAnalytics: true }
+			});
 		});
 	});
 });

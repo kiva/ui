@@ -28,8 +28,11 @@
 					>
 						<template #sharebutton v-if="inPfp">
 							<!-- Share button for PFP loans -->
-							<social-share-button
-								class="tw-block md:tw-hidden tw-mt-3" :loan="loan" :lender="lender"
+							<share-button
+								class="tw-block md:tw-hidden tw-mt-3"
+								:loan="loan"
+								:lender="lender"
+								campaign="social_share_bp_pfp"
 							/>
 						</template>
 					</summary-card>
@@ -54,9 +57,11 @@
 					>
 						<template #sharebutton v-if="inPfp">
 							<!-- Share button for PFP loans -->
-							<social-share-button
+							<share-button
 								class="tw-hidden md:tw-block lg:tw-mb-1.5"
-								:loan="loan" :lender="lender"
+								:loan="loan"
+								:lender="lender"
+								campaign="social_share_bp_pfp"
 							/>
 						</template>
 					</lend-cta>
@@ -142,7 +147,7 @@ import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
-import SocialShareButton from '@/components/BorrowerProfile/SocialShareButton';
+import ShareButton from '@/components/BorrowerProfile/ShareButton';
 import WhatIsKivaModal from '@/components/BorrowerProfile/WhatIsKivaModal';
 
 import {
@@ -296,7 +301,7 @@ export default {
 		LoanStory,
 		MoreAboutLoan,
 		SidebarContainer,
-		SocialShareButton,
+		ShareButton,
 		SummaryCard,
 		TopBannerPfp,
 		WhySpecial,

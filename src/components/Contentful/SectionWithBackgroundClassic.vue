@@ -1,41 +1,47 @@
 <template>
-	<section>
-		<div class="tw-relative">
-			<div
-				class="tw-relative tw-w-full tw-overflow-hidden tw-z-1 tw-top-0"
-				:class="verticalPaddingClasses"
-			>
-				<slot name="content">
-				</slot>
-			</div>
-			<div
-				class="tw-w-full tw-h-full tw-absolute tw-top-0 tw-z--1"
-				:style="backgroundStyle"
-			>
-				<video
-					class="tw-w-full tw-h-full tw-object-cover" v-if="isBackgroundVideo"
-					:src="backgroundMedia.url"
-					autoplay
-					loop
-					muted
-					playsinline
-				></video>
-				<kv-contentful-img
-					class="tw-w-full tw-h-full tw-object-cover"
-					v-if="isBackgroundImage"
-					:width="1440"
-					:contentful-src="backgroundMedia.url"
-					fallback-format="jpg"
-					:alt="backgroundMedia.description"
-					:source-sizes="sourceSizes"
-				/>
-			</div>
+	<section class="tw-relative" :style="themeStyles">
+		<div
+			class="tw-relative tw-w-full tw-overflow-hidden tw-z-1 tw-top-0"
+			:class="verticalPaddingClasses"
+		>
+			<slot name="content">
+			</slot>
+		</div>
+		<div
+			class="tw-w-full tw-h-full tw-absolute tw-top-0 tw-z--1"
+			:style="backgroundStyle"
+		>
+			<video
+				class="tw-w-full tw-h-full tw-object-cover" v-if="isBackgroundVideo"
+				:src="backgroundMedia.url"
+				autoplay
+				loop
+				muted
+				playsinline
+			></video>
+			<kv-contentful-img
+				class="tw-w-full tw-h-full tw-object-cover"
+				v-if="isBackgroundImage"
+				:width="1440"
+				:contentful-src="backgroundMedia.url"
+				fallback-format="jpg"
+				:alt="backgroundMedia.description"
+				:source-sizes="sourceSizes"
+			/>
 		</div>
 	</section>
 </template>
 
 <script>
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
+import {
+	darkTheme,
+	darkGreenTheme,
+	mintTheme,
+	defaultTheme,
+	darkMintTheme
+} from '~/@kiva/kv-tokens/configs/kivaColors.cjs';
+
+const KvContentfulImg = () => import('~/@kiva/kv-components/vue/KvContentfulImg');
 
 /**
 * Section Background
@@ -75,6 +81,22 @@ export default {
 		verticalPadding: {
 			type: Object,
 			default: () => {},
+		},
+		/**
+		 * Theme name from Contentful settings
+		 *
+		 * Can be one of:
+		 * - 'kivaClassicLight'
+		 * - 'kivaClassicMint'
+		 * - 'kivaClassicGreen'
+		 * - 'kivaClassicDark'
+		 * - 'imageCard'
+		 *
+		 * The default theme 'kivaClassicLight' will be used for any other value.
+		 */
+		themeName: {
+			type: String,
+			default: '',
 		}
 	},
 	data() {
@@ -115,6 +137,11 @@ export default {
 					'background-color': this.backgroundContent?.backgroundColor
 				};
 			}
+			if (this.themeStyles) {
+				return {
+					'background-color': 'rgb(var(--bg-primary))'
+				};
+			}
 			return {};
 		},
 		isBackgroundVideo() {
@@ -128,6 +155,22 @@ export default {
 				description: this.backgroundContent?.backgroundMedia?.description ?? '',
 				title: this.backgroundContent?.backgroundMedia?.title ?? '',
 				url: this.backgroundContent?.backgroundMedia?.file?.url ?? ''
+			};
+		},
+		themeStyles() {
+			const themeMapper = {
+				kivaClassicLight: defaultTheme,
+				kivaClassicMint: mintTheme,
+				kivaClassicGreen: darkGreenTheme,
+				kivaClassicDark: darkTheme,
+				imageCard: darkTheme,
+				kivaDarkMint: darkMintTheme
+			};
+			const theme = themeMapper[this.themeName] ?? defaultTheme;
+			// No styles needed if using the default theme
+			return theme === defaultTheme ? {} : {
+				...theme,
+				color: 'rgb(var(--text-primary))',
 			};
 		},
 		/**

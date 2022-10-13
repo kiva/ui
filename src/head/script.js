@@ -3,7 +3,7 @@ export default (config, globalOneTrustEvent) => {
 	const cookies = typeof document !== 'undefined' ? document.cookie.split(';') : [];
 	let optout = false;
 	for (let i = 0; i < cookies.length; i++) { // eslint-disable-line
-		if (cookies[i].indexOf('kvgdpr') !== -1 && cookies[i].indexOf('opted_out=true') !== -1) {
+		if (cookies[i].indexOf('kvgdpr') > -1 && cookies[i].indexOf('opted_out=true') > -1) {
 			optout = true;
 		}
 	}
@@ -118,14 +118,18 @@ export default (config, globalOneTrustEvent) => {
 		/* eslint-enable */
 	};
 
-	// Optimizely experiment loader
-	const insertOptimizely = () => {
-		const p = document.getElementsByTagName('script')[0];
-		const s = document.createElement('script');
-		s.src = `https://cdn.optimizely.com/js/${config.optimizelyProjectId}.js`;
-		p.parentNode.insertBefore(s, p);
+	// Hotjar Snippet
+	const insertHotjar = () => {
+		/* eslint-disable */
+		(function(h,o,t,j,a,r){
+			h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+			h._hjSettings={hjid:config.hotjarId,hjsv:6};
+			a=o.getElementsByTagName('head')[0];
+			r=o.createElement('script');r.async=1;
+			r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+			a.appendChild(r);
+		})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
 	};
-
 	// Always load
 	// PerimeterX snippet
 	if (config.enablePerimeterx) {
@@ -171,7 +175,8 @@ export default (config, globalOneTrustEvent) => {
 			* */
 			if (config.enableAnalytics) {
 				if (config.enableOptimizely && !optout) {
-					OneTrust.InsertHtml('', 'head', insertOptimizely, null, 'C0002');
+					// reactivate optimizely events
+					window['optimizely'].push({'type':'sendEvents'});
 				}
 				if (config.enableGA && !optout) {
 					OneTrust.InsertHtml('', 'head', insertGoogleAnalytics, null, 'C0002');
@@ -184,6 +189,9 @@ export default (config, globalOneTrustEvent) => {
 				}
 				if (config.enableFullStory && !optout) {
 					OneTrust.InsertHtml('', 'head', insertFullStory, null, 'C0002');
+				}
+				if (config.enableHotjar && !optout) {
+					OneTrust.InsertHtml('', 'head', insertHotjar, null, 'C0002');
 				}
 			}
 
@@ -231,7 +239,9 @@ export default (config, globalOneTrustEvent) => {
 	if (!config.oneTrust || !config.oneTrust.enable) {
 		if (config.enableAnalytics) {
 			if (config.enableOptimizely && !optout) {
-				insertOptimizely();
+				// reactivate optimizely events
+				// eslint-disable-next-line dot-notation
+				window['optimizely'].push({ type: 'sendEvents' });
 			}
 			if (config.enableGA && !optout) {
 				insertGoogleAnalytics();
@@ -247,6 +257,9 @@ export default (config, globalOneTrustEvent) => {
 			}
 			if (config.algoliaConfig.enableAA && !optout) {
 				insertAlgoliaAnalytics();
+			}
+			if (config.enableHotjar && !optout) {
+				insertHotjar();
 			}
 		}
 

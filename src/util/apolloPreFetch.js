@@ -58,7 +58,7 @@ export function preFetchApolloQuery(config, client, args) {
 	// Fetch the query from the component's apollo options
 	return new Promise((resolve, reject) => {
 		const { cookieStore } = args;
-		const prefetchVariables = config.preFetchVariables ? config.preFetchVariables(args) : {};
+		const prefetchVariables = config.preFetchVariables ? config.preFetchVariables({ client, ...args }) : {};
 		client.query({
 			query: config.query,
 			variables: {

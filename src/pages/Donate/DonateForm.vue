@@ -99,15 +99,6 @@ export default {
 			type: String,
 			default: '',
 		},
-		formSubmitAnalytics: {
-			type: Object,
-			default: () => {
-				return {
-					category: 'Donate Form',
-					action: 'click-donate-support-us-form',
-				};
-			},
-		},
 		id: { // used when you have multiple instances of this form on one page.
 			type: String,
 			default: 'instance1',
@@ -197,11 +188,11 @@ export default {
 					});
 				} else {
 					this.$kvTrackEvent(
-						this.formSubmitAnalytics.category,
-						this.formSubmitAnalytics.action,
-						this.buttonText,
+						'donation',
+						'add-to-basket',
+						'donation-one-time',
+						null,
 						// pass donation amount as whole number
-						numeral(this.selectedAmount).value() * 100,
 						numeral(this.selectedAmount).value() * 100
 					);
 					this.$router.push({

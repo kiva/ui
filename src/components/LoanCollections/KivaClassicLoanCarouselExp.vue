@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-pt-4">
+	<div :class="isMfi ? 'tw-pt-2' : 'tw-pt-4'">
 		<transition name="kvfade">
 			<div
 				v-if="isLoading"
@@ -24,13 +24,12 @@
 			<template v-for="(loanId, index) in loanIds" #[`slide${index}`]>
 				<!-- show loan card -->
 				<!-- TODO Re-implement card position analytics -->
-				<kiva-classic-basic-loan-card-bundle-exp
-					v-if="isBundle"
+
+				<mfi-loan-card
+					v-if="isMfi"
 					:item-index="index"
-					:key="`loan-bundle-${loanId}`"
+					:key="`loan-mfi-${loanId}`"
 					:loan-id="loanId"
-					@read-more-link="getLoanDetails"
-					:is-personalized="isPersonalized"
 				/>
 				<kiva-classic-basic-loan-card-exp
 					v-else
@@ -44,9 +43,9 @@
 </template>
 
 <script>
-import KivaClassicBasicLoanCardBundleExp from '@/components/LoanCards/KivaClassicBasicLoanCardBundleExp';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import MfiLoanCard from '@/components/LoansByCategory/MFIRecommendations/MfiLoanCard';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
@@ -55,7 +54,7 @@ export default {
 		KvCarousel,
 		KvLoadingSpinner,
 		KivaClassicBasicLoanCardExp,
-		KivaClassicBasicLoanCardBundleExp,
+		MfiLoanCard
 	},
 	props: {
 		isLoggedIn: {
@@ -86,18 +85,14 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		isBundle: {
-			type: Boolean,
-			default: false
-		},
-		isPersonalized: {
-			type: Boolean,
-			default: false
-		},
 		getDetailedLoan: {
 			type: Function,
 			default: () => {}
-		}
+		},
+		isMfi: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {

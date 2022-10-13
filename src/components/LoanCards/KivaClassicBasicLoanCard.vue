@@ -133,77 +133,84 @@
 			class="tw-rounded tw-self-start" :style="{width: '9rem', height: '3rem'}"
 		/>
 
-		<kv-ui-button
-			v-if="!isLoading && !allSharesReserved && !showLendNowButton"
-			class="tw-mb-2 tw-self-start"
-			:state="`${allSharesReserved ? 'disabled' : ''}`"
-			:to="`/lend/${loanId}`"
-			v-kv-track-event="['Lending', 'click-Read-more', 'View loan', loanId]"
-		>
-			View loan
-			<kv-material-icon
-				class="tw-w-3 tw-h-3 tw-align-middle"
-				:icon="mdiChevronRight"
-			/>
-		</kv-ui-button>
-
-		<kv-ui-button
-			class="tw-text-secondary"
-			variant="secondary"
-			v-if="isInBasket"
-			v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
-			to="/basket"
-		>
-			<slot>
-				<div class="tw-inline-flex tw-items-center tw-gap-1">
-					Checkout now
-					<kv-material-icon
-						class="tw-w-2.5 tw-h-2.5"
-						:icon="mdiCheckCircleOutline"
-					/>
+		<template v-if="!isLoading">
+			<!-- If loan is in basket, always show checkout now button -->
+			<kv-ui-button
+				class="tw-mb-2 tw-text-secondary"
+				variant="secondary"
+				v-if="isInBasket"
+				v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
+				to="/basket"
+			>
+				<slot>
+					<div class="tw-inline-flex tw-items-center tw-gap-1">
+						Checkout now
+						<kv-material-icon
+							class="tw-w-2.5 tw-h-2.5"
+							:icon="mdiCheckCircleOutline"
+						/>
+					</div>
+				</slot>
+			</kv-ui-button>
+			<!-- loan is not in basket -->
+			<template v-if="!isInBasket">
+				<!-- If allSharesReserved show message and hide cta button -->
+				<div
+					v-if="allSharesReserved"
+					class="
+						tw-rounded
+						tw-bg-secondary
+						tw-text-center
+						tw-w-full
+						tw-py-1 tw-px-1.5
+						tw-mb-2 tw-mt-2
+					"
+				>
+					Another lender has selected this loan. Please choose a different borrower to support.
 				</div>
-			</slot>
-		</kv-ui-button>
+				<template v-if="!allSharesReserved">
+					<!-- View Loan button -->
+					<kv-ui-button
+						v-if="!showLendNowButton"
+						class="tw-mb-2 tw-self-start"
+						:state="`${allSharesReserved ? 'disabled' : ''}`"
+						:to="`/lend/${loanId}`"
+						v-kv-track-event="['Lending', 'click-Read-more', 'View loan', loanId]"
+					>
+						View loan
+						<kv-material-icon
+							class="tw-w-3 tw-h-3 tw-align-middle"
+							:icon="mdiChevronRight"
+						/>
+					</kv-ui-button>
 
-		<!-- Lend button -->
-		<kv-ui-button
-			key="lendButton"
-			v-if="!allSharesReserved && !isLoading && showLendNowButton && !isAdding && !isInBasket"
-			class="tw-inline-flex tw-flex-1"
-			data-testid="bp-lend-cta-lend-button"
-			type="submit"
-			@click="addToBasket"
-			v-kv-track-event="[
-				'Lending',
-				'lend-button-loan-upsell',
-				expLabel
-			]"
-		>
-			{{ ctaButtonText }}
-		</kv-ui-button>
+					<!-- Lend button -->
+					<kv-ui-button
+						key="lendButton"
+						v-if="showLendNowButton && !isAdding"
+						class="tw-inline-flex tw-flex-1"
+						data-testid="bp-lend-cta-lend-button"
+						type="submit"
+						@click="addToBasket"
+						v-kv-track-event="[
+							'Lending',
+							'lend-button-loan-upsell',
+							expLabel
+						]"
+					>
+						{{ ctaButtonText }}
+					</kv-ui-button>
 
-		<kv-ui-button
-			v-if="showLendNowButton && isAdding"
-			class="tw-inline-flex tw-flex-1"
-			data-testid="bp-lend-cta-adding-to-basket-button"
-		>
-			Adding to basket...
-		</kv-ui-button>
-
-		<!-- If allSharesReserved show message and hide cta button -->
-		<div
-			v-if="allSharesReserved"
-			class="
-				tw-rounded
-				tw-bg-secondary
-				tw-text-center
-				tw-w-full
-				tw-py-1 tw-px-1.5
-				tw-mb-2 tw-mt-2
-			"
-		>
-			Another lender has selected this loan. Please choose a different borrower to support.
-		</div>
+					<kv-ui-button
+						v-if="showLendNowButton && isAdding"
+						class="tw-inline-flex tw-flex-1"
+						data-testid="bp-lend-cta-adding-to-basket-button"
+					>
+						Adding to basket...
+					</kv-ui-button>
+				</template>
+			</template>
+		</template>
 	</div>
 </template>
 
@@ -224,10 +231,13 @@ import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import { setLendAmount } from '@/util/basketUtils';
+import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
-const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
+const loanQuery = gql`
+	${loanCardFieldsFragment}
+	query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
 		id
 		basket {
@@ -243,55 +253,12 @@ const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	lend {
 		loan(id: $loanId) {
 			id
-			distributionModel
-			geocode {
-				city
-				state
-				country {
-					name
-					isoCode
-				}
-			}
-			image {
-				id
-				hash
-			}
-			name
-			sector {
-				id
-				name
-			}
-			whySpecial
-
-			# for isLentTo
-			userProperties {
-				lentTo
-			}
-
-			# for loan-use-mixin
-			use
-			status
-			loanAmount
-			borrowerCount
-
-			# for percent-raised-mixin
-			loanFundraisingInfo {
-				fundedAmount
-				reservedAmount
-			}
-
-			# for time-left-mixin
-			plannedExpirationDate
+			...loanCardFields
 
 			# for loan-progress component
 			unreservedAmount @client
 			fundraisingPercent @client
 			fundraisingTimeLeft @client
-
-			# for matching-text component
-			isMatchable
-			matchingText
-			matchRatio
 		}
 	}
 }`;
@@ -499,6 +466,35 @@ export default {
 	},
 	beforeDestroy() {
 		this.destroyViewportObserver();
+	},
+	created() {
+		let partnerFragment;
+		let	directFragment;
+		try {
+			// Attempt to read the loan card fragment from the cache
+			// If cache is missing fragment fields, this will throw an invariant error
+			partnerFragment = this.apollo.readFragment({
+				id: `LoanPartner:${this.loanId}`,
+				fragment: loanCardFieldsFragment,
+			}) || null;
+		} catch (e) {
+			// no-op
+		}
+		try {
+			// Attempt to read the loan card fragment from the cache
+			// If cache is missing fragment fields, this will throw an invariant error
+			directFragment = this.apollo.readFragment({
+				id: `LoanDirect:${this.loanId}`,
+				fragment: loanCardFieldsFragment,
+			}) || null;
+		} catch (e) {
+			// no-op
+		}
+		const loanCardFieldFragment = partnerFragment || directFragment;
+		if (loanCardFieldFragment) {
+			this.loan = loanCardFieldFragment;
+			this.isLoading = false;
+		}
 	},
 	watch: {
 		// When loan id changes, update watch query variables

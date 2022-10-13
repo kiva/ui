@@ -171,12 +171,12 @@ export default {
 		/* Redirect to the thanks
 		 * @param transactionId
 		 */
-		redirectToThanks(transactionId) {
+		redirectToThanks(transactionId, additionalQueryParams) {
 			checkInjections(this, injections);
-
 			if (transactionId) {
 				this.cookieStore.remove('kvbskt', { path: '/', secure: true });
-				window.location = `/checkout/post-purchase?kiva_transaction_id=${transactionId}`;
+				// eslint-disable-next-line max-len
+				window.location = `/checkout/post-purchase?kiva_transaction_id=${transactionId}${additionalQueryParams}`;
 			}
 		}
 	}

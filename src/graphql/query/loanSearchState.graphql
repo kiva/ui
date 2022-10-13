@@ -6,7 +6,9 @@ query loanSearchStateQuery {
 		countryIsoCode
 		sortBy
 		themeId
+		tagId
 		pageOffset
 		pageLimit
+		distributionModel
 	}
 }

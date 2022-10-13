@@ -13,6 +13,7 @@ import showTipMessage from '@/graphql/mutation/tipMessage/showTipMessage.graphql
 import { preFetchAll } from '@/util/apolloPreFetch';
 import { authenticationGuard } from '@/util/authenticationGuard';
 import { contentfulPreviewCookie } from '@/util/contentfulPreviewCookie';
+import collectWebVitals from '@/util/webVitals';
 
 import createApp from '@/main';
 import '@/assets/iconLoader';
@@ -107,11 +108,12 @@ try {
 	// do nothing (leave user id as null)
 }
 
-// setup global analytics configuratino + data
+// setup global analytics configuration + data
 app.$setKvAnalyticsData(userId).then(() => {
 	// fire server rendered pageview
 	app.$fireServerPageView();
 	app.$fireQueuedEvents();
+	collectWebVitals(app.$kvTrackEvent);
 });
 
 // Setup adding touch info to the state
@@ -133,12 +135,22 @@ router.onReady(() => {
 		// get newly activated components
 		const matched = router.getMatchedComponents(to);
 		const prevMatched = router.getMatchedComponents(from);
-		const activated = _dropWhile(matched, (c, i) => prevMatched[i] === c);
+		const areRoutesTheSame = JSON.stringify(to?.matched?.[0]?.path) === JSON.stringify(from?.matched?.[0]?.path);
+		const areParamsTheSame = JSON.stringify(to?.params) === JSON.stringify(from?.params);
+		let activated;
+		/** if route is the same but params are different, do not drop matched components this prevents buggy
+		 * navigation when client side navigating from route to same route with different params
+		 */
+		if (areRoutesTheSame && !areParamsTheSame) {
+			activated = matched;
+		} else {
+			activated = _dropWhile(matched, (c, i) => prevMatched[i] === c);
+		}
 
 		contentfulPreviewCookie({ route: to, cookieStore });
 		authenticationGuard({ route: to, apolloClient, kvAuth0 })
 			.then(() => {
-			// Pre-fetch graphql queries from activated components
+				// Pre-fetch graphql queries from activated components
 				return preFetchAll(activated, apolloClient, {
 					cookieStore,
 					kvAuth0,

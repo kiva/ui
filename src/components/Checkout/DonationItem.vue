@@ -175,7 +175,6 @@
 			:close-nudge-lightbox="closeNudgeLightbox"
 			:update-donation-to="updateDonationTo"
 			:has-custom-donation="hasCustomDonation"
-			:experimental-footer="showCharityOverheadFooter"
 			:description="donationNudgeDescription()"
 			:percentage-rows="donationNudgePercentageRows"
 			:current-donation-amount="amount"
@@ -272,14 +271,10 @@ export default {
 			cachedAmount: numeral(this.donation.price).format('$0,0.00'),
 			editDonation: false,
 			nudgeLightboxVisible: false,
-			isCash80Running: true,
-			donationTagLineExperiment: false,
 			hasCustomDonation: true,
 			donationNudgeExperimentalDescription: false,
 			loanHistoryCount: null,
-			donationNudgeBorrowerImageExperiment: false,
 			donationDetailsLink: 'How Kiva uses donations',
-			showCharityOverheadFooter: false,
 			dynamicDonationItem: '',
 			mdiPencil,
 			imageRequire,
@@ -333,11 +328,7 @@ export default {
 			}
 
 			let coverOurCosts = `${this.loanCount > 1 ? 'These loans cost' : 'This loan costs'}`;
-			if (this.donationTagLineExperiment) {
-				coverOurCosts = 'During the COVID-19 pandemic, Kiva is working with lenders, Field Partners, borrowers and more to ensure a rapid and impactful global response. Your donations help us fight this global crisis.'; // eslint-disable-line max-len
-			} else {
-				coverOurCosts += ` Kiva more than ${loanCost} to facilitate. Will you help us cover our costs?`;
-			}
+			coverOurCosts += ` Kiva more than ${loanCost} to facilitate. Will you help us cover our costs?`;
 			return coverOurCosts;
 		},
 		donationNudgePercentageRows() {
@@ -370,7 +361,7 @@ export default {
 			this.updateDonation();
 		},
 		enterEditDonation() {
-			if (this.hasLoans && this.isCash80Running) {
+			if (this.hasLoans) {
 				this.openNudgeLightbox();
 			} else {
 				this.editDonation = true;

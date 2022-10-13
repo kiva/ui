@@ -5,13 +5,15 @@
 				{{ headline }}
 			</h2>
 		</div>
-		<div v-if="questions" class="tw-divide-y">
+		<div v-if="questions" class="tw-divide-y tw-not-prose tw-whitespace-normal">
 			<kv-expandable-question
 				v-for="(question, index) in questions"
 				:key="index"
 				:title="question.name"
 				:content="convertFromRichTextToHtml(question.richText)"
 				:id="question.name | changeCase('paramCase')"
+				:active="isActive(question.name)"
+				@toggle="setActiveAccordion"
 			/>
 		</div>
 	</kv-grid>
@@ -27,6 +29,11 @@ export default {
 	components: {
 		KvExpandableQuestion,
 		KvGrid,
+	},
+	data() {
+		return {
+			activeAccordion: '',
+		};
 	},
 	props: {
 		/**
@@ -47,6 +54,12 @@ export default {
 	methods: {
 		convertFromRichTextToHtml(rawRichText) {
 			return rawRichText ? richTextRenderer(rawRichText) : '';
+		},
+		setActiveAccordion({ title }) {
+			this.activeAccordion = title;
+		},
+		isActive(title) {
+			return this.activeAccordion === title;
 		}
 	},
 	mounted() {

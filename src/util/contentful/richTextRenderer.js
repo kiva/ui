@@ -7,7 +7,7 @@
  */
 
 import {
-	formatResponsiveImageSet, responsiveImageSetSourceSets
+	formatResponsiveImageSet, responsiveImageSetSourceSets, formatContentTypes
 } from '@/util/contentfulUtils';
 import { BLOCKS, INLINES } from '~/@contentful/rich-text-types';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
@@ -104,6 +104,7 @@ export function richTextRenderer(content) {
 		const isRichTextContent = entryContentTypeId === 'richTextContent';
 		const isButton = entryContentTypeId === 'button';
 		const isResponsiveImageSet = entryContentTypeId === 'responsiveImageSet';
+		const isFAQ = entryContent?.fields?.type === 'frequentlyAskedQuestions';
 
 		if (isRichTextContent) {
 			const richTextHTML = richTextRenderer(entryContent?.fields?.richText);
@@ -130,6 +131,11 @@ export function richTextRenderer(content) {
 						alt="${formattedResponsiveImageSet?.description}"
 						:source-sizes="${sourceSetArrayAsString}" />`;
 		}
+		if (isFAQ) {
+			return `<kv-frequently-asked-questions
+						:questions="${htmlSafeStringify(formatContentTypes(entryContent?.fields?.contents))}"
+					/>`;
+		}
 		return '';
 	};
 
@@ -150,4 +156,25 @@ export function richTextRenderer(content) {
 	const contentWithoutTrailingEmptyParagraph = removeTrailingParagraphTag(content);
 
 	return documentToHtmlString(contentWithoutTrailingEmptyParagraph, options);
+}
+
+/* eslint-disable import/prefer-default-export */
+/**
+ * Adds target="_blank" to links so they open in a new tab
+ *
+ * @param {String} bodyCopy String containing html of contentful entry
+ * @param {Object} pageSettings Object containing global page settings of
+ * the page that the contentful entry is from
+ * @returns {void}
+ */
+export function addBlankTargetToExternalLinks(bodyCopy, pageSettings) {
+	// make sure all partner content links open externally
+	if (bodyCopy && pageSettings?.enableBlankTargetLinks) {
+		const links = bodyCopy.querySelectorAll('a');
+		if (links.length > 0) {
+			Array.prototype.forEach.call(links, link => {
+				link.target = '_blank';// eslint-disable-line no-param-reassign
+			});
+		}
+	}
 }
