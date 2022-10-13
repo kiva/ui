@@ -38,7 +38,8 @@
 						:loan-id="loan"
 						:lend-now-button="true"
 						custom-checkout-route="#show-basket"
-						:show-loan-details="showLoanDetails"
+						:custom-loan-details="true"
+						@show-loan-details="showLoanDetails(loans[index])"
 						@add-to-basket="addToBasket"
 					/>
 				</div>
@@ -132,7 +133,7 @@ export default {
 	},
 	computed: {
 		loanIds() {
-			return this.loans?.map((loan) => { return loan.id });
+			return this.loans?.map(loan => { return loan.id; });
 		},
 		singleSlideWidth() {
 			const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
@@ -206,6 +207,9 @@ export default {
 		}
 	},
 	methods: {
+		showLoanDetails(loan) {
+			this.$emit('show-loan-details', loan);
+		},
 		// TODO: Review all tracking cateogries
 		onInteractCarousel(interaction) {
 			this.$kvTrackEvent('carousel', 'click-carousel-horizontal-scroll', interaction);
@@ -213,10 +217,6 @@ export default {
 		addToBasket(payload) {
 			this.loanAdded = true;
 			this.$emit('add-to-basket', payload);
-		},
-		showLoanDetails(payload) {
-			const selectedLoan = this.loans.find(loan => String(loan.id) === String(payload.loanId));
-			this.$emit('show-loan-details', selectedLoan);
 		},
 		fetchLoans() {
 			if (this.isVisible) {

@@ -14,7 +14,8 @@
 					:loan-id="loan"
 					:lend-now-button="true"
 					custom-checkout-route="#show-basket"
-					:show-loan-details="showLoanDetails"
+					:custom-loan-details="true"
+					@show-loan-details="showLoanDetails(loans[index])"
 					@add-to-basket="addToBasket"
 				/>
 			</div>
@@ -206,9 +207,8 @@ export default {
 		addToBasket(payload) {
 			this.$emit('add-to-basket', payload);
 		},
-		showLoanDetails(payload) {
-			const selectedLoan = this.loans.find(loan => String(loan.id) === String(payload.loanId));
-			this.$emit('show-loan-details', selectedLoan);
+		showLoanDetails(loan) {
+			this.$emit('show-loan-details', loan);
 		},
 		fetchLoans() {
 			if (this.isVisible) {
