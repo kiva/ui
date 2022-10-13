@@ -1,3 +1,10 @@
+### [2.332.1](https://github.com/kiva/ui/compare/v2.332.0...v2.332.1) (2022-10-13)
+
+
+### Bug Fixes
+
+* mobile styling issues for various part of eco_challenge ([75a4e1c](https://github.com/kiva/ui/commit/75a4e1c6e9b3b65debd5668e0a92af6765327774))
+
 ## [2.332.0](https://github.com/kiva/ui/compare/v2.331.0...v2.332.0) (2022-10-12)
 
 
