@@ -28,7 +28,7 @@
 <script>
 import _throttle from 'lodash/throttle';
 import KvChipClassic from '@/components/Kv/KvChipClassic';
-import { transformTagName, genderDisplayMap, distributionModelDisplayMap } from '@/util/loanSearch/filterUtils';
+import { transformTagName, distributionModelDisplayMap } from '@/util/loanSearch/filterUtils';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 export default {
