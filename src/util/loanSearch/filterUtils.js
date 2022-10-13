@@ -44,6 +44,42 @@ export const FLSS_QUERY_TYPE = 'flss';
 export const STANDARD_QUERY_TYPE = 'standard';
 
 /**
+ * Key for configuring expected female enum value
+ */
+export const FEMALE_KEY = 'FEMALE';
+
+/**
+ * Key for configuring expected male enum value
+ */
+export const MALE_KEY = 'MALE';
+
+/**
+ * Key for configuring expected field partner enum value
+ */
+export const FIELDPARTNER_KEY = 'FIELDPARTNER';
+
+/**
+ * Key for configuring expected direct enum value
+ */
+export const DIRECT_KEY = 'DIRECT';
+
+/**
+ * Maps the gender enum names to display names
+ */
+export const genderDisplayMap = {
+	[FEMALE_KEY]: 'Women',
+	[MALE_KEY]: 'Men',
+};
+
+/**
+ * Maps the distributor enum names to display names
+ */
+export const distributionModelDisplayMap = {
+	[FIELDPARTNER_KEY]: 'Partner',
+	[DIRECT_KEY]: 'Direct',
+};
+
+/**
  * Categorizes Sort Options
  *
  * @param {Array<Object>} standardSorts Sort options from the lend API
@@ -175,6 +211,47 @@ export function transformTags(allTags = []) {
 	});
 
 	return _orderBy(transformed, 'name');
+}
+
+/**
+ * Prepares the options to be used by a radio group
+ *
+ * @param {Array<Object>} options The options to transform
+ * @param {Array<string>} order The order of the options (name property)
+ * @param {Object} map Display name map
+ * @returns {Array<Object>} The transformed radio group options
+ */
+export function transformRadioGroupOptions(options, order, map) {
+	const capitalizedOrder = order.map(o => o.toUpperCase());
+
+	const transformed = options.filter(o => capitalizedOrder.includes(o.name.toUpperCase())).map(o => {
+		return {
+			name: o.name,
+			title: map[o.name.toUpperCase()] ?? o
+		};
+	}).sort((a, b) => capitalizedOrder.indexOf(a.name.toUpperCase()) - capitalizedOrder.indexOf(b.name.toUpperCase()));
+
+	return transformed;
+}
+
+/**
+ * Prepares the gender options to be used by a radio group
+ *
+ * @param {Array<Object>} genders The genders to transform
+ * @returns {Array<Object>} The transformed radio group options
+ */
+export function transformGenderOptions(genders) {
+	return transformRadioGroupOptions(genders, [FEMALE_KEY, MALE_KEY], genderDisplayMap);
+}
+
+/**
+ * Prepares the distribution model options to be used by a radio group
+ *
+ * @param {Array<Object>} distributionModels The distribution models to transform
+ * @returns {Array<Object>} The transformed radio group options
+ */
+export function transformDistributionModelOptions(distributionModels) {
+	return transformRadioGroupOptions(distributionModels, [FIELDPARTNER_KEY, DIRECT_KEY], distributionModelDisplayMap);
 }
 
 /**

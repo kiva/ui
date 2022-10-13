@@ -1,3 +1,43 @@
+## [2.333.0](https://github.com/kiva/ui/compare/v2.332.1...v2.333.0) (2022-10-13)
+
+
+### Features
+
+* sort by on quick filters and reset ([764d177](https://github.com/kiva/ui/commit/764d177de6e8b12854dd2a77fe44d069858cdde2))
+
+
+### Bug Fixes
+
+* update min width to show full sort by txt ([c68fc09](https://github.com/kiva/ui/commit/c68fc09d6167e7e646dd21e1900bee765fcbb0ba))
+
+### [2.332.1](https://github.com/kiva/ui/compare/v2.332.0...v2.332.1) (2022-10-13)
+
+
+### Bug Fixes
+
+* mobile styling issues for various part of eco_challenge ([75a4e1c](https://github.com/kiva/ui/commit/75a4e1c6e9b3b65debd5668e0a92af6765327774))
+
+## [2.332.0](https://github.com/kiva/ui/compare/v2.331.0...v2.332.0) (2022-10-12)
+
+
+### Features
+
+* distribution model filter to new loan filter page, abstracted radio button group filter ([3f5c139](https://github.com/kiva/ui/commit/3f5c13998fb21c743cee49c96dc86e7a7d9ef9bf))
+
+
+### Bug Fixes
+
+* made all loans title configurable on new radio button group filter ([ad5c326](https://github.com/kiva/ui/commit/ad5c326f34295986ffcd59a6c3e98bac855b79a0))
+* moved loan distribution filter outside of accordion and above advanced filters ([9c2b823](https://github.com/kiva/ui/commit/9c2b8232485749675c894ad030dd4941e0b75735))
+
+## [2.331.0](https://github.com/kiva/ui/compare/v2.330.1...v2.331.0) (2022-10-12)
+
+
+### Features
+
+* add flag when data is completely loaded for optimizely experiments ([8573c95](https://github.com/kiva/ui/commit/8573c956f161d12393b5ef48dd65dfbae6a49f2a))
+* get thankspage data using window object ([e3df8ee](https://github.com/kiva/ui/commit/e3df8eec35ff106bd85e85e7ad29a254aeb7ae69))
+
 ### [2.330.1](https://github.com/kiva/ui/compare/v2.330.0...v2.330.1) (2022-10-11)
 
 

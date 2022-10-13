@@ -65,6 +65,7 @@ export async function fetchLoanFacets(apollo) {
 		const themeFacets = result.data?.lend?.loanThemeFilter ?? [];
 		const tagFacets = result.data?.lend?.tag ?? [];
 		const genderFacets = result.data?.genderOptions?.enumValues ?? [];
+		const distributionModelFacets = result.data?.distributionModelOptions?.enumValues ?? [];
 
 		return {
 			countryFacets,
@@ -83,6 +84,8 @@ export async function fetchLoanFacets(apollo) {
 			genders: genderFacets.map(g => g.name.toUpperCase()),
 			flssSorts: result.data?.flssSorts?.enumValues ?? [],
 			standardSorts: result.data?.standardSorts?.enumValues ?? [],
+			distributionModelFacets,
+			distributionModels: distributionModelFacets.map(d => d.name.toUpperCase()),
 		};
 	} catch (e) {
 		logReadQueryError(e, 'dataUtils loanFacetsQuery');

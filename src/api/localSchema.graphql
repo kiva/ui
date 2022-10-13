@@ -84,6 +84,7 @@ type LoanSearchState {
 	tagId: [Int]
 	pageOffset: [Int]
 	pageLimit: [Int]
+	distributionModel: String
 }
 
 type TipMessage {

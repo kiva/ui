@@ -4,10 +4,11 @@ import {
 	getIdsFromQueryParam,
 	getCountryIsoCodesFromQueryParam,
 	hasExcludedQueryParams,
+	getEnumNameFromQueryParam,
 } from '@/util/loanSearch/queryParamUtils';
 import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
-import { mockState, mockAllFacets } from './mockData';
+import { mockState, mockAllFacets } from '../../../fixtures/mockLoanSearchData';
 
 describe('queryParamUtils.js', () => {
 	describe('hasExcludedQueryParams', () => {
@@ -27,6 +28,29 @@ describe('queryParamUtils.js', () => {
 
 		it('should return false', () => {
 			expect(hasExcludedQueryParams({ test: [] })).toBe(false);
+		});
+	});
+
+	describe('getEnumNameFromQueryParam', () => {
+		const facets = [{ name: 'a' }, { name: 'b' }];
+
+		it('should handle empty', () => {
+			expect(getEnumNameFromQueryParam(undefined, [])).toBe(undefined);
+			expect(getEnumNameFromQueryParam('', [])).toBe(undefined);
+		});
+
+		it('should return undefined when no match', () => {
+			expect(getEnumNameFromQueryParam('asd', [])).toBe(undefined);
+			expect(getEnumNameFromQueryParam('', [{ name: 'asd' }])).toBe(undefined);
+		});
+
+		it('should get name', () => {
+			expect(getEnumNameFromQueryParam('a', facets)).toBe('a');
+		});
+
+		it('should get name regardless of casing', () => {
+			expect(getEnumNameFromQueryParam('A', facets)).toBe('a');
+			expect(getEnumNameFromQueryParam('a', facets.map(f => ({ name: f.name.toUpperCase() })))).toBe('A');
 		});
 	});
 
@@ -267,6 +291,7 @@ describe('queryParamUtils.js', () => {
 						tagId: [1],
 						pageOffset: 5,
 						pageLimit: 5,
+						distributionModel: 'DIRECT'
 					}
 				}
 			};
@@ -278,6 +303,7 @@ describe('queryParamUtils.js', () => {
 				attribute: '1',
 				tag: '1',
 				page: '2',
+				distributionModel: 'DIRECT'
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -299,6 +325,7 @@ describe('queryParamUtils.js', () => {
 						tagId: [],
 						pageOffset: 0,
 						pageLimit: 5,
+						distributionModel: null,
 					}
 				},
 			};
@@ -323,6 +350,7 @@ describe('queryParamUtils.js', () => {
 						tagId: [],
 						pageOffset: 0,
 						pageLimit: 5,
+						distributionModel: null,
 					}
 				},
 			};
@@ -347,6 +375,7 @@ describe('queryParamUtils.js', () => {
 						tagId: [],
 						pageOffset: 15,
 						pageLimit: 5,
+						distributionModel: null,
 					}
 				},
 			};
@@ -371,6 +400,7 @@ describe('queryParamUtils.js', () => {
 						tagId: [],
 						pageOffset: 0,
 						pageLimit: 5,
+						distributionModel: null,
 					}
 				},
 			};
@@ -395,6 +425,7 @@ describe('queryParamUtils.js', () => {
 						tagId: [],
 						pageOffset: 5,
 						pageLimit: 5,
+						distributionModel: null,
 					}
 				},
 			};
@@ -419,6 +450,7 @@ describe('queryParamUtils.js', () => {
 						tagId: [],
 						pageOffset: 0,
 						pageLimit: 5,
+						distributionModel: null,
 					}
 				},
 			};
@@ -439,6 +471,7 @@ describe('queryParamUtils.js', () => {
 				attribute: '1',
 				tag: '1',
 				page: '3',
+				distributionModel: 'DIRECT',
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -460,6 +493,7 @@ describe('queryParamUtils.js', () => {
 						tagId: [1],
 						pageOffset: 5,
 						pageLimit: 5,
+						distributionModel: 'DIRECT',
 					}
 				}
 			};
@@ -471,6 +505,7 @@ describe('queryParamUtils.js', () => {
 				attribute: '1',
 				tag: '1',
 				page: '2',
+				distributionModel: 'DIRECT',
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -492,6 +527,7 @@ describe('queryParamUtils.js', () => {
 						tagId: [1],
 						pageOffset: 5,
 						pageLimit: 5,
+						distributionModel: 'DIRECT',
 					}
 				}
 			};
@@ -503,6 +539,75 @@ describe('queryParamUtils.js', () => {
 				attributes: 'theme 1',
 				tag: 'tag 1',
 				page: '2',
+				distributionModel: 'DIRECT',
+			};
+
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
+
+			expect(apollo.mutate).toHaveBeenCalledWith(params);
+		});
+
+		it('should handle different gender casing', async () => {
+			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
+			const params = {
+				mutation: updateLoanSearchMutation,
+				variables: {
+					searchParams: {
+						gender: 'female',
+						countryIsoCode: ['US'],
+						sectorId: [1],
+						sortBy: 'expiringSoon',
+						themeId: [1],
+						tagId: [1],
+						pageOffset: 5,
+						pageLimit: 5,
+						distributionModel: 'DIRECT',
+					}
+				}
+			};
+			const query = {
+				gender: 'FEMALE',
+				countries: 'us',
+				sector: mockState.sectorId.toString(),
+				sortBy: 'expiringSoon',
+				attributes: 'theme 1',
+				tag: 'tag 1',
+				page: '2',
+				distributionModel: 'DIRECT',
+			};
+
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
+
+			expect(apollo.mutate).toHaveBeenCalledWith(params);
+		});
+
+		it('should handle different distribution model casing', async () => {
+			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
+			const params = {
+				mutation: updateLoanSearchMutation,
+				variables: {
+					searchParams: {
+						gender: 'female',
+						countryIsoCode: ['US'],
+						sectorId: [1],
+						sortBy: 'expiringSoon',
+						themeId: [1],
+						tagId: [1],
+						pageOffset: 5,
+						pageLimit: 5,
+						distributionModel: 'DIRECT',
+					}
+				}
+			};
+			const query = {
+				gender: 'female',
+				countries: 'us',
+				sector: mockState.sectorId.toString(),
+				sortBy: 'expiringSoon',
+				attributes: 'theme 1',
+				tag: 'tag 1',
+				page: '2',
+				distributionModel: 'direct',
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -529,6 +634,7 @@ describe('queryParamUtils.js', () => {
 				params: { noScroll: true, noAnalytics: true }
 			});
 		});
+
 		it('should push gender', () => {
 			const state = { gender: 'female' };
 			const router = getRouter();
@@ -692,6 +798,19 @@ describe('queryParamUtils.js', () => {
 			updateQueryParams(state, router, FLSS_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledTimes(0);
+		});
+
+		it('should push distribution model', () => {
+			const state = { distributionModel: 'DIRECT' };
+			const router = getRouter();
+
+			updateQueryParams(state, router, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: state,
+				params: { noScroll: true, noAnalytics: true }
+			});
 		});
 	});
 });
