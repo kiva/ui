@@ -530,7 +530,7 @@ export default {
 			mdiAccountCircle,
 			mdiChevronDown,
 			mdiMagnify,
-			userId: 0,
+			userId: null,
 		};
 	},
 	props: {
@@ -605,7 +605,7 @@ export default {
 			});
 		},
 		result({ data }) {
-			this.userId = data?.my?.userAccount?.id;
+			this.userId = data?.my?.userAccount?.id ?? null;
 			this.isVisitor = !data?.my?.userAccount?.id;
 			this.isBorrower = data?.my?.isBorrower ?? false;
 			this.loanId = data?.my?.mostRecentBorrowedLoan?.id ?? null;
@@ -630,37 +630,38 @@ export default {
 	},
 	created() {
 		// MARS-194 User Metrics for Optimizely A/B experiment
-		const hasLentBeforeValue = this.cookieStore.get(hasLentBeforeCookie);
-		const hasDepositBeforeValue = this.cookieStore.get(hasDepositBeforeCookie);
+		let hasLentBefore = this.cookieStore.get(hasLentBeforeCookie);
+		let hasDepositBefore = this.cookieStore.get(hasDepositBeforeCookie);
+		let hasEverLoggedIn = false;
 
-		if (hasLentBeforeValue === undefined || hasDepositBeforeValue === undefined) {
+		if (hasLentBefore === undefined || hasDepositBefore === undefined) {
 			try {
 				let userData = {};
 				userData = this.apollo.readQuery({
 					query: optimizelyUserDataQuery,
 				});
 
-				const hasLentBefore = userData?.my?.loans?.totalCount > 0;
-				const hasDepositBefore = userData?.my?.transactions?.totalCount > 0;
+				hasLentBefore = userData?.my?.loans?.totalCount > 0;
+				hasDepositBefore = userData?.my?.transactions?.totalCount > 0;
+				hasEverLoggedIn = userData?.hasEverLoggedIn;
 
 				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { path: '/' });
 				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { path: '/' });
 
 				userHasLentBefore(hasLentBefore);
 				userHasDepositBefore(hasDepositBefore);
-
-				// MARS-246 Hotjar user attributes
-				if (this.userId !== 0) {
-					setHotJarUserAttributes({
-						userId: this.userId,
-						hasEverLoggedIn: userData.hasEverLoggedIn,
-						hasLentBefore,
-						hasDepositBefore,
-					});
-				}
 			} catch (e) {
 				logReadQueryError(e, 'User Data For Optimizely Metrics');
 			}
+		}
+		// MARS-246 Hotjar user attributes
+		if (this.userId) {
+			setHotJarUserAttributes({
+				userId: this.userId,
+				hasEverLoggedIn,
+				hasLentBefore,
+				hasDepositBefore,
+			});
 		}
 	},
 	methods: {
