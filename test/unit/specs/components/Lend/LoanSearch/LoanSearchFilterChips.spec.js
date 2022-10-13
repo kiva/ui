@@ -2,53 +2,7 @@ import Vue from 'vue';
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
-
-const mockState = {
-	gender: 'female',
-	countryIsoCode: ['US'],
-	sectorId: [1],
-	themeId: [1],
-};
-
-const mockAllFacets = {
-	countryFacets: [
-		{
-			country: {
-				isoCode: 'US',
-				name: 'United States',
-				region: 'North America',
-				__typename: 'Country'
-			}
-		},
-		{
-			country: {
-				isoCode: 'CA',
-				name: 'Canada',
-				region: 'North America',
-				__typename: 'Country'
-			}
-		}
-	],
-	countryIsoCodes: ['US', 'CA'],
-	countryNames: ['UNITED STATES', 'CANADA'],
-	sectorFacets: [
-		{ id: 1, name: 'Sector 1', __typename: 'Sector' },
-		{ id: 2, name: 'Sector 2', __typename: 'Sector' }
-	],
-	sectorIds: [1],
-	sectorNames: ['SECTOR 1', 'SECTOR 2'],
-	themeFacets: [
-		{ id: 1, name: 'Theme 1', __typename: 'LoanThemeFilter' },
-		{ id: 2, name: 'Theme 2', __typename: 'LoanThemeFilter' }
-	],
-	themeNames: ['THEME 1', 'THEME 2'],
-	genderFacets: [
-		{ name: 'female', __typename: 'Gender' },
-		{ name: 'male', __typename: 'Gender' },
-		{ name: 'nonbinary', __typename: 'Gender' }
-	],
-	genders: ['FEMALE', 'MALE', 'NONBINARY'],
-};
+import { mockState, mockAllFacets } from '../../../../fixtures/mockLoanSearchData';
 
 describe('LoanSearchFilterChips', () => {
 	let spyTrackEvent;
@@ -141,6 +95,21 @@ describe('LoanSearchFilterChips', () => {
 		expect(emitted().updated[0]).toEqual([{ themeId: [] }]);
 	});
 
+	it('should handle tag chip click', async () => {
+		const user = userEvent.setup();
+
+		const { getByText, emitted } = render(LoanSearchFilterChips, {
+			props: {
+				loanSearchState: mockState,
+				allFacets: mockAllFacets
+			}
+		});
+
+		await user.click(getByText('Tag 1'));
+
+		expect(emitted().updated[0]).toEqual([{ tagId: [] }]);
+	});
+
 	it('should handle gender chip click', async () => {
 		const user = userEvent.setup();
 
@@ -154,6 +123,21 @@ describe('LoanSearchFilterChips', () => {
 		await user.click(getByText('Women'));
 
 		expect(emitted().updated[0]).toEqual([{ gender: null }]);
+	});
+
+	it('should handle distribution model chip click', async () => {
+		const user = userEvent.setup();
+
+		const { getByText, emitted } = render(LoanSearchFilterChips, {
+			props: {
+				loanSearchState: mockState,
+				allFacets: mockAllFacets
+			}
+		});
+
+		await user.click(getByText('Direct'));
+
+		expect(emitted().updated[0]).toEqual([{ distributionModel: null }]);
 	});
 
 	it('should track event', async () => {

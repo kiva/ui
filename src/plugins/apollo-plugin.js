@@ -34,6 +34,7 @@ export default Vue => {
 									...preFetchVariables({
 										cookieStore: this.cookieStore,
 										route: this.$route,
+										client: this.apollo,
 									}),
 									/* Adds `preview: true` variable if the query is a contentful query
 									and the preview cookie value exists */

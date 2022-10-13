@@ -81,6 +81,7 @@
 		</div>
 
 		<kv-lightbox
+			v-if="filtersVisible"
 			class="loan-filters__lightbox"
 			id="filterControlsLightbox"
 			title="Filter Loans"

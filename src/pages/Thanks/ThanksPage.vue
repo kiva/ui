@@ -131,6 +131,9 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
 
+const hasLentBeforeCookie = 'kvu_lb';
+const hasDepositBeforeCookie = 'kvu_db';
+
 export default {
 	name: 'ThanksPage',
 	components: {
@@ -170,10 +173,14 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { cookieStore, route }) {
+			const transactionId = route.query?.kiva_transaction_id
+				? numeral(route.query?.kiva_transaction_id).value()
+				: null;
+
 			return client.query({
 				query: thanksPageQuery,
 				variables: {
-					checkoutId: numeral(route.query.kiva_transaction_id).value(),
+					checkoutId: transactionId,
 					visitorId: cookieStore.get('uiv') || null,
 				}
 			}).then(({ data }) => {
@@ -192,7 +199,7 @@ export default {
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
-					'Thanks page preFetch failed: ',
+					`Thanks page preFetch failed: (transaction_id: ${transactionId})`,
 					'error',
 					{ errorResponse }
 				);
@@ -242,16 +249,19 @@ export default {
 	created() {
 		// Retrieve and apply Page level data + experiment state
 		let data = {};
+		const transactionId = this.$route.query?.kiva_transaction_id
+			? numeral(this.$route.query?.kiva_transaction_id).value()
+			: null;
 		try {
 			data = this.apollo.readQuery({
 				query: thanksPageQuery,
 				variables: {
-					checkoutId: numeral(this.$route.query.kiva_transaction_id).value(),
+					checkoutId: transactionId,
 					visitorId: this.cookieStore.get('uiv') || null,
 				}
 			});
 		} catch (e) {
-			logReadQueryError(e, 'Thanks Page Data');
+			logReadQueryError(e, `Thanks page readQuery failed: (transaction_id: ${transactionId})`);
 		}
 
 		const modernSubscriptions = data?.mySubscriptions?.values ?? [];
@@ -282,20 +292,27 @@ export default {
 
 		// MARS-194-User metrics A/B Optimizely experiment
 		const depositTotal = this.receipt?.totals?.depositTotals?.depositTotal;
-		userHasLentBefore(this.loans.length > 0);
-		userHasDepositBefore(parseFloat(depositTotal) > 0);
+
+		const hasLentBefore = this.loans.length > 0;
+		const hasDepositBefore = parseFloat(depositTotal) > 0;
+
+		this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { path: '/' });
+		this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { path: '/' });
+
+		userHasLentBefore(hasLentBefore);
+		userHasDepositBefore(hasDepositBefore);
 
 		if (!this.isGuest && !data?.my?.userAccount) {
 			logFormatter(
-				`Failed to get lender for transaction id: ${this.$route.query.kiva_transaction_id}`,
-				'error',
+				`Failed to get lender for transaction id: ${transactionId}`,
+				'info',
 				{ data }
 			);
 		}
 		if (!this.receipt) {
 			logFormatter(
-				`Failed to get receipt for transaction id: ${this.$route.query.kiva_transaction_id}`,
-				'error',
+				`Failed to get receipt for transaction id: ${transactionId}`,
+				'info',
 				{ data }
 			);
 		}
@@ -338,12 +355,12 @@ export default {
 			}
 
 			// MARS-202 Share copy ask experiment
-			const shareAskCopyVersion = this.apollo.readFragment({
+			const shareAskCopyResult = this.apollo.readFragment({
 				id: 'Experiment:share_ask_copy',
 				fragment: experimentVersionFragment,
 			}) || {};
 
-			this.shareAskCopyVersion = shareAskCopyVersion.version;
+			this.shareAskCopyVersion = shareAskCopyResult.version;
 			if (this.shareAskCopyVersion) {
 				this.$kvTrackEvent(
 					'Thanks',

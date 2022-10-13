@@ -71,6 +71,7 @@
 						:shift-increment="calculateCardShiftIncrement(index)"
 						:prevent-updating-detailed-card="preventUpdatingDetailedCard"
 
+						@add-to-basket="handleAddToBasket"
 						@update-detailed-loan-index="updateDetailedLoanIndex"
 						@update-hover-loan-index="updateHoverLoanIndex"
 						@set-prevent-updating-detailed-card="handleSetPreventUpdatingDetailedCard"
@@ -127,6 +128,7 @@
 					:card-number="detailedLoanIndex + 1"
 					:enable-tracking="true"
 					:is-visitor="!isLoggedIn"
+					@add-to-basket="handleAddToBasket"
 					@close-detailed-loan-card="detailedLoanIndex = null"
 				/>
 			</div>
@@ -337,6 +339,12 @@ export default {
 		window.removeEventListener('resize', this.throttledResize);
 	},
 	methods: {
+		// the final outcome of adding a loan to basket
+		// payload is { loanId: ######, success: true/false }
+		// optionally payload may also contain an eventSource identifier
+		handleAddToBasket(payload) {
+			this.$emit('add-to-basket', payload);
+		},
 		saveWindowWidth() {
 			this.windowWidth = window.innerWidth;
 			// TODO: New Countries for You code is getting executed even for NON Logged in lenders (no loans, no width)

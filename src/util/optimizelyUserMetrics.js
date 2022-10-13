@@ -1,3 +1,7 @@
+import numeral from 'numeral';
+import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
+import logReadQueryError from '@/util/logReadQueryError';
+
 function setUserAttribute(key, value) {
 	if (typeof window === 'undefined') {
 		return;
@@ -34,4 +38,35 @@ export function userHasLentBefore(hasLentBefore) {
  */
 export function userHasDepositBefore(hasDepositedBefore) {
 	setUserAttribute('has_deposited_before', hasDepositedBefore);
+}
+
+export function buildUserDataGlobal(router, cookieStore, apolloClient) {
+	let data = null;
+	const transactionId = router.currentRoute.query?.kiva_transaction_id
+		? numeral(router.currentRoute.query?.kiva_transaction_id).value()
+		: null;
+	try {
+		data = transactionId ? apolloClient.readQuery({
+			query: thanksPageQuery,
+			variables: {
+				checkoutId: transactionId,
+				visitorId: cookieStore.get('uiv') || null,
+			}
+		}) : {};
+	} catch (e) {
+		logReadQueryError(e, `Thanks page on server-entry failed: (transaction_id: ${transactionId})`);
+	}
+
+	const loans = data?.shop?.receipt?.items?.values
+		.filter(item => item.basketItemType === 'loan_reservation')
+		.map(item => item.loan) ?? [];
+
+	return {
+		viewer: {
+			userId: data?.my?.userAccount?.id,
+			displayName: `${data?.my?.userAccount?.firstName} ${data?.my?.userAccount?.lastName}`,
+			publicProfile: data?.my?.userAccount?.public
+		},
+		loans
+	};
 }

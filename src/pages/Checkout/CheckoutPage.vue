@@ -42,13 +42,13 @@
 							<upsell-module
 								v-if="!upsellCookieActive &&
 									showUpsellModule &&
-									upsellLoan.name &&
-									isUpsellUnder100
+									upsellLoan.name
 								"
 								:loan="upsellLoan"
 								:close-upsell-module="closeUpsellModule"
 								:add-to-basket="addToBasket"
 								:enable-experiment-copy="enableUpsellsCopy"
+								:use-dynamic-upsell="useDynamicUpsell"
 							/>
 						</div>
 					</div>
@@ -271,6 +271,8 @@ import numeral from 'numeral';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import syncDate from '@/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
+import { achievementsQuery, hasMadeAchievementsProgression } from '@/util/ecoChallengeUtils';
+
 import { getPromoFromBasket } from '@/util/campaignUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import checkoutSettings from '@/graphql/query/checkout/checkoutSettings.graphql';
@@ -296,14 +298,21 @@ import RandomLoanSelector from '@/components/RandomLoanSelector/RandomLoanSelect
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import upsellQuery from '@/graphql/query/checkout/upsellLoans.graphql';
+import upsellExpiringSoonQuery from '@/graphql/query/checkout/upsellLoansExpiringSoon.graphql';
 import UpsellModule from '@/components/Checkout/UpsellModule';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
 import { isLoanFundraising } from '@/util/loanUtils';
 import MatchedLoansLightbox from '@/components/Checkout/MatchedLoansLightbox';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+
+const ecoChallengeExpKey = 'eco_challenge';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -387,6 +396,11 @@ export default {
 			showTeamForm: false,
 			teamJoinStatus: null,
 			enableUpsellsCopy: false,
+			myTeams: [],
+			enableDynamicUpsells: false,
+			isEcoChallengeExpShown: false,
+			useDynamicUpsell: false,
+			ecoChallengeRedirectQueryParam: '',
 		};
 	},
 	apollo: {
@@ -421,7 +435,8 @@ export default {
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 						client.query({ query: upsellQuery }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
-						client.query({ query: experimentQuery, variables: { id: 'upsells_copy' } })
+						client.query({ query: experimentQuery, variables: { id: 'upsells_copy' } }),
+						client.query({ query: experimentQuery, variables: { id: 'dynamic_upsells' } }),
 					]);
 				});
 		},
@@ -461,6 +476,18 @@ export default {
 		}
 	},
 	created() {
+		const upsellsDynamicExperiment = this.apollo.readFragment({
+			id: 'Experiment:dynamic_upsells',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.enableDynamicUpsells = upsellsDynamicExperiment.version === 'b';
+		if (upsellsDynamicExperiment.version) {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-CORE-721-Sept2022',
+				upsellsDynamicExperiment.version
+			);
+		}
 		const upsellsCopyExperiment = this.apollo.readFragment({
 			id: 'Experiment:upsells_copy',
 			fragment: experimentVersionFragment,
@@ -536,7 +563,6 @@ export default {
 			const isMatchedLoan = loan.loan?.matchingText;
 			return hasCredits && isMatchedLoan;
 		});
-		this.showMatchedLoanKivaCredit = matchedLoansWithCredit.length > 0;
 		this.matchedText = matchedLoansWithCredit[0]?.loan?.matchingText ?? '';
 	},
 	mounted() {
@@ -563,9 +589,40 @@ export default {
 		// show toast for specified scenario
 		this.handleToast();
 		this.getPromoInformationFromBasket();
-		this.getUpsellModuleData();
-		// show join-team form for specified scenario
-		this.handleTeamForm();
+		if (this.$route.query.forceDynamicUpsell === 'true' && this.enableDynamicUpsells) {
+			this.getDynamicUpsellModuleData();
+		} else {
+			this.getUpsellModuleData();
+		}
+
+		const ecoChallengeExpData = getExperimentSettingCached(this.apollo, ecoChallengeExpKey);
+		if (ecoChallengeExpData?.enabled) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				ecoChallengeExpKey,
+				'EXP-ACK-392-Sep2022'
+			);
+			if (version === 'b') {
+				this.isEcoChallengeExpShown = true;
+
+				// Fetch Eco Challenge Game Status
+				// If user is in eco challenge and a loan in basket makes progress towards
+				// eco challenge, set ecoChallengeRedirectQueryParam
+				achievementsQuery(this.apollo, this.loanIdsInBasket)
+					.then(({ data }) => {
+						// eslint-disable-next-line max-len
+						const checkoutMilestoneProgresses = data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
+						const showEcoThanksPage = hasMadeAchievementsProgression(
+							checkoutMilestoneProgresses,
+							'climate-challenge'
+						);
+						this.ecoChallengeRedirectQueryParam = showEcoThanksPage ? '&ecoChallenge=true' : '';
+					});
+				// end game code
+			}
+		}
 	},
 	computed: {
 		isUpsellUnder100() {
@@ -683,6 +740,9 @@ export default {
 		},
 		promoAmount() {
 			return this.promoData?.promoFund?.promoPrice ?? null;
+		},
+		loanIdsInBasket() {
+			return this.loans.map(loan => loan.id);
 		}
 	},
 	methods: {
@@ -818,7 +878,7 @@ export default {
 				// redirect to thanks
 				window.setTimeout(
 					() => {
-						this.redirectToThanks(transactionId);
+						this.redirectToThanks(transactionId, this.ecoChallengeRedirectQueryParam);
 					},
 					800
 				);
@@ -863,6 +923,8 @@ export default {
 						&& this.loans.length
 					) {
 						this.showVerification = true;
+					} else {
+						this.handleTeamForm();
 					}
 				});
 			});
@@ -874,11 +936,43 @@ export default {
 			}).then(({ data }) => {
 				const loans = data?.lend?.loans?.values || [];
 				// Temp solution so we don't show reserved loans on upsell
+				const upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || {};
+				const amountLeft = upsellLoan?.loanAmount
+					- upsellLoan?.loanFundraisingInfo?.fundedAmount
+					- upsellLoan?.loanFundraisingInfo?.reservedAmount;
+				if (amountLeft > 50 && this.enableDynamicUpsells) {
+					this.getDynamicUpsellModuleData();
+				} else {
+					this.upsellLoan = upsellLoan;
+					if (this.enableDynamicUpsells) {
+						this.$kvTrackEvent(
+							'Basket',
+							'get-almost-funded-upsells',
+							'Use almost funded upsell loan'
+						);
+					}
+				}
+			});
+		},
+		getDynamicUpsellModuleData() {
+			this.$kvTrackEvent(
+				'Basket',
+				'get-expiring-soon-upsells',
+				'Use expiring soon upsell loan'
+			);
+			this.useDynamicUpsell = true;
+			this.apollo.query({
+				query: upsellExpiringSoonQuery,
+				fetchPolicy: 'network-only',
+			}).then(({ data }) => {
+				const loans = data?.lend?.loans?.values || [];
+				// Temp solution so we don't show reserved loans on upsell
 				this.upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || {};
 			});
 		},
 		verificationComplete() {
 			this.verificationSubmitted = true;
+			this.handleTeamForm();
 		},
 		handleVerificationOptOut() {
 			this.showVerification = false;
@@ -924,7 +1018,11 @@ export default {
 							);
 							// eslint-disable-next-line max-len
 							this.$showTipMsg('Looks like that loan was reserved by someone else! Try this one instead.', 'info');
-							this.getUpsellModuleData();
+							if (this.$route.query.forceDynamicUpsell === 'true' && this.enableDynamicUpsells) {
+								this.getDynamicUpsellModuleData();
+							} else {
+								this.getUpsellModuleData();
+							}
 							this.refreshTotals();
 						} else {
 							this.$showTipMsg(error.message, 'error');
@@ -992,26 +1090,23 @@ export default {
 						}
 					});
 				});
-				Promise.all(loans).then(() => {
-					this.updateBasketState();
-				});
 			}
 		},
+		handleTeamForm() {
+			if (
+				this.loans.length
+				&& this.isActivelyLoggedIn
+				&& this.teamId
+				&& !this.teamJoinStatus
+			) {
+				// check for team join optionality
+				this.showTeamForm = true;
+			}
+		}
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
 	},
-	handleTeamForm() {
-		if (
-			this.loans.length
-			&& this.isActivelyLoggedIn
-			&& this.teamId
-			&& !this.teamJoinStatus
-		) {
-			// check for team join optionality
-			this.showTeamForm = true;
-		}
-	}
 };
 </script>
 

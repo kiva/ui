@@ -45,6 +45,7 @@ import {
 	trackExperimentVersion
 } from '@/util/experimentUtils';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 // MARS-124 experiment
 const manualLendingLPExpKey = 'manual_lending_lp';
@@ -92,16 +93,14 @@ const CenteredRichText = () => import('@/components/Contentful/CenteredRichText'
 const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
 const HeroWithCarousel = () => import('@/components/Contentful/HeroWithCarousel');
 const LoansByCategoryCarousel = () => import('@/components/Contentful/LoansByCategoryCarousel');
-
+const LoansByCategoryGrid = () => import('@/components/Contentful/HomePage/NewHomeLoansByCategoryGrid');
+const NewHomeLoansCardsCarousel = () => import('@/components/Contentful/HomePage/NewHomeLoansCardCarousel');
 const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
-
 const FrequentlyAskedQuestions = () => import('@/components/Contentful/FrequentlyAskedQuestions');
-
 const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
-
 const RichTextItemsCentered = () => import('@/components/Contentful/RichTextItemsCentered');
-
 const MediaItemsCentered = () => import('@/components/Contentful/MediaItemsCentered');
+const StoryCardCarousel = () => import('@/components/Contentful/StoryCardCarousel');
 
 // Get the Contentful Page data from the data of an Apollo query result
 const getPageData = data => {
@@ -170,10 +169,16 @@ const getComponentFromType = type => {
 			return HeroWithCarousel;
 		case 'loansByCategoryCarousel':
 			return LoansByCategoryCarousel;
+		case 'loansByCategoryGrid':
+			return LoansByCategoryGrid;
+		case 'newHomeLoansCardCarousel':
+			return NewHomeLoansCardsCarousel;
 		case 'richTextItemsCentered':
 			return RichTextItemsCentered;
 		case 'mediaItemsCentered':
 			return MediaItemsCentered;
+		case 'storyCardCarousel':
+			return StoryCardCarousel;
 		default:
 			logFormatter(`ContenfulPage: Unknown content group type "${type}"`, 'error');
 			return null;
@@ -206,33 +211,44 @@ export default {
 		};
 	},
 	metaInfo() {
-		const metaObj = {};
-
-		if (this.title) {
-			metaObj.title = this.title.replace('| Kiva', '');
-		}
-
-		if (this.description) {
-			metaObj.meta = [
+		return {
+			title: this.title ? this.title?.replace('| Kiva', '') : 'Make a loan, change a life',
+			meta: [].concat(this.title ? [
+				{
+					property: 'og:title',
+					vmid: 'og:title',
+					content: this.title?.replace('| Kiva', ''),
+				},
+				{
+					name: 'twitter:title',
+					vmid: 'twitter:title',
+					content: this.title?.replace('| Kiva', ''),
+				},
+			] : []).concat(this.description ? [
 				{
 					vmid: 'description',
 					name: 'description',
 					content: this.description,
-				}
-			];
-		}
-
-		if (this.canonicalUrl) {
-			metaObj.link = [
+				},
+				{
+					property: 'og:description',
+					vmid: 'og:description',
+					content: this.description
+				},
+				{
+					name: 'twitter:description',
+					vmid: 'twitter:description',
+					content: this.description
+				},
+			] : []),
+			link: [].concat(this.canonicalUrl ? [
 				{
 					vmid: 'canonical',
 					rel: 'canonical',
 					href: this.canonicalUrl,
 				}
-			];
-		}
-
-		return metaObj;
+			] : [])
+		};
 	},
 	mounted() {
 		if (this.$route.path === '/lp/home-ml' || this.$route.path === '/lp/home-mlv') {
@@ -250,16 +266,18 @@ export default {
 	},
 	apollo: {
 		query: contentfulEntries,
-		preFetchVariables({ route }) {
+		preFetchVariables({ route, client }) {
 			return {
 				contentType: 'page',
-				contentKey: route?.meta?.contentfulPage(route)?.trim(),
+				contentKey: route?.meta?.contentfulPage(route, client, experimentVersionFragment)?.trim(),
 			};
 		},
 		variables() {
 			return {
 				contentType: 'page',
-				contentKey: this.$route?.meta?.contentfulPage(this.$route)?.trim(),
+				contentKey: this.$route?.meta?.contentfulPage(
+					this.$route, this.apollo, experimentVersionFragment
+				)?.trim(),
 			};
 		},
 		async preFetch(config, client, args) {
@@ -290,7 +308,9 @@ export default {
 				query: contentfulEntries,
 				variables: {
 					contentType: 'page',
-					contentKey: args?.route?.meta?.contentfulPage(args?.route)?.trim(),
+					contentKey: args?.route?.meta?.contentfulPage(
+						args?.route, client, experimentVersionFragment
+					)?.trim(),
 				}
 			}).then(({ data }) => {
 				// Get Contentful page data

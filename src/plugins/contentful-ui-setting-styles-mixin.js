@@ -44,6 +44,12 @@ export default {
 		swapOrder() {
 			return this.uiSetting?.dataObject?.swapOrder ?? false;
 		},
+		/**
+		 * Depends on themeName property on Contentful dataObject
+		 */
+		themeName() {
+			return this.uiSetting?.dataObject?.themeName ?? '';
+		},
 		uiSetting() {
 			const uiSetting = this.content?.contents?.find(({ contentType }) => {
 				return contentType ? contentType === 'uiSetting' : false;
@@ -56,5 +62,9 @@ export default {
 		verticalPadding() {
 			return this.uiSetting?.dataObject?.verticalPadding ?? {};
 		},
+
+		bodyColumns() {
+			return this.uiSetting?.dataObject?.bodyColumns ?? null;
+		}
 	}
 };

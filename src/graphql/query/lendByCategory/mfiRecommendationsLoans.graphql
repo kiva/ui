@@ -1,0 +1,44 @@
+
+# MFI Recommendations Experiment Query
+query getMFIRecommendationsLoans {
+	fundraisingLoans(
+		limit: 6,
+		filters: {
+			partnerId: {
+				eq: 59
+			}
+		},
+		origin: "web:lend-by-category"
+	) {
+		totalCount
+		values {
+			id
+			distributionModel
+			status
+			loanFundraisingInfo {
+				fundedAmount
+				isExpiringSoon
+				reservedAmount
+			}
+			geocode {
+				city
+				state
+				country {
+					name
+					isoCode
+				}
+			}
+			image {
+				id
+				hash
+			}
+			name
+
+			# for loan-use-mixin
+			use
+			status
+			loanAmount
+			borrowerCount
+		}
+	}
+}

@@ -1,6 +1,7 @@
 import { isNumber } from '@/util/numberUtils';
 import { updateSearchState } from '@/util/loanSearch/searchStateUtils';
 import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
+import VueRouter from 'vue-router';
 
 /**
  * Map used to convert lend <> FLSS sort option values
@@ -35,8 +36,8 @@ export function hasExcludedQueryParams(query) {
 		'partner',
 		'riskRating',
 		'state',
-		'queryString',
-		'loanLimit'
+		'queryString', // can be mapped to description
+		'loanLimit',
 	];
 	// Check route.query for excluded params
 	const queryContainsExcludedParams = Object.keys(query).filter(key => {
@@ -46,7 +47,20 @@ export function hasExcludedQueryParams(query) {
 }
 
 /**
- * Returns the sector IDs based on the query param. Handles FLSS/legacy and Algolia formats.
+ * Returns the enum name property based on the query param
+ *
+ * @param {string} param The query param
+ * @param {Array} facets Facets from the API
+ * @returns The valid enum value
+ */
+export function getEnumNameFromQueryParam(param, facets) {
+	if (param) {
+		return facets.find(f => f.name.toUpperCase() === param.toUpperCase())?.name;
+	}
+}
+
+/**
+ * Returns IDs based on the query param. Handles FLSS/legacy and Algolia formats.
  *
  * @param {string} param The query param
  * @param {Array} names Facet names from the APIs
@@ -95,7 +109,7 @@ export function getIdsFromQueryParam(param, names, facets) {
  *
  * @param {string} param The query param
  * @param {Object} allFacets All available facets from the APIs
- * @returns {Array} Valid sector IDs based on the query param
+ * @returns {Array} Valid country ISO codes based on the query param
  */
 export function getCountryIsoCodesFromQueryParam(param, allFacets) {
 	if (!param) return;
@@ -139,7 +153,7 @@ export async function applyQueryParams(apollo, query, allFacets, queryType, page
 	const page = isNumber(query.page) && query.page >= 1 ? Math.floor(query.page) - 1 : 0;
 
 	const filters = {
-		gender: query.gender,
+		gender: getEnumNameFromQueryParam(query.gender, allFacets.genderFacets),
 		countryIsoCode: getCountryIsoCodesFromQueryParam(query.country || query.countries, allFacets),
 		sectorId: getIdsFromQueryParam(query.sector, allFacets.sectorNames, allFacets.sectorFacets),
 		sortBy: queryType === FLSS_QUERY_TYPE ? lendToFlssSort.get(query.sortBy) : query.sortBy,
@@ -147,6 +161,8 @@ export async function applyQueryParams(apollo, query, allFacets, queryType, page
 			query.attribute || query.attributes || query.theme,
 			allFacets.themeNames, allFacets.themeFacets
 		),
+		tagId: getIdsFromQueryParam(query.tag || query.tags, allFacets.tagNames, allFacets.tagFacets),
+		distributionModel: getEnumNameFromQueryParam(query.distributionModel, allFacets.distributionModelFacets),
 		pageOffset: page * pageLimit,
 		pageLimit,
 	};
@@ -188,6 +204,8 @@ export function updateQueryParams(loanSearchState, router, queryType) {
 		...(loanSearchState.countryIsoCode?.length && { country: loanSearchState.countryIsoCode.join() }),
 		...(loanSearchState.sectorId?.length && { sector: loanSearchState.sectorId.join() }),
 		...(loanSearchState.themeId?.length && { attribute: loanSearchState.themeId.join() }),
+		...(loanSearchState.tagId?.length && { tag: loanSearchState.tagId.join() }),
+		...(loanSearchState.distributionModel && { distributionModel: loanSearchState.distributionModel }),
 		...(queryParamSortBy && { sortBy: queryParamSortBy }),
 		...(page > 1 && { page: page.toString() }),
 		...utmParams,
@@ -201,6 +219,14 @@ export function updateQueryParams(loanSearchState, router, queryType) {
 
 	// Vue throws duplicate navigation exception when identical paths are pushed to the router
 	if (!doParamsMatch) {
-		router.push({ ...router.currentRoute, query: newParams, params: { noScroll: true, noAnalytics: true } });
+		router.push({ ...router.currentRoute, query: newParams, params: { noScroll: true, noAnalytics: true } })
+			.catch(e => {
+				const { isNavigationFailure, NavigationFailureType } = VueRouter;
+
+				// Ignore "navigation canceled" errors from clicking filter options quickly
+				if (!isNavigationFailure(e, NavigationFailureType.cancelled)) {
+					throw e;
+				}
+			});
 	}
 }

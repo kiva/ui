@@ -19,6 +19,7 @@
 					</template>
 					<loan-search-filter
 						style="min-width: 285px;"
+						:extend-flss-filters="extendFlssFilters"
 						:loading="!initialLoadComplete"
 						:is-logged-in="userId !== null"
 						:facets="facets"
@@ -45,6 +46,7 @@
 		<div class="tw-flex tw-mr-4">
 			<div class="tw-hidden lg:tw-block" style="width: 285px;">
 				<loan-search-filter
+					:extend-flss-filters="extendFlssFilters"
 					:loading="!initialLoadComplete"
 					:facets="facets"
 					:is-logged-in="userId !== null"
@@ -57,6 +59,13 @@
 		<div class="tw-col-span-2 tw-relative tw-grow">
 			<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
 			<div v-if="initialLoadComplete">
+				<loan-search-saved-search
+					v-if="enableSavedSearch && showSavedSearch && !savedSearchSuccess"
+					:loan-search-state="loanSearchState"
+					:theme-names="themeNames"
+					:show-success-message="showSavedSearchSuccessMessage"
+					:user-id="userId"
+				/>
 				<loan-search-filter-chips
 					:loan-search-state="loanSearchState"
 					:all-facets="allFacets"
@@ -117,7 +126,11 @@ import {
 	transformIsoCodes,
 	transformThemes,
 	transformSectors,
+	transformTags,
+	transformGenderOptions,
+	transformDistributionModelOptions,
 } from '@/util/loanSearch/filterUtils';
+import { FLSS_ORIGIN_LEND_FILTER } from '@/util/flssUtils';
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
 import { applyQueryParams, hasExcludedQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
 import { updateSearchState } from '@/util/loanSearch/searchStateUtils';
@@ -128,6 +141,7 @@ import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util//numberUtils';
 import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
+import LoanSearchSavedSearch from '@/components/Lend/LoanSearch/LoanSearchSavedSearch';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -147,69 +161,27 @@ export default {
 		KvSectionModalLoader,
 		KvPagination,
 		KvResultsPerPage,
+		LoanSearchSavedSearch
+	},
+	props: {
+		extendFlssFilters: {
+			type: Boolean,
+			default: false,
+		},
+		enableSavedSearch: {
+			type: Boolean,
+			default: false,
+		},
+		savedSearchSuccess: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
 			initialLoadComplete: false,
 			loading: true,
-			/**
-			 * All available facet options from lend API. Format:
-			 * {
-			 *   countryFacets: [
-			 *     {
-			 *       name: '',
-			 *       isoCode: '',
-			 *       region: '',
-			 *     }
-			 *   ],
-			 *   sectorFacets: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *     }
-			 *   ],
-			 *   themeFacets: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *     }
-			 *   ],
-			 * }
-			 */
 			allFacets: undefined,
-			/**
-			 * Facet options based on the loans available. Format:
-			 * {
-			 *   regions: [
-			 *     {
-			 *       region: '',
-			 *       numLoansFundraising: 1,
-			 *       countries: [
-			 *         {
-			 *           name: '',
-			 *           region: '',
-			 *           isoCode: '',
-			 *           numLoansFundraising: 1,
-			 *         }
-			 *       ]
-			 *     }
-			 *   ],
-			 *   sectors: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *       numLoansFundraising: 1,
-			 *     }
-			 *   ],
-			 *   themes: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *       numLoansFundraising: 1,
-			 *     }
-			 *   ],
-			 * }
-			 */
 			facets: {},
 			loans: [],
 			totalCount: 0,
@@ -286,7 +258,7 @@ export default {
 
 				const [{ loans, totalCount }] = await Promise.all([
 					// Get filtered loans from FLSS
-					await runLoansQuery(this.apollo, this.loanSearchState),
+					await runLoansQuery(this.apollo, this.loanSearchState, FLSS_ORIGIN_LEND_FILTER),
 					// Get filtered facet options from FLSS
 					await this.fetchFacets(this.loanSearchState)
 				]);
@@ -324,18 +296,43 @@ export default {
 
 			return isNumber(storedPageLimit) ? +storedPageLimit : this.loanSearchState.pageLimit;
 		},
+		showSavedSearch() {
+			// implement more global solution when out of exp phase
+			const countryFilterApplied = this.loanSearchState.countryIsoCode.length > 0;
+			const genderFilterApplied = !!this.loanSearchState.gender;
+			const sectorFilterApplied = this.loanSearchState.sectorId.length > 0;
+			const themeFilterApplied = this.loanSearchState.themeId.length > 0;
+			const tagFilterApplied = this.loanSearchState.tagId.length > 0;
+			const distributionModelFilterApplied = !!this.loanSearchState.distributionModel;
+			return countryFilterApplied
+				|| genderFilterApplied
+				|| sectorFilterApplied
+				|| themeFilterApplied
+				|| tagFilterApplied
+				|| distributionModelFilterApplied;
+		},
+		themeNames() {
+			return this.allFacets?.themeNames ?? [];
+		}
 	},
 	methods: {
 		async fetchFacets(loanSearchState = {}) {
 			// TODO: Prevent this from running on every query (not needed for sorting and paging)
-			const { isoCodes, themes, sectors } = await runFacetsQueries(this.apollo, loanSearchState);
+			const { isoCodes, themes, sectors } = await runFacetsQueries(
+				this.apollo,
+				loanSearchState,
+				FLSS_ORIGIN_LEND_FILTER
+			);
 
 			// Merge all facet options with filtered options
 			this.facets = {
+				genders: transformGenderOptions(this.allFacets?.genderFacets),
 				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 				sectors: transformSectors(sectors, this.allFacets?.sectorFacets),
 				themes: transformThemes(themes, this.allFacets?.themeFacets),
-				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
+				tags: transformTags(this.allFacets?.tagFacets ?? []),
+				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? []),
+				distributionModels: transformDistributionModelOptions(this.allFacets?.distributionModelFacets),
 			};
 		},
 		trackLoans() {
@@ -360,6 +357,9 @@ export default {
 			this.isLightboxVisible = toggle;
 		},
 		updateState(filters = {}) {
+			if (this.savedSearchSuccess) {
+				this.disableSavedSearchSuccessMessage();
+			}
 			updateSearchState(this.apollo, filters, this.allFacets, this.queryType, this.loanSearchState);
 		},
 		handleUpdatedFilters(filters) {
@@ -387,6 +387,12 @@ export default {
 
 			this.$kvTrackEvent?.('Lending', 'click-zero-loans-reset');
 		},
+		showSavedSearchSuccessMessage(searchName) {
+			this.$emit('enable-success-saved-search', searchName);
+		},
+		disableSavedSearchSuccessMessage() {
+			this.$emit('disable-success-saved-search', false);
+		}
 	},
 	watch: {
 		$route(to) {

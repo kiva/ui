@@ -7,7 +7,7 @@
 		<!-- Borrower image w/ location <summary-tag> -->
 		<kv-loading-placeholder
 			v-if="isLoading"
-			class="tw-mb-1 tw-rounded" :style="{width: '100%', height: '15.75rem'}"
+			class="tw-mb-1 tw-rounded" :style="{width: '100%', height: '168px'}"
 		/>
 		<div
 			v-if="!isLoading"
@@ -21,14 +21,14 @@
 				tw-rounded
 			"
 				:alt="'photo of ' + borrowerName"
-				:aspect-ratio="4 / 3"
-				:default-image="{ width: 360 }"
+				:aspect-ratio="3 / 5"
+				:default-image="{ width: 260 }"
 				:hash="imageHash"
 				id="borrower-image"
 			/>
 			<div v-if="countryName">
 				<summary-tag
-					class="tw-absolute tw-bottom-2 tw-right-0 tw-ml-2 tw-text-primary"
+					class="tw-absolute tw-bottom-2 tw-left-0 tw-ml-2 tw-text-primary"
 					:city="city"
 					:state="state"
 					:country-name="countryName"
@@ -59,14 +59,14 @@
 		<!-- LoanUse  -->
 		<kv-loading-paragraph
 			v-if="isLoading"
-			class="tw-mb-1.5 tw-flex-grow" :style="{width: '100%', height: '5.5rem'}"
+			class="tw-mb-1.5 tw-flex-grow" :style="{width: '100%', height: '46px'}"
 		/>
 
-		<div class="flex">
+		<div>
 			<loan-use
 				v-if="!isLoading"
 				class="tw-inline"
-				:loan-use-max-length="40"
+				:loan-use-max-length="20"
 				:loan-id="`${allSharesReserved ? '' : loanId}`"
 				:use="loan.use"
 				:name="borrowerName"
@@ -77,14 +77,28 @@
 			/>
 
 			<a
-				@click="handleReadMoreLink(loan)"
-				v-kv-track-event="['Lending', 'click-read-more-loan-bundle-cta',
-					isPersonalized ? 'Read more - personalized' : 'Read more', loanId]"
+				v-kv-track-event="['Lending', 'MFI-feature-click-read-more-cta',
+					'Read more', loanId]"
+				:href="`/lend/${loanId}`"
 				class="tw-inline tw-cursor-pointer"
 			>
-				More
+				Read more
 			</a>
 		</div>
+
+		<action-button
+			v-if="!isLoading"
+			:loan-id="loanId"
+			:loan="loan"
+			:items-in-basket="basketIds"
+			:is-funded="isFunded"
+			:show-now="false"
+			:is-simple-lend-button="true"
+			class="tw-mt-2 tw-w-full"
+			v-kv-track-event="['Lending', 'MFI-feature-Add to basket',
+				'lend-button-click', loanId]"
+			@add-to-basket="$emit('add-to-basket', $event)"
+		/>
 	</div>
 </template>
 
@@ -102,9 +116,21 @@ import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
+import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
-const loanQuery = gql`query kcBasicLoanCard($loanId: Int!) {
+const loanQuery = gql`query kcBasicLoanCard($loanId: Int!, $basketId: String) {
+	shop (basketId: $basketId) {
+		id
+		basket {
+			id
+			items {
+				values {
+					id
+				}
+			}
+		}
+	}
 	lend {
 		loan(id: $loanId) {
 			id
@@ -165,7 +191,7 @@ const loanQuery = gql`query kcBasicLoanCard($loanId: Int!) {
 }`;
 
 export default {
-	name: 'KivaClassicBasicLoanCardBundleExp',
+	name: 'MfiLoanCard',
 	props: {
 		loanId: {
 			type: Number,
@@ -190,6 +216,7 @@ export default {
 		LoanUse,
 		KvMaterialIcon,
 		SummaryTag,
+		ActionButton,
 	},
 	data() {
 		return {
@@ -200,6 +227,7 @@ export default {
 			mdiChevronRight,
 			mdiMapMarker,
 			viewportObserver: null,
+			basketIds: []
 		};
 	},
 	computed: {
@@ -253,19 +281,11 @@ export default {
 			}
 			return false;
 		},
+		isFunded() {
+			return this.loan?.status === 'funded' ?? false;
+		},
 	},
 	methods: {
-		handleReadMoreLink(event) {
-			this.$emit('read-more-link', event);
-			if (this.disableLink) {
-				event.preventDefault();
-				return;
-			}
-			this.$emit('track-loan-card-interaction', {
-				interactionType: 'viewBorrowerPage',
-				interactionElement: 'readMore'
-			});
-		},
 		createViewportObserver() {
 			// Watch for this element being in the viewport
 			this.viewportObserver = createIntersectionObserver({
@@ -295,6 +315,7 @@ export default {
 					apollo: this.apollo,
 					cookieStore: this.cookieStore,
 					loanId: this.loanId,
+					basketId: this.cookieStore.get('kvbskt'),
 					loanQuery,
 					callback: result => this.processQueryResult(result),
 				});
@@ -318,6 +339,7 @@ export default {
 			this.isLoading = false;
 			this.loan = result.data?.lend?.loan ?? {};
 			this.basketItems = result.data?.shop?.basket?.items?.values ?? [];
+			this.basketIds = this.basketItems.map(loan => loan.id);
 		}
 	},
 	mounted() {

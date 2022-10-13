@@ -269,10 +269,23 @@ export default {
 			return client.query({
 				query: loanChannelPageQuery
 			}).then(({ data }) => {
+				// combine both 'pages' of loan channels
+				const pageQueryData = {
+					...data,
+					lend: {
+						loanChannels: {
+							values: [
+								...(data?.lend?.firstLoanChannels?.values ?? []),
+								...(data?.lend?.secondLoanChannels?.values ?? [])
+							]
+						}
+					}
+				};
+
 				// filter routes on route.param.category to get current path
 				const targetedLoanChannelURL = routePath;
 				// isolate targeted loan channel id
-				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, data);
+				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, pageQueryData);
 				// extract query
 				const pageQuery = _get(args, 'route.query');
 
@@ -301,13 +314,25 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'LoanChannelCategoryPage loanChannelPageQuery');
 		}
+		// combine both 'pages' of loan channels
+		const pageQueryData = {
+			...allChannelsData,
+			lend: {
+				loanChannels: {
+					values: [
+						...(allChannelsData?.lend?.firstLoanChannels?.values ?? []),
+						...(allChannelsData?.lend?.secondLoanChannels?.values ?? [])
+					]
+				}
+			}
+		};
 
 		// set user status
-		this.isVisitor = !_get(allChannelsData, 'my.userAccount.id');
+		this.isVisitor = !_get(pageQueryData, 'my.userAccount.id');
 		// filter routes on param.category to get current path
 		const targetedLoanChannelURL = routePath;
 		// isolate targeted loan channel id
-		this.targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, allChannelsData);
+		this.targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, pageQueryData);
 		// extract query
 		this.pageQuery = _get(this.$route, 'query');
 

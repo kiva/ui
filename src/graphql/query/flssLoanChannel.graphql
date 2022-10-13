@@ -9,6 +9,7 @@ query flssLoanChannel(
 	$imgDefaultSize: String = "w480h360"
 	$imgRetinaSize: String = "w960h720"
 	$basketId: String
+	$origin: String
 ) {
 	lend {
 		loanChannelsById(ids: $ids) {
@@ -18,7 +19,7 @@ query flssLoanChannel(
 			url
 		}
 	}
-	fundraisingLoans(filters: $filterObject, sortBy: $sortBy, limit: $pageLimit, pageNumber: $pageNumber) {
+	fundraisingLoans(filters: $filterObject, sortBy: $sortBy, limit: $pageLimit, pageNumber: $pageNumber, origin: $origin) {
 		totalCount
 		values {
 			id

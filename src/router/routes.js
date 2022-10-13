@@ -4,7 +4,14 @@ module.exports = [
 		name: 'homepage',
 		component: () => import('@/pages/Homepage/Homepage'),
 		meta: {
-			contentfulPage: () => 'home',
+			contentfulPage: (route, apollo, experimentVersionFragment) => {
+				const exp = apollo?.readFragment({
+					id: 'Experiment:new_home_layout',
+					fragment: experimentVersionFragment,
+				}) || {};
+
+				return exp?.version === 'b' ? 'hp/crowdfund-for-good' : 'home';
+			},
 			unbounce: true,
 		},
 	},
@@ -91,6 +98,13 @@ module.exports = [
 		}
 	},
 	{
+		path: '/checkout/eco-challenge/thanks',
+		component: () => import('@/pages/Thanks/ThanksPageEcoChallenge'),
+		meta: {
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
 		path: '/confirm-instant-donation/:token/:amount',
 		component: () => import('@/pages/InstantActions/ConfirmInstantDonation'),
 		meta: {
@@ -114,6 +128,15 @@ module.exports = [
 		path: '/donate/supportus',
 		component: () => import('@/pages/Donate/DonateSupportUs'),
 		meta: {
+			contentfulPage: () => 'donate/supportus',
+			unbounce: true,
+		},
+	},
+	{
+		path: '/donate/supportkiva',
+		component: () => import('@/pages/Donate/DonateSupportUs'),
+		meta: {
+			contentfulPage: () => 'donate/supportkiva',
 			unbounce: true,
 		},
 	},
@@ -277,6 +300,14 @@ module.exports = [
 		},
 	},
 	{
+		path: '/hp/:dynamicRoute',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: {
+			contentfulPage: route => `hp/${route.params.dynamicRoute}`,
+			excludeFromStaticSitemap: true,
+		},
+	},
+	{
 		path: '/monthlygood',
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage'),
 		props: route => ({ category: route.query.category }),
@@ -435,6 +466,8 @@ module.exports = [
 		meta: {
 			activeLoginRequired: true,
 			excludeFromStaticSitemap: true,
+			mfaRequired: true,
+			recentLoginRequired: true,
 		},
 	},
 	{
@@ -501,8 +534,8 @@ module.exports = [
 		}
 	},
 	{
-		path: '/lend/saved-search-beta',
-		component: () => import('@/pages/Settings/SavedSearchBeta'),
+		path: '/lend/saved-search',
+		component: () => import('@/pages/Settings/SavedSearch'),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,

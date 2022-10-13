@@ -4,6 +4,7 @@ import {
 	preFetchChannel,
 	checkCachedChannelExperiment,
 	getCachedChannel,
+	getLoanChannel,
 	watchChannelQuery,
 	loanChannelFLSSQueryEXP,
 	trackChannelExperiment,
@@ -231,6 +232,66 @@ describe('loanChannelUtils.js', () => {
 		});
 	});
 
+	describe('getLoanChannel', () => {
+		let spyGetLoanChannel;
+		const apollo = {
+			query: jest.fn(() => Promise.resolve()),
+			readQuery: jest.fn(() => Promise.resolve())
+		};
+		beforeEach(() => {
+			spyGetLoanChannel = jest.spyOn(flssUtils, 'fetchLoanChannel').mockImplementation(() => Promise.resolve());
+		});
+
+		afterEach(jest.clearAllMocks);
+
+		it('should handle channel without FLSS mapping', () => {
+			getLoanChannel(apollo, mockQueryMap, 'asd', mockLoanQueryVars);
+
+			expect(apollo.query).toHaveBeenCalledTimes(1);
+			expect(apollo.query).toHaveBeenCalledWith({ query: loanChannelQuery, variables: mockLoanQueryVars });
+		});
+
+		it('should handle active assigned experiment', async () => {
+			const mockData = {
+				shop: { id: 1 },
+				lend: { loanChannelsById: [{ id: 2 }] },
+				fundraisingLoans: { test: 3 },
+			};
+
+			apollo.readQuery.mockReturnValueOnce({ experiment: { version: 'b' } });
+
+			spyGetLoanChannel.mockReturnValueOnce(mockData);
+
+			const result = await getLoanChannel(apollo, mockQueryMap, 'women', mockLoanQueryVars);
+
+			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
+			expect(apollo.readQuery).toHaveBeenCalledWith(
+				{ query: experimentAssignmentQuery, variables: { id: loanChannelFLSSQueryEXP } }
+			);
+			expect(result).toEqual({
+				shop: mockData.shop,
+				lend: {
+					loanChannelsById: [{ ...mockData.lend.loanChannelsById[0], loans: mockData.fundraisingLoans }]
+				},
+			});
+		});
+
+		it('should handle active unassigned experiment', async () => {
+			const data = {};
+
+			apollo.readQuery.mockReturnValueOnce({ experiment: { version: 'a' } }).mockReturnValueOnce(data);
+
+			await getLoanChannel(apollo, mockQueryMap, 'women', mockLoanQueryVars);
+
+			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
+			expect(apollo.readQuery).toHaveBeenCalledWith(
+				{ query: experimentAssignmentQuery, variables: { id: loanChannelFLSSQueryEXP } },
+			);
+			expect(apollo.query).toHaveBeenCalledTimes(1);
+			expect(apollo.query).toHaveBeenCalledWith({ query: loanChannelQuery, variables: mockLoanQueryVars });
+		});
+	});
+
 	describe('watchChannelQuery', () => {
 		let spyWatchLoanChannel;
 		let watchCallback;
@@ -251,7 +312,7 @@ describe('loanChannelUtils.js', () => {
 		it('should handle channel without FLSS mapping', () => {
 			const next = jest.fn();
 
-			const result = watchChannelQuery(apollo, mockQueryMap, 'asd', mockLoanQueryVars, next, watch);
+			const result = watchChannelQuery(apollo, mockQueryMap, {}, 'asd', mockLoanQueryVars, next, watch);
 
 			expect(spyWatchLoanChannel).toHaveBeenCalledTimes(0);
 			expect(apollo.watchQuery).toHaveBeenCalledTimes(1);
@@ -279,7 +340,7 @@ describe('loanChannelUtils.js', () => {
 
 			const next = jest.fn();
 
-			const result = watchChannelQuery(apollo, mockQueryMap, 'women', mockLoanQueryVars, next, watch);
+			const result = watchChannelQuery(apollo, mockQueryMap, {}, 'women', mockLoanQueryVars, next, watch);
 
 			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
 			expect(apollo.readQuery).toHaveBeenCalledWith(
@@ -312,7 +373,7 @@ describe('loanChannelUtils.js', () => {
 
 			const next = jest.fn();
 
-			const result = watchChannelQuery(apollo, mockQueryMap, 'women', mockLoanQueryVars, next, watch);
+			const result = watchChannelQuery(apollo, mockQueryMap, {}, 'women', mockLoanQueryVars, next, watch);
 
 			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
 			expect(apollo.readQuery).toHaveBeenCalledWith(
