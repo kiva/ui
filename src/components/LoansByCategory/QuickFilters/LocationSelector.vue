@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-relative tw-w-full">
+	<div class="tw-relative tw-flex tw-flex-col tw-w-full">
 		<label
 			class="tw-text-h4"
 			for="location"
@@ -15,6 +15,7 @@
 			@click="toggleRegions()"
 			placeholder="All countries"
 			:disabled="!filtersLoaded"
+			autocomplete="off"
 		/>
 
 		<div
@@ -38,6 +39,7 @@
 				tw-overflow-auto
 
 				md:tw-absolute
+				md:tw-mt-9
 				md:tw-bottom-auto
 				md:tw-top-auto
 				md:tw-rounded
@@ -66,7 +68,7 @@
 							@click="selectRegion(index)"
 							class="tw-py-0.5 tw-font-medium
 								tw-flex tw-items-center tw-justify-between lg:tw-justify-start tw-w-full
-								tw-text-left tw-uppercase lg:tw-capitalize "
+								tw-text-left tw-uppercase lg:tw-capitalize"
 						>
 							<div class="tw-flex tw-items-center">
 								<div class="tw-w-4 tw-text-action tw-text-small tw-text-right tw-mr-.5">
@@ -113,7 +115,6 @@
 				class="tw-w-full tw-hidden lg:tw-flex tw-flex-col tw-justify-between tw-ml-1"
 			>
 				<checkbox-list
-					class="tw-pl-3"
 					:items="getItems(activeCountries)"
 					:selected-values="selectedCountries"
 					@updated="updateCountries($event)"
@@ -186,7 +187,6 @@ export default {
 		toggleRegions() {
 			this.showRegions = !this.showRegions;
 			this.selectedRegion = null;
-			this.updateLocation(this.selectedCountries);
 		},
 		selectRegion(index) {
 			this.selectedRegion = this.selectedRegion === index ? null : index;
@@ -236,6 +236,11 @@ export default {
 				message = this.selectedCountries.length === 1 ? '1 country' : `${this.selectedCountries.length} countries`; // eslint-disable-line max-len
 			}
 			return message;
+		}
+	},
+	watch: {
+		selectedCountries() {
+			this.updateLocation(this.selectedCountries);
 		}
 	}
 
