@@ -17,7 +17,6 @@ module.exports = merge(baseWebpackConfig, {
 			chunks: 'all',
 			maxAsyncRequests: Infinity, // default is 6
 			cacheGroups: {
-				default: false,
 				vendors: false
 			}
 		}
