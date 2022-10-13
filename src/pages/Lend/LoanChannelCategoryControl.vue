@@ -42,6 +42,7 @@
 				:filter-options="quickFiltersOptions"
 				:filters-loaded="filtersLoaded"
 				:update-filters="updateQuickFilters"
+				@reset-filters="resetFilters"
 			/>
 		</div>
 
@@ -127,6 +128,7 @@ import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
 import {
 	formatSortOptions,
 	transformIsoCodes,
+	sortByNameToDisplay
 } from '@/util/loanSearch/filterUtils';
 import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
@@ -438,6 +440,9 @@ export default {
 		}
 	},
 	methods: {
+		resetFilters() {
+			this.selectedQuickFilters = {};
+		},
 		updateQuickFilters(filter) {
 			if (filter.gender) {
 				this.selectedQuickFilters.gender = filter.gender;
@@ -575,10 +580,34 @@ export default {
 			const facets = {
 				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
+					.map(sortOption => ({ name: sortByNameToDisplay[sortOption.name], key: sortOption.name }))
 			};
 
 			this.quickFiltersOptions.location = facets.regions;
-			this.quickFiltersOptions.sorting = facets.sortOptions;
+			// TODO: Revisit after experiment phase as this returns a bunch of sort options we don't need
+			// this.quickFiltersOptions.sorting = facets.sortOptions;
+			this.quickFiltersOptions.sorting = [
+				{
+					title: 'Recommended',
+					key: 'personalized',
+				},
+				{
+					title: 'Almost funded',
+					key: 'amountLeft',
+				},
+				{
+					title: 'Amount high to low',
+					key: 'amountHighToLow'
+				},
+				{
+					title: 'Amount low to high',
+					key: 'amountLowToHigh'
+				},
+				{
+					title: 'Ending soon',
+					key: 'expiringSoon'
+				}
+			];
 			this.quickFiltersOptions.gender = [
 				{
 					title: 'All genders',
