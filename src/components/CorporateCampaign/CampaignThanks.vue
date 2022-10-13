@@ -163,7 +163,7 @@ export default {
 
 				// MARS-246 Hotjar user attributes
 				setHotJarUserAttributes({
-					userId: this.userId,
+					userId: this.lender?.id,
 					hasEverLoggedIn: true,
 					hasLentBefore,
 					hasDepositBefore,
