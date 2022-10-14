@@ -664,6 +664,8 @@ export default {
 		quickFiltersFlssParameters(matchedUrls = []) {
 			if (this.targetedLoanChannelURL === 'single-parents') {
 				this.flssLoanSearch = { tagId: [17] };
+			} else if (this.targetedLoanChannelURL === 'livestock') {
+				this.flssLoanSearch = { activityId: [73] };
 			} else {
 				this.flssLoanSearch = matchedUrls[0]?.flssLoanSearch ?? {};
 			}
