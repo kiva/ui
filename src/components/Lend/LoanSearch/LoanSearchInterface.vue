@@ -324,6 +324,7 @@ export default {
 				FLSS_ORIGIN_LEND_FILTER
 			);
 
+			// TODO: Remove this filter once non binary filter is ready to release
 			const nonBinaryFilterEnabled = this.$route.query?.nonBinaryFilter;
 			let genderFacets = this.allFacets?.genderFacets;
 			if (!nonBinaryFilterEnabled) {
