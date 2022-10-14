@@ -12,11 +12,12 @@
 		<div
 			v-if="!isLoading"
 			class="tw-relative"
+			@click="showLoanDetails"
 		>
 			<!-- If allSharesReserved, disable link by making it a span -->
 			<router-link
 				:is="allSharesReserved ? 'span' : 'router-link'"
-				:to="`/lend/${loanId}`"
+				:to="customLoanDetails ? null : `/lend/${loanId}`"
 				v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
 			>
 				<borrower-image
@@ -108,6 +109,8 @@
 			:status="loan.status"
 			:loan-amount="loan.loanAmount"
 			:borrower-count="loan.borrowerCount"
+			:custom-loan-details="customLoanDetails"
+			@show-loan-details="showLoanDetails"
 		/>
 
 		<!-- Matching text  -->
@@ -140,7 +143,7 @@
 				variant="secondary"
 				v-if="isInBasket"
 				v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
-				to="/basket"
+				:to="customCheckoutRoute ? customCheckoutRoute : '/basket'"
 			>
 				<slot>
 					<div class="tw-inline-flex tw-items-center tw-gap-1">
@@ -174,7 +177,8 @@
 						v-if="!showLendNowButton"
 						class="tw-mb-2 tw-self-start"
 						:state="`${allSharesReserved ? 'disabled' : ''}`"
-						:to="`/lend/${loanId}`"
+						:to="customLoanDetails ? null : `/lend/${loanId}`"
+						@click="showLoanDetails"
 						v-kv-track-event="['Lending', 'click-Read-more', 'View loan', loanId]"
 					>
 						View loan
@@ -275,6 +279,14 @@ export default {
 			default: ''
 		},
 		lendNowButton: {
+			type: Boolean,
+			default: false
+		},
+		customCheckoutRoute: {
+			type: String,
+			default: ''
+		},
+		customLoanDetails: {
 			type: Boolean,
 			default: false
 		}
@@ -394,6 +406,12 @@ export default {
 		}
 	},
 	methods: {
+		showLoanDetails(e) {
+			if (this.customLoanDetails) {
+				e.preventDefault();
+				this.$emit('show-loan-details');
+			}
+		},
 		createViewportObserver() {
 			// Watch for this element being in the viewport
 			this.viewportObserver = createIntersectionObserver({
@@ -455,8 +473,10 @@ export default {
 				loanId: this.loanId,
 			}).then(() => {
 				this.isAdding = false;
+				this.$emit('add-to-basket', { loanId: this.loanId, success: true });
 			}).catch(e => {
 				this.isAdding = false;
+				this.$emit('add-to-basket', { loanId: this.loanId, success: false });
 				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
 					? e[0].message
 					: 'There was a problem adding the loan to your basket';
