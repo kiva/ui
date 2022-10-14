@@ -473,7 +473,7 @@ export default {
 			this.selectedQuickFilters = {};
 		},
 		updateQuickFilters(filter) {
-			if (filter.gender) {
+			if (filter.gender !== undefined) {
 				this.selectedQuickFilters.gender = filter.gender;
 			} else if (filter.sortBy) {
 				this.selectedQuickFilters.sortBy = filter.sortBy;
