@@ -446,9 +446,12 @@ export default {
 
 					const loan = data?.lend?.loan;
 					if (loan === null || loan === 'undefined') {
-					// redirect to legacy borrower profile
+						// redirect to legacy borrower profile
+						const { query = {} } = route;
+						query.minimal = false;
 						return Promise.reject({
-							path: `/lend-classic/${Number(route.params?.id ?? 0)}?minimal=false`,
+							path: `/lend-classic/${Number(route.params?.id ?? 0)}`,
+							query,
 						});
 					}
 
