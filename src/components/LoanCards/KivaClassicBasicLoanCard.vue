@@ -17,7 +17,7 @@
 			<!-- If allSharesReserved, disable link by making it a span -->
 			<router-link
 				:is="allSharesReserved ? 'span' : 'router-link'"
-				:to="customLoanDetails ? null : `/lend/${loanId}`"
+				:to="customLoanDetails ? '' : `/lend/${loanId}`"
 				v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
 			>
 				<borrower-image
@@ -177,7 +177,7 @@
 						v-if="!showLendNowButton"
 						class="tw-mb-2 tw-self-start"
 						:state="`${allSharesReserved ? 'disabled' : ''}`"
-						:to="customLoanDetails ? null : `/lend/${loanId}`"
+						:to="customLoanDetails ? '' : `/lend/${loanId}`"
 						@click="showLoanDetails"
 						v-kv-track-event="['Lending', 'click-Read-more', 'View loan', loanId]"
 					>
