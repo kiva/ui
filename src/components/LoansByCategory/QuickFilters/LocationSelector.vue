@@ -224,7 +224,7 @@ export default {
 			}
 
 			return total;
-		}
+		},
 	},
 	computed: {
 		activeCountries() {
