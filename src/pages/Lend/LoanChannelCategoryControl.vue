@@ -7,6 +7,7 @@
 					v-else
 					:to="filterUrl"
 					class="tw-text-action tw-flex tw-items-center tw-float-right"
+					@click.native="trackAdvancedFilters"
 				>
 					<img class="tw-w-2 tw-mr-1" src="@/assets/images/tune.svg">
 					Advanced filters
@@ -440,6 +441,12 @@ export default {
 		}
 	},
 	methods: {
+		trackAdvancedFilters() {
+			this.$kvTrackEvent(
+				'Lending',
+				'click-category-advanced-filters'
+			);
+		},
 		resetFilters() {
 			this.selectedQuickFilters = {};
 		},
