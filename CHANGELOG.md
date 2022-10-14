@@ -1,3 +1,15 @@
+## [2.337.0](https://github.com/kiva/ui/compare/v2.336.0...v2.337.0) (2022-10-14)
+
+
+### Features
+
+* copy updated for auto lending increment dropdown ([812fc01](https://github.com/kiva/ui/commit/812fc01a61b3301ae77d79ec125ffcc95c55594a))
+
+
+### Bug Fixes
+
+* images aren't showing up on cc page for production build ([a9bf309](https://github.com/kiva/ui/commit/a9bf30999159a8f074b614ef344d29adba6cb081))
+
 ## [2.336.0](https://github.com/kiva/ui/compare/v2.335.0...v2.336.0) (2022-10-14)
 
 
