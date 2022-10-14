@@ -264,7 +264,15 @@ module.exports = [
 	},
 	{
 		path: '/lend-beta/:id',
-		redirect: { name: 'borrowerProfile' }
+		redirect: '/lend/:id'
+	},
+	{
+		path: '/lend/saved-search',
+		component: () => import('@/pages/Settings/SavedSearch'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
 	},
 	{
 		name: 'borrowerProfile',
@@ -535,14 +543,6 @@ module.exports = [
 		path: '/styleguide/*',
 		redirect: '/styleguide',
 		meta: {
-			excludeFromStaticSitemap: true,
-		}
-	},
-	{
-		path: '/lend/saved-search',
-		component: () => import('@/pages/Settings/SavedSearch'),
-		meta: {
-			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
 		}
 	},

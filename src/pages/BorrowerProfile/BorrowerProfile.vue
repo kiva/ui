@@ -436,13 +436,11 @@ export default {
 				})
 				.then(({ data }) => {
 					const expCookieSignifier = cookieStore.get('kvlendborrowerbeta');
-					if (expCookieSignifier !== 'b') {
-						const { query } = this.$route;
-						const queryString = Object.keys(query)
-							.map(key => `${key}=${query[key]}`)
-							.join('&');
+					if (expCookieSignifier === 'a' || expCookieSignifier === 'c') {
+						const { query } = route;
 						return Promise.reject({
-							path: `/lend-classic/${this.$route.params.id}?query=${queryString}`,
+							path: `/lend-classic/${route.params.id}`,
+							query,
 						});
 					}
 
@@ -458,7 +456,6 @@ export default {
 						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 						client.query({ query: experimentQuery, variables: { id: socialElementsExpKey } }),
-						client.query({ query: experimentQuery, variables: { id: whatIsKivaExpKey } }),
 						client.query({ query: experimentQuery, variables: { id: whatIsKivaExpKey } }),
 					]);
 				});
@@ -677,8 +674,8 @@ export default {
 			this.socialExpEnabled = true;
 		}
 
-		const utmContent = this.$route.query?.utm_content;
-		this.inviterIsGuestOrAnonymous = utmContent === 'anonymous' || utmContent === 'guest';
+		const publicId = getPublicId(this.$route);
+		this.inviterIsGuestOrAnonymous = publicId === 'anonymous' || publicId === 'guest';
 	},
 };
 </script>
