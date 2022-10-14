@@ -1,3 +1,10 @@
+## [2.336.0](https://github.com/kiva/ui/compare/v2.335.0...v2.336.0) (2022-10-14)
+
+
+### Features
+
+* ui and logic improvements added to quick filters exp ([edbee6e](https://github.com/kiva/ui/commit/edbee6e89d30650a778c1cf22ebe5898103cb1d4))
+
 ## [2.335.0](https://github.com/kiva/ui/compare/v2.334.0...v2.335.0) (2022-10-13)
 
 
