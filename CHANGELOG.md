@@ -1,3 +1,17 @@
+## [2.340.0](https://github.com/kiva/ui/compare/v2.339.0...v2.340.0) (2022-10-17)
+
+
+### Features
+
+* async component prefetch support ([e48e8f2](https://github.com/kiva/ui/commit/e48e8f2f27a9fe177996520e78574ea95a45673f))
+* delay loading of popper.js until needed ([41e518f](https://github.com/kiva/ui/commit/41e518f6a845ccc7b9173ce515a3fa7a7907d8e4))
+
+
+### Bug Fixes
+
+* default group required to avoid duplicating modules ([df99938](https://github.com/kiva/ui/commit/df99938092ab94f67a3bc86d4f715381cfe66b38))
+* drop lodash usage in KvAuth0 ([99bbe78](https://github.com/kiva/ui/commit/99bbe7844a65f2f7dcaaed993646f209e5e1aed2))
+
 ## [2.339.0](https://github.com/kiva/ui/compare/v2.338.0...v2.339.0) (2022-10-17)
 
 
