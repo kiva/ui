@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import { createMinMaxRange } from '@/util/loanSearch/minMaxRange';
 
 export default {
 	data() {
@@ -139,7 +140,10 @@ export default {
 					id: 11,
 					url: 'short-term-loans',
 					queryParams: 'status=fundRaising&lenderTerm=0,16',
-					algoliaParams: 'repayment=%3A16'
+					algoliaParams: 'repayment=%3A16',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 16)
+					},
 				},
 				{
 					id: 6,
@@ -208,7 +212,10 @@ export default {
 					id: 14,
 					url: 'groups',
 					queryParams: 'status=fundRaising&isGroup=1',
-					algoliaParams: '' // not support show exit link
+					algoliaParams: '', // not support show exit link
+					flssLoanSearch: {
+						isIndividual: false
+					},
 				},
 				{
 					id: 1,
@@ -410,6 +417,9 @@ export default {
 					id: 79,
 					url: 'group-loans',
 					queryParams: 'status=fundRaising&isGroup=1&distributionModel=both',
+					flssLoanSearch: {
+						isIndividual: false
+					},
 				},
 
 				// Lend By Category Carousel Layout Sub Channels
@@ -712,31 +722,55 @@ export default {
 					id: 144,
 					url: 'short-term-loans-almost-funded',
 					queryParams: 'lenderTerm=0,16&sortBy=amountLeft',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 16),
+						sortBy: 'amountLeft'
+					},
 				},
 				{
 					id: 145,
 					url: 'africa-short-term-loans',
 					queryParams: 'status=fundRaising&lenderTerm=0,16&country=MZ,UG,TZ,SN,RW,KE,CD,LR,SL,BF,CM,GH,NG,TG,MG,MW,ZM,ML,EG,LS,ZA,BI,SS,ZW,NA&distributionModel=both',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 16),
+						countryIsoCode: ['MZ', 'UG', 'TZ', 'SN', 'RW', 'KE', 'CD', 'LR', 'SL', 'BF', 'CM', 'GH', 'NG', 'TG', 'MG', 'MW', 'ZM', 'ML', 'EG', 'LS', 'ZA', 'BI', 'SS', 'ZW', 'NA'],
+					},
 				},
 				{
 					id: 146,
 					url: 'asia-short-term-loans',
 					queryParams: 'status=fundRaising&lenderTerm=0,16&country=KH,NP,TJ,TH,VN,PH,KG,IN,ID,PK,MM,LA,BT,BD&distributionModel=both',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 16),
+						countryIsoCode: ['KH', 'NP', 'TJ', 'TH', 'VN', 'PH', 'KG', 'IN', 'ID', 'PK', 'MM', 'LA', 'BT', 'BD'],
+					},
 				},
 				{
 					id: 148,
 					url: 'eastern-europe-short-term-loans',
 					queryParams: 'status=fundRaising&lenderTerm=0,16&country=GE,AL,XK,MD&distributionModel=both',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 16),
+						countryIsoCode: ['GE', 'AL', 'XK', 'MD'],
+					},
 				},
 				{
 					id: 149,
 					url: 'middle-east-short-term-loans',
 					queryParams: 'status=fundRaising&lenderTerm=0,16&country=JO,PS,IL,TR&distributionModel=both',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 16),
+						countryIsoCode: ['JO', 'PS', 'IL', 'TR'],
+					},
 				},
 				{
 					id: 150,
 					url: 'oceania-short-term-loans',
 					queryParams: 'status=fundRaising&lenderTerm=0,16&country=WS,TL,SB,TO,FJ,PG,VU,GU&distributionModel=both',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 16),
+						countryIsoCode: ['WS', 'TL', 'SB', 'TO', 'FJ', 'PG', 'VU', 'GU'],
+					},
 				},
 				{
 					id: 151,

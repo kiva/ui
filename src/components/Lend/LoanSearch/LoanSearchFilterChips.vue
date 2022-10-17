@@ -28,8 +28,22 @@
 <script>
 import _throttle from 'lodash/throttle';
 import KvChipClassic from '@/components/Kv/KvChipClassic';
-import { transformTagName, genderDisplayMap, distributionModelDisplayMap } from '@/util/loanSearch/filterUtils';
+import {
+	transformTagName,
+	genderDisplayMap,
+	distributionModelDisplayMap,
+	isIndividualDisplayMap,
+	isIndividualValueMap,
+	lenderRepaymentTermDisplayMap,
+	lenderRepaymentTermValueMap,
+	getFilterKeyFromValue,
+} from '@/util/loanSearch/filterUtils';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
+
+const GENDER_TYPE = 'Gender';
+const DISTRIBUTION_MODEL_TYPE = 'DistributionModel';
+const IS_INDIVIDUAL_TYPE = 'IsIndividual';
+const LENDER_REPAYMENT_TERM_TYPE = 'LenderRepaymentTerm';
 
 export default {
 	name: 'LoanSearchFilterChips',
@@ -76,7 +90,7 @@ export default {
 	methods: {
 		formatRemovedFacet(facetType, facet) {
 			switch (facetType) {
-				case 'Gender':
+				case GENDER_TYPE:
 					return { gender: null };
 				case 'Sector':
 					return { sectorId: [...this.loanSearchState.sectorId?.filter(id => facet.id !== id)] };
@@ -90,8 +104,12 @@ export default {
 					return { themeId: [...this.loanSearchState.themeId?.filter(id => facet.id !== id)] };
 				case 'Tag':
 					return { tagId: [...this.loanSearchState.tagId?.filter(id => facet.id !== id)] };
-				case 'DistributionModel':
+				case DISTRIBUTION_MODEL_TYPE:
 					return { distributionModel: null };
+				case IS_INDIVIDUAL_TYPE:
+					return { isIndividual: null };
+				case LENDER_REPAYMENT_TERM_TYPE:
+					return { lenderRepaymentTerm: null };
 				default:
 					return {};
 			}
@@ -102,7 +120,7 @@ export default {
 				const genderFacet = allFacets.genderFacets?.find(f => f.name === loanSearchState.gender);
 				itemList.push({
 					name: genderDisplayMap[genderFacet?.name.toUpperCase()],
-					__typename: 'Gender'
+					__typename: GENDER_TYPE
 				});
 			}
 			if (loanSearchState.countryIsoCode?.length) {
@@ -143,7 +161,25 @@ export default {
 					?.find(f => f.name === loanSearchState.distributionModel);
 				itemList.push({
 					name: distributionModelDisplayMap[distributionModelFacet?.name.toUpperCase()],
-					__typename: 'DistributionModel'
+					__typename: DISTRIBUTION_MODEL_TYPE
+				});
+			}
+			if (loanSearchState.isIndividual !== null) {
+				itemList.push({
+					name: isIndividualDisplayMap[getFilterKeyFromValue(
+						loanSearchState.isIndividual,
+						isIndividualValueMap
+					)],
+					__typename: IS_INDIVIDUAL_TYPE
+				});
+			}
+			if (loanSearchState.lenderRepaymentTerm) {
+				itemList.push({
+					name: lenderRepaymentTermDisplayMap[getFilterKeyFromValue(
+						loanSearchState.lenderRepaymentTerm,
+						lenderRepaymentTermValueMap
+					)],
+					__typename: LENDER_REPAYMENT_TERM_TYPE
 				});
 			}
 			return itemList;

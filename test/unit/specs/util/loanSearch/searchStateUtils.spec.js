@@ -91,6 +91,31 @@ describe('searchStateUtils.js', () => {
 
 			expect(result).toEqual({ ...mockState, distributionModel: null });
 		});
+
+		it('should validate is individual', () => {
+			const state = { ...mockState, isIndividual: 'asd' };
+
+			const result = getValidatedSearchState(state, mockAllFacets, FLSS_QUERY_TYPE);
+
+			expect(result).toEqual({ ...mockState, isIndividual: null });
+		});
+
+		it('should validate lender repayment term', () => {
+			const state = { ...mockState, lenderRepaymentTerm: 'asd' };
+
+			const result = getValidatedSearchState(state, mockAllFacets, FLSS_QUERY_TYPE);
+
+			expect(result).toEqual({ ...mockState, lenderRepaymentTerm: null });
+		});
+
+		it('should add lender repayment term typename', () => {
+			const result = getValidatedSearchState(mockState, mockAllFacets, FLSS_QUERY_TYPE);
+
+			expect(result).toEqual({
+				...mockState,
+				lenderRepaymentTerm: { ...mockState.lenderRepaymentTerm, __typename: 'MinMaxRange' }
+			});
+		});
 	});
 
 	describe('updateSearchState', () => {

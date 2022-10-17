@@ -21,6 +21,18 @@ import {
 	DIRECT_KEY,
 	genderDisplayMap,
 	distributionModelDisplayMap,
+	transformIsIndividualOptions,
+	transformLenderRepaymentTermOptions,
+	getFilterKeyFromValue,
+	INDIVIDUAL_KEY,
+	GROUP_KEY,
+	isIndividualDisplayMap,
+	EIGHT_MONTHS_KEY,
+	SIXTEEN_MONTHS_KEY,
+	TWO_YEARS_KEY,
+	MORE_THAN_TWO_YEARS_KEY,
+	lenderRepaymentTermDisplayMap,
+	lenderRepaymentTermValueMap,
 } from '@/util/loanSearch/filterUtils';
 import _orderBy from 'lodash/orderBy';
 import {
@@ -335,9 +347,9 @@ describe('filterUtils.js', () => {
 			const result = transformRadioGroupOptions(options, order, map);
 
 			expect(result).toEqual([
-				{ name: 'a', title: 'AA' },
-				{ name: 'b', title: 'BB' },
-				{ name: 'c', title: 'CC' }
+				{ name: 'a', title: 'AA', value: 'a' },
+				{ name: 'b', title: 'BB', value: 'b' },
+				{ name: 'c', title: 'CC', value: 'c' }
 			]);
 		});
 	});
@@ -353,8 +365,8 @@ describe('filterUtils.js', () => {
 			const result = transformGenderOptions(genders);
 
 			expect(result).toEqual([
-				{ name: FEMALE_KEY, title: genderDisplayMap[FEMALE_KEY] },
-				{ name: MALE_KEY, title: genderDisplayMap[MALE_KEY] },
+				{ name: FEMALE_KEY, title: genderDisplayMap[FEMALE_KEY], value: FEMALE_KEY },
+				{ name: MALE_KEY, title: genderDisplayMap[MALE_KEY], value: MALE_KEY },
 			]);
 		});
 	});
@@ -370,9 +382,76 @@ describe('filterUtils.js', () => {
 			const result = transformDistributionModelOptions(distributionModels);
 
 			expect(result).toEqual([
-				{ name: FIELDPARTNER_KEY, title: distributionModelDisplayMap[FIELDPARTNER_KEY] },
-				{ name: DIRECT_KEY, title: distributionModelDisplayMap[DIRECT_KEY] },
+				{
+					name: FIELDPARTNER_KEY,
+					title: distributionModelDisplayMap[FIELDPARTNER_KEY],
+					value: FIELDPARTNER_KEY
+				},
+				{ name: DIRECT_KEY, title: distributionModelDisplayMap[DIRECT_KEY], value: DIRECT_KEY },
 			]);
+		});
+	});
+
+	describe('transformIsIndividualOptions', () => {
+		it('should transform and sort', () => {
+			const result = transformIsIndividualOptions();
+
+			expect(result).toEqual([
+				{ name: INDIVIDUAL_KEY, title: isIndividualDisplayMap[INDIVIDUAL_KEY], value: true },
+				{ name: GROUP_KEY, title: isIndividualDisplayMap[GROUP_KEY], value: false },
+			]);
+		});
+	});
+
+	describe('transformLenderRepaymentTermOptions', () => {
+		it('should transform and sort', () => {
+			const result = transformLenderRepaymentTermOptions();
+
+			expect(result).toEqual([
+				{
+					name: EIGHT_MONTHS_KEY,
+					title: lenderRepaymentTermDisplayMap[EIGHT_MONTHS_KEY],
+					value: lenderRepaymentTermValueMap[EIGHT_MONTHS_KEY]
+				},
+				{
+					name: SIXTEEN_MONTHS_KEY,
+					title: lenderRepaymentTermDisplayMap[SIXTEEN_MONTHS_KEY],
+					value: lenderRepaymentTermValueMap[SIXTEEN_MONTHS_KEY]
+				},
+				{
+					name: TWO_YEARS_KEY,
+					title: lenderRepaymentTermDisplayMap[TWO_YEARS_KEY],
+					value: lenderRepaymentTermValueMap[TWO_YEARS_KEY]
+				},
+				{
+					name: MORE_THAN_TWO_YEARS_KEY,
+					title: lenderRepaymentTermDisplayMap[MORE_THAN_TWO_YEARS_KEY],
+					value: lenderRepaymentTermValueMap[MORE_THAN_TWO_YEARS_KEY]
+				},
+			]);
+		});
+	});
+
+	describe('getFilterKeyFromValue', () => {
+		it('should return undefined when not found', () => {
+			const result = getFilterKeyFromValue('asd', lenderRepaymentTermValueMap);
+
+			expect(result).toEqual(undefined);
+		});
+
+		it('should get filter key', () => {
+			const result = getFilterKeyFromValue(1, { test: 1 });
+
+			expect(result).toEqual('test');
+		});
+
+		it('should get filter key from min max range', () => {
+			const result = getFilterKeyFromValue(
+				lenderRepaymentTermValueMap[EIGHT_MONTHS_KEY],
+				lenderRepaymentTermValueMap
+			);
+
+			expect(result).toEqual(EIGHT_MONTHS_KEY);
 		});
 	});
 

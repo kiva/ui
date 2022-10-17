@@ -5,9 +5,15 @@ import {
 	getCountryIsoCodesFromQueryParam,
 	hasExcludedQueryParams,
 	getEnumNameFromQueryParam,
+	getBooleanValueFromQueryParam,
+	getMinMaxRangeFromQueryParam,
+	getIsIndividualFromQueryParam,
 } from '@/util/loanSearch/queryParamUtils';
-import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
+import {
+	FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE, lenderRepaymentTermValueMap, SIXTEEN_MONTHS_KEY
+} from '@/util/loanSearch/filterUtils';
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
+import { createMinMaxRange } from '@/util/loanSearch/minMaxRange';
 import { mockState, mockAllFacets } from '../../../fixtures/mockLoanSearchData';
 
 describe('queryParamUtils.js', () => {
@@ -16,8 +22,6 @@ describe('queryParamUtils.js', () => {
 			expect(hasExcludedQueryParams({ activity: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ city_state: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ defaultRate: [] })).toBe(true);
-			expect(hasExcludedQueryParams({ isGroup: [] })).toBe(true);
-			expect(hasExcludedQueryParams({ lenderTerm: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ loanTags: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ partner: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ riskRating: [] })).toBe(true);
@@ -51,6 +55,50 @@ describe('queryParamUtils.js', () => {
 		it('should get name regardless of casing', () => {
 			expect(getEnumNameFromQueryParam('A', facets)).toBe('a');
 			expect(getEnumNameFromQueryParam('a', facets.map(f => ({ name: f.name.toUpperCase() })))).toBe('A');
+		});
+	});
+
+	describe('getBooleanValueFromQueryParam', () => {
+		it('should handle non-boolean', () => {
+			expect(getBooleanValueFromQueryParam('')).toBe(null);
+			expect(getBooleanValueFromQueryParam('asd')).toBe(null);
+		});
+
+		it('should get boolean', () => {
+			expect(getBooleanValueFromQueryParam('true')).toBe(true);
+			expect(getBooleanValueFromQueryParam('false')).toBe(false);
+		});
+
+		it('should get boolean regardless of casing', () => {
+			expect(getBooleanValueFromQueryParam('True')).toBe(true);
+			expect(getBooleanValueFromQueryParam('FALSE')).toBe(false);
+		});
+	});
+
+	describe('getMinMaxRangeFromQueryParam', () => {
+		it('should handle bad param', () => {
+			expect(getMinMaxRangeFromQueryParam()).toBe(undefined);
+			expect(getMinMaxRangeFromQueryParam('')).toBe(undefined);
+			expect(getMinMaxRangeFromQueryParam('1,')).toBe(undefined);
+			expect(getMinMaxRangeFromQueryParam(',1')).toBe(undefined);
+		});
+
+		it('should get range', () => {
+			expect(getMinMaxRangeFromQueryParam('1,3')).toEqual(createMinMaxRange(1, 3));
+			expect(getMinMaxRangeFromQueryParam('0,400')).toEqual(createMinMaxRange(0, 400));
+		});
+	});
+
+	describe('getIsIndividualFromQueryParam', () => {
+		it('should handle bad param', () => {
+			expect(getIsIndividualFromQueryParam()).toBe(null);
+			expect(getIsIndividualFromQueryParam('')).toBe(null);
+			expect(getIsIndividualFromQueryParam('asd')).toBe(null);
+		});
+
+		it('should get is individual', () => {
+			expect(getIsIndividualFromQueryParam('true')).toBe(false);
+			expect(getIsIndividualFromQueryParam('false')).toBe(true);
 		});
 	});
 
@@ -291,7 +339,12 @@ describe('queryParamUtils.js', () => {
 						tagId: [1],
 						pageOffset: 5,
 						pageLimit: 5,
-						distributionModel: 'DIRECT'
+						distributionModel: 'DIRECT',
+						isIndividual: false,
+						lenderRepaymentTerm: {
+							...lenderRepaymentTermValueMap[SIXTEEN_MONTHS_KEY],
+							__typename: 'MinMaxRange'
+						},
 					}
 				}
 			};
@@ -303,7 +356,9 @@ describe('queryParamUtils.js', () => {
 				attribute: '1',
 				tag: '1',
 				page: '2',
-				distributionModel: 'DIRECT'
+				distributionModel: 'DIRECT',
+				isGroup: 'true',
+				lenderTerm: '0,16'
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -326,6 +381,8 @@ describe('queryParamUtils.js', () => {
 						pageOffset: 0,
 						pageLimit: 5,
 						distributionModel: null,
+						isIndividual: null,
+						lenderRepaymentTerm: null,
 					}
 				},
 			};
@@ -351,6 +408,8 @@ describe('queryParamUtils.js', () => {
 						pageOffset: 0,
 						pageLimit: 5,
 						distributionModel: null,
+						isIndividual: null,
+						lenderRepaymentTerm: null,
 					}
 				},
 			};
@@ -376,6 +435,8 @@ describe('queryParamUtils.js', () => {
 						pageOffset: 15,
 						pageLimit: 5,
 						distributionModel: null,
+						isIndividual: null,
+						lenderRepaymentTerm: null,
 					}
 				},
 			};
@@ -401,6 +462,8 @@ describe('queryParamUtils.js', () => {
 						pageOffset: 0,
 						pageLimit: 5,
 						distributionModel: null,
+						isIndividual: null,
+						lenderRepaymentTerm: null,
 					}
 				},
 			};
@@ -426,6 +489,8 @@ describe('queryParamUtils.js', () => {
 						pageOffset: 5,
 						pageLimit: 5,
 						distributionModel: null,
+						isIndividual: null,
+						lenderRepaymentTerm: null,
 					}
 				},
 			};
@@ -451,6 +516,8 @@ describe('queryParamUtils.js', () => {
 						pageOffset: 0,
 						pageLimit: 5,
 						distributionModel: null,
+						isIndividual: null,
+						lenderRepaymentTerm: null,
 					}
 				},
 			};
@@ -472,6 +539,8 @@ describe('queryParamUtils.js', () => {
 				tag: '1',
 				page: '3',
 				distributionModel: 'DIRECT',
+				isGroup: 'true',
+				lenderTerm: '0,8',
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -494,6 +563,8 @@ describe('queryParamUtils.js', () => {
 						pageOffset: 5,
 						pageLimit: 5,
 						distributionModel: 'DIRECT',
+						isIndividual: null,
+						lenderRepaymentTerm: null,
 					}
 				}
 			};
@@ -528,6 +599,8 @@ describe('queryParamUtils.js', () => {
 						pageOffset: 5,
 						pageLimit: 5,
 						distributionModel: 'DIRECT',
+						isIndividual: null,
+						lenderRepaymentTerm: null,
 					}
 				}
 			};
@@ -562,6 +635,8 @@ describe('queryParamUtils.js', () => {
 						pageOffset: 5,
 						pageLimit: 5,
 						distributionModel: 'DIRECT',
+						isIndividual: null,
+						lenderRepaymentTerm: null,
 					}
 				}
 			};
@@ -596,6 +671,8 @@ describe('queryParamUtils.js', () => {
 						pageOffset: 5,
 						pageLimit: 5,
 						distributionModel: 'DIRECT',
+						isIndividual: null,
+						lenderRepaymentTerm: null,
 					}
 				}
 			};
@@ -608,6 +685,43 @@ describe('queryParamUtils.js', () => {
 				tag: 'tag 1',
 				page: '2',
 				distributionModel: 'direct',
+			};
+
+			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
+
+			expect(apollo.mutate).toHaveBeenCalledWith(params);
+		});
+
+		it('should handle different is group casing', async () => {
+			const apollo = { mutate: jest.fn(() => Promise.resolve()) };
+			const params = {
+				mutation: updateLoanSearchMutation,
+				variables: {
+					searchParams: {
+						gender: 'female',
+						countryIsoCode: ['US'],
+						sectorId: [1],
+						sortBy: 'expiringSoon',
+						themeId: [1],
+						tagId: [1],
+						pageOffset: 5,
+						pageLimit: 5,
+						distributionModel: 'DIRECT',
+						isIndividual: false,
+						lenderRepaymentTerm: null,
+					}
+				}
+			};
+			const query = {
+				gender: 'female',
+				countries: 'us',
+				sector: mockState.sectorId.toString(),
+				sortBy: 'expiringSoon',
+				attributes: 'theme 1',
+				tag: 'tag 1',
+				page: '2',
+				distributionModel: 'direct',
+				isGroup: 'TRUE'
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -809,6 +923,32 @@ describe('queryParamUtils.js', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
 				query: state,
+				params: { noScroll: true, noAnalytics: true }
+			});
+		});
+
+		it('should push is group', () => {
+			const state = { isIndividual: false };
+			const router = getRouter();
+
+			updateQueryParams(state, router, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { isGroup: 'true' },
+				params: { noScroll: true, noAnalytics: true }
+			});
+		});
+
+		it('should push lender term', () => {
+			const state = { lenderRepaymentTerm: { min: 0, max: 8, __typename: 'MinMaxRange' } };
+			const router = getRouter();
+
+			updateQueryParams(state, router, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { lenderTerm: '0,8' },
 				params: { noScroll: true, noAnalytics: true }
 			});
 		});
