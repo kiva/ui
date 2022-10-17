@@ -67,7 +67,10 @@ export default {
 					url: 'livestock',
 					queryParams: 'status=fundRaising&activity=73',
 					// algoliaParams: '', // not supported pass exclude link
-					fallbackUrl: '/lend?status=fundRaising&activity=73'
+					fallbackUrl: '/lend?status=fundRaising&activity=73',
+					flssLoanSearch: {
+						activityId: [73]
+					}
 				},
 				{
 					id: 29,

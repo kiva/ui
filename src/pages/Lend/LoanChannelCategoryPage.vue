@@ -223,9 +223,9 @@ export default {
 		}
 		// Initialize Help Me Choose Experiment
 		if (this.targetedLoanChannel === 'women'
-				&& this.targetedLoanChannel === 'kiva-u-s'
-				&& this.targetedLoanChannel === 'mission-driven-orgs'
-				&& this.targetedLoanChannel === 'short-term-loans'
+				|| this.targetedLoanChannel === 'kiva-u-s'
+				|| this.targetedLoanChannel === 'mission-driven-orgs'
+				|| this.targetedLoanChannel === 'short-term-loans'
 		) {
 			this.initializeHelpmeChoose();
 		}

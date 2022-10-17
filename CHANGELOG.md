@@ -1,3 +1,130 @@
+## [2.341.0](https://github.com/kiva/ui/compare/v2.340.0...v2.341.0) (2022-10-17)
+
+
+### Features
+
+* migrate /lend/:id and lend/:category route from monolith ([4b1bd32](https://github.com/kiva/ui/commit/4b1bd32529887b22738bd6c4e5baa5fbec6b86c7))
+* migrate fundedBorrowerProfile page into a component to BorrowerProfile page ([5ca6f0b](https://github.com/kiva/ui/commit/5ca6f0bd9d8e8c8ae2cc700802cc4c446eee148a))
+
+
+### Bug Fixes
+
+* address borrower profile loading issues ([e407111](https://github.com/kiva/ui/commit/e407111712cc56190fdc8ec30a5289a4f062b1df))
+* basketItems and funded page conditional rendering ([8695da4](https://github.com/kiva/ui/commit/8695da4f5966ca9eaddc10498054b00edc6aba6d))
+* include query params in redirect ([b9380bc](https://github.com/kiva/ui/commit/b9380bc9bc869669f9b79f2fce87ee8a4e3bfe59))
+* redirect to lend-classic in prefetch ([71113ea](https://github.com/kiva/ui/commit/71113eae4c5b63f8963017dc17427a0e8b799302))
+* remaining money showed in funded loan ([fde4aa6](https://github.com/kiva/ui/commit/fde4aa657c31ee95887d0bd2ffbab9daa4363253))
+* remove unnecessary basket func ([616a324](https://github.com/kiva/ui/commit/616a324f6e1f05e5b8b0aa423209a0ea4981d815))
+* remove unused code ([4232146](https://github.com/kiva/ui/commit/423214625557b21436055e9e190e26facaea4569))
+* solve conflicts ([e1237b6](https://github.com/kiva/ui/commit/e1237b639470d5b6a7041a929ffeea54e866e982))
+* solve conflicts ([754a1f7](https://github.com/kiva/ui/commit/754a1f732b0721d2d5800b536a31787f488f6310))
+* solve conflicts ([ea4e00a](https://github.com/kiva/ui/commit/ea4e00aa73728abc0189d7de900ec93fbf02518f))
+* solve conflicts ([353261d](https://github.com/kiva/ui/commit/353261dd0a12565a3baaf53e1e7e29d3662e82a8))
+* update fundedBorrowerProfile and routes ([97f86da](https://github.com/kiva/ui/commit/97f86dae0bfd51ad35cfe1d147ee5fbd3f311ad7))
+* validate loan status is fundraising ([4a8a691](https://github.com/kiva/ui/commit/4a8a691df1a7f0908cb5934b7c4bea9404dabdb9))
+
+## [2.340.0](https://github.com/kiva/ui/compare/v2.339.0...v2.340.0) (2022-10-17)
+
+
+### Features
+
+* async component prefetch support ([e48e8f2](https://github.com/kiva/ui/commit/e48e8f2f27a9fe177996520e78574ea95a45673f))
+* delay loading of popper.js until needed ([41e518f](https://github.com/kiva/ui/commit/41e518f6a845ccc7b9173ce515a3fa7a7907d8e4))
+
+
+### Bug Fixes
+
+* default group required to avoid duplicating modules ([df99938](https://github.com/kiva/ui/commit/df99938092ab94f67a3bc86d4f715381cfe66b38))
+* drop lodash usage in KvAuth0 ([99bbe78](https://github.com/kiva/ui/commit/99bbe7844a65f2f7dcaaed993646f209e5e1aed2))
+
+## [2.339.0](https://github.com/kiva/ui/compare/v2.338.0...v2.339.0) (2022-10-17)
+
+
+### Features
+
+* personalized welcome message for help me choose exp ([5fb5225](https://github.com/kiva/ui/commit/5fb5225f7fa1331716bc4e97cf6ff339cbdf3b59))
+
+## [2.338.0](https://github.com/kiva/ui/compare/v2.337.0...v2.338.0) (2022-10-17)
+
+
+### Features
+
+* quick filters tracking ([13d64d4](https://github.com/kiva/ui/commit/13d64d4918be01080727e8db5c6e1159e95ca847))
+
+
+### Bug Fixes
+
+* add activity id ([8d164fe](https://github.com/kiva/ui/commit/8d164fe1bf895944f1a076b59818f31637ac702c))
+* remove line change ([f6a1d7c](https://github.com/kiva/ui/commit/f6a1d7c4d2eec751f1accdb5f9a67000a68ff5c4))
+* update tracking ([b4ea410](https://github.com/kiva/ui/commit/b4ea410531c967df5b988d6931be4dcbb0384d3d))
+
+## [2.337.0](https://github.com/kiva/ui/compare/v2.336.0...v2.337.0) (2022-10-14)
+
+
+### Features
+
+* copy updated for auto lending increment dropdown ([812fc01](https://github.com/kiva/ui/commit/812fc01a61b3301ae77d79ec125ffcc95c55594a))
+
+
+### Bug Fixes
+
+* images aren't showing up on cc page for production build ([a9bf309](https://github.com/kiva/ui/commit/a9bf30999159a8f074b614ef344d29adba6cb081))
+
+## [2.336.0](https://github.com/kiva/ui/compare/v2.335.0...v2.336.0) (2022-10-14)
+
+
+### Features
+
+* ui and logic improvements added to quick filters exp ([edbee6e](https://github.com/kiva/ui/commit/edbee6e89d30650a778c1cf22ebe5898103cb1d4))
+
+## [2.335.0](https://github.com/kiva/ui/compare/v2.334.0...v2.335.0) (2022-10-13)
+
+
+### Features
+
+* kiva classic loan card ([9927537](https://github.com/kiva/ui/commit/9927537966443a71a6f7a338fadc1f7962c460f7))
+* kiva classic loan card in cc landing pages ([1fe854b](https://github.com/kiva/ui/commit/1fe854b896a2e520f04709ab8fa10cdeb624076c))
+* swap loan row out for kiva classic loan row ([06b60e8](https://github.com/kiva/ui/commit/06b60e806068294a6c4de9d80fe1cea7c2e436a3))
+
+
+### Bug Fixes
+
+* error in ref string ([bad3ab1](https://github.com/kiva/ui/commit/bad3ab1eb4355d73617d9208da7529c27091ec97))
+* fixing nits ([ec30d81](https://github.com/kiva/ui/commit/ec30d813edf0d0505f42bf13919457bbf5927c6b))
+* getting grid loan cards working + bug fixes ([41410df](https://github.com/kiva/ui/commit/41410dff4701a826527ed03450bf8d76921a625f))
+* handling event emission for showing loan details ([81733f8](https://github.com/kiva/ui/commit/81733f87314901bd893447a0927e4c347ef7736b))
+
+## [2.334.0](https://github.com/kiva/ui/compare/v2.333.0...v2.334.0) (2022-10-13)
+
+
+### Features
+
+* loans grid was break in two on category page to include the help me choose wrapper ([13b5342](https://github.com/kiva/ui/commit/13b534203c6a08bc0e89b16141f28eec4dd3d3ea))
+
+
+### Bug Fixes
+
+* all loans parameter fixed ([feed05d](https://github.com/kiva/ui/commit/feed05d5ec8463aa5acd294d71a3e31fcb5c1bb8))
+
+## [2.333.0](https://github.com/kiva/ui/compare/v2.332.1...v2.333.0) (2022-10-13)
+
+
+### Features
+
+* sort by on quick filters and reset ([764d177](https://github.com/kiva/ui/commit/764d177de6e8b12854dd2a77fe44d069858cdde2))
+
+
+### Bug Fixes
+
+* update min width to show full sort by txt ([c68fc09](https://github.com/kiva/ui/commit/c68fc09d6167e7e646dd21e1900bee765fcbb0ba))
+
+### [2.332.1](https://github.com/kiva/ui/compare/v2.332.0...v2.332.1) (2022-10-13)
+
+
+### Bug Fixes
+
+* mobile styling issues for various part of eco_challenge ([75a4e1c](https://github.com/kiva/ui/commit/75a4e1c6e9b3b65debd5668e0a92af6765327774))
+
 ## [2.332.0](https://github.com/kiva/ui/compare/v2.331.0...v2.332.0) (2022-10-12)
 
 
