@@ -16,6 +16,17 @@
 			all-option-title="All genders"
 			@updated="handleUpdatedFilters"
 		/>
+		<template v-if="extendFlssFilters">
+			<hr class="tw-border-tertiary tw-my-1">
+			<loan-search-radio-group-filter
+				:options="facets.isIndividualOptions"
+				:selected="loanSearchState.isIndividual"
+				filter-key="isIndividual"
+				event-action="click-isIndividual-filter"
+				:value-map="isIndividualValueMap"
+				@updated="handleUpdatedFilters"
+			/>
+		</template>
 		<hr class="tw-border-tertiary tw-my-1">
 		<kv-accordion-item id="acc-sort-by" :open="false">
 			<template #header>
@@ -72,21 +83,32 @@
 				event-action="click-theme-filter"
 			/>
 		</kv-accordion-item>
-		<kv-accordion-item v-if="extendFlssFilters" id="acc-tags" :open="false">
-			<template #header>
-				<h2 class="tw-text-h4">
-					Tags
-				</h2>
-			</template>
-			<loan-search-checkbox-list-filter
-				:options="facets.tags"
-				:ids="loanSearchState.tagId"
-				@updated="handleUpdatedFilters"
-				filter-key="tagId"
-				event-action="click-tag-filter"
-			/>
-		</kv-accordion-item>
 		<template v-if="extendFlssFilters">
+			<kv-accordion-item id="acc-tags" :open="false">
+				<template #header>
+					<h2 class="tw-text-h4">
+						Tags
+					</h2>
+				</template>
+				<loan-search-checkbox-list-filter
+					:options="facets.tags"
+					:ids="loanSearchState.tagId"
+					@updated="handleUpdatedFilters"
+					filter-key="tagId"
+					event-action="click-tag-filter"
+				/>
+			</kv-accordion-item>
+			<h2 class="tw-text-h4 tw-pt-2">
+				Loan length
+			</h2>
+			<loan-search-radio-group-filter
+				:options="facets.lenderRepaymentTerms"
+				:selected="loanSearchState.lenderRepaymentTerm"
+				filter-key="lenderRepaymentTerm"
+				event-action="click-lenderRepaymentTerm-filter"
+				:value-map="lenderRepaymentTermValueMap"
+				@updated="handleUpdatedFilters"
+			/>
 			<h2 class="tw-text-h4 tw-pt-2">
 				Loan distribution
 			</h2>
@@ -129,7 +151,7 @@ import { mdiClose, mdiArrowRight } from '@mdi/js';
 import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
 import LoanSearchCheckboxListFilter from '@/components/Lend/LoanSearch/LoanSearchCheckboxListFilter';
 import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
-import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
+import { FLSS_QUERY_TYPE, isIndividualValueMap, lenderRepaymentTermValueMap } from '@/util/loanSearch/filterUtils';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import LoanSearchRadioGroupFilter from '@/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -176,6 +198,8 @@ export default {
 		return {
 			mdiClose,
 			mdiArrowRight,
+			isIndividualValueMap,
+			lenderRepaymentTermValueMap,
 		};
 	},
 	methods: {

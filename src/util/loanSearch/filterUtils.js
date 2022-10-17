@@ -1,5 +1,6 @@
 import _orderBy from 'lodash/orderBy';
 import { sortRegions } from '@/util/loanSearch/countryUtils';
+import { createMinMaxRange } from '@/util/loanSearch/minMaxRange';
 
 /**
  * Used to map the sort value to display value
@@ -43,40 +44,74 @@ export const FLSS_QUERY_TYPE = 'flss';
  */
 export const STANDARD_QUERY_TYPE = 'standard';
 
-/**
- * Key for configuring expected female enum value
- */
+// Gender enum keys
 export const FEMALE_KEY = 'FEMALE';
-
-/**
- * Key for configuring expected male enum value
- */
 export const MALE_KEY = 'MALE';
 
-/**
- * Key for configuring expected field partner enum value
- */
+// Distribution model enum keys
 export const FIELDPARTNER_KEY = 'FIELDPARTNER';
-
-/**
- * Key for configuring expected direct enum value
- */
 export const DIRECT_KEY = 'DIRECT';
+
+// Is individual option keys
+export const INDIVIDUAL_KEY = 'INDIVIDUAL';
+export const GROUP_KEY = 'GROUP';
+
+// Lender repayment term option keys
+export const EIGHT_MONTHS_KEY = 'EIGHT_MONTHS';
+export const SIXTEEN_MONTHS_KEY = 'SIXTEEN_MONTHS';
+export const TWO_YEARS_KEY = 'TWO_YEARS';
+export const MORE_THAN_TWO_YEARS_KEY = 'MORE_THAN_TWO_YEARS_KEY';
 
 /**
  * Maps the gender enum names to display names
  */
 export const genderDisplayMap = {
 	[FEMALE_KEY]: 'Women',
-	[MALE_KEY]: 'Men',
+	[MALE_KEY]: 'Men'
 };
 
 /**
- * Maps the distributor enum names to display names
+ * Maps the distribution model enum names to display names
  */
 export const distributionModelDisplayMap = {
 	[FIELDPARTNER_KEY]: 'Partner',
 	[DIRECT_KEY]: 'Direct',
+};
+
+/**
+ * Maps the is individual keys to display names
+ */
+export const isIndividualDisplayMap = {
+	[INDIVIDUAL_KEY]: 'Individual',
+	[GROUP_KEY]: 'Group',
+};
+
+/**
+ * Maps the is individual keys to values
+ */
+export const isIndividualValueMap = {
+	[INDIVIDUAL_KEY]: true,
+	[GROUP_KEY]: false,
+};
+
+/**
+ * Maps the lender repayment term keys to display names
+ */
+export const lenderRepaymentTermDisplayMap = {
+	[EIGHT_MONTHS_KEY]: '8 mths or less',
+	[SIXTEEN_MONTHS_KEY]: '16 mths or less',
+	[TWO_YEARS_KEY]: '2 yrs or less',
+	[MORE_THAN_TWO_YEARS_KEY]: '2 yrs or more'
+};
+
+/**
+ * Maps the lender repayment term keys to values
+ */
+export const lenderRepaymentTermValueMap = {
+	[EIGHT_MONTHS_KEY]: createMinMaxRange(0, 8),
+	[SIXTEEN_MONTHS_KEY]: createMinMaxRange(0, 16),
+	[TWO_YEARS_KEY]: createMinMaxRange(0, 24),
+	[MORE_THAN_TWO_YEARS_KEY]: createMinMaxRange(24, 400),
 };
 
 /**
@@ -218,16 +253,20 @@ export function transformTags(allTags = []) {
  *
  * @param {Array<Object>} options The options to transform
  * @param {Array<string>} order The order of the options (name property)
- * @param {Object} map Display name map
+ * @param {Object} displayMap The map for name to display title
+ * @param {Object} valueMap The map for name to value
  * @returns {Array<Object>} The transformed radio group options
  */
-export function transformRadioGroupOptions(options, order, map) {
+export function transformRadioGroupOptions(options, order, displayMap, valueMap = {}) {
 	const capitalizedOrder = order.map(o => o.toUpperCase());
 
 	const transformed = options.filter(o => capitalizedOrder.includes(o.name.toUpperCase())).map(o => {
+		const key = o.name.toUpperCase();
+
 		return {
 			name: o.name,
-			title: map[o.name.toUpperCase()] ?? o
+			title: displayMap[key] ?? o,
+			value: valueMap[key] ?? o.name,
 		};
 	}).sort((a, b) => capitalizedOrder.indexOf(a.name.toUpperCase()) - capitalizedOrder.indexOf(b.name.toUpperCase()));
 
@@ -252,6 +291,55 @@ export function transformGenderOptions(genders) {
  */
 export function transformDistributionModelOptions(distributionModels) {
 	return transformRadioGroupOptions(distributionModels, [FIELDPARTNER_KEY, DIRECT_KEY], distributionModelDisplayMap);
+}
+
+/**
+ * Prepares the is individual options to be used by a radio group
+ *
+ * @returns The transformed radio group options
+ */
+export function transformIsIndividualOptions() {
+	const options = [{ name: INDIVIDUAL_KEY }, { name: GROUP_KEY }];
+	const order = [INDIVIDUAL_KEY, GROUP_KEY];
+	return transformRadioGroupOptions(options, order, isIndividualDisplayMap, isIndividualValueMap);
+}
+
+/**
+ * Prepares the lender repayment term options to be used by a radio group
+ *
+ * @returns The transformed radio group options
+ */
+export function transformLenderRepaymentTermOptions() {
+	const options = [
+		{ name: EIGHT_MONTHS_KEY },
+		{ name: SIXTEEN_MONTHS_KEY },
+		{ name: TWO_YEARS_KEY },
+		{ name: MORE_THAN_TWO_YEARS_KEY }
+	];
+	const order = [EIGHT_MONTHS_KEY, SIXTEEN_MONTHS_KEY, TWO_YEARS_KEY, MORE_THAN_TWO_YEARS_KEY];
+	return transformRadioGroupOptions(options, order, lenderRepaymentTermDisplayMap, lenderRepaymentTermValueMap);
+}
+
+/**
+ * Gets the filter key based on the value
+ * @param {(Object|boolean|string)} value The filter value
+ * @param {Object} valueMap The filter key to value map
+ * @returns The key of the filter
+ */
+export function getFilterKeyFromValue(value, valueMap) {
+	const isMinMax = typeof value === 'object'
+		&& typeof value?.min !== 'undefined'
+		&& typeof value?.max !== 'undefined';
+
+	return Object.keys(valueMap).find(k => {
+		const mapValue = valueMap[k];
+
+		if (isMinMax) {
+			return mapValue.min === value.min && mapValue.max === value.max;
+		}
+
+		return mapValue === value;
+	});
 }
 
 /**

@@ -2,7 +2,11 @@ import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.g
 import createSavedSearchMutation from '@/graphql/mutation/createSavedSearch.graphql';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util/numberUtils';
-import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
+import {
+	FLSS_QUERY_TYPE,
+	getFilterKeyFromValue,
+	lenderRepaymentTermValueMap,
+} from '@/util/loanSearch/filterUtils';
 
 /**
  * Returns loan search state that has been validated against the available facets
@@ -44,6 +48,17 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 		? loanSearchState.distributionModel
 		: null;
 
+	const validatedIsIndividual = typeof loanSearchState?.isIndividual === 'boolean'
+		? loanSearchState?.isIndividual
+		: null;
+
+	const validatedLenderRepaymentTerm = getFilterKeyFromValue(
+		loanSearchState?.lenderRepaymentTerm,
+		lenderRepaymentTermValueMap
+	)
+		? { ...loanSearchState.lenderRepaymentTerm, __typename: 'MinMaxRange' }
+		: null;
+
 	return {
 		gender: validatedGender,
 		countryIsoCode: validatedIsoCodes,
@@ -54,6 +69,8 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 		pageOffset: validatedPageOffset,
 		pageLimit: validatedPageLimit,
 		distributionModel: validatedDistributionModel,
+		isIndividual: validatedIsIndividual,
+		lenderRepaymentTerm: validatedLenderRepaymentTerm,
 	};
 }
 

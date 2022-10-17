@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { getFilterKeyFromValue } from '@/util/loanSearch/filterUtils';
 import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 
 export const ALL_LOANS_TITLE = 'All loans';
@@ -28,7 +29,7 @@ export default {
 			default: () => ([])
 		},
 		selected: {
-			type: String,
+			type: [String, Boolean, Object],
 			default: ''
 		},
 		filterKey: {
@@ -42,38 +43,50 @@ export default {
 		allOptionTitle: {
 			type: String,
 			default: ALL_LOANS_TITLE
-		}
+		},
+		valueMap: {
+			type: Object,
+			default: null
+		},
 	},
 	data() {
 		return {
-			selectedOption: this.selected || '',
+			selectedOption: this.getOptionFromValue(this.selected),
 		};
 	},
 	computed: {
 		displayedOptions() {
 			return [
 				// Don't show "all" until options have loaded
-				...(this.options.length > 0 ? [{ title: this.allOptionTitle, name: '' }] : []),
+				...(this.options.length > 0 ? [{ title: this.allOptionTitle, name: '', value: null }] : []),
 				...this.options
 			];
 		}
 	},
 	methods: {
-		setSelected(option) {
-			if (option !== this.selectedOption) {
-				this.selectedOption = option;
+		getOptionFromValue(value) {
+			const filterKey = this.valueMap ? getFilterKeyFromValue(value, this.valueMap) : value;
 
-				// Return null as default to match GraphQL enum default
-				this.$emit('updated', { [this.filterKey]: this.selectedOption || null });
+			// The KvRadio component can't handle a null value
+			return this.options.find(o => o.name === filterKey)?.name ?? '';
+		},
+		setSelected(nextName) {
+			if (nextName !== this.selectedOption) {
+				const next = this.displayedOptions.find(o => o.name === nextName);
 
-				this.$kvTrackEvent?.('Lending', this.eventAction, this.selectedOption);
+				if (next) {
+					this.selectedOption = next.name;
+
+					this.$emit('updated', { [this.filterKey]: next.value });
+
+					this.$kvTrackEvent('Lending', this.eventAction, next.value);
+				}
 			}
 		},
 	},
 	watch: {
-		selected(next) {
-			// The KvRadio component can't handle a null value
-			const nextOption = this.options.map(o => o.name).includes(next) ? next : '';
+		selected(nextValue) {
+			const nextOption = this.getOptionFromValue(nextValue);
 
 			if (nextOption !== this.selectedOption) {
 				// Don't emit when value is changed via the component prop
