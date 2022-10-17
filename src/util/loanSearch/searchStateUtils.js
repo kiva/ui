@@ -39,6 +39,11 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 		? loanSearchState.pageLimit
 		: defaultLoanSearchState.pageLimit;
 
+	const validatedDistributionModel = allFacets.distributionModels
+		.includes(loanSearchState?.distributionModel?.toUpperCase())
+		? loanSearchState.distributionModel
+		: null;
+
 	return {
 		gender: validatedGender,
 		countryIsoCode: validatedIsoCodes,
@@ -48,6 +53,7 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 		tagId: validatedTagIds,
 		pageOffset: validatedPageOffset,
 		pageLimit: validatedPageLimit,
+		distributionModel: validatedDistributionModel,
 	};
 }
 

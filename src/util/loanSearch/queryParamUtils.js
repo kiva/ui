@@ -49,6 +49,19 @@ export function hasExcludedQueryParams(query) {
 }
 
 /**
+ * Returns the enum name property based on the query param
+ *
+ * @param {string} param The query param
+ * @param {Array} facets Facets from the API
+ * @returns The valid enum value
+ */
+export function getEnumNameFromQueryParam(param, facets) {
+	if (param) {
+		return facets.find(f => f.name.toUpperCase() === param.toUpperCase())?.name;
+	}
+}
+
+/**
  * Returns IDs based on the query param. Handles FLSS/legacy and Algolia formats.
  *
  * @param {string} param The query param
@@ -142,7 +155,7 @@ export async function applyQueryParams(apollo, query, allFacets, queryType, page
 	const page = isNumber(query.page) && query.page >= 1 ? Math.floor(query.page) - 1 : 0;
 
 	const filters = {
-		gender: query.gender,
+		gender: getEnumNameFromQueryParam(query.gender, allFacets.genderFacets),
 		countryIsoCode: getCountryIsoCodesFromQueryParam(query.country || query.countries, allFacets),
 		sectorId: getIdsFromQueryParam(query.sector, allFacets.sectorNames, allFacets.sectorFacets),
 		sortBy: queryType === FLSS_QUERY_TYPE ? lendToFlssSort.get(query.sortBy) : query.sortBy,
@@ -151,6 +164,7 @@ export async function applyQueryParams(apollo, query, allFacets, queryType, page
 			allFacets.themeNames, allFacets.themeFacets
 		),
 		tagId: getIdsFromQueryParam(query.tag || query.tags, allFacets.tagNames, allFacets.tagFacets),
+		distributionModel: getEnumNameFromQueryParam(query.distributionModel, allFacets.distributionModelFacets),
 		pageOffset: page * pageLimit,
 		pageLimit,
 	};
@@ -193,6 +207,7 @@ export function updateQueryParams(loanSearchState, router, queryType) {
 		...(loanSearchState.sectorId?.length && { sector: loanSearchState.sectorId.join() }),
 		...(loanSearchState.themeId?.length && { attribute: loanSearchState.themeId.join() }),
 		...(loanSearchState.tagId?.length && { tag: loanSearchState.tagId.join() }),
+		...(loanSearchState.distributionModel && { distributionModel: loanSearchState.distributionModel }),
 		...(queryParamSortBy && { sortBy: queryParamSortBy }),
 		...(page > 1 && { page: page.toString() }),
 		...utmParams,

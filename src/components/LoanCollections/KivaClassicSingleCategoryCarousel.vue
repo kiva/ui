@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<div>
-			<h2 class="tw-mb-2 tw-inline">
+			<h2 class="tw-mb-2 tw-block md:tw-inline">
 				{{ name }}
 			</h2>
-			<kv-pill class="tw-ml-4.5" v-if="climateChallenge">
+			<kv-pill class="md:tw-ml-4.5" v-if="climateChallenge">
 				<template #icon>
 					<icon-climate-challenge class="tw-h-3 tw-w-2 tw-mr-0.5" />
 				</template>

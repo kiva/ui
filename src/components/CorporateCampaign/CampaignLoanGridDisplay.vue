@@ -3,22 +3,20 @@
 		id="campaign-loans"
 		class="campaign-loans row align-center"
 	>
-		<div class="columns small-12 large-8 align-self-middle" v-if="isVisible && loans.length > 0">
-			<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
+		<div class="columns align-self-middle" v-if="isVisible && loans.length > 0">
+			<div class="loan-card-group row tw-gap-x-4">
 				<!-- GridLoanCard or LendHomepageLoanCard -->
-				<loan-card-controller
-					v-for="loan in loans"
-					class="cards-loan-card"
-					:items-in-basket="itemsInBasket"
-					:is-visitor="isVisitor"
-					:key="loan.id"
-					:loan="loan"
-					loan-card-type="LendHomepageLoanCard"
-					:disable-redirects="true"
+				<kiva-classic-basic-loan-card
+					class="tw-mb-4"
+					v-for="(loan, index) in loanIds"
+					:item-index="index"
+					:key="`loan-${loan}`"
+					:loan-id="loan"
+					:lend-now-button="true"
+					custom-checkout-route="#show-basket"
+					:custom-loan-details="true"
+					@show-loan-details="showLoanDetails(loans[index])"
 					@add-to-basket="addToBasket"
-					@image-click="showLoanDetails"
-					@read-more-link="showLoanDetails"
-					@name-click="showLoanDetails"
 				/>
 			</div>
 			<kv-pagination
@@ -57,11 +55,12 @@
 <script>
 import _invokeMap from 'lodash/invokeMap';
 import _mapValues from 'lodash/mapValues';
+import _map from 'lodash/map';
 import _merge from 'lodash/merge';
 import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import KvPagination from '@/components/Kv/KvPagination';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
+import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 
 const loansPerPage = 9;
 
@@ -100,7 +99,7 @@ export default {
 		// KvButton,
 		KvLoadingOverlay,
 		KvPagination,
-		LoanCardController,
+		KivaClassicBasicLoanCard,
 	},
 	props: {
 		checkoutVisible: {
@@ -151,6 +150,9 @@ export default {
 		};
 	},
 	computed: {
+		loanIds() {
+			return _map(this.loans, 'id');
+		},
 		urlParams() {
 			return toUrlParams({
 				offset: this.offset,
@@ -205,9 +207,8 @@ export default {
 		addToBasket(payload) {
 			this.$emit('add-to-basket', payload);
 		},
-		showLoanDetails(payload) {
-			const selectedLoan = this.loans.find(loan => loan.id === payload.loanId);
-			this.$emit('show-loan-details', selectedLoan);
+		showLoanDetails(loan) {
+			this.$emit('show-loan-details', loan);
 		},
 		fetchLoans() {
 			if (this.isVisible) {
@@ -286,23 +287,8 @@ $card-margin: rem-calc(14);
 $card-half-space: rem-calc(14/2);
 
 .campaign-loans {
-	position: relative;
-	background-color: rgba(0, 0, 0, 0.0125);
-	padding: 3rem 0;
-	max-width: inherit;
-
 	.loan-card-group {
-		display: flex;
 		justify-content: center;
-	}
-
-	.cards-loan-card {
-		border-radius: 0.65rem;
-		box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
-		width: $card-width;
-		max-width: $max-card-width;
-		flex: 1 0 auto;
-		margin: $card-margin;
 	}
 
 	.loan-count {

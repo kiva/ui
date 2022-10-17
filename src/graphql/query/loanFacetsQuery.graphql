@@ -36,4 +36,9 @@ query loanFacets {
 			name
 		}
 	}
+	distributionModelOptions: __type(name: "LoanDistributionModelEnum") {
+		enumValues {
+			name
+		}
+	}
 }

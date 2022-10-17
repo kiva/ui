@@ -127,6 +127,8 @@ import {
 	transformThemes,
 	transformSectors,
 	transformTags,
+	transformGenderOptions,
+	transformDistributionModelOptions,
 } from '@/util/loanSearch/filterUtils';
 import { FLSS_ORIGIN_LEND_FILTER } from '@/util/flssUtils';
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
@@ -297,15 +299,17 @@ export default {
 		showSavedSearch() {
 			// implement more global solution when out of exp phase
 			const countryFilterApplied = this.loanSearchState.countryIsoCode.length > 0;
-			const genderFilterApplied = this.loanSearchState.gender;
+			const genderFilterApplied = !!this.loanSearchState.gender;
 			const sectorFilterApplied = this.loanSearchState.sectorId.length > 0;
 			const themeFilterApplied = this.loanSearchState.themeId.length > 0;
 			const tagFilterApplied = this.loanSearchState.tagId.length > 0;
+			const distributionModelFilterApplied = !!this.loanSearchState.distributionModel;
 			return countryFilterApplied
 				|| genderFilterApplied
 				|| sectorFilterApplied
 				|| themeFilterApplied
-				|| tagFilterApplied;
+				|| tagFilterApplied
+				|| distributionModelFilterApplied;
 		},
 		themeNames() {
 			return this.allFacets?.themeNames ?? [];
@@ -322,6 +326,7 @@ export default {
 
 			// Merge all facet options with filtered options
 			this.facets = {
+				genders: transformGenderOptions(this.allFacets?.genderFacets),
 				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 				sectors: transformSectors(sectors, this.allFacets?.sectorFacets),
 				themes: transformThemes(themes, this.allFacets?.themeFacets),
@@ -329,6 +334,7 @@ export default {
 				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [],
 					this.allFacets?.flssSorts ?? [],
 					this.extendFlssFilters),
+				distributionModels: transformDistributionModelOptions(this.allFacets?.distributionModelFacets),
 			};
 		},
 		trackLoans() {

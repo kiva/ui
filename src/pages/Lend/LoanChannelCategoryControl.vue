@@ -7,6 +7,7 @@
 					v-else
 					:to="filterUrl"
 					class="tw-text-action tw-flex tw-items-center tw-float-right"
+					@click.native="trackAdvancedFilters"
 				>
 					<img class="tw-w-2 tw-mr-1" src="@/assets/images/tune.svg">
 					Advanced filters
@@ -42,6 +43,7 @@
 				:filter-options="quickFiltersOptions"
 				:filters-loaded="filtersLoaded"
 				:update-filters="updateQuickFilters"
+				@reset-filters="resetFilters"
 			/>
 		</div>
 
@@ -55,6 +57,13 @@
 						:key="loan.id"
 						:loan="loan"
 						loan-card-type="GridLoanCard"
+					/>
+					<helpme-choose-wrapper
+						v-if="enableHelpmeChoose"
+						:remaining-loans="helpmeChooseRemainingLoans"
+						:items-in-basket="itemsInBasket"
+						:is-visitor="isVisitor"
+						:user-data="userData"
 					/>
 				</div>
 				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
@@ -79,6 +88,13 @@
 						:key="loan.id"
 						:loan="loan"
 						loan-card-type="GridLoanCard"
+					/>
+					<helpme-choose-wrapper
+						v-if="enableHelpmeChoose"
+						:remaining-loans="helpmeChooseRemainingLoans"
+						:items-in-basket="itemsInBasket"
+						:is-visitor="isVisitor"
+						:user-data="userData"
 					/>
 				</div>
 				<kv-pagination
@@ -127,9 +143,11 @@ import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
 import {
 	formatSortOptions,
 	transformIsoCodes,
+	sortByNameToDisplay
 } from '@/util/loanSearch/filterUtils';
 import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
+import HelpmeChooseWrapper from '@/components/LoansByCategory/HelpmeChoose/HelpmeChooseWrapper';
 
 const defaultLoansPerPage = 12;
 
@@ -187,7 +205,8 @@ export default {
 		KvLoadingOverlay,
 		ViewToggle,
 		PromoGridLoanCard,
-		QuickFilters
+		QuickFilters,
+		HelpmeChooseWrapper
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
@@ -234,7 +253,8 @@ export default {
 				}]
 			},
 			filtersLoaded: false,
-			selectedQuickFilters: {}
+			selectedQuickFilters: {},
+			userData: {}
 		};
 	},
 	computed: {
@@ -252,18 +272,33 @@ export default {
 		loanChannelDescription() {
 			return _get(this.loanChannel, 'description') || null;
 		},
-		loans() {
+		allLoans() {
 			return (this.loanChannel?.loans?.values ?? []).filter(loan => loan !== null);
+		},
+		loans() {
+			if (this.enableHelpmeChoose) {
+				return _filter(this.allLoans, (loan, index) => index < 6);
+			}
+			return this.allLoans;
 		},
 		firstLoan() {
 			// Handle an edge case where a backend error could lead to a null loan
-			return this.loans[0] ? [this.loans[0]] : [];
+			return this.allLoans[0] ? [this.allLoans[0]] : [];
 		},
 		remainingLoans() {
-			return _filter(this.loans, (loan, index) => index > 0);
+			if (this.enableHelpmeChoose) {
+				return _filter(this.allLoans, (loan, index) => index > 0 && index < 5);
+			}
+			return _filter(this.allLoans, (loan, index) => index > 0);
+		},
+		helpmeChooseRemainingLoans() {
+			if (this.displayLoanPromoCard) {
+				return _filter(this.allLoans, (loan, index) => index > 4);
+			}
+			return _filter(this.allLoans, (loan, index) => index > 5);
 		},
 		loanIds() {
-			return _map(this.loans, 'id');
+			return _map(this.allLoans, 'id');
 		},
 		totalCount() {
 			return _get(this.loanChannel, 'loans.totalCount') || 0;
@@ -375,6 +410,7 @@ export default {
 
 		// Set user status
 		this.isVisitor = !_get(pageQueryData, 'my.userAccount.id');
+		this.userData = _get(pageQueryData, 'my.userAccount');
 
 		// Filter routes on param.category to get current path
 		this.targetedLoanChannelURL = _get(this.$route, 'params.category');
@@ -438,8 +474,18 @@ export default {
 		}
 	},
 	methods: {
+		trackAdvancedFilters() {
+			this.$kvTrackEvent(
+				'Search',
+				'click',
+				'category-advanced-filters'
+			);
+		},
+		resetFilters() {
+			this.selectedQuickFilters = {};
+		},
 		updateQuickFilters(filter) {
-			if (filter.gender) {
+			if (filter.gender !== undefined) {
 				this.selectedQuickFilters.gender = filter.gender;
 			} else if (filter.sortBy) {
 				this.selectedQuickFilters.sortBy = filter.sortBy;
@@ -575,10 +621,34 @@ export default {
 			const facets = {
 				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
+					.map(sortOption => ({ name: sortByNameToDisplay[sortOption.name], key: sortOption.name }))
 			};
 
 			this.quickFiltersOptions.location = facets.regions;
-			this.quickFiltersOptions.sorting = facets.sortOptions;
+			// TODO: Revisit after experiment phase as this returns a bunch of sort options we don't need
+			// this.quickFiltersOptions.sorting = facets.sortOptions;
+			this.quickFiltersOptions.sorting = [
+				{
+					title: 'Recommended',
+					key: 'personalized',
+				},
+				{
+					title: 'Almost funded',
+					key: 'amountLeft',
+				},
+				{
+					title: 'Amount high to low',
+					key: 'amountHighToLow'
+				},
+				{
+					title: 'Amount low to high',
+					key: 'amountLowToHigh'
+				},
+				{
+					title: 'Ending soon',
+					key: 'expiringSoon'
+				}
+			];
 			this.quickFiltersOptions.gender = [
 				{
 					title: 'All genders',
@@ -599,6 +669,8 @@ export default {
 		quickFiltersFlssParameters(matchedUrls = []) {
 			if (this.targetedLoanChannelURL === 'single-parents') {
 				this.flssLoanSearch = { tagId: [17] };
+			} else if (this.targetedLoanChannelURL === 'livestock') {
+				this.flssLoanSearch = { activityId: [73] };
 			} else {
 				this.flssLoanSearch = matchedUrls[0]?.flssLoanSearch ?? {};
 			}

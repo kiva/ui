@@ -4,6 +4,7 @@ query loanChannelPage {
 	my {
 		userAccount {
 			id
+			firstName
 		}
 	}
 	lend {
