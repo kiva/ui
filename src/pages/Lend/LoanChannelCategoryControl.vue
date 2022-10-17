@@ -7,6 +7,7 @@
 					v-else
 					:to="filterUrl"
 					class="tw-text-action tw-flex tw-items-center tw-float-right"
+					@click.native="trackAdvancedFilters"
 				>
 					<img class="tw-w-2 tw-mr-1" src="@/assets/images/tune.svg">
 					Advanced filters
@@ -469,6 +470,13 @@ export default {
 		}
 	},
 	methods: {
+		trackAdvancedFilters() {
+			this.$kvTrackEvent(
+				'Search',
+				'click',
+				'category-advanced-filters'
+			);
+		},
 		resetFilters() {
 			this.selectedQuickFilters = {};
 		},
@@ -657,6 +665,8 @@ export default {
 		quickFiltersFlssParameters(matchedUrls = []) {
 			if (this.targetedLoanChannelURL === 'single-parents') {
 				this.flssLoanSearch = { tagId: [17] };
+			} else if (this.targetedLoanChannelURL === 'livestock') {
+				this.flssLoanSearch = { activityId: [73] };
 			} else {
 				this.flssLoanSearch = matchedUrls[0]?.flssLoanSearch ?? {};
 			}
