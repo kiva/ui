@@ -1,3 +1,17 @@
+## [2.342.0](https://github.com/kiva/ui/compare/v2.341.2...v2.342.0) (2022-10-17)
+
+
+### Features
+
+* send user attributes to hotjar api ([438087c](https://github.com/kiva/ui/commit/438087c20acd186ef924985d13e43c55e62909c1))
+
+
+### Bug Fixes
+
+* add hasEverLoggedIn on thankspage query ([3734a2e](https://github.com/kiva/ui/commit/3734a2ee4d14cd97c66b594140a35ffed94abdbb))
+* add user id validation ([3bb3d4b](https://github.com/kiva/ui/commit/3bb3d4b448599aad7310fd8f48d05bc1fb88754a))
+* set userId from lender ([5e8e88f](https://github.com/kiva/ui/commit/5e8e88f7a5db9254f0d47b29d14fad5e82f5f9fd))
+
 ### [2.341.2](https://github.com/kiva/ui/compare/v2.341.1...v2.341.2) (2022-10-17)
 
 
