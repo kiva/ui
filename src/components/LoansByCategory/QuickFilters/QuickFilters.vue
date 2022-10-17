@@ -125,16 +125,18 @@ export default {
 		selectedGender(gender) {
 			this.updateFilters({ gender });
 			this.$kvTrackEvent(
-				'Lending',
-				'select-quick-filters-option',
+				'search',
+				'filter',
+				'quick-filters-option',
 				gender === '' ? 'all genders' : gender
 			);
 		},
 		sortBy(sortBy) {
 			this.updateFilters({ sortBy });
 			this.$kvTrackEvent(
-				'Lending',
-				'select-quick-filters-option',
+				'search',
+				'click',
+				'quick-filters-option',
 				sortBy
 			);
 		}
@@ -143,8 +145,9 @@ export default {
 		updateLocation(location) {
 			this.updateFilters({ country: location });
 			this.$kvTrackEvent(
-				'Lending',
-				'select-quick-filters-option',
+				'search',
+				'filter',
+				'quick-filters-option',
 				location
 			);
 		},
@@ -154,14 +157,17 @@ export default {
 			this.sortBy = 'personalized';
 			this.updateLocation([]);
 			this.$kvTrackEvent(
-				'Lending',
-				'click-quick-filters-reset'
+				'search',
+				'click',
+				'quick-filters-reset',
+				'all'
 			);
 		},
 		trackDropdownClick(label) {
 			this.$kvTrackEvent(
-				'Lending',
-				'click-quick-filters-dropdown',
+				'search',
+				'click',
+				'quick-filters-dropdown',
 				label
 			);
 		}
