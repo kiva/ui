@@ -126,7 +126,7 @@
 					</button>
 
 					<kv-button
-						@click="toggleRegions()"
+						@click="handleClickCta"
 					>
 						See {{ totalLoans }} loans
 					</kv-button>
@@ -184,6 +184,24 @@ export default {
 		};
 	},
 	methods: {
+		handleClickCta() {
+			this.toggleRegions();
+			this.$kvTrackEvent(
+				'search',
+				'click',
+				'apply-quick-filters',
+				'see-loans',
+			);
+		},
+		resetCountries() {
+			this.selectedCountries = [];
+			this.$kvTrackEvent(
+				'search',
+				'filter',
+				'quick-filters-reset',
+				'countries',
+			);
+		},
 		toggleRegions() {
 			this.showRegions = !this.showRegions;
 			this.selectedRegion = null;

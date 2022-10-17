@@ -472,8 +472,9 @@ export default {
 	methods: {
 		trackAdvancedFilters() {
 			this.$kvTrackEvent(
-				'Lending',
-				'click-category-advanced-filters'
+				'Search',
+				'click',
+				'category-advanced-filters'
 			);
 		},
 		resetFilters() {
