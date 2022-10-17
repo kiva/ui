@@ -1,3 +1,16 @@
+## [2.343.0](https://github.com/kiva/ui/compare/v2.342.0...v2.343.0) (2022-10-17)
+
+
+### Features
+
+* is individual and lender repayment term filters ([fcf8527](https://github.com/kiva/ui/commit/fcf8527e2f41c736e7368419cd6d11ef188114ea))
+
+
+### Bug Fixes
+
+* missing horizontal line ([3471325](https://github.com/kiva/ui/commit/3471325f1c5a152e634787f38bb1bbfed2e8bad5))
+* updated channel map file, other small fixes ([6303372](https://github.com/kiva/ui/commit/63033725f1e3ee89db359abc055cf173a7c85682))
+
 ## [2.342.0](https://github.com/kiva/ui/compare/v2.341.2...v2.342.0) (2022-10-17)
 
 
