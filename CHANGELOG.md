@@ -1,3 +1,10 @@
+### [2.341.2](https://github.com/kiva/ui/compare/v2.341.1...v2.341.2) (2022-10-17)
+
+
+### Bug Fixes
+
+* filter route now usable again ([96ac862](https://github.com/kiva/ui/commit/96ac86262aa5dad29fef950f90f2cd9a6fb792e7))
+
 ### [2.341.1](https://github.com/kiva/ui/compare/v2.341.0...v2.341.1) (2022-10-17)
 
 
