@@ -12,7 +12,7 @@
 				/>
 			</button>
 		</div>
-		<div class="tw-grid tw-grid-cols-1 lg:tw-grid-cols-3 tw-gap-1.5 tw-mb-1">
+		<div class="tw-grid tw-grid-cols-1 lg:tw-grid-cols-3 tw-gap-1 tw-mb-1">
 			<div v-for="(item, i) in items" :key="i">
 				<kv-checkbox
 					:value="item.value"
@@ -20,6 +20,7 @@
 					:disabled="item.disabled"
 					v-model="selected"
 					@change="updateSelected($event, item.value)"
+					class="tw-text-small"
 				>
 					{{ item.title }}
 				</kv-checkbox>

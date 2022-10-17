@@ -6,9 +6,9 @@
 
 		<!-- Eco Challenge CTA -->
 		<div v-if="ecoChallengeExp" class="tw-bg-brand-50">
-			<div class="tw-max-w-5xl tw-mx-auto lg:tw-px-6 tw-py-2.5 lg:tw-py-4">
-				<div class="tw-flex">
-					<eco-challenge-badge class="tw-h-14 tw-w-12 tw-mr-4 tw-flex-none" />
+			<div class="tw-max-w-5xl tw-mx-auto lg:tw-px-6 tw-p-2.5 lg:tw-py-4">
+				<div class="md:tw-flex">
+					<eco-challenge-badge class="tw-h-14 tw-w-12 md:tw-mr-4 tw-flex-none tw-mx-auto" />
 					<div class="tw-w-full">
 						<h2>Join Kiva’s October eco-friendly challenge!</h2>
 						<p class="tw-text-subhead tw-mt-2">

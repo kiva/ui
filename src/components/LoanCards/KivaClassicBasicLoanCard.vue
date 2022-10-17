@@ -12,11 +12,12 @@
 		<div
 			v-if="!isLoading"
 			class="tw-relative"
+			@click="showLoanDetails"
 		>
 			<!-- If allSharesReserved, disable link by making it a span -->
 			<router-link
 				:is="allSharesReserved ? 'span' : 'router-link'"
-				:to="`/lend/${loanId}`"
+				:to="customLoanDetails ? '' : `/lend/${loanId}`"
 				v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
 			>
 				<borrower-image
@@ -108,6 +109,8 @@
 			:status="loan.status"
 			:loan-amount="loan.loanAmount"
 			:borrower-count="loan.borrowerCount"
+			:custom-loan-details="customLoanDetails"
+			@show-loan-details="showLoanDetails"
 		/>
 
 		<!-- Matching text  -->
@@ -140,7 +143,7 @@
 				variant="secondary"
 				v-if="isInBasket"
 				v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
-				to="/basket"
+				:to="customCheckoutRoute ? customCheckoutRoute : '/basket'"
 			>
 				<slot>
 					<div class="tw-inline-flex tw-items-center tw-gap-1">
@@ -174,7 +177,8 @@
 						v-if="!showLendNowButton"
 						class="tw-mb-2 tw-self-start"
 						:state="`${allSharesReserved ? 'disabled' : ''}`"
-						:to="`/lend/${loanId}`"
+						:to="customLoanDetails ? '' : `/lend/${loanId}`"
+						@click="showLoanDetails"
 						v-kv-track-event="['Lending', 'click-Read-more', 'View loan', loanId]"
 					>
 						View loan
@@ -231,10 +235,13 @@ import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import { setLendAmount } from '@/util/basketUtils';
+import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
-const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
+const loanQuery = gql`
+	${loanCardFieldsFragment}
+	query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
 		id
 		basket {
@@ -250,55 +257,12 @@ const loanQuery = gql`query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	lend {
 		loan(id: $loanId) {
 			id
-			distributionModel
-			geocode {
-				city
-				state
-				country {
-					name
-					isoCode
-				}
-			}
-			image {
-				id
-				hash
-			}
-			name
-			sector {
-				id
-				name
-			}
-			whySpecial
-
-			# for isLentTo
-			userProperties {
-				lentTo
-			}
-
-			# for loan-use-mixin
-			use
-			status
-			loanAmount
-			borrowerCount
-
-			# for percent-raised-mixin
-			loanFundraisingInfo {
-				fundedAmount
-				reservedAmount
-			}
-
-			# for time-left-mixin
-			plannedExpirationDate
+			...loanCardFields
 
 			# for loan-progress component
 			unreservedAmount @client
 			fundraisingPercent @client
 			fundraisingTimeLeft @client
-
-			# for matching-text component
-			isMatchable
-			matchingText
-			matchRatio
 		}
 	}
 }`;
@@ -315,6 +279,14 @@ export default {
 			default: ''
 		},
 		lendNowButton: {
+			type: Boolean,
+			default: false
+		},
+		customCheckoutRoute: {
+			type: String,
+			default: ''
+		},
+		customLoanDetails: {
 			type: Boolean,
 			default: false
 		}
@@ -434,6 +406,12 @@ export default {
 		}
 	},
 	methods: {
+		showLoanDetails(e) {
+			if (this.customLoanDetails) {
+				e.preventDefault();
+				this.$emit('show-loan-details');
+			}
+		},
 		createViewportObserver() {
 			// Watch for this element being in the viewport
 			this.viewportObserver = createIntersectionObserver({
@@ -495,8 +473,10 @@ export default {
 				loanId: this.loanId,
 			}).then(() => {
 				this.isAdding = false;
+				this.$emit('add-to-basket', { loanId: this.loanId, success: true });
 			}).catch(e => {
 				this.isAdding = false;
+				this.$emit('add-to-basket', { loanId: this.loanId, success: false });
 				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
 					? e[0].message
 					: 'There was a problem adding the loan to your basket';
@@ -510,6 +490,35 @@ export default {
 	},
 	beforeDestroy() {
 		this.destroyViewportObserver();
+	},
+	created() {
+		let partnerFragment;
+		let	directFragment;
+		try {
+			// Attempt to read the loan card fragment from the cache
+			// If cache is missing fragment fields, this will throw an invariant error
+			partnerFragment = this.apollo.readFragment({
+				id: `LoanPartner:${this.loanId}`,
+				fragment: loanCardFieldsFragment,
+			}) || null;
+		} catch (e) {
+			// no-op
+		}
+		try {
+			// Attempt to read the loan card fragment from the cache
+			// If cache is missing fragment fields, this will throw an invariant error
+			directFragment = this.apollo.readFragment({
+				id: `LoanDirect:${this.loanId}`,
+				fragment: loanCardFieldsFragment,
+			}) || null;
+		} catch (e) {
+			// no-op
+		}
+		const loanCardFieldFragment = partnerFragment || directFragment;
+		if (loanCardFieldFragment) {
+			this.loan = loanCardFieldFragment;
+			this.isLoading = false;
+		}
 	},
 	watch: {
 		// When loan id changes, update watch query variables

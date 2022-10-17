@@ -4,7 +4,7 @@
 		title="Added to basket!"
 		@lightbox-closed="closeLightbox"
 	>
-		<div class="tw-flex tw-justify-between tw-items-center">
+		<div class="tw-block md:tw-flex tw-justify-between tw-items-center">
 			<h2 class="tw-pb-3 tw-pr-5 tw-basis-9/12" v-if="missingMilestones.length === 0">
 				Way to go! You’re all set to complete the Climate Challenge.
 			</h2>

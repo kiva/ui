@@ -1,5 +1,6 @@
 fragment loanCardFields on LoanBasic {
 	id
+	distributionModel
 	status
 	name
 	borrowerCount
@@ -35,10 +36,17 @@ fragment loanCardFields on LoanBasic {
 	plannedExpirationDate
 	matchingText
 	matchRatio
+	isMatchable
 	userProperties {
 		favorited
 		lentTo
 	}
+
+	image {
+		id
+		hash
+	}
+
 	# lenders added for DetailedLoanCard Query Cache
 	lenders(limit: 0) {
 		totalCount

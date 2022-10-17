@@ -37,7 +37,8 @@
 					:page-setting-data="pageSettingData"
 				/>
 				<campaign-loan-wrapper
-					:component-props="getComponentProps({ name:'CampaignLoanWrapper' })"
+					ref="mlLoanDisplay"
+					:component-props="campaignLoanWrapperProps"
 				/>
 				<template v-if="partnerAreaContent">
 					<campaign-partner
@@ -72,9 +73,10 @@
 						:name="content.key"
 						:id="content.key"
 						:is="component"
+						:ref="content.type"
 						:content="content"
 						data-section-type="contentful-section"
-						:component-props="getComponentProps(component)"
+						:component-props="campaignLoanWrapperProps"
 					/>
 				</div>
 			</div>
@@ -745,6 +747,32 @@ export default {
 		}
 	},
 	computed: {
+		campaignLoanWrapperProps() {
+			return {
+				filters: this.filters,
+				initialFilters: this.initialFilters,
+				excludedTags: this.excludedTags,
+				initialSortBy: this.initialSortBy,
+				activeLoanDisplay: this.activeLoanDisplay,
+				showLoanDisplayToggle: this.showLoanDisplayToggle,
+				totalCount: this.totalCount,
+				handleUpdatedFilters: this.handleUpdatedFilters,
+				handleUpdatedSortBy: this.handleUpdatedSortBy,
+				handleLoanDisplayType: this.handleLoanDisplayType,
+				handleResetLoanFilters: this.handleResetLoanFilters,
+				showLoanRows: this.showLoanRows,
+				isVisitor: this.isVisitor,
+				itemsInBasket: this.itemsInBasket,
+				promoOnlyQuery: this.promoOnlyQuery,
+				showLoans: this.showLoans,
+				sortBy: this.sortBy,
+				handleAddToBasket: this.handleAddToBasket,
+				setTotalCount: this.setTotalCount,
+				showLoanDetails: this.showLoanDetails,
+				checkoutVisible: this.checkoutVisible,
+				showThanks: this.showThanks,
+			};
+		},
 		pageSettingData() {
 			const settings = this.pageData?.page?.settings ?? [];
 			const jsonDataArray = settings.map(setting => setting.dataObject || {});
@@ -932,37 +960,6 @@ export default {
 		},
 	},
 	methods: {
-		getComponentProps(component) {
-			switch (component.name) {
-				case 'CampaignLoanWrapper':
-					return {
-						filters: this.filters,
-						initialFilters: this.initialFilters,
-						excludedTags: this.excludedTags,
-						initialSortBy: this.initialSortBy,
-						activeLoanDisplay: this.activeLoanDisplay,
-						showLoanDisplayToggle: this.showLoanDisplayToggle,
-						totalCount: this.totalCount,
-						handleUpdatedFilters: this.handleUpdatedFilters,
-						handleUpdatedSortBy: this.handleUpdatedSortBy,
-						handleLoanDisplayType: this.handleLoanDisplayType,
-						handleResetLoanFilters: this.handleResetLoanFilters,
-						showLoanRows: this.showLoanRows,
-						isVisitor: this.isVisitor,
-						itemsInBasket: this.itemsInBasket,
-						promoOnlyQuery: this.promoOnlyQuery,
-						showLoans: this.showLoans,
-						sortBy: this.sortBy,
-						handleAddToBasket: this.handleAddToBasket,
-						setTotalCount: this.setTotalCount,
-						showLoanDetails: this.showLoanDetails,
-						checkoutVisible: this.checkoutVisible,
-						showThanks: this.showThanks,
-					};
-				default:
-					return null;
-			}
-		},
 		verifyOrApplyPromotion() {
 			// Always apply a promo if activating query params exist
 			const promoQueryKeys = ['upc', 'promoCode', 'lendingReward'];
@@ -1418,7 +1415,8 @@ export default {
 			}
 		},
 		jumpToLoans() {
-			this.$refs.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
+			const loanDisplayComponent = this.$refs?.mlLoanDisplay?.$refs || this.$refs?.mlLoanDisplay?.[0]?.$refs;
+			loanDisplayComponent.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
 		},
 		adjustRouteHash(hash) {
 			const route = { ...this.$route };

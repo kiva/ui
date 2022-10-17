@@ -9,5 +9,6 @@ mutation updateLoanSearch($searchParams: JSONObject) {
 		tagId
 		pageOffset
 		pageLimit
+		distributionModel
 	}
 }
