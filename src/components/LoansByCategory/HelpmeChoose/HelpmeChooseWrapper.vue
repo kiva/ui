@@ -5,8 +5,29 @@
 				{{ welcomeTitle }}
 			</h2>
 			<p class="tw-text-base tw-text-secondary">
-				Choose a subcategory and we'll do the rest.
+				{{ subTitle }}
 			</p>
+		</div>
+
+		<div class="tw-w-full tw-pb-2">
+			<div v-if="triggersVisible" class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 lg:tw-gap-4">
+				<helpme-choose-trigger
+					variant="amountLeft"
+					@click="showLoans"
+				/>
+				<helpme-choose-trigger
+					variant="personalized"
+					@click="showLoans"
+				/>
+				<helpme-choose-trigger
+					variant="researchScore"
+					@click="showLoans"
+				/>
+			</div>
+
+			<div v-else>
+				Loans
+			</div>
 		</div>
 
 		<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
@@ -24,6 +45,7 @@
 
 <script>
 import LoanCardController from '@/components/LoanCards/LoanCardController';
+import HelpmeChooseTrigger from './HelpmeChooseTrigger';
 
 export default {
 	name: 'HelpmeChooseWrapper',
@@ -45,12 +67,41 @@ export default {
 			default: () => {}
 		}
 	},
+	data() {
+		return {
+			triggersVisible: true
+		};
+	},
 	components: {
-		LoanCardController
+		LoanCardController,
+		HelpmeChooseTrigger
 	},
 	computed: {
 		welcomeTitle() {
+			if (!this.triggersVisible) {
+				return 'Borrowers we think you’ll like';
+			}
 			return this.isVisitor ? 'Need help choosing?' : `Need help choosing, ${this.userData.firstName}?`;
+		},
+		subTitle() {
+			if (!this.triggersVisible) {
+				return 'Borrowers we think you’ll like';
+			}
+			return 'Choose a subcategory and we\'ll do the rest.';
+		}
+	},
+	methods: {
+		showLoans(event) {
+			this.triggersVisible = false;
+			if (event === 'amountLeft') {
+				// getting loans code block
+			}
+			if (event === 'personalized') {
+				// getting loans code block
+			}
+			if (event === 'researchScore') {
+				// getting loans code block
+			}
 		}
 	}
 };
