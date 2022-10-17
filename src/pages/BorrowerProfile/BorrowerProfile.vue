@@ -2,7 +2,7 @@
 	<www-page
 		id="borrower-profile"
 	>
-		<article class="tw-relative md:tw-bg-secondary">
+		<article v-if="showFundraising" class="tw-relative tw-bg-secondary">
 			<div class="tw-relative">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 					<hero-background />
@@ -111,6 +111,14 @@
 				</content-container>
 			</div>
 		</article>
+		<article v-else>
+			<FundedBorrowerProfile
+				:loan="loan"
+				:hash="hash"
+				:items-in-basket="itemsInBasket"
+				:inviter-name="inviterName"
+			/>
+		</article>
 		<what-is-kiva-modal v-if="kivaModuleExpEnabled && !shownModal" />
 		<!-- <aside>Similar loans</aside> -->
 	</www-page>
@@ -132,6 +140,7 @@ import HeroBackground from '@/components/BorrowerProfile/HeroBackground';
 import SummaryCard from '@/components/BorrowerProfile/SummaryCard';
 import LendCta from '@/components/BorrowerProfile/LendCta';
 import LoanStory from '@/components/BorrowerProfile/LoanStory';
+import FundedBorrowerProfile from '@/components/BorrowerProfile/FundedBorrowerProfile';
 import DetailsTabs from '@/components/BorrowerProfile/DetailsTabs';
 import BorrowerCountry from '@/components/BorrowerProfile/BorrowerCountry';
 import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
@@ -141,7 +150,6 @@ import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
 import WhatIsKivaModal from '@/components/BorrowerProfile/WhatIsKivaModal';
 
-import { isLoanFundraising } from '@/util/loanUtils';
 import {
 	getExperimentSettingCached,
 	trackExperimentVersion
@@ -152,7 +160,14 @@ const socialElementsExpKey = 'social_elements';
 const whatIsKivaExpKey = 'what_is_kiva_module';
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 const pageQuery = gql`
-	query borrowerProfileMeta($loanId: Int!, $publicId: String!, $getInviter: Boolean!) {
+	query borrowerProfileMeta(
+		$loanId: Int!,
+		$publicId: String!,
+		$getInviter: Boolean!,
+		$basketId: String,
+		$imgDefaultSize: String = "w480h360",
+		$imgRetinaSize: String = "w960h720"
+	) {
 		hasEverLoggedIn @client
 		general {
 			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
@@ -171,6 +186,14 @@ const pageQuery = gql`
 				key
 				value
 			}
+			customSort: uiExperimentSetting(key: "funded_lyml_sort") {
+				key
+				value
+			}
+			newFundedBorrowerPage: uiExperimentSetting(key: "new_funded_borrower_page") {
+				key
+				value
+			}
 			whatIsKivaModule: uiExperimentSetting(key: "what_is_kiva_module") {
 				key
 				value
@@ -185,12 +208,17 @@ const pageQuery = gql`
 					businessName
 				}
 				geocode {
+					city
+					state
 					country {
 						name
+						isoCode
 					}
 				}
 				image {
 					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
 					hash
 				}
 				plannedExpirationDate
@@ -225,6 +253,11 @@ const pageQuery = gql`
 				}
 				inPfp
 				pfpMinLenders
+				gender
+				sector {
+					id
+					name
+				}
 			}
 		}
 		community @include(if: $getInviter) {
@@ -240,6 +273,17 @@ const pageQuery = gql`
 				public
 			}
 		}
+		shop(basketId: $basketId) {
+			id
+			basket {
+				id
+				items {
+					values {
+						id
+					}
+				}
+			}
+		}
 	}
 `;
 
@@ -251,6 +295,7 @@ export default {
 		ContentContainer,
 		DetailsTabs,
 		HeroBackground,
+		FundedBorrowerProfile,
 		LendCta,
 		LendersAndTeams,
 		LoanStory,
@@ -377,7 +422,7 @@ export default {
 	},
 	apollo: {
 		query: pageQuery,
-		preFetch(config, client, { route }) {
+		preFetch(config, client, { route, cookieStore }) {
 			const publicId = getPublicId(route);
 			return client
 				.query({
@@ -385,16 +430,28 @@ export default {
 					variables: {
 						loanId: Number(route.params?.id ?? 0),
 						publicId,
-						getInviter: !!publicId
+						getInviter: !!publicId,
+						basketId: cookieStore.get('kvbskt')
 					},
 				})
 				.then(({ data }) => {
-					const loan = data?.lend?.loan;
-					// checks if the loan status is fundraising or not
-					// if not, then redirect to the lend/loan_id page
-					if (loan && !isLoanFundraising(loan)) {
+					const expCookieSignifier = cookieStore.get('kvlendborrowerbeta');
+					if (expCookieSignifier === 'a' || expCookieSignifier === 'c') {
+						const { query } = route;
 						return Promise.reject({
-							path: `/lend/${loan.id}`,
+							path: `/lend-classic/${route.params.id}`,
+							query,
+						});
+					}
+
+					const loan = data?.lend?.loan;
+					if (loan === null || loan === 'undefined') {
+						// redirect to legacy borrower profile
+						const { query = {} } = route;
+						query.minimal = false;
+						return Promise.reject({
+							path: `/lend-classic/${Number(route.params?.id ?? 0)}`,
+							query,
 						});
 					}
 
@@ -406,12 +463,13 @@ export default {
 					]);
 				});
 		},
-		preFetchVariables({ route }) {
+		preFetchVariables({ route, cookieStore }) {
 			const publicId = getPublicId(route);
 			return {
 				loanId: Number(route?.params?.id ?? 0),
 				publicId,
 				getInviter: !!publicId,
+				basketId: cookieStore.get('kvbskt'),
 			};
 		},
 		variables() {
@@ -420,6 +478,7 @@ export default {
 				loanId: Number(this.$route?.params?.id ?? 0),
 				publicId,
 				getInviter: !!publicId,
+				basketId: this.cookieStore.get('kvbskt'),
 			};
 		},
 		result(result) {
@@ -442,6 +501,7 @@ export default {
 			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
 			this.lenders = loan?.lenders?.values ?? [];
 			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
+			this.itemsInBasket = result?.data?.shop?.basket?.items?.values ?? [];
 
 			this.diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;
@@ -542,6 +602,9 @@ export default {
 			}
 			return 'For the borrower\'s privacy, this loan has been made anonymous.';
 		},
+		showFundraising() {
+			return this.amountLeft && this.status === 'fundraising';
+		}
 	},
 	created() {
 		// this experiment is assigned in experimentPreFetch.js
@@ -614,8 +677,8 @@ export default {
 			this.socialExpEnabled = true;
 		}
 
-		const utmContent = this.$route.query?.utm_content;
-		this.inviterIsGuestOrAnonymous = utmContent === 'anonymous' || utmContent === 'guest';
+		const publicId = getPublicId(this.$route);
+		this.inviterIsGuestOrAnonymous = publicId === 'anonymous' || publicId === 'guest';
 	},
 };
 </script>

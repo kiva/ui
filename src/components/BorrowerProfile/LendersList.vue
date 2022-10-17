@@ -62,8 +62,8 @@ export default {
 	},
 	apollo: {
 		query: gql`
-			query inviterLent($publicId: String!, $loanIds: [Int!]) {
-				community {
+			query inviterLent($publicId: String!, $getLender: Boolean!, $loanIds: [Int!]) {
+				community @include(if: $getLender) {
 					lender(publicId: $publicId) {
 						id
  						name
@@ -87,14 +87,18 @@ export default {
 		`,
 		preFetch: true,
 		preFetchVariables({ route }) {
+			const publicId = route?.query?.utm_content ?? '';
 			return {
-				publicId: route?.query?.utm_content ?? '',
+				publicId,
+				getLender: !!publicId,
 				loanIds: [Number(route.params?.id ?? 0)]
 			};
 		},
 		variables() {
+			const publicId = this.$route?.query?.utm_content ?? '';
 			return {
-				publicId: this.$route?.query?.utm_content ?? '',
+				publicId,
+				getLender: !!publicId,
 				loanIds: [Number(this.$route.params?.id ?? 0)]
 			};
 		},
