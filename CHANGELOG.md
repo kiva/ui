@@ -1,3 +1,10 @@
+### [2.341.1](https://github.com/kiva/ui/compare/v2.341.0...v2.341.1) (2022-10-17)
+
+
+### Bug Fixes
+
+* only import braintree dropin on initialization in the client ([bf8cd43](https://github.com/kiva/ui/commit/bf8cd43d218eb4325f66b3407696e4abb9c2ecda))
+
 ## [2.341.0](https://github.com/kiva/ui/compare/v2.340.0...v2.341.0) (2022-10-17)
 
 
