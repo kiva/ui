@@ -1,5 +1,6 @@
 import { parseExpCookie, serializeExpCookie, assignVersion } from '@/util/experimentUtils';
-import { readJSONSetting, hashCode } from '@/util/settingsUtils';
+import { hashCode } from '@/util/settingsUtils';
+import experimentSettingQuery from '@/graphql/query/experimentSetting.graphql';
 
 /**
  * Experiment resolvers
@@ -11,12 +12,21 @@ export default ({ cookieStore }) => {
 	return {
 		resolvers: {
 			Query: {
-				experiment(_, { id }, context) {
+				experiment(_, { id }, { cache }) {
 					// get the existing assigned version for this experiment id
 					let currentAssignment = assignments[id] || {};
 
 					// read the experiment data from the cache
-					const experiment = readJSONSetting(context, `cache.data.data['Setting:uiexp.${id}'].value`);
+					const experimentData = cache.readQuery({
+						query: experimentSettingQuery,
+						variables: {
+							key: id || '',
+						}
+					});
+
+					const experimentSetting = experimentData?.general?.uiExperimentSetting;
+					const experiment = JSON.parse(experimentSetting?.value);
+
 					// create targeted subset of experiment setting to use in hash
 					// Changing the Name, Distribution, Variants or Control values will "reset" an experiment assignment
 					const {
@@ -81,7 +91,8 @@ export default ({ cookieStore }) => {
 						id,
 						// if experiment exist & enabled = false return a null version
 						// > we don't want to render a disabled experiment even if a cookie version is present
-						version: (experiment === null || !experiment.enabled) ? null : currentAssignment.version,
+						version: (!id?.length || experiment === null || !experiment.enabled)
+							? null : currentAssignment.version,
 						__typename: 'Experiment',
 					};
 				},

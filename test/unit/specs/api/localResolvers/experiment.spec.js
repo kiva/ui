@@ -9,7 +9,6 @@ function Experiment(id, version) {
 }
 
 function getExperimentContext(data = {}) {
-	const context = {};
 	// default hash-code is 1753809052
 	const exp = {
 		id: 'ab',
@@ -22,7 +21,19 @@ function getExperimentContext(data = {}) {
 		},
 		...data
 	};
-	_set(context, `cache.data.data['Setting:uiexp.${exp.id}'].value`, JSON.stringify(JSON.stringify(exp)));
+	const context = {
+		cache: {
+			readQuery: jest.fn().mockReturnValue({
+				general: {
+					uiExperimentSetting: {
+						key: exp.id,
+						value: JSON.stringify(exp)
+					}
+				}
+			}),
+		}
+	};
+
 	return context;
 }
 
@@ -42,9 +53,10 @@ describe('experiment.js', () => {
 		it('Returns a null assignment when experiment id is unknown', () => {
 			const cookieStore = new CookieStore();
 			const { resolvers } = expResolverFactory({ cookieStore });
+			const context = getExperimentContext();
 
-			const result = resolvers.Query.experiment(null, { id: 'ab' }, {});
-			expect(result).toEqual(Experiment('ab', null));
+			const result = resolvers.Query.experiment(null, { id: '' }, context);
+			expect(result).toEqual(Experiment('', null));
 		});
 
 		it('Returns a null assignment when experiment is not enabled', () => {
