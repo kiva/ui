@@ -1,3 +1,10 @@
+## [2.339.0](https://github.com/kiva/ui/compare/v2.338.0...v2.339.0) (2022-10-17)
+
+
+### Features
+
+* personalized welcome message for help me choose exp ([5fb5225](https://github.com/kiva/ui/commit/5fb5225f7fa1331716bc4e97cf6ff339cbdf3b59))
+
 ## [2.338.0](https://github.com/kiva/ui/compare/v2.337.0...v2.338.0) (2022-10-17)
 
 
