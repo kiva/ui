@@ -1,6 +1,7 @@
 import { parseExpCookie, serializeExpCookie, assignVersion } from '@/util/experimentUtils';
 import { hashCode } from '@/util/settingsUtils';
 import experimentSettingQuery from '@/graphql/query/experimentSetting.graphql';
+import logReadQueryError from '@/util/logReadQueryError';
 
 /**
  * Experiment resolvers
@@ -16,13 +17,17 @@ export default ({ cookieStore }) => {
 					// get the existing assigned version for this experiment id
 					let currentAssignment = assignments[id] || {};
 
-					// read the experiment data from the cache
-					const experimentData = cache.readQuery({
-						query: experimentSettingQuery,
-						variables: {
-							key: id || '',
-						}
-					});
+					let experimentData = null;
+					try {
+						experimentData = cache.readQuery({
+							query: experimentSettingQuery,
+							variables: {
+								key: id || '',
+							}
+						});
+					} catch (e) {
+						logReadQueryError(e, 'AlgoliaPOC itemsInBasketQuery');
+					}
 
 					const experimentSetting = experimentData?.general?.uiExperimentSetting;
 					const experiment = JSON.parse(experimentSetting?.value);

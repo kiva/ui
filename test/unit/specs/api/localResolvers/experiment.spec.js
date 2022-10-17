@@ -1,4 +1,3 @@
-import _set from 'lodash/set';
 import CookieStore from '@/util/cookieStore';
 import * as expUtils from '@/util/experimentUtils';
 import expResolverFactory from '@/api/localResolvers/experiment';
