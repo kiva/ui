@@ -265,6 +265,7 @@ export default {
 			logReadQueryError(e, `Thanks page readQuery failed: (transaction_id: ${transactionId})`);
 		}
 
+		const hasEverLoggedIn = data?.hasEverLoggedIn;
 		const modernSubscriptions = data?.mySubscriptions?.values ?? [];
 		this.hasModernSub = modernSubscriptions.length !== 0;
 		this.lender = {
@@ -306,7 +307,7 @@ export default {
 		// MARS-246 Hotjar user attributes
 		setHotJarUserAttributes({
 			userId: data?.my?.userAccountId?.id,
-			hasEverLoggedIn: true,
+			hasEverLoggedIn,
 			hasLentBefore,
 			hasDepositBefore,
 		});
