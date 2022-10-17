@@ -284,10 +284,6 @@ module.exports = [
 		}
 	},
 	{
-		path: '/lend/:category',
-		redirect: '/lend-by-category/:category'
-	},
-	{
 		name: 'lend-filter',
 		path: '/lend/filter',
 		component: () => import('@/pages/Lend/LoanSearchPage'),
@@ -299,6 +295,10 @@ module.exports = [
 		name: 'filter-alpha',
 		path: '/lend/filter-alpha',
 		redirect: '/lend/filter'
+	},
+	{
+		path: '/lend/:category',
+		redirect: '/lend-by-category/:category'
 	},
 	{
 		path: '/lp/own-the-change-gender-equality',
