@@ -10,7 +10,7 @@ import { isNumber } from '@/util/numberUtils';
 export function createMinMaxRange(min, max) {
 	if (!isNumber(min) || !isNumber(max)) return;
 
-	return { min, max };
+	return { min, max, __typename: 'MinMaxRange' };
 }
 
 /**

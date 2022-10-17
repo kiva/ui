@@ -11,7 +11,7 @@ describe('minMaxRange.js', () => {
 		});
 
 		it('should create min max range', () => {
-			expect(createMinMaxRange(1, 100)).toEqual({ min: 1, max: 100 });
+			expect(createMinMaxRange(1, 100)).toEqual({ min: 1, max: 100, __typename: 'MinMaxRange' });
 		});
 	});
 

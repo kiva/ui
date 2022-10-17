@@ -56,7 +56,7 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 		loanSearchState?.lenderRepaymentTerm,
 		lenderRepaymentTermValueMap
 	)
-		? { ...loanSearchState.lenderRepaymentTerm, __typename: 'MinMaxRange' }
+		? { ...loanSearchState.lenderRepaymentTerm }
 		: null;
 
 	return {
