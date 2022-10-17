@@ -109,6 +109,7 @@
 				:value-map="lenderRepaymentTermValueMap"
 				@updated="handleUpdatedFilters"
 			/>
+			<hr class="tw-border-tertiary tw-my-1">
 			<h2 class="tw-text-h4 tw-pt-2">
 				Loan distribution
 			</h2>
