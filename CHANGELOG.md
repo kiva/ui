@@ -1,3 +1,17 @@
+## [2.338.0](https://github.com/kiva/ui/compare/v2.337.0...v2.338.0) (2022-10-17)
+
+
+### Features
+
+* quick filters tracking ([13d64d4](https://github.com/kiva/ui/commit/13d64d4918be01080727e8db5c6e1159e95ca847))
+
+
+### Bug Fixes
+
+* add activity id ([8d164fe](https://github.com/kiva/ui/commit/8d164fe1bf895944f1a076b59818f31637ac702c))
+* remove line change ([f6a1d7c](https://github.com/kiva/ui/commit/f6a1d7c4d2eec751f1accdb5f9a67000a68ff5c4))
+* update tracking ([b4ea410](https://github.com/kiva/ui/commit/b4ea410531c967df5b988d6931be4dcbb0384d3d))
+
 ## [2.337.0](https://github.com/kiva/ui/compare/v2.336.0...v2.337.0) (2022-10-14)
 
 
