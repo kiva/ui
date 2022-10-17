@@ -26,7 +26,6 @@ export const typePolicies = {
 	},
 	LoanPartner: {
 		fundraisingPercent: {
-			// read function spec: https://www.apollographql.com/docs/react/caching/cache-field-behavior/#fieldpolicy-api-reference
 			read(_, { readField }) {
 				return LoanPartner.fundraisingPercent(readField('loan'));
 			}
