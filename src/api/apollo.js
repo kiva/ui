@@ -78,6 +78,9 @@ export const typePolicies = {
 	shop: {
 		keyFields: ['id'],
 	},
+	Setting: {
+		keyFields: ['key'],
+	},
 	Query: {
 		fields: {
 			community: {
