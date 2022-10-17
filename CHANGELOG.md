@@ -1,3 +1,28 @@
+## [2.341.0](https://github.com/kiva/ui/compare/v2.340.0...v2.341.0) (2022-10-17)
+
+
+### Features
+
+* migrate /lend/:id and lend/:category route from monolith ([4b1bd32](https://github.com/kiva/ui/commit/4b1bd32529887b22738bd6c4e5baa5fbec6b86c7))
+* migrate fundedBorrowerProfile page into a component to BorrowerProfile page ([5ca6f0b](https://github.com/kiva/ui/commit/5ca6f0bd9d8e8c8ae2cc700802cc4c446eee148a))
+
+
+### Bug Fixes
+
+* address borrower profile loading issues ([e407111](https://github.com/kiva/ui/commit/e407111712cc56190fdc8ec30a5289a4f062b1df))
+* basketItems and funded page conditional rendering ([8695da4](https://github.com/kiva/ui/commit/8695da4f5966ca9eaddc10498054b00edc6aba6d))
+* include query params in redirect ([b9380bc](https://github.com/kiva/ui/commit/b9380bc9bc869669f9b79f2fce87ee8a4e3bfe59))
+* redirect to lend-classic in prefetch ([71113ea](https://github.com/kiva/ui/commit/71113eae4c5b63f8963017dc17427a0e8b799302))
+* remaining money showed in funded loan ([fde4aa6](https://github.com/kiva/ui/commit/fde4aa657c31ee95887d0bd2ffbab9daa4363253))
+* remove unnecessary basket func ([616a324](https://github.com/kiva/ui/commit/616a324f6e1f05e5b8b0aa423209a0ea4981d815))
+* remove unused code ([4232146](https://github.com/kiva/ui/commit/423214625557b21436055e9e190e26facaea4569))
+* solve conflicts ([e1237b6](https://github.com/kiva/ui/commit/e1237b639470d5b6a7041a929ffeea54e866e982))
+* solve conflicts ([754a1f7](https://github.com/kiva/ui/commit/754a1f732b0721d2d5800b536a31787f488f6310))
+* solve conflicts ([ea4e00a](https://github.com/kiva/ui/commit/ea4e00aa73728abc0189d7de900ec93fbf02518f))
+* solve conflicts ([353261d](https://github.com/kiva/ui/commit/353261dd0a12565a3baaf53e1e7e29d3662e82a8))
+* update fundedBorrowerProfile and routes ([97f86da](https://github.com/kiva/ui/commit/97f86dae0bfd51ad35cfe1d147ee5fbd3f311ad7))
+* validate loan status is fundraising ([4a8a691](https://github.com/kiva/ui/commit/4a8a691df1a7f0908cb5934b7c4bea9404dabdb9))
+
 ## [2.340.0](https://github.com/kiva/ui/compare/v2.339.0...v2.340.0) (2022-10-17)
 
 
