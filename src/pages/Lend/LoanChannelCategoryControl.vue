@@ -62,6 +62,7 @@
 						:remaining-loans="helpmeChooseRemainingLoans"
 						:items-in-basket="itemsInBasket"
 						:is-visitor="isVisitor"
+						:user-data="userData"
 					/>
 				</div>
 				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
@@ -92,6 +93,7 @@
 						:remaining-loans="helpmeChooseRemainingLoans"
 						:items-in-basket="itemsInBasket"
 						:is-visitor="isVisitor"
+						:user-data="userData"
 					/>
 				</div>
 				<kv-pagination
@@ -250,7 +252,8 @@ export default {
 				}]
 			},
 			filtersLoaded: false,
-			selectedQuickFilters: {}
+			selectedQuickFilters: {},
+			userData: {}
 		};
 	},
 	computed: {
@@ -406,6 +409,7 @@ export default {
 
 		// Set user status
 		this.isVisitor = !_get(pageQueryData, 'my.userAccount.id');
+		this.userData = _get(pageQueryData, 'my.userAccount');
 
 		// Filter routes on param.category to get current path
 		this.targetedLoanChannelURL = _get(this.$route, 'params.category');
