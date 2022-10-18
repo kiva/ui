@@ -1,3 +1,10 @@
+### [2.343.1](https://github.com/kiva/ui/compare/v2.343.0...v2.343.1) (2022-10-18)
+
+
+### Bug Fixes
+
+* storybook path was incorrect ([94a730e](https://github.com/kiva/ui/commit/94a730e7554379d6a166c3db0cd0f3e09713546c))
+
 ## [2.343.0](https://github.com/kiva/ui/compare/v2.342.0...v2.343.0) (2022-10-17)
 
 
