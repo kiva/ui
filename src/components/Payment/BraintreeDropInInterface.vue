@@ -9,7 +9,6 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
-import Dropin from 'braintree-web-drop-in';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
@@ -147,8 +146,6 @@ export default {
 					} else {
 						this.clientToken = _get(response, 'data.shop.getClientToken');
 						this.initializeDropIn(this.clientToken);
-						// Replace our loader with the dropIn loader after a small delay
-						setTimeout(() => this.setUpdatingPaymentWrapper(false), 500);
 					}
 				}).catch(error => {
 					console.error(error);
@@ -159,7 +156,10 @@ export default {
 				this.initializeDropIn(this.$appConfig.btTokenKey);
 			}
 		},
-		initializeDropIn(authToken) {
+		async initializeDropIn(authToken) {
+			const { default: Dropin } = await import('braintree-web-drop-in');
+			// Replace our loader with the dropIn loader after a small delay
+			setTimeout(() => this.setUpdatingPaymentWrapper(false), 500);
 			Dropin.create({
 				authorization: authToken,
 				container: '#dropin-container',

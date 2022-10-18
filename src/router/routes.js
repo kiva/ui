@@ -156,10 +156,7 @@ module.exports = [
 	},
 	{
 		path: '/funded/:id',
-		component: () => import('@/pages/BorrowerProfile/FundedBorrowerProfile'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		}
+		redirect: '/lend/:id'
 	},
 	{
 		path: '/gender-equality',
@@ -266,6 +263,27 @@ module.exports = [
 		},
 	},
 	{
+		path: '/lend-beta/:id',
+		redirect: '/lend/:id'
+	},
+	{
+		path: '/lend/saved-search',
+		component: () => import('@/pages/Settings/SavedSearch'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
+		name: 'borrowerProfile',
+		path: '/lend/:id(\\d+)',
+		component: () => import('@/pages/BorrowerProfile/BorrowerProfile'),
+		meta: {
+			excludeFromStaticSitemap: true,
+			unbounce: true,
+		}
+	},
+	{
 		name: 'lend-filter',
 		path: '/lend/filter',
 		component: () => import('@/pages/Lend/LoanSearchPage'),
@@ -279,13 +297,8 @@ module.exports = [
 		redirect: '/lend/filter'
 	},
 	{
-		name: 'borrowerProfile',
-		path: '/lend-beta/:id',
-		component: () => import('@/pages/BorrowerProfile/BorrowerProfile'),
-		meta: {
-			excludeFromStaticSitemap: true,
-			unbounce: true,
-		},
+		path: '/lend/:category',
+		redirect: '/lend-by-category/:category'
 	},
 	{
 		path: '/lp/own-the-change-gender-equality',
@@ -530,14 +543,6 @@ module.exports = [
 		path: '/styleguide/*',
 		redirect: '/styleguide',
 		meta: {
-			excludeFromStaticSitemap: true,
-		}
-	},
-	{
-		path: '/lend/saved-search',
-		component: () => import('@/pages/Settings/SavedSearch'),
-		meta: {
-			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
 		}
 	},

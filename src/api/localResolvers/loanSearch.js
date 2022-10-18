@@ -13,6 +13,8 @@ export const getDefaultLoanSearchState = () => ({
 	pageOffset: 0, // Expects a number
 	pageLimit: 15, // Expects a number
 	distributionModel: null, // Expects DIRECT or FIELDPARTNER
+	isIndividual: null, // Expects a boolean
+	lenderRepaymentTerm: null, // Expects a MinMaxRange
 });
 
 // export queries, resolvers and defaults for LoanSearchState

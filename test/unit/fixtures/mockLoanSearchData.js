@@ -6,6 +6,8 @@ export const mockState = {
 	themeId: [1],
 	tagId: [1],
 	distributionModel: 'DIRECT',
+	isIndividual: false,
+	lenderRepaymentTerm: { min: 0, max: 8, __typename: 'MinMaxRange' },
 	pageOffset: 10,
 	pageLimit: 5,
 };
@@ -60,7 +62,7 @@ export const mockAllFacets = {
 	tagNames: ['TAG 1', 'TAG 2'],
 	genderFacets: [{ name: 'female', __typename: 'Gender' }, { name: 'male', __typename: 'Gender' }],
 	genders: ['FEMALE', 'MALE'],
-	flssSorts: [{ name: 'expiringSoon' }, { name: 'personalized' }],
+	flssSorts: [{ name: 'expiringSoon' }, { name: 'personalized' }, { name: 'popularityScore' }],
 	standardSorts: [{ name: 'expiringSoon' }, { name: 'popularity' }],
 	distributionModelFacets: [
 		{ name: 'FIELDPARTNER', __typename: 'DistributionModel' },

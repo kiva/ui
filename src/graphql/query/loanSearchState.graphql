@@ -10,5 +10,10 @@ query loanSearchStateQuery {
 		pageOffset
 		pageLimit
 		distributionModel
+		isIndividual
+		lenderRepaymentTerm {
+			min
+			max
+		}
 	}
 }

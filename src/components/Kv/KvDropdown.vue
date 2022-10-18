@@ -10,8 +10,6 @@
 </template>
 
 <script>
-import Popper from 'popper.js';
-import _map from 'lodash/map';
 import dropdownQuery from '@/graphql/query/dropdown.graphql';
 import {
 	onBodyTouchstart,
@@ -73,7 +71,8 @@ export default {
 	},
 	methods: {
 		open() {
-			this.setTimeout(() => {
+			this.setTimeout(async () => {
+				await this.initPopper();
 				this.show = true;
 				if (this.usingTouch) {
 					this.attachBodyEvents();
@@ -96,7 +95,6 @@ export default {
 			}
 		},
 		makeDropdown() {
-			this.initPopper();
 			this.attachEvents();
 		},
 		unmakeDropdown() {
@@ -109,7 +107,10 @@ export default {
 			this.unmakeDropdown();
 			this.makeDropdown();
 		},
-		initPopper() {
+		async initPopper() {
+			if (this.popper) return;
+			const { default: Popper } = await import('popper.js');
+			if (this.popper) return; // in case popper was initialized in another callback while importing
 			this.popper = new Popper(this.reference, this.$el, {
 				placement: 'bottom-start',
 				modifiers: {
@@ -158,7 +159,8 @@ export default {
 			offBodyTouchstart(this.bodyTouchHandler);
 		},
 		setAttributes(attrs) {
-			_map(attrs, (value, attr) => {
+			Object.keys(attrs).forEach(attr => {
+				const value = attrs[attr];
 				if (value === false) {
 					this.$el.removeAttribute(attr);
 				} else {

@@ -130,6 +130,14 @@ export default {
 				theme: this.loanSearchState?.themeId.map(themeId => this.themeNames[themeId]),
 				loanTags: this.loanSearchState?.tagId,
 				distributionModel: distributionModelEnumMap[this.loanSearchState?.distributionModel?.toUpperCase()],
+				// Reverse "isIndividual" to match legacy "isGroup" query param
+				isGroup: this.loanSearchState?.isIndividual !== null ? !this.loanSearchState.isIndividual : null,
+				// Create new simple object that can be saved to legacy "MinMaxRangeInput" type
+				lenderTerm: this.loanSearchState?.lenderRepaymentTerm
+					? {
+						min: this.loanSearchState.lenderRepaymentTerm.min,
+						max: this.loanSearchState.lenderRepaymentTerm.max
+					} : null,
 			};
 		},
 		loginUrl() {

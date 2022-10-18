@@ -77,9 +77,9 @@ export function preFetchApolloQuery(config, client, args) {
 	});
 }
 
-export function preFetchAll(components, apolloClient, { ...args }) {
+export async function preFetchAll(components, apolloClient, { ...args }) {
 	// update basketId before preFetch cycle
-	const allComponents = getDeepComponents(components);
+	const allComponents = await getDeepComponents(components);
 	const apolloComponents = _filter(allComponents, 'apollo.preFetch');
 	return Promise.all(_map(apolloComponents, c => preFetchApolloQuery(c.apollo, apolloClient, args)));
 }
