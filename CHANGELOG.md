@@ -1,3 +1,19 @@
+## [2.345.0](https://github.com/kiva/ui/compare/v2.344.0...v2.345.0) (2022-10-18)
+
+
+### Features
+
+* activated additional sortBy options and edited unit testing ([d688052](https://github.com/kiva/ui/commit/d68805248f04a2dd2f4e9d4e6aa80df382a16df7))
+* created LendFilterFlssQuery experiment ([e600d3b](https://github.com/kiva/ui/commit/e600d3b52d851713c538589820fa24dcbccf7f4d))
+* merged branch 'main' into VUE-1314 and fixed git commit conflicts ([8797f5d](https://github.com/kiva/ui/commit/8797f5d64fda80044159597ec4afd3d375ae8a9a))
+
+## [2.344.0](https://github.com/kiva/ui/compare/v2.343.1...v2.344.0) (2022-10-18)
+
+
+### Features
+
+* triggers were added to help me choose experiment ([055eeed](https://github.com/kiva/ui/commit/055eeed8ca7e1998ddab3ad04d61e3cafcf6ff6c))
+
 ### [2.343.1](https://github.com/kiva/ui/compare/v2.343.0...v2.343.1) (2022-10-18)
 
 

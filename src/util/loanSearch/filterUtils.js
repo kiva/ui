@@ -8,25 +8,36 @@ import { createMinMaxRange } from '@/util/loanSearch/minMaxRange';
 export const sortByNameToDisplay = {
 	// Shared
 	expiringSoon: 'Ending soon',
-	// Standard (lend)
 	amountLeft: 'Amount left',
+	repaymentTerm: 'Loan length',
+	// Standard (lend)
 	loanAmount: 'Amount: Low to High',
 	loanAmountDesc: 'Amount: High to Low',
 	newest: 'Most recent',
 	popularity: 'Trending now',
 	random: 'Random',
-	repaymentTerm: 'Loan length',
 	// FLSS specific
 	amountHighToLow: 'Amount: High to Low',
 	amountLowToHigh: 'Amount: Low to High',
-	personalized: 'Recommended'
+	personalized: 'Recommended',
+	popularityScore: 'Trending now'
 };
 
 export const visibleFLSSSortOptions = [
 	'expiringSoon',
 	'amountHighToLow',
 	'amountLowToHigh',
-	'personalized'
+	'personalized',
+];
+
+export const experimentVisibleFLSSSortOptions = [
+	'expiringSoon',
+	'amountHighToLow',
+	'amountLowToHigh',
+	'personalized',
+	'amountLeft',
+	'popularityScore',
+	'repaymentTerm',
 ];
 
 /**
@@ -119,9 +130,10 @@ export const lenderRepaymentTermValueMap = {
  *
  * @param {Array<Object>} standardSorts Sort options from the lend API
  * @param {Array<Object>} flssSorts Sort options from the FLSS API
+ * @param {boolean} extendFlssFilters Flag for FLSS experiment
  * @returns New formatted array
  */
-export function formatSortOptions(standardSorts, flssSorts) {
+export function formatSortOptions(standardSorts, flssSorts, extendFlssFilters) {
 	const labeledStandardSorts = standardSorts?.map(sort => {
 		return {
 			name: sort.name,
@@ -129,7 +141,8 @@ export function formatSortOptions(standardSorts, flssSorts) {
 		};
 	}) ?? [];
 	const labeledFlssSorts = flssSorts?.reduce((prev, current) => {
-		if (visibleFLSSSortOptions.includes(current.name)) {
+		const visibleOptions = extendFlssFilters ? experimentVisibleFLSSSortOptions : visibleFLSSSortOptions;
+		if (visibleOptions.includes(current.name)) {
 			prev.push({ name: current.name, sortSrc: FLSS_QUERY_TYPE });
 		}
 
