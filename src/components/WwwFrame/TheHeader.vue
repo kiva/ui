@@ -630,39 +630,34 @@ export default {
 	},
 	created() {
 		// MARS-194 User Metrics for Optimizely A/B experiment
-		let hasLentBefore = this.cookieStore.get(hasLentBeforeCookie);
-		let hasDepositBefore = this.cookieStore.get(hasDepositBeforeCookie);
+		let hasLentBefore = false;
+		let hasDepositBefore = false;
 		let hasEverLoggedIn = false;
 
-		if (hasLentBefore === undefined || hasDepositBefore === undefined) {
-			try {
-				let userData = {};
-				userData = this.apollo.readQuery({
-					query: optimizelyUserDataQuery,
-				});
-
-				hasLentBefore = userData?.my?.loans?.totalCount > 0;
-				hasDepositBefore = userData?.my?.transactions?.totalCount > 0;
-				hasEverLoggedIn = userData?.hasEverLoggedIn;
-
-				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { path: '/' });
-				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { path: '/' });
-
-				userHasLentBefore(hasLentBefore);
-				userHasDepositBefore(hasDepositBefore);
-			} catch (e) {
-				logReadQueryError(e, 'User Data For Optimizely Metrics');
-			}
-		}
-		// MARS-246 Hotjar user attributes
-		if (this.userId) {
-			setHotJarUserAttributes({
-				userId: this.userId,
-				hasEverLoggedIn,
-				hasLentBefore,
-				hasDepositBefore,
+		try {
+			const userData = this.apollo.readQuery({
+				query: optimizelyUserDataQuery,
 			});
+
+			hasLentBefore = userData?.my?.loans?.totalCount > 0;
+			hasDepositBefore = userData?.my?.transactions?.totalCount > 0;
+			hasEverLoggedIn = userData?.hasEverLoggedIn;
+			this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { path: '/' });
+			this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { path: '/' });
+
+			userHasLentBefore(hasLentBefore);
+			userHasDepositBefore(hasDepositBefore);
+		} catch (e) {
+			logReadQueryError(e, 'User Data For Optimizely Metrics');
 		}
+
+		// MARS-246 Hotjar user attributes
+		setHotJarUserAttributes({
+			userId: this.userId,
+			hasEverLoggedIn,
+			hasLentBefore,
+			hasDepositBefore,
+		});
 	},
 	methods: {
 		toggleLendMenu(immediate = false) {
