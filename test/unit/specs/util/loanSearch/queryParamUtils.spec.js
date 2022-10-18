@@ -374,7 +374,7 @@ describe('queryParamUtils.js', () => {
 					searchParams: {
 						gender: null,
 						countryIsoCode: [],
-						sortBy: 'personalized',
+						sortBy: 'popularityScore',
 						sectorId: [],
 						themeId: [],
 						tagId: [],
@@ -841,7 +841,7 @@ describe('queryParamUtils.js', () => {
 		});
 
 		it('should push mapped FLSS sort value', () => {
-			const state = { sortBy: 'personalized' };
+			const state = { sortBy: 'popularityScore' };
 			const router = getRouter();
 
 			updateQueryParams(state, router, FLSS_QUERY_TYPE);

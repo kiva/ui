@@ -9,10 +9,12 @@ import VueRouter from 'vue-router';
  */
 const lendToFlssSort = new Map([
 	['expiringSoon', 'expiringSoon'],
-	['popularity', 'personalized'],
+	['popularity', 'popularityScore'],
+	['personalized', 'personalized'],
 	['loanAmountDesc', 'amountHighToLow'],
 	['loanAmount', 'amountLowToHigh'],
-	['amountLeft', 'amountLeft']
+	['amountLeft', 'amountLeft'],
+	['repaymentTerm', 'repaymentTerm']
 ]);
 
 /**

@@ -62,7 +62,7 @@ export const mockAllFacets = {
 	tagNames: ['TAG 1', 'TAG 2'],
 	genderFacets: [{ name: 'female', __typename: 'Gender' }, { name: 'male', __typename: 'Gender' }],
 	genders: ['FEMALE', 'MALE'],
-	flssSorts: [{ name: 'expiringSoon' }, { name: 'personalized' }],
+	flssSorts: [{ name: 'expiringSoon' }, { name: 'personalized' }, { name: 'popularityScore' }],
 	standardSorts: [{ name: 'expiringSoon' }, { name: 'popularity' }],
 	distributionModelFacets: [
 		{ name: 'FIELDPARTNER', __typename: 'DistributionModel' },
