@@ -223,7 +223,7 @@ export default {
 				if (index > -1) {
 					this.selectedCountries.splice(index, 1);
 				}
-			} else {
+			} else if (evt.changed) {
 				this.selectedCountries.push(evt.changed);
 			}
 		},
