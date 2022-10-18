@@ -15,7 +15,7 @@ module.exports = merge(base, {
 		enableGA: true,
 		gaId: 'UA-11686022-3',
 		enableHotjar: true,
-		hotjarId: '3112979',
+		hotjarId: '3071239',
 		enableSnowplow: true,
 		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
 		enableFB: true,
