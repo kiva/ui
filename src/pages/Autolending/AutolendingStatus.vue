@@ -82,7 +82,7 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import {
 	format, addDays, parseISO, formatISO
 } from 'date-fns';

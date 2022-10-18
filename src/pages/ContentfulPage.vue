@@ -39,7 +39,7 @@ import { preFetchAll } from '@/util/apolloPreFetch';
 import { processPageContent } from '@/util/contentfulUtils';
 import logFormatter from '@/util/logFormatter';
 import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import {
 	getExperimentSettingCached,
 	trackExperimentVersion

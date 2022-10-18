@@ -127,7 +127,7 @@
 
 <script>
 import { mdiMapMarker } from '@mdi/js';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
 import LoanUse from '@/components/BorrowerProfile/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';

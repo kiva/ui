@@ -216,7 +216,7 @@
 
 <script>
 import numeral from 'numeral';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import _forEach from 'lodash/forEach';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { mdiPencil } from '@mdi/js';

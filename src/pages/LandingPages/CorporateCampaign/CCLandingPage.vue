@@ -208,7 +208,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import numeral from 'numeral';
 import { indexIn } from '@/util/comparators';
 import logFormatter from '@/util/logFormatter';

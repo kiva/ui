@@ -38,7 +38,7 @@
 <script>
 import { mdiLightningBolt } from '@mdi/js';
 import LendersListItem from '@/components/BorrowerProfile/LendersListItem';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 

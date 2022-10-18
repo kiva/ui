@@ -200,7 +200,7 @@
 <script>
 import _isEqual from 'lodash/isEqual';
 import _sortBy from 'lodash/sortBy';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KvButton from '@/components/Kv/KvButton';
 import KvChip from '@/components/Kv/KvChip';
 import KvLightbox from '@/components/Kv/KvLightbox';

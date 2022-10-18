@@ -101,7 +101,7 @@ import MainCategoryTile from '@/components/Categories/MainCategoryTile';
 import LoanSpotlight from '@/components/Categories/LoanSpotlight';
 import MonthlyGoodModule from '@/components/Categories/MonthlyGoodModule';
 import FrequentlyAskedQuestions from '@/components/Contentful/FrequentlyAskedQuestions';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';

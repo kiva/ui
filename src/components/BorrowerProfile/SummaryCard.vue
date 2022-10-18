@@ -112,7 +112,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { mdiMapMarker } from '@mdi/js';
 import LendersList from '@/components/BorrowerProfile/LendersList';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';

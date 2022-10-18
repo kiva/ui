@@ -93,7 +93,7 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import _isFinite from 'lodash/isFinite';
 
 import KvButton from '@/components/Kv/KvButton';

@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import BorrowerBusinessDetails from '@/components/BorrowerProfile/BorrowerBusinessDetails';
 // TODO: replace the loading placeholder with component from kv-components when available.

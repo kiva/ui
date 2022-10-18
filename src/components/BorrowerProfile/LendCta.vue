@@ -364,7 +364,7 @@
 
 <script>
 import { mdiLightningBolt } from '@mdi/js';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { setLendAmount } from '@/util/basketUtils';
 import { buildPriceArray, isMatchAtRisk } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';

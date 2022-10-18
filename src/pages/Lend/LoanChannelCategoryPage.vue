@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import {
 	getExperimentSettingCached,

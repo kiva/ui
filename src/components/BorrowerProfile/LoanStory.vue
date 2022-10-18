@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import BorrowerImage from './BorrowerImage';
 import LoanDescription from './LoanDescription';
 
