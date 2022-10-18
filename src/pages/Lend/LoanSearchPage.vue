@@ -78,6 +78,10 @@ const pageQuery = gql`query loanSearchPage {
 			key
 			value
 		}
+		lendFilterFlssQuery: uiExperimentSetting(key: "EXP-FLSS-Lend-Filter") {
+			key
+			value
+		}
 	}
 }`;
 
@@ -94,6 +98,7 @@ export default {
 		return {
 			extendFlssFilters: false,
 			enableSavedSearch: false,
+			enableFlssQueryExp: false,
 			mdiEarth,
 			mdiFilter,
 			mdiClose,
@@ -132,6 +137,7 @@ export default {
 				return Promise.all([
 					client.query({ query: experimentQuery, variables: { id: 'saved_search' } }),
 					client.query({ query: experimentQuery, variables: { id: 'extend_flss_filters' } }),
+					client.query({ query: experimentQuery, variables: { id: 'EXP-FLSS-Lend-Filter' } }),
 				]);
 			});
 		},
@@ -160,6 +166,19 @@ export default {
 					'Lending',
 					'EXP-VUE-1323-Nov-2022',
 					showMoreFiltersExp.version
+				);
+			}
+			// Lend Filter Flss Query Experiment
+			const lendFilterFlssQuery = this.apollo.readFragment({
+				id: 'Experiment:EXP-FLSS-Lend-Filter',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.enableFlssQueryExp = lendFilterFlssQuery.version;
+			if (lendFilterFlssQuery.version) {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-VUE-1346-Oct-2022',
+					lendFilterFlssQuery.version
 				);
 			}
 		}
