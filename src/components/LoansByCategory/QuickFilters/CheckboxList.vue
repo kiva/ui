@@ -78,7 +78,11 @@ export default {
 					if (exists) this.selected.splice(index, 1);
 				} else if (!exists) this.selected.push(item.value);
 			});
-			this.updateSelected(this.selected, undefined, true);
+			if (isAll && typeof item === 'object') {
+				this.updateSelected(this.selected, this.selected.toString(), true);
+			} else {
+				this.updateSelected(this.selected, '', true);
+			}
 		},
 		updateSelected(values, changed, wasSelectAll) {
 			this.$emit('updated', { values: [...values], changed, wasSelectAll });
