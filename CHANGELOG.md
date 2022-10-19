@@ -1,3 +1,10 @@
+## [2.347.0](https://github.com/kiva/ui/compare/v2.346.0...v2.347.0) (2022-10-19)
+
+
+### Features
+
+* body scroll was blocked when location dropdown is visible ([f1985a5](https://github.com/kiva/ui/commit/f1985a5505621b6deee185d1c00370a6310163cf))
+
 ## [2.346.0](https://github.com/kiva/ui/compare/v2.345.0...v2.346.0) (2022-10-19)
 
 
