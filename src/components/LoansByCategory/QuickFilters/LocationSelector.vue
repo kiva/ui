@@ -205,6 +205,11 @@ export default {
 		toggleRegions() {
 			this.showRegions = !this.showRegions;
 			this.selectedRegion = null;
+			if (this.showRegions) {
+				document.documentElement.style.overflow = 'hidden';
+			} else {
+				document.documentElement.style.overflow = 'auto';
+			}
 		},
 		selectRegion(index) {
 			this.selectedRegion = this.selectedRegion === index ? null : index;
