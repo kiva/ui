@@ -194,8 +194,11 @@ export default {
 				'see-loans',
 			);
 		},
-		resetCountries() {
+		emptyCountries() {
 			this.selectedCountries = [];
+		},
+		resetCountries() {
+			this.emptyCountries();
 			this.$kvTrackEvent(
 				'search',
 				'filter',
