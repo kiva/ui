@@ -1,3 +1,11 @@
+### [2.347.2](https://github.com/kiva/ui/compare/v2.347.1...v2.347.2) (2022-10-19)
+
+
+### Bug Fixes
+
+* lint ([dfbd341](https://github.com/kiva/ui/commit/dfbd3413f37c46f14704bbfb74ba04c947d59aee))
+* update regions ui ([63157af](https://github.com/kiva/ui/commit/63157af0fb2ecee1c654acc503d06a2492b4199d))
+
 ### [2.347.1](https://github.com/kiva/ui/compare/v2.347.0...v2.347.1) (2022-10-19)
 
 
