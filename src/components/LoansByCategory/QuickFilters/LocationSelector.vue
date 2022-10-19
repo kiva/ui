@@ -16,6 +16,7 @@
 			placeholder="All countries"
 			:disabled="!filtersLoaded"
 			autocomplete="off"
+			readonly
 		/>
 
 		<div
