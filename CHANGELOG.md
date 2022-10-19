@@ -1,3 +1,11 @@
+### [2.347.1](https://github.com/kiva/ui/compare/v2.347.0...v2.347.1) (2022-10-19)
+
+
+### Bug Fixes
+
+* location selector was updated ([7de1f1b](https://github.com/kiva/ui/commit/7de1f1b8e0aa86ddf2d6a4114a59060a20ed0284))
+* select all countries bug was fixed for location dropdown ([57165a5](https://github.com/kiva/ui/commit/57165a57aa0016dd06366ffadc261484a34a5ae6))
+
 ## [2.347.0](https://github.com/kiva/ui/compare/v2.346.0...v2.347.0) (2022-10-19)
 
 
