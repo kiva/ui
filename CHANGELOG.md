@@ -1,3 +1,10 @@
+## [2.346.0](https://github.com/kiva/ui/compare/v2.345.0...v2.346.0) (2022-10-19)
+
+
+### Features
+
+* readonly attr was added to location input ([09c4d5b](https://github.com/kiva/ui/commit/09c4d5b638fd3efeed699828941bbcefefebdfdb))
+
 ## [2.345.0](https://github.com/kiva/ui/compare/v2.344.0...v2.345.0) (2022-10-18)
 
 
