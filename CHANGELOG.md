@@ -1,3 +1,11 @@
+### [2.347.3](https://github.com/kiva/ui/compare/v2.347.2...v2.347.3) (2022-10-19)
+
+
+### Bug Fixes
+
+* avoid skipping userData query ([7751e2d](https://github.com/kiva/ui/commit/7751e2dc8281ffc5c34a1f46cbb204ea794f3734))
+* revert and add hasEverLoggedIn in header query due to performance ([4ea976e](https://github.com/kiva/ui/commit/4ea976ec3a6d9b09de60d754de92c5730be93b73))
+
 ### [2.347.2](https://github.com/kiva/ui/compare/v2.347.1...v2.347.2) (2022-10-19)
 
 
