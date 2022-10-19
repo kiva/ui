@@ -62,7 +62,7 @@
 				</div>
 				<ol
 					class="tw-whitespace-nowrap lg:tw-bg-secondary lg:tw-py-2"
-					style="margin: -12px"
+					style="margin: -12px;"
 				>
 					<li
 						class="tw-hidden lg:tw-block tw-px-4 tw-py-2"
