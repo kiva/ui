@@ -75,17 +75,16 @@ export default {
 				const index = this.selected.indexOf(item.value);
 				const exists = index !== -1;
 				if (isAll) {
-					if (exists) this.selected.splice(index, 1);
-				} else if (!exists) this.selected.push(item.value);
+					if (exists) {
+						this.updateSelected(this.selected, item.value);
+					}
+				} else if (!exists) {
+					this.updateSelected(this.selected, item.value);
+				}
 			});
-			if (isAll && typeof item === 'object') {
-				this.updateSelected(this.selected, this.selected.toString(), true);
-			} else {
-				this.updateSelected(this.selected, '', true);
-			}
 		},
-		updateSelected(values, changed, wasSelectAll) {
-			this.$emit('updated', { values: [...values], changed, wasSelectAll });
+		updateSelected(values, changed) {
+			this.$emit('updated', { values: [...values], changed });
 		},
 	},
 	watch: {
