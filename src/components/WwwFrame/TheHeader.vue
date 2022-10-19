@@ -484,7 +484,6 @@ const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 
 const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
-	hasEverLoggedIn @client
   	my {
     	loans(limit:1) {
       		totalCount
@@ -531,6 +530,7 @@ export default {
 			mdiChevronDown,
 			mdiMagnify,
 			userId: null,
+			hasEverLoggedIn: false
 		};
 	},
 	props: {
@@ -615,6 +615,7 @@ export default {
 			this.profilePic = data?.my?.lender?.image?.url ?? '';
 			this.profilePicId = data?.my?.lender?.image?.id ?? null;
 			this.basketState = data || {};
+			this.hasEverLoggedIn = data?.hasEverLoggedIn;
 		},
 		errorHandlers: {
 			'shop.invalidBasketId': ({ cookieStore, route }) => {
@@ -630,34 +631,37 @@ export default {
 	},
 	created() {
 		// MARS-194 User Metrics for Optimizely A/B experiment
-		let hasLentBefore = false;
-		let hasDepositBefore = false;
-		let hasEverLoggedIn = false;
+		let hasLentBefore = this.cookieStore.get(hasLentBeforeCookie);
+		let hasDepositBefore = this.cookieStore.get(hasDepositBeforeCookie);
 
-		try {
-			const userData = this.apollo.readQuery({
-				query: optimizelyUserDataQuery,
-			});
+		if (hasLentBefore === undefined || hasDepositBefore === undefined) {
+			try {
+				let userData = {};
+				userData = this.apollo.readQuery({
+					query: optimizelyUserDataQuery,
+				});
 
-			hasLentBefore = userData?.my?.loans?.totalCount > 0;
-			hasDepositBefore = userData?.my?.transactions?.totalCount > 0;
-			hasEverLoggedIn = userData?.hasEverLoggedIn;
-			this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { path: '/' });
-			this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { path: '/' });
+				hasLentBefore = userData?.my?.loans?.totalCount > 0;
+				hasDepositBefore = userData?.my?.transactions?.totalCount > 0;
 
-			userHasLentBefore(hasLentBefore);
-			userHasDepositBefore(hasDepositBefore);
-		} catch (e) {
-			logReadQueryError(e, 'User Data For Optimizely Metrics');
+				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { path: '/' });
+				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { path: '/' });
+
+				userHasLentBefore(hasLentBefore);
+				userHasDepositBefore(hasDepositBefore);
+			} catch (e) {
+				logReadQueryError(e, 'User Data For Optimizely Metrics');
+			}
 		}
-
 		// MARS-246 Hotjar user attributes
-		setHotJarUserAttributes({
-			userId: this.userId,
-			hasEverLoggedIn,
-			hasLentBefore,
-			hasDepositBefore,
-		});
+		if (this.userId) {
+			setHotJarUserAttributes({
+				userId: this.userId,
+				hasEverLoggedIn: this.hasEverLoggedIn,
+				hasLentBefore: Boolean(hasLentBefore),
+				hasDepositBefore: Boolean(hasDepositBefore),
+			});
+		}
 	},
 	methods: {
 		toggleLendMenu(immediate = false) {

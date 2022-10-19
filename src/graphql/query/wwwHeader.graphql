@@ -1,4 +1,5 @@
 query wwwHeader($basketId: String) {
+	hasEverLoggedIn @client
 	shop (basketId: $basketId) {
 		id
 		nonTrivialItemCount
