@@ -1,3 +1,25 @@
+## [2.349.0](https://github.com/kiva/ui/compare/v2.348.0...v2.349.0) (2022-10-20)
+
+
+### Features
+
+* gender added to facets for location options ([10adc96](https://github.com/kiva/ui/commit/10adc96f5b53bc583ecdd6003afe72e9afe352ab))
+
+## [2.348.0](https://github.com/kiva/ui/compare/v2.347.3...v2.348.0) (2022-10-20)
+
+
+### Features
+
+* dynamic copy was added for every category and subcategory in helpme choose exp ([cbe47a8](https://github.com/kiva/ui/commit/cbe47a84a607acbe15c475f851adaf95b9cca2b8))
+
+### [2.347.3](https://github.com/kiva/ui/compare/v2.347.2...v2.347.3) (2022-10-19)
+
+
+### Bug Fixes
+
+* avoid skipping userData query ([7751e2d](https://github.com/kiva/ui/commit/7751e2dc8281ffc5c34a1f46cbb204ea794f3734))
+* revert and add hasEverLoggedIn in header query due to performance ([4ea976e](https://github.com/kiva/ui/commit/4ea976ec3a6d9b09de60d754de92c5730be93b73))
+
 ### [2.347.2](https://github.com/kiva/ui/compare/v2.347.1...v2.347.2) (2022-10-19)
 
 

@@ -65,11 +65,16 @@ export default {
 		userData: {
 			type: Object,
 			default: () => {}
+		},
+		loanChannelName: {
+			type: String,
+			default: ''
 		}
 	},
 	data() {
 		return {
-			triggersVisible: true
+			triggersVisible: true,
+			subCategoryTitle: ''
 		};
 	},
 	components: {
@@ -85,7 +90,7 @@ export default {
 		},
 		subTitle() {
 			if (!this.triggersVisible) {
-				return 'Borrowers we think you’ll like';
+				return `${this.loanChannelName} + ${this.subCategoryTitle}`;
 			}
 			return 'Choose a subcategory and we\'ll do the rest.';
 		}
@@ -94,13 +99,13 @@ export default {
 		showLoans(event) {
 			this.triggersVisible = false;
 			if (event === 'amountLeft') {
-				// getting loans code block
+				this.subCategoryTitle = 'Almost funded';
 			}
 			if (event === 'personalized') {
-				// getting loans code block
+				this.subCategoryTitle = 'Recommended for you';
 			}
 			if (event === 'researchScore') {
-				// getting loans code block
+				this.subCategoryTitle = 'Research backed impact';
 			}
 		}
 	}
