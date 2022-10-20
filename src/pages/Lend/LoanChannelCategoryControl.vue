@@ -450,6 +450,8 @@ export default {
 		updateQuickFilters(filter) {
 			if (filter.gender !== undefined) {
 				this.selectedQuickFilters.gender = filter.gender;
+				this.flssLoanSearch.gender = filter.gender;
+				this.fetchFacets(this.flssLoanSearch);
 			} else if (filter.sortBy) {
 				this.selectedQuickFilters.sortBy = filter.sortBy;
 			} else {
