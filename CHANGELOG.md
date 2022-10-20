@@ -1,3 +1,10 @@
+## [2.349.0](https://github.com/kiva/ui/compare/v2.348.0...v2.349.0) (2022-10-20)
+
+
+### Features
+
+* gender added to facets for location options ([10adc96](https://github.com/kiva/ui/commit/10adc96f5b53bc583ecdd6003afe72e9afe352ab))
+
 ## [2.348.0](https://github.com/kiva/ui/compare/v2.347.3...v2.348.0) (2022-10-20)
 
 
