@@ -140,6 +140,36 @@ describe('LoanSearchFilterChips', () => {
 		expect(emitted().updated[0]).toEqual([{ distributionModel: null }]);
 	});
 
+	it('should handle is individual chip click', async () => {
+		const user = userEvent.setup();
+
+		const { getByText, emitted } = render(LoanSearchFilterChips, {
+			props: {
+				loanSearchState: mockState,
+				allFacets: mockAllFacets
+			}
+		});
+
+		await user.click(getByText('Group'));
+
+		expect(emitted().updated[0]).toEqual([{ isIndividual: null }]);
+	});
+
+	it('should handle lender repayment term chip click', async () => {
+		const user = userEvent.setup();
+
+		const { getByText, emitted } = render(LoanSearchFilterChips, {
+			props: {
+				loanSearchState: mockState,
+				allFacets: mockAllFacets
+			}
+		});
+
+		await user.click(getByText('8 mths or less'));
+
+		expect(emitted().updated[0]).toEqual([{ lenderRepaymentTerm: null }]);
+	});
+
 	it('should track event', async () => {
 		const user = userEvent.setup();
 

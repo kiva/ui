@@ -1,6 +1,7 @@
 import { isNumber } from '@/util/numberUtils';
 import { updateSearchState } from '@/util/loanSearch/searchStateUtils';
 import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
+import { createMinMaxRange, getMinMaxRangeQueryParam } from '@/util/loanSearch/minMaxRange';
 import VueRouter from 'vue-router';
 
 /**
@@ -8,10 +9,12 @@ import VueRouter from 'vue-router';
  */
 const lendToFlssSort = new Map([
 	['expiringSoon', 'expiringSoon'],
-	['popularity', 'personalized'],
+	['popularity', 'popularityScore'],
+	['personalized', 'personalized'],
 	['loanAmountDesc', 'amountHighToLow'],
 	['loanAmount', 'amountLowToHigh'],
-	['amountLeft', 'amountLeft']
+	['amountLeft', 'amountLeft'],
+	['repaymentTerm', 'repaymentTerm']
 ]);
 
 /**
@@ -26,12 +29,6 @@ export function hasExcludedQueryParams(query) {
 		'activity',
 		'city_state',
 		'defaultRate',
-		// We don't yet officially support this query param, but will soon
-		// Dropping it doesn't have any ill affect on the most popular categories
-		// If problems are reported we can uncomment this one to redirect to legacy
-		// 'distributionModel',
-		'isGroup',
-		'lenderTerm',
 		'loanTags',
 		'partner',
 		'riskRating',
@@ -57,6 +54,48 @@ export function getEnumNameFromQueryParam(param, facets) {
 	if (param) {
 		return facets.find(f => f.name.toUpperCase() === param.toUpperCase())?.name;
 	}
+}
+
+/**
+ * Gets boolean value based on string query param
+ *
+ * @param {string} param The query param to parse
+ * @returns The boolean value
+ */
+export function getBooleanValueFromQueryParam(param) {
+	const lowerParam = param?.toLowerCase();
+
+	// eslint-disable-next-line no-nested-ternary
+	return lowerParam === 'true' ? true : (lowerParam === 'false' ? false : null);
+}
+
+/**
+ * Gets the min max range object based on string query param
+ *
+ * @param {string} param The query param to parse
+ * @returns The min max range object
+ */
+export function getMinMaxRangeFromQueryParam(param) {
+	if (!param) return;
+
+	const minMaxSplit = param?.split(',');
+
+	if (minMaxSplit.length === 2 && isNumber(minMaxSplit[0]) && isNumber(minMaxSplit[1])) {
+		return createMinMaxRange(+minMaxSplit[0], +minMaxSplit[1]);
+	}
+}
+
+/**
+ * Gets the is individual filter value based on the query param
+ *
+ * @param {string} param The query param to parse
+ * @returns The is individual filter value
+ */
+export function getIsIndividualFromQueryParam(param) {
+	const value = getBooleanValueFromQueryParam(param);
+
+	// Reverse the "isGroup" param that is used to match legacy filters
+	return typeof value === 'boolean' ? !value : null;
 }
 
 /**
@@ -163,6 +202,8 @@ export async function applyQueryParams(apollo, query, allFacets, queryType, page
 		),
 		tagId: getIdsFromQueryParam(query.tag || query.tags, allFacets.tagNames, allFacets.tagFacets),
 		distributionModel: getEnumNameFromQueryParam(query.distributionModel, allFacets.distributionModelFacets),
+		isIndividual: getIsIndividualFromQueryParam(query.isGroup),
+		lenderRepaymentTerm: getMinMaxRangeFromQueryParam(query.lenderTerm),
 		pageOffset: page * pageLimit,
 		pageLimit,
 	};
@@ -206,6 +247,13 @@ export function updateQueryParams(loanSearchState, router, queryType) {
 		...(loanSearchState.themeId?.length && { attribute: loanSearchState.themeId.join() }),
 		...(loanSearchState.tagId?.length && { tag: loanSearchState.tagId.join() }),
 		...(loanSearchState.distributionModel && { distributionModel: loanSearchState.distributionModel }),
+		// Reverse "isIndividual" to match legacy "isGroup" query param
+		...(typeof loanSearchState.isIndividual === 'boolean' && {
+			isGroup: (!loanSearchState.isIndividual).toString()
+		}),
+		...(loanSearchState.lenderRepaymentTerm && {
+			lenderTerm: getMinMaxRangeQueryParam(loanSearchState.lenderRepaymentTerm)
+		}),
 		...(queryParamSortBy && { sortBy: queryParamSortBy }),
 		...(page > 1 && { page: page.toString() }),
 		...utmParams,

@@ -25,6 +25,7 @@ describe('flssUtils.js', () => {
 				tagId: [],
 				sectorId: [],
 				distributionModel: null,
+				isIndividual: null,
 				description: null,
 			};
 
@@ -39,6 +40,8 @@ describe('flssUtils.js', () => {
 				tagId: [1],
 				sectorId: [1],
 				distributionModel: 'DIRECT',
+				isIndividual: false,
+				lenderRepaymentTerm: { min: 0, max: 8, __typename: 'MinMaxRange' },
 				description: 'desc',
 			};
 
@@ -49,6 +52,8 @@ describe('flssUtils.js', () => {
 				tagId: { any: [1] },
 				sectorId: { any: [1] },
 				distributionModel: { eq: 'DIRECT' },
+				isIndividual: { eq: false },
+				lenderRepaymentTerm: { range: { gte: 0, lte: 8 } },
 				description: { eq: 'desc' },
 			});
 		});

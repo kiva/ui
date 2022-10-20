@@ -10,5 +10,10 @@ mutation updateLoanSearch($searchParams: JSONObject) {
 		pageOffset
 		pageLimit
 		distributionModel
+		isIndividual
+		lenderRepaymentTerm {
+			min
+			max
+		}
 	}
 }

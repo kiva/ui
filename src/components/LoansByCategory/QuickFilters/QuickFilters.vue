@@ -26,7 +26,13 @@
 				>
 					Gender
 				</label>
-				<kv-select :disabled="!filtersLoaded" v-model="selectedGender" id="gender" style="min-width: 140px;">
+				<kv-select
+					:disabled="!filtersLoaded"
+					v-model="selectedGender"
+					id="gender"
+					style="min-width: 140px;"
+					@click.native="trackDropdownClick('gender')"
+				>
 					<option
 						v-for="gender in filterOptions.gender"
 						:key="gender.key"
@@ -38,11 +44,13 @@
 			</div>
 
 			<location-selector
+				@click.native="trackDropdownClick('location')"
 				class="tw-order-1 lg:tw-order-2"
 				:regions="filterOptions.location"
 				:total-loans="totalLoans"
 				:filters-loaded="filtersLoaded"
 				:update-location="updateLocation"
+				ref="locationSelector"
 			/>
 
 			<div class="tw-flex tw-flex-col tw-order-3">
@@ -52,7 +60,12 @@
 				>
 					Sort By
 				</label>
-				<kv-select :disabled="!filtersLoaded" v-model="sortBy" id="sortBy" style="min-width: 180px;">
+				<kv-select
+					:disabled="!filtersLoaded"
+					v-model="sortBy" id="sortBy"
+					style="min-width: 180px;"
+					@click.native="trackDropdownClick('sort')"
+				>
 					<option
 						v-for="sortType in filterOptions.sorting"
 						:key="sortType.key"
@@ -105,20 +118,53 @@ export default {
 	watch: {
 		selectedGender(gender) {
 			this.updateFilters({ gender });
+			this.$kvTrackEvent(
+				'search',
+				'filter',
+				'quick-filters-option',
+				gender === '' ? 'all genders' : gender
+			);
 		},
 		sortBy(sortBy) {
 			this.updateFilters({ sortBy });
+			this.$kvTrackEvent(
+				'search',
+				'click',
+				'quick-filters-option',
+				sortBy
+			);
 		}
 	},
 	methods: {
 		updateLocation(location) {
 			this.updateFilters({ country: location });
+			this.$kvTrackEvent(
+				'search',
+				'filter',
+				'quick-filters-option',
+				location
+			);
 		},
 		resetFilters() {
 			this.$emit('reset-filters');
 			this.selectedGender = '';
 			this.sortBy = 'personalized';
 			this.updateLocation([]);
+			this.$refs.locationSelector.emptyCountries();
+			this.$kvTrackEvent(
+				'search',
+				'click',
+				'quick-filters-reset',
+				'all'
+			);
+		},
+		trackDropdownClick(label) {
+			this.$kvTrackEvent(
+				'search',
+				'click',
+				'quick-filters-dropdown',
+				label
+			);
 		}
 	},
 	mounted() {

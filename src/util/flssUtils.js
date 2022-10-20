@@ -2,6 +2,7 @@ import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 import flssLoanFacetsQuery from '@/graphql/query/flssLoanFacetsQuery.graphql';
 import flssLoanChannelQuery from '@/graphql/query/flssLoanChannel.graphql';
 import logReadQueryError from '@/util/logReadQueryError';
+import { getMinMaxRangeFilter } from '@/util/loanSearch/minMaxRange';
 
 /**
  * FLSS Query Context Const lists
@@ -29,6 +30,12 @@ export function getFlssFilters(loanSearchState) {
 		...(loanSearchState?.distributionModel && { distributionModel: { eq: loanSearchState.distributionModel } }),
 		...(loanSearchState?.tagId?.length && { tagId: { any: loanSearchState.tagId } }),
 		...(loanSearchState?.description && { description: { eq: loanSearchState.description } }),
+		...(typeof loanSearchState?.isIndividual !== 'undefined' && loanSearchState.isIndividual !== null && {
+			isIndividual: { eq: loanSearchState.isIndividual }
+		}),
+		...(loanSearchState?.lenderRepaymentTerm && {
+			lenderRepaymentTerm: { range: getMinMaxRangeFilter(loanSearchState.lenderRepaymentTerm) }
+		}),
 	};
 }
 

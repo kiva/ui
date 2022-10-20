@@ -17,7 +17,7 @@
 			<!-- If allSharesReserved, disable link by making it a span -->
 			<router-link
 				:is="allSharesReserved ? 'span' : 'router-link'"
-				:to="customLoanDetails ? null : `/lend/${loanId}`"
+				:to="customLoanDetails ? '' : `/lend/${loanId}`"
 				v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
 			>
 				<borrower-image
@@ -177,7 +177,7 @@
 						v-if="!showLendNowButton"
 						class="tw-mb-2 tw-self-start"
 						:state="`${allSharesReserved ? 'disabled' : ''}`"
-						:to="customLoanDetails ? null : `/lend/${loanId}`"
+						:to="customLoanDetails ? '' : `/lend/${loanId}`"
 						@click="showLoanDetails"
 						v-kv-track-event="['Lending', 'click-Read-more', 'View loan', loanId]"
 					>
@@ -391,18 +391,14 @@ export default {
 		isLessThan25() {
 			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
 		},
-		inBorrowerProfilePage() {
-			return this.$route.path.includes('funded');
-		},
 		lendAmount() {
 			return this.isLessThan25 ? this.unreservedAmount : 25;
 		},
 		ctaButtonText() {
 			return `Lend $${this.lendAmount} now`;
 		},
-		// TODO refactor this when inBorrowerProfilePage is removed.
 		showLendNowButton() {
-			return this.inBorrowerProfilePage || this.lendNowButton;
+			return this.lendNowButton;
 		}
 	},
 	methods: {

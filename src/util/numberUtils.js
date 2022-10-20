@@ -8,7 +8,7 @@
  * @returns Whether the value is a number
  */
 export function isNumber(value) {
-	if (['object', 'boolean'].includes(typeof value)) return false;
+	if (value === '' || ['object', 'boolean'].includes(typeof value)) return false;
 
 	return !Number.isNaN(Number(value));
 }

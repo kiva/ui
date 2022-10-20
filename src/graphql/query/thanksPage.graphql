@@ -1,4 +1,5 @@
 query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
+	hasEverLoggedIn @client
 	shop {
 		id
 		receipt(checkoutId: $checkoutId, visitorId: $visitorId) {

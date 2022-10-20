@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-relative tw-w-full">
+	<div class="tw-relative tw-flex tw-flex-col tw-w-full">
 		<label
 			class="tw-text-h4"
 			for="location"
@@ -15,6 +15,8 @@
 			@click="toggleRegions()"
 			placeholder="All countries"
 			:disabled="!filtersLoaded"
+			autocomplete="off"
+			readonly
 		/>
 
 		<div
@@ -38,6 +40,7 @@
 				tw-overflow-auto
 
 				md:tw-absolute
+				md:tw-mt-9
 				md:tw-bottom-auto
 				md:tw-top-auto
 				md:tw-rounded
@@ -57,16 +60,25 @@
 						/>
 					</button>
 				</div>
-				<ol class="tw-whitespace-nowrap">
+				<ol
+					class="tw-whitespace-nowrap lg:tw-bg-secondary lg:tw-py-2"
+					style="margin: -12px;"
+				>
+					<li
+						class="tw-hidden lg:tw-block tw-px-4 tw-py-2"
+					>
+						Regions
+					</li>
 					<li
 						v-for="(region, index) in regions" :key="index"
-						class="tw-border-b tw-border-tertiary lg:tw-border-b-0 lg:tw-pr-2"
+						class="tw-border-b tw-border-tertiary lg:tw-border-b-0 lg:tw-pr-2 tw-py-0.5"
+						:class="{ 'tw-bg-primary': selectedRegion === index }"
 					>
 						<button
 							@click="selectRegion(index)"
 							class="tw-py-0.5 tw-font-medium
 								tw-flex tw-items-center tw-justify-between lg:tw-justify-start tw-w-full
-								tw-text-left tw-uppercase lg:tw-capitalize "
+								tw-text-left tw-uppercase lg:tw-capitalize"
 						>
 							<div class="tw-flex tw-items-center">
 								<div class="tw-w-4 tw-text-action tw-text-small tw-text-right tw-mr-.5">
@@ -110,10 +122,9 @@
 			</div>
 			<div
 				v-if="selectedRegion !== null"
-				class="tw-w-full tw-hidden lg:tw-flex tw-flex-col tw-justify-between tw-ml-1"
+				class="tw-w-full tw-hidden lg:tw-flex tw-flex-col tw-justify-between tw-ml-1 lg:tw-ml-3"
 			>
 				<checkbox-list
-					class="tw-pl-3"
 					:items="getItems(activeCountries)"
 					:selected-values="selectedCountries"
 					@updated="updateCountries($event)"
@@ -125,7 +136,7 @@
 					</button>
 
 					<kv-button
-						@click="toggleRegions()"
+						@click="handleClickCta"
 					>
 						See {{ totalLoans }} loans
 					</kv-button>
@@ -183,10 +194,35 @@ export default {
 		};
 	},
 	methods: {
+		handleClickCta() {
+			this.toggleRegions();
+			this.$kvTrackEvent(
+				'search',
+				'click',
+				'apply-quick-filters',
+				'see-loans',
+			);
+		},
+		emptyCountries() {
+			this.selectedCountries = [];
+		},
+		resetCountries() {
+			this.emptyCountries();
+			this.$kvTrackEvent(
+				'search',
+				'filter',
+				'quick-filters-reset',
+				'countries',
+			);
+		},
 		toggleRegions() {
 			this.showRegions = !this.showRegions;
 			this.selectedRegion = null;
-			this.updateLocation(this.selectedCountries);
+			if (this.showRegions) {
+				document.documentElement.style.overflow = 'hidden';
+			} else {
+				document.documentElement.style.overflow = 'auto';
+			}
 		},
 		selectRegion(index) {
 			this.selectedRegion = this.selectedRegion === index ? null : index;
@@ -236,6 +272,11 @@ export default {
 				message = this.selectedCountries.length === 1 ? '1 country' : `${this.selectedCountries.length} countries`; // eslint-disable-line max-len
 			}
 			return message;
+		}
+	},
+	watch: {
+		selectedCountries() {
+			this.updateLocation(this.selectedCountries);
 		}
 	}
 

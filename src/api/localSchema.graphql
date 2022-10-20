@@ -85,6 +85,8 @@ type LoanSearchState {
 	pageOffset: [Int]
 	pageLimit: [Int]
 	distributionModel: String
+	isIndividual: Boolean
+	lenderRepaymentTerm: MinMaxRange
 }
 
 type TipMessage {
