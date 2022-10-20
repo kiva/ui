@@ -54,7 +54,8 @@ fragment loanCardFields on LoanBasic {
 	... on LoanPartner {
 		partnerName
 	}
-	...on LoanDirect {
+	... on LoanDirect {
 		trusteeName
 	}
+	fundraisingPercent @client
 }

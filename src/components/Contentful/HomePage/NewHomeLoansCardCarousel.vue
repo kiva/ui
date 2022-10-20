@@ -9,7 +9,7 @@
 				<div>
 					<kiva-loan-card-carousel
 						:selected-channel="selectedChannel"
-						:loan-ids="selectedChannelLoanIds"
+						:loans="selectedChannelLoanIds"
 					/>
 				</div>
 			</kv-page-container>
@@ -19,6 +19,7 @@
 
 <script>
 import gql from 'graphql-tag';
+import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import KivaLoanCardCarousel from '@/components/LoanCollections/HomeExp/KivaLoanCardCarousel';
 import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
@@ -97,7 +98,7 @@ export default {
 			const selectedChannel = this.combinedLoanChannelData.find(channel => {
 				return this.selectedChannel?.id === channel.id;
 			});
-			return selectedChannel?.loans?.values?.map(loan => loan.id) ?? [];
+			return selectedChannel?.loans.values ?? [];
 		},
 		showViewMoreCard() {
 			return this.loanDisplaySettings?.showViewMoreCard ?? false;
@@ -109,7 +110,9 @@ export default {
 	methods: {
 		fetchLoanChannel() {
 			this.apollo.query({
-				query: gql`query selectedLoanCategory($loanChannelIds: [Int]!, $loanLimit: Int) {
+				query: gql`
+				${loanCardFieldsFragment}
+				query selectedLoanCategory($loanChannelIds: [Int]!, $loanLimit: Int) {
 					lend {
 						loanChannelsById(ids: $loanChannelIds){
 							id
@@ -118,6 +121,7 @@ export default {
 							loans(limit: $loanLimit) {
 								values {
 									id
+									...loanCardFields
 								}
 							}
 						}

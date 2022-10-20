@@ -10,7 +10,7 @@
 		</transition>
 		<kv-carousel
 			id="loan-category-carousel"
-			v-if="augmentedLoanIds.length > 0 && isVisible"
+			v-if="loans.length > 0 && isVisible"
 			:class="['tw-w-full tw-overflow-visible md:tw-overflow-hidden', { 'md:tw-hidden' : newHomeExp }]"
 			:embla-options="{
 				loop: false,
@@ -21,13 +21,14 @@
 			:slide-max-width="singleSlideWidth"
 			@interact-carousel="onInteractCarousel"
 		>
-			<template v-for="(loanId, index) in augmentedLoanIds" #[`slide${index}`]>
+			<template v-for="(loan, index) in loans" #[`slide${index}`]>
 				<!-- show loan card -->
 				<!-- TODO Re-implement card position analytics -->
 				<new-home-page-loan-card
 					:item-index="index"
-					:key="`loan-${loanId}`"
-					:loan-id="loanId"
+					:key="`loan-${loan.id}`"
+					:loan-id="loan.id"
+					:loan="loan"
 				/>
 			</template>
 			<!-- Show View more Card -->
@@ -57,13 +58,14 @@
 		</kv-carousel>
 		<template v-if="newHomeExp && !isLoading">
 			<div class="tw-hidden md:tw-grid md:tw-grid-cols-2 md:tw-gap-4 lg:tw-grid-cols-3">
-				<template v-for="(loanId, index) in augmentedLoanIds">
+				<template v-for="(loan, index) in loans">
 					<!-- show loan card -->
 					<!-- TODO Re-implement card position analytics -->
 					<new-home-page-loan-card
 						:item-index="index"
-						:key="`loan-${loanId}`"
-						:loan-id="loanId"
+						:key="`loan-${loan.id}`"
+						:loan-id="loan.id"
+						:loan="loan"
 					/>
 				</template>
 			</div>
@@ -140,11 +142,11 @@ export default {
 	},
 	computed: {
 		isLoading() {
-			return this.augmentedLoanIds.length === 0 && !this.isVisible;
+			return this.loans.length === 0 && !this.isVisible;
 		},
-		augmentedLoanIds() {
-			const clonedLoanIds = [...this.loanIds];
-			return clonedLoanIds;
+		loans() {
+			const clonedLoans = [...this.selectedChannel?.loans?.values || []];
+			return clonedLoans;
 		},
 		cleanUrl() {
 			// Convert LoanChannel Url to use first path segment /lend-by-category instead of /lend

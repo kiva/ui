@@ -11,7 +11,7 @@
 
 		<kv-carousel
 			id="loan-carousel"
-			v-if="augmentedLoanIds.length > 0"
+			v-if="loans.length > 0"
 			class="tw-w-full tw-overflow-visible md:tw-overflow-hidden"
 			:embla-options="{
 				loop: false,
@@ -22,11 +22,12 @@
 			:slide-max-width="singleSlideWidth"
 			@interact-carousel="onInteractCarousel"
 		>
-			<template v-for="(loanId, index) in augmentedLoanIds" #[`slide${index}`]>
+			<template v-for="(loan, index) in loans" #[`slide${index}`]>
 				<new-home-page-loan-card
 					:item-index="index"
-					:key="`loan-${loanId}`"
-					:loan-id="loanId"
+					:key="`loan-${loan.id}`"
+					:loan-id="loan.id"
+					:loan="loan"
 				/>
 			</template>
 			<!-- Show View more Card -->
@@ -62,7 +63,7 @@ export default {
 		NewHomePageLoanCard,
 	},
 	props: {
-		loanIds: {
+		loans: {
 			type: Array,
 			default: () => [],
 		},
@@ -80,11 +81,7 @@ export default {
 	},
 	computed: {
 		isLoading() {
-			return this.augmentedLoanIds.length === 0;
-		},
-		augmentedLoanIds() {
-			const clonedLoanIds = [...this.loanIds];
-			return clonedLoanIds;
+			return this.loans.length === 0;
 		},
 		cleanUrl() {
 			const lastPathIndex = this.url.lastIndexOf('/');

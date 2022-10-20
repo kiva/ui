@@ -27,6 +27,7 @@
 
 <script>
 import gql from 'graphql-tag';
+import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import KivaLoanCardCategory from '@/components/LoanCollections/HomeExp/KivaLoanCardCategory';
 import LoanCategorySelectorHomeExp from '@/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
@@ -94,7 +95,7 @@ export default {
 			return this.loanDisplaySettings?.showViewMoreCard ?? false;
 		}
 	},
-	mounted() {
+	created() {
 		this.fetchLoanChannel();
 	},
 	methods: {
@@ -105,7 +106,9 @@ export default {
 		},
 		fetchLoanChannel() {
 			this.apollo.query({
-				query: gql`query selectedLoanCategory($loanChannelIds: [Int]!, $loanLimit: Int) {
+				query: gql`
+				${loanCardFieldsFragment}
+				query selectedLoanCategory($loanChannelIds: [Int]!, $loanLimit: Int) {
 					lend {
 						loanChannelsById(ids: $loanChannelIds){
 							id
@@ -114,6 +117,7 @@ export default {
 							loans(limit: $loanLimit) {
 								values {
 									id
+									...loanCardFields
 								}
 							}
 						}

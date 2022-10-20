@@ -127,8 +127,6 @@
 
 <script>
 import { mdiMapMarker } from '@mdi/js';
-import gql from 'graphql-tag';
-import * as Sentry from '@sentry/vue';
 import LoanUse from '@/components/BorrowerProfile/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
@@ -136,37 +134,9 @@ import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
-import { watchLoanCardData } from '@/util/loanUtils';
-import { createIntersectionObserver } from '@/util/observerUtils';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-
-const loanCardQuery = gql`query welcomeLoanCard($loanId: Int!) {
-	lend {
-		loan(id: $loanId) {
-			id
-			distributionModel
-			geocode {
-				country {
-					name
-				}
-			}
-			image {
-				id
-				hash
-			}
-			name
-			use
-			loanAmount
-			loanFundraisingInfo {
-				fundedAmount
-				reservedAmount
-			}
-			fundraisingPercent @client
-		}
-	}
-}`;
 
 export default {
 	name: 'NewHomePageLoanCard',
@@ -174,6 +144,10 @@ export default {
 		loanId: {
 			type: Number,
 			required: true,
+		},
+		loan: {
+			type: Object,
+			default: () => {},
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -190,9 +164,8 @@ export default {
 	},
 	data() {
 		return {
-			loan: null,
 			mdiMapMarker,
-			isLoading: true,
+			isLoading: false,
 			queryObserver: null,
 			viewportObserver: null,
 		};
@@ -242,74 +215,6 @@ export default {
 		},
 		loanAmount() {
 			return this.loan?.loanAmount;
-		},
-	},
-	methods: {
-		createViewportObserver() {
-			// Watch for this element being in the viewport
-			this.viewportObserver = createIntersectionObserver({
-				targets: [this.$el],
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							// This element is in the viewport, so load the data.
-							this.loadData();
-						}
-					});
-				}
-			});
-			if (!this.viewportObserver) {
-				// Observer was not created, so call loadData right away as a fallback.
-				this.loadData();
-			}
-		},
-		destroyViewportObserver() {
-			if (this.viewportObserver) {
-				this.viewportObserver.disconnect();
-			}
-		},
-		loadData() {
-			if (!this.queryObserver) {
-				this.queryObserver = watchLoanCardData({
-					apollo: this.apollo,
-					loanId: this.loanId,
-					loanCardQuery,
-					callback: result => this.processQueryResult(result),
-				});
-			}
-		},
-		processQueryResult(result) {
-			if (result.error) {
-				this.$showTipMsg('There was a problem loading your loan recommendations', 'error');
-				try {
-					Sentry.withScope(scope => {
-						scope.setTag('wizard_stage', 'results');
-						scope.setTag('loan_id', this.loanId);
-						Sentry.captureException(result.error);
-					});
-				} catch (e) {
-					// no-op
-				}
-			}
-
-			this.isLoading = false;
-			this.loan = result.data?.lend?.loan || null;
-		},
-	},
-	mounted() {
-		this.createViewportObserver();
-	},
-	beforeDestroy() {
-		this.destroyViewportObserver();
-	},
-	watch: {
-		// When loan id changes, update watch query variables
-		loanId(loanId) {
-			if (this.queryObserver) {
-				this.queryObserver.setVariables({
-					loanId,
-				});
-			}
 		},
 	},
 };
