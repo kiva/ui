@@ -1,3 +1,10 @@
+### [2.350.1](https://github.com/kiva/ui/compare/v2.350.0...v2.350.1) (2022-10-20)
+
+
+### Bug Fixes
+
+* make sure game users see the FLSS loan results in carousel ([98a1d0f](https://github.com/kiva/ui/commit/98a1d0f5e4fe6cefc090556852c10988d53c1bb9))
+
 ## [2.350.0](https://github.com/kiva/ui/compare/v2.349.0...v2.350.0) (2022-10-20)
 
 
