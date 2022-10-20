@@ -106,7 +106,6 @@ export const typePolicies = {
 };
 
 export default function createApolloClient({
-	// appConfig,
 	cookieStore,
 	kvAuth0,
 	types,
@@ -114,8 +113,6 @@ export default function createApolloClient({
 	fetch
 }) {
 	// initialize local state resolvers
-	// TODO: convert resolvers into typePolicies
-	// const { resolvers } = initState({ appConfig, cookieStore, kvAuth0 });
 
 	const possibleTypes = {};
 	types.forEach(element => {
