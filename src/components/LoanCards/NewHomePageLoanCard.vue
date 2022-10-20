@@ -148,6 +148,10 @@ export default {
 		loan: {
 			type: Object,
 			default: () => {},
+		},
+		isLoading: {
+			type: Boolean,
+			default: true,
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -165,7 +169,6 @@ export default {
 	data() {
 		return {
 			mdiMapMarker,
-			isLoading: false,
 			queryObserver: null,
 			viewportObserver: null,
 		};

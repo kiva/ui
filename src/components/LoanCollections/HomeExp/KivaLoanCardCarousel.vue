@@ -28,6 +28,7 @@
 					:key="`loan-${loan.id}`"
 					:loan-id="loan.id"
 					:loan="loan"
+					:is-loading="isLoading"
 				/>
 			</template>
 			<!-- Show View more Card -->
