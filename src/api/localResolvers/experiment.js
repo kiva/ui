@@ -26,7 +26,7 @@ export default ({ cookieStore }) => {
 							}
 						});
 					} catch (e) {
-						logReadQueryError(e, 'AlgoliaPOC itemsInBasketQuery');
+						logReadQueryError(e, 'ExperimentResolver experimentSettingQuery');
 					}
 
 					const experimentSetting = experimentData?.general?.uiExperimentSetting;
