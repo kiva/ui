@@ -64,6 +64,7 @@
 						:items-in-basket="itemsInBasket"
 						:is-visitor="isVisitor"
 						:user-data="userData"
+						:loan-channel-name="loanChannelName"
 					/>
 				</div>
 				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
@@ -95,6 +96,7 @@
 						:items-in-basket="itemsInBasket"
 						:is-visitor="isVisitor"
 						:user-data="userData"
+						:loan-channel-name="loanChannelName"
 					/>
 				</div>
 				<kv-pagination
