@@ -1,3 +1,10 @@
+## [2.348.0](https://github.com/kiva/ui/compare/v2.347.3...v2.348.0) (2022-10-20)
+
+
+### Features
+
+* dynamic copy was added for every category and subcategory in helpme choose exp ([cbe47a8](https://github.com/kiva/ui/commit/cbe47a84a607acbe15c475f851adaf95b9cca2b8))
+
 ### [2.347.3](https://github.com/kiva/ui/compare/v2.347.2...v2.347.3) (2022-10-19)
 
 
