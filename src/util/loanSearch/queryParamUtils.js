@@ -33,7 +33,6 @@ export function hasExcludedQueryParams(query) {
 		'partner',
 		'riskRating',
 		'state',
-		'queryString', // can be mapped to description
 		'loanLimit',
 	];
 	// Check route.query for excluded params
@@ -204,6 +203,7 @@ export async function applyQueryParams(apollo, query, allFacets, queryType, page
 		distributionModel: getEnumNameFromQueryParam(query.distributionModel, allFacets.distributionModelFacets),
 		isIndividual: getIsIndividualFromQueryParam(query.isGroup),
 		lenderRepaymentTerm: getMinMaxRangeFromQueryParam(query.lenderTerm),
+		keywordSearch: query.queryString,
 		pageOffset: page * pageLimit,
 		pageLimit,
 	};
@@ -254,6 +254,7 @@ export function updateQueryParams(loanSearchState, router, queryType) {
 		...(loanSearchState.lenderRepaymentTerm && {
 			lenderTerm: getMinMaxRangeQueryParam(loanSearchState.lenderRepaymentTerm)
 		}),
+		...(loanSearchState.keywordSearch && { queryString: loanSearchState.keywordSearch }),
 		...(queryParamSortBy && { sortBy: queryParamSortBy }),
 		...(page > 1 && { page: page.toString() }),
 		...utmParams,

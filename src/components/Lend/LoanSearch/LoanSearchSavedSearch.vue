@@ -180,11 +180,12 @@ export default {
 			);
 			// We want to exclude sending any utm params
 			// New lend/filter page doesn't allow for custom keywords ATM - revisit this after exp phase
-			// const queryString = window.location.search.replace(/(&|\?)utm_[a-zA-Z0-9]*=[a-zA-Z0-9]*/, '');
 			createSavedSearch(
-				this.apollo, this.reformattedSearchState, '', this.savedSearchName
-			// eslint-disable-next-line no-unused-vars
-			).then(({ data }) => {
+				this.apollo,
+				this.reformattedSearchState,
+				this.loanSearchState?.keywordSearch ?? '',
+				this.savedSearchName
+			).then(() => {
 				this.showSuccessMessage(this.savedSearchName);
 			}).catch(errorResponse => {
 				logFormatter(errorResponse, 'error');

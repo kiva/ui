@@ -170,6 +170,21 @@ describe('LoanSearchFilterChips', () => {
 		expect(emitted().updated[0]).toEqual([{ lenderRepaymentTerm: null }]);
 	});
 
+	it('should handle keyword search chip click', async () => {
+		const user = userEvent.setup();
+
+		const { getByText, emitted } = render(LoanSearchFilterChips, {
+			props: {
+				loanSearchState: mockState,
+				allFacets: mockAllFacets
+			}
+		});
+
+		await user.click(getByText(mockState.keywordSearch));
+
+		expect(emitted().updated[0]).toEqual([{ keywordSearch: null }]);
+	});
+
 	it('should track event', async () => {
 		const user = userEvent.setup();
 

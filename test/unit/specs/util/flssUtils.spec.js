@@ -26,7 +26,7 @@ describe('flssUtils.js', () => {
 				sectorId: [],
 				distributionModel: null,
 				isIndividual: null,
-				description: null,
+				keywordSearch: null,
 			};
 
 			expect(getFlssFilters(state)).toEqual({});
@@ -42,7 +42,7 @@ describe('flssUtils.js', () => {
 				distributionModel: 'DIRECT',
 				isIndividual: false,
 				lenderRepaymentTerm: { min: 0, max: 8, __typename: 'MinMaxRange' },
-				description: 'desc',
+				keywordSearch: 'search',
 			};
 
 			expect(getFlssFilters(state)).toEqual({
@@ -54,7 +54,7 @@ describe('flssUtils.js', () => {
 				distributionModel: { eq: 'DIRECT' },
 				isIndividual: { eq: false },
 				lenderRepaymentTerm: { range: { gte: 0, lte: 8 } },
-				description: { eq: 'desc' },
+				description: { eq: 'search' },
 			});
 		});
 	});

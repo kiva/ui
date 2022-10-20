@@ -429,7 +429,7 @@ export default {
 					url: 'solar-energy',
 					queryParams: 'queryString=solar',
 					flssLoanSearch: {
-						description: 'solar'
+						keywordSearch: 'solar'
 					},
 				},
 				{
@@ -446,7 +446,7 @@ export default {
 					url: 'recycle-and-re-use',
 					queryParams: 'queryString=used clothing',
 					flssLoanSearch: {
-						description: 'clothing',
+						keywordSearch: 'clothing',
 						tagId: [9],
 					},
 				},

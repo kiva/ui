@@ -87,6 +87,7 @@ type LoanSearchState {
 	distributionModel: String
 	isIndividual: Boolean
 	lenderRepaymentTerm: MinMaxRange
+	keywordSearch: String
 }
 
 type TipMessage {

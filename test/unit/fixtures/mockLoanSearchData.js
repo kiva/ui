@@ -10,6 +10,7 @@ export const mockState = {
 	lenderRepaymentTerm: { min: 0, max: 8, __typename: 'MinMaxRange' },
 	pageOffset: 10,
 	pageLimit: 5,
+	keywordSearch: 'search',
 };
 
 export const savedSearchParams = {
