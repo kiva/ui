@@ -154,6 +154,22 @@ export default {
 							});
 						}).then(() => {
 							return fetchExperimentSettings('eco_challenge', client);
+						}),
+						client.query(
+							{
+								query: experimentAssignmentQuery,
+								variables: { id: 'loan_channel_flss_query_v1' }
+							}
+						).then(() => {
+							return client.mutate({
+								mutation: updateExperimentVersion,
+								variables: {
+									id: 'loan_channel_flss_query_v1',
+									version: 'b'
+								}
+							});
+						}).then(() => {
+							return fetchExperimentSettings('loan_channel_flss_query_v1', client);
 						})
 					];
 				} else {
