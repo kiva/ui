@@ -1,3 +1,10 @@
+## [2.350.0](https://github.com/kiva/ui/compare/v2.349.0...v2.350.0) (2022-10-20)
+
+
+### Features
+
+* keyword search FLSS filter ([6e5dcdb](https://github.com/kiva/ui/commit/6e5dcdbe4b65b98651b666ca47b92c151b6b9d63))
+
 ## [2.349.0](https://github.com/kiva/ui/compare/v2.348.0...v2.349.0) (2022-10-20)
 
 
