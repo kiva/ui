@@ -50,6 +50,7 @@
 				:total-loans="totalLoans"
 				:filters-loaded="filtersLoaded"
 				:update-location="updateLocation"
+				ref="locationSelector"
 			/>
 
 			<div class="tw-flex tw-flex-col tw-order-3">
@@ -149,6 +150,7 @@ export default {
 			this.selectedGender = '';
 			this.sortBy = 'personalized';
 			this.updateLocation([]);
+			this.$refs.locationSelector.emptyCountries();
 			this.$kvTrackEvent(
 				'search',
 				'click',

@@ -1,3 +1,41 @@
+### [2.347.3](https://github.com/kiva/ui/compare/v2.347.2...v2.347.3) (2022-10-19)
+
+
+### Bug Fixes
+
+* avoid skipping userData query ([7751e2d](https://github.com/kiva/ui/commit/7751e2dc8281ffc5c34a1f46cbb204ea794f3734))
+* revert and add hasEverLoggedIn in header query due to performance ([4ea976e](https://github.com/kiva/ui/commit/4ea976ec3a6d9b09de60d754de92c5730be93b73))
+
+### [2.347.2](https://github.com/kiva/ui/compare/v2.347.1...v2.347.2) (2022-10-19)
+
+
+### Bug Fixes
+
+* lint ([dfbd341](https://github.com/kiva/ui/commit/dfbd3413f37c46f14704bbfb74ba04c947d59aee))
+* update regions ui ([63157af](https://github.com/kiva/ui/commit/63157af0fb2ecee1c654acc503d06a2492b4199d))
+
+### [2.347.1](https://github.com/kiva/ui/compare/v2.347.0...v2.347.1) (2022-10-19)
+
+
+### Bug Fixes
+
+* location selector was updated ([7de1f1b](https://github.com/kiva/ui/commit/7de1f1b8e0aa86ddf2d6a4114a59060a20ed0284))
+* select all countries bug was fixed for location dropdown ([57165a5](https://github.com/kiva/ui/commit/57165a57aa0016dd06366ffadc261484a34a5ae6))
+
+## [2.347.0](https://github.com/kiva/ui/compare/v2.346.0...v2.347.0) (2022-10-19)
+
+
+### Features
+
+* body scroll was blocked when location dropdown is visible ([f1985a5](https://github.com/kiva/ui/commit/f1985a5505621b6deee185d1c00370a6310163cf))
+
+## [2.346.0](https://github.com/kiva/ui/compare/v2.345.0...v2.346.0) (2022-10-19)
+
+
+### Features
+
+* readonly attr was added to location input ([09c4d5b](https://github.com/kiva/ui/commit/09c4d5b638fd3efeed699828941bbcefefebdfdb))
+
 ## [2.345.0](https://github.com/kiva/ui/compare/v2.344.0...v2.345.0) (2022-10-18)
 
 

@@ -16,6 +16,7 @@
 			placeholder="All countries"
 			:disabled="!filtersLoaded"
 			autocomplete="off"
+			readonly
 		/>
 
 		<div
@@ -59,10 +60,19 @@
 						/>
 					</button>
 				</div>
-				<ol class="tw-whitespace-nowrap">
+				<ol
+					class="tw-whitespace-nowrap lg:tw-bg-secondary lg:tw-py-2"
+					style="margin: -12px;"
+				>
+					<li
+						class="tw-hidden lg:tw-block tw-px-4 tw-py-2"
+					>
+						Regions
+					</li>
 					<li
 						v-for="(region, index) in regions" :key="index"
-						class="tw-border-b tw-border-tertiary lg:tw-border-b-0 lg:tw-pr-2"
+						class="tw-border-b tw-border-tertiary lg:tw-border-b-0 lg:tw-pr-2 tw-py-0.5"
+						:class="{ 'tw-bg-primary': selectedRegion === index }"
 					>
 						<button
 							@click="selectRegion(index)"
@@ -112,7 +122,7 @@
 			</div>
 			<div
 				v-if="selectedRegion !== null"
-				class="tw-w-full tw-hidden lg:tw-flex tw-flex-col tw-justify-between tw-ml-1"
+				class="tw-w-full tw-hidden lg:tw-flex tw-flex-col tw-justify-between tw-ml-1 lg:tw-ml-3"
 			>
 				<checkbox-list
 					:items="getItems(activeCountries)"
@@ -193,8 +203,11 @@ export default {
 				'see-loans',
 			);
 		},
-		resetCountries() {
+		emptyCountries() {
 			this.selectedCountries = [];
+		},
+		resetCountries() {
+			this.emptyCountries();
 			this.$kvTrackEvent(
 				'search',
 				'filter',
@@ -205,6 +218,11 @@ export default {
 		toggleRegions() {
 			this.showRegions = !this.showRegions;
 			this.selectedRegion = null;
+			if (this.showRegions) {
+				document.documentElement.style.overflow = 'hidden';
+			} else {
+				document.documentElement.style.overflow = 'auto';
+			}
 		},
 		selectRegion(index) {
 			this.selectedRegion = this.selectedRegion === index ? null : index;
