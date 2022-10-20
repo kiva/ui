@@ -183,6 +183,41 @@
 * gender added to facets for location options ([ca86932](https://github.com/kiva/ui/commit/ca869325465320d67ab1361ce87d360a70e3866c))
 * quick filters tracking ([568245c](https://github.com/kiva/ui/commit/568245cdc2d8dcefec7db3fcb80e92dbb848e1dd))
 * readonly attr was added to location input ([848763c](https://github.com/kiva/ui/commit/848763cf170cfad0d5506e69cbc9113ca38e6f7e))
+* send user attributes to hotjar api ([7d6e2f8](https://github.com/kiva/ui/commit/7d6e2f80c2d6dc80ddf642b4515c11cad63818f8))
+* sort by on quick filters and reset ([f07c1ee](https://github.com/kiva/ui/commit/f07c1eea4c254247298960961286243030ec0c35))
+* ui and logic improvements added to quick filters exp ([2a4d074](https://github.com/kiva/ui/commit/2a4d074bdab15d221b0a4d5f656c5c525e6a3d5d))
+* update category pages to show selected quick filters ([deff321](https://github.com/kiva/ui/commit/deff321ee107895c02bf9a53eb49416431aa49e6))
+
+
+### Bug Fixes
+
+* add activity id ([4993b89](https://github.com/kiva/ui/commit/4993b896723dbf95b44d25416a0e18fcdca5de6b))
+* add hasEverLoggedIn on thankspage query ([4e8378f](https://github.com/kiva/ui/commit/4e8378f35ff73d4e1a52a8a69c613687b1b8718f))
+* add user id validation ([5ddee41](https://github.com/kiva/ui/commit/5ddee410aa13000c07ddad5bc929e77b45010df7))
+* avoid skipping userData query ([65efd1b](https://github.com/kiva/ui/commit/65efd1b60aec78721a707677d1f8981f2cf35b90))
+* lint ([71e76b4](https://github.com/kiva/ui/commit/71e76b463bda5d9d14e282eac8e4e328d49f90b1))
+* location selector was updated ([bdf8e61](https://github.com/kiva/ui/commit/bdf8e61cc0ee1524b7b89599c545e997449feed1))
+* make sure game users see the FLSS loan results in carousel ([09c2e97](https://github.com/kiva/ui/commit/09c2e97d416480a71b77d9eb141825df10d7bf42))
+* pr comments ([12ec40c](https://github.com/kiva/ui/commit/12ec40cfb6d2dfb9d38e04908a6f363c01078803))
+* remove line change ([1ae77c5](https://github.com/kiva/ui/commit/1ae77c53f07b5378e6c2e56fa6e496d81655824d))
+* revert and add hasEverLoggedIn in header query due to performance ([d77c2ef](https://github.com/kiva/ui/commit/d77c2efe2ab73bf1388dc2cc2f734bb3e8facce1))
+* select all countries bug was fixed for location dropdown ([9cd574c](https://github.com/kiva/ui/commit/9cd574cf77ebb2efb9335de111d9b2f3e14cd3c9))
+* set userId from lender ([eb2a1d7](https://github.com/kiva/ui/commit/eb2a1d78e4aae73547464b8f37ce695c15d4de99))
+* unit tests ([83aada6](https://github.com/kiva/ui/commit/83aada680b5aba06244e2d14afddc5f1eff0fa6b))
+* update min width to show full sort by txt ([71551dd](https://github.com/kiva/ui/commit/71551dd17a2a5b6a551e346e660f3f8504725b1b))
+* update regions ui ([b891085](https://github.com/kiva/ui/commit/b89108516d0a85ee548310dc34cb1f4ffe87e5b0))
+* update tracking ([df10e3a](https://github.com/kiva/ui/commit/df10e3a02728c1ed26e9b88fff54e5dc1663f76c))
+
+## [2.329.0-next.1](https://github.com/kiva/ui/compare/v2.328.1-next.1...v2.329.0-next.1) (2022-10-20)
+
+
+### Features
+
+* body scroll was blocked when location dropdown is visible ([a8dbfb4](https://github.com/kiva/ui/commit/a8dbfb41b89120370ed115198c4aa3e797247d3e))
+* display filtered category loans for quick filters ([47135d8](https://github.com/kiva/ui/commit/47135d8c47386f9c88e2677fbe3ba264b9ff35a1))
+* gender added to facets for location options ([ca86932](https://github.com/kiva/ui/commit/ca869325465320d67ab1361ce87d360a70e3866c))
+* quick filters tracking ([568245c](https://github.com/kiva/ui/commit/568245cdc2d8dcefec7db3fcb80e92dbb848e1dd))
+* readonly attr was added to location input ([848763c](https://github.com/kiva/ui/commit/848763cf170cfad0d5506e69cbc9113ca38e6f7e))
 * sort by on quick filters and reset ([f07c1ee](https://github.com/kiva/ui/commit/f07c1eea4c254247298960961286243030ec0c35))
 * ui and logic improvements added to quick filters exp ([2a4d074](https://github.com/kiva/ui/commit/2a4d074bdab15d221b0a4d5f656c5c525e6a3d5d))
 * update category pages to show selected quick filters ([deff321](https://github.com/kiva/ui/commit/deff321ee107895c02bf9a53eb49416431aa49e6))
