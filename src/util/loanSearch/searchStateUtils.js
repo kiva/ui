@@ -59,6 +59,8 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 		? { ...loanSearchState.lenderRepaymentTerm }
 		: null;
 
+	const validatedKeywordSearch = loanSearchState?.keywordSearch?.trim() || null;
+
 	return {
 		gender: validatedGender,
 		countryIsoCode: validatedIsoCodes,
@@ -71,6 +73,7 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 		distributionModel: validatedDistributionModel,
 		isIndividual: validatedIsIndividual,
 		lenderRepaymentTerm: validatedLenderRepaymentTerm,
+		keywordSearch: validatedKeywordSearch,
 	};
 }
 

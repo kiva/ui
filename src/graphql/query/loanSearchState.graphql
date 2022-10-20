@@ -15,5 +15,6 @@ query loanSearchStateQuery {
 			min
 			max
 		}
+		keywordSearch
 	}
 }

@@ -15,6 +15,7 @@ export const getDefaultLoanSearchState = () => ({
 	distributionModel: null, // Expects DIRECT or FIELDPARTNER
 	isIndividual: null, // Expects a boolean
 	lenderRepaymentTerm: null, // Expects a MinMaxRange
+	keywordSearch: null, // Expects a string
 });
 
 // export queries, resolvers and defaults for LoanSearchState

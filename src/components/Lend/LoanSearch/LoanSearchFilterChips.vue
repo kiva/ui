@@ -44,6 +44,7 @@ const GENDER_TYPE = 'Gender';
 const DISTRIBUTION_MODEL_TYPE = 'DistributionModel';
 const IS_INDIVIDUAL_TYPE = 'IsIndividual';
 const LENDER_REPAYMENT_TERM_TYPE = 'LenderRepaymentTerm';
+const KEYWORD_SEARCH_TYPE = 'KeywordSearch';
 
 export default {
 	name: 'LoanSearchFilterChips',
@@ -110,6 +111,8 @@ export default {
 					return { isIndividual: null };
 				case LENDER_REPAYMENT_TERM_TYPE:
 					return { lenderRepaymentTerm: null };
+				case KEYWORD_SEARCH_TYPE:
+					return { keywordSearch: null };
 				default:
 					return {};
 			}
@@ -181,6 +184,9 @@ export default {
 					)],
 					__typename: LENDER_REPAYMENT_TERM_TYPE
 				});
+			}
+			if (loanSearchState.keywordSearch) {
+				itemList.push({ name: loanSearchState.keywordSearch, __typename: KEYWORD_SEARCH_TYPE });
 			}
 			return itemList;
 		},

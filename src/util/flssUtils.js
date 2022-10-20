@@ -29,7 +29,7 @@ export function getFlssFilters(loanSearchState) {
 		...(loanSearchState?.sectorId?.length && { sectorId: { any: loanSearchState.sectorId } }),
 		...(loanSearchState?.distributionModel && { distributionModel: { eq: loanSearchState.distributionModel } }),
 		...(loanSearchState?.tagId?.length && { tagId: { any: loanSearchState.tagId } }),
-		...(loanSearchState?.description && { description: { eq: loanSearchState.description } }),
+		...(loanSearchState?.keywordSearch && { description: { eq: loanSearchState.keywordSearch } }),
 		...(typeof loanSearchState?.isIndividual !== 'undefined' && loanSearchState.isIndividual !== null && {
 			isIndividual: { eq: loanSearchState.isIndividual }
 		}),
