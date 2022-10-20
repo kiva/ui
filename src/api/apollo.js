@@ -15,15 +15,6 @@ const { resolvers } = loanResolverFactory();
 const { LoanPartner, LoanDirect } = resolvers;
 
 export const typePolicies = {
-	activeLoan: {
-		merge: true
-	},
-	LoanChannel: {
-		keyFields: ['id'],
-	},
-	RecLoanChannel: {
-		keyFields: ['id'],
-	},
 	LoanPartner: {
 		fundraisingPercent: {
 			read(_, { readField }) {
@@ -68,19 +59,12 @@ export const typePolicies = {
 			}
 		},
 	},
-	loanSearchState: {
-		keyFields: ['id'],
-	},
-	Manifest: {
-		keyFields: ['id'],
-	},
-	shop: {
-		keyFields: ['id'],
-	},
 	Setting: {
 		keyFields: ['key'],
 	},
 	Query: {
+		// Combine top level fields without ids
+		// https://www.apollographql.com/docs/react/caching/cache-field-behavior/#the-merge-function
 		fields: {
 			community: {
 				merge: true
@@ -88,19 +72,15 @@ export const typePolicies = {
 			general: {
 				merge: true
 			},
-			// The ml field doesn't have an ID
 			ml: {
 				merge: true,
 			},
-			// The contentful field doesn't have an ID
 			contentful: {
 				merge: true,
 			},
-			// The lend field doesn't have an ID
 			lend: {
 				merge: true,
 			},
-			// The my field doesn't have an ID
 			my: {
 				merge: true,
 			},
@@ -111,6 +91,9 @@ export const typePolicies = {
 				merge: true
 			},
 			fundraisingLoans: {
+				merge: true
+			},
+			activeLoan: {
 				merge: true
 			}
 		},
