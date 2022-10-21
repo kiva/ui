@@ -162,7 +162,7 @@ export function readLoanFragment({
 	apollo, loanId, fragment
 }) {
 	let partnerFragment;
-	let	directFragment;
+	let directFragment;
 	try {
 		// Attempt to read the loan card fragment for LoanPartner from the cache
 		// If cache is missing fragment fields, this will throw an invariant error
