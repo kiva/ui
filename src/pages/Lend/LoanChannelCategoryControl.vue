@@ -23,7 +23,7 @@
 				</h1>
 				<p
 					v-if="loanChannelDescription"
-					class="page-subhead show-for-large tw-mb-4"
+					class="page-subhead tw-mb-4"
 				>
 					{{ loanChannelDescription }}
 				</p>
