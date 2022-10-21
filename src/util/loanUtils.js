@@ -157,3 +157,31 @@ export function watchLoanCardData({
 	// Return the observer to allow modification of variables
 	return queryObserver;
 }
+
+export function readLoanFragment({
+	apollo, loanId, fragment
+}) {
+	let partnerFragment;
+	let	directFragment;
+	try {
+		// Attempt to read the loan card fragment for LoanPartner from the cache
+		// If cache is missing fragment fields, this will throw an invariant error
+		partnerFragment = apollo.readFragment({
+			id: `LoanPartner:${loanId}`,
+			fragment,
+		}) || null;
+	} catch (e) {
+		// no-op
+	}
+	try {
+		// Attempt to read the loan card fragment for LoanDirect from the cache
+		// If cache is missing fragment fields, this will throw an invariant error
+		directFragment = apollo.readFragment({
+			id: `LoanDirect:${loanId}`,
+			fragment,
+		}) || null;
+	} catch (e) {
+		// no-op
+	}
+	return partnerFragment || directFragment;
+}
