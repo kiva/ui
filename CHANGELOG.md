@@ -1,3 +1,10 @@
+### [2.352.1](https://github.com/kiva/ui/compare/v2.352.0...v2.352.1) (2022-10-21)
+
+
+### Bug Fixes
+
+* ensure optimizely events are gated with OneTrust call instead of auto activated in callback ([e55e216](https://github.com/kiva/ui/commit/e55e21665609752372ba206cb0f573f73281b29a))
+
 ## [2.352.0](https://github.com/kiva/ui/compare/v2.351.0...v2.352.0) (2022-10-21)
 
 
