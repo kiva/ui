@@ -44,7 +44,7 @@
 						<div>
 							<!-- Link to see full borrower profile in old stack -->
 							<router-link
-								:to="`/lend/${loan.id}?minimal=false`"
+								:to="`/lend-classic/${loan.id}?minimal=false`"
 								v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
 							>
 								See full borrower profile
@@ -292,7 +292,7 @@ export default {
 			loanRowsCount: 4,
 			loanUseMaxLength: 100,
 			anonymizationLevel: 'none',
-			enabledExperiment: false,
+			enabledExperiment: true,
 			shareCardLanguageVersion: '',
 			inviterIsGuestOrAnonymous: false,
 			basketedLoans: []
