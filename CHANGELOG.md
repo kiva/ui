@@ -1,3 +1,10 @@
+### [2.350.2](https://github.com/kiva/ui/compare/v2.350.1...v2.350.2) (2022-10-21)
+
+
+### Bug Fixes
+
+* don't add background as a question in faqs ([748df73](https://github.com/kiva/ui/commit/748df73f14b6b976a340cc9ee540ac7bd7cabbf2))
+
 ### [2.350.1](https://github.com/kiva/ui/compare/v2.350.0...v2.350.1) (2022-10-20)
 
 
