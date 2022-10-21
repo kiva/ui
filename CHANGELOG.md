@@ -1,3 +1,13 @@
+## [2.351.0](https://github.com/kiva/ui/compare/v2.350.2...v2.351.0) (2022-10-21)
+
+
+### Features
+
+* extract loan fragment reading as util function ([ce530ae](https://github.com/kiva/ui/commit/ce530ae646681285654d05a4e53f716d3cc2e4aa))
+* prefetch 1st loan in category grid and only load selected category ([ce115b2](https://github.com/kiva/ui/commit/ce115b296ec50c709536535dfa0fd494c3d5ff18))
+* provide content-group content in ContentfulPage prefetch ([b24b764](https://github.com/kiva/ui/commit/b24b764c583d4296aebb7f1e2933d5010b4acf37))
+* use cached loan data in NewHomePageLoanCard ([fcd3ef9](https://github.com/kiva/ui/commit/fcd3ef98bc762c1d51464d5156fa9ce02263ae95))
+
 ### [2.350.2](https://github.com/kiva/ui/compare/v2.350.1...v2.350.2) (2022-10-21)
 
 
