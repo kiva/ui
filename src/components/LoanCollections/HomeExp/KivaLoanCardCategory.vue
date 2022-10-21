@@ -1,16 +1,8 @@
 <template>
 	<div class="tw-pt-4">
-		<transition name="kvfade">
-			<div
-				v-if="isLoading"
-				class="spinner tw-text-center"
-			>
-				<kv-loading-spinner />
-			</div>
-		</transition>
 		<kv-carousel
 			id="loan-category-carousel"
-			v-if="augmentedLoanIds.length > 0 && isVisible"
+			v-if="augmentedLoanIds.length > 0"
 			:class="['tw-w-full tw-overflow-visible md:tw-overflow-hidden', { 'md:tw-hidden' : newHomeExp }]"
 			:embla-options="{
 				loop: false,
@@ -26,7 +18,7 @@
 				<!-- TODO Re-implement card position analytics -->
 				<new-home-page-loan-card
 					:item-index="index"
-					:key="`loan-${loanId}`"
+					:key="`loan-${loanId||index}`"
 					:loan-id="loanId"
 				/>
 			</template>
@@ -55,14 +47,14 @@
 				</div>
 			</div>
 		</kv-carousel>
-		<template v-if="newHomeExp && !isLoading">
+		<template v-if="newHomeExp">
 			<div class="tw-hidden md:tw-grid md:tw-grid-cols-2 md:tw-gap-4 lg:tw-grid-cols-3">
 				<template v-for="(loanId, index) in augmentedLoanIds">
 					<!-- show loan card -->
 					<!-- TODO Re-implement card position analytics -->
 					<new-home-page-loan-card
 						:item-index="index"
-						:key="`loan-${loanId}`"
+						:key="`loan-${loanId||index}`"
 						:loan-id="loanId"
 					/>
 				</template>
@@ -90,7 +82,6 @@
 <script>
 import { getCategoryName } from '@/util/categoryUtils';
 import NewHomePageLoanCard from '@/components/LoanCards/NewHomePageLoanCard';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -98,15 +89,10 @@ export default {
 	name: 'KivaLoanCardCategory',
 	components: {
 		KvCarousel,
-		KvLoadingSpinner,
 		NewHomePageLoanCard,
 		KvButton
 	},
 	props: {
-		isVisible: {
-			type: Boolean,
-			default: false
-		},
 		loanIds: {
 			type: Array,
 			default: () => [],
@@ -139,9 +125,6 @@ export default {
 		};
 	},
 	computed: {
-		isLoading() {
-			return this.augmentedLoanIds.length === 0 && !this.isVisible;
-		},
 		augmentedLoanIds() {
 			const clonedLoanIds = [...this.loanIds];
 			return clonedLoanIds;
