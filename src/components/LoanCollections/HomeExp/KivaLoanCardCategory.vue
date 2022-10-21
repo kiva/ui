@@ -111,10 +111,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		loanIds: {
-			type: Array,
-			default: () => [],
-		},
 		selectedChannel: {
 			type: Object,
 			default: () => {},
@@ -147,8 +143,7 @@ export default {
 			return this.loans.length === 0 && !this.isVisible;
 		},
 		loans() {
-			const clonedLoans = [...this.selectedChannel?.loans?.values || []];
-			return clonedLoans;
+			return [...this.selectedChannel?.loans?.values || []];
 		},
 		cleanUrl() {
 			// Convert LoanChannel Url to use first path segment /lend-by-category instead of /lend

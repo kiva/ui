@@ -9,6 +9,8 @@
 			:id="content.key"
 			:is="component"
 			:content="content"
+			:loans="categoryLoansByChannel"
+			:selected-channel="selectedChannel"
 			data-section-type="contentful-section"
 		/>
 	</component>
@@ -46,6 +48,7 @@ import {
 } from '@/util/experimentUtils';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 
 // MARS-124 experiment
 const manualLendingLPExpKey = 'manual_lending_lp';
@@ -208,6 +211,8 @@ export default {
 			title: undefined,
 			description: undefined,
 			canonicalUrl: undefined,
+			categoryLoansByChannel: [],
+			selectedChannel: {},
 		};
 	},
 	metaInfo() {
@@ -262,6 +267,36 @@ export default {
 					'EXP-MARS-124-May2022'
 				);
 			}
+		}
+	},
+	methods: {
+		async fetLoanChannelData(loanChannelIds, loanLimit) {
+			return this.apollo.query({
+				query: gql`
+				${loanCardFieldsFragment}
+				query selectedLoanCategory($loanChannelIds: [Int]!, $loanLimit: Int) {
+					lend {
+						loanChannelsById(ids: $loanChannelIds){
+							id
+							name
+							url
+							loans(limit: $loanLimit) {
+								values {
+									id
+									...loanCardFields
+								}
+							}
+						}
+					}
+				}`,
+				variables: {
+					loanChannelIds,
+					loanLimit
+				},
+			}).then(({ data }) => {
+				const loans = data?.lend?.loanChannelsById;
+				return loans;
+			});
 		}
 	},
 	apollo: {
@@ -334,7 +369,7 @@ export default {
 				return preFetchAll(components, client, args);
 			});
 		},
-		result({ data }) {
+		async result({ data }) {
 			const pageData = getPageData(data);
 			if (pageData.error) {
 				this.pageError = true;
@@ -348,6 +383,28 @@ export default {
 				this.pageBackgroundColor = pageLayout.pageBackgroundColor ?? '';
 				this.pageFrame = getPageFrameFromType(page.pageType);
 				this.contentGroups = getContentGroups(pageData);
+
+				if (page.key === 'hp/crowdfund-for-good') {
+					const components = this.contentGroups.filter(e => {
+						return e.component.name === 'LoansByCategoryGrid'
+						|| e.component.name === 'NewHomeLoansCardsCarousel';
+					});
+					const channelIds = [];
+					let loanLimit;
+					components.forEach(component => {
+						const dataObject = component?.content?.contents[0].dataObject;
+						const loanChannelIds = dataObject?.loanChannels.map(channelSetting => {
+							return channelSetting.id;
+						});
+						loanLimit = dataObject?.loanLimit;
+						channelIds.push(loanChannelIds);
+					});
+
+					const result = await this.fetLoanChannelData(channelIds.flat(), loanLimit);
+					// eslint-disable-next-line prefer-destructuring
+					this.selectedChannel = result[0];
+					this.categoryLoansByChannel = result;
+				}
 			}
 		}
 	},

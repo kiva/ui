@@ -15,7 +15,6 @@
 		<div class="tw-col-span-12 md:tw-col-span-9">
 			<kiva-loan-card-category
 				:is-visible="showCarousel"
-				:loan-ids="selectedChannelLoanIds"
 				:selected-channel="selectedChannel"
 				:loan-channels="combinedLoanChannelData"
 				:new-home-exp="newHomeExp"
@@ -26,8 +25,6 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
-import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import KivaLoanCardCategory from '@/components/LoanCollections/HomeExp/KivaLoanCardCategory';
 import LoanCategorySelectorHomeExp from '@/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
@@ -48,6 +45,14 @@ export default {
 		contentfulLoanChannels: {
 			type: Array,
 			default: () => [],
+		},
+		loans: {
+			type: Array,
+			default: () => [],
+		},
+		currentSelectedChannel: {
+			type: Object,
+			default: () => {}
 		},
 		/**
 		 * Additional display settings
@@ -73,30 +78,20 @@ export default {
 	computed: {
 		combinedLoanChannelData() {
 			return this.contentfulLoanChannels.map(channel => {
-				const matchedLoanChannel = this.loanChannelData.find(lc => lc.id === channel.id);
+				const matchedLoanChannel = this.loans.find(lc => lc.id === channel.id);
 				return { ...matchedLoanChannel, ...channel };
 			});
-		},
-		loanChannelIds() {
-			return this.contentfulLoanChannels.map(channelSetting => {
-				return channelSetting.id;
-			});
-		},
-		loanQueryLimit() {
-			return this.loanDisplaySettings?.loanLimit ?? 1;
-		},
-		selectedChannelLoanIds() {
-			const selectedChannel = this.combinedLoanChannelData.find(channel => {
-				return this.selectedChannel?.id === channel.id;
-			});
-			return selectedChannel?.loans?.values?.map(loan => loan.id) ?? [];
 		},
 		showViewMoreCard() {
 			return this.loanDisplaySettings?.showViewMoreCard ?? false;
 		}
 	},
-	created() {
-		this.fetchLoanChannel();
+	watch: {
+		// When loan id changes, update watch query variables
+		currentSelectedChannel() {
+			this.selectedChannel = this.currentSelectedChannel;
+			this.showCarousel = true;
+		}
 	},
 	methods: {
 		handleCategoryClick(payload) {
@@ -104,40 +99,6 @@ export default {
 				loanChannel => loanChannel.id === payload.categoryId
 			);
 		},
-		fetchLoanChannel() {
-			this.apollo.query({
-				query: gql`
-				${loanCardFieldsFragment}
-				query selectedLoanCategory($loanChannelIds: [Int]!, $loanLimit: Int) {
-					lend {
-						loanChannelsById(ids: $loanChannelIds){
-							id
-							name
-							url
-							loans(limit: $loanLimit) {
-								values {
-									id
-									...loanCardFields
-								}
-							}
-						}
-					}
-				}`,
-				variables: {
-					loanChannelIds: this.loanChannelIds,
-					loanLimit: this.loanQueryLimit
-				},
-			}).then(result => {
-				// Set All Active Loan Channels Data
-				const loanChannels = result?.data?.lend?.loanChannelsById ?? [];
-				this.loanChannelData = loanChannels;
-				// Activate the first channel available
-				const initialChannel = this.combinedLoanChannelData[0];
-				this.selectedChannel = initialChannel;
-				// Make the carousel visible
-				this.showCarousel = true;
-			});
-		}
 	}
 };
 </script>

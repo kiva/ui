@@ -9,6 +9,8 @@
 				<div>
 					<kiva-multi-category-grid
 						:contentful-loan-channels="contentfulLoanChannels"
+						:loans="loans"
+						:current-selected-channel="selectedChannel"
 						:loan-display-settings="loanDisplaySettings"
 						:new-home-exp="true"
 					/>
@@ -40,6 +42,14 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		loans: {
+			type: Array,
+			default: () => [],
+		},
+		selectedChannel: {
+			type: Object,
+			default: () => {},
+		}
 	},
 	computed: {
 		/**
