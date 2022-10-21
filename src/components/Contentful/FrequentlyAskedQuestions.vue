@@ -43,7 +43,9 @@ export default {
 			return this.content?.title ?? null;
 		},
 		frequentlyAskedQuestions() {
-			return this.content?.contents ?? null;
+			return this.content?.contents?.filter(({ contentType }) => {
+				return contentType ? contentType === 'richTextContent' : false;
+			});
 		},
 		background() {
 			return this.content?.contents?.find(({ contentType }) => {

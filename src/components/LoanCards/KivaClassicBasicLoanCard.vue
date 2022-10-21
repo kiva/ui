@@ -222,7 +222,7 @@
 import { mdiChevronRight, mdiMapMarker, mdiCheckCircleOutline } from '@mdi/js';
 import gql from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
-import { isMatchAtRisk, watchLoanData } from '@/util/loanUtils';
+import { isMatchAtRisk, readLoanFragment, watchLoanData } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import LoanUse from '@/components/BorrowerProfile/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
@@ -482,37 +482,26 @@ export default {
 		},
 	},
 	mounted() {
-		this.createViewportObserver();
+		if (this.loan) {
+			// Already have a loan, so only setup watch query to handle changes in data
+			this.loadData();
+		} else {
+			// Don't have a loan yet, so setup viewport observer to prepare async loading
+			this.createViewportObserver();
+		}
 	},
 	beforeDestroy() {
 		this.destroyViewportObserver();
 	},
 	created() {
-		let partnerFragment;
-		let	directFragment;
-		try {
-			// Attempt to read the loan card fragment from the cache
-			// If cache is missing fragment fields, this will throw an invariant error
-			partnerFragment = this.apollo.readFragment({
-				id: `LoanPartner:${this.loanId}`,
-				fragment: loanCardFieldsFragment,
-			}) || null;
-		} catch (e) {
-			// no-op
-		}
-		try {
-			// Attempt to read the loan card fragment from the cache
-			// If cache is missing fragment fields, this will throw an invariant error
-			directFragment = this.apollo.readFragment({
-				id: `LoanDirect:${this.loanId}`,
-				fragment: loanCardFieldsFragment,
-			}) || null;
-		} catch (e) {
-			// no-op
-		}
-		const loanCardFieldFragment = partnerFragment || directFragment;
-		if (loanCardFieldFragment) {
-			this.loan = loanCardFieldFragment;
+		// Use cached loan data if it exists
+		const cachedLoan = readLoanFragment({
+			apollo: this.apollo,
+			loanId: this.loanId,
+			fragment: loanCardFieldsFragment,
+		});
+		if (cachedLoan) {
+			this.loan = cachedLoan;
 			this.isLoading = false;
 		}
 	},
