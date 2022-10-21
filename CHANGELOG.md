@@ -1,3 +1,15 @@
+## [2.352.0](https://github.com/kiva/ui/compare/v2.351.0...v2.352.0) (2022-10-21)
+
+
+### Features
+
+* use new funded borrower profile as default, remove exp code + fix full profile link ([24be7dc](https://github.com/kiva/ui/commit/24be7dc99302d839409b5f8bee22d359b8e607ca))
+
+
+### Bug Fixes
+
+* update funded bp full profile link to use lend-classic ([f602c50](https://github.com/kiva/ui/commit/f602c504c79dc5a1da4c4d33e0d588a128be47b1))
+
 ## [2.351.0](https://github.com/kiva/ui/compare/v2.350.2...v2.351.0) (2022-10-21)
 
 
