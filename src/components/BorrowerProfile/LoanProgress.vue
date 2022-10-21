@@ -23,7 +23,7 @@
 					</p>
 					<p class="tw-text-h4 tw-text-action tw-block">
 						<router-link
-							:to="`/lend/${$route.params.id}?minimal=false`"
+							:to="`/lend-classic/${$route.params.id}?minimal=false`"
 							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
 						>
 							View the full borrower profile
