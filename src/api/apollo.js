@@ -9,7 +9,6 @@ import ExperimentIdLink from './ExperimentIdLink';
 import HttpLinkCreator from './HttpLink';
 import NetworkErrorLink from './NetworkErrorLink';
 import SnowplowSessionLink from './SnowplowSessionLink';
-// import initState from './localState';
 
 const { resolvers } = loanResolverFactory();
 const { LoanPartner, LoanDirect } = resolvers;
@@ -116,9 +115,7 @@ export default function createApolloClient({
 
 	const possibleTypes = {};
 	types.forEach(element => {
-		const typeList = [element.possibleTypes.map(type => type.name)];
-		// eslint-disable-next-line prefer-destructuring
-		possibleTypes[element.name] = typeList[0];
+		possibleTypes[element.name] = element.possibleTypes.map(type => type.name);
 	});
 
 	const cache = new InMemoryCache({
