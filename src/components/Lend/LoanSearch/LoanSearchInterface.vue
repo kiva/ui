@@ -306,7 +306,8 @@ export default {
 				|| this.loanSearchState.tagId.length > 0
 				|| !!this.loanSearchState.distributionModel
 				|| this.loanSearchState.isIndividual !== null
-				|| !!this.loanSearchState.lenderRepaymentTerm;
+				|| !!this.loanSearchState.lenderRepaymentTerm
+				|| !!this.loanSearchState.keywordSearch;
 		},
 		themeNames() {
 			return this.allFacets?.themeNames ?? [];

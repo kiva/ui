@@ -26,7 +26,6 @@ describe('queryParamUtils.js', () => {
 			expect(hasExcludedQueryParams({ partner: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ riskRating: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ state: [] })).toBe(true);
-			expect(hasExcludedQueryParams({ queryString: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ loanLimit: [] })).toBe(true);
 		});
 
@@ -345,6 +344,7 @@ describe('queryParamUtils.js', () => {
 							...lenderRepaymentTermValueMap[SIXTEEN_MONTHS_KEY],
 							__typename: 'MinMaxRange'
 						},
+						keywordSearch: 'search',
 					}
 				}
 			};
@@ -358,7 +358,8 @@ describe('queryParamUtils.js', () => {
 				page: '2',
 				distributionModel: 'DIRECT',
 				isGroup: 'true',
-				lenderTerm: '0,16'
+				lenderTerm: '0,16',
+				queryString: 'search',
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -383,6 +384,7 @@ describe('queryParamUtils.js', () => {
 						distributionModel: null,
 						isIndividual: null,
 						lenderRepaymentTerm: null,
+						keywordSearch: null,
 					}
 				},
 			};
@@ -410,6 +412,7 @@ describe('queryParamUtils.js', () => {
 						distributionModel: null,
 						isIndividual: null,
 						lenderRepaymentTerm: null,
+						keywordSearch: null,
 					}
 				},
 			};
@@ -437,6 +440,7 @@ describe('queryParamUtils.js', () => {
 						distributionModel: null,
 						isIndividual: null,
 						lenderRepaymentTerm: null,
+						keywordSearch: null,
 					}
 				},
 			};
@@ -464,6 +468,7 @@ describe('queryParamUtils.js', () => {
 						distributionModel: null,
 						isIndividual: null,
 						lenderRepaymentTerm: null,
+						keywordSearch: null,
 					}
 				},
 			};
@@ -491,6 +496,7 @@ describe('queryParamUtils.js', () => {
 						distributionModel: null,
 						isIndividual: null,
 						lenderRepaymentTerm: null,
+						keywordSearch: null,
 					}
 				},
 			};
@@ -518,6 +524,7 @@ describe('queryParamUtils.js', () => {
 						distributionModel: null,
 						isIndividual: null,
 						lenderRepaymentTerm: null,
+						keywordSearch: null,
 					}
 				},
 			};
@@ -541,6 +548,7 @@ describe('queryParamUtils.js', () => {
 				distributionModel: 'DIRECT',
 				isGroup: 'true',
 				lenderTerm: '0,8',
+				queryString: 'search',
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -565,6 +573,7 @@ describe('queryParamUtils.js', () => {
 						distributionModel: 'DIRECT',
 						isIndividual: null,
 						lenderRepaymentTerm: null,
+						keywordSearch: null,
 					}
 				}
 			};
@@ -601,6 +610,7 @@ describe('queryParamUtils.js', () => {
 						distributionModel: 'DIRECT',
 						isIndividual: null,
 						lenderRepaymentTerm: null,
+						keywordSearch: null,
 					}
 				}
 			};
@@ -637,6 +647,7 @@ describe('queryParamUtils.js', () => {
 						distributionModel: 'DIRECT',
 						isIndividual: null,
 						lenderRepaymentTerm: null,
+						keywordSearch: null,
 					}
 				}
 			};
@@ -673,6 +684,7 @@ describe('queryParamUtils.js', () => {
 						distributionModel: 'DIRECT',
 						isIndividual: null,
 						lenderRepaymentTerm: null,
+						keywordSearch: null,
 					}
 				}
 			};
@@ -709,6 +721,7 @@ describe('queryParamUtils.js', () => {
 						distributionModel: 'DIRECT',
 						isIndividual: false,
 						lenderRepaymentTerm: null,
+						keywordSearch: null,
 					}
 				}
 			};
@@ -949,6 +962,19 @@ describe('queryParamUtils.js', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
 				query: { lenderTerm: '0,8' },
+				params: { noScroll: true, noAnalytics: true }
+			});
+		});
+
+		it('should push queryString', () => {
+			const state = { keywordSearch: 'search' };
+			const router = getRouter();
+
+			updateQueryParams(state, router, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { queryString: 'search' },
 				params: { noScroll: true, noAnalytics: true }
 			});
 		});

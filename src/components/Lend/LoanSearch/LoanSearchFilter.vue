@@ -26,6 +26,18 @@
 				:value-map="isIndividualValueMap"
 				@updated="handleUpdatedFilters"
 			/>
+			<hr class="tw-border-tertiary tw-my-1">
+			<h2 class="tw-text-h4 tw-pt-1">
+				Keywords
+			</h2>
+			<kv-text-input
+				id="keywords-text-input"
+				placeholder="Search borrower story"
+				:can-clear="true"
+				v-model="keywordSearch"
+				@input="value => debouncedHandleUpdatedFilters({ keywordSearch: value.trim() })"
+				class="tw-w-full tw-py-1.5"
+			/>
 		</template>
 		<hr class="tw-border-tertiary tw-my-1">
 		<kv-accordion-item id="acc-sort-by" :open="false">
@@ -110,7 +122,7 @@
 				@updated="handleUpdatedFilters"
 			/>
 			<hr class="tw-border-tertiary tw-my-1">
-			<h2 class="tw-text-h4 tw-pt-2">
+			<h2 class="tw-text-h4 tw-pt-1">
 				Loan distribution
 			</h2>
 			<loan-search-radio-group-filter
@@ -155,7 +167,9 @@ import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
 import { FLSS_QUERY_TYPE, isIndividualValueMap, lenderRepaymentTermValueMap } from '@/util/loanSearch/filterUtils';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import LoanSearchRadioGroupFilter from '@/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
+import _debounce from 'lodash/debounce';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 export default {
 	name: 'LoanSearchFilter',
@@ -163,6 +177,7 @@ export default {
 	components: {
 		KvAccordionItem,
 		KvMaterialIcon,
+		KvTextInput,
 		LoanSearchRadioGroupFilter,
 		LoanSearchLocationFilter,
 		LoanSearchCheckboxListFilter,
@@ -201,6 +216,8 @@ export default {
 			mdiArrowRight,
 			isIndividualValueMap,
 			lenderRepaymentTermValueMap,
+			keywordSearch: '',
+			debouncedHandleUpdatedFilters: _debounce(this.handleUpdatedFilters, 750),
 		};
 	},
 	methods: {
@@ -216,7 +233,12 @@ export default {
 		},
 		handleUpdatedFilters(payload) {
 			this.$emit('updated', payload);
-		}
+		},
+	},
+	watch: {
+		loanSearchState(state) {
+			this.keywordSearch = state.keywordSearch ?? '';
+		},
 	},
 };
 </script>

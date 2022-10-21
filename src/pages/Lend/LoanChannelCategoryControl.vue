@@ -64,6 +64,7 @@
 						:items-in-basket="itemsInBasket"
 						:is-visitor="isVisitor"
 						:user-data="userData"
+						:loan-channel-name="loanChannelName"
 					/>
 				</div>
 				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
@@ -95,6 +96,7 @@
 						:items-in-basket="itemsInBasket"
 						:is-visitor="isVisitor"
 						:user-data="userData"
+						:loan-channel-name="loanChannelName"
 					/>
 				</div>
 				<kv-pagination
@@ -487,6 +489,8 @@ export default {
 		updateQuickFilters(filter) {
 			if (filter.gender !== undefined) {
 				this.selectedQuickFilters.gender = filter.gender;
+				this.flssLoanSearch.gender = filter.gender;
+				this.fetchFacets(this.flssLoanSearch);
 			} else if (filter.sortBy) {
 				this.selectedQuickFilters.sortBy = filter.sortBy;
 			} else {
