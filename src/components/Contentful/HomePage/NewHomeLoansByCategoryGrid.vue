@@ -105,7 +105,6 @@ export default {
 		preFetch(config, client, { content, device }) {
 			const contentfulLoanChannels = getContentfulLoanChannels(content);
 			const id = contentfulLoanChannels[0]?.id;
-			console.log('Device Type', device?.platform?.type)
 			return client.query({
 				query: loanCategoryPrefetchQuery,
 				variables: {
@@ -118,13 +117,14 @@ export default {
 	created() {
 		// Fetch loan channel data from the cache
 		let data = {};
+		const isDesktop = this.device?.platform?.type === 'desktop';
 		try {
 			const id = this.contentfulLoanChannels[0]?.id;
 			data = this.apollo.readQuery({
 				query: loanCategoryPrefetchQuery,
 				variables: {
 					loanChannelIds: id ? [id] : [],
-					limit: this.device?.platform?.type === 'desktop' ? 6 : 1
+					limit: isDesktop ? 6 : 1
 				},
 			});
 		} catch (e) {
@@ -133,11 +133,19 @@ export default {
 
 		// Create an array with placeholder loans for loading
 		const { loanLimit = 0 } = this.loanDisplaySettings;
-		const loanValues = Array(loanLimit).fill({ id: 0 });
 
 		// Get the fetched loan and merge it into the placeholder loan array
 		const loanChannel = data?.lend?.loanChannelsById[0] ?? { loans: { values: [] } };
-		loanValues[0] = loanChannel?.loans?.values[0];
+
+		let loanValues;
+		if (isDesktop) {
+			loanValues = loanChannel?.loans?.values;
+		} else {
+			loanValues = Array(loanLimit).fill({ id: 0 });
+			loanValues[0] = loanChannel?.loans?.values[0];
+		}
+
+		// loanValues[0] = isDesktop ? loanChannel?.loans?.values : loanChannel?.loans?.values[0];
 		const loanChannelCopy = {
 			...loanChannel,
 			loans: {
