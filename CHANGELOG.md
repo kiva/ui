@@ -1,3 +1,16 @@
+## [2.355.0](https://github.com/kiva/ui/compare/v2.354.0...v2.355.0) (2022-10-24)
+
+
+### Features
+
+* add overlay when location dropdown open quick filters ([0cc5520](https://github.com/kiva/ui/commit/0cc55202c5cf37baefa089eadb5f9be4a3f95f79))
+
+
+### Bug Fixes
+
+* add mobile view ([da9b900](https://github.com/kiva/ui/commit/da9b90055464d7918538a8fdffa7003705f0de76))
+* lint ([5d825c4](https://github.com/kiva/ui/commit/5d825c4a48350dd99a4022d3c509c8b06a67570a))
+
 ## [2.354.0](https://github.com/kiva/ui/compare/v2.353.0...v2.354.0) (2022-10-24)
 
 
