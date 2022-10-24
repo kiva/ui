@@ -1,5 +1,9 @@
 <template>
 	<div class="tw-relative">
+		<div
+			:class="{ overlay: showQuickFiltersOverlay }"
+		>
+		</div>
 		<div class="row">
 			<div class="small-12 columns heading-region">
 				<view-toggle v-if="!enableQuickFilters" browse-url="/lend-by-category" :filter-url="filterUrl" />
@@ -770,5 +774,17 @@ export default {
 
 #carousel_exp >>> section > div:nth-child(1) > div {
 	max-width: 185px !important;
+}
+
+.overlay{
+	@media only screen and (max-width: 1023px) {
+		position: fixed;
+		top: 0;
+		background-color: #000;
+		width: 100%;
+		height: 100%;
+		z-index: 5;
+		opacity: 0.5;
+	}
 }
 </style>
