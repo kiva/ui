@@ -776,7 +776,7 @@ export default {
 	max-width: 185px !important;
 }
 
-.overlay{
+.overlay {
 	@media only screen and (max-width: 1023px) {
 		position: fixed;
 		top: 0;
