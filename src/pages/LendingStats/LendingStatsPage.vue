@@ -14,6 +14,16 @@
 						This is a snapshot of your lending activity on Kiva.
 						Use this page to collect loans and hit milestones along the way.
 					</p>
+					<template v-if="hasBadges">
+						<hr class="tw-border-tertiary tw-my-4">
+						<badges-section
+							v-for="(badge, index) in completedAchievements"
+							:key="index"
+							:badges-obtained="completedAchievements.length"
+							:total-badges="allAchievements.length"
+							:achievement-id="badge.achievementId"
+						/>
+					</template>
 					<hr class="tw-border-tertiary tw-my-4">
 					<stats-section
 						title="Countries &amp; Territories*"
@@ -80,20 +90,23 @@ import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
 import lendingStatsQuery from '@/graphql/query/myLendingStats.graphql';
+import userAchievementsProgress from '@/graphql/query/userAchievementsProgress.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
+import BadgesSection from '@/pages/LendingStats/BadgesSection';
 import StatsSection from './StatsSection';
 
 export default {
 	name: 'LendingStatsPage',
 	components: {
+		BadgesSection,
 		KvDefaultWrapper,
-		WwwPage,
+		StatsSection,
 		TheMyKivaSecondaryMenu,
 		ThePortfolioTertiaryMenu,
-		StatsSection
+		WwwPage,
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo: {
@@ -111,6 +124,8 @@ export default {
 			partnersLentTo: [],
 			partnersNotLentTo: [],
 			totalPartners: 0,
+			userId: null,
+			allAchievements: [],
 		};
 	},
 	apollo: {
@@ -134,7 +149,29 @@ export default {
 			this.partnersLentTo = _sortBy(_get(data, 'my.lendingStats.partnersLentTo'), 'name');
 			this.partnersNotLentTo = _differenceBy(allPartners, this.partnersLentTo, 'id');
 			this.totalPartners = _get(data, 'general.partners.totalCount');
+
+			this.userId = data?.my?.userAccount?.id;
 		},
+	},
+	created() {
+		this.apollo.query({
+			query: userAchievementsProgress,
+			variables: {
+				userId: this.userId.toString(),
+			},
+		}).then(({ data }) => {
+			this.allAchievements = data?.userAchievementProgress?.achievementProgress;
+		});
+	},
+	computed: {
+		completedAchievements() {
+			return this.allAchievements.filter(
+				achievement => achievement.status === 'COMPLETE'
+			);
+		},
+		hasBadges() {
+			return this.completedAchievements.length > 0;
+		}
 	},
 	methods: {
 		iconForSector(sector) {
