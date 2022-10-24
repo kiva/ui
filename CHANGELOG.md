@@ -1,3 +1,11 @@
+## [2.353.0](https://github.com/kiva/ui/compare/v2.352.1...v2.353.0) (2022-10-24)
+
+
+### Features
+
+* display achievement service badge on lending stats page ([28c5190](https://github.com/kiva/ui/commit/28c5190ac03b70addd48d8153639416434fea56c))
+* show category description on mobile ([7a81261](https://github.com/kiva/ui/commit/7a81261821e71cb2de451f1a589e0d5a008e4eb6))
+
 ### [2.352.1](https://github.com/kiva/ui/compare/v2.352.0...v2.352.1) (2022-10-21)
 
 
