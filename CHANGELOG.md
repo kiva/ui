@@ -1,3 +1,10 @@
+## [2.356.0](https://github.com/kiva/ui/compare/v2.355.0...v2.356.0) (2022-10-24)
+
+
+### Features
+
+* borrower picker was created for help me choose experiment ([ef097e1](https://github.com/kiva/ui/commit/ef097e111e369706f5e1f6ef5e4336c6c3b1c2cd))
+
 ## [2.355.0](https://github.com/kiva/ui/compare/v2.354.0...v2.355.0) (2022-10-24)
 
 
