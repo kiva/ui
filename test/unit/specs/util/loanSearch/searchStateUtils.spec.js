@@ -116,6 +116,39 @@ describe('searchStateUtils.js', () => {
 				lenderRepaymentTerm: { ...mockState.lenderRepaymentTerm, __typename: 'MinMaxRange' }
 			});
 		});
+
+		it('should validate keyword search and trim', () => {
+			const state = { ...mockState, keywordSearch: 'test ' };
+
+			const result = getValidatedSearchState(state, mockAllFacets, FLSS_QUERY_TYPE);
+
+			expect(result).toEqual({
+				...mockState,
+				keywordSearch: 'test',
+			});
+		});
+
+		it('should validate keyword search empty string', () => {
+			const state = { ...mockState, keywordSearch: ' ' };
+
+			const result = getValidatedSearchState(state, mockAllFacets, FLSS_QUERY_TYPE);
+
+			expect(result).toEqual({
+				...mockState,
+				keywordSearch: null,
+			});
+		});
+
+		it('should validate keyword search undefined', () => {
+			const state = { ...mockState, keywordSearch: undefined };
+
+			const result = getValidatedSearchState(state, mockAllFacets, FLSS_QUERY_TYPE);
+
+			expect(result).toEqual({
+				...mockState,
+				keywordSearch: null,
+			});
+		});
 	});
 
 	describe('updateSearchState', () => {

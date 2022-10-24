@@ -1,3 +1,95 @@
+## [2.355.0](https://github.com/kiva/ui/compare/v2.354.0...v2.355.0) (2022-10-24)
+
+
+### Features
+
+* add overlay when location dropdown open quick filters ([0cc5520](https://github.com/kiva/ui/commit/0cc55202c5cf37baefa089eadb5f9be4a3f95f79))
+
+
+### Bug Fixes
+
+* add mobile view ([da9b900](https://github.com/kiva/ui/commit/da9b90055464d7918538a8fdffa7003705f0de76))
+* lint ([5d825c4](https://github.com/kiva/ui/commit/5d825c4a48350dd99a4022d3c509c8b06a67570a))
+
+## [2.354.0](https://github.com/kiva/ui/compare/v2.353.0...v2.354.0) (2022-10-24)
+
+
+### Features
+
+* new select box component for lend filter partner ID ([5f20052](https://github.com/kiva/ui/commit/5f200526f76415ee6415010cffe04d1a71f96800))
+
+## [2.353.0](https://github.com/kiva/ui/compare/v2.352.1...v2.353.0) (2022-10-24)
+
+
+### Features
+
+* display achievement service badge on lending stats page ([28c5190](https://github.com/kiva/ui/commit/28c5190ac03b70addd48d8153639416434fea56c))
+* show category description on mobile ([7a81261](https://github.com/kiva/ui/commit/7a81261821e71cb2de451f1a589e0d5a008e4eb6))
+
+### [2.352.1](https://github.com/kiva/ui/compare/v2.352.0...v2.352.1) (2022-10-21)
+
+
+### Bug Fixes
+
+* ensure optimizely events are gated with OneTrust call instead of auto activated in callback ([e55e216](https://github.com/kiva/ui/commit/e55e21665609752372ba206cb0f573f73281b29a))
+
+## [2.352.0](https://github.com/kiva/ui/compare/v2.351.0...v2.352.0) (2022-10-21)
+
+
+### Features
+
+* use new funded borrower profile as default, remove exp code + fix full profile link ([24be7dc](https://github.com/kiva/ui/commit/24be7dc99302d839409b5f8bee22d359b8e607ca))
+
+
+### Bug Fixes
+
+* update funded bp full profile link to use lend-classic ([f602c50](https://github.com/kiva/ui/commit/f602c504c79dc5a1da4c4d33e0d588a128be47b1))
+
+## [2.351.0](https://github.com/kiva/ui/compare/v2.350.2...v2.351.0) (2022-10-21)
+
+
+### Features
+
+* extract loan fragment reading as util function ([ce530ae](https://github.com/kiva/ui/commit/ce530ae646681285654d05a4e53f716d3cc2e4aa))
+* prefetch 1st loan in category grid and only load selected category ([ce115b2](https://github.com/kiva/ui/commit/ce115b296ec50c709536535dfa0fd494c3d5ff18))
+* provide content-group content in ContentfulPage prefetch ([b24b764](https://github.com/kiva/ui/commit/b24b764c583d4296aebb7f1e2933d5010b4acf37))
+* use cached loan data in NewHomePageLoanCard ([fcd3ef9](https://github.com/kiva/ui/commit/fcd3ef98bc762c1d51464d5156fa9ce02263ae95))
+
+### [2.350.2](https://github.com/kiva/ui/compare/v2.350.1...v2.350.2) (2022-10-21)
+
+
+### Bug Fixes
+
+* don't add background as a question in faqs ([748df73](https://github.com/kiva/ui/commit/748df73f14b6b976a340cc9ee540ac7bd7cabbf2))
+
+### [2.350.1](https://github.com/kiva/ui/compare/v2.350.0...v2.350.1) (2022-10-20)
+
+
+### Bug Fixes
+
+* make sure game users see the FLSS loan results in carousel ([98a1d0f](https://github.com/kiva/ui/commit/98a1d0f5e4fe6cefc090556852c10988d53c1bb9))
+
+## [2.350.0](https://github.com/kiva/ui/compare/v2.349.0...v2.350.0) (2022-10-20)
+
+
+### Features
+
+* keyword search FLSS filter ([6e5dcdb](https://github.com/kiva/ui/commit/6e5dcdbe4b65b98651b666ca47b92c151b6b9d63))
+
+## [2.349.0](https://github.com/kiva/ui/compare/v2.348.0...v2.349.0) (2022-10-20)
+
+
+### Features
+
+* gender added to facets for location options ([10adc96](https://github.com/kiva/ui/commit/10adc96f5b53bc583ecdd6003afe72e9afe352ab))
+
+## [2.348.0](https://github.com/kiva/ui/compare/v2.347.3...v2.348.0) (2022-10-20)
+
+
+### Features
+
+* dynamic copy was added for every category and subcategory in helpme choose exp ([cbe47a8](https://github.com/kiva/ui/commit/cbe47a84a607acbe15c475f851adaf95b9cca2b8))
+
 ### [2.347.3](https://github.com/kiva/ui/compare/v2.347.2...v2.347.3) (2022-10-19)
 
 

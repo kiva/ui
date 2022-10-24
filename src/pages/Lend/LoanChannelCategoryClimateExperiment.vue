@@ -16,7 +16,7 @@
 				</h1>
 				<p
 					v-if="!isEcoChallengeExpShown"
-					class="tw-text-subhead tw-w-full show-for-large tw-mb-4 lg:tw-w-3/4"
+					class="tw-text-subhead tw-w-full tw-mb-4 lg:tw-w-3/4"
 				>
 					{{ loanChannelDescription }}
 				</p>

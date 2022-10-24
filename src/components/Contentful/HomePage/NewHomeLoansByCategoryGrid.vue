@@ -8,7 +8,7 @@
 			<kv-page-container>
 				<div>
 					<kiva-multi-category-grid
-						:contentful-loan-channels="contentfulLoanChannels"
+						:contentful-loan-channels="loanChannels"
 						:loan-display-settings="loanDisplaySettings"
 						:new-home-exp="true"
 					/>
@@ -19,13 +19,43 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
+import logReadQueryError from '@/util/logReadQueryError';
 import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
 import KivaMultiCategoryGrid from '@/components/Homepage/HomeExp/KivaMultiCategoryGrid';
+import { loanFieldsFragment } from '@/components/LoanCards/NewHomePageLoanCard';
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
+/**
+ * Extract Loan Channel settings from Contentful Ui Setting dataObject
+* */
+const getContentfulLoanChannels = content => {
+	const uiSetting = content?.contents?.find(({ contentType }) => {
+		return contentType ? contentType === 'uiSetting' : false;
+	});
+	return uiSetting?.dataObject?.loanChannels ?? [];
+};
+
+const loanCategoryPrefetchQuery = gql`
+	${loanFieldsFragment}
+	query loanCategoryPrefetch($loanChannelIds: [Int]!) {
+		lend {
+			loanChannelsById(ids: $loanChannelIds) {
+				id
+				loans(limit: 1) {
+					values {
+						id
+						...loanFields
+					}
+				}
+			}
+		}
+	}`;
+
 export default {
 	name: 'NewHomeLoansByCategoryGrid',
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		KivaMultiCategoryGrid,
 		KvPageContainer,
@@ -41,6 +71,11 @@ export default {
 			default: () => {},
 		},
 	},
+	data() {
+		return {
+			loanChannels: [],
+		};
+	},
 	computed: {
 		/**
 		 * Extract Background content from Contentful
@@ -50,14 +85,8 @@ export default {
 				return contentType ? contentType === 'background' : false;
 			});
 		},
-		/**
-		 * Extract Loan Channel settings from Contentful Ui Setting dataObject
-		* */
 		contentfulLoanChannels() {
-			const uiSetting = this.content?.contents?.find(({ contentType }) => {
-				return contentType ? contentType === 'uiSetting' : false;
-			});
-			return uiSetting?.dataObject?.loanChannels ?? [];
+			return getContentfulLoanChannels(this.content);
 		},
 		/**
 		 * Extract Loan Display settings from Contentful Ui Setting dataObject
@@ -71,6 +100,51 @@ export default {
 				showViewMoreCard: uiSetting?.dataObject?.showViewMoreCard ?? false
 			};
 		}
-	}
+	},
+	apollo: {
+		preFetch(config, client, { content }) {
+			const contentfulLoanChannels = getContentfulLoanChannels(content);
+			const id = contentfulLoanChannels[0]?.id;
+			return client.query({
+				query: loanCategoryPrefetchQuery,
+				variables: {
+					loanChannelIds: id ? [id] : [],
+				},
+			});
+		},
+	},
+	created() {
+		// Fetch loan channel data from the cache
+		let data = {};
+		try {
+			const id = this.contentfulLoanChannels[0]?.id;
+			data = this.apollo.readQuery({
+				query: loanCategoryPrefetchQuery,
+				variables: {
+					loanChannelIds: id ? [id] : [],
+				},
+			});
+		} catch (e) {
+			logReadQueryError(e, 'NewHomeLoansByCategoryGrid loanCategoryPrefetch');
+		}
+
+		// Create an array with placeholder loans for loading
+		const { loanLimit = 0 } = this.loanDisplaySettings;
+		const loanValues = Array(loanLimit).fill({ id: 0 });
+
+		// Get the fetched loan and merge it into the placeholder loan array
+		const loanChannel = data?.lend?.loanChannelsById[0] ?? { loans: { values: [] } };
+		loanValues[0] = loanChannel?.loans?.values[0];
+		const loanChannelCopy = {
+			...loanChannel,
+			loans: {
+				values: loanValues,
+			},
+		};
+
+		// Set the channel with the prefetched loan
+		const [firstChannel, ...otherChannels] = this.contentfulLoanChannels;
+		this.loanChannels = [{ ...firstChannel, ...loanChannelCopy }, ...otherChannels];
+	},
 };
 </script>
