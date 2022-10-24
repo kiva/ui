@@ -25,9 +25,9 @@
 				/>
 			</div>
 
-			<div v-else>
-				Loans
-			</div>
+			<helpme-choose-recommendations
+				v-else
+			/>
 		</div>
 
 		<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
@@ -46,6 +46,7 @@
 <script>
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import HelpmeChooseTrigger from './HelpmeChooseTrigger';
+import HelpmeChooseRecommendations from './HelpmeChooseRecommendations';
 
 export default {
 	name: 'HelpmeChooseWrapper',
@@ -79,7 +80,8 @@ export default {
 	},
 	components: {
 		LoanCardController,
-		HelpmeChooseTrigger
+		HelpmeChooseTrigger,
+		HelpmeChooseRecommendations
 	},
 	computed: {
 		welcomeTitle() {
