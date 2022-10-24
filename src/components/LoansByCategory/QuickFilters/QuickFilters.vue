@@ -45,6 +45,7 @@
 
 			<location-selector
 				@click.native="trackDropdownClick('location')"
+				@handle-overlay="handleQuickFiltersOverlay"
 				class="tw-order-1 lg:tw-order-2"
 				:regions="filterOptions.location"
 				:total-loans="totalLoans"
@@ -165,6 +166,9 @@ export default {
 				'quick-filters-dropdown',
 				label
 			);
+		},
+		handleQuickFiltersOverlay(showOverlay) {
+			this.$emit('handle-overlay', showOverlay);
 		}
 	},
 	mounted() {
