@@ -1,3 +1,10 @@
+## [2.354.0](https://github.com/kiva/ui/compare/v2.353.0...v2.354.0) (2022-10-24)
+
+
+### Features
+
+* new select box component for lend filter partner ID ([5f20052](https://github.com/kiva/ui/commit/5f200526f76415ee6415010cffe04d1a71f96800))
+
 ## [2.353.0](https://github.com/kiva/ui/compare/v2.352.1...v2.353.0) (2022-10-24)
 
 
