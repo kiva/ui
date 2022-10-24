@@ -39,11 +39,11 @@ const getContentfulLoanChannels = content => {
 
 const loanCategoryPrefetchQuery = gql`
 	${loanFieldsFragment}
-	query loanCategoryPrefetch($loanChannelIds: [Int]!) {
+	query loanCategoryPrefetch($loanChannelIds: [Int]!, $limit: Int) {
 		lend {
 			loanChannelsById(ids: $loanChannelIds) {
 				id
-				loans(limit: 1) {
+				loans(limit: $limit) {
 					values {
 						id
 						...loanFields
@@ -55,7 +55,7 @@ const loanCategoryPrefetchQuery = gql`
 
 export default {
 	name: 'NewHomeLoansByCategoryGrid',
-	inject: ['apollo', 'cookieStore'],
+	inject: ['apollo', 'cookieStore', 'device'],
 	components: {
 		KivaMultiCategoryGrid,
 		KvPageContainer,
@@ -102,13 +102,15 @@ export default {
 		}
 	},
 	apollo: {
-		preFetch(config, client, { content }) {
+		preFetch(config, client, { content, device }) {
 			const contentfulLoanChannels = getContentfulLoanChannels(content);
 			const id = contentfulLoanChannels[0]?.id;
+			console.log('Device Type', device?.platform?.type)
 			return client.query({
 				query: loanCategoryPrefetchQuery,
 				variables: {
 					loanChannelIds: id ? [id] : [],
+					limit: device?.platform?.type === 'desktop' ? 6 : 1
 				},
 			});
 		},
@@ -122,6 +124,7 @@ export default {
 				query: loanCategoryPrefetchQuery,
 				variables: {
 					loanChannelIds: id ? [id] : [],
+					limit: this.device?.platform?.type === 'desktop' ? 6 : 1
 				},
 			});
 		} catch (e) {

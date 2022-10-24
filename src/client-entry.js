@@ -155,6 +155,7 @@ router.onReady(() => {
 					cookieStore,
 					kvAuth0,
 					route: to,
+					device
 				});
 			}).then(next).catch(next);
 	});
