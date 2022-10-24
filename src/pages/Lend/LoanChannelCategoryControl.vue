@@ -44,10 +44,11 @@
 				:filters-loaded="filtersLoaded"
 				:update-filters="updateQuickFilters"
 				@reset-filters="resetFilters"
+				@handle-overlay="handleQuickFiltersOverlay"
 			/>
 		</div>
 
-		<div class="row">
+		<div class="row" :class="{ 'tw-opacity-low': showQuickFiltersOverlay }">
 			<div class="columns small-12" v-if="loans.length > 0">
 				<div v-if="!displayLoanPromoCard" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
 					<loan-card-controller
@@ -256,7 +257,8 @@ export default {
 			},
 			filtersLoaded: false,
 			selectedQuickFilters: {},
-			userData: {}
+			userData: {},
+			showQuickFiltersOverlay: false,
 		};
 	},
 	computed: {
@@ -476,6 +478,9 @@ export default {
 		}
 	},
 	methods: {
+		handleQuickFiltersOverlay(showOverlay) {
+			this.showQuickFiltersOverlay = showOverlay;
+		},
 		trackAdvancedFilters() {
 			this.$kvTrackEvent(
 				'Search',
