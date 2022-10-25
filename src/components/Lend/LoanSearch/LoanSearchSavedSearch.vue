@@ -138,6 +138,7 @@ export default {
 						min: this.loanSearchState.lenderRepaymentTerm.min,
 						max: this.loanSearchState.lenderRepaymentTerm.max
 					} : null,
+				partner: this.loanSearchState?.partnerId,
 			};
 		},
 		loginUrl() {

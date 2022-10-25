@@ -88,6 +88,7 @@ type LoanSearchState {
 	isIndividual: Boolean
 	lenderRepaymentTerm: MinMaxRange
 	keywordSearch: String
+	partnerId: [Int]
 }
 
 type TipMessage {

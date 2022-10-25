@@ -144,10 +144,17 @@ describe('searchStateUtils.js', () => {
 
 			const result = getValidatedSearchState(state, mockAllFacets, FLSS_QUERY_TYPE);
 
-			expect(result).toEqual({
-				...mockState,
-				keywordSearch: null,
-			});
+			expect(result).toEqual({ ...mockState, keywordSearch: null });
+		});
+
+		it('should validate partner IDs', () => {
+			let result = getValidatedSearchState({ ...mockState, partnerId: [-1] }, mockAllFacets, FLSS_QUERY_TYPE);
+
+			expect(result).toEqual({ ...mockState, partnerId: [] });
+
+			result = getValidatedSearchState({ ...mockState, partnerId: undefined }, mockAllFacets, FLSS_QUERY_TYPE);
+
+			expect(result).toEqual({ ...mockState, partnerId: [] });
 		});
 	});
 

@@ -334,6 +334,53 @@ export function transformLenderRepaymentTermOptions() {
 }
 
 /**
+ * Transforms partners into a form usable by the select box
+ *
+ * @param {Array<Object>} partners The partners from the lend API
+ * @returns {Array<Object>} Partners sorted by region and partner name
+ */
+export function transformPartners(partners) {
+	const order = [
+		'NORTH AMERICA',
+		'CENTRAL AMERICA',
+		'SOUTH AMERICA',
+		'AFRICA',
+		'EASTERN EUROPE',
+		'MIDDLE EAST',
+		'ASIA',
+		'OCEANIA'
+	];
+
+	const transformed = [];
+
+	partners.forEach(({ id, name, countries }) => {
+		const region = countries?.[0]?.region ?? '';
+
+		transformed.push({
+			id,
+			name,
+			region,
+		});
+	});
+
+	// Sort by region order array, then partner name
+	transformed.sort((a, b) => {
+		if (a.region !== b.region) {
+			const aIndex = order.indexOf(a.region.toUpperCase());
+			const bIndex = order.indexOf(b.region.toUpperCase());
+			// eslint-disable-next-line no-nested-ternary
+			return aIndex < bIndex ? -1 : aIndex > bIndex ? 1 : 0;
+		}
+		const aName = a.name.toUpperCase();
+		const bName = b.name.toUpperCase();
+		// eslint-disable-next-line no-nested-ternary
+		return aName < bName ? -1 : aName > bName ? 1 : 0;
+	});
+
+	return transformed;
+}
+
+/**
  * Gets the filter key based on the value
  * @param {(Object|boolean|string)} value The filter value
  * @param {Object} valueMap The filter key to value map

@@ -16,5 +16,6 @@ query loanSearchStateQuery {
 			max
 		}
 		keywordSearch
+		partnerId
 	}
 }

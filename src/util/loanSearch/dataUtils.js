@@ -66,6 +66,7 @@ export async function fetchLoanFacets(apollo) {
 		const tagFacets = result.data?.lend?.tag ?? [];
 		const genderFacets = result.data?.genderOptions?.enumValues ?? [];
 		const distributionModelFacets = result.data?.distributionModelOptions?.enumValues ?? [];
+		const partnerFacets = result.data?.general?.partners?.values ?? [];
 
 		return {
 			countryFacets,
@@ -86,6 +87,9 @@ export async function fetchLoanFacets(apollo) {
 			standardSorts: result.data?.standardSorts?.enumValues ?? [],
 			distributionModelFacets,
 			distributionModels: distributionModelFacets.map(d => d.name.toUpperCase()),
+			partnerFacets,
+			partnerIds: partnerFacets.map(p => p.id),
+			partnerNames: partnerFacets.map(p => p.name.toUpperCase()),
 		};
 	} catch (e) {
 		logReadQueryError(e, 'dataUtils loanFacetsQuery');

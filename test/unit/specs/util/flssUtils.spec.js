@@ -27,6 +27,7 @@ describe('flssUtils.js', () => {
 				distributionModel: null,
 				isIndividual: null,
 				keywordSearch: null,
+				partnerId: [],
 			};
 
 			expect(getFlssFilters(state)).toEqual({});
@@ -43,6 +44,7 @@ describe('flssUtils.js', () => {
 				isIndividual: false,
 				lenderRepaymentTerm: { min: 0, max: 8, __typename: 'MinMaxRange' },
 				keywordSearch: 'search',
+				partnerId: [1]
 			};
 
 			expect(getFlssFilters(state)).toEqual({
@@ -55,6 +57,7 @@ describe('flssUtils.js', () => {
 				isIndividual: { eq: false },
 				lenderRepaymentTerm: { range: { gte: 0, lte: 8 } },
 				description: { eq: 'search' },
+				partnerId: { any: [1] },
 			});
 		});
 	});

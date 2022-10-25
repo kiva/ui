@@ -5,8 +5,7 @@ export default {
 	component: KvSelectBox,
 };
 
-const items = [...Array(20)].map((_, i) => ({ id: i, name: `Item ${i + 1}` }));
-[...Array(5)].forEach((_, i) => items.splice([i * 5], 0, { isHeader: true, name: `Header ${i + 1}` }));
+const items = [...Array(20)].map((_, i) => ({ id: i, name: `Item ${i + 1}`, header: `Header ${i % 5}` }));
 
 const story = (args) => {
 	const template = (_args, { argTypes }) => ({
@@ -15,7 +14,7 @@ const story = (args) => {
 		data: () => ({
 			myCoolModel: '',
 		}),
-		template: `<kv-select-box id="select-box" :items="items">
+		template: `<kv-select-box id="select-box" :items="items" header-key="header">
 			<option value="test">Test</option>
 			<option value="test2">Test2</option>
 			<option value="test3">Test3</option>

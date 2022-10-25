@@ -33,9 +33,11 @@ import {
 	MORE_THAN_TWO_YEARS_KEY,
 	lenderRepaymentTermDisplayMap,
 	lenderRepaymentTermValueMap,
+	transformPartners,
 } from '@/util/loanSearch/filterUtils';
 import _orderBy from 'lodash/orderBy';
 import {
+	mockAllFacets,
 	mockTransformedMiddleEast,
 	mockTransformedChile,
 	mockTransformedColombia,
@@ -427,6 +429,30 @@ describe('filterUtils.js', () => {
 					name: MORE_THAN_TWO_YEARS_KEY,
 					title: lenderRepaymentTermDisplayMap[MORE_THAN_TWO_YEARS_KEY],
 					value: lenderRepaymentTermValueMap[MORE_THAN_TWO_YEARS_KEY]
+				},
+			]);
+		});
+	});
+
+	describe('transformPartners', () => {
+		it('should transform and sort', () => {
+			const result = transformPartners(mockAllFacets.partnerFacets);
+
+			expect(result).toEqual([
+				{
+					id: 3,
+					name: 'Aaa',
+					region: 'Central America'
+				},
+				{
+					id: 2,
+					name: 'Bbb',
+					region: 'Central America'
+				},
+				{
+					id: 1,
+					name: 'Ccc',
+					region: 'Africa'
 				},
 			]);
 		});
