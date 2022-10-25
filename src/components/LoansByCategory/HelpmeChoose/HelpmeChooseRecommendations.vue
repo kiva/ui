@@ -32,28 +32,38 @@
 			/>
 
 			<button @click="$emit('show-triggers')" class="tw-hidden lg:tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-action tw-text-small tw-mt-1">
-				<img src="@/assets/images/helpmechoose/replay.svg"> Start over
+				<kv-material-icon
+					class="tw-w-2 tw-h-2"
+					:icon="mdiRefresh"
+				/> Start over
 			</button>
 		</div>
 		<div>
 			<!-- Loan Card code -->
 		</div>
 		<button @click="$emit('show-triggers')" class="lg:tw-hidden tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-action tw-text-small tw-mt-1">
-			<img src="@/assets/images/helpmechoose/replay.svg"> Start over
+			<kv-material-icon
+				class="tw-w-2 tw-h-2"
+				:icon="mdiRefresh"
+			/> Start over
 		</button>
 	</div>
 </template>
 
 <script>
+import { mdiRefresh } from '@mdi/js';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import HelpmeChooseBorrowerSelector from './HelpmeChooseBorrowerSelector';
 
 export default {
 	name: 'HelpmeChooseRecommendations',
 	components: {
-		HelpmeChooseBorrowerSelector
+		HelpmeChooseBorrowerSelector,
+		KvMaterialIcon
 	},
 	data() {
 		return {
+			mdiRefresh,
 			selectedLoan: 0
 		};
 	},
