@@ -30,9 +30,10 @@
 					class="tw-py-0.5 tw-px-1.5"
 					:class="{
 						'tw-pb-1': item.isHeader,
-						'tw-cursor-pointer hover:tw-bg-action-highlight hover:tw-text-white': !item.isHeader
+						'tw-cursor-pointer hover:tw-bg-action-highlight hover:tw-text-white': !item.isHeader,
+						'tw-bg-tertiary tw-pointer-events-none': itemSelected(item.id),
 					}"
-					@click="clickItem(item)"
+					@click="!item.isHeader && !itemSelected(item.id) && clickItem(item)"
 				>
 					<span :class="{ 'tw-border-b tw-pb-0.5': item.isHeader }">
 						{{ item.name }}
@@ -81,6 +82,10 @@ export default {
 		isFullWidth: {
 			type: Boolean,
 			default: false
+		},
+		selectedIds: {
+			type: Array,
+			default: () => ([])
 		},
 	},
 	data() {
@@ -161,6 +166,9 @@ export default {
 		},
 		clickItem({ id }) {
 			this.$emit('selected', { id });
+		},
+		itemSelected(id) {
+			return this.selectedIds.includes(id);
 		},
 	},
 };

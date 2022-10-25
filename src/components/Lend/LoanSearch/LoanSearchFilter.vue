@@ -143,6 +143,7 @@
 				:should-sort="false"
 				placeholder="Partner name"
 				:is-full-width="true"
+				:selected-ids="loanSearchState.partnerId"
 				class="tw-w-full tw-py-1.5"
 				@selected="handleUpdatePartnerIdFilter"
 			/>

@@ -90,4 +90,67 @@ describe('KvSelectBox', () => {
 
 		expect(payload).toEqual({ id: 0 });
 	});
+
+	it('should disable selected items', async () => {
+		const { getByText, updateProps } = render(KvSelectBox, { props: { id: 'id', items, selectedIds: [1] } });
+
+		const item0 = getByText(items[0].name).parentNode;
+		const item1 = getByText(items[1].name).parentNode;
+		const item2 = getByText(items[2].name).parentNode;
+
+		expect(item0.classList.contains('tw-bg-tertiary')).toBe(false);
+		expect(item0.classList.contains('tw-pointer-events-none')).toBe(false);
+		expect(item1.classList.contains('tw-bg-tertiary')).toBe(true);
+		expect(item1.classList.contains('tw-pointer-events-none')).toBe(true);
+		expect(item2.classList.contains('tw-bg-tertiary')).toBe(false);
+		expect(item2.classList.contains('tw-pointer-events-none')).toBe(false);
+
+		await updateProps({ selectedIds: [0, 2] });
+
+		expect(item0.classList.contains('tw-bg-tertiary')).toBe(true);
+		expect(item0.classList.contains('tw-pointer-events-none')).toBe(true);
+		expect(item1.classList.contains('tw-bg-tertiary')).toBe(false);
+		expect(item1.classList.contains('tw-pointer-events-none')).toBe(false);
+		expect(item2.classList.contains('tw-bg-tertiary')).toBe(true);
+		expect(item2.classList.contains('tw-pointer-events-none')).toBe(true);
+	});
+
+	it('should prevent clicking selected items', async () => {
+		const user = userEvent.setup();
+
+		const { getByText, emitted } = render(KvSelectBox, {
+			props: {
+				id: 'id',
+				items,
+				selectedIds: [0, 2]
+			}
+		});
+
+		const item0 = getByText(items[0].name).parentNode;
+		const item2 = getByText(items[0].name).parentNode;
+
+		await user.click(item0);
+		await user.click(item2);
+
+		expect(emitted().selected).toBe(undefined);
+	});
+
+	it('should prevent clicking headers', async () => {
+		const user = userEvent.setup();
+
+		const { getByText, emitted } = render(KvSelectBox, {
+			props: {
+				id: 'id',
+				items,
+				headerKey: 'header',
+				selectedIds: [0, 2]
+			}
+		});
+
+		const header = getByText('Header 1').parentNode;
+
+		await user.click(header);
+
+		expect(emitted().selected).toBe(undefined);
+	});
 });
