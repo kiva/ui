@@ -1,3 +1,19 @@
+### [2.356.2](https://github.com/kiva/ui/compare/v2.356.1...v2.356.2) (2022-10-25)
+
+
+### Bug Fixes
+
+* change custom attributes name format ([97ff3d6](https://github.com/kiva/ui/commit/97ff3d6789a6bddd038c9502ab0a30f82cf55a08))
+
+### [2.356.1](https://github.com/kiva/ui/compare/v2.356.0...v2.356.1) (2022-10-25)
+
+
+### Bug Fixes
+
+* detect device type ([41dda3c](https://github.com/kiva/ui/commit/41dda3c5f30e16c9cac49f79c19ec9f9bc15deba))
+* detect device type ([40c411b](https://github.com/kiva/ui/commit/40c411bedaed767c8d8cee529778509fe6770e7f))
+* removed commented code ([7b2f0c8](https://github.com/kiva/ui/commit/7b2f0c86661dbd08a5a10d35af408e550b2e8f0f))
+
 ## [2.356.0](https://github.com/kiva/ui/compare/v2.355.0...v2.356.0) (2022-10-24)
 
 

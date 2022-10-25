@@ -9,9 +9,9 @@ export default function setHotJarUserAttributes(userData) {
 
 	if (window.hj) {
 		window.hj('identify', userData.userId, {
-			has_ever_logged_in: userData.hasEverLoggedIn,
-			has_lent_before: userData.hasLentBefore,
-			has_deposit_before: userData.hasDepositBefore,
+			'Has ever logged in': userData.hasEverLoggedIn,
+			'Has lent before': userData.hasLentBefore,
+			'Has deposit before': userData.hasDepositBefore,
 		});
 	}
 }
