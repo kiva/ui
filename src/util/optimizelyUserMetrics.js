@@ -21,7 +21,7 @@ function setUserAttribute(key, value) {
  * @param {Boolean} hasEverLoggedIn
  */
 export function userHasEverLoggedInBefore(hasEverLoggedIn) {
-	setUserAttribute('has_ever_logged_in_before', hasEverLoggedIn);
+	setUserAttribute('has_ever_logged_in_before', hasEverLoggedIn ? 'yes' : 'no');
 }
 
 /**
@@ -29,7 +29,7 @@ export function userHasEverLoggedInBefore(hasEverLoggedIn) {
  * @param {Boolean} hasLentBefore
  */
 export function userHasLentBefore(hasLentBefore) {
-	setUserAttribute('has_lent_before', hasLentBefore);
+	setUserAttribute('has_lent_before', hasLentBefore ? 'yes' : 'no');
 }
 
 /**
@@ -37,7 +37,7 @@ export function userHasLentBefore(hasLentBefore) {
  * @param {Boolean} hasDepositedBefore
  */
 export function userHasDepositBefore(hasDepositedBefore) {
-	setUserAttribute('has_deposited_before', hasDepositedBefore);
+	setUserAttribute('has_deposited_before', hasDepositedBefore ? 'yes' : 'no');
 }
 
 export function buildUserDataGlobal(router, cookieStore, apolloClient) {
