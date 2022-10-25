@@ -438,15 +438,6 @@ export default {
 					},
 				})
 				.then(({ data }) => {
-					const expCookieSignifier = cookieStore.get('kvlendborrowerbeta');
-					if (expCookieSignifier === 'a' || expCookieSignifier === 'c') {
-						const { query } = route;
-						return Promise.reject({
-							path: `/lend-classic/${route.params.id}`,
-							query,
-						});
-					}
-
 					const loan = data?.lend?.loan;
 					if (loan === null || loan === 'undefined') {
 						// redirect to legacy borrower profile
