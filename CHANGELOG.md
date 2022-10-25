@@ -1,3 +1,10 @@
+### [2.357.1](https://github.com/kiva/ui/compare/v2.357.0...v2.357.1) (2022-10-25)
+
+
+### Bug Fixes
+
+* change boolean flags to strings ([3d1b985](https://github.com/kiva/ui/commit/3d1b985bad285a5f6a67d4b9d6cad4ac69a63b88))
+
 ## [2.357.0](https://github.com/kiva/ui/compare/v2.356.2...v2.357.0) (2022-10-25)
 
 
