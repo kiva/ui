@@ -1,3 +1,10 @@
+### [2.357.2](https://github.com/kiva/ui/compare/v2.357.1...v2.357.2) (2022-10-25)
+
+
+### Bug Fixes
+
+* loan row carousel resets whenever see more loans button is clicked ([3595a79](https://github.com/kiva/ui/commit/3595a79b0d5373f63ad82bd384e9256377020545))
+
 ### [2.357.1](https://github.com/kiva/ui/compare/v2.357.0...v2.357.1) (2022-10-25)
 
 
