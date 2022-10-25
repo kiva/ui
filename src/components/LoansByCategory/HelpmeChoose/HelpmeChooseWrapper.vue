@@ -10,13 +10,13 @@
 		</div>
 
 		<div class="tw-w-full tw-pb-2">
-			<div v-if="triggersVisible" class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 lg:tw-gap-4">
+			<div v-show="triggersVisible" class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 lg:tw-gap-4">
 				<helpme-choose-trigger
 					variant="amountLeft"
 					@click="showLoans"
 				/>
 				<helpme-choose-trigger
-					variant="personalized"
+					:variant="secondOption"
 					@click="showLoans"
 				/>
 				<helpme-choose-trigger
@@ -26,7 +26,8 @@
 			</div>
 
 			<helpme-choose-recommendations
-				v-else
+				v-show="!triggersVisible"
+				@show-triggers="triggersVisible = true"
 			/>
 		</div>
 
@@ -75,7 +76,8 @@ export default {
 	data() {
 		return {
 			triggersVisible: true,
-			subCategoryTitle: ''
+			subCategoryTitle: '',
+			selectedSort: ''
 		};
 	},
 	components: {
@@ -95,19 +97,30 @@ export default {
 				return `${this.loanChannelName} + ${this.subCategoryTitle}`;
 			}
 			return 'Choose a subcategory and we\'ll do the rest.';
-		}
+		},
+		secondOption() {
+			return this.isVisitor ? 'popularityScore' : 'personalized';
+		},
 	},
 	methods: {
-		showLoans(event) {
+		showLoans(evt) {
 			this.triggersVisible = false;
-			if (event === 'amountLeft') {
-				this.subCategoryTitle = 'Almost funded';
-			}
-			if (event === 'personalized') {
-				this.subCategoryTitle = 'Recommended for you';
-			}
-			if (event === 'researchScore') {
-				this.subCategoryTitle = 'Research backed impact';
+			this.selectedSort = evt;
+			switch (evt) {
+				case 'amountLeft':
+					this.subCategoryTitle = 'Almost funded';
+					break;
+				case 'personalized':
+					this.subCategoryTitle = 'Recommended for you';
+					break;
+				case 'researchScore':
+					this.subCategoryTitle = 'Research backed impact';
+					break;
+				case 'popularityScore':
+					this.subCategoryTitle = 'Popular loans';
+					break;
+				default:
+					this.subCategoryTitle = '';
 			}
 		}
 	}
