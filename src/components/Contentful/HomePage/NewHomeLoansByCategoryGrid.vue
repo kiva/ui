@@ -145,7 +145,6 @@ export default {
 			loanValues[0] = loanChannel?.loans?.values[0];
 		}
 
-		// loanValues[0] = isDesktop ? loanChannel?.loans?.values : loanChannel?.loans?.values[0];
 		const loanChannelCopy = {
 			...loanChannel,
 			loans: {
