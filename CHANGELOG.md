@@ -1,3 +1,10 @@
+### [2.356.2](https://github.com/kiva/ui/compare/v2.356.1...v2.356.2) (2022-10-25)
+
+
+### Bug Fixes
+
+* change custom attributes name format ([97ff3d6](https://github.com/kiva/ui/commit/97ff3d6789a6bddd038c9502ab0a30f82cf55a08))
+
 ### [2.356.1](https://github.com/kiva/ui/compare/v2.356.0...v2.356.1) (2022-10-25)
 
 
