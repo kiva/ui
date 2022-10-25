@@ -1,8 +1,12 @@
 <template>
 	<div
-		class="tw-rounded lg:tw-flex tw-border tw-border-secondary tw-gap-1 tw-items-center tw-p-1.5 lg:tw-p-1 tw-w-auto
-				tw-justify-center lg:tw-justify-left"
-		:class="{ 'tw-bg-primary-inverse lg:tw-bg-white lg:tw-shadow-lg tw-border-none': selectedLoan }"
+		class="tw-rounded lg:tw-flex tw-border tw-gap-1 tw-items-center tw-p-1.5 lg:tw-p-1
+				tw-text-center lg:tw-text-left tw-cursor-pointer"
+		:class="[
+			{ 'tw-bg-primary-inverse lg:tw-bg-white tw-shadow-md tw-border-white': activeLoan },
+			{ 'tw-border-secondary': !activeLoan },
+		]"
+		@click="updateSelectedLoan"
 	>
 		<img :src="imageUrl" class="tw-hidden lg:tw-block tw-rounded tw-h-8 tw-w-8 tw-object-cover">
 		<div>
@@ -11,8 +15,9 @@
 			</h6>
 			<span
 				class="tw-text-black lg:tw-text-white tw-text-base lg:tw-text-small
-					tw-rounded tw-p-1.5 lg:tw-p-1 tw-w-full lg:tw-bg-black tw-font-medium"
-				:class="{ 'tw-text-white': selectedLoan }"
+					tw-rounded tw-p-1.5 lg:tw-p-1 lg:tw-bg-black tw-font-medium
+					tw-text-center lg:tw-text-left"
+				:class="{ 'tw-text-white': activeLoan }"
 			>
 				{{ tag }}
 			</span>
@@ -36,9 +41,23 @@ export default {
 			type: String,
 			default: ''
 		},
-		selectedLoan: {
-			type: Boolean,
-			default: false
+		selected: {
+			type: Number,
+			default: 0
+		},
+		index: {
+			type: Number,
+			default: 0
+		}
+	},
+	methods: {
+		updateSelectedLoan() {
+			this.$emit('select', this.index);
+		}
+	},
+	computed: {
+		activeLoan() {
+			return this.selected === this.index;
 		}
 	},
 };
