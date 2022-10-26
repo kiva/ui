@@ -3,24 +3,21 @@
 		:corporate-logo-url="corporateLogoUrl"
 	>
 		<div class="corporate-campaign-landing">
+			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
+			<campaign-status
+				v-if="!hideStatusBar"
+				class="corporate-campaign-landing__status tw-sticky tw-top-8 md:tw-top-9 tw-z-2"
+				:active-credit-type="activeCreditType"
+				:is-matching="isMatchingCampaign"
+				:loading-promotion="loadingPromotion"
+				:promo-error-message="promoErrorMessage"
+				:promo-applied="promoApplied"
+				:promo-amount="promoAmount"
+				:promo-name="campaignPartnerName"
+				:status-message-override="statusMessageOverride"
+			/>
+
 			<div v-if="!usesDynamicContentfulRendering">
-				<kv-loading-overlay
-					v-if="loadingPage"
-					class="tw-z-1"
-				/>
-				<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
-				<campaign-status
-					v-if="!hideStatusBar"
-					class="corporate-campaign-landing__status tw-sticky tw-top-8 md:tw-top-9 tw-z-2"
-					:active-credit-type="activeCreditType"
-					:is-matching="isMatchingCampaign"
-					:loading-promotion="loadingPromotion"
-					:promo-error-message="promoErrorMessage"
-					:promo-applied="promoApplied"
-					:promo-amount="promoAmount"
-					:promo-name="campaignPartnerName"
-					:status-message-override="statusMessageOverride"
-				/>
 
 				<!-- TODO: Alter CTA if Checkout is ready -->
 				<campaign-hero
