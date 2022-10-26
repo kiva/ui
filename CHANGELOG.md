@@ -1,3 +1,31 @@
+## [2.361.0](https://github.com/kiva/ui/compare/v2.360.0...v2.361.0) (2022-10-26)
+
+
+### Features
+
+* added non-binary filter option ([e730c91](https://github.com/kiva/ui/commit/e730c91057c1b90397c477a83d7c444988e6e282))
+* show nonbinary filter with specific param ([6eb0c70](https://github.com/kiva/ui/commit/6eb0c70385d0d5d39ef9e499377b6b0def49f105))
+* small update ([d907915](https://github.com/kiva/ui/commit/d90791563c53136d59e24d16ba1c83b6603f6a3b))
+
+
+### Bug Fixes
+
+* add remove comment ([9f01ccc](https://github.com/kiva/ui/commit/9f01ccc5f051cc0fcec95ff04b0a1507aa603d5a))
+* remove hypens from filter name ([7814b7f](https://github.com/kiva/ui/commit/7814b7f141b78977f92d2dd54402d1d7c8402522))
+* remove unused component ([20e0d3a](https://github.com/kiva/ui/commit/20e0d3a975cdcb9e5e33f6c0733e9031a509fec5))
+* remove unused func ([8081eec](https://github.com/kiva/ui/commit/8081eec57328a597b0328aff1dc3a68207d04740))
+* removed male key duplicated ([72ea163](https://github.com/kiva/ui/commit/72ea1637a8e30b1bea3c32f431a4de65ff32d507))
+* resolve comments ([a2a41e4](https://github.com/kiva/ui/commit/a2a41e4aa298a2da212151f09a3ed946d78af964))
+* solve conflicts ([4669054](https://github.com/kiva/ui/commit/46690547fbe5d7fd7e301fb26ef7202151584c35))
+* unremoved code from merge ([6f8498b](https://github.com/kiva/ui/commit/6f8498b8981db1fefef2d1dc25521078c238235a))
+* use genderDisplayMap ([0fab7f4](https://github.com/kiva/ui/commit/0fab7f475077a2a516de692377d8cbf02e9d6126))
+
+
+### Reverts
+
+* filter chips ([7d92fe5](https://github.com/kiva/ui/commit/7d92fe51568d31f700ee5d9f42042df671c10838))
+* loan search filters file ([2c0281d](https://github.com/kiva/ui/commit/2c0281da8fcef9e77003cc25f320923a97de42d3))
+
 ## [2.360.0](https://github.com/kiva/ui/compare/v2.359.2...v2.360.0) (2022-10-26)
 
 
