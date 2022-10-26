@@ -59,13 +59,6 @@ export default {
 		loanData() {
 			return this.loans[this.selectedLoan];
 		},
-		activityName() {
-			return this.loans[this.selectedLoan]?.activity?.name ?? '';
-		},
-		imageUrl(evt) {
-			console.log(evt);
-			return this.loans[this.selectedLoan]?.activity?.name ?? '';
-		}
 	},
 	methods: {
 		selectLoan(evt) {
