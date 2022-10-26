@@ -70,6 +70,8 @@
 						:is-visitor="isVisitor"
 						:user-data="userData"
 						:loan-channel-name="loanChannelName"
+						:loans="helpmeChooseLoans"
+						@update="getHelpmeChooseLoans($event)"
 					/>
 				</div>
 				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
@@ -102,6 +104,8 @@
 						:is-visitor="isVisitor"
 						:user-data="userData"
 						:loan-channel-name="loanChannelName"
+						:loans="helpmeChooseLoans"
+						@update="getHelpmeChooseLoans($event)"
 					/>
 				</div>
 				<kv-pagination
@@ -263,6 +267,7 @@ export default {
 			selectedQuickFilters: {},
 			userData: {},
 			showQuickFiltersOverlay: false,
+			helpmeChooseLoans: []
 		};
 	},
 	computed: {
@@ -687,6 +692,22 @@ export default {
 			} else {
 				this.flssLoanSearch = matchedUrls[0]?.flssLoanSearch ?? {};
 			}
+		},
+		async getHelpmeChooseLoans(evt = 'amountLeft') {
+			const loansData = await getFilteredLoanChannel(
+				this.apollo,
+				this.loanChannelQueryMap,
+				this.targetedLoanChannelURL,
+				{
+					ids: [this.targetedLoanChannelID],
+					limit: 3,
+					basketId: this.cookieStore.get('kvbskt'),
+					origin: FLSS_ORIGIN_CATEGORY
+				},
+				{ sortBy: evt }
+			);
+			const loans = loansData?.lend?.loanChannelsById[0]?.loans?.values ?? [];
+			this.helpmeChooseLoans = loans;
 		}
 	},
 	watch: {
