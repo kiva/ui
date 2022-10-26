@@ -653,12 +653,14 @@ export default {
 				logReadQueryError(e, 'User Data For Optimizely Metrics');
 			}
 		}
+	},
+	mounted() {
 		// MARS-246 Hotjar user attributes
 		setHotJarUserAttributes({
 			userId: this.userId,
 			hasEverLoggedIn: this.hasEverLoggedIn,
-			hasLentBefore: Boolean(hasLentBefore),
-			hasDepositBefore: Boolean(hasDepositBefore),
+			hasLentBefore: Boolean(this.cookieStore.get(hasLentBeforeCookie)),
+			hasDepositBefore: Boolean(this.cookieStore.get(hasDepositBeforeCookie)),
 		});
 	},
 	methods: {
