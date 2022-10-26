@@ -654,14 +654,12 @@ export default {
 			}
 		}
 		// MARS-246 Hotjar user attributes
-		if (this.userId) {
-			setHotJarUserAttributes({
-				userId: this.userId,
-				hasEverLoggedIn: this.hasEverLoggedIn,
-				hasLentBefore: Boolean(hasLentBefore),
-				hasDepositBefore: Boolean(hasDepositBefore),
-			});
-		}
+		setHotJarUserAttributes({
+			userId: this.userId,
+			hasEverLoggedIn: this.hasEverLoggedIn,
+			hasLentBefore: Boolean(hasLentBefore),
+			hasDepositBefore: Boolean(hasDepositBefore),
+		});
 	},
 	methods: {
 		toggleLendMenu(immediate = false) {
