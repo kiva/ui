@@ -1,3 +1,10 @@
+## [2.360.0](https://github.com/kiva/ui/compare/v2.359.2...v2.360.0) (2022-10-26)
+
+
+### Features
+
+* update placement of user attributes ([f3ad8e4](https://github.com/kiva/ui/commit/f3ad8e46ea62604e889b45c3dbdab5b13dcb5f7c))
+
 ### [2.359.2](https://github.com/kiva/ui/compare/v2.359.1...v2.359.2) (2022-10-26)
 
 
