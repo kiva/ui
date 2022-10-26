@@ -1,3 +1,10 @@
+### [2.359.1](https://github.com/kiva/ui/compare/v2.359.0...v2.359.1) (2022-10-26)
+
+
+### Bug Fixes
+
+* update My conversations link to lend-classic ([3a4161d](https://github.com/kiva/ui/commit/3a4161dd93e03c765a1469c242c48c2e230aa6ac))
+
 ## [2.359.0](https://github.com/kiva/ui/compare/v2.358.1...v2.359.0) (2022-10-26)
 
 
