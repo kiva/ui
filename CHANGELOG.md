@@ -1,3 +1,10 @@
+### [2.359.2](https://github.com/kiva/ui/compare/v2.359.1...v2.359.2) (2022-10-26)
+
+
+### Bug Fixes
+
+* promo code only comes up for non-dynamically rendered pages ([5bb0e43](https://github.com/kiva/ui/commit/5bb0e4392cdf53deb4a95078aa6f121be0ccd444))
+
 ### [2.359.1](https://github.com/kiva/ui/compare/v2.359.0...v2.359.1) (2022-10-26)
 
 
