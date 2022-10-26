@@ -4,9 +4,9 @@
 			<helpme-choose-borrower-selector
 				v-for="(loan, index) in loans"
 				:key="loan.id"
-				:image-url="imageUrl"
+				:image-url="getImageUrl(loan)"
 				:name="loan.name"
-				:tag="activityName"
+				:tag="getActivityName(loan)"
 				:selected="selectedLoan"
 				:index="index"
 				@select="selectLoan"
@@ -60,10 +60,11 @@ export default {
 			return this.loans[this.selectedLoan];
 		},
 		activityName() {
-			return this.loanData?.activity?.name ?? '';
+			return this.loans[this.selectedLoan]?.activity?.name ?? '';
 		},
-		imageUrl() {
-			return this.loanData?.image.default ?? '';
+		imageUrl(evt) {
+			console.log(evt);
+			return this.loans[this.selectedLoan]?.activity?.name ?? '';
 		}
 	},
 	methods: {
@@ -73,6 +74,12 @@ export default {
 		goBack() {
 			this.selectedLoan = 0;
 			this.$emit('show-triggers');
+		},
+		getActivityName(loan) {
+			return loan?.activity?.name ?? '';
+		},
+		getImageUrl(loan) {
+			return loan?.image?.default ?? '';
 		}
 	}
 };
