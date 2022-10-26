@@ -284,7 +284,7 @@ export default {
 				this.$kvTrackEvent(
 					'Lending',
 					'EXP-CORE-792-Oct-2022',
-					quickFiltersExperiment.version
+					loanTagsExperiment.version
 				);
 			}
 		},
