@@ -1,3 +1,10 @@
+### [2.358.1](https://github.com/kiva/ui/compare/v2.358.0...v2.358.1) (2022-10-26)
+
+
+### Bug Fixes
+
+* always set user attribute ([7f556dc](https://github.com/kiva/ui/commit/7f556dc4f928c448535525c712f75b988a66bd6e))
+
 ## [2.358.0](https://github.com/kiva/ui/compare/v2.357.2...v2.358.0) (2022-10-26)
 
 
