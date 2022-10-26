@@ -1,3 +1,17 @@
+## [2.362.0](https://github.com/kiva/ui/compare/v2.361.0...v2.362.0) (2022-10-26)
+
+
+### Features
+
+* computed values added for image and activity ([7b3299b](https://github.com/kiva/ui/commit/7b3299b891638e73e8d4478fdde6edfb20c45635))
+* helpme choose loans getter and logic added to the experiment ([ea271ef](https://github.com/kiva/ui/commit/ea271efb69ec6769cdff3b84f01e58360a5e6c90))
+* methods for getting image and activity were added ([e4e3405](https://github.com/kiva/ui/commit/e4e34057792a5fb9c9335178f624398bb3557de1))
+
+
+### Bug Fixes
+
+* extra code removed ([b4855a6](https://github.com/kiva/ui/commit/b4855a6dffa6fa079911fdbcdf9e405e6b0abfc8))
+
 ## [2.361.0](https://github.com/kiva/ui/compare/v2.360.0...v2.361.0) (2022-10-26)
 
 
