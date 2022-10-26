@@ -28,6 +28,7 @@
 			<helpme-choose-recommendations
 				v-show="!triggersVisible"
 				@show-triggers="triggersVisible = true"
+				:loans="loans"
 			/>
 		</div>
 
@@ -71,13 +72,16 @@ export default {
 		loanChannelName: {
 			type: String,
 			default: ''
-		}
+		},
+		loans: {
+			type: Array,
+			default: () => []
+		},
 	},
 	data() {
 		return {
 			triggersVisible: true,
 			subCategoryTitle: '',
-			selectedSort: ''
 		};
 	},
 	components: {
@@ -105,7 +109,7 @@ export default {
 	methods: {
 		showLoans(evt) {
 			this.triggersVisible = false;
-			this.selectedSort = evt;
+			this.$emit('update', evt);
 			switch (evt) {
 				case 'amountLeft':
 					this.subCategoryTitle = 'Almost funded';

@@ -1,37 +1,19 @@
 <template>
 	<div class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-3 tw-w-full">
-		<div class="tw-flex tw-flex-col tw-gap-1 lg:tw-gap-1.5">
-			<!-- eslint-disable max-len -->
+		<div class="tw-flex tw-flex-col tw-gap-1 lg:tw-gap-1.5 lg:tw-w-1/3">
 			<helpme-choose-borrower-selector
-				image-url="https://res.cloudinary.com/kiva/w_960,h_600,c_fill,g_faces/a_ignore,fl_progressive,q_auto:best,f_auto/remote/ea3be8ae591d38de82c7a81b3657b22e.jpg"
-				name="BV Goudiry Group"
-				tag="Latinx/Hispanic-Owned Business"
+				v-for="(loan, index) in loans"
+				:key="loan.id"
+				:image-url="loan.image.default"
+				:name="loan.name"
+				:tag="loan.activity.name"
 				:selected="selectedLoan"
-				:index="0"
+				:index="index"
 				@select="selectLoan"
 			/>
 
 			<!-- eslint-disable max-len -->
-			<helpme-choose-borrower-selector
-				image-url="https://res.cloudinary.com/kiva/w_960,h_600,c_fill,g_faces/a_ignore,fl_progressive,q_auto:best,f_auto/remote/ea3be8ae591d38de82c7a81b3657b22e.jpg"
-				name="BV Goudiry Group"
-				tag="Agriculture"
-				:selected="selectedLoan"
-				:index="1"
-				@select="selectLoan"
-			/>
-
-			<!-- eslint-disable max-len -->
-			<helpme-choose-borrower-selector
-				image-url="https://res.cloudinary.com/kiva/w_960,h_600,c_fill,g_faces/a_ignore,fl_progressive,q_auto:best,f_auto/remote/ea3be8ae591d38de82c7a81b3657b22e.jpg"
-				name="BV Goudiry Group"
-				tag="Retain"
-				:selected="selectedLoan"
-				:index="2"
-				@select="selectLoan"
-			/>
-
-			<button @click="$emit('show-triggers')" class="tw-hidden lg:tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-action tw-text-small tw-mt-1">
+			<button @click="goBack" class="tw-hidden lg:tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-action tw-text-small tw-mt-1">
 				<kv-material-icon
 					class="tw-w-2 tw-h-2"
 					:icon="mdiRefresh"
@@ -41,7 +23,7 @@
 		<div>
 			<!-- Loan Card code -->
 		</div>
-		<button @click="$emit('show-triggers')" class="lg:tw-hidden tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-action tw-text-small tw-mt-1">
+		<button @click="goBack" class="lg:tw-hidden tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-action tw-text-small tw-mt-1">
 			<kv-material-icon
 				class="tw-w-2 tw-h-2"
 				:icon="mdiRefresh"
@@ -61,16 +43,31 @@ export default {
 		HelpmeChooseBorrowerSelector,
 		KvMaterialIcon
 	},
+	props: {
+		loans: {
+			type: Array,
+			default: () => []
+		},
+	},
 	data() {
 		return {
 			mdiRefresh,
-			selectedLoan: 0
+			selectedLoan: 0,
 		};
+	},
+	computed: {
+		loanData() {
+			return this.loans[this.selectedLoan];
+		}
 	},
 	methods: {
 		selectLoan(evt) {
 			this.selectedLoan = evt;
 		},
+		goBack() {
+			this.selectedLoan = 0;
+			this.$emit('show-triggers');
+		}
 	}
 };
 </script>
