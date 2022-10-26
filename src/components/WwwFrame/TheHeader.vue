@@ -372,7 +372,7 @@
 											</li>
 											<li>
 												<router-link
-													:to="`/lend/${loanId}#loanComments`"
+													:to="`/lend-classic/${loanId}#loanComments`"
 													v-kv-track-event="['TopNav','click-Portfolio-My Conversations']"
 												>
 													My conversations
