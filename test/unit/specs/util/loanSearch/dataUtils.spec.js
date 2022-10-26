@@ -96,6 +96,8 @@ describe('dataUtils.js', () => {
 		const flssSorts = { enumValues: [{ name: 'expiringSoon' }] };
 		const standardSorts = { enumValues: [{ name: 'expiringSoon' }] };
 		const distributionModelOptions = { enumValues: [{ name: 'direct' }] };
+		const partners = [{ id: 1, name: 'Asd', region: 'Africa' }];
+		const general = { partners: { values: partners } };
 
 		it('should pass the correct query variables to apollo', async () => {
 			const apollo = { query: jest.fn(() => Promise.resolve({})) };
@@ -128,6 +130,9 @@ describe('dataUtils.js', () => {
 				standardSorts: [],
 				distributionModelFacets: [],
 				distributionModels: [],
+				partnerFacets: [],
+				partnerIds: [],
+				partnerNames: [],
 			});
 		});
 
@@ -140,6 +145,7 @@ describe('dataUtils.js', () => {
 						loanThemeFilter,
 						tag,
 					},
+					general,
 					genderOptions,
 					flssSorts,
 					standardSorts,
@@ -169,6 +175,9 @@ describe('dataUtils.js', () => {
 				standardSorts: [{ name: 'expiringSoon' }],
 				distributionModelFacets: [{ name: 'direct' }],
 				distributionModels: ['DIRECT'],
+				partnerFacets: partners,
+				partnerIds: [1],
+				partnerNames: ['ASD'],
 			});
 		});
 	});

@@ -61,6 +61,8 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 
 	const validatedKeywordSearch = loanSearchState?.keywordSearch?.trim() || null;
 
+	const validatedPartnerIds = loanSearchState?.partnerId?.filter(p => allFacets.partnerIds.includes(p)) ?? [];
+
 	return {
 		gender: validatedGender,
 		countryIsoCode: validatedIsoCodes,
@@ -74,6 +76,7 @@ export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
 		isIndividual: validatedIsIndividual,
 		lenderRepaymentTerm: validatedLenderRepaymentTerm,
 		keywordSearch: validatedKeywordSearch,
+		partnerId: validatedPartnerIds,
 	};
 }
 

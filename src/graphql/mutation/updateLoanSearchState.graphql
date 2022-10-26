@@ -16,5 +16,6 @@ mutation updateLoanSearch($searchParams: JSONObject) {
 			max
 		}
 		keywordSearch
+		partnerId
 	}
 }

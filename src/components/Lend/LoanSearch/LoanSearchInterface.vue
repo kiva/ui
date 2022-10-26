@@ -131,6 +131,7 @@ import {
 	transformDistributionModelOptions,
 	transformIsIndividualOptions,
 	transformLenderRepaymentTermOptions,
+	transformPartners,
 } from '@/util/loanSearch/filterUtils';
 import { FLSS_ORIGIN_LEND_FILTER } from '@/util/flssUtils';
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
@@ -307,7 +308,8 @@ export default {
 				|| !!this.loanSearchState.distributionModel
 				|| this.loanSearchState.isIndividual !== null
 				|| !!this.loanSearchState.lenderRepaymentTerm
-				|| !!this.loanSearchState.keywordSearch;
+				|| !!this.loanSearchState.keywordSearch
+				|| this.loanSearchState.partnerId.length > 0;
 		},
 		themeNames() {
 			return this.allFacets?.themeNames ?? [];
@@ -335,6 +337,7 @@ export default {
 				distributionModels: transformDistributionModelOptions(this.allFacets?.distributionModelFacets),
 				isIndividualOptions: transformIsIndividualOptions(),
 				lenderRepaymentTerms: transformLenderRepaymentTermOptions(),
+				partners: transformPartners(this.allFacets?.partnerFacets ?? []),
 			};
 		},
 		trackLoans() {

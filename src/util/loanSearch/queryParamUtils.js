@@ -30,7 +30,6 @@ export function hasExcludedQueryParams(query) {
 		'city_state',
 		'defaultRate',
 		'loanTags',
-		'partner',
 		'riskRating',
 		'state',
 		'loanLimit',
@@ -204,6 +203,7 @@ export async function applyQueryParams(apollo, query, allFacets, queryType, page
 		isIndividual: getIsIndividualFromQueryParam(query.isGroup),
 		lenderRepaymentTerm: getMinMaxRangeFromQueryParam(query.lenderTerm),
 		keywordSearch: query.queryString,
+		partnerId: getIdsFromQueryParam(query.partner, allFacets.partnerNames, allFacets.partnerFacets),
 		pageOffset: page * pageLimit,
 		pageLimit,
 	};
@@ -255,6 +255,7 @@ export function updateQueryParams(loanSearchState, router, queryType) {
 			lenderTerm: getMinMaxRangeQueryParam(loanSearchState.lenderRepaymentTerm)
 		}),
 		...(loanSearchState.keywordSearch && { queryString: loanSearchState.keywordSearch }),
+		...(loanSearchState.partnerId?.length && { partner: loanSearchState.partnerId.join() }),
 		...(queryParamSortBy && { sortBy: queryParamSortBy }),
 		...(page > 1 && { page: page.toString() }),
 		...utmParams,

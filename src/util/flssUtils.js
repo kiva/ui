@@ -36,6 +36,7 @@ export function getFlssFilters(loanSearchState) {
 		...(loanSearchState?.lenderRepaymentTerm && {
 			lenderRepaymentTerm: { range: getMinMaxRangeFilter(loanSearchState.lenderRepaymentTerm) }
 		}),
+		...(loanSearchState?.partnerId?.length && { partnerId: { any: loanSearchState.partnerId } }),
 	};
 }
 

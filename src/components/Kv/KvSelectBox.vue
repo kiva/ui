@@ -1,6 +1,15 @@
 <template>
-	<div>
-		<kv-text-input ref="input" :id="id" v-model="search" :can-clear="true" autocomplete="off" @focus="open" />
+	<div :class="{ 'tw-w-full': isFullWidth }">
+		<kv-text-input
+			ref="input"
+			:id="id"
+			v-model="search"
+			:placeholder="placeholder"
+			:can-clear="true"
+			autocomplete="off"
+			:class="{ 'tw-w-full': isFullWidth }"
+			@focus="open"
+		/>
 		<div
 			ref="dropdown"
 			:class="{ 'tw-hidden': !this.show }"
@@ -10,7 +19,8 @@
 				tw-py-0.5
 				tw-rounded-sm
 				tw-bg-white
-				tw-overflow-auto"
+				tw-overflow-auto
+				tw-z-1"
 			:style="{ 'max-height': '200px' }"
 		>
 			<ul>
@@ -20,9 +30,10 @@
 					class="tw-py-0.5 tw-px-1.5"
 					:class="{
 						'tw-pb-1': item.isHeader,
-						'tw-cursor-pointer hover:tw-bg-action-highlight hover:tw-text-white': !item.isHeader
+						'tw-cursor-pointer hover:tw-bg-action-highlight hover:tw-text-white': !item.isHeader,
+						'tw-bg-tertiary tw-pointer-events-none': itemSelected(item.id),
 					}"
-					@click="clickItem(item)"
+					@click="!item.isHeader && !itemSelected(item.id) && clickItem(item)"
 				>
 					<span :class="{ 'tw-border-b tw-pb-0.5': item.isHeader }">
 						{{ item.name }}
@@ -37,6 +48,7 @@
 </template>
 
 <script>
+import _orderBy from 'lodash/orderBy';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 export const NO_RESULTS = 'No results found';
@@ -54,7 +66,27 @@ export default {
 		items: {
 			type: Array,
 			default: () => ([])
-		}
+		},
+		headerKey: {
+			type: String,
+			default: null
+		},
+		shouldSort: {
+			type: Boolean,
+			default: true
+		},
+		placeholder: {
+			type: String,
+			default: ''
+		},
+		isFullWidth: {
+			type: Boolean,
+			default: false
+		},
+		selectedIds: {
+			type: Array,
+			default: () => ([])
+		},
 	},
 	data() {
 		return {
@@ -76,16 +108,32 @@ export default {
 	},
 	computed: {
 		filteredItems() {
-			// Lower case search non-header items
-			const filtered = this.items
-				.filter(i => i.isHeader || i.name.toLowerCase().includes(this.search.toLowerCase().trim()));
+			// Lowercase search the items
+			let filtered = this.items.filter(i => i.name.toLowerCase().includes(this.search.toLowerCase().trim()));
 
-			// eslint-disable-next-line no-plusplus
-			for (let i = 0; i < filtered.length; ++i) {
-				// Remove headers that have no filtered items
-				if (filtered[i].isHeader && (i + 1 === filtered.length || filtered?.[i + 1]?.isHeader)) {
-					// eslint-disable-next-line no-plusplus
-					filtered.splice(i--, 1);
+			if (this.shouldSort) {
+				// Sort the items based on header key and name property
+				filtered = _orderBy(filtered, this.headerKey ? [this.headerKey, 'name'] : ['name']);
+			}
+
+			if (this.headerKey) {
+				// eslint-disable-next-line no-plusplus
+				for (let i = 0; i < filtered.length; ++i) {
+					const current = filtered[i];
+					const next = filtered[i + 1];
+
+					const currentHeader = current?.[this.headerKey];
+					const nextHeader = next?.[this.headerKey];
+
+					if (i === 0) {
+						filtered.splice(0, 0, { name: currentHeader, isHeader: true });
+					} else if (i < filtered.length - 1 && currentHeader !== nextHeader) {
+						// Add header entry for the next item
+						filtered.splice(i + 1, 0, { name: nextHeader, isHeader: true });
+
+						// Move current index to new header entry
+						i += 1;
+					}
 				}
 			}
 
@@ -118,6 +166,9 @@ export default {
 		},
 		clickItem({ id }) {
 			this.$emit('selected', { id });
+		},
+		itemSelected(id) {
+			return this.selectedIds.includes(id);
 		},
 	},
 };

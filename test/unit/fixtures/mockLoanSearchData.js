@@ -11,6 +11,7 @@ export const mockState = {
 	pageOffset: 10,
 	pageLimit: 5,
 	keywordSearch: 'search',
+	partnerId: [1],
 };
 
 export const savedSearchParams = {
@@ -70,6 +71,43 @@ export const mockAllFacets = {
 		{ name: 'DIRECT', __typename: 'DistributionModel' }
 	],
 	distributionModels: ['FIELDPARTNER', 'DIRECT'],
+	partnerFacets: [
+		{
+			id: 1,
+			name: 'Ccc',
+			countries: [
+				{
+					region: 'Africa',
+					__typename: 'Country'
+				}
+			],
+			__typename: 'Partner'
+		},
+		{
+			id: 2,
+			name: 'Bbb',
+			countries: [
+				{
+					region: 'Central America',
+					__typename: 'Country'
+				}
+			],
+			__typename: 'Partner'
+		},
+		{
+			id: 3,
+			name: 'Aaa',
+			countries: [
+				{
+					region: 'Central America',
+					__typename: 'Country'
+				}
+			],
+			__typename: 'Partner'
+		},
+	],
+	partnerIds: [1, 2, 3],
+	partnerNames: ['AAA', 'BBB', 'CCC'],
 };
 
 export const mockTransformedMiddleEast = (numLoansFundraising = 44) => ({
