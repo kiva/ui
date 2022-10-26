@@ -4,9 +4,9 @@
 			<helpme-choose-borrower-selector
 				v-for="(loan, index) in loans"
 				:key="loan.id"
-				:image-url="loan.image.default"
+				:image-url="imageUrl"
 				:name="loan.name"
-				:tag="loan.activity.name"
+				:tag="activityName"
 				:selected="selectedLoan"
 				:index="index"
 				@select="selectLoan"
@@ -58,6 +58,12 @@ export default {
 	computed: {
 		loanData() {
 			return this.loans[this.selectedLoan];
+		},
+		activityName() {
+			return this.loanData?.activity?.name ?? '';
+		},
+		imageUrl() {
+			return this.loanData?.image.default ?? '';
 		}
 	},
 	methods: {
