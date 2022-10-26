@@ -1,3 +1,15 @@
+## [2.359.0](https://github.com/kiva/ui/compare/v2.358.1...v2.359.0) (2022-10-26)
+
+
+### Features
+
+* a/b test for loan tags ([465aa56](https://github.com/kiva/ui/commit/465aa565a020edf0dcc0b690f914525ff2e2ec92))
+
+
+### Bug Fixes
+
+* update var name ([1837d36](https://github.com/kiva/ui/commit/1837d36fb8e4d57913024ade8ca19aad97ea0b7c))
+
 ### [2.358.1](https://github.com/kiva/ui/compare/v2.358.0...v2.358.1) (2022-10-26)
 
 
