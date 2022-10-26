@@ -17,6 +17,7 @@ import {
 	transformDistributionModelOptions,
 	FEMALE_KEY,
 	MALE_KEY,
+	NON_BINARY_KEY,
 	FIELDPARTNER_KEY,
 	DIRECT_KEY,
 	genderDisplayMap,
@@ -362,13 +363,14 @@ describe('filterUtils.js', () => {
 		});
 
 		it('should transform and sort', () => {
-			const genders = [{ name: MALE_KEY }, { name: FEMALE_KEY }];
+			const genders = [{ name: MALE_KEY }, { name: FEMALE_KEY }, { name: NON_BINARY_KEY }];
 
 			const result = transformGenderOptions(genders);
 
 			expect(result).toEqual([
 				{ name: FEMALE_KEY, title: genderDisplayMap[FEMALE_KEY], value: FEMALE_KEY },
 				{ name: MALE_KEY, title: genderDisplayMap[MALE_KEY], value: MALE_KEY },
+				{ name: NON_BINARY_KEY, title: genderDisplayMap[NON_BINARY_KEY], value: NON_BINARY_KEY },
 			]);
 		});
 	});

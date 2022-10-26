@@ -324,9 +324,17 @@ export default {
 				FLSS_ORIGIN_LEND_FILTER
 			);
 
+			// TODO: Revert once non binary filter is ready to release
+			// genders: transformGenderOptions(this.allFacets?.genderFacets);
+			const nonBinaryFilterEnabled = this.$route.query?.nonBinaryFilter;
+			let genderFacets = this.allFacets?.genderFacets;
+			if (!nonBinaryFilterEnabled) {
+				genderFacets = genderFacets.filter(gender => gender.name !== 'nonbinary');
+			}
+
 			// Merge all facet options with filtered options
 			this.facets = {
-				genders: transformGenderOptions(this.allFacets?.genderFacets),
+				genders: transformGenderOptions(genderFacets),
 				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 				sectors: transformSectors(sectors, this.allFacets?.sectorFacets),
 				themes: transformThemes(themes, this.allFacets?.themeFacets),

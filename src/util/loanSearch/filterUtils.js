@@ -58,6 +58,7 @@ export const STANDARD_QUERY_TYPE = 'standard';
 // Gender enum keys
 export const FEMALE_KEY = 'FEMALE';
 export const MALE_KEY = 'MALE';
+export const NON_BINARY_KEY = 'NONBINARY';
 
 // Distribution model enum keys
 export const FIELDPARTNER_KEY = 'FIELDPARTNER';
@@ -78,7 +79,8 @@ export const MORE_THAN_TWO_YEARS_KEY = 'MORE_THAN_TWO_YEARS_KEY';
  */
 export const genderDisplayMap = {
 	[FEMALE_KEY]: 'Women',
-	[MALE_KEY]: 'Men'
+	[MALE_KEY]: 'Men',
+	[NON_BINARY_KEY]: 'Nonbinary'
 };
 
 /**
@@ -293,7 +295,7 @@ export function transformRadioGroupOptions(options, order, displayMap, valueMap 
  * @returns {Array<Object>} The transformed radio group options
  */
 export function transformGenderOptions(genders) {
-	return transformRadioGroupOptions(genders, [FEMALE_KEY, MALE_KEY], genderDisplayMap);
+	return transformRadioGroupOptions(genders, [FEMALE_KEY, MALE_KEY, NON_BINARY_KEY], genderDisplayMap);
 }
 
 /**
