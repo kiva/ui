@@ -52,6 +52,10 @@ const pageQuery = gql`
 				key
 				value
 			}
+			loanTags: uiExperimentSetting(key: "loan_tags") {
+				key
+				value 
+			}
 		}
 	}
 `;
@@ -114,6 +118,7 @@ export default {
 			pageLayoutComponent: null,
 			enableQuickFilters: false,
 			enableHelpmeChoose: false,
+			enableLoanTags: false,
 		};
 	},
 	apollo: {
@@ -190,6 +195,7 @@ export default {
 					...gameExperimentAssignments,
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'quick_filters' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'helpme_choose' } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'loan_tags' } }),
 				]);
 			}).then(results => {
 				// manipulate experiment results format
@@ -244,6 +250,8 @@ export default {
 				|| this.targetedLoanChannel === 'short-term-loans'
 		) {
 			this.initializeHelpmeChoose();
+		} else {
+			this.initializeLoanTags();
 		}
 	},
 	computed: {
@@ -266,6 +274,20 @@ export default {
 		}
 	},
 	methods: {
+		initializeLoanTags() {
+			const loanTagsExperiment = this.apollo.readFragment({
+				id: 'Experiment:loan_tags',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.enableLoanTags = loanTagsExperiment.version === 'b';
+			if (loanTagsExperiment.version) {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CORE-792-Oct-2022',
+					quickFiltersExperiment.version
+				);
+			}
+		},
 		initializeQuickFilters() {
 			const quickFiltersExperiment = this.apollo.readFragment({
 				id: 'Experiment:quick_filters',
