@@ -1,3 +1,16 @@
+## [2.358.0](https://github.com/kiva/ui/compare/v2.357.2...v2.358.0) (2022-10-26)
+
+
+### Features
+
+* partner ID loan filter ([f10e8c3](https://github.com/kiva/ui/commit/f10e8c341d34ce5423baeb3af3040452aacfb1b4))
+* updated loan channel map ([948ba0d](https://github.com/kiva/ui/commit/948ba0d9450b3f27e94f5624e2d8b98f9b2063e3))
+
+
+### Bug Fixes
+
+* mark selected items, prevent headers from being clicked ([100d438](https://github.com/kiva/ui/commit/100d4388bb4c18fc108288f38f053bdb7a7dbc64))
+
 ### [2.357.2](https://github.com/kiva/ui/compare/v2.357.1...v2.357.2) (2022-10-25)
 
 
