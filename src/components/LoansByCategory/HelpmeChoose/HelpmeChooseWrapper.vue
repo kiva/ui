@@ -29,6 +29,9 @@
 				v-show="!triggersVisible"
 				@show-triggers="triggersVisible = true"
 				:loans="loans"
+				:items-in-basket="itemsInBasket"
+				:is-visitor="isVisitor"
+				:user-data="userData"
 			/>
 		</div>
 

@@ -1,6 +1,6 @@
 <template>
-	<div class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-3 tw-w-full">
-		<div class="tw-flex tw-flex-col tw-gap-1 lg:tw-gap-1.5 lg:tw-w-1/3">
+	<div class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-x-2 tw-w-full tw-items-start">
+		<div class="tw-flex tw-flex-col tw-gap-1 lg:tw-gap-1.5 tw-w-full lg:tw-basis-1/4">
 			<helpme-choose-borrower-selector
 				v-for="(loan, index) in loans"
 				:key="loan.id"
@@ -20,10 +20,19 @@
 				/> Start over
 			</button>
 		</div>
-		<div>
-			<!-- Loan Card code -->
+		<div class="tw-pt-2 lg:tw-pt-0 tw-w-full lg:tw-basis-3/4">
+			<loan-card-controller
+				style="margin-top:0 !important;"
+				:items-in-basket="itemsInBasket"
+				:is-visitor="isVisitor"
+				:is-logged-in="!isVisitor"
+				:user-id="userId !== null ? userId.toString() : null"
+				:loan="loanData"
+				loan-card-type="ListLoanCard"
+				:rounded-corners="true"
+			/>
 		</div>
-		<button @click="goBack" class="lg:tw-hidden tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-action tw-text-small tw-mt-1">
+		<button @click="goBack" class="lg:tw-hidden tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-action tw-text-small tw-mt-1 tw-w-full">
 			<kv-material-icon
 				class="tw-w-2 tw-h-2"
 				:icon="mdiRefresh"
@@ -34,6 +43,7 @@
 
 <script>
 import { mdiRefresh } from '@mdi/js';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import HelpmeChooseBorrowerSelector from './HelpmeChooseBorrowerSelector';
 
@@ -41,12 +51,25 @@ export default {
 	name: 'HelpmeChooseRecommendations',
 	components: {
 		HelpmeChooseBorrowerSelector,
-		KvMaterialIcon
+		KvMaterialIcon,
+		LoanCardController
 	},
 	props: {
 		loans: {
 			type: Array,
 			default: () => []
+		},
+		itemsInBasket: {
+			type: Array,
+			default: () => []
+		},
+		isVisitor: {
+			type: Boolean,
+			default: false
+		},
+		userData: {
+			type: Object,
+			default: () => {}
 		},
 	},
 	data() {
@@ -59,6 +82,10 @@ export default {
 		loanData() {
 			return this.loans[this.selectedLoan];
 		},
+		userId() {
+			if (this.userData && this.userData.id) return this.userData.id;
+			return null;
+		}
 	},
 	methods: {
 		selectLoan(evt) {
@@ -69,7 +96,7 @@ export default {
 			this.$emit('show-triggers');
 		},
 		getActivityName(loan) {
-			return loan?.activity?.name ?? '';
+			return loan?.activity?.name.slice(0, 19) ?? '';
 		},
 		getImageUrl(loan) {
 			return loan?.image?.default ?? '';
