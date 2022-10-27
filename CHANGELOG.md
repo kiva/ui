@@ -1,3 +1,16 @@
+## [2.363.0](https://github.com/kiva/ui/compare/v2.362.0...v2.363.0) (2022-10-27)
+
+
+### Features
+
+* range min max slider ([b736c6c](https://github.com/kiva/ui/commit/b736c6c18549029e63f6bdf7e4aa7d0cf3f5029b))
+
+
+### Bug Fixes
+
+* automated linting fixes from trying to push ([0e6f3de](https://github.com/kiva/ui/commit/0e6f3de52ee6af811db54f05490c197a932a1207))
+* more linting fixes ([97e743d](https://github.com/kiva/ui/commit/97e743d98cef9278aee4e1405cea4722eeed11ed))
+
 ## [2.362.0](https://github.com/kiva/ui/compare/v2.361.0...v2.362.0) (2022-10-26)
 
 
