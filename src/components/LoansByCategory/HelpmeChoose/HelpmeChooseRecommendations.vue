@@ -22,7 +22,7 @@
 		</div>
 		<div class="tw-pt-2 lg:tw-pt-0 tw-w-full lg:tw-basis-3/4">
 			<loan-card-controller
-				style="margin-top:0 !important;"
+				style="margin-top: 0 !important;"
 				:items-in-basket="itemsInBasket"
 				:is-visitor="isVisitor"
 				:is-logged-in="!isVisitor"
