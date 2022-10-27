@@ -73,6 +73,7 @@
 						</router-link>
 						<kv-button
 							variant="secondary"
+							v-show="isVisitor"
 							class="header__login__button"
 							:to="loginUrl"
 							data-testid="header-log-in"
@@ -306,6 +307,7 @@
 							<!-- Log in Link -->
 							<kv-button
 								variant="secondary"
+								v-show="isVisitor"
 								class="header__login__button"
 								:to="loginUrl"
 								data-testid="header-log-in"
