@@ -74,7 +74,7 @@
 						<kv-button
 							variant="secondary"
 							v-show="isVisitor"
-							class="header__login__button"
+							class="header__login__button tw-bg-white"
 							:to="loginUrl"
 							data-testid="header-log-in"
 							v-kv-track-event="['TopNav','click-Sign-in']"
@@ -308,7 +308,7 @@
 							<kv-button
 								variant="secondary"
 								v-show="isVisitor"
-								class="header__login__button"
+								class="header__login__button tw-bg-white"
 								:to="loginUrl"
 								data-testid="header-log-in"
 								v-kv-track-event="['TopNav','click-Sign-in']"
@@ -802,7 +802,6 @@ export default {
 }
 
 .header__login__button {
-	background-color: #fff;
 	margin-top: 13px;
 }
 
