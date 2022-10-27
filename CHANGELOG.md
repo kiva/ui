@@ -1,3 +1,10 @@
+### [2.365.2](https://github.com/kiva/ui/compare/v2.365.1...v2.365.2) (2022-10-27)
+
+
+### Bug Fixes
+
+* issues with new range min max slider (FF and colors) ([0af2323](https://github.com/kiva/ui/commit/0af2323e265e4845e81645fdc761da71ce459d97))
+
 ### [2.365.1](https://github.com/kiva/ui/compare/v2.365.0...v2.365.1) (2022-10-27)
 
 
