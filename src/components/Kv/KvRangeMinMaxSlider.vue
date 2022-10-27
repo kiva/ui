@@ -122,11 +122,11 @@ export default {
 <style lang="postcss" scoped>
 .kv-range-min-max-slider {
 	--thumb-diameter: 1.25em;
-	--thumb-fill: #4faf4e;
-	--thumb-fill-active: #8ccb8c;
+	--thumb-fill: rgb(var(--bg-action));
+	--thumb-fill-active: rgb(var(--bg-action-highlight));
 	--track-height: 0.375em;
-	--track-background: #c3c3c3;
-	--track-fill: #8ccb8c;
+	--track-background: rgb(var(--bg-tertiary));
+	--track-fill: rgb(var(--bg-action));
 
 	position: relative;
 	height: var(--thumb-diameter);
@@ -138,8 +138,10 @@ input[type=range] {
 	margin: 0;
 	padding: 0;
 	width: 100%;
-	height: var(--thumb-diameter);
+	height: 0;
+	pointer-events: none;
 	background: transparent;
+	top: 50%;
 }
 
 input[type=range]::-webkit-slider-runnable-track {
@@ -208,20 +210,17 @@ input[type=range]::-ms-track {
 	color: transparent;
 }
 
-input[type=range]::-moz-range-progress {
-	height: var(--track-height);
-	background: var(--track-fill);
-}
-
 input[type=range]::-ms-fill-lower {
 	height: var(--track-height);
 	background: var(--track-fill);
 }
 
+input[type=range]:first-of-type {
+	z-index: 1;
+}
+
 input[type=range]::-webkit-slider-thumb {
 	/** Thumb common CSS */
-	z-index: 2;
-	position: relative;
 	box-sizing: border-box;
 	border: 0;
 	width: var(--thumb-diameter);
@@ -230,6 +229,7 @@ input[type=range]::-webkit-slider-thumb {
 	background: var(--thumb-fill);
 	transform: scale(1);
 	transition: all 100ms ease-in-out;
+	pointer-events: all;
 
 	/** Webkit-specific CSS */
 	-webkit-appearance: none;
@@ -238,8 +238,6 @@ input[type=range]::-webkit-slider-thumb {
 
 input[type=range]::-moz-range-thumb {
 	/** Thumb common CSS */
-	z-index: 2;
-	position: relative;
 	box-sizing: border-box;
 	border: 0;
 	width: var(--thumb-diameter);
@@ -248,12 +246,11 @@ input[type=range]::-moz-range-thumb {
 	background: var(--thumb-fill);
 	transform: scale(1);
 	transition: all 100ms ease-in-out;
+	pointer-events: all;
 }
 
 input[type=range]::-ms-thumb {
 	/** Thumb common CSS */
-	z-index: 2;
-	position: relative;
 	box-sizing: border-box;
 	border: 0;
 	width: var(--thumb-diameter);
@@ -262,6 +259,7 @@ input[type=range]::-ms-thumb {
 	background: var(--thumb-fill);
 	transform: scale(1);
 	transition: all 100ms ease-in-out;
+	pointer-events: all;
 
 	/** MS-specific CSS */
 	margin-top: 0;
