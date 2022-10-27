@@ -186,10 +186,6 @@ const pageQuery = gql`
 				key
 				value
 			}
-			customSort: uiExperimentSetting(key: "funded_lyml_sort") {
-				key
-				value
-			}
 			newFundedBorrowerPage: uiExperimentSetting(key: "new_funded_borrower_page") {
 				key
 				value
