@@ -16,6 +16,7 @@ query loanChannelData(
 			loanChannelId
 			name
 			description
+			url
 			savedSearch(limit: $numberOfLoans, excludeLoanIds: $excludeIds, origin: $origin) {
 				id
 				... on FundraisingLoanSavedSearchPageOutput {
