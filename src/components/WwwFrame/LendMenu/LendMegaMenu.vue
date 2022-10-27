@@ -136,14 +136,14 @@
 										</span>
 									</li>
 									<li>
-										<router-link
-											to="/lend/countries-not-lent"
+										<a
+											href="/lend/countries-not-lent"
 											v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
 											class="tw-text-primary tw-text-left hover:tw-text-action-highlight
 												tw-py-1 tw-inline-block"
 										>
 											Countries I haven't lent to
-										</router-link>
+										</a>
 									</li>
 								</ul>
 							</div>
