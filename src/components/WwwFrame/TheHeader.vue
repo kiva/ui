@@ -71,15 +71,15 @@
 									tw-rounded-full tw-overflow-hidden tw-object-fill"
 							>
 						</router-link>
-						<router-link
+						<kv-button
+							variant="secondary"
+							class="header__login__button"
 							:to="loginUrl"
-							v-show="isVisitor"
-							class="header__button header__log-in"
 							data-testid="header-log-in"
 							v-kv-track-event="['TopNav','click-Sign-in']"
 						>
 							Log in
-						</router-link>
+						</kv-button>
 					</div>
 				</template>
 
@@ -304,15 +304,15 @@
 							</router-link>
 
 							<!-- Log in Link -->
-							<router-link
+							<kv-button
+								variant="secondary"
+								class="header__login__button"
 								:to="loginUrl"
-								v-show="isVisitor"
 								data-testid="header-log-in"
-								class="header__button header__log-in"
 								v-kv-track-event="['TopNav','click-Sign-in']"
 							>
 								Log in
-							</router-link>
+							</kv-button>
 
 							<!-- Logged in Profile -->
 							<router-link
@@ -474,6 +474,7 @@ import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
@@ -504,6 +505,7 @@ export default {
 		KvPageContainer,
 		PromoCreditBanner,
 		SearchBar,
+		KvButton,
 		TheLendMenu: () => import('@/components/WwwFrame/LendMenu/TheLendMenu'),
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
@@ -797,6 +799,11 @@ export default {
 	@apply tw-h-8 md:tw-h-9 tw-whitespace-nowrap tw-flex-shrink-0;
 }
 
+.header__login__button {
+	background-color: #fff;
+	margin-top: 13px;
+}
+
 .dropdown-list {
 	@apply tw-px-2 tw-rounded-b;
 }
@@ -827,6 +834,12 @@ export default {
 	.header {
 		grid-template-areas: "logo lend search right-side";
 		grid-template-columns: auto auto 1fr auto;
+	}
+}
+
+@media screen and (max-width: 734px) {
+	.header__login__button {
+		margin-top: 9px;
 	}
 }
 </style>
