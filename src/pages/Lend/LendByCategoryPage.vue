@@ -572,21 +572,6 @@ export default {
 				);
 			}
 		},
-		initializeRecommendedRowAlgoExp() {
-			// experiment: VUE-937 for "recommend by others" row backing algorithm
-			const experimentId = 'EXP-VUE-937-recommended-row-algo';
-
-			// get experiment assignment
-			const { version } = this.apollo.readFragment({
-				id: `Experiment:${experimentId}`,
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			// track version if it is set
-			if (version && version !== 'unassigned') {
-				this.$kvTrackEvent('Lending', experimentId, version);
-			}
-		},
 		createViewportObserver() {
 			// Watch for this element being in the viewport
 			this.viewportObserver = createIntersectionObserver({
