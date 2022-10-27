@@ -204,6 +204,7 @@ input[type=range]::-ms-track {
 		);
 	border-radius: 1.5em;
 
+	/** MS-specific CSS */
 	color: transparent;
 }
 
@@ -230,6 +231,7 @@ input[type=range]::-webkit-slider-thumb {
 	transform: scale(1);
 	transition: all 100ms ease-in-out;
 
+	/** Webkit-specific CSS */
 	-webkit-appearance: none;
 	margin-top: calc(0.5 * (var(--track-height) - var(--thumb-diameter)));
 }
@@ -261,6 +263,7 @@ input[type=range]::-ms-thumb {
 	transform: scale(1);
 	transition: all 100ms ease-in-out;
 
+	/** MS-specific CSS */
 	margin-top: 0;
 }
 
