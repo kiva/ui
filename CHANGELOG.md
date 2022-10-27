@@ -1,3 +1,10 @@
+### [2.364.1](https://github.com/kiva/ui/compare/v2.364.0...v2.364.1) (2022-10-27)
+
+
+### Bug Fixes
+
+* use anchor links to avoid app routing for monolith lend/ routes ([e5701d0](https://github.com/kiva/ui/commit/e5701d00efe9988a8e15aaec5316081612462b8c))
+
 ## [2.364.0](https://github.com/kiva/ui/compare/v2.363.0...v2.364.0) (2022-10-27)
 
 
