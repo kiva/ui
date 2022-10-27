@@ -1,3 +1,10 @@
+### [2.365.1](https://github.com/kiva/ui/compare/v2.365.0...v2.365.1) (2022-10-27)
+
+
+### Bug Fixes
+
+* use category url to activate view more link and card on lend by category ([c0ae9b7](https://github.com/kiva/ui/commit/c0ae9b7674933a376c397f290e94ed2d601c0240))
+
 ## [2.365.0](https://github.com/kiva/ui/compare/v2.364.1...v2.365.0) (2022-10-27)
 
 
