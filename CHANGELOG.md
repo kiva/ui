@@ -1,3 +1,10 @@
+## [2.364.0](https://github.com/kiva/ui/compare/v2.363.0...v2.364.0) (2022-10-27)
+
+
+### Features
+
+* add donate modules experiment ([c183f83](https://github.com/kiva/ui/commit/c183f837baae34c66ff06af9c93bd5d867c3ab01))
+
 ## [2.363.0](https://github.com/kiva/ui/compare/v2.362.0...v2.363.0) (2022-10-27)
 
 
