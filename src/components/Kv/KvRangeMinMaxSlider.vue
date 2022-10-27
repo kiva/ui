@@ -143,7 +143,7 @@ input[type=range] {
 }
 
 input[type=range]::-webkit-slider-runnable-track {
-	/** Start track common CSS */
+	/** Track common CSS */
 	box-sizing: border-box;
 	width: 100%;
 	height: var(--track-height);
@@ -161,11 +161,10 @@ input[type=range]::-webkit-slider-runnable-track {
 			var(--track-background) 100%
 		);
 	border-radius: 1.5em;
-	/** End track common CSS */
 }
 
 input[type=range]::-moz-range-track {
-	/** Start track common CSS */
+	/** Track common CSS */
 	box-sizing: border-box;
 	width: 100%;
 	height: var(--track-height);
@@ -183,11 +182,10 @@ input[type=range]::-moz-range-track {
 			var(--track-background) 100%
 		);
 	border-radius: 1.5em;
-	/** End track common CSS */
 }
 
 input[type=range]::-ms-track {
-	/** Start track common CSS */
+	/** Track common CSS */
 	box-sizing: border-box;
 	width: 100%;
 	height: var(--track-height);
@@ -205,7 +203,6 @@ input[type=range]::-ms-track {
 			var(--track-background) 100%
 		);
 	border-radius: 1.5em;
-	/** End track common CSS */
 
 	color: transparent;
 }
@@ -221,7 +218,7 @@ input[type=range]::-ms-fill-lower {
 }
 
 input[type=range]::-webkit-slider-thumb {
-	/** Start thumb common CSS */
+	/** Thumb common CSS */
 	z-index: 2;
 	position: relative;
 	box-sizing: border-box;
@@ -232,14 +229,13 @@ input[type=range]::-webkit-slider-thumb {
 	background: var(--thumb-fill);
 	transform: scale(1);
 	transition: all 100ms ease-in-out;
-	/** End thumb common CSS */
 
 	-webkit-appearance: none;
 	margin-top: calc(0.5 * (var(--track-height) - var(--thumb-diameter)));
 }
 
 input[type=range]::-moz-range-thumb {
-	/** Start thumb common CSS */
+	/** Thumb common CSS */
 	z-index: 2;
 	position: relative;
 	box-sizing: border-box;
@@ -250,11 +246,10 @@ input[type=range]::-moz-range-thumb {
 	background: var(--thumb-fill);
 	transform: scale(1);
 	transition: all 100ms ease-in-out;
-	/** End thumb common CSS */
 }
 
 input[type=range]::-ms-thumb {
-	/** Start thumb common CSS */
+	/** Thumb common CSS */
 	z-index: 2;
 	position: relative;
 	box-sizing: border-box;
@@ -265,7 +260,6 @@ input[type=range]::-ms-thumb {
 	background: var(--thumb-fill);
 	transform: scale(1);
 	transition: all 100ms ease-in-out;
-	/** End thumb common CSS */
 
 	margin-top: 0;
 }
@@ -293,6 +287,11 @@ input[type=range]:focus {
 	outline: 0;
 }
 
+input[type=range]:hover {
+	cursor: pointer;
+	overflow: visible;
+}
+
 input[type=range]:focus::-moz-focus-outer {
 	border: 0;
 }
@@ -307,11 +306,6 @@ input[type=range]:focus::-moz-range-thumb {
 
 input[type=range]:focus::-ms-thumb {
 	outline: 0;
-}
-
-input[type=range]:hover {
-	cursor: pointer;
-	overflow: visible;
 }
 
 input[type=range]:hover::-webkit-slider-thumb {
