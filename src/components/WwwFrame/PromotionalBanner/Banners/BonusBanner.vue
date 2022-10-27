@@ -1,8 +1,8 @@
 <template functional>
 	<div class="bonus-banner-holder">
-		<router-link
+		<a
 			v-if="props.promoData && !props.promoData.pageId"
-			to="/lend/freeCreditEligible"
+			href="/lend/freeCreditEligible"
 			class="bonus-banner"
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
@@ -12,7 +12,7 @@
 					lend your {{ props.promoData.bonusBalance | numeral('$0.00') }} free credit
 				</span>
 			</div>
-		</router-link>
+		</a>
 		<router-link
 			v-if="props.promoData && props.promoData.pageId"
 			:to="`/cc/${props.promoData.pageId}`"

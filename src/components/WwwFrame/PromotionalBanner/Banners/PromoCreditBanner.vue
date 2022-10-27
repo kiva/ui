@@ -32,9 +32,9 @@
 		class="bonus-banner-holder tw-bg-brand tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
 		data-testid="bonus-banner"
 	>
-		<router-link
+		<a
 			v-if="promoData && !promoData.pageId"
-			to="/lend/freeCreditEligible"
+			href="/lend/freeCreditEligible"
 			class="
 				tw-text-white
 				hover:tw-no-underline hover:tw-text-white
@@ -44,7 +44,7 @@
 		>
 			Select a borrower to <span class="tw-underline">
 				lend your {{ promoData.bonusBalance | numeral('$0.00') }} free credit</span>
-		</router-link>
+		</a>
 		<router-link
 			v-if="promoData && promoData.pageId"
 			:to="`/cc/${promoData.pageId}`"
