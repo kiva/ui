@@ -4,4 +4,13 @@ query donationData {
 			totalCount
 		}
 	}
+	contentful {
+		entries (contentType: "page", contentKey: "checkout")
+	}
+	general {
+		basket_donate_modules: uiExperimentSetting(key: "basket_donate_modules") {
+			key
+			value
+		}
+	}
 }
