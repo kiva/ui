@@ -18,7 +18,6 @@
 			/>
 
 			<div v-if="!usesDynamicContentfulRendering">
-
 				<!-- TODO: Alter CTA if Checkout is ready -->
 				<campaign-hero
 					v-if="hasCampaignHero"
