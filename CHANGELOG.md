@@ -1,3 +1,10 @@
+## [2.366.0](https://github.com/kiva/ui/compare/v2.365.2...v2.366.0) (2022-10-28)
+
+
+### Features
+
+* placeholders added to help me choose experiment ([0c6c925](https://github.com/kiva/ui/commit/0c6c925d0521cb35cec306608796ae1199a817bf))
+
 ### [2.365.2](https://github.com/kiva/ui/compare/v2.365.1...v2.365.2) (2022-10-27)
 
 
