@@ -217,7 +217,7 @@ describe('filterUtils.js', () => {
 			expect(result).toEqual(mockTransformedSectors);
 		});
 
-		it('should filter transform themes with number casting', () => {
+		it('should filter transform sectors with number casting', () => {
 			const mockFilteredSectors = [
 				{
 					key: '2',
@@ -310,28 +310,72 @@ describe('filterUtils.js', () => {
 
 	describe('transformTags', () => {
 		it('should handle empty', () => {
-			expect(transformTags()).toEqual([]);
 			expect(transformTags([])).toEqual([]);
 		});
 
 		it('should transform and sort', () => {
-			const result = transformTags([
+			const flssTags = [
+				{ key: 1, value: 5 },
+				{ key: 2, value: 6 },
+				{ key: 3, value: 7 }
+			];
+
+			const allTags = [
 				{ id: 1, name: 'tag', vocabularyId: 2 },
 				{ id: 2, name: '#tag2', vocabularyId: 2 },
 				{ id: 3, name: 'asd', vocabularyId: 2 }
-			]);
+			];
 
-			expect(result).toEqual([{ id: 3, name: 'asd' }, { id: 1, name: 'tag' }, { id: 2, name: 'tag2' }]);
+			const result = transformTags(flssTags, allTags);
+
+			expect(result).toEqual([
+				{ id: 3, name: 'asd', numLoansFundraising: 7 },
+				{ id: 1, name: 'tag', numLoansFundraising: 5 },
+				{ id: 2, name: 'tag2', numLoansFundraising: 6 }
+			]);
 		});
 
 		it('should only return public tags', () => {
-			const result = transformTags([
+			const flssTags = [
+				{ key: 1, value: 5 },
+				{ key: 2, value: 6 },
+				{ key: 3, value: 7 }
+			];
+
+			const allTags = [
 				{ id: 1, name: 'tag', vocabularyId: 2 },
 				{ id: 2, name: '#tag2', vocabularyId: 1 },
 				{ id: 3, name: 'asd', vocabularyId: 2 }
-			]);
+			];
 
-			expect(result).toEqual([{ id: 3, name: 'asd' }, { id: 1, name: 'tag' }]);
+			const result = transformTags(flssTags, allTags);
+
+			expect(result).toEqual([
+				{ id: 3, name: 'asd', numLoansFundraising: 7 },
+				{ id: 1, name: 'tag', numLoansFundraising: 5 }
+			]);
+		});
+
+		it('should filter transform tags with number casting', () => {
+			const flssTags = [
+				{ key: '1', value: 5 },
+				{ key: '2', value: 6 },
+				{ key: '3', value: 7 }
+			];
+
+			const allTags = [
+				{ id: 1, name: 'tag', vocabularyId: 2 },
+				{ id: 2, name: '#tag2', vocabularyId: 2 },
+				{ id: 3, name: 'asd', vocabularyId: 2 }
+			];
+
+			const result = transformTags(flssTags, allTags);
+
+			expect(result).toEqual([
+				{ id: 3, name: 'asd', numLoansFundraising: 7 },
+				{ id: 1, name: 'tag', numLoansFundraising: 5 },
+				{ id: 2, name: 'tag2', numLoansFundraising: 6 }
+			]);
 		});
 	});
 

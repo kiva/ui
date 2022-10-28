@@ -71,17 +71,18 @@ describe('flssUtils.js', () => {
 			isoCodeFilters: filters,
 			themeFilters: filters,
 			sectorFilters: filters,
+			tagFilters: filters,
 			origin: 'web:test-context'
 		};
 		const apolloVariables = { query: flssLoanFacetsQuery, variables, fetchPolicy: 'network-only' };
 
 		it('should pass the correct query variables to apollo', async () => {
-			await fetchFacets(apollo, 'web:test-context', filters, filters, filters);
+			await fetchFacets(apollo, 'web:test-context', filters, filters, filters, filters);
 			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
 		});
 
 		it('should return the fundraising facets data', async () => {
-			const data = await fetchFacets(apollo, 'web:test-context', filters, filters, filters);
+			const data = await fetchFacets(apollo, 'web:test-context', filters, filters, filters, filters);
 			expect(data).toBe(result);
 		});
 	});
