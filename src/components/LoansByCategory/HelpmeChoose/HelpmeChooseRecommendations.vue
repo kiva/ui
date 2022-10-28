@@ -1,6 +1,20 @@
 <template>
 	<div class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-x-2 tw-w-full tw-items-start">
-		<div class="tw-flex tw-flex-col tw-gap-1 lg:tw-gap-1.5 tw-w-full lg:tw-basis-1/4">
+		<div v-if="isLoading" class="tw-flex tw-flex-col tw-gap-1 lg:tw-gap-1.5 tw-w-full lg:tw-basis-1/4">
+			<kv-loading-placeholder
+				class="tw-mb-1 tw-rounded tw-w-full lg:tw-h-10"
+				style="min-height: 50px;"
+			/>
+			<kv-loading-placeholder
+				class="tw-mb-1 tw-rounded tw-w-full lg:tw-h-10"
+				style="min-height: 50px;"
+			/>
+			<kv-loading-placeholder
+				class="tw-mb-1 tw-rounded tw-w-full lg:tw-h-10"
+				style="min-height: 50px;"
+			/>
+		</div>
+		<div v-else class="tw-flex tw-flex-col tw-gap-1 lg:tw-gap-1.5 tw-w-full lg:tw-basis-1/4">
 			<helpme-choose-borrower-selector
 				v-for="(loan, index) in loans"
 				:key="loan.id"
@@ -21,8 +35,13 @@
 			</button>
 		</div>
 		<div class="tw-pt-2 lg:tw-pt-0 tw-w-full lg:tw-basis-3/4">
+			<kv-loading-placeholder
+				v-if="isLoading"
+				class="tw-mb-1 tw-rounded tw-w-full" :style="{height: '283px'}"
+			/>
 			<loan-card-controller
-				style="margin-top: 0 !important;"
+				v-else
+				style="margin-top: 0 !important; min-height: 283px;"
 				:items-in-basket="itemsInBasket"
 				:is-visitor="isVisitor"
 				:is-logged-in="!isVisitor"
@@ -44,6 +63,7 @@
 <script>
 import { mdiRefresh } from '@mdi/js';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
+import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import HelpmeChooseBorrowerSelector from './HelpmeChooseBorrowerSelector';
 
@@ -52,7 +72,8 @@ export default {
 	components: {
 		HelpmeChooseBorrowerSelector,
 		KvMaterialIcon,
-		LoanCardController
+		LoanCardController,
+		KvLoadingPlaceholder
 	},
 	props: {
 		loans: {
@@ -70,6 +91,10 @@ export default {
 		userData: {
 			type: Object,
 			default: () => {}
+		},
+		isLoading: {
+			type: Boolean,
+			default: true
 		},
 	},
 	data() {

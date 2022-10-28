@@ -72,6 +72,7 @@
 						:loan-channel-name="loanChannelName"
 						:loans="helpmeChooseLoans"
 						@update="getHelpmeChooseLoans($event)"
+						:is-loading="isLoadingHC"
 					/>
 				</div>
 				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
@@ -106,6 +107,7 @@
 						:loan-channel-name="loanChannelName"
 						:loans="helpmeChooseLoans"
 						@update="getHelpmeChooseLoans($event)"
+						:is-loading="isLoadingHC"
 					/>
 				</div>
 				<kv-pagination
@@ -267,7 +269,8 @@ export default {
 			selectedQuickFilters: {},
 			userData: {},
 			showQuickFiltersOverlay: false,
-			helpmeChooseLoans: []
+			helpmeChooseLoans: [],
+			isLoadingHC: true,
 		};
 	},
 	computed: {
@@ -694,6 +697,7 @@ export default {
 			}
 		},
 		async getHelpmeChooseLoans(evt = 'amountLeft') {
+			this.isLoadingHC = true;
 			const loansData = await getFilteredLoanChannel(
 				this.apollo,
 				this.loanChannelQueryMap,
@@ -708,6 +712,7 @@ export default {
 			);
 			const loans = loansData?.lend?.loanChannelsById[0]?.loans?.values ?? [];
 			this.helpmeChooseLoans = loans;
+			this.isLoadingHC = false;
 		}
 	},
 	watch: {

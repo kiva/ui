@@ -9,7 +9,7 @@
 			</p>
 		</div>
 
-		<div class="tw-w-full tw-pb-2">
+		<div class="tw-w-full tw-pb-4">
 			<div v-show="triggersVisible" class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 lg:tw-gap-4">
 				<helpme-choose-trigger
 					variant="amountLeft"
@@ -32,6 +32,7 @@
 				:items-in-basket="itemsInBasket"
 				:is-visitor="isVisitor"
 				:user-data="userData"
+				:is-loading="isLoading"
 			/>
 		</div>
 
@@ -79,6 +80,10 @@ export default {
 		loans: {
 			type: Array,
 			default: () => []
+		},
+		isLoading: {
+			type: Boolean,
+			default: true
 		},
 	},
 	data() {
