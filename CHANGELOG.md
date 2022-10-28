@@ -1,3 +1,10 @@
+## [2.367.0](https://github.com/kiva/ui/compare/v2.366.0...v2.367.0) (2022-10-28)
+
+
+### Features
+
+* loan count added to tag filter ([fca9360](https://github.com/kiva/ui/commit/fca93606aee5558cc807addeee7d89dd5255933e))
+
 ## [2.366.0](https://github.com/kiva/ui/compare/v2.365.2...v2.366.0) (2022-10-28)
 
 
