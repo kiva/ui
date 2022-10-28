@@ -3,9 +3,10 @@
 		class="tw-rounded lg:tw-flex tw-border tw-gap-1 tw-items-center tw-p-1.5 lg:tw-p-1
 				tw-text-center lg:tw-text-left tw-cursor-pointer"
 		:class="[
-			{ 'tw-bg-primary-inverse lg:tw-bg-white tw-shadow-md tw-border-white': activeLoan },
-			{ 'tw-border-secondary': !activeLoan },
+			{ 'tw-bg-primary-inverse lg:tw-bg-white tw-border-white' : activeLoan },
+			{ 'tw-border-secondary' : !activeLoan },
 		]"
+		:style="{ boxShadow }"
 		@click="updateSelectedLoan"
 	>
 		<img :src="imageUrl" class="tw-hidden lg:tw-block tw-rounded tw-h-8 tw-w-8 tw-object-cover">
@@ -15,7 +16,7 @@
 			</h6>
 			<span
 				class="tw-text-black lg:tw-text-white tw-text-base lg:tw-text-small
-					tw-rounded tw-p-1.5 lg:tw-p-1 lg:tw-bg-black tw-font-medium
+					tw-rounded tw-p-1.5 lg:tw-p-1 lg:tw-py-0.5 lg:tw-bg-black tw-font-medium
 					tw-text-center lg:tw-text-left"
 				:class="{ 'tw-text-white': activeLoan }"
 			>
@@ -58,6 +59,10 @@ export default {
 	computed: {
 		activeLoan() {
 			return this.selected === this.index;
+		},
+		boxShadow() {
+			if (this.activeLoan) return '0px 4px 15px rgba(0, 0, 0, 0.05);';
+			return 'none';
 		}
 	},
 };
