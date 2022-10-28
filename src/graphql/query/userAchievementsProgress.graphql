@@ -1,0 +1,11 @@
+
+query userAchievementProgress(
+	$userId: String!
+) {
+	userAchievementProgress(userId: $userId) {
+		achievementProgress {
+			achievementId
+			status
+		}
+	}
+}

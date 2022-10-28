@@ -1,5 +1,9 @@
 <template>
 	<div class="tw-relative">
+		<div
+			:class="{ overlay: showQuickFiltersOverlay }"
+		>
+		</div>
 		<div class="row">
 			<div class="small-12 columns heading-region">
 				<view-toggle v-if="!enableQuickFilters" browse-url="/lend-by-category" :filter-url="filterUrl" />
@@ -23,7 +27,7 @@
 				</h1>
 				<p
 					v-if="loanChannelDescription"
-					class="page-subhead show-for-large tw-mb-4"
+					class="page-subhead tw-mb-4"
 				>
 					{{ loanChannelDescription }}
 				</p>
@@ -44,10 +48,11 @@
 				:filters-loaded="filtersLoaded"
 				:update-filters="updateQuickFilters"
 				@reset-filters="resetFilters"
+				@handle-overlay="handleQuickFiltersOverlay"
 			/>
 		</div>
 
-		<div class="row">
+		<div class="row" :class="{ 'tw-opacity-low': showQuickFiltersOverlay }">
 			<div class="columns small-12" v-if="loans.length > 0">
 				<div v-if="!displayLoanPromoCard" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
 					<loan-card-controller
@@ -65,6 +70,9 @@
 						:is-visitor="isVisitor"
 						:user-data="userData"
 						:loan-channel-name="loanChannelName"
+						:loans="helpmeChooseLoans"
+						@update="getHelpmeChooseLoans($event)"
+						:is-loading="isLoadingHC"
 					/>
 				</div>
 				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
@@ -97,6 +105,9 @@
 						:is-visitor="isVisitor"
 						:user-data="userData"
 						:loan-channel-name="loanChannelName"
+						:loans="helpmeChooseLoans"
+						@update="getHelpmeChooseLoans($event)"
+						:is-loading="isLoadingHC"
 					/>
 				</div>
 				<kv-pagination
@@ -256,7 +267,10 @@ export default {
 			},
 			filtersLoaded: false,
 			selectedQuickFilters: {},
-			userData: {}
+			userData: {},
+			showQuickFiltersOverlay: false,
+			helpmeChooseLoans: [],
+			isLoadingHC: true,
 		};
 	},
 	computed: {
@@ -476,6 +490,9 @@ export default {
 		}
 	},
 	methods: {
+		handleQuickFiltersOverlay(showOverlay) {
+			this.showQuickFiltersOverlay = showOverlay;
+		},
 		trackAdvancedFilters() {
 			this.$kvTrackEvent(
 				'Search',
@@ -678,6 +695,24 @@ export default {
 			} else {
 				this.flssLoanSearch = matchedUrls[0]?.flssLoanSearch ?? {};
 			}
+		},
+		async getHelpmeChooseLoans(evt = 'amountLeft') {
+			this.isLoadingHC = true;
+			const loansData = await getFilteredLoanChannel(
+				this.apollo,
+				this.loanChannelQueryMap,
+				this.targetedLoanChannelURL,
+				{
+					ids: [this.targetedLoanChannelID],
+					limit: 3,
+					basketId: this.cookieStore.get('kvbskt'),
+					origin: FLSS_ORIGIN_CATEGORY
+				},
+				{ sortBy: evt }
+			);
+			const loans = loansData?.lend?.loanChannelsById[0]?.loans?.values ?? [];
+			this.helpmeChooseLoans = loans;
+			this.isLoadingHC = false;
 		}
 	},
 	watch: {
@@ -765,5 +800,17 @@ export default {
 
 #carousel_exp >>> section > div:nth-child(1) > div {
 	max-width: 185px !important;
+}
+
+.overlay {
+	@media only screen and (max-width: 1023px) {
+		position: fixed;
+		top: 0;
+		background-color: #000;
+		width: 100%;
+		height: 100%;
+		z-index: 5;
+		opacity: 0.5;
+	}
 }
 </style>

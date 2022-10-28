@@ -131,6 +131,7 @@ import {
 	transformDistributionModelOptions,
 	transformIsIndividualOptions,
 	transformLenderRepaymentTermOptions,
+	transformPartners,
 } from '@/util/loanSearch/filterUtils';
 import { FLSS_ORIGIN_LEND_FILTER } from '@/util/flssUtils';
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
@@ -307,7 +308,8 @@ export default {
 				|| !!this.loanSearchState.distributionModel
 				|| this.loanSearchState.isIndividual !== null
 				|| !!this.loanSearchState.lenderRepaymentTerm
-				|| !!this.loanSearchState.keywordSearch;
+				|| !!this.loanSearchState.keywordSearch
+				|| this.loanSearchState.partnerId.length > 0;
 		},
 		themeNames() {
 			return this.allFacets?.themeNames ?? [];
@@ -316,25 +318,39 @@ export default {
 	methods: {
 		async fetchFacets(loanSearchState = {}) {
 			// TODO: Prevent this from running on every query (not needed for sorting and paging)
-			const { isoCodes, themes, sectors } = await runFacetsQueries(
+			const {
+				isoCodes,
+				themes,
+				sectors,
+				tags,
+			} = await runFacetsQueries(
 				this.apollo,
 				loanSearchState,
 				FLSS_ORIGIN_LEND_FILTER
 			);
 
+			// TODO: Revert once non binary filter is ready to release
+			// genders: transformGenderOptions(this.allFacets?.genderFacets);
+			const nonBinaryFilterEnabled = this.$route.query?.nonBinaryFilter;
+			let genderFacets = this.allFacets?.genderFacets;
+			if (!nonBinaryFilterEnabled) {
+				genderFacets = genderFacets.filter(gender => gender.name !== 'nonbinary');
+			}
+
 			// Merge all facet options with filtered options
 			this.facets = {
-				genders: transformGenderOptions(this.allFacets?.genderFacets),
+				genders: transformGenderOptions(genderFacets),
 				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 				sectors: transformSectors(sectors, this.allFacets?.sectorFacets),
 				themes: transformThemes(themes, this.allFacets?.themeFacets),
-				tags: transformTags(this.allFacets?.tagFacets ?? []),
+				tags: transformTags(tags, this.allFacets?.tagFacets),
 				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [],
 					this.allFacets?.flssSorts ?? [],
 					this.extendFlssFilters),
 				distributionModels: transformDistributionModelOptions(this.allFacets?.distributionModelFacets),
 				isIndividualOptions: transformIsIndividualOptions(),
 				lenderRepaymentTerms: transformLenderRepaymentTermOptions(),
+				partners: transformPartners(this.allFacets?.partnerFacets ?? []),
 			};
 		},
 		trackLoans() {

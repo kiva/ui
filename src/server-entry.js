@@ -176,6 +176,7 @@ export default context => {
 					cookieStore,
 					kvAuth0,
 					route: router.currentRoute,
+					device
 				});
 			}).then(() => {
 				let sp; // Vue serverPrefetch timing start

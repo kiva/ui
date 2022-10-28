@@ -36,6 +36,7 @@ export function getFlssFilters(loanSearchState) {
 		...(loanSearchState?.lenderRepaymentTerm && {
 			lenderRepaymentTerm: { range: getMinMaxRangeFilter(loanSearchState.lenderRepaymentTerm) }
 		}),
+		...(loanSearchState?.partnerId?.length && { partnerId: { any: loanSearchState.partnerId } }),
 	};
 }
 
@@ -47,6 +48,7 @@ export function getFlssFilters(loanSearchState) {
  * @param {Object} isoCodeFilters The filters for the ISO code facets
  * @param {Object} themeFilters The filters for the theme facets
  * @param {Object} sectorFilters The filters for the sector facets
+ * @param {Object} tagFilters The filters for the tag facets
  * @returns {Promise<Array<Object>>} Promise for facets data
  */
 export async function fetchFacets(
@@ -55,6 +57,7 @@ export async function fetchFacets(
 	isoCodeFilters,
 	themeFilters,
 	sectorFilters,
+	tagFilters,
 ) {
 	try {
 		const result = await apollo.query({
@@ -63,7 +66,8 @@ export async function fetchFacets(
 				isoCodeFilters,
 				themeFilters,
 				sectorFilters,
-				origin
+				tagFilters,
+				origin,
 			},
 			fetchPolicy: 'network-only',
 		});

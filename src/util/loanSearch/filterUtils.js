@@ -58,6 +58,7 @@ export const STANDARD_QUERY_TYPE = 'standard';
 // Gender enum keys
 export const FEMALE_KEY = 'FEMALE';
 export const MALE_KEY = 'MALE';
+export const NON_BINARY_KEY = 'NONBINARY';
 
 // Distribution model enum keys
 export const FIELDPARTNER_KEY = 'FIELDPARTNER';
@@ -78,7 +79,8 @@ export const MORE_THAN_TWO_YEARS_KEY = 'MORE_THAN_TWO_YEARS_KEY';
  */
 export const genderDisplayMap = {
 	[FEMALE_KEY]: 'Women',
-	[MALE_KEY]: 'Men'
+	[MALE_KEY]: 'Men',
+	[NON_BINARY_KEY]: 'Nonbinary'
 };
 
 /**
@@ -244,18 +246,21 @@ export function transformTagName(name = '') {
 /**
  * Transforms tags into a form usable by the filters
  *
+ * @param {Array<Object>} filteredTags The tag IDs from FLSS
  * @param {Array<Object>} allTags The tags from lend API
  * @returns {Array<Object>} Tags usable by the filters
  */
-export function transformTags(allTags = []) {
-	// TODO: filter options against FLSS loan counts and add numLoansFundraising (VUE-1335)
-
+export function transformTags(filteredTags, allTags = []) {
 	// Public tags have vocabularyId of 2
-	const transformed = allTags.filter(t => t.vocabularyId === 2).map(t => {
-		return {
-			id: t.id,
-			name: transformTagName(t.name),
-		};
+	const publicTags = allTags.filter(t => t.vocabularyId === 2);
+
+	const transformed = [];
+
+	filteredTags.forEach(({ key: id, value: numLoansFundraising }) => {
+		const lookupTag = publicTags.find(t => t.id === +id);
+		if (!lookupTag) return;
+		const tag = { id: lookupTag.id, name: transformTagName(lookupTag.name), numLoansFundraising };
+		transformed.push(tag);
 	});
 
 	return _orderBy(transformed, 'name');
@@ -293,7 +298,7 @@ export function transformRadioGroupOptions(options, order, displayMap, valueMap 
  * @returns {Array<Object>} The transformed radio group options
  */
 export function transformGenderOptions(genders) {
-	return transformRadioGroupOptions(genders, [FEMALE_KEY, MALE_KEY], genderDisplayMap);
+	return transformRadioGroupOptions(genders, [FEMALE_KEY, MALE_KEY, NON_BINARY_KEY], genderDisplayMap);
 }
 
 /**
@@ -331,6 +336,53 @@ export function transformLenderRepaymentTermOptions() {
 	];
 	const order = [EIGHT_MONTHS_KEY, SIXTEEN_MONTHS_KEY, TWO_YEARS_KEY, MORE_THAN_TWO_YEARS_KEY];
 	return transformRadioGroupOptions(options, order, lenderRepaymentTermDisplayMap, lenderRepaymentTermValueMap);
+}
+
+/**
+ * Transforms partners into a form usable by the select box
+ *
+ * @param {Array<Object>} partners The partners from the lend API
+ * @returns {Array<Object>} Partners sorted by region and partner name
+ */
+export function transformPartners(partners) {
+	const order = [
+		'NORTH AMERICA',
+		'CENTRAL AMERICA',
+		'SOUTH AMERICA',
+		'AFRICA',
+		'EASTERN EUROPE',
+		'MIDDLE EAST',
+		'ASIA',
+		'OCEANIA'
+	];
+
+	const transformed = [];
+
+	partners.forEach(({ id, name, countries }) => {
+		const region = countries?.[0]?.region ?? '';
+
+		transformed.push({
+			id,
+			name,
+			region,
+		});
+	});
+
+	// Sort by region order array, then partner name
+	transformed.sort((a, b) => {
+		if (a.region !== b.region) {
+			const aIndex = order.indexOf(a.region.toUpperCase());
+			const bIndex = order.indexOf(b.region.toUpperCase());
+			// eslint-disable-next-line no-nested-ternary
+			return aIndex < bIndex ? -1 : aIndex > bIndex ? 1 : 0;
+		}
+		const aName = a.name.toUpperCase();
+		const bName = b.name.toUpperCase();
+		// eslint-disable-next-line no-nested-ternary
+		return aName < bName ? -1 : aName > bName ? 1 : 0;
+	});
+
+	return transformed;
 }
 
 /**

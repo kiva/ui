@@ -100,12 +100,6 @@
 			</div>
 		</div>
 
-		<!-- <div class="row" v-if="isAdmin">
-			<div class="columns small-12">
-				<category-admin-controls />
-			</div>
-		</div> -->
-
 		<add-to-basket-interstitial />
 
 		<m-g-lightbox />
@@ -156,7 +150,6 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 export default {
 	name: 'LendByCategoryPage',
 	components: {
-		// CategoryAdminControls: () => import('./admin/CategoryAdminControls'),
 		CategoryRow,
 		FeaturedHeroLoanWrapper,
 		WwwPage,
@@ -188,7 +181,6 @@ export default {
 	},
 	data() {
 		return {
-			isAdmin: false,
 			isLoggedIn: false,
 			userId: null,
 			firstName: 'you',
@@ -444,7 +436,6 @@ export default {
 				});
 				this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
 					next: ({ data }) => {
-						this.isAdmin = !!_get(data, 'my.isAdmin');
 						this.isLoggedIn = !!_get(data, 'my');
 						this.userId = _get(data, 'my.userAccount.id') || null;
 						this.firstName = _get(data, 'my.userAccount.firstName') || 'you';
@@ -570,21 +561,6 @@ export default {
 					this.mlServiceBanditExpVersion === 'b' ? mlServiceBandit : null,
 					this.mlServiceBanditExpVersion === 'b' ? mlServiceBandit : null
 				);
-			}
-		},
-		initializeRecommendedRowAlgoExp() {
-			// experiment: VUE-937 for "recommend by others" row backing algorithm
-			const experimentId = 'EXP-VUE-937-recommended-row-algo';
-
-			// get experiment assignment
-			const { version } = this.apollo.readFragment({
-				id: `Experiment:${experimentId}`,
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			// track version if it is set
-			if (version && version !== 'unassigned') {
-				this.$kvTrackEvent('Lending', experimentId, version);
 			}
 		},
 		createViewportObserver() {
@@ -816,7 +792,6 @@ export default {
 
 		// Copy basic data from query into instance variables
 		this.setRows(baseData);
-		this.isAdmin = !!_get(baseData, 'my.isAdmin');
 		this.isLoggedIn = !!_get(baseData, 'my');
 		this.userId = _get(baseData, 'my.userAccount.id') || null;
 		this.firstName = _get(baseData, 'my.userAccount.firstName') || 'you';

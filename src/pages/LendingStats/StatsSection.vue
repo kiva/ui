@@ -53,7 +53,7 @@
 			</button>
 			<kv-button
 				v-if="hasUnlent"
-				:to="unlentUrlRoute"
+				:href="unlentUrlRoute"
 				variant="secondary"
 				:data-testid="lendNewId"
 			>

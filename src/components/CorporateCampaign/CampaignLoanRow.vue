@@ -129,6 +129,7 @@ export default {
 			offset: 0,
 			totalCount: 0,
 			zeroLoans: false,
+			currentSlide: 0
 		};
 	},
 	computed: {
@@ -166,6 +167,7 @@ export default {
 					if (this.$refs.campaignLoanCarousel) {
 						// re-init carousel since the slides changed
 						this.$refs.campaignLoanCarousel.reInit();
+						this.$refs.campaignLoanCarousel.goToSlide(this.currentSlide);
 					}
 				});
 			}
@@ -257,6 +259,7 @@ export default {
 			}
 		},
 		loadMoreLoans() {
+			this.currentSlide = this.$refs.campaignLoanCarousel.currentIndex;
 			this.offset += this.limit;
 		},
 		resetSearchFilters() {

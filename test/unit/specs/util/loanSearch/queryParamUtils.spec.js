@@ -23,7 +23,6 @@ describe('queryParamUtils.js', () => {
 			expect(hasExcludedQueryParams({ city_state: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ defaultRate: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ loanTags: [] })).toBe(true);
-			expect(hasExcludedQueryParams({ partner: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ riskRating: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ state: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ loanLimit: [] })).toBe(true);
@@ -345,6 +344,7 @@ describe('queryParamUtils.js', () => {
 							__typename: 'MinMaxRange'
 						},
 						keywordSearch: 'search',
+						partnerId: [1],
 					}
 				}
 			};
@@ -360,6 +360,7 @@ describe('queryParamUtils.js', () => {
 				isGroup: 'true',
 				lenderTerm: '0,16',
 				queryString: 'search',
+				partner: '1',
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -385,6 +386,7 @@ describe('queryParamUtils.js', () => {
 						isIndividual: null,
 						lenderRepaymentTerm: null,
 						keywordSearch: null,
+						partnerId: [],
 					}
 				},
 			};
@@ -413,6 +415,7 @@ describe('queryParamUtils.js', () => {
 						isIndividual: null,
 						lenderRepaymentTerm: null,
 						keywordSearch: null,
+						partnerId: [],
 					}
 				},
 			};
@@ -441,6 +444,7 @@ describe('queryParamUtils.js', () => {
 						isIndividual: null,
 						lenderRepaymentTerm: null,
 						keywordSearch: null,
+						partnerId: [],
 					}
 				},
 			};
@@ -469,6 +473,7 @@ describe('queryParamUtils.js', () => {
 						isIndividual: null,
 						lenderRepaymentTerm: null,
 						keywordSearch: null,
+						partnerId: [],
 					}
 				},
 			};
@@ -497,6 +502,7 @@ describe('queryParamUtils.js', () => {
 						isIndividual: null,
 						lenderRepaymentTerm: null,
 						keywordSearch: null,
+						partnerId: [],
 					}
 				},
 			};
@@ -525,6 +531,7 @@ describe('queryParamUtils.js', () => {
 						isIndividual: null,
 						lenderRepaymentTerm: null,
 						keywordSearch: null,
+						partnerId: [],
 					}
 				},
 			};
@@ -549,6 +556,7 @@ describe('queryParamUtils.js', () => {
 				isGroup: 'true',
 				lenderTerm: '0,8',
 				queryString: 'search',
+				partner: '1',
 			};
 
 			await applyQueryParams(apollo, query, mockAllFacets, FLSS_QUERY_TYPE, mockState.pageLimit, mockState);
@@ -574,6 +582,7 @@ describe('queryParamUtils.js', () => {
 						isIndividual: null,
 						lenderRepaymentTerm: null,
 						keywordSearch: null,
+						partnerId: [],
 					}
 				}
 			};
@@ -611,6 +620,7 @@ describe('queryParamUtils.js', () => {
 						isIndividual: null,
 						lenderRepaymentTerm: null,
 						keywordSearch: null,
+						partnerId: [],
 					}
 				}
 			};
@@ -648,6 +658,7 @@ describe('queryParamUtils.js', () => {
 						isIndividual: null,
 						lenderRepaymentTerm: null,
 						keywordSearch: null,
+						partnerId: [],
 					}
 				}
 			};
@@ -685,6 +696,7 @@ describe('queryParamUtils.js', () => {
 						isIndividual: null,
 						lenderRepaymentTerm: null,
 						keywordSearch: null,
+						partnerId: [],
 					}
 				}
 			};
@@ -722,6 +734,7 @@ describe('queryParamUtils.js', () => {
 						isIndividual: false,
 						lenderRepaymentTerm: null,
 						keywordSearch: null,
+						partnerId: [],
 					}
 				}
 			};
@@ -975,6 +988,32 @@ describe('queryParamUtils.js', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
 				query: { queryString: 'search' },
+				params: { noScroll: true, noAnalytics: true }
+			});
+		});
+
+		it('should push partner IDs', () => {
+			const state = { partnerId: [1, 2] };
+			const router = getRouter();
+
+			updateQueryParams(state, router, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { partner: '1,2' },
+				params: { noScroll: true, noAnalytics: true }
+			});
+		});
+
+		it('should not push empty partner IDs', () => {
+			const state = { gender: 'female', partnerId: [] };
+			const router = getRouter();
+
+			updateQueryParams(state, router, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { gender: 'female' },
 				params: { noScroll: true, noAnalytics: true }
 			});
 		});

@@ -10,9 +10,11 @@ describe('dataUtils.js', () => {
 		const isoCodeFacets = [{ key: 'iso', value: 1 }];
 		const themeFacets = [{ key: 'theme', value: 1 }];
 		const sectorFacets = [{ key: 'sector', value: 1 }];
+		const tagFacets = [{ key: 'tag', value: 1 }];
 		const isoCodes = { facets: { isoCode: isoCodeFacets } };
 		const themes = { facets: { themes: themeFacets } };
 		const sectors = { facets: { sectorId: sectorFacets } };
+		const tags = { facets: { tagsIds: tagFacets } };
 		const origin = FLSS_ORIGIN_NOT_SPECIFIED;
 
 		beforeEach(() => {
@@ -20,7 +22,8 @@ describe('dataUtils.js', () => {
 				.mockImplementation(() => Promise.resolve({
 					isoCodes,
 					themes,
-					sectors
+					sectors,
+					tags,
 				}));
 		});
 
@@ -34,28 +37,65 @@ describe('dataUtils.js', () => {
 				origin,
 				{ countryIsoCode: undefined },
 				{ themeId: undefined },
-				{ sectorId: undefined }
+				{ sectorId: undefined },
+				{ tagId: undefined },
 			);
 			expect(spyFetchFacets).toHaveBeenCalledTimes(1);
-			expect(result).toEqual({ isoCodes: isoCodeFacets, themes: themeFacets, sectors: sectorFacets });
+			expect(result).toEqual({
+				isoCodes: isoCodeFacets,
+				themes: themeFacets,
+				sectors: sectorFacets,
+				tags: tagFacets,
+			});
 		});
 
 		it('should return apply filters', async () => {
 			const apollo = {};
 			const result = await runFacetsQueries(
 				apollo,
-				{ countryIsoCode: ['US'], themeId: [2], sectorId: [1] },
+				{
+					countryIsoCode: ['US'],
+					themeId: [2],
+					sectorId: [1],
+					tagId: [3],
+				},
 				origin
 			);
 			expect(spyFetchFacets).toHaveBeenCalledWith(
 				apollo,
 				origin,
-				{ themeId: { any: [2] }, sectorId: { any: [1] }, countryIsoCode: undefined },
-				{ countryIsoCode: { any: ['US'] }, sectorId: { any: [1] }, themeId: undefined },
-				{ countryIsoCode: { any: ['US'] }, themeId: { any: [2] }, sectorId: undefined }
+				{
+					themeId: { any: [2] },
+					sectorId: { any: [1] },
+					tagId: { any: [3] },
+					countryIsoCode: undefined,
+				},
+				{
+					countryIsoCode: { any: ['US'] },
+					sectorId: { any: [1] },
+					tagId: { any: [3] },
+					themeId: undefined,
+				},
+				{
+					countryIsoCode: { any: ['US'] },
+					themeId: { any: [2] },
+					tagId: { any: [3] },
+					sectorId: undefined,
+				},
+				{
+					countryIsoCode: { any: ['US'] },
+					themeId: { any: [2] },
+					sectorId: { any: [1] },
+					tagId: undefined,
+				},
 			);
 			expect(spyFetchFacets).toHaveBeenCalledTimes(1);
-			expect(result).toEqual({ isoCodes: isoCodeFacets, themes: themeFacets, sectors: sectorFacets });
+			expect(result).toEqual({
+				isoCodes: isoCodeFacets,
+				themes: themeFacets,
+				sectors: sectorFacets,
+				tags: tagFacets,
+			});
 		});
 	});
 
@@ -96,6 +136,8 @@ describe('dataUtils.js', () => {
 		const flssSorts = { enumValues: [{ name: 'expiringSoon' }] };
 		const standardSorts = { enumValues: [{ name: 'expiringSoon' }] };
 		const distributionModelOptions = { enumValues: [{ name: 'direct' }] };
+		const partners = [{ id: 1, name: 'Asd', region: 'Africa' }];
+		const general = { partners: { values: partners } };
 
 		it('should pass the correct query variables to apollo', async () => {
 			const apollo = { query: jest.fn(() => Promise.resolve({})) };
@@ -128,6 +170,9 @@ describe('dataUtils.js', () => {
 				standardSorts: [],
 				distributionModelFacets: [],
 				distributionModels: [],
+				partnerFacets: [],
+				partnerIds: [],
+				partnerNames: [],
 			});
 		});
 
@@ -140,6 +185,7 @@ describe('dataUtils.js', () => {
 						loanThemeFilter,
 						tag,
 					},
+					general,
 					genderOptions,
 					flssSorts,
 					standardSorts,
@@ -169,6 +215,9 @@ describe('dataUtils.js', () => {
 				standardSorts: [{ name: 'expiringSoon' }],
 				distributionModelFacets: [{ name: 'direct' }],
 				distributionModels: ['DIRECT'],
+				partnerFacets: partners,
+				partnerIds: [1],
+				partnerNames: ['ASD'],
 			});
 		});
 	});

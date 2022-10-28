@@ -220,8 +220,10 @@ export default {
 			this.selectedRegion = null;
 			if (this.showRegions) {
 				document.documentElement.style.overflow = 'hidden';
+				this.$emit('handle-overlay', true);
 			} else {
 				document.documentElement.style.overflow = 'auto';
+				this.$emit('handle-overlay', false);
 			}
 		},
 		selectRegion(index) {

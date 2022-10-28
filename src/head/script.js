@@ -49,6 +49,11 @@ export default (config, globalOneTrustEvent) => {
 		/* eslint-enable */
 	};
 
+	const activateOptimizely = () => {
+		// eslint-disable-next-line dot-notation
+		window['optimizely'].push({ type: 'sendEvents' });
+	};
+
 	// FullStory snippet
 	const insertFullStory = () => {
 		/* eslint-disable */
@@ -176,7 +181,7 @@ export default (config, globalOneTrustEvent) => {
 			if (config.enableAnalytics) {
 				if (config.enableOptimizely && !optout) {
 					// reactivate optimizely events
-					window['optimizely'].push({'type':'sendEvents'});
+					OneTrust.InsertHtml('', 'head', activateOptimizely, null, 'C0002');
 				}
 				if (config.enableGA && !optout) {
 					OneTrust.InsertHtml('', 'head', insertGoogleAnalytics, null, 'C0002');

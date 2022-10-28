@@ -39,6 +39,12 @@ describe('LoanSearchFilterChips', () => {
 		getByText('Sector 1');
 		getByText('Theme 1');
 		getByText('Women');
+		getByText('Tag 1');
+		getByText('Direct');
+		getByText('Group');
+		getByText('8 mths or less');
+		getByText('search');
+		getByText('Ccc');
 	});
 
 	it('should handle render state with missing state', () => {
@@ -183,6 +189,27 @@ describe('LoanSearchFilterChips', () => {
 		await user.click(getByText(mockState.keywordSearch));
 
 		expect(emitted().updated[0]).toEqual([{ keywordSearch: null }]);
+	});
+
+	it('should handle partner ID chip click', async () => {
+		const user = userEvent.setup();
+
+		const { getByText, emitted, updateProps } = render(LoanSearchFilterChips, {
+			props: {
+				loanSearchState: { ...mockState, partnerId: [1, 2] },
+				allFacets: mockAllFacets
+			}
+		});
+
+		await user.click(getByText(mockAllFacets.partnerFacets[0].name));
+
+		expect(emitted().updated[0]).toEqual([{ partnerId: [2] }]);
+
+		await updateProps({ loanSearchState: { ...mockState, partnerId: [2] } });
+
+		await user.click(getByText(mockAllFacets.partnerFacets[1].name));
+
+		expect(emitted().updated[1]).toEqual([{ partnerId: [] }]);
 	});
 
 	it('should track event', async () => {

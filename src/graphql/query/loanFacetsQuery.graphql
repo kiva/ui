@@ -21,6 +21,17 @@ query loanFacets {
 			vocabularyId
 		}
 	}
+	general {
+		partners (filters: { status: active }, limit: null) {
+			values {
+				id
+				name
+				countries {
+					region
+				}
+			}
+		}
+	}
 	genderOptions: __type(name: "GenderEnum") {
 		enumValues {
 			name

@@ -33,27 +33,41 @@ export default {
 	computed: {
 		title() {
 			let str = '';
-			if (this.variant === 'amountLeft') {
-				str = 'Almost funded';
-			}
-			if (this.variant === 'personalized') {
-				str = 'Recommended for you';
-			}
-			if (this.variant === 'researchScore') {
-				str = 'Research backed impact';
+			switch (this.variant) {
+				case 'amountLeft':
+					str = 'Almost funded';
+					break;
+				case 'personalized':
+					str = 'Recommended for you';
+					break;
+				case 'researchScore':
+					str = 'Research backed impact';
+					break;
+				case 'popularityScore':
+					str = 'Popular loans';
+					break;
+				default:
+					str = '';
 			}
 			return str;
 		},
 		imgSource() {
 			let src;
-			if (this.variant === 'amountLeft') {
-				src = this.progressIcon;
-			}
-			if (this.variant === 'personalized') {
-				src = this.kivaIcon;
-			}
-			if (this.variant === 'researchScore') {
-				src = this.appleIcon;
+			switch (this.variant) {
+				case 'amountLeft':
+					src = this.progressIcon;
+					break;
+				case 'personalized':
+					src = this.kivaIcon;
+					break;
+				case 'researchScore':
+					src = this.appleIcon;
+					break;
+				case 'popularityScore':
+					src = this.kivaIcon;
+					break;
+				default:
+					src = '';
 			}
 			return src;
 		}

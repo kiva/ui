@@ -7,10 +7,6 @@ query fundedBorrowerProfile(
 	$imgRetinaSize: String = "w960h720"
 ) {
 	general {
-		customSort: uiExperimentSetting(key: "funded_lyml_sort") {
-			key
-			value
-		}
 		newFundedBorrowerPage: uiExperimentSetting(
 			key: "new_funded_borrower_page"
 		) {

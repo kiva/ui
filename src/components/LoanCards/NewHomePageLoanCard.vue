@@ -136,37 +136,45 @@ import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
-import { watchLoanCardData } from '@/util/loanUtils';
+import { readLoanFragment, watchLoanCardData } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
-const loanCardQuery = gql`query welcomeLoanCard($loanId: Int!) {
-	lend {
-		loan(id: $loanId) {
-			id
-			distributionModel
-			geocode {
-				country {
-					name
-				}
+export const loanFieldsFragment = gql`
+	fragment loanFields on LoanBasic {
+		id
+		distributionModel
+		geocode {
+			country {
+				name
 			}
-			image {
-				id
-				hash
-			}
-			name
-			use
-			loanAmount
-			loanFundraisingInfo {
-				fundedAmount
-				reservedAmount
-			}
-			fundraisingPercent @client
 		}
-	}
-}`;
+		image {
+			id
+			hash
+		}
+		name
+		use
+		loanAmount
+		loanFundraisingInfo {
+			fundedAmount
+			reservedAmount
+		}
+		fundraisingPercent @client
+	}`;
+
+const loanCardQuery = gql`
+	${loanFieldsFragment}
+	query welcomeLoanCard($loanId: Int!) {
+		lend {
+			loan(id: $loanId) {
+				id
+				...loanFields
+			}
+		}
+	}`;
 
 export default {
 	name: 'NewHomePageLoanCard',
@@ -292,12 +300,32 @@ export default {
 				}
 			}
 
-			this.isLoading = false;
 			this.loan = result.data?.lend?.loan || null;
+			if (this.loan) {
+				this.isLoading = false;
+			}
 		},
 	},
+	created() {
+		// Use cached loan data if it exists
+		const cachedLoan = readLoanFragment({
+			apollo: this.apollo,
+			loanId: this.loanId,
+			fragment: loanFieldsFragment,
+		});
+		if (cachedLoan) {
+			this.loan = cachedLoan;
+			this.isLoading = false;
+		}
+	},
 	mounted() {
-		this.createViewportObserver();
+		if (this.loan) {
+			// Already have a loan, so only setup watch query to handle changes in data
+			this.loadData();
+		} else {
+			// Don't have a loan yet, so setup viewport observer to prepare async loading
+			this.createViewportObserver();
+		}
 	},
 	beforeDestroy() {
 		this.destroyViewportObserver();

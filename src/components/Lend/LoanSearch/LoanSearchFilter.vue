@@ -35,7 +35,7 @@
 				placeholder="Search borrower story"
 				:can-clear="true"
 				v-model="keywordSearch"
-				@input="value => debouncedHandleUpdatedFilters({ keywordSearch: value.trim() })"
+				@input="value => debouncedHandleUpdateKeywordSearch({ keywordSearch: value.trim() })"
 				class="tw-w-full tw-py-1.5"
 			/>
 		</template>
@@ -133,6 +133,21 @@
 				@updated="handleUpdatedFilters"
 			/>
 			<hr class="tw-border-tertiary tw-my-1">
+			<h2 class="tw-text-h4 tw-pt-1">
+				Partner info
+			</h2>
+			<kv-select-box
+				id="partner-info-select-box"
+				:items="facets.partners"
+				header-key="region"
+				:should-sort="false"
+				placeholder="Partner name"
+				:is-full-width="true"
+				:selected-ids="loanSearchState.partnerId"
+				class="tw-w-full tw-py-1.5"
+				@selected="handleUpdatePartnerIdFilter"
+			/>
+			<hr class="tw-border-tertiary tw-my-1">
 			<kv-accordion-item id="acc-advanced" :open="false">
 				<template #header>
 					<h2 class="tw-text-h4">
@@ -166,6 +181,7 @@ import LoanSearchCheckboxListFilter from '@/components/Lend/LoanSearch/LoanSearc
 import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
 import { FLSS_QUERY_TYPE, isIndividualValueMap, lenderRepaymentTermValueMap } from '@/util/loanSearch/filterUtils';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
+import KvSelectBox from '@/components/Kv/KvSelectBox';
 import LoanSearchRadioGroupFilter from '@/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
 import _debounce from 'lodash/debounce';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -183,6 +199,7 @@ export default {
 		LoanSearchCheckboxListFilter,
 		LoanSearchSortBy,
 		KvSectionModalLoader,
+		KvSelectBox,
 	},
 	props: {
 		extendFlssFilters: {
@@ -217,7 +234,7 @@ export default {
 			isIndividualValueMap,
 			lenderRepaymentTermValueMap,
 			keywordSearch: '',
-			debouncedHandleUpdatedFilters: _debounce(this.handleUpdatedFilters, 750),
+			debouncedHandleUpdateKeywordSearch: _debounce(this.handleUpdateKeywordSearch, 750),
 		};
 	},
 	methods: {
@@ -233,6 +250,18 @@ export default {
 		},
 		handleUpdatedFilters(payload) {
 			this.$emit('updated', payload);
+		},
+		handleUpdateKeywordSearch(payload) {
+			this.handleUpdatedFilters(payload);
+
+			this.$kvTrackEvent('Lending', 'change-keyword-search', payload.keywordSearch);
+		},
+		handleUpdatePartnerIdFilter({ id }) {
+			if (!this.loanSearchState.partnerId.includes(id)) {
+				this.handleUpdatedFilters({ partnerId: [...this.loanSearchState.partnerId, id] });
+			}
+
+			this.$kvTrackEvent('Lending', 'click-partner-id', id);
 		},
 	},
 	watch: {

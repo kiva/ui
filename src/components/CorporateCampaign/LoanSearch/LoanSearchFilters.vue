@@ -589,10 +589,11 @@ export default {
 		align-items: center;
 		justify-content: space-between;
 		flex-direction: column;
+		margin: 0 1rem 1rem;
 
 		@include breakpoint(medium) {
 			flex-direction: row;
-			margin: 0 0 1rem;
+			margin: 0 3.5rem 1rem;
 		}
 	}
 

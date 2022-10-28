@@ -9,14 +9,14 @@
 			</p>
 		</div>
 
-		<div class="tw-w-full tw-pb-2">
-			<div v-if="triggersVisible" class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 lg:tw-gap-4">
+		<div class="tw-w-full tw-pb-4">
+			<div v-show="triggersVisible" class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 lg:tw-gap-4">
 				<helpme-choose-trigger
 					variant="amountLeft"
 					@click="showLoans"
 				/>
 				<helpme-choose-trigger
-					variant="personalized"
+					:variant="secondOption"
 					@click="showLoans"
 				/>
 				<helpme-choose-trigger
@@ -25,9 +25,15 @@
 				/>
 			</div>
 
-			<div v-else>
-				Loans
-			</div>
+			<helpme-choose-recommendations
+				v-show="!triggersVisible"
+				@show-triggers="triggersVisible = true"
+				:loans="loans"
+				:items-in-basket="itemsInBasket"
+				:is-visitor="isVisitor"
+				:user-data="userData"
+				:is-loading="isLoading"
+			/>
 		</div>
 
 		<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
@@ -46,6 +52,7 @@
 <script>
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import HelpmeChooseTrigger from './HelpmeChooseTrigger';
+import HelpmeChooseRecommendations from './HelpmeChooseRecommendations';
 
 export default {
 	name: 'HelpmeChooseWrapper',
@@ -69,17 +76,26 @@ export default {
 		loanChannelName: {
 			type: String,
 			default: ''
-		}
+		},
+		loans: {
+			type: Array,
+			default: () => []
+		},
+		isLoading: {
+			type: Boolean,
+			default: true
+		},
 	},
 	data() {
 		return {
 			triggersVisible: true,
-			subCategoryTitle: ''
+			subCategoryTitle: '',
 		};
 	},
 	components: {
 		LoanCardController,
-		HelpmeChooseTrigger
+		HelpmeChooseTrigger,
+		HelpmeChooseRecommendations
 	},
 	computed: {
 		welcomeTitle() {
@@ -93,19 +109,30 @@ export default {
 				return `${this.loanChannelName} + ${this.subCategoryTitle}`;
 			}
 			return 'Choose a subcategory and we\'ll do the rest.';
-		}
+		},
+		secondOption() {
+			return this.isVisitor ? 'popularityScore' : 'personalized';
+		},
 	},
 	methods: {
-		showLoans(event) {
+		showLoans(evt) {
 			this.triggersVisible = false;
-			if (event === 'amountLeft') {
-				this.subCategoryTitle = 'Almost funded';
-			}
-			if (event === 'personalized') {
-				this.subCategoryTitle = 'Recommended for you';
-			}
-			if (event === 'researchScore') {
-				this.subCategoryTitle = 'Research backed impact';
+			this.$emit('update', evt);
+			switch (evt) {
+				case 'amountLeft':
+					this.subCategoryTitle = 'Almost funded';
+					break;
+				case 'personalized':
+					this.subCategoryTitle = 'Recommended for you';
+					break;
+				case 'researchScore':
+					this.subCategoryTitle = 'Research backed impact';
+					break;
+				case 'popularityScore':
+					this.subCategoryTitle = 'Popular loans';
+					break;
+				default:
+					this.subCategoryTitle = '';
 			}
 		}
 	}

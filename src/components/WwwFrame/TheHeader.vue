@@ -372,7 +372,7 @@
 											</li>
 											<li>
 												<router-link
-													:to="`/lend/${loanId}#loanComments`"
+													:to="`/lend-classic/${loanId}#loanComments`"
 													v-kv-track-event="['TopNav','click-Portfolio-My Conversations']"
 												>
 													My conversations
@@ -653,15 +653,15 @@ export default {
 				logReadQueryError(e, 'User Data For Optimizely Metrics');
 			}
 		}
+	},
+	mounted() {
 		// MARS-246 Hotjar user attributes
-		if (this.userId) {
-			setHotJarUserAttributes({
-				userId: this.userId,
-				hasEverLoggedIn: this.hasEverLoggedIn,
-				hasLentBefore: Boolean(hasLentBefore),
-				hasDepositBefore: Boolean(hasDepositBefore),
-			});
-		}
+		setHotJarUserAttributes({
+			userId: this.userId,
+			hasEverLoggedIn: this.hasEverLoggedIn,
+			hasLentBefore: Boolean(this.cookieStore.get(hasLentBeforeCookie)),
+			hasDepositBefore: Boolean(this.cookieStore.get(hasDepositBeforeCookie)),
+		});
 	},
 	methods: {
 		toggleLendMenu(immediate = false) {

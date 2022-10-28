@@ -186,10 +186,6 @@ const pageQuery = gql`
 				key
 				value
 			}
-			customSort: uiExperimentSetting(key: "funded_lyml_sort") {
-				key
-				value
-			}
 			newFundedBorrowerPage: uiExperimentSetting(key: "new_funded_borrower_page") {
 				key
 				value
@@ -386,6 +382,8 @@ export default {
 	},
 	data() {
 		return {
+			businessName: null,
+			countryName: '',
 			loanId: Number(this.$route.params.id || 0),
 			showLenders: true,
 			showTeams: true,
@@ -409,6 +407,7 @@ export default {
 			inviterName: '',
 			inviterIsGuestOrAnonymous: false,
 			inPfp: false,
+			itemsInBasket: [],
 			pfpMinLenders: 0,
 			diffInDays: 0,
 			lender: {},
@@ -491,7 +490,7 @@ export default {
 			this.countryName = loan?.geocode?.country?.name ?? '';
 			this.hash = loan?.image?.hash ?? '';
 			this.numLenders = loan?.lenders?.totalCount ?? 0;
-			this.endDate = format(parseISO(loan?.plannedExpirationDate), 'M/d') ?? '';
+			this.endDate = loan?.plannedExpirationDate ? format(parseISO(loan?.plannedExpirationDate), 'M/d') : '';
 			this.borrowerCount = loan?.borrowerCount ?? 0;
 			this.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
 			this.loanAmount = loan?.loanAmount ?? '0';

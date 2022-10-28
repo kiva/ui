@@ -161,13 +161,13 @@
 							<span class="tw-block tw-py-1 tw-text-tertiary">Saved searches</span>
 						</li>
 						<li>
-							<router-link
-								to="/lend/countries-not-lent"
+							<a
+								href="/lend/countries-not-lent"
 								class="lend-link"
 								v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
 							>
 								Countries I haven't lent to
-							</router-link>
+							</a>
 						</li>
 					</ul>
 				</kv-tab-panel>

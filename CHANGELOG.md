@@ -1,3 +1,269 @@
+## [2.367.0](https://github.com/kiva/ui/compare/v2.366.0...v2.367.0) (2022-10-28)
+
+
+### Features
+
+* loan count added to tag filter ([fca9360](https://github.com/kiva/ui/commit/fca93606aee5558cc807addeee7d89dd5255933e))
+
+## [2.366.0](https://github.com/kiva/ui/compare/v2.365.2...v2.366.0) (2022-10-28)
+
+
+### Features
+
+* placeholders added to help me choose experiment ([0c6c925](https://github.com/kiva/ui/commit/0c6c925d0521cb35cec306608796ae1199a817bf))
+
+### [2.365.2](https://github.com/kiva/ui/compare/v2.365.1...v2.365.2) (2022-10-27)
+
+
+### Bug Fixes
+
+* issues with new range min max slider (FF and colors) ([0af2323](https://github.com/kiva/ui/commit/0af2323e265e4845e81645fdc761da71ce459d97))
+
+### [2.365.1](https://github.com/kiva/ui/compare/v2.365.0...v2.365.1) (2022-10-27)
+
+
+### Bug Fixes
+
+* use category url to activate view more link and card on lend by category ([c0ae9b7](https://github.com/kiva/ui/commit/c0ae9b7674933a376c397f290e94ed2d601c0240))
+
+## [2.365.0](https://github.com/kiva/ui/compare/v2.364.1...v2.365.0) (2022-10-27)
+
+
+### Features
+
+* loan card added for helpme choose experiment ([b93f41d](https://github.com/kiva/ui/commit/b93f41d22732db0665082caf600afa2c601a828c))
+
+### [2.364.1](https://github.com/kiva/ui/compare/v2.364.0...v2.364.1) (2022-10-27)
+
+
+### Bug Fixes
+
+* use anchor links to avoid app routing for monolith lend/ routes ([e5701d0](https://github.com/kiva/ui/commit/e5701d00efe9988a8e15aaec5316081612462b8c))
+
+## [2.364.0](https://github.com/kiva/ui/compare/v2.363.0...v2.364.0) (2022-10-27)
+
+
+### Features
+
+* add donate modules experiment ([c183f83](https://github.com/kiva/ui/commit/c183f837baae34c66ff06af9c93bd5d867c3ab01))
+
+## [2.363.0](https://github.com/kiva/ui/compare/v2.362.0...v2.363.0) (2022-10-27)
+
+
+### Features
+
+* range min max slider ([b736c6c](https://github.com/kiva/ui/commit/b736c6c18549029e63f6bdf7e4aa7d0cf3f5029b))
+
+
+### Bug Fixes
+
+* automated linting fixes from trying to push ([0e6f3de](https://github.com/kiva/ui/commit/0e6f3de52ee6af811db54f05490c197a932a1207))
+* more linting fixes ([97e743d](https://github.com/kiva/ui/commit/97e743d98cef9278aee4e1405cea4722eeed11ed))
+
+## [2.362.0](https://github.com/kiva/ui/compare/v2.361.0...v2.362.0) (2022-10-26)
+
+
+### Features
+
+* computed values added for image and activity ([7b3299b](https://github.com/kiva/ui/commit/7b3299b891638e73e8d4478fdde6edfb20c45635))
+* helpme choose loans getter and logic added to the experiment ([ea271ef](https://github.com/kiva/ui/commit/ea271efb69ec6769cdff3b84f01e58360a5e6c90))
+* methods for getting image and activity were added ([e4e3405](https://github.com/kiva/ui/commit/e4e34057792a5fb9c9335178f624398bb3557de1))
+
+
+### Bug Fixes
+
+* extra code removed ([b4855a6](https://github.com/kiva/ui/commit/b4855a6dffa6fa079911fdbcdf9e405e6b0abfc8))
+
+## [2.361.0](https://github.com/kiva/ui/compare/v2.360.0...v2.361.0) (2022-10-26)
+
+
+### Features
+
+* added non-binary filter option ([e730c91](https://github.com/kiva/ui/commit/e730c91057c1b90397c477a83d7c444988e6e282))
+* show nonbinary filter with specific param ([6eb0c70](https://github.com/kiva/ui/commit/6eb0c70385d0d5d39ef9e499377b6b0def49f105))
+* small update ([d907915](https://github.com/kiva/ui/commit/d90791563c53136d59e24d16ba1c83b6603f6a3b))
+
+
+### Bug Fixes
+
+* add remove comment ([9f01ccc](https://github.com/kiva/ui/commit/9f01ccc5f051cc0fcec95ff04b0a1507aa603d5a))
+* remove hypens from filter name ([7814b7f](https://github.com/kiva/ui/commit/7814b7f141b78977f92d2dd54402d1d7c8402522))
+* remove unused component ([20e0d3a](https://github.com/kiva/ui/commit/20e0d3a975cdcb9e5e33f6c0733e9031a509fec5))
+* remove unused func ([8081eec](https://github.com/kiva/ui/commit/8081eec57328a597b0328aff1dc3a68207d04740))
+* removed male key duplicated ([72ea163](https://github.com/kiva/ui/commit/72ea1637a8e30b1bea3c32f431a4de65ff32d507))
+* resolve comments ([a2a41e4](https://github.com/kiva/ui/commit/a2a41e4aa298a2da212151f09a3ed946d78af964))
+* solve conflicts ([4669054](https://github.com/kiva/ui/commit/46690547fbe5d7fd7e301fb26ef7202151584c35))
+* unremoved code from merge ([6f8498b](https://github.com/kiva/ui/commit/6f8498b8981db1fefef2d1dc25521078c238235a))
+* use genderDisplayMap ([0fab7f4](https://github.com/kiva/ui/commit/0fab7f475077a2a516de692377d8cbf02e9d6126))
+
+
+### Reverts
+
+* filter chips ([7d92fe5](https://github.com/kiva/ui/commit/7d92fe51568d31f700ee5d9f42042df671c10838))
+* loan search filters file ([2c0281d](https://github.com/kiva/ui/commit/2c0281da8fcef9e77003cc25f320923a97de42d3))
+
+## [2.360.0](https://github.com/kiva/ui/compare/v2.359.2...v2.360.0) (2022-10-26)
+
+
+### Features
+
+* update placement of user attributes ([f3ad8e4](https://github.com/kiva/ui/commit/f3ad8e46ea62604e889b45c3dbdab5b13dcb5f7c))
+
+### [2.359.2](https://github.com/kiva/ui/compare/v2.359.1...v2.359.2) (2022-10-26)
+
+
+### Bug Fixes
+
+* promo code only comes up for non-dynamically rendered pages ([5bb0e43](https://github.com/kiva/ui/commit/5bb0e4392cdf53deb4a95078aa6f121be0ccd444))
+
+### [2.359.1](https://github.com/kiva/ui/compare/v2.359.0...v2.359.1) (2022-10-26)
+
+
+### Bug Fixes
+
+* update My conversations link to lend-classic ([3a4161d](https://github.com/kiva/ui/commit/3a4161dd93e03c765a1469c242c48c2e230aa6ac))
+
+## [2.359.0](https://github.com/kiva/ui/compare/v2.358.1...v2.359.0) (2022-10-26)
+
+
+### Features
+
+* a/b test for loan tags ([465aa56](https://github.com/kiva/ui/commit/465aa565a020edf0dcc0b690f914525ff2e2ec92))
+
+
+### Bug Fixes
+
+* update var name ([1837d36](https://github.com/kiva/ui/commit/1837d36fb8e4d57913024ade8ca19aad97ea0b7c))
+
+### [2.358.1](https://github.com/kiva/ui/compare/v2.358.0...v2.358.1) (2022-10-26)
+
+
+### Bug Fixes
+
+* always set user attribute ([7f556dc](https://github.com/kiva/ui/commit/7f556dc4f928c448535525c712f75b988a66bd6e))
+
+## [2.358.0](https://github.com/kiva/ui/compare/v2.357.2...v2.358.0) (2022-10-26)
+
+
+### Features
+
+* partner ID loan filter ([f10e8c3](https://github.com/kiva/ui/commit/f10e8c341d34ce5423baeb3af3040452aacfb1b4))
+* updated loan channel map ([948ba0d](https://github.com/kiva/ui/commit/948ba0d9450b3f27e94f5624e2d8b98f9b2063e3))
+
+
+### Bug Fixes
+
+* mark selected items, prevent headers from being clicked ([100d438](https://github.com/kiva/ui/commit/100d4388bb4c18fc108288f38f053bdb7a7dbc64))
+
+### [2.357.2](https://github.com/kiva/ui/compare/v2.357.1...v2.357.2) (2022-10-25)
+
+
+### Bug Fixes
+
+* loan row carousel resets whenever see more loans button is clicked ([3595a79](https://github.com/kiva/ui/commit/3595a79b0d5373f63ad82bd384e9256377020545))
+
+### [2.357.1](https://github.com/kiva/ui/compare/v2.357.0...v2.357.1) (2022-10-25)
+
+
+### Bug Fixes
+
+* change boolean flags to strings ([3d1b985](https://github.com/kiva/ui/commit/3d1b985bad285a5f6a67d4b9d6cad4ac69a63b88))
+
+## [2.357.0](https://github.com/kiva/ui/compare/v2.356.2...v2.357.0) (2022-10-25)
+
+
+### Features
+
+* grid and logic added for help me choose experiment to show borrower selectors ([c3b6351](https://github.com/kiva/ui/commit/c3b6351cee8612932bc5f136ab42ad31b38eac6d))
+* svgs removed and replaced by mdi ([e5cffd1](https://github.com/kiva/ui/commit/e5cffd17617c9f5dbbe3a6ab8fefcdc72c416b2e))
+
+### [2.356.2](https://github.com/kiva/ui/compare/v2.356.1...v2.356.2) (2022-10-25)
+
+
+### Bug Fixes
+
+* change custom attributes name format ([97ff3d6](https://github.com/kiva/ui/commit/97ff3d6789a6bddd038c9502ab0a30f82cf55a08))
+
+### [2.356.1](https://github.com/kiva/ui/compare/v2.356.0...v2.356.1) (2022-10-25)
+
+
+### Bug Fixes
+
+* detect device type ([41dda3c](https://github.com/kiva/ui/commit/41dda3c5f30e16c9cac49f79c19ec9f9bc15deba))
+* detect device type ([40c411b](https://github.com/kiva/ui/commit/40c411bedaed767c8d8cee529778509fe6770e7f))
+* removed commented code ([7b2f0c8](https://github.com/kiva/ui/commit/7b2f0c86661dbd08a5a10d35af408e550b2e8f0f))
+
+## [2.356.0](https://github.com/kiva/ui/compare/v2.355.0...v2.356.0) (2022-10-24)
+
+
+### Features
+
+* borrower picker was created for help me choose experiment ([ef097e1](https://github.com/kiva/ui/commit/ef097e111e369706f5e1f6ef5e4336c6c3b1c2cd))
+
+## [2.355.0](https://github.com/kiva/ui/compare/v2.354.0...v2.355.0) (2022-10-24)
+
+
+### Features
+
+* add overlay when location dropdown open quick filters ([0cc5520](https://github.com/kiva/ui/commit/0cc55202c5cf37baefa089eadb5f9be4a3f95f79))
+
+
+### Bug Fixes
+
+* add mobile view ([da9b900](https://github.com/kiva/ui/commit/da9b90055464d7918538a8fdffa7003705f0de76))
+* lint ([5d825c4](https://github.com/kiva/ui/commit/5d825c4a48350dd99a4022d3c509c8b06a67570a))
+
+## [2.354.0](https://github.com/kiva/ui/compare/v2.353.0...v2.354.0) (2022-10-24)
+
+
+### Features
+
+* new select box component for lend filter partner ID ([5f20052](https://github.com/kiva/ui/commit/5f200526f76415ee6415010cffe04d1a71f96800))
+
+## [2.353.0](https://github.com/kiva/ui/compare/v2.352.1...v2.353.0) (2022-10-24)
+
+
+### Features
+
+* display achievement service badge on lending stats page ([28c5190](https://github.com/kiva/ui/commit/28c5190ac03b70addd48d8153639416434fea56c))
+* show category description on mobile ([7a81261](https://github.com/kiva/ui/commit/7a81261821e71cb2de451f1a589e0d5a008e4eb6))
+
+### [2.352.1](https://github.com/kiva/ui/compare/v2.352.0...v2.352.1) (2022-10-21)
+
+
+### Bug Fixes
+
+* ensure optimizely events are gated with OneTrust call instead of auto activated in callback ([e55e216](https://github.com/kiva/ui/commit/e55e21665609752372ba206cb0f573f73281b29a))
+
+## [2.352.0](https://github.com/kiva/ui/compare/v2.351.0...v2.352.0) (2022-10-21)
+
+
+### Features
+
+* use new funded borrower profile as default, remove exp code + fix full profile link ([24be7dc](https://github.com/kiva/ui/commit/24be7dc99302d839409b5f8bee22d359b8e607ca))
+
+
+### Bug Fixes
+
+* update funded bp full profile link to use lend-classic ([f602c50](https://github.com/kiva/ui/commit/f602c504c79dc5a1da4c4d33e0d588a128be47b1))
+
+## [2.351.0](https://github.com/kiva/ui/compare/v2.350.2...v2.351.0) (2022-10-21)
+
+
+### Features
+
+* extract loan fragment reading as util function ([ce530ae](https://github.com/kiva/ui/commit/ce530ae646681285654d05a4e53f716d3cc2e4aa))
+* prefetch 1st loan in category grid and only load selected category ([ce115b2](https://github.com/kiva/ui/commit/ce115b296ec50c709536535dfa0fd494c3d5ff18))
+* provide content-group content in ContentfulPage prefetch ([b24b764](https://github.com/kiva/ui/commit/b24b764c583d4296aebb7f1e2933d5010b4acf37))
+* use cached loan data in NewHomePageLoanCard ([fcd3ef9](https://github.com/kiva/ui/commit/fcd3ef98bc762c1d51464d5156fa9ce02263ae95))
+
+### [2.350.2](https://github.com/kiva/ui/compare/v2.350.1...v2.350.2) (2022-10-21)
+
+
+### Bug Fixes
+
+* don't add background as a question in faqs ([748df73](https://github.com/kiva/ui/commit/748df73f14b6b976a340cc9ee540ac7bd7cabbf2))
+
 ### [2.350.1](https://github.com/kiva/ui/compare/v2.350.0...v2.350.1) (2022-10-20)
 
 
