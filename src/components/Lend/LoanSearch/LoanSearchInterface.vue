@@ -318,7 +318,12 @@ export default {
 	methods: {
 		async fetchFacets(loanSearchState = {}) {
 			// TODO: Prevent this from running on every query (not needed for sorting and paging)
-			const { isoCodes, themes, sectors } = await runFacetsQueries(
+			const {
+				isoCodes,
+				themes,
+				sectors,
+				tags,
+			} = await runFacetsQueries(
 				this.apollo,
 				loanSearchState,
 				FLSS_ORIGIN_LEND_FILTER
@@ -338,7 +343,7 @@ export default {
 				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 				sectors: transformSectors(sectors, this.allFacets?.sectorFacets),
 				themes: transformThemes(themes, this.allFacets?.themeFacets),
-				tags: transformTags(this.allFacets?.tagFacets ?? []),
+				tags: transformTags(tags, this.allFacets?.tagFacets),
 				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [],
 					this.allFacets?.flssSorts ?? [],
 					this.extendFlssFilters),

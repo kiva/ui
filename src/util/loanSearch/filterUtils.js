@@ -246,18 +246,21 @@ export function transformTagName(name = '') {
 /**
  * Transforms tags into a form usable by the filters
  *
+ * @param {Array<Object>} filteredTags The tag IDs from FLSS
  * @param {Array<Object>} allTags The tags from lend API
  * @returns {Array<Object>} Tags usable by the filters
  */
-export function transformTags(allTags = []) {
-	// TODO: filter options against FLSS loan counts and add numLoansFundraising (VUE-1335)
-
+export function transformTags(filteredTags, allTags = []) {
 	// Public tags have vocabularyId of 2
-	const transformed = allTags.filter(t => t.vocabularyId === 2).map(t => {
-		return {
-			id: t.id,
-			name: transformTagName(t.name),
-		};
+	const publicTags = allTags.filter(t => t.vocabularyId === 2);
+
+	const transformed = [];
+
+	filteredTags.forEach(({ key: id, value: numLoansFundraising }) => {
+		const lookupTag = publicTags.find(t => t.id === +id);
+		if (!lookupTag) return;
+		const tag = { id: lookupTag.id, name: transformTagName(lookupTag.name), numLoansFundraising };
+		transformed.push(tag);
 	});
 
 	return _orderBy(transformed, 'name');

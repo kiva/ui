@@ -19,13 +19,15 @@ export async function runFacetsQueries(apollo, loanSearchState = {}, origin = FL
 	const isoCodeFilters = { ...getFlssFilters(loanSearchState), countryIsoCode: undefined };
 	const themeFilters = { ...getFlssFilters(loanSearchState), themeId: undefined };
 	const sectorFilters = { ...getFlssFilters(loanSearchState), sectorId: undefined };
+	const tagFilters = { ...getFlssFilters(loanSearchState), tagId: undefined };
 
-	const facets = await fetchFacets(apollo, origin, isoCodeFilters, themeFilters, sectorFilters);
+	const facets = await fetchFacets(apollo, origin, isoCodeFilters, themeFilters, sectorFilters, tagFilters);
 
 	return {
 		isoCodes: facets?.isoCodes?.facets?.isoCode ?? [],
 		themes: facets?.themes?.facets?.themes ?? [],
 		sectors: facets?.sectors?.facets?.sectorId ?? [],
+		tags: facets?.tags?.facets?.tagsIds ?? [],
 	};
 }
 
