@@ -120,6 +120,8 @@
 				<div v-if="totalCount > 0" class="loan-count tw-text-tertiary">
 					{{ totalCount }} loans
 				</div>
+				<!-- Donation CTA Experiment -->
+				<donation-c-t-a v-if="hasOnePageOfLoans" />
 			</div>
 		</div>
 
@@ -139,6 +141,8 @@ import experimentVersionFragment from '@/graphql/fragments/experimentVersion.gra
 import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
+import DonationCTA from '@/components/Lend/DonationCTA';
+
 import KvPagination from '@/components/Kv/KvPagination';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
@@ -219,7 +223,8 @@ export default {
 		ViewToggle,
 		PromoGridLoanCard,
 		QuickFilters,
-		HelpmeChooseWrapper
+		HelpmeChooseWrapper,
+		DonationCTA,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
@@ -345,6 +350,9 @@ export default {
 				url = `${url}?page=${this.$route.query.page}`;
 			}
 			return url;
+		},
+		hasOnePageOfLoans() {
+			return this.totalCount <= this.limit;
 		}
 	},
 	apollo: {
