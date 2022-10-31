@@ -6,7 +6,7 @@
 		<kv-material-icon
 			:icon="iconName"
 			class="tw-align-middle tw-ml-0.5"
-			style="width: 15px"
+			style="width: 15px;"
 			:style="{
 				width: '15px',
 				color: useWhiteText ? '#ffffff' : '#000000'
