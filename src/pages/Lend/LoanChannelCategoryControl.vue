@@ -62,6 +62,7 @@
 						:key="loan.id"
 						:loan="loan"
 						loan-card-type="GridLoanCard"
+						:show-tags="enableLoanTags"
 					/>
 					<helpme-choose-wrapper
 						v-if="enableHelpmeChoose"
@@ -82,6 +83,7 @@
 						:key="loan.id"
 						:loan="loan"
 						loan-card-type="GridLoanCard"
+						:show-tags="enableLoanTags"
 					/>
 					<div class="column column-block">
 						<promo-grid-loan-card
@@ -96,6 +98,7 @@
 						:key="loan.id"
 						:loan="loan"
 						loan-card-type="GridLoanCard"
+						:show-tags="enableLoanTags"
 					/>
 					<helpme-choose-wrapper
 						v-if="enableHelpmeChoose"
@@ -208,6 +211,10 @@ export default {
 		enableHelpmeChoose: {
 			type: Boolean,
 			default: false,
+		},
+		enableLoanTags: {
+			type: Boolean,
+			default: false
 		}
 	},
 	components: {

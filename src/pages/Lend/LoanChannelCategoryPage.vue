@@ -7,6 +7,7 @@
 			:is="pageLayoutComponent"
 			:enable-quick-filters="enableQuickFilters"
 			:enable-helpme-choose="enableHelpmeChoose"
+			:enable-loan-tags="enableLoanTags"
 		/>
 
 		<add-to-basket-interstitial />
@@ -54,7 +55,7 @@ const pageQuery = gql`
 			}
 			loanTags: uiExperimentSetting(key: "loan_tags") {
 				key
-				value 
+				value
 			}
 		}
 	}
