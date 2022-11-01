@@ -284,7 +284,7 @@ export default {
 			if (loanTagsExperiment.version) {
 				this.$kvTrackEvent(
 					'Lending',
-					'EXP-CORE-792-Oct-2022',
+					'EXP-CORE-792-Oct2022',
 					loanTagsExperiment.version
 				);
 			}
