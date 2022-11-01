@@ -30,7 +30,7 @@
 			<button
 				@click="goBack"
 				class="tw-hidden lg:tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-action tw-text-small tw-mt-1"
-				v-kv-track-event="['event-tracking', 'click', 'help-choosing-click-go-back']"
+				v-kv-track-event="['event-tracking', 'click', 'help-choosing-go-back']"
 			>
 				<kv-material-icon
 					class="tw-w-2 tw-h-2"
@@ -59,7 +59,7 @@
 		<button
 			@click="goBack"
 			class="lg:tw-hidden tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-action tw-text-small tw-mt-1 tw-w-full"
-			v-kv-track-event="['event-tracking', 'click', 'help-choosing-click-go-back']"
+			v-kv-track-event="['event-tracking', 'click', 'help-choosing-go-back']"
 		>
 			<kv-material-icon
 				class="tw-w-2 tw-h-2"
@@ -127,20 +127,20 @@ export default {
 			let eventProperty = '';
 			switch (evt) {
 				case 0:
-					eventProperty = 'first';
+					eventProperty = 'help-me-choose-loan-1';
 					break;
 				case 1:
-					eventProperty = 'second';
+					eventProperty = 'help-me-choose-loan-2';
 					break;
 				case 2:
-					eventProperty = 'third';
+					eventProperty = 'help-me-choose-loan-3';
 					break;
 				default:
 					eventProperty = '';
 			}
 			this.$kvTrackEvent(
-				'event-tracking',
-				'click',
+				'loan-card',
+				'show',
 				eventProperty
 			);
 		},
@@ -156,9 +156,9 @@ export default {
 		},
 		handleAddToBasket() {
 			this.$kvTrackEvent(
-				'event-tracking',
+				'loan-card',
 				'add-to-basket',
-				'help-choosing-add-to-basket'
+				'help-choosing'
 			);
 		}
 	}

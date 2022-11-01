@@ -143,7 +143,7 @@ export default {
 			this.$kvTrackEvent(
 				'event-tracking',
 				'click',
-				'category-clicked-need-help-choosing',
+				'help-choosing-category',
 				eventProperty
 			);
 		}
