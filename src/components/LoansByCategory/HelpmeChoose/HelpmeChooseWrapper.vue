@@ -118,22 +118,34 @@ export default {
 		showLoans(evt) {
 			this.triggersVisible = false;
 			this.$emit('update', evt);
+			let eventProperty = '';
 			switch (evt) {
 				case 'amountLeft':
 					this.subCategoryTitle = 'Almost funded';
+					eventProperty = 'almost-funded';
 					break;
 				case 'personalized':
 					this.subCategoryTitle = 'Recommended for you';
+					eventProperty = 'recommended';
 					break;
 				case 'researchScore':
 					this.subCategoryTitle = 'Research backed impact';
+					eventProperty = 'research-backed';
 					break;
 				case 'popularityScore':
 					this.subCategoryTitle = 'Popular loans';
+					eventProperty = 'popular-loans';
 					break;
 				default:
 					this.subCategoryTitle = '';
 			}
+
+			this.$kvTrackEvent(
+				'event-tracking',
+				'click',
+				'category-clicked-need-help-choosing',
+				eventProperty
+			);
 		}
 	}
 };
