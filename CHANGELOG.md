@@ -1,3 +1,10 @@
+### [2.370.1](https://github.com/kiva/ui/compare/v2.370.0...v2.370.1) (2022-11-01)
+
+
+### Bug Fixes
+
+* clear up warning from github around lighthouse action, there may be more ([f9201ef](https://github.com/kiva/ui/commit/f9201ef2ff011fd6aa7f3abd8bd4d2017d985098))
+
 ## [2.370.0](https://github.com/kiva/ui/compare/v2.369.1...v2.370.0) (2022-11-01)
 
 
