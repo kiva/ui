@@ -1,3 +1,29 @@
+### [2.370.1](https://github.com/kiva/ui/compare/v2.370.0...v2.370.1) (2022-11-01)
+
+
+### Bug Fixes
+
+* clear up warning from github around lighthouse action, there may be more ([f9201ef](https://github.com/kiva/ui/commit/f9201ef2ff011fd6aa7f3abd8bd4d2017d985098))
+
+## [2.370.0](https://github.com/kiva/ui/compare/v2.369.1...v2.370.0) (2022-11-01)
+
+
+### Features
+
+* tracking events added to help me choose experiment ([9ffd6f2](https://github.com/kiva/ui/commit/9ffd6f2fb7333f3623bc49e81528aabd8b546dd2))
+
+
+### Bug Fixes
+
+* tracking properties updated ([9e489e6](https://github.com/kiva/ui/commit/9e489e68e7f3f681daf26c0d34a97d134e7e6126))
+
+### [2.369.1](https://github.com/kiva/ui/compare/v2.369.0...v2.369.1) (2022-11-01)
+
+
+### Bug Fixes
+
+* update collected lend link to work with href ([a2ec89a](https://github.com/kiva/ui/commit/a2ec89ad9da67e9448b7b0592817b99efaf67bd8))
+
 ## [2.369.0](https://github.com/kiva/ui/compare/v2.368.0...v2.369.0) (2022-11-01)
 
 
