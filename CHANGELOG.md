@@ -1,3 +1,10 @@
+### [2.369.1](https://github.com/kiva/ui/compare/v2.369.0...v2.369.1) (2022-11-01)
+
+
+### Bug Fixes
+
+* update collected lend link to work with href ([a2ec89a](https://github.com/kiva/ui/commit/a2ec89ad9da67e9448b7b0592817b99efaf67bd8))
+
 ## [2.369.0](https://github.com/kiva/ui/compare/v2.368.0...v2.369.0) (2022-11-01)
 
 
