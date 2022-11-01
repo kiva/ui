@@ -32,7 +32,7 @@ jobs:
           lhci upload --target=filesystem --outputDir=./lhci
           node format-lh-for-s3.js
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-region: ${{ secrets.LHCI_S3_REGION }}
           role-to-assume: ${{ secrets.LHCI_AWS_ROLE_TO_ASSUME }}
