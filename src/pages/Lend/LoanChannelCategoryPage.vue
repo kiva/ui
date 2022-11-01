@@ -312,7 +312,7 @@ export default {
 			if (helpmeChooseExperiment.version) {
 				this.$kvTrackEvent(
 					'Lending',
-					'EXP-CORE-771-Oct-2022',
+					'EXP-CORE-771-Oct2022',
 					helpmeChooseExperiment.version
 				);
 			}
