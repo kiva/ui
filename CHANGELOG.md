@@ -1,3 +1,10 @@
+## [2.368.0](https://github.com/kiva/ui/compare/v2.367.0...v2.368.0) (2022-11-01)
+
+
+### Features
+
+* add human centric donate module for single page of loan results ([568f2b8](https://github.com/kiva/ui/commit/568f2b834416420a796ae9e66a3807a17c71c24c))
+
 ## [2.367.0](https://github.com/kiva/ui/compare/v2.366.0...v2.367.0) (2022-10-28)
 
 
