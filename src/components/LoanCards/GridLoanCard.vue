@@ -4,6 +4,9 @@
 			{{ title }}
 		</h3>
 		<div class="grid-loan-card tw-bg-primary tw-border tw-border-tertiary">
+			<div v-if="showTags" class="tw-mt-1 tw-ml-1 tw-absolute tw-z-1">
+				<loan-tag v-if="getTagInfo()" :variation="getTagInfo()" />
+			</div>
 			<loan-card-image
 				:loan-id="loan.id"
 				:name="loan.name"
@@ -78,6 +81,7 @@ import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MatchingText from '@/components/LoanCards/MatchingText';
+import LoanTag from '@/components/LoanCards/LoanTags/LoanTag';
 
 export default {
 	name: 'GridLoanCard',
@@ -87,6 +91,7 @@ export default {
 		FundraisingStatus,
 		LoanCardImage,
 		MatchingText,
+		LoanTag
 	},
 	inject: ['apollo'],
 	props: {
@@ -143,6 +148,10 @@ export default {
 			type: String,
 			default: ''
 		},
+		showTags: {
+			type: Boolean,
+			default: false
+		}
 	},
 	computed: {
 		lessThan25() {
@@ -155,6 +164,16 @@ export default {
 		},
 		trackInteraction(args) {
 			this.$emit('track-interaction', args);
+		},
+		getTagInfo() {
+			if (this.loan?.loanFundraisingInfo?.isExpiringSoon) {
+				return 'endingSoon';
+			} if (this.amountLeft < 100) {
+				return 'almostFunded';
+			} if (this.loan?.matchingText) {
+				return 'matchedLoan';
+			}
+			return null;
 		}
 	},
 };
