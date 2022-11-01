@@ -1,3 +1,10 @@
+### [2.370.2](https://github.com/kiva/ui/compare/v2.370.1...v2.370.2) (2022-11-01)
+
+
+### Bug Fixes
+
+* tracking code format updated ([c2769f3](https://github.com/kiva/ui/commit/c2769f3e0e578fd29375cb9311fac0e47e030f99))
+
 ### [2.370.1](https://github.com/kiva/ui/compare/v2.370.0...v2.370.1) (2022-11-01)
 
 
