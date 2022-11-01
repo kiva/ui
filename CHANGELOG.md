@@ -1,3 +1,16 @@
+## [2.369.0](https://github.com/kiva/ui/compare/v2.368.0...v2.369.0) (2022-11-01)
+
+
+### Features
+
+* implement loan tags on category pages ([69761bc](https://github.com/kiva/ui/commit/69761bc853f308ee102b645f21cada88139227ad))
+
+
+### Bug Fixes
+
+* lint ([b3c8de6](https://github.com/kiva/ui/commit/b3c8de65342830436c830152c01e802703e6e576))
+* update exp name ([376f922](https://github.com/kiva/ui/commit/376f922e38682a4bbccd1482339b0f34e9a8bb9c))
+
 ## [2.368.0](https://github.com/kiva/ui/compare/v2.367.0...v2.368.0) (2022-11-01)
 
 
