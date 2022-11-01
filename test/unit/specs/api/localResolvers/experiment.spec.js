@@ -26,7 +26,7 @@ function getExperimentContext(data = {}) {
 				general: {
 					uiExperimentSetting: {
 						key: exp.id,
-						value: JSON.stringify(exp)
+						value: JSON.stringify(JSON.stringify(exp))
 					}
 				}
 			}),
@@ -54,8 +54,8 @@ describe('experiment.js', () => {
 			const { resolvers } = expResolverFactory({ cookieStore });
 			const context = getExperimentContext();
 
-			const result = resolvers.Query.experiment(null, { id: '' }, context);
-			expect(result).toEqual(Experiment('', null));
+			const result = resolvers.Query.experiment(null, { id: 'ab' }, context);
+			expect(result).toEqual(Experiment('ab', null));
 		});
 
 		it('Returns a null assignment when experiment is not enabled', () => {

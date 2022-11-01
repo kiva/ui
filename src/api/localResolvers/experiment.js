@@ -1,5 +1,5 @@
 import { parseExpCookie, serializeExpCookie, assignVersion } from '@/util/experimentUtils';
-import { hashCode } from '@/util/settingsUtils';
+import { hashCode, readJSONSetting } from '@/util/settingsUtils';
 import experimentSettingQuery from '@/graphql/query/experimentSetting.graphql';
 import logReadQueryError from '@/util/logReadQueryError';
 
@@ -30,7 +30,7 @@ export default ({ cookieStore }) => {
 					}
 
 					const experimentSetting = experimentData?.general?.uiExperimentSetting;
-					const experiment = JSON.parse(experimentSetting?.value);
+					const experiment = readJSONSetting(experimentSetting?.value);
 
 					// create targeted subset of experiment setting to use in hash
 					// Changing the Name, Distribution, Variants or Control values will "reset" an experiment assignment
