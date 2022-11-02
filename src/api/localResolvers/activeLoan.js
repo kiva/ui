@@ -4,8 +4,8 @@ import query from '@/graphql/mutation/updateActiveLoan.graphql';
  */
 export default () => {
 	return {
-		defaults: {
-			activeLoan: {
+		defaults(cache) {
+			const data = {
 				hoverLoanId: 0,
 				xCoordinate: 0,
 				yCoordinate: 0,
@@ -20,9 +20,16 @@ export default () => {
 				}),
 				tracking: JSON.stringify({}),
 				__typename: 'ActiveLoan',
-			}
+			};
+
+			cache.writeQuery({
+				query,
+				data,
+			});
+
+			return data;
 		},
-		resolvers: {
+		typePolicies: {
 			Mutation: {
 				updateActiveLoan(
 					_,
@@ -62,6 +69,6 @@ export default () => {
 					return data;
 				},
 			},
-		},
+		}
 	};
 };

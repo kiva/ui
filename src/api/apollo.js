@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { ApolloLink, ApolloClient, InMemoryCache } from '@apollo/client/core';
 
-import loanResolverFactory from '@/api/localResolvers/loan';
 import Auth0LinkCreator from './Auth0Link';
 import BasketLinkCreator from './BasketLink';
 import ContentfulPreviewLink from './ContentfulPreviewLink';
@@ -9,114 +8,22 @@ import ExperimentIdLink from './ExperimentIdLink';
 import HttpLinkCreator from './HttpLink';
 import NetworkErrorLink from './NetworkErrorLink';
 import SnowplowSessionLink from './SnowplowSessionLink';
-
-const { resolvers } = loanResolverFactory();
-const { LoanPartner, LoanDirect } = resolvers;
-
-export const typePolicies = {
-	LoanPartner: {
-		fundraisingPercent: {
-			read(_, { readField }) {
-				return LoanPartner.fundraisingPercent(readField('loan'));
-			}
-		},
-		fundraisingTimeLeft: {
-			read(_, { readField }) {
-				return LoanPartner.fundraisingTimeLeft(readField('loan'));
-			}
-		},
-		unreservedAmount: {
-			read(_, { readField }) {
-				return LoanPartner.unreservedAmount(readField('loan'));
-			}
-		},
-		fundraisingTimeLeftMilliseconds: {
-			read(_, { readField }) {
-				return LoanPartner.fundraisingTimeLeftMilliseconds(readField('loan'));
-			}
-		},
-	},
-	LoanDirect: {
-		fundraisingPercent: {
-			read(_, { readField }) {
-				return LoanDirect.fundraisingPercent(readField('loan'));
-			}
-		},
-		fundraisingTimeLeft: {
-			read(_, { readField }) {
-				return LoanDirect.fundraisingTimeLeft(readField('loan'));
-			}
-		},
-		unreservedAmount: {
-			read(_, { readField }) {
-				return LoanDirect.unreservedAmount(readField('loan'));
-			}
-		},
-		fundraisingTimeLeftMilliseconds: {
-			read(_, { readField }) {
-				return LoanDirect.fundraisingTimeLeftMilliseconds(readField('loan'));
-			}
-		},
-	},
-	Setting: {
-		keyFields: ['key'],
-	},
-	Query: {
-		// Combine top level fields without ids
-		// https://www.apollographql.com/docs/react/caching/cache-field-behavior/#the-merge-function
-		fields: {
-			community: {
-				merge: true
-			},
-			general: {
-				merge: true
-			},
-			ml: {
-				merge: true,
-			},
-			contentful: {
-				merge: true,
-			},
-			lend: {
-				merge: true,
-			},
-			my: {
-				merge: true,
-			},
-			getCategories: {
-				merge: true
-			},
-			mySubscriptions: {
-				merge: true
-			},
-			fundraisingLoans: {
-				merge: true
-			},
-			activeLoan: {
-				merge: true
-			}
-		},
-	},
-	Mutation: {
-		AutolendingMutation: {
-			merge: true
-		}
-	}
-};
+import { initState, setDefaultLocalState } from './localState';
 
 export default function createApolloClient({
+	appConfig,
 	cookieStore,
 	kvAuth0,
 	types,
 	uri,
 	fetch
 }) {
-	// initialize local state resolvers
-
 	const possibleTypes = {};
 	types.forEach(element => {
 		possibleTypes[element.name] = element.possibleTypes.map(type => type.name);
 	});
+
+	const { typePolicies } = initState({ appConfig, cookieStore, kvAuth0 });
 
 	const cache = new InMemoryCache({
 		possibleTypes,
@@ -150,7 +57,9 @@ export default function createApolloClient({
 		assumeImmutableResults: true,
 	});
 
-	client.resetStore();
+	// set default local state
+	setDefaultLocalState(cache);
+	client.onResetStore(() => setDefaultLocalState(cache));
 
 	return client;
 }

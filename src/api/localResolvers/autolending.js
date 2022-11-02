@@ -14,6 +14,7 @@ import LoanSearchCriteria, {
 	criteriaAreEqual,
 	getSearchableCriteria,
 } from '@/api/fixtures/LoanSearchCriteria';
+import { gql } from '@apollo/client';
 
 // Helper function for writing autolending data to the cache
 function writeAutolendingData(cache, { currentProfile, savedProfile, ...data }) {
@@ -140,10 +141,22 @@ function convertLegacyProfile(profile) {
 }
 
 // export resolvers and defaults for Autolending and AutolendingMutation
+
 export default () => {
 	return {
-		defaults: {
-			autolending: {
+		defaults(cache) {
+			const query = gql`query autolending {
+				autolending @client {
+					currentLoanCount
+					profileChanged
+					loadingProfile
+					countingLoans
+					savingProfile
+					warningThreshold
+				}
+			}`;
+
+			const data = {
 				__typename: 'Autolending',
 				currentLoanCount: 0, // updates when search filters are changed
 				profileChanged: false, // true when the current profile is different than the profile on the server
@@ -151,9 +164,16 @@ export default () => {
 				countingLoans: false, // true when loan count is updating
 				savingProfile: false, // true when profile is being saved o the server
 				warningThreshold: 25, // minimum loan count to avoid getting a warning message
-			},
+			};
+
+			cache.writeQuery({
+				query,
+				data,
+			});
+
+			return data;
 		},
-		resolvers: {
+		typePolicies: {
 			AutolendingMutation: {
 				/**
 				 * Fetches autolend profile information and sets up local autolending state

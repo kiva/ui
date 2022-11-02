@@ -195,7 +195,7 @@ function unreservedAmount(loan) {
 
 export default () => {
 	return {
-		resolvers: {
+		typePolicies: {
 			LoanPartner: {
 				fundraisingPercent,
 				fundraisingTimeLeft,

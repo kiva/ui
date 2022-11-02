@@ -2,7 +2,7 @@ import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql
 
 export default ({ cookieStore, kvAuth0 }) => {
 	return {
-		resolvers: {
+		typePolicies: {
 			My: {
 				lastLoginTimestamp() {
 					return kvAuth0.getLastLogin();

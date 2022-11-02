@@ -4,10 +4,17 @@ import query from '@/graphql/mutation/updateUsingTouch.graphql';
  */
 export default () => {
 	return {
-		defaults: {
-			usingTouch: false,
+		defaults(cache) {
+			const usingTouch = false;
+
+			cache.writeQuery({
+				query,
+				usingTouch,
+			});
+
+			return usingTouch;
 		},
-		resolvers: {
+		typePolicies: {
 			Mutation: {
 				updateUsingTouch(_, { usingTouch = false }, context) {
 					context.cache.writeQuery({

@@ -4,15 +4,22 @@ import query from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
  */
 export default () => {
 	return {
-		defaults: {
-			basketAddInterstitial: {
+		defaults(cache) {
+			const data = {
 				active: false,
 				visible: false,
 				loanId: 0,
 				__typename: 'BasketAddInterstitial',
-			}
+			};
+
+			cache.writeQuery({
+				query,
+				data,
+			});
+
+			return data;
 		},
-		resolvers: {
+		typePolicies: {
 			Mutation: {
 				updateAddToBasketInterstitial(_, { active = false, visible = false, loanId = 0 }, context) {
 					const data = {

@@ -22,14 +22,21 @@ export const getDefaultLoanSearchState = () => ({
 // export queries, resolvers and defaults for LoanSearchState
 export default () => {
 	return {
-		defaults: {
-			loanSearchState: {
+		defaults(cache) {
+			const loanSearchState = {
 				id: 'SearchData', // Using a hard-coded id for now to enable cache
 				__typename,
 				...getDefaultLoanSearchState(),
-			},
+			};
+
+			cache.writeQuery({
+				loanSearchStateQuery,
+				loanSearchState,
+			});
+
+			return loanSearchState;
 		},
-		resolvers: {
+		typePolicies: {
 			Query: {
 				loanSearchState(_, _args, { cache }) {
 					// Retrieve current LoanSearchState from the Apollo cache

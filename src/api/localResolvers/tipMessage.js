@@ -5,16 +5,23 @@ import closeTipMessageQuery from '@/graphql/mutation/tipMessage/closeTipMessage.
  */
 export default () => {
 	return {
-		defaults: {
-			tip: {
+		defaults(cache) {
+			const tip = {
 				message: '',
 				persist: false,
 				type: '',
 				visible: false,
 				__typename: 'TipMessage',
-			},
+			};
+
+			cache.writeQuery({
+				showTipMessageQuery,
+				tip,
+			});
+
+			return tip;
 		},
-		resolvers: {
+		typePolicies: {
 			Mutation: {
 				showTipMessage(_, {
 					message = '', persist = false, type = '', visible = true

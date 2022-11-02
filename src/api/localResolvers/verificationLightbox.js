@@ -9,13 +9,20 @@ const __typename = 'VerificationLightbox';
 
 export default () => {
 	return {
-		defaults: {
-			verificationLightbox: {
+		defaults(cache) {
+			const verificationLightbox = {
 				visible: false,
 				__typename,
-			},
+			};
+
+			cache.writeQuery({
+				showVerificationLightboxQuery,
+				verificationLightbox,
+			});
+
+			return verificationLightbox;
 		},
-		resolvers: {
+		typePolicies: {
 			Mutation: {
 				showVerificationLightbox(_, { visible = true }, context) {
 					context.cache.writeQuery({
