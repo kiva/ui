@@ -1,3 +1,10 @@
+### [2.371.1](https://github.com/kiva/ui/compare/v2.371.0...v2.371.1) (2022-11-02)
+
+
+### Bug Fixes
+
+* remove unused dependnecies, fix unit test ([bd4f3da](https://github.com/kiva/ui/commit/bd4f3da7bd94315b58cc2f80ee2e2db456ab6a7f))
+
 ## [2.371.0](https://github.com/kiva/ui/compare/v2.370.2...v2.371.0) (2022-11-02)
 
 
