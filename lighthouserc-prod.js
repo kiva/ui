@@ -9,6 +9,8 @@ module.exports = {
 			},
 			url: [
 				'https://www.kiva.org/',
+				'https://www.kiva.org?setuiab=new_home_layout.a',
+				'https://www.kiva.org?setuiab=new_home_layout.b',
 				'https://www.kiva.org/lend/filter',
 				'https://www.kiva.org/lend-by-category',
 				'https://www.kiva.org/lend-by-category/women',
@@ -18,6 +20,7 @@ module.exports = {
 				'https://www.kiva.org/lp/support-refugees',
 				'https://www.kiva.org/design',
 				'https://www.kiva.org/pgtmp/home',
+				'https://www.kiva.org/hptmp/crowdfund-for-good',
 				'https://www.kiva.org/lptmp/how-kiva-works',
 				'https://www.kiva.org/lp/how-kiva-works',
 				'https://www.kiva.org/lptmp/qw',
