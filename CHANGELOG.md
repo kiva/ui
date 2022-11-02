@@ -1,3 +1,10 @@
+## [2.371.0](https://github.com/kiva/ui/compare/v2.370.2...v2.371.0) (2022-11-02)
+
+
+### Features
+
+* add share button to fundraising borrower profile ([2ae6e4f](https://github.com/kiva/ui/commit/2ae6e4f95ea037b55b5ed0ff775f6331953d1926))
+
 ### [2.370.2](https://github.com/kiva/ui/compare/v2.370.1...v2.370.2) (2022-11-01)
 
 
