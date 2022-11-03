@@ -4,7 +4,8 @@
 		@click="$emit('click', variant)"
 	>
 		<img :src="imgSource" class="tw-hidden lg:tw-block tw-w-3">
-		<h3 class="tw-text-h3 tw-text-primary-inverse lg:tw-mt-5 tw-text-center lg:tw-text-left">
+		<!-- eslint-disable-next-line max-len -->
+		<h3 class="tw-text-base lg:tw-text-h3 tw-py-0.5 lg:tw-py-0 tw-text-primary-inverse lg:tw-mt-5 tw-text-center lg:tw-text-left">
 			{{ title }}
 		</h3>
 	</div>
