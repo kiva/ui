@@ -16,6 +16,8 @@ const story = (args) => {
 				:step="step"
 				:min="min"
 				:max="max"
+				:is-percentage="isPercentage"
+				:displayed-unit="displayedUnit"
 			/>
 		`,
 	});
@@ -30,3 +32,7 @@ export const SmallerRange = story({ rangeMin: 0, rangeMax: 5 });
 export const LargerStep = story({ step: 10 });
 
 export const Selected = story({ min: 30, max: 50 });
+
+export const Percentage = story({ rangeMin: 0, rangeMax: 1, step: 0.001, isPercentage: true, displayedUnit: '%' });
+
+export const Unit = story({ displayedUnit: '°' });
