@@ -1,3 +1,16 @@
+## [2.372.0](https://github.com/kiva/ui/compare/v2.371.1...v2.372.0) (2022-11-03)
+
+
+### Features
+
+* add tracking and update styles for loan tags ([3c41e07](https://github.com/kiva/ui/commit/3c41e078fd2803e7fc1af00815183a916c0e6eac))
+
+
+### Bug Fixes
+
+* pr updates ([72e14b8](https://github.com/kiva/ui/commit/72e14b80867939154846c16cf57c7b37eea5e85c))
+* update tracking ([a43c122](https://github.com/kiva/ui/commit/a43c1220337b87c7b4731562173e25104ac7553d))
+
 ### [2.371.1](https://github.com/kiva/ui/compare/v2.371.0...v2.371.1) (2022-11-02)
 
 
