@@ -362,11 +362,13 @@ input[type=range]:hover::-ms-thumb {
 	transform: scale(1.15);
 }
 
-#range-min-tooltip, #range-max-tooltip {
+#range-min-tooltip,
+#range-max-tooltip {
 	@apply tw-absolute tw-text-center tw-text-small;
+
 	top: 26px;
 	height: 24px;
-    width: 50px;
+	width: 50px;
 }
 
 #range-min-tooltip {
