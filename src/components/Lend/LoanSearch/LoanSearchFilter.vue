@@ -7,146 +7,83 @@
 				Reset All
 			</p>
 		</button>
-		<hr class="tw-border-tertiary tw-my-1">
-		<loan-search-radio-group-filter
-			:options="facets.genders"
-			:selected="loanSearchState.gender"
-			filter-key="gender"
-			event-action="click-gender-filter"
-			all-option-title="All genders"
-			@updated="handleUpdatedFilters"
-		/>
-		<template v-if="extendFlssFilters">
-			<hr class="tw-border-tertiary tw-my-1">
-			<loan-search-radio-group-filter
-				:options="facets.isIndividualOptions"
-				:selected="loanSearchState.isIndividual"
-				filter-key="isIndividual"
-				event-action="click-isIndividual-filter"
-				:value-map="isIndividualValueMap"
-				@updated="handleUpdatedFilters"
-			/>
-			<hr class="tw-border-tertiary tw-my-1">
-			<h2 class="tw-text-h4 tw-pt-1">
-				Keywords
-			</h2>
-			<kv-text-input
-				id="keywords-text-input"
-				placeholder="Search borrower story"
-				:can-clear="true"
-				v-model="keywordSearch"
-				@input="value => debouncedHandleUpdateKeywordSearch({ keywordSearch: value.trim() })"
-				class="tw-w-full tw-py-1.5"
-			/>
+		<template v-for="key in filterConfig.keys">
+			<template v-if="shouldDisplayFilter(key)">
+				<component
+					:key="key"
+					:is="filterConfig.config[key].uiConfig.hasAccordion ? KvAccordionItem : 'div'"
+					:id="`${key}-filter-container`"
+				>
+					<template #header v-if="filterConfig.config[key].uiConfig.hasAccordion">
+						<h2 class="tw-text-h4">
+							{{ filterConfig.config[key].uiConfig.title }}
+						</h2>
+					</template>
+					<template v-if="!filterConfig.config[key].uiConfig.hasAccordion">
+						<hr v-if="filterConfig.config[key].uiConfig.topLine" class="tw-border-tertiary tw-my-1">
+						<h2 v-if="filterConfig.config[key].uiConfig.title" class="tw-text-h4 tw-pt-1">
+							{{ filterConfig.config[key].uiConfig.title }}
+						</h2>
+					</template>
+					<loan-search-radio-group-filter
+						v-if="filterConfig.config[key].uiConfig.type === filterUiType.radioGroup"
+						:options="facets[filterConfig.config[key].uiConfig.facetsKey]"
+						:selected="loanSearchState[filterConfig.config[key].uiConfig.stateKey]"
+						:filter-key="filterConfig.config[key].uiConfig.stateKey"
+						:event-action="filterConfig.config[key].uiConfig.eventAction"
+						:all-option-title="filterConfig.config[key].uiConfig.allOptionsTitle"
+						:value-map="filterConfig.config[key].uiConfig.valueMap"
+						@updated="handleUpdatedFilters"
+					/>
+					<kv-text-input
+						v-if="filterConfig.config[key].uiConfig.type === filterUiType.keyword"
+						:id="`${key}-text-input`"
+						:placeholder="filterConfig.config[key].uiConfig.placeholder"
+						:can-clear="true"
+						v-model="keywordSearch"
+						class="tw-w-full tw-py-1.5"
+						@input="value => debouncedHandleUpdateKeywordSearch({ keywordSearch: value.trim() })"
+					/>
+					<loan-search-sort-by
+						v-if="filterConfig.config[key].uiConfig.type === filterUiType.sortBy"
+						:all-sort-options="facets[filterConfig.config[key].uiConfig.facetsKey]"
+						:extend-flss-filters="extendFlssFilters"
+						:is-logged-in="isLoggedIn"
+						:sort="loanSearchState[filterConfig.config[key].uiConfig.stateKey]"
+						:query-type="queryType"
+						@updated="handleUpdatedFilters"
+					/>
+					<loan-search-location-filter
+						v-if="filterConfig.config[key].uiConfig.type === filterUiType.location"
+						:active-iso-codes="loanSearchState[filterConfig.config[key].uiConfig.stateKey]"
+						:regions="facets[filterConfig.config[key].uiConfig.facetsKey]"
+						@updated="handleUpdatedFilters"
+					/>
+					<loan-search-checkbox-list-filter
+						v-if="filterConfig.config[key].uiConfig.type === filterUiType.checkboxList"
+						:options="facets[filterConfig.config[key].uiConfig.facetsKey]"
+						:ids="loanSearchState[filterConfig.config[key].uiConfig.stateKey]"
+						:filter-key="filterConfig.config[key].uiConfig.stateKey"
+						:event-action="filterConfig.config[key].uiConfig.eventAction"
+						@updated="handleUpdatedFilters"
+					/>
+					<kv-select-box
+						v-if="filterConfig.config[key].uiConfig.type === filterUiType.partner"
+						:id="`${filterConfig.config[key].uiConfig.stateKey}-info-select-box`"
+						:items="facets[filterConfig.config[key].uiConfig.facetsKey]"
+						:header-key="filterConfig.config[key].uiConfig.itemHeaderKey"
+						:should-sort="false"
+						:placeholder="filterConfig.config[key].uiConfig.placeholder"
+						:is-full-width="true"
+						:selected-ids="loanSearchState[filterConfig.config[key].uiConfig.stateKey]"
+						class="tw-w-full tw-py-1.5"
+						@selected="handleUpdatePartnerIdFilter"
+					/>
+					<hr v-if="filterConfig.config[key].uiConfig.bottomLine" class="tw-border-tertiary tw-mt-1">
+				</component>
+			</template>
 		</template>
-		<hr class="tw-border-tertiary tw-my-1">
-		<kv-accordion-item id="acc-sort-by" :open="false">
-			<template #header>
-				<h2 class="tw-text-h4">
-					Sort order
-				</h2>
-			</template>
-			<loan-search-sort-by
-				:all-sort-options="facets.sortOptions"
-				:extend-flss-filters="extendFlssFilters"
-				:is-logged-in="isLoggedIn"
-				:sort="loanSearchState.sortBy"
-				:query-type="queryType"
-				@updated="handleUpdatedFilters"
-			/>
-		</kv-accordion-item>
-		<kv-accordion-item id="acc-location" :open="false">
-			<template #header>
-				<h2 class="tw-text-h4">
-					Location
-				</h2>
-			</template>
-			<loan-search-location-filter
-				:active-iso-codes="loanSearchState.countryIsoCode"
-				:regions="facets.regions"
-				@updated="handleUpdatedFilters"
-			/>
-		</kv-accordion-item>
-		<kv-accordion-item id="acc-sectors" :open="false">
-			<template #header>
-				<h2 class="tw-text-h4">
-					Sectors
-				</h2>
-			</template>
-			<loan-search-checkbox-list-filter
-				:options="facets.sectors"
-				:ids="loanSearchState.sectorId"
-				@updated="handleUpdatedFilters"
-				filter-key="sectorId"
-				event-action="click-sector-filter"
-			/>
-		</kv-accordion-item>
-		<kv-accordion-item id="acc-attributes" :open="false">
-			<template #header>
-				<h2 class="tw-text-h4">
-					Attributes
-				</h2>
-			</template>
-			<loan-search-checkbox-list-filter
-				:options="facets.themes"
-				:ids="loanSearchState.themeId"
-				@updated="handleUpdatedFilters"
-				filter-key="themeId"
-				event-action="click-theme-filter"
-			/>
-		</kv-accordion-item>
 		<template v-if="extendFlssFilters">
-			<kv-accordion-item id="acc-tags" :open="false">
-				<template #header>
-					<h2 class="tw-text-h4">
-						Tags
-					</h2>
-				</template>
-				<loan-search-checkbox-list-filter
-					:options="facets.tags"
-					:ids="loanSearchState.tagId"
-					@updated="handleUpdatedFilters"
-					filter-key="tagId"
-					event-action="click-tag-filter"
-				/>
-			</kv-accordion-item>
-			<h2 class="tw-text-h4 tw-pt-2">
-				Loan length
-			</h2>
-			<loan-search-radio-group-filter
-				:options="facets.lenderRepaymentTerms"
-				:selected="loanSearchState.lenderRepaymentTerm"
-				filter-key="lenderRepaymentTerm"
-				event-action="click-lenderRepaymentTerm-filter"
-				:value-map="lenderRepaymentTermValueMap"
-				@updated="handleUpdatedFilters"
-			/>
-			<hr class="tw-border-tertiary tw-my-1">
-			<h2 class="tw-text-h4 tw-pt-1">
-				Loan distribution
-			</h2>
-			<loan-search-radio-group-filter
-				:options="facets.distributionModels"
-				:selected="loanSearchState.distributionModel"
-				filter-key="distributionModel"
-				event-action="click-distributionModel-filter"
-				@updated="handleUpdatedFilters"
-			/>
-			<hr class="tw-border-tertiary tw-my-1">
-			<h2 class="tw-text-h4 tw-pt-1">
-				Partner info
-			</h2>
-			<kv-select-box
-				id="partner-info-select-box"
-				:items="facets.partners"
-				header-key="region"
-				:should-sort="false"
-				placeholder="Partner name"
-				:is-full-width="true"
-				:selected-ids="loanSearchState.partnerId"
-				class="tw-w-full tw-py-1.5"
-				@selected="handleUpdatePartnerIdFilter"
-			/>
 			<hr class="tw-border-tertiary tw-my-1">
 			<kv-accordion-item id="acc-advanced" :open="false">
 				<template #header>
@@ -154,7 +91,7 @@
 						Advanced filters
 					</h2>
 				</template>
-				<button class="tw-mt-2 tw-h-[22px]" @click="advancedFilters">
+				<button class="tw-mt-2" @click="advancedFilters">
 					<h2 class="tw-text-h4 tw-flex tw-items-center">
 						Legacy filters
 						<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1" />
@@ -163,7 +100,7 @@
 			</kv-accordion-item>
 		</template>
 		<template v-else>
-			<button class="tw-mt-2 tw-h-[22px]" @click="advancedFilters">
+			<button class="tw-mt-2" @click="advancedFilters">
 				<h2 class="tw-text-h4 tw-flex tw-items-center">
 					Advanced filters
 					<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1" />
@@ -179,11 +116,12 @@ import { mdiClose, mdiArrowRight } from '@mdi/js';
 import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
 import LoanSearchCheckboxListFilter from '@/components/Lend/LoanSearch/LoanSearchCheckboxListFilter';
 import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
-import { FLSS_QUERY_TYPE, isIndividualValueMap, lenderRepaymentTermValueMap } from '@/util/loanSearch/filterUtils';
+import { filterUiType, FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import KvSelectBox from '@/components/Kv/KvSelectBox';
 import LoanSearchRadioGroupFilter from '@/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
 import _debounce from 'lodash/debounce';
+import filterConfig from '@/util/loanSearch/filterConfig';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
@@ -231,10 +169,11 @@ export default {
 		return {
 			mdiClose,
 			mdiArrowRight,
-			isIndividualValueMap,
-			lenderRepaymentTermValueMap,
 			keywordSearch: '',
 			debouncedHandleUpdateKeywordSearch: _debounce(this.handleUpdateKeywordSearch, 750),
+			filterConfig,
+			filterUiType,
+			KvAccordionItem,
 		};
 	},
 	methods: {
@@ -262,6 +201,25 @@ export default {
 			}
 
 			this.$kvTrackEvent('Lending', 'click-partner-id', id);
+		},
+		shouldDisplayFilter(key) {
+			// TODO: remove once the "extendFlssFilters" experiment is complete
+			const isExperimentFilter = [
+				filterConfig.config.isIndividual.uiConfig.stateKey,
+				filterConfig.config.keywordSearch.uiConfig.stateKey,
+				filterConfig.config.tags.uiConfig.stateKey,
+				filterConfig.config.lenderRepaymentTerms.uiConfig.stateKey,
+				filterConfig.config.distributionModels.uiConfig.stateKey,
+				filterConfig.config.partners.uiConfig.stateKey,
+			].includes(filterConfig.config[key].uiConfig.stateKey);
+
+			// Paging filters are not currently part of the filter panel
+			const isPagingFilter = [
+				filterConfig.config.pageOffset.uiConfig.stateKey,
+				filterConfig.config.pageLimit.uiConfig.stateKey,
+			].includes(filterConfig.config[key].uiConfig.stateKey);
+
+			return !isPagingFilter && (this.extendFlssFilters || !isExperimentFilter);
 		},
 	},
 	watch: {

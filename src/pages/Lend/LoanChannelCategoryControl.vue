@@ -153,11 +153,8 @@ import {
 } from '@/util/loanChannelUtils';
 
 import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
-import {
-	formatSortOptions,
-	transformIsoCodes,
-	sortByNameToDisplay
-} from '@/util/loanSearch/filterUtils';
+import { formatSortOptions, sortByNameToDisplay } from '@/util/loanSearch/filters/sortOptions';
+import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
 import HelpmeChooseWrapper from '@/components/LoansByCategory/HelpmeChoose/HelpmeChooseWrapper';

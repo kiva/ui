@@ -64,17 +64,10 @@
 import IconAdd from '@/assets/icons/inline/add.svg';
 import { createSavedSearch } from '@/util/loanSearch/searchStateUtils';
 import logFormatter from '@/util/logFormatter';
+import filterConfig from '@/util/loanSearch/filterConfig';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
-
-/**
- * Maps the FLSS enum values to the lend API enum values
- */
-const distributionModelEnumMap = {
-	FIELDPARTNER: 'fieldPartner',
-	DIRECT: 'direct'
-};
 
 export default {
 	name: 'LoanSearchSavedSearch',
@@ -88,15 +81,15 @@ export default {
 	props: {
 		loanSearchState: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		},
-		themeNames: {
-			type: Array,
-			default: () => {}
+		allFacets: {
+			type: Object,
+			default: () => ({})
 		},
 		showSuccessMessage: {
 			type: Function,
-			default: () => {}
+			default: () => ({})
 		},
 		userId: {
 			type: Number,
@@ -123,23 +116,9 @@ export default {
 	},
 	computed: {
 		reformattedSearchState() {
-			return {
-				country: this.loanSearchState?.countryIsoCode,
-				gender: this.loanSearchState?.gender,
-				sector: this.loanSearchState?.sectorId,
-				theme: this.loanSearchState?.themeId.map(themeId => this.themeNames[themeId]),
-				loanTags: this.loanSearchState?.tagId,
-				distributionModel: distributionModelEnumMap[this.loanSearchState?.distributionModel?.toUpperCase()],
-				// Reverse "isIndividual" to match legacy "isGroup" query param
-				isGroup: this.loanSearchState?.isIndividual !== null ? !this.loanSearchState.isIndividual : null,
-				// Create new simple object that can be saved to legacy "MinMaxRangeInput" type
-				lenderTerm: this.loanSearchState?.lenderRepaymentTerm
-					? {
-						min: this.loanSearchState.lenderRepaymentTerm.min,
-						max: this.loanSearchState.lenderRepaymentTerm.max
-					} : null,
-				partner: this.loanSearchState?.partnerId,
-			};
+			return filterConfig.keys.reduce((prev, key) => {
+				return { ...prev, ...filterConfig.config[key].getSavedSearch(this.loanSearchState, this.allFacets) };
+			}, {});
 		},
 		loginUrl() {
 			const fullPath = encodeURIComponent(`${this.$route.fullPath}&saved_search=true`);
