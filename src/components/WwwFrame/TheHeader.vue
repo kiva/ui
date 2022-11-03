@@ -24,7 +24,7 @@
 				<template v-else-if="corporate">
 					<div
 						class="
-						tw-flex tw-gap-2.5 lg:tw-gap-6 tw-items-center"
+						tw-flex tw-gap-2.5 lg:tw-gap-6 tw-items-center align-middle"
 					>
 						<campaign-logo-group
 							class="tw-h-2.5 lg:tw-h-3.5"
@@ -74,7 +74,7 @@
 						<kv-button
 							variant="secondary"
 							v-show="isVisitor"
-							class="header__login__button tw-bg-white"
+							class="tw-bg-white"
 							:to="loginUrl"
 							data-testid="header-log-in"
 							v-kv-track-event="['TopNav','click-Sign-in']"
@@ -161,7 +161,7 @@
 
 						<div
 							class="header__right-side
-						tw-flex tw-justify-end tw-gap-2.5 lg:tw-gap-4"
+						tw-flex tw-justify-end tw-gap-2.5 lg:tw-gap-4 align-middle"
 						>
 							<!-- Borrow -->
 							<router-link
@@ -308,7 +308,7 @@
 							<kv-button
 								variant="secondary"
 								v-show="isVisitor"
-								class="header__login__button tw-bg-white"
+								class="tw-bg-white"
 								:to="loginUrl"
 								data-testid="header-log-in"
 								v-kv-track-event="['TopNav','click-Sign-in']"
@@ -799,10 +799,6 @@ export default {
 	@apply tw-inline-flex tw-items-center tw-flex-shrink-0;
 	@apply tw-font-medium tw-text-primary hover:tw-text-action-highlight hover:tw-no-underline focus:tw-no-underline;
 	@apply tw-h-8 md:tw-h-9 tw-whitespace-nowrap tw-flex-shrink-0;
-}
-
-.header__login__button {
-	margin-top: 13px;
 }
 
 .dropdown-list {
