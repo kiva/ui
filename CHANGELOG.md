@@ -1,3 +1,11 @@
+## [2.373.0](https://github.com/kiva/ui/compare/v2.372.0...v2.373.0) (2022-11-03)
+
+
+### Features
+
+* added EEPR to Homepage Footer within Ui Server ([fbd9a12](https://github.com/kiva/ui/commit/fbd9a12fc1c2ec7eac94f39e244664fd496119a4))
+* revised click statement (Work with us -> Get to know us) ([a6135e5](https://github.com/kiva/ui/commit/a6135e51d6d6e4f3a4f11f32687018c16419cf5f))
+
 ## [2.372.0](https://github.com/kiva/ui/compare/v2.371.1...v2.372.0) (2022-11-03)
 
 
