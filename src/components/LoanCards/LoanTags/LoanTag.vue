@@ -5,7 +5,7 @@
 	>
 		<kv-material-icon
 			:icon="iconName"
-			class="tw-align-middle tw-ml-0.5"
+			class="tw-align-middle tw-ml-1"
 			style="width: 15px;"
 			:style="{
 				width: '15px',
@@ -13,7 +13,7 @@
 			}"
 		/>
 		<span
-			class="tw-font-medium tw-mr-0.5"
+			class="tw-font-medium tw-align-middle tw-mr-1"
 			:style="{
 				fontSize: '14px',
 				color: useWhiteText ? '#ffffff' : '#000000'
@@ -38,6 +38,13 @@ export default {
 			type: String,
 			default: 'endingSoon'
 		}
+	},
+	mounted() {
+		this.$kvTrackEvent(
+			'loan-card',
+			'view-tag',
+			this.variation
+		);
 	},
 	computed: {
 		iconName() {
