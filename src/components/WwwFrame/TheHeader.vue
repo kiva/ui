@@ -24,7 +24,7 @@
 				<template v-else-if="corporate">
 					<div
 						class="
-						tw-flex tw-gap-2.5 lg:tw-gap-6 tw-items-center"
+						tw-flex tw-gap-2.5 lg:tw-gap-6 tw-items-center align-middle"
 					>
 						<campaign-logo-group
 							class="tw-h-2.5 lg:tw-h-3.5"
@@ -71,15 +71,16 @@
 									tw-rounded-full tw-overflow-hidden tw-object-fill"
 							>
 						</router-link>
-						<router-link
-							:to="loginUrl"
+						<kv-button
+							variant="secondary"
 							v-show="isVisitor"
-							class="header__button header__log-in"
+							class="tw-bg-white"
+							:to="loginUrl"
 							data-testid="header-log-in"
 							v-kv-track-event="['TopNav','click-Sign-in']"
 						>
 							Log in
-						</router-link>
+						</kv-button>
 					</div>
 				</template>
 
@@ -160,7 +161,7 @@
 
 						<div
 							class="header__right-side
-						tw-flex tw-justify-end tw-gap-2.5 lg:tw-gap-4"
+						tw-flex tw-justify-end tw-gap-2.5 lg:tw-gap-4 align-middle"
 						>
 							<!-- Borrow -->
 							<router-link
@@ -304,15 +305,16 @@
 							</router-link>
 
 							<!-- Log in Link -->
-							<router-link
-								:to="loginUrl"
+							<kv-button
+								variant="secondary"
 								v-show="isVisitor"
+								class="tw-bg-white"
+								:to="loginUrl"
 								data-testid="header-log-in"
-								class="header__button header__log-in"
 								v-kv-track-event="['TopNav','click-Sign-in']"
 							>
 								Log in
-							</router-link>
+							</kv-button>
 
 							<!-- Logged in Profile -->
 							<router-link
@@ -474,6 +476,7 @@ import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
@@ -504,6 +507,7 @@ export default {
 		KvPageContainer,
 		PromoCreditBanner,
 		SearchBar,
+		KvButton,
 		TheLendMenu: () => import('@/components/WwwFrame/LendMenu/TheLendMenu'),
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
