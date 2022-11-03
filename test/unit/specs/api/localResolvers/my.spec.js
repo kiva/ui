@@ -11,9 +11,9 @@ describe('my.js', () => {
 			kvAuth0 = MockKvAuth0,
 		} = {}) {
 			const cookieStore = new CookieStore(cookies);
-			const { resolvers } = myResolverFactory({ cookieStore, kvAuth0 });
+			const { typePolicies } = myResolverFactory({ cookieStore, kvAuth0 });
 
-			const result = resolvers.Query.hasEverLoggedIn(null, {}, context);
+			const result = typePolicies.Query.hasEverLoggedIn(null, {}, context);
 			expect(result).toBe(expected);
 		}
 
