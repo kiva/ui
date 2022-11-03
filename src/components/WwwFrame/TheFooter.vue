@@ -145,6 +145,15 @@
 								</router-link>
 							</li>
 							<li>
+								<a
+									:href="employeeEngagementUrl"
+									v-kv-track-event="['Footer', 'click-Work with us-Employee engagement']"
+									class="tw-text-small"
+								>
+									Employee engagement
+								</a>
+							</li>
+							<li>
 								<router-link
 									to="/help/contact-us"
 									v-kv-track-event="['Footer', 'click-Get to know us-Contact us']"
@@ -592,6 +601,15 @@
 									</router-link>
 								</li>
 								<li>
+									<a
+										:href="employeeEngagementUrl"
+										v-kv-track-event="['Footer', 'click-Work with us-Employee engagement']"
+										class="tw-text-small"
+									>
+										Employee engagement
+									</a>
+								</li>
+								<li>
 									<router-link
 										to="/help/contact-us"
 										v-kv-track-event="['Footer', 'click-Get to know us-Contact us']"
@@ -849,6 +867,7 @@ export default {
 			lendByCategoryUrl: '/lend-by-category',
 			helpUrl: '/help',
 			careersUrl: 'https://www.careers.kiva.org/',
+			employeeEngagementUrl: '/lp/employee-engagement',
 			cookiesUrl: '/legal/cookies#manage-settings',
 			sitemapUrl: '/sitemap',
 			privacyUrl: '/legal/privacy',
