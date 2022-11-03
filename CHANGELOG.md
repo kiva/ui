@@ -1,3 +1,16 @@
+## [2.376.0](https://github.com/kiva/ui/compare/v2.375.0...v2.376.0) (2022-11-03)
+
+
+### Features
+
+* extended range slider functionality ([9c0732f](https://github.com/kiva/ui/commit/9c0732f4a1a6670e8054599e0049ecbd0cd1ba96))
+* new range slider stories ([5572601](https://github.com/kiva/ui/commit/5572601a7961844624b8b076553e85a70c02898c))
+
+
+### Bug Fixes
+
+* push linting fixes ([b7997ae](https://github.com/kiva/ui/commit/b7997aed8513a670194f5757252235e7896abea2))
+
 ## [2.375.0](https://github.com/kiva/ui/compare/v2.374.1...v2.375.0) (2022-11-03)
 
 
