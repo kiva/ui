@@ -121,3 +121,35 @@ export function getCheckboxLabel(item) {
 
 	return `${item.name || item.region}${countLabel}`;
 }
+
+/**
+ * Gets the adjusted number ready for display
+ *
+ * @param {number} value The value of the number
+ * @param {boolean} isPercentage Whether the number is a decimal-representation of a percentage
+ * @param {string} unit The unit to display after the number
+ * @param {number} step The step associated with selecting the number
+ * @returns The number to be used for display
+ */
+export function getDisplayedNumber(value, isPercentage = false, unit = undefined, step = undefined) {
+	const stepWithFallback = step ?? 1;
+
+	// Get visual step based on whether the number is a decimal percentage
+	const precision = isPercentage ? stepWithFallback * 100 : stepWithFallback;
+
+	// Use string splitting to count decimals
+	const numberOfDecimals = Math.floor(precision) === precision ? 0 : precision.toString().split('.')[1].length || 0;
+
+	// Adjust for decimal percentage
+	let adjustedValue = isPercentage ? value * 100 : value;
+
+	if (step) {
+		// Set fixed decimals if the number isn't a whole number
+		adjustedValue = Math.floor(adjustedValue) !== adjustedValue
+			? adjustedValue.toFixed(numberOfDecimals)
+			: adjustedValue;
+	}
+
+	// Return with displayed unit
+	return `${adjustedValue}${unit ?? ''}`;
+}

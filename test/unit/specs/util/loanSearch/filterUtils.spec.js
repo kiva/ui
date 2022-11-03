@@ -3,6 +3,7 @@ import {
 	getCheckboxLabel,
 	transformRadioGroupOptions,
 	getFilterKeyFromValue,
+	getDisplayedNumber,
 } from '@/util/loanSearch/filterUtils';
 import { lenderRepaymentTermValueMap, EIGHT_MONTHS_KEY } from '@/util/loanSearch/filters/lenderRepaymentTerms';
 
@@ -111,6 +112,33 @@ describe('filterUtils.js', () => {
 
 		it('should handle missing numLoansFundraising', () => {
 			expect(getCheckboxLabel({ name: 'test' })).toBe('test');
+		});
+	});
+
+	describe('getDisplayedNumber', () => {
+		it('should return value', () => {
+			expect(getDisplayedNumber(4)).toBe('4');
+			expect(getDisplayedNumber(4.5)).toBe('4.5');
+			expect(getDisplayedNumber(4.55)).toBe('4.55');
+		});
+
+		it('should return percentage', () => {
+			expect(getDisplayedNumber(4, true)).toBe('400');
+		});
+
+		it('should return unit', () => {
+			expect(getDisplayedNumber(4, false, '%')).toBe('4%');
+		});
+
+		it('should return percentage and unit', () => {
+			expect(getDisplayedNumber(4, true, '%')).toBe('400%');
+		});
+
+		it('should return value with precision based on step', () => {
+			expect(getDisplayedNumber(4, false, undefined, 0.001)).toBe('4');
+			expect(getDisplayedNumber(4.001, false, undefined, '.001')).toBe('4.001');
+			expect(getDisplayedNumber(4.0011, false, undefined, '.001')).toBe('4.001');
+			expect(getDisplayedNumber(4.0016, false, undefined, '.001')).toBe('4.002');
 		});
 	});
 });

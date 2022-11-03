@@ -14,13 +14,22 @@
 			:max="rangeMax"
 			:step="step"
 			v-model="sliderMax"
-			:style="sliderStyle"
+			:style="sliderMaxStyle"
 			@input="onInput"
 		>
+		<div id="range-min-tooltip" :style="sliderMinTooltipStyle">
+			{{ getDisplayedNumber(minSelected, isPercentage, displayedUnit, step) }}
+		</div>
+		<div id="range-max-tooltip" :style="sliderMaxTooltipStyle">
+			{{ getDisplayedNumber(maxSelected, isPercentage, displayedUnit, step) }}
+		</div>
 	</div>
 </template>
 
 <script>
+import { isNumber } from '@/util/numberUtils';
+import { getDisplayedNumber } from '@/util/loanSearch/filterUtils';
+
 export default {
 	name: 'KvRangeMinMaxSlider',
 	props: {
@@ -44,11 +53,20 @@ export default {
 			type: Number,
 			default: 100
 		},
+		isPercentage: {
+			type: Boolean,
+			default: false
+		},
+		displayedUnit: {
+			type: String,
+			default: undefined
+		},
 	},
 	data() {
 		return {
 			minSelected: this.getValidatedValue(this.min),
 			maxSelected: this.getValidatedValue(this.max),
+			getDisplayedNumber,
 		};
 	},
 	computed: {
@@ -60,21 +78,42 @@ export default {
 			const fromFill = (fromPosition / rangeDistance) * 100;
 			const toFill = (toPosition / rangeDistance) * 100;
 
-			return `--from-fill: ${fromFill}%; --to-fill: ${toFill}%;`;
+			const labelAdjustment = this.displayedUnit ? 22 : 25;
+
+			const fromLeft = `calc(${fromFill}% + ${10 - (fromFill * 0.2)}px - ${labelAdjustment}px)`;
+			const toLeft = `calc(${toFill}% + ${10 - (toFill * 0.2)}px - ${labelAdjustment}px)`;
+
+			return {
+				fromFill,
+				fromLeft,
+				toFill,
+				toLeft,
+			};
+		},
+		sliderMaxStyle() {
+			return `--from-fill: ${this.sliderStyle.fromFill}%; --to-fill: ${this.sliderStyle.toFill}%;`;
+		},
+		sliderMinTooltipStyle() {
+			return `--from-left: ${this.sliderStyle.fromLeft};`;
+		},
+		sliderMaxTooltipStyle() {
+			return `--to-left: ${this.sliderStyle.toLeft};`;
 		},
 		sliderMin: {
 			get() {
 				return this.minSelected;
 			},
 			set(value) {
-				const parsed = this.getValidatedValue(parseInt(value, 10) || this.rangeMin);
+				const parsed = +value;
+
+				const validated = isNumber(parsed) ? this.getValidatedValue(parsed) : this.rangeMin;
 
 				// Move max slider if new min selected value is above previous max
-				if (parsed > this.maxSelected) {
-					this.maxSelected = parsed;
+				if (validated > this.maxSelected) {
+					this.maxSelected = validated;
 				}
 
-				this.minSelected = parsed;
+				this.minSelected = validated;
 			}
 		},
 		sliderMax: {
@@ -82,16 +121,18 @@ export default {
 				return this.maxSelected;
 			},
 			set(value) {
-				const parsed = this.getValidatedValue(parseInt(value, 10) || this.rangeMax);
+				const parsed = +value;
+
+				const validated = isNumber(parsed) ? this.getValidatedValue(parsed) : this.rangeMax;
 
 				// Move min slider if new max selected value is below previous min
-				if (parsed < this.minSelected) {
-					this.minSelected = parsed;
+				if (validated < this.minSelected) {
+					this.minSelected = validated;
 				}
 
-				this.maxSelected = parsed;
+				this.maxSelected = validated;
 			}
-		}
+		},
 	},
 	methods: {
 		getValidatedValue(value) {
@@ -129,7 +170,7 @@ export default {
 	--track-fill: rgb(var(--bg-action));
 
 	position: relative;
-	height: var(--thumb-diameter);
+	height: calc(var(--thumb-diameter) + 24px);
 }
 
 input[type=range] {
@@ -141,7 +182,7 @@ input[type=range] {
 	height: 0;
 	pointer-events: none;
 	background: transparent;
-	top: 50%;
+	top: 14px;
 }
 
 input[type=range]::-webkit-slider-runnable-track {
@@ -319,5 +360,20 @@ input[type=range]:hover::-moz-range-thumb {
 
 input[type=range]:hover::-ms-thumb {
 	transform: scale(1.15);
+}
+
+#range-min-tooltip, #range-max-tooltip {
+	@apply tw-absolute tw-text-center tw-text-small;
+	top: 26px;
+	height: 24px;
+    width: 50px;
+}
+
+#range-min-tooltip {
+	left: var(--from-left);
+}
+
+#range-max-tooltip {
+	left: var(--to-left);
 }
 </style>
