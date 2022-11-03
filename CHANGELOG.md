@@ -1,3 +1,10 @@
+## [2.374.0](https://github.com/kiva/ui/compare/v2.373.1...v2.374.0) (2022-11-03)
+
+
+### Features
+
+* modularized lend filter refactor ([d2bfc19](https://github.com/kiva/ui/commit/d2bfc19f498938af2437a0d5383b8c3a0a528cf8))
+
 ### [2.373.1](https://github.com/kiva/ui/compare/v2.373.0...v2.373.1) (2022-11-03)
 
 
