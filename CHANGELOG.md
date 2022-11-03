@@ -1,3 +1,18 @@
+## [2.375.0](https://github.com/kiva/ui/compare/v2.374.1...v2.375.0) (2022-11-03)
+
+
+### Features
+
+* change header login button ([a0ed90b](https://github.com/kiva/ui/commit/a0ed90b8e5a615a25939b749948cc7cc3023230f))
+
+
+### Bug Fixes
+
+* removed unnecessary class ([42dca79](https://github.com/kiva/ui/commit/42dca79bcf1666d070cf7ecdb88a96f7e0f17a99))
+* reverted isVisitor validation ([55c7f44](https://github.com/kiva/ui/commit/55c7f4425193eeeb93ead13d2e6f96ae847859e3))
+* use tailwind class and removed px values ([a398e21](https://github.com/kiva/ui/commit/a398e217cb7a4581f7eb8db5abc4711f11f5e5d0))
+* use tailwind class instead of background hex ([e280d9a](https://github.com/kiva/ui/commit/e280d9a1350e1bab9f77d6f5b017ca1146a4f300))
+
 ### [2.374.1](https://github.com/kiva/ui/compare/v2.374.0...v2.374.1) (2022-11-03)
 
 
