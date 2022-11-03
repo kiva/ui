@@ -1,3 +1,10 @@
+## [2.377.0](https://github.com/kiva/ui/compare/v2.376.0...v2.377.0) (2022-11-03)
+
+
+### Features
+
+* font size and padding fixed for helpmechoose trigger ([ed9049e](https://github.com/kiva/ui/commit/ed9049eb309fe7013c868d9baff9bfa47e6f6611))
+
 ## [2.376.0](https://github.com/kiva/ui/compare/v2.375.0...v2.376.0) (2022-11-03)
 
 
