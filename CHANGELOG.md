@@ -1,3 +1,10 @@
+### [2.374.1](https://github.com/kiva/ui/compare/v2.374.0...v2.374.1) (2022-11-03)
+
+
+### Bug Fixes
+
+* updated new home variant components ([b7ec310](https://github.com/kiva/ui/commit/b7ec31027d440f63a1ed60e2355539801fb37217))
+
 ## [2.374.0](https://github.com/kiva/ui/compare/v2.373.1...v2.374.0) (2022-11-03)
 
 
