@@ -184,9 +184,6 @@ export default {
 			return null;
 		}
 	},
-	mounted() {
-		console.log('Loan Info', this.loan);
-	}
 };
 </script>
 
