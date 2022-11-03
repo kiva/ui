@@ -27,7 +27,11 @@
 			/>
 
 			<!-- eslint-disable max-len -->
-			<button @click="goBack" class="tw-hidden lg:tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-action tw-text-small tw-mt-1">
+			<button
+				@click="goBack"
+				class="tw-hidden lg:tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-action tw-text-small tw-mt-1"
+				v-kv-track-event="['event-tracking', 'click', 'help-choosing-go-back']"
+			>
 				<kv-material-icon
 					class="tw-w-2 tw-h-2"
 					:icon="mdiRefresh"
@@ -49,9 +53,14 @@
 				:loan="loanData"
 				loan-card-type="ListLoanCard"
 				:rounded-corners="true"
+				@add-to-basket="handleAddToBasket"
 			/>
 		</div>
-		<button @click="goBack" class="lg:tw-hidden tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-action tw-text-small tw-mt-1 tw-w-full">
+		<button
+			@click="goBack"
+			class="lg:tw-hidden tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-action tw-text-small tw-mt-1 tw-w-full"
+			v-kv-track-event="['event-tracking', 'click', 'help-choosing-go-back']"
+		>
 			<kv-material-icon
 				class="tw-w-2 tw-h-2"
 				:icon="mdiRefresh"
@@ -115,6 +124,25 @@ export default {
 	methods: {
 		selectLoan(evt) {
 			this.selectedLoan = evt;
+			let eventProperty = '';
+			switch (evt) {
+				case 0:
+					eventProperty = 'help-me-choose-loan-1';
+					break;
+				case 1:
+					eventProperty = 'help-me-choose-loan-2';
+					break;
+				case 2:
+					eventProperty = 'help-me-choose-loan-3';
+					break;
+				default:
+					eventProperty = '';
+			}
+			this.$kvTrackEvent(
+				'loan-card',
+				'show',
+				eventProperty
+			);
 		},
 		goBack() {
 			this.selectedLoan = 0;
@@ -125,6 +153,13 @@ export default {
 		},
 		getImageUrl(loan) {
 			return loan?.image?.default ?? '';
+		},
+		handleAddToBasket() {
+			this.$kvTrackEvent(
+				'loan-card',
+				'add-to-basket',
+				'help-choosing'
+			);
 		}
 	}
 };

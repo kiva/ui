@@ -1,116 +1,122 @@
 <template>
-	<div class="tw-flex tw-flex-col lg:tw-flex-row">
-		<div class="tw-flex lg:tw-hidden">
-			<div class="tw-mb-3 tw-mr-2">
-				<kv-button
-					variant="secondary"
-					@click="toggleLightbox(true)"
-				>
-					Filter & Sort
-				</kv-button>
-				<kv-lightbox
-					:visible="isLightboxVisible"
-					variant="lightbox"
-					title="Loan filter controls"
-					@lightbox-closed="toggleLightbox(false)"
-				>
-					<template #header>
-						{{ null }} <!-- Hide title text -->
-					</template>
+	<div>
+		<div class="tw-flex tw-flex-col lg:tw-flex-row">
+			<div class="tw-flex lg:tw-hidden">
+				<div class="tw-mb-3 tw-mr-2">
+					<kv-button
+						variant="secondary"
+						@click="toggleLightbox(true)"
+					>
+						Filter & Sort
+					</kv-button>
+					<kv-lightbox
+						:visible="isLightboxVisible"
+						variant="lightbox"
+						title="Loan filter controls"
+						@lightbox-closed="toggleLightbox(false)"
+					>
+						<template #header>
+							{{ null }} <!-- Hide title text -->
+						</template>
+						<loan-search-filter
+							style="min-width: 285px;"
+							:extend-flss-filters="extendFlssFilters"
+							:loading="!initialLoadComplete"
+							:is-logged-in="userId !== null"
+							:facets="facets"
+							:loan-search-state="loanSearchState"
+							@updated="handleUpdatedFilters"
+							@reset="handleResetFilters"
+						/>
+						<template #controls>
+							<kv-button
+								v-if="totalCount > 0"
+								class="tw-mt-2 tw-w-full lg:tw-hidden"
+								@click="toggleLightbox(false)"
+								ref="showLoansButton"
+							>
+								Show {{ totalCount }} Loans
+							</kv-button>
+						</template>
+					</kv-lightbox>
+				</div>
+				<div v-if="initialLoadComplete" class="tw-pt-1.5">
+					<p>{{ totalCount }} Loans</p>
+				</div>
+			</div>
+			<div class="tw-flex tw-mr-4">
+				<div class="tw-hidden lg:tw-block" style="width: 285px;">
 					<loan-search-filter
-						style="min-width: 285px;"
 						:extend-flss-filters="extendFlssFilters"
 						:loading="!initialLoadComplete"
-						:is-logged-in="userId !== null"
 						:facets="facets"
+						:is-logged-in="userId !== null"
 						:loan-search-state="loanSearchState"
 						@updated="handleUpdatedFilters"
 						@reset="handleResetFilters"
 					/>
-					<template #controls>
-						<kv-button
-							v-if="totalCount > 0"
-							class="tw-mt-2 tw-w-full lg:tw-hidden"
-							@click="toggleLightbox(false)"
-							ref="showLoansButton"
-						>
-							Show {{ totalCount }} Loans
-						</kv-button>
-					</template>
-				</kv-lightbox>
+				</div>
 			</div>
-			<div v-if="initialLoadComplete" class="tw-pt-1.5">
-				<p>{{ totalCount }} Loans</p>
+			<div class="tw-col-span-2 tw-relative tw-grow">
+				<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
+				<div v-if="initialLoadComplete">
+					<loan-search-saved-search
+						v-if="enableSavedSearch && showSavedSearch && !savedSearchSuccess"
+						:loan-search-state="loanSearchState"
+						:all-facets="allFacets"
+						:show-success-message="showSavedSearchSuccessMessage"
+						:user-id="userId"
+					/>
+					<loan-search-filter-chips
+						:loan-search-state="loanSearchState"
+						:all-facets="allFacets"
+						@updated="handleUpdatedFilters"
+						@reset="handleResetFilters"
+					/>
+					<p class="tw-hidden lg:tw-block tw-mt-1">
+						{{ totalCount }} Loans
+					</p>
+				</div>
+				<template v-if="initialLoadComplete && totalCount === 0">
+					<h3 class="tw-text-center">
+						All borrowers matching this search have been funded.
+					</h3>
+					<p class="tw-text-center tw-mt-2">
+						Please adjust your criteria or
+						<a class="tw-cursor-pointer" @click="clickZeroLoansReset">start a new search.</a>
+					</p>
+				</template>
+				<kv-grid class="tw-grid-rows-4">
+					<loan-card-controller
+						v-for="loan in loans"
+						:items-in-basket="itemsInBasket"
+						:is-visitor="userId === null"
+						:is-logged-in="userId !== null"
+						:user-id="userId !== null ? userId.toString() : null"
+						:key="loan.id"
+						:loan="loan"
+						loan-card-type="ListLoanCard"
+						:rounded-corners="true"
+					/>
+				</kv-grid>
+				<template v-if="initialLoadComplete && totalCount > 0">
+					<kv-pagination
+						:limit="loanSearchState.pageLimit"
+						:total="totalCount"
+						:offset="loanSearchState.pageOffset"
+						@page-changed="handlePageChange"
+					/>
+					<kv-results-per-page
+						:selected="loanSearchState.pageLimit"
+						@updated="handleResultsPerPage"
+					/>
+				</template>
 			</div>
 		</div>
-		<div class="tw-flex tw-mr-4">
-			<div class="tw-hidden lg:tw-block" style="width: 285px;">
-				<loan-search-filter
-					:extend-flss-filters="extendFlssFilters"
-					:loading="!initialLoadComplete"
-					:facets="facets"
-					:is-logged-in="userId !== null"
-					:loan-search-state="loanSearchState"
-					@updated="handleUpdatedFilters"
-					@reset="handleResetFilters"
-				/>
-			</div>
-		</div>
-		<div class="tw-col-span-2 tw-relative tw-grow">
-			<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
-			<div v-if="initialLoadComplete">
-				<loan-search-saved-search
-					v-if="enableSavedSearch && showSavedSearch && !savedSearchSuccess"
-					:loan-search-state="loanSearchState"
-					:all-facets="allFacets"
-					:show-success-message="showSavedSearchSuccessMessage"
-					:user-id="userId"
-				/>
-				<loan-search-filter-chips
-					:loan-search-state="loanSearchState"
-					:all-facets="allFacets"
-					@updated="handleUpdatedFilters"
-					@reset="handleResetFilters"
-				/>
-				<p class="tw-hidden lg:tw-block tw-mt-1">
-					{{ totalCount }} Loans
-				</p>
-			</div>
-			<template v-if="initialLoadComplete && totalCount === 0">
-				<h3 class="tw-text-center">
-					All borrowers matching this search have been funded.
-				</h3>
-				<p class="tw-text-center tw-mt-2">
-					Please adjust your criteria or
-					<a class="tw-cursor-pointer" @click="clickZeroLoansReset">start a new search.</a>
-				</p>
-			</template>
-			<kv-grid class="tw-grid-rows-4">
-				<loan-card-controller
-					v-for="loan in loans"
-					:items-in-basket="itemsInBasket"
-					:is-visitor="userId === null"
-					:is-logged-in="userId !== null"
-					:user-id="userId !== null ? userId.toString() : null"
-					:key="loan.id"
-					:loan="loan"
-					loan-card-type="ListLoanCard"
-					:rounded-corners="true"
-				/>
-			</kv-grid>
-			<template v-if="initialLoadComplete && totalCount > 0">
-				<kv-pagination
-					:limit="loanSearchState.pageLimit"
-					:total="totalCount"
-					:offset="loanSearchState.pageOffset"
-					@page-changed="handlePageChange"
-				/>
-				<kv-results-per-page
-					:selected="loanSearchState.pageLimit"
-					@updated="handleResultsPerPage"
-				/>
-			</template>
-		</div>
+		<template v-if="initialLoadComplete && totalCount > 0">
+			<!-- Donation CTA Experiment -->
+			<donation-c-t-a v-if="hasOnePageOfLoans" />
+		</template>
 	</div>
 </template>
 
@@ -134,6 +140,7 @@ import { isNumber } from '@/util//numberUtils';
 import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
 import LoanSearchSavedSearch from '@/components/Lend/LoanSearch/LoanSearchSavedSearch';
 import filterConfig from '@/util/loanSearch/filterConfig';
+import DonationCTA from '@/components/Lend/DonationCTA';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -144,6 +151,7 @@ export default {
 	name: 'LoanSearchInterface',
 	inject: ['apollo', 'cookieStore'],
 	components: {
+		DonationCTA,
 		LoanCardController,
 		LoanSearchFilterChips,
 		KvGrid,
@@ -293,6 +301,9 @@ export default {
 				return prev || filterConfig.config[key].showSavedSearch(this.loanSearchState);
 			}, false);
 		},
+		hasOnePageOfLoans() {
+			return this.totalCount <= this.loanSearchState.pageLimit;
+		}
 	},
 	methods: {
 		async fetchFacets(loanSearchState = {}) {

@@ -7,6 +7,7 @@
 			:is="pageLayoutComponent"
 			:enable-quick-filters="enableQuickFilters"
 			:enable-helpme-choose="enableHelpmeChoose"
+			:enable-loan-tags="enableLoanTags"
 		/>
 
 		<add-to-basket-interstitial />
@@ -54,7 +55,7 @@ const pageQuery = gql`
 			}
 			loanTags: uiExperimentSetting(key: "loan_tags") {
 				key
-				value 
+				value
 			}
 		}
 	}
@@ -283,7 +284,7 @@ export default {
 			if (loanTagsExperiment.version) {
 				this.$kvTrackEvent(
 					'Lending',
-					'EXP-CORE-792-Oct-2022',
+					'EXP-CORE-792-Oct2022',
 					loanTagsExperiment.version
 				);
 			}
@@ -311,7 +312,7 @@ export default {
 			if (helpmeChooseExperiment.version) {
 				this.$kvTrackEvent(
 					'Lending',
-					'EXP-CORE-771-Oct-2022',
+					'EXP-CORE-771-Oct2022',
 					helpmeChooseExperiment.version
 				);
 			}

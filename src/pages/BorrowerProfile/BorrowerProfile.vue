@@ -26,13 +26,13 @@
 						:lenders="lenders"
 						:social-exp-enabled="socialExpEnabled"
 					>
-						<template #sharebutton v-if="inPfp">
+						<template #sharebutton v-if="inPfp || shareButtonExpEnabled">
 							<!-- Share button for PFP loans -->
 							<share-button
 								class="tw-block md:tw-hidden tw-mt-3"
 								:loan="loan"
 								:lender="lender"
-								campaign="social_share_bp_pfp"
+								:campaign="inPfp ? 'social_share_bp_pfp' : 'social_share_bp'"
 							/>
 						</template>
 					</summary-card>
@@ -55,13 +55,13 @@
 						@togglelightbox="toggleLightbox"
 						:num-lenders="numLenders"
 					>
-						<template #sharebutton v-if="inPfp">
+						<template #sharebutton v-if="inPfp || shareButtonExpEnabled">
 							<!-- Share button for PFP loans -->
 							<share-button
 								class="tw-hidden md:tw-block lg:tw-mb-1.5"
 								:loan="loan"
 								:lender="lender"
-								campaign="social_share_bp_pfp"
+								:campaign="inPfp ? 'social_share_bp_pfp' : 'social_share_bp'"
 							/>
 						</template>
 					</lend-cta>
@@ -158,6 +158,8 @@ import loanUseFilter from '@/plugins/loan-use-filter';
 
 const socialElementsExpKey = 'social_elements';
 const whatIsKivaExpKey = 'what_is_kiva_module';
+const shareButtonExpKey = 'share_button_bp';
+
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 const pageQuery = gql`
 	query borrowerProfileMeta(
@@ -191,6 +193,10 @@ const pageQuery = gql`
 				value
 			}
 			whatIsKivaModule: uiExperimentSetting(key: "what_is_kiva_module") {
+				key
+				value
+			}
+			shareButton: uiExperimentSetting(key: "share_button_bp") {
 				key
 				value
 			}
@@ -416,6 +422,7 @@ export default {
 			socialExpEnabled: false,
 			showLightBoxModal: false,
 			kivaModuleExpEnabled: false,
+			shareButtonExpEnabled: false,
 			shownModal: false
 		};
 	},
@@ -459,6 +466,7 @@ export default {
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 						client.query({ query: experimentQuery, variables: { id: socialElementsExpKey } }),
 						client.query({ query: experimentQuery, variables: { id: whatIsKivaExpKey } }),
+						client.query({ query: experimentQuery, variables: { id: shareButtonExpKey } }),
 					]);
 				});
 		},
@@ -538,6 +546,20 @@ export default {
 			);
 			if (version === 'b') {
 				this.kivaModuleExpEnabled = true;
+			}
+		}
+
+		const shareButtonExpData = getExperimentSettingCached(this.apollo, shareButtonExpKey);
+		if (shareButtonExpData?.enabled) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Borrower Profile',
+				shareButtonExpKey,
+				'EXP-ACK-451-Oct2022'
+			);
+			if (version === 'b') {
+				this.shareButtonExpEnabled = true;
 			}
 		}
 	},

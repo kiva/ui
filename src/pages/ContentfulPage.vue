@@ -78,13 +78,10 @@ const CampaignLogoGroup = () => import('@/components/CorporateCampaign/CampaignL
 const CampaignPartner = () => import('@/components/CorporateCampaign/CampaignPartner');
 const CampaignThanks = () => import('@/components/CorporateCampaign/CampaignThanks');
 
-const HomepageCorporateSponsors = () => import('@/components/Homepage/HomepageCorporateSponsors');
 // const HomepageGeneralStats = () => import('@/components/Homepage/HomepageGeneralStats');
 const HomepageHowItWorks = () => import('@/components/Homepage/HomepageHowItWorks');
 const HomepageLenderQuotes = () => import('@/components/Homepage/HomepageLenderQuotes');
-const HomepageLoanCategories = () => import('@/components/Homepage/HomepageLoanCategories');
 const HomepageStatistics = () => import('@/components/Homepage/HomepageStatistics');
-const HomepageTestimonials = () => import('@/components/Homepage/HomepageTestimonials');
 const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
 const HomepageMonthlyGoodInfo = () => import('@/components/Homepage/HomepageMonthlyGoodInfo');
 
@@ -132,15 +129,9 @@ const getComponentFromType = type => {
 			return HomepageHowItWorks;
 		case 'homepageLenderQuotes':
 			return HomepageLenderQuotes;
-		case 'homepageLoanCategories':
-			return HomepageLoanCategories;
 		case 'homepageStatistics':
 			// return HomepageGeneralStats;
 			return HomepageStatistics;
-		case 'homepageStrategicPartners':
-			return HomepageCorporateSponsors;
-		case 'homepageTestimonials':
-			return HomepageTestimonials;
 		case 'homepageVerticalCTA':
 			return HomepageVerticalCTA;
 		case 'homepageMonthlyGoodInfo':
@@ -180,7 +171,7 @@ const getComponentFromType = type => {
 		case 'storyCardCarousel':
 			return StoryCardCarousel;
 		default:
-			logFormatter(`ContenfulPage: Unknown content group type "${type}"`, 'error');
+			logFormatter(`ContentfulPage: Unknown content group type "${type}"`, 'error');
 			return null;
 	}
 };
