@@ -76,6 +76,7 @@
 </template>
 
 <script>
+import { differenceInDays, parseISO } from 'date-fns';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
@@ -173,9 +174,9 @@ export default {
 			}
 		},
 		getTagInfo() {
-			if (this.loan?.loanFundraisingInfo?.isExpiringSoon) {
+			if (differenceInDays(parseISO(this.loan?.plannedExpirationDate), Date.now()) <= 3) {
 				return 'ending-soon';
-			} if (this.amountLeft < 100) {
+			} if (this.amountLeft < 100 && this.amountLeft > 0) {
 				return 'almost-funded';
 			} if (this.loan?.matchingText) {
 				return 'matched-loan';
