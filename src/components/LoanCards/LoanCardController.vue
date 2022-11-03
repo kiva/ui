@@ -46,6 +46,8 @@
 		@update-hover-loan-index="updateHoverLoanIndex"
 		@close-detailed-loan-card="handleCloseDetailedLoanCard"
 		@set-prevent-updating-detailed-card="handleSetPreventUpdatingDetailedCard"
+
+		:show-tags="showTags"
 	/>
 	<!--
 		Blocks of attributes above:
@@ -177,6 +179,10 @@ export default {
 			default: false,
 		},
 		hideLendCta: {
+			type: Boolean,
+			default: false,
+		},
+		showTags: {
 			type: Boolean,
 			default: false,
 		}

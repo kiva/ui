@@ -1,3 +1,70 @@
+### [2.371.1](https://github.com/kiva/ui/compare/v2.371.0...v2.371.1) (2022-11-02)
+
+
+### Bug Fixes
+
+* remove unused dependnecies, fix unit test ([bd4f3da](https://github.com/kiva/ui/commit/bd4f3da7bd94315b58cc2f80ee2e2db456ab6a7f))
+
+## [2.371.0](https://github.com/kiva/ui/compare/v2.370.2...v2.371.0) (2022-11-02)
+
+
+### Features
+
+* add share button to fundraising borrower profile ([2ae6e4f](https://github.com/kiva/ui/commit/2ae6e4f95ea037b55b5ed0ff775f6331953d1926))
+
+### [2.370.2](https://github.com/kiva/ui/compare/v2.370.1...v2.370.2) (2022-11-01)
+
+
+### Bug Fixes
+
+* tracking code format updated ([c2769f3](https://github.com/kiva/ui/commit/c2769f3e0e578fd29375cb9311fac0e47e030f99))
+
+### [2.370.1](https://github.com/kiva/ui/compare/v2.370.0...v2.370.1) (2022-11-01)
+
+
+### Bug Fixes
+
+* clear up warning from github around lighthouse action, there may be more ([f9201ef](https://github.com/kiva/ui/commit/f9201ef2ff011fd6aa7f3abd8bd4d2017d985098))
+
+## [2.370.0](https://github.com/kiva/ui/compare/v2.369.1...v2.370.0) (2022-11-01)
+
+
+### Features
+
+* tracking events added to help me choose experiment ([9ffd6f2](https://github.com/kiva/ui/commit/9ffd6f2fb7333f3623bc49e81528aabd8b546dd2))
+
+
+### Bug Fixes
+
+* tracking properties updated ([9e489e6](https://github.com/kiva/ui/commit/9e489e68e7f3f681daf26c0d34a97d134e7e6126))
+
+### [2.369.1](https://github.com/kiva/ui/compare/v2.369.0...v2.369.1) (2022-11-01)
+
+
+### Bug Fixes
+
+* update collected lend link to work with href ([a2ec89a](https://github.com/kiva/ui/commit/a2ec89ad9da67e9448b7b0592817b99efaf67bd8))
+
+## [2.369.0](https://github.com/kiva/ui/compare/v2.368.0...v2.369.0) (2022-11-01)
+
+
+### Features
+
+* implement loan tags on category pages ([69761bc](https://github.com/kiva/ui/commit/69761bc853f308ee102b645f21cada88139227ad))
+
+
+### Bug Fixes
+
+* lint ([b3c8de6](https://github.com/kiva/ui/commit/b3c8de65342830436c830152c01e802703e6e576))
+* update exp name ([376f922](https://github.com/kiva/ui/commit/376f922e38682a4bbccd1482339b0f34e9a8bb9c))
+
+## [2.368.0](https://github.com/kiva/ui/compare/v2.367.0...v2.368.0) (2022-11-01)
+
+
+### Features
+
+* add human centric donate module for single page of loan results ([568f2b8](https://github.com/kiva/ui/commit/568f2b834416420a796ae9e66a3807a17c71c24c))
+
 ## [2.367.0](https://github.com/kiva/ui/compare/v2.366.0...v2.367.0) (2022-10-28)
 
 

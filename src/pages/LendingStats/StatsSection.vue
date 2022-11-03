@@ -114,12 +114,8 @@ export default {
 			return this.query ? this.query : this.noun;
 		},
 		unlentUrlRoute() {
-			return this.unlentUrl ? this.unlentUrl : {
-				path: '/lend',
-				query: {
-					[this.queryParam]: _map(this.notLentTo, this.itemKey).join(',')
-				},
-			};
+			return this.unlentUrl ? this.unlentUrl
+				: `/lend?${this.queryParam}=${_map(this.notLentTo, this.itemKey).join(',')}`;
 		}
 	},
 	methods: {
