@@ -11,19 +11,18 @@ const initState = options => {
 	}, {});
 };
 
-const setDefaultLocalState = cache => {
+const setLocalState = (options, cache) => {
 	// Call defaults function for each local resolver
-	requireLocalResolver.keys().reduce((result, key) => {
-		if (!key.includes('experiment') && result) {
-			const module = requireLocalResolver(key).default;
-			const data = _merge(result, module());
-			data?.defaults(cache);
+	return requireLocalResolver.keys().forEach(value => {
+		const module = requireLocalResolver(value).default;
+		const { defaults } = module(options);
+		if (defaults) {
+			defaults(cache);
 		}
-		return null;
 	});
 };
 
 export {
 	initState,
-	setDefaultLocalState
+	setLocalState
 };

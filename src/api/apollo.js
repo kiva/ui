@@ -8,7 +8,7 @@ import ExperimentIdLink from './ExperimentIdLink';
 import HttpLinkCreator from './HttpLink';
 import NetworkErrorLink from './NetworkErrorLink';
 import SnowplowSessionLink from './SnowplowSessionLink';
-import { initState, setDefaultLocalState } from './localState';
+import { initState, setLocalState } from './localState';
 
 export default function createApolloClient({
 	appConfig,
@@ -58,8 +58,8 @@ export default function createApolloClient({
 	});
 
 	// set default local state
-	setDefaultLocalState(cache);
-	client.onResetStore(() => setDefaultLocalState(cache));
+	setLocalState({ appConfig, cookieStore, kvAuth0 }, cache);
+	client.onResetStore(() => setLocalState({ appConfig, cookieStore, kvAuth0 }, cache));
 
 	return client;
 }

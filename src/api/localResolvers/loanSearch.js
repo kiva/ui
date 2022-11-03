@@ -30,8 +30,8 @@ export default () => {
 			};
 
 			cache.writeQuery({
-				loanSearchStateQuery,
-				loanSearchState,
+				query: loanSearchStateQuery,
+				data: loanSearchState,
 			});
 
 			return loanSearchState;

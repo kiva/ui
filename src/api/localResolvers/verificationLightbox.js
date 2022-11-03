@@ -14,10 +14,9 @@ export default () => {
 				visible: false,
 				__typename,
 			};
-
 			cache.writeQuery({
-				showVerificationLightboxQuery,
-				verificationLightbox,
+				query: showVerificationLightboxQuery,
+				data: verificationLightbox
 			});
 
 			return verificationLightbox;

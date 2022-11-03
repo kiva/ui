@@ -15,8 +15,8 @@ export default () => {
 			};
 
 			cache.writeQuery({
-				showTipMessageQuery,
-				tip,
+				query: showTipMessageQuery,
+				data: tip,
 			});
 
 			return tip;
