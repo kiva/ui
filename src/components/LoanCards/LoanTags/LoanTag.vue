@@ -43,8 +43,7 @@ export default {
 		this.$kvTrackEvent(
 			'loan-card',
 			'show',
-			'view-loan-tag',
-			this.variation
+			`tag-${this.variation}`,
 		);
 	},
 	computed: {
