@@ -28,24 +28,8 @@
 <script>
 import _throttle from 'lodash/throttle';
 import KvChipClassic from '@/components/Kv/KvChipClassic';
-import {
-	transformTagName,
-	genderDisplayMap,
-	distributionModelDisplayMap,
-	isIndividualDisplayMap,
-	isIndividualValueMap,
-	lenderRepaymentTermDisplayMap,
-	lenderRepaymentTermValueMap,
-	getFilterKeyFromValue,
-} from '@/util/loanSearch/filterUtils';
+import filterConfig from '@/util/loanSearch/filterConfig';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
-
-const GENDER_TYPE = 'Gender';
-const DISTRIBUTION_MODEL_TYPE = 'DistributionModel';
-const IS_INDIVIDUAL_TYPE = 'IsIndividual';
-const LENDER_REPAYMENT_TERM_TYPE = 'LenderRepaymentTerm';
-const KEYWORD_SEARCH_TYPE = 'KeywordSearch';
-const PARTNER_TYPE = 'Partner';
 
 export default {
 	name: 'LoanSearchFilterChips',
@@ -56,11 +40,11 @@ export default {
 	props: {
 		loanSearchState: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		},
 		allFacets: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		}
 	},
 	data() {
@@ -83,127 +67,28 @@ export default {
 			return typeof this.isCollapsable !== 'undefined' && this.isCollapsable;
 		},
 		items() {
-			return this.getLabelsFromState(this.loanSearchState, this.allFacets);
+			return this.getLabelsFromState();
 		},
 		containerMaxHeight() {
 			return !this.isCollapsed ? { 'max-height': 'none' } : undefined;
 		}
 	},
 	methods: {
-		formatRemovedFacet(facetType, facet) {
-			switch (facetType) {
-				case GENDER_TYPE:
-					return { gender: null };
-				case 'Sector':
-					return { sectorId: [...this.loanSearchState.sectorId?.filter(id => facet.id !== id)] };
-				case 'Country':
-					return {
-						countryIsoCode: [...this.loanSearchState.countryIsoCode?.filter(iso => {
-							return facet.isoCode !== iso;
-						})]
-					};
-				case 'LoanThemeFilter':
-					return { themeId: [...this.loanSearchState.themeId?.filter(id => facet.id !== id)] };
-				case 'Tag':
-					return { tagId: [...this.loanSearchState.tagId?.filter(id => facet.id !== id)] };
-				case DISTRIBUTION_MODEL_TYPE:
-					return { distributionModel: null };
-				case IS_INDIVIDUAL_TYPE:
-					return { isIndividual: null };
-				case LENDER_REPAYMENT_TERM_TYPE:
-					return { lenderRepaymentTerm: null };
-				case KEYWORD_SEARCH_TYPE:
-					return { keywordSearch: null };
-				case PARTNER_TYPE:
-					return { partnerId: [...this.loanSearchState.partnerId?.filter(id => facet.id !== id)] };
-				default:
-					return {};
-			}
+		formatRemovedFacet(facet) {
+			return filterConfig.config[facet.key].getRemovedFacet(this.loanSearchState, facet);
 		},
-		getLabelsFromState(loanSearchState = {}, allFacets) {
-			const itemList = [];
-			if (loanSearchState.gender) {
-				const genderFacet = allFacets.genderFacets?.find(f => f.name === loanSearchState.gender);
-				itemList.push({
-					name: genderDisplayMap[genderFacet?.name.toUpperCase()],
-					__typename: GENDER_TYPE
-				});
-			}
-			if (loanSearchState.countryIsoCode?.length) {
-				const countryFacets = loanSearchState.countryIsoCode?.map(iso => {
-					return allFacets.countryFacets?.find(facet => {
-						return facet.country.isoCode === iso;
-					})?.country;
-				});
-				itemList.push(...countryFacets);
-			}
-			if (loanSearchState.sectorId?.length) {
-				const sectorFacets = loanSearchState.sectorId?.map(sectorId => {
-					return allFacets.sectorFacets?.find(facet => {
-						return facet.id === sectorId;
-					});
-				});
-				itemList.push(...sectorFacets);
-			}
-			if (loanSearchState.themeId?.length) {
-				const themeFacets = loanSearchState.themeId?.map(id => {
-					return allFacets.themeFacets?.find(facet => facet.id === id);
-				});
-				itemList.push(...themeFacets);
-			}
-			if (loanSearchState.tagId?.length) {
-				const tagFacets = loanSearchState.tagId?.map(id => {
-					const tagFacet = allFacets.tagFacets?.find(facet => facet.id === id);
-
-					return {
-						...tagFacet,
-						name: transformTagName(tagFacet?.name)
-					};
-				});
-				itemList.push(...tagFacets);
-			}
-			if (loanSearchState.distributionModel) {
-				const distributionModelFacet = allFacets.distributionModelFacets
-					?.find(f => f.name === loanSearchState.distributionModel);
-				itemList.push({
-					name: distributionModelDisplayMap[distributionModelFacet?.name.toUpperCase()],
-					__typename: DISTRIBUTION_MODEL_TYPE
-				});
-			}
-			if (loanSearchState.isIndividual !== null) {
-				itemList.push({
-					name: isIndividualDisplayMap[getFilterKeyFromValue(
-						loanSearchState.isIndividual,
-						isIndividualValueMap
-					)],
-					__typename: IS_INDIVIDUAL_TYPE
-				});
-			}
-			if (loanSearchState.lenderRepaymentTerm) {
-				itemList.push({
-					name: lenderRepaymentTermDisplayMap[getFilterKeyFromValue(
-						loanSearchState.lenderRepaymentTerm,
-						lenderRepaymentTermValueMap
-					)],
-					__typename: LENDER_REPAYMENT_TERM_TYPE
-				});
-			}
-			if (loanSearchState.keywordSearch) {
-				itemList.push({ name: loanSearchState.keywordSearch, __typename: KEYWORD_SEARCH_TYPE });
-			}
-			if (loanSearchState.partnerId?.length) {
-				const partnerFacets = loanSearchState.partnerId?.map(id => {
-					return allFacets.partnerFacets?.find(f => f.id === id);
-				});
-				itemList.push(...partnerFacets);
-			}
-			return itemList;
+		getLabelsFromState() {
+			return filterConfig.keys.reduce((prev, key) => {
+				const chips = filterConfig.config[key].getFilterChips(this.loanSearchState, this.allFacets);
+				prev.push(...chips.map(f => ({ ...f, key })));
+				return prev;
+			}, []);
 		},
 		handleChipClick(facet) {
 			// Convert our removed facet back into a compatible facet structure
 			// eslint-disable-next-line no-underscore-dangle
 			const facetType = facet.__typename;
-			const formattedFacet = this.formatRemovedFacet(facetType, facet);
+			const formattedFacet = this.formatRemovedFacet(facet);
 			this.$emit('updated', formattedFacet);
 
 			this.$kvTrackEvent('Lending', 'click-remove-filter-chip', `${facetType}-${facet.name}`);
