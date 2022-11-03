@@ -27,7 +27,21 @@ export default function createApolloClient({
 
 	const cache = new InMemoryCache({
 		possibleTypes,
-		typePolicies
+		typePolicies: {
+			...typePolicies,
+			General: {
+				merge: true,
+			},
+			Contentful: {
+				merge: true,
+			},
+			Lend: {
+				merge: true,
+			},
+			Setting: {
+				keyFields: ['key'],
+			},
+		}
 	});
 
 	const client = new ApolloClient({
