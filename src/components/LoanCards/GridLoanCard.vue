@@ -174,11 +174,11 @@ export default {
 		},
 		getTagInfo() {
 			if (this.loan?.loanFundraisingInfo?.isExpiringSoon) {
-				return 'endingSoon';
+				return 'ending-soon';
 			} if (this.amountLeft < 100) {
-				return 'almostFunded';
+				return 'almost-funded';
 			} if (this.loan?.matchingText) {
-				return 'matchedLoan';
+				return 'matched-loan';
 			}
 			return null;
 		}

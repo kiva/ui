@@ -36,40 +36,41 @@ export default {
 	props: {
 		variation: {
 			type: String,
-			default: 'endingSoon'
+			default: 'ending-soon'
 		}
 	},
 	mounted() {
 		this.$kvTrackEvent(
 			'loan-card',
-			'view-tag',
+			'show',
+			'view-loan-tag',
 			this.variation
 		);
 	},
 	computed: {
 		iconName() {
 			switch (this.variation) {
-				case 'almostFunded': return mdiFlag;
-				case 'matchedLoan': return mdiHeart;
+				case 'almost-funded': return mdiFlag;
+				case 'matched-loan': return mdiHeart;
 				default: return mdiTimerSandComplete;
 			}
 		},
 		tagText() {
 			switch (this.variation) {
-				case 'almostFunded': return 'Almost Funded';
-				case 'matchedLoan': return 'Matched Loan';
+				case 'almost-funded': return 'Almost Funded';
+				case 'matched-loan': return 'Matched Loan';
 				default: return 'Ending Soon';
 			}
 		},
 		tagColor() {
 			switch (this.variation) {
-				case 'almostFunded': return 'tw-bg-brand-200';
-				case 'matchedLoan': return 'tw-bg-danger';
+				case 'almost-funded': return 'tw-bg-brand-200';
+				case 'matched-loan': return 'tw-bg-danger';
 				default: return 'tw-bg-caution';
 			}
 		},
 		useWhiteText() {
-			return this.variation === 'matchedLoan';
+			return this.variation === 'matched-loan';
 		}
 	},
 	data() {
