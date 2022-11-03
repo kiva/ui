@@ -164,14 +164,21 @@ export default {
 		},
 		trackInteraction(args) {
 			this.$emit('track-interaction', args);
+			if (args?.interactionType === 'addToBasket' && this.getTagInfo()) {
+				this.$kvTrackEvent(
+					'loan-card',
+					'add-to-basket',
+					this.getTagInfo()
+				);
+			}
 		},
 		getTagInfo() {
 			if (this.loan?.loanFundraisingInfo?.isExpiringSoon) {
-				return 'endingSoon';
+				return 'ending-soon';
 			} if (this.amountLeft < 100) {
-				return 'almostFunded';
+				return 'almost-funded';
 			} if (this.loan?.matchingText) {
-				return 'matchedLoan';
+				return 'matched-loan';
 			}
 			return null;
 		}
