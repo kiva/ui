@@ -833,10 +833,4 @@ export default {
 		grid-template-columns: auto auto 1fr auto;
 	}
 }
-
-@media screen and (max-width: 734px) {
-	.header__login__button {
-		margin-top: 9px;
-	}
-}
 </style>
