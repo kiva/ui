@@ -147,7 +147,7 @@
 							<li>
 								<a
 									:href="employeeEngagementUrl"
-									v-kv-track-event="['Footer', 'click-Work with us-Employee engagement']"
+									v-kv-track-event="['Footer', 'click-Get to know us-Employee engagement']"
 									class="tw-text-small"
 								>
 									Employee engagement
@@ -603,7 +603,7 @@
 								<li>
 									<a
 										:href="employeeEngagementUrl"
-										v-kv-track-event="['Footer', 'click-Work with us-Employee engagement']"
+										v-kv-track-event="['Footer', 'click-Get to know us-Employee engagement']"
 										class="tw-text-small"
 									>
 										Employee engagement
