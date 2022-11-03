@@ -1,3 +1,11 @@
+### [2.373.1](https://github.com/kiva/ui/compare/v2.373.0...v2.373.1) (2022-11-03)
+
+
+### Bug Fixes
+
+* remove console log ([55b80eb](https://github.com/kiva/ui/commit/55b80eb6fbf1858d74895393454e78f288a43bed))
+* update some logic for loan tags ([27040c2](https://github.com/kiva/ui/commit/27040c26508144f08d74b7b8deeed00b248874f5))
+
 ## [2.373.0](https://github.com/kiva/ui/compare/v2.372.0...v2.373.0) (2022-11-03)
 
 
