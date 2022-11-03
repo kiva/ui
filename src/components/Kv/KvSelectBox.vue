@@ -20,7 +20,7 @@
 				tw-rounded-sm
 				tw-bg-white
 				tw-overflow-auto
-				tw-z-1"
+				tw-z-2"
 			:style="{ 'max-height': '200px' }"
 		>
 			<ul>
