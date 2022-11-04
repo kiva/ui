@@ -1,3 +1,10 @@
+## [2.378.0](https://github.com/kiva/ui/compare/v2.377.0...v2.378.0) (2022-11-04)
+
+
+### Features
+
+* new partner filters ([36c00f7](https://github.com/kiva/ui/commit/36c00f75a175ba24d3ab834031b9652586263877))
+
 ## [2.377.0](https://github.com/kiva/ui/compare/v2.376.0...v2.377.0) (2022-11-03)
 
 
