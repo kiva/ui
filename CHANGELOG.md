@@ -1,3 +1,11 @@
+### [2.379.1](https://github.com/kiva/ui/compare/v2.379.0...v2.379.1) (2022-11-04)
+
+
+### Bug Fixes
+
+* added some extra whitespace that was missing ([c308861](https://github.com/kiva/ui/commit/c308861d592db9755d93f6eaaf3e0e02734a2b8d))
+* radio group didn't pass good tracking strings for object-based filters ([7996cbc](https://github.com/kiva/ui/commit/7996cbc1d388e7a41f648f06dd3647a78c72822e))
+
 ## [2.379.0](https://github.com/kiva/ui/compare/v2.378.1...v2.379.0) (2022-11-04)
 
 
