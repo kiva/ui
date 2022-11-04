@@ -50,6 +50,8 @@ export default {
 		eventAction: 'click-tag-filter',
 		allOptionsTitle: undefined,
 		valueMap: undefined,
+		isPercentage: false,
+		displayedUnit: undefined,
 	},
 	getOptions: (allFacets = {}, filteredFacets = {}) => transformTags(filteredFacets.tags, allFacets.tagFacets),
 	showSavedSearch: loanSearchState => loanSearchState.tagId.length > 0,

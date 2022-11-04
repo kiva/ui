@@ -1,6 +1,3 @@
-import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
-import { isNumber } from '@/util/numberUtils';
-
 export default {
 	uiConfig: {
 		type: undefined,
@@ -11,7 +8,7 @@ export default {
 		itemHeaderKey: undefined,
 		placeholder: undefined,
 		facetsKey: undefined,
-		stateKey: 'pageLimit',
+		stateKey: 'activityId',
 		eventAction: undefined,
 		allOptionsTitle: undefined,
 		valueMap: undefined,
@@ -23,12 +20,10 @@ export default {
 	getFilterChips: () => ([]),
 	getRemovedFacet: () => ({}),
 	getSavedSearch: () => ({}),
-	getFlssFilter: () => ({}),
-	getValidatedSearchState: loanSearchState => ({
-		pageLimit: isNumber(loanSearchState?.pageLimit)
-			? loanSearchState.pageLimit
-			: getDefaultLoanSearchState().pageLimit
+	getFlssFilter: loanSearchState => ({
+		...(loanSearchState?.activityId && { activityId: { any: loanSearchState.activityId } })
 	}),
-	getFilterFromQuery: (_query, _allFacets, pageLimit) => ({ pageLimit }),
+	getValidatedSearchState: () => ({}),
+	getFilterFromQuery: () => ({}),
 	getQueryFromFilter: () => ({}),
 };

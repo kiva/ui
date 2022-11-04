@@ -36,6 +36,8 @@ export default {
 		eventAction: 'click-sector-filter',
 		allOptionsTitle: undefined,
 		valueMap: undefined,
+		isPercentage: false,
+		displayedUnit: undefined,
 	},
 	getOptions: (allFacets = {}, filteredFacets = {}) => {
 		return transformSectors(filteredFacets.sectors, allFacets.sectorFacets);

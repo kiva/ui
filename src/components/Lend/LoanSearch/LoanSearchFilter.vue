@@ -79,6 +79,26 @@
 						class="tw-w-full tw-py-1.5"
 						@selected="handleUpdatePartnerIdFilter"
 					/>
+					<kv-range-min-max-slider
+						v-if="filterConfig.config[key].uiConfig.type === filterUiType.rangeSlider"
+						:range-min="filterConfig.config[key].getOptions().min"
+						:range-max="filterConfig.config[key].getOptions().max"
+						:step="filterConfig.config[key].getOptions().step"
+						:min="loanSearchState[filterConfig.config[key].uiConfig.stateKey]
+							? loanSearchState[filterConfig.config[key].uiConfig.stateKey].min
+							: filterConfig.config[key].getOptions().min"
+						:max="loanSearchState[filterConfig.config[key].uiConfig.stateKey]
+							? loanSearchState[filterConfig.config[key].uiConfig.stateKey].max
+							: filterConfig.config[key].getOptions().max"
+						:is-percentage="filterConfig.config[key].uiConfig.isPercentage"
+						:displayed-unit="filterConfig.config[key].uiConfig.displayedUnit"
+						class="tw-mt-0.5"
+						@change="payload => debouncedHandleRangeSlider(
+							filterConfig.config[key].uiConfig.stateKey,
+							payload,
+							filterConfig.config[key].uiConfig.eventAction
+						)"
+					/>
 					<hr v-if="filterConfig.config[key].uiConfig.bottomLine" class="tw-border-tertiary tw-mt-1">
 				</component>
 			</template>
@@ -122,6 +142,8 @@ import KvSelectBox from '@/components/Kv/KvSelectBox';
 import LoanSearchRadioGroupFilter from '@/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
 import _debounce from 'lodash/debounce';
 import filterConfig from '@/util/loanSearch/filterConfig';
+import KvRangeMinMaxSlider from '@/components/Kv/KvRangeMinMaxSlider';
+import { createMinMaxRange, getMinMaxRangeQueryParam } from '@/util/loanSearch/minMaxRange';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
@@ -138,6 +160,7 @@ export default {
 		LoanSearchSortBy,
 		KvSectionModalLoader,
 		KvSelectBox,
+		KvRangeMinMaxSlider,
 	},
 	props: {
 		extendFlssFilters: {
@@ -174,6 +197,7 @@ export default {
 			filterConfig,
 			filterUiType,
 			KvAccordionItem,
+			debouncedHandleRangeSlider: _debounce(this.handleRangeSlider, 500),
 		};
 	},
 	methods: {
@@ -202,6 +226,13 @@ export default {
 
 			this.$kvTrackEvent('Lending', 'click-partner-id', id);
 		},
+		handleRangeSlider(stateKey, payload, eventAction) {
+			const newValue = createMinMaxRange(payload.min, payload.max);
+
+			this.handleUpdatedFilters({ [stateKey]: newValue });
+
+			this.$kvTrackEvent('Lending', eventAction, getMinMaxRangeQueryParam(newValue));
+		},
 		shouldDisplayFilter(key) {
 			// TODO: remove once the "extendFlssFilters" experiment is complete
 			const isExperimentFilter = [
@@ -211,15 +242,19 @@ export default {
 				filterConfig.config.lenderRepaymentTerms.uiConfig.stateKey,
 				filterConfig.config.distributionModels.uiConfig.stateKey,
 				filterConfig.config.partners.uiConfig.stateKey,
+				filterConfig.config.partnerRiskRating.uiConfig.stateKey,
+				filterConfig.config.partnerDefaultRate.uiConfig.stateKey,
+				filterConfig.config.partnerAvgProfitability.uiConfig.stateKey,
 			].includes(filterConfig.config[key].uiConfig.stateKey);
 
-			// Paging filters are not currently part of the filter panel
-			const isPagingFilter = [
+			// Paging and activities filters are not currently part of the filter panel
+			const hiddenFilters = [
 				filterConfig.config.pageOffset.uiConfig.stateKey,
 				filterConfig.config.pageLimit.uiConfig.stateKey,
+				filterConfig.config.activities.uiConfig.stateKey,
 			].includes(filterConfig.config[key].uiConfig.stateKey);
 
-			return !isPagingFilter && (this.extendFlssFilters || !isExperimentFilter);
+			return !hiddenFilters && (this.extendFlssFilters || !isExperimentFilter);
 		},
 	},
 	watch: {

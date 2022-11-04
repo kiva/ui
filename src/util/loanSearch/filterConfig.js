@@ -11,6 +11,10 @@ import tags from '@/util/loanSearch/filters/tags';
 import lenderRepaymentTerms from '@/util/loanSearch/filters/lenderRepaymentTerms';
 import distributionModels from '@/util/loanSearch/filters/distributionModels';
 import partners from '@/util/loanSearch/filters/partners';
+import partnerRiskRating from '@/util/loanSearch/filters/partnerRiskRating';
+import partnerDefaultRate from '@/util/loanSearch/filters/partnerDefaultRate';
+import partnerAvgProfitability from '@/util/loanSearch/filters/partnerAvgProfitability';
+import activities from '@/util/loanSearch/filters/activities';
 
 /**
  * Configuration for the lend/filter FLSS-driven page
@@ -32,6 +36,8 @@ import partners from '@/util/loanSearch/filters/partners';
  * 		eventAction: undefined,
  * 		allOptionsTitle: undefined,
  * 		valueMap: undefined,
+ * 		isPercentage: false,
+ * 		displayedUnit: undefined,
  * 	},
  * 	getOptions: (allFacets, filteredFacets, extend) => ([]),
  * 	showSavedSearch: loanSearchState => (false),
@@ -57,6 +63,10 @@ const config = {
 	lenderRepaymentTerms,
 	distributionModels,
 	partners,
+	partnerRiskRating,
+	partnerDefaultRate,
+	partnerAvgProfitability,
+	activities,
 };
 
 /**

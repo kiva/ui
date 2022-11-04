@@ -48,6 +48,8 @@ export default {
 		eventAction: 'click-theme-filter',
 		allOptionsTitle: undefined,
 		valueMap: undefined,
+		isPercentage: false,
+		displayedUnit: undefined,
 	},
 	getOptions: (allFacets = {}, filteredFacets = {}) => {
 		return transformThemes(filteredFacets.themes, allFacets.themeFacets);

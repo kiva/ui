@@ -17,5 +17,17 @@ query loanSearchStateQuery {
 		}
 		keywordSearch
 		partnerId
+		partnerRiskRating {
+			min
+			max
+		}
+		partnerDefaultRate {
+			min
+			max
+		}
+		partnerAvgProfitability {
+			min
+			max
+		}
 	}
 }

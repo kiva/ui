@@ -45,6 +45,8 @@ export default {
 		eventAction: 'click-distributionModel-filter',
 		allOptionsTitle: undefined,
 		valueMap: undefined,
+		isPercentage: false,
+		displayedUnit: undefined,
 	},
 	getOptions: (allFacets = {}) => transformDistributionModelOptions(allFacets.distributionModelFacets),
 	showSavedSearch: loanSearchState => !!loanSearchState.distributionModel,

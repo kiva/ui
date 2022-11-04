@@ -58,6 +58,8 @@ export default {
 		eventAction: 'click-lenderRepaymentTerm-filter',
 		allOptionsTitle: undefined,
 		valueMap: lenderRepaymentTermValueMap,
+		isPercentage: false,
+		displayedUnit: undefined,
 	},
 	getOptions: () => transformLenderRepaymentTermOptions(),
 	showSavedSearch: loanSearchState => !!loanSearchState.lenderRepaymentTerm,
