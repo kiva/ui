@@ -78,12 +78,8 @@ const CampaignLogoGroup = () => import('@/components/CorporateCampaign/CampaignL
 const CampaignPartner = () => import('@/components/CorporateCampaign/CampaignPartner');
 const CampaignThanks = () => import('@/components/CorporateCampaign/CampaignThanks');
 
-// const HomepageGeneralStats = () => import('@/components/Homepage/HomepageGeneralStats');
 const HomepageHowItWorks = () => import('@/components/Homepage/HomepageHowItWorks');
-const HomepageLenderQuotes = () => import('@/components/Homepage/HomepageLenderQuotes');
-const HomepageStatistics = () => import('@/components/Homepage/HomepageStatistics');
 const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
-const HomepageMonthlyGoodInfo = () => import('@/components/Homepage/HomepageMonthlyGoodInfo');
 
 const CardRow = () => import('@/components/Contentful/CardRow');
 const CenteredRichText = () => import('@/components/Contentful/CenteredRichText');
@@ -127,15 +123,8 @@ const getComponentFromType = type => {
 	switch (type) {
 		case 'homepageHowItWorks':
 			return HomepageHowItWorks;
-		case 'homepageLenderQuotes':
-			return HomepageLenderQuotes;
-		case 'homepageStatistics':
-			// return HomepageGeneralStats;
-			return HomepageStatistics;
 		case 'homepageVerticalCTA':
 			return HomepageVerticalCTA;
-		case 'homepageMonthlyGoodInfo':
-			return HomepageMonthlyGoodInfo;
 		case 'mlCampaignHero':
 			return CampaignHero;
 		case 'mlCampaignLogo':
