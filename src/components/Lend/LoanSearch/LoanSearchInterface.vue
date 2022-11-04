@@ -310,12 +310,6 @@ export default {
 			// TODO: Prevent this from running on every query (not needed for sorting and paging)
 			const filteredFacets = await runFacetsQueries(this.apollo, loanSearchState, FLSS_ORIGIN_LEND_FILTER);
 
-			// TODO: Revert once non binary filter is ready to release
-			const nonBinaryFilterEnabled = this.$route.query?.nonBinaryFilter;
-			if (!nonBinaryFilterEnabled) {
-				this.allFacets.genderFacets = this.allFacets?.genderFacets.filter(g => g.name !== 'nonbinary');
-			}
-
 			// Merge all facet options with filtered options
 			this.facets = filterConfig.keys.reduce((prev, next) => {
 				// eslint-disable-next-line no-param-reassign
