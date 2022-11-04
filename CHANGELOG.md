@@ -1,3 +1,10 @@
+## [2.379.0](https://github.com/kiva/ui/compare/v2.378.1...v2.379.0) (2022-11-04)
+
+
+### Features
+
+* show non binary filter ([cd0a96b](https://github.com/kiva/ui/commit/cd0a96b6ce46c8c0a5856e18586a07e78c98200f))
+
 ### [2.378.1](https://github.com/kiva/ui/compare/v2.378.0...v2.378.1) (2022-11-04)
 
 
