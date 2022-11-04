@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import LoanSearchRadioGroupFilter, { ALL_LOANS_TITLE } from '@/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
@@ -13,6 +14,13 @@ const getOptions = (isObject = false, isBoolean = false) => [...Array(4)].map((_
 const getValueMap = options => options.reduce((map, option) => { map[option.name] = option.value; return map; }, {});
 
 describe('LoanSearchRadioGroupFilter', () => {
+	const mockTrackEvent = jest.fn();
+
+	beforeEach(() => {
+		Vue.prototype.$kvTrackEvent = mockTrackEvent;
+		jest.resetAllMocks();
+	});
+
 	it('should default to all', () => {
 		const { getByLabelText } = render(LoanSearchRadioGroupFilter, {
 			props: { options: getOptions(), filterKey: 'option', eventAction: 'action' }
@@ -86,7 +94,7 @@ describe('LoanSearchRadioGroupFilter', () => {
 		expect(radio.checked).toBeTruthy();
 	});
 
-	it('should emit updated', async () => {
+	it('should emit and track updated', async () => {
 		const options = getOptions();
 
 		const user = userEvent.setup();
@@ -101,6 +109,34 @@ describe('LoanSearchRadioGroupFilter', () => {
 		radio = getByLabelText('Option 1');
 		await user.click(radio);
 		expect(radio.checked).toBeTruthy();
+
+		expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+		expect(mockTrackEvent).toHaveBeenCalledWith('Lending', 'action', '2');
+
+		expect(emitted().updated[0]).toEqual([{ option: options[1].value }]);
+	});
+
+	it('should emit and track updated when map used', async () => {
+		const user = userEvent.setup();
+
+		const options = getOptions(true);
+		const map = getValueMap(options);
+
+		const { getByLabelText, emitted } = render(LoanSearchRadioGroupFilter, {
+			props: {
+				options, filterKey: 'option', eventAction: 'action', valueMap: map
+			}
+		});
+
+		let radio = getByLabelText(ALL_LOANS_TITLE);
+		expect(radio.checked).toBeTruthy();
+
+		radio = getByLabelText('Option 1');
+		await user.click(radio);
+		expect(radio.checked).toBeTruthy();
+
+		expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+		expect(mockTrackEvent).toHaveBeenCalledWith('Lending', 'action', '1');
 
 		expect(emitted().updated[0]).toEqual([{ option: options[1].value }]);
 	});
