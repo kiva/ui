@@ -1,3 +1,10 @@
+### [2.378.1](https://github.com/kiva/ui/compare/v2.378.0...v2.378.1) (2022-11-04)
+
+
+### Bug Fixes
+
+* noop typo fix to kick off fresh tag/build ([2e5a6f0](https://github.com/kiva/ui/commit/2e5a6f0ea61ea41f04ae8351419a90fd52a2ca4b))
+
 ## [2.378.0](https://github.com/kiva/ui/compare/v2.377.0...v2.378.0) (2022-11-04)
 
 
