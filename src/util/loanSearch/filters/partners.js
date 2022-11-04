@@ -62,6 +62,8 @@ export default {
 		eventAction: undefined,
 		allOptionsTitle: undefined,
 		valueMap: undefined,
+		isPercentage: false,
+		displayedUnit: undefined,
 	},
 	getOptions: (allFacets = {}) => transformPartners(allFacets?.partnerFacets ?? []),
 	showSavedSearch: loanSearchState => loanSearchState.partnerId.length > 0,

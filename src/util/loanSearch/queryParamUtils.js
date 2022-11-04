@@ -12,7 +12,6 @@ export function hasExcludedQueryParams(query) {
 	const excludedParams = [
 		'activity',
 		'city_state',
-		'defaultRate',
 		'loanTags',
 		'state',
 		'loanLimit',

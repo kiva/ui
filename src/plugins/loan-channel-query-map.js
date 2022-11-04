@@ -364,6 +364,9 @@ export default {
 					id: 71,
 					url: 'loans-for-livestock',
 					queryParams: 'status=fundRaising&activity=73&distributionModel=both',
+					flssLoanSearch: {
+						activityId: [73],
+					},
 				},
 				{
 					id: 72,

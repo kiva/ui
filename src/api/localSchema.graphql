@@ -89,6 +89,9 @@ type LoanSearchState {
 	lenderRepaymentTerm: MinMaxRange
 	keywordSearch: String
 	partnerId: [Int]
+	partnerRiskRating: MinMaxRange
+	partnerDefaultRate: MinMaxRange
+	partnerAvgProfitability: MinMaxRange
 }
 
 type TipMessage {

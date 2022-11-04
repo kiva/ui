@@ -26,7 +26,6 @@ describe('queryParamUtils.js', () => {
 		it('should return true', () => {
 			expect(hasExcludedQueryParams({ activity: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ city_state: [] })).toBe(true);
-			expect(hasExcludedQueryParams({ defaultRate: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ loanTags: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ state: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ loanLimit: [] })).toBe(true);

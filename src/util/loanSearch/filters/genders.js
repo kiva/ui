@@ -39,6 +39,8 @@ export default {
 		eventAction: 'click-gender-filter',
 		allOptionsTitle: 'All genders',
 		valueMap: undefined,
+		isPercentage: false,
+		displayedUnit: undefined,
 	},
 	getOptions: allFacets => transformGenderOptions(allFacets.genderFacets),
 	showSavedSearch: loanSearchState => !!loanSearchState.gender,

@@ -15,6 +15,8 @@ export default {
 		eventAction: undefined,
 		allOptionsTitle: undefined,
 		valueMap: undefined,
+		isPercentage: false,
+		displayedUnit: undefined,
 	},
 	getOptions: () => ([]),
 	showSavedSearch: () => (false),

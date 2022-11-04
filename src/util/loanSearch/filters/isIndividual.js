@@ -59,6 +59,8 @@ export default {
 		eventAction: 'click-isIndividual-filter',
 		allOptionsTitle: undefined,
 		valueMap: isIndividualValueMap,
+		isPercentage: false,
+		displayedUnit: undefined,
 	},
 	getOptions: () => transformIsIndividualOptions(),
 	showSavedSearch: loanSearchState => loanSearchState.isIndividual !== null,
