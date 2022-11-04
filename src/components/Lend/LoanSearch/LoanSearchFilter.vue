@@ -13,6 +13,7 @@
 					:key="key"
 					:is="filterConfig.config[key].uiConfig.hasAccordion ? KvAccordionItem : 'div'"
 					:id="`${key}-filter-container`"
+					class="tw-mb-0.5"
 				>
 					<template #header v-if="filterConfig.config[key].uiConfig.hasAccordion">
 						<h2 class="tw-text-h4">
