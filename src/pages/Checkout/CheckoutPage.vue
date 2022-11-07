@@ -127,6 +127,7 @@
 										'click-guest-checkout-cta',
 										'Checkout as guest'
 									]"
+									:state="continueButtonState"
 									@click="guestCheckout"
 								>
 									Continue as guest
@@ -139,6 +140,7 @@
 									data-testid="login-to-continue-button"
 									v-kv-track-event="['basket', 'click-register-cta', 'Continue']"
 									:href="'/ui-login?force=true&doneUrl=/checkout'"
+									:state="continueButtonState"
 								>
 									Continue
 								</kv-button>
@@ -151,6 +153,7 @@
 									data-testid="create-account-continue-button"
 									v-kv-track-event="['basket', 'click-register-cta', 'Create an account']"
 									:href="'/ui-login?force=true&doneUrl=/checkout'"
+									:state="continueButtonState"
 								>
 									Create an account
 								</kv-button>
@@ -166,6 +169,7 @@
 										'Continue as guest'
 									]"
 									@click="guestCheckout"
+									:state="continueButtonState"
 								>
 									Continue as guest
 								</kv-button>
@@ -401,6 +405,7 @@ export default {
 			isEcoChallengeExpShown: false,
 			useDynamicUpsell: false,
 			ecoChallengeRedirectQueryParam: '',
+			continueButtonState: 'loading',
 		};
 	},
 	apollo: {
@@ -743,7 +748,7 @@ export default {
 		},
 		loanIdsInBasket() {
 			return this.loans.map(loan => loan.id);
-		}
+		},
 	},
 	methods: {
 		openMatchedLoansLightbox() {
@@ -934,6 +939,7 @@ export default {
 				query: upsellQuery,
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
+				this.continueButtonState = 'active';
 				const loans = data?.lend?.loans?.values || [];
 				// Temp solution so we don't show reserved loans on upsell
 				const upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || {};
