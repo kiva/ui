@@ -1,3 +1,10 @@
+## [2.380.0](https://github.com/kiva/ui/compare/v2.379.2...v2.380.0) (2022-11-07)
+
+
+### Features
+
+* loading state was added to continue buttons in checkout page ([9cff5b8](https://github.com/kiva/ui/commit/9cff5b83667de38239f45c67b04b605c89e2f4aa))
+
 ### [2.379.2](https://github.com/kiva/ui/compare/v2.379.1...v2.379.2) (2022-11-07)
 
 
