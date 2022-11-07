@@ -1,3 +1,10 @@
+### [2.379.2](https://github.com/kiva/ui/compare/v2.379.1...v2.379.2) (2022-11-07)
+
+
+### Bug Fixes
+
+* adjust loading overlay z index to display above loan tags ([3401e74](https://github.com/kiva/ui/commit/3401e74720ac5e3782f8888b99cf89730d89cafa))
+
 ### [2.379.1](https://github.com/kiva/ui/compare/v2.379.0...v2.379.1) (2022-11-04)
 
 

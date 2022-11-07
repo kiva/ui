@@ -128,7 +128,7 @@
 			</div>
 		</div>
 
-		<kv-loading-overlay v-if="loading" />
+		<kv-loading-overlay v-if="loading" class="tw-z-2" />
 	</div>
 </template>
 
