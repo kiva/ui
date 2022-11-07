@@ -15,7 +15,7 @@
 			</template>
 		</kv-hero>
 		<div class="row intro">
-			<div class="tw-text-center featured-text columns large-10 large-offset-1">
+			<div class="tw-text-center columns large-10 large-offset-1">
 				<p>
 					Help us turn possibility into reality for borrowers around the world.
 				</p>
@@ -160,5 +160,4 @@ $dark_blue: #00244e;
 		}
 	}
 }
-
 </style>
