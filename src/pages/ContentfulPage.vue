@@ -78,9 +78,6 @@ const CampaignLogoGroup = () => import('@/components/CorporateCampaign/CampaignL
 const CampaignPartner = () => import('@/components/CorporateCampaign/CampaignPartner');
 const CampaignThanks = () => import('@/components/CorporateCampaign/CampaignThanks');
 
-const HomepageHowItWorks = () => import('@/components/Homepage/HomepageHowItWorks');
-const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
-
 const CardRow = () => import('@/components/Contentful/CardRow');
 const CenteredRichText = () => import('@/components/Contentful/CenteredRichText');
 const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
@@ -121,10 +118,6 @@ const getPageFrameFromType = type => {
 // Return a component importer function based on content group type from Contentful
 const getComponentFromType = type => {
 	switch (type) {
-		case 'homepageHowItWorks':
-			return HomepageHowItWorks;
-		case 'homepageVerticalCTA':
-			return HomepageVerticalCTA;
 		case 'mlCampaignHero':
 			return CampaignHero;
 		case 'mlCampaignLogo':
