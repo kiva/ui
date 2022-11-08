@@ -4,9 +4,10 @@
 		:share-message="shareMessage"
 		:share-url="shareLink"
 		variant="caution"
-		:utm-campaign="campaign"
+		:utm-campaign="utmCampaign"
 		:utm-content="utmContent"
 		:linked-in-title="linkedInTitle"
+		:open-lightbox="forceLightbox"
 	>
 		<template #modal-content>
 			<!-- eslint-disable-next-line max-len -->
@@ -61,12 +62,24 @@ export default {
 			if (this.lender?.public && this.lender?.inviterName) return this.lender.inviterName;
 			return 'anonymous';
 		},
+		utmCampaign() {
+			// If 'emlid' is present in the query params, append it to the campaign prop.
+			// This is used to track email campaigns.
+			if (this.$route.query.emlid) {
+				return `${this.campaign}_eml${this.$route.query.emlid}`;
+			}
+			return this.campaign;
+		},
 		shareLink() {
 			if (this.loan.id && this.lender?.inviterName) {
 				return `/invitedby/${this.lender.inviterName}/for/${this.loan.id}`; // eslint-disable-line max-len
 			}
 			return `${this.$route.path}`;
 		},
+		forceLightbox() {
+			// If query param share=true return true to force lightbox open
+			return this.$route.query.share === 'true';
+		}
 	},
 };
 </script>
