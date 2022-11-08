@@ -1,3 +1,11 @@
+### [2.380.1](https://github.com/kiva/ui/compare/v2.380.0...v2.380.1) (2022-11-08)
+
+
+### Bug Fixes
+
+* extend filters flag wasn't being passed to sort options ([02cd83f](https://github.com/kiva/ui/commit/02cd83f2ede278007a300f0ed3e5de649d414f60))
+* key typo ([669a7be](https://github.com/kiva/ui/commit/669a7be58f13e0f52c5afe202a85a110d32879df))
+
 ## [2.380.0](https://github.com/kiva/ui/compare/v2.379.2...v2.380.0) (2022-11-07)
 
 
