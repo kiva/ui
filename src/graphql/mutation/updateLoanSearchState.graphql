@@ -29,5 +29,6 @@ mutation updateLoanSearch($searchParams: JSONObject) {
 			min
 			max
 		}
+		isMatchable
 	}
 }

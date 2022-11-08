@@ -12,6 +12,7 @@ export const mockState = {
 	pageLimit: 5,
 	keywordSearch: 'search',
 	partnerId: [1],
+	isMatchable: true,
 };
 
 export const savedSearchParams = {
