@@ -1,3 +1,10 @@
+## [2.383.0](https://github.com/kiva/ui/compare/v2.382.0...v2.383.0) (2022-11-08)
+
+
+### Features
+
+* isMatchable lend filter ([f7c83b1](https://github.com/kiva/ui/commit/f7c83b16407ff172cb80468cfb9d0163809d0bf1))
+
 ## [2.382.0](https://github.com/kiva/ui/compare/v2.381.0...v2.382.0) (2022-11-08)
 
 
