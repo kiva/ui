@@ -1,3 +1,10 @@
+## [2.381.0](https://github.com/kiva/ui/compare/v2.380.1...v2.381.0) (2022-11-08)
+
+
+### Features
+
+* donation amount added to loan share purchase event ([58b396b](https://github.com/kiva/ui/commit/58b396bbf2e33df9fd2a746978d10e4cc6b00b16))
+
 ### [2.380.1](https://github.com/kiva/ui/compare/v2.380.0...v2.380.1) (2022-11-08)
 
 
