@@ -1,3 +1,10 @@
+## [2.382.0](https://github.com/kiva/ui/compare/v2.381.0...v2.382.0) (2022-11-08)
+
+
+### Features
+
+* add additional query param functionality to borrower profile sharing and tracking ([b39327c](https://github.com/kiva/ui/commit/b39327c692ef6735be8c4f0433e665a7d63dd0f5))
+
 ## [2.381.0](https://github.com/kiva/ui/compare/v2.380.1...v2.381.0) (2022-11-08)
 
 
