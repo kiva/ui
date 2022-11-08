@@ -6,7 +6,7 @@ import { getMinMaxRangeFromQueryParam } from '@/util/loanSearch/queryParseUtils'
 export const EIGHT_MONTHS_KEY = 'EIGHT_MONTHS';
 export const SIXTEEN_MONTHS_KEY = 'SIXTEEN_MONTHS';
 export const TWO_YEARS_KEY = 'TWO_YEARS';
-export const MORE_THAN_TWO_YEARS_KEY = 'MORE_THAN_TWO_YEARS_KEY';
+export const MORE_THAN_TWO_YEARS_KEY = 'MORE_THAN_TWO_YEARS';
 
 /**
  * Maps the lender repayment term keys to display names

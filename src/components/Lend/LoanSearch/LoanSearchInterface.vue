@@ -313,7 +313,11 @@ export default {
 			// Merge all facet options with filtered options
 			this.facets = filterConfig.keys.reduce((prev, next) => {
 				// eslint-disable-next-line no-param-reassign
-				prev[next] = filterConfig.config[next].getOptions(this.allFacets, filteredFacets);
+				prev[next] = filterConfig.config[next].getOptions(
+					this.allFacets,
+					filteredFacets,
+					this.extendFlssFilters
+				);
 				return prev;
 			}, {});
 		},
