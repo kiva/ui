@@ -24,6 +24,20 @@ module.exports = [
 	},
 	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
 	{
+		path: '/about/how',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: {
+			contentfulPage: () => 'lp/how-kiva-works',
+		},
+	},
+	{
+		path: '/about/press-center',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: {
+			contentfulPage: () => 'lp/press',
+		},
+	},
+	{
 		path: '/auto-deposit',
 		component: () => import('@/pages/AutoDeposit/AutoDepositLandingPage'),
 	},
