@@ -9,17 +9,6 @@
 						Save This Search
 					</h4>
 				</div>
-				<!-- eslint-disable-next-line max-len -->
-				Found the perfect filter settings? Add them to your 'Saved Searches' to easily return to the list of borrowers that meet your lending criteria.
-			</div>
-			<div style="min-width: 250px;" class="tw-self-center tw-w-full">
-				<kv-button
-					variant="secondary"
-					class="tw-w-full"
-					@click="openModal"
-				>
-					Add to Saved Searches
-				</kv-button>
 			</div>
 			<kv-lightbox
 				title="Save this search"
@@ -85,10 +74,6 @@ export default {
 		},
 		allFacets: {
 			type: Object,
-			default: () => ({})
-		},
-		showSuccessMessage: {
-			type: Function,
 			default: () => ({})
 		},
 		userId: {
@@ -166,7 +151,7 @@ export default {
 				this.loanSearchState?.keywordSearch ?? '',
 				this.savedSearchName
 			).then(() => {
-				this.showSuccessMessage(this.savedSearchName);
+				this.$showTipMsg(`Success! You've added ${this.savedSearchName} to your saved searches.`);
 			}).catch(errorResponse => {
 				logFormatter(errorResponse, 'error');
 				// eslint-disable-next-line max-len

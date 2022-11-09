@@ -60,13 +60,6 @@
 			<div class="tw-col-span-2 tw-relative tw-grow">
 				<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
 				<div v-if="initialLoadComplete">
-					<loan-search-saved-search
-						v-if="enableSavedSearch && showSavedSearch && !savedSearchSuccess"
-						:loan-search-state="loanSearchState"
-						:all-facets="allFacets"
-						:show-success-message="showSavedSearchSuccessMessage"
-						:user-id="userId"
-					/>
 					<loan-search-filter-chips
 						:loan-search-state="loanSearchState"
 						:all-facets="allFacets"
@@ -76,6 +69,13 @@
 					<p class="tw-hidden lg:tw-block tw-mt-1">
 						{{ totalCount }} Loans
 					</p>
+					<loan-search-saved-search
+						v-if="enableSavedSearch && showSavedSearch && !savedSearchSuccess"
+						:loan-search-state="loanSearchState"
+						:all-facets="allFacets"
+						:show-success-message="showSavedSearchSuccessMessage"
+						:user-id="userId"
+					/>
 				</div>
 				<template v-if="initialLoadComplete && totalCount === 0">
 					<h3 class="tw-text-center">
@@ -343,9 +343,6 @@ export default {
 			this.isLightboxVisible = toggle;
 		},
 		updateState(filters = {}) {
-			if (this.savedSearchSuccess) {
-				this.disableSavedSearchSuccessMessage();
-			}
 			updateSearchState(this.apollo, filters, this.allFacets, this.queryType, this.loanSearchState);
 		},
 		handleUpdatedFilters(filters) {
@@ -372,12 +369,6 @@ export default {
 			this.handleResetFilters();
 
 			this.$kvTrackEvent?.('Lending', 'click-zero-loans-reset');
-		},
-		showSavedSearchSuccessMessage(searchName) {
-			this.$emit('enable-success-saved-search', searchName);
-		},
-		disableSavedSearchSuccessMessage() {
-			this.$emit('disable-success-saved-search', false);
 		},
 		applyQuery: async (apollo, query, allFacets, queryType, pageLimit, loanSearchState = {}) => {
 			const filters = convertQueryToFilters(query, allFacets, queryType, pageLimit);
