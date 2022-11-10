@@ -4,6 +4,7 @@ import { getEnumNameFromQueryParam } from '@/util/loanSearch/queryParseUtils';
 // Distribution model enum keys
 export const FIELDPARTNER_KEY = 'FIELDPARTNER';
 export const DIRECT_KEY = 'DIRECT';
+export const BOTH = 'BOTH';
 
 /**
  * Maps the distribution model enum names to display names
@@ -11,6 +12,7 @@ export const DIRECT_KEY = 'DIRECT';
 export const distributionModelDisplayMap = {
 	[FIELDPARTNER_KEY]: 'Partner',
 	[DIRECT_KEY]: 'Direct',
+	[BOTH]: 'All loans',
 };
 
 /**
@@ -18,7 +20,8 @@ export const distributionModelDisplayMap = {
  */
 const distributionModelEnumMap = {
 	FIELDPARTNER: 'fieldPartner',
-	DIRECT: 'direct'
+	DIRECT: 'direct',
+	BOTH: 'both',
 };
 
 /**
@@ -63,7 +66,7 @@ export default {
 	},
 	getRemovedFacet: () => ({ distributionModel: null }),
 	getSavedSearch: loanSearchState => ({
-		distributionModel: distributionModelEnumMap[loanSearchState?.distributionModel?.toUpperCase()]
+		distributionModel: distributionModelEnumMap[loanSearchState?.distributionModel?.toUpperCase() ?? 'BOTH']
 	}),
 	getFlssFilter: loanSearchState => ({
 		...(loanSearchState?.distributionModel && { distributionModel: { eq: loanSearchState.distributionModel } })
