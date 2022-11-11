@@ -50,7 +50,7 @@
 				:regions="filterOptions.location"
 				:total-loans="totalLoans"
 				:filters-loaded="filtersLoaded"
-				:update-location="updateLocation"
+				@update-location="updateLocation"
 				ref="locationSelector"
 			/>
 
@@ -100,10 +100,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		updateFilters: {
-			type: Function,
-			required: true
-		}
 	},
 	components: {
 		KvSelect,
@@ -118,7 +114,7 @@ export default {
 	},
 	watch: {
 		selectedGender(gender) {
-			this.updateFilters({ gender });
+			this.$emit('update-filters', { gender });
 			this.$kvTrackEvent(
 				'search',
 				'filter',
@@ -127,7 +123,7 @@ export default {
 			);
 		},
 		sortBy(sortBy) {
-			this.updateFilters({ sortBy });
+			this.$emit('update-filters', { sortBy });
 			this.$kvTrackEvent(
 				'search',
 				'click',
@@ -138,7 +134,7 @@ export default {
 	},
 	methods: {
 		updateLocation(location) {
-			this.updateFilters({ country: location });
+			this.$emit('update-filters', { country: location });
 			this.$kvTrackEvent(
 				'search',
 				'filter',
