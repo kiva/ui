@@ -1,3 +1,10 @@
+### [2.384.1](https://github.com/kiva/ui/compare/v2.384.0...v2.384.1) (2022-11-11)
+
+
+### Bug Fixes
+
+* callback props removed from quick filters components ([7d796e2](https://github.com/kiva/ui/commit/7d796e2b6e0cec415bfa41098e41468d33fc4c9b))
+
 ## [2.384.0](https://github.com/kiva/ui/compare/v2.383.0...v2.384.0) (2022-11-11)
 
 
