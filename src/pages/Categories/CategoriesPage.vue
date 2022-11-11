@@ -136,7 +136,7 @@ const allCategoriesPageQuery = gql`
 `;
 
 export default {
-	name: 'CategoriesBeta',
+	name: 'CategoriesPage',
 	components: {
 		WwwPage,
 		MainCategoryTile,
@@ -196,13 +196,6 @@ export default {
 		},
 	},
 	mounted() {
-		// EXP-ACK-345-Jul2022
-		// This cookie is set during the redirect and signifies the exp is active when landing on this page
-		const expCookieSignifier = this.cookieStore.get('kvcategoriesbeta');
-		if (expCookieSignifier === 'b') {
-			this.$kvTrackEvent('Categories', 'EXP-ACK-345-Jul2022', expCookieSignifier);
-		}
-
 		this.apollo.query({
 			query: gql`
 				query bpHeroBackgroundImage($placeholderKey: String) {

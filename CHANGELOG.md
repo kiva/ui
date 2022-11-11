@@ -1,3 +1,10 @@
+## [2.384.0](https://github.com/kiva/ui/compare/v2.383.0...v2.384.0) (2022-11-11)
+
+
+### Features
+
+* make categories-beta categories page ([bf40646](https://github.com/kiva/ui/commit/bf406462da7c8613fad9bb91ebe6053bbe261b14))
+
 ## [2.383.0](https://github.com/kiva/ui/compare/v2.382.0...v2.383.0) (2022-11-08)
 
 

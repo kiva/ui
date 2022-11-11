@@ -50,7 +50,7 @@
 
 		<div class="row tw-relative">
 			<!-- eslint-disable max-len -->
-			<div v-show="showQuickFiltersOverlay" style="opacity:0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-1"></div>
+			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-1"></div>
 			<div class="columns small-12" v-if="loans.length > 0">
 				<div v-if="!displayLoanPromoCard" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
 					<loan-card-controller
