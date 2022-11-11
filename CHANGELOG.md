@@ -1,3 +1,10 @@
+### [2.384.2](https://github.com/kiva/ui/compare/v2.384.1...v2.384.2) (2022-11-11)
+
+
+### Bug Fixes
+
+* remove ineffective exp force versions, add cps version of support-refugees ([da87b65](https://github.com/kiva/ui/commit/da87b6535caee61cd3c6e57845a91a70823610d3))
+
 ### [2.384.1](https://github.com/kiva/ui/compare/v2.384.0...v2.384.1) (2022-11-11)
 
 
