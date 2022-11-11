@@ -1,9 +1,5 @@
 <template>
 	<div class="tw-relative">
-		<div
-			:class="{ overlay: showQuickFiltersOverlay }"
-		>
-		</div>
 		<div class="row">
 			<div class="small-12 columns heading-region">
 				<view-toggle v-if="!enableQuickFilters" browse-url="/lend-by-category" :filter-url="filterUrl" />
@@ -42,17 +38,19 @@
 
 		<div v-if="enableQuickFilters" class="row">
 			<quick-filters
-				class="tw-ml-2"
+				class="tw-ml-2 tw-z-2"
 				:total-loans="totalCount"
 				:filter-options="quickFiltersOptions"
 				:filters-loaded="filtersLoaded"
-				:update-filters="updateQuickFilters"
+				@update-filters="updateQuickFilters"
 				@reset-filters="resetFilters"
 				@handle-overlay="handleQuickFiltersOverlay"
 			/>
 		</div>
 
-		<div class="row" :class="{ 'tw-opacity-low': showQuickFiltersOverlay }">
+		<div class="row tw-relative">
+			<!-- eslint-disable max-len -->
+			<div v-show="showQuickFiltersOverlay" style="opacity:0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-1"></div>
 			<div class="columns small-12" v-if="loans.length > 0">
 				<div v-if="!displayLoanPromoCard" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
 					<loan-card-controller
@@ -160,7 +158,6 @@ import {
 } from '@/util/loanChannelUtils';
 
 import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
-import { formatSortOptions, sortByNameToDisplay } from '@/util/loanSearch/filters/sortOptions';
 import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
@@ -653,13 +650,10 @@ export default {
 			// Merge all facet options with filtered options
 			const facets = {
 				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
-				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
-					.map(sortOption => ({ name: sortByNameToDisplay[sortOption.name], key: sortOption.name }))
 			};
 
 			this.quickFiltersOptions.location = facets.regions;
-			// TODO: Revisit after experiment phase as this returns a bunch of sort options we don't need
-			// this.quickFiltersOptions.sorting = facets.sortOptions;
+
 			this.quickFiltersOptions.sorting = [
 				{
 					title: 'Recommended',
@@ -797,32 +791,6 @@ export default {
 		p {
 			max-width: 75%;
 		}
-	}
-}
-
-@include breakpoint(xxlarge) {
-	#carousel_exp >>> section > div:nth-child(2) {
-		display: none;
-	}
-}
-
-#carousel_exp >>> section > div:nth-child(1) {
-	column-gap: 1rem !important;
-}
-
-#carousel_exp >>> section > div:nth-child(1) > div {
-	max-width: 185px !important;
-}
-
-.overlay {
-	@media only screen and (max-width: 1023px) {
-		position: fixed;
-		top: 0;
-		background-color: #000;
-		width: 100%;
-		height: 100%;
-		z-index: 5;
-		opacity: 0.5;
 	}
 }
 </style>
