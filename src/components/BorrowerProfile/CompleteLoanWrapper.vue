@@ -1,6 +1,5 @@
 <template>
 	<div>
-		Wrapper goes here dawg
 		<div
 			class="tw-relative tw-inline-flex tw-flex-1"
 			:class="{'tw-w-full':isLendAmountButton}"
