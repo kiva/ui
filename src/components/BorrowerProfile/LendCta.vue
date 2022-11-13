@@ -87,81 +87,61 @@
 								</kv-ui-select>
 
 								<!-- Sparkles wrapper -->
-								<div
-									class="tw-relative tw-inline-flex tw-flex-1"
-									:class="{'tw-w-full':isLendAmountButton}"
+								<complete-loan-wrapper
+									:is-complete-loan-active="isCompleteLoanActive"
+									:is-lend-amount-button="isLendAmountButton"
 								>
-									<!-- Lend button -->
-									<kv-ui-button
-										key="lendButton"
-										v-if="lendButtonVisibility && !isLessThan25"
-										class="tw-inline-flex tw-flex-1"
-										data-testid="bp-lend-cta-lend-button"
-										type="submit"
-									>
-										{{ ctaButtonText }}
-									</kv-ui-button>
+									<template #button>
 
-									<!-- Lend again/lent previously button -->
-									<kv-ui-button
-										key="lendAgainButton"
-										v-if="this.state === 'lent-to' && !isLessThan25"
-										class="tw-inline-flex tw-flex-1"
-										data-testid="bp-lend-cta-lend-again-button"
-										type="submit"
-										v-kv-track-event="[
-											'Lending',
-											'Add to basket',
-											'Lend again'
-										]"
-									>
-										Lend again
-									</kv-ui-button>
+										<!-- Lend button -->
+										<kv-ui-button
+											key="lendButton"
+											v-if="lendButtonVisibility && !isLessThan25"
+											class="tw-inline-flex tw-flex-1"
+											data-testid="bp-lend-cta-lend-button"
+											type="submit"
+										>
+											{{ ctaButtonText }}
+										</kv-ui-button>
 
-									<!-- Stranded loans -->
-									<lend-amount-button
-										class="tw-w-full"
-										:loan-id="loanId"
-										:show-now="true"
-										:amount-left="unreservedAmount"
-										@add-to-basket="addToBasket"
-										:complete-loan="completeLoan"
-										v-if="isLendAmountButton"
-									/>
+										<!-- Lend again/lent previously button -->
+										<kv-ui-button
+											key="lendAgainButton"
+											v-if="this.state === 'lent-to' && !isLessThan25"
+											class="tw-inline-flex tw-flex-1"
+											data-testid="bp-lend-cta-lend-again-button"
+											type="submit"
+											v-kv-track-event="[
+												'Lending',
+												'Add to basket',
+												'Lend again'
+											]"
+										>
+											Lend again
+										</kv-ui-button>
 
-									<!-- Adding to basket button -->
-									<kv-ui-button
-										v-if="isAdding"
-										class="tw-inline-flex tw-flex-1"
-										data-testid="bp-lend-cta-adding-to-basket-button"
-									>
-										Adding to basket...
-									</kv-ui-button>
+										<!-- Stranded loans -->
+										<lend-amount-button
+											class="tw-w-full"
+											:loan-id="loanId"
+											:show-now="true"
+											:amount-left="unreservedAmount"
+											@add-to-basket="addToBasket"
+											:complete-loan="completeLoan"
+											v-if="isLendAmountButton"
+										/>
 
-									<!-- Sparkles section -->
-									<img
-										v-show="isCompleteLoanActive"
-										class="tw-absolute tw--bottom-1 tw--left-1 tw-animate-pulse"
-										src="@/assets/images/sparkle.svg"
-									>
-									<img
-										v-show="isCompleteLoanActive"
-										class="tw-absolute tw--top-2 tw-right-1.5 tw-animate-pulse tw-scale-50"
-										style="animation-delay: 300ms;"
-										src="@/assets/images/sparkle.svg"
-									>
-									<img
-										v-show="isCompleteLoanActive"
-										class="tw-absolute tw--top-1 tw--right-1 tw-animate-pulse"
-										src="@/assets/images/sparkle.svg"
-									>
-									<img
-										v-show="isCompleteLoanActive"
-										class="tw-absolute tw-top-2 tw--right-1.5 tw-animate-pulse tw-scale-75"
-										style="animation-delay: 800ms;"
-										src="@/assets/images/sparkle.svg"
-									>
-								</div>
+										<!-- Adding to basket button -->
+										<kv-ui-button
+											v-if="isAdding"
+											class="tw-inline-flex tw-flex-1"
+											data-testid="bp-lend-cta-adding-to-basket-button"
+										>
+											Adding to basket...
+										</kv-ui-button>
+
+									</template>
+								</complete-loan-wrapper>
 							</fieldset>
 						</form>
 
@@ -379,6 +359,7 @@ import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
 import EcoChallengeLightbox from '@/components/Lightboxes/EcoChallengeLightbox';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import LendersList from '@/components/BorrowerProfile/LendersList';
+import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrapper';
 
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -422,6 +403,7 @@ export default {
 		KvUiSelect,
 		JumpLinks,
 		LoanBookmark,
+		CompleteLoanWrapper
 	},
 	data() {
 		return {
