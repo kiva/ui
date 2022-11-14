@@ -97,20 +97,6 @@ export default (config, globalOneTrustEvent) => {
 		/* eslint-enable */
 	};
 
-	// Facebook Pixel Code
-	const insertFB = () => {
-		/* eslint-disable */
-		!function(f,b,e,v,n,t,s) {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-			n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-			if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-			n.queue=[];t=b.createElement(e);t.async=!0;
-			t.src=v;s=b.getElementsByTagName(e)[0];
-			s.parentNode.insertBefore(t,s)}(window, document,'script',
-			'https://connect.facebook.net/en_US/fbevents.js');
-		fbq('init', config.fbPixelId);
-		/* eslint-enable */
-	};
-
 	// Algolia Analytics
 	const insertAlgoliaAnalytics = () => {
 		/* eslint-disable */
@@ -219,9 +205,6 @@ export default (config, globalOneTrustEvent) => {
 				if (config.enableGTM && !optout) {
 					OneTrust.InsertHtml('', 'head', insertGTM, null, 'C0004');
 				}
-				if (config.enableFB && !optout) {
-					OneTrust.InsertHtml('', 'head', insertFB, null, 'C0004');
-				}
 			}
 
 			/** Category 'C0005'
@@ -266,10 +249,6 @@ export default (config, globalOneTrustEvent) => {
 			if (config.enableHotjar && !optout) {
 				insertHotjar();
 			}
-		}
-
-		if (config.enableFB && !optout) {
-			insertFB();
 		}
 	}
 };

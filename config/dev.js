@@ -20,10 +20,8 @@ module.exports = merge(base, {
 		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
 		enableFB: true,
 		fbApplicationId: '364044572460',
-		fbPixelId: '108245819986414',
 		fbOgNameSpace: 'dev-kiva',
 		enableFullStory: false,
-		quantcastId: '',
 		enableSentry: true,
 		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@o7540.ingest.sentry.io/1201287',
 		algoliaConfig: {

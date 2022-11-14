@@ -21,10 +21,8 @@ module.exports = merge(base, {
 		enableOptimizely: false,
 		enableFB: true,
 		fbApplicationId: '370252743225',
-		fbPixelId: '108245819986414',
 		fbOgNameSpace: 'qa-kiva',
 		enableFullStory: false,
-		quantcastId: '',
 		enableSentry: false,
 		sentryURI: '',
 		algoliaConfig: {
