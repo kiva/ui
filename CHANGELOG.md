@@ -1,3 +1,24 @@
+### [2.384.2](https://github.com/kiva/ui/compare/v2.384.1...v2.384.2) (2022-11-11)
+
+
+### Bug Fixes
+
+* remove ineffective exp force versions, add cps version of support-refugees ([da87b65](https://github.com/kiva/ui/commit/da87b6535caee61cd3c6e57845a91a70823610d3))
+
+### [2.384.1](https://github.com/kiva/ui/compare/v2.384.0...v2.384.1) (2022-11-11)
+
+
+### Bug Fixes
+
+* callback props removed from quick filters components ([7d796e2](https://github.com/kiva/ui/commit/7d796e2b6e0cec415bfa41098e41468d33fc4c9b))
+
+## [2.384.0](https://github.com/kiva/ui/compare/v2.383.0...v2.384.0) (2022-11-11)
+
+
+### Features
+
+* make categories-beta categories page ([bf40646](https://github.com/kiva/ui/commit/bf406462da7c8613fad9bb91ebe6053bbe261b14))
+
 ## [2.383.0](https://github.com/kiva/ui/compare/v2.382.0...v2.383.0) (2022-11-08)
 
 

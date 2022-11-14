@@ -59,8 +59,8 @@ describe('Meta information', () => {
 						+ ' Click here to learn more and make a difference.');
 	});
 
-	it('Categories Beta Page', () => {
-		cy.visit('/categories-beta');
+	it('Categories Page', () => {
+		cy.visit('/categories');
 
 		cy.title().should('eq', 'Choose a category and fund a loan | Kiva');
 		cy.document().get('head meta[name="description"]')

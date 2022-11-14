@@ -1,12 +1,12 @@
 import { aliasQuery } from '../utils/graphql-test-utils';
 
-describe('Testing the Categories Beta page elements', () => {
+describe('Testing the Categories Page elements', () => {
 	it('Checks that the buttons and category tiles appear correctly', () => {
 		// Spy on every GraphQL request
 		cy.intercept('POST', '**/graphql*').as('graphqlRequest');
 
-		// Go to all categories beta page
-		cy.visit('/categories-beta');
+		// Go to all categories page
+		cy.visit('/categories');
 
 		// Wait for page buttons to exist
 		cy.get('@graphqlRequest.all');
@@ -27,8 +27,8 @@ describe('Testing the Categories Beta page elements', () => {
 			aliasQuery(req, 'spotlightLoanQuery');
 		});
 
-		// Go to all categories beta page
-		cy.visit('/categories-beta');
+		// Go to all categories page
+		cy.visit('/categories');
 
 		cy.wait('@gqlspotlightLoanQueryQuery');
 		// Wait for spotlight loan button to exist
