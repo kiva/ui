@@ -26,6 +26,10 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
 		/* eslint-disable global-require */
+		// Remove once New Yeah Share Campaign ends
+		const imageUrl = this.loadNYShare
+			? 'https://via.placeholder.com/1200x630'
+			: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg';
 		return {
 			title: 'Make a loan, change a life',
 			meta: [
@@ -38,6 +42,17 @@ export default {
 					name: 'description',
 					content: 'Kiva is the world\'s first online lending platform. '
 						+ 'For as little as $25 you can lend to an entrepreneur around the world. Learn more here.'
+				},
+				// Remove once New Yeah Share Campaign ends
+				{
+					property: 'og:image',
+					vmid: 'og:image',
+					content: imageUrl
+				},
+				{
+					name: 'twitter:image',
+					vmid: 'twitter:image',
+					content: imageUrl
 				},
 			],
 			script: [
@@ -81,10 +96,18 @@ export default {
 			],
 		};
 	},
+	created() {
+		// Remove once New Yeah Share Campaign ends
+		if (this.$route?.query?.newYearShare) {
+			this.loadNYShare = true;
+		}
+	},
 	data() {
 		return {
 			activeHomepage: ContentfulPage,
-			hasEverLoggedIn: false
+			hasEverLoggedIn: false,
+			// Remove once New Yeah Share Campaign ends
+			loadNYShare: false
 		};
 	},
 	apollo: {
