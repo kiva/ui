@@ -1,3 +1,16 @@
+## [2.385.0](https://github.com/kiva/ui/compare/v2.384.2...v2.385.0) (2022-11-14)
+
+
+### Features
+
+* overall cleanup of saved-search interface ([cac34e4](https://github.com/kiva/ui/commit/cac34e4a28067f2b9c3ae3aa76155a608706ac02))
+
+
+### Bug Fixes
+
+* cleanup merge conflicts ([8cb52fb](https://github.com/kiva/ui/commit/8cb52fb0f17b4b8d0cd4bf39b5a65c7ac055c234))
+* removed !savedSearchSuccess codeline ([df8230c](https://github.com/kiva/ui/commit/df8230cde2fbc48255f0de184888051bcdc0befd))
+
 ### [2.384.2](https://github.com/kiva/ui/compare/v2.384.1...v2.384.2) (2022-11-11)
 
 
