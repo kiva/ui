@@ -46,7 +46,7 @@
 					</p>
 					<loan-search-saved-search
 						class="tw-inline-block tw-align-center tw-justify-self-auto"
-						v-if="enableSavedSearch && showSavedSearch && !savedSearchSuccess"
+						v-if="enableSavedSearch && showSavedSearch"
 						:loan-search-state="loanSearchState"
 						:all-facets="allFacets"
 						:user-id="userId"
@@ -80,7 +80,7 @@
 					</p>
 					<loan-search-saved-search
 						class="tw-hidden lg:tw-inline-block tw-mt-1 tw-align-center tw-justify-self-auto"
-						v-if="enableSavedSearch && showSavedSearch && !savedSearchSuccess"
+						v-if="enableSavedSearch && showSavedSearch"
 						:loan-search-state="loanSearchState"
 						:all-facets="allFacets"
 						:user-id="userId"
