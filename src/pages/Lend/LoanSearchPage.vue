@@ -34,9 +34,6 @@
 				<loan-search-interface
 					:extend-flss-filters="extendFlssFilters"
 					:enable-saved-search="enableSavedSearch"
-					:saved-search-success="savedSearchSuccess"
-					@enable-success-saved-search="enableSuccessSavedSearch"
-					@disable-success-saved-search="disableSuccessSavedSearch"
 				/>
 			</kv-page-container>
 		</article>
@@ -82,7 +79,6 @@ export default {
 			mdiEarth,
 			mdiFilter,
 			mdiClose,
-			savedSearchSuccess: false,
 			savedSearchName: '',
 		};
 	},

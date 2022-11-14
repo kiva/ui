@@ -41,7 +41,16 @@
 					</kv-lightbox>
 				</div>
 				<div v-if="initialLoadComplete" class="tw-pt-1.5">
-					<p>{{ totalCount }} Loans</p>
+					<p class="tw-inline-block tw-align-center">
+						{{ totalCount }} Loans
+					</p>
+					<loan-search-saved-search
+						class="tw-inline-block tw-align-center tw-justify-self-auto"
+						v-if="enableSavedSearch && showSavedSearch && !savedSearchSuccess"
+						:loan-search-state="loanSearchState"
+						:all-facets="allFacets"
+						:user-id="userId"
+					/>
 				</div>
 			</div>
 			<div class="tw-flex tw-mr-4">
@@ -66,14 +75,14 @@
 						@updated="handleUpdatedFilters"
 						@reset="handleResetFilters"
 					/>
-					<p class="tw-hidden lg:tw-block tw-mt-1">
+					<p class="tw-hidden lg:tw-inline-block tw-mt-1 tw-align-center">
 						{{ totalCount }} Loans
 					</p>
 					<loan-search-saved-search
+						class="tw-hidden lg:tw-inline-block tw-mt-1 tw-align-center tw-justify-self-auto"
 						v-if="enableSavedSearch && showSavedSearch && !savedSearchSuccess"
 						:loan-search-state="loanSearchState"
 						:all-facets="allFacets"
-						:show-success-message="showSavedSearchSuccessMessage"
 						:user-id="userId"
 					/>
 				</div>
@@ -172,10 +181,6 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		savedSearchSuccess: {
-			type: Boolean,
-			default: false
-		}
 	},
 	data() {
 		return {
