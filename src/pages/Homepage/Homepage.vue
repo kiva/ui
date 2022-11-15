@@ -35,6 +35,10 @@ export default {
 			? this.nyShareCopy
 			: 'Kiva is the world\'s first online lending platform. '
 			+ 'For as little as $25 you can lend to an entrepreneur around the world. Learn more here.';
+		const socialDescription = this.loadNYShare
+			? this.nyShareCopy
+			: 'Support women, entrepreneurs, students and refugees around the world with as little as $25 on Kiva. '
+			+ '100% of your loans go to support borrowers.';
 		return {
 			title: 'Make a loan, change a life',
 			meta: [
@@ -54,9 +58,19 @@ export default {
 					content: imageUrl
 				},
 				{
+					property: 'og:description',
+					vmid: 'og:description',
+					content: socialDescription
+				},
+				{
 					name: 'twitter:image',
 					vmid: 'twitter:image',
 					content: imageUrl
+				},
+				{
+					name: 'twitter:description',
+					vmid: 'twitter:description',
+					content: socialDescription
 				},
 			],
 			script: [
