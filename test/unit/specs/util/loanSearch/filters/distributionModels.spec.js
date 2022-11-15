@@ -47,7 +47,7 @@ describe('distributionModels.js', () => {
 
 		describe('getFilterFromQuery', () => {
 			it('it should get filter', () => {
-				const query = { distributionModel: 'DIRECT' };
+				const query = { distributionModel: 'direct' };
 
 				const result = distributionModels.getFilterFromQuery(
 					query,
@@ -60,7 +60,7 @@ describe('distributionModels.js', () => {
 			});
 
 			it('should handle different distribution model casing', () => {
-				const query = { distributionModel: 'direct' };
+				const query = { distributionModel: 'DIRECT' };
 
 				const result = distributionModels.getFilterFromQuery(
 					query,
@@ -71,6 +71,19 @@ describe('distributionModels.js', () => {
 
 				expect(result).toEqual({ distributionModel: 'DIRECT' });
 			});
+
+			it('should handle legacy value', () => {
+				const query = { distributionModel: 'field_partner' };
+
+				const result = distributionModels.getFilterFromQuery(
+					query,
+					mockAllFacets,
+					mockState.pageLimit,
+					FLSS_QUERY_TYPE
+				);
+
+				expect(result).toEqual({ distributionModel: 'FIELDPARTNER' });
+			});
 		});
 
 		describe('getQueryFromFilter', () => {
@@ -79,7 +92,15 @@ describe('distributionModels.js', () => {
 
 				const result = distributionModels.getQueryFromFilter(state, FLSS_QUERY_TYPE);
 
-				expect(result).toEqual({ distributionModel: 'DIRECT' });
+				expect(result).toEqual({ distributionModel: 'direct' });
+			});
+
+			it('should push legacy distribution model', () => {
+				const state = { distributionModel: 'FIELDPARTNER' };
+
+				const result = distributionModels.getQueryFromFilter(state, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ distributionModel: 'field_partner' });
 			});
 		});
 
