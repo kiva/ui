@@ -21,7 +21,7 @@
 				class="tw-border-tertiary tw-mb-2"
 			>
 			<kv-button
-				:href="savedSearch.url"
+				:href="savedSearchUrl"
 				class="tw-mr-2 tw-mb-2 md:tw-mb-0"
 			>
 				{{ viewLoansText }}
@@ -65,6 +65,20 @@ export default {
 		};
 	},
 	computed: {
+		savedSearchUrl() {
+			// augment url for lend/filter compatibility
+			let ssUrl = this.savedSearch?.url ?? '';
+			// update url with lend/filter path
+			ssUrl = ssUrl.replace('lend', 'lend/filter');
+			// remove loanLimit of -1 which is equivalent to not being set
+			if (ssUrl.indexOf('loanLimit=-1') > -1) {
+				ssUrl = ssUrl.replace(/loanLimit=-1/, '');
+			}
+			// clear up any duplicate separators
+			ssUrl = ssUrl.replace(/\?&/, '?').replace(/&&/, '&');
+			// return augmented url
+			return ssUrl;
+		},
 		sortByText() {
 			const sortType = this.savedSearch?.loanSearchCriteria?.sortBy;
 			return sortByNameToDisplay?.[sortType] ?? sortType;
