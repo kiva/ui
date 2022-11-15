@@ -8,6 +8,7 @@ import gql from 'graphql-tag';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
+import numeral from 'numeral';
 
 const ContentfulPage = () => import('@/pages/ContentfulPage');
 
@@ -30,6 +31,10 @@ export default {
 		const imageUrl = this.loadNYShare
 			? 'https://via.placeholder.com/1200x630'
 			: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg';
+		const description = this.loadNYShare
+			? this.nyShareCopy
+			: 'Kiva is the world\'s first online lending platform. '
+			+ 'For as little as $25 you can lend to an entrepreneur around the world. Learn more here.';
 		return {
 			title: 'Make a loan, change a life',
 			meta: [
@@ -40,8 +45,7 @@ export default {
 				{
 					vmid: 'description',
 					name: 'description',
-					content: 'Kiva is the world\'s first online lending platform. '
-						+ 'For as little as $25 you can lend to an entrepreneur around the world. Learn more here.'
+					content: description
 				},
 				// Remove once New Yeah Share Campaign ends
 				{
@@ -98,7 +102,7 @@ export default {
 	},
 	created() {
 		// Remove once New Yeah Share Campaign ends
-		if (this.$route?.query?.newYearShare) {
+		if (this.$route?.query?.nyshare) {
 			this.loadNYShare = true;
 		}
 	},
@@ -128,6 +132,17 @@ export default {
 				const component = await ContentfulPage();
 				return preFetchAll([component?.default], client, args);
 			});
+		}
+	},
+	computed: {
+		nyShareCopy() {
+			const loans = numeral(this.$route?.query?.nyl);
+			const loanString = `${loans.format('0,0')} ${loans.value() === 1 ? 'loan' : 'loans'}`;
+			const borrowers = numeral(this.$route?.query?.nyb);
+			const borrowerString = `${borrowers.format('0,0')} ${borrowers.value() === 1 ? 'borrower' : 'borrowers'}`;
+			const countries = numeral(this.$route?.query?.nyc);
+			const countryString = `${countries.format('0,0')} ${countries.value() === 1 ? 'country' : 'countries'}`;
+			return `In 2022 I lent to ${loanString}, and helped ${borrowerString} in ${countryString} succeed.`;
 		}
 	},
 	mounted() {
