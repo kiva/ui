@@ -29,7 +29,11 @@
 <script>
 /* eslint-disable vue/no-computed-properties-in-data */
 import LendButton from '@/components/LoanCards/Buttons/LendButton';
-import { buildPriceArray } from '@/util/loanUtils';
+import {
+	buildPriceArray,
+	isLessThan25,
+	isBetween25And500
+} from '@/util/loanUtils';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
@@ -77,8 +81,17 @@ export default {
 			// IF we wanted to show this interface on loans with less than 25 remaining they would see the selector
 			const minAmount = parseFloat(this.amountLeft < 25 ? this.loan.minNoteSize : 25); // 25_hard_coded
 			// cap at 20 prices
-			return buildPriceArray(this.amountLeft, minAmount).slice(0, 20);
-		}
+			const priceArray = buildPriceArray(parseFloat(this.amountLeft), minAmount).slice(0, 20);
+			const amountLeftFixed = Number(this.amountLeft).toFixed();
+			if (this.isCompleteLoanActive && !priceArray.includes(amountLeftFixed)) {
+				priceArray.push(amountLeftFixed);
+			}
+			return priceArray;
+		},
+		isCompleteLoanActive() {
+			// eslint-disable-next-line
+			return isLessThan25(this.amountLeft) || isBetween25And500(this.amountLeft);
+		},
 	},
 	watch: {
 		loan: {
