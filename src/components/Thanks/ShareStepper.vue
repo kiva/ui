@@ -1,6 +1,6 @@
 <template>
 	<div class="tw-my-2 tw-px-2">
-		<div style="width: 136px" class="tw-mx-auto tw-px-1">
+		<div style="width: 136px;" class="tw-mx-auto tw-px-1">
 			<div class="tw-flex tw-items-center">
 				<template v-for="step in steps">
 					<ShareStepperStep
