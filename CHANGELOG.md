@@ -1,3 +1,10 @@
+## [2.387.0](https://github.com/kiva/ui/compare/v2.386.0...v2.387.0) (2022-11-15)
+
+
+### Features
+
+* changed distribution model query to use and expect legacy values ([e771137](https://github.com/kiva/ui/commit/e771137dc3696ee9c5a5f7000c2d6f109082a0f2))
+
 ## [2.386.0](https://github.com/kiva/ui/compare/v2.385.0...v2.386.0) (2022-11-15)
 
 
