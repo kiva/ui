@@ -185,3 +185,15 @@ export function readLoanFragment({
 	}
 	return partnerFragment || directFragment;
 }
+
+export function isLessThan25(unreservedAmount) {
+	return unreservedAmount < 25 && unreservedAmount > 0;
+}
+
+export function isBetween25And50(unreservedAmount) {
+	return unreservedAmount <= 50 && unreservedAmount > 25;
+}
+
+export function isBetween25And500(unreservedAmount) {
+	return unreservedAmount < 500 && unreservedAmount >= 25;
+}
