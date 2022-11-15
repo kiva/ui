@@ -17,8 +17,16 @@ export const distributionModelDisplayMap = {
  * Maps the FLSS enum values to the lend API enum values
  */
 const distributionModelEnumMap = {
-	FIELDPARTNER: 'fieldPartner',
-	DIRECT: 'direct'
+	[FIELDPARTNER_KEY]: 'fieldPartner',
+	[DIRECT_KEY]: 'direct'
+};
+
+/**
+ * Maps the FLSS enum values to the legacy query values
+ */
+const distributionModelQueryMap = {
+	[FIELDPARTNER_KEY]: 'field_partner',
+	[DIRECT_KEY]: 'direct'
 };
 
 /**
@@ -76,10 +84,13 @@ export default {
 	getFilterFromQuery: (query, allFacets) => ({
 		distributionModel: getEnumNameFromQueryParam(
 			query.distributionModel,
-			allFacets.distributionModelFacets
+			allFacets.distributionModelFacets,
+			distributionModelQueryMap
 		) ?? null
 	}),
 	getQueryFromFilter: loanSearchState => ({
-		...(loanSearchState.distributionModel && { distributionModel: loanSearchState.distributionModel })
+		...(loanSearchState.distributionModel && {
+			distributionModel: distributionModelQueryMap[loanSearchState.distributionModel]
+		})
 	}),
 };

@@ -29,6 +29,11 @@ describe('queryParseUtils.js', () => {
 			expect(getEnumNameFromQueryParam('A', facets)).toBe('a');
 			expect(getEnumNameFromQueryParam('a', facets.map(f => ({ name: f.name.toUpperCase() })))).toBe('A');
 		});
+
+		it('should get mapped value', () => {
+			expect(getEnumNameFromQueryParam('asd', facets, {})).toBe(undefined);
+			expect(getEnumNameFromQueryParam('asd', facets, { a: 'asd' })).toBe('a');
+		});
 	});
 
 	describe('getBooleanValueFromQueryParam', () => {
