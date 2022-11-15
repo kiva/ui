@@ -1,3 +1,15 @@
+## [2.386.0](https://github.com/kiva/ui/compare/v2.385.0...v2.386.0) (2022-11-15)
+
+
+### Features
+
+* complete loan functions passed to loan utils file ([6124d8c](https://github.com/kiva/ui/commit/6124d8c4e695f913d28fc9b5d91857490acb7f00))
+
+
+### Bug Fixes
+
+* remove comment ([77735a4](https://github.com/kiva/ui/commit/77735a4e8b5ce8a3dd882195e1d9e0e51f1a7fa0))
+
 ## [2.385.0](https://github.com/kiva/ui/compare/v2.384.2...v2.385.0) (2022-11-14)
 
 
