@@ -26,7 +26,6 @@ module.exports = merge(base, {
 		enableSentry: false,
 		sentryURI: '',
 		algoliaConfig: {
-			enableAA: false,
 			group: 'qa',
 			appId: 'testingZ9YK0WNQ85',
 			apiKey: '28aaa1d56e6a1688f13f6b41da0f27a5',

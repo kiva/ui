@@ -97,18 +97,6 @@ export default (config, globalOneTrustEvent) => {
 		/* eslint-enable */
 	};
 
-	// Algolia Analytics
-	const insertAlgoliaAnalytics = () => {
-		/* eslint-disable */
-		if (typeof String.prototype.startsWith === 'function') {
-			(function(e,a,t,n,s,i,c){e.AlgoliaAnalyticsObject=s,e.aa=e.aa||function(){
-				(e.aa.queue=e.aa.queue||[]).push(arguments)},i=a.createElement(t),c=a.getElementsByTagName(t)
-				[0],i.async=1,i.src="https://cdn.jsdelivr.net/npm/search-insights@1.2.0",
-				c.parentNode.insertBefore(i,c)})(window,document,"script",0,"aa");
-		}
-		/* eslint-enable */
-	};
-
 	// Hotjar Snippet
 	const insertHotjar = () => {
 		/* eslint-disable */
@@ -175,9 +163,6 @@ export default (config, globalOneTrustEvent) => {
 				if (config.enableSnowplow) {
 					OneTrust.InsertHtml('', 'head', insertSnowplow, null, 'C0002');
 				}
-				if (config.algoliaConfig.enableAA && !optout) {
-					OneTrust.InsertHtml('', 'head', insertAlgoliaAnalytics, null, 'C0002');
-				}
 				if (config.enableFullStory && !optout) {
 					OneTrust.InsertHtml('', 'head', insertFullStory, null, 'C0002');
 				}
@@ -242,9 +227,6 @@ export default (config, globalOneTrustEvent) => {
 			}
 			if (config.enableGTM && !optout) {
 				insertGTM();
-			}
-			if (config.algoliaConfig.enableAA && !optout) {
-				insertAlgoliaAnalytics();
 			}
 			if (config.enableHotjar && !optout) {
 				insertHotjar();
