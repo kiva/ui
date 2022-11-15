@@ -56,12 +56,14 @@ module.exports = [
 	{ path: '/build/getting-started', component: () => import('@/pages/Build/GettingStartedPage') },
 	{ path: '/build/research', component: () => import('@/pages/Build/Research') },
 	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
-
+	{
+		path: '/categories',
+		component: () => import('@/pages/Categories/CategoriesPage')
+	},
 	{
 		path: '/categories-beta',
-		component: () => import('@/pages/Categories/CategoriesBeta')
+		redirect: '/categories'
 	},
-
 	{
 		path: '/cc/:dynamicRoute',
 		component: () => import('@/pages/LandingPages/CorporateCampaign/CCLandingPage'),

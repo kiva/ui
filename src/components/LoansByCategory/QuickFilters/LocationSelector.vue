@@ -177,10 +177,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		updateLocation: {
-			type: Function,
-			required: true,
-		}
 	},
 	data() {
 		return {
@@ -238,13 +234,16 @@ export default {
 			}));
 		},
 		updateCountries(evt) {
-			if (this.selectedCountries.includes(evt.changed)) {
-				const index = this.selectedCountries.indexOf(evt.changed);
-				if (index > -1) {
-					this.selectedCountries.splice(index, 1);
+			for (let i = 0; i < evt.changed.length; i += 1) {
+				const isoCode = evt.changed[i];
+				if (this.selectedCountries.includes(isoCode)) {
+					const index = this.selectedCountries.indexOf(isoCode);
+					if (index > -1) {
+						this.selectedCountries.splice(index, 1);
+					}
+				} else {
+					this.selectedCountries.push(isoCode);
 				}
-			} else {
-				this.selectedCountries.push(evt.changed);
 			}
 		},
 		numberByRegion(region) {
@@ -278,7 +277,7 @@ export default {
 	},
 	watch: {
 		selectedCountries() {
-			this.updateLocation(this.selectedCountries);
+			this.$emit('update-location', this.selectedCountries);
 		}
 	}
 

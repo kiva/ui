@@ -166,6 +166,11 @@ export default {
 			type: String,
 			required: true
 		},
+		/** Force lightbox visibility on load */
+		openLightbox: {
+			type: Boolean,
+			required: false
+		},
 	},
 	data() {
 		return {
@@ -173,7 +178,7 @@ export default {
 				disabled: false,
 				text: 'Copy Link'
 			},
-			isLightboxVisible: false,
+			isLightboxVisible: this.openLightbox || false,
 			mdiFacebook,
 			mdiLinkedin,
 			mdiTwitter,

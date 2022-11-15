@@ -353,7 +353,8 @@ export default {
 						type: 'event',
 						eventName: 'loan_share_purchase',
 						tags: {
-							loan_share_purchase_amount: transactionData.loanTotal
+							loan_share_purchase_amount: transactionData.loanTotal,
+							donation_amount: transactionData.donationTotal
 						}
 					});
 				}

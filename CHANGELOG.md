@@ -1,3 +1,58 @@
+## [2.385.0](https://github.com/kiva/ui/compare/v2.384.2...v2.385.0) (2022-11-14)
+
+
+### Features
+
+* overall cleanup of saved-search interface ([cac34e4](https://github.com/kiva/ui/commit/cac34e4a28067f2b9c3ae3aa76155a608706ac02))
+
+
+### Bug Fixes
+
+* cleanup merge conflicts ([8cb52fb](https://github.com/kiva/ui/commit/8cb52fb0f17b4b8d0cd4bf39b5a65c7ac055c234))
+* removed !savedSearchSuccess codeline ([df8230c](https://github.com/kiva/ui/commit/df8230cde2fbc48255f0de184888051bcdc0befd))
+
+### [2.384.2](https://github.com/kiva/ui/compare/v2.384.1...v2.384.2) (2022-11-11)
+
+
+### Bug Fixes
+
+* remove ineffective exp force versions, add cps version of support-refugees ([da87b65](https://github.com/kiva/ui/commit/da87b6535caee61cd3c6e57845a91a70823610d3))
+
+### [2.384.1](https://github.com/kiva/ui/compare/v2.384.0...v2.384.1) (2022-11-11)
+
+
+### Bug Fixes
+
+* callback props removed from quick filters components ([7d796e2](https://github.com/kiva/ui/commit/7d796e2b6e0cec415bfa41098e41468d33fc4c9b))
+
+## [2.384.0](https://github.com/kiva/ui/compare/v2.383.0...v2.384.0) (2022-11-11)
+
+
+### Features
+
+* make categories-beta categories page ([bf40646](https://github.com/kiva/ui/commit/bf406462da7c8613fad9bb91ebe6053bbe261b14))
+
+## [2.383.0](https://github.com/kiva/ui/compare/v2.382.0...v2.383.0) (2022-11-08)
+
+
+### Features
+
+* isMatchable lend filter ([f7c83b1](https://github.com/kiva/ui/commit/f7c83b16407ff172cb80468cfb9d0163809d0bf1))
+
+## [2.382.0](https://github.com/kiva/ui/compare/v2.381.0...v2.382.0) (2022-11-08)
+
+
+### Features
+
+* add additional query param functionality to borrower profile sharing and tracking ([b39327c](https://github.com/kiva/ui/commit/b39327c692ef6735be8c4f0433e665a7d63dd0f5))
+
+## [2.381.0](https://github.com/kiva/ui/compare/v2.380.1...v2.381.0) (2022-11-08)
+
+
+### Features
+
+* donation amount added to loan share purchase event ([58b396b](https://github.com/kiva/ui/commit/58b396bbf2e33df9fd2a746978d10e4cc6b00b16))
+
 ### [2.380.1](https://github.com/kiva/ui/compare/v2.380.0...v2.380.1) (2022-11-08)
 
 
