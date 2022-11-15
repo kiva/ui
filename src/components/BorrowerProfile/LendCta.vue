@@ -87,10 +87,7 @@
 								</kv-ui-select>
 
 								<!-- Sparkles wrapper -->
-								<complete-loan-wrapper
-									:is-complete-loan-active="isCompleteLoanActive"
-									:is-lend-amount-button="isLendAmountButton"
-								>
+								<complete-loan-wrapper :is-complete-loan-active="isCompleteLoanActive">
 									<template #button>
 
 										<!-- Lend button -->
@@ -107,7 +104,7 @@
 										<!-- Lend again/lent previously button -->
 										<kv-ui-button
 											key="lendAgainButton"
-											v-if="this.state === 'lent-to' && !isLessThan25"
+											v-if="isLentTo && !isLessThan25"
 											class="tw-inline-flex tw-flex-1"
 											data-testid="bp-lend-cta-lend-again-button"
 											type="submit"
@@ -346,7 +343,13 @@
 import { mdiLightningBolt } from '@mdi/js';
 import gql from 'graphql-tag';
 import { setLendAmount } from '@/util/basketUtils';
-import { buildPriceArray, isMatchAtRisk } from '@/util/loanUtils';
+import {
+	buildPriceArray,
+	isMatchAtRisk,
+	isLessThan25,
+	isBetween25And50,
+	isBetween25And500
+} from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import {
 	getExperimentSettingCached,
@@ -524,7 +527,7 @@ export default {
 		async addToBasket() {
 			this.isAdding = true;
 			setLendAmount({
-				amount: this.isLessThan25 ? this.unreservedAmount : this.selectedOption,
+				amount: isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption,
 				apollo: this.apollo,
 				loanId: this.loanId,
 			}).then(() => {
@@ -625,7 +628,7 @@ export default {
 		},
 		unreservedAmount(newValue, previousValue) {
 			// set initial selected value for sub 25 loan if shown
-			if (this.completeLoan && this.isBetween25And50) {
+			if (this.completeLoan && isBetween25And50(this.unreservedAmount)) {
 				this.selectedOption = Number(this.unreservedAmount).toFixed();
 			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
 				this.selectedOption = parseInt(newValue, 10);
@@ -769,23 +772,20 @@ export default {
 			return 'tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7';
 		},
 		isLessThan25() {
-			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
+			return isLessThan25(this.unreservedAmount);
 		},
-		isBetween25And50() {
-			return this.unreservedAmount <= 50 && this.unreservedAmount > 25;
-		},
-		isBetween25And500() {
-			return this.unreservedAmount < 500 && this.unreservedAmount >= 25;
+		isLentTo() {
+			return this.state === 'lent-to';
 		},
 		isCompleteLoanActive() {
 			if (this.completeLoan) {
 				// eslint-disable-next-line
-				return (this.isLessThan25) || (this.isBetween25And500 && Number(this.unreservedAmount).toFixed() === this.selectedOption);
+				return (isLessThan25(this.unreservedAmount)) || (isBetween25And500(this.unreservedAmount) && Number(this.unreservedAmount).toFixed() === this.selectedOption);
 			}
 			return false;
 		},
 		isLendAmountButton() {
-			return (this.lendButtonVisibility || this.state === 'lent-to') && this.isLessThan25;
+			return (this.lendButtonVisibility || this.state === 'lent-to') && isLessThan25(this.unreservedAmount);
 		}
 	},
 	mounted() {

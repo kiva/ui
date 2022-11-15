@@ -1,8 +1,7 @@
 <template>
 	<div>
 		<div
-			class="tw-relative tw-inline-flex tw-flex-1"
-			:class="{'tw-w-full':isLendAmountButton}"
+			class="tw-relative tw-inline-flex tw-flex-1 tw-w-full"
 		>
 			<slot name="button"></slot>
 			<img
@@ -39,10 +38,6 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		isLendAmountButton: {
-			type: Boolean,
-			default: false,
-		}
 	}
 };
 </script>
