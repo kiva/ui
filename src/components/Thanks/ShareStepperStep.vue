@@ -4,24 +4,24 @@
 			<div
 				class="tw-h-3.5 tw-rounded-full tw-w-3.5"
 				:class="[
-					{'tw-bg-brand': step !== lastStep},
-					{ 'tw-bg-transparent tw-border-2 tw-border-brand': step === lastStep }
+					{ 'tw-bg-brand': !isLastStep },
+					{ 'tw-bg-transparent tw-border-2 tw-border-brand': isLastStep }
 				]"
 			>
 				<kv-icon
-					v-if="step !== lastStep"
+					v-if="!isLastStep"
 					class="tw-fill-current tw-inline-flex tw-max-h-full tw-ml-1 tw-mt-1 tw-text-white tw-w-1.5"
 					name="checkmark"
 				/>
 			</div>
 			<p
-				:class="`tw-text-small tw-absolute tw-font-medium tw-mt-0.5 tw-text-center
-				tw-uppercase tw--ml-${0.5 * (step + 1)}`"
+				class="tw-text-small tw-absolute tw-font-medium tw-mt-0.5 tw-text-center tw-uppercase"
+				:style="{ marginLeft: -0.25 * (step + 1) + 'rem' }"
 			>
 				{{ text }}
 			</p>
 		</div>
-		<div v-if="step !== lastStep" class="tw-w-8 tw-border-t-2 tw-border-brand"></div>
+		<div v-if="!isLastStep" class="tw-w-8 tw-border-t-2 tw-border-brand"></div>
 	</div>
 </template>
 <script>
@@ -35,9 +35,9 @@ export default {
 			type: Number,
 			default: 0
 		},
-		lastStep: {
-			type: Number,
-			default: 1
+		isLastStep: {
+			type: Boolean,
+			default: false
 		},
 		iconName: {
 			type: String,

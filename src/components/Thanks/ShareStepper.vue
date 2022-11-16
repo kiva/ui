@@ -6,7 +6,7 @@
 					<ShareStepperStep
 						:key="step.key"
 						:step="step.key"
-						:last-step="steps.length - 1"
+						:is-last-step="step.key === steps.length - 1"
 						:text="step.text"
 					/>
 				</template>
