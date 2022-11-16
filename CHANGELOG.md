@@ -1,3 +1,10 @@
+## [2.389.0](https://github.com/kiva/ui/compare/v2.388.0...v2.389.0) (2022-11-16)
+
+
+### Features
+
+* add how and press-center routes ([9585234](https://github.com/kiva/ui/commit/958523433f2952045d0df2c34e892481ef2f038e))
+
 ## [2.388.0](https://github.com/kiva/ui/compare/v2.387.0...v2.388.0) (2022-11-16)
 
 
