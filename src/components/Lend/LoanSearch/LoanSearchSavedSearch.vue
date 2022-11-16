@@ -1,11 +1,11 @@
 <template>
 	<div>
 		<div
-			class="tw-flex tw-cursor-pointer tw-align-center"
+			class="tw-flex tw-cursor-pointer tw-items-center"
 			@click="openModal"
 		>
-			<icon-add class="tw-mr-1 tw-inline-block tw-align-baseline" />
-			<h4 class="tw-text-h4 tw-mb-1 tw-font-medium tw-text-action tw-align-baseline">
+			<icon-add class="tw-mr-1 tw-inline-block" />
+			<h4 class="tw-text-h4 tw-font-medium tw-text-action">
 				Save This Search
 			</h4>
 		</div>
