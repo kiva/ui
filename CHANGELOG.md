@@ -1,3 +1,10 @@
+## [2.388.0](https://github.com/kiva/ui/compare/v2.387.0...v2.388.0) (2022-11-16)
+
+
+### Features
+
+* non 25 increment option added to amount selector in lend increment button component ([7982f5a](https://github.com/kiva/ui/commit/7982f5accefd136489858214bcda26c8768c61e9))
+
 ## [2.387.0](https://github.com/kiva/ui/compare/v2.386.0...v2.387.0) (2022-11-15)
 
 
