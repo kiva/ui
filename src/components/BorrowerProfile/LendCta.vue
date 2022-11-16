@@ -124,7 +124,7 @@
 											:show-now="true"
 											:amount-left="unreservedAmount"
 											@add-to-basket="addToBasket"
-											:complete-loan="completeLoan"
+											:complete-loan="isCompleteLoanActive"
 											v-if="isLendAmountButton"
 										/>
 
@@ -379,10 +379,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		completeLoan: {
-			type: Boolean,
-			default: false,
-		},
 		lenders: {
 			type: Array,
 			default: () => []
@@ -628,7 +624,7 @@ export default {
 		},
 		unreservedAmount(newValue, previousValue) {
 			// set initial selected value for sub 25 loan if shown
-			if (this.completeLoan && isBetween25And50(this.unreservedAmount)) {
+			if (isBetween25And50(this.unreservedAmount)) {
 				this.selectedOption = Number(this.unreservedAmount).toFixed();
 			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
 				this.selectedOption = parseInt(newValue, 10);
@@ -666,7 +662,7 @@ export default {
 			// limit at 20 price options
 			const priceArray = buildPriceArray(parseFloat(this.unreservedAmount), minAmount).slice(0, 20);
 			// eslint-disable-next-line
-			if (this.completeLoan && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
+			if (this.isCompleteLoanActive && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
 			}
 			return priceArray;
@@ -778,11 +774,8 @@ export default {
 			return this.state === 'lent-to';
 		},
 		isCompleteLoanActive() {
-			if (this.completeLoan) {
-				// eslint-disable-next-line
-				return (isLessThan25(this.unreservedAmount)) || (isBetween25And500(this.unreservedAmount) && Number(this.unreservedAmount).toFixed() === this.selectedOption);
-			}
-			return false;
+			// eslint-disable-next-line
+			return (isLessThan25(this.unreservedAmount)) || (isBetween25And500(this.unreservedAmount) && Number(this.unreservedAmount).toFixed() === this.selectedOption);
 		},
 		isLendAmountButton() {
 			return (this.lendButtonVisibility || this.state === 'lent-to') && isLessThan25(this.unreservedAmount);

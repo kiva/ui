@@ -48,7 +48,6 @@
 					<lend-cta
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
-						:complete-loan="completeLoanExpActive"
 						:require-deposits-matched-loans="requireDepositsMatchedLoans"
 						:lenders="lenders"
 						:social-exp-enabled="socialExpEnabled"
@@ -173,10 +172,6 @@ const pageQuery = gql`
 		hasEverLoggedIn @client
 		general {
 			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
-				key
-				value
-			}
-			bpCompleteLoan: uiExperimentSetting(key: "bp_complete_loan") {
 				key
 				value
 			}
@@ -406,7 +401,6 @@ export default {
 			status: '',
 			use: '',
 			description: '',
-			completeLoanExpActive: false,
 			loanFundraisingInfo: {},
 			requireDepositsMatchedLoans: false,
 			shareCardLanguageVersion: '',
@@ -462,7 +456,6 @@ export default {
 					}
 
 					return Promise.all([
-						client.query({ query: experimentQuery, variables: { id: 'bp_complete_loan' } }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 						client.query({ query: experimentQuery, variables: { id: socialElementsExpKey } }),
 						client.query({ query: experimentQuery, variables: { id: whatIsKivaExpKey } }),
@@ -657,23 +650,6 @@ export default {
 				'Basket',
 				'EXP-CORE-615-May-2022',
 				matchedLoansExperiment.version
-			);
-		}
-
-		// EXP-CORE-607-May-2022
-		const completeLoanEXP = this.apollo.readFragment({
-			id: 'Experiment:bp_complete_loan',
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		if (completeLoanEXP.version) {
-			if (completeLoanEXP.version === 'b' && this.amountLeft < 500) {
-				this.completeLoanExpActive = true;
-			}
-			this.$kvTrackEvent(
-				'Borrower Profile',
-				'EXP-CORE-607-May-2022',
-				completeLoanEXP.version
 			);
 		}
 
