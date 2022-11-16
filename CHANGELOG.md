@@ -1,3 +1,10 @@
+### [2.390.1](https://github.com/kiva/ui/compare/v2.390.0...v2.390.1) (2022-11-16)
+
+
+### Bug Fixes
+
+* saved search link alignment ([f977ea2](https://github.com/kiva/ui/commit/f977ea21ef684d8fe874b5de0888382ba7e36133))
+
 ## [2.390.0](https://github.com/kiva/ui/compare/v2.389.0...v2.390.0) (2022-11-16)
 
 
