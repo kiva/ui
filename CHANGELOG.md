@@ -1,3 +1,10 @@
+## [2.390.0](https://github.com/kiva/ui/compare/v2.389.0...v2.390.0) (2022-11-16)
+
+
+### Features
+
+* experiment code for complete loan feature was removed ([67aa855](https://github.com/kiva/ui/commit/67aa855ab3a9c2c16269cc75a1865ced00b1a190))
+
 ## [2.389.0](https://github.com/kiva/ui/compare/v2.388.0...v2.389.0) (2022-11-16)
 
 
