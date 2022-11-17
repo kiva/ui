@@ -13,7 +13,7 @@
 			</div>
 		</div>
 		<p class="tw-text-center tw-mt-4 tw-text-h3">
-			{{ lenderName }}, complete your support by sharing this loan.
+			<span class="fs-mask">{{ lenderName }}</span>, complete your support by sharing this loan.
 		</p>
 	</div>
 </template>
