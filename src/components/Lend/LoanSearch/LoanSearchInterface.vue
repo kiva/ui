@@ -41,16 +41,18 @@
 					</kv-lightbox>
 				</div>
 				<div v-if="initialLoadComplete" class="tw-pt-1.5">
-					<p class="tw-inline-block tw-align-center">
-						{{ totalCount }} Loans
-					</p>
-					<loan-search-saved-search
-						class="tw-inline-block tw-align-center tw-justify-self-auto"
-						v-if="enableSavedSearch && showSavedSearch"
-						:loan-search-state="loanSearchState"
-						:all-facets="allFacets"
-						:user-id="userId"
-					/>
+					<div class="tw-flex tw-items-center tw-flex-wrap">
+						<p class="tw-inline-block tw-mr-2">
+							{{ totalCount }} Loans
+						</p>
+						<loan-search-saved-search
+							class="tw-inline-block"
+							v-if="enableSavedSearch && showSavedSearch"
+							:loan-search-state="loanSearchState"
+							:all-facets="allFacets"
+							:user-id="userId"
+						/>
+					</div>
 				</div>
 			</div>
 			<div class="tw-flex tw-mr-4">
@@ -75,16 +77,18 @@
 						@updated="handleUpdatedFilters"
 						@reset="handleResetFilters"
 					/>
-					<p class="tw-hidden lg:tw-inline-block tw-mt-1 tw-align-center">
-						{{ totalCount }} Loans
-					</p>
-					<loan-search-saved-search
-						class="tw-hidden lg:tw-inline-block tw-mt-1 tw-align-center tw-justify-self-auto"
-						v-if="enableSavedSearch && showSavedSearch"
-						:loan-search-state="loanSearchState"
-						:all-facets="allFacets"
-						:user-id="userId"
-					/>
+					<div class="tw-flex tw-mt-1 tw-items-center tw-flex-wrap">
+						<p class="tw-hidden lg:tw-inline-block tw-mr-2">
+							{{ totalCount }} Loans
+						</p>
+						<loan-search-saved-search
+							class="tw-hidden lg:tw-inline-block"
+							v-if="enableSavedSearch && showSavedSearch"
+							:loan-search-state="loanSearchState"
+							:all-facets="allFacets"
+							:user-id="userId"
+						/>
+					</div>
 				</div>
 				<template v-if="initialLoadComplete && totalCount === 0">
 					<h3 class="tw-text-center">

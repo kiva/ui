@@ -6,10 +6,20 @@ import { createMinMaxRange } from '@/util/loanSearch/minMaxRange';
  *
  * @param {string} param The query param
  * @param {Array} facets Facets from the API
+ * @param {Object} queryMap Maps query values to expected values
  * @returns The valid enum value
  */
-export function getEnumNameFromQueryParam(param, facets) {
+export function getEnumNameFromQueryParam(param, facets, queryMap) {
 	if (param) {
+		if (queryMap) {
+			Object.keys(queryMap).forEach(key => {
+				if (queryMap[key] === param) {
+					// eslint-disable-next-line no-param-reassign
+					param = key;
+				}
+			});
+		}
+
 		return facets.find(f => f.name.toUpperCase() === param.toUpperCase())?.name;
 	}
 }

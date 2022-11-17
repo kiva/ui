@@ -1,3 +1,57 @@
+### [2.390.2](https://github.com/kiva/ui/compare/v2.390.1...v2.390.2) (2022-11-17)
+
+
+### Bug Fixes
+
+* hide isMatchable filter ([f26ab31](https://github.com/kiva/ui/commit/f26ab31e504b5df831b6d4daebb86af12cd7347c))
+
+### [2.390.1](https://github.com/kiva/ui/compare/v2.390.0...v2.390.1) (2022-11-16)
+
+
+### Bug Fixes
+
+* saved search link alignment ([f977ea2](https://github.com/kiva/ui/commit/f977ea21ef684d8fe874b5de0888382ba7e36133))
+
+## [2.390.0](https://github.com/kiva/ui/compare/v2.389.0...v2.390.0) (2022-11-16)
+
+
+### Features
+
+* experiment code for complete loan feature was removed ([67aa855](https://github.com/kiva/ui/commit/67aa855ab3a9c2c16269cc75a1865ced00b1a190))
+
+## [2.389.0](https://github.com/kiva/ui/compare/v2.388.0...v2.389.0) (2022-11-16)
+
+
+### Features
+
+* add how and press-center routes ([9585234](https://github.com/kiva/ui/commit/958523433f2952045d0df2c34e892481ef2f038e))
+
+## [2.388.0](https://github.com/kiva/ui/compare/v2.387.0...v2.388.0) (2022-11-16)
+
+
+### Features
+
+* non 25 increment option added to amount selector in lend increment button component ([7982f5a](https://github.com/kiva/ui/commit/7982f5accefd136489858214bcda26c8768c61e9))
+
+## [2.387.0](https://github.com/kiva/ui/compare/v2.386.0...v2.387.0) (2022-11-15)
+
+
+### Features
+
+* changed distribution model query to use and expect legacy values ([e771137](https://github.com/kiva/ui/commit/e771137dc3696ee9c5a5f7000c2d6f109082a0f2))
+
+## [2.386.0](https://github.com/kiva/ui/compare/v2.385.0...v2.386.0) (2022-11-15)
+
+
+### Features
+
+* complete loan functions passed to loan utils file ([6124d8c](https://github.com/kiva/ui/commit/6124d8c4e695f913d28fc9b5d91857490acb7f00))
+
+
+### Bug Fixes
+
+* remove comment ([77735a4](https://github.com/kiva/ui/commit/77735a4e8b5ce8a3dd882195e1d9e0e51f1a7fa0))
+
 ## [2.385.0](https://github.com/kiva/ui/compare/v2.384.2...v2.385.0) (2022-11-14)
 
 

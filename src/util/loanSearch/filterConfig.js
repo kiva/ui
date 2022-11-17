@@ -9,7 +9,6 @@ import sectors from '@/util/loanSearch/filters/sectors';
 import themes from '@/util/loanSearch/filters/themes';
 import tags from '@/util/loanSearch/filters/tags';
 import lenderRepaymentTerms from '@/util/loanSearch/filters/lenderRepaymentTerms';
-import isMatchable from '@/util/loanSearch/filters/isMatchable';
 import distributionModels from '@/util/loanSearch/filters/distributionModels';
 import partners from '@/util/loanSearch/filters/partners';
 import partnerRiskRating from '@/util/loanSearch/filters/partnerRiskRating';
@@ -62,7 +61,6 @@ const config = {
 	themes,
 	tags,
 	lenderRepaymentTerms,
-	isMatchable,
 	distributionModels,
 	partners,
 	partnerRiskRating,
