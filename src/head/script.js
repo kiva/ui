@@ -97,32 +97,6 @@ export default (config, globalOneTrustEvent) => {
 		/* eslint-enable */
 	};
 
-	// Facebook Pixel Code
-	const insertFB = () => {
-		/* eslint-disable */
-		!function(f,b,e,v,n,t,s) {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-			n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-			if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-			n.queue=[];t=b.createElement(e);t.async=!0;
-			t.src=v;s=b.getElementsByTagName(e)[0];
-			s.parentNode.insertBefore(t,s)}(window, document,'script',
-			'https://connect.facebook.net/en_US/fbevents.js');
-		fbq('init', config.fbPixelId);
-		/* eslint-enable */
-	};
-
-	// Algolia Analytics
-	const insertAlgoliaAnalytics = () => {
-		/* eslint-disable */
-		if (typeof String.prototype.startsWith === 'function') {
-			(function(e,a,t,n,s,i,c){e.AlgoliaAnalyticsObject=s,e.aa=e.aa||function(){
-				(e.aa.queue=e.aa.queue||[]).push(arguments)},i=a.createElement(t),c=a.getElementsByTagName(t)
-				[0],i.async=1,i.src="https://cdn.jsdelivr.net/npm/search-insights@1.2.0",
-				c.parentNode.insertBefore(i,c)})(window,document,"script",0,"aa");
-		}
-		/* eslint-enable */
-	};
-
 	// Hotjar Snippet
 	const insertHotjar = () => {
 		/* eslint-disable */
@@ -189,9 +163,6 @@ export default (config, globalOneTrustEvent) => {
 				if (config.enableSnowplow) {
 					OneTrust.InsertHtml('', 'head', insertSnowplow, null, 'C0002');
 				}
-				if (config.algoliaConfig.enableAA && !optout) {
-					OneTrust.InsertHtml('', 'head', insertAlgoliaAnalytics, null, 'C0002');
-				}
 				if (config.enableFullStory && !optout) {
 					OneTrust.InsertHtml('', 'head', insertFullStory, null, 'C0002');
 				}
@@ -218,9 +189,6 @@ export default (config, globalOneTrustEvent) => {
 			if (config.enableAnalytics) {
 				if (config.enableGTM && !optout) {
 					OneTrust.InsertHtml('', 'head', insertGTM, null, 'C0004');
-				}
-				if (config.enableFB && !optout) {
-					OneTrust.InsertHtml('', 'head', insertFB, null, 'C0004');
 				}
 			}
 
@@ -260,16 +228,9 @@ export default (config, globalOneTrustEvent) => {
 			if (config.enableGTM && !optout) {
 				insertGTM();
 			}
-			if (config.algoliaConfig.enableAA && !optout) {
-				insertAlgoliaAnalytics();
-			}
 			if (config.enableHotjar && !optout) {
 				insertHotjar();
 			}
-		}
-
-		if (config.enableFB && !optout) {
-			insertFB();
 		}
 	}
 };
