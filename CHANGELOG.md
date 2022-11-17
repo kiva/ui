@@ -1,3 +1,10 @@
+### [2.390.4](https://github.com/kiva/ui/compare/v2.390.3...v2.390.4) (2022-11-17)
+
+
+### Bug Fixes
+
+* select box needs touch event ([b792ce8](https://github.com/kiva/ui/commit/b792ce84d502f7eb456d8cd2310a024e27df02e7))
+
 ### [2.390.3](https://github.com/kiva/ui/compare/v2.390.2...v2.390.3) (2022-11-17)
 
 
