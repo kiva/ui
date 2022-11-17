@@ -1,3 +1,11 @@
+### [2.390.3](https://github.com/kiva/ui/compare/v2.390.2...v2.390.3) (2022-11-17)
+
+
+### Bug Fixes
+
+* remove algolia analytics ([6d9aa86](https://github.com/kiva/ui/commit/6d9aa8646bf2dd699cec1a78addae58ee8e8d94c))
+* remove duplicate FB pixel and old quantcast tracking ([dcc6adf](https://github.com/kiva/ui/commit/dcc6adffe72d424ccc5f2240acd5c4c415ec10c8))
+
 ### [2.390.2](https://github.com/kiva/ui/compare/v2.390.1...v2.390.2) (2022-11-17)
 
 
