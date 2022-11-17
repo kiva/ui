@@ -112,6 +112,13 @@ export default {
 					},
 				},
 			],
+			link: (this.loadNYShare ? [
+				{
+					vmid: 'canonical',
+					rel: 'canonical',
+					href: `https://${this.$appConfig.host}${this.$route.fullPath}`,
+				},
+			] : []),
 		};
 	},
 	created() {
