@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="tw-w-full">
 		<div
 			class="tw-relative tw-inline-flex tw-flex-1 tw-w-full"
 		>
