@@ -28,8 +28,7 @@ export default ({ cookieStore }) => {
 						logReadQueryError(e, 'ExperimentResolver experimentSettingQuery');
 					}
 
-					const experimentSetting = experimentData?.general?.uiExperimentSetting;
-					const experiment = readJSONSetting(experimentSetting?.value);
+					const experiment = readJSONSetting(experimentData, 'general.uiExperimentSetting.value');
 
 					// create targeted subset of experiment setting to use in hash
 					// Changing the Name, Distribution, Variants or Control values will "reset" an experiment assignment
