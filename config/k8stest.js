@@ -3,7 +3,7 @@ var test  = require('./test.js')
 
 module.exports = merge(test, {
 	app: {
-		publicPath: 'https://www-test-kiva-org.freetls.fastly.net/',
+		publicPath: 'https://www.test.kiva.org/',
 	},
 	server: {
 		memcachedServers: 'marketplace-k8s-ui-test.knmtma.0001.usw2.cache.amazonaws.com:11211',
