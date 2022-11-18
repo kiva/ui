@@ -1,3 +1,25 @@
+### [2.390.4](https://github.com/kiva/ui/compare/v2.390.3...v2.390.4) (2022-11-17)
+
+
+### Bug Fixes
+
+* select box needs touch event ([b792ce8](https://github.com/kiva/ui/commit/b792ce84d502f7eb456d8cd2310a024e27df02e7))
+
+### [2.390.3](https://github.com/kiva/ui/compare/v2.390.2...v2.390.3) (2022-11-17)
+
+
+### Bug Fixes
+
+* remove algolia analytics ([6d9aa86](https://github.com/kiva/ui/commit/6d9aa8646bf2dd699cec1a78addae58ee8e8d94c))
+* remove duplicate FB pixel and old quantcast tracking ([dcc6adf](https://github.com/kiva/ui/commit/dcc6adffe72d424ccc5f2240acd5c4c415ec10c8))
+
+### [2.390.2](https://github.com/kiva/ui/compare/v2.390.1...v2.390.2) (2022-11-17)
+
+
+### Bug Fixes
+
+* hide isMatchable filter ([f26ab31](https://github.com/kiva/ui/commit/f26ab31e504b5df831b6d4daebb86af12cd7347c))
+
 ### [2.390.1](https://github.com/kiva/ui/compare/v2.390.0...v2.390.1) (2022-11-16)
 
 

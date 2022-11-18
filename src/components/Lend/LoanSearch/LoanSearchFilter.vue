@@ -246,7 +246,6 @@ export default {
 				filterConfig.config.partnerRiskRating.uiConfig.stateKey,
 				filterConfig.config.partnerDefaultRate.uiConfig.stateKey,
 				filterConfig.config.partnerAvgProfitability.uiConfig.stateKey,
-				filterConfig.config.isMatchable.uiConfig.stateKey,
 			].includes(filterConfig.config[key].uiConfig.stateKey);
 
 			// Paging and activities filters are not currently part of the filter panel
