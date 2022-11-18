@@ -172,7 +172,6 @@ export default {
 			mfiRecommendationsExp: false,
 			mfiRecommendationsLoans: [],
 			selectedChannel: {},
-			enableLoanFindingExp: false,
 			showContent: false
 		};
 	},
