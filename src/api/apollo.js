@@ -18,24 +18,13 @@ export default function createApolloClient({
 	uri,
 	fetch
 }) {
-	const possibleTypes = {};
-	types.forEach(element => {
-		possibleTypes[element.name] = element.possibleTypes.map(type => type.name);
-	});
-
 	const { typePolicies } = initState({ appConfig, cookieStore, kvAuth0 });
 
 	const cache = new InMemoryCache({
-		possibleTypes,
+		possibleTypes: types,
 		typePolicies: {
 			...typePolicies,
-			General: {
-				merge: true,
-			},
-			Contentful: {
-				merge: true,
-			},
-			Lend: {
+			Mergable: {
 				merge: true,
 			},
 			Setting: {
