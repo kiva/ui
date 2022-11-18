@@ -25,6 +25,7 @@
 				<div class="thanks__header hide-for-print">
 					<template v-if="receipt">
 						<borrower-image
+							v-if="categoryShareVersion === 'c' || !categoryName"
 							class="
 								tw-w-full
 								tw-bg-black
@@ -46,7 +47,13 @@
 								{ width: 280 },
 							]"
 						/>
-						<div class="tw-flex-auto tw-mb-2">
+						<div v-else>
+							<img
+								:alt="`${categoryName} category image`"
+								:src="imageRequire(`./${categoryName}_thanks_page.png`)"
+							>
+						</div>
+						<div v-if="categoryShareVersion === 'c' || !categoryName" class="tw-flex-auto tw-mb-2">
 							<figure>
 								<figcaption class="tw-flex progress">
 									<template>
@@ -88,11 +95,26 @@
 					<template v-else>
 						<h1	class="thanks__headline-h1 tw-mt-1 tw-mb-3 tw-text-left">
 							<!-- eslint-disable-next-line max-len -->
-							<span class="fs-mask">{{ this.lender.firstName }}</span>, can you share this loan with one more person?
+							<template v-if="categoryShareVersion === 'a' && categoryName">
+								<!-- eslint-disable-next-line max-len -->
+								<span class="fs-mask">{{ this.lender.firstName }}</span>, share now to find allies in the fight against economic inequity for {{ this.categoryName }}.
+							</template>
+							<template v-else-if="categoryShareVersion === 'b' && categoryName">
+								More loans like yours mean more opportunities for {{ this.categoryName }}.
+							</template>
+							<template v-else>
+								<!-- eslint-disable-next-line max-len -->
+								<span class="fs-mask">{{ this.lender.firstName }}</span>, can you share this loan with one more person?
+							</template>
 						</h1>
 						<p class="tw-text-h3 tw-m-0 thanks__base-text">
-							<!-- eslint-disable-next-line max-len -->
-							<span class="fs-mask">{{ this.loan.name }}</span> only needs {{ calculatePeopleQtyToGoal() }} more people to lend $25 and their loan could be fully funded in a matter of hours!
+							<template v-if="categoryShareVersion === 'c' || !categoryName">
+								<!-- eslint-disable-next-line max-len -->
+								<span class="fs-mask">{{ this.loan.name }}</span> only needs {{ calculatePeopleQtyToGoal() }} more people to lend $25 and their loan could be fully funded in a matter of hours!
+							</template>
+							<template v-else>
+								{{ this.thanksPageBody }}
+							</template>
 						</p>
 					</template>
 					<template>
@@ -178,7 +200,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
-const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
+const imageRequire = require.context('@/assets/images/category-share-experiment/', true);
 
 export default {
 	name: 'ThanksPageShare',
@@ -213,6 +235,10 @@ export default {
 		shareAskCopyVersion: {
 			type: String,
 			default: 'a'
+		},
+		categoryShareVersion: {
+			type: String,
+			default: 'c'
 		},
 	},
 	metaInfo() {
@@ -293,6 +319,42 @@ export default {
 				via: 'Kiva',
 			});
 		},
+		categoryName() {
+			if (this.loan?.gender?.toLowerCase() === 'female') {
+				return 'women';
+			}
+			if (['education', 'agriculture'].includes(this.loan?.sector?.name?.toLowerCase())) {
+				return this.loan?.sector?.name?.toLowerCase();
+			}
+			return '';
+		},
+		thanksPageBody() {
+			let pageBody = '';
+			if (this.categoryShareVersion === 'a') {
+				pageBody = '1.4 billion people are currently unbanked with no access to basic financial services.';
+				if (this.categoryName === 'women') {
+					pageBody += ' Your loan will help women access to the funds they need to improve their lives.';
+				}
+				if (['education', 'women'].includes(this.categoryName)) {
+					// eslint-disable-next-line max-len
+					pageBody += `Your loan will help borrowers access the funds they need to invest in ${this.categoryName}.`;
+				}
+				pageBody += ' The more people join our cause, the bigger impact we\'ll make.';
+			}
+			if (this.categoryShareVersion === 'b') {
+				pageBody = 'Share Kiva.org with others to rally more allies around this cause.';
+				if (this.categoryName === 'women') {
+					// eslint-disable-next-line max-len
+					pageBody += ' Many women around the world lack access to the financial services they need to improve their lives.';
+				}
+				if (['education', 'women'].includes(this.categoryName)) {
+					// eslint-disable-next-line max-len
+					pageBody += ' Many people around the world lack access to the financial services they need to improve their lives. Together, we can address this inequity, one loan at a time.';
+				}
+			}
+
+			return pageBody;
+		}
 	},
 	methods: {
 		handleFacebookResponse() {
