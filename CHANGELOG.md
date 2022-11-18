@@ -1,3 +1,10 @@
+### [2.390.5](https://github.com/kiva/ui/compare/v2.390.4...v2.390.5) (2022-11-18)
+
+
+### Bug Fixes
+
+* cta size fixed in borrower profile page ([056b7b9](https://github.com/kiva/ui/commit/056b7b94f101bd516c30de189407cae245366f6d))
+
 ### [2.390.4](https://github.com/kiva/ui/compare/v2.390.3...v2.390.4) (2022-11-17)
 
 
