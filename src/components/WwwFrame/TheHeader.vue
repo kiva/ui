@@ -650,13 +650,13 @@ export default {
 
 				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { path: '/' });
 				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { path: '/' });
-
-				userHasLentBefore(hasLentBefore);
-				userHasDepositBefore(hasDepositBefore);
 			} catch (e) {
 				logReadQueryError(e, 'User Data For Optimizely Metrics');
 			}
 		}
+
+		userHasLentBefore(hasLentBefore);
+		userHasDepositBefore(hasDepositBefore);
 	},
 	mounted() {
 		// MARS-246 Hotjar user attributes
