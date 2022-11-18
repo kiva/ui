@@ -286,12 +286,20 @@ export default {
 			return `&utm_campaign=social_share_checkout_control_scle_${this.shareCardLanguageVersion}`;
 		},
 		shareLink() {
-			const base = `https://${this.$appConfig.host}`;
-			if (this.loan.id) {
-				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utm_content=${this.utmContent}`; // eslint-disable-line max-len
+			let base = `https://${this.$appConfig.host}`;
+			let lender = '';
+			let categoryShareVersion = '';
+			if (this.categoryName) {
+				base += `/lend-by-category/${this.categoryName}`;
+				lender = `&lender=${this.loan.name}`;
+				categoryShareVersion = ['a', 'b'].includes(this.categoryShareVersion)
+					? `&category_share_version=${this.categoryShareVersion}`
+					: '';
 			}
-
-			return `${base}?utm_content=${this.utmContent}${this.getUtmCampaignVersion}`; // eslint-disable-line max-len
+			if (this.loan.id) {
+				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utm_content=${this.utmContent}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
+			}
+			return `${base}?utm_content=${this.utmContent}${this.getUtmCampaignVersion}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
@@ -304,11 +312,22 @@ export default {
 			});
 		},
 		linkedInShareUrl() {
+			let title = `A loan for ${this.loan.name}`;
+			if (['a', 'b'].includes(this.categoryShareVersion) && this.categoryName) {
+				title = `Can you help ${this.loan.name} `;
+				if (this.categoryName === 'women') {
+					title += 'support women around the world?';
+				}
+				if (this.categoryName === 'education') {
+					title += 'expand access to education around the world?';
+				}
+				title += 'support smallholder farmers around the world?';
+			}
 			return getFullUrl('https://www.linkedin.com/shareArticle', {
 				mini: 'true',
 				source: `https://${this.$appConfig.host}`,
 				summary: this.shareMessage.substring(0, 256),
-				title: `A loan for ${this.loan.name}`,
+				title,
 				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social${this.getUtmCampaignVersion}` // eslint-disable-line max-len
 			});
 		},

@@ -67,10 +67,29 @@ const testCategories = [
 	'eco-friendly'
 ];
 
+const imageRequire = require.context('@/assets/images/category-share-experiment/', true);
+
 export default {
 	name: 'LoanChannelCategoryPage',
 	metaInfo() {
 		this.getMetaInfo();
+		let image = '';
+		let title = '';
+		if (this.$route.query.category_share_version
+			&& ['women', 'education', 'agriculture'].includes(this.$route.params.category)) {
+			image = imageRequire(`./${this.$route.params.category}_share_card.png`);
+			title = `Can you help, ${this.$route.query.lender} `;
+			if (this.$route.params.category === 'women') {
+				title += 'support women around the world?';
+			}
+			if (this.$route.params.category === 'education') {
+				title += 'expand access to education around the world?';
+			}
+			if (this.$route.params.category === 'agriculture') {
+				title += 'support smallholder farmers around the world?';
+			}
+		}
+
 		return {
 			title: this.meta.title,
 			meta: [
@@ -101,7 +120,20 @@ export default {
 					vmid: 'twitter:description',
 					content: this.meta.description
 				}
-			])
+			]).concat(image ? [
+				{ property: 'og:title', vmid: 'og:title', content: title },
+				{
+					property: 'og:image',
+					vmid: 'og:image',
+					content: image
+				},
+				{ name: 'twitter:title', vmid: 'twitter:title', content: title },
+				{
+					name: 'twitter:image',
+					vmid: 'twitter:image',
+					content: image
+				}
+			] : [])
 		};
 	},
 	components: {
