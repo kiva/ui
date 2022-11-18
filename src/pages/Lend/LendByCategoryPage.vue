@@ -1,5 +1,6 @@
 <template>
 	<www-page
+		v-show="showContent"
 		class="lend-by-category-page"
 	>
 		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true" />
@@ -171,6 +172,8 @@ export default {
 			mfiRecommendationsExp: false,
 			mfiRecommendationsLoans: [],
 			selectedChannel: {},
+			enableLoanFindingExp: false,
+			showContent: false
 		};
 	},
 	computed: {
@@ -694,6 +697,27 @@ export default {
 				}
 			});
 		},
+		initializeLoanFindingPageExperiment() {
+			const layoutEXP = this.apollo.readFragment({
+				id: 'Experiment:loan_finding_page',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			if (layoutEXP.version && this.isLoggedIn) {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CORE-854-Dec2022',
+					layoutEXP.version
+				);
+				if (layoutEXP.version === 'b') {
+					this.$router.push({ path: '/lending-home' });
+				} else {
+					this.showContent = true;
+				}
+			} else {
+				this.showContent = true;
+			}
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -708,8 +732,15 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'mfi_recommendations' } }),
 					// experiment: VUE- Category Service driven FLSS channels
 					client.query({ query: experimentQuery, variables: { id: 'flss_category_service' } }),
+					// experiment: CORE-854 Loan Finding Page
+					client.query({ query: experimentQuery, variables: { id: 'loan_finding_page' } }),
 				]);
 			})
+				.then(() => {
+					return client.query({
+						query: mlOrderedLoanChannels
+					});
+				})
 				.then(() => {
 					return client.query({
 						query: mlOrderedLoanChannels
@@ -786,6 +817,9 @@ export default {
 
 		// Initialize CORE-698 MFI Recommendations Experiment
 		this.initializeMFIRecommendationsExperiment();
+
+		// Initialize CORE-854 Loan Finding Page Experiment
+		this.initializeLoanFindingPageExperiment();
 	},
 	mounted() {
 		this.fetchCategoryIds = [...this.categorySetting];
