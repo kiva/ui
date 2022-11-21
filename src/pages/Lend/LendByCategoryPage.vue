@@ -1,8 +1,5 @@
 <template>
-	<www-page
-		v-show="showContent"
-		class="lend-by-category-page"
-	>
+	<www-page class="lend-by-category-page">
 		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true" />
 
 		<!-- MFI Recommendations Section -->
@@ -176,7 +173,6 @@ export default {
 			mfiRecommendationsExp: false,
 			mfiRecommendationsLoans: [],
 			selectedChannel: {},
-			showContent: false
 		};
 	},
 	computed: {
