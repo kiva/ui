@@ -1,3 +1,10 @@
+## [2.392.0](https://github.com/kiva/ui/compare/v2.391.0...v2.392.0) (2022-11-21)
+
+
+### Features
+
+* remove dropdowns for excluded categories on quick filters ([c6deb4d](https://github.com/kiva/ui/commit/c6deb4d59ba68ef900d79286f014722baf2c41c2))
+
 ## [2.391.0](https://github.com/kiva/ui/compare/v2.390.5...v2.391.0) (2022-11-21)
 
 
