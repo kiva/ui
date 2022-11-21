@@ -1,3 +1,11 @@
+### [2.393.1](https://github.com/kiva/ui/compare/v2.393.0...v2.393.1) (2022-11-21)
+
+
+### Bug Fixes
+
+* margin button for amount selector fixed in lendcta ([6b29f06](https://github.com/kiva/ui/commit/6b29f062760d51eb59eef006d6f4a111c53a28a8))
+* validation of boolean as string ([38b72d1](https://github.com/kiva/ui/commit/38b72d1dddbb08e9b1e19236a0f41b33afe48fab))
+
 ## [2.393.0](https://github.com/kiva/ui/compare/v2.392.0...v2.393.0) (2022-11-21)
 
 
