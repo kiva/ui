@@ -1,3 +1,18 @@
+## [2.393.0](https://github.com/kiva/ui/compare/v2.392.0...v2.393.0) (2022-11-21)
+
+
+### Features
+
+* mask lender name ([76767ea](https://github.com/kiva/ui/commit/76767ea956d0531300b32a0a97e958fa9d332e53))
+* stepper in thanks page share ([0c61816](https://github.com/kiva/ui/commit/0c6181610263514e29b02673dcd06dd19464dfca))
+
+
+### Bug Fixes
+
+* eslint ([0bd6962](https://github.com/kiva/ui/commit/0bd69628f20cb74bd9caed9aabd86954f1d0a431))
+* remove lender first name in headline ([c591c20](https://github.com/kiva/ui/commit/c591c20d9a7874da563a0f2cad4eb6e170072cd0))
+* use inline styles for possible not existing tw classes ([1db9f68](https://github.com/kiva/ui/commit/1db9f6876acc4fcfaee0a3715f849f3cc6b0678d))
+
 ## [2.392.0](https://github.com/kiva/ui/compare/v2.391.0...v2.392.0) (2022-11-21)
 
 
