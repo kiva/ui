@@ -1,33 +1,33 @@
-import query from '@/graphql/mutation/updateActiveLoan.graphql';
+import query from '@/graphql/query/activeLoanClient.graphql';
+
 /*
  * Active loan resolvers
  */
 export default () => {
 	return {
 		defaults(cache) {
-			const data = {
-				hoverLoanId: 0,
-				xCoordinate: 0,
-				yCoordinate: 0,
-				loan: JSON.stringify({
-					activity: {},
-					userProperties: {},
-					loanFundraisingInfo: {},
-					geocode: {
-						country: {},
-					},
-					image: {},
-				}),
-				tracking: JSON.stringify({}),
-				__typename: 'ActiveLoan',
-			};
-
 			cache.writeQuery({
 				query,
-				data,
+				data: {
+					activeLoan: {
+						id: 0,
+						hoverLoanId: 0,
+						xCoordinate: 0,
+						yCoordinate: 0,
+						loan: JSON.stringify({
+							activity: {},
+							userProperties: {},
+							loanFundraisingInfo: {},
+							geocode: {
+								country: {},
+							},
+							image: {},
+						}),
+						tracking: JSON.stringify({}),
+						__typename: 'ActiveLoan',
+					}
+				},
 			});
-
-			return data;
 		},
 		typePolicies: {
 			Mutation: {
@@ -52,6 +52,7 @@ export default () => {
 				) {
 					const data = {
 						activeLoan: {
+							id: 0,
 							hoverLoanId,
 							xCoordinate,
 							yCoordinate,

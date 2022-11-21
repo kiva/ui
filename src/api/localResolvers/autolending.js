@@ -14,14 +14,14 @@ import LoanSearchCriteria, {
 	criteriaAreEqual,
 	getSearchableCriteria,
 } from '@/api/fixtures/LoanSearchCriteria';
-import { gql } from '@apollo/client';
 
 // Helper function for writing autolending data to the cache
-function writeAutolendingData(cache, { currentProfile, savedProfile, ...data }) {
+function writeAutolendingData(cache, { currentProfile, savedProfile, ...fields }) {
 	// Set base typename
 	const autolending = {
+		id: 0,
 		__typename: 'Autolending',
-		...data,
+		...fields,
 	};
 	// Set autolend profile typenames
 	if (currentProfile) {
@@ -30,8 +30,13 @@ function writeAutolendingData(cache, { currentProfile, savedProfile, ...data }) 
 	if (savedProfile) {
 		autolending.savedProfile = getCacheableProfile(savedProfile);
 	}
-	// Write autolending object to cache
-	cache.writeData({ data: { autolending } });
+	// Update autolending object in the cache
+	cache.updateQuery({ query: bothProfilesQuery }, data => ({
+		autolending: {
+			...data.autolending,
+			...autolending
+		}
+	}));
 }
 
 let loanCountObservable;
@@ -145,33 +150,23 @@ function convertLegacyProfile(profile) {
 export default () => {
 	return {
 		defaults(cache) {
-			const query = gql`query autolending {
-				autolending @client {
-					currentLoanCount
-					profileChanged
-					loadingProfile
-					countingLoans
-					savingProfile
-					warningThreshold
-				}
-			}`;
-
-			const data = {
-				__typename: 'Autolending',
-				currentLoanCount: 0, // updates when search filters are changed
-				profileChanged: false, // true when the current profile is different than the profile on the server
-				loadingProfile: false, // true when first loading the profile from the server
-				countingLoans: false, // true when loan count is updating
-				savingProfile: false, // true when profile is being saved o the server
-				warningThreshold: 25, // minimum loan count to avoid getting a warning message
-			};
-
 			cache.writeQuery({
-				query,
-				data,
+				query: bothProfilesQuery,
+				data: {
+					autolending: {
+						id: 0,
+						__typename: 'Autolending',
+						currentProfile: null,
+						savedProfile: null,
+						currentLoanCount: 0, // updates when search filters are changed
+						profileChanged: false, // true when currentProfile is different than savedProfile
+						loadingProfile: false, // true when first loading the profile from the server
+						countingLoans: false, // true when loan count is updating
+						savingProfile: false, // true when profile is being saved o the server
+						warningThreshold: 25, // minimum loan count to avoid getting a warning message
+					}
+				}
 			});
-
-			return data;
 		},
 		typePolicies: {
 			AutolendingMutation: {
@@ -342,7 +337,7 @@ export default () => {
 			Mutation: {
 				autolending() {
 					// Return typename so apollo will use that type to resolve the fields
-					return { __typename: 'AutolendingMutation' };
+					return { id: 0, __typename: 'AutolendingMutation' };
 				}
 			}
 		}

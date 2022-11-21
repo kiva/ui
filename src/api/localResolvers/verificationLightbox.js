@@ -1,50 +1,40 @@
-import showVerificationLightboxQuery from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
-import closeVerificationLightboxQuery from '@/graphql/mutation/checkout/closeVerificationLightbox.graphql';
+import { gql } from '@apollo/client';
+
 /*
  * VerificationLightbox resolvers
  */
 
-// eslint-disable-next-line no-underscore-dangle
-const __typename = 'VerificationLightbox';
+function writeVerificationLightboxData({ cache, visible = false }) {
+	cache.writeQuery({
+		query: gql`query verificationLightboxData {
+			verificationLightbox @client {
+				id
+				visible
+			}
+		}`,
+		data: {
+			verificationLightbox: {
+				id: 0,
+				visible,
+				__typename: 'VerificationLightbox',
+			}
+		}
+	});
+}
 
 export default () => {
 	return {
 		defaults(cache) {
-			const verificationLightbox = {
-				visible: false,
-				__typename,
-			};
-			cache.writeQuery({
-				query: showVerificationLightboxQuery,
-				data: verificationLightbox
-			});
-
-			return verificationLightbox;
+			writeVerificationLightboxData({ cache, visible: false });
 		},
 		typePolicies: {
 			Mutation: {
-				showVerificationLightbox(_, { visible = true }, context) {
-					context.cache.writeQuery({
-						query: showVerificationLightboxQuery,
-						data: {
-							verificationLightbox: {
-								visible,
-								__typename,
-							},
-						},
-					});
+				showVerificationLightbox(_, args, { cache }) {
+					writeVerificationLightboxData({ cache, visible: true });
 					return true;
 				},
-				closeVerificationLightbox(_, { visible = false }, context) {
-					context.cache.writeQuery({
-						query: closeVerificationLightboxQuery,
-						data: {
-							verificationLightbox: {
-								visible,
-								__typename,
-							},
-						},
-					});
+				closeVerificationLightbox(_, args, { cache }) {
+					writeVerificationLightboxData({ cache, visible: false });
 					return true;
 				},
 			},

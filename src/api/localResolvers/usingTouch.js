@@ -1,18 +1,14 @@
-import query from '@/graphql/mutation/updateUsingTouch.graphql';
+import query from '@/graphql/query/shared/usingTouchClient.graphql';
 /*
  * UsingTouch resolvers
  */
 export default () => {
 	return {
 		defaults(cache) {
-			const usingTouch = false;
-
 			cache.writeQuery({
 				query,
-				usingTouch,
+				data: { usingTouch: false },
 			});
-
-			return usingTouch;
 		},
 		typePolicies: {
 			Mutation: {
@@ -21,7 +17,7 @@ export default () => {
 						query,
 						data: { usingTouch }
 					});
-					return null;
+					return true;
 				},
 			},
 		},

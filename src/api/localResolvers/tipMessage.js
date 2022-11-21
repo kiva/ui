@@ -1,55 +1,46 @@
-import showTipMessageQuery from '@/graphql/mutation/tipMessage/showTipMessage.graphql';
-import closeTipMessageQuery from '@/graphql/mutation/tipMessage/closeTipMessage.graphql';
+import tipMessageDataQuery from '@/graphql/query/tipMessage/tipMessageData.graphql';
+
 /*
  * TipMessage resolvers
  */
 export default () => {
 	return {
 		defaults(cache) {
-			const tip = {
-				message: '',
-				persist: false,
-				type: '',
-				visible: false,
-				__typename: 'TipMessage',
-			};
-
 			cache.writeQuery({
-				query: showTipMessageQuery,
-				data: tip,
+				query: tipMessageDataQuery,
+				data: {
+					tip: {
+						id: 0,
+						message: '',
+						persist: false,
+						type: '',
+						visible: false,
+						__typename: 'TipMessage',
+					}
+				},
 			});
-
-			return tip;
 		},
 		typePolicies: {
 			Mutation: {
-				showTipMessage(_, {
-					message = '', persist = false, type = '', visible = true
-				}, context) {
-					context.cache.writeQuery({
-						query: showTipMessageQuery,
-						data: {
-							tip: {
-								message,
-								persist,
-								type,
-								visible,
-								__typename: 'TipMessage',
-							},
-						},
-					});
+				showTipMessage(_, { message = '', persist = false, type = '' }, context) {
+					context.cache.updateQuery({ query: tipMessageDataQuery }, data => ({
+						tip: {
+							...data.tip,
+							message,
+							persist,
+							type,
+							visible: true,
+						}
+					}));
 					return true;
 				},
-				closeTipMessage(_, { visible = false }, context) {
-					context.cache.writeQuery({
-						query: closeTipMessageQuery,
-						data: {
-							tip: {
-								visible,
-								__typename: 'TipMessage',
-							},
-						},
-					});
+				closeTipMessage(_, args, context) {
+					context.cache.updateQuery({ query: tipMessageDataQuery }, data => ({
+						tip: {
+							...data.tip,
+							visible: false,
+						}
+					}));
 					return true;
 				},
 			},
