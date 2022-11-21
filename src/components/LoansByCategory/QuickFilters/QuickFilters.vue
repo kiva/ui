@@ -19,7 +19,7 @@
 			</button>
 		</div>
 		<div class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 tw-w-full tw-pr-2 lg:tw-pr-0">
-			<div class="tw-flex tw-flex-col tw-order-2 lg:tw-order-1">
+			<div v-if="!removeGenderDropdown" class="tw-flex tw-flex-col tw-grow tw-order-2 lg:tw-order-1">
 				<label
 					class="tw-text-h4"
 					for="gender"
@@ -44,6 +44,7 @@
 			</div>
 
 			<location-selector
+				v-if="!removeLocationDropdown"
 				@click.native="trackDropdownClick('location')"
 				@handle-overlay="handleQuickFiltersOverlay"
 				class="tw-order-1 lg:tw-order-2"
@@ -54,10 +55,10 @@
 				ref="locationSelector"
 			/>
 
-			<div class="tw-flex tw-flex-col tw-order-3">
+			<div v-if="!removeSortByDropdown" class="tw-flex tw-flex-col tw-order-3 tw-grow">
 				<label
 					class="tw-text-h4"
-					for="gender"
+					for="sortBy"
 				>
 					Sort By
 				</label>
@@ -100,6 +101,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		targetedLoanChannelUrl: {
+			type: String,
+			required: true
+		}
 	},
 	components: {
 		KvSelect,
@@ -165,6 +170,17 @@ export default {
 		},
 		handleQuickFiltersOverlay(showOverlay) {
 			this.$emit('handle-overlay', showOverlay);
+		}
+	},
+	computed: {
+		removeGenderDropdown() {
+			return this.targetedLoanChannelUrl === 'women';
+		},
+		removeLocationDropdown() {
+			return this.targetedLoanChannelUrl === 'kiva-u-s';
+		},
+		removeSortByDropdown() {
+			return this.targetedLoanChannelUrl === 'ending-soon';
 		}
 	},
 	mounted() {

@@ -1,3 +1,42 @@
+## [2.393.0](https://github.com/kiva/ui/compare/v2.392.0...v2.393.0) (2022-11-21)
+
+
+### Features
+
+* mask lender name ([76767ea](https://github.com/kiva/ui/commit/76767ea956d0531300b32a0a97e958fa9d332e53))
+* stepper in thanks page share ([0c61816](https://github.com/kiva/ui/commit/0c6181610263514e29b02673dcd06dd19464dfca))
+
+
+### Bug Fixes
+
+* eslint ([0bd6962](https://github.com/kiva/ui/commit/0bd69628f20cb74bd9caed9aabd86954f1d0a431))
+* remove lender first name in headline ([c591c20](https://github.com/kiva/ui/commit/c591c20d9a7874da563a0f2cad4eb6e170072cd0))
+* use inline styles for possible not existing tw classes ([1db9f68](https://github.com/kiva/ui/commit/1db9f6876acc4fcfaee0a3715f849f3cc6b0678d))
+
+## [2.392.0](https://github.com/kiva/ui/compare/v2.391.0...v2.392.0) (2022-11-21)
+
+
+### Features
+
+* remove dropdowns for excluded categories on quick filters ([c6deb4d](https://github.com/kiva/ui/commit/c6deb4d59ba68ef900d79286f014722baf2c41c2))
+
+## [2.391.0](https://github.com/kiva/ui/compare/v2.390.5...v2.391.0) (2022-11-21)
+
+
+### Features
+
+* add og and twitter description ([1a300af](https://github.com/kiva/ui/commit/1a300affb6ea062f226671fd6375bd3e372486d0))
+* add share copy ([3f4e310](https://github.com/kiva/ui/commit/3f4e31042fed72cb4d704b827f2d682043925e96))
+* conditional canonical url ([c58834b](https://github.com/kiva/ui/commit/c58834b17171a6a478b3994e7f77e33155cd2763))
+* conditional share card image for new year campaign ([92b0743](https://github.com/kiva/ui/commit/92b074358a6a8ad771b20b8440b14f6e249a1466))
+
+### [2.390.5](https://github.com/kiva/ui/compare/v2.390.4...v2.390.5) (2022-11-18)
+
+
+### Bug Fixes
+
+* cta size fixed in borrower profile page ([056b7b9](https://github.com/kiva/ui/commit/056b7b94f101bd516c30de189407cae245366f6d))
+
 ### [2.390.4](https://github.com/kiva/ui/compare/v2.390.3...v2.390.4) (2022-11-17)
 
 

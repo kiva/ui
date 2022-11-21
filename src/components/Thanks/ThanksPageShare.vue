@@ -1,24 +1,6 @@
 <template>
 	<div>
-		<div class="message-content">
-			<div class="row">
-				<div class="thanks__header-h1 tw-text-left large-3 small-1">
-					<kv-material-icon
-						class="tw-w-3 tw-h-3 tw-my-3 tw-align-middle tw-mr-0.5 message-content__success"
-						:icon="mdiCheckAll"
-					/>
-				</div>
-				<div v-if="receipt" class="large-9 small-11 message-content__text">
-					<div v-if="isGuest">
-						<div>Success, we've emailed your receipt to you.</div>
-					</div>
-					<div v-else>
-						<!-- eslint-disable-next-line max-len -->
-						<div>Success, your receipt has been sent to <strong class="fs-mask">{{ lender.email }}</strong></div>
-					</div>
-				</div>
-			</div>
-		</div>
+		<ShareStepper :lender-name="this.lender.firstName" />
 		<div class="row page-content">
 			<div class="large-2"></div>
 			<div class="small-12 large-8 columns thanks">
@@ -88,7 +70,7 @@
 					<template v-else>
 						<h1	class="thanks__headline-h1 tw-mt-1 tw-mb-3 tw-text-left">
 							<!-- eslint-disable-next-line max-len -->
-							<span class="fs-mask">{{ this.lender.firstName }}</span>, can you share this loan with one more person?
+							Can you share this loan with one more person?
 						</h1>
 						<p class="tw-text-h3 tw-m-0 thanks__base-text">
 							<!-- eslint-disable-next-line max-len -->
@@ -173,6 +155,7 @@ import clipboardCopy from 'clipboard-copy';
 import { mdiCheckAll, mdiLink } from '@mdi/js';
 import { getFullUrl } from '@/util/urlUtils';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
+import ShareStepper from '@/components/Thanks/ShareStepper';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -188,6 +171,7 @@ export default {
 		BorrowerImage,
 		KvProgressBar,
 		KvIcon,
+		ShareStepper
 	},
 	props: {
 		receipt: {

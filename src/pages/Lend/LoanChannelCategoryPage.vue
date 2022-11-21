@@ -235,10 +235,7 @@ export default {
 		// Experimental page layout
 		this.initializeExperimentalPageLayout();
 		// Initialize Quick Filters Experiment
-		if (this.targetedLoanChannel !== 'women'
-				&& this.targetedLoanChannel !== 'eco-friendly'
-				&& this.targetedLoanChannel !== 'kiva-u-s'
-				&& this.targetedLoanChannel !== 'ending-soon'
+		if (this.targetedLoanChannel !== 'eco-friendly'
 				&& this.targetedLoanChannel !== 'mission-driven-orgs'
 				&& this.targetedLoanChannel !== 'short-term-loans'
 		) {
