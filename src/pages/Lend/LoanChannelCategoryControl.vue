@@ -42,6 +42,7 @@
 				:total-loans="totalCount"
 				:filter-options="quickFiltersOptions"
 				:filters-loaded="filtersLoaded"
+				:targeted-loan-channel-url="targetedLoanChannelURL"
 				@update-filters="updateQuickFilters"
 				@reset-filters="resetFilters"
 				@handle-overlay="handleQuickFiltersOverlay"
