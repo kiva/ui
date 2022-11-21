@@ -108,7 +108,6 @@
 </template>
 
 <script>
-import confetti from 'canvas-confetti';
 import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
@@ -379,20 +378,7 @@ export default {
 				);
 			}
 		}
-	},
-	mounted() {
-		if (this.receipt) {
-			confetti({
-				origin: {
-					y: 0.2
-				},
-				particleCount: 150,
-				spread: 200,
-				colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c'],
-				disableForReducedMotion: true,
-			});
-		}
-	},
+	}
 };
 
 </script>
