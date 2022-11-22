@@ -1,3 +1,10 @@
+### [2.396.1](https://github.com/kiva/ui/compare/v2.396.0...v2.396.1) (2022-11-22)
+
+
+### Bug Fixes
+
+* removed TransactionInfo FB event ([6b1e725](https://github.com/kiva/ui/commit/6b1e725eebcecd97e048350cffd62574d4e2c14f))
+
 ## [2.396.0](https://github.com/kiva/ui/compare/v2.395.0...v2.396.0) (2022-11-22)
 
 
