@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		class="lend-by-category-page"
-	>
+	<www-page class="lend-by-category-page">
 		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true" />
 
 		<!-- MFI Recommendations Section -->
@@ -88,6 +86,10 @@ import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
 import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '@/util/flssUtils';
 import { isLoanFundraising } from '@/util/loanUtils';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import basketItems from '@/graphql/query/basketItems.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
@@ -699,7 +701,9 @@ export default {
 		preFetch(config, client) {
 			return client.query({
 				query: lendByCategoryQuery
-			}).then(() => {
+			}).then(({ data }) => {
+				// check logged in user
+				const loggedIn = data?.my?.userAccount?.id ?? false;
 				// Get the array of channel objects from settings
 				return Promise.all([
 					// experiment: GROW-330 Machine Learning Category row
@@ -708,8 +712,24 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'mfi_recommendations' } }),
 					// experiment: VUE- Category Service driven FLSS channels
 					client.query({ query: experimentQuery, variables: { id: 'flss_category_service' } }),
+					// experiment: CORE-854 Loan Finding Page
+					// eslint-disable-next-line max-len
+					loggedIn ? client.query({ query: experimentQuery, variables: { id: 'loan_finding_page' } }) : Promise.resolve()
 				]);
 			})
+				.then(expAssignments => {
+					const experimentSettings = expAssignments.filter(item => item?.data?.experiment);
+					// Initialize CORE-854 Loan Finding Page Experiment an redirect
+					const LoanFindingExp = experimentSettings
+						.find(item => item.data.experiment.id === 'loan_finding_page');
+					const enableLoanFindingPage = LoanFindingExp?.data?.experiment?.version === 'b' ?? false;
+					if (enableLoanFindingPage) {
+						return Promise.reject({
+							path: '/lending-home',
+						});
+					}
+					Promise.resolve();
+				})
 				.then(() => {
 					return client.query({
 						query: mlOrderedLoanChannels
@@ -813,6 +833,18 @@ export default {
 		// Fetching MFI Recommendations Loans
 		if (this.mfiRecommendationsExp) {
 			this.fetchMFILoans();
+		}
+
+		const { enabled } = getExperimentSettingCached(this.apollo, 'loan_finding_page');
+		if (enabled) {
+			// this method will get the version from the apollo cache
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				'loan_finding_page',
+				'EXP-CORE-854-Dec2022'
+			);
 		}
 	},
 	beforeDestroy() {

@@ -291,6 +291,14 @@ module.exports = [
 		}
 	},
 	{
+		path: '/lending-home',
+		component: () => import('@/pages/LoanFinding/LoanFinding'),
+		meta: {
+			excludeFromStaticSitemap: true,
+			authenticationRequired: true,
+		}
+	},
+	{
 		name: 'borrowerProfile',
 		path: '/lend/:id(\\d+)',
 		component: () => import('@/pages/BorrowerProfile/BorrowerProfile'),
