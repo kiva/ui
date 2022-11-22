@@ -85,7 +85,6 @@
 								More loans like yours mean more opportunities for {{ this.categoryName }}.
 							</template>
 							<template v-else>
-								<!-- eslint-disable-next-line max-len -->
 								Can you share this loan with one more person?
 							</template>
 						</h1>
@@ -301,8 +300,7 @@ export default {
 				title = `Can you help ${this.loan.name} `;
 				if (this.categoryName === 'women') {
 					title += 'support women around the world?';
-				}
-				if (this.categoryName === 'education') {
+				} else if (this.categoryName === 'education') {
 					title += 'expand access to education around the world?';
 				}
 				title += 'support smallholder farmers around the world?';
@@ -343,8 +341,7 @@ export default {
 					pageBody += `Your loan will help borrowers access the funds they need to invest in ${this.categoryName}.`;
 				}
 				pageBody += ' The more people join our cause, the bigger impact we\'ll make.';
-			}
-			if (this.categoryShareVersion === 'b') {
+			} else if (this.categoryShareVersion === 'b') {
 				pageBody = 'Share Kiva.org with others to rally more allies around this cause.';
 				if (this.categoryName === 'women') {
 					// eslint-disable-next-line max-len
