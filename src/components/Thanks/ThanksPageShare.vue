@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<ShareStepper :lender-name="this.lender.firstName" />
+		<ShareStepper :lender-name="this.lender.firstName" :category-share-version="categoryShareVersion" />
 		<div class="row page-content">
 			<div class="large-2"></div>
 			<div class="small-12 large-8 columns thanks">

@@ -13,7 +13,12 @@
 			</div>
 		</div>
 		<p class="tw-text-center tw-mt-4 tw-text-h3">
-			<span class="fs-mask">{{ lenderName }}</span>, complete your support by sharing this loan.
+			<template v-if="categoryShareVersion === 'b'">
+				<span class="fs-mask">{{ lenderName }}</span>, complete your support by sharing this loan.
+			</template>
+			<template v-else>
+				Complete your support by sharing this loan.
+			</template>
 		</p>
 	</div>
 </template>
@@ -28,7 +33,11 @@ export default {
 		lenderName: {
 			type: String,
 			default: ''
-		}
+		},
+		categoryShareVersion: {
+			type: String,
+			default: 'c'
+		},
 	},
 	data() {
 		return {
