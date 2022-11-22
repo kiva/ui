@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<ShareStepper :lender-name="this.lender.firstName" :category-share-version="categoryShareVersion" />
+		<ShareStepper :lender-name="this.lender.firstName" :show-lender-name="showLenderName" />
 		<div class="row page-content">
 			<div class="large-2"></div>
 			<div class="small-12 large-8 columns thanks">
@@ -86,7 +86,7 @@
 							</template>
 							<template v-else>
 								<!-- eslint-disable-next-line max-len -->
-								<span class="fs-mask">{{ this.lender.firstName }}</span>, can you share this loan with one more person?
+								Can you share this loan with one more person?
 							</template>
 						</h1>
 						<p class="tw-text-h3 tw-m-0 thanks__base-text">
@@ -357,6 +357,9 @@ export default {
 			}
 
 			return pageBody;
+		},
+		showLenderName() {
+			return this.categoryShareVersion === 'b' || !this.categoryName;
 		}
 	},
 	methods: {
