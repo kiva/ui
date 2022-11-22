@@ -1,28 +1,44 @@
 <template>
-	<div class="tw-max-w-5xl tw-mx-auto">
-		New loan finding page
-	</div>
+	<www-page>
+		<div class="tw-max-w-5xl tw-mx-auto tw-p-2 lg:tw-pt-4">
+			<h3 class="tw-text-h3 tw-text-primary">
+				Welcome back, <span class="tw-text-action">{{ firstName }}</span>
+			</h3>
+		</div>
+	</www-page>
 </template>
 
 <script>
-import userInfo from '@/graphql/query/userInfo.graphql';
+import userInfoQuery from '@/graphql/query/userInfo.graphql';
+import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
 	name: 'LoanFinding',
 	inject: ['apollo', 'cookieStore'],
+	components: {
+		WwwPage
+	},
 	data() {
 		return {
 			userInfo: {}
 		};
 	},
 	apollo: {
+		query: userInfoQuery,
 		preFetch(config, client) {
-			return client.query({
-				query: userInfo
-			}).then(({ data }) => {
-				this.userInfo = data?.my?.userAccount ?? {};
-			});
+			return client
+				.query({
+					query: userInfoQuery,
+				});
 		},
+		result({ data }) {
+			this.userInfo = data?.my?.userAccount ?? {};
+		}
+	},
+	computed: {
+		firstName() {
+			return this.userInfo?.firstName ?? '';
+		}
 	},
 };
 </script>
