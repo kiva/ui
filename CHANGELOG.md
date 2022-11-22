@@ -1,3 +1,10 @@
+## [2.395.0](https://github.com/kiva/ui/compare/v2.394.0...v2.395.0) (2022-11-22)
+
+
+### Features
+
+* query to get user info added to lending home page ([657b958](https://github.com/kiva/ui/commit/657b958e72debc0906607e3f57f7762e5d178134))
+
 ## [2.394.0](https://github.com/kiva/ui/compare/v2.393.1...v2.394.0) (2022-11-22)
 
 
