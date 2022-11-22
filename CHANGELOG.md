@@ -1,3 +1,17 @@
+## [2.394.0](https://github.com/kiva/ui/compare/v2.393.1...v2.394.0) (2022-11-22)
+
+
+### Features
+
+* new loan finding page setup added to lbc page ([d0a4cf4](https://github.com/kiva/ui/commit/d0a4cf4bc4eb2c6a2f38221340f458611fef0c54))
+* redirection for lending page moved to prefetch method ([06458c3](https://github.com/kiva/ui/commit/06458c38fce1c48e4ab6c207570da6f404d868c4))
+
+
+### Bug Fixes
+
+* showcontent flag removed in lbc page ([acd13b3](https://github.com/kiva/ui/commit/acd13b3f9c35b108a1135afb2684428e4ad530e6))
+* unused var removed ([9c320de](https://github.com/kiva/ui/commit/9c320de93b97ad309785cb04963981be30792852))
+
 ### [2.393.1](https://github.com/kiva/ui/compare/v2.393.0...v2.393.1) (2022-11-21)
 
 
