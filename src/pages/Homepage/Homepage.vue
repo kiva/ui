@@ -8,6 +8,7 @@ import gql from 'graphql-tag';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
+import numeral from 'numeral';
 
 const ContentfulPage = () => import('@/pages/ContentfulPage');
 
@@ -26,6 +27,18 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
 		/* eslint-disable global-require */
+		// Remove once New Yeah Share Campaign ends
+		const imageUrl = this.loadNYShare
+			? 'https://via.placeholder.com/1200x630'
+			: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg';
+		const description = this.loadNYShare
+			? this.nyShareCopy
+			: 'Kiva is the world\'s first online lending platform. '
+			+ 'For as little as $25 you can lend to an entrepreneur around the world. Learn more here.';
+		const socialDescription = this.loadNYShare
+			? this.nyShareCopy
+			: 'Support women, entrepreneurs, students and refugees around the world with as little as $25 on Kiva. '
+			+ '100% of your loans go to support borrowers.';
 		return {
 			title: 'Make a loan, change a life',
 			meta: [
@@ -36,8 +49,28 @@ export default {
 				{
 					vmid: 'description',
 					name: 'description',
-					content: 'Kiva is the world\'s first online lending platform. '
-						+ 'For as little as $25 you can lend to an entrepreneur around the world. Learn more here.'
+					content: description
+				},
+				// Remove once New Yeah Share Campaign ends
+				{
+					property: 'og:image',
+					vmid: 'og:image',
+					content: imageUrl
+				},
+				{
+					property: 'og:description',
+					vmid: 'og:description',
+					content: socialDescription
+				},
+				{
+					name: 'twitter:image',
+					vmid: 'twitter:image',
+					content: imageUrl
+				},
+				{
+					name: 'twitter:description',
+					vmid: 'twitter:description',
+					content: socialDescription
 				},
 			],
 			script: [
@@ -79,12 +112,27 @@ export default {
 					},
 				},
 			],
+			link: (this.loadNYShare ? [
+				{
+					vmid: 'canonical',
+					rel: 'canonical',
+					href: `https://${this.$appConfig.host}${this.$route.fullPath}`,
+				},
+			] : []),
 		};
+	},
+	created() {
+		// Remove once New Yeah Share Campaign ends
+		if (this.$route?.query?.nyshare) {
+			this.loadNYShare = true;
+		}
 	},
 	data() {
 		return {
 			activeHomepage: ContentfulPage,
-			hasEverLoggedIn: false
+			hasEverLoggedIn: false,
+			// Remove once New Yeah Share Campaign ends
+			loadNYShare: false
 		};
 	},
 	apollo: {
@@ -105,6 +153,17 @@ export default {
 				const component = await ContentfulPage();
 				return preFetchAll([component?.default], client, args);
 			});
+		}
+	},
+	computed: {
+		nyShareCopy() {
+			const loans = numeral(this.$route?.query?.nyl);
+			const loanString = `${loans.format('0,0')} ${loans.value() === 1 ? 'loan' : 'loans'}`;
+			const borrowers = numeral(this.$route?.query?.nyb);
+			const borrowerString = `${borrowers.format('0,0')} ${borrowers.value() === 1 ? 'borrower' : 'borrowers'}`;
+			const countries = numeral(this.$route?.query?.nyc);
+			const countryString = `${countries.format('0,0')} ${countries.value() === 1 ? 'country' : 'countries'}`;
+			return `In 2022 I lent to ${loanString}, and helped ${borrowerString} in ${countryString} succeed.`;
 		}
 	},
 	mounted() {

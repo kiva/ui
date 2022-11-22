@@ -650,21 +650,21 @@ export default {
 
 				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { path: '/' });
 				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { path: '/' });
-
-				userHasLentBefore(hasLentBefore);
-				userHasDepositBefore(hasDepositBefore);
 			} catch (e) {
 				logReadQueryError(e, 'User Data For Optimizely Metrics');
 			}
 		}
+
+		userHasLentBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
+		userHasDepositBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
 	},
 	mounted() {
 		// MARS-246 Hotjar user attributes
 		setHotJarUserAttributes({
 			userId: this.userId,
 			hasEverLoggedIn: this.hasEverLoggedIn,
-			hasLentBefore: Boolean(this.cookieStore.get(hasLentBeforeCookie)),
-			hasDepositBefore: Boolean(this.cookieStore.get(hasDepositBeforeCookie)),
+			hasLentBefore: this.cookieStore.get(hasLentBeforeCookie) === 'true',
+			hasDepositBefore: this.cookieStore.get(hasDepositBeforeCookie) === 'true',
 		});
 	},
 	methods: {

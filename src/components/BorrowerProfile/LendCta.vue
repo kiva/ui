@@ -67,7 +67,7 @@
 								<kv-ui-select
 									v-if="hideShowLendDropdown && !isLessThan25"
 									id="LoanAmountDropdown"
-									class="tw-pr-2.5 tw--mb-2"
+									class="tw-mr-2.5 lg:tw-mb-2 tw-min-w-12"
 									data-testid="bp-lend-cta-amount-dropdown"
 									v-model="selectedOption"
 									v-kv-track-event="[
