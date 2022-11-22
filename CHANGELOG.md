@@ -1,3 +1,15 @@
+## [2.396.0](https://github.com/kiva/ui/compare/v2.395.0...v2.396.0) (2022-11-22)
+
+
+### Features
+
+* welcome message added to lending home page ([4ea0133](https://github.com/kiva/ui/commit/4ea0133db200224ca2a4a9f29e7d214d34de2b29))
+
+
+### Bug Fixes
+
+* mask added to first name span ([706aa32](https://github.com/kiva/ui/commit/706aa328a206205d05e54925d764b4483e7ca951))
+
 ## [2.395.0](https://github.com/kiva/ui/compare/v2.394.0...v2.395.0) (2022-11-22)
 
 
