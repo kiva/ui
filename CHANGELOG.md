@@ -1,3 +1,10 @@
+### [2.397.1-next.1](https://github.com/kiva/ui/compare/v2.397.0...v2.397.1-next.1) (2022-11-23)
+
+
+### Bug Fixes
+
+* use `next` branch of web-ui-ci for testing ([b7c098e](https://github.com/kiva/ui/commit/b7c098e147bb08fd7df4b0592cf6128f9e1d2a95))
+
 ## [2.397.0](https://github.com/kiva/ui/compare/v2.396.1...v2.397.0) (2022-11-23)
 
 
