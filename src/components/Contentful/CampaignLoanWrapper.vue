@@ -43,7 +43,6 @@
 				<campaign-loan-grid-display
 					v-if="!componentProps.showLoanRows"
 					id="campaignLoanDisplay"
-					ref="loandisplayref"
 					:checkout-visible="componentProps.checkoutVisible || componentProps.showThanks"
 					:filters="componentProps.filters"
 					:is-visible="!componentProps.showLoanRows"
