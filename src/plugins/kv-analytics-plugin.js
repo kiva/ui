@@ -241,26 +241,6 @@ export default {
 					});
 				}
 
-				// send transaction data
-				kvActions.trackFBCustomEvent(
-					'TransactionInfo',
-					{
-						depositTotal: transactionData.depositTotal,
-						donationTotal: transactionData.donationTotal,
-						isFtd: transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender',
-						isTip: transactionData.isTip,
-						isUserEdited: transactionData.isUserEdited,
-						itemTotal: transactionData.itemTotal,
-						loanCount: transactionData.loanCount,
-						loanTotal: transactionData.loanTotal,
-						kivaCardCount: transactionData.kivaCardCount,
-						kivaCardTotal: transactionData.kivaCardTotal,
-						kivaCreditUsed: transactionData.kivaCreditAppliedTotal,
-						paymentType: transactionData.paymentType,
-						transactionId: transactionData.transactionId,
-					}
-				);
-
 				// signify transaction has kiva cards
 				if (transactionData.kivaCards && transactionData.kivaCards.length) {
 					kvActions.trackFBCustomEvent(
