@@ -1,3 +1,10 @@
+### [2.398.1](https://github.com/kiva/ui/compare/v2.398.0...v2.398.1) (2022-11-23)
+
+
+### Bug Fixes
+
+* stepper title style ([01566c1](https://github.com/kiva/ui/commit/01566c1cf8fa67b6ac0656b8ab2d0abec7ce973f))
+
 ## [2.398.0](https://github.com/kiva/ui/compare/v2.397.0...v2.398.0) (2022-11-23)
 
 
