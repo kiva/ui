@@ -4,11 +4,12 @@
 			Find a loan by category and location
 		</h2>
 		<quick-filters
-			class="tw-ml-2 tw-z-2"
+			class="tw-z-2"
 			:total-loans="totalCount"
 			:filter-options="quickFiltersOptions"
 			:filters-loaded="filtersLoaded"
 			:targeted-loan-channel-url="targetedLoanChannelURL"
+			:with-categories="true"
 			@update-filters="updateQuickFilters"
 			@reset-filters="resetFilters"
 			@handle-overlay="handleQuickFiltersOverlay"
@@ -28,7 +29,7 @@ export default {
 		return {
 			quickFiltersOptions: {},
 			filtersLoaded: false,
-			targetedLoanChannelURL: null,
+			targetedLoanChannelURL: '',
 		};
 	},
 	computed: {
