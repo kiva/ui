@@ -4,6 +4,8 @@
 			<h3 class="tw-text-h3 tw-text-primary">
 				Welcome back, <span class="tw-text-action fs-mask">{{ firstName }}</span>
 			</h3>
+
+			<quick-filters-section class="tw-mt-2" />
 		</div>
 	</www-page>
 </template>
@@ -11,12 +13,14 @@
 <script>
 import userInfoQuery from '@/graphql/query/userInfo.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
 
 export default {
 	name: 'LoanFinding',
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		WwwPage
+		WwwPage,
+		QuickFiltersSection,
 	},
 	data() {
 		return {
