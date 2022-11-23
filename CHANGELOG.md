@@ -1,3 +1,10 @@
+## [2.398.0](https://github.com/kiva/ui/compare/v2.397.0...v2.398.0) (2022-11-23)
+
+
+### Features
+
+* quickfilters component upgraded to include category dropdown ([2fddabc](https://github.com/kiva/ui/commit/2fddabc74aff28fc840e229dbb224172e7a242c0))
+
 ## [2.397.0](https://github.com/kiva/ui/compare/v2.396.1...v2.397.0) (2022-11-23)
 
 
