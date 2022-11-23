@@ -1,3 +1,10 @@
+### [2.398.2](https://github.com/kiva/ui/compare/v2.398.1...v2.398.2) (2022-11-23)
+
+
+### Bug Fixes
+
+* ui doesn't load loans when default loan display mode is set to "grid" ([2f0dde8](https://github.com/kiva/ui/commit/2f0dde8b4d16bc50aaf2bc7d19ea8477454515fc))
+
 ### [2.398.1](https://github.com/kiva/ui/compare/v2.398.0...v2.398.1) (2022-11-23)
 
 
