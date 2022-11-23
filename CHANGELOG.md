@@ -1,3 +1,10 @@
+## [2.397.0](https://github.com/kiva/ui/compare/v2.396.1...v2.397.0) (2022-11-23)
+
+
+### Features
+
+* quick filter section added to lending home page ([a9af386](https://github.com/kiva/ui/commit/a9af386742bc418befb7c9378dfe1d695df711ba))
+
 ### [2.396.1](https://github.com/kiva/ui/compare/v2.396.0...v2.396.1) (2022-11-22)
 
 
