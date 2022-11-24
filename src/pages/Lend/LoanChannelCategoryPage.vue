@@ -74,18 +74,16 @@ export default {
 	metaInfo() {
 		this.getMetaInfo();
 		let image = '';
-		let title = '';
+		let title = null;
 		if (this.$route.query.category_share_version
 			&& ['women', 'education', 'agriculture'].includes(this.$route.params.category)) {
 			image = imageRequire(`./${this.$route.params.category}_share_card.png`);
-			title = `Can you help, ${this.$route.query.lender} `;
+			title = `Can you help ${this.$route.query.lender} `;
 			if (this.$route.params.category === 'women') {
 				title += 'support women around the world?';
-			}
-			if (this.$route.params.category === 'education') {
+			} else if (this.$route.params.category === 'education') {
 				title += 'expand access to education around the world?';
-			}
-			if (this.$route.params.category === 'agriculture') {
+			} else if (this.$route.params.category === 'agriculture') {
 				title += 'support smallholder farmers around the world?';
 			}
 		}
@@ -102,7 +100,7 @@ export default {
 				{
 					vmid: 'og:title',
 					property: 'og:title',
-					content: this.meta.title
+					content: title ?? this.meta.title
 				},
 				{
 					vmid: 'og:description',
@@ -113,7 +111,7 @@ export default {
 				{
 					vmid: 'twitter:title',
 					name: 'twitter:title',
-					content: this.meta.title
+					content: title ?? this.meta.title
 				},
 				{
 					name: 'twitter:description',
@@ -121,13 +119,11 @@ export default {
 					content: this.meta.description
 				}
 			]).concat(image ? [
-				{ property: 'og:title', vmid: 'og:title', content: title },
 				{
 					property: 'og:image',
 					vmid: 'og:image',
 					content: image
 				},
-				{ name: 'twitter:title', vmid: 'twitter:title', content: title },
 				{
 					name: 'twitter:image',
 					vmid: 'twitter:image',

@@ -407,7 +407,8 @@ export default {
 			}) || {};
 
 			this.categoryShareVersion = categoryShareResult?.version;
-			if (this.categoryShareVersion) {
+			if (this.categoryShareVersion && (this.selectedLoan?.gender?.toLowerCase() === 'female'
+				|| ['women', 'education', 'agriculture'].includes(this.selectedLoan?.sector?.name?.toLowerCase()))) {
 				this.$kvTrackEvent(
 					'Thanks',
 					'EXP-MARS-310-Nov2022',
