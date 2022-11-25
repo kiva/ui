@@ -53,6 +53,7 @@
 						:social-exp-enabled="socialExpEnabled"
 						@togglelightbox="toggleLightbox"
 						:num-lenders="numLenders"
+						:user-context-exp-variant="userContextExpVariant"
 					>
 						<template #sharebutton v-if="inPfp || shareButtonExpEnabled">
 							<!-- Share button for PFP loans -->
@@ -72,6 +73,7 @@
 					data-testid="bp-loan-story"
 					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8 tw-z-1"
 					:loan-id="loanId"
+					:user-context-exp-variant="userContextExpVariant"
 				/>
 			</content-container>
 			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
@@ -158,6 +160,7 @@ import loanUseFilter from '@/plugins/loan-use-filter';
 const socialElementsExpKey = 'social_elements';
 const whatIsKivaExpKey = 'what_is_kiva_module';
 const shareButtonExpKey = 'share_button_bp';
+const userContextExpKey = 'context_for_new_users';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 const pageQuery = gql`
@@ -417,7 +420,8 @@ export default {
 			showLightBoxModal: false,
 			kivaModuleExpEnabled: false,
 			shareButtonExpEnabled: false,
-			shownModal: false
+			shownModal: false,
+			userContextExpVariant: 'b',
 		};
 	},
 	apollo: {
@@ -460,6 +464,7 @@ export default {
 						client.query({ query: experimentQuery, variables: { id: socialElementsExpKey } }),
 						client.query({ query: experimentQuery, variables: { id: whatIsKivaExpKey } }),
 						client.query({ query: experimentQuery, variables: { id: shareButtonExpKey } }),
+						client.query({ query: experimentQuery, variables: { id: userContextExpKey } }),
 					]);
 				});
 		},
@@ -554,6 +559,18 @@ export default {
 			if (version === 'b') {
 				this.shareButtonExpEnabled = true;
 			}
+		}
+
+		const userContextExpData = getExperimentSettingCached(this.apollo, userContextExpKey);
+		if (userContextExpData?.enabled) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Borrower Profile',
+				userContextExpKey,
+				''
+			);
+			this.userContextExpVariant = version;
 		}
 	},
 	methods: {

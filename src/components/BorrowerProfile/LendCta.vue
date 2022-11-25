@@ -188,7 +188,10 @@
 					>
 						All shares reserved
 					</p>
-					<div class="tw-hidden md:tw-flex tw-content-center tw-justify-center">
+					<div
+						v-if="userContextExpVariant === 'b'"
+						class="tw-hidden md:tw-flex tw-content-center tw-justify-center"
+					>
 						<div>
 							<icon-clock />
 						</div>
@@ -307,7 +310,7 @@
 								class="tw-inline-block tw-align-middle"
 								data-testid="bp-lend-cta-powered-by-text"
 								key="numLendersStat"
-								v-if="statScrollAnimation && !showExpectedRepayment"
+								v-if="statScrollAnimation && !repaymentEnabled || loopItemTurn === 1"
 							>
 								<kv-material-icon
 									class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
@@ -317,23 +320,10 @@
 							</span>
 
 							<span
-								class="md:tw-hidden tw-inline-block tw-align-middle"
-								data-testid="bp-lend-cta-expected-repayment"
-								key="expectedRepayment"
-								v-if="!statScrollAnimation && showExpectedRepayment && isMobile"
-							>
-								<icon-clock
-									class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
-								/>
-								Your 1st expected repayment will be in {{ repaymentDate }}
-							</span>
-
-							<span
 								class="tw-inline-block tw-align-middle"
 								data-testid="bp-lend-cta-matched-text"
 								key="loanMatchingText"
-								v-if="!statScrollAnimation && !isMatchAtRisk && !showExpectedRepayment && showMatch
-									|| !isMobile && !statScrollAnimation"
+								v-if="!statScrollAnimation && !repaymentEnabled || loopItemTurn === 2"
 							>
 								<span
 									class="tw-text-h3 tw-inline-block tw-align-middle tw-px-1"
@@ -343,6 +333,18 @@
 								{{ matchRatio + 1 }}X
 								<span v-if="requireDepositsMatchedLoans"> MATCHED NEW DEPOSITS</span>
 								<span v-else> MATCHED LOAN</span>
+							</span>
+
+							<span
+								v-if="loopItemTurn === 3"
+								class="md:tw-hidden tw-align-middle tw-flex tw-gap-1 tw-items-center"
+								data-testid="bp-lend-cta-expected-repayment"
+								key="expectedRepayment"
+							>
+								<div>
+									<icon-clock class="tw-pointer-events-none tw-inline-block tw-align-middle" />
+								</div>
+								<span> 1st repayment will be in {{ repaymentDate }}</span>
 							</span>
 						</transition>
 					</div>
@@ -410,6 +412,10 @@ export default {
 		requireDepositsMatchedLoans: {
 			type: Boolean,
 			default: false,
+		},
+		userContextExpVariant: {
+			type: String,
+			default: 'c'
 		}
 	},
 	components: {
@@ -460,7 +466,8 @@ export default {
 			isMobile: false,
 			repaymentInterval: '',
 			showExpectedRepayment: false,
-			showMatch: false
+			showMatch: false,
+			loopItemTurn: 0
 		};
 	},
 	apollo: {
@@ -629,21 +636,15 @@ export default {
 		cycleStatsSlot() {
 			if (this.matchingText.length) {
 				const cycleSlotMachine = () => {
-					if (!this.isMatchAtRisk) {
+					if (this.repaymentEnabled && this.isMobile) {
+						this.loopItemTurn += 1;
+						if (this.loopItemTurn > 3) {
+							this.loopItemTurn = 1;
+						}
+					} else if (!this.isMatchAtRisk) {
 						if (this.socialExpEnabled) {
 							this.statScrollAnimation = false;
-						} else if (this.isMobileLayout) {
-							this.showMatch = !this.showMatch;
-							this.statScrollAnimation = !this.statScrollAnimation;
-							return 1;
-						} else if (this.showExpectedRepayment) {
-							this.showExpectedRepayment = !this.showExpectedRepayment;
-							this.showMatch = !this.showMatch;
-						} else if (this.showMatch) {
-							this.statScrollAnimation = !this.statScrollAnimation;
-							this.showMatch = !this.showMatch;
 						} else {
-							this.showExpectedRepayment = !this.showExpectedRepayment;
 							this.statScrollAnimation = !this.statScrollAnimation;
 						}
 					} else {
@@ -680,6 +681,9 @@ export default {
 		},
 	},
 	computed: {
+		repaymentEnabled() {
+			return this.userContextExpVariant === 'b';
+		},
 		repaymentDate() {
 			const date = new Date();
 			const currentYear = date.getFullYear();
@@ -829,6 +833,9 @@ export default {
 		}
 	},
 	mounted() {
+		if (this.repaymentEnabled) {
+			this.loopItemTurn = 1;
+		}
 		this.determineIfMobile();
 		this.createWrapperObserver();
 		this.cycleStatsSlot();

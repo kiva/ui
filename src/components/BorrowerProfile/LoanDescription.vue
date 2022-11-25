@@ -10,7 +10,15 @@
 				{{ borrowerOrGroupName }}'s story
 			</h2>
 		</div>
-		<div class="tw-prose">
+		<div v-if="fullStoryEnabled">
+			<p class="tw-my-4 tw-truncate">
+				{{ storyDescription.slice(0, 260) }}...
+			</p>
+			<kv-text-link @click="showFullStory = true">
+				Read more about {{ borrowerOrGroupName }}
+			</kv-text-link>
+		</div>
+		<div v-else class="tw-prose">
 			<section v-if="storyDescription">
 				<p
 					v-for="(paragraph, index) in storyDescriptionParagraphs"
@@ -92,12 +100,14 @@
 import { toParagraphs } from '@/util/loanUtils';
 import previousLoanDescription from '@/components/BorrowerProfile/PreviousLoanDescription';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 export default {
 	name: 'LoanDescription',
 	components: {
 		KvLightbox,
 		previousLoanDescription,
+		KvTextLink
 	},
 	props: {
 		partnerName: { // LoanPartner.partnerName
@@ -143,11 +153,16 @@ export default {
 		loanId: {
 			type: Number,
 			default: 0,
+		},
+		userContextExpVariant: {
+			type: String,
+			default: 'c'
 		}
 	},
 	data() {
 		return {
 			isLightboxVisible: false,
+			showFullStory: false
 		};
 	},
 	computed: {
@@ -184,6 +199,9 @@ export default {
 		},
 		showReviewersName() {
 			return this.reviewer?.showName;
+		},
+		fullStoryEnabled() {
+			return this.userContextExpVariant === 'a' && !this.showFullStory;
 		}
 	},
 	methods: {

@@ -35,6 +35,7 @@
 			:reviewer="reviewer"
 			:story-description="description"
 			:previous-loan-id="previousLoanId"
+			:user-context-exp-variant="userContextExpVariant"
 		/>
 	</article>
 </template>
@@ -56,6 +57,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		userContextExpVariant: {
+			type: String,
+			default: 'c'
+		}
 	},
 	data() {
 		return {
