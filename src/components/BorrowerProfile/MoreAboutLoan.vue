@@ -11,26 +11,32 @@
 					borrowers, provide services, and administer loans on the ground.
 				</p>
 
-				<div v-html="moreInfoAboutLoan" data-testid="bp-more-about-info">
-				</div>
-
-				<div v-if="loanAlertText" data-testid="bp-more-about-alert-text">
-					<h3>
-						About {{ partnerName }}:
-					</h3>
-					<p
-						key="storyDescription"
-						v-html="this.loanAlertText"
-					>
-					</p>
-				</div>
-				<div v-if="dualStatementNote" data-testid="bp-more-about-dual-statement">
-					<h3>
-						Important Note About This Loan
-					</h3>
-					<div v-html="dualStatementNote">
+				<template v-if="readMore || userContextExpVariant !== 'a'">
+					<div v-html="moreInfoAboutLoan" data-testid="bp-more-about-info">
 					</div>
-				</div>
+					<div v-if="loanAlertText" data-testid="bp-more-about-alert-text">
+						<h3>
+							About {{ partnerName }}:
+						</h3>
+						<p
+							key="storyDescription"
+							v-html="this.loanAlertText"
+						>
+						</p>
+					</div>
+					<div v-if="dualStatementNote" data-testid="bp-more-about-dual-statement">
+						<h3>
+							Important Note About This Loan
+						</h3>
+						<div v-html="dualStatementNote">
+						</div>
+					</div>
+				</template>
+				<template v-else>
+					<kv-text-link @click="readMore = true">
+						Read more
+					</kv-text-link>
+				</template>
 			</div>
 		</div>
 		<div v-if="!partnerName && !loading">
@@ -100,6 +106,7 @@ import { createIntersectionObserver } from '@/util/observerUtils';
 import BorrowerBusinessDetails from '@/components/BorrowerProfile/BorrowerBusinessDetails';
 // TODO: replace the loading placeholder with component from kv-components when available.
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 export default {
 	name: 'MoreAboutLoan',
@@ -107,12 +114,17 @@ export default {
 	components: {
 		BorrowerBusinessDetails,
 		KvLoadingPlaceholder,
+		KvTextLink
 	},
 	props: {
 		loanId: {
 			type: Number,
 			default: 0,
 		},
+		userContextExpVariant: {
+			type: String,
+			default: 'c'
+		}
 	},
 	data() {
 		return {
@@ -136,6 +148,7 @@ export default {
 				yelp: '',
 			},
 			yearsInBusiness: '',
+			readMore: false
 		};
 	},
 	computed: {
