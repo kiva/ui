@@ -73,7 +73,7 @@
 							</button>
 						</div>
 
-						<div v-if="hasLoans">
+						<div>
 							<div
 								class="donation-tagline tw-text-small tw-text-secondary tw-my-1"
 								data-testid="basket-donation-tagline"
@@ -241,7 +241,7 @@
 							</button>
 						</div>
 
-						<div v-if="hasLoans">
+						<div>
 							<div
 								class="donation-tagline tw-text-small tw-text-secondary tw-my-1 tw-max-w-2xl"
 								data-testid="basket-donation-tagline"
@@ -392,7 +392,7 @@
 							</button>
 						</div>
 
-						<div v-if="hasLoans">
+						<div>
 							<div
 								class="donation-tagline tw-text-small tw-text-secondary tw-mb-1 tw-max-w-2xl"
 								data-testid="basket-donation-tagline"

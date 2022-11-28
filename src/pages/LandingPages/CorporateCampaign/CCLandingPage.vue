@@ -6,7 +6,7 @@
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
 			<campaign-status
 				v-if="!hideStatusBar"
-				class="corporate-campaign-landing__status tw-sticky tw-top-8 md:tw-top-9 tw-z-2"
+				class="corporate-campaign-landing__status tw-sticky tw-z-2"
 				:active-credit-type="activeCreditType"
 				:is-matching="isMatchingCampaign"
 				:loading-promotion="loadingPromotion"
@@ -743,6 +743,9 @@ export default {
 		}
 	},
 	computed: {
+		loanDisplayComponent() {
+			return this.$refs?.mlLoanDisplay?.$refs || this.$refs?.mlLoanDisplay?.[0]?.$refs;
+		},
 		campaignLoanWrapperProps() {
 			return {
 				filters: this.filters,
@@ -1122,10 +1125,6 @@ export default {
 			// TDOO: Consider extending loading state for basket updates
 			// Query to update basket state
 			this.updateBasketState();
-			// TEMPORARY: Obstruct ability to click the "Checkout" button on the loan card to prevent redirect
-			if (this.$refs.loandisplayref) {
-				this.$refs.loandisplayref.loadingLoans = true;
-			}
 		},
 		updateBasketState() {
 			// Ensure basket state is loading
@@ -1220,11 +1219,6 @@ export default {
 
 					// Update user Auth state
 					this.setAuthStatus(this.kvAuth0?.user ?? {});
-
-					// TEMPORARY: turn off loading loans
-					if (this.$refs.loandisplayref) {
-						this.$refs.loandisplayref.loadingLoans = false;
-					}
 					if (this.$refs.inContextCheckoutRef) {
 						this.$refs.inContextCheckoutRef.updatingTotals = false;
 					}
@@ -1322,10 +1316,6 @@ export default {
 			this.$nextTick(() => {
 				// re-enable visibility of loans, activates loan fetch within loan display
 				this.showLoans = true;
-				// up loan query for grid view
-				if (!this.showLoanRows && this.$refs.loandisplayref && this.$route.query.page) {
-					this.$refs.loandisplayref.updateFromParams(this.$route.query);
-				}
 			});
 		},
 
@@ -1411,8 +1401,7 @@ export default {
 			}
 		},
 		jumpToLoans() {
-			const loanDisplayComponent = this.$refs?.mlLoanDisplay?.$refs || this.$refs?.mlLoanDisplay?.[0]?.$refs;
-			loanDisplayComponent.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
+			this.loanDisplayComponent.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
 		},
 		adjustRouteHash(hash) {
 			const route = { ...this.$route };
@@ -1445,18 +1434,7 @@ export default {
 			this.loanDetailsVisible = true;
 		}
 	},
-	beforeRouteEnter(to, from, next) {
-		next(vm => {
-			if (vm.$refs.loandisplayref) {
-				vm.$refs.loandisplayref?.updateFromParams(to.query);
-			}
-		});
-	},
 	beforeRouteUpdate(to, from, next) {
-		if (this.$refs.loandisplayref) {
-			this.$refs.loandisplayref?.updateFromParams(to.query);
-		}
-
 		if (to.hash === '#show-basket') {
 			this.checkoutVisible = true;
 		}

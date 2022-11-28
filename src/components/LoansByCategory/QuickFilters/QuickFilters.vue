@@ -10,44 +10,72 @@
 			>
 				<img src="@/assets/images/green_sparkles.svg" alt=""> New!
 			</div>
-			<h3 class="tw-text-h3">
-				Quick filters
-			</h3>
-			<span v-show="filtersLoaded" class="tw-ml-2 tw-text-small">Showing {{ totalLoans }} loans</span>
-			<button v-show="filtersLoaded" class="tw-ml-2 tw-text-small tw-text-action" @click="resetFilters">
-				Reset filters
-			</button>
+			<div v-if="!withCategories" class="tw-flex tw-items-center">
+				<h3 class="tw-text-h3">
+					Quick filters
+				</h3>
+				<span v-show="filtersLoaded" class="tw-ml-2 tw-text-small">Showing {{ totalLoans }} loans</span>
+				<button v-show="filtersLoaded" class="tw-ml-2 tw-text-small tw-text-action" @click="resetFilters">
+					Reset filters
+				</button>
+			</div>
 		</div>
-		<div class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 tw-w-full tw-pr-2 lg:tw-pr-0">
-			<div v-if="!removeGenderDropdown" class="tw-flex tw-flex-col tw-grow tw-order-2 lg:tw-order-1">
-				<label
-					class="tw-text-h4"
-					for="gender"
-				>
-					Gender
-				</label>
-				<kv-select
-					:disabled="!filtersLoaded"
-					v-model="selectedGender"
-					id="gender"
-					style="min-width: 140px;"
-					@click.native="trackDropdownClick('gender')"
-				>
-					<option
-						v-for="gender in filterOptions.gender"
-						:key="gender.key"
-						:value="gender.key"
+		<div
+			class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 tw-w-full"
+			:class="{'tw-pr-2 lg:tw-pr-0' : !withCategories}"
+		>
+			<div class="tw-flex tw-gap-2 tw-w-full lg:tw-w-auto">
+				<div v-if="withCategories" class="tw-flex tw-flex-col tw-grow">
+					<label
+						class="tw-text-h4"
+						for="category"
 					>
-						{{ gender.title }}
-					</option>
-				</kv-select>
+						Category
+					</label>
+					<kv-select
+						:disabled="!filtersLoaded"
+						v-model="selectedCategory"
+						id="category"
+						style="min-width: 160px;"
+					>
+						<option
+							v-for="category in filterOptions.category"
+							:key="category.key"
+							:value="category.key"
+						>
+							{{ category.title }}
+						</option>
+					</kv-select>
+				</div>
+				<div v-if="!removeGenderDropdown" class="tw-flex tw-flex-col tw-grow">
+					<label
+						class="tw-text-h4"
+						for="gender"
+					>
+						Gender
+					</label>
+					<kv-select
+						:disabled="!filtersLoaded"
+						v-model="selectedGender"
+						id="gender"
+						style="min-width: 140px;"
+						@click.native="trackDropdownClick('gender')"
+					>
+						<option
+							v-for="gender in filterOptions.gender"
+							:key="gender.key"
+							:value="gender.key"
+						>
+							{{ gender.title }}
+						</option>
+					</kv-select>
+				</div>
 			</div>
 
 			<location-selector
 				v-if="!removeLocationDropdown"
 				@click.native="trackDropdownClick('location')"
 				@handle-overlay="handleQuickFiltersOverlay"
-				class="tw-order-1 lg:tw-order-2"
 				:regions="filterOptions.location"
 				:total-loans="totalLoans"
 				:filters-loaded="filtersLoaded"
@@ -55,7 +83,7 @@
 				ref="locationSelector"
 			/>
 
-			<div v-if="!removeSortByDropdown" class="tw-flex tw-flex-col tw-order-3 tw-grow">
+			<div v-if="!removeSortByDropdown && !withCategories" class="tw-flex tw-flex-col tw-grow">
 				<label
 					class="tw-text-h4"
 					for="sortBy"
@@ -77,6 +105,30 @@
 					</option>
 				</kv-select>
 			</div>
+		</div>
+		<div class="tw-flex tw-justify-between tw-items-center tw-mt-1" v-if="withCategories">
+			<div class="tw-flex tw-flex-col lg:tw-flex-row tw-items-start">
+				<span v-show="filtersLoaded" class="tw-text-small">Showing {{ totalLoans }} loans</span>
+				<!-- eslint-disable-next-line max-len -->
+				<button v-show="filtersLoaded" class="lg:tw-ml-2 tw-mt-1 lg:tw-mt-0 tw-text-small tw-text-action" @click="resetFilters">
+					Reset filters
+				</button>
+			</div>
+			<kv-select
+				id="customizedSortBySelector"
+				:disabled="!filtersLoaded"
+				v-model="sortBy"
+				style="min-width: 180px;"
+				@click.native="trackDropdownClick('sort')"
+			>
+				<option
+					v-for="sortType in filterOptions.sorting"
+					:key="sortType.key"
+					:value="sortType.key"
+				>
+					{{ sortType.title }}
+				</option>
+			</kv-select>
 		</div>
 	</div>
 </template>
@@ -104,7 +156,11 @@ export default {
 		targetedLoanChannelUrl: {
 			type: String,
 			required: true
-		}
+		},
+		withCategories: {
+			type: Boolean,
+			default: false
+		},
 	},
 	components: {
 		KvSelect,
@@ -112,6 +168,7 @@ export default {
 	},
 	data() {
 		return {
+			selectedCategory: '',
 			selectedGender: '',
 			sortBy: 'personalized',
 			showBadge: false
