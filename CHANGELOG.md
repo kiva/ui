@@ -1,3 +1,10 @@
+### [2.398.3](https://github.com/kiva/ui/compare/v2.398.2...v2.398.3) (2022-11-28)
+
+
+### Bug Fixes
+
+* show donation item tagline when there are no loans ([cd94620](https://github.com/kiva/ui/commit/cd94620e3564cacea69be28136910d8c947aaaa7))
+
 ### [2.398.2](https://github.com/kiva/ui/compare/v2.398.1...v2.398.2) (2022-11-23)
 
 
