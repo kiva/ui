@@ -1,3 +1,10 @@
+## [2.400.0](https://github.com/kiva/ui/compare/v2.399.0...v2.400.0) (2022-11-29)
+
+
+### Features
+
+* add another donation item variant ([00198a6](https://github.com/kiva/ui/commit/00198a622bcf0efcf38b3157bc286667c8ca95f4))
+
 ## [2.399.0](https://github.com/kiva/ui/compare/v2.398.3...v2.399.0) (2022-11-29)
 
 
