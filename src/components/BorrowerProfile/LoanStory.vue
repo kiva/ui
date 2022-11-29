@@ -131,12 +131,29 @@ export default {
 						id
 						name
 					}
+					geocode {
+						country {
+							isoCode
+						}
+					}
+					tags
+					gender
+					sector {
+						id
+						name
+					}
 					... on LoanPartner {
 						partnerName
 						reviewer {
 							id
 							bylineName
 							showName
+						}
+						partner {
+							id
+							countries {
+								name
+							}
 						}
 					}
 				}
@@ -165,6 +182,10 @@ export default {
 			this.partnerName = loan?.partnerName ?? '';
 			this.reviewer = loan?.reviewer ?? {};
 			this.previousLoanId = loan?.previousLoanId ?? 0;
+			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
+			this.tags = loan?.tags ?? [];
+			this.gender = loan?.gender ?? '';
+			this.sector = loan?.sector ?? '';
 		},
 	},
 	mounted() {
