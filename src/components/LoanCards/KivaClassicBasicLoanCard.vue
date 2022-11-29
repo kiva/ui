@@ -68,7 +68,7 @@
 			class="tw-mb-1 tw-text-h3"
 			:max-length="50"
 			:name="borrowerName"
-			style="min-height: 3rem;"
+			:style="{minHeight: showActionButton ? 0 : '3rem'}"
 		/>
 
 		<!-- Amount to go line-->
@@ -174,7 +174,7 @@
 				<template v-if="!allSharesReserved">
 					<!-- View Loan button -->
 					<kv-ui-button
-						v-if="!showLendNowButton"
+						v-if="!showLendNowButton && !showActionButton"
 						class="tw-mb-2 tw-self-start"
 						:state="`${allSharesReserved ? 'disabled' : ''}`"
 						:to="customLoanDetails ? '' : `/lend/${loanId}`"
@@ -212,6 +212,20 @@
 					>
 						Adding to basket...
 					</kv-ui-button>
+					<!-- Action button -->
+					<action-button
+						v-if="showActionButton && !showLendNowButton"
+						:loan-id="loanId"
+						:loan="loan"
+						:items-in-basket="basketItems"
+						:is-lent-to="isLentTo"
+						:is-funded="isFunded"
+						:is-selected-by-another="isSelectedByAnother"
+						:is-amount-lend-button="isLessThan25"
+						:amount-left="amountLeft"
+						:show-now="true"
+						@add-to-basket="addToBasket"
+					/>
 				</template>
 			</template>
 		</template>
@@ -219,6 +233,7 @@
 </template>
 
 <script>
+import numeral from 'numeral';
 import { mdiChevronRight, mdiMapMarker, mdiCheckCircleOutline } from '@mdi/js';
 import gql from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
@@ -236,6 +251,7 @@ import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import { setLendAmount } from '@/util/basketUtils';
 import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
+import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -289,6 +305,10 @@ export default {
 		customLoanDetails: {
 			type: Boolean,
 			default: false
+		},
+		showActionButton: {
+			type: Boolean,
+			default: false
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -303,7 +323,8 @@ export default {
 		LoanMatchingText,
 		KvMaterialIcon,
 		SummaryTag,
-		KvUiButton
+		KvUiButton,
+		ActionButton
 	},
 	data() {
 		return {
@@ -319,6 +340,16 @@ export default {
 		};
 	},
 	computed: {
+		amountLeft() {
+			const { fundedAmount, reservedAmount } = this.loan.loanFundraisingInfo;
+			return numeral(this.loan.loanAmount).subtract(fundedAmount).subtract(reservedAmount).value();
+		},
+		isFunded() {
+			return this.loan?.status === 'funded';
+		},
+		isSelectedByAnother() {
+			return this.amountLeft <= 0 && !this.isFunded;
+		},
 		borrowerName() {
 			return this.loan?.name || '';
 		},

@@ -1,3 +1,83 @@
+## [2.400.0](https://github.com/kiva/ui/compare/v2.399.0...v2.400.0) (2022-11-29)
+
+
+### Features
+
+* add another donation item variant ([00198a6](https://github.com/kiva/ui/commit/00198a622bcf0efcf38b3157bc286667c8ca95f4))
+
+## [2.399.0](https://github.com/kiva/ui/compare/v2.398.3...v2.399.0) (2022-11-29)
+
+
+### Features
+
+* new temp loan cards for MVP loan finding page ([09abc4f](https://github.com/kiva/ui/commit/09abc4f47dbbbf39b757b3d8fb4e9fb6f0eafa3a))
+
+
+### Bug Fixes
+
+* merge conflict ([3784633](https://github.com/kiva/ui/commit/3784633daaa0f2151edad4f0b59d5cacb39c7102))
+
+### [2.398.3](https://github.com/kiva/ui/compare/v2.398.2...v2.398.3) (2022-11-28)
+
+
+### Bug Fixes
+
+* show donation item tagline when there are no loans ([cd94620](https://github.com/kiva/ui/commit/cd94620e3564cacea69be28136910d8c947aaaa7))
+
+### [2.398.2](https://github.com/kiva/ui/compare/v2.398.1...v2.398.2) (2022-11-23)
+
+
+### Bug Fixes
+
+* ui doesn't load loans when default loan display mode is set to "grid" ([2f0dde8](https://github.com/kiva/ui/commit/2f0dde8b4d16bc50aaf2bc7d19ea8477454515fc))
+
+### [2.398.1](https://github.com/kiva/ui/compare/v2.398.0...v2.398.1) (2022-11-23)
+
+
+### Bug Fixes
+
+* stepper title style ([01566c1](https://github.com/kiva/ui/commit/01566c1cf8fa67b6ac0656b8ab2d0abec7ce973f))
+
+## [2.398.0](https://github.com/kiva/ui/compare/v2.397.0...v2.398.0) (2022-11-23)
+
+
+### Features
+
+* quickfilters component upgraded to include category dropdown ([2fddabc](https://github.com/kiva/ui/commit/2fddabc74aff28fc840e229dbb224172e7a242c0))
+
+## [2.397.0](https://github.com/kiva/ui/compare/v2.396.1...v2.397.0) (2022-11-23)
+
+
+### Features
+
+* quick filter section added to lending home page ([a9af386](https://github.com/kiva/ui/commit/a9af386742bc418befb7c9378dfe1d695df711ba))
+
+### [2.396.1](https://github.com/kiva/ui/compare/v2.396.0...v2.396.1) (2022-11-22)
+
+
+### Bug Fixes
+
+* removed TransactionInfo FB event ([6b1e725](https://github.com/kiva/ui/commit/6b1e725eebcecd97e048350cffd62574d4e2c14f))
+
+## [2.396.0](https://github.com/kiva/ui/compare/v2.395.0...v2.396.0) (2022-11-22)
+
+
+### Features
+
+* welcome message added to lending home page ([4ea0133](https://github.com/kiva/ui/commit/4ea0133db200224ca2a4a9f29e7d214d34de2b29))
+
+
+### Bug Fixes
+
+* mask added to first name span ([706aa32](https://github.com/kiva/ui/commit/706aa328a206205d05e54925d764b4483e7ca951))
+
+## [2.395.0](https://github.com/kiva/ui/compare/v2.394.0...v2.395.0) (2022-11-22)
+
+
+### Features
+
+* query to get user info added to lending home page ([657b958](https://github.com/kiva/ui/commit/657b958e72debc0906607e3f57f7762e5d178134))
+
 ## [2.394.0](https://github.com/kiva/ui/compare/v2.393.1...v2.394.0) (2022-11-22)
 
 
