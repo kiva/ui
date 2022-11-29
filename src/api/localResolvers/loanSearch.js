@@ -34,7 +34,7 @@ export default () => {
 				},
 			});
 		},
-		typePolicies: {
+		resolvers: {
 			Mutation: {
 				updateLoanSearch(_, { searchParams }, { cache }) {
 					// Patch the new params into the existing state in the cache

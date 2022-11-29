@@ -168,7 +168,7 @@ export default () => {
 				}
 			});
 		},
-		typePolicies: {
+		resolvers: {
 			AutolendingMutation: {
 				/**
 				 * Fetches autolend profile information and sets up local autolending state

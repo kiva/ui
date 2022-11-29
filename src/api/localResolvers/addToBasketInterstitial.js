@@ -18,7 +18,7 @@ export default () => {
 				},
 			});
 		},
-		typePolicies: {
+		resolvers: {
 			Mutation: {
 				updateAddToBasketInterstitial(_, { active = false, visible = false, loanId = 0 }, context) {
 					const data = {

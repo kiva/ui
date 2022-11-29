@@ -10,7 +10,7 @@ export default () => {
 				data: { usingTouch: false },
 			});
 		},
-		typePolicies: {
+		resolvers: {
 			Mutation: {
 				updateUsingTouch(_, { usingTouch = false }, context) {
 					context.cache.writeQuery({
