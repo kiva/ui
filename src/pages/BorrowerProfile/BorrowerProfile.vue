@@ -82,7 +82,28 @@
 				</content-container>
 			</div>
 			<content-container>
-				<more-about-loan data-testid="bp-more-about" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
+				<div
+					v-if="userContextExpVariant === 'a'"
+					class="tw-rounded tw-bg-white tw-px-2 md:tw-px-4 tw-py-3 tw-mb-5 tw-flex tw-gap-2"
+				>
+					<div>
+						<check-icon />
+					</div>
+					<div>
+						<p class="tw-text-base">
+							{{ vettedHeadline }}
+						</p>
+						<p class="tw-text-base tw-text-secondary">
+							{{ vettedBody }}
+						</p>
+					</div>
+				</div>
+				<more-about-loan
+					data-testid="bp-more-about"
+					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+					:loan-id="loanId"
+					:user-context-exp-variant="userContextExpVariant"
+				/>
 				<borrower-country data-testid="bp-country" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<lenders-and-teams
 					ref="lendersComponent"
@@ -156,6 +177,7 @@ import {
 	trackExperimentVersion
 } from '@/util/experimentUtils';
 import loanUseFilter from '@/plugins/loan-use-filter';
+import CheckIcon from '@/assets/icons/inline/check-with-bg.svg';
 
 const socialElementsExpKey = 'social_elements';
 const whatIsKivaExpKey = 'what_is_kiva_module';
@@ -220,6 +242,15 @@ const pageQuery = gql`
 					default: url(customSize: $imgDefaultSize)
 					retina: url(customSize: $imgRetinaSize)
 					hash
+				}
+				... on LoanPartner {
+					partnerName
+					partner {
+						id
+						countries {
+							name
+						}
+					}
 				}
 				plannedExpirationDate
 				lenders(limit: 10) {
@@ -306,7 +337,8 @@ export default {
 		TopBannerPfp,
 		WhySpecial,
 		WwwPage,
-		WhatIsKivaModal
+		WhatIsKivaModal,
+		CheckIcon
 	},
 	metaInfo() {
 		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
@@ -422,6 +454,8 @@ export default {
 			shareButtonExpEnabled: false,
 			shownModal: false,
 			userContextExpVariant: 'b',
+			partnerName: '',
+			isoCode: ''
 		};
 	},
 	apollo: {
@@ -513,6 +547,10 @@ export default {
 			this.lender = result?.data?.my?.userAccount ?? {};
 
 			this.shownModal = this.cookieStore.get('what-is-kiva-shown') || result?.data?.hasEverLoggedIn;
+
+			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
+			this.partnerName = loan?.partnerName ?? '';
+			this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
 		},
 	},
 	mounted() {
@@ -579,6 +617,20 @@ export default {
 		}
 	},
 	computed: {
+		vettedHeadline() {
+			if (this.isoCode === 'US') {
+				return `${this.name} was approved by Kiva`;
+			}
+			return `${this.name} was vetted by ${this.partnerName}, a lending partner in ${this.partnerCountry}`;
+		},
+		vettedBody() {
+			if (this.isoCode === 'US') {
+			// eslint-disable-next-line max-len
+				return 'Body text: Kiva reviews all US-based borrowers to ensure they meet the proper eligibility criteria';
+			}
+			// eslint-disable-next-line max-len
+			return 'Lending partners are local organizations that vet borrowers and provide services like financial education training and business development skills';
+		},
 		imageShareUrl() {
 			if (!this.hash) return '';
 			return getKivaImageUrl({

@@ -10,7 +10,7 @@
 				{{ borrowerOrGroupName }}'s story
 			</h2>
 		</div>
-		<div v-if="fullStoryEnabled">
+		<div v-if="chunkedStoryEnabled">
 			<p class="tw-my-4 tw-truncate">
 				{{ storyDescription.slice(0, 260) }}...
 			</p>
@@ -200,7 +200,7 @@ export default {
 		showReviewersName() {
 			return this.reviewer?.showName;
 		},
-		fullStoryEnabled() {
+		chunkedStoryEnabled() {
 			return this.userContextExpVariant === 'a' && !this.showFullStory;
 		}
 	},

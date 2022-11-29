@@ -189,13 +189,13 @@
 						All shares reserved
 					</p>
 					<div
-						v-if="userContextExpVariant === 'b'"
-						class="tw-hidden md:tw-flex tw-content-center tw-justify-center"
+						v-if="repaymentEnabled"
+						class="tw-hidden md:tw-flex tw-content-center tw-gap-2"
 					>
 						<div>
 							<icon-clock />
 						</div>
-						<span>Your 1st expected repayment will be in {{ repaymentDate }}</span>
+						<span>First expected repayment {{ repaymentDate }}</span>
 					</div>
 					<hr
 						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full tw-my-2"
@@ -323,7 +323,7 @@
 								class="tw-inline-block tw-align-middle"
 								data-testid="bp-lend-cta-matched-text"
 								key="loanMatchingText"
-								v-if="!statScrollAnimation && !repaymentEnabled || loopItemTurn === 2"
+								v-if="showMatchingText"
 							>
 								<span
 									class="tw-text-h3 tw-inline-block tw-align-middle tw-px-1"
@@ -336,7 +336,7 @@
 							</span>
 
 							<span
-								v-if="loopItemTurn === 3"
+								v-if="showExpectedRepayment"
 								class="md:tw-hidden tw-align-middle tw-flex tw-gap-1 tw-items-center"
 								data-testid="bp-lend-cta-expected-repayment"
 								key="expectedRepayment"
@@ -344,7 +344,7 @@
 								<div>
 									<icon-clock class="tw-pointer-events-none tw-inline-block tw-align-middle" />
 								</div>
-								<span> 1st repayment will be in {{ repaymentDate }}</span>
+								<span> First expected repayment {{ repaymentDate }}</span>
 							</span>
 						</transition>
 					</div>
@@ -465,8 +465,6 @@ export default {
 			checkoutMilestoneProgresses: [],
 			isMobile: false,
 			repaymentInterval: '',
-			showExpectedRepayment: false,
-			showMatch: false,
 			loopItemTurn: 0
 		};
 	},
@@ -634,8 +632,9 @@ export default {
 			);
 		},
 		cycleStatsSlot() {
+			let cycleSlotMachine = () => {};
 			if (this.matchingText.length) {
-				const cycleSlotMachine = () => {
+				cycleSlotMachine = () => {
 					if (this.repaymentEnabled && this.isMobile) {
 						this.loopItemTurn += 1;
 						if (this.loopItemTurn > 3) {
@@ -651,8 +650,16 @@ export default {
 						this.statScrollAnimation = true;
 					}
 				};
-				setInterval(cycleSlotMachine, 5000);
+			} else {
+				cycleSlotMachine = () => {
+					this.loopItemTurn += 1;
+					if (this.loopItemTurn > 2) {
+						this.loopItemTurn = 1;
+					}
+				};
 			}
+
+			setInterval(cycleSlotMachine, 5000);
 		},
 		toggleLightbox() {
 			this.$emit('togglelightbox');
@@ -681,14 +688,24 @@ export default {
 		},
 	},
 	computed: {
+		showMatchingText() {
+			return (!this.statScrollAnimation && !this.repaymentEnabled)
+			|| (this.loopItemTurn === 2 && this.matchingText.length);
+		},
+		showExpectedRepayment() {
+			return this.loopItemTurn === 3 || (this.loopItemTurn === 2 && !this.matchingText.length);
+		},
 		repaymentEnabled() {
 			return this.userContextExpVariant === 'b';
 		},
 		repaymentDate() {
 			const date = new Date();
+			date.setMonth(date.getMonth() + 1);
 			const currentYear = date.getFullYear();
 			const currentMonth = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(date);
-			return this.repaymentInterval === 'monthly' ? `${currentMonth}, ${currentYear}` : 'undefined?';
+			return this.repaymentInterval === 'monthly'
+				? `${currentMonth.substring(0, 3)}, ${currentYear}`
+				: `Jun, ${currentYear + 1}`;
 		},
 		isInBasket() {
 			// eslint-disable-next-line no-underscore-dangle

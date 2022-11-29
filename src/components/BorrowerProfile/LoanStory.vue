@@ -22,6 +22,26 @@
 				{ width: 280 },
 			]"
 		/>
+		<div
+			v-if="loanImpactStatements.length && userContextExpVariant === 'a'"
+			class="tw-rounded tw-bg-white tw-p-3 md:tw-p-4 tw-my-5"
+		>
+			<p class="tw-text-h2 tw-mb-3">
+				How this loans supports {{ name }}
+			</p>
+			<div
+				v-for="statement in loanImpactStatements"
+				:key="statement.id" class="tw-flex tw-justify-around tw-mb-3 tw-gap-2"
+			>
+				<img class="tw-w-10 tw-h-10" alt="High five" :src="imageRequire(`./hi5.png`)">
+				<div>
+					<p class="tw-text-h3">
+						{{ statement.headline }}
+					</p>
+					<p>{{ statement.body }}</p>
+				</div>
+			</div>
+		</div>
 		<loan-description
 			class="tw-pt-4"
 			:loan-id="loanId"
@@ -44,6 +64,8 @@
 import gql from 'graphql-tag';
 import BorrowerImage from './BorrowerImage';
 import LoanDescription from './LoanDescription';
+
+const imageRequire = require.context('@/assets/images/borrower-loan-impact/', true);
 
 export default {
 	name: 'LoanStory',
@@ -74,7 +96,12 @@ export default {
 			originalLanguage: {},
 			partnerName: '',
 			reviewer: {},
-			previousLoanId: 0
+			previousLoanId: 0,
+			isoCode: '',
+			partnerCountry: '',
+			imageRequire,
+			tags: [],
+			sector: ''
 		};
 	},
 	apollo: {
@@ -101,12 +128,29 @@ export default {
 						id
 						name
 					}
+					geocode {
+						country {
+							isoCode
+						}
+					}
+					tags
+					gender
+					sector {
+						id
+						name
+					}
 					... on LoanPartner {
 						partnerName
 						reviewer {
 							id
 							bylineName
 							showName
+						}
+						partner {
+							id
+							countries {
+								name
+							}
 						}
 					}
 				}
@@ -135,7 +179,93 @@ export default {
 			this.partnerName = loan?.partnerName ?? '';
 			this.reviewer = loan?.reviewer ?? {};
 			this.previousLoanId = loan?.previousLoanId ?? 0;
+			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
+			this.tags = loan?.tags ?? [];
+			this.gender = loan?.gender ?? '';
+			this.sector = loan?.sector ?? '';
 		},
 	},
+	computed: {
+		loanImpactStatements() {
+			const statements = [];
+			const loanStatements = [{
+				id: '1',
+				headline: 'Improved livelihood',
+				// eslint-disable-next-line max-len
+				body: '88% of borrowers said their quality of life has improved since accessing loans and other financial services',
+			},
+			{
+				id: '2',
+				headline: 'Access to funding',
+				body: 'Kiva loans give access to funding that would not be available to many borrowers elsewhere',
+			},
+			{
+				id: '3',
+				headline: 'Increased household income',
+				body: '73% of borrowers interviewed said they had increased their household income',
+			},
+			{
+				id: '4',
+				headline: 'Better household outcomes',
+				body: 'Borrowers who used loans to grow their businesses reported better household outcomes',
+			}
+			];
+			const firstStatement = loanStatements[Math.floor(Math.random() * loanStatements.length)];
+			statements.push(firstStatement);
+			statements.push(this.calculateStatementRank);
+
+			return statements.filter(x => !!x);
+		},
+		calculateStatementRank() {
+			if (this.tags.includes('#Eco-friendly') || this.tags.includes('#Sustainable Ag')) {
+				return {
+					id: '5',
+					headline: 'Supports climate action',
+					// eslint-disable-next-line max-len
+					body: 'Loans enable borrowers to use clean energy, partake in recycling, and adopt sustainable practices'
+				};
+			}
+			if (this.sector?.name.toLowerCase() === 'education') {
+				return {
+					id: '6',
+					headline: 'Increases earning potential',
+					body: 'Higher education graduates are able to earn 17% more'
+				};
+			}
+			if (this.sector?.name.toLowerCase() === 'arts') {
+				return {
+					id: '7',
+					headline: 'Invest in their craft',
+					// eslint-disable-next-line max-len
+					body: 'Borrowers who use loans to fund their businesses report better financial management and more resilience'
+				};
+			}
+			if (this.sector?.name.toLowerCase() === 'agriculture') {
+				return {
+					id: '8',
+					headline: 'Supports their family',
+					// eslint-disable-next-line max-len
+					body: 'More than 75% of people living in poverty depend on agricultural activity to feed their families'
+				};
+			}
+			if (this.loan?.gender === 'female') {
+				return {
+					id: '9',
+					headline: 'Promotes gender equality',
+					// eslint-disable-next-line max-len
+					body: 'Lending to women leads to positive improvement on quality of life, driving a cycle of increased innovation and growth'
+				};
+			}
+			if (this.isoCode === 'US') {
+				return {
+					id: '10',
+					headline: 'Promotes financial equity',
+					// eslint-disable-next-line max-len
+					body: 'Kiva offers interest-free loans to US-based borrowers who have been excluded from traditional financial services'
+				};
+			}
+			return null;
+		}
+	}
 };
 </script>
