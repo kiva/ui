@@ -40,6 +40,7 @@ export default {
 	apollo: {
 		query: gql`query autolendProfileLoanCount {
 			autolending @client {
+				id
 				currentLoanCount
 				countingLoans
 				warningThreshold

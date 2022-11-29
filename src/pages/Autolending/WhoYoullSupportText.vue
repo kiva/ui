@@ -74,6 +74,7 @@ export default {
 	apollo: {
 		query: gql`query whoYoullSupport {
 			autolending @client {
+				id
 				currentProfile {
 					id
 					kivaChooses

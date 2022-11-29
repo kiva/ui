@@ -19,6 +19,7 @@ export default {
 			this.apollo.mutate({
 				mutation: gql`mutation saveAny($filters: LoanSearchFiltersInput!) {
 							autolending @client {
+								id
 								editProfile(profile: {
 									loanSearchCriteria: {
 										filters: $filters

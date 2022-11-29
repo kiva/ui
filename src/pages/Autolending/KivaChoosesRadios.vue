@@ -38,6 +38,7 @@ export default {
 	apollo: {
 		query: gql`query autolendProfileKivaChooses {
 			autolending @client {
+				id
 				currentProfile {
 					id
 					kivaChooses
@@ -55,6 +56,7 @@ export default {
 				this.apollo.mutate({
 					mutation: gql`mutation updateKivaChooses($kivaChooses: Boolean!) {
 						autolending @client {
+							id
 							editProfile(profile: {
 								kivaChooses: $kivaChooses
 							})
