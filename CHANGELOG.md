@@ -1,3 +1,15 @@
+## [2.399.0](https://github.com/kiva/ui/compare/v2.398.3...v2.399.0) (2022-11-29)
+
+
+### Features
+
+* new temp loan cards for MVP loan finding page ([09abc4f](https://github.com/kiva/ui/commit/09abc4f47dbbbf39b757b3d8fb4e9fb6f0eafa3a))
+
+
+### Bug Fixes
+
+* merge conflict ([3784633](https://github.com/kiva/ui/commit/3784633daaa0f2151edad4f0b59d5cacb39c7102))
+
 ### [2.398.3](https://github.com/kiva/ui/compare/v2.398.2...v2.398.3) (2022-11-28)
 
 
