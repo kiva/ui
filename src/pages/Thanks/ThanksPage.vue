@@ -402,7 +402,7 @@ export default {
 
 			// MARS-310 Category Share on Thanks page
 			const categoryShareResult = this.apollo.readFragment({
-				id: 'Experiment:share_ask_copy',
+				id: 'Experiment:category_share',
 				fragment: experimentVersionFragment,
 			}) || {};
 
