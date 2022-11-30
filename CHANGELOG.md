@@ -1,3 +1,10 @@
+## [2.403.0](https://github.com/kiva/ui/compare/v2.402.0...v2.403.0) (2022-11-30)
+
+
+### Features
+
+* removed unused exp ([2d943c8](https://github.com/kiva/ui/commit/2d943c82219473da5a7e8be7011fedd0c333c944))
+
 ## [2.402.0](https://github.com/kiva/ui/compare/v2.401.0...v2.402.0) (2022-11-30)
 
 
