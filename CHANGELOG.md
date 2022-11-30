@@ -1,3 +1,22 @@
+## [2.402.0](https://github.com/kiva/ui/compare/v2.401.0...v2.402.0) (2022-11-30)
+
+
+### Features
+
+* modify stepper message ([12a7289](https://github.com/kiva/ui/commit/12a7289a3ebb769d837510017e834d2bf5924cde))
+* set share card information ([6890000](https://github.com/kiva/ui/commit/6890000f6400fb82485eb74d67e69a0a201b3ad9))
+* show category image, headline and body based on exp version ([3e5e52e](https://github.com/kiva/ui/commit/3e5e52eb77317001b549ebf3978003dca9b4af01))
+* update canonical url and avoid tracking when loan doesnt belong to categories experiment ([eb80797](https://github.com/kiva/ui/commit/eb80797efc9e59cde4dbae824695ab18bd97c933))
+
+
+### Bug Fixes
+
+* minor fixes ([deda7e1](https://github.com/kiva/ui/commit/deda7e18c3619210baf27c589dd322441f883af3))
+* resolve conflicts ([3c5d2e0](https://github.com/kiva/ui/commit/3c5d2e0faa36b8b758bd7216deecb61b58c02b0e))
+* show lender name on stepper ([b42985f](https://github.com/kiva/ui/commit/b42985f78d771462f2e3dc4ef00aa75705d2da6f))
+* solve conflict ([76c9c4e](https://github.com/kiva/ui/commit/76c9c4eaa8d576b507579bcb43ca08117ba008c6))
+* unmask loan name ([d9fd2fb](https://github.com/kiva/ui/commit/d9fd2fb35678975f187cf11583f57ebd08b75c6a))
+
 ## [2.401.0](https://github.com/kiva/ui/compare/v2.400.0...v2.401.0) (2022-11-30)
 
 
