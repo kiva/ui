@@ -596,25 +596,20 @@ export default {
 				this.loanUseMaxLength, this.anonymizationLevel);
 		},
 		shareTitle() {
-			if (this.shareCardLanguageVersion === 'b') {
-				// eslint-disable-next-line max-len
-				return this.inviterName === '' ? `Can you help support ${this.name}?` : `Can you help ${this.inviterName} support ${this.name}?`;
+			if (this.anonymizationLevel === 'full') {
+				return 'Can you help support this loan?';
 			}
-
-			return `Lend as little as $25 to ${this.name}`;
+			/** if inviterName is blank or share query param (used for sharing your own loan)
+			 * is set to true, then we don't want to use the inviter name in the share title
+			 */
+			if (this.inviterName === '' || this.$route.query.share === 'true') {
+				return `Can you help support ${this.name}?`;
+			}
+			return `Can you help ${this.inviterName} support ${this.name}?`;
 		},
 		shareDescription() {
-			if (this.shareCardLanguageVersion === 'b') {
-				// eslint-disable-next-line max-len
-				return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
-			}
-
-			if (this.anonymizationLevel !== 'full') {
-				const loanUse = loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount,
-					this.loanUseMaxLength);
-				return `${loanUse}\n\n${this.description.substring(0, 120)}...`;
-			}
-			return 'For the borrower\'s privacy, this loan has been made anonymous.';
+			// eslint-disable-next-line max-len
+			return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
 		},
 		showFundraising() {
 			return this.amountLeft && this.status === 'fundraising';

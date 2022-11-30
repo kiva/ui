@@ -116,7 +116,6 @@ import personalizedLoansQuery from '@/graphql/query/lendByCategory/personalizedL
 import mlLoansYouMightLikeData from '@/graphql/query/loansYouMightLike/mlLoansYouMightLikeData.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import { FLSS_ORIGIN_BP_FUNDED } from '@/util/flssUtils';
-import loanUseFilter from '@/plugins/loan-use-filter';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
@@ -190,34 +189,19 @@ export default {
 			rows: null,
 			isVisitor: true,
 			loanRowsCount: 4,
-			loanUseMaxLength: 100,
-			anonymizationLevel: 'none',
-			shareCardLanguageVersion: '',
-			inviterIsGuestOrAnonymous: false,
-			basketedLoans: []
+			shareCardLanguageVersion: ''
 		};
 	},
 	computed: {
 		shareTitle() {
-			if (this.shareCardLanguageVersion === 'b') {
-				// eslint-disable-next-line max-len
-				return this.inviterName === '' ? `Can you help support ${this.loan.name}?` : `Can you help ${this.inviterName} support ${this.loan.name}?`;
+			if (this.loan?.anonymizationLevel !== 'full') {
+				return `A loan of $${this.loan?.loanAmount} made a difference for ${this.loan.name}`;
 			}
-
-			return `Lend as little as $25 to ${this.loan.name}`;
+			return `A loan of $${this.loan?.loanAmount} made a difference`;
 		},
 		shareDescription() {
-			if (this.shareCardLanguageVersion === 'b') {
-				// eslint-disable-next-line max-len
-				return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
-			}
-
-			if (this.anonymizationLevel !== 'full') {
-				const loanUse = loanUseFilter(this.loan.use, this.loan.name, this.loan.status, this.loan?.loanAmount,
-					this.loan?.borrowerCount, this.loanUseMaxLength);
-				return `${loanUse}\n\n${this.loan.description.substring(0, 120)}...`;
-			}
-			return 'For the borrower\'s privacy, this loan has been made anonymous.';
+			// eslint-disable-next-line max-len
+			return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
 		},
 	},
 	created() {
