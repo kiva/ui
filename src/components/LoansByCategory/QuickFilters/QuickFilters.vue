@@ -258,9 +258,9 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 
-	#customizedSortBySelector select {
+	#customizedSortBySelector >>> select {
 		border-style: none;
 		padding: 0 0 0 4px;
 		width: auto;
@@ -268,7 +268,7 @@ export default {
 		@apply focus:tw-ring-0 focus:tw-ring-offset-0;
 	}
 
-	#customizedSortBySelector span:nth-child(2) {
+	#customizedSortBySelector >>> span:nth-child(2) {
 		display: none;
 	}
 
