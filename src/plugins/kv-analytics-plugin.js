@@ -297,6 +297,7 @@ export default {
 						type: 'event',
 						eventName: 'deposit',
 						tags: {
+							revenue: transactionData.depositTotal * 100,
 							deposit_amount: transactionData.depositTotal
 						}
 					});
