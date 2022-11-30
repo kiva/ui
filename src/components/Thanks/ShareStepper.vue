@@ -13,7 +13,12 @@
 			</div>
 		</div>
 		<p class="tw-text-center tw-mt-4 tw-text-subhead">
-			<span class="fs-mask">{{ lenderName }}</span>, complete your support by sharing this loan.
+			<template v-if="showLenderName">
+				<span class="fs-mask">{{ lenderName }}</span>, complete your support by sharing this loan.
+			</template>
+			<template v-else>
+				Complete your support by sharing this loan.
+			</template>
 		</p>
 	</div>
 </template>
@@ -28,7 +33,11 @@ export default {
 		lenderName: {
 			type: String,
 			default: ''
-		}
+		},
+		showLenderName: {
+			type: Boolean,
+			default: true
+		},
 	},
 	data() {
 		return {
