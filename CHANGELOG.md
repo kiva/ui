@@ -1,3 +1,11 @@
+### [2.404.2](https://github.com/kiva/ui/compare/v2.404.1...v2.404.2) (2022-11-30)
+
+
+### Bug Fixes
+
+* exp name ([ecfcc08](https://github.com/kiva/ui/commit/ecfcc08a9bf5b344a604749140102f7ffeb0673c))
+* validate invited by url ([b49e3b2](https://github.com/kiva/ui/commit/b49e3b23b7fb83ae4474411788fd0727a80efd25))
+
 ### [2.404.1](https://github.com/kiva/ui/compare/v2.404.0...v2.404.1) (2022-11-30)
 
 
