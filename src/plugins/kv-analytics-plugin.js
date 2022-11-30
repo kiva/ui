@@ -302,13 +302,13 @@ export default {
 					});
 				}
 
-				if (transactionData.loanTotal) {
+				if (transactionData.loanTotal !== '0.00') {
 					window.optimizely.push({
 						type: 'event',
 						eventName: 'loan_share_purchase',
 						tags: {
-							loan_share_purchase_amount: transactionData.optimizely.loanTotal,
-							donation_amount: transactionData.optimizely.donationTotal
+							loan_share_purchase_amount: transactionData.loanTotal,
+							donation_amount: transactionData.donationTotal
 						}
 					});
 				}

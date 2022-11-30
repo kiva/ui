@@ -85,10 +85,6 @@ export function formatTransactionData(
 		depositTotal: totals.creditAmountNeeded || 0,
 		paymentType,
 		isFTD: false,
-		optimizely: {
-			loanTotal,
-			donationTotal
-		}
 	};
 
 	return transactionData;
