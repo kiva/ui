@@ -67,10 +67,27 @@ const testCategories = [
 	'eco-friendly'
 ];
 
+const imageRequire = require.context('@/assets/images/category-share-experiment/', true);
+
 export default {
 	name: 'LoanChannelCategoryPage',
 	metaInfo() {
 		this.getMetaInfo();
+		let image = '';
+		let title = null;
+		if (this.$route.query.category_share_version
+			&& ['women', 'education', 'agriculture'].includes(this.$route.params.category)) {
+			image = imageRequire(`./${this.$route.params.category}_share_card.png`);
+			title = `Can you help ${this.$route.query.lender} `;
+			if (this.$route.params.category === 'women') {
+				title += 'support women around the world?';
+			} else if (this.$route.params.category === 'education') {
+				title += 'expand access to education around the world?';
+			} else if (this.$route.params.category === 'agriculture') {
+				title += 'support smallholder farmers around the world?';
+			}
+		}
+
 		return {
 			title: this.meta.title,
 			meta: [
@@ -83,7 +100,7 @@ export default {
 				{
 					vmid: 'og:title',
 					property: 'og:title',
-					content: this.meta.title
+					content: title ?? this.meta.title
 				},
 				{
 					vmid: 'og:description',
@@ -94,14 +111,25 @@ export default {
 				{
 					vmid: 'twitter:title',
 					name: 'twitter:title',
-					content: this.meta.title
+					content: title ?? this.meta.title
 				},
 				{
 					name: 'twitter:description',
 					vmid: 'twitter:description',
 					content: this.meta.description
 				}
-			])
+			]).concat(image ? [
+				{
+					property: 'og:image',
+					vmid: 'og:image',
+					content: image
+				},
+				{
+					name: 'twitter:image',
+					vmid: 'twitter:image',
+					content: image
+				}
+			] : [])
 		};
 	},
 	components: {

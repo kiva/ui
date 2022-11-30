@@ -91,8 +91,9 @@
 					Sort By
 				</label>
 				<kv-select
+					id="sortBy"
 					:disabled="!filtersLoaded"
-					v-model="sortBy" id="sortBy"
+					v-model="sortBy"
 					style="min-width: 180px;"
 					@click.native="trackDropdownClick('sort')"
 				>
@@ -114,26 +115,31 @@
 					Reset filters
 				</button>
 			</div>
-			<kv-select
-				id="customizedSortBySelector"
-				:disabled="!filtersLoaded"
-				v-model="sortBy"
-				style="min-width: 180px;"
-				@click.native="trackDropdownClick('sort')"
-			>
-				<option
-					v-for="sortType in filterOptions.sorting"
-					:key="sortType.key"
-					:value="sortType.key"
+			<div id="customizedSortBySelector" class="tw-text-action tw-flex tw-items-center tw-gap-1 tw-text-small">
+				<kv-material-icon :icon="mdiFilterVariant" class="tw-w-2 tw-h-2" />
+				Loan sort:
+				<kv-select
+					id="sortBy"
+					:disabled="!filtersLoaded"
+					v-model="sortBy"
+					@click.native="trackDropdownClick('sort')"
 				>
-					{{ sortType.title }}
-				</option>
-			</kv-select>
+					<option
+						v-for="sortType in filterOptions.sorting"
+						:key="sortType.key"
+						:value="sortType.key"
+					>
+						{{ sortType.title }}
+					</option>
+				</kv-select>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+import { mdiFilterVariant } from '@mdi/js';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import LocationSelector from './LocationSelector';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
@@ -164,10 +170,12 @@ export default {
 	},
 	components: {
 		KvSelect,
-		LocationSelector
+		LocationSelector,
+		KvMaterialIcon
 	},
 	data() {
 		return {
+			mdiFilterVariant,
 			selectedCategory: '',
 			selectedGender: '',
 			sortBy: 'personalized',
@@ -249,3 +257,19 @@ export default {
 	}
 };
 </script>
+
+<style lang="postcss" scoped>
+
+	#customizedSortBySelector >>> select {
+		border-style: none;
+		padding: 0 0 0 4px;
+		width: auto;
+		font-size: 0.875rem;
+		@apply focus:tw-ring-0 focus:tw-ring-offset-0;
+	}
+
+	#customizedSortBySelector >>> span:nth-child(2) {
+		display: none;
+	}
+
+</style>

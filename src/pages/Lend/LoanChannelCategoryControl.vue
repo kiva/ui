@@ -351,6 +351,13 @@ export default {
 			if (this.$route.query.page && Number(this.$route.query.page) > 1) {
 				url = `${url}?page=${this.$route.query.page}`;
 			}
+			// MARS-310 Category Share on Thanks page
+			if (this.$route.query.category_share_version
+				&& ['women', 'education', 'agriculture'].includes(this.$route.params.category)) {
+				const params = this.$router.currentRoute.query;
+				const queryString = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+				url = `${url}?${queryString}`;
+			}
 			return url;
 		},
 		hasOnePageOfLoans() {
