@@ -292,17 +292,18 @@ export default {
 				});
 			},
 			trackOPTransaction: transactionData => {
-				if (transactionData.depositTotal !== '0.00') {
+				if (transactionData.depositTotal) {
 					window.optimizely.push({
 						type: 'event',
 						eventName: 'deposit',
 						tags: {
+							revenue: transactionData.depositTotal * 100,
 							deposit_amount: transactionData.depositTotal
 						}
 					});
 				}
 
-				if (transactionData.loanTotal !== '0.00') {
+				if (transactionData.loanTotal) {
 					window.optimizely.push({
 						type: 'event',
 						eventName: 'loan_share_purchase',
