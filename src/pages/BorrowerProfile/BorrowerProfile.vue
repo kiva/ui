@@ -182,7 +182,7 @@ import CheckIcon from '@/assets/icons/inline/check-with-bg.svg';
 const socialElementsExpKey = 'social_elements';
 const whatIsKivaExpKey = 'what_is_kiva_module';
 const shareButtonExpKey = 'share_button_bp';
-const userContextExpKey = 'context_for_new_users';
+const userContextExpKey = 'new_users_context';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 const pageQuery = gql`
@@ -449,7 +449,7 @@ export default {
 			kivaModuleExpEnabled: false,
 			shareButtonExpEnabled: false,
 			shownModal: false,
-			userContextExpVariant: 'b',
+			userContextExpVariant: 'c',
 			partnerName: '',
 			isoCode: ''
 		};
@@ -493,8 +493,7 @@ export default {
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 						client.query({ query: experimentQuery, variables: { id: socialElementsExpKey } }),
 						client.query({ query: experimentQuery, variables: { id: whatIsKivaExpKey } }),
-						client.query({ query: experimentQuery, variables: { id: shareButtonExpKey } }),
-						client.query({ query: experimentQuery, variables: { id: userContextExpKey } }),
+						client.query({ query: experimentQuery, variables: { id: shareButtonExpKey } })
 					]);
 				});
 		},
@@ -593,18 +592,6 @@ export default {
 			if (version === 'b') {
 				this.shareButtonExpEnabled = true;
 			}
-		}
-
-		const userContextExpData = getExperimentSettingCached(this.apollo, userContextExpKey);
-		if (userContextExpData?.enabled) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Borrower Profile',
-				userContextExpKey,
-				''
-			);
-			this.userContextExpVariant = version;
 		}
 	},
 	methods: {
@@ -741,6 +728,21 @@ export default {
 
 		const publicId = getPublicId(this.$route);
 		this.inviterIsGuestOrAnonymous = publicId === 'anonymous' || publicId === 'guest';
+
+		const contextExpEnabled = getExperimentSettingCached(this.apollo, userContextExpKey)?.enabled;
+		const userContextExpData = this.apollo.readFragment({
+			id: `Experiment:${userContextExpKey}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		this.userContextExpVariant = userContextExpData?.version;
+		if (contextExpEnabled && userContextExpData?.version) {
+			this.$kvTrackEvent(
+				'Borrower Profile',
+				'EXP-MARS-317-Nov2022',
+				this.userContextExpVariant,
+			);
+		}
 	},
 };
 </script>

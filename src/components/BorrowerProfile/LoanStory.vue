@@ -33,7 +33,7 @@
 				v-for="statement in loanImpactStatements"
 				:key="statement.id" class="tw-flex tw-justify-around tw-mb-3 tw-gap-2"
 			>
-				<img class="tw-w-10 tw-h-10" alt="High five" :src="imageRequire(`./hi5.png`)">
+				<img class="tw-w-10 tw-h-10" alt="High five" :src="imageRequire(`./${statement.image}.svg`)">
 				<div>
 					<p class="tw-text-h3">
 						{{ statement.headline }}
@@ -211,7 +211,7 @@ export default {
 			}
 			];
 			const firstStatement = loanStatements[Math.floor(Math.random() * loanStatements.length)];
-			statements.push(firstStatement);
+			statements.push({ ...firstStatement, image: 'orange' });
 			statements.push(this.calculateStatementRank);
 
 			return statements.filter(x => !!x);
@@ -222,14 +222,16 @@ export default {
 					id: '5',
 					headline: 'Supports climate action',
 					// eslint-disable-next-line max-len
-					body: 'Loans enable borrowers to use clean energy, partake in recycling, and adopt sustainable practices'
+					body: 'Loans enable borrowers to use clean energy, partake in recycling, and adopt sustainable practices',
+					image: 'leafheart'
 				};
 			}
 			if (this.sector?.name.toLowerCase() === 'education') {
 				return {
 					id: '6',
 					headline: 'Increases earning potential',
-					body: 'Higher education graduates are able to earn 17% more'
+					body: 'Higher education graduates are able to earn 17% more',
+					image: 'water'
 				};
 			}
 			if (this.sector?.name.toLowerCase() === 'arts') {
@@ -237,7 +239,8 @@ export default {
 					id: '7',
 					headline: 'Invest in their craft',
 					// eslint-disable-next-line max-len
-					body: 'Borrowers who use loans to fund their businesses report better financial management and more resilience'
+					body: 'Borrowers who use loans to fund their businesses report better financial management and more resilience',
+					image: 'water'
 				};
 			}
 			if (this.sector?.name.toLowerCase() === 'agriculture') {
@@ -245,7 +248,8 @@ export default {
 					id: '8',
 					headline: 'Supports their family',
 					// eslint-disable-next-line max-len
-					body: 'More than 75% of people living in poverty depend on agricultural activity to feed their families'
+					body: 'More than 75% of people living in poverty depend on agricultural activity to feed their families',
+					image: 'water'
 				};
 			}
 			if (this.loan?.gender === 'female') {
@@ -253,7 +257,8 @@ export default {
 					id: '9',
 					headline: 'Promotes gender equality',
 					// eslint-disable-next-line max-len
-					body: 'Lending to women leads to positive improvement on quality of life, driving a cycle of increased innovation and growth'
+					body: 'Lending to women leads to positive improvement on quality of life, driving a cycle of increased innovation and growth',
+					image: 'highfive'
 				};
 			}
 			if (this.isoCode === 'US') {
@@ -261,7 +266,8 @@ export default {
 					id: '10',
 					headline: 'Promotes financial equity',
 					// eslint-disable-next-line max-len
-					body: 'Kiva offers interest-free loans to US-based borrowers who have been excluded from traditional financial services'
+					body: 'Kiva offers interest-free loans to US-based borrowers who have been excluded from traditional financial services',
+					image: 'highfive'
 				};
 			}
 			return null;
