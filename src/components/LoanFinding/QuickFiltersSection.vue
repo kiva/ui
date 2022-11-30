@@ -61,7 +61,6 @@ export default {
 		},
 		handleQuickFiltersOverlay() {
 		},
-<<<<<<< HEAD
 		async fetchFilterData(loanSearchState = {}) {
 			// TODO: Prevent this from running on every query (not needed for sorting and paging)
 			const { isoCodes } = await runFacetsQueries(this.apollo, loanSearchState, FLSS_ORIGIN_CATEGORY);
@@ -118,8 +117,6 @@ export default {
 
 			this.filtersLoaded = true;
 		},
-=======
->>>>>>> origin/main
 	},
 };
 </script>
