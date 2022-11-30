@@ -292,7 +292,7 @@ export default {
 				});
 			},
 			trackOPTransaction: transactionData => {
-				if (transactionData.depositTotal) {
+				if (transactionData.depositTotal !== '0.00') {
 					window.optimizely.push({
 						type: 'event',
 						eventName: 'deposit',
