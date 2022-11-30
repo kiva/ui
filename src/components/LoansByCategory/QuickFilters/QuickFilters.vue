@@ -39,7 +39,7 @@
 						style="min-width: 160px;"
 					>
 						<option
-							v-for="category in filterOptions.category"
+							v-for="category in filterOptions.categories"
 							:key="category.key"
 							:value="category.key"
 						>
