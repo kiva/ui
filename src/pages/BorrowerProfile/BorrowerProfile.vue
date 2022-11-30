@@ -183,10 +183,6 @@ const pageQuery = gql`
 				key
 				value
 			}
-			newFundedBorrowerPage: uiExperimentSetting(key: "new_funded_borrower_page") {
-				key
-				value
-			}
 			whatIsKivaModule: uiExperimentSetting(key: "what_is_kiva_module") {
 				key
 				value
