@@ -16,9 +16,9 @@
 					class="card-preview tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
 					src="~@/assets/images/checkout/kiva_card_postal_preview.jpg"
 				>
-				<!-- Email Kiva Card -->
+				<!-- Email or Lender Kiva Card -->
 				<img
-					v-if="cardType == 'email'"
+					v-if="cardType === 'email' || cardType === 'lender'"
 					alt="email-kiva-card"
 					class="card-preview tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
 					src="~@/assets/images/checkout/kiva_card_email_preview.jpg"
@@ -39,8 +39,12 @@
 						Postal delivery Kiva Card
 						<span v-if="quantity > 1">({{ quantity }})</span>
 					</h2>
-					<!-- Email Kiva Card -->
-					<h2 class="tw-text-h3" v-if="cardType == 'email'" data-testid="basket-kiva-card-title">
+					<!-- Email or Lender Kiva Card -->
+					<h2
+						class="tw-text-h3"
+						v-if="cardType === 'email' || cardType === 'lender'"
+						data-testid="basket-kiva-card-title"
+					>
 						Email delivery Kiva Card
 					</h2>
 
@@ -87,8 +91,8 @@
 							{{ mailingZip }}
 						</p>
 					</div>
-					<!-- Email Kiva Card -->
-					<div v-if="cardType == 'email'">
+					<!-- Email or Lender Kiva Card -->
+					<div v-if="cardType === 'email' || cardType === 'lender'">
 						<p class="tw-text-small tw-mb-1" data-testid="basket-kiva-card-info-1">
 							Scheduled to be sent  {{ deliveryDate }}
 						</p>
