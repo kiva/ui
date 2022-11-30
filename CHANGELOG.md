@@ -1,3 +1,12 @@
+### [2.404.1](https://github.com/kiva/ui/compare/v2.404.0...v2.404.1) (2022-11-30)
+
+
+### Bug Fixes
+
+* add revenue tag ([07f0fd9](https://github.com/kiva/ui/commit/07f0fd9a2509f851bb8819fe87b23b566d57661a))
+* validate deposit total ([b7f0226](https://github.com/kiva/ui/commit/b7f0226e89f89e9f08201b6ff48480d25ae50898))
+* validate loan total value ([9caee35](https://github.com/kiva/ui/commit/9caee359fc1c7cb7922afc83fb9c7051a0622997))
+
 ## [2.404.0](https://github.com/kiva/ui/compare/v2.403.0...v2.404.0) (2022-11-30)
 
 
