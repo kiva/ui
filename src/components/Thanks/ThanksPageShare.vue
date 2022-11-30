@@ -91,7 +91,7 @@
 						<p class="tw-text-h3 tw-m-0 thanks__base-text">
 							<template v-if="categoryShareVersion === 'c' || !categoryName">
 								<!-- eslint-disable-next-line max-len -->
-								<span class="fs-mask">{{ this.loan.name }}</span> only needs {{ calculatePeopleQtyToGoal() }} more people to lend $25 and their loan could be fully funded in a matter of hours!
+								{{ this.loan.name }} only needs {{ calculatePeopleQtyToGoal() }} more people to lend $25 and their loan could be fully funded in a matter of hours!
 							</template>
 							<template v-else>
 								{{ this.thanksPageBody }}
