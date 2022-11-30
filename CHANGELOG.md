@@ -1,3 +1,10 @@
+## [2.404.0](https://github.com/kiva/ui/compare/v2.403.0...v2.404.0) (2022-11-30)
+
+
+### Features
+
+* checkout page support for lender kiva cards ([13e5bde](https://github.com/kiva/ui/commit/13e5bdeea9e000b66a6754880be2460a7b115871))
+
 ## [2.403.0](https://github.com/kiva/ui/compare/v2.402.0...v2.403.0) (2022-11-30)
 
 
