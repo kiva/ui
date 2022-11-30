@@ -307,8 +307,8 @@ export default {
 						type: 'event',
 						eventName: 'loan_share_purchase',
 						tags: {
-							loan_share_purchase_amount: transactionData.loanTotal,
-							donation_amount: transactionData.donationTotal
+							loan_share_purchase_amount: transactionData.optimizely.loanTotal,
+							donation_amount: transactionData.optimizely.donationTotal
 						}
 					});
 				}
