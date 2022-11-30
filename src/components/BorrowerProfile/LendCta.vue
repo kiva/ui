@@ -656,6 +656,9 @@ export default {
 					if (this.loopItemTurn > 2) {
 						this.loopItemTurn = 1;
 					}
+					if (!this.isMobile) {
+						this.loopItemTurn = 1;
+					}
 				};
 			}
 
@@ -693,7 +696,7 @@ export default {
 			|| (this.loopItemTurn === 2 && this.matchingText.length);
 		},
 		showExpectedRepayment() {
-			return this.loopItemTurn === 3 || (this.loopItemTurn === 2 && !this.matchingText.length);
+			return this.loopItemTurn === 3 || (this.loopItemTurn === 2 && !this.matchingText.length && this.isMobile);
 		},
 		repaymentEnabled() {
 			return this.userContextExpVariant === 'b';
