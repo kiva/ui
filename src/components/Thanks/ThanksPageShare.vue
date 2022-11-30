@@ -279,7 +279,7 @@ export default {
 					? `&category_share_version=${this.categoryShareVersion}`
 					: '';
 			}
-			if (this.loan.id) {
+			if (this.loan.id && !this.categoryName) {
 				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utm_content=${this.utmContent}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
 			}
 			return `${base}?utm_content=${this.utmContent}${this.getUtmCampaignVersion}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
