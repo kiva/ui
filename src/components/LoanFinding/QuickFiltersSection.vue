@@ -27,8 +27,31 @@ export default {
 	},
 	data() {
 		return {
-			quickFiltersOptions: {},
-			filtersLoaded: false,
+			quickFiltersOptions: {
+				sorting: [
+					{
+						title: 'Recommended',
+						key: 'personalized',
+					},
+					{
+						title: 'Almost funded',
+						key: 'amountLeft',
+					},
+					{
+						title: 'Amount high to low',
+						key: 'amountHighToLow'
+					},
+					{
+						title: 'Amount low to high',
+						key: 'amountLowToHigh'
+					},
+					{
+						title: 'Ending soon',
+						key: 'expiringSoon'
+					}
+				]
+			},
+			filtersLoaded: true,
 			targetedLoanChannelURL: '',
 		};
 	},
@@ -43,7 +66,7 @@ export default {
 		resetFilters() {
 		},
 		handleQuickFiltersOverlay() {
-		}
+		},
 	},
 };
 </script>
