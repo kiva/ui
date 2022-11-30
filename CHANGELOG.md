@@ -1,3 +1,15 @@
+## [2.401.0](https://github.com/kiva/ui/compare/v2.400.0...v2.401.0) (2022-11-30)
+
+
+### Features
+
+* sort by dropdown updgraded in quick filters component ([439acaf](https://github.com/kiva/ui/commit/439acaf588760ff1d39d4c46bd5b4f20155dedf7))
+
+
+### Bug Fixes
+
+* css code updated in quick filter component ([e314b82](https://github.com/kiva/ui/commit/e314b8261b7d64d15213939903bcbb76df95723c))
+
 ## [2.400.0](https://github.com/kiva/ui/compare/v2.399.0...v2.400.0) (2022-11-29)
 
 
