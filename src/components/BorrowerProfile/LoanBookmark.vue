@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<template v-if="isLoading">
-			<kv-loading-placeholder style="height: 2rem; width: 130px" />
+			<kv-loading-placeholder style="height: 2rem; width: 130px;" />
 		</template>
 		<template v-else>
 			<button
