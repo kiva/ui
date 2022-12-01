@@ -171,6 +171,7 @@ import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
 import WhatIsKivaModal from '@/components/BorrowerProfile/WhatIsKivaModal';
+import logReadQueryError from '@/util/logReadQueryError';
 
 import {
 	getExperimentSettingCached,
@@ -238,15 +239,6 @@ const pageQuery = gql`
 					default: url(customSize: $imgDefaultSize)
 					retina: url(customSize: $imgRetinaSize)
 					hash
-				}
-				... on LoanPartner {
-					partnerName
-					partner {
-						id
-						countries {
-							name
-						}
-					}
 				}
 				plannedExpirationDate
 				lenders(limit: 10) {
@@ -451,6 +443,7 @@ export default {
 			shownModal: false,
 			userContextExpVariant: 'c',
 			partnerName: '',
+			partnerCountry: '',
 			isoCode: ''
 		};
 	},
@@ -542,10 +535,7 @@ export default {
 			this.lender = result?.data?.my?.userAccount ?? {};
 
 			this.shownModal = this.cookieStore.get('what-is-kiva-shown') || result?.data?.hasEverLoggedIn;
-
 			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
-			this.partnerName = loan?.partnerName ?? '';
-			this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
 		},
 	},
 	mounted() {
@@ -592,6 +582,39 @@ export default {
 			if (version === 'b') {
 				this.shareButtonExpEnabled = true;
 			}
+		}
+
+		const query = gql`query borrowerProfileMeta(
+			$loanId: Int!,
+		) {
+			lend {
+				loan(id: $loanId) {
+					id
+					...on LoanPartner {
+						partnerName
+						partner {
+							id
+							countries {
+								name
+							}
+						}
+					}
+				}
+			}
+		}`;
+
+		try {
+			const data = this.apollo.readQuery({
+				query,
+				variables: {
+					loanId: this.loanId,
+				},
+			});
+			const loan = data?.lend?.loan;
+			this.partnerName = loan?.partnerName ?? '';
+			this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
+		} catch (e) {
+			logReadQueryError(e, 'BorrowerProfile userContextExperiment');
 		}
 	},
 	methods: {
