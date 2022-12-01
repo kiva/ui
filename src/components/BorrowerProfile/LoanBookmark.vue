@@ -57,11 +57,6 @@ export default {
 				}
 			}
 		`,
-		preFetchVariables({ route }) {
-			return {
-				loanId: Number(route?.params?.id ?? 0),
-			};
-		},
 		variables() {
 			return {
 				loanId: this.loanId,
