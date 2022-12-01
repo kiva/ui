@@ -131,29 +131,12 @@ export default {
 						id
 						name
 					}
-					geocode {
-						country {
-							isoCode
-						}
-					}
-					tags
-					gender
-					sector {
-						id
-						name
-					}
 					... on LoanPartner {
 						partnerName
 						reviewer {
 							id
 							bylineName
 							showName
-						}
-						partner {
-							id
-							countries {
-								name
-							}
 						}
 					}
 				}
