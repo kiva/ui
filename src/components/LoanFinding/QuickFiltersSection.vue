@@ -64,20 +64,30 @@ export default {
 		async fetchFilterData(loanSearchState = {}) {
 			// TODO: Prevent this from running on every query (not needed for sorting and paging)
 			const { isoCodes } = await runFacetsQueries(this.apollo, loanSearchState, FLSS_ORIGIN_CATEGORY);
-			const categories = await fetchCategories(this.apollo);
+			const fetchedCategories = await fetchCategories(this.apollo);
 
 			// Merge all facet options with filtered options
 			const facets = {
 				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 			};
 
+			const categories = fetchedCategories.lend?.loanChannels?.values;
+			const sortedCategories = [...categories].sort(
+				// eslint-disable-next-line no-nested-ternary
+				(catA, catB) => {
+					if (catA.title < catB.title) return -1;
+					if (catA.title > catB.title) return 1;
+					return 0;
+				}
+			);
+
 			this.quickFiltersOptions.categories = [
 				...[{ title: 'All categories', key: 0 }],
-				...categories.lend?.loanChannels?.values
+				...sortedCategories
 			];
 
 			this.quickFiltersOptions.location = facets.regions;
-
+			// TODO: Pull sort by and gender filters from API
 			this.quickFiltersOptions.sorting = [
 				{
 					title: 'Recommended',
@@ -113,6 +123,10 @@ export default {
 					title: 'Men',
 					key: 'male',
 				},
+				{
+					title: 'Non-binary',
+					key: 'nonbinary',
+				}
 			];
 
 			this.filtersLoaded = true;
