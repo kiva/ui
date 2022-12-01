@@ -1,3 +1,11 @@
+### [2.409.1](https://github.com/kiva/ui/compare/v2.409.0...v2.409.1) (2022-12-01)
+
+
+### Bug Fixes
+
+* copy for agriculture, show lender name in stepper within control ([c9b9fd6](https://github.com/kiva/ui/commit/c9b9fd63d8a48b287bf640fc58ad445baf85c613))
+* minor designs ([d0c499f](https://github.com/kiva/ui/commit/d0c499fbf305b198534f21f645e615285620a285))
+
 ## [2.409.0](https://github.com/kiva/ui/compare/v2.408.0...v2.409.0) (2022-12-01)
 
 
