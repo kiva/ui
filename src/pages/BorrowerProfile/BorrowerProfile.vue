@@ -132,7 +132,6 @@
 				:inviter-name="inviterName"
 			/>
 		</article>
-		<what-is-kiva-modal v-if="kivaModuleExpEnabled && !shownModal" />
 		<!-- <aside>Similar loans</aside> -->
 	</www-page>
 </template>
@@ -161,7 +160,6 @@ import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
-import WhatIsKivaModal from '@/components/BorrowerProfile/WhatIsKivaModal';
 import logReadQueryError from '@/util/logReadQueryError';
 
 import {
@@ -171,7 +169,6 @@ import {
 import loanUseFilter from '@/plugins/loan-use-filter';
 import CheckIcon from '@/assets/icons/inline/check-with-bg.svg';
 
-const whatIsKivaExpKey = 'what_is_kiva_module';
 const shareButtonExpKey = 'share_button_bp';
 const userContextExpKey = 'new_users_context';
 
@@ -185,17 +182,12 @@ const pageQuery = gql`
 		$imgDefaultSize: String = "w480h360",
 		$imgRetinaSize: String = "w960h720"
 	) {
-		hasEverLoggedIn @client
 		general {
 			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
 				key
 				value
 			}
 			requireDepositsMatchedLoans: uiExperimentSetting(key: "require_deposits_matched_loans") {
-				key
-				value
-			}
-			whatIsKivaModule: uiExperimentSetting(key: "what_is_kiva_module") {
 				key
 				value
 			}
@@ -295,7 +287,6 @@ export default {
 		TopBannerPfp,
 		WhySpecial,
 		WwwPage,
-		WhatIsKivaModal,
 		CheckIcon
 	},
 	metaInfo() {
@@ -405,9 +396,7 @@ export default {
 			diffInDays: 0,
 			lender: {},
 			loan: {},
-			kivaModuleExpEnabled: false,
 			shareButtonExpEnabled: false,
-			shownModal: false,
 			userContextExpVariant: 'c',
 			partnerName: '',
 			partnerCountry: '',
@@ -451,7 +440,6 @@ export default {
 
 					return Promise.all([
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
-						client.query({ query: experimentQuery, variables: { id: whatIsKivaExpKey } }),
 						client.query({ query: experimentQuery, variables: { id: shareButtonExpKey } })
 					]);
 				});
@@ -499,7 +487,6 @@ export default {
 			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;
 			this.lender = result?.data?.my?.userAccount ?? {};
 
-			this.shownModal = this.cookieStore.get('what-is-kiva-shown') || result?.data?.hasEverLoggedIn;
 			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
 		},
 	},
@@ -509,20 +496,6 @@ export default {
 		const expCookieSignifier = this.cookieStore.get('kvlendborrowerbeta');
 		if (expCookieSignifier === 'b') {
 			this.$kvTrackEvent('Borrower Profile', 'EXP-GROW-655-Aug2021', expCookieSignifier);
-		}
-
-		const kivaModuleExpData = getExperimentSettingCached(this.apollo, whatIsKivaExpKey);
-		if (kivaModuleExpData?.enabled) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Borrower Profile',
-				whatIsKivaExpKey,
-				'EXP-MARS-199-Aug2022'
-			);
-			if (version === 'b') {
-				this.kivaModuleExpEnabled = true;
-			}
 		}
 
 		const shareButtonExpData = getExperimentSettingCached(this.apollo, shareButtonExpKey);
