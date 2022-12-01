@@ -51,6 +51,7 @@ export default {
 	apollo: {
 		query: gql`query autolendProfileLoanLimit {
 			autolending @client {
+				id
 				currentProfile {
 					id
 					loanSearchCriteria {
@@ -72,6 +73,7 @@ export default {
 				this.apollo.mutate({
 					mutation: gql`mutation updateLoanLimit($loanLimit: Int) {
 						autolending @client {
+							id
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {

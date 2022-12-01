@@ -20,7 +20,7 @@ export default () => {
 				},
 			});
 		},
-		typePolicies: {
+		resolvers: {
 			Mutation: {
 				showTipMessage(_, { message = '', persist = false, type = '' }, context) {
 					context.cache.updateQuery({ query: tipMessageDataQuery }, data => ({

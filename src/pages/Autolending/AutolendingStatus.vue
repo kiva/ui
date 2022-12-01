@@ -119,6 +119,7 @@ export default {
 	apollo: {
 		query: gql`query autolendProfileStatus {
 			autolending @client {
+				id
 				profileChanged
 				currentProfile {
 					id
@@ -159,6 +160,7 @@ export default {
 					this.apollo.mutate({
 						mutation: gql`mutation pauseAutolending($pauseUntilDate: Date) {
 							autolending @client {
+								id
 								editProfile(profile: {
 									isEnabled: true,
 									pauseUntil: $pauseUntilDate
@@ -175,6 +177,7 @@ export default {
 					this.apollo.mutate({
 						mutation: gql`mutation enableAutolending {
 							autolending @client {
+								id
 								editProfile(profile: { isEnabled: true, pauseUntil: null })
 							}
 						}`,
@@ -185,6 +188,7 @@ export default {
 					this.apollo.mutate({
 						mutation: gql`mutation disableAutolending {
 							autolending @client {
+								id
 								editProfile(profile: { isEnabled: false, pauseUntil: null })
 							}
 						}`,
@@ -221,6 +225,7 @@ export default {
 			this.apollo.mutate({
 				mutation: gql`mutation saveAutolendProfile {
 					autolending @client {
+						id
 						saveProfile
 					}
 				}`

@@ -27,7 +27,7 @@ export default () => {
 		defaults(cache) {
 			writeVerificationLightboxData({ cache, visible: false });
 		},
-		typePolicies: {
+		resolvers: {
 			Mutation: {
 				showVerificationLightbox(_, args, { cache }) {
 					writeVerificationLightboxData({ cache, visible: true });

@@ -86,6 +86,7 @@ export default {
 	apollo: {
 		query: gql`query autolendProfileChanged {
 			autolending @client {
+				id
 				currentLoanCount
 				profileChanged
 				savingProfile
@@ -121,6 +122,7 @@ export default {
 			this.apollo.mutate({
 				mutation: gql`mutation saveProfile {
 					autolending @client {
+						id
 						saveProfile
 					}
 				}`

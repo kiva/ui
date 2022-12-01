@@ -1,6 +1,4 @@
-/* eslint-disable no-underscore-dangle */
 import { ApolloLink, ApolloClient, InMemoryCache } from '@apollo/client/core';
-
 import Auth0LinkCreator from './Auth0Link';
 import BasketLinkCreator from './BasketLink';
 import ContentfulPreviewLink from './ContentfulPreviewLink';
@@ -18,12 +16,9 @@ export default function createApolloClient({
 	uri,
 	fetch
 }) {
-	const { typePolicies } = initState({ appConfig, cookieStore, kvAuth0 });
-
 	const cache = new InMemoryCache({
 		possibleTypes: types,
 		typePolicies: {
-			...typePolicies,
 			Mergable: {
 				merge: true,
 			},
@@ -32,6 +27,8 @@ export default function createApolloClient({
 			},
 		}
 	});
+
+	const { resolvers } = initState({ appConfig, cookieStore, kvAuth0 });
 
 	const client = new ApolloClient({
 		link: ApolloLink.from([
@@ -44,6 +41,7 @@ export default function createApolloClient({
 			HttpLinkCreator({ kvAuth0, uri, fetch }),
 		]),
 		cache,
+		resolvers,
 		defaultOptions: {
 			watchQuery: {
 				errorPolicy: 'all',

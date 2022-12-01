@@ -29,7 +29,7 @@ export default () => {
 				},
 			});
 		},
-		typePolicies: {
+		resolvers: {
 			Mutation: {
 				updateActiveLoan(
 					_,

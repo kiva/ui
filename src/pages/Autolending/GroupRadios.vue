@@ -46,6 +46,7 @@ export default {
 	apollo: {
 		query: gql`query autolendProfileIsGroup {
 			autolending @client {
+				id
 				currentProfile {
 					id
 					loanSearchCriteria {
@@ -80,6 +81,7 @@ export default {
 				this.apollo.mutate({
 					mutation: gql`mutation updateIsGroup($isGroup: Boolean) {
 						autolending @client {
+							id
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {

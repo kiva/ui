@@ -46,6 +46,7 @@ export default {
 	apollo: {
 		query: gql`query autolendProfileGender {
 			autolending @client {
+				id
 				currentProfile {
 					id
 					loanSearchCriteria {
@@ -67,6 +68,7 @@ export default {
 				this.apollo.mutate({
 					mutation: gql`mutation updateGender($gender: GenderEnum) {
 						autolending @client {
+							id
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {

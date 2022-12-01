@@ -10,7 +10,7 @@ export default ({ cookieStore }) => {
 	// initialize the assignments from the experiment cookie
 	const assignments = parseExpCookie(cookieStore.get('uiab'));
 	return {
-		typePolicies: {
+		resolvers: {
 			Query: {
 				experiment(_, { id }, { cache }) {
 					// get the existing assigned version for this experiment id

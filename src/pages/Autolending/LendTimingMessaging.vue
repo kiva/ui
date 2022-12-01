@@ -127,6 +127,7 @@ export default {
 				}
 			}
 			autolending @client {
+				id
 				currentProfile {
 					id
 					isEnabled
