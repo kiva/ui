@@ -44,7 +44,11 @@ export default {
 				gender: [{
 					key: '',
 					title: 'All genders'
-				}]
+				}],
+				sorting: [{
+					title: 'Recommended',
+					key: 'personalized',
+				}],
 			},
 			allFacets: []
 		};
