@@ -37,6 +37,10 @@ export default {
 			loanSearchState: {},
 			loans: [],
 			quickFiltersOptions: {
+				categories: [{
+					title: 'All categories',
+					key: 0
+				}],
 				gender: [{
 					key: '',
 					title: 'All genders'
