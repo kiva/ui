@@ -1,3 +1,62 @@
+## [2.408.0](https://github.com/kiva/ui/compare/v2.407.0...v2.408.0) (2022-12-01)
+
+
+### Features
+
+* customized sortby dropdown updated ([586f023](https://github.com/kiva/ui/commit/586f0238a07d61a62545b0474619eaa967097dc3))
+
+## [2.407.0](https://github.com/kiva/ui/compare/v2.406.0...v2.407.0) (2022-12-01)
+
+
+### Features
+
+* default value added to category dropdown options ([81adf25](https://github.com/kiva/ui/commit/81adf2569eef5afeb8a52c44d959780aa09547c0))
+
+## [2.406.0](https://github.com/kiva/ui/compare/v2.405.1...v2.406.0) (2022-12-01)
+
+
+### Features
+
+* load filters for loan finding page quick filters ([de969ca](https://github.com/kiva/ui/commit/de969ca6f3cb440e16844c27b14181fd45a42c33))
+
+
+### Bug Fixes
+
+* merge conflict ([62d3dc1](https://github.com/kiva/ui/commit/62d3dc1f2946942f7be6ce6d05243e2729921e8c))
+* mrg conflict ([c81e48f](https://github.com/kiva/ui/commit/c81e48fbce7e17ac50a38f4906a2a82795eca1cf))
+* pr comment updates ([2014f52](https://github.com/kiva/ui/commit/2014f52ca60ce33cd376ef3bde89531a365d7d4c))
+
+### [2.405.1](https://github.com/kiva/ui/compare/v2.405.0...v2.405.1) (2022-12-01)
+
+
+### Bug Fixes
+
+* text change on donation variant ([1783aeb](https://github.com/kiva/ui/commit/1783aeb59d9e26549e4e2931b23fbcb3dc342010))
+
+## [2.405.0](https://github.com/kiva/ui/compare/v2.404.2...v2.405.0) (2022-12-01)
+
+
+### Features
+
+* improve loan meta preview ([2a61925](https://github.com/kiva/ui/commit/2a61925641ed20f8bcd77f5cfb12509e31e7473f))
+
+### [2.404.2](https://github.com/kiva/ui/compare/v2.404.1...v2.404.2) (2022-11-30)
+
+
+### Bug Fixes
+
+* exp name ([ecfcc08](https://github.com/kiva/ui/commit/ecfcc08a9bf5b344a604749140102f7ffeb0673c))
+* validate invited by url ([b49e3b2](https://github.com/kiva/ui/commit/b49e3b23b7fb83ae4474411788fd0727a80efd25))
+
+### [2.404.1](https://github.com/kiva/ui/compare/v2.404.0...v2.404.1) (2022-11-30)
+
+
+### Bug Fixes
+
+* add revenue tag ([07f0fd9](https://github.com/kiva/ui/commit/07f0fd9a2509f851bb8819fe87b23b566d57661a))
+* validate deposit total ([b7f0226](https://github.com/kiva/ui/commit/b7f0226e89f89e9f08201b6ff48480d25ae50898))
+* validate loan total value ([9caee35](https://github.com/kiva/ui/commit/9caee359fc1c7cb7922afc83fb9c7051a0622997))
+
 ## [2.404.0](https://github.com/kiva/ui/compare/v2.403.0...v2.404.0) (2022-11-30)
 
 

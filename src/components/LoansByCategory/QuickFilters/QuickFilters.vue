@@ -39,7 +39,7 @@
 						style="min-width: 160px;"
 					>
 						<option
-							v-for="category in filterOptions.category"
+							v-for="category in filterOptions.categories"
 							:key="category.key"
 							:value="category.key"
 						>
@@ -107,7 +107,7 @@
 				</kv-select>
 			</div>
 		</div>
-		<div class="tw-flex tw-justify-between tw-items-center tw-mt-1" v-if="withCategories">
+		<div class="tw-flex tw-justify-between tw-items-center tw-mt-2" v-if="withCategories">
 			<div class="tw-flex tw-flex-col lg:tw-flex-row tw-items-start">
 				<span v-show="filtersLoaded" class="tw-text-small">Showing {{ totalLoans }} loans</span>
 				<!-- eslint-disable-next-line max-len -->
@@ -176,13 +176,16 @@ export default {
 	data() {
 		return {
 			mdiFilterVariant,
-			selectedCategory: '',
+			selectedCategory: 0,
 			selectedGender: '',
 			sortBy: 'personalized',
 			showBadge: false
 		};
 	},
 	watch: {
+		selectedCategory(category) {
+			this.$emit('update-filters', { category });
+		},
 		selectedGender(gender) {
 			this.$emit('update-filters', { gender });
 			this.$kvTrackEvent(
@@ -265,6 +268,8 @@ export default {
 		padding: 0 0 0 4px;
 		width: auto;
 		font-size: 0.875rem;
+		cursor: pointer;
+		height: auto;
 		@apply focus:tw-ring-0 focus:tw-ring-offset-0;
 	}
 

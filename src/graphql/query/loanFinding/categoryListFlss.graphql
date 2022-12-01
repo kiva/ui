@@ -1,0 +1,10 @@
+query categoryListFlssQuery {
+	lend {
+		loanChannels(popular: true) {
+			values {
+				key: id
+				title: name
+			}
+		}
+	}
+}
