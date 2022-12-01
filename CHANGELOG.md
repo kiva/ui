@@ -1,3 +1,10 @@
+## [2.405.0](https://github.com/kiva/ui/compare/v2.404.2...v2.405.0) (2022-12-01)
+
+
+### Features
+
+* improve loan meta preview ([2a61925](https://github.com/kiva/ui/commit/2a61925641ed20f8bcd77f5cfb12509e31e7473f))
+
 ### [2.404.2](https://github.com/kiva/ui/compare/v2.404.1...v2.404.2) (2022-11-30)
 
 
