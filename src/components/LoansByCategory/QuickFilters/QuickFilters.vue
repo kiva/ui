@@ -107,7 +107,7 @@
 				</kv-select>
 			</div>
 		</div>
-		<div class="tw-flex tw-justify-between tw-items-center tw-mt-1" v-if="withCategories">
+		<div class="tw-flex tw-justify-between tw-items-center tw-mt-2" v-if="withCategories">
 			<div class="tw-flex tw-flex-col lg:tw-flex-row tw-items-start">
 				<span v-show="filtersLoaded" class="tw-text-small">Showing {{ totalLoans }} loans</span>
 				<!-- eslint-disable-next-line max-len -->
@@ -268,6 +268,8 @@ export default {
 		padding: 0 0 0 4px;
 		width: auto;
 		font-size: 0.875rem;
+		cursor: pointer;
+		height: auto;
 		@apply focus:tw-ring-0 focus:tw-ring-offset-0;
 	}
 
