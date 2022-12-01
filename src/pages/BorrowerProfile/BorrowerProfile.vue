@@ -53,6 +53,7 @@
 						:social-exp-enabled="socialExpEnabled"
 						@togglelightbox="toggleLightbox"
 						:num-lenders="numLenders"
+						:user-context-exp-variant="userContextExpVariant"
 					>
 						<template #sharebutton v-if="inPfp || shareButtonExpEnabled">
 							<!-- Share button for PFP loans -->
@@ -72,6 +73,7 @@
 					data-testid="bp-loan-story"
 					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8 tw-z-1"
 					:loan-id="loanId"
+					:user-context-exp-variant="userContextExpVariant"
 				/>
 			</content-container>
 			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
@@ -80,7 +82,28 @@
 				</content-container>
 			</div>
 			<content-container>
-				<more-about-loan data-testid="bp-more-about" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
+				<div
+					v-if="userContextExpVariant === 'a'"
+					class="tw-rounded tw-bg-white tw-px-2 md:tw-px-4 tw-py-3 tw-mb-5 tw-flex tw-gap-2"
+				>
+					<div>
+						<check-icon />
+					</div>
+					<div>
+						<p class="tw-text-base">
+							{{ vettedHeadline }}
+						</p>
+						<p class="tw-text-base tw-text-secondary">
+							{{ vettedBody }}
+						</p>
+					</div>
+				</div>
+				<more-about-loan
+					data-testid="bp-more-about"
+					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+					:loan-id="loanId"
+					:user-context-exp-variant="userContextExpVariant"
+				/>
 				<borrower-country data-testid="bp-country" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<lenders-and-teams
 					ref="lendersComponent"
@@ -148,16 +171,19 @@ import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
 import WhatIsKivaModal from '@/components/BorrowerProfile/WhatIsKivaModal';
+import logReadQueryError from '@/util/logReadQueryError';
 
 import {
 	getExperimentSettingCached,
 	trackExperimentVersion
 } from '@/util/experimentUtils';
 import loanUseFilter from '@/plugins/loan-use-filter';
+import CheckIcon from '@/assets/icons/inline/check-with-bg.svg';
 
 const socialElementsExpKey = 'social_elements';
 const whatIsKivaExpKey = 'what_is_kiva_module';
 const shareButtonExpKey = 'share_button_bp';
+const userContextExpKey = 'new_users_context';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 const pageQuery = gql`
@@ -299,7 +325,8 @@ export default {
 		TopBannerPfp,
 		WhySpecial,
 		WwwPage,
-		WhatIsKivaModal
+		WhatIsKivaModal,
+		CheckIcon
 	},
 	metaInfo() {
 		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
@@ -413,7 +440,11 @@ export default {
 			showLightBoxModal: false,
 			kivaModuleExpEnabled: false,
 			shareButtonExpEnabled: false,
-			shownModal: false
+			shownModal: false,
+			userContextExpVariant: 'c',
+			partnerName: '',
+			partnerCountry: '',
+			isoCode: ''
 		};
 	},
 	apollo: {
@@ -455,7 +486,7 @@ export default {
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 						client.query({ query: experimentQuery, variables: { id: socialElementsExpKey } }),
 						client.query({ query: experimentQuery, variables: { id: whatIsKivaExpKey } }),
-						client.query({ query: experimentQuery, variables: { id: shareButtonExpKey } }),
+						client.query({ query: experimentQuery, variables: { id: shareButtonExpKey } })
 					]);
 				});
 		},
@@ -504,6 +535,7 @@ export default {
 			this.lender = result?.data?.my?.userAccount ?? {};
 
 			this.shownModal = this.cookieStore.get('what-is-kiva-shown') || result?.data?.hasEverLoggedIn;
+			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
 		},
 	},
 	mounted() {
@@ -551,6 +583,39 @@ export default {
 				this.shareButtonExpEnabled = true;
 			}
 		}
+
+		const query = gql`query borrowerProfileMeta(
+			$loanId: Int!,
+		) {
+			lend {
+				loan(id: $loanId) {
+					id
+					...on LoanPartner {
+						partnerName
+						partner {
+							id
+							countries {
+								name
+							}
+						}
+					}
+				}
+			}
+		}`;
+
+		try {
+			const data = this.apollo.readQuery({
+				query,
+				variables: {
+					loanId: this.loanId,
+				},
+			});
+			const loan = data?.lend?.loan;
+			this.partnerName = loan?.partnerName ?? '';
+			this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
+		} catch (e) {
+			logReadQueryError(e, 'BorrowerProfile userContextExperiment');
+		}
 	},
 	methods: {
 		toggleLightbox() {
@@ -558,6 +623,20 @@ export default {
 		}
 	},
 	computed: {
+		vettedHeadline() {
+			if (this.isoCode === 'US') {
+				return `${this.name} was approved by Kiva`;
+			}
+			return `${this.name} was vetted by ${this.partnerName}, a lending partner in ${this.partnerCountry}`;
+		},
+		vettedBody() {
+			if (this.isoCode === 'US') {
+			// eslint-disable-next-line max-len
+				return 'Body text: Kiva reviews all US-based borrowers to ensure they meet the proper eligibility criteria';
+			}
+			// eslint-disable-next-line max-len
+			return 'Lending partners are local organizations that vet borrowers and provide services like financial education training and business development skills';
+		},
 		imageShareUrl() {
 			if (!this.hash) return '';
 			return getKivaImageUrl({
@@ -667,6 +746,21 @@ export default {
 
 		const publicId = getPublicId(this.$route);
 		this.inviterIsGuestOrAnonymous = publicId === 'anonymous' || publicId === 'guest';
+
+		const contextExpEnabled = getExperimentSettingCached(this.apollo, userContextExpKey)?.enabled;
+		const userContextExpData = this.apollo.readFragment({
+			id: `Experiment:${userContextExpKey}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		this.userContextExpVariant = userContextExpData?.version;
+		if (contextExpEnabled && userContextExpData?.version) {
+			this.$kvTrackEvent(
+				'Borrower Profile',
+				'EXP-MARS-317-Nov2022',
+				this.userContextExpVariant,
+			);
+		}
 	},
 };
 </script>

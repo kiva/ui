@@ -188,6 +188,15 @@
 					>
 						All shares reserved
 					</p>
+					<div
+						v-if="repaymentEnabled"
+						class="tw-hidden md:tw-flex tw-content-center tw-gap-2"
+					>
+						<div>
+							<icon-clock />
+						</div>
+						<span>First expected repayment {{ repaymentDate }}</span>
+					</div>
 					<hr
 						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full tw-my-2"
 					>
@@ -301,7 +310,7 @@
 								class="tw-inline-block tw-align-middle"
 								data-testid="bp-lend-cta-powered-by-text"
 								key="numLendersStat"
-								v-if="statScrollAnimation"
+								v-if="statScrollAnimation && !repaymentEnabled || loopItemTurn === 1"
 							>
 								<kv-material-icon
 									class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
@@ -314,7 +323,7 @@
 								class="tw-inline-block tw-align-middle"
 								data-testid="bp-lend-cta-matched-text"
 								key="loanMatchingText"
-								v-if="!statScrollAnimation && !isMatchAtRisk"
+								v-if="showMatchingText"
 							>
 								<span
 									class="tw-text-h3 tw-inline-block tw-align-middle tw-px-1"
@@ -324,6 +333,18 @@
 								{{ matchRatio + 1 }}X
 								<span v-if="requireDepositsMatchedLoans"> MATCHED NEW DEPOSITS</span>
 								<span v-else> MATCHED LOAN</span>
+							</span>
+
+							<span
+								v-if="showExpectedRepayment"
+								class="md:tw-hidden tw-align-middle tw-flex tw-gap-1 tw-items-center"
+								data-testid="bp-lend-cta-expected-repayment"
+								key="expectedRepayment"
+							>
+								<div>
+									<icon-clock class="tw-pointer-events-none tw-inline-block tw-align-middle" />
+								</div>
+								<span> First expected repayment {{ repaymentDate }}</span>
 							</span>
 						</transition>
 					</div>
@@ -364,6 +385,7 @@ import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import LendersList from '@/components/BorrowerProfile/LendersList';
 import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrapper';
 
+import IconClock from '@/assets/icons/inline/clock.svg';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -390,6 +412,10 @@ export default {
 		requireDepositsMatchedLoans: {
 			type: Boolean,
 			default: false,
+		},
+		userContextExpVariant: {
+			type: String,
+			default: 'c'
 		}
 	},
 	components: {
@@ -402,7 +428,8 @@ export default {
 		KvUiSelect,
 		JumpLinks,
 		LoanBookmark,
-		CompleteLoanWrapper
+		CompleteLoanWrapper,
+		IconClock
 	},
 	data() {
 		return {
@@ -436,6 +463,9 @@ export default {
 			completeLoanView: true,
 			showGameLightbox: false,
 			checkoutMilestoneProgresses: [],
+			isMobile: false,
+			repaymentInterval: '',
+			loopItemTurn: 0
 		};
 	},
 	apollo: {
@@ -463,6 +493,7 @@ export default {
 						lenders{
 							totalCount
 						}
+						repaymentInterval
 					}
 				}
 				shop (basketId: $basketId) {
@@ -510,6 +541,7 @@ export default {
 			this.basketItems = basket?.items?.values ?? [];
 			this.matchingText = loan?.matchingText ?? '';
 			this.matchRatio = loan?.matchRatio ?? 0;
+			this.repaymentInterval = loan?.repaymentInterval ?? 0;
 			this.name = loan?.name ?? '';
 			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
 
@@ -520,6 +552,9 @@ export default {
 		},
 	},
 	methods: {
+		determineIfMobile() {
+			this.isMobile = document.documentElement.clientWidth < 735;
+		},
 		async addToBasket() {
 			this.isAdding = true;
 			setLendAmount({
@@ -597,9 +632,15 @@ export default {
 			);
 		},
 		cycleStatsSlot() {
+			let cycleSlotMachine = () => {};
 			if (this.matchingText.length) {
-				const cycleSlotMachine = () => {
-					if (!this.isMatchAtRisk) {
+				cycleSlotMachine = () => {
+					if (this.repaymentEnabled && this.isMobile) {
+						this.loopItemTurn += 1;
+						if (this.loopItemTurn > 3) {
+							this.loopItemTurn = 1;
+						}
+					} else if (!this.isMatchAtRisk) {
 						if (this.socialExpEnabled) {
 							this.statScrollAnimation = false;
 						} else {
@@ -609,8 +650,19 @@ export default {
 						this.statScrollAnimation = true;
 					}
 				};
-				setInterval(cycleSlotMachine, 5000);
+			} else {
+				cycleSlotMachine = () => {
+					this.loopItemTurn += 1;
+					if (this.loopItemTurn > 2) {
+						this.loopItemTurn = 1;
+					}
+					if (!this.isMobile) {
+						this.loopItemTurn = 1;
+					}
+				};
 			}
+
+			setInterval(cycleSlotMachine, 5000);
 		},
 		toggleLightbox() {
 			this.$emit('togglelightbox');
@@ -639,6 +691,25 @@ export default {
 		},
 	},
 	computed: {
+		showMatchingText() {
+			return (!this.statScrollAnimation && !this.repaymentEnabled)
+			|| (this.loopItemTurn === 2 && this.matchingText.length);
+		},
+		showExpectedRepayment() {
+			return this.loopItemTurn === 3 || (this.loopItemTurn === 2 && !this.matchingText.length && this.isMobile);
+		},
+		repaymentEnabled() {
+			return this.userContextExpVariant === 'b';
+		},
+		repaymentDate() {
+			const date = new Date();
+			date.setMonth(date.getMonth() + 1);
+			const currentYear = date.getFullYear();
+			const currentMonth = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(date);
+			return this.repaymentInterval === 'monthly'
+				? `${currentMonth.substring(0, 3)}, ${currentYear}`
+				: `Jun, ${currentYear + 1}`;
+		},
 		isInBasket() {
 			// eslint-disable-next-line no-underscore-dangle
 			return this.basketItems.some(item => item.__typename === 'LoanReservation' && item.id === this.loanId);
@@ -782,6 +853,10 @@ export default {
 		}
 	},
 	mounted() {
+		if (this.repaymentEnabled) {
+			this.loopItemTurn = 1;
+		}
+		this.determineIfMobile();
 		this.createWrapperObserver();
 		this.cycleStatsSlot();
 	},
