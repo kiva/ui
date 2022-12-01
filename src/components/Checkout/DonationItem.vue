@@ -860,7 +860,7 @@ export default {
 				default:
 					return 'Help our team find more borrowers';
 				case 'd':
-					return 'Optional: cover the cost of your loan';
+					return 'Help cover the cost of your loan';
 			}
 		},
 		basketDonateModulesExpDonationTagline() {
