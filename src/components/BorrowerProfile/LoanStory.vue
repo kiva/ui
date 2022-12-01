@@ -211,50 +211,6 @@ export default {
 			logReadQueryError(e, 'LoanStory userContextExperiment');
 		}
 	},
-	mounted() {
-		const query = gql`query loanStoryContextExp($loanId: Int!) {
-			lend {
-				loan(id: $loanId) {
-					id
-					geocode {
-						country {
-							isoCode
-						}
-					}
-					tags
-					gender
-					sector {
-						id
-						name
-					}
-					... on LoanPartner {
-						partner {
-							id
-							countries {
-								name
-							}
-						}
-					}
-				}
-			}
-		}`;
-
-		try {
-			const data = this.apollo.readQuery({
-				query,
-				variables: {
-					loanId: this.loanId,
-				},
-			});
-			const loan = data?.lend?.loan;
-			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
-			this.tags = loan?.tags ?? [];
-			this.gender = loan?.gender ?? '';
-			this.sector = loan?.sector ?? '';
-		} catch (e) {
-			logReadQueryError(e, 'LoanStory userContextExperiment');
-		}
-	},
 	computed: {
 		loanImpactStatements() {
 			const statements = [];
