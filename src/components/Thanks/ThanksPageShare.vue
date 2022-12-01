@@ -272,14 +272,14 @@ export default {
 			let base = `https://${this.$appConfig.host}`;
 			let lender = '';
 			let categoryShareVersion = '';
-			if (this.categoryName) {
+			if (this.categoryName && this.categoryShareVersion !== 'c') {
 				base += `/lend-by-category/${this.categoryName}`;
 				lender = `&lender=${this.loan.name}`;
 				categoryShareVersion = ['a', 'b'].includes(this.categoryShareVersion)
 					? `&category_share_version=${this.categoryShareVersion}`
 					: '';
 			}
-			if (this.loan.id && !this.categoryName) {
+			if (this.loan.id || this.categoryShareVersion === 'c') {
 				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utm_content=${this.utmContent}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
 			}
 			return `${base}?utm_content=${this.utmContent}${this.getUtmCampaignVersion}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
@@ -336,27 +336,28 @@ export default {
 				if (this.categoryName === 'women') {
 					pageBody += ' Your loan will help women access to the funds they need to improve their lives.';
 				}
-				if (['education', 'women'].includes(this.categoryName)) {
+				if (['education', 'agriculture'].includes(this.categoryName)) {
 					// eslint-disable-next-line max-len
-					pageBody += `Your loan will help borrowers access the funds they need to invest in ${this.categoryName}.`;
+					pageBody += ` Your loan will help borrowers access the funds they need to invest in ${this.categoryName}.`;
 				}
 				pageBody += ' The more people join our cause, the bigger impact we\'ll make.';
 			} else if (this.categoryShareVersion === 'b') {
 				pageBody = 'Share Kiva.org with others to rally more allies around this cause.';
 				if (this.categoryName === 'women') {
 					// eslint-disable-next-line max-len
-					pageBody += ' Many women around the world lack access to the financial services they need to improve their lives.';
+					pageBody += ' Many women around the world lack access to the financial services they need to improve their lives. ';
 				}
-				if (['education', 'women'].includes(this.categoryName)) {
+				if (['education', 'agriculture'].includes(this.categoryName)) {
 					// eslint-disable-next-line max-len
-					pageBody += ' Many people around the world lack access to the financial services they need to improve their lives. Together, we can address this inequity, one loan at a time.';
+					pageBody += ' Many people around the world lack access to the financial services they need to improve their lives. ';
 				}
+				pageBody += 'Together, we can address this inequity, one loan at a time.';
 			}
 
 			return pageBody;
 		},
 		showLenderName() {
-			return this.categoryShareVersion === 'b' || !this.categoryName;
+			return ['b', 'c'].includes(this.categoryShareVersion) || !this.categoryName;
 		}
 	},
 	methods: {
