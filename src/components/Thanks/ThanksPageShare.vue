@@ -338,19 +338,20 @@ export default {
 				}
 				if (['education', 'agriculture'].includes(this.categoryName)) {
 					// eslint-disable-next-line max-len
-					pageBody += `Your loan will help borrowers access the funds they need to invest in ${this.categoryName}.`;
+					pageBody += ` Your loan will help borrowers access the funds they need to invest in ${this.categoryName}.`;
 				}
 				pageBody += ' The more people join our cause, the bigger impact we\'ll make.';
 			} else if (this.categoryShareVersion === 'b') {
 				pageBody = 'Share Kiva.org with others to rally more allies around this cause.';
 				if (this.categoryName === 'women') {
 					// eslint-disable-next-line max-len
-					pageBody += ' Many women around the world lack access to the financial services they need to improve their lives.';
+					pageBody += ' Many women around the world lack access to the financial services they need to improve their lives. ';
 				}
 				if (['education', 'agriculture'].includes(this.categoryName)) {
 					// eslint-disable-next-line max-len
-					pageBody += ' Many people around the world lack access to the financial services they need to improve their lives. Together, we can address this inequity, one loan at a time.';
+					pageBody += ' Many people around the world lack access to the financial services they need to improve their lives. ';
 				}
+				pageBody += 'Together, we can address this inequity, one loan at a time.';
 			}
 
 			return pageBody;
