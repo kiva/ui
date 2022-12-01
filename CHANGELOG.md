@@ -1,3 +1,10 @@
+## [2.408.0](https://github.com/kiva/ui/compare/v2.407.0...v2.408.0) (2022-12-01)
+
+
+### Features
+
+* customized sortby dropdown updated ([586f023](https://github.com/kiva/ui/commit/586f0238a07d61a62545b0474619eaa967097dc3))
+
 ## [2.407.0](https://github.com/kiva/ui/compare/v2.406.0...v2.407.0) (2022-12-01)
 
 
