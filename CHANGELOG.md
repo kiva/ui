@@ -1,3 +1,10 @@
+## [2.407.0](https://github.com/kiva/ui/compare/v2.406.0...v2.407.0) (2022-12-01)
+
+
+### Features
+
+* default value added to category dropdown options ([81adf25](https://github.com/kiva/ui/commit/81adf2569eef5afeb8a52c44d959780aa09547c0))
+
 ## [2.406.0](https://github.com/kiva/ui/compare/v2.405.1...v2.406.0) (2022-12-01)
 
 
