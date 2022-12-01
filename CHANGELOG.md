@@ -1,3 +1,19 @@
+## [2.409.0](https://github.com/kiva/ui/compare/v2.408.0...v2.409.0) (2022-12-01)
+
+
+### Features
+
+* add impact statement icons ([fad8abb](https://github.com/kiva/ui/commit/fad8abbac26706d9c338b2dde306170f129cc167))
+* first variation ([4252ef1](https://github.com/kiva/ui/commit/4252ef1ae2b6a294a61691f2652ce208f298989d))
+* repayment text ([1e4852e](https://github.com/kiva/ui/commit/1e4852efd50bfbd6dde12825a1e4ec1dc93e1e46))
+
+
+### Bug Fixes
+
+* error in loop cycle ([a687366](https://github.com/kiva/ui/commit/a687366fceebe46e54c245712c0f0477c7c3a9e9))
+* remove exp data from prefetch query ([c0f2f2a](https://github.com/kiva/ui/commit/c0f2f2a459467b5a607c4c62209083e8d4c4539a))
+* send extra data to mounted hook ([8ddd601](https://github.com/kiva/ui/commit/8ddd601a310808e52a330d98e6ece3bfbd83597d))
+
 ## [2.408.0](https://github.com/kiva/ui/compare/v2.407.0...v2.408.0) (2022-12-01)
 
 
