@@ -1,3 +1,17 @@
+## [2.406.0](https://github.com/kiva/ui/compare/v2.405.1...v2.406.0) (2022-12-01)
+
+
+### Features
+
+* load filters for loan finding page quick filters ([de969ca](https://github.com/kiva/ui/commit/de969ca6f3cb440e16844c27b14181fd45a42c33))
+
+
+### Bug Fixes
+
+* merge conflict ([62d3dc1](https://github.com/kiva/ui/commit/62d3dc1f2946942f7be6ce6d05243e2729921e8c))
+* mrg conflict ([c81e48f](https://github.com/kiva/ui/commit/c81e48fbce7e17ac50a38f4906a2a82795eca1cf))
+* pr comment updates ([2014f52](https://github.com/kiva/ui/commit/2014f52ca60ce33cd376ef3bde89531a365d7d4c))
+
 ### [2.405.1](https://github.com/kiva/ui/compare/v2.405.0...v2.405.1) (2022-12-01)
 
 
