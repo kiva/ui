@@ -226,15 +226,6 @@ const pageQuery = gql`
 					retina: url(customSize: $imgRetinaSize)
 					hash
 				}
-				... on LoanPartner {
-					partnerName
-					partner {
-						id
-						countries {
-							name
-						}
-					}
-				}
 				plannedExpirationDate
 				lenders {
 					totalCount
