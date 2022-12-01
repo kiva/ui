@@ -1,3 +1,10 @@
+### [2.405.1](https://github.com/kiva/ui/compare/v2.405.0...v2.405.1) (2022-12-01)
+
+
+### Bug Fixes
+
+* text change on donation variant ([1783aeb](https://github.com/kiva/ui/commit/1783aeb59d9e26549e4e2931b23fbcb3dc342010))
+
 ## [2.405.0](https://github.com/kiva/ui/compare/v2.404.2...v2.405.0) (2022-12-01)
 
 
