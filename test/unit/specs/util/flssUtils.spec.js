@@ -1,6 +1,7 @@
 import {
 	fetchFacets,
 	fetchLoans,
+	fetchCategories,
 	getFlssFilters,
 	getLoanChannelVariables,
 	fetchLoanChannel,
@@ -10,6 +11,7 @@ import {
 import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 import flssLoanFacetsQuery from '@/graphql/query/flssLoanFacetsQuery.graphql';
 import flssLoanChannelQuery from '@/graphql/query/flssLoanChannel.graphql';
+import categoryListFlssQuery from '@/graphql/query/loanFinding/categoryListFlss.graphql';
 import filterConfig from '@/util/loanSearch/filterConfig';
 
 jest.mock('@/util/loanSearch/filterConfig', () => {
@@ -58,6 +60,23 @@ describe('flssUtils.js', () => {
 
 		it('should return the fundraising facets data', async () => {
 			const data = await fetchFacets(apollo, 'web:test-context', filters, filters, filters, filters);
+			expect(data).toBe(result);
+		});
+	});
+
+	describe('fetchCategories', () => {
+		const result = {};
+		const dataObj = { data: result };
+		const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
+		const apolloVariables = { query: categoryListFlssQuery, fetchPolicy: 'network-only' };
+
+		it('should pass the correct query variables to apollo', async () => {
+			await fetchCategories(apollo);
+			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
+		});
+
+		it('should return the categories data', async () => {
+			const data = await fetchCategories(apollo);
 			expect(data).toBe(result);
 		});
 	});
