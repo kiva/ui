@@ -97,24 +97,12 @@
 
 			<jump-links class="md:tw-hidden tw-my-2" data-testid="bp-summary-card-jump-links" />
 		</div>
-		<div
-			v-if="socialExpEnabled && lenders.length"
-			:class="[
-				'md:tw-hidden',
-				'tw-block',
-				/* 'tw-border-t tw-border-tertiary', */
-				'tw-mt-1.5'
-			]"
-		>
-			<lenders-list :lenders="lenders" key="lenderList" :num-lenders="numLenders" />
-		</div>
 	</section>
 </template>
 
 <script>
 import gql from 'graphql-tag';
 import { mdiMapMarker } from '@mdi/js';
-import LendersList from '@/components/BorrowerProfile/LendersList';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
@@ -136,20 +124,11 @@ export default {
 		SummaryTag,
 		LoanBookmark,
 		JumpLinks,
-		LendersList,
 	},
 	props: {
 		showUrgencyExp: {
 			type: Boolean,
 			default: false,
-		},
-		lenders: {
-			type: Array,
-			default: () => []
-		},
-		socialExpEnabled: {
-			type: Boolean,
-			default: false
 		},
 	},
 	data() {
