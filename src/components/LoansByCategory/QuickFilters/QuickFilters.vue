@@ -176,13 +176,16 @@ export default {
 	data() {
 		return {
 			mdiFilterVariant,
-			selectedCategory: '',
+			selectedCategory: 0,
 			selectedGender: '',
 			sortBy: 'personalized',
 			showBadge: false
 		};
 	},
 	watch: {
+		selectedCategory(category) {
+			this.$emit('update-filters', { category });
+		},
 		selectedGender(gender) {
 			this.$emit('update-filters', { gender });
 			this.$kvTrackEvent(
