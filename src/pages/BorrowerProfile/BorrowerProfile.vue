@@ -23,8 +23,6 @@
 						data-testid="bp-summary"
 						class="tw-relative lg:tw--mb-1.5"
 						:show-urgency-exp="showUrgencyExp"
-						:lenders="lenders"
-						:social-exp-enabled="socialExpEnabled"
 					>
 						<template #sharebutton v-if="inPfp || shareButtonExpEnabled">
 							<!-- Share button for PFP loans -->
@@ -49,10 +47,6 @@
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
 						:require-deposits-matched-loans="requireDepositsMatchedLoans"
-						:lenders="lenders"
-						:social-exp-enabled="socialExpEnabled"
-						@togglelightbox="toggleLightbox"
-						:num-lenders="numLenders"
 					>
 						<template #sharebutton v-if="inPfp || shareButtonExpEnabled">
 							<!-- Share button for PFP loans -->
@@ -83,7 +77,6 @@
 				<more-about-loan data-testid="bp-more-about" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<borrower-country data-testid="bp-country" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<lenders-and-teams
-					ref="lendersComponent"
 					v-if="showLenders"
 					data-testid="bp-lenders"
 					key="lenders"
@@ -91,8 +84,6 @@
 					:loan-id="loanId"
 					display-type="lenders"
 					@hide-section="showLenders = false"
-					:social-exp-enabled="socialExpEnabled"
-					:show-light-box-modal="showLightBoxModal"
 				/>
 				<lenders-and-teams
 					v-if="showTeams"
@@ -155,7 +146,6 @@ import {
 } from '@/util/experimentUtils';
 import loanUseFilter from '@/plugins/loan-use-filter';
 
-const socialElementsExpKey = 'social_elements';
 const whatIsKivaExpKey = 'what_is_kiva_module';
 const shareButtonExpKey = 'share_button_bp';
 
@@ -176,10 +166,6 @@ const pageQuery = gql`
 				value
 			}
 			requireDepositsMatchedLoans: uiExperimentSetting(key: "require_deposits_matched_loans") {
-				key
-				value
-			}
-			socialElements: uiExperimentSetting(key: "social_elements") {
 				key
 				value
 			}
@@ -215,23 +201,7 @@ const pageQuery = gql`
 					hash
 				}
 				plannedExpirationDate
-				lenders(limit: 10) {
-					values {
-						id
-						name
-						publicId
-						image {
-							id
-							url
-							hash
-						}
-						lenderPage {
-							city
-							country {
-								isoCode
-							}
-						}
-					}
+				lenders {
 					totalCount
 				}
 				anonymizationLevel
@@ -408,9 +378,6 @@ export default {
 			diffInDays: 0,
 			lender: {},
 			loan: {},
-			lenders: [],
-			socialExpEnabled: false,
-			showLightBoxModal: false,
 			kivaModuleExpEnabled: false,
 			shareButtonExpEnabled: false,
 			shownModal: false
@@ -453,7 +420,6 @@ export default {
 
 					return Promise.all([
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
-						client.query({ query: experimentQuery, variables: { id: socialElementsExpKey } }),
 						client.query({ query: experimentQuery, variables: { id: whatIsKivaExpKey } }),
 						client.query({ query: experimentQuery, variables: { id: shareButtonExpKey } }),
 					]);
@@ -495,7 +461,6 @@ export default {
 			this.use = loan?.use ?? '';
 			this.description = loan?.description ?? '';
 			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
-			this.lenders = loan?.lenders?.values ?? [];
 			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
 			this.itemsInBasket = result?.data?.shop?.basket?.items?.values ?? [];
 
@@ -512,16 +477,6 @@ export default {
 		const expCookieSignifier = this.cookieStore.get('kvlendborrowerbeta');
 		if (expCookieSignifier === 'b') {
 			this.$kvTrackEvent('Borrower Profile', 'EXP-GROW-655-Aug2021', expCookieSignifier);
-		}
-		const { enabled } = getExperimentSettingCached(this.apollo, socialElementsExpKey);
-		if (enabled) {
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Borrower Profile',
-				socialElementsExpKey,
-				'EXP-MARS-158-Jul2022'
-			);
 		}
 
 		const kivaModuleExpData = getExperimentSettingCached(this.apollo, whatIsKivaExpKey);
@@ -550,11 +505,6 @@ export default {
 			if (version === 'b') {
 				this.shareButtonExpEnabled = true;
 			}
-		}
-	},
-	methods: {
-		toggleLightbox() {
-			this.$refs.lendersComponent.openLightbox();
 		}
 	},
 	computed: {
@@ -653,16 +603,6 @@ export default {
 				'EXP-MARS-143-Jul2022',
 				this.shareCardLanguageVersion.replace('-normal', '')
 			);
-		}
-
-		// Check if social elements experiment is active.
-		const { enabled } = getExperimentSettingCached(this.apollo, socialElementsExpKey);
-		const exp = this.apollo.readFragment({
-			id: `Experiment:${socialElementsExpKey}`,
-			fragment: experimentVersionFragment,
-		}) ?? {};
-		if (enabled && exp.version === 'b') {
-			this.socialExpEnabled = true;
 		}
 
 		const publicId = getPublicId(this.$route);
