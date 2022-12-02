@@ -1,3 +1,10 @@
+### [2.409.3](https://github.com/kiva/ui/compare/v2.409.2...v2.409.3) (2022-12-02)
+
+
+### Bug Fixes
+
+* medium italic is the correct font ([ede4890](https://github.com/kiva/ui/commit/ede4890c51caf75270ae65ab44acd8bd85f401dd))
+
 ### [2.409.2](https://github.com/kiva/ui/compare/v2.409.1...v2.409.2) (2022-12-02)
 
 
