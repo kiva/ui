@@ -14,29 +14,52 @@
 			@reset-filters="resetFilters"
 			@handle-overlay="handleQuickFiltersOverlay"
 		/>
+		<div
+			class="tw-flex tw-flex-wrap"
+		>
+			<kiva-classic-basic-loan-card
+				v-for="(loan, index) in loans"
+				:key="`loan-${loan.id}`"
+				:item-index="index"
+				:loan-id="loan.id"
+				:exp-label="expLabel"
+				:show-action-button="true"
+				style="margin-right: 16px; max-width: 300px;"
+			/>
+		</div>
 	</div>
 </template>
 
 <script>
 import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
-import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
+import { runFacetsQueries, fetchLoanFacets, runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { fetchCategories, FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
+import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 
 export default {
 	name: 'QuickFiltersSection',
 	components: {
-		QuickFilters
+		QuickFilters,
+		KivaClassicBasicLoanCard
 	},
 	inject: ['apollo'],
 	data() {
 		return {
-			filtersLoaded: false,
+			totalCount: 0,
 			targetedLoanChannelURL: '',
+			filtersLoaded: false,
 			flssLoanSearch: {},
-			loanSearchState: {},
+			loanSearchState: {
+				pageOffset: 0,
+				pageLimit: 3
+			},
 			loans: [],
 			quickFiltersOptions: {
+				category: [{
+					key: 0,
+					title: 'All categories',
+				}],
 				gender: [{
 					key: '',
 					title: 'All genders'
@@ -46,16 +69,42 @@ export default {
 		};
 	},
 	async mounted() {
-		this.allFacets = await fetchLoanFacets(this.apollo);
+		this.allFacets = await fetchLoanFacets(this.apollo, true);
 		await this.fetchFilterData(this.flssLoanSearch);
-	},
-	computed: {
-		totalCount() {
-			return 0;
-		},
+		const { loans, totalCount } = await runLoansQuery(
+			this.apollo,
+			{ ...this.flssLoanSearch, ...this.loanSearchState },
+			FLSS_ORIGIN_CATEGORY
+		);
+		this.loans = loans;
+		this.totalCount = totalCount;
 	},
 	methods: {
-		updateQuickFilters() {
+		async updateQuickFilters(filter) {
+			if (filter.gender !== undefined) {
+				this.flssLoanSearch.gender = filter.gender;
+			} else if (filter.sortBy) {
+				this.flssLoanSearch.sortBy = filter.sortBy;
+			} else if (filter.country) {
+				this.flssLoanSearch.countryIsoCode = filter.country;
+			} else {
+				// We want to reset the flss paramaters for categories
+				delete this.flssLoanSearch.sectorId;
+				delete this.flssLoanSearch.tagId;
+				delete this.flssLoanSearch.activityId;
+				delete this.flssLoanSearch.themeId;
+				this.flssLoanSearch = {
+					...this.flssLoanSearch,
+					...filter
+				};
+			}
+			const { loans, totalCount } = await runLoansQuery(
+				this.apollo,
+				{ ...this.flssLoanSearch, ...this.loanSearchState },
+				FLSS_ORIGIN_CATEGORY
+			);
+			this.loans = loans;
+			this.totalCount = totalCount;
 		},
 		resetFilters() {
 		},

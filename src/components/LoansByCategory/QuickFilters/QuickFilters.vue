@@ -139,6 +139,7 @@
 
 <script>
 import { mdiFilterVariant } from '@mdi/js';
+import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import LocationSelector from './LocationSelector';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
@@ -182,7 +183,22 @@ export default {
 			showBadge: false
 		};
 	},
+	mixins: [
+		loanChannelQueryMapMixin
+	],
 	watch: {
+		selectedCategory(category) {
+			console.log('category: ', category);
+			const queryMap = this.loanChannelQueryMap;
+			console.log('the query map: ', queryMap);
+			const flssParams = category === 0 ? {} : this.loanChannelQueryMap.find(
+				c => c.id === category
+			);
+			console.log('flss params!!:)) ', queryMap.find(
+				c => c.id === category
+			));
+			this.$emit('update-filters', flssParams);
+		},
 		selectedGender(gender) {
 			this.$emit('update-filters', { gender });
 			this.$kvTrackEvent(
