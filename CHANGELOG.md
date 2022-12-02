@@ -1,3 +1,78 @@
+### [2.409.4](https://github.com/kiva/ui/compare/v2.409.3...v2.409.4) (2022-12-02)
+
+
+### Bug Fixes
+
+* errors resolved for apollo cache on BP ([effde90](https://github.com/kiva/ui/commit/effde909ce6bc10ce9560070cb2b1f9930ccf041))
+* forgot async await ([2318f87](https://github.com/kiva/ui/commit/2318f876ce3b1244295fa75febd73f7c4fc74fc8))
+
+### [2.409.3](https://github.com/kiva/ui/compare/v2.409.2...v2.409.3) (2022-12-02)
+
+
+### Bug Fixes
+
+* medium italic is the correct font ([ede4890](https://github.com/kiva/ui/commit/ede4890c51caf75270ae65ab44acd8bd85f401dd))
+
+### [2.409.2](https://github.com/kiva/ui/compare/v2.409.1...v2.409.2) (2022-12-02)
+
+
+### Bug Fixes
+
+* share link ([c9ed7c5](https://github.com/kiva/ui/commit/c9ed7c54e22b42a06d944754035f6168841d13b7))
+* share link condition ([3a6cf03](https://github.com/kiva/ui/commit/3a6cf0341847eb9d5c6b84c16b3ae18a7dd30e0e))
+
+### [2.409.1](https://github.com/kiva/ui/compare/v2.409.0...v2.409.1) (2022-12-01)
+
+
+### Bug Fixes
+
+* copy for agriculture, show lender name in stepper within control ([c9b9fd6](https://github.com/kiva/ui/commit/c9b9fd63d8a48b287bf640fc58ad445baf85c613))
+* minor designs ([d0c499f](https://github.com/kiva/ui/commit/d0c499fbf305b198534f21f645e615285620a285))
+
+## [2.409.0](https://github.com/kiva/ui/compare/v2.408.0...v2.409.0) (2022-12-01)
+
+
+### Features
+
+* add impact statement icons ([fad8abb](https://github.com/kiva/ui/commit/fad8abbac26706d9c338b2dde306170f129cc167))
+* first variation ([4252ef1](https://github.com/kiva/ui/commit/4252ef1ae2b6a294a61691f2652ce208f298989d))
+* repayment text ([1e4852e](https://github.com/kiva/ui/commit/1e4852efd50bfbd6dde12825a1e4ec1dc93e1e46))
+
+
+### Bug Fixes
+
+* error in loop cycle ([a687366](https://github.com/kiva/ui/commit/a687366fceebe46e54c245712c0f0477c7c3a9e9))
+* remove exp data from prefetch query ([c0f2f2a](https://github.com/kiva/ui/commit/c0f2f2a459467b5a607c4c62209083e8d4c4539a))
+* send extra data to mounted hook ([8ddd601](https://github.com/kiva/ui/commit/8ddd601a310808e52a330d98e6ece3bfbd83597d))
+
+## [2.408.0](https://github.com/kiva/ui/compare/v2.407.0...v2.408.0) (2022-12-01)
+
+
+### Features
+
+* customized sortby dropdown updated ([586f023](https://github.com/kiva/ui/commit/586f0238a07d61a62545b0474619eaa967097dc3))
+
+## [2.407.0](https://github.com/kiva/ui/compare/v2.406.0...v2.407.0) (2022-12-01)
+
+
+### Features
+
+* default value added to category dropdown options ([81adf25](https://github.com/kiva/ui/commit/81adf2569eef5afeb8a52c44d959780aa09547c0))
+
+## [2.406.0](https://github.com/kiva/ui/compare/v2.405.1...v2.406.0) (2022-12-01)
+
+
+### Features
+
+* load filters for loan finding page quick filters ([de969ca](https://github.com/kiva/ui/commit/de969ca6f3cb440e16844c27b14181fd45a42c33))
+
+
+### Bug Fixes
+
+* merge conflict ([62d3dc1](https://github.com/kiva/ui/commit/62d3dc1f2946942f7be6ce6d05243e2729921e8c))
+* mrg conflict ([c81e48f](https://github.com/kiva/ui/commit/c81e48fbce7e17ac50a38f4906a2a82795eca1cf))
+* pr comment updates ([2014f52](https://github.com/kiva/ui/commit/2014f52ca60ce33cd376ef3bde89531a365d7d4c))
+
 ### [2.405.1](https://github.com/kiva/ui/compare/v2.405.0...v2.405.1) (2022-12-01)
 
 

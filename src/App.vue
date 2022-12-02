@@ -113,7 +113,13 @@ export default {
 				// Fonts in format woff2nt'
 				{
 					rel: 'preload',
-					href: require('@/assets/fonts/PostGrotesk-BoldItalic.woff2'),
+					href: require('@/assets/fonts/PostGrotesk-Medium.woff2'),
+					crossorigin: 'anonymous',
+					as: 'font'
+				},
+				{
+					rel: 'preload',
+					href: require('@/assets/fonts/PostGrotesk-MediumItalic.woff2'),
 					crossorigin: 'anonymous',
 					as: 'font'
 				},
@@ -126,12 +132,6 @@ export default {
 				{
 					rel: 'preload',
 					href: require('@/assets/fonts/PostGrotesk-BookItalic.woff2'),
-					crossorigin: 'anonymous',
-					as: 'font'
-				},
-				{
-					rel: 'preload',
-					href: require('@/assets/fonts/PostGrotesk-Medium.woff2'),
 					crossorigin: 'anonymous',
 					as: 'font'
 				},

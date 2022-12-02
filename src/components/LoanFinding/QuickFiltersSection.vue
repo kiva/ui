@@ -56,14 +56,18 @@ export default {
 			},
 			loans: [],
 			quickFiltersOptions: {
-				category: [{
-					key: 0,
+				categories: [{
 					title: 'All categories',
+					key: 0
 				}],
 				gender: [{
 					key: '',
 					title: 'All genders'
-				}]
+				}],
+				sorting: [{
+					title: 'Recommended',
+					key: 'personalized',
+				}],
 			},
 			allFacets: []
 		};

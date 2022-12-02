@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		:gray-background="true"
-	>
+	<www-page>
 		<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 			<div class="small-12 columns thanks">
 				<div class="thanks__header hide-for-print">
