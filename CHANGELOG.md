@@ -1,3 +1,10 @@
+## [2.410.0](https://github.com/kiva/ui/compare/v2.409.4...v2.410.0) (2022-12-02)
+
+
+### Features
+
+* add support for additional bp backgrounds ([e7ab849](https://github.com/kiva/ui/commit/e7ab8496c64be5a7167dcc913c9b31a32baef36d))
+
 ### [2.409.4](https://github.com/kiva/ui/compare/v2.409.3...v2.409.4) (2022-12-02)
 
 
