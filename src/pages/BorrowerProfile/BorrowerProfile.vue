@@ -223,6 +223,10 @@ const pageQuery = gql`
 				key
 				value
 			}
+			userContext: uiExperimentSetting(key: "new_users_context") {
+				key
+				value
+			}
 		}
 		lend {
 			loan(id: $loanId) {
@@ -549,7 +553,7 @@ export default {
 			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
 		},
 	},
-	mounted() {
+	async mounted() {
 		// EXP-GROW-655-Aug2021
 		// This is cookie is set during the redirect and signifies the exp is active when landing on this page
 		const expCookieSignifier = this.cookieStore.get('kvlendborrowerbeta');
@@ -615,7 +619,7 @@ export default {
 		}`;
 
 		try {
-			const data = this.apollo.readQuery({
+			const { data } = await this.apollo.query({
 				query,
 				variables: {
 					loanId: this.loanId,

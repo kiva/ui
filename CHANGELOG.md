@@ -1,3 +1,11 @@
+### [2.409.4](https://github.com/kiva/ui/compare/v2.409.3...v2.409.4) (2022-12-02)
+
+
+### Bug Fixes
+
+* errors resolved for apollo cache on BP ([effde90](https://github.com/kiva/ui/commit/effde909ce6bc10ce9560070cb2b1f9930ccf041))
+* forgot async await ([2318f87](https://github.com/kiva/ui/commit/2318f876ce3b1244295fa75febd73f7c4fc74fc8))
+
 ### [2.409.3](https://github.com/kiva/ui/compare/v2.409.2...v2.409.3) (2022-12-02)
 
 

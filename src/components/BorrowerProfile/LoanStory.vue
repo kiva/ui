@@ -188,7 +188,7 @@ export default {
 			this.previousLoanId = loan?.previousLoanId ?? 0;
 		},
 	},
-	mounted() {
+	async mounted() {
 		const query = gql`query loanStoryContextExp($loanId: Int!) {
 			lend {
 				loan(id: $loanId) {
@@ -217,7 +217,7 @@ export default {
 		}`;
 
 		try {
-			const data = this.apollo.readQuery({
+			const { data } = await this.apollo.query({
 				query,
 				variables: {
 					loanId: this.loanId,
@@ -276,7 +276,7 @@ export default {
 					image: 'leafheart'
 				};
 			}
-			if (this.sector?.name.toLowerCase() === 'education') {
+			if (this.sector?.name?.toLowerCase() === 'education') {
 				return {
 					id: '6',
 					headline: 'Increases earning potential',
@@ -284,7 +284,7 @@ export default {
 					image: 'water'
 				};
 			}
-			if (this.sector?.name.toLowerCase() === 'arts') {
+			if (this.sector?.name?.toLowerCase() === 'arts') {
 				return {
 					id: '7',
 					headline: 'Invest in their craft',
@@ -293,7 +293,7 @@ export default {
 					image: 'water'
 				};
 			}
-			if (this.sector?.name.toLowerCase() === 'agriculture') {
+			if (this.sector?.name?.toLowerCase() === 'agriculture') {
 				return {
 					id: '8',
 					headline: 'Supports their family',
