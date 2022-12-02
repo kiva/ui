@@ -217,6 +217,10 @@ const pageQuery = gql`
 				key
 				value
 			}
+			userContext: uiExperimentSetting(key: "new_users_context") {
+				key
+				value
+			}
 		}
 		lend {
 			loan(id: $loanId) {
@@ -604,7 +608,7 @@ export default {
 		}`;
 
 		try {
-			const data = this.apollo.readQuery({
+			const data = this.apollo.query({
 				query,
 				variables: {
 					loanId: this.loanId,
