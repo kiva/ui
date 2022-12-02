@@ -23,7 +23,7 @@
 			]"
 		/>
 		<div
-			v-if="loanImpactStatements.length && userContextExpVariant === 'a'"
+			v-if="loanImpactStatements.length && enabledContextExperiment"
 			class="tw-rounded tw-bg-white tw-p-3 md:tw-p-4 tw-my-5"
 		>
 			<p class="tw-text-h2 tw-mb-3">
@@ -39,6 +39,15 @@
 						{{ statement.headline }}
 					</p>
 					<p>{{ statement.body }}</p>
+				</div>
+			</div>
+			<div v-if="loanImpactStatements.length === 1">
+				<div class="tw-flex tw-justify-around tw-mb-3 tw-gap-2">
+					<kv-loading-placeholder :style="{width: '6rem', height: '5rem'}" />
+					<div class="tw-w-full">
+						<kv-loading-placeholder class="tw-mb-1" :style="{width: '100%', height: '1.3rem'}" />
+						<kv-loading-paragraph class="tw-mb-1.5 tw-flex-grow" :style="{width: '100%', height: '5rem'}" />
+					</div>
 				</div>
 			</div>
 		</div>
@@ -63,6 +72,8 @@
 <script>
 import gql from 'graphql-tag';
 import logReadQueryError from '@/util/logReadQueryError';
+import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import BorrowerImage from './BorrowerImage';
 import LoanDescription from './LoanDescription';
 
@@ -74,6 +85,8 @@ export default {
 	components: {
 		BorrowerImage,
 		LoanDescription,
+		KvLoadingParagraph,
+		KvLoadingPlaceholder
 	},
 	props: {
 		loanId: {
@@ -83,6 +96,14 @@ export default {
 		userContextExpVariant: {
 			type: String,
 			default: 'c'
+		},
+		hasLentBefore: {
+			type: Boolean,
+			default: false
+		},
+		hasDepositBefore: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
@@ -212,6 +233,9 @@ export default {
 		}
 	},
 	computed: {
+		enabledContextExperiment() {
+			return this.userContextExpVariant !== 'a' && (!this.hasLentBefore || !this.hasDepositBefore);
+		},
 		loanImpactStatements() {
 			const statements = [];
 			const loanStatements = [{

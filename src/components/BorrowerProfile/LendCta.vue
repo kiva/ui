@@ -416,6 +416,14 @@ export default {
 		userContextExpVariant: {
 			type: String,
 			default: 'c'
+		},
+		hasLentBefore: {
+			type: Boolean,
+			default: false
+		},
+		hasDepositBefore: {
+			type: Boolean,
+			default: false
 		}
 	},
 	components: {
