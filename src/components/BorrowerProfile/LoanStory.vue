@@ -167,7 +167,7 @@ export default {
 			this.previousLoanId = loan?.previousLoanId ?? 0;
 		},
 	},
-	mounted() {
+	async mounted() {
 		const query = gql`query loanStoryContextExp($loanId: Int!) {
 			lend {
 				loan(id: $loanId) {
@@ -196,7 +196,7 @@ export default {
 		}`;
 
 		try {
-			const data = this.apollo.query({
+			const { data } = await this.apollo.query({
 				query,
 				variables: {
 					loanId: this.loanId,
