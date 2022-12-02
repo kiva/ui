@@ -278,8 +278,7 @@ export default {
 				categoryShareVersion = ['a', 'b'].includes(this.categoryShareVersion)
 					? `&category_share_version=${this.categoryShareVersion}`
 					: '';
-			}
-			if (this.loan.id || this.categoryShareVersion === 'c') {
+			} else if (this.loan.id) {
 				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utm_content=${this.utmContent}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
 			}
 			return `${base}?utm_content=${this.utmContent}${this.getUtmCampaignVersion}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
