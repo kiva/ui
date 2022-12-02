@@ -14,7 +14,7 @@
 			<p class="tw-my-4 tw-truncate">
 				{{ storyDescription.slice(0, 260) }}...
 			</p>
-			<kv-text-link @click="showFullStory = true">
+			<kv-text-link @click="readMore = true">
 				Read more about {{ borrowerOrGroupName }}
 			</kv-text-link>
 		</div>
@@ -154,15 +154,15 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		userContextExpVariant: {
-			type: String,
-			default: 'c'
+		enabledExperimentVariant: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
 		return {
 			isLightboxVisible: false,
-			showFullStory: false
+			readMore: false
 		};
 	},
 	computed: {
@@ -201,7 +201,7 @@ export default {
 			return this.reviewer?.showName;
 		},
 		chunkedStoryEnabled() {
-			return this.userContextExpVariant === 'a' && !this.showFullStory;
+			return this.enabledExperimentVariant && !this.readMore;
 		}
 	},
 	methods: {

@@ -75,9 +75,7 @@
 					data-testid="bp-loan-story"
 					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8 tw-z-1"
 					:loan-id="loanId"
-					:user-context-exp-variant="userContextExpVariant"
-					:has-lent-before="hasLentBefore"
-					:has-deposit-before="hasDepositBefore"
+					:enabled-experiment-variant="enabledExperimentVariant"
 				/>
 			</content-container>
 			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
@@ -87,7 +85,7 @@
 			</div>
 			<content-container>
 				<div
-					v-if="enabledContextExperiment"
+					v-if="enabledExperimentVariant"
 					class="tw-rounded tw-bg-white tw-px-2 md:tw-px-4 tw-py-3 tw-mb-5 tw-flex tw-gap-2"
 				>
 					<div>
@@ -106,9 +104,7 @@
 					data-testid="bp-more-about"
 					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
 					:loan-id="loanId"
-					:user-context-exp-variant="userContextExpVariant"
-					:has-lent-before="hasLentBefore"
-					:has-deposit-before="hasDepositBefore"
+					:enabled-experiment-variant="enabledExperimentVariant"
 				/>
 				<borrower-country data-testid="bp-country" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<lenders-and-teams
@@ -638,8 +634,9 @@ export default {
 		}
 	},
 	computed: {
-		enabledContextExperiment() {
-			return this.userContextExpVariant === 'a' && (!this.hasLentBefore || !this.hasDepositBefore);
+		enabledExperimentVariant() {
+			return this.userContextExpVariant === 'a'
+				&& (!this.hasLentBefore || !this.hasDepositBefore);
 		},
 		vettedHeadline() {
 			if (this.isoCode === 'US') {
@@ -775,7 +772,7 @@ export default {
 		this.hasDepositBefore = this.cookieStore.get(hasDepositBeforeCookie) === 'true';
 
 		this.userContextExpVariant = userContextExpData?.version;
-		if (contextExpEnabled && this.hasLentBefore && this.hasDepositBefore && userContextExpData?.version) {
+		if (contextExpEnabled && !this.hasLentBefore && !this.hasDepositBefore && userContextExpData?.version) {
 			this.$kvTrackEvent(
 				'Borrower Profile',
 				'EXP-MARS-317-Nov2022',

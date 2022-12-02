@@ -11,7 +11,7 @@
 					borrowers, provide services, and administer loans on the ground.
 				</p>
 
-				<template v-if="readMore || enabledContextExperiment">
+				<template v-if="!enabledExperimentVariant && !readMore">
 					<div v-html="moreInfoAboutLoan" data-testid="bp-more-about-info">
 					</div>
 					<div v-if="loanAlertText" data-testid="bp-more-about-alert-text">
@@ -121,15 +121,7 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		userContextExpVariant: {
-			type: String,
-			default: 'c'
-		},
-		hasLentBefore: {
-			type: Boolean,
-			default: false
-		},
-		hasDepositBefore: {
+		enabledExperimentVariant: {
 			type: Boolean,
 			default: false
 		}
@@ -160,9 +152,6 @@ export default {
 		};
 	},
 	computed: {
-		enabledContextExperiment() {
-			return this.userContextExpVariant !== 'a' && (!this.hasLentBefore || !this.hasDepositBefore);
-		},
 		borrowerBusinessName() {
 			if (this.businessName) {
 				return this.businessName;

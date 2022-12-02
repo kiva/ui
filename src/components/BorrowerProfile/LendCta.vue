@@ -707,7 +707,7 @@ export default {
 			return this.loopItemTurn === 3 || (this.loopItemTurn === 2 && !this.matchingText.length && this.isMobile);
 		},
 		repaymentEnabled() {
-			return this.userContextExpVariant === 'b';
+			return this.userContextExpVariant === 'b' && (!this.hasLentBefore || !this.hasDepositBefore);
 		},
 		repaymentDate() {
 			const date = new Date();

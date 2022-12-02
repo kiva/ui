@@ -23,7 +23,7 @@
 			]"
 		/>
 		<div
-			v-if="loanImpactStatements.length && enabledContextExperiment"
+			v-if="loanImpactStatements.length && enabledExperimentVariant"
 			class="tw-rounded tw-bg-white tw-p-3 md:tw-p-4 tw-my-5"
 		>
 			<p class="tw-text-h2 tw-mb-3">
@@ -41,15 +41,6 @@
 					<p>{{ statement.body }}</p>
 				</div>
 			</div>
-			<div v-if="loanImpactStatements.length === 1">
-				<div class="tw-flex tw-justify-around tw-mb-3 tw-gap-2">
-					<kv-loading-placeholder :style="{width: '6rem', height: '5rem'}" />
-					<div class="tw-w-full">
-						<kv-loading-placeholder class="tw-mb-1" :style="{width: '100%', height: '1.3rem'}" />
-						<kv-loading-paragraph class="tw-mb-1.5 tw-flex-grow" :style="{width: '100%', height: '5rem'}" />
-					</div>
-				</div>
-			</div>
 		</div>
 		<loan-description
 			class="tw-pt-4"
@@ -62,9 +53,9 @@
 			:original-language="originalLanguage"
 			:partner-name="partnerName"
 			:reviewer="reviewer"
+			:enabled-experiment-variant="enabledExperimentVariant"
 			:story-description="description"
 			:previous-loan-id="previousLoanId"
-			:user-context-exp-variant="userContextExpVariant"
 		/>
 	</article>
 </template>
@@ -72,8 +63,6 @@
 <script>
 import gql from 'graphql-tag';
 import logReadQueryError from '@/util/logReadQueryError';
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
-import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import BorrowerImage from './BorrowerImage';
 import LoanDescription from './LoanDescription';
 
@@ -85,25 +74,19 @@ export default {
 	components: {
 		BorrowerImage,
 		LoanDescription,
-		KvLoadingParagraph,
-		KvLoadingPlaceholder
 	},
 	props: {
 		loanId: {
 			type: Number,
 			default: 0,
 		},
+		enabledExperimentVariant: {
+			type: Boolean,
+			default: false
+		},
 		userContextExpVariant: {
 			type: String,
 			default: 'c'
-		},
-		hasLentBefore: {
-			type: Boolean,
-			default: false
-		},
-		hasDepositBefore: {
-			type: Boolean,
-			default: false
 		}
 	},
 	data() {
@@ -123,6 +106,7 @@ export default {
 			partnerCountry: '',
 			imageRequire,
 			tags: [],
+			gender: '',
 			sector: {
 				name: ''
 			}
@@ -227,15 +211,12 @@ export default {
 			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
 			this.tags = loan?.tags ?? [];
 			this.gender = loan?.gender ?? '';
-			this.sector = loan?.sector ?? '';
+			this.sector = loan?.sector ?? { name: '' };
 		} catch (e) {
 			logReadQueryError(e, 'LoanStory userContextExperiment');
 		}
 	},
 	computed: {
-		enabledContextExperiment() {
-			return this.userContextExpVariant !== 'a' && (!this.hasLentBefore || !this.hasDepositBefore);
-		},
 		loanImpactStatements() {
 			const statements = [];
 			const loanStatements = [{
