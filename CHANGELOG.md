@@ -1,3 +1,11 @@
+### [2.409.2](https://github.com/kiva/ui/compare/v2.409.1...v2.409.2) (2022-12-02)
+
+
+### Bug Fixes
+
+* share link ([c9ed7c5](https://github.com/kiva/ui/commit/c9ed7c54e22b42a06d944754035f6168841d13b7))
+* share link condition ([3a6cf03](https://github.com/kiva/ui/commit/3a6cf0341847eb9d5c6b84c16b3ae18a7dd30e0e))
+
 ### [2.409.1](https://github.com/kiva/ui/compare/v2.409.0...v2.409.1) (2022-12-01)
 
 
