@@ -1,3 +1,15 @@
+## [2.411.0](https://github.com/kiva/ui/compare/v2.410.0...v2.411.0) (2022-12-03)
+
+
+### Features
+
+* show context experiment when havent lent or deposited ([223b703](https://github.com/kiva/ui/commit/223b7033316b336f84a30b550e84cda9b5848f15))
+
+
+### Bug Fixes
+
+* categories copy ([4f74c35](https://github.com/kiva/ui/commit/4f74c357711195c751b6fc5d91f6a79ba651872f))
+
 ## [2.410.0](https://github.com/kiva/ui/compare/v2.409.4...v2.410.0) (2022-12-02)
 
 
