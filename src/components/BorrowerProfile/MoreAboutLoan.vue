@@ -11,7 +11,7 @@
 					borrowers, provide services, and administer loans on the ground.
 				</p>
 
-				<template v-if="readMore || userContextExpVariant !== 'a'">
+				<template v-if="!enabledExperimentVariant && !readMore">
 					<div v-html="moreInfoAboutLoan" data-testid="bp-more-about-info">
 					</div>
 					<div v-if="loanAlertText" data-testid="bp-more-about-alert-text">
@@ -121,9 +121,9 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		userContextExpVariant: {
-			type: String,
-			default: 'c'
+		enabledExperimentVariant: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {

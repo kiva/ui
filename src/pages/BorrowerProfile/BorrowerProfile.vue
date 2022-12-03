@@ -54,6 +54,8 @@
 						@togglelightbox="toggleLightbox"
 						:num-lenders="numLenders"
 						:user-context-exp-variant="userContextExpVariant"
+						:has-lent-before="hasLentBefore"
+						:has-deposit-before="hasDepositBefore"
 					>
 						<template #sharebutton v-if="inPfp || shareButtonExpEnabled">
 							<!-- Share button for PFP loans -->
@@ -73,7 +75,7 @@
 					data-testid="bp-loan-story"
 					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8 tw-z-1"
 					:loan-id="loanId"
-					:user-context-exp-variant="userContextExpVariant"
+					:enabled-experiment-variant="enabledExperimentVariant"
 				/>
 			</content-container>
 			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
@@ -83,7 +85,7 @@
 			</div>
 			<content-container>
 				<div
-					v-if="userContextExpVariant === 'a'"
+					v-if="enabledExperimentVariant"
 					class="tw-rounded tw-bg-white tw-px-2 md:tw-px-4 tw-py-3 tw-mb-5 tw-flex tw-gap-2"
 				>
 					<div>
@@ -102,7 +104,7 @@
 					data-testid="bp-more-about"
 					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
 					:loan-id="loanId"
-					:user-context-exp-variant="userContextExpVariant"
+					:enabled-experiment-variant="enabledExperimentVariant"
 				/>
 				<borrower-country data-testid="bp-country" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<lenders-and-teams
@@ -310,6 +312,9 @@ const pageQuery = gql`
 	}
 `;
 
+const hasLentBeforeCookie = 'kvu_lb';
+const hasDepositBeforeCookie = 'kvu_db';
+
 export default {
 	name: 'BorrowerProfile',
 	inject: ['apollo', 'cookieStore'],
@@ -445,10 +450,12 @@ export default {
 			kivaModuleExpEnabled: false,
 			shareButtonExpEnabled: false,
 			shownModal: false,
-			userContextExpVariant: 'c',
+			userContextExpVariant: 'a',
 			partnerName: '',
 			partnerCountry: '',
-			isoCode: ''
+			isoCode: '',
+			hasLentBefore: false,
+			hasDepositBefore: false
 		};
 	},
 	apollo: {
@@ -627,6 +634,10 @@ export default {
 		}
 	},
 	computed: {
+		enabledExperimentVariant() {
+			return this.userContextExpVariant === 'a'
+				&& (!this.hasLentBefore || !this.hasDepositBefore);
+		},
 		vettedHeadline() {
 			if (this.isoCode === 'US') {
 				return `${this.name} was approved by Kiva`;
@@ -757,8 +768,11 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 
+		this.hasLentBefore = this.cookieStore.get(hasLentBeforeCookie) === 'true';
+		this.hasDepositBefore = this.cookieStore.get(hasDepositBeforeCookie) === 'true';
+
 		this.userContextExpVariant = userContextExpData?.version;
-		if (contextExpEnabled && userContextExpData?.version) {
+		if (contextExpEnabled && !this.hasLentBefore && !this.hasDepositBefore && userContextExpData?.version) {
 			this.$kvTrackEvent(
 				'Borrower Profile',
 				'EXP-MARS-317-Nov2022',

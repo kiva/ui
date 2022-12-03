@@ -23,7 +23,7 @@
 			]"
 		/>
 		<div
-			v-if="loanImpactStatements.length && userContextExpVariant === 'a'"
+			v-if="loanImpactStatements.length && enabledExperimentVariant"
 			class="tw-rounded tw-bg-white tw-p-3 md:tw-p-4 tw-my-5"
 		>
 			<p class="tw-text-h2 tw-mb-3">
@@ -53,9 +53,9 @@
 			:original-language="originalLanguage"
 			:partner-name="partnerName"
 			:reviewer="reviewer"
+			:enabled-experiment-variant="enabledExperimentVariant"
 			:story-description="description"
 			:previous-loan-id="previousLoanId"
-			:user-context-exp-variant="userContextExpVariant"
 		/>
 	</article>
 </template>
@@ -80,6 +80,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		enabledExperimentVariant: {
+			type: Boolean,
+			default: false
+		},
 		userContextExpVariant: {
 			type: String,
 			default: 'c'
@@ -102,6 +106,7 @@ export default {
 			partnerCountry: '',
 			imageRequire,
 			tags: [],
+			gender: '',
 			sector: {
 				name: ''
 			}
@@ -206,7 +211,7 @@ export default {
 			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
 			this.tags = loan?.tags ?? [];
 			this.gender = loan?.gender ?? '';
-			this.sector = loan?.sector ?? '';
+			this.sector = loan?.sector ?? { name: '' };
 		} catch (e) {
 			logReadQueryError(e, 'LoanStory userContextExperiment');
 		}
@@ -248,7 +253,7 @@ export default {
 					id: '5',
 					headline: 'Supports climate action',
 					// eslint-disable-next-line max-len
-					body: 'Loans enable borrowers to use clean energy, partake in recycling, and adopt sustainable practices',
+					body: 'Loans enable borrowers to use clean energy, partake in recycling, and adopt sustainable practices.',
 					image: 'leafheart'
 				};
 			}
@@ -256,7 +261,7 @@ export default {
 				return {
 					id: '6',
 					headline: 'Increases earning potential',
-					body: 'Higher education graduates are able to earn 17% more',
+					body: 'Higher education graduates are able to earn 17% more.',
 					image: 'water'
 				};
 			}
@@ -265,7 +270,7 @@ export default {
 					id: '7',
 					headline: 'Invest in their craft',
 					// eslint-disable-next-line max-len
-					body: 'Borrowers who use loans to fund their businesses report better financial management and more resilience',
+					body: 'Borrowers who use loans to fund their businesses report better financial management and more resilience.',
 					image: 'water'
 				};
 			}
@@ -274,7 +279,7 @@ export default {
 					id: '8',
 					headline: 'Supports their family',
 					// eslint-disable-next-line max-len
-					body: 'More than 75% of people living in poverty depend on agricultural activity to feed their families',
+					body: '75% of economically disadvantaged people depend on agricultural activity to feed their families.',
 					image: 'water'
 				};
 			}
@@ -283,7 +288,7 @@ export default {
 					id: '9',
 					headline: 'Promotes gender equality',
 					// eslint-disable-next-line max-len
-					body: 'Lending to women leads to positive improvement on quality of life, driving a cycle of increased innovation and growth',
+					body: 'Lending to women leads to positive improvement on quality of life, driving a cycle of increased innovation and growth.',
 					image: 'highfive'
 				};
 			}
@@ -292,7 +297,7 @@ export default {
 					id: '10',
 					headline: 'Promotes financial equity',
 					// eslint-disable-next-line max-len
-					body: 'Kiva offers interest-free loans to US-based borrowers who have been excluded from traditional financial services',
+					body: 'Kiva offers interest-free loans to US-based borrowers who have been excluded from traditional financial services.',
 					image: 'highfive'
 				};
 			}
