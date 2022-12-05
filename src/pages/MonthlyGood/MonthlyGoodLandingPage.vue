@@ -349,9 +349,8 @@ export default {
 		},
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
-			// TODO! Add this back in when service supports non-logged in users
-			// const modernSubscriptions = data?.mySubscriptions?.values ?? [];
-			// this.hasModernSub = modernSubscriptions.length !== 0;
+			const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+			this.hasModernSub = modernSubscriptions.length !== 0;
 
 			// mg_hero_show_loans
 			// Hero Loan Visibility Experiment - CORE-451
