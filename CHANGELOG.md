@@ -1,3 +1,10 @@
+### [2.411.2](https://github.com/kiva/ui/compare/v2.411.1...v2.411.2) (2022-12-05)
+
+
+### Bug Fixes
+
+* add additional checks for modern subscriptions ([c9f5c76](https://github.com/kiva/ui/commit/c9f5c76ebab737d7ffbbe5f489d9a8098e3e4842))
+
 ### [2.411.1](https://github.com/kiva/ui/compare/v2.411.0...v2.411.1) (2022-12-05)
 
 
