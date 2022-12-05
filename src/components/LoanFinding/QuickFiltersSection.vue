@@ -22,7 +22,6 @@
 				:key="`loan-${loan.id}`"
 				:item-index="index"
 				:loan-id="loan.id"
-				:exp-label="expLabel"
 				:show-action-button="true"
 				style="margin-right: 16px; max-width: 300px;"
 			/>
@@ -73,7 +72,7 @@ export default {
 		};
 	},
 	async mounted() {
-		this.allFacets = await fetchLoanFacets(this.apollo, true);
+		this.allFacets = await fetchLoanFacets(this.apollo);
 		await this.fetchFilterData(this.flssLoanSearch);
 		const { loans, totalCount } = await runLoansQuery(
 			this.apollo,

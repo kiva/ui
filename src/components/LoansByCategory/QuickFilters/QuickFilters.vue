@@ -187,17 +187,7 @@ export default {
 		loanChannelQueryMapMixin
 	],
 	watch: {
-		selectedCategory(category) {
-			console.log('category: ', category);
-			const queryMap = this.loanChannelQueryMap;
-			console.log('the query map: ', queryMap);
-			const flssParams = category === 0 ? {} : this.loanChannelQueryMap.find(
-				c => c.id === category
-			);
-			console.log('flss params!!:)) ', queryMap.find(
-				c => c.id === category
-			));
-			this.$emit('update-filters', flssParams);
+		selectedCategory() {
 		},
 		selectedGender(gender) {
 			this.$emit('update-filters', { gender });
