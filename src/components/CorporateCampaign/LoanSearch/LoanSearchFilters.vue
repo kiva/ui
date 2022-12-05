@@ -19,181 +19,197 @@
 			</div>
 
 			<div v-if="showLoanDisplayToggle" class="loan-filters__loan-display">
-				<kv-pill-toggle
-					id="pill"
-					:options="[
-						{
-							title: 'Rows',
-							key: 'rows',
-						},
-						{
-							title: 'Grid',
-							key: 'grid',
-						},
-					]"
-					:selected="activeLoanDisplay"
-					@pill-toggled="(val) => { $emit('set-loan-display', val === 'rows') }"
-				/>
-			</div>
-		</div>
-
-		<div
-			v-if="filterChips.length"
-			class="tw-mt-3 tw-mx-2 tw-mb-1 md:tw-mx-7"
-		>
-			<div class="row">
 				<div
-					class="chips__container small-12 large-8 xxlarge-9 columns"
-					:class="{'chips--collapsed' : isChipsCollapsed}"
-					ref="chipsContainer"
+					class="tw-flex tw-cursor-pointer tw-items-center"
+					id="view"
+					:selected="activeLoanDisplay"
+					@view-toggled="(val) => { $emit('set-loan-display', val === 'rows') }"
 				>
-					<div
-						ref="chipsInnerContainer"
+					<h4 class="tw-text-h4 tw-font-medium tw-text-action">
+						Row View
+					</h4>
+					<img
+						class="tw-h-5 tw-mr-1 tw-inline-block"
+						src="@/assets/icons/inline/list-green.svg"
 					>
-						<kv-chip
-							v-for="(filter, index) in filterChips"
-							:key="`chip-${index}`"
-							:title="cleanChipName(filter.name)"
-							@click-chip="handleRemoveFilter(filter)"
+					<h4 class="tw-text-h4 tw-font-medium tw-text-action">
+						Grid View
+					</h4>
+					<img
+						class="tw-h-5 tw-mr-1 tw-inline-block"
+						src="@/assets/icons/inline/grid-green.svg"
+					>
+				</div>
+			</div>
+
+			<div
+				v-if="filterChips.length"
+				class="tw-mt-3 tw-mx-2 tw-mb-1 md:tw-mx-7"
+			>
+				<div class="row">
+					<div
+						class="chips__container small-12 large-8 xxlarge-9 columns"
+						:class="{'chips--collapsed' : isChipsCollapsed}"
+						ref="chipsContainer"
+					>
+						<div
+							ref="chipsInnerContainer"
+						>
+							<kv-chip
+								v-for="(filter, index) in filterChips"
+								:key="`chip-${index}`"
+								:title="cleanChipName(filter.name)"
+								@click-chip="handleRemoveFilter(filter)"
+							/>
+						</div>
+					</div>
+					<div class="small-12 large-4 xxlarge-3 columns">
+						<div class="chips__toggle-container">
+							<kv-button
+								v-if="isChipsCollapsable"
+								class="chips__toggle text-link"
+								@click.native="isChipsCollapsed = !isChipsCollapsed"
+							>
+								{{ isChipsCollapsed ? `Show all ${filterChips.length} filters` : 'Hide filters' }}
+							</kv-button>
+							<span v-if="!isInitialFilters && isChipsCollapsable">|</span>
+							<kv-button
+								v-if="!isInitialFilters"
+								class="chips__toggle text-link"
+								@click.native="handleResetFilters"
+							>
+								Reset all
+							</kv-button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<kv-lightbox
+				v-if="filtersVisible"
+				class="loan-filters__lightbox"
+				id="filterControlsLightbox"
+				title="Filter Loans"
+				:visible="filtersVisible"
+				@lightbox-closed="filtersVisible = false"
+			>
+				<div class="loan-filter-controls">
+					<radio-group-filter
+						class="loan-filters__lightbox"
+						id="gender-option-frame"
+					>
+						<template #header>
+							<h3 class="tw-py-1 tw-flex">
+								Gender
+							</h3>
+						</template>
+						<gender-filter
+							class="loan-filter-controls__filter-type tw-flex tw-items-center"
+							:initial-gender="initialGender"
+							:selected-gender="selectedGender"
+							@updated-filters="handleUpdatedFilters"
 						/>
-					</div>
-				</div>
-				<div class="small-12 large-4 xxlarge-3 columns">
-					<div class="chips__toggle-container">
-						<kv-button
-							v-if="isChipsCollapsable"
-							class="chips__toggle text-link"
-							@click.native="isChipsCollapsed = !isChipsCollapsed"
-						>
-							{{ isChipsCollapsed ? `Show all ${filterChips.length} filters` : 'Hide filters' }}
-						</kv-button>
-						<span v-if="!isInitialFilters && isChipsCollapsable">|</span>
-						<kv-button
-							v-if="!isInitialFilters"
-							class="chips__toggle text-link"
-							@click.native="handleResetFilters"
-						>
-							Reset all
-						</kv-button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<kv-lightbox
-			v-if="filtersVisible"
-			class="loan-filters__lightbox"
-			id="filterControlsLightbox"
-			title="Filter Loans"
-			:visible="filtersVisible"
-			@lightbox-closed="filtersVisible = false"
-		>
-			<div class="loan-filter-controls">
-				<gender-filter
-					:initial-gender="initialGender"
-					:selected-gender="selectedGender"
-					@updated-filters="handleUpdatedFilters"
-				/>
-
-				<kv-accordion-item
-					class="loan-filters__lightbox-accordian"
-					id="sort-order-accordian"
-				>
-					<template #header>
-						<h3 class="tw-py-1">
-							Sort By
-						</h3>
-					</template>
+					</radio-group-filter>
 					<sort-order
-						class="loan-filter-controls__filter-type"
-						:initial-sort="initialSortBy"
-						:selected-sort="selectedSort"
-						@sort-order-updated="handleSortByUpdated"
-					/>
-				</kv-accordion-item>
+						class="loan-filters__lightbox"
+						id="sort-order-frame"
+					>
+						<template #header>
+							<h3 class="tw-py-1 tw-flex">
+								Sort By
+							</h3>
+						</template>
+						<sort-order
+							class="loan-filter-controls__filter-type tw-items-center"
+							:initial-sort="initialSortBy"
+							:selected-sort="selectedSort"
+							@sort-order-updated="handleSortByUpdated"
+						/>
+					</sort-order>
 
-				<kv-accordion-item
-					class="loan-filters__lightbox-accordian"
-					id="region-accordian"
-				>
-					<template #header>
-						<h3 class="tw-py-1">
-							Countries
-						</h3>
-					</template>
-					<location-filter
-						class="loan-filter-controls__filter-type"
-						:all-countries="allCountries"
-						:initial-countries="initialCountries"
-						:selected-countries="selectedCountries"
-						@updated-filters="handleUpdatedFilters"
-					/>
-				</kv-accordion-item>
+					<kv-accordion-item
+						class="loan-filters__lightbox-accordian"
+						id="region-accordian"
+					>
+						<template #header>
+							<h3 class="tw-py-1">
+								Countries
+							</h3>
+						</template>
+						<location-filter
+							class="loan-filter-controls__filter-type"
+							:all-countries="allCountries"
+							:initial-countries="initialCountries"
+							:selected-countries="selectedCountries"
+							@updated-filters="handleUpdatedFilters"
+						/>
+					</kv-accordion-item>
 
-				<kv-accordion-item
-					class="loan-filters__lightbox-accordian"
-					id="sectors-accordian"
-				>
-					<template #header>
-						<h3 class="tw-py-1">
-							Sectors
-						</h3>
-					</template>
-					<sector-filter
-						class="loan-filter-controls__filter-type"
-						:all-sectors="allSectors"
-						:initial-sectors="initialSectors"
-						:selected-sectors="selectedSectors"
-						@updated-filters="handleUpdatedFilters"
-					/>
-				</kv-accordion-item>
+					<kv-accordion-item
+						class="loan-filters__lightbox-accordian"
+						id="sectors-accordian"
+					>
+						<template #header>
+							<h3 class="tw-py-1">
+								Sectors
+							</h3>
+						</template>
+						<sector-filter
+							class="loan-filter-controls__filter-type"
+							:all-sectors="allSectors"
+							:initial-sectors="initialSectors"
+							:selected-sectors="selectedSectors"
+							@updated-filters="handleUpdatedFilters"
+						/>
+					</kv-accordion-item>
 
-				<kv-accordion-item
-					class="loan-filters__lightbox-accordian"
-					id="attributes-accordian"
-				>
-					<template #header>
-						<h3 class="tw-py-1">
-							Attributes
-						</h3>
-					</template>
-					<attribute-filter
-						class="loan-filter-controls__filter-type"
-						:all-attributes="allAttributes"
-						:initial-attributes="initialAttributes"
-						:selected-attributes="selectedAttributes"
-						@updated-filters="handleUpdatedFilters"
-					/>
-				</kv-accordion-item>
+					<kv-accordion-item
+						class="loan-filters__lightbox-accordian"
+						id="attributes-accordian"
+					>
+						<template #header>
+							<h3 class="tw-py-1">
+								Attributes
+							</h3>
+						</template>
+						<attribute-filter
+							class="loan-filter-controls__filter-type"
+							:all-attributes="allAttributes"
+							:initial-attributes="initialAttributes"
+							:selected-attributes="selectedAttributes"
+							@updated-filters="handleUpdatedFilters"
+						/>
+					</kv-accordion-item>
 
-				<kv-accordion-item
-					class="loan-filters__lightbox-accordian"
-					id="tags-accordian"
-				>
-					<template #header>
-						<h3 class="tw-py-1">
-							Tags
-						</h3>
-					</template>
-					<tag-filter
-						class="loan-filter-controls__filter-type"
-						:all-tags="allTags"
-						:initial-tags="initialTags"
-						:selected-tags="selectedTags"
-						@updated-filters="handleUpdatedFilters"
-					/>
-				</kv-accordion-item>
-			</div>
+					<kv-accordion-item
+						class="loan-filters__lightbox-accordian"
+						id="tags-accordian"
+					>
+						<template #header>
+							<h3 class="tw-py-1">
+								Tags
+							</h3>
+						</template>
+						<tag-filter
+							class="loan-filter-controls__filter-type"
+							:all-tags="allTags"
+							:initial-tags="initialTags"
+							:selected-tags="selectedTags"
+							@updated-filters="handleUpdatedFilters"
+						/>
+					</kv-accordion-item>
+				</div>
 
-			<template #controls>
-				<kv-button
-					class="button smallest"
-					@click.native.prevent="applyFilters"
-				>
-					Apply Filters
-				</kv-button>
-			</template>
-		</kv-lightbox>
+				<template #controls>
+					<kv-button
+						variant="secondary"
+						@click.native.prevent="applyFilters"
+					>
+						Apply Filters
+					</kv-button>
+				</template>
+			</kv-lightbox>
+		</div>
 	</div>
 </template>
 
@@ -208,7 +224,6 @@ import AttributeFilter from '@/components/CorporateCampaign/LoanSearch/Attribute
 import GenderFilter from '@/components/CorporateCampaign/LoanSearch/GenderFilter';
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import KvIcon from '@/components/Kv/KvIcon';
-import KvPillToggle from '@/components/Kv/KvPillToggle';
 import LocationFilter from '@/components/CorporateCampaign/LoanSearch/LocationFilter';
 import SectorFilter from '@/components/CorporateCampaign/LoanSearch/SectorFilter';
 import SortOrder from '@/components/CorporateCampaign/LoanSearch/SortOrder';
@@ -249,7 +264,6 @@ export default {
 		KvButton,
 		KvChip,
 		KvLightbox,
-		KvPillToggle,
 		AttributeFilter,
 		GenderFilter,
 		KvAccordionItem,
