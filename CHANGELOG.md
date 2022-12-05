@@ -1,3 +1,10 @@
+### [2.411.1](https://github.com/kiva/ui/compare/v2.411.0...v2.411.1) (2022-12-05)
+
+
+### Bug Fixes
+
+* minor styling change to donation variants ([ff60997](https://github.com/kiva/ui/commit/ff609979519cad19af4cb39aa87706b6c906cb19))
+
 ## [2.411.0](https://github.com/kiva/ui/compare/v2.410.0...v2.411.0) (2022-12-03)
 
 
