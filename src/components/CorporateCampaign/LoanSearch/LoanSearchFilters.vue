@@ -21,24 +21,29 @@
 			<div v-if="showLoanDisplayToggle" class="loan-filters__loan-display">
 				<div
 					class="tw-flex tw-cursor-pointer tw-items-center"
-					id="view"
+					id="view-toggle"
 					:selected="activeLoanDisplay"
-					@view-toggled="(val) => { $emit('set-loan-display', val === 'rows') }"
+					@click-toggle="(val) => { $emit('set-loan-display', val === 'rows') }"
 				>
 					<h4 class="tw-text-h4 tw-font-medium tw-text-action">
 						Row View
 					</h4>
-					<img
+					<kv-icon
 						class="tw-h-5 tw-mr-1 tw-inline-block"
+						name="list-green"
 						src="@/assets/icons/inline/list-green.svg"
-					>
+						:icon="mdiLandRowsHorizontal"
+					/>
+					<span class="divider"></span>
 					<h4 class="tw-text-h4 tw-font-medium tw-text-action">
 						Grid View
 					</h4>
-					<img
+					<kv-icon
 						class="tw-h-5 tw-mr-1 tw-inline-block"
+						name="grid-green"
 						src="@/assets/icons/inline/grid-green.svg"
-					>
+						:icon="mdiGridLarge"
+					/>
 				</div>
 			</div>
 
@@ -94,38 +99,41 @@
 				@lightbox-closed="filtersVisible = false"
 			>
 				<div class="loan-filter-controls">
-					<radio-group-filter
-						class="loan-filters__lightbox"
-						id="gender-option-frame"
+					<div
+						class="loan-filters__lightbox tw-mb-0.5"
+						id="gender-filter-container"
 					>
-						<template #header>
-							<h3 class="tw-py-1 tw-flex">
-								Gender
-							</h3>
-						</template>
-						<gender-filter
-							class="loan-filter-controls__filter-type tw-flex tw-items-center"
-							:initial-gender="initialGender"
-							:selected-gender="selectedGender"
-							@updated-filters="handleUpdatedFilters"
-						/>
-					</radio-group-filter>
-					<sort-order
+						<h3 class="tw-py-1 tw-flex">
+							Gender
+						</h3>
+
+						<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-my-2">
+							<gender-filter
+								class="loan-filter-controls__filter-type tw-flex tw-items-center"
+								:initial-gender="initialGender"
+								:selected-gender="selectedGender"
+								@updated-filters="handleUpdatedFilters"
+							/>
+						</fieldset>
+					</div>
+
+					<div
 						class="loan-filters__lightbox"
-						id="sort-order-frame"
+						id="sort-filter-container"
 					>
-						<template #header>
-							<h3 class="tw-py-1 tw-flex">
-								Sort By
-							</h3>
-						</template>
-						<sort-order
-							class="loan-filter-controls__filter-type tw-items-center"
-							:initial-sort="initialSortBy"
-							:selected-sort="selectedSort"
-							@sort-order-updated="handleSortByUpdated"
-						/>
-					</sort-order>
+						<h3 class="tw-py-1 tw-flex">
+							Sort By
+						</h3>
+						<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-my-2">
+							<sort-order
+								class="loan-filter-controls__filter-type tw-items-center"
+								:initial-sort="initialSortBy"
+								:selected-sort="selectedSort"
+								@sort-order-updated="handleSortByUpdated"
+							/>
+						</fieldset>
+						<hr class="tw-border-tertiary tw-mt-1">
+					</div>
 
 					<kv-accordion-item
 						class="loan-filters__lightbox-accordian"
@@ -202,7 +210,7 @@
 
 				<template #controls>
 					<kv-button
-						variant="secondary"
+						variant="primary"
 						@click.native.prevent="applyFilters"
 					>
 						Apply Filters
@@ -217,6 +225,7 @@
 import _isEqual from 'lodash/isEqual';
 import _sortBy from 'lodash/sortBy';
 import gql from 'graphql-tag';
+import { mdiGridLarge, mdiLandRowsHorizontal } from '@mdi/js';
 import KvButton from '@/components/Kv/KvButton';
 import KvChip from '@/components/Kv/KvChip';
 import KvLightbox from '@/components/Kv/KvLightbox';
@@ -319,6 +328,8 @@ export default {
 			selectedSort: null,
 			isChipsCollapsable: true,
 			isChipsCollapsed: true,
+			mdiGridLarge,
+			mdiLandRowsHorizontal
 		};
 	},
 	mounted() {
