@@ -107,6 +107,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		selectedAmountSetting: {
+			type: Number,
+			default: null
+		},
 	},
 	inject: ['apollo'],
 	data() {
@@ -207,7 +211,14 @@ export default {
 	mounted() {
 		this.$nextTick(() => {
 			// set a default selection
-			const initialSelection = this.donationAmountOptions[1]?.key;
+			let initialSelection;
+			// if a selectedAmountSetting prop is passed in, and selected amount is in the list of options use that
+			if (this.selectedAmountSetting && this.data.includes(this.selectedAmountSetting)) {
+				initialSelection = this.selectedAmountSetting;
+			} else {
+				// otherwise use the middle option in the list
+				initialSelection = this.donationAmountOptions[2]?.key;
+			}
 			this.donationAmountSelected(initialSelection);
 			this.updateAmount(initialSelection);
 			this.donationCustomAmount = numeral(initialSelection).value();
