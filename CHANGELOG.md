@@ -1,3 +1,10 @@
+## [2.412.0-next.1](https://github.com/kiva/ui/compare/v2.411.2...v2.412.0-next.1) (2022-12-06)
+
+
+### Features
+
+* setting for preselected amount on donation form ([36aed57](https://github.com/kiva/ui/commit/36aed57bfc1d7c9a21ddef7c25da12943ef3a6d8))
+
 ### [2.411.2](https://github.com/kiva/ui/compare/v2.411.1...v2.411.2) (2022-12-05)
 
 
