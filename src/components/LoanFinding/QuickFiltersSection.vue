@@ -15,7 +15,7 @@
 			@handle-overlay="handleQuickFiltersOverlay"
 		/>
 		<div
-			class="tw-flex tw-flex-wrap"
+			class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-mt-2"
 		>
 			<kiva-classic-basic-loan-card
 				v-for="(loan, index) in loans"
@@ -23,7 +23,14 @@
 				:item-index="index"
 				:loan-id="loan.id"
 				:show-action-button="true"
-				style="margin-right: 16px; max-width: 300px;"
+			/>
+		</div>
+		<div class="tw-w-full tw-my-4">
+			<kv-pagination
+				:total="totalCount"
+				:limit="loanSearchState.pageLimit"
+				:offset="loanSearchState.pageOffset"
+				@page-changed="pageChange"
 			/>
 		</div>
 	</div>
@@ -35,12 +42,14 @@ import { runFacetsQueries, fetchLoanFacets, runLoansQuery } from '@/util/loanSea
 import { fetchCategories, FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
+import KvPagination from '@/components/Kv/KvPagination';
 
 export default {
 	name: 'QuickFiltersSection',
 	components: {
 		QuickFilters,
-		KivaClassicBasicLoanCard
+		KivaClassicBasicLoanCard,
+		KvPagination
 	},
 	inject: ['apollo'],
 	data() {
@@ -51,7 +60,7 @@ export default {
 			flssLoanSearch: {},
 			loanSearchState: {
 				pageOffset: 0,
-				pageLimit: 3
+				pageLimit: 6
 			},
 			loans: [],
 			quickFiltersOptions: {
@@ -182,6 +191,9 @@ export default {
 			];
 
 			this.filtersLoaded = true;
+		},
+		pageChange({ pageOffset }) {
+			this.loanSearchState.pageOffset = pageOffset;
 		},
 	},
 };
