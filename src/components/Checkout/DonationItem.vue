@@ -246,7 +246,10 @@
 								class="donation-tagline tw-text-small tw-text-secondary tw-my-1 tw-max-w-2xl"
 								data-testid="basket-donation-tagline"
 							>
-								<p class="tw-text-primary tw-text-base" v-html="basketDonateModulesExpDonationTagline">
+								<p
+									class="tw-text-small tw-text-secondary"
+									v-html="basketDonateModulesExpDonationTagline"
+								>
 								</p>
 							</div>
 							<button
@@ -393,7 +396,10 @@
 								class="donation-tagline tw-text-small tw-text-secondary tw-mb-1 tw-max-w-2xl"
 								data-testid="basket-donation-tagline"
 							>
-								<p class="tw-text-primary tw-text-base" v-html="basketDonateModulesExpDonationTagline">
+								<p
+									class="tw-text-small tw-text-secondary"
+									v-html="basketDonateModulesExpDonationTagline"
+								>
 								</p>
 							</div>
 							<button
@@ -562,7 +568,10 @@
 								class="donation-tagline tw-text-small tw-text-secondary tw-my-1 tw-max-w-2xl"
 								data-testid="basket-donation-tagline"
 							>
-								<p class="tw-text-primary tw-text-base" v-html="basketDonateModulesExpDonationTagline">
+								<p
+									class="tw-text-small tw-text-secondary"
+									v-html="basketDonateModulesExpDonationTagline"
+								>
 								</p>
 							</div>
 							<button

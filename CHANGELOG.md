@@ -1,3 +1,81 @@
+### [2.414.1](https://github.com/kiva/ui/compare/v2.414.0...v2.414.1) (2022-12-07)
+
+
+### Bug Fixes
+
+* loan card key fixed to use index instead of key in quick filters section ([e25e179](https://github.com/kiva/ui/commit/e25e17902b31dcd4ba8a292eb14c59ab8b7617fc))
+
+## [2.414.0](https://github.com/kiva/ui/compare/v2.413.0...v2.414.0) (2022-12-07)
+
+
+### Features
+
+* ui added when having zero loans result in quick filters ([6a5c42b](https://github.com/kiva/ui/commit/6a5c42be1dc816c39eaaa3596fba02542001f8ec))
+
+## [2.413.0](https://github.com/kiva/ui/compare/v2.412.0...v2.413.0) (2022-12-06)
+
+
+### Features
+
+* kvpagination component added to new quick filter section ([0b6b5be](https://github.com/kiva/ui/commit/0b6b5be3234cfbbbfaf00a28b6f2344fa92adb94))
+
+## [2.412.0](https://github.com/kiva/ui/compare/v2.411.3...v2.412.0) (2022-12-06)
+
+
+### Features
+
+* setting for preselected amount on donation form ([48ede68](https://github.com/kiva/ui/commit/48ede68a017da8c2b8ec83918e69b637cad2ee6d))
+
+### [2.411.3](https://github.com/kiva/ui/compare/v2.411.2...v2.411.3) (2022-12-06)
+
+
+### Bug Fixes
+
+* correct page limit ([a9a60e3](https://github.com/kiva/ui/commit/a9a60e39ea365e7f993d020b0b8af05dad4b0571))
+* merge conflict ([fd8361d](https://github.com/kiva/ui/commit/fd8361d77a9761c62ec238fbcef08e755a71e69a))
+* pr comments ([a862578](https://github.com/kiva/ui/commit/a8625782aaebb6e51987c2d19b7a3e67c4b78f77))
+
+### [2.411.2](https://github.com/kiva/ui/compare/v2.411.1...v2.411.2) (2022-12-05)
+
+
+### Bug Fixes
+
+* add additional checks for modern subscriptions ([c9f5c76](https://github.com/kiva/ui/commit/c9f5c76ebab737d7ffbbe5f489d9a8098e3e4842))
+
+### [2.411.1](https://github.com/kiva/ui/compare/v2.411.0...v2.411.1) (2022-12-05)
+
+
+### Bug Fixes
+
+* minor styling change to donation variants ([ff60997](https://github.com/kiva/ui/commit/ff609979519cad19af4cb39aa87706b6c906cb19))
+
+## [2.411.0](https://github.com/kiva/ui/compare/v2.410.0...v2.411.0) (2022-12-03)
+
+
+### Features
+
+* show context experiment when havent lent or deposited ([223b703](https://github.com/kiva/ui/commit/223b7033316b336f84a30b550e84cda9b5848f15))
+
+
+### Bug Fixes
+
+* categories copy ([4f74c35](https://github.com/kiva/ui/commit/4f74c357711195c751b6fc5d91f6a79ba651872f))
+
+## [2.410.0](https://github.com/kiva/ui/compare/v2.409.4...v2.410.0) (2022-12-02)
+
+
+### Features
+
+* add support for additional bp backgrounds ([e7ab849](https://github.com/kiva/ui/commit/e7ab8496c64be5a7167dcc913c9b31a32baef36d))
+
+### [2.409.4](https://github.com/kiva/ui/compare/v2.409.3...v2.409.4) (2022-12-02)
+
+
+### Bug Fixes
+
+* errors resolved for apollo cache on BP ([effde90](https://github.com/kiva/ui/commit/effde909ce6bc10ce9560070cb2b1f9930ccf041))
+* forgot async await ([2318f87](https://github.com/kiva/ui/commit/2318f876ce3b1244295fa75febd73f7c4fc74fc8))
+
 ### [2.409.3](https://github.com/kiva/ui/compare/v2.409.2...v2.409.3) (2022-12-02)
 
 
