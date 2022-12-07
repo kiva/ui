@@ -34,18 +34,27 @@
 					class="tw-mb-0.5 md:tw-mb-1.5 lg:tw-mb-2"
 					:name="name"
 				/>
-				<loan-progress
-					data-testid="bp-summary-progress"
-					class="tw-mb-2"
-					:money-left="unreservedAmount"
-					:progress-percent="fundraisingPercent"
-					:time-left="timeLeft"
-					:urgency="showUrgencyExp && timeLeftMs > 0"
-					:ms-left="timeLeftMs"
-					:loan-status="inPfp ? 'pfp' : 'fundraising'"
-					:number-of-lenders="numLenders"
-					:pfp-min-lenders="pfpMinLenders"
-				/>
+				<template v-if="isLoading">
+					<div class="tw-flex tw-flex-wrap tw-mb-3">
+						<kv-loading-placeholder class="tw-mb-1" style="height: 0.5rem;" />
+						<kv-loading-placeholder style="height: 2.8rem; width: 30%;" />
+						<kv-loading-placeholder style="height: 2.8rem; width: 30%; margin-left: auto;" />
+					</div>
+				</template>
+				<template v-else>
+					<loan-progress
+						data-testid="bp-summary-progress"
+						class="tw-mb-2"
+						:money-left="unreservedAmount"
+						:progress-percent="fundraisingPercent"
+						:time-left="timeLeft"
+						:urgency="showUrgencyExp && timeLeftMs > 0"
+						:ms-left="timeLeftMs"
+						:loan-status="inPfp ? 'pfp' : 'fundraising'"
+						:number-of-lenders="numLenders"
+						:pfp-min-lenders="pfpMinLenders"
+					/>
+				</template>
 			</div>
 		</div>
 		<loan-use
@@ -59,19 +68,24 @@
 			:anonymization-level="anonymizationLevel"
 		/>
 		<div class="tw-flex-auto tw-inline-flex tw-w-full">
-			<summary-tag v-if="countryName">
-				<kv-material-icon
-					class="tw-h-2.5 tw-w-2.5 tw-mr-0.5 tw-shrink-0"
-					:icon="mdiMapMarker"
-				/>
-				<span class="tw-flex-1" data-testid="bp-summary-country-tag">
-					{{ formattedLocation }}
-				</span>
-			</summary-tag>
+			<template v-if="isLoading">
+				<kv-loading-placeholder style="height: 1.9rem; width: 50%;" />
+			</template>
+			<template v-else>
+				<summary-tag v-if="countryName">
+					<kv-material-icon
+						class="tw-h-2.5 tw-w-2.5 tw-mr-0.5 tw-shrink-0"
+						:icon="mdiMapMarker"
+					/>
+					<span class="tw-flex-1" data-testid="bp-summary-country-tag">
+						{{ formattedLocation }}
+					</span>
+				</summary-tag>
 
-			<summary-tag data-testid="bp-summary-activity-tag" v-if="activityName">
-				{{ activityName }}
-			</summary-tag>
+				<summary-tag data-testid="bp-summary-activity-tag" v-if="activityName">
+					{{ activityName }}
+				</summary-tag>
+			</template>
 
 			<!-- only show option to bookmark loan if user is logged in -->
 			<loan-bookmark
@@ -103,6 +117,7 @@
 <script>
 import gql from 'graphql-tag';
 import { mdiMapMarker } from '@mdi/js';
+import logReadQueryError from '@/util/logReadQueryError';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
@@ -111,6 +126,69 @@ import LoanUse from './LoanUse';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
 import JumpLinks from './JumpLinks';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+
+const preFetchQuery = gql`
+	query summaryCard($loanId: Int!) {
+		lend {
+			loan(id: $loanId) {
+				id
+				borrowerCount
+				image {
+					id
+					hash
+				}
+				loanAmount
+				name
+				status
+				use
+				anonymizationLevel
+			}
+		}
+		my {
+			userAccount {
+				id
+			}
+		}
+	}
+`;
+
+const mountQuery = gql`
+	query summaryCard($loanId: Int!) {
+		lend {
+			loan(id: $loanId) {
+				id
+				activity {
+					id
+					name
+				}
+				distributionModel
+				fundraisingPercent @client
+				fundraisingTimeLeft @client
+				fundraisingTimeLeftMilliseconds @client
+				geocode {
+					city
+					state
+					country {
+						name
+					}
+				}
+				loanAmount
+				loanFundraisingInfo {
+					fundedAmount
+					reservedAmount
+				}
+				plannedExpirationDate
+				unreservedAmount @client
+				inPfp
+				pfpMinLenders
+				lenders {
+					totalCount
+				}
+			}
+		}
+	}
+`;
 
 export default {
 	name: 'SummaryCard',
@@ -124,6 +202,7 @@ export default {
 		SummaryTag,
 		LoanBookmark,
 		JumpLinks,
+		KvLoadingPlaceholder,
 	},
 	props: {
 		showUrgencyExp: {
@@ -133,8 +212,8 @@ export default {
 	},
 	data() {
 		return {
+			isLoading: true,
 			isLoggedIn: false,
-			loanId: 0,
 			activityName: '',
 			borrowerCount: 0,
 			countryName: '',
@@ -158,6 +237,9 @@ export default {
 		};
 	},
 	computed: {
+		loanId() {
+			return Number(this.$route?.params?.id ?? 0);
+		},
 		formattedLocation() {
 			if (this.distributionModel === 'direct') {
 				const formattedString = `${this.city}, ${this.state}, ${this.countryName}`;
@@ -170,64 +252,39 @@ export default {
 			return this.countryName;
 		}
 	},
-	mounted() {
+	async mounted() {
 		this.$kvTrackEvent(
 			'Borrower profile',
 			'borrower profile status',
 			this.status
 		);
+
+		try {
+			const { data } = await this.apollo.query({ query: mountQuery, variables: { loanId: this.loanId } });
+			const loan = data?.lend?.loan;
+			this.inPfp = loan?.inPfp ?? false;
+			this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
+			this.numLenders = loan?.lenders?.totalCount ?? 0;
+			this.activityName = loan?.activity?.name ?? '';
+			this.countryName = loan?.geocode?.country?.name ?? '';
+			this.fundraisingPercent = loan?.fundraisingPercent ?? 0;
+			this.timeLeft = loan?.fundraisingTimeLeft ?? '';
+			this.unreservedAmount = loan?.unreservedAmount ?? '0';
+			this.distributionModel = loan?.distributionModel ?? '';
+			this.city = loan?.geocode?.city ?? '';
+			this.state = loan?.geocode?.state ?? '';
+			this.timeLeftMs = loan?.fundraisingTimeLeftMilliseconds > 0 ? loan?.fundraisingTimeLeftMilliseconds : 0;
+			// If all shares are reserved in baskets, set the fundraising meter to 100%
+			if (this.unreservedAmount === '0') {
+				this.fundraisingPercent = 1;
+			}
+			this.isLoading = false;
+		} catch (e) {
+			logReadQueryError(e, 'SummaryCard mountQuery');
+		}
 	},
 	apollo: {
-		query: gql`
-			query summaryCard($loanId: Int!) {
-				lend {
-					loan(id: $loanId) {
-						id
-						activity {
-							id
-							name
-						}
-						borrowerCount
-						distributionModel
-						fundraisingPercent @client
-						fundraisingTimeLeft @client
-						fundraisingTimeLeftMilliseconds @client
-						geocode {
-							city
-							state
-							country {
-								name
-							}
-						}
-						image {
-							id
-							hash
-						}
-						loanAmount
-						loanFundraisingInfo {
-							fundedAmount
-							reservedAmount
-						}
-						name
-						plannedExpirationDate
-						status
-						unreservedAmount @client
-						use
-						anonymizationLevel
-						inPfp
-						pfpMinLenders
-						lenders {
-							totalCount
-						}
-					}
-				}
-				my {
-					userAccount {
-						id
-					}
-				}
-			}
-		`,
+		query: preFetchQuery,
 		preFetch: true,
 		preFetchVariables({ route }) {
 			return {
@@ -236,36 +293,19 @@ export default {
 		},
 		variables() {
 			return {
-				loanId: Number(this.$route?.params?.id ?? 0),
+				loanId: this.loanId,
 			};
 		},
 		result(result) {
 			const loan = result?.data?.lend?.loan;
-			this.inPfp = loan?.inPfp ?? false;
-			this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
-			this.numLenders = loan?.lenders?.totalCount ?? 0;
 			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
-			this.loanId = loan?.id ?? 0;
-			this.activityName = loan?.activity?.name ?? '';
 			this.borrowerCount = loan?.borrowerCount ?? 0;
-			this.countryName = loan?.geocode?.country?.name ?? '';
-			this.fundraisingPercent = loan?.fundraisingPercent ?? 0;
 			this.hash = loan?.image?.hash ?? '';
 			this.loanAmount = loan?.loanAmount ?? '0';
 			this.name = loan?.name ?? '';
 			this.status = loan?.status ?? '';
-			this.timeLeft = loan?.fundraisingTimeLeft ?? '';
-			this.unreservedAmount = loan?.unreservedAmount ?? '0';
 			this.use = loan?.use ?? '';
-			this.distributionModel = loan?.distributionModel ?? '';
-			this.city = loan?.geocode?.city ?? '';
-			this.state = loan?.geocode?.state ?? '';
 			this.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
-			this.timeLeftMs = loan?.fundraisingTimeLeftMilliseconds > 0 ? loan?.fundraisingTimeLeftMilliseconds : 0;
-			// If all shares are reserved in baskets, set the fundraising meter to 100%
-			if (this.unreservedAmount === '0') {
-				this.fundraisingPercent = 1;
-			}
 		},
 	},
 };

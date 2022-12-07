@@ -208,12 +208,7 @@
 							class="tw-hidden md:tw-inline-block lg:tw-hidden"
 						/>
 						<jump-links
-							:class="[
-								'tw-hidden md:tw-block lg:tw-mb-1.5',
-								{
-									'md:tw-mb-3': isSticky,
-								}
-							]"
+							class="tw-hidden md:tw-block lg:tw-mb-1.5 md:tw-mb-3"
 							data-testid="bp-lend-cta-jump-links"
 						/>
 					</div>
