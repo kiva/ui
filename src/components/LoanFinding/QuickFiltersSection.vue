@@ -27,7 +27,7 @@
 		<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-mt-2">
 			<kiva-classic-basic-loan-card
 				v-for="(loan, index) in loans"
-				:key="`loan-${loan.id}`"
+				:key="index"
 				:item-index="index"
 				:loan-id="loan.id"
 				:show-action-button="true"
@@ -73,8 +73,8 @@ export default {
 			},
 			// Default loans for loading animations
 			loans: [
-				{ id: 1 }, { id: 2 }, { id: 3 },
-				{ id: 4 }, { id: 5 }, { id: 6 }
+				{ id: 0 }, { id: 0 }, { id: 0 },
+				{ id: 0 }, { id: 0 }, { id: 0 }
 			],
 			backupLoans: [],
 			quickFiltersOptions: {
