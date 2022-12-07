@@ -36,7 +36,7 @@
 				/>
 				<template v-if="isLoading">
 					<div class="tw-flex tw-flex-wrap tw-mb-3">
-						<kv-loading-placeholder class="tw-mb-1" style="height: .5rem;" />
+						<kv-loading-placeholder class="tw-mb-1" style="height: 0.5rem;" />
 						<kv-loading-placeholder style="height: 2.8rem; width: 30%;" />
 						<kv-loading-placeholder style="height: 2.8rem; width: 30%; margin-left: auto;" />
 					</div>
