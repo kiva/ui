@@ -1,3 +1,10 @@
+## [2.414.0](https://github.com/kiva/ui/compare/v2.413.0...v2.414.0) (2022-12-07)
+
+
+### Features
+
+* ui added when having zero loans result in quick filters ([6a5c42b](https://github.com/kiva/ui/commit/6a5c42be1dc816c39eaaa3596fba02542001f8ec))
+
 ## [2.413.0](https://github.com/kiva/ui/compare/v2.412.0...v2.413.0) (2022-12-06)
 
 
