@@ -104,11 +104,11 @@
 			class="tw-mb-2.5 tw-flex-grow"
 			:loan-use-max-length="52"
 			:loan-id="`${allSharesReserved ? '' : loanId}`"
-			:use="loan.use"
+			:use="loanUse"
 			:name="borrowerName"
-			:status="loan.status"
-			:loan-amount="loan.loanAmount"
-			:borrower-count="loan.borrowerCount"
+			:status="loanStatus"
+			:loan-amount="loanAmount"
+			:borrower-count="loanBorrowerCount"
 			:custom-loan-details="customLoanDetails"
 			@show-loan-details="showLoanDetails"
 		/>
@@ -120,14 +120,14 @@
 		/>
 
 		<loan-matching-text
-			v-if="!isLoading && loan.matchingText !== '' && !isMatchAtRisk"
+			v-if="!isLoading && loanMatchingText !== '' && !isMatchAtRisk"
 			class="tw-mb-1.5"
-			:matcher-name="loan.matchingText"
-			:match-ratio="loan.matchRatio"
-			:status="loan.status"
-			:funded-amount="loan.loanFundraisingInfo.fundedAmount"
-			:reserved-amount="loan.loanFundraisingInfo.reservedAmount"
-			:loan-amount="loan.loanAmount"
+			:matcher-name="loanMatchingText"
+			:match-ratio="loanMatchRatio"
+			:status="loanStatus"
+			:funded-amount="loanFundedAmount"
+			:reserved-amount="loanReservedAmount"
+			:loan-amount="loanAmount"
 		/>
 
 		<!-- CTA Button -->
@@ -341,8 +341,9 @@ export default {
 	},
 	computed: {
 		amountLeft() {
-			const { fundedAmount, reservedAmount } = this.loan.loanFundraisingInfo;
-			return numeral(this.loan.loanAmount).subtract(fundedAmount).subtract(reservedAmount).value();
+			const loanFundraisingInfo = this.loan?.loanFundraisingInfo ?? { fundedAmount: 0, reservedAmount: 0 };
+			const { fundedAmount, reservedAmount } = loanFundraisingInfo;
+			return numeral(this.loanAmount).subtract(fundedAmount).subtract(reservedAmount).value();
 		},
 		isFunded() {
 			return this.loan?.status === 'funded';
@@ -430,7 +431,31 @@ export default {
 		},
 		showLendNowButton() {
 			return this.lendNowButton;
-		}
+		},
+		loanUse() {
+			return this.loan?.use ?? '';
+		},
+		loanStatus() {
+			return this.loan?.status ?? '';
+		},
+		loanAmount() {
+			return this.loan?.loanAmount ?? '0';
+		},
+		loanBorrowerCount() {
+			return this.loan?.borrowerCount ?? 0;
+		},
+		loanMatchingText() {
+			return this.loan?.matchingText ?? '';
+		},
+		loanMatchRatio() {
+			return this.loan?.matchRatio ?? '';
+		},
+		loanFundedAmount() {
+			return this.loan?.loanFundraisingInfo?.fundedAmount ?? 0;
+		},
+		loanReservedAmount() {
+			return this.loan?.loanFundraisingInfo?.reservedAmount ?? 0;
+		},
 	},
 	methods: {
 		showLoanDetails(e) {
@@ -488,8 +513,8 @@ export default {
 				}
 			}
 
-			this.isLoading = false;
 			this.loan = result.data?.lend?.loan || null;
+			if (this.loan) this.isLoading = false;
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
 		},
 		addToBasket() {
