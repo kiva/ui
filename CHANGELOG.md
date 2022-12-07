@@ -1,3 +1,10 @@
+### [2.414.1](https://github.com/kiva/ui/compare/v2.414.0...v2.414.1) (2022-12-07)
+
+
+### Bug Fixes
+
+* loan card key fixed to use index instead of key in quick filters section ([e25e179](https://github.com/kiva/ui/commit/e25e17902b31dcd4ba8a292eb14c59ab8b7617fc))
+
 ## [2.414.0](https://github.com/kiva/ui/compare/v2.413.0...v2.414.0) (2022-12-07)
 
 
