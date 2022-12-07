@@ -1,3 +1,10 @@
+## [2.413.0](https://github.com/kiva/ui/compare/v2.412.0...v2.413.0) (2022-12-06)
+
+
+### Features
+
+* kvpagination component added to new quick filter section ([0b6b5be](https://github.com/kiva/ui/commit/0b6b5be3234cfbbbfaf00a28b6f2344fa92adb94))
+
 ## [2.412.0](https://github.com/kiva/ui/compare/v2.411.3...v2.412.0) (2022-12-06)
 
 
