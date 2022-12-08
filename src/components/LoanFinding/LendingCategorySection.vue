@@ -11,6 +11,12 @@
 
 <script>
 export default {
-	name: 'LendingCategorySection'
+	name: 'LendingCategorySection',
+	props: {
+		loans: {
+			type: Array,
+			default: () => []
+		}
+	}
 };
 </script>
