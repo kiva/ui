@@ -6,7 +6,7 @@
 
 		<div
 			v-if="showKivaCredit"
-			class="kiva-credit tw-font-medium tw-mb-2"
+			class="kiva-credit tw-font-medium tw-mb-2 tw-text-left md:tw-text-right"
 			data-testid="basket-kiva-credit"
 		>
 			<span v-if="showRemoveKivaCredit">
@@ -103,7 +103,18 @@
 			<matched-loan-kiva-credit :open-lightbox="openLightbox" />
 		</div>
 
-		<div class="order-total" data-testid="total-due">
+		<!-- variant e on donate item experiment -->
+		<donation-item
+			v-if="donateItemExperimentVersion === 'e' && Number(totals.loanReservationTotal) > 0 "
+			data-testid="basket-donation"
+			:donation="donationObject"
+			:order-total-variant="donateItemExperimentVersion === 'e'"
+			:loan-count="Number(totals.loanReservationTotal) > 0 ? 1 : 0"
+			:loan-reservation-total="Number(totals.loanReservationTotal)"
+			@refreshtotals="$emit('refreshtotals')"
+			@updating-totals="$emit('updating-totals', $event)"
+		/>
+		<div class="order-total tw-text-left md:tw-text-right" data-testid="total-due">
 			<strong>
 				<template v-if="!showPromoCreditTotal">Total: </template>
 				<template v-else>Total Due: </template>
@@ -136,6 +147,12 @@ import KvIcon from '@/components/Kv/KvIcon';
 import KvTooltip from '@/components/Kv/KvTooltip';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 import MatchedLoanKivaCredit from '@/components/Checkout/MatchedLoanKivaCredit';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
+import DonationItem from '@/components/Checkout/DonationItem';
 
 export default {
 	name: 'OrderTotals',
@@ -144,9 +161,10 @@ export default {
 		KvIcon,
 		KvTooltip,
 		VerifyRemovePromoCredit,
-		MatchedLoanKivaCredit
+		MatchedLoanKivaCredit,
+		DonationItem
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		totals: {
 			type: Object,
@@ -168,6 +186,7 @@ export default {
 	data() {
 		return {
 			promoOptOutLightboxVisible: false,
+			donateItemExperimentVersion: null
 		};
 	},
 	computed: {
@@ -287,6 +306,16 @@ export default {
 				&& parseFloat(this.availablePromoTotal.replace('$', '')) > 0;
 			}
 			return false;
+		},
+		donationObject() {
+			// used for prop in donation item
+			return {
+				__typename: 'Donation',
+				id: 0,
+				isTip: false,
+				isUserEdited: false,
+				price: numeral(this.totals.donationTotal)
+			};
 		}
 	},
 	methods: {
@@ -334,21 +363,34 @@ export default {
 			this.$emit('credit-removed');
 			this.$router.push(this.$route.path); // remove promo query param from url
 		}
-	}
+	},
+	apollo: {
+		preFetch(config, client) {
+			return client.query({
+				query: experimentQuery, variables: { id: 'basket_donate_modules' }
+			}).catch(errorResponse => {
+				logFormatter(errorResponse, 'error');
+			});
+		}
+	},
+	created() {
+		const donateModuleExpData = getExperimentSettingCached(this.apollo, 'basket_donate_modules');
+		if (donateModuleExpData?.enabled) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Basket',
+				'basket_donate_modules',
+				'EXP-ACK-440-Oct2022'
+			);
+			this.donateItemExperimentVersion = version;
+		}
+	},
 };
 </script>
 
 <style lang="scss" scoped>
 @import 'settings';
-
-.order-total,
-.kiva-credit {
-	text-align: left;
-
-	@include breakpoint(medium) {
-		text-align: right;
-	}
-}
 
 .order-totals {
 	.remove-credit {
