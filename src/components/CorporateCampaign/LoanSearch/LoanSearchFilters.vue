@@ -4,15 +4,15 @@
 			<div class="tw-mb-2 md:tw-mb-0">
 				<kv-button
 					class="loan-filters__toggle rounded smallest secondary tw-mr-2"
+					variant="secondary"
 					@click.native.prevent="showFilters()"
 				>
 					Filter loans
 
-					<kv-icon
-						class="loan-filters__toggle-icon"
-						name="small-chevron"
-						:from-sprite="true"
-						aria-hidden="true"
+					<kv-material-icon
+						class=" tw-w-3"
+						name="chevron-down"
+						:icon="mdiChevronDown"
 					/>
 				</kv-button>
 				<span class="tw-font-medium tw-whitespace-nowrap">{{ totalCount }} loans</span>
@@ -22,28 +22,39 @@
 				<div
 					class="tw-flex tw-cursor-pointer tw-items-center"
 					id="view-toggle"
-					:selected="activeLoanDisplay"
-					@click-toggle="(val) => { $emit('set-loan-display', val === 'rows') }"
 				>
-					<h4 class="tw-text-h4 tw-font-medium tw-text-action">
-						Row View
-					</h4>
-					<kv-icon
-						class="tw-h-5 tw-mr-1 tw-inline-block"
-						name="list-green"
-						src="@/assets/icons/inline/list-green.svg"
-						:icon="mdiLandRowsHorizontal"
-					/>
+					<span
+						class="tw-flex tw-items-center tw-flex-wrap"
+						:selected="activeLoanDisplay"
+						@click=" (val) => { $emit('set-loan-display', val === true) }"
+					>
+						<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-p-1">
+							Row View
+						</h4>
+						<kv-material-icon
+							class="tw-mr-1 tw-w-2 tw-text-action tw-inline-block"
+							name="list-green"
+							src="@/assets/icons/inline/list-green.svg"
+							:icon="mdiLandRowsHorizontal"
+						/>
+					</span>
+
 					<span class="divider"></span>
-					<h4 class="tw-text-h4 tw-font-medium tw-text-action">
-						Grid View
-					</h4>
-					<kv-icon
-						class="tw-h-5 tw-mr-1 tw-inline-block"
-						name="grid-green"
-						src="@/assets/icons/inline/grid-green.svg"
-						:icon="mdiGridLarge"
-					/>
+					<span
+						class="tw-flex tw-items-center tw-flex-wrap"
+						:selected="activeLoanDisplay"
+						@click=" (val) => { $emit('set-loan-display', val !== true) }"
+					>
+						<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-p-1">
+							Grid View
+						</h4>
+						<kv-material-icon
+							class="tw-mr-1 tw-w-2 tw-text-action tw-inline-block"
+							name="grid-green"
+							src="@/assets/icons/inline/grid-green.svg"
+							:icon="mdiGridLarge"
+						/>
+					</span>
 				</div>
 			</div>
 
@@ -99,41 +110,45 @@
 				@lightbox-closed="filtersVisible = false"
 			>
 				<div class="loan-filter-controls">
-					<div
-						class="loan-filters__lightbox tw-mb-0.5"
-						id="gender-filter-container"
+					<span
+						class="tw-flex tw-items-center tw-flex-wrap"
 					>
-						<h3 class="tw-py-1 tw-flex">
-							Gender
-						</h3>
+						<div
+							class="loan-filters__lightbox tw-mb-0.5"
+							id="gender-filter-container"
+						>
+							<h3 class="tw-py-1 tw-p-2 tw-inline-block">
+								Gender
+							</h3>
 
-						<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-my-2">
-							<gender-filter
-								class="loan-filter-controls__filter-type tw-flex tw-items-center"
-								:initial-gender="initialGender"
-								:selected-gender="selectedGender"
-								@updated-filters="handleUpdatedFilters"
-							/>
-						</fieldset>
-					</div>
+							<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-my-2 tw-p-1">
+								<gender-filter
+									class="loan-filter-controls__filter-type tw-flex tw-items-center"
+									:initial-gender="initialGender"
+									:selected-gender="selectedGender"
+									@updated-filters="handleUpdatedFilters"
+								/>
+							</fieldset>
+						</div>
 
-					<div
-						class="loan-filters__lightbox"
-						id="sort-filter-container"
-					>
-						<h3 class="tw-py-1 tw-flex">
-							Sort By
-						</h3>
-						<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-my-2">
-							<sort-order
-								class="loan-filter-controls__filter-type tw-items-center"
-								:initial-sort="initialSortBy"
-								:selected-sort="selectedSort"
-								@sort-order-updated="handleSortByUpdated"
-							/>
-						</fieldset>
-						<hr class="tw-border-tertiary tw-mt-1">
-					</div>
+						<div
+							class="loan-filters__lightbox"
+							id="sort-filter-container"
+						>
+							<h3 class="tw-py-1 tw-p-2 tw-inline-block">
+								Sort By
+							</h3>
+							<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-my-2 tw-p-1">
+								<sort-order
+									class="loan-filter-controls__filter-type tw-items-center"
+									:initial-sort="initialSortBy"
+									:selected-sort="selectedSort"
+									@sort-order-updated="handleSortByUpdated"
+								/>
+							</fieldset>
+							<hr class="tw-border-tertiary tw-mt-1">
+						</div>
+					</span>
 
 					<kv-accordion-item
 						class="loan-filters__lightbox-accordian"
@@ -225,18 +240,18 @@
 import _isEqual from 'lodash/isEqual';
 import _sortBy from 'lodash/sortBy';
 import { gql } from '@apollo/client';
-import { mdiGridLarge, mdiLandRowsHorizontal } from '@mdi/js';
-import KvButton from '@/components/Kv/KvButton';
-import KvChip from '@/components/Kv/KvChip';
-import KvLightbox from '@/components/Kv/KvLightbox';
+import { mdiChevronDown, mdiGridLarge, mdiLandRowsHorizontal } from '@mdi/js';
 import AttributeFilter from '@/components/CorporateCampaign/LoanSearch/AttributeFilter';
 import GenderFilter from '@/components/CorporateCampaign/LoanSearch/GenderFilter';
-import KvAccordionItem from '@/components/Kv/KvAccordionItem';
-import KvIcon from '@/components/Kv/KvIcon';
 import LocationFilter from '@/components/CorporateCampaign/LoanSearch/LocationFilter';
 import SectorFilter from '@/components/CorporateCampaign/LoanSearch/SectorFilter';
 import SortOrder from '@/components/CorporateCampaign/LoanSearch/SortOrder';
 import TagFilter from '@/components/CorporateCampaign/LoanSearch/TagFilter';
+import KvChip from '@/components/Kv/KvChip';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvAccordionItem from '~/@kiva/kv-components/vue/KvAccordionItem';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const filterOptionsQuery = gql`
 	query filterOptionsQuery {
@@ -276,7 +291,7 @@ export default {
 		AttributeFilter,
 		GenderFilter,
 		KvAccordionItem,
-		KvIcon,
+		KvMaterialIcon,
 		LocationFilter,
 		SectorFilter,
 		SortOrder,
@@ -328,6 +343,7 @@ export default {
 			selectedSort: null,
 			isChipsCollapsable: true,
 			isChipsCollapsed: true,
+			mdiChevronDown,
 			mdiGridLarge,
 			mdiLandRowsHorizontal
 		};
