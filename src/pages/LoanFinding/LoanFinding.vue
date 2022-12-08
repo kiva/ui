@@ -5,6 +5,8 @@
 				Welcome back, <span class="tw-text-action fs-mask">{{ firstName }}</span>
 			</h3>
 
+			<lending-category-section class="tw-mt-2" />
+
 			<quick-filters-section class="tw-mt-2" />
 		</div>
 	</www-page>
@@ -13,6 +15,7 @@
 <script>
 import userInfoQuery from '@/graphql/query/userInfo.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
 import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
 
 export default {
@@ -20,6 +23,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		WwwPage,
+		LendingCategorySection,
 		QuickFiltersSection,
 	},
 	data() {
