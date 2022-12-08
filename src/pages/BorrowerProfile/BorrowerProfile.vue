@@ -175,7 +175,8 @@ const shareButtonExpKey = 'share_button_bp';
 const userContextExpKey = 'new_users_context';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
-const pageQuery = gql`
+
+const preFetchQuery = gql`
 	query borrowerProfileMeta(
 		$loanId: Int!,
 		$publicId: String!,
@@ -212,7 +213,6 @@ const pageQuery = gql`
 				}
 				geocode {
 					city
-					state
 					country {
 						name
 						isoCode
@@ -232,11 +232,8 @@ const pageQuery = gql`
 				loanAmount
 				status
 				use
-				description
-				loanFundraisingInfo{
+				loanFundraisingInfo {
 					fundedAmount
-					isExpiringSoon
-					reservedAmount
 				}
 				inPfp
 				pfpMinLenders
@@ -253,13 +250,6 @@ const pageQuery = gql`
 				name
 			}
 		}
-		my {
-			userAccount {
-				id
-				inviterName
-				public
-			}
-		}
 		shop(basketId: $basketId) {
 			id
 			basket {
@@ -269,6 +259,34 @@ const pageQuery = gql`
 						id
 					}
 				}
+			}
+		}
+	}
+`;
+
+const mountedQuery = gql`
+	query borrowerProfileMeta(
+		$loanId: Int!,
+	) {
+		lend {
+			loan(id: $loanId) {
+				id
+				...on LoanPartner {
+					partnerName
+					partner {
+						id
+						countries {
+							name
+						}
+					}
+				}
+			}
+		}
+		my {
+			userAccount {
+				id
+				inviterName
+				public
 			}
 		}
 	}
@@ -393,7 +411,6 @@ export default {
 			loanAmount: '0',
 			status: '',
 			use: '',
-			description: '',
 			loanFundraisingInfo: {},
 			requireDepositsMatchedLoans: false,
 			shareCardLanguageVersion: '',
@@ -415,12 +432,12 @@ export default {
 		};
 	},
 	apollo: {
-		query: pageQuery,
+		query: preFetchQuery,
 		preFetch(config, client, { route, cookieStore }) {
 			const publicId = getPublicId(route);
 			return client
 				.query({
-					query: pageQuery,
+					query: preFetchQuery,
 					variables: {
 						loanId: Number(route.params?.id ?? 0),
 						publicId,
@@ -489,14 +506,12 @@ export default {
 			this.loanAmount = loan?.loanAmount ?? '0';
 			this.status = loan?.status ?? '';
 			this.use = loan?.use ?? '';
-			this.description = loan?.description ?? '';
 			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
 			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
 			this.itemsInBasket = result?.data?.shop?.basket?.items?.values ?? [];
 
 			this.diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;
-			this.lender = result?.data?.my?.userAccount ?? {};
 
 			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
 		},
@@ -523,28 +538,9 @@ export default {
 			}
 		}
 
-		const query = gql`query borrowerProfileMeta(
-			$loanId: Int!,
-		) {
-			lend {
-				loan(id: $loanId) {
-					id
-					...on LoanPartner {
-						partnerName
-						partner {
-							id
-							countries {
-								name
-							}
-						}
-					}
-				}
-			}
-		}`;
-
 		try {
 			const { data } = await this.apollo.query({
-				query,
+				query: mountedQuery,
 				variables: {
 					loanId: this.loanId,
 				},
@@ -552,6 +548,7 @@ export default {
 			const loan = data?.lend?.loan;
 			this.partnerName = loan?.partnerName ?? '';
 			this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
+			this.lender = data?.my?.userAccount ?? {};
 		} catch (e) {
 			logReadQueryError(e, 'BorrowerProfile userContextExperiment');
 		}
