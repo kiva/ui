@@ -1,3 +1,24 @@
+### [2.414.2](https://github.com/kiva/ui/compare/v2.414.1...v2.414.2) (2022-12-08)
+
+
+### Bug Fixes
+
+* font files updated in kv-components ([0044325](https://github.com/kiva/ui/commit/0044325a89af22def3ab95314cdb7e35ac65ca2c))
+
+### [2.414.1](https://github.com/kiva/ui/compare/v2.414.0...v2.414.1) (2022-12-07)
+
+
+### Bug Fixes
+
+* loan card key fixed to use index instead of key in quick filters section ([e25e179](https://github.com/kiva/ui/commit/e25e17902b31dcd4ba8a292eb14c59ab8b7617fc))
+
+## [2.414.0](https://github.com/kiva/ui/compare/v2.413.0...v2.414.0) (2022-12-07)
+
+
+### Features
+
+* ui added when having zero loans result in quick filters ([6a5c42b](https://github.com/kiva/ui/commit/6a5c42be1dc816c39eaaa3596fba02542001f8ec))
+
 ## [2.413.0](https://github.com/kiva/ui/compare/v2.412.0...v2.413.0) (2022-12-06)
 
 
