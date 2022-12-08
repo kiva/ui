@@ -1,3 +1,15 @@
+## [2.416.0](https://github.com/kiva/ui/compare/v2.415.0...v2.416.0) (2022-12-08)
+
+
+### Features
+
+* data fetching method added for recommeded loans in lending page ([d2d0420](https://github.com/kiva/ui/commit/d2d042092cb56fb89f5c72803d318aa65ff391c5))
+
+
+### Bug Fixes
+
+* recommended loans getter moved to mounted hook ([dbc9cbe](https://github.com/kiva/ui/commit/dbc9cbe336878e9e7e18a1452ccb0b8560088d41))
+
 ## [2.415.0](https://github.com/kiva/ui/compare/v2.414.2...v2.415.0) (2022-12-08)
 
 
