@@ -1,6 +1,10 @@
 <template>
 	<div class="order-totals" data-testid="basket-order-totals-section">
-		<div v-if="showPromoCreditTotal" class="order-total" data-testid="basket-order-total">
+		<div
+			v-if="showPromoCreditTotal"
+			class="order-total tw-text-left md:tw-text-right"
+			data-testid="basket-order-total"
+		>
 			<strong>Order Total: <span class="total-value">{{ itemTotal }}</span></strong>
 		</div>
 
@@ -45,7 +49,7 @@
 		</div>
 
 		<div v-if="showPromoCreditTotal">
-			<div class="order-total" data-testid="basket-promo-total">
+			<div class="order-total tw-text-left md:tw-text-right" data-testid="basket-promo-total">
 				<template v-if="availablePromoTotal">
 					{{ availablePromoTotal }}
 				</template>
@@ -186,7 +190,7 @@ export default {
 	data() {
 		return {
 			promoOptOutLightboxVisible: false,
-			donateItemExperimentVersion: null
+			donateItemExperimentVersion: 'a' // control version
 		};
 	},
 	computed: {
@@ -383,7 +387,9 @@ export default {
 				'basket_donate_modules',
 				'EXP-ACK-440-Oct2022'
 			);
-			this.donateItemExperimentVersion = version;
+			if (version) {
+				this.donateItemExperimentVersion = version;
+			}
 		}
 	},
 };
