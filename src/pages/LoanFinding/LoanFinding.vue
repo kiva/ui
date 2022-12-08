@@ -64,7 +64,7 @@ export default {
 			this.recommendedLoans = loans;
 		}
 	},
-	created() {
+	mounted() {
 		this.getRecommendedLoans();
 	},
 };
