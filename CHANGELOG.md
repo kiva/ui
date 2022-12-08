@@ -1,3 +1,10 @@
+## [2.417.0](https://github.com/kiva/ui/compare/v2.416.0...v2.417.0) (2022-12-08)
+
+
+### Features
+
+* add 5th donation item variant as line item in order totals ([c3975cf](https://github.com/kiva/ui/commit/c3975cf24872657080d6511edf48f500fd8e5a35))
+
 ## [2.416.0](https://github.com/kiva/ui/compare/v2.415.0...v2.416.0) (2022-12-08)
 
 
