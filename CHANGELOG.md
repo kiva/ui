@@ -1,3 +1,10 @@
+## [2.415.0](https://github.com/kiva/ui/compare/v2.414.2...v2.415.0) (2022-12-08)
+
+
+### Features
+
+* recommended loans section added to lending page ([edd90e4](https://github.com/kiva/ui/commit/edd90e40225a7ae19d8e2df858f0a63973b8862c))
+
 ### [2.414.2](https://github.com/kiva/ui/compare/v2.414.1...v2.414.2) (2022-12-08)
 
 
