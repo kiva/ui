@@ -1,3 +1,10 @@
+### [2.414.2](https://github.com/kiva/ui/compare/v2.414.1...v2.414.2) (2022-12-08)
+
+
+### Bug Fixes
+
+* font files updated in kv-components ([0044325](https://github.com/kiva/ui/commit/0044325a89af22def3ab95314cdb7e35ac65ca2c))
+
 ### [2.414.1](https://github.com/kiva/ui/compare/v2.414.0...v2.414.1) (2022-12-07)
 
 
