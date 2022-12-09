@@ -893,7 +893,9 @@ export default {
 				'basket_donate_modules',
 				'EXP-ACK-440-Oct2022'
 			);
-			this.donateItemExperimentVersion = version;
+			if (version) {
+				this.donateItemExperimentVersion = version;
+			}
 		}
 
 		this.setupContentfulContent();
