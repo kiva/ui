@@ -1,3 +1,10 @@
+## [2.419.0](https://github.com/kiva/ui/compare/v2.418.0...v2.419.0) (2022-12-09)
+
+
+### Features
+
+* carousel added to lendingcategorysection component ([6a3d33b](https://github.com/kiva/ui/commit/6a3d33bc7fe17ff229049594384b3be71a94c093))
+
 ## [2.418.0](https://github.com/kiva/ui/compare/v2.417.2...v2.418.0) (2022-12-09)
 
 
