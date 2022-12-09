@@ -34,7 +34,10 @@ export default {
 	data() {
 		return {
 			userInfo: {},
-			recommendedLoans: []
+			recommendedLoans: [
+				{ id: 0 }, { id: 0 }, { id: 0 },
+				{ id: 0 }, { id: 0 }, { id: 0 }
+			]
 		};
 	},
 	apollo: {
