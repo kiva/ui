@@ -51,7 +51,6 @@ export default {
 	},
 	methods: {
 		onBorrowerMenuShow() {
-			this.$refs.lendMenuDesktop.onOpen();
 			this.$kvTrackEvent('TopNav', 'hover-Borrower-menu', 'Find a borrower');
 		},
 		onBorrowerMenuHide() {
