@@ -4,7 +4,7 @@
 			<li v-for="sortOption in sortOptions" :key="sortOption.value" class="tw-mb-1">
 				<kv-radio
 					:id="`sort-by-${sortOption.value}`"
-					:radio-value="sortOption.value"
+					:value="sortOption.value"
 					v-model="activeSort"
 				>
 					{{ sortOption.label }}
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import KvRadio from '@/components/Kv/KvRadio';
+import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 
 export default {
 	name: 'SortOrder',
