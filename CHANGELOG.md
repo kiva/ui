@@ -1,3 +1,10 @@
+### [2.417.1](https://github.com/kiva/ui/compare/v2.417.0...v2.417.1) (2022-12-09)
+
+
+### Bug Fixes
+
+* css for order totals ([5923ea6](https://github.com/kiva/ui/commit/5923ea6e4f71052515cd44827286ab9bee461568))
+
 ## [2.417.0](https://github.com/kiva/ui/compare/v2.416.0...v2.417.0) (2022-12-08)
 
 
