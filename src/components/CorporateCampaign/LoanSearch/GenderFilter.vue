@@ -4,7 +4,7 @@
 			<li v-for="genderOption in genderOptions" :key="genderOption.value" class="tw-mb-1">
 				<kv-radio
 					:id="`gender-${genderOption.value}`"
-					:radio-value="genderOption.value"
+					:value="genderOption.value"
 					v-model="activeGender"
 				>
 					{{ genderOption.label }}
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import KvRadio from '@/components/Kv/KvRadio';
+import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 
 export default {
 	name: 'GenderFilter',
