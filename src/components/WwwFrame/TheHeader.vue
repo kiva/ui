@@ -669,6 +669,8 @@ export default {
 	},
 	methods: {
 		toggleLendMenu(immediate = false) {
+			const wasVisible = this.isLendMenuVisible;
+
 			if (immediate) {
 				// if touch, toggle immediately
 				this.isLendMenuVisible = !this.isLendMenuVisible;
@@ -685,7 +687,9 @@ export default {
 					}
 				}, 500);
 			}
-			if (this.isLendMenuVisible) {
+
+			// If the menu was previously hidden and is now visible, run onLoad
+			if (!wasVisible && this.isLendMenuVisible) {
 				this.$refs?.lendMenu?.onLoad?.();
 			}
 		},

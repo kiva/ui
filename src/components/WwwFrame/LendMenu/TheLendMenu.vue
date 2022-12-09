@@ -124,7 +124,7 @@ export default {
 			this.$refs.list.onClose();
 			this.$refs.mega.onClose();
 		},
-		onLoad() {
+		async onLoad() {
 			this.apollo.watchQuery({
 				query: gql`query countryFacets {
 					lend {
@@ -152,23 +152,22 @@ export default {
 					this.isChannelsLoading = false;
 				}
 			});
+
+			if (this.hasUserId) {
+				const { data } = await this.apollo.query({
+					query: privateLendMenuQuery,
+					variables: {
+						userId: this.userId,
+					},
+					fetchPolicy: 'network-only',
+				});
+
+				this.favoritesCount = data?.lend?.loans?.totalCount ?? 0;
+				this.savedSearches = data?.my?.savedSearches?.values ?? [];
+			}
 		},
 	},
 	mounted() {
-		if (this.hasUserId) {
-			this.apollo.watchQuery({
-				query: privateLendMenuQuery,
-				variables: {
-					userId: this.userId,
-				},
-			}).subscribe({
-				next: ({ data }) => {
-					this.favoritesCount = data?.lend?.loans?.totalCount ?? 0;
-					this.savedSearches = data?.my?.savedSearches?.values ?? [];
-				}
-			});
-		}
-
 		// CORE-641 NEW MG ENTRYPOINT
 		// this experiment is assigned in experimentPreFetch.js
 		const newMgEntrypointExperiment = this.apollo.readFragment({
