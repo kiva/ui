@@ -38,7 +38,12 @@
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<div class="upsellContainer">
+						<div
+							class="upsellContainer" v-if="!upsellCookieActive &&
+								showUpsellModule &&
+								upsellLoan.name
+							"
+						>
 							<upsell-module
 								v-if="!upsellCookieActive &&
 									showUpsellModule &&
