@@ -59,6 +59,6 @@ export async function createSavedSearch(apollo, loanQueryFilters, queryString, s
 			name: savedSearchName,
 			queryString,
 			filters: loanQueryFilters
-		},
+		}
 	});
 }
