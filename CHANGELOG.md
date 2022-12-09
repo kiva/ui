@@ -1,3 +1,13 @@
+### [2.419.1](https://github.com/kiva/ui/compare/v2.419.0...v2.419.1) (2022-12-09)
+
+
+### Bug Fixes
+
+* reverted file ([0a420fa](https://github.com/kiva/ui/commit/0a420fac56cfe923a45b645fbb4e4999f40bbcaa))
+* run private menu query when lend menu opened ([ef01d31](https://github.com/kiva/ui/commit/ef01d31178c13ef59cf6b74cd3adb0073eb69736))
+* safer solution to running private query for lend menu ([e9213c0](https://github.com/kiva/ui/commit/e9213c0dd80c4c7a539c5cd58ec628938989a539))
+* watch saved searches ([36f7f80](https://github.com/kiva/ui/commit/36f7f803ed1d3812d05a691a2321b4de537c6161))
+
 ## [2.419.0](https://github.com/kiva/ui/compare/v2.418.0...v2.419.0) (2022-12-09)
 
 
