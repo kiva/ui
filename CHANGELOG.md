@@ -1,3 +1,12 @@
+### [2.417.2](https://github.com/kiva/ui/compare/v2.417.1...v2.417.2) (2022-12-09)
+
+
+### Bug Fixes
+
+* country list navigate to new filter page ([d4da974](https://github.com/kiva/ui/commit/d4da9744bbc51748f49cc97460f4fabec84718ca))
+* in page navigation for search ([ff86cf0](https://github.com/kiva/ui/commit/ff86cf0535d5ab8a605e55102cdfbc81005aff92))
+* search box URL ([3e83ab1](https://github.com/kiva/ui/commit/3e83ab1ea9722dc0996b24f8428c7b4841b0f293))
+
 ### [2.417.1](https://github.com/kiva/ui/compare/v2.417.0...v2.417.1) (2022-12-09)
 
 
