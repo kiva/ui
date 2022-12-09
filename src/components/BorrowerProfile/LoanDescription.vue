@@ -10,15 +10,7 @@
 				{{ borrowerOrGroupName }}'s story
 			</h2>
 		</div>
-		<div v-if="chunkedStoryEnabled">
-			<p class="tw-my-4 tw-truncate">
-				{{ storyDescription.slice(0, 260) }}...
-			</p>
-			<kv-text-link @click="readMore = true">
-				Read more about {{ borrowerOrGroupName }}
-			</kv-text-link>
-		</div>
-		<div v-else class="tw-prose">
+		<div class="tw-prose" :class="{'tw-line-clamp-3': truncateBody}">
 			<section v-if="storyDescription">
 				<p
 					v-for="(paragraph, index) in storyDescriptionParagraphs"
@@ -79,6 +71,14 @@
 				</p>
 			</section>
 		</div>
+		<button
+			class="tw-text-link tw-mt-1"
+			@click="readMore = true"
+			v-show="showReadMore"
+			v-kv-track-event="['borrower-profile', 'click', 'loan-story', 'read-more']"
+		>
+			Read more about {{ borrowerOrGroupName }}
+		</button>
 		<kv-lightbox
 			data-testid="bp-lightbox-story-translate-original-language"
 			:visible="isLightboxVisible"
@@ -100,14 +100,12 @@
 import { toParagraphs } from '@/util/loanUtils';
 import previousLoanDescription from '@/components/BorrowerProfile/PreviousLoanDescription';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 export default {
 	name: 'LoanDescription',
 	components: {
 		KvLightbox,
 		previousLoanDescription,
-		KvTextLink
 	},
 	props: {
 		partnerName: { // LoanPartner.partnerName
@@ -200,9 +198,12 @@ export default {
 		showReviewersName() {
 			return this.reviewer?.showName;
 		},
-		chunkedStoryEnabled() {
+		truncateBody() {
 			return this.enabledExperimentVariant && !this.readMore;
-		}
+		},
+		showReadMore() {
+			return this.enabledExperimentVariant && !this.readMore;
+		},
 	},
 	methods: {
 		openLightbox() {
