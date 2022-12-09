@@ -35,7 +35,6 @@ import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
 import gql from 'graphql-tag';
-import logReadQueryError from '@/util/logReadQueryError';
 import { indexIn } from '@/util/comparators';
 import publicLendMenuQuery from '@/graphql/query/lendMenuData.graphql';
 import privateLendMenuQuery from '@/graphql/query/lendMenuPrivateData.graphql';
@@ -125,7 +124,7 @@ export default {
 			this.$refs.list.onClose();
 			this.$refs.mega.onClose();
 		},
-		async onLoad() {
+		onLoad() {
 			this.apollo.watchQuery({
 				query: gql`query countryFacets {
 					lend {
@@ -153,29 +152,23 @@ export default {
 					this.isChannelsLoading = false;
 				}
 			});
-
-			if (this.hasUserId) {
-				try {
-					const { data } = await this.apollo.query({
-						query: privateLendMenuQuery,
-						variables: {
-							userId: this.userId,
-						},
-						fetchPolicy: 'network-only',
-					});
-
-					this.favoritesCount = data?.lend?.loans?.totalCount;
-					this.savedSearches = data?.my?.savedSearches?.values;
-				} catch (e) {
-					this.favoritesCount = 0;
-					this.savedSearches = [];
-
-					logReadQueryError(e, 'TheLendMenu privateLendMenuQuery');
-				}
-			}
 		},
 	},
 	mounted() {
+		if (this.hasUserId) {
+			this.apollo.watchQuery({
+				query: privateLendMenuQuery,
+				variables: {
+					userId: this.userId,
+				},
+			}).subscribe({
+				next: ({ data }) => {
+					this.favoritesCount = data?.lend?.loans?.totalCount ?? 0;
+					this.savedSearches = data?.my?.savedSearches?.values ?? [];
+				}
+			});
+		}
+
 		// CORE-641 NEW MG ENTRYPOINT
 		// this experiment is assigned in experimentPreFetch.js
 		const newMgEntrypointExperiment = this.apollo.readFragment({

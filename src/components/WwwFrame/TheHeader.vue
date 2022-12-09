@@ -669,11 +669,6 @@ export default {
 	},
 	methods: {
 		toggleLendMenu(immediate = false) {
-			if (!this.isLendMenuVisible) {
-				// If menu was previously hidden, run menu onLoad
-				this.$refs?.lendMenu?.onLoad?.();
-			}
-
 			if (immediate) {
 				// if touch, toggle immediately
 				this.isLendMenuVisible = !this.isLendMenuVisible;
@@ -689,6 +684,9 @@ export default {
 						this.isLendMenuVisible = false;
 					}
 				}, 500);
+			}
+			if (this.isLendMenuVisible) {
+				this.$refs?.lendMenu?.onLoad?.();
 			}
 		},
 		onLendLinkPointerEnter(e) {

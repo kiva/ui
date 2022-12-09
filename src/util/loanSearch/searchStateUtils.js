@@ -1,5 +1,6 @@
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
 import createSavedSearchMutation from '@/graphql/mutation/createSavedSearch.graphql';
+import privateLendMenuQuery from '@/graphql/query/lendMenuPrivateData.graphql';
 import filterConfig from '@/util/loanSearch/filterConfig';
 
 /**
@@ -59,6 +60,7 @@ export async function createSavedSearch(apollo, loanQueryFilters, queryString, s
 			name: savedSearchName,
 			queryString,
 			filters: loanQueryFilters
-		}
+		},
+		refetchQueries: [{ query: privateLendMenuQuery }],
 	});
 }
