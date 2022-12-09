@@ -87,6 +87,8 @@ describe('experimentUtils.js', () => {
 			expect(matchTargets({})).toBe(false);
 		});
 
+		// Cookied/uncookied
+
 		it('Returns true when cookied users are targeted and the kvu cookie exists', () => {
 			const cookieStore = new CookieStore({ kvu: 'user id' });
 			expect(matchTargets({ users: ['cookied'] }, cookieStore)).toBe(true);
@@ -103,6 +105,66 @@ describe('experimentUtils.js', () => {
 
 		it('Returns true when uncookied users are targeted and the kvu cookie does not exist', () => {
 			expect(matchTargets({ users: ['uncookied'] }, new CookieStore())).toBe(true);
+		});
+
+		// Lender/non-lender
+
+		it('Returns false when lenders are targeted and the kvu_lb cookie does not exist', () => {
+			expect(matchTargets({ users: ['lender'] }, new CookieStore())).toBe(false);
+		});
+
+		it('Returns false when lenders are targeted and the kvu_lb cookie exists and is \'false\'', () => {
+			const cookieStore = new CookieStore({ kvu_lb: 'false' });
+			expect(matchTargets({ users: ['lender'] }, cookieStore)).toBe(false);
+		});
+
+		it('Returns true when lenders are targeted and the kvu_lb cookie exists and is \'true\'', () => {
+			const cookieStore = new CookieStore({ kvu_lb: 'true' });
+			expect(matchTargets({ users: ['lender'] }, cookieStore)).toBe(true);
+		});
+
+		it('Returns true when non-lenders are targeted and the kvu_lb cookie does not exist', () => {
+			expect(matchTargets({ users: ['non-lender'] }, new CookieStore())).toBe(true);
+		});
+
+		it('Returns true when non-lenders are targeted and the kvu_lb cookie exists and is \'false\'', () => {
+			const cookieStore = new CookieStore({ kvu_lb: 'false' });
+			expect(matchTargets({ users: ['non-lender'] }, cookieStore)).toBe(true);
+		});
+
+		it('Returns false when non-lenders are targeted and the kvu_lb cookie exists and is \'true\'', () => {
+			const cookieStore = new CookieStore({ kvu_lb: 'true' });
+			expect(matchTargets({ users: ['non-lender'] }, cookieStore)).toBe(false);
+		});
+
+		// Depositor/non-depositor
+
+		it('Returns false when depositors are targeted and the kvu_db cookie does not exist', () => {
+			expect(matchTargets({ users: ['depositor'] }, new CookieStore())).toBe(false);
+		});
+
+		it('Returns false when depositors are targeted and the kvu_db cookie exists and is \'false\'', () => {
+			const cookieStore = new CookieStore({ kvu_db: 'false' });
+			expect(matchTargets({ users: ['depositor'] }, cookieStore)).toBe(false);
+		});
+
+		it('Returns true when depositors are targeted and the kvu_db cookie exists and is \'true\'', () => {
+			const cookieStore = new CookieStore({ kvu_db: 'true' });
+			expect(matchTargets({ users: ['depositor'] }, cookieStore)).toBe(true);
+		});
+
+		it('Returns true when non-depositors are targeted and the kvu_db cookie does not exist', () => {
+			expect(matchTargets({ users: ['non-depositor'] }, new CookieStore())).toBe(true);
+		});
+
+		it('Returns true when non-depositors are targeted and the kvu_db cookie exists and is \'false\'', () => {
+			const cookieStore = new CookieStore({ kvu_db: 'false' });
+			expect(matchTargets({ users: ['non-depositor'] }, cookieStore)).toBe(true);
+		});
+
+		it('Returns false when non-depositors are targeted and the kvu_db cookie exists and is \'true\'', () => {
+			const cookieStore = new CookieStore({ kvu_db: 'true' });
+			expect(matchTargets({ users: ['non-depositor'] }, cookieStore)).toBe(false);
 		});
 	});
 

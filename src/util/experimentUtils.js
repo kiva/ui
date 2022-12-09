@@ -77,12 +77,31 @@ export function matchTargets(targets, cookieStore) {
 	// User Segment Targets
 	if (typeof targets.users !== 'undefined') {
 		const kvu = cookieStore.get('kvu');
+		const kvuLb = cookieStore.get('kvu_lb');
+		const kvuDb = cookieStore.get('kvu_db');
+
 		// target cookied users only - kvu cookie is present
 		if (kvu && targets.users.indexOf('cookied') > -1) {
 			matched = true;
 		}
 		// target new or existing users without kvu cookie
 		if (!kvu && targets.users.indexOf('uncookied') > -1) {
+			matched = true;
+		}
+		// target users who have lent
+		if (kvuLb === 'true' && targets.users.indexOf('lender') > -1) {
+			matched = true;
+		}
+		// target users who have not lent
+		if (kvuLb !== 'true' && targets.users.indexOf('non-lender') > -1) {
+			matched = true;
+		}
+		// target users who have deposited
+		if (kvuDb === 'true' && targets.users.indexOf('depositor') > -1) {
+			matched = true;
+		}
+		// target users who have not deposited
+		if (kvuDb !== 'true' && targets.users.indexOf('non-depositor') > -1) {
 			matched = true;
 		}
 	}
