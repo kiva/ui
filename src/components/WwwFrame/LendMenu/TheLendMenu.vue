@@ -35,7 +35,6 @@ import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
 import gql from 'graphql-tag';
-
 import { indexIn } from '@/util/comparators';
 import publicLendMenuQuery from '@/graphql/query/lendMenuData.graphql';
 import privateLendMenuQuery from '@/graphql/query/lendMenuPrivateData.graphql';
@@ -121,14 +120,11 @@ export default {
 		},
 	},
 	methods: {
-		onOpen() {
-			this.$refs?.mega?.onOpen?.();
-		},
 		onClose() {
 			this.$refs.list.onClose();
 			this.$refs.mega.onClose();
 		},
-		onLoad() {
+		async onLoad() {
 			this.apollo.watchQuery({
 				query: gql`query countryFacets {
 					lend {
@@ -149,35 +145,29 @@ export default {
 					this.isRegionsLoading = false;
 				}
 			});
+
 			this.apollo.watchQuery({ query: publicLendMenuQuery }).subscribe({
 				next: ({ data }) => {
 					this.categories = _get(data, 'lend.loanChannels.values');
 					this.isChannelsLoading = false;
 				}
 			});
+
+			if (this.hasUserId) {
+				const { data } = await this.apollo.query({
+					query: privateLendMenuQuery,
+					variables: {
+						userId: this.userId,
+					},
+					fetchPolicy: 'network-only',
+				});
+
+				this.favoritesCount = data?.lend?.loans?.totalCount ?? 0;
+				this.savedSearches = data?.my?.savedSearches?.values ?? [];
+			}
 		},
 	},
 	mounted() {
-		if (this.hasUserId) {
-			this.apollo.query({
-				query: privateLendMenuQuery,
-				variables: {
-					userId: this.userId,
-				}
-			}).then(({ data, errors }) => {
-				if (!errors) {
-					this.favoritesCount = _get(data, 'lend.loans.totalCount');
-					this.savedSearches = _get(data, 'my.savedSearches.values');
-				} else {
-					this.favoritesCount = 0;
-					this.savedSearches = [];
-				}
-			}).finally(() => {
-				// data might have changed since the initial render, so trigger any needed updates
-				this.onOpen();
-			});
-		}
-
 		// CORE-641 NEW MG ENTRYPOINT
 		// this experiment is assigned in experimentPreFetch.js
 		const newMgEntrypointExperiment = this.apollo.readFragment({
