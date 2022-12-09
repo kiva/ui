@@ -5,6 +5,11 @@
 				Welcome back, <span class="tw-text-action fs-mask">{{ firstName }}</span>
 			</h3>
 
+			<lending-category-section
+				:loans="recommendedLoans"
+				class="tw-mt-2"
+			/>
+
 			<quick-filters-section class="tw-mt-2" />
 		</div>
 	</www-page>
@@ -13,18 +18,23 @@
 <script>
 import userInfoQuery from '@/graphql/query/userInfo.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
 import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
+import { runLoansQuery } from '@/util/loanSearch/dataUtils';
+import { FLSS_ORIGIN_NOT_SPECIFIED } from '@/util/flssUtils';
 
 export default {
 	name: 'LoanFinding',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		WwwPage,
+		LendingCategorySection,
 		QuickFiltersSection,
 	},
 	data() {
 		return {
 			userInfo: {},
+			recommendedLoans: []
 		};
 	},
 	apollo: {
@@ -43,6 +53,19 @@ export default {
 		firstName() {
 			return this.userInfo?.firstName ?? '';
 		}
+	},
+	methods: {
+		async getRecommendedLoans() {
+			const { loans } = await runLoansQuery(
+				this.apollo,
+				{ sortBy: 'personalized', pageLimit: 6 },
+				FLSS_ORIGIN_NOT_SPECIFIED
+			);
+			this.recommendedLoans = loans;
+		}
+	},
+	mounted() {
+		this.getRecommendedLoans();
 	},
 };
 </script>
