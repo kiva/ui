@@ -1,3 +1,33 @@
+## [2.418.0](https://github.com/kiva/ui/compare/v2.417.2...v2.418.0) (2022-12-09)
+
+
+### Features
+
+* match experiment targets for lenders and depositors ([3d33f58](https://github.com/kiva/ui/commit/3d33f5818802038f55ebde3af925cd1316be3b27))
+
+
+### Bug Fixes
+
+* change partner description for experiment MARS-317 ([7c6a562](https://github.com/kiva/ui/commit/7c6a5620a1d5dd97caed2264289e6d9479cb5617))
+* repayment date copy and stat cycling updates MARS-317 ([b0e6f2f](https://github.com/kiva/ui/commit/b0e6f2ffcf0352cda922968fa074f11f859d7767))
+* use line clamp for truncating and track clicks MARS-317 ([ef35c5e](https://github.com/kiva/ui/commit/ef35c5edc52aed5ea6fc8044fa141e06229104b4))
+
+### [2.417.2](https://github.com/kiva/ui/compare/v2.417.1...v2.417.2) (2022-12-09)
+
+
+### Bug Fixes
+
+* country list navigate to new filter page ([d4da974](https://github.com/kiva/ui/commit/d4da9744bbc51748f49cc97460f4fabec84718ca))
+* in page navigation for search ([ff86cf0](https://github.com/kiva/ui/commit/ff86cf0535d5ab8a605e55102cdfbc81005aff92))
+* search box URL ([3e83ab1](https://github.com/kiva/ui/commit/3e83ab1ea9722dc0996b24f8428c7b4841b0f293))
+
+### [2.417.1](https://github.com/kiva/ui/compare/v2.417.0...v2.417.1) (2022-12-09)
+
+
+### Bug Fixes
+
+* css for order totals ([5923ea6](https://github.com/kiva/ui/commit/5923ea6e4f71052515cd44827286ab9bee461568))
+
 ## [2.417.0](https://github.com/kiva/ui/compare/v2.416.0...v2.417.0) (2022-12-08)
 
 
