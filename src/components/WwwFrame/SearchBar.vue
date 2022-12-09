@@ -239,7 +239,14 @@ export default {
 					filterUrl = '/lend';
 				}
 
-				window.location.href = `${filterUrl}?${new URLSearchParams(query).toString()}`;
+				// When already on the filter page, prevent identical paths from being pushed
+				if (this.$router.currentRoute.fullPath !== `${filterUrl}?${new URLSearchParams(query).toString()}`) {
+					this.$router.push({ path: filterUrl, query });
+				}
+
+				// Exit searching state, in case user is already on filter page
+				this.searching = false;
+				this.$refs.input.blur();
 			}
 		},
 		formatResult({ label, matches }) {
