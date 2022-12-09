@@ -1,7 +1,10 @@
 <template>
 	<!-- DO NOT REMOVE basket-donation-item class -->
 	<div class="basket-donation-item">
-		<template v-if="donateItemExperimentVersion === 'a'">
+		<template
+			v-if="donateItemExperimentVersion === 'a' ||
+				(donateItemExperimentVersion === 'e' && !hasLoans)"
+		>
 			<div class="tw-flex tw-flex-col md:tw-flex-row tw-pb-5">
 				<!-- donation image -->
 				<div class="tw-hidden md:tw-block tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
@@ -663,6 +666,93 @@
 				</div>
 			</div>
 		</template>
+		<template v-if="donateItemExperimentVersion === 'e' && orderTotalVariant && hasLoans">
+			<div class="tw-flex tw-flex-col tw-w-full tw-pb-4">
+				<div class="tw-flex tw-flex-row tw-w-full">
+					<!-- donation text -->
+					<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
+						<h2
+							class="tw-text-h3"
+							data-testid="basket-donation-title"
+						>
+							Donate to Kiva:
+						</h2>
+					</div>
+
+					<!-- donation total -->
+					<div
+						class="tw-flex-none tw-w-auto"
+					>
+						<div
+							v-show="!editDonation"
+							class="tw-block tw-text-right tw-ml-1"
+						>
+							<button
+								class="donation-amount tw-text-h3"
+								data-testid="basket-donation-edit-button-combined"
+								v-kv-track-event="['basket', 'Edit Donation']"
+								@click="enterEditDonation"
+								title="Edit Donation"
+							>
+								{{ formattedAmount }}
+								<kv-material-icon
+									role="img"
+									aria-label="Edit Donation"
+									title="Edit Donation"
+									class="edit-donation
+											tw-text-action
+											tw-w-2.5
+											tw-ml-2
+											tw-h-3.5
+											tw-py-0.5
+											tw-align-bottom
+									"
+									name="pencil"
+									:icon="mdiPencil"
+								/>
+							</button>
+						</div>
+						<div v-show="editDonation" class="small-12 columns donation-amount-input-wrapper">
+							<kv-text-input
+								class="donation-amount-input"
+								data-testid="basket-donation-edit-input"
+								name="donation"
+								id="donation"
+								v-model="amount"
+								@blur="validateInput"
+								@keyup.enter.prevent="updateDonation()"
+							/>
+							<kv-button
+								variant="secondary"
+								class="update-donation-inline-button"
+								data-testid="basket-donation-edit-submit"
+								@click="updateDonation()"
+							>
+								Update
+							</kv-button>
+							<button
+								class="show-for-medium remove-wrapper"
+								@click="updateLoanAmount('remove')"
+								data-testid="basket-donation-remove"
+							>
+								<kv-material-icon
+									class="remove-x tw-text-tertiary"
+									name="small-x"
+									:from-sprite="true"
+									title="Remove donation"
+								/>
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<donate-repayments
+					v-if="hasLoans"
+					@updating-totals="$emit('updating-totals', $event)"
+					@refreshtotals="$emit('refreshtotals')"
+				/>
+			</div>
+		</template>
 		<!-- Donation nudge lightbox -->
 		<donation-nudge-lightbox
 			ref="nudgeLightbox"
@@ -760,6 +850,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		orderTotalVariant: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -790,8 +884,8 @@ export default {
 		}
 	},
 	created() {
-		const ecoChallengeExpData = getExperimentSettingCached(this.apollo, 'basket_donate_modules');
-		if (ecoChallengeExpData?.enabled) {
+		const donateModuleExpData = getExperimentSettingCached(this.apollo, 'basket_donate_modules');
+		if (donateModuleExpData?.enabled) {
 			const { version } = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
@@ -799,7 +893,9 @@ export default {
 				'basket_donate_modules',
 				'EXP-ACK-440-Oct2022'
 			);
-			this.donateItemExperimentVersion = version;
+			if (version) {
+				this.donateItemExperimentVersion = version;
+			}
 		}
 
 		this.setupContentfulContent();

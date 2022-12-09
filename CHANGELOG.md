@@ -1,3 +1,26 @@
+### [2.417.2](https://github.com/kiva/ui/compare/v2.417.1...v2.417.2) (2022-12-09)
+
+
+### Bug Fixes
+
+* country list navigate to new filter page ([d4da974](https://github.com/kiva/ui/commit/d4da9744bbc51748f49cc97460f4fabec84718ca))
+* in page navigation for search ([ff86cf0](https://github.com/kiva/ui/commit/ff86cf0535d5ab8a605e55102cdfbc81005aff92))
+* search box URL ([3e83ab1](https://github.com/kiva/ui/commit/3e83ab1ea9722dc0996b24f8428c7b4841b0f293))
+
+### [2.417.1](https://github.com/kiva/ui/compare/v2.417.0...v2.417.1) (2022-12-09)
+
+
+### Bug Fixes
+
+* css for order totals ([5923ea6](https://github.com/kiva/ui/commit/5923ea6e4f71052515cd44827286ab9bee461568))
+
+## [2.417.0](https://github.com/kiva/ui/compare/v2.416.0...v2.417.0) (2022-12-08)
+
+
+### Features
+
+* add 5th donation item variant as line item in order totals ([c3975cf](https://github.com/kiva/ui/commit/c3975cf24872657080d6511edf48f500fd8e5a35))
+
 ## [2.416.0](https://github.com/kiva/ui/compare/v2.415.0...v2.416.0) (2022-12-08)
 
 

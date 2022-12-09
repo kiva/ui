@@ -1,8 +1,6 @@
 <template>
 	<form
 		class="search-form tw-relative"
-		action="/lend"
-		method="get"
 		autocomplete="off"
 		@submit.prevent="onSubmit"
 	>
@@ -90,6 +88,7 @@ import { indexIn } from '@/util/comparators';
 import { mdiMagnify } from '@mdi/js';
 import lockScrollUtils from '@/plugins/lock-scroll';
 import getCacheKey from '@/util/getCacheKey';
+import { hasExcludedQueryParams } from '@/util/loanSearch/queryParamUtils';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 const engine = new SearchEngine();
@@ -233,7 +232,21 @@ export default {
 				} else {
 					query = { queryString: suggestion };
 				}
-				this.$router.push({ path: '/lend', query });
+
+				// Fallback to legacy filter if there's an unsupported query param
+				let filterUrl = '/lend/filter';
+				if (hasExcludedQueryParams(query)) {
+					filterUrl = '/lend';
+				}
+
+				// When already on the filter page, prevent identical paths from being pushed
+				if (this.$router.currentRoute.fullPath !== `${filterUrl}?${new URLSearchParams(query).toString()}`) {
+					this.$router.push({ path: filterUrl, query });
+				}
+
+				// Exit searching state, in case user is already on filter page
+				this.searching = false;
+				this.$refs.input.blur();
 			}
 		},
 		formatResult({ label, matches }) {

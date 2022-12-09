@@ -62,7 +62,9 @@ export default {
 #customizedCarousel >>> .kv-carousel__controls {
 	justify-content: center;
 }
+
 #customizedCarousel >>> .kv-carousel__controls div {
 	visibility: visible;
 }
+
 </style>
