@@ -83,7 +83,7 @@
 			</div>
 			<content-container>
 				<div
-					v-if="enabledExperimentVariant"
+					v-if="enabledExperimentVariant && !partnerNameNA"
 					class="tw-rounded tw-bg-white tw-px-2 md:tw-px-4 tw-py-3 tw-mb-5 tw-flex tw-gap-2"
 				>
 					<div>
@@ -624,6 +624,11 @@ export default {
 	computed: {
 		enabledExperimentVariant() {
 			return this.userContextExpVariant === 'a';
+		},
+		partnerNameNA() {
+			return this.partnerName.indexOf('N/A') > -1
+				|| this.partnerName.indexOf('N/a') > -1
+				|| this.partnerName.indexOf('n/a') > -1;
 		},
 		vettedHeadline() {
 			if (this.isoCode === 'US') {

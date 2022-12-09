@@ -7,9 +7,14 @@
 			<div class="tw-prose tw-break-words">
 				<div v-if="partnerName && !loading">
 					<p v-if="!partnerNameNA" data-testid="bp-more_about-facilitated">
-						This loan is facilitated by our Field Partner, {{ partnerName }}.
-						Field Partners are local organizations working in communities to vet
-						borrowers, provide services, and administer loans on the ground.
+						<template v-if="enabledExperimentVariant">
+							This loan is facilitated by our Lending Partner, {{ partnerName }}.
+						</template>
+						<template v-else>
+							This loan is facilitated by our Field Partner, {{ partnerName }}.
+							Field Partners are local organizations working in communities to vet
+							borrowers, provide services, and administer loans on the ground.
+						</template>
 					</p>
 
 					<div v-html="moreInfoAboutLoan" data-testid="bp-more-about-info">
