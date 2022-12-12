@@ -34,7 +34,7 @@
 				:key="statement.id" class="tw-flex tw-justify-around tw-mb-3 tw-gap-2"
 			>
 				<img class="tw-w-10 tw-h-10" alt="High five" :src="imageRequire(`./${statement.image}.svg`)">
-				<div>
+				<div class="tw-flex-grow">
 					<p class="tw-text-h3">
 						{{ statement.headline }}
 					</p>
@@ -248,7 +248,7 @@ export default {
 			return statements.filter(x => !!x);
 		},
 		calculateStatementRank() {
-			if (this.tags.includes('#Eco-friendly') || this.tags.includes('#Sustainable Ag')) {
+			if (this.tags?.includes('#Eco-friendly') || this.tags?.includes('#Sustainable Ag')) {
 				return {
 					id: '5',
 					headline: 'Supports climate action',
@@ -283,7 +283,7 @@ export default {
 					image: 'water'
 				};
 			}
-			if (this.loan?.gender === 'female') {
+			if (this.gender === 'female') {
 				return {
 					id: '9',
 					headline: 'Promotes gender equality',

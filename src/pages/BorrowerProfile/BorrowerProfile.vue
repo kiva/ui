@@ -48,8 +48,6 @@
 						:loan-id="loanId"
 						:require-deposits-matched-loans="requireDepositsMatchedLoans"
 						:user-context-exp-variant="userContextExpVariant"
-						:has-lent-before="hasLentBefore"
-						:has-deposit-before="hasDepositBefore"
 					>
 						<template #sharebutton v-if="inPfp || shareButtonExpEnabled">
 							<!-- Share button for PFP loans -->
@@ -79,7 +77,7 @@
 			</div>
 			<content-container>
 				<div
-					v-if="enabledExperimentVariant"
+					v-if="enabledExperimentVariant && !partnerNameNA"
 					class="tw-rounded tw-bg-white tw-px-2 md:tw-px-4 tw-py-3 tw-mb-5 tw-flex tw-gap-2"
 				>
 					<div>
@@ -162,7 +160,6 @@ import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
-import logReadQueryError from '@/util/logReadQueryError';
 
 import {
 	getExperimentSettingCached,
@@ -291,9 +288,6 @@ const mountedQuery = gql`
 		}
 	}
 `;
-
-const hasLentBeforeCookie = 'kvu_lb';
-const hasDepositBeforeCookie = 'kvu_db';
 
 export default {
 	name: 'BorrowerProfile',
@@ -427,8 +421,6 @@ export default {
 			partnerName: '',
 			partnerCountry: '',
 			isoCode: '',
-			hasLentBefore: false,
-			hasDepositBefore: false
 		};
 	},
 	apollo: {
@@ -468,7 +460,8 @@ export default {
 
 					return Promise.all([
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
-						client.query({ query: experimentQuery, variables: { id: shareButtonExpKey } })
+						client.query({ query: experimentQuery, variables: { id: shareButtonExpKey } }),
+						client.query({ query: experimentQuery, variables: { id: userContextExpKey } }),
 					]);
 				});
 		},
@@ -538,25 +531,26 @@ export default {
 			}
 		}
 
-		try {
-			const { data } = await this.apollo.query({
-				query: mountedQuery,
-				variables: {
-					loanId: this.loanId,
-				},
-			});
-			const loan = data?.lend?.loan;
-			this.partnerName = loan?.partnerName ?? '';
-			this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
-			this.lender = data?.my?.userAccount ?? {};
-		} catch (e) {
-			logReadQueryError(e, 'BorrowerProfile userContextExperiment');
-		}
+		// Async data fetch for MARS-317 and share button
+		const { data } = await this.apollo.query({
+			query: mountedQuery,
+			variables: {
+				loanId: this.loanId,
+			},
+		});
+		const loan = data?.lend?.loan;
+		this.partnerName = loan?.partnerName ?? '';
+		this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
+		this.lender = data?.my?.userAccount ?? {};
 	},
 	computed: {
 		enabledExperimentVariant() {
-			return this.userContextExpVariant === 'a'
-				&& (!this.hasLentBefore || !this.hasDepositBefore);
+			return this.userContextExpVariant === 'a';
+		},
+		partnerNameNA() {
+			return this.partnerName.indexOf('N/A') > -1
+				|| this.partnerName.indexOf('N/a') > -1
+				|| this.partnerName.indexOf('n/a') > -1;
 		},
 		vettedHeadline() {
 			if (this.isoCode === 'US') {
@@ -567,7 +561,7 @@ export default {
 		vettedBody() {
 			if (this.isoCode === 'US') {
 			// eslint-disable-next-line max-len
-				return 'Body text: Kiva reviews all US-based borrowers to ensure they meet the proper eligibility criteria';
+				return 'Kiva reviews all US-based borrowers to ensure they meet the proper eligibility criteria';
 			}
 			// eslint-disable-next-line max-len
 			return 'Lending partners are local organizations that vet borrowers and provide services like financial education training and business development skills';
@@ -672,23 +666,15 @@ export default {
 		const publicId = getPublicId(this.$route);
 		this.inviterIsGuestOrAnonymous = publicId === 'anonymous' || publicId === 'guest';
 
-		const contextExpEnabled = getExperimentSettingCached(this.apollo, userContextExpKey)?.enabled;
-		const userContextExpData = this.apollo.readFragment({
-			id: `Experiment:${userContextExpKey}`,
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		this.hasLentBefore = this.cookieStore.get(hasLentBeforeCookie) === 'true';
-		this.hasDepositBefore = this.cookieStore.get(hasDepositBeforeCookie) === 'true';
-
-		this.userContextExpVariant = userContextExpData?.version;
-		if (contextExpEnabled && !this.hasLentBefore && !this.hasDepositBefore && userContextExpData?.version) {
-			this.$kvTrackEvent(
-				'Borrower Profile',
-				'EXP-MARS-317-Nov2022',
-				this.userContextExpVariant,
-			);
-		}
+		// New user context experiment setup & tracking EXP-MARS-317-Nov2022
+		const userContextExp = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Borrower Profile',
+			userContextExpKey,
+			'EXP-MARS-317-Nov2022'
+		);
+		this.userContextExpVariant = userContextExp?.version;
 	},
 };
 </script>
