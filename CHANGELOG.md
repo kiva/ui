@@ -1,3 +1,10 @@
+## [2.420.0](https://github.com/kiva/ui/compare/v2.419.1...v2.420.0) (2022-12-12)
+
+
+### Features
+
+* tracking event added when adding to basket in recommended loans section ([88edd41](https://github.com/kiva/ui/commit/88edd41f3c792ab176b37fcede936156587fff30))
+
 ### [2.419.1](https://github.com/kiva/ui/compare/v2.419.0...v2.419.1) (2022-12-09)
 
 
