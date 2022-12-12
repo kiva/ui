@@ -187,7 +187,22 @@ export default {
 		loanChannelQueryMapMixin
 	],
 	watch: {
-		selectedCategory() {
+		selectedCategory(categoryId) {
+			const catId = Number(categoryId);
+			const queryMap = loanChannelQueryMapMixin.data().loanChannelQueryMap;
+			const categoryFilter = catId === 0 ? {} : queryMap
+				.find(channel => channel.id === catId)?.flssLoanSearch;
+			// These categories use location/gender/sort by for FLSS and need
+			// to have dropdowns preset
+			if (catId === 5) { // women
+				this.selectedGender = 'female';
+			} else if (catId === 28) { // kiva-u-s
+				this.setCountry('US');
+			} else if (catId === 3) { // ending-soon
+				this.sortBy = 'expiringSoon';
+			} else {
+				this.$emit('update-filters', categoryFilter);
+			}
 		},
 		selectedGender(gender) {
 			this.$emit('update-filters', { gender });
@@ -209,6 +224,9 @@ export default {
 		}
 	},
 	methods: {
+		setCountry(country) {
+			this.$refs.locationSelector.setCountry(country);
+		},
 		updateLocation(location) {
 			this.$emit('update-filters', { country: location });
 			this.$kvTrackEvent(
