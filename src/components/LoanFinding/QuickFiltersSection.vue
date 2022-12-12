@@ -51,7 +51,8 @@ export default {
 			flssLoanSearch: {},
 			loanSearchState: {
 				pageOffset: 0,
-				pageLimit: 3
+				pageLimit: 3,
+				sortBy: 'amountLeft'
 			},
 			loans: [],
 			quickFiltersOptions: {
@@ -64,8 +65,8 @@ export default {
 					title: 'All genders'
 				}],
 				sorting: [{
-					title: 'Recommended',
-					key: 'personalized',
+					title: 'Almost funded',
+					key: 'amountLeft',
 				}],
 			},
 			allFacets: []
@@ -88,6 +89,7 @@ export default {
 				this.flssLoanSearch.gender = filter.gender;
 			} else if (filter.sortBy) {
 				this.flssLoanSearch.sortBy = filter.sortBy;
+				this.loanSearchState.sortBy = filter.sortBy;
 			} else if (filter.country) {
 				this.flssLoanSearch.countryIsoCode = filter.country;
 			} else {
@@ -142,12 +144,12 @@ export default {
 			// TODO: Pull sort by and gender filters from API
 			this.quickFiltersOptions.sorting = [
 				{
-					title: 'Recommended',
-					key: 'personalized',
-				},
-				{
 					title: 'Almost funded',
 					key: 'amountLeft',
+				},
+				{
+					title: 'Recommended',
+					key: 'personalized',
 				},
 				{
 					title: 'Amount high to low',
