@@ -117,7 +117,6 @@
 <script>
 import gql from 'graphql-tag';
 import { mdiMapMarker } from '@mdi/js';
-import logReadQueryError from '@/util/logReadQueryError';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
@@ -259,29 +258,25 @@ export default {
 			this.status
 		);
 
-		try {
-			const { data } = await this.apollo.query({ query: mountQuery, variables: { loanId: this.loanId } });
-			const loan = data?.lend?.loan;
-			this.inPfp = loan?.inPfp ?? false;
-			this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
-			this.numLenders = loan?.lenders?.totalCount ?? 0;
-			this.activityName = loan?.activity?.name ?? '';
-			this.countryName = loan?.geocode?.country?.name ?? '';
-			this.fundraisingPercent = loan?.fundraisingPercent ?? 0;
-			this.timeLeft = loan?.fundraisingTimeLeft ?? '';
-			this.unreservedAmount = loan?.unreservedAmount ?? '0';
-			this.distributionModel = loan?.distributionModel ?? '';
-			this.city = loan?.geocode?.city ?? '';
-			this.state = loan?.geocode?.state ?? '';
-			this.timeLeftMs = loan?.fundraisingTimeLeftMilliseconds > 0 ? loan?.fundraisingTimeLeftMilliseconds : 0;
-			// If all shares are reserved in baskets, set the fundraising meter to 100%
-			if (this.unreservedAmount === '0') {
-				this.fundraisingPercent = 1;
-			}
-			this.isLoading = false;
-		} catch (e) {
-			logReadQueryError(e, 'SummaryCard mountQuery');
+		const { data } = await this.apollo.query({ query: mountQuery, variables: { loanId: this.loanId } });
+		const loan = data?.lend?.loan;
+		this.inPfp = loan?.inPfp ?? false;
+		this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
+		this.numLenders = loan?.lenders?.totalCount ?? 0;
+		this.activityName = loan?.activity?.name ?? '';
+		this.countryName = loan?.geocode?.country?.name ?? '';
+		this.fundraisingPercent = loan?.fundraisingPercent ?? 0;
+		this.timeLeft = loan?.fundraisingTimeLeft ?? '';
+		this.unreservedAmount = loan?.unreservedAmount ?? '0';
+		this.distributionModel = loan?.distributionModel ?? '';
+		this.city = loan?.geocode?.city ?? '';
+		this.state = loan?.geocode?.state ?? '';
+		this.timeLeftMs = loan?.fundraisingTimeLeftMilliseconds > 0 ? loan?.fundraisingTimeLeftMilliseconds : 0;
+		// If all shares are reserved in baskets, set the fundraising meter to 100%
+		if (this.unreservedAmount === '0') {
+			this.fundraisingPercent = 1;
 		}
+		this.isLoading = false;
 	},
 	apollo: {
 		query: preFetchQuery,
