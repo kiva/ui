@@ -20,6 +20,7 @@
 					:loan-id="loan.id"
 					:show-action-button="true"
 					style="max-width: 100%;"
+					@add-to-basket="addToBasket"
 				/>
 			</template>
 		</kv-carousel>
@@ -54,6 +55,11 @@ export default {
 			if (viewportWidth >= 1024) return '480px';
 			return '336px';
 		},
+	},
+	methods: {
+		addToBasket(payload) {
+			this.$emit('add-to-basket', payload);
+		}
 	},
 };
 </script>
