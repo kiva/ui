@@ -14,16 +14,32 @@
 			@reset-filters="resetFilters"
 			@handle-overlay="handleQuickFiltersOverlay"
 		/>
+		<!-- eslint-disable max-len -->
 		<div
-			class="tw-flex tw-flex-wrap"
+			v-show="emptyState"
+			class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 tw-bg-white tw-px-2 tw-pb-2 lg:tw-py-4 lg:tw-px-8 tw-items-center"
 		>
+			<img class="tw-w-8 lg:tw-w-16" src="~@/assets/images/sad_cloud.svg">
+			<h2 class="tw-text-h2">
+				We couldn’t find any loans that match your current filters but here are other recommended loans for you.
+			</h2>
+		</div>
+		<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-mt-2">
 			<kiva-classic-basic-loan-card
 				v-for="(loan, index) in loans"
-				:key="`loan-${loan.id}`"
+				:key="index"
 				:item-index="index"
 				:loan-id="loan.id"
 				:show-action-button="true"
-				style="margin-right: 16px; max-width: 300px;"
+			/>
+		</div>
+		<div class="tw-w-full tw-my-4">
+			<kv-pagination
+				v-show="!emptyState"
+				:total="totalCount"
+				:limit="loanSearchState.pageLimit"
+				:offset="loanSearchState.pageOffset"
+				@page-changed="pageChange"
 			/>
 		</div>
 	</div>
@@ -35,12 +51,14 @@ import { runFacetsQueries, fetchLoanFacets, runLoansQuery } from '@/util/loanSea
 import { fetchCategories, FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
+import KvPagination from '@/components/Kv/KvPagination';
 
 export default {
 	name: 'QuickFiltersSection',
 	components: {
 		QuickFilters,
-		KivaClassicBasicLoanCard
+		KivaClassicBasicLoanCard,
+		KvPagination
 	},
 	inject: ['apollo'],
 	data() {
@@ -51,10 +69,15 @@ export default {
 			flssLoanSearch: {},
 			loanSearchState: {
 				pageOffset: 0,
-				pageLimit: 3,
+				pageLimit: 6,
 				sortBy: 'amountLeft'
 			},
-			loans: [],
+			// Default loans for loading animations
+			loans: [
+				{ id: 0 }, { id: 0 }, { id: 0 },
+				{ id: 0 }, { id: 0 }, { id: 0 }
+			],
+			backupLoans: [],
 			quickFiltersOptions: {
 				categories: [{
 					title: 'All categories',
@@ -69,7 +92,8 @@ export default {
 					key: 'amountLeft',
 				}],
 			},
-			allFacets: []
+			allFacets: [],
+			emptyState: false
 		};
 	},
 	async mounted() {
@@ -82,6 +106,7 @@ export default {
 		);
 		this.loans = loans;
 		this.totalCount = totalCount;
+		this.backupLoans = this.loans.slice(3);
 	},
 	methods: {
 		async updateQuickFilters(filter) {
@@ -108,8 +133,14 @@ export default {
 				{ ...this.flssLoanSearch, ...this.loanSearchState },
 				FLSS_ORIGIN_CATEGORY
 			);
-			this.loans = loans;
 			this.totalCount = totalCount;
+			if (loans.length > 0) {
+				this.emptyState = false;
+				this.loans = loans;
+			} else {
+				this.emptyState = true;
+				this.loans = this.backupLoans;
+			}
 		},
 		resetFilters() {
 		},
@@ -184,6 +215,9 @@ export default {
 			];
 
 			this.filtersLoaded = true;
+		},
+		pageChange({ pageOffset }) {
+			this.loanSearchState.pageOffset = pageOffset;
 		},
 	},
 };

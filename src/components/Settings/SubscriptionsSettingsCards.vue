@@ -10,7 +10,7 @@
 
 		<!-- Monthly Good Settings -->
 		<subscriptions-monthly-good
-			v-if="!isOnetime && !hasModernSub"
+			v-if="!isOnetime"
 			@cancel-subscription="cancelSubscription"
 			@unsaved-changes="setUnsavedChanges"
 			ref="subscriptionsMonthlyGoodComponent"

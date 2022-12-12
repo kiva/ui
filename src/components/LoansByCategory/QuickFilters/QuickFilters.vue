@@ -107,11 +107,11 @@
 				</kv-select>
 			</div>
 		</div>
-		<div class="tw-flex tw-justify-between tw-items-center tw-mt-2" v-if="withCategories">
-			<div class="tw-flex tw-flex-col lg:tw-flex-row tw-items-start">
+		<div class="tw-flex tw-justify-between tw-items-start tw-mt-2" v-if="withCategories">
+			<div class="tw-flex tw-flex-col md:tw-flex-row tw-items-start">
 				<span v-show="filtersLoaded" class="tw-text-small">Showing {{ totalLoans }} loans</span>
 				<!-- eslint-disable-next-line max-len -->
-				<button v-show="filtersLoaded" class="lg:tw-ml-2 tw-mt-1 lg:tw-mt-0 tw-text-small tw-text-action" @click="resetFilters">
+				<button v-show="filtersLoaded" class="md:tw-ml-2 tw-mt-1 md:tw-mt-0 tw-text-small tw-text-action" @click="resetFilters">
 					Reset filters
 				</button>
 			</div>
