@@ -6,7 +6,7 @@
 				id="team_select"
 				data-testid="basket-loan-team-selector"
 				v-model="selectedId"
-				class="team-select-dd fs-mask tw-float-left"
+				class="team-select-dd data-hj-suppress tw-float-left"
 				style="max-width: rem-calc(250);"
 				@update:modelValue="updateLoanReservation()"
 			>

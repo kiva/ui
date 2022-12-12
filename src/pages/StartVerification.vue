@@ -19,7 +19,7 @@
 						<h1>Email verification pending</h1>
 						<p>
 							We sent a validation link
-							<span v-if="email" class="email fs-exclude">to {{ email }}</span>.
+							<span v-if="email" class="email data-hj-suppress">to {{ email }}</span>.
 						</p>
 						<p>After receiving the email, follow the link provided to continue {{ process }}.</p>
 						<kv-button

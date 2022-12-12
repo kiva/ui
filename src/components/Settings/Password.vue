@@ -15,7 +15,7 @@
 			>
 				<b>
 					Email has been sent to
-					<span class="fs-exclude">{{ userEmail ? userEmail : 'the address on file' }}</span>
+					<span class="data-hj-suppress">{{ userEmail ? userEmail : 'the address on file' }}</span>
 				</b>
 			</kv-alert>
 			<kv-alert

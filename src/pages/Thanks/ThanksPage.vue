@@ -26,11 +26,11 @@
 								'tw-text-subhead tw-mb-2': !showAutoDepositUpsell
 							}"
 						>
-							Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
+							Thanks for supporting <span class="data-hj-suppress">{{ borrowerSupport }}</span>.<br>
 						</p>
 						<p v-if="lender.email" class="hide-for-print">
 							We've emailed your order confirmation to
-							<strong class="fs-exclude">{{ lender.email }}</strong>
+							<strong class="data-hj-suppress">{{ lender.email }}</strong>
 						</p>
 						<p v-else class="hide-for-print">
 							We've emailed your order confirmation to you.

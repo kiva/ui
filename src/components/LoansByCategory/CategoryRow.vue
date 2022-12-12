@@ -4,7 +4,7 @@
 			<div class="column small-12">
 				<h2
 					class="category-name"
-					:class="{'fs-mask': loanChannel.id === 95}"
+					:class="{'data-hj-suppress': loanChannel.id === 95}"
 				>
 					<router-link
 						v-if="showViewAllLink"

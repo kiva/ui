@@ -79,7 +79,7 @@
 							<!-- eslint-disable-next-line max-len -->
 							<template v-if="categoryShareVersion === 'a' && categoryName">
 								<!-- eslint-disable-next-line max-len -->
-								<span class="fs-mask">{{ this.lender.firstName }}</span>, share now to find allies in the fight against economic inequity for {{ this.categoryName }}.
+								<span class="data-hj-suppress">{{ this.lender.firstName }}</span>, share now to find allies in the fight against economic inequity for {{ this.categoryName }}.
 							</template>
 							<template v-else-if="categoryShareVersion === 'b' && categoryName">
 								More loans like yours mean more opportunities for {{ this.categoryName }}.

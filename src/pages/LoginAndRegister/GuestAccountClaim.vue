@@ -10,7 +10,7 @@
 			<form id="guestAccountClaimForm" action="." @submit.prevent.stop="claimGuestAccount" class="tw-text-left">
 				<kv-base-input
 					name="firstName"
-					class="fs-exclude tw-w-full tw-mb-4"
+					class="data-hj-suppress tw-w-full tw-mb-4"
 					type="text"
 					v-model.trim="firstName"
 					:validation="$v.firstName"
@@ -22,7 +22,7 @@
 				</kv-base-input>
 				<kv-base-input
 					name="lastName"
-					class="fs-exclude tw-w-full tw-mb-4"
+					class="data-hj-suppress tw-w-full tw-mb-4"
 					type="text"
 					v-model.trim="lastName"
 					:validation="$v.lastName"
