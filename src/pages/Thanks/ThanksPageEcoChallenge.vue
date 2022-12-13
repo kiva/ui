@@ -13,6 +13,7 @@
 				/>
 				<div v-if="receipt">
 					<p>
+						<!-- eslint-disable-next-line max-len -->
 						Success, your receipt has been sent to <strong class="data-hj-suppress">{{ lender.email }}</strong>
 					</p>
 				</div>
