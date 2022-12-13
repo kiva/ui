@@ -1,3 +1,10 @@
+## [2.422.0](https://github.com/kiva/ui/compare/v2.421.0...v2.422.0) (2022-12-13)
+
+
+### Features
+
+* update copy and images ([9323470](https://github.com/kiva/ui/commit/9323470571165a6a95330ab2dfe7f3048ab8db53))
+
 ## [2.421.0](https://github.com/kiva/ui/compare/v2.420.0...v2.421.0) (2022-12-13)
 
 
