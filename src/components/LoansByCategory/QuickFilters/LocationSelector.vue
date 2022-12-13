@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-relative tw-flex tw-flex-col tw-w-full">
+	<div class="tw-relative tw-flex tw-flex-col tw-w-full" v-click-outside="toggleRegions">
 		<label
 			class="tw-text-h4"
 			for="location"
@@ -148,6 +148,7 @@
 
 <script>
 import { mdiMagnify, mdiChevronDown, mdiClose } from '@mdi/js';
+import clickOutside from '@/plugins/click-outside';
 import { getCheckboxLabel } from '@/util/loanSearch/filterUtils';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -164,6 +165,9 @@ export default {
 		KvExpandable,
 		KvMaterialIcon
 	},
+	mixins: [
+		clickOutside,
+	],
 	props: {
 		regions: {
 			type: Array,

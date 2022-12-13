@@ -1,5 +1,5 @@
 <template>
-	<www-page>
+	<www-page class="tw-bg-secondary" style="height: auto;">
 		<div class="tw-max-w-5xl tw-mx-auto tw-p-2 lg:tw-pt-4">
 			<h3 class="tw-text-h3 tw-text-primary">
 				Welcome back, <span class="tw-text-action fs-mask">{{ firstName }}</span>
@@ -11,7 +11,7 @@
 				@add-to-basket="trackRecommended"
 			/>
 
-			<quick-filters-section class="tw-mt-2" />
+			<quick-filters-section class="tw-mt-6" />
 		</div>
 	</www-page>
 </template>
