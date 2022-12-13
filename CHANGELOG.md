@@ -1,3 +1,28 @@
+## [2.423.0](https://github.com/kiva/ui/compare/v2.422.0...v2.423.0) (2022-12-13)
+
+
+### Features
+
+* add impact statement icons ([6dde732](https://github.com/kiva/ui/commit/6dde7323269d61f6120d0b2999a8afbf4d961234))
+* clientside load the loan bookmark ([dcadd62](https://github.com/kiva/ui/commit/dcadd626fc83e6d336b84883597217d578e4c561))
+* first variation ([054ca30](https://github.com/kiva/ui/commit/054ca305358620e64fd1715b2d1c1bc546ff5dd8))
+* lazy load summary card ([1b073db](https://github.com/kiva/ui/commit/1b073dbbbc5b282042b916775f4acd6006c70a60))
+* remove some prefetched borrower profile data ([911a836](https://github.com/kiva/ui/commit/911a8365a33aa67fa8ff109a830c10c26348cf07))
+* removed social elements exp ([2375f63](https://github.com/kiva/ui/commit/2375f635709e1bbc51c2577de4755089f73fa2db))
+
+
+### Bug Fixes
+
+* merge issue ([fd404ea](https://github.com/kiva/ui/commit/fd404ea36927681cfa14ad33810dc7e9bc2ffe93))
+* missed removing exp flag ([0df0911](https://github.com/kiva/ui/commit/0df091174d911fa3778778c7818e412099046e04))
+* missing semicolon ([5d90c57](https://github.com/kiva/ui/commit/5d90c57385ae1c652509af16d7d95eac5dc8b331))
+* needs leading zero ([7ccf247](https://github.com/kiva/ui/commit/7ccf24721b68ea1355eb7d9aba4228f48fb2b115))
+* remove exp data from prefetch query ([aa13cf5](https://github.com/kiva/ui/commit/aa13cf59843d6ca28a8cd2cbb5333ec84681003d))
+* removed exp code ([62a7ad3](https://github.com/kiva/ui/commit/62a7ad3a3ea4510404bc5f6808cd2a7ddb6b98c0))
+* removed unneeded preFetchVariables ([da258ec](https://github.com/kiva/ui/commit/da258ecdcfbb80b1374c2e56f298c59e6e013ab0))
+* removed unneeded try catch ([3c5275b](https://github.com/kiva/ui/commit/3c5275b8106aff82de198f2df3738ad3ef72ac09))
+* send extra data to mounted hook ([01604fe](https://github.com/kiva/ui/commit/01604fee893bf559e981f9d40cceba7f2c3580fe))
+
 ## [2.422.0](https://github.com/kiva/ui/compare/v2.421.0...v2.422.0) (2022-12-13)
 
 
