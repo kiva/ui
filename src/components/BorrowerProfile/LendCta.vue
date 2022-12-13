@@ -616,7 +616,7 @@ export default {
 			const cycleSlotMachine = () => {
 				const possibleStats = [];
 				// Add lender count
-				if (this.status === 'fundraising' && this.numLenders > 0 && !this.socialExpEnabled) {
+				if (this.status === 'fundraising' && this.numLenders > 0) {
 					possibleStats.push('lenderCount');
 				}
 				// Add matching text
