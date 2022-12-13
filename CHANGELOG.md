@@ -1,3 +1,10 @@
+## [2.424.0](https://github.com/kiva/ui/compare/v2.423.0...v2.424.0) (2022-12-13)
+
+
+### Features
+
+* design and ux updates for lending home page ([7aaaa45](https://github.com/kiva/ui/commit/7aaaa4572638b64edae2151cfc31b473796c17bf))
+
 ## [2.423.0](https://github.com/kiva/ui/compare/v2.422.0...v2.423.0) (2022-12-13)
 
 
