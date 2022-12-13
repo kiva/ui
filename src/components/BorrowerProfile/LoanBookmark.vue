@@ -1,15 +1,20 @@
 <template>
 	<div>
-		<button
-			class="tw-text-action tw-inline-flex tw-cursor-pointer tw-whitespace-nowrap tw-font-medium"
-			@click="toggleBookmark()"
-		>
-			<kv-material-icon
-				class="tw-text-action tw-w-3 tw-mr-0.5"
-				:icon="`${!isBookmarked ? mdiBookmarkOutline : mdiBookmark}`"
-			/>
-			{{ bookmarkText }}
-		</button>
+		<template v-if="isLoading">
+			<kv-loading-placeholder style="height: 2rem; width: 130px;" />
+		</template>
+		<template v-else>
+			<button
+				class="tw-text-action tw-inline-flex tw-cursor-pointer tw-whitespace-nowrap tw-font-medium"
+				@click="toggleBookmark()"
+			>
+				<kv-material-icon
+					class="tw-text-action tw-w-3 tw-mr-0.5"
+					:icon="`${!isBookmarked ? mdiBookmarkOutline : mdiBookmark}`"
+				/>
+				{{ bookmarkText }}
+			</button>
+		</template>
 	</div>
 </template>
 <script>
@@ -17,11 +22,13 @@ import gql from 'graphql-tag';
 import { mdiBookmarkOutline, mdiBookmark } from '@mdi/js';
 import bookmarkLoan from '@/util/bookmarkUtil';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'LoanBookmark',
 	components: {
 		KvMaterialIcon,
+		KvLoadingPlaceholder,
 	},
 	inject: ['apollo', 'cookieStore'],
 	props: {
@@ -35,6 +42,7 @@ export default {
 			mdiBookmarkOutline,
 			mdiBookmark,
 			isBookmarked: false,
+			isLoading: true,
 		};
 	},
 	apollo: {
@@ -49,12 +57,6 @@ export default {
 				}
 			}
 		`,
-		preFetch: true,
-		preFetchVariables({ route }) {
-			return {
-				loanId: Number(route?.params?.id ?? 0),
-			};
-		},
 		variables() {
 			return {
 				loanId: this.loanId,
@@ -63,6 +65,7 @@ export default {
 		result(result) {
 			const loan = result?.data?.lend?.loan || {};
 			this.isBookmarked = loan?.userProperties?.favorited || false;
+			this.isLoading = false;
 		},
 	},
 	computed: {
