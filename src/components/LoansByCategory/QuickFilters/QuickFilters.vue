@@ -179,15 +179,50 @@ export default {
 			mdiFilterVariant,
 			selectedCategory: 0,
 			selectedGender: '',
-			sortBy: 'personalized',
-			showBadge: false
+			sortBy: 'amountLeft',
+			showBadge: false,
+			presetFilterActive: {
+				women: false,
+				kivaUs: false,
+				endingSoon: false,
+			},
 		};
 	},
 	mixins: [
 		loanChannelQueryMapMixin
 	],
 	watch: {
-		selectedCategory() {
+		selectedCategory(categoryId) {
+			const catId = Number(categoryId);
+			const queryMap = loanChannelQueryMapMixin.data().loanChannelQueryMap;
+			const categoryFilter = catId === 0 ? {} : queryMap
+				.find(channel => channel.id === catId)?.flssLoanSearch;
+
+			if (this.presetFilterActive.women) {
+				this.resetGender();
+				this.presetFilterActive.women = false;
+			} else if (this.presetFilterActive.kivaUs) {
+				this.resetLocation();
+				this.presetFilterActive.kivaUs = false;
+			} else if (this.presetFilterActive.endingSoon) {
+				this.resetSortBy();
+				this.presetFilterActive.endingSoon = false;
+			}
+
+			// These categories use location/gender/sort by for FLSS and need
+			// to have dropdowns preset
+			if (catId === 5) { // women
+				this.selectedGender = 'female';
+				this.presetFilterActive.women = true;
+			} else if (catId === 28) { // kiva-u-s
+				this.setCountry('US');
+				this.presetFilterActive.kivaUs = true;
+			} else if (catId === 3) { // ending-soon
+				this.sortBy = 'expiringSoon';
+				this.presetFilterActive.endingSoon = true;
+			} else {
+				this.$emit('update-filters', categoryFilter);
+			}
 		},
 		selectedGender(gender) {
 			this.$emit('update-filters', { gender });
@@ -209,6 +244,19 @@ export default {
 		}
 	},
 	methods: {
+		resetGender() {
+			this.selectedGender = '';
+		},
+		resetLocation() {
+			this.updateLocation([]);
+			this.$refs.locationSelector.emptyCountries();
+		},
+		resetSortBy() {
+			this.sortBy = 'amountLeft';
+		},
+		setCountry(country) {
+			this.$refs.locationSelector.setCountry(country);
+		},
 		updateLocation(location) {
 			this.$emit('update-filters', { country: location });
 			this.$kvTrackEvent(
@@ -221,7 +269,7 @@ export default {
 		resetFilters() {
 			this.$emit('reset-filters');
 			this.selectedGender = '';
-			this.sortBy = 'personalized';
+			this.sortBy = 'almostFunded';
 			this.updateLocation([]);
 			this.$refs.locationSelector.emptyCountries();
 			this.$kvTrackEvent(

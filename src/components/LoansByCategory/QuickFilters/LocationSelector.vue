@@ -246,6 +246,10 @@ export default {
 				}
 			}
 		},
+		setCountry(countryIsoCode) {
+			this.emptyCountries();
+			this.selectedCountries.push(countryIsoCode);
+		},
 		numberByRegion(region) {
 			let total = 0;
 			const regionData = this.regions.filter(regionItem => {
