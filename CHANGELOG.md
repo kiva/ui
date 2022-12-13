@@ -1,3 +1,10 @@
+### [2.424.1](https://github.com/kiva/ui/compare/v2.424.0...v2.424.1) (2022-12-13)
+
+
+### Bug Fixes
+
+* update fastly url in dev to use root now that the domain is running through fastly ([ca854ed](https://github.com/kiva/ui/commit/ca854ed821ed69b94aeb64e08d49c064571fc8c6))
+
 ## [2.424.0](https://github.com/kiva/ui/compare/v2.423.0...v2.424.0) (2022-12-13)
 
 
