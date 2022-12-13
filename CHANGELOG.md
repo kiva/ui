@@ -1,3 +1,16 @@
+## [2.421.0](https://github.com/kiva/ui/compare/v2.420.0...v2.421.0) (2022-12-13)
+
+
+### Features
+
+* category dropdown logic for MVP quick filters section ([deddcef](https://github.com/kiva/ui/commit/deddcef2497232d7e58a3a3ea649a0dadc3eb1d4))
+
+
+### Bug Fixes
+
+* merge conflict ([f366d9e](https://github.com/kiva/ui/commit/f366d9e456cfb0e0293aa15e96f5a9ad4995b508))
+* reset preset filters when category changes ([8f36657](https://github.com/kiva/ui/commit/8f36657cc257ad395f9c8bb964c2a20953b51b69))
+
 ## [2.420.0](https://github.com/kiva/ui/compare/v2.419.1...v2.420.0) (2022-12-12)
 
 
