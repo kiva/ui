@@ -1,3 +1,10 @@
+## [2.425.0](https://github.com/kiva/ui/compare/v2.424.1...v2.425.0) (2022-12-14)
+
+
+### Features
+
+* spacing and alignment pass on order totals line items ([17d91b1](https://github.com/kiva/ui/commit/17d91b16e8948f191e4b9e9ed37612cbcc2d1027))
+
 ### [2.424.1](https://github.com/kiva/ui/compare/v2.424.0...v2.424.1) (2022-12-13)
 
 
