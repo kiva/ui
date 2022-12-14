@@ -1,3 +1,10 @@
+### [2.426.2](https://github.com/kiva/ui/compare/v2.426.1...v2.426.2) (2022-12-14)
+
+
+### Bug Fixes
+
+* updated e2e for search with lend/filter navigation ([135f9d0](https://github.com/kiva/ui/commit/135f9d03c7e8810715f5ddf0ff947ac8257a58af))
+
 ### [2.426.1](https://github.com/kiva/ui/compare/v2.426.0...v2.426.1) (2022-12-14)
 
 
