@@ -30,7 +30,7 @@
 						</p>
 						<p v-if="lender.email" class="hide-for-print">
 							We've emailed your order confirmation to
-							<strong class="fs-exclude">{{ lender.email }}</strong>
+							<strong class="data-hj-suppress fs-exclude">{{ lender.email }}</strong>
 						</p>
 						<p v-else class="hide-for-print">
 							We've emailed your order confirmation to you.
