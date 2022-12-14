@@ -6,8 +6,8 @@ describe('Header Navigation', () => {
 		cy.intercept('POST', '**/graphql*', req => {
 			// Setup query alias for specific operations
 			aliasQuery(req, 'loanSearchSuggestions');
+			aliasQuery(req, 'flssLoanData');
 		});
-		cy.intercept('GET', '**/v2/loans*').as('sirenLoansRequest');
 
 		// Go to the home page
 		cy.visit('/');
@@ -18,9 +18,9 @@ describe('Header Navigation', () => {
 		// Click on the "Fabrics" tag in the search results
 		cy.contains('Fabrics').click();
 		// Expect to visit the lend page
-		cy.location('pathname').should('eq', '/lend');
+		cy.location('pathname').should('eq', '/lend/filter');
 		// Wait for loan results to load
-		cy.wait('@sirenLoansRequest');
+		cy.wait('@gqlflssLoanDataQuery');
 		// Expect "Fabrics" filter element to exist
 		cy.contains('Fabrics').should('exist');
 	});
