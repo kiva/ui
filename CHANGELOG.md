@@ -1,3 +1,10 @@
+### [2.425.1](https://github.com/kiva/ui/compare/v2.425.0...v2.425.1) (2022-12-14)
+
+
+### Bug Fixes
+
+* js error for null city/state/country when missing ([5a69d72](https://github.com/kiva/ui/commit/5a69d72e01402844747dfa202bac8651b542ce3e))
+
 ## [2.425.0](https://github.com/kiva/ui/compare/v2.424.1...v2.425.0) (2022-12-14)
 
 
