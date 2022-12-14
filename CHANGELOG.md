@@ -1,3 +1,10 @@
+## [2.426.0](https://github.com/kiva/ui/compare/v2.425.1...v2.426.0) (2022-12-14)
+
+
+### Features
+
+* add hotjar data suppress ([f764e9d](https://github.com/kiva/ui/commit/f764e9dc50e3e56153208a5b3e19e2f8bcb8b2fa))
+
 ### [2.425.1](https://github.com/kiva/ui/compare/v2.425.0...v2.425.1) (2022-12-14)
 
 
