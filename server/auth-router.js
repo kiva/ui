@@ -101,9 +101,12 @@ module.exports = function authRouter(config = {}) {
 		info(`LoginUI: execute logout, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, user id:${req.user && req.user.id}`); // eslint-disable-line max-len
 		const returnUrl = encodeURIComponent(`https://${config.host}`);
 		const logoutUrl = `https://${config.auth0.domain}/v2/logout?returnTo=${returnUrl}`;
-		req.logout(); // removes req.user
-		noteLoggedOut(res);
-		res.redirect(logoutUrl);
+		req.logout({}, err => {
+			console.error(err);
+			// removes req.user
+			noteLoggedOut(res);
+			res.redirect(logoutUrl);
+		});
 	});
 
 	// Callback redirected to after Auth0 authentication
