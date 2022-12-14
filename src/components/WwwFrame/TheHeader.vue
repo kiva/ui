@@ -66,7 +66,7 @@
 								v-else
 								:src="profilePic"
 								alt="My portfolio"
-								class="fs-mask tw-inline-block
+								class="data-hj-suppress fs-mask tw-inline-block
 									tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5
 									tw-rounded-full tw-overflow-hidden tw-object-fill"
 							>
@@ -339,7 +339,7 @@
 									v-else
 									:src="profilePic"
 									alt="My portfolio"
-									class="fs-mask tw-inline-block
+									class="data-hj-suppress fs-mask tw-inline-block
 										tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5
 										tw-rounded-full tw-overflow-hidden tw-object-fill"
 								>
