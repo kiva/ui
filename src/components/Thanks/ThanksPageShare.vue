@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<ShareStepper :lender-name="this.lender.firstName" :show-lender-name="showLenderName" />
+		<ShareStepper :lender-name="lender.firstName" :show-lender-name="showLenderName" />
 		<div class="row page-content">
 			<div class="large-2"></div>
 			<div class="small-12 large-8 columns thanks">
@@ -79,10 +79,10 @@
 							<!-- eslint-disable-next-line max-len -->
 							<template v-if="categoryShareVersion === 'a' && categoryName">
 								<!-- eslint-disable-next-line max-len -->
-								<span class="fs-mask data-hj-suppress">{{ this.lender.firstName }}</span>, share now to find allies in the fight against economic inequity for {{ this.categoryName }}.
+								<span class="fs-mask data-hj-suppress">{{ lender.firstName }}</span>, share now to find allies in the fight against economic inequity for {{ categoryName }}.
 							</template>
 							<template v-else-if="categoryShareVersion === 'b' && categoryName">
-								More loans like yours mean more opportunities for {{ this.categoryName }}.
+								More loans like yours mean more opportunities for {{ categoryName }}.
 							</template>
 							<template v-else>
 								Can you share this loan with one more person?
@@ -91,10 +91,10 @@
 						<p class="tw-text-h3 tw-m-0 thanks__base-text">
 							<template v-if="categoryShareVersion === 'c' || !categoryName">
 								<!-- eslint-disable-next-line max-len -->
-								{{ this.loan.name }} only needs {{ calculatePeopleQtyToGoal() }} more people to lend $25 and their loan could be fully funded in a matter of hours!
+								{{ loan.name }} only needs {{ calculatePeopleQtyToGoal() }} more people to lend $25 and their loan could be fully funded in a matter of hours!
 							</template>
 							<template v-else>
-								{{ this.thanksPageBody }}
+								{{ thanksPageBody }}
 							</template>
 						</p>
 					</template>
@@ -107,7 +107,8 @@
 										data-testid="share-facebook-button"
 										class="social__btn social__btn--facebook"
 										:href="facebookShareUrl"
-										v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Facebook-share']"
+										v-kv-track-event="
+											['thanks', 'Social-Share-Lightbox', 'click-Facebook-share', loanId]"
 									>
 										<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
 										<span>Share on Facebook</span>
@@ -117,7 +118,8 @@
 										class="social__btn social__btn--link tw-text-link tw-border-tertiary tw-border"
 										:class="copyStatus.class"
 										:disabled="copyStatus.disabled"
-										v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Copy-link-share']"
+										v-kv-track-event="
+											['thanks', 'Social-Share-Lightbox', 'click-Copy-link-share', loanId]"
 										@click="copyLink"
 									>
 										<kv-material-icon
@@ -125,7 +127,7 @@
 											class="social__icon"
 											:icon="mdiLink"
 										/>
-										<span>{{ this.copyStatus.text }}</span>
+										<span>{{ copyStatus.text }}</span>
 									</button>
 									<a
 										data-testid="share-twitter-button"
@@ -133,7 +135,8 @@
 										:href="twitterShareUrl"
 										target="_blank"
 										rel="noopener"
-										v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Twitter-share']"
+										v-kv-track-event="
+											['thanks', 'Social-Share-Lightbox', 'click-Twitter-share', loanId]"
 										@click="$showTipMsg('Thanks for tweeting!')"
 									>
 										<kv-icon name="twitter" title="Twitter" class="social__icon" />
@@ -145,7 +148,8 @@
 										:href="linkedInShareUrl"
 										target="_blank"
 										rel="noopener"
-										v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-LinkedIn-share']"
+										v-kv-track-event="
+											['thanks', 'Social-Share-Lightbox', 'click-LinkedIn-share', loanId]"
 										@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
 									>
 										<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
@@ -244,6 +248,9 @@ export default {
 		};
 	},
 	computed: {
+		loanId() {
+			return this.loan?.id ?? undefined;
+		},
 		suggestedMessage() {
 			if (this.loan.name) {
 				const location = this.loan?.geocode?.city || this.loan?.geocode?.country?.name;
@@ -278,8 +285,8 @@ export default {
 				categoryShareVersion = ['a', 'b'].includes(this.categoryShareVersion)
 					? `&category_share_version=${this.categoryShareVersion}`
 					: '';
-			} else if (this.loan.id) {
-				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utm_content=${this.utmContent}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
+			} else if (this.loanId) {
+				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loanId}?utm_content=${this.utmContent}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
 			}
 			return `${base}?utm_content=${this.utmContent}${this.getUtmCampaignVersion}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
 		},
@@ -368,25 +375,15 @@ export default {
 				if (code) {
 					// The 4201 error code means the user pressed 'Cancel', so can be ignored
 					if (code !== '4201') {
-						this.$kvTrackEvent(
-							'thanks',
-							'click-Facebook-share',
-							'error-Social-Share-Lightbox'
-						);
 						this.$showTipMsg(`There was a problem sharing to Facebook: ${message}`, 'warning');
-					} else {
-						this.$kvTrackEvent(
-							'thanks',
-							'click-Facebook-share',
-							'error-Social-Share-Lightbox'
-						);
 					}
-				} else {
 					this.$kvTrackEvent(
 						'thanks',
 						'click-Facebook-share',
-						'error-Social-Share-Lightbox'
+						'error-Social-Share-Lightbox',
+						this.loanId
 					);
+				} else {
 					this.$showTipMsg('Thanks for sharing to Facebook!');
 				}
 			}
