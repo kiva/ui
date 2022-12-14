@@ -4,7 +4,7 @@ const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
 const { usingFakeAuth } = require('./util/fakeAuthentication');
 const { isExpired } = require('./util/jwt');
-const { info, warn } = require('./util/log');
+const { error, info, warn } = require('./util/log');
 const {
 	clearNotedLoginState,
 	getSyncCookie,
@@ -102,7 +102,9 @@ module.exports = function authRouter(config = {}) {
 		const returnUrl = encodeURIComponent(`https://${config.host}`);
 		const logoutUrl = `https://${config.auth0.domain}/v2/logout?returnTo=${returnUrl}`;
 		req.logout({}, err => {
-			console.error(err);
+			if (err) {
+				error('LoginUI: logout callback error:', err);
+			}
 			// removes req.user
 			noteLoggedOut(res);
 			res.redirect(logoutUrl);
