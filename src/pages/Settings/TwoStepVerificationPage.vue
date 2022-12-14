@@ -67,7 +67,7 @@
 									</h3>
 									<!-- Phone number related to authentication method -->
 									<p
-										class="two-step-verification__method--number fs-mask"
+										class="two-step-verification__method--number fs-mask data-hj-suppress"
 									>
 										{{ mfaMethod.name }}
 									</p>
