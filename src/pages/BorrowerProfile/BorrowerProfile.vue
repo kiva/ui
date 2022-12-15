@@ -390,7 +390,6 @@ export default {
 		return {
 			businessName: null,
 			countryName: '',
-			loanId: Number(this.$route.params.id || 0),
 			showLenders: true,
 			showTeams: true,
 			isUrgencyExpVersionShown: false,
@@ -544,6 +543,9 @@ export default {
 		this.lender = data?.my?.userAccount ?? {};
 	},
 	computed: {
+		loanId() {
+			return Number(this.$route.params.id || 0);
+		},
 		enabledExperimentVariant() {
 			return this.userContextExpVariant === 'a';
 		},
