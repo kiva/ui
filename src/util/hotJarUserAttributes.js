@@ -14,7 +14,7 @@ export default function setHotJarUserAttributes(userData) {
 			'Has deposit before': userData.hasDepositBefore,
 		});
 
-		if (userData?.isFirstLoan) {
+		if (userData?.isFirstLoan !== undefined) {
 			window.hj('identify', userData.userId, {
 				'First loan': userData?.isFirstLoan,
 				'Has direct loan': userData?.hasDirectLoan,
