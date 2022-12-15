@@ -4,14 +4,14 @@ import loanResolverFactory from '@/api/localResolvers/loan';
 describe('loan.js', () => {
 	describe('LoanBasic.fundraisingPercent', () => {
 		function testFundraisingPercent({ loan, expected }) {
-			const { typePolicies } = loanResolverFactory();
-			const result = typePolicies.LoanPartner.fundraisingPercent(loan);
+			const { resolvers } = loanResolverFactory();
+			const result = resolvers.LoanPartner.fundraisingPercent(loan);
 			expect(result).toBe(expected);
 		}
 
 		it('Exports the same resolver for LoanDirect and LoanPartner', () => {
-			const { typePolicies } = loanResolverFactory();
-			expect(typePolicies.LoanDirect.fundraisingPercent).toBe(typePolicies.LoanPartner.fundraisingPercent);
+			const { resolvers } = loanResolverFactory();
+			expect(resolvers.LoanDirect.fundraisingPercent).toBe(resolvers.LoanPartner.fundraisingPercent);
 		});
 
 		it('Returns the percent funded and reserved amount of the total loan amount', () => {
@@ -166,14 +166,14 @@ describe('loan.js', () => {
 
 	describe('LoanBasic.fundraisingTimeLeft', () => {
 		function testFundraisingTimeLeft({ loan, expected }) {
-			const { typePolicies } = loanResolverFactory();
-			const result = typePolicies.LoanPartner.fundraisingTimeLeft(loan);
+			const { resolvers } = loanResolverFactory();
+			const result = resolvers.LoanPartner.fundraisingTimeLeft(loan);
 			expect(result).toBe(expected);
 		}
 
 		it('Exports the same resolver for LoanDirect and LoanPartner', () => {
-			const { typePolicies } = loanResolverFactory();
-			expect(typePolicies.LoanDirect.fundraisingTimeLeft).toBe(typePolicies.LoanPartner.fundraisingTimeLeft);
+			const { resolvers } = loanResolverFactory();
+			expect(resolvers.LoanDirect.fundraisingTimeLeft).toBe(resolvers.LoanPartner.fundraisingTimeLeft);
 		});
 
 		it('Returns the time remaining before expiration in milliseconds', () => {
@@ -226,15 +226,15 @@ describe('loan.js', () => {
 
 	describe('LoanBasic.fundraisingTimeLeftMilliseconds', () => {
 		function testFundraisingTimeLeftMilliseconds({ loan, expected }) {
-			const { typePolicies } = loanResolverFactory();
-			const result = typePolicies.LoanPartner.fundraisingTimeLeftMilliseconds(loan);
+			const { resolvers } = loanResolverFactory();
+			const result = resolvers.LoanPartner.fundraisingTimeLeftMilliseconds(loan);
 			expect(result).toBeCloseTo(expected, -4);
 		}
 
 		it('Exports the same resolver for LoanDirect and LoanPartner', () => {
-			const { typePolicies } = loanResolverFactory();
-			expect(typePolicies.LoanDirect.fundraisingTimeLeftMilliseconds)
-				.toBe(typePolicies.LoanPartner.fundraisingTimeLeftMilliseconds);
+			const { resolvers } = loanResolverFactory();
+			expect(resolvers.LoanDirect.fundraisingTimeLeftMilliseconds)
+				.toBe(resolvers.LoanPartner.fundraisingTimeLeftMilliseconds);
 		});
 
 		it('Returns the time remaining before expiration in milliseconds', () => {
@@ -258,8 +258,8 @@ describe('loan.js', () => {
 		});
 
 		it('Returns an empty string if plannedExpirationDate is not a valid date', () => {
-			const { typePolicies } = loanResolverFactory();
-			const result = typePolicies.LoanPartner.fundraisingTimeLeftMilliseconds(
+			const { resolvers } = loanResolverFactory();
+			const result = resolvers.LoanPartner.fundraisingTimeLeftMilliseconds(
 				{ plannedExpirationDate: 'not a date' }
 			);
 			expect(result).toBe('');
@@ -269,8 +269,8 @@ describe('loan.js', () => {
 			const originalError = console.error;
 			console.error = jest.fn();
 
-			const { typePolicies } = loanResolverFactory();
-			const result = typePolicies.LoanPartner.fundraisingTimeLeftMilliseconds({});
+			const { resolvers } = loanResolverFactory();
+			const result = resolvers.LoanPartner.fundraisingTimeLeftMilliseconds({});
 			expect(result).toBe('');
 
 			expect(console.error.mock.calls.length).toBe(1);
@@ -284,14 +284,14 @@ describe('loan.js', () => {
 
 	describe('LoanBasic.unreservedAmount', () => {
 		function testUnreservedAmount({ loan, expected }) {
-			const { typePolicies } = loanResolverFactory();
-			const result = typePolicies.LoanPartner.unreservedAmount(loan);
+			const { resolvers } = loanResolverFactory();
+			const result = resolvers.LoanPartner.unreservedAmount(loan);
 			expect(result).toBe(expected);
 		}
 
 		it('Exports the same resolver for LoanDirect and LoanPartner', () => {
-			const { typePolicies } = loanResolverFactory();
-			expect(typePolicies.LoanDirect.unreservedAmount).toBe(typePolicies.LoanPartner.unreservedAmount);
+			const { resolvers } = loanResolverFactory();
+			expect(resolvers.LoanDirect.unreservedAmount).toBe(resolvers.LoanPartner.unreservedAmount);
 		});
 
 		it('Returns the unreserved amount for this loan as a string', () => {

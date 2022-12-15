@@ -51,37 +51,37 @@ describe('experiment.js', () => {
 
 		it('Returns a null assignment when experiment id is unknown', () => {
 			const cookieStore = new CookieStore();
-			const { typePolicies } = expResolverFactory({ cookieStore });
+			const { resolvers } = expResolverFactory({ cookieStore });
 
-			const result = typePolicies.Query.experiment(null, { id: 'ab' }, {});
+			const result = resolvers.Query.experiment(null, { id: 'ab' }, {});
 			expect(result).toEqual(Experiment('ab', null));
 		});
 
 		it('Returns a null assignment when experiment is not enabled', () => {
 			const cookieStore = new CookieStore();
 			const context = getExperimentContext({ enabled: false });
-			const { typePolicies } = expResolverFactory({ cookieStore });
+			const { resolvers } = expResolverFactory({ cookieStore });
 
-			const result = typePolicies.Query.experiment(null, { id: 'ab' }, context);
+			const result = resolvers.Query.experiment(null, { id: 'ab' }, context);
 			expect(result).toEqual(Experiment('ab', null));
 		});
 
 		it('Returns the current assignment when it is already set', () => {
 			const cookieStore = new CookieStore({ uiab: 'ab:variant:1753809052' });
-			const { typePolicies } = expResolverFactory({ cookieStore });
+			const { resolvers } = expResolverFactory({ cookieStore });
 			const context = getExperimentContext();
 
-			const result = typePolicies.Query.experiment(null, { id: 'ab' }, context);
+			const result = resolvers.Query.experiment(null, { id: 'ab' }, context);
 			expect(assignVersionSpy).not.toHaveBeenCalled();
 			expect(result).toEqual(Experiment('ab', 'variant'));
 		});
 
 		it('Returns a new assignment when no assigment is set', () => {
 			const cookieStore = new CookieStore();
-			const { typePolicies } = expResolverFactory({ cookieStore });
+			const { resolvers } = expResolverFactory({ cookieStore });
 			const context = getExperimentContext();
 
-			const result = typePolicies.Query.experiment(null, { id: 'ab' }, context);
+			const result = resolvers.Query.experiment(null, { id: 'ab' }, context);
 			expect(assignVersionSpy).toHaveBeenCalled();
 			expect(result).toEqual(Experiment('ab', expect.any(String)));
 			expect(cookieStore.getSetCookies()[0]).toMatch(`ab:${result.version}`);
@@ -89,7 +89,7 @@ describe('experiment.js', () => {
 
 		it('Returns a new assignment when the distribution changes', () => {
 			const cookieStore = new CookieStore({ uiab: 'ab:variant:1753809052' });
-			const { typePolicies } = expResolverFactory({ cookieStore });
+			const { resolvers } = expResolverFactory({ cookieStore });
 			const context = getExperimentContext({
 				distribution: {
 					control: 0.75,
@@ -97,43 +97,43 @@ describe('experiment.js', () => {
 				},
 			});
 
-			const { version } = typePolicies.Query.experiment(null, { id: 'ab' }, context);
+			const { version } = resolvers.Query.experiment(null, { id: 'ab' }, context);
 			expect(assignVersionSpy).toHaveBeenCalled();
 			expect(cookieStore.getSetCookies()[0]).toMatch(`ab:${version}`);
 		});
 
 		it('Returns a new assignment when currently "unassigned" and the population changes', () => {
 			const cookieStore = new CookieStore({ uiab: 'ab:unassigned:1753809052:0.5' });
-			const { typePolicies } = expResolverFactory({ cookieStore });
+			const { resolvers } = expResolverFactory({ cookieStore });
 			const context = getExperimentContext({
 				population: 0.75,
 			});
 
-			const { version } = typePolicies.Query.experiment(null, { id: 'ab' }, context);
+			const { version } = resolvers.Query.experiment(null, { id: 'ab' }, context);
 			expect(assignVersionSpy).toHaveBeenCalled();
 			expect(cookieStore.getSetCookies()[0]).toMatch(`ab:${version}:1753809052:0.75`);
 		});
 
 		it('Returns the current assignment if already assigned when the population changes', () => {
 			const cookieStore = new CookieStore({ uiab: 'ab:variant:1753809052:0.5' });
-			const { typePolicies } = expResolverFactory({ cookieStore });
+			const { resolvers } = expResolverFactory({ cookieStore });
 			const context = getExperimentContext({
 				population: 0.75,
 			});
 
-			const result = typePolicies.Query.experiment(null, { id: 'ab' }, context);
+			const result = resolvers.Query.experiment(null, { id: 'ab' }, context);
 			expect(assignVersionSpy).not.toHaveBeenCalled();
 			expect(result).toEqual(Experiment('ab', 'variant'));
 		});
 
 		it('Returns a null assignment when assignVersion returns undefined', () => {
 			const cookieStore = new CookieStore();
-			const { typePolicies } = expResolverFactory({ cookieStore });
+			const { resolvers } = expResolverFactory({ cookieStore });
 			const context = getExperimentContext({
 				endTime: Date.now() - 1000,
 			});
 
-			const result = typePolicies.Query.experiment(null, { id: 'ab' }, context);
+			const result = resolvers.Query.experiment(null, { id: 'ab' }, context);
 			expect(assignVersionSpy).toHaveBeenCalled();
 			expect(result).toEqual(Experiment('ab', null));
 		});
@@ -142,26 +142,26 @@ describe('experiment.js', () => {
 	describe('Mutation.updateExperimentVersion', () => {
 		it('Returns null when version is undefined', () => {
 			const cookieStore = new CookieStore();
-			const { typePolicies } = expResolverFactory({ cookieStore });
+			const { resolvers } = expResolverFactory({ cookieStore });
 
-			const result = typePolicies.Mutation.updateExperimentVersion(null, { id: 'ab' });
+			const result = resolvers.Mutation.updateExperimentVersion(null, { id: 'ab' });
 			expect(result).toEqual(Experiment('ab', null));
 		});
 
 		it('Does not make updates to the version if already assigned to the requested version', () => {
 			const cookieStore = new CookieStore({ uiab: 'ab:variant' });
-			const { typePolicies } = expResolverFactory({ cookieStore });
+			const { resolvers } = expResolverFactory({ cookieStore });
 
-			const result = typePolicies.Mutation.updateExperimentVersion(null, { id: 'ab', version: 'variant' });
+			const result = resolvers.Mutation.updateExperimentVersion(null, { id: 'ab', version: 'variant' });
 			expect(result).toEqual(Experiment('ab', 'variant'));
 			expect(cookieStore.getSetCookies()).toHaveLength(0);
 		});
 
 		it('Updates the uiab cookie and returns the new version', () => {
 			const cookieStore = new CookieStore({ uiab: 'ab:variant' });
-			const { typePolicies } = expResolverFactory({ cookieStore });
+			const { resolvers } = expResolverFactory({ cookieStore });
 
-			const result = typePolicies.Mutation.updateExperimentVersion(null, { id: 'ab', version: 'control' });
+			const result = resolvers.Mutation.updateExperimentVersion(null, { id: 'ab', version: 'control' });
 			expect(result).toEqual(Experiment('ab', 'control'));
 			expect(cookieStore.getSetCookies()[0]).toMatch('ab:control');
 		});
@@ -170,8 +170,8 @@ describe('experiment.js', () => {
 	describe('Mutation.cleanExperimentCookie', () => {
 		it('Always returns true', () => {
 			const cookieStore = new CookieStore();
-			const { typePolicies } = expResolverFactory({ cookieStore });
-			expect(typePolicies.Mutation.cleanExperimentCookie()).toBe(true);
+			const { resolvers } = expResolverFactory({ cookieStore });
+			expect(resolvers.Mutation.cleanExperimentCookie()).toBe(true);
 		});
 	});
 });
