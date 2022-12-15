@@ -13,5 +13,13 @@ export default function setHotJarUserAttributes(userData) {
 			'Has lent before': userData.hasLentBefore,
 			'Has deposit before': userData.hasDepositBefore,
 		});
+
+		if (userData?.isFirstLoan) {
+			window.hj('identify', userData.userId, {
+				'First loan': userData?.isFirstLoan,
+				'Has direct loan': userData?.hasDirectLoan,
+				'Has core loan': userData?.hasCoreLoan,
+			});
+		}
 	}
 }

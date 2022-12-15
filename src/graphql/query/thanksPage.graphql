@@ -86,6 +86,7 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 								name
 							}
 							gender
+							distributionModel
 							unreservedAmount @client
 						}
 					}
@@ -120,6 +121,9 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			values {
 				id
 			}
+		}
+		loans {
+			totalCount
 		}
 	}
 	general {

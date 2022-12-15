@@ -324,12 +324,20 @@ export default {
 		userHasLentBefore(hasLentBefore);
 		userHasDepositBefore(hasDepositBefore);
 
+		const totalLoans = data?.my?.totalCount ?? 0;
+		const isFirstLoan = this.loans.length && totalLoans === this.loans.length;
+		const hasDirectLoan = this.loans.findIndex(loan => loan.distributionModel === 'direct') > -1;
+		const hasCoreLoan = this.loans.findIndex(loan => loan.distributionModel === 'fieldPartner') > -1;
+
 		// MARS-246 Hotjar user attributes
 		setHotJarUserAttributes({
 			userId: data?.my?.userAccountId?.id,
 			hasEverLoggedIn,
 			hasLentBefore,
 			hasDepositBefore,
+			isFirstLoan,
+			hasDirectLoan,
+			hasCoreLoan
 		});
 
 		if (!this.isGuest && !data?.my?.userAccount) {
