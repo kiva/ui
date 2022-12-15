@@ -1,3 +1,10 @@
+## [2.430.0](https://github.com/kiva/ui/compare/v2.429.1...v2.430.0) (2022-12-15)
+
+
+### Features
+
+* add loan ids to various social share events ([81d97e6](https://github.com/kiva/ui/commit/81d97e6e699a5d935456991b9763d2ef7fa00921))
+
 ### [2.429.1](https://github.com/kiva/ui/compare/v2.429.0...v2.429.1) (2022-12-15)
 
 
