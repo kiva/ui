@@ -1,3 +1,10 @@
+### [2.426.3](https://github.com/kiva/ui/compare/v2.426.2...v2.426.3) (2022-12-15)
+
+
+### Bug Fixes
+
+* refresh the basket totals and state (includes user balance) on payment submisson error ([905b300](https://github.com/kiva/ui/commit/905b300f6724e053bef1dbc1444768fcb2180d5d))
+
 ### [2.426.2](https://github.com/kiva/ui/compare/v2.426.1...v2.426.2) (2022-12-14)
 
 
