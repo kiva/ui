@@ -1,3 +1,16 @@
+## [2.429.0](https://github.com/kiva/ui/compare/v2.428.0...v2.429.0) (2022-12-15)
+
+
+### Features
+
+* add new user attributes ([16a739d](https://github.com/kiva/ui/commit/16a739d1d674a9cfb6326aab009aef8366776f3f))
+
+
+### Bug Fixes
+
+* get loans total ([31b344a](https://github.com/kiva/ui/commit/31b344adb9edf09beb27564fb64c1590c8436d53))
+* wrap condition ([a525fb2](https://github.com/kiva/ui/commit/a525fb2bb3c2bdcc541ca51764ce9877c9ba68e7))
+
 ## [2.428.0](https://github.com/kiva/ui/compare/v2.427.0...v2.428.0) (2022-12-15)
 
 
