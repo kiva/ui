@@ -1,3 +1,11 @@
+### [2.430.1](https://github.com/kiva/ui/compare/v2.430.0...v2.430.1) (2022-12-15)
+
+
+### Bug Fixes
+
+* redirect visits from /lp/how-kiva-works to /about/how ([45e359c](https://github.com/kiva/ui/commit/45e359c14158c51ea9c0c97ac83490b47543af22))
+* stop hitting lp/how-kiva-works from lighthouse ([31e377c](https://github.com/kiva/ui/commit/31e377ca30192e10c0ce8fae8d19b4e14ad8381c))
+
 ## [2.430.0](https://github.com/kiva/ui/compare/v2.429.1...v2.430.0) (2022-12-15)
 
 
