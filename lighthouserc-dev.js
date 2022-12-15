@@ -13,7 +13,7 @@ module.exports = {
 				'http://localhost:8888/lend-by-category/women',
 				'http://localhost:8888/ui-site-map',
 				// 'http://localhost:8888/cc/kiva-universal',
-				'http://localhost:8888/lp/how-kiva-works'
+				'http://localhost:8888/about/how'
 			],
 			numberOfRuns: 5,
 		},
