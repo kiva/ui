@@ -8,6 +8,7 @@
 		:utm-content="utmContent"
 		:linked-in-title="linkedInTitle"
 		:open-lightbox="forceLightbox"
+		:loan-id="loan.id"
 	>
 		<template #modal-content>
 			<!-- eslint-disable-next-line max-len -->

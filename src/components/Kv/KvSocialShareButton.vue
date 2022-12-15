@@ -29,7 +29,7 @@
 					:href="facebookShareUrl"
 					target="_blank"
 					rel="noopener"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Facebook-share']"
+					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Facebook-share', loanId]"
 					@click="$showTipMsg('Thanks for sharing to Facebook!')"
 				>
 					<kv-material-icon
@@ -45,7 +45,7 @@
 					:href="twitterShareUrl"
 					target="_blank"
 					rel="noopener"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Twitter-share']"
+					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Twitter-share', loanId]"
 					@click="$showTipMsg('Thanks for tweeting!')"
 				>
 					<kv-material-icon
@@ -61,7 +61,7 @@
 					:href="linkedInShareUrl"
 					target="_blank"
 					rel="noopener"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-LinkedIn-share']"
+					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-LinkedIn-share', loanId]"
 					@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
 				>
 					<kv-material-icon
@@ -75,14 +75,14 @@
 					class="social-button "
 					data-testid="share-copy-link-button"
 					:disabled="copyStatus.disabled"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Copy-link-share']"
+					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Copy-link-share', loanId]"
 					@click="copyLink"
 				>
 					<kv-material-icon
 						class="tw-w-4.5 tw-h-4.5 tw-pointer-events-none tw-inline-block tw-align-middle"
 						:icon="mdiLink"
 					/>
-					<span class="tw-font-medium">{{ this.copyStatus.text }}</span>
+					<span class="tw-font-medium">{{ copyStatus.text }}</span>
 				</kv-button>
 			</div>
 		</kv-lightbox>
@@ -171,6 +171,11 @@ export default {
 			type: Boolean,
 			required: false
 		},
+		loanId: {
+			type: String,
+			required: false,
+			default: ''
+		},
 	},
 	data() {
 		return {
@@ -239,6 +244,12 @@ export default {
 					if (code !== '4201') {
 						this.$showTipMsg(`There was a problem sharing to Facebook: ${message}`, 'warning');
 					}
+					this.$kvTrackEvent(
+						'thanks',
+						'click-Facebook-share',
+						'error-Social-Share-Lightbox',
+						this.loanId
+					);
 				} else {
 					this.$showTipMsg('Thanks for sharing to Facebook!');
 				}
