@@ -31,6 +31,10 @@ module.exports = [
 		},
 	},
 	{
+		path: '/lp/how-kiva-works',
+		redirect: '/about/how'
+	},
+	{
 		path: '/about/press-center',
 		component: () => import('@/pages/ContentfulPage'),
 		meta: {
