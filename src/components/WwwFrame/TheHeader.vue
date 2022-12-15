@@ -24,7 +24,7 @@
 				<template v-else-if="corporate">
 					<div
 						class="
-						tw-flex tw-gap-2.5 lg:tw-gap-6 tw-items-center"
+						tw-flex tw-gap-2.5 lg:tw-gap-6 tw-items-center align-middle"
 					>
 						<campaign-logo-group
 							class="tw-h-2.5 lg:tw-h-3.5"
@@ -66,20 +66,21 @@
 								v-else
 								:src="profilePic"
 								alt="My portfolio"
-								class="fs-mask tw-inline-block
+								class="data-hj-suppress fs-mask tw-inline-block
 									tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5
 									tw-rounded-full tw-overflow-hidden tw-object-fill"
 							>
 						</router-link>
-						<router-link
-							:to="loginUrl"
+						<kv-button
+							variant="secondary"
 							v-show="isVisitor"
-							class="header__button header__log-in"
+							class="tw-bg-white"
+							:to="loginUrl"
 							data-testid="header-log-in"
 							v-kv-track-event="['TopNav','click-Sign-in']"
 						>
 							Log in
-						</router-link>
+						</kv-button>
 					</div>
 				</template>
 
@@ -160,7 +161,7 @@
 
 						<div
 							class="header__right-side
-						tw-flex tw-justify-end tw-gap-2.5 lg:tw-gap-4"
+						tw-flex tw-justify-end tw-gap-2.5 lg:tw-gap-4 align-middle"
 						>
 							<!-- Borrow -->
 							<router-link
@@ -304,15 +305,16 @@
 							</router-link>
 
 							<!-- Log in Link -->
-							<router-link
-								:to="loginUrl"
+							<kv-button
+								variant="secondary"
 								v-show="isVisitor"
+								class="tw-bg-white"
+								:to="loginUrl"
 								data-testid="header-log-in"
-								class="header__button header__log-in"
 								v-kv-track-event="['TopNav','click-Sign-in']"
 							>
 								Log in
-							</router-link>
+							</kv-button>
 
 							<!-- Logged in Profile -->
 							<router-link
@@ -337,7 +339,7 @@
 									v-else
 									:src="profilePic"
 									alt="My portfolio"
-									class="fs-mask tw-inline-block
+									class="data-hj-suppress fs-mask tw-inline-block
 										tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5
 										tw-rounded-full tw-overflow-hidden tw-object-fill"
 								>
@@ -474,6 +476,7 @@ import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
@@ -504,6 +507,7 @@ export default {
 		KvPageContainer,
 		PromoCreditBanner,
 		SearchBar,
+		KvButton,
 		TheLendMenu: () => import('@/components/WwwFrame/LendMenu/TheLendMenu'),
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
@@ -646,25 +650,27 @@ export default {
 
 				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { path: '/' });
 				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { path: '/' });
-
-				userHasLentBefore(hasLentBefore);
-				userHasDepositBefore(hasDepositBefore);
 			} catch (e) {
 				logReadQueryError(e, 'User Data For Optimizely Metrics');
 			}
 		}
+
+		userHasLentBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
+		userHasDepositBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
 	},
 	mounted() {
 		// MARS-246 Hotjar user attributes
 		setHotJarUserAttributes({
 			userId: this.userId,
 			hasEverLoggedIn: this.hasEverLoggedIn,
-			hasLentBefore: Boolean(this.cookieStore.get(hasLentBeforeCookie)),
-			hasDepositBefore: Boolean(this.cookieStore.get(hasDepositBeforeCookie)),
+			hasLentBefore: this.cookieStore.get(hasLentBeforeCookie) === 'true',
+			hasDepositBefore: this.cookieStore.get(hasDepositBeforeCookie) === 'true',
 		});
 	},
 	methods: {
 		toggleLendMenu(immediate = false) {
+			const wasVisible = this.isLendMenuVisible;
+
 			if (immediate) {
 				// if touch, toggle immediately
 				this.isLendMenuVisible = !this.isLendMenuVisible;
@@ -681,7 +687,9 @@ export default {
 					}
 				}, 500);
 			}
-			if (this.isLendMenuVisible) {
+
+			// If the menu was previously hidden and is now visible, run onLoad
+			if (!wasVisible && this.isLendMenuVisible) {
 				this.$refs?.lendMenu?.onLoad?.();
 			}
 		},

@@ -1,30 +1,13 @@
 <template>
 	<div>
-		<div class="message-content">
-			<div class="row">
-				<div class="thanks__header-h1 tw-text-left large-3 small-1">
-					<kv-material-icon
-						class="tw-w-3 tw-h-3 tw-my-3 tw-align-middle tw-mr-0.5 message-content__success"
-						:icon="mdiCheckAll"
-					/>
-				</div>
-				<div v-if="receipt" class="large-9 small-11 message-content__text">
-					<div v-if="isGuest">
-						<div>Success, we've emailed your receipt to you.</div>
-					</div>
-					<div v-else>
-						<!-- eslint-disable-next-line max-len -->
-						<div>Success, your receipt has been sent to <strong class="fs-mask">{{ lender.email }}</strong></div>
-					</div>
-				</div>
-			</div>
-		</div>
+		<ShareStepper :lender-name="this.lender.firstName" :show-lender-name="showLenderName" />
 		<div class="row page-content">
 			<div class="large-2"></div>
 			<div class="small-12 large-8 columns thanks">
 				<div class="thanks__header hide-for-print">
 					<template v-if="receipt">
 						<borrower-image
+							v-if="categoryShareVersion === 'c' || !categoryName"
 							class="
 								tw-w-full
 								tw-bg-black
@@ -46,7 +29,13 @@
 								{ width: 280 },
 							]"
 						/>
-						<div class="tw-flex-auto tw-mb-2">
+						<div v-else>
+							<img
+								:alt="`${categoryName} category image`"
+								:src="imageRequire(`./${categoryName}_thanks_page.png`)"
+							>
+						</div>
+						<div v-if="categoryShareVersion === 'c' || !categoryName" class="tw-flex-auto tw-mb-2">
 							<figure>
 								<figcaption class="tw-flex progress">
 									<template>
@@ -88,11 +77,25 @@
 					<template v-else>
 						<h1	class="thanks__headline-h1 tw-mt-1 tw-mb-3 tw-text-left">
 							<!-- eslint-disable-next-line max-len -->
-							<span class="fs-mask">{{ this.lender.firstName }}</span>, can you share this loan with one more person?
+							<template v-if="categoryShareVersion === 'a' && categoryName">
+								<!-- eslint-disable-next-line max-len -->
+								<span class="fs-mask data-hj-suppress">{{ this.lender.firstName }}</span>, share now to find allies in the fight against economic inequity for {{ this.categoryName }}.
+							</template>
+							<template v-else-if="categoryShareVersion === 'b' && categoryName">
+								More loans like yours mean more opportunities for {{ this.categoryName }}.
+							</template>
+							<template v-else>
+								Can you share this loan with one more person?
+							</template>
 						</h1>
 						<p class="tw-text-h3 tw-m-0 thanks__base-text">
-							<!-- eslint-disable-next-line max-len -->
-							<span class="fs-mask">{{ this.loan.name }}</span> only needs {{ calculatePeopleQtyToGoal() }} more people to lend $25 and their loan could be fully funded in a matter of hours!
+							<template v-if="categoryShareVersion === 'c' || !categoryName">
+								<!-- eslint-disable-next-line max-len -->
+								{{ this.loan.name }} only needs {{ calculatePeopleQtyToGoal() }} more people to lend $25 and their loan could be fully funded in a matter of hours!
+							</template>
+							<template v-else>
+								{{ this.thanksPageBody }}
+							</template>
 						</p>
 					</template>
 					<template>
@@ -173,12 +176,13 @@ import clipboardCopy from 'clipboard-copy';
 import { mdiCheckAll, mdiLink } from '@mdi/js';
 import { getFullUrl } from '@/util/urlUtils';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
+import ShareStepper from '@/components/Thanks/ShareStepper';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
-const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
+const imageRequire = require.context('@/assets/images/category-share-experiment/', true);
 
 export default {
 	name: 'ThanksPageShare',
@@ -188,6 +192,7 @@ export default {
 		BorrowerImage,
 		KvProgressBar,
 		KvIcon,
+		ShareStepper
 	},
 	props: {
 		receipt: {
@@ -213,6 +218,10 @@ export default {
 		shareAskCopyVersion: {
 			type: String,
 			default: 'a'
+		},
+		categoryShareVersion: {
+			type: String,
+			default: 'c'
 		},
 	},
 	metaInfo() {
@@ -260,12 +269,19 @@ export default {
 			return `&utm_campaign=social_share_checkout_control_scle_${this.shareCardLanguageVersion}`;
 		},
 		shareLink() {
-			const base = `https://${this.$appConfig.host}`;
-			if (this.loan.id) {
-				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utm_content=${this.utmContent}`; // eslint-disable-line max-len
+			let base = `https://${this.$appConfig.host}`;
+			let lender = '';
+			let categoryShareVersion = '';
+			if (this.categoryName && this.categoryShareVersion !== 'c') {
+				base += `/lend-by-category/${this.categoryName}`;
+				lender = `&lender=${this.loan.name}`;
+				categoryShareVersion = ['a', 'b'].includes(this.categoryShareVersion)
+					? `&category_share_version=${this.categoryShareVersion}`
+					: '';
+			} else if (this.loan.id) {
+				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utm_content=${this.utmContent}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
 			}
-
-			return `${base}?utm_content=${this.utmContent}${this.getUtmCampaignVersion}`; // eslint-disable-line max-len
+			return `${base}?utm_content=${this.utmContent}${this.getUtmCampaignVersion}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
@@ -278,11 +294,21 @@ export default {
 			});
 		},
 		linkedInShareUrl() {
+			let title = `A loan for ${this.loan.name}`;
+			if (['a', 'b'].includes(this.categoryShareVersion) && this.categoryName) {
+				title = `Can you help ${this.loan.name} `;
+				if (this.categoryName === 'women') {
+					title += 'support women around the world?';
+				} else if (this.categoryName === 'education') {
+					title += 'expand access to education around the world?';
+				}
+				title += 'support smallholder farmers around the world?';
+			}
 			return getFullUrl('https://www.linkedin.com/shareArticle', {
 				mini: 'true',
 				source: `https://${this.$appConfig.host}`,
 				summary: this.shareMessage.substring(0, 256),
-				title: `A loan for ${this.loan.name}`,
+				title,
 				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social${this.getUtmCampaignVersion}` // eslint-disable-line max-len
 			});
 		},
@@ -293,6 +319,45 @@ export default {
 				via: 'Kiva',
 			});
 		},
+		categoryName() {
+			if (this.loan?.gender?.toLowerCase() === 'female') {
+				return 'women';
+			}
+			if (['education', 'agriculture'].includes(this.loan?.sector?.name?.toLowerCase())) {
+				return this.loan?.sector?.name?.toLowerCase();
+			}
+			return '';
+		},
+		thanksPageBody() {
+			let pageBody = '';
+			if (this.categoryShareVersion === 'a') {
+				pageBody = '1.4 billion people are currently unbanked with no access to basic financial services.';
+				if (this.categoryName === 'women') {
+					pageBody += ' Your loan will help women access to the funds they need to improve their lives.';
+				}
+				if (['education', 'agriculture'].includes(this.categoryName)) {
+					// eslint-disable-next-line max-len
+					pageBody += ` Your loan will help borrowers access the funds they need to invest in ${this.categoryName}.`;
+				}
+				pageBody += ' The more people join our cause, the bigger impact we\'ll make.';
+			} else if (this.categoryShareVersion === 'b') {
+				pageBody = 'Share Kiva.org with others to rally more allies around this cause.';
+				if (this.categoryName === 'women') {
+					// eslint-disable-next-line max-len
+					pageBody += ' Many women around the world lack access to the financial services they need to improve their lives. ';
+				}
+				if (['education', 'agriculture'].includes(this.categoryName)) {
+					// eslint-disable-next-line max-len
+					pageBody += ' Many people around the world lack access to the financial services they need to improve their lives. ';
+				}
+				pageBody += 'Together, we can address this inequity, one loan at a time.';
+			}
+
+			return pageBody;
+		},
+		showLenderName() {
+			return ['b', 'c'].includes(this.categoryShareVersion) || !this.categoryName;
+		}
 	},
 	methods: {
 		handleFacebookResponse() {

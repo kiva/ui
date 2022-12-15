@@ -20,7 +20,7 @@
 				tw-rounded-sm
 				tw-bg-white
 				tw-overflow-auto
-				tw-z-1"
+				tw-z-2"
 			:style="{ 'max-height': '200px' }"
 		>
 			<ul>
@@ -98,9 +98,11 @@ export default {
 	},
 	mounted() {
 		document.addEventListener('click', this.clickDocument);
+		document.addEventListener('touchstart', this.clickDocument);
 	},
 	beforeDestroy() {
 		document.removeEventListener('click', this.clickDocument);
+		document.removeEventListener('touchstart', this.clickDocument);
 
 		if (this.popper) {
 			this.popper.destroy();

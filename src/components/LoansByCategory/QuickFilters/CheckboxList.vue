@@ -19,7 +19,7 @@
 					:key="item.value"
 					:disabled="item.disabled"
 					v-model="selected"
-					@change="updateSelected($event, item.value)"
+					@change="updateSelected($event, [item.value])"
 					class="tw-text-small"
 				>
 					{{ item.title }}
@@ -71,17 +71,19 @@ export default {
 	methods: {
 		toggleSelectAll() {
 			const isAll = this.isAllSelected;
+			const changedArr = [];
 			this.items.forEach(item => {
 				const index = this.selected.indexOf(item.value);
 				const exists = index !== -1;
 				if (isAll) {
 					if (exists) {
-						this.updateSelected(this.selected, item.value);
+						changedArr.push(item.value);
 					}
 				} else if (!exists) {
-					this.updateSelected(this.selected, item.value);
+					changedArr.push(item.value);
 				}
 			});
+			this.updateSelected(this.selected, changedArr);
 		},
 		updateSelected(values, changed) {
 			this.$emit('updated', { values: [...values], changed });

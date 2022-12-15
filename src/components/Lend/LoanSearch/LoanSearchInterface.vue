@@ -41,7 +41,18 @@
 					</kv-lightbox>
 				</div>
 				<div v-if="initialLoadComplete" class="tw-pt-1.5">
-					<p>{{ totalCount }} Loans</p>
+					<div class="tw-flex tw-items-center tw-flex-wrap">
+						<p class="tw-inline-block tw-mr-2">
+							{{ totalCount }} Loans
+						</p>
+						<loan-search-saved-search
+							class="tw-inline-block"
+							v-if="enableSavedSearch && showSavedSearch"
+							:loan-search-state="loanSearchState"
+							:all-facets="allFacets"
+							:user-id="userId"
+						/>
+					</div>
 				</div>
 			</div>
 			<div class="tw-flex tw-mr-4">
@@ -60,22 +71,24 @@
 			<div class="tw-col-span-2 tw-relative tw-grow">
 				<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
 				<div v-if="initialLoadComplete">
-					<loan-search-saved-search
-						v-if="enableSavedSearch && showSavedSearch && !savedSearchSuccess"
-						:loan-search-state="loanSearchState"
-						:theme-names="themeNames"
-						:show-success-message="showSavedSearchSuccessMessage"
-						:user-id="userId"
-					/>
 					<loan-search-filter-chips
 						:loan-search-state="loanSearchState"
 						:all-facets="allFacets"
 						@updated="handleUpdatedFilters"
 						@reset="handleResetFilters"
 					/>
-					<p class="tw-hidden lg:tw-block tw-mt-1">
-						{{ totalCount }} Loans
-					</p>
+					<div class="tw-flex tw-mt-1 tw-items-center tw-flex-wrap">
+						<p class="tw-hidden lg:tw-inline-block tw-mr-2">
+							{{ totalCount }} Loans
+						</p>
+						<loan-search-saved-search
+							class="tw-hidden lg:tw-inline-block"
+							v-if="enableSavedSearch && showSavedSearch"
+							:loan-search-state="loanSearchState"
+							:all-facets="allFacets"
+							:user-id="userId"
+						/>
+					</div>
 				</div>
 				<template v-if="initialLoadComplete && totalCount === 0">
 					<h3 class="tw-text-center">
@@ -126,22 +139,10 @@ import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
 import userIdQuery from '@/graphql/query/userId.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
-import {
-	FLSS_QUERY_TYPE,
-	formatSortOptions,
-	transformIsoCodes,
-	transformThemes,
-	transformSectors,
-	transformTags,
-	transformGenderOptions,
-	transformDistributionModelOptions,
-	transformIsIndividualOptions,
-	transformLenderRepaymentTermOptions,
-	transformPartners,
-} from '@/util/loanSearch/filterUtils';
+import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
 import { FLSS_ORIGIN_LEND_FILTER } from '@/util/flssUtils';
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
-import { applyQueryParams, hasExcludedQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
+import { convertQueryToFilters, hasExcludedQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
 import { updateSearchState } from '@/util/loanSearch/searchStateUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
@@ -151,6 +152,7 @@ import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util//numberUtils';
 import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
 import LoanSearchSavedSearch from '@/components/Lend/LoanSearch/LoanSearchSavedSearch';
+import filterConfig from '@/util/loanSearch/filterConfig';
 import DonationCTA from '@/components/Lend/DonationCTA';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -183,10 +185,6 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		savedSearchSuccess: {
-			type: Boolean,
-			default: false
-		}
 	},
 	data() {
 		return {
@@ -255,7 +253,7 @@ export default {
 		await this.fetchFacets();
 
 		// Initialize the search filters with the query string params
-		await applyQueryParams(this.apollo, this.$route.query, this.allFacets, this.queryType, this.defaultPageLimit);
+		await this.applyQuery(this.apollo, this.$route.query, this.allFacets, this.queryType, this.defaultPageLimit);
 
 		// Here we subscribe to the loanSearchState and run the loan query when it updates
 		// TODO: work some guards to prevent duplicate queries and throttling to more carefully control # of queries
@@ -308,19 +306,9 @@ export default {
 			return isNumber(storedPageLimit) ? +storedPageLimit : this.loanSearchState.pageLimit;
 		},
 		showSavedSearch() {
-			return this.loanSearchState.countryIsoCode.length > 0
-				|| !!this.loanSearchState.gender
-				|| this.loanSearchState.sectorId.length > 0
-				|| this.loanSearchState.themeId.length > 0
-				|| this.loanSearchState.tagId.length > 0
-				|| !!this.loanSearchState.distributionModel
-				|| this.loanSearchState.isIndividual !== null
-				|| !!this.loanSearchState.lenderRepaymentTerm
-				|| !!this.loanSearchState.keywordSearch
-				|| this.loanSearchState.partnerId.length > 0;
-		},
-		themeNames() {
-			return this.allFacets?.themeNames ?? [];
+			return filterConfig.keys.reduce((prev, key) => {
+				return prev || filterConfig.config[key].showSavedSearch(this.loanSearchState);
+			}, false);
 		},
 		hasOnePageOfLoans() {
 			return this.totalCount <= this.loanSearchState.pageLimit;
@@ -329,40 +317,18 @@ export default {
 	methods: {
 		async fetchFacets(loanSearchState = {}) {
 			// TODO: Prevent this from running on every query (not needed for sorting and paging)
-			const {
-				isoCodes,
-				themes,
-				sectors,
-				tags,
-			} = await runFacetsQueries(
-				this.apollo,
-				loanSearchState,
-				FLSS_ORIGIN_LEND_FILTER
-			);
-
-			// TODO: Revert once non binary filter is ready to release
-			// genders: transformGenderOptions(this.allFacets?.genderFacets);
-			const nonBinaryFilterEnabled = this.$route.query?.nonBinaryFilter;
-			let genderFacets = this.allFacets?.genderFacets;
-			if (!nonBinaryFilterEnabled) {
-				genderFacets = genderFacets.filter(gender => gender.name !== 'nonbinary');
-			}
+			const filteredFacets = await runFacetsQueries(this.apollo, loanSearchState, FLSS_ORIGIN_LEND_FILTER);
 
 			// Merge all facet options with filtered options
-			this.facets = {
-				genders: transformGenderOptions(genderFacets),
-				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
-				sectors: transformSectors(sectors, this.allFacets?.sectorFacets),
-				themes: transformThemes(themes, this.allFacets?.themeFacets),
-				tags: transformTags(tags, this.allFacets?.tagFacets),
-				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [],
-					this.allFacets?.flssSorts ?? [],
-					this.extendFlssFilters),
-				distributionModels: transformDistributionModelOptions(this.allFacets?.distributionModelFacets),
-				isIndividualOptions: transformIsIndividualOptions(),
-				lenderRepaymentTerms: transformLenderRepaymentTermOptions(),
-				partners: transformPartners(this.allFacets?.partnerFacets ?? []),
-			};
+			this.facets = filterConfig.keys.reduce((prev, next) => {
+				// eslint-disable-next-line no-param-reassign
+				prev[next] = filterConfig.config[next].getOptions(
+					this.allFacets,
+					filteredFacets,
+					this.extendFlssFilters
+				);
+				return prev;
+			}, {});
 		},
 		trackLoans() {
 			this.$kvSetCustomUrl();
@@ -386,9 +352,6 @@ export default {
 			this.isLightboxVisible = toggle;
 		},
 		updateState(filters = {}) {
-			if (this.savedSearchSuccess) {
-				this.disableSavedSearchSuccessMessage();
-			}
 			updateSearchState(this.apollo, filters, this.allFacets, this.queryType, this.loanSearchState);
 		},
 		handleUpdatedFilters(filters) {
@@ -416,17 +379,16 @@ export default {
 
 			this.$kvTrackEvent?.('Lending', 'click-zero-loans-reset');
 		},
-		showSavedSearchSuccessMessage(searchName) {
-			this.$emit('enable-success-saved-search', searchName);
-		},
-		disableSavedSearchSuccessMessage() {
-			this.$emit('disable-success-saved-search', false);
+		applyQuery: async (apollo, query, allFacets, queryType, pageLimit, loanSearchState = {}) => {
+			const filters = convertQueryToFilters(query, allFacets, queryType, pageLimit);
+
+			await updateSearchState(apollo, filters, allFacets, queryType, loanSearchState);
 		}
 	},
 	watch: {
 		$route(to) {
 			// Update the loan search state when the user clicks back/forward in the browser
-			applyQueryParams(
+			this.applyQuery(
 				this.apollo,
 				to.query,
 				this.allFacets,

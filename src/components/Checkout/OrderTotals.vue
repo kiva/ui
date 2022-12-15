@@ -1,81 +1,122 @@
 <template>
-	<div class="order-totals" data-testid="basket-order-totals-section">
-		<div v-if="showPromoCreditTotal" class="order-total" data-testid="basket-order-total">
-			<strong>Order Total: <span class="total-value">{{ itemTotal }}</span></strong>
+	<div class="tw-mb-1" data-testid="basket-order-totals-section">
+		<div
+			v-if="showPromoCreditTotal"
+			class="tw-flex tw-flex-row tw-w-full tw-mb-2 tw-text-h3"
+			data-testid="basket-order-total"
+		>
+			<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
+				Order Total:
+			</div>
+			<span class="tw-float-right md:tw-float-none tw-text-right tw-pl-2">
+				{{ itemTotal }}</span>
+			<!-- icon spacer -->
+			<span class="tw-w-4.5"></span>
 		</div>
+
+		<!-- variant e on donate item experiment -->
+		<donation-item
+			v-if="donateItemExperimentVersion === 'e' && Number(totals.loanReservationTotal) > 0 "
+			data-testid="basket-donation"
+			:donation="donationObject"
+			:order-total-variant="donateItemExperimentVersion === 'e'"
+			:loan-count="Number(totals.loanReservationTotal) > 0 ? 1 : 0"
+			:loan-reservation-total="Number(totals.loanReservationTotal)"
+			@refreshtotals="$emit('refreshtotals')"
+			@updating-totals="$emit('updating-totals', $event)"
+		/>
 
 		<div
 			v-if="showKivaCredit"
-			class="kiva-credit tw-font-medium tw-mb-2"
+			class="tw-flex tw-flex-row tw-w-full tw-mb-2 tw-text-h3"
 			data-testid="basket-kiva-credit"
 		>
-			<span v-if="showRemoveKivaCredit">
-				Kiva credit: <span
-					data-testid="applied-kiva-credit-amount"
-					class="total-value"
-				>({{ kivaCredit }})</span>
-			</span>
-			<span v-if="showApplyKivaCredit">
-				<del>Kiva credit:</del> <span
-					data-testid="removed-kiva-credit-amount"
-					class="total-value"
-				><del>({{ kivaCredit }})</del></span>
-			</span>
-			<button
-				v-if="showRemoveKivaCredit"
-				class="remove-credit"
-				@click="removeCredit('kiva_credit')"
-				data-testid="basket-remove-kiva-credit"
-			>
-				<kv-icon
-					class="remove-credit-icon tw-fill-current tw-text-tertiary"
-					name="small-x"
-					:from-sprite="true"
-					title="Remove Credit"
-				/>
-			</button>
-			<button
-				v-if="showApplyKivaCredit"
-				class="apply-credit tw-text-small tw-font-book"
-				@click="addCredit('kiva_credit')"
-				data-testid="basket-apply-kiva-credit"
-			>
-				Apply
-			</button>
+			<template v-if="showRemoveKivaCredit">
+				<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
+					Kiva Credit:
+				</div>
+				<div
+					class="tw-flex-none tw-w-auto tw-flex tw-items-center"
+				>
+					<span
+						data-testid="applied-kiva-credit-amount"
+						class="tw-pl-2 tw-text-right tw-whitespace-nowrap"
+					>- {{ kivaCredit }}</span>
+					<button
+						v-if="showRemoveKivaCredit"
+						@click="removeCredit('kiva_credit')"
+						data-testid="basket-remove-kiva-credit"
+						class="tw-h-2.5 tw-flex"
+					>
+						<kv-material-icon
+							class="tw-text-secondary tw-ml-2 tw-w-2.5"
+							:icon="mdiClose"
+						/>
+					</button>
+				</div>
+			</template>
+			<template v-if="showApplyKivaCredit">
+				<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
+					<del>Kiva Credit:</del>
+				</div>
+				<div
+					class="tw-flex-none tw-w-auto tw-flex"
+				>
+					<span
+						data-testid="removed-kiva-credit-amount"
+						class="tw-pl-2 tw-text-right tw-whitespace-nowrap"
+					><del>- {{ kivaCredit }}</del></span>
+					<button
+						class="tw-text-small tw-ml-2"
+						@click="addCredit('kiva_credit')"
+						data-testid="basket-apply-kiva-credit"
+					>
+						Apply
+					</button>
+				</div>
+			</template>
 		</div>
 
 		<div v-if="showPromoCreditTotal">
-			<div class="order-total" data-testid="basket-promo-total">
-				<template v-if="availablePromoTotal">
-					{{ availablePromoTotal }}
-				</template>
-				<kv-button
-					class="text-link"
-					id="promo_name"
-					data-testid="basket-promo-name"
-					v-if="promoFundDisplayName"
-				>
-					{{ promoFundDisplayName }}
-				</kv-button> promotion: <span
-					data-testid="promo-amount"
-					class="total-value"
-				>({{ appliedPromoTotal }})</span>
-				<button
-					v-if="showRemoveActivePromoCredit"
-					class="remove-credit"
-					@click="promoOptOutLightboxVisible = true"
-					data-testid="basket-remove-active-promo"
-				>
-					<kv-icon
-						class="remove-credit-icon tw-fill-current tw-text-tertiary"
-						name="small-x"
-						:from-sprite="true"
-						title="Remove Credit"
-					/>
-				</button>
+			<div
+				class="tw-text-h3 tw-mb-2 tw-text-left md:tw-text-right
+			tw-flex tw-justify-end tw-items-center" data-testid="basket-promo-total"
+			>
+				<span class="tw-w-full">
+					<template v-if="availablePromoTotal">
+						{{ availablePromoTotal }}
+					</template>
+					<span
+						class="tw-text-brand"
+						id="promo_name"
+						data-testid="basket-promo-name"
+						v-if="promoFundDisplayName"
+					>
+						{{ promoFundDisplayName }}
+					</span> promotion:
+				</span>
+
+				<div class="tw-flex tw-items-center">
+					<span
+						data-testid="promo-amount"
+						class="tw-pl-2 tw-text-right tw-whitespace-nowrap"
+					>- {{ appliedPromoTotal }}</span>
+					<button
+						v-if="showRemoveActivePromoCredit"
+						@click="promoOptOutLightboxVisible = true"
+						data-testid="basket-remove-active-promo"
+						class="tw-h-2.5 tw-flex"
+					>
+						<kv-material-icon
+							class="tw-text-secondary tw-ml-2 tw-w-2.5"
+							:icon="mdiClose"
+						/>
+					</button>
+				</div>
+
 				<button
 					v-if="showApplyActivePromoCredit"
-					class="apply-credit tw-text-small"
+					class="tw-text-small tw-ml-2"
 					@click="applyPromoCredit"
 					data-testid="basket-apply-active-promo"
 				>
@@ -103,25 +144,38 @@
 			<matched-loan-kiva-credit :open-lightbox="openLightbox" />
 		</div>
 
-		<div class="order-total" data-testid="total-due">
-			<strong>
-				<template v-if="!showPromoCreditTotal">Total: </template>
-				<template v-else>Total Due: </template>
-				<span class="total-value" data-testid="basket-total-due-amount">{{ creditAmountNeeded }}</span>
-			</strong>
-		</div>
+		<div class="tw-text-h3 tw-mb-1 tw-text-right" data-testid="total-due">
+			<div class="tw-flex tw-w-full tw-justify-end tw-items-center">
+				<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
+					<template v-if="!showPromoCreditTotal">
+						Total:
+					</template>
+					<template v-else>
+						Total Due:
+					</template>
+				</div>
+				<div
+					class="tw-pl-2"
+					data-testid="basket-total-due-amount"
+				>
+					{{ creditAmountNeeded }}
+				</div>
+				<!-- icon spacer -->
+				<span class="tw-w-4.5"></span>
+			</div>
 
-		<!-- Warn about removing promo credit -->
-		<verify-remove-promo-credit
-			data-testid="basket-remove-promo-verification"
-			:visible="promoOptOutLightboxVisible"
-			:applied-promo-total="appliedPromoTotal"
-			:promo-fund-display-name="promoFundDisplayName"
-			:active-credit-type="activeCreditType"
-			@credit-removed="handleCreditRemoved"
-			@updating-totals="setUpdating($event)"
-			@promo-opt-out-lightbox-closed="promoOptOutLightboxVisible = false"
-		/>
+			<!-- Warn about removing promo credit -->
+			<verify-remove-promo-credit
+				data-testid="basket-remove-promo-verification"
+				:visible="promoOptOutLightboxVisible"
+				:applied-promo-total="appliedPromoTotal"
+				:promo-fund-display-name="promoFundDisplayName"
+				:active-credit-type="activeCreditType"
+				@credit-removed="handleCreditRemoved"
+				@updating-totals="setUpdating($event)"
+				@promo-opt-out-lightbox-closed="promoOptOutLightboxVisible = false"
+			/>
+		</div>
 	</div>
 </template>
 
@@ -131,22 +185,29 @@ import logFormatter from '@/util/logFormatter';
 import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
 import { removeCredit } from '@/util/checkoutUtils';
 import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
-import KvButton from '@/components/Kv/KvButton';
-import KvIcon from '@/components/Kv/KvIcon';
 import KvTooltip from '@/components/Kv/KvTooltip';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 import MatchedLoanKivaCredit from '@/components/Checkout/MatchedLoanKivaCredit';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
+import DonationItem from '@/components/Checkout/DonationItem';
+import { mdiClose } from '@mdi/js';
+
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'OrderTotals',
 	components: {
-		KvButton,
-		KvIcon,
 		KvTooltip,
 		VerifyRemovePromoCredit,
-		MatchedLoanKivaCredit
+		MatchedLoanKivaCredit,
+		DonationItem,
+		KvMaterialIcon
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		totals: {
 			type: Object,
@@ -167,7 +228,9 @@ export default {
 	},
 	data() {
 		return {
+			mdiClose,
 			promoOptOutLightboxVisible: false,
+			donateItemExperimentVersion: 'a' // control version
 		};
 	},
 	computed: {
@@ -287,6 +350,16 @@ export default {
 				&& parseFloat(this.availablePromoTotal.replace('$', '')) > 0;
 			}
 			return false;
+		},
+		donationObject() {
+			// used for prop in donation item
+			return {
+				__typename: 'Donation',
+				id: 0,
+				isTip: false,
+				isUserEdited: false,
+				price: numeral(this.totals.donationTotal)
+			};
 		}
 	},
 	methods: {
@@ -334,47 +407,38 @@ export default {
 			this.$emit('credit-removed');
 			this.$router.push(this.$route.path); // remove promo query param from url
 		}
-	}
+	},
+	apollo: {
+		preFetch(config, client) {
+			return client.query({
+				query: experimentQuery, variables: { id: 'basket_donate_modules' }
+			}).catch(errorResponse => {
+				logFormatter(errorResponse, 'error');
+			});
+		}
+	},
+	created() {
+		const donateModuleExpData = getExperimentSettingCached(this.apollo, 'basket_donate_modules');
+		if (donateModuleExpData?.enabled) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Basket',
+				'basket_donate_modules',
+				'EXP-ACK-440-Oct2022'
+			);
+			if (version) {
+				this.donateItemExperimentVersion = version;
+			}
+		}
+	},
 };
 </script>
 
 <style lang="scss" scoped>
 @import 'settings';
 
-.order-total,
-.kiva-credit {
-	text-align: left;
-
-	@include breakpoint(medium) {
-		text-align: right;
-	}
-}
-
 .order-totals {
-	.remove-credit {
-		margin-left: 0.625rem;
-	}
-
-	.remove-credit-icon {
-		width: 1.1rem;
-		height: 1.1rem;
-		vertical-align: middle;
-	}
-
-	.order-total {
-		font-size: $featured-text-font-size;
-		margin-bottom: 1rem;
-	}
-
-	.total-value {
-		display: inline-block;
-		margin-left: rem-calc(5);
-		margin-right: rem-calc(3);
-		@include breakpoint(small only) {
-			float: right;
-		}
-	}
-
 	.tooltip {
 		text-align: left;
 	}

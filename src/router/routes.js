@@ -24,6 +24,20 @@ module.exports = [
 	},
 	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
 	{
+		path: '/about/how',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: {
+			contentfulPage: () => 'lp/how-kiva-works',
+		},
+	},
+	{
+		path: '/about/press-center',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: {
+			contentfulPage: () => 'lp/press',
+		},
+	},
+	{
 		path: '/auto-deposit',
 		component: () => import('@/pages/AutoDeposit/AutoDepositLandingPage'),
 	},
@@ -56,12 +70,14 @@ module.exports = [
 	{ path: '/build/getting-started', component: () => import('@/pages/Build/GettingStartedPage') },
 	{ path: '/build/research', component: () => import('@/pages/Build/Research') },
 	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
-
+	{
+		path: '/categories',
+		component: () => import('@/pages/Categories/CategoriesPage')
+	},
 	{
 		path: '/categories-beta',
-		component: () => import('@/pages/Categories/CategoriesBeta')
+		redirect: '/categories'
 	},
-
 	{
 		path: '/cc/:dynamicRoute',
 		component: () => import('@/pages/LandingPages/CorporateCampaign/CCLandingPage'),
@@ -272,6 +288,14 @@ module.exports = [
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
+		}
+	},
+	{
+		path: '/lending-home',
+		component: () => import('@/pages/LoanFinding/LoanFinding'),
+		meta: {
+			excludeFromStaticSitemap: true,
+			authenticationRequired: true,
 		}
 	},
 	{

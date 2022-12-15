@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import logFormatter from '@/util/logFormatter';
 import SimpleQueue from '@/util/simpleQueue';
 
@@ -229,8 +230,6 @@ export default {
 				if (optimizelyLoaded) {
 					kvActions.trackOPTransaction(transactionData);
 				}
-
-				kvActions.trackQuantcast(transactionData);
 			},
 			trackFBTransaction: transactionData => {
 				const itemTotal = transactionData.itemTotal || '';
@@ -241,26 +240,6 @@ export default {
 						content_type: transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender'
 					});
 				}
-
-				// send transaction data
-				kvActions.trackFBCustomEvent(
-					'TransactionInfo',
-					{
-						depositTotal: transactionData.depositTotal,
-						donationTotal: transactionData.donationTotal,
-						isFtd: transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender',
-						isTip: transactionData.isTip,
-						isUserEdited: transactionData.isUserEdited,
-						itemTotal: transactionData.itemTotal,
-						loanCount: transactionData.loanCount,
-						loanTotal: transactionData.loanTotal,
-						kivaCardCount: transactionData.kivaCardCount,
-						kivaCardTotal: transactionData.kivaCardTotal,
-						kivaCreditUsed: transactionData.kivaCreditAppliedTotal,
-						paymentType: transactionData.paymentType,
-						transactionId: transactionData.transactionId,
-					}
-				);
 
 				// signify transaction has kiva cards
 				if (transactionData.kivaCards && transactionData.kivaCards.length) {
@@ -312,37 +291,13 @@ export default {
 					non_interaction: true
 				});
 			},
-			trackQuantcast: transactionData => {
-				// exit if script is not loaded due to blocking or user choice
-				// eslint-disable-next-line no-underscore-dangle
-				if (typeof window._qevents === 'undefined') return false;
-
-				let qacct = null;
-				/* eslint-disable no-underscore-dangle */
-				if (window.__KV_CONFIG__ && window.__KV_CONFIG__.quantcastId) {
-					qacct = window.__KV_CONFIG__.quantcastId;
-				}
-
-				const customerType = transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender';
-				const donationAmountNormalized = transactionData.donationTotal ? transactionData.donationTotal.replace('.', '') : null;
-
-				// format data for quantcast event
-				// eslint-disable-next-line no-underscore-dangle
-				window._qevents.push({
-					qacct,
-					uid: 'null',
-					labels: `_fp.event.Checkout,_fp.customer.${customerType},_fp.donation.${donationAmountNormalized}`,
-					orderid: String(transactionData.transactionId),
-					revenue: String(transactionData.itemTotal),
-					event: 'refresh'
-				});
-			},
 			trackOPTransaction: transactionData => {
 				if (transactionData.depositTotal) {
 					window.optimizely.push({
 						type: 'event',
 						eventName: 'deposit',
 						tags: {
+							revenue: transactionData.depositTotal * 100,
 							deposit_amount: transactionData.depositTotal
 						}
 					});
@@ -353,7 +308,8 @@ export default {
 						type: 'event',
 						eventName: 'loan_share_purchase',
 						tags: {
-							loan_share_purchase_amount: transactionData.loanTotal
+							loan_share_purchase_amount: transactionData.loanTotal,
+							donation_amount: transactionData.donationTotal
 						}
 					});
 				}

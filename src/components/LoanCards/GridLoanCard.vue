@@ -76,6 +76,7 @@
 </template>
 
 <script>
+import { differenceInDays, parseISO } from 'date-fns';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
@@ -164,14 +165,21 @@ export default {
 		},
 		trackInteraction(args) {
 			this.$emit('track-interaction', args);
+			if (args?.interactionType === 'addToBasket' && this.getTagInfo()) {
+				this.$kvTrackEvent(
+					'loan-card',
+					'add-to-basket',
+					this.getTagInfo()
+				);
+			}
 		},
 		getTagInfo() {
-			if (this.loan?.loanFundraisingInfo?.isExpiringSoon) {
-				return 'endingSoon';
-			} if (this.amountLeft < 100) {
-				return 'almostFunded';
+			if (differenceInDays(parseISO(this.loan?.plannedExpirationDate), Date.now()) <= 3) {
+				return 'ending-soon';
+			} if (this.amountLeft < 100 && this.amountLeft > 0) {
+				return 'almost-funded';
 			} if (this.loan?.matchingText) {
-				return 'matchedLoan';
+				return 'matched-loan';
 			}
 			return null;
 		}

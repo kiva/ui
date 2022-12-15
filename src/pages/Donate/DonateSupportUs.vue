@@ -8,6 +8,7 @@
 					:key="1"
 					:button-text="buttonText"
 					:data="donationValues"
+					:selected-amount-setting="selectedAmountSetting"
 					:form-disclaimer="formDisclaimer"
 					:show-disclaimer="false"
 					:activate-monthly-option="true"
@@ -165,6 +166,9 @@ export default {
 			return this.heroSettingsContent?.dataObject?.amounts.length
 				? this.heroSettingsContent?.dataObject?.amounts
 				: this.defaultDonationValues;
+		},
+		selectedAmountSetting() {
+			return this.heroSettingsContent?.dataObject?.selectedAmount ?? null;
 		},
 		heroDisclaimerContent() {
 			return this.heroContentGroup?.contents?.find(({ contentType }) => {

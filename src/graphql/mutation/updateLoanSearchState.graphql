@@ -17,5 +17,18 @@ mutation updateLoanSearch($searchParams: JSONObject) {
 		}
 		keywordSearch
 		partnerId
+		partnerRiskRating {
+			min
+			max
+		}
+		partnerDefaultRate {
+			min
+			max
+		}
+		partnerAvgProfitability {
+			min
+			max
+		}
+		isMatchable
 	}
 }

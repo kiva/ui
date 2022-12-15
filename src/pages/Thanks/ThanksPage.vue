@@ -1,7 +1,5 @@
 <template>
-	<www-page
-		:gray-background="true"
-	>
+	<www-page>
 		<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 			<div class="small-12 columns thanks">
 				<div class="thanks__header hide-for-print">
@@ -28,11 +26,12 @@
 								'tw-text-subhead tw-mb-2': !showAutoDepositUpsell
 							}"
 						>
-							Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
+							Thanks for supporting
+							<span class="fs-mask data-hj-suppress">{{ borrowerSupport }}</span>.<br>
 						</p>
 						<p v-if="lender.email" class="hide-for-print">
 							We've emailed your order confirmation to
-							<strong class="fs-exclude">{{ lender.email }}</strong>
+							<strong class="data-hj-suppress fs-exclude">{{ lender.email }}</strong>
 						</p>
 						<p v-else class="hide-for-print">
 							We've emailed your order confirmation to you.
@@ -103,12 +102,12 @@
 			:simple-social-share-version="simpleSocialShareVersion"
 			:share-card-language-version="shareCardLanguageVersion"
 			:share-ask-copy-version="shareAskCopyVersion"
+			:category-share-version="categoryShareVersion"
 		/>
 	</www-page>
 </template>
 
 <script>
-import confetti from 'canvas-confetti';
 import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
@@ -170,6 +169,7 @@ export default {
 			shareCardLanguageVersion: '',
 			simpleSocialShareVersion: '',
 			shareAskCopyVersion: '',
+			categoryShareVersion: '',
 		};
 	},
 	apollo: {
@@ -209,6 +209,26 @@ export default {
 	},
 	computed: {
 		selectedLoan() {
+			if (this.categoryShareVersion === 'a' || this.categoryShareVersion === 'b') {
+				const loans = [...this.loans];
+				loans.sort((a, b) => {
+					const aSector = a?.sector?.name?.toLowerCase();
+					const bSector = b?.sector?.name?.toLowerCase();
+					if (a?.gender?.toLowerCase() === 'female') return -1;
+					if (b?.gender?.toLowerCase() === 'female') return 1;
+					if (aSector === 'education') return -1;
+					if (bSector === 'education') return 1;
+					if (aSector === 'agriculture') return -1;
+					if (bSector === 'agriculture') return 1;
+					return 0;
+				});
+
+				const firstLoan = loans[0];
+				if (firstLoan?.gender === 'female'
+					|| ['agriculture', 'education'].includes(firstLoan?.sector?.name.toLowerCase())) {
+					return firstLoan;
+				}
+			}
 			const orderedLoans = orderBy(this.loans, ['unreservedAmount'], ['desc']);
 			return orderedLoans[0] || {};
 		},
@@ -378,21 +398,24 @@ export default {
 					this.shareAskCopyVersion,
 				);
 			}
+
+			// MARS-310 Category Share on Thanks page
+			const categoryShareResult = this.apollo.readFragment({
+				id: 'Experiment:category_share',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.categoryShareVersion = categoryShareResult?.version;
+			if (this.categoryShareVersion && (this.selectedLoan?.gender?.toLowerCase() === 'female'
+				|| ['women', 'education', 'agriculture'].includes(this.selectedLoan?.sector?.name?.toLowerCase()))) {
+				this.$kvTrackEvent(
+					'Thanks',
+					'EXP-MARS-310-Nov2022',
+					this.categoryShareVersion,
+				);
+			}
 		}
-	},
-	mounted() {
-		if (this.receipt) {
-			confetti({
-				origin: {
-					y: 0.2
-				},
-				particleCount: 150,
-				spread: 200,
-				colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c'],
-				disableForReducedMotion: true,
-			});
-		}
-	},
+	}
 };
 
 </script>

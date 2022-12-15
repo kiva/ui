@@ -3,7 +3,7 @@ var dev  = require('./dev.js')
 
 module.exports = merge(dev, {
 	app: {
-		publicPath: 'https://www-dev-kiva-org.freetls.fastly.net/',
+		publicPath: 'https://www.dev.kiva.org/',
 	},
 	server: {
 		memcachedServers: 'marketplace-k8s-ui-dev.knmtma.cfg.usw2.cache.amazonaws.com:11211',

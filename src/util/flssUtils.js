@@ -1,8 +1,9 @@
 import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 import flssLoanFacetsQuery from '@/graphql/query/flssLoanFacetsQuery.graphql';
 import flssLoanChannelQuery from '@/graphql/query/flssLoanChannel.graphql';
+import categoryListFlssQuery from '@/graphql/query/loanFinding/categoryListFlss.graphql';
 import logReadQueryError from '@/util/logReadQueryError';
-import { getMinMaxRangeFilter } from '@/util/loanSearch/minMaxRange';
+import filterConfig from '@/util/loanSearch/filterConfig';
 
 /**
  * FLSS Query Context Const lists
@@ -14,6 +15,7 @@ export const FLSS_ORIGIN_LEND_BY_CATEGORY = 'web:lend-by-category';
 export const FLSS_ORIGIN_LEND_FILTER = 'web:lend-filter';
 export const FLSS_ORIGIN_BP_FUNDED = 'web:bp-funded';
 export const FLSS_ORIGIN_THANKS = 'web:thanks';
+export const FLSS_ORIGIN_LENDING_HOME = 'web:lending-home';
 
 /**
  * Gets the filters for FLSS
@@ -22,22 +24,9 @@ export const FLSS_ORIGIN_THANKS = 'web:thanks';
  * @returns {Object} The filters in the correct FLSS format
  */
 export function getFlssFilters(loanSearchState) {
-	return {
-		...(loanSearchState?.gender && { gender: { any: loanSearchState.gender } }),
-		...(loanSearchState?.countryIsoCode?.length && { countryIsoCode: { any: loanSearchState.countryIsoCode } }),
-		...(loanSearchState?.themeId?.length && { themeId: { any: loanSearchState.themeId } }),
-		...(loanSearchState?.sectorId?.length && { sectorId: { any: loanSearchState.sectorId } }),
-		...(loanSearchState?.distributionModel && { distributionModel: { eq: loanSearchState.distributionModel } }),
-		...(loanSearchState?.tagId?.length && { tagId: { any: loanSearchState.tagId } }),
-		...(loanSearchState?.keywordSearch && { description: { eq: loanSearchState.keywordSearch } }),
-		...(typeof loanSearchState?.isIndividual !== 'undefined' && loanSearchState.isIndividual !== null && {
-			isIndividual: { eq: loanSearchState.isIndividual }
-		}),
-		...(loanSearchState?.lenderRepaymentTerm && {
-			lenderRepaymentTerm: { range: getMinMaxRangeFilter(loanSearchState.lenderRepaymentTerm) }
-		}),
-		...(loanSearchState?.partnerId?.length && { partnerId: { any: loanSearchState.partnerId } }),
-	};
+	return filterConfig.keys.reduce((prev, key) => {
+		return { ...prev, ...filterConfig.config[key].getFlssFilter(loanSearchState) };
+	}, {});
 }
 
 /**
@@ -74,6 +63,26 @@ export async function fetchFacets(
 		return result.data;
 	} catch (e) {
 		logReadQueryError(e, 'flssUtils fetchFacets flssLoanFacetsQuery');
+	}
+}
+
+/**
+ * Fetches list of categories from FLSS
+ *
+ * @param {Object} apollo The Apollo client instant
+ * @returns {Promise<Array<Object>>} Promise for category name/id
+ */
+export async function fetchCategories(
+	apollo
+) {
+	try {
+		const result = await apollo.query({
+			query: categoryListFlssQuery,
+			fetchPolicy: 'network-only',
+		});
+		return result.data;
+	} catch (e) {
+		logReadQueryError(e, 'flssUtils fetchCategories categoryListFlssQuery');
 	}
 }
 

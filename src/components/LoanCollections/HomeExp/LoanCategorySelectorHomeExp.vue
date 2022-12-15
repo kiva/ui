@@ -39,7 +39,7 @@ export default {
 	data() {
 		return {
 			categoryBtnStyle: 'vertical-tab',
-			buttonStyle: 'primary',
+			buttonStyle: 'secondary',
 			categoryPage: '/lend-by-category/',
 		};
 	},

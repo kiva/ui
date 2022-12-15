@@ -41,10 +41,7 @@
 							'md:tw-col-start-2 md:tw-col-span-10': isSticky,
 						},
 						'lg:tw-col-span-12',
-						{
-							'lg:tw-pt-1 lg:tw-pb-1': !socialExpEnabled,
-							'lg:tw-pt-1 lg:tw-pb-0': socialExpEnabled,
-						},
+						'lg:tw-pt-1 lg:tw-pb-1',
 					]"
 				>
 					<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
@@ -67,7 +64,7 @@
 								<kv-ui-select
 									v-if="hideShowLendDropdown && !isLessThan25"
 									id="LoanAmountDropdown"
-									class="tw-pr-2.5 tw--mb-2"
+									class="tw-mr-2.5 lg:tw-mb-2 tw-min-w-12"
 									data-testid="bp-lend-cta-amount-dropdown"
 									v-model="selectedOption"
 									v-kv-track-event="[
@@ -87,81 +84,58 @@
 								</kv-ui-select>
 
 								<!-- Sparkles wrapper -->
-								<div
-									class="tw-relative tw-inline-flex tw-flex-1"
-									:class="{'tw-w-full':isLendAmountButton}"
-								>
-									<!-- Lend button -->
-									<kv-ui-button
-										key="lendButton"
-										v-if="lendButtonVisibility && !isLessThan25"
-										class="tw-inline-flex tw-flex-1"
-										data-testid="bp-lend-cta-lend-button"
-										type="submit"
-									>
-										{{ ctaButtonText }}
-									</kv-ui-button>
+								<complete-loan-wrapper :is-complete-loan-active="isCompleteLoanActive">
+									<template #button>
 
-									<!-- Lend again/lent previously button -->
-									<kv-ui-button
-										key="lendAgainButton"
-										v-if="this.state === 'lent-to' && !isLessThan25"
-										class="tw-inline-flex tw-flex-1"
-										data-testid="bp-lend-cta-lend-again-button"
-										type="submit"
-										v-kv-track-event="[
-											'Lending',
-											'Add to basket',
-											'Lend again'
-										]"
-									>
-										Lend again
-									</kv-ui-button>
+										<!-- Lend button -->
+										<kv-ui-button
+											key="lendButton"
+											v-if="lendButtonVisibility && !isLessThan25"
+											class="tw-inline-flex tw-flex-1"
+											data-testid="bp-lend-cta-lend-button"
+											type="submit"
+										>
+											{{ ctaButtonText }}
+										</kv-ui-button>
 
-									<!-- Stranded loans -->
-									<lend-amount-button
-										class="tw-w-full"
-										:loan-id="loanId"
-										:show-now="true"
-										:amount-left="unreservedAmount"
-										@add-to-basket="addToBasket"
-										:complete-loan="completeLoan"
-										v-if="isLendAmountButton"
-									/>
+										<!-- Lend again/lent previously button -->
+										<kv-ui-button
+											key="lendAgainButton"
+											v-if="isLentTo && !isLessThan25"
+											class="tw-inline-flex tw-flex-1"
+											data-testid="bp-lend-cta-lend-again-button"
+											type="submit"
+											v-kv-track-event="[
+												'Lending',
+												'Add to basket',
+												'Lend again'
+											]"
+										>
+											Lend again
+										</kv-ui-button>
 
-									<!-- Adding to basket button -->
-									<kv-ui-button
-										v-if="isAdding"
-										class="tw-inline-flex tw-flex-1"
-										data-testid="bp-lend-cta-adding-to-basket-button"
-									>
-										Adding to basket...
-									</kv-ui-button>
+										<!-- Stranded loans -->
+										<lend-amount-button
+											class="tw-w-full"
+											:loan-id="loanId"
+											:show-now="true"
+											:amount-left="unreservedAmount"
+											@add-to-basket="addToBasket"
+											:complete-loan="isCompleteLoanActive"
+											v-if="isLendAmountButton"
+										/>
 
-									<!-- Sparkles section -->
-									<img
-										v-show="isCompleteLoanActive"
-										class="tw-absolute tw--bottom-1 tw--left-1 tw-animate-pulse"
-										src="@/assets/images/sparkle.svg"
-									>
-									<img
-										v-show="isCompleteLoanActive"
-										class="tw-absolute tw--top-2 tw-right-1.5 tw-animate-pulse tw-scale-50"
-										style="animation-delay: 300ms;"
-										src="@/assets/images/sparkle.svg"
-									>
-									<img
-										v-show="isCompleteLoanActive"
-										class="tw-absolute tw--top-1 tw--right-1 tw-animate-pulse"
-										src="@/assets/images/sparkle.svg"
-									>
-									<img
-										v-show="isCompleteLoanActive"
-										class="tw-absolute tw-top-2 tw--right-1.5 tw-animate-pulse tw-scale-75"
-										style="animation-delay: 800ms;"
-										src="@/assets/images/sparkle.svg"
-									>
-								</div>
+										<!-- Adding to basket button -->
+										<kv-ui-button
+											v-if="isAdding"
+											class="tw-inline-flex tw-flex-1"
+											data-testid="bp-lend-cta-adding-to-basket-button"
+										>
+											Adding to basket...
+										</kv-ui-button>
+
+									</template>
+								</complete-loan-wrapper>
 							</fieldset>
 						</form>
 
@@ -211,6 +185,13 @@
 					>
 						All shares reserved
 					</p>
+					<div
+						v-if="repaymentEnabled"
+						class="tw-hidden md:tw-flex tw-mt-2 lg:tw-mt-0 tw-content-center tw-gap-2"
+					>
+						<icon-clock />
+						<span>{{ repaymentDateCopy }}</span>
+					</div>
 					<hr
 						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full tw-my-2"
 					>
@@ -225,39 +206,10 @@
 							class="tw-hidden md:tw-inline-block lg:tw-hidden"
 						/>
 						<jump-links
-							:class="[
-								'tw-hidden md:tw-block lg:tw-mb-1.5',
-								{
-									'md:tw-mb-3': isSticky || !socialExpEnabled,
-								}
-							]"
+							class="tw-hidden md:tw-block lg:tw-mb-1.5 md:tw-mb-3"
 							data-testid="bp-lend-cta-jump-links"
 						/>
 					</div>
-				</div>
-				<div
-					v-if="socialExpEnabled"
-					:class="[
-						'tw-hidden',
-						{
-							'md:tw-block': !isSticky,
-						},
-						'tw-col-span-12',
-						'md:tw-col-start-7 md:tw-col-span-6',
-						'lg:tw-col-span-12',
-					]"
-				>
-					<hr
-						v-if="socialExpEnabled && lenders.length"
-						class="tw-hidden lg:tw-block tw-border-tertiary tw-w-full tw-mb-3"
-					>
-					<lenders-list
-						v-if="socialExpEnabled && lenders.length"
-						:num-lenders="numLenders"
-						:lenders="lenders"
-						key="lenderList"
-						@togglelightbox="toggleLightbox"
-					/>
 				</div>
 			</kv-grid>
 
@@ -321,10 +273,10 @@
 							leave-to-class="tw-transform tw-translate-y-2 tw-opacity-0"
 						>
 							<span
+								v-if="currentSlotStat === 'lenderCount'"
 								class="tw-inline-block tw-align-middle"
 								data-testid="bp-lend-cta-powered-by-text"
 								key="numLendersStat"
-								v-if="statScrollAnimation"
 							>
 								<kv-material-icon
 									class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
@@ -334,10 +286,10 @@
 							</span>
 
 							<span
+								v-if="currentSlotStat === 'matchingText'"
 								class="tw-inline-block tw-align-middle"
 								data-testid="bp-lend-cta-matched-text"
 								key="loanMatchingText"
-								v-if="!statScrollAnimation && !isMatchAtRisk"
 							>
 								<span
 									class="tw-text-h3 tw-inline-block tw-align-middle tw-px-1"
@@ -347,6 +299,16 @@
 								{{ matchRatio + 1 }}X
 								<span v-if="requireDepositsMatchedLoans"> MATCHED NEW DEPOSITS</span>
 								<span v-else> MATCHED LOAN</span>
+							</span>
+
+							<span
+								v-if="currentSlotStat === 'repaymentDate'"
+								class="md:tw-hidden tw-align-middle tw-flex tw-gap-1 tw-items-center"
+								data-testid="bp-lend-cta-expected-repayment"
+								key="expectedRepayment"
+							>
+								<icon-clock class="tw-pointer-events-none tw-inline-block tw-align-middle" />
+								<span>{{ repaymentDateCopy }}</span>
 							</span>
 						</transition>
 					</div>
@@ -364,9 +326,21 @@
 
 <script>
 import { mdiLightningBolt } from '@mdi/js';
+import {
+	addMonths,
+	format,
+	parseISO,
+	isSameMonth,
+} from 'date-fns';
 import { gql } from '@apollo/client';
 import { setLendAmount } from '@/util/basketUtils';
-import { buildPriceArray, isMatchAtRisk } from '@/util/loanUtils';
+import {
+	buildPriceArray,
+	isMatchAtRisk,
+	isLessThan25,
+	isBetween25And50,
+	isBetween25And500
+} from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import {
 	getExperimentSettingCached,
@@ -378,8 +352,9 @@ import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
 import EcoChallengeLightbox from '@/components/Lightboxes/EcoChallengeLightbox';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
-import LendersList from '@/components/BorrowerProfile/LendersList';
+import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrapper';
 
+import IconClock from '@/assets/icons/inline/clock.svg';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -395,25 +370,16 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		completeLoan: {
-			type: Boolean,
-			default: false,
-		},
-		lenders: {
-			type: Array,
-			default: () => []
-		},
-		socialExpEnabled: {
-			type: Boolean,
-			default: false
-		},
 		requireDepositsMatchedLoans: {
 			type: Boolean,
 			default: false,
-		}
+		},
+		userContextExpVariant: {
+			type: String,
+			default: 'c'
+		},
 	},
 	components: {
-		LendersList,
 		LendAmountButton,
 		KvGrid,
 		EcoChallengeLightbox,
@@ -422,6 +388,8 @@ export default {
 		KvUiSelect,
 		JumpLinks,
 		LoanBookmark,
+		CompleteLoanWrapper,
+		IconClock
 	},
 	data() {
 		return {
@@ -441,7 +409,6 @@ export default {
 			numLenders: 0,
 			lenderCountVisibility: false,
 			matchingTextVisibility: false,
-			statScrollAnimation: false,
 			matchingText: '',
 			matchRatio: 0,
 			basketItems: [],
@@ -455,6 +422,12 @@ export default {
 			completeLoanView: true,
 			showGameLightbox: false,
 			checkoutMilestoneProgresses: [],
+			isMobile: false,
+			repaymentInterval: '',
+			plannedExpirationDate: '',
+			firstRepaymentDate: '',
+			slotMachineInterval: null,
+			currentSlotStat: '',
 		};
 	},
 	apollo: {
@@ -481,6 +454,13 @@ export default {
 						}
 						lenders{
 							totalCount
+						}
+						repaymentInterval
+						plannedExpirationDate
+						terms {
+							expectedPayments {
+								dueToKivaDate
+							}
 						}
 					}
 				}
@@ -529,20 +509,31 @@ export default {
 			this.basketItems = basket?.items?.values ?? [];
 			this.matchingText = loan?.matchingText ?? '';
 			this.matchRatio = loan?.matchRatio ?? 0;
+			this.firstRepaymentDate = loan?.terms?.expectedPayments?.[0]?.dueToKivaDate ?? '';
+			this.plannedExpirationDate = loan?.plannedExpirationDate ?? '';
+			this.repaymentInterval = loan?.repaymentInterval ?? '';
 			this.name = loan?.name ?? '';
 			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
-				this.lenderCountVisibility = !this.socialExpEnabled;
-				this.statScrollAnimation = !this.socialExpEnabled;
+				this.lenderCountVisibility = true;
 			}
+
+			// Start cycling the stats slot now that loan data is available
+			this.cycleStatsSlot();
+
+			// Track this.repaymentDateCopy for MARS-317
+			this.$kvTrackEvent('borrower-profile', 'show', 'expected-repayment', this.repaymentDateCopy);
 		},
 	},
 	methods: {
+		determineIfMobile() {
+			this.isMobile = document.documentElement.clientWidth < 735;
+		},
 		async addToBasket() {
 			this.isAdding = true;
 			setLendAmount({
-				amount: this.isLessThan25 ? this.unreservedAmount : this.selectedOption,
+				amount: isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption,
 				apollo: this.apollo,
 				loanId: this.loanId,
 			}).then(() => {
@@ -616,24 +607,39 @@ export default {
 			);
 		},
 		cycleStatsSlot() {
-			if (this.matchingText.length) {
-				const cycleSlotMachine = () => {
-					if (!this.isMatchAtRisk) {
-						if (this.socialExpEnabled) {
-							this.statScrollAnimation = false;
-						} else {
-							this.statScrollAnimation = !this.statScrollAnimation;
-						}
-					} else {
-						this.statScrollAnimation = true;
-					}
-				};
-				setInterval(cycleSlotMachine, 5000);
+			// Function can be skipped if slot machine interval is already set
+			if (this.slotMachineInterval) {
+				return;
 			}
+
+			// Change which stat is displayed in the stats slot
+			const cycleSlotMachine = () => {
+				const possibleStats = [];
+				// Add lender count
+				if (this.status === 'fundraising' && this.numLenders > 0) {
+					possibleStats.push('lenderCount');
+				}
+				// Add matching text
+				if (this.status === 'fundraising' && this.matchingText.length && !this.isMatchAtRisk) {
+					possibleStats.push('matchingText');
+				}
+				// Add repayment date MARS-317
+				this.determineIfMobile();
+				if (this.isMobile && this.repaymentEnabled) {
+					possibleStats.push('repaymentDate');
+				}
+				// Cycle through the possible stats in the order they were added.
+				// If current slot stat is no longer in the possible stat list, this will cycle back to the first stat.
+				let nextStatIndex = possibleStats.indexOf(this.currentSlotStat) + 1;
+				nextStatIndex = nextStatIndex >= possibleStats.length ? 0 : nextStatIndex;
+				this.currentSlotStat = possibleStats[nextStatIndex] ?? '';
+			};
+
+			// Set inital stat
+			cycleSlotMachine();
+			// Start cycling
+			this.slotMachineInterval = setInterval(cycleSlotMachine, 5000);
 		},
-		toggleLightbox() {
-			this.$emit('togglelightbox');
-		}
 	},
 	watch: {
 		matchingText(newValue, previousValue) {
@@ -643,7 +649,7 @@ export default {
 		},
 		unreservedAmount(newValue, previousValue) {
 			// set initial selected value for sub 25 loan if shown
-			if (this.completeLoan && this.isBetween25And50) {
+			if (isBetween25And50(this.unreservedAmount)) {
 				this.selectedOption = Number(this.unreservedAmount).toFixed();
 			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
 				this.selectedOption = parseInt(newValue, 10);
@@ -658,6 +664,29 @@ export default {
 		},
 	},
 	computed: {
+		repaymentEnabled() {
+			return this.userContextExpVariant === 'b';
+		},
+		repaymentDate() {
+			if (this.firstRepaymentDate) {
+				return format(parseISO(this.firstRepaymentDate), 'MMM yyyy');
+			}
+			if (this.plannedExpirationDate) {
+				const asSoonAs = addMonths(new Date(), 1);
+				const asLateAs = addMonths(parseISO(this.plannedExpirationDate), 1);
+				if (isSameMonth(asSoonAs, asLateAs)) {
+					return format(asSoonAs, 'MMM yyyy');
+				}
+				return `${format(asSoonAs, 'MMM yyyy')} or ${format(asLateAs, 'MMM yyyy')}`;
+			}
+			return '';
+		},
+		repaymentDateCopy() {
+			if (this.repaymentInterval === 'at_end') {
+				return `Expected repayment ${this.repaymentDate}`;
+			}
+			return `First expected repayment ${this.repaymentDate}`;
+		},
 		isInBasket() {
 			// eslint-disable-next-line no-underscore-dangle
 			return this.basketItems.some(item => item.__typename === 'LoanReservation' && item.id === this.loanId);
@@ -681,7 +710,7 @@ export default {
 			// limit at 20 price options
 			const priceArray = buildPriceArray(parseFloat(this.unreservedAmount), minAmount).slice(0, 20);
 			// eslint-disable-next-line
-			if (this.completeLoan && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
+			if (this.isCompleteLoanActive && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
 			}
 			return priceArray;
@@ -787,28 +816,21 @@ export default {
 			return 'tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7';
 		},
 		isLessThan25() {
-			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
+			return isLessThan25(this.unreservedAmount);
 		},
-		isBetween25And50() {
-			return this.unreservedAmount <= 50 && this.unreservedAmount > 25;
-		},
-		isBetween25And500() {
-			return this.unreservedAmount < 500 && this.unreservedAmount >= 25;
+		isLentTo() {
+			return this.state === 'lent-to';
 		},
 		isCompleteLoanActive() {
-			if (this.completeLoan) {
-				// eslint-disable-next-line
-				return (this.isLessThan25) || (this.isBetween25And500 && Number(this.unreservedAmount).toFixed() === this.selectedOption);
-			}
-			return false;
+			// eslint-disable-next-line
+			return (isLessThan25(this.unreservedAmount)) || (isBetween25And500(this.unreservedAmount) && Number(this.unreservedAmount).toFixed() === this.selectedOption);
 		},
 		isLendAmountButton() {
-			return (this.lendButtonVisibility || this.state === 'lent-to') && this.isLessThan25;
+			return (this.lendButtonVisibility || this.state === 'lent-to') && isLessThan25(this.unreservedAmount);
 		}
 	},
 	mounted() {
 		this.createWrapperObserver();
-		this.cycleStatsSlot();
 	},
 	beforeDestroy() {
 		this.destroyWrapperObserver();

@@ -1,62 +1,49 @@
 <template>
 	<div>
-		<!-- eslint-disable-next-line max-len -->
-		<div class="tw-bg-brand-100 tw-border tw-border-action tw-rounded tw-p-2 tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 tw-mb-2">
-			<div class="tw-grow">
-				<div class="tw-flex">
-					<icon-add class="tw-mr-1" />
-					<h4 class="tw-text-h4 tw-mb-1 tw-font-medium tw-text-action">
-						Save This Search
-					</h4>
-				</div>
-				<!-- eslint-disable-next-line max-len -->
-				Found the perfect filter settings? Add them to your 'Saved Searches' to easily return to the list of borrowers that meet your lending criteria.
-			</div>
-			<div style="min-width: 250px;" class="tw-self-center tw-w-full">
-				<kv-button
-					variant="secondary"
-					class="tw-w-full"
-					@click="openModal"
+		<div
+			class="tw-flex tw-cursor-pointer tw-items-center"
+			@click="openModal"
+		>
+			<icon-add class="tw-mr-1 tw-inline-block" />
+			<h4 class="tw-text-h4 tw-font-medium tw-text-action">
+				Save This Search
+			</h4>
+		</div>
+		<kv-lightbox
+			title="Save this search"
+			:visible="isLightboxVisible"
+			@lightbox-closed="closeModal"
+		>
+			<template #header>
+				<icon-add />
+				<h2 class="tw-text-h2">
+					Save this search
+				</h2>
+				<h3 class="tw-text-base">
+					You can find all your saved searches under Lend in the top menu bar.
+				</h3>
+			</template>
+			<div>
+				<label
+					for="savedSearchName"
+					class="tw-text-h4 tw-block tw-pb-1 tw-text-secondary"
 				>
-					Add to Saved Searches
+					Saved Search Name
+				</label>
+				<kv-text-input
+					class="tw-w-full tw-mb-2"
+					id="savedSearchName"
+					placeholder="i.e. Women Owned Business"
+					v-model="savedSearchName"
+				/>
+				<kv-button
+					@click.native="saveSavedSearch"
+					:state="savedSearchName.length === 0 ? 'disabled' : null"
+				>
+					Create Saved Search
 				</kv-button>
 			</div>
-			<kv-lightbox
-				title="Save this search"
-				:visible="isLightboxVisible"
-				@lightbox-closed="closeModal"
-			>
-				<template #header>
-					<icon-add />
-					<h2 class="tw-text-h2">
-						Save this search
-					</h2>
-					<h3 class="tw-text-base">
-						You can find all your saved searches under Lend in the top menu bar.
-					</h3>
-				</template>
-				<div>
-					<label
-						for="savedSearchName"
-						class="tw-text-h4 tw-block tw-pb-1 tw-text-secondary"
-					>
-						Saved Search Name
-					</label>
-					<kv-text-input
-						class="tw-w-full tw-mb-2"
-						id="savedSearchName"
-						placeholder="i.e. Women Owned Business"
-						v-model="savedSearchName"
-					/>
-					<kv-button
-						@click.native="saveSavedSearch"
-						:state="savedSearchName.length === 0 ? 'disabled' : null"
-					>
-						Create Saved Search
-					</kv-button>
-				</div>
-			</kv-lightbox>
-		</div>
+		</kv-lightbox>
 	</div>
 </template>
 
@@ -64,17 +51,10 @@
 import IconAdd from '@/assets/icons/inline/add.svg';
 import { createSavedSearch } from '@/util/loanSearch/searchStateUtils';
 import logFormatter from '@/util/logFormatter';
+import filterConfig from '@/util/loanSearch/filterConfig';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
-
-/**
- * Maps the FLSS enum values to the lend API enum values
- */
-const distributionModelEnumMap = {
-	FIELDPARTNER: 'fieldPartner',
-	DIRECT: 'direct'
-};
 
 export default {
 	name: 'LoanSearchSavedSearch',
@@ -88,15 +68,11 @@ export default {
 	props: {
 		loanSearchState: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		},
-		themeNames: {
-			type: Array,
-			default: () => {}
-		},
-		showSuccessMessage: {
-			type: Function,
-			default: () => {}
+		allFacets: {
+			type: Object,
+			default: () => ({})
 		},
 		userId: {
 			type: Number,
@@ -123,23 +99,9 @@ export default {
 	},
 	computed: {
 		reformattedSearchState() {
-			return {
-				country: this.loanSearchState?.countryIsoCode,
-				gender: this.loanSearchState?.gender,
-				sector: this.loanSearchState?.sectorId,
-				theme: this.loanSearchState?.themeId.map(themeId => this.themeNames[themeId]),
-				loanTags: this.loanSearchState?.tagId,
-				distributionModel: distributionModelEnumMap[this.loanSearchState?.distributionModel?.toUpperCase()],
-				// Reverse "isIndividual" to match legacy "isGroup" query param
-				isGroup: this.loanSearchState?.isIndividual !== null ? !this.loanSearchState.isIndividual : null,
-				// Create new simple object that can be saved to legacy "MinMaxRangeInput" type
-				lenderTerm: this.loanSearchState?.lenderRepaymentTerm
-					? {
-						min: this.loanSearchState.lenderRepaymentTerm.min,
-						max: this.loanSearchState.lenderRepaymentTerm.max
-					} : null,
-				partner: this.loanSearchState?.partnerId,
-			};
+			return filterConfig.keys.reduce((prev, key) => {
+				return { ...prev, ...filterConfig.config[key].getSavedSearch(this.loanSearchState, this.allFacets) };
+			}, {});
 		},
 		loginUrl() {
 			const fullPath = encodeURIComponent(`${this.$route.fullPath}&saved_search=true`);
@@ -187,7 +149,7 @@ export default {
 				this.loanSearchState?.keywordSearch ?? '',
 				this.savedSearchName
 			).then(() => {
-				this.showSuccessMessage(this.savedSearchName);
+				this.$showTipMsg(`Success! You've added ${this.savedSearchName} to your saved searches.`);
 			}).catch(errorResponse => {
 				logFormatter(errorResponse, 'error');
 				// eslint-disable-next-line max-len

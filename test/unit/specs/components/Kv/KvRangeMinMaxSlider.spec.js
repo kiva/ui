@@ -247,4 +247,112 @@ describe('KvRangeMinMaxSlider', () => {
 
 		expect(emitted().change[1][0]).toEqual({ min: 5, max: 10 });
 	});
+
+	it('should handle decimal step', async () => {
+		const { getAllByRole, updateProps } = render(KvRangeMinMaxSlider, { props: { step: 0.5 } });
+
+		const rangeInputs = getAllByRole('slider');
+
+		expect(rangeInputs[0].min).toBe('0');
+		expect(rangeInputs[0].max).toBe('100');
+		expect(rangeInputs[0].value).toBe('0');
+		expect(rangeInputs[0].step).toBe('0.5');
+		expect(rangeInputs[1].min).toBe('0');
+		expect(rangeInputs[1].max).toBe('100');
+		expect(rangeInputs[1].value).toBe('100');
+		expect(rangeInputs[1].step).toBe('0.5');
+
+		await updateProps({ min: 0.5, max: 8.5 });
+
+		expect(rangeInputs[0].min).toBe('0');
+		expect(rangeInputs[0].max).toBe('100');
+		expect(rangeInputs[0].value).toBe('0.5');
+		expect(rangeInputs[0].step).toBe('0.5');
+		expect(rangeInputs[1].min).toBe('0');
+		expect(rangeInputs[1].max).toBe('100');
+		expect(rangeInputs[1].value).toBe('8.5');
+		expect(rangeInputs[1].step).toBe('0.5');
+	});
+
+	it('should handle max of 0', async () => {
+		const { getAllByRole, updateProps } = render(KvRangeMinMaxSlider);
+
+		const rangeInputs = getAllByRole('slider');
+
+		expect(rangeInputs[0].min).toBe('0');
+		expect(rangeInputs[0].max).toBe('100');
+		expect(rangeInputs[0].value).toBe('0');
+		expect(rangeInputs[0].step).toBe('1');
+		expect(rangeInputs[1].min).toBe('0');
+		expect(rangeInputs[1].max).toBe('100');
+		expect(rangeInputs[1].value).toBe('100');
+		expect(rangeInputs[1].step).toBe('1');
+
+		await updateProps({ min: 0, max: 0 });
+
+		expect(rangeInputs[0].min).toBe('0');
+		expect(rangeInputs[0].max).toBe('100');
+		expect(rangeInputs[0].value).toBe('0');
+		expect(rangeInputs[0].step).toBe('1');
+		expect(rangeInputs[1].min).toBe('0');
+		expect(rangeInputs[1].max).toBe('100');
+		expect(rangeInputs[1].value).toBe('0');
+		expect(rangeInputs[1].step).toBe('1');
+	});
+
+	it('should display tooltips', () => {
+		const { getByText } = render(KvRangeMinMaxSlider);
+
+		getByText('0');
+		getByText('100');
+	});
+
+	it('should display decimals as percentages', () => {
+		const { getByText } = render(KvRangeMinMaxSlider, {
+			props: {
+				rangeMax: 1,
+				max: 0.9,
+				isPercentage: true,
+			}
+		});
+
+		getByText('0');
+		getByText('90');
+	});
+
+	it('should display display tooltips with decimals', () => {
+		const { getByText } = render(KvRangeMinMaxSlider, {
+			props: {
+				rangeMax: 10,
+				step: 0.1,
+				min: 4.1,
+				max: 9,
+			}
+		});
+
+		getByText('4.1');
+		getByText('9');
+	});
+
+	it('should display display tooltips with percentages as decimals', () => {
+		const { getByText } = render(KvRangeMinMaxSlider, {
+			props: {
+				rangeMax: 1,
+				step: 0.001,
+				min: 0.001,
+				max: 1,
+				isPercentage: true,
+			}
+		});
+
+		getByText('0.1');
+		getByText('100');
+	});
+
+	it('should display tooltip units', () => {
+		const { getByText } = render(KvRangeMinMaxSlider, { props: { displayedUnit: '%' } });
+
+		getByText('0%');
+		getByText('100%');
+	});
 });

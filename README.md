@@ -27,7 +27,7 @@ $ npx husky install
 $ npm run dev -- --config=local
 # visit localhost:8888 for the home page
 # visit localhost:8888/ui-site-map to explore our page index
-# /styleguide, /lend-by-category, + /lend/filter are of great to explore
+# /styleguide, /lend-by-category, + /lend/filter are great to explore
 
 # COMPILED/PROD MODE
 

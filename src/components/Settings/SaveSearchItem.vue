@@ -38,7 +38,7 @@
 
 <script>
 import { gql } from '@apollo/client';
-import { sortByNameToDisplay } from '@/util/loanSearch/filterUtils';
+import { sortByNameToDisplay } from '@/util/loanSearch/filters/sortOptions';
 import { getInputRange } from '@/api/fixtures/MinMaxRange';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';

@@ -81,6 +81,11 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 								fundedAmount
 								reservedAmount
 							}
+							sector {
+								id
+								name
+							}
+							gender
 							unreservedAmount @client
 						}
 					}

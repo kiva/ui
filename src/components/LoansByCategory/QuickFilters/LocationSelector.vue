@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-relative tw-flex tw-flex-col tw-w-full">
+	<div class="tw-relative tw-flex tw-flex-col tw-w-full" v-click-outside="closeRegions">
 		<label
 			class="tw-text-h4"
 			for="location"
@@ -148,6 +148,7 @@
 
 <script>
 import { mdiMagnify, mdiChevronDown, mdiClose } from '@mdi/js';
+import clickOutside from '@/plugins/click-outside';
 import { getCheckboxLabel } from '@/util/loanSearch/filterUtils';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -164,6 +165,9 @@ export default {
 		KvExpandable,
 		KvMaterialIcon
 	},
+	mixins: [
+		clickOutside,
+	],
 	props: {
 		regions: {
 			type: Array,
@@ -177,10 +181,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		updateLocation: {
-			type: Function,
-			required: true,
-		}
 	},
 	data() {
 		return {
@@ -226,6 +226,14 @@ export default {
 				this.$emit('handle-overlay', false);
 			}
 		},
+		closeRegions() {
+			if (this.showRegions) {
+				this.showRegions = false;
+				this.selectedRegion = null;
+				document.documentElement.style.overflow = 'auto';
+				this.$emit('handle-overlay', false);
+			}
+		},
 		selectRegion(index) {
 			this.selectedRegion = this.selectedRegion === index ? null : index;
 		},
@@ -238,14 +246,21 @@ export default {
 			}));
 		},
 		updateCountries(evt) {
-			if (this.selectedCountries.includes(evt.changed)) {
-				const index = this.selectedCountries.indexOf(evt.changed);
-				if (index > -1) {
-					this.selectedCountries.splice(index, 1);
+			for (let i = 0; i < evt.changed.length; i += 1) {
+				const isoCode = evt.changed[i];
+				if (this.selectedCountries.includes(isoCode)) {
+					const index = this.selectedCountries.indexOf(isoCode);
+					if (index > -1) {
+						this.selectedCountries.splice(index, 1);
+					}
+				} else {
+					this.selectedCountries.push(isoCode);
 				}
-			} else {
-				this.selectedCountries.push(evt.changed);
 			}
+		},
+		setCountry(countryIsoCode) {
+			this.emptyCountries();
+			this.selectedCountries.push(countryIsoCode);
 		},
 		numberByRegion(region) {
 			let total = 0;
@@ -278,7 +293,7 @@ export default {
 	},
 	watch: {
 		selectedCountries() {
-			this.updateLocation(this.selectedCountries);
+			this.$emit('update-location', this.selectedCountries);
 		}
 	}
 

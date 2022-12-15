@@ -64,11 +64,12 @@ export default {
 		}
 	},
 	methods: {
+		getFilterKey(value) {
+			return this.valueMap ? getFilterKeyFromValue(value, this.valueMap) : value;
+		},
 		getOptionFromValue(value) {
-			const filterKey = this.valueMap ? getFilterKeyFromValue(value, this.valueMap) : value;
-
 			// The KvRadio component can't handle a null value
-			return this.options.find(o => o.name === filterKey)?.name ?? '';
+			return this.options.find(o => o.name === this.getFilterKey(value))?.name ?? '';
 		},
 		setSelected(nextName) {
 			if (nextName !== this.selectedOption) {
@@ -79,7 +80,7 @@ export default {
 
 					this.$emit('updated', { [this.filterKey]: next.value });
 
-					this.$kvTrackEvent('Lending', this.eventAction, next.value);
+					this.$kvTrackEvent('Lending', this.eventAction, this.getFilterKey(next.value));
 				}
 			}
 		},

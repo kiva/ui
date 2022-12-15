@@ -78,16 +78,6 @@ const CampaignLogoGroup = () => import('@/components/CorporateCampaign/CampaignL
 const CampaignPartner = () => import('@/components/CorporateCampaign/CampaignPartner');
 const CampaignThanks = () => import('@/components/CorporateCampaign/CampaignThanks');
 
-const HomepageCorporateSponsors = () => import('@/components/Homepage/HomepageCorporateSponsors');
-// const HomepageGeneralStats = () => import('@/components/Homepage/HomepageGeneralStats');
-const HomepageHowItWorks = () => import('@/components/Homepage/HomepageHowItWorks');
-const HomepageLenderQuotes = () => import('@/components/Homepage/HomepageLenderQuotes');
-const HomepageLoanCategories = () => import('@/components/Homepage/HomepageLoanCategories');
-const HomepageStatistics = () => import('@/components/Homepage/HomepageStatistics');
-const HomepageTestimonials = () => import('@/components/Homepage/HomepageTestimonials');
-const HomepageVerticalCTA = () => import('@/components/Homepage/HomepageVerticalCTA');
-const HomepageMonthlyGoodInfo = () => import('@/components/Homepage/HomepageMonthlyGoodInfo');
-
 const CardRow = () => import('@/components/Contentful/CardRow');
 const CenteredRichText = () => import('@/components/Contentful/CenteredRichText');
 const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
@@ -128,23 +118,6 @@ const getPageFrameFromType = type => {
 // Return a component importer function based on content group type from Contentful
 const getComponentFromType = type => {
 	switch (type) {
-		case 'homepageHowItWorks':
-			return HomepageHowItWorks;
-		case 'homepageLenderQuotes':
-			return HomepageLenderQuotes;
-		case 'homepageLoanCategories':
-			return HomepageLoanCategories;
-		case 'homepageStatistics':
-			// return HomepageGeneralStats;
-			return HomepageStatistics;
-		case 'homepageStrategicPartners':
-			return HomepageCorporateSponsors;
-		case 'homepageTestimonials':
-			return HomepageTestimonials;
-		case 'homepageVerticalCTA':
-			return HomepageVerticalCTA;
-		case 'homepageMonthlyGoodInfo':
-			return HomepageMonthlyGoodInfo;
 		case 'mlCampaignHero':
 			return CampaignHero;
 		case 'mlCampaignLogo':
@@ -180,7 +153,7 @@ const getComponentFromType = type => {
 		case 'storyCardCarousel':
 			return StoryCardCarousel;
 		default:
-			logFormatter(`ContenfulPage: Unknown content group type "${type}"`, 'error');
+			logFormatter(`ContentfulPage: Unknown content group type "${type}"`, 'error');
 			return null;
 	}
 };

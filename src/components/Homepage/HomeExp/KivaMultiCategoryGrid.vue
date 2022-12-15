@@ -2,9 +2,9 @@
 	<kv-grid class="tw-grid-cols-12">
 		<div class="tw-col-span-12 md:tw-col-span-3">
 			<div class="tw-mr-4">
-				<p class="tw-text-h3 tw-font-medium tw-mb-2 tw-text-secondary title">
+				<h4 class="tw-mb-4">
 					I want to support
-				</p>
+				</h4>
 				<loan-category-selector-home-exp
 					:loan-channels="combinedLoanChannelData"
 					:selected-channel="selectedChannel.id"
@@ -12,7 +12,7 @@
 				/>
 			</div>
 		</div>
-		<div class="tw-col-span-12 md:tw-col-span-9">
+		<div class="tw-col-span-12 md:tw-col-span-9 tw-mt-1.5">
 			<kiva-loan-card-category
 				:loan-ids="selectedChannelLoanIds"
 				:selected-channel="selectedChannel"
@@ -145,8 +145,3 @@ export default {
 	}
 };
 </script>
-<style lang="postcss" scoped>
-	.title {
-		color: #505050;
-	}
-</style>

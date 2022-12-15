@@ -1,96 +1,111 @@
 <template>
 	<section>
-		<div class="tw-prose tw-break-words">
-			<h2 data-testid="bp-more-about-header">
-				More about this loan
-			</h2>
-			<div v-if="partnerName && !loading">
-				<p v-if="!partnerNameNA" data-testid="bp-more_about-facilitated">
-					This loan is facilitated by our Field Partner, {{ partnerName }}.
-					Field Partners are local organizations working in communities to vet
-					borrowers, provide services, and administer loans on the ground.
-				</p>
-
-				<div v-html="moreInfoAboutLoan" data-testid="bp-more-about-info">
-				</div>
-
-				<div v-if="loanAlertText" data-testid="bp-more-about-alert-text">
-					<h3>
-						About {{ partnerName }}:
-					</h3>
-					<p
-						key="storyDescription"
-						v-html="this.loanAlertText"
-					>
+		<h2 data-testid="bp-more-about-header">
+			More about this loan
+		</h2>
+		<div ref="body" :class="{'tw-line-clamp-3': truncateBody}">
+			<div class="tw-prose tw-break-words">
+				<div v-if="partnerName && !loading">
+					<p v-if="!partnerNameNA" data-testid="bp-more_about-facilitated">
+						<template v-if="enabledExperimentVariant">
+							This loan is facilitated by our Lending Partner, {{ partnerName }}.
+						</template>
+						<template v-else>
+							This loan is facilitated by our Field Partner, {{ partnerName }}.
+							Field Partners are local organizations working in communities to vet
+							borrowers, provide services, and administer loans on the ground.
+						</template>
 					</p>
-				</div>
-				<div v-if="dualStatementNote" data-testid="bp-more-about-dual-statement">
-					<h3>
-						Important Note About This Loan
-					</h3>
-					<div v-html="dualStatementNote">
+
+					<div v-html="moreInfoAboutLoan" data-testid="bp-more-about-info">
+					</div>
+
+					<div v-if="loanAlertText" data-testid="bp-more-about-alert-text">
+						<h3>
+							About {{ partnerName }}:
+						</h3>
+						<p
+							key="storyDescription"
+							v-html="this.loanAlertText"
+						>
+						</p>
+					</div>
+					<div v-if="dualStatementNote" data-testid="bp-more-about-dual-statement">
+						<h3>
+							Important Note About This Loan
+						</h3>
+						<div v-html="dualStatementNote">
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div v-if="!partnerName && !loading">
-			<div class="tw-prose tw-mb-2">
-				<h3>
-					Business description
-				</h3>
-				<div
-					data-testid="bp-more-about-direct-description"
-					key="businessDescription"
-					v-html="this.businessDescription"
-				>
+			<div v-if="!partnerName && !loading">
+				<div class="tw-prose tw-mb-2">
+					<h3>
+						Business description
+					</h3>
+					<div
+						data-testid="bp-more-about-direct-description"
+						key="businessDescription"
+						v-html="this.businessDescription"
+					>
+					</div>
+				</div>
+
+				<borrower-business-details
+					class="tw-mb-2"
+					:borrower-business-name="borrowerBusinessName"
+					:sector="sector"
+					:social-links="socialLinks"
+					:years-in-business="yearsInBusiness"
+					:loan-id="loanId"
+				/>
+
+				<div class="tw-prose" data-testid="bp-direct-loan-purpose">
+					<h3>
+						What is the purpose of this loan?
+					</h3>
+					<div
+						key="purpose"
+						v-html="this.purpose"
+					>
+					</div>
 				</div>
 			</div>
 
-			<borrower-business-details
-				class="tw-mb-2"
-				:borrower-business-name="borrowerBusinessName"
-				:sector="sector"
-				:social-links="socialLinks"
-				:years-in-business="yearsInBusiness"
-				:loan-id="loanId"
-			/>
-
-			<div class="tw-prose" data-testid="bp-direct-loan-purpose">
-				<h3>
-					What is the purpose of this loan?
-				</h3>
-				<div
-					key="purpose"
-					v-html="this.purpose"
-				>
+			<div
+				v-if="loading"
+			>
+				<kv-loading-placeholder
+					class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
+				/>
+				<div v-for="i in 5" :key="`${i}pl1`">
+					<kv-loading-placeholder
+						class="tw-w-full tw-mb-1"
+						:style="{width: 80 + (Math.random() * 15) + '%', height: '1rem'}"
+					/>
 				</div>
+				<br>
+				<kv-loading-placeholder
+					class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
+				/>
+				<div v-for="i in 5" :key="`${i}pl2`">
+					<kv-loading-placeholder
+						class="tw-w-full tw-mb-1"
+						:style="{width: 80 + (Math.random() * 15) + '%', height: '1rem'}"
+					/>
+				</div>
+				<br>
 			</div>
 		</div>
-
-		<div
-			v-if="loading"
+		<button
+			class="tw-text-link tw-mt-1"
+			@click="readMore = true"
+			v-show="showReadMore"
+			v-kv-track-event="['borrower-profile', 'click', 'more-about-loan', 'read-more']"
 		>
-			<kv-loading-placeholder
-				class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
-			/>
-			<div v-for="i in 5" :key="`${i}pl1`">
-				<kv-loading-placeholder
-					class="tw-w-full tw-mb-1"
-					:style="{width: 80 + (Math.random() * 15) + '%', height: '1rem'}"
-				/>
-			</div>
-			<br>
-			<kv-loading-placeholder
-				class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
-			/>
-			<div v-for="i in 5" :key="`${i}pl2`">
-				<kv-loading-placeholder
-					class="tw-w-full tw-mb-1"
-					:style="{width: 80 + (Math.random() * 15) + '%', height: '1rem'}"
-				/>
-			</div>
-			<br>
-		</div>
+			Read more
+		</button>
 	</section>
 </template>
 
@@ -113,6 +128,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		enabledExperimentVariant: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -136,6 +155,7 @@ export default {
 				yelp: '',
 			},
 			yearsInBusiness: '',
+			readMore: false
 		};
 	},
 	computed: {
@@ -149,7 +169,13 @@ export default {
 			return this.partnerName.indexOf('N/A') > -1
 				|| this.partnerName.indexOf('N/a') > -1
 				|| this.partnerName.indexOf('n/a') > -1;
-		}
+		},
+		truncateBody() {
+			return this.enabledExperimentVariant && !this.readMore;
+		},
+		showReadMore() {
+			return this.enabledExperimentVariant && !this.readMore;
+		},
 	},
 	methods: {
 		createObserver() {
