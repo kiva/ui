@@ -1,3 +1,10 @@
+### [2.430.2](https://github.com/kiva/ui/compare/v2.430.1...v2.430.2) (2022-12-15)
+
+
+### Bug Fixes
+
+* loanid computed property added to borrower profile ([91488df](https://github.com/kiva/ui/commit/91488dfebaf43b2520a7383814ed65519f567488))
+
 ### [2.430.1](https://github.com/kiva/ui/compare/v2.430.0...v2.430.1) (2022-12-15)
 
 
