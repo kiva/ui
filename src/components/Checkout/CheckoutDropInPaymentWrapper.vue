@@ -296,6 +296,8 @@ export default {
 						this.processBraintreeDropInError('basket', kivaBraintreeResponse);
 						// Payment method failed, unselect attempted payment method
 						this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
+						// Initialize a refresh of basket state
+						this.$emit('refreshtotals');
 						// exit
 						return kivaBraintreeResponse;
 					}
