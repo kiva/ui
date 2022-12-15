@@ -324,7 +324,7 @@ export default {
 		userHasLentBefore(hasLentBefore);
 		userHasDepositBefore(hasDepositBefore);
 
-		const totalLoans = data?.my?.totalCount ?? 0;
+		const totalLoans = data?.my?.loans?.totalCount ?? 0;
 		const isFirstLoan = this.loans.length && totalLoans === this.loans.length;
 		const hasDirectLoan = this.loans.findIndex(loan => loan.distributionModel === 'direct') > -1;
 		const hasCoreLoan = this.loans.findIndex(loan => loan.distributionModel === 'fieldPartner') > -1;
