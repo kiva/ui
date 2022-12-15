@@ -25,6 +25,7 @@
 								'tw-text-base tw-mb-0': showAutoDepositUpsell,
 								'tw-text-subhead tw-mb-2': !showAutoDepositUpsell
 							}"
+							data-testid="thanks-message"
 						>
 							Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
 						</p>

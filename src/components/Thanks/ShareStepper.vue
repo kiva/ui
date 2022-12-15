@@ -12,7 +12,7 @@
 				</template>
 			</div>
 		</div>
-		<p class="tw-text-center tw-mt-4 tw-text-subhead">
+		<p class="tw-text-center tw-mt-4 tw-text-subhead" data-testid="thanks-message">
 			<template v-if="showLenderName">
 				<span class="fs-mask">{{ lenderName }}</span>, complete your support by sharing.
 			</template>
