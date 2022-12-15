@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<h2 class="tw-text-h2 tw-text-primary">
-			Recommended for you
+			{{ title }}
 		</h2>
 		<p class="tw-text-subhead tw-text-primary">
-			Loans handpicked for you based on your lending history
+			{{ subtitle }}
 		</p>
 		<kv-carousel
 			class="tw-w-full tw-overflow-visible md:tw-overflow-hidden tw-my-3"
@@ -19,6 +19,7 @@
 					:item-index="index"
 					:loan-id="loan.id"
 					:show-action-button="true"
+					class="tw-mr-2"
 					style="max-width: 100%;"
 					@add-to-basket="addToBasket"
 				/>
@@ -38,9 +39,22 @@ export default {
 		KivaClassicBasicLoanCard
 	},
 	props: {
+		title: {
+			type: String,
+			default: '',
+			required: true
+		},
+		subtitle: {
+			type: String,
+			default: ''
+		},
 		loans: {
 			type: Array,
 			default: () => []
+		},
+		perStep: {
+			type: Number,
+			default: 3
 		}
 	},
 	computed: {
@@ -52,7 +66,7 @@ export default {
 			}
 			if (viewportWidth >= 414 && viewportWidth < 768) return '278px';
 			if (viewportWidth >= 768 && viewportWidth < 1024) return '336px';
-			if (viewportWidth >= 1024) return '480px';
+			if (viewportWidth >= 1024) { if (this.perStep === 2) return '480px'; return '308px'; }
 			return '336px';
 		},
 	},
