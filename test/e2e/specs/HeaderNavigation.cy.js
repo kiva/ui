@@ -6,7 +6,7 @@ describe('Header Navigation', () => {
 		cy.intercept('POST', '**/graphql*', req => {
 			// Setup query alias for specific operations
 			aliasQuery(req, 'loanSearchSuggestions');
-			aliasQuery(req, 'flssLoanData');
+			aliasQuery(req, 'flssLoanFacets');
 		});
 
 		// Go to the home page
@@ -19,9 +19,9 @@ describe('Header Navigation', () => {
 		cy.contains('Fabrics').click();
 		// Expect to visit the lend page
 		cy.location('pathname').should('eq', '/lend/filter');
-		// Wait for loan results to load
-		cy.wait('@gqlflssLoanDataQuery');
-		// Expect "Fabrics" filter element to exist
+		// Wait for loan facets to load
+		cy.wait('@gqlflssLoanFacetsQuery');
+		// Expect "Fabrics" filter chip to exist
 		cy.contains('Fabrics').should('exist');
 	});
 });
