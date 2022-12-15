@@ -1,3 +1,10 @@
+## [2.428.0](https://github.com/kiva/ui/compare/v2.427.0...v2.428.0) (2022-12-15)
+
+
+### Features
+
+* use loan facets in e2e instead of loan data ([7f56f42](https://github.com/kiva/ui/commit/7f56f421c5eedc432994243bd6f544b0a89c5046))
+
 ## [2.427.0](https://github.com/kiva/ui/compare/v2.426.3...v2.427.0) (2022-12-15)
 
 
