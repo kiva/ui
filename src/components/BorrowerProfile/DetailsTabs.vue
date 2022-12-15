@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { formatContentGroupsFlat } from '@/util/contentfulUtils';
 // TODO: replace the loading placeholder with component from kv-components when available.
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';

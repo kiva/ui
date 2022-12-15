@@ -43,7 +43,7 @@
 
 <script>
 import * as Sentry from '@sentry/vue';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';

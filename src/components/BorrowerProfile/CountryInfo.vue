@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import numeral from 'numeral';
 import { createIntersectionObserver } from '@/util/observerUtils';
 // TODO: replace the loading placeholder with component from kv-components when available.

@@ -94,7 +94,7 @@ import {
 	mdiClose
 } from '@mdi/js';
 import IconCalendar from '@/assets/icons/inline/eco-challenge/calendar.svg';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';

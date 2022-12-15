@@ -1,6 +1,6 @@
 import _get from 'lodash/get';
 import _set from 'lodash/set';
-import { ApolloLink } from 'apollo-link';
+import { ApolloLink } from '@apollo/client/core';
 
 export default ({ cookieStore }) => {
 	return new ApolloLink((operation, forward) => {

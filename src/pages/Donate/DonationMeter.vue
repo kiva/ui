@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KvProgressCircle from '@/components/Kv/KvProgressCircle';
 
 const meterStatsQuery = gql`query meterInfo {

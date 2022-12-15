@@ -801,9 +801,8 @@
 
 <script>
 import numeral from 'numeral';
-import { mdiPencil } from '@mdi/js';
-
 import { processPageContentFlat } from '@/util/contentfulUtils';
+import { mdiPencil } from '@mdi/js';
 import logFormatter from '@/util/logFormatter';
 import {
 	getExperimentSettingCached,

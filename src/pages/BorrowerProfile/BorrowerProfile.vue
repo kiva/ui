@@ -141,7 +141,7 @@ import { getKivaImageUrl } from '@/util/imageUtils';
 import {
 	format, parseISO, differenceInCalendarDays
 } from 'date-fns';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 

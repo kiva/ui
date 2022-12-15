@@ -1,5 +1,6 @@
 query activeLoanClient {
 	activeLoan @client {
+		id
 		xCoordinate
 		yCoordinate
 		loan

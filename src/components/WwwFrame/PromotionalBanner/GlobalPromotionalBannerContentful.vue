@@ -14,7 +14,7 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 import { settingEnabled } from '@/util/settingsUtils';
 import { globalBannerDenyList, isExcludedUrl } from '@/util/urlUtils';

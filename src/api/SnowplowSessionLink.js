@@ -1,4 +1,4 @@
-import { setContext } from 'apollo-link-context';
+import { setContext } from '@apollo/client/link/context';
 import _set from 'lodash/set';
 
 function getSPCookieSession(cookieStore) {

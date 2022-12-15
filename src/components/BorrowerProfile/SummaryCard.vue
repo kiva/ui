@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { mdiMapMarker } from '@mdi/js';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerImage from './BorrowerImage';
