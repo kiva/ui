@@ -17,7 +17,7 @@ module.exports = {
 				'https://www.kiva.org/lp/support-refugees',
 				'https://www.kiva.org/lptmp/support-refugees',
 				'https://www.kiva.org/lptmp/how-kiva-works',
-				'https://www.kiva.org/lp/how-kiva-works',
+				'https://www.kiva.org/about/how',
 				'https://www.kiva.org/lptmp/qw',
 				'https://www.kiva.org/lp/qw',
 				'https://www.kiva.org/design',
