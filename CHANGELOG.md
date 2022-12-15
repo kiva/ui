@@ -1,3 +1,10 @@
+### [2.429.1](https://github.com/kiva/ui/compare/v2.429.0...v2.429.1) (2022-12-15)
+
+
+### Bug Fixes
+
+* add thanks-message testid to simplify automated thanks page test ([2a14831](https://github.com/kiva/ui/commit/2a14831e2ccbfa9f06914a1ed3752d5efcede45d))
+
 ## [2.429.0](https://github.com/kiva/ui/compare/v2.428.0...v2.429.0) (2022-12-15)
 
 
