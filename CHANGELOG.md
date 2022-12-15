@@ -1,3 +1,10 @@
+## [2.427.0](https://github.com/kiva/ui/compare/v2.426.3...v2.427.0) (2022-12-15)
+
+
+### Features
+
+* matched lending section added to lending page ([93a79f3](https://github.com/kiva/ui/commit/93a79f33a2c7b98c133dcfab855ed8a5344dc46d))
+
 ### [2.426.3](https://github.com/kiva/ui/compare/v2.426.2...v2.426.3) (2022-12-15)
 
 
