@@ -1,3 +1,44 @@
+## [2.431.0](https://github.com/kiva/ui/compare/v2.430.2...v2.431.0) (2022-12-15)
+
+
+### Features
+
+* add general typepolicies fields ([ca297a6](https://github.com/kiva/ui/commit/ca297a677522f948972a5decb823ebeec85d5f34))
+* add query argument to writeQuery ([387368d](https://github.com/kiva/ui/commit/387368d29be052a796169af1b4f0e40244131b5c))
+* add remain type policies ([1795298](https://github.com/kiva/ui/commit/1795298126fc3a243a2a514fb3884197dcf4945b))
+* add resolvers to typePolicies object ([25b788d](https://github.com/kiva/ui/commit/25b788d1ca17846b9395bc9e7cb935bf991f8be1))
+* export typePolicies and set default state ([b3ee5d8](https://github.com/kiva/ui/commit/b3ee5d8b2ea4f6c7a77b1095d2687e8fbb335168))
+* set local resolvers default value ([56b0490](https://github.com/kiva/ui/commit/56b04904e19e2039345826cf474bd3a9f4dd9959))
+* set type policy for Setting ([aa2b73d](https://github.com/kiva/ui/commit/aa2b73d7fe99105006c5fed6ab8640113fd390db))
+* update local resolvers typePolicies ([acb010f](https://github.com/kiva/ui/commit/acb010f39789e87df6e532eca7f09d61600991dc))
+* work in progress ([d818958](https://github.com/kiva/ui/commit/d818958ae52062a1ef0e33d375f81be96903dd1b))
+* work in progress migrate apollo to version 3 ([b43ca71](https://github.com/kiva/ui/commit/b43ca71211ccf91b643e86293ba805122bdbffe8))
+
+
+### Bug Fixes
+
+* add ID field to local GraphQL types and update methods for writing data to cache ([a5596fb](https://github.com/kiva/ui/commit/a5596fb748c061a30d3b3ce103b4d96e7df4cfbc))
+* add missing id to autolending local resolver ([60e9e4b](https://github.com/kiva/ui/commit/60e9e4b3a6bb0d191f349d2806330159b33e4b8b))
+* add missing typePolicies ([88e1ea9](https://github.com/kiva/ui/commit/88e1ea94751a1bf3612a1da1aabefe89cdbfdd9f))
+* add some type polices ([ac3b283](https://github.com/kiva/ui/commit/ac3b2839785377c7bc31b378cb0deb4e587c632e))
+* another missing id ([556a272](https://github.com/kiva/ui/commit/556a272c7c053cc558c03d814dcdc4bbad0f4a7e))
+* bring back deleted experiment resolver tests and correct use of readJSONSetting ([70a2780](https://github.com/kiva/ui/commit/70a2780c5945d422bed2d1edbbb253afa511d1c9))
+* call result function data is not null ([ff611f3](https://github.com/kiva/ui/commit/ff611f3e8eb6353ccb336b3212f876a22fb71ba9))
+* change log error message ([13ae9d9](https://github.com/kiva/ui/commit/13ae9d94564d60acb1f8a0b42bc69c45b39f2b54))
+* ensure local resolvers work ([accaa6e](https://github.com/kiva/ui/commit/accaa6e05b0817443850d5bc9dcdf84bbd38770b))
+* eslint error ([6f7dc43](https://github.com/kiva/ui/commit/6f7dc43f6318d579443d56a96f6f04525db31ceb))
+* experiment resolvers ([326cca9](https://github.com/kiva/ui/commit/326cca9b3e61b934048d7da0614da8552ed7df7b))
+* more missing ids ([61483d4](https://github.com/kiva/ui/commit/61483d40c7fc37d3728d6796902c4720feb1b751))
+* new gql import ([268543a](https://github.com/kiva/ui/commit/268543af265af02748c769203c46757cf1e042c2))
+* remove unnecessary type policies and merge ones without ids ([48d767b](https://github.com/kiva/ui/commit/48d767b2b0ef6a44e3a369ac47bd893b4651bd9a))
+* resolve conflicts ([63a7d6a](https://github.com/kiva/ui/commit/63a7d6ad4fe00ac8baf63487a47108aaaaed3d27))
+* solve conflicts ([a4f6b06](https://github.com/kiva/ui/commit/a4f6b06af2f405adae0f4739ef16f0d43a22908a))
+* solve conflicts ([9873cff](https://github.com/kiva/ui/commit/9873cff6ebc9cf8a46b97ddc7527356028d89aeb))
+* update package-lock.json ([5297144](https://github.com/kiva/ui/commit/5297144299e356bc5a31983fd4f244b4e87a99ec))
+* update some experiments and remove changed experiment tests with cookies ([8f4d8c7](https://github.com/kiva/ui/commit/8f4d8c73eaa82d2318cde6b39d3c88db0656bd98))
+* use `merge:true` by default for GraphQL types without IDs ([d935795](https://github.com/kiva/ui/commit/d9357957bc22f74fcebb53674f94462bf33e0274))
+* writeQuery args ([b0543db](https://github.com/kiva/ui/commit/b0543dbf0b0bf1014f5ae6d5511b63aadfc9eaa5))
+
 ### [2.430.2](https://github.com/kiva/ui/compare/v2.430.1...v2.430.2) (2022-12-15)
 
 
