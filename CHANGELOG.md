@@ -1,3 +1,10 @@
+### [2.431.1](https://github.com/kiva/ui/compare/v2.431.0...v2.431.1) (2022-12-16)
+
+
+### Bug Fixes
+
+* preserve open space for checkout upsell to pop in ([955f5e6](https://github.com/kiva/ui/commit/955f5e66cae419bde2e920bdd2072f7cfffda0dc))
+
 ## [2.431.0](https://github.com/kiva/ui/compare/v2.430.2...v2.431.0) (2022-12-15)
 
 
