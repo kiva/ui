@@ -1,7 +1,8 @@
 <template>
 	<div
 		class="tw-flex tw-flex-col"
-		style="min-width: 230px; max-width: 374px; height: 100%;"
+		style="min-width: 230px; height: 100%;"
+		:style="{ minWidth: '230px', height: '100%', maxWidth: cardWidth}"
 		:id="`${loanId}-loan-card`"
 	>
 		<!-- Borrower image w/ location <summary-tag> -->
@@ -309,6 +310,10 @@ export default {
 		showActionButton: {
 			type: Boolean,
 			default: false
+		},
+		useFullWidth: {
+			type: Boolean,
+			default: false
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -340,6 +345,9 @@ export default {
 		};
 	},
 	computed: {
+		cardWidth() {
+			return this.useFullWidth ? '100%' : '374px';
+		},
 		amountLeft() {
 			const loanFundraisingInfo = this.loan?.loanFundraisingInfo ?? { fundedAmount: 0, reservedAmount: 0 };
 			const { fundedAmount, reservedAmount } = loanFundraisingInfo;

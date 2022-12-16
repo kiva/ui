@@ -1,5 +1,9 @@
 <template>
 	<div>
+		<div
+			v-show="showOverlay"
+			style="opacity: 0.5;" class="tw-fixed tw-inset-0 tw-bg-black tw-z-1"
+		></div>
 		<h2 class="tw-text-h2 tw-text-primary">
 			Find a loan by category and location
 		</h2>
@@ -31,16 +35,26 @@
 				:item-index="index"
 				:loan-id="loan.id"
 				:show-action-button="true"
+				:use-full-width="true"
 			/>
 		</div>
 		<div class="tw-w-full tw-my-4">
 			<kv-pagination
 				v-show="!emptyState"
-				:total="totalCount"
+				:total="totalCount >= 12 ? 12 : totalCount"
 				:limit="loanSearchState.pageLimit"
 				:offset="loanSearchState.pageOffset"
 				@page-changed="pageChange"
+				:scroll-to-top="false"
 			/>
+		</div>
+		<div v-show="showSeeMoreCta" class="tw-w-full tw-my-4 tw-text-center">
+			<kv-button
+				variant="secondary"
+				:href="filterPageUrl"
+			>
+				See more loans
+			</kv-button>
 		</div>
 	</div>
 </template>
@@ -52,13 +66,15 @@ import { fetchCategories, FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import KvPagination from '@/components/Kv/KvPagination';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'QuickFiltersSection',
 	components: {
 		QuickFilters,
 		KivaClassicBasicLoanCard,
-		KvPagination
+		KvPagination,
+		KvButton
 	},
 	inject: ['apollo'],
 	data() {
@@ -93,7 +109,8 @@ export default {
 				}],
 			},
 			allFacets: [],
-			emptyState: false
+			emptyState: false,
+			showOverlay: false,
 		};
 	},
 	async mounted() {
@@ -108,8 +125,27 @@ export default {
 		this.totalCount = totalCount;
 		this.backupLoans = this.loans.slice(3);
 	},
+	computed: {
+		filterPageUrl() {
+			const location = this.flssLoanSearch.countryIsoCode?.toString();
+			const paramStr = JSON.parse(JSON.stringify({
+				gender: this.flssLoanSearch.gender,
+				sortBy: this.flssLoanSearch.sortBy,
+				sector: this.flssLoanSearch.sectorId,
+				tag: this.flssLoanSearch.tagId,
+				attribute: this.flssLoanSearch.themeId,
+				location: (!location || location.length > 0) ? location : undefined,
+			}));
+			const params = new URLSearchParams(paramStr);
+			return `/lend/filter?${params.toString()}`;
+		},
+		showSeeMoreCta() {
+			return this.loanSearchState.pageOffset !== 0 && !this.flssLoanSearch.activityId;
+		}
+	},
 	methods: {
 		async updateQuickFilters(filter) {
+			this.loanSearchState.pageOffset = 0;
 			if (filter.gender !== undefined) {
 				this.flssLoanSearch.gender = filter.gender;
 			} else if (filter.sortBy) {
@@ -142,9 +178,13 @@ export default {
 				this.loans = this.backupLoans;
 			}
 		},
-		resetFilters() {
+		async resetFilters() {
+			this.loanSearchState.pageOffset = 0;
+			this.flssLoanSearch = {};
+			this.updateLoans();
 		},
-		handleQuickFiltersOverlay() {
+		handleQuickFiltersOverlay(showOverlay) {
+			this.showOverlay = showOverlay;
 		},
 		async fetchFilterData(loanSearchState = {}) {
 			// TODO: Prevent this from running on every query (not needed for sorting and paging)
@@ -218,7 +258,16 @@ export default {
 		},
 		pageChange({ pageOffset }) {
 			this.loanSearchState.pageOffset = pageOffset;
+			this.updateLoans();
 		},
+		async updateLoans() {
+			const { loans } = await runLoansQuery(
+				this.apollo,
+				{ ...this.flssLoanSearch, ...this.loanSearchState },
+				FLSS_ORIGIN_CATEGORY
+			);
+			this.loans = loans;
+		}
 	},
 };
 </script>
