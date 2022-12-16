@@ -62,7 +62,7 @@
 <script>
 import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
 import { runFacetsQueries, fetchLoanFacets, runLoansQuery } from '@/util/loanSearch/dataUtils';
-import { fetchCategories, FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
+import { fetchCategories, FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
 import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import KvPagination from '@/components/Kv/KvPagination';
@@ -119,7 +119,7 @@ export default {
 		const { loans, totalCount } = await runLoansQuery(
 			this.apollo,
 			{ ...this.flssLoanSearch, ...this.loanSearchState },
-			FLSS_ORIGIN_CATEGORY
+			FLSS_ORIGIN_LENDING_HOME
 		);
 		this.loans = loans;
 		this.totalCount = totalCount;
@@ -167,7 +167,7 @@ export default {
 			const { loans, totalCount } = await runLoansQuery(
 				this.apollo,
 				{ ...this.flssLoanSearch, ...this.loanSearchState },
-				FLSS_ORIGIN_CATEGORY
+				FLSS_ORIGIN_LENDING_HOME
 			);
 			this.totalCount = totalCount;
 			if (loans.length > 0) {
@@ -188,7 +188,7 @@ export default {
 		},
 		async fetchFilterData(loanSearchState = {}) {
 			// TODO: Prevent this from running on every query (not needed for sorting and paging)
-			const { isoCodes } = await runFacetsQueries(this.apollo, loanSearchState, FLSS_ORIGIN_CATEGORY);
+			const { isoCodes } = await runFacetsQueries(this.apollo, loanSearchState, FLSS_ORIGIN_LENDING_HOME);
 			const fetchedCategories = await fetchCategories(this.apollo);
 
 			// Merge all facet options with filtered options
@@ -264,7 +264,7 @@ export default {
 			const { loans } = await runLoansQuery(
 				this.apollo,
 				{ ...this.flssLoanSearch, ...this.loanSearchState },
-				FLSS_ORIGIN_CATEGORY
+				FLSS_ORIGIN_LENDING_HOME
 			);
 			this.loans = loans;
 		}
