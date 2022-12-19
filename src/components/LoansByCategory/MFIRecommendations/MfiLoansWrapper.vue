@@ -17,7 +17,7 @@
 		<div class="tw-flex tw-justify-center tw-mt-4">
 			<a
 				class="tw-text-action tw-text-base"
-				href="https://www.kiva.org/lend?partner=59&status=fundRaising&sortBy=newest"
+				href="https://www.kiva.org/lend/filter?partner=59"
 				v-kv-track-event="['event-tracking', 'click', 'mfi-view-all']"
 			>
 				View All
