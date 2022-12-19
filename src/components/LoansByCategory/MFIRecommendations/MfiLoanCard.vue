@@ -77,8 +77,8 @@
 			/>
 
 			<a
-				v-kv-track-event="['Lending', 'MFI-feature-click-read-more-cta',
-					'Read more', loanId]"
+				v-kv-track-event="['loan-card', 'click',
+					'mfi-read-more', null, loanId]"
 				:href="`/lend/${loanId}`"
 				class="tw-inline tw-cursor-pointer"
 			>
@@ -95,8 +95,8 @@
 			:show-now="false"
 			:is-simple-lend-button="true"
 			class="tw-mt-2 tw-w-full"
-			v-kv-track-event="['Lending', 'MFI-feature-Add to basket',
-				'lend-button-click', loanId]"
+			v-kv-track-event="['loan-card', 'add-to-basket',
+				'mfi-lending', null, loanId]"
 			@add-to-basket="$emit('add-to-basket', $event)"
 		/>
 	</div>

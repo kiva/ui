@@ -18,7 +18,7 @@
 			<a
 				class="tw-text-action tw-text-base"
 				href="https://www.kiva.org/lend?partner=59&status=fundRaising&sortBy=newest"
-				v-kv-track-event="['Lending', 'click-MFI-feature', 'view all']"
+				v-kv-track-event="['event-tracking', 'click', 'mfi-view-all']"
 			>
 				View All
 			</a>
