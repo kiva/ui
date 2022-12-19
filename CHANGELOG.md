@@ -1,3 +1,17 @@
+## [2.434.0](https://github.com/kiva/ui/compare/v2.433.0...v2.434.0) (2022-12-19)
+
+
+### Features
+
+* logic for mvp quick filters ([0dd500c](https://github.com/kiva/ui/commit/0dd500c8539ae07362ef51a625ed9e90116ca294))
+
+
+### Bug Fixes
+
+* fix query string ([7f264d0](https://github.com/kiva/ui/commit/7f264d04cb81d94a4b44cecd551ecf607a972a1e))
+* pr comment updates ([333011a](https://github.com/kiva/ui/commit/333011a2c71ce1cffd2b9c6d1471333ed14de4b8))
+* update context ([82e2876](https://github.com/kiva/ui/commit/82e28765861149f546dc42b264c8d274460e02d9))
+
 ## [2.433.0](https://github.com/kiva/ui/compare/v2.432.0...v2.433.0) (2022-12-19)
 
 
