@@ -1,3 +1,15 @@
+## [2.433.0](https://github.com/kiva/ui/compare/v2.432.0...v2.433.0) (2022-12-19)
+
+
+### Features
+
+* partner spotlight section added to lending page ([305994d](https://github.com/kiva/ui/commit/305994d8a890b2ce227c6283ddf83441277d6cdf))
+
+
+### Bug Fixes
+
+* url to view more partner loans updated to new stack ([58a16e2](https://github.com/kiva/ui/commit/58a16e2f5a698a8efe3d18e3eb79e2363614cade))
+
 ## [2.432.0](https://github.com/kiva/ui/compare/v2.431.1...v2.432.0) (2022-12-19)
 
 
