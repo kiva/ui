@@ -12,7 +12,8 @@ module.exports = [
 
 				return exp?.version === 'b' ? 'hp/crowdfund-for-good' : 'home';
 			},
-			unbounce: true,
+			unbounceEmailCapture: true,
+			unbouncePopUp: true,
 		},
 	},
 	{
@@ -87,6 +88,7 @@ module.exports = [
 		component: () => import('@/pages/LandingPages/CorporateCampaign/CCLandingPage'),
 		meta: {
 			excludeFromStaticSitemap: true,
+			unbouncePopUp: true,
 		},
 		props: route => ({
 			dynamicRoute: route.params.dynamicRoute,
@@ -115,6 +117,7 @@ module.exports = [
 		component: () => import('@/pages/Thanks/ThanksPage'),
 		meta: {
 			excludeFromStaticSitemap: true,
+			unbouncePopUp: true,
 		}
 	},
 	{
@@ -149,7 +152,7 @@ module.exports = [
 		component: () => import('@/pages/Donate/DonateSupportUs'),
 		meta: {
 			contentfulPage: () => 'donate/supportus',
-			unbounce: true,
+			unbounceEmailCapture: true,
 		},
 	},
 	{
@@ -157,7 +160,7 @@ module.exports = [
 		component: () => import('@/pages/Donate/DonateSupportUs'),
 		meta: {
 			contentfulPage: () => 'donate/supportkiva',
-			unbounce: true,
+			unbounceEmailCapture: true,
 		},
 	},
 	{
@@ -263,7 +266,7 @@ module.exports = [
 		path: '/lend-by-category',
 		component: () => import('@/pages/Lend/LendByCategoryPage'),
 		meta: {
-			unbounce: true,
+			unbounceEmailCapture: true,
 		},
 	},
 	{
@@ -271,7 +274,8 @@ module.exports = [
 		component: () => import('@/pages/Lend/LoanChannelCategoryPageRecommendedByLenders'),
 		meta: {
 			excludeFromStaticSitemap: true,
-			unbounce: true,
+			unbounceEmailCapture: true,
+			unbouncePopUp: true,
 		},
 	},
 	{
@@ -279,7 +283,8 @@ module.exports = [
 		component: () => import('@/pages/Lend/LoanChannelCategoryPage'),
 		meta: {
 			excludeFromStaticSitemap: true,
-			unbounce: true,
+			unbounceEmailCapture: true,
+			unbouncePopUp: true,
 		},
 	},
 	{
@@ -308,7 +313,8 @@ module.exports = [
 		component: () => import('@/pages/BorrowerProfile/BorrowerProfile'),
 		meta: {
 			excludeFromStaticSitemap: true,
-			unbounce: true,
+			unbounceEmailCapture: true,
+			unbouncePopUp: true,
 		}
 	},
 	{
@@ -316,7 +322,7 @@ module.exports = [
 		path: '/lend/filter',
 		component: () => import('@/pages/Lend/LoanSearchPage'),
 		meta: {
-			unbounce: true,
+			unbounceEmailCapture: true,
 		},
 	},
 	{
@@ -338,6 +344,7 @@ module.exports = [
 		meta: {
 			contentfulPage: route => `lp/${route.params.dynamicRoute}`,
 			excludeFromStaticSitemap: true,
+			unbouncePopUp: true,
 		},
 	},
 	{
@@ -346,6 +353,7 @@ module.exports = [
 		meta: {
 			contentfulPage: route => `hp/${route.params.dynamicRoute}`,
 			excludeFromStaticSitemap: true,
+			unbouncePopUp: true,
 		},
 	},
 	{
@@ -353,7 +361,7 @@ module.exports = [
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage'),
 		props: route => ({ category: route.query.category }),
 		meta: {
-			unbounce: true,
+			unbounceEmailCapture: true,
 		},
 	},
 	{
