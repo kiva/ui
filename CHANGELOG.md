@@ -1,3 +1,10 @@
+## [2.432.0](https://github.com/kiva/ui/compare/v2.431.1...v2.432.0) (2022-12-19)
+
+
+### Features
+
+* add unbounce script for generic pop up on certain routes ([973b233](https://github.com/kiva/ui/commit/973b23317fffd90a61cbca7b30b24ee5dd661731))
+
 ### [2.431.1](https://github.com/kiva/ui/compare/v2.431.0...v2.431.1) (2022-12-16)
 
 
