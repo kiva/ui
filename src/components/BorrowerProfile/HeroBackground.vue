@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 
 export default {

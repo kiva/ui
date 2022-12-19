@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
 import loanUseMixin from '@/plugins/loan/loan-use-mixin';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';

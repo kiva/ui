@@ -141,7 +141,7 @@ import { getKivaImageUrl } from '@/util/imageUtils';
 import {
 	format, parseISO, differenceInCalendarDays
 } from 'date-fns';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
@@ -390,7 +390,6 @@ export default {
 		return {
 			businessName: null,
 			countryName: '',
-			loanId: Number(this.$route.params.id || 0),
 			showLenders: true,
 			showTeams: true,
 			isUrgencyExpVersionShown: false,
@@ -544,6 +543,9 @@ export default {
 		this.lender = data?.my?.userAccount ?? {};
 	},
 	computed: {
+		loanId() {
+			return Number(this.$route.params.id || 0);
+		},
 		enabledExperimentVariant() {
 			return this.userContextExpVariant === 'a';
 		},

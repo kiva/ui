@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { sortByNameToDisplay } from '@/util/loanSearch/filters/sortOptions';
 import { getInputRange } from '@/api/fixtures/MinMaxRange';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';

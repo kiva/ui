@@ -332,7 +332,7 @@ import {
 	parseISO,
 	isSameMonth,
 } from 'date-fns';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { setLendAmount } from '@/util/basketUtils';
 import {
 	buildPriceArray,

@@ -1,4 +1,4 @@
-import { setContext } from 'apollo-link-context';
+import { setContext } from '@apollo/client/link/context';
 import _set from 'lodash/set';
 
 // Add the user info to the context and add the access token to the authorization header

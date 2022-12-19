@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import TertiaryMenu from '@/components/WwwFrame/TertiaryMenu';
 
 const pageQuery = gql`query mfaFeatureFlagQuery {

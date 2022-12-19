@@ -471,7 +471,7 @@ import logReadQueryError from '@/util/logReadQueryError';
 import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
 import setHotJarUserAttributes from '@/util/hotJarUserAttributes';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';

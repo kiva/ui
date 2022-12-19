@@ -19,7 +19,7 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
 import logFormatter from '@/util/logFormatter';
 import SaveButton from './SaveButton';
@@ -29,6 +29,7 @@ import AutolendingWho from './AutolendingWho';
 
 const pageQuery = gql`query autolendProfileEnabled {
 	autolending @client {
+		id
 		profileChanged
 		currentProfile {
 			id

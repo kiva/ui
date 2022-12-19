@@ -7,6 +7,7 @@ type Experiment {
 }
 
 type Autolending {
+	id: Int
 	currentLoanCount: Int
 	currentProfile: AutolendProfile
 	profileChanged: Boolean
@@ -18,6 +19,7 @@ type Autolending {
 }
 
 type AutolendingMutation {
+	id: Int
 	initAutolending: Boolean
 	editProfile(profile: AutolendProfileUpdateInput): Boolean
 	saveProfile: Boolean
@@ -96,6 +98,7 @@ type LoanSearchState {
 }
 
 type TipMessage {
+	id: Int
 	message: String
 	persist: Boolean
 	type: String
@@ -103,12 +106,14 @@ type TipMessage {
 }
 
 type BasketAddInterstitial {
+	id: Int
 	active: Boolean
 	visible: Boolean
 	loanId: Int
 }
 
 type ActiveLoan {
+	id: Int
 	hoverLoanId: Int
 	xCoordinate: Int
 	yCoordinate: Int
@@ -117,5 +122,6 @@ type ActiveLoan {
  }
 
 type VerificationLightbox {
+	id: Int
 	visible: Boolean
 }

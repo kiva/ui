@@ -176,7 +176,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
