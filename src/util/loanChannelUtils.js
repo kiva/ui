@@ -233,8 +233,14 @@ export async function getFilteredLoanChannel(apollo, queryMap, channelUrl, loanQ
 	return transformFLSSData(await fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars));
 }
 
-export function getMetaDescription(targetedLoanChannelURL) {
-	switch (targetedLoanChannelURL) {
+/**
+ * Gets loan channel meta description
+ *
+ * @param {string} channelUrl The URL of the loan channel
+ * @returns {string} The meta description of the loan channel
+ */
+export function getMetaDescription(channelUrl) {
+	switch (channelUrl) {
 		case 'agriculture':
 			return 'By supporting a loan in agriculture, you\'re helping a'
 				+ 'farmer invest in their livelihood. Make a difference and lend today.';
