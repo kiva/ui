@@ -1,7 +1,10 @@
 <template>
 	<div class="gender-radios">
 		<ul>
-			<li v-for="genderOption in genderOptions" :key="genderOption.value" class="tw-mb-1">
+			<li
+				v-for="genderOption in genderOptions" :key="genderOption.value"
+				class="tw-mb-1 tw-px-1 tw-py-1"
+			>
 				<kv-radio
 					:id="`gender-${genderOption.value}`"
 					:value="genderOption.value"
