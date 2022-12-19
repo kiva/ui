@@ -1,7 +1,12 @@
 <template>
-	<div class="sort-by-controls">
-		<ul>
-			<li v-for="sortOption in sortOptions" :key="sortOption.value" class="tw-mb-1">
+	<div class="sort-by-controls ">
+		<ul
+			class="tw-grid tw-grid-rows-4 tw-grid-cols-2"
+		>
+			<li
+				v-for="sortOption in sortOptions" :key="sortOption.value"
+				class="tw-mb-1 tw-px-1 tw-py-1"
+			>
 				<kv-radio
 					:id="`sort-by-${sortOption.value}`"
 					:value="sortOption.value"

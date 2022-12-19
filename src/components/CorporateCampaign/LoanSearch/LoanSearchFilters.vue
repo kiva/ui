@@ -72,7 +72,7 @@
 							v-for="(filter, index) in filterChips"
 							:key="`chip-${index}`"
 							:title="cleanChipName(filter.name)"
-							@click-chip="handleRemoveFilter(filter)"
+							@click="handleRemoveFilter(filter)"
 						>
 							{{ filter.name }}
 						</kv-chip-classic>
@@ -90,46 +90,44 @@
 			@lightbox-closed="filtersVisible = false"
 		>
 			<div class="loan-filter-controls">
-				<span
-					class="tw-flex tw-items-center"
-				>
-					<div
-						class="loan-filters__lightbox tw-mb-0.5 tw-grid tw-grid-rows-2
-								tw-grid-flow-col"
-						id="gender-filter-container"
-					>
-						<h3 class="tw-py-1 tw-p-2 tw-inline-block tw-items-center">
-							Gender
-						</h3>
+				<span class="tw-flex-col">
+					<span class="tw-flex">
+						<div
+							class="loan-filters__lightbox tw-mb-0.5"
+							id="gender-filter-container"
+						>
+							<h3 class="tw-py-1 tw-p-2 tw-inline-block">
+								Gender
+							</h3>
 
-						<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-my-2 tw-p-1">
-							<gender-filter
-								class="loan-filter-controls__filter-type tw-flex tw-items-end"
-								:initial-gender="initialGender"
-								:selected-gender="selectedGender"
-								@updated-filters="handleUpdatedFilters"
-							/>
-						</fieldset>
-					</div>
+							<fieldset class="tw-flex tw-flex-col tw-gap-4 tw-my-2 tw-p-1">
+								<gender-filter
+									class="loan-filter-controls__filter-type"
+									:initial-gender="initialGender"
+									:selected-gender="selectedGender"
+									@updated-filters="handleUpdatedFilters"
+								/>
+							</fieldset>
+						</div>
 
-					<div
-						class="loan-filters__lightbox tw-grid tw-grid-rows-2
-								tw-grid-flow-col"
-						id="sort-filter-container"
-					>
-						<h3 class="tw-py-1 tw-p-2 tw-inline-block tw-items-center">
-							Sort By
-						</h3>
-						<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-my-2 tw-p-1">
-							<sort-order
-								class="loan-filter-controls__filter-type tw-items-end"
-								:initial-sort="initialSortBy"
-								:selected-sort="selectedSort"
-								@sort-order-updated="handleSortByUpdated"
-							/>
-						</fieldset>
-						<hr class="tw-border-tertiary tw-my-1">
-					</div>
+						<div
+							class="loan-filters__lightbox tw-flex-grow"
+							id="sort-filter-container"
+						>
+							<h3 class="tw-py-1 tw-p-2 tw-inline-block">
+								Sort By
+							</h3>
+							<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-my-2 tw-p-1">
+								<sort-order
+									class="loan-filter-controls__filter-type"
+									:initial-sort="initialSortBy"
+									:selected-sort="selectedSort"
+									@sort-order-updated="handleSortByUpdated"
+								/>
+							</fieldset>
+						</div>
+					</span>
+					<hr class="tw-border-tertiary tw-my-1">
 				</span>
 
 				<kv-accordion-item
@@ -682,4 +680,5 @@ export default {
 		padding: 0 0 1rem;
 	}
 }
+
 </style>
