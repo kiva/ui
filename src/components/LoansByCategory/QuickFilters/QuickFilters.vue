@@ -268,8 +268,9 @@ export default {
 		},
 		resetFilters() {
 			this.$emit('reset-filters');
+			this.selectedCategory = 0;
 			this.selectedGender = '';
-			this.sortBy = 'almostFunded';
+			this.sortBy = 'amountLeft';
 			this.updateLocation([]);
 			this.$refs.locationSelector.emptyCountries();
 			this.$kvTrackEvent(
