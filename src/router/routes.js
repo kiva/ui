@@ -438,6 +438,13 @@ module.exports = [
 		}),
 	},
 	{
+		path: '/refugees',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: {
+			contentfulPage: () => 'lp/support-refugees',
+		},
+	},
+	{
 		path: '/register/social',
 		component: () => import('@/pages/LoginAndRegister/RegisterSocial'),
 		meta: {
