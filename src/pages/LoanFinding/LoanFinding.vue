@@ -24,6 +24,8 @@
 				class="tw-mt-6"
 				@add-to-basket="trackCategory($event, 'matched-lending')"
 			/>
+
+			<partner-spotlight-section class="tw-mt-6" />
 		</div>
 	</www-page>
 </template>
@@ -33,6 +35,7 @@ import userInfoQuery from '@/graphql/query/userInfo.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
 import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
+import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSection';
 import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
 
@@ -43,6 +46,7 @@ export default {
 		WwwPage,
 		LendingCategorySection,
 		QuickFiltersSection,
+		PartnerSpotlightSection,
 	},
 	data() {
 		return {

@@ -1,0 +1,66 @@
+<template>
+	<div>
+		<m-f-i-hero />
+
+		<mfi-loans-wrapper
+			v-if="selectedChannelLoanIds.length > 0"
+			:selected-channel-loan-ids="selectedChannelLoanIds"
+			:selected-channel="selectedChannel"
+			class="tw-my-4"
+		/>
+	</div>
+</template>
+
+<script>
+import MFIHero from '@/components/LoansByCategory/MFIRecommendations/MFIHero';
+import MfiLoansWrapper from '@/components/LoansByCategory/MFIRecommendations/MfiLoansWrapper';
+import mfiRecommendationsLoans from '@/graphql/query/lendByCategory/mfiRecommendationsLoans.graphql';
+
+export default {
+	name: 'PartnerSpotlightSection',
+	components: {
+		MFIHero,
+		MfiLoansWrapper
+	},
+	inject: ['apollo', 'cookieStore'],
+	data() {
+		return {
+			mfiRecommendationsLoans: [],
+			selectedChannel: {},
+		};
+	},
+	computed: {
+		selectedChannelLoanIds() {
+			return this.mfiRecommendationsLoans?.map(element => element.id) ?? [];
+		},
+	},
+	methods: {
+		fetchMFILoans() {
+			// Load mfi recommendations loans data
+			return this.apollo.query({
+				query: mfiRecommendationsLoans,
+			}).then(({ data }) => {
+				this.mfiRecommendationsLoans = data?.fundraisingLoans?.values ?? [];
+				const numberLoans = this.mfiRecommendationsLoans.length;
+				if (numberLoans > 0) {
+					this.$kvTrackEvent(
+						'Lending',
+						'view-MFI-feature',
+						'pro mujer',
+						'',
+						numberLoans
+					);
+				} else {
+					this.$kvTrackEvent(
+						'Lending',
+						'no-featured-loan-available'
+					);
+				}
+			});
+		},
+	},
+	mounted() {
+		this.fetchMFILoans();
+	},
+};
+</script>
