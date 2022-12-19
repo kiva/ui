@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-relative tw-flex tw-flex-col tw-w-full">
+	<div class="tw-relative tw-flex tw-flex-col tw-w-full" v-click-outside="toggleRegions">
 		<label
 			class="tw-text-h4"
 			for="location"

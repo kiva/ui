@@ -1,7 +1,6 @@
 <template>
 	<div
 		class="tw-flex tw-flex-col"
-		style="min-width: 230px; height: 100%;"
 		:style="{ minWidth: '230px', height: '100%', maxWidth: cardWidth}"
 		:id="`${loanId}-loan-card`"
 	>
