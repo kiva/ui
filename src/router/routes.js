@@ -339,6 +339,10 @@ module.exports = [
 		redirect: '/gender-equality'
 	},
 	{
+		path: '/lp/support-refugees',
+		redirect: '/refugees'
+	},
+	{
 		path: '/lp/:dynamicRoute',
 		component: () => import('@/pages/ContentfulPage'),
 		meta: {
