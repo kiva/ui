@@ -104,7 +104,7 @@
 
 <script>
 import { mdiChevronRight, mdiMapMarker } from '@mdi/js';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
 import { isMatchAtRisk, watchLoanData } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';

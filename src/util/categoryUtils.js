@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
 import recommendedLoansQuery from '@/graphql/query/lendByCategory/recommendedLoans.graphql';
 import logReadQueryError from '@/util/logReadQueryError';

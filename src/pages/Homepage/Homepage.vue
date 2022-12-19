@@ -4,7 +4,7 @@
 
 <script>
 /* eslint-disable vue/multi-word-component-names */
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
@@ -22,14 +22,19 @@ const homePageQuery = gql`query homepageFrame {
 	}
 }`;
 
+const imagesRequire = require.context('@/assets/images/year-in-review-share', true);
+
 export default {
 	name: 'Homepage',
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
 		/* eslint-disable global-require */
 		// Remove once New Yeah Share Campaign ends
-		const imageUrl = this.loadNYShare
-			? 'https://via.placeholder.com/1200x630'
+		const baseImage = this.loadNYShare
+			? imagesRequire('./base.png')
+			: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg';
+		const twitterImage = this.loadNYShare
+			? imagesRequire('./twitter.png')
 			: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg';
 		const description = this.loadNYShare
 			? this.nyShareCopy
@@ -55,7 +60,7 @@ export default {
 				{
 					property: 'og:image',
 					vmid: 'og:image',
-					content: imageUrl
+					content: baseImage
 				},
 				{
 					property: 'og:description',
@@ -65,7 +70,7 @@ export default {
 				{
 					name: 'twitter:image',
 					vmid: 'twitter:image',
-					content: imageUrl
+					content: twitterImage
 				},
 				{
 					name: 'twitter:description',
@@ -163,7 +168,9 @@ export default {
 			const borrowerString = `${borrowers.format('0,0')} ${borrowers.value() === 1 ? 'borrower' : 'borrowers'}`;
 			const countries = numeral(this.$route?.query?.nyc);
 			const countryString = `${countries.format('0,0')} ${countries.value() === 1 ? 'country' : 'countries'}`;
-			return `In 2022 I lent to ${loanString}, and helped ${borrowerString} in ${countryString} succeed.`;
+			// eslint-disable-next-line max-len
+			return `In 2022, I contributed to ${loanString}, helping fund the dreams of ${borrowerString} in ${countryString}. `
+			+ 'With as little as $25, you can become a Kiva lender and help expand financial opportunity worldwide!';
 		}
 	},
 	mounted() {

@@ -305,7 +305,7 @@ export default {
 	},
 	mounted() {
 		const badgeCookie = this.cookieStore.get('quick_filter_new_badge') === 'true' || false;
-		if (!badgeCookie) {
+		if (!badgeCookie && this.withCategories) {
 			this.showBadge = true;
 			this.cookieStore.set('quick_filter_new_badge', true);
 		}
@@ -322,6 +322,7 @@ export default {
 		font-size: 0.875rem;
 		cursor: pointer;
 		height: auto;
+		background: transparent;
 		@apply focus:tw-ring-0 focus:tw-ring-offset-0;
 	}
 

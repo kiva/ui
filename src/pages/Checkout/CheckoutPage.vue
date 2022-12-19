@@ -38,12 +38,7 @@
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<div
-							class="upsellContainer" v-if="!upsellCookieActive &&
-								showUpsellModule &&
-								upsellLoan.name
-							"
-						>
+						<div class="upsellContainer">
 							<upsell-module
 								v-if="!upsellCookieActive &&
 									showUpsellModule &&
@@ -273,7 +268,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';

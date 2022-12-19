@@ -1,3 +1,215 @@
+## [2.432.0](https://github.com/kiva/ui/compare/v2.431.1...v2.432.0) (2022-12-19)
+
+
+### Features
+
+* add unbounce script for generic pop up on certain routes ([973b233](https://github.com/kiva/ui/commit/973b23317fffd90a61cbca7b30b24ee5dd661731))
+
+### [2.431.1](https://github.com/kiva/ui/compare/v2.431.0...v2.431.1) (2022-12-16)
+
+
+### Bug Fixes
+
+* preserve open space for checkout upsell to pop in ([955f5e6](https://github.com/kiva/ui/commit/955f5e66cae419bde2e920bdd2072f7cfffda0dc))
+
+## [2.431.0](https://github.com/kiva/ui/compare/v2.430.2...v2.431.0) (2022-12-15)
+
+
+### Features
+
+* add general typepolicies fields ([ca297a6](https://github.com/kiva/ui/commit/ca297a677522f948972a5decb823ebeec85d5f34))
+* add query argument to writeQuery ([387368d](https://github.com/kiva/ui/commit/387368d29be052a796169af1b4f0e40244131b5c))
+* add remain type policies ([1795298](https://github.com/kiva/ui/commit/1795298126fc3a243a2a514fb3884197dcf4945b))
+* add resolvers to typePolicies object ([25b788d](https://github.com/kiva/ui/commit/25b788d1ca17846b9395bc9e7cb935bf991f8be1))
+* export typePolicies and set default state ([b3ee5d8](https://github.com/kiva/ui/commit/b3ee5d8b2ea4f6c7a77b1095d2687e8fbb335168))
+* set local resolvers default value ([56b0490](https://github.com/kiva/ui/commit/56b04904e19e2039345826cf474bd3a9f4dd9959))
+* set type policy for Setting ([aa2b73d](https://github.com/kiva/ui/commit/aa2b73d7fe99105006c5fed6ab8640113fd390db))
+* update local resolvers typePolicies ([acb010f](https://github.com/kiva/ui/commit/acb010f39789e87df6e532eca7f09d61600991dc))
+* work in progress ([d818958](https://github.com/kiva/ui/commit/d818958ae52062a1ef0e33d375f81be96903dd1b))
+* work in progress migrate apollo to version 3 ([b43ca71](https://github.com/kiva/ui/commit/b43ca71211ccf91b643e86293ba805122bdbffe8))
+
+
+### Bug Fixes
+
+* add ID field to local GraphQL types and update methods for writing data to cache ([a5596fb](https://github.com/kiva/ui/commit/a5596fb748c061a30d3b3ce103b4d96e7df4cfbc))
+* add missing id to autolending local resolver ([60e9e4b](https://github.com/kiva/ui/commit/60e9e4b3a6bb0d191f349d2806330159b33e4b8b))
+* add missing typePolicies ([88e1ea9](https://github.com/kiva/ui/commit/88e1ea94751a1bf3612a1da1aabefe89cdbfdd9f))
+* add some type polices ([ac3b283](https://github.com/kiva/ui/commit/ac3b2839785377c7bc31b378cb0deb4e587c632e))
+* another missing id ([556a272](https://github.com/kiva/ui/commit/556a272c7c053cc558c03d814dcdc4bbad0f4a7e))
+* bring back deleted experiment resolver tests and correct use of readJSONSetting ([70a2780](https://github.com/kiva/ui/commit/70a2780c5945d422bed2d1edbbb253afa511d1c9))
+* call result function data is not null ([ff611f3](https://github.com/kiva/ui/commit/ff611f3e8eb6353ccb336b3212f876a22fb71ba9))
+* change log error message ([13ae9d9](https://github.com/kiva/ui/commit/13ae9d94564d60acb1f8a0b42bc69c45b39f2b54))
+* ensure local resolvers work ([accaa6e](https://github.com/kiva/ui/commit/accaa6e05b0817443850d5bc9dcdf84bbd38770b))
+* eslint error ([6f7dc43](https://github.com/kiva/ui/commit/6f7dc43f6318d579443d56a96f6f04525db31ceb))
+* experiment resolvers ([326cca9](https://github.com/kiva/ui/commit/326cca9b3e61b934048d7da0614da8552ed7df7b))
+* more missing ids ([61483d4](https://github.com/kiva/ui/commit/61483d40c7fc37d3728d6796902c4720feb1b751))
+* new gql import ([268543a](https://github.com/kiva/ui/commit/268543af265af02748c769203c46757cf1e042c2))
+* remove unnecessary type policies and merge ones without ids ([48d767b](https://github.com/kiva/ui/commit/48d767b2b0ef6a44e3a369ac47bd893b4651bd9a))
+* resolve conflicts ([63a7d6a](https://github.com/kiva/ui/commit/63a7d6ad4fe00ac8baf63487a47108aaaaed3d27))
+* solve conflicts ([a4f6b06](https://github.com/kiva/ui/commit/a4f6b06af2f405adae0f4739ef16f0d43a22908a))
+* solve conflicts ([9873cff](https://github.com/kiva/ui/commit/9873cff6ebc9cf8a46b97ddc7527356028d89aeb))
+* update package-lock.json ([5297144](https://github.com/kiva/ui/commit/5297144299e356bc5a31983fd4f244b4e87a99ec))
+* update some experiments and remove changed experiment tests with cookies ([8f4d8c7](https://github.com/kiva/ui/commit/8f4d8c73eaa82d2318cde6b39d3c88db0656bd98))
+* use `merge:true` by default for GraphQL types without IDs ([d935795](https://github.com/kiva/ui/commit/d9357957bc22f74fcebb53674f94462bf33e0274))
+* writeQuery args ([b0543db](https://github.com/kiva/ui/commit/b0543dbf0b0bf1014f5ae6d5511b63aadfc9eaa5))
+
+### [2.430.2](https://github.com/kiva/ui/compare/v2.430.1...v2.430.2) (2022-12-15)
+
+
+### Bug Fixes
+
+* loanid computed property added to borrower profile ([91488df](https://github.com/kiva/ui/commit/91488dfebaf43b2520a7383814ed65519f567488))
+
+### [2.430.1](https://github.com/kiva/ui/compare/v2.430.0...v2.430.1) (2022-12-15)
+
+
+### Bug Fixes
+
+* redirect visits from /lp/how-kiva-works to /about/how ([45e359c](https://github.com/kiva/ui/commit/45e359c14158c51ea9c0c97ac83490b47543af22))
+* stop hitting lp/how-kiva-works from lighthouse ([31e377c](https://github.com/kiva/ui/commit/31e377ca30192e10c0ce8fae8d19b4e14ad8381c))
+
+## [2.430.0](https://github.com/kiva/ui/compare/v2.429.1...v2.430.0) (2022-12-15)
+
+
+### Features
+
+* add loan ids to various social share events ([81d97e6](https://github.com/kiva/ui/commit/81d97e6e699a5d935456991b9763d2ef7fa00921))
+
+### [2.429.1](https://github.com/kiva/ui/compare/v2.429.0...v2.429.1) (2022-12-15)
+
+
+### Bug Fixes
+
+* add thanks-message testid to simplify automated thanks page test ([2a14831](https://github.com/kiva/ui/commit/2a14831e2ccbfa9f06914a1ed3752d5efcede45d))
+
+## [2.429.0](https://github.com/kiva/ui/compare/v2.428.0...v2.429.0) (2022-12-15)
+
+
+### Features
+
+* add new user attributes ([16a739d](https://github.com/kiva/ui/commit/16a739d1d674a9cfb6326aab009aef8366776f3f))
+
+
+### Bug Fixes
+
+* get loans total ([31b344a](https://github.com/kiva/ui/commit/31b344adb9edf09beb27564fb64c1590c8436d53))
+* wrap condition ([a525fb2](https://github.com/kiva/ui/commit/a525fb2bb3c2bdcc541ca51764ce9877c9ba68e7))
+
+## [2.428.0](https://github.com/kiva/ui/compare/v2.427.0...v2.428.0) (2022-12-15)
+
+
+### Features
+
+* use loan facets in e2e instead of loan data ([7f56f42](https://github.com/kiva/ui/commit/7f56f421c5eedc432994243bd6f544b0a89c5046))
+
+## [2.427.0](https://github.com/kiva/ui/compare/v2.426.3...v2.427.0) (2022-12-15)
+
+
+### Features
+
+* matched lending section added to lending page ([93a79f3](https://github.com/kiva/ui/commit/93a79f33a2c7b98c133dcfab855ed8a5344dc46d))
+
+### [2.426.3](https://github.com/kiva/ui/compare/v2.426.2...v2.426.3) (2022-12-15)
+
+
+### Bug Fixes
+
+* refresh the basket totals and state (includes user balance) on payment submisson error ([905b300](https://github.com/kiva/ui/commit/905b300f6724e053bef1dbc1444768fcb2180d5d))
+
+### [2.426.2](https://github.com/kiva/ui/compare/v2.426.1...v2.426.2) (2022-12-14)
+
+
+### Bug Fixes
+
+* updated e2e for search with lend/filter navigation ([135f9d0](https://github.com/kiva/ui/commit/135f9d03c7e8810715f5ddf0ff947ac8257a58af))
+
+### [2.426.1](https://github.com/kiva/ui/compare/v2.426.0...v2.426.1) (2022-12-14)
+
+
+### Bug Fixes
+
+* update TOU and highlight changes ([9780b04](https://github.com/kiva/ui/commit/9780b047b1600639237689c0880145990416b4f8))
+
+## [2.426.0](https://github.com/kiva/ui/compare/v2.425.1...v2.426.0) (2022-12-14)
+
+
+### Features
+
+* add hotjar data suppress ([f764e9d](https://github.com/kiva/ui/commit/f764e9dc50e3e56153208a5b3e19e2f8bcb8b2fa))
+
+### [2.425.1](https://github.com/kiva/ui/compare/v2.425.0...v2.425.1) (2022-12-14)
+
+
+### Bug Fixes
+
+* js error for null city/state/country when missing ([5a69d72](https://github.com/kiva/ui/commit/5a69d72e01402844747dfa202bac8651b542ce3e))
+
+## [2.425.0](https://github.com/kiva/ui/compare/v2.424.1...v2.425.0) (2022-12-14)
+
+
+### Features
+
+* spacing and alignment pass on order totals line items ([17d91b1](https://github.com/kiva/ui/commit/17d91b16e8948f191e4b9e9ed37612cbcc2d1027))
+
+### [2.424.1](https://github.com/kiva/ui/compare/v2.424.0...v2.424.1) (2022-12-13)
+
+
+### Bug Fixes
+
+* update fastly url in dev to use root now that the domain is running through fastly ([ca854ed](https://github.com/kiva/ui/commit/ca854ed821ed69b94aeb64e08d49c064571fc8c6))
+
+## [2.424.0](https://github.com/kiva/ui/compare/v2.423.0...v2.424.0) (2022-12-13)
+
+
+### Features
+
+* design and ux updates for lending home page ([7aaaa45](https://github.com/kiva/ui/commit/7aaaa4572638b64edae2151cfc31b473796c17bf))
+
+## [2.423.0](https://github.com/kiva/ui/compare/v2.422.0...v2.423.0) (2022-12-13)
+
+
+### Features
+
+* add impact statement icons ([6dde732](https://github.com/kiva/ui/commit/6dde7323269d61f6120d0b2999a8afbf4d961234))
+* clientside load the loan bookmark ([dcadd62](https://github.com/kiva/ui/commit/dcadd626fc83e6d336b84883597217d578e4c561))
+* first variation ([054ca30](https://github.com/kiva/ui/commit/054ca305358620e64fd1715b2d1c1bc546ff5dd8))
+* lazy load summary card ([1b073db](https://github.com/kiva/ui/commit/1b073dbbbc5b282042b916775f4acd6006c70a60))
+* remove some prefetched borrower profile data ([911a836](https://github.com/kiva/ui/commit/911a8365a33aa67fa8ff109a830c10c26348cf07))
+* removed social elements exp ([2375f63](https://github.com/kiva/ui/commit/2375f635709e1bbc51c2577de4755089f73fa2db))
+
+
+### Bug Fixes
+
+* merge issue ([fd404ea](https://github.com/kiva/ui/commit/fd404ea36927681cfa14ad33810dc7e9bc2ffe93))
+* missed removing exp flag ([0df0911](https://github.com/kiva/ui/commit/0df091174d911fa3778778c7818e412099046e04))
+* missing semicolon ([5d90c57](https://github.com/kiva/ui/commit/5d90c57385ae1c652509af16d7d95eac5dc8b331))
+* needs leading zero ([7ccf247](https://github.com/kiva/ui/commit/7ccf24721b68ea1355eb7d9aba4228f48fb2b115))
+* remove exp data from prefetch query ([aa13cf5](https://github.com/kiva/ui/commit/aa13cf59843d6ca28a8cd2cbb5333ec84681003d))
+* removed exp code ([62a7ad3](https://github.com/kiva/ui/commit/62a7ad3a3ea4510404bc5f6808cd2a7ddb6b98c0))
+* removed unneeded preFetchVariables ([da258ec](https://github.com/kiva/ui/commit/da258ecdcfbb80b1374c2e56f298c59e6e013ab0))
+* removed unneeded try catch ([3c5275b](https://github.com/kiva/ui/commit/3c5275b8106aff82de198f2df3738ad3ef72ac09))
+* send extra data to mounted hook ([01604fe](https://github.com/kiva/ui/commit/01604fee893bf559e981f9d40cceba7f2c3580fe))
+
+## [2.422.0](https://github.com/kiva/ui/compare/v2.421.0...v2.422.0) (2022-12-13)
+
+
+### Features
+
+* update copy and images ([9323470](https://github.com/kiva/ui/commit/9323470571165a6a95330ab2dfe7f3048ab8db53))
+
+## [2.421.0](https://github.com/kiva/ui/compare/v2.420.0...v2.421.0) (2022-12-13)
+
+
+### Features
+
+* category dropdown logic for MVP quick filters section ([deddcef](https://github.com/kiva/ui/commit/deddcef2497232d7e58a3a3ea649a0dadc3eb1d4))
+
+
+### Bug Fixes
+
+* merge conflict ([f366d9e](https://github.com/kiva/ui/commit/f366d9e456cfb0e0293aa15e96f5a9ad4995b508))
+* reset preset filters when category changes ([8f36657](https://github.com/kiva/ui/commit/8f36657cc257ad395f9c8bb964c2a20953b51b69))
+
 ## [2.420.0](https://github.com/kiva/ui/compare/v2.419.1...v2.420.0) (2022-12-12)
 
 

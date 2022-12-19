@@ -21,7 +21,7 @@
 					v-model="email"
 					data-testid="basket-guest-email-input"
 					id="email"
-					class="fs-exclude tw-mb-2 tw-w-full"
+					class="data-hj-suppress fs-exclude tw-mb-2 tw-w-full"
 					@focus="$kvTrackEvent(
 						'basket',
 						'click-email-receipt-field',
@@ -296,6 +296,8 @@ export default {
 						this.processBraintreeDropInError('basket', kivaBraintreeResponse);
 						// Payment method failed, unselect attempted payment method
 						this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
+						// Initialize a refresh of basket state
+						this.$emit('refreshtotals');
 						// exit
 						return kivaBraintreeResponse;
 					}

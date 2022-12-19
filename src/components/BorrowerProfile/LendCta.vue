@@ -41,10 +41,7 @@
 							'md:tw-col-start-2 md:tw-col-span-10': isSticky,
 						},
 						'lg:tw-col-span-12',
-						{
-							'lg:tw-pt-1 lg:tw-pb-1': !socialExpEnabled,
-							'lg:tw-pt-1 lg:tw-pb-0': socialExpEnabled,
-						},
+						'lg:tw-pt-1 lg:tw-pb-1',
 					]"
 				>
 					<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
@@ -209,39 +206,10 @@
 							class="tw-hidden md:tw-inline-block lg:tw-hidden"
 						/>
 						<jump-links
-							:class="[
-								'tw-hidden md:tw-block lg:tw-mb-1.5',
-								{
-									'md:tw-mb-3': isSticky || !socialExpEnabled,
-								}
-							]"
+							class="tw-hidden md:tw-block lg:tw-mb-1.5 md:tw-mb-3"
 							data-testid="bp-lend-cta-jump-links"
 						/>
 					</div>
-				</div>
-				<div
-					v-if="socialExpEnabled"
-					:class="[
-						'tw-hidden',
-						{
-							'md:tw-block': !isSticky,
-						},
-						'tw-col-span-12',
-						'md:tw-col-start-7 md:tw-col-span-6',
-						'lg:tw-col-span-12',
-					]"
-				>
-					<hr
-						v-if="socialExpEnabled && lenders.length"
-						class="tw-hidden lg:tw-block tw-border-tertiary tw-w-full tw-mb-3"
-					>
-					<lenders-list
-						v-if="socialExpEnabled && lenders.length"
-						:num-lenders="numLenders"
-						:lenders="lenders"
-						key="lenderList"
-						@togglelightbox="toggleLightbox"
-					/>
 				</div>
 			</kv-grid>
 
@@ -364,7 +332,7 @@ import {
 	parseISO,
 	isSameMonth,
 } from 'date-fns';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { setLendAmount } from '@/util/basketUtils';
 import {
 	buildPriceArray,
@@ -384,7 +352,6 @@ import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
 import EcoChallengeLightbox from '@/components/Lightboxes/EcoChallengeLightbox';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
-import LendersList from '@/components/BorrowerProfile/LendersList';
 import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrapper';
 
 import IconClock from '@/assets/icons/inline/clock.svg';
@@ -403,14 +370,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		lenders: {
-			type: Array,
-			default: () => []
-		},
-		socialExpEnabled: {
-			type: Boolean,
-			default: false
-		},
 		requireDepositsMatchedLoans: {
 			type: Boolean,
 			default: false,
@@ -421,7 +380,6 @@ export default {
 		},
 	},
 	components: {
-		LendersList,
 		LendAmountButton,
 		KvGrid,
 		EcoChallengeLightbox,
@@ -558,7 +516,7 @@ export default {
 			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
-				this.lenderCountVisibility = !this.socialExpEnabled;
+				this.lenderCountVisibility = true;
 			}
 
 			// Start cycling the stats slot now that loan data is available
@@ -658,7 +616,7 @@ export default {
 			const cycleSlotMachine = () => {
 				const possibleStats = [];
 				// Add lender count
-				if (this.status === 'fundraising' && this.numLenders > 0 && !this.socialExpEnabled) {
+				if (this.status === 'fundraising' && this.numLenders > 0) {
 					possibleStats.push('lenderCount');
 				}
 				// Add matching text
@@ -682,9 +640,6 @@ export default {
 			// Start cycling
 			this.slotMachineInterval = setInterval(cycleSlotMachine, 5000);
 		},
-		toggleLightbox() {
-			this.$emit('togglelightbox');
-		}
 	},
 	watch: {
 		matchingText(newValue, previousValue) {

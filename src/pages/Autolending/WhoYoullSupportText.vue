@@ -56,7 +56,7 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 export default {
 	name: 'WhoYoullSupportText',
@@ -74,6 +74,7 @@ export default {
 	apollo: {
 		query: gql`query whoYoullSupport {
 			autolending @client {
+				id
 				currentProfile {
 					id
 					kivaChooses

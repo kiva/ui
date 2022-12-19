@@ -15,7 +15,7 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { differenceInCalendarDays } from 'date-fns';
 import numeral from 'numeral';
 
@@ -127,6 +127,7 @@ export default {
 				}
 			}
 			autolending @client {
+				id
 				currentProfile {
 					id
 					isEnabled

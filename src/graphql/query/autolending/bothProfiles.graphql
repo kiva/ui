@@ -2,6 +2,13 @@
 
 query autolendingProfiles {
 	autolending @client {
+		id
+		currentLoanCount
+		profileChanged
+		loadingProfile
+		countingLoans
+		savingProfile
+		warningThreshold
 		currentProfile {
 			id
 			...autolendProfileFragment

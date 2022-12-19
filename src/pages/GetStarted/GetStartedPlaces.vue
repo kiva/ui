@@ -170,7 +170,7 @@
 
 <script>
 import _orderBy from 'lodash/orderBy';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import Fuse from 'fuse.js/dist/fuse.common';
 // import Fuse from 'fuse.js'; // re-enabled after https://github.com/krisk/Fuse/pull/383 is merged
 

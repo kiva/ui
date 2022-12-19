@@ -51,7 +51,7 @@
 		<div v-show="showSeeMoreCta" class="tw-w-full tw-my-4 tw-text-center">
 			<kv-button
 				variant="secondary"
-				:href="filterPageUrl"
+				:href="filterPageUrl()"
 			>
 				See more loans
 			</kv-button>
@@ -126,24 +126,26 @@ export default {
 		this.backupLoans = this.loans.slice(3);
 	},
 	computed: {
-		filterPageUrl() {
-			const location = this.flssLoanSearch.countryIsoCode?.toString();
-			const paramStr = JSON.parse(JSON.stringify({
-				gender: this.flssLoanSearch.gender,
-				sortBy: this.flssLoanSearch.sortBy,
-				sector: this.flssLoanSearch.sectorId,
-				tag: this.flssLoanSearch.tagId,
-				attribute: this.flssLoanSearch.themeId,
-				location: (!location || location.length > 0) ? location : undefined,
-			}));
-			const params = new URLSearchParams(paramStr);
-			return `/lend/filter?${params.toString()}`;
-		},
 		showSeeMoreCta() {
 			return this.loanSearchState.pageOffset !== 0 && !this.flssLoanSearch.activityId;
 		}
 	},
 	methods: {
+		filterPageUrl() {
+			const location = this.flssLoanSearch.countryIsoCode?.toString();
+			// parse, stringify, and undefined are all needed to ensure
+			// we don't have a gender=undefined or gender= in our string
+			const paramStr = JSON.parse(JSON.stringify({
+				gender: this.flssLoanSearch.gender || undefined,
+				sortBy: this.flssLoanSearch.sortBy || undefined,
+				sector: this.flssLoanSearch.sectorId || undefined,
+				tag: this.flssLoanSearch.tagId || undefined,
+				attribute: this.flssLoanSearch.themeId || undefined,
+				location: location || undefined,
+			}));
+			const params = new URLSearchParams(paramStr);
+			return `/lend/filter?${params.toString()}`;
+		},
 		async updateQuickFilters(filter) {
 			this.loanSearchState.pageOffset = 0;
 			if (filter.gender !== undefined) {

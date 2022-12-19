@@ -44,7 +44,7 @@
 </template>
 <script>
 
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import FlssLoans from '@/pages/FlssPrototypes/FlssLoanRow';
 

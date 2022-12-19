@@ -23,8 +23,6 @@
 						data-testid="bp-summary"
 						class="tw-relative lg:tw--mb-1.5"
 						:show-urgency-exp="showUrgencyExp"
-						:lenders="lenders"
-						:social-exp-enabled="socialExpEnabled"
 					>
 						<template #sharebutton v-if="inPfp || shareButtonExpEnabled">
 							<!-- Share button for PFP loans -->
@@ -49,10 +47,6 @@
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
 						:require-deposits-matched-loans="requireDepositsMatchedLoans"
-						:lenders="lenders"
-						:social-exp-enabled="socialExpEnabled"
-						@togglelightbox="toggleLightbox"
-						:num-lenders="numLenders"
 						:user-context-exp-variant="userContextExpVariant"
 					>
 						<template #sharebutton v-if="inPfp || shareButtonExpEnabled">
@@ -106,7 +100,6 @@
 				/>
 				<borrower-country data-testid="bp-country" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<lenders-and-teams
-					ref="lendersComponent"
 					v-if="showLenders"
 					data-testid="bp-lenders"
 					key="lenders"
@@ -114,8 +107,6 @@
 					:loan-id="loanId"
 					display-type="lenders"
 					@hide-section="showLenders = false"
-					:social-exp-enabled="socialExpEnabled"
-					:show-light-box-modal="showLightBoxModal"
 				/>
 				<lenders-and-teams
 					v-if="showTeams"
@@ -141,7 +132,6 @@
 				:inviter-name="inviterName"
 			/>
 		</article>
-		<what-is-kiva-modal v-if="kivaModuleExpEnabled && !shownModal" />
 		<!-- <aside>Similar loans</aside> -->
 	</www-page>
 </template>
@@ -151,7 +141,7 @@ import { getKivaImageUrl } from '@/util/imageUtils';
 import {
 	format, parseISO, differenceInCalendarDays
 } from 'date-fns';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
@@ -170,7 +160,6 @@ import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
-import WhatIsKivaModal from '@/components/BorrowerProfile/WhatIsKivaModal';
 
 import {
 	getExperimentSettingCached,
@@ -179,13 +168,12 @@ import {
 import loanUseFilter from '@/plugins/loan-use-filter';
 import CheckIcon from '@/assets/icons/inline/check-with-bg.svg';
 
-const socialElementsExpKey = 'social_elements';
-const whatIsKivaExpKey = 'what_is_kiva_module';
 const shareButtonExpKey = 'share_button_bp';
 const userContextExpKey = 'new_users_context';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
-const pageQuery = gql`
+
+const preFetchQuery = gql`
 	query borrowerProfileMeta(
 		$loanId: Int!,
 		$publicId: String!,
@@ -194,21 +182,12 @@ const pageQuery = gql`
 		$imgDefaultSize: String = "w480h360",
 		$imgRetinaSize: String = "w960h720"
 	) {
-		hasEverLoggedIn @client
 		general {
 			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
 				key
 				value
 			}
 			requireDepositsMatchedLoans: uiExperimentSetting(key: "require_deposits_matched_loans") {
-				key
-				value
-			}
-			socialElements: uiExperimentSetting(key: "social_elements") {
-				key
-				value
-			}
-			whatIsKivaModule: uiExperimentSetting(key: "what_is_kiva_module") {
 				key
 				value
 			}
@@ -231,7 +210,6 @@ const pageQuery = gql`
 				}
 				geocode {
 					city
-					state
 					country {
 						name
 						isoCode
@@ -244,34 +222,15 @@ const pageQuery = gql`
 					hash
 				}
 				plannedExpirationDate
-				lenders(limit: 10) {
-					values {
-						id
-						name
-						publicId
-						image {
-							id
-							url
-							hash
-						}
-						lenderPage {
-							city
-							country {
-								isoCode
-							}
-						}
-					}
+				lenders {
 					totalCount
 				}
 				anonymizationLevel
 				loanAmount
 				status
 				use
-				description
-				loanFundraisingInfo{
+				loanFundraisingInfo {
 					fundedAmount
-					isExpiringSoon
-					reservedAmount
 				}
 				inPfp
 				pfpMinLenders
@@ -288,13 +247,6 @@ const pageQuery = gql`
 				name
 			}
 		}
-		my {
-			userAccount {
-				id
-				inviterName
-				public
-			}
-		}
 		shop(basketId: $basketId) {
 			id
 			basket {
@@ -304,6 +256,34 @@ const pageQuery = gql`
 						id
 					}
 				}
+			}
+		}
+	}
+`;
+
+const mountedQuery = gql`
+	query borrowerProfileMeta(
+		$loanId: Int!,
+	) {
+		lend {
+			loan(id: $loanId) {
+				id
+				...on LoanPartner {
+					partnerName
+					partner {
+						id
+						countries {
+							name
+						}
+					}
+				}
+			}
+		}
+		my {
+			userAccount {
+				id
+				inviterName
+				public
 			}
 		}
 	}
@@ -328,7 +308,6 @@ export default {
 		TopBannerPfp,
 		WhySpecial,
 		WwwPage,
-		WhatIsKivaModal,
 		CheckIcon
 	},
 	metaInfo() {
@@ -411,7 +390,6 @@ export default {
 		return {
 			businessName: null,
 			countryName: '',
-			loanId: Number(this.$route.params.id || 0),
 			showLenders: true,
 			showTeams: true,
 			isUrgencyExpVersionShown: false,
@@ -426,7 +404,6 @@ export default {
 			loanAmount: '0',
 			status: '',
 			use: '',
-			description: '',
 			loanFundraisingInfo: {},
 			requireDepositsMatchedLoans: false,
 			shareCardLanguageVersion: '',
@@ -438,12 +415,7 @@ export default {
 			diffInDays: 0,
 			lender: {},
 			loan: {},
-			lenders: [],
-			socialExpEnabled: false,
-			showLightBoxModal: false,
-			kivaModuleExpEnabled: false,
 			shareButtonExpEnabled: false,
-			shownModal: false,
 			userContextExpVariant: 'a',
 			partnerName: '',
 			partnerCountry: '',
@@ -451,12 +423,12 @@ export default {
 		};
 	},
 	apollo: {
-		query: pageQuery,
+		query: preFetchQuery,
 		preFetch(config, client, { route, cookieStore }) {
 			const publicId = getPublicId(route);
 			return client
 				.query({
-					query: pageQuery,
+					query: preFetchQuery,
 					variables: {
 						loanId: Number(route.params?.id ?? 0),
 						publicId,
@@ -487,8 +459,6 @@ export default {
 
 					return Promise.all([
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
-						client.query({ query: experimentQuery, variables: { id: socialElementsExpKey } }),
-						client.query({ query: experimentQuery, variables: { id: whatIsKivaExpKey } }),
 						client.query({ query: experimentQuery, variables: { id: shareButtonExpKey } }),
 						client.query({ query: experimentQuery, variables: { id: userContextExpKey } }),
 					]);
@@ -528,17 +498,13 @@ export default {
 			this.loanAmount = loan?.loanAmount ?? '0';
 			this.status = loan?.status ?? '';
 			this.use = loan?.use ?? '';
-			this.description = loan?.description ?? '';
 			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
-			this.lenders = loan?.lenders?.values ?? [];
 			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
 			this.itemsInBasket = result?.data?.shop?.basket?.items?.values ?? [];
 
 			this.diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
 			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;
-			this.lender = result?.data?.my?.userAccount ?? {};
 
-			this.shownModal = this.cookieStore.get('what-is-kiva-shown') || result?.data?.hasEverLoggedIn;
 			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
 		},
 	},
@@ -548,30 +514,6 @@ export default {
 		const expCookieSignifier = this.cookieStore.get('kvlendborrowerbeta');
 		if (expCookieSignifier === 'b') {
 			this.$kvTrackEvent('Borrower Profile', 'EXP-GROW-655-Aug2021', expCookieSignifier);
-		}
-		const { enabled } = getExperimentSettingCached(this.apollo, socialElementsExpKey);
-		if (enabled) {
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Borrower Profile',
-				socialElementsExpKey,
-				'EXP-MARS-158-Jul2022'
-			);
-		}
-
-		const kivaModuleExpData = getExperimentSettingCached(this.apollo, whatIsKivaExpKey);
-		if (kivaModuleExpData?.enabled) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Borrower Profile',
-				whatIsKivaExpKey,
-				'EXP-MARS-199-Aug2022'
-			);
-			if (version === 'b') {
-				this.kivaModuleExpEnabled = true;
-			}
 		}
 
 		const shareButtonExpData = getExperimentSettingCached(this.apollo, shareButtonExpKey);
@@ -588,26 +530,9 @@ export default {
 			}
 		}
 
-		// Async data fetch for MARS-317
+		// Async data fetch for MARS-317 and share button
 		const { data } = await this.apollo.query({
-			query: gql`query newUserContextExpData(
-				$loanId: Int!,
-			) {
-				lend {
-					loan(id: $loanId) {
-						id
-						...on LoanPartner {
-							partnerName
-							partner {
-								id
-								countries {
-									name
-								}
-							}
-						}
-					}
-				}
-			}`,
+			query: mountedQuery,
 			variables: {
 				loanId: this.loanId,
 			},
@@ -615,13 +540,12 @@ export default {
 		const loan = data?.lend?.loan;
 		this.partnerName = loan?.partnerName ?? '';
 		this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
-	},
-	methods: {
-		toggleLightbox() {
-			this.$refs.lendersComponent.openLightbox();
-		}
+		this.lender = data?.my?.userAccount ?? {};
 	},
 	computed: {
+		loanId() {
+			return Number(this.$route.params.id || 0);
+		},
 		enabledExperimentVariant() {
 			return this.userContextExpVariant === 'a';
 		},
@@ -739,16 +663,6 @@ export default {
 				'EXP-MARS-143-Jul2022',
 				this.shareCardLanguageVersion.replace('-normal', '')
 			);
-		}
-
-		// Check if social elements experiment is active.
-		const { enabled } = getExperimentSettingCached(this.apollo, socialElementsExpKey);
-		const exp = this.apollo.readFragment({
-			id: `Experiment:${socialElementsExpKey}`,
-			fragment: experimentVersionFragment,
-		}) ?? {};
-		if (enabled && exp.version === 'b') {
-			this.socialExpEnabled = true;
 		}
 
 		const publicId = getPublicId(this.$route);

@@ -9,7 +9,7 @@
 		<form id="guestUpsellForm" action="." @submit.prevent.stop="submit">
 			<kv-base-input
 				name="firstName"
-				class="fs-exclude"
+				class="fs-exclude data-hj-suppress"
 				type="text"
 				v-model.trim="firstName"
 				:validation="$v.firstName"
@@ -21,7 +21,7 @@
 			</kv-base-input>
 			<kv-base-input
 				name="lastName"
-				class="fs-exclude"
+				class="fs-exclude data-hj-suppress"
 				type="text"
 				v-model.trim="lastName"
 				:validation="$v.lastName"
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';

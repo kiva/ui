@@ -1,4 +1,3 @@
-import _set from 'lodash/set';
 import CookieStore from '@/util/cookieStore';
 import * as expUtils from '@/util/experimentUtils';
 import expResolverFactory from '@/api/localResolvers/experiment';
@@ -9,7 +8,6 @@ function Experiment(id, version) {
 }
 
 function getExperimentContext(data = {}) {
-	const context = {};
 	// default hash-code is 1753809052
 	const exp = {
 		id: 'ab',
@@ -22,7 +20,19 @@ function getExperimentContext(data = {}) {
 		},
 		...data
 	};
-	_set(context, `cache.data.data['Setting:uiexp.${exp.id}'].value`, JSON.stringify(JSON.stringify(exp)));
+	const context = {
+		cache: {
+			readQuery: jest.fn().mockReturnValue({
+				general: {
+					uiExperimentSetting: {
+						key: exp.id,
+						value: JSON.stringify(JSON.stringify(exp))
+					}
+				}
+			}),
+		}
+	};
+
 	return context;
 }
 

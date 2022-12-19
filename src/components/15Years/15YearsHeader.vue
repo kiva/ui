@@ -133,7 +133,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import ThirtyEightMillion from '@/assets/images/15-years/stickers/38MMBorrowers-1.png';
 import TShirt from '@/assets/images/15-years/stickers/T-shirt.png';
 import DreamTeam from '@/assets/images/15-years/stickers/DTeam2.png';

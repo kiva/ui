@@ -20,7 +20,7 @@
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import partnerListQuery from '@/graphql/query/autolending/partnerList.graphql';
 import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolending-filter-mixin';
 import CheckList from './CheckList';
@@ -72,6 +72,7 @@ export default {
 			this.apollo.mutate({
 				mutation: gql`mutation updatePartners($partners: [Int]) {
 					autolending @client {
+						id
 						editProfile(profile: {
 							loanSearchCriteria: {
 								filters: {

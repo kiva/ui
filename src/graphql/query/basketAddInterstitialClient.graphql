@@ -1,5 +1,6 @@
 query basketAddInterstitialClient {
 	basketAddInterstitial @client {
+		id
 		active
 		visible
 		loanId

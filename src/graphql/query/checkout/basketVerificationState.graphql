@@ -10,6 +10,7 @@ query basketVerificationState($basketId: String) {
 		}
 	}
 	verificationLightbox @client {
+		id
 		visible
 	}
 }

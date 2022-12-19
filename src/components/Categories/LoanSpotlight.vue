@@ -49,7 +49,7 @@
 <script>
 
 import { toParagraphs } from '@/util/loanUtils';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
