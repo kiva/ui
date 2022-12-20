@@ -14,7 +14,7 @@ module.exports = {
 				'https://www.kiva.org/lend/filter',
 				'https://www.kiva.org/lend-by-category',
 				'https://www.kiva.org/lend-by-category/women',
-				'https://www.kiva.org/lp/support-refugees',
+				'https://www.kiva.org/refugees',
 				'https://www.kiva.org/lptmp/support-refugees',
 				'https://www.kiva.org/lptmp/how-kiva-works',
 				'https://www.kiva.org/about/how',
