@@ -1,3 +1,10 @@
+## [2.435.0](https://github.com/kiva/ui/compare/v2.434.0...v2.435.0) (2022-12-20)
+
+
+### Features
+
+* tracking event added when no loans find for partner spotlight ([3030b6b](https://github.com/kiva/ui/commit/3030b6bfb57f78f29249789d30c2d4d46c9b6c5b))
+
 ## [2.434.0](https://github.com/kiva/ui/compare/v2.433.0...v2.434.0) (2022-12-19)
 
 
