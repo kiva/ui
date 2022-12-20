@@ -14,7 +14,7 @@
 		</div>
 		<p class="tw-text-center tw-mt-4 tw-text-subhead" data-testid="thanks-message">
 			<template v-if="showLenderName">
-				<span class="fs-mask data-hj-suppress">{{ lenderName }}</span>, complete your support by sharing.
+				<span class="fs-mask data-hj-suppress">{{ lenderName }}</span>, complete your support by sharing {{ subject }}
 			</template>
 			<template v-else>
 				Complete your support by sharing.
@@ -38,6 +38,14 @@ export default {
 			type: Boolean,
 			default: true
 		},
+		calculatePeopleQtyToGoal: {
+			type: Number,
+			default: 0
+		},
+		fundedCopyVersion: {
+			type: String,
+			default: 'a'
+		}
 	},
 	data() {
 		return {
@@ -52,6 +60,14 @@ export default {
 				},
 			]
 		};
+	},
+	computed: {
+		subject() {
+			if (this.calculatePeopleQtyToGoal) {
+				return 'this loan.';
+			}
+			return 'Kiva\'s mission!';
+		}
 	}
 };
 </script>

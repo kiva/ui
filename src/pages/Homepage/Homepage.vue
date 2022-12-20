@@ -23,6 +23,7 @@ const homePageQuery = gql`query homepageFrame {
 }`;
 
 const imagesRequire = require.context('@/assets/images/year-in-review-share', true);
+const thanksImgRequire = require.context('@/assets/images/thanks-page', true);
 
 export default {
 	name: 'Homepage',
@@ -30,22 +31,40 @@ export default {
 	metaInfo() {
 		/* eslint-disable global-require */
 		// Remove once New Yeah Share Campaign ends
-		const baseImage = this.loadNYShare
-			? imagesRequire('./base.png')
-			: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg';
+		let baseImage = 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg';
+		if (this.loadNYShare) {
+			baseImage = imagesRequire('./base.png');
+		} else if (this.$route.query.funded_share) {
+			baseImage = thanksImgRequire('./kiva-share.png');
+		}
 		const twitterImage = this.loadNYShare
 			? imagesRequire('./twitter.png')
-			: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg';
-		const description = this.loadNYShare
-			? this.nyShareCopy
-			: 'Kiva is the world\'s first online lending platform. '
+			: baseImage;
+
+		let title = 'Make a loan, change a life';
+		if (this.$route.query.lender && this.$route.query.funded_share) {
+			title = `Can you join ${this.$route.query.lender} in giving others a chance to succeed?`;
+		}
+
+		let description = 'Kiva is the world\'s first online lending platform. '
 			+ 'For as little as $25 you can lend to an entrepreneur around the world. Learn more here.';
-		const socialDescription = this.loadNYShare
-			? this.nyShareCopy
-			: 'Support women, entrepreneurs, students and refugees around the world with as little as $25 on Kiva. '
-			+ '100% of your loans go to support borrowers.';
+		if (this.loadNYShare) {
+			description = this.nyShareCopy;
+		} else if (this.$route.query.funded_share) {
+			description = 'Kiva is a loan, not a donation. '
+			+ 'With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
+		}
+
+		let socialDescription = 'Support women, entrepreneurs, students and refugees around the world with as '
+			+ 'little as $25 on Kiva. 100% of your loans go to support borrowers.';
+		if (this.loadNYShare) {
+			socialDescription = this.nyShareCopy;
+		} else if (this.$route.query.funded_share) {
+			socialDescription = description;
+		}
+
 		return {
-			title: 'Make a loan, change a life',
+			title,
 			meta: [
 				{
 					name: 'google-site-verification', // for Google Search Console
@@ -63,6 +82,11 @@ export default {
 					content: baseImage
 				},
 				{
+					property: 'og:title',
+					vmid: 'og:title',
+					content: title
+				},
+				{
 					property: 'og:description',
 					vmid: 'og:description',
 					content: socialDescription
@@ -71,6 +95,11 @@ export default {
 					name: 'twitter:image',
 					vmid: 'twitter:image',
 					content: twitterImage
+				},
+				{
+					name: 'twitter:title',
+					vmid: 'twitter:title',
+					content: title
 				},
 				{
 					name: 'twitter:description',

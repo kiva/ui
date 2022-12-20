@@ -104,6 +104,7 @@
 			:share-card-language-version="shareCardLanguageVersion"
 			:share-ask-copy-version="shareAskCopyVersion"
 			:category-share-version="categoryShareVersion"
+			:funded-copy-version="fundedCopyVersion"
 		/>
 	</www-page>
 </template>
@@ -171,6 +172,7 @@ export default {
 			simpleSocialShareVersion: '',
 			shareAskCopyVersion: '',
 			categoryShareVersion: '',
+			fundedCopyVersion: 'a'
 		};
 	},
 	apollo: {

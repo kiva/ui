@@ -1,13 +1,21 @@
 <template>
 	<div>
-		<ShareStepper :lender-name="lender.firstName" :show-lender-name="showLenderName" />
+		<ShareStepper
+			:lender-name="lender.firstName"
+			:show-lender-name="showLenderName"
+			:calculate-people-qty-to-goal="calculatePeopleQtyToGoal()"
+			:funded-copy-version="fundedCopyVersion"
+		/>
 		<div class="row page-content">
 			<div class="large-2"></div>
 			<div class="small-12 large-8 columns thanks">
 				<div class="thanks__header hide-for-print">
 					<template v-if="receipt">
+						<div v-if="!calculatePeopleQtyToGoal()">
+							<img :alt="`Fully funded image`" :src="thanksImgRequire(`./kiva-share.png`)">
+						</div>
 						<borrower-image
-							v-if="categoryShareVersion === 'c' || !categoryName"
+							v-else-if="categoryShareVersion === 'c' || !categoryName"
 							class="
 								tw-w-full
 								tw-bg-black
@@ -35,7 +43,10 @@
 								:src="imageRequire(`./${categoryName}_thanks_page.png`)"
 							>
 						</div>
-						<div v-if="categoryShareVersion === 'c' || !categoryName" class="tw-flex-auto tw-mb-2">
+						<div
+							v-if="showLoanProgress"
+							class="tw-flex-auto tw-mb-2"
+						>
 							<figure>
 								<figcaption class="tw-flex progress">
 									<template>
@@ -77,7 +88,10 @@
 					<template v-else>
 						<h1	class="thanks__headline-h1 tw-mt-1 tw-mb-3 tw-text-left">
 							<!-- eslint-disable-next-line max-len -->
-							<template v-if="categoryShareVersion === 'a' && categoryName">
+							<template v-if="!calculatePeopleQtyToGoal()">
+								Can you share Kiva with one more person?
+							</template>
+							<template v-else-if="categoryShareVersion === 'a' && categoryName">
 								<!-- eslint-disable-next-line max-len -->
 								<span class="fs-mask data-hj-suppress">{{ lender.firstName }}</span>, share now to find allies in the fight against economic inequity for {{ categoryName }}.
 							</template>
@@ -89,13 +103,7 @@
 							</template>
 						</h1>
 						<p class="tw-text-h3 tw-m-0 thanks__base-text">
-							<template v-if="categoryShareVersion === 'c' || !categoryName">
-								<!-- eslint-disable-next-line max-len -->
-								{{ loan.name }} only needs {{ calculatePeopleQtyToGoal() }} more people to lend $25 and their loan could be fully funded in a matter of hours!
-							</template>
-							<template v-else>
-								{{ thanksPageBody }}
-							</template>
+							{{ thanksPageBody }}
 						</p>
 					</template>
 					<template>
@@ -186,7 +194,8 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
-const imageRequire = require.context('@/assets/images/category-share-experiment/', true);
+const imageRequire = require.context('@/assets/images/category-share-experiment', true);
+const thanksImgRequire = require.context('@/assets/images/thanks-page', true);
 
 export default {
 	name: 'ThanksPageShare',
@@ -227,6 +236,10 @@ export default {
 			type: String,
 			default: 'c'
 		},
+		fundedCopyVersion: {
+			type: String,
+			default: 'a'
+		}
 	},
 	metaInfo() {
 		return {
@@ -236,6 +249,7 @@ export default {
 	data() {
 		return {
 			imageRequire,
+			thanksImgRequire,
 			isGuest: false,
 			mdiCheckAll,
 			mdiLink,
@@ -248,6 +262,9 @@ export default {
 		};
 	},
 	computed: {
+		showLoanProgress() {
+			return (this.categoryShareVersion === 'c' || !this.categoryName) && this.calculatePeopleQtyToGoal();
+		},
 		loanId() {
 			return this.loan?.id ?? undefined;
 		},
@@ -285,6 +302,9 @@ export default {
 				categoryShareVersion = ['a', 'b'].includes(this.categoryShareVersion)
 					? `&category_share_version=${this.categoryShareVersion}`
 					: '';
+			} else if (!this.calculatePeopleQtyToGoal()) {
+				lender = `&lender=${this.loan.name}`;
+				return `${base}/invitedby/${this.lender.inviterName}?utm_content=${this.utmContent}${lender}&funded_share=1`; // eslint-disable-line max-len
 			} else if (this.loanId) {
 				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loanId}?utm_content=${this.utmContent}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
 			}
@@ -302,7 +322,9 @@ export default {
 		},
 		linkedInShareUrl() {
 			let title = `A loan for ${this.loan.name}`;
-			if (['a', 'b'].includes(this.categoryShareVersion) && this.categoryName) {
+			if (!this.calculatePeopleQtyToGoal()) {
+				title = `Can you join ${this.loan.name} in giving others a chance to succeed?`;
+			} else if (['a', 'b'].includes(this.categoryShareVersion) && this.categoryName) {
 				title = `Can you help ${this.loan.name} `;
 				if (this.categoryName === 'women') {
 					title += 'support women around the world?';
@@ -337,6 +359,19 @@ export default {
 		},
 		thanksPageBody() {
 			let pageBody = '';
+			if (!this.calculatePeopleQtyToGoal()) {
+				return '1.4 billion people are currently unbanked with no access to basic financial services. '
+					+ 'Sharing Kiva with others can help inspire them to give people '
+					+ 'the funds they need to improve their lives ?';
+			}
+			if (this.categoryShareVersion === 'c' || !this.categoryName) {
+				if (this.fundedCopyVersion === 'b') {
+					// eslint-disable-next-line max-len
+					return `This loan could be fully funded in a matter of hours! ${this.loan.name} only needs ${this.calculatePeopleQtyToGoal()} more people to lend $25.`;
+				}
+				// eslint-disable-next-line max-len
+				return `${this.loan.name} only needs ${this.calculatePeopleQtyToGoal()} more people to lend $25 and they could be fully funded in a matter of hours!`;
+			}
 			if (this.categoryShareVersion === 'a') {
 				pageBody = '1.4 billion people are currently unbanked with no access to basic financial services.';
 				if (this.categoryName === 'women') {
