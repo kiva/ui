@@ -42,20 +42,7 @@ export default {
 			}).then(({ data }) => {
 				this.mfiRecommendationsLoans = data?.fundraisingLoans?.values ?? [];
 				const numberLoans = this.mfiRecommendationsLoans.length;
-				if (numberLoans > 0) {
-					this.$kvTrackEvent(
-						'Lending',
-						'view-MFI-feature',
-						'pro mujer',
-						'',
-						numberLoans
-					);
-				} else {
-					this.$kvTrackEvent(
-						'Lending',
-						'no-featured-loan-available'
-					);
-				}
+				if (!numberLoans) this.$kvTrackEvent('event-tracking', 'update', 'mfi-no-featured-loan-available');
 			});
 		},
 	},

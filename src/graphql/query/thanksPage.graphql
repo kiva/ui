@@ -109,6 +109,10 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 				}
 			}
 		}
+		lender {
+			id
+			name
+		}
 		userAccount {
 			id
 			firstName
@@ -131,21 +135,19 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			key
 			value
 		}
-	}
-	general {
 		thanksShareModule: uiExperimentSetting(key: "thanks_share_module") {
 			key
 			value
 		}
-	}
-	general {
 		shareCardLanguage: uiExperimentSetting(key: "share_card_language") {
 			key
 			value
 		}
-	}
-	general {
 		shareAskCopy: uiExperimentSetting(key: "share_ask_copy") {
+			key
+			value
+		}
+		categoryShare: uiExperimentSetting(key: "category_share") {
 			key
 			value
 		}
