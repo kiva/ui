@@ -7,7 +7,7 @@
 				<div class="thanks__header hide-for-print">
 					<template v-if="receipt">
 						<borrower-image
-							v-if="categoryShareVersion === 'c' || !categoryName"
+							v-if="showCategoryShareControl"
 							class="
 								tw-w-full
 								tw-bg-black
@@ -35,7 +35,7 @@
 								:src="imageRequire(`./${categoryName}_thanks_page.png`)"
 							>
 						</div>
-						<div v-if="categoryShareVersion === 'c' || !categoryName" class="tw-flex-auto tw-mb-2">
+						<div v-if="showCategoryShareControl" class="tw-flex-auto tw-mb-2">
 							<figure>
 								<figcaption class="tw-flex progress">
 									<template>
@@ -89,7 +89,7 @@
 							</template>
 						</h1>
 						<p class="tw-text-h3 tw-m-0 thanks__base-text">
-							<template v-if="categoryShareVersion === 'c' || !categoryName">
+							<template v-if="showCategoryShareControl">
 								<!-- eslint-disable-next-line max-len -->
 								{{ loan.name }} only needs {{ calculatePeopleQtyToGoal() }} more people to lend $25 and their loan could be fully funded in a matter of hours!
 							</template>
@@ -269,33 +269,39 @@ export default {
 			if (this.lender?.public && this.lender?.inviterName) return this.lender?.inviterName;
 			return 'anonymous';
 		},
-		getUtmCampaignVersion() {
+		utmCampaign() {
 			if (this.shareAskCopyVersion === 'b') {
-				return `&utm_campaign=social_share_checkout_variant_scle_${this.shareCardLanguageVersion}`;
+				return `social_share_checkout_variant_scle_${this.shareCardLanguageVersion}`;
 			}
-			return `&utm_campaign=social_share_checkout_control_scle_${this.shareCardLanguageVersion}`;
+			return `social_share_checkout_control_scle_${this.shareCardLanguageVersion}`;
 		},
 		shareLink() {
-			let base = `https://${this.$appConfig.host}`;
-			let lender = '';
-			let categoryShareVersion = '';
-			if (this.categoryName && this.categoryShareVersion !== 'c') {
-				base += `/lend-by-category/${this.categoryName}`;
-				lender = `&lender=${this.loan.name}`;
-				categoryShareVersion = ['a', 'b'].includes(this.categoryShareVersion)
-					? `&category_share_version=${this.categoryShareVersion}`
-					: '';
-			} else if (this.loanId) {
-				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loanId}?utm_content=${this.utmContent}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
+			const base = `https://${this.$appConfig.host}`;
+			const args = {
+				utm_campaign: this.utmCampaign,
+				utm_content: this.utmContent,
+			};
+			// Category share URL for MARS-310 Experiment
+			if (this.categoryName && ['a', 'b'].includes(this.categoryShareVersion)) {
+				if (this.lender.public && this.lender.publicName) {
+					args.lender = this.lender.publicName;
+				}
+				args.category_share_version = this.categoryShareVersion;
+				return getFullUrl(`${base}/lend-by-category/${this.categoryName}`, args);
 			}
-			return `${base}?utm_content=${this.utmContent}${this.getUtmCampaignVersion}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
+			// Share specific loan URL
+			if (this.loan.id) {
+				return getFullUrl(`${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}`, args);
+			}
+			// Share generic Kiva URL
+			return getFullUrl(base, args);
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
 			return getFullUrl('https://www.facebook.com/dialog/share', {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
-				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social${this.getUtmCampaignVersion}`, // eslint-disable-line max-len
+				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social`, // eslint-disable-line max-len
 				redirect_uri: `${pageUrl}?kiva_transaction_id=${this.$route.query.kiva_transaction_id}`,
 				quote: this.shareMessage,
 			});
@@ -303,7 +309,8 @@ export default {
 		linkedInShareUrl() {
 			let title = `A loan for ${this.loan.name}`;
 			if (['a', 'b'].includes(this.categoryShareVersion) && this.categoryName) {
-				title = `Can you help ${this.loan.name} `;
+				const lender = this.lender.public && this.lender.publicName ? this.lender.publicName : '';
+				title = lender ? `Can you help ${lender} ` : 'Can you help ';
 				if (this.categoryName === 'women') {
 					title += 'support women around the world?';
 				} else if (this.categoryName === 'education') {
@@ -316,13 +323,13 @@ export default {
 				source: `https://${this.$appConfig.host}`,
 				summary: this.shareMessage.substring(0, 256),
 				title,
-				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social${this.getUtmCampaignVersion}` // eslint-disable-line max-len
+				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social` // eslint-disable-line max-len
 			});
 		},
 		twitterShareUrl() {
 			return getFullUrl('https://twitter.com/intent/tweet', {
 				text: this.shareMessage,
-				url: `${this.shareLink}&utm_source=t.co&utm_medium=social${this.getUtmCampaignVersion}`, // eslint-disable-line max-len
+				url: `${this.shareLink}&utm_source=t.co&utm_medium=social`, // eslint-disable-line max-len
 				via: 'Kiva',
 			});
 		},
@@ -364,6 +371,9 @@ export default {
 		},
 		showLenderName() {
 			return ['b', 'c'].includes(this.categoryShareVersion) || !this.categoryName;
+		},
+		showCategoryShareControl() {
+			return !this.categoryName || !this.categoryShareVersion || this.categoryShareVersion === 'c';
 		}
 	},
 	methods: {
@@ -389,7 +399,7 @@ export default {
 			}
 		},
 		async copyLink() {
-			const url = `${this.shareLink}&utm_source=social_share_link${this.getUtmCampaignVersion}`; // eslint-disable-line max-len
+			const url = `${this.shareLink}&utm_source=social_share_link`; // eslint-disable-line max-len
 			try {
 				await clipboardCopy(url);
 				this.copyStatus = {

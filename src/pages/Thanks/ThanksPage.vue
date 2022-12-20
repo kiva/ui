@@ -197,6 +197,7 @@ export default {
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_share_module' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_card_language' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'category_share' } }),
 					upsellEligible ? client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_ad_upsell' } }) : Promise.resolve() // eslint-disable-line max-len
 				]);
 			}).catch(errorResponse => {
@@ -291,6 +292,7 @@ export default {
 		this.hasModernSub = modernSubscriptions.length !== 0;
 		this.lender = {
 			...(data?.my?.userAccount ?? {}),
+			publicName: data?.my?.lender?.name ?? '',
 			teams: data?.my?.teams?.values?.map(value => value.team) ?? [],
 		};
 
@@ -409,19 +411,21 @@ export default {
 			}
 
 			// MARS-310 Category Share on Thanks page
-			const categoryShareResult = this.apollo.readFragment({
-				id: 'Experiment:category_share',
-				fragment: experimentVersionFragment,
-			}) || {};
+			if (!this.isGuest) {
+				const categoryShareResult = this.apollo.readFragment({
+					id: 'Experiment:category_share',
+					fragment: experimentVersionFragment,
+				}) || {};
 
-			this.categoryShareVersion = categoryShareResult?.version;
-			if (this.categoryShareVersion && (this.selectedLoan?.gender?.toLowerCase() === 'female'
-				|| ['women', 'education', 'agriculture'].includes(this.selectedLoan?.sector?.name?.toLowerCase()))) {
-				this.$kvTrackEvent(
-					'Thanks',
-					'EXP-MARS-310-Nov2022',
-					this.categoryShareVersion,
-				);
+				this.categoryShareVersion = categoryShareResult?.version;
+				if (this.categoryShareVersion && (this.selectedLoan?.gender?.toLowerCase() === 'female'
+					|| ['education', 'agriculture'].includes(this.selectedLoan?.sector?.name?.toLowerCase()))) {
+					this.$kvTrackEvent(
+						'Thanks',
+						'EXP-MARS-310-Nov2022',
+						this.categoryShareVersion,
+					);
+				}
 			}
 		}
 	}
