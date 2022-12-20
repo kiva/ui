@@ -81,6 +81,7 @@
 				:filters-loaded="filtersLoaded"
 				@update-location="updateLocation"
 				ref="locationSelector"
+				:tracking-category="trackingCategory"
 			/>
 
 			<div v-if="!removeSortByDropdown && !withCategories" class="tw-flex tw-flex-col tw-grow">
@@ -168,6 +169,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		trackingCategory: {
+			type: String,
+			default: 'search'
+		}
 	},
 	components: {
 		KvSelect,
@@ -227,7 +232,7 @@ export default {
 		selectedGender(gender) {
 			this.$emit('update-filters', { gender });
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'filter',
 				'quick-filters-option',
 				gender === '' ? 'all genders' : gender
@@ -236,7 +241,7 @@ export default {
 		sortBy(sortBy) {
 			this.$emit('update-filters', { sortBy });
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'click',
 				'quick-filters-option',
 				sortBy
@@ -260,7 +265,7 @@ export default {
 		updateLocation(location) {
 			this.$emit('update-filters', { country: location });
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'filter',
 				'quick-filters-option',
 				location
@@ -274,7 +279,7 @@ export default {
 			this.updateLocation([]);
 			this.$refs.locationSelector.emptyCountries();
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'click',
 				'quick-filters-reset',
 				'all'
@@ -282,7 +287,7 @@ export default {
 		},
 		trackDropdownClick(label) {
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'click',
 				'quick-filters-dropdown',
 				label
