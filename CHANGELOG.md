@@ -1,3 +1,16 @@
+## [2.436.0](https://github.com/kiva/ui/compare/v2.435.0...v2.436.0) (2022-12-20)
+
+
+### Features
+
+* add refugees route ([f8c4730](https://github.com/kiva/ui/commit/f8c47306b5298cbf59351151a48aed7fc8a748e4))
+
+
+### Bug Fixes
+
+* redirect lp refugees page ([f91cf0d](https://github.com/kiva/ui/commit/f91cf0d58a253ebf05ae1043eb64bd4372be5bed))
+* update lighthouse ([9665bfa](https://github.com/kiva/ui/commit/9665bfa63171765b79f11b4f07c598fced8478db))
+
 ## [2.435.0](https://github.com/kiva/ui/compare/v2.434.0...v2.435.0) (2022-12-20)
 
 
