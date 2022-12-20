@@ -1,12 +1,11 @@
 <template>
 	<div class="tw-w-full tw-mb-2">
-		<div class="tw-flex tw-items-center tw-gap-1 tw-px-2 lg:tw-px-0">
+		<div class="tw-flex tw-items-center tw-gap-1 tw-px-1 lg:tw-px-2">
 			<!-- eslint-disable max-len -->
 			<img class="tw-w-4 lg:tw-w-6" src="@/assets/images/mfi_recommendations/earth.svg" alt="mfi_recommendations">
 			<h3 class="tw-text-h3 tw-text-primary tw-whitespace-nowrap">
-				Field Partner Spotlight
+				Lending partner spotlight
 			</h3>
-			<hr class="tw-border-tertiary tw-w-full tw-ml-2 tw-hidden lg:tw-block">
 		</div>
 		<div class="tw-mt-2 lg:tw-mt-4 tw-px-2">
 			<h2 class="tw-text-h2 tw-text-primary">
@@ -34,13 +33,6 @@
 			<div class="lg:tw-w-1/3 lg:tw-pl-2 tw-pt-2 lg:tw-pt-0">
 				<p class="tw-px-3 lg:tw-px-0">
 					Fundación Pro Mujer provides so much more than loans to their borrowers.
-					<a
-						target="_blank"
-						href="https://www.kiva.org/about/where-kiva-works/partners/59"
-						v-kv-track-event="['Lending', 'click-MFI-feature', 'learn more']"
-					>
-						Learn More
-					</a>
 				</p>
 
 				<ul class="tw-mt-2 tw-px-2">
