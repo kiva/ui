@@ -339,6 +339,10 @@ module.exports = [
 		redirect: '/gender-equality'
 	},
 	{
+		path: '/lp/support-refugees',
+		redirect: '/refugees'
+	},
+	{
 		path: '/lp/:dynamicRoute',
 		component: () => import('@/pages/ContentfulPage'),
 		meta: {
@@ -436,6 +440,13 @@ module.exports = [
 			loanId: Number(route.params.loanId),
 			lendAmount: Number(route.params.lendAmount)
 		}),
+	},
+	{
+		path: '/refugees',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: {
+			contentfulPage: () => 'lp/support-refugees',
+		},
 	},
 	{
 		path: '/register/social',
