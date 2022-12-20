@@ -1,3 +1,10 @@
+### [2.436.1](https://github.com/kiva/ui/compare/v2.436.0...v2.436.1) (2022-12-20)
+
+
+### Bug Fixes
+
+* prefetch experiment data and use public lender name in share copy MARS-310 ([d5ee343](https://github.com/kiva/ui/commit/d5ee343679cdb7c596c663f7c317d8140f785f9c))
+
 ## [2.436.0](https://github.com/kiva/ui/compare/v2.435.0...v2.436.0) (2022-12-20)
 
 
