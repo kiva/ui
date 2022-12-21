@@ -1,3 +1,10 @@
+## [2.440.0](https://github.com/kiva/ui/compare/v2.439.0...v2.440.0) (2022-12-21)
+
+
+### Features
+
+* add title ([2a68c55](https://github.com/kiva/ui/commit/2a68c55f613d0b651bd375b429fffb7e8195e86b))
+
 ## [2.439.0](https://github.com/kiva/ui/compare/v2.438.0...v2.439.0) (2022-12-21)
 
 
