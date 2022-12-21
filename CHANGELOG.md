@@ -1,3 +1,15 @@
+## [2.437.0](https://github.com/kiva/ui/compare/v2.436.1...v2.437.0) (2022-12-21)
+
+
+### Features
+
+* tracking for mvp quick filters ([1e6af3e](https://github.com/kiva/ui/commit/1e6af3ef8532192884271edf327ae362128dd3bc))
+
+
+### Bug Fixes
+
+* pr comments ([95891a0](https://github.com/kiva/ui/commit/95891a0c4a952d18b73849b008c633e0d56eb97d))
+
 ### [2.436.1](https://github.com/kiva/ui/compare/v2.436.0...v2.436.1) (2022-12-20)
 
 

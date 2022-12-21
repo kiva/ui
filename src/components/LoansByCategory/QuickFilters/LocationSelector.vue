@@ -182,6 +182,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		trackingCategory: {
+			type: String,
+			required: true,
+		}
 	},
 	data() {
 		return {
@@ -198,7 +202,7 @@ export default {
 		handleClickCta() {
 			this.toggleRegions();
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'click',
 				'apply-quick-filters',
 				'see-loans',
@@ -210,7 +214,7 @@ export default {
 		resetCountries() {
 			this.emptyCountries();
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'filter',
 				'quick-filters-reset',
 				'countries',

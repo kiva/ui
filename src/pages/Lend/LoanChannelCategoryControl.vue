@@ -43,6 +43,7 @@
 				:filter-options="quickFiltersOptions"
 				:filters-loaded="filtersLoaded"
 				:targeted-loan-channel-url="targetedLoanChannelURL"
+				tracking-category="search"
 				@update-filters="updateQuickFilters"
 				@reset-filters="resetFilters"
 				@handle-overlay="handleQuickFiltersOverlay"
@@ -512,7 +513,7 @@ export default {
 		},
 		trackAdvancedFilters() {
 			this.$kvTrackEvent(
-				'Search',
+				'search',
 				'click',
 				'category-advanced-filters'
 			);
