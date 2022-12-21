@@ -1,3 +1,17 @@
+## [2.439.0](https://github.com/kiva/ui/compare/v2.438.0...v2.439.0) (2022-12-21)
+
+
+### Features
+
+* add jsdoc ([3836455](https://github.com/kiva/ui/commit/3836455eb380ae311b066c88474340e26308c341))
+* update lbc title tags ([28ccd11](https://github.com/kiva/ui/commit/28ccd11c9d563ef166c4867d21ac2b3244d4e71a))
+
+
+### Bug Fixes
+
+* solve conflicts ([1e614de](https://github.com/kiva/ui/commit/1e614de76554f5be854391b1c72d2a60cb9e3623))
+* validate lender in param ([9c65df7](https://github.com/kiva/ui/commit/9c65df72dbe2bf39c89714333a38a338b23fb25d))
+
 ## [2.438.0](https://github.com/kiva/ui/compare/v2.437.0...v2.438.0) (2022-12-21)
 
 
