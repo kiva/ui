@@ -30,6 +30,10 @@ export default {
 	metaInfo() {
 		/* eslint-disable global-require */
 		// Remove once New Yeah Share Campaign ends
+		const { yearReviewTitle, yearReviewDescription } = this.nyShareCopy;
+		const title = this.loadNYShare
+			? yearReviewTitle
+			: 'Make a loan, change a life';
 		const baseImage = this.loadNYShare
 			? imagesRequire('./base.png')
 			: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg';
@@ -37,15 +41,15 @@ export default {
 			? imagesRequire('./twitter.png')
 			: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg';
 		const description = this.loadNYShare
-			? this.nyShareCopy
+			? yearReviewDescription
 			: 'Kiva is the world\'s first online lending platform. '
 			+ 'For as little as $25 you can lend to an entrepreneur around the world. Learn more here.';
 		const socialDescription = this.loadNYShare
-			? this.nyShareCopy
+			? yearReviewDescription
 			: 'Support women, entrepreneurs, students and refugees around the world with as little as $25 on Kiva. '
 			+ '100% of your loans go to support borrowers.';
 		return {
-			title: 'Make a loan, change a life',
+			title,
 			meta: [
 				{
 					name: 'google-site-verification', // for Google Search Console
@@ -58,6 +62,11 @@ export default {
 				},
 				// Remove once New Yeah Share Campaign ends
 				{
+					property: 'og:title',
+					vmid: 'og:title',
+					content: title
+				},
+				{
 					property: 'og:image',
 					vmid: 'og:image',
 					content: baseImage
@@ -67,6 +76,7 @@ export default {
 					vmid: 'og:description',
 					content: socialDescription
 				},
+				{ name: 'twitter:title', vmid: 'twitter:title', content: title },
 				{
 					name: 'twitter:image',
 					vmid: 'twitter:image',
@@ -168,9 +178,11 @@ export default {
 			const borrowerString = `${borrowers.format('0,0')} ${borrowers.value() === 1 ? 'borrower' : 'borrowers'}`;
 			const countries = numeral(this.$route?.query?.nyc);
 			const countryString = `${countries.format('0,0')} ${countries.value() === 1 ? 'country' : 'countries'}`;
-			// eslint-disable-next-line max-len
-			return `In 2022, I contributed to ${loanString}, helping fund the dreams of ${borrowerString} in ${countryString}. `
-			+ 'With as little as $25, you can become a Kiva lender and help expand financial opportunity worldwide!';
+			return {
+				yearReviewTitle: `I helped fund the dreams of ${borrowerString} in 2022! | Kiva – Loans that change lives`, // eslint-disable-line max-len
+				yearReviewDescription: `In 2022, I contributed to ${loanString}, helping fund the dreams of ${borrowerString} in ${countryString}. ` // eslint-disable-line max-len
+				+ 'With as little as $25, you can become a Kiva lender and help expand financial opportunity worldwide!'
+			};
 		}
 	},
 	mounted() {
