@@ -156,7 +156,8 @@ import {
 	getCachedChannel,
 	trackChannelExperiment,
 	watchChannelQuery,
-	getFilteredLoanChannel
+	getFilteredLoanChannel,
+	getMetaDescription
 } from '@/util/loanChannelUtils';
 
 import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
@@ -203,8 +204,78 @@ function getPageOffset(query, limit) {
 	return pageNum > 0 ? limit * pageNum : 0;
 }
 
+const imageRequire = require.context('@/assets/images/category-share-experiment/', true);
+
 export default {
 	name: 'LoanChannelCategoryControl',
+	metaInfo() {
+		const channelDescription = getMetaDescription(this.$route.params.category);
+		let image = '';
+		let title = null;
+		if (this.$route.query.category_share_version
+			&& ['women', 'education', 'agriculture'].includes(this.$route.params.category)) {
+			image = imageRequire(`./${this.$route.params.category}_share_card.png`);
+			title = this.$route.query.lender ? `Can you help ${this.$route.query.lender} ` : 'Can you help ';
+			if (this.$route.params.category === 'women') {
+				title += 'support women around the world?';
+			} else if (this.$route.params.category === 'education') {
+				title += 'expand access to education around the world?';
+			} else if (this.$route.params.category === 'agriculture') {
+				title += 'support smallholder farmers around the world?';
+			}
+		}
+
+		return {
+			title: `${this.loanChannelName} | Invest & Support`,
+			link: [
+				{
+					vmid: 'canonical',
+					rel: 'canonical',
+					href: `${this.handleCanonicalUrl}`
+				}
+			],
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: channelDescription
+				}
+			].concat([
+				{
+					vmid: 'og:title',
+					property: 'og:title',
+					content: title ?? `${this.loanChannelName} | Invest & Support`
+				},
+				{
+					vmid: 'og:description',
+					property: 'og:description',
+					content: channelDescription
+				},
+			]).concat([
+				{
+					vmid: 'twitter:title',
+					name: 'twitter:title',
+					content: title ?? `${this.loanChannelName} | Invest & Support`
+				},
+				{
+					name: 'twitter:description',
+					vmid: 'twitter:description',
+					content: channelDescription
+				}
+			]).concat(image ? [
+				{
+					property: 'og:image',
+					vmid: 'og:image',
+					content: image
+				},
+				{
+					name: 'twitter:image',
+					vmid: 'twitter:image',
+					content: image
+				}
+			] : [])
+		};
+	},
 	props: {
 		enableQuickFilters: {
 			type: Boolean,
@@ -234,17 +305,6 @@ export default {
 		lendFilterExpMixin,
 		loanChannelQueryMapMixin,
 	],
-	metaInfo() {
-		return {
-			link: [
-				{
-					vmid: 'canonical',
-					rel: 'canonical',
-					href: `${this.handleCanonicalUrl}`
-				}
-			]
-		};
-	},
 	data() {
 		return {
 			offset: 0,
