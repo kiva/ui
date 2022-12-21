@@ -1,3 +1,10 @@
+## [2.438.0](https://github.com/kiva/ui/compare/v2.437.0...v2.438.0) (2022-12-21)
+
+
+### Features
+
+* icon added to location dropdown for quick filters ([6b73a91](https://github.com/kiva/ui/commit/6b73a91acfcb0e5244b5f8198547db1502dd0899))
+
 ## [2.437.0](https://github.com/kiva/ui/compare/v2.436.1...v2.437.0) (2022-12-21)
 
 
