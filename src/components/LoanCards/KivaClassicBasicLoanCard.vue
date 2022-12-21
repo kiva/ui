@@ -552,7 +552,7 @@ export default {
 
 				this.$showTipMsg(msg, 'error');
 			});
-			if (this.showActionButton) {
+			if (this.atcTrackingProps.category) {
 				this.$kvTrackEvent(
 					this.atcTrackingProps.category,
 					this.atcTrackingProps.action,

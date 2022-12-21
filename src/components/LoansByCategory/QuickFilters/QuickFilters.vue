@@ -171,7 +171,7 @@ export default {
 		},
 		trackingCategory: {
 			type: String,
-			default: 'search'
+			required: true,
 		}
 	},
 	components: {
