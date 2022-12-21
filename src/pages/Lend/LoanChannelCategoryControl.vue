@@ -214,7 +214,7 @@ export default {
 		if (this.$route.query.category_share_version
 			&& ['women', 'education', 'agriculture'].includes(this.$route.params.category)) {
 			image = imageRequire(`./${this.$route.params.category}_share_card.png`);
-			title = `Can you help ${this.$route.query.lender} `;
+			title = this.$route.query.lender ? `Can you help ${this.$route.query.lender} ` : 'Can you help ';
 			if (this.$route.params.category === 'women') {
 				title += 'support women around the world?';
 			} else if (this.$route.params.category === 'education') {
