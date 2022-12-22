@@ -1,3 +1,15 @@
+## [2.433.0-next.1](https://github.com/kiva/ui/compare/v2.432.0...v2.433.0-next.1) (2022-12-22)
+
+
+### Features
+
+* add title ([29378b8](https://github.com/kiva/ui/commit/29378b8a7afaea3c8a177719f0922313616b6b02))
+
+
+### Bug Fixes
+
+* prefetch experiment data and use public lender name in share copy MARS-310 ([dc6ce73](https://github.com/kiva/ui/commit/dc6ce73a4e5aac304848b13079885f394f3d889c))
+
 ## [2.432.0](https://github.com/kiva/ui/compare/v2.431.1...v2.432.0) (2022-12-19)
 
 
