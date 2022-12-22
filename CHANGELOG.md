@@ -1,3 +1,10 @@
+### [2.440.1](https://github.com/kiva/ui/compare/v2.440.0...v2.440.1) (2022-12-22)
+
+
+### Bug Fixes
+
+* shorten year review share title for twitter requirements ([aad59c9](https://github.com/kiva/ui/commit/aad59c9bbeb7513f3e488854708fe94976e86424))
+
 ## [2.440.0](https://github.com/kiva/ui/compare/v2.439.0...v2.440.0) (2022-12-21)
 
 
