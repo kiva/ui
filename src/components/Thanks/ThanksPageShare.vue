@@ -4,7 +4,6 @@
 			:lender-name="lender.firstName"
 			:show-lender-name="showLenderName"
 			:calculate-people-qty-to-goal="calculatePeopleQtyToGoal()"
-			:funded-copy-version="fundedCopyVersion"
 		/>
 		<div class="row page-content">
 			<div class="large-2"></div>
@@ -15,7 +14,7 @@
 							<img :alt="`Fully funded image`" :src="thanksImgRequire(`./kiva-share.png`)">
 						</div>
 						<borrower-image
-							v-if="showCategoryShareControl"
+							v-else-if="showCategoryShareControl"
 							class="
 								tw-w-full
 								tw-bg-black
@@ -43,7 +42,7 @@
 								:src="imageRequire(`./${categoryName}_thanks_page.png`)"
 							>
 						</div>
-						<div v-if="showCategoryShareControl" class="tw-flex-auto tw-mb-2">
+						<div v-if="showCategoryShareControl && calculatePeopleQtyToGoal()" class="tw-flex-auto tw-mb-2">
 							<figure>
 								<figcaption class="tw-flex progress">
 									<template>
@@ -232,10 +231,6 @@ export default {
 		categoryShareVersion: {
 			type: String,
 			default: 'c'
-		},
-		fundedCopyVersion: {
-			type: String,
-			default: 'a'
 		}
 	},
 	metaInfo() {
@@ -300,8 +295,7 @@ export default {
 					args.lender = this.lender.publicName;
 				}
 				args.funded_share = 1;
-				getFullUrl(`${base}/invitedby/${this.lender.inviterName}`, args);
-				return `${base}/invitedby/${this.lender.inviterName}`; // eslint-disable-line max-len
+				return getFullUrl(`${base}/invitedby/${this.lender.inviterName}`, args);
 			}
 
 			// Category share URL for MARS-310 Experiment
@@ -376,10 +370,6 @@ export default {
 					+ 'the funds they need to improve their lives ?';
 			}
 			if (this.showCategoryShareControl) {
-				if (this.fundedCopyVersion === 'b') {
-					// eslint-disable-next-line max-len
-					return `This loan could be fully funded in a matter of hours! ${this.loan.name} only needs ${this.calculatePeopleQtyToGoal()} more people to lend $25.`;
-				}
 				// eslint-disable-next-line max-len
 				return `${this.loan.name} only needs ${this.calculatePeopleQtyToGoal()} more people to lend $25 and they could be fully funded in a matter of hours!`;
 			}

@@ -13,11 +13,11 @@
 			</div>
 		</div>
 		<p class="tw-text-center tw-mt-4 tw-text-subhead" data-testid="thanks-message">
-			<template v-if="showLenderName">
+			<template v-if="showLenderName || !calculatePeopleQtyToGoal">
 				<span class="fs-mask data-hj-suppress">{{ lenderName }}</span>, complete your support by sharing {{ subject }}
 			</template>
 			<template v-else>
-				Complete your support by sharing.
+				Complete your support by sharing {{ subject }}
 			</template>
 		</p>
 	</div>
@@ -41,10 +41,6 @@ export default {
 		calculatePeopleQtyToGoal: {
 			type: Number,
 			default: 0
-		},
-		fundedCopyVersion: {
-			type: String,
-			default: 'a'
 		}
 	},
 	data() {
