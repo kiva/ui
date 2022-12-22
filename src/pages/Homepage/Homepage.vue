@@ -179,7 +179,7 @@ export default {
 			const countries = numeral(this.$route?.query?.nyc);
 			const countryString = `${countries.format('0,0')} ${countries.value() === 1 ? 'country' : 'countries'}`;
 			return {
-				yearReviewTitle: `I helped fund the dreams of ${borrowerString} in 2022! | Kiva – Loans that change lives`, // eslint-disable-line max-len
+				yearReviewTitle: `I helped fund the dreams of ${borrowerString} in 2022! | Kiva – Changing lives`, // eslint-disable-line max-len
 				yearReviewDescription: `In 2022, I contributed to ${loanString}, helping fund the dreams of ${borrowerString} in ${countryString}. ` // eslint-disable-line max-len
 				+ 'With as little as $25, you can become a Kiva lender and help expand financial opportunity worldwide!'
 			};
