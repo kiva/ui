@@ -31,36 +31,43 @@ export default {
 	metaInfo() {
 		/* eslint-disable global-require */
 		// Remove once New Yeah Share Campaign ends
-		let baseImage = 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg';
-		if (this.loadNYShare) {
-			baseImage = imagesRequire('./base.png');
-		} else if (this.$route.query.funded_share) {
-			baseImage = thanksImgRequire('./kiva-share.png');
-		}
-		const twitterImage = this.loadNYShare
-			? imagesRequire('./twitter.png')
-			: baseImage;
+		const { yearReviewTitle, yearReviewDescription } = this.nyShareCopy;
 
 		let title = 'Make a loan, change a life';
 		if (this.$route.query.lender && this.$route.query.funded_share) {
 			title = `Can you join ${this.$route.query.lender} in giving others a chance to succeed?`;
+		} else if (this.loadNYShare) {
+			title = yearReviewTitle;
 		}
+
+		let baseImage = 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg';
+		if (this.$route.query.funded_share) {
+			baseImage = thanksImgRequire('./kiva-share.png');
+		} else if (this.loadNYShare) {
+			baseImage = imagesRequire('./base.png');
+		}
+
+		const twitterImage = this.loadNYShare
+			? imagesRequire('./twitter.png')
+			: baseImage;
 
 		let description = 'Kiva is the world\'s first online lending platform. '
 			+ 'For as little as $25 you can lend to an entrepreneur around the world. Learn more here.';
 		if (this.loadNYShare) {
-			description = this.nyShareCopy;
+			description = yearReviewDescription;
 		} else if (this.$route.query.funded_share) {
 			description = 'Kiva is a loan, not a donation. '
 			+ 'With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
 		}
 
-		let socialDescription = 'Support women, entrepreneurs, students and refugees around the world with as '
-			+ 'little as $25 on Kiva. 100% of your loans go to support borrowers.';
+		// eslint-disable-next-line max-len
+		let socialDescription = 'Support women, entrepreneurs, students and refugees around the world with as little as $25 on Kiva. '
+			+ '100% of your loans go to support borrowers.';
 		if (this.loadNYShare) {
-			socialDescription = this.nyShareCopy;
+			socialDescription = yearReviewDescription;
 		} else if (this.$route.query.funded_share) {
-			socialDescription = description;
+			socialDescription = 'Kiva is a loan, not a donation. '
+				+ 'With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
 		}
 
 		return {
@@ -77,6 +84,11 @@ export default {
 				},
 				// Remove once New Yeah Share Campaign ends
 				{
+					property: 'og:title',
+					vmid: 'og:title',
+					content: title
+				},
+				{
 					property: 'og:image',
 					vmid: 'og:image',
 					content: baseImage
@@ -91,6 +103,7 @@ export default {
 					vmid: 'og:description',
 					content: socialDescription
 				},
+				{ name: 'twitter:title', vmid: 'twitter:title', content: title },
 				{
 					name: 'twitter:image',
 					vmid: 'twitter:image',
@@ -197,9 +210,11 @@ export default {
 			const borrowerString = `${borrowers.format('0,0')} ${borrowers.value() === 1 ? 'borrower' : 'borrowers'}`;
 			const countries = numeral(this.$route?.query?.nyc);
 			const countryString = `${countries.format('0,0')} ${countries.value() === 1 ? 'country' : 'countries'}`;
-			// eslint-disable-next-line max-len
-			return `In 2022, I contributed to ${loanString}, helping fund the dreams of ${borrowerString} in ${countryString}. `
-			+ 'With as little as $25, you can become a Kiva lender and help expand financial opportunity worldwide!';
+			return {
+				yearReviewTitle: `I helped fund the dreams of ${borrowerString} in 2022! | Kiva – Loans that change lives`, // eslint-disable-line max-len
+				yearReviewDescription: `In 2022, I contributed to ${loanString}, helping fund the dreams of ${borrowerString} in ${countryString}. ` // eslint-disable-line max-len
+				+ 'With as little as $25, you can become a Kiva lender and help expand financial opportunity worldwide!'
+			};
 		}
 	},
 	mounted() {

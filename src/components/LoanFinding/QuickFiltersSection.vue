@@ -14,6 +14,7 @@
 			:filters-loaded="filtersLoaded"
 			:targeted-loan-channel-url="targetedLoanChannelURL"
 			:with-categories="true"
+			tracking-category="lending-home"
 			@update-filters="updateQuickFilters"
 			@reset-filters="resetFilters"
 			@handle-overlay="handleQuickFiltersOverlay"
@@ -36,6 +37,11 @@
 				:loan-id="loan.id"
 				:show-action-button="true"
 				:use-full-width="true"
+				:atc-tracking-props="{
+					category: 'lending-home',
+					action: 'add-to-basket',
+					label: 'quick-filters'
+				}"
 			/>
 		</div>
 		<div class="tw-w-full tw-my-4">
@@ -52,6 +58,11 @@
 			<kv-button
 				variant="secondary"
 				:href="filterPageUrl()"
+				v-kv-track-event="[
+					'lending-home',
+					'click',
+					'quick-filters-view-more-loans'
+				]"
 			>
 				See more loans
 			</kv-button>
@@ -166,6 +177,7 @@ export default {
 					...filter
 				};
 			}
+			this.fetchFilterData(this.flssLoanSearch);
 			const { loans, totalCount } = await runLoansQuery(
 				this.apollo,
 				{ ...this.flssLoanSearch, ...this.loanSearchState },
@@ -178,6 +190,11 @@ export default {
 			} else {
 				this.emptyState = true;
 				this.loans = this.backupLoans;
+				this.$kvTrackEvent(
+					'lending-home',
+					'show',
+					'quick-filters-empty-state'
+				);
 			}
 		},
 		async resetFilters() {
@@ -259,6 +276,12 @@ export default {
 			this.filtersLoaded = true;
 		},
 		pageChange({ pageOffset }) {
+			const label = this.loanSearchState.pageOffset === 0 ? 'next' : 'back';
+			this.$kvTrackEvent(
+				'lending-home',
+				'click',
+				label
+			);
 			this.loanSearchState.pageOffset = pageOffset;
 			this.updateLoans();
 		},

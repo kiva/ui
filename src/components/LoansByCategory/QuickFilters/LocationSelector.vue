@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-relative tw-flex tw-flex-col tw-w-full" v-click-outside="closeRegions">
+	<div id="locationWrapper" class="tw-relative tw-flex tw-flex-col tw-w-full" v-click-outside="closeRegions">
 		<label
 			class="tw-text-h4"
 			for="location"
@@ -17,6 +17,7 @@
 			:disabled="!filtersLoaded"
 			autocomplete="off"
 			readonly
+			:icon="mdiChevronDown"
 		/>
 
 		<div
@@ -181,6 +182,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		trackingCategory: {
+			type: String,
+			required: true,
+		}
 	},
 	data() {
 		return {
@@ -197,7 +202,7 @@ export default {
 		handleClickCta() {
 			this.toggleRegions();
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'click',
 				'apply-quick-filters',
 				'see-loans',
@@ -209,7 +214,7 @@ export default {
 		resetCountries() {
 			this.emptyCountries();
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'filter',
 				'quick-filters-reset',
 				'countries',
@@ -299,3 +304,20 @@ export default {
 
 };
 </script>
+
+<style scoped>
+
+#locationWrapper >>> input {
+	padding-left: 16px;
+}
+
+#locationWrapper >>> input::placeholder {
+	color: black;
+}
+
+#locationWrapper >>> span {
+	left: auto;
+	right: 8px;
+}
+
+</style>

@@ -1,3 +1,43 @@
+## [2.440.0](https://github.com/kiva/ui/compare/v2.439.0...v2.440.0) (2022-12-21)
+
+
+### Features
+
+* add title ([2a68c55](https://github.com/kiva/ui/commit/2a68c55f613d0b651bd375b429fffb7e8195e86b))
+
+## [2.439.0](https://github.com/kiva/ui/compare/v2.438.0...v2.439.0) (2022-12-21)
+
+
+### Features
+
+* add jsdoc ([3836455](https://github.com/kiva/ui/commit/3836455eb380ae311b066c88474340e26308c341))
+* update lbc title tags ([28ccd11](https://github.com/kiva/ui/commit/28ccd11c9d563ef166c4867d21ac2b3244d4e71a))
+
+
+### Bug Fixes
+
+* solve conflicts ([1e614de](https://github.com/kiva/ui/commit/1e614de76554f5be854391b1c72d2a60cb9e3623))
+* validate lender in param ([9c65df7](https://github.com/kiva/ui/commit/9c65df72dbe2bf39c89714333a38a338b23fb25d))
+
+## [2.438.0](https://github.com/kiva/ui/compare/v2.437.0...v2.438.0) (2022-12-21)
+
+
+### Features
+
+* icon added to location dropdown for quick filters ([6b73a91](https://github.com/kiva/ui/commit/6b73a91acfcb0e5244b5f8198547db1502dd0899))
+
+## [2.437.0](https://github.com/kiva/ui/compare/v2.436.1...v2.437.0) (2022-12-21)
+
+
+### Features
+
+* tracking for mvp quick filters ([1e6af3e](https://github.com/kiva/ui/commit/1e6af3ef8532192884271edf327ae362128dd3bc))
+
+
+### Bug Fixes
+
+* pr comments ([95891a0](https://github.com/kiva/ui/commit/95891a0c4a952d18b73849b008c633e0d56eb97d))
+
 ### [2.436.1](https://github.com/kiva/ui/compare/v2.436.0...v2.436.1) (2022-12-20)
 
 
