@@ -14,6 +14,7 @@
 		</div>
 		<p class="tw-text-center tw-mt-4 tw-text-subhead" data-testid="thanks-message">
 			<template v-if="showLenderName || !calculatePeopleQtyToGoal">
+				<!-- eslint-disable-next-line max-len -->
 				<span class="fs-mask data-hj-suppress">{{ lenderName }}</span>, complete your support by sharing {{ subject }}
 			</template>
 			<template v-else>
