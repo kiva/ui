@@ -1,3 +1,10 @@
+## [2.433.0-next.2](https://github.com/kiva/ui/compare/v2.433.0-next.1...v2.433.0-next.2) (2022-12-22)
+
+
+### Bug Fixes
+
+* shorten year review share title for twitter requirements ([2e061c2](https://github.com/kiva/ui/commit/2e061c253d67c0ebde30627aedfb13c0eaf2477a))
+
 ## [2.433.0-next.1](https://github.com/kiva/ui/compare/v2.432.0...v2.433.0-next.1) (2022-12-22)
 
 
