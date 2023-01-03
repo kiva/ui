@@ -1,3 +1,10 @@
+### [2.441.1](https://github.com/kiva/ui/compare/v2.441.0...v2.441.1) (2023-01-03)
+
+
+### Bug Fixes
+
+* paragraph spacing in expandable questions ([e63aa84](https://github.com/kiva/ui/commit/e63aa84e6a640b731865415f99c834edea4f5042))
+
 ## [2.441.0](https://github.com/kiva/ui/compare/v2.440.1...v2.441.0) (2023-01-03)
 
 
