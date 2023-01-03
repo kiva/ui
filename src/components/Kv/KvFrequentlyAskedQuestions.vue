@@ -5,7 +5,7 @@
 				{{ headline }}
 			</h2>
 		</div>
-		<div v-if="questions" class="tw-divide-y tw-not-prose tw-whitespace-normal">
+		<div v-if="questions" class="tw-divide-y tw-whitespace-normal">
 			<kv-expandable-question
 				v-for="(question, index) in questions"
 				:key="index"
