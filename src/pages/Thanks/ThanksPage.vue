@@ -170,7 +170,7 @@ export default {
 			shareCardLanguageVersion: '',
 			simpleSocialShareVersion: '',
 			shareAskCopyVersion: '',
-			categoryShareVersion: '',
+			categoryShareVersion: ''
 		};
 	},
 	apollo: {

@@ -23,6 +23,7 @@ const homePageQuery = gql`query homepageFrame {
 }`;
 
 const imagesRequire = require.context('@/assets/images/year-in-review-share', true);
+const thanksImgRequire = require.context('@/assets/images/thanks-page', true);
 
 export default {
 	name: 'Homepage',
@@ -31,23 +32,44 @@ export default {
 		/* eslint-disable global-require */
 		// Remove once New Yeah Share Campaign ends
 		const { yearReviewTitle, yearReviewDescription } = this.nyShareCopy;
-		const title = this.loadNYShare
-			? yearReviewTitle
-			: 'Make a loan, change a life';
-		const baseImage = this.loadNYShare
-			? imagesRequire('./base.png')
-			: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg';
+
+		let title = 'Make a loan, change a life';
+		if (this.$route.query.lender && this.$route.query.funded_share) {
+			title = `Can you join ${this.$route.query.lender} in giving others a chance to succeed?`;
+		} else if (this.loadNYShare) {
+			title = yearReviewTitle;
+		}
+
+		let baseImage = 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg';
+		if (this.$route.query.funded_share) {
+			baseImage = thanksImgRequire('./kiva-share.png');
+		} else if (this.loadNYShare) {
+			baseImage = imagesRequire('./base.png');
+		}
+
 		const twitterImage = this.loadNYShare
 			? imagesRequire('./twitter.png')
-			: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg';
-		const description = this.loadNYShare
-			? yearReviewDescription
-			: 'Kiva is the world\'s first online lending platform. '
+			: baseImage;
+
+		let description = 'Kiva is the world\'s first online lending platform. '
 			+ 'For as little as $25 you can lend to an entrepreneur around the world. Learn more here.';
-		const socialDescription = this.loadNYShare
-			? yearReviewDescription
-			: 'Support women, entrepreneurs, students and refugees around the world with as little as $25 on Kiva. '
+		if (this.loadNYShare) {
+			description = yearReviewDescription;
+		} else if (this.$route.query.funded_share) {
+			description = 'Kiva is a loan, not a donation. '
+			+ 'With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
+		}
+
+		// eslint-disable-next-line max-len
+		let socialDescription = 'Support women, entrepreneurs, students and refugees around the world with as little as $25 on Kiva. '
 			+ '100% of your loans go to support borrowers.';
+		if (this.loadNYShare) {
+			socialDescription = yearReviewDescription;
+		} else if (this.$route.query.funded_share) {
+			socialDescription = 'Kiva is a loan, not a donation. '
+				+ 'With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
+		}
+
 		return {
 			title,
 			meta: [
@@ -72,6 +94,11 @@ export default {
 					content: baseImage
 				},
 				{
+					property: 'og:title',
+					vmid: 'og:title',
+					content: title
+				},
+				{
 					property: 'og:description',
 					vmid: 'og:description',
 					content: socialDescription
@@ -81,6 +108,11 @@ export default {
 					name: 'twitter:image',
 					vmid: 'twitter:image',
 					content: twitterImage
+				},
+				{
+					name: 'twitter:title',
+					vmid: 'twitter:title',
+					content: title
 				},
 				{
 					name: 'twitter:description',
