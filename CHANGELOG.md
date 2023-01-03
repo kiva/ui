@@ -1,3 +1,18 @@
+## [2.441.0](https://github.com/kiva/ui/compare/v2.440.1...v2.441.0) (2023-01-03)
+
+
+### Features
+
+* new copy and share links for funded loans ([5af8d25](https://github.com/kiva/ui/commit/5af8d25256ea881162915db6973c8b8675e89b14))
+* remove exp setup ([2204c6c](https://github.com/kiva/ui/commit/2204c6cbd572f5f19beb1021a72882a46f61a62d))
+
+
+### Bug Fixes
+
+* eslint ([61d8fa6](https://github.com/kiva/ui/commit/61d8fa6b745b1859f01622379344e2640a040404))
+* solve conflicts ([0a90e8b](https://github.com/kiva/ui/commit/0a90e8b7c439b1062a4d5eba084a81e382cbbe26))
+* solve conflicts ([f1cdefb](https://github.com/kiva/ui/commit/f1cdefb8625459d0bb67f17893ea859e07957f78))
+
 ### [2.440.1](https://github.com/kiva/ui/compare/v2.440.0...v2.440.1) (2022-12-22)
 
 
