@@ -131,10 +131,6 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		}
 	}
 	general {
-		autoDepositUpsellSetting: uiExperimentSetting(key: "thanks_ad_upsell") {
-			key
-			value
-		}
 		thanksShareModule: uiExperimentSetting(key: "thanks_share_module") {
 			key
 			value

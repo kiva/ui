@@ -29,28 +29,6 @@
 					</template>
 				</kv-icon-button>
 				<kv-icon-button
-					data-testid="thanks-page-button-ad"
-					class="thanks-page__icon-button expanded"
-					v-if="showAutoDepositUpsell"
-					:class="{ active: isAdSelected }"
-					@click.native="setVisibleSection('ad')"
-				>
-					<template #icon-left>
-						<kv-icon
-							class="tw-w-2.5"
-							name="piggy-bank"
-						/>
-					</template>
-					Auto-deposit
-					<template #icon-right>
-						<kv-icon
-							class="arrow-icon tw-w-3 tw-h-3"
-							:class="{ obfuscate: !isAdSelected }"
-							name="arrow"
-						/>
-					</template>
-				</kv-icon-button>
-				<kv-icon-button
 					data-testid="thanks-page-button-mg"
 					class="thanks-page__icon-button expanded"
 					v-if="showMgCta"
@@ -127,15 +105,6 @@
 					</slot>
 				</div>
 				<div
-					v-if="showAutoDepositUpsell"
-					v-show="isAdSelected"
-					class="thanks-page__content-area thanks-page__content-area--ad"
-					data-testid="thanks-page-content-ad"
-				>
-					<slot v-if="!isMobile" name="ad">
-					</slot>
-				</div>
-				<div
 					v-if="showMgCta"
 					v-show="isMgSelected"
 					class="thanks-page__content-area thanks-page__content-area--mg"
@@ -209,50 +178,6 @@
 						>
 							<hr>
 							<slot name="guest">
-							</slot>
-						</div>
-					</kv-expandable>
-				</div>
-				<!-- auto deposit (ad) -->
-				<div
-					class="kv-accordion thanks-page__content-area thanks-page__content-area--ad"
-					:class="{
-						'kv-accordion--open' : isAdSelected,
-					}"
-					v-if="showAutoDepositUpsell"
-				>
-					<kv-icon-button
-						data-testid="thanks-page-ad-button" class="thanks-page__icon-button expanded"
-						:class="{ active: isAdSelected }"
-						aria-controls="`kv-accordion-mg-accordion`"
-						:aria-expanded="isAdSelected ? 'true' : 'false'"
-						@click.native="setVisibleSection('ad')"
-					>
-						<template #icon-left>
-							<kv-icon
-								class="tw-w-2.5"
-								name="piggy-bank"
-							/>
-						</template>
-						Auto-deposit
-						<template #icon-right>
-							<kv-icon
-								class="tw-w-2.5 tw-h-2.5"
-								name="fat-chevron"
-								:from-sprite="true"
-							/>
-						</template>
-					</kv-icon-button>
-					<kv-expandable>
-						<div
-							data-testid="thanks-page-accordion-ad"
-							class="kv-accordion__pane"
-							id="kv-accordion-ad-accordion"
-							v-show="isAdSelected"
-							:aria-hidden="isAdSelected ? 'false' : 'true'"
-						>
-							<hr>
-							<slot v-if="isMobile" name="ad">
 							</slot>
 						</div>
 					</kv-expandable>
@@ -410,10 +335,6 @@ export default {
 		KvIconButton,
 	},
 	props: {
-		showAutoDepositUpsell: {
-			type: Boolean,
-			default: false
-		},
 		showGuestUpsell: {
 			type: Boolean,
 			default: false
@@ -435,8 +356,6 @@ export default {
 			visibleSection = 'share';
 		} else if (this.showMgCta) {
 			visibleSection = 'mg';
-		} else if (this.showAutoDepositUpsell) {
-			visibleSection = 'ad';
 		}
 
 		return {
