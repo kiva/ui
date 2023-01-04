@@ -21,7 +21,7 @@
 
 			<!-- Second category row: Matched loans section -->
 			<lending-category-section
-				title="matched lending"
+				title="Matched lending"
 				subtitle="Stretch your funds further with the help of our partners and Kivans just like you"
 				:loans="matchedLoans"
 				class="tw-mt-6"
