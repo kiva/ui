@@ -1,3 +1,10 @@
+### [2.442.1](https://github.com/kiva/ui/compare/v2.442.0...v2.442.1) (2023-01-04)
+
+
+### Bug Fixes
+
+* add lend route to exclusion array ([bf340df](https://github.com/kiva/ui/commit/bf340df2ddd44841f12a882a6ecc197402af1aef))
+
 ## [2.442.0](https://github.com/kiva/ui/compare/v2.441.2...v2.442.0) (2023-01-04)
 
 
