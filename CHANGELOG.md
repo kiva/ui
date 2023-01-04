@@ -1,3 +1,11 @@
+### [2.443.1](https://github.com/kiva/ui/compare/v2.443.0...v2.443.1) (2023-01-04)
+
+
+### Bug Fixes
+
+* eslint ([0736567](https://github.com/kiva/ui/commit/0736567f8918ff810b6772a519463c735f4066bf))
+* remove exp file ([cdcffdb](https://github.com/kiva/ui/commit/cdcffdb967f477a9acf403b8e7d0e23a96bbe350))
+
 ## [2.443.0](https://github.com/kiva/ui/compare/v2.442.2...v2.443.0) (2023-01-04)
 
 
