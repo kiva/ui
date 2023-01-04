@@ -921,8 +921,7 @@ export default {
 				this.continueButtonState = 'active';
 				const loans = data?.lend?.loans?.values || [];
 				// Temp solution so we don't show reserved loans on upsell
-				const upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || {};
-				this.upsellLoan = upsellLoan;
+				this.upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || {};
 			});
 		},
 		verificationComplete() {
