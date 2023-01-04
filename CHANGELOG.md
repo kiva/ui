@@ -1,3 +1,10 @@
+## [2.443.0](https://github.com/kiva/ui/compare/v2.442.2...v2.443.0) (2023-01-04)
+
+
+### Features
+
+* loading state added to upsell feat ([2a63988](https://github.com/kiva/ui/commit/2a63988b83d49665b21a57609f80bd8dd8ee95b5))
+
 ### [2.442.2](https://github.com/kiva/ui/compare/v2.442.1...v2.442.2) (2023-01-04)
 
 
