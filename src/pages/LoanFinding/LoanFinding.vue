@@ -14,11 +14,14 @@
 				@add-to-basket="trackCategory($event, 'recommended')"
 			/>
 
-			<quick-filters-section class="tw-mt-6" />
+			<quick-filters-section
+				class="tw-mt-6"
+				@add-to-basket="trackCategory($event, 'quick-filters')"
+			/>
 
 			<!-- Second category row: Matched loans section -->
 			<lending-category-section
-				title="Matched lending"
+				title="matched lending"
 				subtitle="Stretch your funds further with the help of our partners and Kivans just like you"
 				:loans="matchedLoans"
 				class="tw-mt-6"

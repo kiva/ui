@@ -91,6 +91,7 @@
 			:progress-percent="fundraisingPercent"
 			:time-left="timeLeftMessage"
 			:all-shares-reserved="allSharesReserved"
+			:use-new-progress="useNewProgress"
 		/>
 
 		<!-- LoanUse  -->
@@ -314,15 +315,9 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		atcTrackingProps: {
-			type: Object,
-			default: () => {
-				return {
-					category: '',
-					action: '',
-					label: '',
-				};
-			}
+		useNewProgress: {
+			type: Boolean,
+			default: false,
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -338,7 +333,7 @@ export default {
 		KvMaterialIcon,
 		SummaryTag,
 		KvUiButton,
-		ActionButton
+		ActionButton,
 	},
 	data() {
 		return {
@@ -552,13 +547,6 @@ export default {
 
 				this.$showTipMsg(msg, 'error');
 			});
-			if (this.atcTrackingProps.category) {
-				this.$kvTrackEvent(
-					this.atcTrackingProps.category,
-					this.atcTrackingProps.action,
-					this.atcTrackingProps.label
-				);
-			}
 		},
 	},
 	mounted() {
