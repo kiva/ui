@@ -1,3 +1,15 @@
+## [2.442.0](https://github.com/kiva/ui/compare/v2.441.2...v2.442.0) (2023-01-04)
+
+
+### Features
+
+* test code for dynamic upsells removed ([a4213d1](https://github.com/kiva/ui/commit/a4213d1a1ea4220619c19cd653729a71c5ed5097))
+
+
+### Bug Fixes
+
+* dynamic upsell gql removed from repo ([fc8bb25](https://github.com/kiva/ui/commit/fc8bb25cadb28dbb826085c7edfb5156affe1dc7))
+
 ### [2.441.2](https://github.com/kiva/ui/compare/v2.441.1...v2.441.2) (2023-01-04)
 
 
