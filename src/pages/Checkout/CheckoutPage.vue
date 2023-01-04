@@ -48,7 +48,6 @@
 								:close-upsell-module="closeUpsellModule"
 								:add-to-basket="addToBasket"
 								:enable-experiment-copy="enableUpsellsCopy"
-								:use-dynamic-upsell="useDynamicUpsell"
 							/>
 						</div>
 					</div>
@@ -302,7 +301,6 @@ import RandomLoanSelector from '@/components/RandomLoanSelector/RandomLoanSelect
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import upsellQuery from '@/graphql/query/checkout/upsellLoans.graphql';
-import upsellExpiringSoonQuery from '@/graphql/query/checkout/upsellLoansExpiringSoon.graphql';
 import UpsellModule from '@/components/Checkout/UpsellModule';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import * as Sentry from '@sentry/vue';
@@ -401,9 +399,7 @@ export default {
 			teamJoinStatus: null,
 			enableUpsellsCopy: false,
 			myTeams: [],
-			enableDynamicUpsells: false,
 			isEcoChallengeExpShown: false,
-			useDynamicUpsell: false,
 			ecoChallengeRedirectQueryParam: '',
 			continueButtonState: 'loading',
 		};
@@ -441,7 +437,6 @@ export default {
 						client.query({ query: upsellQuery }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 						client.query({ query: experimentQuery, variables: { id: 'upsells_copy' } }),
-						client.query({ query: experimentQuery, variables: { id: 'dynamic_upsells' } }),
 					]);
 				});
 		},
@@ -481,18 +476,6 @@ export default {
 		}
 	},
 	created() {
-		const upsellsDynamicExperiment = this.apollo.readFragment({
-			id: 'Experiment:dynamic_upsells',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.enableDynamicUpsells = upsellsDynamicExperiment.version === 'b';
-		if (upsellsDynamicExperiment.version) {
-			this.$kvTrackEvent(
-				'Basket',
-				'EXP-CORE-721-Sept2022',
-				upsellsDynamicExperiment.version
-			);
-		}
 		const upsellsCopyExperiment = this.apollo.readFragment({
 			id: 'Experiment:upsells_copy',
 			fragment: experimentVersionFragment,
@@ -594,11 +577,7 @@ export default {
 		// show toast for specified scenario
 		this.handleToast();
 		this.getPromoInformationFromBasket();
-		if (this.$route.query.forceDynamicUpsell === 'true' && this.enableDynamicUpsells) {
-			this.getDynamicUpsellModuleData();
-		} else {
-			this.getUpsellModuleData();
-		}
+		this.getUpsellModuleData();
 
 		const ecoChallengeExpData = getExperimentSettingCached(this.apollo, ecoChallengeExpKey);
 		if (ecoChallengeExpData?.enabled) {
@@ -942,37 +921,6 @@ export default {
 				this.continueButtonState = 'active';
 				const loans = data?.lend?.loans?.values || [];
 				// Temp solution so we don't show reserved loans on upsell
-				const upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || {};
-				const amountLeft = upsellLoan?.loanAmount
-					- upsellLoan?.loanFundraisingInfo?.fundedAmount
-					- upsellLoan?.loanFundraisingInfo?.reservedAmount;
-				if (amountLeft > 50 && this.enableDynamicUpsells) {
-					this.getDynamicUpsellModuleData();
-				} else {
-					this.upsellLoan = upsellLoan;
-					if (this.enableDynamicUpsells) {
-						this.$kvTrackEvent(
-							'Basket',
-							'get-almost-funded-upsells',
-							'Use almost funded upsell loan'
-						);
-					}
-				}
-			});
-		},
-		getDynamicUpsellModuleData() {
-			this.$kvTrackEvent(
-				'Basket',
-				'get-expiring-soon-upsells',
-				'Use expiring soon upsell loan'
-			);
-			this.useDynamicUpsell = true;
-			this.apollo.query({
-				query: upsellExpiringSoonQuery,
-				fetchPolicy: 'network-only',
-			}).then(({ data }) => {
-				const loans = data?.lend?.loans?.values || [];
-				// Temp solution so we don't show reserved loans on upsell
 				this.upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || {};
 			});
 		},
@@ -1024,11 +972,7 @@ export default {
 							);
 							// eslint-disable-next-line max-len
 							this.$showTipMsg('Looks like that loan was reserved by someone else! Try this one instead.', 'info');
-							if (this.$route.query.forceDynamicUpsell === 'true' && this.enableDynamicUpsells) {
-								this.getDynamicUpsellModuleData();
-							} else {
-								this.getUpsellModuleData();
-							}
+							this.getUpsellModuleData();
 							this.refreshTotals();
 						} else {
 							this.$showTipMsg(error.message, 'error');
