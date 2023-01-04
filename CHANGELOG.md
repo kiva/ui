@@ -1,3 +1,10 @@
+### [2.442.2](https://github.com/kiva/ui/compare/v2.442.1...v2.442.2) (2023-01-04)
+
+
+### Bug Fixes
+
+* support for expired loan statuses MARS-325 ([cf19a3d](https://github.com/kiva/ui/commit/cf19a3d0cf49b2889659ef7a06d95ac8880ee60f))
+
 ### [2.442.1](https://github.com/kiva/ui/compare/v2.442.0...v2.442.1) (2023-01-04)
 
 
