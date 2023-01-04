@@ -1,3 +1,10 @@
+### [2.441.2](https://github.com/kiva/ui/compare/v2.441.1...v2.441.2) (2023-01-04)
+
+
+### Bug Fixes
+
+* assigment of ACK-440 exp was not working correctly ([6299cc8](https://github.com/kiva/ui/commit/6299cc825a143ccca90a71d7452cf1a1edfa39d5))
+
 ### [2.441.1](https://github.com/kiva/ui/compare/v2.441.0...v2.441.1) (2023-01-03)
 
 

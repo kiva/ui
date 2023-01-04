@@ -180,6 +180,8 @@
 </template>
 
 <script>
+import { gql } from '@apollo/client';
+
 import numeral from 'numeral';
 import logFormatter from '@/util/logFormatter';
 import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
@@ -411,7 +413,17 @@ export default {
 	apollo: {
 		preFetch(config, client) {
 			return client.query({
-				query: experimentQuery, variables: { id: 'basket_donate_modules' }
+				query: gql`
+						query generalExpQuery {
+							general {
+								basket_donate_modules: uiExperimentSetting(key: "basket_donate_modules") {
+									key
+									value
+								}
+							}
+						}`
+			}).then(() => {
+				return client.query({ query: experimentQuery, variables: { id: 'basket_donate_modules' } });
 			}).catch(errorResponse => {
 				logFormatter(errorResponse, 'error');
 			});
