@@ -124,14 +124,12 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvHero from '@/components/Kv/KvHero';
 import KvContentfulImg from '@/components/Kv/KvContentfulImg';
 import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
-import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
 import AutomaticallySupportNotice from '@/components/MonthlyGood/AutomaticallySupportNotice';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 import LandingForm from './LandingForm';
-import LandingFormVisibilityExp from './LandingFormVisibilityExp';
 import HowItWorks from './HowItWorks';
 import EmailPreview from './EmailPreview';
 import MoreAboutKiva from './MoreAboutKiva';
@@ -185,10 +183,8 @@ export default {
 		KvFrequentlyAskedQuestions,
 		KvHero,
 		LandingForm,
-		LandingFormVisibilityExp,
 		MoreAboutKiva,
 		WwwPage,
-		KivaClassicLoanCarouselExp,
 		AutomaticallySupportNotice,
 	},
 	props: {
