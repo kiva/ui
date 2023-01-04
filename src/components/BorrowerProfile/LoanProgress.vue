@@ -31,7 +31,25 @@
 					</p>
 				</div>
 			</div>
-			<template v-if="loanStatus === 'pfp'">
+			<div v-else-if="loanStatus === 'expired'">
+				<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
+					This loan has expired
+				</p>
+				<div class="md:tw-flex tw-gap-2">
+					<p class="tw-text-h4 tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
+						{{ progressPercent | numeral('0%') }} funded
+					</p>
+					<p class="tw-text-h4 tw-text-action tw-block">
+						<router-link
+							:to="`/lend-classic/${$route.params.id}?minimal=false`"
+							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
+						>
+							View the full borrower profile
+						</router-link>
+					</p>
+				</div>
+			</div>
+			<template v-else-if="loanStatus === 'pfp'">
 				<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
 					<span class="tw-text-h3 tw-block tw-m-0">
 						{{ timeLeft }}
@@ -50,7 +68,7 @@
 					</p>
 				</div>
 			</template>
-			<template v-else-if="loanStatus !== 'funded'">
+			<template v-else>
 				<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
 					<countdown-timer
 						v-if="urgency"
@@ -113,7 +131,23 @@ export default {
 			type: String,
 			default: 'fundraising',
 			validator: value => {
-				return ['fundraising', 'funded', 'pfp'].indexOf(value) !== -1;
+				// Uncomment loan statuses as they become supported
+				return [
+					// 'defaulted',
+					// 'deleted',
+					// 'ended',
+					'expired',
+					'funded',
+					'fundraising',
+					// 'inactive',
+					// 'inactiveExpired',
+					// 'issue',
+					// 'payingBack',
+					'pfp',
+					// 'raised',
+					// 'refunded',
+					// 'reviewed'
+				].indexOf(value) !== -1;
 			}
 		},
 		numberOfLenders: {
