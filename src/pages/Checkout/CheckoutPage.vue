@@ -38,12 +38,10 @@
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<div class="upsellContainer">
+						<div v-if="!upsellCookieActive" class="upsellContainer">
+							<kv-loading-placeholder v-if="!upsellLoan.name" class="tw-rounded" />
 							<upsell-module
-								v-if="!upsellCookieActive &&
-									showUpsellModule &&
-									upsellLoan.name
-								"
+								v-if="showUpsellModule && upsellLoan.name"
 								:loan="upsellLoan"
 								:close-upsell-module="closeUpsellModule"
 								:add-to-basket="addToBasket"
@@ -311,6 +309,7 @@ import {
 	getExperimentSettingCached,
 	trackExperimentVersion
 } from '@/util/experimentUtils';
+import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -350,7 +349,8 @@ export default {
 		VerifyRemovePromoCredit,
 		UpsellModule,
 		MatchedLoansLightbox,
-		CampaignJoinTeamForm
+		CampaignJoinTeamForm,
+		KvLoadingPlaceholder
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [
@@ -1063,11 +1063,13 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-.upsellContainer {
+.upsellContainer,
+.upsellContainer > .loading-placeholder {
 	min-height: 250px;
 }
 @media screen and (max-width: 733px) {
-	.upsellContainer {
+	.upsellContainer,
+	.upsellContainer > .loading-placeholder {
 		min-height: 300px;
 	}
 }
