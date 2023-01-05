@@ -109,14 +109,7 @@
 			</div>
 		</div>
 		<div class="tw-flex tw-justify-between tw-items-start tw-mt-2" v-if="withCategories">
-			<div class="tw-flex tw-flex-col md:tw-flex-row tw-items-start">
-				<span v-show="filtersLoaded" class="tw-text-small">Showing {{ totalLoans }} loans</span>
-				<!-- eslint-disable-next-line max-len -->
-				<button v-show="filtersLoaded" class="md:tw-ml-2 tw-mt-1 md:tw-mt-0 tw-text-small tw-text-action" @click="resetFilters">
-					Reset filters
-				</button>
-			</div>
-			<div id="customizedSortBySelector" class="tw-text-action tw-flex tw-items-center tw-gap-1 tw-text-small">
+			<div id="customizedSortBySelector" class="tw-text-action tw-flex tw-items-center tw-gap-1 tw-text-base">
 				<kv-material-icon :icon="mdiFilterVariant" class="tw-w-2 tw-h-2" />
 				Loan sort:
 				<kv-select
@@ -133,6 +126,13 @@
 						{{ sortType.title }}
 					</option>
 				</kv-select>
+			</div>
+			<div class="tw-flex tw-flex-col md:tw-flex-row tw-items-start">
+				<span v-show="filtersLoaded" class="tw-text-base">Showing {{ totalLoans }} loans</span>
+				<!-- eslint-disable-next-line max-len -->
+				<button v-show="filtersLoaded" class="md:tw-ml-2 tw-mt-1 md:tw-mt-0 tw-text-base tw-text-action" @click="resetFilters">
+					Reset filters
+				</button>
 			</div>
 		</div>
 	</div>
@@ -202,7 +202,6 @@ export default {
 			const queryMap = loanChannelQueryMapMixin.data().loanChannelQueryMap;
 			const categoryFilter = catId === 0 ? {} : queryMap
 				.find(channel => channel.id === catId)?.flssLoanSearch;
-
 			if (this.presetFilterActive.women) {
 				this.resetGender();
 				this.presetFilterActive.women = false;
@@ -226,10 +225,26 @@ export default {
 				this.sortBy = 'expiringSoon';
 				this.presetFilterActive.endingSoon = true;
 			} else {
+				if (catId === 33 || catId === 96) { // mission-driven-orgs, covid-19
+				// we don't currently have this option for these categories, also irrelevant since
+				// the user has a sort by dropdown available to them
+					delete categoryFilter.sortBy;
+				}
 				this.$emit('update-filters', categoryFilter);
 			}
+
+			this.$kvTrackEvent(
+				this.trackingCategory,
+				'filter',
+				'quick-filters-option',
+				categoryId === 0 ? 'All categories' : categoryId
+			);
 		},
 		selectedGender(gender) {
+			if (this.presetFilterActive.women && gender !== 'female') {
+				this.resetCategory();
+				this.presetFilterActive.women = false;
+			}
 			this.$emit('update-filters', { gender });
 			this.$kvTrackEvent(
 				this.trackingCategory,
@@ -239,6 +254,10 @@ export default {
 			);
 		},
 		sortBy(sortBy) {
+			if (this.presetFilterActive.endingSoon && sortBy !== 'expiringSoon') {
+				this.resetCategory();
+				this.presetFilterActive.endingSoon = false;
+			}
 			this.$emit('update-filters', { sortBy });
 			this.$kvTrackEvent(
 				this.trackingCategory,
@@ -249,6 +268,9 @@ export default {
 		}
 	},
 	methods: {
+		resetCategory() {
+			this.selectedCategory = 0;
+		},
 		resetGender() {
 			this.selectedGender = '';
 		},
@@ -263,6 +285,10 @@ export default {
 			this.$refs.locationSelector.setCountry(country);
 		},
 		updateLocation(location) {
+			if (this.presetFilterActive.kivaUs && JSON.stringify(location) !== '["US"]') {
+				this.resetCategory();
+				this.presetFilterActive.kivaUs = false;
+			}
 			this.$emit('update-filters', { country: location });
 			this.$kvTrackEvent(
 				this.trackingCategory,
@@ -324,7 +350,8 @@ export default {
 		border-style: none;
 		padding: 0 0 0 4px;
 		width: auto;
-		font-size: 0.875rem;
+		font-size: 1rem;
+		text-decoration: underline;
 		cursor: pointer;
 		height: auto;
 		background: transparent;

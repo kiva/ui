@@ -984,6 +984,13 @@ export default {
 					queryParams: 'status=fundRaising&riskRating=3,5&sector=1,9,5,14,17,12,8,7,4,3,13&theme=Islamic Finance,Youth,Start-Up,Water and Sanitation,Vulnerable Groups,Fair Trade,Rural Exclusion,Mobile Technology,Underfunded Areas,Conflict Zones,Job Creation,Growing Businesses,Disaster recovery,Innovative Loans,Refugees/Displaced,Social Enterprise,Crisis Support Loans&distributionModel=field_partner',
 					algoliaParams: '',
 				},
+				{
+					id: 157,
+					url: 'l-g-b-t-q',
+					flssLoanSearch: {
+						tagId: [73]
+					},
+				},
 			]
 
 		};

@@ -36,7 +36,7 @@ export default {
 		allSharesReserved: {
 			type: Boolean,
 			default: false,
-		}
+		},
 	},
 	computed: {
 		fundingText() {

@@ -313,16 +313,6 @@ export default {
 		useFullWidth: {
 			type: Boolean,
 			default: false
-		},
-		atcTrackingProps: {
-			type: Object,
-			default: () => {
-				return {
-					category: '',
-					action: '',
-					label: '',
-				};
-			}
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -338,7 +328,7 @@ export default {
 		KvMaterialIcon,
 		SummaryTag,
 		KvUiButton,
-		ActionButton
+		ActionButton,
 	},
 	data() {
 		return {
@@ -552,13 +542,6 @@ export default {
 
 				this.$showTipMsg(msg, 'error');
 			});
-			if (this.atcTrackingProps.category) {
-				this.$kvTrackEvent(
-					this.atcTrackingProps.category,
-					this.atcTrackingProps.action,
-					this.atcTrackingProps.label
-				);
-			}
 		},
 	},
 	mounted() {
