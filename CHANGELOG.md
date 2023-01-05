@@ -1,3 +1,10 @@
+## [2.444.0](https://github.com/kiva/ui/compare/v2.443.2...v2.444.0) (2023-01-05)
+
+
+### Features
+
+* upsell copy test code removed ([d00ca9c](https://github.com/kiva/ui/commit/d00ca9ca3a5d831e5f8b42cb16e93ead4fa5fcfc))
+
 ### [2.443.2](https://github.com/kiva/ui/compare/v2.443.1...v2.443.2) (2023-01-05)
 
 
