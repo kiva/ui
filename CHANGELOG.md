@@ -1,3 +1,10 @@
+### [2.444.1](https://github.com/kiva/ui/compare/v2.444.0...v2.444.1) (2023-01-05)
+
+
+### Bug Fixes
+
+* update cypress meta tests to use new lbc and category title format ([4ed1f75](https://github.com/kiva/ui/commit/4ed1f75c6c1e93d54d83a3bc929fcbe82b95544d))
+
 ## [2.444.0](https://github.com/kiva/ui/compare/v2.443.2...v2.444.0) (2023-01-05)
 
 
