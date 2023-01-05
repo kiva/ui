@@ -1,3 +1,10 @@
+### [2.444.2](https://github.com/kiva/ui/compare/v2.444.1...v2.444.2) (2023-01-05)
+
+
+### Bug Fixes
+
+* add  | Kiva suffix to meta title test ([25f1568](https://github.com/kiva/ui/commit/25f15685b40940070d43e6e1747d24668acc2df4))
+
 ### [2.444.1](https://github.com/kiva/ui/compare/v2.444.0...v2.444.1) (2023-01-05)
 
 
