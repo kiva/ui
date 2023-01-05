@@ -21,7 +21,6 @@
 					:show-action-button="true"
 					class="tw-mr-2"
 					style="max-width: 100%;"
-					:use-new-progress="true"
 					@add-to-basket="addToBasket"
 				/>
 			</template>

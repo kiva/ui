@@ -3,13 +3,7 @@
 		<h4 class="tw-mb-0.5">
 			{{ fundingText }}
 		</h4>
-		<fundraising-status-meter
-			v-if="useNewProgress"
-			:is-funded="progressPercent === 100"
-			:percent-raised="progressPercent"
-		/>
 		<kv-progress-bar
-			v-else
 			class="tw-mb-1.5 lg:tw-mb-1"
 			aria-label="Percent the loan has funded"
 			:value="progressPercent * 100"
@@ -19,14 +13,12 @@
 
 <script>
 import numeral from 'numeral';
-import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
 export default {
 	name: 'LoanProgressGroup',
 	components: {
 		KvProgressBar,
-		FundraisingStatusMeter
 	},
 	props: {
 		moneyLeft: {
@@ -45,10 +37,6 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		useNewProgress: {
-			type: Boolean,
-			default: false,
-		}
 	},
 	computed: {
 		fundingText() {

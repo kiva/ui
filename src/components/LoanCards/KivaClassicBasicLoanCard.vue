@@ -91,7 +91,6 @@
 			:progress-percent="fundraisingPercent"
 			:time-left="timeLeftMessage"
 			:all-shares-reserved="allSharesReserved"
-			:use-new-progress="useNewProgress"
 		/>
 
 		<!-- LoanUse  -->
@@ -314,10 +313,6 @@ export default {
 		useFullWidth: {
 			type: Boolean,
 			default: false
-		},
-		useNewProgress: {
-			type: Boolean,
-			default: false,
 		}
 	},
 	inject: ['apollo', 'cookieStore'],

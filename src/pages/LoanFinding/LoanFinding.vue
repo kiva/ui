@@ -109,3 +109,9 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+>>> [role=progressbar] {
+	@apply tw-bg-tertiary;
+}
+</style>

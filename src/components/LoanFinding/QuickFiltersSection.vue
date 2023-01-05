@@ -37,7 +37,6 @@
 				:loan-id="loan.id"
 				:show-action-button="true"
 				:use-full-width="true"
-				:use-new-progress="true"
 				@add-to-basket="addToBasket"
 			/>
 		</div>
