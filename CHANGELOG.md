@@ -1,3 +1,15 @@
+### [2.443.2](https://github.com/kiva/ui/compare/v2.443.1...v2.443.2) (2023-01-05)
+
+
+### Bug Fixes
+
+* add cmt ([2766bca](https://github.com/kiva/ui/commit/2766bcaddd3bdd7d7663c93a2d9032a30db35c2b))
+* add new prop for loan cards ([716b99d](https://github.com/kiva/ui/commit/716b99d701fe016610ca4e65bf1c757cf0494f07))
+* change progress bar component back and add styling ([888cfab](https://github.com/kiva/ui/commit/888cfab58da9cd84ba386b2e0f29a310329a062e))
+* oops lol ([595f563](https://github.com/kiva/ui/commit/595f563561b9cd910e999feacc959e595378e0e8))
+* qa fixes for quick filters on mvp landing page ([f0d1e44](https://github.com/kiva/ui/commit/f0d1e44d285cf4add45526720d3e6bc4dfeedef6))
+* update edge cases for mission driven orgs and covid 19 ([aa932af](https://github.com/kiva/ui/commit/aa932afc128c41b48ce2da20b46e68c843776935))
+
 ### [2.443.1](https://github.com/kiva/ui/compare/v2.443.0...v2.443.1) (2023-01-04)
 
 
