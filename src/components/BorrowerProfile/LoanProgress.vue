@@ -49,6 +49,24 @@
 					</p>
 				</div>
 			</div>
+			<div v-else-if="loanStatus === 'inactive'">
+				<p class="tw-text-h3 tw-m-0">
+					This loan is inactive
+				</p>
+				<div class="md:tw-flex tw-gap-2">
+					<p class="tw-text-h4 tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
+						{{ progressPercent | numeral('0%') }} funded
+					</p>
+					<p class="tw-text-h4 tw-text-action tw-block">
+						<router-link
+							:to="`/lend-classic/${$route.params.id}?minimal=false`"
+							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
+						>
+							View the full borrower profile
+						</router-link>
+					</p>
+				</div>
+			</div>
 			<template v-else-if="loanStatus === 'pfp'">
 				<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
 					<span class="tw-text-h3 tw-block tw-m-0">
@@ -139,7 +157,7 @@ export default {
 					'expired',
 					'funded',
 					'fundraising',
-					// 'inactive',
+					'inactive',
 					// 'inactiveExpired',
 					// 'issue',
 					// 'payingBack',
@@ -161,6 +179,9 @@ export default {
 	},
 	computed: {
 		pfpProgressPercent() {
+			if (this.pfpMinLenders === 0) {
+				return 0;
+			}
 			return (this.numberOfLenders / this.pfpMinLenders) * 100;
 		}
 	},
