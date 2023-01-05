@@ -20,7 +20,7 @@ describe('Meta information', () => {
 	it('Lend By Category Page', () => {
 		cy.visit('/lend-by-category');
 
-		cy.title().should('eq', 'Make a loan, change a life | Loans by category');
+		cy.title().should('eq', 'Make a loan, change a life | Loans by category | Kiva');
 		cy.document().get('head meta[name="description"]')
 			.should('have.attr', 'content', 'Choose a category, lend to borrowers, and make an impact. '
 				+ 'Each Kiva loan helps people build a better future for themselves and their families.');
