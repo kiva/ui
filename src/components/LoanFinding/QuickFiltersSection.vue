@@ -160,6 +160,7 @@ export default {
 		// TODO: Rearchitect this at some point.
 		// This won't work for categories that have
 		// multiple criteria applied to their FLSSLoanSearch criteria.
+		// See CORE-944
 		async updateQuickFilters(filter) {
 			this.loanSearchState.pageOffset = 0;
 			if (filter.gender !== undefined) {
