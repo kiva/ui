@@ -138,7 +138,10 @@ module.exports = [
 			amount: route.params.amount
 		})
 	},
-	{ path: '/covid19response', component: () => import('@/pages/LandingPages/MGCovid19/MGCovid19') },
+	{
+		path: '/covid19response',
+		redirect: '/monthlygood'
+	},
 	{
 		path: '/design',
 		component: () => import('@/pages/ContentfulPage'),

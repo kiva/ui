@@ -14,11 +14,6 @@
 					Your contribution: ${{ mgAmount }}<span v-if="!isOnetime">/month</span>
 					<span v-if="donation > 0">(including your ${{ donation }} donation)</span>
 				</p>
-				<div v-if="fromCovidLanding" class="tw-font-medium tw-bg-secondary tw-p-4 ">
-					<p>
-						Thank you for choosing to support someone who has been impacted by COVID‑19 coronavirus.
-					</p>
-				</div>
 			</div>
 		</kv-default-wrapper>
 	</www-page>
@@ -124,9 +119,6 @@ export default {
 	},
 	computed: {
 		headline() {
-			if (this.fromCovidLanding) {
-				return 'You joined the Global COVID‑19 Response Fund!';
-			}
 			return 'You joined Monthly Good!';
 		},
 		monthWording() {
@@ -151,9 +143,6 @@ export default {
 			// ensure this is cast to a bool for use in Graphql mutation
 			return this.onetime === 'true';
 		},
-		fromCovidLanding() {
-			return this.source === 'covid19response';
-		}
 	},
 };
 </script>

@@ -47,7 +47,7 @@
 						<div class="panel zigzag-bottom tw-bg-secondary">
 							<div class="row align-center tw-text-center">
 								<div class="medium-10 small-12 columns">
-									<div class="row column" v-if="!fromCovidLanding">
+									<div class="row column">
 										<strong>Each month on the</strong>
 										<label
 											class="tw-sr-only"
@@ -212,7 +212,7 @@
 										</div>
 									</div>
 
-									<div class="row tw-text-left" v-if="!fromCovidLanding">
+									<div class="row tw-text-left">
 										<div class="small-12 columns">
 											<div class="tw-ml-3">
 												<label for="lending-category" class="tw-block tw-mb-2">
@@ -764,9 +764,6 @@ export default {
 			// ensure this is cast to a bool for use in Graphql mutation
 			return this.onetime === 'true';
 		},
-		fromCovidLanding() {
-			return this.source === 'covid19response';
-		}
 	},
 };
 
