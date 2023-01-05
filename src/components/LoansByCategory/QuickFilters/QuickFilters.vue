@@ -202,7 +202,6 @@ export default {
 			const queryMap = loanChannelQueryMapMixin.data().loanChannelQueryMap;
 			const categoryFilter = catId === 0 ? {} : queryMap
 				.find(channel => channel.id === catId)?.flssLoanSearch;
-			console.log(catId, categoryFilter);
 			if (this.presetFilterActive.women) {
 				this.resetGender();
 				this.presetFilterActive.women = false;
@@ -226,6 +225,11 @@ export default {
 				this.sortBy = 'expiringSoon';
 				this.presetFilterActive.endingSoon = true;
 			} else {
+				if (catId === 33 || catId === 96) { // mission-driven-orgs, covid-19
+				// we don't currently have this option for these categories, also irrelevant since
+				// the user has a sort by dropdown available to them
+					delete categoryFilter.sortBy;
+				}
 				this.$emit('update-filters', categoryFilter);
 			}
 

@@ -157,6 +157,9 @@ export default {
 			const params = new URLSearchParams(paramStr);
 			return `/lend/filter?${params.toString()}`;
 		},
+		// TODO: Rearchitect this at some point.
+		// This won't work for categories that have
+		// multiple criteria applied to their FLSSLoanSearch criteria.
 		async updateQuickFilters(filter) {
 			this.loanSearchState.pageOffset = 0;
 			if (filter.gender !== undefined) {
