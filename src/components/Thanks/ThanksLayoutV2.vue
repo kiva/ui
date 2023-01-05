@@ -372,9 +372,6 @@ export default {
 		}
 	},
 	computed: {
-		isAdSelected() {
-			return this.visibleSection === 'ad';
-		},
 		isGuestSelected() {
 			return this.visibleSection === 'guest';
 		},

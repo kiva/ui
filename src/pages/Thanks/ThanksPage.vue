@@ -113,8 +113,6 @@ import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
-const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
-
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 
@@ -139,13 +137,9 @@ export default {
 	},
 	data() {
 		return {
-			autoDepositUpsellCookie: null,
-			autoDepositUpsellExpVersion: null,
-			imageRequire,
 			lender: {},
 			loans: [],
 			receipt: null,
-			isAutoDepositSubscriber: false,
 			isMonthlyGoodSubscriber: false,
 			hasModernSub: false,
 			isGuest: false,
@@ -265,8 +259,6 @@ export default {
 		};
 
 		this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
-		const hasAutoDeposit = data?.my?.autoDeposit?.id ?? false;
-		this.isAutoDepositSubscriber = !!(hasAutoDeposit && !this.isMonthlyGoodSubscriber);
 
 		// The default empty object and the v-if will prevent the
 		// receipt from rendering in the rare cases this query fails.

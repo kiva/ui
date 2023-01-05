@@ -121,11 +121,6 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			inviterName
 			public
 		}
-		subscriptions {
-			values {
-				id
-			}
-		}
 		loans {
 			totalCount
 		}
