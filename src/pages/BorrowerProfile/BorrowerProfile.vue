@@ -537,18 +537,16 @@ export default {
 		}
 
 		// Async data fetch for MARS-317 and share button
-		if (this.enabledExperiment) {
-			const { data } = await this.apollo.query({
-				query: mountedQuery,
-				variables: {
-					loanId: this.loanId,
-				},
-			});
-			const loan = data?.lend?.loan;
-			this.partnerName = loan?.partnerName ?? '';
-			this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
-			this.lender = data?.my?.userAccount ?? {};
-		}
+		const { data } = await this.apollo.query({
+			query: mountedQuery,
+			variables: {
+				loanId: this.loanId,
+			},
+		});
+		const loan = data?.lend?.loan;
+		this.partnerName = loan?.partnerName ?? '';
+		this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
+		this.lender = data?.my?.userAccount ?? {};
 	},
 	computed: {
 		loanId() {
