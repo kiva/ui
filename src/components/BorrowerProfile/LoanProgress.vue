@@ -13,7 +13,7 @@
 			:value="progressPercent * 100"
 		/>
 		<figcaption class="tw-flex">
-			<div v-if="loanStatus === 'funded'">
+			<div v-if="loanStatus === 'funded' || loanStatus === 'raised'">
 				<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
 					This loan is fully funded!
 				</p>
@@ -162,7 +162,7 @@ export default {
 					// 'issue',
 					// 'payingBack',
 					'pfp',
-					// 'raised',
+					'raised',
 					// 'refunded',
 					// 'reviewed'
 				].indexOf(value) !== -1;

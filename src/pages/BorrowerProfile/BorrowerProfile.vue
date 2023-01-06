@@ -446,8 +446,26 @@ export default {
 						});
 					}
 
+					// Check for loan and loan status
 					const loan = data?.lend?.loan;
-					if (loan === null || loan === 'undefined') {
+					// TODO: This list is replicated in LoanProgress.vue de-duplicate
+					const loanStatusAllowed = [
+						// 'defaulted',
+						// 'deleted',
+						// 'ended',
+						'expired',
+						'funded',
+						'fundraising',
+						'inactive',
+						// 'inactiveExpired',
+						// 'issue',
+						// 'payingBack',
+						'pfp',
+						'raised',
+						// 'refunded',
+						// 'reviewed'
+					].indexOf(loan?.status) !== -1;
+					if (loan === null || loan === 'undefined' || !loanStatusAllowed) {
 						// redirect to legacy borrower profile
 						const { query = {} } = route;
 						query.minimal = false;
