@@ -78,26 +78,20 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
-		preFetch(config, client) {
-			return client.query({
-				query: pageQuery
-			}).then(({ data }) => {
-				this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
-
-				if (!this.isMonthlyGoodSubscriber) {
-					// Return user to /monthlygood
-					return Promise.reject({ path: '/monthlygood' });
-				}
-
-				this.autoDepositAmount = numeral(_get(data, 'my.autoDeposit.amount', 0)).format('0.00');
-				this.donation = numeral(_get(data, 'my.autoDeposit.donateAmount', 0)).format('0.00');
-				this.mgAmount = this.autoDepositAmount - this.donation;
-				this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
-				this.category = _get(data, 'my.monthlyGoodCategory');
-				this.autoDepositId = _get(data, 'my.autoDeposit.id');
-
-				return Promise.resolve();
-			});
+		query: pageQuery,
+		preFetch: true,
+		result({ data }) {
+			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
+			if (!this.isMonthlyGoodSubscriber) {
+				this.$router.push({ path: '/monthlygood' }).catch(() => {});
+			}
+			this.autoDepositAmount = numeral(_get(data, 'my.autoDeposit.amount', 0)).format('0.00');
+			this.donation = numeral(_get(data, 'my.autoDeposit.donateAmount', 0)).format('0.00');
+			this.mgAmount = this.autoDepositAmount - this.donation;
+			this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
+			this.category = _get(data, 'my.monthlyGoodCategory');
+			this.isOnetimePayment = _get(data, 'my.autoDeposit.isOnetime');
+			this.autoDepositId = _get(data, 'my.autoDeposit.id');
 		},
 	},
 	mounted() {
