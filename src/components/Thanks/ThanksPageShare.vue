@@ -367,7 +367,7 @@ export default {
 			if (!this.calculatePeopleQtyToGoal()) {
 				return '1.4 billion people are currently unbanked with no access to basic financial services. '
 					+ 'Sharing Kiva with others can help inspire them to give people '
-					+ 'the funds they need to improve their lives ?';
+					+ 'the funds they need to improve their lives.';
 			}
 			if (this.showCategoryShareControl) {
 				// eslint-disable-next-line max-len
