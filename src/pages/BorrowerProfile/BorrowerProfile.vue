@@ -137,6 +137,7 @@
 
 <script>
 import { getKivaImageUrl } from '@/util/imageUtils';
+import { ALLOWED_LOAN_STATUSES } from '@/util/loanUtils';
 import {
 	format, parseISO, differenceInCalendarDays
 } from 'date-fns';
@@ -440,8 +441,10 @@ export default {
 						});
 					}
 
+					// Check for loan and loan status
 					const loan = data?.lend?.loan;
-					if (loan === null || loan === 'undefined') {
+					const loanStatusAllowed = ALLOWED_LOAN_STATUSES.indexOf(loan?.status) !== -1;
+					if (loan === null || loan === 'undefined' || !loanStatusAllowed) {
 						// redirect to legacy borrower profile
 						const { query = {} } = route;
 						query.minimal = false;
