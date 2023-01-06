@@ -1,3 +1,10 @@
+## [2.445.0](https://github.com/kiva/ui/compare/v2.444.3...v2.445.0) (2023-01-06)
+
+
+### Features
+
+* add support for inactive loan status on bp ([3cd8781](https://github.com/kiva/ui/commit/3cd878196f607aabf1a25cbc5660be8c6e1fd4c8))
+
 ### [2.444.3](https://github.com/kiva/ui/compare/v2.444.2...v2.444.3) (2023-01-06)
 
 
