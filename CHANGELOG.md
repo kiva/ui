@@ -1,3 +1,15 @@
+## [2.446.0](https://github.com/kiva/ui/compare/v2.445.0...v2.446.0) (2023-01-06)
+
+
+### Features
+
+* deposit matched loans test removed from bp and checkout pages ([844c98c](https://github.com/kiva/ui/commit/844c98c99c7004c16ea12d416beebdf7c7c4de8a))
+
+
+### Bug Fixes
+
+* computed property removed in checkout page and unused files removed ([459aaf8](https://github.com/kiva/ui/commit/459aaf8e734b8eaf4f41134e03094982e48b3d5d))
+
 ## [2.445.0](https://github.com/kiva/ui/compare/v2.444.3...v2.445.0) (2023-01-06)
 
 
