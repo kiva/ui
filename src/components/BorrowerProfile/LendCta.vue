@@ -297,8 +297,7 @@
 									🎉
 								</span>
 								{{ matchRatio + 1 }}X
-								<span v-if="requireDepositsMatchedLoans"> MATCHED NEW DEPOSITS</span>
-								<span v-else> MATCHED LOAN</span>
+								<span> MATCHED LOAN</span>
 							</span>
 
 							<span
@@ -369,10 +368,6 @@ export default {
 		loanId: {
 			type: Number,
 			default: 0,
-		},
-		requireDepositsMatchedLoans: {
-			type: Boolean,
-			default: false,
 		},
 		userContextExpVariant: {
 			type: String,
