@@ -1,3 +1,11 @@
+### [2.446.1](https://github.com/kiva/ui/compare/v2.446.0...v2.446.1) (2023-01-06)
+
+
+### Bug Fixes
+
+* create shared constant for allowed loan statues ([fb86839](https://github.com/kiva/ui/commit/fb8683956b66d7ddaaacf051656d91aef9e86ebb))
+* redirect to lend-classic for unhandled loan statuses, allow raised status ([78da3e6](https://github.com/kiva/ui/commit/78da3e6fdf740d25eb3557dedc796510d8db2240))
+
 ## [2.446.0](https://github.com/kiva/ui/compare/v2.445.0...v2.446.0) (2023-01-06)
 
 
