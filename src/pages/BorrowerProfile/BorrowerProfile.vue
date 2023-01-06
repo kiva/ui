@@ -182,6 +182,7 @@ const preFetchQuery = gql`
 		$imgDefaultSize: String = "w480h360",
 		$imgRetinaSize: String = "w960h720"
 	) {
+		hasEverLoggedIn @client
 		general {
 			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
 				key
@@ -288,6 +289,9 @@ const mountedQuery = gql`
 		}
 	}
 `;
+
+const hasLentBeforeCookie = 'kvu_lb';
+const hasDepositBeforeCookie = 'kvu_db';
 
 export default {
 	name: 'BorrowerProfile',
@@ -416,10 +420,11 @@ export default {
 			lender: {},
 			loan: {},
 			shareButtonExpEnabled: false,
-			userContextExpVariant: 'a',
+			userContextExpVariant: 'c',
 			partnerName: '',
 			partnerCountry: '',
 			isoCode: '',
+			hasEverLoggedIn: false
 		};
 	},
 	apollo: {
@@ -506,6 +511,7 @@ export default {
 			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;
 
 			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
+			this.hasEverLoggedIn = result?.data?.hasEverLoggedIn;
 		},
 	},
 	async mounted() {
@@ -531,20 +537,27 @@ export default {
 		}
 
 		// Async data fetch for MARS-317 and share button
-		const { data } = await this.apollo.query({
-			query: mountedQuery,
-			variables: {
-				loanId: this.loanId,
-			},
-		});
-		const loan = data?.lend?.loan;
-		this.partnerName = loan?.partnerName ?? '';
-		this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
-		this.lender = data?.my?.userAccount ?? {};
+		if (this.enabledExperiment) {
+			const { data } = await this.apollo.query({
+				query: mountedQuery,
+				variables: {
+					loanId: this.loanId,
+				},
+			});
+			const loan = data?.lend?.loan;
+			this.partnerName = loan?.partnerName ?? '';
+			this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
+			this.lender = data?.my?.userAccount ?? {};
+		}
 	},
 	computed: {
 		loanId() {
 			return Number(this.$route.params.id || 0);
+		},
+		enabledExperiment() {
+			const hasLentBefore = this.cookieStore.get(hasLentBeforeCookie);
+			const hasDepositBefore = this.cookieStore.get(hasDepositBeforeCookie);
+			return hasLentBefore !== 'true' && hasDepositBefore !== 'true' && !this.hasEverLoggedIn;
 		},
 		enabledExperimentVariant() {
 			return this.userContextExpVariant === 'a';
@@ -669,14 +682,16 @@ export default {
 		this.inviterIsGuestOrAnonymous = publicId === 'anonymous' || publicId === 'guest';
 
 		// New user context experiment setup & tracking EXP-MARS-317-Nov2022
-		const userContextExp = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'Borrower Profile',
-			userContextExpKey,
-			'EXP-MARS-317-Nov2022'
-		);
-		this.userContextExpVariant = userContextExp?.version;
+		if (this.enabledExperiment) {
+			const userContextExp = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Borrower Profile',
+				userContextExpKey,
+				'EXP-MARS-317-Nov2022'
+			);
+			this.userContextExpVariant = userContextExp?.version;
+		}
 	},
 };
 </script>
