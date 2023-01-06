@@ -33,7 +33,6 @@
 							:kiva-cards="kivaCards"
 							:teams="teams"
 							:loan-reservation-total="parseInt(totals.loanReservationTotal)"
-							:disable-matching="requireDepositsMatchedLoans"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
@@ -73,7 +72,6 @@
 							:promo-fund="derivedPromoFund"
 							@refreshtotals="refreshTotals"
 							@updating-totals="setUpdatingTotals"
-							:show-matched-loan-kiva-credit="showMatchedLoanKivaCredit && requireDepositsMatchedLoans"
 							:open-lightbox="openMatchedLoansLightbox"
 						/>
 
@@ -296,7 +294,6 @@ import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/RandomLoanSelector';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import upsellQuery from '@/graphql/query/checkout/upsellLoans.graphql';
 import UpsellModule from '@/components/Checkout/UpsellModule';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
@@ -392,7 +389,6 @@ export default {
 			showVerifyRemovePromoCredit: false,
 			upsellLoan: {},
 			showUpsellModule: true,
-			requireDepositsMatchedLoans: false,
 			showMatchedLoansLightbox: false,
 			showTeamForm: false,
 			teamJoinStatus: null,
@@ -433,7 +429,6 @@ export default {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 						client.query({ query: upsellQuery }),
-						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 					]);
 				});
 		},
@@ -473,18 +468,6 @@ export default {
 		}
 	},
 	created() {
-		const matchedLoansExperiment = this.apollo.readFragment({
-			id: 'Experiment:require_deposits_matched_loans',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.requireDepositsMatchedLoans = matchedLoansExperiment.version === 'b';
-		if (matchedLoansExperiment.version) {
-			this.$kvTrackEvent(
-				'Basket',
-				'EXP-CORE-615-May-2022',
-				matchedLoansExperiment.version
-			);
-		}
 		// show guest account claim confirmation message
 		if (this.myId && this.$route.query?.claimed === '1') {
 			this.$showTipMsg('Account created');

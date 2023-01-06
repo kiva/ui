@@ -4,14 +4,6 @@ query checkoutSettings($basketId: String) {
 			value
 			key
 		}
-		upsellsEnabled: uiExperimentSetting(key: "upsells_checkout") {
-			key
-			value
-		}
-		requireDepositsMatchedLoans: uiExperimentSetting(key: "require_deposits_matched_loans") {
-			key
-			value
-		}
 	}
 	shop (basketId: $basketId) {
 		id

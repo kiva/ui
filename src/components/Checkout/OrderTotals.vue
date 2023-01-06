@@ -140,10 +140,6 @@
 			</kv-tooltip>
 		</div>
 
-		<div v-if="showMatchedLoanKivaCredit" class="tw-flex tw-flex-row-reverse">
-			<matched-loan-kiva-credit :open-lightbox="openLightbox" />
-		</div>
-
 		<div class="tw-text-h3 tw-mb-1 tw-text-right" data-testid="total-due">
 			<div class="tw-flex tw-w-full tw-justify-end tw-items-center">
 				<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
@@ -189,7 +185,6 @@ import { removeCredit } from '@/util/checkoutUtils';
 import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
 import KvTooltip from '@/components/Kv/KvTooltip';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
-import MatchedLoanKivaCredit from '@/components/Checkout/MatchedLoanKivaCredit';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import {
 	getExperimentSettingCached,
@@ -205,7 +200,6 @@ export default {
 	components: {
 		KvTooltip,
 		VerifyRemovePromoCredit,
-		MatchedLoanKivaCredit,
 		DonationItem,
 		KvMaterialIcon
 	},
@@ -218,10 +212,6 @@ export default {
 		promoFund: {
 			type: Object,
 			default: () => {}
-		},
-		showMatchedLoanKivaCredit: {
-			type: Boolean,
-			default: false
 		},
 		openLightbox: {
 			type: Function,

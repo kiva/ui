@@ -46,7 +46,6 @@
 					<lend-cta
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
-						:require-deposits-matched-loans="requireDepositsMatchedLoans"
 						:user-context-exp-variant="userContextExpVariant"
 					>
 						<template #sharebutton v-if="inPfp || shareButtonExpEnabled">
@@ -184,10 +183,6 @@ const preFetchQuery = gql`
 	) {
 		general {
 			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
-				key
-				value
-			}
-			requireDepositsMatchedLoans: uiExperimentSetting(key: "require_deposits_matched_loans") {
 				key
 				value
 			}
@@ -405,7 +400,6 @@ export default {
 			status: '',
 			use: '',
 			loanFundraisingInfo: {},
-			requireDepositsMatchedLoans: false,
 			shareCardLanguageVersion: '',
 			inviterName: '',
 			inviterIsGuestOrAnonymous: false,
@@ -458,7 +452,6 @@ export default {
 					}
 
 					return Promise.all([
-						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
 						client.query({ query: experimentQuery, variables: { id: shareButtonExpKey } }),
 						client.query({ query: experimentQuery, variables: { id: userContextExpKey } }),
 					]);
@@ -639,19 +632,6 @@ export default {
 					this.isUrgencyExpVersionShown ? 'b' : 'a'
 				);
 			}
-		}
-
-		const matchedLoansExperiment = this.apollo.readFragment({
-			id: 'Experiment:require_deposits_matched_loans',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.requireDepositsMatchedLoans = matchedLoansExperiment.version === 'b';
-		if (matchedLoansExperiment.version) {
-			this.$kvTrackEvent(
-				'Basket',
-				'EXP-CORE-615-May-2022',
-				matchedLoansExperiment.version
-			);
 		}
 
 		if (this.$route.query?.utm_campaign?.includes('scle')) {
