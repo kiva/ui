@@ -29,6 +29,8 @@
 						<campaign-logo-group
 							class="tw-h-2.5 lg:tw-h-3.5"
 							:corporate-logo-url="corporateLogoUrl"
+							:logo-height="logoHeight"
+							:logo-classes="logoClasses"
 						/>
 						<div class="tw-flex-1"></div>
 						<router-link
@@ -554,6 +556,16 @@ export default {
 			type: String,
 			default: ''
 		},
+		logoHeight: {
+			type: Number,
+			default: 28,
+			required: false
+		},
+		logoClasses: {
+			type: String,
+			default: '',
+			required: false
+		}
 	},
 	computed: {
 		isTrustee() {
