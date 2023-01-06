@@ -4,6 +4,26 @@ import _get from 'lodash/get';
 /** Utility functions for working with loan objects */
 
 /**
+ * Loan Statuses Available on borrower profile
+ */
+export const ALLOWED_LOAN_STATUSES = [
+	// 'defaulted',
+	// 'deleted',
+	// 'ended',
+	'expired',
+	'funded',
+	'fundraising',
+	'inactive',
+	// 'inactiveExpired',
+	// 'issue',
+	// 'payingBack',
+	'pfp',
+	'raised',
+	// 'refunded',
+	// 'reviewed'
+];
+
+/**
  * Returns true if loan is fundraising / can be lent to
  *
  * @param {object} loan

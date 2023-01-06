@@ -115,6 +115,7 @@
 </template>
 
 <script>
+import { ALLOWED_LOAN_STATUSES } from '@/util/loanUtils';
 import CountdownTimer from '@/components/BorrowerProfile/CountdownTimer';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
@@ -150,22 +151,7 @@ export default {
 			default: 'fundraising',
 			validator: value => {
 				// Uncomment loan statuses as they become supported
-				return [
-					// 'defaulted',
-					// 'deleted',
-					// 'ended',
-					'expired',
-					'funded',
-					'fundraising',
-					'inactive',
-					// 'inactiveExpired',
-					// 'issue',
-					// 'payingBack',
-					'pfp',
-					'raised',
-					// 'refunded',
-					// 'reviewed'
-				].indexOf(value) !== -1;
+				return ALLOWED_LOAN_STATUSES.indexOf(value) !== -1;
 			}
 		},
 		numberOfLenders: {
