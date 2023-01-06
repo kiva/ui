@@ -137,6 +137,7 @@
 
 <script>
 import { getKivaImageUrl } from '@/util/imageUtils';
+import { ALLOWED_LOAN_STATUSES } from '@/util/loanUtils';
 import {
 	format, parseISO, differenceInCalendarDays
 } from 'date-fns';
@@ -442,23 +443,7 @@ export default {
 
 					// Check for loan and loan status
 					const loan = data?.lend?.loan;
-					// TODO: This list is replicated in LoanProgress.vue de-duplicate
-					const loanStatusAllowed = [
-						// 'defaulted',
-						// 'deleted',
-						// 'ended',
-						'expired',
-						'funded',
-						'fundraising',
-						'inactive',
-						// 'inactiveExpired',
-						// 'issue',
-						// 'payingBack',
-						'pfp',
-						'raised',
-						// 'refunded',
-						// 'reviewed'
-					].indexOf(loan?.status) !== -1;
+					const loanStatusAllowed = ALLOWED_LOAN_STATUSES.indexOf(loan?.status) !== -1;
 					if (loan === null || loan === 'undefined' || !loanStatusAllowed) {
 						// redirect to legacy borrower profile
 						const { query = {} } = route;
