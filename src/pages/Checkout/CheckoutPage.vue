@@ -583,14 +583,6 @@ export default {
 			- this.upsellLoan?.loanFundraisingInfo?.reservedAmount || 0;
 			return amountLeft < 100;
 		},
-		showMatchedLoanKivaCredit() {
-			const matchedLoansWithCredit = this.loans?.filter(loan => {
-				const hasCredits = loan.creditsUsed?.length > 0;
-				const isMatchedLoan = loan.loan?.matchingText;
-				return hasCredits && isMatchedLoan;
-			});
-			return matchedLoansWithCredit.length > 0;
-		},
 		// show upsell module only once per session
 		upsellCookieActive() {
 			return this.cookieStore.get('upsell-loan-added') === 'true';
