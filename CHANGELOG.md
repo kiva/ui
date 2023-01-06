@@ -1,3 +1,16 @@
+## [2.447.0](https://github.com/kiva/ui/compare/v2.446.1...v2.447.0) (2023-01-06)
+
+
+### Features
+
+* removed "onetime" prop from monthly good ([e0a5ca1](https://github.com/kiva/ui/commit/e0a5ca1cfe1f2ef421612b32367ba54a789c8057))
+
+
+### Bug Fixes
+
+* better approach to prefetch redirect ([7f900ca](https://github.com/kiva/ui/commit/7f900ca3c79152da31416a4018361b35be3faa0c))
+* removed deprecated /covid19response page ([4ae5a6f](https://github.com/kiva/ui/commit/4ae5a6feb164c619a51f6de1c2f6d8efaf7f38f6))
+
 ### [2.446.1](https://github.com/kiva/ui/compare/v2.446.0...v2.446.1) (2023-01-06)
 
 
