@@ -1,3 +1,16 @@
+## [2.445.0-next.1](https://github.com/kiva/ui/compare/v2.444.3...v2.445.0-next.1) (2023-01-06)
+
+
+### Features
+
+* add support for inactive loan status on bp ([14a2aaa](https://github.com/kiva/ui/commit/14a2aaa8b396dc47961be6bc18758e812891dc71))
+
+
+### Bug Fixes
+
+* create shared constant for allowed loan statues ([2ef8454](https://github.com/kiva/ui/commit/2ef845414d174748a8af2052ccb71d0b19a42143))
+* redirect to lend-classic for unhandled loan statuses, allow raised status ([bbda579](https://github.com/kiva/ui/commit/bbda579447688c6b62c6485f5574bbc42a5fe043))
+
 ### [2.444.3](https://github.com/kiva/ui/compare/v2.444.2...v2.444.3) (2023-01-06)
 
 
