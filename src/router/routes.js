@@ -380,7 +380,6 @@ module.exports = [
 		props: route => ({
 			amount: Number(route.query.amount),
 			category: route.query.category,
-			onetime: route.query.onetime,
 			source: route.query.source,
 			nextmonth: route.query.nextmonth === 'true',
 			initDonation: Number(route.query.initDonation),
@@ -391,7 +390,6 @@ module.exports = [
 		path: '/monthlygood/thanks',
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodThanksPage'),
 		props: route => ({
-			onetime: String(route.query.onetime),
 			source: route.query.source,
 			paymentType: route.query.paymentType,
 		}),

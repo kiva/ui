@@ -11,7 +11,7 @@
 					{{ headline }}
 				</h1>
 				<p class="tw-text-subhead tw-mb-6">
-					Your contribution: ${{ mgAmount }}<span v-if="!isOnetime">/month</span>
+					Your contribution: ${{ mgAmount }}/month
 					<span v-if="donation > 0">(including your ${{ donation }} donation)</span>
 				</p>
 			</div>
@@ -38,7 +38,6 @@ const pageQuery = gql`query monthlyGoodThanksPage {
 			donateAmount
 			dayOfMonth
 			isSubscriber
-			isOnetime
 		}
 		monthlyGoodCategory
 	}
@@ -55,10 +54,6 @@ export default {
 		WwwPage,
 	},
 	props: {
-		onetime: {
-			type: String,
-			default: 'false'
-		},
 		source: {
 			type: String,
 			default: ''
@@ -76,7 +71,6 @@ export default {
 			dayOfMonth: new Date().getDate(),
 			// user flags
 			isMonthlyGoodSubscriber: false,
-			isOnetimePayment: null,
 			autoDepositId: null,
 			category: null,
 			mdiCheckCircle,
@@ -84,26 +78,32 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
-		query: pageQuery,
-		preFetch: true,
-		result({ data }) {
-			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
-			if (!this.isMonthlyGoodSubscriber) {
-				this.$router.push({ path: '/monthlygood' });
-			}
-			this.autoDepositAmount = numeral(_get(data, 'my.autoDeposit.amount', 0)).format('0.00');
-			this.donation = numeral(_get(data, 'my.autoDeposit.donateAmount', 0)).format('0.00');
-			this.mgAmount = this.autoDepositAmount - this.donation;
-			this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
-			this.category = _get(data, 'my.monthlyGoodCategory');
-			this.isOnetimePayment = _get(data, 'my.autoDeposit.isOnetime');
-			this.autoDepositId = _get(data, 'my.autoDeposit.id');
+		preFetch(config, client) {
+			return client.query({
+				query: pageQuery
+			}).then(({ data }) => {
+				this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
+
+				if (!this.isMonthlyGoodSubscriber) {
+					// Return user to /monthlygood
+					return Promise.reject({ path: '/monthlygood' });
+				}
+
+				this.autoDepositAmount = numeral(_get(data, 'my.autoDeposit.amount', 0)).format('0.00');
+				this.donation = numeral(_get(data, 'my.autoDeposit.donateAmount', 0)).format('0.00');
+				this.mgAmount = this.autoDepositAmount - this.donation;
+				this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
+				this.category = _get(data, 'my.monthlyGoodCategory');
+				this.autoDepositId = _get(data, 'my.autoDeposit.id');
+
+				return Promise.resolve();
+			});
 		},
 	},
 	mounted() {
 		// eslint-disable-next-line max-len
 		const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_monthlygood_checkout_event_schema_1_0_1.json#';
-		const mgSubscriptionType = this.isOnetimePayment ? 'one-time' : 'monthly';
+		const mgSubscriptionType = 'monthly';
 		const checkoutEventData = {
 			schema,
 			data: {
@@ -138,10 +138,6 @@ export default {
 				// This catch avoids a 500 error if this url is reached in an erroneous state
 				return '';
 			}
-		},
-		isOnetime() {
-			// ensure this is cast to a bool for use in Graphql mutation
-			return this.onetime === 'true';
 		},
 	},
 };

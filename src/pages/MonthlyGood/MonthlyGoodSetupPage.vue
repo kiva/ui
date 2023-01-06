@@ -36,7 +36,7 @@
 					<h1 class="tw-text-center tw-mb-2">
 						Confirm your Good
 					</h1>
-					<h2 class="tw-text-center tw-text-subhead tw-mb-4" v-if="!isOnetime">
+					<h2 class="tw-text-center tw-text-subhead tw-mb-4">
 						Review and set up your monthly contribution
 					</h2>
 					<form
@@ -186,11 +186,7 @@
 
 									<div class="row tw-text-left">
 										<div class="columns">
-											<span
-												v-if="!onetime"
-												class="tw-font-medium tw-ml-3"
-											>Total/month</span>
-											<span v-else class="tw-font-medium tw-ml-3">Total</span>
+											<span class="tw-font-medium tw-ml-3">Total/month</span>
 										</div>
 
 										<div class="medium-5 small-6 columns">
@@ -235,7 +231,7 @@
 										</div>
 									</div>
 
-									<div class="row small-collapse" v-if="!isOnetime">
+									<div class="row small-collapse">
 										<div class="small-12 columns">
 											<em class="tw-text-center">Rest easy, you can cancel anytime.</em>
 										</div>
@@ -247,13 +243,13 @@
 							<div class="large-9 medium-10 small-12 columns">
 								<p class="tw-mb-2">
 									<!-- eslint-disable-next-line max-len -->
-									We’ll charge your payment method{{ isOnetime ? '' : ' each month' }}. All credit in your Kiva account, including repayments, will be automatically lent whenever it exceeds $5.
+									We’ll charge your payment method each month. All credit in your Kiva account, including repayments, will be automatically lent whenever it exceeds $5.
 								</p>
 								<p class="conditional-messaging">
 									<!-- eslint-disable-next-line max-len -->
-									<em v-if="hasAutoDeposits">* Your {{ isOnetime ? '' : 'new Monthly Good ' }}contribution will replace your existing auto deposit.</em>
+									<em v-if="hasAutoDeposits">* Your new Monthly Good contribution will replace your existing auto deposit.</em>
 									<!-- eslint-disable-next-line max-len -->
-									<em v-if="hasAutoLending">* {{ isOnetime ? 'This contribution' : 'Enrolling in Monthly Good' }} will also disable your current auto lending settings.</em>
+									<em v-if="hasAutoLending">* Enrolling in Monthly Good will also disable your current auto lending settings.</em>
 								</p>
 
 								<div class="payment-dropin-wrapper" v-if="hasActiveLogin">
@@ -263,7 +259,6 @@
 										:donate-amount="donation"
 										:day-of-month="dayOfMonth"
 										:category="selectedGroup"
-										:is-one-time="isOnetime"
 										@complete-transaction="completeMGBraintree"
 									/>
 								</div>
@@ -286,7 +281,6 @@
 				<already-subscribed-notice
 					class="small-12 medium-11 large-8 column"
 					v-if="isMonthlyGoodSubscriber || hasModernSub"
-					:onetime="isOnetime"
 				/>
 				<legacy-subscriber-notice
 					class="small-12 medium-11 large-8 column"
@@ -399,10 +393,6 @@ export default {
 		category: {
 			type: String,
 			default: 'default'
-		},
-		onetime: {
-			type: String,
-			default: 'false'
 		},
 		source: {
 			type: String,
@@ -668,7 +658,7 @@ export default {
 				mgDayOfMonth: this.dayOfMonth,
 				mgCategory: this.selectedGroup,
 				isFTD: false,
-				mgIsOneTime: this.isOnetime,
+				mgIsOneTime: false,
 			};
 
 			// check ftd status
@@ -691,7 +681,6 @@ export default {
 				this.$router.push({
 					path: '/monthlygood/thanks',
 					query: {
-						onetime: this.isOnetime,
 						source: this.source,
 						paymentType: paymentType || 'UnknownBraintree',
 					}
@@ -759,10 +748,6 @@ export default {
 					label: 'Other'
 				}
 			];
-		},
-		isOnetime() {
-			// ensure this is cast to a bool for use in Graphql mutation
-			return this.onetime === 'true';
 		},
 	},
 };
