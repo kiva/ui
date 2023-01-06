@@ -11,14 +11,9 @@
 					{{ headline }}
 				</h1>
 				<p class="tw-text-subhead tw-mb-6">
-					Your contribution: ${{ mgAmount }}<span v-if="!isOnetime">/month</span>
+					Your contribution: ${{ mgAmount }}/month
 					<span v-if="donation > 0">(including your ${{ donation }} donation)</span>
 				</p>
-				<div v-if="fromCovidLanding" class="tw-font-medium tw-bg-secondary tw-p-4 ">
-					<p>
-						Thank you for choosing to support someone who has been impacted by COVID‑19 coronavirus.
-					</p>
-				</div>
 			</div>
 		</kv-default-wrapper>
 	</www-page>
@@ -43,7 +38,6 @@ const pageQuery = gql`query monthlyGoodThanksPage {
 			donateAmount
 			dayOfMonth
 			isSubscriber
-			isOnetime
 		}
 		monthlyGoodCategory
 	}
@@ -60,10 +54,6 @@ export default {
 		WwwPage,
 	},
 	props: {
-		onetime: {
-			type: String,
-			default: 'false'
-		},
 		source: {
 			type: String,
 			default: ''
@@ -81,7 +71,6 @@ export default {
 			dayOfMonth: new Date().getDate(),
 			// user flags
 			isMonthlyGoodSubscriber: false,
-			isOnetimePayment: null,
 			autoDepositId: null,
 			category: null,
 			mdiCheckCircle,
@@ -94,7 +83,7 @@ export default {
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 			if (!this.isMonthlyGoodSubscriber) {
-				this.$router.push({ path: '/monthlygood' });
+				this.$router.push({ path: '/monthlygood' }).catch(() => {});
 			}
 			this.autoDepositAmount = numeral(_get(data, 'my.autoDeposit.amount', 0)).format('0.00');
 			this.donation = numeral(_get(data, 'my.autoDeposit.donateAmount', 0)).format('0.00');
@@ -108,7 +97,7 @@ export default {
 	mounted() {
 		// eslint-disable-next-line max-len
 		const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_monthlygood_checkout_event_schema_1_0_1.json#';
-		const mgSubscriptionType = this.isOnetimePayment ? 'one-time' : 'monthly';
+		const mgSubscriptionType = 'monthly';
 		const checkoutEventData = {
 			schema,
 			data: {
@@ -124,9 +113,6 @@ export default {
 	},
 	computed: {
 		headline() {
-			if (this.fromCovidLanding) {
-				return 'You joined the Global COVID‑19 Response Fund!';
-			}
 			return 'You joined Monthly Good!';
 		},
 		monthWording() {
@@ -147,13 +133,6 @@ export default {
 				return '';
 			}
 		},
-		isOnetime() {
-			// ensure this is cast to a bool for use in Graphql mutation
-			return this.onetime === 'true';
-		},
-		fromCovidLanding() {
-			return this.source === 'covid19response';
-		}
 	},
 };
 </script>
