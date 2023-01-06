@@ -45,7 +45,6 @@
 								:loan="upsellLoan"
 								:close-upsell-module="closeUpsellModule"
 								:add-to-basket="addToBasket"
-								:enable-experiment-copy="enableUpsellsCopy"
 							/>
 						</div>
 					</div>
@@ -397,7 +396,6 @@ export default {
 			showMatchedLoansLightbox: false,
 			showTeamForm: false,
 			teamJoinStatus: null,
-			enableUpsellsCopy: false,
 			myTeams: [],
 			isEcoChallengeExpShown: false,
 			ecoChallengeRedirectQueryParam: '',
@@ -436,7 +434,6 @@ export default {
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 						client.query({ query: upsellQuery }),
 						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
-						client.query({ query: experimentQuery, variables: { id: 'upsells_copy' } }),
 					]);
 				});
 		},
@@ -476,18 +473,6 @@ export default {
 		}
 	},
 	created() {
-		const upsellsCopyExperiment = this.apollo.readFragment({
-			id: 'Experiment:upsells_copy',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.enableUpsellsCopy = upsellsCopyExperiment.version === 'b';
-		if (upsellsCopyExperiment.version) {
-			this.$kvTrackEvent(
-				'Basket',
-				'EXP-CORE-678-Aug-2022',
-				upsellsCopyExperiment.version
-			);
-		}
 		const matchedLoansExperiment = this.apollo.readFragment({
 			id: 'Experiment:require_deposits_matched_loans',
 			fragment: experimentVersionFragment,

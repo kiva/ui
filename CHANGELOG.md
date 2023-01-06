@@ -1,3 +1,43 @@
+### [2.444.3](https://github.com/kiva/ui/compare/v2.444.2...v2.444.3) (2023-01-06)
+
+
+### Bug Fixes
+
+* remove question mark in copy ([d712a4c](https://github.com/kiva/ui/commit/d712a4cf53fcb02a7d733b5821d3289e638f034f))
+
+### [2.444.2](https://github.com/kiva/ui/compare/v2.444.1...v2.444.2) (2023-01-05)
+
+
+### Bug Fixes
+
+* add  | Kiva suffix to meta title test ([25f1568](https://github.com/kiva/ui/commit/25f15685b40940070d43e6e1747d24668acc2df4))
+
+### [2.444.1](https://github.com/kiva/ui/compare/v2.444.0...v2.444.1) (2023-01-05)
+
+
+### Bug Fixes
+
+* update cypress meta tests to use new lbc and category title format ([4ed1f75](https://github.com/kiva/ui/commit/4ed1f75c6c1e93d54d83a3bc929fcbe82b95544d))
+
+## [2.444.0](https://github.com/kiva/ui/compare/v2.443.2...v2.444.0) (2023-01-05)
+
+
+### Features
+
+* upsell copy test code removed ([d00ca9c](https://github.com/kiva/ui/commit/d00ca9ca3a5d831e5f8b42cb16e93ead4fa5fcfc))
+
+### [2.443.2](https://github.com/kiva/ui/compare/v2.443.1...v2.443.2) (2023-01-05)
+
+
+### Bug Fixes
+
+* add cmt ([2766bca](https://github.com/kiva/ui/commit/2766bcaddd3bdd7d7663c93a2d9032a30db35c2b))
+* add new prop for loan cards ([716b99d](https://github.com/kiva/ui/commit/716b99d701fe016610ca4e65bf1c757cf0494f07))
+* change progress bar component back and add styling ([888cfab](https://github.com/kiva/ui/commit/888cfab58da9cd84ba386b2e0f29a310329a062e))
+* oops lol ([595f563](https://github.com/kiva/ui/commit/595f563561b9cd910e999feacc959e595378e0e8))
+* qa fixes for quick filters on mvp landing page ([f0d1e44](https://github.com/kiva/ui/commit/f0d1e44d285cf4add45526720d3e6bc4dfeedef6))
+* update edge cases for mission driven orgs and covid 19 ([aa932af](https://github.com/kiva/ui/commit/aa932afc128c41b48ce2da20b46e68c843776935))
+
 ### [2.443.1](https://github.com/kiva/ui/compare/v2.443.0...v2.443.1) (2023-01-04)
 
 

@@ -37,11 +37,7 @@
 				:loan-id="loan.id"
 				:show-action-button="true"
 				:use-full-width="true"
-				:atc-tracking-props="{
-					category: 'lending-home',
-					action: 'add-to-basket',
-					label: 'quick-filters'
-				}"
+				@add-to-basket="addToBasket"
 			/>
 		</div>
 		<div class="tw-w-full tw-my-4">
@@ -142,6 +138,9 @@ export default {
 		}
 	},
 	methods: {
+		addToBasket(payload) {
+			this.$emit('add-to-basket', payload);
+		},
 		filterPageUrl() {
 			const location = this.flssLoanSearch.countryIsoCode?.toString();
 			// parse, stringify, and undefined are all needed to ensure
@@ -157,6 +156,10 @@ export default {
 			const params = new URLSearchParams(paramStr);
 			return `/lend/filter?${params.toString()}`;
 		},
+		// TODO: Rearchitect this at some point.
+		// This won't work for categories that have
+		// multiple criteria applied to their FLSSLoanSearch criteria.
+		// See CORE-944
 		async updateQuickFilters(filter) {
 			this.loanSearchState.pageOffset = 0;
 			if (filter.gender !== undefined) {
@@ -172,6 +175,7 @@ export default {
 				delete this.flssLoanSearch.tagId;
 				delete this.flssLoanSearch.activityId;
 				delete this.flssLoanSearch.themeId;
+				delete this.flssLoanSearch.partnerId;
 				this.flssLoanSearch = {
 					...this.flssLoanSearch,
 					...filter

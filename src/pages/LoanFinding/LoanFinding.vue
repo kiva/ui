@@ -14,7 +14,10 @@
 				@add-to-basket="trackCategory($event, 'recommended')"
 			/>
 
-			<quick-filters-section class="tw-mt-6" />
+			<quick-filters-section
+				class="tw-mt-6"
+				@add-to-basket="trackCategory($event, 'quick-filters')"
+			/>
 
 			<!-- Second category row: Matched loans section -->
 			<lending-category-section
@@ -106,3 +109,9 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+>>> [role=progressbar] {
+	@apply tw-bg-tertiary;
+}
+</style>

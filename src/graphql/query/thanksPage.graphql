@@ -121,20 +121,11 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			inviterName
 			public
 		}
-		subscriptions {
-			values {
-				id
-			}
-		}
 		loans {
 			totalCount
 		}
 	}
 	general {
-		autoDepositUpsellSetting: uiExperimentSetting(key: "thanks_ad_upsell") {
-			key
-			value
-		}
 		thanksShareModule: uiExperimentSetting(key: "thanks_share_module") {
 			key
 			value
