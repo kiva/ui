@@ -1,3 +1,10 @@
+## [2.448.0](https://github.com/kiva/ui/compare/v2.447.2...v2.448.0) (2023-01-09)
+
+
+### Features
+
+* test code for quick filters removed ([a109f66](https://github.com/kiva/ui/commit/a109f661a12b2b9ed09fb87906237106eb33a4cc))
+
 ### [2.447.2](https://github.com/kiva/ui/compare/v2.447.1...v2.447.2) (2023-01-09)
 
 
