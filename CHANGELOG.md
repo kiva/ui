@@ -1,3 +1,10 @@
+### [2.447.1](https://github.com/kiva/ui/compare/v2.447.0...v2.447.1) (2023-01-09)
+
+
+### Bug Fixes
+
+* fix issue with logo alignment in cc pages ([f101c82](https://github.com/kiva/ui/commit/f101c82cb213e6dfca229b69c375c041a5669c6f))
+
 ## [2.447.0](https://github.com/kiva/ui/compare/v2.446.1...v2.447.0) (2023-01-06)
 
 
