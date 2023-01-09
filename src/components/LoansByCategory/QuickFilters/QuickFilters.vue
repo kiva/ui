@@ -1,15 +1,6 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-mb-2 tw-w-full">
-		<div class="tw-flex tw-items-center tw-mb-2 tw-relative">
-			<div
-				v-show="showBadge"
-				class="tw-hidden lg:tw-flex tw-gap-1 tw-text-base tw-text-primary-inverse
-					tw-rounded tw-bg-brand tw-px-1.5 tw-py-0.5
-					tw-absolute"
-				style="left: -102px;"
-			>
-				<img src="@/assets/images/green_sparkles.svg" alt=""> New!
-			</div>
+		<div class="tw-flex tw-items-center tw-mb-2">
 			<div v-if="!withCategories" class="tw-flex tw-items-center">
 				<h3 class="tw-text-h3">
 					Quick filters
@@ -185,7 +176,6 @@ export default {
 			selectedCategory: 0,
 			selectedGender: '',
 			sortBy: 'amountLeft',
-			showBadge: false,
 			presetFilterActive: {
 				women: false,
 				kivaUs: false,
@@ -334,13 +324,6 @@ export default {
 			return this.targetedLoanChannelUrl === 'ending-soon';
 		}
 	},
-	mounted() {
-		const badgeCookie = this.cookieStore.get('quick_filter_new_badge') === 'true' || false;
-		if (!badgeCookie && this.withCategories) {
-			this.showBadge = true;
-			this.cookieStore.set('quick_filter_new_badge', true);
-		}
-	}
 };
 </script>
 
