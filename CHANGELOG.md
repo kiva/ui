@@ -1,3 +1,11 @@
+### [2.447.2](https://github.com/kiva/ui/compare/v2.447.1...v2.447.2) (2023-01-09)
+
+
+### Bug Fixes
+
+* better thanks page test ID ([81a18b8](https://github.com/kiva/ui/commit/81a18b833e3c5e45603704dc8d670b9f624be91d))
+* filter faq content ([a13aeb7](https://github.com/kiva/ui/commit/a13aeb7087c1c12f6019a0ee94c74e470336c908))
+
 ### [2.447.1](https://github.com/kiva/ui/compare/v2.447.0...v2.447.1) (2023-01-09)
 
 
