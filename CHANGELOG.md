@@ -1,3 +1,12 @@
+### [2.449.1](https://github.com/kiva/ui/compare/v2.449.0...v2.449.1) (2023-01-09)
+
+
+### Bug Fixes
+
+* updated google play icon badge to 2022 version (ui repo) [VUE-1370] ([b875ac7](https://github.com/kiva/ui/commit/b875ac7feaeffdd9289e92a847a11a979e436b0c))
+* updated google play icon badge to 2022 version (ui repo) [VUE-1370] ([c250a80](https://github.com/kiva/ui/commit/c250a80368a7c9cd1b471aa8d3733f6818c7899d))
+* updated google play icon badge to 2022 version (VUE-1370) ([8ca1bfb](https://github.com/kiva/ui/commit/8ca1bfb5950abe7d7eab4c9477bf03956d1ba0c3))
+
 ## [2.449.0](https://github.com/kiva/ui/compare/v2.448.0...v2.449.0) (2023-01-09)
 
 
