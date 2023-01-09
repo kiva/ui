@@ -1,11 +1,11 @@
 <template>
-	<www-page>
+	<www-page data-testid="thanks-page">
 		<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 			<div class="small-12 columns thanks">
 				<div class="thanks__header hide-for-print">
 					<template v-if="receipt">
 						<h1
-							class="thanks__header-h1 tw-mt-1 tw-mb-3"
+							class="tw-mt-1 tw-mb-3"
 						>
 							Thank you!
 						</h1>
