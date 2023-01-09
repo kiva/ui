@@ -45,10 +45,6 @@ const pageQuery = gql`
 				key
 				value
 			}
-			quickFilters: uiExperimentSetting(key: "quick_filters") {
-				key
-				value
-			}
 			helpmeChoose: uiExperimentSetting(key: "helpme_choose") {
 				key
 				value
@@ -159,7 +155,6 @@ export default {
 				}
 				return Promise.all([
 					...gameExperimentAssignments,
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'quick_filters' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'helpme_choose' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'loan_tags' } }),
 				]);
@@ -204,7 +199,7 @@ export default {
 				&& this.targetedLoanChannel !== 'mission-driven-orgs'
 				&& this.targetedLoanChannel !== 'short-term-loans'
 		) {
-			this.initializeQuickFilters();
+			this.enableQuickFilters = true;
 		}
 		// Initialize Help Me Choose Experiment
 		if (this.targetedLoanChannel === 'women'
@@ -248,20 +243,6 @@ export default {
 					'Lending',
 					'EXP-CORE-792-Oct2022',
 					loanTagsExperiment.version
-				);
-			}
-		},
-		initializeQuickFilters() {
-			const quickFiltersExperiment = this.apollo.readFragment({
-				id: 'Experiment:quick_filters',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.enableQuickFilters = quickFiltersExperiment.version === 'b';
-			if (quickFiltersExperiment.version) {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CORE-729-Sept-2022',
-					quickFiltersExperiment.version
 				);
 			}
 		},
