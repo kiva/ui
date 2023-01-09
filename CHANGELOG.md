@@ -1,3 +1,15 @@
+## [2.449.0](https://github.com/kiva/ui/compare/v2.448.0...v2.449.0) (2023-01-09)
+
+
+### Features
+
+* new tag removed from quick filters component ([7e168d4](https://github.com/kiva/ui/commit/7e168d4d7082fc85b29ccab52e98b028374de40b))
+
+
+### Bug Fixes
+
+* svg removed ([5f14841](https://github.com/kiva/ui/commit/5f14841d99bd9fa46aebda8d2cdc503b5e7caf42))
+
 ## [2.448.0](https://github.com/kiva/ui/compare/v2.447.2...v2.448.0) (2023-01-09)
 
 
