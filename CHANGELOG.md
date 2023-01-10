@@ -1,3 +1,10 @@
+## [2.450.0](https://github.com/kiva/ui/compare/v2.449.2...v2.450.0) (2023-01-10)
+
+
+### Features
+
+* journal updates on borrower profile ([ab68047](https://github.com/kiva/ui/commit/ab680477cf8ca5f909dafadd84eab768c5e84a0e))
+
 ### [2.449.2](https://github.com/kiva/ui/compare/v2.449.1...v2.449.2) (2023-01-10)
 
 
