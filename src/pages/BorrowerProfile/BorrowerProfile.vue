@@ -116,6 +116,13 @@
 					display-type="teams"
 					@hide-section="showTeams = false"
 				/>
+				<journal-updates
+					v-if="showUpdates"
+					data-testid="bp-updates"
+					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+					:loan-id="loanId"
+					@hide-section="showUpdates = false"
+				/>
 			</content-container>
 			<div class="tw-bg-primary">
 				<content-container>
@@ -160,6 +167,7 @@ import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
+import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
 
 import {
 	getExperimentSettingCached,
@@ -297,6 +305,7 @@ export default {
 		LendCta,
 		LendersAndTeams,
 		LoanStory,
+		JournalUpdates,
 		MoreAboutLoan,
 		SidebarContainer,
 		ShareButton,
@@ -388,6 +397,7 @@ export default {
 			countryName: '',
 			showLenders: true,
 			showTeams: true,
+			showUpdates: true,
 			isUrgencyExpVersionShown: false,
 			hasThreeDaysOrLessLeft: false,
 			// meta fields
