@@ -1,3 +1,11 @@
+### [2.449.2](https://github.com/kiva/ui/compare/v2.449.1...v2.449.2) (2023-01-10)
+
+
+### Bug Fixes
+
+* add odd values to safelisted padding classes ([646e637](https://github.com/kiva/ui/commit/646e6379c25c92c8f2922666a24006e9748df9ee))
+* remove 5 and 7 padding values from safelist ([87239b9](https://github.com/kiva/ui/commit/87239b9b16971a627a8902d1a3451f6e0d2f6827))
+
 ### [2.449.1](https://github.com/kiva/ui/compare/v2.449.0...v2.449.1) (2023-01-09)
 
 
