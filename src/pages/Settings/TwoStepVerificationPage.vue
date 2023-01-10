@@ -139,13 +139,13 @@
 import _uniqBy from 'lodash/uniqBy';
 import * as Sentry from '@sentry/vue';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import mfaQuery from '@/graphql/query/mfa/mfaQuery.graphql';
 import removeMfa from '@/graphql/mutation/mfa/removeMfa.graphql';
 import removeOneMfaMethod from '@/graphql/mutation/mfa/removeOneMfaMethod.graphql';
 import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {

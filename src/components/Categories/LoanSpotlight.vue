@@ -51,8 +51,8 @@
 import { toParagraphs } from '@/util/loanUtils';
 import { gql } from '@apollo/client';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const allChannelsQuery = gql`

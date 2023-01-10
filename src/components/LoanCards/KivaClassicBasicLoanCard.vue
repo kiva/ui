@@ -244,7 +244,6 @@ import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
@@ -252,6 +251,7 @@ import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import { setLendAmount } from '@/util/basketUtils';
 import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 

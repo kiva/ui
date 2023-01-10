@@ -111,8 +111,8 @@
 <script>
 import { gql } from '@apollo/client';
 import { formatContentGroupsFlat } from '@/util/contentfulUtils';
-// TODO: replace the loading placeholder with component from kv-components when available.
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvTab from '~/@kiva/kv-components/vue/KvTab';
