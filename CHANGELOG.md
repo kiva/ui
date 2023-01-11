@@ -1,3 +1,10 @@
+## [2.451.0](https://github.com/kiva/ui/compare/v2.450.1...v2.451.0) (2023-01-11)
+
+
+### Features
+
+* add ability to link to updates section in bp ([b5828df](https://github.com/kiva/ui/commit/b5828dfb0bb0222e53945cb875c0a5518d475eb7))
+
 ### [2.450.1](https://github.com/kiva/ui/compare/v2.450.0...v2.450.1) (2023-01-11)
 
 
