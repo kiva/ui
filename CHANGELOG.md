@@ -1,3 +1,11 @@
+### [2.450.1](https://github.com/kiva/ui/compare/v2.450.0...v2.450.1) (2023-01-11)
+
+
+### Bug Fixes
+
+* default loanId value ([7c0b445](https://github.com/kiva/ui/commit/7c0b44527829495efb8b1278edc37bca979d609f))
+* loanId prop type ([7a46aa9](https://github.com/kiva/ui/commit/7a46aa93b56d7c8bf5f68d941ed0cae1a6e87539))
+
 ## [2.450.0](https://github.com/kiva/ui/compare/v2.449.2...v2.450.0) (2023-01-10)
 
 
