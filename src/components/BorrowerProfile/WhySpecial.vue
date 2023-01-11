@@ -20,8 +20,8 @@
 import { gql } from '@apollo/client';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import { formatWhySpecial } from '@/util/loanUtils';
-// TODO: replace the loading placeholder with component from kv-components when available.
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'WhySpecial',
