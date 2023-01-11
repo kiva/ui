@@ -172,9 +172,9 @@ export default {
 			required: false
 		},
 		loanId: {
-			type: String,
+			type: Number,
 			required: false,
-			default: ''
+			default: 0
 		},
 	},
 	data() {
