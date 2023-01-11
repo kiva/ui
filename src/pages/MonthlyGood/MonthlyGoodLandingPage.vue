@@ -77,7 +77,10 @@
 			:value-image-alt="personalizedImageAlt"
 			class="tw-my-8"
 		/>
-		<how-it-works />
+		<how-it-works
+			:headline-content="howItWorksHeadline"
+			:columns-content="howItWorksContent"
+		/>
 		<email-preview />
 		<kiva-as-expert>
 			<template #form>
@@ -146,7 +149,7 @@ const pageQuery = gql`
 			}
 		}
 		contentful {
-			entries(contentType: "page", contentKey: "monthlygood")
+			entries(contentType: "page", contentKey: "monthlygood", preview: true)
 		}
 		# mySubscriptions(includeDisabled: false) {
 		# 	values {
@@ -283,6 +286,16 @@ export default {
 		faqChoiceTestGroup() {
 			return this.contentGroups?.find(({ key }) => {
 				return key ? key === 'monthly-good-faqs-choice-test' : false;
+			});
+		},
+		howItWorksHeadline() {
+			return this.contentGroups?.find(({ key }) => {
+				return key ? key === 'monthlygood-how-it-works-headline-cg' : false;
+			});
+		},
+		howItWorksContent() {
+			return this.contentGroups?.find(({ key }) => {
+				return key ? key === 'monthlygood-how-it-works-content-cg' : false;
 			});
 		},
 		frequentlyAskedQuestionsHeadline() {
