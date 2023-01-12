@@ -63,7 +63,6 @@
 				<kiva-classic-single-category-carousel
 					:id="`carousel-${channel.name}` | changeCase('paramCase')"
 					:prefetched-selected-channel="channel"
-					:climate-challenge="isEcoChallengeExpShown"
 					:loan-display-settings="loanDisplaySettings"
 					:lend-now-button="true"
 					:query-context="ecoExpQueryContext"
@@ -88,10 +87,6 @@ import {
 	getMetaDescription
 } from '@/util/loanChannelUtils';
 import {
-	getExperimentSettingCached,
-	trackExperimentVersion
-} from '@/util/experimentUtils';
-import {
 	mdiClose
 } from '@mdi/js';
 import IconCalendar from '@/assets/icons/inline/eco-challenge/calendar.svg';
@@ -99,8 +94,6 @@ import { gql } from '@apollo/client';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-
-const ecoChallengeExpKey = 'eco_challenge';
 
 const secondaryEcoLoanChannelUrls = [
 	'solar-energy',
@@ -190,7 +183,6 @@ export default {
 				showViewMoreCard: true,
 				showCheckBackMessage: true
 			},
-			isEcoChallengeExpShown: false,
 			showHowItWorks: true,
 			mdiClose,
 			ecoExpQueryContext: FLSS_ORIGIN_CATEGORY
@@ -220,11 +212,6 @@ export default {
 			return this.getFilterUrl();
 		},
 		secondaryChannels() {
-			// if eco challenge experiment is shown, return only the challenge channels
-			if (this.isEcoChallengeExpShown) {
-				return this.secondaryEcoLoanChannelsResponse
-					.filter(channel => this.challengeChannels.includes(channel.id));
-			}
 			return this.secondaryEcoLoanChannelsResponse;
 		}
 	},
@@ -315,20 +302,6 @@ export default {
 	},
 	mounted() {
 		this.updateLendFilterExp();
-
-		const ecoChallengeExpData = getExperimentSettingCached(this.apollo, ecoChallengeExpKey);
-		if (ecoChallengeExpData?.enabled) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				ecoChallengeExpKey,
-				'EXP-ACK-392-Sep2022'
-			);
-			if (version === 'b') {
-				this.isEcoChallengeExpShown = true;
-			}
-		}
 
 		// check for newly assigned bounceback
 		const redirectFromUiCookie = this.cookieStore.get('redirectFromUi') || '';
