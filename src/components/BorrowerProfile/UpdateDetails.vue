@@ -8,7 +8,18 @@
 		>
 		<div class="tw-prose tw-pb-2">
 			<p v-html="subject"></p>
-			<p v-html="body"></p>
+			<p v-if="truncateBody && !readMoreClicked">
+				<span v-html="shortBody"></span>
+				<button
+					class="tw-text-link tw-mt-1"
+					@click="readMoreClicked = true"
+					v-show="truncateBody && !readMoreClicked"
+					v-kv-track-event="['borrower-profile', 'click', 'more-about-loan', 'read-more']"
+				>
+					read more
+				</button>
+			</p>
+			<p v-else v-html="htmlSafeBody"></p>
 		</div>
 
 		<div>
@@ -29,6 +40,7 @@
 </template>
 
 <script>
+import DOMPurify from 'dompurify';
 import { format, parseISO } from 'date-fns';
 
 export default {
@@ -57,9 +69,25 @@ export default {
 			default: '',
 		},
 	},
+	data() {
+		return {
+			readMoreClicked: false
+		};
+	},
 	computed: {
 		formattedJournalDate() {
 			return format(parseISO(this.date), 'MMMM dd, yyyy');
+		},
+		truncateBody() {
+			const bodyLength = this.htmlSafeBody?.length ?? 0;
+			return bodyLength > 210;
+		},
+		shortBody() {
+			return `${this.htmlSafeBody?.substring(0, 210)}... `;
+		},
+		htmlSafeBody() {
+			// eslint-disable-next-line max-len
+			return DOMPurify.sanitize(this.body, { ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'h4'] });
 		}
 	},
 };
