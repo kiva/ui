@@ -5,7 +5,6 @@
 	>
 		<component
 			:is="pageLayoutComponent"
-			:enable-quick-filters="enableQuickFilters"
 			:enable-helpme-choose="enableHelpmeChoose"
 			:enable-loan-tags="enableLoanTags"
 		/>
@@ -78,7 +77,6 @@ export default {
 			},
 			pageLayout: 'control',
 			pageLayoutComponent: null,
-			enableQuickFilters: false,
 			enableHelpmeChoose: false,
 			enableLoanTags: false,
 		};
@@ -194,13 +192,6 @@ export default {
 		this.initializeAddToBasketInterstitial();
 		// Experimental page layout
 		this.initializeExperimentalPageLayout();
-		// Initialize Quick Filters Experiment
-		if (this.targetedLoanChannel !== 'eco-friendly'
-				&& this.targetedLoanChannel !== 'mission-driven-orgs'
-				&& this.targetedLoanChannel !== 'short-term-loans'
-		) {
-			this.enableQuickFilters = true;
-		}
 		// Initialize Help Me Choose Experiment
 		if (this.targetedLoanChannel === 'women'
 				|| this.targetedLoanChannel === 'kiva-u-s'

@@ -293,7 +293,7 @@ export default {
 			this.selectedGender = '';
 			this.sortBy = 'amountLeft';
 			this.updateLocation([]);
-			this.$refs.locationSelector.emptyCountries();
+			this.$refs.locationSelector?.emptyCountries();
 			this.$kvTrackEvent(
 				this.trackingCategory,
 				'click',

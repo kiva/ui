@@ -2,9 +2,7 @@
 	<div class="tw-relative">
 		<div class="row">
 			<div class="small-12 columns heading-region">
-				<view-toggle v-if="!enableQuickFilters" browse-url="/lend-by-category" :filter-url="filterUrl" />
 				<router-link
-					v-else
 					:to="filterUrl"
 					class="tw-text-action tw-flex tw-items-center tw-float-right"
 					@click.native="trackAdvancedFilters"
@@ -36,7 +34,7 @@
 			</div>
 		</div>
 
-		<div v-if="enableQuickFilters" class="row">
+		<div class="row">
 			<quick-filters
 				class="tw-ml-2 tw-z-2"
 				:total-loans="totalCount"
@@ -145,9 +143,7 @@ import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import DonationCTA from '@/components/Lend/DonationCTA';
-
 import KvPagination from '@/components/Kv/KvPagination';
-import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
@@ -159,7 +155,6 @@ import {
 	getFilteredLoanChannel,
 	getMetaDescription
 } from '@/util/loanChannelUtils';
-
 import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
 import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
@@ -277,10 +272,6 @@ export default {
 		};
 	},
 	props: {
-		enableQuickFilters: {
-			type: Boolean,
-			default: false,
-		},
 		enableHelpmeChoose: {
 			type: Boolean,
 			default: false,
@@ -294,7 +285,6 @@ export default {
 		LoanCardController,
 		KvPagination,
 		KvLoadingOverlay,
-		ViewToggle,
 		PromoGridLoanCard,
 		QuickFilters,
 		HelpmeChooseWrapper,
@@ -468,8 +458,7 @@ export default {
 						limit,
 						offset,
 						origin: FLSS_ORIGIN_CATEGORY
-					},
-					this.selectedQuickFilters
+					}
 				);
 			});
 		}
@@ -519,19 +508,12 @@ export default {
 		this.updateFromParams(this.pageQuery);
 
 		// Prevent pop-in by loading data from the Apollo cache manually here instead of just using the subscription
-		const baseData = this.enableQuickFilters
-			? getFilteredLoanChannel(
-				this.apollo,
-				this.loanChannelQueryMap,
-				this.targetedLoanChannelURL,
-				this.loanQueryVars,
-				this.selectedQuickFilters
-			) : getCachedChannel(
-				this.apollo,
-				this.loanChannelQueryMap,
-				this.targetedLoanChannelURL,
-				this.loanQueryVars,
-			);
+		const baseData = getCachedChannel(
+			this.apollo,
+			this.loanChannelQueryMap,
+			this.targetedLoanChannelURL,
+			this.loanQueryVars,
+		);
 
 		if (baseData) this.loading = false;
 
@@ -551,6 +533,7 @@ export default {
 		this.activateLoanChannelWatchQuery();
 
 		this.updateLendFilterExp();
+
 		// check for newly assigned bounceback
 		const redirectFromUiCookie = this.cookieStore.get('redirectFromUi') || '';
 		if (redirectFromUiCookie === 'true') {
@@ -560,12 +543,11 @@ export default {
 
 		trackChannelExperiment(this.apollo, this.loanChannelQueryMap, this.targetedLoanChannelURL, this.$kvTrackEvent);
 
-		if (this.enableQuickFilters) {
-			// Fetch the facet options from the lend and FLSS APIs
-			this.allFacets = await fetchLoanFacets(this.apollo);
-			// Load all available facets for specified sector
-			await this.fetchFacets(this.flssLoanSearch);
-		}
+		// Fetch the facet options from the lend and FLSS APIs
+		this.allFacets = await fetchLoanFacets(this.apollo);
+
+		// Load all available facets for specified sector
+		await this.fetchFacets();
 	},
 	methods: {
 		handleQuickFiltersOverlay(showOverlay) {
@@ -585,7 +567,7 @@ export default {
 			if (filter.gender !== undefined) {
 				this.selectedQuickFilters.gender = filter.gender;
 				this.flssLoanSearch.gender = filter.gender;
-				this.fetchFacets(this.flssLoanSearch);
+				this.fetchFacets();
 			} else if (filter.sortBy) {
 				this.selectedQuickFilters.sortBy = filter.sortBy;
 			} else {
@@ -712,9 +694,9 @@ export default {
 		handleCloseLoanCard() {
 			this.detailedLoan = null;
 		},
-		async fetchFacets(loanSearchState = {}) {
+		async fetchFacets() {
 			// TODO: Prevent this from running on every query (not needed for sorting and paging)
-			const { isoCodes } = await runFacetsQueries(this.apollo, loanSearchState, FLSS_ORIGIN_CATEGORY);
+			const { isoCodes } = await runFacetsQueries(this.apollo, this.flssLoanSearch, FLSS_ORIGIN_CATEGORY);
 
 			// Merge all facet options with filtered options
 			const facets = {
