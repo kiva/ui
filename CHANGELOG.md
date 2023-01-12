@@ -1,3 +1,11 @@
+### [2.452.1](https://github.com/kiva/ui/compare/v2.452.0...v2.452.1) (2023-01-12)
+
+
+### Bug Fixes
+
+* enable quick filters for all categories ([332f951](https://github.com/kiva/ui/commit/332f9518244c34de4c571678701e1a5d09e1ed98))
+* improved category page initial load with quick filters ([2ce3d2d](https://github.com/kiva/ui/commit/2ce3d2dd411a749c5459ee7342c7f75b867b2807))
+
 ## [2.452.0](https://github.com/kiva/ui/compare/v2.451.0...v2.452.0) (2023-01-12)
 
 
