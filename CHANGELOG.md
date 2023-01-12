@@ -1,3 +1,15 @@
+## [2.452.0](https://github.com/kiva/ui/compare/v2.451.0...v2.452.0) (2023-01-12)
+
+
+### Features
+
+* how it work section content in monthlygood page passed to contentful ([e3cd4c9](https://github.com/kiva/ui/commit/e3cd4c9d5d8f85a69e64bc552d04d982b37b471f))
+
+
+### Bug Fixes
+
+* preview flag and css syntax error removed ([f11dd2b](https://github.com/kiva/ui/commit/f11dd2b4591a8f0c769e3cc80cd4776209da9435))
+
 ## [2.451.0](https://github.com/kiva/ui/compare/v2.450.1...v2.451.0) (2023-01-11)
 
 
