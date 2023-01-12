@@ -42,9 +42,8 @@ export function transformFLSSData(data) {
  * @param {Array} queryMap The map mixin from loan-channel-query-map.js
  * @param {string} channelUrl The URL of the loan channel
  * @param {Object} loanQueryVars The loan channel query variables
- * @param {Object} selectedQuickFilters Selected quick filters
  */
-export async function preFetchChannel(apollo, queryMap, channelUrl, loanQueryVars, selectedQuickFilters) {
+export async function preFetchChannel(apollo, queryMap, channelUrl, loanQueryVars) {
 	const queryMapFLSS = getFLSSQueryMap(queryMap, channelUrl);
 
 	if (queryMapFLSS) {
@@ -62,7 +61,7 @@ export async function preFetchChannel(apollo, queryMap, channelUrl, loanQueryVar
 		}
 
 		if (experimentActive) {
-			const filterObj = { ...queryMapFLSS, ...selectedQuickFilters };
+			const filterObj = { ...queryMapFLSS };
 			return fetchLoanChannel(apollo, filterObj, loanQueryVars);
 		}
 	}
