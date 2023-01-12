@@ -46,7 +46,7 @@ export default {
 
 <style scoped>
 
-#rteContent >>> figure{
+#rteContent >>> figure {
 	margin-bottom: 0;
 }
 

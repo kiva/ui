@@ -149,7 +149,7 @@ const pageQuery = gql`
 			}
 		}
 		contentful {
-			entries(contentType: "page", contentKey: "monthlygood", preview: true)
+			entries(contentType: "page", contentKey: "monthlygood")
 		}
 		# mySubscriptions(includeDisabled: false) {
 		# 	values {
