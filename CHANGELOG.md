@@ -1,3 +1,10 @@
+## [2.453.0](https://github.com/kiva/ui/compare/v2.452.1...v2.453.0) (2023-01-12)
+
+
+### Features
+
+* add read more functionality to journal entries in bp ([54d1a6a](https://github.com/kiva/ui/commit/54d1a6ab195e7fa953150ec7067767c75ea041c2))
+
 ### [2.452.1](https://github.com/kiva/ui/compare/v2.452.0...v2.452.1) (2023-01-12)
 
 
