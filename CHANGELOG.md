@@ -1,3 +1,10 @@
+### [2.454.1](https://github.com/kiva/ui/compare/v2.454.0...v2.454.1) (2023-01-13)
+
+
+### Bug Fixes
+
+* updated order totals test ID ([c0a6870](https://github.com/kiva/ui/commit/c0a687014651dcf41ad714de23b7a6ae7e0c0537))
+
 ## [2.454.0](https://github.com/kiva/ui/compare/v2.453.0...v2.454.0) (2023-01-13)
 
 
