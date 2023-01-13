@@ -11,10 +11,10 @@
 			<p v-if="truncateBody && !readMoreClicked">
 				<span v-html="shortBody"></span>
 				<button
-					class="tw-text-link tw-mt-1"
+					class="tw-text-link"
 					@click="readMoreClicked = true"
 					v-show="truncateBody && !readMoreClicked"
-					v-kv-track-event="['borrower-profile', 'click', 'more-about-loan', 'read-more']"
+					v-kv-track-event="['borrower-profile', 'click', 'update-read-more']"
 				>
 					read more
 				</button>
@@ -23,16 +23,23 @@
 		</div>
 
 		<div>
-			<div class="tw-flex tw-justify-between tw-align-baseline">
-				<div>
-					<!-- TODO Share component goes here -->
-					<!-- <span class="tw-text-small tw-text-secondary">Share this Update</span> -->
+			<div class="tw-flex tw-justify-between tw-align-center">
+				<div class="tw-flex tw-items-center">
+					<kv-social-share-button
+						modal-title="Share this loan update"
+						:share-message="shareMessage"
+						:share-url="$route.path + '#updates'"
+						variant="link"
+						utm-campaign="bp_update_share"
+					>
+						Share this update
+					</kv-social-share-button>
 				</div>
-				<div>
+				<div class="tw-flex tw-items-center">
 					<!-- eslint-disable-next-line max-len -->
-					<span class="tw-text-small tw-text-secondary">Update #{{ index }}</span>
-					<span class="tw-text-small tw-text-secondary tw-px-1.5">&#x2022;</span>
-					<span class="tw-text-small tw-text-secondary">{{ formattedJournalDate }}</span>
+					<span class="tw-text-secondary">Update #{{ index }}</span>
+					<span class="tw-text-secondary tw-px-1.5">&#x2022;</span>
+					<span class="tw-text-secondary">{{ formattedJournalDate }}</span>
 				</div>
 			</div>
 		</div>
@@ -43,9 +50,12 @@
 import DOMPurify from 'dompurify';
 import { format, parseISO } from 'date-fns';
 
+import KvSocialShareButton from '@/components/Kv/KvSocialShareButton';
+
 export default {
 	name: 'UpdateDetails',
 	components: {
+		KvSocialShareButton,
 	},
 	props: {
 		body: {
@@ -71,7 +81,7 @@ export default {
 	},
 	data() {
 		return {
-			readMoreClicked: false
+			readMoreClicked: false,
 		};
 	},
 	computed: {
@@ -80,14 +90,23 @@ export default {
 		},
 		truncateBody() {
 			const bodyLength = this.htmlSafeBody?.length ?? 0;
-			return bodyLength > 210;
+			return bodyLength > 205;
 		},
 		shortBody() {
-			return `${this.htmlSafeBody?.substring(0, 210)}... `;
+			return `${this.htmlSafeBody?.substring(0, 205)}... `;
 		},
 		htmlSafeBody() {
 			// eslint-disable-next-line max-len
 			return DOMPurify.sanitize(this.body, { ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'h4'] });
+		},
+		shareMessage() {
+			let shareMsgString = '';
+			if (this.subject) {
+				shareMsgString += `${this.subject} - `;
+			}
+			shareMsgString += this.shortBody;
+			// remove all html for sharing
+			return DOMPurify.sanitize(shareMsgString, { ALLOWED_TAGS: [] });
 		}
 	},
 };
