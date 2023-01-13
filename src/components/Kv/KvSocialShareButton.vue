@@ -197,11 +197,15 @@ export default {
 		utmContentQueryParam() {
 			return this.utmContent ? `&utm_content=${this.utmContent}` : '';
 		},
+		hashParams() {
+			return this.shareUrl.split('#')[1] ? `#${this.shareUrl.split('#')[1]}` : '';
+		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			// Get query param string from shareUrl
 			const shareUrlSuffix = this.shareUrl.split('?')[1] ? `?${this.shareUrl.split('?')[1]}&` : '?';
-			return `${base}${this.shareUrl}${shareUrlSuffix}`;
+			const shareUrlWithoutHash = this.shareUrl.split('#')[0];
+			return `${base}${shareUrlWithoutHash}${shareUrlSuffix}`;
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
@@ -209,7 +213,7 @@ export default {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
 				// eslint-disable-next-line max-len
-				href: `${this.shareLink}utm_source=facebook.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}`,
+				href: `${this.shareLink}utm_source=facebook.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}${this.hashParams}`,
 				redirect_uri: `${pageUrl}`,
 				quote: this.shareMessage,
 			});
@@ -221,14 +225,14 @@ export default {
 				summary: this.shareMessage.substring(0, 256),
 				title: this.linkedInTitle ? this.linkedInTitle : this.modalTitle,
 				// eslint-disable-next-line max-len
-				url: `${this.shareLink}utm_source=linkedin.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}`
+				url: `${this.shareLink}utm_source=linkedin.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}${this.hashParams}`
 			});
 		},
 		twitterShareUrl() {
 			return getFullUrl('https://twitter.com/intent/tweet', {
 				text: this.shareMessage,
 				// eslint-disable-next-line max-len
-				url: `${this.shareLink}utm_source=t.co&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}`,
+				url: `${this.shareLink}utm_source=t.co&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}${this.hashParams}`,
 				via: 'Kiva',
 			});
 		},
