@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-mb-1" data-testid="basket-order-totals-section">
+	<div class="tw-mb-1">
 		<div
 			v-if="showPromoCreditTotal"
 			class="tw-flex tw-flex-row tw-w-full tw-mb-2 tw-text-h3"
@@ -8,7 +8,10 @@
 			<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
 				Order Total:
 			</div>
-			<span class="tw-float-right md:tw-float-none tw-text-right tw-pl-2">
+			<span
+				data-testid="basket-order-totals-item-total"
+				class="tw-float-right md:tw-float-none tw-text-right tw-pl-2"
+			>
 				{{ itemTotal }}</span>
 			<!-- icon spacer -->
 			<span class="tw-w-4.5"></span>
