@@ -1,3 +1,10 @@
+## [2.454.0](https://github.com/kiva/ui/compare/v2.453.0...v2.454.0) (2023-01-13)
+
+
+### Features
+
+* add ability to share updates on social media ([ecb63a2](https://github.com/kiva/ui/commit/ecb63a2d2966e79313c9bc71ab6fb3885befa307))
+
 ## [2.453.0](https://github.com/kiva/ui/compare/v2.452.1...v2.453.0) (2023-01-12)
 
 
