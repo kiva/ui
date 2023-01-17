@@ -201,6 +201,8 @@
 </template>
 
 <script>
+// This component was used in the Eco Challenge. Currently not in use.
+
 import { mdiCheckAll } from '@mdi/js';
 import confetti from 'canvas-confetti';
 import numeral from 'numeral';

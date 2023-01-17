@@ -104,6 +104,8 @@
 </template>
 
 <script>
+// This component was used in the Eco Challenge. Currently not in use.
+
 import IconClimateChallenge from '@/assets/icons/inline/eco-challenge/globe-leaf.svg';
 import {
 	mdiArrowRight,
