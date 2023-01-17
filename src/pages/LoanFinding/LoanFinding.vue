@@ -41,6 +41,7 @@ import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
 import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSection';
 import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
+import { gql } from '@apollo/client';
 
 export default {
 	name: 'LoanFinding',
@@ -92,12 +93,22 @@ export default {
 			this.recommendedLoans = loans;
 		},
 		async getMatchedLoans() {
-			const { loans } = await runLoansQuery(
-				this.apollo,
-				{ filterObject: { isMatchable: { eq: true } }, sortBy: 'personalized', pageLimit: 9 },
-				FLSS_ORIGIN_LENDING_HOME
-			);
-			this.matchedLoans = loans;
+			// TODO: replace with FLSS query once "isMatchable" is stable in FLSS
+			const { data } = await this.apollo.query({
+				query: gql`
+					query lendMatchingData {
+						lend {
+							loans(filters: { isMatched: true }, limit: 9) {
+								values {
+									id
+								}
+							}
+						}
+					}
+				`,
+			});
+
+			this.matchedLoans = data?.lend?.loans?.values ?? [];
 		},
 		trackCategory({ success }, category) {
 			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', `${category}-lending-home`);
