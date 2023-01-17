@@ -1,3 +1,10 @@
+## [2.455.0](https://github.com/kiva/ui/compare/v2.454.1...v2.455.0) (2023-01-17)
+
+
+### Features
+
+* use legacy for matching in lending-home ([dc00a06](https://github.com/kiva/ui/commit/dc00a062ede46d0b0d35ec0392bd5fb2e2629555))
+
 ### [2.454.1](https://github.com/kiva/ui/compare/v2.454.0...v2.454.1) (2023-01-13)
 
 
