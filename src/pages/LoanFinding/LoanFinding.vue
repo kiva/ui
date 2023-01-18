@@ -1,16 +1,19 @@
 <template>
-	<www-page class="tw-bg-secondary" style="height: auto;">
-		<div class="tw-max-w-5xl tw-mx-auto tw-p-2 lg:tw-pt-4">
-			<h3 class="tw-text-h3 tw-text-primary">
-				Welcome back, <span class="tw-text-action fs-mask data-hj-suppress">{{ firstName }}</span>
-			</h3>
+	<www-page class="tw-bg-white" style="height: auto;">
+		<div class="tw-w-full">
+			<!-- eslint-disable-next-line max-len -->
+			<div class="tw-mx-auto tw-p-2 lg:tw-pt-4 tw-px-2.5 md:tw-px-4 lg:tw-px-8 tw-bg-white" style="max-width: 1200px;">
+				<h3 class="tw-text-h3 tw-text-primary">
+					Welcome back, <span class="tw-text-action fs-mask data-hj-suppress">{{ firstName }}</span>
+				</h3>
+			</div>
 			<!-- First category row: Recommended loans section -->
 			<lending-category-section
 				title="Recommended for you"
 				subtitle="Loans handpicked for you based on your lending history"
 				:loans="recommendedLoans"
 				:per-step="2"
-				class="tw-mt-2"
+				class="tw-pt-2 tw-bg-white"
 				@add-to-basket="trackCategory($event, 'recommended')"
 			/>
 
@@ -24,11 +27,11 @@
 				title="Matched lending"
 				subtitle="Stretch your funds further with the help of our partners and Kivans just like you"
 				:loans="matchedLoans"
-				class="tw-mt-6"
+				class="tw-pt-6 tw-pb-2 tw-bg-white"
 				@add-to-basket="trackCategory($event, 'matched-lending')"
 			/>
 
-			<partner-spotlight-section class="tw-mt-6" />
+			<partner-spotlight-section class="tw-pt-6" />
 		</div>
 	</www-page>
 </template>

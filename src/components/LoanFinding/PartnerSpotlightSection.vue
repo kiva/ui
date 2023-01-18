@@ -1,13 +1,15 @@
 <template>
-	<div>
-		<m-f-i-hero />
+	<div class="tw-w-full tw-bg-secondary">
+		<div class="tw-mx-auto tw-px-0 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
+			<m-f-i-hero />
 
-		<mfi-loans-wrapper
-			v-if="selectedChannelLoanIds.length > 0"
-			:selected-channel-loan-ids="selectedChannelLoanIds"
-			:selected-channel="selectedChannel"
-			class="tw-my-4"
-		/>
+			<mfi-loans-wrapper
+				v-if="selectedChannelLoanIds.length > 0"
+				:selected-channel-loan-ids="selectedChannelLoanIds"
+				:selected-channel="selectedChannel"
+				class="tw-py-4"
+			/>
+		</div>
 	</div>
 </template>
 

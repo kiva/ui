@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-my-4 tw-px-2 lg:tw-px-0">
+	<div class="tw-py-4 tw-px-2 lg:tw-px-0">
 		<h4 class="tw-text-h4 tw-text-action">
 			Support Borrowers from Fundación Pro Mujer
 		</h4>
@@ -72,7 +72,4 @@ export default {
 		}
 	}
 
-	#carousel_exp >>> section > div:nth-child(1) > div {
-		max-width: 280px !important;
-	}
 </style>
