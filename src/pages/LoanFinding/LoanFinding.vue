@@ -1,5 +1,5 @@
 <template>
-	<www-page class="tw-bg-white" style="height: auto;">
+	<www-page class="tw-bg-white main-class" style="height: auto;">
 		<div class="tw-w-full">
 			<!-- eslint-disable-next-line max-len -->
 			<div class="tw-mx-auto tw-p-2 lg:tw-pt-4 tw-px-2.5 md:tw-px-4 lg:tw-px-8 tw-bg-white" style="max-width: 1200px;">
