@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KivaLoanCardCarousel from '@/components/LoanCollections/HomeExp/KivaLoanCardCarousel';
 import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';

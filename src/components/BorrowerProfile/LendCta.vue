@@ -41,10 +41,7 @@
 							'md:tw-col-start-2 md:tw-col-span-10': isSticky,
 						},
 						'lg:tw-col-span-12',
-						{
-							'lg:tw-pt-1 lg:tw-pb-1': !socialExpEnabled,
-							'lg:tw-pt-1 lg:tw-pb-0': socialExpEnabled,
-						},
+						'lg:tw-pt-1 lg:tw-pb-1',
 					]"
 				>
 					<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
@@ -190,12 +187,10 @@
 					</p>
 					<div
 						v-if="repaymentEnabled"
-						class="tw-hidden md:tw-flex tw-content-center tw-gap-2"
+						class="tw-hidden md:tw-flex tw-mt-2 lg:tw-mt-0 tw-content-center tw-gap-2"
 					>
-						<div>
-							<icon-clock />
-						</div>
-						<span>First expected repayment {{ repaymentDate }}</span>
+						<icon-clock />
+						<span>{{ repaymentDateCopy }}</span>
 					</div>
 					<hr
 						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full tw-my-2"
@@ -211,39 +206,10 @@
 							class="tw-hidden md:tw-inline-block lg:tw-hidden"
 						/>
 						<jump-links
-							:class="[
-								'tw-hidden md:tw-block lg:tw-mb-1.5',
-								{
-									'md:tw-mb-3': isSticky || !socialExpEnabled,
-								}
-							]"
+							class="tw-hidden md:tw-block lg:tw-mb-1.5 md:tw-mb-3"
 							data-testid="bp-lend-cta-jump-links"
 						/>
 					</div>
-				</div>
-				<div
-					v-if="socialExpEnabled"
-					:class="[
-						'tw-hidden',
-						{
-							'md:tw-block': !isSticky,
-						},
-						'tw-col-span-12',
-						'md:tw-col-start-7 md:tw-col-span-6',
-						'lg:tw-col-span-12',
-					]"
-				>
-					<hr
-						v-if="socialExpEnabled && lenders.length"
-						class="tw-hidden lg:tw-block tw-border-tertiary tw-w-full tw-mb-3"
-					>
-					<lenders-list
-						v-if="socialExpEnabled && lenders.length"
-						:num-lenders="numLenders"
-						:lenders="lenders"
-						key="lenderList"
-						@togglelightbox="toggleLightbox"
-					/>
 				</div>
 			</kv-grid>
 
@@ -307,10 +273,10 @@
 							leave-to-class="tw-transform tw-translate-y-2 tw-opacity-0"
 						>
 							<span
+								v-if="currentSlotStat === 'lenderCount'"
 								class="tw-inline-block tw-align-middle"
 								data-testid="bp-lend-cta-powered-by-text"
 								key="numLendersStat"
-								v-if="statScrollAnimation && !repaymentEnabled || loopItemTurn === 1"
 							>
 								<kv-material-icon
 									class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
@@ -320,10 +286,10 @@
 							</span>
 
 							<span
+								v-if="currentSlotStat === 'matchingText'"
 								class="tw-inline-block tw-align-middle"
 								data-testid="bp-lend-cta-matched-text"
 								key="loanMatchingText"
-								v-if="showMatchingText"
 							>
 								<span
 									class="tw-text-h3 tw-inline-block tw-align-middle tw-px-1"
@@ -331,20 +297,17 @@
 									🎉
 								</span>
 								{{ matchRatio + 1 }}X
-								<span v-if="requireDepositsMatchedLoans"> MATCHED NEW DEPOSITS</span>
-								<span v-else> MATCHED LOAN</span>
+								<span> MATCHED LOAN</span>
 							</span>
 
 							<span
-								v-if="showExpectedRepayment"
+								v-if="currentSlotStat === 'repaymentDate'"
 								class="md:tw-hidden tw-align-middle tw-flex tw-gap-1 tw-items-center"
 								data-testid="bp-lend-cta-expected-repayment"
 								key="expectedRepayment"
 							>
-								<div>
-									<icon-clock class="tw-pointer-events-none tw-inline-block tw-align-middle" />
-								</div>
-								<span> First expected repayment {{ repaymentDate }}</span>
+								<icon-clock class="tw-pointer-events-none tw-inline-block tw-align-middle" />
+								<span>{{ repaymentDateCopy }}</span>
 							</span>
 						</transition>
 					</div>
@@ -362,7 +325,13 @@
 
 <script>
 import { mdiLightningBolt } from '@mdi/js';
-import gql from 'graphql-tag';
+import {
+	addMonths,
+	format,
+	parseISO,
+	isSameMonth,
+} from 'date-fns';
+import { gql } from '@apollo/client';
 import { setLendAmount } from '@/util/basketUtils';
 import {
 	buildPriceArray,
@@ -382,7 +351,6 @@ import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
 import EcoChallengeLightbox from '@/components/Lightboxes/EcoChallengeLightbox';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
-import LendersList from '@/components/BorrowerProfile/LendersList';
 import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrapper';
 
 import IconClock from '@/assets/icons/inline/clock.svg';
@@ -401,33 +369,12 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		lenders: {
-			type: Array,
-			default: () => []
-		},
-		socialExpEnabled: {
-			type: Boolean,
-			default: false
-		},
-		requireDepositsMatchedLoans: {
-			type: Boolean,
-			default: false,
-		},
 		userContextExpVariant: {
 			type: String,
 			default: 'c'
 		},
-		hasLentBefore: {
-			type: Boolean,
-			default: false
-		},
-		hasDepositBefore: {
-			type: Boolean,
-			default: false
-		}
 	},
 	components: {
-		LendersList,
 		LendAmountButton,
 		KvGrid,
 		EcoChallengeLightbox,
@@ -457,7 +404,6 @@ export default {
 			numLenders: 0,
 			lenderCountVisibility: false,
 			matchingTextVisibility: false,
-			statScrollAnimation: false,
 			matchingText: '',
 			matchRatio: 0,
 			basketItems: [],
@@ -473,7 +419,10 @@ export default {
 			checkoutMilestoneProgresses: [],
 			isMobile: false,
 			repaymentInterval: '',
-			loopItemTurn: 0
+			plannedExpirationDate: '',
+			firstRepaymentDate: '',
+			slotMachineInterval: null,
+			currentSlotStat: '',
 		};
 	},
 	apollo: {
@@ -502,6 +451,12 @@ export default {
 							totalCount
 						}
 						repaymentInterval
+						plannedExpirationDate
+						terms {
+							expectedPayments {
+								dueToKivaDate
+							}
+						}
 					}
 				}
 				shop (basketId: $basketId) {
@@ -549,14 +504,21 @@ export default {
 			this.basketItems = basket?.items?.values ?? [];
 			this.matchingText = loan?.matchingText ?? '';
 			this.matchRatio = loan?.matchRatio ?? 0;
-			this.repaymentInterval = loan?.repaymentInterval ?? 0;
+			this.firstRepaymentDate = loan?.terms?.expectedPayments?.[0]?.dueToKivaDate ?? '';
+			this.plannedExpirationDate = loan?.plannedExpirationDate ?? '';
+			this.repaymentInterval = loan?.repaymentInterval ?? '';
 			this.name = loan?.name ?? '';
 			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
-				this.lenderCountVisibility = !this.socialExpEnabled;
-				this.statScrollAnimation = !this.socialExpEnabled;
+				this.lenderCountVisibility = true;
 			}
+
+			// Start cycling the stats slot now that loan data is available
+			this.cycleStatsSlot();
+
+			// Track this.repaymentDateCopy for MARS-317
+			this.$kvTrackEvent('borrower-profile', 'show', 'expected-repayment', this.repaymentDateCopy);
 		},
 	},
 	methods: {
@@ -640,41 +602,39 @@ export default {
 			);
 		},
 		cycleStatsSlot() {
-			let cycleSlotMachine = () => {};
-			if (this.matchingText.length) {
-				cycleSlotMachine = () => {
-					if (this.repaymentEnabled && this.isMobile) {
-						this.loopItemTurn += 1;
-						if (this.loopItemTurn > 3) {
-							this.loopItemTurn = 1;
-						}
-					} else if (!this.isMatchAtRisk) {
-						if (this.socialExpEnabled) {
-							this.statScrollAnimation = false;
-						} else {
-							this.statScrollAnimation = !this.statScrollAnimation;
-						}
-					} else {
-						this.statScrollAnimation = true;
-					}
-				};
-			} else {
-				cycleSlotMachine = () => {
-					this.loopItemTurn += 1;
-					if (this.loopItemTurn > 2) {
-						this.loopItemTurn = 1;
-					}
-					if (!this.isMobile) {
-						this.loopItemTurn = 1;
-					}
-				};
+			// Function can be skipped if slot machine interval is already set
+			if (this.slotMachineInterval) {
+				return;
 			}
 
-			setInterval(cycleSlotMachine, 5000);
+			// Change which stat is displayed in the stats slot
+			const cycleSlotMachine = () => {
+				const possibleStats = [];
+				// Add lender count
+				if (this.status === 'fundraising' && this.numLenders > 0) {
+					possibleStats.push('lenderCount');
+				}
+				// Add matching text
+				if (this.status === 'fundraising' && this.matchingText.length && !this.isMatchAtRisk) {
+					possibleStats.push('matchingText');
+				}
+				// Add repayment date MARS-317
+				this.determineIfMobile();
+				if (this.isMobile && this.repaymentEnabled) {
+					possibleStats.push('repaymentDate');
+				}
+				// Cycle through the possible stats in the order they were added.
+				// If current slot stat is no longer in the possible stat list, this will cycle back to the first stat.
+				let nextStatIndex = possibleStats.indexOf(this.currentSlotStat) + 1;
+				nextStatIndex = nextStatIndex >= possibleStats.length ? 0 : nextStatIndex;
+				this.currentSlotStat = possibleStats[nextStatIndex] ?? '';
+			};
+
+			// Set inital stat
+			cycleSlotMachine();
+			// Start cycling
+			this.slotMachineInterval = setInterval(cycleSlotMachine, 5000);
 		},
-		toggleLightbox() {
-			this.$emit('togglelightbox');
-		}
 	},
 	watch: {
 		matchingText(newValue, previousValue) {
@@ -699,24 +659,28 @@ export default {
 		},
 	},
 	computed: {
-		showMatchingText() {
-			return (!this.statScrollAnimation && !this.repaymentEnabled)
-			|| (this.loopItemTurn === 2 && this.matchingText.length);
-		},
-		showExpectedRepayment() {
-			return this.loopItemTurn === 3 || (this.loopItemTurn === 2 && !this.matchingText.length && this.isMobile);
-		},
 		repaymentEnabled() {
-			return this.userContextExpVariant === 'b' && (!this.hasLentBefore || !this.hasDepositBefore);
+			return this.userContextExpVariant === 'b';
 		},
 		repaymentDate() {
-			const date = new Date();
-			date.setMonth(date.getMonth() + 1);
-			const currentYear = date.getFullYear();
-			const currentMonth = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(date);
-			return this.repaymentInterval === 'monthly'
-				? `${currentMonth.substring(0, 3)}, ${currentYear}`
-				: `Jun, ${currentYear + 1}`;
+			if (this.firstRepaymentDate) {
+				return format(parseISO(this.firstRepaymentDate), 'MMM yyyy');
+			}
+			if (this.plannedExpirationDate) {
+				const asSoonAs = addMonths(new Date(), 1);
+				const asLateAs = addMonths(parseISO(this.plannedExpirationDate), 1);
+				if (isSameMonth(asSoonAs, asLateAs)) {
+					return format(asSoonAs, 'MMM yyyy');
+				}
+				return `${format(asSoonAs, 'MMM yyyy')} or ${format(asLateAs, 'MMM yyyy')}`;
+			}
+			return '';
+		},
+		repaymentDateCopy() {
+			if (this.repaymentInterval === 'at_end') {
+				return `Expected repayment ${this.repaymentDate}`;
+			}
+			return `First expected repayment ${this.repaymentDate}`;
 		},
 		isInBasket() {
 			// eslint-disable-next-line no-underscore-dangle
@@ -861,12 +825,7 @@ export default {
 		}
 	},
 	mounted() {
-		if (this.repaymentEnabled) {
-			this.loopItemTurn = 1;
-		}
-		this.determineIfMobile();
 		this.createWrapperObserver();
-		this.cycleStatsSlot();
 	},
 	beforeDestroy() {
 		this.destroyWrapperObserver();

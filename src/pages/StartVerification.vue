@@ -19,7 +19,7 @@
 						<h1>Email verification pending</h1>
 						<p>
 							We sent a validation link
-							<span v-if="email" class="email fs-exclude">to {{ email }}</span>.
+							<span v-if="email" class="email fs-exclude data-hj-suppress">to {{ email }}</span>.
 						</p>
 						<p>After receiving the email, follow the link provided to continue {{ process }}.</p>
 						<kv-button
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';

@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
 import KivaClassicLoanCategorySelector from '@/components/LoanCollections/KivaClassicLoanCategorySelector';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';

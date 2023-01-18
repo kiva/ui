@@ -29,7 +29,7 @@
 					:href="facebookShareUrl"
 					target="_blank"
 					rel="noopener"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Facebook-share']"
+					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Facebook-share', loanId]"
 					@click="$showTipMsg('Thanks for sharing to Facebook!')"
 				>
 					<kv-material-icon
@@ -45,7 +45,7 @@
 					:href="twitterShareUrl"
 					target="_blank"
 					rel="noopener"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Twitter-share']"
+					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Twitter-share', loanId]"
 					@click="$showTipMsg('Thanks for tweeting!')"
 				>
 					<kv-material-icon
@@ -61,7 +61,7 @@
 					:href="linkedInShareUrl"
 					target="_blank"
 					rel="noopener"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-LinkedIn-share']"
+					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-LinkedIn-share', loanId]"
 					@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
 				>
 					<kv-material-icon
@@ -75,14 +75,14 @@
 					class="social-button "
 					data-testid="share-copy-link-button"
 					:disabled="copyStatus.disabled"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Copy-link-share']"
+					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Copy-link-share', loanId]"
 					@click="copyLink"
 				>
 					<kv-material-icon
 						class="tw-w-4.5 tw-h-4.5 tw-pointer-events-none tw-inline-block tw-align-middle"
 						:icon="mdiLink"
 					/>
-					<span class="tw-font-medium">{{ this.copyStatus.text }}</span>
+					<span class="tw-font-medium">{{ copyStatus.text }}</span>
 				</kv-button>
 			</div>
 		</kv-lightbox>
@@ -171,6 +171,11 @@ export default {
 			type: Boolean,
 			required: false
 		},
+		loanId: {
+			type: Number,
+			required: false,
+			default: null
+		},
 	},
 	data() {
 		return {
@@ -192,11 +197,15 @@ export default {
 		utmContentQueryParam() {
 			return this.utmContent ? `&utm_content=${this.utmContent}` : '';
 		},
+		hashParams() {
+			return this.shareUrl.split('#')[1] ? `#${this.shareUrl.split('#')[1]}` : '';
+		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			// Get query param string from shareUrl
 			const shareUrlSuffix = this.shareUrl.split('?')[1] ? `?${this.shareUrl.split('?')[1]}&` : '?';
-			return `${base}${this.shareUrl}${shareUrlSuffix}`;
+			const shareUrlWithoutHash = this.shareUrl.split('#')[0];
+			return `${base}${shareUrlWithoutHash}${shareUrlSuffix}`;
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
@@ -204,7 +213,7 @@ export default {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
 				// eslint-disable-next-line max-len
-				href: `${this.shareLink}utm_source=facebook.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}`,
+				href: `${this.shareLink}utm_source=facebook.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}${this.hashParams}`,
 				redirect_uri: `${pageUrl}`,
 				quote: this.shareMessage,
 			});
@@ -216,14 +225,14 @@ export default {
 				summary: this.shareMessage.substring(0, 256),
 				title: this.linkedInTitle ? this.linkedInTitle : this.modalTitle,
 				// eslint-disable-next-line max-len
-				url: `${this.shareLink}utm_source=linkedin.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}`
+				url: `${this.shareLink}utm_source=linkedin.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}${this.hashParams}`
 			});
 		},
 		twitterShareUrl() {
 			return getFullUrl('https://twitter.com/intent/tweet', {
 				text: this.shareMessage,
 				// eslint-disable-next-line max-len
-				url: `${this.shareLink}utm_source=t.co&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}`,
+				url: `${this.shareLink}utm_source=t.co&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}${this.hashParams}`,
 				via: 'Kiva',
 			});
 		},
@@ -239,6 +248,12 @@ export default {
 					if (code !== '4201') {
 						this.$showTipMsg(`There was a problem sharing to Facebook: ${message}`, 'warning');
 					}
+					this.$kvTrackEvent(
+						'thanks',
+						'click-Facebook-share',
+						'error-Social-Share-Lightbox',
+						this.loanId
+					);
 				} else {
 					this.$showTipMsg('Thanks for sharing to Facebook!');
 				}

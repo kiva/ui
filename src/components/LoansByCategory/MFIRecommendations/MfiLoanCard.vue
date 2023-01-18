@@ -77,8 +77,8 @@
 			/>
 
 			<a
-				v-kv-track-event="['Lending', 'MFI-feature-click-read-more-cta',
-					'Read more', loanId]"
+				v-kv-track-event="['loan-card', 'click',
+					'mfi-read-more', null, loanId]"
 				:href="`/lend/${loanId}`"
 				class="tw-inline tw-cursor-pointer"
 			>
@@ -95,8 +95,8 @@
 			:show-now="false"
 			:is-simple-lend-button="true"
 			class="tw-mt-2 tw-w-full"
-			v-kv-track-event="['Lending', 'MFI-feature-Add to basket',
-				'lend-button-click', loanId]"
+			v-kv-track-event="['loan-card', 'add-to-basket',
+				'mfi-lending', null, loanId]"
 			@add-to-basket="$emit('add-to-basket', $event)"
 		/>
 	</div>
@@ -104,7 +104,7 @@
 
 <script>
 import { mdiChevronRight, mdiMapMarker } from '@mdi/js';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
 import { isMatchAtRisk, watchLoanData } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
@@ -113,10 +113,10 @@ import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 const loanQuery = gql`query kcBasicLoanCard($loanId: Int!, $basketId: String) {

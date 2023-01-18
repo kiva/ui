@@ -84,7 +84,8 @@ import KivaClassicSingleCategoryCarousel from '@/components/LoanCollections/Kiva
 import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import {
 	preFetchChannel,
-	getCachedChannel
+	getCachedChannel,
+	getMetaDescription
 } from '@/util/loanChannelUtils';
 import {
 	getExperimentSettingCached,
@@ -94,7 +95,7 @@ import {
 	mdiClose
 } from '@mdi/js';
 import IconCalendar from '@/assets/icons/inline/eco-challenge/calendar.svg';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -128,6 +129,41 @@ const mainCategoryQuery = gql`
 `;
 export default {
 	name: 'LoanChannelCategoryClimateExperiment',
+	metaInfo() {
+		const channelDescription = getMetaDescription(this.$route.params.category);
+		return {
+			title: `${this.loanChannelName} | Invest & Support`,
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: channelDescription
+				}
+			].concat([
+				{
+					vmid: 'og:title',
+					property: 'og:title',
+					content: `${this.loanChannelName} | Invest & Support`
+				},
+				{
+					vmid: 'og:description',
+					property: 'og:description',
+					content: channelDescription
+				},
+			]).concat([
+				{
+					vmid: 'twitter:title',
+					name: 'twitter:title',
+					content: `${this.loanChannelName} | Invest & Support`
+				},
+				{
+					name: 'twitter:description',
+					vmid: 'twitter:description',
+					content: channelDescription
+				}
+			])
+		};
+	},
 	components: {
 		KivaClassicSingleCategoryCarousel,
 		KvMaterialIcon,

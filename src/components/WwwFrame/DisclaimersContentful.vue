@@ -14,7 +14,7 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { settingEnabled, settingWithinDateRange } from '@/util/settingsUtils';
 import { globalBannerDenyList, isExcludedUrl } from '@/util/urlUtils';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';

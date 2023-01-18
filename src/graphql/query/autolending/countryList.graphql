@@ -1,5 +1,6 @@
 query countryList {
 	autolending @client {
+		id
 		currentProfile {
 			id
 			loanSearchCriteria {

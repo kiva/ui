@@ -26,7 +26,7 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KvSelect from '@/components/Kv/KvSelect';
 
 export default {
@@ -71,6 +71,7 @@ export default {
 				this.apollo.mutate({
 					mutation: gql`mutation updateLendAfterDaysIdle($value: Int) {
 						autolending @client {
+							id
 							editProfile(profile: {
 								enableAfter: 0
 								lendAfterDaysIdle: $value
@@ -93,6 +94,7 @@ export default {
 				}
 			}
 			autolending @client {
+				id
 				currentProfile {
 					id
 					isEnabled

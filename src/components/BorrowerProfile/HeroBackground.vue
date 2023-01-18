@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
@@ -33,7 +33,7 @@ export default {
 		return {
 			contentfulAlt: '',
 			contentfulSrc: '',
-			isoCode: null,
+			isoCode: '',
 			stateCode: '',
 			city: '',
 			placeholderKey: 'bp-hero-country-placeholder',
@@ -92,9 +92,9 @@ export default {
 		},
 		result(result) {
 			const loan = result?.data?.lend?.loan ?? {};
-			this.isoCode = loan?.geocode?.country?.isoCode ?? null;
-			this.stateCode = loan?.geocode?.state ?? null;
-			this.city = loan?.geocode?.city ?? null;
+			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
+			this.stateCode = loan?.geocode?.state ?? '';
+			this.city = loan?.geocode?.city ?? '';
 		},
 	},
 	mounted() {

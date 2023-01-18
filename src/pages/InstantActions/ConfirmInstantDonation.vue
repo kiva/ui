@@ -120,7 +120,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import numeral from 'numeral';
 import { formatContentGroupsFlat } from '@/util/contentfulUtils';
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';

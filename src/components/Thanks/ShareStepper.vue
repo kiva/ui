@@ -12,12 +12,13 @@
 				</template>
 			</div>
 		</div>
-		<p class="tw-text-center tw-mt-4 tw-text-subhead">
-			<template v-if="showLenderName">
-				<span class="fs-mask">{{ lenderName }}</span>, complete your support by sharing.
+		<p class="tw-text-center tw-mt-4 tw-text-subhead" data-testid="thanks-message">
+			<template v-if="showLenderName || !calculatePeopleQtyToGoal">
+				<!-- eslint-disable-next-line max-len -->
+				<span class="fs-mask data-hj-suppress">{{ lenderName }}</span>, complete your support by sharing {{ subject }}
 			</template>
 			<template v-else>
-				Complete your support by sharing.
+				Complete your support by sharing {{ subject }}
 			</template>
 		</p>
 	</div>
@@ -38,6 +39,10 @@ export default {
 			type: Boolean,
 			default: true
 		},
+		calculatePeopleQtyToGoal: {
+			type: Number,
+			default: 0
+		}
 	},
 	data() {
 		return {
@@ -52,6 +57,14 @@ export default {
 				},
 			]
 		};
+	},
+	computed: {
+		subject() {
+			if (this.calculatePeopleQtyToGoal) {
+				return 'this loan.';
+			}
+			return 'Kiva\'s mission!';
+		}
 	}
 };
 </script>

@@ -33,27 +33,17 @@
 							:kiva-cards="kivaCards"
 							:teams="teams"
 							:loan-reservation-total="parseInt(totals.loanReservationTotal)"
-							:disable-matching="requireDepositsMatchedLoans"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<div
-							class="upsellContainer" v-if="!upsellCookieActive &&
-								showUpsellModule &&
-								upsellLoan.name
-							"
-						>
+						<div v-if="!upsellCookieActive" class="upsellContainer">
+							<kv-loading-placeholder v-if="!upsellLoan.name" class="tw-rounded" />
 							<upsell-module
-								v-if="!upsellCookieActive &&
-									showUpsellModule &&
-									upsellLoan.name
-								"
+								v-if="showUpsellModule && upsellLoan.name"
 								:loan="upsellLoan"
 								:close-upsell-module="closeUpsellModule"
 								:add-to-basket="addToBasket"
-								:enable-experiment-copy="enableUpsellsCopy"
-								:use-dynamic-upsell="useDynamicUpsell"
 							/>
 						</div>
 					</div>
@@ -82,7 +72,6 @@
 							:promo-fund="derivedPromoFund"
 							@refreshtotals="refreshTotals"
 							@updating-totals="setUpdatingTotals"
-							:show-matched-loan-kiva-credit="showMatchedLoanKivaCredit && requireDepositsMatchedLoans"
 							:open-lightbox="openMatchedLoansLightbox"
 						/>
 
@@ -273,7 +262,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
@@ -305,9 +294,7 @@ import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/RandomLoanSelector';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import upsellQuery from '@/graphql/query/checkout/upsellLoans.graphql';
-import upsellExpiringSoonQuery from '@/graphql/query/checkout/upsellLoansExpiringSoon.graphql';
 import UpsellModule from '@/components/Checkout/UpsellModule';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import * as Sentry from '@sentry/vue';
@@ -318,6 +305,7 @@ import {
 	getExperimentSettingCached,
 	trackExperimentVersion
 } from '@/util/experimentUtils';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -357,7 +345,8 @@ export default {
 		VerifyRemovePromoCredit,
 		UpsellModule,
 		MatchedLoansLightbox,
-		CampaignJoinTeamForm
+		CampaignJoinTeamForm,
+		KvLoadingPlaceholder
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [
@@ -400,15 +389,11 @@ export default {
 			showVerifyRemovePromoCredit: false,
 			upsellLoan: {},
 			showUpsellModule: true,
-			requireDepositsMatchedLoans: false,
 			showMatchedLoansLightbox: false,
 			showTeamForm: false,
 			teamJoinStatus: null,
-			enableUpsellsCopy: false,
 			myTeams: [],
-			enableDynamicUpsells: false,
 			isEcoChallengeExpShown: false,
-			useDynamicUpsell: false,
 			ecoChallengeRedirectQueryParam: '',
 			continueButtonState: 'loading',
 		};
@@ -444,9 +429,6 @@ export default {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 						client.query({ query: upsellQuery }),
-						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
-						client.query({ query: experimentQuery, variables: { id: 'upsells_copy' } }),
-						client.query({ query: experimentQuery, variables: { id: 'dynamic_upsells' } }),
 					]);
 				});
 		},
@@ -486,42 +468,6 @@ export default {
 		}
 	},
 	created() {
-		const upsellsDynamicExperiment = this.apollo.readFragment({
-			id: 'Experiment:dynamic_upsells',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.enableDynamicUpsells = upsellsDynamicExperiment.version === 'b';
-		if (upsellsDynamicExperiment.version) {
-			this.$kvTrackEvent(
-				'Basket',
-				'EXP-CORE-721-Sept2022',
-				upsellsDynamicExperiment.version
-			);
-		}
-		const upsellsCopyExperiment = this.apollo.readFragment({
-			id: 'Experiment:upsells_copy',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.enableUpsellsCopy = upsellsCopyExperiment.version === 'b';
-		if (upsellsCopyExperiment.version) {
-			this.$kvTrackEvent(
-				'Basket',
-				'EXP-CORE-678-Aug-2022',
-				upsellsCopyExperiment.version
-			);
-		}
-		const matchedLoansExperiment = this.apollo.readFragment({
-			id: 'Experiment:require_deposits_matched_loans',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.requireDepositsMatchedLoans = matchedLoansExperiment.version === 'b';
-		if (matchedLoansExperiment.version) {
-			this.$kvTrackEvent(
-				'Basket',
-				'EXP-CORE-615-May-2022',
-				matchedLoansExperiment.version
-			);
-		}
 		// show guest account claim confirmation message
 		if (this.myId && this.$route.query?.claimed === '1') {
 			this.$showTipMsg('Account created');
@@ -599,11 +545,7 @@ export default {
 		// show toast for specified scenario
 		this.handleToast();
 		this.getPromoInformationFromBasket();
-		if (this.$route.query.forceDynamicUpsell === 'true' && this.enableDynamicUpsells) {
-			this.getDynamicUpsellModuleData();
-		} else {
-			this.getUpsellModuleData();
-		}
+		this.getUpsellModuleData();
 
 		const ecoChallengeExpData = getExperimentSettingCached(this.apollo, ecoChallengeExpKey);
 		if (ecoChallengeExpData?.enabled) {
@@ -640,14 +582,6 @@ export default {
 			- this.upsellLoan?.loanFundraisingInfo?.fundedAmount
 			- this.upsellLoan?.loanFundraisingInfo?.reservedAmount || 0;
 			return amountLeft < 100;
-		},
-		showMatchedLoanKivaCredit() {
-			const matchedLoansWithCredit = this.loans?.filter(loan => {
-				const hasCredits = loan.creditsUsed?.length > 0;
-				const isMatchedLoan = loan.loan?.matchingText;
-				return hasCredits && isMatchedLoan;
-			});
-			return matchedLoansWithCredit.length > 0;
 		},
 		// show upsell module only once per session
 		upsellCookieActive() {
@@ -947,37 +881,6 @@ export default {
 				this.continueButtonState = 'active';
 				const loans = data?.lend?.loans?.values || [];
 				// Temp solution so we don't show reserved loans on upsell
-				const upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || {};
-				const amountLeft = upsellLoan?.loanAmount
-					- upsellLoan?.loanFundraisingInfo?.fundedAmount
-					- upsellLoan?.loanFundraisingInfo?.reservedAmount;
-				if (amountLeft > 50 && this.enableDynamicUpsells) {
-					this.getDynamicUpsellModuleData();
-				} else {
-					this.upsellLoan = upsellLoan;
-					if (this.enableDynamicUpsells) {
-						this.$kvTrackEvent(
-							'Basket',
-							'get-almost-funded-upsells',
-							'Use almost funded upsell loan'
-						);
-					}
-				}
-			});
-		},
-		getDynamicUpsellModuleData() {
-			this.$kvTrackEvent(
-				'Basket',
-				'get-expiring-soon-upsells',
-				'Use expiring soon upsell loan'
-			);
-			this.useDynamicUpsell = true;
-			this.apollo.query({
-				query: upsellExpiringSoonQuery,
-				fetchPolicy: 'network-only',
-			}).then(({ data }) => {
-				const loans = data?.lend?.loans?.values || [];
-				// Temp solution so we don't show reserved loans on upsell
 				this.upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || {};
 			});
 		},
@@ -1029,11 +932,7 @@ export default {
 							);
 							// eslint-disable-next-line max-len
 							this.$showTipMsg('Looks like that loan was reserved by someone else! Try this one instead.', 'info');
-							if (this.$route.query.forceDynamicUpsell === 'true' && this.enableDynamicUpsells) {
-								this.getDynamicUpsellModuleData();
-							} else {
-								this.getUpsellModuleData();
-							}
+							this.getUpsellModuleData();
 							this.refreshTotals();
 						} else {
 							this.$showTipMsg(error.message, 'error');
@@ -1124,11 +1023,13 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-.upsellContainer {
+.upsellContainer,
+.upsellContainer > .loading-placeholder {
 	min-height: 250px;
 }
 @media screen and (max-width: 733px) {
-	.upsellContainer {
+	.upsellContainer,
+	.upsellContainer > .loading-placeholder {
 		min-height: 300px;
 	}
 }

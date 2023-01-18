@@ -3,7 +3,7 @@ const path = require('path');
 const Bowser = require('bowser');
 const cookie = require('cookie');
 const { createBundleRenderer } = require('vue-server-renderer');
-const getGqlFragmentTypes = require('./util/getGqlFragmentTypes');
+const getGqlPossibleTypes = require('./util/getGqlPossibleTypes');
 const getSessionCookies = require('./util/getSessionCookies');
 const vueSsrCache = require('./util/vueSsrCache');
 const tracer = require('./util/ddTrace');
@@ -75,8 +75,8 @@ module.exports = function createMiddleware({
 		res.setHeader('Content-Type', 'text/html');
 		res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 
-		// get graphql api fragment types for the graphql client
-		const typesPromise = getGqlFragmentTypes(config.server.graphqlUri, cache);
+		// get graphql api possible types for the graphql client
+		const typesPromise = getGqlPossibleTypes(config.server.graphqlUri, cache);
 
 		// fetch initial session cookies in case starting session with this request
 		const cookiePromise = getSessionCookies(config.server.sessionUri, cookies);
@@ -85,7 +85,7 @@ module.exports = function createMiddleware({
 			typesPromise.then(() => console.info(JSON.stringify({
 				meta: {},
 				level: 'info',
-				message: `fragment fetch: ${Date.now() - s}ms`
+				message: `types fetch: ${Date.now() - s}ms`
 			})));
 			cookiePromise.then(() => console.info(JSON.stringify({
 				meta: {},
@@ -97,7 +97,7 @@ module.exports = function createMiddleware({
 		Promise.all([typesPromise, cookiePromise])
 			.then(([types, cookieInfo]) => {
 				// add fetched types to rendering context
-				context.config.graphqlFragmentTypes = types;
+				context.config.graphqlPossibleTypes = types;
 				// update cookies in the rendering context with any newly fetched session cookies
 				context.cookies = Object.assign(context.cookies, cookieInfo.cookies);
 				// forward any newly fetched 'Set-Cookie' headers

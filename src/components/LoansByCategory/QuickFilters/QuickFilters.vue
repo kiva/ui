@@ -1,15 +1,6 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-mb-2 tw-w-full">
-		<div class="tw-flex tw-items-center tw-mb-2 tw-relative">
-			<div
-				v-show="showBadge"
-				class="tw-hidden lg:tw-flex tw-gap-1 tw-text-base tw-text-primary-inverse
-					tw-rounded tw-bg-brand tw-px-1.5 tw-py-0.5
-					tw-absolute"
-				style="left: -102px;"
-			>
-				<img src="@/assets/images/green_sparkles.svg" alt=""> New!
-			</div>
+		<div class="tw-flex tw-items-center tw-mb-2">
 			<div v-if="!withCategories" class="tw-flex tw-items-center">
 				<h3 class="tw-text-h3">
 					Quick filters
@@ -81,6 +72,7 @@
 				:filters-loaded="filtersLoaded"
 				@update-location="updateLocation"
 				ref="locationSelector"
+				:tracking-category="trackingCategory"
 			/>
 
 			<div v-if="!removeSortByDropdown && !withCategories" class="tw-flex tw-flex-col tw-grow">
@@ -108,14 +100,7 @@
 			</div>
 		</div>
 		<div class="tw-flex tw-justify-between tw-items-start tw-mt-2" v-if="withCategories">
-			<div class="tw-flex tw-flex-col md:tw-flex-row tw-items-start">
-				<span v-show="filtersLoaded" class="tw-text-small">Showing {{ totalLoans }} loans</span>
-				<!-- eslint-disable-next-line max-len -->
-				<button v-show="filtersLoaded" class="md:tw-ml-2 tw-mt-1 md:tw-mt-0 tw-text-small tw-text-action" @click="resetFilters">
-					Reset filters
-				</button>
-			</div>
-			<div id="customizedSortBySelector" class="tw-text-action tw-flex tw-items-center tw-gap-1 tw-text-small">
+			<div id="customizedSortBySelector" class="tw-text-action tw-flex tw-items-center tw-gap-1 tw-text-base">
 				<kv-material-icon :icon="mdiFilterVariant" class="tw-w-2 tw-h-2" />
 				Loan sort:
 				<kv-select
@@ -132,6 +117,13 @@
 						{{ sortType.title }}
 					</option>
 				</kv-select>
+			</div>
+			<div class="tw-flex tw-flex-col md:tw-flex-row tw-items-start">
+				<span v-show="filtersLoaded" class="tw-text-base">Showing {{ totalLoans }} loans</span>
+				<!-- eslint-disable-next-line max-len -->
+				<button v-show="filtersLoaded" class="md:tw-ml-2 tw-mt-1 md:tw-mt-0 tw-text-base tw-text-action" @click="resetFilters">
+					Reset filters
+				</button>
 			</div>
 		</div>
 	</div>
@@ -168,6 +160,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		trackingCategory: {
+			type: String,
+			required: true,
+		}
 	},
 	components: {
 		KvSelect,
@@ -179,29 +175,82 @@ export default {
 			mdiFilterVariant,
 			selectedCategory: 0,
 			selectedGender: '',
-			sortBy: 'personalized',
-			showBadge: false
+			sortBy: 'amountLeft',
+			presetFilterActive: {
+				women: false,
+				kivaUs: false,
+				endingSoon: false,
+			},
 		};
 	},
 	mixins: [
 		loanChannelQueryMapMixin
 	],
 	watch: {
-		selectedCategory() {
+		selectedCategory(categoryId) {
+			const catId = Number(categoryId);
+			const queryMap = loanChannelQueryMapMixin.data().loanChannelQueryMap;
+			const categoryFilter = catId === 0 ? {} : queryMap
+				.find(channel => channel.id === catId)?.flssLoanSearch;
+			if (this.presetFilterActive.women) {
+				this.resetGender();
+				this.presetFilterActive.women = false;
+			} else if (this.presetFilterActive.kivaUs) {
+				this.resetLocation();
+				this.presetFilterActive.kivaUs = false;
+			} else if (this.presetFilterActive.endingSoon) {
+				this.resetSortBy();
+				this.presetFilterActive.endingSoon = false;
+			}
+
+			// These categories use location/gender/sort by for FLSS and need
+			// to have dropdowns preset
+			if (catId === 5) { // women
+				this.selectedGender = 'female';
+				this.presetFilterActive.women = true;
+			} else if (catId === 28) { // kiva-u-s
+				this.setCountry('US');
+				this.presetFilterActive.kivaUs = true;
+			} else if (catId === 3) { // ending-soon
+				this.sortBy = 'expiringSoon';
+				this.presetFilterActive.endingSoon = true;
+			} else {
+				if (catId === 33 || catId === 96) { // mission-driven-orgs, covid-19
+				// we don't currently have this option for these categories, also irrelevant since
+				// the user has a sort by dropdown available to them
+					delete categoryFilter.sortBy;
+				}
+				this.$emit('update-filters', categoryFilter);
+			}
+
+			this.$kvTrackEvent(
+				this.trackingCategory,
+				'filter',
+				'quick-filters-option',
+				categoryId === 0 ? 'All categories' : categoryId
+			);
 		},
 		selectedGender(gender) {
+			if (this.presetFilterActive.women && gender !== 'female') {
+				this.resetCategory();
+				this.presetFilterActive.women = false;
+			}
 			this.$emit('update-filters', { gender });
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'filter',
 				'quick-filters-option',
 				gender === '' ? 'all genders' : gender
 			);
 		},
 		sortBy(sortBy) {
+			if (this.presetFilterActive.endingSoon && sortBy !== 'expiringSoon') {
+				this.resetCategory();
+				this.presetFilterActive.endingSoon = false;
+			}
 			this.$emit('update-filters', { sortBy });
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'click',
 				'quick-filters-option',
 				sortBy
@@ -209,10 +258,30 @@ export default {
 		}
 	},
 	methods: {
+		resetCategory() {
+			this.selectedCategory = 0;
+		},
+		resetGender() {
+			this.selectedGender = '';
+		},
+		resetLocation() {
+			this.updateLocation([]);
+			this.$refs.locationSelector.emptyCountries();
+		},
+		resetSortBy() {
+			this.sortBy = 'amountLeft';
+		},
+		setCountry(country) {
+			this.$refs.locationSelector.setCountry(country);
+		},
 		updateLocation(location) {
+			if (this.presetFilterActive.kivaUs && JSON.stringify(location) !== '["US"]') {
+				this.resetCategory();
+				this.presetFilterActive.kivaUs = false;
+			}
 			this.$emit('update-filters', { country: location });
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'filter',
 				'quick-filters-option',
 				location
@@ -220,12 +289,13 @@ export default {
 		},
 		resetFilters() {
 			this.$emit('reset-filters');
+			this.selectedCategory = 0;
 			this.selectedGender = '';
-			this.sortBy = 'personalized';
+			this.sortBy = 'amountLeft';
 			this.updateLocation([]);
-			this.$refs.locationSelector.emptyCountries();
+			this.$refs.locationSelector?.emptyCountries();
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'click',
 				'quick-filters-reset',
 				'all'
@@ -233,7 +303,7 @@ export default {
 		},
 		trackDropdownClick(label) {
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'click',
 				'quick-filters-dropdown',
 				label
@@ -254,13 +324,6 @@ export default {
 			return this.targetedLoanChannelUrl === 'ending-soon';
 		}
 	},
-	mounted() {
-		const badgeCookie = this.cookieStore.get('quick_filter_new_badge') === 'true' || false;
-		if (!badgeCookie) {
-			this.showBadge = true;
-			this.cookieStore.set('quick_filter_new_badge', true);
-		}
-	}
 };
 </script>
 
@@ -270,9 +333,11 @@ export default {
 		border-style: none;
 		padding: 0 0 0 4px;
 		width: auto;
-		font-size: 0.875rem;
+		font-size: 1rem;
+		text-decoration: underline;
 		cursor: pointer;
 		height: auto;
+		background: transparent;
 		@apply focus:tw-ring-0 focus:tw-ring-offset-0;
 	}
 

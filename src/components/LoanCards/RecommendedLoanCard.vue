@@ -89,17 +89,17 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
 import loanUseMixin from '@/plugins/loan/loan-use-mixin';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
 import KvFlag from '@/components/Kv/KvFlag';
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LendButton from '@/components/LoanCards/Buttons/LendButton2';
 import WhySpecial from '@/components/LoanCards/WhySpecial';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const loanQuery = gql`query recLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {

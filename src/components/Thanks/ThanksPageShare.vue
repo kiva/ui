@@ -1,13 +1,20 @@
 <template>
 	<div>
-		<ShareStepper :lender-name="this.lender.firstName" :show-lender-name="showLenderName" />
+		<ShareStepper
+			:lender-name="lender.firstName"
+			:show-lender-name="showLenderName"
+			:calculate-people-qty-to-goal="calculatePeopleQtyToGoal()"
+		/>
 		<div class="row page-content">
 			<div class="large-2"></div>
 			<div class="small-12 large-8 columns thanks">
 				<div class="thanks__header hide-for-print">
 					<template v-if="receipt">
+						<div v-if="!calculatePeopleQtyToGoal()">
+							<img :alt="`Fully funded image`" :src="thanksImgRequire(`./kiva-share.png`)">
+						</div>
 						<borrower-image
-							v-if="categoryShareVersion === 'c' || !categoryName"
+							v-else-if="showCategoryShareControl"
 							class="
 								tw-w-full
 								tw-bg-black
@@ -35,7 +42,7 @@
 								:src="imageRequire(`./${categoryName}_thanks_page.png`)"
 							>
 						</div>
-						<div v-if="categoryShareVersion === 'c' || !categoryName" class="tw-flex-auto tw-mb-2">
+						<div v-if="showCategoryShareControl && calculatePeopleQtyToGoal()" class="tw-flex-auto tw-mb-2">
 							<figure>
 								<figcaption class="tw-flex progress">
 									<template>
@@ -77,25 +84,22 @@
 					<template v-else>
 						<h1	class="thanks__headline-h1 tw-mt-1 tw-mb-3 tw-text-left">
 							<!-- eslint-disable-next-line max-len -->
-							<template v-if="categoryShareVersion === 'a' && categoryName">
+							<template v-if="!calculatePeopleQtyToGoal()">
+								Can you share Kiva with one more person?
+							</template>
+							<template v-else-if="categoryShareVersion === 'a' && categoryName">
 								<!-- eslint-disable-next-line max-len -->
-								<span class="fs-mask">{{ this.lender.firstName }}</span>, share now to find allies in the fight against economic inequity for {{ this.categoryName }}.
+								<span class="fs-mask data-hj-suppress">{{ lender.firstName }}</span>, share now to find allies in the fight against economic inequity for {{ categoryName }}.
 							</template>
 							<template v-else-if="categoryShareVersion === 'b' && categoryName">
-								More loans like yours mean more opportunities for {{ this.categoryName }}.
+								More loans like yours mean more opportunities for {{ categoryName }}.
 							</template>
 							<template v-else>
 								Can you share this loan with one more person?
 							</template>
 						</h1>
 						<p class="tw-text-h3 tw-m-0 thanks__base-text">
-							<template v-if="categoryShareVersion === 'c' || !categoryName">
-								<!-- eslint-disable-next-line max-len -->
-								{{ this.loan.name }} only needs {{ calculatePeopleQtyToGoal() }} more people to lend $25 and their loan could be fully funded in a matter of hours!
-							</template>
-							<template v-else>
-								{{ this.thanksPageBody }}
-							</template>
+							{{ thanksPageBody }}
 						</p>
 					</template>
 					<template>
@@ -107,7 +111,8 @@
 										data-testid="share-facebook-button"
 										class="social__btn social__btn--facebook"
 										:href="facebookShareUrl"
-										v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Facebook-share']"
+										v-kv-track-event="
+											['thanks', 'Social-Share-Lightbox', 'click-Facebook-share', loanId]"
 									>
 										<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
 										<span>Share on Facebook</span>
@@ -117,7 +122,8 @@
 										class="social__btn social__btn--link tw-text-link tw-border-tertiary tw-border"
 										:class="copyStatus.class"
 										:disabled="copyStatus.disabled"
-										v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Copy-link-share']"
+										v-kv-track-event="
+											['thanks', 'Social-Share-Lightbox', 'click-Copy-link-share', loanId]"
 										@click="copyLink"
 									>
 										<kv-material-icon
@@ -125,7 +131,7 @@
 											class="social__icon"
 											:icon="mdiLink"
 										/>
-										<span>{{ this.copyStatus.text }}</span>
+										<span>{{ copyStatus.text }}</span>
 									</button>
 									<a
 										data-testid="share-twitter-button"
@@ -133,7 +139,8 @@
 										:href="twitterShareUrl"
 										target="_blank"
 										rel="noopener"
-										v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Twitter-share']"
+										v-kv-track-event="
+											['thanks', 'Social-Share-Lightbox', 'click-Twitter-share', loanId]"
 										@click="$showTipMsg('Thanks for tweeting!')"
 									>
 										<kv-icon name="twitter" title="Twitter" class="social__icon" />
@@ -145,7 +152,8 @@
 										:href="linkedInShareUrl"
 										target="_blank"
 										rel="noopener"
-										v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-LinkedIn-share']"
+										v-kv-track-event="
+											['thanks', 'Social-Share-Lightbox', 'click-LinkedIn-share', loanId]"
 										@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
 									>
 										<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
@@ -182,7 +190,8 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
-const imageRequire = require.context('@/assets/images/category-share-experiment/', true);
+const imageRequire = require.context('@/assets/images/category-share-experiment', true);
+const thanksImgRequire = require.context('@/assets/images/thanks-page', true);
 
 export default {
 	name: 'ThanksPageShare',
@@ -222,7 +231,7 @@ export default {
 		categoryShareVersion: {
 			type: String,
 			default: 'c'
-		},
+		}
 	},
 	metaInfo() {
 		return {
@@ -232,6 +241,7 @@ export default {
 	data() {
 		return {
 			imageRequire,
+			thanksImgRequire,
 			isGuest: false,
 			mdiCheckAll,
 			mdiLink,
@@ -244,6 +254,12 @@ export default {
 		};
 	},
 	computed: {
+		showLoanProgress() {
+			return (this.categoryShareVersion === 'c' || !this.categoryName) && this.calculatePeopleQtyToGoal();
+		},
+		loanId() {
+			return this.loan?.id ?? undefined;
+		},
 		suggestedMessage() {
 			if (this.loan.name) {
 				const location = this.loan?.geocode?.city || this.loan?.geocode?.country?.name;
@@ -262,41 +278,59 @@ export default {
 			if (this.lender?.public && this.lender?.inviterName) return this.lender?.inviterName;
 			return 'anonymous';
 		},
-		getUtmCampaignVersion() {
+		utmCampaign() {
 			if (this.shareAskCopyVersion === 'b') {
-				return `&utm_campaign=social_share_checkout_variant_scle_${this.shareCardLanguageVersion}`;
+				return `social_share_checkout_variant_scle_${this.shareCardLanguageVersion}`;
 			}
-			return `&utm_campaign=social_share_checkout_control_scle_${this.shareCardLanguageVersion}`;
+			return `social_share_checkout_control_scle_${this.shareCardLanguageVersion}`;
 		},
 		shareLink() {
-			let base = `https://${this.$appConfig.host}`;
-			let lender = '';
-			let categoryShareVersion = '';
-			if (this.categoryName && this.categoryShareVersion !== 'c') {
-				base += `/lend-by-category/${this.categoryName}`;
-				lender = `&lender=${this.loan.name}`;
-				categoryShareVersion = ['a', 'b'].includes(this.categoryShareVersion)
-					? `&category_share_version=${this.categoryShareVersion}`
-					: '';
-			} else if (this.loan.id) {
-				return `${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}?utm_content=${this.utmContent}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
+			const base = `https://${this.$appConfig.host}`;
+			const args = {
+				utm_campaign: this.utmCampaign,
+				utm_content: this.utmContent,
+			};
+			if (!this.calculatePeopleQtyToGoal()) {
+				if (this.lender.public && this.lender.publicName) {
+					args.lender = this.lender.publicName;
+				}
+				args.funded_share = 1;
+				return getFullUrl(`${base}/invitedby/${this.lender.inviterName}`, args);
 			}
-			return `${base}?utm_content=${this.utmContent}${this.getUtmCampaignVersion}${categoryShareVersion}${lender}`; // eslint-disable-line max-len
+
+			// Category share URL for MARS-310 Experiment
+			if (this.categoryName && ['a', 'b'].includes(this.categoryShareVersion)) {
+				if (this.lender.public && this.lender.publicName) {
+					args.lender = this.lender.publicName;
+				}
+				args.category_share_version = this.categoryShareVersion;
+				return getFullUrl(`${base}/lend-by-category/${this.categoryName}`, args);
+			}
+			// Share specific loan URL
+			if (this.loan.id) {
+				return getFullUrl(`${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}`, args);
+			}
+			// Share generic Kiva URL
+			return getFullUrl(base, args);
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
 			return getFullUrl('https://www.facebook.com/dialog/share', {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
-				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social${this.getUtmCampaignVersion}`, // eslint-disable-line max-len
+				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social`, // eslint-disable-line max-len
 				redirect_uri: `${pageUrl}?kiva_transaction_id=${this.$route.query.kiva_transaction_id}`,
 				quote: this.shareMessage,
 			});
 		},
 		linkedInShareUrl() {
 			let title = `A loan for ${this.loan.name}`;
-			if (['a', 'b'].includes(this.categoryShareVersion) && this.categoryName) {
-				title = `Can you help ${this.loan.name} `;
+			const lender = this.lender.public && this.lender.publicName ? this.lender.publicName : '';
+			if (!this.calculatePeopleQtyToGoal()) {
+				title = lender ? `Can you join ${lender} ` : 'Can you join ';
+				title += 'in giving others a chance to succeed?';
+			} else if (['a', 'b'].includes(this.categoryShareVersion) && this.categoryName) {
+				title = lender ? `Can you help ${lender} ` : 'Can you help ';
 				if (this.categoryName === 'women') {
 					title += 'support women around the world?';
 				} else if (this.categoryName === 'education') {
@@ -309,13 +343,13 @@ export default {
 				source: `https://${this.$appConfig.host}`,
 				summary: this.shareMessage.substring(0, 256),
 				title,
-				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social${this.getUtmCampaignVersion}` // eslint-disable-line max-len
+				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social` // eslint-disable-line max-len
 			});
 		},
 		twitterShareUrl() {
 			return getFullUrl('https://twitter.com/intent/tweet', {
 				text: this.shareMessage,
-				url: `${this.shareLink}&utm_source=t.co&utm_medium=social${this.getUtmCampaignVersion}`, // eslint-disable-line max-len
+				url: `${this.shareLink}&utm_source=t.co&utm_medium=social`, // eslint-disable-line max-len
 				via: 'Kiva',
 			});
 		},
@@ -330,6 +364,15 @@ export default {
 		},
 		thanksPageBody() {
 			let pageBody = '';
+			if (!this.calculatePeopleQtyToGoal()) {
+				return '1.4 billion people are currently unbanked with no access to basic financial services. '
+					+ 'Sharing Kiva with others can help inspire them to give people '
+					+ 'the funds they need to improve their lives.';
+			}
+			if (this.showCategoryShareControl) {
+				// eslint-disable-next-line max-len
+				return `${this.loan.name} only needs ${this.calculatePeopleQtyToGoal()} more people to lend $25 and they could be fully funded in a matter of hours!`;
+			}
 			if (this.categoryShareVersion === 'a') {
 				pageBody = '1.4 billion people are currently unbanked with no access to basic financial services.';
 				if (this.categoryName === 'women') {
@@ -357,6 +400,9 @@ export default {
 		},
 		showLenderName() {
 			return ['b', 'c'].includes(this.categoryShareVersion) || !this.categoryName;
+		},
+		showCategoryShareControl() {
+			return !this.categoryName || !this.categoryShareVersion || this.categoryShareVersion === 'c';
 		}
 	},
 	methods: {
@@ -368,31 +414,21 @@ export default {
 				if (code) {
 					// The 4201 error code means the user pressed 'Cancel', so can be ignored
 					if (code !== '4201') {
-						this.$kvTrackEvent(
-							'thanks',
-							'click-Facebook-share',
-							'error-Social-Share-Lightbox'
-						);
 						this.$showTipMsg(`There was a problem sharing to Facebook: ${message}`, 'warning');
-					} else {
-						this.$kvTrackEvent(
-							'thanks',
-							'click-Facebook-share',
-							'error-Social-Share-Lightbox'
-						);
 					}
-				} else {
 					this.$kvTrackEvent(
 						'thanks',
 						'click-Facebook-share',
-						'error-Social-Share-Lightbox'
+						'error-Social-Share-Lightbox',
+						this.loanId
 					);
+				} else {
 					this.$showTipMsg('Thanks for sharing to Facebook!');
 				}
 			}
 		},
 		async copyLink() {
-			const url = `${this.shareLink}&utm_source=social_share_link${this.getUtmCampaignVersion}`; // eslint-disable-line max-len
+			const url = `${this.shareLink}&utm_source=social_share_link`; // eslint-disable-line max-len
 			try {
 				await clipboardCopy(url);
 				this.copyStatus = {
