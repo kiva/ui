@@ -1,92 +1,81 @@
 <template>
 	<div class="gender-radios">
-		<kv-pill-toggle
-			id="filter-gender"
-			:options="genderOptions"
-			:selected="gender"
-			@pill-toggled="(val) => gender = val"
-		/>
+		<ul>
+			<li
+				v-for="genderOption in genderOptions" :key="genderOption.value"
+				class="tw-mb-1 tw-px-1 tw-py-1"
+			>
+				<kv-radio
+					:id="`gender-${genderOption.value}`"
+					:value="genderOption.value"
+					v-model="activeGender"
+				>
+					{{ genderOption.label }}
+				</kv-radio>
+			</li>
+		</ul>
 	</div>
 </template>
 
 <script>
-import KvPillToggle from '@/components/Kv/KvPillToggle';
+import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 
 export default {
 	name: 'GenderFilter',
-	inject: ['apollo'],
 	components: {
-		KvPillToggle,
+		KvRadio
 	},
 	props: {
-		initialGender: {
+		selectedGender: {
 			type: String,
 			default: null
 		},
-		selectedGender: {
+		initialGender: {
 			type: String,
 			default: null
 		}
 	},
 	data() {
 		return {
-			gender: null,
+			activeGender: null,
 			genderOptions: [
-				{
-					title: 'All genders',
-					key: 'both',
-				},
-				{
-					title: 'Women',
-					key: 'female',
-				},
-				{
-					title: 'Men',
-					key: 'male',
-				},
+				{ value: 'both', label: 'All genders' },
+				{ value: 'female', label: 'Women' },
+				{ value: 'male', label: 'Men' },
+				{ value: 'non-binary', label: 'Non-Binary' },
 			]
 		};
 	},
+	created() {
+		this.setGenderFilter();
+	},
 	watch: {
-		gender(gender, previousGender) {
-			if (gender !== previousGender && gender !== this.selectedGender) {
-				this.$emit('updated-filters', {
-					gender: this.gender === 'both' ? null : this.gender
-				});
+		initialGender(next, prev) {
+			if (!this.selectedGender && next !== prev) {
+				this.setGenderFilter();
 			}
 		},
-		initialGender(gender, previousGender) {
-			if (!this.selectedGender && gender !== previousGender) {
-				this.setFilterState();
+		selectedGender(next, prev) {
+			if (next !== prev) {
+				this.setGenderFilter();
 			}
 		},
-		selectedGender(gender, previousGender) {
-			if (gender !== previousGender) {
-				this.setFilterState();
+		activeGender(next, prev) {
+			if (next !== prev) {
+				this.$emit('gender-updated', next);
 			}
 		}
 	},
-	mounted() {
-		this.setFilterState();
-	},
 	methods: {
-		setFilterState() {
-			// set currently selected if present
+		setGenderFilter() {
+			// set selected if present
 			if (this.selectedGender) {
-				this.gender = this.selectedGender;
+				this.activeGender = this.selectedGender;
 				return true;
 			}
-			// fallback to initial setting if present
-			if (this.initialGender) {
-				this.gender = this.initialGender;
-				return true;
-			}
+			// fallback to initial sort
+			this.activeGender = this.initialGender;
 		}
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-// @import 'settings';
-
-</style>

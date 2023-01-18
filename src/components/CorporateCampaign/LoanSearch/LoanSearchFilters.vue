@@ -4,77 +4,78 @@
 			<div class="tw-mb-2 md:tw-mb-0">
 				<kv-button
 					class="loan-filters__toggle rounded smallest secondary tw-mr-2"
+					variant="secondary"
 					@click.native.prevent="showFilters()"
 				>
 					Filter loans
 
-					<kv-icon
-						class="loan-filters__toggle-icon"
-						name="small-chevron"
-						:from-sprite="true"
+					<kv-material-icon
 						aria-hidden="true"
+						class="	tw-inline-flex tw-w-4 tw-absolute tw-top-0
+								tw-pt-1.5 tw-pr-1 tw-space-x-1"
+						name="chevron-down"
+						:icon="mdiChevronDown"
 					/>
 				</kv-button>
 				<span class="tw-font-medium tw-whitespace-nowrap">{{ totalCount }} loans</span>
 			</div>
 
 			<div v-if="showLoanDisplayToggle" class="loan-filters__loan-display">
-				<kv-pill-toggle
-					id="pill"
-					:options="[
-						{
-							title: 'Rows',
-							key: 'rows',
-						},
-						{
-							title: 'Grid',
-							key: 'grid',
-						},
-					]"
-					:selected="activeLoanDisplay"
-					@pill-toggled="(val) => { $emit('set-loan-display', val === 'rows') }"
-				/>
-			</div>
-		</div>
-
-		<div
-			v-if="filterChips.length"
-			class="tw-mt-3 tw-mx-2 tw-mb-1 md:tw-mx-7"
-		>
-			<div class="row">
 				<div
-					class="chips__container small-12 large-8 xxlarge-9 columns"
-					:class="{'chips--collapsed' : isChipsCollapsed}"
-					ref="chipsContainer"
+					class="tw-flex tw-cursor-pointer tw-items-center"
+					id="view-toggle"
+				>
+					<span
+						class="tw-flex tw-items-center tw-flex-wrap"
+						:selected="activeLoanDisplay"
+						@click="$emit('set-loan-display', true)"
+					>
+						<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-p-1">
+							Row View
+						</h4>
+						<kv-material-icon
+							class="tw-mr-1 tw-w-2 tw-text-action tw-inline-block"
+							name="list-green"
+							:icon="mdiLandRowsHorizontal"
+						/>
+					</span>
+
+					<span class="divider"></span>
+					<span
+						class="tw-flex tw-items-center tw-flex-wrap"
+						:selected="activeLoanDisplay"
+						@click="$emit('set-loan-display', false)"
+					>
+						<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-p-1">
+							Grid View
+						</h4>
+						<kv-material-icon
+							class="tw-mr-1 tw-w-2 tw-text-action tw-inline-block"
+							name="grid-green"
+							:icon="mdiGridLarge"
+						/>
+					</span>
+				</div>
+			</div>
+
+			<div
+				v-if="filterChips.length"
+				class="tw-flex tw-items-start tw-flex-col lg:tw-flex-row"
+			>
+				<div
+					class="chips__container tw-overflow-hidden"
 				>
 					<div
-						ref="chipsInnerContainer"
+						class="tw-flex tw-flex-wrap tw-gap-1.5"
 					>
-						<kv-chip
+						<kv-chip-classic
 							v-for="(filter, index) in filterChips"
 							:key="`chip-${index}`"
 							:title="cleanChipName(filter.name)"
-							@click-chip="handleRemoveFilter(filter)"
-						/>
-					</div>
-				</div>
-				<div class="small-12 large-4 xxlarge-3 columns">
-					<div class="chips__toggle-container">
-						<kv-button
-							v-if="isChipsCollapsable"
-							class="chips__toggle text-link"
-							@click.native="isChipsCollapsed = !isChipsCollapsed"
+							@click="handleRemoveFilter(filter)"
 						>
-							{{ isChipsCollapsed ? `Show all ${filterChips.length} filters` : 'Hide filters' }}
-						</kv-button>
-						<span v-if="!isInitialFilters && isChipsCollapsable">|</span>
-						<kv-button
-							v-if="!isInitialFilters"
-							class="chips__toggle text-link"
-							@click.native="handleResetFilters"
-						>
-							Reset all
-						</kv-button>
+							{{ filter.name }}
+						</kv-chip-classic>
 					</div>
 				</div>
 			</div>
@@ -89,28 +90,45 @@
 			@lightbox-closed="filtersVisible = false"
 		>
 			<div class="loan-filter-controls">
-				<gender-filter
-					:initial-gender="initialGender"
-					:selected-gender="selectedGender"
-					@updated-filters="handleUpdatedFilters"
-				/>
+				<span class="tw-flex-col">
+					<span class="tw-flex">
+						<div
+							class="loan-filters__lightbox tw-mb-0.5"
+							id="gender-filter-container"
+						>
+							<h3 class="tw-py-1 tw-p-2 tw-inline-block">
+								Gender
+							</h3>
 
-				<kv-accordion-item
-					class="loan-filters__lightbox-accordian"
-					id="sort-order-accordian"
-				>
-					<template #header>
-						<h3 class="tw-py-1">
-							Sort By
-						</h3>
-					</template>
-					<sort-order
-						class="loan-filter-controls__filter-type"
-						:initial-sort="initialSortBy"
-						:selected-sort="selectedSort"
-						@sort-order-updated="handleSortByUpdated"
-					/>
-				</kv-accordion-item>
+							<fieldset class="tw-flex tw-flex-col tw-gap-4 tw-my-2 tw-p-1">
+								<gender-filter
+									class="loan-filter-controls__filter-type"
+									:initial-gender="initialGender"
+									:selected-gender="selectedGender"
+									@updated-filters="handleUpdatedFilters"
+								/>
+							</fieldset>
+						</div>
+
+						<div
+							class="loan-filters__lightbox tw-flex-grow"
+							id="sort-filter-container"
+						>
+							<h3 class="tw-py-1 tw-p-2 tw-inline-block">
+								Sort By
+							</h3>
+							<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-my-2 tw-p-1">
+								<sort-order
+									class="loan-filter-controls__filter-type"
+									:initial-sort="initialSortBy"
+									:selected-sort="selectedSort"
+									@sort-order-updated="handleSortByUpdated"
+								/>
+							</fieldset>
+						</div>
+					</span>
+					<hr class="tw-border-tertiary tw-my-1">
+				</span>
 
 				<kv-accordion-item
 					class="loan-filters__lightbox-accordian"
@@ -187,7 +205,7 @@
 
 			<template #controls>
 				<kv-button
-					class="button smallest"
+					variant="primary"
 					@click.native.prevent="applyFilters"
 				>
 					Apply Filters
@@ -201,18 +219,18 @@
 import _isEqual from 'lodash/isEqual';
 import _sortBy from 'lodash/sortBy';
 import { gql } from '@apollo/client';
-import KvButton from '@/components/Kv/KvButton';
-import KvChip from '@/components/Kv/KvChip';
-import KvLightbox from '@/components/Kv/KvLightbox';
+import { mdiChevronDown, mdiGridLarge, mdiLandRowsHorizontal } from '@mdi/js';
 import AttributeFilter from '@/components/CorporateCampaign/LoanSearch/AttributeFilter';
 import GenderFilter from '@/components/CorporateCampaign/LoanSearch/GenderFilter';
-import KvAccordionItem from '@/components/Kv/KvAccordionItem';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvPillToggle from '@/components/Kv/KvPillToggle';
 import LocationFilter from '@/components/CorporateCampaign/LoanSearch/LocationFilter';
 import SectorFilter from '@/components/CorporateCampaign/LoanSearch/SectorFilter';
 import SortOrder from '@/components/CorporateCampaign/LoanSearch/SortOrder';
 import TagFilter from '@/components/CorporateCampaign/LoanSearch/TagFilter';
+import KvChipClassic from '@/components/Kv/KvChipClassic';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvAccordionItem from '~/@kiva/kv-components/vue/KvAccordionItem';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const filterOptionsQuery = gql`
 	query filterOptionsQuery {
@@ -247,13 +265,12 @@ export default {
 	inject: ['apollo'],
 	components: {
 		KvButton,
-		KvChip,
+		KvChipClassic,
 		KvLightbox,
-		KvPillToggle,
 		AttributeFilter,
 		GenderFilter,
 		KvAccordionItem,
-		KvIcon,
+		KvMaterialIcon,
 		LocationFilter,
 		SectorFilter,
 		SortOrder,
@@ -305,6 +322,9 @@ export default {
 			selectedSort: null,
 			isChipsCollapsable: true,
 			isChipsCollapsed: true,
+			mdiChevronDown,
+			mdiGridLarge,
+			mdiLandRowsHorizontal
 		};
 	},
 	mounted() {
@@ -660,4 +680,5 @@ export default {
 		padding: 0 0 1rem;
 	}
 }
+
 </style>
