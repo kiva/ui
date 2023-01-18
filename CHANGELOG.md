@@ -1,3 +1,17 @@
+## [2.456.0](https://github.com/kiva/ui/compare/v2.455.0...v2.456.0) (2023-01-18)
+
+
+### Features
+
+* background updated for every section in lending home page ([328fdf9](https://github.com/kiva/ui/commit/328fdf9dce57eb3bc23eaf3e1b92c49f7a358a48))
+
+
+### Bug Fixes
+
+* main class added to the loanfinding page wrapper ([5e57139](https://github.com/kiva/ui/commit/5e571399175566cde0e3d3fddba7f5fa3201e64b))
+* main class prop added to www page compoent in lending home ([cf38ba0](https://github.com/kiva/ui/commit/cf38ba09182dd572ae76fba43f0a5502081e6d6e))
+* redudant tw classes removed in loanfinding page ([260780d](https://github.com/kiva/ui/commit/260780de477d7316e8ac91ff7188490e25cfc993))
+
 ## [2.455.0](https://github.com/kiva/ui/compare/v2.454.1...v2.455.0) (2023-01-17)
 
 
