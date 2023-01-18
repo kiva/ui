@@ -269,7 +269,6 @@ import numeral from 'numeral';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import syncDate from '@/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
-import { achievementsQuery, hasMadeAchievementsProgression } from '@/util/ecoChallengeUtils';
 
 import { getPromoFromBasket } from '@/util/campaignUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -301,15 +300,9 @@ import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
 import { isLoanFundraising } from '@/util/loanUtils';
 import MatchedLoansLightbox from '@/components/Checkout/MatchedLoansLightbox';
-import {
-	getExperimentSettingCached,
-	trackExperimentVersion
-} from '@/util/experimentUtils';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
-
-const ecoChallengeExpKey = 'eco_challenge';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -393,8 +386,6 @@ export default {
 			showTeamForm: false,
 			teamJoinStatus: null,
 			myTeams: [],
-			isEcoChallengeExpShown: false,
-			ecoChallengeRedirectQueryParam: '',
 			continueButtonState: 'loading',
 		};
 	},
@@ -546,35 +537,6 @@ export default {
 		this.handleToast();
 		this.getPromoInformationFromBasket();
 		this.getUpsellModuleData();
-
-		const ecoChallengeExpData = getExperimentSettingCached(this.apollo, ecoChallengeExpKey);
-		if (ecoChallengeExpData?.enabled) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				ecoChallengeExpKey,
-				'EXP-ACK-392-Sep2022'
-			);
-			if (version === 'b') {
-				this.isEcoChallengeExpShown = true;
-
-				// Fetch Eco Challenge Game Status
-				// If user is in eco challenge and a loan in basket makes progress towards
-				// eco challenge, set ecoChallengeRedirectQueryParam
-				achievementsQuery(this.apollo, this.loanIdsInBasket)
-					.then(({ data }) => {
-						// eslint-disable-next-line max-len
-						const checkoutMilestoneProgresses = data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
-						const showEcoThanksPage = hasMadeAchievementsProgression(
-							checkoutMilestoneProgresses,
-							'climate-challenge'
-						);
-						this.ecoChallengeRedirectQueryParam = showEcoThanksPage ? '&ecoChallenge=true' : '';
-					});
-				// end game code
-			}
-		}
 	},
 	computed: {
 		isUpsellUnder100() {
@@ -822,7 +784,7 @@ export default {
 				// redirect to thanks
 				window.setTimeout(
 					() => {
-						this.redirectToThanks(transactionId, this.ecoChallengeRedirectQueryParam);
+						this.redirectToThanks(transactionId);
 					},
 					800
 				);

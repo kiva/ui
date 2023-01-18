@@ -313,12 +313,6 @@
 					</div>
 				</kv-grid>
 			</transition>
-
-			<eco-challenge-lightbox
-				:visible="showGameLightbox"
-				:progresses="checkoutMilestoneProgresses"
-				@close-lightbox="showGameLightbox = false;"
-			/>
 		</div>
 	</div>
 </template>
@@ -341,15 +335,9 @@ import {
 	isBetween25And500
 } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
-import {
-	getExperimentSettingCached,
-	trackExperimentVersion
-} from '@/util/experimentUtils';
-import { achievementsQuery, hasMadeAchievementsProgression } from '@/util/ecoChallengeUtils';
 
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
-import EcoChallengeLightbox from '@/components/Lightboxes/EcoChallengeLightbox';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrapper';
 
@@ -358,8 +346,6 @@ import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-
-const ecoChallengeExpKey = 'eco_challenge';
 
 export default {
 	name: 'LendCta',
@@ -377,7 +363,6 @@ export default {
 	components: {
 		LendAmountButton,
 		KvGrid,
-		EcoChallengeLightbox,
 		KvMaterialIcon,
 		KvUiButton,
 		KvUiSelect,
@@ -415,8 +400,6 @@ export default {
 			wrapperObserver: null,
 			name: '',
 			completeLoanView: true,
-			showGameLightbox: false,
-			checkoutMilestoneProgresses: [],
 			isMobile: false,
 			repaymentInterval: '',
 			plannedExpirationDate: '',
@@ -546,28 +529,6 @@ export default {
 
 				this.$showTipMsg(msg, 'error');
 			});
-
-			// Game code
-			const ecoChallengeExpData = getExperimentSettingCached(this.apollo, ecoChallengeExpKey);
-			if (ecoChallengeExpData?.enabled) {
-				const { version } = trackExperimentVersion(
-					this.apollo,
-					this.$kvTrackEvent,
-					'Lending',
-					ecoChallengeExpKey,
-					'EXP-ACK-392-Sep2022'
-				);
-				if (version === 'b') {
-					// check achievements service for progress
-					const myAchievements = await achievementsQuery(this.apollo, [this.loanId]);
-					// eslint-disable-next-line max-len
-					this.checkoutMilestoneProgresses = myAchievements?.data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
-					this.showGameLightbox = hasMadeAchievementsProgression(
-						this.checkoutMilestoneProgresses,
-						'climate-challenge'
-					);
-				}
-			}
 		},
 		createWrapperObserver() {
 			// Watch for the wrapper element moving in and out of the viewport
