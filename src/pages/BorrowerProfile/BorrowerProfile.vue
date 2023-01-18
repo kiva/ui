@@ -24,8 +24,8 @@
 						class="tw-relative lg:tw--mb-1.5"
 						:show-urgency-exp="showUrgencyExp"
 					>
-						<template #sharebutton v-if="inPfp || shareButtonExpEnabled">
-							<!-- Share button for PFP loans -->
+						<template #sharebutton>
+							<!-- Share button -->
 							<share-button
 								class="tw-block md:tw-hidden tw-mt-3"
 								:loan="loan"
@@ -48,8 +48,8 @@
 						:loan-id="loanId"
 						:user-context-exp-variant="userContextExpVariant"
 					>
-						<template #sharebutton v-if="inPfp || shareButtonExpEnabled">
-							<!-- Share button for PFP loans -->
+						<template #sharebutton>
+							<!-- Share button -->
 							<share-button
 								class="tw-hidden md:tw-block lg:tw-mb-1.5"
 								:loan="loan"
@@ -170,13 +170,11 @@ import ShareButton from '@/components/BorrowerProfile/ShareButton';
 import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
 
 import {
-	getExperimentSettingCached,
 	trackExperimentVersion
 } from '@/util/experimentUtils';
 import loanUseFilter from '@/plugins/loan-use-filter';
 import CheckIcon from '@/assets/icons/inline/check-with-bg.svg';
 
-const shareButtonExpKey = 'share_button_bp';
 const userContextExpKey = 'new_users_context';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
@@ -192,10 +190,6 @@ const preFetchQuery = gql`
 	) {
 		general {
 			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
-				key
-				value
-			}
-			shareButton: uiExperimentSetting(key: "share_button_bp") {
 				key
 				value
 			}
@@ -420,7 +414,6 @@ export default {
 			diffInDays: 0,
 			lender: {},
 			loan: {},
-			shareButtonExpEnabled: false,
 			userContextExpVariant: 'a',
 			partnerName: '',
 			partnerCountry: '',
@@ -464,10 +457,7 @@ export default {
 						});
 					}
 
-					return Promise.all([
-						client.query({ query: experimentQuery, variables: { id: shareButtonExpKey } }),
-						client.query({ query: experimentQuery, variables: { id: userContextExpKey } }),
-					]);
+					return client.query({ query: experimentQuery, variables: { id: userContextExpKey } });
 				});
 		},
 		preFetchVariables({ route, cookieStore }) {
@@ -522,21 +512,7 @@ export default {
 			this.$kvTrackEvent('Borrower Profile', 'EXP-GROW-655-Aug2021', expCookieSignifier);
 		}
 
-		const shareButtonExpData = getExperimentSettingCached(this.apollo, shareButtonExpKey);
-		if (shareButtonExpData?.enabled) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Borrower Profile',
-				shareButtonExpKey,
-				'EXP-ACK-451-Oct2022'
-			);
-			if (version === 'b') {
-				this.shareButtonExpEnabled = true;
-			}
-		}
-
-		// Async data fetch for MARS-317 and share button
+		// Async data fetch for MARS-317
 		const { data } = await this.apollo.query({
 			query: mountedQuery,
 			variables: {
