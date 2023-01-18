@@ -38,6 +38,7 @@
 					:loan-id="loan.id"
 					:show-action-button="true"
 					:use-full-width="true"
+					:show-tags="true"
 					@add-to-basket="addToBasket"
 				/>
 			</div>

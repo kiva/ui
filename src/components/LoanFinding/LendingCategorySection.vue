@@ -20,6 +20,7 @@
 						:item-index="index"
 						:loan-id="loan.id"
 						:show-action-button="true"
+						:show-tags="true"
 						class="tw-mr-2"
 						style="max-width: 100%;"
 						@add-to-basket="addToBasket"
