@@ -19,7 +19,7 @@
 				:style="{ padding: '4px 0 2px 0', height: '1.2rem'}"
 			>
 		</span>
-		<h4 class="tw-inline-block">
+		<h4 class="tw-inline-block" style="color: #A24536;">
 			{{ constructedMatchingText }}
 		</h4>
 	</span>
