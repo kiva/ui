@@ -1,3 +1,10 @@
+## [2.457.0](https://github.com/kiva/ui/compare/v2.456.1...v2.457.0) (2023-01-18)
+
+
+### Features
+
+* navigation updated in partner spotlight carousel ([b59ef70](https://github.com/kiva/ui/commit/b59ef70a7df490cdf0e58cb214e40212bf2af25e))
+
 ### [2.456.1](https://github.com/kiva/ui/compare/v2.456.0...v2.456.1) (2023-01-18)
 
 
