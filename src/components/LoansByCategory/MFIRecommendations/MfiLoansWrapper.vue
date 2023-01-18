@@ -48,28 +48,14 @@ export default {
 
 </script>
 
-<style lang="scss" scoped>
-	@import 'settings';
-	@include breakpoint(xxlarge) {
-		#carousel_exp {
-			position: relative;
-		}
+<style scoped>
 
-		#carousel_exp >>> section > div:nth-child(2) {
-			position: absolute;
-			top: -55px;
-			margin-left: -40px;
-		}
+	#carousel_exp >>> .kv-carousel__controls {
+		justify-content: center;
+	}
 
-		#carousel_exp >>> section > div:nth-child(2) > button {
-			width: 24px;
-			height: 24px;
-			margin-right: 15px;
-		}
-
-		#carousel_exp >>> section > div:nth-child(2) > div {
-			display: none;
-		}
+	#carousel_exp >>> .kv-carousel__controls div {
+		visibility: visible;
 	}
 
 </style>
