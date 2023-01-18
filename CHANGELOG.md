@@ -1,3 +1,10 @@
+### [2.456.1](https://github.com/kiva/ui/compare/v2.456.0...v2.456.1) (2023-01-18)
+
+
+### Bug Fixes
+
+* journal updates in bp should use correctly sized image ([c1cf412](https://github.com/kiva/ui/commit/c1cf4123364b723809824ccb3edfe8f3956cef48))
+
 ## [2.456.0](https://github.com/kiva/ui/compare/v2.455.0...v2.456.0) (2023-01-18)
 
 
