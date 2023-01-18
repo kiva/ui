@@ -112,7 +112,7 @@
 										class="social__btn social__btn--facebook"
 										:href="facebookShareUrl"
 										v-kv-track-event="
-											['thanks', 'Social-Share-Lightbox', 'click-Facebook-share', loanId]"
+											['post-checkout', 'share', 'facebook', utmCampaign, loanId]"
 									>
 										<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
 										<span>Share on Facebook</span>
@@ -123,7 +123,7 @@
 										:class="copyStatus.class"
 										:disabled="copyStatus.disabled"
 										v-kv-track-event="
-											['thanks', 'Social-Share-Lightbox', 'click-Copy-link-share', loanId]"
+											['post-checkout', 'share', 'copy-link', utmCampaign, loanId]"
 										@click="copyLink"
 									>
 										<kv-material-icon
@@ -140,7 +140,7 @@
 										target="_blank"
 										rel="noopener"
 										v-kv-track-event="
-											['thanks', 'Social-Share-Lightbox', 'click-Twitter-share', loanId]"
+											['post-checkout', 'share', 'twitter', utmCampaign, loanId]"
 										@click="$showTipMsg('Thanks for tweeting!')"
 									>
 										<kv-icon name="twitter" title="Twitter" class="social__icon" />
@@ -153,7 +153,7 @@
 										target="_blank"
 										rel="noopener"
 										v-kv-track-event="
-											['thanks', 'Social-Share-Lightbox', 'click-LinkedIn-share', loanId]"
+											['post-checkout', 'share', 'linkedin', utmCampaign, loanId]"
 										@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
 									>
 										<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
@@ -416,12 +416,7 @@ export default {
 					if (code !== '4201') {
 						this.$showTipMsg(`There was a problem sharing to Facebook: ${message}`, 'warning');
 					}
-					this.$kvTrackEvent(
-						'thanks',
-						'click-Facebook-share',
-						'error-Social-Share-Lightbox',
-						this.loanId
-					);
+					this.$kvTrackEvent('post-checkout', 'fail', 'share-facebook');
 				} else {
 					this.$showTipMsg('Thanks for sharing to Facebook!');
 				}

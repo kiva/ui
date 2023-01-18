@@ -30,7 +30,7 @@
 						:share-message="shareMessage"
 						:share-url="$route.path + '#updates'"
 						variant="link"
-						utm-campaign="bp_update_share"
+						utm-campaign="social_share_update"
 					>
 						Share this update
 					</kv-social-share-button>

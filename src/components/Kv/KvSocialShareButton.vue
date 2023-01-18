@@ -5,9 +5,10 @@
 			data-testid="bp-share-cta-button"
 			@click="isLightboxVisible = true;"
 			v-kv-track-event="[
-				'Lending',
-				'click-share-cta',
-				'Share'
+				trackingCategory,
+				'show',
+				'share-lightbox',
+				utmCampaign
 			]"
 			:variant="variant"
 		>
@@ -29,7 +30,7 @@
 					:href="facebookShareUrl"
 					target="_blank"
 					rel="noopener"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Facebook-share', loanId]"
+					v-kv-track-event="[trackingCategory, 'share', 'facebook', utmCampaign, loanId]"
 					@click="$showTipMsg('Thanks for sharing to Facebook!')"
 				>
 					<kv-material-icon
@@ -45,7 +46,7 @@
 					:href="twitterShareUrl"
 					target="_blank"
 					rel="noopener"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Twitter-share', loanId]"
+					v-kv-track-event="[trackingCategory, 'share', 'twitter', utmCampaign, loanId]"
 					@click="$showTipMsg('Thanks for tweeting!')"
 				>
 					<kv-material-icon
@@ -61,7 +62,7 @@
 					:href="linkedInShareUrl"
 					target="_blank"
 					rel="noopener"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-LinkedIn-share', loanId]"
+					v-kv-track-event="[trackingCategory, 'share', 'linkedin', utmCampaign, loanId]"
 					@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
 				>
 					<kv-material-icon
@@ -75,7 +76,7 @@
 					class="social-button "
 					data-testid="share-copy-link-button"
 					:disabled="copyStatus.disabled"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Copy-link-share', loanId]"
+					v-kv-track-event="[trackingCategory, 'share', 'copy-link', utmCampaign, loanId]"
 					@click="copyLink"
 				>
 					<kv-material-icon
@@ -171,10 +172,17 @@ export default {
 			type: Boolean,
 			required: false
 		},
+		/** LoanId of loan we're sharing */
 		loanId: {
 			type: Number,
 			required: false,
 			default: null
+		},
+		/** Optional tracking category, defaults to 'borrower-profile' but allows for uses in other context */
+		trackingCategory: {
+			type: String,
+			required: false,
+			default: 'borrower-profile'
 		},
 	},
 	data() {
@@ -248,12 +256,7 @@ export default {
 					if (code !== '4201') {
 						this.$showTipMsg(`There was a problem sharing to Facebook: ${message}`, 'warning');
 					}
-					this.$kvTrackEvent(
-						'thanks',
-						'click-Facebook-share',
-						'error-Social-Share-Lightbox',
-						this.loanId
-					);
+					this.$kvTrackEvent(this.trackingCategory, 'fail', 'share-facebook');
 				} else {
 					this.$showTipMsg('Thanks for sharing to Facebook!');
 				}
