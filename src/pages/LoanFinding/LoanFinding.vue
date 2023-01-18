@@ -2,7 +2,7 @@
 	<www-page main-class="tw-bg-white" style="height: auto;">
 		<div class="tw-w-full">
 			<!-- eslint-disable-next-line max-len -->
-			<div class="tw-mx-auto tw-p-2 lg:tw-pt-4 tw-px-2.5 md:tw-px-4 lg:tw-px-8 tw-bg-white" style="max-width: 1200px;">
+			<div class="tw-mx-auto tw-p-2 lg:tw-pt-4 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 				<h3 class="tw-text-h3 tw-text-primary">
 					Welcome back, <span class="tw-text-action fs-mask data-hj-suppress">{{ firstName }}</span>
 				</h3>
@@ -13,7 +13,7 @@
 				subtitle="Loans handpicked for you based on your lending history"
 				:loans="recommendedLoans"
 				:per-step="2"
-				class="tw-pt-2 tw-bg-white"
+				class="tw-pt-2"
 				@add-to-basket="trackCategory($event, 'recommended')"
 			/>
 
@@ -27,7 +27,7 @@
 				title="Matched lending"
 				subtitle="Stretch your funds further with the help of our partners and Kivans just like you"
 				:loans="matchedLoans"
-				class="tw-pt-6 tw-pb-2 tw-bg-white"
+				class="tw-pt-6 tw-pb-2"
 				@add-to-basket="trackCategory($event, 'matched-lending')"
 			/>
 
