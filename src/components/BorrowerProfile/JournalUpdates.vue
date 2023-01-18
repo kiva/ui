@@ -74,7 +74,7 @@ const updatesQuery = gql`query updatesQuery($loanId: Int!, $limit: Int, $offset:
 					date
 					image {
 						id
-						url
+						url(customSize: "h200w700")
 					}
 				}
 			}
