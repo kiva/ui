@@ -8,10 +8,7 @@
 			<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
 				Order Total:
 			</div>
-			<span
-				data-testid="basket-order-totals-item-total"
-				class="tw-float-right md:tw-float-none tw-text-right tw-pl-2"
-			>
+			<span class="tw-float-right md:tw-float-none tw-text-right tw-pl-2">
 				{{ itemTotal }}</span>
 			<!-- icon spacer -->
 			<span class="tw-w-4.5"></span>
