@@ -1,3 +1,11 @@
+### [2.458.3](https://github.com/kiva/ui/compare/v2.458.2...v2.458.3) (2023-01-19)
+
+
+### Bug Fixes
+
+* removed unused test ID ([30b7f90](https://github.com/kiva/ui/commit/30b7f9045b489febd634b8b8b219f334d95c9d8d))
+* resolved issues with default sorts ([b9cf456](https://github.com/kiva/ui/commit/b9cf4569d106fef51a865dfd0e3b7f5a5a1de9e2))
+
 ### [2.458.2](https://github.com/kiva/ui/compare/v2.458.1...v2.458.2) (2023-01-19)
 
 
