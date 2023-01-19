@@ -1,3 +1,17 @@
+## [2.458.0](https://github.com/kiva/ui/compare/v2.457.0...v2.458.0) (2023-01-19)
+
+
+### Features
+
+* add loan cards to lending-home ([ff33308](https://github.com/kiva/ui/commit/ff3330807b7472c05335caa7380bde1957f65f0c))
+* change kiva classic loan card matching text to red ([8d0cad6](https://github.com/kiva/ui/commit/8d0cad6e75a8f396bbcd950deead429936902d75))
+* new grid loan card story ([60c8341](https://github.com/kiva/ui/commit/60c8341e7e2f17e4a9d93827ac14831e4fa50982))
+
+
+### Bug Fixes
+
+* matching color reverted ([004ae4c](https://github.com/kiva/ui/commit/004ae4c154be269c2471a23e467e4c4403c1c2c9))
+
 ## [2.457.0](https://github.com/kiva/ui/compare/v2.456.1...v2.457.0) (2023-01-18)
 
 
