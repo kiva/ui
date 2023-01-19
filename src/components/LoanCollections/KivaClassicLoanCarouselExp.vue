@@ -30,12 +30,14 @@
 					:item-index="index"
 					:key="`loan-mfi-${loanId}`"
 					:loan-id="loanId"
+					:show-tags="showTags"
 				/>
 				<kiva-classic-basic-loan-card-exp
 					v-else
 					:item-index="index"
 					:key="`loan-${loanId}`"
 					:loan-id="loanId"
+					:show-tags="showTags"
 				/>
 			</template>
 		</kv-carousel>
@@ -92,6 +94,10 @@ export default {
 		isMfi: {
 			type: Boolean,
 			default: false
+		},
+		showTags: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {

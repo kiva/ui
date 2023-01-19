@@ -10,6 +10,7 @@
 			:show-view-more-card="true"
 			:is-personalized="true"
 			:is-mfi="true"
+			:show-tags="showTags"
 			id="carousel_exp"
 			class="-tw-mt-4"
 		/>
@@ -39,7 +40,11 @@ export default {
 		selectedChannel: {
 			type: Object,
 			default: () => {},
-		}
+		},
+		showTags: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	components: {
 		KivaClassicLoanCarouselExp

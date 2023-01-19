@@ -13,6 +13,7 @@
 			v-if="!isLoading"
 			class="tw-relative"
 		>
+			<loan-tag v-if="showTags" :loan="loan" :amount-left="amountLeft" />
 			<borrower-image
 				class="
 				tw-relative
@@ -85,6 +86,7 @@
 </template>
 
 <script>
+import numeral from 'numeral';
 import { mdiChevronRight, mdiMapMarker } from '@mdi/js';
 import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
@@ -97,6 +99,7 @@ import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
+import LoanTag from '@/components/LoanCards/LoanTags/LoanTag';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -125,6 +128,13 @@ const loanQuery = gql`query kcBasicLoanCard($loanId: Int!) {
 			loanAmount
 			borrowerCount
 
+			# For loan tags
+			plannedExpirationDate
+			matchingText
+			loanFundraisingInfo {
+				fundedAmount
+				reservedAmount
+			}
 		}
 	}
 }`;
@@ -135,7 +145,11 @@ export default {
 		loanId: {
 			type: Number,
 			required: true,
-		}
+		},
+		showTags: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],
@@ -147,6 +161,7 @@ export default {
 		LoanUse,
 		KvMaterialIcon,
 		SummaryTag,
+		LoanTag,
 	},
 	data() {
 		return {
@@ -209,6 +224,11 @@ export default {
 				return true;
 			}
 			return false;
+		},
+		amountLeft() {
+			const loanFundraisingInfo = this.loan?.loanFundraisingInfo ?? { fundedAmount: 0, reservedAmount: 0 };
+			const { fundedAmount, reservedAmount } = loanFundraisingInfo;
+			return numeral(this.loan?.loanAmount).subtract(fundedAmount).subtract(reservedAmount).value();
 		},
 	},
 	methods: {

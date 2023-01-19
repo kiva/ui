@@ -20,6 +20,7 @@
 				:to="customLoanDetails ? '' : `/lend/${loanId}`"
 				v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
 			>
+				<loan-tag v-if="showTags" :loan="loan" :amount-left="amountLeft" />
 				<borrower-image
 					class="
 					tw-relative
@@ -251,6 +252,7 @@ import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import { setLendAmount } from '@/util/basketUtils';
 import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
+import LoanTag from '@/components/LoanCards/LoanTags/LoanTag';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -313,7 +315,11 @@ export default {
 		useFullWidth: {
 			type: Boolean,
 			default: false
-		}
+		},
+		showTags: {
+			type: Boolean,
+			default: false
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],
@@ -329,6 +335,7 @@ export default {
 		SummaryTag,
 		KvUiButton,
 		ActionButton,
+		LoanTag,
 	},
 	data() {
 		return {

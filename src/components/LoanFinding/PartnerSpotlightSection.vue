@@ -7,6 +7,7 @@
 				v-if="selectedChannelLoanIds.length > 0"
 				:selected-channel-loan-ids="selectedChannelLoanIds"
 				:selected-channel="selectedChannel"
+				:show-tags="true"
 				class="tw-py-4"
 			/>
 		</div>

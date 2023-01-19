@@ -4,9 +4,7 @@
 			{{ title }}
 		</h3>
 		<div class="grid-loan-card tw-bg-primary tw-border tw-border-tertiary">
-			<div v-if="showTags" class="tw-mt-1 tw-ml-1 tw-absolute tw-z-1">
-				<loan-tag v-if="getTagInfo()" :variation="getTagInfo()" />
-			</div>
+			<loan-tag v-if="showTags" :loan="loan" :amount-left="amountLeft" />
 			<loan-card-image
 				:loan-id="loan.id"
 				:name="loan.name"
@@ -76,7 +74,6 @@
 </template>
 
 <script>
-import { differenceInDays, parseISO } from 'date-fns';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
@@ -173,16 +170,6 @@ export default {
 				);
 			}
 		},
-		getTagInfo() {
-			if (differenceInDays(parseISO(this.loan?.plannedExpirationDate), Date.now()) <= 3) {
-				return 'ending-soon';
-			} if (this.amountLeft < 100 && this.amountLeft > 0) {
-				return 'almost-funded';
-			} if (this.loan?.matchingText) {
-				return 'matched-loan';
-			}
-			return null;
-		}
 	},
 };
 </script>

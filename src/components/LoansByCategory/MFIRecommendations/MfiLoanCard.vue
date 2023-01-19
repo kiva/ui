@@ -13,6 +13,7 @@
 			v-if="!isLoading"
 			class="tw-relative"
 		>
+			<loan-tag v-if="showTags" :loan="loan" :amount-left="amountLeft" />
 			<borrower-image
 				class="
 				tw-relative
@@ -103,6 +104,7 @@
 </template>
 
 <script>
+import numeral from 'numeral';
 import { mdiChevronRight, mdiMapMarker } from '@mdi/js';
 import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
@@ -116,6 +118,7 @@ import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
+import LoanTag from '@/components/LoanCards/LoanTags/LoanTag';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -205,6 +208,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		showTags: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],
@@ -217,6 +224,7 @@ export default {
 		KvMaterialIcon,
 		SummaryTag,
 		ActionButton,
+		LoanTag,
 	},
 	data() {
 		return {
@@ -283,6 +291,11 @@ export default {
 		},
 		isFunded() {
 			return this.loan?.status === 'funded' ?? false;
+		},
+		amountLeft() {
+			const loanFundraisingInfo = this.loan?.loanFundraisingInfo ?? { fundedAmount: 0, reservedAmount: 0 };
+			const { fundedAmount, reservedAmount } = loanFundraisingInfo;
+			return numeral(this.loan?.loanAmount).subtract(fundedAmount).subtract(reservedAmount).value();
 		},
 	},
 	methods: {
