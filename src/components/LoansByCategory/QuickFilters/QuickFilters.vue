@@ -136,7 +136,6 @@
 </template>
 
 <script>
-import _throttle from 'lodash/throttle';
 import { mdiFilterVariant } from '@mdi/js';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
