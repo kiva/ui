@@ -1,3 +1,12 @@
+### [2.458.2](https://github.com/kiva/ui/compare/v2.458.1...v2.458.2) (2023-01-19)
+
+
+### Bug Fixes
+
+* css only ([de2750c](https://github.com/kiva/ui/commit/de2750c1cb41db6589ec7a5125d5b98c51262618))
+* mobile ui updates for quick filters ([3758f5c](https://github.com/kiva/ui/commit/3758f5cdc94717b67ca3178175909cf064c7da97))
+* remove unused code ([3f6bff6](https://github.com/kiva/ui/commit/3f6bff64d8aab7c56fe7518b5ed354e9274b0b32))
+
 ### [2.458.1](https://github.com/kiva/ui/compare/v2.458.0...v2.458.1) (2023-01-19)
 
 
