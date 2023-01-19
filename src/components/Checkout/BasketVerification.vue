@@ -35,7 +35,7 @@
 		>
 			<p class="tw-mb-4">
 				We sent a validation link
-				<span v-if="email" class="email fs-exclude data-hj-suppress">to {{ email }}</span>.
+				<span v-if="email" class="email data-hj-suppress">to {{ email }}</span>.
 			</p>
 			<p class="tw-mb-4">
 				After receiving the email, follow the link provided to continue checking out with your Kiva Credit.

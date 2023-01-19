@@ -8,7 +8,7 @@
 			need it if you want to log in without your device.
 		</p>
 		<!-- eslint-disable-next-line max-len -->
-		<div class="data-hj-suppress fs-exclude tw-mb-2 tw-text-center tw-font-medium tw-p-2 tw-bg-tertiary tw-rounded-sm tw-border">
+		<div class="data-hj-suppress tw-mb-2 tw-text-center tw-font-medium tw-p-2 tw-bg-tertiary tw-rounded-sm tw-border">
 			{{ mfaRecoveryCode }}
 		</div>
 		<div>

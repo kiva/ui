@@ -4,7 +4,7 @@
 			<!-- eslint-disable-next-line max-len -->
 			<div class="tw-mx-auto tw-p-2 lg:tw-pt-4 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 				<h3 class="tw-text-h3 tw-text-primary">
-					Welcome back, <span class="tw-text-action fs-mask data-hj-suppress">{{ firstName }}</span>
+					Welcome back, <span class="tw-text-action data-hj-suppress">{{ firstName }}</span>
 				</h3>
 			</div>
 			<!-- First category row: Recommended loans section -->
