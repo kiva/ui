@@ -1,3 +1,14 @@
+### [2.458.1](https://github.com/kiva/ui/compare/v2.458.0...v2.458.1) (2023-01-19)
+
+
+### Bug Fixes
+
+* loan cards now always use full width ([657808a](https://github.com/kiva/ui/commit/657808a059c8d7c4f023d3e01d00d7ebdff540f3))
+* location selector now only freezes scroll for sm view and md view uses large version ([627fe05](https://github.com/kiva/ui/commit/627fe0521210d90c0cb4a659bb3ba2671e7f6880))
+* resolved mobile view extra horizontal scroll ([792448b](https://github.com/kiva/ui/commit/792448b07417462a0e4763cb88c83af1f7be710e))
+* update primitives import path to match other usages ([13e3416](https://github.com/kiva/ui/commit/13e34167326aa5f28ddd6b5a67c48a5fc4e3d77b))
+* use actual breakpoint ([f30613f](https://github.com/kiva/ui/commit/f30613f4fc508173c75fd1d445c929001f63e687))
+
 ## [2.458.0](https://github.com/kiva/ui/compare/v2.457.0...v2.458.0) (2023-01-19)
 
 
