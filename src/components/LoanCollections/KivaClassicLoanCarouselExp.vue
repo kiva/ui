@@ -11,7 +11,7 @@
 
 		<kv-carousel
 			v-if="loanIds.length > 0 && isVisible"
-			class="tw-w-full tw-overflow-visible md:tw-overflow-hidden"
+			class="tw-w-full tw-overflow-hidden"
 			:embla-options="{
 				loop: false,
 			}"
