@@ -152,6 +152,7 @@ import { mdiMagnify, mdiChevronDown, mdiClose } from '@mdi/js';
 import clickOutside from '@/plugins/click-outside';
 import { getCheckboxLabel } from '@/util/loanSearch/filterUtils';
 import KvExpandable from '@/components/Kv/KvExpandable';
+import kvTokensPrimitives from '@kiva/kv-tokens/primitives.json';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import CheckboxList from './CheckboxList';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -225,7 +226,7 @@ export default {
 			this.selectedRegion = null;
 			if (this.showRegions) {
 				// Smaller browsers have a static location selector on the bottom of the viewport
-				if (document.documentElement.clientWidth < 734) {
+				if (document.documentElement.clientWidth < kvTokensPrimitives.breakpoints.md) {
 					document.documentElement.style.overflow = 'hidden';
 				}
 				this.$emit('handle-overlay', true);
