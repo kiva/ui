@@ -15,6 +15,7 @@
 				:filters-loaded="filtersLoaded"
 				:targeted-loan-channel-url="targetedLoanChannelURL"
 				:with-categories="true"
+				default-sort="amountLeft"
 				tracking-category="lending-home"
 				@update-filters="updateQuickFilters"
 				@reset-filters="resetFilters"

@@ -152,7 +152,7 @@ export default {
 		},
 		filterOptions: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		},
 		filtersLoaded: {
 			type: Boolean,
@@ -169,7 +169,11 @@ export default {
 		trackingCategory: {
 			type: String,
 			required: true,
-		}
+		},
+		defaultSort: {
+			type: String,
+			default: 'personalized',
+		},
 	},
 	components: {
 		KvSelect,
@@ -181,7 +185,7 @@ export default {
 			mdiFilterVariant,
 			selectedCategory: 0,
 			selectedGender: '',
-			sortBy: 'amountLeft',
+			sortBy: this.defaultSort,
 			presetFilterActive: {
 				women: false,
 				kivaUs: false,
@@ -275,7 +279,7 @@ export default {
 			this.$refs.locationSelector.emptyCountries();
 		},
 		resetSortBy() {
-			this.sortBy = 'amountLeft';
+			this.sortBy = this.defaultSort;
 		},
 		setCountry(country) {
 			this.$refs.locationSelector.setCountry(country);
@@ -297,7 +301,7 @@ export default {
 			this.$emit('reset-filters');
 			this.selectedCategory = 0;
 			this.selectedGender = '';
-			this.sortBy = 'amountLeft';
+			this.sortBy = this.defaultSort;
 			this.updateLocation([]);
 			this.$refs.locationSelector?.emptyCountries();
 			this.$kvTrackEvent(
@@ -334,7 +338,6 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-
 	#customizedSortBySelector >>> select {
 		border-style: none;
 		padding: 0 0 0 4px;
@@ -350,5 +353,4 @@ export default {
 	#customizedSortBySelector >>> span:nth-child(2) {
 		display: none;
 	}
-
 </style>
