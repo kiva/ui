@@ -101,8 +101,13 @@
 		</div>
 		<div class="tw-flex tw-justify-between tw-items-start tw-mt-2" v-if="withCategories">
 			<div id="customizedSortBySelector" class="tw-text-action tw-flex tw-items-center tw-gap-1">
-				<kv-material-icon :icon="mdiFilterVariant" class="tw-w-2 tw-h-2" v-show="!isMobile" />
-				{{ loanSortText }}
+				<kv-material-icon :icon="mdiFilterVariant" class="tw-w-2 tw-h-2 tw-hidden md:tw-inline" />
+				<div class="md:tw-inline tw-hidden">
+					Loan sort:
+				</div>
+				<div class="md:tw-hidden tw-inline">
+					Sort:
+				</div>
 				<kv-select
 					id="sortBy"
 					:disabled="!filtersLoaded"
@@ -120,11 +125,10 @@
 			</div>
 			<div class="tw-flex md:tw-flex-row tw-items-start">
 				<span v-show="filtersLoaded" class="tw-text-base">
-					<span v-show="!isMobile">Showing</span> {{ totalLoans }} loans </span>
+					<span class="md:tw-inline tw-hidden">Showing</span> {{ totalLoans }} loans </span>
 				<!-- eslint-disable-next-line max-len -->
 				<button v-show="filtersLoaded" class="tw-ml-2 tw-text-base tw-text-action" @click="resetFilters">
-					<span v-if="isMobile">Reset</span>
-					<span v-else>Reset filters</span>
+					<span>Reset</span><span class="md:tw-inline tw-hidden"> filters</span>
 				</button>
 			</div>
 		</div>
@@ -183,19 +187,12 @@ export default {
 				women: false,
 				kivaUs: false,
 				endingSoon: false,
-			},
-			isMobile: false,
+			}
 		};
 	},
 	mixins: [
 		loanChannelQueryMapMixin
 	],
-	mounted() {
-		window.addEventListener('resize', _throttle(() => {
-			this.determineIsMobile();
-		}, 200));
-		this.determineIsMobile();
-	},
 	watch: {
 		selectedCategory(categoryId) {
 			const catId = Number(categoryId);
@@ -268,9 +265,6 @@ export default {
 		}
 	},
 	methods: {
-		determineIsMobile() {
-			this.isMobile = document.documentElement.clientWidth < 480;
-		},
 		resetCategory() {
 			this.selectedCategory = 0;
 		},
@@ -327,9 +321,6 @@ export default {
 		}
 	},
 	computed: {
-		loanSortText() {
-			return this.isMobile ? 'Sort:' : 'Loan sort:';
-		},
 		removeGenderDropdown() {
 			return this.targetedLoanChannelUrl === 'women';
 		},
