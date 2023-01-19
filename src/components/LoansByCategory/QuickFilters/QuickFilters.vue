@@ -100,9 +100,14 @@
 			</div>
 		</div>
 		<div class="tw-flex tw-justify-between tw-items-start tw-mt-2" v-if="withCategories">
-			<div id="customizedSortBySelector" class="tw-text-action tw-flex tw-items-center tw-gap-1 tw-text-base">
-				<kv-material-icon :icon="mdiFilterVariant" class="tw-w-2 tw-h-2" />
-				Loan sort:
+			<div id="customizedSortBySelector" class="tw-text-action tw-flex tw-items-center tw-gap-1">
+				<kv-material-icon :icon="mdiFilterVariant" class="tw-w-2 tw-h-2 tw-hidden md:tw-inline" />
+				<div class="md:tw-inline tw-hidden">
+					Loan sort:
+				</div>
+				<div class="md:tw-hidden tw-inline">
+					Sort:
+				</div>
 				<kv-select
 					id="sortBy"
 					:disabled="!filtersLoaded"
@@ -118,11 +123,12 @@
 					</option>
 				</kv-select>
 			</div>
-			<div class="tw-flex tw-flex-col md:tw-flex-row tw-items-start">
-				<span v-show="filtersLoaded" class="tw-text-base">Showing {{ totalLoans }} loans</span>
+			<div class="tw-flex md:tw-flex-row tw-items-start">
+				<span v-show="filtersLoaded" class="tw-text-base">
+					<span class="md:tw-inline tw-hidden">Showing</span> {{ totalLoans }} loans </span>
 				<!-- eslint-disable-next-line max-len -->
-				<button v-show="filtersLoaded" class="md:tw-ml-2 tw-mt-1 md:tw-mt-0 tw-text-base tw-text-action" @click="resetFilters">
-					Reset filters
+				<button v-show="filtersLoaded" class="tw-ml-2 tw-text-base tw-text-action" @click="resetFilters">
+					<span>Reset</span><span class="md:tw-inline tw-hidden"> filters</span>
 				</button>
 			</div>
 		</div>
@@ -180,7 +186,7 @@ export default {
 				women: false,
 				kivaUs: false,
 				endingSoon: false,
-			},
+			}
 		};
 	},
 	mixins: [
