@@ -33,6 +33,21 @@
 
 			<partner-spotlight-section class="tw-pt-6" />
 		</div>
+
+		<kv-toast
+			ref="welcomeToastMessage"
+			@close="closeToast()"
+			class="tw-fixed tw-top-9 md:tw-top-11 tw-left-0 tw-right-0 tw-z-banner"
+		>
+			<template #toastContent>
+				<div>
+					Welcome to Lending home! We’re doing something new based on your feedback this year.
+					<button @click="openLightbox()" class="tw-text-action">
+						Read more here
+					</button>
+				</div>
+			</template>
+		</kv-toast>
 	</www-page>
 </template>
 
@@ -45,6 +60,7 @@ import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSe
 import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
 import { gql } from '@apollo/client';
+import KvToast from '~/@kiva/kv-components/vue/KvToast';
 
 export default {
 	name: 'LoanFinding',
@@ -54,6 +70,7 @@ export default {
 		LendingCategorySection,
 		QuickFiltersSection,
 		PartnerSpotlightSection,
+		KvToast,
 	},
 	data() {
 		return {
@@ -115,11 +132,24 @@ export default {
 		},
 		trackCategory({ success }, category) {
 			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', `${category}-lending-home`);
+		},
+		closeToast() {
+			this.$refs.welcomeToastMessage.close();
+		},
+		showToast() {
+			if (!this.cookieStore.get('lending-home-toast')) {
+				this.$refs.welcomeToastMessage.show('', 'kiva-logo', true);
+				this.cookieStore.set('lending-home-toast', true);
+			}
+		},
+		openLightbox() {
+			this.$refs.welcomeToastMessage.close();
 		}
 	},
 	mounted() {
 		this.getRecommendedLoans();
 		this.getMatchedLoans();
+		this.showToast();
 	},
 };
 </script>
