@@ -135,15 +135,18 @@ export default {
 		},
 		closeToast() {
 			this.$refs.welcomeToastMessage.close();
+			this.$kvTrackEvent('event-tracking', 'dismiss', 'lending-home-toast-dismissed');
 		},
 		showToast() {
 			if (!this.cookieStore.get('lending-home-toast')) {
 				this.$refs.welcomeToastMessage.show('', 'kiva-logo', true);
 				this.cookieStore.set('lending-home-toast', true);
+				this.$kvTrackEvent('event-tracking', 'show', 'lending-home-toast-showed');
 			}
 		},
 		openLightbox() {
 			this.$refs.welcomeToastMessage.close();
+			this.$kvTrackEvent('event-tracking', 'click', 'lending-home-toast-read-more-clicked');
 		}
 	},
 	mounted() {
