@@ -139,6 +139,7 @@
 						variant="primary"
 						utm-campaign="social_eco_thanks_page"
 						style="max-width: 190px;"
+						tracking-category="post-checkout"
 					>
 						Share this fact
 						<template #modal-content>

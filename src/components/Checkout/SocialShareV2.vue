@@ -13,7 +13,12 @@
 				data-testid="share-facebook-button"
 				class="social__btn social__btn--facebook"
 				:href="facebookShareUrl"
-				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Facebook-share', selectedLoanId]"
+				v-kv-track-event="[
+					'post-checkout',
+					'share',
+					'facebook',
+					`social_share_checkout_scle_${this.shareCardLanguageVersion}`,
+					selectedLoanId]"
 			>
 				<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
 				<span>Share</span>
@@ -24,7 +29,12 @@
 				:href="twitterShareUrl"
 				target="_blank"
 				rel="noopener"
-				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Twitter-share', selectedLoanId]"
+				v-kv-track-event="[
+					'post-checkout',
+					'share',
+					'twitter',
+					`social_share_checkout_scle_${this.shareCardLanguageVersion}`,
+					selectedLoanId]"
 				@click="$showTipMsg('Thanks for tweeting!')"
 			>
 				<kv-icon name="twitter" title="Twitter" class="social__icon" />
@@ -36,7 +46,12 @@
 				:href="linkedInShareUrl"
 				target="_blank"
 				rel="noopener"
-				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-LinkedIn-share', selectedLoanId]"
+				v-kv-track-event="[
+					'post-checkout',
+					'share',
+					'linkedin',
+					`social_share_checkout_scle_${this.shareCardLanguageVersion}`,
+					selectedLoanId]"
 				@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
 			>
 				<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
@@ -47,7 +62,12 @@
 				class="social__btn social__btn--link tw-text-link tw-border-tertiary tw-border"
 				:class="copyStatus.class"
 				:disabled="copyStatus.disabled"
-				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Copy-link-share', selectedLoanId]"
+				v-kv-track-event="[
+					'post-checkout',
+					'share',
+					'copy-link',
+					`social_share_checkout_scle_${this.shareCardLanguageVersion}`,
+					selectedLoanId]"
 				@click="copyLink"
 			>
 				<kv-icon name="clipboard" class="social__icon" />
@@ -178,12 +198,7 @@ export default {
 					if (code !== '4201') {
 						this.$showTipMsg(`There was a problem sharing to Facebook: ${message}`, 'warning');
 					}
-					this.$kvTrackEvent(
-						'thanks',
-						'click-Facebook-share',
-						'error-Social-Share-Lightbox',
-						this.selectedLoanId
-					);
+					this.$kvTrackEvent('post-checkout', 'fail', 'share-facebook');
 				} else {
 					this.$showTipMsg('Thanks for sharing to Facebook!');
 				}
