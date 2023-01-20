@@ -324,25 +324,7 @@ export default {
 			});
 		},
 		linkedInShareUrl() {
-			let title = `A loan for ${this.loan.name}`;
-			const lender = this.lender.public && this.lender.publicName ? this.lender.publicName : '';
-			if (!this.calculatePeopleQtyToGoal()) {
-				title = lender ? `Can you join ${lender} ` : 'Can you join ';
-				title += 'in giving others a chance to succeed?';
-			} else if (['a', 'b'].includes(this.categoryShareVersion) && this.categoryName) {
-				title = lender ? `Can you help ${lender} ` : 'Can you help ';
-				if (this.categoryName === 'women') {
-					title += 'support women around the world?';
-				} else if (this.categoryName === 'education') {
-					title += 'expand access to education around the world?';
-				}
-				title += 'support smallholder farmers around the world?';
-			}
-			return getFullUrl('https://www.linkedin.com/shareArticle', {
-				mini: 'true',
-				source: `https://${this.$appConfig.host}`,
-				summary: this.shareMessage.substring(0, 256),
-				title,
+			return getFullUrl('https://www.linkedin.com/sharing/share-offsite/', {
 				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social` // eslint-disable-line max-len
 			});
 		},
