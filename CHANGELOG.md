@@ -1,3 +1,10 @@
+## [2.459.0](https://github.com/kiva/ui/compare/v2.458.3...v2.459.0) (2023-01-20)
+
+
+### Features
+
+* modify sharing events ([46f29f6](https://github.com/kiva/ui/commit/46f29f6856c5d22c59c191ca466fb99ddea83d54))
+
 ### [2.458.3](https://github.com/kiva/ui/compare/v2.458.2...v2.458.3) (2023-01-19)
 
 
