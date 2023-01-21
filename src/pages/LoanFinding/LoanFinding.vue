@@ -134,7 +134,6 @@ export default {
 			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', `${category}-lending-home`);
 		},
 		closeToast() {
-			this.$refs.welcomeToastMessage.close();
 			this.$kvTrackEvent('event-tracking', 'dismiss', 'lending-home-toast-dismissed');
 		},
 		showToast() {
