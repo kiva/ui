@@ -1,3 +1,16 @@
+## [2.460.0](https://github.com/kiva/ui/compare/v2.459.0...v2.460.0) (2023-01-21)
+
+
+### Features
+
+* tracking events added for lending home toast component ([e596525](https://github.com/kiva/ui/commit/e596525085594cc4c9362b9354a58d3bc06c3701))
+* welcome toast added to lending home page ([8ffac83](https://github.com/kiva/ui/commit/8ffac83ccf37876dfac87d2bef60f0d84cc76df7))
+
+
+### Bug Fixes
+
+* bug fixed in toast close method ([129ab9a](https://github.com/kiva/ui/commit/129ab9acebe08b22956d465759b54c5f49d3df26))
+
 ## [2.459.0](https://github.com/kiva/ui/compare/v2.458.3...v2.459.0) (2023-01-20)
 
 
