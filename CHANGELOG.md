@@ -1,3 +1,10 @@
+## [2.463.0](https://github.com/kiva/ui/compare/v2.462.1...v2.463.0) (2023-01-23)
+
+
+### Features
+
+* spotlight hero updated for medium screens ([9e9bb8d](https://github.com/kiva/ui/commit/9e9bb8d36f6594cb4f43786d5ed4cb3199c15083))
+
 ### [2.462.1](https://github.com/kiva/ui/compare/v2.462.0...v2.462.1) (2023-01-23)
 
 
