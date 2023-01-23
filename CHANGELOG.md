@@ -1,3 +1,37 @@
+### [2.462.1](https://github.com/kiva/ui/compare/v2.462.0...v2.462.1) (2023-01-23)
+
+
+### Bug Fixes
+
+* use revenue tag for custom optimizely events MARS-330 ([beeeb1d](https://github.com/kiva/ui/commit/beeeb1dad82a34e325b91999d99f52770b95a65d))
+
+## [2.462.0](https://github.com/kiva/ui/compare/v2.461.0...v2.462.0) (2023-01-23)
+
+
+### Features
+
+* remove Full Story MARS-305 ([dc6b75b](https://github.com/kiva/ui/commit/dc6b75ba16fcab7b2eddb7ce284ae3f8182ee44b))
+
+## [2.461.0](https://github.com/kiva/ui/compare/v2.460.0...v2.461.0) (2023-01-23)
+
+
+### Features
+
+* experiment setup added to category page to show a new loan card ([eedb4a4](https://github.com/kiva/ui/commit/eedb4a4f8c3d9edf55a862a8ac042e2041698aa5))
+
+## [2.460.0](https://github.com/kiva/ui/compare/v2.459.0...v2.460.0) (2023-01-21)
+
+
+### Features
+
+* tracking events added for lending home toast component ([e596525](https://github.com/kiva/ui/commit/e596525085594cc4c9362b9354a58d3bc06c3701))
+* welcome toast added to lending home page ([8ffac83](https://github.com/kiva/ui/commit/8ffac83ccf37876dfac87d2bef60f0d84cc76df7))
+
+
+### Bug Fixes
+
+* bug fixed in toast close method ([129ab9a](https://github.com/kiva/ui/commit/129ab9acebe08b22956d465759b54c5f49d3df26))
+
 ## [2.459.0](https://github.com/kiva/ui/compare/v2.458.3...v2.459.0) (2023-01-20)
 
 

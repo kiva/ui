@@ -8,7 +8,7 @@
 					</h2>
 					<p class="tw-text-subhead">
 						We've emailed your order confirmation to
-						<span class="fs-exclude data-hj-suppress">{{ lender.email }}</span>
+						<span class="data-hj-suppress">{{ lender.email }}</span>
 					</p>
 				</header>
 				<section class="campaign-thanks__partner-block">

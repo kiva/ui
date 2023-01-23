@@ -14,7 +14,7 @@
 				<div v-if="receipt">
 					<p>
 						Success, your receipt has been sent to
-						<strong class="fs-mask data-hj-suppress">{{ lender.email }}</strong>
+						<strong class="data-hj-suppress">{{ lender.email }}</strong>
 					</p>
 				</div>
 			</div>

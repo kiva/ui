@@ -22,7 +22,6 @@ module.exports = {
 		enableFB: true,
 		fbApplicationId: '123230061223',
 		fbOgNameSpace: 'kivadotorg',
-		enableFullStory: true,
 		enableSentry: true,
 		sentryURI: 'https://3ab8031cd8bf45d48f79e2b77657e16e@o7540.ingest.sentry.io/1201288',
 		algoliaConfig: {

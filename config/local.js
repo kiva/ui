@@ -13,7 +13,6 @@ module.exports = merge(base, {
 		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
 		enableGA: false,
 		gaId: 'UA-11686022-7', // dev-vm property
-		enableFullStory: false,
 		enableSentry: false,
 		auth0: {
 			enable: false,
