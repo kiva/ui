@@ -3,7 +3,7 @@
 		<div class="loan-filters__top-row">
 			<div class="tw-mb-2 md:tw-mb-0">
 				<kv-button
-					class="loan-filters__toggle tw-mr-2"
+					class="loan-filters__toggle"
 					variant="secondary"
 					@click.native.prevent="showFilters()"
 				>
@@ -11,7 +11,7 @@
 
 					<kv-material-icon
 						aria-hidden="true"
-						class="	loan-filters__toggle-icon"
+						class="loan-filters__toggle-icon"
 						name="large-chevron"
 						:icon="mdiChevronDown"
 					/>
@@ -30,6 +30,7 @@
 						@click="$emit('set-loan-display', true)"
 					>
 						<span
+							class="tw-inline-flex"
 							v-show="rowDisplay"
 							@click="rowDisplay = !rowDisplay"
 						>
@@ -39,7 +40,7 @@
 								Row View
 							</h4>
 							<kv-material-icon
-								class="tw-mr-1 tw-w-2 tw-text-action tw-inline-block"
+								class="tw-mr-1 tw-w-2 tw-text-action tw-inline-flex"
 								name="list-green"
 								:icon="mdiLandRowsHorizontal"
 							/>
@@ -54,7 +55,7 @@
 						@click="$emit('set-loan-display', false,)"
 					>
 						<span
-							class="tw-inline-block"
+							class="tw-inline-flex"
 							v-show="gridDisplay"
 							@click="gridDisplay = !gridDisplay"
 						>
@@ -649,9 +650,9 @@ export default {
 	}
 
 	&__toggle-icon {
-		width: 1.2rem;
-		height: 0.75rem;
-		margin: 0 0 0 0.5rem;
+		width: 2.2rem;
+		height: 1.75rem;
+		margin: 0 0 0 0;
 	}
 
 	&__lightbox {
