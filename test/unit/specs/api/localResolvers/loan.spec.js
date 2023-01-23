@@ -108,19 +108,19 @@ describe('loan.js', () => {
 
 		describe('Returns 0 if required fields are missing', () => {
 			function testConsoleError(field) {
-				expect(console.error.mock.calls.length).toBe(1);
-				expect(console.error.mock.calls[0][0]).toEqual(
+				expect(console.info.mock.calls.length).toBe(1);
+				expect(console.info.mock.calls[0][0]).toEqual(
 					expect.stringContaining(`'${field}' for LoanBasic.fundraisingPercent`)
 				);
 			}
 
-			const originalError = console.error;
+			const originalError = console.info;
 			beforeEach(() => {
-				console.error = jest.fn();
+				console.info = jest.fn();
 			});
 
 			afterEach(() => {
-				console.error = originalError;
+				console.info = originalError;
 			});
 
 			it('loanAmount missing', () => {
@@ -211,16 +211,16 @@ describe('loan.js', () => {
 		});
 
 		it('Returns an empty string if plannedExpirationDate is missing', () => {
-			const originalError = console.error;
-			console.error = jest.fn();
+			const originalError = console.info;
+			console.info = jest.fn();
 
 			testFundraisingTimeLeft({ loan: {}, expected: '' });
-			expect(console.error.mock.calls.length).toBe(1);
-			expect(console.error.mock.calls[0][0]).toEqual(
+			expect(console.info.mock.calls.length).toBe(1);
+			expect(console.info.mock.calls[0][0]).toEqual(
 				expect.stringContaining('\'plannedExpirationDate\' for LoanBasic.fundraisingTimeLeft')
 			);
 
-			console.error = originalError;
+			console.info = originalError;
 		});
 	});
 
@@ -266,19 +266,19 @@ describe('loan.js', () => {
 		});
 
 		it('Returns an empty string if plannedExpirationDate is missing', () => {
-			const originalError = console.error;
-			console.error = jest.fn();
+			const originalError = console.info;
+			console.info = jest.fn();
 
 			const { resolvers } = loanResolverFactory();
 			const result = resolvers.LoanPartner.fundraisingTimeLeftMilliseconds({});
 			expect(result).toBe('');
 
-			expect(console.error.mock.calls.length).toBe(1);
-			expect(console.error.mock.calls[0][0]).toEqual(
+			expect(console.info.mock.calls.length).toBe(1);
+			expect(console.info.mock.calls[0][0]).toEqual(
 				expect.stringContaining('\'plannedExpirationDate\' for LoanBasic.fundraisingTimeLeftMilliseconds')
 			);
 
-			console.error = originalError;
+			console.info = originalError;
 		});
 	});
 
@@ -352,19 +352,19 @@ describe('loan.js', () => {
 
 		describe('Returns "0.00" if required fields are missing', () => {
 			function testConsoleError(field) {
-				expect(console.error.mock.calls.length).toBe(1);
-				expect(console.error.mock.calls[0][0]).toEqual(
+				expect(console.info.mock.calls.length).toBe(1);
+				expect(console.info.mock.calls[0][0]).toEqual(
 					expect.stringContaining(`'${field}' for LoanBasic.unreservedAmount`)
 				);
 			}
 
-			const originalError = console.error;
+			const originalError = console.info;
 			beforeEach(() => {
-				console.error = jest.fn();
+				console.info = jest.fn();
 			});
 
 			afterEach(() => {
-				console.error = originalError;
+				console.info = originalError;
 			});
 
 			it('loanAmount missing', () => {
