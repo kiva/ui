@@ -1,3 +1,10 @@
+### [2.462.1](https://github.com/kiva/ui/compare/v2.462.0...v2.462.1) (2023-01-23)
+
+
+### Bug Fixes
+
+* use revenue tag for custom optimizely events MARS-330 ([beeeb1d](https://github.com/kiva/ui/commit/beeeb1dad82a34e325b91999d99f52770b95a65d))
+
 ## [2.462.0](https://github.com/kiva/ui/compare/v2.461.0...v2.462.0) (2023-01-23)
 
 
