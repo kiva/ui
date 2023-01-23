@@ -1,3 +1,10 @@
+## [2.461.0](https://github.com/kiva/ui/compare/v2.460.0...v2.461.0) (2023-01-23)
+
+
+### Features
+
+* experiment setup added to category page to show a new loan card ([eedb4a4](https://github.com/kiva/ui/commit/eedb4a4f8c3d9edf55a862a8ac042e2041698aa5))
+
 ## [2.460.0](https://github.com/kiva/ui/compare/v2.459.0...v2.460.0) (2023-01-21)
 
 
