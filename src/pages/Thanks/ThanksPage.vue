@@ -15,11 +15,11 @@
 							data-testid="thanks-message"
 						>
 							Thanks for supporting
-							<span class="fs-mask data-hj-suppress">{{ borrowerSupport }}</span>.<br>
+							<span class="data-hj-suppress">{{ borrowerSupport }}</span>.<br>
 						</p>
 						<p v-if="lender.email" class="hide-for-print">
 							We've emailed your order confirmation to
-							<strong class="data-hj-suppress fs-exclude">{{ lender.email }}</strong>
+							<strong class="data-hj-suppress ">{{ lender.email }}</strong>
 						</p>
 						<p v-else class="hide-for-print">
 							We've emailed your order confirmation to you.
