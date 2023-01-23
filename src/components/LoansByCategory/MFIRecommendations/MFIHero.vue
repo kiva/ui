@@ -15,22 +15,24 @@
 				15 years with Kiva, 52,908 borrowers supported
 			</h6>
 		</div>
-		<div class="tw-flex tw-flex-col lg:tw-flex-row tw-my-3">
-			<div class="md:tw-w-2/3 md:tw-px-2 tw-relative">
-				<!-- eslint-disable max-len -->
-				<img class="md:tw-rounded tw-w-full" src="@/assets/images/mfi_recommendations/fundacionpromujer.jpg" alt="fundacionpromujer">
-				<span
-					class="tw-absolute tw-bottom-1 tw-left-3 tw-rounded tw-bg-tertiary
-						tw-px-2 tw-py-1 tw-flex tw-items-center tw-text-h4"
-				>
-					<kv-material-icon
-						class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
-						:icon="mdiMapMarker"
-					/>
-					BOLIVIA
-				</span>
+		<div class="tw-flex tw-flex-col md:tw-flex-row tw-my-3">
+			<div class="md:tw-w-2/3 md:tw-px-2">
+				<div class="tw-relative">
+					<!-- eslint-disable max-len -->
+					<img class="md:tw-rounded tw-w-full" src="@/assets/images/mfi_recommendations/fundacionpromujer.jpg" alt="fundacionpromujer">
+					<span
+						class="tw-absolute tw-bottom-1 tw-left-3 tw-rounded tw-bg-tertiary
+							tw-px-2 tw-py-1 tw-flex tw-items-center tw-text-h4"
+					>
+						<kv-material-icon
+							class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
+							:icon="mdiMapMarker"
+						/>
+						BOLIVIA
+					</span>
+				</div>
 			</div>
-			<div class="lg:tw-w-1/3 lg:tw-pl-2 tw-pt-2 lg:tw-pt-0">
+			<div class="lg:tw-w-1/3 lg:tw-pl-2 tw-pt-2 md:tw-pt-0">
 				<p class="tw-px-3 lg:tw-px-0">
 					Fundación Pro Mujer provides so much more than loans to their borrowers.
 				</p>
