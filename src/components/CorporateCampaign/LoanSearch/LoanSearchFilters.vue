@@ -662,7 +662,7 @@ export default {
 }
 
 .hidden {
-		display: none;
+	display: none;
 }
 
 .chips {
