@@ -1,3 +1,10 @@
+## [2.462.0](https://github.com/kiva/ui/compare/v2.461.0...v2.462.0) (2023-01-23)
+
+
+### Features
+
+* remove Full Story MARS-305 ([dc6b75b](https://github.com/kiva/ui/commit/dc6b75ba16fcab7b2eddb7ce284ae3f8182ee44b))
+
 ## [2.461.0](https://github.com/kiva/ui/compare/v2.460.0...v2.461.0) (2023-01-23)
 
 
