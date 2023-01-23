@@ -31,8 +31,8 @@
 					>
 						<span
 							class="tw-inline-flex"
-							v-show="rowDisplay"
-							@click="rowDisplay = !rowDisplay"
+							v-show="!rowDisplay"
+							@click="setLoanDisplayMode('rowDisplay')"
 						>
 							<h4
 								class="tw-text-h4 tw-font-medium tw-text-action tw-p-1"
@@ -56,8 +56,8 @@
 					>
 						<span
 							class="tw-inline-flex"
-							v-show="gridDisplay"
-							@click="gridDisplay = !gridDisplay"
+							v-show="!gridDisplay"
+							@click="setLoanDisplayMode('gridDisplay')"
 						>
 							<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-p-1">
 								Grid View
@@ -340,7 +340,7 @@ export default {
 			mdiGridLarge,
 			mdiLandRowsHorizontal,
 			rowDisplay: true,
-			gridDisplay: true,
+			gridDisplay: false,
 		};
 	},
 	mounted() {
@@ -483,6 +483,20 @@ export default {
 		},
 	},
 	methods: {
+		setLoanDisplayMode(mode) {
+			switch(mode) {
+				case 'rowDisplay':
+					this.rowDisplay=true;
+					this.gridDisplay=false;
+					return;
+				case 'gridDisplay':
+					this.rowDisplay=false;
+					this.gridDisplay=true;
+					return;
+				default:
+					return
+			}
+		},
 		/* viewDisplayToggle() {
 			if ()
 		}, */
