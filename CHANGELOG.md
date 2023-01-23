@@ -1,3 +1,10 @@
+## [2.464.0](https://github.com/kiva/ui/compare/v2.463.0...v2.464.0) (2023-01-23)
+
+
+### Features
+
+* loan finding page lightbox ([79e1114](https://github.com/kiva/ui/commit/79e1114922296d18024195ce99ee66ffc703363a))
+
 ## [2.463.0](https://github.com/kiva/ui/compare/v2.462.1...v2.463.0) (2023-01-23)
 
 
