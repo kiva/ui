@@ -6,6 +6,7 @@
 		<loan-channel-category-control
 			:enable-helpme-choose="enableHelpmeChoose"
 			:enable-loan-tags="enableLoanTags"
+			:enable-new-loan-card="enableNewLoanCard"
 		/>
 
 		<add-to-basket-interstitial />
@@ -34,6 +35,10 @@ const pageQuery = gql`
 				key
 				value
 			}
+			newLoanCard: uiExperimentSetting(key: "new_loan_card") {
+				key
+				value
+			}
 		}
 	}
 `;
@@ -55,6 +60,7 @@ export default {
 			pageLayout: 'control',
 			enableHelpmeChoose: false,
 			enableLoanTags: false,
+			enableNewLoanCardTest: false,
 		};
 	},
 	apollo: {
@@ -65,6 +71,7 @@ export default {
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'helpme_choose' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'loan_tags' } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'new_loan_card' } }),
 				]);
 			});
 		}
@@ -86,6 +93,9 @@ export default {
 		} else {
 			this.initializeLoanTags();
 		}
+
+		// Initialize New Loan Card Experiment
+		this.initializeNewLoanCardTest();
 	},
 	computed: {
 		targetedLoanChannel() {
@@ -93,6 +103,20 @@ export default {
 		},
 	},
 	methods: {
+		initializeNewLoanCardTest() {
+			const loanCardExperiment = this.apollo.readFragment({
+				id: 'Experiment:new_loan_card',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.enableNewLoanCardTest = loanCardExperiment.version === 'b';
+			if (loanCardExperiment.version) {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CORE-941-Feb2023',
+					loanCardExperiment.version
+				);
+			}
+		},
 		initializeLoanTags() {
 			const loanTagsExperiment = this.apollo.readFragment({
 				id: 'Experiment:loan_tags',

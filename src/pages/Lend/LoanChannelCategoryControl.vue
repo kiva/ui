@@ -279,7 +279,11 @@ export default {
 		enableLoanTags: {
 			type: Boolean,
 			default: false
-		}
+		},
+		enableNewLoanCard: {
+			type: Boolean,
+			default: false
+		},
 	},
 	components: {
 		LoanCardController,
