@@ -1,3 +1,10 @@
+## [2.466.0](https://github.com/kiva/ui/compare/v2.465.0...v2.466.0) (2023-01-24)
+
+
+### Features
+
+* change copy link to copy message and link in share for bp ([8ae5271](https://github.com/kiva/ui/commit/8ae5271f374a67d546febde6575c6cf86e4173d1))
+
 ## [2.465.0](https://github.com/kiva/ui/compare/v2.464.0...v2.465.0) (2023-01-24)
 
 
