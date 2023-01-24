@@ -168,11 +168,7 @@ export default {
 			});
 		},
 		linkedInShareUrl() {
-			return getFullUrl('https://www.linkedin.com/shareArticle', {
-				mini: 'true',
-				source: `https://${this.$appConfig.host}`,
-				summary: this.shareMessage.substring(0, 256),
-				title: `A loan for ${this.selectedLoan.name}`,
+			return getFullUrl('https://www.linkedin.com/sharing/share-offsite/', {
 				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout_scle_${this.shareCardLanguageVersion}` // eslint-disable-line max-len
 			});
 		},

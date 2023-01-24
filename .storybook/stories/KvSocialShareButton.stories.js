@@ -10,7 +10,6 @@ export default {
 		variant: 'caution',
 		utmCampaign: 'social_share_campaign',
 		utmContent: 'testuser123',
-		linkedInTitle: 'This is the linked in title',
 	},
 	argTypes: {
 		variant: {
@@ -36,7 +35,6 @@ export const Default= (args, { argTypes }) => ({
 			:variant="variant"
 			:utm-campaign="utmCampaign"
 			:utm-content="utmContent"
-			:linked-in-title="linkedInTitle"
 		>
 			Share this thing
 			<template #modal-content>

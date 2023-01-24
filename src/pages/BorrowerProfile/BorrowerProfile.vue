@@ -227,8 +227,10 @@ const preFetchQuery = gql`
 				loanAmount
 				status
 				use
+				fundraisingPercent @client
 				loanFundraisingInfo {
 					fundedAmount
+					reservedAmount
 				}
 				inPfp
 				pfpMinLenders

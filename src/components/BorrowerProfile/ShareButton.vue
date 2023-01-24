@@ -1,30 +1,51 @@
 <template>
 	<kv-social-share-button
 		:modal-title="modalTitle"
-		:share-message="shareMessage"
+		:share-message="modifiedShareMessage"
 		:share-url="shareLink"
 		variant="caution"
 		:utm-campaign="utmCampaign"
 		:utm-content="utmContent"
-		:linked-in-title="linkedInTitle"
 		:open-lightbox="forceLightbox"
 		:loan-id="loan.id"
 	>
 		<template #modal-content>
-			<!-- eslint-disable-next-line max-len -->
-			<p>You can make change happen faster for {{ name }} by getting the word out. Each lender that supports {{ name }} brings them one step closer to being live for all to see on Kiva.org. Share their loan now.</p>
+			<div class="tw-relative">
+				<textarea
+					class="tw-w-full tw-border tw-border-tertiary tw-rounded-sm tw-h-12 tw-p-2"
+					style="height: 10rem;"
+					v-model="modifiedShareMessage"
+				>
+				</textarea>
+				<kv-material-icon
+					class="tw-w-2.5 tw-h-2.5 tw-absolute tw-bottom-2 tw-right-2"
+					:icon="mdiPencilOutline"
+				/>
+			</div>
 		</template>
 	</kv-social-share-button>
 </template>
 
 <script>
+import { gql } from '@apollo/client';
+import { mdiPencilOutline } from '@mdi/js';
 import KvSocialShareButton from '@/components/Kv/KvSocialShareButton';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'ShareButton',
 	components: {
-		KvSocialShareButton
+		KvSocialShareButton,
+		KvMaterialIcon
 	},
+	data() {
+		return {
+			modifiedShareMessage: '',
+			mdiPencilOutline,
+			borrowedLoanId: null
+		};
+	},
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		lender: {
 			type: Object,
@@ -39,12 +60,55 @@ export default {
 			required: true
 		}
 	},
+	created() {
+		// This query is part of the header query and should be in the cache.
+		// It's also not critical that this is 100% accurate since most
+		// borrowers will get prompted to share via the share query param
+		const myBorrowedLoanQuery = this.apollo.readQuery({
+			query: gql`
+				query mostRecentBorrowedLoan {
+					my {
+						mostRecentBorrowedLoan {
+							id
+						}
+					}
+				}
+			`,
+		});
+		this.borrowedLoanId = myBorrowedLoanQuery?.my?.mostRecentBorrowedLoan?.id ?? null;
+		this.modifiedShareMessage = this.shareMessage;
+	},
 	computed: {
-		linkedInTitle() {
-			return `A loan for ${this.loan.name}`;
+		progressPercent() {
+			// percent as a whole number 0-100
+			const percent = this.loan?.fundraisingPercent ?? 0;
+			return Math.round(percent * 100);
+		},
+		amountRemaining() {
+			return `$${this.loan?.loanAmount - this.loan?.loanFundraisingInfo?.fundedAmount}`;
+		},
+		isBorrower() {
+			// If the loan id's match or the share query param is present, the user is the borrower
+			return this.loan?.id === this.borrowedLoanId || this.$route.query.share === 'true';
 		},
 		modalTitle() {
-			return `Help ${this.name} spread the word.`;
+			if (this.isBorrower) {
+				switch (true) {
+					case (this.progressPercent >= 50):
+						return 'You’re almost there';
+					case (this.progressPercent < 50):
+					default:
+						return 'Set a goal for today';
+				}
+			}
+			// Not the borrower of this loan
+			switch (true) {
+				case (this.progressPercent >= 50):
+					return 'Push this loan over the finish line!';
+				case (this.progressPercent < 50):
+				default:
+					return `Get ${this.name}'s loan back on track`;
+			}
 		},
 		name() {
 			if (this.loan.name && this.loan.anonymization !== 'full') {
@@ -53,11 +117,25 @@ export default {
 			return 'this lender';
 		},
 		shareMessage() {
-			if (this.loan.name) {
-				const location = this.loan?.geocode?.city || this.loan?.geocode?.country?.name;
-				return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${this.loan.name} ${location ? `in ${location} ` : ''}to pursue their dream?`; // eslint-disable-line max-len
+			if (this.isBorrower) {
+				switch (true) {
+					case (this.progressPercent >= 50):
+						return `My fundraiser on Kiva is over halfway there — only ${this.amountRemaining} to go!`;
+					case (this.progressPercent < 50):
+					default:
+						return `I'm crowdfunding a loan on Kiva — Help me hit ${this.progressPercent + 10}% today!`;
+				}
 			}
-			return '';
+			// Not the borrower of this loan
+			const borrowerName = this.$options.filters.changeCase(this.name, 'titleCase');
+			switch (true) {
+				case (this.progressPercent >= 50):
+					return `${borrowerName}'s loan is over halfway there on Kiva – only ${this.amountRemaining} to go!`;
+				case (this.progressPercent < 50):
+				default:
+					// eslint-disable-next-line max-len
+					return `${borrowerName} is crowdfunding a loan on Kiva — Let's get them to ${this.progressPercent + 10}% today!`;
+			}
 		},
 		utmContent() {
 			if (this.lender?.public && this.lender?.inviterName) return this.lender.inviterName;
