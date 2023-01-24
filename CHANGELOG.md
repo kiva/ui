@@ -1,3 +1,10 @@
+### [2.466.2](https://github.com/kiva/ui/compare/v2.466.1...v2.466.2) (2023-01-24)
+
+
+### Bug Fixes
+
+* add margin to loan finding page lightbox mobile ([053c7f6](https://github.com/kiva/ui/commit/053c7f6c06083dc07f9ee3d8f28f99fa56ce6071))
+
 ### [2.466.1](https://github.com/kiva/ui/compare/v2.466.0...v2.466.1) (2023-01-24)
 
 
