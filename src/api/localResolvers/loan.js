@@ -18,7 +18,7 @@ function missingLoanField({
 }) {
 	const propChain = field.split('.');
 	// Use optional chaining to see if nested loan properties exist
-	const value = propChain.reduce((val, chainLink) => val?.[chainLink] ?? undefined, loan);
+	const value = propChain.reduce((val, chainLink) => val?.[chainLink], loan);
 	if (value === undefined) {
 		logFormatter(`Loan resolver: Missing required field '${field}' for ${type}.${resolver}`, 'error', { loan });
 		return true;
