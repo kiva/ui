@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="tw-mb-2">
+		<div class="md:tw-mb-2 tw-mb-3">
 			<p>
 				We're trying something new! Based on your feedback this year we've built an all-new 'Lending Home'
 				that offers the Kiva community a simple way to find and support borrowers they care about. Take a
@@ -8,7 +8,7 @@
 			</p>
 		</div>
 
-		<div class="tw-flex tw-gap-3 tw-mb-2">
+		<div class="tw-flex tw-gap-3 md:tw-mb-2 tw-mb-3">
 			<div><icon-heart /></div>
 			<div>
 				<h3 class="tw-mb-1">
@@ -21,7 +21,7 @@
 			</div>
 		</div>
 
-		<div class="tw-flex tw-gap-3 tw-mb-2">
+		<div class="tw-flex tw-gap-3 md:tw-mb-2 tw-mb-3">
 			<div><icon-earth /></div>
 			<div>
 				<h3 class="tw-mb-1">
@@ -35,7 +35,7 @@
 			</div>
 		</div>
 
-		<div class="tw-flex tw-gap-3 tw-mb-2">
+		<div class="tw-flex tw-gap-3 md:tw-mb-2 tw-mb-3">
 			<div><icon-puzzle /></div>
 			<div>
 				<h3 class="tw-mb-1">
