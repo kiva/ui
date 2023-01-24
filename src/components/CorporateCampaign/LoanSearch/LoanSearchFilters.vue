@@ -1,13 +1,15 @@
 <template>
 	<div class="loan-filters">
 		<div class="loan-filters__top-row">
-			<div class="tw-mb-2 md:tw-mb-0">
+			<span class="tw-mb-2 md:tw-mb-0">
 				<kv-button
-					class="loan-filters__toggle"
+					class="loan-filters__toggle tw-pr-2"
 					variant="secondary"
 					@click.native.prevent="showFilters()"
 				>
-					Filter loans
+					<span class="loan-filters__toggle-text">
+						Filter loans
+					</span>
 
 					<kv-material-icon
 						aria-hidden="true"
@@ -17,7 +19,7 @@
 					/>
 				</kv-button>
 				<span class="tw-font-medium tw-whitespace-nowrap">{{ totalCount }} loans</span>
-			</div>
+			</span>
 
 			<div v-if="showLoanDisplayToggle" class="loan-filters__loan-display">
 				<div
@@ -643,11 +645,11 @@ export default {
 		align-items: center;
 		justify-content: space-between;
 		flex-direction: column;
-		margin: 0 1rem 1rem;
+		margin: 0 0 1rem;
 
 		@include breakpoint(medium) {
 			flex-direction: row;
-			margin: 0 3.5rem 1rem;
+			margin: 0 0 1rem;
 		}
 	}
 
@@ -659,14 +661,18 @@ export default {
 		}
 	}
 
-	&__toggle {
-		margin: 0 1rem 0 0;
+	&__toggle-text {
+		margin: 0.2rem 0 0 0;
+		display: inline-block;
+		vertical-align: top;
 	}
 
 	&__toggle-icon {
 		width: 2.2rem;
 		height: 1.75rem;
 		margin: 0 0 0 0;
+		display: inline-block;
+		vertical-align: top;
 	}
 
 	&__lightbox {
