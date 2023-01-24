@@ -23,7 +23,7 @@
 		</div>
 
 		<div>
-			<div class="tw-flex tw-justify-between tw-align-center">
+			<div class="tw-flex tw-justify-between tw-align-center tw-flex-wrap">
 				<div class="tw-flex tw-items-center">
 					<kv-social-share-button
 						modal-title="Share this loan update"
@@ -35,8 +35,7 @@
 						Share this update
 					</kv-social-share-button>
 				</div>
-				<div class="tw-flex tw-items-center">
-					<!-- eslint-disable-next-line max-len -->
+				<div class="tw-flex tw-items-center tw-mt-2 md:tw-mt-0">
 					<span class="tw-text-secondary">Update #{{ index }}</span>
 					<span class="tw-text-secondary tw-px-1.5">&#x2022;</span>
 					<span class="tw-text-secondary">{{ formattedJournalDate }}</span>
