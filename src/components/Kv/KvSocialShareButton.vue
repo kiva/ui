@@ -173,7 +173,7 @@ export default {
 		return {
 			copyStatus: {
 				disabled: false,
-				text: 'Copy Link'
+				text: 'Copy'
 			},
 			isLightboxVisible: this.openLightbox || false,
 			mdiFacebook,
@@ -247,7 +247,7 @@ export default {
 			// eslint-disable-next-line max-len
 			const url = `${this.shareLink}utm_source=social_share_link&utm_medium=referral${this.utmCampaignQueryParam}${this.utmContentQueryParam}`;
 			try {
-				await clipboardCopy(url);
+				await clipboardCopy(`${this.shareMessage} ${url}`);
 				this.copyStatus = {
 					disabled: true,
 					text: 'Copied!'
@@ -261,7 +261,7 @@ export default {
 				setTimeout(() => {
 					this.copyStatus = {
 						disabled: false,
-						text: 'Copy Link'
+						text: 'Copy'
 					};
 				}, 500);
 			}
