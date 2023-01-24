@@ -1,3 +1,11 @@
+## [2.465.0](https://github.com/kiva/ui/compare/v2.464.0...v2.465.0) (2023-01-24)
+
+
+### Features
+
+* add unit test for null value in loan resolver ([754180f](https://github.com/kiva/ui/commit/754180f3580b9c8d9afa7c2cb3282909173c756c))
+* personalized sharing modal ([79f95a9](https://github.com/kiva/ui/commit/79f95a95250c127b64d08622449b76d60bc21ec8))
+
 ## [2.464.0](https://github.com/kiva/ui/compare/v2.463.0...v2.464.0) (2023-01-23)
 
 
