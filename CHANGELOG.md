@@ -1,3 +1,10 @@
+### [2.466.1](https://github.com/kiva/ui/compare/v2.466.0...v2.466.1) (2023-01-24)
+
+
+### Bug Fixes
+
+* styling of share update button and updaate info on mobile ([e258fda](https://github.com/kiva/ui/commit/e258fda5a6e808627247ecbce4b0f6553cb83949))
+
 ## [2.466.0](https://github.com/kiva/ui/compare/v2.465.0...v2.466.0) (2023-01-24)
 
 
