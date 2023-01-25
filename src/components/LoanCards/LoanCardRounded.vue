@@ -175,6 +175,10 @@ export default {
 	box-shadow: 0.125rem 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
 }
 
+.loan-card-rounded-use {
+	color: inherit;
+}
+
 .loan-card-rounded:hover >>> .loan-card-rounded-use {
 	@apply tw-underline;
 }
@@ -182,10 +186,6 @@ export default {
 .loan-card-rounded-image {
 	padding-top: 75%;
 	background: #d8d8d8;
-}
-
-.loan-card-rounded-use {
-	color: inherit;
 }
 
 .loan-card-rounded-status:hover {
