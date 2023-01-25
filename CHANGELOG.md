@@ -1,3 +1,15 @@
+## [2.468.0](https://github.com/kiva/ui/compare/v2.467.0...v2.468.0) (2023-01-25)
+
+
+### Features
+
+* rolling out help me choose feat to all category pages ([fb07c75](https://github.com/kiva/ui/commit/fb07c7576b0f848270ef1f2daf7f00a0edb0cd70))
+
+
+### Bug Fixes
+
+* unused computed prop removed in category page ([51b8661](https://github.com/kiva/ui/commit/51b8661ada51447b560f0be5ab865434968101e1))
+
 ## [2.467.0](https://github.com/kiva/ui/compare/v2.466.3...v2.467.0) (2023-01-25)
 
 
