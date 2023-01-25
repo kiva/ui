@@ -6,7 +6,7 @@
 		<loan-channel-category-control
 			:enable-helpme-choose="enableHelpmeChoose"
 			:enable-loan-tags="enableLoanTags"
-			:enable-new-loan-card="enableNewLoanCard"
+			:enable-loan-card-rounded="enableLoanCardRounded"
 		/>
 
 		<add-to-basket-interstitial />
@@ -60,7 +60,7 @@ export default {
 			pageLayout: 'control',
 			enableHelpmeChoose: false,
 			enableLoanTags: false,
-			enableNewLoanCardTest: false,
+			enableLoanCardRounded: false,
 		};
 	},
 	apollo: {
@@ -108,7 +108,7 @@ export default {
 				id: 'Experiment:new_loan_card',
 				fragment: experimentVersionFragment,
 			}) || {};
-			this.enableNewLoanCardTest = loanCardExperiment.version === 'b';
+			this.enableLoanCardRounded = loanCardExperiment.version === 'b';
 			if (loanCardExperiment.version) {
 				this.$kvTrackEvent(
 					'Lending',

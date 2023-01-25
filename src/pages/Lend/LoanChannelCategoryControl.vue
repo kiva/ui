@@ -59,7 +59,7 @@
 						:is-visitor="isVisitor"
 						:key="loan.id"
 						:loan="loan"
-						loan-card-type="GridLoanCard"
+						:loan-card-type="loanCardType"
 						:show-tags="enableLoanTags"
 					/>
 					<helpme-choose-wrapper
@@ -81,7 +81,7 @@
 						:is-visitor="isVisitor"
 						:key="loan.id"
 						:loan="loan"
-						loan-card-type="GridLoanCard"
+						:loan-card-type="loanCardType"
 						:show-tags="enableLoanTags"
 					/>
 					<div class="column column-block">
@@ -96,7 +96,7 @@
 						:is-visitor="isVisitor"
 						:key="loan.id"
 						:loan="loan"
-						loan-card-type="GridLoanCard"
+						:loan-card-type="loanCardType"
 						:show-tags="enableLoanTags"
 					/>
 					<helpme-choose-wrapper
@@ -280,7 +280,7 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		enableNewLoanCard: {
+		enableLoanCardRounded: {
 			type: Boolean,
 			default: false
 		},
@@ -417,6 +417,9 @@ export default {
 		},
 		hasOnePageOfLoans() {
 			return this.totalCount <= this.limit;
+		},
+		loanCardType() {
+			return this.enableLoanCardRounded ? 'LoanCardRounded' : 'GridLoanCard';
 		}
 	},
 	apollo: {
