@@ -1,3 +1,10 @@
+## [2.467.0](https://github.com/kiva/ui/compare/v2.466.3...v2.467.0) (2023-01-25)
+
+
+### Features
+
+* hide reset on quick filters when no filters applied ([4d7308b](https://github.com/kiva/ui/commit/4d7308b99e5a2ff9c0ba590961475d636be29bf5))
+
 ### [2.466.3](https://github.com/kiva/ui/compare/v2.466.2...v2.466.3) (2023-01-25)
 
 
