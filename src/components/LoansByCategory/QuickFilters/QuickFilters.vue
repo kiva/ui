@@ -13,54 +13,52 @@
 		</div>
 		<div
 			class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 tw-w-full"
-			:class="{'tw-pr-2 lg:tw-pr-0' : !withCategories}"
+			:class="{'tw-pr-0 md:tw-pr-1 lg:tw-pr-0' : !withCategories}"
 		>
-			<div class="tw-flex tw-gap-2 tw-w-full lg:tw-w-auto">
-				<div v-if="withCategories" class="tw-flex tw-flex-col tw-grow">
-					<label
-						class="tw-text-h4"
-						for="category"
+			<div v-if="withCategories" class="tw-flex tw-flex-col tw-grow">
+				<label
+					class="tw-text-h4"
+					for="category"
+				>
+					Category
+				</label>
+				<kv-select
+					:disabled="!filtersLoaded"
+					v-model="selectedCategory"
+					id="category"
+					style="min-width: 160px;"
+				>
+					<option
+						v-for="category in filterOptions.categories"
+						:key="category.key"
+						:value="category.key"
 					>
-						Category
-					</label>
-					<kv-select
-						:disabled="!filtersLoaded"
-						v-model="selectedCategory"
-						id="category"
-						style="min-width: 160px;"
+						{{ category.title }}
+					</option>
+				</kv-select>
+			</div>
+			<div v-if="!removeGenderDropdown" class="tw-flex tw-flex-col tw-grow">
+				<label
+					class="tw-text-h4"
+					for="gender"
+				>
+					Gender
+				</label>
+				<kv-select
+					:disabled="!filtersLoaded"
+					v-model="selectedGender"
+					id="gender"
+					style="min-width: 140px;"
+					@click.native="trackDropdownClick('gender')"
+				>
+					<option
+						v-for="gender in filterOptions.gender"
+						:key="gender.key"
+						:value="gender.key"
 					>
-						<option
-							v-for="category in filterOptions.categories"
-							:key="category.key"
-							:value="category.key"
-						>
-							{{ category.title }}
-						</option>
-					</kv-select>
-				</div>
-				<div v-if="!removeGenderDropdown" class="tw-flex tw-flex-col tw-grow">
-					<label
-						class="tw-text-h4"
-						for="gender"
-					>
-						Gender
-					</label>
-					<kv-select
-						:disabled="!filtersLoaded"
-						v-model="selectedGender"
-						id="gender"
-						style="min-width: 140px;"
-						@click.native="trackDropdownClick('gender')"
-					>
-						<option
-							v-for="gender in filterOptions.gender"
-							:key="gender.key"
-							:value="gender.key"
-						>
-							{{ gender.title }}
-						</option>
-					</kv-select>
-				</div>
+						{{ gender.title }}
+					</option>
+				</kv-select>
 			</div>
 
 			<location-selector

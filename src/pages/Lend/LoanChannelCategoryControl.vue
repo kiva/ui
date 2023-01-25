@@ -36,7 +36,7 @@
 
 		<div class="row">
 			<quick-filters
-				class="tw-ml-2 tw-z-2"
+				class="tw-m-1 md:tw-ml-2 lg:tw-mr-2 tw-z-2"
 				:total-loans="totalCount"
 				:filter-options="quickFiltersOptions"
 				:filters-loaded="filtersLoaded"
@@ -325,6 +325,10 @@ export default {
 				gender: [{
 					key: '',
 					title: 'All genders'
+				}],
+				sorting: [{
+					key: 'personalized',
+					title: 'Recommended'
 				}]
 			},
 			filtersLoaded: false,
