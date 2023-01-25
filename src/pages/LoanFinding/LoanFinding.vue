@@ -1,5 +1,13 @@
 <template>
 	<www-page main-class="tw-bg-white" style="height: auto;">
+		<kv-lightbox
+			:visible="showLightbox"
+			title="Welcome to Lending Home"
+			@lightbox-closed="closeLightbox"
+		>
+			<welcome-lightbox @close-lightbox="closeLightbox" />
+		</kv-lightbox>
+
 		<div class="tw-w-full">
 			<!-- eslint-disable-next-line max-len -->
 			<div class="tw-mx-auto tw-p-2 lg:tw-pt-4 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
@@ -60,7 +68,9 @@ import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSe
 import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
 import { gql } from '@apollo/client';
+import WelcomeLightbox from '@/components/LoanFinding/WelcomeLightbox';
 import KvToast from '~/@kiva/kv-components/vue/KvToast';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	name: 'LoanFinding',
@@ -71,6 +81,8 @@ export default {
 		QuickFiltersSection,
 		PartnerSpotlightSection,
 		KvToast,
+		WelcomeLightbox,
+		KvLightbox
 	},
 	data() {
 		return {
@@ -83,7 +95,8 @@ export default {
 				{ id: 0 }, { id: 0 }, { id: 0 },
 				{ id: 0 }, { id: 0 }, { id: 0 },
 				{ id: 0 }, { id: 0 }, { id: 0 }
-			]
+			],
+			showLightbox: false,
 		};
 	},
 	apollo: {
@@ -144,8 +157,12 @@ export default {
 			}
 		},
 		openLightbox() {
+			this.showLightbox = true;
 			this.$refs.welcomeToastMessage.close();
 			this.$kvTrackEvent('event-tracking', 'click', 'lending-home-toast-read-more-clicked');
+		},
+		closeLightbox() {
+			this.showLightbox = false;
 		}
 	},
 	mounted() {

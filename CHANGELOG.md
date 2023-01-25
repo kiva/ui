@@ -1,3 +1,39 @@
+### [2.466.2](https://github.com/kiva/ui/compare/v2.466.1...v2.466.2) (2023-01-24)
+
+
+### Bug Fixes
+
+* add margin to loan finding page lightbox mobile ([053c7f6](https://github.com/kiva/ui/commit/053c7f6c06083dc07f9ee3d8f28f99fa56ce6071))
+
+### [2.466.1](https://github.com/kiva/ui/compare/v2.466.0...v2.466.1) (2023-01-24)
+
+
+### Bug Fixes
+
+* styling of share update button and updaate info on mobile ([e258fda](https://github.com/kiva/ui/commit/e258fda5a6e808627247ecbce4b0f6553cb83949))
+
+## [2.466.0](https://github.com/kiva/ui/compare/v2.465.0...v2.466.0) (2023-01-24)
+
+
+### Features
+
+* change copy link to copy message and link in share for bp ([8ae5271](https://github.com/kiva/ui/commit/8ae5271f374a67d546febde6575c6cf86e4173d1))
+
+## [2.465.0](https://github.com/kiva/ui/compare/v2.464.0...v2.465.0) (2023-01-24)
+
+
+### Features
+
+* add unit test for null value in loan resolver ([754180f](https://github.com/kiva/ui/commit/754180f3580b9c8d9afa7c2cb3282909173c756c))
+* personalized sharing modal ([79f95a9](https://github.com/kiva/ui/commit/79f95a95250c127b64d08622449b76d60bc21ec8))
+
+## [2.464.0](https://github.com/kiva/ui/compare/v2.463.0...v2.464.0) (2023-01-23)
+
+
+### Features
+
+* loan finding page lightbox ([79e1114](https://github.com/kiva/ui/commit/79e1114922296d18024195ce99ee66ffc703363a))
+
 ## [2.463.0](https://github.com/kiva/ui/compare/v2.462.1...v2.463.0) (2023-01-23)
 
 
