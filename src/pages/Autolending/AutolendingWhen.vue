@@ -93,7 +93,7 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import _isFinite from 'lodash/isFinite';
 
 import KvButton from '@/components/Kv/KvButton';
@@ -134,6 +134,7 @@ export default {
 	apollo: {
 		query: gql`query autolendProfileWhen {
 			autolending @client {
+				id
 				profileChanged
 				currentProfile {
 					id
@@ -170,6 +171,7 @@ export default {
 				this.apollo.mutate({
 					mutation: gql`mutation editDonation($donation: Int) {
 						autolending @client {
+							id
 							editProfile(profile: { donationPercentage: $donation })
 						}
 					}`,
@@ -199,6 +201,7 @@ export default {
 			this.apollo.mutate({
 				mutation: gql`mutation saveProfile {
 					autolending @client {
+						id
 						saveProfile
 					}
 				}`

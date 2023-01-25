@@ -4,8 +4,10 @@
 			<div class="tw-px-2 tw-py-4 md:tw-px-4 md:tw-py-6 tw-text-center">
 				<div class="tw-bg-white tw-rounded-sm tw-p-2 tw-mb-3 tw-mx-auto" style="max-width: 400px;">
 					<campaign-logo-group
-						class="the-footer-corporate__logos tw-h-4 md:tw-h-5"
+						class="the-footer-corporate__logos tw-h-3 md:tw-h-4"
 						:corporate-logo-url="corporateLogoUrl"
+						:logo-height="logoHeight"
+						:logo-classes="logoClasses"
 					/>
 				</div>
 				<p class="the-footer-corporate__text tw-text-small tw-mx-auto tw-mb-2" style="max-width: 400px;">
@@ -63,6 +65,16 @@ export default {
 			type: String,
 			default: ''
 		},
+		logoHeight: {
+			type: Number,
+			default: 28,
+			required: false
+		},
+		logoClasses: {
+			type: String,
+			default: '',
+			required: false
+		}
 	},
 	data() {
 		return {

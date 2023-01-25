@@ -44,7 +44,7 @@
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanSearchInterface from '@/components/Lend/LoanSearch/LoanSearchInterface';
 import { mdiEarth, mdiFilter, mdiClose } from '@mdi/js';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';

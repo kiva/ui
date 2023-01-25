@@ -29,6 +29,8 @@
 						<campaign-logo-group
 							class="tw-h-2.5 lg:tw-h-3.5"
 							:corporate-logo-url="corporateLogoUrl"
+							:logo-height="logoHeight"
+							:logo-classes="logoClasses"
 						/>
 						<div class="tw-flex-1"></div>
 						<router-link
@@ -66,7 +68,7 @@
 								v-else
 								:src="profilePic"
 								alt="My portfolio"
-								class="fs-mask tw-inline-block
+								class="data-hj-suppress tw-inline-block
 									tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5
 									tw-rounded-full tw-overflow-hidden tw-object-fill"
 							>
@@ -339,7 +341,7 @@
 									v-else
 									:src="profilePic"
 									alt="My portfolio"
-									class="fs-mask tw-inline-block
+									class="data-hj-suppress tw-inline-block
 										tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5
 										tw-rounded-full tw-overflow-hidden tw-object-fill"
 								>
@@ -471,7 +473,7 @@ import logReadQueryError from '@/util/logReadQueryError';
 import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
 import setHotJarUserAttributes from '@/util/hotJarUserAttributes';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
@@ -554,6 +556,16 @@ export default {
 			type: String,
 			default: ''
 		},
+		logoHeight: {
+			type: Number,
+			default: 28,
+			required: false
+		},
+		logoClasses: {
+			type: String,
+			default: '',
+			required: false
+		}
 	},
 	computed: {
 		isTrustee() {

@@ -151,10 +151,10 @@
 
 <script>
 import { mdiLightningBolt } from '@mdi/js';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { createIntersectionObserver } from '@/util/observerUtils';
-// TODO: replace the loading placeholder with component from kv-components when available.
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';

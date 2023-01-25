@@ -7,7 +7,6 @@
 					:disable-redirects="disableRedirects"
 					:loan="loan"
 					:teams="teams"
-					:disable-matching="disableMatching"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
@@ -75,10 +74,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		disableMatching: {
-			type: Boolean,
-			default: false,
-		}
 	},
 	components: {
 		BasketItem,

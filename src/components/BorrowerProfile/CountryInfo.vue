@@ -61,11 +61,11 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import numeral from 'numeral';
 import { createIntersectionObserver } from '@/util/observerUtils';
-// TODO: replace the loading placeholder with component from kv-components when available.
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {

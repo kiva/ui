@@ -132,7 +132,7 @@ export default context => {
 			appConfig: config,
 			apollo: {
 				uri: config.graphqlUri,
-				types: config.graphqlFragmentTypes
+				types: config.graphqlPossibleTypes
 			},
 			cookieStore,
 			device,

@@ -179,7 +179,7 @@
 <script>
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiArrowRight } from '@mdi/js';
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import SearchList from './SearchList';
 import CountryList from './CountryList';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';

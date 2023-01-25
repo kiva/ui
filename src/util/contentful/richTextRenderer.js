@@ -132,8 +132,10 @@ export function richTextRenderer(content) {
 						:source-sizes="${sourceSetArrayAsString}" />`;
 		}
 		if (isFAQ) {
+			const questions = formatContentTypes(entryContent?.fields?.contents)
+				.filter(entry => entry.contentType === 'richTextContent');
 			return `<kv-frequently-asked-questions
-						:questions="${htmlSafeStringify(formatContentTypes(entryContent?.fields?.contents))}"
+						:questions="${htmlSafeStringify(questions)}"
 					/>`;
 		}
 		return '';

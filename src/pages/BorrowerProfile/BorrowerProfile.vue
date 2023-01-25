@@ -24,8 +24,8 @@
 						class="tw-relative lg:tw--mb-1.5"
 						:show-urgency-exp="showUrgencyExp"
 					>
-						<template #sharebutton v-if="inPfp || shareButtonExpEnabled">
-							<!-- Share button for PFP loans -->
+						<template #sharebutton>
+							<!-- Share button -->
 							<share-button
 								class="tw-block md:tw-hidden tw-mt-3"
 								:loan="loan"
@@ -46,11 +46,10 @@
 					<lend-cta
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
-						:require-deposits-matched-loans="requireDepositsMatchedLoans"
 						:user-context-exp-variant="userContextExpVariant"
 					>
-						<template #sharebutton v-if="inPfp || shareButtonExpEnabled">
-							<!-- Share button for PFP loans -->
+						<template #sharebutton>
+							<!-- Share button -->
 							<share-button
 								class="tw-hidden md:tw-block lg:tw-mb-1.5"
 								:loan="loan"
@@ -117,6 +116,13 @@
 					display-type="teams"
 					@hide-section="showTeams = false"
 				/>
+				<journal-updates
+					v-if="showUpdates"
+					data-testid="bp-updates"
+					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+					:loan-id="loanId"
+					@hide-section="showUpdates = false"
+				/>
 			</content-container>
 			<div class="tw-bg-primary">
 				<content-container>
@@ -138,10 +144,11 @@
 
 <script>
 import { getKivaImageUrl } from '@/util/imageUtils';
+import { ALLOWED_LOAN_STATUSES } from '@/util/loanUtils';
 import {
 	format, parseISO, differenceInCalendarDays
 } from 'date-fns';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
@@ -160,15 +167,14 @@ import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
+import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
 
 import {
-	getExperimentSettingCached,
 	trackExperimentVersion
 } from '@/util/experimentUtils';
 import loanUseFilter from '@/plugins/loan-use-filter';
 import CheckIcon from '@/assets/icons/inline/check-with-bg.svg';
 
-const shareButtonExpKey = 'share_button_bp';
 const userContextExpKey = 'new_users_context';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
@@ -184,14 +190,6 @@ const preFetchQuery = gql`
 	) {
 		general {
 			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
-				key
-				value
-			}
-			requireDepositsMatchedLoans: uiExperimentSetting(key: "require_deposits_matched_loans") {
-				key
-				value
-			}
-			shareButton: uiExperimentSetting(key: "share_button_bp") {
 				key
 				value
 			}
@@ -229,8 +227,10 @@ const preFetchQuery = gql`
 				loanAmount
 				status
 				use
+				fundraisingPercent @client
 				loanFundraisingInfo {
 					fundedAmount
+					reservedAmount
 				}
 				inPfp
 				pfpMinLenders
@@ -301,6 +301,7 @@ export default {
 		LendCta,
 		LendersAndTeams,
 		LoanStory,
+		JournalUpdates,
 		MoreAboutLoan,
 		SidebarContainer,
 		ShareButton,
@@ -390,9 +391,9 @@ export default {
 		return {
 			businessName: null,
 			countryName: '',
-			loanId: Number(this.$route.params.id || 0),
 			showLenders: true,
 			showTeams: true,
+			showUpdates: true,
 			isUrgencyExpVersionShown: false,
 			hasThreeDaysOrLessLeft: false,
 			// meta fields
@@ -406,7 +407,6 @@ export default {
 			status: '',
 			use: '',
 			loanFundraisingInfo: {},
-			requireDepositsMatchedLoans: false,
 			shareCardLanguageVersion: '',
 			inviterName: '',
 			inviterIsGuestOrAnonymous: false,
@@ -416,7 +416,6 @@ export default {
 			diffInDays: 0,
 			lender: {},
 			loan: {},
-			shareButtonExpEnabled: false,
 			userContextExpVariant: 'a',
 			partnerName: '',
 			partnerCountry: '',
@@ -447,8 +446,10 @@ export default {
 						});
 					}
 
+					// Check for loan and loan status
 					const loan = data?.lend?.loan;
-					if (loan === null || loan === 'undefined') {
+					const loanStatusAllowed = ALLOWED_LOAN_STATUSES.indexOf(loan?.status) !== -1;
+					if (loan === null || loan === 'undefined' || !loanStatusAllowed) {
 						// redirect to legacy borrower profile
 						const { query = {} } = route;
 						query.minimal = false;
@@ -458,11 +459,7 @@ export default {
 						});
 					}
 
-					return Promise.all([
-						client.query({ query: experimentQuery, variables: { id: 'require_deposits_matched_loans' } }),
-						client.query({ query: experimentQuery, variables: { id: shareButtonExpKey } }),
-						client.query({ query: experimentQuery, variables: { id: userContextExpKey } }),
-					]);
+					return client.query({ query: experimentQuery, variables: { id: userContextExpKey } });
 				});
 		},
 		preFetchVariables({ route, cookieStore }) {
@@ -517,21 +514,7 @@ export default {
 			this.$kvTrackEvent('Borrower Profile', 'EXP-GROW-655-Aug2021', expCookieSignifier);
 		}
 
-		const shareButtonExpData = getExperimentSettingCached(this.apollo, shareButtonExpKey);
-		if (shareButtonExpData?.enabled) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Borrower Profile',
-				shareButtonExpKey,
-				'EXP-ACK-451-Oct2022'
-			);
-			if (version === 'b') {
-				this.shareButtonExpEnabled = true;
-			}
-		}
-
-		// Async data fetch for MARS-317 and share button
+		// Async data fetch for MARS-317
 		const { data } = await this.apollo.query({
 			query: mountedQuery,
 			variables: {
@@ -544,6 +527,9 @@ export default {
 		this.lender = data?.my?.userAccount ?? {};
 	},
 	computed: {
+		loanId() {
+			return Number(this.$route.params.id || 0);
+		},
 		enabledExperimentVariant() {
 			return this.userContextExpVariant === 'a';
 		},
@@ -637,19 +623,6 @@ export default {
 					this.isUrgencyExpVersionShown ? 'b' : 'a'
 				);
 			}
-		}
-
-		const matchedLoansExperiment = this.apollo.readFragment({
-			id: 'Experiment:require_deposits_matched_loans',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.requireDepositsMatchedLoans = matchedLoansExperiment.version === 'b';
-		if (matchedLoansExperiment.version) {
-			this.$kvTrackEvent(
-				'Basket',
-				'EXP-CORE-615-May-2022',
-				matchedLoansExperiment.version
-			);
 		}
 
 		if (this.$route.query?.utm_campaign?.includes('scle')) {

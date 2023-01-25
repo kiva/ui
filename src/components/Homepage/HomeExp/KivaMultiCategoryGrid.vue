@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KivaLoanCardCategory from '@/components/LoanCollections/HomeExp/KivaLoanCardCategory';
 import LoanCategorySelectorHomeExp from '@/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';

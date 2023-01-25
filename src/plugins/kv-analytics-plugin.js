@@ -308,7 +308,18 @@ export default {
 						type: 'event',
 						eventName: 'loan_share_purchase',
 						tags: {
-							loan_share_purchase_amount: transactionData.loanTotal,
+							revenue: transactionData.loanTotal * 100,
+							loan_share_purchase_amount: transactionData.loanTotal
+						}
+					});
+				}
+
+				if (transactionData.donationTotal) {
+					window.optimizely.push({
+						type: 'event',
+						eventName: 'donation',
+						tags: {
+							revenue: transactionData.donationTotal * 100,
 							donation_amount: transactionData.donationTotal
 						}
 					});

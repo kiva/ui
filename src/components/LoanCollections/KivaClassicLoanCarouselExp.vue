@@ -11,7 +11,7 @@
 
 		<kv-carousel
 			v-if="loanIds.length > 0 && isVisible"
-			class="tw-w-full tw-overflow-visible md:tw-overflow-hidden"
+			class="tw-w-full tw-overflow-hidden"
 			:embla-options="{
 				loop: false,
 			}"
@@ -30,12 +30,14 @@
 					:item-index="index"
 					:key="`loan-mfi-${loanId}`"
 					:loan-id="loanId"
+					:show-tags="showTags"
 				/>
 				<kiva-classic-basic-loan-card-exp
 					v-else
 					:item-index="index"
 					:key="`loan-${loanId}`"
 					:loan-id="loanId"
+					:show-tags="showTags"
 				/>
 			</template>
 		</kv-carousel>
@@ -92,6 +94,10 @@ export default {
 		isMfi: {
 			type: Boolean,
 			default: false
+		},
+		showTags: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {

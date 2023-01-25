@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="tw-flex tw-flex-col"
-		style="min-width: 230px; max-width: 374px; height: 100%;"
+		:style="{ minWidth: '230px', height: '100%', maxWidth: cardWidth}"
 		:id="`${loanId}-loan-card`"
 	>
 		<!-- Borrower image w/ location <summary-tag> -->
@@ -20,6 +20,7 @@
 				:to="customLoanDetails ? '' : `/lend/${loanId}`"
 				v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
 			>
+				<loan-tag v-if="showTags" :loan="loan" :amount-left="amountLeft" />
 				<borrower-image
 					class="
 					tw-relative
@@ -235,7 +236,7 @@
 <script>
 import numeral from 'numeral';
 import { mdiChevronRight, mdiMapMarker, mdiCheckCircleOutline } from '@mdi/js';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
 import { isMatchAtRisk, readLoanFragment, watchLoanData } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
@@ -244,7 +245,6 @@ import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
@@ -252,6 +252,8 @@ import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import { setLendAmount } from '@/util/basketUtils';
 import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
+import LoanTag from '@/components/LoanCards/LoanTags/LoanTag';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -309,7 +311,15 @@ export default {
 		showActionButton: {
 			type: Boolean,
 			default: false
-		}
+		},
+		useFullWidth: {
+			type: Boolean,
+			default: false
+		},
+		showTags: {
+			type: Boolean,
+			default: false
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],
@@ -324,7 +334,8 @@ export default {
 		KvMaterialIcon,
 		SummaryTag,
 		KvUiButton,
-		ActionButton
+		ActionButton,
+		LoanTag,
 	},
 	data() {
 		return {
@@ -340,6 +351,9 @@ export default {
 		};
 	},
 	computed: {
+		cardWidth() {
+			return this.useFullWidth ? '100%' : '374px';
+		},
 		amountLeft() {
 			const loanFundraisingInfo = this.loan?.loanFundraisingInfo ?? { fundedAmount: 0, reservedAmount: 0 };
 			const { fundedAmount, reservedAmount } = loanFundraisingInfo;

@@ -3,22 +3,6 @@ import loanSearchFactory, { getDefaultLoanSearchState } from '@/api/localResolve
 const defaultLoanSearchState = getDefaultLoanSearchState();
 
 describe('loanSearch.js', () => {
-	describe('Query.loanSearchState', () => {
-		it('Returns a default loan search object', () => {
-			const { resolvers } = loanSearchFactory();
-			const context = {
-				cache: {
-					readQuery: jest.fn().mockReturnValue(defaultLoanSearchState),
-				},
-			};
-
-			const result = resolvers.Query.loanSearchState(null, null, context);
-
-			expect(context.cache.readQuery.mock.calls.length).toBe(1);
-			expect(result).toEqual(defaultLoanSearchState);
-		});
-	});
-
 	describe('Mutation.updateLoanSearch', () => {
 		it('Returns a default loan search object with gender set', () => {
 			const { resolvers } = loanSearchFactory();
@@ -34,15 +18,13 @@ describe('loanSearch.js', () => {
 
 			const context = {
 				cache: {
-					readQuery: jest.fn().mockReturnValue(defaultLoanSearchState),
-					writeData: jest.fn().mockReturnValue(loanSearchPlusGender),
+					updateQuery: jest.fn().mockReturnValue(loanSearchPlusGender),
 				},
 			};
 
 			const result = resolvers.Mutation.updateLoanSearch(null, { searchParams: { gender: 'male' } }, context);
 
-			expect(context.cache.readQuery.mock.calls.length).toBe(1);
-			expect(context.cache.writeData.mock.calls.length).toBe(1);
+			expect(context.cache.updateQuery.mock.calls.length).toBe(1);
 
 			expect(result).toEqual(loanSearchPlusGender.loanSearchState);
 		});

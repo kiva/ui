@@ -13,7 +13,8 @@
 				/>
 				<div v-if="receipt">
 					<p>
-						Success, your receipt has been sent to <strong class="fs-mask">{{ lender.email }}</strong>
+						Success, your receipt has been sent to
+						<strong class="data-hj-suppress">{{ lender.email }}</strong>
 					</p>
 				</div>
 			</div>
@@ -138,6 +139,7 @@
 						variant="primary"
 						utm-campaign="social_eco_thanks_page"
 						style="max-width: 190px;"
+						tracking-category="post-checkout"
 					>
 						Share this fact
 						<template #modal-content>
@@ -200,6 +202,8 @@
 </template>
 
 <script>
+// This component was used in the Eco Challenge. Currently not in use.
+
 import { mdiCheckAll } from '@mdi/js';
 import confetti from 'canvas-confetti';
 import numeral from 'numeral';

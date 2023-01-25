@@ -132,7 +132,7 @@ export default {
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo() {
 		return {
-			title: 'See loans by category',
+			title: 'Make a loan, change a life | Loans by category',
 			meta: [
 				{
 					vmid: 'description',

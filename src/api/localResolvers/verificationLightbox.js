@@ -1,40 +1,40 @@
+import { gql } from '@apollo/client';
+
 /*
  * VerificationLightbox resolvers
  */
 
-// eslint-disable-next-line no-underscore-dangle
-const __typename = 'VerificationLightbox';
+function writeVerificationLightboxData({ cache, visible = false }) {
+	cache.writeQuery({
+		query: gql`query verificationLightboxData {
+			verificationLightbox @client {
+				id
+				visible
+			}
+		}`,
+		data: {
+			verificationLightbox: {
+				id: 0,
+				visible,
+				__typename: 'VerificationLightbox',
+			}
+		}
+	});
+}
 
 export default () => {
 	return {
-		defaults: {
-			verificationLightbox: {
-				visible: false,
-				__typename,
-			},
+		defaults(cache) {
+			writeVerificationLightboxData({ cache, visible: false });
 		},
 		resolvers: {
 			Mutation: {
-				showVerificationLightbox(_, args, context) {
-					context.cache.writeData({
-						data: {
-							verificationLightbox: {
-								visible: true,
-								__typename,
-							},
-						},
-					});
+				showVerificationLightbox(_, args, { cache }) {
+					writeVerificationLightboxData({ cache, visible: true });
 					return true;
 				},
-				closeVerificationLightbox(_, args, context) {
-					context.cache.writeData({
-						data: {
-							verificationLightbox: {
-								visible: false,
-								__typename,
-							},
-						},
-					});
+				closeVerificationLightbox(_, args, { cache }) {
+					writeVerificationLightboxData({ cache, visible: false });
 					return true;
 				},
 			},

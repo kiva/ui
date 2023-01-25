@@ -1,18 +1,61 @@
 <template>
-	<www-page class="tw-bg-secondary" style="height: auto;">
-		<div class="tw-max-w-5xl tw-mx-auto tw-p-2 lg:tw-pt-4">
-			<h3 class="tw-text-h3 tw-text-primary">
-				Welcome back, <span class="tw-text-action fs-mask">{{ firstName }}</span>
-			</h3>
+	<www-page main-class="tw-bg-white" style="height: auto;">
+		<kv-lightbox
+			:visible="showLightbox"
+			title="Welcome to Lending Home"
+			@lightbox-closed="closeLightbox"
+		>
+			<welcome-lightbox @close-lightbox="closeLightbox" />
+		</kv-lightbox>
+
+		<div class="tw-w-full">
+			<!-- eslint-disable-next-line max-len -->
+			<div class="tw-mx-auto tw-p-2 lg:tw-pt-4 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
+				<h3 class="tw-text-h3 tw-text-primary">
+					Welcome back, <span class="tw-text-action data-hj-suppress">{{ firstName }}</span>
+				</h3>
+			</div>
 			<!-- First category row: Recommended loans section -->
 			<lending-category-section
+				title="Recommended for you"
+				subtitle="Loans handpicked for you based on your lending history"
 				:loans="recommendedLoans"
-				class="tw-mt-2"
-				@add-to-basket="trackRecommended"
+				:per-step="2"
+				class="tw-pt-2"
+				@add-to-basket="trackCategory($event, 'recommended')"
 			/>
 
-			<quick-filters-section class="tw-mt-6" />
+			<quick-filters-section
+				class="tw-mt-6"
+				@add-to-basket="trackCategory($event, 'quick-filters')"
+			/>
+
+			<!-- Second category row: Matched loans section -->
+			<lending-category-section
+				title="Matched lending"
+				subtitle="Stretch your funds further with the help of our partners and Kivans just like you"
+				:loans="matchedLoans"
+				class="tw-pt-6 tw-pb-2"
+				@add-to-basket="trackCategory($event, 'matched-lending')"
+			/>
+
+			<partner-spotlight-section class="tw-pt-6" />
 		</div>
+
+		<kv-toast
+			ref="welcomeToastMessage"
+			@close="closeToast()"
+			class="tw-fixed tw-top-9 md:tw-top-11 tw-left-0 tw-right-0 tw-z-banner"
+		>
+			<template #toastContent>
+				<div>
+					Welcome to Lending home! We’re doing something new based on your feedback this year.
+					<button @click="openLightbox()" class="tw-text-action">
+						Read more here
+					</button>
+				</div>
+			</template>
+		</kv-toast>
 	</www-page>
 </template>
 
@@ -21,8 +64,13 @@ import userInfoQuery from '@/graphql/query/userInfo.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
 import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
+import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSection';
 import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
+import { gql } from '@apollo/client';
+import WelcomeLightbox from '@/components/LoanFinding/WelcomeLightbox';
+import KvToast from '~/@kiva/kv-components/vue/KvToast';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	name: 'LoanFinding',
@@ -31,6 +79,10 @@ export default {
 		WwwPage,
 		LendingCategorySection,
 		QuickFiltersSection,
+		PartnerSpotlightSection,
+		KvToast,
+		WelcomeLightbox,
+		KvLightbox
 	},
 	data() {
 		return {
@@ -38,7 +90,13 @@ export default {
 			recommendedLoans: [
 				{ id: 0 }, { id: 0 }, { id: 0 },
 				{ id: 0 }, { id: 0 }, { id: 0 }
-			]
+			],
+			matchedLoans: [
+				{ id: 0 }, { id: 0 }, { id: 0 },
+				{ id: 0 }, { id: 0 }, { id: 0 },
+				{ id: 0 }, { id: 0 }, { id: 0 }
+			],
+			showLightbox: false,
 		};
 	},
 	apollo: {
@@ -67,12 +125,56 @@ export default {
 			);
 			this.recommendedLoans = loans;
 		},
-		trackRecommended({ success }) {
-			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', 'recommended-lending-home');
+		async getMatchedLoans() {
+			// TODO: replace with FLSS query once "isMatchable" is stable in FLSS
+			const { data } = await this.apollo.query({
+				query: gql`
+					query lendMatchingData {
+						lend {
+							loans(filters: { isMatched: true }, limit: 9) {
+								values {
+									id
+								}
+							}
+						}
+					}
+				`,
+			});
+
+			this.matchedLoans = data?.lend?.loans?.values ?? [];
+		},
+		trackCategory({ success }, category) {
+			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', `${category}-lending-home`);
+		},
+		closeToast() {
+			this.$kvTrackEvent('event-tracking', 'dismiss', 'lending-home-toast-dismissed');
+		},
+		showToast() {
+			if (!this.cookieStore.get('lending-home-toast')) {
+				this.$refs.welcomeToastMessage.show('', 'kiva-logo', true);
+				this.cookieStore.set('lending-home-toast', true);
+				this.$kvTrackEvent('event-tracking', 'show', 'lending-home-toast-showed');
+			}
+		},
+		openLightbox() {
+			this.showLightbox = true;
+			this.$refs.welcomeToastMessage.close();
+			this.$kvTrackEvent('event-tracking', 'click', 'lending-home-toast-read-more-clicked');
+		},
+		closeLightbox() {
+			this.showLightbox = false;
 		}
 	},
 	mounted() {
 		this.getRecommendedLoans();
+		this.getMatchedLoans();
+		this.showToast();
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+>>> [role=progressbar] {
+	@apply tw-bg-tertiary;
+}
+</style>

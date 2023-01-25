@@ -15,7 +15,7 @@
 			>
 				<kv-base-input
 					name="firstName"
-					class="fs-exclude tw-w-full tw-mb-4"
+					class="data-hj-suppress tw-w-full tw-mb-4"
 					type="text"
 					v-show="needsNames"
 					v-model.trim="firstName"
@@ -28,7 +28,7 @@
 				</kv-base-input>
 				<kv-base-input
 					name="lastName"
-					class="fs-exclude tw-w-full tw-mb-4"
+					class="data-hj-suppress tw-w-full tw-mb-4"
 					type="text"
 					v-show="needsNames"
 					v-model.trim="lastName"
@@ -41,7 +41,7 @@
 				</kv-base-input>
 				<kv-base-input
 					name="newAcctTerms"
-					class="fs-exclude tw-w-full tw-mb-4"
+					class="data-hj-suppress tw-w-full tw-mb-4"
 					type="checkbox"
 					v-show="needsTerms"
 					v-model="newAcctTerms"
@@ -57,7 +57,7 @@
 				</kv-base-input>
 				<kv-base-input
 					name="newsConsent"
-					class="fs-exclude tw-w-full tw-mb-4"
+					class="data-hj-suppress tw-w-full tw-mb-4"
 					type="checkbox"
 					v-show="needsNews"
 					v-model="newsConsent"

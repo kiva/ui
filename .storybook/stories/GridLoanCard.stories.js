@@ -72,3 +72,26 @@ export const Default = (args, { argTypes }) => ({
 		/>
 	`,
 });
+
+export const Tags = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	mixins: [apolloStoryMixin()],
+	components: {
+		GridLoanCard,
+	},
+	template: `
+		<grid-loan-card
+			:items-in-basket="itemsInBasket"
+			:loan="loan"
+			:amount-left="amountLeft"
+			:expiring-soon-message="expiringSoonMessage"
+			:is-favorite="isFavorite"
+			:is-funded="isFunded"
+			:is-selected-by-another="isSelectedByAnother"
+			:is-visitor="isVisitor"
+			:percent-raised="percentRaised"
+			:title="title"
+			:show-tags="true"
+		/>
+	`,
+});

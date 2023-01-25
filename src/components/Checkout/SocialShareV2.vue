@@ -13,7 +13,12 @@
 				data-testid="share-facebook-button"
 				class="social__btn social__btn--facebook"
 				:href="facebookShareUrl"
-				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Facebook-share']"
+				v-kv-track-event="[
+					'post-checkout',
+					'share',
+					'facebook',
+					`social_share_checkout_scle_${this.shareCardLanguageVersion}`,
+					selectedLoanId]"
 			>
 				<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
 				<span>Share</span>
@@ -24,7 +29,12 @@
 				:href="twitterShareUrl"
 				target="_blank"
 				rel="noopener"
-				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Twitter-share']"
+				v-kv-track-event="[
+					'post-checkout',
+					'share',
+					'twitter',
+					`social_share_checkout_scle_${this.shareCardLanguageVersion}`,
+					selectedLoanId]"
 				@click="$showTipMsg('Thanks for tweeting!')"
 			>
 				<kv-icon name="twitter" title="Twitter" class="social__icon" />
@@ -36,7 +46,12 @@
 				:href="linkedInShareUrl"
 				target="_blank"
 				rel="noopener"
-				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-LinkedIn-share']"
+				v-kv-track-event="[
+					'post-checkout',
+					'share',
+					'linkedin',
+					`social_share_checkout_scle_${this.shareCardLanguageVersion}`,
+					selectedLoanId]"
 				@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
 			>
 				<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
@@ -47,11 +62,16 @@
 				class="social__btn social__btn--link tw-text-link tw-border-tertiary tw-border"
 				:class="copyStatus.class"
 				:disabled="copyStatus.disabled"
-				v-kv-track-event="['thanks', 'Social-Share-Lightbox', 'click-Copy-link-share']"
+				v-kv-track-event="[
+					'post-checkout',
+					'share',
+					'copy-link',
+					`social_share_checkout_scle_${this.shareCardLanguageVersion}`,
+					selectedLoanId]"
 				@click="copyLink"
 			>
 				<kv-icon name="clipboard" class="social__icon" />
-				<span>{{ this.copyStatus.text }}</span>
+				<span>{{ copyStatus.text }}</span>
 			</button>
 		</div>
 	</section>
@@ -105,6 +125,9 @@ export default {
 			const orderedLoans = orderBy(this.loans, ['unreservedAmount'], ['desc']);
 			return orderedLoans[0] || {};
 		},
+		selectedLoanId() {
+			return this.selectedLoan?.id ?? undefined;
+		},
 		placeholderMessage() {
 			return this.selectedLoan.name ? `Why did you lend to ${this.selectedLoan.name}?` : '';
 		},
@@ -128,8 +151,8 @@ export default {
 		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
-			if (this.selectedLoan.id) {
-				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoan.id}?utm_content=${this.utmContent}`; // eslint-disable-line max-len
+			if (this.selectedLoanId) {
+				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoanId}?utm_content=${this.utmContent}`; // eslint-disable-line max-len
 			}
 
 			return `${base}?utm_content=${this.utmContent}&utm_campaign=social_share_checkout_scle_${this.shareCardLanguageVersion}`; // eslint-disable-line max-len
@@ -145,11 +168,7 @@ export default {
 			});
 		},
 		linkedInShareUrl() {
-			return getFullUrl('https://www.linkedin.com/shareArticle', {
-				mini: 'true',
-				source: `https://${this.$appConfig.host}`,
-				summary: this.shareMessage.substring(0, 256),
-				title: `A loan for ${this.selectedLoan.name}`,
+			return getFullUrl('https://www.linkedin.com/sharing/share-offsite/', {
 				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout_scle_${this.shareCardLanguageVersion}` // eslint-disable-line max-len
 			});
 		},
@@ -175,6 +194,7 @@ export default {
 					if (code !== '4201') {
 						this.$showTipMsg(`There was a problem sharing to Facebook: ${message}`, 'warning');
 					}
+					this.$kvTrackEvent('post-checkout', 'fail', 'share-facebook');
 				} else {
 					this.$showTipMsg('Thanks for sharing to Facebook!');
 				}

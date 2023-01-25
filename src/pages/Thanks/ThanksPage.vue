@@ -1,36 +1,25 @@
 <template>
-	<www-page>
+	<www-page data-testid="thanks-page">
 		<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 			<div class="small-12 columns thanks">
 				<div class="thanks__header hide-for-print">
 					<template v-if="receipt">
-						<div
-							v-if="!isAutoDepositSubscriber && showAutoDepositUpsell"
-							class="thanks_header-image tw-hidden md:tw-block tw-mb-3"
-						>
-							<img :src="imageRequire(`./high-five.svg`)" class="tw-mx-auto" alt="high fiving hands">
-						</div>
 						<h1
-							class="thanks__header-h1 tw-mt-1 tw-mb-3"
-							:class="{
-								'tw-text-h2': showAutoDepositUpsell
-							}"
+							class="tw-mt-1 tw-mb-3"
 						>
 							Thank you!
 						</h1>
 						<p
 							v-if="loans.length > 0"
-							class="thanks__header-subhead"
-							:class="{
-								'tw-text-base tw-mb-0': showAutoDepositUpsell,
-								'tw-text-subhead tw-mb-2': !showAutoDepositUpsell
-							}"
+							class="thanks__header-subhead tw-text-subhead tw-mb-2"
+							data-testid="thanks-message"
 						>
-							Thanks for supporting <span class="fs-mask">{{ borrowerSupport }}</span>.<br>
+							Thanks for supporting
+							<span class="data-hj-suppress">{{ borrowerSupport }}</span>.<br>
 						</p>
 						<p v-if="lender.email" class="hide-for-print">
 							We've emailed your order confirmation to
-							<strong class="fs-exclude">{{ lender.email }}</strong>
+							<strong class="data-hj-suppress ">{{ lender.email }}</strong>
 						</p>
 						<p v-else class="hide-for-print">
 							We've emailed your order confirmation to you.
@@ -51,14 +40,10 @@
 			</div>
 			<thanks-layout-v2
 				v-if="receipt"
-				:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !showAutoDepositUpsell && !hasModernSub"
-				:show-auto-deposit-upsell="!isAutoDepositSubscriber && showAutoDepositUpsell && !hasModernSub"
+				:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !hasModernSub"
 				:show-guest-upsell="isGuest"
 				:show-share="loans.length > 0"
 				:thanks-social-share-version="simpleSocialShareVersion"
-				:class="{
-					'tw-mt-4': showAutoDepositUpsell
-				}"
 			>
 				<template #receipt>
 					<checkout-receipt
@@ -128,8 +113,6 @@ import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
-const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
-
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 
@@ -154,13 +137,9 @@ export default {
 	},
 	data() {
 		return {
-			autoDepositUpsellCookie: null,
-			autoDepositUpsellExpVersion: null,
-			imageRequire,
 			lender: {},
 			loans: [],
 			receipt: null,
-			isAutoDepositSubscriber: false,
 			isMonthlyGoodSubscriber: false,
 			hasModernSub: false,
 			isGuest: false,
@@ -168,7 +147,7 @@ export default {
 			shareCardLanguageVersion: '',
 			simpleSocialShareVersion: '',
 			shareAskCopyVersion: '',
-			categoryShareVersion: '',
+			categoryShareVersion: ''
 		};
 	},
 	apollo: {
@@ -183,19 +162,12 @@ export default {
 					checkoutId: transactionId,
 					visitorId: cookieStore.get('uiv') || null,
 				}
-			}).then(({ data }) => {
-				const isLoggedIn = data?.my?.userAccountId?.id !== null;
-				const hasAutoDeposit = data?.my?.autoDeposit !== null;
-				const hasLegacySubs = data?.my?.subscriptions?.values?.length !== 0;
-				const modernSubscriptions = data?.mySubscriptions?.values ?? [];
-				const hasModernSub = modernSubscriptions.length !== 0;
-				const upsellEligible = isLoggedIn && !hasAutoDeposit && !hasLegacySubs && !hasModernSub;
-
+			}).then(() => {
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_share_module' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_card_language' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
-					upsellEligible ? client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_ad_upsell' } }) : Promise.resolve() // eslint-disable-line max-len
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'category_share' } }),
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
@@ -254,13 +226,6 @@ export default {
 		ctaButtonText() {
 			return this.ctaContentBlock?.primaryCtaText;
 		},
-		showAutoDepositUpsell() {
-			// Check cookie and eligibility before showing
-			if (!this.isGuest && this.autoDepositUpsellExpVersion === 'b') {
-				return true;
-			}
-			return false;
-		},
 		showFocusedShareAsk() {
 			// Only show focused share ask for non-guest loan purchases
 			return !this.isGuest && this.selectedLoan.id;
@@ -289,16 +254,11 @@ export default {
 		this.hasModernSub = modernSubscriptions.length !== 0;
 		this.lender = {
 			...(data?.my?.userAccount ?? {}),
+			publicName: data?.my?.lender?.name ?? '',
 			teams: data?.my?.teams?.values?.map(value => value.team) ?? [],
 		};
 
 		this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
-		const hasAutoDeposit = data?.my?.autoDeposit?.id ?? false;
-		this.isAutoDepositSubscriber = !!(hasAutoDeposit && !this.isMonthlyGoodSubscriber);
-
-		const isLoggedIn = data?.my?.userAccountId?.id !== null;
-		const hasLegacySubs = data?.my?.subscriptions?.values?.length !== 0;
-		const upsellEligible = isLoggedIn && !hasAutoDeposit && !hasLegacySubs && !this.hasModernSub;
 
 		// The default empty object and the v-if will prevent the
 		// receipt from rendering in the rare cases this query fails.
@@ -323,12 +283,20 @@ export default {
 		userHasLentBefore(hasLentBefore);
 		userHasDepositBefore(hasDepositBefore);
 
+		const totalLoans = data?.my?.loans?.totalCount ?? 0;
+		const isFirstLoan = this.loans.length && totalLoans === this.loans.length;
+		const hasDirectLoan = this.loans.findIndex(loan => loan.distributionModel === 'direct') > -1;
+		const hasCoreLoan = this.loans.findIndex(loan => loan.distributionModel === 'fieldPartner') > -1;
+
 		// MARS-246 Hotjar user attributes
 		setHotJarUserAttributes({
 			userId: data?.my?.userAccountId?.id,
 			hasEverLoggedIn,
 			hasLentBefore,
 			hasDepositBefore,
+			isFirstLoan,
+			hasDirectLoan,
+			hasCoreLoan
 		});
 
 		if (!this.isGuest && !data?.my?.userAccount) {
@@ -349,24 +317,6 @@ export default {
 		// Check for contentful content
 		const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
-
-		// Check for upsell eligibility and experiment state
-		if (upsellEligible) {
-			// CORE-427 Thanks auto deposit upsell experiment
-			const autoDepositUpsellExp = this.apollo.readFragment({
-				id: 'Experiment:thanks_ad_upsell',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			this.autoDepositUpsellExpVersion = autoDepositUpsellExp.version;
-			if (this.autoDepositUpsellExpVersion) {
-				this.$kvTrackEvent(
-					'Thanks',
-					'EXP-CORE-427-Feb-2022',
-					this.autoDepositUpsellExpVersion,
-				);
-			}
-		}
 
 		if (this.showFocusedShareAsk) {
 			const shareCardLanguage = this.apollo.readFragment({
@@ -399,19 +349,21 @@ export default {
 			}
 
 			// MARS-310 Category Share on Thanks page
-			const categoryShareResult = this.apollo.readFragment({
-				id: 'Experiment:category_share',
-				fragment: experimentVersionFragment,
-			}) || {};
+			if (!this.isGuest) {
+				const categoryShareResult = this.apollo.readFragment({
+					id: 'Experiment:category_share',
+					fragment: experimentVersionFragment,
+				}) || {};
 
-			this.categoryShareVersion = categoryShareResult?.version;
-			if (this.categoryShareVersion && (this.selectedLoan?.gender?.toLowerCase() === 'female'
-				|| ['women', 'education', 'agriculture'].includes(this.selectedLoan?.sector?.name?.toLowerCase()))) {
-				this.$kvTrackEvent(
-					'Thanks',
-					'EXP-MARS-310-Nov2022',
-					this.categoryShareVersion,
-				);
+				this.categoryShareVersion = categoryShareResult?.version;
+				if (this.categoryShareVersion && (this.selectedLoan?.gender?.toLowerCase() === 'female'
+					|| ['education', 'agriculture'].includes(this.selectedLoan?.sector?.name?.toLowerCase()))) {
+					this.$kvTrackEvent(
+						'Thanks',
+						'EXP-MARS-310-Nov2022',
+						this.categoryShareVersion,
+					);
+				}
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-import { onError } from 'apollo-link-error';
+import { onError } from '@apollo/client/link/error';
 import logFormatter from '@/util/logFormatter';
 
 export default () => {

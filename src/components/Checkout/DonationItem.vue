@@ -667,7 +667,7 @@
 			</div>
 		</template>
 		<template v-if="donateItemExperimentVersion === 'e' && orderTotalVariant && hasLoans">
-			<div class="tw-flex tw-flex-col tw-w-full tw-pb-4">
+			<div class="tw-flex tw-flex-col tw-w-full tw-pb-2">
 				<div class="tw-flex tw-flex-row tw-w-full">
 					<!-- donation text -->
 					<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
@@ -681,25 +681,24 @@
 
 					<!-- donation total -->
 					<div
-						class="tw-flex-none tw-w-auto"
+						v-show="!editDonation"
+						class="tw-block tw-text-right"
 					>
-						<div
-							v-show="!editDonation"
-							class="tw-block tw-text-right tw-ml-1"
+						<button
+							class="donation-amount tw-text-h3 tw-flex"
+							data-testid="basket-donation-edit-button-combined"
+							v-kv-track-event="['basket', 'Edit Donation']"
+							@click="enterEditDonation"
+							title="Edit Donation"
 						>
-							<button
-								class="donation-amount tw-text-h3"
-								data-testid="basket-donation-edit-button-combined"
-								v-kv-track-event="['basket', 'Edit Donation']"
-								@click="enterEditDonation"
-								title="Edit Donation"
-							>
+							<div class="tw-text-right tw-inline-block tw-pl-2">
 								{{ formattedAmount }}
-								<kv-material-icon
-									role="img"
-									aria-label="Edit Donation"
-									title="Edit Donation"
-									class="edit-donation
+							</div>
+							<kv-material-icon
+								role="img"
+								aria-label="Edit Donation"
+								title="Edit Donation"
+								class="edit-donation
 											tw-text-action
 											tw-w-2.5
 											tw-ml-2
@@ -707,42 +706,41 @@
 											tw-py-0.5
 											tw-align-bottom
 									"
-									name="pencil"
-									:icon="mdiPencil"
-								/>
-							</button>
-						</div>
-						<div v-show="editDonation" class="small-12 columns donation-amount-input-wrapper">
-							<kv-text-input
-								class="donation-amount-input"
-								data-testid="basket-donation-edit-input"
-								name="donation"
-								id="donation"
-								v-model="amount"
-								@blur="validateInput"
-								@keyup.enter.prevent="updateDonation()"
+								name="pencil"
+								:icon="mdiPencil"
 							/>
-							<kv-button
-								variant="secondary"
-								class="update-donation-inline-button"
-								data-testid="basket-donation-edit-submit"
-								@click="updateDonation()"
-							>
-								Update
-							</kv-button>
-							<button
-								class="show-for-medium remove-wrapper"
-								@click="updateLoanAmount('remove')"
-								data-testid="basket-donation-remove"
-							>
-								<kv-material-icon
-									class="remove-x tw-text-tertiary"
-									name="small-x"
-									:from-sprite="true"
-									title="Remove donation"
-								/>
-							</button>
-						</div>
+						</button>
+					</div>
+					<div v-show="editDonation" class="donation-amount-input-wrapper">
+						<kv-text-input
+							class="donation-amount-input"
+							data-testid="basket-donation-edit-input"
+							name="donation"
+							id="donation"
+							v-model="amount"
+							@blur="validateInput"
+							@keyup.enter.prevent="updateDonation()"
+						/>
+						<kv-button
+							variant="secondary"
+							class="update-donation-inline-button"
+							data-testid="basket-donation-edit-submit"
+							@click="updateDonation()"
+						>
+							Update
+						</kv-button>
+						<button
+							class="show-for-medium remove-wrapper"
+							@click="updateLoanAmount('remove')"
+							data-testid="basket-donation-remove"
+						>
+							<kv-material-icon
+								class="remove-x tw-text-tertiary"
+								name="small-x"
+								:from-sprite="true"
+								title="Remove donation"
+							/>
+						</button>
 					</div>
 				</div>
 
@@ -803,9 +801,8 @@
 
 <script>
 import numeral from 'numeral';
-import { mdiPencil } from '@mdi/js';
-
 import { processPageContentFlat } from '@/util/contentfulUtils';
+import { mdiPencil } from '@mdi/js';
 import logFormatter from '@/util/logFormatter';
 import {
 	getExperimentSettingCached,

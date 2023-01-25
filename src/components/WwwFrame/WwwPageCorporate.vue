@@ -4,6 +4,8 @@
 		<the-header
 			:corporate="true"
 			:corporate-logo-url="corporateLogoUrl"
+			:logo-height="logoHeight"
+			:logo-classes="logoClasses"
 			class="tw-sticky tw-z-sticky tw-top-0"
 		/>
 		<main>
@@ -11,6 +13,8 @@
 		</main>
 		<the-footer-corporate
 			:corporate-logo-url="corporateLogoUrl"
+			:logo-height="logoHeight"
+			:logo-classes="logoClasses"
 		/>
 		<the-basket-bar
 			:corporate="true"
@@ -47,6 +51,14 @@ export default {
 		corporateLogoUrl: {
 			type: String,
 			default: ''
+		},
+		logoClasses: {
+			type: String,
+			default: ''
+		},
+		logoHeight: {
+			type: Number,
+			default: 28
 		}
 	},
 	apollo: {

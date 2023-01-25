@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import getCacheKey from '@/util/getCacheKey';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'KvLoadingParagraph',

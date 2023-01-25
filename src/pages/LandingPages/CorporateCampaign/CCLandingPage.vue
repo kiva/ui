@@ -1,6 +1,8 @@
 <template>
 	<www-page-corporate
 		:corporate-logo-url="corporateLogoUrl"
+		:logo-height="logoHeight"
+		:logo-classes="logoClasses"
 	>
 		<div class="corporate-campaign-landing">
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
@@ -204,7 +206,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import numeral from 'numeral';
 import { indexIn } from '@/util/comparators';
 import logFormatter from '@/util/logFormatter';
@@ -926,6 +928,12 @@ export default {
 		},
 		corporateLogoUrl() {
 			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.media?.[0]?.file?.url;
+		},
+		logoHeight() {
+			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.contents?.[0]?.dataObject?.logoHeight;
+		},
+		logoClasses() {
+			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.contents?.[0]?.dataObject?.logoClasses;
 		},
 		hideStatusBar() {
 			return this.pageSettingData?.hideStatusBar ?? false;

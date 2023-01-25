@@ -45,9 +45,8 @@
 										<loan-progress
 											data-testid="bp-summary-progress"
 											class="tw-mb-2"
-											:money-left="'0'"
-											:progress-percent="1"
-											loan-status="funded"
+											:progress-percent="progressPercent"
+											:loan-status="loanStatus"
 										/>
 									</div>
 								</div>
@@ -202,6 +201,19 @@ export default {
 		shareDescription() {
 			// eslint-disable-next-line max-len
 			return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
+		},
+		loanStatus() {
+			// Loan may still be fundraising, but all shares are reserved
+			if (this.loan?.status === 'fundraising') {
+				return 'funded';
+			}
+			return this.loan?.status ?? 'funded';
+		},
+		progressPercent() {
+			if (this.loanStatus === 'funded') {
+				return 1;
+			}
+			return this.loan?.loanFundraisingInfo?.fundedAmount / this.loan?.loanAmount;
 		},
 	},
 	created() {

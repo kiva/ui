@@ -5,9 +5,10 @@
 			data-testid="bp-share-cta-button"
 			@click="isLightboxVisible = true;"
 			v-kv-track-event="[
-				'Lending',
-				'click-share-cta',
-				'Share'
+				trackingCategory,
+				'show',
+				'share-lightbox',
+				utmCampaign
 			]"
 			:variant="variant"
 		>
@@ -20,69 +21,60 @@
 		>
 			<slot name="modal-content"></slot>
 			<div
-				class="tw-inline-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-1 tw-mt-2.5"
+				class="tw-flex tw-mt-2.5 tw-flex-wrap"
 			>
 				<kv-button
 					variant="ghost"
 					class="social-button"
 					data-testid="share-facebook-button"
-					:href="facebookShareUrl"
-					target="_blank"
-					rel="noopener"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Facebook-share']"
-					@click="$showTipMsg('Thanks for sharing to Facebook!')"
+					v-kv-track-event="[trackingCategory, 'share', 'facebook', utmCampaign, loanId]"
+					@click="showSharePopUp(facebookShareUrl, 'Thanks for sharing to Facebook!')"
 				>
 					<kv-material-icon
 						class="social-button__icon social-button__icon--facebook"
 						:icon="mdiFacebook"
 					/>
-					<span class="tw-font-medium">Share on Facebook</span>
+					<span class="tw-font-medium">Facebook</span>
 				</kv-button>
 				<kv-button
 					variant="ghost"
 					class="social-button"
 					data-testid="share-twitter-button"
-					:href="twitterShareUrl"
-					target="_blank"
-					rel="noopener"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Twitter-share']"
-					@click="$showTipMsg('Thanks for tweeting!')"
+					v-kv-track-event="[trackingCategory, 'share', 'twitter', utmCampaign, loanId]"
+					@click="showSharePopUp(twitterShareUrl, 'Thanks for tweeting!')"
 				>
 					<kv-material-icon
 						class="social-button__icon social-button__icon--twitter"
 						:icon="mdiTwitter"
 					/>
-					<span class="tw-font-medium">Share on Twitter</span>
+					<span class="tw-font-medium">Twitter</span>
 				</kv-button>
 				<kv-button
 					variant="ghost"
 					class="social-button"
 					data-testid="share-linkedin-button"
-					:href="linkedInShareUrl"
-					target="_blank"
-					rel="noopener"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-LinkedIn-share']"
-					@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
+					v-kv-track-event="[trackingCategory, 'share', 'linkedin', utmCampaign, loanId]"
+					@click="showSharePopUp(linkedInShareUrl, 'Thanks for sharing to LinkedIn!')"
 				>
 					<kv-material-icon
 						class="social-button__icon social-button__icon--linkedin"
 						:icon="mdiLinkedin"
 					/>
-					<span class="tw-font-medium">Share on LinkedIn</span>
+					<span class="tw-font-medium">LinkedIn</span>
 				</kv-button>
 				<kv-button
 					variant="ghost"
 					class="social-button "
 					data-testid="share-copy-link-button"
 					:disabled="copyStatus.disabled"
-					v-kv-track-event="['Lending', 'Social-Share-Lightbox', 'click-Copy-link-share']"
+					v-kv-track-event="[trackingCategory, 'share', 'copy-link', utmCampaign, loanId]"
 					@click="copyLink"
 				>
 					<kv-material-icon
 						class="tw-w-4.5 tw-h-4.5 tw-pointer-events-none tw-inline-block tw-align-middle"
 						:icon="mdiLink"
 					/>
-					<span class="tw-font-medium">{{ this.copyStatus.text }}</span>
+					<span class="tw-font-medium">{{ copyStatus.text }}</span>
 				</kv-button>
 			</div>
 		</kv-lightbox>
@@ -120,13 +112,6 @@ export default {
 		modalTitle: {
 			type: String,
 			default: 'Help spread the word'
-		},
-		/**
-		 * Linked in supports a title attribute
-		 */
-		linkedInTitle: {
-			type: String,
-			default: ''
 		},
 		/**
 		 * Button variant style
@@ -171,12 +156,24 @@ export default {
 			type: Boolean,
 			required: false
 		},
+		/** LoanId of loan we're sharing */
+		loanId: {
+			type: Number,
+			required: false,
+			default: null
+		},
+		/** Optional tracking category, defaults to 'borrower-profile' but allows for uses in other context */
+		trackingCategory: {
+			type: String,
+			required: false,
+			default: 'borrower-profile'
+		},
 	},
 	data() {
 		return {
 			copyStatus: {
 				disabled: false,
-				text: 'Copy Link'
+				text: 'Copy'
 			},
 			isLightboxVisible: this.openLightbox || false,
 			mdiFacebook,
@@ -185,6 +182,7 @@ export default {
 			mdiLink,
 		};
 	},
+	inject: ['apollo'],
 	computed: {
 		utmCampaignQueryParam() {
 			return `&utm_campaign=${this.utmCampaign}`;
@@ -192,11 +190,15 @@ export default {
 		utmContentQueryParam() {
 			return this.utmContent ? `&utm_content=${this.utmContent}` : '';
 		},
+		hashParams() {
+			return this.shareUrl.split('#')[1] ? `#${this.shareUrl.split('#')[1]}` : '';
+		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			// Get query param string from shareUrl
 			const shareUrlSuffix = this.shareUrl.split('?')[1] ? `?${this.shareUrl.split('?')[1]}&` : '?';
-			return `${base}${this.shareUrl}${shareUrlSuffix}`;
+			const shareUrlWithoutHash = this.shareUrl.split('#')[0];
+			return `${base}${shareUrlWithoutHash}${shareUrlSuffix}`;
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
@@ -204,26 +206,22 @@ export default {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
 				// eslint-disable-next-line max-len
-				href: `${this.shareLink}utm_source=facebook.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}`,
+				href: `${this.shareLink}utm_source=facebook.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}${this.hashParams}`,
 				redirect_uri: `${pageUrl}`,
 				quote: this.shareMessage,
 			});
 		},
 		linkedInShareUrl() {
-			return getFullUrl('https://www.linkedin.com/shareArticle', {
-				mini: 'true',
-				source: `https://${this.$appConfig.host}`,
-				summary: this.shareMessage.substring(0, 256),
-				title: this.linkedInTitle ? this.linkedInTitle : this.modalTitle,
-				// eslint-disable-next-line max-len
-				url: `${this.shareLink}utm_source=linkedin.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}`
+			return getFullUrl('https://www.linkedin.com/sharing/share-offsite/', {
+				url: `${this.shareLink}utm_source=linkedin.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}${this.hashParams}` // eslint-disable-line max-len
 			});
 		},
 		twitterShareUrl() {
 			return getFullUrl('https://twitter.com/intent/tweet', {
 				text: this.shareMessage,
 				// eslint-disable-next-line max-len
-				url: `${this.shareLink}utm_source=t.co&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}`,
+				url: `${this.shareLink}utm_source=t.co&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}${this.hashParams}`,
+				hashtags: 'microloan,kivalove',
 				via: 'Kiva',
 			});
 		},
@@ -239,6 +237,7 @@ export default {
 					if (code !== '4201') {
 						this.$showTipMsg(`There was a problem sharing to Facebook: ${message}`, 'warning');
 					}
+					this.$kvTrackEvent(this.trackingCategory, 'fail', 'share-facebook');
 				} else {
 					this.$showTipMsg('Thanks for sharing to Facebook!');
 				}
@@ -248,7 +247,7 @@ export default {
 			// eslint-disable-next-line max-len
 			const url = `${this.shareLink}utm_source=social_share_link&utm_medium=referral${this.utmCampaignQueryParam}${this.utmContentQueryParam}`;
 			try {
-				await clipboardCopy(url);
+				await clipboardCopy(`${this.shareMessage} ${url}`);
 				this.copyStatus = {
 					disabled: true,
 					text: 'Copied!'
@@ -262,10 +261,31 @@ export default {
 				setTimeout(() => {
 					this.copyStatus = {
 						disabled: false,
-						text: 'Copy Link'
+						text: 'Copy'
 					};
 				}, 500);
 			}
+		},
+		/** displays the share pop up window for whatever service we are sharing on.  */
+		showSharePopUp(destinationUrl, thanksText) {
+			// This code taken from the twitter example in the docs
+			const width = 600;
+			const height = 420;
+			const winHeight = window.innerHeight;
+			const winWidth = window.innerWidth;
+			const left = Math.round((winWidth / 2) - (width / 2));
+			let top = 0;
+
+			if (winHeight > height) {
+				top = Math.round((winHeight / 2) - (height / 2));
+			}
+			window.open(
+				destinationUrl,
+				'intent',
+				// eslint-disable-next-line max-len
+				`scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=${width},height=${height},left=${left},top=${top}`
+			);
+			this.$showTipMsg(thanksText);
 		}
 	},
 	mounted() {
@@ -275,10 +295,6 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.social-button {
-	@apply tw-mb-2.5 tw-w-fit;
-}
-
 .social-button__icon {
 	@apply tw-w-5 tw-h-5 tw-pointer-events-none tw-inline-block tw-align-middle;
 }

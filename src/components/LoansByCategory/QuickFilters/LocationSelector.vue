@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-relative tw-flex tw-flex-col tw-w-full" v-click-outside="toggleRegions">
+	<div id="locationWrapper" class="tw-relative tw-flex tw-flex-col tw-w-full" v-click-outside="closeRegions">
 		<label
 			class="tw-text-h4"
 			for="location"
@@ -17,6 +17,7 @@
 			:disabled="!filtersLoaded"
 			autocomplete="off"
 			readonly
+			:icon="mdiChevronDown"
 		/>
 
 		<div
@@ -46,10 +47,10 @@
 				md:tw-rounded
 				md:tw-max-h-screen
 			"
-			:class="[ selectedRegion !== null ? 'lg:tw-w-full' : 'lg:tw-w-auto' ]"
+			:class="[ selectedRegion !== null ? 'md:tw-w-full' : 'md:tw-w-auto' ]"
 		>
-			<div class="tw-w-full lg:tw-w-auto">
-				<div class="lg:tw-hidden tw-flex tw-justify-between tw-items-center tw-mt-1 tw-mb-2">
+			<div class="tw-w-full md:tw-w-auto">
+				<div class="md:tw-hidden tw-flex tw-justify-between tw-items-center tw-mt-1 tw-mb-2">
 					<div>
 						<h3>Location selector</h3>
 					</div>
@@ -61,24 +62,24 @@
 					</button>
 				</div>
 				<ol
-					class="tw-whitespace-nowrap lg:tw-bg-secondary lg:tw-py-2"
+					class="tw-whitespace-nowrap md:tw-bg-secondary md:tw-py-2"
 					style="margin: -12px;"
 				>
 					<li
-						class="tw-hidden lg:tw-block tw-px-4 tw-py-2"
+						class="tw-hidden md:tw-block tw-px-4 tw-py-2"
 					>
 						Regions
 					</li>
 					<li
 						v-for="(region, index) in regions" :key="index"
-						class="tw-border-b tw-border-tertiary lg:tw-border-b-0 lg:tw-pr-2 tw-py-0.5"
+						class="tw-border-b tw-border-tertiary md:tw-border-b-0 md:tw-pr-2 tw-py-0.5"
 						:class="{ 'tw-bg-primary': selectedRegion === index }"
 					>
 						<button
 							@click="selectRegion(index)"
 							class="tw-py-0.5 tw-font-medium
-								tw-flex tw-items-center tw-justify-between lg:tw-justify-start tw-w-full
-								tw-text-left tw-uppercase lg:tw-capitalize"
+								tw-flex tw-items-center tw-justify-between md:tw-justify-start tw-w-full
+								tw-text-left tw-uppercase md:tw-capitalize"
 						>
 							<div class="tw-flex tw-items-center">
 								<div class="tw-w-4 tw-text-action tw-text-small tw-text-right tw-mr-.5">
@@ -88,12 +89,12 @@
 							</div>
 
 							<kv-material-icon
-								class="tw-w-4 tw-h-4 lg:tw-hidden"
+								class="tw-w-4 tw-h-4 md:tw-hidden"
 								:icon="mdiChevronDown"
 							/>
 						</button>
 
-						<kv-expandable easing="ease-in-out" class="lg:tw-hidden">
+						<kv-expandable easing="ease-in-out" class="md:tw-hidden">
 							<div v-show="index == selectedRegion">
 								<div class="tw-pb-4 tw-pt-2">
 									<checkbox-list
@@ -108,7 +109,7 @@
 						</kv-expandable>
 					</li>
 				</ol>
-				<div class="tw-flex tw-gap-2 tw-justify-between lg:tw-hidden tw-py-4">
+				<div class="tw-flex tw-gap-2 tw-justify-between md:tw-hidden tw-py-4">
 					<button @click="selectedCountries = []" class="tw-text-link">
 						Reset country selection
 					</button>
@@ -122,7 +123,7 @@
 			</div>
 			<div
 				v-if="selectedRegion !== null"
-				class="tw-w-full tw-hidden lg:tw-flex tw-flex-col tw-justify-between tw-ml-1 lg:tw-ml-3"
+				class="tw-w-full tw-hidden md:tw-flex tw-flex-col tw-justify-between tw-ml-1 md:tw-ml-3"
 			>
 				<checkbox-list
 					:items="getItems(activeCountries)"
@@ -151,6 +152,7 @@ import { mdiMagnify, mdiChevronDown, mdiClose } from '@mdi/js';
 import clickOutside from '@/plugins/click-outside';
 import { getCheckboxLabel } from '@/util/loanSearch/filterUtils';
 import KvExpandable from '@/components/Kv/KvExpandable';
+import kvTokensPrimitives from '~/@kiva/kv-tokens/primitives.json';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import CheckboxList from './CheckboxList';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -181,6 +183,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		trackingCategory: {
+			type: String,
+			required: true,
+		}
 	},
 	data() {
 		return {
@@ -197,7 +203,7 @@ export default {
 		handleClickCta() {
 			this.toggleRegions();
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'click',
 				'apply-quick-filters',
 				'see-loans',
@@ -209,7 +215,7 @@ export default {
 		resetCountries() {
 			this.emptyCountries();
 			this.$kvTrackEvent(
-				'search',
+				this.trackingCategory,
 				'filter',
 				'quick-filters-reset',
 				'countries',
@@ -219,9 +225,20 @@ export default {
 			this.showRegions = !this.showRegions;
 			this.selectedRegion = null;
 			if (this.showRegions) {
-				document.documentElement.style.overflow = 'hidden';
+				// Smaller browsers have a static location selector on the bottom of the viewport
+				if (document.documentElement.clientWidth < kvTokensPrimitives.breakpoints.md) {
+					document.documentElement.style.overflow = 'hidden';
+				}
 				this.$emit('handle-overlay', true);
 			} else {
+				document.documentElement.style.overflow = 'auto';
+				this.$emit('handle-overlay', false);
+			}
+		},
+		closeRegions() {
+			if (this.showRegions) {
+				this.showRegions = false;
+				this.selectedRegion = null;
 				document.documentElement.style.overflow = 'auto';
 				this.$emit('handle-overlay', false);
 			}
@@ -291,3 +308,20 @@ export default {
 
 };
 </script>
+
+<style scoped>
+
+#locationWrapper >>> input {
+	padding-left: 16px;
+}
+
+#locationWrapper >>> input::placeholder {
+	color: black;
+}
+
+#locationWrapper >>> span {
+	left: auto;
+	right: 8px;
+}
+
+</style>
