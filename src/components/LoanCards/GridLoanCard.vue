@@ -162,11 +162,13 @@ export default {
 		},
 		trackInteraction(args) {
 			this.$emit('track-interaction', args);
-			if (args?.interactionType === 'addToBasket' && this.getTagInfo()) {
+			if (args?.interactionType === 'addToBasket') {
 				this.$kvTrackEvent(
 					'loan-card',
 					'add-to-basket',
-					this.getTagInfo()
+					null,
+					this.loan.id,
+					this.lessThan25 ? this.amountLeft : 25
 				);
 			}
 		},
