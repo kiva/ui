@@ -93,11 +93,6 @@ export default {
 		// Initialize New Loan Card Experiment
 		this.initializeNewLoanCardTest();
 	},
-	computed: {
-		targetedLoanChannel() {
-			return this.$route?.params?.category ?? '';
-		},
-	},
 	methods: {
 		initializeNewLoanCardTest() {
 			const loanCardExperiment = this.apollo.readFragment({
