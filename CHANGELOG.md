@@ -1,3 +1,10 @@
+### [2.466.3](https://github.com/kiva/ui/compare/v2.466.2...v2.466.3) (2023-01-25)
+
+
+### Bug Fixes
+
+* padding fix for quick filters feat in category page ([2c9d130](https://github.com/kiva/ui/commit/2c9d130a1b4f95f60f608c25363587589d5176f3))
+
 ### [2.466.2](https://github.com/kiva/ui/compare/v2.466.1...v2.466.2) (2023-01-24)
 
 
