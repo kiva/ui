@@ -30,6 +30,7 @@
 					:loan-id="loanId"
 					:exp-label="expLabel"
 					:lend-now-button="lendNowButton"
+					:show-tags="showTags"
 				/>
 			</template>
 			<!-- Show View more Card -->
@@ -68,6 +69,7 @@
 						:loan-id="loanId"
 						:exp-label="expLabel"
 						:lend-now-button="lendNowButton"
+						:show-tags="showTags"
 					/>
 				</template>
 			</div>
@@ -150,7 +152,11 @@ export default {
 		newHomeExp: {
 			type: Boolean,
 			default: false
-		}
+		},
+		showTags: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
