@@ -79,9 +79,7 @@
 
 <script>
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
-import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import LoanTag from '@/components/LoanCards/LoanTags/LoanTag';
 import FavoriteStar from '@/components/LoanCards/FavoriteStar';
@@ -90,9 +88,7 @@ export default {
 	name: 'LoanCardRounded',
 	components: {
 		ActionButton,
-		BorrowerInfo,
 		FundraisingStatus,
-		LoanCardImage,
 		MatchingText,
 		LoanTag,
 		FavoriteStar,
@@ -159,7 +155,7 @@ export default {
 			return `/lend/${this.loan.id}`;
 		},
 		trackViewLoanData() {
-			return ['loan-card', 'click', 'view-loan', this.loan.id]
+			return ['loan-card', 'click', 'view-loan', this.loan.id];
 		},
 		lessThan25() {
 			return this.amountLeft < 25 && this.amountLeft !== 0;
