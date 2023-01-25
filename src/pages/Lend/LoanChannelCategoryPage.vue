@@ -83,24 +83,15 @@ export default {
 
 		// Add to Basket Interstitial
 		this.initializeAddToBasketInterstitial();
+
 		// Initialize Help Me Choose Experiment
-		if (this.targetedLoanChannel === 'women'
-				|| this.targetedLoanChannel === 'kiva-u-s'
-				|| this.targetedLoanChannel === 'mission-driven-orgs'
-				|| this.targetedLoanChannel === 'short-term-loans'
-		) {
-			this.initializeHelpmeChoose();
-		} else {
-			this.initializeLoanTags();
-		}
+		this.initializeHelpmeChoose();
+
+		// Initialize Loan Tags Experiment
+		this.initializeLoanTags();
 
 		// Initialize New Loan Card Experiment
 		this.initializeNewLoanCardTest();
-	},
-	computed: {
-		targetedLoanChannel() {
-			return this.$route?.params?.category ?? '';
-		},
 	},
 	methods: {
 		initializeNewLoanCardTest() {
