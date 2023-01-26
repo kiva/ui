@@ -72,162 +72,187 @@
 						</span>
 					</span>
 				</div>
+			</div>
+		</div>
 
+		<div class="loan-filters__top-row">
+			<div
+				v-if="filterChips.length"
+				class="tw-flex tw-items-start tw-flex-col"
+				:class="{ 'lg:tw-flex-row': isChipsCollapsed }"
+			>
 				<div
-					v-if="filterChips.length"
-					class="tw-flex tw-items-start tw-flex-col lg:tw-flex-row"
+					ref="container"
+					class="chips__container tw-overflow-hidden"
 				>
 					<div
-						class="chips__container tw-overflow-hidden"
+						div ref="chips"
+						class="tw-flex tw-flex-wrap tw-gap-1.5"
 					>
-						<div
-							class="tw-flex tw-flex-wrap tw-gap-1.5"
+						<kv-chip-classic
+							v-for="(filter, index) in filterChips"
+							:key="`chip-${index}`"
+							:title="cleanChipName(filter.name)"
+							@click="handleRemoveFilter(filter)"
 						>
-							<kv-chip-classic
-								v-for="(filter, index) in filterChips"
-								:key="`chip-${index}`"
-								:title="cleanChipName(filter.name)"
-								@click="handleRemoveFilter(filter)"
-							>
-								{{ filter.name }}
-							</kv-chip-classic>
-						</div>
+							{{ filter.name }}
+						</kv-chip-classic>
 					</div>
 				</div>
+
+				<div class="chips__toggle-container tw-whitespace-nowrap tw-my-0.5 tw-mx-1">
+					<kv-text-link
+						v-if="isChipsCollapsable"
+						class="tw-text-p1 tw-inline-flex tw-font-medium tw-text-action tw-p-1"
+						@click.native="isChipsCollapsed = !isChipsCollapsed"
+					>
+						{{ isChipsCollapsed ? `Show all ${filterChips.length} filters` : 'Hide filters' }}
+					</kv-text-link>
+					<span v-if="!isInitialFilters && isChipsCollapsable">|</span>
+					<kv-text-link
+						v-if="!isInitialFilters"
+						class="tw-text-p1 tw-inline-flex tw-font-medium tw-text-action tw-p-1"
+						@click.native="handleResetFilters"
+					>
+						Reset all
+					</kv-text-link>
+				</div>
+			</div>
+		</div>
+
+		<kv-lightbox
+			v-if="filtersVisible"
+			class="loan-filters__lightbox"
+			id="filterControlsLightbox"
+			title="Filter Loans"
+			:visible="filtersVisible"
+			@lightbox-closed="filtersVisible = false"
+		>
+			<div class="loan-filter-controls">
+				<span class="tw-flex-col">
+					<span class="tw-flex">
+						<div
+							class="loan-filters__lightbox tw-mb-0.5"
+							id="gender-filter-container"
+						>
+							<h3 class="tw-py-1 tw-p-2 tw-inline-block">
+								Gender
+							</h3>
+
+							<fieldset class="tw-flex tw-flex-col tw-gap-4 tw-my-2 tw-p-1">
+								<gender-filter
+									id="gender"
+									class="loan-filter-controls__filter-type"
+									:initial-gender="initialGender"
+									:selected-gender="selectedGender"
+									@gender-filters-updated="handleGenderFiltersUpdated"
+								/>
+							</fieldset>
+						</div>
+
+						<div
+							class="loan-filters__lightbox tw-flex-grow"
+							id="sort-filter-container"
+						>
+							<h3 class="tw-py-1 tw-p-2 tw-inline-block">
+								Sort By
+							</h3>
+							<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-my-2 tw-p-1">
+								<sort-order
+									id="sortBy"
+									class="loan-filter-controls__filter-type"
+									:initial-sort="initialSortBy"
+									:selected-sort="selectedSort"
+									@sort-order-updated="handleSortByUpdated"
+								/>
+							</fieldset>
+						</div>
+					</span>
+					<hr class="tw-border-tertiary tw-my-1">
+				</span>
+
+				<kv-accordion-item
+					class="loan-filters__lightbox-accordian"
+					id="region-accordian"
+				>
+					<template #header>
+						<h3 class="tw-py-1">
+							Countries
+						</h3>
+					</template>
+					<location-filter
+						class="loan-filter-controls__filter-type"
+						:all-countries="allCountries"
+						:initial-countries="initialCountries"
+						:selected-countries="selectedCountries"
+						@updated-filters="handleUpdatedFilters"
+					/>
+				</kv-accordion-item>
+
+				<kv-accordion-item
+					class="loan-filters__lightbox-accordian"
+					id="sectors-accordian"
+				>
+					<template #header>
+						<h3 class="tw-py-1">
+							Sectors
+						</h3>
+					</template>
+					<sector-filter
+						class="loan-filter-controls__filter-type"
+						:all-sectors="allSectors"
+						:initial-sectors="initialSectors"
+						:selected-sectors="selectedSectors"
+						@updated-filters="handleUpdatedFilters"
+					/>
+				</kv-accordion-item>
+
+				<kv-accordion-item
+					class="loan-filters__lightbox-accordian"
+					id="attributes-accordian"
+				>
+					<template #header>
+						<h3 class="tw-py-1">
+							Attributes
+						</h3>
+					</template>
+					<attribute-filter
+						class="loan-filter-controls__filter-type"
+						:all-attributes="allAttributes"
+						:initial-attributes="initialAttributes"
+						:selected-attributes="selectedAttributes"
+						@updated-filters="handleUpdatedFilters"
+					/>
+				</kv-accordion-item>
+
+				<kv-accordion-item
+					class="loan-filters__lightbox-accordian"
+					id="tags-accordian"
+				>
+					<template #header>
+						<h3 class="tw-py-1">
+							Tags
+						</h3>
+					</template>
+					<tag-filter
+						class="loan-filter-controls__filter-type"
+						:all-tags="allTags"
+						:initial-tags="initialTags"
+						:selected-tags="selectedTags"
+						@updated-filters="handleUpdatedFilters"
+					/>
+				</kv-accordion-item>
 			</div>
 
-			<kv-lightbox
-				v-if="filtersVisible"
-				class="loan-filters__lightbox"
-				id="filterControlsLightbox"
-				title="Filter Loans"
-				:visible="filtersVisible"
-				@lightbox-closed="filtersVisible = false"
-			>
-				<div class="loan-filter-controls">
-					<span class="tw-flex-col">
-						<span class="tw-flex">
-							<div
-								class="loan-filters__lightbox tw-mb-0.5"
-								id="gender-filter-container"
-							>
-								<h3 class="tw-py-1 tw-p-2 tw-inline-block">
-									Gender
-								</h3>
-
-								<fieldset class="tw-flex tw-flex-col tw-gap-4 tw-my-2 tw-p-1">
-									<gender-filter
-										class="loan-filter-controls__filter-type"
-										:initial-gender="initialGender"
-										:selected-gender="selectedGender"
-										@updated-filters="handleUpdatedFilters"
-									/>
-								</fieldset>
-							</div>
-
-							<div
-								class="loan-filters__lightbox tw-flex-grow"
-								id="sort-filter-container"
-							>
-								<h3 class="tw-py-1 tw-p-2 tw-inline-block">
-									Sort By
-								</h3>
-								<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-my-2 tw-p-1">
-									<sort-order
-										class="loan-filter-controls__filter-type"
-										:initial-sort="initialSortBy"
-										:selected-sort="selectedSort"
-										@sort-order-updated="handleSortByUpdated"
-									/>
-								</fieldset>
-							</div>
-						</span>
-						<hr class="tw-border-tertiary tw-my-1">
-					</span>
-
-					<kv-accordion-item
-						class="loan-filters__lightbox-accordian"
-						id="region-accordian"
-					>
-						<template #header>
-							<h3 class="tw-py-1">
-								Countries
-							</h3>
-						</template>
-						<location-filter
-							class="loan-filter-controls__filter-type"
-							:all-countries="allCountries"
-							:initial-countries="initialCountries"
-							:selected-countries="selectedCountries"
-							@updated-filters="handleUpdatedFilters"
-						/>
-					</kv-accordion-item>
-
-					<kv-accordion-item
-						class="loan-filters__lightbox-accordian"
-						id="sectors-accordian"
-					>
-						<template #header>
-							<h3 class="tw-py-1">
-								Sectors
-							</h3>
-						</template>
-						<sector-filter
-							class="loan-filter-controls__filter-type"
-							:all-sectors="allSectors"
-							:initial-sectors="initialSectors"
-							:selected-sectors="selectedSectors"
-							@updated-filters="handleUpdatedFilters"
-						/>
-					</kv-accordion-item>
-
-					<kv-accordion-item
-						class="loan-filters__lightbox-accordian"
-						id="attributes-accordian"
-					>
-						<template #header>
-							<h3 class="tw-py-1">
-								Attributes
-							</h3>
-						</template>
-						<attribute-filter
-							class="loan-filter-controls__filter-type"
-							:all-attributes="allAttributes"
-							:initial-attributes="initialAttributes"
-							:selected-attributes="selectedAttributes"
-							@updated-filters="handleUpdatedFilters"
-						/>
-					</kv-accordion-item>
-
-					<kv-accordion-item
-						class="loan-filters__lightbox-accordian"
-						id="tags-accordian"
-					>
-						<template #header>
-							<h3 class="tw-py-1">
-								Tags
-							</h3>
-						</template>
-						<tag-filter
-							class="loan-filter-controls__filter-type"
-							:all-tags="allTags"
-							:initial-tags="initialTags"
-							:selected-tags="selectedTags"
-							@updated-filters="handleUpdatedFilters"
-						/>
-					</kv-accordion-item>
-				</div>
-
-				<template #controls>
-					<kv-button
-						variant="primary"
-						@click.native.prevent="applyFilters"
-					>
-						Apply Filters
-					</kv-button>
-				</template>
-			</kv-lightbox>
-		</div>
+			<template #controls>
+				<kv-button
+					variant="primary"
+					@click.native.prevent="applyFilters"
+				>
+					Apply Filters
+				</kv-button>
+			</template>
+		</kv-lightbox>
 	</div>
 </template>
 
@@ -247,6 +272,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvAccordionItem from '~/@kiva/kv-components/vue/KvAccordionItem';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 const filterOptionsQuery = gql`
 	query filterOptionsQuery {
@@ -282,6 +308,7 @@ export default {
 	components: {
 		KvButton,
 		KvChipClassic,
+		KvTextLink,
 		KvLightbox,
 		AttributeFilter,
 		GenderFilter,
@@ -486,22 +513,18 @@ export default {
 	},
 	methods: {
 		setLoanDisplayMode(mode) {
-			switch(mode) {
+			switch (mode) {
 				case 'rowDisplay':
-					this.rowDisplay=true;
-					this.gridDisplay=false;
+					this.rowDisplay = true;
+					this.gridDisplay = false;
 					return;
 				case 'gridDisplay':
-					this.rowDisplay=false;
-					this.gridDisplay=true;
-					return;
+					this.rowDisplay = false;
+					this.gridDisplay = true;
+
 				default:
-					return
 			}
 		},
-		/* viewDisplayToggle() {
-			if ()
-		}, */
 		showFilters() {
 			this.filtersVisible = true;
 		},
@@ -609,6 +632,11 @@ export default {
 					break;
 			}
 		},
+		handleGenderFilterUpdated(gender) {
+			if (this.selectedGender !== gender) {
+				this.selectedGender = gender;
+			}
+		},
 		handleSortByUpdated(sortBy) {
 			if (this.selectedSort !== sortBy) {
 				this.selectedSort = sortBy;
@@ -619,17 +647,23 @@ export default {
 			this.$emit('reset-loan-filters');
 		},
 		async determineIsChipsCollapsable() {
-			const { chipsContainer, chipsInnerContainer } = this.$refs;
+			const { container, chips } = this.$refs;
 
-			if (chipsContainer && chipsInnerContainer) {
-				const isCollapsed = this.isChipsCollapsed.valueOf(); // get the initial collapsed state
+			if (container && chips) {
+				// get the initial collapsed state // Store whether collapsed to restore after calculation below
+				const storedIsCollapsed = this.isChipsCollapsed;
 
-				this.isChipsCollapsed = true; // collapse the container.
+				// collapse the container and hide the toggle link
+				this.isChipsCollapsed = true;
+				this.isChipsCollapsable = undefined;
+
+				// update virtual DOM with single row of chips
 				await this.$nextTick(); // let that render
 
 				// is the inner container bigger than the outer?
-				this.isChipsCollapsable = chipsInnerContainer.clientHeight > chipsContainer.clientHeight;
-				this.isChipsCollapsed = isCollapsed; // go back to the initial state
+				this.isChipsCollapsable = chips.clientHeight > container.clientHeight;
+				// go back to the initial state
+				this.isChipsCollapsed = storedIsCollapsed;
 			}
 		}
 	},
