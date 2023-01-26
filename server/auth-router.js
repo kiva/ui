@@ -65,6 +65,7 @@ module.exports = function authRouter(config = {}) {
 
 	// Handle login request
 	router.get('/ui-login', (req, res, next) => {
+		res.set('Cache-Control', 'no-store, max-age=0, no-transform');
 		const cookies = cookie.parse(req.headers.cookie || '');
 		const options = {
 			audience: config.auth0.apiAudience,
@@ -109,6 +110,7 @@ module.exports = function authRouter(config = {}) {
 	// Callback redirected to after Auth0 authentication
 	router.get('/process-ssr-auth', (req, res, next) => {
 		passport.authenticate('auth0', (authErr, user, authInfo) => {
+			res.set('Cache-Control', 'no-store, max-age=0, no-transform');
 			if (authErr) {
 				info(`LoginUI: auth error, session id:${req.sessionID}, error: ${authErr}`, { error: authErr });
 
