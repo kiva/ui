@@ -423,8 +423,7 @@ export default {
 			return this.totalCount <= this.limit;
 		},
 		showHelpMeChooseFeat() {
-			if (this.enableHelpmeChoose && this.allLoans.length > 8) return true;
-			return false;
+			return this.enableHelpmeChoose && this.allLoans.length > 8;
 		}
 	},
 	apollo: {
