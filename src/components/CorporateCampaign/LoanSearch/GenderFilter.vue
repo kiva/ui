@@ -1,14 +1,12 @@
 <template>
-	<div class="gender-radios">
+	<div class="gender-enum-sorting">
 		<ul>
-			<li
-				v-for="genderOption in genderOptions" :key="genderOption.value"
-				class="tw-mb-1 tw-px-1 tw-py-1"
-			>
+			<li class="tw-mb-1">
 				<kv-radio
-					:id="`gender-${genderOption.value}`"
+					v-for="genderOption in genderOptions"
+					:key="genderOption.value"
 					:value="genderOption.value"
-					v-model="activeGender"
+					v-model="currentGender"
 				>
 					{{ genderOption.label }}
 				</kv-radio>
@@ -32,17 +30,17 @@ export default {
 		},
 		initialGender: {
 			type: String,
-			default: null
+			default: 'women'
 		}
 	},
 	data() {
 		return {
-			activeGender: null,
+			currentGender: null,
 			genderOptions: [
-				{ value: 'both', label: 'All genders' },
-				{ value: 'female', label: 'Women' },
-				{ value: 'male', label: 'Men' },
-				{ value: 'non-binary', label: 'Non-Binary' },
+				{ value: 'allGenders', label: 'All genders' },
+				{ value: 'women', label: 'Women' },
+				{ value: 'men', label: 'Men' },
+				{ value: 'nonBinary', label: 'Non binary' },
 			]
 		};
 	},
@@ -60,9 +58,9 @@ export default {
 				this.setGenderFilter();
 			}
 		},
-		activeGender(next, prev) {
+		currentGender(next, prev) {
 			if (next !== prev) {
-				this.$emit('gender-updated', next);
+				this.$emit('gender-filter-updated', next);
 			}
 		}
 	},
@@ -70,11 +68,11 @@ export default {
 		setGenderFilter() {
 			// set selected if present
 			if (this.selectedGender) {
-				this.activeGender = this.selectedGender;
+				this.currentGender = this.selectedGender;
 				return true;
 			}
-			// fallback to initial sort
-			this.activeGender = this.initialGender;
+			// fallback to initial gender
+			this.currentGender = this.initialGender;
 		}
 	}
 };

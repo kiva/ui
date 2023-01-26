@@ -145,7 +145,7 @@
 									class="loan-filter-controls__filter-type"
 									:initial-gender="initialGender"
 									:selected-gender="selectedGender"
-									@gender-filters-updated="handleGenderFiltersUpdated"
+									@gender-filter-updated="handleGenderFiltersUpdated"
 								/>
 							</fieldset>
 						</div>
@@ -344,6 +344,10 @@ export default {
 			type: String,
 			default: 'popularity',
 		},
+		initialGender: {
+			type: String,
+			default: 'women',
+		},
 		showLoanDisplayToggle: {
 			type: Boolean,
 			default: true
@@ -362,6 +366,7 @@ export default {
 			filtersVisible: false,
 			initialFiltersCopy: null,
 			modifiedFilters: null,
+			selectedGender: null,
 			selectedSort: null,
 			isChipsCollapsable: true,
 			isChipsCollapsed: true,
@@ -396,14 +401,6 @@ export default {
 				? this.modifiedFilters.theme : this.initialFiltersCopy.theme;
 			return incomingFilter || [];
 		},
-		initialGender() {
-			return this.initialFilters.gender || 'both';
-		},
-		selectedGender() {
-			const incomingFilter = this.initialFiltersCopy.gender !== this.modifiedFilters.gender
-				? this.modifiedFilters.gender : this.initialFiltersCopy.gender;
-			return incomingFilter || 'both';
-		},
 		initialCountries() {
 			// list of 2 character country code
 			return this.initialFilters.country || [];
@@ -430,19 +427,6 @@ export default {
 			return incomingFilter || [];
 		},
 		filterChips() {
-			// gather gender setting
-			const genderOptions = [
-				{ name: 'Non-binary', key: 'non-binary', __typename: 'GenderEnum' },
-				{ name: 'Women', key: 'female', __typename: 'GenderEnum' },
-				{ name: 'Men', key: 'male', __typename: 'GenderEnum' },
-			];
-			const selectedGenderRaw = genderOptions.filter(gender => {
-				if (this.appliedFilters && this.appliedFilters.gender) {
-					return this.appliedFilters.gender === gender.key;
-				}
-				return false;
-			});
-
 			// gather selected Countries
 			const selectedCountriesRaw = this.allCountries.filter(country => {
 				const appliedCountries = this.appliedFilters?.country ?? [];
@@ -482,7 +466,6 @@ export default {
 			});
 
 			return [
-				...selectedGenderRaw,
 				...selectedCountriesRaw,
 				...selectedSectorsRaw,
 				...selectedAttributesRaw,
@@ -537,6 +520,7 @@ export default {
 		applyFilters() {
 			this.$emit('updated-filters', this.modifiedFilters);
 			this.$emit('updated-sort-by', this.selectedSort);
+			this.$emit('updated-gender', this.selectedGender);
 			this.filtersVisible = false;
 		},
 		// TODO: Move to Util file
@@ -588,10 +572,6 @@ export default {
 			// eslint-disable-next-line no-underscore-dangle
 			const type = filter.__typename;
 			switch (type) {
-				case 'GenderEnum':
-					this.modifiedFilters.gender = null;
-					this.applyFilters();
-					break;
 				case 'Country':
 					if (this.modifiedFilters.country && this.modifiedFilters.country.length) {
 						const newCountries = this.modifiedFilters.country.filter(isoCode => {
@@ -632,7 +612,7 @@ export default {
 					break;
 			}
 		},
-		handleGenderFilterUpdated(gender) {
+		handleGenderFiltersUpdated(gender) {
 			if (this.selectedGender !== gender) {
 				this.selectedGender = gender;
 			}
