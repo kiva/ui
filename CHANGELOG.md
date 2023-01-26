@@ -1,3 +1,15 @@
+## [2.469.0](https://github.com/kiva/ui/compare/v2.468.0...v2.469.0) (2023-01-26)
+
+
+### Features
+
+* hide help me choose feat when loans are fewer than 9 in category page ([9d049dd](https://github.com/kiva/ui/commit/9d049ddb1ecd5884a1469b95ee73fd5efb716414))
+
+
+### Bug Fixes
+
+* computed prop updated avoiding extra code ([7494b64](https://github.com/kiva/ui/commit/7494b64268c8b314509b6c25a11c3adcd56d8b9d))
+
 ## [2.468.0](https://github.com/kiva/ui/compare/v2.467.0...v2.468.0) (2023-01-25)
 
 
