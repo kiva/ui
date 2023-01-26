@@ -615,5 +615,4 @@ export default {
 		max-width: calc(100% / 3);
 	}
 }
-/* END TODO */
 </style>
