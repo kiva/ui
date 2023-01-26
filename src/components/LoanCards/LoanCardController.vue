@@ -81,7 +81,6 @@ const GridLoanCard = () => import('@/components/LoanCards/GridLoanCard');
 const HoverLoanCard = () => import('@/components/LoanCards/HoverLoanCard/HoverLoanCard');
 const LendHomepageLoanCard = () => import('@/components/LoanCards/LendHomepageLoanCard');
 const ListLoanCard = () => import('@/components/LoanCards/ListLoanCard');
-const LoanCardRounded = () => import('@/components/LoanCards/LoanCardRounded');
 
 export default {
 	name: 'LoanCardController',
@@ -210,8 +209,6 @@ export default {
 					return LendHomepageLoanCard;
 				case 'ListLoanCard':
 					return ListLoanCard;
-				case 'LoanCardRounded':
-					return LoanCardRounded;
 				default:
 					return null;
 			}

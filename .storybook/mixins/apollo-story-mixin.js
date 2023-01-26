@@ -14,8 +14,8 @@ export default ({
 			},
 			watchQuery() {
 				return {
-					subscribe() {}
-				}
+					subscribe: ({ next }) => { next(queryResult); }
+				};
 			},
 			query() {
 				return loading ? new Promise(() => {}) : Promise.resolve(queryResult);

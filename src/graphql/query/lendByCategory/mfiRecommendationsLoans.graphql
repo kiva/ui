@@ -8,7 +8,7 @@ query getMFIRecommendationsLoans {
 				eq: 59
 			}
 		},
-		origin: "web:lend-by-category"
+		origin: "web:lending-home"
 	) {
 		totalCount
 		values {

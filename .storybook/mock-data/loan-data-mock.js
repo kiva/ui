@@ -60,7 +60,7 @@ export default [
 			},
 			"anonymizationLevel": "none",
 			"fundraisingTimeLeft": "0 days",
-			"fundraisingPercent": 40,
+			"fundraisingPercent": .4,
 			"fundraisingTimeLeftMilliseconds": 123456789,
 		},
 		{
@@ -121,7 +121,7 @@ export default [
 			},
 			"anonymizationLevel": "none",
 			"fundraisingTimeLeft": "0 days",
-			"fundraisingPercent": 40,
+			"fundraisingPercent": .4,
 			"fundraisingTimeLeftMilliseconds": 123456789,
 		},
 		{
@@ -182,7 +182,7 @@ export default [
 			},
 			"anonymizationLevel": "none",
 			"fundraisingTimeLeft": "0 days",
-			"fundraisingPercent": 40,
+			"fundraisingPercent": .4,
 			"fundraisingTimeLeftMilliseconds": 123456789,
 		}
 ]
