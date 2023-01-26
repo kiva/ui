@@ -1,3 +1,34 @@
+## [2.469.0](https://github.com/kiva/ui/compare/v2.468.0...v2.469.0) (2023-01-26)
+
+
+### Features
+
+* hide help me choose feat when loans are fewer than 9 in category page ([9d049dd](https://github.com/kiva/ui/commit/9d049ddb1ecd5884a1469b95ee73fd5efb716414))
+
+
+### Bug Fixes
+
+* computed prop updated avoiding extra code ([7494b64](https://github.com/kiva/ui/commit/7494b64268c8b314509b6c25a11c3adcd56d8b9d))
+
+## [2.468.0](https://github.com/kiva/ui/compare/v2.467.0...v2.468.0) (2023-01-25)
+
+
+### Features
+
+* rolling out help me choose feat to all category pages ([fb07c75](https://github.com/kiva/ui/commit/fb07c7576b0f848270ef1f2daf7f00a0edb0cd70))
+
+
+### Bug Fixes
+
+* unused computed prop removed in category page ([51b8661](https://github.com/kiva/ui/commit/51b8661ada51447b560f0be5ab865434968101e1))
+
+## [2.467.0](https://github.com/kiva/ui/compare/v2.466.3...v2.467.0) (2023-01-25)
+
+
+### Features
+
+* hide reset on quick filters when no filters applied ([4d7308b](https://github.com/kiva/ui/commit/4d7308b99e5a2ff9c0ba590961475d636be29bf5))
+
 ### [2.466.3](https://github.com/kiva/ui/compare/v2.466.2...v2.466.3) (2023-01-25)
 
 

@@ -6,7 +6,10 @@
 					Quick filters
 				</h3>
 				<span v-show="filtersLoaded" class="tw-ml-2 tw-text-small">Showing {{ totalLoans }} loans</span>
-				<button v-show="filtersLoaded" class="tw-ml-2 tw-text-small tw-text-action" @click="resetFilters">
+				<button
+					v-show="filtersLoaded && !hideReset"
+					class="tw-ml-2 tw-text-small tw-text-action" @click="resetFilters"
+				>
 					Reset filters
 				</button>
 			</div>
@@ -125,7 +128,7 @@
 				<span v-show="filtersLoaded" class="tw-text-base">
 					<span class="md:tw-inline tw-hidden">Showing</span> {{ totalLoans }} loans </span>
 				<!-- eslint-disable-next-line max-len -->
-				<button v-show="filtersLoaded" class="tw-ml-2 tw-text-base tw-text-action" @click="resetFilters">
+				<button v-show="filtersLoaded && !hideReset" class="tw-ml-2 tw-text-base tw-text-action" @click="resetFilters">
 					<span>Reset</span><span class="md:tw-inline tw-hidden"> filters</span>
 				</button>
 			</div>
@@ -322,6 +325,12 @@ export default {
 		}
 	},
 	computed: {
+		hideReset() {
+			return this.selectedCategory === 0
+			&& this.selectedGender === ''
+			&& this.sortBy === this.defaultSort
+			&& !this.$refs.locationSelector.selectedCountries.length;
+		},
 		removeGenderDropdown() {
 			return this.targetedLoanChannelUrl === 'women';
 		},
