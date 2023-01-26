@@ -63,7 +63,7 @@
 						:show-tags="enableLoanTags"
 					/>
 					<helpme-choose-wrapper
-						v-if="enableHelpmeChoose"
+						v-if="showHelpMeChooseFeat"
 						:remaining-loans="helpmeChooseRemainingLoans"
 						:items-in-basket="itemsInBasket"
 						:is-visitor="isVisitor"
@@ -100,7 +100,7 @@
 						:show-tags="enableLoanTags"
 					/>
 					<helpme-choose-wrapper
-						v-if="enableHelpmeChoose"
+						v-if="showHelpMeChooseFeat"
 						:remaining-loans="helpmeChooseRemainingLoans"
 						:items-in-basket="itemsInBasket"
 						:is-visitor="isVisitor"
@@ -358,7 +358,7 @@ export default {
 			return (this.loanChannel?.loans?.values ?? []).filter(loan => loan !== null);
 		},
 		loans() {
-			if (this.enableHelpmeChoose) {
+			if (this.showHelpMeChooseFeat) {
 				return _filter(this.allLoans, (loan, index) => index < 6);
 			}
 			return this.allLoans;
@@ -368,7 +368,7 @@ export default {
 			return this.allLoans[0] ? [this.allLoans[0]] : [];
 		},
 		remainingLoans() {
-			if (this.enableHelpmeChoose) {
+			if (this.showHelpMeChooseFeat) {
 				return _filter(this.allLoans, (loan, index) => index > 0 && index < 5);
 			}
 			return _filter(this.allLoans, (loan, index) => index > 0);
@@ -421,6 +421,10 @@ export default {
 		},
 		hasOnePageOfLoans() {
 			return this.totalCount <= this.limit;
+		},
+		showHelpMeChooseFeat() {
+			if (this.enableHelpmeChoose && this.allLoans.length > 8) return true;
+			return false;
 		}
 	},
 	apollo: {
