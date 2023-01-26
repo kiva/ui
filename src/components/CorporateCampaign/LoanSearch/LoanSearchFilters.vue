@@ -521,7 +521,7 @@ export default {
 				case 'gridDisplay':
 					this.rowDisplay = false;
 					this.gridDisplay = true;
-
+					break;
 				default:
 			}
 		},
