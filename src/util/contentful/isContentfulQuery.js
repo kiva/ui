@@ -8,10 +8,10 @@
  * 	contentful {}
  * }
  */
-export function isContentfulQuery(queryAST) {
+export function isContentfulQuery(queryAST = {}) {
 	try {
-		const { operation } = queryAST.definitions[0];
-		const name = queryAST.definitions[0].selectionSet.selections[0].name.value;
+		const operation = queryAST.definitions?.[0]?.operation;
+		const name = queryAST.definitions?.[0]?.selectionSet?.selections?.[0]?.name?.value;
 
 		return operation === 'query' && name === 'contentful';
 	} catch {
