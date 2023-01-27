@@ -87,7 +87,6 @@ export const InGrid = story({
 
 export const AllSharesReserved = story({
 	loanId: loan.id,
-	inGrid: true
 }, false, { unreservedAmount: '0.00', fundraisingPercent: 1 });
 
 export const Matched = story({
