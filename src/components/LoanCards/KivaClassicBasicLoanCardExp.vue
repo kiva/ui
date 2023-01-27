@@ -589,6 +589,11 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+.loan-card-use:hover,
+.loan-card-use:focus {
+	@apply tw-text-primary;
+}
+
 .loan-card-active-hover:hover .loan-card-use {
 	@apply tw-underline;
 }
@@ -596,11 +601,6 @@ export default {
 .loan-card-progress:hover,
 .loan-card-progress:focus {
 	@apply tw-no-underline;
-}
-
-.loan-card-use:hover,
-.loan-card-use:focus {
-	@apply tw-text-primary;
 }
 
 /* TODO: refactor to tw classes/breakpoints when foundation classes removed from loan grid */
