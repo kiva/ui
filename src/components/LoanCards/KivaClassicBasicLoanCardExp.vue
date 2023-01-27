@@ -593,15 +593,13 @@ export default {
 	@apply tw-underline;
 }
 
-.loan-card-progress:hover {
+.loan-card-progress:hover,
+.loan-card-progress:focus {
 	@apply tw-no-underline;
 }
 
-.loan-card-progress:active {
-	@apply tw-no-underline;
-}
-
-.loan-card-use:hover {
+.loan-card-use:hover,
+.loan-card-use:focus {
 	@apply tw-text-primary;
 }
 
