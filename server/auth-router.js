@@ -20,6 +20,7 @@ module.exports = function authRouter(config = {}) {
 
 	// Helper function to start slient authentication process
 	function attemptSilentAuth(req, res, next) {
+		res.set('Cache-Control', 'no-store, max-age=0, no-transform');
 		// Store current url to redirect to after auth
 		req.session.doneUrl = req.originalUrl;
 		req.session.silentAuth = true;
@@ -55,6 +56,7 @@ module.exports = function authRouter(config = {}) {
 
 	// Handle recoverable Auth0 errors
 	router.use('/error', (req, res, next) => {
+		res.set('Cache-Control', 'no-store, max-age=0, no-transform');
 		if (req.query.error_description && req.query.error_description.indexOf('OIDC-conformant') > -1) {
 			const loginRedirectUrl = config.auth0.loginRedirectUrls[req.query.client_id];
 			res.redirect(loginRedirectUrl);
@@ -99,6 +101,7 @@ module.exports = function authRouter(config = {}) {
 
 	// Handle logout request
 	router.get('/ui-logout', (req, res) => {
+		res.set('Cache-Control', 'no-store, max-age=0, no-transform');
 		info(`LoginUI: execute logout, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, user id:${req.user && req.user.id}`); // eslint-disable-line max-len
 		const returnUrl = encodeURIComponent(`https://${config.host}`);
 		const logoutUrl = `https://${config.auth0.domain}/v2/logout?returnTo=${returnUrl}`;
