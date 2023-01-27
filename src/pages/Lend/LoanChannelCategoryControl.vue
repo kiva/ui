@@ -551,8 +551,6 @@ export default {
 			this.$router.push(this.getFilterUrl());
 		}
 
-		trackChannelExperiment(this.apollo, this.loanChannelQueryMap, this.targetedLoanChannelURL, this.$kvTrackEvent);
-
 		// Fetch the facet options from the lend and FLSS APIs
 		this.allFacets = await fetchLoanFacets(this.apollo);
 
