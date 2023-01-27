@@ -8,24 +8,34 @@ export default {
 	component: KivaClassicBasicLoanCardExp,
 };
 
-// Get mock loan that is almost funded so tags are shown when enabled
 const loan = mockLoansArray(1)[0];
-loan.loanFundraisingInfo = { fundedAmount: 550, reservedAmount: 0 };
-loan.loanAmount = '600.00';
 
 const queryResult = {
 	data: {
 		lend: {
 			loan,
 		},
-		basketAddInterstitial: {}
 	}
 };
 
-const story = (args = {}, isLoading = false) => {
+const story = (args = {}, isLoading = false, extraLoanProps = {}, extraData = {}) => {
+	const result = extraLoanProps
+		? {
+			data: {
+				lend: {
+					loan: {
+						...queryResult.data.lend.loan,
+						...extraLoanProps
+					}
+				},
+				...extraData
+			}
+		}
+		: queryResult;
+
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
-		mixins: [apolloStoryMixin({ ...(isLoading ? { loading: true } : { queryResult }) }), cookieStoreStoryMixin()],
+		mixins: [apolloStoryMixin({ ...(!isLoading && { queryResult: result }) }), cookieStoreStoryMixin()],
 		components: { KivaClassicBasicLoanCardExp },
 		template: `
 			<kiva-classic-basic-loan-card-exp
@@ -46,22 +56,44 @@ export const Default = story({
 	loanId: loan.id,
 });
 
+export const Loading = story({
+	loanId: loan.id,
+}, true);
+
 export const LendNowButton = story({
 	loanId: loan.id,
 	lendNowButton: true
 });
 
-export const showActionButton = story({
+export const ShowActionButton = story({
 	loanId: loan.id,
 	showActionButton: true
 });
 
-export const showTags = story({
+export const UseFullWidth = story({
+	loanId: loan.id,
+	useFullWidth: true
+});
+
+export const ShowTags = story({
 	loanId: loan.id,
 	showTags: true
 });
 
-export const inGrid = story({
+export const InGrid = story({
 	loanId: loan.id,
 	inGrid: true
 });
+
+export const AllSharesReserved = story({
+	loanId: loan.id,
+	inGrid: true
+}, false, { unreservedAmount: '0.00', fundraisingPercent: 1 });
+
+export const Matched = story({
+	loanId: loan.id,
+}, false, { matchingText: 'Matched by Ebay', matchRatio: 1 });
+
+export const InBasket = story({
+	loanId: loan.id,
+}, false, {}, { shop: { basket: { items: { values: [{ id: loan.id, __typename: 'LoanReservation' }] } } } });

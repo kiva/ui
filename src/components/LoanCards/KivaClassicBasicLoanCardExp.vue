@@ -2,26 +2,27 @@
 	<div
 		:id="`${loanId}-loan-card`"
 		class="tw-flex tw-flex-col"
-		:class="{ 'loan-card-in-grid tw-px-2 tw-mb-4': inGrid }"
+		:class="{ 'loan-card-in-grid tw-px-2 tw-mb-4': inGrid, 'loan-card-active-hover': !allSharesReserved }"
 		:style="{ ...(!inGrid && { minWidth: '230px', maxWidth: cardWidth }) }"
 	>
-		<!-- Borrower image w/ location <summary-tag> -->
+		<!-- Borrower image -->
 		<kv-loading-placeholder
 			v-if="isLoading"
 			class="tw-mb-1 tw-rounded" :style="{ width: '100%', height: '15.75rem' }"
 		/>
 		<div
-			v-if="!isLoading"
+			v-else
 			class="tw-relative"
 			@click="showLoanDetails"
 		>
-			<!-- If allSharesReserved, disable link by making it a span -->
 			<router-link
 				:is="allSharesReserved ? 'span' : 'router-link'"
 				:to="customLoanDetails ? '' : `/lend/${loanId}`"
 				v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
+				class="tw-flex"
 			>
 				<loan-tag v-if="showTags" :loan="loan" :amount-left="amountLeft" />
+
 				<borrower-image
 					class="
 					tw-relative
@@ -29,7 +30,7 @@
 					tw-bg-black
 					tw-rounded
 				"
-					:alt="'photo of ' + borrowerName"
+					:alt="`Photo of ${borrowerName}`"
 					:aspect-ratio="3 / 4"
 					:default-image="{ width: 336 }"
 					:hash="imageHash"
@@ -42,9 +43,10 @@
 						{ width: 280 },
 					]"
 				/>
+
 				<div v-if="countryName">
 					<summary-tag
-						class="tw-absolute tw-bottom-2 tw-left-1 tw-text-primary"
+						class="tw-absolute tw-bottom-1 tw-left-1 tw-text-primary"
 						:city="city"
 						:state="state"
 						:country-name="countryName"
@@ -59,68 +61,63 @@
 			</router-link>
 		</div>
 
-		<!-- Borrower name-->
-		<kv-loading-placeholder
-			v-if="isLoading"
-			class="tw-mb-0.5" :style="{width: 75 + (Math.random() * 15) + '%', height: '1.875rem'}"
-		/>
+		<!-- Fundraising -->
+		<div v-if="isLoading">
+			<kv-loading-placeholder
+				class="tw-mb-0.5"
+				:style="{ width: 40 + (Math.random() * 15) + '%', height: '1.3rem' }"
+			/>
 
-		<borrower-name
-			v-if="!isLoading"
-			class="tw-mb-1 tw-text-h3"
-			:max-length="50"
-			:name="borrowerName"
-			:style="{ minHeight: showActionButton ? 0 : '3rem' }"
-		/>
+			<kv-loading-placeholder
+				class="tw-mb-1.5 tw-rounded"
+				:style="{ width: '100%', height: '0.5rem' }"
+			/>
+		</div>
 
-		<!-- Amount to go line-->
-		<kv-loading-placeholder
-			v-if="isLoading"
-			class="tw-mb-0.5" :style="{ width: 40 + (Math.random() * 15) + '%', height: '1.3rem' }"
-		/>
+		<router-link
+			v-else
+			:is="allSharesReserved ? 'span' : 'router-link'"
+			:to="customLoanDetails ? '' : `/lend/${loanId}`"
+			v-kv-track-event="['Lending', 'click-Read more', 'Progress', loanId]"
+			class="loan-card-progress tw-my-1.5"
+		>
+			<loan-progress-group
+				:money-left="unreservedAmount"
+				:progress-percent="fundraisingPercent"
+				:time-left="timeLeftMessage"
+			/>
+		</router-link>
 
-		<!-- Fundraising bar -->
-		<kv-loading-placeholder
-			v-if="isLoading"
-			class="tw-mb-1.5 tw-rounded" :style="{ width: '100%', height: '0.5rem' }"
-		/>
+		<!-- Loan use  -->
+		<div class="tw-grow tw-mb-1.5">
+			<kv-loading-paragraph
+				v-if="isLoading"
+				:style="{ width: '100%', height: '5.5rem' }"
+			/>
 
-		<!-- Contains amount to go and fundraising bar -->
-		<loan-progress-group
-			v-if="!isLoading"
-			class="tw-mb-2.5"
-			:money-left="unreservedAmount"
-			:progress-percent="fundraisingPercent"
-			:time-left="timeLeftMessage"
-			:all-shares-reserved="allSharesReserved"
-		/>
-
-		<!-- LoanUse  -->
-		<kv-loading-paragraph
-			v-if="isLoading"
-			class="tw-mb-1.5 tw-flex-grow" :style="{width: '100%', height: '5.5rem'}"
-		/>
-
-		<loan-use
-			v-if="!isLoading"
-			class="tw-mb-2.5 tw-flex-grow"
-			:loan-use-max-length="52"
-			:loan-id="`${allSharesReserved ? '' : loanId}`"
-			:use="loanUse"
-			:name="borrowerName"
-			:status="loanStatus"
-			:loan-amount="loanAmount"
-			:borrower-count="loanBorrowerCount"
-			:custom-loan-details="customLoanDetails"
-			@show-loan-details="showLoanDetails"
-		/>
+			<router-link
+				v-else
+				:is="allSharesReserved ? 'span' : 'router-link'"
+				:to="customLoanDetails ? '' : `/lend/${loanId}`"
+				v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
+				class="loan-card-use tw-text-primary"
+			>
+				<loan-use
+					:loan-use-max-length="150"
+					:loan-id="`${allSharesReserved ? '' : loanId}`"
+					:use="loanUse"
+					:name="borrowerName"
+					:status="loanStatus"
+					:loan-amount="loanAmount"
+					:borrower-count="loanBorrowerCount"
+					:custom-loan-details="customLoanDetails"
+					:show-learn-more="false"
+					@show-loan-details="showLoanDetails"
+				/>
+			</router-link>
+		</div>
 
 		<!-- Matching text  -->
-		<kv-loading-placeholder
-			v-if="isLoading"
-			class="tw-mb-1" :style="{ width: 75 + (Math.random() * 15) + '%', height: '1.3rem' }"
-		/>
-
 		<loan-matching-text
 			v-if="!isLoading && loanMatchingText !== '' && !isMatchAtRisk"
 			class="tw-mb-1.5"
@@ -138,7 +135,7 @@
 			class="tw-rounded tw-self-start" :style="{ width: '9rem', height: '3rem' }"
 		/>
 
-		<template v-if="!isLoading">
+		<template v-else>
 			<!-- If loan is in basket, always show checkout now button -->
 			<kv-ui-button
 				class="tw-mb-2 tw-text-secondary"
@@ -158,7 +155,7 @@
 				</slot>
 			</kv-ui-button>
 			<!-- loan is not in basket -->
-			<template v-if="!isInBasket">
+			<template v-else>
 				<!-- If allSharesReserved show message and hide cta button -->
 				<div
 					v-if="allSharesReserved"
@@ -173,7 +170,7 @@
 				>
 					Another lender has selected this loan. Please choose a different borrower to support.
 				</div>
-				<template v-if="!allSharesReserved">
+				<template v-else>
 					<!-- View Loan button -->
 					<kv-ui-button
 						v-if="!showLendNowButton && !showActionButton"
@@ -192,9 +189,8 @@
 
 					<!-- Lend button -->
 					<kv-ui-button
-						key="lendButton"
 						v-if="showLendNowButton && !isAdding"
-						class="tw-inline-flex tw-flex-1"
+						key="lendButton"
 						data-testid="bp-lend-cta-lend-button"
 						type="submit"
 						@click="addToBasket"
@@ -209,11 +205,11 @@
 
 					<kv-ui-button
 						v-if="showLendNowButton && isAdding"
-						class="tw-inline-flex tw-flex-1"
 						data-testid="bp-lend-cta-adding-to-basket-button"
 					>
 						Adding to basket...
 					</kv-ui-button>
+
 					<!-- Action button -->
 					<action-button
 						v-if="showActionButton && !showLendNowButton"
@@ -245,7 +241,6 @@ import LoanUse from '@/components/BorrowerProfile/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
-import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
@@ -330,7 +325,6 @@ export default {
 	mixins: [percentRaisedMixin, timeLeftMixin],
 	components: {
 		BorrowerImage,
-		BorrowerName,
 		KvLoadingPlaceholder,
 		KvLoadingParagraph,
 		LoanUse,
@@ -595,6 +589,22 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+.loan-card-active-hover:hover .loan-card-use {
+	@apply tw-underline;
+}
+
+.loan-card-progress:hover {
+	@apply tw-no-underline;
+}
+
+.loan-card-progress:active {
+	@apply tw-no-underline;
+}
+
+.loan-card-use:hover {
+	@apply tw-text-primary;
+}
+
 /* TODO: refactor to tw classes/breakpoints when foundation classes removed from loan grid */
 @media (min-width: 30.0625em) {
 	.loan-card-in-grid {

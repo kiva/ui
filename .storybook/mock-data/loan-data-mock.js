@@ -31,10 +31,11 @@ export default [
 			},
 			"whySpecial": "It supports organic farming and includes a lower interest rate.",
 			"lenderRepaymentTerm": 26,
-			"loanAmount": "2675.00",
+			"loanAmount": "600.00",
+			"unreservedAmount": "75.00",
 			"loanFundraisingInfo": {
-				"fundedAmount": "900.00",
-				"reservedAmount": "0.00",
+				"fundedAmount": '525.00',
+				"reservedAmount": '0.00',
 				"isExpiringSoon": false,
 				"__typename": "LoanFundraisingInfo"
 			},
@@ -60,7 +61,7 @@ export default [
 			},
 			"anonymizationLevel": "none",
 			"fundraisingTimeLeft": "0 days",
-			"fundraisingPercent": .4,
+			"fundraisingPercent": .875,
 			"fundraisingTimeLeftMilliseconds": 123456789,
 		},
 		{
@@ -121,7 +122,7 @@ export default [
 			},
 			"anonymizationLevel": "none",
 			"fundraisingTimeLeft": "0 days",
-			"fundraisingPercent": .4,
+			"fundraisingPercent": 40,
 			"fundraisingTimeLeftMilliseconds": 123456789,
 		},
 		{
@@ -182,7 +183,7 @@ export default [
 			},
 			"anonymizationLevel": "none",
 			"fundraisingTimeLeft": "0 days",
-			"fundraisingPercent": .4,
+			"fundraisingPercent": 40,
 			"fundraisingTimeLeftMilliseconds": 123456789,
 		}
 ]

@@ -1,28 +1,33 @@
 export default ({
 	queryResult = {},
 	mutationResult = {},
-	fragmentResult = {},
+	fragmentResult = null,
 	loading = false,
-} = {}) => ({
-	provide: {
-		apollo: {
-			mutate() {
-				return loading ? new Promise(() => {}) : Promise.resolve(mutationResult);
+} = {}) => {
+	// Add to basket button expects basketAddInterstitial
+	const queryData = { ...queryResult, data: { ...queryResult.data, basketAddInterstitial: {} } };
+
+	return {
+		provide: {
+			apollo: {
+				mutate() {
+					return loading ? new Promise(() => {}) : Promise.resolve(mutationResult);
+				},
+				readQuery() {
+					return queryData;
+				},
+				watchQuery() {
+					return {
+						subscribe: ({ next }) => { next(queryData); }
+					};
+				},
+				query() {
+					return loading ? new Promise(() => {}) : Promise.resolve(queryData);
+				},
+				readFragment() {
+					return fragmentResult;
+				},
 			},
-			readQuery() {
-				return queryResult.data;
-			},
-			watchQuery() {
-				return {
-					subscribe: ({ next }) => { next(queryResult); }
-				};
-			},
-			query() {
-				return loading ? new Promise(() => {}) : Promise.resolve(queryResult);
-			},
-			readFragment() {
-				return fragmentResult
-			},
-		},
-	}
-});
+		}
+	};
+};
