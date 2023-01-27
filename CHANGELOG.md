@@ -1,3 +1,10 @@
+### [2.469.1](https://github.com/kiva/ui/compare/v2.469.0...v2.469.1) (2023-01-27)
+
+
+### Bug Fixes
+
+* use optional chaining in isContentfulQuery ([d75ca2c](https://github.com/kiva/ui/commit/d75ca2c2e139b3c443a5fa9763257fefe09273dd))
+
 ## [2.469.0](https://github.com/kiva/ui/compare/v2.468.0...v2.469.0) (2023-01-26)
 
 
