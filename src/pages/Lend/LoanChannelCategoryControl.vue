@@ -112,7 +112,6 @@
 					/>
 				</div>
 				<kv-pagination
-					ref="categoryPagination"
 					v-if="totalCount > 0"
 					:total="totalCount"
 					:limit="limit"
