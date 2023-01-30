@@ -103,16 +103,11 @@
 				class="loan-card-use tw-text-primary"
 			>
 				<loan-use
-					:loan-use-max-length="150"
-					:loan-id="`${allSharesReserved ? '' : loanId}`"
 					:use="loanUse"
-					:name="borrowerName"
-					:status="loanStatus"
 					:loan-amount="loanAmount"
+					:status="loanStatus"
 					:borrower-count="loanBorrowerCount"
-					:custom-loan-details="customLoanDetails"
-					:show-learn-more="false"
-					@show-loan-details="showLoanDetails"
+					:name="borrowerName"
 				/>
 			</router-link>
 		</div>
@@ -237,7 +232,7 @@ import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
 import { isMatchAtRisk, readLoanFragment, watchLoanData } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
-import LoanUse from '@/components/BorrowerProfile/LoanUse';
+import LoanUse from '@/components/LoanCards/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
