@@ -1,3 +1,24 @@
+## [2.470.0](https://github.com/kiva/ui/compare/v2.469.1...v2.470.0) (2023-01-30)
+
+
+### Features
+
+* initial setup of new rounded loan card ([4943ed5](https://github.com/kiva/ui/commit/4943ed58583ca8f9092e41f8df66a3df40f860e5))
+* use kiva classic loan card as base ([e0a57c2](https://github.com/kiva/ui/commit/e0a57c24a96c23f9367c25719f56617d0477cb46))
+
+
+### Bug Fixes
+
+* filled out new loan card stories and fixed some general issues with the component ([f4c1689](https://github.com/kiva/ui/commit/f4c1689d3e174e9e2872f504f5e20ca9b11e6ac3))
+* focus was needed ([2e87be7](https://github.com/kiva/ui/commit/2e87be7687088efd4411443f187d79b9a13b716a))
+* getTagInfo no longer exists ([69ded98](https://github.com/kiva/ui/commit/69ded987dce1a73849ccb19c813b7646dbd59455))
+* move CSS following linting ([c4768be](https://github.com/kiva/ui/commit/c4768be624c926452992ef12f77ef6d900b7167d))
+* remove comment following linting ([3c38911](https://github.com/kiva/ui/commit/3c389111b1c0ddc374dfa686292c66237772b00b))
+* removed unneeded prop from story ([e1a6fcb](https://github.com/kiva/ui/commit/e1a6fcbc8d8265f23b61d5bb8f5aa79a29eff445))
+* removed unused components ([23d8f4f](https://github.com/kiva/ui/commit/23d8f4f446558535fa887e4eb48a66119d4d9fda))
+* resolve CSS order issue from linting ([f0be296](https://github.com/kiva/ui/commit/f0be2961031fcc8ac39e34e901640919f2380f89))
+* use kiva classic loan card as baseline ([1ecf200](https://github.com/kiva/ui/commit/1ecf200c54822acf07ef65a4bb9940b2dabbc6d7))
+
 ### [2.469.1](https://github.com/kiva/ui/compare/v2.469.0...v2.469.1) (2023-01-27)
 
 
