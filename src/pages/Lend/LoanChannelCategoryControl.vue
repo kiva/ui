@@ -112,10 +112,12 @@
 					/>
 				</div>
 				<kv-pagination
+					ref="categoryPagination"
 					v-if="totalCount > 0"
 					:total="totalCount"
 					:limit="limit"
 					:offset="offset"
+					:scroll-to-top="true"
 					@page-changed="pageChange"
 				/>
 				<div v-if="totalCount > 0" class="loan-count tw-text-tertiary">
@@ -585,6 +587,7 @@ export default {
 				this.selectedQuickFilters.countryIsoCode = filter.country;
 			}
 			this.activateLoanChannelWatchQuery();
+			this.resetPagination();
 		},
 		checkIfPageIsOutOfRange(loansArrayLength, pageQueryParam) {
 			// determines if the page query param is for a page that is out of bounds.
@@ -781,6 +784,9 @@ export default {
 			const loans = loansData?.lend?.loanChannelsById[0]?.loans?.values ?? [];
 			this.helpmeChooseLoans = loans;
 			this.isLoadingHC = false;
+		},
+		resetPagination() {
+			this.$refs.categoryPagination.clickPage(0);
 		}
 	},
 	watch: {
