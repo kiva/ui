@@ -116,7 +116,6 @@
 					:total="totalCount"
 					:limit="limit"
 					:offset="offset"
-					:scroll-to-top="true"
 					@page-changed="pageChange"
 				/>
 				<div v-if="totalCount > 0" class="loan-count tw-text-tertiary">
