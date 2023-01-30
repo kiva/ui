@@ -53,15 +53,27 @@
 			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-1"></div>
 			<div class="columns small-12" v-if="loans.length > 0">
 				<div v-if="!displayLoanPromoCard" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-					<loan-card-controller
-						v-for="loan in loans"
-						:items-in-basket="itemsInBasket"
-						:is-visitor="isVisitor"
-						:key="loan.id"
-						:loan="loan"
-						loan-card-type="GridLoanCard"
-						:show-tags="enableLoanTags"
-					/>
+					<template v-for="(loan, index) in loans">
+						<kiva-classic-basic-loan-card-exp
+							v-if="enableLoanCardExp"
+							:item-index="index"
+							:key="`classic-${loan.id}`"
+							:loan-id="loan.id"
+							:lend-now-button="true"
+							:show-tags="enableLoanTags"
+							:in-grid="true"
+						/>
+						<loan-card-controller
+							v-else
+							:items-in-basket="itemsInBasket"
+							:is-visitor="isVisitor"
+							:key="`controller-${loan.id}`"
+							:loan="loan"
+							loan-card-type="GridLoanCard"
+							:show-tags="enableLoanTags"
+						/>
+					</template>
+
 					<helpme-choose-wrapper
 						v-if="showHelpMeChooseFeat"
 						:remaining-loans="helpmeChooseRemainingLoans"
@@ -75,30 +87,55 @@
 					/>
 				</div>
 				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-					<loan-card-controller
-						v-for="loan in firstLoan"
-						:items-in-basket="itemsInBasket"
-						:is-visitor="isVisitor"
-						:key="loan.id"
-						:loan="loan"
-						loan-card-type="GridLoanCard"
-						:show-tags="enableLoanTags"
-					/>
+					<template v-for="(loan, index) in firstLoan">
+						<kiva-classic-basic-loan-card-exp
+							v-if="enableLoanCardExp"
+							:item-index="index"
+							:key="`classic-${loan.id}`"
+							:loan-id="loan.id"
+							:lend-now-button="true"
+							:show-tags="enableLoanTags"
+							:in-grid="true"
+						/>
+						<loan-card-controller
+							v-else
+							:items-in-basket="itemsInBasket"
+							:is-visitor="isVisitor"
+							:key="`controller-${loan.id}`"
+							:loan="loan"
+							loan-card-type="GridLoanCard"
+							:show-tags="enableLoanTags"
+						/>
+					</template>
+
 					<div class="column column-block">
 						<promo-grid-loan-card
 							:category-url="mgTargetCategory.url"
 							:category-label="mgTargetCategory.label"
 						/>
 					</div>
-					<loan-card-controller
-						v-for="loan in remainingLoans"
-						:items-in-basket="itemsInBasket"
-						:is-visitor="isVisitor"
-						:key="loan.id"
-						:loan="loan"
-						loan-card-type="GridLoanCard"
-						:show-tags="enableLoanTags"
-					/>
+
+					<template v-for="(loan, index) in remainingLoans">
+						<kiva-classic-basic-loan-card-exp
+							v-if="enableLoanCardExp"
+							:item-index="index"
+							:key="`classic-${loan.id}`"
+							:loan-id="loan.id"
+							:lend-now-button="true"
+							:show-tags="enableLoanTags"
+							:in-grid="true"
+						/>
+						<loan-card-controller
+							v-else
+							:items-in-basket="itemsInBasket"
+							:is-visitor="isVisitor"
+							:key="`controller-${loan.id}`"
+							:loan="loan"
+							loan-card-type="GridLoanCard"
+							:show-tags="enableLoanTags"
+						/>
+					</template>
+
 					<helpme-choose-wrapper
 						v-if="showHelpMeChooseFeat"
 						:remaining-loans="helpmeChooseRemainingLoans"
@@ -160,6 +197,7 @@ import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
 import HelpmeChooseWrapper from '@/components/LoansByCategory/HelpmeChoose/HelpmeChooseWrapper';
+import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 
 const defaultLoansPerPage = 12;
 
@@ -280,7 +318,7 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		enableNewLoanCard: {
+		enableLoanCardExp: {
 			type: Boolean,
 			default: false
 		},
@@ -293,6 +331,7 @@ export default {
 		QuickFilters,
 		HelpmeChooseWrapper,
 		DonationCTA,
+		KivaClassicBasicLoanCardExp,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [

@@ -3,16 +3,15 @@
 		<h4 class="tw-text-h4 tw-text-action">
 			Support Borrowers from Fundación Pro Mujer
 		</h4>
-		<kiva-classic-loan-carousel-exp
+		<kiva-classic-loan-carousel
 			:is-visible="true"
 			:loan-ids="selectedChannelLoanIds"
 			:selected-channel="selectedChannel"
 			:show-view-more-card="true"
-			:is-personalized="true"
-			:is-mfi="true"
 			:show-tags="showTags"
+			:lend-now-button="true"
 			id="carousel_exp"
-			class="-tw-mt-4"
+			class="tw-overflow-hidden"
 		/>
 
 		<div class="tw-flex tw-justify-center tw-mt-4">
@@ -28,10 +27,13 @@
 </template>
 
 <script>
-import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
+import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
 
 export default {
 	name: 'MfiLoansWrapper',
+	components: {
+		KivaClassicLoanCarousel,
+	},
 	props: {
 		selectedChannelLoanIds: {
 			type: Array,
@@ -46,9 +48,6 @@ export default {
 			default: false,
 		},
 	},
-	components: {
-		KivaClassicLoanCarouselExp
-	}
 };
 
 </script>
