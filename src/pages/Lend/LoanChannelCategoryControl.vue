@@ -624,6 +624,7 @@ export default {
 				this.selectedQuickFilters.countryIsoCode = filter.country;
 			}
 			this.activateLoanChannelWatchQuery();
+			this.resetPagination();
 		},
 		checkIfPageIsOutOfRange(loansArrayLength, pageQueryParam) {
 			// determines if the page query param is for a page that is out of bounds.
@@ -820,6 +821,9 @@ export default {
 			const loans = loansData?.lend?.loanChannelsById[0]?.loans?.values ?? [];
 			this.helpmeChooseLoans = loans;
 			this.isLoadingHC = false;
+		},
+		resetPagination() {
+			this.pageChange({ pageOffset: 0 });
 		}
 	},
 	watch: {
