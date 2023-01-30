@@ -1,3 +1,17 @@
+## [2.471.0](https://github.com/kiva/ui/compare/v2.470.0...v2.471.0) (2023-01-30)
+
+
+### Features
+
+* pagination reset added in category page ([8a752ba](https://github.com/kiva/ui/commit/8a752ba363e708efe9ebfea49fbe399bbabd9d64))
+
+
+### Bug Fixes
+
+* method changed when resetting pagination in category page ([97c4cf6](https://github.com/kiva/ui/commit/97c4cf64c39f0374957a26bc33d16379e03b961f))
+* ref removed for pagination in category page ([4563bec](https://github.com/kiva/ui/commit/4563becb12691ac9cf6ebe630785d4ac540ad0a0))
+* scroll to top removed in category page paginator ([c7f16d2](https://github.com/kiva/ui/commit/c7f16d24ce3de6c1831314659039aff48d22501c))
+
 ## [2.470.0](https://github.com/kiva/ui/compare/v2.469.1...v2.470.0) (2023-01-30)
 
 
