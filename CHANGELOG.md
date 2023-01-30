@@ -1,3 +1,10 @@
+## [2.472.0](https://github.com/kiva/ui/compare/v2.471.0...v2.472.0) (2023-01-30)
+
+
+### Features
+
+* updated loan card use statement ([090c0b9](https://github.com/kiva/ui/commit/090c0b928289e0d5fc7d1edcba2130fb1baf83cd))
+
 ## [2.471.0](https://github.com/kiva/ui/compare/v2.470.0...v2.471.0) (2023-01-30)
 
 
