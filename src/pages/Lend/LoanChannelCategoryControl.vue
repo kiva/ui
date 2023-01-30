@@ -786,7 +786,7 @@ export default {
 			this.isLoadingHC = false;
 		},
 		resetPagination() {
-			this.$refs.categoryPagination.clickPage(0);
+			this.pageChange({ pageOffset: 0 });
 		}
 	},
 	watch: {
