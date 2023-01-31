@@ -1,3 +1,11 @@
+### [2.472.1](https://github.com/kiva/ui/compare/v2.472.0...v2.472.1) (2023-01-31)
+
+
+### Bug Fixes
+
+* remove track func ([d2fc91c](https://github.com/kiva/ui/commit/d2fc91cc9d39300b49ab161a9adf79ae43deb90a))
+* revalidate partnerIds and add risk prop to flss ([451ac60](https://github.com/kiva/ui/commit/451ac60bee39bdb110ff173670b0a69225075bbd))
+
 ## [2.472.0](https://github.com/kiva/ui/compare/v2.471.0...v2.472.0) (2023-01-30)
 
 
