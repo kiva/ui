@@ -354,7 +354,7 @@ export default {
 		},
 		largestImageWidth() {
 			// We currently only use grid or carousel rows with 2 or 3 loan cards
-			return this.perRow === 2 ? 504 : 336;
+			return this.perRow === 2 ? 520 : 336;
 		},
 		amountLeft() {
 			const loanFundraisingInfo = this.loan?.loanFundraisingInfo ?? { fundedAmount: 0, reservedAmount: 0 };
