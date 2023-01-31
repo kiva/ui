@@ -354,7 +354,9 @@ export default {
 		},
 		largestImageWidth() {
 			// We currently only use grid or carousel rows with 2 or 3 loan cards
-			return this.perRow === 2 ? 520 : 336;
+			// TODO: update cloudinary image settings to allow for exact new size if experiment wins
+			// https://kiva.atlassian.net/browse/CORE-1045
+			return this.perRow === 2 ? 548 : 336;
 		},
 		amountLeft() {
 			const loanFundraisingInfo = this.loan?.loanFundraisingInfo ?? { fundedAmount: 0, reservedAmount: 0 };
