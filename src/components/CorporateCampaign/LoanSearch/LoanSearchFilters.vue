@@ -139,35 +139,31 @@
 								Gender
 							</h3>
 
-							<fieldset class="tw-flex tw-flex-col tw-gap-4 tw-my-2 tw-p-1">
+							<div class="loan-filter-controls">
 								<gender-filter
-									id="gender"
-									class="loan-filter-controls__filter-type"
 									:initial-gender="initialGender"
 									:selected-gender="selectedGender"
-									@gender-filter-updated="handleGenderFiltersUpdated"
+									@updated-filters="handleUpdatedFilters"
 								/>
-							</fieldset>
-						</div>
 
-						<div
-							class="loan-filters__lightbox tw-flex-grow"
-							id="sort-filter-container"
-						>
-							<h3 class="tw-py-1 tw-p-2 tw-inline-block">
-								Sort By
-							</h3>
-							<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-my-2 tw-p-1">
-								<sort-order
-									id="sortBy"
-									class="loan-filter-controls__filter-type"
-									:initial-sort="initialSortBy"
-									:selected-sort="selectedSort"
-									@sort-order-updated="handleSortByUpdated"
-								/>
-							</fieldset>
-						</div>
-					</span>
+								<div
+									class="loan-filters__lightbox tw-flex-grow"
+									id="sort-filter-container"
+								>
+									<h3 class="tw-py-1 tw-p-2 tw-inline-block">
+										Sort By
+									</h3>
+									<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-my-2 tw-p-1">
+										<sort-order
+											id="sortBy"
+											class="loan-filter-controls__filter-type"
+											:initial-sort="initialSortBy"
+											:selected-sort="selectedSort"
+											@sort-order-updated="handleSortByUpdated"
+										/>
+									</fieldset>
+								</div>
+							</div></div></span>
 					<hr class="tw-border-tertiary tw-my-1">
 				</span>
 
@@ -340,13 +336,13 @@ export default {
 			type: Array,
 			default: () => []
 		},
+		/* initialGender: {
+			type: String,
+			default: 'female'
+		}, */
 		initialSortBy: {
 			type: String,
 			default: 'popularity',
-		},
-		initialGender: {
-			type: String,
-			default: 'women',
 		},
 		showLoanDisplayToggle: {
 			type: Boolean,
@@ -366,7 +362,7 @@ export default {
 			filtersVisible: false,
 			initialFiltersCopy: null,
 			modifiedFilters: null,
-			selectedGender: null,
+			// selectedGender: null,
 			selectedSort: null,
 			isChipsCollapsable: true,
 			isChipsCollapsed: true,
@@ -401,6 +397,14 @@ export default {
 				? this.modifiedFilters.theme : this.initialFiltersCopy.theme;
 			return incomingFilter || [];
 		},
+		initialGender() {
+			return this.initialFilters.gender || 'both';
+		},
+		selectedGender() {
+			const incomingFilter = this.initialFiltersCopy.gender !== this.modifiedFilters.gender
+				? this.modifiedFilters.gender : this.initialFiltersCopy.gender;
+			return incomingFilter || 'both';
+		},
 		initialCountries() {
 			// list of 2 character country code
 			return this.initialFilters.country || [];
@@ -427,6 +431,19 @@ export default {
 			return incomingFilter || [];
 		},
 		filterChips() {
+			// gather gender setting
+			const genderOptions = [
+				{ name: 'All genders', key: 'unspecified', __typename: 'GenderEnum' },
+				{ name: 'Women', key: 'female', __typename: 'GenderEnum' },
+				{ name: 'Men', key: 'male', __typename: 'GenderEnum' },
+				{ name: 'Non-binary', key: 'nonbinary', __typename: 'GenderEnum' },
+			];
+			const selectedGenderRaw = genderOptions.filter(gender => {
+				if (this.appliedFilters && this.appliedFilters.gender) {
+					return this.appliedFilters.gender === gender.key;
+				}
+				return false;
+			});
 			// gather selected Countries
 			const selectedCountriesRaw = this.allCountries.filter(country => {
 				const appliedCountries = this.appliedFilters?.country ?? [];
@@ -466,6 +483,7 @@ export default {
 			});
 
 			return [
+				...selectedGenderRaw,
 				...selectedCountriesRaw,
 				...selectedSectorsRaw,
 				...selectedAttributesRaw,
@@ -520,7 +538,7 @@ export default {
 		applyFilters() {
 			this.$emit('updated-filters', this.modifiedFilters);
 			this.$emit('updated-sort-by', this.selectedSort);
-			this.$emit('updated-gender', this.selectedGender);
+			// this.$emit('updated-gender', this.selectedGender);
 			this.filtersVisible = false;
 		},
 		// TODO: Move to Util file
@@ -572,6 +590,10 @@ export default {
 			// eslint-disable-next-line no-underscore-dangle
 			const type = filter.__typename;
 			switch (type) {
+				case 'GenderEnum':
+					this.modifiedFilters.gender = null;
+					this.applyFilters();
+					break;
 				case 'Country':
 					if (this.modifiedFilters.country && this.modifiedFilters.country.length) {
 						const newCountries = this.modifiedFilters.country.filter(isoCode => {
@@ -612,11 +634,11 @@ export default {
 					break;
 			}
 		},
-		handleGenderFiltersUpdated(gender) {
+		/* handleGenderFiltersUpdated(gender) {
 			if (this.selectedGender !== gender) {
 				this.selectedGender = gender;
 			}
-		},
+		}, */
 		handleSortByUpdated(sortBy) {
 			if (this.selectedSort !== sortBy) {
 				this.selectedSort = sortBy;
