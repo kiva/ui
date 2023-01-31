@@ -115,6 +115,9 @@
 					@show-loan-details="showLoanDetails"
 				/>
 			</router-link>
+
+			<!-- Loan callouts -->
+			<loan-callouts :callouts="loanCallouts" class="tw-mt-1" />
 		</div>
 
 		<!-- Matching text  -->
@@ -249,6 +252,8 @@ import { setLendAmount } from '@/util/basketUtils';
 import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import LoanTag from '@/components/LoanCards/LoanTags/LoanTag';
+import LoanCallouts from '@/components/LoanCards/LoanTags/LoanCallouts';
+import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -322,7 +327,7 @@ export default {
 		},
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [percentRaisedMixin, timeLeftMixin],
+	mixins: [percentRaisedMixin, timeLeftMixin, loanChannelQueryMapMixin],
 	components: {
 		BorrowerImage,
 		KvLoadingPlaceholder,
@@ -335,6 +340,7 @@ export default {
 		KvUiButton,
 		ActionButton,
 		LoanTag,
+		LoanCallouts
 	},
 	data() {
 		return {
@@ -350,6 +356,13 @@ export default {
 		};
 	},
 	computed: {
+		loanCallouts() {
+			// const sectorId = this.loan?.sector.id;
+			// const activityId = this.loan?.activity.id;
+			const sectorName = this.loan?.sector.name;
+			const activityName = this.loan?.activity.name;
+			return [sectorName, activityName];
+		},
 		cardWidth() {
 			return this.useFullWidth ? '100%' : '374px';
 		},

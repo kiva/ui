@@ -24,6 +24,7 @@ fragment loanCardFields on LoanBasic {
 		id
 		name
 	}
+	tags
 	whySpecial
 	lenderRepaymentTerm
 	loanAmount
