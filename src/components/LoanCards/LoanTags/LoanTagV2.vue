@@ -1,5 +1,5 @@
 <template>
-	<div v-if="!!variation && timeLeftMs > 0" class="tw-text-small tw-font-medium tw-mt-0.5" style="color: #CE4A00">
+	<div v-if="!!variation && timeLeftMs > 0" class="tw-text-small tw-font-medium tw-mt-0.5" style="color: #CE4A00;">
 		{{ tagText }}
 		<countdown-timer
 			v-if="variation === 'ending-soon'"
