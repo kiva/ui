@@ -187,9 +187,8 @@ import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.grap
 import {
 	preFetchChannel,
 	getCachedChannel,
-	trackChannelExperiment,
 	watchChannelQuery,
-	getFilteredLoanChannel,
+	getLoanChannel,
 	getMetaDescription
 } from '@/util/loanChannelUtils';
 import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
@@ -591,8 +590,6 @@ export default {
 			this.$router.push(this.getFilterUrl());
 		}
 
-		trackChannelExperiment(this.apollo, this.loanChannelQueryMap, this.targetedLoanChannelURL, this.$kvTrackEvent);
-
 		// Fetch the facet options from the lend and FLSS APIs
 		this.allFacets = await fetchLoanFacets(this.apollo);
 
@@ -804,9 +801,9 @@ export default {
 				this.flssLoanSearch = matchedUrls[0]?.flssLoanSearch ?? {};
 			}
 		},
-		async getHelpmeChooseLoans(evt = 'amountLeft') {
+		async getHelpmeChooseLoans() {
 			this.isLoadingHC = true;
-			const loansData = await getFilteredLoanChannel(
+			const loansData = await getLoanChannel(
 				this.apollo,
 				this.loanChannelQueryMap,
 				this.targetedLoanChannelURL,
@@ -815,8 +812,7 @@ export default {
 					limit: 3,
 					basketId: this.cookieStore.get('kvbskt'),
 					origin: FLSS_ORIGIN_CATEGORY
-				},
-				{ sortBy: evt }
+				}
 			);
 			const loans = loansData?.lend?.loanChannelsById[0]?.loans?.values ?? [];
 			this.helpmeChooseLoans = loans;
