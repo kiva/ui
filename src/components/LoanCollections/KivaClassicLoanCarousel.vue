@@ -24,7 +24,16 @@
 			<template v-for="(loanId, index) in augmentedLoanIds" #[`slide${index}`]>
 				<!-- show loan card -->
 				<!-- TODO Re-implement card position analytics -->
+				<kiva-classic-basic-loan-card-exp
+					v-if="enableLoanCardExp"
+					:key="`loan-exp-${loanId}`"
+					:loan-id="loanId"
+					:exp-label="expLabel"
+					:lend-now-button="lendNowButton"
+					:show-tags="showTags"
+				/>
 				<kiva-classic-basic-loan-card
+					v-else
 					:item-index="index"
 					:key="`loan-${loanId}`"
 					:loan-id="loanId"
@@ -63,7 +72,16 @@
 				<template v-for="(loanId, index) in augmentedLoanIds">
 					<!-- show loan card -->
 					<!-- TODO Re-implement card position analytics -->
+					<kiva-classic-basic-loan-card-exp
+						v-if="enableLoanCardExp"
+						:key="`loan-exp-${loanId}`"
+						:loan-id="loanId"
+						:exp-label="expLabel"
+						:lend-now-button="lendNowButton"
+						:show-tags="showTags"
+					/>
 					<kiva-classic-basic-loan-card
+						v-else
 						:item-index="index"
 						:key="`loan-${loanId}`"
 						:loan-id="loanId"
@@ -95,6 +113,7 @@
 
 <script>
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
+import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -105,6 +124,7 @@ export default {
 		KvCarousel,
 		KvLoadingSpinner,
 		KivaClassicBasicLoanCard,
+		KivaClassicBasicLoanCardExp,
 		KvButton
 	},
 	props: {
@@ -156,6 +176,10 @@ export default {
 		showTags: {
 			type: Boolean,
 			default: false,
+		},
+		enableLoanCardExp: {
+			type: Boolean,
+			default: false
 		},
 	},
 	data() {
