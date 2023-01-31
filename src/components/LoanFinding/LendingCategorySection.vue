@@ -13,6 +13,7 @@
 				:multiple-slides-visible="true"
 				slides-to-scroll="visible"
 				:slide-max-width="singleSlideWidth"
+				:embla-options="{ loop: false }"
 			>
 				<template v-for="(loan, index) in loans" #[`slide${index}`]>
 					<kiva-classic-basic-loan-card-exp
@@ -88,5 +89,4 @@ export default {
 #customizedCarousel >>> .kv-carousel__controls div {
 	visibility: visible;
 }
-
 </style>

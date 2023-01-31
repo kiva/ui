@@ -10,7 +10,6 @@
 			:show-view-more-card="true"
 			:show-tags="showTags"
 			:lend-now-button="true"
-			:enable-loan-card-exp="true"
 			id="carousel_exp"
 			class="tw-overflow-hidden"
 		/>
