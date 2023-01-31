@@ -15,14 +15,13 @@
 				:slide-max-width="singleSlideWidth"
 			>
 				<template v-for="(loan, index) in loans" #[`slide${index}`]>
-					<kiva-classic-basic-loan-card
+					<kiva-classic-basic-loan-card-exp
 						:key="index"
-						:item-index="index"
 						:loan-id="loan.id"
 						:show-action-button="true"
 						:show-tags="true"
 						:use-full-width="true"
-						class="tw-mr-2"
+						:per-row="perStep"
 						@add-to-basket="addToBasket"
 					/>
 				</template>
@@ -32,14 +31,14 @@
 </template>
 
 <script>
-import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
+import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
 	name: 'LendingCategorySection',
 	components: {
 		KvCarousel,
-		KivaClassicBasicLoanCard
+		KivaClassicBasicLoanCardExp
 	},
 	props: {
 		title: {
