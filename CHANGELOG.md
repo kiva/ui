@@ -1,3 +1,10 @@
+## [2.474.0](https://github.com/kiva/ui/compare/v2.473.0...v2.474.0) (2023-02-01)
+
+
+### Features
+
+* update progress text when amount left is low ([7dc78fc](https://github.com/kiva/ui/commit/7dc78fcda9e285b1a4597306a268a9a4875122f5))
+
 ## [2.473.0](https://github.com/kiva/ui/compare/v2.472.1...v2.473.0) (2023-01-31)
 
 
