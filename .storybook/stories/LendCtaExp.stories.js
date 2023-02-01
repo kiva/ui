@@ -35,6 +35,17 @@ const queryNon25Inc = {
 	}
 };
 
+const queryFullyFunded = {
+	data: {
+		lend: {
+			loan: {
+                ...loan,
+                unreservedAmount: 0
+            }
+		},
+	}
+};
+
 export default {
     title: 'Components/Lend CTA Exp',
     component: LendCtaExp,
@@ -67,6 +78,17 @@ export const Non25Increments = (_args, { argTypes }) => ({
     props: Object.keys(argTypes),
 	components: { LendCtaExp },
 	mixins: [apolloStoryMixin({ queryResult: queryNon25Inc }), cookieStoreStoryMixin()],
+	template: `
+			<lend-cta-exp
+				:loan-id="loanId"
+			/>
+		`,
+});
+
+export const FullyFunded = (_args, { argTypes }) => ({
+    props: Object.keys(argTypes),
+	components: { LendCtaExp },
+	mixins: [apolloStoryMixin({ queryResult: queryFullyFunded }), cookieStoreStoryMixin()],
 	template: `
 			<lend-cta-exp
 				:loan-id="loanId"

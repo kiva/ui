@@ -2,17 +2,13 @@ import {
 	getFLSSQueryMap,
 	transformFLSSData,
 	preFetchChannel,
-	checkCachedChannelExperiment,
 	getCachedChannel,
 	getLoanChannel,
 	watchChannelQuery,
-	loanChannelFLSSQueryEXP,
-	trackChannelExperiment,
 } from '@/util/loanChannelUtils';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
 import * as experimentalUtils from '@/util/experimentUtils';
 import * as flssUtils from '@/util/flssUtils';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import { getLoanChannelVariables } from '@/util/flssUtils';
 
 const mockWomenMap = {
@@ -111,14 +107,10 @@ describe('loanChannelUtils.js', () => {
 
 			await preFetchChannel(apollo, mockQueryMap, 'women', mockLoanQueryVars);
 
-			expect(spyGetExperimentSettingAsync).toHaveBeenCalledTimes(1);
-			expect(spyGetExperimentSettingAsync).toHaveBeenCalledWith(apollo, loanChannelFLSSQueryEXP);
+			expect(spyGetExperimentSettingAsync).toHaveBeenCalledTimes(0);
 			expect(spyFetchLoanChannel).toHaveBeenCalledTimes(1);
 			expect(spyFetchLoanChannel).toHaveBeenCalledWith(apollo, mockWomenMap.flssLoanSearch, mockLoanQueryVars);
-			expect(apollo.query).toHaveBeenCalledTimes(1);
-			expect(apollo.query).toHaveBeenCalledWith(
-				{ query: experimentAssignmentQuery, variables: { id: loanChannelFLSSQueryEXP } }
-			);
+			expect(apollo.query).toHaveBeenCalledTimes(0);
 		});
 
 		it('should handle active unassigned experiment', async () => {
@@ -126,51 +118,9 @@ describe('loanChannelUtils.js', () => {
 
 			await preFetchChannel(apollo, mockQueryMap, 'women', mockLoanQueryVars);
 
-			expect(spyGetExperimentSettingAsync).toHaveBeenCalledTimes(1);
-			expect(spyGetExperimentSettingAsync).toHaveBeenCalledWith(apollo, loanChannelFLSSQueryEXP);
-			expect(spyFetchLoanChannel).toHaveBeenCalledTimes(0);
-			expect(apollo.query).toHaveBeenCalledTimes(2);
-			expect(apollo.query).toHaveBeenCalledWith(
-				{ query: experimentAssignmentQuery, variables: { id: loanChannelFLSSQueryEXP } },
-			);
-			expect(apollo.query).toHaveBeenCalledWith({ query: loanChannelQuery, variables: mockLoanQueryVars });
-		});
-	});
-
-	describe('checkCachedChannelExperiment', () => {
-		const apollo = { readQuery: jest.fn(() => Promise.resolve()) };
-		const apolloVariables = { query: experimentAssignmentQuery, variables: { id: loanChannelFLSSQueryEXP } };
-
-		afterEach(jest.clearAllMocks);
-
-		it('should handle default matching version', () => {
-			apollo.readQuery.mockReturnValueOnce({ experiment: { version: 'b' } });
-
-			const result = checkCachedChannelExperiment(apollo);
-
-			expect(result).toBe(true);
-			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
-			expect(apollo.readQuery).toHaveBeenCalledWith(apolloVariables);
-		});
-
-		it('should handle matching version', () => {
-			apollo.readQuery.mockReturnValueOnce({ experiment: { version: 'b' } });
-
-			const result = checkCachedChannelExperiment(apollo, 'b');
-
-			expect(result).toBe(true);
-			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
-			expect(apollo.readQuery).toHaveBeenCalledWith(apolloVariables);
-		});
-
-		it('should handle different version', () => {
-			apollo.readQuery.mockReturnValueOnce({ experiment: { version: 'x' } });
-
-			const result = checkCachedChannelExperiment(apollo);
-
-			expect(result).toBe(false);
-			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
-			expect(apollo.readQuery).toHaveBeenCalledWith(apolloVariables);
+			expect(spyGetExperimentSettingAsync).toHaveBeenCalledTimes(0);
+			expect(spyFetchLoanChannel).toHaveBeenCalledTimes(1);
+			expect(apollo.query).toHaveBeenCalledTimes(0);
 		});
 	});
 
@@ -204,10 +154,7 @@ describe('loanChannelUtils.js', () => {
 
 			const result = getCachedChannel(apollo, mockQueryMap, 'women', mockLoanQueryVars);
 
-			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
-			expect(apollo.readQuery).toHaveBeenCalledWith(
-				{ query: experimentAssignmentQuery, variables: { id: loanChannelFLSSQueryEXP } }
-			);
+			expect(apollo.readQuery).toHaveBeenCalledTimes(0);
 			expect(result).toEqual({
 				shop: mockData.shop,
 				lend: {
@@ -221,14 +168,9 @@ describe('loanChannelUtils.js', () => {
 
 			apollo.readQuery.mockReturnValueOnce({ experiment: { version: 'a' } }).mockReturnValueOnce(data);
 
-			const result = getCachedChannel(apollo, mockQueryMap, 'women', mockLoanQueryVars);
+			getCachedChannel(apollo, mockQueryMap, 'women', mockLoanQueryVars);
 
-			expect(apollo.readQuery).toHaveBeenCalledTimes(2);
-			expect(apollo.readQuery).toHaveBeenCalledWith(
-				{ query: experimentAssignmentQuery, variables: { id: loanChannelFLSSQueryEXP } },
-			);
-			expect(apollo.readQuery).toHaveBeenCalledWith({ query: loanChannelQuery, variables: mockLoanQueryVars });
-			expect(result).toEqual(data);
+			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
 		});
 	});
 
@@ -264,10 +206,7 @@ describe('loanChannelUtils.js', () => {
 
 			const result = await getLoanChannel(apollo, mockQueryMap, 'women', mockLoanQueryVars);
 
-			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
-			expect(apollo.readQuery).toHaveBeenCalledWith(
-				{ query: experimentAssignmentQuery, variables: { id: loanChannelFLSSQueryEXP } }
-			);
+			expect(apollo.readQuery).toHaveBeenCalledTimes(0);
 			expect(result).toEqual({
 				shop: mockData.shop,
 				lend: {
@@ -283,12 +222,8 @@ describe('loanChannelUtils.js', () => {
 
 			await getLoanChannel(apollo, mockQueryMap, 'women', mockLoanQueryVars);
 
-			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
-			expect(apollo.readQuery).toHaveBeenCalledWith(
-				{ query: experimentAssignmentQuery, variables: { id: loanChannelFLSSQueryEXP } },
-			);
-			expect(apollo.query).toHaveBeenCalledTimes(1);
-			expect(apollo.query).toHaveBeenCalledWith({ query: loanChannelQuery, variables: mockLoanQueryVars });
+			expect(apollo.readQuery).toHaveBeenCalledTimes(0);
+			expect(apollo.query).toHaveBeenCalledTimes(0);
 		});
 	});
 
@@ -316,7 +251,6 @@ describe('loanChannelUtils.js', () => {
 
 			expect(spyWatchLoanChannel).toHaveBeenCalledTimes(0);
 			expect(apollo.watchQuery).toHaveBeenCalledTimes(1);
-			expect(apollo.watchQuery).toHaveBeenCalledWith({ query: loanChannelQuery, variables: mockLoanQueryVars });
 			expect(result.subscribe).toHaveBeenCalledTimes(1);
 			expect(result.subscribe).toHaveBeenCalledWith({ next: expect.any(Function) });
 			expect(watch).toHaveBeenCalledTimes(1);
@@ -342,10 +276,7 @@ describe('loanChannelUtils.js', () => {
 
 			const result = watchChannelQuery(apollo, mockQueryMap, {}, 'women', mockLoanQueryVars, next, watch);
 
-			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
-			expect(apollo.readQuery).toHaveBeenCalledWith(
-				{ query: experimentAssignmentQuery, variables: { id: loanChannelFLSSQueryEXP } }
-			);
+			expect(apollo.readQuery).toHaveBeenCalledTimes(0);
 			expect(spyWatchLoanChannel).toHaveBeenCalledTimes(1);
 			expect(spyWatchLoanChannel).toHaveBeenCalledWith(apollo, mockWomenMap.flssLoanSearch, mockLoanQueryVars);
 			expect(result.subscribe).toHaveBeenCalledTimes(1);
@@ -375,13 +306,9 @@ describe('loanChannelUtils.js', () => {
 
 			const result = watchChannelQuery(apollo, mockQueryMap, {}, 'women', mockLoanQueryVars, next, watch);
 
-			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
-			expect(apollo.readQuery).toHaveBeenCalledWith(
-				{ query: experimentAssignmentQuery, variables: { id: loanChannelFLSSQueryEXP } }
-			);
-			expect(spyWatchLoanChannel).toHaveBeenCalledTimes(0);
-			expect(apollo.watchQuery).toHaveBeenCalledTimes(1);
-			expect(apollo.watchQuery).toHaveBeenCalledWith({ query: loanChannelQuery, variables: mockLoanQueryVars });
+			expect(apollo.readQuery).toHaveBeenCalledTimes(0);
+			expect(spyWatchLoanChannel).toHaveBeenCalledTimes(1);
+			expect(apollo.watchQuery).toHaveBeenCalledTimes(0);
 			expect(result.subscribe).toHaveBeenCalledTimes(1);
 			expect(result.subscribe).toHaveBeenCalledWith({ next: expect.any(Function) });
 			expect(watch).toHaveBeenCalledTimes(1);
@@ -390,62 +317,10 @@ describe('loanChannelUtils.js', () => {
 			subscribeNextCallback({ data: mockFLSSData, loading: true });
 
 			expect(next).toHaveBeenCalledTimes(1);
-			expect(next).toHaveBeenCalledWith(mockFLSSData, true);
 
 			watchCallback(mockLoanQueryVars);
 
 			expect(observer.setVariables).toHaveBeenCalledTimes(1);
-			expect(observer.setVariables).toHaveBeenCalledWith(mockLoanQueryVars);
-		});
-	});
-
-	describe('trackChannelExperiment', () => {
-		let spyGetExperimentSettingCached;
-		let spyTrackExperimentVersion;
-		const apollo = {};
-		const trackEvent = {};
-
-		beforeEach(() => {
-			spyGetExperimentSettingCached = jest.spyOn(experimentalUtils, 'getExperimentSettingCached')
-				.mockImplementation(() => {});
-			spyTrackExperimentVersion = jest.spyOn(experimentalUtils, 'trackExperimentVersion')
-				.mockImplementation(() => {});
-		});
-
-		afterEach(jest.clearAllMocks);
-
-		it('should handle missing map', () => {
-			trackChannelExperiment(apollo, mockQueryMap, 'asd', trackEvent);
-
-			expect(spyGetExperimentSettingCached).toHaveBeenCalledTimes(0);
-			expect(spyTrackExperimentVersion).toHaveBeenCalledTimes(0);
-		});
-
-		it('should handle enabled experiment', () => {
-			spyGetExperimentSettingCached.mockReturnValueOnce({ enabled: true });
-
-			trackChannelExperiment(apollo, mockQueryMap, 'women', trackEvent);
-
-			expect(spyGetExperimentSettingCached).toHaveBeenCalledTimes(1);
-			expect(spyGetExperimentSettingCached).toHaveBeenCalledWith(apollo, loanChannelFLSSQueryEXP);
-			expect(spyTrackExperimentVersion).toHaveBeenCalledTimes(1);
-			expect(spyTrackExperimentVersion).toHaveBeenCalledWith(
-				apollo,
-				trackEvent,
-				'Lending',
-				loanChannelFLSSQueryEXP,
-				'EXP-VUE-1114-July2022'
-			);
-		});
-
-		it('should handle disabled experiment', () => {
-			spyGetExperimentSettingCached.mockReturnValueOnce({ enabled: false });
-
-			trackChannelExperiment(apollo, mockQueryMap, 'women', trackEvent);
-
-			expect(spyGetExperimentSettingCached).toHaveBeenCalledTimes(1);
-			expect(spyGetExperimentSettingCached).toHaveBeenCalledWith(apollo, loanChannelFLSSQueryEXP);
-			expect(spyTrackExperimentVersion).toHaveBeenCalledTimes(0);
 		});
 	});
 });

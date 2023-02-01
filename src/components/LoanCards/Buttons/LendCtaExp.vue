@@ -332,7 +332,7 @@ export default {
 	border-radius: 14px 0 0 14px;
 }
 
-.lendButtonWrapper >>> span:first-child  {
+.lendButtonWrapper >>> span:first-child {
 	border-radius: 0 14px 14px 0;
 }
 

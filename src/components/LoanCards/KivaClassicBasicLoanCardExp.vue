@@ -35,8 +35,8 @@
 					:default-image="{ width: 336 }"
 					:hash="imageHash"
 					:images="[
-						{ width: 336, viewSize: 1024 },
-						{ width: 336, viewSize: 768 },
+						{ width: largestImageWidth, viewSize: 1024 },
+						{ width: largestImageWidth, viewSize: 768 },
 						{ width: 416, viewSize: 480 },
 						{ width: 374, viewSize: 414 },
 						{ width: 335, viewSize: 375 },
@@ -121,6 +121,7 @@
 				<loan-progress-group
 					:money-left="unreservedAmount"
 					:progress-percent="fundraisingPercent"
+					:enable-loan-card-exp="true"
 				/>
 			</router-link>
 
@@ -229,6 +230,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		perRow: {
+			type: Number,
+			default: 3
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],
@@ -262,6 +267,12 @@ export default {
 	computed: {
 		cardWidth() {
 			return this.useFullWidth ? '100%' : '374px';
+		},
+		largestImageWidth() {
+			// We currently only use grid or carousel rows with 2 or 3 loan cards
+			// TODO: update cloudinary image settings to allow for exact new size if experiment wins
+			// https://kiva.atlassian.net/browse/CORE-1045
+			return this.perRow === 2 ? 548 : 336;
 		},
 		amountLeft() {
 			const loanFundraisingInfo = this.loan?.loanFundraisingInfo ?? { fundedAmount: 0, reservedAmount: 0 };

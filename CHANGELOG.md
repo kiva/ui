@@ -1,3 +1,41 @@
+### [2.474.1](https://github.com/kiva/ui/compare/v2.474.0...v2.474.1) (2023-02-01)
+
+
+### Bug Fixes
+
+* tracking was missing on new page ([5915eec](https://github.com/kiva/ui/commit/5915eec8a0a16d56f99dc18dffb7e486561210ce))
+
+## [2.474.0](https://github.com/kiva/ui/compare/v2.473.0...v2.474.0) (2023-02-01)
+
+
+### Features
+
+* update progress text when amount left is low ([7dc78fc](https://github.com/kiva/ui/commit/7dc78fcda9e285b1a4597306a268a9a4875122f5))
+
+## [2.473.0](https://github.com/kiva/ui/compare/v2.472.1...v2.473.0) (2023-01-31)
+
+
+### Features
+
+* added support for larger loan card images when 2 cards in row ([b2f4dee](https://github.com/kiva/ui/commit/b2f4deee0381c5b09565c573af5e3baae9affb36))
+* story for larger loan card image ([ddbba7f](https://github.com/kiva/ui/commit/ddbba7f733d460354133ade2d9624be70676d5ed))
+* update lending-home to use new loan card throughout ([db174a0](https://github.com/kiva/ui/commit/db174a01281a352ad7820cd190d0359e44594131))
+
+
+### Bug Fixes
+
+* use a size we already provide from cloudinary ([ee402d5](https://github.com/kiva/ui/commit/ee402d5f7b9a3989bf7c98a0d4fd96a25e3eb565))
+* use kv-carousel instead of classic carousel ([07390f9](https://github.com/kiva/ui/commit/07390f930184ee590b945be61ed6db53185a31b1))
+* width is actually larger now that padding is removed ([131ad71](https://github.com/kiva/ui/commit/131ad7178d3b0b71bb2d0c4505f38645318e0059))
+
+### [2.472.1](https://github.com/kiva/ui/compare/v2.472.0...v2.472.1) (2023-01-31)
+
+
+### Bug Fixes
+
+* remove track func ([d2fc91c](https://github.com/kiva/ui/commit/d2fc91cc9d39300b49ab161a9adf79ae43deb90a))
+* revalidate partnerIds and add risk prop to flss ([451ac60](https://github.com/kiva/ui/commit/451ac60bee39bdb110ff173670b0a69225075bbd))
+
 ## [2.472.0](https://github.com/kiva/ui/compare/v2.471.0...v2.472.0) (2023-01-30)
 
 

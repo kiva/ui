@@ -32,10 +32,9 @@
 				</h2>
 			</div>
 			<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-mt-2">
-				<kiva-classic-basic-loan-card
+				<kiva-classic-basic-loan-card-exp
 					v-for="(loan, index) in loans"
 					:key="index"
-					:item-index="index"
 					:loan-id="loan.id"
 					:show-action-button="true"
 					:use-full-width="true"
@@ -75,7 +74,7 @@ import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters
 import { runFacetsQueries, fetchLoanFacets, runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { fetchCategories, FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
 import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
-import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
+import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import KvPagination from '@/components/Kv/KvPagination';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -83,7 +82,7 @@ export default {
 	name: 'QuickFiltersSection',
 	components: {
 		QuickFilters,
-		KivaClassicBasicLoanCard,
+		KivaClassicBasicLoanCardExp,
 		KvPagination,
 		KvButton
 	},
