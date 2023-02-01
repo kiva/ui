@@ -85,6 +85,7 @@
 				:money-left="unreservedAmount"
 				:progress-percent="fundraisingPercent"
 				:time-left="timeLeftMessage"
+				:enable-loan-card-exp="true"
 			/>
 		</router-link>
 
