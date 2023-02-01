@@ -69,8 +69,12 @@ import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
 import { gql } from '@apollo/client';
 import WelcomeLightbox from '@/components/LoanFinding/WelcomeLightbox';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experimentUtils';
 import KvToast from '~/@kiva/kv-components/vue/KvToast';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+
+const EXP_KEY = 'loan_finding_page';
 
 export default {
 	name: 'LoanFinding',
@@ -102,10 +106,11 @@ export default {
 	apollo: {
 		query: userInfoQuery,
 		preFetch(config, client) {
-			return client
-				.query({
-					query: userInfoQuery,
-				});
+			return client.query({
+				query: userInfoQuery,
+			}).then(() => {
+				return client.query({ query: experimentQuery, variables: { id: EXP_KEY } });
+			});
 		},
 		result({ data }) {
 			this.userInfo = data?.my?.userAccount ?? {};
@@ -169,6 +174,17 @@ export default {
 		this.getRecommendedLoans();
 		this.getMatchedLoans();
 		this.showToast();
+
+		const { enabled } = getExperimentSettingCached(this.apollo, EXP_KEY);
+		if (enabled) {
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				EXP_KEY,
+				'EXP-CORE-854-Dec2022'
+			);
+		}
 	},
 };
 </script>
