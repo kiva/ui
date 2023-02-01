@@ -1,3 +1,10 @@
+### [2.472.1-next.1](https://github.com/kiva/ui/compare/v2.472.0...v2.472.1-next.1) (2023-02-01)
+
+
+### Bug Fixes
+
+* tracking was missing on new page ([cc7d85d](https://github.com/kiva/ui/commit/cc7d85d2be457baf639f86c642af93cf2e4bc635))
+
 ## [2.472.0](https://github.com/kiva/ui/compare/v2.471.0...v2.472.0) (2023-01-30)
 
 
