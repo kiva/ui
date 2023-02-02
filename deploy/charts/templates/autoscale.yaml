@@ -1,5 +1,5 @@
 {{- $fullName := include "ui-helm.fullname" . -}}
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "ui-helm.fullname" . }}

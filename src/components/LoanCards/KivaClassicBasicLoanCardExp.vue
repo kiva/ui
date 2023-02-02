@@ -21,8 +21,6 @@
 				v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
 				class="tw-flex"
 			>
-				<loan-tag v-if="showTags" :loan="loan" :amount-left="amountLeft" />
-
 				<borrower-image
 					class="
 					tw-relative
@@ -60,6 +58,8 @@
 				</div>
 			</router-link>
 		</div>
+		<!-- Loan tag -->
+		<loan-tag-v2 v-if="showTags" :loan="loan" :amount-left="amountLeft" />
 
 		<!-- Loan use  -->
 		<div class="tw-grow tw-mb-1.5">
@@ -161,8 +161,8 @@ import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import { setLendAmount } from '@/util/basketUtils';
 import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import LoanTag from '@/components/LoanCards/LoanTags/LoanTag';
 import LendCtaExp from '@/components/LoanCards/Buttons/LendCtaExp';
+import LoanTagV2 from '@/components/LoanCards/LoanTags/LoanTagV2';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -252,8 +252,8 @@ export default {
 		SummaryTag,
 		KvUiButton,
 		ActionButton,
-		LoanTag,
-		LendCtaExp
+		LendCtaExp,
+		LoanTagV2,
 	},
 	data() {
 		return {
