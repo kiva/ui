@@ -1,3 +1,16 @@
+## [2.476.0](https://github.com/kiva/ui/compare/v2.475.0...v2.476.0) (2023-02-02)
+
+
+### Features
+
+* add new loan tags to new loan cards ([98dac08](https://github.com/kiva/ui/commit/98dac08003ebc9b239ece913bdc8a5a0c3311dd9))
+
+
+### Bug Fixes
+
+* add clamping ([df623d4](https://github.com/kiva/ui/commit/df623d4377bf9aceeb7c21eecbda8afa9012603a))
+* lint ([5df8572](https://github.com/kiva/ui/commit/5df85723cdbabd9712db1bd833145da6c48c9565))
+
 ## [2.475.0](https://github.com/kiva/ui/compare/v2.474.1...v2.475.0) (2023-02-02)
 
 
