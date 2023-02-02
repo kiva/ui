@@ -1,3 +1,10 @@
+## [2.475.0](https://github.com/kiva/ui/compare/v2.474.1...v2.475.0) (2023-02-02)
+
+
+### Features
+
+* use new loan card in help me choose during experiment ([b2c99fa](https://github.com/kiva/ui/commit/b2c99fa7afb699e5bc2d0d953f705f183c3170ba))
+
 ### [2.474.1](https://github.com/kiva/ui/compare/v2.474.0...v2.474.1) (2023-02-01)
 
 
