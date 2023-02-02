@@ -76,13 +76,13 @@
 
 					<helpme-choose-wrapper
 						v-if="showHelpMeChooseFeat"
-						:remaining-loans="helpmeChooseRemainingLoans"
+						:remaining-loans="helpMeChooseRemainingLoans"
 						:items-in-basket="itemsInBasket"
 						:is-visitor="isVisitor"
 						:user-data="userData"
 						:loan-channel-name="loanChannelName"
-						:loans="helpmeChooseLoans"
-						@update="getHelpmeChooseLoans($event)"
+						:loans="helpMeChooseLoans"
+						@update="getHelpMeChooseLoans($event)"
 						:is-loading="isLoadingHC"
 					/>
 				</div>
@@ -138,13 +138,13 @@
 
 					<helpme-choose-wrapper
 						v-if="showHelpMeChooseFeat"
-						:remaining-loans="helpmeChooseRemainingLoans"
+						:remaining-loans="helpMeChooseRemainingLoans"
 						:items-in-basket="itemsInBasket"
 						:is-visitor="isVisitor"
 						:user-data="userData"
 						:loan-channel-name="loanChannelName"
-						:loans="helpmeChooseLoans"
-						@update="getHelpmeChooseLoans($event)"
+						:loans="helpMeChooseLoans"
+						@update="getHelpMeChooseLoans($event)"
 						:is-loading="isLoadingHC"
 					/>
 				</div>
@@ -189,7 +189,8 @@ import {
 	getCachedChannel,
 	watchChannelQuery,
 	getLoanChannel,
-	getMetaDescription
+	getMetaDescription,
+	getFLSSQueryMap,
 } from '@/util/loanChannelUtils';
 import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
 import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
@@ -373,7 +374,8 @@ export default {
 			selectedQuickFilters: {},
 			userData: {},
 			showQuickFiltersOverlay: false,
-			helpmeChooseLoans: [],
+			helpMeChooseSort: '',
+			helpMeChooseLoans: [],
 			isLoadingHC: true,
 		};
 	},
@@ -411,7 +413,7 @@ export default {
 			}
 			return _filter(this.allLoans, (loan, index) => index > 0);
 		},
-		helpmeChooseRemainingLoans() {
+		helpMeChooseRemainingLoans() {
 			if (this.displayLoanPromoCard) {
 				return _filter(this.allLoans, (loan, index) => index > 4);
 			}
@@ -461,7 +463,12 @@ export default {
 			return this.totalCount <= this.limit;
 		},
 		showHelpMeChooseFeat() {
-			return this.enableHelpmeChoose && this.allLoans.length > 8;
+			const queryMapFLSS = getFLSSQueryMap(this.loanChannelQueryMap, this.targetedLoanChannelURL);
+			const hasSortBy = !!queryMapFLSS.sortBy;
+
+			// Don't show help me choose if the category has sortBy
+			// Help me choose categories are just different sortBy options
+			return this.enableHelpmeChoose && !hasSortBy && this.allLoans.length > 8;
 		}
 	},
 	apollo: {
@@ -622,6 +629,7 @@ export default {
 			}
 			this.activateLoanChannelWatchQuery();
 			this.resetPagination();
+			this.getHelpMeChooseLoans();
 		},
 		checkIfPageIsOutOfRange(loansArrayLength, pageQueryParam) {
 			// determines if the page query param is for a page that is out of bounds.
@@ -801,8 +809,13 @@ export default {
 				this.flssLoanSearch = matchedUrls[0]?.flssLoanSearch ?? {};
 			}
 		},
-		async getHelpmeChooseLoans() {
+		async getHelpMeChooseLoans(sortBy) {
 			this.isLoadingHC = true;
+
+			if (sortBy) {
+				this.helpMeChooseSort = sortBy;
+			}
+
 			const loansData = await getLoanChannel(
 				this.apollo,
 				this.loanChannelQueryMap,
@@ -812,10 +825,13 @@ export default {
 					limit: 3,
 					basketId: this.cookieStore.get('kvbskt'),
 					origin: FLSS_ORIGIN_CATEGORY
-				}
+				},
+				// Apply quick filters to help me choose
+				{ ...this.selectedQuickFilters, sortBy: this.helpMeChooseSort }
 			);
+
 			const loans = loansData?.lend?.loanChannelsById[0]?.loans?.values ?? [];
-			this.helpmeChooseLoans = loans;
+			this.helpMeChooseLoans = loans;
 			this.isLoadingHC = false;
 		},
 		resetPagination() {

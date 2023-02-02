@@ -178,35 +178,33 @@ describe('loanChannelUtils.js', () => {
 		let spyGetLoanChannel;
 		const apollo = {
 			query: jest.fn(() => Promise.resolve()),
-			readQuery: jest.fn(() => Promise.resolve())
 		};
+
 		beforeEach(() => {
 			spyGetLoanChannel = jest.spyOn(flssUtils, 'fetchLoanChannel').mockImplementation(() => Promise.resolve());
 		});
 
 		afterEach(jest.clearAllMocks);
 
-		it('should handle channel without FLSS mapping', () => {
-			getLoanChannel(apollo, mockQueryMap, 'asd', mockLoanQueryVars);
+		it('should handle channel without FLSS mapping', async () => {
+			await getLoanChannel(apollo, mockQueryMap, 'asd', mockLoanQueryVars);
 
 			expect(apollo.query).toHaveBeenCalledTimes(1);
 			expect(apollo.query).toHaveBeenCalledWith({ query: loanChannelQuery, variables: mockLoanQueryVars });
 		});
 
-		it('should handle active assigned experiment', async () => {
+		it('should handle channel with FLSS mapping', async () => {
 			const mockData = {
 				shop: { id: 1 },
 				lend: { loanChannelsById: [{ id: 2 }] },
 				fundraisingLoans: { test: 3 },
 			};
 
-			apollo.readQuery.mockReturnValueOnce({ experiment: { version: 'b' } });
-
 			spyGetLoanChannel.mockReturnValueOnce(mockData);
 
 			const result = await getLoanChannel(apollo, mockQueryMap, 'women', mockLoanQueryVars);
 
-			expect(apollo.readQuery).toHaveBeenCalledTimes(0);
+			expect(apollo.query).toHaveBeenCalledTimes(0);
 			expect(result).toEqual({
 				shop: mockData.shop,
 				lend: {
@@ -215,15 +213,12 @@ describe('loanChannelUtils.js', () => {
 			});
 		});
 
-		it('should handle active unassigned experiment', async () => {
-			const data = {};
+		it('should pass filter overrides to FLSS', async () => {
+			await getLoanChannel(apollo, mockQueryMap, 'women', mockLoanQueryVars, { extra: 'asd' });
 
-			apollo.readQuery.mockReturnValueOnce({ experiment: { version: 'a' } }).mockReturnValueOnce(data);
+			const expectedFilters = { gender: 'female', extra: 'asd' };
 
-			await getLoanChannel(apollo, mockQueryMap, 'women', mockLoanQueryVars);
-
-			expect(apollo.readQuery).toHaveBeenCalledTimes(0);
-			expect(apollo.query).toHaveBeenCalledTimes(0);
+			expect(spyGetLoanChannel).toHaveBeenCalledWith(apollo, expectedFilters, mockLoanQueryVars);
 		});
 	});
 
