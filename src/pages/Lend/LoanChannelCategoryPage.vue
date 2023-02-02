@@ -4,7 +4,6 @@
 		:gray-background="pageLayout === 'control'"
 	>
 		<loan-channel-category-control
-			:enable-helpme-choose="enableHelpmeChoose"
 			:enable-loan-tags="enableLoanTags"
 			:enable-loan-card-exp="enableLoanCardExp"
 		/>
@@ -27,10 +26,6 @@ import LoanChannelCategoryControl from '@/pages/Lend/LoanChannelCategoryControl'
 const pageQuery = gql`
 	query LoanChannelCategoryPageExperiments {
 		general {
-			helpmeChoose: uiExperimentSetting(key: "helpme_choose") {
-				key
-				value
-			}
 			loanTags: uiExperimentSetting(key: "loan_tags") {
 				key
 				value
@@ -58,7 +53,6 @@ export default {
 				description: undefined
 			},
 			pageLayout: 'control',
-			enableHelpmeChoose: false,
 			enableLoanTags: false,
 			enableLoanCardExp: false,
 		};
@@ -69,7 +63,6 @@ export default {
 				query: pageQuery
 			}).then(() => {
 				return Promise.all([
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'helpme_choose' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'loan_tags' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'new_loan_card' } }),
 				]);
@@ -83,9 +76,6 @@ export default {
 
 		// Add to Basket Interstitial
 		this.initializeAddToBasketInterstitial();
-
-		// Initialize Help Me Choose Experiment
-		this.initializeHelpmeChoose();
 
 		// Initialize Loan Tags Experiment
 		this.initializeLoanTags();
@@ -119,20 +109,6 @@ export default {
 					'Lending',
 					'EXP-CORE-792-Oct2022',
 					loanTagsExperiment.version
-				);
-			}
-		},
-		initializeHelpmeChoose() {
-			const helpmeChooseExperiment = this.apollo.readFragment({
-				id: 'Experiment:helpme_choose',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.enableHelpmeChoose = helpmeChooseExperiment.version === 'b';
-			if (helpmeChooseExperiment.version) {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CORE-771-Oct2022',
-					helpmeChooseExperiment.version
 				);
 			}
 		},
