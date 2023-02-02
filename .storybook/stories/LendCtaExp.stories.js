@@ -1,39 +1,8 @@
 import LendCtaExp from '@/components/LoanCards/Buttons/LendCtaExp';
-import apolloStoryMixin from '../mixins/apollo-story-mixin';
-import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import { mockLoansArray } from '../utils';
 
 const loan = mockLoansArray(1)[0];
 
-const queryResult = {
-	data: {
-		lend: {
-			loan
-		},
-	}
-};
-
-const queryNon25Inc = {
-	data: {
-		lend: {
-			loan: {
-                ...loan,
-                unreservedAmount: 30
-            }
-		},
-	}
-};
-
-const queryFullyFunded = {
-	data: {
-		lend: {
-			loan: {
-                ...loan,
-                unreservedAmount: 0
-            }
-		},
-	}
-};
 
 export default {
     title: 'Components/Lend CTA Exp',
