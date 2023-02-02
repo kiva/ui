@@ -37,20 +37,32 @@
 		</div>
 
 		<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-			<loan-card-controller
-				v-for="loan in remainingLoans"
-				:items-in-basket="itemsInBasket"
-				:is-visitor="isVisitor"
-				:key="loan.id"
-				:loan="loan"
-				loan-card-type="GridLoanCard"
-			/>
+			<template v-for="loan in remainingLoans">
+				<kiva-classic-basic-loan-card-exp
+					v-if="enableLoanCardExp"
+					:key="`classic-${loan.id}`"
+					:loan-id="loan.id"
+					:show-action-button="true"
+					:show-tags="enableLoanTags"
+					:in-grid="true"
+				/>
+				<loan-card-controller
+					v-else
+					:items-in-basket="itemsInBasket"
+					:is-visitor="isVisitor"
+					:key="`controller-${loan.id}`"
+					:loan="loan"
+					loan-card-type="GridLoanCard"
+					:show-tags="enableLoanTags"
+				/>
+			</template>
 		</div>
 	</div>
 </template>
 
 <script>
 import LoanCardController from '@/components/LoanCards/LoanCardController';
+import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import HelpmeChooseTrigger from './HelpmeChooseTrigger';
 import HelpmeChooseRecommendations from './HelpmeChooseRecommendations';
 
@@ -85,6 +97,14 @@ export default {
 			type: Boolean,
 			default: true
 		},
+		enableLoanTags: {
+			type: Boolean,
+			default: false
+		},
+		enableLoanCardExp: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -95,7 +115,8 @@ export default {
 	components: {
 		LoanCardController,
 		HelpmeChooseTrigger,
-		HelpmeChooseRecommendations
+		HelpmeChooseRecommendations,
+		KivaClassicBasicLoanCardExp,
 	},
 	computed: {
 		welcomeTitle() {
