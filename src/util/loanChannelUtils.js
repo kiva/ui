@@ -87,13 +87,15 @@ export function getCachedChannel(apollo, queryMap, channelUrl, loanQueryVars) {
  * @param {Array} queryMap The map mixin from loan-channel-query-map.js
  * @param {string} channelUrl The URL of the loan channel
  * @param {Object} loanQueryVars The loan channel query variables
+ * @param {Object} filterOverrides Filters that override or extend the query map filters (only for FLSS)
  * @returns {Object} The loan channel data, transformed if FLSS
  */
-export async function getLoanChannel(apollo, queryMap, channelUrl, loanQueryVars) {
+export async function getLoanChannel(apollo, queryMap, channelUrl, loanQueryVars, filterOverrides = {}) {
 	const queryMapFLSS = getFLSSQueryMap(queryMap, channelUrl);
 
 	if (queryMapFLSS) {
-		return transformFLSSData(await fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars));
+		const data = await fetchLoanChannel(apollo, { ...queryMapFLSS, ...filterOverrides }, loanQueryVars);
+		return transformFLSSData(data);
 	}
 
 	try {
