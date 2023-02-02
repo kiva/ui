@@ -1,3 +1,15 @@
+## [2.478.0](https://github.com/kiva/ui/compare/v2.477.0...v2.478.0) (2023-02-02)
+
+
+### Features
+
+* updated help me choose behavior ([ee9de60](https://github.com/kiva/ui/commit/ee9de60cd71ec10e1ceb668e8c590f476283a911))
+
+
+### Bug Fixes
+
+* default null sort is more appropriate ([9943d9f](https://github.com/kiva/ui/commit/9943d9f6ed38fe6a47c4effab2ab19046f985046))
+
 ## [2.477.0](https://github.com/kiva/ui/compare/v2.476.1...v2.477.0) (2023-02-02)
 
 
