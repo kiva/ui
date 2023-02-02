@@ -59,7 +59,7 @@
 							:item-index="index"
 							:key="`classic-${loan.id}`"
 							:loan-id="loan.id"
-							:lend-now-button="true"
+							:show-action-button="true"
 							:show-tags="enableLoanTags"
 							:in-grid="true"
 						/>
@@ -93,7 +93,7 @@
 							:item-index="index"
 							:key="`classic-${loan.id}`"
 							:loan-id="loan.id"
-							:lend-now-button="true"
+							:show-action-button="true"
 							:show-tags="enableLoanTags"
 							:in-grid="true"
 						/>
@@ -121,7 +121,7 @@
 							:item-index="index"
 							:key="`classic-${loan.id}`"
 							:loan-id="loan.id"
-							:lend-now-button="true"
+							:show-action-button="true"
 							:show-tags="enableLoanTags"
 							:in-grid="true"
 						/>
@@ -146,6 +146,8 @@
 						:loans="helpMeChooseLoans"
 						@update="getHelpMeChooseLoans($event)"
 						:is-loading="isLoadingHC"
+						:enable-loan-tags="enableLoanTags"
+						:enable-loan-card-exp="enableLoanCardExp"
 					/>
 				</div>
 				<kv-pagination
