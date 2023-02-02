@@ -312,10 +312,6 @@ export default {
 		};
 	},
 	props: {
-		enableHelpmeChoose: {
-			type: Boolean,
-			default: false,
-		},
 		enableLoanTags: {
 			type: Boolean,
 			default: false
@@ -470,7 +466,7 @@ export default {
 
 			// Don't show help me choose if the category has sortBy
 			// Help me choose categories are just different sortBy options
-			return this.enableHelpmeChoose && !hasSortBy && this.allLoans.length > 8;
+			return !hasSortBy && this.allLoans.length > 8;
 		}
 	},
 	apollo: {

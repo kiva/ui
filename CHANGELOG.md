@@ -1,3 +1,17 @@
+## [2.477.0](https://github.com/kiva/ui/compare/v2.476.1...v2.477.0) (2023-02-02)
+
+
+### Features
+
+* helpme choose test code removed ([f8d6d20](https://github.com/kiva/ui/commit/f8d6d20dbe0261829ac7013e04d9068f91db37cf))
+
+### [2.476.1](https://github.com/kiva/ui/compare/v2.476.0...v2.476.1) (2023-02-02)
+
+
+### Bug Fixes
+
+* hpa deprecation warning ([b9809f7](https://github.com/kiva/ui/commit/b9809f7dbc603c3213f18c069764f3a11c477c20))
+
 ## [2.476.0](https://github.com/kiva/ui/compare/v2.475.0...v2.476.0) (2023-02-02)
 
 
