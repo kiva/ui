@@ -376,7 +376,7 @@ export default {
 			selectedQuickFilters: {},
 			userData: {},
 			showQuickFiltersOverlay: false,
-			helpMeChooseSort: '',
+			helpMeChooseSort: null,
 			helpMeChooseLoans: [],
 			isLoadingHC: true,
 		};
