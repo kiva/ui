@@ -311,10 +311,6 @@ export default {
 		};
 	},
 	props: {
-		enableHelpmeChoose: {
-			type: Boolean,
-			default: false,
-		},
 		enableLoanTags: {
 			type: Boolean,
 			default: false
@@ -463,7 +459,7 @@ export default {
 			return this.totalCount <= this.limit;
 		},
 		showHelpMeChooseFeat() {
-			return this.enableHelpmeChoose && this.allLoans.length > 8;
+			return this.allLoans.length > 8;
 		}
 	},
 	apollo: {
