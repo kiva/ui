@@ -13,17 +13,6 @@ const queryResult = {
 	}
 };
 
-const queryResultLess25 = {
-	data: {
-		lend: {
-			loan: {
-                ...loan,
-                unreservedAmount: 15
-            }
-		},
-	}
-};
-
 const queryNon25Inc = {
 	data: {
 		lend: {
@@ -49,49 +38,52 @@ const queryFullyFunded = {
 export default {
     title: 'Components/Lend CTA Exp',
     component: LendCtaExp,
-    args: { loanId: loan.id },
+    args: { loan: loan },
 };
 
 export const Default = (_args, { argTypes }) => ({
     props: Object.keys(argTypes),
 	components: { LendCtaExp },
-	mixins: [apolloStoryMixin({ queryResult }), cookieStoreStoryMixin()],
 	template: `
 			<lend-cta-exp
-				:loan-id="loanId"
+				:loan="loan"
+				:is-loading="false"
 			/>
 		`,
 });
 
-export const LessThan25 = (_args, { argTypes }) => ({
-    props: Object.keys(argTypes),
-	components: { LendCtaExp },
-	mixins: [apolloStoryMixin({ queryResult: queryResultLess25 }), cookieStoreStoryMixin()],
-	template: `
-			<lend-cta-exp
-				:loan-id="loanId"
-			/>
-		`,
-});
+export const LessThan25 = Default.bind({});
+LessThan25.args = {
+	loan: {
+		...loan,
+		unreservedAmount: 15
+	},
+};
 
-export const Non25Increments = (_args, { argTypes }) => ({
-    props: Object.keys(argTypes),
-	components: { LendCtaExp },
-	mixins: [apolloStoryMixin({ queryResult: queryNon25Inc }), cookieStoreStoryMixin()],
-	template: `
-			<lend-cta-exp
-				:loan-id="loanId"
-			/>
-		`,
-});
+export const Non25Increments = Default.bind({});
+Non25Increments.args = {
+	loan: {
+		...loan,
+		unreservedAmount: 30
+	},
+};
 
-export const FullyFunded = (_args, { argTypes }) => ({
+export const FullyFunded = Default.bind({});
+FullyFunded.args = {
+	loan: {
+		...loan,
+		unreservedAmount: 0
+	},
+};
+
+export const AddingToBasket = (_args, { argTypes }) => ({
     props: Object.keys(argTypes),
 	components: { LendCtaExp },
-	mixins: [apolloStoryMixin({ queryResult: queryFullyFunded }), cookieStoreStoryMixin()],
 	template: `
 			<lend-cta-exp
-				:loan-id="loanId"
+				:loan="loan"
+				:is-loading="false"
+				:is-adding="true"
 			/>
 		`,
 });
