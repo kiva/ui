@@ -133,7 +133,11 @@
 
 			<lend-cta-exp
 				v-else
-				:loan-id="loanId"
+				:loan="loan"
+				:basket-items="basketItems"
+				:is-loading="isLoading"
+				:is-adding="isAdding"
+				@add-to-basket="addToBasket"
 			/>
 		</div>
 	</div>
@@ -279,12 +283,6 @@ export default {
 			const { fundedAmount, reservedAmount } = loanFundraisingInfo;
 			return numeral(this.loanAmount).subtract(fundedAmount).subtract(reservedAmount).value();
 		},
-		isFunded() {
-			return this.loan?.status === 'funded';
-		},
-		isSelectedByAnother() {
-			return this.amountLeft <= 0 && !this.isFunded;
-		},
 		borrowerName() {
 			return this.loan?.name || '';
 		},
@@ -315,18 +313,8 @@ export default {
 			const loanIds = loanItems.map(loan => loan.id);
 			return loanIds.indexOf(this.loanId) > -1;
 		},
-		isLentTo() {
-			return this.loan?.userProperties?.lentTo;
-		},
 		isMatchAtRisk() {
 			return isMatchAtRisk(this.loan);
-		},
-		sectorName() {
-			return (this.loan?.sector?.name || '').toLowerCase();
-		},
-		whySpecial() {
-			const text = this.loan?.whySpecial || '';
-			return text.toString().charAt(0).toLowerCase() + text.toString().slice(1);
 		},
 		fundraisingPercent() {
 			return this.loan?.fundraisingPercent ?? 0;
@@ -353,18 +341,6 @@ export default {
 				return true;
 			}
 			return false;
-		},
-		isLessThan25() {
-			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
-		},
-		lendAmount() {
-			return this.isLessThan25 ? this.unreservedAmount : 25;
-		},
-		ctaButtonText() {
-			return `Lend $${this.lendAmount} now`;
-		},
-		showLendNowButton() {
-			return this.lendNowButton;
 		},
 		loanUse() {
 			return this.loan?.use ?? '';
@@ -451,10 +427,10 @@ export default {
 			if (this.loan) this.isLoading = false;
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
 		},
-		addToBasket() {
+		addToBasket(lendAmount) {
 			this.isAdding = true;
 			setLendAmount({
-				amount: this.lendAmount,
+				amount: lendAmount,
 				apollo: this.apollo,
 				loanId: this.loanId,
 			}).then(() => {

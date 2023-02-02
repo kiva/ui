@@ -56,7 +56,7 @@
 				<!-- Stranded loans -->
 				<lend-amount-button
 					class="tw-w-full"
-					:loan-id="loanId"
+					:loan-id="loan.id"
 					:show-now="false"
 					:amount-left="unreservedAmount"
 					@add-to-basket="addToBasket"
@@ -95,8 +95,6 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import { setLendAmount } from '@/util/basketUtils';
 import {
 	buildPriceArray,
 	isLessThan25,
@@ -113,10 +111,22 @@ export default {
 	name: 'LendCtaExp',
 	inject: ['apollo', 'cookieStore'],
 	props: {
-		loanId: {
-			type: Number,
-			default: 0,
+		loan: {
+			type: Object,
+			default: () => {},
 		},
+		basketItems: {
+			type: Array,
+			default: () => []
+		},
+		isLoading: {
+			type: Boolean,
+			default: true
+		},
+		isAdding: {
+			type: Boolean,
+			default: false
+		}
 	},
 	components: {
 		LendAmountButton,
@@ -126,89 +136,15 @@ export default {
 	data() {
 		return {
 			selectedOption: '25',
-			loanAmount: '',
-			fundedAmount: '',
-			reservedAmount: '',
-			unreservedAmount: '',
-			lentPreviously: false,
-			minNoteSize: '',
-			status: '',
-			basketItems: [],
-			isAdding: false,
-			isLoading: true,
 			completeLoanView: true,
 		};
 	},
-	apollo: {
-		query: gql`
-			query lendCta($loanId: Int!, $basketId: String) {
-				lend {
-					loan(id: $loanId) {
-						id
-						status
-						minNoteSize
-						loanAmount
-						unreservedAmount @client
-						loanFundraisingInfo {
-							fundedAmount
-							reservedAmount
-						}
-						userProperties {
-							lentTo
-						}
-					}
-				}
-				shop (basketId: $basketId) {
-					id
-					basket {
-						id
-						items {
-							values {
-								id
-							}
-						}
-					}
-				}
-			}
-		`,
-		preFetch: false,
-		variables() {
-			return {
-				loanId: this.loanId,
-			};
-		},
-		result(result) {
-			this.isLoading = false;
-			const loan = result?.data?.lend?.loan;
-			const basket = result?.data?.shop?.basket;
-
-			this.loanAmount = loan?.loanAmount ?? '0';
-			this.status = loan?.status ?? '';
-			this.minNoteSize = loan?.minNoteSize ?? '';
-			this.fundedAmount = loan?.loanFundraisingInfo?.fundedAmount ?? '';
-			this.reservedAmount = loan?.loanFundraisingInfo?.reservedAmount ?? '';
-			this.unreservedAmount = loan?.unreservedAmount ?? '';
-			this.lentPreviously = loan?.userProperties?.lentTo ?? false;
-			this.basketItems = basket?.items?.values ?? [];
-		},
-	},
 	methods: {
 		async addToBasket() {
-			this.isAdding = true;
-			setLendAmount({
-				amount: isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption,
-				apollo: this.apollo,
-				loanId: this.loanId,
-			}).then(() => {
-				this.isAdding = false;
-			}).catch(e => {
-				this.isAdding = false;
-				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
-					? e[0].message
-					: 'There was a problem adding the loan to your basket';
-
-				this.$showTipMsg(msg, 'error');
-			});
+			this.$emit(
+				'add-to-basket',
+				isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption
+			);
 		},
 	},
 	watch: {
@@ -227,9 +163,22 @@ export default {
 		},
 	},
 	computed: {
+		status() {
+			return this.loan?.status ?? '';
+		},
+		minNoteSize() {
+			return this.loan?.minNoteSize ?? '';
+		},
+		unreservedAmount() {
+			return this.loan?.unreservedAmount ?? '';
+		},
+		lentPreviously() {
+			return this.loan?.userProperties?.lentTo ?? false;
+		},
 		isInBasket() {
-			// eslint-disable-next-line no-underscore-dangle
-			return this.basketItems.some(item => item.__typename === 'LoanReservation' && item.id === this.loanId);
+			/* eslint-disable */
+			return this.basketItems?.some(item => item.__typename === 'LoanReservation' && item.id === this.loan.id) ?? false;
+			/* eslint-enable */
 		},
 		prices() {
 			// We don't want to open up $5 loan shares for loans with more than $25 at this time
