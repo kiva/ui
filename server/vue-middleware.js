@@ -73,7 +73,12 @@ module.exports = function createMiddleware({
 
 		// set html response headers
 		res.setHeader('Content-Type', 'text/html');
-		res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+		// Set strict cache-control headers for protected pages
+		if (req?.url?.match(/(settings|portfolio|lend\/saved-search)/g)?.length) {
+			res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
+		} else {
+			res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+		}
 
 		// get graphql api possible types for the graphql client
 		const typesPromise = getGqlPossibleTypes(config.server.graphqlUri, cache);
