@@ -1,3 +1,29 @@
+### [2.478.1](https://github.com/kiva/ui/compare/v2.478.0...v2.478.1) (2023-02-03)
+
+
+### Bug Fixes
+
+* pass by reference issue for quick filters ([ff961b9](https://github.com/kiva/ui/commit/ff961b9fe59eef5ed580499fd7ea5fda7ba66ee5))
+
+## [2.478.0](https://github.com/kiva/ui/compare/v2.477.0...v2.478.0) (2023-02-02)
+
+
+### Features
+
+* updated help me choose behavior ([ee9de60](https://github.com/kiva/ui/commit/ee9de60cd71ec10e1ceb668e8c590f476283a911))
+
+
+### Bug Fixes
+
+* default null sort is more appropriate ([9943d9f](https://github.com/kiva/ui/commit/9943d9f6ed38fe6a47c4effab2ab19046f985046))
+
+## [2.477.0](https://github.com/kiva/ui/compare/v2.476.1...v2.477.0) (2023-02-02)
+
+
+### Features
+
+* helpme choose test code removed ([f8d6d20](https://github.com/kiva/ui/commit/f8d6d20dbe0261829ac7013e04d9068f91db37cf))
+
 ### [2.476.1](https://github.com/kiva/ui/compare/v2.476.0...v2.476.1) (2023-02-02)
 
 
