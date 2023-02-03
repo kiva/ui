@@ -59,6 +59,6 @@ export default {
 
 <style scoped>
 .progress-group-amount-low {
-	color: #FF5C00;
+	color: #CE4A00;
 }
 </style>
