@@ -1,3 +1,10 @@
+### [2.479.1](https://github.com/kiva/ui/compare/v2.479.0...v2.479.1) (2023-02-03)
+
+
+### Bug Fixes
+
+* put recommended at the bottom of the sort options ([3c5bd08](https://github.com/kiva/ui/commit/3c5bd0841fcb679975696b1a1dd58d0adc854a07))
+
 ## [2.479.0](https://github.com/kiva/ui/compare/v2.478.1...v2.479.0) (2023-02-03)
 
 
