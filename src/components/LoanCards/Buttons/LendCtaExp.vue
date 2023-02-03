@@ -109,7 +109,6 @@ import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'LendCtaExp',
-	inject: ['apollo', 'cookieStore'],
 	props: {
 		loan: {
 			type: Object,
