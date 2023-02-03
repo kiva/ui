@@ -1,3 +1,18 @@
+## [2.479.0](https://github.com/kiva/ui/compare/v2.478.1...v2.479.0) (2023-02-03)
+
+
+### Features
+
+* new cta component added for new loan card ([de2d255](https://github.com/kiva/ui/commit/de2d255ea7479e13b4037acdf77d1d06497e6b03))
+* new lend cta component updated to work with parent data via props ([b15a663](https://github.com/kiva/ui/commit/b15a663455a5ed5e6fda5dbe06149f26370b4d20))
+
+
+### Bug Fixes
+
+* stories for new lend cta component updated ([651cb83](https://github.com/kiva/ui/commit/651cb8336145050295f20f1d3fb1f72bdd1ada65))
+* story for lendctaexp component cleaned ([663a7f3](https://github.com/kiva/ui/commit/663a7f3a8d8f9fe12471d4460b42fa49e45f3557))
+* unused mixins removed from lendctaexp component ([4bca3b9](https://github.com/kiva/ui/commit/4bca3b99cc0417390aeba8e68b6df51c67ad11e5))
+
 ### [2.478.1](https://github.com/kiva/ui/compare/v2.478.0...v2.478.1) (2023-02-03)
 
 
