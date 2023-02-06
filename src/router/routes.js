@@ -25,24 +25,6 @@ module.exports = [
 	},
 	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
 	{
-		path: '/about/how',
-		component: () => import('@/pages/ContentfulPage'),
-		meta: {
-			contentfulPage: () => 'lp/how-kiva-works',
-		},
-	},
-	{
-		path: '/lp/how-kiva-works',
-		redirect: '/about/how'
-	},
-	{
-		path: '/about/press-center',
-		component: () => import('@/pages/ContentfulPage'),
-		meta: {
-			contentfulPage: () => 'lp/press',
-		},
-	},
-	{
 		path: '/auto-deposit',
 		component: () => import('@/pages/AutoDeposit/AutoDepositLandingPage'),
 	},
@@ -142,30 +124,7 @@ module.exports = [
 		path: '/covid19response',
 		redirect: '/monthlygood'
 	},
-	{
-		path: '/design',
-		component: () => import('@/pages/ContentfulPage'),
-		meta: {
-			contentfulPage: () => 'design',
-		},
-	},
 	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/DonateFromMacro') },
-	{
-		path: '/donate/supportus',
-		component: () => import('@/pages/Donate/DonateSupportUs'),
-		meta: {
-			contentfulPage: () => 'donate/supportus',
-			unbounceEmailCapture: true,
-		},
-	},
-	{
-		path: '/donate/supportkiva',
-		component: () => import('@/pages/Donate/DonateSupportUs'),
-		meta: {
-			contentfulPage: () => 'donate/supportkiva',
-			unbounceEmailCapture: true,
-		},
-	},
 	{
 		path: '/error',
 		component: () => import('@/pages/Error'),
@@ -183,13 +142,6 @@ module.exports = [
 	{
 		path: '/funded/:id',
 		redirect: '/lend/:id'
-	},
-	{
-		path: '/gender-equality',
-		component: () => import('@/pages/ContentfulPage'),
-		meta: {
-			contentfulPage: () => 'gender-equality',
-		},
 	},
 	{
 		path: '/get-started',
@@ -441,13 +393,6 @@ module.exports = [
 			loanId: Number(route.params.loanId),
 			lendAmount: Number(route.params.lendAmount)
 		}),
-	},
-	{
-		path: '/refugees',
-		component: () => import('@/pages/ContentfulPage'),
-		meta: {
-			contentfulPage: () => 'lp/support-refugees',
-		},
 	},
 	{
 		path: '/register/social',
