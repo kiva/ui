@@ -1,3 +1,10 @@
+### [2.479.3](https://github.com/kiva/ui/compare/v2.479.2...v2.479.3) (2023-02-06)
+
+
+### Bug Fixes
+
+* location QF wasn't working after first selection ([4c58769](https://github.com/kiva/ui/commit/4c58769315944357bd59f4d429bc82f9e2dfa87c))
+
 ### [2.479.2](https://github.com/kiva/ui/compare/v2.479.1...v2.479.2) (2023-02-06)
 
 
