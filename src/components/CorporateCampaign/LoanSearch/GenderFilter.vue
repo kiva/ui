@@ -42,7 +42,6 @@ export default {
 				{ value: 'both', label: 'All genders' },
 				{ value: 'female', label: 'Women' },
 				{ value: 'male', label: 'Men' },
-				{ value: 'non-binary', label: 'Non-Binary' },
 			]
 		};
 	},
@@ -62,7 +61,7 @@ export default {
 		},
 		activeGender(next, prev) {
 			if (next !== prev) {
-				this.$emit('gender-updated', next);
+				this.$emit('gender-updated', { gender: next });
 			}
 		}
 	},

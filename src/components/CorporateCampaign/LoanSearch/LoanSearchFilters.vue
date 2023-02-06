@@ -1,24 +1,24 @@
 <template>
 	<div class="loan-filters">
 		<div class="loan-filters__top-row">
-			<div class="tw-mb-2 md:tw-mb-0">
+			<span class="tw-mb-2 md:tw-mb-0">
 				<kv-button
-					class="loan-filters__toggle rounded smallest secondary tw-mr-2"
+					class="loan-filters__toggle tw-pr-2"
 					variant="secondary"
 					@click.native.prevent="showFilters()"
 				>
-					Filter loans
-
+					<span class="loan-filters__toggle-text">
+						Filter loans
+					</span>
 					<kv-material-icon
 						aria-hidden="true"
-						class="	tw-inline-flex tw-w-4 tw-absolute tw-top-0
-								tw-pt-1.5 tw-pr-1 tw-space-x-1"
+						class="loan-filters__toggle-icon"
 						name="chevron-down"
 						:icon="mdiChevronDown"
 					/>
 				</kv-button>
 				<span class="tw-font-medium tw-whitespace-nowrap">{{ totalCount }} loans</span>
-			</div>
+			</span>
 
 			<div v-if="showLoanDisplayToggle" class="loan-filters__loan-display">
 				<div
@@ -30,53 +30,64 @@
 						:selected="activeLoanDisplay"
 						@click="$emit('set-loan-display', true)"
 					>
-						<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-p-1">
-							Row View
-						</h4>
-						<kv-material-icon
-							class="tw-mr-1 tw-w-2 tw-text-action tw-inline-block"
-							name="list-green"
-							:icon="mdiLandRowsHorizontal"
-						/>
+						<span
+							class="tw-inline-flex"
+							v-show="rowDisplay"
+							@click="setLoanDisplayMode('gridDisplay')"
+						>
+							<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-p-1">
+								Row View
+							</h4>
+							<kv-material-icon
+								class="tw-mr-1 tw-w-2 tw-text-action tw-inline-block"
+								name="list-green"
+								:icon="mdiLandRowsHorizontal"
+							/>
+						</span>
 					</span>
 
 					<span class="divider"></span>
 					<span
 						class="tw-flex tw-items-center tw-flex-wrap"
 						:selected="activeLoanDisplay"
-						@click="$emit('set-loan-display', false)"
+						@click="$emit('set-loan-display', true)"
 					>
-						<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-p-1">
-							Grid View
-						</h4>
-						<kv-material-icon
-							class="tw-mr-1 tw-w-2 tw-text-action tw-inline-block"
-							name="grid-green"
-							:icon="mdiGridLarge"
-						/>
+						<span
+							class="tw-inline-flex"
+							v-show="gridDisplay"
+							@click="setLoanDisplayMode('rowDisplay')"
+						>
+							<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-p-1">
+								Grid View
+							</h4>
+							<kv-material-icon
+								class="tw-mr-1 tw-w-2 tw-text-action tw-inline-block"
+								name="grid-green"
+								:icon="mdiGridLarge"
+							/>
+						</span>
 					</span>
 				</div>
 			</div>
-
+		</div>
+		<div
+			v-if="filterChips.length"
+			class="tw-flex tw-items-start tw-flex-col lg:tw-flex-row"
+		>
 			<div
-				v-if="filterChips.length"
-				class="tw-flex tw-items-start tw-flex-col lg:tw-flex-row"
+				class="chips__container tw-overflow-hidden"
 			>
 				<div
-					class="chips__container tw-overflow-hidden"
+					class="tw-flex tw-flex-wrap tw-gap-1.5"
 				>
-					<div
-						class="tw-flex tw-flex-wrap tw-gap-1.5"
+					<kv-chip-classic
+						v-for="(filter, index) in filterChips"
+						:key="`chip-${index}`"
+						:title="cleanChipName(filter.name)"
+						@click="handleRemoveFilter(filter)"
 					>
-						<kv-chip-classic
-							v-for="(filter, index) in filterChips"
-							:key="`chip-${index}`"
-							:title="cleanChipName(filter.name)"
-							@click="handleRemoveFilter(filter)"
-						>
-							{{ filter.name }}
-						</kv-chip-classic>
-					</div>
+						{{ filter.name }}
+					</kv-chip-classic>
 				</div>
 			</div>
 		</div>
@@ -105,7 +116,7 @@
 									class="loan-filter-controls__filter-type"
 									:initial-gender="initialGender"
 									:selected-gender="selectedGender"
-									@updated-filters="handleUpdatedFilters"
+									@gender-updated="handleUpdatedFilters"
 								/>
 							</fieldset>
 						</div>
@@ -324,7 +335,9 @@ export default {
 			isChipsCollapsed: true,
 			mdiChevronDown,
 			mdiGridLarge,
-			mdiLandRowsHorizontal
+			mdiLandRowsHorizontal,
+			rowDisplay: true,
+			gridDisplay: false
 		};
 	},
 	mounted() {
@@ -466,6 +479,20 @@ export default {
 		},
 	},
 	methods: {
+		setLoanDisplayMode(mode) {
+			switch(mode) {
+				case 'rowDisplay':
+					this.rowDisplay=true;
+					this.gridDisplay=false;
+					return;
+				case 'gridDisplay':
+					this.rowDisplay=false;
+					this.gridDisplay=true;
+					return;
+				default:
+					return
+			}
+		},
 		showFilters() {
 			this.filtersVisible = true;
 		},
@@ -609,11 +636,10 @@ export default {
 		align-items: center;
 		justify-content: space-between;
 		flex-direction: column;
-		margin: 0 1rem 1rem;
+		margin: 0 0 1rem;
 
 		@include breakpoint(medium) {
 			flex-direction: row;
-			margin: 0 3.5rem 1rem;
 		}
 	}
 
@@ -625,14 +651,16 @@ export default {
 		}
 	}
 
-	&__toggle {
-		margin: 0 1rem 0 0;
+	&__toggle-text {
+		margin: 0 0.2rem 0 0;
 	}
 
 	&__toggle-icon {
-		width: 1.2rem;
-		height: 0.75rem;
-		margin: 0 0 0 0.5rem;
+		width: 2.2rem;
+		height: 1.75rem;
+		margin: 0 0 0 0;
+		display: inline-block;
+		vertical-align: top;
 	}
 
 	&__lightbox {
