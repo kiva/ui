@@ -1,3 +1,10 @@
+### [2.479.2](https://github.com/kiva/ui/compare/v2.479.1...v2.479.2) (2023-02-06)
+
+
+### Bug Fixes
+
+* only log lending-home exp for logged-in users ([b6913f6](https://github.com/kiva/ui/commit/b6913f67b2acdecc2965f1fcf0f233369948898d))
+
 ### [2.479.1](https://github.com/kiva/ui/compare/v2.479.0...v2.479.1) (2023-02-03)
 
 
