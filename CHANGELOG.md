@@ -1,3 +1,11 @@
+### [2.472.1-next.2](https://github.com/kiva/ui/compare/v2.472.1-next.1...v2.472.1-next.2) (2023-02-06)
+
+
+### Bug Fixes
+
+* only log lending-home exp for logged-in users ([87a8607](https://github.com/kiva/ui/commit/87a8607b43658ff474f57e2927950df367bc2276))
+* pass by reference issue for quick filters ([24b93e6](https://github.com/kiva/ui/commit/24b93e6db5a658044afe4f99cfa5d7365e6640d2))
+
 ### [2.472.1-next.1](https://github.com/kiva/ui/compare/v2.472.0...v2.472.1-next.1) (2023-02-01)
 
 
