@@ -230,7 +230,7 @@ describe('loanChannelUtils.js', () => {
 			subscribe: jest.fn(options => { subscribeNextCallback = options.next; }),
 			setVariables: jest.fn()
 		};
-		const apollo = { readQuery: jest.fn(), watchQuery: jest.fn(() => observer) };
+		const apollo = { watchQuery: jest.fn(() => observer) };
 		const watch = jest.fn(callback => { watchCallback = callback; });
 
 		beforeEach(() => {
@@ -242,7 +242,7 @@ describe('loanChannelUtils.js', () => {
 		it('should handle channel without FLSS mapping', () => {
 			const next = jest.fn();
 
-			const result = watchChannelQuery(apollo, mockQueryMap, {}, 'asd', mockLoanQueryVars, next, watch);
+			const result = watchChannelQuery(apollo, mockQueryMap, 'asd', mockLoanQueryVars, next, watch);
 
 			expect(spyWatchLoanChannel).toHaveBeenCalledTimes(0);
 			expect(apollo.watchQuery).toHaveBeenCalledTimes(1);
@@ -262,16 +262,13 @@ describe('loanChannelUtils.js', () => {
 			expect(observer.setVariables).toHaveBeenCalledWith(mockLoanQueryVars);
 		});
 
-		it('should handle active assigned experiment', () => {
-			apollo.readQuery.mockReturnValueOnce({ experiment: { version: 'b' } });
-
+		it('should handle channel with FLSS mapping', () => {
 			spyWatchLoanChannel.mockReturnValueOnce(observer);
 
 			const next = jest.fn();
 
-			const result = watchChannelQuery(apollo, mockQueryMap, {}, 'women', mockLoanQueryVars, next, watch);
+			const result = watchChannelQuery(apollo, mockQueryMap, 'women', mockLoanQueryVars, next, watch);
 
-			expect(apollo.readQuery).toHaveBeenCalledTimes(0);
 			expect(spyWatchLoanChannel).toHaveBeenCalledTimes(1);
 			expect(spyWatchLoanChannel).toHaveBeenCalledWith(apollo, mockWomenMap.flssLoanSearch, mockLoanQueryVars);
 			expect(result.subscribe).toHaveBeenCalledTimes(1);
@@ -293,15 +290,12 @@ describe('loanChannelUtils.js', () => {
 		});
 
 		it('should handle active unassigned experiment', () => {
-			apollo.readQuery.mockReturnValueOnce({ experiment: { version: 'unassigned' } });
-
 			spyWatchLoanChannel.mockReturnValueOnce(observer);
 
 			const next = jest.fn();
 
-			const result = watchChannelQuery(apollo, mockQueryMap, {}, 'women', mockLoanQueryVars, next, watch);
+			const result = watchChannelQuery(apollo, mockQueryMap, 'women', mockLoanQueryVars, next, watch);
 
-			expect(apollo.readQuery).toHaveBeenCalledTimes(0);
 			expect(spyWatchLoanChannel).toHaveBeenCalledTimes(1);
 			expect(apollo.watchQuery).toHaveBeenCalledTimes(0);
 			expect(result.subscribe).toHaveBeenCalledTimes(1);

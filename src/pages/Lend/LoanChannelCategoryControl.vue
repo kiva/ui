@@ -429,7 +429,13 @@ export default {
 				limit: this.limit,
 				offset: this.offset,
 				basketId: this.cookieStore.get('kvbskt'),
-				origin: FLSS_ORIGIN_CATEGORY
+				origin: FLSS_ORIGIN_CATEGORY,
+				// Only add quick filters if they are defined so that channel filters aren't incorrectly overridden
+				...(this.selectedQuickFilters.gender && { gender: this.selectedQuickFilters.gender }),
+				...(this.selectedQuickFilters.sortBy && { sortBy: this.selectedQuickFilters.sortBy }),
+				...(!!this.selectedQuickFilters.countryIsoCode?.length && {
+					countryIsoCode: this.selectedQuickFilters.countryIsoCode
+				}),
 			};
 		},
 		filterUrl() {
@@ -616,16 +622,21 @@ export default {
 			this.selectedQuickFilters = {};
 		},
 		updateQuickFilters(filter) {
+			// Create new filter object so the watch query is triggered by reference change
+			const newFilters = JSON.parse(JSON.stringify(this.selectedQuickFilters));
+
 			if (filter.gender !== undefined) {
-				this.selectedQuickFilters.gender = filter.gender;
+				newFilters.gender = filter.gender;
 				this.flssLoanSearch.gender = filter.gender;
 				this.fetchFacets();
 			} else if (filter.sortBy) {
-				this.selectedQuickFilters.sortBy = filter.sortBy;
+				newFilters.sortBy = filter.sortBy;
 			} else {
-				this.selectedQuickFilters.countryIsoCode = filter.country;
+				newFilters.countryIsoCode = [...filter.country];
 			}
-			this.activateLoanChannelWatchQuery();
+
+			this.selectedQuickFilters = newFilters;
+
 			this.resetPagination();
 			this.getHelpMeChooseLoans();
 		},
@@ -689,7 +700,6 @@ export default {
 			watchChannelQuery(
 				this.apollo,
 				this.loanChannelQueryMap,
-				this.selectedQuickFilters,
 				this.targetedLoanChannelURL,
 				this.loanQueryVars,
 				next,
