@@ -123,6 +123,22 @@ module.exports = [
 	},
 	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/DonateFromMacro') },
 	{
+		path: '/donate/supportus',
+		component: () => import('@/pages/Donate/DonateSupportUs'),
+		meta: {
+			contentfulPage: () => 'donate/supportus',
+			unbounceEmailCapture: true,
+		},
+	},
+	{
+		path: '/donate/supportkiva',
+		component: () => import('@/pages/Donate/DonateSupportUs'),
+		meta: {
+			contentfulPage: () => 'donate/supportkiva',
+			unbounceEmailCapture: true,
+		},
+	},
+	{
 		path: '/error',
 		component: () => import('@/pages/Error'),
 		meta: {
