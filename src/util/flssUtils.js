@@ -133,8 +133,8 @@ export async function fetchLoans(
 export function getLoanChannelVariables(queryMapFLSS, loanQueryVars) {
 	return {
 		ids: [...loanQueryVars.ids],
-		filterObject: getFlssFilters(queryMapFLSS),
-		sortBy: queryMapFLSS.sortBy,
+		filterObject: getFlssFilters({ ...queryMapFLSS, ...loanQueryVars }),
+		sortBy: loanQueryVars.sortBy || queryMapFLSS.sortBy,
 		pageNumber: loanQueryVars.offset / loanQueryVars.limit,
 		pageLimit: loanQueryVars.limit,
 		basketId: loanQueryVars.basketId,
