@@ -835,16 +835,18 @@ export default {
 			this.fetchMFILoans();
 		}
 
-		const { enabled } = getExperimentSettingCached(this.apollo, 'loan_finding_page');
-		if (enabled) {
-			// this method will get the version from the apollo cache
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				'loan_finding_page',
-				'EXP-CORE-854-Dec2022'
-			);
+		// The lending-home experiment tracking should only be enabled for logged-in users
+		if (this.isLoggedIn) {
+			const { enabled } = getExperimentSettingCached(this.apollo, 'loan_finding_page');
+			if (enabled) {
+				trackExperimentVersion(
+					this.apollo,
+					this.$kvTrackEvent,
+					'Lending',
+					'loan_finding_page',
+					'EXP-CORE-854-Dec2022'
+				);
+			}
 		}
 	},
 	beforeDestroy() {
