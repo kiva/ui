@@ -325,6 +325,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		categoryPageName: {
+			type: String,
+			default: null,
+		}
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin, loanChannelQueryMapMixin],
@@ -357,11 +361,49 @@ export default {
 	},
 	computed: {
 		loanCallouts() {
-			// const sectorId = this.loan?.sector.id;
-			// const activityId = this.loan?.activity.id;
-			const sectorName = this.loan?.sector.name;
+			const callouts = [];
 			const activityName = this.loan?.activity.name;
-			return [sectorName, activityName];
+			const sectorName = this.loan?.sector.name;
+			const tags = this.loan?.tags.filter(tag => tag.charAt(0) === '#')
+				.map(tag => tag.substring(1)) ?? [];
+			const themes = this.loan?.themes ?? [];
+			const categories = {
+				ecoFriendly: tags.includes('Eco-friendly') || tags.includes('Sustainable Ag'),
+				refugeesIdps: themes.includes('Refugees/Displaced'),
+				singleParents: tags.includes('Single Parent')
+			};
+
+			// P1 Category
+			// Exp limited to: Eco-friendly, Refugees and IDPs, Single Parents
+			if (!this.categoryPageName) {
+				if (categories.ecoFriendly) {
+					callouts.push('Eco-friendly');
+				} else if (categories.refugeesIdps) {
+					callouts.push('Refugees and IDPs');
+				} else if (categories.singleParents) {
+					callouts.push('Single Parent');
+				}
+			}
+
+			// P2 Activity
+			if (this.categoryPageName !== activityName) {
+				callouts.push(activityName);
+			}
+
+			// P3 Sector
+			if (sectorName
+			&& (activityName !== sectorName)
+			&& (sectorName !== this.categoryPageName)
+			&& callouts.length < 2) {
+				callouts.push(sectorName);
+			}
+
+			// P4 Tag
+			if (tags && callouts.length < 2) {
+				callouts.push(tags[0]);
+			}
+
+			return callouts;
 		},
 		cardWidth() {
 			return this.useFullWidth ? '100%' : '374px';

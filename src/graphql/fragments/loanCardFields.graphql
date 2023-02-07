@@ -54,6 +54,7 @@ fragment loanCardFields on LoanBasic {
 	}
 	... on LoanPartner {
 		partnerName
+		themes
 	}
 	...on LoanDirect {
 		trusteeName

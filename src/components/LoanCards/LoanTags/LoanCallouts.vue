@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="tw-line-clamp-1">
 		<template v-for="tag in callouts">
 			<div
 				:key="tag"
@@ -11,7 +11,9 @@
 				tw-py-0.5
 				tw-px-1
 				tw-mr-0.5
-				tw-text-small"
+				tw-mb-0.5
+				tw-text-small
+				"
 			>
 				{{ tag }}
 			</div>
