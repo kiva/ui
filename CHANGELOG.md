@@ -1,3 +1,22 @@
+## [2.481.0](https://github.com/kiva/ui/compare/v2.480.1...v2.481.0) (2023-02-07)
+
+
+### Features
+
+* displaying kiva classic versions of kvradio, kvchip, etc ([9fabb39](https://github.com/kiva/ui/commit/9fabb39d1ee0cef7d7b67ce1c5a8f681922ff01a))
+* migrating campaign loan filters onto Kiva Classic ([639a497](https://github.com/kiva/ui/commit/639a497eba108e777cf420b766bc9ce373ccc423))
+
+
+### Bug Fixes
+
+* alignment, padding, and display fixes ([a30815a](https://github.com/kiva/ui/commit/a30815ac0572b5a6043f49bf873363833f1f714e))
+* changed filter alignment, fixed gender filters issue, and addressed CIT-100 ([6cbb325](https://github.com/kiva/ui/commit/6cbb3252eaae3b237f65af0bb667b7c62b284ce1))
+* fixing issue with both gender selection ([f3fa36a](https://github.com/kiva/ui/commit/f3fa36a43fc91bca5b6a255a32c6a9da286046b9))
+* linting ([36993f7](https://github.com/kiva/ui/commit/36993f7a5a341c848b84252c2d2ba3199a19d193))
+* linting errors ([00699d5](https://github.com/kiva/ui/commit/00699d5e3dc24752f588c727d696c424aac156b9))
+* now displaying SVG icons and gender/sortBy options ([ce124a9](https://github.com/kiva/ui/commit/ce124a9aa990a7b91878f862fcc1f9d21ec7338d))
+* view layout toggling, gender and sortBy radios, other changes ([25701c3](https://github.com/kiva/ui/commit/25701c3bc6f404c40edaaef7208ea60e483a25bc))
+
 ### [2.480.1](https://github.com/kiva/ui/compare/v2.480.0...v2.480.1) (2023-02-07)
 
 
