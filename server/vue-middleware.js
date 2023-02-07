@@ -15,7 +15,7 @@ function handleError(err, req, res, next) {
 	// redirect to url if provided in the error
 	// -> this is how we handle vue-router links to external kiva pages
 	if (err.url) {
-		res.redirect(err.url);
+		res.redirect(err.code ?? 302, err.url);
 	// respond with 404 specifically set
 	} else if (err.code === 404) {
 		res.status(404).send('404 | Page Not Found');
