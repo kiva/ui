@@ -564,8 +564,8 @@ export default {
 		// Extract query
 		this.pageQuery = _get(this.$route, 'query');
 
-		// Ensure page offset gets set before loading cached data
-		this.updateFromParams(this.pageQuery);
+		// Reset pagination when loading the page
+		this.resetPagination();
 
 		// Prevent pop-in by loading data from the Apollo cache manually here instead of just using the subscription
 		const baseData = getCachedChannel(
