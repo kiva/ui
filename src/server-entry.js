@@ -144,7 +144,8 @@ export default context => {
 		// redirect to the resolved url if it does not match the requested url
 		const { fullPath } = router.resolve(url).route;
 		if (fullPath !== url) {
-			return reject({ url: fullPath });
+			// redirects defined in routes.js use a permanent (301) redirect
+			return reject({ url: fullPath, code: 301 });
 		}
 
 		// render content for template
