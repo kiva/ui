@@ -1,3 +1,15 @@
+## [2.480.0](https://github.com/kiva/ui/compare/v2.479.3...v2.480.0) (2023-02-07)
+
+
+### Features
+
+* experiment initialization for lend menu buttons ([dd32268](https://github.com/kiva/ui/commit/dd32268f1554e08b9f2ebd0c4fe117a03247e53d))
+
+
+### Bug Fixes
+
+* errors when card loading due to null loan data ([3f9753b](https://github.com/kiva/ui/commit/3f9753b0b29b4e7252ec4378a292efec5d086983))
+
 ### [2.479.3](https://github.com/kiva/ui/compare/v2.479.2...v2.479.3) (2023-02-06)
 
 
