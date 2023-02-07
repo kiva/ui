@@ -1,3 +1,16 @@
+## [2.483.0](https://github.com/kiva/ui/compare/v2.482.0...v2.483.0) (2023-02-07)
+
+
+### Features
+
+* use permanent 301 for redirects defined in routes.js MARS-335 ([8e7751b](https://github.com/kiva/ui/commit/8e7751bdecf088491328951804b6247b87c01418))
+
+
+### Bug Fixes
+
+* redirect old categories to current pages MARS-335 ([c1af106](https://github.com/kiva/ui/commit/c1af10664c23f6624f42e609612b69b838e938d0))
+* remove duplicate route listing ([0ebd917](https://github.com/kiva/ui/commit/0ebd9178cdbc4dd07ebd3ea4be6f9a84549b3408))
+
 ## [2.482.0](https://github.com/kiva/ui/compare/v2.481.0...v2.482.0) (2023-02-07)
 
 
