@@ -242,6 +242,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvAccordionItem from '~/@kiva/kv-components/vue/KvAccordionItem';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+
 const filterOptionsQuery = gql`
 	query filterOptionsQuery {
 		lend {
@@ -473,17 +474,15 @@ export default {
 	},
 	methods: {
 		setLoanDisplayMode(mode) {
-			switch(mode) {
+			switch (mode) {
 				case 'rowDisplay':
-					this.rowDisplay=true;
-					this.gridDisplay=false;
-					return;
+					this.rowDisplay = true;
+					this.gridDisplay = false;
 				case 'gridDisplay':
-					this.rowDisplay=false;
-					this.gridDisplay=true;
-					return;
+					this.rowDisplay = false;
+					this.gridDisplay = true;
 				default:
-					return
+					return;
 			}
 		},
 		showFilters() {
