@@ -73,7 +73,6 @@ export default {
 <style lang="scss" scoped>
 
 .promo-background-image {
-
 	&::after {
 		display: block;
 		content: '';
