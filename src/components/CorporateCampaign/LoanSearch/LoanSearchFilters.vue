@@ -478,11 +478,13 @@ export default {
 				case 'rowDisplay':
 					this.rowDisplay = true;
 					this.gridDisplay = false;
+					break;
 				case 'gridDisplay':
 					this.rowDisplay = false;
 					this.gridDisplay = true;
+					break;
 				default:
-					return;
+					break;
 			}
 		},
 		showFilters() {
@@ -614,6 +616,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import 'settings';
+
 .loan-filters {
 	&__top-row {
 		display: flex;
@@ -625,15 +628,18 @@ export default {
 			flex-direction: row;
 		}
 	}
+
 	&__controls {
 		margin-bottom: 1rem;
 		@include breakpoint(medium) {
 			margin-bottom: 0;
 		}
 	}
+
 	&__toggle-text {
 		margin: 0 0.2rem 0 0;
 	}
+
 	&__toggle-icon {
 		width: 2.2rem;
 		height: 1.75rem;
@@ -641,12 +647,14 @@ export default {
 		display: inline-block;
 		vertical-align: top;
 	}
+
 	&__lightbox {
 		::v-deep .kv-lightbox__container {
 			min-width: 20rem;
 		}
 	}
 }
+
 .chips {
 	&__toggle-container {
 		display: block;
@@ -656,6 +664,7 @@ export default {
 			text-align: right;
 		}
 	}
+
 	&--collapsed {
 		overflow: hidden;
 		max-height: 7rem;
@@ -664,16 +673,20 @@ export default {
 		}
 	}
 }
+
 .loan-filter-controls {
 	@include breakpoint('medium') {
 		width: rem-calc(360);
 	}
+
 	@include breakpoint('large') {
 		width: rem-calc(550);
 	}
+
 	@include breakpoint('xlarge') {
 		width: rem-calc(625);
 	}
+
 	&__filter-type {
 		padding: 0 0 1rem;
 	}
