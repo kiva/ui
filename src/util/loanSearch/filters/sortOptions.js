@@ -66,6 +66,7 @@ export function formatSortOptions(standardSorts, flssSorts, extendFlssFilters) {
 			sortSrc: STANDARD_QUERY_TYPE,
 		};
 	}) ?? [];
+
 	const labeledFlssSorts = flssSorts?.reduce((prev, current) => {
 		const visibleOptions = extendFlssFilters ? experimentVisibleFLSSSortOptions : visibleFLSSSortOptions;
 		if (visibleOptions.includes(current.name)) {
@@ -74,7 +75,11 @@ export function formatSortOptions(standardSorts, flssSorts, extendFlssFilters) {
 
 		return prev;
 	}, []) ?? [];
-	return [...labeledStandardSorts, ...labeledFlssSorts];
+
+	// Personalized/recommended sort should go at the bottom of the options list to align with help text
+	const personalized = labeledFlssSorts.splice(labeledFlssSorts.findIndex(s => s.name === 'personalized'), 1);
+
+	return [...labeledStandardSorts, ...labeledFlssSorts, ...personalized];
 }
 
 export default {

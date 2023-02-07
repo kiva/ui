@@ -21,8 +21,6 @@
 				v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
 				class="tw-flex"
 			>
-				<loan-tag v-if="showTags" :loan="loan" :amount-left="amountLeft" />
-
 				<borrower-image
 					class="
 					tw-relative
@@ -35,8 +33,8 @@
 					:default-image="{ width: 336 }"
 					:hash="imageHash"
 					:images="[
-						{ width: 336, viewSize: 1024 },
-						{ width: 336, viewSize: 768 },
+						{ width: largestImageWidth, viewSize: 1024 },
+						{ width: largestImageWidth, viewSize: 768 },
 						{ width: 416, viewSize: 480 },
 						{ width: 374, viewSize: 414 },
 						{ width: 335, viewSize: 375 },
@@ -61,32 +59,8 @@
 			</router-link>
 		</div>
 
-		<!-- Fundraising -->
-		<div v-if="isLoading">
-			<kv-loading-placeholder
-				class="tw-mb-0.5"
-				:style="{ width: 40 + (Math.random() * 15) + '%', height: '1.3rem' }"
-			/>
-
-			<kv-loading-placeholder
-				class="tw-mb-1.5 tw-rounded"
-				:style="{ width: '100%', height: '0.5rem' }"
-			/>
-		</div>
-
-		<router-link
-			v-else
-			:is="allSharesReserved ? 'span' : 'router-link'"
-			:to="customLoanDetails ? '' : `/lend/${loanId}`"
-			v-kv-track-event="['Lending', 'click-Read more', 'Progress', loanId]"
-			class="loan-card-progress tw-my-1.5"
-		>
-			<loan-progress-group
-				:money-left="unreservedAmount"
-				:progress-percent="fundraisingPercent"
-				:time-left="timeLeftMessage"
-			/>
-		</router-link>
+		<!-- Loan tag -->
+		<loan-tag-v2 v-if="showTags && !isLoading" :loan="loan" :amount-left="amountLeft" />
 
 		<!-- Loan use  -->
 		<div class="tw-grow tw-mb-1.5">
@@ -103,16 +77,11 @@
 				class="loan-card-use tw-text-primary"
 			>
 				<loan-use
-					:loan-use-max-length="150"
-					:loan-id="`${allSharesReserved ? '' : loanId}`"
 					:use="loanUse"
-					:name="borrowerName"
-					:status="loanStatus"
 					:loan-amount="loanAmount"
+					:status="loanStatus"
 					:borrower-count="loanBorrowerCount"
-					:custom-loan-details="customLoanDetails"
-					:show-learn-more="false"
-					@show-loan-details="showLoanDetails"
+					:name="borrowerName"
 				/>
 			</router-link>
 
@@ -132,104 +101,49 @@
 			:loan-amount="loanAmount"
 		/>
 
-		<!-- CTA Button -->
-		<kv-loading-placeholder
-			v-if="isLoading"
-			class="tw-rounded tw-self-start" :style="{ width: '9rem', height: '3rem' }"
-		/>
+		<div class="tw-flex tw-justify-between tw-mt-2">
+			<!-- Fundraising -->
+			<div v-if="isLoading">
+				<kv-loading-placeholder
+					class="tw-mb-0.5"
+					:style="{ width: 40 + (Math.random() * 15) + '%', height: '1.3rem' }"
+				/>
 
-		<template v-else>
-			<!-- If loan is in basket, always show checkout now button -->
-			<kv-ui-button
-				class="tw-mb-2 tw-text-secondary"
-				variant="secondary"
-				v-if="isInBasket"
-				v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
-				:to="customCheckoutRoute ? customCheckoutRoute : '/basket'"
+				<kv-loading-placeholder
+					class="tw-mb-1.5 tw-rounded"
+					:style="{ width: '100%', height: '0.5rem' }"
+				/>
+			</div>
+
+			<router-link
+				v-else
+				:is="allSharesReserved ? 'span' : 'router-link'"
+				:to="customLoanDetails ? '' : `/lend/${loanId}`"
+				v-kv-track-event="['Lending', 'click-Read more', 'Progress', loanId]"
+				class="loan-card-progress tw-my-1.5"
 			>
-				<slot>
-					<div class="tw-inline-flex tw-items-center tw-gap-1">
-						Checkout now
-						<kv-material-icon
-							class="tw-w-2.5 tw-h-2.5"
-							:icon="mdiCheckCircleOutline"
-						/>
-					</div>
-				</slot>
-			</kv-ui-button>
-			<!-- loan is not in basket -->
-			<template v-else>
-				<!-- If allSharesReserved show message and hide cta button -->
-				<div
-					v-if="allSharesReserved"
-					class="
-						tw-rounded
-						tw-bg-secondary
-						tw-text-center
-						tw-w-full
-						tw-py-1 tw-px-1.5
-						tw-mb-2 tw-mt-2
-					"
-				>
-					Another lender has selected this loan. Please choose a different borrower to support.
-				</div>
-				<template v-else>
-					<!-- View Loan button -->
-					<kv-ui-button
-						v-if="!showLendNowButton && !showActionButton"
-						class="tw-mb-2 tw-self-start"
-						:state="`${allSharesReserved ? 'disabled' : ''}`"
-						:to="customLoanDetails ? '' : `/lend/${loanId}`"
-						@click="showLoanDetails"
-						v-kv-track-event="['Lending', 'click-Read-more', 'View loan', loanId]"
-					>
-						View loan
-						<kv-material-icon
-							class="tw-w-3 tw-h-3 tw-align-middle"
-							:icon="mdiChevronRight"
-						/>
-					</kv-ui-button>
+				<loan-progress-group
+					:money-left="unreservedAmount"
+					:progress-percent="fundraisingPercent"
+					:enable-loan-card-exp="true"
+				/>
+			</router-link>
 
-					<!-- Lend button -->
-					<kv-ui-button
-						v-if="showLendNowButton && !isAdding"
-						key="lendButton"
-						data-testid="bp-lend-cta-lend-button"
-						type="submit"
-						@click="addToBasket"
-						v-kv-track-event="[
-							'Lending',
-							'lend-button-loan-upsell',
-							expLabel
-						]"
-					>
-						{{ ctaButtonText }}
-					</kv-ui-button>
+			<!-- CTA Button -->
+			<kv-loading-placeholder
+				v-if="isLoading"
+				class="tw-rounded tw-self-start" :style="{ width: '9rem', height: '3rem' }"
+			/>
 
-					<kv-ui-button
-						v-if="showLendNowButton && isAdding"
-						data-testid="bp-lend-cta-adding-to-basket-button"
-					>
-						Adding to basket...
-					</kv-ui-button>
-
-					<!-- Action button -->
-					<action-button
-						v-if="showActionButton && !showLendNowButton"
-						:loan-id="loanId"
-						:loan="loan"
-						:items-in-basket="basketItems"
-						:is-lent-to="isLentTo"
-						:is-funded="isFunded"
-						:is-selected-by-another="isSelectedByAnother"
-						:is-amount-lend-button="isLessThan25"
-						:amount-left="amountLeft"
-						:show-now="true"
-						@add-to-basket="addToBasket"
-					/>
-				</template>
-			</template>
-		</template>
+			<lend-cta-exp
+				v-else
+				:loan="loan"
+				:basket-items="basketItems"
+				:is-loading="isLoading"
+				:is-adding="isAdding"
+				@add-to-basket="addToBasket"
+			/>
+		</div>
 	</div>
 </template>
 
@@ -240,7 +154,7 @@ import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
 import { isMatchAtRisk, readLoanFragment, watchLoanData } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
-import LoanUse from '@/components/BorrowerProfile/LoanUse';
+import LoanUse from '@/components/LoanCards/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
@@ -251,8 +165,9 @@ import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import { setLendAmount } from '@/util/basketUtils';
 import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import LoanTag from '@/components/LoanCards/LoanTags/LoanTag';
 import LoanCallouts from '@/components/LoanCards/LoanTags/LoanCallouts';
+import LendCtaExp from '@/components/LoanCards/Buttons/LendCtaExp';
+import LoanTagV2 from '@/components/LoanCards/LoanTags/LoanTagV2';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -324,6 +239,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		perRow: {
+			type: Number,
+			default: 3
+		},
 		categoryPageName: {
 			type: String,
 			default: null,
@@ -342,8 +261,9 @@ export default {
 		SummaryTag,
 		KvUiButton,
 		ActionButton,
-		LoanTag,
-		LoanCallouts
+		LendCtaExp,
+		LoanTagV2,
+		LoanCallouts,
 	},
 	data() {
 		return {
@@ -407,16 +327,16 @@ export default {
 		cardWidth() {
 			return this.useFullWidth ? '100%' : '374px';
 		},
+		largestImageWidth() {
+			// We currently only use grid or carousel rows with 2 or 3 loan cards
+			// TODO: update cloudinary image settings to allow for exact new size if experiment wins
+			// https://kiva.atlassian.net/browse/CORE-1045
+			return this.perRow === 2 ? 548 : 336;
+		},
 		amountLeft() {
 			const loanFundraisingInfo = this.loan?.loanFundraisingInfo ?? { fundedAmount: 0, reservedAmount: 0 };
 			const { fundedAmount, reservedAmount } = loanFundraisingInfo;
 			return numeral(this.loanAmount).subtract(fundedAmount).subtract(reservedAmount).value();
-		},
-		isFunded() {
-			return this.loan?.status === 'funded';
-		},
-		isSelectedByAnother() {
-			return this.amountLeft <= 0 && !this.isFunded;
 		},
 		borrowerName() {
 			return this.loan?.name || '';
@@ -448,18 +368,8 @@ export default {
 			const loanIds = loanItems.map(loan => loan.id);
 			return loanIds.indexOf(this.loanId) > -1;
 		},
-		isLentTo() {
-			return this.loan?.userProperties?.lentTo;
-		},
 		isMatchAtRisk() {
 			return isMatchAtRisk(this.loan);
-		},
-		sectorName() {
-			return (this.loan?.sector?.name || '').toLowerCase();
-		},
-		whySpecial() {
-			const text = this.loan?.whySpecial || '';
-			return text.toString().charAt(0).toLowerCase() + text.toString().slice(1);
 		},
 		fundraisingPercent() {
 			return this.loan?.fundraisingPercent ?? 0;
@@ -486,18 +396,6 @@ export default {
 				return true;
 			}
 			return false;
-		},
-		isLessThan25() {
-			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
-		},
-		lendAmount() {
-			return this.isLessThan25 ? this.unreservedAmount : 25;
-		},
-		ctaButtonText() {
-			return `Lend $${this.lendAmount} now`;
-		},
-		showLendNowButton() {
-			return this.lendNowButton;
 		},
 		loanUse() {
 			return this.loan?.use ?? '';
@@ -584,10 +482,10 @@ export default {
 			if (this.loan) this.isLoading = false;
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
 		},
-		addToBasket() {
+		addToBasket(lendAmount) {
 			this.isAdding = true;
 			setLendAmount({
-				amount: this.lendAmount,
+				amount: lendAmount,
 				apollo: this.apollo,
 				loanId: this.loanId,
 			}).then(() => {

@@ -104,5 +104,19 @@ describe('sortOptions.js', () => {
 					...mockFLSSSorts
 				]);
 		});
+
+		it('should place personalized at the end of the returned list', () => {
+			// Put personalized at the beginning to ensure it gets moved to the end
+			const originalMockSorts = [...mockFLSSSorts];
+			const sorts = [
+				...originalMockSorts.splice(originalMockSorts.findIndex(s => s.name === 'personalized'), 1),
+				...originalMockSorts
+			];
+
+			const result = formatSortOptions(mockStandardSorts, sorts);
+
+			expect(sorts.findIndex(s => s.name === 'personalized')).not.toBe(sorts.length - 1);
+			expect(result.findIndex(s => s.name === 'personalized')).toBe(result.length - 1);
+		});
 	});
 });

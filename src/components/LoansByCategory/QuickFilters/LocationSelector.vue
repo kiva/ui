@@ -302,7 +302,7 @@ export default {
 	},
 	watch: {
 		selectedCountries() {
-			this.$emit('update-location', this.selectedCountries);
+			this.$emit('update-location', [...this.selectedCountries]);
 		}
 	}
 

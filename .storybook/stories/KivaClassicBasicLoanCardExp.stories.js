@@ -45,6 +45,7 @@ const story = (args = {}, isLoading = false, extraLoanProps = {}, extraData = {}
 				:use-full-width="useFullWidth"
 				:show-tags="showTags"
 				:in-grid="inGrid"
+				:per-row="perRow"
 			/>
 		`,
 	})
@@ -96,3 +97,8 @@ export const Matched = story({
 export const InBasket = story({
 	loanId: loan.id,
 }, false, {}, { shop: { basket: { items: { values: [{ id: loan.id, __typename: 'LoanReservation' }] } } } });
+
+export const LargerImage = story({
+	loanId: loan.id,
+	perRow: 2
+});

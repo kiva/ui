@@ -80,6 +80,7 @@ export default {
 			isChannelsLoading: true,
 			showMGUpsellLink: false,
 			newMgEntrypointExp: false,
+			lendMenuButtonExp: false,
 		};
 	},
 	apollo: {
@@ -167,24 +168,45 @@ export default {
 				this.savedSearches = data?.my?.savedSearches?.values ?? [];
 			}
 		},
+		initializeMGExp() {
+			// CORE-641 NEW MG ENTRYPOINT
+			const newMgEntrypointExperiment = this.apollo.readFragment({
+				id: 'Experiment:topnav_mg_entrypoint',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.newMgEntrypointExp = newMgEntrypointExperiment.version === 'b';
+
+			// Fire Event for EXP-CORE-644-June-2022
+			if (newMgEntrypointExperiment.version) {
+				this.$kvTrackEvent(
+					'TopNav',
+					'EXP-CORE-644-June-2022',
+					newMgEntrypointExperiment.version
+				);
+			}
+		},
+		initializeLendMenuButtonExp() {
+			const experiment = this.apollo.readFragment({
+				id: 'Experiment:lend_menu_buttons',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.lendMenuButtonExp = experiment.version === 'b';
+
+			if (experiment.version) {
+				this.$kvTrackEvent(
+					'Lend',
+					'EXP-CORE-1035-Feb-2023',
+					experiment.version
+				);
+			}
+		},
 	},
 	mounted() {
-		// CORE-641 NEW MG ENTRYPOINT
-		// this experiment is assigned in experimentPreFetch.js
-		const newMgEntrypointExperiment = this.apollo.readFragment({
-			id: 'Experiment:topnav_mg_entrypoint',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.newMgEntrypointExp = newMgEntrypointExperiment.version === 'b';
+		this.initializeMGExp();
 
-		// Fire Event for EXP-CORE-644-June-2022
-		if (newMgEntrypointExperiment.version) {
-			this.$kvTrackEvent(
-				'TopNav',
-				'EXP-CORE-644-June-2022',
-				newMgEntrypointExperiment.version
-			);
-		}
+		this.initializeLendMenuButtonExp();
 
 		this.$nextTick(() => {
 			this.showMGUpsellLink = true;

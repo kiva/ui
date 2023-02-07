@@ -1,3 +1,212 @@
+## [2.484.0](https://github.com/kiva/ui/compare/v2.483.0...v2.484.0) (2023-02-07)
+
+
+### Features
+
+* new promo grid card added for new loan cards experiment ([9749863](https://github.com/kiva/ui/commit/974986340c7ec608a3a44884c4f9e73e04b78895))
+
+
+### Bug Fixes
+
+* scss code removed from new promo loan card ([024d9b9](https://github.com/kiva/ui/commit/024d9b9f0e6e52d9e0ee57e2c8e53c4301b4fde9))
+
+## [2.483.0](https://github.com/kiva/ui/compare/v2.482.0...v2.483.0) (2023-02-07)
+
+
+### Features
+
+* use permanent 301 for redirects defined in routes.js MARS-335 ([8e7751b](https://github.com/kiva/ui/commit/8e7751bdecf088491328951804b6247b87c01418))
+
+
+### Bug Fixes
+
+* redirect old categories to current pages MARS-335 ([c1af106](https://github.com/kiva/ui/commit/c1af10664c23f6624f42e609612b69b838e938d0))
+* remove duplicate route listing ([0ebd917](https://github.com/kiva/ui/commit/0ebd9178cdbc4dd07ebd3ea4be6f9a84549b3408))
+
+## [2.482.0](https://github.com/kiva/ui/compare/v2.481.0...v2.482.0) (2023-02-07)
+
+
+### Features
+
+* add cache control headers to passport redirects ([5f506bc](https://github.com/kiva/ui/commit/5f506bcc60e3a0580555627ecd78816d6ead01f1))
+
+
+### Bug Fixes
+
+* add header to remaining routes ([55a8199](https://github.com/kiva/ui/commit/55a81991825a87982609a8163830f1efc942986a))
+
+## [2.481.0](https://github.com/kiva/ui/compare/v2.480.1...v2.481.0) (2023-02-07)
+
+
+### Features
+
+* displaying kiva classic versions of kvradio, kvchip, etc ([9fabb39](https://github.com/kiva/ui/commit/9fabb39d1ee0cef7d7b67ce1c5a8f681922ff01a))
+* migrating campaign loan filters onto Kiva Classic ([639a497](https://github.com/kiva/ui/commit/639a497eba108e777cf420b766bc9ce373ccc423))
+
+
+### Bug Fixes
+
+* alignment, padding, and display fixes ([a30815a](https://github.com/kiva/ui/commit/a30815ac0572b5a6043f49bf873363833f1f714e))
+* changed filter alignment, fixed gender filters issue, and addressed CIT-100 ([6cbb325](https://github.com/kiva/ui/commit/6cbb3252eaae3b237f65af0bb667b7c62b284ce1))
+* fixing issue with both gender selection ([f3fa36a](https://github.com/kiva/ui/commit/f3fa36a43fc91bca5b6a255a32c6a9da286046b9))
+* linting ([36993f7](https://github.com/kiva/ui/commit/36993f7a5a341c848b84252c2d2ba3199a19d193))
+* linting errors ([00699d5](https://github.com/kiva/ui/commit/00699d5e3dc24752f588c727d696c424aac156b9))
+* now displaying SVG icons and gender/sortBy options ([ce124a9](https://github.com/kiva/ui/commit/ce124a9aa990a7b91878f862fcc1f9d21ec7338d))
+* view layout toggling, gender and sortBy radios, other changes ([25701c3](https://github.com/kiva/ui/commit/25701c3bc6f404c40edaaef7208ea60e483a25bc))
+
+### [2.480.1](https://github.com/kiva/ui/compare/v2.480.0...v2.480.1) (2023-02-07)
+
+
+### Bug Fixes
+
+* updated new orange ([9afb4d3](https://github.com/kiva/ui/commit/9afb4d3ce0cebb85a4abc1643e755cff5041786f))
+
+## [2.480.0](https://github.com/kiva/ui/compare/v2.479.3...v2.480.0) (2023-02-07)
+
+
+### Features
+
+* experiment initialization for lend menu buttons ([dd32268](https://github.com/kiva/ui/commit/dd32268f1554e08b9f2ebd0c4fe117a03247e53d))
+
+
+### Bug Fixes
+
+* errors when card loading due to null loan data ([3f9753b](https://github.com/kiva/ui/commit/3f9753b0b29b4e7252ec4378a292efec5d086983))
+
+### [2.479.3](https://github.com/kiva/ui/compare/v2.479.2...v2.479.3) (2023-02-06)
+
+
+### Bug Fixes
+
+* location QF wasn't working after first selection ([4c58769](https://github.com/kiva/ui/commit/4c58769315944357bd59f4d429bc82f9e2dfa87c))
+
+### [2.479.2](https://github.com/kiva/ui/compare/v2.479.1...v2.479.2) (2023-02-06)
+
+
+### Bug Fixes
+
+* only log lending-home exp for logged-in users ([b6913f6](https://github.com/kiva/ui/commit/b6913f67b2acdecc2965f1fcf0f233369948898d))
+
+### [2.479.1](https://github.com/kiva/ui/compare/v2.479.0...v2.479.1) (2023-02-03)
+
+
+### Bug Fixes
+
+* put recommended at the bottom of the sort options ([3c5bd08](https://github.com/kiva/ui/commit/3c5bd0841fcb679975696b1a1dd58d0adc854a07))
+
+## [2.479.0](https://github.com/kiva/ui/compare/v2.478.1...v2.479.0) (2023-02-03)
+
+
+### Features
+
+* new cta component added for new loan card ([de2d255](https://github.com/kiva/ui/commit/de2d255ea7479e13b4037acdf77d1d06497e6b03))
+* new lend cta component updated to work with parent data via props ([b15a663](https://github.com/kiva/ui/commit/b15a663455a5ed5e6fda5dbe06149f26370b4d20))
+
+
+### Bug Fixes
+
+* stories for new lend cta component updated ([651cb83](https://github.com/kiva/ui/commit/651cb8336145050295f20f1d3fb1f72bdd1ada65))
+* story for lendctaexp component cleaned ([663a7f3](https://github.com/kiva/ui/commit/663a7f3a8d8f9fe12471d4460b42fa49e45f3557))
+* unused mixins removed from lendctaexp component ([4bca3b9](https://github.com/kiva/ui/commit/4bca3b99cc0417390aeba8e68b6df51c67ad11e5))
+
+### [2.478.1](https://github.com/kiva/ui/compare/v2.478.0...v2.478.1) (2023-02-03)
+
+
+### Bug Fixes
+
+* pass by reference issue for quick filters ([ff961b9](https://github.com/kiva/ui/commit/ff961b9fe59eef5ed580499fd7ea5fda7ba66ee5))
+
+## [2.478.0](https://github.com/kiva/ui/compare/v2.477.0...v2.478.0) (2023-02-02)
+
+
+### Features
+
+* updated help me choose behavior ([ee9de60](https://github.com/kiva/ui/commit/ee9de60cd71ec10e1ceb668e8c590f476283a911))
+
+
+### Bug Fixes
+
+* default null sort is more appropriate ([9943d9f](https://github.com/kiva/ui/commit/9943d9f6ed38fe6a47c4effab2ab19046f985046))
+
+## [2.477.0](https://github.com/kiva/ui/compare/v2.476.1...v2.477.0) (2023-02-02)
+
+
+### Features
+
+* helpme choose test code removed ([f8d6d20](https://github.com/kiva/ui/commit/f8d6d20dbe0261829ac7013e04d9068f91db37cf))
+
+### [2.476.1](https://github.com/kiva/ui/compare/v2.476.0...v2.476.1) (2023-02-02)
+
+
+### Bug Fixes
+
+* hpa deprecation warning ([b9809f7](https://github.com/kiva/ui/commit/b9809f7dbc603c3213f18c069764f3a11c477c20))
+
+## [2.476.0](https://github.com/kiva/ui/compare/v2.475.0...v2.476.0) (2023-02-02)
+
+
+### Features
+
+* add new loan tags to new loan cards ([98dac08](https://github.com/kiva/ui/commit/98dac08003ebc9b239ece913bdc8a5a0c3311dd9))
+
+
+### Bug Fixes
+
+* add clamping ([df623d4](https://github.com/kiva/ui/commit/df623d4377bf9aceeb7c21eecbda8afa9012603a))
+* lint ([5df8572](https://github.com/kiva/ui/commit/5df85723cdbabd9712db1bd833145da6c48c9565))
+
+## [2.475.0](https://github.com/kiva/ui/compare/v2.474.1...v2.475.0) (2023-02-02)
+
+
+### Features
+
+* use new loan card in help me choose during experiment ([b2c99fa](https://github.com/kiva/ui/commit/b2c99fa7afb699e5bc2d0d953f705f183c3170ba))
+
+### [2.474.1](https://github.com/kiva/ui/compare/v2.474.0...v2.474.1) (2023-02-01)
+
+
+### Bug Fixes
+
+* tracking was missing on new page ([5915eec](https://github.com/kiva/ui/commit/5915eec8a0a16d56f99dc18dffb7e486561210ce))
+
+## [2.474.0](https://github.com/kiva/ui/compare/v2.473.0...v2.474.0) (2023-02-01)
+
+
+### Features
+
+* update progress text when amount left is low ([7dc78fc](https://github.com/kiva/ui/commit/7dc78fcda9e285b1a4597306a268a9a4875122f5))
+
+## [2.473.0](https://github.com/kiva/ui/compare/v2.472.1...v2.473.0) (2023-01-31)
+
+
+### Features
+
+* added support for larger loan card images when 2 cards in row ([b2f4dee](https://github.com/kiva/ui/commit/b2f4deee0381c5b09565c573af5e3baae9affb36))
+* story for larger loan card image ([ddbba7f](https://github.com/kiva/ui/commit/ddbba7f733d460354133ade2d9624be70676d5ed))
+* update lending-home to use new loan card throughout ([db174a0](https://github.com/kiva/ui/commit/db174a01281a352ad7820cd190d0359e44594131))
+
+
+### Bug Fixes
+
+* use a size we already provide from cloudinary ([ee402d5](https://github.com/kiva/ui/commit/ee402d5f7b9a3989bf7c98a0d4fd96a25e3eb565))
+* use kv-carousel instead of classic carousel ([07390f9](https://github.com/kiva/ui/commit/07390f930184ee590b945be61ed6db53185a31b1))
+* width is actually larger now that padding is removed ([131ad71](https://github.com/kiva/ui/commit/131ad7178d3b0b71bb2d0c4505f38645318e0059))
+
+### [2.472.1](https://github.com/kiva/ui/compare/v2.472.0...v2.472.1) (2023-01-31)
+
+
+### Bug Fixes
+
+* remove track func ([d2fc91c](https://github.com/kiva/ui/commit/d2fc91cc9d39300b49ab161a9adf79ae43deb90a))
+* revalidate partnerIds and add risk prop to flss ([451ac60](https://github.com/kiva/ui/commit/451ac60bee39bdb110ff173670b0a69225075bbd))
+
+## [2.472.0](https://github.com/kiva/ui/compare/v2.471.0...v2.472.0) (2023-01-30)
+
+
+### Features
+
+* updated loan card use statement ([090c0b9](https://github.com/kiva/ui/commit/090c0b928289e0d5fc7d1edcba2130fb1baf83cd))
+
 ## [2.471.0](https://github.com/kiva/ui/compare/v2.470.0...v2.471.0) (2023-01-30)
 
 
