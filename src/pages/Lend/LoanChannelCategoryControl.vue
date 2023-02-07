@@ -109,7 +109,13 @@
 					</template>
 
 					<div class="column column-block">
+						<promo-grid-loan-card-exp
+							v-if="enableLoanCardExp"
+							:category-url="mgTargetCategory.url"
+							:category-label="mgTargetCategory.label"
+						/>
 						<promo-grid-loan-card
+							v-else
 							:category-url="mgTargetCategory.url"
 							:category-label="mgTargetCategory.label"
 						/>
@@ -184,6 +190,7 @@ import LoanCardController from '@/components/LoanCards/LoanCardController';
 import DonationCTA from '@/components/Lend/DonationCTA';
 import KvPagination from '@/components/Kv/KvPagination';
 import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
+import PromoGridLoanCardExp from '@/components/LoanCards/PromoGridLoanCardExp';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import {
@@ -330,6 +337,7 @@ export default {
 		HelpmeChooseWrapper,
 		DonationCTA,
 		KivaClassicBasicLoanCardExp,
+		PromoGridLoanCardExp,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
