@@ -58,8 +58,9 @@
 				</div>
 			</router-link>
 		</div>
+
 		<!-- Loan tag -->
-		<loan-tag-v2 v-if="showTags" :loan="loan" :amount-left="amountLeft" />
+		<loan-tag-v2 v-if="showTags && !isLoading" :loan="loan" :amount-left="amountLeft" />
 
 		<!-- Loan use  -->
 		<div class="tw-grow tw-mb-1.5">
