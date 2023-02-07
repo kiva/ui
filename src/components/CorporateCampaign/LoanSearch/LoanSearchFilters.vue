@@ -242,7 +242,6 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvAccordionItem from '~/@kiva/kv-components/vue/KvAccordionItem';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
-
 const filterOptionsQuery = gql`
 	query filterOptionsQuery {
 		lend {
@@ -270,7 +269,6 @@ const filterOptionsQuery = gql`
 		}
 	}
 `;
-
 export default {
 	name: 'LoanSearchFilters',
 	inject: ['apollo'],
@@ -409,7 +407,6 @@ export default {
 				}
 				return false;
 			});
-
 			// gather selected Countries
 			const selectedCountriesRaw = this.allCountries.filter(country => {
 				const appliedCountries = this.appliedFilters?.country ?? [];
@@ -418,7 +415,6 @@ export default {
 				}
 				return false;
 			});
-
 			// gather selected Sectors
 			const selectedSectorsRaw = this.allSectors.filter(sector => {
 				const appliedSectors = this.appliedFilters?.sector ?? [];
@@ -427,7 +423,6 @@ export default {
 				}
 				return false;
 			});
-
 			// gather selected Themes
 			const selectedAttributesRaw = this.allAttributes.filter(attribute => {
 				const appliedAttributes = this.appliedFilters?.theme ?? [];
@@ -436,7 +431,6 @@ export default {
 				}
 				return false;
 			});
-
 			// gather selected tags
 			const selectedTagsRaw = this.allTags.filter(tag => {
 				if (tag.name?.charAt(0) === '#') { // kludge to only include public tags
@@ -447,7 +441,6 @@ export default {
 				}
 				return false;
 			});
-
 			return [
 				...selectedGenderRaw,
 				...selectedCountriesRaw,
@@ -503,14 +496,17 @@ export default {
 			});
 		},
 		applyFilters() {
-			this.$emit('updated-filters', this.modifiedFilters);
+			const gqlFilters = this.modifiedFilters;
+			if (gqlFilters.gender === 'both') {
+				gqlFilters.gender = null;
+			}
+			this.$emit('updated-filters', gqlFilters);
 			this.$emit('updated-sort-by', this.selectedSort);
 			this.filtersVisible = false;
 		},
 		// TODO: Move to Util file
 		copyFilters(initialFilters) {
 			const filtersCopy = {};
-
 			const initialFilterKeys = Object.keys(initialFilters);
 			initialFilterKeys.forEach(key => {
 				// copy an object
@@ -520,7 +516,6 @@ export default {
 					&& initialFilters[key] === 'undefined'
 				) {
 					filtersCopy[key] = { ...initialFilters[key] };
-
 				// copy an array
 				} else if (
 					typeof initialFilters[key] === 'object'
@@ -528,25 +523,20 @@ export default {
 					&& initialFilters[key].length
 				) {
 					filtersCopy[key] = initialFilters[key].slice();
-
 				// copy a string
 				} else if (typeof initialFilters[key] === 'string') {
 					filtersCopy[key] = initialFilters[key].toString();
-
 				// copy a boolean
 				} else if (typeof initialFilters[key] === 'boolean') {
 					filtersCopy[key] = Boolean(initialFilters[key]);
-
 				// handle undefined defaults
 				} else if (typeof initialFilters[key] === 'undefined') {
 					filtersCopy[key] = undefined;
-
 				// handle null defaults and all others
 				} else {
 					filtersCopy[key] = null;
 				}
 			});
-
 			return filtersCopy;
 		},
 		cleanChipName(name) {
@@ -611,13 +601,10 @@ export default {
 		},
 		async determineIsChipsCollapsable() {
 			const { chipsContainer, chipsInnerContainer } = this.$refs;
-
 			if (chipsContainer && chipsInnerContainer) {
 				const isCollapsed = this.isChipsCollapsed.valueOf(); // get the initial collapsed state
-
 				this.isChipsCollapsed = true; // collapse the container.
 				await this.$nextTick(); // let that render
-
 				// is the inner container bigger than the outer?
 				this.isChipsCollapsable = chipsInnerContainer.clientHeight > chipsContainer.clientHeight;
 				this.isChipsCollapsed = isCollapsed; // go back to the initial state
@@ -626,10 +613,8 @@ export default {
 	},
 };
 </script>
-
 <style lang="scss" scoped>
 @import 'settings';
-
 .loan-filters {
 	&__top-row {
 		display: flex;
@@ -637,24 +622,19 @@ export default {
 		justify-content: space-between;
 		flex-direction: column;
 		margin: 0 0 1rem;
-
 		@include breakpoint(medium) {
 			flex-direction: row;
 		}
 	}
-
 	&__controls {
 		margin-bottom: 1rem;
-
 		@include breakpoint(medium) {
 			margin-bottom: 0;
 		}
 	}
-
 	&__toggle-text {
 		margin: 0 0.2rem 0 0;
 	}
-
 	&__toggle-icon {
 		width: 2.2rem;
 		height: 1.75rem;
@@ -662,51 +642,41 @@ export default {
 		display: inline-block;
 		vertical-align: top;
 	}
-
 	&__lightbox {
 		::v-deep .kv-lightbox__container {
 			min-width: 20rem;
 		}
 	}
 }
-
 .chips {
 	&__toggle-container {
 		display: block;
 		margin: 1rem auto 0 0;
-
 		@include breakpoint(large) {
 			margin: 0 0 0 auto;
 			text-align: right;
 		}
 	}
-
 	&--collapsed {
 		overflow: hidden;
 		max-height: 7rem;
-
 		@include breakpoint(large) {
 			max-height: rem-calc(38);
 		}
 	}
 }
-
 .loan-filter-controls {
 	@include breakpoint('medium') {
 		width: rem-calc(360);
 	}
-
 	@include breakpoint('large') {
 		width: rem-calc(550);
 	}
-
 	@include breakpoint('xlarge') {
 		width: rem-calc(625);
 	}
-
 	&__filter-type {
 		padding: 0 0 1rem;
 	}
 }
-
 </style>
