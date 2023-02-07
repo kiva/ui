@@ -1,3 +1,10 @@
+### [2.480.1](https://github.com/kiva/ui/compare/v2.480.0...v2.480.1) (2023-02-07)
+
+
+### Bug Fixes
+
+* updated new orange ([9afb4d3](https://github.com/kiva/ui/commit/9afb4d3ce0cebb85a4abc1643e755cff5041786f))
+
 ## [2.480.0](https://github.com/kiva/ui/compare/v2.479.3...v2.480.0) (2023-02-07)
 
 
