@@ -253,7 +253,6 @@ import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import LoanTag from '@/components/LoanCards/LoanTags/LoanTag';
 import LoanCallouts from '@/components/LoanCards/LoanTags/LoanCallouts';
-import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -331,7 +330,7 @@ export default {
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [percentRaisedMixin, timeLeftMixin, loanChannelQueryMapMixin],
+	mixins: [percentRaisedMixin, timeLeftMixin],
 	components: {
 		BorrowerImage,
 		KvLoadingPlaceholder,
