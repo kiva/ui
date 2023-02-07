@@ -1,3 +1,15 @@
+## [2.482.0](https://github.com/kiva/ui/compare/v2.481.0...v2.482.0) (2023-02-07)
+
+
+### Features
+
+* add cache control headers to passport redirects ([5f506bc](https://github.com/kiva/ui/commit/5f506bcc60e3a0580555627ecd78816d6ead01f1))
+
+
+### Bug Fixes
+
+* add header to remaining routes ([55a8199](https://github.com/kiva/ui/commit/55a81991825a87982609a8163830f1efc942986a))
+
 ## [2.481.0](https://github.com/kiva/ui/compare/v2.480.1...v2.481.0) (2023-02-07)
 
 
