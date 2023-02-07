@@ -1,3 +1,10 @@
+### [2.484.1](https://github.com/kiva/ui/compare/v2.484.0...v2.484.1) (2023-02-07)
+
+
+### Bug Fixes
+
+* add strict cache-control headers to private pages ([babd638](https://github.com/kiva/ui/commit/babd638701f893f07867f7a77e923813e90213d5))
+
 ## [2.484.0](https://github.com/kiva/ui/compare/v2.483.0...v2.484.0) (2023-02-07)
 
 
