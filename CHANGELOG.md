@@ -1,3 +1,15 @@
+## [2.484.0](https://github.com/kiva/ui/compare/v2.483.0...v2.484.0) (2023-02-07)
+
+
+### Features
+
+* new promo grid card added for new loan cards experiment ([9749863](https://github.com/kiva/ui/commit/974986340c7ec608a3a44884c4f9e73e04b78895))
+
+
+### Bug Fixes
+
+* scss code removed from new promo loan card ([024d9b9](https://github.com/kiva/ui/commit/024d9b9f0e6e52d9e0ee57e2c8e53c4301b4fde9))
+
 ## [2.483.0](https://github.com/kiva/ui/compare/v2.482.0...v2.483.0) (2023-02-07)
 
 
