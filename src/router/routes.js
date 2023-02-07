@@ -347,10 +347,6 @@ module.exports = [
 		redirect: '/lend-by-category/single-parents',
 	},
 	{
-		path: '/lend-by-category/loans-to-women',
-		redirect: '/lend-by-category/women',
-	},
-	{
 		path: '/lend-by-category/recommended-by-lend-by-categoryers',
 		redirect: '/lend-by-category/recommended-by-lenders',
 	},
