@@ -245,7 +245,7 @@ export default {
 		},
 		categoryPageName: {
 			type: String,
-			default: null,
+			default: '',
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -281,8 +281,8 @@ export default {
 	computed: {
 		loanCallouts() {
 			const callouts = [];
-			const activityName = this.loan?.activity.name;
-			const sectorName = this.loan?.sector.name;
+			const activityName = this.loan?.activity.name ?? '';
+			const sectorName = this.loan?.sector.name ?? '';
 			const tags = this.loan?.tags.filter(tag => tag.charAt(0) === '#')
 				.map(tag => tag.substring(1)) ?? [];
 			const themes = this.loan?.themes ?? [];
@@ -305,21 +305,28 @@ export default {
 			}
 
 			// P2 Activity
-			if (this.categoryPageName !== activityName) {
+			if (this.categoryPageName.toUpperCase() !== activityName.toUpperCase()) {
 				callouts.push(activityName);
 			}
 
 			// P3 Sector
 			if (sectorName
-			&& (activityName !== sectorName)
-			&& (sectorName !== this.categoryPageName)
+			&& (activityName.toUpperCase() !== sectorName.toUpperCase())
+			&& (sectorName.toUpperCase() !== this.categoryPageName.toUpperCase())
 			&& callouts.length < 2) {
 				callouts.push(sectorName);
 			}
 
 			// P4 Tag
-			if (tags && callouts.length < 2) {
-				callouts.push(tags[0]);
+			if (!!tags.length && callouts.length < 2) {
+				const position = Math.floor(Math.random() * tags.length);
+				callouts.push(tags[position]);
+			}
+
+			// P5 Tag
+			if (!!themes.length && callouts.length < 2) {
+				const position = Math.floor(Math.random() * themes.length);
+				callouts.push(themes[position]);
 			}
 
 			return callouts;

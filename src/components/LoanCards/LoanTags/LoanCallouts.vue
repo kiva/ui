@@ -1,23 +1,34 @@
 <template>
-	<div class="tw-line-clamp-1">
-		<template v-for="tag in callouts">
-			<div
-				:key="tag"
-				class="
-				tw-rounded-full
-				tw-bg-tertiary
-				tw-font-medium
-				tw-inline-flex
-				tw-py-0.5
-				tw-px-1
-				tw-mr-0.5
-				tw-mb-0.5
-				tw-text-small
+	<div class="tw-overflow-hidden" style="width:inherit;">
+		<div
+			class="
+				tw-text-ellipsis
+				tw-overflow-hidden
+				tw-inline-block
+				tw-whitespace-nowrap
+				tw-w-full
+				tw-h-4
 				"
-			>
-				{{ tag }}
-			</div>
-		</template>
+		>
+			<template v-for="tag in callouts">
+				<span
+					:key="tag"
+					class="
+                callout
+                tw-rounded-full
+                tw-bg-tertiary
+                tw-font-medium
+                tw-py-0.5
+                tw-px-1
+                tw-mr-0.5
+                tw-mb-0.5
+                tw-text-small
+                "
+				>
+					{{ tag }}
+				</span>
+			</template>
+		</div>
 	</div>
 </template>
 
