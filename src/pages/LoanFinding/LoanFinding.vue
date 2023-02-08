@@ -75,6 +75,7 @@ import KvToast from '~/@kiva/kv-components/vue/KvToast';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const EXP_KEY = 'loan_finding_page';
+const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
 
 export default {
 	name: 'LoanFinding',
@@ -109,7 +110,10 @@ export default {
 			return client.query({
 				query: userInfoQuery,
 			}).then(() => {
-				return client.query({ query: experimentQuery, variables: { id: EXP_KEY } });
+				return client.query(
+					{ query: experimentQuery, variables: { id: EXP_KEY } },
+					{ query: experimentQuery, variables: { id: LOAN_CARD_EXP_KEY } }
+				);
 			});
 		},
 		result({ data }) {
@@ -183,6 +187,17 @@ export default {
 				'Lending',
 				EXP_KEY,
 				'EXP-CORE-854-Dec2022'
+			);
+		}
+
+		const loanCardExpData = getExperimentSettingCached(this.apollo, LOAN_CARD_EXP_KEY);
+		if (loanCardExpData.enabled) {
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				LOAN_CARD_EXP_KEY,
+				'EXP-CORE-1073-Feb2023'
 			);
 		}
 	},
