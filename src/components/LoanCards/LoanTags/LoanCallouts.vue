@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-overflow-hidden" style="width:inherit;">
+	<div class="tw-overflow-hidden" style="width: inherit;">
 		<div
 			class="
 				tw-text-ellipsis
