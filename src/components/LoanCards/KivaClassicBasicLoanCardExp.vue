@@ -1,145 +1,147 @@
 <template>
 	<div
 		:id="`${loanId}-loan-card`"
-		class="tw-flex tw-flex-col"
+		class="tw-flex tw-flex-col tw-bg-primary tw-rounded tw-drop-shadow-md"
 		:class="{ 'loan-card-in-grid tw-px-2 tw-mb-4': inGrid, 'loan-card-active-hover': !allSharesReserved }"
 		:style="{ ...(!inGrid && { minWidth: '230px', maxWidth: cardWidth }) }"
 	>
-		<!-- Borrower image -->
-		<kv-loading-placeholder
-			v-if="isLoading"
-			class="tw-mb-1 tw-rounded" :style="{ width: '100%', height: '15.75rem' }"
-		/>
-		<div
-			v-else
-			class="tw-relative"
-			@click="showLoanDetails"
-		>
-			<router-link
-				:is="allSharesReserved ? 'span' : 'router-link'"
-				:to="customLoanDetails ? '' : `/lend/${loanId}`"
-				v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
-				class="tw-flex"
+		<div class="tw-m-1">
+			<!-- Borrower image -->
+			<kv-loading-placeholder
+				v-if="isLoading"
+				class="tw-mb-1 tw-rounded" :style="{ width: '100%', height: '15.75rem' }"
+			/>
+			<div
+				v-else
+				class="tw-relative"
+				@click="showLoanDetails"
 			>
-				<borrower-image
-					class="
+				<router-link
+					:is="allSharesReserved ? 'span' : 'router-link'"
+					:to="customLoanDetails ? '' : `/lend/${loanId}`"
+					v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
+					class="tw-flex"
+				>
+					<borrower-image
+						class="
 					tw-relative
 					tw-w-full
 					tw-bg-black
 					tw-rounded
 				"
-					:alt="`Photo of ${borrowerName}`"
-					:aspect-ratio="3 / 4"
-					:default-image="{ width: 336 }"
-					:hash="imageHash"
-					:images="[
-						{ width: largestImageWidth, viewSize: 1024 },
-						{ width: largestImageWidth, viewSize: 768 },
-						{ width: 416, viewSize: 480 },
-						{ width: 374, viewSize: 414 },
-						{ width: 335, viewSize: 375 },
-						{ width: 280 },
-					]"
-				/>
+						:alt="`Photo of ${borrowerName}`"
+						:aspect-ratio="3 / 4"
+						:default-image="{ width: 336 }"
+						:hash="imageHash"
+						:images="[
+							{ width: largestImageWidth, viewSize: 1024 },
+							{ width: largestImageWidth, viewSize: 768 },
+							{ width: 416, viewSize: 480 },
+							{ width: 374, viewSize: 414 },
+							{ width: 335, viewSize: 375 },
+							{ width: 280 },
+						]"
+					/>
 
-				<div v-if="countryName">
-					<summary-tag
-						class="tw-absolute tw-bottom-1 tw-left-1 tw-text-primary"
-						:city="city"
-						:state="state"
-						:country-name="countryName"
-					>
-						<kv-material-icon
-							class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
-							:icon="mdiMapMarker"
-						/>
-						{{ formattedLocation }}
-					</summary-tag>
-				</div>
-			</router-link>
-		</div>
-
-		<!-- Loan tag -->
-		<loan-tag-v2 v-if="showTags && !isLoading" :loan="loan" :amount-left="amountLeft" />
-
-		<!-- Loan use  -->
-		<div class="tw-grow tw-mb-1.5">
-			<kv-loading-paragraph
-				v-if="isLoading"
-				:style="{ width: '100%', height: '5.5rem' }"
-			/>
-
-			<router-link
-				v-else
-				:is="allSharesReserved ? 'span' : 'router-link'"
-				:to="customLoanDetails ? '' : `/lend/${loanId}`"
-				v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
-				class="loan-card-use tw-text-primary"
-			>
-				<loan-use
-					:use="loanUse"
-					:loan-amount="loanAmount"
-					:status="loanStatus"
-					:borrower-count="loanBorrowerCount"
-					:name="borrowerName"
-				/>
-			</router-link>
-		</div>
-
-		<!-- Matching text  -->
-		<loan-matching-text
-			v-if="!isLoading && loanMatchingText !== '' && !isMatchAtRisk"
-			class="tw-mb-1.5"
-			:matcher-name="loanMatchingText"
-			:match-ratio="loanMatchRatio"
-			:status="loanStatus"
-			:funded-amount="loanFundedAmount"
-			:reserved-amount="loanReservedAmount"
-			:loan-amount="loanAmount"
-		/>
-
-		<div class="tw-flex tw-justify-between tw-mt-2">
-			<!-- Fundraising -->
-			<div v-if="isLoading">
-				<kv-loading-placeholder
-					class="tw-mb-0.5"
-					:style="{ width: 40 + (Math.random() * 15) + '%', height: '1.3rem' }"
-				/>
-
-				<kv-loading-placeholder
-					class="tw-mb-1.5 tw-rounded"
-					:style="{ width: '100%', height: '0.5rem' }"
-				/>
+					<div v-if="countryName">
+						<summary-tag
+							class="tw-absolute tw-bottom-1 tw-left-1 tw-text-primary"
+							:city="city"
+							:state="state"
+							:country-name="countryName"
+						>
+							<kv-material-icon
+								class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
+								:icon="mdiMapMarker"
+							/>
+							{{ formattedLocation }}
+						</summary-tag>
+					</div>
+				</router-link>
 			</div>
 
-			<router-link
-				v-else
-				:is="allSharesReserved ? 'span' : 'router-link'"
-				:to="customLoanDetails ? '' : `/lend/${loanId}`"
-				v-kv-track-event="['Lending', 'click-Read more', 'Progress', loanId]"
-				class="loan-card-progress tw-my-1.5"
-			>
-				<loan-progress-group
-					:money-left="unreservedAmount"
-					:progress-percent="fundraisingPercent"
-					:enable-loan-card-exp="true"
+			<!-- Loan tag -->
+			<loan-tag-v2 v-if="showTags && !isLoading" :loan="loan" :amount-left="amountLeft" />
+
+			<!-- Loan use  -->
+			<div class="tw-grow tw-my-1.5">
+				<kv-loading-paragraph
+					v-if="isLoading"
+					:style="{ width: '100%', height: '5.5rem' }"
 				/>
-			</router-link>
 
-			<!-- CTA Button -->
-			<kv-loading-placeholder
-				v-if="isLoading"
-				class="tw-rounded tw-self-start" :style="{ width: '9rem', height: '3rem' }"
+				<router-link
+					v-else
+					:is="allSharesReserved ? 'span' : 'router-link'"
+					:to="customLoanDetails ? '' : `/lend/${loanId}`"
+					v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
+					class="loan-card-use tw-text-primary"
+				>
+					<loan-use
+						:use="loanUse"
+						:loan-amount="loanAmount"
+						:status="loanStatus"
+						:borrower-count="loanBorrowerCount"
+						:name="borrowerName"
+					/>
+				</router-link>
+			</div>
+
+			<!-- Matching text  -->
+			<loan-matching-text
+				v-if="!isLoading && loanMatchingText !== '' && !isMatchAtRisk"
+				class="tw-mb-1.5"
+				:matcher-name="loanMatchingText"
+				:match-ratio="loanMatchRatio"
+				:status="loanStatus"
+				:funded-amount="loanFundedAmount"
+				:reserved-amount="loanReservedAmount"
+				:loan-amount="loanAmount"
 			/>
 
-			<lend-cta-exp
-				v-else
-				:loan="loan"
-				:basket-items="basketItems"
-				:is-loading="isLoading"
-				:is-adding="isAdding"
-				@add-to-basket="addToBasket"
-			/>
+			<div class="tw-flex tw-justify-between tw-mt-2">
+				<!-- Fundraising -->
+				<div v-if="isLoading">
+					<kv-loading-placeholder
+						class="tw-mb-0.5"
+						:style="{ width: 40 + (Math.random() * 15) + '%', height: '1.3rem' }"
+					/>
+
+					<kv-loading-placeholder
+						class="tw-mb-1.5 tw-rounded"
+						:style="{ width: '100%', height: '0.5rem' }"
+					/>
+				</div>
+
+				<router-link
+					v-else
+					:is="allSharesReserved ? 'span' : 'router-link'"
+					:to="customLoanDetails ? '' : `/lend/${loanId}`"
+					v-kv-track-event="['Lending', 'click-Read more', 'Progress', loanId]"
+					class="loan-card-progress tw-my-1.5"
+				>
+					<loan-progress-group
+						:money-left="unreservedAmount"
+						:progress-percent="fundraisingPercent"
+						:enable-loan-card-exp="true"
+					/>
+				</router-link>
+
+				<!-- CTA Button -->
+				<kv-loading-placeholder
+					v-if="isLoading"
+					class="tw-rounded tw-self-start" :style="{ width: '9rem', height: '3rem' }"
+				/>
+
+				<lend-cta-exp
+					v-else
+					:loan="loan"
+					:basket-items="basketItems"
+					:is-loading="isLoading"
+					:is-adding="isAdding"
+					@add-to-basket="addToBasket"
+				/>
+			</div>
 		</div>
 	</div>
 </template>
