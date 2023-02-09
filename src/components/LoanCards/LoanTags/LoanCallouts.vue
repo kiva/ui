@@ -2,31 +2,32 @@
 	<div class="tw-overflow-hidden" style="width: inherit;">
 		<div
 			class="
-				tw-text-ellipsis
-				tw-overflow-hidden
-				tw-inline-block
+				tw-flex
 				tw-whitespace-nowrap
 				tw-w-full
 				tw-h-4
-				"
+			"
 		>
-			<template v-for="tag in callouts">
-				<span
-					:key="tag"
-					class="
-						tw-rounded-full
-						tw-bg-tertiary
-						tw-font-medium
-						tw-py-0.5
-						tw-px-1
-						tw-mr-0.5
-						tw-mb-0.5
-						tw-text-small
-					"
-				>
-					{{ tag }}
-				</span>
-			</template>
+			<span
+				v-for="tag in callouts"
+				:key="tag"
+				:title="tag"
+				class="
+					loan-callout
+					tw-text-ellipsis
+					tw-overflow-hidden
+					tw-rounded-full
+					tw-bg-tertiary
+					tw-font-medium
+					tw-py-0.5
+					tw-px-1
+					tw-mr-0.5
+					tw-mb-0.5
+					tw-text-small
+				"
+			>
+				{{ tag }}
+			</span>
 		</div>
 	</div>
 </template>
@@ -42,3 +43,9 @@ export default {
 	},
 };
 </script>
+
+<style scoped>
+.loan-callout {
+	max-width: 50%;
+}
+</style>
