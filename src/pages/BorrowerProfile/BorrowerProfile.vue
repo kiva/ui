@@ -31,6 +31,9 @@
 								:loan="loan"
 								:lender="lender"
 								:campaign="inPfp ? 'social_share_bp_pfp' : 'social_share_bp'"
+								:in-pfp="inPfp"
+								:pfp-min-lenders="pfpMinLenders"
+								:num-lenders="numLenders"
 							/>
 						</template>
 					</summary-card>
@@ -55,6 +58,9 @@
 								:loan="loan"
 								:lender="lender"
 								:campaign="inPfp ? 'social_share_bp_pfp' : 'social_share_bp'"
+								:in-pfp="inPfp"
+								:pfp-min-lenders="pfpMinLenders"
+								:num-lenders="numLenders"
 							/>
 						</template>
 					</lend-cta>

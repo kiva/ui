@@ -21,12 +21,14 @@
 				subtitle="Loans handpicked for you based on your lending history"
 				:loans="recommendedLoans"
 				:per-step="2"
+				:enable-loan-card-exp="enableLoanCardExp"
 				class="tw-pt-2"
 				@add-to-basket="trackCategory($event, 'recommended')"
 			/>
 
 			<quick-filters-section
 				class="tw-mt-6"
+				:enable-loan-card-exp="enableLoanCardExp"
 				@add-to-basket="trackCategory($event, 'quick-filters')"
 			/>
 
@@ -36,10 +38,14 @@
 				subtitle="Stretch your funds further with the help of our partners and Kivans just like you"
 				:loans="matchedLoans"
 				class="tw-pt-6 tw-pb-2"
+				:enable-loan-card-exp="enableLoanCardExp"
 				@add-to-basket="trackCategory($event, 'matched-lending')"
 			/>
 
-			<partner-spotlight-section class="tw-pt-6" />
+			<partner-spotlight-section
+				class="tw-pt-6"
+				:enable-loan-card-exp="enableLoanCardExp"
+			/>
 		</div>
 
 		<kv-toast
@@ -69,12 +75,12 @@ import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
 import { gql } from '@apollo/client';
 import WelcomeLightbox from '@/components/LoanFinding/WelcomeLightbox';
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experimentUtils';
 import KvToast from '~/@kiva/kv-components/vue/KvToast';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const EXP_KEY = 'loan_finding_page';
+const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
 
 export default {
 	name: 'LoanFinding',
@@ -101,6 +107,7 @@ export default {
 				{ id: 0 }, { id: 0 }, { id: 0 }
 			],
 			showLightbox: false,
+			enableLoanCardExp: false,
 		};
 	},
 	apollo: {
@@ -108,8 +115,6 @@ export default {
 		preFetch(config, client) {
 			return client.query({
 				query: userInfoQuery,
-			}).then(() => {
-				return client.query({ query: experimentQuery, variables: { id: EXP_KEY } });
 			});
 		},
 		result({ data }) {
@@ -184,6 +189,18 @@ export default {
 				EXP_KEY,
 				'EXP-CORE-854-Dec2022'
 			);
+		}
+
+		const loanCardExpData = getExperimentSettingCached(this.apollo, LOAN_CARD_EXP_KEY);
+		if (loanCardExpData.enabled) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				LOAN_CARD_EXP_KEY,
+				'EXP-CORE-1073-Feb2023'
+			);
+			this.enableLoanCardExp = version === 'b' ?? false;
 		}
 	},
 };
