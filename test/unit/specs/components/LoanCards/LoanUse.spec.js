@@ -135,4 +135,18 @@ describe('LoanUse', () => {
 
 		getByText('$100 to a member of Group Name helps to buy supplies.');
 	});
+
+	it('should display loan use with lower case first letter', () => {
+		const { getByText } = render(LoanUse, {
+			props: {
+				use: 'To buy supplies.',
+				loanAmount: '100',
+				status: 'fundraising',
+				borrowerCount: 2,
+				name: 'Group Name',
+			},
+		});
+
+		getByText('$100 to a member of Group Name helps to buy supplies.');
+	});
 });

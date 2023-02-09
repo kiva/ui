@@ -67,7 +67,7 @@ export default {
 				+ `${isGroup ? 'a member of ' : ''}`
 				+ `${this.name} `
 				+ `${this.isDirect ? `${this.helpLanguage} ` : ''}`
-				+ `${this.use}`;
+				+ `${this.use.charAt(0).toLowerCase() + this.use.slice(1)}`;
 		},
 	}
 };
