@@ -152,7 +152,12 @@ import numeral from 'numeral';
 import { mdiChevronRight, mdiMapMarker, mdiCheckCircleOutline } from '@mdi/js';
 import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
-import { isMatchAtRisk, readLoanFragment, watchLoanData } from '@/util/loanUtils';
+import {
+	isMatchAtRisk,
+	readLoanFragment,
+	watchLoanData,
+	loanCallouts
+} from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import LoanUse from '@/components/LoanCards/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
@@ -280,56 +285,7 @@ export default {
 	},
 	computed: {
 		loanCallouts() {
-			const callouts = [];
-			const activityName = this.loan?.activity.name ?? '';
-			const sectorName = this.loan?.sector.name ?? '';
-			const tags = this.loan?.tags.filter(tag => tag.charAt(0) === '#')
-				.map(tag => tag.substring(1)) ?? [];
-			const themes = this.loan?.themes ?? [];
-			const categories = {
-				ecoFriendly: tags.includes('Eco-friendly') || tags.includes('Sustainable Ag'),
-				refugeesIdps: themes.includes('Refugees/Displaced'),
-				singleParents: tags.includes('Single Parent')
-			};
-
-			// P1 Category
-			// Exp limited to: Eco-friendly, Refugees and IDPs, Single Parents
-			if (!this.categoryPageName) {
-				if (categories.ecoFriendly) {
-					callouts.push('Eco-friendly');
-				} else if (categories.refugeesIdps) {
-					callouts.push('Refugees and IDPs');
-				} else if (categories.singleParents) {
-					callouts.push('Single Parent');
-				}
-			}
-
-			// P2 Activity
-			if (this.categoryPageName.toUpperCase() !== activityName.toUpperCase()) {
-				callouts.push(activityName);
-			}
-
-			// P3 Sector
-			if (sectorName
-			&& (activityName.toUpperCase() !== sectorName.toUpperCase())
-			&& (sectorName.toUpperCase() !== this.categoryPageName.toUpperCase())
-			&& callouts.length < 2) {
-				callouts.push(sectorName);
-			}
-
-			// P4 Tag
-			if (!!tags.length && callouts.length < 2) {
-				const position = Math.floor(Math.random() * tags.length);
-				callouts.push(tags[position]);
-			}
-
-			// P5 Tag
-			if (!!themes.length && callouts.length < 2) {
-				const position = Math.floor(Math.random() * themes.length);
-				callouts.push(themes[position]);
-			}
-
-			return callouts;
+			return loanCallouts(this.loan, this.categoryPageName);
 		},
 		cardWidth() {
 			return this.useFullWidth ? '100%' : '374px';

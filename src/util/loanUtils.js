@@ -217,3 +217,56 @@ export function isBetween25And50(unreservedAmount) {
 export function isBetween25And500(unreservedAmount) {
 	return unreservedAmount < 500 && unreservedAmount >= 25;
 }
+
+export function loanCallouts(loan, categoryPageName) {
+	const callouts = [];
+	const activityName = loan?.activity.name ?? '';
+	const sectorName = loan?.sector.name ?? '';
+	const tags = loan?.tags.filter(tag => tag.charAt(0) === '#')
+		.map(tag => tag.substring(1)) ?? [];
+	const themes = loan?.themes ?? [];
+	const categories = {
+		ecoFriendly: tags.includes('Eco-friendly') || tags.includes('Sustainable Ag'),
+		refugeesIdps: themes.includes('Refugees/Displaced'),
+		singleParents: tags.includes('Single Parent')
+	};
+
+	// P1 Category
+	// Exp limited to: Eco-friendly, Refugees and IDPs, Single Parents
+	if (!categoryPageName) {
+		if (categories.ecoFriendly) {
+			callouts.push('Eco-friendly');
+		} else if (categories.refugeesIdps) {
+			callouts.push('Refugees and IDPs');
+		} else if (categories.singleParents) {
+			callouts.push('Single Parent');
+		}
+	}
+
+	// P2 Activity
+	if (categoryPageName.toUpperCase() !== activityName.toUpperCase()) {
+		callouts.push(activityName);
+	}
+
+	// P3 Sector
+	if (sectorName
+	&& (activityName.toUpperCase() !== sectorName.toUpperCase())
+	&& (sectorName.toUpperCase() !== categoryPageName.toUpperCase())
+	&& callouts.length < 2) {
+		callouts.push(sectorName);
+	}
+
+	// P4 Tag
+	if (!!tags.length && callouts.length < 2) {
+		const position = Math.floor(Math.random() * tags.length);
+		callouts.push(tags[position]);
+	}
+
+	// P5 Tag
+	if (!!themes.length && callouts.length < 2) {
+		const position = Math.floor(Math.random() * themes.length);
+		callouts.push(themes[position]);
+	}
+
+	return callouts;
+}
