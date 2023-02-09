@@ -91,7 +91,12 @@
 					<div
 						class="header
 							tw-grid tw-gap-x-2.5 lg:tw-gap-x-4 tw-items-center"
-						:class="{'header--mobile-open': searchOpen}"
+						:class="{
+							'header-lend-menu-button-exp': lendMenuButtonExp,
+							'header-lend-menu-button-exp-visitor': lendMenuButtonExp && isVisitor,
+							'header--mobile-open': searchOpen,
+							'mobile-lend-menu-button-exp': searchOpen && lendMenuButtonExp,
+						}"
 					>
 						<!-- Logo -->
 						<div class="header__logo">
@@ -106,26 +111,59 @@
 							</router-link>
 						</div>
 
-						<!-- Lend -->
-						<router-link
-							:id="lendMenuId"
-							to="/lend-by-category"
-							data-testid="header-lend"
-							class="header__button header__lend"
-							v-kv-track-event="['TopNav','click-Lend']"
-							@pointerenter.native.stop="onLendLinkPointerEnter"
-							@pointerleave.native.stop="onLendLinkPointerLeave"
-							@pointerup.native.stop="onLendLinkPointerUp"
-							@click.native.stop="onLendLinkClick"
-						>
-							<span class="tw-flex tw-items-center">Lend
-								<kv-material-icon
-									class="tw-w-3 tw-h-3 tw-transition-transform tw-duration-300"
-									:icon="mdiChevronDown"
-									:class="{'tw-rotate-180' : isLendMenuVisible}"
-								/>
-							</span>
-						</router-link>
+						<template v-if="lendMenuButtonExp">
+							<!-- Explore -->
+							<router-link
+								to="/lend-by-category"
+								data-testid="header-explore"
+								class="header__button header__explore"
+								v-kv-track-event="['TopNav','click-Lend']"
+							>
+								<span class="tw-hidden lg:tw-inline-block">Explore loans</span>
+								<span class="tw-inline-block lg:tw-hidden">Explore</span>
+							</router-link>
+
+							<!-- Categories -->
+							<div
+								data-testid="header-lend"
+								class="header__button header__lend !tw-hidden md:!tw-inline-flex"
+								@pointerenter.stop="onLendLinkPointerEnter"
+								@pointerleave.stop="onLendLinkPointerLeave"
+								@pointerup.stop="onLendLinkPointerUp"
+							>
+								<span class="tw-flex tw-items-center">Categories
+									<kv-material-icon
+										class="tw-w-3 tw-h-3 tw-transition-transform tw-duration-300"
+										:icon="mdiChevronDown"
+										:class="{'tw-rotate-180' : isLendMenuVisible}"
+									/>
+								</span>
+							</div>
+						</template>
+
+						<template v-else>
+							<!-- Lend -->
+							<router-link
+								:id="lendMenuId"
+								to="/lend-by-category"
+								data-testid="header-lend"
+								class="header__button header__lend"
+								v-kv-track-event="['TopNav','click-Lend']"
+								@pointerenter.native.stop="onLendLinkPointerEnter"
+								@pointerleave.native.stop="onLendLinkPointerLeave"
+								@pointerup.native.stop="onLendLinkPointerUp"
+								@click.native.stop="onLendLinkClick"
+							>
+								<span class="tw-flex tw-items-center">Lend
+									<kv-material-icon
+										class="tw-w-3 tw-h-3 tw-transition-transform tw-duration-300"
+										:icon="mdiChevronDown"
+										:class="{'tw-rotate-180' : isLendMenuVisible}"
+									/>
+								</span>
+							</router-link>
+						</template>
+
 						<transition name="kvfastfade">
 							<div
 								v-show="isLendMenuVisible"
@@ -156,7 +194,11 @@
 								tw--mx-2.5 tw-px-2.5 md:tw-mx-0 md:tw-px-0
 								tw-border-t tw-border-tertiary md:tw-border-t-0
 							"
-							:class="{'tw-hidden md:tw-block': !searchOpen}"
+							:class="{
+								'tw-hidden': !searchOpen || isVisitor,
+								'md:tw-block': !lendMenuButtonExp || searchOpen || !isVisitor,
+								'lg:tw-block': lendMenuButtonExp,
+							}"
 						>
 							<search-bar ref="search" />
 						</div>
@@ -278,8 +320,15 @@
 
 							<!-- Mobile Search Toggle -->
 							<button
-								class="header__button header__search-icon md:!tw-hidden"
-								v-show="!hideSearchInHeader && !isVisitor"
+								class="header__button header__search-icon"
+								:class="{
+									'!tw-hidden': isVisitor,
+									'!tw-inline-flex': !isVisitor,
+									'md:!tw-inline-flex': isVisitor,
+									'md:!tw-hidden': !lendMenuButtonExp || !isVisitor,
+									'lg:!tw-hidden': lendMenuButtonExp && isVisitor,
+								}"
+								v-show="!hideSearchInHeader"
 								data-testid="header-mobile-search-toggle"
 								:aria-expanded="searchOpen ? 'true' : 'false'"
 								:aria-pressed="searchOpen ? 'true' : 'false'"
@@ -478,10 +527,10 @@ import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
@@ -536,7 +585,8 @@ export default {
 			mdiChevronDown,
 			mdiMagnify,
 			userId: null,
-			hasEverLoggedIn: false
+			hasEverLoggedIn: false,
+			lendMenuButtonExp: false,
 		};
 	},
 	props: {
@@ -669,6 +719,8 @@ export default {
 
 		userHasLentBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
 		userHasDepositBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
+
+		this.initializeLendMenuButtonExp();
 	},
 	mounted() {
 		// MARS-246 Hotjar user attributes
@@ -785,7 +837,23 @@ export default {
 			if (!withinBoundary) {
 				this.toggleLendMenu(true);
 			}
-		}
+		},
+		initializeLendMenuButtonExp() {
+			const experiment = this.apollo.readFragment({
+				id: 'Experiment:lend_menu_buttons',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.lendMenuButtonExp = experiment.version === 'b';
+
+			if (experiment.version) {
+				this.$kvTrackEvent(
+					'Lend',
+					'EXP-CORE-1035-Feb-2023',
+					experiment.version
+				);
+			}
+		},
 	},
 	watch: {
 		isVisitor(newVal, oldVal) {
@@ -827,12 +895,17 @@ export default {
 
 /* CSS grid areas to manage position changes across breakpoints without markup duplication */
 .header__logo { grid-area: logo; }
+.header__explore { grid-area: explore; }
 .header__lend { grid-area: lend; }
 .header__search { grid-area: search; }
 .header__right-side { grid-area: right-side; }
 
 .header {
 	grid-template-areas: "logo lend right-side";
+	grid-template-columns: 1fr auto auto;
+}
+.header.header-lend-menu-button-exp {
+	grid-template-areas: "logo explore right-side";
 	grid-template-columns: 1fr auto auto;
 }
 
@@ -842,11 +915,41 @@ export default {
 		"search search search";
 	grid-template-columns: 1fr auto auto;
 }
+.header--mobile-open.mobile-lend-menu-button-exp {
+	grid-template-areas:
+		"logo explore right-side"
+		"search search search";
+	grid-template-columns: 1fr auto auto;
+}
+.header--mobile-open.header-lend-menu-button-exp-visitor {
+	grid-template-areas: "logo explore right-side";
+}
 
 @screen md {
 	.header {
 		grid-template-areas: "logo lend search right-side";
 		grid-template-columns: auto auto 1fr auto;
+	}
+	.header.header-lend-menu-button-exp {
+		grid-template-areas: "logo explore lend search right-side";
+		grid-template-columns: auto auto auto 1fr auto;
+	}
+	.header.header-lend-menu-button-exp-visitor {
+		grid-template-areas: "logo explore lend right-side";
+		grid-template-columns: auto auto 1fr auto;
+	}
+	.header--mobile-open.header-lend-menu-button-exp-visitor {
+		grid-template-areas:
+			"logo explore lend right-side"
+			"search search search search";
+		grid-template-columns: auto auto 1fr auto;
+	}
+}
+
+@screen lg {
+	.header.header-lend-menu-button-exp-visitor {
+		grid-template-areas: "logo explore lend search right-side";
+		grid-template-columns: auto auto auto 1fr auto;
 	}
 }
 </style>
