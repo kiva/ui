@@ -84,6 +84,9 @@
 					:name="borrowerName"
 				/>
 			</router-link>
+
+			<!-- Loan callouts -->
+			<loan-callouts :callouts="loanCallouts" class="tw-mt-1" />
 		</div>
 
 		<!-- Matching text  -->
@@ -149,7 +152,12 @@ import numeral from 'numeral';
 import { mdiChevronRight, mdiMapMarker, mdiCheckCircleOutline } from '@mdi/js';
 import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
-import { isMatchAtRisk, readLoanFragment, watchLoanData } from '@/util/loanUtils';
+import {
+	isMatchAtRisk,
+	readLoanFragment,
+	watchLoanData,
+	loanCallouts
+} from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import LoanUse from '@/components/LoanCards/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
@@ -162,6 +170,7 @@ import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import { setLendAmount } from '@/util/basketUtils';
 import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
+import LoanCallouts from '@/components/LoanCards/LoanTags/LoanCallouts';
 import LendCtaExp from '@/components/LoanCards/Buttons/LendCtaExp';
 import LoanTagV2 from '@/components/LoanCards/LoanTags/LoanTagV2';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
@@ -239,6 +248,10 @@ export default {
 			type: Number,
 			default: 3
 		},
+		categoryPageName: {
+			type: String,
+			default: '',
+		}
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],
@@ -255,6 +268,7 @@ export default {
 		ActionButton,
 		LendCtaExp,
 		LoanTagV2,
+		LoanCallouts,
 	},
 	data() {
 		return {
@@ -270,6 +284,9 @@ export default {
 		};
 	},
 	computed: {
+		loanCallouts() {
+			return loanCallouts(this.loan, this.categoryPageName);
+		},
 		cardWidth() {
 			return this.useFullWidth ? '100%' : '374px';
 		},
