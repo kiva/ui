@@ -904,6 +904,7 @@ export default {
 	grid-template-areas: "logo lend right-side";
 	grid-template-columns: 1fr auto auto;
 }
+
 .header.header-lend-menu-button-exp {
 	grid-template-areas: "logo explore right-side";
 	grid-template-columns: 1fr auto auto;
@@ -915,12 +916,14 @@ export default {
 		"search search search";
 	grid-template-columns: 1fr auto auto;
 }
+
 .header--mobile-open.mobile-lend-menu-button-exp {
 	grid-template-areas:
 		"logo explore right-side"
 		"search search search";
 	grid-template-columns: 1fr auto auto;
 }
+
 .header--mobile-open.header-lend-menu-button-exp-visitor {
 	grid-template-areas: "logo explore right-side";
 }
@@ -930,14 +933,17 @@ export default {
 		grid-template-areas: "logo lend search right-side";
 		grid-template-columns: auto auto 1fr auto;
 	}
+
 	.header.header-lend-menu-button-exp {
 		grid-template-areas: "logo explore lend search right-side";
 		grid-template-columns: auto auto auto 1fr auto;
 	}
+
 	.header.header-lend-menu-button-exp-visitor {
 		grid-template-areas: "logo explore lend right-side";
 		grid-template-columns: auto auto 1fr auto;
 	}
+
 	.header--mobile-open.header-lend-menu-button-exp-visitor {
 		grid-template-areas:
 			"logo explore lend right-side"
