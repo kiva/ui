@@ -80,7 +80,6 @@ export default {
 			isChannelsLoading: true,
 			showMGUpsellLink: false,
 			newMgEntrypointExp: false,
-			lendMenuButtonExp: false,
 		};
 	},
 	apollo: {
@@ -186,27 +185,9 @@ export default {
 				);
 			}
 		},
-		initializeLendMenuButtonExp() {
-			const experiment = this.apollo.readFragment({
-				id: 'Experiment:lend_menu_buttons',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			this.lendMenuButtonExp = experiment.version === 'b';
-
-			if (experiment.version) {
-				this.$kvTrackEvent(
-					'Lend',
-					'EXP-CORE-1035-Feb-2023',
-					experiment.version
-				);
-			}
-		},
 	},
 	mounted() {
 		this.initializeMGExp();
-
-		this.initializeLendMenuButtonExp();
 
 		this.$nextTick(() => {
 			this.showMGUpsellLink = true;
