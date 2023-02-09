@@ -45,6 +45,7 @@
 					:show-action-button="true"
 					:show-tags="enableLoanTags"
 					:in-grid="true"
+					:category-page-name="loanChannelName"
 				/>
 				<loan-card-controller
 					v-else

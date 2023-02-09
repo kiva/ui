@@ -1,3 +1,22 @@
+## [2.488.0](https://github.com/kiva/ui/compare/v2.487.0...v2.488.0) (2023-02-09)
+
+
+### Features
+
+* function to get loan callouts added to loanutils file ([1cba12c](https://github.com/kiva/ui/commit/1cba12cf9839b39ae77934470353a2618cd8d0ee))
+* loan callouts on loan cards ([edaafb4](https://github.com/kiva/ui/commit/edaafb4069617b3e6e29baee4fa5f2d9a936882a))
+
+
+### Bug Fixes
+
+* lint errors ([c78f862](https://github.com/kiva/ui/commit/c78f86296702447faf0a406d27c8d22dbedc6109))
+* loan callout ellipsis ([aee7ece](https://github.com/kiva/ui/commit/aee7eceff80f7e34839caa915b6baf95d39c676e))
+* merge conflict ([f0190d9](https://github.com/kiva/ui/commit/f0190d97d1c479ae71e2f62cf2f4daa33c18ca11))
+* pause ([bb58e59](https://github.com/kiva/ui/commit/bb58e59339986b8ff07681bab0a7277422be565f))
+* pr updates ([6d21aaa](https://github.com/kiva/ui/commit/6d21aaa7b9fbb4eef00145734d82fc84473c35d1))
+* remove unnecessary code ([b6194e2](https://github.com/kiva/ui/commit/b6194e26f3315d5a5b2787966c9278ba68e25674))
+* unused class removed and prop passed to helpmechoosewrapper component ([c4f52d1](https://github.com/kiva/ui/commit/c4f52d1be1a3283a775fde3521125729d19622c4))
+
 ## [2.487.0](https://github.com/kiva/ui/compare/v2.486.0...v2.487.0) (2023-02-09)
 
 
