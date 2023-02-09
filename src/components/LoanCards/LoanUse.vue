@@ -7,6 +7,8 @@
 <script>
 import numeral from 'numeral';
 
+const DIRECT = 'direct';
+
 export default {
 	name: 'LoanUse',
 	props: {
@@ -38,6 +40,10 @@ export default {
 			type: Number,
 			default: 100,
 		},
+		distributionModel: {
+			type: String,
+			default: DIRECT
+		},
 	},
 	computed: {
 		helpLanguage() {
@@ -45,6 +51,9 @@ export default {
 				return 'helps';
 			}
 			return 'helped';
+		},
+		isDirect() {
+			return this.distributionModel === DIRECT;
 		},
 		loanUse() {
 			if (this.anonymizationLevel === 'full' || this.use.length === 0) {
@@ -54,10 +63,11 @@ export default {
 			const isGroup = this.borrowerCount > 1;
 
 			return `${numeral(this.loanAmount).format('$0,0')} `
-				+ `${this.helpLanguage} `
+				+ `${this.isDirect ? 'to' : this.helpLanguage} `
 				+ `${isGroup ? 'a member of ' : ''}`
 				+ `${this.name} `
-				+ `${this.use}`;
+				+ `${this.isDirect ? `${this.helpLanguage} ` : ''}`
+				+ `${this.use.charAt(0).toLowerCase() + this.use.slice(1)}`;
 		},
 	}
 };
