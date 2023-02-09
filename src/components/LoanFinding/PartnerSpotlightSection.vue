@@ -7,7 +7,7 @@
 		<lending-category-section
 			title="Support Borrowers from Fundación Pro Mujer"
 			:loans="mfiRecommendationsLoans"
-			enable-loan-card-exp="enableLoanCardExp"
+			:enable-loan-card-exp="enableLoanCardExp"
 		/>
 
 		<div class="tw-flex tw-justify-center tw-mt-4">
