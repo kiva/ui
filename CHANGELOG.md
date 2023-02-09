@@ -1,3 +1,15 @@
+## [2.487.0](https://github.com/kiva/ui/compare/v2.486.0...v2.487.0) (2023-02-09)
+
+
+### Features
+
+* header lend menu button experiment ([27f3e6b](https://github.com/kiva/ui/commit/27f3e6bce3719b2cd805c28d7dc27609b7460fb0))
+
+
+### Bug Fixes
+
+* linting issues ([f85ff0e](https://github.com/kiva/ui/commit/f85ff0eb4ff7ce45d7c662044283949960096c1e))
+
 ## [2.486.0](https://github.com/kiva/ui/compare/v2.485.0...v2.486.0) (2023-02-09)
 
 
