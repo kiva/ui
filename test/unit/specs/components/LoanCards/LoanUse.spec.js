@@ -30,6 +30,7 @@ describe('LoanUse', () => {
 				loanAmount: '100',
 				status: 'fundraising',
 				name: 'Bob',
+				distributionModel: 'fieldPartner',
 			},
 		});
 
@@ -43,6 +44,7 @@ describe('LoanUse', () => {
 				loanAmount: '100',
 				status: 'inactive',
 				name: 'Bob',
+				distributionModel: 'fieldPartner',
 			},
 		});
 
@@ -56,6 +58,7 @@ describe('LoanUse', () => {
 				loanAmount: '100',
 				status: 'reviewed',
 				name: 'Bob',
+				distributionModel: 'fieldPartner',
 			},
 		});
 
@@ -69,6 +72,7 @@ describe('LoanUse', () => {
 				loanAmount: '100',
 				status: 'other',
 				name: 'Bob',
+				distributionModel: 'fieldPartner',
 			},
 		});
 
@@ -83,6 +87,7 @@ describe('LoanUse', () => {
 				status: 'fundraising',
 				borrowerCount: 2,
 				name: 'Group Name',
+				distributionModel: 'fieldPartner',
 			},
 		});
 
@@ -102,5 +107,32 @@ describe('LoanUse', () => {
 		});
 
 		expect(container.getElementsByClassName('tw-line-clamp-4').length).toBe(1);
+	});
+
+	it('should display loan use for direct single borrower loan', () => {
+		const { getByText } = render(LoanUse, {
+			props: {
+				use: 'to buy supplies.',
+				loanAmount: '100',
+				status: 'fundraising',
+				name: 'Bob',
+			},
+		});
+
+		getByText('$100 to Bob helps to buy supplies.');
+	});
+
+	it('should display loan use for direct group loan', () => {
+		const { getByText } = render(LoanUse, {
+			props: {
+				use: 'to buy supplies.',
+				loanAmount: '100',
+				status: 'fundraising',
+				borrowerCount: 2,
+				name: 'Group Name',
+			},
+		});
+
+		getByText('$100 to a member of Group Name helps to buy supplies.');
 	});
 });

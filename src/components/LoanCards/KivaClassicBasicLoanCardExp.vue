@@ -82,6 +82,7 @@
 					:status="loanStatus"
 					:borrower-count="loanBorrowerCount"
 					:name="borrowerName"
+					:distribution-model="distributionModel"
 				/>
 			</router-link>
 		</div>
