@@ -17,12 +17,24 @@
 			>
 				<template v-for="(loan, index) in loans" #[`slide${index}`]>
 					<kiva-classic-basic-loan-card-exp
-						:key="index"
+						v-if="enableLoanCardExp"
+						:key="`new-card-${index}`"
 						:loan-id="loan.id"
 						:show-action-button="true"
 						:show-tags="true"
 						:use-full-width="true"
 						:per-row="perStep"
+						@add-to-basket="addToBasket"
+					/>
+					<kiva-classic-basic-loan-card
+						v-else
+						:key="index"
+						:item-index="index"
+						:loan-id="loan.id"
+						:show-action-button="true"
+						:show-tags="true"
+						:use-full-width="true"
+						class="tw-mr-2"
 						@add-to-basket="addToBasket"
 					/>
 				</template>
@@ -33,13 +45,15 @@
 
 <script>
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
+import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
 	name: 'LendingCategorySection',
 	components: {
 		KvCarousel,
-		KivaClassicBasicLoanCardExp
+		KivaClassicBasicLoanCardExp,
+		KivaClassicBasicLoanCard
 	},
 	props: {
 		title: {
@@ -58,6 +72,10 @@ export default {
 		perStep: {
 			type: Number,
 			default: 3
+		},
+		enableLoanCardExp: {
+			type: Boolean,
+			default: false
 		}
 	},
 	computed: {

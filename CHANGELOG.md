@@ -1,3 +1,42 @@
+## [2.486.0](https://github.com/kiva/ui/compare/v2.485.0...v2.486.0) (2023-02-09)
+
+
+### Features
+
+* modified bp share language for loans in pfp ([8682cf0](https://github.com/kiva/ui/commit/8682cf003c7ee9142a90ad2f3524d59054d1dad3))
+
+## [2.485.0](https://github.com/kiva/ui/compare/v2.484.1...v2.485.0) (2023-02-09)
+
+
+### Features
+
+* ability to swap cards added to lending home sections ([dd04ee2](https://github.com/kiva/ui/commit/dd04ee29ce43072ed171b5ff66b5a6d7f8be6dc8))
+* new loan card exp setup added to lending home page ([0a14696](https://github.com/kiva/ui/commit/0a14696b2e308ff73edb67a5349f5497ed7bb9db))
+
+
+### Bug Fixes
+
+* dynamic prop added to spotlight component ([de7b51f](https://github.com/kiva/ui/commit/de7b51fedc3d1a23783effc6b470e9eb83573b8d))
+
+### [2.484.1](https://github.com/kiva/ui/compare/v2.484.0...v2.484.1) (2023-02-07)
+
+
+### Bug Fixes
+
+* add strict cache-control headers to private pages ([babd638](https://github.com/kiva/ui/commit/babd638701f893f07867f7a77e923813e90213d5))
+
+## [2.484.0](https://github.com/kiva/ui/compare/v2.483.0...v2.484.0) (2023-02-07)
+
+
+### Features
+
+* new promo grid card added for new loan cards experiment ([9749863](https://github.com/kiva/ui/commit/974986340c7ec608a3a44884c4f9e73e04b78895))
+
+
+### Bug Fixes
+
+* scss code removed from new promo loan card ([024d9b9](https://github.com/kiva/ui/commit/024d9b9f0e6e52d9e0ee57e2c8e53c4301b4fde9))
+
 ## [2.483.0](https://github.com/kiva/ui/compare/v2.482.0...v2.483.0) (2023-02-07)
 
 
