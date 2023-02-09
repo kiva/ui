@@ -1,3 +1,10 @@
+## [2.486.0](https://github.com/kiva/ui/compare/v2.485.0...v2.486.0) (2023-02-09)
+
+
+### Features
+
+* modified bp share language for loans in pfp ([8682cf0](https://github.com/kiva/ui/commit/8682cf003c7ee9142a90ad2f3524d59054d1dad3))
+
 ## [2.485.0](https://github.com/kiva/ui/compare/v2.484.1...v2.485.0) (2023-02-09)
 
 
