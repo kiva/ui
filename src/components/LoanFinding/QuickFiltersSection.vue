@@ -32,15 +32,28 @@
 				</h2>
 			</div>
 			<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-mt-2">
-				<kiva-classic-basic-loan-card-exp
-					v-for="(loan, index) in loans"
-					:key="index"
-					:loan-id="loan.id"
-					:show-action-button="true"
-					:use-full-width="true"
-					:show-tags="true"
-					@add-to-basket="addToBasket"
-				/>
+				<template v-for="(loan, index) in loans">
+					<kiva-classic-basic-loan-card-exp
+						v-if="enableLoanCardExp"
+						:key="`new-card-${index}`"
+						:loan-id="loan.id"
+						:show-action-button="true"
+						:use-full-width="true"
+						:show-tags="true"
+						@add-to-basket="addToBasket"
+					/>
+					<kiva-classic-basic-loan-card
+						v-else
+						:key="index"
+						:item-index="index"
+						:loan-id="loan.id"
+						:show-action-button="true"
+						:show-tags="true"
+						:use-full-width="true"
+						class="tw-mr-2"
+						@add-to-basket="addToBasket"
+					/>
+				</template>
 			</div>
 			<div class="tw-w-full tw-my-4">
 				<kv-pagination
@@ -75,6 +88,7 @@ import { runFacetsQueries, fetchLoanFacets, runLoansQuery } from '@/util/loanSea
 import { fetchCategories, FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
 import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
+import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import KvPagination from '@/components/Kv/KvPagination';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -83,10 +97,17 @@ export default {
 	components: {
 		QuickFilters,
 		KivaClassicBasicLoanCardExp,
+		KivaClassicBasicLoanCard,
 		KvPagination,
 		KvButton
 	},
 	inject: ['apollo'],
+	props: {
+		enableLoanCardExp: {
+			type: Boolean,
+			default: false
+		}
+	},
 	data() {
 		return {
 			totalCount: 0,
