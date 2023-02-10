@@ -73,7 +73,6 @@ import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
 import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSection';
 import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
-import { gql } from '@apollo/client';
 import WelcomeLightbox from '@/components/LoanFinding/WelcomeLightbox';
 import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experimentUtils';
 import KvToast from '~/@kiva/kv-components/vue/KvToast';
@@ -136,22 +135,12 @@ export default {
 			this.recommendedLoans = loans;
 		},
 		async getMatchedLoans() {
-			// TODO: replace with FLSS query once "isMatchable" is stable in FLSS
-			const { data } = await this.apollo.query({
-				query: gql`
-					query lendMatchingData {
-						lend {
-							loans(filters: { isMatched: true }, limit: 9) {
-								values {
-									id
-								}
-							}
-						}
-					}
-				`,
-			});
-
-			this.matchedLoans = data?.lend?.loans?.values ?? [];
+			const { loans } = await runLoansQuery(
+				this.apollo,
+				{ isMatchable: true, sortBy: 'personalized', pageLimit: 9 },
+				FLSS_ORIGIN_LENDING_HOME
+			);
+			this.matchedLoans = loans;
 		},
 		trackCategory({ success }, category) {
 			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', `${category}-lending-home`);
@@ -161,7 +150,7 @@ export default {
 		},
 		showToast() {
 			if (!this.cookieStore.get('lending-home-toast')) {
-				this.$refs.welcomeToastMessage.show('', 'kiva-logo', true);
+				this.$refs.welcomeToastMessage.show('', 'kiva-logo', false, 10000);
 				this.cookieStore.set('lending-home-toast', true);
 				this.$kvTrackEvent('event-tracking', 'show', 'lending-home-toast-showed');
 			}
