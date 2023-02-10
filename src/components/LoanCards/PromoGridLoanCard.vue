@@ -84,13 +84,15 @@ export default {
 @import 'settings';
 
 .promo-grid-card-container {
-	padding-left: .9375rem;
-	padding-right: .9375rem;
+	padding-left: 0.625rem;
+    padding-right: 0.625rem;
 	padding-bottom: 1.25rem;
 }
 
 @media (min-width: 30.0625em) {
 	.promo-grid-card-container {
+		padding-left: .9375rem;
+		padding-right: .9375rem;
 		padding-bottom: 1.875rem;
 	}
 }
