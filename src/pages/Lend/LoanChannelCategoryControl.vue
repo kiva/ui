@@ -53,7 +53,7 @@
 			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-1"></div>
 			<div v-if="loans.length > 0">
 				<div v-if="!displayLoanPromoCard">
-					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3" :class="{'tw-gap-2 tw-px-2' : enableLoanCardExp}">
+					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3" :class="{'tw-gap-2 tw-px-1 md:tw-px-2' : enableLoanCardExp}">
 						<template v-for="(loan, index) in loans">
 							<kiva-classic-basic-loan-card-exp
 								v-if="enableLoanCardExp"
@@ -64,6 +64,7 @@
 								:show-tags="enableLoanTags"
 								:in-grid="false"
 								:category-page-name="loanChannelName"
+								:use-full-width="true"
 							/>
 							<loan-card-controller
 								v-else
@@ -92,7 +93,7 @@
 					/>
 				</div>
 				<div v-else>
-					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3" :class="{'tw-gap-2 tw-px-2' : enableLoanCardExp}">
+					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3" :class="{'tw-gap-2 tw-px-1 md:tw-px-2' : enableLoanCardExp}">
 						<template v-for="(loan, index) in firstLoan">
 							<kiva-classic-basic-loan-card-exp
 								v-if="enableLoanCardExp"
@@ -103,6 +104,7 @@
 								:show-tags="enableLoanTags"
 								:in-grid="false"
 								:category-page-name="loanChannelName"
+								:use-full-width="true"
 							/>
 							<loan-card-controller
 								v-else
@@ -136,6 +138,7 @@
 								:show-tags="enableLoanTags"
 								:in-grid="false"
 								:category-page-name="loanChannelName"
+								:use-full-width="true"
 							/>
 							<loan-card-controller
 								v-else

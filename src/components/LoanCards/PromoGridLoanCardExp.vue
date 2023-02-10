@@ -19,7 +19,7 @@
 				</p>
 				<router-link
 					style="background: #212121; color: #F5F5F5;"
-					class="tw-rounded tw-block tw-mt-2 tw-px-3 tw-py-1.5 tw-text-center tw-w-auto"
+					class="tw-rounded tw-block tw-mt-2 tw-px-3 tw-py-1.5 tw-mb-1 tw-text-center tw-w-auto"
 					:to="categoryUrl"
 					v-kv-track-event="['Lending', 'PromoGridCard-click-Learn more', 'CASH-1426 Dec2019']"
 				>

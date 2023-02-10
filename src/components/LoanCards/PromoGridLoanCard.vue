@@ -1,32 +1,34 @@
 <template>
-	<div
-		class="promo-grid-card tw-bg-primary tw-border tw-border-tertiary"
-		:class="compact ? 'compact': ''"
-	>
-		<kv-responsive-image
-			class="promo-background-image"
-			:images="backgroundImage" loading="lazy" alt=""
-		/>
-		<div class="promo-content-wrapper tw-text-white">
-			<div class="promo-content">
-				<h3
-					class="promo-content-title tw-mb-1"
-					:class="compact ? 'tw-text-h3' : 'tw-text-h2'"
-				>
-					Make a<br class="su">monthly impact
-				</h3>
-				<p v-if="categoryLabel">
-					We’ll lend to {{ categoryLabel }} for you every month with a Monthly Good subscription.
-				</p>
-				<p v-else>
-					We’ll make a loan for you every month with a Monthly Good subscription.
-				</p>
-				<kv-button
-					:to="categoryUrl"
-					v-kv-track-event="['Lending', 'PromoGridCard-click-Learn more', 'CASH-1426 Dec2019']"
-				>
-					Learn more
-				</kv-button>
+	<div class="tw-mb-3 md:tw-mb-4 tw-px-1.5">
+		<div
+			class="promo-grid-card tw-bg-primary tw-border tw-border-tertiary"
+			:class="compact ? 'compact': ''"
+		>
+			<kv-responsive-image
+				class="promo-background-image"
+				:images="backgroundImage" loading="lazy" alt=""
+			/>
+			<div class="promo-content-wrapper tw-text-white">
+				<div class="promo-content">
+					<h3
+						class="promo-content-title tw-mb-1"
+						:class="compact ? 'tw-text-h3' : 'tw-text-h2'"
+					>
+						Make a<br class="su">monthly impact
+					</h3>
+					<p v-if="categoryLabel">
+						We’ll lend to {{ categoryLabel }} for you every month with a Monthly Good subscription.
+					</p>
+					<p v-else>
+						We’ll make a loan for you every month with a Monthly Good subscription.
+					</p>
+					<kv-button
+						:to="categoryUrl"
+						v-kv-track-event="['Lending', 'PromoGridCard-click-Learn more', 'CASH-1426 Dec2019']"
+					>
+						Learn more
+					</kv-button>
+				</div>
 			</div>
 		</div>
 	</div>

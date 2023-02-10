@@ -1,7 +1,7 @@
 <template>
 	<div
 		:id="`${loanId}-loan-card`"
-		class="tw-flex tw-flex-col tw-p-1 tw-bg-white tw-rounded"
+		class="tw-flex tw-flex-col tw-p-1 tw-bg-white tw-rounded tw-w-full"
 		:class="{ 'loan-card-in-grid tw-px-1': inGrid, 'loan-card-active-hover': !allSharesReserved }"
 		style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);"
 		:style="{ ...(!inGrid && { minWidth: '230px', maxWidth: cardWidth }) }"
@@ -45,13 +45,14 @@
 
 				<div v-if="countryName">
 					<summary-tag
+						id="locationPill"
 						class="tw-absolute tw-bottom-1 tw-left-1 tw-text-primary"
 						:city="city"
 						:state="state"
 						:country-name="countryName"
 					>
 						<kv-material-icon
-							class="tw-h-2 tw-w-2 tw-mr-0.5"
+							class="tw-h-2 tw-w-2"
 							:icon="mdiMapMarker"
 						/>
 						{{ formattedLocation }}
@@ -118,6 +119,8 @@
 					:money-left="unreservedAmount"
 					:progress-percent="fundraisingPercent"
 					:enable-loan-card-exp="true"
+					class="tw-text-black"
+					id="loanProgress"
 				/>
 			</router-link>
 
@@ -490,6 +493,16 @@ export default {
 .loan-card-progress:hover,
 .loan-card-progress:focus {
 	@apply tw-no-underline;
+}
+
+#locationPill {
+	background-color: #fff;
+	padding: 2px 6px;
+	text-transform: capitalize;
+}
+
+#loanProgress >>> h4 {
+	text-transform: lowercase;
 }
 
 /* TODO: refactor to tw classes/breakpoints when foundation classes removed from loan grid */

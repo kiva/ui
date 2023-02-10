@@ -36,7 +36,10 @@
 			/>
 		</div>
 
-		<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-mb-2" :class="{'tw-gap-3 tw-px-2' : enableLoanCardExp}">
+		<div
+			class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-mb-2"
+			:class="{'tw-gap-3 tw-px-2' : enableLoanCardExp}"
+		>
 			<template v-for="loan in remainingLoans">
 				<kiva-classic-basic-loan-card-exp
 					v-if="enableLoanCardExp"
@@ -46,6 +49,7 @@
 					:show-tags="enableLoanTags"
 					:in-grid="false"
 					:category-page-name="loanChannelName"
+					:use-full-width="true"
 				/>
 				<loan-card-controller
 					v-else
