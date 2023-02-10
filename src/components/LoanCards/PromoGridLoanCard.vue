@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-mb-3 md:tw-mb-4 tw-px-1.5">
+	<div class="promo-grid-card-container">
 		<div
 			class="promo-grid-card tw-bg-primary tw-border tw-border-tertiary"
 			:class="compact ? 'compact': ''"
@@ -82,6 +82,18 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+
+.promo-grid-card-container {
+	padding-left: .9375rem;
+	padding-right: .9375rem;
+	padding-bottom: 1.25rem;
+}
+
+@media (min-width: 30.0625em) {
+	.promo-grid-card-container {
+		padding-bottom: 1.875rem;
+	}
+}
 
 .promo-grid-card {
 	height: 100%;
