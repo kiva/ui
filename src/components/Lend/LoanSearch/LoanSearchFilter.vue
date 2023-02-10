@@ -248,11 +248,12 @@ export default {
 				filterConfig.config.partnerAvgProfitability.uiConfig.stateKey,
 			].includes(filterConfig.config[key].uiConfig.stateKey);
 
-			// Paging and activities filters are not currently part of the filter panel
+			// These filters are not currently part of the filter panel
 			const hiddenFilters = [
 				filterConfig.config.pageOffset.uiConfig.stateKey,
 				filterConfig.config.pageLimit.uiConfig.stateKey,
 				filterConfig.config.activities.uiConfig.stateKey,
+				filterConfig.config.isMatchable.uiConfig.stateKey,
 			].includes(filterConfig.config[key].uiConfig.stateKey);
 
 			return !hiddenFilters && (this.extendFlssFilters || !isExperimentFilter);

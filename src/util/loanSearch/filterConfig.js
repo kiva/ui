@@ -15,6 +15,7 @@ import partnerRiskRating from '@/util/loanSearch/filters/partnerRiskRating';
 import partnerDefaultRate from '@/util/loanSearch/filters/partnerDefaultRate';
 import partnerAvgProfitability from '@/util/loanSearch/filters/partnerAvgProfitability';
 import activities from '@/util/loanSearch/filters/activities';
+import isMatchable from '@/util/loanSearch/filters/isMatchable';
 
 /**
  * Configuration for the lend/filter FLSS-driven page
@@ -67,6 +68,7 @@ const config = {
 	partnerDefaultRate,
 	partnerAvgProfitability,
 	activities,
+	isMatchable,
 };
 
 /**
