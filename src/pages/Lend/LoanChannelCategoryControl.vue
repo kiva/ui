@@ -51,29 +51,31 @@
 		<div class="row tw-relative">
 			<!-- eslint-disable max-len -->
 			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-1"></div>
-			<div class="columns small-12" v-if="loans.length > 0">
-				<div v-if="!displayLoanPromoCard" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-					<template v-for="(loan, index) in loans">
-						<kiva-classic-basic-loan-card-exp
-							v-if="enableLoanCardExp"
-							:item-index="index"
-							:key="`classic-${loan.id}`"
-							:loan-id="loan.id"
-							:show-action-button="true"
-							:show-tags="enableLoanTags"
-							:in-grid="true"
-							:category-page-name="loanChannelName"
-						/>
-						<loan-card-controller
-							v-else
-							:items-in-basket="itemsInBasket"
-							:is-visitor="isVisitor"
-							:key="`controller-${loan.id}`"
-							:loan="loan"
-							loan-card-type="GridLoanCard"
-							:show-tags="enableLoanTags"
-						/>
-					</template>
+			<div v-if="loans.length > 0">
+				<div v-if="!displayLoanPromoCard">
+					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3" :class="{'tw-gap-2 tw-px-2' : enableLoanCardExp}">
+						<template v-for="(loan, index) in loans">
+							<kiva-classic-basic-loan-card-exp
+								v-if="enableLoanCardExp"
+								:item-index="index"
+								:key="`classic-${loan.id}`"
+								:loan-id="loan.id"
+								:show-action-button="true"
+								:show-tags="enableLoanTags"
+								:in-grid="false"
+								:category-page-name="loanChannelName"
+							/>
+							<loan-card-controller
+								v-else
+								:items-in-basket="itemsInBasket"
+								:is-visitor="isVisitor"
+								:key="`controller-${loan.id}`"
+								:loan="loan"
+								loan-card-type="GridLoanCard"
+								:show-tags="enableLoanTags"
+							/>
+						</template>
+					</div>
 
 					<helpme-choose-wrapper
 						v-if="showHelpMeChooseFeat"
@@ -85,32 +87,34 @@
 						:loans="helpMeChooseLoans"
 						@update="getHelpMeChooseLoans($event)"
 						:is-loading="isLoadingHC"
+						:enable-loan-tags="enableLoanTags"
+						:enable-loan-card-exp="enableLoanCardExp"
 					/>
 				</div>
-				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-					<template v-for="(loan, index) in firstLoan">
-						<kiva-classic-basic-loan-card-exp
-							v-if="enableLoanCardExp"
-							:item-index="index"
-							:key="`classic-${loan.id}`"
-							:loan-id="loan.id"
-							:show-action-button="true"
-							:show-tags="enableLoanTags"
-							:in-grid="true"
-							:category-page-name="loanChannelName"
-						/>
-						<loan-card-controller
-							v-else
-							:items-in-basket="itemsInBasket"
-							:is-visitor="isVisitor"
-							:key="`controller-${loan.id}`"
-							:loan="loan"
-							loan-card-type="GridLoanCard"
-							:show-tags="enableLoanTags"
-						/>
-					</template>
+				<div v-else>
+					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3" :class="{'tw-gap-2 tw-px-2' : enableLoanCardExp}">
+						<template v-for="(loan, index) in firstLoan">
+							<kiva-classic-basic-loan-card-exp
+								v-if="enableLoanCardExp"
+								:item-index="index"
+								:key="`classic-${loan.id}`"
+								:loan-id="loan.id"
+								:show-action-button="true"
+								:show-tags="enableLoanTags"
+								:in-grid="false"
+								:category-page-name="loanChannelName"
+							/>
+							<loan-card-controller
+								v-else
+								:items-in-basket="itemsInBasket"
+								:is-visitor="isVisitor"
+								:key="`controller-${loan.id}`"
+								:loan="loan"
+								loan-card-type="GridLoanCard"
+								:show-tags="enableLoanTags"
+							/>
+						</template>
 
-					<div class="column column-block">
 						<promo-grid-loan-card-exp
 							v-if="enableLoanCardExp"
 							:category-url="mgTargetCategory.url"
@@ -121,29 +125,29 @@
 							:category-url="mgTargetCategory.url"
 							:category-label="mgTargetCategory.label"
 						/>
-					</div>
 
-					<template v-for="(loan, index) in remainingLoans">
-						<kiva-classic-basic-loan-card-exp
-							v-if="enableLoanCardExp"
-							:item-index="index"
-							:key="`classic-${loan.id}`"
-							:loan-id="loan.id"
-							:show-action-button="true"
-							:show-tags="enableLoanTags"
-							:in-grid="true"
-							:category-page-name="loanChannelName"
-						/>
-						<loan-card-controller
-							v-else
-							:items-in-basket="itemsInBasket"
-							:is-visitor="isVisitor"
-							:key="`controller-${loan.id}`"
-							:loan="loan"
-							loan-card-type="GridLoanCard"
-							:show-tags="enableLoanTags"
-						/>
-					</template>
+						<template v-for="(loan, index) in remainingLoans">
+							<kiva-classic-basic-loan-card-exp
+								v-if="enableLoanCardExp"
+								:item-index="index"
+								:key="`classic-${loan.id}`"
+								:loan-id="loan.id"
+								:show-action-button="true"
+								:show-tags="enableLoanTags"
+								:in-grid="false"
+								:category-page-name="loanChannelName"
+							/>
+							<loan-card-controller
+								v-else
+								:items-in-basket="itemsInBasket"
+								:is-visitor="isVisitor"
+								:key="`controller-${loan.id}`"
+								:loan="loan"
+								loan-card-type="GridLoanCard"
+								:show-tags="enableLoanTags"
+							/>
+						</template>
+					</div>
 
 					<helpme-choose-wrapper
 						v-if="showHelpMeChooseFeat"
