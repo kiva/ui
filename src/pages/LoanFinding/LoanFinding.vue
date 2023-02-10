@@ -150,7 +150,7 @@ export default {
 		},
 		showToast() {
 			if (!this.cookieStore.get('lending-home-toast')) {
-				this.$refs.welcomeToastMessage.show('', 'kiva-logo', true);
+				this.$refs.welcomeToastMessage.show('', 'kiva-logo', false, 10000);
 				this.cookieStore.set('lending-home-toast', true);
 				this.$kvTrackEvent('event-tracking', 'show', 'lending-home-toast-showed');
 			}
