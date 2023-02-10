@@ -62,7 +62,6 @@
 								:loan-id="loan.id"
 								:show-action-button="true"
 								:show-tags="enableLoanTags"
-								:in-grid="false"
 								:category-page-name="loanChannelName"
 								:use-full-width="true"
 							/>
@@ -102,7 +101,6 @@
 								:loan-id="loan.id"
 								:show-action-button="true"
 								:show-tags="enableLoanTags"
-								:in-grid="false"
 								:category-page-name="loanChannelName"
 								:use-full-width="true"
 							/>
@@ -136,7 +134,6 @@
 								:loan-id="loan.id"
 								:show-action-button="true"
 								:show-tags="enableLoanTags"
-								:in-grid="false"
 								:category-page-name="loanChannelName"
 								:use-full-width="true"
 							/>

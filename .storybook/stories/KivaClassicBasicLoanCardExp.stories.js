@@ -44,7 +44,6 @@ const story = (args = {}, isLoading = false, extraLoanProps = {}, extraData = {}
 				:show-action-button="showActionButton"
 				:use-full-width="useFullWidth"
 				:show-tags="showTags"
-				:in-grid="inGrid"
 				:per-row="perRow"
 			/>
 		`,
@@ -79,11 +78,6 @@ export const UseFullWidth = story({
 export const ShowTags = story({
 	loanId: loan.id,
 	showTags: true
-});
-
-export const InGrid = story({
-	loanId: loan.id,
-	inGrid: true
 });
 
 export const AllSharesReserved = story({

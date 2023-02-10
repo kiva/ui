@@ -63,6 +63,9 @@ export default [
 			"fundraisingTimeLeft": "0 days",
 			"fundraisingPercent": .875,
 			"fundraisingTimeLeftMilliseconds": 123456789,
+			"tags": [
+				"user_favorite"
+			],
 		},
 		{
 			"id": 1976581,

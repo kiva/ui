@@ -2,9 +2,9 @@
 	<div
 		:id="`${loanId}-loan-card`"
 		class="tw-flex tw-flex-col tw-p-1 tw-bg-white tw-rounded tw-w-full"
-		:class="{ 'loan-card-in-grid tw-px-1': inGrid, 'loan-card-active-hover': !allSharesReserved }"
+		:class="{ 'loan-card-active-hover': !allSharesReserved }"
 		style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);"
-		:style="{ ...(!inGrid && { minWidth: '230px', maxWidth: cardWidth }) }"
+		:style="{ minWidth: '230px', maxWidth: cardWidth }"
 	>
 		<!-- Borrower image -->
 		<kv-loading-placeholder
@@ -230,10 +230,6 @@ export default {
 			default: false
 		},
 		showTags: {
-			type: Boolean,
-			default: false
-		},
-		inGrid: {
 			type: Boolean,
 			default: false
 		},
@@ -503,26 +499,5 @@ export default {
 
 #loanProgress >>> h4 {
 	text-transform: lowercase;
-}
-
-/* TODO: refactor to tw classes/breakpoints when foundation classes removed from loan grid */
-@media (min-width: 30.0625em) {
-	.loan-card-in-grid {
-		max-width: 100%;
-		min-width: 100%;
-	}
-}
-
-@media (min-width: 42.5625em) {
-	.loan-card-in-grid {
-		max-width: 50%;
-		min-width: auto;
-	}
-}
-
-@media (min-width: 61.8125em) {
-	.loan-card-in-grid {
-		max-width: calc(100% / 3);
-	}
 }
 </style>
