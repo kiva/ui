@@ -1,3 +1,15 @@
+## [2.489.0](https://github.com/kiva/ui/compare/v2.488.0...v2.489.0) (2023-02-10)
+
+
+### Features
+
+* updated loan use for direct loans ([212e78a](https://github.com/kiva/ui/commit/212e78add17b73a36744c5746ca67c7aa696147b))
+
+
+### Bug Fixes
+
+* lower case first letter of use ([428f0c0](https://github.com/kiva/ui/commit/428f0c02e1b4602cd566a6d8b59cadc186bed7aa))
+
 ## [2.488.0](https://github.com/kiva/ui/compare/v2.487.0...v2.488.0) (2023-02-09)
 
 
