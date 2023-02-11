@@ -61,7 +61,7 @@
 			</router-link>
 		</div>
 
-		<div style="min-height: 190px;">
+		<div class="tw-grow">
 			<!-- Loan tag -->
 			<loan-tag-v2 v-if="showTags && !isLoading" :loan="loan" :amount-left="amountLeft" />
 
@@ -113,7 +113,7 @@
 				:is="allSharesReserved ? 'span' : 'router-link'"
 				:to="customLoanDetails ? '' : `/lend/${loanId}`"
 				v-kv-track-event="['Lending', 'click-Read more', 'Progress', loanId]"
-				class="loan-card-progress tw-my-1.5"
+				class="loan-card-progress tw-mt-1"
 			>
 				<loan-progress-group
 					:money-left="unreservedAmount"
@@ -137,6 +137,7 @@
 				:is-loading="isLoading"
 				:is-adding="isAdding"
 				@add-to-basket="addToBasket"
+				class="tw-mt-auto"
 			/>
 		</div>
 	</div>
