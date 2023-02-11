@@ -53,7 +53,7 @@
 			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-1"></div>
 			<div v-if="loans.length > 0" class="tw-w-full">
 				<div v-if="!displayLoanPromoCard">
-					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3" :class="{'tw-gap-2 tw-px-1 md:tw-px-2' : enableLoanCardExp}">
+					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3" :class="{ 'tw-gap-2 tw-px-1 md:tw-px-2' : enableLoanCardExp }">
 						<template v-for="(loan, index) in loans">
 							<kiva-classic-basic-loan-card-exp
 								v-if="enableLoanCardExp"
@@ -92,7 +92,7 @@
 					/>
 				</div>
 				<div v-else>
-					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3" :class="{'tw-gap-2 tw-px-1 md:tw-px-2' : enableLoanCardExp}">
+					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3" :class="{ 'tw-gap-2 tw-px-1 md:tw-px-2' : enableLoanCardExp }">
 						<template v-for="(loan, index) in firstLoan">
 							<kiva-classic-basic-loan-card-exp
 								v-if="enableLoanCardExp"
@@ -905,10 +905,6 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.loan-card-group {
-	position: relative;
-}
-
 .loan-count {
 	text-align: center;
 	margin: 0 0 2rem;
@@ -916,16 +912,6 @@ export default {
 
 .heading-region {
 	margin: 1.25rem 0;
-
-	.view-toggle {
-		margin: 0.125rem 0 0 0.375rem;
-		float: right;
-		display: flex;
-
-		@include breakpoint(large) {
-			margin: 0.375rem 0 0.375rem 0.375rem;
-		}
-	}
 
 	@include breakpoint(large) {
 		p {

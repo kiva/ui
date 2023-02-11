@@ -66,7 +66,7 @@
 			<loan-tag-v2 v-if="showTags && !isLoading" :loan="loan" :amount-left="amountLeft" />
 
 			<!-- Loan use  -->
-			<div class="tw-grow tw-mb-1.5 tw-mt-1">
+			<div class="tw-mb-1.5 tw-mt-1">
 				<kv-loading-paragraph
 					v-if="isLoading"
 					:style="{ width: '100%', height: '5.5rem' }"
