@@ -74,7 +74,8 @@ module.exports = function createMiddleware({
 		// set html response headers
 		res.setHeader('Content-Type', 'text/html');
 		// Set strict cache-control headers for protected pages
-		if (req?.url?.match(/(settings|portfolio|lend\/saved-search)/g)?.length) {
+		// eslint-disable-next-line max-len
+		if (req?.url?.match(/(checkout|settings|portfolio|lend\/saved-search|monthlygood\/thanks|process-browser-auth|register|start-verification|confirm-instant-donation|instant-donation-thanks)/g)?.length) {
 			res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
 		} else {
 			res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
