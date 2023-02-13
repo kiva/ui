@@ -1,3 +1,10 @@
+### [2.491.1](https://github.com/kiva/ui/compare/v2.491.0...v2.491.1) (2023-02-13)
+
+
+### Bug Fixes
+
+* add private and no-cache headers for auth routes, add more private routes ([c4119a1](https://github.com/kiva/ui/commit/c4119a1e6a8c128222de7467fab992712d22cd3b))
+
 ## [2.491.0](https://github.com/kiva/ui/compare/v2.490.1...v2.491.0) (2023-02-13)
 
 
