@@ -47,5 +47,6 @@ export default {
 <style scoped>
 .loan-callout {
 	max-width: 50%;
+	background: #f1f1f1;
 }
 </style>

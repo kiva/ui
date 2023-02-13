@@ -6,7 +6,7 @@
 			class="promo-background-image tw-object-cover"
 			:images="backgroundImage" loading="lazy" alt=""
 		/>
-		<div class="tw-pb-1 tw-px-1.5 tw-absolute tw-bottom-1">
+		<div class="tw-p-1 tw-absolute tw-bottom-0">
 			<div class="tw-flex tw-flex-col tw-gap-1 md:tw-gap-0.5" style="color: #F5F5F5;">
 				<h3 class="tw-mb-1 tw-text-h2 md:tw-text-h3">
 					Make a monthly impact
