@@ -1,3 +1,22 @@
+### [2.490.1](https://github.com/kiva/ui/compare/v2.490.0...v2.490.1) (2023-02-13)
+
+
+### Bug Fixes
+
+* reverted FLSS isMatchable work ([c62a38f](https://github.com/kiva/ui/commit/c62a38f5ea44e103f806361a98befe46ed64f71a))
+
+## [2.490.0](https://github.com/kiva/ui/compare/v2.489.0...v2.490.0) (2023-02-10)
+
+
+### Features
+
+* show the lending-home toast for 10s ([3c71db4](https://github.com/kiva/ui/commit/3c71db4e8d24bc098acd0a193e91d76afca76a2d))
+
+
+### Bug Fixes
+
+* pull matched loans from FLSS ([bd06154](https://github.com/kiva/ui/commit/bd061545cbf3ff376e196bad6e69f03ddf6f0791))
+
 ## [2.489.0](https://github.com/kiva/ui/compare/v2.488.0...v2.489.0) (2023-02-10)
 
 
