@@ -1,3 +1,21 @@
+## [2.491.0](https://github.com/kiva/ui/compare/v2.490.1...v2.491.0) (2023-02-13)
+
+
+### Features
+
+* new loand card styles updated ([5bc4cd6](https://github.com/kiva/ui/commit/5bc4cd63339e155d612b63a8ac02b492c93e8d82))
+
+
+### Bug Fixes
+
+* consistent outer padding on cards ([f4f4d94](https://github.com/kiva/ui/commit/f4f4d948d945f2e0047f773cf309c9c819e2c523))
+* linting issues ([eb02e8e](https://github.com/kiva/ui/commit/eb02e8ea2fcb9325aa861719d7ae6c0907bde246))
+* minor cleanup ([6974a41](https://github.com/kiva/ui/commit/6974a412bdd40ef75e4b8cf91964cdc7bbe75052))
+* old MG card sizing, center align old cards ([3c1cbaf](https://github.com/kiva/ui/commit/3c1cbaf5e2dd71792bc4ed426ebb2e198ec558f7))
+* removed inGrid, fixed stories, fixed help me choose padding ([6d07480](https://github.com/kiva/ui/commit/6d0748091e6290be806cfd39b776de7731a84434))
+* style fixes for new loan card ([f52a9ea](https://github.com/kiva/ui/commit/f52a9ea95b8c2cdf71d910a6c5c4a1192fcb0777))
+* update old MG card to match old loan cards ([023b72d](https://github.com/kiva/ui/commit/023b72d63104f56e7d075c257a168fdd1c30cd1a))
+
 ### [2.490.1](https://github.com/kiva/ui/compare/v2.490.0...v2.490.1) (2023-02-13)
 
 
