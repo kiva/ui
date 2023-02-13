@@ -1,3 +1,10 @@
+### [2.490.1](https://github.com/kiva/ui/compare/v2.490.0...v2.490.1) (2023-02-13)
+
+
+### Bug Fixes
+
+* reverted FLSS isMatchable work ([c62a38f](https://github.com/kiva/ui/commit/c62a38f5ea44e103f806361a98befe46ed64f71a))
+
 ## [2.490.0](https://github.com/kiva/ui/compare/v2.489.0...v2.490.0) (2023-02-10)
 
 
