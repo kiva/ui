@@ -1,3 +1,10 @@
+### [2.491.2](https://github.com/kiva/ui/compare/v2.491.1...v2.491.2) (2023-02-13)
+
+
+### Bug Fixes
+
+* remove MARS-124 experiment code MARS-223 ([acd780b](https://github.com/kiva/ui/commit/acd780b55d1cd8fafe93a701b187d7c61260be2c))
+
 ### [2.491.1](https://github.com/kiva/ui/compare/v2.491.0...v2.491.1) (2023-02-13)
 
 
