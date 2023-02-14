@@ -48,6 +48,17 @@
 				/>
 			</div>
 		</div>
+		<div class="
+				tw-flex-none
+				tw-w-full
+				md:tw-w-auto
+				md:tw-ml-3
+				lg:tw-ml-4.5
+				tw-mt-1.5
+				md:tw-mt-0"
+			:v-if="loan.isLeftoverCreditAllocation === true">
+			This is an allocated loan.
+		</div>
 		<div
 			class="
 			tw-flex-none
@@ -58,6 +69,7 @@
 			tw-mt-1.5
 			md:tw-mt-0
 			loan-res-price-wrapper"
+			:v-else-if="!loan.isLeftoverCreditAllocation"
 		>
 			<loan-price
 				data-testid="basket-loan-price-selector"
