@@ -1,3 +1,10 @@
+## [2.493.0](https://github.com/kiva/ui/compare/v2.492.0...v2.493.0) (2023-02-14)
+
+
+### Features
+
+* move journals up on the page ([4c730ca](https://github.com/kiva/ui/commit/4c730cacfaff68e83b433951f5525a89cafc1ecb))
+
 ## [2.492.0](https://github.com/kiva/ui/compare/v2.491.5...v2.492.0) (2023-02-14)
 
 
