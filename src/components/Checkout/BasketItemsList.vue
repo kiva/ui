@@ -38,6 +38,7 @@
 import BasketItem from '@/components/Checkout/BasketItem';
 import DonationItem from '@/components/Checkout/DonationItem';
 import KivaCardItem from '@/components/Checkout/KivaCardItem';
+import { userUsLoanCheckout } from '@/util/optimizelyUserMetrics';
 
 export default {
 	name: 'BasketItemsList',
@@ -79,6 +80,13 @@ export default {
 		BasketItem,
 		DonationItem,
 		KivaCardItem
-	}
+	},
+	watch: {
+		loans(loansInBasket) {
+			// eslint-disable-next-line no-underscore-dangle
+			const hasUsLoan = loansInBasket.some(reservation => reservation?.loan?.__typename === 'LoanDirect');
+			userUsLoanCheckout(hasUsLoan);
+		}
+	},
 };
 </script>
