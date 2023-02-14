@@ -130,6 +130,7 @@
 								@pointerenter.stop="onLendLinkPointerEnter"
 								@pointerleave.stop="onLendLinkPointerLeave"
 								@pointerup.stop="onLendLinkPointerEnter"
+								@click="onCategoriesClick"
 							>
 								<span class="tw-flex tw-items-center">Categories
 									<kv-material-icon
@@ -778,6 +779,11 @@ export default {
 				this.$router.push({
 					path: '/lend-by-category'
 				}).catch(() => {});
+			}
+		},
+		onCategoriesClick(e) {
+			if (e.pointerType === 'touch') {
+				this.toggleLendMenu();
 			}
 		},
 		onLendLinkClick(e) {
