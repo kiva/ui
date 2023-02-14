@@ -244,6 +244,7 @@ export default {
 				if (this.isVisible) {
 					this.totalCount = data.lend?.loans?.totalCount ?? 0;
 					this.$emit('update-total-count', this.totalCount);
+					this.$emit('update-available-loans', data.lend?.loans);
 					this.loadingLoans = false;
 				}
 
