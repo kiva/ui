@@ -75,6 +75,15 @@
 					:enabled-experiment-variant="enabledExperimentVariant"
 				/>
 			</content-container>
+			<content-container>
+				<journal-updates
+					v-if="showUpdates"
+					data-testid="bp-updates"
+					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+					:loan-id="loanId"
+					@hide-section="showUpdates = false"
+				/>
+			</content-container>
 			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
 				<content-container>
 					<why-special data-testid="bp-why-special" :loan-id="loanId" />
@@ -121,13 +130,6 @@
 					:loan-id="loanId"
 					display-type="teams"
 					@hide-section="showTeams = false"
-				/>
-				<journal-updates
-					v-if="showUpdates"
-					data-testid="bp-updates"
-					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
-					:loan-id="loanId"
-					@hide-section="showUpdates = false"
 				/>
 			</content-container>
 			<div class="tw-bg-primary">
