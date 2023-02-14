@@ -44,17 +44,29 @@ const mockFLSSData = {
 };
 
 describe('loanChannelUtils.js', () => {
+	let spyConsoleInfo;
+
+	beforeEach(() => {
+		spyConsoleInfo = jest.spyOn(global.console, 'info').mockImplementation();
+	});
+
+	afterEach(jest.restoreAllMocks);
+
 	describe('getFLSSQueryMap', () => {
 		it('should handle no match', () => {
 			const result = getFLSSQueryMap(mockQueryMap, 'asd');
 
 			expect(result).toBeFalsy();
+			expect(spyConsoleInfo).toHaveBeenCalledTimes(1);
+			// eslint-disable-next-line max-len
+			expect(spyConsoleInfo).toHaveBeenCalledWith('{"meta":{},"level":"info","message":"The following category was not found in the FLSS query map: asd"}');
 		});
 
 		it('should return map result', () => {
 			const result = getFLSSQueryMap(mockQueryMap, 'women');
 
 			expect(result).toEqual({ gender: 'female' });
+			expect(spyConsoleInfo).toHaveBeenCalledTimes(0);
 		});
 	});
 

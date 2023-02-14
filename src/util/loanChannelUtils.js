@@ -6,6 +6,7 @@ import {
 } from '@/util/flssUtils';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
 import logReadQueryError from '@/util/logReadQueryError';
+import logFormatter from '@/util/logFormatter';
 
 /**
  * Returns the FLSS loan search state object based on the map and category
@@ -15,7 +16,13 @@ import logReadQueryError from '@/util/logReadQueryError';
  * @returns {Object} The loan search state object
  */
 export function getFLSSQueryMap(queryMap, category) {
-	return queryMap.find(c => c.url === category)?.flssLoanSearch;
+	const result = queryMap.find(c => c.url === category)?.flssLoanSearch;
+
+	if (!result) {
+		logFormatter(`The following category was not found in the FLSS query map: ${category}`, 'info');
+	}
+
+	return result;
 }
 
 /**
