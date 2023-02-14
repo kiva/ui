@@ -1,3 +1,10 @@
+### [2.494.1](https://github.com/kiva/ui/compare/v2.494.0...v2.494.1) (2023-02-14)
+
+
+### Bug Fixes
+
+* missing optional chaining ([5a4e1c3](https://github.com/kiva/ui/commit/5a4e1c337ef33d6125a02e0221291eef6f95d015))
+
 ## [2.494.0](https://github.com/kiva/ui/compare/v2.493.0...v2.494.0) (2023-02-14)
 
 
