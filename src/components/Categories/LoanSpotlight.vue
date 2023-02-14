@@ -172,7 +172,7 @@ export default {
 	},
 	computed: {
 		altText() {
-			return this.spotlightLoan?.description.slice(0, 100) ?? '';
+			return this.spotlightLoan?.description?.slice(0, 100) ?? '';
 		},
 		getSpotlightLoanID() {
 			return this.spotlightLoan.id ?? '';
