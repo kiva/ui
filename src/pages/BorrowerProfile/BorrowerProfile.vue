@@ -49,7 +49,6 @@
 					<lend-cta
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
-						:user-context-exp-variant="userContextExpVariant"
 					>
 						<template #sharebutton>
 							<!-- Share button -->
@@ -72,7 +71,6 @@
 					data-testid="bp-loan-story"
 					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8 tw-z-1"
 					:loan-id="loanId"
-					:enabled-experiment-variant="enabledExperimentVariant"
 				/>
 			</content-container>
 			<content-container>
@@ -90,27 +88,10 @@
 				</content-container>
 			</div>
 			<content-container>
-				<div
-					v-if="enabledExperimentVariant && !partnerNameNA"
-					class="tw-rounded tw-bg-white tw-px-2 md:tw-px-4 tw-py-3 tw-mb-5 tw-flex tw-gap-2"
-				>
-					<div>
-						<check-icon />
-					</div>
-					<div>
-						<p class="tw-text-base">
-							{{ vettedHeadline }}
-						</p>
-						<p class="tw-text-base tw-text-secondary">
-							{{ vettedBody }}
-						</p>
-					</div>
-				</div>
 				<more-about-loan
 					data-testid="bp-more-about"
 					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
 					:loan-id="loanId"
-					:enabled-experiment-variant="enabledExperimentVariant"
 				/>
 				<borrower-country data-testid="bp-country" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
 				<lenders-and-teams
@@ -158,7 +139,6 @@ import {
 } from 'date-fns';
 import { gql } from '@apollo/client';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
@@ -177,13 +157,7 @@ import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
 import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
 
-import {
-	trackExperimentVersion
-} from '@/util/experimentUtils';
 import loanUseFilter from '@/plugins/loan-use-filter';
-import CheckIcon from '@/assets/icons/inline/check-with-bg.svg';
-
-const userContextExpKey = 'new_users_context';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 
@@ -317,7 +291,6 @@ export default {
 		TopBannerPfp,
 		WhySpecial,
 		WwwPage,
-		CheckIcon
 	},
 	metaInfo() {
 		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
@@ -424,7 +397,6 @@ export default {
 			diffInDays: 0,
 			lender: {},
 			loan: {},
-			userContextExpVariant: 'a',
 			partnerName: '',
 			partnerCountry: '',
 			isoCode: '',
@@ -466,8 +438,6 @@ export default {
 							query,
 						});
 					}
-
-					return client.query({ query: experimentQuery, variables: { id: userContextExpKey } });
 				});
 		},
 		preFetchVariables({ route, cookieStore }) {
@@ -537,28 +507,6 @@ export default {
 	computed: {
 		loanId() {
 			return Number(this.$route.params.id || 0);
-		},
-		enabledExperimentVariant() {
-			return this.userContextExpVariant === 'a';
-		},
-		partnerNameNA() {
-			return this.partnerName.indexOf('N/A') > -1
-				|| this.partnerName.indexOf('N/a') > -1
-				|| this.partnerName.indexOf('n/a') > -1;
-		},
-		vettedHeadline() {
-			if (this.isoCode === 'US') {
-				return `${this.name} was approved by Kiva`;
-			}
-			return `${this.name} was vetted by ${this.partnerName}, a lending partner in ${this.partnerCountry}`;
-		},
-		vettedBody() {
-			if (this.isoCode === 'US') {
-			// eslint-disable-next-line max-len
-				return 'Kiva reviews all US-based borrowers to ensure they meet the proper eligibility criteria';
-			}
-			// eslint-disable-next-line max-len
-			return 'Lending partners are local organizations that vet borrowers and provide services like financial education training and business development skills';
 		},
 		imageShareUrl() {
 			if (!this.hash) return '';
@@ -646,16 +594,6 @@ export default {
 
 		const publicId = getPublicId(this.$route);
 		this.inviterIsGuestOrAnonymous = publicId === 'anonymous' || publicId === 'guest';
-
-		// New user context experiment setup & tracking EXP-MARS-317-Nov2022
-		const userContextExp = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'Borrower Profile',
-			userContextExpKey,
-			'EXP-MARS-317-Nov2022'
-		);
-		this.userContextExpVariant = userContextExp?.version;
 	},
 };
 </script>
