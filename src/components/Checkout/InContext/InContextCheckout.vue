@@ -163,7 +163,7 @@ export default {
 			return appliedCreditsPromoFunds[0] || null;
 		},
 		registerOrLoginHref() {
-			return `/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
+			return `/ui-login?autoPage=true&force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
 		},
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;

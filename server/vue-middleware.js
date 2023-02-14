@@ -15,7 +15,7 @@ function handleError(err, req, res, next) {
 	// redirect to url if provided in the error
 	// -> this is how we handle vue-router links to external kiva pages
 	if (err.url) {
-		res.redirect(err.url);
+		res.redirect(err.code ?? 302, err.url);
 	// respond with 404 specifically set
 	} else if (err.code === 404) {
 		res.status(404).send('404 | Page Not Found');
@@ -73,7 +73,13 @@ module.exports = function createMiddleware({
 
 		// set html response headers
 		res.setHeader('Content-Type', 'text/html');
-		res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+		// Set strict cache-control headers for protected pages
+		// eslint-disable-next-line max-len
+		if (req?.url?.match(/(checkout|settings|portfolio|lend\/saved-search|monthlygood\/thanks|process-browser-auth|register|start-verification|confirm-instant-donation|instant-donation-thanks)/g)?.length) {
+			res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
+		} else {
+			res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+		}
 
 		// get graphql api possible types for the graphql client
 		const typesPromise = getGqlPossibleTypes(config.server.graphqlUri, cache);

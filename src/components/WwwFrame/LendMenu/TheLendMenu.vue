@@ -167,24 +167,27 @@ export default {
 				this.savedSearches = data?.my?.savedSearches?.values ?? [];
 			}
 		},
+		initializeMGExp() {
+			// CORE-641 NEW MG ENTRYPOINT
+			const newMgEntrypointExperiment = this.apollo.readFragment({
+				id: 'Experiment:topnav_mg_entrypoint',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.newMgEntrypointExp = newMgEntrypointExperiment.version === 'b';
+
+			// Fire Event for EXP-CORE-644-June-2022
+			if (newMgEntrypointExperiment.version) {
+				this.$kvTrackEvent(
+					'TopNav',
+					'EXP-CORE-644-June-2022',
+					newMgEntrypointExperiment.version
+				);
+			}
+		},
 	},
 	mounted() {
-		// CORE-641 NEW MG ENTRYPOINT
-		// this experiment is assigned in experimentPreFetch.js
-		const newMgEntrypointExperiment = this.apollo.readFragment({
-			id: 'Experiment:topnav_mg_entrypoint',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.newMgEntrypointExp = newMgEntrypointExperiment.version === 'b';
-
-		// Fire Event for EXP-CORE-644-June-2022
-		if (newMgEntrypointExperiment.version) {
-			this.$kvTrackEvent(
-				'TopNav',
-				'EXP-CORE-644-June-2022',
-				newMgEntrypointExperiment.version
-			);
-		}
+		this.initializeMGExp();
 
 		this.$nextTick(() => {
 			this.showMGUpsellLink = true;

@@ -131,6 +131,48 @@ describe('flssUtils.js', () => {
 			expect(result.pageLimit).toBe(loanQueryVars.limit);
 			expect(result.basketId).toBe(loanQueryVars.basketId);
 		});
+
+		it('should use loanQueryVars as override', () => {
+			const queryMap = { sector: [1, 2, 3], sortBy: 'expiringSoon' };
+			const loanQueryVars = {
+				ids: [3],
+				offset: 10,
+				limit: 5,
+				basketId: 'asd',
+				sector: [1],
+				sortBy: 'personalized'
+			};
+
+			const result = getLoanChannelVariables(queryMap, loanQueryVars);
+
+			expect(result.ids).toEqual(loanQueryVars.ids);
+			expect(result.filterObject).toEqual(getFlssFilters(queryMap, loanQueryVars));
+			expect(result.sortBy).toEqual(loanQueryVars.sortBy);
+			expect(result.pageNumber).toBe(loanQueryVars.offset / loanQueryVars.limit);
+			expect(result.pageLimit).toBe(loanQueryVars.limit);
+			expect(result.basketId).toBe(loanQueryVars.basketId);
+		});
+
+		it('should use correct sortBy fallback', () => {
+			const queryMap = { sector: [1, 2, 3], sortBy: 'expiringSoon' };
+			const loanQueryVars = {
+				ids: [3],
+				offset: 10,
+				limit: 5,
+				basketId: 'asd',
+				sector: [1],
+				sortBy: null
+			};
+
+			const result = getLoanChannelVariables(queryMap, loanQueryVars);
+
+			expect(result.ids).toEqual(loanQueryVars.ids);
+			expect(result.filterObject).toEqual(getFlssFilters(queryMap, loanQueryVars));
+			expect(result.sortBy).toEqual(queryMap.sortBy);
+			expect(result.pageNumber).toBe(loanQueryVars.offset / loanQueryVars.limit);
+			expect(result.pageLimit).toBe(loanQueryVars.limit);
+			expect(result.basketId).toBe(loanQueryVars.basketId);
+		});
 	});
 
 	describe('fetchLoanChannel', () => {

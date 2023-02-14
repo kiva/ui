@@ -20,6 +20,7 @@ module.exports = function authRouter(config = {}) {
 
 	// Helper function to start slient authentication process
 	function attemptSilentAuth(req, res, next) {
+		res.set('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
 		// Store current url to redirect to after auth
 		req.session.doneUrl = req.originalUrl;
 		req.session.silentAuth = true;
@@ -55,6 +56,7 @@ module.exports = function authRouter(config = {}) {
 
 	// Handle recoverable Auth0 errors
 	router.use('/error', (req, res, next) => {
+		res.set('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
 		if (req.query.error_description && req.query.error_description.indexOf('OIDC-conformant') > -1) {
 			const loginRedirectUrl = config.auth0.loginRedirectUrls[req.query.client_id];
 			res.redirect(loginRedirectUrl);
@@ -65,6 +67,7 @@ module.exports = function authRouter(config = {}) {
 
 	// Handle login request
 	router.get('/ui-login', (req, res, next) => {
+		res.set('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
 		const cookies = cookie.parse(req.headers.cookie || '');
 		const options = {
 			audience: config.auth0.apiAudience,
@@ -74,16 +77,17 @@ module.exports = function authRouter(config = {}) {
 			options.prompt = 'login';
 		}
 		// Go to register instead of login if the user has not logged in before
-		if (!cookies.kvu) {
+		if (req.query.autoPage === 'true' && !cookies.kvu) {
 			options.login_hint = 'signUp';
 		}
+		// Used by guest checkout to start account claiming process (password reset)
 		if (req.query.forgot === 'true') {
 			options.prompt = 'login';
 			options.login_hint = `forgotPassword|${JSON.stringify({
 				guest: true,
 			})}`;
 		}
-
+		// Override the login hint with whatever hint is set in the request
 		if (req.query.loginHint) {
 			options.login_hint = req.query.loginHint;
 		}
@@ -98,6 +102,7 @@ module.exports = function authRouter(config = {}) {
 
 	// Handle logout request
 	router.get('/ui-logout', (req, res) => {
+		res.set('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
 		info(`LoginUI: execute logout, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, user id:${req.user && req.user.id}`); // eslint-disable-line max-len
 		const returnUrl = encodeURIComponent(`https://${config.host}`);
 		const logoutUrl = `https://${config.auth0.domain}/v2/logout?returnTo=${returnUrl}`;
@@ -109,6 +114,7 @@ module.exports = function authRouter(config = {}) {
 	// Callback redirected to after Auth0 authentication
 	router.get('/process-ssr-auth', (req, res, next) => {
 		passport.authenticate('auth0', (authErr, user, authInfo) => {
+			res.set('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
 			if (authErr) {
 				info(`LoginUI: auth error, session id:${req.sessionID}, error: ${authErr}`, { error: authErr });
 

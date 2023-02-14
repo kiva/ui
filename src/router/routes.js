@@ -19,9 +19,6 @@ module.exports = [
 	{
 		path: '/homepage-classic',
 		redirect: '/',
-		meta: {
-			excludeFromStaticSitemap: true,
-		}
 	},
 	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
 	{
@@ -264,6 +261,110 @@ module.exports = [
 	{
 		path: '/lend-by-category/loans-for-education',
 		redirect: '/lend-by-category/education'
+	},
+	{
+		path: '/lend-by-category/1-billion-in-change',
+		redirect: '/lend-by-category'
+	},
+	{
+		path: '/lend-by-category/arts-loans',
+		redirect: '/lend-by-category/arts',
+	},
+	{
+		path: '/lend-by-category/choose-a-woman-borrower',
+		redirect: '/lend-by-category/women',
+	},
+	{
+		path: '/lend-by-category/eco-friendly-loans',
+		redirect: '/lend-by-category/eco-friendly',
+	},
+	{
+		path: '/lend-by-category/ecofriendly-loans',
+		redirect: '/lend-by-category/eco-friendly',
+	},
+	{
+		path: '/lend-by-category/flash-match',
+		redirect: '/lend-by-category',
+	},
+	{
+		path: '/lend-by-category/food-loans',
+		redirect: '/lend-by-category/food',
+	},
+	{
+		path: '/lend-by-category/group-loans',
+		redirect: '/lend-by-category/groups',
+	},
+	{
+		path: '/lend-by-category/hitachi-employees-helping-c-o-v-i-d-impacted-businesses',
+		redirect: '/cc/hitachi',
+	},
+	{
+		path: '/lend-by-category/hitachi-employees-helping-to-ignite-a-dream',
+		redirect: '/cc/hitachi',
+	},
+	{
+		path: '/lend-by-category/hitachis-c-o-v-i-d-19-response',
+		redirect: '/cc/hitachi',
+	},
+	{
+		path: '/lend-by-category/human-flow-fund-support-refugees-and-i-d-ps',
+		redirect: '/lend-by-category/refugees-and-i-d-ps',
+	},
+	{
+		path: '/lend-by-category/i-t-cosmetics-confidence',
+		redirect: '/itcosmetics',
+	},
+	{
+		path: '/lend-by-category/international-womens-day',
+		redirect: '/lend-by-category/women',
+	},
+	{
+		path: '/lend-by-category/loans-for-healthcare',
+		redirect: '/lend-by-category/health',
+	},
+	{
+		path: '/lend-by-category/loans-for-livestock',
+		redirect: '/lend-by-category/livestock',
+	},
+	{
+		path: '/lend-by-category/loans-for-retail-businesses',
+		redirect: '/lend-by-category/retail-businesses',
+	},
+	{
+		path: '/lend-by-category/loans-for-shelter',
+		redirect: '/lend-by-category/shelter',
+	},
+	{
+		path: '/lend-by-category/loans-that-are-ending-soon',
+		redirect: '/lend-by-category/ending-soon',
+	},
+	{
+		path: '/lend-by-category/loans-to-artisans',
+		redirect: '/lend-by-category/arts',
+	},
+	{
+		path: '/lend-by-category/loans-to-single-parents',
+		redirect: '/lend-by-category/single-parents',
+	},
+	{
+		path: '/lend-by-category/recommended-by-lend-by-categoryers',
+		redirect: '/lend-by-category/recommended-by-lenders',
+	},
+	{
+		path: '/lend-by-category/retail-loans',
+		redirect: '/lend-by-category/retail-businesses',
+	},
+	{
+		path: '/lend-by-category/super-power-a-woman-on-kiva',
+		redirect: '/lend-by-category/women',
+	},
+	{
+		path: '/lend-by-category/world-refugee-day',
+		redirect: '/lend-by-category/refugees-and-i-d-ps',
+	},
+	{
+		path: '/lend-by-category/blackrock',
+		redirect: '/lend-by-category',
 	},
 	{
 		path: '/lend-by-category',
@@ -590,9 +691,6 @@ module.exports = [
 	{
 		path: '/styleguide/*',
 		redirect: '/styleguide',
-		meta: {
-			excludeFromStaticSitemap: true,
-		}
 	},
 	{
 		path: '/ui-site-map',

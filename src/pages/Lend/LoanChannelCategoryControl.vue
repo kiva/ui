@@ -51,101 +51,116 @@
 		<div class="row tw-relative">
 			<!-- eslint-disable max-len -->
 			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-1"></div>
-			<div class="columns small-12" v-if="loans.length > 0">
-				<div v-if="!displayLoanPromoCard" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-					<template v-for="(loan, index) in loans">
-						<kiva-classic-basic-loan-card-exp
-							v-if="enableLoanCardExp"
-							:item-index="index"
-							:key="`classic-${loan.id}`"
-							:loan-id="loan.id"
-							:lend-now-button="true"
-							:show-tags="enableLoanTags"
-							:in-grid="true"
-						/>
-						<loan-card-controller
-							v-else
-							:items-in-basket="itemsInBasket"
-							:is-visitor="isVisitor"
-							:key="`controller-${loan.id}`"
-							:loan="loan"
-							loan-card-type="GridLoanCard"
-							:show-tags="enableLoanTags"
-						/>
-					</template>
+			<div v-if="loans.length > 0" class="tw-w-full">
+				<div v-if="!displayLoanPromoCard">
+					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3" :class="{ 'tw-gap-2 tw-px-1 md:tw-px-2' : enableLoanCardExp }">
+						<template v-for="(loan, index) in loans">
+							<kiva-classic-basic-loan-card-exp
+								v-if="enableLoanCardExp"
+								:item-index="index"
+								:key="`classic-${loan.id}`"
+								:loan-id="loan.id"
+								:show-action-button="true"
+								:show-tags="enableLoanTags"
+								:category-page-name="loanChannelName"
+								:use-full-width="true"
+							/>
+							<loan-card-controller
+								v-else
+								:items-in-basket="itemsInBasket"
+								:is-visitor="isVisitor"
+								:key="`controller-${loan.id}`"
+								:loan="loan"
+								loan-card-type="GridLoanCard"
+								:show-tags="enableLoanTags"
+							/>
+						</template>
+					</div>
 
 					<helpme-choose-wrapper
 						v-if="showHelpMeChooseFeat"
-						:remaining-loans="helpmeChooseRemainingLoans"
+						:remaining-loans="helpMeChooseRemainingLoans"
 						:items-in-basket="itemsInBasket"
 						:is-visitor="isVisitor"
 						:user-data="userData"
 						:loan-channel-name="loanChannelName"
-						:loans="helpmeChooseLoans"
-						@update="getHelpmeChooseLoans($event)"
+						:loans="helpMeChooseLoans"
+						@update="getHelpMeChooseLoans($event)"
 						:is-loading="isLoadingHC"
+						:enable-loan-tags="enableLoanTags"
+						:enable-loan-card-exp="enableLoanCardExp"
 					/>
 				</div>
-				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-					<template v-for="(loan, index) in firstLoan">
-						<kiva-classic-basic-loan-card-exp
-							v-if="enableLoanCardExp"
-							:item-index="index"
-							:key="`classic-${loan.id}`"
-							:loan-id="loan.id"
-							:lend-now-button="true"
-							:show-tags="enableLoanTags"
-							:in-grid="true"
-						/>
-						<loan-card-controller
-							v-else
-							:items-in-basket="itemsInBasket"
-							:is-visitor="isVisitor"
-							:key="`controller-${loan.id}`"
-							:loan="loan"
-							loan-card-type="GridLoanCard"
-							:show-tags="enableLoanTags"
-						/>
-					</template>
+				<div v-else>
+					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3" :class="{ 'tw-gap-2 tw-px-1 md:tw-px-2' : enableLoanCardExp }">
+						<template v-for="(loan, index) in firstLoan">
+							<kiva-classic-basic-loan-card-exp
+								v-if="enableLoanCardExp"
+								:item-index="index"
+								:key="`classic-${loan.id}`"
+								:loan-id="loan.id"
+								:show-action-button="true"
+								:show-tags="enableLoanTags"
+								:category-page-name="loanChannelName"
+								:use-full-width="true"
+							/>
+							<loan-card-controller
+								v-else
+								:items-in-basket="itemsInBasket"
+								:is-visitor="isVisitor"
+								:key="`controller-${loan.id}`"
+								:loan="loan"
+								loan-card-type="GridLoanCard"
+								:show-tags="enableLoanTags"
+							/>
+						</template>
 
-					<div class="column column-block">
-						<promo-grid-loan-card
+						<promo-grid-loan-card-exp
+							v-if="enableLoanCardExp"
 							:category-url="mgTargetCategory.url"
 							:category-label="mgTargetCategory.label"
 						/>
-					</div>
-
-					<template v-for="(loan, index) in remainingLoans">
-						<kiva-classic-basic-loan-card-exp
-							v-if="enableLoanCardExp"
-							:item-index="index"
-							:key="`classic-${loan.id}`"
-							:loan-id="loan.id"
-							:lend-now-button="true"
-							:show-tags="enableLoanTags"
-							:in-grid="true"
-						/>
-						<loan-card-controller
+						<promo-grid-loan-card
 							v-else
-							:items-in-basket="itemsInBasket"
-							:is-visitor="isVisitor"
-							:key="`controller-${loan.id}`"
-							:loan="loan"
-							loan-card-type="GridLoanCard"
-							:show-tags="enableLoanTags"
+							:category-url="mgTargetCategory.url"
+							:category-label="mgTargetCategory.label"
 						/>
-					</template>
+
+						<template v-for="(loan, index) in remainingLoans">
+							<kiva-classic-basic-loan-card-exp
+								v-if="enableLoanCardExp"
+								:item-index="index"
+								:key="`classic-${loan.id}`"
+								:loan-id="loan.id"
+								:show-action-button="true"
+								:show-tags="enableLoanTags"
+								:category-page-name="loanChannelName"
+								:use-full-width="true"
+							/>
+							<loan-card-controller
+								v-else
+								:items-in-basket="itemsInBasket"
+								:is-visitor="isVisitor"
+								:key="`controller-${loan.id}`"
+								:loan="loan"
+								loan-card-type="GridLoanCard"
+								:show-tags="enableLoanTags"
+							/>
+						</template>
+					</div>
 
 					<helpme-choose-wrapper
 						v-if="showHelpMeChooseFeat"
-						:remaining-loans="helpmeChooseRemainingLoans"
+						:remaining-loans="helpMeChooseRemainingLoans"
 						:items-in-basket="itemsInBasket"
 						:is-visitor="isVisitor"
 						:user-data="userData"
 						:loan-channel-name="loanChannelName"
-						:loans="helpmeChooseLoans"
-						@update="getHelpmeChooseLoans($event)"
+						:loans="helpMeChooseLoans"
+						@update="getHelpMeChooseLoans($event)"
 						:is-loading="isLoadingHC"
+						:enable-loan-tags="enableLoanTags"
+						:enable-loan-card-exp="enableLoanCardExp"
 					/>
 				</div>
 				<kv-pagination
@@ -182,6 +197,7 @@ import LoanCardController from '@/components/LoanCards/LoanCardController';
 import DonationCTA from '@/components/Lend/DonationCTA';
 import KvPagination from '@/components/Kv/KvPagination';
 import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
+import PromoGridLoanCardExp from '@/components/LoanCards/PromoGridLoanCardExp';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import {
@@ -189,6 +205,7 @@ import {
 	getCachedChannel,
 	watchChannelQuery,
 	getLoanChannel,
+	getFLSSQueryMap,
 } from '@/util/loanChannelUtils';
 import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
 import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
@@ -307,10 +324,6 @@ export default {
 		};
 	},
 	props: {
-		enableHelpmeChoose: {
-			type: Boolean,
-			default: false,
-		},
 		enableLoanTags: {
 			type: Boolean,
 			default: false
@@ -329,6 +342,7 @@ export default {
 		HelpmeChooseWrapper,
 		DonationCTA,
 		KivaClassicBasicLoanCardExp,
+		PromoGridLoanCardExp,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
@@ -371,7 +385,8 @@ export default {
 			selectedQuickFilters: {},
 			userData: {},
 			showQuickFiltersOverlay: false,
-			helpmeChooseLoans: [],
+			helpMeChooseSort: null,
+			helpMeChooseLoans: [],
 			isLoadingHC: true,
 		};
 	},
@@ -419,7 +434,7 @@ export default {
 			}
 			return _filter(this.allLoans, (loan, index) => index > 0);
 		},
-		helpmeChooseRemainingLoans() {
+		helpMeChooseRemainingLoans() {
 			if (this.displayLoanPromoCard) {
 				return _filter(this.allLoans, (loan, index) => index > 4);
 			}
@@ -437,7 +452,13 @@ export default {
 				limit: this.limit,
 				offset: this.offset,
 				basketId: this.cookieStore.get('kvbskt'),
-				origin: FLSS_ORIGIN_CATEGORY
+				origin: FLSS_ORIGIN_CATEGORY,
+				// Only add quick filters if they are defined so that channel filters aren't incorrectly overridden
+				...(this.selectedQuickFilters.gender && { gender: this.selectedQuickFilters.gender }),
+				...(this.selectedQuickFilters.sortBy && { sortBy: this.selectedQuickFilters.sortBy }),
+				...(!!this.selectedQuickFilters.countryIsoCode?.length && {
+					countryIsoCode: this.selectedQuickFilters.countryIsoCode
+				}),
 			};
 		},
 		filterUrl() {
@@ -462,7 +483,12 @@ export default {
 			return this.totalCount <= this.limit;
 		},
 		showHelpMeChooseFeat() {
-			return this.enableHelpmeChoose && this.allLoans.length > 8;
+			const queryMapFLSS = getFLSSQueryMap(this.loanChannelQueryMap, this.targetedLoanChannelURL);
+			const hasSortBy = !!queryMapFLSS.sortBy;
+
+			// Don't show help me choose if the category has sortBy
+			// Help me choose categories are just different sortBy options
+			return !hasSortBy && this.allLoans.length > 8;
 		}
 	},
 	apollo: {
@@ -612,17 +638,23 @@ export default {
 			this.selectedQuickFilters = {};
 		},
 		updateQuickFilters(filter) {
+			// Create new filter object so the watch query is triggered by reference change
+			const newFilters = JSON.parse(JSON.stringify(this.selectedQuickFilters));
+
 			if (filter.gender !== undefined) {
-				this.selectedQuickFilters.gender = filter.gender;
+				newFilters.gender = filter.gender;
 				this.flssLoanSearch.gender = filter.gender;
 				this.fetchFacets();
 			} else if (filter.sortBy) {
-				this.selectedQuickFilters.sortBy = filter.sortBy;
+				newFilters.sortBy = filter.sortBy;
 			} else {
-				this.selectedQuickFilters.countryIsoCode = filter.country;
+				newFilters.countryIsoCode = [...filter.country];
 			}
-			this.activateLoanChannelWatchQuery();
+
+			this.selectedQuickFilters = newFilters;
+
 			this.resetPagination();
+			this.getHelpMeChooseLoans();
 		},
 		checkIfPageIsOutOfRange(loansArrayLength, pageQueryParam) {
 			// determines if the page query param is for a page that is out of bounds.
@@ -684,7 +716,6 @@ export default {
 			watchChannelQuery(
 				this.apollo,
 				this.loanChannelQueryMap,
-				this.selectedQuickFilters,
 				this.targetedLoanChannelURL,
 				this.loanQueryVars,
 				next,
@@ -802,8 +833,13 @@ export default {
 				this.flssLoanSearch = matchedUrls[0]?.flssLoanSearch ?? {};
 			}
 		},
-		async getHelpmeChooseLoans() {
+		async getHelpMeChooseLoans(sortBy) {
 			this.isLoadingHC = true;
+
+			if (sortBy) {
+				this.helpMeChooseSort = sortBy;
+			}
+
 			const loansData = await getLoanChannel(
 				this.apollo,
 				this.loanChannelQueryMap,
@@ -813,10 +849,13 @@ export default {
 					limit: 3,
 					basketId: this.cookieStore.get('kvbskt'),
 					origin: FLSS_ORIGIN_CATEGORY
-				}
+				},
+				// Apply quick filters to help me choose
+				{ ...this.selectedQuickFilters, sortBy: this.helpMeChooseSort }
 			);
+
 			const loans = loansData?.lend?.loanChannelsById[0]?.loans?.values ?? [];
-			this.helpmeChooseLoans = loans;
+			this.helpMeChooseLoans = loans;
 			this.isLoadingHC = false;
 		},
 		resetPagination() {
@@ -867,10 +906,6 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.loan-card-group {
-	position: relative;
-}
-
 .loan-count {
 	text-align: center;
 	margin: 0 0 2rem;
@@ -878,16 +913,6 @@ export default {
 
 .heading-region {
 	margin: 1.25rem 0;
-
-	.view-toggle {
-		margin: 0.125rem 0 0 0.375rem;
-		float: right;
-		display: flex;
-
-		@include breakpoint(large) {
-			margin: 0.375rem 0 0.375rem 0.375rem;
-		}
-	}
 
 	@include breakpoint(large) {
 		p {

@@ -87,13 +87,15 @@ export function getCachedChannel(apollo, queryMap, channelUrl, loanQueryVars) {
  * @param {Array} queryMap The map mixin from loan-channel-query-map.js
  * @param {string} channelUrl The URL of the loan channel
  * @param {Object} loanQueryVars The loan channel query variables
+ * @param {Object} filterOverrides Filters that override or extend the query map filters (only for FLSS)
  * @returns {Object} The loan channel data, transformed if FLSS
  */
-export async function getLoanChannel(apollo, queryMap, channelUrl, loanQueryVars) {
+export async function getLoanChannel(apollo, queryMap, channelUrl, loanQueryVars, filterOverrides = {}) {
 	const queryMapFLSS = getFLSSQueryMap(queryMap, channelUrl);
 
 	if (queryMapFLSS) {
-		return transformFLSSData(await fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars));
+		const data = await fetchLoanChannel(apollo, { ...queryMapFLSS, ...filterOverrides }, loanQueryVars);
+		return transformFLSSData(data);
 	}
 
 	try {
@@ -108,21 +110,17 @@ export async function getLoanChannel(apollo, queryMap, channelUrl, loanQueryVars
  *
  * @param {Object} apollo The Apollo client instance
  * @param {Array} queryMap The map mixin from loan-channel-query-map.js
- * @param {Object} selectedQuickFilters Selected quick filters
  * @param {string} channelUrl The URL of the loan channel
  * @param {Object} loanQueryVars The loan channel query variables
  * @param {function} next The function to call in the observer subscription next callback
  * @param {function} watch The function to call to setup the component watch
  * @returns {Object} The Apollo watch observer
  */
-export function watchChannelQuery(apollo, queryMap, selectedQuickFilters, channelUrl, loanQueryVars, next, watch) {
+export function watchChannelQuery(apollo, queryMap, channelUrl, loanQueryVars, next, watch) {
 	const queryMapFLSS = getFLSSQueryMap(queryMap, channelUrl);
-
-	const filterObj = { ...queryMapFLSS, ...selectedQuickFilters };
-
 	// Check if current user should see the FLSS experiment
 	const observer = queryMapFLSS
-		? watchLoanChannel(apollo, filterObj, loanQueryVars)
+		? watchLoanChannel(apollo, queryMapFLSS, loanQueryVars)
 		: apollo.watchQuery({ query: loanChannelQuery, variables: loanQueryVars });
 
 	if (observer) {
@@ -134,7 +132,7 @@ export function watchChannelQuery(apollo, queryMap, selectedQuickFilters, channe
 
 		watch(vars => {
 			// eslint-disable-next-line max-len
-			observer.setVariables(queryMapFLSS ? getLoanChannelVariables(filterObj, vars) : vars);
+			observer.setVariables(queryMapFLSS ? getLoanChannelVariables(queryMapFLSS, vars) : vars);
 		});
 
 		return observer;

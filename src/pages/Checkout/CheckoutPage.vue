@@ -133,7 +133,7 @@
 									id="login-to-continue-button"
 									data-testid="login-to-continue-button"
 									v-kv-track-event="['basket', 'click-register-cta', 'Continue']"
-									:href="'/ui-login?force=true&doneUrl=/checkout'"
+									:href="'/ui-login?autoPage=true&force=true&doneUrl=/checkout'"
 									:state="continueButtonState"
 								>
 									Continue
@@ -146,7 +146,7 @@
 									id="create-account-continue-button"
 									data-testid="create-account-continue-button"
 									v-kv-track-event="['basket', 'click-register-cta', 'Create an account']"
-									:href="'/ui-login?force=true&doneUrl=/checkout'"
+									:href="'/ui-login?loginHint=signUp&force=true&doneUrl=/checkout'"
 									:state="continueButtonState"
 								>
 									Create an account
@@ -177,7 +177,7 @@
 							>
 								<span>Already have an account?</span>
 								<a
-									href="/login?force=true&amp;loginHint=login&amp;doneUrl=checkout"
+									href="/ui-login?force=true&amp;doneUrl=%2Fcheckout"
 									v-kv-track-event="['basket', 'click-sign—in-cta', 'Sign in here']"
 									title="Sign in here"
 									data-testid="sign-in-button"

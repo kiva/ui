@@ -58,7 +58,19 @@ export default {
 		campaign: {
 			type: String,
 			required: true
-		}
+		},
+		inPfp: {
+			type: Boolean,
+			default: false
+		},
+		pfpMinLenders: {
+			type: Number,
+			default: 1 // avoids divide by zero
+		},
+		numLenders: {
+			type: Number,
+			default: 0
+		},
 	},
 	created() {
 		// This query is part of the header query and should be in the cache.
@@ -79,6 +91,11 @@ export default {
 		this.modifiedShareMessage = this.shareMessage;
 	},
 	computed: {
+		progressPfpPercent() {
+			// percent as a whole number 0-100
+			const percent = this.numLenders / this.pfpMinLenders;
+			return Math.round(percent * 100);
+		},
 		progressPercent() {
 			// percent as a whole number 0-100
 			const percent = this.loan?.fundraisingPercent ?? 0;
@@ -93,22 +110,20 @@ export default {
 		},
 		modalTitle() {
 			if (this.isBorrower) {
-				switch (true) {
-					case (this.progressPercent >= 50):
-						return 'You’re almost there';
-					case (this.progressPercent < 50):
-					default:
-						return 'Set a goal for today';
+				if (this.inPfp) {
+					return this.progressPfpPercent >= 50 ? 'You’re almost there' : 'Set a goal for today';
 				}
+				return this.progressPercent >= 50 ? 'You’re almost there' : 'Set a goal for today';
 			}
 			// Not the borrower of this loan
-			switch (true) {
-				case (this.progressPercent >= 50):
-					return 'Push this loan over the finish line!';
-				case (this.progressPercent < 50):
-				default:
-					return `Get ${this.name}'s loan back on track`;
+			if (this.inPfp) {
+				return this.progressPfpPercent >= 50
+					? 'Push this loan into public fundraising!'
+					: `Get ${this.name}'s loan back on track`;
 			}
+			return this.progressPercent >= 50
+				? 'Push this loan over the finish line!'
+				: `Get ${this.name}'s loan back on track`;
 		},
 		name() {
 			if (this.loan.name && this.loan.anonymization !== 'full') {
@@ -117,25 +132,34 @@ export default {
 			return 'this lender';
 		},
 		shareMessage() {
+			/* eslint-disable max-len */
+			const remainingLenders = this.pfpMinLenders - this.numLenders;
+			const lenderText = remainingLenders === 1 ? 'lender' : 'lenders';
+			const targetLenders = this.numLenders + 3 <= this.pfpMinLenders
+				? this.numLenders + 3
+				: this.pfpMinLenders;
+
 			if (this.isBorrower) {
-				switch (true) {
-					case (this.progressPercent >= 50):
-						return `My fundraiser on Kiva is over halfway there — only ${this.amountRemaining} to go!`;
-					case (this.progressPercent < 50):
-					default:
-						return `I'm crowdfunding a loan on Kiva — Help me hit ${this.progressPercent + 10}% today!`;
+				if (this.inPfp) {
+					return this.progressPfpPercent >= 50
+						? `Join me in reaching my goal on Kiva with only ${remainingLenders} ${lenderText} left to go! Your support can help me grow my business and achieve my dreams.`
+						: `Help me reach ${targetLenders} lenders on my 0% interest Kiva loan today! Your support can make a big difference in my business.`;
 				}
+				return this.progressPercent >= 50
+					? `My fundraiser on Kiva is over halfway there — only ${this.amountRemaining} to go!`
+					: `I'm crowdfunding a loan on Kiva — Help me hit ${this.progressPercent + 10}% today!`;
 			}
 			// Not the borrower of this loan
 			const borrowerName = this.$options.filters.changeCase(this.name, 'titleCase');
-			switch (true) {
-				case (this.progressPercent >= 50):
-					return `${borrowerName}'s loan is over halfway there on Kiva – only ${this.amountRemaining} to go!`;
-				case (this.progressPercent < 50):
-				default:
-					// eslint-disable-next-line max-len
-					return `${borrowerName} is crowdfunding a loan on Kiva — Let's get them to ${this.progressPercent + 10}% today!`;
+			if (this.inPfp) {
+				return this.progressPfpPercent >= 50
+					? `Help ${borrowerName} reach their goal – only ${remainingLenders} ${lenderText} to go!`
+					: `Join me in supporting ${borrowerName} on Kiva! Let's help them reach their dream by getting 3 more lenders today.`;
 			}
+			return this.progressPercent >= 50
+				? `${borrowerName}'s loan is over halfway there on Kiva – only ${this.amountRemaining} to go!`
+				: `${borrowerName} is crowdfunding a loan on Kiva — Let's get them to ${this.progressPercent + 10}% today!`;
+			/* eslint-enable max-len */
 		},
 		utmContent() {
 			if (this.lender?.public && this.lender?.inviterName) return this.lender.inviterName;
