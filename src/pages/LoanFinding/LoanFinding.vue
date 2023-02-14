@@ -34,9 +34,10 @@
 
 			<!-- Second category row: Matched loans section -->
 			<lending-category-section
-				title="Matched lending"
-				subtitle="Stretch your funds further with the help of our partners and Kivans just like you"
-				:loans="matchedLoans"
+				v-if="secondCategoryLoans.length > 0"
+				:title="secondCategoryTitle"
+				:subtitle="secondCategorySubtitle"
+				:loans="secondCategoryLoans"
 				class="tw-pt-6 tw-pb-2"
 				:enable-loan-card-exp="enableLoanCardExp"
 				@add-to-basket="trackCategory($event, 'matched-lending')"
@@ -101,11 +102,8 @@ export default {
 				{ id: 0 }, { id: 0 }, { id: 0 },
 				{ id: 0 }, { id: 0 }, { id: 0 }
 			],
-			matchedLoans: [
-				{ id: 0 }, { id: 0 }, { id: 0 },
-				{ id: 0 }, { id: 0 }, { id: 0 },
-				{ id: 0 }, { id: 0 }, { id: 0 }
-			],
+			secondCategoryLoans: [],
+			matchedLoansTotal: 0,
 			showLightbox: false,
 			enableLoanCardExp: false,
 		};
@@ -124,7 +122,14 @@ export default {
 	computed: {
 		firstName() {
 			return this.userInfo?.firstName ?? '';
-		}
+		},
+		secondCategoryTitle() {
+			if (this.matchedLoansTotal > 0) return 'Matched lending'; return 'Borrowers at the finish line';
+		},
+		secondCategorySubtitle() {
+			if (this.matchedLoansTotal > 0) return 'Stretch your funds further with the help of our partners and Kivans just like you'; // eslint-disable-line max-len
+			return 'Loans that are ending soon or almost funded';
+		},
 	},
 	methods: {
 		async getRecommendedLoans() {
@@ -134,6 +139,24 @@ export default {
 				FLSS_ORIGIN_LENDING_HOME
 			);
 			this.recommendedLoans = loans;
+		},
+		async getSecondCategoryData() {
+			this.secondCategoryLoans = await this.getMatchedLoans();
+			this.matchedLoansTotal = this.secondCategoryLoans.length;
+			if (this.matchedLoansTotal === 0) this.secondCategoryLoans = await this.getExpiringSoonAlmostFundedCombo(); // eslint-disable-line max-len
+		},
+		async getExpiringSoonAlmostFundedCombo() {
+			const expiringSoonData = await runLoansQuery(
+				this.apollo,
+				{ sortBy: 'expiringSoon', pageLimit: 5 },
+				FLSS_ORIGIN_LENDING_HOME
+			);
+			const almostFundedData = await runLoansQuery(
+				this.apollo,
+				{ sortBy: 'amountLeft', pageLimit: 4 },
+				FLSS_ORIGIN_LENDING_HOME
+			);
+			return [...expiringSoonData.loans, ...almostFundedData.loans];
 		},
 		async getMatchedLoans() {
 			const { data } = await this.apollo.query({
@@ -149,7 +172,7 @@ export default {
 					}
 				`,
 			});
-			this.matchedLoans = data?.lend?.loans?.values ?? [];
+			return data?.lend?.loans?.values ?? [];
 
 			// TODO: enable after initial experiment is complete/successful
 			// https://kiva.atlassian.net/browse/CORE-1088
@@ -184,7 +207,7 @@ export default {
 	},
 	mounted() {
 		this.getRecommendedLoans();
-		this.getMatchedLoans();
+		this.getSecondCategoryData();
 		this.showToast();
 
 		const { enabled } = getExperimentSettingCached(this.apollo, EXP_KEY);
