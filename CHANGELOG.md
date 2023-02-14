@@ -1,3 +1,12 @@
+### [2.495.1](https://github.com/kiva/ui/compare/v2.495.0...v2.495.1) (2023-02-14)
+
+
+### Bug Fixes
+
+* log for when channel not found in map ([8823514](https://github.com/kiva/ui/commit/8823514cd7b94e76b39727ea13bacc7dbd588deb))
+* some missing optional chaining based on logs ([71847f9](https://github.com/kiva/ui/commit/71847f9ef09ddc0c8864814268027528bbfaf882))
+* touch should toggle categories menu ([67b5412](https://github.com/kiva/ui/commit/67b54124ad9c4557356d65c2ee63e0a5c4211e5c))
+
 ## [2.495.0](https://github.com/kiva/ui/compare/v2.494.1...v2.495.0) (2023-02-14)
 
 
