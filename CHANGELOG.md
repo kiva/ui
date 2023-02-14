@@ -1,3 +1,10 @@
+### [2.491.4](https://github.com/kiva/ui/compare/v2.491.3...v2.491.4) (2023-02-14)
+
+
+### Bug Fixes
+
+* categories button click behavior ([7544b6d](https://github.com/kiva/ui/commit/7544b6db0d83f2e8f980e54b1cd4ec5dbf7f29e5))
+
 ### [2.491.3](https://github.com/kiva/ui/compare/v2.491.2...v2.491.3) (2023-02-14)
 
 
