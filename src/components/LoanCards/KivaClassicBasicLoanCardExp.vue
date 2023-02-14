@@ -89,22 +89,28 @@
 					/>
 				</router-link>
 
-				<!-- Loan callouts -->
-				<loan-callouts :callouts="loanCallouts" class="tw-mt-1.5" />
+				<!-- Loan call outs -->
+				<kv-loading-placeholder
+					v-if="typeof loanCallouts === 'undefined'"
+					class="tw-mt-1.5 tw-mb-2"
+					:style="{ width: '60%', height: '1.75rem', 'border-radius': '500rem' }"
+				/>
+
+				<loan-callouts v-else :callouts="loanCallouts" class="tw-mt-1.5" />
 			</div>
 		</div>
 
 		<div class="tw-flex tw-justify-between tw-mt-2">
 			<!-- Fundraising -->
-			<div v-if="isLoading">
+			<div v-if="!hasProgressData" class="tw-w-full tw-pt-1 tw-pr-1">
 				<kv-loading-placeholder
 					class="tw-mb-0.5"
-					:style="{ width: 40 + (Math.random() * 15) + '%', height: '1.3rem' }"
+					:style="{ width: '70%', height: '1.3rem' }"
 				/>
 
 				<kv-loading-placeholder
-					class="tw-mb-1.5 tw-rounded"
-					:style="{ width: '100%', height: '0.5rem' }"
+					class="tw-rounded"
+					:style="{ width: '70%', height: '0.5rem' }"
 				/>
 			</div>
 
@@ -148,11 +154,7 @@ import numeral from 'numeral';
 import { mdiChevronRight, mdiMapMarker, mdiCheckCircleOutline } from '@mdi/js';
 import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
-import {
-	readLoanFragment,
-	watchLoanData,
-	loanCallouts
-} from '@/util/loanUtils';
+import { readLoanFragment, watchLoanData, loanCallouts } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import LoanUse from '@/components/LoanCards/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
@@ -269,13 +271,11 @@ export default {
 			mdiChevronRight,
 			mdiMapMarker,
 			viewportObserver: null,
-			isAdding: false
+			isAdding: false,
+			loanCallouts: undefined,
 		};
 	},
 	computed: {
-		loanCallouts() {
-			return loanCallouts(this.loan, this.categoryPageName);
-		},
 		cardWidth() {
 			return this.useFullWidth ? '100%' : '374px';
 		},
@@ -319,6 +319,11 @@ export default {
 			const loanItems = this.basketItems.filter(item => item.__typename === 'LoanReservation');
 			const loanIds = loanItems.map(loan => loan.id);
 			return loanIds.indexOf(this.loanId) > -1;
+		},
+		hasProgressData() {
+			// Local resolver values for the progress bar load client-side
+			return typeof this.loan?.unreservedAmount !== 'undefined'
+				&& typeof this.loan?.fundraisingPercent !== 'undefined';
 		},
 		fundraisingPercent() {
 			return this.loan?.fundraisingPercent ?? 0;
@@ -416,7 +421,12 @@ export default {
 			}
 
 			this.loan = result.data?.lend?.loan || null;
+
+			// Set client-side to prevent call outs from changing on page load due to random selections
+			this.loanCallouts = loanCallouts(this.loan, this.categoryPageName);
+
 			if (this.loan) this.isLoading = false;
+
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
 		},
 		addToBasket(lendAmount) {
@@ -485,6 +495,10 @@ export default {
 
 .loan-card-active-hover:hover .loan-card-use {
 	@apply tw-underline;
+}
+
+.loan-card-progress >>> [role=progressbar] {
+	margin-bottom: 0;
 }
 
 .loan-card-progress:hover,
