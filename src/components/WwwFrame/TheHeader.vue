@@ -129,7 +129,7 @@
 								class="header__button header__lend !tw-hidden md:!tw-inline-flex"
 								@pointerenter.stop="onLendLinkPointerEnter"
 								@pointerleave.stop="onLendLinkPointerLeave"
-								@pointerup.stop="onLendLinkPointerUp"
+								@pointerup.stop="onLendLinkPointerEnter"
 							>
 								<span class="tw-flex tw-items-center">Categories
 									<kv-material-icon
