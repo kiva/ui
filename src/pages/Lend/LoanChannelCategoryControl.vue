@@ -483,7 +483,7 @@ export default {
 		},
 		showHelpMeChooseFeat() {
 			const queryMapFLSS = getFLSSQueryMap(this.loanChannelQueryMap, this.targetedLoanChannelURL);
-			const hasSortBy = !!queryMapFLSS.sortBy;
+			const hasSortBy = !!queryMapFLSS?.sortBy;
 
 			// Don't show help me choose if the category has sortBy
 			// Help me choose categories are just different sortBy options
