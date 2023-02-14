@@ -39,7 +39,7 @@ export default {
 		callouts: {
 			type: Array,
 			required: true
-		},
+		}
 	},
 };
 </script>
