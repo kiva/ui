@@ -33,28 +33,13 @@
 </template>
 
 <script>
-import { loanCallouts } from '@/util/loanUtils';
-
 export default {
 	name: 'LoanCallouts',
 	props: {
-		loan: {
-			type: Object,
-			default: () => ({})
+		callouts: {
+			type: Array,
+			required: true
 		},
-		categoryPageName: {
-			type: String,
-			default: ''
-		}
-	},
-	data() {
-		return {
-			callouts: [],
-		};
-	},
-	mounted() {
-		// Render client-side to prevent call outs from changing on page load due to random selections
-		this.callouts = loanCallouts(this.loan, this.categoryPageName);
 	},
 };
 </script>
