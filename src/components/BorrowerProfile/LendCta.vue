@@ -185,13 +185,6 @@
 					>
 						All shares reserved
 					</p>
-					<div
-						v-if="repaymentEnabled"
-						class="tw-hidden md:tw-flex tw-mt-2 lg:tw-mt-0 tw-content-center tw-gap-2"
-					>
-						<icon-clock />
-						<span>{{ repaymentDateCopy }}</span>
-					</div>
 					<hr
 						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full tw-my-2"
 					>
@@ -299,16 +292,6 @@
 								{{ matchRatio + 1 }}X
 								<span> MATCHED LOAN</span>
 							</span>
-
-							<span
-								v-if="currentSlotStat === 'repaymentDate'"
-								class="md:tw-hidden tw-align-middle tw-flex tw-gap-1 tw-items-center"
-								data-testid="bp-lend-cta-expected-repayment"
-								key="expectedRepayment"
-							>
-								<icon-clock class="tw-pointer-events-none tw-inline-block tw-align-middle" />
-								<span>{{ repaymentDateCopy }}</span>
-							</span>
 						</transition>
 					</div>
 				</kv-grid>
@@ -319,12 +302,6 @@
 
 <script>
 import { mdiLightningBolt } from '@mdi/js';
-import {
-	addMonths,
-	format,
-	parseISO,
-	isSameMonth,
-} from 'date-fns';
 import { gql } from '@apollo/client';
 import { setLendAmount } from '@/util/basketUtils';
 import {
@@ -341,7 +318,6 @@ import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrapper';
 
-import IconClock from '@/assets/icons/inline/clock.svg';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -355,10 +331,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		userContextExpVariant: {
-			type: String,
-			default: 'c'
-		},
 	},
 	components: {
 		LendAmountButton,
@@ -369,7 +341,6 @@ export default {
 		JumpLinks,
 		LoanBookmark,
 		CompleteLoanWrapper,
-		IconClock
 	},
 	data() {
 		return {
@@ -400,10 +371,6 @@ export default {
 			wrapperObserver: null,
 			name: '',
 			completeLoanView: true,
-			isMobile: false,
-			repaymentInterval: '',
-			plannedExpirationDate: '',
-			firstRepaymentDate: '',
 			slotMachineInterval: null,
 			currentSlotStat: '',
 		};
@@ -432,13 +399,6 @@ export default {
 						}
 						lenders{
 							totalCount
-						}
-						repaymentInterval
-						plannedExpirationDate
-						terms {
-							expectedPayments {
-								dueToKivaDate
-							}
 						}
 					}
 				}
@@ -487,9 +447,6 @@ export default {
 			this.basketItems = basket?.items?.values ?? [];
 			this.matchingText = loan?.matchingText ?? '';
 			this.matchRatio = loan?.matchRatio ?? 0;
-			this.firstRepaymentDate = loan?.terms?.expectedPayments?.[0]?.dueToKivaDate ?? '';
-			this.plannedExpirationDate = loan?.plannedExpirationDate ?? '';
-			this.repaymentInterval = loan?.repaymentInterval ?? '';
 			this.name = loan?.name ?? '';
 			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
 
@@ -499,15 +456,9 @@ export default {
 
 			// Start cycling the stats slot now that loan data is available
 			this.cycleStatsSlot();
-
-			// Track this.repaymentDateCopy for MARS-317
-			this.$kvTrackEvent('borrower-profile', 'show', 'expected-repayment', this.repaymentDateCopy);
 		},
 	},
 	methods: {
-		determineIfMobile() {
-			this.isMobile = document.documentElement.clientWidth < 735;
-		},
 		async addToBasket() {
 			this.isAdding = true;
 			setLendAmount({
@@ -579,11 +530,6 @@ export default {
 				if (this.status === 'fundraising' && this.matchingText.length && !this.isMatchAtRisk) {
 					possibleStats.push('matchingText');
 				}
-				// Add repayment date MARS-317
-				this.determineIfMobile();
-				if (this.isMobile && this.repaymentEnabled) {
-					possibleStats.push('repaymentDate');
-				}
 				// Cycle through the possible stats in the order they were added.
 				// If current slot stat is no longer in the possible stat list, this will cycle back to the first stat.
 				let nextStatIndex = possibleStats.indexOf(this.currentSlotStat) + 1;
@@ -620,29 +566,6 @@ export default {
 		},
 	},
 	computed: {
-		repaymentEnabled() {
-			return this.userContextExpVariant === 'b';
-		},
-		repaymentDate() {
-			if (this.firstRepaymentDate) {
-				return format(parseISO(this.firstRepaymentDate), 'MMM yyyy');
-			}
-			if (this.plannedExpirationDate) {
-				const asSoonAs = addMonths(new Date(), 1);
-				const asLateAs = addMonths(parseISO(this.plannedExpirationDate), 1);
-				if (isSameMonth(asSoonAs, asLateAs)) {
-					return format(asSoonAs, 'MMM yyyy');
-				}
-				return `${format(asSoonAs, 'MMM yyyy')} or ${format(asLateAs, 'MMM yyyy')}`;
-			}
-			return '';
-		},
-		repaymentDateCopy() {
-			if (this.repaymentInterval === 'at_end') {
-				return `Expected repayment ${this.repaymentDate}`;
-			}
-			return `First expected repayment ${this.repaymentDate}`;
-		},
 		isInBasket() {
 			// eslint-disable-next-line no-underscore-dangle
 			return this.basketItems.some(item => item.__typename === 'LoanReservation' && item.id === this.loanId);
