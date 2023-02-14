@@ -1,3 +1,10 @@
+## [2.495.0](https://github.com/kiva/ui/compare/v2.494.1...v2.495.0) (2023-02-14)
+
+
+### Features
+
+* add user attribute for when a user has a us loan in basket ([9bb69ee](https://github.com/kiva/ui/commit/9bb69eeb65e95dd94806e6dbca1fc8e9f250e265))
+
 ### [2.494.1](https://github.com/kiva/ui/compare/v2.494.0...v2.494.1) (2023-02-14)
 
 
