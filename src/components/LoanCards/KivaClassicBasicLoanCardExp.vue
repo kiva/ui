@@ -90,7 +90,12 @@
 				</router-link>
 
 				<!-- Loan callouts -->
-				<loan-callouts :callouts="loanCallouts" class="tw-mt-1.5" />
+				<loan-callouts
+					v-if="!isLoading"
+					:loan="loan"
+					:category-page-name="categoryPageName"
+					class="tw-mt-1.5"
+				/>
 			</div>
 		</div>
 
@@ -148,11 +153,7 @@ import numeral from 'numeral';
 import { mdiChevronRight, mdiMapMarker, mdiCheckCircleOutline } from '@mdi/js';
 import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
-import {
-	readLoanFragment,
-	watchLoanData,
-	loanCallouts
-} from '@/util/loanUtils';
+import { readLoanFragment, watchLoanData } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import LoanUse from '@/components/LoanCards/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
@@ -190,11 +191,6 @@ const loanQuery = gql`
 		loan(id: $loanId) {
 			id
 			...loanCardFields
-
-			# for loan-progress component
-			unreservedAmount @client
-			fundraisingPercent @client
-			fundraisingTimeLeft @client
 		}
 	}
 }`;
@@ -273,9 +269,6 @@ export default {
 		};
 	},
 	computed: {
-		loanCallouts() {
-			return loanCallouts(this.loan, this.categoryPageName);
-		},
 		cardWidth() {
 			return this.useFullWidth ? '100%' : '374px';
 		},

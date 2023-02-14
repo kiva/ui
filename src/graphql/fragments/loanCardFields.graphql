@@ -59,4 +59,9 @@ fragment loanCardFields on LoanBasic {
 	...on LoanDirect {
 		trusteeName
 	}
+
+	# for loan-progress component
+	unreservedAmount @client
+	fundraisingPercent @client
+	fundraisingTimeLeft @client
 }
