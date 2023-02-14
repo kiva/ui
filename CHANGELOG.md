@@ -1,3 +1,10 @@
+## [2.492.0](https://github.com/kiva/ui/compare/v2.491.5...v2.492.0) (2023-02-14)
+
+
+### Features
+
+* data fetch update for matched loans in lh ([8ded19d](https://github.com/kiva/ui/commit/8ded19d52d011b936fabaf1fa090ab8d7ebeda68))
+
 ### [2.491.5](https://github.com/kiva/ui/compare/v2.491.4...v2.491.5) (2023-02-14)
 
 
