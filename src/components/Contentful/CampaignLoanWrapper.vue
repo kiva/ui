@@ -32,6 +32,7 @@
 					:show-loans="componentProps.showLoans"
 					:sort-by="componentProps.sortBy"
 					@add-to-basket="componentProps.handleAddToBasket"
+					@update-available-loans="componentProps.handleUpdateAvailableLoans"
 					@update-total-count="componentProps.setTotalCount"
 					@show-loan-details="componentProps.showLoanDetails"
 					@reset-loan-filters="componentProps.handleResetLoanFilters"

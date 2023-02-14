@@ -229,6 +229,7 @@ import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 import { preFetchAll } from '@/util/apolloPreFetch';
+import { setLendAmount } from '@/util/basketUtils';
 
 // Error page
 const ErrorPage = () => import('@/pages/Error');
@@ -599,6 +600,8 @@ export default {
 			showVerifyRemovePromoCredit: false,
 			contentGroups: [],
 			pageFrame: WwwPageCorporate,
+			availableLoans: [],
+			leftoverCreditAllocationLoan: null
 		};
 	},
 	metaInfo() {
@@ -773,6 +776,7 @@ export default {
 				showLoanDetails: this.showLoanDetails,
 				checkoutVisible: this.checkoutVisible,
 				showThanks: this.showThanks,
+				handleUpdateAvailableLoans: this.handleUpdateAvailableLoans
 			};
 		},
 		pageSettingData() {
@@ -1204,8 +1208,19 @@ export default {
 			}
 
 			const basketItems = basketState.shop?.basket?.items?.values ?? [];
+			// insert some kind of tag to indicate that creditAllocationLoans should have a different message on them.
+
 			// eslint-disable-next-line no-underscore-dangle
 			this.basketLoans = basketItems.filter(item => item.__typename === 'LoanReservation');
+
+			this.basketLoans.forEach(item => {
+				if (item.id === this.leftoverCreditAllocationLoan){
+					item.isLeftoverCreditAllocation = true;
+				}
+			});
+
+			debugger;
+
 			// eslint-disable-next-line no-underscore-dangle
 			this.donations = basketItems.filter(item => item.__typename === 'Donation');
 			// eslint-disable-next-line no-underscore-dangle
@@ -1274,8 +1289,35 @@ export default {
 				this.showCheckout();
 			}
 		},
+		allocateLeftoverCredits(payload) {
+			setLendAmount({
+				amount: payload.lendAmount,
+				apollo: this.apollo,
+				loanId: payload.loanId,
+			}).then(() => {
+				console.log(`Successfully added loan with id ${payload.loanId} to basket`);
+				this.$emit('add-to-basket', { loanId: payload.loanId, success: true });
+				this.updateBasketState();
+			}).catch(e => {
+				console.log(`Failed to add loan with id ${payload.loanId} to basket`);
+				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
+					? e[0].message
+					: 'There was a problem adding the loan to your basket';
+
+				this.$showTipMsg(msg, 'error');
+			});
+		},
 		showCheckout() {
 			if (this.basketLoans.length) {
+				const remainingCredit = this.basketTotals.creditAvailableTotal - this.basketTotals.creditAppliedTotal;
+				if (remainingCredit > 0) {
+					// if the credit available is less than credit applied, get a loan from the carousel and add it to the basket
+					this.leftoverCreditAllocationLoan = this.availableLoans.values[0].id;
+					this.allocateLeftoverCredits({
+						lendAmount: remainingCredit,
+						loanId: this.availableLoans.values[0].id
+					});
+				}
 				this.checkoutVisible = true;
 			} else {
 				this.checkoutVisible = false;
@@ -1437,6 +1479,9 @@ export default {
 				this.useMatcherAccountIds = false;
 				this.setInitialFilters();
 			}
+		},
+		handleUpdateAvailableLoans(loans) {
+			this.availableLoans = loans;
 		},
 		showLoanDetails(loan) {
 			this.detailedLoan = loan;
