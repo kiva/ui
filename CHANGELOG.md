@@ -1,3 +1,15 @@
+## [2.494.0](https://github.com/kiva/ui/compare/v2.493.0...v2.494.0) (2023-02-14)
+
+
+### Features
+
+* use loan channel headline, metaTitle, metaDescription from api MARS-321 ([f8f2237](https://github.com/kiva/ui/commit/f8f2237657a46df98c066cc0860f348dc95bacef))
+
+
+### Bug Fixes
+
+* remove MARS-317 experiment code MARS-342 ([a78bb59](https://github.com/kiva/ui/commit/a78bb598fbd805449dcdf9573831d1116ca46280))
+
 ## [2.493.0](https://github.com/kiva/ui/compare/v2.492.0...v2.493.0) (2023-02-14)
 
 
