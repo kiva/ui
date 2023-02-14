@@ -77,16 +77,17 @@ module.exports = function authRouter(config = {}) {
 			options.prompt = 'login';
 		}
 		// Go to register instead of login if the user has not logged in before
-		if (!cookies.kvu) {
+		if (req.query.autoPage === 'true' && !cookies.kvu) {
 			options.login_hint = 'signUp';
 		}
+		// Used by guest checkout to start account claiming process (password reset)
 		if (req.query.forgot === 'true') {
 			options.prompt = 'login';
 			options.login_hint = `forgotPassword|${JSON.stringify({
 				guest: true,
 			})}`;
 		}
-
+		// Override the login hint with whatever hint is set in the request
 		if (req.query.loginHint) {
 			options.login_hint = req.query.loginHint;
 		}
