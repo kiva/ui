@@ -1,3 +1,12 @@
+### [2.491.5](https://github.com/kiva/ui/compare/v2.491.4...v2.491.5) (2023-02-14)
+
+
+### Bug Fixes
+
+* progress was changing on mount, callouts now just loaded on mount ([0e08cf1](https://github.com/kiva/ui/commit/0e08cf193050f35b5d6a01e5efef1b497c68553e))
+* revert change to reduce file churn ([95708ac](https://github.com/kiva/ui/commit/95708ac5a0bc4f58cf80a17c33eb34890edc229b))
+* set progress bar clientside, add loader to loan callouts ([f3006e5](https://github.com/kiva/ui/commit/f3006e5911658622709151ef71ec2b11fa0922f6))
+
 ### [2.491.4](https://github.com/kiva/ui/compare/v2.491.3...v2.491.4) (2023-02-14)
 
 
