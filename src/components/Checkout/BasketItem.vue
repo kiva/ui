@@ -48,18 +48,21 @@
 				/>
 			</div>
 		</div>
-		<div class="
+		<div
+			v-if="leftoverCreditAllocationLoanId === String(loan.id)"
+			class="
 				tw-flex-none
 				tw-w-full
 				md:tw-w-auto
 				md:tw-ml-3
 				lg:tw-ml-4.5
 				tw-mt-1.5
-				md:tw-mt-0"
-			:v-if="loan.isLeftoverCreditAllocation === true">
-			This is an allocated loan.
+				md:tw-mt-0">
+			<div>The remaining ${{loan.price}} will be lent to this borrower.</div>
+			<div><u>Choose another borrower</u></div>
 		</div>
 		<div
+			v-if="leftoverCreditAllocationLoanId !== String(loan.id)"
 			class="
 			tw-flex-none
 			tw-w-full
@@ -69,7 +72,6 @@
 			tw-mt-1.5
 			md:tw-mt-0
 			loan-res-price-wrapper"
-			:v-else-if="!loan.isLeftoverCreditAllocation"
 		>
 			<loan-price
 				data-testid="basket-loan-price-selector"
@@ -108,7 +110,7 @@ export default {
 		RemoveBasketItem,
 		TeamAttribution
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		disableRedirects: {
 			type: Boolean,
@@ -141,6 +143,9 @@ export default {
 				return appliedCredits.length ? appliedCredits : [];
 			}
 			return [];
+		},
+		leftoverCreditAllocationLoanId() {
+			return this.cookieStore.get('leftoverCreditAllocationLoanId');
 		}
 	},
 	methods: {
