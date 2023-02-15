@@ -218,6 +218,7 @@ import syncDate from '@/util/syncDate';
 import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
+import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
 import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
@@ -603,7 +604,7 @@ export default {
 			contentGroups: [],
 			pageFrame: WwwPageCorporate,
 			availableLoans: [],
-			leftoverCreditAllocationLoan: null
+			leftoverCreditAllocationLoanId: null
 		};
 	},
 	metaInfo() {
@@ -1216,12 +1217,13 @@ export default {
 			this.basketLoans = basketItems.filter(item => item.__typename === 'LoanReservation');
 
 			this.basketLoans.forEach(item => {
-				if (item.id === this.leftoverCreditAllocationLoan){
-					item.isLeftoverCreditAllocation = true;
+				if (item.id === this.leftoverCreditAllocationLoanId) {
+					const prevLCALoanId = this.cookieStore.get('leftoverCreditAllocationLoanId');
+					if (this.leftoverCreditAllocationLoanId !== prevLCALoanId) {
+						return this.cookieStore.set('leftoverCreditAllocationLoanId', this.leftoverCreditAllocationLoanId);
+					}
 				}
 			});
-
-			debugger;
 
 			// eslint-disable-next-line no-underscore-dangle
 			this.donations = basketItems.filter(item => item.__typename === 'Donation');
@@ -1309,12 +1311,97 @@ export default {
 				this.$showTipMsg(msg, 'error');
 			});
 		},
+		updateBasketItem(loanId, price) {
+			this.$emit('updating-totals', true);
+				this.apollo.mutate({
+					mutation: updateLoanReservation,
+					variables: {
+						loanid: loanId,
+						price: price
+					}
+				}).then(data => {
+					if (data.errors?.length) {
+						let notAllSharesAdded = false;
+						data.errors.forEach(({ message, code }) => {
+							this.$showTipMsg(message, 'error');
+							// update flag if this error is present
+							if (code === 'not_all_shared_added') {
+								notAllSharesAdded = true;
+							}
+						});
+						// for not all shares added, the loan amount is updated by not reported to the client
+						// - we need to refresh the page to get back into updated state
+						if (typeof window !== 'undefined' && notAllSharesAdded) {
+							window.setTimeout(window.location.reload(), 8000);
+						} else {
+							this.selectedOption = this.cachedSelection;
+							this.$emit('updating-totals', false);
+						}
+					} else {
+						if (price === Number(0)) {
+							this.completeRemoveBasketItem();
+						}
+					}
+				}).catch(error => {
+					console.error(error);
+					this.$emit('updating-totals', false);
+				});
+		},
+		completeRemoveBasketItem() {
+			this.$closeTipMsg();
+			this.trackItemRemoved();
+			this.$emit('refreshtotals', 'removeLoan');
+			this.$emit('updating-totals', false);
+			this.updateBasketState();
+		},
+		trackItemRemoved() {
+			const category = 'basket';
+			let action = 'Update Loan Amount';
+			let label = 'Loan Removed';
+			if (this.type === 'kivaCard') {
+				action = 'Update Kiva Card Amount';
+				label = 'Kiva Card Removed';
+			}
+
+			this.$kvTrackEvent(
+				category,
+				action,
+				label,
+				0,
+				0
+			);
+		},
 		showCheckout() {
 			if (this.basketLoans.length) {
-				const remainingCredit = this.basketTotals.creditAvailableTotal - this.basketTotals.creditAppliedTotal;
-				if (remainingCredit > 0) {
-					// if the credit available is less than credit applied, get a loan from the carousel and add it to the basket
-					this.leftoverCreditAllocationLoan = this.availableLoans.values[0].id;
+				const remainingCredit = this.basketTotals.creditAvailableTotal - this.basketTotals.itemTotal;
+				debugger;
+				const LCALoanId = this.cookieStore.get('leftoverCreditAllocationLoanId');
+				// Check if there is already a loan id that has unspent credit allocated to it
+				if (LCALoanId) {
+					// Try getting that loan from the basket
+					const basketLCALoan =
+						this.basketLoans.find(loan => String(loan.id) === LCALoanId);
+					if (basketLCALoan?.price) {
+						// If there's a delta between total checkout price and credit available
+						if (remainingCredit !== 0) {
+							let lCALoanPrice = parseFloat(basketLCALoan.price) + parseFloat(remainingCredit);
+							if (lCALoanPrice < 0) {
+								lCALoanPrice = 0;
+							}
+							// Set the LCA loan price that balances the delta
+							this.updateBasketItem(Number(LCALoanId), lCALoanPrice);
+							if (lCALoanPrice === 0) {
+								this.cookieStore.remove('leftoverCreditAllocationLoanId');
+							};
+						}
+					} else {
+						this.cookieStore.remove('leftoverCreditAllocationLoanId');
+					}
+				} else if (remainingCredit > 0) {
+					// If there's no existing loan that we've allocated the unspent credit to
+					// Then get a loan from the carousel and add it to the basket,
+					// and apply the unspent credits to that loan.
+					this.leftoverCreditAllocationLoanId = this.availableLoans.values[0].id;
 					this.allocateLeftoverCredits({
 						lendAmount: remainingCredit,
 						loanId: this.availableLoans.values[0].id
