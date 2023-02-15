@@ -1,3 +1,10 @@
+## [2.497.0](https://github.com/kiva/ui/compare/v2.496.0...v2.497.0) (2023-02-15)
+
+
+### Features
+
+* partner list updated for loan channels 33 and 68 in loan channel query map file ([20dd962](https://github.com/kiva/ui/commit/20dd9625832eb1b9080e0a3ed620be017f51f61f))
+
 ## [2.496.0](https://github.com/kiva/ui/compare/v2.495.2...v2.496.0) (2023-02-15)
 
 

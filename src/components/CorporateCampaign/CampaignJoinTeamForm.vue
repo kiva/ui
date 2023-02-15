@@ -109,6 +109,7 @@ export default {
 			return `Join the ${this.teamName} Lending Team to do more good together`;
 		},
 		campaignNameText() {
+			
 			return this.campaignName ? `the ${this.campaignName}` : 'this';
 		}
 	},

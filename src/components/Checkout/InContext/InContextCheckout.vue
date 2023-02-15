@@ -34,10 +34,14 @@
 				id="Continue-to-legacy-button"
 				v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
 				:href="registerOrLoginHref"
+				@click="handleJoinTeam"
 			>
 				Continue
 			</kv-button>
 		</div>
+
+
+		
 		<div class="in-context-payment-conttrols" v-else>
 			<kiva-credit-payment
 				v-if="showKivaCreditButton"
@@ -58,6 +62,14 @@
 			/>
 		</div>
 
+		<div class="in-context-login" v-if="teamId">
+    		<kv-checkbox
+				v-model="isChecked"
+			>
+				{{ campaignTitleText }} 
+    		</kv-checkbox>
+		</div>
+
 		<kv-loading-overlay
 			v-if="updatingTotals"
 			id="updating-overlay"
@@ -76,6 +88,10 @@ import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
+import joinTeam from '@/graphql/mutation/joinTeam.graphql';
+import myTeamsQuery from '@/graphql/query/myTeams.graphql';
 
 export default {
 	name: 'InContextCheckout',
@@ -84,6 +100,7 @@ export default {
 		BasketItemsList,
 		CheckoutDropInPaymentWrapper,
 		KvButton,
+		KvCheckbox,
 		KivaCreditPayment,
 		KvLoadingOverlay,
 		OrderTotals
@@ -132,10 +149,32 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		promoId: {
+			type: Number,
+			default: null
+		},
+		teamId: {
+			type: Number,
+			default: null
+		},
+		campaignName: {
+			type: String,
+			default: null
+		},
 	},
 	data() {
 		return {
 			updatingTotals: false,
+			isMember: false,
+			loading: false,
+			joinStatus: null,
+			showError: false,
+			showForm: true,
+			showSuccess: false,
+			showTeamLightbox: false,
+			teamName: '',
+			myTeams: () => [],
+			isChecked: false,
 		};
 	},
 	computed: {
@@ -163,11 +202,23 @@ export default {
 			return appliedCreditsPromoFunds[0] || null;
 		},
 		registerOrLoginHref() {
-			return `/ui-login?autoPage=true&force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
+			return `/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
 		},
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;
 		},
+		campaignTitleText() {
+			return `Join the ${this.teamName} Lending Team to do more good together`;
+		},
+		campaignNameText() {
+			return this.campaignName ? `the ${this.campaignName}` : 'this';
+		}
+	},
+	mounted() {
+		this.loading = true;
+		if (this.teamId) {
+			this.fetchTeamData();
+		}
 	},
 	methods: {
 		completeTransaction(transactionId) {
@@ -207,6 +258,90 @@ export default {
 		setUpdatingTotals(payload) {
 			this.updatingTotals = payload;
 		},
+		fetchTeamData() {
+			this.apollo.query({
+				query: TeamInfoFromId,
+				variables: {
+					team_id: this.teamId,
+					team_ids: [this.teamId],
+				}
+			}).then(({ data }) => {
+				this.teamName = data.community?.team?.name ?? '';
+				this.isMember = data.my?.teams?.values?.length ?? false;
+				// if lender is a member emit event and skip form
+				if (this.isMember) {
+					this.myTeams = data.my?.teams?.values ?? [];
+					this.joinStatus = 'existing-member';
+					this.$emit('team-process-complete', { join: this.joinStatus });
+				} else {
+					this.showTeamLightbox = true;
+					this.loading = false;
+				}
+			});
+		},
+		joinTeamMutation() {
+			this.apollo.mutate({
+				mutation: joinTeam,
+				variables: {
+					team_id: this.teamId,
+					promo_id: this.promoId
+				}
+			}).then(result => {
+				if (result.errors) {
+					throw result.errors;
+				} else {
+					return this.apollo.query({
+						query: myTeamsQuery,
+						variables: {
+							teamIds: [this.teamId]
+						},
+						fetchPolicy: 'network-only',
+					});
+				}
+			}).then(result => {
+				this.loading = false;
+				if (result.errors) {
+					throw result.errors;
+				} else {
+					this.isMember = result.data?.my?.teams?.values?.length ?? false;
+					if (this.isMember) {
+						this.myTeams = result.data?.my?.teams?.values ?? [];
+					}
+					this.showForm = false;
+					this.showSuccess = true;
+					this.joinStatus = 'joined';
+				}
+			})
+				.catch(error => {
+					this.loading = false;
+					this.showError = true;
+					this.joinStatus = 'error';
+					console.log(error);
+				});
+		},
+		handleJoinTeam() {
+			if(this.isChecked){
+				this.joinTeamMutation();
+			}
+			
+		},
+		handleContinue() {
+			this.loading = true;
+			this.showError = false;
+			this.showTeamLightbox = false;
+			this.$emit('team-process-complete', { join: this.joinStatus });
+		},
+		handleRejectTeam() {
+			this.showError = false;
+			// TODO: Close lightbox
+			this.showTeamLightbox = false;
+			this.$emit('team-process-complete', { join: 'declined', myTeams: this.myTeams });
+			// TODO: Determine if /declineInvitationToJoinTeam?team_id=${this.teamId} is necessary
+			// - It may be that we can use this to prevent spamming the person with repeated ligthboxes
+		},
+		handleLightboxClosed() {
+
+		}
 	}
 };
 </script>
