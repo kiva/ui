@@ -1,3 +1,16 @@
+## [2.496.0](https://github.com/kiva/ui/compare/v2.495.2...v2.496.0) (2023-02-15)
+
+
+### Features
+
+* ab test added to categories page to be redirected to lbc page ([c606631](https://github.com/kiva/ui/commit/c6066311066e5fd53c9664c77f8e4bef6f15be46))
+
+
+### Bug Fixes
+
+* comma removed for consistency ([a0a5e9f](https://github.com/kiva/ui/commit/a0a5e9f1e91b6e0d608df8ee6b742c3a31f9dd4e))
+* prefetch chain updated in categories page ([16f1ac5](https://github.com/kiva/ui/commit/16f1ac5839f28202c6232ed50ffa1c6974de9d85))
+
 ### [2.495.2](https://github.com/kiva/ui/compare/v2.495.1...v2.495.2) (2023-02-15)
 
 
