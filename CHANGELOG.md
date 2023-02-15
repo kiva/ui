@@ -1,3 +1,10 @@
+### [2.495.2](https://github.com/kiva/ui/compare/v2.495.1...v2.495.2) (2023-02-15)
+
+
+### Bug Fixes
+
+* missing fallback array ([a7daa55](https://github.com/kiva/ui/commit/a7daa554e9c519b0742351fb0a9e2a384008566f))
+
 ### [2.495.1](https://github.com/kiva/ui/compare/v2.495.0...v2.495.1) (2023-02-14)
 
 
