@@ -848,6 +848,18 @@ export default {
 				);
 			}
 		}
+
+		// Tracking for EXP-CORE-1057-Feb-2023
+		const { enabled } = getExperimentSettingCached(this.apollo, 'categories_redirect');
+		if (enabled) {
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				'categories_page',
+				'EXP-CORE-1057-Feb2023'
+			);
+		}
 	},
 	beforeDestroy() {
 		this.destroyViewportObserver();
