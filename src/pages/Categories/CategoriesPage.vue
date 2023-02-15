@@ -149,7 +149,7 @@ const allCategoriesPageQuery = gql`
 		}
 		contentful {
 			entries(contentType: "page", contentKey: "categories")
-		},
+		}
 	}
 `;
 
