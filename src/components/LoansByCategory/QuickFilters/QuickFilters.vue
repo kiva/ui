@@ -329,7 +329,7 @@ export default {
 			return this.selectedCategory === 0
 			&& this.selectedGender === ''
 			&& this.sortBy === this.defaultSort
-			&& !this.$refs.locationSelector.selectedCountries.length;
+			&& !(this.$refs.locationSelector?.selectedCountries?.length ?? 0);
 		},
 		removeGenderDropdown() {
 			return this.targetedLoanChannelUrl === 'women';

@@ -186,12 +186,12 @@ export default {
 		// See CORE-944
 		async updateQuickFilters(filter) {
 			this.loanSearchState.pageOffset = 0;
-			if (filter.gender !== undefined) {
+			if (filter?.gender !== undefined) {
 				this.flssLoanSearch.gender = filter.gender;
-			} else if (filter.sortBy) {
+			} else if (filter?.sortBy) {
 				this.flssLoanSearch.sortBy = filter.sortBy;
 				this.loanSearchState.sortBy = filter.sortBy;
-			} else if (filter.country) {
+			} else if (filter?.country) {
 				this.flssLoanSearch.countryIsoCode = filter.country;
 			} else {
 				// We want to reset the flss paramaters for categories
