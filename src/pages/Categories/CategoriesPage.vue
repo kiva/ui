@@ -113,6 +113,17 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
 
+const categoriesExperimentsQuery = gql`
+	query experimentsQuery {		
+		general {
+			categoriesRedirect: uiExperimentSetting(key: "categories_redirect") {
+				key
+				value
+			}
+		}
+	}
+`;
+
 const allCategoriesPageQuery = gql`
 	query allCategoriesPageQuery {
 		lend {
@@ -139,12 +150,6 @@ const allCategoriesPageQuery = gql`
 		contentful {
 			entries(contentType: "page", contentKey: "categories")
 		},
-		general {
-			categoriesRedirect: uiExperimentSetting(key: "categories_redirect") {
-				key
-				value
-			}
-		}
 	}
 `;
 
@@ -185,7 +190,7 @@ export default {
 		query: allCategoriesPageQuery,
 		preFetch(config, client) {
 			return client.query({
-				query: allCategoriesPageQuery
+				query: categoriesExperimentsQuery
 			}).then(() => {
 				// Get the array of channel objects from settings
 				return Promise.all([
@@ -204,6 +209,10 @@ export default {
 					});
 				}
 				Promise.resolve();
+			}).then(() => {
+				return client.query({
+					query: allCategoriesPageQuery
+				});
 			});
 		},
 		result(result) {
