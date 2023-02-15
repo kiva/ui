@@ -147,7 +147,7 @@ export default {
 			loanChannels = allLoanData?.loanCategoriesByLoanChannelIds ?? [];
 		} else {
 			// get array of loan channels, accounting for different structure of loan channel queries
-			loanChannels = allLoanData?.ml?.getOrderedChannelsByIds ?? allLoanData?.lend?.featuredLoanChannel;
+			loanChannels = allLoanData?.ml?.getOrderedChannelsByIds ?? allLoanData?.lend?.featuredLoanChannel ?? [];
 		}
 
 		// get featured loan channel and add custom properties to it
