@@ -1,3 +1,10 @@
+### [2.497.3](https://github.com/kiva/ui/compare/v2.497.2...v2.497.3) (2023-02-16)
+
+
+### Bug Fixes
+
+* downgrade @apollo/client to v3.3.21 to address memory leak ([10f429c](https://github.com/kiva/ui/commit/10f429c13039fb7f83fe5bbdbe1899194fe23157))
+
 ### [2.497.2](https://github.com/kiva/ui/compare/v2.497.1...v2.497.2) (2023-02-16)
 
 
