@@ -1,3 +1,10 @@
+### [2.497.2](https://github.com/kiva/ui/compare/v2.497.1...v2.497.2) (2023-02-16)
+
+
+### Bug Fixes
+
+* height fixed for new loan cards in lendingcategorysection component ([17192db](https://github.com/kiva/ui/commit/17192db44f612d2f2de8172e77e8c1b5c2fb29ee))
+
 ### [2.497.1](https://github.com/kiva/ui/compare/v2.497.0...v2.497.1) (2023-02-16)
 
 
