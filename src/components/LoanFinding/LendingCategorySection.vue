@@ -25,6 +25,7 @@
 						:use-full-width="true"
 						:per-row="perStep"
 						@add-to-basket="addToBasket"
+						class="tw-h-full"
 					/>
 					<kiva-classic-basic-loan-card
 						v-else
