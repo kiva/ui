@@ -315,7 +315,7 @@ export default {
 		}
 
 		// Check for contentful content
-		const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
+		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
 
 		if (this.showFocusedShareAsk) {
