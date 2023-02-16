@@ -17,10 +17,7 @@
 					@reset-loan-filters="componentProps.handleResetLoanFilters"
 				/>
 
-				<campaign-progress-bar
-					:promo-amount="promoAmount"
-					:promo-name="promoName"
-				/>
+				<campaign-progress-bar />
 
 				<campaign-loan-row
 					name="Loan Row"
@@ -65,6 +62,7 @@
 </template>
 
 <script>
+import CampaignProgressBar from '@/components/CorporateCampaign/CampaignProgressBar';
 import CampaignLoanFilters from '@/components/CorporateCampaign/LoanSearch/LoanSearchFilters';
 import CampaignLoanRow from '@/components/CorporateCampaign/CampaignLoanRow';
 import CampaignLoanGridDisplay from '@/components/CorporateCampaign/CampaignLoanGridDisplay';
@@ -74,7 +72,8 @@ export default {
 	components: {
 		CampaignLoanFilters,
 		CampaignLoanRow,
-		CampaignLoanGridDisplay
+		CampaignLoanGridDisplay,
+		CampaignProgressBar
 	},
 	props: {
 		content: {
