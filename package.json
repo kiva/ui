@@ -109,7 +109,7 @@
 		"uuid": "^8.3.0",
 		"vue": "^2.6.14",
 		"vue-docgen-loader": "^2.0.0",
-		"vue-focus-lock": "^1.4.0",
+		"vue-focus-lock": "^2.0.2",
 		"vue-instantsearch": "^2.4.0",
 		"vue-meta": "^2.4.0",
 		"vue-observe-visibility": "^0.4.6",
