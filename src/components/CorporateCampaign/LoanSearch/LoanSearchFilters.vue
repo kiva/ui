@@ -330,9 +330,7 @@ export default {
 			isChipsCollapsed: true,
 			mdiChevronDown,
 			mdiGridLarge,
-			mdiLandRowsHorizontal,
-			rowDisplay: true,
-			gridDisplay: false
+			mdiLandRowsHorizontal
 		};
 	},
 	mounted() {
@@ -348,6 +346,7 @@ export default {
 				return !this.excludedTags.includes(tag.name);
 			});
 		});
+		this.setLoanDisplayMode(this.activeLoanDisplay);
 	},
 	computed: {
 		// Attributes are also known as LoanThemes
