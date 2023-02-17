@@ -1314,6 +1314,7 @@ export default {
 		},
 		// toggle visible loan types
 		handleLoanDisplayType(state) {
+			debugger;
 			// toggle off loan visibility prop passed down to loan displays
 			this.showLoans = false;
 			// set new loan display type
