@@ -9,7 +9,7 @@
 			</p>
 			<kv-carousel
 				class="tw-w-full tw-overflow-hidden tw-my-3"
-				:class="{ 'tw-pl-1' : enableLoanCardExp }"
+				:class="{ 'tw-px-1 tw-pt-1' : enableLoanCardExp }"
 				id="customizedCarousel"
 				:multiple-slides-visible="true"
 				slides-to-scroll="visible"
