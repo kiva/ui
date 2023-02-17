@@ -1,3 +1,11 @@
+### [2.497.4](https://github.com/kiva/ui/compare/v2.497.3...v2.497.4) (2023-02-17)
+
+
+### Bug Fixes
+
+* card width fixed for carousels in lh page ([0c02d13](https://github.com/kiva/ui/commit/0c02d13346eede23057f622d53a978686c17929e))
+* padding fix for new loan card in lh carousels ([5bea85a](https://github.com/kiva/ui/commit/5bea85a130337f7474387882a3e04eeb34d642a0))
+
 ### [2.497.3](https://github.com/kiva/ui/compare/v2.497.2...v2.497.3) (2023-02-16)
 
 
