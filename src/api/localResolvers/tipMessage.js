@@ -23,24 +23,32 @@ export default () => {
 		resolvers: {
 			Mutation: {
 				showTipMessage(_, { message = '', persist = false, type = '' }, context) {
-					context.cache.updateQuery({ query: tipMessageDataQuery }, data => ({
-						tip: {
-							...data.tip,
-							message,
-							persist,
-							type,
-							visible: true,
+					const data = context.cache.readQuery({ query: tipMessageDataQuery });
+					context.cache.writeQuery({
+						query: tipMessageDataQuery,
+						data: {
+							tip: {
+								...data.tip,
+								message,
+								persist,
+								type,
+								visible: true,
+							}
 						}
-					}));
+					});
 					return true;
 				},
 				closeTipMessage(_, args, context) {
-					context.cache.updateQuery({ query: tipMessageDataQuery }, data => ({
-						tip: {
-							...data.tip,
-							visible: false,
+					const data = context.cache.readQuery({ query: tipMessageDataQuery });
+					context.cache.writeQuery({
+						query: tipMessageDataQuery,
+						data: {
+							tip: {
+								...data.tip,
+								visible: false,
+							}
 						}
-					}));
+					});
 					return true;
 				},
 			},
