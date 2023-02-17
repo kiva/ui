@@ -1213,7 +1213,6 @@ export default {
 
 			// eslint-disable-next-line no-underscore-dangle
 			this.basketLoans = basketItems.filter(item => item.__typename === 'LoanReservation');
-
 			this.basketLoans.forEach(item => {
 				if (item.id === this.leftoverCreditAllocationLoanId) {
 					const prevLCALoanId = this.cookieStore.get('leftoverCreditAllocationLoanId');
@@ -1291,59 +1290,90 @@ export default {
 				this.showCheckout();
 			}
 		},
+		amountLeftOnLoan(loan) {
+			const loanFundraisingInfo = loan?.loanFundraisingInfo ?? { fundedAmount: 0, reservedAmount: 0 };
+			const { fundedAmount, reservedAmount } = loanFundraisingInfo;
+			return numeral(loan.loanAmount).subtract(fundedAmount).subtract(reservedAmount).value();
+		},
 		allocateLeftoverCredits(payload) {
+			let loanIdx = payload.loanIdx ? payload.loanIdx : 0;
+			while (payload.lendAmount > this.amountLeftOnLoan(this.availableLoans.values[loanIdx])) {
+				loanIdx+=1;
+				if (loanIdx === this.availableLoans.length-1) {
+					break;
+				}
+			}
+			let loanId = this.availableLoans.values[loanIdx].id;
+			setLendAmount({
+				amount: payload.lendAmount,
+				apollo: this.apollo,
+				loanId: loanId
+			}).then(() => {
+				console.log(`Successfully added loan with id ${loanId} to basket`);
+				this.$emit('add-to-basket', { loanId, success: true });
+				this.leftoverCreditAllocationLoanId = loanId;
+				this.updateBasketState();
+			}).catch(e => {
+				console.log(`Failed to add loan with id ${loanId} to basket`);
+				let msg = 'There was a problem adding the loan to your basket';
+				switch (e[0].extensions.code) {
+					case 'reached_anonymous_basket_limit':
+						msg = e[0].message;
+						this.$showTipMsg(msg, 'error');
+						break;
+					case 'no_shares_added_regular_xb' || 'not_all_shared_added':
+						msg = e[0].message;
+						payload.loanIdx = loanIdx+=1;
+						this.allocateLeftoverCredits(payload);
+						break;
+					default:
+						this.$showTipMsg(msg, 'error');
+				}
+
+			});
+		},
+		updateBasketItem(payload) {
+			this.$emit('updating-totals', true);
+			const loanId = payload.loanId;
 			setLendAmount({
 				amount: payload.lendAmount,
 				apollo: this.apollo,
 				loanId: payload.loanId,
 			}).then(() => {
-				console.log(`Successfully added loan with id ${payload.loanId} to basket`);
-				this.$emit('add-to-basket', { loanId: payload.loanId, success: true });
+				console.log(`Successfully updated loan price to $${payload.lendAmount} for loan with id ${loanId}`);
+				this.$emit('add-to-basket', { loanId, success: true });
+				this.leftoverCreditAllocationLoanId = loanId;
 				this.updateBasketState();
+				if (payload.lendAmount === Number(0)) {
+					this.completeRemoveBasketItem();
+				}
 			}).catch(e => {
-				console.log(`Failed to add loan with id ${payload.loanId} to basket`);
-				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
-					? e[0].message
-					: 'There was a problem adding the loan to your basket';
-
-				this.$showTipMsg(msg, 'error');
-			});
-		},
-		updateBasketItem(loanId, price) {
-			this.$emit('updating-totals', true);
-				this.apollo.mutate({
-					mutation: updateLoanReservation,
-					variables: {
-						loanid: loanId,
-						price: price
-					}
-				}).then(data => {
-					if (data.errors?.length) {
-						let notAllSharesAdded = false;
-						data.errors.forEach(({ message, code }) => {
-							this.$showTipMsg(message, 'error');
-							// update flag if this error is present
-							if (code === 'not_all_shared_added') {
-								notAllSharesAdded = true;
-							}
-						});
-						// for not all shares added, the loan amount is updated by not reported to the client
-						// - we need to refresh the page to get back into updated state
-						if (typeof window !== 'undefined' && notAllSharesAdded) {
-							window.setTimeout(window.location.reload(), 8000);
-						} else {
-							this.selectedOption = this.cachedSelection;
-							this.$emit('updating-totals', false);
-						}
-					} else {
-						if (price === Number(0)) {
-							this.completeRemoveBasketItem();
-						}
-					}
-				}).catch(error => {
-					console.error(error);
+				let notAllSharesAdded = false;
+				console.log(`Failed to update loan price to $${payload.lendAmount} for loan with id ${loanId}`);
+				let msg = 'There was a problem updating a loan in your basket';
+				switch (e[0].extensions.code) {
+					case 'reached_anonymous_basket_limit':
+						msg = e[0].message;
+						this.$showTipMsg(msg, 'error');
+						break;
+					case 'no_shares_added_regular_xb':
+						msg = e[0].message;
+						break;
+					case 'not_all_shared_added':
+						notAllSharesAdded = true;
+						msg = e[0].message;
+					default:
+						this.$showTipMsg(msg, 'error');
+				}
+				// for not all shares added, the loan amount is updated but not reported to the client
+				// - we need to refresh the page to get back into updated state
+				if (typeof window !== 'undefined' && notAllSharesAdded) {
+					window.setTimeout(window.location.reload(), 8000);
+				} else {
 					this.$emit('updating-totals', false);
-				});
+				}
+
+			});
 		},
 		completeRemoveBasketItem() {
 			this.$closeTipMsg();
@@ -1372,7 +1402,6 @@ export default {
 		showCheckout() {
 			if (this.basketLoans.length) {
 				const remainingCredit = this.basketTotals.creditAvailableTotal - this.basketTotals.itemTotal;
-				debugger;
 				const LCALoanId = this.cookieStore.get('leftoverCreditAllocationLoanId');
 				// Check if there is already a loan id that has unspent credit allocated to it
 				if (LCALoanId) {
@@ -1387,7 +1416,10 @@ export default {
 								lCALoanPrice = 0;
 							}
 							// Set the LCA loan price that balances the delta
-							this.updateBasketItem(Number(LCALoanId), lCALoanPrice);
+							this.updateBasketItem({
+								loanId: Number(LCALoanId),
+								lendAmount: lCALoanPrice
+							});
 							if (lCALoanPrice === 0) {
 								this.cookieStore.remove('leftoverCreditAllocationLoanId');
 							};
@@ -1399,13 +1431,11 @@ export default {
 					// If there's no existing loan that we've allocated the unspent credit to
 					// Then get a loan from the carousel and add it to the basket,
 					// and apply the unspent credits to that loan.
-					this.leftoverCreditAllocationLoanId = this.availableLoans.values[0].id;
 					this.allocateLeftoverCredits({
-						lendAmount: remainingCredit,
-						loanId: this.availableLoans.values[0].id
+						lendAmount: remainingCredit
 					});
 				}
-				this.checkoutVisible = true;
+				// this.checkoutVisible = true;
 			} else {
 				this.checkoutVisible = false;
 			}
