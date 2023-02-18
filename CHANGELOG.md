@@ -1,3 +1,12 @@
+### [2.497.5](https://github.com/kiva/ui/compare/v2.497.4...v2.497.5) (2023-02-18)
+
+
+### Bug Fixes
+
+* fallback props for autolending resolver ([4954b73](https://github.com/kiva/ui/commit/4954b73736f9fca438e1dd5a7f09339db346520e))
+* revert autolending merge ([6038ad6](https://github.com/kiva/ui/commit/6038ad699639bf278dff6be42a4e14bbe1743030))
+* updated Apollo updateQuery usage for downgrade ([fa3100e](https://github.com/kiva/ui/commit/fa3100eec37a18bed3c3605263542837410c4a21))
+
 ### [2.497.4](https://github.com/kiva/ui/compare/v2.497.3...v2.497.4) (2023-02-17)
 
 
