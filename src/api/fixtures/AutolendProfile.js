@@ -14,6 +14,7 @@ export default function AutolendProfile() {
 		lendAfterDaysIdle: 90,
 		idleCreditOptIn: true,
 		cIdleStartTime: null,
+		pauseUntil: null,
 		enableAfter: 0,
 		kivaChooses: true,
 		loanSearchCriteria: LoanSearchCriteria(),

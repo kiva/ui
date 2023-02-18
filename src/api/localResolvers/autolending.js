@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import _get from 'lodash/get';
+import _merge from 'lodash/merge';
 import logFormatter from '@/util/logFormatter';
 import bothProfilesQuery from '@/graphql/query/autolending/bothProfiles.graphql';
 import loanCountQuery from '@/graphql/query/loanCount.graphql';
@@ -35,10 +36,7 @@ function writeAutolendingData(cache, { currentProfile, savedProfile, ...fields }
 	cache.writeQuery({
 		query: bothProfilesQuery,
 		data: {
-			autolending: {
-				...data.autolending,
-				...autolending
-			}
+			autolending: _merge(AutolendProfile(), data.autolending, autolending)
 		}
 	});
 }
