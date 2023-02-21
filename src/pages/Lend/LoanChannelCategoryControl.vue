@@ -819,6 +819,10 @@ export default {
 					title: 'Men',
 					key: 'male',
 				},
+				{
+					title: 'Non-binary',
+					key: 'nonbinary',
+				},
 			];
 
 			this.filtersLoaded = true;

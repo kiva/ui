@@ -16,7 +16,10 @@
 		</div>
 		<div
 			class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 tw-w-full"
-			:class="{'tw-pr-0 md:tw-pr-1 lg:tw-pr-0' : !withCategories}"
+			:class="{
+				'tw-pr-0 sm:tw-flex-row md:tw-pr-1 lg:tw-pr-0 tw-justify-start tw-gap-1 tw-flex-nowrap'
+					: !withCategories
+			}"
 		>
 			<div v-if="withCategories" class="tw-flex tw-flex-col tw-grow">
 				<label
@@ -40,28 +43,13 @@
 					</option>
 				</kv-select>
 			</div>
-			<div v-if="!removeGenderDropdown" class="tw-flex tw-flex-col tw-grow">
-				<label
-					class="tw-text-h4"
-					for="gender"
-				>
-					Gender
-				</label>
-				<kv-select
+			<div v-if="!removeGenderDropdown" class="tw-shrink-0 md:tw-mt-1">
+				<filter-pills
+					:options="filterOptions.gender"
+					:selected-values="selectedGenders"
 					:disabled="!filtersLoaded"
-					v-model="selectedGender"
-					id="gender"
-					style="min-width: 140px;"
-					@click.native="trackDropdownClick('gender')"
-				>
-					<option
-						v-for="gender in filterOptions.gender"
-						:key="gender.key"
-						:value="gender.key"
-					>
-						{{ gender.title }}
-					</option>
-				</kv-select>
+					@update-values="updateGenders($event)"
+				/>
 			</div>
 
 			<location-selector
@@ -76,28 +64,30 @@
 				:tracking-category="trackingCategory"
 			/>
 
-			<div v-if="!removeSortByDropdown && !withCategories" class="tw-flex tw-flex-col tw-grow">
+			<div v-if="!removeSortByDropdown && !withCategories" @click="trackDropdownClick('sort')">
 				<label
-					class="tw-text-h4"
+					class="tw-hidden"
 					for="sortBy"
 				>
 					Sort By
 				</label>
-				<kv-select
-					id="sortBy"
-					:disabled="!filtersLoaded"
-					v-model="sortBy"
-					style="min-width: 180px;"
-					@click.native="trackDropdownClick('sort')"
-				>
-					<option
-						v-for="sortType in filterOptions.sorting"
-						:key="sortType.key"
-						:value="sortType.key"
+				<div class="tw-flex tw-bg-primary filter-pill tw-justify-center tw-w-full md:tw-w-auto">
+					<kv-material-icon :icon="mdiSort" class="tw-w-3 tw-h-3" />
+					<select
+						id="sortBy"
+						class="tw-w-full md:tw-w-auto"
+						:disabled="!filtersLoaded"
+						v-model="sortBy"
 					>
-						{{ sortType.title }}
-					</option>
-				</kv-select>
+						<option
+							v-for="sortType in filterOptions.sorting"
+							:key="sortType.key"
+							:value="sortType.key"
+						>
+							{{ sortType.title }}
+						</option>
+					</select>
+				</div>
 			</div>
 		</div>
 		<div class="tw-flex tw-justify-between tw-items-start tw-mt-2" v-if="withCategories">
@@ -137,11 +127,13 @@
 </template>
 
 <script>
-import { mdiFilterVariant } from '@mdi/js';
+import { mdiFilterVariant, mdiSort } from '@mdi/js';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import LocationSelector from './LocationSelector';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import FilterPills from './FilterPills';
+import DropdownPill from './DropdownPill';
 
 export default {
 	name: 'QuickFilters',
@@ -179,13 +171,17 @@ export default {
 	components: {
 		KvSelect,
 		LocationSelector,
-		KvMaterialIcon
+		KvMaterialIcon,
+		FilterPills,
+		DropdownPill
 	},
 	data() {
 		return {
 			mdiFilterVariant,
+			mdiSort,
 			selectedCategory: 0,
 			selectedGender: '',
+			selectedGenders: [''], // TODO: consolidate to just this when UI changes apply to QF on lending home, too
 			sortBy: this.defaultSort,
 			presetFilterActive: {
 				women: false,
@@ -254,6 +250,9 @@ export default {
 				gender === '' ? 'all genders' : gender
 			);
 		},
+		selectedGenders(genders) {
+			this.$emit('update-filters', { gender: genders.includes('') ? '' : genders });
+		},
 		sortBy(sortBy) {
 			if (this.presetFilterActive.endingSoon && sortBy !== 'expiringSoon') {
 				this.resetCategory();
@@ -274,6 +273,7 @@ export default {
 		},
 		resetGender() {
 			this.selectedGender = '';
+			this.selectedGenders = [''];
 		},
 		resetLocation() {
 			this.updateLocation([]);
@@ -298,10 +298,21 @@ export default {
 				location
 			);
 		},
+		// We will need to factor in categories at some point
+		updateGenders({ values }) { // values: [''] | ['female'] | ['male']...
+			this.selectedGenders = values;
+			this.$kvTrackEvent(
+				this.trackingCategory,
+				'filter',
+				'quick-filters-option',
+				this.selectedGenders
+			);
+		},
 		resetFilters() {
 			this.$emit('reset-filters');
 			this.selectedCategory = 0;
 			this.selectedGender = '';
+			this.selectedGenders = [''];
 			this.sortBy = this.defaultSort;
 			this.updateLocation([]);
 			this.$refs.locationSelector?.emptyCountries();
@@ -328,6 +339,7 @@ export default {
 		hideReset() {
 			return this.selectedCategory === 0
 			&& this.selectedGender === ''
+			&& this.selectedGenders === ['']
 			&& this.sortBy === this.defaultSort
 			&& !this.$refs.locationSelector.selectedCountries.length;
 		},
@@ -359,5 +371,28 @@ export default {
 
 	#customizedSortBySelector >>> span:nth-child(2) {
 		display: none;
+	}
+
+	.filter-pill {
+		border-radius: 16px;
+		padding: 10px 20px;
+		font-weight: bold;
+		box-shadow: 0px 4px 15px 0px #0000000D;
+		transition: all .2s ease-in;
+	}
+
+	.filter-pill select {
+		transition: all .2s ease-in;
+		background-color: #FFF;
+		color: #000;
+		min-width: 160px;
+	}
+
+	.filter-pill:hover select,
+	.filter-pill.hover select,
+	.filter-pill:hover {
+		cursor: pointer;
+		background-color: #000;
+		color: #FFF;
 	}
 </style>

@@ -1,12 +1,17 @@
 <template>
-	<div id="locationWrapper" class="tw-relative tw-flex tw-flex-col tw-w-full" v-click-outside="closeRegions">
-		<label
+	<div
+		:id="{'locationWrapper': !isCategoryPage }"
+		class="tw-relative tw-flex"
+		:class="{'tw-flex-row sm:tw-w-full': isCategoryPage, 'tw-flex-col': !isCategoryPage }"
+		v-click-outside="closeRegions"
+	>
+		<!-- <label
 			class="tw-text-h4"
 			for="location"
 		>
 			Location
-		</label>
-		<kv-text-input
+		</label> -->
+		<!-- <kv-text-input
 			type="text"
 			id="location"
 			ref="input"
@@ -18,8 +23,48 @@
 			autocomplete="off"
 			readonly
 			:icon="mdiChevronDown"
-		/>
-
+		/> -->
+		<!-- <dropdown-pill :selected-item="term">
+			<kv-material-icon :icon="mdiMapMarker" class="tw-w-3 tw-h-3" />
+		</dropdown-pill> -->
+		<label
+			class="tw-hidden"
+			for="location"
+		>
+			Location
+		</label>
+		<div class="tw-flex tw-bg-primary filter-pill tw-justify-center tw-w-full md:tw-w-auto" @click="toggleRegions()">
+			<kv-material-icon :icon="mdiMapMarker" class="tw-w-3 tw-h-3" />
+			<input
+				type="text"
+				class="tw-w-full md:tw-w-auto"
+				id="location"
+				ref="input"
+				:value="term"
+				placeholder="All countries"
+				:disabled="!filtersLoaded"
+				readonly
+			>
+			<kv-material-icon
+				class="tw-w-2.5 tw-h-2.5"
+				:icon="mdiChevronDown"
+			/>
+			<!-- <select
+						id="sortBy"
+						:disabled="!filtersLoaded"
+						v-model="sortBy"
+						style="min-width: 180px;"
+						@click.native="trackDropdownClick('sort')"
+					>
+						<option
+							v-for="sortType in filterOptions.sorting"
+							:key="sortType.key"
+							:value="sortType.key"
+						>
+							{{ sortType.title }}
+						</option>
+					</select> -->
+		</div>
 		<div
 			v-show="showRegions"
 			class="
@@ -148,7 +193,9 @@
 </template>
 
 <script>
-import { mdiMagnify, mdiChevronDown, mdiClose } from '@mdi/js';
+import {
+	mdiMagnify, mdiChevronDown, mdiClose, mdiMapMarker
+} from '@mdi/js';
 import clickOutside from '@/plugins/click-outside';
 import { getCheckboxLabel } from '@/util/loanSearch/filterUtils';
 import KvExpandable from '@/components/Kv/KvExpandable';
@@ -157,6 +204,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import CheckboxList from './CheckboxList';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import DropdownPill from './DropdownPill';
 
 export default {
 	name: 'LocationSelector',
@@ -165,7 +213,8 @@ export default {
 		CheckboxList,
 		KvButton,
 		KvExpandable,
-		KvMaterialIcon
+		KvMaterialIcon,
+		DropdownPill
 	},
 	mixins: [
 		clickOutside,
@@ -186,6 +235,10 @@ export default {
 		trackingCategory: {
 			type: String,
 			required: true,
+		},
+		isCategoryPage: {
+			type: Boolean,
+			default: true, // TODO: Change this and pass in
 		}
 	},
 	data() {
@@ -193,6 +246,7 @@ export default {
 			mdiMagnify,
 			mdiChevronDown,
 			mdiClose,
+			mdiMapMarker,
 			hasFocus: false,
 			selectedRegion: null,
 			selectedCountries: [],
@@ -293,11 +347,10 @@ export default {
 			return this.regions[this.selectedRegion]?.countries ?? '';
 		},
 		term() {
-			let message = '';
 			if (this.selectedCountries.length > 0) {
-				message = this.selectedCountries.length === 1 ? '1 country' : `${this.selectedCountries.length} countries`; // eslint-disable-line max-len
+				return this.selectedCountries.length === 1 ? '1 country' : `${this.selectedCountries.length} countries`; // eslint-disable-line max-len
 			}
-			return message;
+			return 'All countries';
 		}
 	},
 	watch: {
@@ -322,6 +375,29 @@ export default {
 #locationWrapper >>> span {
 	left: auto;
 	right: 8px;
+}
+
+.filter-pill {
+	border-radius: 16px;
+	padding: 10px 20px;
+	font-weight: bold;
+	box-shadow: 0px 4px 15px 0px #0000000D;
+	transition: all .2s ease-in;
+}
+
+.filter-pill input {
+	transition: all .2s ease-in;
+	background-color: #FFF;
+	color: #000;
+	min-width: 135px;
+}
+
+.filter-pill:hover input,
+.filter-pill.hover input,
+.filter-pill:hover {
+	cursor: pointer;
+	background-color: #000;
+	color: #FFF;
 }
 
 </style>
