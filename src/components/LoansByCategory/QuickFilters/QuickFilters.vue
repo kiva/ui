@@ -1,19 +1,5 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-mb-2 tw-w-full">
-		<div class="tw-flex tw-items-center tw-mb-2">
-			<div v-if="!withCategories" class="tw-flex tw-items-center">
-				<h3 class="tw-text-h3">
-					Quick filters
-				</h3>
-				<span v-show="filtersLoaded" class="tw-ml-2 tw-text-small">Showing {{ totalLoans }} loans</span>
-				<button
-					v-show="filtersLoaded && !hideReset"
-					class="tw-ml-2 tw-text-small tw-text-action" @click="resetFilters"
-				>
-					Reset filters
-				</button>
-			</div>
-		</div>
 		<div
 			class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 tw-w-full"
 			:class="{
@@ -43,13 +29,36 @@
 					</option>
 				</kv-select>
 			</div>
-			<div v-if="!removeGenderDropdown" class="tw-shrink-0 md:tw-mt-1">
+			<div v-if="!removeGenderDropdown && !withCategories" class="tw-shrink-0">
 				<filter-pills
 					:options="filterOptions.gender"
 					:selected-values="selectedGenders"
-					:disabled="!filtersLoaded"
 					@update-values="updateGenders($event)"
 				/>
+			</div>
+
+			<div v-if="!removeGenderDropdown && withCategories" class="tw-flex tw-flex-col tw-grow">
+				<label
+					class="tw-text-h4"
+					for="gender"
+				>
+					Gender
+				</label>
+				<kv-select
+					:disabled="!filtersLoaded"
+					v-model="selectedGender"
+					id="gender"
+					style="min-width: 140px;"
+					@click.native="trackDropdownClick('gender')"
+				>
+					<option
+						v-for="gender in filterOptions.gender"
+						:key="gender.key"
+						:value="gender.key"
+					>
+						{{ gender.title }}
+					</option>
+				</kv-select>
 			</div>
 
 			<location-selector
@@ -62,6 +71,7 @@
 				@update-location="updateLocation"
 				ref="locationSelector"
 				:tracking-category="trackingCategory"
+				:with-categories="withCategories"
 			/>
 
 			<div v-if="!removeSortByDropdown && !withCategories" @click="trackDropdownClick('sort')">
@@ -72,10 +82,10 @@
 					Sort By
 				</label>
 				<div class="tw-flex tw-bg-primary filter-pill tw-justify-center tw-w-full md:tw-w-auto">
-					<kv-material-icon :icon="mdiSort" class="tw-w-3 tw-h-3" />
+					<kv-material-icon :icon="mdiSort" class="tw-w-3 tw-h-3 tw-mr-1" />
 					<select
 						id="sortBy"
-						class="tw-w-full md:tw-w-auto"
+						class="tw-w-full"
 						:disabled="!filtersLoaded"
 						v-model="sortBy"
 					>
@@ -133,7 +143,6 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import LocationSelector from './LocationSelector';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 import FilterPills from './FilterPills';
-import DropdownPill from './DropdownPill';
 
 export default {
 	name: 'QuickFilters',
@@ -172,8 +181,7 @@ export default {
 		KvSelect,
 		LocationSelector,
 		KvMaterialIcon,
-		FilterPills,
-		DropdownPill
+		FilterPills
 	},
 	data() {
 		return {
@@ -181,7 +189,7 @@ export default {
 			mdiSort,
 			selectedCategory: 0,
 			selectedGender: '',
-			selectedGenders: [''], // TODO: consolidate to just this when UI changes apply to QF on lending home, too
+			selectedGenders: ['all'], // TODO: consolidate to just this when UI changes apply to QF on lending home, too
 			sortBy: this.defaultSort,
 			presetFilterActive: {
 				women: false,
@@ -251,7 +259,7 @@ export default {
 			);
 		},
 		selectedGenders(genders) {
-			this.$emit('update-filters', { gender: genders.includes('') ? '' : genders });
+			this.$emit('update-filters', { gender: genders.includes('all') ? '' : genders });
 		},
 		sortBy(sortBy) {
 			if (this.presetFilterActive.endingSoon && sortBy !== 'expiringSoon') {
@@ -273,7 +281,7 @@ export default {
 		},
 		resetGender() {
 			this.selectedGender = '';
-			this.selectedGenders = [''];
+			this.selectedGenders = ['all'];
 		},
 		resetLocation() {
 			this.updateLocation([]);
@@ -312,7 +320,7 @@ export default {
 			this.$emit('reset-filters');
 			this.selectedCategory = 0;
 			this.selectedGender = '';
-			this.selectedGenders = [''];
+			this.selectedGenders = ['all'];
 			this.sortBy = this.defaultSort;
 			this.updateLocation([]);
 			this.$refs.locationSelector?.emptyCountries();
@@ -339,7 +347,7 @@ export default {
 		hideReset() {
 			return this.selectedCategory === 0
 			&& this.selectedGender === ''
-			&& this.selectedGenders === ['']
+			&& this.selectedGenders === ['all']
 			&& this.sortBy === this.defaultSort
 			&& !this.$refs.locationSelector.selectedCountries.length;
 		},

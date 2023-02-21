@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-flex tw-flex-nowrap tw-gap-1 tw-overflow-scroll">
 		<div
-			class="tw-shrink-0 pill-container tw-my-2"
+			class="tw-shrink-0 pill-container"
 			:class="{'first' : selectedOptions.includes(option.key) }"
 			v-for="(option) in options"
 			:key="option.key"
@@ -10,9 +10,8 @@
 				:id="option.key"
 				type="checkbox"
 				class="tw-hidden"
-				:disabled="(option.key === '' && selectedOptions.includes(option.key))
-					? true : disabled"
 				:checked="selectedOptions.includes(option.key)"
+				:disabled="option.key === 'all' && selectedOptions.includes('all')"
 				@change="updateSelected($event, option.key)"
 			>
 			<label
@@ -35,12 +34,8 @@ export default {
 		},
 		selectedValues: {
 			type: Array,
-			default: () => []
+			default: () => ['all']
 		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		}
 	},
 	data() {
 		return {
@@ -50,22 +45,21 @@ export default {
 	methods: {
 		updateSelected(event, option) {
 			const selected = event.target.checked;
-			if (option !== '') {
-				if (selected) { // Add gender
-					if (!this.selectedOptions.includes(option)) {
-						this.selectedOptions = this.selectedOptions.filter(val => val !== '');
-						this.selectedOptions.push(option);
-					}
-				} else { // Remove gender
-					const optionCount = this.selectedOptions.length;
-					if (optionCount <= 1) {
-						this.selectedOptions = [''];
-					} else {
-						this.selectedOptions = this.selectedOptions.filter(val => val !== option);
-					}
+
+			if (option === 'all') {
+				this.selectedOptions = ['all'];
+			} else if (selected) { // Add option
+				if (!this.selectedOptions.includes(option)) {
+					this.selectedOptions = this.selectedOptions.filter(val => val !== 'all');
+					this.selectedOptions.push(option);
 				}
-			} else if (selected) {
-				this.selectedOptions = [''];
+			} else { // Remove option
+				const optionCount = this.selectedOptions.length;
+				if (optionCount <= 1) {
+					this.selectedOptions = ['all'];
+				} else {
+					this.selectedOptions = this.selectedOptions.filter(val => val !== option);
+				}
 			}
 			this.$emit('update-values', { values: [...this.selectedOptions], selected, option });
 		}
@@ -75,6 +69,7 @@ export default {
 
 <style lang="postcss" scoped>
 .filter-pill {
+	display: inherit;
 	border-radius: 16px;
 	padding: 10px 20px;
 	font-weight: bold;
@@ -91,10 +86,6 @@ export default {
 .filter-pill.selected {
 	color: #FFF;
 	background-color: #000;
-}
-
-.pill-container {
-	transition: order 3s ease-in;
 }
 
 .pill-container.first {

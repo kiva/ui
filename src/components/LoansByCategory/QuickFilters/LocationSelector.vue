@@ -1,69 +1,63 @@
 <template>
 	<div
-		:id="{'locationWrapper': !isCategoryPage }"
-		class="tw-relative tw-flex"
-		:class="{'tw-flex-row sm:tw-w-full': isCategoryPage, 'tw-flex-col': !isCategoryPage }"
+		id="locationWrapper"
+		class="tw-relative tw-flex tw-flex-col tw-w-full"
 		v-click-outside="closeRegions"
 	>
-		<!-- <label
-			class="tw-text-h4"
-			for="location"
-		>
-			Location
-		</label> -->
-		<!-- <kv-text-input
-			type="text"
-			id="location"
-			ref="input"
-			:model-value="term"
-			class="tw-w-full"
-			@click="toggleRegions()"
-			placeholder="All countries"
-			:disabled="!filtersLoaded"
-			autocomplete="off"
-			readonly
-			:icon="mdiChevronDown"
-		/> -->
-		<!-- <dropdown-pill :selected-item="term">
-			<kv-material-icon :icon="mdiMapMarker" class="tw-w-3 tw-h-3" />
-		</dropdown-pill> -->
-		<label
-			class="tw-hidden"
-			for="location"
-		>
-			Location
-		</label>
-		<div class="tw-flex tw-bg-primary filter-pill tw-justify-center tw-w-full md:tw-w-auto" @click="toggleRegions()">
-			<kv-material-icon :icon="mdiMapMarker" class="tw-w-3 tw-h-3" />
-			<input
+		<div v-if="withCategories">
+			<label
+				class="tw-text-h4"
+				for="location"
+			>
+				Location
+			</label>
+			<kv-text-input
 				type="text"
-				class="tw-w-full md:tw-w-auto"
 				id="location"
 				ref="input"
-				:value="term"
+				:model-value="term"
+				class="tw-w-full"
+				@click="toggleRegions()"
 				placeholder="All countries"
 				:disabled="!filtersLoaded"
+				autocomplete="off"
 				readonly
-			>
-			<kv-material-icon
-				class="tw-w-2.5 tw-h-2.5"
 				:icon="mdiChevronDown"
 			/>
-			<!-- <select
-						id="sortBy"
-						:disabled="!filtersLoaded"
-						v-model="sortBy"
-						style="min-width: 180px;"
-						@click.native="trackDropdownClick('sort')"
-					>
-						<option
-							v-for="sortType in filterOptions.sorting"
-							:key="sortType.key"
-							:value="sortType.key"
-						>
-							{{ sortType.title }}
-						</option>
-					</select> -->
+		</div>
+		<div v-else>
+			<label
+				class="tw-hidden"
+				for="location"
+			>
+				Location
+			</label>
+			<div
+				class="
+			tw-flex
+			tw-bg-primary
+			filter-pill
+			tw-justify-center
+			tw-w-full
+			md:tw-w-auto"
+				@click="toggleRegions()"
+			>
+				<kv-material-icon :icon="mdiMapMarker" class="tw-w-3 tw-h-3" />
+				<input
+					type="text"
+					class="tw-w-full"
+					id="location"
+					ref="input"
+					:value="term"
+					placeholder="All countries"
+					:disabled="!filtersLoaded"
+					readonly
+				>
+				<kv-material-icon
+					class="tw-w-2.5 tw-h-2.5"
+					:icon="mdiChevronDown"
+				/>
+			</div>
 		</div>
 		<div
 			v-show="showRegions"
@@ -236,9 +230,9 @@ export default {
 			type: String,
 			required: true,
 		},
-		isCategoryPage: {
+		withCategories: {
 			type: Boolean,
-			default: true, // TODO: Change this and pass in
+			required: true,
 		}
 	},
 	data() {

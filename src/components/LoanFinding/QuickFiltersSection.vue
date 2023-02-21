@@ -131,7 +131,7 @@ export default {
 					key: 0
 				}],
 				gender: [{
-					key: '',
+					key: 'all',
 					title: 'All genders'
 				}],
 				sorting: [{
@@ -285,7 +285,7 @@ export default {
 			this.quickFiltersOptions.gender = [
 				{
 					title: 'All genders',
-					key: '',
+					key: 'all',
 				},
 				{
 					title: 'Women',

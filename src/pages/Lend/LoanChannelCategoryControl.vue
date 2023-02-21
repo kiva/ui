@@ -34,9 +34,9 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="tw-mx-1">
 			<quick-filters
-				class="tw-m-1 md:tw-ml-2 lg:tw-mr-2 tw-z-2"
+				class="tw-z-2"
 				:total-loans="totalCount"
 				:filter-options="quickFiltersOptions"
 				:filters-loaded="filtersLoaded"
@@ -375,7 +375,7 @@ export default {
 			flssLoanSearch: {},
 			quickFiltersOptions: {
 				gender: [{
-					key: '',
+					key: 'all',
 					title: 'All genders'
 				}],
 				sorting: [{
@@ -809,7 +809,7 @@ export default {
 			this.quickFiltersOptions.gender = [
 				{
 					title: 'All genders',
-					key: '',
+					key: 'all',
 				},
 				{
 					title: 'Women',
