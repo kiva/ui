@@ -554,7 +554,7 @@ export default {
 			logReadQueryError(e, 'LoanChannelCategoryControl created loanChannelPageQuery');
 		}
 
-		// combine both 'pages' of loan channels
+		// Combine both 'pages' of loan channels
 		const pageQueryData = {
 			...allChannelsData,
 			lend: {
