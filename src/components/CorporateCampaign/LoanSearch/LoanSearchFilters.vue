@@ -27,13 +27,11 @@
 				>
 					<span
 						class="tw-flex tw-items-center tw-flex-wrap"
-						:selected="activeLoanDisplay"
-						@click="$emit('set-loan-display', true)"
 					>
 						<span
 							class="tw-inline-flex"
-							v-show="rowDisplay"
-							@click="setLoanDisplayMode('gridDisplay')"
+							v-show="activeLoanDisplay === 'grid'"
+							@click="setLoanDisplayMode('rows')"
 						>
 							<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-p-1">
 								Row View
@@ -49,13 +47,11 @@
 					<span class="divider"></span>
 					<span
 						class="tw-flex tw-items-center tw-flex-wrap"
-						:selected="activeLoanDisplay"
-						@click="$emit('set-loan-display', true)"
 					>
 						<span
 							class="tw-inline-flex"
-							v-show="gridDisplay"
-							@click="setLoanDisplayMode('rowDisplay')"
+							v-show="activeLoanDisplay === 'rows'"
+							@click="setLoanDisplayMode('grid')"
 						>
 							<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-p-1">
 								Grid View
@@ -334,9 +330,7 @@ export default {
 			isChipsCollapsed: true,
 			mdiChevronDown,
 			mdiGridLarge,
-			mdiLandRowsHorizontal,
-			rowDisplay: true,
-			gridDisplay: false
+			mdiLandRowsHorizontal
 		};
 	},
 	mounted() {
@@ -352,6 +346,7 @@ export default {
 				return !this.excludedTags.includes(tag.name);
 			});
 		});
+		this.setLoanDisplayMode(this.activeLoanDisplay);
 	},
 	computed: {
 		// Attributes are also known as LoanThemes
@@ -475,13 +470,11 @@ export default {
 	methods: {
 		setLoanDisplayMode(mode) {
 			switch (mode) {
-				case 'rowDisplay':
-					this.rowDisplay = true;
-					this.gridDisplay = false;
+				case 'rows':
+					this.$emit('set-loan-display', true);
 					break;
-				case 'gridDisplay':
-					this.rowDisplay = false;
-					this.gridDisplay = true;
+				case 'grid':
+					this.$emit('set-loan-display', false);
 					break;
 				default:
 					break;
