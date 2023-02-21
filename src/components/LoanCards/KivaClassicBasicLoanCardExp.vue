@@ -9,7 +9,7 @@
 		<!-- Borrower image -->
 		<kv-loading-placeholder
 			v-if="isLoading"
-			class="tw-mb-1 tw-rounded" :style="{ width: '100%', height: '15.75rem' }"
+			class="tw-mb-1 tw-rounded" :style="{ width: '100%', height: imgPlaceholderHeight }"
 		/>
 		<div
 			v-else
@@ -362,6 +362,14 @@ export default {
 		},
 		loanBorrowerCount() {
 			return this.loan?.borrowerCount ?? 0;
+		},
+		imgPlaceholderHeight() {
+			const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
+
+			if (viewportWidth >= 1024) {
+				if (this.perRow === 2) return '23rem'; return '14rem';
+			}
+			return '14rem';
 		},
 	},
 	methods: {
