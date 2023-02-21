@@ -205,6 +205,19 @@ export default {
 			this.showLightbox = false;
 		}
 	},
+	created() {
+		const loanCardExpData = getExperimentSettingCached(this.apollo, LOAN_CARD_EXP_KEY);
+		if (loanCardExpData.enabled) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				LOAN_CARD_EXP_KEY,
+				'EXP-CORE-1073-Feb2023'
+			);
+			this.enableLoanCardExp = version === 'b' ?? false;
+		}
+	},
 	mounted() {
 		this.getRecommendedLoans();
 		this.getSecondCategoryData();
@@ -219,18 +232,6 @@ export default {
 				EXP_KEY,
 				'EXP-CORE-854-Dec2022'
 			);
-		}
-
-		const loanCardExpData = getExperimentSettingCached(this.apollo, LOAN_CARD_EXP_KEY);
-		if (loanCardExpData.enabled) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				LOAN_CARD_EXP_KEY,
-				'EXP-CORE-1073-Feb2023'
-			);
-			this.enableLoanCardExp = version === 'b' ?? false;
 		}
 
 		// Tracking for EXP-CORE-1057-Feb-2023
