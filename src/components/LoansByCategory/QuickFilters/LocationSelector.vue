@@ -86,6 +86,7 @@
 				md:tw-top-auto
 				md:tw-rounded
 				md:tw-max-h-screen
+				md:tw-min-w-max
 			"
 			:class="[ selectedRegion !== null ? 'md:tw-w-full' : 'md:tw-w-auto' ]"
 		>
