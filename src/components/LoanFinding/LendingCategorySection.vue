@@ -9,6 +9,7 @@
 			</p>
 			<kv-carousel
 				class="tw-w-full tw-overflow-hidden tw-my-3"
+				:class="{ 'tw-px-1 tw-pt-1' : enableLoanCardExp }"
 				id="customizedCarousel"
 				:multiple-slides-visible="true"
 				slides-to-scroll="visible"
@@ -87,8 +88,15 @@ export default {
 				return `${viewportWidth - 80}px`;
 			}
 			if (viewportWidth >= 414 && viewportWidth < 768) return '278px';
-			if (viewportWidth >= 768 && viewportWidth < 1024) return '336px';
-			if (viewportWidth >= 1024) { if (this.perStep === 2) return '520px'; return '336px'; }
+			if (viewportWidth >= 768 && viewportWidth < 1024) {
+				if (this.enableLoanCardExp) return '328px'; return '336px';
+			}
+			if (viewportWidth >= 1024) {
+				if (this.enableLoanCardExp) {
+					if (this.perStep === 2) return '512px'; return '328px';
+				}
+				if (this.perStep === 2) return '520px'; return '336px';
+			}
 			return '336px';
 		},
 	},

@@ -1,3 +1,34 @@
+### [2.497.6](https://github.com/kiva/ui/compare/v2.497.5...v2.497.6) (2023-02-21)
+
+
+### Bug Fixes
+
+* capitalization ([fd7230d](https://github.com/kiva/ui/commit/fd7230d21a7f2681f4b1f2b0b6c383dad48bb60c))
+
+### [2.497.5](https://github.com/kiva/ui/compare/v2.497.4...v2.497.5) (2023-02-18)
+
+
+### Bug Fixes
+
+* fallback props for autolending resolver ([4954b73](https://github.com/kiva/ui/commit/4954b73736f9fca438e1dd5a7f09339db346520e))
+* revert autolending merge ([6038ad6](https://github.com/kiva/ui/commit/6038ad699639bf278dff6be42a4e14bbe1743030))
+* updated Apollo updateQuery usage for downgrade ([fa3100e](https://github.com/kiva/ui/commit/fa3100eec37a18bed3c3605263542837410c4a21))
+
+### [2.497.4](https://github.com/kiva/ui/compare/v2.497.3...v2.497.4) (2023-02-17)
+
+
+### Bug Fixes
+
+* card width fixed for carousels in lh page ([0c02d13](https://github.com/kiva/ui/commit/0c02d13346eede23057f622d53a978686c17929e))
+* padding fix for new loan card in lh carousels ([5bea85a](https://github.com/kiva/ui/commit/5bea85a130337f7474387882a3e04eeb34d642a0))
+
+### [2.497.3](https://github.com/kiva/ui/compare/v2.497.2...v2.497.3) (2023-02-16)
+
+
+### Bug Fixes
+
+* downgrade @apollo/client to v3.3.21 to address memory leak ([10f429c](https://github.com/kiva/ui/commit/10f429c13039fb7f83fe5bbdbe1899194fe23157))
+
 ### [2.497.2](https://github.com/kiva/ui/compare/v2.497.1...v2.497.2) (2023-02-16)
 
 

@@ -31,12 +31,16 @@ function writeAutolendingData(cache, { currentProfile, savedProfile, ...fields }
 		autolending.savedProfile = getCacheableProfile(savedProfile);
 	}
 	// Update autolending object in the cache
-	cache.updateQuery({ query: bothProfilesQuery }, data => ({
-		autolending: {
-			...data.autolending,
-			...autolending
+	const data = cache.readQuery({ query: bothProfilesQuery });
+	cache.writeQuery({
+		query: bothProfilesQuery,
+		data: {
+			autolending: {
+				...data.autolending,
+				...autolending
+			}
 		}
-	}));
+	});
 }
 
 let loanCountObservable;
