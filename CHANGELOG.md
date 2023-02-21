@@ -1,3 +1,12 @@
+### [2.497.7](https://github.com/kiva/ui/compare/v2.497.6...v2.497.7) (2023-02-21)
+
+
+### Bug Fixes
+
+* changing the loan grid/row view logic ([09adddf](https://github.com/kiva/ui/commit/09adddf63e080a447e9a9dbb4854abec7ef8551a))
+* editing settings for loan query ([a1dec1a](https://github.com/kiva/ui/commit/a1dec1aa62ee098add6fe39de7e4cd563c1fd641))
+* loan row and grid view toggle wasn't working ([70052f4](https://github.com/kiva/ui/commit/70052f4179069ecfecc6297bd40939128715a8df))
+
 ### [2.497.6](https://github.com/kiva/ui/compare/v2.497.5...v2.497.6) (2023-02-21)
 
 
