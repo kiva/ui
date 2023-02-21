@@ -34,7 +34,7 @@
 			</div>
 		</div>
 
-		<div class="tw-mx-1">
+		<div class="row">
 			<quick-filters
 				class="tw-z-2"
 				:total-loans="totalCount"

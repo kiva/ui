@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-flex tw-flex-nowrap tw-gap-1 tw-overflow-scroll">
+	<div class="tw-flex tw-flex-nowrap tw-gap-1 tw-overflow-scroll tw-ml-1 md:tw-ml-0">
 		<div
 			class="tw-shrink-0 pill-container"
 			:class="{'first' : selectedOptions.includes(option.key) }"
@@ -70,11 +70,11 @@ export default {
 <style lang="postcss" scoped>
 .filter-pill {
 	display: inherit;
-	border-radius: 16px;
-	padding: 10px 20px;
+	border-radius: calc(16px);
+	padding: calc(10px) calc(20px);
 	font-weight: bold;
-	box-shadow: 0px 4px 15px 0px #0000000D;
-	transition: all .2s ease-in;
+	box-shadow: 0 calc(4px) calc(15px) 0 rgba(0, 0, 0, 0.05);
+	transition: all 0.2s ease-in;
 }
 
 .filter-pill:hover {

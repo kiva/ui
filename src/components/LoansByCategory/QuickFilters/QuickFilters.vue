@@ -74,7 +74,11 @@
 				:with-categories="withCategories"
 			/>
 
-			<div v-if="!removeSortByDropdown && !withCategories" @click="trackDropdownClick('sort')">
+			<div
+				v-if="!removeSortByDropdown && !withCategories"
+				class="tw-px-1 md:tw-px-0"
+				@click="trackDropdownClick('sort')"
+			>
 				<label
 					class="tw-hidden"
 					for="sortBy"
@@ -365,6 +369,29 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+	.filter-pill {
+		border-radius: 16px;
+		padding: 10px 20px;
+		font-weight: bold;
+		box-shadow: 0 calc(4px) calc(15px) 0 rgba(0, 0, 0, 0.05);
+		transition: all 0.2s ease-in;
+	}
+
+	.filter-pill select {
+		transition: all 0.2s ease-in;
+		background-color: #FFF;
+		color: #000;
+		min-width: 160px;
+	}
+
+	.filter-pill:hover select,
+	.filter-pill.hover select,
+	.filter-pill:hover {
+		cursor: pointer;
+		background-color: #000;
+		color: #FFF;
+	}
+
 	#customizedSortBySelector >>> select {
 		border-style: none;
 		padding: 0 0 0 4px;
@@ -379,28 +406,5 @@ export default {
 
 	#customizedSortBySelector >>> span:nth-child(2) {
 		display: none;
-	}
-
-	.filter-pill {
-		border-radius: 16px;
-		padding: 10px 20px;
-		font-weight: bold;
-		box-shadow: 0px 4px 15px 0px #0000000D;
-		transition: all .2s ease-in;
-	}
-
-	.filter-pill select {
-		transition: all .2s ease-in;
-		background-color: #FFF;
-		color: #000;
-		min-width: 160px;
-	}
-
-	.filter-pill:hover select,
-	.filter-pill.hover select,
-	.filter-pill:hover {
-		cursor: pointer;
-		background-color: #000;
-		color: #FFF;
 	}
 </style>

@@ -2,6 +2,7 @@
 	<div
 		id="locationWrapper"
 		class="tw-relative tw-flex tw-flex-col tw-w-full"
+		:class="{'tw-px-1 md:tw-px-0': !withCategories}"
 		v-click-outside="closeRegions"
 	>
 		<div v-if="withCategories">
@@ -354,31 +355,17 @@ export default {
 };
 </script>
 
-<style scoped>
-
-#locationWrapper >>> input {
-	padding-left: 16px;
-}
-
-#locationWrapper >>> input::placeholder {
-	color: black;
-}
-
-#locationWrapper >>> span {
-	left: auto;
-	right: 8px;
-}
-
+<style lang="postcss" scoped>
 .filter-pill {
 	border-radius: 16px;
 	padding: 10px 20px;
 	font-weight: bold;
-	box-shadow: 0px 4px 15px 0px #0000000D;
-	transition: all .2s ease-in;
+	box-shadow: 0 calc(4px) calc(15px) 0 rgba(0, 0, 0, 0.05);
+	transition: all 0.2s ease-in;
 }
 
 .filter-pill input {
-	transition: all .2s ease-in;
+	transition: all 0.2s ease-in;
 	background-color: #FFF;
 	color: #000;
 	min-width: 135px;
@@ -392,4 +379,16 @@ export default {
 	color: #FFF;
 }
 
+#locationWrapper >>> input {
+	padding-left: 16px;
+}
+
+#locationWrapper >>> input::placeholder {
+	color: black;
+}
+
+#locationWrapper >>> span {
+	left: auto;
+	right: 8px;
+}
 </style>
