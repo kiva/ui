@@ -198,7 +198,6 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import CheckboxList from './CheckboxList';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
-import DropdownPill from './DropdownPill';
 
 export default {
 	name: 'LocationSelector',
@@ -208,7 +207,6 @@ export default {
 		KvButton,
 		KvExpandable,
 		KvMaterialIcon,
-		DropdownPill
 	},
 	mixins: [
 		clickOutside,
