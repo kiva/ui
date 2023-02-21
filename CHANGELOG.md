@@ -1,3 +1,10 @@
+### [2.497.8](https://github.com/kiva/ui/compare/v2.497.7...v2.497.8) (2023-02-21)
+
+
+### Bug Fixes
+
+* lending home test setup moved to created hook avoiding to show old card when mounting ([6d33ac0](https://github.com/kiva/ui/commit/6d33ac06df53ee42bc69d96b2a8ef230d8b0bcd0))
+
 ### [2.497.7](https://github.com/kiva/ui/compare/v2.497.6...v2.497.7) (2023-02-21)
 
 
