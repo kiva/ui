@@ -1,3 +1,26 @@
+### [2.497.8](https://github.com/kiva/ui/compare/v2.497.7...v2.497.8) (2023-02-21)
+
+
+### Bug Fixes
+
+* lending home test setup moved to created hook avoiding to show old card when mounting ([6d33ac0](https://github.com/kiva/ui/commit/6d33ac06df53ee42bc69d96b2a8ef230d8b0bcd0))
+
+### [2.497.7](https://github.com/kiva/ui/compare/v2.497.6...v2.497.7) (2023-02-21)
+
+
+### Bug Fixes
+
+* changing the loan grid/row view logic ([09adddf](https://github.com/kiva/ui/commit/09adddf63e080a447e9a9dbb4854abec7ef8551a))
+* editing settings for loan query ([a1dec1a](https://github.com/kiva/ui/commit/a1dec1aa62ee098add6fe39de7e4cd563c1fd641))
+* loan row and grid view toggle wasn't working ([70052f4](https://github.com/kiva/ui/commit/70052f4179069ecfecc6297bd40939128715a8df))
+
+### [2.497.6](https://github.com/kiva/ui/compare/v2.497.5...v2.497.6) (2023-02-21)
+
+
+### Bug Fixes
+
+* capitalization ([fd7230d](https://github.com/kiva/ui/commit/fd7230d21a7f2681f4b1f2b0b6c383dad48bb60c))
+
 ### [2.497.5](https://github.com/kiva/ui/compare/v2.497.4...v2.497.5) (2023-02-18)
 
 
