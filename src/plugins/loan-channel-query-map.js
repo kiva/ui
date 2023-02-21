@@ -1040,6 +1040,13 @@ export default {
 						tagId: [73]
 					},
 				},
+				{
+					id: 155,
+					url: 'matched-loans',
+					flssLoanSearch: {
+						isMatchable: true
+					},
+				},
 			]
 
 		};
