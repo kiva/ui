@@ -1,3 +1,10 @@
+### [2.498.1](https://github.com/kiva/ui/compare/v2.498.0...v2.498.1) (2023-02-22)
+
+
+### Bug Fixes
+
+* remove algolia-poc page ([5e0c29b](https://github.com/kiva/ui/commit/5e0c29bf374a9abe710f0403c4769819d052bfcb))
+
 ## [2.498.0](https://github.com/kiva/ui/compare/v2.497.8...v2.498.0) (2023-02-21)
 
 
