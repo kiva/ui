@@ -4,7 +4,7 @@
 			<h2 class="tw-text-h2 tw-text-primary tw-mb-1">
 				{{ title }}
 			</h2>
-			<p class="tw-text-subhead tw-text-primary">
+			<p v-if="subtitle" class="tw-text-subhead tw-text-primary">
 				{{ subtitle }}
 			</p>
 			<kv-carousel
