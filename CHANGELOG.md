@@ -1,3 +1,15 @@
+## [2.496.0-next.1](https://github.com/kiva/ui/compare/v2.495.1...v2.496.0-next.1) (2023-02-22)
+
+
+### Features
+
+* new loan card click analytics ([3d1f50f](https://github.com/kiva/ui/commit/3d1f50ff22ac22f86b1e20f136bb9cd7794ccd75))
+
+
+### Bug Fixes
+
+* use FLSS for matched-loans category ([e9f30c7](https://github.com/kiva/ui/commit/e9f30c7ab0675f2dc0c2ea528ec1fc041730ed29))
+
 ### [2.495.1](https://github.com/kiva/ui/compare/v2.495.0...v2.495.1) (2023-02-14)
 
 
