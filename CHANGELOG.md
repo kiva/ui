@@ -1,3 +1,16 @@
+## [2.499.0](https://github.com/kiva/ui/compare/v2.498.1...v2.499.0) (2023-02-22)
+
+
+### Features
+
+* spotlight component updated to be reusable ([b8ff074](https://github.com/kiva/ui/commit/b8ff074ebe79826597de9f3c4d0c3b8f91ae183e))
+
+
+### Bug Fixes
+
+* headline rendered as html ([b236bbb](https://github.com/kiva/ui/commit/b236bbb707d3b2a8b3b8d19208a873608621f585))
+* style fixes in partner spotlight component ([f77c7cf](https://github.com/kiva/ui/commit/f77c7cf85c99229e3e2cba47dcb12a285e3a178f))
+
 ### [2.498.1](https://github.com/kiva/ui/compare/v2.498.0...v2.498.1) (2023-02-22)
 
 
