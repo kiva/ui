@@ -2,86 +2,66 @@
 	<div class="tw-w-full tw-mb-2">
 		<div class="tw-flex tw-items-center tw-gap-1 tw-px-1 lg:tw-px-2">
 			<!-- eslint-disable max-len -->
-			<img class="tw-w-4 lg:tw-w-6" src="@/assets/images/mfi_recommendations/earth.svg" alt="mfi_recommendations">
-			<h3 class="tw-text-h3 tw-text-primary tw-whitespace-nowrap">
-				Lending partner spotlight
+			<img src="@/assets/images/mfi_recommendations/megaphone.svg" alt="mfi_recommendations">
+			<h3 class="tw-text-h4 tw-text-primary tw-whitespace-nowrap">
+				{{ sectionTitle }}
 			</h3>
 		</div>
 		<div class="tw-mt-2 lg:tw-mt-4 tw-px-2">
-			<h2 class="tw-text-h2 tw-text-primary">
-				Fundación Pro Mujer
-			</h2>
-			<h6 class="tw-text-subhead tw-text-primary">
-				15 years with Kiva, 52,908 borrowers supported
+			<h2 v-html="headline" class="tw-text-h2 tw-text-primary"></h2>
+			<h6 class="tw-text-small tw-text-primary tw-mt-1">
+				{{ subheadline }}
 			</h6>
 		</div>
-		<div class="tw-flex tw-flex-col md:tw-flex-row tw-my-3">
-			<div class="md:tw-w-2/3 md:tw-px-2">
+		<div class="tw-flex tw-flex-col md:tw-flex-row tw-my-3 tw-items-center">
+			<div class="md:tw-w-2/3 tw-px-2">
 				<div class="tw-relative">
 					<!-- eslint-disable max-len -->
-					<img class="md:tw-rounded tw-w-full" src="@/assets/images/mfi_recommendations/fundacionpromujer.jpg" alt="fundacionpromujer">
-					<span
-						class="tw-absolute tw-bottom-1 tw-left-3 tw-rounded tw-bg-tertiary
-							tw-px-2 tw-py-1 tw-flex tw-items-center tw-text-h4"
-					>
-						<kv-material-icon
-							class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
-							:icon="mdiMapMarker"
-						/>
-						BOLIVIA
-					</span>
+					<div class="tw-rounded tw-p-2 tw-bg-white tw-border" style="border-color: #C4C4C4;">
+						<img class="tw-rounded tw-w-full" :src="imageRequire(`./${partnerImage}`)" alt="Spotlight Recommendation">
+
+						<div class="tw-flex tw-items-center tw-mt-3 tw-mb-1 tw-gap-2">
+							<img src="@/assets/images/mfi_recommendations/leaf.svg" alt="MFI Recommendations">
+							<p class="tw-text-small">
+								{{ partnerImageFooter }}
+							</p>
+						</div>
+					</div>
 				</div>
 			</div>
-			<div class="lg:tw-w-1/3 lg:tw-pl-2 tw-pt-2 md:tw-pt-0">
-				<p class="tw-px-3 lg:tw-px-0">
-					Fundación Pro Mujer provides so much more than loans to their borrowers.
+			<div class="lg:tw-w-1/3 md:tw-pl-2 tw-pt-2 md:tw-pt-0">
+				<p class="tw-px-2 md:tw-px-0">
+					{{ subheadsTitle }}
 				</p>
 
-				<ul class="tw-mt-2 tw-px-2">
-					<li class="tw-flex tw-items-center tw-gap-1">
+				<ul class="tw-mt-3 tw-px-2">
+					<li v-if="getSubhead(0)" class="tw-flex tw-items-center tw-gap-1">
 						<!-- eslint-disable max-len -->
 						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/heart.svg" alt="Anti-poverty focus">
 						<h4 class="tw-uppercase tw-text-h4">
-							Anti-poverty focus
+							{{ getSubhead(0) }}
 						</h4>
 					</li>
-					<li class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
-						<!-- eslint-disable max-len -->
-						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/support.svg" alt="Entrepreneurial support">
-						<h4 class="tw-uppercase tw-text-h4">
-							Entrepreneurial support
-						</h4>
-					</li>
-					<li class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
-						<!-- eslint-disable max-len -->
-						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/empowerment.svg" alt="Family & Community Empowerment">
-						<h4 class="tw-uppercase tw-text-h4">
-							Family & Community Empowerment
-						</h4>
-					</li>
-					<li class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
+					<li v-if="getSubhead(1)" class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
 						<!-- eslint-disable max-len -->
 						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/savings.svg" alt="Facilitation of savings">
 						<h4 class="tw-uppercase tw-text-h4">
-							Facilitation of savings
+							{{ getSubhead(1) }}
 						</h4>
 					</li>
-					<li class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
+					<li v-if="getSubhead(2)" class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
 						<!-- eslint-disable max-len -->
-						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/client_voice.svg" alt="Client voice">
+						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/empowerment.svg" alt="Family & Community Empowerment">
 						<h4 class="tw-uppercase tw-text-h4">
-							Client voice
+							{{ getSubhead(2) }}
 						</h4>
 					</li>
 				</ul>
 			</div>
 		</div>
 		<div>
-			<p class="tw-text-primary tw-text-subhead tw-py-0 lg:tw-pt-5 tw-px-2 lg:tw-px-0">
-				Fundación Pro Mujer offers Bolivia’s most in-need women the holistic services
-				they need to build livelihoods for themselves and futures for their families.
-				They help borrowers with business training and personal development services and
-				are one of the few partners to offer low-cost, high-quality healthcare.
+			<p class="tw-text-primary tw-text-subhead tw-py-0 lg:tw-pt-2 tw-px-2">
+				{{ partnerText }}
 			</p>
 		</div>
 	</div>
@@ -89,17 +69,55 @@
 
 <script>
 import { mdiMapMarker } from '@mdi/js';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+
+const imageRequire = require.context('@/assets/images/mfi_recommendations/', true);
 
 export default {
 	name: 'MFIHero',
+	props: {
+		sectionTitle: {
+			type: String,
+			default: ''
+		},
+		headline: {
+			type: String,
+			default: ''
+		},
+		subheadline: {
+			type: String,
+			default: ''
+		},
+		partnerImage: {
+			type: String,
+			default: ''
+		},
+		partnerImageFooter: {
+			type: String,
+			default: ''
+		},
+		partnerText: {
+			type: String,
+			default: ''
+		},
+		subheadsTitle: {
+			type: String,
+			default: ''
+		},
+		subheads: {
+			type: Array,
+			default: () => []
+		}
+	},
 	data() {
 		return {
-			mdiMapMarker
+			mdiMapMarker,
+			imageRequire
 		};
 	},
-	components: {
-		KvMaterialIcon
+	methods: {
+		getSubhead(index) {
+			return this.subheads[index] ? this.subheads[index] : '';
+		}
 	}
 };
 </script>

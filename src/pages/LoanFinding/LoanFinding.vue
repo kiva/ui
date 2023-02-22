@@ -46,6 +46,8 @@
 			<partner-spotlight-section
 				class="tw-pt-6"
 				:enable-loan-card-exp="enableLoanCardExp"
+				:spotlight-data="spotlightData"
+				:loans="mfiRecommendationsLoans"
 			/>
 		</div>
 
@@ -68,6 +70,7 @@
 
 <script>
 import userInfoQuery from '@/graphql/query/userInfo.graphql';
+import mfiRecommendationsLoans from '@/graphql/query/lendByCategory/mfiRecommendationsLoans.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
 import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
@@ -83,6 +86,18 @@ import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 const EXP_KEY = 'loan_finding_page';
 const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
 
+const spotlightData = {
+	headline: 'Fundación <span style="color: #2AA967;">Pro Mujer</span>',
+	subheadline: '15 years with Kiva, 52,908 borrowers supported',
+	image: 'fundacionpromujer.jpg',
+	imageFooter: 'Alcina, a farm owner since 2016, grows and sells vegetables to support her three children.',
+	subheadsTitle: 'Fundación Pro Mujer provides so much more than loans to their borrowers.',
+	subheads: ['ANTI-POVERTY FOCUS', 'FACILITATION OF SAVINGS', 'FAMILY & COMMUNITY EMPOWERMENT'],
+	carouselTitle: 'SUPPORT BORROWERS FROM FUNDACIÓN PRO MUJER',
+	viewAllLink: 'https://www.kiva.org/lend/filter?partner=59',
+	partnerText: 'Fundación Pro Mujer offers Bolivia’s most in-need women the holistic services they need to build livelihoods for themselves and futures for their families. They help borrowers with business training and personal development services and are one of the few partners to offer low-cost, high-quality healthcare.', // eslint-disable-line max-len
+};
+
 export default {
 	name: 'LoanFinding',
 	inject: ['apollo', 'cookieStore'],
@@ -97,6 +112,7 @@ export default {
 	},
 	data() {
 		return {
+			spotlightData,
 			userInfo: {},
 			recommendedLoans: [
 				{ id: 0 }, { id: 0 }, { id: 0 },
@@ -104,6 +120,7 @@ export default {
 			],
 			secondCategoryLoans: [],
 			matchedLoansTotal: 0,
+			mfiRecommendationsLoans: [],
 			showLightbox: false,
 			enableLoanCardExp: false,
 		};
@@ -183,6 +200,16 @@ export default {
 			// );
 			// this.matchedLoans = loans;
 		},
+		fetchMFILoans() {
+			// Load mfi recommendations loans data
+			return this.apollo.query({
+				query: mfiRecommendationsLoans,
+			}).then(({ data }) => {
+				this.mfiRecommendationsLoans = data?.fundraisingLoans?.values ?? [];
+				const numberLoans = this.mfiRecommendationsLoans.length;
+				if (!numberLoans) this.$kvTrackEvent('event-tracking', 'update', 'mfi-no-featured-loan-available');
+			});
+		},
 		trackCategory({ success }, category) {
 			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', `${category}-lending-home`);
 		},
@@ -221,6 +248,7 @@ export default {
 	mounted() {
 		this.getRecommendedLoans();
 		this.getSecondCategoryData();
+		this.fetchMFILoans();
 		this.showToast();
 
 		const { enabled } = getExperimentSettingCached(this.apollo, EXP_KEY);
