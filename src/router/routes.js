@@ -718,16 +718,6 @@ module.exports = [
 	},
 	// These are Demo Pages
 	{
-		path: '/algolia-vue',
-		component: () => import('@/pages/AlgoliaPOC'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		},
-		children: [
-			{ path: '*', component: () => import('@/pages/AlgoliaPOC') },
-		]
-	},
-	{
 		path: '/lend-vue',
 		component: () => import('@/pages/Lend/LendPage'),
 		meta: {
