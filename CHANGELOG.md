@@ -1,3 +1,38 @@
+### [2.498.1](https://github.com/kiva/ui/compare/v2.498.0...v2.498.1) (2023-02-22)
+
+
+### Bug Fixes
+
+* remove algolia-poc page ([5e0c29b](https://github.com/kiva/ui/commit/5e0c29bf374a9abe710f0403c4769819d052bfcb))
+
+## [2.498.0](https://github.com/kiva/ui/compare/v2.497.8...v2.498.0) (2023-02-21)
+
+
+### Features
+
+* new loan card click analytics ([5575922](https://github.com/kiva/ui/commit/55759229b1c56103acc06d1bc5621bb71a139c81))
+
+
+### Bug Fixes
+
+* use FLSS for matched-loans category ([2669dab](https://github.com/kiva/ui/commit/2669dab92b72c5ea0c9e365fb58b17a8916b13cc))
+
+### [2.497.8](https://github.com/kiva/ui/compare/v2.497.7...v2.497.8) (2023-02-21)
+
+
+### Bug Fixes
+
+* lending home test setup moved to created hook avoiding to show old card when mounting ([6d33ac0](https://github.com/kiva/ui/commit/6d33ac06df53ee42bc69d96b2a8ef230d8b0bcd0))
+
+### [2.497.7](https://github.com/kiva/ui/compare/v2.497.6...v2.497.7) (2023-02-21)
+
+
+### Bug Fixes
+
+* changing the loan grid/row view logic ([09adddf](https://github.com/kiva/ui/commit/09adddf63e080a447e9a9dbb4854abec7ef8551a))
+* editing settings for loan query ([a1dec1a](https://github.com/kiva/ui/commit/a1dec1aa62ee098add6fe39de7e4cd563c1fd641))
+* loan row and grid view toggle wasn't working ([70052f4](https://github.com/kiva/ui/commit/70052f4179069ecfecc6297bd40939128715a8df))
+
 ### [2.497.6](https://github.com/kiva/ui/compare/v2.497.5...v2.497.6) (2023-02-21)
 
 

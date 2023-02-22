@@ -9,7 +9,7 @@
 		<!-- Borrower image -->
 		<kv-loading-placeholder
 			v-if="isLoading"
-			class="tw-mb-1 tw-rounded" :style="{ width: '100%', height: '15.75rem' }"
+			class="tw-mb-1 tw-rounded" :style="{ width: '100%', height: imgPlaceholderHeight }"
 		/>
 		<div
 			v-else
@@ -363,6 +363,17 @@ export default {
 		loanBorrowerCount() {
 			return this.loan?.borrowerCount ?? 0;
 		},
+		imgPlaceholderHeight() {
+			const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
+
+			if (viewportWidth >= 1024) {
+				if (this.perRow === 2) return '23rem'; return '14rem';
+			}
+			return '14rem';
+		},
+		lessThan25() {
+			return this.amountLeft < 25 && this.amountLeft !== 0;
+		},
 	},
 	methods: {
 		showLoanDetails(e) {
@@ -438,14 +449,22 @@ export default {
 			}).then(() => {
 				this.isAdding = false;
 				this.$emit('add-to-basket', { loanId: this.loanId, success: true });
+				this.$kvTrackEvent(
+					'loan-card',
+					'add-to-basket',
+					null,
+					this.loanId,
+					this.lessThan25 ? this.amountLeft : 25
+				);
 			}).catch(e => {
 				this.isAdding = false;
 				this.$emit('add-to-basket', { loanId: this.loanId, success: false });
-				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
-					? e[0].message
+				const msg = e?.[0]?.extensions?.code === 'reached_anonymous_basket_limit'
+					? e?.[0]?.message
 					: 'There was a problem adding the loan to your basket';
-
 				this.$showTipMsg(msg, 'error');
+				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
+				Sentry.captureException(e);
 			});
 		},
 	},
