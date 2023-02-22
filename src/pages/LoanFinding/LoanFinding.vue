@@ -87,7 +87,7 @@ const EXP_KEY = 'loan_finding_page';
 const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
 
 const spotlightData = {
-	headline: 'Fundación Pro Mujer',
+	headline: 'Fundación <span style="color: #2AA967;">Pro Mujer</span>',
 	subheadline: '15 years with Kiva, 52,908 borrowers supported',
 	image: 'fundacionpromujer.jpg',
 	imageFooter: 'Alcina, a farm owner since 2016, grows and sells vegetables to support her three children.',
