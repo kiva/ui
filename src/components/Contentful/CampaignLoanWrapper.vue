@@ -20,7 +20,10 @@
 					@reset-loan-filters="componentProps.handleResetLoanFilters"
 				/>
 
-				<campaign-progress-bar />
+				<campaign-progress-bar
+					:promo-amount="promoAmount"
+					:promo-name="promoName"
+				/>
 
 				<campaign-loan-row
 					name="Loan Row"
@@ -85,7 +88,15 @@ export default {
 		componentProps: {
 			type: Object,
 			default: () => {}
-		}
+		},
+		promoAmount: {
+			type: String,
+			default: '$0.00'
+		},
+		promoName: {
+			type: String,
+			default: null
+		},
 	}
 };
 </script>
