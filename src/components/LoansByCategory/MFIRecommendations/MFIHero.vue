@@ -4,7 +4,7 @@
 			<!-- eslint-disable max-len -->
 			<img src="@/assets/images/mfi_recommendations/megaphone.svg" alt="mfi_recommendations">
 			<h3 class="tw-text-h4 tw-text-primary tw-whitespace-nowrap">
-				IMPACT AT KIVA
+				{{ sectionTitle }}
 			</h3>
 		</div>
 		<div class="tw-mt-2 lg:tw-mt-4 tw-px-2">
@@ -14,14 +14,14 @@
 			</h6>
 		</div>
 		<div class="tw-flex tw-flex-col md:tw-flex-row tw-my-3 tw-items-center">
-			<div class="md:tw-w-2/3 md:tw-px-2">
+			<div class="md:tw-w-2/3 tw-px-2">
 				<div class="tw-relative">
 					<!-- eslint-disable max-len -->
 					<div class="tw-rounded tw-p-2 tw-bg-white tw-border" style="border-color: #C4C4C4;">
-						<img class="tw-rounded tw-w-full" :src="imageRequire(`./${partnerImage}`)">
+						<img class="tw-rounded tw-w-full" :src="imageRequire(`./${partnerImage}`)" alt="Spotlight Recommendation">
 
-						<div class="tw-flex tw-items-center tw-mt-3 tw-mb-2 tw-gap-2">
-							<img src="@/assets/images/mfi_recommendations/leaf.svg" alt="mfi_recommendations">
+						<div class="tw-flex tw-items-center tw-mt-3 tw-mb-1 tw-gap-2">
+							<img src="@/assets/images/mfi_recommendations/leaf.svg" alt="MFI Recommendations">
 							<p class="tw-text-small">
 								{{ partnerImageFooter }}
 							</p>
@@ -29,27 +29,27 @@
 					</div>
 				</div>
 			</div>
-			<div class="lg:tw-w-1/3 lg:tw-pl-2 tw-pt-2 md:tw-pt-0">
-				<p class="tw-px-3 lg:tw-px-0">
+			<div class="lg:tw-w-1/3 md:tw-pl-2 tw-pt-2 md:tw-pt-0">
+				<p class="tw-px-2 md:tw-px-0">
 					{{ subheadsTitle }}
 				</p>
 
-				<ul class="tw-mt-3">
-					<li class="tw-flex tw-items-center tw-gap-1">
+				<ul class="tw-mt-3 tw-px-2">
+					<li v-if="getSubhead(0)" class="tw-flex tw-items-center tw-gap-1">
 						<!-- eslint-disable max-len -->
 						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/heart.svg" alt="Anti-poverty focus">
 						<h4 class="tw-uppercase tw-text-h4">
 							{{ getSubhead(0) }}
 						</h4>
 					</li>
-					<li class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
+					<li v-if="getSubhead(1)" class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
 						<!-- eslint-disable max-len -->
 						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/savings.svg" alt="Facilitation of savings">
 						<h4 class="tw-uppercase tw-text-h4">
 							{{ getSubhead(1) }}
 						</h4>
 					</li>
-					<li class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
+					<li v-if="getSubhead(2)" class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
 						<!-- eslint-disable max-len -->
 						<img class="tw-w-4" src="@/assets/images/mfi_recommendations/empowerment.svg" alt="Family & Community Empowerment">
 						<h4 class="tw-uppercase tw-text-h4">
@@ -60,7 +60,7 @@
 			</div>
 		</div>
 		<div>
-			<p class="tw-text-primary tw-text-subhead tw-py-0 lg:tw-pt-2 tw-px-2 lg:tw-px-0">
+			<p class="tw-text-primary tw-text-subhead tw-py-0 lg:tw-pt-2 tw-px-2">
 				{{ partnerText }}
 			</p>
 		</div>
@@ -75,6 +75,10 @@ const imageRequire = require.context('@/assets/images/mfi_recommendations/', tru
 export default {
 	name: 'MFIHero',
 	props: {
+		sectionTitle: {
+			type: String,
+			default: ''
+		},
 		headline: {
 			type: String,
 			default: ''

@@ -2,6 +2,7 @@
 	<div v-if="loans.length > 0" class="tw-w-full tw-bg-secondary">
 		<div class="tw-mx-auto tw-px-0 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 			<m-f-i-hero
+				section-title="IMPACT AT KIVA"
 				:headline="headline"
 				:subheadline="subheadline"
 				:partner-image="partnerImage"
@@ -92,16 +93,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 
 #mfiCarousel >>> h2 {
-	font-size: 14px;
-	color: #2B7C5F;
-	margin-bottom: 0;
-	text-transform: uppercase;
+	@apply tw-text-h4 tw-mb-0 tw-text-action tw-ml-2;
 }
 
 #mfiCarousel >>> section {
-	margin-top: 8px;
+	@apply tw-mt-1;
 }
 </style>
