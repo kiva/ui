@@ -40,8 +40,6 @@
 			</kv-button>
 		</div>
 
-
-		
 		<div class="in-context-payment-conttrols" v-else>
 			<kiva-credit-payment
 				v-if="showKivaCreditButton"
