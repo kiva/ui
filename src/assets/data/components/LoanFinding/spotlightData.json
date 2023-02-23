@@ -1,0 +1,52 @@
+{
+    "spotlightData": [
+        {
+            "headline": "Empowering <span style='color: #2AA967;'>women</span> to pursue their dreams",
+            "subheadline": "Investing in women’s economic empowerment and freedom around the world.",
+            "image": "women.jpg",
+            "imageFooter": "Alcina, a farm owner since 2016, grows and sells vegetables to support her three children.",
+            "subheadsTitle": "$1.4 billion raised to support 3.7 million female borrowers around the world",
+            "subheads": ["81% of all borrowers on Kiva  are women", "Kiva Funded more than 150,000 women in 2021", "Promoting family and community empowerment"],
+            "carouselTitle": "Support THESE WOMEN TODAY",
+            "viewAllLink": "https://www.kiva.org/lend-by-category/women",
+            "partnerText": "Worldwide, women have much less economic opportunity, security, and freedom than men. Support women starting their own businesses, going to school, or investing in the health of their communities and families.",
+            "flssLoanSearch": { "gender": "female" }
+        },
+        {
+            "headline": "A world of opportunity for <span style='color: #2AA967;'>refugees</span>",
+            "subheadline": "Empowering refugees to rebuild their lives and communities",
+            "image": "refugees.jpg",
+            "imageFooter": "Fadi, a 21-year-old Syrian refugee in Lebanon, works as a mechanic in an auto-shop.",
+            "subheadsTitle": "Over $29,000,000 raised to support over 32,000 refugee borrowers around the world",
+            "subheads": ["Kiva works in 4 of the top countries with the largest refugee populations", "Kiva Funded ALMOST 5000 REFUGEES IN 2022", "PROVIDING TOOLS AND RESOURCES FOR REFUGEE ENTREPRENEURS"],
+            "carouselTitle": "Support THESE REFUGEES TODAY",
+            "viewAllLink": "https://www.kiva.org/lend-by-category/refugees-and-i-d-ps",
+            "partnerText": "Forced to flee their homes due to conflict or persecution, refugees often have limited resources and few opportunities. Your support empowers refugees to create better futures for themselves and their families.",
+            "flssLoanSearch": { "themeId": [28] }
+        },
+        {
+            "headline": "Breaking down barriers, building up <span style='color: #2AA967;'>marginalized communities</span>",
+            "subheadline": "Investing in marginalized populations in the U.S. to lift up those who are overlooked",
+            "image": "us.jpg",
+            "imageFooter": "Yolanda tends her urban farm in Oakland, CA – where she provides organic and local goods to her community",
+            "subheadsTitle": "Funded almost 9000 borrowers in communities across the United States",
+            "subheads": ["95% of all U.S. borrowers on Kiva are in marginalized communities", "95% of all U.S. borrowers on Kiva  are in marginalized communities", "95% of all U.S. borrowers on Kiva  are in marginalized communities"],
+            "carouselTitle": "SUPPORT THESE PEOPLE TODAY",
+            "viewAllLink": "https://www.kiva.org/lend-by-category/kiva-u-s",
+            "partnerText": "From Indigenous communities to veterans and low-income populations, many U.S. communities are  overlooked and underserved. Your support starts businesses, enables education, and grows communities.",
+            "flssLoanSearch": { "countryIsoCode": ["US", "GU", "VI", "PR"] }
+        },
+        {
+            "headline": "Support <span style='color: #2AA967;'>smallholder farms and farmers</span> providing for their families and uplifting their neighbors",
+            "subheadline": "Build up families by helping diversify their crops, commercialize their small farms, or simply rebuilding or relocating their farms.",
+            "image": "agriculture.jpg",
+            "imageFooter": "Chan working on her organic farm in northern Thailand, where she grows rice and sells chicken eggs.",
+            "subheadsTitle": "Kiva has supported 1.1 million farmers and farms around the world.",
+            "subheads": ["about 30% of all Kiva borrowers are smallholder farmers", "Kiva funded more than 100,000 smallholder farms in 2022", "Help global families and small communities thrive "],
+            "carouselTitle": "SUPPORT THESE farms and farmers TODAY",
+            "viewAllLink": "https://www.kiva.org/lend-by-category/agriculture",
+            "partnerText": "Smallholder farms are vital to healthy families and robust communities around the world. Your support builds community sustainability, enables growth, and empowers individuals.",
+            "flssLoanSearch": { "sectorId": [1] }
+        }
+    ]
+}

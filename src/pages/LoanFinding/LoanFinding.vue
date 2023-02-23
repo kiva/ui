@@ -46,8 +46,8 @@
 			<partner-spotlight-section
 				class="tw-pt-6"
 				:enable-loan-card-exp="enableLoanCardExp"
-				:spotlight-data="spotlightData"
-				:loans="mfiRecommendationsLoans"
+				:spotlight-data="activeSpotlightData"
+				:loans="spotlightLoans"
 			/>
 		</div>
 
@@ -70,7 +70,6 @@
 
 <script>
 import userInfoQuery from '@/graphql/query/userInfo.graphql';
-import mfiRecommendationsLoans from '@/graphql/query/lendByCategory/mfiRecommendationsLoans.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
 import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
@@ -80,23 +79,12 @@ import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
 import WelcomeLightbox from '@/components/LoanFinding/WelcomeLightbox';
 import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experimentUtils';
 import { gql } from '@apollo/client';
+import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightData.json';
 import KvToast from '~/@kiva/kv-components/vue/KvToast';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const EXP_KEY = 'loan_finding_page';
 const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
-
-const spotlightData = {
-	headline: 'Fundación <span style="color: #2AA967;">Pro Mujer</span>',
-	subheadline: '15 years with Kiva, 52,908 borrowers supported',
-	image: 'fundacionpromujer.jpg',
-	imageFooter: 'Alcina, a farm owner since 2016, grows and sells vegetables to support her three children.',
-	subheadsTitle: 'Fundación Pro Mujer provides so much more than loans to their borrowers.',
-	subheads: ['ANTI-POVERTY FOCUS', 'FACILITATION OF SAVINGS', 'FAMILY & COMMUNITY EMPOWERMENT'],
-	carouselTitle: 'SUPPORT BORROWERS FROM FUNDACIÓN PRO MUJER',
-	viewAllLink: 'https://www.kiva.org/lend/filter?partner=59',
-	partnerText: 'Fundación Pro Mujer offers Bolivia’s most in-need women the holistic services they need to build livelihoods for themselves and futures for their families. They help borrowers with business training and personal development services and are one of the few partners to offer low-cost, high-quality healthcare.', // eslint-disable-line max-len
-};
 
 export default {
 	name: 'LoanFinding',
@@ -112,7 +100,6 @@ export default {
 	},
 	data() {
 		return {
-			spotlightData,
 			userInfo: {},
 			recommendedLoans: [
 				{ id: 0 }, { id: 0 }, { id: 0 },
@@ -120,9 +107,10 @@ export default {
 			],
 			secondCategoryLoans: [],
 			matchedLoansTotal: 0,
-			mfiRecommendationsLoans: [],
+			spotlightLoans: [],
 			showLightbox: false,
 			enableLoanCardExp: false,
+			spotlightIndex: 0
 		};
 	},
 	apollo: {
@@ -147,6 +135,9 @@ export default {
 			if (this.matchedLoansTotal > 0) return 'Stretch your funds further with the help of our partners and Kivans just like you'; // eslint-disable-line max-len
 			return 'Loans that are ending soon or almost funded';
 		},
+		activeSpotlightData() {
+			return spotlightData[this.spotlightIndex] ?? [];
+		}
 	},
 	methods: {
 		async getRecommendedLoans() {
@@ -200,15 +191,15 @@ export default {
 			// );
 			// this.matchedLoans = loans;
 		},
-		fetchMFILoans() {
-			// Load mfi recommendations loans data
-			return this.apollo.query({
-				query: mfiRecommendationsLoans,
-			}).then(({ data }) => {
-				this.mfiRecommendationsLoans = data?.fundraisingLoans?.values ?? [];
-				const numberLoans = this.mfiRecommendationsLoans.length;
-				if (!numberLoans) this.$kvTrackEvent('event-tracking', 'update', 'mfi-no-featured-loan-available');
-			});
+		async fetchSpotlightLoans() {
+			const flssFilterCriteria = this.activeSpotlightData?.flssLoanSearch ?? {};
+			const { loans } = await runLoansQuery(
+				this.apollo,
+				{ ...flssFilterCriteria, pageLimit: 6 },
+				FLSS_ORIGIN_LENDING_HOME
+			);
+
+			this.spotlightLoans = loans ?? [];
 		},
 		trackCategory({ success }, category) {
 			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', `${category}-lending-home`);
@@ -230,6 +221,11 @@ export default {
 		},
 		closeLightbox() {
 			this.showLightbox = false;
+		},
+		verifySpotlightIndex() {
+			const spotlightCookie = this.cookieStore.get('lh_spotlight') || null;
+			if (spotlightCookie) this.spotlightIndex = spotlightData.length - 1 <= Number(spotlightCookie) ? 0 : Number(spotlightCookie) + 1; // eslint-disable-line max-len
+			this.cookieStore.set('lh_spotlight', this.spotlightIndex);
 		}
 	},
 	created() {
@@ -248,7 +244,8 @@ export default {
 	mounted() {
 		this.getRecommendedLoans();
 		this.getSecondCategoryData();
-		this.fetchMFILoans();
+		this.verifySpotlightIndex();
+		this.fetchSpotlightLoans();
 		this.showToast();
 
 		const { enabled } = getExperimentSettingCached(this.apollo, EXP_KEY);
