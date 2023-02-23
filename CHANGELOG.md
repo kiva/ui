@@ -1,3 +1,15 @@
+## [2.500.0](https://github.com/kiva/ui/compare/v2.499.0...v2.500.0) (2023-02-23)
+
+
+### Features
+
+* dynamic data for spotlight section added with rotation based in a cookie ([5ed2f1e](https://github.com/kiva/ui/commit/5ed2f1e2b5ef568553e5a36608aec4725d7dc31a))
+
+
+### Bug Fixes
+
+* pr fixes ([691bf16](https://github.com/kiva/ui/commit/691bf163b917bae337f80f8b86c465b2e5ca1f90))
+
 ## [2.499.0](https://github.com/kiva/ui/compare/v2.498.1...v2.499.0) (2023-02-22)
 
 
