@@ -136,7 +136,7 @@ export default {
 			return 'Loans that are ending soon or almost funded';
 		},
 		activeSpotlightData() {
-			return spotlightData[this.spotlightIndex] ?? [];
+			return spotlightData[this.spotlightIndex] ?? {};
 		}
 	},
 	methods: {
@@ -224,7 +224,8 @@ export default {
 		},
 		verifySpotlightIndex() {
 			const spotlightCookie = this.cookieStore.get('lh_spotlight') || null;
-			if (spotlightCookie) this.spotlightIndex = spotlightData.length - 1 <= Number(spotlightCookie) ? 0 : Number(spotlightCookie) + 1; // eslint-disable-line max-len
+			const cookieIndexNumber = Number(spotlightCookie);
+			if (spotlightCookie) this.spotlightIndex = spotlightData.length - 1 <= cookieIndexNumber ? 0 : cookieIndexNumber + 1; // eslint-disable-line max-len
 			this.cookieStore.set('lh_spotlight', this.spotlightIndex);
 		}
 	},
