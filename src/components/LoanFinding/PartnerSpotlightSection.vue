@@ -59,9 +59,6 @@ export default {
 		},
 	},
 	computed: {
-		selectedChannelLoanIds() {
-			return this.mfiRecommendationsLoans?.map(element => element.id) ?? [];
-		},
 		headline() {
 			return this.spotlightData?.headline ?? '';
 		},
@@ -84,7 +81,7 @@ export default {
 			return this.spotlightData?.subheadsTitle ?? '';
 		},
 		subheads() {
-			return this.spotlightData?.subheads ?? '';
+			return this.spotlightData?.subheads ?? [];
 		},
 		viewAllLink() {
 			return this.spotlightData?.viewAllLink ?? '';
