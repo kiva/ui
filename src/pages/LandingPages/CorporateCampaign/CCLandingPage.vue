@@ -163,7 +163,7 @@
 					:show-donation="isMatchingCampaign || lendingRewardOffered"
 					:auto-redirect-to-thanks="false"
 					:promo-fund="promoFund"
-					:teamId="teamId"
+					:team-id="teamId"
 					@credit-removed="handleCreditRemoved"
 					@transaction-complete="transactionComplete"
 					@refresh-totals="refreshTotals"
