@@ -61,11 +61,11 @@
 		</div>
 
 		<div class="in-context-login" v-if="teamId">
-    		<kv-checkbox
+			<kv-checkbox
 				v-model="isChecked"
 			>
-				{{ campaignTitleText }} 
-    		</kv-checkbox>
+				{{ campaignTitleText }}
+			</kv-checkbox>
 		</div>
 
 		<kv-loading-overlay
@@ -85,11 +85,11 @@ import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import OrderTotals from '@/components/Checkout/OrderTotals';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
 import joinTeam from '@/graphql/mutation/joinTeam.graphql';
 import myTeamsQuery from '@/graphql/query/myTeams.graphql';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 
 export default {
 	name: 'InContextCheckout',
@@ -318,10 +318,9 @@ export default {
 				});
 		},
 		handleJoinTeam() {
-			if(this.isChecked){
+			if (this.isChecked) {
 				this.joinTeamMutation();
 			}
-			
 		},
 		handleContinue() {
 			this.loading = true;
