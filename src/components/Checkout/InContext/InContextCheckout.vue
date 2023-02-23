@@ -34,7 +34,6 @@
 				id="Continue-to-legacy-button"
 				v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
 				:href="registerOrLoginHref"
-				@click="handleJoinTeam"
 			>
 				Continue
 			</kv-button>
@@ -60,7 +59,7 @@
 			/>
 		</div>
 
-		<div class="in-context-login" v-if="teamId">
+		<div class="in-context-login" v-if="teamId && isActivelyLoggedIn">
 			<kv-checkbox
 				v-model="isChecked"
 			>
