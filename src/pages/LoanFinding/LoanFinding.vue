@@ -48,6 +48,7 @@
 				:enable-loan-card-exp="enableLoanCardExp"
 				:spotlight-data="activeSpotlightData"
 				:loans="spotlightLoans"
+				@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
 			/>
 		</div>
 
@@ -202,6 +203,7 @@ export default {
 			this.spotlightLoans = loans ?? [];
 		},
 		trackCategory({ success }, category) {
+			console.log(success, category);
 			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', `${category}-lending-home`);
 		},
 		closeToast() {
@@ -227,6 +229,7 @@ export default {
 			const cookieIndexNumber = Number(spotlightCookie);
 			if (spotlightCookie) this.spotlightIndex = spotlightData.length - 1 <= cookieIndexNumber ? 0 : cookieIndexNumber + 1; // eslint-disable-line max-len
 			this.cookieStore.set('lh_spotlight', this.spotlightIndex);
+			this.$kvTrackEvent('event-tracking', 'show', `lending-home-spotlight-${this.activeSpotlightData.keyword}`);
 		}
 	},
 	created() {
