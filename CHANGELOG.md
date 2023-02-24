@@ -1,3 +1,11 @@
+### [2.500.2](https://github.com/kiva/ui/compare/v2.500.1...v2.500.2) (2023-02-24)
+
+
+### Bug Fixes
+
+* add private flag to live loan image serve ([5b3c9f0](https://github.com/kiva/ui/commit/5b3c9f0def4a7a0f0ea15ab19dd76948faeb7c74))
+* extract protectedRoutes and adjust checking mechanism and add new routes ([84d25b8](https://github.com/kiva/ui/commit/84d25b8aaf4392588a4b5c9f7c48cb124e8d87ea))
+
 ### [2.500.1](https://github.com/kiva/ui/compare/v2.500.0...v2.500.1) (2023-02-24)
 
 
