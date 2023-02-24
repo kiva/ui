@@ -46,5 +46,6 @@ function buildRouteJSON() {
 
 // eslint-disable-next-line
 module.exports = (req, res, next) => {
+	res.set('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
 	res.json(buildRouteJSON());
 };
