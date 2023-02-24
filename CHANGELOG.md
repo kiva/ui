@@ -1,3 +1,10 @@
+## [2.502.0](https://github.com/kiva/ui/compare/v2.501.0...v2.502.0) (2023-02-24)
+
+
+### Features
+
+* flss ismatchable rolled out in lh matched loans ([1a2a231](https://github.com/kiva/ui/commit/1a2a23167b705ac260f032204c7c752af741ebc7))
+
 ## [2.501.0](https://github.com/kiva/ui/compare/v2.500.4...v2.501.0) (2023-02-24)
 
 
