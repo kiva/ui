@@ -1,3 +1,10 @@
+### [2.500.4](https://github.com/kiva/ui/compare/v2.500.3...v2.500.4) (2023-02-24)
+
+
+### Bug Fixes
+
+* duplicated data replaced for spotlightdata file ([fe34b6d](https://github.com/kiva/ui/commit/fe34b6dcd41e9d230af373570bf518c32fa76dec))
+
 ### [2.500.3](https://github.com/kiva/ui/compare/v2.500.2...v2.500.3) (2023-02-24)
 
 
