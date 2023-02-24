@@ -203,7 +203,6 @@ export default {
 			this.spotlightLoans = loans ?? [];
 		},
 		trackCategory({ success }, category) {
-			console.log(success, category);
 			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', `${category}-lending-home`);
 		},
 		closeToast() {

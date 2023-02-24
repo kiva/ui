@@ -197,6 +197,7 @@ describe('regions.js', () => {
 		it('should handle empty', () => {
 			expect(getCountryIsoCodesFromQueryParam()).toBe(undefined);
 			expect(getCountryIsoCodesFromQueryParam('')).toBe(undefined);
+			expect(getCountryIsoCodesFromQueryParam('asd', undefined)).toEqual([]);
 		});
 
 		it('should handle FLSS and legacy single sector', () => {
