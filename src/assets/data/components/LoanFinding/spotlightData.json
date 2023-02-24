@@ -1,6 +1,7 @@
 {
     "spotlightData": [
         {
+            "keyword": "women",
             "headline": "Empowering <span style='color: #2AA967;'>women</span> to pursue their dreams",
             "subheadline": "Investing in women’s economic empowerment and freedom around the world.",
             "image": "women.jpg",
@@ -13,6 +14,7 @@
             "flssLoanSearch": { "gender": "female" }
         },
         {
+            "keyword": "refugees",
             "headline": "A world of opportunity for <span style='color: #2AA967;'>refugees</span>",
             "subheadline": "Empowering refugees to rebuild their lives and communities",
             "image": "refugees.jpg",
@@ -25,6 +27,7 @@
             "flssLoanSearch": { "themeId": [28] }
         },
         {
+            "keyword": "kiva-us",
             "headline": "Breaking down barriers, building up <span style='color: #2AA967;'>marginalized communities</span>",
             "subheadline": "Investing in marginalized populations in the U.S. to lift up those who are overlooked",
             "image": "us.jpg",
@@ -37,6 +40,7 @@
             "flssLoanSearch": { "countryIsoCode": ["US", "GU", "VI", "PR"] }
         },
         {
+            "keyword": "agriculture",
             "headline": "Support <span style='color: #2AA967;'>smallholder farms and farmers</span> providing for their families and uplifting their neighbors",
             "subheadline": "Build up families by helping diversify their crops, commercialize their small farms, or simply rebuilding or relocating their farms.",
             "image": "agriculture.jpg",

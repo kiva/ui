@@ -19,6 +19,7 @@
 			:title="carouselTitle"
 			:loans="loans"
 			:enable-loan-card-exp="enableLoanCardExp"
+			@add-to-basket="$emit('add-to-basket', $event)"
 		/>
 
 		<div class="tw-flex tw-justify-center tw-mt-4">
