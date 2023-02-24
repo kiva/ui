@@ -41,6 +41,14 @@ describe('tags.js', () => {
 		});
 
 		describe('getFilterFromQuery', () => {
+			it('it should handle undefined facets', () => {
+				const query = { tag: '1,2' };
+
+				const result = tags.getFilterFromQuery(query, undefined, mockState.pageLimit, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ tagId: [1, 2] });
+			});
+
 			it('it should get filter', () => {
 				const query = { tag: '1,2' };
 

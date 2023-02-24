@@ -64,7 +64,7 @@ export default {
 		sectorId: loanSearchState?.sectorId?.filter(s => allFacets.sectorIds.includes(s)) ?? []
 	}),
 	getFilterFromQuery: (query, allFacets) => ({
-		sectorId: getIdsFromQueryParam(query.sector, allFacets.sectorNames, allFacets.sectorFacets) ?? []
+		sectorId: getIdsFromQueryParam(query.sector, allFacets?.sectorNames, allFacets?.sectorFacets) ?? []
 	}),
 	getQueryFromFilter: loanSearchState => ({
 		...(loanSearchState.sectorId?.length && { sector: loanSearchState.sectorId.join() })
