@@ -1,3 +1,10 @@
+### [2.500.1](https://github.com/kiva/ui/compare/v2.500.0...v2.500.1) (2023-02-24)
+
+
+### Bug Fixes
+
+* resolve errors with read/write query for autolending ([1760424](https://github.com/kiva/ui/commit/17604240802889b76c1deff503b29ba5c057a7b2))
+
 ## [2.500.0](https://github.com/kiva/ui/compare/v2.499.0...v2.500.0) (2023-02-23)
 
 
