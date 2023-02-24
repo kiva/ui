@@ -46,6 +46,19 @@ describe('distributionModels.js', () => {
 		});
 
 		describe('getFilterFromQuery', () => {
+			it('it should handle undefined facets', () => {
+				const query = { distributionModel: 'direct' };
+
+				const result = distributionModels.getFilterFromQuery(
+					query,
+					undefined,
+					mockState.pageLimit,
+					FLSS_QUERY_TYPE
+				);
+
+				expect(result).toEqual({ distributionModel: null });
+			});
+
 			it('it should get filter', () => {
 				const query = { distributionModel: 'direct' };
 

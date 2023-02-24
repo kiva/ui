@@ -84,7 +84,7 @@ export default {
 	getFilterFromQuery: (query, allFacets) => ({
 		distributionModel: getEnumNameFromQueryParam(
 			query.distributionModel,
-			allFacets.distributionModelFacets,
+			allFacets?.distributionModelFacets,
 			distributionModelQueryMap
 		) ?? null
 	}),
