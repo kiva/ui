@@ -1,3 +1,10 @@
+## [2.501.0](https://github.com/kiva/ui/compare/v2.500.4...v2.501.0) (2023-02-24)
+
+
+### Features
+
+* tracking events added for spotlight variations in lh ([a313e5c](https://github.com/kiva/ui/commit/a313e5c26a591a508e3e795239a67204884958ad))
+
 ### [2.500.4](https://github.com/kiva/ui/compare/v2.500.3...v2.500.4) (2023-02-24)
 
 
