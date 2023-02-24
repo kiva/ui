@@ -1,3 +1,10 @@
+## [2.503.0](https://github.com/kiva/ui/compare/v2.502.0...v2.503.0) (2023-02-24)
+
+
+### Features
+
+* hover on card update, cleaned up stories ([8cb0f05](https://github.com/kiva/ui/commit/8cb0f051f4eba56b5a377d36f011709e94c30722))
+
 ## [2.502.0](https://github.com/kiva/ui/compare/v2.501.0...v2.502.0) (2023-02-24)
 
 
