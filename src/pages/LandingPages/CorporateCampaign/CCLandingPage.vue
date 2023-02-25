@@ -132,6 +132,7 @@
 			</kv-lightbox>
 
 			<kv-lightbox
+				v-if="checkoutVisible"
 				:prevent-close="preventLightboxClose"
 				:visible="checkoutVisible"
 				@lightbox-closed="checkoutLightboxClosed"
@@ -601,7 +602,8 @@ export default {
 			contentGroups: [],
 			pageFrame: WwwPageCorporate,
 			availableLoans: [],
-			leftoverCreditAllocationLoanId: null
+			leftoverCreditAllocationLoanId: null,
+			scrollToLoans: false
 		};
 	},
 	metaInfo() {
@@ -710,9 +712,6 @@ export default {
 		if (this.$route.hash === '#show-basket') {
 			this.$router.push(this.adjustRouteHash('')).catch(() => {});
 		}
-		if (this.$route.hash === '#loan-row') {
-			this.loanDisplayComponent.campaignLoanSection.scrollIntoView();
-		}
 
 		// Ensure browser clock is correct before using current time
 		syncDate().then(() => {
@@ -742,6 +741,11 @@ export default {
 					'modal-show-in-context-checkout',
 					this.isActivelyLoggedIn ? 'checkout-ready' : 'checkout-requires-login'
 				);
+			}
+		},
+		scrollToLoans() {
+			if (this.scrollToLoans) {
+				this.checkoutVisible = false;
 			}
 		}
 	},
@@ -1449,7 +1453,12 @@ export default {
 			this.checkoutVisible = false;
 			if (this.$route.hash === '#show-basket') {
 				this.$nextTick(() => {
-					this.$router.push(this.adjustRouteHash('')).catch(() => {});
+					this.$router.push(this.adjustRouteHash('')).then(() => {
+						if (this.scrollToLoans) {
+							this.scrollToLoans = false;
+							this.loanDisplayComponent.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
+						}
+					}).catch(() => {});
 				});
 			}
 		},
@@ -1574,14 +1583,9 @@ export default {
 			}
 		},
 		jumpToLoans() {
-			if (this.$route.hash === '#show-basket') {
-				this.$nextTick(() => {
-					this.$router.push(this.adjustRouteHash('#loan-row')).catch(() => {});
-					this.checkoutVisible = false;
-				});
-			} else {
-				this.loanDisplayComponent.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
-			}
+			this.scrollToLoans = true;
+			this.checkoutLightboxClosed();
+			this.loanDisplayComponent.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
 		},
 		adjustRouteHash(hash) {
 			const route = { ...this.$route };
@@ -1618,9 +1622,6 @@ export default {
 		}
 	},
 	beforeRouteUpdate(to, from, next) {
-		if (to.hash === '#loan-row') {
-			this.loanDisplayComponent.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
-		}
 		if (to.hash === '#show-basket') {
 			this.checkoutVisible = true;
 		}
