@@ -139,7 +139,7 @@
 				variant="secondary"
 				v-if="isInBasket"
 				v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
-				:to="customCheckoutRoute ? customCheckoutRoute : '/basket'"
+				:to="checkoutButtonEnabled ? '/basket' : ''"
 			>
 				<slot>
 					<div class="tw-inline-flex tw-items-center tw-gap-1">
@@ -296,9 +296,9 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		customCheckoutRoute: {
-			type: String,
-			default: ''
+		checkoutButtonEnabled: {
+			type: Boolean,
+			default: true
 		},
 		customLoanDetails: {
 			type: Boolean,
