@@ -1,3 +1,10 @@
+## [2.504.0](https://github.com/kiva/ui/compare/v2.503.0...v2.504.0) (2023-02-27)
+
+
+### Features
+
+* loanCallouts unit tests and associated fixes ([aac89b0](https://github.com/kiva/ui/commit/aac89b007f07b06265267d4f57757cff46e25873))
+
 ## [2.503.0](https://github.com/kiva/ui/compare/v2.502.0...v2.503.0) (2023-02-24)
 
 
