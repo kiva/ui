@@ -225,7 +225,6 @@ export default {
 				this.loadingLoans = true;
 			}
 			this.zeroLoans = false;
-
 			this.apollo.query({
 				query: basicLoanQuery,
 				variables: this.loanQueryVars,

@@ -17,7 +17,7 @@
 					<span class="show-for-large">{{ loanChannelName }}</span>
 				</p>
 				<h1 class="tw-mb-2">
-					{{ loanChannelName }}
+					{{ pageHeadline }}
 				</h1>
 				<p
 					v-if="loanChannelDescription"
@@ -205,7 +205,6 @@ import {
 	getCachedChannel,
 	watchChannelQuery,
 	getLoanChannel,
-	getMetaDescription,
 	getFLSSQueryMap,
 } from '@/util/loanChannelUtils';
 import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
@@ -258,7 +257,6 @@ const imageRequire = require.context('@/assets/images/category-share-experiment/
 export default {
 	name: 'LoanChannelCategoryControl',
 	metaInfo() {
-		const channelDescription = getMetaDescription(this.$route.params.category);
 		let image = '';
 		let title = null;
 		if (this.$route.query.category_share_version
@@ -275,41 +273,41 @@ export default {
 		}
 
 		return {
-			title: `${this.loanChannelName} | Invest & Support`,
+			title: this.metaTitle,
 			link: [
 				{
 					vmid: 'canonical',
 					rel: 'canonical',
-					href: `${this.handleCanonicalUrl}`
+					href: this.canonicalUrl
 				}
 			],
 			meta: [
 				{
 					vmid: 'description',
 					name: 'description',
-					content: channelDescription
+					content: this.metaDescription
 				}
 			].concat([
 				{
 					vmid: 'og:title',
 					property: 'og:title',
-					content: title ?? `${this.loanChannelName} | Invest & Support`
+					content: title ?? this.metaTitle
 				},
 				{
 					vmid: 'og:description',
 					property: 'og:description',
-					content: channelDescription
+					content: this.metaDescription
 				},
 			]).concat([
 				{
 					vmid: 'twitter:title',
 					name: 'twitter:title',
-					content: title ?? `${this.loanChannelName} | Invest & Support`
+					content: title ?? this.metaTitle
 				},
 				{
 					name: 'twitter:description',
 					vmid: 'twitter:description',
-					content: channelDescription
+					content: this.metaDescription
 				}
 			]).concat(image ? [
 				{
@@ -402,10 +400,20 @@ export default {
 			return Math.ceil(this.totalCount / this.limit);
 		},
 		loanChannelName() {
-			return _get(this.loanChannel, 'name') || 'No loans found';
+			return this.loanChannel?.name ?? 'No loans found';
 		},
 		loanChannelDescription() {
-			return _get(this.loanChannel, 'description') || null;
+			return this.loanChannel?.description;
+		},
+		pageHeadline() {
+			return this.loanChannel?.headline ?? this.loanChannelName;
+		},
+		metaTitle() {
+			const name = this.loanChannel?.metaTitle ?? this.loanChannelName;
+			return `${name} | Invest & Support`;
+		},
+		metaDescription() {
+			return this.loanChannel?.metaDescription ?? this.loanChannelDescription ?? '';
 		},
 		allLoans() {
 			return (this.loanChannel?.loans?.values ?? []).filter(loan => loan !== null);
@@ -457,14 +465,7 @@ export default {
 			// process eligible filter url
 			return this.getFilterUrl();
 		},
-		pageTitle() {
-			let title = 'Fundraising loans';
-			if (this.loanChannel && this.loanChannel.name) {
-				title = `${this.loanChannel.name}`;
-			}
-			return title;
-		},
-		handleCanonicalUrl() {
+		canonicalUrl() {
 			let url = `https://${this.$appConfig.host}${this.$route.path}`;
 			if (this.$route.query.page && Number(this.$route.query.page) > 1) {
 				url = `${url}?page=${this.$route.query.page}`;
@@ -483,7 +484,7 @@ export default {
 		},
 		showHelpMeChooseFeat() {
 			const queryMapFLSS = getFLSSQueryMap(this.loanChannelQueryMap, this.targetedLoanChannelURL);
-			const hasSortBy = !!queryMapFLSS.sortBy;
+			const hasSortBy = !!queryMapFLSS?.sortBy;
 
 			// Don't show help me choose if the category has sortBy
 			// Help me choose categories are just different sortBy options
@@ -553,7 +554,7 @@ export default {
 			logReadQueryError(e, 'LoanChannelCategoryControl created loanChannelPageQuery');
 		}
 
-		// combine both 'pages' of loan channels
+		// Combine both 'pages' of loan channels
 		const pageQueryData = {
 			...allChannelsData,
 			lend: {

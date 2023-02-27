@@ -386,7 +386,7 @@ export default {
 			&& this.selectedGender === 'all'
 			&& this.selectedGenders === ['all']
 			&& this.sortBy === this.defaultSort
-			&& !this.$refs.locationSelector.selectedCountries.length;
+			&& !(this.$refs.locationSelector?.selectedCountries?.length ?? 0);
 		},
 		removeGenderDropdown() {
 			return this.targetedLoanChannelUrl === 'women';

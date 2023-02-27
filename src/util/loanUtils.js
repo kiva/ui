@@ -218,17 +218,25 @@ export function isBetween25And500(unreservedAmount) {
 	return unreservedAmount < 500 && unreservedAmount >= 25;
 }
 
+/**
+ * Returns an array of loan callouts following a hierarchy of importance
+ *
+ * @param {Object} loan The loan data object
+ * @param {String} categoryPageName The optional name of the category
+ * @returns An array of loan callout strings
+ */
 export function loanCallouts(loan, categoryPageName) {
 	const callouts = [];
-	const activityName = loan?.activity.name ?? '';
-	const sectorName = loan?.sector.name ?? '';
-	const tags = loan?.tags.filter(tag => tag.charAt(0) === '#')
+	const activityName = loan?.activity?.name ?? '';
+	const sectorName = loan?.sector?.name ?? '';
+	const tags = loan?.tags?.filter(tag => tag.charAt(0) === '#')
 		.map(tag => tag.substring(1)) ?? [];
 	const themes = loan?.themes ?? [];
 	const categories = {
-		ecoFriendly: tags.includes('Eco-friendly') || tags.includes('Sustainable Ag'),
-		refugeesIdps: themes.includes('Refugees/Displaced'),
-		singleParents: tags.includes('Single Parent')
+		ecoFriendly: !!tags
+			.filter(t => t.toUpperCase() === 'ECO-FRIENDLY' || t.toUpperCase() === 'SUSTAINABLE AG').length,
+		refugeesIdps: !!themes.filter(t => t.toUpperCase() === 'REFUGEES/DISPLACED').length,
+		singleParents: !!tags.filter(t => t.toUpperCase() === 'SINGLE PARENT').length
 	};
 
 	// P1 Category
@@ -244,28 +252,34 @@ export function loanCallouts(loan, categoryPageName) {
 	}
 
 	// P2 Activity
-	if (categoryPageName.toUpperCase() !== activityName.toUpperCase()) {
+	if (activityName && categoryPageName?.toUpperCase() !== activityName.toUpperCase()) {
 		callouts.push(activityName);
 	}
 
 	// P3 Sector
 	if (sectorName
-	&& (activityName.toUpperCase() !== sectorName.toUpperCase())
-	&& (sectorName.toUpperCase() !== categoryPageName.toUpperCase())
-	&& callouts.length < 2) {
+		&& (activityName.toUpperCase() !== sectorName.toUpperCase())
+		&& (sectorName.toUpperCase() !== categoryPageName?.toUpperCase())
+		&& callouts.length < 2) {
 		callouts.push(sectorName);
 	}
 
 	// P4 Tag
 	if (!!tags.length && callouts.length < 2) {
 		const position = Math.floor(Math.random() * tags.length);
-		callouts.push(tags[position]);
+		const tag = tags[position];
+		if (!callouts.filter(c => c.toUpperCase() === tag.toUpperCase()).length) {
+			callouts.push(tag);
+		}
 	}
 
-	// P5 Tag
+	// P5 Theme
 	if (!!themes.length && callouts.length < 2) {
 		const position = Math.floor(Math.random() * themes.length);
-		callouts.push(themes[position]);
+		const theme = themes[position];
+		if (!callouts.filter(c => c.toUpperCase() === theme.toUpperCase()).length) {
+			callouts.push(theme);
+		}
 	}
 
 	return callouts;

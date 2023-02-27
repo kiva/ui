@@ -63,7 +63,7 @@ export default {
 		gender: allFacets.genders.includes(loanSearchState?.gender?.toUpperCase()) ? loanSearchState.gender : null
 	}),
 	getFilterFromQuery: (query, allFacets) => ({
-		gender: getEnumNameFromQueryParam(query.gender, allFacets.genderFacets) ?? null
+		gender: getEnumNameFromQueryParam(query.gender, allFacets?.genderFacets) ?? null
 	}),
 	getQueryFromFilter: loanSearchState => ({ ...(loanSearchState.gender && { gender: loanSearchState.gender }) }),
 };

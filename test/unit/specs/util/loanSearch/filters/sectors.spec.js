@@ -41,6 +41,19 @@ describe('sectors.js', () => {
 		});
 
 		describe('getFilterFromQuery', () => {
+			it('it should handle undefined facets', () => {
+				const query = { sector: '1,2' };
+
+				const result = sectors.getFilterFromQuery(
+					query,
+					undefined,
+					mockState.pageLimit,
+					FLSS_QUERY_TYPE
+				);
+
+				expect(result).toEqual({ sectorId: [1, 2] });
+			});
+
 			it('it should get filter', () => {
 				const query = { sector: '1,2' };
 

@@ -132,8 +132,8 @@ import { gql } from '@apollo/client';
 
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 import AttributeFilter from './AttributeFilter';
 import AttributeRadios from './AttributeRadios';

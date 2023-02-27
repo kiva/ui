@@ -18,6 +18,7 @@
 						id="LoanAmountDropdown"
 						class="tw-min-w-12"
 						v-model="selectedOption"
+						v-kv-track-event="['Lending', 'click-Modify loan amount', 'open dialog', loanId, loanId]"
 					>
 						<option
 							v-for="priceOption in prices"
@@ -37,6 +38,7 @@
 						class="tw-inline-flex tw-flex-1"
 						data-testid="bp-lend-cta-lend-button"
 						type="submit"
+						v-kv-track-event="['Lending', 'Add to basket', 'lend-button-click', loanId, loanId]"
 					>
 						{{ ctaButtonText }}
 					</kv-ui-button>
@@ -49,6 +51,7 @@
 					class="tw-inline-flex tw-flex-1"
 					data-testid="bp-lend-cta-lend-again-button"
 					type="submit"
+					v-kv-track-event="['Lending', 'Add to basket', 'Lend again', loanId, loanId]"
 				>
 					Lend again
 				</kv-ui-button>
@@ -80,6 +83,7 @@
 			class="tw-inline-flex tw-flex-1"
 			data-testid="bp-lend-cta-checkout-button"
 			to="/basket"
+			v-kv-track-event="['Lending', 'click-Continue-to-checkout', 'Continue to checkout', loanId, loanId]"
 		>
 			Checkout now
 		</kv-ui-button>
@@ -101,9 +105,7 @@ import {
 	isBetween25And50,
 	isBetween25And500
 } from '@/util/loanUtils';
-
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
-
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -162,6 +164,9 @@ export default {
 		},
 	},
 	computed: {
+		loanId() {
+			return this.loan?.id;
+		},
 		status() {
 			return this.loan?.status ?? '';
 		},

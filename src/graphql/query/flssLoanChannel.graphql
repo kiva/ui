@@ -15,7 +15,10 @@ query flssLoanChannel(
 		loanChannelsById(ids: $ids) {
 			id
 			name
+			headline
+			metaTitle
 			description
+			metaDescription
 			url
 		}
 	}
