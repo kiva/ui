@@ -35,7 +35,9 @@ export default {
 						// get tracking data from snowplow cookie
 						const { snowplowUserId, snowplowSessionId } = parseSPCookie(cookieStore);
 
-						const successPath = '/thanks';
+						// If iwd challenge is true send to iwd thanks page
+						const successPath = route.query.iwdChallenge === 'true'
+							? '/checkout/iwd-challenge/thanks' : '/thanks';
 
 						// build route for thanks page redirect
 						const successRoute = {
