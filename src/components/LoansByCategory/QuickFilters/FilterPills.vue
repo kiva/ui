@@ -1,7 +1,7 @@
 <template>
-	<div class="tw-flex tw-flex-nowrap tw-gap-1 tw-overflow-scroll tw-ml-1 md:tw-ml-0">
+	<div class="tw-flex tw-gap-1" :class="{ 'tw-opacity-low': !filtersLoaded }">
 		<div
-			class="tw-shrink-0 pill-container"
+			class="tw-shrink-0 pill-container tw-rounded"
 			:class="{'first' : selectedOptions.includes(option.key) }"
 			v-for="(option) in options"
 			:key="option.key"
@@ -16,7 +16,7 @@
 			>
 			<label
 				:for="option.key"
-				class="tw-bg-primary filter-pill"
+				class="tw-bg-primary tw-rounded tw-transition tw-font-medium filter-pill"
 				:class="{ 'selected': selectedOptions.includes(option.key) }"
 			>{{ option.title }}
 			</label>
@@ -35,6 +35,10 @@ export default {
 		selectedValues: {
 			type: Array,
 			default: () => ['all']
+		},
+		filtersLoaded: {
+			type: Boolean,
+			default: false
 		},
 	},
 	data() {
@@ -70,22 +74,16 @@ export default {
 <style lang="postcss" scoped>
 .filter-pill {
 	display: inherit;
-	border-radius: calc(16px);
-	padding: calc(10px) calc(20px);
-	font-weight: bold;
+	padding: 10px 20px;
 	box-shadow: 0 calc(4px) calc(15px) 0 rgba(0, 0, 0, 0.05);
-	transition: all 0.2s ease-in;
 }
 
 .filter-pill:hover {
-	cursor: pointer;
-	background-color: #000;
-	color: #FFF;
+	@apply tw-bg-black tw-text-white tw-cursor-pointer;
 }
 
 .filter-pill.selected {
-	color: #FFF;
-	background-color: #000;
+	@apply tw-bg-black tw-text-white;
 }
 
 .pill-container.first {

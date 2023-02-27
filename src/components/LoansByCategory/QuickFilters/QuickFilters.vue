@@ -1,10 +1,11 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-mb-2 tw-w-full">
 		<div
-			class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 tw-w-full"
+			class="tw-flex"
 			:class="{
-				'tw-pr-0 sm:tw-flex-row md:tw-pr-1 lg:tw-pr-0 tw-justify-start tw-gap-1 tw-flex-nowrap'
-					: !withCategories
+				'tw-px-1 lg:tw-pr-0 tw-justify-start md:tw-gap-1 tw-flex-wrap lg:tw-flex-nowrap'
+					: !withCategories,
+				'tw-gap-2 tw-flex-col lg:tw-flex-row tw-w-full' : withCategories
 			}"
 		>
 			<div v-if="withCategories" class="tw-flex tw-flex-col tw-grow">
@@ -29,8 +30,9 @@
 					</option>
 				</kv-select>
 			</div>
-			<div v-if="!removeGenderDropdown && !withCategories" class="tw-shrink-0">
+			<div v-if="!removeGenderDropdown && !withCategories" class="tw-overflow-scroll tw-pb-1">
 				<filter-pills
+					:filters-loaded="filtersLoaded"
 					:options="filterOptions.gender"
 					:selected-values="selectedGenders"
 					@update-values="updateGenders($event)"
@@ -61,46 +63,77 @@
 				</kv-select>
 			</div>
 
-			<location-selector
-				v-if="!removeLocationDropdown"
-				@click.native="trackDropdownClick('location')"
-				@handle-overlay="handleQuickFiltersOverlay"
-				:regions="filterOptions.location"
-				:total-loans="totalLoans"
-				:filters-loaded="filtersLoaded"
-				@update-location="updateLocation"
-				ref="locationSelector"
-				:tracking-category="trackingCategory"
-				:with-categories="withCategories"
-			/>
-
 			<div
-				v-if="!removeSortByDropdown && !withCategories"
-				class="tw-px-1 md:tw-px-0"
-				@click="trackDropdownClick('sort')"
+				:class="{
+					'tw-flex tw-gap-1 overflow-container': !withCategories,
+					'tw-w-full': withCategories}"
 			>
-				<label
-					class="tw-hidden"
-					for="sortBy"
+				<location-selector
+					v-if="!removeLocationDropdown"
+					@click.native="trackDropdownClick('location')"
+					@handle-overlay="handleQuickFiltersOverlay"
+					:regions="filterOptions.location"
+					:total-loans="totalLoans"
+					:filters-loaded="filtersLoaded"
+					@update-location="updateLocation"
+					ref="locationSelector"
+					:tracking-category="trackingCategory"
+					:with-categories="withCategories"
+				/>
+
+				<div
+					v-if="!removeSortByDropdown && !withCategories"
+					class="tw-pb-1 tw-shrink-0"
+					:class="{ 'tw-opacity-low': !filtersLoaded }"
+					@click="trackDropdownClick('sort')"
 				>
-					Sort By
-				</label>
-				<div class="tw-flex tw-bg-primary filter-pill tw-justify-center tw-w-full md:tw-w-auto">
-					<kv-material-icon :icon="mdiSort" class="tw-w-3 tw-h-3 tw-mr-1" />
-					<select
-						id="sortBy"
-						class="tw-w-full"
-						:disabled="!filtersLoaded"
-						v-model="sortBy"
+					<label
+						class="tw-hidden"
+						for="sortBy"
 					>
-						<option
-							v-for="sortType in filterOptions.sorting"
-							:key="sortType.key"
-							:value="sortType.key"
+						Sort By
+					</label>
+					<div
+						class="
+						pill-container
+						tw-rounded
+						tw-transition
+						tw-bg-white
+						tw-h-full
+						md:tw-w-auto
+						tw-relative
+						tw-pointer-events-none
+					"
+					>
+						<kv-material-icon
+							:icon="mdiSort"
+							class="tw-w-3 tw-h-3 tw-mr-1 tw-absolute tw-pointer-events-auto"
+							style="left: 20px; top: 50%; transform: translateY(-50%);"
+						/>
+						<select
+							id="sortBy"
+							class="
+							tw-bg-transparent
+							tw-font-medium
+							tw-transition
+							tw-rounded
+							filter-pill
+							tw-w-full
+							tw-h-full
+							tw-pointer-events-auto
+						"
+							:disabled="!filtersLoaded"
+							v-model="sortBy"
 						>
-							{{ sortType.title }}
-						</option>
-					</select>
+							<option
+								v-for="sortType in filterOptions.sorting"
+								:key="sortType.key"
+								:value="sortType.key"
+							>
+								{{ sortType.title }}
+							</option>
+						</select>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -141,7 +174,7 @@
 </template>
 
 <script>
-import { mdiFilterVariant, mdiSort } from '@mdi/js';
+import { mdiFilterVariant, mdiSort, mdiChevronDown } from '@mdi/js';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import LocationSelector from './LocationSelector';
@@ -191,8 +224,9 @@ export default {
 		return {
 			mdiFilterVariant,
 			mdiSort,
+			mdiChevronDown,
 			selectedCategory: 0,
-			selectedGender: '',
+			selectedGender: 'all',
 			selectedGenders: ['all'], // TODO: consolidate to just this when UI changes apply to QF on lending home, too
 			sortBy: this.defaultSort,
 			presetFilterActive: {
@@ -254,12 +288,12 @@ export default {
 				this.resetCategory();
 				this.presetFilterActive.women = false;
 			}
-			this.$emit('update-filters', { gender });
+			this.$emit('update-filters', { gender: gender === 'all' ? '' : gender });
 			this.$kvTrackEvent(
 				this.trackingCategory,
 				'filter',
 				'quick-filters-option',
-				gender === '' ? 'all genders' : gender
+				gender === 'all' ? 'all genders' : gender
 			);
 		},
 		selectedGenders(genders) {
@@ -284,7 +318,7 @@ export default {
 			this.selectedCategory = 0;
 		},
 		resetGender() {
-			this.selectedGender = '';
+			this.selectedGender = 'all';
 			this.selectedGenders = ['all'];
 		},
 		resetLocation() {
@@ -310,8 +344,7 @@ export default {
 				location
 			);
 		},
-		// We will need to factor in categories at some point
-		updateGenders({ values }) { // values: [''] | ['female'] | ['male']...
+		updateGenders({ values }) { // values: ['all'] | ['female'] | ['male', 'nonbinary']...
 			this.selectedGenders = values;
 			this.$kvTrackEvent(
 				this.trackingCategory,
@@ -350,7 +383,7 @@ export default {
 	computed: {
 		hideReset() {
 			return this.selectedCategory === 0
-			&& this.selectedGender === ''
+			&& this.selectedGender === 'all'
 			&& this.selectedGenders === ['all']
 			&& this.sortBy === this.defaultSort
 			&& !this.$refs.locationSelector.selectedCountries.length;
@@ -369,27 +402,26 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+	.overflow-container {
+		overflow: scroll;
+	}
+
+	@media screen and (min-width: 400px) {
+		.overflow-container {
+			overflow: visible;
+		}
+	}
+
+	.pill-container:hover {
+		@apply tw-text-white tw-bg-black tw-cursor-pointer;
+	}
+
 	.filter-pill {
-		border-radius: 16px;
-		padding: 10px 20px;
-		font-weight: bold;
+		padding: 10px 0 10px 50px;
 		box-shadow: 0 calc(4px) calc(15px) 0 rgba(0, 0, 0, 0.05);
-		transition: all 0.2s ease-in;
-	}
-
-	.filter-pill select {
-		transition: all 0.2s ease-in;
-		background-color: #FFF;
-		color: #000;
 		min-width: 160px;
-	}
-
-	.filter-pill:hover select,
-	.filter-pill.hover select,
-	.filter-pill:hover {
-		cursor: pointer;
-		background-color: #000;
-		color: #FFF;
+		border-right: 20px transparent solid;
+		@apply focus:tw-outline-none focus:tw-border-transparent;
 	}
 
 	#customizedSortBySelector >>> select {

@@ -1,17 +1,16 @@
 <template>
 	<div
-		id="locationWrapper"
-		class="tw-relative tw-flex tw-flex-col tw-w-full"
-		:class="{'tw-px-1 md:tw-px-0': !withCategories}"
+		:id="wrapperClass"
+		class="tw-relative tw-flex tw-flex-col"
 		v-click-outside="closeRegions"
 	>
+		<label
+			:class="{'tw-text-h4': withCategories, 'tw-hidden': !withCategories}"
+			for="location"
+		>
+			Location
+		</label>
 		<div v-if="withCategories">
-			<label
-				class="tw-text-h4"
-				for="location"
-			>
-				Location
-			</label>
 			<kv-text-input
 				type="text"
 				id="location"
@@ -26,27 +25,26 @@
 				:icon="mdiChevronDown"
 			/>
 		</div>
-		<div v-else>
-			<label
-				class="tw-hidden"
-				for="location"
-			>
-				Location
-			</label>
+		<div v-else class="tw-pb-1">
 			<div
 				class="
-			tw-flex
-			tw-bg-primary
-			filter-pill
-			tw-justify-center
-			tw-w-full
-			md:tw-w-auto"
+					tw-flex
+					tw-bg-primary
+					filter-pill
+					tw-transition
+					tw-rounded
+					tw-justify-center
+					tw-text-black
+					tw-bg-white
+					"
+				:class="{ 'tw-opacity-low': !filtersLoaded }"
 				@click="toggleRegions()"
 			>
 				<kv-material-icon :icon="mdiMapMarker" class="tw-w-3 tw-h-3" />
 				<input
 					type="text"
-					class="tw-w-full"
+					class="selector tw-w-full tw-appearance-none tw-transition tw-border-none tw-pl-1"
+					:class="{ 'tw-pointer-events-none': !filtersLoaded}"
 					id="location"
 					ref="input"
 					:value="term"
@@ -55,8 +53,8 @@
 					readonly
 				>
 				<kv-material-icon
-					class="tw-w-2.5 tw-h-2.5"
 					:icon="mdiChevronDown"
+					class="tw-w-3"
 				/>
 			</div>
 		</div>
@@ -345,6 +343,9 @@ export default {
 				return this.selectedCountries.length === 1 ? '1 country' : `${this.selectedCountries.length} countries`; // eslint-disable-line max-len
 			}
 			return 'All countries';
+		},
+		wrapperClass() {
+			return this.withCategories ? 'locationWrapper' : '';
 		}
 	},
 	watch: {
@@ -358,26 +359,22 @@ export default {
 
 <style lang="postcss" scoped>
 .filter-pill {
-	border-radius: 16px;
 	padding: 10px 20px;
-	font-weight: bold;
 	box-shadow: 0 calc(4px) calc(15px) 0 rgba(0, 0, 0, 0.05);
-	transition: all 0.2s ease-in;
 }
 
 .filter-pill input {
-	transition: all 0.2s ease-in;
-	background-color: #FFF;
-	color: #000;
 	min-width: 135px;
 }
 
 .filter-pill:hover input,
 .filter-pill.hover input,
 .filter-pill:hover {
-	cursor: pointer;
-	background-color: #000;
-	color: #FFF;
+	@apply tw-bg-black tw-text-white tw-cursor-pointer;
+}
+
+.selector {
+	@apply focus:tw-outline-none focus:tw-ring-0 focus:tw-border-transparent;
 }
 
 #locationWrapper >>> input {
