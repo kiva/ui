@@ -1,6 +1,6 @@
 import {
 	hasMadeAchievementsProgression, missingMilestones
-} from '@/util/ecoChallengeUtils';
+} from '@/util/achievementUtils';
 
 const sampleAPIMilestoneProgress = [
 	{
@@ -61,7 +61,7 @@ const sampleAPIMilestoneProgress = [
 	}
 
 ];
-describe('ecoChallengeUtils.js hasMadeAchievementsProgression', () => {
+describe('achievementUtils.js hasMadeAchievementsProgression', () => {
 	test('Should return true for achievement with 1 milestone in completeable status', () => {
 		expect(hasMadeAchievementsProgression(sampleAPIMilestoneProgress, 'climate-challenge')).toBe(true);
 	});
@@ -84,7 +84,7 @@ describe('ecoChallengeUtils.js hasMadeAchievementsProgression', () => {
 	});
 });
 
-describe('ecoChallengeUtils.js missingMilestones', () => {
+describe('achievementUtils.js missingMilestones', () => {
 	test('Should return achievements yet to be completed', () => {
 		expect(missingMilestones(sampleAPIMilestoneProgress, 'another-challenge')).toEqual([
 			{
