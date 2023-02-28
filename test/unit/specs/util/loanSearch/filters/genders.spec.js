@@ -47,6 +47,19 @@ describe('genders.js', () => {
 		});
 
 		describe('getFilterFromQuery', () => {
+			it('it should handle undefined facets', () => {
+				const query = { gender: 'female' };
+
+				const result = genders.getFilterFromQuery(
+					query,
+					undefined,
+					mockState.pageLimit,
+					FLSS_QUERY_TYPE
+				);
+
+				expect(result).toEqual({ gender: null });
+			});
+
 			it('it should get filter', () => {
 				const query = { gender: 'female' };
 

@@ -40,8 +40,6 @@ const story = (args = {}, isLoading = false, extraLoanProps = {}, extraData = {}
 		template: `
 			<kiva-classic-basic-loan-card-exp
 				:loan-id="loanId"
-				:lend-now-button="lendNowButton"
-				:show-action-button="showActionButton"
 				:use-full-width="useFullWidth"
 				:show-tags="showTags"
 				:per-row="perRow"
@@ -60,16 +58,6 @@ export const Loading = story({
 	loanId: loan.id,
 }, true);
 
-export const LendNowButton = story({
-	loanId: loan.id,
-	lendNowButton: true
-});
-
-export const ShowActionButton = story({
-	loanId: loan.id,
-	showActionButton: true
-});
-
 export const UseFullWidth = story({
 	loanId: loan.id,
 	useFullWidth: true
@@ -80,13 +68,18 @@ export const ShowTags = story({
 	showTags: true
 });
 
+export const Matched = story({
+	loanId: loan.id,
+	showTags: true,
+}, false, { matchingText: 'Matched by Ebay', matchRatio: 1, loanFundraisingInfo: {
+	fundedAmount: '200.00',
+	isExpiringSoon: false,
+	reservedAmount: '0.00'
+} });
+
 export const AllSharesReserved = story({
 	loanId: loan.id,
 }, false, { unreservedAmount: '0.00', fundraisingPercent: 1 });
-
-export const Matched = story({
-	loanId: loan.id,
-}, false, { matchingText: 'Matched by Ebay', matchRatio: 1 });
 
 export const InBasket = story({
 	loanId: loan.id,

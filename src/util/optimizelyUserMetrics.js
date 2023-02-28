@@ -17,6 +17,14 @@ function setUserAttribute(key, value) {
 }
 
 /**
+ * Checks if user is checking out with a US Direct Loan.
+ * @param {Boolean} hasUsLoan
+ */
+export function userUsLoanCheckout(hasUsLoan) {
+	setUserAttribute('us_loan_checkout', hasUsLoan ? 'yes' : 'no');
+}
+
+/**
  * Checks if user has visted kiva before on the.
  * @param {Boolean} hasEverLoggedIn
  */

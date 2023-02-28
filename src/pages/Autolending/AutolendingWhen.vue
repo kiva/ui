@@ -98,10 +98,10 @@ import _isFinite from 'lodash/isFinite';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvSelect from '@/components/Kv/KvSelect';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvRadio from '@/components/Kv/KvRadio';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 import LendTimingDropdown from './LendTimingDropdown';
 import LendTimingMessaging from './LendTimingMessaging';

@@ -215,11 +215,10 @@ export default {
 				this.loadingLoans = true;
 			}
 			this.zeroLoans = false;
-
 			this.apollo.query({
 				query: basicLoanQuery,
 				variables: this.loanQueryVars,
-				// fetchPolicy: 'network-only'
+				fetchPolicy: 'network-only'
 			}).then(({ data }) => {
 				this.loans = data.lend?.loans?.values ?? [];
 				this.totalCount = data.lend?.loans?.totalCount ?? 0;

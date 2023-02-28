@@ -10,7 +10,7 @@
 				{{ borrowerOrGroupName }}'s story
 			</h2>
 		</div>
-		<div class="tw-prose" :class="{'tw-line-clamp-3': truncateBody}">
+		<div class="tw-prose">
 			<section v-if="storyDescription">
 				<p
 					v-for="(paragraph, index) in storyDescriptionParagraphs"
@@ -71,14 +71,6 @@
 				</p>
 			</section>
 		</div>
-		<button
-			class="tw-text-link tw-mt-1"
-			@click="readMore = true"
-			v-show="showReadMore"
-			v-kv-track-event="['borrower-profile', 'click', 'loan-story', 'read-more']"
-		>
-			Read more about {{ borrowerOrGroupName }}
-		</button>
 		<kv-lightbox
 			data-testid="bp-lightbox-story-translate-original-language"
 			:visible="isLightboxVisible"
@@ -152,15 +144,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		enabledExperimentVariant: {
-			type: Boolean,
-			default: false
-		}
 	},
 	data() {
 		return {
 			isLightboxVisible: false,
-			readMore: false
 		};
 	},
 	computed: {
@@ -197,12 +184,6 @@ export default {
 		},
 		showReviewersName() {
 			return this.reviewer?.showName;
-		},
-		truncateBody() {
-			return this.enabledExperimentVariant && !this.readMore;
-		},
-		showReadMore() {
-			return this.enabledExperimentVariant && !this.readMore;
 		},
 	},
 	methods: {

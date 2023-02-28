@@ -102,9 +102,27 @@ import LoanSpotlight from '@/components/Categories/LoanSpotlight';
 import MonthlyGoodModule from '@/components/Categories/MonthlyGoodModule';
 import FrequentlyAskedQuestions from '@/components/Contentful/FrequentlyAskedQuestions';
 import { gql } from '@apollo/client';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experimentUtils';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+
+const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
+
+const categoriesExperimentsQuery = gql`
+	query experimentsQuery {		
+		general {
+			categoriesRedirect: uiExperimentSetting(key: "categories_redirect") {
+				key
+				value
+			}
+		}
+	}
+`;
 
 const allCategoriesPageQuery = gql`
 	query allCategoriesPageQuery {
@@ -170,7 +188,33 @@ export default {
 	},
 	apollo: {
 		query: allCategoriesPageQuery,
-		preFetch: true,
+		preFetch(config, client) {
+			return client.query({
+				query: categoriesExperimentsQuery
+			}).then(() => {
+				// Get the array of channel objects from settings
+				return Promise.all([
+					// experiment: CORE-1057 A/B test - redirect / hide kiva.org/categories
+					client.query({ query: experimentQuery, variables: { id: CATEGORIES_REDIRECT_EXP_KEY } }),
+				]);
+			}).then(expAssignments => {
+				const experimentSettings = expAssignments.filter(item => item?.data?.experiment);
+				// Initialize CORE-1057 A/B test - redirect / hide kiva.org/categories
+				const CategoriesRedirectExp = experimentSettings
+					.find(item => item.data.experiment.id === CATEGORIES_REDIRECT_EXP_KEY);
+				const enableCategoriesRedirect = CategoriesRedirectExp?.data?.experiment?.version === 'b' ?? false;
+				if (enableCategoriesRedirect) {
+					return Promise.reject({
+						path: '/lend-by-category',
+					});
+				}
+				Promise.resolve();
+			}).then(() => {
+				return client.query({
+					query: allCategoriesPageQuery
+				});
+			});
+		},
 		result(result) {
 			this.categories = result.data?.lend?.loanChannels?.values ?? [];
 			const pageEntry = result.data?.contentful?.entries?.items?.[0] ?? null;
@@ -211,6 +255,18 @@ export default {
 			const placeholderMedia = result?.data?.contentful?.placeholder?.items?.[0]?.fields?.backgroundMedia ?? {};
 			this.categoryPlaceholderImageCTF = placeholderMedia?.fields?.file?.url ?? '';
 		});
+
+		// Tracking for EXP-CORE-1057-Feb-2023
+		const { enabled } = getExperimentSettingCached(this.apollo, CATEGORIES_REDIRECT_EXP_KEY);
+		if (enabled) {
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				'categories_page',
+				'EXP-CORE-1057-Feb2023'
+			);
+		}
 	},
 };
 

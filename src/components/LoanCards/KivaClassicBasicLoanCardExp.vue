@@ -2,109 +2,116 @@
 	<div
 		:id="`${loanId}-loan-card`"
 		class="tw-flex tw-flex-col tw-p-1 tw-bg-white tw-rounded tw-w-full"
-		:class="{ 'loan-card-active-hover': !allSharesReserved }"
 		style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);"
 		:style="{ minWidth: '230px', maxWidth: cardWidth }"
 	>
-		<!-- Borrower image -->
-		<kv-loading-placeholder
-			v-if="isLoading"
-			class="tw-mb-1 tw-rounded" :style="{ width: '100%', height: '15.75rem' }"
-		/>
-		<div
-			v-else
-			class="tw-relative"
-			@click="showLoanDetails"
-		>
-			<router-link
-				:is="allSharesReserved ? 'span' : 'router-link'"
-				:to="customLoanDetails ? '' : `/lend/${loanId}`"
-				v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
-				class="tw-flex"
-			>
-				<borrower-image
-					class="
-					tw-relative
-					tw-w-full
-					tw-bg-black
-					tw-rounded
-				"
-					:alt="`Photo of ${borrowerName}`"
-					:aspect-ratio="3 / 4"
-					:default-image="{ width: 336 }"
-					:hash="imageHash"
-					:images="[
-						{ width: largestImageWidth, viewSize: 1024 },
-						{ width: largestImageWidth, viewSize: 768 },
-						{ width: 416, viewSize: 480 },
-						{ width: 374, viewSize: 414 },
-						{ width: 335, viewSize: 375 },
-						{ width: 280 },
-					]"
-				/>
-
-				<div v-if="countryName">
-					<summary-tag
-						id="locationPill"
-						class="tw-absolute tw-bottom-1 tw-left-1 tw-text-primary"
-						:city="city"
-						:state="state"
-						:country-name="countryName"
-					>
-						<kv-material-icon
-							class="tw-h-2 tw-w-2"
-							:icon="mdiMapMarker"
-						/>
-						{{ formattedLocation }}
-					</summary-tag>
-				</div>
-			</router-link>
-		</div>
-
 		<div class="tw-grow">
-			<!-- Loan tag -->
-			<loan-tag-v2 v-if="showTags && !isLoading" :loan="loan" :amount-left="amountLeft" />
-
-			<!-- Loan use  -->
-			<div class="tw-mb-1.5 tw-mt-1">
-				<kv-loading-paragraph
+			<div :class="{ 'loan-card-active-hover': !allSharesReserved }">
+				<!-- Borrower image -->
+				<kv-loading-placeholder
 					v-if="isLoading"
-					:style="{ width: '100%', height: '5.5rem' }"
+					class="tw-mb-1 tw-rounded" :style="{ width: '100%', height: imgPlaceholderHeight }"
 				/>
-
-				<router-link
+				<div
 					v-else
-					:is="allSharesReserved ? 'span' : 'router-link'"
-					:to="customLoanDetails ? '' : `/lend/${loanId}`"
-					v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
-					class="loan-card-use tw-text-primary"
+					class="tw-relative"
+					@click="showLoanDetails"
 				>
-					<loan-use
-						:use="loanUse"
-						:loan-amount="loanAmount"
-						:status="loanStatus"
-						:borrower-count="loanBorrowerCount"
-						:name="borrowerName"
-						:distribution-model="distributionModel"
-					/>
-				</router-link>
+					<router-link
+						:is="allSharesReserved ? 'span' : 'router-link'"
+						:to="customLoanDetails ? '' : `/lend/${loanId}`"
+						v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
+						class="tw-flex"
+					>
+						<borrower-image
+							class="
+								tw-relative
+								tw-w-full
+								tw-bg-black
+								tw-rounded
+							"
+							:alt="`Photo of ${borrowerName}`"
+							:aspect-ratio="3 / 4"
+							:default-image="{ width: 336 }"
+							:hash="imageHash"
+							:images="[
+								{ width: largestImageWidth, viewSize: 1024 },
+								{ width: largestImageWidth, viewSize: 768 },
+								{ width: 416, viewSize: 480 },
+								{ width: 374, viewSize: 414 },
+								{ width: 335, viewSize: 375 },
+								{ width: 280 },
+							]"
+						/>
 
-				<!-- Loan callouts -->
-				<loan-callouts :callouts="loanCallouts" class="tw-mt-1.5" />
+						<div v-if="countryName">
+							<summary-tag
+								id="locationPill"
+								class="tw-absolute tw-bottom-1 tw-left-1 tw-text-primary"
+								:city="city"
+								:state="state"
+								:country-name="countryName"
+							>
+								<kv-material-icon
+									class="tw-h-2 tw-w-2"
+									:icon="mdiMapMarker"
+								/>
+								{{ formattedLocation }}
+							</summary-tag>
+						</div>
+					</router-link>
+				</div>
+
+				<!-- Loan tag -->
+				<loan-tag-v2 v-if="showTags && !isLoading" :loan="loan" :amount-left="amountLeft" />
+
+				<!-- Loan use  -->
+				<div class="tw-mb-1.5 tw-mt-1">
+					<kv-loading-paragraph
+						v-if="isLoading"
+						:style="{ width: '100%', height: '5.5rem' }"
+					/>
+
+					<router-link
+						v-else
+						:is="allSharesReserved ? 'span' : 'router-link'"
+						:to="customLoanDetails ? '' : `/lend/${loanId}`"
+						v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
+						class="loan-card-use tw-text-primary"
+					>
+						<loan-use
+							:use="loanUse"
+							:loan-amount="loanAmount"
+							:status="loanStatus"
+							:borrower-count="loanBorrowerCount"
+							:name="borrowerName"
+							:distribution-model="distributionModel"
+						/>
+					</router-link>
+				</div>
 			</div>
+
+			<!-- Loan call outs -->
+			<kv-loading-placeholder
+				v-if="isLoading || typeof loanCallouts === 'undefined'"
+				class="tw-mt-1.5 tw-mb-2"
+				:style="{ width: '60%', height: '1.75rem', 'border-radius': '500rem' }"
+			/>
+
+			<loan-callouts v-else :callouts="loanCallouts" class="tw-mt-1.5" />
 		</div>
 
 		<div class="tw-flex tw-justify-between tw-mt-2">
 			<!-- Fundraising -->
-			<div v-if="isLoading">
+			<div v-if="!hasProgressData" class="tw-w-full tw-pt-1 tw-pr-1">
 				<kv-loading-placeholder
 					class="tw-mb-0.5"
-					:style="{ width: 40 + (Math.random() * 15) + '%', height: '1.3rem' }"
+					:style="{ width: '70%', height: '1.3rem' }"
 				/>
 
 				<kv-loading-placeholder
-					class="tw-mb-1.5 tw-rounded"
-					:style="{ width: '100%', height: '0.5rem' }"
+					class="tw-rounded"
+					:style="{ width: '70%', height: '0.5rem' }"
 				/>
 			</div>
 
@@ -148,11 +155,7 @@ import numeral from 'numeral';
 import { mdiChevronRight, mdiMapMarker, mdiCheckCircleOutline } from '@mdi/js';
 import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
-import {
-	readLoanFragment,
-	watchLoanData,
-	loanCallouts
-} from '@/util/loanUtils';
+import { readLoanFragment, watchLoanData, loanCallouts } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import LoanUse from '@/components/LoanCards/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
@@ -206,23 +209,7 @@ export default {
 			type: Number,
 			required: true,
 		},
-		expLabel: {
-			type: String,
-			default: ''
-		},
-		lendNowButton: {
-			type: Boolean,
-			default: false
-		},
-		customCheckoutRoute: {
-			type: String,
-			default: ''
-		},
 		customLoanDetails: {
-			type: Boolean,
-			default: false
-		},
-		showActionButton: {
 			type: Boolean,
 			default: false
 		},
@@ -269,13 +256,11 @@ export default {
 			mdiChevronRight,
 			mdiMapMarker,
 			viewportObserver: null,
-			isAdding: false
+			isAdding: false,
+			loanCallouts: undefined,
 		};
 	},
 	computed: {
-		loanCallouts() {
-			return loanCallouts(this.loan, this.categoryPageName);
-		},
 		cardWidth() {
 			return this.useFullWidth ? '100%' : '374px';
 		},
@@ -320,6 +305,11 @@ export default {
 			const loanIds = loanItems.map(loan => loan.id);
 			return loanIds.indexOf(this.loanId) > -1;
 		},
+		hasProgressData() {
+			// Local resolver values for the progress bar load client-side
+			return typeof this.loan?.unreservedAmount !== 'undefined'
+				&& typeof this.loan?.fundraisingPercent !== 'undefined';
+		},
 		fundraisingPercent() {
 			return this.loan?.fundraisingPercent ?? 0;
 		},
@@ -357,6 +347,17 @@ export default {
 		},
 		loanBorrowerCount() {
 			return this.loan?.borrowerCount ?? 0;
+		},
+		imgPlaceholderHeight() {
+			const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
+
+			if (viewportWidth >= 1024) {
+				if (this.perRow === 2) return '23rem'; return '14rem';
+			}
+			return '14rem';
+		},
+		lessThan25() {
+			return this.amountLeft < 25 && this.amountLeft !== 0;
 		},
 	},
 	methods: {
@@ -416,7 +417,12 @@ export default {
 			}
 
 			this.loan = result.data?.lend?.loan || null;
+
+			// Set client-side to prevent call outs from changing on page load due to random selections
+			this.loanCallouts = loanCallouts(this.loan, this.categoryPageName);
+
 			if (this.loan) this.isLoading = false;
+
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
 		},
 		addToBasket(lendAmount) {
@@ -428,14 +434,22 @@ export default {
 			}).then(() => {
 				this.isAdding = false;
 				this.$emit('add-to-basket', { loanId: this.loanId, success: true });
+				this.$kvTrackEvent(
+					'loan-card',
+					'add-to-basket',
+					null,
+					this.loanId,
+					this.lessThan25 ? this.amountLeft : 25
+				);
 			}).catch(e => {
 				this.isAdding = false;
 				this.$emit('add-to-basket', { loanId: this.loanId, success: false });
-				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
-					? e[0].message
+				const msg = e?.[0]?.extensions?.code === 'reached_anonymous_basket_limit'
+					? e?.[0]?.message
 					: 'There was a problem adding the loan to your basket';
-
 				this.$showTipMsg(msg, 'error');
+				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
+				Sentry.captureException(e);
 			});
 		},
 	},
@@ -485,6 +499,10 @@ export default {
 
 .loan-card-active-hover:hover .loan-card-use {
 	@apply tw-underline;
+}
+
+.loan-card-progress >>> [role=progressbar] {
+	margin-bottom: 0;
 }
 
 .loan-card-progress:hover,

@@ -34,9 +34,10 @@
 
 			<!-- Second category row: Matched loans section -->
 			<lending-category-section
-				title="Matched lending"
-				subtitle="Stretch your funds further with the help of our partners and Kivans just like you"
-				:loans="matchedLoans"
+				v-if="secondCategoryLoans.length > 0"
+				:title="secondCategoryTitle"
+				:subtitle="secondCategorySubtitle"
+				:loans="secondCategoryLoans"
 				class="tw-pt-6 tw-pb-2"
 				:enable-loan-card-exp="enableLoanCardExp"
 				@add-to-basket="trackCategory($event, 'matched-lending')"
@@ -45,6 +46,9 @@
 			<partner-spotlight-section
 				class="tw-pt-6"
 				:enable-loan-card-exp="enableLoanCardExp"
+				:spotlight-data="activeSpotlightData"
+				:loans="spotlightLoans"
+				@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
 			/>
 		</div>
 
@@ -75,7 +79,7 @@ import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
 import WelcomeLightbox from '@/components/LoanFinding/WelcomeLightbox';
 import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experimentUtils';
-import { gql } from '@apollo/client';
+import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightData.json';
 import KvToast from '~/@kiva/kv-components/vue/KvToast';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
@@ -101,13 +105,12 @@ export default {
 				{ id: 0 }, { id: 0 }, { id: 0 },
 				{ id: 0 }, { id: 0 }, { id: 0 }
 			],
-			matchedLoans: [
-				{ id: 0 }, { id: 0 }, { id: 0 },
-				{ id: 0 }, { id: 0 }, { id: 0 },
-				{ id: 0 }, { id: 0 }, { id: 0 }
-			],
+			secondCategoryLoans: [],
+			matchedLoansTotal: 0,
+			spotlightLoans: [],
 			showLightbox: false,
 			enableLoanCardExp: false,
+			spotlightIndex: 0
 		};
 	},
 	apollo: {
@@ -124,6 +127,16 @@ export default {
 	computed: {
 		firstName() {
 			return this.userInfo?.firstName ?? '';
+		},
+		secondCategoryTitle() {
+			if (this.matchedLoansTotal > 0) return 'Matched lending'; return 'Borrowers at the finish line';
+		},
+		secondCategorySubtitle() {
+			if (this.matchedLoansTotal > 0) return 'Stretch your funds further with the help of our partners and Kivans just like you'; // eslint-disable-line max-len
+			return 'Loans that are ending soon or almost funded';
+		},
+		activeSpotlightData() {
+			return spotlightData[this.spotlightIndex] ?? {};
 		}
 	},
 	methods: {
@@ -135,30 +148,41 @@ export default {
 			);
 			this.recommendedLoans = loans;
 		},
+		async getSecondCategoryData() {
+			this.secondCategoryLoans = await this.getMatchedLoans();
+			this.matchedLoansTotal = this.secondCategoryLoans.length;
+			if (this.matchedLoansTotal === 0) this.secondCategoryLoans = await this.getExpiringSoonAlmostFundedCombo(); // eslint-disable-line max-len
+		},
+		async getExpiringSoonAlmostFundedCombo() {
+			const expiringSoonData = await runLoansQuery(
+				this.apollo,
+				{ sortBy: 'expiringSoon', pageLimit: 5 },
+				FLSS_ORIGIN_LENDING_HOME
+			);
+			const almostFundedData = await runLoansQuery(
+				this.apollo,
+				{ sortBy: 'amountLeft', pageLimit: 4 },
+				FLSS_ORIGIN_LENDING_HOME
+			);
+			return [...expiringSoonData.loans, ...almostFundedData.loans];
+		},
 		async getMatchedLoans() {
-			const { data } = await this.apollo.query({
-				query: gql`
-					query lendMatchingData {
-						lend {
-							loans(filters: { isMatched: true }, limit: 9) {
-								values {
-									id
-								}
-							}
-						}
-					}
-				`,
-			});
-			this.matchedLoans = data?.lend?.loans?.values ?? [];
+			const { loans } = await runLoansQuery(
+				this.apollo,
+				{ isMatchable: true, pageLimit: 9 },
+				FLSS_ORIGIN_LENDING_HOME
+			);
+			return loans ?? [];
+		},
+		async fetchSpotlightLoans() {
+			const flssFilterCriteria = this.activeSpotlightData?.flssLoanSearch ?? {};
+			const { loans } = await runLoansQuery(
+				this.apollo,
+				{ ...flssFilterCriteria, pageLimit: 6 },
+				FLSS_ORIGIN_LENDING_HOME
+			);
 
-			// TODO: enable after initial experiment is complete/successful
-			// https://kiva.atlassian.net/browse/CORE-1088
-			// const { loans } = await runLoansQuery(
-			// 	this.apollo,
-			// 	{ isMatchable: true, sortBy: 'personalized', pageLimit: 9 },
-			// 	FLSS_ORIGIN_LENDING_HOME
-			// );
-			// this.matchedLoans = loans;
+			this.spotlightLoans = loans ?? [];
 		},
 		trackCategory({ success }, category) {
 			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', `${category}-lending-home`);
@@ -180,11 +204,33 @@ export default {
 		},
 		closeLightbox() {
 			this.showLightbox = false;
+		},
+		verifySpotlightIndex() {
+			const spotlightCookie = this.cookieStore.get('lh_spotlight') || null;
+			const cookieIndexNumber = Number(spotlightCookie);
+			if (spotlightCookie) this.spotlightIndex = spotlightData.length - 1 <= cookieIndexNumber ? 0 : cookieIndexNumber + 1; // eslint-disable-line max-len
+			this.cookieStore.set('lh_spotlight', this.spotlightIndex);
+			this.$kvTrackEvent('event-tracking', 'show', `lending-home-spotlight-${this.activeSpotlightData.keyword}`);
+		}
+	},
+	created() {
+		const loanCardExpData = getExperimentSettingCached(this.apollo, LOAN_CARD_EXP_KEY);
+		if (loanCardExpData.enabled) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				LOAN_CARD_EXP_KEY,
+				'EXP-CORE-1073-Feb2023'
+			);
+			this.enableLoanCardExp = version === 'b' ?? false;
 		}
 	},
 	mounted() {
 		this.getRecommendedLoans();
-		this.getMatchedLoans();
+		this.getSecondCategoryData();
+		this.verifySpotlightIndex();
+		this.fetchSpotlightLoans();
 		this.showToast();
 
 		const { enabled } = getExperimentSettingCached(this.apollo, EXP_KEY);
@@ -198,16 +244,16 @@ export default {
 			);
 		}
 
-		const loanCardExpData = getExperimentSettingCached(this.apollo, LOAN_CARD_EXP_KEY);
-		if (loanCardExpData.enabled) {
-			const { version } = trackExperimentVersion(
+		// Tracking for EXP-CORE-1057-Feb-2023
+		const categoriesRedirectData = getExperimentSettingCached(this.apollo, 'categories_redirect');
+		if (categoriesRedirectData.enabled) {
+			trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
 				'Lending',
-				LOAN_CARD_EXP_KEY,
-				'EXP-CORE-1073-Feb2023'
+				'categories_page',
+				'EXP-CORE-1057-Feb2023'
 			);
-			this.enableLoanCardExp = version === 'b' ?? false;
 		}
 	},
 };

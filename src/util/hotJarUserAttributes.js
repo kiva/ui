@@ -8,14 +8,14 @@ export default function setHotJarUserAttributes(userData) {
 	}
 
 	if (window.hj) {
-		window.hj('identify', userData.userId, {
-			'Has ever logged in': userData.hasEverLoggedIn,
-			'Has lent before': userData.hasLentBefore,
-			'Has deposit before': userData.hasDepositBefore,
+		window.hj('identify', userData?.userId, {
+			'Has ever logged in': userData?.hasEverLoggedIn,
+			'Has lent before': userData?.hasLentBefore,
+			'Has deposit before': userData?.hasDepositBefore,
 		});
 
 		if (userData?.isFirstLoan !== undefined) {
-			window.hj('identify', userData.userId, {
+			window.hj('identify', userData?.userId, {
 				'First loan': userData?.isFirstLoan,
 				'Has direct loan': userData?.hasDirectLoan,
 				'Has core loan': userData?.hasCoreLoan,

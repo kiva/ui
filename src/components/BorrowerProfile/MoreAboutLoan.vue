@@ -3,18 +3,13 @@
 		<h2 data-testid="bp-more-about-header">
 			More about this loan
 		</h2>
-		<div ref="body" :class="{'tw-line-clamp-3': truncateBody}">
+		<div ref="body">
 			<div class="tw-prose tw-break-words">
 				<div v-if="partnerName && !loading">
 					<p v-if="!partnerNameNA" data-testid="bp-more_about-facilitated">
-						<template v-if="enabledExperimentVariant">
-							This loan is facilitated by our Lending Partner, {{ partnerName }}.
-						</template>
-						<template v-else>
-							This loan is facilitated by our Field Partner, {{ partnerName }}.
-							Field Partners are local organizations working in communities to vet
-							borrowers, provide services, and administer loans on the ground.
-						</template>
+						This loan is facilitated by our Lending Partner, {{ partnerName }}.
+						Lending Partners are local organizations working in communities to vet
+						borrowers, provide services, and administer loans on the ground.
 					</p>
 
 					<div v-html="moreInfoAboutLoan" data-testid="bp-more-about-info">
@@ -98,14 +93,6 @@
 				<br>
 			</div>
 		</div>
-		<button
-			class="tw-text-link tw-mt-1"
-			@click="readMore = true"
-			v-show="showReadMore"
-			v-kv-track-event="['borrower-profile', 'click', 'more-about-loan', 'read-more']"
-		>
-			Read more
-		</button>
 	</section>
 </template>
 
@@ -128,10 +115,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		enabledExperimentVariant: {
-			type: Boolean,
-			default: false
-		}
 	},
 	data() {
 		return {
@@ -155,7 +138,6 @@ export default {
 				yelp: '',
 			},
 			yearsInBusiness: '',
-			readMore: false
 		};
 	},
 	computed: {
@@ -169,12 +151,6 @@ export default {
 			return this.partnerName.indexOf('N/A') > -1
 				|| this.partnerName.indexOf('N/a') > -1
 				|| this.partnerName.indexOf('n/a') > -1;
-		},
-		truncateBody() {
-			return this.enabledExperimentVariant && !this.readMore;
-		},
-		showReadMore() {
-			return this.enabledExperimentVariant && !this.readMore;
 		},
 	},
 	methods: {

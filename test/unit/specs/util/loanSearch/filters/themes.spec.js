@@ -41,6 +41,14 @@ describe('themes.js', () => {
 		});
 
 		describe('getFilterFromQuery', () => {
+			it('it should handle undefined facets', () => {
+				const query = { attributes: '1' };
+
+				const result = themes.getFilterFromQuery(query, undefined, mockState.pageLimit, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ themeId: [1] });
+			});
+
 			it('it should get filter', () => {
 				const query = { attributes: '1' };
 

@@ -14,6 +14,7 @@ describe('queryParseUtils.js', () => {
 		it('should handle empty', () => {
 			expect(getEnumNameFromQueryParam(undefined, [])).toBe(undefined);
 			expect(getEnumNameFromQueryParam('', [])).toBe(undefined);
+			expect(getEnumNameFromQueryParam('asd', undefined)).toBe(undefined);
 		});
 
 		it('should return undefined when no match', () => {
@@ -71,6 +72,13 @@ describe('queryParseUtils.js', () => {
 		it('should handle empty', () => {
 			expect(getIdsFromQueryParam()).toBe(undefined);
 			expect(getIdsFromQueryParam('')).toBe(undefined);
+			expect(getIdsFromQueryParam('asd,asd', ['ASD'], undefined)).toEqual([]);
+			expect(getIdsFromQueryParam('asd~qwe', ['ASD'], undefined)).toEqual([]);
+			expect(getIdsFromQueryParam('1,2', undefined)).toEqual([1, 2]);
+			expect(getIdsFromQueryParam('asd,asd', undefined)).toEqual([]);
+			expect(getIdsFromQueryParam('asd~qwe', undefined)).toEqual([]);
+			expect(getIdsFromQueryParam('asd,asd', undefined, undefined)).toEqual([]);
+			expect(getIdsFromQueryParam('asd~qwe', undefined, undefined)).toEqual([]);
 		});
 
 		it('should handle sector FLSS and legacy single sector', () => {

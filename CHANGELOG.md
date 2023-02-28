@@ -1,3 +1,265 @@
+## [2.504.0](https://github.com/kiva/ui/compare/v2.503.0...v2.504.0) (2023-02-27)
+
+
+### Features
+
+* loanCallouts unit tests and associated fixes ([aac89b0](https://github.com/kiva/ui/commit/aac89b007f07b06265267d4f57757cff46e25873))
+
+## [2.503.0](https://github.com/kiva/ui/compare/v2.502.0...v2.503.0) (2023-02-24)
+
+
+### Features
+
+* hover on card update, cleaned up stories ([8cb0f05](https://github.com/kiva/ui/commit/8cb0f051f4eba56b5a377d36f011709e94c30722))
+
+## [2.502.0](https://github.com/kiva/ui/compare/v2.501.0...v2.502.0) (2023-02-24)
+
+
+### Features
+
+* flss ismatchable rolled out in lh matched loans ([1a2a231](https://github.com/kiva/ui/commit/1a2a23167b705ac260f032204c7c752af741ebc7))
+
+## [2.501.0](https://github.com/kiva/ui/compare/v2.500.4...v2.501.0) (2023-02-24)
+
+
+### Features
+
+* tracking events added for spotlight variations in lh ([a313e5c](https://github.com/kiva/ui/commit/a313e5c26a591a508e3e795239a67204884958ad))
+
+### [2.500.4](https://github.com/kiva/ui/compare/v2.500.3...v2.500.4) (2023-02-24)
+
+
+### Bug Fixes
+
+* duplicated data replaced for spotlightdata file ([fe34b6d](https://github.com/kiva/ui/commit/fe34b6dcd41e9d230af373570bf518c32fa76dec))
+
+### [2.500.3](https://github.com/kiva/ui/compare/v2.500.2...v2.500.3) (2023-02-24)
+
+
+### Bug Fixes
+
+* added some safe code checks ([ad9ba4e](https://github.com/kiva/ui/commit/ad9ba4ea7ddeb1a66f49fc4b6074c322ce20ad0f))
+* one more test change ([865884f](https://github.com/kiva/ui/commit/865884f6dc7456d6c12be4d8392c5e654795647d))
+
+### [2.500.2](https://github.com/kiva/ui/compare/v2.500.1...v2.500.2) (2023-02-24)
+
+
+### Bug Fixes
+
+* add private flag to live loan image serve ([5b3c9f0](https://github.com/kiva/ui/commit/5b3c9f0def4a7a0f0ea15ab19dd76948faeb7c74))
+* extract protectedRoutes and adjust checking mechanism and add new routes ([84d25b8](https://github.com/kiva/ui/commit/84d25b8aaf4392588a4b5c9f7c48cb124e8d87ea))
+
+### [2.500.1](https://github.com/kiva/ui/compare/v2.500.0...v2.500.1) (2023-02-24)
+
+
+### Bug Fixes
+
+* resolve errors with read/write query for autolending ([1760424](https://github.com/kiva/ui/commit/17604240802889b76c1deff503b29ba5c057a7b2))
+
+## [2.500.0](https://github.com/kiva/ui/compare/v2.499.0...v2.500.0) (2023-02-23)
+
+
+### Features
+
+* dynamic data for spotlight section added with rotation based in a cookie ([5ed2f1e](https://github.com/kiva/ui/commit/5ed2f1e2b5ef568553e5a36608aec4725d7dc31a))
+
+
+### Bug Fixes
+
+* pr fixes ([691bf16](https://github.com/kiva/ui/commit/691bf163b917bae337f80f8b86c465b2e5ca1f90))
+
+## [2.499.0](https://github.com/kiva/ui/compare/v2.498.1...v2.499.0) (2023-02-22)
+
+
+### Features
+
+* spotlight component updated to be reusable ([b8ff074](https://github.com/kiva/ui/commit/b8ff074ebe79826597de9f3c4d0c3b8f91ae183e))
+
+
+### Bug Fixes
+
+* headline rendered as html ([b236bbb](https://github.com/kiva/ui/commit/b236bbb707d3b2a8b3b8d19208a873608621f585))
+* style fixes in partner spotlight component ([f77c7cf](https://github.com/kiva/ui/commit/f77c7cf85c99229e3e2cba47dcb12a285e3a178f))
+
+### [2.498.1](https://github.com/kiva/ui/compare/v2.498.0...v2.498.1) (2023-02-22)
+
+
+### Bug Fixes
+
+* remove algolia-poc page ([5e0c29b](https://github.com/kiva/ui/commit/5e0c29bf374a9abe710f0403c4769819d052bfcb))
+
+## [2.498.0](https://github.com/kiva/ui/compare/v2.497.8...v2.498.0) (2023-02-21)
+
+
+### Features
+
+* new loan card click analytics ([5575922](https://github.com/kiva/ui/commit/55759229b1c56103acc06d1bc5621bb71a139c81))
+
+
+### Bug Fixes
+
+* use FLSS for matched-loans category ([2669dab](https://github.com/kiva/ui/commit/2669dab92b72c5ea0c9e365fb58b17a8916b13cc))
+
+### [2.497.8](https://github.com/kiva/ui/compare/v2.497.7...v2.497.8) (2023-02-21)
+
+
+### Bug Fixes
+
+* lending home test setup moved to created hook avoiding to show old card when mounting ([6d33ac0](https://github.com/kiva/ui/commit/6d33ac06df53ee42bc69d96b2a8ef230d8b0bcd0))
+
+### [2.497.7](https://github.com/kiva/ui/compare/v2.497.6...v2.497.7) (2023-02-21)
+
+
+### Bug Fixes
+
+* changing the loan grid/row view logic ([09adddf](https://github.com/kiva/ui/commit/09adddf63e080a447e9a9dbb4854abec7ef8551a))
+* editing settings for loan query ([a1dec1a](https://github.com/kiva/ui/commit/a1dec1aa62ee098add6fe39de7e4cd563c1fd641))
+* loan row and grid view toggle wasn't working ([70052f4](https://github.com/kiva/ui/commit/70052f4179069ecfecc6297bd40939128715a8df))
+
+### [2.497.6](https://github.com/kiva/ui/compare/v2.497.5...v2.497.6) (2023-02-21)
+
+
+### Bug Fixes
+
+* capitalization ([fd7230d](https://github.com/kiva/ui/commit/fd7230d21a7f2681f4b1f2b0b6c383dad48bb60c))
+
+### [2.497.5](https://github.com/kiva/ui/compare/v2.497.4...v2.497.5) (2023-02-18)
+
+
+### Bug Fixes
+
+* fallback props for autolending resolver ([4954b73](https://github.com/kiva/ui/commit/4954b73736f9fca438e1dd5a7f09339db346520e))
+* revert autolending merge ([6038ad6](https://github.com/kiva/ui/commit/6038ad699639bf278dff6be42a4e14bbe1743030))
+* updated Apollo updateQuery usage for downgrade ([fa3100e](https://github.com/kiva/ui/commit/fa3100eec37a18bed3c3605263542837410c4a21))
+
+### [2.497.4](https://github.com/kiva/ui/compare/v2.497.3...v2.497.4) (2023-02-17)
+
+
+### Bug Fixes
+
+* card width fixed for carousels in lh page ([0c02d13](https://github.com/kiva/ui/commit/0c02d13346eede23057f622d53a978686c17929e))
+* padding fix for new loan card in lh carousels ([5bea85a](https://github.com/kiva/ui/commit/5bea85a130337f7474387882a3e04eeb34d642a0))
+
+### [2.497.3](https://github.com/kiva/ui/compare/v2.497.2...v2.497.3) (2023-02-16)
+
+
+### Bug Fixes
+
+* downgrade @apollo/client to v3.3.21 to address memory leak ([10f429c](https://github.com/kiva/ui/commit/10f429c13039fb7f83fe5bbdbe1899194fe23157))
+
+### [2.497.2](https://github.com/kiva/ui/compare/v2.497.1...v2.497.2) (2023-02-16)
+
+
+### Bug Fixes
+
+* height fixed for new loan cards in lendingcategorysection component ([17192db](https://github.com/kiva/ui/commit/17192db44f612d2f2de8172e77e8c1b5c2fb29ee))
+
+### [2.497.1](https://github.com/kiva/ui/compare/v2.497.0...v2.497.1) (2023-02-16)
+
+
+### Bug Fixes
+
+* missing optional chaining ([df8083d](https://github.com/kiva/ui/commit/df8083d6351a7e540837d38cc26d0cbdf4cddc31))
+
+## [2.497.0](https://github.com/kiva/ui/compare/v2.496.0...v2.497.0) (2023-02-15)
+
+
+### Features
+
+* partner list updated for loan channels 33 and 68 in loan channel query map file ([20dd962](https://github.com/kiva/ui/commit/20dd9625832eb1b9080e0a3ed620be017f51f61f))
+
+## [2.496.0](https://github.com/kiva/ui/compare/v2.495.2...v2.496.0) (2023-02-15)
+
+
+### Features
+
+* ab test added to categories page to be redirected to lbc page ([c606631](https://github.com/kiva/ui/commit/c6066311066e5fd53c9664c77f8e4bef6f15be46))
+
+
+### Bug Fixes
+
+* comma removed for consistency ([a0a5e9f](https://github.com/kiva/ui/commit/a0a5e9f1e91b6e0d608df8ee6b742c3a31f9dd4e))
+* prefetch chain updated in categories page ([16f1ac5](https://github.com/kiva/ui/commit/16f1ac5839f28202c6232ed50ffa1c6974de9d85))
+
+### [2.495.2](https://github.com/kiva/ui/compare/v2.495.1...v2.495.2) (2023-02-15)
+
+
+### Bug Fixes
+
+* missing fallback array ([a7daa55](https://github.com/kiva/ui/commit/a7daa554e9c519b0742351fb0a9e2a384008566f))
+
+### [2.495.1](https://github.com/kiva/ui/compare/v2.495.0...v2.495.1) (2023-02-14)
+
+
+### Bug Fixes
+
+* log for when channel not found in map ([8823514](https://github.com/kiva/ui/commit/8823514cd7b94e76b39727ea13bacc7dbd588deb))
+* some missing optional chaining based on logs ([71847f9](https://github.com/kiva/ui/commit/71847f9ef09ddc0c8864814268027528bbfaf882))
+* touch should toggle categories menu ([67b5412](https://github.com/kiva/ui/commit/67b54124ad9c4557356d65c2ee63e0a5c4211e5c))
+
+## [2.495.0](https://github.com/kiva/ui/compare/v2.494.1...v2.495.0) (2023-02-14)
+
+
+### Features
+
+* add user attribute for when a user has a us loan in basket ([9bb69ee](https://github.com/kiva/ui/commit/9bb69eeb65e95dd94806e6dbca1fc8e9f250e265))
+
+### [2.494.1](https://github.com/kiva/ui/compare/v2.494.0...v2.494.1) (2023-02-14)
+
+
+### Bug Fixes
+
+* missing optional chaining ([5a4e1c3](https://github.com/kiva/ui/commit/5a4e1c337ef33d6125a02e0221291eef6f95d015))
+
+## [2.494.0](https://github.com/kiva/ui/compare/v2.493.0...v2.494.0) (2023-02-14)
+
+
+### Features
+
+* use loan channel headline, metaTitle, metaDescription from api MARS-321 ([f8f2237](https://github.com/kiva/ui/commit/f8f2237657a46df98c066cc0860f348dc95bacef))
+
+
+### Bug Fixes
+
+* remove MARS-317 experiment code MARS-342 ([a78bb59](https://github.com/kiva/ui/commit/a78bb598fbd805449dcdf9573831d1116ca46280))
+
+## [2.493.0](https://github.com/kiva/ui/compare/v2.492.0...v2.493.0) (2023-02-14)
+
+
+### Features
+
+* move journals up on the page ([4c730ca](https://github.com/kiva/ui/commit/4c730cacfaff68e83b433951f5525a89cafc1ecb))
+
+## [2.492.0](https://github.com/kiva/ui/compare/v2.491.5...v2.492.0) (2023-02-14)
+
+
+### Features
+
+* data fetch update for matched loans in lh ([8ded19d](https://github.com/kiva/ui/commit/8ded19d52d011b936fabaf1fa090ab8d7ebeda68))
+
+### [2.491.5](https://github.com/kiva/ui/compare/v2.491.4...v2.491.5) (2023-02-14)
+
+
+### Bug Fixes
+
+* progress was changing on mount, callouts now just loaded on mount ([0e08cf1](https://github.com/kiva/ui/commit/0e08cf193050f35b5d6a01e5efef1b497c68553e))
+* revert change to reduce file churn ([95708ac](https://github.com/kiva/ui/commit/95708ac5a0bc4f58cf80a17c33eb34890edc229b))
+* set progress bar clientside, add loader to loan callouts ([f3006e5](https://github.com/kiva/ui/commit/f3006e5911658622709151ef71ec2b11fa0922f6))
+
+### [2.491.4](https://github.com/kiva/ui/compare/v2.491.3...v2.491.4) (2023-02-14)
+
+
+### Bug Fixes
+
+* categories button click behavior ([7544b6d](https://github.com/kiva/ui/commit/7544b6db0d83f2e8f980e54b1cd4ec5dbf7f29e5))
+
+### [2.491.3](https://github.com/kiva/ui/compare/v2.491.2...v2.491.3) (2023-02-14)
+
+
+### Bug Fixes
+
+* ensure login links always go to login MARS-327 ([dac0fbd](https://github.com/kiva/ui/commit/dac0fbd3fbc3afd38e4c3edc8dbe79b980cc251a))
+
 ### [2.491.2](https://github.com/kiva/ui/compare/v2.491.1...v2.491.2) (2023-02-13)
 
 

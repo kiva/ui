@@ -42,14 +42,16 @@ export default () => {
 			Mutation: {
 				updateLoanSearch(_, { searchParams }, { cache }) {
 					// Patch the new params into the existing state in the cache
-					const updatedResult = cache.updateQuery({ query: loanSearchStateQuery }, data => ({
-						loanSearchState: {
-							...data.loanSearchState,
-							...searchParams
+					const data = cache.readQuery({ query: loanSearchStateQuery });
+					cache.writeQuery({
+						query: loanSearchStateQuery,
+						data: {
+							loanSearchState: {
+								...data.loanSearchState,
+								...searchParams
+							}
 						}
-					}));
-					// Return the latest state
-					return updatedResult.loanSearchState;
+					});
 				}
 			}
 		}

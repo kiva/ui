@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import _get from 'lodash/get';
+import _mergeWith from 'lodash/mergeWith';
 import logFormatter from '@/util/logFormatter';
 import bothProfilesQuery from '@/graphql/query/autolending/bothProfiles.graphql';
 import loanCountQuery from '@/graphql/query/loanCount.graphql';
@@ -30,13 +31,13 @@ function writeAutolendingData(cache, { currentProfile, savedProfile, ...fields }
 	if (savedProfile) {
 		autolending.savedProfile = getCacheableProfile(savedProfile);
 	}
+	// Create copy of cached object to remove readonly from props since lodash doesn't merge readonly props
+	const cached = JSON.parse(JSON.stringify(cache.readQuery({ query: bothProfilesQuery })?.autolending ?? {}));
+	// Use customizer to overwrite array props instead of merging
+	const customizer = (_a, b) => (Array.isArray(b) ? b : undefined);
+	const data = _mergeWith(cached, autolending, customizer);
 	// Update autolending object in the cache
-	cache.updateQuery({ query: bothProfilesQuery }, data => ({
-		autolending: {
-			...data.autolending,
-			...autolending
-		}
-	}));
+	cache.writeQuery({ query: bothProfilesQuery, data: { autolending: data } });
 }
 
 let loanCountObservable;
@@ -47,7 +48,7 @@ function updateCurrentLoanCount({ cache, client, currentProfile }) {
 	writeAutolendingData(cache, { countingLoans: true });
 
 	// Get criteria input from current profile
-	const { filters } = getSearchableCriteria(currentProfile.loanSearchCriteria);
+	const { filters } = getSearchableCriteria(currentProfile?.loanSearchCriteria);
 
 	// Cancel the currently in-flight query
 	if (loanCountObservable) loanCountObservable.unsubscribe();
@@ -200,7 +201,7 @@ export default () => {
 								const profile = _get(result, 'data.my.autolendProfile') || AutolendProfile();
 								return {
 									...profile,
-									loanSearchCriteria: profile.loanSearchCriteria || LoanSearchCriteria(),
+									loanSearchCriteria: profile?.loanSearchCriteria || LoanSearchCriteria(),
 								};
 							})
 							// Replace any legacy filter values
@@ -260,7 +261,7 @@ export default () => {
 					});
 
 					// If the search filters haven't changed, return immediately instead of getting a new loan count
-					if (criteriaAreEqual(profileBeforeChange.loanSearchCriteria, currentProfile.loanSearchCriteria)) {
+					if (criteriaAreEqual(profileBeforeChange?.loanSearchCriteria, currentProfile?.loanSearchCriteria)) {
 						return true;
 					}
 

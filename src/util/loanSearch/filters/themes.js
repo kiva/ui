@@ -78,7 +78,7 @@ export default {
 	getFilterFromQuery: (query, allFacets) => ({
 		themeId: getIdsFromQueryParam(
 			query.attribute || query.attributes || query.theme,
-			allFacets.themeNames, allFacets.themeFacets
+			allFacets?.themeNames, allFacets?.themeFacets
 		) ?? []
 	}),
 	getQueryFromFilter: loanSearchState => ({

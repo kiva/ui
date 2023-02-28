@@ -1,6 +1,6 @@
 {
 	"name": "kvue",
-	"version": "2.491.2",
+	"version": "2.504.0",
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
@@ -39,7 +39,7 @@
 		"deploy-storybook": "storybook-to-ghpages"
 	},
 	"dependencies": {
-		"@apollo/client": "^3.6.9",
+		"@apollo/client": "^3.3.21",
 		"@babel/eslint-parser": "^7.18.2",
 		"@babel/polyfill": "^7.10.4",
 		"@babel/runtime": "^7.12.5",

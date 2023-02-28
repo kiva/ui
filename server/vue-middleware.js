@@ -5,6 +5,7 @@ const cookie = require('cookie');
 const { createBundleRenderer } = require('vue-server-renderer');
 const getGqlPossibleTypes = require('./util/getGqlPossibleTypes');
 const getSessionCookies = require('./util/getSessionCookies');
+const protectedRoutes = require('./util/protectedRoutes.js');
 const vueSsrCache = require('./util/vueSsrCache');
 const tracer = require('./util/ddTrace');
 
@@ -74,8 +75,9 @@ module.exports = function createMiddleware({
 		// set html response headers
 		res.setHeader('Content-Type', 'text/html');
 		// Set strict cache-control headers for protected pages
-		// eslint-disable-next-line max-len
-		if (req?.url?.match(/(checkout|settings|portfolio|lend\/saved-search|monthlygood\/thanks|process-browser-auth|register|start-verification|confirm-instant-donation|instant-donation-thanks)/g)?.length) {
+		if (req?.url && protectedRoutes.filter(route => {
+			return req?.url?.indexOf(route) !== -1;
+		}).length) {
 			res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
 		} else {
 			res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');

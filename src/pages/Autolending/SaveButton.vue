@@ -40,8 +40,8 @@
 import _get from 'lodash/get';
 import { gql } from '@apollo/client';
 import KvButton from '@/components/Kv/KvButton';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	name: 'SaveButton',
