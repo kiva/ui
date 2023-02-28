@@ -1,25 +1,63 @@
 <template>
-	<div id="locationWrapper" class="tw-relative tw-flex tw-flex-col tw-w-full" v-click-outside="closeRegions">
+	<div
+		:id="wrapperClass"
+		class="tw-relative tw-flex tw-flex-col"
+		v-click-outside="closeRegions"
+	>
 		<label
-			class="tw-text-h4"
+			:class="{'tw-text-h4': withCategories, 'tw-hidden': !withCategories}"
 			for="location"
 		>
 			Location
 		</label>
-		<kv-text-input
-			type="text"
-			id="location"
-			ref="input"
-			:model-value="term"
-			class="tw-w-full"
-			@click="toggleRegions()"
-			placeholder="All countries"
-			:disabled="!filtersLoaded"
-			autocomplete="off"
-			readonly
-			:icon="mdiChevronDown"
-		/>
-
+		<div v-if="withCategories">
+			<kv-text-input
+				type="text"
+				id="location"
+				ref="input"
+				:model-value="term"
+				class="tw-w-full"
+				@click="toggleRegions()"
+				placeholder="All countries"
+				:disabled="!filtersLoaded"
+				autocomplete="off"
+				readonly
+				:icon="mdiChevronDown"
+			/>
+		</div>
+		<div v-else class="tw-pb-1">
+			<div
+				class="
+					tw-flex
+					tw-bg-primary
+					filter-pill
+					tw-transition
+					tw-rounded
+					tw-justify-center
+					tw-text-black
+					tw-bg-white
+					"
+				:class="{ 'tw-opacity-low': !filtersLoaded }"
+				@click="toggleRegions()"
+			>
+				<kv-material-icon :icon="mdiMapMarker" class="tw-w-3 tw-h-3" />
+				<input
+					type="text"
+					class="selector tw-w-full tw-appearance-none tw-transition tw-border-none tw-pl-1"
+					:class="{ 'tw-pointer-events-none': !filtersLoaded}"
+					id="location"
+					ref="input"
+					:value="term"
+					placeholder="All countries"
+					:disabled="!filtersLoaded"
+					readonly
+				>
+				<kv-material-icon
+					:icon="mdiChevronDown"
+					class="tw-w-3"
+				/>
+			</div>
+		</div>
 		<div
 			v-show="showRegions"
 			class="
@@ -46,6 +84,7 @@
 				md:tw-top-auto
 				md:tw-rounded
 				md:tw-max-h-screen
+				md:tw-min-w-max
 			"
 			:class="[ selectedRegion !== null ? 'md:tw-w-full' : 'md:tw-w-auto' ]"
 		>
@@ -148,7 +187,9 @@
 </template>
 
 <script>
-import { mdiMagnify, mdiChevronDown, mdiClose } from '@mdi/js';
+import {
+	mdiMagnify, mdiChevronDown, mdiClose, mdiMapMarker
+} from '@mdi/js';
 import clickOutside from '@/plugins/click-outside';
 import { getCheckboxLabel } from '@/util/loanSearch/filterUtils';
 import KvExpandable from '@/components/Kv/KvExpandable';
@@ -165,7 +206,7 @@ export default {
 		CheckboxList,
 		KvButton,
 		KvExpandable,
-		KvMaterialIcon
+		KvMaterialIcon,
 	},
 	mixins: [
 		clickOutside,
@@ -186,6 +227,10 @@ export default {
 		trackingCategory: {
 			type: String,
 			required: true,
+		},
+		withCategories: {
+			type: Boolean,
+			required: true,
 		}
 	},
 	data() {
@@ -193,6 +238,7 @@ export default {
 			mdiMagnify,
 			mdiChevronDown,
 			mdiClose,
+			mdiMapMarker,
 			hasFocus: false,
 			selectedRegion: null,
 			selectedCountries: [],
@@ -293,11 +339,13 @@ export default {
 			return this.regions[this.selectedRegion]?.countries ?? '';
 		},
 		term() {
-			let message = '';
 			if (this.selectedCountries.length > 0) {
-				message = this.selectedCountries.length === 1 ? '1 country' : `${this.selectedCountries.length} countries`; // eslint-disable-line max-len
+				return this.selectedCountries.length === 1 ? '1 country' : `${this.selectedCountries.length} countries`; // eslint-disable-line max-len
 			}
-			return message;
+			return 'All countries';
+		},
+		wrapperClass() {
+			return this.withCategories ? 'locationWrapper' : '';
 		}
 	},
 	watch: {
@@ -309,7 +357,25 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
+.filter-pill {
+	padding: 10px 20px;
+	box-shadow: 0 calc(4px) calc(15px) 0 rgba(0, 0, 0, 0.05);
+}
+
+.filter-pill input {
+	min-width: 135px;
+}
+
+.filter-pill:hover input,
+.filter-pill.hover input,
+.filter-pill:hover {
+	@apply tw-bg-black tw-text-white tw-cursor-pointer;
+}
+
+.selector {
+	@apply focus:tw-outline-none focus:tw-ring-0 focus:tw-border-transparent;
+}
 
 #locationWrapper >>> input {
 	padding-left: 16px;
@@ -323,5 +389,4 @@ export default {
 	left: auto;
 	right: 8px;
 }
-
 </style>
