@@ -1,3 +1,15 @@
+## [2.507.0](https://github.com/kiva/ui/compare/v2.506.0...v2.507.0) (2023-02-28)
+
+
+### Features
+
+* progress bar copy updated when loan is already funded ([dbf0c05](https://github.com/kiva/ui/commit/dbf0c055b81907450c2a37d413d18f3fe507b39a))
+
+
+### Bug Fixes
+
+* loanprogressgroup test file updated ([405ac74](https://github.com/kiva/ui/commit/405ac74928821369f739f30e609773fe5cbd5711))
+
 ## [2.506.0](https://github.com/kiva/ui/compare/v2.505.0...v2.506.0) (2023-02-28)
 
 
