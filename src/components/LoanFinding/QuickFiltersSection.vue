@@ -1,6 +1,6 @@
 <template>
 	<div class="tw-w-full tw-bg-secondary">
-		<div class="tw-mx-auto tw-pt-4 tw-pb-2 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
+		<div class="tw-mx-auto tw-pt-2 tw-pb-1 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 			<div
 				v-show="showOverlay"
 				style="opacity: 0.5;" class="tw-fixed tw-inset-0 tw-bg-black tw-z-1"
