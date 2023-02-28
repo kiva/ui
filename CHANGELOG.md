@@ -1,3 +1,20 @@
+## [2.505.0](https://github.com/kiva/ui/compare/v2.504.0...v2.505.0) (2023-02-28)
+
+
+### Features
+
+* new ui ([5230f56](https://github.com/kiva/ui/commit/5230f56f14d4bdc0e07c4a21e8ec8dea92c66361))
+* updated quick filters ui ([10acbae](https://github.com/kiva/ui/commit/10acbae7774629b79eb5909549178906059e6458))
+
+
+### Bug Fixes
+
+* another lint ([af82768](https://github.com/kiva/ui/commit/af82768d427537810cb2daa7ac9b0e99b80012d7))
+* design updates, pr comments, and tw adjustments ([a11c0ab](https://github.com/kiva/ui/commit/a11c0ab088fc861e9897c3aaad193e4e08da7de9))
+* linter ([802da82](https://github.com/kiva/ui/commit/802da821a51be56f0c5c64c62bef4978ca51f499))
+* location dropdown min width ([31364e5](https://github.com/kiva/ui/commit/31364e5c43ca1cb505e3b05611a780b04a3a984b))
+* ui updates and pr comments ([c25a287](https://github.com/kiva/ui/commit/c25a2873ae4c5c2819147cdc170b182c8ef0225e))
+
 ## [2.504.0](https://github.com/kiva/ui/compare/v2.503.0...v2.504.0) (2023-02-27)
 
 
