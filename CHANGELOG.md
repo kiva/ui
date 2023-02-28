@@ -1,3 +1,10 @@
+## [2.506.0](https://github.com/kiva/ui/compare/v2.505.0...v2.506.0) (2023-02-28)
+
+
+### Features
+
+* number of loans for recommended section in lh increased to 12 ([9fd5a84](https://github.com/kiva/ui/commit/9fd5a84cfcad16eff4e7429680068400f80cf220))
+
 ## [2.505.0](https://github.com/kiva/ui/compare/v2.504.0...v2.505.0) (2023-02-28)
 
 
