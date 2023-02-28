@@ -1,3 +1,10 @@
+### [2.507.1](https://github.com/kiva/ui/compare/v2.507.0...v2.507.1) (2023-02-28)
+
+
+### Bug Fixes
+
+* more white space removed for product qa ([ca937f7](https://github.com/kiva/ui/commit/ca937f7a13c804df0c17239b409f4a1add004513))
+
 ## [2.507.0](https://github.com/kiva/ui/compare/v2.506.0...v2.507.0) (2023-02-28)
 
 
