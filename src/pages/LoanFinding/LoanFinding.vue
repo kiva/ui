@@ -103,6 +103,8 @@ export default {
 			userInfo: {},
 			recommendedLoans: [
 				{ id: 0 }, { id: 0 }, { id: 0 },
+				{ id: 0 }, { id: 0 }, { id: 0 },
+				{ id: 0 }, { id: 0 }, { id: 0 },
 				{ id: 0 }, { id: 0 }, { id: 0 }
 			],
 			secondCategoryLoans: [],
@@ -143,7 +145,7 @@ export default {
 		async getRecommendedLoans() {
 			const { loans } = await runLoansQuery(
 				this.apollo,
-				{ sortBy: 'personalized', pageLimit: 6 },
+				{ sortBy: 'personalized', pageLimit: 12 },
 				FLSS_ORIGIN_LENDING_HOME
 			);
 			this.recommendedLoans = loans;
