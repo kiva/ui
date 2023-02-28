@@ -30,7 +30,7 @@
 					</option>
 				</kv-select>
 			</div>
-			<div v-if="!removeGenderDropdown && !withCategories" class="tw-overflow-scroll tw-pb-1">
+			<div v-if="!removeGenderDropdown && !withCategories" class="tw-overflow-x-auto tw-pb-1">
 				<filter-pills
 					:filters-loaded="filtersLoaded"
 					:options="filterOptions.gender"
@@ -121,6 +121,7 @@
 							tw-w-full
 							tw-h-full
 							tw-pointer-events-auto
+							tw-cursor-pointer
 						"
 							:disabled="!filtersLoaded"
 							v-model="sortBy"
@@ -227,7 +228,7 @@ export default {
 			mdiChevronDown,
 			selectedCategory: 0,
 			selectedGender: 'all',
-			selectedGenders: ['all'], // TODO: consolidate to just this when UI changes apply to QF on lending home, too
+			selectedGenders: ['all'], // TODO: Remove selectedGender and just use this, see CORE-1163
 			sortBy: this.defaultSort,
 			presetFilterActive: {
 				women: false,
@@ -403,17 +404,17 @@ export default {
 
 <style lang="postcss" scoped>
 	.overflow-container {
-		overflow: scroll;
+		overflow-x: auto;
 	}
 
-	@media screen and (min-width: 400px) {
+	@media screen and (min-width: 734px) {
 		.overflow-container {
-			overflow: visible;
+			overflow-x: visible;
 		}
 	}
 
 	.pill-container:hover {
-		@apply tw-text-white tw-bg-black tw-cursor-pointer;
+		@apply tw-text-white tw-bg-black;
 	}
 
 	.filter-pill {
