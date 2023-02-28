@@ -10,7 +10,7 @@
 
 		<div class="tw-w-full">
 			<!-- eslint-disable-next-line max-len -->
-			<div class="tw-mx-auto tw-p-2 lg:tw-pt-4 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
+			<div class="tw-mx-auto tw-p-2 tw-py-1 lg:tw-pt-3 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 				<h3 class="tw-text-h3 tw-text-primary">
 					Welcome back, <span class="tw-text-action data-hj-suppress">{{ firstName }}</span>
 				</h3>
@@ -22,12 +22,11 @@
 				:loans="recommendedLoans"
 				:per-step="2"
 				:enable-loan-card-exp="enableLoanCardExp"
-				class="tw-pt-2"
 				@add-to-basket="trackCategory($event, 'recommended')"
 			/>
 
 			<quick-filters-section
-				class="tw-mt-6"
+				class="tw-mt-3"
 				:enable-loan-card-exp="enableLoanCardExp"
 				@add-to-basket="trackCategory($event, 'quick-filters')"
 			/>
@@ -38,13 +37,13 @@
 				:title="secondCategoryTitle"
 				:subtitle="secondCategorySubtitle"
 				:loans="secondCategoryLoans"
-				class="tw-pt-6 tw-pb-2"
+				class="tw-py-3"
 				:enable-loan-card-exp="enableLoanCardExp"
 				@add-to-basket="trackCategory($event, 'matched-lending')"
 			/>
 
 			<partner-spotlight-section
-				class="tw-pt-6"
+				class="tw-pt-3"
 				:enable-loan-card-exp="enableLoanCardExp"
 				:spotlight-data="activeSpotlightData"
 				:loans="spotlightLoans"
