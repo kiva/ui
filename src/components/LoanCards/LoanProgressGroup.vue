@@ -51,6 +51,7 @@ export default {
 			const formattedTimeLeft = `${this.timeLeft !== '' ? `. ${this.timeLeft}` : ''}`;
 			// Some time left strings already include an exclamation mark
 			const exclamationMark = this.amountLow && !formattedTimeLeft.includes('!') ? '!' : '';
+			if (!this.numeralLeft.value()) return 'Funded!';
 			return `${formattedMoneyLeft} to go${formattedTimeLeft}${exclamationMark}`;
 		}
 	}

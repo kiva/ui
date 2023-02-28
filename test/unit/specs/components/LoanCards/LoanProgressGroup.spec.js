@@ -5,7 +5,7 @@ describe('LoanProgressGroup', () => {
 	it('should display default message', () => {
 		const { getByText } = render(LoanProgressGroup);
 
-		getByText('$0 to go');
+		getByText('Funded!');
 	});
 
 	it('should display amount left', () => {
