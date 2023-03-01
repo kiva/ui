@@ -1,3 +1,11 @@
+### [2.508.1](https://github.com/kiva/ui/compare/v2.508.0...v2.508.1) (2023-03-01)
+
+
+### Bug Fixes
+
+* filters should be able to handle undefined facets object ([0fec7f8](https://github.com/kiva/ui/commit/0fec7f8acc1a4abb49593734b03864e89ef8c32e))
+* handle undefined params for radio group options ([4a628c5](https://github.com/kiva/ui/commit/4a628c5b83e6ead4c5264406aa24c4902b65c88f))
+
 ## [2.508.0](https://github.com/kiva/ui/compare/v2.507.1...v2.508.0) (2023-03-01)
 
 
