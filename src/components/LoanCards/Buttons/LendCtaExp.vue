@@ -245,8 +245,7 @@ export default {
 			return 'lend';
 		},
 		lendButtonVisibility() {
-			// return this.state === 'lend' || this.state === 'loading';
-			return false;
+			return this.state === 'lend' || this.state === 'loading';
 		},
 		showNonActionableLoanButton() {
 			return this.state === 'funded'
@@ -267,8 +266,7 @@ export default {
 			return isLessThan25(this.unreservedAmount);
 		},
 		isLentTo() {
-			// return this.state === 'lent-to';
-			return true;
+			return this.state === 'lent-to';
 		},
 		isCompleteLoanActive() {
 			// eslint-disable-next-line
@@ -287,8 +285,12 @@ export default {
 	border-radius: 14px 0 0 14px;
 }
 
-.lend-again >>> span:first-child {
-	@apply tw-px-0.5 md:tw-px-1;
+.lend-again ::v-deep span {
+	@apply tw-px-0;
+}
+
+.lend-again ::v-deep > span {
+	@apply tw-px-1;
 }
 
 .lendButtonWrapper >>> span:first-child {
