@@ -1,5 +1,5 @@
 import KvPill from '@/components/Kv/KvPill';
-import IconClimate from '@/assets/icons/inline/eco-challenge/globe-leaf.svg';
+import IconClimate from '@/assets/icons/inline/achievements/globe-leaf.svg';
 
 export default {
 	title: 'Kv/KvPill',

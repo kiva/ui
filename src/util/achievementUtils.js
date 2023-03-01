@@ -2,7 +2,7 @@ import achievementMilestonesQuery from '@/graphql/query/achievementMilestones.gr
 
 /**
  * achievementsQuery query
- * Checks for Eco Challenge Achievement status
+ * Checks for Challenge Achievement status
  *
  * @param {Object} apollo Apollo Client instance
  * @param {Object} loanIdsArray Array of loan ids as ints
@@ -23,7 +23,7 @@ export function achievementsQuery(apollo, loanIdsArray) {
 
 /**
  * achievementsQueryFromCache query
- * Checks for Eco Challenge Achievement status
+ * Checks for Challenge Achievement status
  *
  * @param {Object} apollo Apollo Client instance
  * @param {Object} loanIdsArray Array of loan ids as ints
@@ -44,7 +44,7 @@ export function achievementsQueryFromCache(apollo, loanIdsArray) {
 
 /**
  * hasMadeAchievementsProgression
- * Checks for Eco Challenge Achievement status
+ * Checks for Challenge Achievement status
  *
  * @param {Array} achievementsQueryResult The array of milestones from the request result from the achievementsQuery
  * @param {Object} achievementName String of achievement name as stored in the achievement service

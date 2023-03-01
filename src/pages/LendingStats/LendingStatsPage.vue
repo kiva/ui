@@ -17,11 +17,8 @@
 					<template v-if="hasBadges">
 						<hr class="tw-border-tertiary tw-my-4">
 						<badges-section
-							v-for="(badge, index) in completedAchievements"
-							:key="index"
-							:badges-obtained="completedAchievements.length"
 							:total-badges="allAchievements.length"
-							:achievement-id="badge.achievementId"
+							:completed-achievements="completedAchievements"
 						/>
 					</template>
 					<hr class="tw-border-tertiary tw-my-4">

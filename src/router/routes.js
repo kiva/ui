@@ -118,8 +118,8 @@ module.exports = [
 		}
 	},
 	{
-		path: '/checkout/eco-challenge/thanks',
-		component: () => import('@/pages/Thanks/ThanksPageEcoChallenge'),
+		path: '/checkout/iwd-challenge/thanks',
+		component: () => import('@/pages/Thanks/ThanksPageIwdChallenge'),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}
