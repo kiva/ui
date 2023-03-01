@@ -1,3 +1,16 @@
+## [2.509.0](https://github.com/kiva/ui/compare/v2.508.1...v2.509.0) (2023-03-01)
+
+
+### Features
+
+* padding decreased for lend again button in lendctaexp component ([8d74d4d](https://github.com/kiva/ui/commit/8d74d4df27b15a62ca24cd91317bd080a1a46e49))
+
+
+### Bug Fixes
+
+* css fixed for first span in lend again button ([d4eb750](https://github.com/kiva/ui/commit/d4eb750d41ad8b56190200a1e88a6571129bbdd2))
+* css updates lendctaexp ([670a291](https://github.com/kiva/ui/commit/670a2911191f9a78da3f902a3830d683f09ec11f))
+
 ### [2.508.1](https://github.com/kiva/ui/compare/v2.508.0...v2.508.1) (2023-03-01)
 
 
