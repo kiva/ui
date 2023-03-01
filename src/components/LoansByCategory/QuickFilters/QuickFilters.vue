@@ -30,13 +30,20 @@
 					</option>
 				</kv-select>
 			</div>
-			<div v-if="!removeGenderDropdown && !withCategories" class="tw-overflow-x-auto tw-pb-1">
+			<div v-if="!removeGenderDropdown && !withCategories" class="tw-flex tw-gap-1 tw-overflow-x-auto tw-pb-1">
 				<filter-pills
 					:filters-loaded="filtersLoaded"
 					:options="filterOptions.gender"
 					:selected-values="selectedGenders"
 					@update-values="updateGenders($event)"
 				/>
+				<div v-if="!filtersLoaded" class="tw-flex tw-gap-1 placeholder">
+					<kv-loading-placeholder
+						style="height: 2.75rem; width: 100px;"
+						v-for="(index) in 3"
+						:key="index"
+					/>
+				</div>
 			</div>
 
 			<div v-if="!removeGenderDropdown && withCategories" class="tw-flex tw-flex-col tw-grow">
@@ -180,6 +187,7 @@ import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import LocationSelector from './LocationSelector';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import FilterPills from './FilterPills';
 
 export default {
@@ -219,7 +227,8 @@ export default {
 		KvSelect,
 		LocationSelector,
 		KvMaterialIcon,
-		FilterPills
+		FilterPills,
+		KvLoadingPlaceholder,
 	},
 	data() {
 		return {
@@ -234,7 +243,7 @@ export default {
 				women: false,
 				kivaUs: false,
 				endingSoon: false,
-			}
+			},
 		};
 	},
 	mixins: [
@@ -403,6 +412,20 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+	.placeholder > div {
+		@apply tw-rounded !important;
+	}
+
+	.placeholder {
+		display: none;
+	}
+
+	@media screen and (min-width: 600px) {
+		.placeholder {
+			display: flex;
+		}
+	}
+
 	.overflow-container {
 		overflow-x: auto;
 	}
